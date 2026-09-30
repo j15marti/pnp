@@ -60,3 +60,12 @@ Do not start TASK-001's exact SU/vMS implementation until the primary-source def
 - task specifications: `tasks/`
 
 A negative result, counterexample, or route retirement is a successful research outcome when reproducible.
+
+
+## Living project document
+
+The repository contains one canonical living progress document named `main.tex`, whose directory may change. Locate it from the repository tree rather than assuming a path. Do not create a duplicate.
+
+When a Codex experiment materially changes the verified project state, update the relevant COMPUTATIONAL/result portion of `main.tex` only if an ownership marker or explicit Codex-owned region authorizes the edit. Otherwise create the result/report and leave a handoff for LSPV-5.
+
+Treat `main.tex` as a readable research dashboard, not a raw log: preserve polished LaTeX, tables, diagrams, equations, status discipline, and source/report paths.
