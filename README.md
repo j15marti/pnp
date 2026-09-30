@@ -26,3 +26,8 @@ Blank placeholder reports are not successful runs. If a write fails, record the 
 
 ## Initial migration
 The initial migration contains the latest verified MAIN synthesis, latest verified LSPV-1 through LSPV-4 reports, current GROK/CLAUDE material, and the battery/tape investigations. Blank Google Drive print failures were intentionally excluded.
+
+
+## Living progress document
+
+The project maintains one living LaTeX status document named **`main.tex`**. Its directory may be reorganized over time, so agents locate it dynamically from the repository tree. It is the readable current synthesis; timestamped files under `research/main/` remain historical snapshots.
