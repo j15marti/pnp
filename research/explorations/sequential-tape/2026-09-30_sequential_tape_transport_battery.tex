@@ -1,0 +1,172 @@
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{fontspec}
+\usepackage{fvextra}
+\setmonofont{Latin Modern Mono}
+\title{2026\_09\_30\_14\_42\_LSPV-MANUAL — Sequential Tape, Polynomial Paper, and Transport Battery}
+\author{P vs NP Research Project}
+\date{}
+\begin{document}
+\maketitle
+
+\noindent\textbf{Migration note.} This file is a source-faithful LaTeX migration of a verified research log. The report body is preserved verbatim; proof-status labels in the source are unchanged.
+
+\noindent\textbf{Source Drive document ID:} \texttt{1haN1QnksnNjuAQ8MxxEO7Qxh5Watpl43nGQdnwxpV-k}
+
+\noindent\textbf{Source URL:} \texttt{https://docs.google.com/document/d/1haN1QnksnNjuAQ8MxxEO7Qxh5Watpl43nGQdnwxpV-k}
+
+\bigskip
+\begin{Verbatim}[breaklines=true,breakanywhere=true]
+LSPV-MANUAL REPORT::SEQUENTIAL-TAPE-001
+STATUS
+P versus NP remains OPEN. This report tests the “deterministic Turing machine must make every linear move and has only polynomial paper” idea as a formal lower-bound framework.
+CORE INTERPRETATION
+Model a deterministic one-tape machine whose head moves only left/right/stay by one cell per primitive step. “Paper” is the number S(N) of tape cells ever visited on inputs of length N. If the machine runs in time T(N), then S(N) <= N + T(N) automatically. Therefore a polynomial-time machine already has polynomial paper. A separate polynomial-space cap does not strengthen the assumption P=NP.
+A stronger warning is that polynomial space is PSPACE-level capacity, not P-level capacity. SAT itself can be decided deterministically using polynomial (indeed essentially linear-in-the-explicit-formula plus assignment/counter) work space by exhaustive search, although the time is exponential. Thus “only polynomial paper” is not a hardness source for SAT.
+KNOWN LOCALITY MECHANISM: CROSSING SEQUENCES
+For a one-tape computation, define C_i to be the crossing sequence at boundary i: the sequence of finite-control states observed when the head crosses between tape cells i and i+1. Standard crossing-sequence theory makes the locality exact: information from the left side can influence the right only through physical crossings, and total crossing activity is charged to actual head motion. This is the correct operational version of the battery idea on a local tape.
+For models without stationary steps, the computation length is the sum over boundary crossing-sequence lengths. With stationary steps, this sum is at most total time, so any lower bound on total crossings is also a time lower bound.
+TOY TEST 1: PALINDROME/EQUALITY
+Take a q-state one-tape machine and a cut that must distinguish R mutually incompatible left contexts. The number of crossing sequences of length at most l is O(q^l), so distinguishability forces
+l >= log_q R - O(1).
+For palindrome/equality-type instances, cuts near the middle have exponentially many distinguishable contexts. Summing the induced crossing requirements over many cuts yields the classical quadratic-scale one-tape lower bound.
+A concrete numerical toy using q=8 and a symmetric distinguishability profile produced the following summed crossing lower bounds:
+N=16 -> 27
+N=32 -> 96
+N=64 -> 363
+N=128 -> 1408
+N=256 -> 5547
+The ratio to N^2 approaches a positive constant in the toy profile, matching the expected quadratic transport behavior.
+EXACT NO-GO 1: POLYNOMIAL MODEL SIMULATION
+A standard fixed multitape T(N)-time machine can be simulated by a one-tape machine in O(T(N)^2) time. Therefore any hypothetical N^k-time SAT algorithm on a conventional multitape model yields a one-tape SAT algorithm in N^{O(k)} time. The exact exponent can change, but polynomial time remains polynomial.
+This means:
+- a fixed quadratic one-tape lower bound cannot refute P=NP;
+- more generally, any fixed N^d lower bound cannot exclude all polynomial-time algorithms, because the candidate algorithm exponent can be larger;
+- a one-tape route capable of proving P != NP must ultimately establish a superpolynomial lower bound for SAT, or an algorithm-indexed lower bound that outruns the polynomial simulation exponent for every candidate machine.
+Numerical exponent check under the standard quadratic simulation:
+candidate exponent k=1 -> one-tape simulation exponent about 2
+k=1.5 -> about 3
+k=2 -> about 4
+k=3 -> about 6
+k=5 -> about 10
+k=10 -> about 20.
+A universal N^2 crossing bound therefore does not defeat arbitrary polynomial k.
+EXACT NO-GO 2: SIMPLE INPUT-CONTEXT COUNTING HAS A QUADRATIC CEILING
+For explicit input length N, one tape cut can see at most 2^N different raw input contexts. A pure distinguishability argument across that cut can therefore force at most O(N) control-state crossings. There are only O(N) original input boundaries. Consequently, the simplest “count distinguishable input contexts at each cut and sum” method naturally has only O(N^2) scale.
+This is not a theorem that all possible crossing-sequence arguments are bounded by N^2. It is a theorem about the simple input-context counting version. Any superpolynomial SAT lower bound must force repeated computational interaction not reducible to the finite set of explicit left/right input contexts.
+HOSTILE CONTROL: AFFINE/TSEITIN
+A formula can have a highly nonlocal/expanding incidence graph while still reducing to polynomial-time linear algebra. Therefore the number of clause-variable edges crossing a tape layout cannot itself be charged independently. One transported variable value or compressed linear-algebraic summary may discharge many apparent edge obligations at once.
+This falsifies the naive rule:
+“every semantic relation crossing the tape cut costs one independent crossing.”
+The transport battery must charge only information that cannot be compressed by a legitimate algorithmic representation.
+HOSTILE CONTROL: BOUNDED TREEWIDTH
+Low-treewidth formulas admit compact dynamic-programming summaries. A tape implementation may pay sequential movement to construct and reuse such summaries, but must not be charged separately for every original clause interaction. Again, representation change is legitimate if its real primitive trace is paid.
+CONNECTION TO THE SHORT-CIRCUIT RESULT
+The strongest surviving rule is:
+A shortcut is never an atomic TC4 edge.
+It must be expanded into its actual primitive execution trace on the chosen machine model.
+On a sequential tape:
+S -> translate -> C_0^K -> C_1^K -> ... -> C_l^K -> return -> S'.
+Every read/write/translation/head movement is charged. If shortcut K fails, the failed micro-execution is automatically charged. If K succeeds quickly, the battery measure must permit that fast discharge. No ad hoc failed-shortcut penalty is required.
+This is cleaner than requiring an analyst-defined “gate certificate.” Operational prerequisites are simply the actual data structures and tape state the program must construct before it can perform its next primitive operation.
+CANDIDATE: TRANSPORT BATTERY
+For a fixed computation trace, define the raw transport expenditure
+X = sum_i |C_i|,
+where C_i ranges over tape boundaries. Then X <= T.
+The candidate proof architecture would require an independently defined source-grounded transport demand D_A(F) satisfying:
+1. D_A(F) <= X_A(F) for every exact SAME_REALIZATION execution;
+2. D_A(F) is invariant under DEAD/COPY/DELAY and correctly charges INTERP/RECOMP;
+3. D_A(F) is small on Gaussian/Tseitin, 2-SAT, Horn, and bounded-treewidth controls;
+4. for a hard SAT family F_A tailored to candidate machine A, D_A(F_A) exceeds every polynomial time bound claimed by A.
+Condition 4 is the unresolved and extremely strong step. Defining D_A as “the number of crossings the optimal computation still needs” would be circular because it simply renames runtime.
+CONNECTION TO 2025 WILLIAMS TIME-SPACE SIMULATION
+Ryan Williams proved that every t-time multitape Turing machine can be simulated in O(sqrt(t log t)) space. His paper explicitly identifies locality of low-dimensional tape storage as crucial and says the same method is not known for arbitrary random-access models because the induced computation graph has much higher indegree.
+This is highly relevant conceptually:
+- low-dimensional local memory creates structural restrictions that can be exploited rigorously;
+- random access destroys those particular locality constraints;
+- therefore a primitive local-tape battery is a real mathematical object, not just metaphor.
+However, the theorem does not itself create a SAT contradiction. SAT already has small-space algorithms, and a hypothetical polynomial-time SAT algorithm remains polynomial after standard model simulations.
+NONRELATIVIZING SEAM
+The sequential-tape model does expose a clean oracle replacement failure:
+ordinary shortcut K has an internal microtrace whose reads/writes/moves can be charged;
+an oracle query can return the corresponding answer atomically without exposing that microtrace.
+Thus a primitive-trace transport theorem would be nonrelativizing in a precise sense. This is useful architecture, but nonrelativizing is not sufficient. An algebraic-oracle version must also be tested, and the underlying transport demand must still be proved.
+INCIDENCE-WIDTH CONNECTION
+There is a useful restricted-model connection to OBDDs and bounded-read branching programs. CNF pathwidth/cutwidth and related parameters can force exponentially large OBDD or bounded-repetition branching-program representations. These results confirm that linear ordering plus restricted revisitation can make formula structure expensive.
+But this does not transfer automatically to arbitrary Turing machines. A general tape machine may revisit variables, rewrite state, and use compressed summaries. Therefore pathwidth/OBDD lower bounds are hostile controls and possible sublemmas, not the missing unrestricted lower bound.
+PAPER SHOULD BE TIED TO THE CANDIDATE MACHINE
+There is no single exponent p that means “enough paper for P,” because
+P = union_k TIME(N^k).
+A candidate N^k-time machine automatically has at most O(N^k) visited cells. For diagonalization against a fixed candidate A, it is legitimate to use A’s own exponent k and actual visited span S_A(N). It is not legitimate to impose one universal N^p tape cap on all P algorithms.
+NEW RESEARCH TARGET: LOCALITY-TO-SOURCE DEMAND
+The only version worth pursuing is not “SAT has many relations, so the head must travel.” It is:
+For every candidate deterministic polynomial-time SAT machine A, construct a formula family F_A and an independently checkable source relation R_A such that any SAME_REALIZATION one-dimensional primitive trace deciding F_A must induce large crossing demand across many boundaries, even after arbitrary legal compression/reencoding.
+This would amount to a wrapper-invariant lower bound on communication carried by the machine’s own finite-control/tape interface.
+The key hostile question is:
+Can A compress all required cross-boundary dependence into a polynomial-size summary and carry/recompute that summary?
+If yes, the transport route fails on that family.
+If no, the proof must state the exact theorem preventing that compression.
+TEST RESULT: SIMPLE EDGE-DEMAND MODEL RETIRED
+A first model that charges one unit for every variable-clause incidence crossing a linear cut is falsified by affine/Tseitin and bounded-treewidth controls. Many incidences can be summarized together. RETIRE this model.
+TEST RESULT: RAW POLYNOMIAL-PAPER CAP RETIRED AS HARDNESS SOURCE
+Polynomial tape capacity alone is not restrictive enough for SAT and is automatically satisfied by polynomial-time machines. RETIRE “paper capacity” as the core lower-bound invariant.
+SURVIVING CANDIDATE
+The useful synthesis is:
+primitive-trace battery + sequential locality + candidate-specific actual tape span + source-grounded crossing demand.
+This candidate is materially narrower than the earlier battery/mana picture and avoids free TC4 shortcuts. It still lacks the universal source-demand theorem.
+SINGLE NEXT TARGET
+Construct a concrete 3-CNF family with expander-like incidence but include three matched versions:
+(A) genuinely hard-looking generic 3-CNF,
+(B) affine/Tseitin control with comparable incidence width,
+(C) bounded-treewidth/tractable control.
+For a fixed one-tape trace model, compute crossing/cut summaries and determine which proposed source-demand statistics distinguish (A) from both controls. Any statistic that assigns comparable superpolynomial demand to (B) or (C) is invalid.
+Then attempt a formal compression attack: permit the machine to replace all local obligations on one side of a cut by any polynomial-size summary. The surviving quantity, if any, is the next candidate transport battery.
+LITERATURE
+Hennie — One-tape, off-line Turing machine computations
+Kushilevitz and Nisan — Communication Complexity, Chapter on time-space tradeoffs
+Pippenger and Fischer — Relations Among Complexity Measures
+Fortnow et al. — Time-Space Lower Bounds for Satisfiability
+R. Ryan Williams — Simulating Time with Square-Root Space
+Bova and Slivovsky — On Compiling Structured CNFs to OBDDs
+Razgon — The splitting power of branching programs of bounded repetition and CNFs of bounded width
+FOLLOW-UP MATCHED-INCIDENCE EXPERIMENT
+Fix any 3-uniform hypergraph H on variables x_1,...,x_n. Define:
+F_Horn(H) = conjunction over {a,b,c} in H of (not x_a OR not x_b OR not x_c).
+This formula is Horn and is satisfied by the all-false assignment.
+Define F_signed(H) using exactly the same triples but arbitrary signs.
+For every linear tape layout of the variables, F_Horn(H) and F_signed(H) have exactly the same unsigned incidence cut profile, the same unsigned cutwidth, and the same unsigned pathwidth-type geometry, because the underlying hypergraph is identical. Therefore no invariant depending only on unsigned incidence transport can distinguish the trivial Horn control from the generic signed formula.
+Reproducible numerical illustration:
+n=40 variables, m=80 random 3-edges, seed=20260930.
+For one random variable layout, maximum number of hyperedges straddling a cut = 58 and mean = 39.21.
+A path-like 3-uniform control on the same n has maximum cut count 2 and mean 1.95.
+Across seeds 1,2,3,4,5 for the random-hypergraph experiment, maximum random-layout cut counts were 65,65,67,62,66.
+The geometry therefore clearly detects “nonlocality,” but assigns exactly the same nonlocality to an easy Horn formula and to the matched generic signing.
+STATUS: FALSIFIED
+Unsigned incidence cutwidth/pathwidth/edge-crossing count cannot be the computational battery for SAT.
+SIGNED-GEOMETRY HOSTILE CONTROL
+Variable complementation x_i <-> not x_i preserves SAT complexity and transforms Horn into renamable-Horn instances while flipping the signs of every occurrence of selected variables. Therefore a sign-sensitive transport statistic that is not invariant under these per-variable renamings is also invalid. Any surviving signed-hypergraph battery must quotient this gauge freedom before claiming hardness.
+SELF-FINANCING PAPER OBSERVATION
+On a local one-tape machine, new paper is not an independent free resource: reaching a fresh cell already consumes head movement. Thus visited space S_A(F) <= N + T_A(F). “Paper” can be included as state in the accounting, but the generic inequality only recovers the trivial lower bound T >= S-N. To gain more, one must prove repeated transport/communication through already visited cells.
+UPDATED SINGLE NEXT TARGET
+Abandon raw incidence geometry. Search instead for a source-grounded cross-boundary quantity invariant under:
+(1) variable renaming/complementation,
+(2) affine/Tseitin compression,
+(3) bounded-treewidth summaries,
+(4) arbitrary polynomial-size local summaries,
+while still forcing repeated communication on a candidate hard family.
+If no such quantity survives these controls, retire the sequential-transport route as an unrestricted P-vs-NP mechanism while retaining it as a restricted-model diagnostic.
+INFORMATION-TRANSFER / CHRONOGRAM CONNECTION
+Cell-probe lower-bound methods provide a close analogue of the proposed tape battery. In those arguments, information written during an earlier epoch must later be recovered by probes in a later epoch; lower bounds follow by proving that too few probes could not carry enough information across the temporal cut. Online communication formulations strengthen this by preventing batching shortcuts.
+This is promising as methodology but also exposes a SAT-specific barrier:
+dynamic/online lower bounds often force many future answers carrying substantial entropy;
+static SAT requires only one output bit.
+Therefore large historical information need not be preserved unless the proof establishes that a source-grounded intermediate object must remain recoverable in the SAME_REALIZATION. An arbitrary SAT decider may compress its entire useful history into a polynomial-size summary or directly into the final decision bit.
+STATUS: CANDIDATE METHOD / NOT A SAT LOWER BOUND.
+Potential use: apply information-transfer accounting inside a forced reconstruction/self-reduction subcomputation where later stages genuinely require multiple earlier source-dependent values. The forcing theorem, not the chronogram machinery, would remain load-bearing.
+Pătraşcu and Demaine — Logarithmic Lower Bounds in the Cell-Probe Model
+Alman, Wang, and Yu — Cell-Probe Lower Bounds from Online Communication Complexity
+END_OF_VERIFIED_REPORT::SEQUENTIAL-TAPE-001
+\end{Verbatim}
+
+\end{document}
