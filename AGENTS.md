@@ -43,9 +43,9 @@ Use only: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OP
 One OPEN load-bearing arrow means P != NP is not proved.
 
 
-## Living progress document: `main.tex`
+## Living progress document: root `main.tex`
 
-There is exactly one canonical living progress document named `main.tex` somewhere in the repository tree. Its directory may change. **Locate it from the current GitHub tree on every run; never assume a fixed path and never create a second `main.tex`.**
+The one and only canonical living progress document is permanently **`/main.tex` at repository root**. Do not move it, rename it, or create a second `main.tex` anywhere in the repository.
 
 The living document explains the overall state of the project for a human reader. It should remain polished, readable, and mathematically typeset, with:
 - executive status and one highest-value target;
@@ -56,6 +56,8 @@ The living document explains the overall state of the project for a human reader
 - barrier and hostile-control ledger;
 - concise specialist sections;
 - links or paths to supporting reports/results.
+
+For Overleaf and CI, compile repository-root `main.tex` directly.
 
 Specialists LSPV-1..4 may edit **only their explicitly marked ownership region**:
 `% BEGIN LSPV-X OWNED` through `% END LSPV-X OWNED`.

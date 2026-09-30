@@ -30,4 +30,7 @@ The initial migration contains the latest verified MAIN synthesis, latest verifi
 
 ## Living progress document
 
-The project maintains one living LaTeX status document named **`main.tex`**. Its directory may be reorganized over time, so agents locate it dynamically from the repository tree. It is the readable current synthesis; timestamped files under `research/main/` remain historical snapshots.
+The project maintains one living LaTeX status document at **repository-root `main.tex`**. This path is permanent and is the Overleaf/CI entry point. Timestamped files under `research/main/` remain historical snapshots.
+
+
+For Overleaf, set the Main document to repository-root `main.tex`. The living document is pdfLaTeX-compatible.

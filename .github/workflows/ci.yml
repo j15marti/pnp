@@ -21,50 +21,22 @@ jobs:
         run: python scripts/check_research_reports.py
       - name: Python syntax check
         run: python -m compileall -q src experiments scripts
-      - name: Locate unique living main.tex
+      - name: Verify canonical root main.tex
         shell: bash
         run: |
-          mapfile -t files < <(find . -type f -name main.tex -not -path './.git/*')
-          if [ "${#files[@]}" -gt 1 ]; then
-            printf 'Multiple main.tex files found:\n%s\n' "${files[@]}"
-            exit 1
-          fi
-          if [ "${#files[@]}" -eq 1 ]; then
-            echo "MAIN_TEX=${files[0]#./}" >> "$GITHUB_ENV"
-            echo "MAIN_PDF=${files[0]#./}" | sed 's/\.tex$/.pdf/' >> "$GITHUB_ENV"
-            echo "Found living document: ${files[0]}"
-          else
-            echo "No main.tex is currently tracked; LaTeX compile step will be skipped."
-          fi
+          test -s main.tex
+          count="$(find . -type f -name main.tex -not -path './.git/*' | wc -l)"
+          test "$count" -eq 1
 
   living-document:
     needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Locate unique living main.tex
-        id: locate
-        shell: bash
-        run: |
-          mapfile -t files < <(find . -type f -name main.tex -not -path './.git/*')
-          if [ "${#files[@]}" -gt 1 ]; then
-            printf 'Multiple main.tex files found:\n%s\n' "${files[@]}"
-            exit 1
-          fi
-          if [ "${#files[@]}" -eq 1 ]; then
-            echo "found=true" >> "$GITHUB_OUTPUT"
-            echo "path=${files[0]#./}" >> "$GITHUB_OUTPUT"
-            echo "pdf=${files[0]#./}" | sed 's/\.tex$/.pdf/' >> "$GITHUB_OUTPUT"
-          else
-            echo "found=false" >> "$GITHUB_OUTPUT"
-          fi
       - uses: xu-cheng/latex-action@v3
-        if: steps.locate.outputs.found == 'true'
         with:
-          root_file: ${{ steps.locate.outputs.path }}
-          latexmk_use_xelatex: true
+          root_file: main.tex
       - uses: actions/upload-artifact@v4
-        if: steps.locate.outputs.found == 'true'
         with:
           name: living-progress-pdf
-          path: ${{ steps.locate.outputs.pdf }}
+          path: main.pdf
