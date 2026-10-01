@@ -71,6 +71,58 @@ The report must distinguish:
 
 Do not import a result across models merely because the language sounds similar. State the exact object correspondence and the missing theorem needed for transfer.
 
+## Mandatory corpus-wide reconciliation on every LSPV run
+
+Every active LSPV run must review its own target in light of the **total current GitHub corpus**, not merely the immediately preceding report.
+
+Before substantive work, the agent must:
+
+1. enumerate or otherwise survey the current repository tree;
+2. read root `main.tex`, `AGENTS.md`, `CODEX.md`, and `.codex/skills/pnp-research/SKILL.md`;
+3. inspect all current task specifications under `tasks/`;
+4. inspect the newest verified MAIN plus materially relevant historical MAIN snapshots;
+5. inspect all LSPV-1..5 reports that bear on the active claim, including older reports when repository search shows the same theorem/route was attempted before;
+6. inspect relevant `research/explorations/` components, especially the HEC / VSC-HEC / G-PPC-HEC / CRS-PPC / CCSPC causal branch when the arbitrary-algorithm bridge is relevant;
+7. inspect governance notes and the experiment/result artifacts cited by active claims;
+8. search repository content/history for duplicate formulations, contradictions, superseded assumptions, failed transfers, and retired routes;
+9. distinguish what is newly proved from what was already in the corpus.
+
+Every LSPV report must include explicit sections or entries for:
+
+- **CORPUS REVIEWED**;
+- **DUPLICATION / CONTRADICTION AUDIT**;
+- **WHAT CHANGED RELATIVE TO ROOT MAIN**;
+- **ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS**;
+- **STALE OR OVERSTATED CLAIMS FOUND**, if any.
+
+"Total corpus review" does not mean mechanically rereading every byte of every historical file on every run. It means surveying the whole repository and reading every artifact materially relevant to the active claim, including older work surfaced by repository search. An agent may not rely only on peer summaries when the underlying report or data is available.
+
+## Mandatory root `main.tex` reconciliation on every successful LSPV run
+
+Every successful LSPV run must update root `main.tex` **in the same run** after its standalone report has been written and verified.
+
+- LSPV-1 updates its marked LSPV-1 ownership region.
+- LSPV-2 updates its marked LSPV-2 ownership region.
+- LSPV-3 updates its marked LSPV-3 ownership region.
+- LSPV-4 updates its marked LSPV-4 ownership region.
+- LSPV-5 performs whole-document reconciliation and remains final synthesis arbiter.
+
+Specialists must not edit other specialists' ownership regions or executive synthesis. They should summarize the current verified state of their specialty, including negative results and open arrows, rather than merely append the newest idea.
+
+Required procedure:
+
+1. verify the standalone report first;
+2. refetch current root `main.tex` and its blob SHA;
+3. reconcile the agent-owned region against the total corpus reviewed that run;
+4. preserve all material outside the authorized region except an explicitly authorized global timestamp;
+5. use the current SHA and resolve concurrent edits rather than overwriting them;
+6. read root `main.tex` back from GitHub;
+7. verify balanced ownership markers, explicit OPEN status while any load-bearing arrow is open, strict proof labels, and no silent strengthening.
+
+A run is not complete until both the report and the authorized root `main.tex` reconciliation verify, unless a documented repository/write failure prevents the second write.
+
+LSPV-5 must treat specialist edits as evidence-bearing inputs, not as final authority. Each LSPV-5 run must survey the total repository corpus and reconcile the executive summary, proof spine, status tables, barrier ledger, open targets, and references against all verified specialist changes.
+
 ## Peer write-failure diagnosis and repair
 
 The predecessor-write check is not only a retry request. When a predecessor has no verified write, the current agent must attempt to diagnose **why** the write was blocked, using available automation state, GitHub history, target path state, and returned tool/error information.
@@ -180,13 +232,13 @@ The living document explains the overall state of the project for a human reader
 
 For Overleaf and CI, compile repository-root `main.tex` directly.
 
-Specialists LSPV-1..4 may edit **only their explicitly marked ownership region**:
+Specialists LSPV-1..4 must update **only their explicitly marked ownership region on every successful run**:
 `% BEGIN LSPV-X OWNED` through `% END LSPV-X OWNED`.
-They must preserve all other text byte-for-byte except a global last-updated timestamp if the document explicitly authorizes it.
+The update must reconcile the specialty against the total verified corpus reviewed during that run, not merely append the latest report. They must preserve all other text byte-for-byte except a global last-updated timestamp if the document explicitly authorizes it.
 
 If `main.tex` exists but ownership markers are absent, LSPV-1..4 must not restructure it; report the condition and leave structural initialization to LSPV-5.
 
-LSPV-5 owns the executive sections and whole-document reconciliation. It may add/repair ownership markers, tables, diagrams, layout, cross-references, and remove stale material when supported by verified reports. Historical agent reports remain append-only snapshots; `main.tex` is intentionally edited in place.
+LSPV-5 owns the executive sections and whole-document reconciliation and must perform that reconciliation on every successful run after surveying the total current repository corpus. It may add/repair ownership markers, tables, diagrams, layout, cross-references, and remove or downgrade stale material when supported by verified evidence. Historical agent reports remain append-only snapshots; `main.tex` is intentionally edited in place.
 
 After modifying `main.tex`, read it back from GitHub and verify that:
 1. `P versus NP remains open` (or equivalent) is still explicit while any load-bearing arrow is OPEN;
