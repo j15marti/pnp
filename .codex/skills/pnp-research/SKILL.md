@@ -124,6 +124,19 @@ Apply the relevant subset of these before treating a resource as serious:
 
 A candidate invariant that makes an easy control falsely expensive is invalid unless the discrepancy is formally explained.
 
+## Post-quantum structural toolkit
+
+When relevant to the current barrier, explicitly test the following PQC/PQ-cryptanalysis ideas:
+
+- shortening/puncturing/filtrations of Schur squares;
+- quadratic-relation matrix spaces and minimum relation rank;
+- Hilbert functions, syzygies, and graded Betti numbers;
+- lossiness/collision entropy for many-to-one maps;
+- black-box reduction architecture inspired by LWE worst-case/average-case reductions;
+- collision extraction / special-soundness style binding instead of generic uniqueness.
+
+Treat them as exact transfers only when the algebraic object and hypotheses match. Cryptographic hardness assumptions, random-oracle assumptions, and physical/quantum security notions cannot be inserted into an unconditional complexity proof.
+
 ## Cross-domain barrier transfer
 
 For each substantive run, identify the current major obstacle(s) and search the direct literature first. Then check whether an analogous obstruction has a rigorous treatment in another field or subfield, including electronics/VLSI, control theory, coding theory, algebraic geometry, topology, optimization, distributed computing, or proof complexity when relevant.

@@ -12,6 +12,42 @@ Google Drive is no longer the primary write target for active LSPV reports. Writ
 - LSPV-5 MAIN: `research/main/YYYY-MM-DD_HHMM_MAIN_<RUN_ID>.tex`
 - Governance changes: `research/governance/YYYY-MM-DD_HHMM_<CHANGE_ID>.tex`
 
+## Post-quantum technique ledger
+
+Every active LSPV run should consider whether one of the following post-quantum cryptography / cryptanalysis techniques is relevant to its current barrier. These are research prompts, not proof claims.
+
+1. **Schur-square / componentwise-product distinguishers.**
+   Our object `C_H^{*2}` is exactly a code Schur square. Consider shortening, puncturing, dualization, filtrations, and matched-random-code controls rather than only raw square dimension.
+
+2. **Quadratic-form relation spaces.**
+   Study the kernel of the multiplication/evaluation map and the rank spectrum of matrices representing quadratic relations. An unusually low-rank quadratic relation may reveal hidden structure even when total square dimension is large.
+
+3. **Hilbert functions, syzygies, graded Betti numbers.**
+   If degree-two square dimension saturates, test higher-order algebraic invariants and syzygies, as modern code-based cryptanalysis does.
+
+4. **Lossiness / collision entropy.**
+   For proof-to-node map `L:A -> F_acc`, consider the full collision distribution, not only maximum fiber. In particular track
+   `Coll(L)=|{(y,y'):L(y)=L(y')}|`
+   and the exact Cauchy-Schwarz bound
+   `|im L| >= |A|^2 / Coll(L)`.
+   Compare collision-effective entropy against `kappa+M`.
+
+5. **Worst-case/average-case reduction architecture (LWE lesson).**
+   Rather than forcing an arbitrary SAT algorithm to internally materialize a chosen resource, consider whether the resource can be externally extracted from black-box behavior of an arbitrary solver. Treat this as a CANDIDATE only; known NP worst-case/average-case barriers must be audited.
+
+6. **Collision extraction / special soundness / collapse-binding lesson.**
+   For reconstruction binding, prefer a construction-specific theorem of the form “two conflicting valid openings yield an explicit forbidden algebraic witness” over generic uniqueness/canonicalization. Cryptographic binding assumptions themselves are not admissible in an unconditional P-vs-NP proof.
+
+7. **Hash/random-oracle methods.**
+   Treat these as engineering/cryptographic analogies only unless an unconditional theorem survives removal of the hardness/random-oracle assumption.
+
+For every PQ-derived idea, classify it as:
+- EXACT OBJECT/THEOREM TRANSFER;
+- ANALOGY/CANDIDATE needing a new bridge;
+- FAILED TRANSFER.
+
+Always ask whether the same structure is exploitable by an algorithm; hidden algebraic structure may be a weakness rather than a hardness source.
+
 ## Barrier-transfer literature preflight
 
 Every active LSPV run must identify the **one or two major current obstacles** blocking its target and search current primary literature before substantive work.
@@ -34,6 +70,32 @@ The report must distinguish:
 3. **misleading analogy / failed transfer**.
 
 Do not import a result across models merely because the language sounds similar. State the exact object correspondence and the missing theorem needed for transfer.
+
+## Peer write-failure diagnosis and repair
+
+The predecessor-write check is not only a retry request. When a predecessor has no verified write, the current agent must attempt to diagnose **why** the write was blocked, using available automation state, GitHub history, target path state, and returned tool/error information.
+
+Classify the failure when possible:
+
+- **STALE REVISION / SHA CONFLICT:** refetch branch head/blob SHA and retry against current state.
+- **PATH COLLISION:** if intended path now exists and verifies, treat as success; if partial/invalid, preserve body and write one fresh `-R1` path.
+- **TRANSIENT API / CONNECTOR / RATE LIMIT / TIMEOUT:** preserve body, honor the timed retry rule, then retry once.
+- **PERMISSION / REPOSITORY / BRANCH ERROR:** verify repository and branch identifiers; do not claim success; report the exact blocker.
+- **PROMPT / PROCEDURE CONTRADICTION:** make the smallest write-procedure repair to the predecessor automation that resolves the contradiction. Do not alter the scientific target unless separately justified.
+- **MALFORMED / EMPTY BODY:** if the predecessor body is available, preserve and rewrite it; if scientific content is missing, do not invent it.
+- **CONCURRENT EDIT CONFLICT:** refetch current file and merge only the authorized ownership region.
+- **UNKNOWN:** record the evidence available and the exact unresolved failure rather than guessing.
+
+Agents are explicitly authorized to make the smallest technical repair to a peer's write procedure, path rule, retry rule, or stale revision handling when evidence supports it. Preserve schedules and scientific targets unless a separate governance reason exists.
+
+If the same peer fails verified writes for two consecutive scheduled cycles, the next agent must escalate:
+1. inspect the peer automation prompt for conflicting write instructions;
+2. inspect GitHub path/branch conventions;
+3. apply the smallest technical repair;
+4. create a governance note describing failure evidence, repair, and rollback;
+5. continue its own run.
+
+Never “repair” a failed scientific write by reconstructing unrecorded mathematical claims from memory.
 
 ## Predecessor write-recovery preflight
 
