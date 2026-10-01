@@ -15,12 +15,16 @@ The purpose of this skill is **research discipline**, not a preferred proof stra
    ```bash
    python .codex/skills/pnp-research/scripts/preflight.py
    ```
-2. Read, in this order:
+2. Survey the current repository tree, then read, in this order:
    - repository-root `main.tex`;
    - `AGENTS.md`;
    - `CODEX.md`;
-   - the newest relevant timestamped reports under `research/main/` and `research/agents/`;
+   - the newest verified MAIN and every materially relevant historical MAIN surfaced by repository search;
+   - materially relevant LSPV reports across all specialist directories, not only the newest peer;
+   - active `research/explorations/` components, including HEC/CRS-PPC/CCSPC when relevant;
+   - governance notes and experiment/result artifacts cited by active claims;
    - the relevant task under `tasks/`, when one exists.
+   Search repository content/history for duplicate formulations, contradictions, prior counterexamples, and retired routes before treating an idea as new.
 3. Determine the run mode from the task:
    - `structure`
    - `product-span`
@@ -37,6 +41,17 @@ The purpose of this skill is **research discipline**, not a preferred proof stra
    - the weakest theorem that would materially advance the target.
 
 If an exact construction or theorem definition needed for the task is missing, record the missing definition and stop that branch. Do not silently replace it with a schematic surrogate.
+
+## Mandatory corpus reconciliation record
+
+Every substantive run must explicitly record:
+
+- corpus/artifacts surveyed;
+- duplicate or conflicting prior work found;
+- what changed relative to root `main.tex`;
+- which prior components were adopted, rejected, downgraded, or retired.
+
+For an LSPV run, the standalone report is not the final step. After the report verifies, refetch root `main.tex` and reconcile the authorized ownership region in the same run. LSPV-5 must reconcile the whole document every successful run. Use current blob SHA, preserve unauthorized regions, read back the result, and verify OPEN status, balanced ownership markers, strict labels, and no silent strengthening.
 
 ## Research loop
 
@@ -204,11 +219,11 @@ If item 12 is pending, keep the result below final promotion in the living synth
 
 The one canonical living synthesis is repository-root `main.tex`. Never move it or create another `main.tex`.
 
-- LSPV-1 may edit only its marked ownership region.
-- LSPV-2 may edit only its marked ownership region.
-- LSPV-3 may edit only its marked ownership region.
-- LSPV-4 may edit only its marked ownership region.
-- LSPV-5 owns whole-document reconciliation.
+- LSPV-1 must reconcile only its marked ownership region every successful run.
+- LSPV-2 must reconcile only its marked ownership region every successful run.
+- LSPV-3 must reconcile only its marked ownership region every successful run.
+- LSPV-4 must reconcile only its marked ownership region every successful run.
+- LSPV-5 must perform whole-document reconciliation every successful run and remains final synthesis arbiter.
 - Codex experiment work should normally create results/reports and hand off to LSPV-5 rather than rewriting executive conclusions.
 
 Timestamped reports are append-only historical records.
