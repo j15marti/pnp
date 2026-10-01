@@ -169,3 +169,42 @@ next_target:
 ```
 
 This can appear in prose or LaTeX; the semantics should remain explicit.
+
+## 11. Cross-field obstacle transfer audit
+
+For the selected open arrow, name the actual obstruction before looking for analogies.
+
+Search:
+- direct complexity/proof-complexity/coding literature;
+- electronics/VLSI for routing, locality, fan-out, synchronization, switching, area-time and memory-hierarchy bottlenecks;
+- control theory for invariant/potential/barrier-certificate ideas;
+- coding theory for rank growth, local decoding, Schur powers, expander/local-test structures;
+- geometry/topology/algebra for local-to-global obstruction and singularity/invariant mechanisms;
+- distributed/communication models for cut-based information transfer;
+- optimization for dual certificates and potential functions.
+
+For every candidate transfer, write:
+
+```text
+Source field:
+Source theorem/mechanism:
+Object correspondence:
+Model correspondence:
+What transfers exactly:
+What does not transfer:
+Missing bridge:
+Status: THEOREM TRANSFER / ANALOGY-CANDIDATE / FAILED TRANSFER
+```
+
+Do not treat an engineering conservation law, physical locality constraint, or restricted-model theorem as an unrestricted Turing/RAM lower bound without an explicit simulation/transfer theorem.
+
+## 12. Timed write retry
+
+After producing a report body, attempt the GitHub write. On a transient write failure:
+- preserve the identical body/status;
+- if the runtime supports a real delay, wait about 30 seconds;
+- refetch repository/path state;
+- retry once;
+- if no delay primitive exists, retry at the next possible tool opportunity and explicitly record that the requested 30-second wait could not be mechanically enforced;
+- never claim a wait occurred if it did not.
+

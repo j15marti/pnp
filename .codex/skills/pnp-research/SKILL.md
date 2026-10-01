@@ -124,6 +124,17 @@ Apply the relevant subset of these before treating a resource as serious:
 
 A candidate invariant that makes an easy control falsely expensive is invalid unless the discrepancy is formally explained.
 
+## Cross-domain barrier transfer
+
+For each substantive run, identify the current major obstacle(s) and search the direct literature first. Then check whether an analogous obstruction has a rigorous treatment in another field or subfield, including electronics/VLSI, control theory, coding theory, algebraic geometry, topology, optimization, distributed computing, or proof complexity when relevant.
+
+Classify every cross-domain import as one of:
+- **THEOREM TRANSFER** — exact hypotheses/model mapping proved;
+- **ANALOGY / CANDIDATE** — suggestive but missing a transfer theorem;
+- **FAILED TRANSFER** — model mismatch, easy counterexample, or no same-realization connection.
+
+Always state the exact correspondence and the missing bridge. Analogy alone cannot promote a complexity claim.
+
 ## Literature discipline
 
 Prefer original papers and authoritative theorem statements.
