@@ -1,0 +1,69 @@
+% LSPV-1 REPORT::1737A::2026-09-30T17:37:04-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{LSPV-1: SU05 Booleanization, product-span falsification, and bit-blast controls}
+
+\textbf{STATUS: OPEN.} P versus NP remains open. The exact bit-seed implementation of the local extractor $E$ used abstractly in van Melkebeek--Mocelin Sdroievski (vMS) Lemma 21 remains under-specified in the checked primary statements. This run nevertheless closes one narrower question and materially narrows the surviving rank route.
+
+\paragraph{Primary-source correction.}
+Shaltiel--Umans 2005 (SU05), Eq.~(7), gives the q-ary extractor
+\[
+ E_q(x,v)=\widehat x(A v)\circ\widehat x(A^2v)\circ\cdots\circ\widehat x(A^m v).
+\]
+Thus the orbit-query addresses are \emph{nonadaptive}: once $v$ is fixed, all $A^iv$ are fixed. SU05 Lemma 4.16 converts a q-ary output $(a_1,\ldots,a_m)$ to binary by choosing one code coordinate $j$ and outputting $(C(a_1)_j,\ldots,C(a_m)_j)$; Hadamard code is explicitly allowed. vMS Definition 20/Lemma 21 exposes only a Boolean oracle extractor interface, and Definition 22/RMV then applies it to restrictions $\widehat g_L$ and takes an $m$-bit prefix. Therefore the earlier generic adaptivity concern is \textbf{FALSIFIED/RETIRED for the SU05 Eq.~(7) orbit realization}; the remaining Booleanization issue is the exact odd-prime bit sampler/field labeling and subsequent bit projection.
+
+\paragraph{PROVED/EXACT: broad-family maximal product span.}
+Let
+\[
+ M=1+m+\binom m2.
+\]
+For the univariate SU05 orbit realization over $\mathbb F_p$, use a primitive element $\alpha$ and one Hadamard coordinate that separates field symbols $0$ and $1$. If
+\[
+ p-1\ge M(m+1),\qquad \Delta\ge Mm-1,
+\]
+then there exists a polynomial $f\in\mathbb F_p[X]$ of degree at most $\Delta$ for which
+\[
+ \dim_{\mathbb F_2}\operatorname{span}\{1,g_i,g_ig_j:i<j\}=M=\Theta(m^2).
+\]
+Proof: take the $M$ target rows
+\[
+ 0,\quad e_i,\quad e_i+e_j.
+\]
+Their degree-$\le2$ feature vectors $(1,x_i,x_ix_j)$ are independent: evaluation at $0$ kills the constant coefficient, at $e_i$ kills each linear coefficient, and at $e_i+e_j$ kills each quadratic coefficient. Choose $M$ pairwise-disjoint length-$m$ multiplicative-orbit windows using seeds $v_r=\alpha^{r(m+1)}$. Prescribe $f(\alpha^iv_r)$ to be the corresponding target bit and interpolate through the $Mm$ distinct points. Lagrange interpolation gives degree at most $Mm-1$, and Hadamard coordinate $j=1$ returns the prescribed bits. Hence these $M$ rows form an explicit independent minor.
+
+Under the vMS scale $m\le\Delta^{1/100}$ and $p>\Delta^{100}$, the two numerical inequalities above hold for sufficiently large $\Delta$. Therefore \textbf{FALSIFIED/RETIRED}: no universal $O(m)$ product-span theorem can follow from the SU orbit architecture, total-degree bound, short seed, locality, canonicity, or list-decodability alone. This does \emph{not} yet retire the route for the narrower PCP low-degree-extension (LDE) subclass used in vMS Theorem 24.
+
+\paragraph{COMPUTATIONAL: exact finite tests.}
+A new exact-arithmetic control implementation is at
+\texttt{src/pnp\_lab/su05\_eq7.py}; raw results are at
+\texttt{results/raw/product\_span/2026-09-30\_LSPV1\_su05\_eq7\_control.json}.
+The constructive minor was checked at
+$(m,p)=(2,17),(3,31),(4,59),(5,101),(6,157),(8,397)$; every case had rank exactly $M$.
+
+More importantly, exhaustive scans were run on all nonconstant Boolean-grid interpolants for
+$(p,h,m)=(7,4,4),(11,4,4),(11,5,6),(13,5,6),(17,6,8),(19,7,10),(23,8,12),(29,8,12)$.
+Every nonconstant message in these scans had maximal rank $M$; only the two constant messages had ranks $1$ and $2$. This is strong \textbf{COMPUTATIONAL} evidence against, but not a proof about, low product span for the PCP-LDE subclass.
+
+A separately labeled modulo-$p$ bit-wrapper stress test gave coordinate ANF degrees
+$[3,3,3,3]$, $[5,5,5,5,4,4]$, and $[6,6,6,6,6,5,6,5]$ in three small cases. Because that minimal-width modulo sampler is biased, these are controls only, not claims about vMS's exact $E$.
+
+\paragraph{Electronics/formal-methods iteration.}
+Bit-blasting, AIGs, and BDDs remain the right implementation technologies after the exact bit sampler is fixed: Beaver explicitly performs word-level simplification, bit-blasting, and AIG conversion; Bryant's reduced ordered decision graphs provide canonical Boolean-function manipulation; DAG-aware AIG rewriting preserves shared subexpressions. For the present finite task, direct truth-table M\"obius transform plus exact $\mathbb F_2$ rank is simpler and avoids mistaking a compact circuit representation for a rank theorem.
+
+\paragraph{Barrier audit.}
+The full-rank theorem is structural, not a runtime lower bound. A maximal semantic or algebraic oracle can still expose the range/rank. DEAD/COPY/DELAY/INTERP/RECOMP and easy affine/Tseitin/Horn/2-SAT/treewidth controls remain relevant to any later runtime claim. SAME\_REALIZATION remains the decisive caveat: the interpolated polynomial above belongs to the broad degree-$\le\Delta$ source family, but it has not been proved to arise as the actual PCP-derived LDE restriction on a successful vMS computation path.
+
+\paragraph{Handoffs and single next target.}
+LSPV-2: treat the architecture-only $O(m)$ rank premise as retired; target the PCP-LDE subclass directly. LSPV-3: no acquisition/reconstruction improvement follows from this result. LSPV-4: attack the conjecture suggested by the exhaustive scans. The single next target is: prove or falsify maximal quadratic-feature rank for the \emph{univariate Boolean-grid LDE restrictions actually reachable from vMS Theorem 24}, with the exact odd-prime fixed-bit sampler/encoder made explicit. A counterexample with $O(m)$ rank rescues the route; a general $\Omega(m^2)$ minor retires it for that realization.
+
+\begin{thebibliography}{9}
+\bibitem{SU05} R. Shaltiel and C. Umans, Simple Extractors for All Min-Entropies and a New Pseudorandom Generator, \emph{J. ACM} 52(2):172--216, 2005. See Eq.~(7), Theorem 4.5, and Lemma 4.16.
+\bibitem{vMS23} D. van Melkebeek and N. Mocelin Sdroievski, Instance-Wise Hardness Versus Randomness Tradeoffs for Arthur-Merlin Protocols, \emph{CCC 2023}, LIPIcs 264:17. See Definition 20, Lemma 21, Definition 22, and Theorem 24.
+\bibitem{Bryant86} R. E. Bryant, Graph-Based Algorithms for Boolean Function Manipulation, \emph{IEEE Trans. Computers} 35(8):677--691, 1986.
+\bibitem{AIG06} A. Mishchenko, S. Chatterjee, and R. Brayton, DAG-Aware AIG Rewriting: A Fresh Look at Combinational Logic Synthesis, \emph{DAC}, 2006.
+\bibitem{Beaver10} R. S. Limaye and S. A. Seshia, Beaver: An SMT Solver for Quantifier-free Bit-vector Logic, UCB/EECS-2010-67, 2010.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::1737A
