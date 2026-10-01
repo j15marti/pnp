@@ -24,6 +24,16 @@ The skill owns the shared research workflow: state recovery, exact quantifiers, 
 6. Identify every definition that must come from a primary source.
 7. If an exact construction is missing, stop that branch and record the missing definition. Do not substitute a schematic construction.
 
+## Corpus-wide reconciliation
+
+For every substantive P-vs-NP task, survey the current repository tree before new work. Do not assume the newest report contains the whole project state.
+
+At minimum, inspect root `main.tex`, current task files, newest and relevant historical MAIN snapshots, materially relevant LSPV reports across all specialists, active `research/explorations/` components (including CRS-PPC and CCSPC when relevant), governance notes, and the code/data/result artifacts cited by the claims under review. Use repository search/history to locate prior formulations, counterexamples, contradictions, and retired routes.
+
+Every research output should state what was already known, what changed, and whether any root-MAIN statement became stale.
+
+For LSPV work, a successful run must also reconcile root `main.tex` in the same run according to the ownership rules in `AGENTS.md`. LSPV-5 remains final arbiter of whole-document synthesis.
+
 ## Research discipline
 
 Every computational result must record:
@@ -58,6 +68,11 @@ python experiments/product_span/run.py --toy-affine --source-bits 4 --outputs 8 
 1. `tasks/TASK-001-su-vms-product-span.md`
 2. `tasks/TASK-002-hostile-controls.md`
 3. `tasks/TASK-003-primitive-trace-battery.md`
+4. `tasks/TASK-004_HEC-static-to-online-compiler.md`
+5. `tasks/TASK-005_CRS-PPC-bridge-theorems.md`
+
+The reusable CCSPC component is recorded under
+`research/explorations/random-challenge/2026-10-01_CCSPC1_CANONICAL-CAUSAL-SAT-POINTER-CASCADE.md`.
 
 Do not start TASK-001's exact SU/vMS implementation until the primary-source definitions required by the task are present in the repository or otherwise explicitly supplied.
 
@@ -77,6 +92,6 @@ A negative result, counterexample, or route retirement is a successful research 
 
 The canonical living progress document is permanently `/main.tex` at repository root. Do not move it, rename it, or create another `main.tex`.
 
-When a Codex experiment materially changes the verified project state, update the relevant COMPUTATIONAL/result portion of root `main.tex` only if an ownership marker or explicit Codex-owned region authorizes the edit. Otherwise create the result/report and leave a handoff for LSPV-5.
+When a Codex experiment materially changes the verified project state, update the relevant COMPUTATIONAL/result portion of root `main.tex` only if an ownership marker or explicit Codex-owned region authorizes the edit. Otherwise create the result/report and leave a handoff for LSPV-5. For LSPV-1..4 runs, the owned specialist region must be reconciled every successful run; for LSPV-5, whole-document reconciliation is mandatory every successful run.
 
 Treat `main.tex` as a readable research dashboard, not a raw log: preserve polished LaTeX, tables, diagrams, equations, status discipline, and source/report paths.
