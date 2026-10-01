@@ -1,0 +1,553 @@
+% SEARCH-SPINE::2026-10-01T11:54:00-07:00
+% !TEX program = pdflatex
+\documentclass[11pt]{article}
+
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\definecolor{proved}{HTML}{1B7F3A}
+\definecolor{candidate}{HTML}{4B5FA5}
+\definecolor{openstatus}{HTML}{B15C00}
+\definecolor{warning}{HTML}{A12A2A}
+\definecolor{softgreen}{HTML}{EDF8F0}
+\definecolor{softblue}{HTML}{EEF4FA}
+\definecolor{softorange}{HTML}{FFF4E8}
+\definecolor{softred}{HTML}{FCEEEE}
+
+\newtcolorbox{provedbox}{colback=softgreen,colframe=proved,boxrule=.8pt}
+\newtcolorbox{candidatebox}{colback=softblue,colframe=candidate,boxrule=.8pt}
+\newtcolorbox{openbox}{colback=softorange,colframe=openstatus,boxrule=.8pt}
+\newtcolorbox{warningbox}{colback=softred,colframe=warning,boxrule=.8pt}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\FSAT}{\mathrm{FSAT}}
+\newcommand{\FP}{\mathrm{FP}}
+\newcommand{\FNP}{\mathrm{FNP}}
+\newcommand{\CanSAT}{\operatorname{CanSAT}}
+
+\title{Parallel Search-Version Proof Spine for \(P\) versus \(NP\)\\
+\large \(FP\) versus \(FNP\), Witness-Robust Search, RCCN, and CCSPC}
+\author{P versus NP Research Project}
+\date{October 1, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{openbox}
+\textbf{Global status: OPEN.}
+This document formalizes a parallel contradiction architecture. It does not prove
+\(FP\neq FNP\), \(P\neq NP\), or any unrestricted superpolynomial lower bound.
+Its purpose is to replace the one-bit SAT-decision endpoint by a witness-producing
+search computation and to state exactly which additional theorems would be required.
+\end{openbox}
+
+\section{Motivation}
+
+The decision branch starts from a hypothetical polynomial-time SAT decider
+\[
+A:\phi\longmapsto \SAT(\phi)\in\{0,1\}.
+\]
+The recurring transfer problem is that the observable output contains only one bit, while
+the proposed lower-bound mechanisms concern richer objects such as witnesses, reconstruction
+states, pointer values, provenance records, or dependency DAGs. An arbitrary SAT decider is
+not known to construct any particular such object.
+
+The search branch instead begins with a witness-producing algorithm
+\[
+S:\phi\longmapsto w,
+\qquad
+\phi(w)=1
+\]
+on satisfiable formulas. The machine is externally required to materialize a polynomial-length
+object. This removes one layer of the decision-to-structure extraction problem, although it does
+not by itself yield a superpolynomial lower bound.
+
+\section{Search convention}
+
+\begin{definition}[SAT witness search]
+For a CNF formula \(\phi\), define
+\[
+R_{\SAT}(\phi,w)=1
+\quad\Longleftrightarrow\quad
+w\text{ is a satisfying assignment of }\phi.
+\]
+The search problem \(\FSAT\) requires an algorithm to output some valid \(w\) on every satisfiable
+input. Its behavior on unsatisfiable inputs may be arbitrary, because a returned string can always
+be checked directly.
+\end{definition}
+
+More generally, an \(FNP\) search relation \(R(x,y)\) has polynomially bounded witness length and
+a deterministic polynomial-time verifier.
+
+\section{Equivalence of decision and search collapse}
+
+\begin{provedbox}
+\begin{theorem}[Search-decision collapse equivalence]
+Under the declared polynomially balanced search-relation convention,
+\[
+\boxed{P=NP\quad\Longleftrightarrow\quad FP=FNP.}
+\]
+\end{theorem}
+
+\begin{proof}
+Assume \(P=NP\). Let \(R(x,y)\) be any \(FNP\) relation with \(|y|\le p(|x|)\). For a partial
+prefix \(u\), define
+\[
+L_R=\{(x,u):\exists v\;R(x,uv)=1\}.
+\]
+This language lies in \(NP\), hence in \(P\). Starting with \(u=\epsilon\), ask whether some valid
+witness extends \(u0\). If yes, append \(0\); otherwise append \(1\) when a witness exists. Repeating
+for at most \(p(|x|)\) positions constructs a valid witness in polynomial time. Hence \(FP=FNP\).
+
+Conversely, assume \(FP=FNP\). Then \(\FSAT\) has a deterministic polynomial-time selector \(S\).
+On formula \(\phi\), compute \(w=S(\phi)\) and evaluate \(\phi(w)\). If \(\phi\) is satisfiable, the
+search guarantee forces \(w\) to satisfy it. If \(\phi\) is unsatisfiable, no string satisfies it.
+Thus SAT is decidable in polynomial time and \(P=NP\).
+\end{proof}
+\end{provedbox}
+
+Therefore proving
+\[
+FP\neq FNP
+\]
+would already prove
+\[
+P\neq NP.
+\]
+
+\section{Parallel contradiction spine}
+
+The proposed search spine is
+\[
+\boxed{P=NP}
+\]
+\[
+\Downarrow
+\]
+\[
+\boxed{FP=FNP}
+\]
+\[
+\Downarrow
+\]
+\[
+\boxed{\exists\text{ deterministic polynomial-time selector }S\text{ for a fixed }R^\star\in FNP}
+\]
+\[
+\Downarrow
+\]
+\[
+\boxed{\text{every valid }y=S(x)\text{ induces a resource-bearing object }D(x,y)}
+\]
+\[
+\Downarrow
+\]
+\[
+\boxed{\mathcal R(S,x)\ge L(D(x,y))}
+\]
+\[
+\Downarrow
+\]
+\[
+\boxed{\forall c\;\exists x:\mathcal R(S,x)>|x|^c}
+\]
+\[
+\Downarrow
+\]
+\[
+\boxed{R^\star\notin FP}
+\]
+\[
+\Downarrow
+\]
+\[
+\boxed{FP\neq FNP}
+\]
+\[
+\Downarrow
+\]
+\[
+\boxed{P\neq NP}.
+\]
+
+The load-bearing steps are witness robustness and output-to-resource. Everything before them is
+standard search/decision logic.
+
+\section{Exact target quantifiers}
+
+The desired separation statement has the form
+\[
+\boxed{
+\exists R^\star\in FNP\;
+\forall S\;
+\forall c\;
+\exists x:
+\bigl[S\text{ solves }R^\star\bigr]
+\Longrightarrow
+T_S(x)>|x|^c.
+}
+\]
+
+The quantifier order matters. A statement of the form
+\[
+\forall S\;\exists R_S
+\]
+does not separate one fixed \(FNP\) problem from \(FP\).
+
+\section{Why search is better aligned with the current machinery}
+
+The decision route needs a theorem of the form
+\[
+A(\phi)\in\{0,1\}
+\Longrightarrow
+Q_A(\phi),
+\]
+forcing a one-bit decider to acquire a rich internal object. This universal extraction is open.
+
+The search route begins with
+\[
+S(x)=y\in\{0,1\}^{p(|x|)}.
+\]
+The bridge becomes
+\[
+\boxed{
+\text{producing explicit valid }y
+\Longrightarrow
+\text{an unavoidable resource associated with }y.
+}
+\]
+
+RCCN, CCSPC, delayed auditing, output-bit dependency, and STORE/RECOMPUTE accounting are more
+naturally applied to such an explicit output.
+
+\section{Output-length guard}
+
+\begin{warningbox}
+A polynomial-length witness does not itself give a superpolynomial lower bound. If
+\[
+|y|\le |x|^d,
+\]
+then an exact requirement of \(\Omega(|y|)\) storage or output work remains polynomial. The search
+spine must obtain superpolynomial cost from dependency structure, sequentiality, reacquisition, or
+another proved bottleneck rather than from witness length alone.
+\end{warningbox}
+
+\section{Two search branches}
+
+\subsection{Search-A: ordinary FNP with all-witness robustness}
+
+Let
+\[
+W(x)=\{y:R^\star(x,y)=1\}.
+\]
+An ordinary \(FNP\) selector may output any member of \(W(x)\). A lower-bound construction must
+therefore survive every legal witness:
+\[
+\boxed{
+\forall y\in W(x),\qquad D(x,y)\text{ has the required property }{\cal H}.
+}
+\]
+
+The ideal downstream theorem is
+\[
+\forall y\in W(x),
+\qquad
+\mathcal R(D(x,y))\ge L(x).
+\]
+
+\subsection{Search-B: canonical function computation}
+
+Alternatively, define a unique transition value such as
+\[
+\CanSAT(\phi)
+=
+\begin{cases}
+0\Vert 0^n,&\phi\text{ is unsatisfiable},\\
+1\Vert \operatorname{LexMaxSAT}(\phi),&\phi\text{ is satisfiable}.
+\end{cases}
+\]
+
+This removes witness-choice freedom and fits CCSPC naturally. Canonical optimization functions of
+this type are associated with the OptP/\(FP^{NP}\) framework introduced by Krentel
+\cite{Krentel1988}. Under the contradiction assumption \(P=NP\), polynomially many adaptive SAT
+queries are polynomial-time, so this canonical function also becomes polynomial-time computable.
+
+Search-B is a legitimate descendant of the \(P=NP\) assumption, but it should not be mislabeled as
+ordinary unrestricted \(FNP\) witness choice.
+
+\section{Structured FNP relation}
+
+A candidate fixed relation \(R^\star\) should have the following properties:
+\begin{itemize}
+\item[] \(R^\star(x,y)\) is polynomial-time decidable.
+\item[] \(|y|\le\operatorname{poly}(|x|)\).
+\item[] \(R^\star\) is \(FNP\)-complete under an explicitly declared search reduction.
+\item[] Every valid \(y\) induces an explicit dependency object \(D(x,y)\).
+\item[] Every such \(D(x,y)\) satisfies the same lower-bound-relevant structural property.
+\end{itemize}
+
+A witness may have the schematic form
+\[
+y=(w,a_1,\ldots,a_q),
+\]
+provided every additional field remains polynomially sized and polynomial-time verifiable.
+
+The final all-witness property is essential. If one valid witness induces an easy object, a selector
+may choose it.
+
+\section{Search-cascade integration with CCSPC}
+
+For a selector \(S\),
+\[
+y_i=S(x_i).
+\]
+Fresh causal randomness \(B_i\) arrives only after the current output exists, and the next pointer is
+\[
+p_{i+1}=F_i(p_i,y_i,B_i,Y_i),
+\]
+where \(Y_i\) is a delayed-audit response associated with the current output or its dependency state.
+The next instance is
+\[
+x_{i+1}=C_{i+1}(p_{i+1}).
+\]
+
+Thus
+\[
+x_1
+\xrightarrow{S}
+y_1
+\xrightarrow{B_1,Y_1}
+x_2
+\xrightarrow{S}
+y_2
+\xrightarrow{B_2,Y_2}
+\cdots.
+\]
+
+For Search-A, the construction must work for every \(y_i\in W(x_i)\). For Search-B, \(y_i\) is
+the unique canonical transition value.
+
+The number of latent trajectories is not used as a lower bound. Only one path is realized, and an
+NDTM can always simulate any deterministic polynomial-time selector.
+
+\section{RCCN integration}
+
+The routed version is
+\[
+M_{\rm search}
+\longrightarrow
+M_{\rm transform}
+\longrightarrow
+M_{\rm audit}
+\longrightarrow
+M_{\rm search}
+\longrightarrow\cdots.
+\]
+
+The search module produces \(y_i\). A fresh later challenge asks for information derived from
+\(y_i\), from its dependency object, or from the computation record that produced it.
+
+The existing RCCN delayed-return theorem yields, in the no-reacquisition model,
+\[
+s\ge K-r
+\]
+when an arbitrary \(K\)-bit ephemeral record must later support arbitrary-coordinate recovery and
+the free side channel has at most \(2^r\) values. Therefore the exact search-version dichotomy is
+\[
+\boxed{
+\text{STORE enough persistent information}
+\quad\text{or}\quad
+\text{REACQUIRE output-dependent information}.
+}
+\]
+
+The missing theorem is a lower bound on the cost of reacquisition for arbitrary implementations.
+
+\section{Witness robustness as replacement for canonicality}
+
+For Search-A, the central structural theorem should have the form
+\[
+\boxed{
+\forall y\;
+\bigl[R^\star(x,y)=1
+\Longrightarrow
+{\cal H}(D(x,y))\bigr].
+}
+\]
+
+No unique witness is assumed. Instead, every valid witness must be resource-bearing. A successful
+all-witness theorem would neutralize the ordinary \(FNP\) selector's freedom to choose any satisfying
+witness.
+
+\section{Lipschitz-squeeze interpretation}
+
+A selector transforms
+\[
+x\longrightarrow y.
+\]
+A valid potential-function route would require an independently defined invariant
+\[
+I(x,\text{current state})
+\]
+with a large initial-to-terminal drop and a rigorously bounded change under every legal primitive
+step:
+\[
+|\Delta I|\le B(n).
+\]
+Then telescoping would give
+\[
+T\ge
+\frac{I_{\rm initial}-I_{\rm terminal}}{B(n)}.
+\]
+
+The invariant cannot encode unknown optimal remaining runtime. Output dimension alone cannot produce
+a superpolynomial lower bound; useful mass would need to arise from dependency structure or constrained
+acquisition.
+
+\section{Four primary missing lemmas}
+
+\begin{candidatebox}
+\textbf{Search Lemma S-A: Structured FNP relation.}
+
+Construct one fixed \(FNP\)-complete relation \(R^\star\) whose valid witnesses induce a well-defined
+explicit dependency object \(D(x,y)\), with all representation and verification costs charged.
+\end{candidatebox}
+
+\begin{candidatebox}
+\textbf{Search Lemma S-B: Witness robustness.}
+
+Prove
+\[
+\forall y\;
+\left[
+R^\star(x,y)=1
+\Longrightarrow
+{\cal H}(D(x,y))
+\right]
+\]
+for the lower-bound-relevant property \({\cal H}\). No valid witness may provide an easy escape.
+\end{candidatebox}
+
+\begin{candidatebox}
+\textbf{Search Lemma S-C: Output-to-resource theorem.}
+
+For every deterministic selector \(S\) and every valid output \(y=S(x)\), prove that actually
+producing \(y\), or answering the declared causal delayed audits tied to \(y\), forces
+\[
+\mathcal R(S,x)\ge L(D(x,y)).
+\]
+The theorem must hold for arbitrary implementations rather than only an intended witness-generation
+procedure.
+\end{candidatebox}
+
+\begin{candidatebox}
+\textbf{Search Lemma S-D: Superpolynomial family.}
+
+Construct explicit inputs \(x_n\) such that for every valid witness
+\[
+R^\star(x_n,y)=1,
+\]
+the forced resource satisfies, for every fixed \(c\),
+\[
+L(D(x_n,y))>|x_n|^c
+\]
+for sufficiently large \(n\). Together with S-A through S-C, this would imply \(R^\star\notin FP\).
+\end{candidatebox}
+
+\section{Hostile controls}
+
+Every attempted proof must explicitly survive:
+\begin{itemize}
+\item[] \textbf{Selector freedom:} ordinary \(FNP\) permits any valid witness.
+\item[] \textbf{DTM-to-NDTM simulation:} an NDTM can run any deterministic selector verbatim.
+\item[] \textbf{Structured witness versus structured computation:} a verifier mentioning a DAG does
+not imply the selector traversed that DAG.
+\item[] \textbf{Output-size normalization:} polynomial witness length yields only polynomial output cost.
+\item[] \textbf{Static reread and recomputation:} delayed information may be cheaply reacquired.
+\item[] \textbf{Memoization, pointer jumping, compact summaries, and alternate representations.}
+\item[] \textbf{Easy controls:} Horn, 2-SAT, affine/Tseitin, bounded treewidth.
+\item[] \textbf{Semantic-oracle replacement:} SAT answers or witnesses may be supplied for free in the
+hostile model.
+\item[] \textbf{Algebraic-oracle replacement and algebrization.}
+\item[] \textbf{DEAD/COPY/DELAY/INTERP/RECOMP wrappers.}
+\item[] \textbf{Quantifier audit:} one fixed \(R^\star\) must be separated, not a new relation selected
+for each candidate selector.
+\end{itemize}
+
+\section{Comparison with the decision spine}
+
+\begin{center}
+\begin{tabular}{p{0.43\linewidth}p{0.43\linewidth}}
+\hline
+\textbf{Decision spine} & \textbf{Search spine}\\
+\hline
+SAT output is one bit & Selector outputs polynomially many witness bits\\
+Must extract a rich hidden object & A nontrivial output object is explicit\\
+Arbitrary decider need not represent a witness & Search algorithm must materialize a valid witness\\
+Decision-to-resource bridge & Output-production-to-resource bridge\\
+No witness-choice issue at endpoint & Must defeat arbitrary legal witness choice\\
+SAT decider as starting object & Fixed \(FNP\)-complete relation as starting object\\
+\hline
+\end{tabular}
+\end{center}
+
+The search spine trades one hard problem for another. It reduces the question of why a rich object
+exists at all, but introduces the all-witness robustness requirement.
+
+\section{NEXP guard}
+
+The search spine does not infer NEXP from an exponential number of potential witnesses or
+trajectories. An NDTM is charged for one computation path rather than the complete branch tree.
+NEXP-like behavior requires a genuinely exponential object, an exponentially long realized
+computation/witness, or a succinct representation whose semantics encode an exponentially large
+instance.
+
+\section{Current assessment}
+
+The search-version proof spine is logically equivalent in ultimate strength to the decision problem:
+a complete separation would prove \(P\neq NP\). It is structurally attractive for this project
+because RCCN and CCSPC naturally reason about production, retention, routing, delayed auditing, and
+reacquisition of explicit objects.
+
+The highest-value Search-A question is
+\[
+\boxed{
+\begin{minipage}{0.82\linewidth}
+Can one construct a fixed \(FNP\)-complete relation for which every valid witness induces the same
+kind of resource-hard dependency structure?
+\end{minipage}
+}
+\]
+
+If so, the next load-bearing step is S-C, the universal output-to-resource theorem. Without S-C, a
+structured witness is only a structured output, not a lower bound on how an arbitrary selector
+computes it.
+
+\section{Strict status ledger}
+
+\begin{itemize}
+\item[] \textbf{PROVED/EXACT:} \(P=NP\iff FP=FNP\) under the declared search convention.
+\item[] \textbf{PROVED/EXACT:} polynomial witness length alone yields at most a polynomial output-size
+obligation.
+\item[] \textbf{PROVED/EXACT guard:} an NDTM can simulate a deterministic selector and need not explore
+all latent branches.
+\item[] \textbf{CANDIDATE:} Search-A all-witness robust relation.
+\item[] \textbf{CANDIDATE:} Search-B canonical \(FP^{NP}\)/OptP-style transition branch.
+\item[] \textbf{OPEN/load-bearing:} S-A through S-D, especially witness robustness and
+output-to-resource.
+\item[] \textbf{OPEN/load-bearing:} arbitrary-algorithm transfer and the
+nonrelativizing/nonalgebrizing final hinge.
+\end{itemize}
+
+\bibliographystyle{plain}
+\bibliography{2026-10-01_FP-FNP_PARALLEL-PROOF-SPINE}
+
+\end{document}
+% END_OF_SEARCH_SPINE::2026-10-01T11:54:00-07:00
