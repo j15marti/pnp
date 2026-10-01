@@ -12,6 +12,30 @@ Google Drive is no longer the primary write target for active LSPV reports. Writ
 - LSPV-5 MAIN: `research/main/YYYY-MM-DD_HHMM_MAIN_<RUN_ID>.tex`
 - Governance changes: `research/governance/YYYY-MM-DD_HHMM_<CHANGE_ID>.tex`
 
+## Predecessor write-recovery preflight
+
+Before **every** active LSPV run, check whether the immediately preceding agent in the stagger completed its most recent scheduled run with a verified GitHub write.
+
+Predecessor order is cyclic:
+
+- LSPV-1 checks LSPV-5.
+- LSPV-2 checks LSPV-1.
+- LSPV-3 checks LSPV-2.
+- LSPV-4 checks LSPV-3.
+- LSPV-5 checks LSPV-4.
+
+A predecessor write counts as successful only if the newest report attributable to that scheduled run:
+1. exists in the predecessor's canonical GitHub report directory;
+2. is nonblank/substantive;
+3. contains the expected report header and final verification sentinel; and
+4. can be read back from GitHub.
+
+If the predecessor's latest scheduled run lacks such a verified write, the current agent must **prompt that predecessor to retry the write** before beginning substantive research. This is a recovery instruction, not a request to rerun the research from scratch. Preserve the predecessor's existing research body if available; do not reconstruct missing scientific content from guesswork.
+
+The recovery request must not block the current run. After issuing the retry instruction, continue the current agent's own research normally.
+
+Do not create duplicate recovery files when a valid retry is already present. A later agent should judge success from the newest verified predecessor artifact, not merely from automation status text.
+
 ## Write protocol
 1. Read the newest verified MAIN and newest verified peer reports from GitHub before substantive work.
 2. Search primary literature before substantive claims.
