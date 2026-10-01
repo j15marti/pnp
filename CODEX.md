@@ -4,14 +4,25 @@ Codex is the implementation, verification, falsification, and repository-mainten
 
 It is **not** authorized to promote finite experiments into asymptotic theorems or to claim a proof of P != NP while any load-bearing implication is open.
 
+## Required project skill
+
+For any substantive P-vs-NP / exact-SAT research task in this repository, invoke the repo-scoped skill:
+
+`$pnp-research`
+
+located at `.codex/skills/pnp-research/SKILL.md`.
+
+The skill owns the shared research workflow: state recovery, exact quantifiers, falsification-first testing, hostile controls, barrier audits, proof-status discipline, experiment provenance, and report/main.tex write rules. `CODEX.md` remains the repository-level operating guide; the skill is the reusable execution protocol.
+
 ## Start every task
 
-1. Read `AGENTS.md`.
-2. Read the newest verified file in `research/main/`.
-3. Read the task specification under `tasks/`.
-4. Read the relevant latest agent reports under `research/agents/`.
-5. Identify every definition that must come from a primary source.
-6. If an exact construction is missing, stop that branch and record the missing definition. Do not substitute a schematic construction.
+1. Invoke `$pnp-research` and run its preflight.
+2. Read `AGENTS.md` and repository-root `main.tex`.
+3. Read the newest verified file in `research/main/`.
+4. Read the task specification under `tasks/`.
+5. Read the relevant latest agent reports under `research/agents/`.
+6. Identify every definition that must come from a primary source.
+7. If an exact construction is missing, stop that branch and record the missing definition. Do not substitute a schematic construction.
 
 ## Research discipline
 
