@@ -382,6 +382,9 @@ def default_control_suite() -> dict[str, object]:
             (11, 5, 6),
             (13, 5, 6),
             (17, 6, 8),
+            (19, 7, 10),
+            (23, 8, 12),
+            (29, 8, 12),
         ]
     ]
     modulo_seed_anf_controls = [
