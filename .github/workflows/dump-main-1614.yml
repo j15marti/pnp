@@ -2,21 +2,62 @@ name: dump-main-1614
 on:
   workflow_dispatch: {}
 jobs:
-  dump:
+  clean:
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Write unified diff of the FULLPAIR6 main.tex edit
+      - name: Verify living main.tex then delete temp dump
         run: |
           set -euo pipefail
-          git fetch --depth=2 origin eadc21439b5877ad580d82dbc2f3d9ca32c24d28
-          git diff eadc21439b5877ad580d82dbc2f3d9ca32c24d28^ eadc21439b5877ad580d82dbc2f3d9ca32c24d28 -- main.tex > tmp/dump1614/DIFF.txt
-          echo "diff_bytes=$(wc -c < tmp/dump1614/DIFF.txt)"
-          git hash-object main.tex | tee tmp/dump1614/BLOB_NOW.txt
+          python3 - << 'PY'
+          from pathlib import Path
+          import subprocess
+          data = Path("main.tex").read_bytes()
+          text = data.decode()
+          blob = subprocess.check_output(["git","hash-object","main.tex"], text=True).strip()
+          print("BYTES", len(data))
+          print("BLOB", blob)
+          if b"PLACEHOLDER" in data:
+              raise SystemExit("placeholder present")
+          if "\\documentclass" not in text:
+              raise SystemExit("not a living document")
+          if not text.split("\\section{",1)[1].startswith("Independent review --- 2026-10-02 16:14 PT"):
+              # first section after begin document
+              pass
+          if "\\section{Independent review --- 2026-10-02 16:14 PT}" not in text:
+              raise SystemExit("missing 16:14 section")
+          if text.find("16:14 PT") > text.find("15:12 PT"):
+              raise SystemExit("16:14 is not the leading review section")
+          if "\\section{Independent review --- 2026-10-02 15:12 PT}" not in text:
+              raise SystemExit("missing 15:12 section")
+          if "comments/grok/2026-10-02/2026-10-02_1614_GROK_REVIEW.tex" not in text:
+              raise SystemExit("review path missing")
+          if "Last synthesized: 2026-10-02, 16:14 PT" not in text:
+              raise SystemExit("date missing")
+          if "FULLPAIR6 completes that finite certificate" not in text:
+              raise SystemExit("FULLPAIR6 ownership text missing")
+          dash = [ln for ln in text.splitlines() if "Independent reviews dated" in ln]
+          if len(dash) != 1:
+              raise SystemExit("dashboard index count %s" % len(dash))
+          print("DASH", dash[0])
+          for needle in [
+              "2026-10-01 20:39 PT",
+              "2026-10-02 09:14 PT",
+              "2026-10-02 15:12 PT",
+              "2026-10-02 16:14 PT",
+              "does not close a load-bearing arrow",
+          ]:
+              if needle not in dash[0]:
+                  raise SystemExit("dashboard missing "+needle)
+          if blob != "8d9ad295de01bee73e19d3ed8f9dfdc3458f32e8":
+              raise SystemExit("main.tex blob moved: "+blob)
+          print("VERIFY_OK")
+          PY
+          git rm -r tmp/dump1614
+          git rm -f .github/workflows/dump-main-1614.yml
           git config user.name "Jeremy Martinez"
           git config user.email "42251772+j15marti@users.noreply.github.com"
-          git add tmp/dump1614/DIFF.txt tmp/dump1614/BLOB_NOW.txt
-          git commit -m "Temp FULLPAIR6 diff of root main.tex for 16:14 review."
+          git commit -m "Remove temporary 16:14 main.tex dump files."
           git push
