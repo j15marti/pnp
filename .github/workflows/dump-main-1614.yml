@@ -8,40 +8,15 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Split current main.tex into readable chunks
+      - name: Write unified diff of the FULLPAIR6 main.tex edit
         run: |
           set -euo pipefail
-          python3 - << 'PY'
-          import hashlib, subprocess
-          from pathlib import Path
-          data = Path("main.tex").read_bytes()
-          if b"PLACEHOLDER" in data or len(data) < 60000:
-              raise SystemExit(f"refusing to dump unexpected main.tex len={len(data)}")
-          if b"\\documentclass" not in data:
-              raise SystemExit("main.tex missing documentclass")
-          out = Path("tmp/dump1614")
-          out.mkdir(parents=True, exist_ok=True)
-          n = 5000
-          i = 0
-          lines = []
-          while True:
-              chunk = data[i*n:(i+1)*n]
-              if not chunk:
-                  break
-              name = f"part{i:02d}.txt"
-              (out/name).write_bytes(chunk)
-              h = subprocess.run(["git","hash-object",str(out/name)], capture_output=True, text=True, check=True).stdout.strip()
-              lines.append(f"{name} {len(chunk)} {h}")
-              i += 1
-          blob = subprocess.run(["git","hash-object","main.tex"], capture_output=True, text=True, check=True).stdout.strip()
-          head = subprocess.run(["git","rev-parse","HEAD"], capture_output=True, text=True, check=True).stdout.strip()
-          (out/"MANIFEST.txt").write_text(
-              f"bytes={len(data)}\nparts={i}\nblob={blob}\nhead={head}\n" + "\n".join(lines) + "\n"
-          )
-          print((out/"MANIFEST.txt").read_text())
-          PY
+          git fetch --depth=2 origin eadc21439b5877ad580d82dbc2f3d9ca32c24d28
+          git diff eadc21439b5877ad580d82dbc2f3d9ca32c24d28^ eadc21439b5877ad580d82dbc2f3d9ca32c24d28 -- main.tex > tmp/dump1614/DIFF.txt
+          echo "diff_bytes=$(wc -c < tmp/dump1614/DIFF.txt)"
+          git hash-object main.tex | tee tmp/dump1614/BLOB_NOW.txt
           git config user.name "Jeremy Martinez"
           git config user.email "42251772+j15marti@users.noreply.github.com"
-          git add tmp/dump1614
-          git commit -m "Temp dump of root main.tex for 16:14 review readback."
+          git add tmp/dump1614/DIFF.txt tmp/dump1614/BLOB_NOW.txt
+          git commit -m "Temp FULLPAIR6 diff of root main.tex for 16:14 review."
           git push
