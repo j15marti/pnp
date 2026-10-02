@@ -1,0 +1,115 @@
+% LSPV-1 REPORT::HASSETEST1::2026-10-01T20:20:00-07:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{LSPV-1: Hasse-jet construction and supported-kernel validation}
+
+\textbf{STATUS: OPEN.} P versus NP remains open. This report builds and tests the repeated-root replacement proposed in ROOT2ADIC1. It proves an exact Hasse-jet conjugacy for the repeated-root cyclic algebra and computationally validates the supported synchronous exterior operator on small binary instances. It proves no unrestricted SAT lower bound and no nonrelativizing or nonalgebrizing hinge.
+
+\paragraph{CORPUS REVIEWED.}
+The current repository tree was enumerated. Reviewed were \texttt{AGENTS.md}, \texttt{CODEX.md}, the pnp-research skill, root \texttt{main.tex}, all current task paths with TASK-001 active, newest verified MAIN 1802 and relevant historical synthesis, LSPV-1 PAIR2COVER1/ORBITSLICE1/SYNCWEDGE1/DIMSUM2/ROOT2ADIC1, LSPV-2 WEDGE1/WINDOWREC1/GCD1/DIAGCONV1/SUPPORTK1, newest relevant LSPV-3/LSPV-4 reports, governance, active HEC/CRS-PPC/CCSPC/RCCN/Search-G material, and product-span code/raw results. MAIN 1802 remains the newest verified LSPV-5 snapshot and is substantive, OPEN and sentinelled.
+
+\paragraph{Primary-literature audit.}
+Castagnoli--Massey--Schoeller--von Seemann derive repeated-root cyclic parity checks using Hasse derivatives and identify Hasse differentiation as the natural characteristic-\(p\) tool \cite{Castagnoli}. Ling--Niederreiter--Sol\'e develop a generalized DFT for repeated-root quasi-cyclic codes using Hasse derivatives \cite{Ling}. Recent repeated-root polycyclic work likewise treats GDFT/Hasse coordinates and matrix-product structure \cite{Bajalan}. These sources support the coordinate transform, not an SU/vMS exterior-rank theorem.
+
+\paragraph{PROVED/EXACT: Hasse-jet conjugacy.}
+Write \(N=2^\nu N_0\), \(N_0\) odd, and let \(K\) split \(z^{N_0}-1\). For each root \(\omega\), the Hasse--Taylor identity
+\[
+f(\omega+\epsilon)=\sum_{r\ge0}D^{[r]}f(\omega)\epsilon^r
+\]
+and the Hasse Leibniz rule give
+\[
+\boxed{J_\omega(fg)=J_\omega(f)J_\omega(g)\pmod{\epsilon^{2^\nu}}.}
+\]
+Taking all roots yields
+\[
+\boxed{K[z]/(z^N-1)\cong\prod_{\omega^{N_0}=1}K[\epsilon]/(\epsilon^{2^\nu}).}
+\]
+Thus the relaxed cyclic convolution operator is exactly conjugate to multiplication by Hasse-jet matrices over local Artin rings.
+
+When \(N_0=1\), the sole root is \(1\) and
+\[
+T_N(f)=(D^{[0]}f(1),\ldots,D^{[N-1]}f(1))
+\]
+is an algebra isomorphism
+\[
+\boxed{\mathbb F_2[z]/((z-1)^N)\cong\mathbb F_2[\epsilon]/(\epsilon^N).}
+\]
+Its coefficient matrix is the mod-2 Pascal matrix \((\binom{i}{r})\), triangular with diagonal one.
+
+\paragraph{Supported operator and implementation correction.}
+DIAGCONV1 uses cyclic correlation
+\[
+\sum_i q_\delta(i)h_{rt,\delta}(s+i).
+\]
+Polynomial convolution therefore requires reversal \(q_\delta(z)\mapsto q_\delta(z^{-1})\). The first in-run implementation omitted this reversal. Random ring-homomorphism checks did not detect it, but direct wedge comparison did. It was corrected before any result artifact was committed.
+
+\paragraph{COMPUTATIONAL experiment.}
+Runner:
+\[
+\texttt{experiments/product\_span/repeated\_root\_hasse\_kernel.py}
+\]
+at commit \texttt{fb4b33f16da6be342aaa21836d2483f26342b2a9}. Raw output:
+\[
+\texttt{results/raw/product\_span/2026-10-01\_LSPV1\_repeated\_root\_hasse\_kernel.json}.
+\]
+Seed \(271828\).
+
+The runner exhaustively checks Hasse conjugacy for every pair of binary words at \(N=2,4,8\), then independently computes direct synchronous wedge rank, supported cyclic-correlation rank, and Hasse-jet supported-operator rank. All three agree in every tested instance.
+
+At \(N=4\), exhaustive label-word batteries contain 256 instances for \((m,k)=(3,2)\), 256 for \((4,2)\), and 4096 for \((4,3)\). For \((4,4,3)\), full exterior rank \(6\) occurs in \(2016/4096\) words.
+
+At \(N=8\), 100 seeded random words were tested for each of \((m,k)=(4,2),(5,3),(6,4)\). The three rank calculations agree throughout; full exterior rank occurs in \(57/100\), \(89/100\), and \(97/100\), respectively. These are finite controls only.
+
+\paragraph{Interpretation and exact filtration.}
+The test validates the repeated-root coordinates and correlation convention, but falsifies the generic inference
+\[
+\text{repeated roots}\Longrightarrow \dim U=O(m).
+\]
+Each local ring \(J_\omega=K[\epsilon]/(\epsilon^{2^\nu})\) has the exact filtration
+\[
+J_\omega\supset\epsilon J_\omega\supset\cdots\supset\epsilon^{2^\nu-1}J_\omega\supset0.
+\]
+The Hasse matrix of the local operator is block lower-triangular by derivative order. This is useful computational structure, but triangular support \(S\) need not split across local factors, so layer ranks alone do not determine the supported kernel.
+
+\paragraph{PQ/cross-domain ledger.}
+\textbf{EXACT OBJECT/THEOREM TRANSFER:} repeated-root Hasse/GDFT coordinates, Hasse Leibniz, local nilpotent filtration, fixed-code Schur products, Boolean polarization/exterior duality, Gaussian elimination.
+\textbf{ANALOGY/CANDIDATE:} nilpotent-power shortening filtration, derivative-layer Schur diagnostics, minimum-rank relations, Hilbert functions and syzygies after source transcription.
+\textbf{FAILED TRANSFER:} repeated-root structure alone as a reason for \(O(m)\) product span; ordinary semisimple DFT on the actual even orbit; cross-model hardness analogies without a theorem.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+ROOT2ADIC1 proposed the Hasse replacement but did not derive/test the explicit conjugacy. DIAGCONV1/SUPPORTK1 supplied the correlation/support operator but not the active repeated-root transform. HASSETEST1 composes them, catches the reversal convention, and validates the composition against direct wedge rank. The conditional odd-\(N\) statements in SUPPORTK1 remain valid outside the active orbit.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+The repeated-root path is now constructed and finite-tested rather than proposed. The Hasse transform is exact, but generic repeated-root cyclicity is not a contraction mechanism. The bottleneck returns to source-specific structure of \(b_j(t)=\kappa_j(f(A^tv_0))\).
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopted: ORBITSLICE1, SYNCWEDGE1, DIMSUM2, GCD1, DIAGCONV1 correlation equations, SUPPORTK1 support intersection, ROOT2ADIC1 repeated-root correction.
+Rejected: unreversed convolution as an implementation of the displayed correlation convention.
+Retired as a generic route: repeated-root multiplicity implies \(O(m)\) exterior span.
+
+\paragraph{STALE OR OVERSTATED CLAIMS FOUND.}
+SUPPORTK1's semisimple result was explicitly conditional and ROOT2ADIC1 correctly retired it for the active orbit. The only newly found defect was the in-run implementation reversal, corrected before committing results. No verified prior numerical result depended on the new runner.
+
+\paragraph{Hostile controls and barriers.}
+A maximal algebraic oracle can expose all Hasse jets and kernels. The construction remains algebraic and relativizing. DEAD/COPY/DELAY preserve the extensional word; INTERP/RECOMP require retyping. Affine/Tseitin, Horn, 2-SAT, bounded treewidth, independent products, padding and alternate representations remain controls. Efficient Hasse decomposition is an algorithmic simplification, not hardness.
+
+\paragraph{Strict status and next target.}
+\textbf{PROVED/EXACT:} multiplicative Hasse-jet conjugacy, the power-of-two Pascal/Hasse isomorphism, and local nilpotent filtration.
+\textbf{COMPUTATIONAL:} exhaustive \(N=4\) and seeded \(N=8\) validation.
+\textbf{FALSIFIED/RETIRED:} repeated-root structure alone forces low synchronous exterior rank.
+\textbf{OPEN:} exact reconstruction-compatible SU/vMS label word, its derivative-layer structure, asymptotic \(\dim U\), global \(K_2(H)\), Boolean source degree, charged acquisition, arbitrary-algorithm transfer, nonrelativizing/nonalgebrizing hinge, final diagonal.
+
+The single next target is to source-transcribe the earliest reconstruction-compatible legal \(b_j(t)\) and compute its Hasse-jet layer profile. Determine whether that specific word forces persistent derivative-layer dependencies keeping \(\dim U=O(m)\), or whether supported rank becomes \(\omega(m)\), which by DIMSUM2 retires the contraction route for the SAME\_REALIZATION.
+
+\begin{thebibliography}{5}
+\bibitem{Castagnoli} G. Castagnoli, J. L. Massey, P. A. Schoeller, N. von Seemann, \emph{On Repeated-Root Cyclic Codes}, IEEE Trans. Inf. Theory 37(2):337--342, 1991.
+\bibitem{Ling} S. Ling, H. Niederreiter, P. Sol\'e, \emph{On the Algebraic Structure of Quasi-cyclic Codes IV: Repeated Roots}, Designs Codes Cryptogr. 38:337--361, 2006.
+\bibitem{Bajalan} M. Bajalan, E. Mart\'inez-Moro, R. Sobhani, S. Szabo, G. G. Yilmazguc, \emph{On the structure of repeated-root polycyclic codes over local rings}, Discrete Math. 347:113715, 2024.
+\bibitem{SU05} R. Shaltiel, C. Umans, \emph{Simple Extractors for All Min-Entropies and a New Pseudorandom Generator}, J. ACM 52(2):172--216, 2005.
+\bibitem{vMS25} D. van Melkebeek, N. Mocelin Sdroievski, \emph{Instance-Wise Hardness and Refutation versus Derandomization for Arthur--Merlin Protocols}, Computational Complexity 34:15, 2025.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::HASSETEST1
