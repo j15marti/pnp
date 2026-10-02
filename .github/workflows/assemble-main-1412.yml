@@ -1,0 +1,35 @@
+name: assemble-main-1412
+on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - 'comments/grok/_assemble_1412/**'
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble and commit main.tex
+        run: |
+          set -euo pipefail
+          PARTS=comments/grok/_assemble_1412
+          test -d "$PARTS"
+          cat "$PARTS"/part00.txt "$PARTS"/part01.txt "$PARTS"/part02.txt "$PARTS"/part03.txt "$PARTS"/part04.txt "$PARTS"/part05.txt "$PARTS"/part06.txt "$PARTS"/part07.txt > main.tex
+          bytes=$(wc -c < main.tex)
+          echo "assembled_bytes=$bytes"
+          test "$bytes" -eq 66144
+          grep -q "Independent review --- 2026-10-02 14:12 PT" main.tex
+          grep -q "ENVELOPE1" main.tex
+          grep -q "STATUS: OPEN" main.tex
+          grep -q "BEGIN LSPV-1 OWNED" main.tex
+          rm -rf "$PARTS"
+          rm -f .github/workflows/assemble-main-tex-1412.yml
+          rm -f .github/workflows/assemble-main-1412.yml
+          git config user.name "Jeremy Martinez"
+          git config user.email "42251772+j15marti@users.noreply.github.com"
+          git add -A
+          git status
+          git commit -m "Record the 14:12 PT independent review in root main.tex."
+          git push
