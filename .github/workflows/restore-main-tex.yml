@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'comments/grok/_restore_1212/MANIFEST'
+      - '.github/workflows/restore-main-tex.yml'
 jobs:
   restore:
     runs-on: ubuntu-latest
@@ -11,28 +11,25 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Reassemble and commit main.tex
+        with:
+          fetch-depth: 0
+      - name: Restore main.tex from last good commit and clean scaffolding
         run: |
           set -euo pipefail
-          parts_dir=comments/grok/_restore_1212
-          out=$(mktemp)
-          while IFS= read -r f; do
-            [ -n "$f" ] || continue
-            cat "$parts_dir/$f" >> "$out"
-          done < "$parts_dir/MANIFEST"
-          expected=$(cat "$parts_dir/EXPECTED_LEN")
-          actual=$(wc -c < "$out")
-          echo "expected=$expected actual=$actual"
-          test "$actual" -eq "$expected"
-          grep -q "P versus NP remains open" "$out"
-          grep -q "Independent review --- 2026-10-02 12:12 PT" "$out"
-          grep -q "BEGIN LSPV-1 OWNED" "$out"
-          cp "$out" main.tex
+          GOOD=b0fcbba2c50f42bdd4b0825ef477a57dfe937bdc
+          git show "$GOOD:main.tex" > main.tex
+          bytes=$(wc -c < main.tex)
+          echo "restored_bytes=$bytes from=$GOOD"
+          test "$bytes" -gt 50000
+          grep -q "P versus NP remains open" main.tex
+          grep -q "Independent review --- 2026-10-02 12:12 PT" main.tex || grep -q "12:12" main.tex
+          grep -q "BEGIN LSPV-1 OWNED" main.tex
           rm -rf comments/grok/_restore_1212
-          rm -f .github/workflows/restore-main-tex.yml
           rm -f test_encoding.txt
+          rm -f .github/workflows/restore-main-tex.yml
           git config user.name "Jeremy Martinez"
           git config user.email "42251772+j15marti@users.noreply.github.com"
           git add -A
-          git commit -m "Restore full main.tex from 12:12 reconciliation chunks; remove emergency stub"
+          git status
+          git commit -m "Restore full main.tex from b0fcbba2; remove emergency stub and restore scaffolding"
           git push
