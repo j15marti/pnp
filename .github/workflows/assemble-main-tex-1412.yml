@@ -1,0 +1,39 @@
+name: assemble-main-tex-1412
+on:
+  workflow_dispatch:
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble main.tex from parts and commit
+        run: |
+          set -euo pipefail
+          PARTS=comments/grok/_assemble_1412
+          test -d "$PARTS"
+          : > main.tex
+          for i in 00 01 02 03 04 05 06 07; do
+            cat "$PARTS/part${i}.txt" >> main.tex
+          done
+          bytes=$(wc -c < main.tex)
+          echo "assembled_bytes=$bytes"
+          test "$bytes" -gt 60000
+          grep -q "Independent review --- 2026-10-02 14:12 PT" main.tex
+          grep -q "ENVELOPE1" main.tex
+          grep -q "STATUS: OPEN" main.tex
+          grep -q "BEGIN LSPV-1 OWNED" main.tex
+          rm -rf "$PARTS"
+          rm -f .github/workflows/assemble-main-tex-1412.yml
+          git config user.name "Jeremy Martinez"
+          git config user.email "42251772+j15marti@users.noreply.github.com"
+          git add -A
+          git status
+          git commit -m "$(cat <<'EOF'
+Record the 14:12 PT independent review in root main.tex.
+
+Points to comments/grok/2026-10-02/2026-10-02_1412_GROK_REVIEW.tex; adopts ENVELOPE1 as accounting only; records UNIVERSALDAG2/D3CAL1 scopes; BINARYDOF_UNIFORM1 remains CANDIDATE/OPEN. P versus NP remains open.
+EOF
+)"
+          git push
