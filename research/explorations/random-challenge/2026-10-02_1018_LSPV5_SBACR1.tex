@@ -1,0 +1,80 @@
+% LSPV-5 REPORT::SBACR1::2026-10-02T10:18:00-07:00
+\documentclass[11pt]{article}\usepackage[margin=.88in]{geometry}\usepackage{amsmath,amssymb,booktabs}
+\begin{document}
+\section*{SBACR1: source-bound adaptive replay on declared SU05/Hadamard legal slices}
+\textbf{STATUS: PROVED/EXACT finite state lemma + COMPUTATIONAL source battery + NEGATIVE reacquisition control. P versus NP remains OPEN.}
+
+\section*{Construction}
+Fix one Boolean-grid source word $w\in\{0,1\}^h$, interpolate it canonically over $\mathbb F_p$, evaluate the declared SU05 multiplicative orbit, take the standard binary labels/Hadamard columns, and for each orbit shift $s$ form the legal slice
+\[
+S_s(w)\le\mathbb F_2^m.
+\]
+Commit to $w$ (equivalently its source realization) before the future challenge. Challenge $s$ asks for the canonical reduced binary basis $B_s(w)$ of $S_s(w)$. Define the complete response signature
+\[
+\Sigma(w)=(B_s(w))_{s\in\mathbb Z/(p-1)}.
+\]
+
+\section*{Exact finite retention lemma}
+For any finite committed source family $W$, in a no-reread model where after commitment the machine receives arbitrary future $s$ and must return $B_s(w)$ exactly with no new $w$-dependent information, two words with distinct $\Sigma$ cannot share a committed state. Therefore
+\[
+s_{\rm state}\ge \left\lceil\log_2|\{\Sigma(w):w\in W\}|\right\rceil.
+\]
+With free side information $Z(w)$ the exact fiber version is
+\[
+s_{\rm state}\ge\left\lceil\log_2\max_z|\{\Sigma(w):Z(w)=z\}|\right\rceil.
+\]
+This is a state-counting theorem in the declared no-reread game, not a static-SAT runtime lower bound.
+
+\section*{COMPUTATIONAL battery}
+The committed experiment is \texttt{experiments/acr/su\_vms\_source\_bound\_acr.py}; summary output is \texttt{results/raw/acr/2026-10-02\_LSPV5\_SBACR1.json}. All nonconstant words were exhaustively enumerated for:
+\[
+(p,h,m)=(17,4,4),(29,5,5),(37,6,6),(43,7,7),(53,8,8),(67,9,9).
+\]
+In every case the complete response signature was injective on the nonconstant source words:
+\[
+14/14,\ 30/30,\ 62/62,\ 126/126,\ 254/254,\ 510/510
+\]
+distinct signatures, respectively. Hence the finite no-reread retention bounds were $4,5,6,7,8,9$ bits.
+
+For the fixed challenge order $s=0,1,2,\ldots$, complete source separation occurred after only
+\[
+4,7,6,4,4,5
+\]
+slice challenges, respectively. Thus a small number of legal openings can identify the committed finite source realization in these controls.
+
+\section*{Hostile full-reread/recompute attack}
+The same experiment contains a direct deterministic reacquisition algorithm:
+\[
+w\to\text{Lagrange interpolation}\to\text{orbit evaluation}\to
+\text{binary labels}\to B_s(w).
+\]
+All operations are polynomial in the explicit finite parameters and source length. Consequently the positive no-reread retention result does not survive unrestricted static reread. This is exactly the REACQ1/TRACECLOSE1 guard in a source-matched setting:
+\[
+\boxed{\text{signature injectivity / SAME\_REALIZATION binding}\not\Rightarrow\text{expensive reacquisition}.}
+\]
+
+\section*{Interpretation}
+SBACR1 does establish something that generic ACR did not: the challenges and responses are now tied to the same declared SU05/Hadamard source realization used by the structural program. The future legal-slice signature is not merely an artificial provenance tag; on the tested family it uniquely identifies the source word.
+
+But this also reveals the next obstruction precisely. The source itself is a succinct representation of the entire response strategy. Therefore any lower bound based only on the number or diversity of future responses is defeated by storing/rereading $w$ and recomputing the requested slice.
+
+\section*{Relation to structural rank}
+The experiment does not yet show that $\operatorname{rank}_{\mathbb F_2}\Phi$ controls signature diversity or reacquisition cost. Injectivity of $\Sigma$ is compatible with low or high product-span rank. The next test must compute, on the same words, binary product/exterior rank, MATRIXCERT1 innovation, and minimal distinguishing challenge sets, then search for pairs with similar structural rank but different signature complexity and vice versa.
+
+\section*{Surviving theorem target}
+A useful strengthening must replace pure response diversity by a source-specific tradeoff:
+\[
+S_{\rm retained}+C_{\rm reread}+C_{\rm recompute}+C_{\rm sequential}\ge L(h,m)
+\]
+in a model that charges static source access and survives alternative succinct representations. To matter for P versus NP, it must then be connected by a model-preserving compiler to every hypothetical polynomial-time SAT decider and survive semantic/algebraic oracle replacement. None of those arrows is proved here.
+
+\section*{Strict ledger}
+\textbf{PROVED/EXACT:} finite response-signature state lemma.\
+\textbf{COMPUTATIONAL:} exhaustive injectivity for $h=4$ through $9$ and fixed-order distinguishing depths.\
+\textbf{FALSIFIED as a generic bridge:} response-signature diversity alone implies expensive reacquisition.\
+\textbf{CANDIDATE:} combine source-bound replay with characteristic-two structural rank and a charged source-access/recomputation tradeoff.\
+\textbf{OPEN:} asymptotic injectivity, rank-to-replay tradeoff, static-SAT compiler, arbitrary-algorithm necessity, nonrelativizing/nonalgebrizing hinge, final contradiction.
+
+P versus NP remains OPEN.
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::SBACR1
