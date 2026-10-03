@@ -1,0 +1,156 @@
+\documentclass[11pt]{article}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\setmainfont{DejaVu Serif}
+\usepackage[margin=1in]{geometry}
+\title{TSR iteration 2: three stores on \(D(4,8)\),\\ and one recomputation that forgets the mask}
+\author{Grok, identity j15marti\\ repository \texttt{j15marti/pnp}, branch \texttt{main}}
+\date{3 October 2026 (PT)}
+\begin{document}
+\maketitle
+% GROK TSR ITER2 :: 2026-10-03_1000_GROK_TSR_ITER2
+
+P versus NP remains open.
+
+This note is iteration~2.
+It does not edit root \texttt{main.tex}.
+It does not add a workflow.
+It does not claim an optimum, and it does not claim that P differs from NP.
+The witnessed point below is \textbf{COMPUTATIONAL}.
+The general Pareto frontier is \textbf{OPEN}.
+The compiler from an arbitrary SAT decider is \textbf{OPEN}.
+
+\section{Charging rule}
+Opened and read: Ingo Wegener and Philipp Woelfel, ``New Results on the Complexity of the Middle Bit of Multiplication,'' ECCC, Revision~1 of Report No.~107 (2004), ISSN 1433-8092, the HTML text of the revision PDF.
+Definition~1 of that text states that the size of a branching program is the number of its nodes, its space is the logarithm of its size, and its time or length is the length of the longest computation path.
+The same definition states that a branching program is read-\(k\) when every source-to-sink path contains each variable at most \(k\) times.
+That is a definition of a charging rule, not a theorem about \(D(n,m)\), and it does not separate P from NP.
+This note uses it as follows, and only as follows.
+Time \(T\) is the number of variable queries on a longest path, counting a re-read as another query.
+The representation \(R\) counted here is the number of nonterminal query nodes, the same accounting as the \(720\)-node baseline.
+At a cut, three stores are named separately: the program counter (the layer index), the selected-count \(k\), and the mask identity (the coverage mask, or the distinct decision-node identity that mask determines).
+Working memory at a cut is the number of distinct configurations stored there.
+No pebble-game theorem is invoked.
+Pebbling remains the candidate analogy from iteration~1, not a price proved here.
+
+\section{Baseline, recomputed}
+The instance is \(D(4,8)\) in the sense of \texttt{experiments/universal-dag/d5\_m8\_exact.cpp}: simple \(3\)-clauses, promise weight \(8\), order with sign pattern outer and variable triples in lexicographic order inner.
+Forced-tail collapse and equal-child merge are the C++ rules.
+The script is \texttt{/workspace/tsr\_iter2/tradeoff.py}.
+One Python~3 run produced every integer in this note.
+
+The run reproduced
+\[
+\binom{32}{8}=10518300,
+\]
+by enumerating that many weight-\(8\) inputs, and the UNSAT count \(272\), by the direct coverage test (the selected masks OR to the full \(16\)-assignment cube).
+The reduced DAG has \(720\) nonterminal query nodes, \(1436\) memoized states, and longest decision path \(T=31\), the chain of layers \(0\) through \(30\).
+There are \(31\) layers that contain a query node.
+Level \(16\) has width \(66\), with \(k\in\{2,3,4,5,6\}\) contributing \(1+16+32+16+1\).
+Those \(66\) nodes are \(66\) distinct coverage masks, and no mask occurs with two values of \(k\).
+So, on this cut, \(k\) is a function of the mask.
+Dropping \(k\) and keeping the mask merges nothing.
+This run's \texttt{math.log2} printed
+\[
+\log_2 66=6.044394119358453,\quad
+\log_2 5=2.321928094887362,\quad
+\log_2 31=4.954196310386875,\quad
+\log_2 32=5.0.
+\]
+
+Three stores at layer \(16\), charged separately:
+\begin{itemize}
+\item Program counter: the layer index. Inside this layer it is fixed, so it does not add width. The whole baseline uses \(31\) layer indices.
+\item Selected-count: \(5\) values are simultaneously live.
+\item Mask identity: \(66\) masks at the layer, and \(32\) of them inside the cell \(k=4\).
+\end{itemize}
+The cell \((t,k)=(16,4)\) was recomputed, not copied.
+It has \(32\) decision nodes.
+On all \(\binom{32}{2}=496\) pairs, some common continuation of weight exactly \(4\) sends the two nodes to opposite terminals in \(\{0,1\}\).
+No pair failed.
+The cell remains tight: \(K=32\) and the program has \(32\) nodes there.
+\(\log_2 32=5\).
+Status of this finite check: \textbf{COMPUTATIONAL}.
+It is not a lower bound on an arbitrary algorithm.
+
+A single bit of the mask is not a load-bearing distinction at this cut.
+For each coverage bit \(b\in\{0,\ldots,15\}\), deleting bit \(b\) from all \(66\) masks left \(66\) distinct pairs \((k, M\text{ without bit }b)\) and \(0\) colliding groups.
+Forgetting one mask bit therefore does not merge baseline nodes.
+The forgotten object in the alternative is the whole mask, not one bit of it.
+
+\section{The alternative}
+The alternative keeps the baseline layers and adds one recomputation, inserted when a path is about to query layer \(16\) as a decision.
+At that cut the mask is erased.
+The configuration stores the program location of the cut and the selected-count \(k\), and it does not store the mask.
+There are \(5\) such configurations, one for each live \(k\).
+The baseline stores \(66\) configurations at the same cut.
+The difference is \(66-5=61\) configurations, all of them mask distinctions.
+In particular the \(32\) masks inside \(k=4\) collapse to one configuration until the re-read finishes.
+
+The re-read queries the sixteen prefix variables \(x_0,\ldots,x_{15}\) again, in order, and rebuilds the coverage by OR-ing the clause mask of each selected prefix bit.
+The re-read state is \((k, j, M_{\mathrm{partial}})\): the kept count, how many prefix bits have been re-read, and the mask rebuilt so far.
+After sixteen re-reads, \(M_{\mathrm{partial}}\) equals the erased mask and the program jumps to the baseline node \((16, k, M)\) it would have occupied.
+The suffix is then the baseline DAG.
+Each prefix variable is queried at most twice on any path (once forward, once in the re-read), and each suffix variable at most once, so the program is read-\(2\) in the sense of the definition opened above.
+
+The sixteen re-read layers have widths
+\[
+5,8,11,15,15,23,30,30,34,46,46,56,59,77,77,78
+\]
+at \(j=0,\ldots,15\).
+These widths sum to \(610\) re-read query nodes.
+The widest re-read layer is \(j=15\), width \(78\).
+Adding the \(610\) nodes to the \(720\) baseline nodes gives
+\[
+R'=1330.
+\]
+The longest baseline chain passes through layer \(16\), so the inserted re-read lengthens it by \(16\):
+\[
+T'=31+16=47.
+\]
+Deltas, for this exhibited program only:
+\[
+\Delta T=+16,\qquad \Delta R=+610,\qquad \Delta(\text{cut width})=66-5=61
+\]
+down at the checkpoint, while the peak layer width moves from \(66\) to \(78\), delta \(+12\).
+Peak working memory does not fall.
+Total stored query nodes do not fall.
+What falls is the mask store at one cut, from \(66\) identities to none, with \(k\) still stored as \(5\) values.
+That is a point on a tradeoff.
+It is not claimed to be undominated, minimal, or a Pareto improvement in \((T,R)\).
+
+\section{Test}
+The direct coverage answer and the baseline walk were compared on every weight-\(8\) input.
+There are \(10518300\) such inputs.
+UNSAT count \(272\).
+Answer mismatches: \(0\).
+On the \(236448\) of those inputs whose walk is still a decision at layer \(16\), the re-read of the prefix reproduced the forward pair \((k, M)\) with \(0\) failures.
+No promise input returned the off-promise terminal.
+Off-promise strings were not enumerated.
+This is an exhaustive check of the promise universe of this one instance, not a certificate for any larger \(n\) or \(m\), and not a certificate about arbitrary deciders.
+
+The cell-tightness result survived.
+The same \(32\) nodes and the same \(496\) separating continuations were recomputed.
+The checkpoint has only \(5\) configurations, which is fewer than \(32\), and that does not falsify \(K=32\): those \(5\) configurations have forgotten the mask and do not yet determine the continuation.
+After the re-read, the \(32\) baseline nodes are present again.
+Nothing stated in iteration~1 was falsified.
+The old count \(2107\) was not recomputed and is not cited as a result.
+
+\section{Status ledger}
+\begin{itemize}
+\item P versus NP: \textbf{OPEN}.
+\item The witnessed point \((T,R,\text{cut store})=(31,720,66)\) versus \((47,1330,5)\), with the mask forgotten and restored by sixteen re-reads: \textbf{COMPUTATIONAL}. Not an optimum.
+\item Baseline \(720\) nodes, \(T=31\), level-\(16\) width \(66\), memoized states \(1436\), UNSAT count \(272\), population \(10518300\), for this order and the C++ accounting: \textbf{PROVED/EXACT} for that finite object.
+\item Cell \((16,4)\), \(K=32\), all \(496\) pairs separated, matching \(32\) nodes: \textbf{COMPUTATIONAL}, and not falsified by the checkpoint.
+\item General \((T,S,R)\) Pareto frontier: \textbf{OPEN}.
+\item Compiler from an arbitrary SAT decider into the charged model: \textbf{OPEN}.
+\item Architecture, including pebbling as a general price: \textbf{CANDIDATE}.
+\item Nothing in this pass is \textbf{FALSIFIED/RETIRED}.
+\end{itemize}
+
+The next honest step is not a larger instance.
+It is a schedule that forgets a load-bearing mask distinction and whose peak layer does not exceed the baseline peak \(66\).
+This note does not claim such a schedule exists.
+
+% END_OF_VERIFIED_REPORT::GROK::2026-10-03_1000_GROK_TSR_ITER2
+\end{document}
