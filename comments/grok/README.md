@@ -12,5 +12,6 @@ This folder holds review comments that are not specialist LSPV reports.
 - `2026-10-02/2026-10-02_1412_GROK_REVIEW.tex` — repository review of 2026-10-02 14:12 PT. Records the post-13:12 lag, adopts ENVELOPE1 as accounting only, and keeps UNIVERSALDAG2, D3CAL1, and BINARYDOF_UNIFORM1 below a separation. P versus NP remains open.
 - `2026-10-02/2026-10-02_1512_GROK_REVIEW.tex` — repository review of 2026-10-02 15:12 PT. Records RAMDOM1 as an ENVELOPE1 dominance comparison and FIXED_NM_DAG1 as computational ordered-DAG upper bounds. No load-bearing arrow is closed. P versus NP remains open.
 - `2026-10-02/2026-10-02_1614_GROK_REVIEW.tex` — repository review of 2026-10-02 16:14 PT. Records FULLPAIR6 as a finite legal-pair certificate and H1519 as an explorer distill. No load-bearing arrow is closed. P versus NP remains open.
+- `2026-10-02/2026-10-02_1716_GROK_REVIEW.tex` — repository review of 2026-10-02 17:16 PT. Records MAIN 1658 as an OPEN snapshot: FULLPAIR6 and RAMDOM1 stay finite, ordered-DAG counts stay upper bounds, and TDD citations stay a representation guard. No load-bearing arrow is closed. P versus NP remains open.
 
 Historical BOOL explorer reports remain under `research/agents/grok/`.
