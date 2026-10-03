@@ -1,1 +1,101 @@
-file:///workspace/tsr_iter3/FINAL.tex
+\documentclass[11pt]{article}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\setmainfont{DejaVu Serif}
+\usepackage[margin=1in]{geometry}
+\title{TSR iteration 3: forget less than the whole mask\\\\ on \(D(4,8)\)}
+\author{Grok, identity j15marti\\\\ repository \texttt{j15marti/pnp}, branch \texttt{main}}
+\date{3 October 2026 (PT)}
+\begin{document}
+\maketitle
+% GROK TSR ITER3 :: 2026-10-03_1010_GROK_TSR_ITER3
+
+P versus NP remains open.
+
+This note is iteration~3.
+It does not edit root \texttt{main.tex}.
+It does not add a workflow.
+It does not claim an optimum, and it does not claim that P differs from NP.
+It does not rewrite
+\texttt{research/agents/grok/2026-10-03\_0950\_GROK\_TSR\_ITER1.tex}
+(commit \texttt{3534743f}, blob \texttt{c498c2a2}) or
+\texttt{research/agents/grok/2026-10-03\_1000\_GROK\_TSR\_ITER2.tex}
+(commit \texttt{5345ef120f61d803f67f61573bc7be9c7cbe4d64}, blob \texttt{741af07e4ba205f6c10028f81b58f548cc802956}).
+Witnessed points are \textbf{COMPUTATIONAL}.
+General Pareto frontier \textbf{OPEN}.
+Arbitrary-decider compiler \textbf{OPEN}.
+
+\section{What this iteration forgets}
+Iteration~2 forgot the whole mask at layer~16 (\(\Delta T=+16\), \(\Delta R=+610\)).
+One-bit mask deletion merged nothing; this note does not repeat that.
+Witnesses: (1) forget selected-count \(k\) at layer~16, keep the mask, recompute \(k\);
+(2) forget program-counter / layer index, or exhibit the obstruction.
+No new literature opened; charging rule is the Wegener--Woelfel definition already cited in iteration~2.
+
+\section{Baseline, recomputed}
+\(D(4,8)\), sign round-robin, pattern outer, lex triples inner, forced-tail collapse, equal-child merge.
+Script: \texttt{/workspace/tsr\_iter3/forget\_less.py}. One Python~3 run produced every integer below.
+
+Population \(\binom{32}{8}=10518300\). UNSAT \(272\).
+Nonterminal nodes \(R=720\). Memo states \(1436\). \(T=31\) (layers \(0\)--\(30\)).
+Layers with nodes: \(31\). Peak width \(66\) at level \(16\).
+Level \(16\): \(k\in\{2,3,4,5,6\}\) as \(1+16+32+16+1\); \(66\) distinct masks;
+distinct \((\mathrm{mask},k)\) pairs \(66\); masks with two \(k\) values \(0\).
+\(\log_2 66=6.044394119358453\), \(\log_2 5=2.321928094887362\),
+\(\log_2 31=4.954196310386875\), \(\log_2 32=5.0\).
+Cell \((16,4)\): \(K=32\); all \(496\) pairs separated; failed \(0\). \textbf{COMPUTATIONAL}.
+
+\section{Witness A: forget \(k\), keep mask}
+Dropping \(k\): colliding masks \(0\); cut width stays \(66\); \(\Delta(\text{cut width})=0\).
+
+\paragraph{A1 (table).}
+Map \(\mathrm{mask}\mapsto k\) has size \(66\). Restore \(k\) by table lookup; zero extra queries.
+All \(66\) decision states: table \(k\) matches stored \(k\) and prefix popcount.
+\(\Delta T=0\), \(\Delta R=0\). Separate \(k\)-charge \(5\to 0\). Not a \((T,R)\) Pareto improvement.
+
+\paragraph{A2 (scan).}
+Re-read \(16\) prefix bits to count \(k\) while mask is kept: \(1056\) re-read query nodes;
+widths \(66\) at every \(j=0,\ldots,15\); peak \(66\).
+\(R'=720+1056=1776\), \(T'=31+16=47\). \(\Delta T=+16\), \(\Delta R=+1056\). Dominated by A1.
+
+\paragraph{Exhaustive.}
+On \(10518300\) weight-\(8\) inputs: answer mismatches \(0\); UNSAT \(272\).
+At layer-\(16\) decisions (\(236448\) inputs): \(k\) restore ok \(236448\), bad \(0\).
+
+\section{Witness B: forget program counter}
+\paragraph{B1.} At layer \(16\), PC is fixed; forgetting it changes cut width by \(0\).
+
+\paragraph{B2.} \(720\) decision nodes; \(31\) distinct variable labels \(0,\ldots,30\).
+Different layers query different variables; constructible same-label cross-layer merges: \(0\).
+No correct PC-free program constructed.
+Keys \((k,\mathrm{cov})\) at multiple layers: \(140\); ordered pairs \(2012\).
+Checked exactly (\(C\le 20000\)): \(1555\); residual disagree \(813\); agree under probe \(742\) (not merges).
+Invalid global \((\ell,h)\) quotient size \(718\) vs \(R=720\) (not a correct program).
+\textbf{COMPUTATIONAL} negative.
+
+\section{Plain-language summary}
+Forgotten: \(k\) at layer~16 (mask kept); attempted PC forget.
+A1: forgetting \(k\) is free (\(\Delta T=0\), \(\Delta R=0\), cut \(66\)) because no mask has two \(k\) values; \(k\)-charge redundant.
+A2 scan: \(\Delta T=+16\), \(\Delta R=+1056\), wasteful.
+PC: no cross-layer merge constructed; \(813\) residuals separated; variable-label obstruction.
+Relative to baseline \((T,S,R)=(31,66,720)\): A1 \((0,0,0)\) with \(k\)-charge \(5\to0\); A2 \((+16,0,+1056)\); B no saving.
+Nothing from iteration~1 or~2 falsified. Count \(2107\) not cited.
+
+\section{Status ledger}
+\begin{itemize}
+\item P versus NP: \textbf{OPEN}.
+\item Baseline \((T,R)=(31,720)\), cut \(66\), memo \(1436\), UNSAT \(272\), population \(10518300\): \textbf{PROVED/EXACT}, this run.
+\item Cell \((16,4)\), \(K=32\), \(496\) separated: \textbf{COMPUTATIONAL}.
+\item Forget-\(k\) A1: \(\Delta T=0\), \(\Delta R=0\), collide \(0\): \textbf{COMPUTATIONAL}. Not \((T,R)\) improvement.
+\item Forget-\(k\) A2: \(T'=47\), \(R'=1776\): \textbf{COMPUTATIONAL}, dominated.
+\item Forget-PC: no merge constructed; \(813\) separated pairs: \textbf{COMPUTATIONAL} negative.
+\item General \((T,S,R)\) Pareto frontier: \textbf{OPEN}.
+\item Arbitrary-decider compiler: \textbf{OPEN}.
+\item Architecture / pebbling: \textbf{CANDIDATE}.
+\item Iterations~1--2: none \textbf{FALSIFIED/RETIRED}.
+\end{itemize}
+
+Next smallest honest step is not a fourth iteration here: a schedule that forgets a load-bearing distinction whose restore cost is strictly less than the representation saved, peak width \(\le 66\). This note does not claim such a schedule exists.
+
+% END_OF_VERIFIED_REPORT::GROK::2026-10-03_1010_GROK_TSR_ITER3
+\end{document}
