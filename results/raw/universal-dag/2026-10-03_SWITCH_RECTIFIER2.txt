@@ -1,0 +1,128 @@
+SWITCH-RECTIFIER2
+Date: 2026-10-03
+Status: PROVED/EXACT model lemma + COMPUTATIONAL routing constructions. P versus NP remains OPEN.
+
+Target:
+Remove the depth-2 biclique restriction from SWITCH-CONTACT1 while explicitly charging both:
+C = controlled on/off contact occurrences,
+R = static directed routing/rectifier edges.
+
+Declared routed-contact architecture:
+- each clause-presence bit x_v may control one entry contact and/or one exit contact;
+- every conflict edge {u,v} is oriented;
+- an oriented conflict u->v is realized by a directed static route from u's entry side to v's exit side;
+- deeper static rectifier nodes may factor/reuse routing;
+- a complete s-t path contains an entry contact x_u, static route, and exit contact x_v.
+
+PROVED/EXACT endpoint-contact theorem:
+Let H_n be the D(n,8) clause-conflict graph and M=8*C(n,3).
+Partition vertices according to an orientation into:
+S = source-only,
+T = sink-only,
+U = mixed.
+No conflict edge can lie inside S or inside T, so S and T are independent sets.
+An independent set in H_n is a family of pairwise-disjoint falsifying codimension-3 subcubes.
+Each such subcube has size 2^(n-3), so any independent set has size at most 8.
+Therefore |S|<=8 and |T|<=8.
+The controlled-contact count is:
+C = |S|+|T|+2|U| = 2M-(|S|+|T|) >= 2M-16.
+
+For every n>=4, two distinct variable triples give two disjoint exact covers, each consisting of all 8 sign patterns on that triple. They are disjoint independent sets of size 8.
+Orient edges out of the first cover and into the second; give every remaining vertex both contacts.
+This attains:
+C_endpoint(n,8) = 2M-16 = 16*C(n,3)-16
+inside the declared endpoint-routed architecture.
+
+Finite values:
+D(4,8): M=32, exact controlled contacts C=48.
+D(5,8): M=80, exact controlled contacts C=144.
+
+D(4,8) routing test:
+conflict edges = 96.
+The selected orientation uses 48 controlled contacts.
+Direct static routing uses 96 directed routing edges.
+The deterministic repeated-pair factorizer finds no saving:
+R_tested = 96,
+intermediate static nodes = 0,
+routing depth = 1.
+Thus the explicit routed construction has resource vector:
+(C,R,Droute) = (48,96,1).
+Including the two controlled contacts, an accepting conductive path has 3 edges.
+
+This does NOT prove Rect(H4)=96; deeper neutral factorizations not found by the heuristic may exist.
+
+D(5,8) routing test:
+conflict edges = 960.
+Exact endpoint controlled contacts = 144.
+A deterministic orientation plus repeated-subexpression static factorization gives:
+R_tested = 548 static routing edges,
+98 static intermediate nodes,
+routing depth <=6,
+352 final output references.
+An independent expansion of every static intermediate node back to source clauses verifies exactly the intended 960 oriented conflict pairs and no others.
+Thus one explicit resource vector is:
+(C,R,Droute) = (144,548,6),
+with accepting contact-to-contact path length at most 8 including the two controlled contacts.
+
+Depth-2 comparison for D(5,8):
+maximal bicliques enumerated = 15,542.
+The fractional weighted biclique-cover LP has optimum:
+313.84615384612965
+so every integer depth-2 contact cover needs at least:
+314 contacts.
+The known deterministic greedy construction from SWITCH-CONTACT1 uses:
+605 contacts.
+Therefore:
+314 <= C_depth2(5,8) <= 605.
+
+Weighted tradeoff:
+For objective lambda*C + R, where one controlled contact costs lambda times one static routing edge:
+
+D(4,8):
+depth2 exact = 96*lambda.
+routed = 48*lambda + 96.
+The routed construction is cheaper iff lambda>2.
+
+D(5,8):
+known depth2 construction = 605*lambda.
+routed = 144*lambda + 548.
+Routed beats this construction when:
+lambda > 548/(605-144) ~= 1.1887.
+
+Using the LP lower bound, routed is guaranteed smaller than every depth-2 realization only when:
+144*lambda+548 < 314*lambda,
+i.e. lambda > 548/170 ~= 3.2236.
+
+Literature:
+- Lupanov 1956 explicitly studies rectifier and switching-and-rectifier schemes.
+- Chistikov-Ivan-Lubiw-Shallit and Ivan et al. show depth-2 weighted biclique cover and unrestricted rectifier complexity can differ substantially.
+- Jukna 2006 and Amano-Maruoka 2006 show for quadratic monotone Boolean functions that unrestricted monotone circuits may be dramatically smaller than single-level circuits; depth-2 factorization therefore cannot be treated as representation-invariant.
+- Nechiporuk and later rectifier-network literature treat static routing complexity as a separate classical complexity measure.
+
+New insight:
+The on/off-switch approach does not yield one scalar lower bound.
+It produces an explicit Pareto tradeoff:
+controlled switching complexity <-> static routing complexity <-> path depth.
+For D(4,8), allowing routed directionality halves controlled contacts from 96 to 48 but raises static routing from 0 to 96.
+For D(5,8), controlled contacts fall to 144 while a tested deeper routing layer requires 548 static edges.
+
+This directly confirms the accounting guard:
+free wires/rectifiers can hide computation.
+Any switch-based lower bound must charge both C and R, and eventually fanout/load, path depth, cut breadth, and sequential relay state.
+
+Hostile controls:
+- fixed m=8 still has polynomial conflict structure and is not an unrestricted hardness family;
+- routing compression is only a construction upper bound, not a minimum;
+- the architecture still restricts every accepting path to exactly two controlled clause contacts;
+- unrestricted passive contact schemes can reuse labels/topology more generally;
+- sequential relay outputs, rereading, and recomputation remain stronger escape routes.
+
+Next target:
+1. Attempt exact or certified lower bounds for unrestricted static routing Rect(A) of the oriented D(4,8) relation.
+2. Search whether a one-occurrence-per-clause contact scheme can realize the same quadratic conflict function; this tests whether 48 controlled contacts itself collapses outside endpoint routing.
+3. Relate multisign incidence/rank to cuts of the static routing relation rather than only to biclique covers.
+
+Code:
+experiments/universal-dag/switch_rectifier_tradeoff.py
+
+END_OF_RESULT::SWITCH_RECTIFIER2
