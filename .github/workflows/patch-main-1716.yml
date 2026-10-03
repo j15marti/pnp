@@ -1,0 +1,100 @@
+name: patch-main-1716
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Insert 17:16 review banner
+        run: |
+          python3 << 'PY'
+          from pathlib import Path
+          p = Path("main.tex")
+          text = p.read_text()
+          if "PLACEHOLDER" in text or len(text) < 60000:
+              raise SystemExit(f"refusing stub: {len(text)} bytes")
+          old_date = r"\date{Last synthesized: 2026-10-02, 16:14 PT}"
+          new_date = r"\date{Last synthesized: 2026-10-02, 17:16 PT}"
+          if old_date not in text and new_date not in text:
+              raise SystemExit("date line missing")
+          text = text.replace(old_date, new_date, 1)
+          marker = r"\section{Independent review --- 2026-10-02 17:16 PT}"
+          if marker not in text:
+              section = r'''
+          \section{Independent review --- 2026-10-02 17:16 PT}
+          \textbf{STATUS: OPEN.} P versus NP remains open. This pass is an independent review, not an
+          LSPV ownership-region rewrite. The comment file is
+          \path{comments/grok/2026-10-02/2026-10-02_1716_GROK_REVIEW.tex}.
+
+          Before this edit, root \texttt{main.tex} was blob \texttt{8c622f913d7581f0a9ea8ffde56d0b99961d407f}
+          at head \texttt{6086ddc7eb0a7eb10a54271fa9830ec976f415c7}.
+          The verified arbiter snapshot remains
+          \path{research/main/2026-10-02_1158_MAIN_1158-R1.tex}
+          (blob \texttt{187629dc25af58087c7f997eb7c881becadb791e}).
+          MAIN 1658 is a later OPEN snapshot. It does not replace that arbiter and closes no load-bearing arrow.
+
+          ENVELOPE1 remains accounting only. RAMDOM1 remains a dominance comparison when \(c_0>0\).
+          UNIVERSALDAG2 remains one fixed clause order: \(D_{\mathrm{ord}}(3,8)=8\) and
+          \(D_{\mathrm{ord}}(4,8)=2107\). It is not a minimum. Tested ordered upper bounds
+          \(720,2776,5342,7771\) do not strengthen it.
+          D3CAL1 remains a \textbf{PROVED/EXACT} finite hostile control.
+          BINARYDOF\_UNIFORM1 remains \textbf{CANDIDATE} / \textbf{OPEN}.
+          FIXED\_NM\_DAG1 remains COMPUTATIONAL.
+          FULLPAIR6 remains a finite certificate \(\rho(H)\ge 1+r+|E_{\mathrm{full}}|\)
+          and does not prove \(r+|E_{\mathrm{full}}|=\omega(m)\).
+          TDD citations in MAIN 1658 are a representation guard only.
+          Specialist ownership regions are unchanged.
+
+          \begin{candidatebox}
+          \textbf{Historical synthesis target.}
+          On one exact reconstruction-compatible SU/vMS polynomial-bit orbit, construct the
+          source-transcribed operator \(\Phi\) and the legal slice matrices, then prove or falsify
+          \[
+          \operatorname{rank}_{\mathbb F_2}\Phi=\omega(m)
+          \]
+          by an intrinsically characteristic-two certificate. A polynomial representation closes the
+          provenance route for that family; it is not progress toward \(P\neq NP\). P versus NP remains OPEN.
+          \end{candidatebox}
+
+
+          '''
+              # dedent the section body written above with 10-space YAML indent
+              lines = []
+              for line in section.splitlines():
+                  if line.startswith("          "):
+                      lines.append(line[10:])
+                  else:
+                      lines.append(line)
+              section = "\n".join(lines).strip("\n") + "\n\n"
+              anchor = r"\section{Independent review --- 2026-10-02 16:14 PT}"
+              if anchor not in text:
+                  raise SystemExit("16:14 section missing")
+              text = text.replace(anchor, section + anchor, 1)
+          old_idx = "and 2026-10-02 16:14 PT are recorded"
+          new_idx = "2026-10-02 16:14 PT, and 2026-10-02 17:16 PT are recorded"
+          if old_idx in text:
+              text = text.replace(old_idx, new_idx, 1)
+          note = "The 17:16 review records MAIN 1658 as an open snapshot and does not close a load-bearing arrow."
+          if note not in text:
+              needle = "The 16:14 review records FULLPAIR6 as a finite legal-pair certificate and does not close a load-bearing arrow."
+              if needle not in text:
+                  raise SystemExit("dashboard sentence missing")
+              text = text.replace(needle, needle + " " + note, 1)
+          if len(text) < 60000 or "PLACEHOLDER" in text:
+              raise SystemExit("patched file is not the living document")
+          if r"\section{Independent review --- 2026-10-02 16:14 PT}" not in text:
+              raise SystemExit("16:14 section dropped")
+          p.write_text(text)
+          print("bytes", len(text.encode()))
+          PY
+      - name: Commit living main.tex
+        run: |
+          git config user.name "Jeremy Martinez"
+          git config user.email "42251772+j15marti@users.noreply.github.com"
+          git add main.tex
+          git diff --cached --quiet && echo "no change" && exit 0
+          git commit -m "Record the 17:16 PT independent review in root main.tex." -m "P versus NP remains open. MAIN 1658 is an open snapshot and closes no load-bearing arrow."
+          git push
