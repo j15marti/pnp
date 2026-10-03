@@ -1,0 +1,94 @@
+HORN-2SAT-ATLAS3
+Date: 2026-10-03
+Status: COMPUTATIONAL finite experiment + KNOWN-THEOREM literature mapping.
+P versus NP remains OPEN.
+
+Goal:
+Extend ATLAS-DISTORT2 with Horn and 2-SAT charts, then test whether continuation/subfunction width remains a useful residual obstruction after known tractable coordinates are admitted.
+
+Literature anchors:
+- Aspvall, Plass, Tarjan (1979): 2-SAT / quantified 2-CNF can be handled in linear time via directed-graph SCC machinery.
+- Dowling, Gallier (1984): Horn-SAT has linear-time algorithms and can be formulated as graph/data-flow pebbling.
+- Schaefer (1978): bijunctive (2-SAT), Horn, dual-Horn, and affine languages are tractable cases in the Boolean CSP dichotomy.
+- Bova, Slivovsky (2017): there are bounded-degree monotone CNFs, with every clause containing exactly two positive literals, whose OBDD size is 2^{Omega(size(F))}. These are monotone 2-CNFs and are trivially satisfiable by the all-true assignment.
+- Amarilli et al. (2018/2020 extended line): for bounded-arity/bounded-degree monotone CNFs, OBDD width is singly exponential in pathwidth, and lower bounds extend to richer knowledge-compilation targets including nFBDD-type representations.
+
+Hostile control:
+Take a cubic graph G and graph-CNF
+  F_G = AND_{uv in E(G)} (x_u OR x_v).
+This is a monotone 2-CNF. SAT decision is syntactically trivial: set every x_v=1.
+Complement all variables to obtain
+  H_G = AND_{uv in E(G)} (NOT y_u OR NOT y_v),
+a Horn 2-CNF, also syntactically satisfiable by all y_v=0.
+The two formulas have identical continuation/subfunction complexity up to bit complementation.
+
+Finite experiment:
+For graph-CNFs, after a prefix variable set S is assigned, the residual function is determined by the boundary N(Z)\S of the independent zero-set Z subseteq S, plus a FALSE sink for prefixes containing an internal zero-zero edge.
+This allows exact residual-width computation for a given cut without truth-table approximation.
+
+n=16 cubic graph:
+edge expansion = 0.666667.
+Exact dynamic programming over all variable orders gives minimum possible peak residual width:
+  W*_16 = 13
+  log2 W* = 3.70044 bits.
+Exact optimal profile:
+  1,2,4,7,11,11,11,13,13,13,13,13,13,9,5,3,2.
+This value is identical for the monotone 2-CNF and its Horn dual.
+
+n=20 cubic graph:
+chosen graph has exact pathwidth 6 and exact edge expansion 0.6.
+Among 200 deterministic random variable orders, the best tested peak residual width is:
+  W_tested_20 = 53
+  log2 W = 5.72792 bits.
+Best tested profile:
+  1,2,4,8,13,19,25,35,49,47,43,43,53,53,31,31,17,9,5,3,2.
+This is an upper bound on the minimum OBDD width, not an optimum.
+Asymptotically the cited expander-CNF results provide exponential lower bounds, so the finite growth is not being used as the theorem.
+
+Random 3-SAT finite comparison, n=16, best of 500 deterministic random orders:
+alpha=3.0: peak width 12
+alpha=3.5: peak width 6
+alpha=4.0: peak width 3
+alpha=4.25: peak width 2
+These are finite instance-specific upper bounds only.
+They show that an easy 2-SAT/Horn family can have continuation width comparable to or larger than these random 3-SAT samples.
+
+Falsification:
+SOLUTION-CONTINUATION-WIDTH is FALSIFIED as a universal SAT-decision hardness invariant.
+The reason is structural, not a finite-size accident:
+knowledge compilation asks to represent the whole Boolean function / all continuations, while SAT decision asks only whether one satisfying assignment exists.
+Monotone 2-CNF can be trivial to decide and nevertheless require exponential OBDD-like compilation.
+
+Effect on the atlas idea:
+A correct 2-SAT/Horn atlas must be allowed to discard most solution-space geometry:
+- the monotone 2-CNF chart can return SAT immediately from the all-true witness;
+- the Horn dual can return SAT immediately from the all-false witness;
+- generic 2-SAT can use implication SCCs;
+- generic Horn-SAT can use forward-chaining/data-flow closure.
+
+Therefore the post-atlas object cannot be the raw continuation matrix of satisfying assignments.
+It must represent DECISION-RELEVANT state of the acquired solver/chart.
+
+Refined candidate:
+For an acquired chart A(F), define a decision sufficient statistic Q_t of a partial input/stream such that two states merge when every legal future continuation gives the same SAT/UNSAT answer under the chart.
+This is a Myhill-Nerode / communication-style quotient at the FORMULA level, not the assignment-solution level.
+
+Candidate chain:
+formula realization
+ -> recognized/charged tractable chart
+ -> decision sufficient statistic
+ -> continuation equivalence classes of partial FORMULAS
+ -> state/communication lower bound
+ -> time-space tradeoff.
+
+Caveat:
+Even a large formula-level continuation quotient gives primarily a streaming/branching/state lower bound. A separate theorem is still required to constrain arbitrary polynomial-time random-access SAT algorithms.
+
+Artifacts:
+local source SHA256 aaa7947f9e370a7c50ddfb00f789127ae006b876d7349b333ab7e15ea624d569
+local CSV SHA256 359845bce0e6f2e4d9e361f2b34a10ed40481f78d311372fa767005a887f1b77
+
+Next target:
+Build the formula-level decision-continuation quotient for small Horn, 2-SAT, XOR, bounded-width, and unrestricted 3-SAT universes.
+Test whether solver-specific canonical states (SCC condensation, Horn closure, Gaussian row space, separator tables) all realize small quotients, then compare with the unrestricted 3-SAT quotient.
+END_OF_RESULT::HORN_2SAT_ATLAS3
