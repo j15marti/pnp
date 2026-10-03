@@ -1,0 +1,104 @@
+SWITCH-DAG-NROBP4
+Date: 2026-10-03
+Status: CANDIDATE with complete proof in the declared passive monotone model; independent red-team review pending.
+P versus NP remains OPEN.
+
+Literature/model identification:
+- An acyclic switching-and-rectifier network is a directed acyclic graph with literal-labelled switching edges and free rectifier edges; acceptance is existence of a live source-sink path.
+- This is the classical nondeterministic branching-program / NROBP viewpoint. Modern papers explicitly call NROBPs acyclic read-once switching-and-rectifier networks.
+- Rectifier networks are DAGs whose complexity is measured by routing edges and depth.
+- Read-k and semantic branching-program literature shows that allowing repeated reads can make restricted lower bounds much harder; the theorem below already permits arbitrary repetition of positive clause labels globally.
+
+Declared model for the theorem:
+1. Directed or undirected passive monotone switching-and-rectifier network.
+2. Controlled contacts are labelled only by positive clause-presence variables x_c.
+3. A label may occur arbitrarily many times.
+4. Free rectifier/wiring edges and arbitrary graph sharing are allowed.
+5. Correctness is required only on the exact-weight-eight promise D(n,8).
+6. Resource C is the total number of controlled contact occurrences.
+7. Sequential relays, complement/normally-closed contacts, and active memory are outside the model.
+
+Exact structural fact:
+Let M=8*C(n,3) and H_n be the clause-conflict graph.
+A set of pairwise nonconflicting clauses corresponds to pairwise disjoint falsifying subcubes.
+Each such subcube has size 2^(n-3), hence alpha(H_n)<=8.
+All eight sign patterns on one variable triple form an independent set of size 8, so alpha(H_n)=8.
+
+Cut-hitting lemma:
+Let K be any finite controlled-contact s-t cut and L(K) its set of distinct clause labels.
+Put R=V(H_n)\L(K).
+Every promised input using only labels in R disables all contacts of K and is rejected.
+
+If |R|>8, then because alpha(H_n)=8, R contains a conflict pair {u,v}.
+Choose any six further labels in R.
+The resulting exact-weight-eight formula contains a conflict pair and is therefore SAT.
+It avoids the cut labels, contradiction.
+
+Hence every controlled-contact cut contains at least:
+M-8
+distinct clause labels, and therefore at least M-8 controlled edges.
+
+Contact-capacitated Menger/max-flow:
+Give every controlled contact capacity 1 and every free rectifier edge infinite capacity.
+The minimum finite s-t cut has capacity at least M-8.
+Therefore there exist at least M-8 s-t paths that are pairwise disjoint in controlled contacts.
+
+Every such path contains at least two controlled contacts.
+Reason: if a path had exactly one controlled contact x_c, then any promised formula containing c would activate that path. But c belongs to an UNSAT exact cover, namely the eight sign patterns on its underlying variable triple.
+
+Therefore every correct passive monotone switch network satisfies:
+C >= 2(M-8)=2M-16.
+
+Exact upper construction:
+Choose two distinct variable triples.
+Let A be the eight sign patterns on the first triple and B the eight sign patterns on the second.
+A and B are disjoint independent sets.
+Give A source-side contacts only, B sink-side contacts only, and every remaining clause one source and one sink contact.
+Orient every conflict edge from a source-capable label to a sink-capable label and connect the corresponding contact endpoints by free rectifier routing.
+This is an acyclic switching-and-rectifier DAG.
+It uses:
+|A| + |B| + 2(M-16) = 2M-16
+controlled contacts and computes the conflict function, hence D(n,8) SAT on the promise.
+
+Thus, after independent review, the target theorem is:
+C_passive-DAG(n,8) = 2M-16 = 16*C(n,3)-16.
+
+Finite values:
+n=4: M=32, exact candidate C=48.
+n=5: M=80, exact candidate C=144.
+n=6: M=160, exact candidate C=304.
+n=7: M=280, exact candidate C=544.
+n=8: M=448, exact candidate C=880.
+
+This supersedes the weaker count-only cut lower bound 2*tau from SWITCH-CUT-MENGER3 for m=8.
+
+D4 routing-breadth experiment:
+Use the explicit 48-contact DAG with 24 source-contact roles and 24 sink-contact roles.
+Its oriented conflict relation contains 96 source-sink pairs.
+Maximal bicliques of this oriented 24x24 relation: 72.
+The fractional rectangle-cover LP and the integer cover both equal 20.
+The LP dual is integral and gives a 20-pair fooling set:
+(0,16),(1,28),(2,25),(3,17),(4,30),(5,19),(6,18),(7,27),
+(24,8),(17,9),(18,10),(25,11),(20,12),(28,13),(29,14),(23,15),
+(16,24),(19,26),(21,29),(22,31).
+
+Therefore every rectifier realization of THIS oriented routing relation has cut rectangle/biclique breadth at least 20.
+This is a finite orientation-specific routing lower bound, not a theorem about all optimal 48-contact switch-DAG orientations.
+
+New interpretation:
+The user's contact-as-DAG model is not merely analogous to branching programs; it lands directly in switching-and-rectifier / nondeterministic branching-program complexity.
+The fixed-m=8 family is especially revealing because DAG sharing and arbitrary positive-label repetition do not reduce controlled-contact count below 2M-16, although free routing still carries O(n^6) structure in the direct construction.
+
+Major limitation:
+Polynomial-size switching-and-rectifier / nondeterministic branching programs are an NL/poly-type model, not all polynomial time.
+Known unrestricted NBP/switching-network lower bounds for explicit efficiently computable functions are weak compared with what a P-vs-NP proof would require.
+Therefore this is a strong restricted-model calibration, not an arbitrary SAT lower bound.
+
+Next hostile extension:
+Allow complement/normally-closed contacts and full literal-labelled DAGs.
+The cut-hitting proof is monotone and does not automatically survive negative contacts.
+Test whether exact-weight-eight promise information lets a literal-labelled NBP compress substantially below 2M-16.
+
+Code:
+experiments/universal-dag/switch_dag_nrobp.py
+END_OF_RESULT::SWITCH_DAG_NROBP4
