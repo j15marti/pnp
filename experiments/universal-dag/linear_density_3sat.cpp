@@ -80,7 +80,7 @@ vector<Clause> gen_formula(int n,int m,mt19937_64&rng){
         array<int,3> vv{x,y,z}; sort(vv.begin(),vv.end());
         int pat=S(rng)|(S(rng)<<1)|(S(rng)<<2);
         uint64_t key=pat;
-        for(int j=0;j<3;j++) key=key*64+vv[j];
+        for(int j=0;j<3;j++) key=key*(uint64_t)n+vv[j];
         if(!seen.insert(key).second) continue;
         Clause c;
         for(int j=0;j<3;j++){c.v[j]=vv[j]; c.s[j]=(pat>>j)&1;}
