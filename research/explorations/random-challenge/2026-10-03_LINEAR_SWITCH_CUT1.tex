@@ -1,0 +1,198 @@
+% LINEAR-SWITCH-CUT1
+\section*{LINEAR-SWITCH-CUT1: passive switch cuts at linear clause density}
+
+\textbf{STATUS: PROVED/EXACT model theorem plus COMPUTATIONAL random-instance estimates. P versus NP remains OPEN.}
+
+\paragraph{General promise-cut theorem.}
+Let \(N=8\binom n3\), and let the input promise be all exact \(m\)-subsets of the \(N\)
+possible genuine three-clauses. Consider a passive monotone two-terminal contact scheme whose
+connectivity represents a chosen positive class \(P\). Let \(Z\) denote the number of negative
+promised inputs.
+
+If an \(s\)-\(t\) cut uses only \(d\) distinct clause labels, then every \(m\)-subset avoiding
+those labels disables the cut. Hence
+\[
+\binom{N-d}{m}\le Z.
+\]
+Define
+\[
+\tau_Z=\min\left\{d:\binom{N-d}{m}\le Z\right\}.
+\]
+When every clause label belongs to a negative promised input, every conducting path must contain
+at least two controlled contacts. Edge-Menger therefore gives
+\[
+C_{\rm contact}\ge2\tau_Z.
+\]
+
+For
+\[
+8\le m\le 7\binom n3,
+\]
+every clause occurs in both a SAT and an UNSAT promised formula. Thus the two-contact lemma
+holds whether connectivity represents SAT or UNSAT.
+
+If a free final output inversion is allowed, the implementation may choose either polarity.
+Writing \(S,U\) for the SAT and UNSAT counts,
+\[
+\boxed{
+C_{\rm contact}\ge
+2\min(\tau_U,\tau_S)
+=
+2\tau_{\max(S,U)}.
+}
+\]
+This is the polarity-robust passive cut/Menger bound.
+
+\paragraph{Linear-density asymptotics.}
+Let \(m=\alpha n\) and
+\[
+N=\frac43n^3+O(n^2).
+\]
+If the majority-class fraction
+\[
+q=\frac{\max(S,U)}{\binom Nm}
+\]
+converges to a fixed value in \((1/2,1)\), then for \(d=o(N)\)
+\[
+\frac{\binom{N-d}{m}}{\binom Nm}
+=
+\exp\left(-(1+o(1))\frac{md}{N}\right),
+\]
+and consequently
+\[
+\tau_{\max(S,U)}
+\sim
+\frac{N}{m}\log\frac1q
+\sim
+\frac{4}{3\alpha}\log\frac1q\,n^2.
+\]
+At exact balance \(q=1/2\),
+\[
+\boxed{
+C_{\rm contact}
+\ge
+\left(\frac{8\log2}{3\alpha}+o(1)\right)n^2.
+}
+\]
+Thus the count-only cut method has only quadratic scale at a balanced linear-density transition.
+If one answer class becomes overwhelmingly dominant and output polarity can be inverted, this
+lower bound collapses.
+
+\paragraph{Experiment.}
+Uniform simple three-CNFs with no repeated clauses were generated at
+\[
+n\in\{64,96,128\},
+\qquad
+\alpha\in\{3,4,4.25,4.5,5,5.25,6,8\},
+\]
+with 100 formulas per point and deterministic seed 20261003. Each formula was classified exactly
+by the project's DPLL solver.
+
+The source and analyzer are
+\texttt{experiments/universal-dag/linear\_density\_switch\_cut\_sampler.cpp}
+and
+\texttt{experiments/universal-dag/linear\_density\_switch\_cut\_analyze.py}.
+The raw sample panel is
+\texttt{results/raw/universal-dag/2026-10-03\_LINEAR\_SWITCH\_CUT1.csv}.
+
+Two-sided exact Clopper--Pearson 95\% intervals were used only as statistical uncertainty
+quantification. They are not finite-family mathematical lower bounds.
+
+At \(n=128\):
+\[
+\begin{array}{c|c|r|r|r}
+\alpha & \widehat p_{\rm UNSAT}
+&\text{point switch LB}
+&\text{95\% statistical switch LB}
+&\text{median DPLL nodes}\\
+\hline
+3.00&0.00&0&0&32\\
+4.00&0.06&660&242&823\\
+4.25&0.47&6372&4628&5699\\
+4.50&0.86&1430&778&5511\\
+5.00&1.00&0&0&2766\\
+5.25&1.00&0&0&2366\\
+6.00&1.00&0&0&980\\
+8.00&1.00&0&0&290
+\end{array}
+\]
+
+The point lower bound peaks near the empirical SAT/UNSAT crossover. At \(\alpha=4.25\),
+\[
+6372/128^2\approx0.389,
+\]
+consistent with the balanced asymptotic coefficient
+\[
+\frac{8\log2}{3(4.25)}\approx0.435.
+\]
+
+\paragraph{Cross-model hostile controls.}
+The existing min-fill panel at \(n=128\) grows smoothly from width about 76 at \(\alpha=3\)
+to 91 at \(\alpha=5\), rather than reproducing the sharp switch-cut peak.
+The exact width-three resolution panel has no width-three refutations among five tested
+\(n=128\) instances at each of \(\alpha=5.25,6,8\), even though the polarity-robust passive
+cut bound is zero on the 100-sample panel there.
+
+Therefore the scalar count-only passive cut resource is \textbf{FALSIFIED/RETIRED as a candidate
+common hardness invariant}. It mainly measures class imbalance. It cannot explain the
+resolution-hard UNSAT regime and has only quadratic scale near balance.
+
+\paragraph{Literature context.}
+Friedgut's work establishes sharp-threshold behavior for random \(k\)-SAT in the appropriate
+threshold-sequence sense. For small fixed \(k\), including \(k=3\), the exact limiting
+satisfiability threshold remains unresolved. Rigorous bounds for random 3-SAT remain separated,
+while statistical-physics and empirical work place the transition near \(4.26\).
+Recent ECCC work gives an \(O(n/\log n)\) scaling-window upper bound for random \(k\)-SAT for
+every fixed \(k\ge3\).
+
+Jukna's contact-circuit entropy method is directly relevant to the required repair: a useful
+cut resource must capture inner information/local dependence, not only the cardinality of the
+two answer classes.
+
+\paragraph{Next target.}
+Replace the scalar negative-count \(Z\) with a structural cut matrix
+\[
+M_{h,z}=F(h\cup z),
+\]
+where rows are multisign partial states on one side of the cut and columns are legal
+continuations on the other. Test:
+\[
+\operatorname{rank}_{\mathbb F_2},
+\quad
+\text{rectangle/fooling-set bounds},
+\quad
+\text{communication complexity},
+\quad
+\text{multisign/projective dimension}.
+\]
+The target is a cut lower bound that survives severe SAT/UNSAT imbalance and therefore measures
+nonmergeability rather than class balance.
+
+\begin{thebibliography}{9}
+\bibitem{Jukna88}
+S.~P.~Jukna,
+\emph{Entropy of Contact Circuits and Lower Bounds on Their Complexity},
+Theoretical Computer Science 57 (1988), 113--129.
+
+\bibitem{Friedgut99}
+E.~Friedgut,
+\emph{Sharp Thresholds of Graph Properties, and the \(k\)-SAT Problem},
+Journal of the American Mathematical Society 12 (1999), 1017--1054.
+
+\bibitem{HajiaghayiSorkin}
+M.~Hajiaghayi and G.~Sorkin,
+\emph{The Satisfiability Threshold of Random 3-SAT Is at Least 3.52},
+IBM Research Report RC22942, 2003.
+
+\bibitem{DuboisEtAl}
+O.~Dubois, Y.~Boufkhad, and J.~Mandler,
+\emph{Typical Random 3-SAT Formulae and the Satisfiability Threshold},
+Theoretical Computer Science, upper-bound work yielding 4.506.
+
+\bibitem{Carenini26}
+G.~Carenini,
+\emph{The Scaling Window of Random \(k\)-SAT},
+ECCC TR26-145, 2026.
+\end{thebibliography}
+
+% END_OF_NOTE::LINEAR-SWITCH-CUT1
