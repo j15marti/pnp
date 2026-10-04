@@ -1,0 +1,214 @@
+% SLICEPAD1 research report
+\documentclass[11pt]{article}
+\usepackage[margin=.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\begin{document}
+\begin{center}
+{\Large SLICEPAD1: Exact-weight hardness for clause-presence 3-UNSAT}\\[4pt]
+\textbf{Date: 2026-10-04}\\
+\textbf{Status: CANDIDATE; independent review pending}\\
+\textbf{P versus NP status: OPEN}
+\end{center}
+
+\section{Target}
+Let \(\mathcal C_q\) be all proper signed 3-clauses on \(q\) variables and
+\[
+M_q=|\mathcal C_q|=8\binom q3.
+\]
+For \(A\subseteq\mathcal C_q\), let \(\mathrm{UNSAT}_{3,q}(A)=1\) iff \(A\) is unsatisfiable. Define
+\[
+S_{q,t}(A)=
+\begin{cases}
+0,&|A|<t,\\
+\mathrm{UNSAT}_{3,q}(A),&|A|=t,\\
+1,&|A|>t.
+\end{cases}
+\]
+The load-bearing target remains \(C_{\rm mon}(S_{q,t})=M_q^{\omega(1)}\). This report closes only the ordinary computational-hardness-of-the-layer obligation.
+
+\section{Corpus reviewed}
+\begin{itemize}
+\item[] Root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, the repository research skill, newest verified MAIN0901, TASK-008, and the existing SLICE-UNSAT plan were reviewed.
+\item[] Repository search for the term monotone found no prior artifact containing the exact control-clause padding theorem below.
+\item[] The current Liu chain/correlation branch is not used in these proofs.
+\end{itemize}
+
+\section{Literature audit}
+\begin{itemize}
+\item[] \textbf{KNOWN THEOREM: Valiant.} For an \(M\)-input slice function, monotone circuit complexity is at most a constant-factor enlargement of unrestricted circuit complexity plus \(O(M\log^2 M)\) \cite{Valiant1986}.
+\item[] \textbf{KNOWN THEOREM/BARRIER: Wegener.} Monotone slice circuits admit a set-circuit viewpoint; standard monotone lower-bound methods fail on slices in their original form, and canonical slices such as CLIQUE can be linear-size \cite{Wegener1985}.
+\item[] \textbf{KNOWN PRECEDENT: Dunne.} Central slices of several monotone NP-complete functions remain NP-complete \cite{Dunne1986}. Thus central-slice NP-hardness is not itself a new general phenomenon.
+\item[] \textbf{KNOWN THEOREM/OPEN ENDPOINT: Hrube\v{s}--Pudl\'ak.} Their clause-presence \(\mathrm{UNSAT}_{k,n}\) theorem is superpolynomial in the coordinate count only when \(k\to\infty\). They explicitly note that restricting soundness to one Hamming layer invokes general-circuit power, and list constant \(k\), especially \(k=3\), as open \cite{HrubesPudlak2017}.
+\item[] \textbf{KNOWN THEOREM: Tovey.} Proper 3-SAT remains NP-complete when each variable appears in at most four clauses \cite{Tovey1984}.
+\item[] \textbf{CURRENT CHECK: Beimel--Nir.} ECCC TR26-213 studies multislices in monotone computation and formula models, but does not supply the general slice-circuit lower bound needed here \cite{BeimelNir2026}.
+\end{itemize}
+
+\section{Control-clause padding}
+Let the source use \(x_1,\ldots,x_n\). Add controls \(d_1,\ldots,d_n\), so \(q=2n\). Let \(\mathcal P_n\subseteq\mathcal C_{2n}\) contain every proper 3-clause with at least one positive control literal. Setting all controls to one satisfies every clause of \(\mathcal P_n\).
+
+Let \(R_n\) count target clauses containing no positive control. Then
+\[
+R_n=\sum_{j=0}^3\binom nj\binom n{3-j}2^{3-j}
+=9\binom n3+6n\binom n2.
+\]
+Since \(M_{2n}=8\binom{2n}{3}\),
+\[
+|\mathcal P_n|=M_{2n}-R_n
+\]
+and
+\[
+M_{2n}-2R_n=\frac{n(n-1)(5n+2)}3>0.
+\]
+Hence \(|\mathcal P_n|>M_{2n}/2\) for \(n>1\).
+
+\section{Middle slice}
+\begin{theorem}[MID-SLICE-3SAT]
+For even \(q=2n\ge6\), proper 3-SAT restricted to exactly
+\[
+t_{\rm mid}=M_q/2
+\]
+distinct clauses is NP-complete. Exact-layer 3-UNSAT is coNP-complete.
+\end{theorem}
+\begin{proof}
+Given a proper 3-CNF \(F\) on \(n\) variables with \(m\) clauses, regard it as a formula on the first \(n\) of the \(2n\) target variables. Choose
+\[
+D\subseteq\mathcal P_n,\qquad |D|=t_{\rm mid}-m,
+\]
+and output \(F'=F\cup D\). The filler pool has more than \(t_{\rm mid}\) clauses, and source clauses contain no controls, so the choice is possible and disjoint. The output size is \(O(n^3)\).
+
+If \(F\) is satisfiable, extend a satisfying assignment by setting every control to one; all fillers are then true. Conversely, any satisfying assignment of \(F'\) satisfies its subformula \(F\). Thus \(F\) and \(F'\) are equisatisfiable and \(|F'|=t_{\rm mid}\). Membership is immediate.
+\end{proof}
+
+\section{Sparse hard layer}
+\begin{theorem}[SPARSE-SLICE-3SAT]
+For \(q=2n\), proper 3-SAT restricted to exactly
+\[
+t_{\rm sp}=6q=12n
+\]
+clauses is NP-complete, using Tovey's bounded-occurrence source. Exact-layer UNSAT is coNP-complete.
+\end{theorem}
+\begin{proof}
+If each source variable occurs at most four times, \(3m\le4n\), hence \(m\le4n/3<12n\). For \(n\ge3\), \(|\mathcal P_n|>M_{2n}/2\ge12n\). Add exactly \(12n-m\) fillers from \(\mathcal P_n\). The same control assignment argument proves equisatisfiability.
+\end{proof}
+
+For uniformly random \(A\in\binom{\mathcal C_q}{6q}\), a fixed assignment satisfies exactly \(7M_q/8\) available clauses. Hence
+\[
+\Pr[A\text{ SAT}]
+\le2^q\left(\frac78\right)^{6q}
+=\left(2\left(\frac78\right)^6\right)^q,
+\]
+where
+\[
+2(7/8)^6=0.89759063720703125<1.
+\]
+Thus the exact sparse layer is overwhelmingly UNSAT.
+
+\section{Hitting-set and Hamming-scheme form}
+For each assignment \(\alpha\in\{0,1\}^q\), define
+\[
+B_\alpha=\{C\in\mathcal C_q:\alpha\text{ falsifies }C\}.
+\]
+Then
+\[
+|B_\alpha|=\binom q3=M_q/8
+\]
+and
+\[
+A\text{ UNSAT}\iff(\forall\alpha)\;A\cap B_\alpha\ne\varnothing.
+\]
+Therefore the positive exact layer is
+\[
+\mathcal U_{q,t}
+=
+\left\{
+A\in\binom{\mathcal C_q}{t}:
+(\forall\alpha)\;A\cap B_\alpha\ne\varnothing
+\right\}.
+\]
+If \(d=d_H(\alpha,\beta)\), then a clause is falsified by both assignments iff all three variables lie among the \(q-d\) coordinates on which they agree, so
+\[
+|B_\alpha\cap B_\beta|=\binom{q-d}{3}.
+\]
+Every positive weight-\(t\) input is a minimal positive input of \(S_{q,t}\), because every strict subset lies below the slice and is forced to zero.
+
+\section{Hostile audit: direct monotone transfer is impossible}
+\begin{proposition}[No nonconstant monotone constant-weight embedding]
+If
+\[
+\Phi:\{0,1\}^r\to\{0,1\}^M
+\]
+is coordinatewise monotone and \(|\Phi(x)|=t\) for every \(x\), then \(\Phi\) is constant.
+\end{proposition}
+\begin{proof}
+If \(x\le y\), then \(\Phi(x)\le\Phi(y)\). Equal Hamming weights force \(\Phi(x)=\Phi(y)\). Since \(0^r\le x\le1^r\) for every \(x\), all images are equal.
+\end{proof}
+
+Therefore the padding maps above are ordinary polynomial many-one reductions, not monotone projections. The number of filler clauses depends on source Hamming weight. The known full-cube monotone lower bound for \(\mathrm{UNSAT}_{3,q}\) cannot be transferred through this padding by monotone projection. That direct route is \textbf{FALSIFIED/RETIRED}.
+
+\section{Why Hrube\v{s}--Pudl\'ak does not close the target}
+Their approximator must reject every satisfiable clause set globally. The slice extension \(S_{q,t}\) is forced to output one on all weights above \(t\), including satisfiable formulas, so their theorem does not apply. Their paper explicitly identifies the exact-layer soundness variant as reaching general-circuit power through slice functions \cite{HrubesPudlak2017}. For fixed \(k=3\), their theorem does not yield a superpolynomial bound in \(M_q\).
+
+\section{Computational check}
+The verifier \texttt{experiments/monotone\_slice/verify\_slicepad.py} uses seed \(20261004\). For each \(n=3,4,5,6\), it generates 50 random proper bounded-occurrence source formulas and checks both middle and sparse padding by exhaustive truth-table SAT evaluation. All \(400\) source/padded pairs agreed. It also checks
+\[
+M_{2n}-2R_n=\frac{n(n-1)(5n+2)}3
+\]
+and \(2(7/8)^6<1\). This is \textbf{COMPUTATIONAL} support only.
+
+\section{Duplication / contradiction audit}
+\begin{itemize}
+\item[] The repository's fixed-weight hardness prerequisite is now replaced by the two explicit candidate padding theorems above.
+\item[] Dunne's central-slice results prevent any claim that NP-hardness of a central slice is itself novel.
+\item[] There is no contradiction with Wegener's easy-slice examples. Computational hardness does not imply monotone circuit hardness.
+\item[] The previous plan's implication that padding might be the primary load-bearing obstacle is stale. The primary obstacle is the set-circuit/monotone lower bound on the layer.
+\end{itemize}
+
+\section{What changed relative to root MAIN}
+The exact fixed-clause-count hardness obligation now has an elementary candidate proof for both
+\[
+t=6q
+\qquad\text{and}\qquad
+t=M_q/2.
+\]
+The remaining load-bearing arrow is
+\[
+\boxed{C_{\rm mon}(S_{q,t})=M_q^{\omega(1)}}.
+\]
+
+\section{Adopted / rejected / retired components}
+\begin{itemize}
+\item[] \textbf{ADOPTED:} Valiant's slice simulation.
+\item[] \textbf{ADOPTED:} Wegener's set-circuit viewpoint.
+\item[] \textbf{ADOPTED:} Hrube\v{s}--Pudl\'ak as the closest clause-presence framework and explicit constant-\(k\) barrier.
+\item[] \textbf{RETIRED:} direct transfer of the full-cube \(\mathrm{UNSAT}_{3,q}\) monotone lower bound through padding.
+\item[] \textbf{NOT YET ADOPTED:} Liu chain/correlation structure as a slice-circuit invariant.
+\end{itemize}
+
+\section{Barrier audit}
+The padding lemmas do not address relativization or algebrization. Any eventual constructive general-circuit property requires a Natural Proofs audit. The immediate barrier is model transfer: ordinary NP-hardness does not preserve monotone circuit lower bounds. Easy fixed-weight CLIQUE, Horn, 2-SAT, affine/Tseitin, bounded-treewidth, padding, and independent-product controls remain mandatory.
+
+\section{Next target}
+The next theorem should target
+\[
+\boxed{\text{superpolynomial set-circuit lower bound for }\mathcal U_{q,6q}}
+\]
+or a rigorously weaker model that advances toward general slice circuits. A first attack is the monotone Karchmer--Wigderson relation for \(\mathcal U_{q,6q}\), using
+\[
+|B_\alpha\cap B_\beta|=\binom{q-d_H(\alpha,\beta)}3
+\]
+to test for a rectangle or communication obstruction that survives DAG sharing.
+
+\section{Final status}
+The exact-layer computational-hardness prerequisite has a complete elementary candidate proof and passes small-instance computational checks. The direct monotone-projection transfer is falsified. The slice monotone lower bound remains \textbf{OPEN}; therefore \(P\ne NP\) remains \textbf{OPEN}.
+
+\begin{thebibliography}{9}
+\bibitem{Valiant1986} L. G. Valiant, Negation is Powerless for Boolean Slice Functions, \emph{SIAM J. Comput.} 15(2):531--535, 1986. doi:10.1137/0215037.
+\bibitem{Wegener1985} I. Wegener, On the Complexity of Slice Functions, \emph{Theor. Comput. Sci.} 38:55--68, 1985. doi:10.1016/0304-3975(85)90209-9.
+\bibitem{Dunne1986} P. E. S. Dunne, The Complexity of Central Slice Functions, \emph{Theor. Comput. Sci.} 44:247--257, 1986. doi:10.1016/0304-3975(86)90122-2.
+\bibitem{HrubesPudlak2017} P. Hrube\v{s} and P. Pudl\'ak, Random Formulas, Monotone Circuits, and Interpolation, FOCS 2017.
+\bibitem{Tovey1984} C. A. Tovey, A Simplified NP-Complete Satisfiability Problem, \emph{Discrete Appl. Math.} 8(1):85--89, 1984. doi:10.1016/0166-218X(84)90081-7.
+\bibitem{BeimelNir2026} A. Beimel and O. Nir, The Power of Multislices in Monotone Computation, ECCC TR26-213, 2026.
+\end{thebibliography}
+\end{document}
