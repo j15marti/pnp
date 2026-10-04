@@ -1,0 +1,144 @@
+ADAPTIVE-FORMULA-FBDD5
+Date: 2026-10-03 local / 2026-10-04 UTC
+Status: PROVED/EXACT for finite adaptive query depth on small controls and for D(4) evasiveness; COMPUTATIONAL upper bounds for FBDD size. P versus NP remains OPEN.
+
+Target
+------
+Extend FORMULA-CONTINUATION4 from fixed-order formula streams to adaptive read-once clause-query DAGs/FBDDs.
+
+Model
+-----
+Input bits are clause/constraint presence bits.
+A deterministic FBDD is a DAG whose internal node queries one presence bit; different paths may query variables in different orders, but no input bit is queried twice along any source-sink path.
+Identical residual decision functions may merge.
+This is stronger than OBDD/fixed-order access and weaker than general branching programs with rereads.
+
+Literature
+----------
+- FBDDs/free BDDs are the adaptive-order read-once branching-program model.
+- Exact/minimal FBDD construction is nontrivial; minimization/ordering is computationally difficult.
+- Modern read-once branching-program work continues to use subfunction, communication, rectangle, rank, and blocking-set measures.
+- Allowing rereads moves into read-k/(1,+k) branching programs; lower-bound methods become substantially weaker.
+- Rivest-Vuillemin 1976: if a Boolean function on d variables is invariant under a transitive permutation group, d is a prime power, and f(0^d) != f(1^d), then deterministic decision-tree complexity is exactly d (evasive).
+
+Canonical residual function
+---------------------------
+For a partial clause-presence history, let U be assignments not yet killed by selected clauses and R the unread clause bits.
+The future formula is UNSAT exactly when future selected clauses cover every assignment in U.
+The canonical residual signature is the antichain of sets of unread clause bits capable of killing each uncovered assignment, after duplicate/subsumed clauses are removed.
+This signature exactly identifies the residual SAT/UNSAT Boolean function over unread bits.
+
+Finite adaptive results
+-----------------------
+The fixed-priority node counts below use the strongest fixed priorities already found in FORMULA-CONTINUATION4; adaptive FBDD sizes are valid constructions, not minima unless stated.
+
+2SAT3:
+  constraint bits 12
+  fixed-priority reduced DAG nodes 86
+  best adaptive construction found 70
+  reduction 18.60%
+  exact adaptive deterministic query depth 12
+
+HORN3_GRAPH:
+  bits 12
+  fixed-priority nodes 32
+  adaptive nodes 29
+  reduction 9.38%
+  exact adaptive query depth 9
+
+XOR3_ALL_EQ:
+  bits 14
+  fixed-priority nodes 146
+  adaptive nodes 122
+  reduction 16.44%
+  exact adaptive query depth 14
+
+CHAIN4_TWO_TRIPLES:
+  bits 16
+  fixed-priority nodes 77
+  adaptive nodes 24
+  reduction 68.83%
+  exact adaptive query depth 16
+  exhaustive verification on all 2^16 = 65,536 presence inputs: 0 mismatches.
+
+The 24-node CHAIN4 FBDD has a simple local structure:
+  - each of the eight clauses on (x0,x1,x2) occurs once globally;
+  - each of the eight clauses on (x1,x2,x3) occurs twice globally.
+Thus bounded-width locality can collapse global DAG size dramatically while worst-case query depth remains 16.
+
+Full 3SAT4:
+  32 genuine signed 3-clause presence bits.
+  Best fixed-priority reduced DAG from sign-major order: 2438 nodes.
+  State-dependent two-candidate adaptive deviation: 2432 nodes.
+  Improvement: 6 nodes = 0.246%.
+  Constructed worst-case depth: 32.
+  Verification: exact residual-state construction plus 1,000,000 seeded random presence vectors, 0 mismatches.
+  2432 is ONLY an upper bound on minimum FBDD size.
+
+Structural identification and exact depth theorem
+-------------------------------------------------
+Each genuine 3-clause on four variables falsifies exactly two assignments that differ in the omitted variable. Therefore the 32 clause bits are exactly the 32 edges of Q4.
+
+For a selected formula:
+  UNSAT iff every assignment is falsified by some selected clause
+        iff every Q4 vertex is incident to a selected edge
+        iff the selected edges form an edge cover of Q4.
+
+Hence full 3SAT4 formula-presence UNSAT is the Q4 edge-cover predicate, and SAT is its complement.
+
+The automorphism group of Q4 acts transitively on its 32 edges:
+translations of F_2^4 move the base vertex and coordinate permutations move edge directions.
+The edge-cover predicate is invariant under this action.
+There are d=32=2^5 input bits and f(0^32) != f(1^32).
+
+By Rivest-Vuillemin's prime-power transitivity theorem:
+  D(f) = 32 exactly.
+
+Therefore full 3SAT4 presence SAT is EVASIVE in deterministic query complexity:
+some input forces every adaptive deterministic algorithm to inspect all 32 distinct clause bits.
+
+This exact theorem applies to decision trees and to any deterministic branching program unrolled along a computation path.
+Rereading cannot reduce the worst-case number of distinct queried bits below 32.
+It MAY still reduce total DAG size/state by merging histories, forgetting information, and later recomputing it.
+
+Main interpretation
+-------------------
+1. Adaptive DAG sharing can materially reduce representation size even when decision-tree depth does not fall.
+   CHAIN4: 77 -> 24 nodes, but exact depth remains 16.
+
+2. On full 3SAT4, a strong fixed sign-major representation was already close to the best adaptive heuristic found:
+   2438 -> 2432.
+   This does NOT prove adaptive FBDD optimality or a lower bound near 2432.
+
+3. D(4) query depth is now theorem-level, not empirical:
+   exact depth 32 by Rivest-Vuillemin evasiveness.
+
+4. Evasiveness is only a linear-in-input-bits query lower bound.
+   It does not imply superpolynomial time and cannot establish P != NP.
+
+5. The next genuine escape is read-twice/RECOMP/general branching programs:
+   rereads cannot improve D(4) worst-case distinct-query depth, but may reduce DAG size.
+   Literature shows this is exactly where lower-bound techniques weaken sharply.
+
+Barrier audit
+-------------
+- Representation -> runtime: OPEN.
+- FBDD size -> arbitrary RAM/Turing time: OPEN.
+- Read-once -> read-twice/general BP transfer: OPEN.
+- Relativization/nonalgebrization: no bridge supplied.
+- SAME_REALIZATION: current objects are explicit presence-bit query machines only.
+- Wrappers: fixed-order quotient survived DEAD/COPY; adaptive FBDD wrapper audit remains incomplete.
+- Acquisition: the Q4 edge-cover identification is explicit and free only for this finite canonical family, not an arbitrary SAT instance.
+
+Next target
+-----------
+1. Use the Q4 edge-cover formulation to search for a smaller read-twice/(1,+k) branching program than 2432 nodes.
+2. Measure exact/heuristic state-size tradeoff as k repeated clause queries are permitted.
+3. Test whether semantic/projective-dimension or communication measures lower-bound this read-k size.
+4. Keep Rivest-Vuillemin depth 32 as a fixed invariant: any size reduction must come from STORE/FORGET/RECOMPUTE tradeoffs, not fewer distinct input inspections.
+
+Artifacts
+---------
+experiments/universal-dag/adaptive_formula_fbdd.py
+results/summaries/2026-10-03_ADAPTIVE_FORMULA_FBDD5.csv
+END_OF_RESULT::ADAPTIVE_FORMULA_FBDD5
