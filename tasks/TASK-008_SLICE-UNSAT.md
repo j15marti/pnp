@@ -105,3 +105,39 @@ not merely (P\ne NP). This calibrates the difficulty of the branch.
 
 Artifact:
 - `research/explorations/monotone-slice/2026-10-04_1650_SLICEKW1.tex`
+
+
+## 2026-10-04 SLICEDEPTH2 update
+
+A symbolic restricted-model lower bound is now available on the sparse hard slice (t=6q).
+
+Every UNSAT exact-(t) input is a minterm of the slice extension, and every SAT exact-(t) input is a maxterm. Therefore:
+
+[
+\mathrm{DNFsize}_{\mathrm{mon}}(S_{q,6q})
+\ge
+\left(1-\rho^q\right)\binom{M_q}{6q},
+\qquad
+\rho=2(7/8)^6<1,
+]
+
+and
+
+[
+\mathrm{CNFsize}_{\mathrm{mon}}(S_{q,6q})
+\ge
+\binom{7M_q/8}{6q}.
+]
+
+Both are
+
+[
+\exp(\Omega(q\log q))
+=
+M_q^{\Omega(M_q^{1/3})}.
+]
+
+This is a genuine unconditional lower bound for monotone depth two, but it does not control multi-level DAG sharing. It is therefore an intermediate baseline, not the load-bearing general monotone-circuit theorem.
+
+Artifact:
+- `research/explorations/monotone-slice/2026-10-04_1715_SLICEDEPTH2.tex`
