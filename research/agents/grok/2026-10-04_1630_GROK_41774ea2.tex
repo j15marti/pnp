@@ -1,0 +1,118 @@
+% GROK REPORT::41774ea2::2026-10-04T16:30:00-07:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\title{GROK H1630 --- the SLICE-UNSAT padding lemma is elementary; SELECTCHARGE1 guard checks; slice-cover $(421,7,7)$ all $\tau{=}1$}
+\author{Agent P$\neq$NP / GROK}
+\date{2026-10-04 16:30 PT}
+\begin{document}
+\maketitle
+
+\noindent\textbf{GLOBAL STATUS: OPEN.} P versus NP remains open. No load-bearing arrow closed in this pass.
+The SAT-to-charged-model compiler and the product-span obstruction remain \textbf{OPEN}.
+This note claims no proof and no lower bound for SAT.
+
+\section*{Delta since H1612}
+Predecessor: \texttt{research/agents/grok/2026-10-04\_1612\_GROK\_41774ea2.tex} (commit \texttt{642cccce}).
+Peer commits on \texttt{main} after it:
+\begin{itemize}
+\item \texttt{55aa69b3}, \texttt{c21606b6}: \texttt{research/agents/lspv-2/2026-10-04\_1623\_LSPV-2\_SELECTCHARGE1.tex} (read in full).
+\item \texttt{6db327f2}, \texttt{56815337}: \texttt{research/explorations/monotone-slice/2026-10-04\_SLICE-UNSAT\_PLAN.md} (read in full at tip \texttt{192ae62e}).
+\item \texttt{eb9d1719}, \texttt{192ae62e}: TASK-008 for the SLICE-UNSAT branch and an escaping fix (unread in this pass).
+\item \texttt{0ac72507}: ``Integrate SLICE-UNSAT monotone lower-bound branch'' (root \texttt{main.tex}, $+44$ lines; diff body unread).
+\end{itemize}
+Nothing new under \texttt{research/main/} or \texttt{research/agents/grok/} besides H1612.
+
+\section*{Claim 1: the SLICE-UNSAT ``Immediate next theorem''}
+The plan asks for an explicit $t=t(n)$ and a polynomial transformation from arbitrary 3-CNFs to the exact-$t$ clause
+layer preserving satisfiability, with polynomially related universe size $N=8\binom n3$. It is stated there as OPEN.
+
+\paragraph{Lemma (PROVED/EXACT, elementary).} Let $M=8\binom n3$ and add $k$ fresh variables $y_1,\dots,y_k$.
+Call a signed 3-clause on the $n+k$ variables a \emph{pad} if it contains at least one positive literal $y_i$. For a
+3-CNF $F$ on $x_1,\dots,x_n$ with $m\le M$ clauses and any set $P$ of $M-m$ distinct pads, $F\cup P$ is satisfiable iff
+$F$ is. \emph{Proof.} If $a\models F$, extend by all $y_i=1$; every pad is satisfied. If $b\models F\cup P$, its restriction
+to the $x$-variables satisfies $F$, since clauses of $F$ mention no $y_i$. The pad capacity is
+$\mathrm{cap}(n,k)=8\binom{n+k}{3}-\sum_{j=0}^{3}\binom kj\binom n{3-j}2^{3-j}$, so the lemma applies whenever
+$\mathrm{cap}(n,k)\ge M$.
+
+Hence $t(n)=M$ on the $(n+k)$-variable universe works, and with $x=k/n$ the condition is asymptotically
+$8(1+x)^3-(2+x)^3\ge 8$, i.e.\ $x\gtrsim0.396$. The universe grows by $N'/N\approx(1+x)^3$.
+
+\paragraph{Computational check (COMPUTATIONAL).} Script \texttt{experiments/slice\_unsat/check\_h1630.py} (scratch only):
+\begin{itemize}
+\item Minimal $k$ with $\mathrm{cap}\ge M$: $n=5,6,8,10,20,50,100,200,1000$ gives
+$k=2,3,3,4,8,20,40,79,396$; $N'/N=3.5,\,4.2,\,2.9464,\,3.0333,\,2.8737,\,2.7929,\,2.768,\,2.7263,\,2.7229$.
+\item Brute force at $n=5$, $k=2$, $t=M=80$, $110$ pads available: $400$ random $F$ ($m\in\{10,\dots,40\}$,
+seed $20261004$, $228$ satisfiable), padded with random pads to exactly $80$ clauses. Mismatches in satisfiability: $0$.
+Hostile control: padding inside the original $5$-variable universe (no fresh variables) forces the full clause set
+at $t=80$ and flips all $228$ satisfiable instances; this only confirms that fresh variables are needed.
+\end{itemize}
+
+\paragraph{Consequence for the branch (PROVED/EXACT, elementary; circuit-size accounting).}
+The padding map depends on $m=|z|$ only through $p_j=[\,j\le M-m\,]$, computable by a poly$(N)$-size counter. So
+$C(\mathrm{UNSAT}_{3,n})\le C(U_{n+k,M})+\mathrm{poly}(N)$. Conversely
+$U_{n,t}(z)=[|z|>t]\vee([|z|=t]\wedge\mathrm{UNSAT}_{3,n}(z))$ gives $C(U_{n,t})\le C(\mathrm{UNSAT}_{3,n})+\mathrm{poly}(N)$
+for every $t$. So for unrestricted circuits the slice and the full function are polynomially equivalent, and the
+plan's padding prerequisite carries no difficulty. The padding map is \emph{not} a monotone projection (the $p_j$
+are anti-monotone in $z$); that matters only for transfers that must stay monotone.
+
+\paragraph{Hostile reading (no label change).} With Valiant's and Berkowitz's slice theorems (KNOWN THEOREM; both
+\emph{unread} in this pass, carried at the plan's description), $C_{\rm mon}(U_{n,t})$ is polynomially equivalent to
+$C(U_{n,t})$. Combined with the lemma, the target $C_{\rm mon}(U_{n,t})=N^{\omega(1)}$ is then polynomially equivalent to
+$\mathrm{NP}\not\subseteq\mathrm{P/poly}$ for 3-UNSAT. That is a restatement, not a reduction in difficulty. The
+load-bearing monotone slice lower bound is \textbf{OPEN}. Razborov's limits on the approximation method for general
+circuits are relevant here but \emph{unread} in this pass. Relation to our surface: a nonuniform lower bound would make the
+SAT-to-charged-model compiler unnecessary (P $\subseteq$ P/poly, KNOWN THEOREM), so the branch is orthogonal to that
+compiler and does not discharge it.
+
+\section*{Claim 2: SELECTCHARGE1 guards}
+\begin{itemize}
+\item Selector charge $n^{u+\delta K+o(1)}$: exact exponent addition, no error. At $\delta=1$ the unknown $K$ survives,
+as stated.
+\item Shrinkage guard (COMPUTATIONAL): $1-\ln(n-c\log_2 n)/\ln n$ for $c=1$ at $n=10^2,10^4,10^6,10^9,10^{12}$:
+$1.493\times10^{-2}$, $1.444\times10^{-4}$, $1.443\times10^{-6}$, $1.443\times10^{-9}$, $1.443\times10^{-12}$; for $c=10$:
+$0.2371$, $1.452\times10^{-3}$, $1.443\times10^{-5}$, $1.443\times10^{-8}$, $1.443\times10^{-11}$. Effective query
+exponent tends to $1$, so grouped self-reduction gives no fixed $\theta<1$, as SELECTCHARGE1 says.
+\item Semantic-collision control (COMPUTATIONAL): $300$ random 3-CNFs, $n=8$, $m\in\{30,34,38\}$, seed $20261004$,
+residuals after fixing $x_1,x_2,x_3$ ($2400$ residuals, exact SAT by brute force). Signature ``multiset of residual
+clause lengths'': $737$ classes, $194$ contain both SAT and UNSAT residuals. Algebraic signature (clause count,
+$\mathbb F_2$-rank of the clause--variable incidence matrix): $30$ classes, $16$ mixed. Equal signatures do not imply
+equal satisfiability, which matches the guard that an OR-preserving selector carries semantic information. This
+does not test the guard's positive direction, which is a direct argument.
+\end{itemize}
+Mahaney, Ogiwara--Watanabe and Hemaspaandra--Silvestri are cited by SELECTCHARGE1 and \emph{unread} here; carried at
+the peer's labels.
+
+\section*{Standing easy-structure control (COMPUTATIONAL)}
+\begin{itemize}
+\item Slice-cover $(421,7,7)$, $k=9$, exhaustive over $126$ nonconstant words: $\tau$-hist $\{1{:}126\}$, $R=7$, $d=21$,
+slice-rank min $=3$, max $=7$. Elapsed $\approx5.61$s. Twenty-eighth $k{=}9$ prime in the run; easy-structure control only.
+\item LDE/Hadamard battery $(421,7,7)$, seed $314159$: rank distribution $\{(0,0){:}1,(1,0){:}1,(7,21){:}126\}$,
+$0$ nonconstant exterior-deficient. Elapsed $\approx9.29$s.
+\end{itemize}
+No charged $T$, $S$, or $R$ improvement. Next prime $431$.
+
+\section*{Status ledger}
+\begin{itemize}
+\item Time-state-representation surface: \textbf{CANDIDATE}.
+\item SAT-to-charged-model compiler; product-span obstruction: \textbf{OPEN}.
+\item SLICE-UNSAT padding lemma (fresh-variable pads, $t=8\binom n3$, $k\approx0.396n$): \textbf{PROVED/EXACT} (elementary, this note); finite check \textbf{COMPUTATIONAL}.
+\item Polynomial equivalence of $C(U_{n,t})$ and $C(\mathrm{UNSAT}_{3,n})$ for unrestricted circuits: \textbf{PROVED/EXACT} (elementary).
+\item $C_{\rm mon}(U_{n,t})=N^{\omega(1)}$ for any $t$: \textbf{OPEN}.
+\item SELECTCHARGE1 selector charge, pruning guard, shrinkage guard: peer label PROVED/EXACT, unchanged; checks \textbf{COMPUTATIONAL}.
+\item $A$-derived fractional SAT shrinker; K-independent OR-preserving selector: \textbf{OPEN}.
+\item D(4,8) semantic-cut $\ge48$: \textbf{FALSIFIED/RETIRED} (exact cut 8); not revived.
+\item Contact/switch models: polynomially equivalent to branching programs; do not close the gap.
+\end{itemize}
+
+\section*{Reproducibility}
+Scratch at \texttt{/workspace/scratch\_h1630} (copied from \texttt{/workspace/scratch\_h1612}); results
+\texttt{results/h1630\_checks.json}, \texttt{results/slice\_cover\_42177.json}, \texttt{results/lde\_battery\_42177.json}.
+Root \texttt{main.tex} not edited.
+
+\section*{FINAL STATUS}
+P versus NP remains OPEN; no falsification, no charged T/S/R improvement, the SLICE-UNSAT padding lemma is elementary
+and the monotone slice lower bound remains OPEN.
+\end{document}
