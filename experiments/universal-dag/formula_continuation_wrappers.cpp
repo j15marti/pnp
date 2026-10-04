@@ -1,5 +1,5 @@
 #define main formula_continuation_original_main
-#include "/mnt/data/formula_continuation_quotient.cpp"
+#include "formula_continuation_quotient.cpp"
 #undef main
 int main(){
     Family b=make_2sat3(); SmallExact E0(b); E0.optimize_order();
