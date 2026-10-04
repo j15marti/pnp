@@ -157,3 +157,31 @@ Only after this lemma is exact should the monotone lower-bound attack be treated
 ## Status guard
 
 \(P\neq NP\) remains open. Existing monotone lower bounds, Valiant's slice theorem, and the current chain/correlation structure do not by themselves establish a lower bound for unrestricted 3-SAT circuits. The load-bearing missing statement is superpolynomial monotone hardness of a computationally hard fixed-weight 3-CNF UNSAT slice.
+
+
+## 2026-10-04 progress: SLICEPAD1
+
+The first planned obligation, exact fixed-clause-count computational hardness, now has a complete candidate proof in `2026-10-04_1630_SLICEPAD1.tex`.
+
+Two targets are retained:
+- sparse: \(t=6q\), technically closest to random-CNF and Hrubeš-Pudlák style methods;
+- middle: \(t=M_q/2\), the clean central-slice formulation.
+
+The direct attempt to transfer the known full-cube monotone lower bound through this padding is retired. Any coordinatewise-monotone map whose image lies entirely in one Hamming layer is constant, so ordinary padding hardness is not a monotone projection.
+
+The next phase is therefore a direct set-circuit / monotone-Karchmer-Wigderson attack on the exact-layer transversal family
+
+\[
+\mathcal U_{q,t}
+=
+\{A\in\binom{\mathcal C_q}{t}: A\cap B_\alpha\ne\varnothing
+\text{ for every assignment }\alpha\},
+\]
+
+using the exact intersection law
+
+\[
+|B_\alpha\cap B_\beta|
+=
+\binom{q-d_H(\alpha,\beta)}3.
+\]
