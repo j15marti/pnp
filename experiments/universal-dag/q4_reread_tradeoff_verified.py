@@ -1,4 +1,5 @@
 from functools import lru_cache
+from itertools import combinations
 import csv
 
 # Q4 edges, vertex order 0..15.
@@ -88,3 +89,14 @@ with open('/tmp/READ_RECOMPUTE_Q4_8.csv','w',newline='') as f:
     w.writerows(rows)
 
 for r in rows: print(*r,sep=',')
+
+
+# Exhaustive tail of this fixed architecture: keep 4,3,2,1,0 variables stored.
+# This proves the exact architecture optimum for exact k=28,...,32 forgotten/reread-enabled variables.
+print('EXACT_TAIL')
+for keep_n in (4,3,2,1,0):
+    best=None
+    for keep in combinations(range(32),keep_n):
+        n=compile_nodes(set(range(32))-set(keep))
+        if best is None or (n,keep)<best: best=(n,keep)
+    print('k=',32-keep_n,' nodes=',best[0],' keep=',best[1],sep='')
