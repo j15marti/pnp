@@ -79,3 +79,29 @@ Artifacts:
 - `research/explorations/monotone-slice/2026-10-04_1630_SLICEPAD1.tex`
 - `experiments/monotone_slice/verify_slicepad.py`
 - `results/raw/monotone_slice/SLICEPAD1_verify.txt`
+
+
+## 2026-10-04 SLICEKW1 update
+
+The communication target is now sharper.
+
+For exact-layer UNSAT input (A) and exact-layer SAT input (B), the restricted monotone Karchmer-Wigderson relation asks for a clause in (A\setminus B). There is an immediate (q)-bit deterministic protocol: Bob sends any satisfying assignment (eta) for (B); Alice returns a clause of (A) falsified by (eta), which cannot belong to (B).
+
+Therefore ordinary communication complexity is too weak to establish the desired circuit-size lower bound.
+
+The correct next model is **DAG-like communication protocols**, whose minimum size exactly characterizes monotone circuit size. The next load-bearing target is
+
+[
+\mathrm{DAGKWsize}(R_{q,6q})=M_q^{\omega(1)}.
+]
+
+A successful superpolynomial monotone lower bound for this slice, combined with Valiant, would actually imply
+
+[
+\mathrm{NP}\not\subseteq\mathrm{P/poly},
+]
+
+not merely (P\ne NP). This calibrates the difficulty of the branch.
+
+Artifact:
+- `research/explorations/monotone-slice/2026-10-04_1650_SLICEKW1.tex`
