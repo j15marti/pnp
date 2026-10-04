@@ -1,0 +1,146 @@
+READ-TWICE-Q4-6
+Date: 2026-10-03
+Status: PROVED construction + exact finite verification; global minimum size OPEN.
+P versus NP remains OPEN.
+
+Target
+------
+Continue the adaptive/FBDD program by permitting each clause-presence bit to be read twice.
+
+Structural identification
+-------------------------
+For full genuine 3-SAT on four Boolean variables there are 32 signed 3-clauses.
+Each clause is falsified by exactly two assignments that differ in the omitted variable.
+Thus clause-presence bits are naturally the 32 edges of Q4.
+
+For a selected edge set X,
+  formula UNSAT iff every assignment is falsified by some selected clause
+               iff every Q4 vertex is incident to some selected edge
+               iff X is an edge cover of Q4.
+
+Therefore UNSAT is the monotone CNF
+  AND_{v in V(Q4)} OR_{e incident to v} x_e.
+There are 16 clauses of width 4. Every edge variable occurs in exactly two clauses.
+
+Read-twice construction
+-----------------------
+Evaluate these 16 vertex clauses sequentially.
+For each vertex v, query its four incident edge bits until one is 1.
+If all four are 0, reject edge-cover immediately.
+If one is 1, continue to the next vertex.
+After all 16 vertex clauses succeed, accept.
+
+The branching program has:
+  16*4 = 64 query nodes.
+Every edge variable labels exactly two query nodes, one for each endpoint.
+Hence every root-sink path reads each variable at most twice:
+  syntactic read-twice.
+
+This is precisely the bounded-repetition "splitting" mechanism emphasized in the literature:
+a CNF whose constraint blocks can be evaluated separately can be concatenated, and repeated
+variables are paid once per block in which they occur.
+
+Exact verification
+------------------
+Exhaustive enumeration of every exact-weight-8 input:
+  C(32,8) = 10,518,300.
+Edge covers among them:
+  272, independently confirmed by perfect-matching enumeration.
+Mismatches:
+  0.
+Maximum reads of any one edge on any tested path:
+  2.
+
+Optimized local query order:
+  worst query count over all 10,518,300 weight-8 inputs = 41.
+  worst accepting/perfect-matching path = 40.
+  worst rejecting path = 41.
+Every one of the 272 perfect matchings takes exactly 40 queries.
+
+Architecture-specific depth lower bound
+---------------------------------------
+Fix any ordering of the four incident edges at every Q4 vertex.
+Under the uniform set of perfect matchings, symmetry makes the matching edge at each vertex
+uniform over its four incident edges. Its expected local position is
+  (1+2+3+4)/4 = 2.5.
+Summed over 16 vertices, the average perfect-matching query count is therefore 40.
+Hence some perfect matching requires at least 40 queries for every such local-clause architecture.
+The tested ordering attains 40 on EVERY perfect matching, and has overall promised worst case 41.
+Thus it is within one query of the architecture-specific lower bound for all weight-8 inputs.
+
+Random full-universe check:
+  1,000,000 seeded random 32-bit inputs,
+  mismatches = 0,
+  maximum observed query count = 43.
+Correctness itself follows symbolically from direct clause evaluation, not from sampling.
+
+Relation to the read-once result
+--------------------------------
+Previous valid adaptive FBDD upper bound for the same full 32-bit function:
+  2432 nodes (heuristic upper bound, not optimum).
+The read-twice construction gives:
+  <=64 nodes.
+Thus one reread per edge permits a dramatic explicit collapse:
+  2432 -> 64
+for the best currently constructed DAGs.
+
+This is exactly the kind of separation the read-k literature warns about:
+- Borodin-Razborov-Smolensky (1993) exhibit functions easy for read-twice but hard for nondeterministic read-once.
+- Jukna (1995) shows major syntactic/semantic gaps for bounded repetition.
+- Savicky-Zak (2000) establish a strict (1,+k) hierarchy.
+- recent bounded-repetition CNF work emphasizes the splitting power of read-twice representations.
+
+Critical limitation: n=4 specialness
+------------------------------------
+The read-twice property is special to four-variable 3-SAT.
+For ordinary 3-SAT on n variables, a 3-clause is falsified by 2^(n-3) assignments.
+In the analogous assignment-cover CNF, each clause-presence variable therefore occurs
+2^(n-3) times, not twice.
+The same naive clause-by-clause construction is syntactic read-2^(n-3), so this finite collapse
+does NOT yield an asymptotic constant-read representation of general 3-SAT.
+
+Exact-weight-8 promise
+----------------------
+On weight 8, an edge cover of 16 Q4 vertices must be a perfect matching.
+Therefore the same 64-node machine decides the D(4,8) promise after swapping terminal labels:
+SAT iff NOT edge-cover.
+No output-complement issue arises for deterministic branching programs because terminal labels
+can simply be exchanged.
+
+What is proved / not proved
+---------------------------
+PROVED:
+- explicit 64-node syntactic read-twice BP for full four-variable 3-SAT clause-presence UNSAT;
+- exact correctness on all weight-8 inputs;
+- exactly 272 accepted weight-8 edge covers/perfect matchings;
+- 41-query promised worst case for the tested local ordering;
+- >=40 accepted-path lower bound for every vertex-by-vertex local-order architecture.
+
+OPEN:
+- global minimum read-twice BP size for Q4 edge cover;
+- whether a hybrid STORE/RECOMP BP can use fewer than 64 nodes;
+- exact minimum promised read-twice size for D(4,8);
+- any asymptotic transfer to n-variable 3-SAT;
+- arbitrary-algorithm lower-bound bridge.
+
+Literature ledger
+-----------------
+Borodin, Razborov, Smolensky, "On lower bounds for read-k-times branching programs",
+Computational Complexity 3 (1993), 1-18.
+Jukna, "A Note on Read-k Times Branching Programs", RAIRO TIA 29(1), 1995.
+Savicky and Zak, "A read-once lower bound and a (1,+k)-hierarchy for branching programs",
+Theoretical Computer Science 238 (2000), 347-362.
+Razgon, "The splitting power of branching programs of bounded repetition and CNFs of bounded width",
+Discrete Applied Mathematics, 2024/2025 publication line.
+
+Next target
+-----------
+1. Attempt sub-64 hybrid BP synthesis that preserves only the minimum endpoint-coverage memory
+   and rereads selected edges when cheaper than storing them.
+2. Compute the (1,+k) tradeoff for k=0,1,... on Q4 edge cover, where k counts edge variables
+   allowed to be reread.
+3. Separate size, total query depth, distinct-bit depth, and retained-state width.
+4. Red-team on Q5 / five-variable width-4 analogue to see whether bounded occurrence remains useful
+   and on genuine n-variable 3-SAT where occurrence rises as 2^(n-3).
+
+END_OF_RESULT::READ_TWICE_Q4_6
