@@ -2,8 +2,8 @@
 
 **Date:** 2026-10-04  
 **Status:** OPEN RESEARCH BRANCH  
-**Repository:** `j15marti/pnp`  
-**Canonical target:** fixed-weight slices of clause-presence `UNSAT_{3,n}`
+**Repository:** \`j15marti/pnp\`  
+**Canonical target:** fixed-weight slices of clause-presence \`UNSAT_{3,n}\`
 
 ## Objective
 
@@ -11,22 +11,22 @@ Revive the earlier genuine monotone-circuit lower-bound work in a form that can 
 
 The central established bridge is Valiant's theorem that negation is essentially powerless for Boolean slice functions. Therefore the proposed target is:
 
-[
+\[
 U_{n,t}(z)=
 \begin{cases}
 0,&|z|<t,\\
 UNSAT_{3,n}(z),&|z|=t,\\
 1,&|z|>t,
 \end{cases}
-]
+\]
 
-where the coordinates of (z) indicate presence/absence of the (8\binom n3=\Theta(n^3)) possible proper signed 3-clauses.
+where the coordinates of \(z\) indicate presence/absence of the \(8\binom n3=\Theta(n^3)\) possible proper signed 3-clauses.
 
-The branch succeeds at the circuit level if one proves, for a suitable hard slice (t=t(n)),
+The branch succeeds at the circuit level if one proves, for a suitable hard slice \(t=t(n)\),
 
-[
-C_{mon}(U_{n,t})=N^{\omega(1)},\qquad N=8\binom n3.
-]
+\[
+C_{\mathrm{mon}}(U_{n,t})=N^{\omega(1)},\qquad N=8\binom n3.
+\]
 
 Valiant then transfers this to a superpolynomial lower bound for unrestricted Boolean circuits for the slice function, subject to verifying the exact theorem hypotheses and the hardness/padding statement for the chosen slice.
 
@@ -46,37 +46,37 @@ Canonical monotone functions can become easy on fixed Hamming layers. In particu
 
 Therefore the load-bearing theorem is not
 
-[
-C_{mon}(UNSAT_{3,n})\text{ is large},
-]
+\[
+C_{\mathrm{mon}}(UNSAT_{3,n})\text{ is large},
+\]
 
 but specifically
 
-[
-C_{mon}(U_{n,t})=N^{\omega(1)}
-]
+\[
+C_{\mathrm{mon}}(U_{n,t})=N^{\omega(1)}
+\]
 
-for an explicitly chosen (t=t(n)) whose slice retains the required computational hardness.
+for an explicitly chosen \(t=t(n)\) whose slice retains the required computational hardness.
 
 ## Research plan
 
 ### Phase 1: exact theorem import and hardness statement
 
 1. Reconstruct Valiant's slice theorem with exact quantifiers, input convention, monotonicity convention, size measure, and additive overhead.
-2. Define the exact clause universe and (U_{n,t}).
-3. Prove or refute a polynomial-time padding/reduction that maps arbitrary 3-CNF UNSAT instances to an exact-(t)-clause slice for a useful (t=t(n)).
+2. Define the exact clause universe and \(U_{n,t}\).
+3. Prove or refute a polynomial-time padding/reduction that maps arbitrary 3-CNF UNSAT instances to an exact-\(t\)-clause slice for a useful \(t=t(n)\).
 4. Track whether the resulting target is NP-hard, coNP-hard, or merely circuit-hard under the chosen reduction. Do not conflate these.
 
 ### Phase 2: reconstruct the full-cube monotone lower bound
 
-5. Identify a published full-cube monotone lower bound applicable to clause-presence (UNSAT_{3,n}), including its exact function definition.
+5. Identify a published full-cube monotone lower bound applicable to clause-presence \(UNSAT_{3,n}\), including its exact function definition.
 6. Reconstruct the proof line by line.
-7. Mark the first step that fails after conditioning on (|z|=t).
+7. Mark the first step that fails after conditioning on \(|z|=t\).
 8. Record whether the failure is combinatorial, distributional, approximation-theoretic, or due to loss of independent coordinates.
 
 ### Phase 3: import the current 3-SAT structural decomposition
 
-9. On the exact-(t) layer, classify formulas by:
+9. On the exact-\(t\) layer, classify formulas by:
    - locally pruned chains,
    - direct pair correlations,
    - direct triple correlations,
@@ -87,10 +87,10 @@ for an explicitly chosen (t=t(n)) whose slice retains the required computational
 
 ### Phase 4: attack the slice directly
 
-12. Start with (t=\Theta(n)), unless the hardness/padding lemma forces a different regime.
+12. Start with \(t=\Theta(n)\), unless the hardness/padding lemma forces a different regime.
 13. Attempt Razborov-style approximation and modern robust-sunflower machinery directly on the exact-weight layer.
-14. Compare against Hrubeš-Pudlák fixed-layer unsatisfiability methods and determine precisely why their strong result for growing (k) does not close fixed (k=3).
-15. Search for a 3-CNF-specific invariant unavailable in the generic (k)-CNF proof.
+14. Compare against Hrubeš-Pudlák fixed-layer unsatisfiability methods and determine precisely why their strong result for growing \(k\) does not close fixed \(k=3\).
+15. Search for a 3-CNF-specific invariant unavailable in the generic \(k\)-CNF proof.
 
 ### Phase 5: hostile controls
 
@@ -103,7 +103,7 @@ Every proposed lemma must be tested against:
 - padded and renamed formulas;
 - independent products;
 - duplicate/dead clause coordinates;
-- random exact-(t) formulas;
+- random exact-\(t\) formulas;
 - formulas engineered to preserve all local chain states while changing global satisfiability.
 
 A successful hostile counterexample retires the lemma.
@@ -114,9 +114,9 @@ A successful hostile counterexample retires the lemma.
 
 An unconditional theorem of the form
 
-[
-C_{mon}(U_{n,t})=N^{\omega(1)}
-]
+\[
+C_{\mathrm{mon}}(U_{n,t})=N^{\omega(1)}
+\]
 
 for a slice with a rigorous hardness transfer.
 
@@ -124,8 +124,8 @@ for a slice with a rigorous hardness transfer.
 
 Any of:
 
-- (N^{\Omega(\log N)}) lower bound for a restricted but materially stronger circuit model on the slice;
-- a theorem isolating exactly why the fixed-(k=3) Hrubeš-Pudlák route fails;
+- \(N^{\Omega(\log N)}\) lower bound for a restricted but materially stronger circuit model on the slice;
+- a theorem isolating exactly why the fixed-\(k=3\) Hrubeš-Pudlák route fails;
 - a new slice-preserving reduction from a monotone-hard source;
 - a structural theorem showing the low-degree externally mediated clean core forces a known hard monotone subfunction.
 
@@ -150,10 +150,10 @@ The two branches may share structural lemmas, especially the pair/triple-correla
 
 ## Immediate next theorem
 
-> **Slice Hardness/Padding Lemma.** Find an explicit (t=t(n)) and a polynomial transformation from arbitrary 3-CNF instances to the exact-(t)-clause layer such that satisfiability/unsatisfiability is preserved and the transformed clause-presence universe remains polynomially related to the original input size.
+> **Slice Hardness/Padding Lemma.** Find an explicit \(t=t(n)\) and a polynomial transformation from arbitrary 3-CNF instances to the exact-\(t\)-clause layer such that satisfiability/unsatisfiability is preserved and the transformed clause-presence universe remains polynomially related to the original input size.
 
-Only after this lemma is exact should the monotone lower-bound attack be treated as potentially relevant to (P\neq NP).
+Only after this lemma is exact should the monotone lower-bound attack be treated as potentially relevant to \(P\neq NP\).
 
 ## Status guard
 
-(P\neq NP) remains open. Existing monotone lower bounds, Valiant's slice theorem, and the current chain/correlation structure do not by themselves establish a lower bound for unrestricted 3-SAT circuits. The load-bearing missing statement is superpolynomial monotone hardness of a computationally hard fixed-weight 3-CNF UNSAT slice.
+\(P\neq NP\) remains open. Existing monotone lower bounds, Valiant's slice theorem, and the current chain/correlation structure do not by themselves establish a lower bound for unrestricted 3-SAT circuits. The load-bearing missing statement is superpolynomial monotone hardness of a computationally hard fixed-weight 3-CNF UNSAT slice.
