@@ -1,0 +1,151 @@
+FORMULA-CONTINUATION4
+Date: 2026-10-03
+Status: PROVED/EXACT for the declared finite quotient calculations; COMPUTATIONAL for tested 3SAT4 order search. P versus NP remains OPEN.
+
+Target
+-----
+Replace solution-space continuation with a formula-level decision quotient.
+
+For a finite constraint universe U and an order pi, let P_k be the first k constraint-presence bits and S_k the remaining bits. A prefix history H subseteq P_k induces the residual Boolean function
+  r_H(K) = SAT(H union K), K subseteq S_k.
+Two histories are equivalent at cut k iff they have the same residual function for every legal suffix K.
+
+Let W_pi(k) be the number of equivalence classes. This is the exact deterministic one-way state count / reduced OBDD width at that cut for the declared presence-bit encoding and order. It is a restricted streaming/ordered-branching resource, not an arbitrary RAM/Turing lower bound.
+
+Canonical residual representation
+---------------------------------
+Every tested family is a conjunction of constraints over n Boolean assignments. A prefix formula eliminates a set C of assignments. For a suffix constraint set, the residual UNSAT predicate is the positive monotone CNF
+  AND_{a notin C} OR_{c in suffix: c falsifies a} z_c.
+After deleting duplicate/superset clauses, this antichain is a canonical residual signature. This lets the code compare residual functions exactly without enumerating every suffix formula.
+
+Families and results
+--------------------
+
+1. Complete 3-variable 2-SAT universe.
+Universe: all 12 non-tautological binary clauses on distinct variable pairs.
+Exact dynamic programming over all clause orders:
+  min_pi max_k W_pi(k) = 17.
+One exact optimal profile:
+  1,2,4,8,16,17,17,17,17,10,5,3,2.
+Optimal order indices:
+  11,10,7,6,3,2,9,8,5,4,1,0.
+
+Canonical tractable state:
+  transitive closure of the 6-node implication graph, with all already-UNSAT states collapsed.
+This state was sufficient at every tested cut:
+  canonical_sufficiency_violations = 0.
+It is not minimal. At cuts where W=17, canonical state counts include
+  25,40,62,97.
+Across the whole profile the largest canonical state count is 346 although the final residual quotient has only SAT/UNSAT terminals.
+
+2. Horn graph/closure universe on 3 variables.
+Universe: 3 positive facts, 6 binary implications xi -> xj, 3 negative goals, total 12 Horn constraints.
+Exact minimum peak:
+  9.
+One optimal profile:
+  1,2,4,8,9,9,8,9,9,8,5,3,2.
+Optimal order:
+  11,10,9,8,5,4,7,6,3,2,1,0.
+
+Canonical tractable state:
+  implication transitive closure + closure of active facts + active negative goals, with contradiction collapsed.
+Sufficiency violations: 0.
+At W=9 cuts, canonical state counts include
+  16,32,112,168.
+Thus ordinary Horn closure data is again sufficient but strongly over-refined relative to the exact future-decision quotient.
+
+3. Complete 3-variable XOR-equation universe.
+Universe: all 14 equations a dot x = b with nonzero a in F_2^3 and b in F_2.
+Exact minimum peak over all constraint orders:
+  29.
+Optimal profile:
+  1,2,4,7,13,20,22,24,24,29,29,9,6,3,2.
+Optimal order:
+  13,12,10,8,7,4,3,1,11,9,6,5,2,0.
+
+Canonical tractable state:
+  reduced augmented row space, with inconsistent systems collapsed.
+Sufficiency violations: 0.
+At the two peak cuts W=29, canonical row-space state counts are 36 and 42.
+Again the canonical polynomial-time solver state maps homomorphically onto, but is not identical to, the minimal continuation quotient.
+
+4. Bounded-width local 3-CNF chain.
+Universe: all eight signed clauses on triple (x0,x1,x2) followed by all eight on (x1,x2,x3), total 16.
+Natural local clause order quotient profile:
+  1,2,2,4,4,8,8,16,16,17,17,17,17,9,5,3,2.
+Peak = 17.
+At the central cut after the first triple block:
+  exact residual classes = 16.
+The natural separator chart records which of the four assignments to (x1,x2) can be extended through the left block.
+Distinct separator states = 16.
+Sufficiency violations = 0.
+Thus at this cut the standard path-DP sufficient statistic exactly realizes the decision quotient.
+
+5. Full genuine 3-SAT on 4 variables.
+Universe: all 32 signed genuine 3-clauses.
+Exact residual widths were computed for eight declared clause orders.
+Results:
+  natural triple-major order: peak 10000;
+  sign-major order: peak 257;
+  reverse natural: peak 10000;
+  five seeded random orders: peaks 2766,4392,4656,2983,2503.
+Best tested order is sign-major:
+  0,8,16,24,1,9,17,25,2,10,18,26,3,11,19,27,
+  4,12,20,28,5,13,21,29,6,14,22,30,7,15,23,31.
+Its exact profile is:
+  1,2,4,8,16,24,28,44,65,65,97,113,129,193,225,241,
+  257,257,257,193,129,129,129,97,65,65,41,25,17,10,6,3,2.
+257 is only a tested upper bound on the minimum peak over all 32! orders.
+The order sensitivity (10000 -> 257) is itself a hostile-control result.
+
+Wrapper controls
+----------------
+On the complete 3-variable 2-SAT universe:
+  BASE M=12 exact min peak 17.
+  DEAD: add a tautological/no-effect presence bit, M=13 -> exact min peak 17.
+  COPY: add a duplicate copy of an existing clause bit, M=13 -> exact min peak 17.
+So the minimized finite quotient survives these DEAD/COPY wrappers in this test.
+Output complementation also preserves the class count trivially because it bijectively complements every residual Boolean function.
+
+Literature interpretation
+-------------------------
+- Aspvall-Plass-Tarjan: 2-SAT is linear-time via implication-graph SCCs.
+- Dowling-Gallier: Horn-SAT is linear-time via graph/data-flow/pebbling.
+- OBDD residual subfunctions and deterministic one-way communication characterize ordered branching state.
+- Chen-Lin-Tsai (WADS 2025), Theorem 31: one-pass streaming 2-SAT requires Omega(n^2) bits, even though offline 2-SAT is linear-time. This is direct evidence that a large formula-continuation quotient is fundamentally a streaming/access-model resource rather than an offline P-vs-NP resource.
+- Bova-Slivovsky and Amarilli et al.: solution/knowledge-compilation width can be exponentially large for tractable CNF families; FORMULA-CONTINUATION4 avoids the specific all-solutions compilation error by quotienting only SAT/UNSAT future behavior, but the streaming-model limitation remains.
+
+Falsification / promotion status
+--------------------------------
+1. The formula-level quotient is a better decision-relevant object than solution-space geometry.
+2. It exactly recognizes tractable canonical states as sufficient on the tested 2-SAT, Horn, XOR, and separator controls.
+3. Canonical solver states are often substantially over-refined relative to the exact quotient.
+4. The quotient is robust to finite DEAD/COPY tests.
+5. It is highly clause-order dependent.
+6. Most importantly, known one-pass 2-SAT lower bounds prove that large quotient/stream state can coexist with linear-time offline decision.
+
+Therefore:
+  FORMULA-CONTINUATION-STATE -> arbitrary SAT runtime remains OPEN.
+No P != NP conclusion follows.
+
+Best surviving use
+------------------
+Treat W as a calibrated minimum state resource under a declared clause-stream/ordered-access model.
+The next hostile extension should remove fixed order:
+  - adaptive clause-query/FBDD version of the formula-presence decision problem;
+  - then read-twice/RECOMP;
+  - compare exact small-family quotients with branching-program projective-dimension style invariants.
+A useful result would be a state measure that survives adaptive access; a collapse under adaptive access is equally informative.
+
+Reproducibility
+---------------
+Main source:
+  experiments/universal-dag/formula_continuation_quotient.cpp
+  local SHA256 7f89d755aa56af58d83a39d0af6eff810404df5ec0054446bbc3f609134a7c0c
+Wrapper source:
+  experiments/universal-dag/formula_continuation_wrappers.cpp
+Local data SHA256:
+  formula_continuation_summary.csv 17c9267451f46e57dcb78ee0c4681cb3edfc84152724d60e1769dde09b5dc371
+  formula_continuation_profiles.csv 126ea70b1e1750a1cd606c94ac36041d6a608d1689f6f1a198319543916f44bc
+  formula_continuation_wrappers.csv d2584d75c5284230d7af6e2e2b314194bae3f78a4e276a6d327a01713a0e9250
+END_OF_RESULT::FORMULA_CONTINUATION4
