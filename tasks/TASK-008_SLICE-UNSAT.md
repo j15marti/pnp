@@ -335,3 +335,108 @@ Only after finding a locally matched positive distribution should SAT-SUNFLOWER1
 
 Artifact:
 - `research/explorations/monotone-slice/2026-10-04_1950_SLICEDENSITY2.tex`
+
+
+## 2026-10-04 INTERMEDIATE1 update
+
+The primary rigorously safe slice is now
+
+\[
+t=\lfloor 3.5q\rfloor,
+\]
+
+which remains below the known (3.52) random-3SAT satisfiable regime while staying above the pure-literal regime.
+
+### Exact structural result: first-order camouflage
+
+Let (G=S_q\ltimes(\mathbb Z_2)^q) act by variable permutations and independent complementation. Any nonempty (G)-invariant exact-(t) family has identical clause-coordinate marginals (t/M). In particular uniform exact-layer UNSAT satisfies
+
+\[
+\Pr[C\in A]=\frac tM
+\]
+
+for every proper clause (C), and therefore exactly matches the uniform layer in expected variable degree, signed degree, and variable-pair incidence.
+
+So the first possible distinguishing information is at pair order or above.
+
+### Pair-orbit framework
+
+Two clause coordinates are classified under (G) by
+- (s): number of shared variables;
+- (h): number of shared variables with opposite signs.
+
+For fixed (C),
+
+\[
+n_{s,h}
+=
+\binom3s\binom{q-3}{3-s}2^{3-s}\binom sh
+\]
+
+with ((3,0)) excluded.
+
+For a (G)-invariant distribution with pair probabilities (	heta_{s,h}),
+
+\[
+\frac M2\sum_{s,h}n_{s,h}\theta_{s,h}=\binom t2.
+\]
+
+### Degree-two monotone hostile statistic
+
+Define
+
+\[
+T(A)=\sum_i d_i^+(A)d_i^-(A).
+\]
+
+Under the uniform exact layer,
+
+\[
+\mathbb E_0T
+=
+q\left(4\binom{q-1}{2}\right)^2
+\frac{t(t-1)}{M(M-1)}.
+\]
+
+Every threshold (T\ge K) has polynomial-size monotone circuits. More generally, every threshold on the count of a fixed constant-order clause pattern family has polynomial-size monotone circuits. This is recorded as **LOCALPATTERN-GUARD**.
+
+### INTERMEDIATE-PAIR1 computational result
+
+Exact DPLL was checked against brute force on 500 small formulas. Then 5000 exact-layer formulas were sampled for each (q\in\{20,24,28,32\}), seed (5252+q).
+
+Using the fixed predeclared threshold
+
+\[
+T\ge\mathbb E_0T+0.5q,
+\]
+
+balanced accuracy for distinguishing UNSAT from SAT was:
+
+- (q=20): 0.7049
+- (q=24): 0.6888
+- (q=28): 0.7034
+- (q=32): 0.6801
+
+This is **COMPUTATIONAL finite-size evidence only**. No asymptotic pair gap is claimed.
+
+A deterministic deletion pass found deletion-minimal UNSAT cores using most variables on average, but this does **not** rule out smaller MUFs and therefore does not answer the Scott--Sorkin open question.
+
+### Literature corrections
+
+- Scott--Sorkin's intermediate rare-UNSAT structure remains open and is now recognized as a direct structural dependency.
+- Caragiannis--Gravin--Jiang's (k)-wise-independence theorem does not cover linear density from fixed-order moment matching.
+- Ahmadi et al. quiet planting is retained only as an analogy for low-order camouflage, not a monotone-circuit theorem.
+- ECCC TR25-124 is **RETIRED** as switching-lemma support: the author withdrew it on 2025-08-19 after recognizing a flaw in the main argument.
+
+### New ranked queue
+
+1. **PAIR-CAMOUFLAGE1:** measure and then match the full ((s,h)) pair-orbit vector, not only (T).
+2. **INTERMEDIATE-MUF1:** on pair-camouflaged UNSAT samples, search for smaller MUFs using multiple deletion orders and exact search at smaller (q).
+3. **SAT-SUNFLOWER2:** attempt a 3CNF-specific approximation lemma only after low-order monotone distinguishers are neutralized.
+4. **HIGHER-ORDER-GUARD:** enumerate order-3 signed-overlap pattern counts; any constant-advantage threshold gap is already a polynomial monotone distinguisher.
+5. Switching and exact-weight lifting remain secondary; local lifting is retired by SLICELIFT2.
+
+Artifacts:
+- `research/explorations/monotone-slice/2026-10-04_2030_INTERMEDIATE1.tex`
+- `experiments/monotone_slice/intermediate_pair_signal.py`
+- `results/raw/monotone_slice/INTERMEDIATE1_pair_signal.txt`
