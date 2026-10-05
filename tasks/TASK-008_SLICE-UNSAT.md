@@ -1289,3 +1289,40 @@ Artifacts:
 - experiments/monotone_slice/dual_column3.py
 
 P versus NP remains OPEN.
+
+
+## 2026-10-04 UNIONPROFILE1 verified-write recovery
+
+The previously blocked UNION-PROFILE-BONFERRONI research artifact has now been written and independently read back from GitHub:
+
+- `research/explorations/monotone-slice/2026-10-04_2345_UNIONPROFILE1.tex`
+- report commit: `0dfb1b7c2db51c53f95fcd1462e5cb010f11bcdd`
+
+### UNION-PROFILE-BONFERRONI — PROVED/EXACT
+
+For an even integer R, if two distributions match all squarefree coordinate moments required by unions of at most R terms of a monotone DNF H, and every R-term subfamily has union size at least L_R, then against the uniform exact-t slice U_{M,t},
+
+\[
+|\Pr_{\mu_+}[H=1]-\Pr_{U_{M,t}}[H=1]|
+\le {m\choose R}\frac{(t)_{L_R}}{(M)_{L_R}}.
+\]
+
+If all terms have width w and pairwise intersection at most lambda, one may take
+
+\[
+L_R\ge Rw-\lambda {R\choose 2}.
+\]
+
+This is a DNF-level exact statement. It does not establish a general monotone/set-circuit decomposition and does not imply an unrestricted SAT runtime lower bound.
+
+### Status reconciliation
+
+- DNF union-profile bridge: **PROVED/EXACT**.
+- Growing-order UNSAT moment design: **OPEN**. The later Q16/Q18 exact order-three designs remain finite exact theorems only.
+- Small general set circuit -> large-union DNF approximator: **OPEN**.
+- XOR-SLICE-EASY, LOCALPATTERN-GUARD, P/poly positive-family barrier, and SLICELIFT2 remain active hostile controls.
+- Withdrawn switching-lemma route remains **FALSIFIED/RETIRED**.
+
+Next falsification target: **SETCIRCUIT-UNIONPROFILE1**, testing whether small monotone DAG sharing can force poor R-union profiles that survive closure/trimming.
+
+P versus NP remains OPEN.
