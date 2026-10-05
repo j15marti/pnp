@@ -290,3 +290,48 @@ So simple hidden relabeling of a dense UNSAT core is **FALSIFIED/RETIRED**.
 
 Artifact:
 - `research/explorations/monotone-slice/2026-10-04_1925_DENSITYPOSFAIL1.tex`
+
+
+## 2026-10-04 SLICEDENSITY2 correction
+
+The preferred density is no longer (t=q).
+
+Scott--Sorkin show that below the pure-literal threshold, rare UNSAT random formulas are typically explained by a unique minimal unsatisfiable subformula of the smallest possible excess. The random-3SAT pure-literal transition is about
+
+[
+c_{PL}\approx1.636.
+]
+
+Therefore density (c=1) lies in a known local/easy rare-UNSAT regime and is a poor primary positive-distribution target.
+
+The revised rigorous window is
+
+[
+\boxed{c_{PL}<c<3.52.}
+]
+
+A concrete working slice is
+
+[
+\boxed{t=\lceil3.4q\rceil.}
+]
+
+At this density:
+- exact-layer SAT is still NP-complete by the padding theorem;
+- uniform exact-layer formulas are SAT with high probability by the rigorous (3.52) lower bound;
+- the known small-MUF characterization below the pure-literal threshold no longer applies;
+- the structure of rare UNSAT formulas in this intermediate regime is explicitly unresolved in the literature.
+
+### Revised P1
+
+**INTERMEDIATE-CORE1:** characterize rare UNSAT exact-(lceil3.4qceil) formulas, first computationally at moderate (q), tracking:
+- minimum UNSAT core size and deficiency;
+- variable-degree and sign profiles;
+- clause codegrees/overlap;
+- incidence expansion;
+- distinguishability by simple polynomial monotone statistics.
+
+Only after finding a locally matched positive distribution should SAT-SUNFLOWER1 become the primary theorem target.
+
+Artifact:
+- `research/explorations/monotone-slice/2026-10-04_1950_SLICEDENSITY2.tex`
