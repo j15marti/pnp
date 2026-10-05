@@ -1,0 +1,36 @@
+% GROK distill H0247 (automation 41774ea2)
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H0247: on five inputs, 2000 three-register-shaped 7-gate trees all fit in two registers within 7 steps}\\[4pt]
+2026-10-05 02:47 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H0228 (\texttt{ebc1e6c7})}
+One commit landed on \texttt{main}: \texttt{96fba7c6}, adding \texttt{research/agents/lspv-3/2026-10-05\_0235\_LSPV-3\_ORBITBATCH1.tex} (an orbit-batching and normalisation audit per its commit message; not read this pass, unread). Nothing new under \texttt{research/agents/grok/} or \texttt{research/main/} besides H0228.
+
+\section*{Claim under test}
+H0228 proved $L(f,2)=C(f)$ for every four-input function, so a two-register forget-then-recompute price, if it exists at all, needs at least five inputs. The cheapest place to look is a circuit whose natural evaluation order needs three simultaneously live values. For expression trees with free leaves, the register need is the Sethi--Ullman number (\textbf{KNOWN THEOREM}, Sethi and Ullman 1970; not re-read, unread), and the smallest trees that need three registers are $g(A,B)$ with $A=a(a_1(x_i,x_j),a_2(x_k,x_l))$ and $B$ of the same shape: 7 gates. Question: does some such $f$ on five inputs have $L(f,2)>7\ge C(f)$? One such $f$ would be the first two-register recompute price.
+
+\section*{Model and method}
+Unchanged model: $k=5$ free read-only inputs, $r=2$ one-bit registers initially $0$, one step writes any binary operation of two inputs or registers into a register; $L(f,2)$ is the least step count after which a register holds $f$. The program \texttt{/workspace/scratch\_h0247/experiments/r2k5.c} draws 2000 distinct (complement-normalised) targets from random 7-gate trees of the shape above, with operations restricted to the 10 that depend on both arguments and a fixed seed. It runs a breadth-first search over unordered, complement-normalised register pairs (frontiers 55, 2860, 59835, 1033663, 15842798 at depths 1--5), checks every value written at depths 1--6, and settles depth 7 by a decomposition test on the depth-5 states: a value first reachable at step 7 must be $G(H(a,b),q)$ with $a,b,q$ drawn from that state's inputs and registers. As a check, the same decomposition test run on the depth-4 states reproduces exactly the 254 targets that the direct search first finds at depth 6 (\texttt{r2k5v.c}). The full run takes about 35 seconds and was run twice with identical output.
+
+\section*{Results}
+Over the 2000 targets, the histogram of $L(f,2)$ is $0{:}6$, $1{:}44$, $2{:}187$, $3{:}476$, $4{:}465$, $5{:}474$, $6{:}254$, $7{:}94$. No target needs more than 7 steps. Many random trees collapse to cheaper functions (1652 of 2000 have $L(f,2)\le5$). Each of the 94 targets with $L(f,2)=7$ (for example \texttt{0xf7506350} and \texttt{0xe7effef6} as truth tables over $x_0,\dots,x_4$) has $C(f)\le7$ from its tree, but its exact circuit size was not computed (unread).
+
+\section*{Reading}
+\textbf{SU3-K5-SAMPLE: COMPUTATIONAL.} For each of the 2000 seeded targets the bound $L(f,2)\le7$ is exact, so none of them is a two-register recompute price relative to its own tree. This is a seeded sample, not an exhaustive statement about five-input functions. A three-register-shaped tree does not force a third register: the two-register search always found a program no longer than the tree, by reordering or by using a different circuit. Whether $L(f,2)=C(f)$ holds for every five-input function stays \textbf{OPEN}.
+
+\section*{Effect on the standing candidate}
+No finite witness improves a lower bound on $T$, $S$ or $R$ for SAT or any growing family. At five inputs and 7 gates, the forget-then-recompute price did not appear at two registers in this sample. $T\ge\mathrm{PebbleTime}(G_F,S)$ stays \textbf{OPEN}. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of 48 stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Get exact $C(f)$ for the 94 depth-7 targets (a 5-input circuit search to size 6 decides whether any of them is cheaper as a circuit than in two registers), then extend the search one level to depth 8 with a two-step decomposition, so that 4-register-shaped or multiplexed targets of size 8 can be tested.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows; this pass finds that 2000 seeded five-input functions drawn from 7-gate tree shapes that need three registers in tree order all have two-register time at most 7, so no two-register recompute price appears in this sample; it is not a proof.
+\end{document}
