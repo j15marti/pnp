@@ -1,0 +1,44 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H0939: exact three-input check that the one-root and two-root joins reach every function at its shortest two-register length}\\[4pt]
+2026-10-05 09:39 America/Los\_Angeles (cron, fired 09:43) \quad branch \texttt{main}, tip \texttt{f3e53721} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H0924 (\texttt{f3e53721})}
+One peer commit landed before H0924's own commit: \texttt{1c548e1d} (``record ADDRESS-CUT-AUDIT2 hostile refinement''), which modifies only \texttt{tasks/TASK-004\_HEC-static-to-online-compiler.md} (40 added lines, contents unread). Nothing new under \texttt{research/agents/grok/} or \texttt{research/main/} except H0924 itself.
+
+\section*{Claim under test}
+H0924 argued (\textbf{CANDIDATE}) that a shortest program whose final step writes $r_0$ either ends in an (input, $r_0$) step after a prefix fully live from its last write (the \texttt{tgt8} one-root join) or ends in $\mathrm{op}(r_0,r_1)$ after a prefix fully live from both final register values (the \texttt{tgt9} two-root join). The general structural half of that argument does not depend on five inputs, so it can be checked exactly against an unreduced breadth-first search where one is affordable. The five-input special steps (the XOR exclusion via $L=C$ on four inputs, and the all-inputs prune) are not tested here.
+
+\section*{Method (\texttt{/workspace/scratch\_h0939})}
+\texttt{covchk.c} (SHA-256 prefix \texttt{b30b2461bb9d001b}) reuses the H0739 exact BFS over register pairs $(r_0,r_1)$ unchanged (all operand pairs from inputs and written registers, five zero-preserving operations, either destination). For each prefix length $K\le5$ it enumerates skeletons with first write $r_0$ and no other reduction, then: if the prefix's last write is $r_0$ and every step is live from it, it probes $\mathrm{op}(x_i,r_0)$ and $\mathrm{op}(r_0,x_i)$ for all inputs and operations; if both registers are written and every step is live from their two last writes, it probes $\mathrm{op}(r_0,r_1)$ and $\mathrm{op}(r_1,r_0)$. A function counts as covered at length $k$ if either join reaches it with a $(k-1)$-step prefix. Output prefix \texttt{8aea14603c4d883c}; run time 8.6\,s while the H0924 main run held the other cores.
+
+\section*{Result (recomputed this pass, three inputs)}
+\begin{center}
+\begin{tabular}{rrrrrr}
+BFS length $k$ & functions & covered & one-root only & two-root only & both\\ \hline
+2 & 57 & 57 & 57 & 0 & 0\\
+3 & 40 & 40 & 0 & 4 & 36\\
+4 & 12 & 12 & 0 & 0 & 12\\
+\end{tabular}
+\end{center}
+Prefix skeleton counts for $K=1,\dots,5$: one-root $1,1,4,20,104$; two-root $0,2,12,64,336$. The BFS reaches $19+57+40+12=128$ zero-preserving functions with maximum length $4$, matching H0739. Length-one functions are excluded since a join needs a nonempty prefix. No function of length $2$ to $4$ is uncovered and no join value is shorter than the BFS value. Status: \textbf{COMPUTATIONAL} (JOIN-COVER-N3), a small-size control. Four functions of length $3$ are reached only by the two-root join, which agrees with H0924's finding that the one-root join alone was incomplete. Three inputs top out at length $4$, so this control is weak; the four-input BFS state space ($65537^2$ pairs) does not fit on this box, and the five-input steps of the argument remain unchecked.
+
+\section*{H0924 main run (still running, not cited)}
+The mode-0 \texttt{tgt9} run at $K=7$ on the 17 orbits ($6201$ new skeletons) had been running $16$\,min at 09:45 and had printed no hit or miss. Nothing from it is reported here.
+
+\section*{Effect on the standing candidate}
+No charged resource improves this pass; the largest confirmed forget-then-recompute price is still $1$. The H0924 coverage argument stays \textbf{CANDIDATE} (its general half now has a three-input exact control; its five-input steps are unchecked). GAP2-C7 stays \textbf{OPEN} on the five orbits \texttt{48dc33d2}, \texttt{7d694f48}, \texttt{7e2e4222}, \texttt{e2b8302e}, \texttt{ddf51ca0}. PRICE1-C7-EXACT12 stays \textbf{COMPUTATIONAL} and LABEL-RED-PROOF stays \textbf{PROVED/EXACT} under its skeleton rules. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of $48$ stays \textbf{FALSIFIED/RETIRED}. Nothing is falsified.
+
+\section*{Next smallest step}
+Read the $K=7$ \texttt{tgt9} result when it finishes and re-simulate any hit. For the five-input steps, test the XOR exclusion directly: for each open orbit $f$ and input $x_k$, check whether $f\oplus x_k$ is independent of $x_k$ and compute its size on the remaining four inputs.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass checks exactly on three inputs that the one-root and two-root joins together reach every zero-preserving function of length at least 2 at its BFS length (all 109 of length 2 to 4, four needing the two-root join), keeps the five-input coverage argument CANDIDATE and GAP2-C7 OPEN with the K=7 run unread, falsifies nothing, improves no charged resource, and is not a proof.
+\end{document}
