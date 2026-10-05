@@ -1,0 +1,56 @@
+% GROK distill H2047 (automation 41774ea2)
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\begin{document}
+\begin{center}
+{\Large GROK H2047: the order-three orbit signal survives exact pair-moment balancing at $q=20$ and $q=24$}\\[4pt]
+2026-10-04 20:47 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta}
+No commit landed after H2031 (\texttt{b179acc7}). Nine commits landed between the start of the H2031 pass and its push and were not reviewed there:
+the Python runtime rule in \texttt{AGENTS.md} (\texttt{1070f89a}) and \texttt{CODEX.md} (\texttt{d0e545da}), which asks that every Python invocation finish in about 30 seconds and that reports state their chunking;
+the LSPV-3 report \texttt{2026-10-04\_1937\_LSPV-3\_CYCLEGAIN1.tex} (\texttt{d2eaaa1c}, reconciled in \texttt{a83d7514}), \emph{unread} this pass;
+\texttt{PAIRMATCH3-REVIEW} (\texttt{b4a07819}), read in its \texttt{.md} form;
+\texttt{MOMENTBALANCE3} (note \texttt{ae05eea0}, script \texttt{59c20452}, raw \texttt{669bd88c}), note read, script and raw \emph{unread};
+and a TASK-008 update (\texttt{ca07f8cb}), \emph{unread}. No file under \texttt{research/main/} changed.
+
+PAIRMATCH3-REVIEW and MOMENTBALANCE3 both read the evidence as ``no replicated order-three distinguisher''. MOMENTBALANCE3 tilts the SAT distribution exponentially so that its eight signed pair-orbit means equal the UNSAT means, and then finds five predeclared cubic degree statistics quiet with unstable sign. It names the next experiment MOMENTBALANCE3-ORBIT: the same frozen tilt, followed by the complete canonical order-three orbit vector. This pass runs that experiment on the H2031 census data and on a fresh $q=24$ census. The peer numbers quoted above are theirs and were not recomputed.
+
+\section*{Claim under test}
+H2031 found that the exact 84-orbit triple census separates SAT from UNSAT beyond the linear and quadratic span of the pair census. That design projected off the pair span; it did not balance the pair distribution. Question: under an exact pair-moment tilt fitted on training data and frozen, does a classifier on the triple census still rank held-out UNSAT above reweighted held-out SAT?
+
+\section*{Tests (scratch \texttt{/workspace/scratch\_h2047}, all numbers computed this pass)}
+\paragraph{Design.} Uniform exact distinct-clause 3-CNF with $t=3.5q$, decided by CaDiCaL 1.5.3 through PySAT. For $q=20$ the H2031 files are reused: discovery seeds $20262031000+i$, $i<24000$ (543 UNSAT), holdout seeds $20262100000+i$, $i<12000$ (265 UNSAT). For $q=24$, $t=84$, a new census was taken on seeds $20262047000+i$, $i<15200$, in thirteen independent chunks of 800 or 1200 formulas (each invocation 16 to 28 seconds, written to its own file, following the runtime rule). The first seven chunks (8000 formulas, 122 UNSAT) are discovery and the last six (7200 formulas, 127 UNSAT) are holdout.
+
+The tilt solves the MOMENTBALANCE3 equation on discovery SAT formulas over the eight pair coordinates $(1,0),\dots,(3,3)$, standardized by discovery SAT, by Newton's method (training error $2\times10^{-15}$ at $q=20$ and $1\times10^{-15}$ at $q=24$). It is then frozen and applied to holdout SAT; no holdout UNSAT enters the fit. L2 logistic regression ($\lambda=1$) is fitted on unweighted discovery data and scored once on holdout. The AUC is $\Pr[s(U)>s(S)]$ with SAT weighted by the tilt, and the standard error comes from 300 bootstrap resamples.
+
+\begin{center}\begin{tabular}{lcccc}\toprule
+ & \multicolumn{2}{c}{$q=20$} & \multicolumn{2}{c}{$q=24$}\\
+features & untilted & tilted & untilted & tilted\\\midrule
+pair census (9) & 0.836 & $0.505\pm0.019$ & 0.823 & $0.477\pm0.030$\\
+pair census with quadratic terms (54) & 0.829 & $0.504\pm0.019$ & 0.801 & $0.467\pm0.029$\\
+full triple census (84) & 0.890 & $0.656\pm0.016$ & 0.865 & $0.644\pm0.024$\\
+complement projection only & 0.892 & $0.652\pm0.017$ & 0.876 & $0.619\pm0.025$\\\midrule
+holdout effective SAT sample size & \multicolumn{2}{c}{2400.9} & \multicolumn{2}{c}{1256.7}\\
+max holdout pair imbalance (SAT SD) & \multicolumn{2}{c}{0.096} & \multicolumn{2}{c}{0.267}\\\bottomrule
+\end{tabular}\end{center}
+
+\paragraph{Per-orbit marginals.} Under the tilt the individual orbit means are close to balanced. At $q=20$ the six orbits with the largest raw shifts ($|z|$ from 11.9 to 17.1) fall to $|z|\le1.9$, and only one of 84 orbits has $|z|>3$ (maximum 3.16). At $q=24$, five orbits have $|z|>3$ (maximum 3.75). The surviving signal is therefore a direction in the 75-dimensional complement, built from many small correlated shifts. It is not one orbit, and this is consistent with MOMENTBALANCE3 seeing nothing in five scalar degree statistics. Status: \textbf{COMPUTATIONAL}.
+
+\section*{Reading}
+After the pair distribution is balanced exactly on training data, the pair-only and quadratic-pair classifiers fall to chance on holdout (0.47 to 0.51). The triple-census classifier keeps a held-out AUC of 0.656 at $q=20$, about 9.8 bootstrap standard errors above one half, and 0.644 at $q=24$, about 6.0 above one half. The $q=24$ replication uses fresh seeds and a fresh split. MOMENTBALANCE3 posed the question in these terms (``otherwise the stable degree-three orbit becomes the next hostile distinguisher''), and on this design the answer is the second branch: a stable order-three direction exists at both sizes. Caveats: the classifier was trained without the tilt, the holdout effective sample sizes are about 2400 and 1260, and the residual pair imbalance at $q=24$ (0.27 SD) is larger than at $q=20$. It does not by itself produce pair AUC above one half. This contradicts the summary sentences of PAIRMATCH3-REVIEW and MOMENTBALANCE3 as finite observations; it falsifies no labeled claim, since both label their findings \textbf{COMPUTATIONAL}, and the MOMENT-CAMOUFLAGE linearity lemma (\textbf{PROVED/EXACT}) is untouched. Whether the excess sits in the sparse UNSAT core, as PAIRMATCH3-REVIEW predicts, is not tested here. Asymptotic degree-three camouflage stays \textbf{OPEN}.
+
+\section*{Effect on the standing candidate}
+No labeled claim was falsified. No finite witness improves the charged time $T$, mutable state $S$ or stored representation $R$: this is a statistic of one random distribution at two finite sizes and says nothing about circuits or deciders. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction remain \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of 48 stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Fit the triple classifier on tilted discovery data, so the training objective already sees balanced pairs, and test whether its held-out tilted AUC rises above 0.656. Then restrict the census to triples inside a minimal unsatisfiable subformula, or inside its failed-literal closure, on the holdout UNSAT formulas. That tests the PAIRMATCH3-REVIEW prediction that the excess is a sparse core rather than bulk structure.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows, and this pass is a finite computational test, not a proof.
+\end{document}
