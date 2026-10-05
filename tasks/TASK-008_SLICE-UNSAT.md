@@ -1210,3 +1210,82 @@ Artifacts:
 - results/raw/monotone_slice/BONFERRONNI_MOMENT1_results.txt
 
 P versus NP remains OPEN.
+
+
+## 2026-10-04 EXACT3DESIGN1 update
+
+The order-three moment-camouflage branch now has two finite exact theorems.
+
+### Q16-ORDER3-DESIGN — PROVED/EXACT finite theorem
+
+For q=16, t=56, M=4480, there exists a probability distribution supported entirely on UNSAT exact-56 proper 3-CNF formulas such that for every set S of at most three distinct clause coordinates,
+
+P[S subseteq F] = (56)_{|S|}/(4480)_{|S|},
+
+exactly matching the uniform exact slice.
+
+Construction/certificate:
+- 1098 exact UNSAT columns from three independent pools
+- 74 dual-guided violating columns added
+- numerical LP reaches zero residual
+- support size 84
+- 84x84 integer/rational DomainMatrix solve gives all weights strictly positive
+- weights sum exactly to 1
+- all 84 canonical triple-orbit equations have integer residual exactly zero
+- independent exhaustive truth-table check over all 2^16 assignments verifies all 84 support formulas are UNSAT
+
+Exact support statistics:
+- ESS about 37.32
+- minimum weight about 1.2488e-4
+- maximum weight about 7.5003e-2
+
+### Q18-ORDER3-DESIGN — PROVED/EXACT finite theorem
+
+For q=18, t=63, M=6528, there exists an UNSAT-supported exact-63 distribution matching every clause moment through degree 3 to the uniform exact slice.
+
+Construction/certificate:
+- 887 exact UNSAT base columns from two independent pools
+- 94 dual-guided violating columns added
+- numerical LP reaches zero residual
+- support size 84
+- exact rational solve over ZZ succeeds in 0.98s
+- all 84 rational weights strictly positive and sum exactly to 1
+- all 84 orbit equations exact with zero integer residual
+- independent exhaustive truth-table check over all 2^18 assignments verifies all 84 support formulas UNSAT
+
+Exact support statistics:
+- ESS about 40.19
+- minimum weight about 9.2566e-5
+- maximum weight about 5.1386e-2
+
+### Why orbit matching implies full degree<=3 matching
+
+Symmetrize the 84-point rational distribution under signed variable permutations. UNSAT and exact weight are invariant. Exact canonical triple-orbit totals then imply every concrete distinct triple has inclusion probability (t)_3/(M)_3. Summing over a third clause gives pair probability (t)_2/(M)_2, and summing again gives one-clause probability t/M.
+
+Therefore every squarefree clause moment through degree 3 matches the uniform exact slice exactly.
+
+### Literature connection
+
+The t-wise-uniformity literature in random-CSP/SoS refutation confirms that local-design order is a natural refutation-hardness coordinate, but no SoS lower bound is transferred to general monotone circuits here.
+
+### Revised top target
+
+GROWING-DESIGN:
+
+Does there exist k(q)->infinity and an UNSAT-supported exact k(q)-design at t=floor(3.5q)?
+
+Immediate predecessor:
+ORDER4-SYMMETRY1.
+
+Do not brute-force the uniform order-four target using C(M-1,3). Instead derive a symbolic/combinatorial classification of canonical four-clause incidence patterns and exact target multiplicities by orbit-stabilizer/incidence-pattern counting, then test order-four fractional-design feasibility.
+
+Mandatory guard remains XOR-SLICE-EASY: even growing local designs do not by themselves imply a general monotone circuit lower bound.
+
+Artifacts:
+- research/explorations/monotone-slice/2026-10-04_2245_EXACT3DESIGN1.tex
+- results/raw/monotone_slice/EXACT3DESIGN1_results.txt
+- experiments/monotone_slice/verify_order3_fractional_design.py
+- experiments/monotone_slice/fractional_design3_exact.py
+- experiments/monotone_slice/dual_column3.py
+
+P versus NP remains OPEN.
