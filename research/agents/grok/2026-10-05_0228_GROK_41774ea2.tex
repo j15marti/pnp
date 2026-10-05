@@ -1,0 +1,44 @@
+% GROK distill H0228 (automation 41774ea2)
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H0228: two registers equal circuit size on every 4-input function; one register pays at most 3 extra steps when it can compute at all}\\[4pt]
+2026-10-05 02:28 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H0159 (\texttt{c41a3778})}
+Three commits landed on \texttt{main} (\texttt{c55e5665}, \texttt{377571e0}, \texttt{bd3d4b5f}): the JOINTERR1 raw file \texttt{results/raw/monotone\_slice/JOINTERR1.txt} and its note, which per their commit messages correct the DIRERR1 one-core closure ratio to an absolute-below-layer statement (COMPUTATIONAL, not re-read here). Nothing new under \texttt{research/agents/grok/} or \texttt{research/main/}.
+
+\section*{Claim under test}
+H0159 left one question \textbf{OPEN}: do any of the 2720 four-input functions with two-register time $L(f,2)=7$ have circuit size $C(f)=6$? Any such $f$ would be the first two-register value-level forget-then-recompute price.
+
+\section*{Model and method}
+Unchanged from H0140/H0159: $k=4$ free read-only inputs and constants, $r$ one-bit registers initially $0$, one step writes any of the 16 binary operations of two inputs or registers into a register; $L(f,r)$ is the least step count after which some register holds $f$; $C(f)$ is full-basis fan-in-2 circuit size with free inputs. A compiled search (\texttt{/workspace/scratch\_h0228/experiments/c6.c}) enumerates complement-normalised closed gate sets of sizes 1--4 (30, 735, 18037, 473767 sets, matching H0159), marks $C\le5$ from one more gate, and marks $C\le6$ by adding a fifth gate $w$ and every sixth gate that reads $w$ (a minimal six-gate circuit's fifth gate is read only by the sixth). The same program reruns the two-register breadth-first search to exhaustion. \texttt{l1.c} runs the one-register search; \texttt{l1check.py} is an independent Python check of the one-register numbers. All numbers below were computed this pass (about 90 seconds each).
+
+\section*{Results}
+Exact circuit-size histogram over all 65536 functions: $0{:}6$, $1{:}64$, $2{:}456$, $3{:}2474$, $4{:}10624$, $5{:}24184$, $6{:}25008$, and 2720 functions not of size at most 6. Since every function has $L(f,2)\le7$ and $L(f,2)\ge C(f)$, those 2720 have $C(f)=7$.
+
+Two-register histogram (recomputed): identical, $0{:}6$ through $7{:}2720$ (frontiers 34, 1123, 14625, 144501, 1134534, 6704028, 28484686). The function-by-function cross table is diagonal: no $f$ has $L(f,2)\ne C(f)$.
+
+One register: 21216 functions are computable at all (44320 are not), with histogram $0{:}6$, $1{:}64$, $2{:}456$, $3{:}2130$, $4{:}4960$, $5{:}6496$, $6{:}4928$, $7{:}1920$, $8{:}256$. Among computable functions, 8320 have $L(f,1)>C(f)$. The price $L(f,1)-C(f)$ is $2$ at $C=3$ (96 functions), $1$ or $2$ at $C=4$ (2496, 384), $1$, $2$ or $3$ at $C=5$ (3168, 768, 128), and $1$ or $2$ at $C=6$ (1152, 128). No function of size 7 is computable with one register. The largest price is 3, for example $f=\texttt{0x0169}=x_3\,?\,\overline{x_0\vee x_1\vee x_2}:\overline{x_0\oplus x_1\oplus x_2}$ with $C(f)=5$ and $L(f,1)=8$ (confirmed by the Python check). The H0140 witness $(x_0\wedge x_3)\vee(x_1\oplus x_2)$ gives $C=3$, $L(f,1)=5$ again.
+
+\section*{Reading}
+\textbf{REG2-K4-EQ-C: PROVED/EXACT (finite, exhaustive).} $L(f,2)=C(f)$ for every Boolean function of four inputs. The H0159 \textbf{OPEN} question is closed in the negative: on four inputs there is no two-register value-level recompute price.
+
+\textbf{REG1-K4-PRICE: PROVED/EXACT (finite, exhaustive).} On four inputs one register computes 21216 functions, and where it can compute $f$ it pays at most $3$ steps over circuit size; the price 3 is attained.
+
+The four-input circuit-size counts agree with the classical enumeration of four-variable functions in Knuth's \emph{TAOCP} Vol.~4A \S7.1.2, which was not re-read this pass (unread). Nothing here strengthens a label; these are constant-size facts, not a lower bound for any growing family. $T\ge\mathrm{PebbleTime}(G_F,S)$ stays \textbf{OPEN}.
+
+\section*{Effect on the standing candidate}
+No finite witness improves a lower bound on $T$, $S$ or $R$ for SAT or any growing family. At four inputs the forget-then-recompute price is a one-register effect of at most 3 steps and vanishes entirely at two registers. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of 48 stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Five inputs, two registers: exhaustive search over $2^{32}$ functions is out of reach, so test targeted candidates. Lift the 128 one-register price-3 functions to multiplexers $x_4\,?\,g:h$ that force three simultaneously live values, and run an iterative-deepening two-register search to depth $C(f)+1$ on each; one $f$ with $L(f,2)>C(f)$ would be the first two-register recompute price.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows; this pass finds that two registers match circuit size on every 4-input function (no two-register recompute price on four inputs) and that one register, where it can compute at all, pays at most 3 extra steps; it is not a proof.
+\end{document}
