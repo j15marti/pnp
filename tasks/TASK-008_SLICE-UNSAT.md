@@ -440,3 +440,87 @@ Artifacts:
 - `research/explorations/monotone-slice/2026-10-04_2030_INTERMEDIATE1.tex`
 - `experiments/monotone_slice/intermediate_pair_signal.py`
 - `results/raw/monotone_slice/INTERMEDIATE1_pair_signal.txt`
+
+
+## 2026-10-04 PAIR-CAMOUFLAGE2 update
+
+A current literature search found no theorem characterizing pair correlations of random 3-SAT conditioned on rare UNSAT in the intermediate regime. Scott--Sorkin still leave the region between the pure-literal and satisfiability thresholds open. Caragiannis--Gravin--Jiang show that bounded k-wise independence does not control linear-density 3-SAT in the way needed here. Ahmadi et al. quiet planting is retained only as an analogy for low-order camouflage.
+
+### Exact guard strengthened
+
+Any polynomial-size exact-layer predicate P(z) can be embedded into the monotone slice extension
+
+\[
+H(z)=0\ (|z|<t),\quad
+H(z)=P(z)\ (|z|=t),\quad
+H(z)=1\ (|z|>t).
+\]
+
+Valiant then gives a polynomial-size monotone circuit. Therefore two-sided pair windows, likelihood scores, and other polynomial exact-layer classifiers are all legitimate hostile tests, not only one-sided monotone count thresholds.
+
+### Full pair-orbit result
+
+At density t=3.5q, 20,000 formulas per q for q=20,24,28,32 show a stable signed-overlap pattern:
+
+- (1,0) same-sign one-variable overlap is depleted in UNSAT;
+- (1,1) opposite-sign one-variable overlap is enriched in UNSAT;
+- (2,0) is depleted;
+- (2,1) is enriched;
+- s=3 orbit counts are sparse and show no stable separation.
+
+The (1,1) mean excess is roughly 0.8--1.0 SAT standard deviations across these sizes.
+
+### Train/holdout pair camouflage
+
+A separate 40,000-formula run per q used 20,000 SAT-training/UNSAT-training formulas only to calibrate six dominant pair-orbit means/SDs. A held-out formula was pair-camouflaged if all six dominant orbit counts lay within +/-1.5 SAT-training SD.
+
+Held-out survival:
+
+- q=20: SAT 0.4720, UNSAT 0.3684
+- q=24: SAT 0.4612, UNSAT 0.3676
+- q=28: SAT 0.4744, UNSAT 0.3504
+- q=32: SAT 0.4767, UNSAT 0.2970
+
+This is COMPUTATIONAL finite-size evidence only. If a constant survival gap persisted asymptotically, the pair-window predicate itself would be a polynomial-size monotone hostile distinguisher by the slice-predicate guard.
+
+### Third-order probe after pair camouflage
+
+Using
+
+\[
+U_3(F)=\sum_i
+\left[
+\binom{d_i^+}{2}d_i^-+
+d_i^+\binom{d_i^-}{2}
+\right],
+\]
+
+with threshold calibrated only from pair-camouflaged SAT training data, held-out balanced accuracy was:
+
+- q=20: 0.5932
+- q=24: 0.6034
+- q=28: 0.5509
+- q=32: 0.6496
+
+The residual cubic signal is weaker and inconsistent in q. No asymptotic order-three gap is claimed.
+
+### Pair-camouflaged multi-order core search
+
+On a separate 20,000-formula run per q, each camouflaged holdout UNSAT formula was reduced under 20 randomized deletion orders. The smallest core found over those runs used on average:
+
+- q=20: 30.97 clauses, 17.74 variables
+- q=24: 38.77 clauses, 21.35 variables
+- q=28: 46.17 clauses, 24.54 variables
+- q=32: 56.22 clauses, 29.04 variables
+
+Minimum variable counts found were 14,17,18,25 respectively. No tiny cores were found, but this does not prove minimum-MUF size.
+
+### Revised next target
+
+**PAIR-MATCH1:** construct a positive UNSAT distribution whose empirical distribution over the dominant pair-orbit cells matches the SAT exact-layer distribution, not merely a rectangular pair window. Then run all order-three signed-overlap hostile tests on fresh holdout data.
+
+If that survives, combine it with stronger core search before returning to SAT-SUNFLOWER2.
+
+Artifacts:
+- research/explorations/monotone-slice/2026-10-04_2120_PAIRCAM2.tex
+- results/raw/monotone_slice/PAIRCAM2_results.txt
