@@ -1,0 +1,69 @@
+% GROK distill H2018 (automation 41774ea2)
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\begin{document}
+\begin{center}
+{\Large GROK H2018: exhaustive audit of TRIPLE-ORBIT-CANON, the exact count of three-clause orbits, and the triple-to-pair census identity}\\[4pt]
+2026-10-04 20:18 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H1939}
+H1939 (commit \texttt{6cf07c08}) reported no peer delta, but five commits had landed minutes before it and were not read:
+the PAIRMATCH3 note \texttt{research/explorations/monotone-slice/2026-10-04\_2250\_PAIRMATCH3.tex} (\texttt{167d9d5b}),
+its scripts \texttt{pair\_match\_order3.py} (\texttt{08e564a6}) and \texttt{pair\_match\_caliper.py} (\texttt{b672ed86}),
+raw results \texttt{PAIRMATCH3\_results.txt} (\texttt{36a66df8}) and a TASK-008 update (\texttt{12151d3f}).
+After H1939 only \texttt{results/raw/monotone\_slice/ORDER3EXACT1\_results.txt} (\texttt{f7a4ab8c}) landed; its generating script is not on \texttt{main}, so its numbers are \emph{unread} (quoted, not recomputed).
+No file under \texttt{research/main/} changed.
+
+\section*{Claim under test}
+PAIRMATCH3 states TRIPLE-ORBIT-CANON (labelled CANDIDATE with an elementary proof): two unordered triples of distinct proper signed 3-clauses lie in one orbit of variable permutations, independent complementations and clause permutations iff they have the same canonical key (normalize each variable's signed incidence vector $v_x\in\{-1,0,1\}^3$ to $\min_{\rm lex}\{v_x,-v_x\}$, take the sorted multiset, minimize over the six clause orders). ORDER3EXACT1 reports 81 canonical orbits observed in an exact census of all $\binom{70}{3}=54{,}740$ triples on 20 matched pairs at $q=20$, and held-out balanced accuracy 0.45 on 10 evaluation pairs.
+I read the peer \texttt{canonical\_triple}: it renormalizes after each clause permutation, as the proposition requires.
+
+\section*{Tests (scratch \texttt{/workspace/scratch\_h2018}, all numbers recomputed this pass)}
+\paragraph{1. Exhaustive orbit audit.} An independent canonicalizer was compared with union-find orbits of all triples of distinct clauses on $n$ variables under the generators (transposition, $n$-cycle, flip of $x_1$):
+\begin{center}\begin{tabular}{rrrrrr}\toprule
+$n$ & clauses & triples & union-find orbits & canonical keys & keys shared by two orbits\\\midrule
+5 & 80 & 82{,}160 & 54 & 54 & 0\\
+6 & 160 & 669{,}920 & 73 & 73 & 0\\
+7 & 280 & 3{,}619{,}560 & 81 & 81 & 0\\\bottomrule
+\end{tabular}\end{center}
+Key invariance inside each orbit was checked on a deterministic 1/7 subsample of triples with zero failures.
+Status: \textbf{COMPUTATIONAL} for $n\le7$. The proposition keeps the peer label \textbf{CANDIDATE}.
+
+\paragraph{2. Exact number of orbits.} Every triple uses at most 9 variables. Enumerating incidence multisets directly (13 normalized nonzero vectors, each clause coordinate of support 3, three distinct clauses) gives exactly \textbf{84 orbits}, by union size $3{:}3,\ 4{:}21,\ 5{:}30,\ 6{:}19,\ 7{:}8,\ 8{:}2,\ 9{:}1$; this matches item 1 for union $\le7$.
+For a key $K$ on $k$ variables the number of triples on a fixed $k$-set with full union is
+\[
+|O_K|=\frac{|S_3\cdot K|\;k!\;2^k}{6\prod_{v}\mathrm{mult}_K(v)!}.
+\]
+Checks: $\sum_K\binom{n}{|K|}|O_K|=\binom{8\binom n3}{3}$ holds exactly for $n=5,6,7,9$ ($50{,}351{,}840$ at $n=9$), and $|O_K|$ equals the brute-force count for all 19 full-union keys at $n=6$.
+Status: \textbf{COMPUTATIONAL} (exhaustive).
+
+\paragraph{3. Exact null census.} For the uniform exact distinct-clause model with $t$ clauses on $q$ variables, $M=8\binom q3$, every 3-set of clauses is equally likely to lie in the formula, so
+\[
+\mathbb E\,N_K=\binom t3\binom q{|K|}|O_K|\Big/\binom M3 .
+\]
+Status: \textbf{PROVED/EXACT} (linearity of expectation); at $q=20,t=70$ the 84 means sum to $54{,}740$ exactly.
+The three union-3 orbits have means $0.00395,\ 0.01185,\ 0.01185$ per formula (total $0.0277$); every other orbit has mean at least $0.134$. Assuming the census covers the 40 formulas of the 20 matched pairs, a Poisson estimate of distinct orbits seen is $81.89$. Hence ORDER3EXACT1's ``81 observed'' is what the null predicts: the missing three are the union-3 orbits, not a SAT/UNSAT effect. Status of this comparison: \textbf{COMPUTATIONAL}. Four fresh formulas (seed 20262018, $q=20$) showed 73, 60, 60, 61 distinct orbits.
+
+\paragraph{4. Triple census contains the pair census.} Each clause pair lies in exactly $t-2$ triples, so for each of the nine pair types $\tau=(s,h)$ ($s$ shared variables, $h$ sign clashes)
+\[
+\sum_K a_{K,\tau}N_K=(t-2)\,n_\tau ,
+\]
+where $a_{K,\tau}$ counts clause pairs of type $\tau$ inside a triple of orbit $K$. Status: \textbf{PROVED/EXACT}; verified on the four fresh formulas above (all $54{,}740$ triples each). The $84\times9$ matrix $(a_{K,\tau})$ has rank 9.
+Consequence: an unmatched linear score on the exact triple census can reproduce the whole pair-vector signal, so the residual order-three question lives in the 75-dimensional complement of that span. Pair matching, as in PAIRMATCH3, approximates this projection; an exact projection is now available.
+
+\paragraph{5. ORDER3EXACT1 power.} With 10 evaluation pairs (20 labels) the standard error of a balanced accuracy near $0.5$ is about $0.11$, so $0.45$ neither supports nor rules out an order-three distinguisher. Status: \textbf{COMPUTATIONAL}, script unread.
+
+\section*{Effect on the standing candidate}
+No claim was falsified: TRIPLE-ORBIT-CANON survives an exhaustive check up to 7 variables. No finite witness improves the charged time $T$, mutable state $S$ or stored representation $R$. Asymptotic order-three camouflage remains \textbf{OPEN}. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction remain \textbf{OPEN}; contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of 48 stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Precompute $K$ from the pair types of the three clause pairs plus the shared-triple data, so the exact census is fast; then test held-out SAT/UNSAT separation at $q=20$ on the 75-dimensional complement of the pair span with at least 300 UNSAT formulas, against the pair-only baseline.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows, and this pass is an exhaustive finite audit, not a proof.
+\end{document}
