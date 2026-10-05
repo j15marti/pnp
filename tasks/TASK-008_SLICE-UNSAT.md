@@ -1120,3 +1120,93 @@ Artifacts:
 - results/raw/monotone_slice/DUALCOLUMN3_results.txt
 
 P versus NP remains OPEN.
+
+
+## 2026-10-04 BONFERRONNI-MOMENT1 update
+
+The moment branch now has an exact DNF-level bridge that avoids the centered-factorization failure.
+
+### BONFERRONNI-MOMENT — PROVED/EXACT
+
+Let mu_plus and mu_minus match all squarefree coordinate moments through degree K.
+Let H be a monotone DNF of width at most w and let X count its satisfied terms.
+
+For any even R with Rw <= K,
+
+|Pr_mu_plus[H=1] - Pr_mu_minus[H=1]|
+<= E_mu_minus[ C(X,R) ].
+
+Reason:
+all factorial moments E C(X,j), j<=R, are sums of coordinate-containment moments of degree <=jw and therefore match exactly. Bonferroni places both acceptance probabilities in the same interval; the interval width is the common R-th factorial moment.
+
+This is a two-distribution exact statement using raw moments only, so CENTER-RATIO-FAIL does not apply.
+
+### Uniform exact-slice specialization
+
+For mu_minus = U_{M,t},
+
+E C(X,R)
+=
+sum over R-term subfamilies I of
+(t)_{|union I|}/(M)_{|union I|}.
+
+Thus DNF fooling error is an explicit exact-slice combinatorial quantity.
+
+### SUNFLOWER-MOMENT — PROVED/EXACT
+
+If the DNF terms are a literal sunflower with core size c and pairwise-disjoint petals of size d, then for even R with c+Rd <= K,
+
+acceptance gap
+<= C(m,R) (t)_{c+Rd}/(M)_{c+Rd}.
+
+Numerical exact-slice examples at density 3.5:
+
+- q=20, c=0,d=3,m=300000,R=4,K=12: 5.23e-6
+- q=24, same: 5.65e-8
+- q=20, c=1,d=2,m=10000,R=4,K=9: 2.26e-5
+- q=24, same: 7.29e-7
+- q=20, c=2,d=1,m=1000,R=10,K=12: 4.08e-3
+- q=24, same: 4.41e-5
+
+This removes the term-by-term union-bound loss from DENSITY-CANCEL1 for literal sunflower DNFs. The cost is growing moment order.
+
+### XOR-SLICE-EASY hostile control strengthened
+
+At density 0.9, where both outcomes occur for the Gaussian-elimination parity-shadow predicate, exact canonical three-clause orbit vectors were computed and empirical XOR-SAT moment targets were compared with XOR-UNSAT convex hulls.
+
+- q=12, t=11, N=5000: XOR-UNSAT 1728, XOR-SAT 3272, minimax 3.70e-6
+- q=12, N=10000: XOR-UNSAT 3311, XOR-SAT 6689, minimax 2.33e-6
+- q=14, t=13, N=5000: XOR-UNSAT 1847, XOR-SAT 3153, minimax 0.0 to floating-point LP tolerance, support 68
+
+COMPUTATIONAL conclusion:
+order-three fractional-design feasibility is not SAT-specific. A polynomial-time Gaussian-elimination predicate exhibits the same local moment camouflage phenomenon.
+
+Therefore fractional designs can be only one ingredient; the load-bearing SAT-specific step must use additional core/minterm geometry or an approximation theorem that does not transfer unchanged to XOR.
+
+### Literature/model audit
+
+- Wegener: set circuits are the natural exact-slice model; standard monotone lower-bound methods fail in their original form.
+- CKR 2022: closure/trimming approximation applies to general monotone DAG circuits.
+- Beimel--Nir 2026: strong multislice lower bound is for formulas over multislice gates, not unrestricted monotone DAG circuits.
+- Krieger prime-implicant incompressibility applies to restricted bounded-depth/multilinear models, not arbitrary monotone DAG sharing.
+- No existing set-circuit-to-sunflower-DNF decomposition theorem for arbitrary DAG sharing was located.
+
+### Revised highest-value target
+
+SETCIRCUIT-SUNFLOWER1:
+
+Using Wegener's set-circuit representation of the t-slice, prove or falsify a DAG-compatible gate-by-gate decomposition in which every intermediate family either
+
+1. contains large literal/robust sunflower structure whose two-distribution acceptance is controlled by BONFERRONNI-MOMENT, or
+2. has a quantitatively small bounded-width minterm family that can be charged directly.
+
+The statement must use SAT-specific core/minterm geometry strongly enough to fail on XOR-SLICE-EASY.
+
+DUAL-COLUMN3 remains useful only as a test of how far moment order can grow; order-three feasibility alone is no longer interpreted as evidence of SAT hardness.
+
+Artifacts:
+- research/explorations/monotone-slice/2026-10-05_0530_BONFERRONNI-MOMENT1.tex
+- experiments/monotone_slice/xor_fractional_design3_control.py
+- results/raw/monotone_slice/BONFERRONNI_MOMENT1_results.txt
+
+P versus NP remains OPEN.
