@@ -1326,3 +1326,48 @@ This is a DNF-level exact statement. It does not establish a general monotone/se
 Next falsification target: **SETCIRCUIT-UNIONPROFILE1**, testing whether small monotone DAG sharing can force poor R-union profiles that survive closure/trimming.
 
 P versus NP remains OPEN.
+
+
+## 2026-10-05 MULTILEVEL-EXTENSIONCAP1 verified reconciliation
+
+Verified artifact:
+- `research/explorations/monotone-slice/2026-10-05_0540_MULTILEVEL_EXTENSIONCAP1.tex`
+- report commit: `8cdee6246dc4668be264b8e7169434e670e01ff8`
+
+### MULTILEVEL-EXTENSIONCAP — PROVED/EXACT
+
+Let mu be supported on the exact t-slice and match every k-coordinate containment moment to
+
+\[
+p_k=(t)_k/(M)_k.
+\]
+
+For k <= r <= t and any family C of r-subsets, with
+
+\[
+d_C(T)=|\{S\in C:T\subseteq S\}|,
+\]
+
+we have
+
+\[
+\sum_{S\in C}\Pr_\mu[S\subseteq X]
+\le
+\frac{p_k}{\binom rk}
+\sum_{|T|=k}
+\min\left\{d_C(T),\binom{t-k}{r-k}\right\}.
+\]
+
+This follows by incidence double counting plus exact fixed-weight fiber conservation. It strictly generalizes EXTENSIONCAP1, recovered at r=k+1.
+
+### Limitation / hostile audit
+
+The bound improves on the elementary unmatched-moment ceiling only when the selected higher-order event family has sufficiently congested k-shadow fibers. It applies unchanged to XOR-SLICE-EASY and therefore is not a SAT-specific hardness ingredient.
+
+Current load-bearing target: **UNION-SHADOW-MULTILEVEL**. Prove or falsify that unmatched union families produced by a directional CKR-style closure/trimming approximator have enough triple-shadow congestion for the cap to activate frequently. **OPEN**.
+
+LOCALPATTERN-GUARD, the P/poly positive-family barrier, SLICELIFT2, and THRESHOLD-APPROX-GUARD remain active. The withdrawn switching-lemma route remains **FALSIFIED/RETIRED**.
+
+Growing-order UNSAT moment design, MATCHED-MUF2 at the required scale, and SAT-SUNFLOWER2 directional circuit approximation remain **OPEN**. No unrestricted SAT runtime lower bound follows.
+
+P versus NP remains OPEN.
