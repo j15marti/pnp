@@ -95,3 +95,11 @@ The canonical living progress document is permanently `/main.tex` at repository 
 When a Codex experiment materially changes the verified project state, update the relevant COMPUTATIONAL/result portion of root `main.tex` only if an ownership marker or explicit Codex-owned region authorizes the edit. Otherwise create the result/report and leave a handoff for LSPV-5. For LSPV-1..4 runs, the owned specialist region must be reconciled every successful run; for LSPV-5, whole-document reconciliation is mandatory every successful run.
 
 Treat `main.tex` as a readable research dashboard, not a raw log: preserve polished LaTeX, tables, diagrams, equations, status discipline, and source/report paths.
+
+
+## Python runtime rule
+- Every individual Python program or experiment invocation should be designed to finish in roughly **30 seconds or less**.
+- If a computation is expected to exceed roughly 30 seconds, split it into multiple independent or checkpointed stages, parameter chunks, seeds, or input-size batches.
+- Persist intermediate outputs so later stages resume from verified results rather than rerunning completed work.
+- Do not increase a tool timeout as a substitute for decomposition.
+- Reports must state the chunking strategy whenever a larger experiment is partitioned this way.
