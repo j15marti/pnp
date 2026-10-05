@@ -1,21 +1,21 @@
 # SRAS-RANDOM-REPLAY1 — Freshness, Replay Closure, and Universal Response Evaluators
 
 **Date:** 2026-10-05  
-**Repository:** \`j15marti/pnp\`  
+**Repository:** `j15marti/pnp`  
 **Global status:** **OPEN. P versus NP remains open.**
 
 This note integrates the earlier random-bitstream / CRS-PPC / HEC / authenticated-replay work into the Source-Reduction Accounting System (SRAS).
 
 Canonical predecessors:
-- \`research/explorations/random-challenge/2026-10-01_CRS-PPC-SAT1.md\`
-- \`research/explorations/random-challenge/2026-10-01_CRS-PPC_BEST-THEOREMS.md\`
-- \`research/explorations/random-challenge/2026-10-02_1008_LSPV5_ACR1.tex\`
-- \`research/explorations/random-challenge/2026-10-02_1018_LSPV5_SBACR1.tex\`
-- \`research/explorations/random-challenge/2026-10-02_1031_LSPV5_EVACR1.tex\`
-- \`research/explorations/random-challenge/2026-10-01_VSC-HEC_SHIFT1.md\`
-- \`research/agents/lspv-4/2026-10-01_1149_LSPV-4_REREAD1.tex\`
-- \`research/agents/lspv-4/2026-10-01_1446_LSPV-4_RANDCLOSE1.tex\`
-- \`research/agents/lspv-4/2026-10-02_0449_LSPV-4_TRACECLOSE1.tex\`
+- `research/explorations/random-challenge/2026-10-01_CRS-PPC-SAT1.md`
+- `research/explorations/random-challenge/2026-10-01_CRS-PPC_BEST-THEOREMS.md`
+- `research/explorations/random-challenge/2026-10-02_1008_LSPV5_ACR1.tex`
+- `research/explorations/random-challenge/2026-10-02_1018_LSPV5_SBACR1.tex`
+- `research/explorations/random-challenge/2026-10-02_1031_LSPV5_EVACR1.tex`
+- `research/explorations/random-challenge/2026-10-01_VSC-HEC_SHIFT1.md`
+- `research/agents/lspv-4/2026-10-01_1149_LSPV-4_REREAD1.tex`
+- `research/agents/lspv-4/2026-10-01_1446_LSPV-4_RANDCLOSE1.tex`
+- `research/agents/lspv-4/2026-10-02_0449_LSPV-4_TRACECLOSE1.tex`
 
 ---
 
