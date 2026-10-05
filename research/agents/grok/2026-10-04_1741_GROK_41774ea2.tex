@@ -1,0 +1,82 @@
+% GROK REPORT::41774ea2::2026-10-04T17:41:00-07:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\title{GROK H1741 --- audit of DENSITYPOSFAIL1 (degree-profile constants reproduced; separator 0/800 errors) and SLICEDENSITY2 ($c_{PL}=1.6369$ reproduced); first finite INTERMEDIATE-CORE1 probe at $c=3.4$; slice-cover $(449,7,7)$ all $\tau{=}1$}
+\author{Agent P$\neq$NP / GROK}
+\date{2026-10-04 17:41 PT}
+\begin{document}
+\maketitle
+
+\noindent\textbf{GLOBAL STATUS: OPEN.} P versus NP remains open. No load-bearing arrow closed in this pass.
+The SAT-to-charged-model compiler and the product-span obstruction remain \textbf{OPEN}.
+This note claims no proof and no lower bound for SAT.
+
+\section*{Delta since H1726}
+Predecessor: \texttt{research/agents/grok/2026-10-04\_1726\_GROK\_41774ea2.tex} (commit \texttt{f904446f}, which is still the head of \texttt{main}).
+Peer commits that landed between the H1726 draft and its push, not itemized there:
+\begin{itemize}
+\item \texttt{c664192b}: \texttt{research/explorations/monotone-slice/2026-10-04\_1925\_DENSITYPOSFAIL1.tex} (read in full; peer status CANDIDATE).
+\item \texttt{4a6962e1}: \texttt{research/explorations/monotone-slice/2026-10-04\_1950\_SLICEDENSITY2.tex} (read in full; peer status CANDIDATE).
+\item \texttt{67d59800} (CONSTQUOT1 correction verification), \texttt{b8f6f7fa} (density-one hostile tests), \texttt{35aa2678} (TASK-008 density correction): unread.
+\end{itemize}
+Nothing new under \texttt{research/agents/grok/} besides H1726, and nothing under \texttt{research/main/}.
+
+\section*{Audit 1: DENSITYPOSFAIL1}
+\paragraph{P/POLY-POSITIVE-BARRIER.} The proof is correct as written: equal-weight inputs are incomparable, so the slice extension $H_q$ is monotone, and Valiant (1986) turns a polynomial unrestricted circuit for a slice function into a polynomial monotone one (\textbf{KNOWN THEOREM}). The barrier is a sound design constraint; peer label \textbf{CANDIDATE} left unchanged.
+
+\paragraph{Hidden density-six core (COMPUTATIONAL).} Script \texttt{experiments/density/check\_h1741.py} (scratch only).
+\begin{itemize}
+\item Constants recomputed: $p_-=\Pr[\mathrm{Pois}(3)\ge6]=0.0839179420$ and $p_+=\tfrac16\Pr[\mathrm{Pois}(18)\ge6]=0.1666126678$, matching the note to all printed digits.
+\item First moment for the planted active formula: $\log_2$ of the expected number of satisfying assignments per clause is $1/6+\log_2(7/8)=-0.02598$, so $\Pr[\mathrm{SAT}]\le2^{-0.026q}$; the claimed bound holds but is weak at moderate $q$.
+\item Distinct-clause sampling, $200$ uniform and $200$ planted formulas at each of $q=600$ and $q=1200$: uniform $H_6/q$ mean $0.0837$ and $0.0836$, max $0.107$ and $0.101$; planted mean $0.1666$, min $0.165$. Threshold $0.12q$: $0$ errors out of $800$. At $q=600$, $40/40$ planted formulas were UNSAT (CaDiCaL).
+\end{itemize}
+Verdict: the retirement of the naive hidden core holds up; no error found.
+
+\paragraph{Retuned control at $c=3.4$.} Moving to SLICEDENSITY2's density does not rescue this design. With planted density $6$, the active fraction is $3.4/6$, and the best single-degree statistic is already $k=1$: the share of variables of degree at least one is $0.99996$ in the uniform layer versus $0.5667$ in the planted one (gap $0.433$). So any planted positive family at $c=3.4$ has to touch essentially every variable before the finer degree and codegree controls even come into play.
+
+\section*{Audit 2: SLICEDENSITY2}
+\paragraph{Pure-literal threshold.} Recomputed $c_{PL}=2\min_{x>0}x/\bigl(3(1-e^{-x})^2\bigr)=1.63694$ (half-rate literals of the hypergraph 2-core value $0.81847$), matching the stated $\approx1.636$.
+Pure-literal elimination on random 3-CNF with $n=10^5$ variables leaves a surviving clause fraction of $0$ at $c\in\{1.0,1.55,1.60,1.62\}$, $0.437$ at $1.65$, $0.553$ at $1.70$ and $0.981$ at $3.4$ (\textbf{COMPUTATIONAL}).
+The window $c_{PL}<c<3.52$ and the working value $c=3.4$ are consistent with these numbers. The Scott--Sorkin structural statement was not re-read here, so the correction stays a peer \textbf{CANDIDATE}.
+
+\section*{INTERMEDIATE-CORE1: first finite probe (COMPUTATIONAL)}
+Uniform exact-$t$ distinct proper clauses on $q$ variables, $t=\lceil3.4q\rceil$, CaDiCaL, then one deletion-based minimal unsatisfiable subformula (minimal, not minimum) per UNSAT instance:
+\begin{center}
+\begin{tabular}{rrrrrrl}
+$q$ & $t$ & UNSAT/samples & core min/median/max & median core/$t$ & median core vars & deficiency range\\\hline
+20 & 68 & 19/1500 & 25/33/44 & 0.485 & 18 & 10--24\\
+30 & 102 & 3/1500 & 50/53/58 & 0.520 & 28 & 22--29\\
+40 & 136 & 1/1000 & 75/75/75 & 0.551 & 38 & 37\\
+\end{tabular}
+\end{center}
+No core had $8$ or fewer clauses, every core spans nearly all variables, and the deficiency (clauses minus variables in the core) grows with $q$, so none of these instances falls into a fixed-deficiency class. The minimum variable degree inside each core was $2$ in $21$ of $23$ cases and $3$ in the other $2$.
+Caveats: UNSAT at $q\le40$ is a finite-size effect far from the asymptotic regime, the samples at $q=30,40$ are tiny, and nothing here measures spreadness or indistinguishability from the SAT layer. This is consistent with the large-core picture SLICEDENSITY2 hopes for, and it is not evidence for a lower bound. INTERMEDIATE-CORE1 remains \textbf{OPEN}.
+
+\section*{Standing easy-structure control (COMPUTATIONAL)}
+\begin{itemize}
+\item Slice-cover $(449,7,7)$, $k=9$, exhaustive over $126$ nonconstant words: $\tau$-hist $\{1{:}126\}$, $R=7$, $d=21$, slice-rank min $=4$, max $=7$. Elapsed $\approx5.85$\,s.
+\item LDE/Hadamard battery $(449,7,7)$, seed $314159$: rank distribution $\{(0,0){:}1,(1,0){:}1,(7,21){:}126\}$, $0$ nonconstant exterior-deficient. Elapsed $\approx9.23$\,s.
+\end{itemize}
+No charged $T$, $S$, or $R$ improvement. Next prime $457$.
+
+\section*{Status ledger}
+\begin{itemize}
+\item Time-state-representation surface: \textbf{CANDIDATE}.
+\item SAT-to-charged-model compiler; product-span obstruction: \textbf{OPEN}.
+\item P/POLY-POSITIVE-BARRIER (DENSITYPOSFAIL1): peer \textbf{CANDIDATE}, unchanged; rests on Valiant's slice theorem (\textbf{KNOWN THEOREM}).
+\item Naive hidden density-six core as positive distribution: \textbf{FALSIFIED/RETIRED} by the peer; this audit reproduces the separation (\textbf{COMPUTATIONAL}).
+\item SLICEDENSITY2 window $c_{PL}<c<3.52$, $c=3.4$: peer \textbf{CANDIDATE}, unchanged; $c_{PL}=1.6369$ reproduced.
+\item INTERMEDIATE-CORE1; spread large-core UNSAT exact-layer family: \textbf{OPEN}.
+\item D(4,8) semantic-cut $\ge48$: \textbf{FALSIFIED/RETIRED} (exact cut 8); not revived.
+\item Contact/switch models: polynomially equivalent to branching programs; do not close the gap.
+\end{itemize}
+
+\section*{Reproducibility}
+Scratch at \texttt{/workspace/scratch\_h1741}; results \texttt{results/h1741.json}, \texttt{results/sc\_449.txt}, \texttt{results/lde\_battery\_44977.json}; RNG seed $1741$. Root \texttt{main.tex} not edited.
+
+\section*{FINAL STATUS}
+P versus NP remains OPEN; no falsification, no charged T/S/R improvement; DENSITYPOSFAIL1 and SLICEDENSITY2 passed independent numerical audits with no error found, and the first finite probe at density 3.4 found only large, high-deficiency UNSAT cores, which leaves INTERMEDIATE-CORE1 OPEN.
+\end{document}
