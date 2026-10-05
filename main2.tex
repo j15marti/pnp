@@ -839,6 +839,692 @@ Until that arrow and its nonrelativizing/nonalgebrizing barrier are proved,
 \]
 \end{statusbox}
 
+
+\appendix
+
+\section{SRAS explained: what the accounting system is for}
+
+\subsection{Purpose}
+
+The Source-Reduction Accounting System (SRAS) is a bookkeeping framework for
+reasoning about a computation that appears to reduce a large family of
+possible continuations to a much smaller future-relevant family.
+
+It is deliberately more conservative than an information-counting argument.
+SRAS does not infer time from the number of semantic possibilities. Instead it
+asks three separate questions:
+
+\begin{enumerate}[leftmargin=1.6em]
+\item \textbf{What future distinctions are genuinely required?}
+This is defined relative to a declared continuation or consumer universe $U$.
+
+\item \textbf{Where did the information supporting those distinctions come from?}
+This is tracked through source lineage, retained representations, external
+inputs, reread authority, and recomputation.
+
+\item \textbf{What did the machine actually pay?}
+This is tracked on the computation DAG, crediting reuse and charging
+recomputation, construction, access, update, and reconstruction separately.
+\end{enumerate}
+
+The point of SRAS is to prevent several invalid identifications:
+\[
+\text{many semantic cases}
+\not\equiv
+\text{many machine states}
+\not\equiv
+\text{large runtime},
+\]
+and
+\[
+\text{information exists}
+\not\equiv
+\text{information has been acquired}.
+\]
+
+\subsection{The SRAS state tuple}
+
+The current full state notation is
+\[
+\mathcal A_t=
+(X,K,Y,Z,H,J,P,B,U,\Phi_U,V,\Psi_V,R,E,C,Q,G,L,W,\mathsf A,
+\Omega_D,\Omega_G,\mathrm{Fate}).
+\]
+
+The coordinates are intended as a typed ledger rather than one monolithic
+measure.
+
+\begin{longtable}{p{0.12\textwidth} p{0.77\textwidth}}
+\toprule
+\textbf{Coordinate} & \textbf{Meaning in the current program}\\
+\midrule
+\endhead
+$X$ & Source identity or source object from which the current object descends.\\
+$K$ & Stable clause, residual, or canonical object identity used to distinguish
+semantic identity from transient representation.\\
+$Y,Z$ & Current semantic values, relations, or state descriptors.\\
+$H$ & Derivational or audit history actually realized by the computation.\\
+$J$ & Causal/source lineage. The important refinement is
+$J_{\rm live}^U\subseteq J_{\rm sem}\subseteq J_{\rm syn}\subseteq J_{\rm origin}$.\\
+$P$ & Identity/provenance tags, including prime or Godel-style tags when used.
+Magnitude of a tag is not itself a hardness measure.\\
+$B$ & Boundary, separator, or interface through which the current object is
+consumed by the rest of the computation.\\
+$U$ & Declared legal continuation/consumer universe.\\
+$\Phi_U$ & Semantic behavior of the current object under all declared
+continuations in $U$.\\
+$V,\Psi_V$ & Provenance-sensitive observations and their required behavior when
+the consumer depends on more than extensional semantics.\\
+$R$ & Retained representation currently available to the computation.\\
+$E$ & Enabled operations, escapes, alternative algorithms, or legal
+transformations still available.\\
+$C$ & Certificates already established.\\
+$Q$ & Reacquisition/reconstruction mechanism.\\
+$G$ & Typed combination, reuse, sharing, or composition rule.\\
+$L$ & Loss or quotient event: what information has been discarded or merged.\\
+$W$ & Recoverability: what discarded information can be reconstructed later.\\
+$\mathsf A$ & Access path: how the machine can read or reach the supporting
+information.\\
+$\Omega_D$ & Data source authority: input, retained memory, random source,
+advice, or another declared data channel.\\
+$\Omega_G$ & Operation authority: ordinary implementation, subroutine,
+oracle/external primitive, or another execution source.\\
+Fate & Final disposition of each future-relevant contribution:
+LIVE, ENCODED, LOCALIZED, QUOTIENTED, COMBINED, IRRELEVANT, TERMINAL, or EXTERNAL.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Source lineage}
+
+SRAS distinguishes four nested source sets:
+\[
+J_{\rm live}^{U}(q)
+\subseteq
+J_{\rm sem}(q)
+\subseteq
+J_{\rm syn}(q)
+\subseteq
+J_{\rm origin}(q).
+\]
+
+\begin{itemize}[leftmargin=1.4em]
+\item $J_{\rm origin}$ records everything that causally contributed.
+\item $J_{\rm syn}$ records what the current syntax depends upon.
+\item $J_{\rm sem}$ removes syntactic dependencies that do not affect meaning.
+\item $J_{\rm live}^{U}$ removes semantic dependencies that no declared future
+consumer can distinguish.
+\end{itemize}
+
+This hierarchy is important because large historical source support can
+collapse to a small future-live representation without contradiction.
+
+\subsection{Fate labels}
+
+The Fate coordinate answers: what happened to each contribution that was once
+future-relevant?
+
+\begin{description}[leftmargin=1.7em,style=nextline]
+\item[LIVE] The distinction is still required by some legal future continuation.
+\item[ENCODED] The distinction is stored in another representation.
+\item[LOCALIZED] The distinction has been isolated to a smaller source region.
+\item[QUOTIENTED] Several histories or source states were safely merged because
+they are continuation-equivalent.
+\item[COMBINED] The information is represented jointly with other information
+through a reusable composed object.
+\item[IRRELEVANT] It has been proved irrelevant to the declared consumers.
+\item[TERMINAL] No future consumer remains.
+\item[EXTERNAL] The distinction is supplied by an external authority such as an
+oracle or genuinely new information source.
+\end{description}
+
+\subsection{Valid reduction}
+
+For a state $S$, let $\kappa_U(S)$ denote the number of continuation-equivalence
+classes still distinguished by the declared consumer universe $U$.
+
+The valid reduction from stage $s$ to stage $t$ is
+\[
+\boxed{
+K_{s\to t}
+=
+\log_2
+\frac{\kappa_U(S_s)}{\kappa_U(S_t)}.
+}
+\]
+
+This is deliberately semantic/consumer-relative. It is not defined from
+runtime.
+
+For example, a transformation that reduces the explicit number of assignments
+but leaves every continuation class distinguishable may have large syntactic
+shrinkage but
+\[
+K_{s\to t}=0.
+\]
+
+Conversely, a safe quotient can have large $K_{s\to t}$ while costing little
+if a compact canonical representation computes the quotient cheaply.
+
+\subsection{The No-Free-Reduction invariant}
+
+The project uses the following accounting rule.
+
+\begin{candidatebox}
+Every future-relevant reduction contribution must be accounted for as
+LOCALIZED, ENCODED/COMBINED, safely QUOTIENTED/IRRELEVANT, REACQUIRABLE through
+a charged recovery path, or EXTERNAL.
+\end{candidatebox}
+
+This is a disciplined ledger rule. It is not yet an unrestricted lower-bound
+theorem. The open problem is to prove that for the selected hard SAT family,
+all ordinary realizations of the required near-total reduction are expensive.
+
+\subsection{Acquisition curve}
+
+The acquisition curve turns that question into a quantitative target:
+\[
+\boxed{
+\mathcal C_{F,U,M}(k)
+=
+\min_{\mathcal D}
+\left\{
+C(\mathcal D):
+K_U(\mathcal D)\ge k
+\right\}.
+}
+\]
+
+Here $M$ is the declared computation model, $\mathcal D$ is a legal
+source-transparent computation DAG, and
+\[
+C(\mathcal D)=\sum_{v\in V(\mathcal D)}c(v)
+\]
+charges nodes actually computed.
+
+The P-vs-NP-strength target is
+\[
+\boxed{
+\mathcal C_{F_n,U_n,M}
+\bigl(n-O(\log n)\bigr)
+=
+n^{\omega(1)}.
+}
+\]
+
+A polynomial SAT algorithm would have to contradict this only after a separate
+extraction theorem proves that it really must instantiate the corresponding
+reduction object.
+
+\subsection{Worked SRAS example: mediator elimination}
+
+Consider a low-degree mediator
+\[
+(A\vee y)\wedge(B\vee\neg y).
+\]
+
+Eliminating $y$ gives the exact resolvent
+\[
+A\vee B.
+\]
+
+In SRAS terms:
+
+\begin{itemize}[leftmargin=1.4em]
+\item The original mediator clauses contribute to $J_{\rm origin}$.
+\item The mediator variable itself can become IRRELEVANT after exact elimination.
+\item The relation $A\vee B$ is ENCODED as a reusable residual constraint.
+\item No reacquisition charge is justified merely because the original
+mediator variable disappeared.
+\item If $A\vee B$ is a constant-width consequence, WIDTHCLOSE1 says its
+discovery belongs to a polynomially saturable inference class.
+\end{itemize}
+
+This example illustrates the intended discipline:
+semantic elimination is credited immediately when an ordinary polynomial
+implementation can expose and reuse it.
+
+\section{CSE explained: the missing extraction theorem}
+
+\subsection{Why extraction is the hard arrow}
+
+A polynomial-time algorithm already has a polynomial execution trace. The
+difficult task is not to copy that trace. The difficult task is to extract an
+object with the exact structural property needed by the contradiction.
+
+The desired arrow is
+\[
+\boxed{
+A
+\Longrightarrow
+\text{source-matched contractive or expensive future-relevant object}.
+}
+\]
+
+An extraction theorem must therefore be stronger than trace recovery,
+provenance recovery, or state counting.
+
+\subsection{Typed CSE contract}
+
+A usable Contractive Source Extraction theorem should specify:
+
+\begin{enumerate}[leftmargin=1.6em]
+\item the input computation model for $A$;
+\item the source object being extracted from the computation;
+\item the exact consumer universe $U$;
+\item how the extracted object is constructed;
+\item its live source footprint;
+\item the number and size of recursive children;
+\item how child answers combine;
+\item construction, access, update, and reconstruction charges;
+\item the recursion rule at smaller scales;
+\item wrapper covariance under padding, delay, copying, interpolation, and
+recomputation;
+\item why no hidden current-scale call to $A$ remains.
+\end{enumerate}
+
+The current candidate form is
+\[
+m\le N^{a+o(1)},\qquad
+|J_{\rm live}^U(Q_i)|\le N^{b+o(1)},\quad b<1,
+\]
+with
+\[
+C_{\rm acquire}+C_{\rm combine}\le N^{c+o(1)}.
+\]
+
+If such a source-matched shrinker exists, RECURCLOSE1 converts the recursive
+geometry into an explicit exponent.
+
+\subsection{Extraction failure modes}
+
+A proposed extraction lemma fails if any of the following occur:
+
+\begin{itemize}[leftmargin=1.4em]
+\item it defines reduction from the observed runtime of $A$;
+\item it assumes the algorithm is a search tree or resolution proof;
+\item it extracts only an explicit trace whose polynomial size is already known;
+\item construction of the extracted object calls SAT again at the current scale;
+\item a wrapper changes the extracted measure without changing computational
+difficulty;
+\item a compact representation or algebraic evaluator services all consumers
+without materializing the extracted object;
+\item the theorem works equally well with an opaque oracle and therefore cannot
+supply the intended nonrelativizing hinge.
+\end{itemize}
+
+\section{Continuation equivalence and consumer design}
+
+\subsection{Why the consumer universe matters}
+
+A quotient is safe only relative to a declared future use.
+
+Two histories can be equivalent for the final SAT bit while inequivalent for a
+stronger future task such as:
+
+\begin{itemize}[leftmargin=1.4em]
+\item returning a satisfying assignment;
+\item answering arbitrary residual-extension queries;
+\item producing a canonical witness;
+\item answering source-bound replay challenges;
+\item supporting a later restriction or separator computation.
+\end{itemize}
+
+Therefore every continuation argument must state $U$ before counting classes.
+
+\subsection{Safe merge rule}
+
+If $h\not\equiv_Uh'$, then a deterministic correct computation cannot merge
+them into one indistinguishable state unless it does at least one of:
+
+\begin{itemize}[leftmargin=1.4em]
+\item retains side information;
+\item keeps separate states;
+\item rereads/reacquires distinguishing source information later;
+\item recomputes a sufficient distinguishing object;
+\item receives new external information.
+\end{itemize}
+
+This is a correctness constraint. It becomes a lower bound only when all legal
+ways of satisfying the constraint have independently proved cost.
+
+\section{Provenance, random challenges, and replay}
+
+\subsection{What provenance establishes}
+
+Provenance can establish that two objects came from different source
+realizations even when their current semantic outputs coincide.
+
+This is useful for defining \same constraints and for preventing an argument
+from silently swapping witnesses or histories.
+
+It does not imply that the provenance-sensitive object is expensive.
+
+\subsection{Replay attack taxonomy}
+
+The current project uses four standard replay attacks.
+
+\begin{description}[leftmargin=1.7em,style=nextline]
+\item[Deterministic rerun]
+If the needed object is a deterministic polynomial-time function of the static
+input, discard-and-rerun is polynomial.
+
+\item[Transcript regeneration]
+A polynomial-time functional of a polynomial execution transcript remains
+polynomial by TRACECLOSE1.
+
+\item[Collapse/selection replacement]
+Under the counterfactual $P=NP$, polynomially balanced fixed-PH witness or
+provenance relations can often be selected in polynomial time.
+
+\item[Compositional quotient]
+If a long challenge/restriction history composes into a polynomial-size
+canonical quotient, retain the quotient rather than the explicit history.
+\end{description}
+
+\subsection{Freshness}
+
+A post-stopping-time random challenge is genuinely unpredictable from the
+prior causal state. This blocks challenge-specific precomputation.
+
+It does not block a reusable evaluator
+\[
+E(R,h,u)
+\]
+that computes the correct answer after $u$ is revealed.
+
+Hence the current random/replay target is a universal-response-evaluator
+barrier, not merely a provenance or freshness theorem.
+
+\section{Clean-core and type-1-chain glossary}
+
+\begin{description}[leftmargin=1.9em,style=nextline]
+\item[Type-1 chain]
+A single positive 3-clause with local satisfying domain
+$D=\{0,1\}^3\setminus\{000\}$ and characteristic $3/7$.
+
+\item[Bare chain]
+A type-1 chain before additional residual interactions are incorporated.
+
+\item[Direct correlation]
+A residual clause supported entirely on variables belonging to two or more
+clean chains.
+
+\item[Outside mediator]
+A variable outside the chain triples that appears in clauses coupling chain
+literals.
+
+\item[Externally mediated clean core]
+A set of bare chains with no direct chain-only rank-2/3 residual coupling,
+while remaining interactions pass through outside variables.
+
+\item[Degree-2 mediator]
+An outside variable with one positive and one negative occurrence. Exact
+elimination yields a single resolvent.
+
+\item[Resolved relation]
+The finite-domain relation on the participating chain states after mediator
+elimination.
+
+\item[Rank]
+The number of distinct chain variables participating in the resolved relation.
+A degree-2 mediator produces rank at most 4.
+
+\item[RESOLVE-MATCH]
+Collect exposed rank-2 relations, combine constraints on the same chain pair,
+compute their exact characteristics, and take a weighted matching.
+
+\item[RESOLVE-HYPERMATCH]
+Generalize to rank-$2/3/4$ relations and greedily select disjoint favorable
+blocks.
+
+\item[Concentration obstruction]
+Many favorable relations can all share the same chain, destroying large
+hypermatching coverage even though each relation is individually useful.
+
+\item[High-chain incidence]
+The remaining exact-algorithm regime in which one chain participates in many
+resolved relations. A favorable branching/reduction theorem for this regime is
+currently OPEN.
+\end{description}
+
+\section{Characteristic and DLS formulas}
+
+\subsection{Local kernel}
+
+For the seven-state domain $D$, define
+\[
+K_{u,v}=2^{-d(u,v)},\qquad N=K^{-1},
+\]
+\[
+z=N\mathbf1,\qquad
+t=\mathbf1^\top z=\frac73.
+\]
+
+The type-1 characteristic is
+\[
+\lambda_1=t^{-1}=\frac37.
+\]
+
+For a local falsifying set $B\subseteq D$, define
+\[
+a(B)=
+z_B^\top
+\bigl(N[B,B]\bigr)^{-1}
+z_B.
+\]
+
+\subsection{Single resolved clause}
+
+For a resolved clause $C$ touching $r$ chains with local falsifying sets
+$B_1,\dots,B_r$:
+\[
+\boxed{
+\lambda(C)=
+\left[
+\left(\frac73\right)^r
+-
+\prod_{i=1}^{r}a(B_i)
+\right]^{-1}.
+}
+\]
+
+The current exhaustive worst cases are:
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Rank & Independent $\lambda$ & Worst resolved $\lambda$ & Relative DLS factor\\
+\midrule
+2 & $9/49$ & $81/440$ & $440/441$\\
+3 & $27/343$ & $729/9236$ & $9236/9261$\\
+4 & $81/2401$ & $6561/193856$ & $193856/194481$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For equality/disequality-correlated chain pairs:
+\[
+\lambda_{=} = \frac{81}{391},
+\qquad
+\lambda_{\ne}=\frac{27}{130}.
+\]
+
+\subsection{How the characteristic enters DLS}
+
+If a disjoint block has characteristic $\lambda_R$, then the local DLS term
+contains $\lambda_R^{-1}$ instead of multiplying the independent single-chain
+terms separately.
+
+A favorable relation has
+\[
+\lambda_R >
+\left(\frac37\right)^r.
+\]
+
+Its relative DLS multiplier is
+\[
+g(R)=
+\frac{(3/7)^r}{\lambda_R}<1.
+\]
+
+This explains why hypermatching is useful: disjoint blocks can be credited
+without double-counting chain variables.
+
+\section{The spread-versus-concentration dichotomy}
+
+After all cheap degree-2 mediators are eliminated, let $H_{\rm res}$ be the
+rank-$\le4$ hypergraph of non-tautological resolved relations.
+
+There are two broad regimes.
+
+\subsection{Spread-out regime}
+
+If there are linearly many relations and bounded clean-chain incidence, then
+HYPERMATCH-DENSITY1 guarantees a constant covered fraction:
+\[
+M\ge\alpha\nu,\qquad
+\Delta\le D
+\quad\Longrightarrow\quad
+f_{\rm covered}\ge\frac{\alpha}{2D}.
+\]
+
+Because every selected resolved relation has positive DLS credit, this regime
+improves the internal deterministic type-1 balance.
+
+\subsection{Concentrated regime}
+
+If incidence is unbounded, a small set of chains may intersect most exposed
+relations. Hypermatching can then be small.
+
+This is not evidence of hardness. It is a new structural signal:
+a small source region has high influence over many local constraints.
+
+The next exact-algorithm target is to prove that conditioning or branching on
+such a high-incidence chain creates a favorable recurrence.
+
+The corresponding SRAS intuition is that concentration may support LOCALIZE,
+but no arbitrary-algorithm localization theorem has been proved.
+
+\section{Barrier and hostile-control checklist}
+
+Before promoting a candidate lemma to the proof spine, apply the following
+audit.
+
+\subsection{Representation controls}
+
+\begin{itemize}[leftmargin=1.4em]
+\item Can a DAG share the purported repeated work?
+\item Can memoization or preprocessing eliminate reacquisition?
+\item Can a compact circuit, algebraic basis, or decision procedure represent
+the entire consumer map?
+\item Does explicit tree/MDD/OBDD growth disappear in another representation?
+\end{itemize}
+
+\subsection{Easy-family controls}
+
+Test the claimed resource on:
+
+\begin{itemize}[leftmargin=1.4em]
+\item Horn and dual-Horn SAT;
+\item 2-SAT/SCC;
+\item affine/XOR/Tseitin with Gaussian elimination;
+\item bounded-treewidth formulas;
+\item independent products.
+\end{itemize}
+
+A resource that is large on one of these families but whose decision problem
+is polynomial is not, by itself, an unrestricted runtime measure.
+
+\subsection{Wrapper controls}
+
+Test DEAD, COPY, DELAY, INTERP, RECOMP, padding, variable renaming, and
+auxiliary-variable encodings.
+
+The measured quantity should not inflate merely because the same computation
+is represented with more dead syntax, copied source support, delay steps, or
+alternative encodings.
+
+\subsection{Oracle controls}
+
+Replace semantic subcomputations by a maximal oracle.
+
+Ask exactly which step fails.
+
+If the proof continues unchanged, it is likely still relativizing.
+
+If it fails only because the oracle is declared expensive, the argument is not
+valid.
+
+A genuine nonrelativizing step must use ordinary implementation/source
+structure that is absent from the opaque oracle interface.
+
+\subsection{Algebrization control}
+
+Even a nonrelativizing source argument may continue to work when the machine is
+given low-degree algebraic extensions of its oracle. This requires a separate
+audit.
+
+\section{Status-label conventions}
+
+This document uses the following meanings.
+
+\begin{description}[leftmargin=1.8em,style=nextline]
+\item[PROVED/EXACT]
+A mathematical statement proved for the explicitly declared model or a finite
+computation exhaustively verified in the declared finite domain.
+
+\item[COMPUTATIONAL]
+An experimental finite result, fit, search, or measurement. It is not an
+asymptotic theorem.
+
+\item[CONDITIONAL]
+The implication is proved if explicitly stated hypotheses hold, but at least
+one hypothesis is not established.
+
+\item[CANDIDATE]
+A proposed lemma, invariant, or architecture whose load-bearing content remains
+unproved.
+
+\item[FALSIFIED/RETIRED]
+A proposed generic hinge has a counterexample, closure theorem, representation
+escape, or other reason it cannot support the intended unrestricted
+conclusion.
+\end{description}
+
+\section{Compact glossary of recurring project terms}
+
+\begin{longtable}{p{0.23\textwidth} p{0.67\textwidth}}
+\toprule
+\textbf{Term} & \textbf{Meaning}\\
+\midrule
+\endhead
+SRAS & Source-Reduction Accounting System: the typed ledger for semantic
+reduction, source lineage, representation, reuse, loss, recovery, access, and
+external authority.\\
+CSE & Contractive Source Extraction: the desired theorem extracting a
+recursively smaller, fully charged, source-matched object from an arbitrary SAT
+decider.\\
+\same & Requirement that a response or witness belong to the same committed
+source realization rather than an arbitrary semantically valid replacement.\\
+Continuation equivalence & Equality of all required future behavior under the
+declared continuation universe $U$.\\
+Universal evaluator & Compact reusable algorithm/representation that can answer
+all legal future challenges after they are revealed.\\
+Reacquisition & Reconstruction of discarded information by reread, rerun,
+replay, recomputation, or another charged recovery path.\\
+Clean core & Residual family of disjoint type-1 chains whose remaining
+cross-chain interactions are externally mediated rather than direct chain-only
+clauses.\\
+Resolved relation & Finite-domain constraint obtained after eliminating a
+mediator.\\
+Hypermatching & Collection of pairwise chain-disjoint resolved relations so
+their DLS credit can be used without overlap.\\
+Concentration & Regime where many exposed relations share a small number of
+chains, defeating large hypermatching coverage.\\
+\bottomrule
+\end{longtable}
+
+
 \begin{thebibliography}{9}
 \bibitem{Liu2018}
 S. Cliff Liu,
