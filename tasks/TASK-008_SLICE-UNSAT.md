@@ -671,3 +671,109 @@ Artifacts:
 - `research/explorations/monotone-slice/2026-10-04_2355_ORDER3EXACT1.tex`
 - `results/raw/monotone_slice/ORDER3EXACT1_results.txt`
 - `results/raw/monotone_slice/ORDER3EXACT1_manual_pilot.txt`
+
+
+## 2026-10-04 MOMENTBALANCE3 update
+
+The pair-matching branch has now been strengthened from nearest-neighbor matching to explicit **pair-moment balancing**.
+
+### Method
+
+On the training split, let (Z(F)inmathbb R^8) be the standardized vector of the eight independent signed pair-orbit counts
+
+[
+(1,0),(1,1),(2,0),(2,1),(2,2),(3,1),(3,2),(3,3).
+]
+
+The SAT training distribution is exponentially tilted by
+
+[
+w_lambda(F)propto exp(lambdacdot Z(F))
+]
+
+so that its weighted mean exactly matches the UNSAT training mean in all eight coordinates.
+
+Every reported solve reached maximum training pair-moment error at most about (4.4	imes10^{-11}).
+
+The learned tilt is frozen before holdout evaluation.
+
+### Runtime rule added project-wide
+
+AGENTS.md and CODEX.md now require every individual Python experiment invocation to be designed to finish in roughly 30 seconds or less. Larger experiments must be split into independent/checkpointed stages or parameter/seed/input-size chunks, with intermediate results persisted. Increasing timeout is explicitly not a substitute for decomposition.
+
+The active SLICE automation was also updated explicitly to enforce this rule. The active LSPV agents inherit it through their mandatory repository-governance preflight.
+
+### Chunked runs
+
+All sampling programs completed below 15 seconds:
+
+- q=16, N=10000, seed 41616: 4.81 s
+- q=18, N=12000, seed 41818: 8.44 s
+- q=20, N=14000, seed 42020: 9.15 s
+- q=24, N=16000, seed 42424: 14.06 s
+- q=20 replicate, N=10000, seed 52020: 6.80 s
+- q=20 replicate, N=10000, seed 62020: 6.69 s
+- q=24 replicate, N=12000, seed 52424: 10.61 s
+
+### Held-out pair balance
+
+Primary chunks had maximum held-out pair-orbit residuals of
+
+- q=16: 0.197 SAT SD
+- q=18: 0.177 SAT SD
+- q=20: 0.158 SAT SD
+- q=24: 0.224 SAT SD
+
+Pooling same-q replicate chunks while preserving train/holdout separation gave
+
+[
+q=20:quad max|Delta_{pair}|=0.126 {m SD},
+]
+
+[
+q=24:quad max|Delta_{pair}|=0.126 {m SD}.
+]
+
+Effective weighted SAT holdout sample sizes remained large:
+- q=20 pooled: ESS 3499
+- q=24 pooled: ESS 3040
+
+### Held-out cubic probes
+
+Five predeclared cubic/local statistics were tested after pair-moment balancing.
+
+Pooled q=20 standardized residuals:
+
+[
+(0.056,0.047,0.063,0.039,0.073).
+]
+
+Pooled q=24 residuals:
+
+[
+(-0.056,-0.082,-0.077,-0.090,-0.040).
+]
+
+The direction is not stable across q or replicate chunks. In particular, independent q=20 chunks changed sign before pooling, and a q=24 replicate moved the original negative vector close to zero.
+
+**COMPUTATIONAL:** after explicit pair-moment balancing, the tested cubic local statistics show no stable replicated direction.
+
+This does **not** prove degree-three moment equality or circuit indistinguishability.
+
+### Exact algebraic interpretation
+
+If two exact-layer distributions match every squarefree clause moment through degree (d), then every multilinear polynomial test of degree at most (d) has identical expectation under them.
+
+MOMENTBALANCE3 currently matches the complete signed-permutation quotient of the empirical degree-two moment vector, not every individual monomial at finite sample size.
+
+### Revised queue
+
+1. **MOMENTBALANCE3-ORBIT:** with the frozen pair-moment tilt, compute the complete canonical degree-three orbit vector in bounded <30-second chunks.
+2. **ORDER3EXACT2:** increase q=20,24 positive counts without violating the per-invocation runtime rule.
+3. **MATCHED-MUF2:** stronger exact/branch-and-bound core search, similarly decomposed.
+4. **SAT-SUNFLOWER2:** only after degree-three hostile tests remain quiet under moment balancing.
+
+Artifacts:
+- `experiments/monotone_slice/moment_balance3.py`
+- `research/explorations/monotone-slice/2026-10-04_2040_MOMENTBALANCE3.tex`
+- `results/raw/monotone_slice/MOMENTBALANCE3_results.txt`
