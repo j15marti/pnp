@@ -1004,3 +1004,119 @@ Artifacts:
 - results/raw/monotone_slice/POSPSEUDO3_results.txt
 
 P versus NP remains OPEN.
+
+
+## 2026-10-04 FRACTIONALDESIGN3-EXACT1 / DUAL-COLUMN3 update
+
+The order-three moment-camouflage question has now been tested with exact canonical triple censuses rather than sampled orbit frequencies.
+
+### FIXED-CLAUSE-TARGET — PROVED/EXACT
+
+By transitivity of the signed-variable permutation group on the clause universe, the canonical orbit distribution of a uniformly random unordered triple of clauses equals the orbit distribution obtained by fixing one clause C0 and choosing an unordered pair from the remaining M-1 clauses.
+
+Thus the exact uniform order-three target is obtained from C(M-1,2) pairs.
+
+Exact targets:
+- q=16: M=4480, target pairs=10,028,481, canonical orbits=84
+- q=18: M=6528, target pairs=21,297,601, canonical orbits=84
+
+### Exact UNSAT triple vectors
+
+At q=16, t=56, every UNSAT formula contributes all C(56,3)=27,720 clause triples.
+Independent pools:
+- 362 UNSAT
+- 378 UNSAT
+- 351 UNSAT
+plus a 120-UNSAT fresh validation pool.
+
+At q=18, t=63, every UNSAT formula contributes all C(63,3)=39,711 triples.
+Independent pools:
+- 415 UNSAT
+- 418 UNSAT
+
+All individual census programs were chunked below roughly 30 seconds.
+
+### Numerical distance from exact uniform target to sampled UNSAT hull
+
+q=16 cumulative:
+- 362 columns: 5.1802e-5
+- 740 columns: 1.5146e-5
+- 1091 columns: 4.9297e-6
+- 1211 columns: 4.1216e-6
+
+q=18 cumulative:
+- 415 columns: 2.5018e-5
+- 833 columns: 6.9073e-6
+
+These are COMPUTATIONAL floating-point LP results over exact rational feature data.
+
+The residual drops by factors of roughly 3--4 as independent UNSAT support is added at both q values. No asymptotic or global convex-hull conclusion is claimed.
+
+### Dual separator instability
+
+q=16 early 362-column dual versus 1091-column dual:
+- margin 5.18e-5 -> 4.93e-6
+- coefficient cosine 0.384
+- top-12 orbit overlap 4/12
+
+q=18 early 415-column dual versus 833-column dual:
+- margin 2.50e-5 -> 6.91e-6
+- coefficient cosine 0.322
+- top-12 overlap 4/12
+
+Early duals are falsified by fresh exact UNSAT formulas:
+- q=16: 37/729 fresh formulas violate
+- q=18: 17/418 violate
+
+Even the enlarged q=16 dual is violated by 4/120 completely fresh exact UNSAT formulas.
+
+### DUAL-COLUMN3
+
+A dual-guided exact-weight clause-swap search was run from the q=16 1091-column hull.
+
+Each iteration:
+1. solve current L1-normalized dual;
+2. start from current closest UNSAT formula;
+3. propose one-clause exact-weight swaps;
+4. reject SAT proposals;
+5. exact-census each scored UNSAT proposal;
+6. append the first formula crossing the separator.
+
+Twenty consecutive iterations all found a violating UNSAT column.
+
+The numerical dual margin decreased from
+
+4.9297e-6
+
+to
+
+2.9398e-6
+
+before the twentieth added column was incorporated.
+
+Most iterations found a violation after scoring only a few UNSAT-preserving proposals.
+
+COMPUTATIONAL interpretation:
+the sampled order-three dual is operationally fragile and behaves like an incomplete-support artifact, not a stable structural separator.
+
+This does NOT prove global order-three fractional-design feasibility.
+
+### Caratheodory consequence
+
+There are 84 canonical triple-orbit frequencies summing to one. If the exact uniform order-three target lies in the global UNSAT orbit hull, Caratheodory implies an exact fractional design supported on at most 84 UNSAT formulas.
+
+### Revised queue
+
+1. Continue DUAL-COLUMN3 with diversified restarts until either numerical margin approaches tolerance or a stable dual survives adversarial search.
+2. If near-zero is reached, rerun the finite system with higher-precision/rational verification before calling finite feasibility.
+3. Then formulate the order-four symmetry-reduced fractional-design problem.
+4. Continue developing TWO-DIST-MOMENT-APPROX only with XOR-SLICE-EASY as mandatory hostile control.
+
+Artifacts:
+- research/explorations/monotone-slice/2026-10-04_2210_FRACTIONALDESIGN3_EXACT1.tex
+- experiments/monotone_slice/fractional_design3_exact.py
+- experiments/monotone_slice/dual_column3.py
+- results/raw/monotone_slice/FRACTIONALDESIGN3_EXACT1_results.txt
+- results/raw/monotone_slice/DUALCOLUMN3_results.txt
+
+P versus NP remains OPEN.
