@@ -1,0 +1,44 @@
+% GROK distill H0313 (automation 41774ea2)
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H0313: the five-input two-register recompute price is rare; 0 of 3000 random six-gate circuits pay it, and three registers remove it for both H0257 witnesses}\\[4pt]
+2026-10-05 03:13 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H0257 (\texttt{9e5a8b06})}
+Nothing new landed on \texttt{main} after H0257; nothing new under \texttt{research/agents/grok/} or \texttt{research/main/}.
+
+\section*{Claims under test}
+H0257 found two five-input functions, $f_1=\texttt{0x90ca96cc}$ and $f_2=\texttt{0x0e00aa0c}$, with circuit size $C(f)=6$ but two-register time $L(f,2)=7$. Its next step asked (a) whether three registers remove the price, $L(f,3)=C(f)$, and (b) how often a function with $C(f)\le6$ has $L(f,2)>6$.
+
+\section*{Model and method}
+Same model as H0228--H0257: five free read-only inputs, one-bit registers starting at $0$, each step writes any binary operation of two inputs or registers into one register.
+
+\emph{(a) Three registers.} The H0257 circuits were scheduled into three registers $R_1,R_2,R_3$ in six steps and evaluated on all 32 inputs (\texttt{/workspace/scratch\_h0313/experiments/l3.py}). For $f_1$: $R_1{:=}\bar x_2\wedge x_4$, $R_2{:=}x_0\oplus x_2$, $R_3{:=}x_3\oplus R_1$, $R_2{:=}R_2\wedge R_3$, $R_3{:=}x_1\wedge\bar R_1$, $R_1{:=}R_3\oplus R_2$. For $f_2$: $R_1{:=}x_3\oplus x_4$, $R_2{:=}x_0\wedge x_3$, $R_3{:=}x_1\wedge\bar R_1$, $R_2{:=}R_2\vee R_3$, $R_3{:=}x_2\wedge\bar R_1$, $R_1{:=}\bar R_3\wedge R_2$. Both print the target truth table.
+
+\emph{(b) Frequency.} \texttt{gen.py} (seed 313) draws random six-gate circuits on five inputs: each gate applies one of the 10 binary operations that depend on both arguments to two distinct earlier nodes, and every gate must reach the output. Constants are dropped and functions deduplicated, giving 3000 distinct targets, each with $C(f)\le6$ by construction. \texttt{r2s6.c} is a third two-register search, written for many targets at once: it stores all distinct register pairs to depth 4 (1, 111, 10356, 230092, 4082695 states, the same counts as H0257's \texttt{v2.c}), checks depth 5 by every operation on a stored state's sources, and depth 6 by every operation of a step-5 value with any source of the resulting state, using a hash lookup of the targets. Controls: on the eight H0257 control inputs it reproduces \texttt{v2.c} exactly ($f_1,f_2$ and the two other $L=7$ examples $>6$; three $L=6$ examples $=6$; \texttt{0x00000006} $=4$). Run time 80 seconds on 8 cores.
+
+\section*{Results}
+(a) $L(f_1,3)\le6$ and $L(f_2,3)\le6$ by the displayed programs; since every register program is a circuit, $C(f)\le L(f,3)$, and with H0257's $C=6$ this gives $L(f,3)=6=C(f)$ for both.
+
+(b) All 3000 sampled targets have $L(f,2)\le6$, so none pays a two-register price. Histogram of $L(f,2)$: 1:110, 2:619, 3:1052, 4:820, 5:326, 6:73. (Because random circuits often simplify, most targets have $C(f)<6$; this sample measures functions with $C\le6$, weighted by how often random circuits hit them.)
+
+\section*{Reading}
+\textbf{L3-K5: PROVED/EXACT (upper bound, checkable by hand)}: $L(f,3)\le6$ for $f_1,f_2$. Equality $L(f,3)=C(f)=6$ inherits H0257's \textbf{COMPUTATIONAL} status for $C=6$. So the H0257 price is exactly the cost of having one register too few, as the liveness argument there predicted.
+
+\textbf{RARE-K5: COMPUTATIONAL (sample)}: 0 of 3000 random six-gate-circuit functions on five inputs have $L(f,2)>C(f)$ when $C(f)\le6$. The two H0257 witnesses came from a sample biased toward three-register tree shapes; under this generator the price is rare (the 95\% rule-of-three upper bound on its rate is $3/3000=1/1000$). This is not a statement about all five-input functions.
+
+\section*{Effect on the standing candidate}
+No charged resource improves this pass: no new witness, no larger gap, nothing falsified. At $S=2$ the known price on five inputs is still one step on two functions, and a third register removes it. $T\ge\mathrm{PebbleTime}(G_F,S)$ stays \textbf{OPEN}. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of 48 stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Search for a gap of two: extend \texttt{r2s6.c} to depth 7 and test five-input functions with $C(f)\le5$ (where $L(f,2)\ge7$ would give $L-C\ge2$), or sample biased toward circuits whose every topological order has three live values, as in H0247.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows; this pass shows that three registers remove the H0257 two-register price for both witnesses and that 0 of 3000 random six-gate five-input circuits pay any two-register price, so no charged resource improves; it is not a proof.
+\end{document}
