@@ -1,0 +1,49 @@
+% GROK distill H0333 (automation 41774ea2)
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H0333: no two-register price below six gates; every function with circuit size at most 5 has $L(f,2)=C(f)$}\\[4pt]
+2026-10-05 03:33 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H0313 (\texttt{2ed8f84f})}
+One commit landed on \texttt{main}: COREPACK1 (\texttt{18b9ce64}), under \texttt{research/explorations/monotone-slice/} and \texttt{results/raw/monotone\_slice/}, not under \texttt{research/agents/grok/} or \texttt{research/main/}. Unread here; its commit message keeps SAT-SUNFLOWER2-DIRECTIONAL OPEN.
+
+\section*{Claim under test}
+H0257 found the first two-register recompute price at circuit size 6 ($C=6$, $L(f,2)=7$ for \texttt{0x90ca96cc}, \texttt{0x0e00aa0c}). H0313 asked whether a gap of two exists at $C\le5$. The smaller question that decides it: does any function with $C(f)\le5$ pay any two-register price at all?
+
+\section*{Model and method}
+Same model as H0228--H0313: free read-only inputs, one-bit registers starting at $0$, each step writes any binary operation of two inputs or registers into one register. $L(f,r)$ is the least number of steps; $C(f)\le L(f,r)$ always.
+
+\emph{Step 1: syntactic pebbling of every shape} (\texttt{/workspace/scratch\_h0333/experiments/peb2.py}). A shape is a fan-in-two DAG whose gate $i$ has two children from $\{\text{input}\}\cup\{0,\dots,i-1\}$, every gate reaching the last gate. Inputs are free; a step puts a gate in a register when each child is an input or held. Breadth-first search gives the exact two-register pebbling time. Histogram of (time $-$ gates):
+$g\le4$: all 1, 2, 7, 38 shapes at $0$.
+$g=5$: 295 shapes; $0$:268, $1$:24, infeasible:3.
+$g=6$: 3098 shapes; $0$:2144, $1$:558, $2$:164, $3$:4, infeasible:228.
+$g=7$: 42271 shapes; $0$:18292, $1$:8980, $2$:4548, $3$:1202, $4$:170, $5$:4, infeasible:9075.
+So a minimum circuit with at most 4 gates always runs in $C$ steps on two registers, for any number of inputs.
+
+\emph{Step 2: semantics of the 27 priced five-gate shapes} (\texttt{gen5.py}). Each has at most 5 input slots, so labelling slots by restricted growth strings over five variables covers every input assignment up to permutation. Each gate takes one of five operation classes (AND, $a\wedge\bar b$, $\bar a\wedge b$, NOR, XOR), which is complete up to output negation, and both $f$ and $\bar f$ are kept: 7994 distinct functions, 11664 targets. \texttt{r2s6b} (H0313's \texttt{r2s6.c} with a larger target array) computed $L(f,2)$ up to depth 6 for all of them. Controls: the eight H0257 control inputs reproduce H0313's output line for line. One target, \texttt{0x00000006}, is also a control; the duplicate entry printed $>6$ because the hash lookup returns the first copy, which has $L=4$.
+
+\section*{Results}
+All 11664 targets have $L(f,2)\le5$. Histogram: 1:66, 2:428, 3:1954, 4:6992, 5:2224.
+
+Take any $f$ with $C(f)=c\le5$ and a minimum circuit; its shape has $c$ gates. If $c\le4$, Step 1 gives $L(f,2)\le c$. If $c=5$ and the shape is unpriced, again $L(f,2)\le5$. If the shape is priced, $f$ is (up to input permutation and complement, which preserve $L$) one of the targets, so $L(f,2)\le5$. With $C\le L$ this gives $L(f,2)=C(f)$. Unused extra inputs do not change $C$ or $L$, so the statement holds for every number of inputs.
+
+\section*{Reading}
+\textbf{NOPRICE-C5: COMPUTATIONAL (exhaustive, one search with matched controls)}: for every Boolean function $f$ with $C(f)\le5$, on any number of inputs, $L(f,2)=C(f)$. With H0257 this places the smallest two-register recompute price exactly at circuit size 6. Of the 27 five-gate shapes that need recomputation or a third register as written, none forces it for any choice of operations: a different program for the same function always removes the syntactic price at this size.
+
+H0313's search for a gap $L(f,2)-C(f)\ge2$ at $C\le5$ is closed negative: there is no gap at all there. (This was an open question, not a claim, so nothing is retired.)
+
+\section*{Effect on the standing candidate}
+No charged resource improves: this pass rules out witnesses below size 6 and finds no larger gap. The syntactic price grows with size (up to 5 extra steps, and 9075 infeasible shapes, at $g=7$), but semantically the only known price is still one step at $C=6$. $T\ge\mathrm{PebbleTime}(G_F,S)$ for semantic programs stays \textbf{OPEN}; at size 5 the pebbling time of a fixed circuit overestimates semantic two-register time, so any such inequality must charge the best program, not a fixed circuit. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of 48 stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Run Step 2 on the 954 six-gate shapes with syntactic price at least 1 (164 at price 2, 4 at price 3, 228 infeasible are the gap-two candidates). Five-input labellings cover the shapes with at most 5 input slots; shapes with 6 slots need a six-input register search.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows; this pass shows by exhaustive search that every function with circuit size at most 5 has two-register time equal to its circuit size, so the smallest two-register recompute price is at size 6 and no charged resource improves; it is not a proof.
+\end{document}
