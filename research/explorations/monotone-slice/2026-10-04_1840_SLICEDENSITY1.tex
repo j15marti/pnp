@@ -1,0 +1,159 @@
+% SLICEDENSITY1
+\documentclass[11pt]{article}
+\usepackage[margin=.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\begin{document}
+\begin{center}
+{\Large SLICEDENSITY1: Hard low-density exact slices of 3-SAT}\\[4pt]
+\textbf{Date: 2026-10-04}\\
+\textbf{Status: CANDIDATE pending independent review}\\
+\textbf{P versus NP status: OPEN}
+\end{center}
+
+\section{Motivation}
+
+The initial sparse target used \(t=6q\), because a first-moment bound makes the uniform exact layer overwhelmingly UNSAT. That is convenient for counting positive minterms but inconvenient for an approximation-method lower bound, which wants a natural distribution concentrated on zero-inputs.
+
+The control-clause padding from SLICEPAD1 works at much lower density.
+
+\section{Uniform-density hardness theorem}
+
+Let the source be Tovey's proper bounded-occurrence 3-SAT instance on \(n\) variables, with each variable occurring in at most four clauses. If the source has \(m\) clauses, then
+\[
+3m\le4n.
+\]
+Introduce \(n\) fresh control variables, so the target has \(q=2n\) variables. Then
+\[
+m\le\frac{2q}{3}.
+\]
+Let \(\mathcal P_n\) be the SLICEPAD1 filler pool of distinct proper 3-clauses containing at least one positive control literal. Setting all controls to one satisfies every filler, and
+\[
+|\mathcal P_n|>\frac12 8\binom q3.
+\]
+
+\begin{theorem}[LOW-DENSITY-SLICE-HARDNESS]
+Fix any constant \(c>2/3\). Let
+\[
+t_q=\lceil cq\rceil.
+\]
+For all sufficiently large even \(q\), proper 3-SAT restricted to exactly \(t_q\) distinct clauses on \(q\) variables is NP-complete. The corresponding exact-layer UNSAT language is coNP-complete.
+\end{theorem}
+
+\begin{proof}
+For the Tovey source, \(m\le2q/3<t_q\) for all sufficiently large \(q\). Add exactly \(t_q-m\) distinct clauses from \(\mathcal P_n\). Since \(t_q=O(q)\) while \(|\mathcal P_n|=\Theta(q^3)\), enough fillers exist. Source clauses contain no control variables and hence are disjoint from the filler pool.
+
+A satisfying source assignment extends by setting all control variables to one, which satisfies every filler. Conversely, every satisfying target assignment satisfies the source subformula. Thus the transformation preserves satisfiability and is polynomial-time. Membership in NP is immediate; complementing gives coNP-completeness for UNSAT.
+\end{proof}
+
+\section{A uniform negative distribution below density 3.52}
+
+Hajiaghayi and Sorkin prove that the standard random 3-SAT model with clause density below \(3.52\) is satisfiable with high probability.
+
+Their model samples clauses with replacement. For \(t=cq\) and
+\[
+M=8\binom q3=\Theta(q^3),
+\]
+the collision probability among \(t\) with-replacement samples is at most
+\[
+\binom t2/M=O(1/q).
+\]
+Conditioned on no collision, forgetting order gives the uniform distribution on exact-\(t\) distinct-clause formulas. Therefore the same satisfiability-with-high-probability statement transfers to the uniform exact layer.
+
+\begin{proposition}[UNIFORM-NEGATIVE-LAYER]
+Fix
+\[
+2/3<c<3.52.
+\]
+If \(A\) is uniformly random in
+\[
+\binom{\mathcal C_q}{\lceil cq\rceil},
+\]
+then
+\[
+\Pr[A\text{ is SAT}]=1-o(1).
+\]
+\end{proposition}
+
+\section{Recommended target}
+
+The cleanest first choice is
+\[
+\boxed{t=q}.
+\]
+This exact layer is NP-complete/coNP-complete by LOW-DENSITY-SLICE-HARDNESS, but a uniformly random input on the layer is SAT with high probability.
+
+Hence for the monotone slice function \(S_{q,q}\), the uniform layer itself is an asymptotically valid negative test distribution. It has several advantages over the density-six target:
+\begin{itemize}
+\item[] it requires no conditioning on a satisfying assignment;
+\item[] it has exact fixed weight from the start;
+\item[] it avoids the strong local correlations of the assignment-supported distribution;
+\item[] it matches the fixed-cardinality version of robust-sunflower containment results;
+\item[] the input universe is unchanged: \(M=\Theta(q^3)\).
+\end{itemize}
+
+\section{What this does not solve}
+
+At density \(c<3.52\), UNSAT inputs are rare under the uniform layer. Thus the previous easy lower bound
+\[
+|\mathcal U_{q,t}|\approx\binom Mt
+\]
+is unavailable. A general monotone lower bound now requires an explicit large, sufficiently spread positive test family of UNSAT exact-\(t\) formulas.
+
+Computational hardness alone does not supply such a family.
+
+The next combinatorial problem is therefore:
+
+\begin{quote}
+Construct an explicit distribution \(\mathcal Y_q\) over exact-\(q\) UNSAT formulas such that its support is large and gate-approximation-resistant, while the uniform exact-\(q\) distribution is SAT with probability \(1-o(1)\).
+\end{quote}
+
+A plausible source is a family of large-core hard contradictions, embedded and relabelled across the target variable set, followed by harmless exact-weight padding. Small fixed UNSAT cores are unacceptable because a polynomial monotone circuit can simply detect them.
+
+\section{Interaction with the lifting route}
+
+The low-density target does not repair the GKRS local lifting mismatch. In that reduction Bob contains all target constraints satisfied by an assignment and is therefore dense. The exact-weight balancing obstruction from SLICENEXT1 still applies.
+
+Thus LOW-DENSITY-SLICE-HARDNESS improves the approximation/sunflower route, not the existing lifting reduction.
+
+\section{Ranked next step}
+
+Use \(t=q\) as the primary general-circuit slice and retain \(t=6q\) as a counting/proof-complexity laboratory.
+
+The next target is:
+\[
+\boxed{
+\text{build a large spread family of large-core UNSAT exact-}q\text{ formulas}
+}
+\]
+and test whether a function-specific sunflower lemma can approximate monotone gates against the uniform exact-\(q\) negative distribution.
+
+Every candidate family must be tested against:
+\begin{itemize}
+\item[] 3XOR-SLICE-EASY;
+\item[] small fixed UNSAT cores;
+\item[] bounded treewidth and Horn/2-SAT controls;
+\item[] permutation/renaming shortcuts;
+\item[] compact detectors for the planted contradiction family.
+\end{itemize}
+
+\section{Status}
+
+LOW-DENSITY-SLICE-HARDNESS and UNIFORM-NEGATIVE-LAYER have complete elementary reductions/probabilistic transfers in this report but remain CANDIDATE pending independent project review. No unrestricted circuit lower bound is claimed.
+
+\begin{thebibliography}{3}
+\bibitem{Tovey1984}
+C. A. Tovey, A Simplified NP-Complete Satisfiability Problem,
+\emph{Discrete Applied Mathematics} 8(1):85--89, 1984.
+
+\bibitem{HajiaghayiSorkin2003}
+M. T. Hajiaghayi and G. B. Sorkin,
+The Satisfiability Threshold of Random 3-SAT Is at Least 3.52,
+MIT-CSAIL-TR-2003-029, 2003.
+
+\bibitem{Valiant1986}
+L. G. Valiant, Negation is Powerless for Boolean Slice Functions,
+\emph{SIAM Journal on Computing} 15(2):531--535, 1986.
+\end{thebibliography}
+\end{document}
