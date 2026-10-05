@@ -524,3 +524,67 @@ If that survives, combine it with stronger core search before returning to SAT-S
 Artifacts:
 - research/explorations/monotone-slice/2026-10-04_2120_PAIRCAM2.tex
 - results/raw/monotone_slice/PAIRCAM2_results.txt
+
+
+## 2026-10-04 PAIRMATCH3 update
+
+The next experiment replaced rectangular pair filtering by explicit nearest-neighbor pair matching.
+
+### Exact new structural lemma
+
+Three-clause signed-overlap orbits admit a complete canonical form. For a fixed ordering of three clauses, map each variable to its signed incidence vector in ({-1,0,+1}^3), quotient independent variable complementation by (vsim -v), sort the resulting normalized vectors to quotient variable relabeling, then minimize over the six clause permutations. This is complete for the action of variable permutations, independent variable complements, and clause permutations.
+
+### Experiment A: nearest pair matching
+
+For each (qin{20,24,28,32}), (N=6000) formulas were sampled at (t=3.5q). The first half calibrated SAT means/SDs for the dominant six pair coordinates. Every held-out UNSAT formula was greedily matched, without SAT replacement, to the nearest held-out SAT formula in standardized pair space.
+
+Held-out balanced accuracy after matching:
+
+- q=20: pair 0.551, cubic 0.564, sampled canonical triple-orbit 0.474
+- q=24: pair 0.548, cubic 0.333, triple 0.333
+- q=28: pair 0.500, cubic 0.458, triple 0.542
+- q=32: pair 0.577, cubic 0.462, triple 0.500
+
+The mean absolute residual mismatch per dominant pair coordinate was approximately (0.13)--(0.33) SAT standard deviations.
+
+No stable order-three held-out advantage appears across q.
+
+### Experiment B: tighter caliper
+
+The run was repeated with independent seeds and caliper
+
+[
+d_{m pair}le0.75.
+]
+
+Surviving UNSAT counts were 41,32,29,13 for q=20,24,28,32. Pair mismatch fell to roughly (0.09)--(0.24) SD per coordinate.
+
+Held-out balanced accuracy:
+
+- q=20: pair 0.595, cubic 0.595, triple 0.548
+- q=24: pair 0.500, cubic 0.563, triple 0.500
+- q=28: pair 0.567, cubic 0.433, triple 0.700
+- q=32: pair 0.500, cubic 0.643, triple 0.571
+
+The isolated q=28 triple value 0.70 is not promoted: neighboring q values do not reproduce it and positive evaluation samples are only on the order of tens.
+
+### Interpretation
+
+**COMPUTATIONAL:** pair matching largely neutralizes the previously dominant second-order leakage.
+
+**COMPUTATIONAL:** no reproducible third-order distinguisher was found in this run.
+
+This does **not** prove order-three camouflage. The positive sample remains small and triple orbits were sampled rather than exhaustively enumerated.
+
+### Revised queue
+
+1. **PAIR-MATCH2:** increase rare-UNSAT sample counts, especially q=28,32.
+2. **ORDER3-EXACT1:** at q=20,24, exhaustively enumerate all (inom t3) canonical clause-triple orbits on pair-matched formulas.
+3. **MATCHED-MUF1:** stronger multi-start and exact/branch-and-bound minimum-core search on pair-matched positives at smaller q.
+4. Only if exact order three remains quiet, advance to order-four guards or SAT-SUNFLOWER2.
+
+Artifacts:
+- `research/explorations/monotone-slice/2026-10-04_2250_PAIRMATCH3.tex`
+- `experiments/monotone_slice/pair_match_order3.py`
+- `experiments/monotone_slice/pair_match_caliper.py`
+- `results/raw/monotone_slice/PAIRMATCH3_results.txt`
