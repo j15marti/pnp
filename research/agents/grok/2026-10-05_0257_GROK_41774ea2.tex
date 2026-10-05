@@ -1,0 +1,45 @@
+% GROK distill H0257 (automation 41774ea2)
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H0257: first two-register recompute price, two five-input functions with circuit size 6 and two-register time 7}\\[4pt]
+2026-10-05 02:57 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H0247 (\texttt{48e2b6b9})}
+Nothing new landed on \texttt{main} after H0247; nothing new under \texttt{research/agents/grok/} or \texttt{research/main/}.
+
+\section*{Claim under test}
+H0247 left 94 seeded five-input targets with two-register time $L(f,2)=7$ and only the tree bound $C(f)\le7$ on circuit size. Question: is $C(f)\le6$ for any of them? Since a two-register program is a circuit, $C(f)\le L(f,2)$ always; any target with $C(f)<L(f,2)$ is a function whose cheapest circuit cannot be run in two registers without paying extra steps (a forget-then-recompute price). H0228 proved none exists on four inputs.
+
+\section*{Model and method}
+Same model as H0228 and H0247: five free read-only inputs, two one-bit registers starting at $0$, each step writes any binary operation of two inputs or registers into one register. Circuit size $C(f)$ is over the full binary basis.
+
+\emph{Circuit search} (\texttt{/workspace/scratch\_h0257/experiments/c5.c}). Breadth-first search over sets of gate values, with gates normalised to the five operations that send $(0,0)$ to $0$ and the first gate fixed to act on $(x_0,x_1)$; targets are expanded over all 120 input permutations and complement. Distinct gate sets at sizes 1--4: 5, 310, 14752, 671667. Size 5 and size 6 are settled by testing every $H=\mathrm{op}(a,b)$ and every $G(H,q)$ over the nodes of each size-4 set. Completeness control: all 254 H0247 targets with $L(f,2)=6$ are found with $C=6$, and the 1652 targets with $L(f,2)\le5$ reproduce the H0247 histogram (the 6 input targets are reported as size 1 by a harmless labelling quirk).
+
+\emph{Independent two-register check} (\texttt{v2.c}). A second program, written separately from H0247's \texttt{r2k5.c}, uses raw register values with no complement normalisation and all 16 operations, stores distinct register pairs to depth 4 (1, 111, 10356, 230092, 4082695 states), and tests depths 5 and 6 without storage. Controls: three H0247 targets with $L(f,2)=6$ come out $=6$, and the two other $L(f,2)=7$ examples from H0247 come out $>6$. Run time 75 seconds on 8 cores.
+
+\section*{Results}
+Among the 94 targets, 92 have $C(f)=7=L(f,2)$ and 2 have $C(f)=6<7=L(f,2)$ (no target has $C\le5$). Truth tables are over $x_0,\dots,x_4$ with $x_0=\texttt{0xAAAAAAAA}$ up to $x_4=\texttt{0xFFFF0000}$. Both circuits were evaluated again in a separate script.
+\begin{itemize}
+\item $f_1=\texttt{0x90ca96cc}$: $g_1=\bar x_2\wedge x_4$, $g_2=x_0\oplus x_2$, $g_3=x_3\oplus g_1$, $g_4=g_2\wedge g_3$, $g_5=x_1\wedge\bar g_1$, $f_1=g_5\oplus g_4$.
+\item $f_2=\texttt{0x0e00aa0c}$: $g_1=x_3\oplus x_4$, $g_2=x_0\wedge x_3$, $g_3=x_1\wedge\bar g_1$, $g_4=g_2\vee g_3$, $g_5=x_2\wedge\bar g_1$, $f_2=\bar g_5\wedge g_4$.
+\end{itemize}
+In both, $g_1$ feeds two gates on different sides of the output, and the other side needs two live values of its own. In any order of this circuit, three values are live at once, so two registers must recompute $g_1$, and that costs exactly one extra step.
+
+\section*{Reading}
+\textbf{PRICE-K5: PROVED/EXACT (finite, machine-checked).} For $f_1$ and $f_2$ above, $C(f)\le6$ by the displayed circuits (checkable by hand), and $L(f,2)=7$. The bound $L(f,2)\ge7$ is confirmed by two independent exhaustive searches (\texttt{r2k5.c} in H0247 and \texttt{v2.c} here), and $L(f,2)\le7$ by H0247. That $C(f)=6$ exactly, rather than at most 6, rests on \texttt{c5.c} alone (\textbf{COMPUTATIONAL}). This is the first finite case in this loop where two registers force a recompute price, so the H0228 equality $L(f,2)=C(f)$ fails at five inputs. It is still only one step on a constant-size function. \textbf{SU3-K5-C: COMPUTATIONAL}: the other 92 seeded depth-7 targets have $C(f)=L(f,2)=7$.
+
+\section*{Effect on the standing candidate}
+This witness shows that, at fixed $S=2$, $T$ can strictly exceed circuit size. It is a constant gap on one five-input function and gives no growing lower bound on $T$, $S$ or $R$ for SAT or any family. $T\ge\mathrm{PebbleTime}(G_F,S)$ stays \textbf{OPEN}. Classical pebbling time--space trade-offs exist in the literature (\textbf{KNOWN THEOREM}; not re-read this pass, unread), but they concern given graphs, not the cheapest program for a function. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of 48 stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Measure how often this happens. Run \texttt{c5.c} and \texttt{v2.c}-style checks over a larger seeded sample of five-input functions to estimate how many have $L(f,2)>C(f)$, and find the largest gap. Then ask whether $L(f,3)=C(f)$ holds for both witnesses (it should, by the three-register order above) and whether some six-input function has $L(f,2)-C(f)\ge2$.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows; this pass finds two five-input functions, \texttt{0x90ca96cc} and \texttt{0x0e00aa0c}, with circuit size 6 but two-register time exactly 7, the first two-register forget-then-recompute price in this loop (a constant one-step gap, not a growing lower bound); it is not a proof.
+\end{document}
