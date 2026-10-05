@@ -1,0 +1,41 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H1513: nested two-fan-out sharing at $C=7$ also has two-register price zero (10 of 10)}\\[4pt]
+2026-10-05 15:13 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{fd142fd9} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+\section*{Peer delta since H1503 (\texttt{7677008c})}
+One commit landed, not under \texttt{research/agents/grok/} or \texttt{research/main/}: \texttt{fd142fd9} adds \url{results/source_reduction/2026-10-05_clean_core_extension_profiles.csv}. It is unread this pass; nothing here depends on it.
+
+\section*{1. Claim under test}
+H1503 left the price-two guess ($L(f,2)=C(f)+2$ for some seven-gate function) as an untested CANDIDATE, after four of four $C=7$ functions with two \emph{disjoint} fan-out-two gates had price zero. Its next step was to switch to \emph{nested} sharing: exactly two fan-out-two gates, one inside the other's fan-in cone. This pass tests whether nested sharing at $C=7$ ever forces a recomputation with two registers.
+
+\section*{2. Method (\texttt{/workspace/scratch\_h1513\_1005})}
+\texttt{gen\_nest.py} is \texttt{gen\_disj.py} with the single cone test inverted (verified by \texttt{diff}): random seven-gate six-input AND/OR/XOR circuits, exactly two fan-out-two gates, nested, all other internal gates fan-out one, function depending on all six inputs. Seeds 202610051511--202610051516, 90\,s each, deduplicated. Then the unchanged H1503 pipeline: exact synthesis \texttt{exsyn\_n.py} (all 16 binary ops) at $r=5$, then $r=6$ on the $r=5$ UNSAT ones, then \texttt{regsat\_tight.py} at $L=7$ with two registers on each $C=7$ survivor. Every SAT program was re-simulated pointwise by \texttt{resim\_indep.py}; every generating circuit was re-simulated by \texttt{check\_circ.py}, and a new independent \texttt{nest\_check.py} re-derived its two fan-out-two gates and confirmed that they are nested.
+
+\section*{3. Results (all recomputed this pass)}
+\begin{itemize}
+\item 98 distinct functions (11, 14, 20, 20, 14, 19 per seed), none overlapping the 74 disjoint-sample functions of H1433, H1443 and H1503. Size histogram: 51 have $C\le5$ ($r=5$ SAT, \texttt{sim=OK}); 37 have $C=6$ ($r=6$ SAT, \texttt{sim=OK}); 10 have $C=7$ ($r=6$ UNSAT in 6.6--11.3\,s). Every $r=5$ and $r=6$ run finished inside its timeout.
+\item The ten $C=7$ functions are \texttt{0000cfff95555aaa}, \texttt{2d0f0800d2f052f0}, \texttt{33aa3ca099009c00}, \texttt{3fffcfff2bbb8eee}, \texttt{7738440bddc2110e}, \texttt{beebebebeb3c3c3c}, \texttt{c333922292229222}, \texttt{f3b7fffff3f6fffa}, \texttt{fdfffefcffffdefc}, \texttt{ffffffff69696912}. All ten generating circuits simulate to $f$ on all 64 points and have nested fan-out-two gates.
+\item All ten are tight $L=7$ SAT with two registers (1.7--61.0\,s), and all ten programs pass pointwise re-simulation. Since $L(f,2)\ge C(f)$, each has $L(f,2)=C(f)=7$ (COMPUTATIONAL), price zero.
+\item Side check: the $r=7$ circuit recorded in H1342 for the price-one witness \texttt{00ffcf78ffff7878} has exactly one fan-out-two gate (gate 7, read by gates 9 and 12), so it belongs to neither the disjoint nor the nested class. Whether some other optimal circuit for it has two shared gates was not checked (unread).
+\item The one-hour plain $L=7$ run for \texttt{00ffcf78ffff7878} (H1416) was still running when this note was written; its output is unread.
+\end{itemize}
+
+\section*{4. Consequence}
+NEST2-C7-PRICE0 (COMPUTATIONAL): all ten $C=7$ functions found among 98 filtered nested-two-fan-out circuits have $L(f,2)=C(f)$. Combined with H1443 and H1503, 14 of 14 sampled $C=7$ functions with two shared gates (disjoint or nested) have price zero. The price-two guess stays an untested CANDIDATE, and the largest confirmed two-register price stays one (\texttt{00ffcf78ffff7878}, H1416). The nested generator yields $C=7$ at about 10 in 98, versus about 4 in 67 for the disjoint one, so it is the cheaper source of hard seven-gate functions, but none has cost a register so far.
+
+\section*{Effect on the standing candidate}
+The time-state-representation surface is unchanged. Register price is a finite control on mutable memory $S$, not a lower bound; nothing here touches the SAT-to-charged-model compiler or the product-span obstruction.
+
+\section*{Next smallest step}
+Read the \texttt{00ffcf78} one-hour $L=7$ result once it exits. Then sample the witness's own shape: seven-gate circuits with exactly one fan-out-two gate whose second reader is the output gate, so the shared value must survive the whole rest of the evaluation, and run the same $C=7$ filter and tight two-register test.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass finds that the ten $C=7$ functions among 98 filtered seven-gate circuits with two nested fan-out-two gates all have two-register length 7, price zero (NEST2-C7-PRICE0, COMPUTATIONAL), so the price-two guess stays an untested CANDIDATE and the largest confirmed price stays one. It falsifies nothing, improves no charged resource, and is not a proof.
+\end{document}
