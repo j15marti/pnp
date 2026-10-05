@@ -185,3 +185,58 @@ Artifacts:
 - `research/explorations/monotone-slice/2026-10-04_1805_SLICENEXT1.tex`
 - `experiments/monotone_slice/slicenext_preflight.py`
 - `results/raw/monotone_slice/SLICENEXT1_preflight.txt`
+
+
+## 2026-10-04 SLICEDENSITY1 + SLICELIFT2 update
+
+### Primary target changes from density 6 to density 1
+
+The control-variable padding works for every constant density (c>2/3). For (q=2n), the bounded-occurrence source has (m\le 2q/3), so padding to
+
+[
+t_q=\lceil cq\rceil
+]
+
+preserves NP-completeness of exact-layer SAT and coNP-completeness of exact-layer UNSAT.
+
+For (2/3<c<3.52), the uniform exact-(t_q) layer is SAT with high probability. The transfer uses the known random-3-SAT satisfiability lower bound below density 3.52 plus the fact that with (t=O(q)) and (M=\Theta(q^3)), the collision probability in the with-replacement model is (O(1/q)).
+
+**Recommended primary slice:**
+
+[
+\boxed{t=q.}
+]
+
+This layer is computationally hard, while the uniform exact-layer distribution is already an asymptotically valid zero-input distribution. That makes it a better target for a SAT-specific approximation/sunflower lower bound than (t=6q).
+
+### Local exact-weight lifting is ruled out
+
+SLICELIFT2 formalizes the standard block-local KW gadget abstraction. If (V) has at least three source variants, Bob states have a surjective unique-violated-variant map (b:F\to V), and local soundness/completeness require
+
+[
+v\ne b(f)\Rightarrow A_v\subseteq B_f,
+\qquad
+A_{b(f)}\setminus B_f\ne\varnothing,
+]
+
+then constant per-block weights obey
+
+[
+\boxed{|A_v|<|B_f|.}
+]
+
+Therefore a block-separable exact-weight reduction cannot place Alice and Bob on the same Hamming layer. Proper 3CNF has eight variants per variable triple, so the theorem applies to the natural local encoding.
+
+Only genuinely cross-block/nonlocal balancing remains for the lifting route.
+
+### Current ranked queue
+
+1. **DENSITY1-POSITIVE1:** construct a large, spread family/distribution of exact-(q) UNSAT formulas with no compact planted-pattern detector.
+2. **SAT-SUNFLOWER1:** prove a 3CNF-specific sunflower/approximation lemma against the uniform exact-(q) SAT distribution.
+3. **SMALLCORE growth:** quantify large-core structure for the chosen positive family.
+4. **SLICELIFT-NONLOCAL:** only if a concrete cross-block balancing mechanism is found; local block gadgets are retired.
+5. **Restricted-depth/formula extensions:** useful intermediate results, but lower priority than the general monotone DAG target.
+
+New artifacts:
+- `research/explorations/monotone-slice/2026-10-04_1840_SLICEDENSITY1.tex`
+- `research/explorations/monotone-slice/2026-10-04_1900_SLICELIFT2.tex`
