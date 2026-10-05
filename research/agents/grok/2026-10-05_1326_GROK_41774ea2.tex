@@ -1,0 +1,41 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H1326: a six-input function with two-register price one; forced sharing gives price $\le 1$ on this sample}\\[4pt]
+2026-10-05 13:26 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{26a6b6af} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+\section*{Peer delta since H1315 (\texttt{26a6b6af})}
+\texttt{26a6b6af} (H1315) is the tip of \texttt{main}. Two commits landed just before it, \texttt{f247f34d} and \texttt{698054f4} (TASK-008), adding \texttt{research/explorations/monotone-slice/2026-10-05\_1314\_TWOSATDEC3.md}; that file is outside \texttt{research/main/} and \texttt{research/agents/grok/} and is \emph{unread} here (only its commit message was seen). Nothing new under \texttt{research/main/}. This note does not touch \texttt{main.tex}.
+\section*{Claim under test}
+H1315 found that formula shape (Strahler three) does not force a price. The price $L(f,2)-C(f)$ of H0257 came from one gate whose value is needed twice, far apart. So the next smallest test is: draw six-input circuits in which two early gates each have fan-out at least two and are read again near the top, and ask whether any reaches price two, or at least price one.
+\section*{Method (\texttt{/workspace/scratch\_h1326\_1005})}
+\texttt{gen\_share.py} (SHA-256 prefix \texttt{4eda793ebeba5fd2}) draws seven-gate circuits over six inputs with AND, OR, XOR gates, requires gates $g_1,g_2$ to have fan-out $\ge2$ and to be read by $g_6$ or $g_7$, and keeps functions that depend on all six inputs. Seed $20261005$. An earlier, unbiased version of the same generator was still running and wrote into the same list file, so the tested set is the union of both outputs; every result below is a statement about a named function, not about a distribution.
+Tools are H1315's unchanged: \texttt{exsyn\_n.py} (\texttt{802a5dda9b96b943}), \texttt{regsat\_tight.py} (\texttt{8b960d33da698dc8}, H1231's tight encoding, valid only at $L=C$), \texttt{regsat\_sb.py} (\texttt{3b015c5035fb6a79}). Every SAT answer is re-simulated; the key witness is also re-simulated by a separate script \texttt{verify.py} (\texttt{4f9250e47922a844}).
+\section*{Results}
+Sixteen distinct functions were run through exact synthesis. All twelve run at $r=6$ were SAT (re-simulated), so none of these seven-gate circuits has $C=7$: forced sharing is easily compressed. At $r=5$, seven functions were SAT ($C\le5$) and four were UNSAT, so those four have $C=6$ exactly, each with a re-simulated six-gate circuit. For these four:
+\begin{center}\small
+\begin{tabular}{lccc}
+function & $C$ & tight $L=6$ & $L(f,2)$\\\hline
+\texttt{0000ffff0906f9f6} & $6$ & SAT, $0.4$\,s & $6$\\
+\texttt{2121121221881288} & $6$ & SAT, $0.3$\,s & $6$\\
+\texttt{f1f1f2f2f1e0f2d0} & $6$ & SAT, $1.5$\,s & $6$\\
+\texttt{43344bb483388778} & $6$ & UNSAT, $11.6$\,s & $7$ (\texttt{regsat\_sb} $L=7$ SAT, $9.5$\,s)\\
+\end{tabular}
+\end{center}
+Witnesses for \texttt{43344bb483388778}: the circuit $g_6=x_0\oplus x_5$, $g_7=x_2\oplus x_3$, $g_8=x_4\wedge g_7$, $g_9=g_6\vee g_8$, $g_{10}=x_1\wedge g_9$, $f=g_7\oplus g_{10}$ (six gates; $g_7$ is used twice, at the third and last gates), and a seven-step two-register program, both re-checked by \texttt{verify.py}.
+\textbf{PRICE1-SIX (COMPUTATIONAL):} $C(\texttt{43344bb483388778})=6$ and $L(\texttt{43344bb483388778},2)=7$. The lower bounds rest on CaDiCaL UNSAT answers with no DRAT log, and $L\ge7$ also rests on H1231's tightness lemma. A confirming run of the plain \texttt{regsat\_sb.py} at $L=6$ was started; its result is not reported here (\emph{unread}).
+\textbf{SHARE-PRICE-SAMPLE (COMPUTATIONAL):} on this sample, no function reaches price two; the one priced function has price exactly one.
+\section*{Consequence}
+This six-input priced function has the same shape as H0257's five-input case: one shared gate, $C=6$, one extra step. It is a constant gap. The largest confirmed price stays $1$, and the price-two search stays \textbf{OPEN}.
+\section*{Effect on the standing candidate}
+No charged resource improves beyond H0257's one-step gap. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of $48$ stays \textbf{FALSIFIED/RETIRED}. Nothing is falsified.
+\section*{Next smallest step}
+Build price-two candidates on purpose: combine two independent copies of the \texttt{43344bb4} pattern so that two shared gates must be held across each other (for example an XOR of two such blocks over disjoint inputs needs twelve inputs, so first try variants that share inputs at six or seven inputs), fix $C$ exactly, and run tight $L=C$ and then plain $L=C+1$.
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass finds a six-input function \texttt{43344bb483388778} with $C=6$ and two-register length $7$ (PRICE1-SIX, COMPUTATIONAL), so the largest confirmed price stays one. It falsifies nothing, improves no charged resource, and is not a proof.
+\end{document}
