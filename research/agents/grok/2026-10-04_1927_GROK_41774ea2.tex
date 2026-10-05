@@ -1,0 +1,76 @@
+% GROK REPORT::41774ea2::2026-10-04T19:27:00-07:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\title{GROK H1927 --- audit of PAIR-CAMOUFLAGE2: the six-orbit window survival gap reproduces on fresh seeds, but the cubic $U_3$ signal inside the window is almost entirely residual pair-orbit signal}
+\author{Agent P$\neq$NP / GROK}
+\date{2026-10-04 19:27 PT}
+\begin{document}
+\maketitle
+
+\noindent\textbf{GLOBAL STATUS: OPEN.} P versus NP remains open. No load-bearing arrow closed in this pass.
+The SAT-to-charged-model compiler and the product-span obstruction remain \textbf{OPEN}.
+This note claims no proof and no lower bound for SAT.
+
+\section*{Delta since H1910}
+Predecessor: \texttt{research/agents/grok/2026-10-04\_1910\_GROK\_41774ea2.tex} (commit \texttt{f7af89d2}).
+Landed after it (all read): \texttt{research/explorations/monotone-slice/2026-10-04\_2120\_PAIRCAM2.tex} (\texttt{7b0d626a}), \texttt{2026-10-04\_2112\_PAIRCAMOUFLAGE1A.md} (\texttt{12b60285}), raw files \texttt{PAIRCAM2\_results.txt} (\texttt{0af60d39}) and \texttt{PAIRCAMOUFLAGE1A.txt} (\texttt{94b3c68f}), and the TASK-008 update (\texttt{1804804a}). No new note under \texttt{research/main/}. No PAIRCAM2 script was pushed, so its raw numbers are reproduced here only in distribution, on fresh seeds.
+
+\section*{Peer claims checked by reading}
+\begin{enumerate}
+\item \textbf{Slice-predicate guard (KNOWN THEOREM).} If $P_q$ is any predicate on the layer $\binom{[M]}{t}$, the extension $H_q$ ($0$ below the layer, $P_q$ on it, $1$ above) is monotone, since distinct weight-$t$ inputs are incomparable. Negation is powerless for slice functions (Berkowitz 1982; Valiant 1986), so a polynomial-size circuit for $P_q$ gives a polynomial-size monotone circuit for $H_q$. The peer's argument is correct; the peer label (CANDIDATE with complete proof) is left unchanged.
+\item \textbf{Raw-file consistency (PROVED/EXACT on the printed means).} The nine SAT orbit means at $q=20$ sum to $2415.00=\binom{70}{2}$, as the identity $\sum n_{s,h}=\binom t2$ from H1910 forces.
+\end{enumerate}
+
+\section*{Why this claim next}
+PAIRCAM2 reports that, inside a six-orbit box window ($\pm1.5$ training-SAT SD on orbits $(0,0),\dots,(2,2)$), the cubic count $U_3=\sum_i[\binom{d_i^+}{2}d_i^-+d_i^+\binom{d_i^-}{2}]$ still gives balanced accuracy $0.55$--$0.65$. The smallest next question: is that a genuine order-three signal, or pair signal that leaks through a box that does not match the separating pair direction?
+
+\section*{Checks}
+Scratch script \texttt{experiments/match3.py} (not pushed). Same generator as H1910 (uniform distinct clauses on $q$ variables, $t=3.5q$), CaDiCaL~1.5 via PySAT, fresh seeds $20261927+q$, $N=40000$ per $q$, first half train and second half holdout. All fitting (window centers and widths, LDA weights, strata cuts) uses the training half only.
+\begin{enumerate}
+\item \textbf{Window survival gap reproduces (COMPUTATIONAL).} Holdout survival in the PAIRCAM2 window, with 95\% Wilson intervals:
+\begin{center}
+\begin{tabular}{rrrlrlr}
+$q$ & SAT & UNSAT & $\Pr[\mathrm{cam}\mid\mathrm{SAT}]$ & & $\Pr[\mathrm{cam}\mid\mathrm{UNSAT}]$ & $z$\\\hline
+20 & 19504 & 496 & .467 & [.460,.474] & .359\ [.318,.402] & 4.78\\
+24 & 19660 & 340 & .471 & [.464,.478] & .353\ [.304,.405] & 4.31\\
+28 & 19780 & 220 & .464 & [.457,.471] & .268\ [.214,.330] & 5.79\\
+32 & 19842 & 158 & .479 & [.472,.486] & .317\ [.249,.393] & 4.07
+\end{tabular}
+\end{center}
+This matches the peer's $0.46$--$0.48$ versus $0.30$--$0.37$ in shape. The gap does not shrink over $q=20..32$.
+\item \textbf{The cubic signal is mostly pair signal (COMPUTATIONAL).} Holdout AUC of train-fitted Fisher LDA, and of $U_3$ after conditioning on the pair vector:
+\begin{center}
+\begin{tabular}{rrrrrrr}
+$q$ & $U_3$ alone & pair$_8$ & pair$_8{+}U_3$ & pair$_8{+}U_3{+}\sum d^3$ & $U_3$ in window & $U_3$ stratified on pair$_8$\\\hline
+20 & .660 & .830 & .834 & .834 & .639 & .539\\
+24 & .685 & .861 & .861 & .859 & .654 & .532\\
+28 & .706 & .879 & .880 & .880 & .702 & .521\\
+32 & .694 & .851 & .851 & .851 & .655 & .487
+\end{tabular}
+\end{center}
+pair$_8$ is the eight free orbit coordinates. ``Stratified'' bins the holdout by quintiles of the pair$_8$ LDA score (cuts from training SAT) and averages the within-bin $U_3$ AUC weighted by $n_{\mathrm{SAT}}n_{\mathrm{UNSAT}}$. Adding $U_3$ (and $\sum_v d_v^3$) to the pair vector moves holdout AUC by at most $0.004$, and once the pair score is held roughly fixed, $U_3$ sits at AUC $0.49$--$0.54$.
+\end{enumerate}
+
+\paragraph{Reading.} The PAIRCAM2 cubic number is reproduced (in-window $U_3$ AUC $0.64$--$0.70$), but on these samples it is not evidence of an order-three signal beyond pairs: an axis-aligned box on six orbits leaves the separating pair direction (excess $(1,1)$, deficit $(1,0)$) partly unconditioned, and $U_3$ is correlated with that direction. So the finite hierarchy at $q\le32$ is: first order exact camouflage, pair order clear signal, order three no detectable signal beyond pairs under linear tests. This sharpens the peer's recommended next step: matching should be done on the pair \emph{score} (or the full pair vector), not on a coordinate box, before any order-three test is read. Nonlinear order-three tests, the other order-three signed-overlap counts, and any asymptotic statement are \textbf{OPEN}. Nothing is falsified, and nothing improves a charged $T$, $S$, or $R$.
+
+\section*{Status ledger}
+\begin{itemize}
+\item Time-state-representation surface: \textbf{CANDIDATE}.
+\item SAT-to-charged-model compiler; product-span obstruction: \textbf{OPEN}.
+\item Monotone slice extension plus Berkowitz--Valiant: \textbf{KNOWN THEOREM}.
+\item Window survival gap; $U_3$ adds $\le0.004$ AUC beyond pair$_8$; stratified $U_3$ AUC $0.49$--$0.54$ at $q\le32$: \textbf{COMPUTATIONAL}.
+\item PAIRCAM2 pair-orbit classification and slice guard: \textbf{CANDIDATE} (peer label, unchanged).
+\item Pair-matched large-core UNSAT distribution; asymptotic pair gap; superpolynomial monotone slice lower bound: \textbf{OPEN}.
+\item D(4,8) semantic-cut $\ge48$: \textbf{FALSIFIED/RETIRED} (exact cut 8); not revived.
+\item Contact/switch models: polynomially equivalent to branching programs; do not close the gap.
+\end{itemize}
+
+\section*{Reproducibility}
+Scratch at \texttt{/workspace/scratch\_h1927}: \texttt{experiments/match3.py} (imports the H1910 generator \texttt{paircam\_audit.py}); results \texttt{results/q\{20,24,28,32\}.json}. Four parallel $40000$-formula runs took under $90$\,s. Root \texttt{main.tex} not edited.
+
+\section*{FINAL STATUS}
+P versus NP remains OPEN; no falsification, no charged T/S/R improvement; the PAIRCAM2 six-orbit window survival gap reproduces on fresh seeds ($0.46$--$0.48$ SAT versus $0.27$--$0.36$ UNSAT, $z=4.1$--$5.8$), while the in-window cubic $U_3$ signal adds at most $0.004$ holdout AUC beyond the full pair vector and drops to AUC $0.49$--$0.54$ once the pair score is stratified, so no order-three signal beyond pairs is detected at $q\le32$.
+\end{document}
