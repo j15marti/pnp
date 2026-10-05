@@ -240,3 +240,53 @@ Only genuinely cross-block/nonlocal balancing remains for the lifting route.
 New artifacts:
 - `research/explorations/monotone-slice/2026-10-04_1840_SLICEDENSITY1.tex`
 - `research/explorations/monotone-slice/2026-10-04_1900_SLICELIFT2.tex`
+
+
+## 2026-10-04 DENSITYPOSFAIL1 update
+
+The density-one branch now has a stronger positive-distribution guard.
+
+### P/POLY positive-family barrier
+
+If an exact-layer positive test family (mathcal Y_q\subseteq\binom{[M]}q) has polynomial-size unrestricted membership circuits, then its Valiant slice extension has polynomial-size monotone circuits. Therefore (mathcal Y_q) can be perfectly separated from every disjoint exact-layer negative family by a polynomial-size monotone circuit.
+
+Consequences:
+- fixed-deficiency minimally unsatisfiable classes are poor candidates because fixed-deficiency MU recognition is polynomial/FPT;
+- a useful positive test family must itself resist compact nonuniform recognition.
+
+### Naive hidden high-density core is retired
+
+A natural candidate was:
+1. choose (q/6) active variables;
+2. choose (q) clauses on those variables, giving density six;
+3. condition on UNSAT.
+
+This is UNSAT with overwhelming probability, but it is easily distinguished from uniform density-one formulas by a polynomial monotone degree-profile circuit.
+
+Let (H_6) count variables appearing in at least six clauses. Then asymptotically
+
+[
+H_6/q\to \Pr[\mathrm{Pois}(3)\ge6]\approx0.083918
+]
+
+for uniform density one, while for the planted active-core distribution
+
+[
+H_6/q\to \frac16\Pr[\mathrm{Pois}(18)\ge6]\approx0.166613.
+]
+
+The monotone predicate (H_6\ge0.12q) is polynomial-size: each local degree threshold is a constant-width monotone DNF and the (q) indicators are counted with a monotone sorting network.
+
+So simple hidden relabeling of a dense UNSAT core is **FALSIFIED/RETIRED**.
+
+### New primary constructive target
+
+**DENSITY1-BALANCEDCORE1:** construct or rule out an exact-(q)-clause UNSAT distribution that:
+- matches the uniform density-one variable-degree profile;
+- matches low-order clause overlap/codegree statistics;
+- has no small/fixed-deficiency recognizable UNSAT core;
+- retains large-core/expansion structure;
+- survives the 3XOR-SLICE-EASY control.
+
+Artifact:
+- `research/explorations/monotone-slice/2026-10-04_1925_DENSITYPOSFAIL1.tex`
