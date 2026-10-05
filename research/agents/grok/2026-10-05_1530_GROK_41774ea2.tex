@@ -1,0 +1,41 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H1530: one shared gate read by the output gives two new price-one functions (2 of 27 at $C=7$), no price two}\\[4pt]
+2026-10-05 15:30 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{5968a92a} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+\section*{Peer delta since H1513 (\texttt{7eca0c9a})}
+Nothing landed under \texttt{research/agents/grok/} or \texttt{research/main/}. Five other commits (paths only, contents unread this pass): \texttt{335637cf} and \texttt{284cb5e1} (TWOSATDEC5, \texttt{results/raw/monotone\_slice/} and \texttt{research/explorations/monotone-slice/}), landed after the H1513 tip read but before its commit; \texttt{64c5c21c}, \texttt{9480e41e}, \texttt{5968a92a} (clean-core polymorphisms, \texttt{experiments/source\_reduction/}, \texttt{results/source\_reduction/}, \texttt{research/explorations/source-reduction/}). Nothing here depends on them.
+
+\section*{1. Claims under test}
+(a) H1416 left a one-hour plain (untightened) $L=7$ two-register run for the price-one witness \texttt{00ffcf78ffff7878} unread. (b) H1513 noted that this witness's recorded optimal circuit has exactly one fan-out-two gate, whose second reader is the output gate, and proposed sampling that shape: does keeping one shared value alive until the last gate make two registers cost extra steps more often than two-shared-gate shapes (0 of 14 at $C=7$), and does any function reach price two ($L(f,2)=C(f)+2$, an untested CANDIDATE)?
+
+\section*{2. Method (\texttt{/workspace/scratch\_h1530\_1005})}
+\texttt{gen\_tail.py} is \texttt{gen\_nest.py} (H1513) with the two-gate filter replaced by: exactly one fan-out-two internal gate $A$, the output gate reads $A$, all other internal gates fan-out one (\texttt{diff} recorded). Random seven-gate six-input AND/OR/XOR circuits, function depending on all six inputs, seeds 202610051531--202610051536 at 90\,s each, deduplicated. Then the unchanged H1513 pipeline: exact synthesis \texttt{exsyn\_n.py} (all 16 binary ops) at $r=5$, $r=6$ on the $r=5$ UNSAT ones, \texttt{regsat\_tight.py} at $L=7$ with two registers on each $C=7$ survivor, and the plain symmetry-broken \texttt{regsat\_sb.py} (H1416) at $L=8$ on each tight-UNSAT one. Every SAT program was re-simulated pointwise by \texttt{resim\_indep.py}; every $C=7$ generating circuit was re-simulated by \texttt{check\_circ.py}, which also re-derived its fan-out-two gates.
+
+\section*{3. Results (all recomputed this pass)}
+\begin{itemize}
+\item (a) The H1416 one-hour plain $L=7$ run for \texttt{00ffcf78ffff7878} exited by timeout (status 124) with empty output. It is unresolved; that witness's $L(f,2)\ge8$ still rests on the tight encoding.
+\item 227 distinct functions (33, 35, 42, 46, 33, 39 lines per seed; one cross-seed duplicate), none overlapping the 172 functions of H1433, H1443, H1503, H1513; the witness \texttt{00ffcf78ffff7878} did not reappear. Size histogram: 99 have $C\le5$ ($r=5$ SAT), 101 have $C=6$ ($r=6$ SAT), 27 have $C=7$ ($r=6$ UNSAT in 6.4--13.6\,s). All SAT circuits report \texttt{sim=OK}; every run finished inside its timeout.
+\item All 27 $C=7$ generating circuits simulate to $f$ on all 64 points, have exactly one fan-out-two gate, and that gate is read by the output gate.
+\item 25 of 27 are tight $L=7$ SAT with two registers (0.3--75.3\,s), all 25 programs pass pointwise re-simulation: $L(f,2)=C(f)=7$, price zero (COMPUTATIONAL).
+\item Two are tight $L=7$ UNSAT: \texttt{0ea0e00a3c0fc3f0} (86.6\,s; $A=7$) and \texttt{a5a5a5a596694812} (102.2\,s; $A=6$). Both are plain $L=8$ SAT (283.9\,s and 216.8\,s), and both eight-step programs pass pointwise re-simulation. So each has $L(f,2)=8=C(f)+1$, price one: the upper bound is COMPUTATIONAL; the lower bound $L\ge8$ is CONDITIONAL on soundness of the tightness constraints, exactly as for the H1416 witness. Plain $L=7$ runs (two hours each) were started for both; their output is unread.
+\end{itemize}
+
+\section*{4. Consequence}
+TAIL1-C7-PRICE1 (COMPUTATIONAL, lower bounds CONDITIONAL): among 27 sampled $C=7$ functions whose circuits share one gate with the output, two cost one extra step with two registers and none costs two. Confirmed price-one functions are now three (\texttt{00ffcf78ffff7878}, \texttt{0ea0e00a3c0fc3f0}, \texttt{a5a5a5a596694812}), all from circuits of this one-shared-with-output shape, against 0 of 14 two-shared-gate $C=7$ samples. The largest confirmed price stays one; the price-two guess stays an untested CANDIDATE. These are finite samples; the ``shape predicts price'' reading is a CANDIDATE observation, not a rate.
+
+\section*{Effect on the standing candidate}
+The time-state-representation surface is unchanged. Register price is a finite control on mutable memory $S$ (forget-then-recompute at two registers), not a lower bound; no charged resource improves, and nothing here touches the SAT-to-charged-model compiler or the product-span obstruction.
+
+\section*{Next smallest step}
+Read the two-hour plain $L=7$ runs for \texttt{0ea0e00a3c0fc3f0} and \texttt{a5a5a5a596694812} when they exit. Then the cheaper of two probes: check whether three registers remove the price for all three witnesses ($L(f,3)=7$, tight encoding), or look for price two among eight-gate circuits of the same shape that pass a $C=8$ filter.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass finds two new seven-gate functions, \texttt{0ea0e00a3c0fc3f0} and \texttt{a5a5a5a596694812}, with two-register length 8 (price one; upper bound COMPUTATIONAL, lower bound CONDITIONAL on the tightness constraints) among 27 $C=7$ functions from circuits sharing one gate with the output, and 25 with price zero (TAIL1-C7-PRICE1), so the largest confirmed price stays one and the price-two guess stays an untested CANDIDATE. It falsifies nothing, improves no charged resource, and is not a proof.
+\end{document}
