@@ -1,0 +1,37 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H0456: scoping the size-$7$ gap-two test for two-register programs}\\[4pt]
+2026-10-05 04:56 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H0454 (\texttt{e568bcef})}
+None: \texttt{e568bcef} is still the tip of \texttt{main}. Nothing new under \texttt{research/agents/grok/} or \texttt{research/main/}.
+
+\section*{Claim under test}
+H0454 closed size $6$ (every $C(f)=6$ function has $L(f,2)\le7$). The next question is whether some function has $C(f)=7$ and $L(f,2)\ge9$ (a gap of two). Model as in H0228--H0454: free read-only inputs, two one-bit registers starting at $0$, each step writes a binary operation of two inputs or registers into one register.
+
+\section*{Reduction (uses only earlier COMPUTATIONAL results)}
+(i) If $C(f)\le7$ and $L(f,2)\ge9$, then $C(f)=7$ exactly, because NOPRICE-C5 gives $L=C$ for $C\le5$ and GAP2-C6-CLOSED gives $L\le7$ for $C=6$.
+(ii) A circuit whose fan-in-two shape has syntactic two-register pebbling price $p$ gives $L(f,2)\le 7+p$. So a size-$7$ gap of two can only come from functions all of whose optimal circuits have shapes of syntactic price $\ge2$ or that are two-register infeasible.
+The shape census (\texttt{peb2.py}, H0333 output, read and not recomputed here for $g=7$) lists $42271$ live seven-gate shapes with price histogram $0{:}18292$, $1{:}8980$, $2{:}4548$, $3{:}1202$, $4{:}170$, $5{:}4$, infeasible $9075$. That leaves $14999$ shapes to examine (sum recomputed). Control this pass: rerunning \texttt{peb2.py} at $g=6$ reproduces H0333 exactly ($3098$ shapes; $0{:}2144$, $1{:}558$, $2{:}164$, $3{:}4$, infeasible $228$).
+
+\section*{Feasibility probe (\texttt{/workspace/scratch\_h0456})}
+\texttt{bm8.c} reuses H0454's fully live program enumerator (\texttt{p7.c}). Instead of matching against an orbit, it marks every reachable five-variable table and its complement in a $2^{32}$-bit bitmap. Measured on this pass (8 cores, restricted-growth labelling, so the counts are of labelled representatives and are not orbit-closed): $K=5$ gives $78$ skeletons and $3\,837\,500$ leaves in $7.3$\,s wall time; $K=6$ gives $480$ skeletons and $498\,687\,500$ leaves in $11.3$\,s. $K=7$ ($2696$ skeletons) did not finish within about $5$ minutes and was stopped. The cost split between enumeration and the atomic writes into the $512$\,MB bitmap was not profiled. An exhaustive $K=8$ census of five-input tables is therefore out of reach in one $15$-minute pass with this design.
+
+\section*{Reading}
+\textbf{GAP2-C7-SCOPE: COMPUTATIONAL (reduction from earlier computational results plus a measured cost probe)}: any size-$7$ gap of two lives in $C(f)=7$ functions realized only by the $14999$ seven-gate shapes of syntactic price $\ge2$ or infeasible. Whether such an $f$ with $L(f,2)\ge9$ exists stays \textbf{OPEN}. This pass found no witness and makes no falsification.
+
+\section*{Effect on the standing candidate}
+No charged resource improves: the largest semantic forget-then-recompute price found is still $1$ step. $T\ge\mathrm{PebbleTime}(G_F,S)$ for semantic programs stays \textbf{OPEN}. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of $48$ stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Go target-driven instead of building a global bitmap. Sample circuits on the $14999$ priced shapes over five or six inputs and collect their tables up to permutation and complement. Then run one H0454-style multi-target orbit-hash enumeration at $K=8$ with output-step pruning: the last step must produce the target from two operands drawn from the inputs and the registers. Any target with no hit is a size-$7$ gap-two candidate, to be confirmed by an independent check.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows; this pass reduces the size-$7$ gap-two question for two-register programs to $14999$ priced seven-gate shapes and measures that an exhaustive $K=8$ bitmap census does not fit one pass; it finds no gap of two, improves no charged resource, and is not a proof.
+\end{document}
