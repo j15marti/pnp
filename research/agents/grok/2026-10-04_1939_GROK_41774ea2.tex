@@ -1,0 +1,61 @@
+% GROK REPORT::41774ea2::2026-10-04T19:39:00-07:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\title{GROK H1939 --- other order-three counts beyond the pair vector: clash triangles carry strong raw signal, but beyond pairs they add only $0.001$--$0.011$ holdout AUC, and a within-stratum control shows the H1927 quintile test leaks pair signal}
+\author{Agent P$\neq$NP / GROK}
+\date{2026-10-04 19:39 PT}
+\begin{document}
+\maketitle
+
+\noindent\textbf{GLOBAL STATUS: OPEN.} P versus NP remains open. No load-bearing arrow closed in this pass.
+The SAT-to-charged-model compiler and the product-span obstruction remain \textbf{OPEN}.
+This note claims no proof and no lower bound for SAT.
+
+\section*{Delta since H1927}
+Predecessor: \texttt{research/agents/grok/2026-10-04\_1927\_GROK\_41774ea2.tex} (commit \texttt{75bab42b}).
+Nothing landed on \texttt{main} after it: no new peer note under \texttt{research/main/} or \texttt{research/explorations/}, and no new raw results. This pass therefore continues H1927's own open item (other order-three counts, nonlinear tests).
+
+\section*{Why this claim next}
+H1927 found that the cubic degree count $U_3$ adds at most $0.004$ holdout AUC beyond the eight free pair-orbit coordinates (pair$_8$) and wrote ``order three: no detectable signal beyond pairs under linear tests''. That sentence was tested on one cubic only. The smallest honest next step is to try the other natural order-three counts and a nonlinear pair baseline, and to put a control on the stratified test.
+
+\section*{Checks}
+Scratch scripts \texttt{experiments/order3.py} and \texttt{experiments/k3check.py} (not pushed). Same generator as H1910/H1927 (uniform distinct 3-clauses on $q$ variables, $t=3.5q$), CaDiCaL~1.5 via PySAT, fresh seeds $20261939+q$, $N=40000$ per $q$, first half train and second half holdout; all fitting on the training half.
+Order-three counts: $U_3=\sum_v[\binom{p_v}{2}n_v+p_v\binom{n_v}{2}]$, $S_3=\sum_v[\binom{p_v}{3}+\binom{n_v}{3}]$ (with $p_v,n_v$ the positive and negative occurrences), $K_3$ = triangles of pairwise-clashing clauses (each pair has $h\ge1$), $O_3$ = triangles of pairwise-overlapping clauses ($s\ge1$). quad$_8$ is pair$_8$ plus all $36$ products; LR is ridge logistic regression on standardized features.
+\begin{enumerate}
+\item \textbf{Clash triangles are a strong raw statistic (COMPUTATIONAL).} Holdout AUC: $K_3$ $0.789/0.793/0.801/0.823$ at $q=20/24/28/32$ (UNSAT means exceed SAT means by $63$--$70$ triangles); $U_3$ $0.650$--$0.720$; $O_3$ $0.563$--$0.633$; $S_3$ $0.338$--$0.374$ (lower for UNSAT).
+\item \textbf{Increment beyond pairs is small (COMPUTATIONAL).} Holdout AUC:
+\begin{center}
+\begin{tabular}{rrrrrrrr}
+$q$ & UNSAT (hold) & LDA pair$_8$ & LDA $+C_3$ & LR pair$_8$ & LR $+C_3$ & LR quad$_8$ & LR quad$_8{+}C_3$\\\hline
+20 & 915 (451) & .8321 & .8427 & .8351 & .8458 & .8350 & .8447\\
+24 & 697 (356) & .8394 & .8465 & .8467 & .8545 & .8414 & .8488\\
+28 & 448 (210) & .8536 & .8549 & .8563 & .8610 & .8495 & .8545\\
+32 & 341 (163) & .8535 & .8594 & .8600 & .8612 & .8514 & .8525
+\end{tabular}
+\end{center}
+$C_3=(U_3,S_3,K_3,O_3)$. The gain is $+0.001$ to $+0.011$, shrinking monotonically in $q$ in both logistic columns. The quadratic pair model is no better than linear on holdout, so nonlinearity in the pair vector is not hiding signal at this $N$. No confidence interval on the AUC differences was computed, so ``detected'' is not claimed either way.
+\item \textbf{The quintile-stratified test is undercontrolled (COMPUTATIONAL).} Stratifying on the quad$_8$ LR score, the within-stratum AUC of the score \emph{itself} is $0.636$ ($q=20$) and $0.655$ ($q=28$) with $5$ strata, and $0.559$ / $0.548$ with $20$ strata. $K_3$ under the same strata: $0.588$ / $0.607$ ($5$), $0.553$ / $0.560$ ($20$), i.e.\ within about $0.05$ below to $0.012$ above the leftover pair signal. $K_3$ residualized on quad$_8$ (least squares on training SAT) has holdout AUC $0.580$ / $0.550$; adding $K_3$ alone to quad$_8$ moves LR AUC $0.835\to0.842$ and $0.850\to0.852$.
+\end{enumerate}
+
+\paragraph{Reading.} H1927's sentence ``no order-three signal beyond pairs'' should be read as scoped to $U_3$; it is narrowed here, not falsified, because the extra order-three counts add only $0.001$--$0.011$ holdout AUC and the clash-triangle stratified AUC stays within about $0.012$ of, or below, a within-stratum pair-score control. The control also shows that H1927's quintile number ($U_3$ stratified AUC $0.49$--$0.54$) sat below a within-stratum pair leak of about $0.64$, so it is consistent with no $U_3$ increment but is a weak test. Whether $K_3$ has a genuine increment that survives a tight pair match (finer strata, or exact matching on pair$_8$ at small $q$) is \textbf{OPEN}. Nothing is falsified, and nothing improves a charged $T$, $S$, or $R$.
+
+\section*{Status ledger}
+\begin{itemize}
+\item Time-state-representation surface: \textbf{CANDIDATE}.
+\item SAT-to-charged-model compiler; product-span obstruction: \textbf{OPEN}.
+\item Raw $K_3$ AUC $0.79$--$0.82$; $C_3$ increment $0.001$--$0.011$ beyond pair$_8$; within-stratum control $0.55$--$0.66$: \textbf{COMPUTATIONAL} ($q\le32$).
+\item Genuine order-three increment beyond pairs; asymptotic pair gap; superpolynomial monotone slice lower bound: \textbf{OPEN}.
+\item PAIRCAM2 pair-orbit classification and slice guard: \textbf{CANDIDATE} (peer label, unchanged).
+\item D(4,8) semantic-cut $\ge48$: \textbf{FALSIFIED/RETIRED} (exact cut 8); not revived.
+\item Contact/switch models: polynomially equivalent to branching programs; do not close the gap.
+\end{itemize}
+
+\section*{Reproducibility}
+Scratch at \texttt{/workspace/scratch\_h1939}: \texttt{experiments/order3.py}, \texttt{experiments/k3check.py} (import the H1910 generator \texttt{paircam\_audit.py}); results \texttt{results/q\{20,24,28,32\}.json} and \texttt{results/k3\_q\{20,28\}.json}. Root \texttt{main.tex} not edited.
+
+\section*{FINAL STATUS}
+P versus NP remains OPEN; no falsification, no charged T/S/R improvement; clash-triangle counts have raw holdout AUC $0.79$--$0.82$ but the four order-three counts add only $0.001$--$0.011$ holdout AUC beyond the pair vector at $q\le32$, and the clash-triangle stratified AUC stays within about $0.012$ of, or below, a within-stratum pair-score control, so a genuine order-three increment beyond pairs remains OPEN.
+\end{document}
