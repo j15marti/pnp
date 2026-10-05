@@ -1,0 +1,320 @@
+% BONFERRONNIMOMENT1
+\documentclass[11pt]{article}
+\usepackage[margin=.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\begin{document}
+
+\begin{center}
+{\Large BONFERRONNI-MOMENT1: Exact DNF fooling from slice moment matching}\\[4pt]
+\textbf{Date: 2026-10-04 22:30 PT}\\
+\textbf{Status: PROVED/EXACT lemmas + COMPUTATIONAL hostile control}\\
+\textbf{P versus NP status: OPEN}
+\end{center}
+
+\section{Literature position}
+
+Wegener's slice theory identifies set circuits as the natural exact-slice
+model and warns that the standard monotone lower-bound methods do not transfer
+to slice functions in their original form.
+
+Cavalar--Kumar--Rossman (Algorithmica 2022) prove lower bounds for general
+monotone DAG circuits by replacing each gate with a closed-and-trimmed
+approximator. Their analysis controls positive errors through small minterms
+and negative errors through closure.  The paper also states that the
+classical sunflower approximation framework leaves limited room for further
+improvement when used with the same product-style test distributions.
+
+Beimel--Nir (ECCC TR26-213, 2026) obtain strong lower bounds for
+\emph{formulas} over multislice gates.  This is not an unrestricted monotone
+DAG lower bound and therefore does not close TASK-008.
+
+The more recent method-of-moments sunflower theorem (ECCC TR26-220, 2026) is
+useful conceptually, but SLICEWIDTH1 and HYPERGEOMCENTER1 show that its
+published pseudo-independence hypothesis and centered-factorization route do
+not directly fit the present exact sparse slice.
+
+This note extracts the method-of-moments step that \emph{does} transfer
+exactly.
+
+\section{Exact Bonferroni moment lemma}
+
+Let \(\mu_+\) and \(\mu_-\) be distributions on
+\(\{0,1\}^M\).  Assume they match every squarefree coordinate moment through
+degree \(K\):
+\[
+\mathbb E_{\mu_+}\prod_{i\in S}z_i
+=
+\mathbb E_{\mu_-}\prod_{i\in S}z_i
+\qquad
+\forall |S|\le K.
+\tag{1}
+\]
+
+Let
+\[
+H(z)=\bigvee_{a=1}^m \bigwedge_{i\in A_a} z_i
+\]
+be a monotone DNF, with \(|A_a|\le w\).  Define
+\[
+X(z)=\sum_{a=1}^m
+\mathbf 1[A_a\subseteq z].
+\]
+
+\begin{theorem}[BONFERRONNI-MOMENT]
+Let \(R\ge2\) be even and satisfy \(Rw\le K\).  Then
+\[
+\boxed{
+\left|
+\Pr_{\mu_+}[H=1]
+-
+\Pr_{\mu_-}[H=1]
+\right|
+\le
+\mathbb E_{\mu_-}\binom XR
+}
+\tag{2}
+\]
+and the same factorial moment occurs under \(\mu_+\).
+\end{theorem}
+
+\begin{proof}
+For every \(j\le R\),
+\[
+\mathbb E\binom Xj
+=
+\sum_{I\subseteq[m], |I|=j}
+\Pr\left[
+\bigcup_{a\in I}A_a\subseteq z
+\right].
+\]
+Every union has size at most \(jw\le Rw\le K\), so (1) implies equality
+of all factorial moments through order \(R\).
+
+Bonferroni gives, for even \(R\),
+\[
+\sum_{j=1}^{R}(-1)^{j+1}\mathbb E\binom Xj
+\le
+\Pr[X>0]
+\le
+\sum_{j=1}^{R-1}(-1)^{j+1}\mathbb E\binom Xj.
+\]
+The two distributions therefore lie in the same interval, whose width is
+\(\mathbb E\binom XR\).  This proves (2).
+\end{proof}
+
+This is an exact two-distribution statement and uses only raw containment
+moments.  It is unaffected by CENTER-RATIO-FAIL.
+
+\section{Uniform exact-slice factorial moment}
+
+For
+\[
+\mu_-=U_{M,t},
+\]
+the uniform exact-\(t\) slice,
+\[
+\mathbb E_{U_{M,t}}\binom XR
+=
+\sum_{I\subseteq[m], |I|=R}
+\frac{(t)_{|\cup_{a\in I}A_a|}}
+{(M)_{|\cup_{a\in I}A_a|}}.
+\tag{3}
+\]
+
+Thus the entire DNF fooling error is an explicit combinatorial quantity.
+
+\section{Literal sunflower corollary}
+
+Suppose the DNF terms form a literal sunflower
+\[
+A_a=C\cup P_a,
+\qquad
+|C|=c,
+\qquad
+|P_a|=d,
+\]
+with pairwise disjoint petals.  Then every \(R\)-term union has size
+\[
+c+Rd.
+\]
+
+\begin{corollary}[SUNFLOWER-MOMENT]
+If \(R\) is even and \(c+Rd\le K\), then
+\[
+\boxed{
+\left|
+\Pr_{\mu_+}[H=1]
+-
+\Pr_{U_{M,t}}[H=1]
+\right|
+\le
+\binom mR
+\frac{(t)_{c+Rd}}{(M)_{c+Rd}}
+}.
+\tag{4}
+\]
+\end{corollary}
+
+This removes the term-by-term union bound that caused DENSITY-CANCEL1.
+The required resource is now growing moment order, not a product-measure
+centered-factorization theorem.
+
+\section{Numerical parameter checks}
+
+At density \(t=3.5q\):
+
+\[
+\begin{array}{c|c|c|c|c|c}
+q&c&d&m&R&\text{bound in (4)}\\
+\hline
+20&0&3&300000&4&5.23\times10^{-6}\\
+24&0&3&300000&4&5.65\times10^{-8}\\
+20&1&2&10000&4&2.26\times10^{-5}\\
+24&1&2&10000&4&7.29\times10^{-7}\\
+20&2&1&1000&10&4.08\times10^{-3}\\
+24&2&1&1000&10&4.41\times10^{-5}
+\end{array}
+\]
+
+The corresponding moment orders \(K=c+Rd\) are 12, 12, 9, 9, 12, and 12.
+
+These are exact-slice combinatorial bounds for the stated literal sunflower
+DNFs, not empirical acceptance estimates.
+
+\section{XOR-SLICE-EASY hostile control}
+
+Moment camouflage itself is not SAT-specific.
+
+At density \(0.9\), where both outcomes occur for the Gaussian-elimination
+parity-shadow predicate, exact canonical three-clause orbit vectors were
+computed for every sampled formula.
+
+For \(q=12,t=11,N=5000\):
+\[
+\#XOR\text{-UNSAT}=1728,
+\qquad
+\#XOR\text{-SAT}=3272,
+\]
+and the empirical XOR-SAT target was at numerical \(L_\infty\) distance
+\[
+3.70\times10^{-6}
+\]
+from the convex hull of XOR-UNSAT order-three vectors.
+
+A second \(q=12,N=10000\) run gave residual
+\[
+2.33\times10^{-6}.
+\]
+
+At \(q=14,t=13,N=5000\):
+\[
+\#XOR\text{-UNSAT}=1847,
+\qquad
+\#XOR\text{-SAT}=3153,
+\]
+and the numerical LP returned
+\[
+\boxed{\delta=0}
+\]
+to solver tolerance, with 68 positive support columns.
+
+Because the parity-shadow predicate is polynomial-time solvable by Gaussian
+elimination, low-order fractional-design feasibility cannot by itself be a
+hardness witness.
+
+\section{What this changes}
+
+The missing bridge should no longer be phrased as
+\[
+\text{small circuit}\Rightarrow\text{low degree}.
+\]
+
+The more precise target is:
+
+\[
+\boxed{
+\text{small UNSAT set circuit}
+\Rightarrow
+\text{two-distribution approximator decomposable into bounded-width
+sunflower DNFs with small factorial tails}
+}.
+\tag{5}
+\]
+
+If (5) were proved in a SAT-specific way, then growing-order UNSAT fractional
+designs plus BONFERRONNI-MOMENT would control the approximator without using
+the pseudo-independent product-mixture theorem.
+
+The SAT-specific qualifier is essential: XOR-SLICE-EASY shows that the local
+moment side of the argument can also hold for an easy predicate.
+
+Krieger's prime-implicant incompressibility results are relevant here because
+they exploit prime-implicant structure and apply to bounded-depth/multilinear
+models and pseudoslice-like functions.  They do not provide (5) for general
+monotone DAG circuits.
+
+\section{Next target}
+
+\textbf{SETCIRCUIT-SUNFLOWER1.}
+
+Using Wegener's set-circuit representation of a \(t\)-slice, formulate the
+output gate directly as a family of exact-layer positive sets.  Attempt to
+prove or falsify a gate-by-gate decomposition theorem in which every
+intermediate family either
+
+\begin{enumerate}
+\item contains a large literal/robust sunflower whose acceptance is controlled
+by BONFERRONNI-MOMENT, or
+\item has a quantitatively small family of bounded-width minterms and can be
+charged directly.
+\end{enumerate}
+
+The theorem must be strong enough for DAG sharing, not just formulas, and it
+must fail cleanly on XOR-SLICE-EASY unless it uses SAT-specific core/minterm
+geometry.
+
+In parallel, continue DUAL-COLUMN3 only as a way to test growing moment order;
+order-three feasibility alone is now known not to be SAT-specific.
+
+\section{Status}
+
+BONFERRONNI-MOMENT: \textbf{PROVED/EXACT}.
+
+SUNFLOWER-MOMENT: \textbf{PROVED/EXACT}.
+
+XOR order-three fractional-design control: \textbf{COMPUTATIONAL}.
+
+SETCIRCUIT-SUNFLOWER1: \textbf{OPEN}.
+
+General monotone slice lower bound and \(P\ne NP\): \textbf{OPEN}.
+
+\begin{thebibliography}{5}
+\bibitem{Wegener1985}
+I. Wegener,
+On the Complexity of Slice Functions,
+Theoretical Computer Science 38:55--68, 1985.
+
+\bibitem{CKR2022}
+B. P. Cavalar, M. Kumar, and B. Rossman,
+Monotone Circuit Lower Bounds from Robust Sunflowers,
+Algorithmica 84:3655--3685, 2022.
+
+\bibitem{CFMSY2026}
+B. P. Cavalar, T. Fabris, P. Mukhopadhyay, S. Srinivasan, and A. Yehudayoff,
+Derandomized Sunflowers and Radical Lower Bounds,
+ECCC TR26-220, 2026.
+
+\bibitem{BeimelNir2026}
+A. Beimel and O. Nir,
+The Power of Multislices in Monotone Computation,
+ECCC TR26-213, 2026.
+
+\bibitem{Krieger2007}
+M. P. Krieger,
+On the Incompressibility of Monotone DNFs,
+Theory of Computing Systems 41:211--231, 2007.
+\end{thebibliography}
+
+\end{document}
