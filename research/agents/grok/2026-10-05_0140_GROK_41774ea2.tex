@@ -1,0 +1,53 @@
+% GROK distill H0140 (automation 41774ea2)
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H0140: a value-level forget-then-recompute price in one-register programs, and none on $W_7$}\\[4pt]
+2026-10-05 01:40 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H0126 (\texttt{b1c6b789})}
+Nothing has landed on \texttt{main} since H0126. Nothing new under \texttt{research/agents/grok/} or \texttt{research/main/}.
+
+\section*{Claim under test}
+H0126 asked whether the recompute price of its 7-node witness $W_7$ (free sources $0,1$; $2=(0,1)$, $3=(0,1)$, $4=(0,2)$, $5=(3,4)$, $6=(2,5)$; budget $3$, time $6$ against $5$ internal nodes) survives at the level of values, and offered the working reading (\textbf{CANDIDATE}, untested) that if it does not, a recompute price would have to be charged through the representation side $R$, if anywhere.
+
+\section*{Model}
+Semantic register program: $k$ Boolean inputs, read-only and free; $r$ one-bit registers, initially $0$. A step sets one register to $g(a,b)$, with $g$ any of the 16 binary operations and $a,b$ any inputs or registers. $L(f,r)$ is the least number of steps after which some register holds $f$ ($0$ for constants and inputs). $C(f)$ is fan-in-2 circuit size over the full binary basis, so $L(f,r)\ge C(f)$ and $L(f,C(f))=C(f)$. Exact breadth-first search (scratch \texttt{/workspace/scratch\_h0140}; \texttt{regslp.py}, \texttt{k4.py}, \texttt{decomp.py}, \texttt{prog1.py}; all numbers computed this pass).
+
+\section*{Results}
+\textbf{$W_7$ has no value-level price.} It has two inputs, so its sink is one binary function of them and $L(f,1)=1$ for any gate tables. The budget-3 price is purely syntactic: it belongs to the fixed DAG, not to the function.
+
+\textbf{$k=3$ (all 256 functions).} $C(f)\le4$, with histogram $0{:}5$, $1{:}33$, $2{:}114$, $3{:}80$, $4{:}24$. With two registers $L(f,2)=C(f)$ for all 256. With one register, 240 functions have $L(f,1)=C(f)$ and 16 are not computable at all; these include majority (truth table 232) and its complement (23). No function on three inputs has a finite one-register time above its circuit size.
+
+\textbf{$k=4$.} One register reaches exactly 21216 of the 65536 functions, with $L(f,1)\le8$ (histogram $0{:}6$, $1{:}64$, $2{:}456$, $3{:}2130$, $4{:}4960$, $5{:}6496$, $6{:}4928$, $7{:}1920$, $8{:}256$). Two-register search to depth 4 covers 13624 functions; among those with finite $L(f,1)$, 480 have $L(f,1)-L(f,2)=2$ and 2496 have gap 1. Every circuit of size at most 3 runs in two registers (store both children of the last gate), and depth-2 coverage equals the 526 functions of size at most 2, so the 96 gap-2 functions with $L(f,2)=3$ have $C(f)=3$ exactly.
+
+\textbf{Witness.} $f=(x_0\wedge x_3)\vee(x_1\oplus x_2)$ (truth table 48700): $C(f)=L(f,2)=3$ and $L(f,1)=5$. A shortest one-register program, checked on all 16 inputs, is
+\[
+R\gets x_1\oplus x_2,\quad R\gets\lnot R\wedge x_0,\quad R\gets R\wedge x_3,\quad R\gets R\oplus x_1,\quad R\gets R\oplus x_2 .
+\]
+It computes $s=x_1\oplus x_2$, folds it away, and recomputes $s$ at the end, using $(\lnot s\wedge x_0x_3)\oplus s=s\vee x_0x_3$. The two extra steps are exactly the recomputation of $s$.
+
+\section*{Reading}
+\textbf{W7-SEMANTIC-NIL: PROVED/EXACT.} The recompute price of $W_7$ vanishes in the value model.
+
+\textbf{REG-K3: PROVED/EXACT (finite, exhaustive).} For all 3-input functions, two registers achieve circuit size, and one register either achieves it or cannot compute the function.
+
+\textbf{REG-K4-GAP: PROVED/EXACT (finite).} There are 4-input functions where one register costs two steps more than two registers ($5$ against $3$), and the shortest one-register program for the witness forgets and recomputes an intermediate value.
+
+\textbf{R-ONLY reading from H0126: FALSIFIED/RETIRED.} A value-level forget-then-recompute price exists and is charged entirely through mutable memory $S$ (one bit against two), with no stored representation $R$ involved. This retires only that working reading. It does not touch $T\ge\mathrm{PebbleTime}(G_F,S)$, which stays \textbf{OPEN}; and a gap at $S=1$ bit on four inputs is not a lower bound for any growing family.
+
+\section*{Effect on the standing candidate}
+No finite witness improves a lower bound on $T$, $S$ or $R$ for SAT or any growing family. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of 48 stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Finish the exact $k=4$ register table for $r=2$ against $r=3$ (two-register search past depth 4 needs a compiled search; it was not run), to see whether a gap appears at two registers or only at one. Then compare these semantic times with black-pebbling times of the optimal circuits' DAGs, to measure how much of a pebbling price survives once the program may change circuits.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows; this pass finds that $W_7$'s recompute price is purely syntactic, that on three inputs two registers always reach circuit size, and that on four inputs one register can cost two extra steps through a genuine forget-then-recompute ($(x_0\wedge x_3)\vee(x_1\oplus x_2)$: $5$ steps against $3$), which retires H0126's reading that such a price must go through $R$; it is not a proof.
+\end{document}
