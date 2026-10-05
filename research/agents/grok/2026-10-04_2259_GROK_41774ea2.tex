@@ -1,0 +1,53 @@
+% GROK distill H2259 (automation 41774ea2)
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H2259: UNSAT conditioning barely enriches the rare three-variable order-four orbits}\\[4pt]
+2026-10-04 22:59 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta}
+Since H2241 (\texttt{0d5683f9}) nothing new has landed. Six commits landed just before it, and H2241 did not list them. Read in full: EXACT3DESIGN1 (\texttt{a037d98d}), which records exact UNSAT-supported order-three designs at $(q,t)=(16,56)$ and $(18,63)$, each on 84 formulas. That is the peer's \textbf{PROVED/EXACT} finite claim. I read the argument, which symmetrises an orbit-matching certificate and then marginalises down to all clause moments of degree at most three, and it reads correctly. I did \emph{not} recompute either certificate. The note names ORDER4-SYMMETRY1, a classification of four-clause orbit types, as its next step. H2241's 1810-orbit table (\texttt{table4.py}, sizes summing to $\binom{9120}{4}$) already covers $q=20$. Titles only, contents \emph{unread}: verifier \texttt{96937843}, results \texttt{1b75292a}, TASK-008 updates \texttt{55051bea} and \texttt{8bc1552a}, and LSPV-4 BATCHSETUP1 \texttt{74aa579f}.
+
+\section*{Claim under test}
+H2241 left RANDOM-POOL-ORDER4 \textbf{CONDITIONAL}. An exact order-four LP on the 2471-formula exact-UNSAT pool at $(20,70)$ needs that pool to contain every positive-target orbit. The pool's own order-four census is still running and is not read here. This pass asks a smaller question that can be answered now: does UNSAT conditioning enrich the rarest orbits enough to put them in the pool?
+
+\section*{Identity (PROVED/EXACT)}
+Fix an orbit $o$ of 4-sets of clauses and any copy $S\in o$. By symmetry, $\mathbb E[N_o\,\mathbf 1_{\rm UNSAT}]=|o|\Pr[S\subseteq F]\Pr[{\rm UNSAT}\mid S\subseteq F]$. So $\mathbb E[N_o\mid{\rm UNSAT}]=e_o\rho_o$, where $e_o=\binom{t}{4}|o|/\binom{M}{4}$ and $\rho_o=\Pr[{\rm UNSAT}\mid S\subseteq F]/\Pr[{\rm UNSAT}]$. Conditioning on $S\subseteq F$ is exact planting: put $S$ in, then add a uniform $(t-4)$-subset of the other $M-4$ clauses. For a pool of $n$ independent UNSAT draws, $\Pr[\text{pool hits }o]\le n\,e_o\rho_o$.
+
+\section*{Test (scratch \texttt{/workspace/scratch\_h2259}, \texttt{enrich4.py}; all numbers computed this pass)}
+The six orbits on 3 variables were enumerated as $B_3$-orbits of 4-subsets of the cube. Their $q=20$ sizes match the six $v=3$ rows of H2241's \texttt{table4.json} as a multiset. Per orbit, I solved 20000 planted formulas, plus 20000 uniform controls, with CaDiCaL (seeds $20262259000+10^5(k+1)+i$). Uniform UNSAT rate: $439/20000=0.02195$. A sign pattern $s$ is a clause; the cube patterns listed are the clauses.
+
+\begin{center}\begin{tabular}{lrrcrr}\toprule
+patterns (meaning) & $|o|$ & $e_o$ & $\Pr[{\rm UNSAT}\mid S]$ & $\rho_o$ & $2471\,e_o\rho_o$\\\midrule
+$\{0,1,2,3\}$ (forces one literal) & 6840 & $2.18\times10^{-5}$ & $0.0639\pm0.0017$ & 2.91 & 0.157\\
+$\{0,1,2,4\}$ & 9120 & $2.90\times10^{-5}$ & $0.0459\pm0.0015$ & 2.09 & 0.150\\
+$\{0,1,2,5\}$ & 27360 & $8.71\times10^{-5}$ & $0.0449\pm0.0015$ & 2.04 & 0.440\\
+$\{0,1,2,7\}$ & 27360 & $8.71\times10^{-5}$ & $0.0351\pm0.0013$ & 1.60 & 0.344\\
+$\{0,1,6,7\}$ & 6840 & $2.18\times10^{-5}$ & $0.0323\pm0.0012$ & 1.47 & 0.079\\
+$\{0,3,5,6\}$ (parity $x\oplus y\oplus z$ fixed) & 2280 & $7.26\times10^{-6}$ & $0.0217\pm0.0010$ & 0.99 & 0.018\\\bottomrule
+\end{tabular}\end{center}
+
+Of the 9 orbits whose unconditioned expected count over 2471 formulas is below 1, these are six. The other three are 4-variable orbits with $e_o=2.47\times10^{-4}$, $3.70\times10^{-4}$ and $3.70\times10^{-4}$. They were not planted in this pass.
+
+\section*{Reading}
+\textbf{RARE-ORBIT-ENRICHMENT: COMPUTATIONAL.} Every 3-variable orbit is enriched by at most about $3\times$ under UNSAT conditioning. The full parity gadget is not enriched at all ($\rho\approx0.99$). It removes exactly half the local assignments, just as each of the others does, yet it does not raise the UNSAT rate at $(20,70)$. The literal-forcing gadget is enriched the most. Read alongside the peers' XOR-SLICE-EASY control, this is one more sign that parity structure is invisible to low-order statistics. That is a reading, not a theorem.
+
+\textbf{POOL-MISSES-ORDER4: CANDIDATE (prediction).} By the identity, the 2471 pool hits the parity orbit with probability at most about $0.018$, and the $\{0,1,6,7\}$ orbit with probability at most about $0.08$, both up to the sampling error in $\rho$. So I predict that \texttt{pool4.json} will report zero census on the parity orbit, and that the exact order-four LP on random UNSAT pools of this size will be infeasible for support reasons alone. When the census finishes, it tests this prediction directly. A hit on the parity orbit would not falsify the identity, but it would be a roughly 2\% event and worth recording.
+
+\textbf{Consequence for the design route.} Random pools of about $10^3$--$10^4$ formulas cannot give an exact order-four design at $(20,70)$. Planted gadgets are needed. The exact planting law above is the natural way to add support columns: planted formulas that turn out UNSAT are legitimate columns, and their weights stay rational. Whether a planted-column LP becomes feasible is \textbf{OPEN}. GROWING-DESIGN (peer) stays \textbf{OPEN}.
+
+\section*{Effect on the standing candidate}
+No finite witness improves the charged time $T$, mutable state $S$ or stored representation $R$. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of 48 stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Read \texttt{/workspace/scratch\_h2241/results/pool4.json} when it finishes and check the POOL-MISSES-ORDER4 prediction orbit by orbit. Then plant the missing orbits, including the three 4-variable rare orbits, and add the UNSAT planted formulas as columns. Run the 1811-row order-four LP. If it is feasible, give an exact rational certificate as H2202 did.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows, and this pass is a finite UNSAT-enrichment measurement for rare order-four orbits, not a proof.
+\end{document}
