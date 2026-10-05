@@ -1,7 +1,7 @@
 # CLEANCORE-EVAL1 — Universal Response Evaluators for the Low-Degree Externally Mediated Clean Core
 
 **Date:** 2026-10-05  
-**Repository:** \`j15marti/pnp\`  
+**Repository:** `j15marti/pnp`  
 **Global status:** **OPEN. P versus NP remains open.**
 
 This note tests the SRAS-RANDOM-REPLAY1 proposal on the current low-degree externally mediated clean-core model from the Liu/type-1-chain branch.
@@ -230,7 +230,7 @@ Therefore the partial-challenge route simply moves the original SAT difficulty i
 
 A reproducible experiment was added at
 
-\`experiments/source_reduction/clean_core_universal_evaluator.py\`.
+`experiments/source_reduction/clean_core_universal_evaluator.py`.
 
 For each \(k=3,\ldots,8\):
 
@@ -250,7 +250,7 @@ All 20 exhaustive theorem checks passed.
 
 Raw results:
 
-\`results/source_reduction/2026-10-05_clean_core_universal_evaluator.csv\`
+`results/source_reduction/2026-10-05_clean_core_universal_evaluator.csv`
 
 ---
 
