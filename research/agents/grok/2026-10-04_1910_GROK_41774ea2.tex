@@ -1,0 +1,68 @@
+% GROK REPORT::41774ea2::2026-10-04T19:10:00-07:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\title{GROK H1910 --- audit of PAIR-CAMOUFLAGE1: raw table reproduced exactly with CaDiCaL, three exact linear identities on the pair-orbit vector, and the orbit vector still separates UNSAT after $T$ and $\sum_v d_v^2$ are removed, including inside the $T$-camouflage window}
+\author{Agent P$\neq$NP / GROK}
+\date{2026-10-04 19:10 PT}
+\begin{document}
+\maketitle
+
+\noindent\textbf{GLOBAL STATUS: OPEN.} P versus NP remains open. No load-bearing arrow closed in this pass.
+The SAT-to-charged-model compiler and the product-span obstruction remain \textbf{OPEN}.
+This note claims no proof and no lower bound for SAT.
+
+\section*{Delta since H1857}
+Predecessor: \texttt{research/agents/grok/2026-10-04\_1857\_GROK\_41774ea2.tex} (commit \texttt{eca5291f}).
+Landed after it (both read): \texttt{experiments/monotone\_slice/pair\_camouflage1.py} (\texttt{e442fc6f}) and \texttt{results/raw/monotone\_slice/PAIRCAM1\_pair\_orbits.txt} (\texttt{d7f52710}). No new note under \texttt{research/main/} or \texttt{research/agents/grok/}; no peer status label on PAIR-CAMOUFLAGE1 yet. Literature: none needed for this check.
+
+\section*{Why this claim next}
+PAIR-CAMOUFLAGE1 measures the full $9$-orbit pair vector $n_{s,h}(F)$ (pairs of clauses sharing $s$ variables, $h$ of them with opposite sign) for SAT and UNSAT formulas at density $3.5$. The camouflage target needs UNSAT formulas whose \emph{whole} pair vector looks typical. H1857 showed the window $|T-\mathbb E_0T|\le q/2$ on the single statistic $T$ is nonempty. The smallest next question: is matching $T$ enough, or do the other orbit coordinates still give UNSAT away?
+
+\section*{Checks}
+Scratch script \texttt{experiments/paircam\_audit.py} (not pushed); pair vectors computed by matrix products $|A||A|^\top$ and $AA^\top$ on the signed clause-variable matrix, satisfiability by CaDiCaL~1.5 (PySAT).
+\begin{enumerate}
+\item \textbf{Reproduction (COMPUTATIONAL).} Peer generator, seeds $8000+q$, $N=4000$: UNSAT counts $89,72,56,40$ at $q=20,24,28,32$ and every printed SAT$-E_0$, UNSAT$-E_0$, U$-$S entry match the raw file to two decimals. The peer DPLL is not a source of error here. The raw file lists only six orbits at $q=20,24,28$; the three $s=3$ orbits there are below $0.35$ in absolute deviation on both seed families.
+\item \textbf{Three exact identities (PROVED/EXACT, checked on all $32000$ formulas).} With $T=\sum_v \mathrm{pos}_v\mathrm{neg}_v$ and $d_v$ the variable degree,
+\[ T=\sum_{s,h} h\,n_{s,h},\qquad \sum_v d_v^2=3t+2\sum_{s,h} s\,n_{s,h},\qquad \sum_{s,h}n_{s,h}=\tbinom t2. \]
+Each is a double count of ordered occurrence pairs (opposite-sign occurrences of one variable in two clauses; all occurrence pairs of one variable; all clause pairs). So the $9$-vector has $8$ free coordinates, two of which are $T$ and the degree second moment.
+\item \textbf{Signal beyond $T$ (COMPUTATIONAL).} Fisher LDA, stratified $5$-fold cross-validation, $20$ repetitions, mean held-out AUC:
+\begin{center}
+\begin{tabular}{llrrrrr}
+seeds & $q$ & $U$ & $T$ alone & $(T,\sum d^2)$ & full $8$ & residual after $(T,\sum d^2)$\\\hline
+peer $8000{+}q$ & 20 & 89 & .729 & .762 & .793 & .674\\
+ & 24 & 72 & .777 & .819 & .862 & .716\\
+ & 28 & 56 & .818 & .822 & .861 & .685\\
+ & 32 & 40 & .785 & .840 & .873 & .704\\
+fresh $20261005{+}q$ & 20 & 85 & .747 & .800 & .847 & .726\\
+ & 24 & 59 & .781 & .804 & .822 & .695\\
+ & 28 & 61 & .833 & .842 & .859 & .673\\
+ & 32 & 33 & .774 & .810 & .811 & .620
+\end{tabular}
+\end{center}
+The residual column regresses $T$ and $\sum d^2$ out of the $8$ coordinates first; it still separates at AUC $0.62$--$0.73$.
+\item \textbf{Inside the $T$ window (COMPUTATIONAL, small samples).} Restricting to $|T-\mathbb E_0T|\le q/2$ with $\mathbb E_0T=qL^2\,t(t-1)/(M(M-1))$: windows of $1446$--$1754$ formulas hold only $11$--$29$ UNSAT, and the full-$8$ LDA gives held-out AUC $0.619,0.751,0.709,0.819$ (peer) and $0.808,0.716,0.645,0.812$ (fresh) at $q=20,24,28,32$. With $11$--$29$ positives these AUCs are noisy, but all eight exceed $0.6$.
+\end{enumerate}
+
+\paragraph{Reading.} Matching $T$ does not camouflage UNSAT against fixed-order pair statistics at these sizes: the other orbit coordinates still carry held-out signal (the largest mean UNSAT deviations sit in orbits $(1,0)$, $(1,1)$ and $(0,0)$; which residual direction carries the signal was not isolated). A PAIR-CAMOUFLAGE family therefore has to pin the whole $8$-dimensional orbit vector near $\mathbb E_0$, not one coordinate. Whether such a family exists with UNSAT density bounded away from zero, and whether the signal persists as $q$ grows, is \textbf{OPEN}; four sizes up to $q=32$ cannot decide an asymptotic gap. Nothing is falsified, and nothing improves a charged $T$, $S$, or $R$.
+
+\section*{Status ledger}
+\begin{itemize}
+\item Time-state-representation surface: \textbf{CANDIDATE}.
+\item SAT-to-charged-model compiler; product-span obstruction: \textbf{OPEN}.
+\item Identities $T=\sum h\,n_{s,h}$, $\sum d^2=3t+2\sum s\,n_{s,h}$, $\sum n_{s,h}=\binom t2$: \textbf{PROVED/EXACT}.
+\item PAIRCAM1 reproduction; residual signal after $(T,\sum d^2)$; signal inside the $T$ window at $q\le32$: \textbf{COMPUTATIONAL}.
+\item INTERMEDIATE1 SYM1, pair-orbit algebra, LOCALPATTERN-GUARD: \textbf{CANDIDATE} (peer label, unchanged).
+\item Full-vector pair-camouflaged UNSAT family; asymptotic pair gap; unrestricted monotone lower bound: \textbf{OPEN}.
+\item D(4,8) semantic-cut $\ge48$: \textbf{FALSIFIED/RETIRED} (exact cut 8); not revived.
+\item Contact/switch models: polynomially equivalent to branching programs; do not close the gap.
+\end{itemize}
+
+\section*{Reproducibility}
+Scratch at \texttt{/workspace/scratch\_h1910}: \texttt{experiments/paircam\_audit.py}, \texttt{experiments/window.py}; results \texttt{results/\{peer,fresh\}\_\{20,24,28,32\}.json} and \texttt{results/window\_\{peer,fresh\}.log}. Each $4\times4000$-formula run took about $15$\,s. Root \texttt{main.tex} not edited.
+
+\section*{FINAL STATUS}
+P versus NP remains OPEN; no falsification, no charged T/S/R improvement; PAIRCAM1 reproduces exactly under CaDiCaL, the pair-orbit vector satisfies three exact linear identities tying it to $T$ and $\sum_v d_v^2$, and its remaining coordinates still separate UNSAT out of sample (AUC $0.62$--$0.73$ after removing $T$ and $\sum d^2$; $0.62$--$0.82$ inside the $T$ window), so camouflage must match the whole orbit vector, which remains OPEN.
+\end{document}
