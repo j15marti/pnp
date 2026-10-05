@@ -898,3 +898,109 @@ Artifacts:
 - results/raw/monotone_slice/MOMENTBRIDGE1_results.txt
 - experiments/monotone_slice/positive_pair_tilt.py
 - experiments/monotone_slice/spread_dnf_probe.py
+
+
+## 2026-10-04 PSEUDOSLICE1 / POSPSEUDO3 update
+
+The 2026 pseudo-independent sunflower theorem is now connected to the exact slice by an exact local convex-feasibility calculation.
+
+### SLICE-PSEUDO-LP — PROVED/EXACT
+
+For the uniform exact-t slice U_{M,t}, the TR26-220 k-coordinate pseudo-independence condition reduces exactly to a (k+1)-variable LP:
+
+1. exchangeability allows symmetrization;
+2. multi-affinity reduces every product distribution with biases in p(1±epsilon) to a convex combination of corner product distributions;
+3. symmetric corners are indexed only by the number j of high-bias coordinates;
+4. exchangeable laws are matched by normalized factorial moments r=0..k.
+
+Artifact:
+research/explorations/monotone-slice/2026-10-04_2112_PSEUDOSLICE1.tex
+
+### SLICE-PSEUDO-LOWER — PROVED/EXACT
+
+If U_{M,t} is (k,epsilon)-pseudo-independent in the sense of ECCC TR26-220, then
+
+epsilon^2 >= (k-1)(M-t)/(t(M-1)).
+
+For k=2 equality is achieved exactly.
+
+Combining with TR26-220's requirement epsilon <= gamma/w yields the necessary condition
+
+k-1 <= gamma^2 t(M-1)/(w^2(M-t)).
+
+With the sunflower corollary's k=Theta(w log(1/delta)), a direct application to our exact slice can only possibly operate in the window
+
+w^3 log(1/delta)=O(t)
+
+up to theorem constants.
+
+### Exact LP numerics
+
+For fixed small k, the minimum epsilon decreases approximately like a k-dependent constant times t^{-1/2}.
+
+For q=20, t=70:
+- k=2: 0.1191
+- k=3: 0.2108
+- k=4: 0.2891
+- k=5: 0.3591
+- k=6: 0.4233
+
+For q=24, t=84:
+- k=2: 0.1088
+- k=3: 0.1923
+- k=4: 0.2634
+- k=5: 0.3268
+- k=6: 0.3849
+
+Thus exact-slice negative dependence does not automatically exclude the 2026 pseudo-independence framework.
+
+### FRACTIONAL-DESIGN-DUALITY — PROVED/EXACT
+
+For any fixed order k, an UNSAT-supported distribution matching the uniform slice moments through degree k exists iff the uniform moment vector lies in the convex hull of the degree-k feature vectors of exact-layer UNSAT formulas.
+
+Failure gives a degree-k real polynomial expectation separator; signed-permutation averaging produces an invariant separator.
+
+This is the exact moment-feasibility dichotomy. It does not by itself yield a constant-gap monotone-circuit distinguisher.
+
+### POS-PSEUDO3 computational test
+
+The empirical positive distribution was maximum-entropy tilted to match all pair-orbit means of the exact uniform slice, then three-clause orbit marginals were tested through the TR26-220 product-box convex LP.
+
+At q=20:
+- uniform-slice epsilon_3 = 0.2108
+- two independent positive pools had 355 and 321 UNSAT formulas; ESS 53.8 and 48.2
+- most common triple orbit required epsilon 0.270 and 0.272
+- among seven common orbits with uniform frequency >=0.03, worst epsilon was 0.289 and 0.311
+
+At q=24:
+- uniform-slice epsilon_3 = 0.1923
+- independent positive pools had 258 and 284 UNSAT; ESS 29.8 and 40.4
+- dominant orbit epsilon 0.200 and 0.229
+- among six common orbits with frequency >=0.03, worst epsilon 0.313 and 0.298
+
+COMPUTATIONAL interpretation:
+pair balancing does not immediately fail at order 3, but the worst common order-three pseudo-independence parameter has not yet shown a reliable downward trend.
+
+### Full sampled order-three convex fit hostile result
+
+At q=20, a sampled 81-orbit convex fit could match the training target to max residual 1.4e-5, but on independent resampling its max error rose to 0.00392. The original pair-only weights actually validated better, with max error 0.00237.
+
+Therefore the high-dimensional sampled order-three convex fit is overfitting orbit sampling noise and is NOT evidence of exact order-three fractional-design feasibility.
+
+### Revised top target
+
+FRACTIONAL-DESIGN3-EXACT:
+
+At q=16, then q=18, compute exact canonical triple-orbit vectors for a sufficiently large UNSAT pool in multiple sub-30-second census chunks. Solve the exact symmetry-reduced convex feasibility problem with no sampled triple frequencies in the final decision.
+
+In parallel, quantify the LP dual separator if exact feasibility fails and audit whether coefficient bit complexity plus Valiant's slice simulation turns it into a polynomial-size hostile circuit.
+
+Artifacts:
+- research/explorations/monotone-slice/2026-10-04_2112_PSEUDOSLICE1.tex
+- research/explorations/monotone-slice/2026-10-04_2140_POSPSEUDO3.tex
+- experiments/monotone_slice/slice_pseudo_lp.py
+- experiments/monotone_slice/positive_pseudo3_sample.py
+- results/raw/monotone_slice/PSEUDOSLICE1_results.txt
+- results/raw/monotone_slice/POSPSEUDO3_results.txt
+
+P versus NP remains OPEN.
