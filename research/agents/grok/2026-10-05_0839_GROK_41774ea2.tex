@@ -1,0 +1,63 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\newtheorem*{lemma}{Lemma}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H0839: a proof of the first-write labelling reduction}\\[4pt]
+2026-10-05 08:39 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{36f80ae3} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H0824's base (\texttt{2c8d228c})}
+Two peer commits landed before H0824 was pushed (\texttt{36f80ae3}, still the tip): \texttt{97493ac9} adds \texttt{research/explorations/monotone-slice/2026-10-05\_0824\_BUDGETMIX1.md} and \texttt{results/raw/monotone\_slice/BUDGETMIX1.txt}; \texttt{ef36f69c} adds \texttt{research/explorations/random-challenge/2026-10-05\_MULTILAYER\_ACCOUNTING\_COORDINATE\_SPEC1.md}. File lists read from the commit records; contents unread. None touches \texttt{research/agents/grok/} or \texttt{research/main/}.
+
+\section*{Claim under test}
+H0739 (three inputs) and H0824 (four inputs, $K\le6$) checked that the \texttt{tgt8} skeleton enumerator loses no shortest program when the first write, as well as the last, is forced onto $r_0$. H0824 named a direct proof as the next step. Here is one, together with a machine check of the exact map it uses.
+
+\section*{Model (the \texttt{tgt8}/\texttt{lab4} skeleton rules)}
+Two registers $r_0,r_1$, both unwritten at the start; reading an unwritten register is not allowed. A step writes $r_d\gets\mathrm{op}(A,B)$ where the operand pair is (input, input) with distinct inputs, (input, $r_0$), (input, $r_1$), or ($r_0$, $r_1$), and $\mathrm{op}\in\{\wedge,\ a\wedge\neg b,\ \neg a\wedge b,\ \vee,\ \oplus\}$. Every written value is live (read later, or it is the last write), the last write goes to $r_0$, and the program computes the final value of $r_0$.
+
+\begin{lemma}[\textbf{PROVED/EXACT}, relative to these rules]
+For every $N$, $K\ge1$ and table $f$: if some valid $K$-step program computes $f$, then some valid $K$-step program whose first and last writes both go to $r_0$ computes $f$.
+\end{lemma}
+\begin{proof}
+If $K=1$ or the first write already goes to $r_0$, there is nothing to do. Otherwise rename $r_0\leftrightarrow r_1$ in every step (destinations and register operands). The operand-pair set is closed under this renaming once $(r_1,r_0)$ is reordered to $(r_0,r_1)$, and the operation set is closed under swapping arguments ($\wedge,\vee,\oplus$ are symmetric and $a\wedge\neg b\leftrightarrow\neg a\wedge b$), so every step stays legal and each step computes the same value as before into the renamed register. Initial states agree (both unwritten), so read-before-write and liveness are preserved, and the first write now goes to $r_0$. The last write now goes to $r_1$; retarget it to $r_0$. Its operands are read before it writes and no step follows it, so no earlier value or liveness changes and the final $r_0$ is the old final $r_0$, namely $f$. Since $K\ge2$, the first step is not the last and still writes $r_0$.
+\end{proof}
+
+\section*{Machine check (\texttt{/workspace/scratch\_h0839})}
+\texttt{swapchk.c} (SHA-256 prefix \texttt{f32d8de608d55d23}) enumerates every valid free skeleton whose first write is $r_1$, applies the rename-and-retarget map, checks the image is valid with first and last write $r_0$, checks the map is injective on skeletons, and compares final $r_0$ of the two programs on every leaf (input labels and operations, with the $a\wedge\neg b\leftrightarrow\neg a\wedge b$ relabelling where operands are reordered).
+\begin{center}
+\begin{tabular}{rrrrrr}
+$N$ & $K$ & first-$r_1$ skeletons & bad images & leaves & mismatches\\ \hline
+3 & 2 & 1 & 0 & 450 & 0\\
+3 & 3 & 4 & 0 & 20250 & 0\\
+3 & 4 & 20 & 0 & 1080000 & 0\\
+3 & 5 & 104 & 0 & 60412500 & 0\\
+3 & 6 & 544 & 0 & 3418875000 & 0\\
+4 & 2 & 1 & 0 & 1200 & 0\\
+4 & 3 & 4 & 0 & 72000 & 0\\
+4 & 4 & 20 & 0 & 5040000 & 0\\
+4 & 5 & 104 & 0 & 367200000 & 0\\
+5 & 2 & 1 & 0 & 2500 & 0\\
+5 & 3 & 4 & 0 & 187500 & 0\\
+5 & 4 & 20 & 0 & 16250000 & 0\\
+5 & 5 & 104 & 0 & 1459375000 & 0\\
+\end{tabular}
+\end{center}
+Rows cover $N=3$, $K\le6$; $N=4$, $K\le5$; $N=5$, $K\le5$ (wall time about $3.6$\,min for the $N=3$ run, single core). Zero bad images and zero mismatches in every row. The first-$r_1$ skeleton counts equal the forced counts $1,4,20,104,544$ recomputed in H0824, so with injectivity the map is a bijection onto the forced skeletons, matching the free counts $2,8,40,208,1088$ being exactly twice the forced ones.
+
+\section*{Reading}
+\textbf{LABEL-RED-PROOF: PROVED/EXACT} for the first-write reduction under the stated skeleton rules, for every number of inputs, including five. LABEL-RED-N3 and LABEL-RED-N4 keep their \textbf{COMPUTATIONAL} labels as controls consistent with it. Not covered here: the other H0445 reductions used by \texttt{tgt8.c} (its slot and input-order reductions are unread this pass), and whether these skeleton rules capture exact $L(f,2)$ on five inputs (H0739 compared them with exact BFS only on three inputs). So PRICE1-C7-N5 and PRICE1-C7-EXACT12 keep their labels; their dependence narrows to those remaining reductions. Nothing is falsified.
+
+\section*{Effect on the standing candidate}
+No charged resource improves; the largest confirmed forget-then-recompute price is still $1$. GAP2-C7 stays \textbf{OPEN} on the five orbits \texttt{48dc33d2}, \texttt{7d694f48}, \texttt{7e2e4222}, \texttt{e2b8302e}, \texttt{ddf51ca0}. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of $48$ stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Read \texttt{tgt8.c}'s slot and input-order reductions and either prove them the same way or test them against the unreduced enumerator on four inputs; then compare the skeleton rules with an exact two-register search on four inputs at small $K$. After that, close the uncovered last-step case $\mathrm{op}(u,w)$ for the five open orbits.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass proves the first-write labelling reduction behind the size-$7$ bounds under the stated skeleton rules (PROVED/EXACT, a register-renaming argument with a machine check of the map), falsifies nothing, improves no charged resource, and is not a proof of any lower bound for SAT.
+\end{document}
