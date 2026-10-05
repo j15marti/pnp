@@ -588,3 +588,86 @@ Artifacts:
 - `experiments/monotone_slice/pair_match_order3.py`
 - `experiments/monotone_slice/pair_match_caliper.py`
 - `results/raw/monotone_slice/PAIRMATCH3_results.txt`
+
+
+## 2026-10-04 ORDER3EXACT1 update
+
+The low-order camouflage program now has an exact algebraic interpretation on the Johnson slice.
+
+If two exact-layer distributions match every clause moment
+
+\[
+\mathbb E\prod_{i\in S} z_i
+\]
+
+for all (|S|\le d), then they give identical expectation to every multilinear polynomial test of degree at most (d). This is the elementary **MOMENT-CAMOUFLAGE** lemma. Filmus/Mossel slice harmonic analysis and the Filmus--Ihringer/Filmus constant-degree junta results confirm that low harmonic degree is a natural structural hierarchy on the slice, but they do **not** imply that small general monotone circuits have low degree.
+
+### Exact order-three census
+
+Every retained pair-matched formula was exhaustively scanned over all (inom t3) clause triples using the exact canonical signed-overlap orbit representation.
+
+Manual pilots:
+- q=16: 14 matched UNSAT, 82 triple orbits, held-out score BA 0.643, logistic BA 0.571
+- q=18: 12 matched UNSAT, 80 triple orbits, score BA 0.417, logistic BA 0.500
+- q=20 tiny hostile check: BA 0.500
+- q=24 tiny hostile check: BA 0.500
+
+A concurrent stronger scheduled run at q=20 used
+
+[
+N=3000,qquad t=70,
+]
+
+with 38 holdout UNSAT formulas and 20 pair-matched survivors. It exhaustively enumerated all
+
+[
+\binom{70}{3}=54{,}740
+]
+
+clause triples per retained formula, observed 81 canonical triple orbits, and obtained held-out balanced accuracy
+
+[
+\boxed{0.45}.
+]
+
+Thus the q=16 value does not reproduce in the better-powered q=20 run.
+
+### Matched core search
+
+The stronger q=20 run used 50 randomized deletion orders per matched UNSAT formula and found:
+
+[
+\overline m_{core}=31.30,quad m_{min}=26,
+\]
+
+[
+\overline n_{core}=17.85,quad n_{min}=15.
+]
+
+Manual multi-start runs similarly found:
+- q=16: mean 13.67/16 variables, minimum 11
+- q=18: mean 15.63/18 variables, minimum 14
+
+These are cores found, not proofs of minimum MUS size.
+
+### Current interpretation
+
+**COMPUTATIONAL:** no replicated exact order-three distinguisher has been found after pair matching.
+
+**OPEN:** asymptotic degree-three camouflage.
+
+**OPEN:** proof that matched UNSAT formulas require large minimum MUS.
+
+**OPEN:** circuit-to-low-degree/local approximation theorem for general monotone DAGs.
+
+### Revised queue
+
+1. **MOMENT-BALANCE3:** explicitly weight/reject samples so all degree-one and degree-two moments match on training data, then retest complete degree-three moments.
+2. **ORDER3EXACT2:** increase q=20,24 matched positive evaluation counts further.
+3. **MATCHED-MUF2:** exact/branch-and-bound MUS search at smaller q.
+4. **SAT-SUNFLOWER2:** only after the exact order-three census remains quiet under larger samples.
+
+Artifacts:
+- `research/explorations/monotone-slice/2026-10-04_2355_ORDER3EXACT1.tex`
+- `results/raw/monotone_slice/ORDER3EXACT1_results.txt`
+- `results/raw/monotone_slice/ORDER3EXACT1_manual_pilot.txt`
