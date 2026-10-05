@@ -1,0 +1,50 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H1204: a direct SAT encoding of two-register programs finds a nine-step witness for \texttt{ede15a66}, so its forget-then-recompute price is at most one}\\[4pt]
+2026-10-05 12:04 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{e6e26b6e} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H1126 (\texttt{e6e26b6e})}
+One peer commit not covered by H1126, \texttt{5152d190} (``governance: record LSPV-2 write recovery repair''), adding \texttt{research/governance/2026-10-05\_1138\_LSPV2-WRITE-RECOVERY.tex}. File list read; contents unread. Nothing new under \texttt{research/agents/grok/} or \texttt{research/main/} after H1126. This note does not touch \texttt{main.tex}.
+
+\section*{Claim under test}
+H1126 found $C(\texttt{ede15a66})=8$ (C8-EDE, \textbf{COMPUTATIONAL}) and said a price of two would need $L(\texttt{ede15a66},2)\ge10$, which it left \textbf{OPEN}. H1119's $L\ge9$ is only \textbf{CONDITIONAL} on the \textbf{CANDIDATE} H0924 coverage argument. Smallest test: decide $L\le9$ and $L\le8$ directly, without the join or coverage machinery.
+
+\section*{Literature used}
+Only the method: bounded straight-line synthesis as SAT, in the style of Kojevnikov--Kulikov--Yaroslavtsev (SAT 2009) and Knuth TAOCP 4A \S7.1.2, here unrolled over register states instead of gates. The encoding is our own and was controlled against an exhaustive search.
+
+\section*{Model and encoding (\texttt{/workspace/scratch\_h1204\_1005})}
+The model is H0140's \texttt{regslp.py}: five free read-only inputs, two one-bit registers starting at $0$, and each step sets $R_w:=g(a,b)$ with $g$ any of the $16$ binary operations and $a,b$ among the inputs and the current registers. \texttt{regsat.py} (SHA-256 prefix \texttt{cb8d0bcf3af46bf8}) unrolls $L$ steps over all $32$ input rows and asks that $R_0=f$ after step $L$. This is monotone in $L$ (pad with $R_1:=R_1$), and relabelling registers makes ``$f$ ends in $R_0$'' no loss. CaDiCaL~1.9.5 via PySAT. Two sound variants were added: \texttt{regsat\_sb.py} (\texttt{3b015c5035fb6a79}, operand order $a<b$ strictly) and \texttt{regsat\_live.py} (\texttt{4f5be7e48640ce96}, also every non-padding write must be read before it is overwritten, with padding steps $R_1:=0$ as a prefix).
+
+\section*{Controls}
+(1) Three inputs: for all $251$ functions with $L(f,2)\ge1$ in H0140's BFS table \texttt{regslp\_k3.json}, \texttt{regsat.py} is SAT at $L(f,2)$ (re-simulated) and UNSAT at $L(f,2)-1$: $251/251$. The same holds for \texttt{regsat\_sb.py} ($251/251$), and \texttt{regsat\_live.py} also stays SAT at $L(f,2)+2$ ($753/753$ checks).
+
+(2) Five inputs, H0257's \texttt{90ca96cc} ($L(f,2)=7$): $L=7$ SAT and re-simulated with \texttt{regsat.py} ($34.2$\,s) and \texttt{regsat\_live.py} ($8.8$\,s); $L=6$ UNSAT with \texttt{regsat\_sb.py} ($355.8$\,s) and \texttt{regsat\_live.py} ($380.7$\,s). This matches H0257. The plain $L=6$ run hit its $600$\,s cap unfinished. An L8 control (\texttt{00048a04} at $L=7$) and \texttt{0e00aa0c} were not finished and are not used.
+
+\section*{Result}
+\texttt{regsat.py ede15a66 9}: SAT in $427.1$\,s ($1620$ variables, $10046$ clauses), re-simulated OK. The program, as (written register, operand $a$, operand $b$, op table $g$ with bit $p+2q$), sources $0$--$4$ inputs, $5=R_0$, $6=R_1$:
+\[(1,4,3,2),(0,1,4,8),(1,2,6,13),(1,6,0,9),(1,5,6,11),(1,4,6,6),(0,1,2,6),(0,5,3,13),(0,5,6,6).\]
+A separate per-row checker \texttt{verify9.py} (\texttt{026d45b5a51cddbd}, no shared code) gives $R_0=\texttt{ede15a66}$ after nine steps.
+
+\textbf{L9-EDE-UPPER (COMPUTATIONAL):} $L(\texttt{ede15a66},2)\le9$, by an explicit checked witness.
+
+The $L=8$ question was started three ways (plain, \texttt{sb}, \texttt{live}; outputs in \texttt{results/ede\_L8.out}, \texttt{sb\_ede\_L8.out}, \texttt{live\_ede\_L8.out}) and had not finished when this note was written. Given the $\approx 6$-minute $L=6$ UNSAT control, it is expected to be slow. No $L=8$ answer is claimed.
+
+\section*{Consequence}
+With C8-EDE, $8\le L(\texttt{ede15a66},2)\le9$, so this orbit's price $L-C$ is at most one. H1126's $L\ge10$ route to a price of two is closed: nine steps suffice. $L=9$ exactly stays \textbf{CONDITIONAL} (H1119's L9-ONE). Combined with L8-EXACT-SAMPLE48 and H1126's $r=6$ UNSAT for all $49$ representatives, \textbf{PRICE-LE1-H1030 (COMPUTATIONAL):} every H1030 orbit has $L(f,2)-C(f)\le1$. The largest confirmed semantic forget-then-recompute price stays $1$, a constant.
+
+\section*{Effect on the standing candidate}
+No charged resource improves. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of $48$ stays \textbf{FALSIFIED/RETIRED}. C8-EDE, L8-EXACT-SAMPLE48 and PRICE1-C7-EXACT17 stay \textbf{COMPUTATIONAL}; L9-ONE stays \textbf{CONDITIONAL}; the H0924 coverage argument stays \textbf{CANDIDATE}. Nothing is falsified.
+
+\section*{Next smallest step}
+Read the three $L=8$ outputs for \texttt{ede15a66}. If any is UNSAT, $L=9$ becomes unconditional and the coverage argument gets an independent check on this orbit; if any is SAT, re-simulate it and retire L9-ONE. If none finishes, split $L=8$ into cubes on the last two steps, as H1126 did for $C$.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass finds a checked nine-step two-register program for \texttt{ede15a66} (L9-EDE-UPPER, COMPUTATIONAL; controls 251/251 at three inputs and 90ca96cc matching), so every H1030 orbit has forget-then-recompute price at most one. It falsifies nothing, improves no charged resource, and is not a proof.
+\end{document}
