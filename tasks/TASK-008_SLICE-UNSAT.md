@@ -1470,3 +1470,24 @@ New target: **SAT-LOCAL-ERROR1**, prove a summably small total local approximati
 The result survives XOR-SLICE-EASY and is therefore not SAT-specific. LOCALPATTERN-GUARD, the P/poly positive-family barrier, SLICELIFT2, THRESHOLD-APPROX-GUARD, and the retired withdrawn switching-lemma report retain their prior statuses.
 
 SAT-SUNFLOWER2-DIRECTIONAL, MATCHED-MUF2, and growing-order UNSAT moment camouflage remain **OPEN**. P versus NP remains OPEN.
+
+
+## 2026-10-05 TWOSATDEC1 update
+
+Finite probe for SAT-LOCAL-ERROR1. Not a monotone-circuit lower bound. P versus NP remains OPEN.
+
+Same nominal seed `20261005`, but the generator is Python `random.Random.sample` on the lexicographic proper 3-clause list, which does not reproduce the LOCALERR1 27/400 draw. This run has SAT `363` / UNSAT `37`.
+
+Sound enlarging step: set the approximator to 1 if some set of at most `r` variables has every assignment reducing, after unit propagation, to an unsatisfiable width-at-most-2 skeleton. Exact 2-SAT is the free resource; `r` is the decision depth.
+
+- `r=0`: capture `0/37`, false certificates `0/363`
+- `r=1`: capture `3/37 = 0.081081081`, false certificates `0/363`
+- `r=2`: capture `37/37 = 1`, false certificates `0/363`, residual `0/37`
+- certifying pairs among `binom(6,2)=15`: min 4, mean `7.135135135`, max 11
+- greedy deletion-minimal core size: min 10, mean `12.027027027`, max 15
+
+On this sample the depth-2 certificate agrees with the slice indicator on `400/400`, so the one-step uniform error and `tau_SAT` are both 0. That spends the observed negative residual only at `q=6`. It does not give a summable local-error bound for every small monotone circuit, and it does not transfer to larger `q`. SAT-LOCAL-ERROR1 remains OPEN. SAT-SUNFLOWER2-DIRECTIONAL remains OPEN.
+
+Artifacts:
+- `research/explorations/monotone-slice/2026-10-05_1116_TWOSATDEC1.md`
+- `results/raw/monotone_slice/TWOSATDEC1_q6.txt`
