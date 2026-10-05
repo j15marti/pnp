@@ -1400,3 +1400,42 @@ SAT-SUNFLOWER2-DIRECTIONAL, growing-order UNSAT moment design, and MATCHED-MUF2 
 The predecessor SHADOWACTIVATION1 standalone write remained blocked on its recovery attempts during this run; no claim of a verified SHADOWACTIVATION1 artifact is made here.
 
 P versus NP remains OPEN.
+
+
+## 2026-10-05 SLICEDELTA0 verified reconciliation
+
+Verified artifact:
+- `research/explorations/monotone-slice/2026-10-05_0910_SLICEDELTA0-R1.tex`
+- report commit: `182d15574b523fa1253fd61535ddf4437fa5780f`
+
+The earlier same-run path `2026-10-05_0910_SLICEDELTA0.tex` is superseded because read-back exposed doubled LaTeX escaping. It is not the verified scientific artifact.
+
+### SLICE-DELTA0 — PROVED/EXACT transfer from KNOWN THEOREM
+
+Hajiaghayi--Sorkin prove standard with-replacement random 3-SAT is satisfiable w.h.p. for every fixed density below 3.52. For the TASK-008 exact slice,
+\[
+M=8\binom q3,\qquad t=\lfloor3.5q\rfloor.
+\]
+The collision probability among t independent sampled clauses is at most
+\[
+\binom t2/M=O(1/q)=o(1).
+\]
+Conditioning the with-replacement model on no collision and forgetting order gives exactly the uniform exact-t subset distribution. Hence
+\[
+\delta_-(q):=\Pr_{U_{M,t}}[\mathrm{UNSAT}]=o(1).
+\]
+
+DIRECTIONALGAP1 therefore reduces asymptotically from
+\[
+\delta_-+\eta_++\eta_-+\varepsilon_A<1
+\]
+to the remaining target
+\[
+\eta_++\eta_-+\varepsilon_A<1-o(1).
+\]
+
+No explicit finite-q convergence rate is claimed. This does not bound the closure/trimming errors or moment-fooling error.
+
+XOR-SLICE-EASY, LOCALPATTERN-GUARD, the P/poly positive-family barrier, SLICELIFT2, and THRESHOLD-APPROX-GUARD remain active. The withdrawn switching-lemma route remains **FALSIFIED/RETIRED**. Growing-order UNSAT moment camouflage, MATCHED-MUF2, and SAT-SUNFLOWER2-DIRECTIONAL remain **OPEN**.
+
+P versus NP remains OPEN.
