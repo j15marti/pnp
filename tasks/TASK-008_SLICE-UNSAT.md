@@ -141,3 +141,47 @@ This is a genuine unconditional lower bound for monotone depth two, but it does 
 
 Artifact:
 - `research/explorations/monotone-slice/2026-10-04_1715_SLICEDEPTH2.tex`
+
+
+## 2026-10-04 SLICENEXT1 literature reconciliation
+
+The literature search materially changes the branch.
+
+### New hostile controls and obstructions
+
+1. **XOR-SLICE-EASY.** Full-cube 3XOR-UNSAT has exponential monotone circuit lower bounds via GGKS/GKRS, but every Valiant slice of 3XOR-UNSAT has polynomial-size monotone circuits because exact-layer XOR consistency is decidable by Gaussian elimination and Valiant removes negations. Therefore generic CSP hardness, Resolution width, or incidence expansion cannot imply slice hardness.
+
+2. **Existing lifting has the wrong weight orientation.** In GKRS Lemma 7, Alice carries a sparse unsatisfiable source CSP while Bob includes all target constraints satisfied by one assignment. Alice is sparse and Bob is dense, while an exact slice requires equal weight.
+
+3. **Output-inert padding cannot fix this.** Any Alice-only fresh coordinate is a legal KW answer; if it does not decode to a source answer, it cannot be used. Common/inert padding therefore cannot reverse the Alice/Bob weight gap.
+
+4. **Proper-clause local bundle rigidity.** Distinct proper 3-clauses cannot imply one another, blocking the simplest local replication gadget.
+
+5. **Generic robust-sunflower parameter barrier.** For any nonempty (t)-uniform family, the spread parameter is at most (M/t). The CKR theorem against a product negative distribution with expected size (ct<t) requires
+[
+r=Theta!left(rac{M}{t}log tight),
+]
+which eventually exceeds the maximum possible spread. The off-the-shelf theorem therefore cannot directly attack the full exact-(t) minterm family.
+
+6. **Natural SAT negative distribution is not pseudo-independent.** Choosing an assignment and then a uniform (t)-subset of its satisfied clauses gives exact SAT negatives with uniform one-coordinate marginals, but the eight signed clauses on one variable triple can never all appear. Hence it fails the September 2026 pseudo-independence hypothesis for (kge8).
+
+### New positive structure
+
+For (t=6q), the exact UNSAT minterm family is (M/(2t)=Theta(q^2))-spread.
+
+For every fixed (L), a (1-o(1)) fraction of exact-(6q) UNSAT formulas have **no UNSAT subformula of at most (L) clauses**, by Tarsi deficiency plus a direct union bound.
+
+### Ranked queue
+
+**P1: SAT-SUNFLOWER1.** Develop a SAT-specific robust-sunflower lemma for the large hard-core family with no small UNSAT cores, against the exact SAT-supported negative distribution.
+
+**P2: SMALLCORE growth.** Extend fixed (L) to the largest useful (L(q)), using 2026 random-3CNF proof-complexity structure where applicable.
+
+**P3: SLICELIFT1.** Try one solution-carrying exact-weight balancing gadget, then prove an impossibility theorem for a declared local gadget class if it fails.
+
+**P4: restricted-model extensions.** Krieger prime-implicant, multislice-formula, and ranked-spreadness routes remain intermediate targets only.
+
+Artifacts:
+- `research/explorations/monotone-slice/2026-10-04_1805_SLICENEXT1.tex`
+- `experiments/monotone_slice/slicenext_preflight.py`
+- `results/raw/monotone_slice/SLICENEXT1_preflight.txt`
