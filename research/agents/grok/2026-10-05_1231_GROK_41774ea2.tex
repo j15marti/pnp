@@ -1,0 +1,50 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H1231: a circuit-minimality pruning of the two-register SAT encoding, and the $L=8$ test for \texttt{ede15a66}}\\[4pt]
+2026-10-05 12:31 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{7a2b7720} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H1204 (\texttt{7a2b7720})}
+Since H1204's base \texttt{e6e26b6e}, one peer commit landed: \texttt{e4a1609f} (TASK-008, ``TWOSATDEC2''), adding \texttt{research/explorations/monotone-slice/2026-10-05\_1222\_TWOSATDEC2.md} and \texttt{results/raw/monotone\_slice/TWOSATDEC2\_q7.txt}. File list read; contents unread. Nothing new under \texttt{research/main/}; the only new file under \texttt{research/agents/grok/} is H1204. This note does not touch \texttt{main.tex}.
+
+\section*{Claim under test}
+H1204 gave L9-EDE-UPPER (\textbf{COMPUTATIONAL}): $L(\texttt{ede15a66},2)\le9$, with $C(\texttt{ede15a66})=8$ from H1126 (C8-EDE, \textbf{COMPUTATIONAL}). Whether $L=8$ was left open: H1204's three direct $L=8$ runs (plain, \texttt{sb}, \texttt{live}) were read this pass and all three hit their time caps ($2400$, $2400$, $1800$\,s) with no answer. The smallest test is to decide $L=8$ with a sound pruning that uses $L=C$.
+
+\section*{Lemma used (PROVED/EXACT, elementary)}
+Let $C(f)=L$ (gate count over all $16$ binary operations). If some $L$-step two-register program computes $f$, then one exists that also satisfies: (i) every step's operation is non-degenerate, i.e.\ not in $\{0,3,5,10,12,15\}$; (ii) no operand is a register not yet written; (iii) steps $1,\dots,L-1$ have $g(0,0)=0$; (iv) operands are two distinct sources in increasing order; (v) every non-final write is read before it is overwritten, and the last step writes $R_0$ and holds $f$.
+\emph{Proof.} Read the program as a circuit with one gate per step. A step violating (i), (ii), the distinctness in (iv), or (v) is a gate whose output is a constant, a literal of one operand, or unused; deleting it and absorbing the literal into its readers gives a circuit for $f$ with at most $L-1$ gates, contradicting $C(f)=L$. For (iii), process steps in order: if $g_t(0,0)=1$ replace $g_t$ by $\lnot g_t$; the register now holds $\lnot v_t$, and each later reader of that value flips the matching argument of its table, which keeps (i), (ii), (iv), (v). Operand order in (iv) is fixed by transposing $g$, which keeps $g(0,0)$. Register relabelling gives $R_0$ in (v). $\square$
+
+Only the lower bound $C(f)\ge L$ is used. With (iii), every non-final value is $0$ on the all-zero input row, so a final operation with $g(0,0)\ne f(0)$ is refuted at once.
+
+\section*{Encoding and controls (\texttt{/workspace/scratch\_h1204\_1005})}
+\texttt{regsat\_tight.py} (SHA-256 prefix \texttt{8b960d33da698dc8}) adds (i)--(v) to H1204's \texttt{regsat\_sb.py}; (v) is a chain of ``read before overwrite'' variables. \texttt{regsat\_tight\_cube.py} (\texttt{1e34a1e593aea296}) and \texttt{regsat\_tight\_cube2.py} (\texttt{d87ac0b143d6bd3e}) only add unit clauses fixing the operation of step $L$, and of step $L-1$.
+
+(1) Three inputs (\texttt{tightcheck.py}, \texttt{5e349bdd543e9a7b}): for all $251$ functions with $L(f,2)\ge1$ in H0140's BFS table, the tight encoding at $L(f,2)$ is SAT and re-simulates for $248$, and UNSAT for exactly $3$: \texttt{0x0f}, \texttt{0x33}, \texttt{0x55}, the negated literals, which have $C=0<L=1$ and are outside the lemma. So every function covered by the lemma is found.
+
+(2) Five inputs, encoding not over-constrained (\texttt{poscheck\_dep.py}, \texttt{7e93697d60edf8a8}): $12$ random programs satisfying (i)--(v) by construction whose output depends on all five inputs ($6$ at length $7$, $6$ at length $8$): tight is SAT at that length and re-simulates, $12/12$.
+
+(3) Five inputs, H0257's \texttt{90ca96cc} and \texttt{0e00aa0c} ($C=6$, $L(f,2)=7$): tight at $L=6$ is UNSAT in $7.7$\,s and $15.6$\,s, against $355.8$\,s and $380.7$\,s for H1204's \texttt{sb} and \texttt{live} on \texttt{90ca96cc}. This agrees with H0257 but is not an independent check, since tight only removes programs.
+
+\section*{Result: $L(\texttt{ede15a66},2)=9$}
+The full tight run at $L=8$ hit its $1500$\,s cap. Split instead on the operation of step $8$, which by (i) is one of the ten non-degenerate tables $\{1,2,4,6,7,8,9,11,13,14\}$, a complete cover. Since $f(0)=0$ for \texttt{ede15a66}, the five tables with $g(0,0)=1$ ($1,7,9,11,13$) are UNSAT in under $0.1$\,s. The others: $g_8=2$ UNSAT $71.5$\,s, $g_8=4$ UNSAT $81.3$\,s, $g_8=8$ UNSAT $65.2$\,s, $g_8=14$ UNSAT $108.8$\,s. The XOR case $g_8=6$ was split again on step $7$, which by (i) and (iii) is one of $\{2,4,6,8,14\}$, again complete: UNSAT in $306.7$, $364.5$, $978.8$, $187.6$, $343.2$\,s respectively. All $14$ cubes are UNSAT (outputs in \texttt{results/cube\_ede\_L8\_*.out} and \texttt{results/cube2\_ede\_L8\_6\_*.out}). By the lemma and C8-EDE ($C\ge8$), no eight-step two-register program computes \texttt{ede15a66}.
+
+\textbf{L9-EDE-EXACT (COMPUTATIONAL):} $L(\texttt{ede15a66},2)=9$, so this orbit's forget-then-recompute price is exactly $L-C=1$. It rests on C8-EDE (\textbf{COMPUTATIONAL}), the lemma above, and CaDiCaL UNSAT answers that were not certified by a proof checker (no DRAT log was kept).
+
+\section*{Consequence}
+H1119's L9-ONE was \textbf{CONDITIONAL} on the \textbf{CANDIDATE} H0924 coverage argument. L9-EDE-EXACT reaches the same number by an independent route, so the coverage argument agrees with direct search on this orbit; it stays \textbf{CANDIDATE}, since one agreement does not prove it. With L8-EXACT-SAMPLE48 and PRICE-LE1-H1030 (both \textbf{COMPUTATIONAL}), every H1030 orbit now has a decided two-register length, and the largest confirmed semantic price is still $1$, a constant. The pruning gives a large speedup ($7.7$\,s against about $6$ minutes on H0257's control), which may make six-input price searches practical (untested).
+
+\section*{Effect on the standing candidate}
+No charged resource improves: the price stays at the constant $1$ already seen in H0257. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of $48$ stays \textbf{FALSIFIED/RETIRED}. Nothing is falsified.
+
+\section*{Next smallest step}
+Use \texttt{regsat\_tight.py} at six inputs: take functions with a known exact $C$ (for example from an exact-synthesis run at $C\le7$) and test $L=C$ and $L=C+1$, looking for the first function with price two. A price that grows with $n$ is the only kind of result here that would bear on a charged resource.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass proves a circuit-minimality pruning lemma for two-register programs and, with it and $14$ exhaustive cubes, finds $L(\texttt{ede15a66},2)=9$ (L9-EDE-EXACT, COMPUTATIONAL), so every H1030 orbit has price at most one and this one has price exactly one. It falsifies nothing, improves no charged resource, and is not a proof.
+\end{document}
