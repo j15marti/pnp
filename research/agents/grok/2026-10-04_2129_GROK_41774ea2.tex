@@ -1,0 +1,52 @@
+% GROK distill H2129 (automation 41774ea2)
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\begin{document}
+\begin{center}
+{\Large GROK H2129: exact order-three target, exact census, and the UNSAT sample hull}\\[4pt]
+2026-10-04 21:29 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta}
+Since H2047 (\texttt{a58c15ba}) these commits landed: a positive UNSAT pair-tilt experiment (\texttt{599d0069}), a spread-DNF probe (\texttt{1a58c9b5}), MOMENTBRIDGE1 (note \texttt{fc691fd4}, raw \texttt{ec5f382e}), XORSLICE1 (\texttt{6f0f33e1}), PSEUDOSLICE1 (\texttt{d93f6691}, \texttt{019f67ce}, \texttt{24a42a45}), POS-PSEUDO3 (sampler \texttt{9613ba77}, note \texttt{9af9b3e5}, raw \texttt{0bbd653b}) and two TASK-008 updates (\texttt{43a1539d}, \texttt{dd84a52f}). MATCHED-MUF2 (\texttt{c34d627f}) landed 24 seconds before the H2047 push and was missed there. Only the POSPSEUDO3 note was read in full this pass; every other item is \emph{unread} apart from its commit message. Nothing under \texttt{research/main/} changed (latest is \texttt{10b9fc82}, MAIN1854). The scheduled H2114 pass did not push; its partial scratch results are not cited here.
+
+POSPSEUDO3 proves FRACTIONAL-DESIGN-DUALITY (\textbf{PROVED/EXACT}, theirs): the uniform-slice moment vector through order $k$ is matched by some UNSAT-supported distribution exactly when it lies in the convex hull of UNSAT feature vectors; otherwise a signed-permutation-invariant degree-$k$ polynomial separates in expectation. Their sampled 81-coordinate fit at $q=20$ was diagnosed by them as overfitting sampling noise, and they name FRACTIONAL-DESIGN3-EXACT as the next target: exact triple-orbit census, exact target, no sampled frequencies in the decision. Their $\varepsilon$ values are not recomputed here.
+
+\section*{Claim under test}
+On the exact census already on the box (H2031 at $q=20$, H2047 at $q=24$; $t=3.5q$, uniform exact distinct-clause slice, CaDiCaL 1.5.3), is the \emph{exact} uniform order-three orbit vector a convex combination of the exact orbit vectors of the sampled UNSAT formulas? A feasible LP would be a finite witness for order-three fractional-design feasibility at that $(q,t)$; an infeasible one says only that this sample's hull misses the target.
+
+\section*{Tests (scratch \texttt{/workspace/scratch\_h2129}; every number computed this pass)}
+\paragraph{Exact target.} With $c_1=(x_0,x_1,x_2)$ fixed (the signed permutation group is transitive on clauses), all ordered $(c_2,c_3)$ on $u\le 9$ labelled variables that use every variable were canonicalized with the audited H2018 key. This gives $|o|=\tfrac{M}{6}\sum_u\binom{q-3}{u-3}K_{o,u}$ for each of the 84 orbits, with $M=8\binom q3$. The sizes sum exactly to $\binom M3$ at $q=20$ and $q=24$ (\textbf{PROVED/EXACT}, by exact integer enumeration). The target is $\mathbb E N_o=\binom t3|o|/\binom M3$; no orbit has target zero. Against the empirical means of all formulas, the largest $|z|$ over 84 orbits is 2.77 at $q=20$ ($n=36000$) and 2.58 at $q=24$ ($n=15200$), which is what 84 Gaussian draws give.
+
+\paragraph{Feasibility.} HiGHS LP: $w\ge0$, $\sum w=1$, $\sum_i w_iN(F_i)=\mathbb EN$ over UNSAT formulas only. One coordinate is dropped because $\sum_oN_o=\binom t3$. When it is infeasible, the second LP computes the $\ell_\infty$ distance from the target to the hull, in units of the per-orbit standard deviation over all formulas. For controls, the same distance was computed for equal-size pools of uniform formulas and of SAT formulas, 5 random pools each (the full UNSAT pool is a single pool). Each Python invocation ran in 1.4 to 3.7 seconds, with no chunking needed.
+
+\begin{center}\begin{tabular}{lcccc}\toprule
+pool size & UNSAT & uniform & SAT & \\\midrule
+\multicolumn{5}{l}{$q=20$, 808 UNSAT (seeds $20262031000+i$, $i<24000$, and $20262100000+i$, $i<12000$), UNSAT rank 84}\\
+100 & 0.214 & 0.084 & 0.075 &\\
+200 & 0.129 & 0.045 & 0.037 &\\
+400 & 0.082 & 0.000 & 0.033 &\\
+808 & 0.038 (infeasible) & 0.000 & 0.000 &\\\midrule
+\multicolumn{5}{l}{$q=24$, 249 UNSAT (seeds $20262047000+i$, $i<15200$), UNSAT rank 82}\\
+100 & 0.188 & 0.078 & 0.087 &\\
+200 & 0.111 & 0.068 & 0.059 &\\
+249 & 0.091 (infeasible) & 0.059 & 0.024 &\\\bottomrule
+\end{tabular}\end{center}
+Entries are mean distances (SD units); 0.000 means the LP was feasible in every pool.
+
+\section*{Reading}
+The exact order-three target is not in the hull of 808 exact UNSAT vectors at $q=20$ or of 249 at $q=24$ (\textbf{COMPUTATIONAL}). This does not decide FRACTIONAL-DESIGN3-EXACT, because the true UNSAT layer is far larger than any sample; exact order-three feasibility stays \textbf{OPEN}. What the controls do show is that UNSAT pools sit farther from the target than equal-size uniform or SAT pools, by a factor of 2.5 to 2.9 at $q=20$ for pools of 100 and 200. Uniform pools contain the target by 400 points, while 808 UNSAT points do not. The UNSAT distance shrinks by a factor of 0.46 to 0.64 per doubling of the pool (0.214, 0.129, 0.082, 0.038), which fits a target inside the true UNSAT hull but close to its boundary. That is a reading of four points, not a claim. At $q=24$ the 249 UNSAT vectors span rank 82 of 84, and the uniform pools are also bounded away from zero, so that row is weaker. The exact-target result agrees with POSPSEUDO3's own overfitting diagnosis of the sampled fit. It falsifies no labeled claim.
+
+\section*{Effect on the standing candidate}
+No labeled claim was falsified. No finite witness improves the charged time $T$, mutable state $S$ or stored representation $R$, since this is a moment-polytope statistic of one random distribution at two finite sizes. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction remain \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of 48 stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Grow the $q=20$ UNSAT pool to about 1600, then 3200, using exact census in sub-30-second chunks, and see whether the LP turns feasible. If it does, verify the vertex weights in exact rational arithmetic, which would give a \textbf{PROVED/EXACT} finite order-three fractional design at $(20,70)$. In parallel, take the LP dual separator from the 808-point pool, freeze it, and score it on fresh UNSAT and uniform formulas. A dual that keeps separating out of sample would be the hostile degree-three polynomial that POSPSEUDO3 asks about. The peer plan at $q=16,18$ is the cheaper route to a large pool if the UNSAT fraction keeps rising as $q$ falls, as the drop from 2.24\% at $q=20$ (808 of 36000) to 1.64\% at $q=24$ (249 of 15200) suggests.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows, and this pass is a finite computational test, not a proof.
+\end{document}
