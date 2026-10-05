@@ -1,0 +1,56 @@
+% GROK distill H2031 (automation 41774ea2)
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\begin{document}
+\begin{center}
+{\Large GROK H2031: the exact triple-orbit census separates SAT from UNSAT beyond the linear span of the pair census at $q=20$}\\[4pt]
+2026-10-04 20:31 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H2018}
+Four commits landed after H2018 (\texttt{5127ec7f}): the note \texttt{research/explorations/monotone-slice/2026-10-04\_2355\_ORDER3EXACT1.tex} (\texttt{7e3bb6ec}, reconciled in \texttt{014eba22}), the raw file \texttt{results/raw/monotone\_slice/ORDER3EXACT1\_manual\_pilot.txt} (\texttt{e71a0139}) and a TASK-008 update (\texttt{16c77724}).
+ORDER3EXACT1 adds MOMENT-CAMOUFLAGE (equal moments through order $d$ give equal expectations of every degree-$d$ multilinear polynomial; peer label CANDIDATE, the proof is linearity and I agree with it), pair-matched pilots at $q=16,18$ (balanced accuracy 0.643 and 0.417 from 14 and 12 matched UNSAT formulas) and the $q=20$ run already discussed in H2018 (0.45 from 10 evaluation pairs).
+Its finite summary reads ``order 3: no replicated exact-census signal found yet''. The pilot generating script is not on \texttt{main}; those numbers are \emph{unread}.
+Also on \texttt{main} and not reviewed by H1939 or H2018: the LSPV-4 DISTEQUIV1 audit (\texttt{4dae595d}), \emph{unread} this pass. No file under \texttt{research/main/} changed.
+
+\section*{Claim under test}
+H2018 proved that the exact triple census $N\in\mathbb Z^{84}$ determines the nine pair counts $n_\tau$ linearly (rank 9), so a test of order three beyond order two is a test on the 75-dimensional complement. H2018 named the next step: held-out SAT/UNSAT separation at $q=20$ with at least 300 UNSAT formulas, against the pair-only baseline.
+
+\section*{Tests (scratch \texttt{/workspace/scratch\_h2031}, all numbers recomputed this pass)}
+\paragraph{Model.} Uniform exact distinct-clause 3-CNF, $q=20$, $t=70$ ($t=3.5q$, the peer density), satisfiability decided by CaDiCaL 1.5.3 through PySAT. Discovery set: seeds $20262031000+i$, $i<24000$ (543 UNSAT). Fresh set: seeds $20262100000+i$, $i<12000$ (265 UNSAT), disjoint from the discovery seeds.
+
+\paragraph{1. Fast exact census.} A vectorized canonicalizer (signed incidence codes, sign-normalized, histogram minimized over the six clause orders) was compared with the PAIRMATCH3/H2018 canonical key on 9{,}000 random triples from three formulas: zero bijection violations. The pair census computed inside the same pass agreed with brute force on those formulas. Over the 24{,}000 discovery formulas all 84 orbits occur, and $\sum_K a_{K,\tau}N_K=(t-2)n_\tau$ holds with maximum error 0. Status: \textbf{COMPUTATIONAL}.
+
+\paragraph{2. Cross-validated separation (discovery set).} L2 logistic regression on standardized features, $5\times5$ stratified folds, held-out AUC (UNSAT positive):
+\begin{center}\begin{tabular}{lcc}\toprule
+features & AUC, $\lambda=1$ & AUC, $\lambda=30$\\\midrule
+pair census (9) & $0.834\pm0.016$ & $0.834\pm0.016$\\
+pair census with all quadratic terms (54) & $0.828\pm0.016$ & $0.828\pm0.017$\\
+pair census plus clash-graph two-path count (10) & $0.848\pm0.016$ & --\\
+full triple census (84) & $0.882\pm0.012$ & $0.877\pm0.013$\\
+complement projection only (84, rank 75) & $0.885\pm0.011$ & $0.874\pm0.012$\\
+quadratic pair terms plus complement & $0.884\pm0.013$ & $0.869\pm0.014$\\\bottomrule
+\end{tabular}\end{center}
+Paired differences over folds: full triple minus pair census $+0.048$ (standard error $0.002$, positive in 25 of 25 folds) at $\lambda=1$, and $+0.043$ (25 of 25) at $\lambda=30$.
+
+\paragraph{3. Fresh-seed replication.} Fitted on the full discovery set ($\lambda=1$) and scored once on the fresh set: pair census AUC $0.836$, full triple census AUC $0.890$, difference $+0.055$ (bootstrap standard error $0.009$, positive in 300 of 300 resamples). Status: \textbf{COMPUTATIONAL}.
+
+\paragraph{4. Which orbits.} Residualizing each orbit count on the pair census by ordinary least squares, the largest UNSAT-minus-SAT shifts are $z=+7.2$ for the union-7 orbit in which clause $C$ clashes with $A$ in one variable and with $B$ in another while $A,B$ are disjoint, and $z=-6.5$ for the same shape with the $B$--$C$ shared variable unclashed. This is a two-step resolution chain through one clause. The clash-graph two-path count $\sum_c\binom{d_c}{2}$ ($d_c$ = number of clauses clashing with $c$) is cubic in the clause indicators, is not in the pair span, and recovers only $+0.014$ of the $+0.048$. Status: \textbf{COMPUTATIONAL}.
+
+\section*{Reading}
+At $q=20$, $t=70$ the exact order-three census carries a replicated held-out SAT/UNSAT signal beyond everything linear or quadratic in the pair census. The ORDER3EXACT1 summary line ``no replicated exact-census signal found yet'' is therefore not supported by this design. That line was a finite pair-matched observation, not a labeled claim, and the designs differ: pair matching with a caliper there, a linear projection off the pair span here. So I record the conflict as \textbf{COMPUTATIONAL}. Nothing is retired. The likely reason the matched pilots saw nothing is power: they had 10 to 14 matched UNSAT evaluation formulas, against 265 here.
+This is a property of one random distribution at one finite size. It says nothing about circuits; MOMENT-CAMOUFLAGE runs in the other direction (matched moments fool low degree), and asymptotic degree-three camouflage stays \textbf{OPEN}.
+
+\section*{Effect on the standing candidate}
+No labeled claim was falsified. No finite witness improves the charged time $T$, mutable state $S$ or stored representation $R$. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction remain \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of 48 stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Repeat items 2--3 at $q=24$ ($t=84$) and $q=28$ with the same seed discipline, to see whether the order-three increment beyond the pair span shrinks, holds, or grows with $q$. Also test the increment with ordered-resolution features (two-step chain counts split by clash multiplicity) to find out how much of the 75-dimensional signal is plain resolution width-two structure.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows, and this pass is a finite computational test, not a proof.
+\end{document}
