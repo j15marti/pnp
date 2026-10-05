@@ -1,0 +1,102 @@
+% GROK REPORT::41774ea2::2026-10-04T16:59:00-07:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\title{GROK H1659 --- independent audit of SLICEDEPTH2: bounds correct, exact at $q{=}4$, but matched by easy threshold slices; slice-cover $(433,7,7)$ all $\tau{=}1$}
+\author{Agent P$\neq$NP / GROK}
+\date{2026-10-04 16:59 PT}
+\begin{document}
+\maketitle
+
+\noindent\textbf{GLOBAL STATUS: OPEN.} P versus NP remains open. No load-bearing arrow closed in this pass.
+The SAT-to-charged-model compiler and the product-span obstruction remain \textbf{OPEN}.
+This note claims no proof and no lower bound for SAT.
+
+\section*{Delta since H1644}
+Predecessor: \texttt{research/agents/grok/2026-10-04\_1644\_GROK\_41774ea2.tex} (commit \texttt{10c00525}).
+Peer commits on \texttt{main} after it:
+\begin{itemize}
+\item \texttt{95bb8c3a}: \texttt{research/explorations/monotone-slice/2026-10-04\_1650\_SLICEKW1.tex} (unread; known here only through SLICEGATE1's summary).
+\item \texttt{95940ac0}: TASK-008 sharpened to a DAG-like KW target (unread).
+\item \texttt{e6eab174}: \texttt{research/explorations/monotone-slice/2026-10-04\_1715\_SLICEDEPTH2.tex} (read in full; peer status CANDIDATE).
+\item \texttt{d5713774}: ``Record SLICEDEPTH2 lower-bound baseline'' (unread).
+\item \texttt{d9f23b48}: \texttt{research/agents/lspv-4/2026-10-04\_1650\_LSPV-4\_SLICEGATE1.tex} (read in full).
+\item \texttt{e396a4f1}: LSPV-4 reconcile after SLICEGATE1 (unread).
+\end{itemize}
+Also not itemized in H1644 and still unread: \texttt{b433406e} (SLICEPAD1 verification output), \texttt{31eba2d9} (TASK-008 update), \texttt{5fbbb834} (SLICE-UNSAT plan update).
+Nothing new under \texttt{research/agents/grok/} besides H1644.
+
+\section*{Claim audited: SLICEDEPTH2}
+With $M=8\binom q3$, $t=6q$ and $S_{q,t}$ the monotone slice extension of clause-presence $\mathrm{UNSAT}_{3,q}$, SLICEDEPTH2 claims that every
+monotone DNF for $S_{q,6q}$ has at least $(1-\rho^q)\binom M{6q}$ terms and every monotone CNF has at least $\binom{7M/8}{6q}$ clauses,
+$\rho=2(7/8)^6$, both $\exp(\Theta(q\log q))$.
+
+\paragraph{Proof check.} Every UNSAT $t$-set is a minterm and every SAT $t$-set is a maxterm; a monotone DNF (CNF) contains every
+minterm as a term (every maxterm complement as a clause). This is the standard prime-implicant fact (\textbf{KNOWN THEOREM}).
+The union bound $\#\mathrm{SAT}\le2^q\binom{7M/8}{t}$ and $\binom{7M/8}{t}/\binom Mt\le(7/8)^t$ are correct. I found no error.
+
+\paragraph{Independent recomputation (COMPUTATIONAL).} Script \texttt{experiments/slice\_depth2/check\_h1659.py} (scratch only):
+\begin{itemize}
+\item $\rho=117649/131072$ exactly. Every block $B_\alpha$ has size $\binom q3$ for $q=3..7$; the $t=6q$ layer is empty at $q=3$ ($t=18>M=8$).
+\item $q=4$ ($M=32$, $t=24$), exact: inclusion--exclusion over all $2^{16}-1$ assignment sets and direct enumeration of all
+$\binom{32}{8}=10{,}518{,}300$ complements agree on $326{,}712$ SAT $t$-sets, so $10{,}191{,}588$ UNSAT $t$-sets (fraction $0.9689$).
+The DNF bound $(1-\rho^4)\binom{32}{24}\approx3{,}690{,}846$ holds; the CNF bound $\binom{28}{24}=20{,}475$ holds; the union upper bound
+$2^4\binom{28}{24}=327{,}600$ holds and is within $0.3\%$ of the truth.
+\item Sampled, seed $20261004{+}1659$: $q=5$, $2000$ trials, UNSAT fraction $0.817$ (bound $0.417$); $q=6$, $600$ trials, UNSAT fraction $0.792$ (bound $0.477$).
+\item Toy forcing check: $140$ random slice functions on $N=8$ variables, all layers $t=1..7$, brute-force minterms and maxterms.
+Layer-$t$ minterms equal layer-$t$ ones and layer-$t$ maxterms equal layer-$t$ zeros in every case. Failures: $0$.
+\end{itemize}
+
+\paragraph{Hostile control: the bound does not separate hard from easy (PROVED/EXACT, elementary).}
+For \emph{every} slice function $f$ on layer $t$ of $M$ variables, each $t$-set is a minterm if $f=1$ there and a maxterm if $f=0$, so
+\[
+\mathrm{DNF}(f)+\mathrm{CNF}(f)\ \ge\ \binom Mt .
+\]
+The easy threshold slice $\mathrm{Th}_{M,t}$ (layer all ones) has exactly $\binom Mt$ minterms at layer $t$, so its monotone DNF is
+\emph{larger} than SLICEDEPTH2's DNF bound, while the counting recurrence $c_{i,j}=c_{i-1,j}\vee(x_i\wedge c_{i-1,j-1})$ gives a
+monotone circuit with at most $2Mt$ gates. Likewise $\mathrm{Th}_{M,t+1}$ has $\binom Mt$ layer-$t$ maxterms, exceeding the CNF bound.
+Concretely: at $q=4$, $\binom{32}{24}=10{,}518{,}300$ DNF terms against at most $1536$ gates; at $q=6$, $\log_2\binom{160}{36}\approx119.34$
+against at most $11{,}520$ gates. The recurrence was checked exhaustively for all $M\le12$ and all $t$ ($90{,}114$ inputs, $0$ failures).
+So the depth-two theorem is correct but carries no information specific to UNSAT: any argument that uses it to lower-bound
+monotone DAG size must fail on $\mathrm{Th}_{M,t}$. This agrees with SLICEDEPTH2's own Wegener caveat and makes it quantitative.
+Peer label CANDIDATE left unchanged; this audit is \textbf{COMPUTATIONAL}, no error.
+
+\section*{SLICEGATE1 spot check}
+The satisfying-assignment leaf protocol is correct on layer pairs: Bob sends $\beta\models B$ ($q$ bits), Alice outputs a clause
+of $A$ falsified by $\beta$, which cannot lie in $B$. Scope note: the full KW relation of $S_{q,t}$ also contains off-layer pairs
+($|A|>t$ or $|B|<t$), handled by threshold-type protocols whose cost is not recomputed here (\emph{unread}). This does not change
+SLICEGATE1's conclusion that ordinary KW depth cannot give superpolynomial size. Its Valiant calibration (a monotone slice lower
+bound plus the padding reduction implies $\mathrm{NP}\not\subseteq\mathrm{P/poly}$) matches H1630 and H1644.
+
+\section*{Standing easy-structure control (COMPUTATIONAL)}
+\begin{itemize}
+\item Slice-cover $(433,7,7)$, $k=9$, exhaustive over $126$ nonconstant words: $\tau$-hist $\{1{:}126\}$, $R=7$, $d=21$,
+slice-rank min $=3$, max $=7$. Elapsed $\approx6.91$s. Thirtieth $k{=}9$ prime in the run; easy-structure control only.
+\item LDE/Hadamard battery $(433,7,7)$, seed $314159$: rank distribution $\{(0,0){:}1,(1,0){:}1,(7,21){:}126\}$,
+$0$ nonconstant exterior-deficient. Elapsed $\approx9.62$s.
+\end{itemize}
+No charged $T$, $S$, or $R$ improvement. Next prime $439$.
+
+\section*{Status ledger}
+\begin{itemize}
+\item Time-state-representation surface: \textbf{CANDIDATE}.
+\item SAT-to-charged-model compiler; product-span obstruction: \textbf{OPEN}.
+\item SLICEDEPTH2 depth-two bounds: peer label \textbf{CANDIDATE}, unchanged; this audit \textbf{COMPUTATIONAL}, no error; matched by easy threshold slices.
+\item $\mathrm{DNF}+\mathrm{CNF}\ge\binom Mt$ for every layer-$t$ slice function: \textbf{PROVED/EXACT} (elementary).
+\item Ordinary KW depth as a route to superpolynomial size: \textbf{FALSIFIED/RETIRED} (SLICEGATE1; agreed).
+\item $C_{\rm mon}(S_{q,t})=M^{\omega(1)}$ for any $t$; DAG-KW size: \textbf{OPEN}.
+\item SLICE-UNSAT padding lemma of H1630: \textbf{PROVED/EXACT} (elementary), unchanged.
+\item D(4,8) semantic-cut $\ge48$: \textbf{FALSIFIED/RETIRED} (exact cut 8); not revived.
+\item Contact/switch models: polynomially equivalent to branching programs; do not close the gap.
+\end{itemize}
+
+\section*{Reproducibility}
+Scratch at \texttt{/workspace/scratch\_h1659}; results \texttt{results/h1659\_checks.json}, \texttt{results/sc\_433.txt},
+\texttt{results/lde\_battery\_43377.json}. Root \texttt{main.tex} not edited.
+
+\section*{FINAL STATUS}
+P versus NP remains OPEN; no falsification, no charged T/S/R improvement, SLICEDEPTH2 passed an independent audit but its
+depth-two bounds are matched by polynomial-size threshold slices, and the monotone slice lower bound remains OPEN.
+\end{document}
