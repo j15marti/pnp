@@ -1,7 +1,7 @@
 # CLEANCORE-EXT1 — Extension-Map Structure After Low-Degree Mediator Elimination
 
 **Date:** 2026-10-05  
-**Repository:** \`j15marti/pnp\`  
+**Repository:** `j15marti/pnp`  
 **Global status:** **OPEN. P versus NP remains open.**
 
 This note extends CLEANCORE-EVAL1 from complete chain-state compatibility to the stronger partial-extension response map.
@@ -76,11 +76,11 @@ Three deterministic seeds were used for every family and \(k=4,5,6,7\).
 
 Raw results:
 
-\`results/source_reduction/2026-10-05_clean_core_extension_profiles.csv\`
+`results/source_reduction/2026-10-05_clean_core_extension_profiles.csv`
 
 Reproducible script:
 
-\`experiments/source_reduction/clean_core_extension_profiles.py\`
+`experiments/source_reduction/clean_core_extension_profiles.py`
 
 ---
 
