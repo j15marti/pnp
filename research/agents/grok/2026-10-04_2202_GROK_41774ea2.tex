@@ -1,0 +1,50 @@
+% GROK distill H2202 (automation 41774ea2)
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H2202: an exact order-three fractional design at $(q,t)=(20,70)$}\\[4pt]
+2026-10-04 22:02 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta}
+Since H2145 (\texttt{5afa946d}) and just before it, the following landed. FRACTIONALDESIGN3-EXACT1 (\texttt{02a3a626}, \texttt{fab81050}, raw \texttt{a90f81f6}) landed 1 to 2 minutes before the H2145 push and was missed there. DUAL-COLUMN3 (\texttt{92f01876}, raw \texttt{2e427733}, note section \texttt{2c8802c3}), the TASK-008 update (\texttt{2cadaf0b}, diff \emph{unread}) and SLICEWIDTH1 (\texttt{912d97a0}) followed. The two notes were read in full. Their figures are \emph{not} recomputed here. At $q=16,18$ they report exact-census UNSAT pools whose raw-frequency $\ell_\infty$ distance to the exact target falls from about $5\times10^{-5}$ to about $4\times10^{-6}$ as the pool grows (\textbf{COMPUTATIONAL}). They also report duals that are unstable (cosine 0.32 to 0.38) and fail on fresh UNSAT formulas, and they call global order-three feasibility \textbf{OPEN}. Their FIXED-CLAUSE-TARGET is the same reduction that the H2129 orbit-size code uses. SLICEWIDTH1 closes the TR26-220 pseudo-independence hypothesis on the slice for width $\ge4$ under a stated budget (\textbf{PROVED/EXACT}, theirs). Nothing under \texttt{research/main/} changed.
+
+\section*{Claim under test}
+H2145 left FRACTIONAL-DESIGN3-EXACT at $(20,70)$ \textbf{OPEN}. The 1641-point exact UNSAT pool missed the exact uniform order-three orbit vector by 0.0124 SD. H2145 named the next step: add one chunk, verify in exact rationals if the LP turns feasible, and otherwise refit and re-score the dual.
+
+\section*{Tests (scratch \texttt{/workspace/scratch\_h2202}; every number computed this pass)}
+I generated 36000 fresh formulas with the unchanged H2031 sampler and census (uniform exact distinct-clause slice, CaDiCaL 1.5.3) on seeds $20262202000+i$, $i<36000$. That ran as three chunks of 12000, at 108 to 113 s each. The seeds are disjoint from all earlier pools, which is asserted in code. The run has 830 UNSAT formulas (2.31\%). SD units are frozen from the H2031/H2100 pool. Raw units are orbit frequencies $N_O/\binom{70}{3}$, which is the peer convention.
+
+\begin{center}\begin{tabular}{lcccc}\toprule
+UNSAT pool & size & $\ell_\infty$ (SD) & $\ell_\infty$ (raw freq.) & LP support\\\midrule
+H2031+H2100 & 808 & 0.0382 & $8.63\times10^{-6}$ & 66\\
+$+$H2145 & 1641 & 0.0124 & $1.60\times10^{-6}$ & 77\\
+this pass only & 830 & 0.0220 & $2.69\times10^{-6}$ & 71\\
+all & 2471 & \textbf{0} (feasible) & \textbf{0} & 84\\\bottomrule
+\end{tabular}\end{center}
+
+\paragraph{Exact certificate.} On the 2471-point pool, HiGHS returned a vertex with 84 support formulas and a float residual of $6.7\times10^{-12}$. Solving the $85\times84$ system on that support in exact rationals gives rank 84, a consistent system and a unique weight vector. Every weight is strictly positive (minimum $1.89\times10^{-5}$, maximum $0.0488$, common denominator of 112 digits). An independent script then rechecked all of it from the seeds alone. It regenerated each support formula, recomputed its full census of $\binom{70}{3}=54740$ triples, and confirmed $\sum_iw_i=1$ and $\sum_iw_iN_O(F_i)=\binom{70}{3}|O|/\binom{M}{3}$ exactly for all 84 orbits, where $M=9120$. It also re-solved all 84 formulas: MiniSat~2.2 returns UNSAT on 84/84, and Glucose~4 DRUP proofs pass \texttt{drat-trim} with \texttt{s VERIFIED} on 84/84. The support takes 33 formulas from H2031/H2100, 15 from H2145 and 36 from this pass. Its seeds are
+{\small\ttfamily 20262031510 32113 33513 33627 34420 34575 35339 36544 37421 38243 38268 39751 40014 40754 41217 41458 43344 45899 48622 50140 51460 52203 52639 52958 20262100653 01545 03588 03731 03998 06800 08567 09423 09833 20262145408 55431 59213 65388 65942 67174 68574 72899 73117 73672 75313 76346 77603 78140 78453 20262202086 06717 07511 07547 07760 07887 08257 08398 09469 10093 11491 11792 12170 12353 12853 12964 14576 14847 18304 18629 19520 20015 20915 21566 23180 23862 28204 28460 29563 29788 30256 31005 36805 37570 37772 37971}
+(each block is a 6-digit prefix followed by 5-digit suffixes). Because the support matrix has rank 84, the weights are determined by the seeds. The interior LP that maximises $s$ subject to $w_i\ge s/2471$ for every $i$ gives $s=0.0298>0$. So the target lies in the relative interior of the 2471-point hull, not on its boundary.
+
+\paragraph{Controls and dual.} Equal-size uniform and SAT pools give distance 0 (2 draws each). Before it was superseded, the 1641-point dual was refit and frozen (margin 0.012411, matching the primal distance) and scored on this pass. 30 of the 830 fresh UNSAT formulas score above the target and 41 above $\beta$, while fresh SAT formulas score above the target 50.9\% of the time. Its held-out SAT/UNSAT AUC is 0.868. The old 808-point dual is crossed by 34 fresh UNSAT formulas. The cosine between the 808- and 1641-point duals is 0.848, with a top-12 orbit overlap of 7.
+
+\paragraph{Census soundness.} The orbit key is a sum of $4^{c}$ over variables, where $c$ is a variable's column class up to complementation. Each class fixes which clauses contain the variable, so its count is at most 3 and the base-4 key cannot collide. The exact target matches the empirical mean of all 108000 formulas within $\max|z|=2.85$ over the 84 orbits.
+
+\section*{Reading}
+\textbf{FRACTIONAL-DESIGN3-EXACT at $(q,t)=(20,70)$: PROVED/EXACT.} This is a finite certificate: 84 DRAT-verified UNSAT formulas with explicit positive rational weights whose exact triple-orbit census averages to the exact uniform-slice vector. Symmetrising that weighted family under variable permutation and complementation gives a distribution on UNSAT formulas whose every degree-$\le3$ clause-indicator moment equals the uniform $(20,70)$ slice moment. So no polynomial of degree at most three in the clause indicators separates the exact uniform slice from the UNSAT layer in expectation at this size. This is the POSPSEUDO3 fractional-design dual: a hostile degree-three polynomial does not exist at $(20,70)$. The result is finite and about one size. It says nothing asymptotic, nothing at order four, and nothing about circuits; Filmus--Mossel already predict that low-degree tests are weak on the slice. No previously labelled claim is falsified: H2145 kept this question OPEN, and the peers' numerical trend at $q=16,18$ pointed the same way.
+
+\section*{Effect on the standing candidate}
+No finite witness improves the charged time $T$, mutable state $S$ or stored representation $R$, because this is a moment certificate for one distribution at one size. It removes order-three symmetric moments as a lower-bound handle at $(20,70)$. It does not touch the open load-bearing arrows: the compiler from an arbitrary SAT decider into the charged time--state--representation model, and the product-span obstruction, both stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of 48 stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Repeat the exact certificate at $(24,84)$, where the H2129 orbit sizes already exist, to test whether the order-three design persists as $q$ grows (\textbf{OPEN}). Separately, count the order-four triple-plus-one orbits before attempting an order-four design.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows, and this pass is a finite exact certificate about order-three moments at one size, not a proof.
+\end{document}
