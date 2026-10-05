@@ -1,0 +1,88 @@
+% GROK REPORT::41774ea2::2026-10-04T17:26:00-07:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\title{GROK H1726 --- audit of SLICELIFT2 (LOCAL-WEIGHT-GAP: no error; $|V|\ge3$ is necessary) and SLICEDENSITY1 ($t{=}q$ pad: 405 cases, 0 mismatches; uniform layer 1600/1600 SAT at $c\in\{1,3\}$); slice-cover $(443,7,7)$ all $\tau{=}1$}
+\author{Agent P$\neq$NP / GROK}
+\date{2026-10-04 17:26 PT}
+\begin{document}
+\maketitle
+
+\noindent\textbf{GLOBAL STATUS: OPEN.} P versus NP remains open. No load-bearing arrow closed in this pass.
+The SAT-to-charged-model compiler and the product-span obstruction remain \textbf{OPEN}.
+This note claims no proof and no lower bound for SAT.
+
+\section*{Delta since H1717}
+Predecessor: \texttt{research/agents/grok/2026-10-04\_1717\_GROK\_41774ea2.tex} (commit \texttt{47bb603e}).
+Peer commits on \texttt{main}:
+\begin{itemize}
+\item \texttt{71746147}: \texttt{research/explorations/monotone-slice/2026-10-04\_1840\_SLICEDENSITY1.tex} (read in full; peer status CANDIDATE).
+\item \texttt{6c6437db}: \texttt{research/explorations/monotone-slice/2026-10-04\_1900\_SLICELIFT2.tex} (read in full; peer status CANDIDATE).
+\item \texttt{8ea0068f}: TASK-008 pivot to the density-one slice, retiring local lifting (unread).
+\item \texttt{0f7a3eca}: start of LSPV-2 CONSTQUOT1 report (unread).
+\end{itemize}
+Nothing new under \texttt{research/agents/grok/} besides H1717. Nothing under \texttt{research/main/} was itemized in these commits.
+
+\section*{Audit 1: SLICELIFT2, LOCAL-WEIGHT-GAP}
+Claim: a locally sound and complete set gadget with $|V|\ge3$ variants and surjective violation map $b$ has Alice weight $a$ strictly below Bob weight $b_0$.
+
+\paragraph{Proof check.} The argument is correct as written: (LS) gives $a\le b_0$; equality turns every (LS) inclusion into $A_v=B_f$ for $v\ne b(f)$;
+with three distinct variants all $A_v$ coincide; then $B_f=A_{b(f)}$ contradicts (LC). No gap found at the declared abstraction.
+
+\paragraph{Exhaustive check (COMPUTATIONAL).} Script \texttt{experiments/slicelift/check\_h1726.py} (scratch only), all parts $\approx5$\,s total.
+Searching all Alice families of common size $a$ and Bob sets of size $b_0\ge a$ on a universe of size $U$:
+\begin{itemize}
+\item $|V|=3$, $U\in\{3,4,5\}$ and $|V|=4$, $U=4$: feasible $(a,b_0)$ pairs exist ($1,3,6,1$ of them) and none has $a=b_0$.
+\item $|V|=2$, $U=3$: equal-weight gadgets exist at $a=b_0\in\{1,2\}$; at $U=4$ also $a=b_0=3$. Example: $A_1=\{x\}$, $A_2=\{y\}$, $B_{f_1}=\{y\}$, $B_{f_2}=\{x\}$.
+So the hypothesis $|V|\ge3$ is necessary, not cosmetic.
+\item Proper 3-CNF instantiation: each of the $8$ assignments to a triple falsifies exactly one of the $8$ signed variants, so $b$ is a bijection and $|V|=8\ge3$.
+\item Block constancy (exact total weight over independent block choices forces constant per-block weight): $0$ violations in $2000$ random $3\times3$ weight tables; the statement itself is elementary (vary one block).
+\end{itemize}
+Scope note: with two Alice options per variant ($|V|=3$, $U=4$, every option of $b(f)$ escaping $B_f$) no gadget of any weights exists, so that small extension is vacuous here and gives no information about multi-encoding gadgets.
+Verdict: no error; peer label \textbf{CANDIDATE} left unchanged; this audit is \textbf{COMPUTATIONAL}. The theorem does not touch cross-block or globally coupled encodings, as SLICELIFT2 itself says.
+
+\section*{Audit 2: SLICEDENSITY1, the $t=q$ slice}
+\paragraph{Literature.} Tovey (1984): 3-SAT with three distinct variables per clause and each variable in at most four clauses is NP-complete: \textbf{KNOWN THEOREM}.
+Random 3-SAT below density $3.52$ is satisfiable with high probability (Hajiaghayi--Sorkin 2003; also Kaporis--Kirousis--Lalas): \textbf{KNOWN THEOREM} in its sampling model.
+
+\paragraph{Pool count (PROVED/EXACT, elementary).} With $q=2n$ and $n$ controls, the filler pool (proper clauses with a positive control literal) has exactly
+$\sum_{j=1}^{3}\binom nj\binom n{3-j}\,8\,(1-2^{-j})$ clauses; verified against enumeration for $n=3..8$. Its fraction of $8\binom q3$ is $0.5982,0.5938,0.5909,0.5889$ at $q=8,10,12,14$ and tends to $1-(3/4)^3=37/64\approx0.578>1/2$, confirming the $>\tfrac12$ claim.
+
+\paragraph{Pad reduction at $t=q$ (COMPUTATIONAL).} Brute force over all $2^q$ assignments, $q=8..14$:
+$205$ random Tovey-bounded sources (all SAT, $m=\lfloor4n/3\rfloor$) plus $200$ further sources ($80$ UNSAT, built from the full 8-clause cube on three variables, and $120$ random unbounded sources), each padded to exactly $q$ distinct clauses: $0$ satisfiability mismatches.
+
+\paragraph{Uniform exact layer (COMPUTATIONAL).} Uniform exact-$t$ subsets of distinct proper clauses, $200$ samples per cell, CaDiCaL:
+$t=q$ and $t=3q$ at $q\in\{50,100,200,400\}$: $1600/1600$ SAT. Control at $t=4.5q$ (above threshold): $82/200$ SAT at $q=50$, $46/200$ at $q=100$, so the sampler does produce UNSAT inputs.
+The collision bound $\binom t2/M$ is $9.4\times10^{-4}$ at $q=400$, $t=q$ (recomputed), so the with-replacement to distinct-subset transfer costs $O(1/q)$.
+The transfer step itself depends on the cited paper's sampling model, which was not re-read here, so UNIFORM-NEGATIVE-LAYER stays \textbf{CANDIDATE}; the empirics are consistent with it.
+
+\paragraph{Verdict.} LOW-DENSITY-SLICE-HARDNESS: no error found; peer label \textbf{CANDIDATE} unchanged. The real open item is the one SLICEDENSITY1 names:
+an explicit large, spread family of large-core UNSAT exact-$q$ formulas. That family is \textbf{OPEN} and nothing here supplies it.
+
+\section*{Standing easy-structure control (COMPUTATIONAL)}
+\begin{itemize}
+\item Slice-cover $(443,7,7)$, $k=9$, exhaustive over $126$ nonconstant words: $\tau$-hist $\{1{:}126\}$, $R=7$, $d=21$, slice-rank min $=3$, max $=7$. Elapsed $\approx6.11$\,s.
+\item LDE/Hadamard battery $(443,7,7)$, seed $314159$: rank distribution $\{(0,0){:}1,(1,0){:}1,(7,21){:}126\}$, $0$ nonconstant exterior-deficient. Elapsed $\approx10.43$\,s.
+\end{itemize}
+No charged $T$, $S$, or $R$ improvement. Next prime $449$.
+
+\section*{Status ledger}
+\begin{itemize}
+\item Time-state-representation surface: \textbf{CANDIDATE}.
+\item SAT-to-charged-model compiler; product-span obstruction: \textbf{OPEN}.
+\item LOCAL-WEIGHT-GAP (SLICELIFT2): peer \textbf{CANDIDATE}, unchanged; audit \textbf{COMPUTATIONAL}, no error; $|V|\ge3$ shown necessary.
+\item LOW-DENSITY-SLICE-HARDNESS; UNIFORM-NEGATIVE-LAYER (SLICEDENSITY1): peer \textbf{CANDIDATE}, unchanged; audit \textbf{COMPUTATIONAL}, no error.
+\item Filler-pool fraction limit $37/64$: \textbf{PROVED/EXACT}.
+\item Spread large-core UNSAT exact-$q$ family; $C_{\rm mon}(S_{q,q})=M^{\omega(1)}$: \textbf{OPEN}.
+\item D(4,8) semantic-cut $\ge48$: \textbf{FALSIFIED/RETIRED} (exact cut 8); not revived.
+\item Contact/switch models: polynomially equivalent to branching programs; do not close the gap.
+\end{itemize}
+
+\section*{Reproducibility}
+Scratch at \texttt{/workspace/scratch\_h1726}; results \texttt{results/h1726\_full.txt}, \texttt{results/sc\_443.txt}, \texttt{results/lde\_battery\_44377.json}. Root \texttt{main.tex} not edited.
+
+\section*{FINAL STATUS}
+P versus NP remains OPEN; no falsification, no charged T/S/R improvement; SLICELIFT2 and SLICEDENSITY1 passed independent audits with no error found, and the spread UNSAT family needed for a $t=q$ monotone lower bound remains OPEN.
+\end{document}
