@@ -1,0 +1,41 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H1443: a filtered $C=7$ disjoint-two-fan-out function still has two-register price zero}\\[4pt]
+2026-10-05 14:43 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{c23cc66d} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+\section*{Peer delta since H1433 (\texttt{c23cc66d})}
+No commit landed on \texttt{main} after H1433. Nothing to reconcile.
+
+\section*{1. Claim under test}
+H1433 found that random seven-gate six-input circuits with two disjoint fan-out-two gates mostly compress, so they never tested the price-two guess at $C=7$. This pass applies the filter H1433 proposed: keep only functions with exact circuit size $C(f)=7$ (over all 16 binary ops), then decide whether the two-register length $L(f,2)$ equals $C(f)$. The price-two guess ($L(f,2)=C(f)+2$ for some such function) is a CANDIDATE.
+
+\section*{2. Method (\texttt{/workspace/scratch\_h1443\_1005})}
+\texttt{gen\_disj.py} (copied from H1433, unchanged) run for 120\,s each on seeds 202610051441--202610051444, deduplicated: 28 distinct functions, all depending on all six inputs. Exact synthesis \texttt{exsyn\_n.py} at $r=5$, then at $r=6$ on the $r=5$ UNSAT ones. The single $C=7$ survivor went to \texttt{regsat\_tight.py} at $L=7$ (sound only for deciding $L\le C$ when $C$ is known). The SAT program was re-simulated pointwise by \texttt{resim\_indep.py}, and the generated seven-gate circuit by \texttt{check\_circ.py}. A partial first generator run (seed 202610051443, 5 functions) was stopped for speed and is not counted.
+
+\section*{3. Results (all recomputed this pass)}
+\begin{itemize}
+\item Size histogram over 28 functions: 13 have $C\le5$ ($r=5$ SAT, all \texttt{sim=OK}); 14 have $C=6$ ($r=5$ UNSAT in 0.4--0.8\,s, $r=6$ SAT, all \texttt{sim=OK}); 1 has $C=7$.
+\item \texttt{d7eb050a050a050a}: $r=5$ UNSAT (0.4\,s), $r=6$ UNSAT (7.6\,s), and the generated circuit (two disjoint fan-out-two gates, $x_0\oplus x_3$ and $x_4\wedge x_5$) simulates to $f$ on all 64 points. So $C=7$ (COMPUTATIONAL).
+\item Tight $L=7$, two registers: SAT in 8.1\,s, program $R_0{:=}x_0\oplus x_3$; $R_1{:=}x_1\vee R_0$; $R_1{:=}x_2\oplus R_1$; $R_0{:=}R_0\wedge R_1$; $R_1{:=}x_4\wedge\neg R_1$; $R_1{:=}x_5\wedge R_1$; $R_0{:=}R_0\oplus R_1$. Pointwise re-simulation OK. Since $L(f,2)\ge C(f)$, $L(f,2)=7$ (COMPUTATIONAL), price zero.
+\item The $L(f,2)$ values of the 27 smaller functions were not computed this pass (unread).
+\item The one-hour plain $L=7$ run for \texttt{00ffcf78ffff7878} (H1416) is still running at write time and is unread.
+\end{itemize}
+
+\section*{4. Consequence}
+DISJ2-C7-PRICE0 (COMPUTATIONAL): the only $C=7$ function in this filtered sample of two-disjoint-fan-out circuits has $L(f,2)=C(f)=7$. With one witness the sample is far too small to say anything about the price-two guess, which stays an untested CANDIDATE. The largest confirmed two-register price stays one.
+
+\section*{Effect on the standing candidate}
+The time-state-representation surface is unchanged. Register price is a finite control on mutable memory $S$, not a lower bound; nothing here touches the SAT-to-charged-model compiler or the product-span obstruction.
+
+\section*{Next smallest step}
+Raise the $C=7$ yield: the generator gives about 7 functions per 120\,s per seed and only 1 in 28 survives, so either run it longer in the background or reject at generation time any circuit whose two shared gates feed the output through a single path. Read the one-hour \texttt{00ffcf78} $L=7$ result once it exits.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass finds that the one $C=7$ function among 28 filtered seven-gate circuits with two disjoint fan-out-two gates, \texttt{d7eb050a050a050a}, has two-register length 7, price zero (DISJ2-C7-PRICE0, COMPUTATIONAL), so the price-two guess stays an untested CANDIDATE and the largest confirmed price stays one. It falsifies nothing, improves no charged resource, and is not a proof.
+\end{document}
