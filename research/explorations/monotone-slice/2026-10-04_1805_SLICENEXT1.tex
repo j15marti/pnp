@@ -1,0 +1,258 @@
+% SLICENEXT1 research report
+\documentclass[11pt]{article}
+\usepackage[margin=.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\begin{document}
+
+\begin{center}
+{\Large SLICENEXT1: Literature-guided next steps for exact-layer 3-UNSAT}\\[4pt]
+\textbf{Date: 2026-10-04}\\
+\textbf{Status: OPEN; new lemmas CANDIDATE pending independent review}\\
+\textbf{P versus NP status: OPEN}
+\end{center}
+
+\section{Target}
+
+Let
+\[
+M=8\binom q3,\qquad t=6q,
+\]
+and let \(S_{q,t}\) be the Valiant slice extension of proper-clause
+\(\mathrm{UNSAT}_{3,q}\). SLICEPAD1 gives a candidate proof that exact-\(t\)
+SAT is NP-complete and exact-\(t\) UNSAT is coNP-complete. SLICEDEPTH2 gives
+\(\exp(\Omega(q\log q))\) lower bounds for monotone depth two. The remaining target is
+\[
+\boxed{C_{\rm mon}(S_{q,6q})=M^{\omega(1)}}.
+\]
+
+\section{Literature map}
+
+\begin{itemize}
+\item[] \textbf{Valiant (1986).} For slice functions, monotone circuit complexity is within a constant factor of unrestricted circuit complexity plus \(O(M\log^2 M)\).
+
+\item[] \textbf{Garg--G\"o\"os--Kamath--Sokolov (2020).} Monotone circuit size is rectangle-DAG complexity of monotone Karchmer--Wigderson search. Their lifting theorem converts Resolution/conjunction-DAG width into rectangle-DAG size after composition with a polynomial-size index gadget.
+
+\item[] \textbf{G\"o\"os--Kamath--Robere--Sokolov (2019).} Their Lemma 7 maps a lifted CSP search problem to \(KW^+(C\hbox{-}Sat)\). Alice gets a renamed sparse unsatisfiable source CSP; Bob includes all target constraints satisfied by one assignment.
+
+\item[] \textbf{Lovett--Meka--Mertz--Pitassi--Zhang (2020).} DAG-like deterministic lifting can be proved via sunflower methods, but the known gadgets are nonconstant size. Work in 2024 still calls constant-size-gadget lifting a major open problem.
+
+\item[] \textbf{Cavalar--Kumar--Rossman (2022).} Robust-sunflower approximation gives strong monotone lower bounds. Their spread theorem requires \(r=B\log(\ell/\epsilon)/p\). They explicitly identify specialized sunflowers and non-product distributions as potential ways forward.
+
+\item[] \textbf{Matching-specific advances (2025--2026).} Cavalar et al. and Rao obtain substantially stronger Perfect Matching lower bounds using new matching-specific sunflower/spread-matching lemmas. This is direct precedent for a SAT-specific sunflower lemma.
+
+\item[] \textbf{Cavalar--Fabris--Mukhopadhyay--Srinivasan--Yehudayoff (2026).} Their September 2026 derandomized sunflower theorem works for \(O(w)\)-wise independent and a broader pseudo-independent class. The natural SAT-supported negative distribution below fails their declared pseudo-independence condition already on one variable triple.
+
+\item[] \textbf{Carenini (2026).} Ranked spreadness removes width dependence from some random-containment estimates. A separate 2026 result proves strong \(k\)-DNF Resolution lower bounds for random 3-CNF up to \(k=O(\sqrt{\log n})\). These are structural tools, not unrestricted slice-circuit lower bounds.
+
+\item[] \textbf{Beimel--Nir (2026).} Multislices support strong formula-model lower bounds, but currently do not supply the needed unrestricted monotone circuit lower bound.
+\end{itemize}
+
+\section{Hostile control: full 3XOR hard, every 3XOR slice easy}
+
+Let \(X_N\) be the monotone incidence function that outputs one iff a set of 3XOR constraints is inconsistent. The full-cube function has an exponential monotone lower bound through the GGKS/GKRS framework. For threshold \(t\), define
+\[
+X_{N,t}(z)=
+\begin{cases}
+0,&|z|<t,\\
+X_N(z),&|z|=t,\\
+1,&|z|>t.
+\end{cases}
+\]
+
+\begin{proposition}[XOR-SLICE-EASY]
+For every \(t\), \(X_{N,t}\) has polynomial-size monotone circuits.
+\end{proposition}
+
+\begin{proof}
+Compute \(|z|\), compare it with \(t\), and on equality solve the represented linear system over \(\mathbb F_2\) by Gaussian elimination. This gives polynomial-size unrestricted circuits. Valiant's slice theorem converts them to polynomial-size monotone circuits.
+\end{proof}
+
+Thus generic full-CSP monotone hardness, Resolution width, or incidence expansion cannot by itself imply hard exact slices. 3XOR is a mandatory hostile control.
+
+\section{Why the existing lifting reduction misses one slice}
+
+In GKRS Lemma 7, Alice has only the source constraints after renaming. Bob includes every target constraint satisfied by his assignment. For 3XOR Bob has density \(1/2\) in the target constraint universe; for proper 3CNF the analogous object has density \(7/8\). Thus the natural reduction has
+\[
+|A_{\rm Alice}|=O(Q),\qquad |B_{\rm Bob}|=\Theta(M),
+\]
+whereas an exact-layer KW pair requires both weights equal to \(t\).
+
+\begin{lemma}[Output-inert padding cannot repair the gap]
+Suppose fresh padding coordinates are \(D_A,D_B\), and an Alice-only fresh coordinate would not decode to a source-search answer. Correctness for every KW output requires \(D_A\subseteq D_B\), and hence
+\[
+|A\cup D_A|-|B\cup D_B|\le |A|-|B|.
+\]
+\end{lemma}
+\begin{proof}
+Any coordinate present for Alice and absent for Bob is a legal monotone-KW answer. Therefore every nondecodable fresh coordinate present for Alice must also be present for Bob. The cardinality inequality follows.
+\end{proof}
+
+\begin{lemma}[Proper 3-clause bundle rigidity]
+For proper width-three clauses \(C,D\),
+\[
+C\models D\quad\Longrightarrow\quad C=D.
+\]
+\end{lemma}
+\begin{proof}
+The falsifying sets of \(C\) and \(D\) are subcubes of equal size \(2^{Q-3}\). The implication gives inclusion of one falsifying set in the other, hence equality, which fixes the same literals.
+\end{proof}
+
+So cosmetic/common padding cannot exact-weight the standard lifting, and the simplest clause-replication gadget is also blocked.
+
+\section{Exact spreadness}
+
+Let
+\[
+\mathcal U=\{A\in\tbinom{[M]}t:A\text{ is UNSAT}\},\qquad
+\delta_q=\Pr[A\text{ is SAT}]\le\rho^q,
+\]
+where \(\rho=2(7/8)^6<1\).
+
+\begin{proposition}[SPREAD1]
+For \(|S|=s\ge1\),
+\[
+\frac{|\{A\in\mathcal U:S\subseteq A\}|}{|\mathcal U|}
+\le
+\frac{(t)_s}{(M)_s}\frac1{1-\delta_q}.
+\]
+For all sufficiently large \(q\),
+\[
+\frac{|\{A\in\mathcal U:S\subseteq A\}|}{|\mathcal U|}
+\le
+\left(\frac{2t}{M}\right)^s.
+\]
+Hence \(\mathcal U\) is \(r_0\)-spread for \(r_0=M/(2t)=\Theta(q^2)\).
+\end{proposition}
+\begin{proof}
+At most \(\binom{M-s}{t-s}\) exact-\(t\) sets contain \(S\), while
+\(|\mathcal U|\ge(1-\delta_q)\binom Mt\). Divide and simplify.
+\end{proof}
+
+No nonempty \(t\)-uniform family can be \(r\)-spread for \(r>M/t\), by averaging singleton incidences.
+
+\section{Generic robust-sunflower barrier}
+
+The CKR theorem requires
+\[
+r=B\frac{\log(t/\epsilon)}p.
+\]
+For a natural below-threshold product negative distribution let
+\[
+p=c\frac tM,\qquad 0<c<1.
+\]
+Then
+\[
+r=\frac Bc\frac Mt\log(t/\epsilon)>\frac Mt
+\]
+for sufficiently large \(t\), which exceeds the maximum possible spread of any nonempty \(t\)-uniform family.
+
+Thus the off-the-shelf robust-sunflower theorem cannot directly start from the full exact-\(t\) minterm family against a product distribution a constant factor below the slice. This is a logarithmic parameter barrier, not merely weak spreadness.
+
+\section{Natural SAT-supported negative distribution}
+
+Define \(\mathcal D^-_{q,t}\) by choosing a uniform assignment \(\beta\), then a uniform \(t\)-subset of the \(7M/8\) clauses satisfied by \(\beta\). Every sample is exact-\(t\) and SAT, and each coordinate has marginal \(t/M\).
+
+Fix one variable triple and its eight signed proper clauses. No assignment satisfies all eight, so
+\[
+\Pr_{B\sim\mathcal D^-}[\text{all eight clauses occur}]=0.
+\]
+The 2026 pseudo-independence definition requires every marginal on at most \(k\) coordinates to be a convex mixture of product distributions whose positive marginals stay within a positive multiplicative window around the common marginal.
+
+\begin{proposition}[PSEUDOIND-FAIL]
+For \(k\ge8\), positive marginal, and \(0<\epsilon<1\), \(\mathcal D^-_{q,t}\) is not \((k,\epsilon)\)-pseudo-independent in the sense of Cavalar et al. 2026.
+\end{proposition}
+\begin{proof}
+On the eight clauses of one triple, every product component with strictly positive bit marginal assigns positive probability to the all-one pattern, and so does every convex mixture. The SAT-supported distribution assigns it probability zero.
+\end{proof}
+
+Therefore the newest derandomized-sunflower theorem is not a black-box solution for the most natural SAT-supported exact-layer distribution.
+
+\section{A hard-core family with no small UNSAT core}
+
+Tarsi's theorem states that a minimally unsatisfiable CNF with \(r\) clauses uses at most \(r-1\) variables. Fix constant \(L\). For uniform \(A\in\binom{\mathcal C_q}{6q}\),
+\[
+\Pr[\exists\text{ UNSAT subformula with at most }L\text{ clauses}]
+\le
+\sum_{r=1}^{L}\sum_{v=0}^{r-1}
+\binom qv
+\binom{8\binom v3}{r}
+\frac{(t)_r}{(M)_r}
+=o(1).
+\]
+For fixed \(r\), each nonzero summand is at most \(O(q^{r-1})O(q^{-2r})=O(q^{-r-1})\).
+
+Since a random exact-\(6q\) formula is UNSAT with probability \(1-\rho^q\), the same \(1-o(1)\) conclusion holds conditioned on UNSAT.
+
+\begin{proposition}[SMALLCORE1]
+For every fixed \(L\), a \(1-o(1)\) fraction of exact-\(6q\) UNSAT minterms contain no UNSAT subformula of at most \(L\) clauses.
+\end{proposition}
+
+Define the resulting hard-core family
+\[
+\mathcal U^{(L)}_{q,6q}
+=
+\{A\in\mathcal U_{q,6q}:\text{every subformula of size }\le L\text{ is SAT}\}.
+\]
+
+\section{What changed}
+
+\begin{enumerate}
+\item Generic full-CSP-to-slice transfers are retired. 3XOR is a decisive counterexample.
+\item Direct GGKS/GKRS exact-weight lifting is downgraded: it has a weight-orientation mismatch, and output-inert padding cannot fix it.
+\item Off-the-shelf robust sunflowers on the full \(t\)-minterm family are retired for natural below-threshold product negatives because of the unavoidable \(\log t\) spread gap.
+\item A SAT-specific sunflower route is promoted. Matching-specific sunflower lemmas in 2025--2026 show that function-specific combinatorics can materially outperform generic robust sunflower bounds.
+\item Ranked spreadness, Johnson/Hamming analysis, and random-3CNF proof complexity remain auxiliary tools until they produce a gate-level or rectangle-DAG theorem.
+\end{enumerate}
+
+\section{Ranked next steps}
+
+\subsection*{Priority 1: SAT-SUNFLOWER1}
+For slowly growing \(L=L(q)\), prove a SAT-specific robust-sunflower statement for a large spread subfamily
+\[
+\mathcal F\subseteq\mathcal U^{(L)}_{q,6q}
+\]
+relative to \(\mathcal D^-_{q,6q}\). The desired core must be proper and conditioning on it should make a petal occur with high probability. The theorem must fail on the XOR-SLICE-EASY control for an explicit OR-clause-specific reason.
+
+\subsection*{Priority 2: grow SMALLCORE1}
+Find the largest \(L(q)\) for which exact-\(6q\) random 3-CNFs have no UNSAT core of size \(\le L(q)\) with high probability. Use Carenini's 2026 random-3CNF proof-complexity methods as a possible source of sharper structure beyond the crude Tarsi count.
+
+\subsection*{Priority 3: SLICELIFT1}
+Define a local exact-weight KW gadget class and search for a solution-carrying balancing gadget satisfying:
+\begin{enumerate}
+\item exact equality of Alice/Bob target weights;
+\item every Alice-only added coordinate decodes to a source answer;
+\item proper width-three CNF syntax;
+\item polynomial target dimension;
+\item explicit survival of the XOR hostile control.
+\end{enumerate}
+If impossible, prove an impossibility theorem for that gadget class and retire the route.
+
+\subsection*{Priority 4: restricted-model extension}
+Use Krieger-style prime-implicant incompressibility, the 2026 multislice formula work, or ranked spreadness to extend SLICEDEPTH2. This is lower reward because it does not close DAG sharing.
+
+\section{Barrier ledger}
+
+The principal current barrier is model transfer to unrestricted monotone DAGs. Relativization and algebrization are not resolved. Natural Proofs must be audited if a constructive large circuit property emerges. No unrestricted lower bound has been proved.
+
+\section{Handoff}
+
+The highest-reward next theorem is SAT-SUNFLOWER1 on \(\mathcal U^{(L)}_{q,6q}\) versus \(\mathcal D^-_{q,6q}\). In parallel, run one explicit SLICELIFT1 balancing-gadget construction and then attempt a local-gadget impossibility theorem if it fails.
+
+\begin{thebibliography}{12}
+\bibitem{Valiant1986} L. G. Valiant, Negation is Powerless for Boolean Slice Functions, \emph{SIAM J. Comput.} 15(2):531--535, 1986.
+\bibitem{GGKS2020} A. Garg, M. G\"o\"os, P. Kamath, D. Sokolov, Monotone Circuit Lower Bounds from Resolution, \emph{Theory of Computing} 16(13):1--30, 2020.
+\bibitem{GKRS2019} M. G\"o\"os, P. Kamath, R. Robere, D. Sokolov, Adventures in Monotone Complexity and TFNP, ITCS 2019.
+\bibitem{LMM2020} S. Lovett, R. Meka, I. Mertz, T. Pitassi, J. Zhang, Lifting with Sunflowers, ECCC TR20-111, 2020.
+\bibitem{CKR2022} B. P. Cavalar, M. Kumar, B. Rossman, Monotone Circuit Lower Bounds from Robust Sunflowers, \emph{Algorithmica} 84:3655--3685, 2022.
+\bibitem{Matching2025} B. P. Cavalar, M. G\"o\"os, A. Riazanov, A. Sofronova, D. Sokolov, Monotone Circuit Complexity of Matching, ECCC TR25-102, 2025.
+\bibitem{Rao2026} A. Rao, Monotone Circuit Lower Bounds from Spread Matchings, ECCC TR26-129, 2026.
+\bibitem{Derand2026} B. P. Cavalar, T. B. Fabris, P. Mukhopadhyay, S. Srinivasan, A. Yehudayoff, Derandomized Sunflowers and Radical Lower Bounds, ECCC TR26-220, 2026.
+\bibitem{CareniniSpread2026} G. Carenini, Ranked Spreadness and Sample-Based Testing, ECCC TR26-161, 2026.
+\bibitem{CareniniRes2026} G. Carenini, Random 3-CNF Formulas Are Hard for \(k\)-DNF Resolution up to \(k=O(\sqrt{\log n})\), ECCC TR26-158, 2026.
+\bibitem{BeimelNir2026} A. Beimel, O. Nir, The Power of Multislices in Monotone Computation, ECCC TR26-213, 2026.
+\bibitem{Kullmann2016} O. Kullmann, Minimal Unsatisfiability and Deficiency: Recent Developments, arXiv:1610.08575, 2016.
+\end{thebibliography}
+\end{document}
