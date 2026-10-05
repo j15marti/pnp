@@ -1439,3 +1439,34 @@ No explicit finite-q convergence rate is claimed. This does not bound the closur
 XOR-SLICE-EASY, LOCALPATTERN-GUARD, the P/poly positive-family barrier, SLICELIFT2, and THRESHOLD-APPROX-GUARD remain active. The withdrawn switching-lemma route remains **FALSIFIED/RETIRED**. Growing-order UNSAT moment camouflage, MATCHED-MUF2, and SAT-SUNFLOWER2-DIRECTIONAL remain **OPEN**.
 
 P versus NP remains OPEN.
+
+
+## 2026-10-05 DIRECTIONALTELESCOPE1 verified reconciliation
+
+Verified artifact:
+- `research/explorations/monotone-slice/2026-10-05_1011_DIRECTIONALTELESCOPE1.tex`
+- report commit: `d87cdc8e7d4163d3098a5c710cebe38eebd0df10`
+
+### DIRECTIONAL-TELESCOPE — PROVED/EXACT
+
+For any Boolean-function path h_0,...,h_L whose individual transitions are each pointwise enlarging or pointwise shrinking, endpoint false-positive error under mu- is at most the sum of local 0-to-1 errors over enlarging steps, and endpoint false-negative error under mu+ is at most the sum of local 1-to-0 errors over shrinking steps.
+
+Thus, if a directional closure/trimming approximator has local closure errors c_i under mu- and local trimming errors tau_i under mu+, then
+
+\[
+\eta_-\le\sum c_i,\qquad \eta_+\le\sum\tau_i.
+\]
+
+Combining with DIRECTIONALGAP1 and SLICEDELTA0-R1 gives the sufficient remaining budget at t=floor(3.5q):
+
+\[
+\sum c_i+\sum\tau_i+\varepsilon_A<1-o(1).
+\]
+
+This is exact accounting, not a local-error theorem. It also exposes the polynomial-step accumulation problem: constant per-step error is insufficient under the union bound.
+
+New target: **SAT-LOCAL-ERROR1**, prove a summably small total local approximation error, or another explicit total bound leaving room for epsilon_A, for every relevant small monotone circuit under the declared SAT distributions. **OPEN**.
+
+The result survives XOR-SLICE-EASY and is therefore not SAT-specific. LOCALPATTERN-GUARD, the P/poly positive-family barrier, SLICELIFT2, THRESHOLD-APPROX-GUARD, and the retired withdrawn switching-lemma report retain their prior statuses.
+
+SAT-SUNFLOWER2-DIRECTIONAL, MATCHED-MUF2, and growing-order UNSAT moment camouflage remain **OPEN**. P versus NP remains OPEN.
