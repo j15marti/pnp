@@ -777,3 +777,124 @@ Artifacts:
 - `experiments/monotone_slice/moment_balance3.py`
 - `research/explorations/monotone-slice/2026-10-04_2040_MOMENTBALANCE3.tex`
 - `results/raw/monotone_slice/MOMENTBALANCE3_results.txt`
+
+
+## 2026-10-04 MOMENTBRIDGE1 update
+
+Literature review changes the branch from generic low-degree classification to a more specific slice-approximation target.
+
+### Literature bridge
+
+- Wegener's slice theory identifies monotone circuits on slices with set-circuit structure and warns that standard monotone lower-bound methods do not directly transfer.
+- CKR 2022 use slice sunflowers inside Razborov's closure/trimming approximation method.
+- Cavalar--Fabris--Mukhopadhyay--Srinivasan--Yehudayoff, ECCC TR26-220 (2026), prove robust sunflower bounds for locally pseudo-independent distributions using the method of moments; they need only local order k=O(w log(1/delta)) for width w.
+- Amireddy--Behera--Srinivasan--Sudan--Willumsgaard, ECCC TR26-152 (2026), give low-degree testing directly on Boolean slices. This does not imply small monotone circuits have low degree.
+
+### DENSITY-CANCEL1 — PROVED/EXACT parameter obstruction
+
+For the direct CKR slice-sunflower closure template, let M=8 binom(q,3), positive layer t=Theta(q), negative slice m<=t, p=m/M, and fixed minterm size ell.
+
+CKR gives a minterm bound of the form
+
+|M_ell(h)| <= (B x log x)^ell,
+x = log(ell/epsilon)/p.
+
+Uniform positive t-slice containment of a fixed ell-set is
+
+(t)_ell/(M)_ell.
+
+Therefore the standard union-bound positive-error factor has ell-th root
+
+Omega(
+B (t/m)
+log(ell/epsilon)
+log((M/m) log(ell/epsilon))
+).
+
+Since M/m=Theta(q^2) and t/m>=1, this diverges at least logarithmically in q.
+
+So the off-the-shelf CKR closure + minterm union-bound template cannot yield a vanishing positive error on two nearby sparse slices.
+
+This retires only the direct parameterization, not all sunflower/approximation approaches.
+
+### Better distribution pair
+
+Use mu_- = uniform exact t-slice, which is SAT whp at density 3.5, and define
+
+mu_{lambda,q}(F)
+propto
+1[|F|=t, F UNSAT] exp(lambda dot Z(F)),
+
+where Z(F) is the eight-dimensional signed pair-orbit vector.
+
+Because Z is signed-permutation invariant, mu_{lambda,q} preserves exact first-order clause marginals.
+
+The exact uniform-slice pair target is
+
+E P_{s,h} = n_{s,h} t(t-1)/(2(M-1)).
+
+### POS-TILT1 computational entropy test
+
+Maximum-entropy fits matching the exact uniform-slice pair target:
+
+- q=16: 324 UNSAT, ESS fraction 0.110, KL 1.140
+- q=18: 322 UNSAT, ESS fraction 0.101, KL 1.453
+- q=20: 976 pooled UNSAT, ESS fraction 0.120, KL 1.246
+- q=24: 827 pooled UNSAT, ESS fraction 0.101, KL 1.341
+
+All empirical pair fits reached about 1e-10 error or better.
+
+COMPUTATIONAL: pair balancing does not visibly require an exponentially tiny empirical subset over q=16..24. No asymptotic bounded-KL claim is made.
+
+### Third-order hostile validation
+
+A previously observed canonical triple-orbit deviation was frozen and tested on two independent q=20 exact-pair-fit pools.
+
+Effects:
+- pool A: -0.251 SD
+- pool B: -0.017 SD
+
+The candidate fails robust replication.
+
+### Random spread-DNF probe
+
+Exact-pair-balanced q=20 UNSAT versus uniform exact slice:
+
+Width 2, 10,000 random terms:
+- gaps -0.0155 and +0.0043.
+
+Width 3, 300,000 random terms, ten independent DNF seeds:
+- gaps 0.1308, -0.0390, -0.0162, 0.0462, -0.0547, -0.0174, 0.0196, 0.0168, -0.0432, 0.0602.
+- mean gap 0.0103, sample SD 0.0572.
+
+The 0.1308 outlier does not replicate.
+
+COMPUTATIONAL: no stable systematic advantage was found for random spread width-2/3 DNFs after exact empirical pair balancing.
+
+### Revised highest-value target
+
+TWO-DIST-MOMENT-APPROX
+
+Seek a slice-intrinsic approximation theorem of the form
+
+small monotone circuit
+=>
+two-distribution approximator built from spread bounded-width DNFs,
+
+with approximation error controlled simultaneously on
+
+mu_+ = moment-balanced UNSAT
+
+and
+
+mu_- = uniform exact t-slice.
+
+The 2026 method-of-moments sunflower machinery is the most relevant existing tool, but its published theorem is not yet this circuit approximation theorem.
+
+Mandatory hostile control remains XOR-SLICE-EASY: any generic moment theorem that would also yield a hard 3XOR slice is too strong.
+
+Artifacts:
+- research/explorations/monotone-slice/2026-10-04_2115_MOMENTBRIDGE1.tex
+- results/raw/monotone_slice/MOMENTBRIDGE1_results.txt
+- experiments/monotone_slice/positive_pair_tilt.py
+- experiments/monotone_slice/spread_dnf_probe.py
