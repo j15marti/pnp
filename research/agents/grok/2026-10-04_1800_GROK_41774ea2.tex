@@ -1,0 +1,71 @@
+% GROK REPORT::41774ea2::2026-10-04T18:00:00-07:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\title{GROK H1800 --- numerical audit of LSPV-3 MULTICHANNEL1 (exponent $C$ reproduced on four parameter sets; base-case precision remark); slice-cover $(457,7,7)$ all $\tau{=}1$}
+\author{Agent P$\neq$NP / GROK}
+\date{2026-10-04 18:00 PT}
+\begin{document}
+\maketitle
+
+\noindent\textbf{GLOBAL STATUS: OPEN.} P versus NP remains open. No load-bearing arrow closed in this pass.
+The SAT-to-charged-model compiler and the product-span obstruction remain \textbf{OPEN}.
+This note claims no proof and no lower bound for SAT.
+
+\section*{Delta since H1741}
+Predecessor: \texttt{research/agents/grok/2026-10-04\_1741\_GROK\_41774ea2.tex} (commit \texttt{cfd76c84}, still the head of \texttt{main} when this pass started). No commit landed after it; nothing new under \texttt{research/agents/grok/} or \texttt{research/main/}.
+Peer commits that landed before the H1741 push and were not itemized there:
+\begin{itemize}
+\item \texttt{fa264baf}: \texttt{research/agents/lspv-3/2026-10-04\_1635\_LSPV-3\_MULTICHANNEL1.tex} (read in full; peer label PROVED/EXACT for the recurrence, OPEN for existence of a source-matched shrinker). \texttt{9318f4c5} reconciles it (unread).
+\item \texttt{67d59800}, \texttt{b8f6f7fa}, \texttt{35aa2678} (TASK-008 density-one items): still unread.
+\end{itemize}
+
+\section*{Why this claim next}
+MULTICHANNEL1 is time and space accounting for recursively replacing smaller SAT calls, which is exactly the $T$ and $S$ coordinates of the standing surface. Its theorem is: with channels $(\eta_j,\theta_j)$, $\theta_j<1$, and local work $n^{r}$, recursion gives $T(n)\le n^{C+o(1)}$ with $C=\max\{r,\max_j\eta_j/(1-\theta_j)\}$, and depth-first space $S(n)\le n^{\max\{\sigma,\theta_*\}+o(1)}$. No literature beyond the note itself was needed for this test.
+
+\section*{Audit: MULTICHANNEL1 recurrence (COMPUTATIONAL)}
+Script \texttt{experiments/multichannel/check\_h1800.py} (scratch only). In log scale $L=\log_2 n$ it evaluates the exact recurrence
+$T(L)=\log_2\!\big(2^{rL}+\sum_j b_j2^{\eta_jL+T(\theta_jL+c_j)}\big)$, where $b_j$ is a constant multiplicity and $c_j$ models the $o(1)$ in query length as a constant factor $2^{c_j}$. Space uses the conservative sum $S(L)=\log_2\!\big(2^{\sigma L}+\sum_j(2^{\theta_jL+c_j}+2^{S(\theta_jL+c_j)})\big)$, which upper-bounds the depth-first maximum. Values below are recomputed in this pass.
+\begin{center}
+\begin{tabular}{lrrrrr}
+case & $C$ & $\log_2T/L$ at $L=10^3$ & at $10^5$ & $\log_2S/L$ at $10^5$ & $\rho$\\\hline
+one channel $(1,\tfrac12)$, $r=1$ & 2.0 & 2.0248 & 2.00051 & 0.50002 & 0.5\\
+two channels $(1,\tfrac12),(\tfrac12,0.8)$, $r=1.5$ & 2.5 & 2.5993 & 2.50173 & 0.80001 & 0.8\\
+two tight $(1,\tfrac12),(1.5,\tfrac14)$, $r=1$ & 2.0 & 2.0319 & 2.00061 & 0.50002 & 0.5\\
+near current scale $(0.1,0.99)$, $r=1$ & 10.0 & 10.5137 & 10.00972 & 0.99 & 0.99\\
+\end{tabular}
+\end{center}
+In every case the time exponent converges to $C$ from above and the space exponent to $\rho=\max\{\sigma,\theta_*\}$. No error found in MULTICHANNEL1.
+
+\paragraph{Size of the hidden factor.} The excess $\log_2T-CL$ grows like a multiple of $\log_2L$, that is, a polylogarithmic factor, which is honestly $n^{o(1)}$. For the near-current-scale channel with $b=2$, $c=0$, the excess grows by $228.96$ bits per decade of $L$, matching the level count $\log_2 10/\log_2(1/0.99)=229.1$ at one bit per level; so the hidden factor there is about $(\log n)^{69}$, with degree $\log_2 b/\log_2(1/\theta)$. As $\theta\to1$ both $C=\eta/(1-\theta)$ and this degree blow up, which is the finite-$n$ face of the note's scale-sensitive selector charge. This is an observation about the recurrence, \textbf{COMPUTATIONAL}.
+
+\paragraph{Precision remark on termination.} The proof says recursion terminates because every scale is strictly fractional. With constant-factor query lengths, $L\mapsto\theta L+c$ has a fixed point $L^*=c/(1-\theta)$, and below it the length does not shrink: with length $4n^{1/2}$ and a base case at $L_0=3<L^*=4$, the recursion never terminated in the script. The two-channel case needed a base case at $L_0=6>5=L^*$. The fix is the standard one, brute force on all instances below a constant size $n_0>2^{L^*}$, which costs $O(1)$ and leaves $C$ unchanged. This is a wording gap, not a falsification; MULTICHANNEL1 keeps its peer label.
+
+\paragraph{What it does not do.} The recurrence relativizes, supplies no fractional SAT channel, and gives no lower bound on $T$, $S$, or $R$. It does not touch the compiler arrow.
+
+\section*{Standing easy-structure control (COMPUTATIONAL)}
+\begin{itemize}
+\item Slice-cover $(457,7,7)$, $k=9$, exhaustive over $126$ nonconstant words: $\tau$-hist $\{1{:}126\}$, $R=7$, $d=21$, slice-rank min $=4$, max $=7$. Elapsed $\approx5.7$\,s.
+\item LDE/Hadamard battery $(457,7,7)$, seed $314159$: rank distribution $\{(0,0){:}1,(1,0){:}1,(7,21){:}126\}$, $0$ nonconstant exterior-deficient. Elapsed $\approx10.1$\,s.
+\end{itemize}
+No charged $T$, $S$, or $R$ improvement. Next prime $461$.
+
+\section*{Status ledger}
+\begin{itemize}
+\item Time-state-representation surface: \textbf{CANDIDATE}.
+\item SAT-to-charged-model compiler; product-span obstruction: \textbf{OPEN}.
+\item MULTICHANNEL1 recurrence: peer \textbf{PROVED/EXACT}, unchanged; numerical audit agrees (\textbf{COMPUTATIONAL}); termination needs a constant-size base case above the fixed point.
+\item Source-matched multichannel shrinker: \textbf{OPEN}.
+\item INTERMEDIATE-CORE1: \textbf{OPEN}, not advanced in this pass.
+\item D(4,8) semantic-cut $\ge48$: \textbf{FALSIFIED/RETIRED} (exact cut 8); not revived.
+\item Contact/switch models: polynomially equivalent to branching programs; do not close the gap.
+\end{itemize}
+
+\section*{Reproducibility}
+Scratch at \texttt{/workspace/scratch\_h1800}; results \texttt{results/multichannel\_h1800.json}, \texttt{results/sc\_457.txt}, \texttt{results/lde\_battery\_45777.json}. Root \texttt{main.tex} not edited.
+
+\section*{FINAL STATUS}
+P versus NP remains OPEN; no falsification, no charged T/S/R improvement; the MULTICHANNEL1 recurrence passed an independent numerical audit (time exponent to $C$, space exponent to $\rho$ on four parameter sets) with only a base-case wording remark, and the source-matched shrinker it presupposes remains OPEN.
+\end{document}
