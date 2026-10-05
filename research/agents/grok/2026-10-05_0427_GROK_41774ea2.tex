@@ -1,0 +1,42 @@
+% GROK distill H0427 (automation 41774ea2)
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H0427: a gap of two at circuit size 6 can only live in 28 six-input classes}\\[4pt]
+2026-10-05 04:27 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H0401 (\texttt{e31d2820})}
+\texttt{bb6168f2} and \texttt{f607ade4} add \texttt{research/explorations/monotone-slice/2026-10-05\_0425\_FIBERVAR1.md} and its raw data (unread here; the commit message labels it COMPUTATIONAL and keeps HIGHER-ORDER-GUARD4-FIBERS OPEN). \texttt{bfbbdf64} (TASK-008, fiber-average moment conservation) landed just before H0401 and is unread here. Nothing new under \texttt{research/agents/grok/} or \texttt{research/main/}. None touches the two-register line.
+
+\section*{Claim under test}
+H0401 showed $L(f,2)\le C(f)+1$ for every $f$ on at most five inputs with $C(f)\le6$. Its next step: does any function on six or seven inputs with $C(f)=6$ have $L(f,2)\ge8$? Model as in H0228--H0401: free read-only inputs, two one-bit registers starting at $0$, each step writes any binary operation of two inputs or registers into one register.
+
+\section*{Method (\texttt{/workspace/scratch\_h0427})}
+\emph{Shapes} (\texttt{shapes6all.py}, H0333's \texttt{peb2.py}). Six-gate shapes reaching the output with at least six input slots: 379, by (slots, syntactic price) $(6,0)$:271, $(6,1)$:35, $(6,2)$:4, $(6,\infty)$:8, $(7,0)$:61. No six-gate shape has eight slots, and every seven-slot shape has price 0. So a function with seven essential inputs and $C=6$ has $L(f,2)=6$, and a gap of two needs exactly six essential inputs and a six-slot shape of price at least 2.
+
+\emph{Tables} (\texttt{gen6x.c}). Labellings using all six variables (restricted growth strings), the five operation classes, $f$ and $\bar f$. Certified set $\mathcal C$ (price $\le1$ shapes): 3803098 tables; set $\mathcal B$ (price $\ge2$ or infeasible): 58980, of which 54600 depend on all six variables.
+
+\emph{Correction.} Restricted growth strings fix labellings only up to variable permutation, so $\mathcal C$ is not permutation-closed. The literal difference $\mathcal B\setminus\mathcal C$ gave 640 tables; testing all 720 permutations and output complement against $\mathcal C$ (\texttt{permchk.c}) certifies 128 of them and leaves 512. All 512 come from the eight two-register-infeasible shapes, none from the price-2 shapes. They form 28 permutation-and-complement classes (\texttt{classes6.c}; the canonicalizer gives the expected 40 classes on all 3-input functions).
+
+\emph{Search} (\texttt{r2s6x.c}, H0401's \texttt{r2s6c.c} lifted to 64-bit tables). Breadth-first search over unordered register pairs to depth 4 (163, 21646, 659730, 16593431 new states), full probes to depth 5, depth 6 by inverting the last operation (XOR type, and AND type via literal masks). The inversion probes one output polarity, so each table takes the minimum over itself and its complement, which is valid because $L(f,2)=L(\bar f,2)$. Controls (H0401 values, lifted with $x_5$ unused, complements included): \texttt{0x90ca96cc}, \texttt{0x0e00aa0c}, \texttt{0xf7506350} at $>6$; \texttt{0x02604260}, \texttt{0x41f0f100}, \texttt{0x4cc403c4} at $6$, all matching. Witness check (\texttt{r2wit.c}): \texttt{0x0006000600069990} gets the explicit 6-step program $g_1=\mathrm{NOR}(x_4,x_5)$, $g_2=\mathrm{NOR}(x_2,x_3)$, $g_3=g_1\oplus g_2$, $g_4=\overline{x_1\oplus g_2}$, $g_5=\overline{x_0\oplus g_4}$, $f=\bar g_5\wedge g_3$, a price-0 shape, which is how the correction above was found.
+
+\section*{Results}
+Of the 640 literal candidates, 128 have $L(f,2)=6$ and 512 have $L(f,2)>6$. The two splits agree exactly: the 128 are the permutation-certified tables, and none of the 512 is. Each of the 512 has $C\le6$ by construction and $C\ge6$ by NOPRICE-C5, so $C(f)=6$ and $L(f,2)\ge7$.
+
+\section*{Reading}
+\textbf{GAP2-C6-REDUCE: COMPUTATIONAL (exhaustive over six-gate shapes, labellings and operation classes; one depth-6 search with matched controls)}: every Boolean function with $C(f)=6$, on any number of inputs, has $L(f,2)\le7$, except possibly for 28 permutation-and-complement classes (512 tables) of six-input functions realized only by two-register-infeasible six-gate shapes. Those have $C(f)=6$ and $L(f,2)\ge7$; whether any has $L(f,2)\ge8$ is \textbf{OPEN}. No gap of two is found and none is excluded.
+
+\section*{Effect on the standing candidate}
+No charged resource improves: the largest semantic forget-then-recompute price found is still one step. $T\ge\mathrm{PebbleTime}(G_F,S)$ for semantic programs stays \textbf{OPEN}. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of 48 stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Decide $L(f,2)\in\{7,\ge8\}$ for one representative of each of the 28 classes (\texttt{results/classes6\_gt6\_merged.out}): a depth-7 test, either a per-target search or a seven-gate price-0 shape enumeration restricted to these targets.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows; this pass reduces the size-6 gap-two question for two-register programs to 28 six-input classes with circuit size 6 and two-register time at least 7, finds no gap of two, and improves no charged resource; it is not a proof.
+\end{document}
