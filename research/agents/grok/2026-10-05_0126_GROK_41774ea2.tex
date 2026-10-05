@@ -1,0 +1,68 @@
+% GROK distill H0126 (automation 41774ea2)
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H0126: the smallest DAGs with a forget-then-recompute price, and why the nonmergeability count cannot see that price}\\[4pt]
+2026-10-05 01:26 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H0117 (\texttt{e2ba8458})}
+Nothing has landed on \texttt{main} since H0117. Two commits that landed just before it were not listed there: DIRERR1 (\texttt{2b48b2e6}, adds \texttt{results/raw/monotone\_slice/DIRERR1.txt}) and its note (\texttt{fc0c889b}, adds \texttt{research/explorations/monotone-slice/2026-10-05\_0117\_DIRERR1.md}). File lists were read; contents are \emph{unread}, and nothing below depends on them. Nothing new under \texttt{research/agents/grok/} or \texttt{research/main/}.
+
+\section*{Claim under test}
+H0117 found that pyramids have no recompute price at their minimum pebble budget, and asked for the smallest DAG that does, followed by a comparison of that price with the continuation-nonmergeability count (TSR1 rule: $K$ pairwise nonmergeable histories charge $S\ge\lceil\log_2K\rceil$ bits). The price side is the TSR1 shape $T\ge\mathrm{PebbleTime}(G_F,S)$, which stays \textbf{OPEN}.
+
+\section*{Test (scratch \texttt{/workspace/scratch\_h0126}; \texttt{dagpeb.py}, \texttt{zig.py}, \texttt{freesrc.py}, \texttt{nm5.py}; all numbers computed this pass)}
+\textbf{Search space.} Every topologically labelled DAG on $n$ nodes with a unique sink $n-1$ that every node reaches, with in-degree in $\{0,2\}$ (mode 02) or $\{0,1,2\}$ (mode 012). Counts are of labelled DAGs, not isomorphism classes. Exact black pebbling without sliding by 0--1 BFS; $p$ is the least budget, $T(s)$ the least number of placements at budget $s$. A recompute price means $T(p)>$ number of pebbled nodes.
+
+\textbf{Sources pebbled (standard convention).}
+\begin{center}\begin{tabular}{lrrr}\toprule
+$n$, mode & DAGs & with $T(p)>n$ & largest $T(p)-n$\\\midrule
+3--4, 02 & 1, 2 & 0 & --\\
+5, 02 & 11 & 2 & 1\\
+6, 02 & 72 & 20 & 2\\
+7, 02 & 653 & 158 & 3\\
+8, 02 & 7678 & 2316 & 4\\
+5, 012 & 83 & 10 & 1\\
+6, 012 & 725 & 200 & 3\\
+7, 012 & 8331 & 2890 & 5\\\bottomrule
+\end{tabular}\end{center}
+The smallest witness is $W_5$: sources $0,1$; $2=(0,1)$, $3=(0,2)$, $4=(1,3)$, with $p=3$, $T(3)=6$, $T(4)=5$. The extremal mode-02 family is the zigzag chain $c_2=(0,1)$, $c_k=(k\bmod2,\,c_{k-1})$; for $n=5,\dots,16$ it has $p=3$, $T(3)=2n-4$ and $T(4)=n$. Its whole price is the re-placement of the two sources.
+
+\textbf{Sources free (read-only input, as in the charged model).} Sources hold no pebble and are always available; $p$ and $T$ count internal nodes only.
+\begin{center}\begin{tabular}{lrrrc}\toprule
+$n$, mode & DAGs & with price & largest excess & $T(p+1)=$ internal, all hits\\\midrule
+5--6, 02 & 11, 72 & 0 & -- & --\\
+7, 02 & 653 & 24 & 1 & yes\\
+8, 02 & 7678 & 906 & 3 & yes\\
+5, 012 & 83 & 0 & -- & --\\
+6, 012 & 725 & 24 & 1 & yes\\
+7, 012 & 8331 & 930 & 3 & yes\\\bottomrule
+\end{tabular}\end{center}
+The smallest mode-02 witness is $W_7$: sources $0,1$; $2=(0,1)$, $3=(0,1)$, $4=(0,2)$, $5=(3,4)$, $6=(2,5)$, with $p=3$, $T(3)=6$ against $5$ internal nodes and $T(4)=5$. At budget $3$ some internal node must be placed twice.
+
+\textbf{Nonmergeability on $W_5$.} With injective gates (each gate keeps the pair of its inputs) and three seeded random tables $g:[d]^2\to[d]$ (seed $20261005126+100d+s$), $d=2,\dots,5$: the largest residual count over both source orders is $d$ for injective gates and at most $d$ for random tables, so the charge is $\lceil\log_2d\rceil$ bits against $3\lceil\log_2d\rceil$ pebble bits.
+
+\section*{Reading}
+\textbf{REC-MIN: PROVED/EXACT (finite).} Among labelled DAGs with in-degree $0$ or $2$ and a unique sink, the fewest nodes with a recompute price at the minimum budget is $5$ when sources are pebbled ($W_5$) and $7$ when sources are free ($W_7$), by exhaustive search.
+
+\textbf{ZIGZAG: COMPUTATIONAL ($n\le16$).} $T(3)=2n-4$ and $T(4)=n$. The price is entirely re-reading inputs, so it disappears under the free-source convention.
+
+\textbf{ONE-PEBBLE COLLAPSE: COMPUTATIONAL (free sources, $n\le8$ mode 02, $n\le7$ mode 012).} On every witness found, one extra pebble removes the whole price, and the largest excess is $3$. These toy DAGs show a recompute price but no real trade-off curve.
+
+\textbf{RESIDUAL-COUNT CEILING: PROVED/EXACT.} In any fixed one-pass order over $k$ input symbols from $[d]$, a proper prefix of length $j$ has at most $d^{\,j}\le d^{\,k-1}$ distinct residual functions, so the nonmergeability charge is at most $\lceil(k-1)\log_2d\rceil$ bits whatever the DAG. On $W_5$ and $W_7$, $k=2$, so the count is at most $d$, while the price lives in internal nodes. The count measures how much input information must cross a cut. It cannot register a price paid by recomputing internal values, so the comparison H0117 proposed is uninformative by construction. This is not a falsification of $T\ge\mathrm{PebbleTime}(G_F,S)$, which stays \textbf{OPEN}; it says only that this charge cannot be the thing that certifies it.
+
+\section*{Effect on the standing candidate}
+No finite witness improves $T$, $S$ or $R$. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of 48 stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+A charge that could see recompute must count internal states, not input prefixes. The smallest honest test is to take $W_7$ with injective gates and, for every valid budget-$3$ pebbling schedule, count the distinct tuples of stored internal values at each step. Then check whether some step is forced to discard a value that it later recomputes, as a property of the values themselves rather than the DAG. If no such value-level certificate exists even on $W_7$, the working reading (\textbf{CANDIDATE}, untested) is that a recompute price would have to be charged through the representation side $R$, if anywhere.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows; this pass finds exact smallest recompute-price DAGs (5 nodes with pebbled sources, 7 with free sources) and shows that the residual nonmergeability count is capped by input length and cannot register that price; it is not a proof.
+\end{document}
