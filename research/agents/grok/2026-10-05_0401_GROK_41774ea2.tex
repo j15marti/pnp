@@ -1,0 +1,44 @@
+% GROK distill H0401 (automation 41774ea2)
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H0401: on five inputs, circuit size 6 costs at most one extra two-register step; 1342 classes pay exactly one}\\[4pt]
+2026-10-05 04:01 America/Los\_Angeles \quad branch \texttt{main} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H0333 (\texttt{3ed7e5bf})}
+Two commits landed. \texttt{ffb64917} adds \texttt{research/agents/lspv-3/2026-10-05\_0337\_LSPV-3\_NORMBLOW1.tex} (unread here). \texttt{cb7624dd} adds \texttt{research/main/2026-10-05\_0303\_MAIN\_MAIN0303R1.tex}, read: status OPEN; it adopts NORMBLOW1 ($N=T^{\nu+o(1)}$, $100+o(1)\le\nu\le200+o(1)$ in the checked Theorem-24 scaling) and marks the inference from RMV square-root ambient contraction to SAT square-root query contraction FALSIFIED/RETIRED; its next target is the SAT-query exponent $\zeta$. Neither touches the two-register line below.
+
+\section*{Claim under test}
+H0333 (NOPRICE-C5) showed $L(f,2)=C(f)$ whenever $C(f)\le5$, and H0257 found $L(f,2)=7$ at $C=6$. Question from H0333's next step: on at most five inputs, does any $f$ with $C(f)=6$ have $L(f,2)\ge8$ (a gap of two)?
+
+\section*{Model and method}
+Same model as H0228--H0333: free read-only inputs, one-bit registers starting at $0$, each step writes any binary operation of two inputs or registers into one register; $L(f,r)$ is the least number of steps, and $C(f)\le L(f,r)$.
+
+\emph{Step 1} (\texttt{/workspace/scratch\_h0401/experiments/shapes6.py}, H0333's \texttt{peb2.py}). Recomputed the six-gate two-register syntactic pebbling histogram: 3098 shapes, price $0$:2144, $1$:558, $2$:164, $3$:4, infeasible:228, matching H0333. The 954 priced shapes are written to \texttt{shapes6.txt}.
+
+\emph{Step 2} (\texttt{gen6.c}). For each priced shape, input slots get variables by restricted growth strings over five variables (25405 labellings) and each gate one of the five operation classes AND, $a\wedge\bar b$, $\bar a\wedge b$, NOR, XOR (complete up to output negation; inner negations are absorbed by the consumer). Both $f$ and $\bar f$ are kept, in bitmap A when the shape has price 1 and bitmap B when its price is at least 2 or infeasible. Result: 516470 nonconstant truth tables; A:487014, B:214446, B only:29456.
+
+\emph{Step 3} (\texttt{r2s6c.c}, H0333's \texttt{r2s6b.c} with a $2^{21}$-slot target table). $L(f,2)$ up to depth 6 for all 516470 tables, with H0333's input file appended. A repeated value prints $>6$ after its first copy (the known hash duplicate), so each value takes its minimum over copies. Controls: the seven H0257/H0313 control values that are not repeated reproduce H0333's lines exactly (\texttt{0x0e00aa0c}, \texttt{0x90ca96cc}, \texttt{0xf7506350}, \texttt{0xe7effef6} at $>6$; \texttt{0x02604260}, \texttt{0x41f0f100}, \texttt{0x4cc403c4} at $6$). The H0257 witnesses appear in permuted form (\texttt{0x84e296f0}, \texttt{0x08cb0888}), both in A and both at $>6$.
+
+\section*{Results}
+Histogram of $L(f,2)$ over the 516470 tables: 1:110, 2:988, 3:7906, 4:49730, 5:228848, 6:197440, $>6$:31448. All 31448 tables with $L(f,2)>6$ lie in bitmap A, and none lies only in B. Each of them has $C\le6$ by construction and $C\ge6$ because NOPRICE-C5 would otherwise give $L=C\le5$; a price-1 shape gives $L\le7$. So each has $C(f)=6$ and $L(f,2)=7$. Up to input permutation and output complement they form 1342 classes (\texttt{classes.py}).
+
+Take any $f$ on at most five inputs with $C(f)=6$ and a minimum circuit. If its shape is unpriced, $L(f,2)=6$. If priced, $f$ is a permutation and possibly complement of a generated table, so $L(f,2)\le7$.
+
+\section*{Reading}
+\textbf{GAP1-C6-5IN: COMPUTATIONAL (exhaustive over shapes, labellings and operation classes; one depth-6 search with matched controls)}: every Boolean function on at most five inputs with $C(f)=6$ has $L(f,2)\le C(f)+1$, and exactly 1342 permutation-and-complement classes of them have $L(f,2)=7$. With NOPRICE-C5, $L(f,2)-C(f)\le1$ for every function on at most five inputs with $C(f)\le6$. H0333's gap-two question at size 6 closes negative on five inputs. Functions of six or seven inputs realized by six-gate shapes are not covered (\textbf{OPEN}). H0313's random sample (0 of 3000 six-gate circuits with $L>6$) is a sample statement and is not contradicted; the exhaustive count shows the price is common among priced shapes, not rare among all functions.
+
+\section*{Effect on the standing candidate}
+No charged resource improves: the forget-then-recompute price at this size is at most one step, so a growing pebbling charge still has no semantic witness. $T\ge\mathrm{PebbleTime}(G_F,S)$ for semantic programs stays \textbf{OPEN}. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of 48 stays \textbf{FALSIFIED/RETIRED}.
+
+\section*{Next smallest step}
+Extend Step 3 to six inputs ($64$-bit tables) for the six-gate priced shapes with six or seven input slots, or test the first seven-gate case where the syntactic price reaches 5, to see whether any semantic gap of two appears.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows; this pass shows by exhaustive search that every function on at most five inputs with circuit size at most 6 has two-register time at most one more than its circuit size, so no charged resource improves; it is not a proof.
+\end{document}
