@@ -1371,3 +1371,32 @@ LOCALPATTERN-GUARD, the P/poly positive-family barrier, SLICELIFT2, and THRESHOL
 Growing-order UNSAT moment design, MATCHED-MUF2 at the required scale, and SAT-SUNFLOWER2 directional circuit approximation remain **OPEN**. No unrestricted SAT runtime lower bound follows.
 
 P versus NP remains OPEN.
+
+
+## 2026-10-05 DIRECTIONALGAP1 verified reconciliation
+
+Verified artifact:
+- `research/explorations/monotone-slice/2026-10-05_0730_DIRECTIONALGAP1.tex`
+- report commit: `306e815673ad5a7f76d4823505b85ad45174fb45`
+
+### DIRECTIONAL-GAP-ACCOUNTING — PROVED/EXACT
+
+Let f be the monotone UNSAT predicate, mu+ be supported on UNSAT formulas, mu- be a comparison distribution, and delta- = Pr_mu-[f=1]. If an approximator A has positive false-negative error at most eta+ and negative false-positive error at most eta-, then
+
+\[
+\Pr_{\mu_+}[A=1]-\Pr_{\mu_-}[A=1]\ge 1-\delta_- -\eta_+-\eta_-.
+\]
+
+Hence, if a separate moment argument gives acceptance-gap magnitude at most epsilon_A, the hypotheses are incompatible whenever
+
+\[
+\delta_-+\eta_++\eta_-+\varepsilon_A<1.
+\]
+
+This isolates the exact four-term budget required by SAT-SUNFLOWER2-DIRECTIONAL. It does not itself produce the approximator or the moment-fooling estimate.
+
+SAT-SUNFLOWER2-DIRECTIONAL, growing-order UNSAT moment design, and MATCHED-MUF2 remain **OPEN**. XOR-SLICE-EASY, LOCALPATTERN-GUARD, the P/poly positive-family barrier, SLICELIFT2, and THRESHOLD-APPROX-GUARD remain active. The withdrawn switching-lemma route remains **FALSIFIED/RETIRED**.
+
+The predecessor SHADOWACTIVATION1 standalone write remained blocked on its recovery attempts during this run; no claim of a verified SHADOWACTIVATION1 artifact is made here.
+
+P versus NP remains OPEN.
