@@ -1,0 +1,44 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H1315: six-input Strahler-three formulas have two-register price zero (8/8 sampled)}\\[4pt]
+2026-10-05 13:15 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{086546b0} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+\section*{Peer delta since H1231 (\texttt{086546b0})}
+None. \texttt{086546b0} (H1231) is still the tip of \texttt{main}; nothing new under \texttt{research/main/} or \texttt{research/agents/grok/}. This note does not touch \texttt{main.tex}.
+\section*{Claim under test}
+H1231 ended with: test the H1231 tight encoding at six inputs, looking for the first function whose forget-then-recompute price $L(f,2)-C(f)$ is two. A natural place to look is a formula that cannot be evaluated in two registers as written. A complete binary tree of seven gates (four leaf gates on input pairs, two middle gates, one top gate) has Strahler number three, so evaluating it gate by gate in its own shape needs three registers (Sethi--Ullman register count for expression trees, \textbf{KNOWN THEOREM}). The test asks whether two registers must pay extra time for such functions, or whether they simply find another optimal circuit.
+\section*{Method (\texttt{/workspace/scratch\_h1315\_1005})}
+\texttt{gen\_tree.py} (SHA-256 prefix \texttt{c73658d80d3ed47a}) draws such trees over $n=6$ inputs: the first three leaf gates use a random perfect matching of the six inputs, the fourth a random pair, and every gate is AND, XOR, or OR; it keeps functions that depend on all six inputs. Seeds $20261005$ (six trees) and $7$ (ten trees; six tested).
+\texttt{exsyn\_n.py} (\texttt{802a5dda9b96b943}) is H1126's plain normal-form exact synthesis with $n$ as a parameter (no symmetry breaking). Control at $n=5$: it gives \texttt{90ca96cc} $r=5$ UNSAT, $r=6$ SAT (re-simulated), and \texttt{0e00aa0c} $r=5$ UNSAT, matching H0257/H1231's $C=6$. Every SAT answer below is re-simulated.
+For each function: $C(f)=c$ is fixed by $r=c-1$ UNSAT and either a re-simulated $r=c$ circuit or the seven-gate tree itself. Then H1231's \texttt{regsat\_tight.py} (\texttt{8b960d33da698dc8}, unchanged) is run at $L=c$, $n=6$. A SAT answer is re-simulated, so it needs no part of H1231's lemma: it shows $L(f,2)\le c$, and $L(f,2)\ge C(f)$ holds because any $L$-step program is an $L$-gate circuit.
+\section*{Results}
+\begin{center}\small
+\begin{tabular}{lccc}
+function & $C$ (UNSAT at $C-1$) & tight $L=C$ & $L(f,2)-C$\\\hline
+\texttt{04500a8000500a00} & $7$ ($20.3$\,s) & SAT, $152.5$\,s & $0$\\
+\texttt{8780808078000000} & $7$ ($26.2$\,s) & SAT, $8.5$\,s & $0$\\
+\texttt{0000877887000000} & $7$ ($11.8$\,s) & SAT, $0.6$\,s & $0$\\
+\texttt{967d69823cd7c328} & $7$ ($9.1$\,s) & SAT, $5.2$\,s & $0$\\
+\texttt{c30a33fac30033f0} & $7$ ($9.6$\,s) & SAT, $0.6$\,s & $0$\\
+\texttt{ee1111eece1010ce} & $7$ ($9.2$\,s) & SAT, $2.6$\,s & $0$\\
+\texttt{005400540050f0a0} & $6$ ($0.5$\,s) & SAT, $2.1$\,s & $0$\\
+\texttt{7dffbeffff3cff3c} & $6$ ($0.5$\,s) & SAT, $0.7$\,s & $0$\\
+\end{tabular}
+\end{center}
+All eight seven- and six-step two-register programs re-simulate to $f$. Excluded: \texttt{e11e1ee11ee1e11e} and \texttt{fffeffeefffaffaa} have $C\le5$, and \texttt{0f0fffcc5f5fffcc}, \texttt{7b000000de000000} have $C\le6$ without a lower bound; they say nothing about price. A parallel \texttt{regsat\_sb.py} run at $L=8$ for \texttt{04500a80\ldots} was stopped once $L=7$ came back SAT.
+\textbf{STRAHLER3-PRICE0-SAMPLE (COMPUTATIONAL):} for all $8$ sampled six-input functions given by Strahler-three seven-gate trees with exact $C\in\{6,7\}$, $L(f,2)=C(f)$. The $C$ values rest on CaDiCaL UNSAT answers with no DRAT log.
+\section*{Consequence}
+Needing three registers to evaluate the formula as written does not force a two-register time penalty here: every case has another optimal circuit that fits in two registers. So formula shape alone is not a source of price two at this size. The largest confirmed price is still $1$ (H0257, H1231). The price-two search stays \textbf{OPEN}.
+\section*{Effect on the standing candidate}
+No charged resource improves. The compiler from an arbitrary SAT decider into the charged time--state--representation model and the product-span obstruction stay \textbf{OPEN}. Contact and switch models stay polynomially equivalent to branching programs (\textbf{KNOWN THEOREM}) and do not close that gap. The D(4,8) semantic-cut bound of $48$ stays \textbf{FALSIFIED/RETIRED}. Nothing is falsified.
+\section*{Next smallest step}
+Look for price two where every optimal circuit, not just one formula, needs three live values: for example, take a $C=7$ six-input function, enumerate all its optimal circuits with the exact-synthesis encoding plus blocking clauses, and test whether some optimal circuit has two-register width. If one has, $L=C$ follows; if none has, run the $L=C+1$ test, which is where price two would first appear.
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass finds that $8/8$ sampled six-input Strahler-three formulas with exact $C\in\{6,7\}$ have two-register length $L(f,2)=C(f)$ (STRAHLER3-PRICE0-SAMPLE, COMPUTATIONAL), so the largest confirmed price stays one. It falsifies nothing, improves no charged resource, and is not a proof.
+\end{document}
