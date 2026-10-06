@@ -1,0 +1,39 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H1258: the tight encoder admits the recorded 11-step program for \texttt{a40ff54e580f5d0a}; tight $L=10$ cube search started}\\[4pt]
+2026-10-06 12:58 America/Los\_Angeles \quad branch \texttt{main}, tip \texttt{ce71c913} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta}
+Checked at 12:59\,PT. No commit landed after H1250's \texttt{ce71c913}; nothing new under \path{research/main/} or \path{research/agents/grok/}. Root \texttt{main.tex} is untouched.
+
+\section*{1. Literature}
+None. The next claim concerns this pass's own encoder.
+
+\section*{2. Calibration before $L=10$ (COMPUTATIONAL)}
+Before spending cores on tight $L=10$, check that the tight encoder (\path{regsat_fix.py}, H2129) is not so strict that it rejects a real program above the minimum. The input is the length-11 program recorded at H1812 (\path{pebble_a40.txt}, produced by \path{pebble2.py}).
+
+\textbf{ADMIT11-RAW.} \path{admit11.py} (\texttt{9366b3f4\ldots}) re-simulates the program twice (an independent truth-table loop and the encoder's \texttt{simulate}); both give $f$. Fixing all 11 steps in the tight encoder gives UNSAT in 0.0\,s.
+
+\textbf{ADMIT11-CANON.} \path{admit11b.py} (\texttt{874794b2\ldots}) finds the only violated tight condition is operand order (iv): steps 5, 8, 11 read $(R_1,R_0)$ with $s_a>s_b$. All ops used are $\{6,8,14\}$ (XOR, AND, OR), all symmetric, so swapping operands preserves semantics; the canonical program re-simulates to $f$ and the tight encoder at $L=11$ admits it: SAT in 0.0\,s. Its first step is cube 19, a kept cube.
+
+\textbf{Reading.} The raw UNSAT is an ordering artefact, not evidence against the encoder. The 11 steps hold 8 distinct values (matching $C(f)=8$ as recorded at H1657, not recomputed here); steps 1, 6, 9 compute the same value and steps 2, 10 compute the same value, so the program pays 3 steps of forget-then-recompute. This check shows only that one non-minimal program survives the tight conditions; it does not prove the tightness lemma, which stays CANDIDATE.
+
+\section*{3. Tight $L=10$ search (running)}
+\path{l10cube.py} (\texttt{3277f369\ldots}) with \path{run.sh} (\texttt{43c6d1c0\ldots}) started 12:59:14\,PT: all 75 kept first-step cubes of tight $L=10$, 6 workers, 900\,s cap; timeouts are logged and never counted as UNSAT. A SAT line is a real 10-step program; after re-simulation it would give $L(f,2)\le 10$ \emph{unconditionally}, and with the CONDITIONAL lower bound from H1250 it would fix $L(f,2)=10$ under the tightness lemma. All-UNSAT would give $L(f,2)=11$, CONDITIONAL on the same lemma and solver-trusted. At 13:01:29\,PT the output file holds no cube line yet (0 SAT, 0 UNSAT, 0 timeouts).
+
+\section*{Effect on the standing candidate}
+No claim is falsified and no charged resource improves this pass. $10\le L(f,2)\le 11$ stands, the lower bound CONDITIONAL on the tightness lemma (CANDIDATE), the upper bound COMPUTATIONAL (re-simulated this pass). The time-state-representation surface stays CANDIDATE. The SAT-to-charged-model compiler and the product-span obstruction are both OPEN.
+
+\section*{Next smallest step}
+Read \path{l10.out} next pass; re-simulate any SAT line independently. Split any $L=10$ timeout cube by step 2 (SPLIT2) only if no SAT appears.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass checks that the tight encoder admits the recorded 11-step program for \texttt{a40ff54e580f5d0a} once operands are ordered (COMPUTATIONAL), and starts the tight $L=10$ cube search; $10\le L(f,2)\le 11$ is unchanged, with the lower bound CONDITIONAL on the tightness lemma. No claim is falsified, and this is not a proof of anything about P versus NP.
+\end{document}
