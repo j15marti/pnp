@@ -1,0 +1,1932 @@
+% !TEX program = pdflatex
+% In-depth explanatory companion to main2.tex.
+% This document explains the project proof mechanics; it does not claim P != NP.
+
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,mathtools,amsthm}
+\usepackage{booktabs,longtable,tabularx,array}
+\usepackage[table]{xcolor}
+\usepackage{enumitem}
+\usepackage[most]{tcolorbox}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\definecolor{proved}{HTML}{1B7F3A}
+\definecolor{openstatus}{HTML}{B15C00}
+\definecolor{retired}{HTML}{A12A2A}
+\definecolor{candidate}{HTML}{4B5FA5}
+\definecolor{softblue}{HTML}{EEF4FA}
+\definecolor{softgreen}{HTML}{EDF8F0}
+\definecolor{softorange}{HTML}{FFF4E8}
+\definecolor{softred}{HTML}{FCEEEE}
+\definecolor{softgray}{HTML}{F5F6F7}
+
+\hypersetup{
+ colorlinks=true,
+ linkcolor=candidate,
+ urlcolor=candidate,
+ citecolor=candidate,
+ pdftitle={P vs NP Research Program --- In-Depth Explanation of Core Proof Mechanics},
+ pdfauthor={P vs NP Research Project}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small P vs NP Research Program}
+\rhead{\small In-Depth Proof Mechanics}
+\cfoot{\small \thepage\ /\ \pageref{LastPage}}
+\setlength{\headheight}{14pt}
+
+\newcommand{\same}{\textsc{same\_realization}}
+\newcommand{\poly}{\operatorname{poly}}
+\newcommand{\statusproved}{\textcolor{proved}{\textbf{PROVED/EXACT}}}
+\newcommand{\statusopen}{\textcolor{openstatus}{\textbf{OPEN}}}
+\newcommand{\statuscandidate}{\textcolor{candidate}{\textbf{CANDIDATE}}}
+\newcommand{\statusretired}{\textcolor{retired}{\textbf{FALSIFIED/RETIRED}}}
+
+\newtcolorbox{statusbox}{
+ colback=softorange,colframe=openstatus,boxrule=0.8pt,arc=2pt,
+ left=7pt,right=7pt,top=6pt,bottom=6pt
+}
+\newtcolorbox{provedbox}{
+ colback=softgreen,colframe=proved,boxrule=0.7pt,arc=2pt,
+ left=7pt,right=7pt,top=6pt,bottom=6pt
+}
+\newtcolorbox{candidatebox}{
+ colback=softblue,colframe=candidate,boxrule=0.7pt,arc=2pt,
+ left=7pt,right=7pt,top=6pt,bottom=6pt
+}
+\newtcolorbox{warningbox}{
+ colback=softred,colframe=retired,boxrule=0.7pt,arc=2pt,
+ left=7pt,right=7pt,top=6pt,bottom=6pt
+}
+\newtcolorbox{explainbox}{
+ colback=softgray,colframe=black!45,boxrule=0.55pt,arc=2pt,
+ left=7pt,right=7pt,top=6pt,bottom=6pt
+}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{\bfseries P vs NP Research Program\\[0.25em]
+\Large In-Depth Explanation of the Core Proof Mechanics}
+\author{Companion exposition to \texttt{main2.tex}}
+\date{2026-10-05}
+
+\begin{document}
+\maketitle
+
+\begin{statusbox}
+\textbf{Global status and purpose.}
+\[
+\boxed{\text{$P$ versus $NP$ remains OPEN.}}
+\]
+This document is an explanatory companion to \texttt{main2.tex}.  It is meant
+to make the proof architecture readable from first principles: what each
+coordinate means, why each theorem was introduced, which implications are
+actually proved, which ideas were falsified, and what would still have to be
+proved for an unconditional separation.
+
+Unless explicitly labeled otherwise, the mathematical claims below are
+explanations of results and status statements already present in the project
+corpus.  This file does not promote a restricted theorem, finite computation,
+or conditional implication into an unrestricted complexity lower bound.
+\end{statusbox}
+
+\tableofcontents
+\bigskip
+
+\section{Executive overview}
+
+The research program has gradually converged on a fairly sharp diagnosis of
+the P-vs-NP difficulty.
+
+It is easy to write down many quantities that become large on a hard-looking
+3-SAT formula: number of satisfying assignments, number of possible histories,
+number of clauses, number of provenance labels, rank of a matrix, width of a
+decision representation, size of an explicit strategy tree, or number of
+distinguishable future continuations.  None of these is automatically a time
+lower bound for an arbitrary algorithm.
+
+The reason is representation freedom.  An algorithm can summarize, reuse,
+recompute, reread, share a DAG node, switch to an algebraic basis, invoke a
+dynamic program on a separator, or use a completely different representation
+from the one the proof is counting.
+
+The current program therefore separates the intended proof into three layers.
+
+\begin{enumerate}[leftmargin=1.6em]
+\item \textbf{Semantic layer.}
+Define exactly which distinctions remain relevant to the future consumer.
+
+\item \textbf{Source/accounting layer.}
+Track where the information supporting those distinctions lives, how it is
+represented, and whether it can be recovered or recomputed.
+
+\item \textbf{Cost layer.}
+Prove that every ordinary way of maintaining or reacquiring enough of those
+distinctions costs superpolynomial resources.
+\end{enumerate}
+
+The first two layers are now comparatively mature.  The third is still the
+central open problem.
+
+\begin{candidatebox}
+\textbf{Current intended separation spine.}
+\[
+\boxed{
+\begin{array}{c}
+\text{hypothetical polynomial-time exact SAT decider }A\\
+\Downarrow\\
+\text{SAT-specific source-to-reduction extraction (OPEN)}\\
+\Downarrow\\
+n-O(\log n)\text{ valid future-relevant reduction}\\
+\Downarrow\\
+\text{SRAS route completeness (proved in the declared interface model)}\\
+\Downarrow\\
+\text{retain/localize}\ \vee\ \text{reacquire}\ \vee\ \text{external}\\
+\Downarrow\\
+\text{ordinary retained/reacquired branch costs }n^{\omega(1)}\text{ (OPEN)}\\
+\Downarrow\\
+P\ne NP.
+\end{array}}
+\]
+\end{candidatebox}
+
+The exact-3SAT work runs in parallel.  It is not itself the unrestricted proof.
+Its purpose is to expose transformations that are genuinely cheap so that the
+abstract lower-bound argument is not allowed to charge them as hard.
+
+\section{Three distinctions that govern the whole project}
+
+\subsection{Semantic multiplicity is not runtime}
+
+Suppose a formula has \(2^n\) assignments.  That does not imply an algorithm
+must examine \(2^n\) objects.
+
+Gaussian elimination on XOR-SAT is the canonical control.  An affine system
+can have exponentially many assignments and strong global dependencies, yet a
+compact basis decides the problem in polynomial time.
+
+So the implication
+\[
+\text{many semantic possibilities}
+\Longrightarrow
+\text{many computational steps}
+\]
+is false without an additional theorem.
+
+\subsection{Existence is not acquisition}
+
+Suppose there exists a short witness \(Q\) that would answer all relevant
+future queries.  A proof still has to explain how the computation obtains
+\(Q\).
+
+Conversely, if \(Q\) is a polynomial-time function of the input, then
+discarding it and recomputing it later may be perfectly cheap.
+
+This is why the project repeatedly separates:
+\[
+\boxed{\text{semantic existence}\ne\text{computational acquisition}.}
+\]
+
+\subsection{Representation size is not source size}
+
+A tiny object can depend on the entire input.
+
+A checksum is the simplest analogy:
+\[
+Q(F)\in\{0,1\}^{O(\log n)}
+\]
+may be a very small representation even though
+\[
+|\operatorname{Src}(Q)|=\Theta(|F|).
+\]
+
+Thus:
+\[
+\boxed{\text{small representation}\not\Rightarrow\text{small source}.}
+\]
+
+CSE needs actual source contraction, not merely a short message.
+
+\section{The Boolean reduction threshold}
+
+The first calculation in \texttt{main2.tex} is intentionally elementary,
+because it calibrates the amount of reduction a polynomial endpoint would
+require.
+
+Start with a conceptual space of size
+\[
+2^n.
+\]
+
+Suppose a valid reduction eliminates a factor \(2^x\).  The residual scale is
+\[
+2^{n-x}.
+\]
+
+If we want this residual scale to be polynomial,
+\[
+2^{n-x}=n^d,
+\]
+then taking logarithms gives
+\[
+\boxed{x=n-d\log_2 n.}
+\]
+
+Equivalently, define the residual exponent
+\[
+D(n)=n-x(n).
+\]
+
+Then:
+\[
+\boxed{
+\begin{array}{rcl}
+D(n)&=&O(\log n)\quad\Rightarrow\quad\text{polynomial residual},\\[0.3em]
+D(n)&=&\omega(\log n)\quad\Rightarrow\quad\text{superpolynomial residual},\\[0.3em]
+D(n)&=&\Omega(n)\quad\Rightarrow\quad\text{exponential residual}.
+\end{array}}
+\]
+
+\begin{explainbox}
+This theorem does \emph{not} say every polynomial SAT algorithm explicitly
+removes \(n-O(\log n)\) assignment bits.  It says that if we independently
+define a Boolean reduction measure whose residual interpretation is
+\(2^{D(n)}\), then polynomial residual scale requires \(D(n)=O(\log n)\).
+
+The missing step is precisely the arbitrary-algorithm theorem connecting an
+unknown SAT computation to such a reduction object.
+\end{explainbox}
+
+\section{Continuation equivalence: what may safely be forgotten}
+
+\subsection{Why raw history counting is too strong}
+
+A computation can have many different histories that are irrelevant to every
+future action.
+
+If two histories differ only in dead code, an unused random bit, or the order
+in which an already-computed fact was obtained, forcing the machine to
+distinguish them would be artificial.
+
+The project therefore defines equivalence relative to a declared future
+consumer universe.
+
+\begin{definition}[Continuation equivalence]
+Let \(\mathcal H\) be a family of histories or residual situations and \(U\) a
+family of legal future continuations.  Define
+\[
+h\equiv_U h'
+\iff
+\forall u\in U,\quad
+\Phi(h,u)=\Phi(h',u).
+\]
+Let
+\[
+\kappa_U(\mathcal H)
+=
+|\mathcal H/\!\equiv_U|.
+\]
+\end{definition}
+
+Only histories in different continuation classes are semantically required to
+remain distinguishable for the declared consumer.
+
+\subsection{The safe-compression lemma}
+
+Suppose a summary
+\[
+\sigma:\mathcal H\to Z
+\]
+supports a deterministic decoder satisfying
+\[
+D(\sigma(h),u)=\Phi(h,u)
+\]
+for all legal \(h,u\).
+
+If
+\[
+h\not\equiv_Uh',
+\]
+then
+\[
+\sigma(h)\ne\sigma(h').
+\]
+
+Therefore:
+\[
+\boxed{
+|\operatorname{range}\sigma|
+\ge
+\kappa_U(\mathcal H).
+}
+\]
+
+This is a clean pigeonhole theorem.  It is also exactly where many false
+lower-bound arguments must stop.
+
+\begin{warningbox}
+A lower bound on the number of required summary states is not automatically a
+time lower bound.  The state index may have a compact representation, may be
+computed algebraically, or may already be present in the input representation.
+\end{warningbox}
+
+\section{SRAS: the Source-Reduction Accounting System}
+
+\subsection{What SRAS is trying to accomplish}
+
+SRAS is not itself a solver and not itself a lower bound.  It is a ledger.
+
+Whenever the proof says that a future-relevant distinction disappeared, SRAS
+asks:
+\begin{itemize}[leftmargin=1.4em]
+\item Was it truly shown irrelevant?
+\item Was it merged with an equivalent state?
+\item Was it encoded into a different representation?
+\item Was it localized to a smaller source?
+\item Can the computation reread or recompute it?
+\item Was it supplied externally?
+\end{itemize}
+
+The purpose is to prevent a proof from silently converting information loss
+into computational cost.
+
+\subsection{The full state tuple}
+
+The current SRAS state is
+\[
+\mathcal A_t=
+(X,K,Y,Z,H,J,P,B,U,\Phi_U,V,\Psi_V,R,E,C,Q,G,L,W,\mathsf A,
+\Omega_D,\Omega_G,\mathrm{Fate}).
+\]
+
+The coordinates are intentionally redundant because they separate concepts
+that were previously conflated.
+
+\begin{longtable}{p{0.11\textwidth} p{0.79\textwidth}}
+\toprule
+\textbf{Coordinate} & \textbf{Interpretation}\\
+\midrule
+\endhead
+\(X\) & Original source identity or source object.\\
+\(K\) & Stable identity of the clause, residual object, or canonical object.\\
+\(Y,Z\) & Current semantic values or relations.\\
+\(H\) & Realized derivation/audit history.\\
+\(J\) & Source or causal lineage.\\
+\(P\) & Provenance tags, prime tags, hashes, or other identity labels.\\
+\(B\) & Boundary/separator/interface through which the object is consumed.\\
+\(U\) & Declared continuation universe.\\
+\(\Phi_U\) & Required future semantic behavior.\\
+\(V,\Psi_V\) & Provenance-sensitive observations and their required behavior.\\
+\(R\) & Representation currently retained.\\
+\(E\) & Enabled operations and legal escape mechanisms.\\
+\(C\) & Certificates already established.\\
+\(Q\) & Reacquisition/reconstruction method.\\
+\(G\) & Combination, reuse, and sharing rule.\\
+\(L\) & Loss/quotient event.\\
+\(W\) & Recoverability of discarded information.\\
+\(\mathsf A\) & Access path to the relevant source/representation.\\
+\(\Omega_D\) & Data authority: input, memory, randomness, advice, etc.\\
+\(\Omega_G\) & Operation authority: ordinary implementation, subroutine, oracle.\\
+Fate & Final disposition of each future-relevant contribution.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Lineage hierarchy}
+
+For a derived object \(q\), the project uses
+\[
+\boxed{
+J_{\rm live}^{U}(q)
+\subseteq
+J_{\rm sem}(q)
+\subseteq
+J_{\rm syn}(q)
+\subseteq
+J_{\rm origin}(q).
+}
+\]
+
+These sets answer different questions.
+
+\begin{itemize}[leftmargin=1.4em]
+\item \(J_{\rm origin}\): what ever causally contributed?
+\item \(J_{\rm syn}\): what does the current syntax refer to?
+\item \(J_{\rm sem}\): what actually affects the current meaning?
+\item \(J_{\rm live}^{U}\): what can still affect a legal future consumer?
+\end{itemize}
+
+This is why a large original dependency set need not remain expensive.  Many
+dependencies can become irrelevant or safely compressed.
+
+\subsection{Fate labels}
+
+Each future-relevant contribution eventually receives one of the following
+dispositions.
+
+\begin{description}[leftmargin=1.8em,style=nextline]
+\item[LIVE] A legal future consumer still distinguishes it.
+\item[ENCODED] It remains available through another representation.
+\item[LOCALIZED] Its live dependence has been confined to a smaller source.
+\item[QUOTIENTED] Distinct histories were safely merged.
+\item[COMBINED] Several contributions are represented jointly.
+\item[IRRELEVANT] Future consumers provably do not need it.
+\item[TERMINAL] No future consumer remains.
+\item[EXTERNAL] It is supplied by an external authority.
+\end{description}
+
+\subsection{Valid continuation reduction}
+
+If \(\kappa_U(S)\) is the number of live continuation classes in state \(S\),
+define
+\[
+\boxed{
+K_{s\to t}
+=
+\log_2
+\frac{\kappa_U(S_s)}{\kappa_U(S_t)}.
+}
+\]
+
+This is the project's preferred reduction quantity because it is defined from
+future semantics, not from the observed runtime of the candidate algorithm.
+
+\subsection{The acquisition curve}
+
+For a formula \(F\), consumer \(U\), and computation model \(M\), define
+\[
+\boxed{
+\mathcal C_{F,U,M}(k)
+=
+\min_{\mathcal D}
+\left\{
+C(\mathcal D):
+K_U(\mathcal D)\ge k
+\right\}.
+}
+\]
+
+The desired lower-bound target is
+\[
+\boxed{
+\mathcal C_{F_n,U_n,M}
+\bigl(n-O(\log n)\bigr)
+=
+n^{\omega(1)}.
+}
+\]
+
+This is a much stronger statement than saying the formula has many semantic
+states.  It says every legal ordinary computation DAG that acquires enough
+future-relevant reduction must pay superpolynomial cost.
+
+That theorem is \statusopen.
+
+\section{SRAS route completeness}
+
+\subsection{The causal conservation argument}
+
+One part of SRAS is now an exact theorem in its declared deterministic
+interface model.
+
+At time \(t\), suppose all future behavior can depend only on:
+\[
+R_t=\text{retained state},
+\]
+\[
+A_t=\text{declared accessible/re-readable source},
+\]
+and future external inputs \(E_{>t}\).
+
+If two histories have equal \(R_t\), equal accessible source answers, and
+receive equal external inputs, then deterministic transition induction forces
+all future states and outputs to be equal.
+
+Therefore, if two histories require different future responses, the
+distinguishing contribution must be somewhere:
+\[
+\boxed{
+\text{retained/encoded}
+\vee
+\text{recoverable from accessible source}
+\vee
+\text{future external information}.
+}
+\]
+
+Quotienting is legal only if the histories are already continuation-equivalent.
+
+\begin{provedbox}
+This closes a bookkeeping question: there is no mysterious fourth place for a
+future distinction to live in the declared deterministic interface.
+
+It does \emph{not} prove that retaining or reacquiring the distinction is
+expensive.
+\end{provedbox}
+
+\section{CSE: why extraction remains the main arrow}
+
+\subsection{Trace extraction is not enough}
+
+If a deterministic algorithm runs in polynomial time, then its explicit
+execution trace is polynomial-size.  Any polynomial-time transformation of
+that trace is also polynomial-time.
+
+Thus:
+\[
+\boxed{
+\text{polynomial trace}
++
+\text{polynomial audit}
+\not\Rightarrow
+\text{superpolynomial resource}.
+}
+\]
+
+This is TRACECLOSE1.
+
+\subsection{A fixed consumer is available}
+
+The project once worried that a proof might invent a counterfactual consumer
+not actually forced by SAT correctness.
+
+EXTCONSUMER1 eliminates that ambiguity by using:
+\[
+\boxed{
+W_{\rm EXT}(F,\rho)
+=
+\operatorname{SAT}(F\upharpoonright\rho).
+}
+\]
+
+Every exact SAT decider \(A\) provides:
+\[
+E_A(F,\rho)
+=
+A(F\upharpoonright\rho).
+\]
+
+So the universal extension consumer is solver-independent.
+
+But this still does not contract source scale.  A one-variable restriction
+typically maps
+\[
+N\mapsto N-O(1),
+\]
+not
+\[
+N\mapsto N^b,\qquad b<1.
+\]
+
+\subsection{The CSE contract}
+
+A usable Contractive Source Extraction theorem must output recursively
+consumable objects \(Q_1,\ldots,Q_m\) with:
+\[
+m\le N^{a+o(1)},
+\]
+\[
+|J_{\rm live}^{U}(Q_i)|
+\le
+N^{b+o(1)},
+\qquad b<1,
+\]
+and
+\[
+C_{\rm acquire}
++
+C_{\rm combine}
+\le
+N^{c+o(1)}.
+\]
+
+It must also satisfy:
+\begin{itemize}[leftmargin=1.4em]
+\item exact correctness;
+\item recursive closure;
+\item no hidden current-scale SAT call;
+\item wrapper covariance;
+\item source matching;
+\item explicit acquisition/reconstruction cost;
+\item no free canonicalization.
+\end{itemize}
+
+This is still \statusopen.
+
+\section{What recursive contraction would buy}
+
+Suppose a valid extractor/shrinker did exist.
+
+If local work costs
+\[
+n^{r+o(1)},
+\]
+there are at most
+\[
+n^{\eta+o(1)}
+\]
+recursive calls, and child size is
+\[
+n^{\theta+o(1)},
+\qquad 0\le\theta<1,
+\]
+then a polynomial exponent \(C\) satisfies
+\[
+C
+=
+\max\left\{
+r,\eta+\theta C
+\right\},
+\]
+so
+\[
+\boxed{
+C
+=
+\max\left\{
+r,
+\frac{\eta}{1-\theta}
+\right\}.
+}
+\]
+
+This is RECURCLOSE1.
+
+The importance of this theorem is conceptual.  It removes the unknown starting
+polynomial exponent if the shrinker has genuine fractional contraction.
+
+By contrast, if a supposedly recursive transform makes a call at current
+scale, then SELECTCHARGE1 shows the unknown exponent simply reappears:
+\[
+n^{u+\delta K},
+\]
+with \(\delta=1\) restoring \(K\).
+
+\section{Why provenance and replay did not solve the problem}
+
+\subsection{What provenance does solve}
+
+Provenance can prevent the proof from replacing the actual computed object by
+an unrelated semantically equivalent object.
+
+This is the purpose of \same.
+
+For example, two histories may satisfy:
+\[
+\operatorname{Sem}(h_1)
+=
+\operatorname{Sem}(h_2)
+\]
+while having different sources or derivations.
+
+A provenance-sensitive consumer may therefore distinguish them.
+
+\subsection{What provenance does not solve}
+
+Perfect provenance can still show that every useful intermediate object depends
+on the entire parent input.
+
+For a compact object \(Q\):
+\[
+|Q|=O(\log n)
+\]
+can coexist with
+\[
+|\operatorname{Src}(Q)|=\Theta(N).
+\]
+
+Provenance labels identify that fact; they do not make the computation
+expensive.
+
+\subsection{Replay attacks}
+
+Four attacks repeatedly defeated provenance-only lower bounds.
+
+\begin{enumerate}[leftmargin=1.6em]
+\item \textbf{Rerun.}
+If \(Q(F)\) is polynomial-time, simply recompute it.
+
+\item \textbf{Reread.}
+If the static input remains available, information discarded from memory may
+be reacquired from the input.
+
+\item \textbf{Transcript regeneration.}
+A polynomial functional of a polynomial trace stays polynomial.
+
+\item \textbf{Quotient retention.}
+A long history may compose into one polynomial-size summary.
+\end{enumerate}
+
+Therefore:
+\[
+\boxed{
+\text{unique provenance}
+\not\Rightarrow
+\text{expensive acquisition}.
+}
+\]
+
+\section{Random challenges: what survived}
+
+The random-digit-string experiments produced one exact lesson and one no-go.
+
+If \(\tau\) is a stopping time for IID fair bits, then:
+\[
+(R_{\tau+1},\ldots,R_{\tau+b})
+\mid
+\mathcal F_\tau
+\sim
+U(\{0,1\}^b).
+\]
+
+So a challenge sampled after \(\tau\) is genuinely fresh relative to the prior
+causal state.
+
+But freshness only prevents challenge-specific advance knowledge.  If the
+computation retains a universal evaluator
+\[
+E(R,h,u),
+\]
+then it can answer after \(u\) is revealed.
+
+Thus:
+\[
+\boxed{
+\text{freshness}+\same
+\not\Rightarrow
+\text{expensive response}.
+}
+\]
+
+The meaningful target becomes the complexity of the universal evaluator.
+
+\section{Bounded-width closure and why hidden local inference is cheap}
+
+A width-\(w\) CNF over \(n\) variables has at most
+\[
+N_w(n)
+=
+\sum_{i=0}^{w}
+2^i\binom ni
+\]
+non-tautological clauses of width at most \(w\).
+
+For constant \(w\),
+\[
+N_w(n)=n^{O(w)}.
+\]
+
+Therefore exhaustive width-\(w\) resolution saturation is polynomial in \(n\).
+
+This has an important methodological consequence.
+
+If the only reason a useful relation seems hard is that it takes several
+constant-width inference steps to expose, that is not enough for an
+unrestricted lower bound.  A global polynomial preprocessing pass can
+enumerate the entire constant-width closure.
+
+This is why mediator-hidden binary relations, guarded 2-SAT constraints, and
+similar structures must be credited as cheap once discovered.
+
+\section{Relativization: from a conceptual location to ASCS}
+
+\subsection{Why generic SRAS arguments relativize}
+
+Continuation equivalence, state counting, and route completeness do not care
+whether one transition is computed by ordinary code or by an oracle.
+
+Therefore these tools alone cannot resolve P versus NP.
+
+Baker--Gill--Solovay imply that some load-bearing step must fail under arbitrary
+oracle replacement.
+
+\subsection{Source transparency}
+
+The project candidate is ordinary-source transparency.
+
+An ordinary machine step has an implementation that can in principle be
+expanded and charged.
+
+An oracle step
+\[
+y=O(x)
+\]
+is opaque by definition.
+
+This gives a place where a proof may stop under relativization without
+declaring oracle calls expensive by fiat.
+
+\subsection{Absolute Source-Complexity Separator}
+
+The Google Drive source audit contains a more concrete construction.
+
+Fix an ordinary universal machine \(U\), public conditioning \(c\), output
+length \(m\), description budget \(B\), and time bound \(\tau\).  Define:
+\[
+\mathrm{Low}_U(c;m,B,\tau)
+=
+\left\{
+y\in\{0,1\}^m:
+\exists q,\ |q|\le B,\ U(q,c)\text{ outputs }y\text{ within }\tau
+\right\}.
+\]
+
+Then:
+\[
+D_{\rm ASCS}(y)=1
+\iff
+y\notin\mathrm{Low}_U(c;m,B,\tau).
+\]
+
+There are fewer than \(2^{B+1}\) descriptions of length at most \(B\), hence:
+\[
+\boxed{
+|\mathrm{Low}_U|<2^{B+1}.
+}
+\]
+
+If \(B\le m-2\), then ASCS accepts at least half of the \(m\)-bit cube.
+
+If a same-realization RMV range \(R_\pi\) is contained in
+\(\mathrm{Low}_U\), ASCS misses every point of that range.
+
+\subsection{Why ASCS genuinely breaks oracle replacement}
+
+Choose a string \(y_m\) outside the ordinary-source set
+\(\mathrm{Low}_U\).
+
+An oracle can simply encode the bits of \(y_m\).  A short oracle program then
+outputs \(y_m\) quickly, even though no corresponding short ordinary program
+does so within the prescribed time.
+
+Thus the ordinary-source containment premise can fail after:
+\[
+U\to U^O.
+\]
+
+This is a genuine oracle-break diagnostic.
+
+\begin{provedbox}
+ASCS gives an explicit example of a source-semantic statement that need not
+survive oracle replacement.
+
+It still does not prove a SAT lower bound.
+\end{provedbox}
+
+\section{FSC: the verification bottleneck inside ASCS}
+
+To use ASCS as the small co-nondeterministic distinguisher required by the RMV
+reconstruction, the complement relation must have a sufficiently small
+verification circuit.
+
+The desired Fast Source Certificate says, roughly:
+
+for every relevant output \(y\), there is a short ordinary source description
+and an exact derivation/evaluation certificate whose deterministic verifier
+fits in the target size \(m\).
+
+In direct form, seek \(V_{\rm src}\) of size at most \(m\) satisfying:
+\[
+y\in R_\pi
+\iff
+\exists w\ V_{\rm src}(c,y,w)=1.
+\]
+
+Then:
+\[
+D(y)
+=
+\forall w\,[V_{\rm src}(c,y,w)=0]
+\]
+is the desired co-nondeterministic separator.
+
+The problem is that direct replay may cost the original source production
+time \(T\), which can be much larger than \(m\).
+
+Probabilistic checking does not immediately fix this because the required
+relation is exact.  Algebraic verification raises a separate algebrization
+audit.
+
+Thus FSC remains \statusopen.
+
+\begin{explainbox}
+The ASCS/FSC line isolates a useful tension:
+
+\[
+\boxed{
+\begin{array}{c}
+\text{easy extensional image test}
+\Rightarrow
+\text{compact but typically relativizing},\\
+\text{absolute source complexity}
+\Rightarrow
+\text{can fail oracle replacement},\\
+\text{exact tiny verification of that source relation}
+\Rightarrow
+\text{currently open}.
+\end{array}}
+\]
+\end{explainbox}
+
+\section{Algebrization and natural-proofs discipline}
+
+Nonrelativizing is not the same as nonalgebrizing.
+
+Low-degree extensions, Reed--Muller encodings, polynomial identities, and
+algebraic reconstruction live close to the methods that the
+Aaronson--Wigderson barrier was designed to audit.
+
+Therefore any source theorem using algebraic encodings must identify which
+load-bearing step fails even when an algebraic oracle extension is allowed.
+
+Likewise, an efficiently recognizable large property of truth tables would
+need a Razborov--Rudich natural-proofs audit if it were used as a circuit
+lower-bound property.
+
+The project currently has no proved final nonalgebrizing hinge.
+
+\section{The exact-3SAT laboratory}
+
+The exact-3SAT branch serves as both an algorithmic project and a red-team
+environment for SRAS.
+
+If the exact solver can expose a relation cheaply, SRAS must treat that
+relation as cheap.
+
+The current laboratory is built around Liu's chain framework.
+
+\subsection{Type-1 chain}
+
+A positive type-1 chain is one positive 3-clause:
+\[
+x_1\vee x_2\vee x_3.
+\]
+
+Its satisfying local state space is:
+\[
+D
+=
+\{0,1\}^3\setminus\{000\},
+\qquad
+|D|=7.
+\]
+
+Its Liu characteristic is:
+\[
+\boxed{
+\lambda_1=\frac37.
+}
+\]
+
+The current internal baseline for the type-1 balance is approximately:
+\[
+c_0\approx1.3279235672.
+\]
+
+This constant belongs to the restricted exact-algorithm analysis.  It is not
+a lower bound for arbitrary SAT algorithms.
+
+\section{Mediator elimination}
+
+Suppose an outside variable \(y\) appears as:
+\[
+G_y
+=
+\bigwedge_{i\in P}(A_i\vee y)
+\wedge
+\bigwedge_{j\in N}(B_j\vee\neg y).
+\]
+
+Eliminating \(y\) gives:
+\[
+\exists y\,G_y
+\iff
+\bigwedge_{i\in P}
+\bigwedge_{j\in N}
+(A_i\vee B_j).
+\]
+
+So a constant-degree outside mediator can be removed by polynomially many
+constant-width resolvents.
+
+In SRAS language:
+\begin{itemize}[leftmargin=1.4em]
+\item the mediator can become irrelevant;
+\item the induced relation is encoded in the resolvent;
+\item the proof is not allowed to charge future rediscovery of a relation that
+ordinary preprocessing can materialize cheaply.
+\end{itemize}
+
+\section{Why the clean-core syntax can still be NP-hard}
+
+The project constructs an externally mediated clean-core class in which:
+\begin{itemize}[leftmargin=1.4em]
+\item base clauses are disjoint positive type-1 chains;
+\item outside mediators have degree two and both polarities;
+\item mediator pairs encode binary consistency conditions;
+\item direct non-base chain-only clauses are absent.
+\end{itemize}
+
+A linear reduction from arbitrary 3-SAT shows that this schema remains
+NP-complete.
+
+This is important because it rules out the naive inference:
+\[
+\text{low mediator degree}
+\Rightarrow
+\text{easy residual problem}.
+\]
+
+At the same time, mediator elimination exposes useful finite-domain
+correlations.  So NP-hard expressiveness and exploitable exact structure can
+coexist.
+
+\section{Exact relation characteristics}
+
+For the seven-state chain domain define:
+\[
+K_{u,v}=2^{-d(u,v)},
+\qquad
+N=K^{-1},
+\]
+\[
+z=N\mathbf1,
+\qquad
+t=\mathbf1^\top z=\frac73.
+\]
+
+For a local falsifying set \(B\subseteq D\), define:
+\[
+a(B)
+=
+z_B^\top
+\bigl(N[B,B]\bigr)^{-1}
+z_B.
+\]
+
+For a resolved clause \(C\) touching \(r\) chains with local falsifying sets
+\(B_1,\ldots,B_r\):
+\[
+\boxed{
+\lambda(C)
+=
+\left[
+\left(\frac73\right)^r
+-
+\prod_{i=1}^{r}a(B_i)
+\right]^{-1}.
+}
+\]
+
+This gives one closed form for all single resolved clauses in the current
+rank-\(2/3/4\) schema.
+
+The exhaustive worst cases are:
+\[
+\lambda_{\min,2}=\frac{81}{440},
+\]
+\[
+\lambda_{\min,3}=\frac{729}{9236},
+\]
+\[
+\lambda_{\min,4}=\frac{6561}{193856}.
+\]
+
+Relative to independent chains, the conservative DLS multipliers are:
+\[
+g_2=\frac{440}{441},
+\qquad
+g_3=\frac{9236}{9261},
+\qquad
+g_4=\frac{193856}{194481}.
+\]
+
+All are strictly below \(1\).
+
+Thus every non-tautological resolved relation gives some positive local DLS
+credit.
+
+\section{Hypermatching: exploiting spread-out relations}
+
+Create a rank-\(\le4\) hypergraph whose vertices are clean chains and whose
+hyperedges are resolved relations.
+
+If there are \(M\) hyperedges and each chain occurs in at most \(\Delta\)
+hyperedges, a maximal hypermatching has at least:
+\[
+\frac{M}{4\Delta}
+\]
+edges and covers at least:
+\[
+\frac{M}{2\Delta}
+\]
+chains.
+
+After removing inactive chains, ACTIVE-DENSITY1 gives:
+\[
+M\ge\frac{\nu_{\rm act}}4.
+\]
+
+Hence:
+\[
+\boxed{
+f_{\rm covered,act}
+\ge
+\frac1{8\Delta}.
+}
+\]
+
+When \(\Delta\) is bounded by a constant, this gives a constant positive
+coverage fraction.
+
+The difficulty had been the concentrated regime where \(\Delta\) becomes very
+large.
+
+\section{Link hypergraph and the former concentration escape}
+
+Fix a chain \(T\) of large incidence.
+
+Every resolved clause in the declared model contains at most two literals from
+\(T\).
+
+There are only 18 possible nonempty one-/two-literal local patterns on \(T\).
+
+Pigeonhole by local pattern, remove \(T\), and consider the outside supports.
+These supports have size at most three.
+
+If the outside-support hypergraph has a large matching, we obtain many
+pairwise-disjoint petals immediately.
+
+If not, the union of a maximal matching forms a small vertex cover.  Pigeonhole
+again on one cover vertex and its local pattern.  This enlarges the common
+center.
+
+Because the original rank is at most four, this process has bounded depth.
+
+This is LINK-DICHOTOMY1.
+
+\section{Closing the finite high-incidence pattern audit}
+
+The 18 patterns collapse by coordinate symmetry to five sign types:
+\[
+1+,\quad 1-,\quad 2++,\quad 2+-,\quad 2--.
+\]
+
+For pairwise-disjoint exposed petals, use the conservative factor:
+\[
+g=\frac{440}{441}.
+\]
+
+For each center type the branch ratio takes the form:
+\[
+R_Q(m)=a_Q+b_Qg^m.
+\]
+
+The exact table is:
+
+\begin{center}
+\begin{tabular}{c|c|c|c}
+\toprule
+Center type & \(a_Q\) & \(b_Q\) & First \(m\) with \(R_Q(m)<1\)\\
+\midrule
+\(1+\) & \(16/21\) & \(5/7\) & 484\\
+\(1-\) & \(5/7\) & \(16/21\) & 433\\
+\(2++\) & \(20/21\) & \(3/7\) & 968\\
+\(2+-\) & \(19/21\) & \(4/7\) & 790\\
+\(2--\) & \(33/35\) & \(4/7\) & 1015\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Therefore:
+\[
+\boxed{q_*=1015.}
+\]
+
+The worst local pattern is \(2--\).
+
+For the two-literal true branches, the corresponding exact local
+characteristics are:
+\[
+\lambda_{2++}=\frac9{20},
+\qquad
+\lambda_{2+-}=\frac9{19},
+\qquad
+\lambda_{2--}=\frac5{11}.
+\]
+
+\section{The explicit high-incidence cutoff}
+
+LINK-DICHOTOMY1 uses:
+\[
+B_4(q)=1,
+\]
+\[
+B_s(q)
+=
+1+18(4-s)(q-1)B_{s+1}(q).
+\]
+
+Substitute \(q=1015\):
+\[
+B_4=1,
+\]
+\[
+B_3=18253,
+\]
+\[
+B_2=666307513,
+\]
+\[
+B_1=36484334181829.
+\]
+
+Thus:
+\[
+\boxed{
+D_*
+=
+18B_1
+=
+656718015272922.
+}
+\]
+
+This number is intentionally interpreted structurally rather than
+practically.
+
+\begin{provedbox}
+Within the declared resolved rank-\(\le4\) type-1-chain model:
+
+\[
+\Delta\le D_*
+\Rightarrow
+\text{fixed positive hypermatching coverage},
+\]
+while
+\[
+\Delta>D_*
+\Rightarrow
+\text{a favorable high-incidence local branch}.
+\]
+
+Therefore concentration is no longer an unstructured local escape in this
+model.
+\end{provedbox}
+
+The bounded-incidence coverage guarantee is:
+\[
+\boxed{
+f_{\rm covered,act}
+\ge
+\frac1{8D_*}
+=
+\frac1{5253744122183376}.
+}
+\]
+
+The fraction is extremely small but independent of \(n\).
+
+\section{What HIGHINC-CLOSE1 actually closes}
+
+It closes:
+\begin{itemize}[leftmargin=1.4em]
+\item the finite one-/two-literal center-pattern audit;
+\item the existence of one uniform finite petal threshold;
+\item the local high-incidence DLS branch;
+\item the bounded-incidence versus high-incidence structural dichotomy in the
+declared resolved rank-\(\le4\) model.
+\end{itemize}
+
+It does not yet close:
+\begin{itemize}[leftmargin=1.4em]
+\item global integration into every stage of the deterministic solver;
+\item every residual clause schema generated by broader preprocessing;
+\item a new fully optimized global exact-3SAT exponent;
+\item any lower bound for arbitrary SAT algorithms;
+\item P versus NP.
+\end{itemize}
+
+This scope distinction is essential.
+
+\section{Drive-recovered q-Horn/expander localization results}
+
+The Drive corpus contains another genuine localization program based on proper
+exact-2P2N formulas, q-Horn defect, and expansion.
+
+The independently rechecked results include:
+\begin{itemize}[leftmargin=1.4em]
+\item additive q-Horn defect;
+\item localization of defect to a majority residual incidence component;
+\item a majority-component lineage theorem;
+\item linear component-backdoor depth under the declared expansion hypotheses.
+\end{itemize}
+
+These theorems are useful because they show an explicit example of persistent
+structural obstruction localizing inside a component over a linear
+restriction prefix.
+
+They do not solve CSE.
+
+The same Drive reports retain:
+\begin{itemize}[leftmargin=1.4em]
+\item the affine/Tseitin bypass;
+\item possible heterogeneous backdoor escapes;
+\item representation sensitivity;
+\item the missing arbitrary-decider acquisition/use theorem;
+\item the absence of a nonrelativizing/nonalgebrizing transfer.
+\end{itemize}
+
+So this line remains a restricted structural control.
+
+\section{Drive-recovered SFSL and orbit-spectral recurrence}
+
+The live LSPV/RMV snapshot contains two independently verified exact lemmas.
+
+\subsection{Seed-Fixed Surjectivity Lemma}
+
+For distinct orbit points \(P_1,\ldots,P_m\) and degree budget at least
+\(m-1\), low-degree interpolation can realize an arbitrary target vector on
+those points.
+
+This means generic low-degree source geometry is too expressive to force a
+nonzero universal relation even on one fixed seed window.
+
+That is an important negative result.
+
+\subsection{Orbit-Spectral Recurrence Lemma}
+
+For a fixed source polynomial \(p\), let:
+\[
+U_p
+=
+\operatorname{span}
+\{p,T_Ap,T_A^2p,\ldots\},
+\]
+where:
+\[
+T_Af=f\circ A.
+\]
+
+If:
+\[
+s=\dim U_p,
+\]
+then the orbit evaluations satisfy a linear recurrence of order \(s\).
+
+This creates a possible compact source-specific relation when \(s\) is small.
+
+\subsection{The Booleanization gap}
+
+The RMV distinguisher ultimately acts on Boolean output bits.
+
+A field recurrence over an odd prime field does not automatically become a
+small Boolean relation after projection through the actual binary code
+coordinate.
+
+So:
+\[
+\boxed{
+\text{small field orbit dimension}
+\not\Rightarrow
+\text{small Boolean separator}
+}
+\]
+without a new transfer theorem.
+
+This remains open.
+
+\section{How the exact-3SAT and SRAS tracks inform each other}
+
+The two tracks operate at different logical levels.
+
+The exact-3SAT track says:
+\begin{quote}
+Here are increasingly sophisticated transformations that really are cheap.
+Any general hardness accounting must credit them.
+\end{quote}
+
+SRAS says:
+\begin{quote}
+Once all cheap transformations are credited, identify where the remaining
+future-relevant distinction lives and charge only what ordinary computation
+must actually pay.
+\end{quote}
+
+The relationship is therefore adversarial and useful.
+
+Examples:
+
+\begin{itemize}[leftmargin=1.4em]
+\item Mediator elimination tells SRAS not to charge constant-width hidden
+binary relations as hard.
+
+\item Hypermatching tells SRAS that spread-out local correlations can be
+aggregated efficiently.
+
+\item High-incidence branching shows concentration need not imply hardness; it
+may instead expose a useful localization/branching structure.
+
+\item q-Horn and XOR controls show that large structural defect can coexist
+with polynomial algorithms in another representation.
+
+\item Replay results show that source history alone cannot be charged if the
+input remains cheaply rereadable.
+\end{itemize}
+
+\section{The universal-evaluator branch}
+
+Suppose CSE does not find a genuinely smaller source object.
+
+Then the computation may instead maintain a compact global summary that
+services all future restrictions.
+
+For \(W_{\rm EXT}\), this is conceptually a reusable extension evaluator:
+\[
+E(F,\rho)
+=
+\operatorname{SAT}(F\upharpoonright\rho).
+\]
+
+Under the counterfactual \(P=NP\), the SAT algorithm itself is such an
+evaluator.
+
+Therefore a generic theorem saying:
+\[
+\text{universal evaluator is expensive}
+\]
+would already be extremely close to the original lower-bound problem.
+
+This is why the project has moved away from trying to prove evaluator hardness
+from:
+\begin{itemize}[leftmargin=1.4em]
+\item provenance;
+\item explicit strategy-tree size;
+\item fixed-level PH witness complexity;
+\item random challenge freshness;
+\item raw state multiplicity.
+\end{itemize}
+
+A successful theorem needs a more structural implementation-dependent reason.
+
+\section{Wrapper covariance and equivalent implementations}
+
+Any universal source-sensitive theorem must survive harmless changes to the
+program.
+
+The project repeatedly attacks candidate source properties with:
+\[
+\text{DEAD},\quad
+\text{COPY},\quad
+\text{DELAY},\quad
+\text{INTERP},\quad
+\text{RECOMP}.
+\]
+
+A raw property of syntax that changes under one of these wrappers cannot be a
+universal necessary property of SAT algorithms.
+
+But requiring complete implementation invariance is also too strong.  It can
+collapse the property into a purely extensional function of the input/output
+relation.
+
+The preferred notion is covariance:
+\[
+E(w(A),F)
+=
+S_w(E(A,F)),
+\]
+where \(S_w\) is an explicitly controlled transport map whose cost is charged.
+
+This allows implementation-sensitive information without pretending different
+implementations are literally identical.
+
+\section{Why easy-family controls are mandatory}
+
+Any proposed hardness resource is tested against known polynomial-time
+families.
+
+\subsection{2-SAT}
+
+Strong graph connectivity can summarize global implication structure.
+
+\subsection{XOR-SAT / Tseitin}
+
+Gaussian elimination can compress apparently global combinatorial dependence
+into a linear basis.
+
+\subsection{Horn and dual-Horn}
+
+Closure procedures can propagate information globally in polynomial time.
+
+\subsection{Bounded treewidth}
+
+Dynamic programming across separators can solve formulas with huge assignment
+spaces but small structural width.
+
+\subsection{Independent products}
+
+Semantic multiplicity can grow exponentially while the decision problem
+factorizes trivially.
+
+If a candidate resource becomes large on one of these families, the resource
+may still be interesting, but it is not by itself an unrestricted time measure.
+
+\section{Retired proof mechanisms}
+
+The following generic implications have been retired.
+
+\begin{longtable}{p{0.40\textwidth} p{0.52\textwidth}}
+\toprule
+\textbf{Claim} & \textbf{Reason it fails as a generic unrestricted step}\\
+\midrule
+\endhead
+Many continuations imply long runtime &
+They imply distinguishability, not acquisition time.\\
+Large explicit representation implies long runtime &
+Another representation may be succinct.\\
+Unique provenance implies expensive recovery &
+Static reread or deterministic rerun may be cheap.\\
+Fresh random challenge implies expensive answer &
+A universal evaluator can answer after the challenge appears.\\
+Long constant-width inference implies hard discovery &
+Constant-width closure is polynomially enumerable.\\
+Large OBDD/MDD/tree representation implies runtime &
+Representation-specific lower bounds need an extraction theorem.\\
+Large rank implies runtime &
+Algebraic bases can be compact and efficiently computable.\\
+Low-degree mediator structure implies easy SAT &
+The residual clean-core schema remains NP-complete.\\
+Low outside degree implies large matching &
+Relations can concentrate on a common chain.\\
+Concentration implies hardness &
+HIGHINC-CLOSE1 converts sufficiently high concentration into a favorable
+local branch in the declared model.\\
+\bottomrule
+\end{longtable}
+
+\section{What would constitute an actual P-vs-NP proof in this framework}
+
+A completed proof would need all of the following with explicit quantifiers.
+
+\subsection{Step A: arbitrary algorithm}
+
+Fix an arbitrary deterministic polynomial-time exact SAT decider \(A\).
+
+The proof cannot assume \(A\) resembles DPLL, resolution, an OBDD, or any
+known solver architecture.
+
+\subsection{Step B: forced SAT-specific obligation}
+
+Show that correctness on a hard family forces \(A\) to support enough
+future-relevant behavior to amount to:
+\[
+n-O(\log n)
+\]
+valid reduction in the independently defined consumer model.
+
+This step is currently open.
+
+\subsection{Step C: source/accounting classification}
+
+Apply SRAS-ROUTECLOSE1.
+
+The required distinction must be:
+\[
+\text{retained/localized}
+\vee
+\text{reacquirable}
+\vee
+\text{external}.
+\]
+
+For ordinary computation, EXTERNAL cannot simply be assumed available.
+
+\subsection{Step D: quantitative ordinary-source theorem}
+
+Prove:
+\[
+\mathcal C_{F_n,U_n,M}
+\bigl(n-O(\log n)\bigr)
+=
+n^{\omega(1)}
+\]
+for every legal retained/reacquired ordinary realization.
+
+This is the central missing lower bound.
+
+\subsection{Step E: barrier discharge}
+
+Identify the load-bearing line that fails under arbitrary oracle replacement.
+
+ASCS supplies a plausible source-semantic candidate.
+
+Then separately show the proof does not merely algebrize.
+
+\subsection{Step F: exact model-matched contradiction}
+
+Only after all prior arrows hold may the recursive closure/time-space endpoint
+be invoked.
+
+\section{Quantifier discipline}
+
+The proof goal is not:
+\[
+\exists F_n\ \forall A
+\]
+unless a universal hard family is actually proved.
+
+A more natural lower-bound quantifier shape is:
+\[
+\forall A\in\mathrm{DTIME}(n^{O(1)})
+\ \exists^\infty n\
+\exists F\in 3\mathrm{SAT}_n
+\]
+such that \(A\) exceeds the alleged polynomial bound or fails.
+
+Every extraction theorem must state which quantities depend on \(A\), which
+depend on \(F\), and which are fixed in advance.
+
+This discipline prevents a common hidden inversion of quantifiers.
+
+\section{Current dependency graph}
+
+The current state can be summarized as:
+
+\[
+\boxed{
+\begin{array}{rcl}
+\text{BRTHRESH1} &:& \text{proved accounting}\\
+\text{CONTSEP1/NO2K1} &:& \text{proved representation constraints}\\
+\text{SRAS-ROUTECLOSE1} &:& \text{proved route completeness}\\
+\text{EXTCONSUMER1} &:& \text{proved fixed consumer}\\
+\text{TRACECLOSE1/FRESH-EVAL1/WIDTHCLOSE1} &:& \text{proved no-go controls}\\
+\text{RECURCLOSE1/MULTICHANNEL1} &:& \text{proved conditional closure}\\
+\text{CSE1} &:& \text{open}\\
+\text{near-total SAT reduction forcing} &:& \text{open}\\
+\text{ordinary-source acquisition LB} &:& \text{open}\\
+\text{ASCS oracle break} &:& \text{proved diagnostic}\\
+\text{FSC} &:& \text{open}\\
+\text{nonalgebrizing hinge} &:& \text{open}\\
+\text{P}\ne\text{NP} &:& \text{open}.
+\end{array}}
+\]
+
+On the exact-3SAT side:
+\[
+\boxed{
+\begin{array}{rcl}
+\text{mediator elimination} &:& \text{proved}\\
+\text{resolved characteristic formula} &:& \text{proved}\\
+\text{rank-2/3/4 finite classification} &:& \text{proved}\\
+\text{active density} &:& \text{proved}\\
+\text{hypermatching density} &:& \text{proved}\\
+\text{link dichotomy} &:& \text{proved}\\
+\text{five center-pattern branch audit} &:& \text{proved}\\
+\text{resolved-incidence dichotomy} &:& \text{proved in stated model}\\
+\text{full pipeline integration} &:& \text{open}.
+\end{array}}
+\]
+
+\section{Research priorities after the current synthesis}
+
+\subsection{Priority 1: integrate HIGHINC-CLOSE1 globally}
+
+The local concentration escape is closed in the declared resolved model.
+
+The next exact-algorithm task is to verify that every residual clause form
+created by the full preprocessing pipeline falls under the proved accounting,
+or else to add the missing case.
+
+Then compute one global deterministic balance.
+
+\subsection{Priority 2: sharpen the SAT-specific extraction statement}
+
+Use \(W_{\rm EXT}\) as the fixed consumer.
+
+Try to prove:
+\[
+\boxed{
+\text{fractional source localization}
+\vee
+\text{globally supported reusable evaluator}.
+}
+\]
+
+This would be a more precise CSE dichotomy than asking an arbitrary trace to
+look locally decomposable.
+
+\subsection{Priority 3: attack FSC inside the exact source map}
+
+Do not ask for a generic certificate for arbitrary long computation.
+
+Work inside the actual canonical proof
+\[
+\to
+\text{low-degree extension}
+\to
+\text{RMV output}
+\]
+map.
+
+Determine the cheapest exact ordinary certificate for:
+\[
+\text{selector }\sigma\text{ produces output }y.
+\]
+
+Measure both witness length and deterministic verification circuit size.
+
+\subsection{Priority 4: Booleanization of source-specific recurrence}
+
+If an accepted proof polynomial has small orbit-spectral dimension, determine
+whether the exact binary conversion preserves any compact Boolean relation.
+
+A negative theorem would retire the spectral separator route cleanly.
+
+A positive theorem could feed the compact-separator/reconstruction branch.
+
+\subsection{Priority 5: nonalgebrization audit}
+
+Any successful source theorem must be tested under algebraic-oracle extension.
+
+Do not infer nonalgebrization merely from nonrelativization.
+
+\section{Source basis for this exposition}
+
+This document is based on the current project records, especially:
+
+\begin{itemize}[leftmargin=1.4em]
+\item \texttt{main2.tex};
+\item \texttt{research/explorations/source-reduction/2026-10-05\_SRAS\_CSE1.md};
+\item \texttt{research/explorations/source-reduction/2026-10-05\_HIGHINC\_CLOSE1.md};
+\item the high-incidence experiment and result files;
+\item the random/replay and recursive-closure GitHub records listed in
+\texttt{main2.tex};
+\item the Drive LSPV source manual containing ASCS/FSC;
+\item the Drive MAIN LSPV/RMV snapshot containing SFSL and the orbit-spectral
+recurrence;
+\item the independently verified Drive q-Horn/expander manuscript chain.
+\end{itemize}
+
+The Drive-derived restricted results are included here only at the scope
+supported by those records.  In particular, component-backdoor depth is not
+promoted to unrestricted SAT runtime, field recurrences are not promoted to
+Boolean separators, and the ASCS oracle-break diagnostic is not promoted to a
+P-vs-NP lower bound.
+
+\section{Final perspective}
+
+The program has made progress mostly by removing false shortcuts.
+
+It now has:
+\begin{itemize}[leftmargin=1.4em]
+\item a disciplined semantic reduction measure;
+\item a route-complete accounting framework;
+\item a fixed solver-independent continuation consumer;
+\item exact recursive-closure formulas;
+\item strong replay, provenance, width, and representation no-go controls;
+\item a concrete ordinary-source predicate that genuinely can fail
+relativization;
+\item an increasingly complete exact-3SAT structural laboratory;
+\item a closed local high-incidence case in the resolved rank-\(\le4\)
+type-1-chain model.
+\end{itemize}
+
+What it still does not have is the theorem that converts arbitrary polynomial
+SAT computation into an ordinary-source object whose required acquisition or
+maintenance cost is superpolynomial.
+
+That is the remaining central arrow:
+\[
+\boxed{
+\text{arbitrary polynomial SAT computation}
+\Longrightarrow
+\text{forced source-matched contraction or superpolynomial acquisition}.
+}
+\]
+
+Until that arrow is proved, together with the necessary barrier discharge:
+\[
+\boxed{\text{$P$ versus $NP$ remains OPEN.}}
+\]
+
+\appendix
+
+\section{Appendix A: concise glossary}
+
+\begin{longtable}{p{0.22\textwidth} p{0.69\textwidth}}
+\toprule
+\textbf{Term} & \textbf{Meaning}\\
+\midrule
+\endhead
+SRAS & Source-Reduction Accounting System.\\
+CSE & Contractive Source Extraction.\\
+\same & Require the object to belong to the same committed source realization.\\
+Continuation equivalence & Indistinguishability under every declared legal future consumer.\\
+Acquisition curve & Minimum charged cost needed to obtain a declared amount of valid reduction.\\
+Universal evaluator & Reusable representation/algorithm answering every legal future challenge.\\
+Reacquisition & Reread, rerun, replay, or recomputation of discarded information.\\
+ASCS & Absolute Source-Complexity Separator.\\
+FSC & Fast Source Certificate needed to make ASCS compatible with the small reconstruction interface.\\
+Type-1 chain & Positive 3-clause with seven satisfying local states.\\
+Resolved relation & Finite-domain relation exposed after mediator elimination.\\
+Hypermatching & Pairwise chain-disjoint set of resolved relations.\\
+Link hypergraph & Outside supports of relations incident to a common high-incidence chain.\\
+Petal & Portion of a resolved support outside the common center.\\
+HIGHINC-CLOSE1 & Finite five-pattern high-incidence audit and resulting structural cutoff.\\
+\bottomrule
+\end{longtable}
+
+\section{Appendix B: status legend}
+
+\begin{description}[leftmargin=1.8em,style=nextline]
+\item[PROVED/EXACT]
+Proved for the explicitly declared model or exhaustively verified finite
+statement with an exact mathematical derivation.
+
+\item[CONDITIONAL]
+The implication is proved assuming an explicitly named open hypothesis.
+
+\item[CANDIDATE]
+A proposed theorem, object, or proof architecture whose load-bearing content is
+not yet proved.
+
+\item[COMPUTATIONAL]
+Finite experiment or numerical check only.
+
+\item[FALSIFIED/RETIRED]
+A generic implication has a counterexample, closure theorem, wrapper escape, or
+other reason it cannot carry the intended unrestricted conclusion.
+\end{description}
+
+\section{Appendix C: theorem-to-gap map}
+
+\begin{longtable}{p{0.26\textwidth} p{0.30\textwidth} p{0.34\textwidth}}
+\toprule
+\textbf{Result} & \textbf{What it gives} & \textbf{What it does not give}\\
+\midrule
+\endhead
+BRTHRESH1 & Required reduction scale & Arbitrary-algorithm extraction\\
+CONTSEP1 & Safe-summary range lower bound & Runtime lower bound\\
+SRAS-ROUTECLOSE1 & Exhaustive location of future distinctions & Cost of ordinary routes\\
+EXTCONSUMER1 & Fixed SAT continuation semantics & Fractional source shrinkage\\
+TRACECLOSE1 & Trace closure no-go & Structural CSE\\
+FRESH-EVAL1 & Freshness no-go & Evaluator hardness\\
+WIDTHCLOSE1 & Fixed-width closure is cheap & Higher-level acquisition LB\\
+RECURCLOSE1 & Exponent after valid contraction & Existence of contraction\\
+ASCS & Concrete oracle-break source predicate & Small exact verification/FSC\\
+CLAUSECHAR1 & Exact resolved relation characteristic & Global solver integration\\
+LINK-DICHOTOMY1 & High incidence gives disjoint petals or deeper center & Branch gain by itself\\
+LOCALPATTERN-BRANCH1 & Branch gain for all five local sign types & Full preprocessing coverage\\
+RESOLVED-INCIDENCE-DICHOTOMY1 & Bounded/high incidence both handled locally & Unrestricted SAT lower bound\\
+\bottomrule
+\end{longtable}
+
+\begin{thebibliography}{9}
+
+\bibitem{Liu2018}
+S. Cliff Liu,
+\emph{Chain, Generalization of Covering Code, and Deterministic Algorithm for $k$-SAT},
+ICALP 2018 / arXiv:1804.07901.
+
+\bibitem{BGS1975}
+T. Baker, J. Gill, R. Solovay,
+\emph{Relativizations of the $P=?NP$ Question},
+SIAM Journal on Computing 4(4), 1975.
+
+\bibitem{AW2009}
+S. Aaronson, A. Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory},
+ACM Transactions on Computation Theory, 2009.
+
+\bibitem{RR1997}
+A. Razborov, S. Rudich,
+\emph{Natural Proofs},
+Journal of Computer and System Sciences 55(1), 1997.
+
+\bibitem{BW2001}
+E. Ben-Sasson, A. Wigderson,
+\emph{Short Proofs are Narrow---Resolution Made Simple},
+Journal of the ACM 48(2), 2001.
+
+\bibitem{IPZ2001}
+R. Impagliazzo, R. Paturi, F. Zane,
+\emph{Which Problems Have Strongly Exponential Complexity?},
+Journal of Computer and System Sciences 63(4), 2001.
+
+\end{thebibliography}
+
+\end{document}
