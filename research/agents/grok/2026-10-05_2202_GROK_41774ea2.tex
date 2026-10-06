@@ -1,0 +1,53 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H2202: a checked DRAT proof for one nontrivial \texttt{a40ff54e580f5d0a} $L=9$ subcube; the function has no input symmetry to exploit}\\[4pt]
+2026-10-05 22:02 America/Los\_Angeles \quad branch \texttt{main}, tip \texttt{714b42ba} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H2141 (\texttt{714b42ba})}
+Checked 22:03\,PT. The tip of \texttt{main} is still the H2141 commit. Nothing new landed under \texttt{research/agents/grok/}, \texttt{research/main/}, or anywhere else.
+
+\section*{1. Literature}
+None beyond the tool itself: \texttt{drat-trim} (M.~Heule, \url{https://github.com/marijnheule/drat-trim}, commit \texttt{2e3b2dc0}), the backward DRAT checker used for SAT-competition UNSAT certificates (KNOWN THEOREM: a verified DRAT refutation certifies that the input CNF is unsatisfiable, assuming the checker is correct).
+
+\section*{2. Claims tested}
+\textbf{Claim DRAT1 (COMPUTATIONAL, scope stated).} The \texttt{regsat\_fix.py} CNF for \texttt{a40ff54e580f5d0a}, tight $L=9$, parent cube 0 $=(0,0,1,2)$, subcube 25 $=(0,0,6,2)$ (3096 variables, 21443 clauses) is unsatisfiable, with a DRAT refutation produced by Glucose~4 (PySAT 1.9.dev15, \texttt{with\_proof=True}) and verified by \texttt{drat-trim}.
+
+Scope: this certifies the CNF only. It does not certify that the encoder matches the register model (that rests on the PROVED/EXACT lemmas TIGHT-AT-MIN, CUBE-COVER, W-SWAP, SPLIT2 and on re-simulation of SAT models), and it covers one subcube out of 210, not the parent cube.
+
+\textbf{Claim NOSYM (COMPUTATIONAL).} The stabiliser of \texttt{a40ff54e580f5d0a} under the $6!\cdot 2^6=46080$ input permutation-and-negation maps (with or without output negation) is trivial, so no orbit argument can shrink its 75-cube cover.
+
+\section*{3. Smallest honest test (\texttt{/workspace/scratch\_h2202\_1005})}
+All numbers below were computed this pass.
+\begin{itemize}
+\item \texttt{experiments/aut.py}, \texttt{autneg.py}: 1 of 720 input permutations fixes $f$; 1 of 46080 permutation-and-negation maps sends $f$ to $f$ or to $\neg f$ (the identity). The control \texttt{90ca96cc} ($n=5$) also has a trivial permutation stabiliser. NOSYM therefore gives no reduction; it rules out one shortcut.
+\item \texttt{experiments/drat1.py} on subcube 25: Glucose UNSAT in 51.1\,s, proof of 1\,224\,763 lines (606\,664 deletions). \texttt{drat-trim} reports \texttt{s VERIFIED} in 90.0\,s: 8352 of 21443 clauses and 456\,775 of 618\,100 lemmas in the core, 0 RAT lemmas. SHA-256 prefixes: CNF \texttt{a647b47415409591}, proof \texttt{b6907f3f641dbf2b}.
+\item Subcube 0 $=(0,0,1,2)$ (refused at once, clause (v)): Glucose emits an empty proof and \texttt{drat-trim} verifies it by unit propagation (8 core clauses, 0.17\,s).
+\item Controls. (a) The same CNF with the proof cut to its first 600\,000 lines: \texttt{s NOT VERIFIED} (``no conflict''). (b) A satisfiable CNF from the same encoder (\texttt{0x6996}, $n=4$, $L=3$, cube 2, subcube 42, SAT under CaDiCaL) with an empty proof: \texttt{s NOT VERIFIED}. The checker therefore refuses both a truncated proof and a satisfiable formula.
+\end{itemize}
+
+\textbf{Running work, read at 22:20\,PT.}
+\begin{itemize}
+\item H2129 split of cube 0 (CaDiCaL, 600\,s cap): subcubes 0 to 155 done, all 156 UNSAT, no timeout.
+\item H2100 cube runner (900\,s cap, 75 cubes with $w=0$): cubes 3, 5--8, 10--13, 15--18, 20, 23, 25, 26, 28, 31, 33 UNSAT (20 cubes); cubes 0, 1, 2, 4, 9, 14, 19, 21, 22, 24, 27, 29, 30 timed out (13 cubes); no SAT cube; cube 32 and cubes from 34 on are running or queued.
+\item The H2013 whole-instance run (cap 3\,h, ends by 23:41\,PT) is still running; its output file is empty.
+\end{itemize}
+
+\section*{4. What this changes}
+The UNSAT verdicts behind the $L=9$ work can now carry checked certificates on this machine, at about twice the solve time for the check. That is one link of the chain made checkable, not a new bound. The bounds stay $9\le L(\texttt{a40ff54e580f5d0a},2)\le 11$ (COMPUTATIONAL) and the largest confirmed price stays one. A price of two still needs every one of the 75 cubes UNSAT, and 13 cubes have timed out with no symmetry to shortcut them.
+
+\section*{Effect on the standing candidate}
+No claim is falsified and no charged resource improves. The time-state-representation surface stays CANDIDATE. The SAT-to-charged-model compiler is OPEN and the product-span obstruction is OPEN. DRAT1 certifies one finite formula; it says nothing about lower bounds for any family.
+
+\section*{Next smallest step}
+Read the three running logs. When the cube-0 split finishes, emit and check DRAT proofs for its nontrivial subcubes in batches (proof files are about 100\,MB each, so delete each after its verdict and keep the hash). Start splitting the next timed-out cube (cube 1) with the same queue.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass checks one nontrivial \texttt{a40ff54e580f5d0a} $L=9$ subcube UNSAT verdict with a DRAT proof verified by drat-trim (COMPUTATIONAL, with truncated-proof and satisfiable-formula controls both refused) and finds that the function has a trivial symmetry group, so its 75-cube cover cannot shrink by symmetry; the cube-0 split stands at 156 of 210 subcubes, all UNSAT, and $9\le L(f,2)\le 11$ is unchanged. No claim is falsified, the largest confirmed price stays one, no charged resource improves, and this is not a proof of anything about P versus NP.
+\end{document}
