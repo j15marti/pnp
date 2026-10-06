@@ -1,0 +1,51 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H2118: register-swap symmetry halves the first-step cube cover (150 to 75 cubes for \texttt{a40ff54e580f5d0a}); 6 of the first 10 cubes at $L=9$ are UNSAT, 4 timed out}\\[4pt]
+2026-10-05 21:18 America/Los\_Angeles \quad branch \texttt{main}, tip \texttt{1d87fa13} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H2100 (\texttt{6d19fad2})}
+Checked 21:20\,PT. Nothing new landed under \texttt{research/agents/grok/} or \texttt{research/main/}. Two TASK-008 commits landed at 21:15\,PT (\texttt{80806846}, \texttt{1d87fa13}), adding \texttt{results/raw/monotone\_slice/TWOSATDEC11\_q16.txt} and \texttt{research/explorations/monotone-slice/2026-10-05\_2115\_TWOSATDEC11.md}; their commit messages say COMPUTATIONAL, SAT-LOCAL-ERROR1 OPEN, P vs NP OPEN. Their contents are unread here and nothing below depends on them.
+
+\section*{1. Literature}
+None needed. The step below is a relabelling symmetry of the encoder, checked from its clauses.
+
+\section*{2. The claim}
+Model, tight encoder and cubes as in H2013 to H2100 (two one-bit registers starting at $0$, $n$ read-only inputs, step $R_w:=g(a,b)$ with $g$ indexed by $p+2q$, operands $s_a<s_b$, final step writes $R_0$ and $R_0=f$ at the end). Cube $k$ fixes step 1 to $(w,s_a,s_b,g)$; cubes $k$ and $k+5\binom{n}{2}$ differ only in $w$.
+
+\textbf{Lemma W-SWAP (PROVED/EXACT, from the clauses of \texttt{regsat\_tight.py}).} For $L\ge 2$, the tight instance restricted to cube $(0,s_a,s_b,g)$ is SAT if and only if it is SAT restricted to $(1,s_a,s_b,g)$.
+
+\emph{Proof.} Given an admitted program, swap the labels $R_0\leftrightarrow R_1$ in every step (targets and operands). Where a step read $(R_0,R_1)$ it now reads $(R_1,R_0)$; put the operands back in order and replace $g$ by its transpose $g^\top(a,b)=g(b,a)$, which keeps $g(0,0)$ and keeps $g$ non-degenerate. Then change the target of the last step to $R_0$. The value the last step computes depends only on the state before it, which is the relabelled state, so $R_0=f$ at the end. Conditions (i) to (iv) are invariant under the relabelling and the transpose. For (v), the encoder only requires every non-final write to be read by step $L$ before it is overwritten; the last step's target does not enter that condition, and the relabelling maps reads to reads. Step 1 keeps its inputs and $g$ and changes $w$ to $1-w$. The map is its own inverse up to the same retargeting, which gives both directions. \qed
+
+So the tight instance is UNSAT if and only if the $5\binom{n}{2}$ cubes with $w=0$ are UNSAT (CUBE-COVER plus W-SWAP). For $n=6$ that is 75 cubes, not 150.
+
+Input permutations give no further cut here: the automorphism group of \texttt{a40ff54e580f5d0a} under $S_6$, and of \texttt{90ca96cc} under $S_5$, is trivial (computed this pass by checking all permutations).
+
+\section*{3. Smallest honest test (\texttt{/workspace/scratch\_h2118\_1005})}
+\texttt{regsat\_fix.py} is \texttt{regsat\_cube.py} with an option that fixes every step, so the encoder itself decides whether it admits a given program. \texttt{wswap.py} implements the map. All numbers below were computed this pass.
+\begin{itemize}
+\item \texttt{90ca96cc}, tight $L=7$: all 16 SAT-cube witnesses from the H2100 control map to programs the encoder admits, that re-simulate to $f$, and whose first step has the other $w$ (16/16, COMPUTATIONAL).
+\item \texttt{wswap\_n4.py}, seed 202610052118: 12 random 4-input functions, each at its least tight SAT length $L\le 8$, all 60 cubes solved. 204 SAT-cube witnesses map to admitted, re-simulating programs (204/204), and the 360 cube pairs $(k,k+30)$ agree in every case (COMPUTATIONAL).
+\item Mutation controls on the same 204 witnesses: dropping the retarget of the last step is rejected 204/204; dropping the transpose is rejected 201/204 (the 3 survivors never read both registers in one step, so the transpose does nothing for them). The checks can fail.
+\end{itemize}
+
+\textbf{\texttt{a40ff54e580f5d0a}, tight $L=9$, read at 21:27\,PT} (run started 20:59:39\,PT, 900\,s per cube): cubes 3, 5, 6, 7, 8, 10 UNSAT (345 to 636\,s each); cubes 0, 1, 2, 4 timed out at 900\,s; cubes 9 and 11 to 14 were running. A watcher (\texttt{stop\_at\_75.sh}) stops the runner when it reaches cube 75, since by W-SWAP the cubes 75 to 149 repeat cubes 0 to 74; it writes a \texttt{WSWAP-STOP} line to the results file. The H2013 whole-instance run (cap 3\,h, ends by 23:41\,PT) is still running and unread.
+
+\section*{4. What this changes}
+The remaining work for a verdict on $L(\texttt{a40ff54e580f5d0a},2)\ge 10$ is cubes 0 to 74 only, about half the H2100 estimate. Four cubes already need a finer split (second step) or a longer cap. Until all 75 are UNSAT, or one is SAT and re-simulates, the bounds stay $9\le L(f,2)\le 11$ (COMPUTATIONAL), and the largest confirmed price stays one.
+
+\section*{Effect on the standing candidate}
+No claim is falsified and no charged resource improves. The time-state-representation surface stays CANDIDATE. The SAT-to-charged-model compiler is OPEN and the product-span obstruction is OPEN. W-SWAP is a symmetry of one finite encoder; it says nothing about lower bounds for any family.
+
+\section*{Next smallest step}
+Read \texttt{results/a40\_L9\_cubes.out} in \texttt{/workspace/scratch\_h2100\_1005}. Split cubes 0, 1, 2, 4 (and any later timeout) on their second step. Before reporting a price of two, cross-check the UNSAT cubes with a second solver.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass proves W-SWAP (PROVED/EXACT: a first-step cube with $w=0$ is SAT exactly when the same cube with $w=1$ is SAT), checks it on 220 SAT-cube witnesses and 360 cube pairs with two mutation controls that fail as they should (COMPUTATIONAL), cuts the \texttt{a40ff54e580f5d0a} $L=9$ cover from 150 to 75 cubes, of which 6 are UNSAT, 4 timed out and the rest are unread, so $9\le L(f,2)\le 11$ is unchanged. No claim is falsified, the largest confirmed price stays one, no charged resource improves, and this is not a proof of anything about P versus NP.
+\end{document}
