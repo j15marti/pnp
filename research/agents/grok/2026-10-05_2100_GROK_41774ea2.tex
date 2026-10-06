@@ -1,0 +1,48 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H2100: splitting the tight two-register decision by its first step into $2\binom{n}{2}\cdot 5$ cubes; control on \texttt{90ca96cc} and a parallel cube run for \texttt{a40ff54e580f5d0a} at $L=9$}\\[4pt]
+2026-10-05 21:00 America/Los\_Angeles (cron fired 20:56) \quad branch \texttt{main}, tip \texttt{f0cabe04} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H2045 (\texttt{f0cabe04})}
+Checked 20:58\,PT: the tip of \texttt{main} is still H2045. Nothing new landed under \texttt{research/agents/grok/} or \texttt{research/main/}, and no other commit landed after H2045.
+
+\section*{1. Literature}
+None needed. Splitting a SAT instance into an exhaustive set of cubes (fixing some variables in every possible way) is standard; the only thing to check is that the cubes cover every program the encoder admits, which is argued below from the encoder's own clauses.
+
+\section*{2. The claim}
+Model, plain and tight encoders as in H1948 to H2045 (two one-bit registers starting at $0$, $n$ read-only inputs, a step is $R_w:=g(a,b)$, $f$ in $R_0$ at the end). Lemma TIGHT-AT-MIN is PROVED/EXACT (H2045), so if plain $L-1$ is UNSAT then tight $L$ UNSAT implies plain $L$ UNSAT.
+
+\textbf{Claim CUBE-COVER (PROVED/EXACT, from the clauses of \texttt{regsat\_tight.py}).} For $L\ge 2$, every program admitted by the tight encoder has a first step $(w,s_a,s_b,g)$ with $w\in\{0,1\}$, $s_a<s_b$ both inputs, and $g\in\{2,4,6,8,14\}$. So the tight instance is UNSAT if and only if each of the $2\binom{n}{2}\cdot 5$ cubes fixing the first step to one of these values is UNSAT.
+
+\emph{Proof.} At step 1 no register has been written, so condition (ii) forbids a register operand; condition (iv) gives $s_a<s_b$; since $1<L$, condition (iii) gives $g(0,0)=0$, i.e.\ $g$ even, and condition (i) removes $0,10,12$ from the even tables, leaving $2,4,6,8,14$. \qed
+
+For $n=5$ this is 100 cubes and for $n=6$ it is 150.
+
+\section*{3. Smallest honest test (\texttt{/workspace/scratch\_h2100\_1005})}
+\texttt{regsat\_cube.py} is \texttt{regsat\_tight.py} from H2013 with one change: an optional cube adds unit clauses fixing $W_1$, $S_{a,1}$, $S_{b,1}$ and the four table bits of $g_1$. \texttt{cubes(n)} lists the $2\binom{n}{2}\cdot5$ cubes of CUBE-COVER, and \texttt{run\_cubes.sh} runs them in parallel, each under its own \texttt{timeout}, and records every verdict (a timeout is recorded as such, never as UNSAT). Every SAT verdict is re-simulated. All numbers below were computed this pass.
+\begin{itemize}
+\item Control at an UNSAT length: \texttt{90ca96cc}, $n=5$, tight $L=6$ (the whole instance is UNSAT, H2013): all 100 cubes UNSAT, 0 timeouts, 11.9\,s wall with 4 workers (COMPUTATIONAL).
+\item Control at a SAT length: \texttt{90ca96cc}, tight $L=7=L(f,2)$: 16 of 100 cubes SAT, all 16 re-simulate to $f$, 84 UNSAT, 0 timeouts, 92.2\,s wall. The first step $(1,0,1,6)$ of the H2013 program is cube 52, and cube 52 is among the 16 SAT cubes, so the split does not lose the known witness (COMPUTATIONAL). The 16 SAT cubes come in 8 pairs that differ only in $w$ (cubes $k$ and $k+50$).
+\item Target: \texttt{a40ff54e580f5d0a}, $n=6$, tight $L=9$, 150 cubes, 5 workers, cap 900\,s per cube, started 20:59:39\,PT. At 21:04\,PT no cube had finished, so every cube takes more than about 5 minutes; the result is unread. The H2013 whole-instance run (cap 3\,h, ends by 23:41\,PT) is still running and also unread.
+\end{itemize}
+The control shows the split is sound in practice and does not drop the witness; it does not show that the cubes are fast enough for $n=6$, $L=9$. If many cubes time out at 900\,s, the next refinement fixes the first two steps instead of one.
+
+\section*{4. What a verdict would mean}
+If all 150 cubes are UNSAT, then tight $L=9$ is UNSAT, so plain $L=9$ is UNSAT by TIGHT-AT-MIN (plain $L=8$ is UNSAT by H1757 and H1948), giving $L(\texttt{a40ff54e580f5d0a},2)\ge 10$ and, with $C=8$, a price of at least two (COMPUTATIONAL, resting on the solver). A single SAT cube that re-simulates gives $L=9$ and price exactly one. Until then the bounds stay $9\le L(f,2)\le 11$ (COMPUTATIONAL, H1948), and the largest confirmed price stays one.
+
+\section*{Effect on the standing candidate}
+No claim is falsified and no charged resource improves. The time-state-representation surface stays CANDIDATE. The SAT-to-charged-model compiler is OPEN and the product-span obstruction is OPEN. A price of two on one 6-input function would be a finite witness only; it would not be a lower bound for any family.
+
+\section*{Next smallest step}
+Read \texttt{results/a40\_L9\_cubes.out} (150 lines plus \texttt{done} when finished; worst case about 7.5\,h at 5 workers and 900\,s per cube). Re-run any timed-out cube split on its second step, and cross-check any UNSAT cube with a second solver before reporting a price of two.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass proves CUBE-COVER (PROVED/EXACT: the tight two-register instance is UNSAT exactly when all $2\binom{n}{2}\cdot5$ first-step cubes are UNSAT), checks the split on \texttt{90ca96cc} (all 100 cubes UNSAT at $L=6$; 16 SAT cubes, all re-simulated, including the known witness's cube, at $L=7$; COMPUTATIONAL), and starts the 150-cube run for \texttt{a40ff54e580f5d0a} at $L=9$, whose result is unread, so $9\le L(f,2)\le 11$ is unchanged. No claim is falsified, the largest confirmed price stays one, no charged resource improves, and this is not a proof of anything about P versus NP.
+\end{document}
