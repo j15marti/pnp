@@ -1,0 +1,40 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H1845: the price-one witness can also pay by forget-then-recompute; H1829's ``larger circuit, not recomputation'' reading is retired}\\[4pt]
+2026-10-05 18:45 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{727d500a} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+\section*{Peer delta since H1829 (\texttt{5686416d})}
+One commit landed on \texttt{main} (checked 18:47\,PT): \texttt{727d500a}, adding \texttt{research/2026-10-05\_1839\_RED-0001\_write\_status.md}. Nothing landed under \texttt{research/main/} or \texttt{research/agents/grok/}. Its content is unread in this pass; no number from it is cited.
+
+\section*{1. Pending run}
+Plain \texttt{regsat\_sb.py a40ff54e580f5d0a 10 2 6} (started 18:14:54\,PT, 2700\,s cap) was still running at 18:50\,PT with no output, so it stays unread. Bounds unchanged: $9\le L(\texttt{a40ff54e580f5d0a},2)\le 11$, lower bound CONDITIONAL (tightness lemma, H1757), upper bound COMPUTATIONAL (H1812).
+
+\section*{2. Smallest honest test: force a recompute step (\texttt{/workspace/scratch\_h1845\_1005})}
+H1829 found that the one $L=8$ program on record for \texttt{000f555b000f141a} ($C=7$; $L(f,2)\ge 8$ CONDITIONAL) computes eight distinct values, and read the price as paid in the representation $R$. It named the test: ask SAT whether a program of the same length exists that recomputes.
+
+\texttt{forcerec.py} takes the plain symmetry-broken encoding of \texttt{regsat\_sb.py} unchanged and adds one clause: some step $t$ writes a value equal to, or the complement of, the value written by an earlier step $t'<t$ (one auxiliary pair per $(t,t')$, one-directional equality implications). Every model is re-simulated; \texttt{classify.py} recomputes each step's truth table and labels it NEW, RECOMP, LIT, or DEAD as in H1829.
+
+\begin{itemize}
+\item Calibration (COMPUTATIONAL): the H0257 five-input witness \texttt{90ca96cc} ($C=6$, $L(f,2)=7$) at $L=7$: SAT in 48.4\,s, re-simulated OK; step 5 recomputes the value of step 1 after it was overwritten, all other steps NEW and live, as H0257 reported.
+\item Main run (COMPUTATIONAL): \texttt{000f555b000f141a} at $L=8$: SAT in 9.3\,s, re-simulated OK. Kinds: seven NEW steps and one RECOMP, no LIT and no DEAD step. Step 6 rewrites $x_2\lor x_3$, the value of step 1, after it had been overwritten; it does so by undoing an XNOR with $x_5$ rather than from inputs.
+\item Collapse (COMPUTATIONAL): \texttt{dedup.py} merges equal values into one node and gets a 7-gate circuit (node $x_2\lor x_3$ has fan-out two) that evaluates to $f$ directly, so it is a minimum-size circuit given $C=7$. The exact fixed-circuit two-register search \texttt{pebble2.py} schedules it in 8 steps (re-simulated OK), recomputing $x_2\lor x_3$ from the inputs once.
+\item Sanity (COMPUTATIONAL): at $L=9$ forcing a recompute is SAT (67.5\,s, re-simulated OK), as expected from the slack.
+\end{itemize}
+
+FORCE-RECOMP-L8 (COMPUTATIONAL): at the same length $L=8$, the price-one witness has both a recompute-free program over an 8-gate circuit (H1829) and a program that schedules a minimum 7-gate circuit with exactly one forget-then-recompute.
+
+\section*{Effect on the standing candidate}
+The H1829 reading that this witness pays ``with a larger circuit, not with forget-then-recompute'' is FALSIFIED/RETIRED as an exclusive statement: both payments reach the same length, so the extra step cannot be assigned to $R$ alone or to recomputation alone. The H1829 computational fact (the fifteen recorded programs do not recompute) stands. The pebbling reading of the price now has one supporting witness at $n=6$ (COMPUTATIONAL), conditional on $L(f,2)\ge 8$. Nothing improves a charged resource: the largest confirmed price stays one, and the time-state-representation surface stays CANDIDATE. The SAT-to-charged-model compiler and the product-span obstruction are untouched and OPEN.
+
+\section*{Next smallest step}
+Read plain $L=10$ for \texttt{a40ff54e580f5d0a} once its cap expires. Then, with the forced clause negated (no step repeats a value or complement), rerun $L=8$ on the six $L=7$ and nine $L=8$ functions of H1829 to count which ones admit a recompute-free optimal program, and which admit only one kind.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass finds that the price-one witness \texttt{000f555b000f141a} ($C=7$, $L=8$ with the lower bound conditional) also has an 8-step two-register program that schedules a minimum 7-gate circuit with one forget-then-recompute, so H1829's reading that it pays only through a larger circuit is retired; the largest confirmed price stays one, no charged resource improves, and this is not a proof.
+\end{document}
