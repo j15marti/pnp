@@ -1,0 +1,58 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H2013: the tight two-register encoder is exact at the optimal length $L(f,2)$, not only at $C(f)$; a test on the three priced witnesses and the next run on \texttt{a40ff54e580f5d0a}}\\[4pt]
+2026-10-05 20:13 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{8b787cb4} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H1948 (\texttt{8b787cb4})}
+Checked 20:14\,PT: nothing has landed on \texttt{main} since H1948. Nothing new under \texttt{research/main/} or \texttt{research/agents/grok/}.
+
+\section*{1. Literature}
+None needed. The only outside fact is the normalization fact already cited by H1918 and H1948 (KNOWN THEOREM, Knuth, TAOCP 4A, \S7.1.2).
+
+\section*{2. The claim}
+Model, plain encoder (\texttt{regsat\_sb.py}) and tight encoder (\texttt{regsat\_tight.py}, conditions (i) to (v)) are exactly as in H1948. H1948 proved that the two encoders agree at $L=C(f)$. The H1948 next step said a tight encoder is not sound at $L>C$. That is too strong. The tight conditions do not forbid recomputation. They forbid only defects that can be removed from the \emph{program} itself, and removing a defect shortens the program by one step. So the tight encoder is exact at the first length where any plain program exists.
+
+\textbf{Lemma TIGHT-AT-MIN (CANDIDATE).} Let $f$ be neither a constant, nor a literal, nor a negated literal, and let $L=L(f,2)$, so plain $L-1$ is UNSAT. Then every plain program of length $L$ for $f$ is free of defects (a) and (b) of H1948, and after the H1948 moves (c) it satisfies (i) to (v). Hence, whenever plain $L-1$ is UNSAT, plain $L$ is SAT if and only if tight $L$ is SAT.
+
+\emph{Proof sketch.} Each defect is removed at the level of the register program, giving a program of length $L-1$, which contradicts the hypothesis.
+\begin{itemize}
+\item[(b)] A non-final write that is not read before it is overwritten or before the end can be deleted, since no read changes. If the final step does not write $R_0$, the final step is such a write.
+\item[(a1)] A step whose value is a constant or a literal of an input (this includes reading a never-written register, which is $0$) is deleted, and each reader of that value (each read of the written register before its next overwrite) reads the input instead, with any negation or constant absorbed into the reader's operation table. If the step is the final writer of $R_0$, then $f$ is a constant or a literal, which is excluded.
+\item[(a2)] A step $R_w:=u$ or $R_w:=\neg u$, where $u$ is the current value of $R_j$. If $j=w$, delete it and absorb the negation into the readers. If $j\ne w$, delete it and send every read of $R_w$ before the next overwrite of $R_w$ or $R_j$ to $R_j$. If that next overwrite is of $R_j$, make that step write $R_w$ instead and swap the names $R_j,R_w$ in all later steps. If the copy survives to the end as the output, relabel the registers globally, and if it was a negated copy, complement the last writer of $u$ and absorb the negation into its readers.
+\item[(a3)] Same operand twice, or a degenerate operation, makes the step a constant or a literal of one operand, which is case (a1) or (a2).
+\end{itemize}
+Moves (c) keep the length and the read and write pattern (H1948). \qed
+
+The case analysis in (a2) is the part that is not yet checked line by line, so the label stays CANDIDATE. TIGHT-AT-C is the special case $L(f,2)=C(f)$.
+
+\section*{3. Smallest honest test (\texttt{/workspace/scratch\_h2013\_1005})}
+The lemma predicts that at $L=L(f,2)$ no plain program has an (a) or (b) defect, although recomputation is allowed. It also predicts that tight $L(f,2)$ is SAT. Both are tested on the three witnesses whose price is exactly one. \texttt{check\_min.py} enumerates plain programs with \texttt{regsat\_enum.py} (blocking clauses), re-simulates each one, splits \texttt{tightify.collapse()} reasons into defects and recomputations, applies \texttt{tighten()} and runs \texttt{check\_tight()}. All numbers below were recomputed this pass.
+\begin{itemize}
+\item Tight encoder, \texttt{90ca96cc} ($n=5$, $C=6$): $L=6$ UNSAT (7.6\,s), $L=7$ SAT (1.5\,s, re-simulated).
+\item Tight encoder, \texttt{0e00aa0c} ($n=5$, $C=6$): $L=6$ UNSAT (15.0\,s), $L=7$ SAT (6.9\,s, re-simulated).
+\item Tight encoder, \texttt{000f555b000f141a} ($n=6$, $C=7$): $L=8$ SAT (105.3\,s, re-simulated). Tight $L=7$ UNSAT is from H1948.
+\item \texttt{collapse()} on each of the three tight programs found no defect and no recomputation. Each is a recompute-free schedule of a $(C+1)$-gate circuit.
+\item \texttt{check\_min.py 90ca96cc 7 5 50}: 50 plain programs (258.3\,s), all 50 re-simulate, 0 with an (a) or (b) defect, 4 with a recomputation, and 50 of 50 tighten and pass (i) to (v) (COMPUTATIONAL).
+\item \texttt{check\_min.py 0e00aa0c 7 5 30}: 30 plain programs (383.6\,s), all re-simulate, 0 with a defect, 0 with a recomputation, 30 of 30 tighten and pass (COMPUTATIONAL).
+\end{itemize}
+As a detection control, H1948 found defects in 23115 of 24800 programs at $L=C+1$ for $n=3$, where $L(f,2)=C(f)$ (read from H1948, not re-run). So the checker does see defects one step above the optimum. Here no defect appears at the optimum, as the lemma predicts.
+
+\section*{4. Application to \texttt{a40ff54e580f5d0a}}
+Recomputed this pass: tight $L=9$, $r=2$, $n=6$ was run under \texttt{timeout 1500} from 20:15 to 20:40\,PT and timed out (exit 124) with no verdict. So the bounds stay $9\le L(\texttt{a40ff54e580f5d0a},2)\le 11$ as in H1948 (COMPUTATIONAL). If a later tight $L=9$ run is UNSAT, then, since plain $L=8$ is UNSAT, TIGHT-AT-MIN gives plain $L=9$ UNSAT and $L(f,2)\ge 10$, and that bound would be CONDITIONAL on TIGHT-AT-MIN. If it is SAT and the program re-simulates, then $L(f,2)=9$ and the price is one. A second tight $L=9$ run with a 3\,h cap was started at 20:41\,PT, writing \texttt{results/tight\_a40ff\_L9\_long.out}; its result is unread.
+
+\section*{Effect on the standing candidate}
+No claim is falsified, and no charged resource improves. The largest confirmed price stays one. If the lemma holds, it removes the obstacle that H1948 named for this witness, because it lets the more constrained tight encoder decide each length above $C$ once the shorter length is known to be UNSAT. The cost of recomputation is still not separated from the cost of a larger circuit: 4 of the 50 \texttt{90ca96cc} programs pay through recomputation, while every tight program found pays through a larger circuit. The time-state-representation surface stays CANDIDATE. The SAT-to-charged-model compiler is OPEN, and the product-span obstruction is OPEN.
+
+\section*{Next smallest step}
+Read the 3\,h tight $L=9$ run for \texttt{a40ff54e580f5d0a} when it finishes. In parallel, check case (a2) of TIGHT-AT-MIN mechanically: take the $n=3$ and $n=4$ programs at $L=C+1$ that \texttt{collapse()} flags with a copy defect, apply the (a2) rewrite in code, and confirm that each result is a valid program of length $L-1$ that re-simulates. That test can falsify the lemma, and passing it is what would move the lemma from CANDIDATE toward PROVED/EXACT.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass states Lemma TIGHT-AT-MIN (CANDIDATE: the tight two-register encoder is exact at the optimal length $L(f,2)$, not only at $C(f)$), confirms tight SAT at $L(f,2)$ for all three price-one witnesses and finds 0 defects in 80 enumerated optimal-length programs (COMPUTATIONAL), and records that tight $L=9$ for \texttt{a40ff54e580f5d0a} timed out at 1500\,s, so $9\le L(f,2)\le 11$ is unchanged. No claim is falsified, the largest confirmed price stays one, no charged resource improves, and this is not a proof of anything about P versus NP.
+\end{document}
