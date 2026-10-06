@@ -1,0 +1,49 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H2141: a second solver agrees on every verdict it finished; \texttt{a40ff54e580f5d0a} $L=9$ cube 0 split reaches 71 of 210 subcubes, all UNSAT}\\[4pt]
+2026-10-05 21:41 America/Los\_Angeles \quad branch \texttt{main}, tip \texttt{22e456ef} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H2129 (\texttt{22e456ef})}
+Checked 21:44\,PT. The tip of \texttt{main} is still the H2129 commit. Nothing new landed under \texttt{research/agents/grok/}, \texttt{research/main/}, or anywhere else.
+
+\section*{1. Literature}
+None needed. The step is the second-solver cross-check that H2129 named as its next step.
+
+\section*{2. The claim tested}
+\textbf{Claim XSOLVE (COMPUTATIONAL, scope stated).} On the CNF produced by \texttt{regsat\_fix.py} (H2129, unchanged), Glucose~4 (\texttt{glucose4} in PySAT 1.9.dev15) returns the same SAT/UNSAT verdict as CaDiCaL~1.9.5 (\texttt{cadical195}), the solver behind every verdict reported from H2013 to H2129.
+
+Scope: both solvers read the same clauses, so agreement checks the solver answer and nothing else. It does not check that the encoding matches the model; that rests on the PROVED/EXACT lemmas (TIGHT-AT-MIN, CUBE-COVER, W-SWAP, SPLIT2) and on re-simulation of SAT models. Agreement of two solvers is not a proof certificate; an UNSAT verdict stays COMPUTATIONAL until a checked proof (for example DRAT) exists.
+
+\section*{3. Smallest honest test (\texttt{/workspace/scratch\_h2141\_1005})}
+\texttt{experiments/xcheck.py} calls \texttt{run} from \texttt{regsat\_fix.py} with \texttt{solver=glucose4}. All numbers below were computed this pass.
+\begin{itemize}
+\item Random $n=4$ functions, 6 functions $\times$ 6 first-step cubes ($w=0$) per length, seeds 202610052144, 202610052145, 202610052146, both solvers on each cube: $L=4$ agree 36/36 (2 SAT), $L=5$ agree 36/36 (8 SAT), $L=6$ agree 36/36 (31 SAT). Every Glucose SAT model re-simulates to $f$ (assertion in the script). Both answers occur (41 SAT, 67 UNSAT), so the comparison is not vacuous. No mutation control was run for this comparison.
+\item \texttt{a40ff54e580f5d0a}, tight $L=9$, parent cube 0 $=(0,0,1,2)$, subcubes 0 to 49 (600\,s cap on the whole Glucose run): all 50 UNSAT under Glucose, matching CaDiCaL on all 50. 45 of them are refused at once by both solvers (step 2 overwrites $R_0$ without reading it, clause (v)). On the 5 nontrivial ones Glucose is about 1.3 to 2.3 times slower: subcubes 25 to 29 take 18.9, 20.1, 19.7, 62.9, 37.1\,s under CaDiCaL and 43.3, 44.4, 42.7, 83.3, 81.7\,s under Glucose. Subcubes 50 and 51 were still running under Glucose when this note was written.
+\end{itemize}
+
+\textbf{Running work, read at 21:49\,PT.}
+\begin{itemize}
+\item H2129 split of cube 0 (CaDiCaL, one core, 600\,s cap per subcube): subcubes 0 to 70 done, all 71 UNSAT, no timeout; the slowest so far is subcube 50 at 74.9\,s.
+\item H2100 cube runner (900\,s cap): cubes 3, 5 to 8, 10 to 13, 15 to 18 UNSAT (13 cubes); cubes 0, 1, 2, 4, 9, 14 timed out (6 cubes); cubes from 19 on are running. Cube 14 is a new timeout and is in the list the split queue will read at its \texttt{PHASE-B} step.
+\item The H2013 whole-instance run (cap 3\,h, ends by 23:41\,PT) is still running and unread.
+\end{itemize}
+
+\section*{4. What this changes}
+The solver verdicts behind the $L=9$ work so far are now confirmed by a second, independent solver on every case it finished. This is a check on one link of the chain, not a new bound. The bounds stay $9\le L(\texttt{a40ff54e580f5d0a},2)\le 11$ (COMPUTATIONAL) and the largest confirmed price stays one. For a price of two, every one of the 75 cubes ($w=0$) has to be UNSAT, either directly or through all of its subcubes, and a sample of those UNSAT verdicts should then be re-run under Glucose or carry a checked proof.
+
+\section*{Effect on the standing candidate}
+No claim is falsified and no charged resource improves. The time-state-representation surface stays CANDIDATE. The SAT-to-charged-model compiler is OPEN and the product-span obstruction is OPEN. XSOLVE is a check of solver answers on one finite encoder; it says nothing about lower bounds for any family.
+
+\section*{Next smallest step}
+Read the three running logs. When the cube-0 split finishes, re-run its nontrivial subcubes under Glucose. Check whether PySAT's Glucose can emit a DRAT proof for one small UNSAT subcube and whether a proof checker such as \texttt{drat-trim} can be built on this machine.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass checks the solver behind the two-register SAT runs against a second solver (COMPUTATIONAL: Glucose agrees with CaDiCaL on 108/108 random $n=4$ cubes and on all 50 \texttt{a40ff54e580f5d0a} $L=9$ cube-0 subcubes it finished); the cube-0 split stands at 71 of 210 subcubes, all UNSAT, and $9\le L(f,2)\le 11$ is unchanged. No claim is falsified, the largest confirmed price stays one, no charged resource improves, and this is not a proof of anything about P versus NP.
+\end{document}
