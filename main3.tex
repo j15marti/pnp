@@ -109,64 +109,63 @@ or conditional implication into an unrestricted complexity lower bound.
 
 \section{Executive overview}
 
-The research program has gradually converged on a fairly sharp diagnosis of
-the P-vs-NP difficulty.
+The program now has a sharper separation between \emph{exposing a canonical
+SAT restriction process} and \emph{proving that process expensive}.
 
-It is easy to write down many quantities that become large on a hard-looking
-3-SAT formula: number of satisfying assignments, number of possible histories,
-number of clauses, number of provenance labels, rank of a matrix, width of a
-decision representation, size of an explicit strategy tree, or number of
-distinguishable future continuations.  None of these is automatically a time
-lower bound for an arbitrary algorithm.
+Representation freedom remains the central difficulty: large semantic
+families, traces, ranks, provenance labels, or explicit trees are not
+automatically runtime lower bounds.  SRAS therefore separates semantic
+relevance, source/accounting, and cost.
 
-The reason is representation freedom.  An algorithm can summarize, reuse,
-recompute, reread, share a DAG node, switch to an algebraic basis, invoke a
-dynamic program on a separator, or use a completely different representation
-from the one the proof is counting.
+For every exact SAT decider \(A\), a fixed downward-self-reduction wrapper
+\(W[A]\) can force an explicit source-bound answer-preserving restriction
+sequence without inspecting \(A\)'s internal representation.  After \(x\)
+fixed variables the raw assignment domain is \(2^{n-x}\), so choosing
+\(x=n-O(\log n)\) leaves only polynomial raw suffix assignments.
 
-The current program therefore separates the intended proof into three layers.
-
-\begin{enumerate}[leftmargin=1.6em]
-\item \textbf{Semantic layer.}
-Define exactly which distinctions remain relevant to the future consumer.
-
-\item \textbf{Source/accounting layer.}
-Track where the information supporting those distinctions lives, how it is
-represented, and whether it can be recovered or recomputed.
-
-\item \textbf{Cost layer.}
-Prove that every ordinary way of maintaining or reacquiring enough of those
-distinctions costs superpolynomial resources.
-\end{enumerate}
-
-The first two layers are now comparatively mature.  The third is still the
-central open problem.
+This does \emph{not} yet establish
+\[
+K_{0\to t}
+=
+\log_2\frac{\kappa_U(S_0)}{\kappa_U(S_t)}
+\]
+at the same scale.  That requires an independently SAT-forced consumer
+\(U\).  Nor does the wrapper yield fixed fractional query scale
+\(n^{\theta+o(1)}\), \(\theta<1\): its early calls remain current-scale and
+retain the unknown runtime exponent of \(A\).  A SAT oracle shadows the wrapper
+exactly, so the wrapper is not the nonrelativizing hinge.
 
 \begin{candidatebox}
-\textbf{Current intended separation spine.}
+\textbf{Current shortest separation spine.}
 \[
 \boxed{
 \begin{array}{c}
-\text{hypothetical polynomial-time exact SAT decider }A\\
-\Downarrow\\
-\text{SAT-specific source-to-reduction extraction (OPEN)}\\
-\Downarrow\\
-n-O(\log n)\text{ valid future-relevant reduction}\\
-\Downarrow\\
-\text{SRAS route completeness (proved in the declared interface model)}\\
-\Downarrow\\
-\text{retain/localize}\ \vee\ \text{reacquire}\ \vee\ \text{external}\\
-\Downarrow\\
-\text{ordinary retained/reacquired branch costs }n^{\omega(1)}\text{ (OPEN)}\\
-\Downarrow\\
+P=NP
+\Rightarrow
+\exists A\in P\text{ exact for SAT}\
+\Downarrow\
+W[A]\text{ exposes an answer-preserving restriction path}
+\quad\text{(PROVED)}\
+\Downarrow\
+x=n-O(\log n)\text{ raw assignment contraction}
+\quad\text{(PROVED)}\
+\Downarrow\
+\text{consumer-valid }K_U\ge n-O(\log n)
+\text{ or direct ordinary-process LB}
+\quad\text{(OPEN)}\
+\Downarrow\
+\text{model-matched, nonrelativizing/nonalgebrizing contradiction}
+\quad\text{(OPEN)}\
+\Downarrow\
 P\ne NP.
 \end{array}}
 \]
 \end{candidatebox}
 
-The exact-3SAT work runs in parallel.  It is not itself the unrestricted proof.
-Its purpose is to expose transformations that are genuinely cheap so that the
-abstract lower-bound argument is not allowed to charge them as hard.
+A stronger fractional CSE theorem remains an alternative route because
+RECURCLOSE1 would remove dependence on the unknown exponent of \(A\).
+The exact-3SAT work remains a structural laboratory and possible source of
+such a theorem, not an unrestricted lower bound by itself.
 
 \section{Three distinctions that govern the whole project}
 
@@ -496,6 +495,22 @@ future-relevant reduction must pay superpolynomial cost.
 
 That theorem is \statusopen.
 
+
+\begin{remark}[WRAPPED-CSE guard]
+The argument
+\[
+2^n\to2^{n-x},\qquad x=n-O(\log n),
+\]
+established by the canonical restriction wrapper is a raw assignment-domain
+statement.  It may be substituted into
+\(\mathcal C_{F,U,M}(k)\) only after an independently justified theorem proves
+the corresponding continuation obligation
+\(K_U\ge n-O(\log n)\).  KAPPA-MISMATCH-GUARD1 forbids treating these as
+identical by definition.
+\end{remark}
+
+
+
 \section{SRAS route completeness}
 
 \subsection{The causal conservation argument}
@@ -538,94 +553,187 @@ It does \emph{not} prove that retaining or reacquiring the distinction is
 expensive.
 \end{provedbox}
 
-\section{CSE: why extraction remains the main arrow}
+\section{CSE after WRAPPED-CSE: solved path exposure and open contraction}
 
-\subsection{Trace extraction is not enough}
+The extraction problem has been sharpened by the wrapper audit.  A polynomial
+execution trace remains cheap to reproduce, so trace extraction is not a
+lower bound.  But an explicit source-bound restriction path need not be
+inferred from the internal state of \(A\): a fixed wrapper can force one.
 
-If a deterministic algorithm runs in polynomial time, then its explicit
-execution trace is polynomial-size.  Any polynomial-time transformation of
-that trace is also polynomial-time.
-
-Thus:
+\begin{theorem}[TRACECLOSE1]
+If deterministic \(A\) runs in polynomial time and \(E\) is a polynomial-time
+transducer, then
 \[
-\boxed{
-\text{polynomial trace}
-+
-\text{polynomial audit}
-\not\Rightarrow
-\text{superpolynomial resource}.
-}
+E(x,\operatorname{Tr}_A(x))
 \]
+is polynomial-time computable.
+\end{theorem}
 
-This is TRACECLOSE1.
+Thus a polynomial trace plus a polynomial audit cannot by itself yield a
+superpolynomial resource.
 
-\subsection{A fixed consumer is available}
-
-The project once worried that a proof might invent a counterfactual consumer
-not actually forced by SAT correctness.
-
-EXTCONSUMER1 eliminates that ambiguity by using:
+\begin{theorem}[EXTCONSUMER1: fixed extension consumer]
+Define
 \[
-\boxed{
 W_{\rm EXT}(F,\rho)
 =
 \operatorname{SAT}(F\upharpoonright\rho).
+\]
+For every exact deterministic SAT decider \(A\),
+\[
+E_A(F,\rho)=A(F\upharpoonright\rho)
+\]
+correctly evaluates this solver-independent consumer on any requested
+restriction.
+\end{theorem}
+
+\begin{remark}
+EXTCONSUMER1 fixes the semantics of a rich all-restrictions consumer, but it
+does not prove that one actual run of \(A(F)\) must retain a summary answering
+all such restrictions.  Evaluability on demand is weaker than a forced
+single-run continuation obligation.
+\end{remark}
+
+\begin{theorem}[WRAPPED-SELFRED1]
+For every exact SAT decider \(A\), there is a fixed wrapper \(W[A]\) that,
+on an \(n\)-variable formula \(F\), maintains restrictions
+\[
+\rho_0\subset\rho_1\subset\cdots\subset\rho_x
+\]
+such that
+\[
+\operatorname{SAT}(F\upharpoonright\rho_i)
+=
+\operatorname{SAT}(F)
+\]
+for every \(i\).  At each step the wrapper makes one decision call on one
+child restriction and selects a child with the same SAT value as its parent.
+The wrapper does not inspect the internal representation of \(A\).
+\end{theorem}
+
+\begin{theorem}[WRAPPED-ASSIGNMENT-CONTRACTION1]
+After fixing \(x\) distinct variables, the raw assignment domain contracts
+from \(2^n\) to \(2^{n-x}\).  Taking
+\[
+x=n-d\lceil\log_2 n\rceil
+\]
+leaves polynomially many raw suffix assignments.  Hence the wrapper realizes
+the BRTHRESH1 scale
+\[
+x=n-O(\log n)
+\]
+as an explicit answer-preserving \emph{assignment-domain} contraction.
+\end{theorem}
+
+\begin{theorem}[KAPPA-MISMATCH-GUARD1]
+WRAPPED-ASSIGNMENT-CONTRACTION1 does not by itself imply
+\[
+x=
+\log_2
+\frac{\kappa_U(S_0)}{\kappa_U(S_t)}.
+\]
+SRAS \(K_U\) counts continuation-equivalence classes for an independently
+justified consumer \(U\), whereas fixing coordinates counts raw assignment
+domain.  A theorem identifying the two at the needed scale is a separate
+obligation.
+\end{theorem}
+
+\begin{theorem}[WRAPPED-CURRENT-SCALE1]
+If \(A\) takes \(T_A(m)=m^{K+o(1)}\) time on an \(m\)-variable residual, the
+one-variable wrapper pays
+\[
+\sum_{m=L}^{n}T_A(m)
+=
+\Theta(n^{K+1+o(1)})
+\]
+to restrict to \(L=O(\log n)\) live variables, up to the chosen size
+normalization.  In SELECTCHARGE1 notation the early calls remain
+current-scale: \(\delta=1\).  Therefore the wrapper does not erase the unknown
+exponent \(K\).
+\end{theorem}
+
+\begin{theorem}[WRAPPED-ORACLE-SHADOW1]
+Because \(W[A]\) uses \(A\) only through SAT decision bits on explicit
+restrictions, an exact SAT oracle reproduces the entire adaptive wrapper
+transcript.  The wrapper therefore relativizes and is not itself the
+nonrelativizing hinge.
+\end{theorem}
+
+\begin{provedbox}
+\textbf{WRAPPED-CSE boundary.}
+The wrapper solves \emph{path exposure}: it gives every exact \(A\) a
+canonical source-bound answer-preserving restriction path.  It does not solve
+either (i) consumer-valid near-total SRAS contraction or (ii) fixed
+\(\theta<1\) fractional shrinkage with no current-scale call.
+\end{provedbox}
+
+The stronger CSE target remains:
+
+\begin{candidatebox}
+\textbf{CSE1: fractional Contractive Source Extraction.}
+For every deterministic exact SAT decider \(A\) and sufficiently large hard
+instance of scale \(N\), derive recursively consumable source-matched objects
+\(Q_1,\ldots,Q_m\) with
+\[
+m\le N^{a+o(1)},\qquad
+|J_{\rm live}^{U}(Q_i)|\le N^{b+o(1)},\quad b<1,
+\]
+fully charged acquisition/combination cost, recursive closure, wrapper
+covariance, and no hidden current-scale SAT call.
+\end{candidatebox}
+
+CSE1 remains OPEN in this stronger fractional sense.  It is no longer needed
+merely to expose a restriction path.
+
+\begin{theorem}[RECURCLOSE1]
+Suppose an \(A\)-derived SAT procedure performs \(n^{r+o(1)}\) local work,
+makes at most \(n^{\eta+o(1)}\) recursive SAT calls, and every call has size at
+most \(n^{\theta+o(1)}\) with fixed \(0\le\theta<1\).  Under recursive closure
+and no hidden current-scale call,
+\[
+\boxed{
+T(n)\le n^{C+o(1)},
+\qquad
+C=\max\left\{r,\frac{\eta}{1-\theta}\right\}.
 }
 \]
+\end{theorem}
 
-Every exact SAT decider \(A\) provides:
+\begin{theorem}[MULTICHANNEL1]
+For finitely many recursive channels \(j\),
 \[
-E_A(F,\rho)
-=
-A(F\upharpoonright\rho).
+C=
+\max\left\{
+r,\max_j\frac{\eta_j}{1-\theta_j}
+\right\}.
 \]
+\end{theorem}
 
-So the universal extension consumer is solver-independent.
-
-But this still does not contract source scale.  A one-variable restriction
-typically maps
+\begin{theorem}[SELECTCHARGE1]
+If \(n^{u+o(1)}\) selector operations each call a SAT decider of exponent
+\(K\) on residuals of size \(n^{\delta+o(1)}\), the implementation contains
+cost
 \[
-N\mapsto N-O(1),
+\boxed{n^{u+\delta K+o(1)}}.
 \]
-not
-\[
-N\mapsto N^b,\qquad b<1.
-\]
+Current-scale calls \(\delta=1\) reintroduce the unknown exponent.
+\end{theorem}
 
-\subsection{The CSE contract}
-
-A usable Contractive Source Extraction theorem must output recursively
-consumable objects \(Q_1,\ldots,Q_m\) with:
+Thus the strongest current route is a fork:
 \[
-m\le N^{a+o(1)},
+\boxed{
+\begin{array}{c}
+\text{canonical wrapper path}\
+\swarrow\hspace{3em}\searrow\
+\text{prove }K_U\ge n-O(\log n)
+&
+\text{prove a direct nonrelativizing ordinary-cost LB}\
+\text{for a SAT-forced consumer}
+&
+\text{for the wrapped adaptive decision process}
+\end{array}}
 \]
-\[
-|J_{\rm live}^{U}(Q_i)|
-\le
-N^{b+o(1)},
-\qquad b<1,
-\]
-and
-\[
-C_{\rm acquire}
-+
-C_{\rm combine}
-\le
-N^{c+o(1)}.
-\]
-
-It must also satisfy:
-\begin{itemize}[leftmargin=1.4em]
-\item exact correctness;
-\item recursive closure;
-\item no hidden current-scale SAT call;
-\item wrapper covariance;
-\item source matching;
-\item explicit acquisition/reconstruction cost;
-\item no free canonicalization.
-\end{itemize}
-
-This is still \statusopen.
+or else obtain the stronger fractional CSE1 object and use RECURCLOSE1.
 
 \section{What recursive contraction would buy}
 
@@ -1581,31 +1689,61 @@ local branch in the declared model.\\
 
 \section{What would constitute an actual P-vs-NP proof in this framework}
 
-A completed proof would need all of the following with explicit quantifiers.
+A completed proof would need the following arrows with explicit quantifiers.
 
-\subsection{Step A: arbitrary algorithm}
+\subsection{Step A: arbitrary polynomial decider}
 
-Fix an arbitrary deterministic polynomial-time exact SAT decider \(A\).
+Assume an arbitrary deterministic polynomial-time exact SAT decider \(A\).
+No internal architecture may be assumed.
 
-The proof cannot assume \(A\) resembles DPLL, resolution, an OBDD, or any
-known solver architecture.
+\subsection{Step B: canonical wrapper path --- now proved}
 
-\subsection{Step B: forced SAT-specific obligation}
-
-Show that correctness on a hard family forces \(A\) to support enough
-future-relevant behavior to amount to:
+Apply WRAPPED-SELFRED1.  A fixed black-box wrapper produces restrictions
 \[
-n-O(\log n)
+\rho_0\subset\rho_1\subset\cdots\subset\rho_x
 \]
-valid reduction in the independently defined consumer model.
+with
+\[
+\operatorname{SAT}(F\upharpoonright\rho_i)
+=
+\operatorname{SAT}(F).
+\]
+Taking \(x=n-O(\log n)\) yields a polynomial raw suffix-assignment domain.
+This removes internal representation/path exposure from the list of open
+requirements.
 
-This step is currently open.
+\subsection{Step C: make the reduction load-bearing --- open}
 
-\subsection{Step C: source/accounting classification}
+One must now prove at least one of the following.
 
-Apply SRAS-ROUTECLOSE1.
+\paragraph{C1: consumer route.}
+For an independently SAT-forced consumer \(U\),
+\[
+K_U
+=
+\log_2\frac{\kappa_U(S_0)}{\kappa_U(S_t)}
+\ge n-O(\log n).
+\]
+KAPPA-MISMATCH-GUARD1 shows that fixed-variable counting alone does not prove
+this.
 
-The required distinction must be:
+\paragraph{C2: direct wrapped-cost route.}
+Without identifying \(K_U=x\), prove that every ordinary implementation of
+the canonical answer-preserving restriction process has superpolynomial
+cost, with all calls to \(A\) expanded and charged.  This theorem cannot
+assume that SAT calls are expensive.
+
+\paragraph{C3: stronger fractional CSE route.}
+Derive a recursively closed SAT reduction whose queries have size
+\[
+n^{\theta+o(1)},\qquad \theta<1,
+\]
+with no hidden current-scale call, then use RECURCLOSE1.  This route remains
+OPEN.
+
+\subsection{Step D: source/accounting classification}
+
+For any chosen consumer/object, apply SRAS-ROUTECLOSE1:
 \[
 \text{retained/localized}
 \vee
@@ -1613,34 +1751,28 @@ The required distinction must be:
 \vee
 \text{external}.
 \]
+Quotients must already be continuation-safe.  EXTERNAL cannot be silently
+treated as ordinary computation.
 
-For ordinary computation, EXTERNAL cannot simply be assumed available.
+\subsection{Step E: quantitative ordinary-source theorem --- open}
 
-\subsection{Step D: quantitative ordinary-source theorem}
-
-Prove:
+Prove the required superpolynomial acquisition/use statement in exactly the
+chosen machine/source model.  If the consumer route is used, the target may
+take the form
 \[
-\mathcal C_{F_n,U_n,M}
-\bigl(n-O(\log n)\bigr)
-=
-n^{\omega(1)}
+\mathcal C_{F_n,U_n,M}(n-O(\log n))=n^{\omega(1)}.
 \]
-for every legal retained/reacquired ordinary realization.
+This expression is not licensed merely by raw assignment contraction; Step C1
+must first establish the corresponding \(K_U\) obligation.
 
-This is the central missing lower bound.
+\subsection{Step F: barrier and endpoint discharge --- open}
 
-\subsection{Step E: barrier discharge}
+Identify the actual line that fails under oracle replacement, separately show
+that the argument does not merely algebrize, audit any constructive circuit
+property against Natural-Proofs conditions, and match the resulting resource
+bound to an exact unconditional endpoint.
 
-Identify the load-bearing line that fails under arbitrary oracle replacement.
-
-ASCS supplies a plausible source-semantic candidate.
-
-Then separately show the proof does not merely algebrize.
-
-\subsection{Step F: exact model-matched contradiction}
-
-Only after all prior arrows hold may the recursive closure/time-space endpoint
-be invoked.
+Only then would the contradiction imply \(P\ne NP\).
 
 \section{Quantifier discipline}
 
@@ -1665,106 +1797,84 @@ This discipline prevents a common hidden inversion of quantifiers.
 
 \section{Current dependency graph}
 
-The current state can be summarized as:
-
 \[
 \boxed{
 \begin{array}{rcl}
-\text{BRTHRESH1} &:& \text{proved accounting}\\
-\text{CONTSEP1/NO2K1} &:& \text{proved representation constraints}\\
-\text{SRAS-ROUTECLOSE1} &:& \text{proved route completeness}\\
-\text{EXTCONSUMER1} &:& \text{proved fixed consumer}\\
-\text{TRACECLOSE1/FRESH-EVAL1/WIDTHCLOSE1} &:& \text{proved no-go controls}\\
-\text{RECURCLOSE1/MULTICHANNEL1} &:& \text{proved conditional closure}\\
-\text{CSE1} &:& \text{open}\\
-\text{near-total SAT reduction forcing} &:& \text{open}\\
-\text{ordinary-source acquisition LB} &:& \text{open}\\
-\text{ASCS oracle break} &:& \text{proved diagnostic}\\
-\text{FSC} &:& \text{open}\\
-\text{nonalgebrizing hinge} &:& \text{open}\\
+\text{BRTHRESH1} &:& \text{proved raw reduction threshold}\
+\text{WRAPPED-SELFRED1} &:& \text{proved canonical path exposure}\
+\text{WRAPPED-ASSIGNMENT-CONTRACTION1} &:& \text{proved raw }2^n\to2^{n-x}\text{ contraction}\
+\text{KAPPA-MISMATCH-GUARD1} &:& \text{proved raw contraction }\not\Rightarrow K_U=x\
+\text{WRAPPED-CURRENT-SCALE1} &:& \text{proved unknown }K\text{ survives standard wrapper}\
+\text{WRAPPED-ORACLE-SHADOW1} &:& \text{proved wrapper relativizes}\
+\text{SRAS-ROUTECLOSE1} &:& \text{proved route completeness}\
+\text{RECURCLOSE1/MULTICHANNEL1} &:& \text{proved conditional fractional closure}\
+\text{consumer-valid }K_U\text{ theorem} &:& \text{open}\
+\text{direct ordinary wrapped-process LB} &:& \text{open}\
+\text{fractional CSE1 }(\theta<1) &:& \text{open}\
+\text{ordinary-source acquisition/use LB} &:& \text{open}\
+\text{FSC-EXTEND1} &:& \text{open if RMV/source branch is used}\
+\text{load-bearing ORDINARY/EXTERNAL theorem} &:& \text{open}\
+\text{nonalgebrizing/final model match} &:& \text{open}\
 \text{P}\ne\text{NP} &:& \text{open}.
 \end{array}}
 \]
 
-On the exact-3SAT side:
-\[
-\boxed{
-\begin{array}{rcl}
-\text{mediator elimination} &:& \text{proved}\\
-\text{resolved characteristic formula} &:& \text{proved}\\
-\text{rank-2/3/4 finite classification} &:& \text{proved}\\
-\text{active density} &:& \text{proved}\\
-\text{hypermatching density} &:& \text{proved}\\
-\text{link dichotomy} &:& \text{proved}\\
-\text{five center-pattern branch audit} &:& \text{proved}\\
-\text{resolved-incidence dichotomy} &:& \text{proved in stated model}\\
-\text{full pipeline integration} &:& \text{open}.
-\end{array}}
-\]
+On the exact-3SAT side, the proved local structural results remain valid at
+their stated scope; full preprocessing/residual pipeline integration remains
+open.  Those results must either feed one of the three open load-bearing
+routes above or be treated as structural diagnostics rather than a separation.
 
 \section{Research priorities after the current synthesis}
 
-\subsection{Priority 1: integrate HIGHINC-CLOSE1 globally}
+\subsection{Priority 1: consumer-validity for WRAPPED-CSE}
 
-The local concentration escape is closed in the declared resolved model.
-
-The next exact-algorithm task is to verify that every residual clause form
-created by the full preprocessing pipeline falls under the proved accounting,
-or else to add the missing case.
-
-Then compute one global deterministic balance.
-
-\subsection{Priority 2: sharpen the SAT-specific extraction statement}
-
-Use \(W_{\rm EXT}\) as the fixed consumer.
-
-Try to prove:
+Search for the weakest solver-independent SAT obligation \(U^\star\) for which
+the canonical answer-preserving restriction sequence forces
 \[
-\boxed{
-\text{fractional source localization}
-\vee
-\text{globally supported reusable evaluator}.
-}
+K_{U^\star}\ge n-O(\log n).
 \]
+Reject any candidate that merely counts fixed coordinates or imposes an
+all-restrictions service not forced by the computation.
 
-This would be a more precise CSE dichotomy than asking an arbitrary trace to
-look locally decomposable.
+\subsection{Priority 2: direct ordinary wrapped-process lower bound}
 
-\subsection{Priority 3: attack FSC inside the exact source map}
+Try the alternative architecture that does not identify \(K_U=x\).  Expand
+the calls made by \(W[A]\) and search for a source/lineage property that an
+ordinary implementation must satisfy but a semantic oracle need not.  This
+must not assume the cost of the SAT calls.
 
-Do not ask for a generic certificate for arbitrary long computation.
+\subsection{Priority 3: fractional CSE / CONTRACTION-FORCING1}
 
-Work inside the actual canonical proof
+Seek a source-matched self-reduction with fixed query scale
 \[
-\to
-\text{low-degree extension}
-\to
-\text{RMV output}
+N^{\theta+o(1)},\qquad \theta<1,
 \]
-map.
+no current-scale call, recursively closed combination, and fully charged
+local work/space.  This is the route on which RECURCLOSE1 can erase the
+unknown starting exponent.
 
-Determine the cheapest exact ordinary certificate for:
+\subsection{Priority 4: FSC/RMV exact source bridge}
+
+Attack FSC-EXTEND1 and the exact local-to-global accepted-source consistency
+problem.  Complete the normalization
 \[
-\text{selector }\sigma\text{ produces output }y.
+n_{\rm SAT}\to |y|\to(h,r,\Delta,p)\to p^r
 \]
+before comparing any source exponent with a SAT endpoint.
 
-Measure both witness length and deterministic verification circuit size.
+\subsection{Priority 5: lineage, nonrelativization, and algebrization}
 
-\subsection{Priority 4: Booleanization of source-specific recurrence}
+Use ORDINARY/EXTERNAL provenance only if an independently required predicate
+makes the distinction load-bearing.  A source-dependent or
+provenance-sensitive quantity alone is insufficient.  Test every surviving
+theorem under oracle and algebraic-oracle replacement.
 
-If an accepted proof polynomial has small orbit-spectral dimension, determine
-whether the exact binary conversion preserves any compact Boolean relation.
+\subsection{Priority 6: exact-3SAT integration}
 
-A negative theorem would retire the spectral separator route cleanly.
-
-A positive theorem could feed the compact-separator/reconstruction branch.
-
-\subsection{Priority 5: nonalgebrization audit}
-
-Any successful source theorem must be tested under algebraic-oracle extension.
-
-Do not infer nonalgebrization merely from nonrelativization.
-
+Complete the global deterministic balance of the clean-core/high-incidence
+pipeline.  Promote it to the main proof only if it supplies a genuine
+fractional shrinker, a consumer theorem, or an unconditional source-cost
+lower bound.
 
 \section{New-agent boundary results and their role in the proof}
 
@@ -2031,55 +2141,72 @@ nonrelativizing/nonalgebrizing audits.
 
 \subsection{Synchronized central dependency graph}
 
-After these updates the load-bearing open chain is still
+The October 6 WRAPPED-CSE audit refines the central chain:
 \[
 \boxed{
 \begin{array}{c}
-\text{arbitrary polynomial exact SAT decider }A\\
-\Downarrow\\
-\text{SAT-CORRECTNESS-FORCING / arbitrary-decider extraction}\\
-\Downarrow\\
-\text{CSE / SOURCE-TRANSPORT to a source-matched object}\\
-\Downarrow\\
-\text{near-total valid reduction or a model-matched reusable evaluator}\\
-\Downarrow\\
-\text{ordinary-source acquisition/use lower bound}\\
-\Downarrow\\
-\text{exact endpoint contradiction}\\
-\Downarrow\\
-\text{nonrelativizing and separately nonalgebrizing discharge}.
+P=NP
+\Rightarrow
+\exists A\in P\text{ exact for SAT}\
+\Downarrow\
+W[A]\text{ produces a canonical answer-preserving restriction path}
+\quad\text{(PROVED)}\
+\Downarrow\
+2^n\to2^{n-x},\ x=n-O(\log n)
+\quad\text{as raw assignment contraction (PROVED)}\
+\Downarrow\
+\begin{array}{c}
+\textbf{OPEN A: }K_U\ge n-O(\log n)
+\text{ for an independently SAT-forced consumer}\
+\text{or}\
+\textbf{OPEN B: }\text{a direct superpolynomial ordinary-source lower bound}
+\text{ for the wrapped adaptive process}\
+\text{or}\
+\textbf{OPEN C: }\text{a stronger fractional CSE1 object with }\theta<1
+\end{array}\
+\Downarrow\
+\text{exact source/model normalization and endpoint}\
+\Downarrow\
+\text{nonrelativizing + nonalgebrizing + natural-proofs discharge}\
+\Downarrow\
+P\ne NP.
 \end{array}}
 \]
 
-The currently necessary unsolved components are:
+The currently necessary unresolved requirements are therefore:
 \begin{itemize}[leftmargin=1.4em]
-\item SAT-CORRECTNESS-FORCING / arbitrary-algorithm CSE;
-\item SOURCE-TRANSPORT coverage of arbitrary equivalent implementations;
-\item a superpolynomial ordinary-source acquisition/use theorem;
-\item closure of the compact universal-evaluator escape without restating SAT hardness;
-\item FSC-EXTEND1 at the exact required source/circuit interface;
-\item a theorem making ORDINARY rather than EXTERNAL lineage load-bearing for
-an independently defined SAT obligation;
-\item the full \(n_{\rm SAT}\)-normalized RMV/source length map;
-\item exact model matching to any Williams/RMV/circuit endpoint;
-\item the full nonrelativizing transfer and a separate nonalgebrization audit;
-\item natural-proofs-style audit for any final constructive circuit property;
-\item full integration of the exact-3SAT preprocessing/residual pipeline.
+\item one of OPEN A, OPEN B, or another theorem that supplies the same
+load-bearing reduction/cost implication;
+\item if using RECURCLOSE1, fixed fractional child scale
+\(N^{\theta+o(1)}\), \(\theta<1\), with no current-scale SAT call;
+\item a superpolynomial ordinary-source acquisition/use theorem in the exact
+model of the chosen object;
+\item FSC-EXTEND1 or another exact source-transport theorem if the RMV/ASCS
+branch is used;
+\item a theorem making ORDINARY rather than EXTERNAL lineage load-bearing if
+lineage is the proposed nonrelativizing hinge;
+\item the full \(n_{\rm SAT}\)-normalized RMV/source length map and exact
+endpoint model match if that branch is used;
+\item nonrelativization, separate nonalgebrization, and natural-proofs audits
+for the actual final theorem;
+\item full exact-3SAT pipeline integration if that structural route is used.
 \end{itemize}
 
-None of STATIC-DS-TYPING1, ANSWER-VECTOR-CAP1, execution provenance,
-PAIR2COVER1/FULLPAIR6, or ORBITBATCH1 supplies one of these missing lower
-bounds by itself.
+Path exposure itself is no longer on this list: WRAPPED-SELFRED1 supplies it.
+Nor may raw \(2^n/2^x\) assignment contraction be silently substituted for
+SRAS \(K_U\).
 
 \begin{statusbox}
-\textbf{Synchronized status.}
-The October 6 results substantially sharpen the boundary of the program but
-do not prove the central extraction or acquisition theorem.
+\textbf{Synchronized status after WRAPPED-CSE.}
+The program now has a canonical representation-independent path and exact raw
+near-total assignment contraction.  It still lacks the theorem converting
+that path into consumer-valid continuation contraction or an unconditional
+ordinary-source cost lower bound.  The strong fractional CSE theorem also
+remains open.
 \[
 \boxed{\text{$P$ versus $NP$ remains OPEN.}}
 \]
 \end{statusbox}
-
 
 \section{Source basis for this exposition}
 
@@ -2106,36 +2233,48 @@ P-vs-NP lower bound.
 
 \section{Final perspective}
 
-The program has made progress mostly by removing false shortcuts.
-
-It now has:
-\begin{itemize}[leftmargin=1.4em]
-\item a disciplined semantic reduction measure;
-\item a route-complete accounting framework;
-\item a fixed solver-independent continuation consumer;
-\item exact recursive-closure formulas;
-\item strong replay, provenance, width, and representation no-go controls;
-\item a concrete ordinary-source predicate that genuinely can fail
-relativization;
-\item an increasingly complete exact-3SAT structural laboratory;
-\item a closed local high-incidence case in the resolved rank-\(\le4\)
-type-1-chain model.
-\end{itemize}
-
-What it still does not have is the theorem that converts arbitrary polynomial
-SAT computation into an ordinary-source object whose required acquisition or
-maintenance cost is superpolynomial.
-
-That is the remaining central arrow:
+The program now has one more exact piece than earlier drafts reflected:
 \[
 \boxed{
-\text{arbitrary polynomial SAT computation}
-\Longrightarrow
-\text{forced source-matched contraction or superpolynomial acquisition}.
+\text{arbitrary exact SAT decider}
+\Rightarrow
+\text{canonical answer-preserving restriction path}
 }
 \]
+by WRAPPED-SELFRED1.  It also has the exact raw assignment-domain relation
+\[
+2^n\to2^{n-x},
+\qquad
+x=n-O(\log n)
+\]
+for polynomial raw residual.
 
-Until that arrow is proved, together with the necessary barrier discharge:
+This does not yet give the decisive SRAS statement
+\[
+K_U\ge n-O(\log n),
+\]
+because continuation classes depend on an independently justified consumer.
+Nor does standard self-reduction provide the fixed fractional query exponent
+\(\theta<1\) required to erase the unknown runtime exponent.  Its calls remain
+current-scale, and a SAT oracle shadows the wrapper.
+
+Accordingly the central missing theorem is now narrower:
+\[
+\boxed{
+\text{canonical near-total answer-preserving restriction}
+\Longrightarrow
+\text{consumer-valid near-total continuation reduction}
+\quad\text{or}\quad
+\text{superpolynomial ordinary-source cost}.
+}
+\]
+A strong fractional CSE theorem is an alternative way to reach the same
+downstream contradiction machinery.
+
+The source/RMV/FSC, provenance/lineage, exact-3SAT, and endpoint branches
+remain supporting routes whose role is to prove one of those load-bearing
+arrows without violating relativization, algebrization, or model matching.
+
 \[
 \boxed{\text{$P$ versus $NP$ remains OPEN.}}
 \]
@@ -2196,58 +2335,25 @@ other reason it cannot carry the intended unrestricted conclusion.
 \textbf{Result} & \textbf{What it gives} & \textbf{What it does not give}\\
 \midrule
 \endhead
-BRTHRESH1 & Required reduction scale & Arbitrary-algorithm extraction\\
+BRTHRESH1 & Polynomial raw residual requires near-total raw contraction & A consumer-valid \(K_U\) theorem\\
+WRAPPED-SELFRED1 & Canonical answer-preserving restriction path for every exact \(A\) & Fractional smaller queries or a lower bound\\
+WRAPPED-ASSIGNMENT-CONTRACTION1 & Explicit \(2^n\to2^{n-x}\) raw assignment contraction & \(K_U=x\)\\
+KAPPA-MISMATCH-GUARD1 & Separates coordinate fixing from continuation reduction & The missing consumer theorem\\
+WRAPPED-CURRENT-SCALE1 & Shows standard wrapper retains unknown exponent \(K\) & A fixed \(\theta<1\) shrinker\\
+WRAPPED-ORACLE-SHADOW1 & Shows wrapper is reproduced by SAT oracle & A nonrelativizing hinge\\
 CONTSEP1 & Safe-summary range lower bound & Runtime lower bound\\
 SRAS-ROUTECLOSE1 & Exhaustive location of future distinctions & Cost of ordinary routes\\
-EXTCONSUMER1 & Fixed SAT continuation semantics & Fractional source shrinkage\\
-TRACECLOSE1 & Trace closure no-go & Structural CSE\\
-FRESH-EVAL1 & Freshness no-go & Evaluator hardness\\
-WIDTHCLOSE1 & Fixed-width closure is cheap & Higher-level acquisition LB\\
-RECURCLOSE1 & Exponent after valid contraction & Existence of contraction\\
-ASCS & Concrete oracle-break source predicate & Small exact verification/FSC\\
-CLAUSECHAR1 & Exact resolved relation characteristic & Global solver integration\\
-LINK-DICHOTOMY1 & High incidence gives disjoint petals or deeper center & Branch gain by itself\\
-LOCALPATTERN-BRANCH1 & Branch gain for all five local sign types & Full preprocessing coverage\\
-RESOLVED-INCIDENCE-DICHOTOMY1 & Bounded/high incidence both handled locally & Unrestricted SAT lower bound\\
-RESTRICTED-ACCESS-ELIMINATION1 & Restricted extensional compiler simulation & Arbitrary intensional extraction\\
-GLOBAL-INTENSIONAL-GATE1 & Candidate architecture constraint & A proved arbitrary-algorithm compiler theorem\\
-SOURCE-TRANSPORT1 & Candidate wrapper-certificate transport interface & Coverage of arbitrary implementations\\
-LINEAR-SEPARATOR-EQUIV1 & Exact affine-separator existence criterion & Final RMV affine-rank deficiency\\
+EXTCONSUMER1 & Solver-independent all-restrictions semantics/evaluator interface & A single-run obligation to answer all restrictions\\
+TRACECLOSE1 & Trace closure no-go & Structural or source-cost lower bound\\
+RECURCLOSE1 & Exponent after valid fixed fractional contraction & Existence of that contraction\\
+STATIC-DS-TYPING1 / ANSWER-VECTOR-CAP1 & Exact static semantic representation boundary & Acquisition-time lower bound\\
+EXACTNESS-GATE1 / LOCAL-GLOBAL-GATE1 & Exact FSC verification guards & FSC-EXTEND1\\
+ORBITBATCH1 & Exact query-address deduplication and normalization guard & SAT-normalized contraction\\
+ASCS & Concrete ordinary-source predicate with oracle-break behavior & Load-bearing SAT acquisition lower bound\\
+EXECUTION-HASH-CLOSE1 / SRAS-PROV-ROUTING1 & Correct provenance routing/replay classification & Hardness or nonrelativization by itself\\
+LINEAGE-BIND1 & Candidate anti-laundering interface & Proof that ORDINARY lineage is SAT-forced\\
+PAIR-REDUCTION-FORCING1 & Candidate semantic pruning bridge & A proved membership-preserving pair reduction\\
+Exact-3SAT structural lemmas & Concrete cheap structure and local branch gains & Unrestricted arbitrary-algorithm lower bound\\
 \bottomrule
 \end{longtable}
 
-\begin{thebibliography}{9}
-
-\bibitem{Liu2018}
-S. Cliff Liu,
-\emph{Chain, Generalization of Covering Code, and Deterministic Algorithm for $k$-SAT},
-ICALP 2018 / arXiv:1804.07901.
-
-\bibitem{BGS1975}
-T. Baker, J. Gill, R. Solovay,
-\emph{Relativizations of the $P=?NP$ Question},
-SIAM Journal on Computing 4(4), 1975.
-
-\bibitem{AW2009}
-S. Aaronson, A. Wigderson,
-\emph{Algebrization: A New Barrier in Complexity Theory},
-ACM Transactions on Computation Theory, 2009.
-
-\bibitem{RR1997}
-A. Razborov, S. Rudich,
-\emph{Natural Proofs},
-Journal of Computer and System Sciences 55(1), 1997.
-
-\bibitem{BW2001}
-E. Ben-Sasson, A. Wigderson,
-\emph{Short Proofs are Narrow---Resolution Made Simple},
-Journal of the ACM 48(2), 2001.
-
-\bibitem{IPZ2001}
-R. Impagliazzo, R. Paturi, F. Zane,
-\emph{Which Problems Have Strongly Exponential Complexity?},
-Journal of Computer and System Sciences 63(4), 2001.
-
-\end{thebibliography}
-
-\end{document}
