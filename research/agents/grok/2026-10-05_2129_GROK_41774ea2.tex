@@ -1,0 +1,53 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H2129: second-step split for the tight cubes that time out; controls agree on 111 parent cubes; \texttt{a40ff54e580f5d0a} $L=9$ stands at 9 UNSAT, 5 timed out of the first 14 cubes}\\[4pt]
+2026-10-05 21:29 America/Los\_Angeles \quad branch \texttt{main}, tip \texttt{27f896e6} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H2118 (\texttt{27f896e6})}
+Checked 21:31\,PT. The tip of \texttt{main} is still the H2118 commit. Nothing new landed under \texttt{research/agents/grok/}, \texttt{research/main/}, or anywhere else.
+
+\section*{1. Literature}
+None needed. The step below is a case split of a finite SAT encoding, checked from its own clauses.
+
+\section*{2. The claim}
+Model, tight encoder and first-step cubes as in H2013 to H2118: two one-bit registers $R_0,R_1$ starting at $0$, $n$ read-only inputs, step $R_w:=g(a,b)$ with $g$ indexed by $p+2q$, operands $s_a<s_b$ (sources $0..n-1$ are inputs, $n+i$ is $R_i$), final step writes $R_0$ and $R_0=f$ at the end. By CUBE-COVER and W-SWAP (both PROVED/EXACT) only the $5\binom n2$ cubes with step 1 $=(0,s_a,s_b,g)$ matter.
+
+\textbf{Lemma SPLIT2 (PROVED/EXACT, from the clauses of \texttt{regsat\_fix.py}).} Let $L\ge 3$ and fix a parent cube $(w_1,s_a,s_b,g_1)$. Every program the tight encoder admits in that cube has step 2 in the list
+\[
+w_2\in\{0,1\},\quad s_a'<s_b' \text{ from } \{0,\dots,n-1\}\cup\{n+w_1\},\quad g_2\in\{2,4,6,8,14\}.
+\]
+So the parent cube is UNSAT if and only if all $2\cdot\binom{n+1}{2}\cdot 5$ subcubes are UNSAT ($210$ at $n=6$, $150$ at $n=5$, $100$ at $n=4$).
+
+\emph{Proof.} The operand order $s_a'<s_b'$ is clause (iv). After step 1 only $R_{w_1}$ has been written, and clause (ii) forbids reading an unwritten register, so $n+1-w_1$ is excluded. Since $L\ge3$, step 2 is not the last step, so $g_2$ is normal ($g_2(0,0)=0$, clause (iii)) and non-degenerate (clause (i)); the normal non-degenerate ops are exactly $2,4,6,8,14$, because $10$ and $12$ are projections and $0$ is constant. Nothing else about step 2 is constrained a priori. \qed
+
+\section*{3. Smallest honest test (\texttt{/workspace/scratch\_h2129\_1005})}
+\texttt{regsat\_cube2.py} fixes steps 1 and 2 through the \texttt{fix} option of \texttt{regsat\_fix.py}; a SAT answer is re-simulated. \texttt{ctl\_split.py} solves a parent cube directly and all its subcubes, and checks that the parent is SAT exactly when some subcube is. All numbers were computed this pass.
+\begin{itemize}
+\item \texttt{90ca96cc}, $n=5$, tight $L=7$: parent cube 2 (SAT) has 11/150 SAT subcubes; parents 0 and 10 (UNSAT) have 0/150. Agreement 3/3.
+\item Random $n=4$ functions, 6 functions $\times$ 6 cubes per length (seeds 202610052129, 202610052130, 202610052131): $L=4$ gives 0/36 SAT parents, $L=5$ gives 6/36, $L=6$ gives 26/36. Agreement 108/108. Several SAT parents at $L=5$ have exactly one SAT subcube (for example \texttt{44e0} cube 1, and \texttt{ad57} cube 12), so the check is tight there.
+\item Mutation control (\texttt{ctl\_mut.py}): dropping the subcubes with $w_2=1$ leaves no SAT subcube for \texttt{44e0} cube 1 and \texttt{ad57} cube 12 at $L=5$, so agreement would fail; the third parent tested (\texttt{ebf0} cube 1) keeps one. The check can fail.
+\end{itemize}
+
+\textbf{\texttt{a40ff54e580f5d0a}, tight $L=9$, read at 21:35\,PT.} The H2100 runner (900\,s per cube) has cubes 3, 5, 6, 7, 8, 10, 11, 12, 13 UNSAT and cubes 0, 1, 2, 4, 9 timed out; cubes 14 to 18 are running. A queue (\texttt{split\_queue.sh}) started at 21:34\,PT splits cube 0 on one spare core now, and after the H2100 runner exits it splits every other timed-out cube below 75 on five workers, with a 600\,s cap per subcube. A subcube timeout is logged as a timeout and never counted as UNSAT. First reading for cube 0: 28 of 210 subcubes done, all UNSAT. 25 of them were refused at once (step 2 overwrites $R_0$ without reading it, which clause (v) forbids), and the 3 that read $R_0$ took 18.9 to 20.1\,s each. That gives a rough estimate of under an hour for cube 0 on one core, against more than 900\,s without a verdict for the whole cube. The H2013 whole-instance run (cap 3\,h, ends by 23:41\,PT) is still running and unread.
+
+Caveat: the H2118 watcher kills the H2100 runner when it reaches cube 75, so cubes 70 to 74 may finish after the split queue has read the timeout list. Any timeout written after the \texttt{PHASE-B} line of \texttt{results/a40\_L9\_split.out} has to be split by a later pass.
+
+\section*{4. What this changes}
+A timed-out cube now has a sound finer cover with a working control, so the verdict on $L(\texttt{a40ff54e580f5d0a},2)\ge 10$ no longer depends on a longer per-cube cap. Nothing is decided yet: the bounds stay $9\le L(f,2)\le 11$ (COMPUTATIONAL) and the largest confirmed price stays one. Before any price of two is reported, the UNSAT cubes and subcubes still need a second-solver cross-check.
+
+\section*{Effect on the standing candidate}
+No claim is falsified and no charged resource improves. The time-state-representation surface stays CANDIDATE. The SAT-to-charged-model compiler is OPEN and the product-span obstruction is OPEN. SPLIT2 is a case split of one finite encoder; it says nothing about lower bounds for any family.
+
+\section*{Next smallest step}
+Read \texttt{results/a40\_L9\_split.out} in \texttt{/workspace/scratch\_h2129\_1005} and \texttt{results/a40\_L9\_cubes.out} in \texttt{/workspace/scratch\_h2100\_1005}. Split any late timeouts. Pick a second solver (for example Glucose through PySAT) and re-run a sample of the UNSAT cubes with it.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass proves SPLIT2 (PROVED/EXACT: a tight first-step cube is UNSAT exactly when all its second-step subcubes are UNSAT), checks it on 111 parent cubes with a mutation control that fails as it should (COMPUTATIONAL), and starts splitting the five \texttt{a40ff54e580f5d0a} $L=9$ cubes that timed out; of the first 14 cubes 9 are UNSAT and 5 timed out, so $9\le L(f,2)\le 11$ is unchanged. No claim is falsified, the largest confirmed price stays one, no charged resource improves, and this is not a proof of anything about P versus NP.
+\end{document}
