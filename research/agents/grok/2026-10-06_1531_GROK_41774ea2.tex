@@ -1,0 +1,38 @@
+\documentclass[11pt]{article}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{url}
+\begin{document}
+\sloppy
+\section*{GROK H1531 (2026-10-06 15:31 PT): second-step split probe for tight $L=8$, $r=3$}
+\textbf{P versus NP: OPEN.}
+
+\section*{0. What landed since H1511}
+\texttt{main} tip is \texttt{486b023d}. Two peer commits landed after H1511 (\texttt{5bd2f27c}): \texttt{c50852d0} adds \path{results/raw/monotone_slice/TWOSATDEC29_q34.txt} and \texttt{486b023d} adds \path{research/explorations/monotone-slice/2026-10-06_1520_TWOSATDEC29.md}. Neither is under \path{research/agents/grok/} or \path{research/main/}; their content is unread here and nothing is cited from them.
+
+\section*{1. Literature}
+None. The claim under test is still this loop's own question from H1458: is $L(f,3)<9$ for $f=\texttt{a40ff54e580f5d0a}$?
+
+\section*{2. H1511 runs so far (COMPUTATIONAL, no answer)}
+Read at 15:37\,PT in \path{/workspace/scratch_h1511_1006}. The uncubed tight $L=8$, $r=3$ solve and the $L=9$, $r=3$ speed control both hit their 600\,s cap (\texttt{exit=124} at 15:21:56). In the first-step cube sweep, cubes 0 to 24 (25 of 150) each timed out at 300\,s; 0 SAT, 0 UNSAT. At this rate the sweep would take about 2.5 hours and may answer nothing.
+
+\section*{3. Second-step split for $r=3$ (PROVED/EXACT, by enumeration of the constraints)}
+For a tight first-step cube $p=(w_1,a_1,b_1,g_1)$ at $L=8$, every program admitted by the tight encoder has step 2 equal to some $(w_2,a,b,g_2)$ with $w_2\in\{0,1,2\}$, $a<b$ drawn from the six inputs and $R_{w_1}$ (the other two registers are unwritten after step 1, excluded by constraint (ii)), and $g_2\in\{2,4,6,8,14\}$ (normal by (iii) and non-degenerate by (i), since step 2 is not the last step). That is $3\cdot\binom{7}{2}\cdot 5=315$ subcubes, recounted by \path{split2_r3.py} (sha256 \texttt{285c61c4}, in \path{/workspace/scratch_h1531_1006}). So $p$ is UNSAT iff all 315 subcubes are UNSAT. This is the $r=3$ form of the H2129 split lemma; it says nothing about soundness of the tight constraints themselves.
+
+\section*{4. Speed probe on parent cube 0 (COMPUTATIONAL, partial)}
+Parent cube 0 is $p=(0,0,1,2)$. Started 15:32:39\,PT with 2 workers and a 60\,s cap per subcube. By 15:37:21\,PT: 64 subcubes UNSAT, 0 SAT, 5 timed out (subcubes 28, 29, 50, 51, 52).
+
+Sixty of the UNSAT answers took 0.0\,s, and all sixty are subcubes with $w_2=0$ and both operands inputs: step 2 overwrites $R_0$ before the step-1 value is read, which constraint (v) forbids, so these are expected and serve as a built-in sanity check (75 such subcubes exist for this parent). The other four UNSAT answers (subcubes 25, 26, 27 and 53, all reading $R_0$) took 39.3 to 41.7\,s. The five timeouts also read $R_0$. So far the hard subcubes are among the 90 that read $R_{w_1}$, and some need more than 60\,s. The remaining 150 subcubes (step 2 writes $R_1$ or $R_2$ from two inputs) were not reached by 15:37\,PT.
+
+No subcube is SAT, so no eight-step three-register program has been found. No parent cube is closed yet, so nothing is excluded either.
+
+\section*{5. Standing status}
+No new finite witness improves a charged resource in this pass, and no claim is falsified. Current bounds for this $f$, carried from earlier notes and not re-derived here: $L(f,2)\le 10$ (COMPUTATIONAL), $L(f,2)=10$ CONDITIONAL on the tightness lemma (CANDIDATE); $L(f,3)\le 9$ (COMPUTATIONAL, H1444) and $L(f,4)\le 8$ (COMPUTATIONAL, H1444). Whether $L(f,3)=8$ stays OPEN. The time-state-representation surface stays CANDIDATE. The SAT-to-charged-model compiler and the product-span obstruction are both OPEN. The D(4,8) semantic-cut bound of 48 stays FALSIFIED/RETIRED.
+
+\section*{Next smallest step}
+Let \path{probe_c0.out} finish all 315 subcubes of parent cube 0, then re-run its timeouts at a longer cap. If parent cube 0 closes UNSAT faster than 300\,s of total CPU per hard subcube, switch the remaining first-step cubes to the second-step split. Re-simulate any SAT line with independent code before citing it.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass records that the tight $L=8$, $r=3$ runs for \texttt{a40ff54e580f5d0a} have no answer yet (25 of 150 first-step cubes timed out, 0 SAT) and that a second-step split of parent cube 0 has 64 of 315 subcubes UNSAT and 0 SAT so far; no charged resource improves, no claim is falsified, and this is not a proof of anything about P versus NP.
+\end{document}
