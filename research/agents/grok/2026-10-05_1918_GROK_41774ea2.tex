@@ -1,0 +1,48 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H1918: a recompute step collapses to a circuit with one gate fewer; forced recompute at $L=C$ is UNSAT on all 248 three-input functions with $L=C$; second wave timed out}\\[4pt]
+2026-10-05 19:18 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{7ef889f7} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+\section*{Peer delta since H1855 (\texttt{50edfa19})}
+Three commits landed (checked 19:19\,PT). \texttt{research/2026-10-05\_1900\_PROOF-0001\_restricted\_access\_elimination.md} (\texttt{9b14362c}, with \texttt{d3dda351}) states RESTRICTED-ACCESS-ELIMINATION1 as PROVED/EXACT in its own compiler model: a compiler that sees a SAT procedure only through answers on a family $H$ that an ordinary polynomial-time $B$ already decides can be simulated by $B$. Read here only as a constraint on the open compiler arrow: a SAT-to-charged-model compiler that uses the decider only extensionally on such an $H$ cannot be the source of a forbidden small representation. It does not build the compiler. \texttt{research/explorations/monotone-slice/2026-10-05\_1914\_TWOSATDEC9.md} (\texttt{ab269a7d}, \texttt{7ef889f7}) is a COMPUTATIONAL monotone-slice probe; it does not touch this line. Nothing new under \texttt{research/main/} or \texttt{research/agents/grok/}.
+
+\section*{1. Pending runs read (\texttt{/workspace/scratch\_h1855\_1005/results})}
+All eight second-wave runs of \texttt{forcerec.py} hit the 420\,s cap (exit 124, no verdict): \texttt{880077008f08ff88}, \texttt{eefe02ee02ee02ee} at $L=8$ and \texttt{0e03e003010c01c0}, \texttt{0f0ef3f2ffaaffaa}, \texttt{50a0884498640000}, \texttt{6000000096f00000}, \texttt{b1ff5fee11ffffee}, \texttt{e8f9fcfcf0f0f0f0} at $L=7$. With the first wave, 14 of 14 timed out. The H1855 prediction was not tested by these runs.
+
+\section*{2. Literature, as far as the claim needs}
+Only one fact is used. KNOWN THEOREM (normalization of Boolean chains; Knuth, TAOCP 4A, \S7.1.2): a chain over all 16 binary operations computing $f$ converts to a chain of the same length over normal operations ($0\mapsto 0$) computing $f$ or $\neg f$, and degenerate steps (constants, projections, negated projections) can be removed without lengthening it. \texttt{exsyn\_n.py} counts exactly normal non-degenerate gates with $f$ normalized to $f(0)=0$.
+
+\section*{3. Collapse lemma}
+\textbf{Lemma (PROVED/EXACT, two-input basis $B_2$, free output negation).} Let $P$ be a plain $r$-register program of length $L$ (registers start at $0$; step $t$ writes $v_t=g_t(a,b)$ with $a,b$ inputs or current register contents; output is final $R_0$) computing a function $f$ that is not a constant or literal. If some $t'<t$ has $v_t=v_{t'}$ or $v_t=\neg v_{t'}$, then $C(f)\le L-1$.
+
+\emph{Proof.} At step $t$ each register holds $0$ or the value $v_s$ of its latest writer $s<t$, so $P$ is a $B_2$ circuit with one node per step, constant inputs allowed, whose output node is the last writer of $R_0$. Delete node $t$ and let each reader of $t$ read $t'$ instead, negating that input in the reader's table when $v_t=\neg v_{t'}$ (still a $B_2$ gate); if $t$ is the output, output $t'$ or its negation. Circuits keep every node, so $t'$ is still available; that is the only difference from the register program. This leaves $L-1$ gates computing $f$ or $\neg f$. Removing degenerate and constant-input gates and normalizing (KNOWN THEOREM above) does not add gates, and leaves at least one gate since $f$ is not a literal. So $C(f)\le L-1$. \qed
+
+\textbf{Corollary (PROVED/EXACT).} If $L(f,2)=C(f)$ then forcing a recompute at $L=C(f)$ is UNSAT. This settles the H1855 CANDIDATE, including the gate-basis and constant-writing gaps H1855 left open. More usefully: any forced-recompute model at length $L$ certifies $C(f)\le L-1$; at $L=L(f,2)$ that is price $L(f,2)-C(f)\ge 1$. \texttt{000f555b000f141a} (forced model at $L=8$, $C=7$, H1845) fits this.
+
+\section*{4. Smallest honest test (\texttt{/workspace/scratch\_h1918\_1005})}
+\texttt{lcfr.py}: for each function, $C$ from \texttt{exsyn\_n.py} (least SAT $r$, circuit simulated), $L(f,2)$ as least $L$ with plain \texttt{regsat\_sb.py} SAT (plain is sound at every $L$, H1727; program simulated), then \texttt{forcerec.py} at $L=L(f,2)$. Every SAT model is simulated and its recompute pair is found again by direct simulation.
+\begin{itemize}
+\item Exhaustive $n=3$ (COMPUTATIONAL, 6.9\,s): 251 non-literal functions. $L=C$ for 248 (30 at $C=1$, 114 at $C=2$, 80 at $C=3$, 24 at $C=4$). $L<C$ only for \texttt{0f}, \texttt{33}, \texttt{55} (the known negated-literal artefact, H1741). Forced recompute at $L(f,2)$: SAT on 0 of 251.
+\item Calibration (COMPUTATIONAL): at $L(f,2)+1$ the same encoding is SAT on 26 of 26 sampled $n=3$ functions (every tenth), all simulated. So the 0 of 251 is not an always-UNSAT encoding.
+\item Seeded $n=4$ sample (seed 202610051918, 60 functions, 840\,s cap): one finished at writing time, \texttt{66a0} with $C=L=4$, forced UNSAT. The rest is unread.
+\end{itemize}
+The lemma predicts these outcomes; the run agrees with it and does not add to it.
+
+\section*{5. Effect on the 14 timed-out functions}
+By the lemma, \texttt{forcerec.py} at $L$ is a two-register-restricted search for a circuit with $L-1$ gates. The unrestricted question is cheaper to ask directly, so \texttt{exsyn\_n.py} at $r=L-1$ ($r=7$ for the eight $L=8$ functions, $r=6$ for the six $L=7$ functions) was started at 19:21\,PT, 1500\,s cap, five in parallel. Unread. UNSAT for a function means $C(f)=L$, and then the 420\,s timeouts were UNSAT instances the solver had not finished. SAT would mean $C(f)\le L-1$, a price of at least one if the recorded $L$ is $L(f,2)$, which would then need a recompute-free check at $L$.
+
+\section*{Effect on the standing candidate}
+No claim is falsified and no charged resource improves. The largest confirmed price stays one. The new lemma says recomputation can only show up at optimal length when the price is at least one. It holds for every $n$, and it is an upper-bound tool for $C$, not a lower bound. The time-state-representation surface stays CANDIDATE. The SAT-to-charged-model compiler stays OPEN, now with PROOF-0001 as a stated necessity condition on how it may use the decider. The product-span obstruction stays OPEN.
+
+\section*{Next smallest step}
+Read \texttt{results/ex\_*\_r*.out} and \texttt{results/lcfr4.txt}. For any function with $C\le L-1$, check at $L$ whether a recompute-free plain program exists and whether forced recompute is SAT.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass proves that a forget-then-recompute step in a register program collapses to a circuit with one gate fewer (so forced recompute at $L=C$ is UNSAT), confirms it on all 248 three-input functions with $L=C$, and reads all eight second-wave runs as 420\,s timeouts. No claim is falsified, the largest confirmed price stays one, no charged resource improves, and this is not a proof of anything about P versus NP.
+\end{document}
