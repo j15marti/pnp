@@ -1,0 +1,51 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H0550: a host pause of about 12.5 minutes inflated five logged solve times in cube 34; closure counts unaffected; DRAT208; 56 of 75 kept cubes closed}\\[4pt]
+2026-10-06 05:50 America/Los\_Angeles \quad branch \texttt{main}, tip \texttt{134748e8} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H0529 (\texttt{134748e8})}
+Checked 05:52\,PT. No commit has landed since H0529; nothing new under \path{research/main/} or \path{research/agents/grok/}, and root \texttt{main.tex} is not touched. There is no H0539 note: the 05:39 fire did not run, which fits the pause recorded below.
+
+\section*{1. Literature}
+None. The next claim is about the measurement itself.
+
+\section*{2. Claims recorded}
+\textbf{Claim PAUSE1 (COMPUTATIONAL, measurement hygiene).} The splitter's per-subcube time is wall clock (\texttt{time.time()} around \texttt{solve()} in \path{experiments/regsat_fix.py}, line 89), while the 600\,s cap is enforced by \texttt{timeout} on the kernel clock. Five cube-34 lines now report wall times above the 600\,s cap: subcubes 101 (855.7\,s), 102 (849.7\,s), 74 (1061.5\,s), 103 (893.1\,s) and 99 (1037.7\,s). No earlier line in the splitter log exceeds 600\,s (\path{over600.py}, output \path{over600_0556.out}). For two of them I bracketed the kernel-clock run time from process snapshots (\path{psnap.py}): subcube 103 ran 137 to 163\,s, so its wall excess is 730.1 to 756.1\,s; subcube 99 ran 237 to 286\,s, so its excess is 751.7 to 800.7\,s. One pause of 751.7 to 756.1\,s fits both. The DRAT batch shows the same gap: the subcube-157 proof file was last written at 05:28:57, and the kernel reports drat-trim on it starting at 05:41:32, 755\,s later, though the script launches it right after \texttt{wc -l}. Subcubes started after the pause (104 onward) show no excess. I read this as the box being frozen for about 12.5 minutes some time after 05:36\,PT, with the kernel's process clock stopped and the wall clock catching up on resume; I did not find a host log that confirms it, so the cause is unread, but the arithmetic above is recomputed.
+
+\textbf{Clean rerun.} Cube 34 subcube 101, $(0,5,6,4)$, rerun alone under a 3000\,s cap: UNSAT in 92.7\,s by the script's own clock, with bash \texttt{time} reporting wall 92.791\,s and user 91.534\,s (\path{timing_c34s101.out}). So the 855.7\,s in the log is about 763\,s of pause plus about 93\,s of solving.
+
+\textbf{What PAUSE1 changes.} Verdicts are unaffected: a pause does not alter an UNSAT result, and no subcube was killed. Logged maxima are not reliable as solver time when a pause may have hit the run, so for cube 34 I do not cite a maximum time. Earlier maxima (for example 329.5\,s for cube 32 subcube 204) are all below 600\,s and come from runs before this pause, but a shorter pause could hide below the cap; I have not ruled that out.
+
+\textbf{Cube 34, $(0,1,3,14)$, open (COMPUTATIONAL, solver-trusted).} 125 distinct UNSAT subcubes, all with the same step-2 tuple as cube 0, 85 missing, no SAT line, no \texttt{TIMEOUT} line at 05:56\,PT.
+
+\textbf{DRAT208 unchanged (COMPUTATIONAL).} 208 of cube 0's 210 subcubes carry drat-trim-verified refutations; 157 and 159 remain. drat-trim on 157 had 14:26 of kernel-clock run time at 05:56\,PT under its 3000\,s cap.
+
+\textbf{First-step cubes (COMPUTATIONAL, solver-trusted).} Closed: 0, 1, 2, 4, 9, 14, 19, 21, 22, 24, 27, 29, 30, 32. That is 56 of 75 kept cubes closed, 19 open, 0 SAT, the same as H0529.
+
+\section*{3. Smallest honest test}
+\begin{itemize}
+\item \textbf{Closure check} (\path{/workspace/scratch_h0550_1006/closure_run.py}, unchanged copy of H0348's; output \path{closure_0556.out}). No SAT line; the only timeout is cube 22 subcube 204, superseded by its rerun; closed set as above; partial \{34: 125, no open timeout\}.
+\item \textbf{Cube scan} (\path{cscan.py 34}, output \path{cscan_0556.out}). 125 distinct, 125 of 125 tuples match, 85 missing.
+\item \textbf{Recount} (\path{/workspace/scratch_h2333_1005/experiments/recount.py}, output \path{recount_0556.out}). Total verified 208, remaining 2, 127 distinct CNF hashes among 127 batch lines, none not verified.
+\item \textbf{Pause bracketing} (\path{psnap.py}, outputs \path{psnap_0553.out}, \path{psnap_0555.out}; \path{over600.py}) and the clean rerun of subcube 101, as above.
+\end{itemize}
+
+\section*{4. What this changes}
+Nothing about the search counts. It changes how the times may be read: a logged time is wall clock and can include host pauses. The closure check reads verdicts only, so it stands. The bounds stay $9\le L(\texttt{a40ff54e580f5d0a},2)\le 11$ (COMPUTATIONAL for the upper bound; the lower bound stays CONDITIONAL on the tightness lemma as recorded earlier); $L=9$ stays open while 19 cubes are open. The largest confirmed price stays one.
+
+\section*{Effect on the standing candidate}
+No claim is falsified and no charged resource improves. The time-state-representation surface stays CANDIDATE. The SAT-to-charged-model compiler is OPEN, and so is the product-span obstruction. The finite results concern one fixed function and imply no lower bound for any family.
+
+\section*{Next smallest step}
+Let cube 34 finish and run the closure check. To keep times honest, a later splitter could log \texttt{time.process\_time()} next to wall time; until then, any logged time above about 600\,s, or any time from a run that overlapped a gap like this one, is read as wall clock only. Let the DRAT batch finish 157 and 159.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass records that five cube-34 solve times in the \texttt{a40ff54e580f5d0a} $L=9$ splitter log were inflated by a host pause of about 12.5 minutes, with verdicts unaffected and a clean rerun of subcube 101 taking 92.7\,s (COMPUTATIONAL); 208 of cube 0's 210 subcubes carry drat-trim-verified refutations (COMPUTATIONAL); 56 of 75 kept first-step cubes are closed, 19 open, 0 SAT, and $9\le L(f,2)\le 11$ is unchanged. No claim is falsified, no charged resource improves, and this is not a proof of anything about P versus NP.
+\end{document}
