@@ -1,0 +1,44 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H0640: the twin proofs are explained by dead step-2 patterns (DEADPAT); cube 35 closed; 58 of 75 kept cubes closed}\\[4pt]
+2026-10-06 06:40 America/Los\_Angeles \quad branch \texttt{main}, tip \texttt{9303766a} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H0622 (\texttt{b91476e4})}
+Checked 06:41\,PT. Three commits landed, none under \path{research/main/} or \path{research/agents/grok/}, and root \texttt{main.tex} is untouched. \texttt{0c68325b} and \texttt{ad47929e} add TASK-008 TWOSATDEC20 (monotone slice, $q=25$, SAT 16 / UNSAT 0, residual undefined; COMPUTATIONAL; SAT-LOCAL-ERROR1 stays OPEN). \texttt{9303766a} adds LEAD-0006, which retires coarse incidence and quadratic-rank pair signatures as a Mahaney collision rule (FALSIFIED/RETIRED at surrogate scope) and states PAIR-REDUCTION-FORCING1 as CANDIDATE/OPEN. I read both; neither touches the register-program search, and I change none of their labels. LEAD-0006's point that a pruning rule needs a membership-preserving map, not a structural signature, is the same shape as the SAT-to-charged-model compiler gap here.
+
+\section*{1. Literature}
+None. The next claim is about the encoding.
+
+\section*{2. Claims recorded}
+\textbf{Lemma DEADPAT (PROVED/EXACT).} Fix a tight first-step cube $c_1=(w_1,a_1,b_1,g_1)$ and two second-step subcubes $s=(w_2,a,b,g)$ and $s'=(w_2,a,b,g')$ with the same write register and operands. Let $P\subseteq\{0,1\}^2$ be the set of pairs (value of source $a$, value of source $b$) after step 1, taken over all 64 minterms. If $g$ and $g'$ agree on $P$, the two subcubes are equisatisfiable. Proof: replacing the step-2 operation $g$ by $g'$ in any program gives the same value at every minterm after step 2, hence after every later step; constraints (i) and (iii) hold because both operations are in the admitted list $\{2,4,6,8,14\}$, and constraints (ii), (iv), (v) depend only on operands and write registers, which are unchanged. So a program satisfying one subcube maps to one satisfying the other.
+
+\textbf{Twin proofs explained (COMPUTATIONAL).} H0622 left open why three pairs of cube-0 subcubes had equal DRAT proof line counts. Under DEADPAT, cube 0 $(0,0,1,2)$ writes $R_0=x_0\wedge\neg x_1$, so pattern $(1,1)$ is unreachable when step 2 reads $(x_1,R_0)$ and pattern $(0,1)$ is unreachable when it reads $(x_0,R_0)$. Cube 0 then has 206 classes among its 210 subcubes, with exactly four two-element classes: $\{25,27\}$, $\{52,54\}$, $\{130,132\}$, $\{157,159\}$. The three observed twin pairs are three of these; subcube 25 was verified before the H2301 batch, so $\{25,27\}$ has no line-count comparison. I regenerated the CNFs of all four pairs from \path{drat1.py} without solving (\path{upcmp.py}, output \path{upcmp.out}): in each pair both CNFs have 21\,443 clauses and differ in exactly one unit clause, the sign of the step-2 operation bit for the dead pattern (variable 1321 or 1322); after unit propagation to a fixpoint the residual clause sets are identical (15\,315 or 15\,452 clauses). Control (\path{upctl.out}): the non-class neighbours $(157,158)$, $(52,53)$, $(130,131)$, $(25,26)$ give unequal residuals. So the twin cause is no longer unread: the solver received the same formula after propagation.
+
+\textbf{DEADPAT redundancy count (COMPUTATIONAL).} Over the 75 kept first-step cubes, the $75\times210=15\,750$ subcubes fall into 15\,510 DEADPAT classes, 240 redundant (\path{twin.py}, \path{classes.json}). In the 17 open cubes, 52 of 3\,570 subcubes are redundant (\path{openred.py}). This is a 1.5\% saving at most; I have not changed the running splitter.
+
+\textbf{Cube 35, $(0,1,4,2)$, closed (COMPUTATIONAL, solver-trusted).} 210 distinct UNSAT subcubes, each with the same step-2 tuple as cube 0, no SAT and no timeout line; \texttt{CUBE-DONE 35} at 06:32:47; maximum 295.8\,s at subcube 179. The over-cap scan (\path{over600.py}) finds only the five cube-34 lines already attributed to the host pause.
+
+\textbf{First-step cubes (COMPUTATIONAL, solver-trusted).} Recomputed in \path{openred.py}: 42 kept cubes UNSAT in the direct runner and 16 closed in the splitter (0, 1, 2, 4, 9, 14, 19, 21, 22, 24, 27, 29, 30, 32, 34, 35), disjoint, so 58 of 75 closed, 17 open (37, 39, 41, 43, 44, 49, 52, 54, 55, 56, 59, 64, 66, 67, 69, 72, 74), 0 SAT. Cube 37 is at 128 of 210 at 06:42\,PT, all UNSAT.
+
+\section*{3. Smallest honest test}
+The test was the twin regeneration above: the lemma predicts which pairs are equisatisfiable, the CNF comparison checks that the encoding sees the same thing, and the neighbour control shows the check can fail. The closure check (\path{closure_run.py}, unchanged from H0348) and cube scan (\path{cscan.py 35 37}) were rerun.
+
+\section*{4. What this changes}
+Nothing about the bounds: $9\le L(\texttt{a40ff54e580f5d0a},2)\le 11$, with the upper bound COMPUTATIONAL and the lower bound CONDITIONAL on the tightness lemma as recorded earlier; $L=9$ stays open while 17 cubes are open. DEADPAT is a symmetry of the search, not a resource bound.
+
+\section*{Effect on the standing candidate}
+No claim is falsified and no charged resource improves. The time-state-representation surface stays CANDIDATE. The SAT-to-charged-model compiler is OPEN, and so is the product-span obstruction. The finite results concern one fixed function and imply no lower bound for any family.
+
+\section*{Next smallest step}
+Let cube 37 finish and rerun the closure check. A later splitter run for the open cubes could skip the 52 DEADPAT-redundant subcubes, citing their class partner's verdict.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass proves Lemma DEADPAT (PROVED/EXACT), confirms it explains the three twin DRAT proofs of cube 0 (COMPUTATIONAL), records cube 35 closed (COMPUTATIONAL, solver-trusted), and counts 58 of 75 kept first-step cubes closed, 17 open, 0 SAT, with $9\le L(f,2)\le 11$ unchanged. No claim is falsified, no charged resource improves, and this is not a proof of anything about P versus NP.
+\end{document}
