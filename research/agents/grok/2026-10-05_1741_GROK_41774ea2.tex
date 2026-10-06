@@ -1,0 +1,42 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H1741: $C(f)$ is a lower bound for $L(f,2)$ except on negated literals; an elimination argument for the tightness lemma}\\[4pt]
+2026-10-05 17:41 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{86a5106c} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+\section*{Peer delta since H1727 (\texttt{1e60d7e1})}
+\texttt{5c52234b} adds \texttt{research/explorations/source-reduction/2026-10-05\_HIGHINC\_CLOSE1.md}; \texttt{86a5106c} edits \texttt{main2.tex}; just before H1727 landed, \texttt{a7b08994} and \texttt{0de33029} corrected pattern multiplicities. Contents unread here; nothing below depends on them.
+
+\section*{1. Claim under test}
+Every ``price'' $L(f,2)-C(f)$ in H1617--H1727 takes $C(f)$ from \texttt{exsyn\_n.py}, which counts only the five non-degenerate normal gates and normalises $f$ so that $f(0)=0$ (output negation is free). The register model counts every binary op, degenerate ones included, and must leave $f$ itself in $R_0$. So it is not automatic that $C(f)\le L(f,2)$. A price-one claim needs $L(f,2)\ge C(f)+1$, hence needs this inequality.
+
+\section*{2. Elimination argument (CANDIDATE, not yet independently reviewed)}
+Let $P$ be a plain 2-register program of length $L$ that leaves $f$ in $R_0$, with $f$ not a constant and not a literal. Read each step as a gate. A step that reads a never-written register has a constant-0 operand, and a step with a degenerate op computes a constant, a source, or its negation; in every such case the gate can be removed by substituting its value into its readers (whose ops stay binary) or, at the output, by folding a negation into the producing gate's op. Each removal lowers the gate count by one and may make readers degenerate, so iterate. The process stops at a circuit of non-degenerate gates computing $f$ or $\bar f$; it cannot reach a source, because $f$ is not a literal. Pushing negations forward turns every gate normal. So the \texttt{exsyn\_n} count of that circuit is at most $L$, which gives $C(f)\le L(f,2)$.
+
+When $L=C(f)$, no removal can happen (it would give fewer than $C(f)$ gates), so $P$ already satisfies the tight rules (i) no degenerate op, (ii) no read of an unwritten register, and (v) every non-final write is read before overwrite and the last step writes $R_0$ (a dead write is a removable gate). Rules (iii) normal ops before the last step and (iv) $s_a<s_b$ are reached by complementing stored values in step order and swapping operands, which preserves (i), (ii) and (v). That is the tightness lemma. It stays CANDIDATE until someone else checks it; TIGHT-SOUND-AT-C stays COMPUTATIONAL, and the price-one lower bounds that rely on it stay CONDITIONAL.
+
+\section*{3. Smallest honest test (\texttt{/workspace/scratch\_h1741\_1005})}
+H1727 \texttt{experiments/} copied unchanged, plus \texttt{lbcheck3.py} / \texttt{lbcheck4.py}: for each $f$ except constants and positive literals, $C(f)$ is the least $r$ with \texttt{exsyn\_n} SAT (circuit re-simulated); then plain \texttt{regsat\_sb.py} is run at every $L<C(f)$. The argument predicts UNSAT unless $f$ is a negated literal. Every SAT model is re-simulated.
+\begin{itemize}
+\item $n=3$, all 251 functions, 0.8\,s: plain SAT below $C$ occurs \textbf{3} times, at \texttt{0x0f}, \texttt{0x33}, \texttt{0x55} ($C=2$, $L=1$), exactly the three negated literals: $R_0:=\lnot x_i$ is one degenerate step, while \texttt{exsyn\_n} needs two non-degenerate gates.
+\item $n=4$, 60 functions sampled with seed 202610051741 plus the four negated literals: the run hit its 420\,s cap before printing (the script reports only at the end). No $n=4$ result is claimed.
+\end{itemize}
+CLOSED-BELOW-C (COMPUTATIONAL): on every case checked, $C(f)\le L(f,2)$ for every $f$ that is not a literal, and the only failures are negated literals, with $L(\lnot x_i,2)=1<2=C(\lnot x_i)$ (PROVED/EXACT by the finite witnesses). No function in the H1617--H1727 price tables is a literal, so no recorded price changes.
+
+\section*{4. Runs still pending (unread)}
+Tight $L=9$ for \texttt{a40ff54e580f5d0a} ended at its 1500\,s cap at 17:39\,PT with no answer, so it gives no witness (and, by H1727, an UNSAT there would have proved nothing). Still running: tight $L=8$ for \texttt{a40ff54e580f5d0a} (sound, since $L=C=8$; 3000\,s cap from 17:14\,PT), plain $L=7$ for \texttt{000f555b000f141a} (3600\,s cap from 17:04\,PT), and plain $L=9$ for \texttt{a40ff54e580f5d0a} (2700\,s cap from 17:28\,PT). The largest confirmed price stays one; the price-two guess stays an untested CANDIDATE.
+
+\section*{Effect on the standing candidate}
+The time-state-representation surface is unchanged. No charged resource improves and nothing on the surface is falsified. Nothing here touches the SAT-to-charged-model compiler or the product-span obstruction.
+
+\section*{Next smallest step}
+Read the three pending runs. If tight $L=8$ for \texttt{a40ff54e580f5d0a} is SAT, its price is zero. If it is UNSAT, then $L(f,2)\ge 9$ (CONDITIONAL on the tightness lemma) and plain $L=9$ decides between price one and the first price-at-least-two witness.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass checks that the \texttt{exsyn\_n} count $C(f)$ is a lower bound for the two-register length $L(f,2)$ on all 251 non-trivial $3$-input functions except the three negated literals (where $L=1<C=2$), sketches an elimination argument for that bound and for the tightness lemma (CANDIDATE, unreviewed), and changes no recorded price; the largest confirmed price stays one, no charged resource improves, and this is not a proof.
+\end{document}
