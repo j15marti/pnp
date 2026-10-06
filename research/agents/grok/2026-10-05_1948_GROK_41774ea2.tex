@@ -1,0 +1,56 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H1948: the tightness lemma at $L=C(f)$ follows from the H1918 reductions, so the price-one witness \texttt{000f555b000f141a} has $L(f,2)=8$ without a condition}\\[4pt]
+2026-10-05 19:48 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{1456f601} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H1929 (\texttt{5128a7d3})}
+One commit landed outside this line (checked 20:00\,PT): \texttt{research/2026-10-05\_1958\_PROOF-0002\_write\_status.md} (\texttt{1456f601}), a three-line note saying a PROOF-0002 publication was blocked and main documents were not changed. No new mathematics for this line. Nothing new under \texttt{research/main/} or \texttt{research/agents/grok/}.
+
+\section*{Correction to the H1929 next step}
+H1929 proposed \texttt{exsyn\_n.py a40ff54e580f5d0a 8 6} and said UNSAT would make $L\ge 9$ unconditional. That run cannot help: $C(\texttt{a40ff54e580f5d0a})=8$ (recomputed below), so exact synthesis at $r=8$ is SAT. The implication is true but its premise is impossible. The run was stopped at 19:51\,PT after about 13 minutes with no output. The intended bound comes from Section~2 instead.
+
+\section*{1. Literature}
+None needed. The only outside fact is the normalization fact already cited by H1918 (KNOWN THEOREM, Knuth, TAOCP 4A, \S7.1.2): removing gates with a constant input, and gates that compute a constant or a literal of one operand, never adds gates.
+
+\section*{2. Tightness at $L=C(f)$}
+Model as in \texttt{regsat\_sb.py}: $n$ read-only inputs, two registers starting at $0$, each step $R_w:=g(a,b)$ with $g$ any of the 16 binary operations and $a,b$ inputs or registers. $C(f)$ is $B_2$ circuit size with free output negation, as computed by \texttt{exsyn\_n.py}. The tight encoder \texttt{regsat\_tight.py} (H1727) adds: (i) no degenerate operation; (ii) no read of a never-written register; (iii) steps $1,\dots,L-1$ have $g(0,0)=0$; (iv) operand indices $s_a<s_b$; (v) every non-final write is read before it is overwritten or the program ends, and step $L$ writes $R_0$.
+
+\textbf{Lemma TIGHT-AT-C (PROVED/EXACT).} Let $f$ be neither a constant, nor a literal, nor a negated literal. If some plain program of length $L=C(f)$ leaves $f$ in $R_0$, then some program of the same length satisfies (i) to (v) and leaves $f$ in $R_0$. So plain and tight encoders agree at $L=C(f)$.
+
+\emph{Proof.} As in the first step of the H1918 proof, read the program as a circuit with $L$ nodes. Node $t$ is step $t$. Each of its operands is an input, the node that last wrote the register being read, or the constant $0$ for a register never written. The output node $o$ is the last writer of $R_0$, which exists because $f\ne 0$.
+\begin{itemize}
+\item[(a)] Suppose some node $t$ reads the constant $0$, reads the same operand twice, or uses a degenerate operation. Then node $t$ computes a constant or a literal of one operand. Substitute that value into the consumers of $t$, absorbing any negation into their operation tables, delete $t$, and normalize. This gives at most $L-1$ gates. If $t=o$, then $f$ is a constant, a literal, or the complement of a node, and the last case gives $C(f)\le L-1$ by free output negation. Either way this contradicts $L=C(f)$ or the hypothesis on $f$. This proves (i) and (ii), and it rules out $s_a=s_b$.
+\item[(b)] Suppose some node $t\ne o$ has no consumer. Deleting it gives $C(f)\le L-1$. So node $L$, which nothing can consume, is $o$, and step $L$ writes $R_0$. A non-final write that is never read before being overwritten or before the end has no consumer. This proves (v).
+\item[(c)] Two moves keep the length. The first swaps the operands when $s_a>s_b$ and transposes $g$. The second runs for $t=1,\dots,L-1$ in order: if $g_t(0,0)=1$, it replaces $g_t$ by its complement and negates the matching argument in every reader of node $t$ (every step that reads that register before it is next overwritten). Neither move changes which sources are read or written, so (ii) and (v) still hold. Neither creates a degenerate operation. Each one changes only the value of node $t<L$ and the tables of later steps, so the final $R_0$ and the steps already normalized are unchanged. This gives (iii) and (iv). \qed
+\end{itemize}
+The proof is written here and uses only the H1918 program-to-circuit step and the normalization fact. It is not a relabel of the H1741 elimination argument, which stays CANDIDATE as recorded.
+
+\section*{3. Smallest honest test (\texttt{/workspace/scratch\_h1948\_1005})}
+\texttt{tightify.py} implements the proof in code. \texttt{collapse()} lists every reduction from (a) and (b), and it also lists recomputation (a step equal to an earlier value or its complement, as in H1918). \texttt{tighten()} applies only the moves in (c). \texttt{check\_tight()} checks (i) to (v) directly on the program, independently of the encoder clauses. \texttt{regsat\_enum.py} is \texttt{regsat\_sb.py} with blocking clauses, so it enumerates up to $K$ plain programs at a given length. Every program is re-simulated.
+\begin{itemize}
+\item $n=3$, all 248 functions other than constants, literals and negated literals ($C$ histogram $\{1{:}30,2{:}114,3{:}80,4{:}24\}$, $K=100$, 1.3\,s). At $L=C$: 8790 plain programs, 0 with any reduction, and 8790 of 8790 tightened programs pass \texttt{check\_tight} and re-simulate. Every function has a program at $L=C$. At $L=C+1$, as calibration: 24800 programs, 23115 flagged with a reduction, 1685 without one, 0 failures (COMPUTATIONAL).
+\item $n=4$, 40 functions (seed 202610051948, $K=50$, 254.7\,s; $C$ histogram $\{2{:}1,3{:}3,4{:}4,5{:}13,6{:}17,7{:}2\}$). At $L=C$: 1884 programs, 0 reductions, 1884 of 1884 tightened OK, and every function has a program at $L=C$. At $L=C+1$: 2000 programs, 1336 flagged, 0 failures (COMPUTATIONAL).
+\item $n=6$: the fresh plain $L=8$ programs for \texttt{7272f5fab1b1f5fa} and \texttt{ab5050aefb0000fe} from H1929 ($C=8$) show no reduction. Both needed the complement move, and both tighten to programs that pass (i) to (v) and re-simulate.
+\end{itemize}
+
+\section*{4. Consequences}
+\textbf{\texttt{000f555b000f141a} (COMPUTATIONAL).} Recomputed this pass: \texttt{exsyn\_n} at $r=6$ is UNSAT (21.4\,s) and at $r=7$ is SAT (5.9\,s, circuit re-simulated), so $C=7$. Tight $L=7$, $r=2$ is UNSAT (109.0\,s). By TIGHT-AT-C, plain $L=7$ is UNSAT, so $L(f,2)\ge 8$. The H1657 $L=8$ program and the H1845 forced-recompute $L=8$ program both re-simulate (\texttt{tightify.simulate}), so $L(f,2)=8$ and the two-register price is exactly one. This had been CONDITIONAL on the tightness lemma since H1657. As H1845 found, the price can be paid either through a different 8-gate circuit or through one forget-then-recompute; \texttt{collapse()} flags step~6 of the H1845 program as recomputing step~1.
+
+\textbf{\texttt{a40ff54e580f5d0a} (COMPUTATIONAL).} Recomputed this pass: \texttt{exsyn\_n} at $r=7$ is UNSAT (356.8\,s), and the H1657 eight-gate circuit re-simulates, so $C=8$. The tight $L=8$, $r=2$ run is UNSAT (2426.2\,s). That result is read from the H1713 log and was not re-run this pass. By TIGHT-AT-C, $L(f,2)\ge 9$. The H1812 11-step program re-simulates, so $9\le L(f,2)\le 11$ and the price is between one and three. That upper end is not confirmed.
+
+\section*{Effect on the standing candidate}
+No claim is falsified. One conditional premise is removed: the price-one witness no longer depends on an unproved lemma. No charged resource improves, because the largest confirmed price is still one and no price of two or more is confirmed. In every sampled program at $L=C$, the two-register schedule is a recompute-free schedule of a minimum circuit, and this holds in general: a program at $L=C$ reads off as a circuit with $C$ nodes, which is a minimum circuit, and by the H1918 collapse lemma it has no recompute step. A price of zero leaves nothing to charge. The time-state-representation surface stays CANDIDATE. The SAT-to-charged-model compiler is OPEN and the product-span obstruction is OPEN.
+
+\section*{Next smallest step}
+For \texttt{a40ff54e580f5d0a} the open question is whether $L(f,2)$ is 9, 10 or 11. A tight encoder is not sound at $L>C$, so this needs the plain encoder. Plain $L=9$ and $L=10$ both timed out at 2700\,s (H1812, H1855). A cheaper route is to enumerate all minimum and next-to-minimum circuits of the function and run the exact two-pebble search on each (the H1812 method). This bounds the price only for recompute-free schedules of those circuits, so any bound it gives would be CONDITIONAL.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass proves that plain and tight two-register encoders agree at $L=C(f)$, checks the constructive proof on 10674 SAT-found programs at $n=3,4$ with no counterexample, and so removes the condition on the price-one witness \texttt{000f555b000f141a} ($C=7$, $L(f,2)=8$, COMPUTATIONAL) and on $L(\texttt{a40ff54e580f5d0a},2)\ge 9$. No claim is falsified, the largest confirmed price stays one, no charged resource improves, and this is not a proof of anything about P versus NP.
+\end{document}
