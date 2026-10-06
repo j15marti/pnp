@@ -1,0 +1,49 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H2045: a uniform descriptor rewrite removes every defect of a two-register program in one step, closing the case (a2) gap of TIGHT-AT-MIN; mechanical check on 37434 rewrites with two mutation controls}\\[4pt]
+2026-10-05 20:45 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{d9cb8ab9} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+
+\section*{Peer delta since H2013 (\texttt{d9cb8ab9})}
+Checked 20:46\,PT: the tip of \texttt{main} is still H2013. Nothing new under \texttt{research/agents/grok/}; the last commit touching \texttt{research/main/} is \texttt{b04263cb} (16:28\,PT, ``Updates from Overleaf''), already older than H2013. Three peer commits landed elsewhere between 20:15 and 20:41\,PT (\texttt{7155081c} TASK-008 TWOSATDEC10, \texttt{fc314e96} provenance audit, \texttt{3e0f8c81} RED-0003); they are outside the two watched folders and were not read.
+
+\section*{1. Literature}
+None needed. No outside fact is used beyond those already cited by H1918 to H2013.
+
+\section*{2. The claim}
+Model as in H1948 and H2013: $n$ read-only inputs, two one-bit registers $R_0,R_1$ starting at $0$, a step is $R_w:=g(a,b)$ with $g$ any of the 16 binary operations and $a,b$ inputs or current registers, and $f$ must be in $R_0$ after the last step. H2013 left Lemma TIGHT-AT-MIN as CANDIDATE because the copy case (a2) of its proof sketch had not been checked line by line. This pass replaces the case analysis by one uniform rewrite. Defects are taken \emph{semantically}, which is weaker as a hypothesis than the syntactic defects of H1948: (a1) the value written is a constant or a literal of an input; (a2) the value written is $u$ or $\neg u$ where $u$ is the current content of some register and is not a constant or literal; (b) the value written is not read before it is overwritten or before the end, and the step is not the last writer of $R_0$.
+
+\textbf{Lemma SHORTEN (PROVED/EXACT).} Let $f$ be neither a constant nor a literal. If a two-register program of length $L$ for $f$ has a semantic defect at step $t$, then there is a two-register program of length $L-1$ for $f$ with operands in strict order $s_a<s_b$ (the plain-encoder form).
+
+\emph{Proof.} Delete step $t$ and replay the remaining steps while keeping, for each original register $R_o$, a descriptor saying where its original value now lives: a physical register together with a negation bit, an input literal, a constant, or ``dead''. At the deleted step the descriptor of $R_w$ becomes the constant or literal in case (a1), the descriptor of the copied register with the negation bit toggled if needed in case (a2), and ``dead'' in case (b). Each surviving step reads its operands through the descriptors, with negations and constants absorbed into its operation table (16 operations are closed under this). It writes to a physical register that the descriptor of the \emph{other} original register does not name; one exists because that descriptor names at most one of the two physical registers. The written register then gets the descriptor (that register, no negation). By induction each original register's value equals what its descriptor says after every step, because a write never overwrites the physical register named by the other descriptor. A ``dead'' descriptor is never read, since in case (b) the value is overwritten before any read, and if it is never overwritten it is not in $R_0$ at the end (otherwise step $t$ would be the last writer of $R_0$). At the end the descriptor of $R_0$ names a physical register $p$, because otherwise $f$ would be a constant or a literal. If its negation bit is set, complement the operation of the last writer of $p$ and absorb the negation into every later read of $p$. If $p=1$, swap the register names in the whole program. Equal operands and reversed operands are put in strict order by a size-preserving rewrite of the operation table (the second operand is an unused input when the step is unary). \qed
+
+\textbf{Consequence (PROVED/EXACT, from SHORTEN and the H1948 moves).} Lemma TIGHT-AT-MIN of H2013 holds: if plain $L-1$ is UNSAT and $L=L(f,2)$, then every plain program of length $L$ has no semantic defect, so in particular none of the syntactic defects of H1948 (a degenerate operation, equal operands, or a read of a never-written register makes the value a constant, a literal, or $\pm$ a current register). The H1948 size-preserving moves then give conditions (i) to (v), and plain $L$ is SAT if and only if tight $L$ is SAT. The case (a2) proof of H2013 is superseded rather than checked; TIGHT-AT-C is the special case $L=C(f)$. The extra content of SHORTEN is that optimal programs also have no \emph{semantic} copy: an exact recomputation of a value that is still held in a register never occurs at $L(f,2)$. A recomputation of a value that has been overwritten is still allowed, and that is exactly the forget-then-recompute that the price measures.
+
+\section*{3. Smallest honest test (\texttt{/workspace/scratch\_h2045\_1005})}
+\texttt{reduce.py} implements the proof literally: \texttt{find\_defects()} lists semantic defects by simulation, and \texttt{remove()} performs the descriptor rewrite. \texttt{test\_reduce.py} enumerates plain programs with \texttt{regsat\_enum.py}, applies \texttt{remove()} to every listed defect separately, and accepts a rewrite only if it has length $L-1$, re-simulates to $f$ in $R_0$, and has $s_a<s_b$ at every step. All numbers were computed this pass.
+\begin{itemize}
+\item $n=3$, all 248 non-trivial functions, up to 100 programs per length: at $L=C$, 8790 programs, 0 with a semantic defect. At $L=C+1$, 24800 programs, 23138 with at least one defect; 35741 rewrites (13040 of type a1, 3821 of type a2, 18880 of type b), 35741 accepted, 0 failures (COMPUTATIONAL).
+\item $n=4$, 40 functions sampled with seed 7, up to 50 programs per length (150.0\,s): at $L=C$, 1852 programs, 0 with a defect. At $L=C+1$, 2000 programs, 1286 defective; 1693 rewrites (414 a1, 457 a2, 822 b), 1693 accepted, 0 failures (COMPUTATIONAL).
+\item Detection controls on the $n=3$ set: a mutant that skips the final negation push fails 537 of 35741 rewrites, and a mutant that writes to the register's own previous location (ignoring the other descriptor) fails 6686 of 35741. So the acceptance test does catch a wrong rewrite.
+\item Optimal length, $n=5$: \texttt{opt\_check.py 90ca96cc 7 5 50} enumerated 50 plain programs at $L(f,2)=7$ (269.2\,s), all 50 re-simulate, and 0 have a semantic defect, as SHORTEN predicts from plain $L=6$ UNSAT (H2013). Recomputations of overwritten values are not counted as defects.
+\end{itemize}
+The 1852 programs at $L=C$ for $n=4$ differ from the 1884 of H1948 because the function sample differs (seed 7 here; H1948's seed was not recorded in its result file).
+
+\section*{4. Application to \texttt{a40ff54e580f5d0a}}
+The 3\,h tight $L=9$ run started by H2013 at 20:41\,PT is still running (about 12 minutes elapsed at 20:53\,PT); its result is unread. Bounds stay $9\le L(\texttt{a40ff54e580f5d0a},2)\le 11$ (COMPUTATIONAL, from H1948). With TIGHT-AT-MIN now PROVED/EXACT, a tight $L=9$ UNSAT verdict would give plain $L=9$ UNSAT and $L(f,2)\ge 10$ as COMPUTATIONAL (from the solver) rather than CONDITIONAL; with $C=8$ that would be price at least two.
+
+\section*{Effect on the standing candidate}
+No claim is falsified and no charged resource improves; the largest confirmed price stays one. What changes is a tool: the tight encoder may now be used to decide every length $L(f,2)$ once $L-1$ is known UNSAT, and optimal programs are known to contain no copy of a live value, so any extra step they pay for is either a larger circuit or a forget-then-recompute. The time-state-representation surface stays CANDIDATE. The SAT-to-charged-model compiler is OPEN and the product-span obstruction is OPEN. Nothing here is a lower bound beyond the finite witnesses.
+
+\section*{Next smallest step}
+Read the tight $L=9$ run for \texttt{a40ff54e580f5d0a} when it ends (cap 23:41\,PT). If it times out again, split $L=9$ by fixing the first step of the program (a tight first step reads two of the six inputs in order and uses one of the five non-degenerate operations with $g(0,0)=0$, so there are $2\cdot 15\cdot 5=150$ choices) and run the cubes in parallel, since each cube is a smaller instance and the lemma makes UNSAT on every cube a valid lower bound.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass proves Lemma SHORTEN (PROVED/EXACT: any semantic defect in a two-register program, including a copy of a live register value, can be removed in one step by a uniform descriptor rewrite), which makes TIGHT-AT-MIN PROVED/EXACT, and checks the rewrite on 37434 defects at $n=3,4$ with 0 failures and two mutation controls that fail (COMPUTATIONAL). The tight $L=9$ run for \texttt{a40ff54e580f5d0a} is unread, so $9\le L(f,2)\le 11$ is unchanged. No claim is falsified, the largest confirmed price stays one, no charged resource improves, and this is not a proof of anything about P versus NP.
+\end{document}
