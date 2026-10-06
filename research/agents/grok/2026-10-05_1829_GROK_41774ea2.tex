@@ -1,0 +1,37 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H1829: none of the fifteen two-register programs found by SAT recomputes anything; the one price-one witness pays with a larger circuit, not with forget-then-recompute}\\[4pt]
+2026-10-05 18:29 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{99286a9d} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+\section*{Peer delta since H1812 (\texttt{f52b5725})}
+Three commits landed on \texttt{main} (checked 18:31\,PT), none under \texttt{research/main/} or \texttt{research/agents/grok/}: \texttt{00e90947} (\texttt{research/explorations/monotone-slice/2026-10-05\_1816\_TWOSATDEC8.md} plus raw data), \texttt{8911e5ec} (\texttt{research/2026-10-05\_1818\_LEAD-0001\_global\_intensional\_gate1.md}) and \texttt{99286a9d} (\texttt{research/2026-10-05\_1825\_WRITE-0001\_repository\_sync\_audit.md}). Their contents are unread in this pass; no number from them is cited.
+
+\section*{1. Pending run}
+Plain \texttt{regsat\_sb.py a40ff54e580f5d0a 10 2 6} (started 18:14:54\,PT, 2700\,s cap) was still running at 18:31\,PT with no output. The bounds stay $9\le L(\texttt{a40ff54e580f5d0a},2)\le 11$, lower bound CONDITIONAL on the tightness lemma (H1757), upper bound COMPUTATIONAL (H1812).
+
+\section*{2. Smallest honest test: where does the two-register price sit? (\texttt{/workspace/scratch\_h1829\_1005})}
+The standing candidate reads pebbling as the price of forget-then-recompute. H1812 showed fixed-circuit pebbling only gives upper bounds. The direct question is whether the shortest two-register programs actually recompute.
+
+\texttt{recompute.py} takes every satisfying plain $r=2$ program logged in the H1645--H1812 scratch results (15 distinct programs, 15 functions on $n=6$, each re-simulated to $f$ here), computes each step's truth table, and marks a step RECOMPUTE if its value or its complement was produced by an earlier step, LIT if it is a constant or literal, and DEAD if its value is overwritten before being read and it is not the output. \texttt{induced.py} then builds the circuit the program induces (gate $i$ is step $i$, register operands point at their writing step), evaluates it to $f$ directly, and reruns the fixed-circuit two-pebble search \texttt{pebble2.py} on it.
+
+NO-RECOMPUTE-15 (COMPUTATIONAL): in all 15 programs every step is NEW and live (no RECOMPUTE, LIT or DEAD step); each induced circuit has exactly $L$ gates, evaluates to $f$, and \texttt{pebble2.py} schedules it in exactly $L$ steps (re-simulated OK). Lengths: $L=7$ for six functions, $L=8$ for nine.
+
+PRICE-IS-REPRESENTATION (COMPUTATIONAL, one witness): for \texttt{000f555b000f141a}, exact synthesis gives circuit size $C=7$ (six-gate UNSAT, seven-gate SAT in the H1657 logs) and tight $L=7$, $r=2$ is UNSAT, so $L(f,2)\ge 8$ is CONDITIONAL on the tightness lemma; the $L=8$ program found computes eight distinct new functions and no recomputation. So on the only price-one witness on record, the extra step is paid by switching to a different eight-gate circuit, that is, by a change of the stored representation $R$, not by forgetting and recomputing a value.
+
+Scope. These are the particular programs the solver returned; other optimal programs that do recompute may exist, and nothing here says recomputation is never needed at larger $n$ or larger prices. Optimality of $L$ is itself only as strong as the recorded lower bounds (several of the $L=8$ programs come from H1645 tight runs with no recorded $L=7$ answer); what holds on all 15 is that each program found is a recompute-free schedule of its own $L$-gate circuit.
+
+\section*{Effect on the standing candidate}
+Nothing is falsified and no charged resource improves: the largest confirmed price stays one, and the new observation moves where that price is charged (into $R$, the choice of circuit) rather than raising it. The time-state-representation surface stays CANDIDATE; the specific reading ``pebbling price equals forget-then-recompute'' has no supporting witness at $n=6$ so far and stays OPEN. The SAT-to-charged-model compiler and the product-span obstruction are untouched.
+
+\section*{Next smallest step}
+Read plain $L=10$ for \texttt{a40ff54e580f5d0a}. Then, for \texttt{000f555b000f141a}, add to the $L=8$ encoding a constraint forcing at least one RECOMPUTE step and ask SAT for such a program, to see whether recomputation is ever an alternative way to pay the price.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass finds that none of the fifteen two-register programs found by SAT so far recomputes or wastes a step, and that the one price-one witness (\texttt{000f555b000f141a}, $C=7$, $L=8$ with the lower bound conditional) pays by using a larger circuit rather than by forget-then-recompute; the largest confirmed price stays one, no charged resource improves, and this is not a proof.
+\end{document}
