@@ -1,0 +1,55 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\begin{document}\sloppy
+\begin{center}
+{\Large GROK H1812: plain $L=9$ for \texttt{a40ff54e580f5d0a} timed out; a fixed-circuit two-pebble schedule gives $L(f,2)\le 11$, and a calibration shows fixed-circuit pebbling overshoots the semantic two-register length by up to four}\\[4pt]
+2026-10-05 18:12 America/Los\_Angeles (cron) \quad branch \texttt{main}, tip \texttt{27e11914} \quad automation 41774ea2\\[2pt]
+\textbf{P versus NP: OPEN.}
+\end{center}
+\section*{Peer delta since H1757 (\texttt{27e11914})}
+No commit has landed on \texttt{main} after H1757 (checked at 18:13\,PT). Nothing under \texttt{research/main/} is new.
+
+\section*{1. Pending run read: plain $L=9$ for \texttt{a40ff54e580f5d0a}}
+The plain symmetry-broken run \texttt{regsat\_sb.py a40ff54e580f5d0a 9 2 6} started 17:28:28\,PT hit its 2700\,s cap at 18:13:27\,PT (exit 124, no answer). The tight $L=9$ run from H1657 had already hit its 1500\,s cap at 17:39:05\,PT. So $L(\texttt{a40ff54e580f5d0a},2)=9$ is neither confirmed nor refuted: OPEN. The lower bound $L\ge 9$ stays CONDITIONAL on the tightness lemma (H1757).
+
+\section*{2. Smallest honest test: a constructive upper bound by two-pebble scheduling (\texttt{/workspace/scratch\_h1812\_1005})}
+\texttt{pebble2.py} fixes a circuit and runs breadth-first search over the contents of two registers (each holds one gate of that circuit or nothing; inputs are always readable; a step computes one gate whose gate operands are currently held, and may overwrite an operand). It returns the shortest schedule that leaves the output gate in $R_0$, and every schedule is re-simulated with \texttt{regsat\_sb.simulate}.
+
+A40-UB11 (COMPUTATIONAL): on the generating eight-gate circuit of \texttt{a40ff54e580f5d0a} (from H1657 \texttt{gen\_2.txt}) the shortest two-pebble schedule has 11 steps (62 states searched), and the resulting plain program re-simulates to $f$. Hence $L(f,2)\le 11$. With the conditional lower bound, $9\le L(f,2)\le 11$; the price is between one (conditional) and three.
+
+\section*{3. Calibration: fixed-circuit pebbling against the semantic model}
+The same search was run on the generating eight-gate circuits of the nine other $n=6$ functions from the H1657 pipeline. The semantic column is the shortest two-register program found by SAT, read from the H1657/H1713 logs (each reported \texttt{resim=OK} there); the $L=8$ program for \texttt{eefe02ee02ee02ee} was re-simulated again here and is correct.
+\begin{center}\small
+\begin{tabular}{lcc}
+function & two-pebble schedule on generating circuit & shortest semantic program found\\\hline
+\texttt{a40ff54e580f5d0a} & 11 & none at $\le 8$; $9,10$ undecided\\
+\texttt{880077008f08ff88} & 11 & 8\\
+\texttt{eefe02ee02ee02ee} & infeasible (41 states) & 8\\
+\texttt{000f555b000f141a} & 9 & 8\\
+\texttt{50a0884498640000} & 8 & 7\\
+\texttt{0f0ef3f2ffaaffaa} & 10 & 7\\
+\texttt{6000000096f00000} & 8 & 7\\
+\texttt{e8f9fcfcf0f0f0f0} & 11 & 7\\
+\texttt{b1ff5fee11ffffee} & 10 & 7\\
+\texttt{0e03e003010c01c0} & infeasible (54 states) & 7\\
+\end{tabular}
+\end{center}
+PEBBLE-OVERSHOOT (COMPUTATIONAL): on the seven of these nine functions whose generating circuit is schedulable, the fixed-circuit two-pebble length exceeds the shortest semantic two-register program found by $1$ to $4$ (largest gap at \texttt{e8f9fcfcf0f0f0f0}, $11$ against $7$), and for two of them (\texttt{eefe02ee02ee02ee}, \texttt{0e03e003010c01c0}) the generating circuit cannot be scheduled in two registers at all, while the semantic model has programs of 8 and 7 steps. For \texttt{eefe02ee02ee02ee} the reason is visible by hand: its output's operand gate $g_{12}=g_{10}\wedge g_{11}$ has two operands that each need two registers, so that circuit needs three; the SAT program is a different eight-gate circuit that does fit in two.
+
+Consequence for the standing candidate. Pebbling one chosen circuit is only an upper bound on the forget-then-recompute price; any lower-bound use of pebbling has to minimise over every circuit, that is, over the stored representation $R$. This is the expected direction and does not falsify the time-state-representation surface, but it rules out reading a price off a fixed circuit, which none of the recorded prices did.
+
+\section*{4. Runs started}
+Plain $L=10$ for \texttt{a40ff54e580f5d0a} (2700\,s cap, from 18:14:54\,PT, \texttt{scratch\_h1812\_1005/results/sb\_a40\_L10.out}). SAT (re-simulated) gives $L\le 10$, price at most two; UNSAT would give $L\ge 11=$ the upper bound, so $L=11$ and price exactly three without the tightness lemma, which would need an independent re-run before any claim.
+
+\section*{Effect on the standing candidate}
+No charged resource improves: the largest confirmed price stays one, and the new bounds on \texttt{a40ff54e580f5d0a} ($9\le L\le 11$, lower bound conditional) do not confirm a price of two or more. Nothing is falsified. The SAT-to-charged-model compiler and the product-span obstruction are untouched.
+
+\section*{Next smallest step}
+Read plain $L=10$ for \texttt{a40ff54e580f5d0a}. Independently, minimise the two-pebble schedule over all eight-gate circuits for $f$ (not only the generating one) to see whether the semantic optimum is always attained by some optimal circuit.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass reads plain $L=9$ for \texttt{a40ff54e580f5d0a} as a timeout, shows $L(f,2)\le 11$ there by a re-simulated two-pebble schedule, and records that fixed-circuit pebbling overshoots the semantic two-register length by up to four on nine sample functions (two of their circuits do not fit in two registers at all); the largest confirmed price stays one, no charged resource improves, and this is not a proof.
+\end{document}
