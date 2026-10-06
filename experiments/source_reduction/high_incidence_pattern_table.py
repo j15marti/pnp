@@ -76,8 +76,8 @@ def main():
 
     # one-literal center
     one = [
-      ("1+", Fraction(16,21), Fraction(5,7), 6),
-      ("1-", Fraction(5,7), Fraction(16,21), 6),
+      ("1+", Fraction(16,21), Fraction(5,7), 3),
+      ("1-", Fraction(5,7), Fraction(16,21), 3),
     ]
     for name,a,b,mult in one:
         m,ratio=threshold(a,b)
