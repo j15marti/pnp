@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb,amsthm,mathtools,geometry,hyperref,booktabs}
+\emergencystretch=2em
 \geometry{margin=1in}
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
@@ -73,6 +74,56 @@ A stronger asymptotic statement aims for exactly $N^{C+o(1)}$ time, removing the
 Regenerating a child instead of storing it may reduce workspace. It does not make child access free. If a child algorithm makes $Q$ bit requests and each request triggers a cost $R$, their product must be charged; nested virtual input interfaces can multiply these costs again. The claim $S=N^{o(1)}$ requires a proved small-live-state implementation and a charged time bound for all such accesses. The explicit-child alternative often needs fewer access assumptions and can still suffice because a positive space exponent is allowed by the product endpoint.
 
 \section{Architecture alternatives}
+\subsection{Shannon exposure followed by an exact quotient}
+One natural two-phase proposal first exposes a frontier by restricting
+variables and then merges equal residuals before recursion.  The semantic
+identity is exact and forward-only:
+\[
+ \SAT(F)=\bigvee_{\alpha\in\{0,1\}^{H}}\SAT(F\upharpoonright\alpha).
+\]
+Equality of residual Boolean functions is a safe quotient for this OR, but
+computing or representing that quotient is a separate charged operation.
+Knowledge-compilation canonicity results concern declared target
+representations and do not by themselves give small ordinary-CNF children
+or cheap acquisition \cite{darwiche2002}.
+
+The following hostile family closes one tempting universal implementation.
+Let
+\[
+ F_m=\bigwedge_{i=1}^{m}(x_i\vee y_i),
+\]
+whose ordinary indexed-CNF length is $M_m=\Theta(m\log m)$.  Restrict
+$x_1,\ldots,x_h$ in all $2^h$ ways and quotient the resulting ordinary CNFs
+by syntactic equality, or even by equality of their residual Boolean
+functions.
+\begin{lemma}[SHANNON-QUOTIENT-GATE1]
+The quotient has exactly $2^h$ classes.  If the frontier is polynomial in
+$M_m$, then every residual retains length $M_m^{1-o(1)}$ in the worst case;
+in particular no fixed power bound $M_m^{b+o(1)}$ with $b<1$ follows.  If
+$h=m-o(m)$ is chosen to leave a fixed-power residual by raw restriction, the
+frontier remains $2^{m-o(m)}$, hence superpolynomial in $M_m$.
+\end{lemma}
+\begin{proof}
+For an assignment $\alpha$, the $i$th restricted clause is deleted when
+$\alpha_i=1$ and becomes the unit clause $y_i$ when $\alpha_i=0$; all
+unrestricted clauses remain.  Two different assignments therefore give
+different residual CNFs.  They also give different Boolean functions: at a
+coordinate where the assignments differ, set the corresponding $y_i$ to
+zero, satisfy every other resulting unit, and set every untouched $x_j$ to
+one.  This separates the two residual functions.  Thus quotienting does not
+reduce the $2^h$ frontier.  Polynomial fanout implies
+$h=O(\log M_m)$, while the untouched $m-h$ clauses still occupy
+$\Theta(m\log m)=M_m^{1-o(1)}$ bits.  Conversely a fixed-power residual
+requires $m-h=o(m)$, leaving $2^{m-o(m)}$ distinct classes.
+\end{proof}
+Thus this specific Shannon-plus-equality-quotient mechanism is
+\textsc{Falsified/Retired} as a universal power shrinker, even on a monotone
+2-CNF family.  This is not a representation-independent lower bound: a new
+semantic representation or source-dependent transformation can escape, but
+must return to ordinary SAT with all acquisition, decoding, and access costs
+charged.  Quotienting merely by the SAT answer would use the bit being
+computed; treating that operation as free is an oracle-model change.
+
 \subsection{Double wrapper}
 The implemented prototype in \texttt{experiments/DOUBLE\_WRAPPER\_2026-10-07}
 already supplies this architecture. Its iterative inner layer uses unit propagation,
@@ -152,6 +203,15 @@ above.
 
 The companion \texttt{wrapper\_test.py} checks finite-depth exponent calculations, exact Shannon disjunction on small random CNFs against brute force, a negative example for merging equal-answer histories, and the restricted covering count. These are bounded computational checks, not verification of W1--W7 for general SAT. Each Python process has an internal 25-second deadline; larger jobs must be checkpointed and divided into separate sub-30-second batches. The JSON result records seed, counts, timing, scope, and status.
 
+The 2026-10-07 SHANNON-QUOTIENT-GATE1 run separately exhausts the residual
+frontiers of $F_m$ for $m\le6$, compares residual truth tables for $m\le4$,
+and checks larger exact encoding-size controls.  It completed 187 checks in
+under one second.  The code and raw output are
+\path{experiments/proof_spines/shannon_quotient_gate_test.py} and
+\path{results/raw/proof_spines/2026-10-07_151508_shannon_quotient_gate.json}.
+The computation supports only the stated architecture-specific lemma; it
+does not infer an asymptotic machine lower bound.
+
 Each automated run must review current repository state and teammate logs, consult relevant primary literature, build or revise a mathematical or executable model, perform a hostile test, and record exact results and limitations. Manuscript revisions must distinguish proved lemmas, conditional statements, computational observations, conjectures, and falsified claims. A stalled run may diagnose and repair a teammate's blocker, but must preserve evidence and explain the change. A timestamped local log and pending-write record must be saved before attempting GitHub writes; another session must not be assumed to share ephemeral local storage.
 
 % BEGIN HISTORICAL ASSEMBLY AUDIT 2026-10-07
@@ -200,3 +260,4 @@ The detailed variant audit is
 \bibliographystyle{plain}
 \bibliography{spines}
 \end{document}
+
