@@ -1,0 +1,34 @@
+\documentclass[11pt]{article}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{url}
+\begin{document}
+\sloppy
+\section*{GROK H2115 (2026-10-06 21:15 PT): the fixed two-step prefix $(0,0,1,2),(1,2,3,6)$ admits no tight $L=9$, $r=3$ program for \texttt{a40ff54e580f5d0a} (all 420 third steps UNSAT); other second steps launched; parent cube 5 of the tight $L=8$ split at 244 of 315 UNSAT}
+\textbf{P versus NP: OPEN.}
+
+\section*{0. What landed since H2058}
+Head of \texttt{main} at 21:16 PT is \texttt{f420da49}. Two commits after H2058 (\texttt{b697d264}), both TWOSATDEC35 from another workstream: \path{results/raw/monotone_slice/TWOSATDEC35_q40.txt} and \path{research/explorations/monotone-slice/2026-10-06_2115_TWOSATDEC35.md} (commit message: SAT-LOCAL-ERROR1 OPEN; contents unread here). Nothing touched \path{research/agents/grok/} or \path{research/main/}.
+
+\section*{1. Third-step domain after the prefix, closed (COMPUTATIONAL)}
+Encoder \path{regsat_fix.py} (tight normal form: operands $s_a<s_b$ strictly over the 6 inputs and written registers, ops in $\{2,4,6,8,14\}$ before the last step, no read of an unwritten register, every non-final write read before overwrite). After steps $(0,0,1,2),(1,2,3,6)$ the written sources are inputs $0..5$ and $R_0,R_1$ (indices 6, 7), so the third-step domain is $\binom{8}{2}\cdot 3\cdot 5=420$ cells: 225 input-input, 180 input-register, 15 register-register. Recounted this pass from the raw files:
+\begin{itemize}
+\item input-input: \path{/workspace/scratch_h2058_1006/inonly.out} (sha256 prefix \texttt{197380c0}, ends \texttt{DONE}): 225 distinct cells, 225 UNSAT, 0 SAT, 0 timeouts at 280\,s; 150 in 0.0\,s (encoder-rejected, $w\in\{0,1\}$), slowest 34.0\,s.
+\item input-register: \path{scratch_h2013_1006/nontriv.out} 120 distinct, 120 UNSAT; \path{triv.out} 60 distinct, 60 UNSAT.
+\item register-register $(w,6,7,h)$: all 15 normal-op cells found UNSAT across \path{scratch_h1841_1006/w9c3.out}, \path{scratch_h1933_1006/}, \path{scratch_h1946_1006/}, \path{scratch_h1959_1006/}.
+\end{itemize}
+So under the tight encoder, no $L=9$, $r=3$ program for $f$ begins with this two-step prefix. This rules out one prefix, not $L(f,3)\le 9$; it changes no charged resource.
+
+\section*{2. Other second steps after step 1 $=(0,0,1,2)$ (COMPUTATIONAL, just launched)}
+New script \path{/workspace/scratch_h2115_1006/w9c2.py} (sha256 prefix \texttt{437d44f6}) fixes only steps 1 and 2. Batch list \path{s2list.txt} (prefix \texttt{59b9ec60}): the 75 second steps $(1,a,b,g)$ with inputs $a<b$, $g\in\{2,4,6,8,14\}$, with $(1,2,3,6)$ first as a direct cross-check of Section 1; \texttt{-P 2}, 1200\,s cap, output \path{s2.out}, started 21:16 PT. 0 cells read so far. Second steps writing $R_2$ from two inputs are the $R_1\leftrightarrow R_2$ relabelling of these (the encoder's constraints are symmetric in $R_1,R_2$ while both are unwritten); second steps reading $R_0$ (60 cells up to that relabelling) are not yet listed.
+
+\section*{3. Tight $L=8$, $r=3$ cover, parent cube 5 (COMPUTATIONAL, partial)}
+Snapshot \path{/workspace/scratch_h2115_1006/c5_snap.out} of \path{scratch_h1727_1006/c5_600.out} (sha256 prefix \texttt{705801e1}): parent $(0,0,2,2)$, 244 distinct subcubes of 315, 244 UNSAT, 0 SAT, 0 timeouts at 600\,s, slowest 330.8\,s. Parents 0 to 4 per H2048 (not reread). $L(f,3)\ge 9$ stays OPEN until all 75 $w_1=0$ parents close.
+
+\section*{4. Standing candidate}
+The time-state-representation surface stays CANDIDATE. The compiler from an arbitrary SAT decider into the charged model and the product-span obstruction stay OPEN. No finite witness changed $T$, $S$, or $R$; nothing was falsified this pass.
+
+\section*{Next}
+Read \path{s2.out}; the cross-check cell $(1,2,3,6)$ must come back UNSAT, else Section 1 is in doubt. Rerun any 1200\,s timeout by splitting on step 3. Then list the 60 $R_0$-reading second steps. Keep reading parent 5.
+\end{document}
