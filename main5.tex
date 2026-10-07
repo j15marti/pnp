@@ -231,6 +231,58 @@ A decomposition $\SAT(F)=\bigvee_i\SAT(G_i)$ gives a streaming OR combiner. SAT 
 \subsection{Parallel portfolios}
 A fixed finite portfolio of exact solvers can be time-shared to exploit its fastest member with a constant time overhead, assuming ordinary suspendable simulations. The simulator must count all retained states. A slow competitor may consume too much memory before the winner finishes. Memory caps or staged restarts therefore require their own analysis. For a growing portfolio, scheduling and description costs are no longer automatically constant. The required coverage statement is that every input has a favorable member, with uniform correctness and a joint resource guarantee. Testing different winners on different instances is not a coverage proof.
 
+\begin{theorem}[CERTIFIED-PARTIAL-PORTFOLIO1]\label{thm:partial-portfolio}
+Fix finitely many uniform forward inner procedures $W_1,\ldots,W_k$.  On an
+ordinary SAT instance $F$ of encoded length $M$, each $W_j$ halts with either
+\textsc{fail} or a finite plan $(C_j;G_{j,1},\ldots,G_{j,q_j})$.  Assume:
+\begin{enumerate}
+\item whenever $W_j$ succeeds, its plan is exact:
+\[
+ \SAT(F)=C_j\bigl(\SAT(G_{j,1}),\ldots,\SAT(G_{j,q_j})\bigr);
+\]
+\item every $F$ is covered, meaning at least one $W_j$ succeeds;
+\item success and failure, including all discarded attempts, are decided
+without a current-scale SAT oracle and within
+$M^{c_j+o(1)}$ time and $M^{s_j+o(1)}$ live space;
+\item every successful plan has $q_j\le M^{a_j+o(1)}$ and children of
+length at most $M^{b_j+o(1)}$, where $b_j<1$, and its actual explicit or
+implicit representation, generation, access, and combiner costs are included
+in those bounds.
+\end{enumerate}
+Then sequentially running $W_1,\ldots,W_k$ until the first success is one
+uniform exact inner procedure with
+\[
+ a=\max_j a_j,\qquad b=\max_j b_j<1,\qquad
+ c=\max_j c_j,\qquad s=\max_j s_j.
+\]
+\end{theorem}
+\begin{proof}
+Coverage guarantees termination with a successful plan, and the first
+hypothesis gives exactness independently of which member wins.  Because $k$
+is fixed, the sum of the attempted running times has exponent
+$\max_j c_j$.  Attempts are sequential and failed state is discarded, so
+peak live space has exponent $\max_j s_j$.  The retained plan is the winning
+member's plan, giving the stated fanout and child-size maxima.  The maximum of
+finitely many $o(1)$ terms is still $o(1)$.  All output writing or generator
+state is already charged by hypothesis.
+\end{proof}
+
+This is a partial-generator specialization of the recovered finite-witness
+portfolio-absorption lemma, not a new source of contraction.  It removes the
+need for a separate classifier among a fixed collection of syntactically safe
+inner mechanisms.  The load-bearing premise is now exact favorable
+\emph{coverage} with common charged bounds.  Merely having one correct member
+is insufficient: every reported success must be exact, including on UNSAT
+instances.  A growing portfolio, an unsafe first finisher, retained failed
+states, or an input-dependent certificate requires a separate ledger.
+
+Recursive and depth-based backdoors provide exact partial mechanisms in their
+stated structural domains \cite{maehlmann2021,dreier2022}.  They do not prove
+bounded depth or cheap acquisition on every CNF.  SATzilla demonstrates the
+practical value of per-instance portfolios \cite{xu2008}, but its empirical
+selection objective is not a worst-case coverage theorem and does not transfer
+to the present resource contract.
+
 \subsection{Prime lineage, hashes, and merging}
 In Boolean semantics, TRUE and NOT FALSE agree, as do FALSE and NOT TRUE. Assigning different primes preserves syntactic provenance, not four distinct Boolean truth values. Any prime product is charged by bit length and arithmetic cost. An ordinary hash needs collision handling for exact correctness. A common terminal node or equal SAT bits does not justify identifying histories under future operations. A merge needs a semantic congruence appropriate to the remaining computation. Compact macro-route indices can save lineage space after contraction; they do not establish contraction. A finite DAG contains no directed cycles: recursion must be described by a well-founded call graph or an unfolded DAG, not a literal cyclic DAG.
 
@@ -466,9 +518,24 @@ therefore remain \textsc{open}; no mathematical status in this manuscript is
 promoted.
 % END ARC COFINAL SEED REVIEW 2026-10-07
 
+% BEGIN CERTIFIED PARTIAL PORTFOLIO 2026-10-07
+\paragraph{Certified partial portfolio, 7 October 2026 (WRP-0002).}
+Theorem~\ref{thm:partial-portfolio} formalizes that a fixed finite union of
+forward partial wrappers needs no separate selector when every SUCCESS plan
+is exact, every failed attempt is charged and discarded, and the domains
+cover all inputs.  A bounded implementation checked Horn, 2-CNF, component,
+and size-two strong-Horn-backdoor mechanisms on 320 generated formulas, while
+a connected positive-clause control remained outside the union.  Thus the
+selector issue is solved conditionally, but favorable general-SAT coverage,
+fixed-power child shrinkage, and joint resource bounds remain \textsc{open}.
+The theorem neither supplies an ARC route nor changes the status of P versus
+NP.
+% END CERTIFIED PARTIAL PORTFOLIO 2026-10-07
+
 \bibliographystyle{plain}
 \bibliography{spines}
 \end{document}
+
 
 
 
