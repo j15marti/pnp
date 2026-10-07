@@ -1,0 +1,39 @@
+\documentclass[11pt]{article}
+\usepackage{fontspec}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{url}
+\begin{document}
+\sloppy
+\section*{GROK H1714 (2026-10-06 17:14 PT): register-permutation symmetry of the tight $r=3$ encoder; first-step cover drops from 225 to 75 cubes}
+\textbf{P versus NP: OPEN.}
+
+\section*{0. What landed since H1702}
+Nothing. The newest commit on \texttt{main} is the H1702 note (\texttt{846d8978}); nothing landed under \path{research/agents/grok/}, \path{research/main/}, or elsewhere since.
+
+\section*{1. Literature}
+None. The claim under test is H1702's open bookkeeping question: may the $L(f,3)<9$ search for $f=\texttt{a40ff54e580f5d0a}$ ($n=6$) close only the 75 first-step cubes with $w_1=0$?
+
+\section*{2. Lemma R3-PERM (PROVED/EXACT, about the encoder \path{regsat_fix.py})}
+Let $\pi$ be any permutation of the registers $\{0,1,2\}$. Map each step $(w,a,b,g)$ to $(\pi(w),a',b',g)$, where inputs stay fixed and source $n+i$ becomes $n+\pi(i)$; if then $a'>b'$, swap the operands and transpose $g$ (exchange truth-table bits 1 and 2). Finally retarget the last step's write to $R_0$.
+\begin{itemize}
+\item Semantics: relabeling plus operand swap with transpose computes the same values; the last step's value is computed from operands read before the write, so retargeting it puts $f$ in $R_0$.
+\item Tight constraints: (i) the degenerate set $\{0,3,5,10,12,15\}$ is closed under transpose ($3\leftrightarrow5$, $10\leftrightarrow12$); (iii) transpose fixes bit 0, so normal stays normal; (iv) inputs sit below registers, so the swap restores $a'<b'$; (ii) ``read only after written'' is relabel-invariant, and the retarget is at the last step, which nothing later reads; (v) at step $L$ the pending-read clauses reduce to ``every pending register is read at step $L$'', which depends on reads only, so the retarget keeps it.
+\end{itemize}
+Since $L\ge 2$, step 1 is not retargeted: a program with step-1 cube $(0,a,b,g)$ maps under $\pi=(0\,1)$ or $(0\,2)$ to one with cube $(1,a,b,g)$ or $(2,a,b,g)$, and back. So, under the tight encoder, the $w_1=1$ and $w_1=2$ cubes are SAT iff the matching $w_1=0$ cube is, and the 75 cubes with $w_1=0$ are a complete cover. This is the $r=3$ form of H2118's W-SWAP.
+
+\section*{3. Controls (COMPUTATIONAL)}
+\path{/workspace/scratch_h1714_1006/symcheck.py} (sha256 prefix \texttt{bce242a3}; it imports \path{regsat_fix.py}, prefix \texttt{1f06dc40}, unchanged) takes the H1458 $L=10$ witness, which uses $R_0,R_1$ only, as an $r=3$ program, applies all 6 permutations, re-simulates, and asks the encoder to admit the fully fixed program. Result at 17:15\,PT: base and all 6 images re-simulate to $f$ and are admitted. Mutations: dropping the retarget for $\pi=(1,0,2),(2,1,0),(1,2,0)$ gives programs that fail simulation and are rejected (3 of 3); dropping the transpose for $\pi=(1,0,2)$ is rejected by (iv). Dropping the transpose for $\pi=(0,2,1)$ is admitted, because this witness never reads $R_1$ and $R_2$ in one step; that control is vacuous, not a failure. Limitation: no witness that uses all three registers was available, so the controls exercise two-register traffic only. The lemma rests on the argument in \S2, not on the controls.
+
+\section*{4. Parent cube 1 (COMPUTATIONAL, in progress)}
+Parent cube 1, $p=(0,0,1,4)$, running since 17:06\,PT at a 600\,s cap on 6 workers. Recounted at 17:16\,PT: 115 of 315 subcubes UNSAT, 0 SAT, 0 timeouts; 40 of them took over 1\,s, 3058\,s of solve time in total.
+
+\section*{5. Standing status}
+No new finite witness improves a charged resource and no claim is falsified; UNSAT subcubes and a symmetry lemma cannot improve $T$, $S$, or $R$. The lemma cuts the cover to a third, so H1702's 75-cube cost estimate applies (about 50 hours of wall time on 6 workers if each parent costs what parent cube 0 did; unmeasured for other parents). Carried, not re-derived: $L(f,2)\le 10$ (COMPUTATIONAL), $L(f,2)=10$ CONDITIONAL on the tightness lemma; $L(f,3)\le 9$ and $L(f,4)\le 8$ (COMPUTATIONAL, H1444). $L(f,3)=8$ stays OPEN with 1 of 75 first-step cubes closed. The soundness of the tight constraints themselves stays CANDIDATE. The time-state-representation surface stays CANDIDATE. The SAT-to-charged-model compiler and the product-span obstruction stay OPEN. The D(4,8) semantic-cut bound of 48 stays FALSIFIED/RETIRED.
+
+\section*{Next smallest step}
+Let parent cube 1 finish; queue $w_1=0$ parents 2 onward. Get a genuine three-register witness (any tight $L=9$, $r=3$ program) to strengthen the controls of \S3.
+
+\bigskip
+\noindent\textbf{Status sentence.} P versus NP remains OPEN: the SAT-to-charged-model compiler and the product-span obstruction are open load-bearing arrows. This pass proves that the tight $r=3$ encoder is symmetric under register permutation with last-step retarget, so 75 first-step cubes cover the $L(f,3)\le 8$ question for \texttt{a40ff54e580f5d0a}, and records parent cube 1 at 115 of 315 UNSAT; no charged resource improves, no claim is falsified, and this is not a proof of anything about P versus NP.
+\end{document}
