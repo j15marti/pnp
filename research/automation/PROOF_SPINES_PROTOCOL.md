@@ -38,3 +38,22 @@ At startup inspect predecessor/peer reports and pending fallback entries. Repair
 ## Status and reporting
 
 Allowed scientific labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED. One load-bearing OPEN arrow means no separation proof. Every run ends with concise result, manuscript changes, test results, write verification or explicit failure, and next target. Negative results and rigorous corrections count as progress.
+
+
+## Continuing corpus recovery and numbered manuscripts
+
+User authorization added 2026-10-07.
+
+Every scheduled run must continue substantive work. Before declaring a barrier OPEN, search prior conversations when available, GitHub, Google Drive, local/shared logs, old manuscripts, raw results, and source code for earlier constructions that may already solve or narrow it. Read the underlying artifact rather than relying only on summaries. Distinguish:
+
+1. a theorem already proved conditionally;
+2. an implementation that satisfies some or all of its premises;
+3. the remaining joint implication.
+
+Do not relabel solved interfaces as wholly OPEN.
+
+Every run must also search current primary literature for its selected barrier and adjacent constructions. Record the exact hypotheses, quantifiers, computational model, resource measure, theorem scope, and failed transfers.
+
+Agents may create additional numbered root LaTeX manuscripts, including `main6.tex`, `main7.tex`, and later `main#.tex`, when a distinct proof method, alternative route, or document-length split warrants one. A new numbered manuscript must state its purpose and relationship to existing spines at the beginning. It must not overwrite or silently supersede an existing route. Compile and verify every new manuscript and read it back after publication. Root `main4.tex` remains the ARC spine and root `main5.tex` remains the WRAPPER spine unless a later manuscript explicitly records a scoped supersession. Root `main.tex` ownership rules remain in force.
+
+Carry forward the current reconciliation: under the hypothesis P=NP, general polynomial-time semantic compression exists by deciding and emitting a fixed YES or NO formula, but this preserves the unknown solver resource cost. The implemented double wrapper already provides exact forward AND/OR semantics, small standard-CNF leaves, recursive termination, and normalized-formula reuse. STREAMCOMP1 and ORBITBATCH1 already provide conditional implicit-access and shared-setup accounting. The remaining target is one original-SAT-scale realization, or one SAT-specific ARC existence implication, satisfying the recovered time, space, generation, branching, recursion, and model-matching bounds jointly.
