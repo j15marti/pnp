@@ -1,0 +1,185 @@
+% BEGIN_REPORT::RED::RED-0001::2026-10-07T15:31:28-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\emergencystretch=3em
+\newtheorem{lemma}{Lemma}
+\newcommand{\sol}{\operatorname{sol}}
+\title{RED-0001: Solution-Cover Obstruction to Sparsification Wrappers}
+\author{RED, ARC/WRAPPER research team}
+\date{7 October 2026}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This run attacks the preceding quantitative sparsification transfer audit.
+The predecessor correctly showed that known sparsity bounds do not certify
+power shrink at polynomial fanout.  A stronger exact obstruction holds in the
+actual same-variable bounded-width solution-cover model: on an independent
+2-CNF product, every satisfiable child in an exact union of solution sets must
+retain linear occurrence and encoded size.  This retires IPZ-style
+solution-cover sparsification as W2, not decision-only semantic wrappers.
+The general-SAT inner transformation and P versus NP remain open.
+\end{abstract}
+
+\section{Claim card and highest-value arrow}
+\begin{description}
+\item[] \textbf{Claim ID:} SPARSIFICATION-SOLUTION-COVER-GATE1.
+\item[] \textbf{Status before attack:} IPZ-POLYFANOUT-TRANSFER-GATE1 was
+\textsc{Falsified/Retired as a theorem transfer} because the published upper
+bound did not prove W2; no actual output lower bound was claimed.
+\item[] \textbf{Status after attack:} \textsc{Proved/Exact} obstruction for
+same-variable, fixed-width CNF children preserving an exact union of solution
+sets.  That mechanism is \textsc{Falsified/Retired} as a universal W2 power
+shrinker.  Decision-only semantic shrinkage remains \textsc{Open}.
+\item[] \textbf{Exact quantifiers:} for every constant width $k\ge1$ and
+every $m\ge1$, for every finite family of width-$k$ CNFs $G_j$ over the
+variables of $F_m$, if $\sol(F_m)=\bigcup_j\sol(G_j)$, then every satisfiable
+$G_j$ has at least $m/k$ clauses and linear indexed length.
+\item[] \textbf{Same realization:} the explicit child CNFs emitted by the
+sparsification algorithm, before child SAT answers are known.
+\item[] \textbf{Weakest surviving theorem:} a decision-only exact OR
+decomposition may emit children whose solution sets are unrelated to the
+parent witnesses.  It must still prove polynomial fanout, fixed-power encoded
+shrink, charged acquisition, recursive closure, and joint workspace.
+\end{description}
+
+\section{Corpus, peer audit, and primary literature}
+The run read the current root \texttt{main.tex}, \texttt{main2.tex},
+\texttt{main3.tex}, \texttt{main4.tex}, \texttt{main5.tex},
+\texttt{AGENTS.md}, \texttt{CODEX.md}, the complete pnp-research skill and
+its referenced protocols, the proof-spines protocol, and \texttt{spines.bib}.
+It read the predecessor RSR-0001 report in full, along with WRP-0001,
+LEAD-0028, GROK CONTRACT1, and LSPV-2 DELAYOR1.  GitHub searches found the
+older witness-cover warning and qualitative sparsification objections but no
+record of the block-incidence child-size lemma below.  Drive searches found
+related independent-product, padding, and witness-cover records; no PROVED
+label was accepted without the underlying argument.
+
+Impagliazzo--Paturi--Zane Corollary~1 states an exact disjunction of sparse
+$k$-CNFs \cite{ipz2001}.  More importantly for this attack,
+Calabro--Impagliazzo--Paturi Lemma~1 explicitly states
+\[
+ \sol(\varphi)=\bigcup_i\sol(\varphi_i)
+\]
+and keeps the children in $k$-CNF on the same $n$ variables, with
+$n^{O(k)}$ delay and the quantitative occurrence bound
+\cite{calabro2010}.  These hypotheses make the following result a theorem
+transfer into the exact child model, not an analogy.  Primary sources opened
+were
+\url{https://doi.org/10.1006/jcss.2001.1774},
+\url{https://www.ccs.neu.edu/home/viola/classes/papers/ImpagliazzoPaturiZane01Which.pdf},
+and
+\url{https://cseweb.ucsd.edu/~paturi/myPapers/pubs/CalabroImpagliazzoPaturi_2010_ipec.pdf}.
+
+\section{Exact obstruction}
+Let
+\[
+ F_m=\bigwedge_{i=1}^{m}(x_i\vee y_i).
+\]
+Its ordinary indexed-CNF length is $M_m=\Theta(m\log m)$.
+
+\begin{lemma}[SPARSIFICATION-SOLUTION-COVER-GATE1]
+Let $G$ be a satisfiable width-$k$ CNF over the variables of $F_m$.  If
+$\sol(G)\subseteq\sol(F_m)$, then $G$ has at least
+$\lceil m/k\rceil$ clauses and at least $m$ literal occurrences.
+\end{lemma}
+\begin{proof}
+Suppose block $i$ contributes neither $x_i$ nor $y_i$ to $G$.  Choose a
+satisfying assignment of $G$ and change only $x_i,y_i$ to zero.  Since neither
+variable is read by $G$, the changed assignment still satisfies $G$; it
+falsifies the $i$th clause of $F_m$.  This contradicts
+$\sol(G)\subseteq\sol(F_m)$.  Hence every block contributes a mentioned
+variable.  Each width-$k$ clause can mention variables from at most $k$
+blocks, giving at least $\lceil m/k\rceil$ clauses and $m$ occurrences.
+\end{proof}
+
+If $\sol(F_m)=\bigcup_j\sol(G_j)$, union equality forces every
+$\sol(G_j)\subseteq\sol(F_m)$; no cancellation is possible.  Since $F_m$ is
+satisfiable, at least one useful child is satisfiable, and in fact every
+satisfiable child obeys the lemma.  Mentioning variables from all $m$ blocks
+costs $\Omega(m\log m)=\Omega(M_m)$ bits in the declared indexed encoding.
+Thus no fixed $b<1$ child bound can hold on this family, irrespective of the
+number of children and irrespective of the rate $C(k,\varepsilon)$.
+
+This strengthens RSR-0001 without contradicting it.  The quantitative theorem
+bound was insufficient; the exact model now also supplies a family-specific
+output lower bound.  The scope is narrower than arbitrary decision reduction:
+the implication uses preservation of all witnesses through a union of solution
+sets.
+
+\section{Bounded model and minimal counterexamples}
+The command
+\[
+\texttt{timeout 30s python experiments/proof\_spines/
+sparsification\_solution\_cover\_gate\_test.py}
+\]
+used seed 20261007 and an internal 25-second budget.  It completed 72,605
+exact bitset checks in 2.599 seconds.  For widths two and three and up to five
+or six independent blocks, respectively, it exhaustively enumerated every
+CNF having fewer than $\lceil m/k\rceil$ clauses.  No satisfiable child had
+solution set contained in $\sol(F_m)$.  Unit-clause children selecting $x_i=1$
+for every block supplied positive controls.  In 256 seeded random cases, 149
+satisfiable formulas omitted a block; resetting that block to $00$ preserved
+the child and falsified the parent exactly as the proof predicts.
+
+The smallest analytic case is $m=1$: a useful satisfiable child must mention
+$x_1$ or $y_1$.  The asymptotic consequence uses independent copies so that
+the occurrence lower bound grows linearly.  The finite computation is only a
+regression check and is not used to infer the asymptotic theorem.
+
+Code and raw output are
+\path{experiments/proof_spines/sparsification_solution_cover_gate_test.py}
+and
+\path{results/raw/proof_spines/2026-10-07_153128_sparsification_solution_cover_gate.json}.
+
+\section{Hostile-control and model audit}
+\begin{description}
+\item[] \textbf{Decision-only escape:} if correctness requires only
+$\operatorname{SAT}(F)=\bigvee_j\operatorname{SAT}(G_j)$, a satisfiable
+parent may map to a constant YES child.  The subset step fails.  Acquisition
+then carries the burden, so this escape does not prove a wrapper.
+\item[] \textbf{Easy-family control:} $F_m$ is monotone 2-CNF and trivially
+satisfiable.  The result is representational, not a hardness inference.
+\item[] \textbf{Independent products:} the family is itself an independent
+product.  Repetition strengthens the occurrence lower bound rather than
+creating computational hardness.
+\item[] \textbf{Source carry and padding:} the lower bound counts the child's
+own mentioned indexed variables; a parent pointer or removable padding cannot
+be credited as a smaller ordinary-CNF child.
+\item[] \textbf{Current-scale calls:} the sparsification construction makes
+none.  The obstruction is W2, not a hidden invocation of the hypothetical
+$M^K$ decider.
+\item[] \textbf{Auxiliary and algebraic representations:} auxiliary
+projection, circuits, polynomials, and unbounded clauses fall outside the
+declared same-variable width-$k$ output model.  They may aggregate blocks but
+need their own ordinary-SAT return and access proof.
+\item[] \textbf{Oracle replacement:} a SAT oracle can emit a constant answer
+child and violates witness preservation.  Hence the lemma relativizes as a
+solution-cover statement and supplies no nonrelativizing hinge.
+\item[] \textbf{Finite versus growing depth:} the obstruction holds at one
+inner application.  It neither assumes nor refutes growing-depth scheduling;
+no asymptotic claim is promoted from the finite enumeration.
+\end{description}
+
+\section{Manuscript reconciliation and status}
+Root \texttt{main5.tex} now records the exact lemma and its decision-only
+escape.  Root \texttt{main4.tex} contains a concise review with no ARC status
+change.  The direct IPZ/CIP same-variable solution-cover route is retired as
+W2.  The weaker decision-only general-SAT interface, its acquisition theorem,
+recursive closure, endpoint-compatible space, nonrelativization, and
+nonalgebrization all remain open.  P versus NP remains open.
+
+\section{Peer handoff}
+\begin{description}
+\item[] \textbf{Handoff to WRITE:} verify that every manuscript use of
+``sparsification'' distinguishes solution-set union from decision-only OR.
+Retain the exact block-incidence obstruction only for same-variable
+bounded-width children.  Do not promote it to circuits, auxiliary projections,
+or arbitrary semantic shrinkers.
+\end{description}
+
+\bibliographystyle{plain}
+\bibliography{spines}
+\end{document}
+% END_OF_VERIFIED_REPORT::RED::RED-0001
