@@ -1,0 +1,367 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\gammats}{2\cos(\pi/7)}
+\title{Main 6: Polynomial-Regime Self-Improvement and the WRAPPER Bridge}
+\author{PNP research working manuscript}
+\date{7 October 2026}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This manuscript isolates the closest published analogue of the recursive
+WRAPPER, Williams's Circuit-SAT self-improvement theorem, and determines
+exactly why it does not yet extend a bare assumption $P=NP$ to the joint
+resource region needed here.  It then gives a source-checkable sufficient
+theorem for a forward WRAPPER tree.  The recovered WRAPPER components prove
+correctness, recursion, sharing and several accounting interfaces, but no
+current construction proves the theorem's all-input quantitative premises.
+The result is a sharper conditional route, not a proof that $P\ne NP$.
+\end{abstract}
+
+\section{Purpose and relation to the other spines}
+\texttt{main4.tex} studies existence-level contraction of the joint
+achievable region.  \texttt{main5.tex} studies explicit recursive SAT
+interfaces.  This manuscript records the bridge suggested by the double
+WRAPPER: an inner solver is represented inside a forward object, outer
+variables are left exposed, and an outer solver or evaluator completes the
+computation.  This is precisely the architecture of the ``OR trick'' in
+Williams's self-improvement proof \cite{williams2024}.
+
+Three statuses must remain separate.
+\begin{description}
+\item[] \textbf{Known theorem.} Williams proves self-improvement in the
+large-circuit and parameterized regimes.
+\item[] \textbf{Proved conditional bridge.} A forward source-queryable tree
+with the joint bounds below would yield a forbidden SAT algorithm.
+\item[] \textbf{Open construction.} No recovered general-input WRAPPER has
+the required node, generation, depth, leaf-length and workspace bounds in one
+realization.
+\end{description}
+
+\section{The published self-improvement theorem}
+Let an $n$-input circuit have size $2^{\alpha n+o(n)}$.  Williams's
+Theorem~1.1 states that, for fixed positive constants $\alpha\le\beta$, a
+$2^{\beta n+o(n)}$-time Circuit-SAT algorithm on that large-circuit regime
+implies a $2^{(\beta-\alpha)n+o(n)}$-time algorithm on
+$2^{o(n)}$-size circuits \cite{williams2024}.  The proof repeatedly splits
+variables, represents the current inner SAT algorithm by a circuit, and asks
+Circuit-SAT on the resulting outer circuit.  It is a rigorous recursive plus
+forward-wrapper construction.
+
+Suppose only that $P=NP$ and that one fixed Circuit-SAT implementation takes
+time $N^{K+o(1)}$.  On size $N=2^{\alpha n+o(n)}$ circuits this gives
+$\beta=K\alpha$, so Theorem~1.1 yields
+\[
+ 2^{(K-1)\alpha n+o(n)}
+\tag{1}
+\]
+time on subexponential-size circuits.  Choosing a different fixed $\alpha$
+for each desired exponential rate recovers arbitrarily small exponential
+rates, which is consistent with $P=NP$.  It does not give a fixed polynomial
+bound in the encoded length of every subexponential-size input.
+
+\begin{lemma}[Fixed-$\alpha$ polynomial-regime gate]
+Fix $K>1$ and $\alpha>0$.  For a family whose encoded circuit length is
+$M=2^{r(n)n}$ with $r(n)\to0$, the bound in (1), expressed as a power of $M$,
+has exponent
+\[
+ \frac{(K-1)\alpha}{r(n)}+o(1/r(n)).
+\]
+Consequently the published fixed-$\alpha$ theorem gives no finite uniform
+polynomial exponent in $M$ on the entire $2^{o(n)}$ regime.
+\end{lemma}
+\begin{proof}
+Substitute $n=\log_2(M)/r(n)$ into (1).  Since $r(n)\to0$, the leading
+coefficient diverges.  Choosing $\alpha$ as a function of the particular
+input length would require a new uniform theorem controlling its construction,
+induction depth and error terms.  The cited theorem fixes $\alpha$ as a
+constant before the asymptotics.
+\end{proof}
+
+The parameterized result makes the second obstruction equally explicit.
+Williams's Lemma~4.1 composes size bounds
+\[
+ O(2^{ak}+n^b)\quad\hbox{and}\quad O(2^{ck}+n^d)
+\]
+into one with variable exponent $a'=adc/(ad+c)$ but size exponent
+$b'=bd$.  Self-composition of a generic $n^K$ size term therefore produces
+$n^{K^2}$ while improving the variable term.  Theorem~1.7 avoids this growth
+because its premise supplies a bound $O(c^k+n^{1+\varepsilon})$ for one fixed
+$c>1$ and for every $\varepsilon>0$.
+
+\begin{lemma}[Hybrid-premise gate]
+The two bounds supplied without a new WRAPPER,
+\[
+ n^{K+o(1)}\quad\hbox{and}\quad 2^k n^{1+o(1)},
+\]
+do not by themselves satisfy
+\[
+ \exists c>1\ \forall\varepsilon>0:\quad
+ O(c^k+n^{1+\varepsilon}).
+\tag{2}
+\]
+More precisely, for every fixed $c>1$ and $K>1$ there are arbitrarily small
+$\varepsilon>0$ and parameter ratios $k=2\varepsilon\log_2n+O(1)$ for which
+the exponent certified by the hybrid minimum is $1+2\varepsilon$, whereas
+the two terms on the right of (2) have exponent at most $1+\varepsilon$.
+\end{lemma}
+\begin{proof}
+Write $d=\log_2c$.  Choose $\varepsilon>0$ so small that
+$1+2\varepsilon<K$ and $2d\varepsilon<1$.  At
+$k=2\varepsilon\log_2n+O(1)$, the brute-force term is
+$n^{1+2\varepsilon+o(1)}$, and it beats $n^K$.  Meanwhile
+$c^k=n^{2d\varepsilon+o(1)}$ and the other term is
+$n^{1+\varepsilon}$.  Their sum has exponent $1+\varepsilon$, which is
+strictly smaller than the only exponent certified by the stated hybrid.
+This is a failure of those two upper bounds to prove (2), not a lower bound
+against another algorithm.
+\end{proof}
+
+Williams explicitly asks whether self-improvement can reach the $P=NP$
+regime and says the present method has bottlenecks below subexponential time
+\cite{williams2024}.  Thus the remembered elimination of $K$ is valid inside
+the project's conditional shrinker recurrences, and Williams eliminates a
+variable exponent under stronger size-sensitive premises, but neither result
+derives the missing premise from bare $P=NP$.
+
+\section{A complete conditional forward-tree bridge}
+The following theorem is the cleanest current target for the nonrecursive
+inner WRAPPER plus recursive outer WRAPPER.
+
+\begin{definition}[Source-queryable forward tree]
+On an explicit CNF $F$ of encoded length $N$, a deterministic constructor
+defines a finite rooted AND/OR tree $\mathcal T_F$.  Each leaf is a standard
+explicit CNF.  A depth-first evaluator can regenerate the next child and the
+combiner state from the read-only source and its current stack.  Let
+\begin{align*}
+ Q(N)&=\text{worst-case number of tree nodes actually evaluated},\\
+ D(N)&=\text{maximum evaluated root-to-leaf depth},\\
+ G(N)&=\text{total construction, regeneration and combination time},\\
+ R(N)&=\text{peak generator and combiner workspace},\\
+ M(N)&=\text{maximum encoded length of an evaluated leaf}.
+\end{align*}
+The tree is exact when its Boolean value equals $\SAT(F)$ for every input.
+All five functions refer to the same implementation and include unsuccessful
+routes needed on worst-case SAT and UNSAT inputs.
+\end{definition}
+
+\begin{theorem}[FORWARD-TREE-BRIDGE1]
+Assume $P=NP$.  Suppose one exact source-queryable forward-tree WRAPPER has
+fixed constants $q,g$ and satisfies
+\[
+ Q(N)\le N^{q+o(1)},\qquad G(N)\le N^{g+o(1)},
+\]
+\[
+ D(N)=N^{o(1)},\qquad R(N)=N^{o(1)},\qquad M(N)=N^{o(1)},
+\]
+with a depth-first frame of $N^{o(1)}$ bits.  Then SAT has one deterministic
+algorithm with
+\[
+ T(N)=N^{\max\{q,g\}+o(1)},\qquad S(N)=N^{o(1)}.
+\]
+If $\max\{q,g\}<\gammats$, this contradicts the model-matched Williams
+time-space product theorem \cite{williams2010}.
+\end{theorem}
+\begin{proof}
+Under $P=NP$, fix one exact SAT decider $A$ with time $m^{K+o(1)}$ and space
+$m^{L+o(1)}$ for finite constants $K,L$.  Evaluate $\mathcal T_F$ depth
+first, calling $A$ at a leaf.  Since $M(N)=N^{o(1)}$, every leaf call takes
+$N^{o(1)}$ time and space.  The total leaf cost is therefore
+$Q(N)N^{o(1)}=N^{q+o(1)}$.  Adding the fully charged $G(N)$ gives the time
+bound.  At most one leaf and one root-to-current-node stack are live.  The
+leaf, generator state and $D(N)$ frames together occupy $N^{o(1)}$ bits.
+The endpoint excludes the resulting exponent pair when the strict inequality
+holds.
+\end{proof}
+
+If generation cost $N^{h+o(1)}$ is only a per-node bound, the theorem must use
+$q+h$ in place of $g$.  A short descriptor is not a small ordinary SAT
+instance.  A generator for a virtually large leaf must charge every access,
+and applying ordinary SAT to its descriptor would instead invoke a succinct
+problem whose complexity can be much higher \cite{py1986}.
+
+The tree condition is also substantive.  Formula/tree value has low-depth
+evaluation structure, whereas evaluation of a general shared Boolean DAG is
+the Circuit Value Problem and is complete for deterministic polynomial time
+under logspace reductions \cite{ladner1975,buss1987}.  Sharing is useful only
+with a proved evaluator bound for the resulting DAG class, or after charging
+its unfolded tree size.  This is an interface guard, not a claim that every
+shared WRAPPER requires large space.
+
+There is a concrete intermediate target for the recursive version.  A
+bounded-fan-in circuit of polynomial size and treewidth $w$ can be balanced
+to formula depth $O(w^2\log N)$ \cite{jansensarma2010}.  Query-DAG results
+likewise turn separator number $s$ into $2^{O(s\log N)}$ deterministic work
+and $O(s\log N)$ oracle queries \cite{gharibianrudolph2023}.  Thus a WRAPPER
+may retain sharing if it emits a source-checkable decomposition and the
+resulting evaluator cost is charged.  Constant width controls dependency and
+space, but the published generic polynomial-time transformations do not fix
+an exponent below $\gammats$.  The remaining theorem must therefore bound
+the actual evaluator time, not merely assert bounded treewidth or separator
+number.  This alternative route separates the recursive-topology problem
+from the still-open leaf-size and acquisition problem.
+
+The selector literature marks another exact boundary.  A merge that must
+return one of two inputs and preserve their disjunction is a p-selector;
+p-selectivity together with self-reducibility characterizes polynomial-time
+decidability \cite{buhrmantorenvliet1996}.  Under $P=NP$ such a selector
+exists, but its polynomial exponent is uncontrolled.  A cheap selector would
+solve the semantic choice problem, while its construction cost is precisely
+part of the resource theorem still needed here.
+
+\section{Where the aggregate $2^k/2^x$ calculation fits}
+If a declared state population begins at $D_0=2^k$ and exact reductions have
+factors $G_i$, then
+\[
+ D_r=\frac{2^k}{\prod_iG_i}=2^{k-x},\qquad
+ x=\sum_i\log_2G_i.
+\]
+The condition $D_r\le N^d$ is exactly
+$x\ge k-d\log_2N$.  For a subpolynomial residual population, it becomes
+$x\ge k-o(\log N)$.  In FORWARD-TREE-BRIDGE1 this calculation may certify a
+bound on $Q$ or $M$ only after a source-checkable map connects the counted
+states to actual tree nodes or explicit leaf bits.  Counting nominal
+assignments, hashes, prime labels, or merged route names does not establish
+that connection.  This is the precise place where the original divide-by-
+$2^x$ argument belongs.
+
+For fixed-power leaves $M=N^{b+o(1)}$ instead, a hypothetical $N^K$ solver
+contributes $q+bK$ to the time exponent.  The finite-depth theorem in
+\texttt{main5.tex} removes the unknown contribution only after a repeatable
+shrinking return is proved and the depth is chosen so that $b^dK$ fits the
+endpoint margin.  FORWARD-TREE-BRIDGE1 is the limiting $b=o(1)$ form.
+
+\section{What the latest constructions establish}
+The double WRAPPER already supplies exact forward AND/OR semantics, standard
+CNF leaves below its declared cutoff, strict recursive termination and
+normalized-formula reuse.  The source-backed variants avoid retained residual
+CNFs.  FRONTIER-JOINT1 supplies an exact future-boundary congruence, and
+BATCHFRONTIER1 shares a suffix scan across blocks.  STREAMCOMP1 and
+ORBITBATCH1 supply conditional charged ledgers for implicit access and shared
+setup.  These are solved components, not wholly open placeholders.
+
+The latest batched frontier implementation has, for sparse bounded-width
+inputs with block exponent $\beta$ and table exponent $\omega$, the envelope
+\[
+ C=\max\{2-\beta,1+\omega\},\qquad
+ \sigma=\max\{\beta,\omega\}.
+\]
+For every $\beta,\omega\ge0$, $C+\sigma\ge2$: if
+$\beta\ge\omega$, the first branch $2-\beta$ plus $\beta$ gives two;
+if $\omega>\beta$, the branch $2-\beta$ plus $\omega$ exceeds two.  The implementation's
+chain control realizes the corresponding $N^{2-o(1)}$ product.  This retires
+that full-suffix-scan access plan as an endpoint solution, not frontier
+merging or the easy chain family.
+
+A combined source-replay prototype now places propagation, frontier DP,
+component AND, Shannon OR and collision-checked bounded sharing in one
+implementation.  Its finite correctness tests are useful, but pigeonhole
+controls exhibit rapid growth in recursion and source rereads.  Its Python
+workspace instrumentation now charges simultaneously live component,
+normalization, frontier, cache and ancestor descriptors.  The resulting
+finite figures are accounting checks only: the dense assignment mask alone
+is $\Theta(n)$ bits, and no asymptotic premise of
+FORWARD-TREE-BRIDGE1 is inferred from those measurements.
+
+Random bitstreams and prime lineage can audit identity or probabilistically
+fingerprint replay.  The endpoint here is deterministic.  A favorable fixed
+stream is advice unless it is generated uniformly; input bits can be reread;
+and exact prime products carry their full bit length.  No recovered bitstream
+construction supplies the five all-input bounds above.
+
+\section{Reproducible arithmetic audit}
+The companion program \texttt{polynomial\_regime\_bridge\_test.py} performs
+635 exact rational checks in under one second, with a 25-second internal
+deadline.  It checks the substitution $\beta=K\alpha$, 49 explicit witnesses
+to the hybrid-premise gate, divergence of the fixed-$\alpha$ encoded-size
+exponent, the BATCHFRONTIER1 minimum product of two on a $1/16$ grid, and the
+disappearance of $K$ from the forward-tree ledger when the leaf exponent is
+zero.  Raw output is in
+\path{polynomial_regime_bridge_results.json}.  The analytic lemmas above,
+not the finite grid, establish the symbolic claims.
+
+\section{Current proof spine and exact open statement}
+The strongest assembled route is
+\[
+\begin{aligned}
+P=NP
+&\Rightarrow \text{one fixed SAT decider with finite }(K,L)\\
+&\overset{\textsc{Open}}{\Longrightarrow}
+  \text{FORWARD-TREE-BRIDGE1 premises, or an ARC successor}\\
+&\overset{\textsc{Proved/Exact conditional composition}}{\Longrightarrow}
+  (C,\sigma)\text{ with }C+\sigma<\gammats\\
+&\overset{\textsc{Known theorem}}{\Longrightarrow}\bot.
+\end{aligned}
+\]
+Equivalently, one may replace the tree premises by a shared-DAG theorem with
+a model-matched evaluator, or by the achievable-region finite-return premise
+of \texttt{main4.tex}.  What remains open is one SAT-specific quantitative
+implication, not correctness of the existing wrappers or the downstream
+recurrence algebra:
+\begin{center}
+\fbox{\parbox{0.86\linewidth}{
+Construct, on every explicit SAT input, one exact source-matched realization
+whose total acquisition, branching, recursive leaf length, evaluation and
+peak workspace jointly enter the Williams forbidden region; or prove the
+corresponding existence implication between achievable resource pairs.
+}}
+\end{center}
+Until this statement is proved, the three manuscripts give conditional proof
+spines and falsifiable construction targets.  P versus NP remains open.
+
+\begin{thebibliography}{9}
+\bibitem{williams2024}
+R. Ryan Williams,
+\emph{Self-Improvement for Circuit-Analysis Problems},
+STOC 2024, 1374--1385.
+\url{https://people.csail.mit.edu/rrw/stoc-self-improvement.pdf}
+
+\bibitem{williams2010}
+R. Ryan Williams,
+\emph{Alternation-Trading Proofs, Linear Programming, and Lower Bounds},
+STACS 2010, Theorem 3.9.
+\url{https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.STACS.2010.2494}
+
+\bibitem{ladner1975}
+R. E. Ladner,
+\emph{The Circuit Value Problem is Log Space Complete for P},
+SIGACT News 7(1), 1975.
+\url{https://doi.org/10.1145/990518.990519}
+
+\bibitem{buss1987}
+S. R. Buss,
+\emph{The Boolean Formula Value Problem is in ALOGTIME},
+STOC 1987.
+\url{https://mathweb.ucsd.edu/~sbuss/ResearchWeb/Boolean/paper.pdf}
+
+\bibitem{py1986}
+C. H. Papadimitriou and M. Yannakakis,
+\emph{A Note on Succinct Representations of Graphs},
+Information and Control 71(3), 1986.
+\url{https://doi.org/10.1016/S0019-9958(86)80009-2}
+
+\bibitem{jansensarma2010}
+M. Jansen and J. Sarma,
+\emph{Balancing Bounded Treewidth Circuits},
+Theoretical Computer Science 2010.
+\url{https://arxiv.org/abs/0910.1427}
+
+\bibitem{gharibianrudolph2023}
+S. Gharibian and D. Rudolph,
+\emph{On Polynomially Many Queries to NP or QMA Oracles},
+Theory of Computing 19(7), 2023.
+\url{https://arxiv.org/abs/2111.02296}
+
+\bibitem{buhrmantorenvliet1996}
+H. Buhrman and L. Torenvliet,
+\emph{P-Selective Self-Reducible Sets: A New Characterization of P},
+Journal of Computer and System Sciences 53(2), 1996.
+\url{https://doi.org/10.1006/jcss.1996.0062}
+\end{thebibliography}
+\end{document}
