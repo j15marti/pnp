@@ -1,0 +1,122 @@
+% PNP RESEARCH REPORT::SOURCE_BACKED_BUILD::2026-10-07
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+\title{Source-Backed WRAPPER Backends: Measured Storage Savings and Charged Rereading}
+\date{7 October 2026}
+\begin{document}\maketitle
+\paragraph{Status.} COMPUTATIONAL implementation result. P versus NP remains
+OPEN. Two source-backed SAT backends have been built and tested. They remove
+retained residual formulas but do not establish endpoint-compatible general
+time and space. These are elementary controlled implementations, not a claim
+of a novel SAT algorithm or a completed model-matched shrinker theorem.
+
+\paragraph{Construction and interface.}
+The source is a read-only CNF with variables labeled in $1,\ldots,n$.
+The prefix backend retains only a depth and an assignment integer. It rescans
+source clauses to determine whether the current prefix is satisfied, inconsistent,
+or unresolved. False branches are explored first. On conflict, trailing exhausted
+true decisions are removed until the next false sibling can be visited. There
+is no recursion stack, residual CNF, or answer cache.
+
+The propagation backend uses a bit mask and values plus an undo trail and
+decision markers. A source scan finds a contradiction, full satisfaction, a unit
+literal, or a variable for branching. It propagates one unit and rescans. Undo
+removes trail assignments without saving full previous assignments. It likewise
+retains no residual CNFs. It does retain up to $O(n)$ trail/decision records.
+The assignment and branching mechanisms differ from the previous separator
+prototype: this run isolates storage and access rather than claiming all earlier
+heuristics were preserved.
+
+\paragraph{Correctness argument.}
+Each source scan evaluates the original formula under exactly the retained
+partial assignment. A satisfied clause may be skipped, a false clause rejects
+that assignment, and a unit literal is forced in every extending satisfying
+assignment. Branches cover both values of the selected unassigned variable.
+Undo restores precisely the state before that decision. Finite search exhausts
+the Boolean assignments or finds a satisfying extension. These are ordinary
+restriction and DPLL invariants; testing is supplementary evidence. No SAT
+oracle or reference solver participates in the production backends.
+
+\paragraph{Matched comparison.}
+An explicit residual-formula backend uses the same prefix branching order as the
+first source-backed backend. All 280 cases agree on answers across the three
+backends: 840 answer comparisons. The matched pair also agrees on all 280 search
+node counts. Cases include all 256 subsets of the eight full-width three-variable
+clauses, twelve seeded random formulas, nine unit/independent-component cases,
+and three delayed-contradiction controls. Independent truth tables check cases
+through 12 variables; larger controls have explicit satisfying assignments.
+The entire batch took about 0.42 seconds under a 25-second alarm.
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+Case / metric & Explicit & Source prefix & Source units\\
+\midrule
+Random 10, seed 0: literal reads & 6139 & 15962 & 3485\\
+Random 10, seed 0: peak bytes & 4904 & 256 & 976\\
+48 positive units: literal reads & 2352 & 3528 & 2352\\
+48 positive units: peak bytes & 56432 & 284 & 1260\\
+Late contradiction, 12: nodes & 8191 & 8191 & 2\\
+Late contradiction, 12: reads & 30665 & 151527 & 48\\
+\bottomrule
+\end{tabular}
+\end{center}
+Peak bytes are incremental Python allocations measured after allocating the
+read-only source. They exclude input conversion, interpreter baseline and the
+test harness. They are not total RSS or formal bit-space bounds. Literal reads
+charge actual rescans, but omit other operations and therefore are not full
+machine time. Improved propagation changes the traversal, so its work comparison
+does not isolate memory representation alone.
+
+\paragraph{Hostile control and repair.}
+For $n$ variables the delayed-contradiction formula consists of tautologies on
+variables $1,\ldots,n-1$ and the units $(x_n)$ and $(\neg x_n)$.
+The prefix methods traverse a full binary tree with $2^{n+1}-1$ nodes.
+This refutes a universal cheap-search claim for those fixed-order implementations,
+not for arbitrary algorithms. Streaming unit propagation repairs this family:
+one propagation exposes conflict on the next scan. The repair is tested rather
+than treating this easy failure as a generic SAT hardness result.
+
+\paragraph{Resource interpretation.}
+The prefix state uses $O(n)$ assignment bits plus counters and transient clause
+scan state. A standard bit-machine implementation may pay extra for indexed bit
+operations. The propagation implementation uses $O(n\log n)$ bits for explicit
+trail/decision records plus the bit masks. Neither is generally $N^{o(1)}$ in
+encoded input length $N$, especially for sparse formulas. Full source scans
+can persist deep in the search; no bound by only the current logical child's
+length is proved. No favorable general branching bound is established.
+STREAMCOMP1 therefore cannot be invoked with a free or subpolynomial generator
+cost merely because no residual formula is stored. The parent-retention obstacle
+is reduced, while trail size, scan cost and search width remain explicit.
+
+\paragraph{Bitstream follow-up.}
+The executable delayed-audit control fixes a deterministic eight-bit record
+$X=(73x+19)\bmod256$ for each eight-bit source $x$. Retain only two record bits
+before an independent three-bit challenge selects a record coordinate.
+The 256 records have 256 distinct full response signatures. The retained-state
+classes contain 8064 distinct pairs distinguishable by some later challenge.
+Nevertheless all 2048 source/challenge pairs are answered by rereading $x$ and
+recomputing the same record. This is an exhaustive countermodel to promoting
+necessary reacquisition into expensive reacquisition. It is not a simulation
+of every SAT-based Search-G construction or a random-beacon hardness claim.
+
+\paragraph{Dependencies and barriers.}
+The earlier virtual-child code already supplied exact residual-bit regeneration;
+this run builds complete source-backed search and a matched materialization
+comparison. STREAMCOMP1 remains conditional accounting. Search-G's response-
+signature theorem and REACQ1's rerun control remain at their stated scopes.
+No new external theorem, cryptographic assumption, nonrelativizing hinge or
+nonalgebrizing hinge is imported. Independent review of this implementation
+audit remains pending. No root-main ownership region is changed.
+
+\paragraph{Artifacts and next target.}
+Runner: \texttt{experiments/proof\_spines/source\_backed\_wrapper.py}.
+Data: \texttt{results/raw/proof\_spines/2026-10-07\_source\_backed.json}.
+The next quantitative task is to bound the retained assignment/trail and total
+root-source rescans together with branching. A bounded cache or sparse index may
+exchange storage for scans, but must be measured and proved for one implementation.
+The bitstream alternative still needs a SAT-required query whose cost survives
+source reread and same-realization recomputation.
+% END_OF_VERIFIED_REPORT::LEAD::SOURCE_BACKED_BUILD
+\end{document}
