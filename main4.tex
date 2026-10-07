@@ -200,6 +200,97 @@ must satisfy the required contraction and endpoint conditions, and every
 intermediate witness must have justified joint resource bounds. Contraction
 of only one selected stage cannot cancel uncharged expansion elsewhere.
 
+\subsection{Finite existential return cycles}
+The preceding multi-stage option admits an exact existence-level formulation
+that is weaker than requiring every phase to contract. It is useful when one
+transformation improves time while worsening space and a later transformation
+reverses that trade.
+
+\begin{definition}[Finite return witness]
+Fix an entrywise nonnegative matrix $P$ and vector $q\ge0$. A finite
+$(P,q)$-return witness for $z\in\R$ is a finite list
+\[
+ z=z^{(0)},z^{(1)},\ldots,z^{(m)}=w
+ \quad\text{with every }z^{(i)}\in\R
+ \quad\text{and}\quad
+ w\le Pz+q.
+\]
+The intermediate points may expand and the length $m$ need not be uniform.
+Each point must nevertheless be witnessed by one uniform exact SAT machine
+with joint time and space bounds.
+\end{definition}
+
+\begin{hypothesis}[SAT-specific finite return closure]
+There are fixed $P\ge0$ and $q\ge0$ with $\rho(P)<1$ and
+\[
+ z_*=(I-P)^{-1}q\in\B
+\]
+such that every $z\in\R\setminus\B$ has a finite $(P,q)$-return witness.
+\end{hypothesis}
+
+\begin{theorem}[Finite return-cycle crossing]
+If the finite return closure holds and $\R$ contains a finite point, then
+$\R\cap\B\ne\varnothing$.
+\end{theorem}
+\begin{proof}
+Start from a finite $z_0\in\R$. If it is outside $\B$, choose the endpoint
+$z_1$ of one finite return witness; continue only while the selected endpoint
+is outside $\B$. Define $u_0=z_0$ and $u_{r+1}=Pu_r+q$. Nonnegativity of
+$P$ gives $z_r\le u_r$ by induction. Moreover
+\[
+ u_r=z_*+P^r(z_0-z_*)\longrightarrow z_*.
+\]
+The open, downward-closed set $\B$ therefore contains $u_r$, and hence
+$z_r$, after finitely many outer returns. Only finitely many finite witness
+chains have then been selected, so their concatenation is finite.
+\end{proof}
+
+A checkable sufficient form uses a fixed sequence of phase bounds
+\[
+ z^{(i+1)}\le M_i z^{(i)}+d_i,qquad i=0,\ldots,m-1,
+\]
+with $M_i,d_i$ entrywise nonnegative. The composite parameters are
+\[
+ P=M_{m-1}\cdots M_0,
+ \qquad
+ q=d_{m-1}+\sum_{j=0}^{m-2}M_{m-1}\cdots M_{j+1}d_j.
+\]
+Thus it is enough that this composite has $\rho(P)<1$ and its fixed point lies
+strictly in $\B$; no individual $M_i$ must be stable. For example,
+\[
+ M_0=\begin{pmatrix}2&0\\0&1/5\end{pmatrix},\quad
+ M_1=\begin{pmatrix}1/5&0\\0&2\end{pmatrix},\quad
+ d_0=d_1=\binom{1/20}{1/20}
+\]
+give $P=(2/5)I$, $q=(3/50,3/20)^T$, and
+$z_*=(1/10,1/4)^T\in\B$, although each phase matrix has spectral radius two.
+This is an arithmetic model, not a SAT transformation.
+
+The quantifiers are important. Under $P=NP$ one first chooses one finite
+achievable pair. The return hypothesis then supplies finitely many further
+uniform-machine witnesses, possibly different at every stage. It does not
+require a universal procedure that accepts arbitrary source code and emits
+the next machine. Williams's staged Circuit-SAT self-improvement gives a
+concrete precedent for finite algorithm-to-algorithm bootstrapping, but its
+theorems do not establish the return hypothesis for ordinary SAT in the
+$P=NP$ regime; the paper lists extension to that regime as open
+\cite{williams2024}.
+
+This theorem also does not cover a single solver that performs
+$J(N)\to\infty$ transformations as input length grows. That is a growing-depth
+uniform algorithm and still needs an effective schedule, uniform error rates,
+and charged access as in PRF3-0018. In contrast, the number of returns above
+is a finite constant after the starting exponent pair has been fixed. A
+strictly decreasing sequence alone remains insufficient: the values
+$\gamma+2^{-r}$ never enter $\B$.
+
+Common Lyapunov functions for arbitrarily switched linear systems provide a
+useful control-theory analogy, including the fact that polynomial Lyapunov
+degree need not be uniformly bounded \cite{mason2004}. This is not a theorem
+transfer: arbitrary physical switching is a different quantifier from the
+existential choice of uniform SAT witnesses, and it supplies no SAT-specific
+successor relation.
+
 \section{Errors, finite iteration, and uniformity}
 Exponent coordinates are constants, whereas $o(1)$ is a function of input
 length. Expressions such as $z'\le Mz+d+o(1)$ must therefore be interpreted
@@ -297,6 +388,17 @@ region counterexample, and the ordinary restriction count. The JSON file
 \texttt{arc\_test\_results.json} records parameters, runtime, and limitations.
 These are arithmetic model checks; they neither implement ARC for SAT nor
 prove its universal premise.
+
+The 2026-10-07 ARC-0001 return-cycle test additionally checks the exact
+two-phase example above, transient phase expansion, fixed-point crossing from
+65 seeded starting points, and hostile controls for coordinate borrowing,
+padding, non-downward target sets, asymptotic approach without crossing, and
+input-dependent growing depth. It completed 277 checks in under one second.
+The code and raw output are
+\path{experiments/proof_spines/arc_return_cycle_test.py} and
+\path{results/raw/proof_spines/2026-10-07_145738_arc_return_cycle.json}.
+These results are \textsc{Computational}; SAT-specific finite return closure
+remains \textsc{Open}.
 
 Every research update should first read the shared claim ledger and peer
 logs, verify relevant primary literature, propose or refine one mechanism,
