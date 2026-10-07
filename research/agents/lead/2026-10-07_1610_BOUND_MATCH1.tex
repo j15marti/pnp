@@ -1,0 +1,190 @@
+% CODEX REPORT::BOUND-MATCH1::2026-10-07
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx,hyperref}
+\title{BOUND-MATCH1: Existing WRAPPER constructions versus recovered resource theorems}
+\date{7 October 2026}
+\begin{document}\maketitle
+\paragraph{Result.}
+\textbf{COMPUTATIONAL reconciliation; general quantitative implication OPEN.}
+The double wrapper already implements exact general-input decision semantics,
+forward construction without a SAT oracle, small standard-CNF leaves, recursive
+termination and normalized-formula sharing. These are not missing constructions.
+The inspected implementation does not establish a favorable joint construction,
+branching, access and workspace bound. The ARC alternative does not require
+normalizing every supplied program. This audit separates those facts rather
+than reopening all components under a generic compression label.
+
+\section*{Two distinct meanings of general compression}
+Assuming $P=NP$, fix an exact SAT decider $A$ with time $N^{K+o(1)}$.
+One can output a fixed satisfiable CNF when $A(F)=1$ and a fixed unsatisfiable
+CNF otherwise. This is a uniform SAT-preserving constant-size compression on
+all inputs under that assumption. Its construction still costs
+$N^{K+o(1)}$ and its space is whatever that realization of $A$ uses.
+Thus general polynomial-time semantic compression is not the missing
+consequence under $P=NP$. The missing quantitative implication is a strict
+improvement of jointly achievable resources. This elementary observation
+also explains why a construction that finishes deciding SAT before emitting
+zero leaves cannot be credited with free compression.
+
+For the actual double wrapper, the emitted frontier is small per leaf
+unconditionally, through branching and simplification. Small output therefore
+has two different realizations in this discussion; neither alone implies cheap
+acquisition. The conditional canonical compressor and the implemented forward
+DAG must not be treated as the same machine.
+
+\section*{Implementation-to-theorem matching}
+\begin{center}\small
+\begin{tabularx}{\textwidth}{p{.19\textwidth}XX}
+\toprule
+Obligation & Existing mechanism & Remaining match\\
+\midrule
+Exact combination & Shannon OR over a common boundary assignment, then AND over disjoint components & Supplied for decision semantics; no external lineage service promised.\\
+Small children & Inner worklist continues to measured cutoff $\max(2,\lfloor N^{2/3}\rfloor)$ & Supplied for leaves; not a bound on all intermediate states or total output.\\
+Oracle-free acquisition & Inner builder has no SAT calls & Work done by its own search, sorting, hashing and normalization still counts.\\
+Sharing & Formula-key intern table; outer answer cache & Reuse is real; lookup/key construction and retained cache space still count.\\
+Recursive closure & Outer solver invokes the same exact builder on strictly smaller leaves & Termination supplied; favorable uniform fanout and local-work exponents not supplied.\\
+Implicit input & STREAMCOMP1 already gives a charged access theorem & Existing double-wrapper nodes store full formulas; replacing them by generators is an implementation change.\\
+Shared setup & ORBITBATCH1 permits reuse and deduplicates its declared field addresses & Do not require independent setup per child; field-domain theorem is not an automatic original-SAT-size guarantee.\\
+Portfolio & Sequential capped restarts already implemented and abstract scheduling recovered & Need a favorable fixed member or a separately proved finite-family coverage/scheduling theorem.\\
+\bottomrule
+\end{tabularx}\end{center}
+
+\section*{Actual source and resource interface}
+The inspected source is
+\path{experiments/DOUBLE_WRAPPER_2026-10-07/double_wrapper.py}.
+Its \texttt{inner} stores \texttt{nodes}, \texttt{keys} and \texttt{todo}.
+Every node contains a full normalized formula. OR nodes additionally retain
+route assignments, prime labels and hashes. The \texttt{outer} solver retains
+its plan while evaluating children, and its unbounded memoization cache uses
+formula-valued keys. The source-bit metric is a logical encoding count, not
+Python memory. Input exclusion does not make separately allocated normalized
+formulas, adjacency maps, intern keys or answer caches free.
+
+Consequently the direct application of STREAMCOMP1's no-persistent-child-
+materialization space premise fails for this implementation. This is an
+implementation mismatch, not a proof that no equivalent low-space realization
+exists. The source-scanning backends avoid residual formula storage but retain
+assignments or trails and have different execution bounds; transferring their
+space result to this DAG without a simulation theorem would mix realizations.
+
+A correct per-invocation ledger is
+\[
+T(F)\le A(F)+V(F)+\sum_{H\in Q(F)}T(H),
+\]
+where $A$ includes all inner construction (including states later collapsed to
+constants), $V$ includes charged combination/cache operations, and $Q(F)$ is
+the set of recursive requests actually serviced without a previously available
+answer. Pre-existing cached answers may reduce this sum, but their acquisition
+and retained storage are charged to the enclosing execution. This is not a
+claim that all nominal branches must be independently solved.
+
+If one realization proves $A+V\le N^{r+o(1)}$, at most $N^{\eta+o(1)}$
+recursive requests of size at most $N^{\theta+o(1)}$ with $\theta<1$, and
+uniformly controlled recursion overhead, the familiar sufficient closure is
+\[
+C=\max\{r,\eta/(1-\theta)\}.
+\]
+The prototype supplies its measured leaf cutoff, but no uniform favorable
+$r,\eta$ and joint workspace certificate. Measuring finite counts is not a
+substitute for these bounds.
+
+For an actual implicit child generator the recovered sufficient budgets are
+\[
+ C_i\ge\max\{r_i,\chi,\delta+p,\eta+g+\theta C_j\},\qquad
+ \rho_i\ge\max\{\sigma_i,s_e,\theta\rho_j\}.
+\]
+Here shared setup is charged once per acquired setup, classification is its
+own total cost, and $g,s_e$ charge generation time and space. The formula is
+a conservative upper certificate, not a lower bound prohibiting batching.
+Nested access and persistent live state must fit the stated interface.
+Neither swapping in ORBITBATCH1's field normalization nor setting $g=0$
+because a child has a short description is justified.
+
+\section*{Fresh regression and hostile checks}
+A new runner uses the recovered double-wrapper source with its reference
+solver disabled after independent expected answers are computed. It tests
+flat and fast-separator variants on all 296 original cases. All 592 complete
+solver checks pass; all measured leaves satisfy their cutoffs. The batch takes
+about 0.55 seconds with a 25-second alarm.
+
+Sharing is observed in 492 inner plans. In 377 plans, the leaf count is zero
+while construction literal visits are nonzero. All 592 tested plans retain
+root formulas at the measured input scale; these cases have no initial unit
+simplification reducing that scale. This finite observation is not a universal
+memory lower bound. Formula payload, DAG nodes, cache hits, separator trials,
+outer metrics and hypothetical uncached full-traversal visits are recorded.
+The latter are only a comparison count, not unavoidable runtime.
+
+On the planted seed-17 no-bridge case, input size is 384 measured bits.
+The flat plan has three leaves, 19 nodes, 2520 stored-formula bits and 2260
+construction literal visits. The fast-separator plan has 15 leaves, 20 nodes,
+1551 stored-formula bits and 2232 visits. Both meet the 52-bit leaf cutoff.
+This demonstrates why leaf count alone does not rank overall acquisition or
+storage. Counters omit sorting, hashing and allocation and cannot certify a
+near-linear machine bound.
+
+The original test suite includes Horn, XOR, independent products, pigeonhole,
+planted-separator and seeded random controls. These are exact finite tests.
+No representation-specific expense is promoted to arbitrary SAT hardness.
+
+\section*{ARC route: the weaker sufficient target}
+Let $\mathcal R_{\rm SAT}$ contain time-space pairs witnessed by one uniform
+exact algorithm each. For a model-matched forbidden region $\mathcal B$, ARC
+needs an implication of the form
+\[
+ \forall x\in\mathcal R_{\rm SAT}\setminus\mathcal B\quad
+ \exists y\in\mathcal R_{\rm SAT}:\quad y\le Mx+b,
+\]
+with controlled exponent slack, nonnegative $M$, spectral radius below one,
+and a fixed point strictly inside an appropriate downward-closed forbidden
+region. The recovered iteration argument does not require discovery of the
+starting exponent or a transformer acting on every padded/delayed program.
+Different algorithms may witness successive pairs. One machine must witness
+both coordinates of each pair.
+
+The double-wrapper implementation is independent of the assumed solver $A$.
+Its correctness alone therefore does not prove this achievable-region
+implication. A constant-size compressor obtained by first running $A$ also
+preserves the original exponent rather than establishing a strict improvement.
+The needed implication remains OPEN in the inspected ARC and power-shrinker
+sources. No new conclusion about the validity of the lower-bound endpoint is
+made in this audit.
+
+\section*{Corpus, status and handoff}
+This is a targeted source/implementation reconciliation, not a fresh exhaustive
+review of all project files. The prior turn directly recovered STREAMCOMP1,
+ORBITBATCH1, SIM-1-0006, PROOF-SYNTHESIS-0013 and the charged backdoor recurrence.
+This run reads the original double-wrapper source and report, the variant
+reconciliation, and the existing ARC test source. It adopts exact decision
+semantics, conditional resource accounting, real cache sharing, and ARC's
+existential formulation. It rejects only automatic composition across
+incompatible storage/access representations. No earlier valid theorem is
+retired. Root MAIN's open quantitative implication is unchanged; main4/main5
+receive a specific scope correction, with executive synthesis reserved for its
+owners. Independent mathematical promotion review remains pending.
+
+The accounting and SAT identities supply no nonrelativizing or nonalgebrizing
+separation mechanism. This audit introduces no new external literature theorem,
+cryptographic assumption or large circuit property. The analogy with software
+interface contracts is organizational only. No new external theorem transfer
+or full literature review is claimed.
+
+The exact remaining handoff is to exhibit one original-SAT-scale realization
+(or prove one ARC existence implication) meeting the already-recovered bounds
+simultaneously. For the double wrapper, the next implementation bridge is a
+source-backed replacement for its retained DAG/formula cache with a proved
+bound on total replay. If it cannot maintain favorable work, the ARC route
+remains logically available and should not inherit this implementation's
+failure as a universal obstruction.
+
+\paragraph{Primary project sources.}
+\begin{description}
+\item[] \url{https://github.com/j15marti/pnp/blob/main/experiments/DOUBLE_WRAPPER_2026-10-07/REPORT.md}
+\item[] \url{https://github.com/j15marti/pnp/blob/main/research/agents/lspv-3/2026-10-04_2135_LSPV-3_STREAMCOMP1.tex}
+\item[] \url{https://github.com/j15marti/pnp/blob/main/research/agents/lspv-3/2026-10-05_0235_LSPV-3_ORBITBATCH1.tex}
+\item[] \url{https://docs.google.com/document/d/1QirzuNPCG-CrE3EX6WweqsPdDbtoblCDEE4YI0HGyC0/edit}
+\item[] \url{https://docs.google.com/document/d/1JBQL5i6nR6jsKIsybQork1lNbLcZMSkFsf6oM_-IcNs/edit}
+\end{description}
+% END_OF_VERIFIED_REPORT::CODEX::BOUND-MATCH1
+\end{document}
