@@ -1,0 +1,899 @@
+% IMMUTABLE RESEARCH REPORT::HASHLIT1::2026-10-07_234214
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,longtable,hyperref}
+\setlength{\emergencystretch}{3em}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\poly}{\operatorname{poly}}
+\newcommand{\mc}{\operatorname{mc}}
+\newcommand{\Var}{\operatorname{Var}}
+
+\title{Exact Fingerprints, Hash-Consing, and SAT State Caching\\
+Primary-Source Transfers and Limits for the WRAPPER Program}
+\author{RESEARCH agent report HASHLIT1}
+\date{7 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This report asks whether deterministic fingerprints, perfect hashing,
+adaptive fingerprints, canonical DAG memoization, or SAT component caches can
+turn a short WRAPPER label into an exact all-input merge rule.  The answer is
+model-dependent.  A fixed $d$-digit label used as the sole merge certificate
+is exact only when at most $10^d$ inequivalent states are reachable.  A short
+label can instead serve as a bucket selector, but then correctness comes from
+an exact structural comparison or a source-checkable semantic certificate,
+whose acquisition, replay, time, and workspace must be charged.  Primary
+literature supplies strong exact mechanisms for already acquired finite key
+sets, ordered decision diagrams, bounded-width compilation, and
+source-provenance verification on already compiled decision-DNNFs.  It does
+not supply a general-input SAT compressor or a fixed-width exact semantic
+fingerprint.  Therefore choosing four, six, or eight output digits changes
+constants in collision rates and bucket sizes, but cannot by itself change a
+polynomial or exponential resource exponent.  The missing general WRAPPER
+contraction remains \textbf{OPEN}; consequently this report does not establish
+$P\ne NP$.
+\end{abstract}
+
+\section{Status, target, and quantifiers}
+
+The target considered here is an exact deterministic merge procedure for a
+family of WRAPPER states.  At input scale $N$, let $\mathcal S_N$ be the set
+of states that the declared construction can reach, and let $\equiv_N$ be the
+continuation equivalence that licenses all future reuse.  Equality of the
+current SAT answer is generally weaker than continuation equivalence: two
+states can both be satisfiable and still behave differently after later
+restrictions or recursive calls.
+
+The load-bearing desired statement has the quantifier form
+\[
+  \exists\,\text{one uniform exact constructor }M\quad
+  \forall N\quad\forall x\in\{0,1\}^N,
+\]
+followed by simultaneous bounds on generated states, encoded child size,
+local work, exact verification, recursive calls, and peak workspace.  A
+finite experiment, an average-case hashing theorem, or a structure theorem
+for bounded width does not establish this all-input statement.
+
+The concrete question is whether a label
+\[
+ h_N:\mathcal S_N\longrightarrow [10^d]
+\]
+with $d\in\{4,6,8\}$, or an adaptive extension of such a label, can supply
+the missing exact contraction.  The distinction
+\[
+ \text{existence}\ne\text{acquisition}\ne
+ \text{verification}\ne\text{decision cost}
+\]
+is maintained throughout.
+
+\section{The exact fixed-range obstruction}
+
+\begin{lemma}[Fixed-range exact-merge obstruction]\label{lem:fixed-range}
+Suppose a deterministic wrapper merges two reachable states whenever their
+$d$-digit labels agree, without any further exact verification.  If every
+merge is sound for $\equiv_N$, then $h_N$ induces an injection
+\[
+ \mathcal S_N/\!\equiv_N\;\hookrightarrow\;[10^d].
+\]
+Consequently
+\[
+  10^d\ge \left|\mathcal S_N/\!\equiv_N\right|,
+  \qquad
+  d\ge
+  \left\lceil\log_{10}\left|\mathcal S_N/\!\equiv_N\right|\right\rceil.
+  \tag{1}
+\]
+\end{lemma}
+
+\begin{proof}
+If two distinct $\equiv_N$-classes had the same label, the wrapper would
+perform an unsound merge.  Selecting one representative of each equivalence
+class therefore gives distinct labels.  The conclusion follows by the
+pigeonhole principle.
+\end{proof}
+
+\begin{corollary}[Bucket-selector alternative]\label{cor:selector}
+If equal labels only nominate candidates and a separate verifier $V_N(x,y)$
+must accept before a merge, the wrapper may remain exact with a noninjective
+label.  In that case exactness comes from $V_N$, not from the $d$ digits, and
+the number of verifier calls, source access, certificate length, replay time,
+and verifier workspace are part of the resource bound.
+\end{corollary}
+
+The obstruction is independent of how the digits are produced.  It applies
+to decimal truncation, modular reduction, a fixed cryptographic digest,
+universal hashing after the coins are fixed, or a truncated product of prime
+labels.
+
+\subsection{Four, six, and eight digits}
+
+The exact range and information content are as follows.
+
+\begin{center}
+\begin{tabular}{@{}rrrr@{}}
+\toprule
+Decimal digits $d$ & Range $10^d$ & $\log_2(10^d)$ & Stored binary bits \\
+\midrule
+4 & $10^4$ & $13.2877\ldots$ & 14 \\
+6 & $10^6$ & $19.9316\ldots$ & 20 \\
+8 & $10^8$ & $26.5754\ldots$ & 27 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+All three widths are $\Theta(1)$ as $N\to\infty$.  If the number of
+reachable inequivalent states is $E(N)=N^{a+o(1)}$, exact merge-on-label
+requires
+\[
+ d(N)\ge (a+o(1))\log_{10}N.
+ \tag{2}
+\]
+If $E(N)=2^{N^{b+o(1)}}$, it requires
+\[
+ d(N)\ge (\log_{10}2)N^{b+o(1)}.
+ \tag{3}
+\]
+Thus fixed digits do not scale to either family.
+
+The same conclusion appears directly in exponent arithmetic.  If $Q(N)$
+candidate states incur balanced all-pairs bucket work on the scale
+\[
+ \frac{Q(N)^2}{10^d},
+\]
+then for $Q(N)=N^{a+o(1)}$ and fixed $d$ the exponent remains $2a$.
+To lower it by $b>0$ through range size alone requires
+\[
+ 10^{d(N)}=N^{b+o(1)},
+ \qquad d(N)=(b+o(1))\log_{10}N.
+ \tag{4}
+\]
+Likewise
+\[
+ \frac{2^k}{10^d}=\Theta(2^k)
+\]
+for fixed $d$.  A strict exponential-rate change needs $d=\Omega(k)$.
+
+\section{Deterministic equality and streaming fingerprints}
+
+The fundamental exact lower bound is elementary and is also the standard
+communication-complexity explanation for why random fingerprints help only
+when error is allowed.
+
+\begin{lemma}[Exact streaming equality]\label{lem:eq-stream}
+Let a deterministic one-pass streaming machine receive $x\#y$, where
+$x,y\in\{0,1\}^n$, and accept exactly when $x=y$.  Immediately after the
+separator, the machine has at least $2^n$ possible states.  Hence it uses at
+least $n$ bits of state.
+\end{lemma}
+
+\begin{proof}
+If distinct $x,x'$ led to the same state after their first halves, append
+$y=x$.  Determinism would force identical behavior on $x\#x$ and
+$x'\#x$, although exactly one is an equality instance.
+\end{proof}
+
+This is the one-way form of deterministic communication complexity for
+$n$-bit equality.  Lalonde, Mande, and de Wolf record deterministic cost $n$
+and analyze the sharp small-error randomized and quantum regimes
+\cite{lalonde2023}.  Babu et al. give a model-matched multipass transfer:
+their Theorem~2 proves that every deterministic $p$-pass streaming
+recognizer for $1$-turn-$\mathrm{Dyck}_2$ uses $\Omega(n/p)$ space, by
+communicating the streaming memory in a reduction from equality
+\cite{babu2011}.
+
+\paragraph{Transfer to the wrapper.}
+If a wrapper must compare two arbitrary $n$-bit exact state descriptions
+from their fingerprints alone, Lemma~\ref{lem:eq-stream} forbids an exact
+constant-size deterministic fingerprint.  This is a theorem transfer only
+for the declared equality task.  It is not a lower bound on all SAT
+algorithms and does not show that the wrapper must materialize arbitrary
+state descriptions.
+
+\section{Universal hashing and randomized equality}
+
+Carter and Wegman define a universal class of functions from a universe into
+a finite range so that for every fixed pair $x\ne y$, a uniformly selected
+function collides on that pair with probability at most the reciprocal of
+the range size \cite{carterwegman1979}.  In the notation here,
+\[
+ \Pr_h[h(x)=h(y)]\le 10^{-d}.
+ \tag{5}
+\]
+This is a probability over the selected function for a fixed pair.  It is
+not a deterministic statement about every input after the function is
+published, and the original paper explicitly distinguishes the case in
+which the user can exploit knowledge of the chosen function.
+
+For $C$ fixed comparisons, the union bound gives
+\[
+ \Pr[\text{at least one collision}]\le C10^{-d}.
+ \tag{6}
+\]
+To make this at most $\delta$ requires
+\[
+ d\ge \left\lceil\log_{10}(C/\delta)\right\rceil.
+ \tag{7}
+\]
+If $C=N^q$ and $\delta=N^{-c}$, the right side is
+$(q+c)\log_{10}N+O(1)$.  If $L$ live histories may all be compared, the
+ordinary all-pairs estimate is
+\[
+ \Pr[\text{some pair collides}]
+ \le \binom{L}{2}10^{-d}.
+ \tag{8}
+\]
+For $L=2^k$, deterministic collision freedom requires at least
+$\lceil k\log_{10}2\rceil$ digits, while the all-pairs randomized bound needs
+roughly twice that many plus the desired error term.
+
+Lalonde, Mande, and de Wolf show that public-coin equality can use about
+$\log_2(1/\varepsilon)$ communication bits, whereas the private-coin regime
+also pays for establishing the randomness and depends on $n$
+\cite{lalonde2023}.  Thus a public shared seed, a private streaming seed, and
+a fixed deterministic hash are different models.  A fixed seed leaves a
+deterministic map with permanent colliding pairs.
+
+\paragraph{Status.}
+Universal hashing is a \textbf{KNOWN THEOREM} for per-pair randomized
+collision bounds.  Importing it as an exact all-input merge certificate is a
+\textbf{FAILED TRANSFER}.  It can support a bounded-error wrapper only if the
+final theorem permits randomness and the seed, adaptivity, total comparison
+count, and effective error are all charged.
+
+\section{Las Vegas collision verification}
+
+Karp and Rabin's string-matching algorithms illustrate the sound use of a
+short fingerprint in an exact computation \cite{karprabin1987}.  Their
+always-correct variants verify each fingerprint hit against the original
+strings, and one variant chooses a new fingerprint after a false match.
+Their Theorem~5 gives expected $O(n+m)$ running time for the stated pattern
+and text lengths.  Under their modulus choice, Theorem~6 bounds repeated
+false matches after reinitialization.
+
+The relevant transfer is:
+\[
+ \text{fingerprint hit}
+ \longrightarrow
+ \text{candidate}
+ \longrightarrow
+ \text{exact source comparison}.
+ \tag{9}
+\]
+Correctness survives collisions because the original objects remain
+accessible.  The expected bound depends on the paper's random selection
+model.  Worst-case exact source replay can still be large.  Therefore this
+mechanism is a useful wrapper design pattern, but it is not lossless
+constant-width compression.
+
+\section{Perfect hashing after the key set is known}
+
+Fredman, Koml\'os, and Szemer\'edi construct a static dictionary for a known
+finite set of $L$ keys using $O(L)$ space and $O(1)$ worst-case membership
+queries; the standard FKS construction uses expected linear randomized
+construction time \cite{fks1984}.  Dynamic perfect hashing retains linear
+space and $O(1)$ worst-case lookup with expected amortized $O(1)$ updates
+\cite{dietzfelbinger1994}.
+
+These results are exact because collisions among the stored keys are
+eliminated or resolved while the original keys are available.  They do not
+give a fixed-width injective map for arbitrarily many keys.  An index among
+$L$ table positions requires $\Theta(\log L)$ bits, and the construction must
+read or enumerate the set it perfect-hashes.
+
+Hagerup, Miltersen, and Pagh give a deterministic counterpart
+\cite{hagerup2001}.  Their Theorem~1.1, on a unit-cost word RAM with
+multiplication and word length $w$, constructs a static dictionary for $n$
+$w$-bit keys in $O(n\log n)$ time and $O(n)$ words, with constant lookup.
+The algorithm is weakly nonuniform: it uses word-size constants depending on
+$w$ that are not known to be computable in $w^{O(1)}$ time.  Their universe
+reduction maps the known key set injectively into $O(\log n)$ bits, not into a
+constant number of bits.
+
+Miltersen gives a particularly clean circuit statement
+\cite{miltersen1997}: for every known set
+$S\subseteq\{0,1\}^w$ of size $n$, there is a Boolean circuit of size
+$O(w\log w)$, with $w$ inputs and $2\log n$ output bits up to ordinary
+rounding, whose function is one-to-one on $S$.  This proves that an exact
+deterministic perfect fingerprint can exist for an already specified finite
+live set.  It also displays the two limitations needed here: output width
+grows as $\Theta(\log n)$, and the theorem does not cheaply discover an
+unknown exponentially large state family or semantic quotient.
+
+\paragraph{Wrapper consequence.}
+Perfect hashing may compact references to states that the wrapper has already
+acquired.  It does not establish that few states are generated, that semantic
+equivalence is cheap to decide, or that acquisition and storage fit the
+desired exponent.
+
+\section{Adaptive and extendible fingerprints}
+
+Adaptive approximate-membership structures respond to discovered false
+positives by changing or extending fingerprints.  Bender et al. prove both a
+lower bound and a matching-style construction in their model
+\cite{bender2018}.  For $n$ keys from a sufficiently large universe and a
+constant sustained false-positive probability, their Theorem~5 requires
+\[
+ \Omega\!\left(\min\{n\log n,\,n\log\log u\}\right)
+\]
+total bits with high probability.  Their broom filter in Theorem~6 uses
+approximately $n\log(1/\varepsilon)+O(n)$ local bits with high probability,
+supports constant-time operations with high probability, and appends bits to
+separate discovered collisions.  The complete keys remain available in a
+remote representation, and false positives can trigger remote updates.
+
+Naor and Yogev study a stronger adversarial model in which future queries
+depend on previous answers \cite{naoryogev2019}.  For computationally bounded
+adversaries, strong resilience is connected to cryptographic assumptions
+such as one-way functions or pseudorandom permutations.  For an unbounded
+adversary making $t$ adaptive queries, their construction uses
+\[
+ O\!\left(n\log(1/\varepsilon)+t\right)
+\]
+bits.  Ordinary per-fixed-query collision estimates do not automatically
+survive adaptive reuse.
+
+These are approximate randomized data structures.  They show how useful
+systems grow information, retain full keys elsewhere, or assume
+cryptographic pseudorandomness.  None turns four, six, or eight digits into
+an exact deterministic identifier for an unbounded wrapper state family.
+
+\section{Exact structural hash-consing and canonical DAGs}
+
+Bryant's reduced ordered Boolean decision diagrams are the canonical exact
+hash-consing example \cite{bryant1986}.  For a fixed variable ordering,
+Theorem~1 states that every Boolean function has a unique reduced function
+graph up to isomorphism, and every other ordered function graph for that
+function has more vertices.  Bottom-up reduction identifies a node by the
+exact tuple
+\[
+  (\text{variable},\text{low-child ID},\text{high-child ID}).
+ \tag{10}
+\]
+Nodes with identical tuples are merged.  An implementation may hash the tuple
+to find a bucket, but it compares the exact tuple to resolve collisions.
+
+If $Q$ unique nodes remain, their identifiers require $\Theta(\log Q)$ bits.
+Moreover, Bryant explicitly allows worst-case exponential graph size; many
+practical functions are small, but canonicity does not imply polynomial
+succinctness for every Boolean function.
+
+\paragraph{Exact transfer.}
+Bryant's rule transfers exactly to a wrapper whose residual states possess a
+proved canonical recursive representation with cheaply computed child IDs.
+The missing theorem is precisely that every general SAT input produces only
+polynomially many such canonical states and that constructing them fits the
+target resource ledger.  Without that theorem, OBDD hash-consing is a
+restricted representation result rather than a general SAT contraction.
+
+\section{Information-theoretically succinct exact dictionaries}
+
+Raman, Raman, and Satti store an $n$-element subset of an $m$-element
+universe in
+\[
+ \mathcal B(n,m)+o(n)+O(\log\log m)
+ \quad\text{bits},\qquad
+ \mathcal B(n,m)=\left\lceil\log_2\binom{m}{n}\right\rceil,
+ \tag{11}
+\]
+while supporting constant-time rank and select; in the cell-probe model the
+additive term can be removed \cite{raman2007}.  The leading term is the
+information-theoretic minimum.
+
+This theorem shows that exact storage can approach optimal information
+content.  It does not eliminate that content.  A wrapper may encode its
+already known state set succinctly, but arbitrary state families cannot be
+represented by a constant number of digits unless the family itself has a
+uniformly bounded number of possibilities or distinguishing information is
+stored elsewhere.
+
+\section{SAT component caching and compiled search traces}
+
+Bacchus, Dalmao, and Pitassi analyze DPLL with exact component caching for
+\#SAT \cite{bacchus2009}.  For an $n$-variable instance of branchwidth $w$,
+their full-cache algorithm has a deterministic execution in
+\[
+ n^{O(1)}2^{O(w)}\quad\text{time},
+ \tag{12}
+\]
+while their linear-space variant uses space linear in the instance size and
+time
+\[
+ 2^{O(w\log n)}.
+ \tag{13}
+\]
+The cache keys are exact residual formula components; hash values, if used in
+an implementation, do not authorize merging nonidentical components.
+
+This supplies a rigorous time--space route on bounded-width families.  For
+$w=O(1)$ it is polynomial; for $w=\Theta(n)$ it gives no general polynomial
+bound.  It therefore supports an achievable-region theorem parameterized by
+branchwidth, not an unrestricted SAT compression theorem.
+
+Huang and Darwiche identify the propositional languages generated by several
+forms of exhaustive DPLL search \cite{huangdarwiche2007}.  Depending on
+variable-ordering, decomposition, and caching restrictions, traces correspond
+to FBDD, OBDD, or a decision-DNNF subclass.  This correspondence allows known
+succinctness lower bounds for a target representation to become limitations
+on the corresponding search-trace algorithm.  It does not lower-bound every
+SAT algorithm, because the transfer is tied to the declared trace model.
+
+\section{Source-backed semantic hashing on decision-DNNF}
+
+Biere, Lagniez, and Lonca give the closest current literature analogue to the
+proposed forward wrapper \cite{biere2026}.  The input is not an arbitrary CNF
+alone.  It consists of a decision-DNNF $\Psi$ already compiled from and
+representing an original CNF $\Sigma$, with provenance linking circuit nodes
+to the source.
+
+For each node $u$, they compute the semantic signature
+\[
+ H(u)=\langle\Var(u),\mc(u)\rangle,
+ \tag{14}
+\]
+where $\mc(u)$ is the exact model count.  Equal signatures are necessary but
+not sufficient for equivalence, so they only create candidate buckets.
+Their Proposition~3 states that, for two nodes $N_1,N_2$ of the compiled
+circuit, the two entailments
+\[
+ \operatorname{circ}(N_1)\models\operatorname{cnf}(N_2,\Sigma),
+ \qquad
+ \operatorname{circ}(N_2)\models\operatorname{cnf}(N_1,\Sigma)
+ \tag{15}
+\]
+imply circuit equivalence.  Clause entailment is polynomial-time on DNNF, so
+the source projections provide an exact polynomial verifier in this compiled
+model.  Proposition~4 states that the resulting circuit has no two distinct
+nodes computing equivalent Boolean functions.
+
+This is an exact theorem transfer for the pattern
+\[
+ \boxed{\text{semantic filter} + \text{source provenance}
+        + \text{exact mutual-entailment verification}.}
+ \tag{16}
+\]
+It also states the principal limitations.  A general CNF may require an
+exponentially large decision-DNNF before this minimization begins.  Exact
+model counts have growing bit length.  Buckets may still contain many
+nonequivalent nodes and trigger many polynomial-time comparisons.  The paper
+notes that equivalence of two arbitrary decision-DNNFs remains open.  The
+provenance theorem therefore does not provide a general CNF compiler or a
+fixed-digit exact hash.
+
+Truncating $\mc(u)$ to four, six, or eight decimal digits leaves the
+verification sound, because equation~(15) still controls merging.  It can
+only enlarge candidate buckets and increase verification work.  It cannot
+improve the worst-case exponent without a separate bucket-size theorem.
+
+\section{Canonical TDDs and bounded-treewidth compilation}
+
+Capelli et al. introduce Tree Decision Diagrams (TDDs), a canonical
+generalization of OBDDs \cite{capelli2026}.  Three theorems are directly
+relevant.
+
+\begin{description}
+\item[Theorem 11.] Given a TDD $C$ of width $k$ over variables $X$, a
+minimal canonical representation $m(C)$ can be computed in
+$\poly(k)|X|$ time.
+
+\item[Theorem 16.] A CNF with $n$ variables, $m$ clauses, and primal or
+incidence treewidth $k$ can be compiled into a TDD of width at most $2^k$ in
+$2^{O(k)}mn$ time.
+
+\item[Theorem 18.] A Boolean circuit $C$ of treewidth $k$ can be compiled
+into a TDD of width $2^{O(k)}$ in time
+$2^{O(k)}|X||C|$.
+\end{description}
+
+The minimization is exact and deterministic: duplicate subfunctions become
+``twins'' that can be contracted in the canonical representation.  This is a
+genuine positive route for bounded treewidth or, more generally, bounded
+factor width.  The same paper proves exponential lower bounds for TDD size
+for some functions (Theorem~21).  It therefore cannot be promoted to a
+polynomial-size representation of all SAT instances.
+
+\section{Algebraic fingerprints and deterministic limits}
+
+Schwartz's polynomial identity test and the related Schwartz--Zippel lemma
+show that a nonzero degree-$D$ polynomial evaluated at a uniformly random
+point from a finite set $S$ vanishes with probability at most $D/|S|$
+\cite{schwartz1980}.  This is another randomized fingerprint: a fixed field
+or fixed number of output digits does not give zero error as the degree,
+number of candidates, or number of tests grows.
+
+Kabanets and Impagliazzo show that broad deterministic polynomial-time
+derandomization of polynomial identity testing would imply major arithmetic
+or Boolean circuit lower bounds \cite{kabanetsimpagliazzo2004}.  This result
+must not be overapplied: equality of explicit strings has simple exact
+methods, and restricted canonical representations may be tractable.  Its
+proper use here is only to reject an unsupported claim that every circuit
+state admits a cheap deterministic algebraic fingerprint with all the power
+of randomized identity testing.
+
+\section{Compressed fingerprints and verification cost}
+
+Bille et al. study fingerprints inside grammar-compressed strings
+\cite{bille2017}.  They obtain small-space Monte Carlo fingerprint query
+structures, while their always-correct Las Vegas construction pays a
+potentially much larger preprocessing cost to certify collision freedom.
+For a string of uncompressed length $N$ and grammar size $n$, their stated
+Las Vegas preprocessing bound includes
+$O(N^2/(n\log N))$ in the general setting.
+
+This is not a SAT lower bound.  It is a model-matched warning: when a short
+fingerprint indexes a compressed object, certifying that the fingerprint is
+collision-free may depend on the uncompressed source scale.  A wrapper must
+therefore charge provenance generation and collision certification rather
+than count only the stored digest.
+
+\section{Prime-product labels}
+
+Suppose the four truth-status labels
+\[
+ \mathsf{TRUE},\quad\mathsf{NOT\ TRUE},\quad
+ \mathsf{FALSE},\quad\mathsf{NOT\ FALSE}
+\]
+receive four fixed primes and a history is represented by their product.
+Unique factorization then recovers only the four multiplicities.  It does not
+recover which variable received which status or the order and recursion
+depth at which statuses appeared.  Distinct histories with the same four
+counts collide even before decimal truncation.
+
+Assigning a distinct prime to every pair
+$(\text{variable or position},\text{status})$ restores injectivity for a
+fixed ordered history.  For $n$ positions, the relevant primes are among the
+first $4n$, each has $O(\log n)$ bits, and a product of $n$ selected primes
+has $\Theta(n\log n)$ bits in the worst case.  Recursive or order-sensitive
+histories also require position- or depth-specific factors.  Reducing the
+product modulo $10^4$, $10^6$, or $10^8$ returns to
+Lemma~\ref{lem:fixed-range}.
+
+The prime scheme is therefore a source-checkable exact encoding when its full
+integer and factor assignment are retained.  It is not constant-space
+compression.
+
+\section{Transfer classification}
+
+\begin{longtable}{@{}p{0.22\textwidth}p{0.23\textwidth}p{0.47\textwidth}@{}}
+\toprule
+Mechanism & Classification & Exact wrapper consequence \\
+\midrule
+\endhead
+Deterministic equality lower bound & THEOREM TRANSFER & Exact comparison of arbitrary
+$n$-bit states from a one-pass summary needs $n$ bits.  This applies to the
+declared equality subtask, not every SAT algorithm. \\
+\addlinespace
+Universal hashing & FAILED TRANSFER for exactness & Provides per-fixed-pair
+random collision bounds.  Exact all-input merging still needs verification
+or a growing range. \\
+\addlinespace
+Karp--Rabin verification & THEOREM TRANSFER & A short label may safely nominate
+candidates if the original source is retained and every match is verified.
+Expected bounds require the paper's randomness model. \\
+\addlinespace
+Perfect hashing & THEOREM TRANSFER after acquisition & Gives exact fast lookup
+for an already known finite key set.  It does not discover or shrink the
+state family, and IDs grow as $\log L$. \\
+\addlinespace
+Adaptive filters & ANALOGY / CANDIDATE & Show how systems append bits and use
+remote full keys.  They are approximate and randomized, so they do not
+certify exact semantic merging. \\
+\addlinespace
+Bryant OBDD reduction & THEOREM TRANSFER under fixed order & Exact tuple
+hash-consing gives a canonical DAG.  General size can be exponential. \\
+\addlinespace
+Component caching & THEOREM TRANSFER for branchwidth $w$ & Gives exact
+$n^{O(1)}2^{O(w)}$ full-cache time or linear-space
+$2^{O(w\log n)}$ time.  No unrestricted polynomial bound follows. \\
+\addlinespace
+Decision-DNNF semantic hashing & THEOREM TRANSFER after compilation & Source
+provenance plus mutual entailment gives exact merges.  Compilation and bucket
+cost may be exponential. \\
+\addlinespace
+Canonical TDD minimization & THEOREM TRANSFER for bounded structural width &
+Provides deterministic canonical contraction and FPT compilation on bounded
+treewidth; some functions still require exponential TDDs. \\
+\addlinespace
+Fixed four/six/eight digits & FALSIFIED/RETIRED as sole exact certificate &
+The range is constant, so it cannot distinguish a growing family of
+inequivalent states or alter an asymptotic exponent. \\
+\bottomrule
+\end{longtable}
+
+\section{A source-checkable exact merge schema}
+
+The literature supports the following conditional schema.  It is a precise
+interface, not a completed general-SAT construction.
+
+\begin{definition}[Certified bucket merge]
+For every generated state $s$, the forward wrapper produces:
+\[
+  \bigl(B(s),\,R(s),\,P(s)\bigr),
+\]
+where $B(s)$ is a cheap bucket label, $R(s)$ is a replayable exact
+representation or source reference, and $P(s)$ is provenance sufficient for
+an exact verifier.  States in different buckets are kept distinct.  States
+in one bucket are merged only when a deterministic verifier
+\[
+ V(R(s),P(s);R(t),P(t))=1
+\]
+proves continuation equivalence.
+\end{definition}
+
+\begin{proposition}[Conditional correctness]
+If $V$ is sound for continuation equivalence and every reuse depends only on
+the equivalence class certified by $V$, every accepted merge is sound.  If
+$V$ is also complete on the generated state family, the retained states are
+exactly one representative per equivalence class.
+\end{proposition}
+
+\begin{proof}
+Soundness prevents an accepted pair from crossing equivalence classes.
+Completeness ensures that every pair in one class can eventually be joined.
+The bucket label affects search order only.
+\end{proof}
+
+To become the missing WRAPPER theorem, this schema still needs all-input
+bounds for the quantities below.  None is supplied by the digit choice.
+
+\begin{description}
+\item[Generation.] Total number $Q(N)$ of states and the cost of producing
+$B,R,P$ for each state.
+
+\item[Encoded size.] Maximum encoded size of every child passed to recursion
+or to a SAT procedure.
+
+\item[Bucket burden.] A deterministic bound on
+\[
+  C_{\rm cand}(N)=\sum_z \binom{|B_z|}{2}
+\]
+or on the actual candidate schedule.
+
+\item[Verification.] Worst-case time and workspace of each $V$ call, including
+source regeneration, exact comparison, entailment, or certificate checking.
+
+\item[Storage/replay.] Peak retained representation and provenance space, or
+the charged cost of regenerating evicted data.
+
+\item[Recursion.] Total branching, recursive query size, recombination cost,
+and closure of the same bounds at every smaller scale.
+
+\item[Randomness, if any.] Seed length, adaptive-query model, total failure
+probability over the entire recursive computation, and whether the endpoint
+lower-bound theorem admits Monte Carlo or Las Vegas algorithms.
+\end{description}
+
+\section{What this report changes}
+
+The earlier repository red-team report already established the internal
+fixed-hash pigeonhole and bucket-replay countermodels.  This report does not
+claim a new lower bound against all SAT algorithms.  It adds a primary-source
+map showing which pieces are known theorems and exactly where their models
+stop.
+
+\begin{description}
+\item[Adopted.] Fixed-range injectivity obstruction; exact hashes as bucket
+indices; source replay must be charged; bounded-width caching and canonical
+representations as restricted positive routes.
+
+\item[Strengthened.] The exact deterministic obstruction is now tied to
+communication/streaming equality; deterministic and randomized perfect
+hashing are separated from semantic discovery; the 2026 decision-DNNF and TDD
+results give concrete source-backed and canonical mechanisms.
+
+\item[Rejected.] The claim that four, six, or eight digits can alone produce
+an exact asymptotic contraction; the claim that universal hashing remains an
+exact guarantee after fixing the seed; the claim that perfect hashing avoids
+enumerating or storing the live state family.
+
+\item[Still open.] A uniform general-CNF constructor that cheaply generates
+sufficiently few smaller instances, supplies exact continuation-equivalence
+certificates, and meets the required joint time--space exponent on every
+input.
+\end{description}
+
+No root-main statement can be promoted from \textbf{OPEN} on the basis of
+this literature.  The strongest defensible positive theorem is restricted:
+source-backed exact merging is available after decision-DNNF compilation,
+and canonical deterministic compilation is fixed-parameter tractable for
+bounded-treewidth CNFs and circuits.
+
+\section{Next concrete target}
+
+The next useful theorem is not a longer fixed digest.  It is an all-input
+bound for a particular certified bucket merge:
+\begin{center}
+\fbox{\begin{minipage}{0.84\textwidth}
+Give a uniform source-checkable rule that, before any current-scale SAT
+query, produces smaller encoded children; prove deterministic bounds on
+the number of children, candidate pairs, exact verification/replay work,
+retained provenance, recursive query size, and peak workspace.
+\end{minipage}}
+\end{center}
+The decision-DNNF provenance rule and the TDD twin-contraction rule are the
+best current templates.  The missing bridge is to obtain their benefits
+without first paying exponential general-input compilation cost.
+
+\section*{Primary-source URLs}
+
+\begin{description}
+\item[Equality and streaming.] \url{https://doi.org/10.4230/LIPIcs.FSTTCS.2023.32};
+\url{https://arxiv.org/abs/1104.0848}.
+
+\item[Universal and perfect hashing.] 
+\url{https://doi.org/10.1016/0022-0000(79)90044-8};
+\url{https://doi.org/10.1145/828.1884};
+\url{https://doi.org/10.1137/S0097539791194094};
+\url{https://doi.org/10.1006/jagm.2001.1171};
+\url{https://doi.org/10.7146/brics.v4i17.18813}.
+
+\item[Fingerprints and adaptivity.] 
+\url{https://doi.org/10.1147/rd.312.0249};
+\url{https://arxiv.org/abs/1711.01616};
+\url{https://arxiv.org/abs/1412.8356}.
+
+\item[Canonical DAGs and succinct dictionaries.]
+\url{https://doi.org/10.1109/TC.1986.1676819};
+\url{https://arxiv.org/abs/0705.0552}.
+
+\item[SAT caching and compilation.]
+\url{https://eccc.weizmann.ac.il/report/2003/003/};
+\url{https://arxiv.org/abs/1401.3458};
+\url{https://arxiv.org/abs/1110.2734};
+\url{https://doi.org/10.24963/ijcai.2026/420};
+\url{https://doi.org/10.4230/LIPIcs.SAT.2026.10}.
+
+\item[Algebraic and compressed fingerprints.]
+\url{https://doi.org/10.1145/322217.322225};
+\url{https://doi.org/10.1007/s00037-004-0182-6};
+\url{https://arxiv.org/abs/1305.2777}.
+\end{description}
+
+\begin{thebibliography}{99}
+
+\bibitem{babu2011}
+A.~Babu, N.~Limaye, J.~Radhakrishnan, and G.~Varma.
+\newblock Streaming algorithms for language recognition problems.
+\newblock \emph{Theoretical Computer Science}, 494:13--23, 2013.
+\newblock Preprint: \url{https://arxiv.org/abs/1104.0848}.
+
+\bibitem{bacchus2009}
+F.~Bacchus, S.~Dalmao, and T.~Pitassi.
+\newblock Solving \#SAT and Bayesian inference with backtracking search.
+\newblock \emph{Journal of Artificial Intelligence Research}, 34:391--442,
+2009.
+\newblock \url{https://arxiv.org/abs/1401.3458}.
+
+\bibitem{bender2018}
+M.~A. Bender, M.~Farach-Colton, M.~Goswami, R.~Johnson, S.~McCauley, and
+S.~Singh.
+\newblock Bloom filters, adaptivity, and the dictionary problem.
+\newblock In \emph{FOCS 2018}.
+\newblock \url{https://arxiv.org/abs/1711.01616}.
+
+\bibitem{biere2026}
+A.~Biere, J.-M. Lagniez, and E.~Lonca.
+\newblock Efficient minimization of decision-DNNF circuits via semantic
+hashing and provenance tracking.
+\newblock In \emph{IJCAI 2026}, pages 3774--3782.
+\newblock \url{https://doi.org/10.24963/ijcai.2026/420}.
+
+\bibitem{bille2017}
+P.~Bille, P.~H. Cording, I.~L. G\o rtz, B.~Sach, H.~W. Vildh\o j, and
+S.~Vind.
+\newblock Fingerprints in compressed strings.
+\newblock \emph{Journal of Computer and System Sciences}, 86:171--180, 2017.
+\newblock \url{https://arxiv.org/abs/1305.2777}.
+
+\bibitem{bryant1986}
+R.~E. Bryant.
+\newblock Graph-based algorithms for Boolean function manipulation.
+\newblock \emph{IEEE Transactions on Computers}, C-35(8):677--691, 1986.
+\newblock \url{https://doi.org/10.1109/TC.1986.1676819}.
+
+\bibitem{capelli2026}
+F.~Capelli, Y.~Choi, S.~Mengel, M.~Mu\~noz, and G.~Van den Broeck.
+\newblock A canonical generalization of OBDD.
+\newblock In \emph{SAT 2026}, LIPIcs 377, Article 10.
+\newblock \url{https://doi.org/10.4230/LIPIcs.SAT.2026.10}.
+
+\bibitem{carterwegman1979}
+J.~L. Carter and M.~N. Wegman.
+\newblock Universal classes of hash functions.
+\newblock \emph{Journal of Computer and System Sciences}, 18(2):143--154,
+1979.
+\newblock \url{https://doi.org/10.1016/0022-0000(79)90044-8}.
+
+\bibitem{dietzfelbinger1994}
+M.~Dietzfelbinger, A.~R. Karlin, K.~Mehlhorn, F.~Meyer auf der Heide,
+H.~Rohnert, and R.~E. Tarjan.
+\newblock Dynamic perfect hashing: upper and lower bounds.
+\newblock \emph{SIAM Journal on Computing}, 23(4):738--761, 1994.
+\newblock \url{https://doi.org/10.1137/S0097539791194094}.
+
+\bibitem{fks1984}
+M.~L. Fredman, J.~Koml\'os, and E.~Szemer\'edi.
+\newblock Storing a sparse table with $O(1)$ worst case access time.
+\newblock \emph{Journal of the ACM}, 31(3):538--544, 1984.
+\newblock \url{https://doi.org/10.1145/828.1884}.
+
+\bibitem{hagerup2001}
+T.~Hagerup, P.~B. Miltersen, and R.~Pagh.
+\newblock Deterministic dictionaries.
+\newblock \emph{Journal of Algorithms}, 41(1):69--85, 2001.
+\newblock \url{https://doi.org/10.1006/jagm.2001.1171}.
+
+\bibitem{huangdarwiche2007}
+J.~Huang and A.~Darwiche.
+\newblock The language of search.
+\newblock \emph{Journal of Artificial Intelligence Research}, 29:191--219,
+2007.
+\newblock \url{https://doi.org/10.1613/JAIR.2097}.
+
+\bibitem{kabanetsimpagliazzo2004}
+V.~Kabanets and R.~Impagliazzo.
+\newblock Derandomizing polynomial identity tests means proving circuit lower
+bounds.
+\newblock \emph{Computational Complexity}, 13:1--46, 2004.
+\newblock \url{https://doi.org/10.1007/s00037-004-0182-6}.
+
+\bibitem{karprabin1987}
+R.~M. Karp and M.~O. Rabin.
+\newblock Efficient randomized pattern-matching algorithms.
+\newblock \emph{IBM Journal of Research and Development}, 31(2):249--260,
+1987.
+\newblock \url{https://doi.org/10.1147/rd.312.0249}.
+
+\bibitem{lalonde2023}
+O.~Lalonde, N.~Mande, and R.~de Wolf.
+\newblock Tight bounds for the randomized and quantum communication
+complexities of equality with small error.
+\newblock In \emph{FSTTCS 2023}, LIPIcs 284, Article 32.
+\newblock \url{https://doi.org/10.4230/LIPIcs.FSTTCS.2023.32}.
+
+\bibitem{miltersen1997}
+P.~B. Miltersen.
+\newblock Error correcting codes, perfect hashing circuits, and deterministic
+dynamic dictionaries.
+\newblock \emph{BRICS Report Series}, 4(17), 1997.
+\newblock \url{https://doi.org/10.7146/brics.v4i17.18813}.
+
+\bibitem{naoryogev2019}
+M.~Naor and E.~Yogev.
+\newblock Bloom filters in adversarial environments.
+\newblock \emph{ACM Transactions on Algorithms}, 15(3), Article 34, 2019.
+\newblock \url{https://doi.org/10.1145/3306193}.
+
+\bibitem{raman2007}
+R.~Raman, V.~Raman, and S.~R. Satti.
+\newblock Succinct indexable dictionaries with applications to encoding
+$k$-ary trees, prefix sums and multisets.
+\newblock \emph{ACM Transactions on Algorithms}, 3(4), Article 43, 2007.
+\newblock \url{https://arxiv.org/abs/0705.0552}.
+
+\bibitem{schwartz1980}
+J.~T. Schwartz.
+\newblock Fast probabilistic algorithms for verification of polynomial
+identities.
+\newblock \emph{Journal of the ACM}, 27(4):701--717, 1980.
+\newblock \url{https://doi.org/10.1145/322217.322225}.
+
+\end{thebibliography}
+
+\paragraph{Report verification status.}
+Literature claims above are labeled only as transfers within their stated
+models.  No general SAT contraction or complexity-class separation is
+promoted.  Compilation status is recorded outside this immutable scientific
+body by the creating run.
+
+% END_OF_VERIFIED_REPORT::RESEARCH::HASHLIT1
+\end{document}

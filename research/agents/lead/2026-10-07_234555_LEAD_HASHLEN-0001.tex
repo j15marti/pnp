@@ -1,0 +1,168 @@
+% CODEX REPORT::LEAD::HASHLEN-0001::2026-10-07
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,graphicx,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{lemma}{Lemma}
+\title{HASHLEN-0001: Exact Fingerprint Length, Adaptive Replay, and the Remaining WRAPPER Cover}
+\author{Lead synthesis report}
+\date{7 October 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Status.}
+P versus NP remains \textsc{Open}.  HASH-INDEX-NO-SHRINK1,
+ADAPTIVE-EXACT1, the bucket ledger and SUMMARY-COVER1 are
+\textsc{Proved/Exact}.  CACHE-FINGERPRINT1, the chosen-collision cache tests
+and the arithmetic simulations are \textsc{Computational}.  The general
+source-dependent witness-preserving cover is \textsc{Open} and load-bearing.
+
+\section{Sources actually reviewed}
+The run reconciled the current GitHub \texttt{main4.tex},
+\texttt{main5.tex}, \texttt{main6.tex}, the combined source-replay solver,
+the current proof-spine protocol, and the recovered October 6--7 wrapper
+artifacts.  The Library precommit test accepted every one of 480 wrong-token
+claims under the native existential check, while the ratchet-link test rejected
+all wrong continuations for an injective commitment and accepted all 1,000
+under the nonbinding commitment.  The shared BAD-SEED construction preserved
+exact replay with linear seed/history description while defeating route-count
+as a generic lower bound.
+
+The Drive recovery included WORKSAT-0011, WORKSAT-0017 and WORKSAT-0019.
+Their rolling fingerprint reduced finite measured storage but provided only
+fingerprint-weak sameness; the truncated sixteen-bit content hash failed
+strong sameness; and the digest-plus-adaptive-pointer proposal either answered
+equality only, re-solved on a miss, or rematerialized linear content for full
+access.  The dynamic-ratchet notes likewise mark transfer from cell-probe or
+online information arguments to unrestricted SAT as open.
+
+Primary literature reviewed during the run included Carter--Wegman universal
+hashing, Karp--Rabin verified fingerprints, Fredman--Koml\'os--Szemer\'edi
+perfect hashing, Bryant canonical OBDDs, Bender et al. adaptive filters,
+Bacchus--Dalmao--Pitassi component caching, Capelli et al. canonical TDDs, and
+Biere--Lagniez--Lonca semantic hashing with provenance verification.  The last
+paper is the closest exact architectural match: a cheap signature proposes a
+decision-DNNF merge and two source-backed entailment tests certify it.  The
+initial compilation may be exponential, so it does not close the acquisition
+arrow for arbitrary CNF.
+
+\section{Exact separation between indexing and merging}
+Let $R$ be the number of classes of the future-use congruence among $Q$
+generated states.  A complete exact verifier leaves one representative per
+class, regardless of fingerprint length.  A sound incomplete verifier can
+leave more.  Conversely, merging from an $h$-bit fingerprint alone requires
+the implication
+\[
+ H(x)=H(y)\Longrightarrow x\equiv y,
+\]
+and therefore $2^h\ge R$.  Constructing a cheap small-range map with that
+implication is the missing semantic quotient theorem rather than a way to
+derive it.
+
+For bucket sizes $m_z$, exact chained comparison work is
+\[
+ P(H)=\sum_z\binom{m_z}{2},
+\qquad
+ P(H)\ge\max\left\{0,{Q^2/2^h-Q\over2}\right\}.
+\]
+A fixed public map admits $P(H)=\binom Q2$.  For independent uniform hashes,
+$\mathbb E[P]=\binom Q2/2^h$.  If $Q=M^u$, one replay costs $M^v$, and
+$h=\kappa\log_2M$, the expected implementation exponent is at least
+\[
+ \max\{u+v,2u-\kappa+v\}.
+\]
+At the target $u=1/3,v=2/3$, a constant-length digest leaves exponent $4/3$;
+$(1/3)\log_2M$ bits make expected replay linear; and
+$(2/3)\log_2M$ bits make the expected number of false pairs constant.  These
+are randomized expectations.  The fixed public worst case still gives joint
+time-space exponent at least two in this cache model.
+
+\begin{lemma}[Source-summary cover guard]
+For every unique-witness unit CNF $F_x$, suppose an $h$-bit summary selects at
+most $q$ restrictions, each leaving at most $\ell$ variables free.  Exact
+coverage on all $x\in\{0,1\}^n$ requires
+\[
+ h+\log_2q+\ell\ge n.
+\]
+\end{lemma}
+\begin{proof}
+One summary bucket contains at least $2^{n-h}$ witnesses.  Its common $q$
+restrictions cover at most $q2^\ell$ assignments.
+\end{proof}
+The same lemma applies when $h$ is the length of a source-independent random
+seed.  Full-source adaptation escapes it, returning the problem to charged
+source-dependent acquisition.
+
+\section{Built and falsified variants}
+The exact multilevel cache starts from a short prefix, extends a colliding
+entry only when needed, and performs full normalized-residual replay before
+every reuse.  Its correctness is independent of digest collision resistance.
+The final guarded run completed twelve answers in 2.90 seconds.
+
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+scheme & max cache bits & bucket peak & equality replays & rejected & literal reads & peak work bits\\
+\midrule
+fixed 2 hex & 49,244 & 10 & 1,278 & 1,157 & 887,763 & 51,721\\
+fixed 4 hex & 55,396 & 2 & 122 & 1 & 833,920 & 57,577\\
+fixed 6 hex & 61,548 & 1 & 121 & 0 & 833,889 & 63,433\\
+fixed 8 hex & 67,700 & 1 & 121 & 0 & 833,889 & 69,289\\
+adaptive $2\to8$ & 55,116 & $10^*$ & 312 & 191 & 989,748 & 57,273\\
+adaptive $4\to8$ & 55,412 & $2^*$ & 122 & 1 & 834,328 & 57,593\\
+\bottomrule
+\end{tabular}}
+\end{center}
+Four hexadecimal digits were the best fixed choice on these two workloads.
+Six removed one rejected collision but saved only 31 literal reads while
+adding 6,152 cache bits.  Eight added another 6,152 bits without saving work.
+The two-digit adaptive cache reduced comparisons but paid 712 extension
+rehashes, raising literal reads by 11.5 percent.
+
+The collision-focused control produced hash-only answer errors at every
+tested width: 1,288 at sixteen bits, 404 at twenty-four, and 72 at thirty-two
+on its four-pass workloads.  Verified-hash and full-key caches remained
+exact.  Equal-current-answer collision pairs were also separated by a later
+common restriction, directly falsifying current SAT-bit equality as a future
+congruence.
+
+\section{Recovered components and final gap}
+The recovered prime, hash, precommitment, BAD-SEED, source-selector and ratchet
+constructions are not wasted.  They supply exact lineage, compact route
+indices, binding tests, replay, and collision-safe dictionaries.  STREAMCOMP1,
+ORBITBATCH1 and BATCHSETUP1 give conditional ledgers once a cover exists.
+MACRO-LINEAGE-SPACE1 makes route bookkeeping logarithmic after contraction.
+CLAUSE-DOM-SELECT1 is a genuine cheap merge, and bounded-width frontier/TDD
+methods are genuine positive subclasses.
+
+The strongest current composition is therefore
+\[
+\begin{gathered}
+\text{full-source cheap witness-preserving cover}\\
+\Longrightarrow q\le M^{1/3+o(1)},\quad |G_i|\le M^{2/3+o(1)}\\
+\Longrightarrow \text{exact replay and charged recursion}\\
+\Longrightarrow (C,\sigma)=(1,2/3)\Longrightarrow C+\sigma=5/3<2\cos(\pi/7).
+\end{gathered}
+\]
+The first arrow is still open.  Hash length affects the third arrow after the
+cover is known; it does not prove the first.  The detailed proof is now in
+\texttt{main7.tex}; \texttt{main4.tex}, \texttt{main5.tex}, and
+\texttt{main6.tex} have been reconciled without promoting any open claim.
+
+\section{Reproducibility and handoff}
+The executable artifacts are
+\path{cache_fingerprint_experiment.py} with
+\path{cache_fingerprint_results.json}, and
+\path{hash_length_redteam_2026-10-07.py} with its JSON output.  Every
+Python run uses an internal 25-second deadline.  The cache batch completed in
+2.90 seconds; the arithmetic audit checked 1,872 convex bucket inequalities
+and 48 common-signature bounds with zero errors.  The next useful target is a
+source-dependent canonical-class theorem for one nontrivial general-SAT
+frontier, with discovery time, residual size, total fanout, verifier calls and
+workspace all charged.  Fingerprint optimization should then be rerun on the
+proved class set.
+
+% END CODEX REPORT::LEAD::HASHLEN-0001::2026-10-07
+\end{document}

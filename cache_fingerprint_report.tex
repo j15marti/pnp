@@ -1,0 +1,127 @@
+% CODEX REPORT::CACHE-FINGERPRINT1::2026-10-07
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,booktabs,graphicx,hyperref}
+\title{CACHE-FINGERPRINT1: Exact Short and Adaptive Fingerprints in the Source-Replay WRAPPER}
+\author{P versus NP Research Project}
+\date{7 October 2026}
+
+\begin{document}
+\maketitle
+
+\paragraph{Status.}
+The cache-safety invariant below is \textbf{PROVED/EXACT}.  The measurements
+are \textbf{COMPUTATIONAL}.  They establish neither an asymptotic cache bound
+nor a general SAT contraction.  The guarded experiment completed 12 answer
+checks with zero errors in 2.90 seconds, inside its 25-second internal limit.
+
+\section{Mechanism and exactness guard}
+The experiment uses the COMBINED-REPLAY1 solver unchanged outside its cache.
+A state contains a source-clause scope and a partial assignment.  Residual
+clauses are regenerated from the immutable source.  A fingerprint is computed
+from the first-occurrence-normalized residual-clause stream.
+
+For every candidate cache hit, the implementation regenerates both complete
+normalized streams and compares them exactly before reusing the stored Boolean
+answer.  Equal streams give a literal-sign-preserving variable bijection and
+therefore equal satisfiability values.  An unequal stream is rejected.  Thus a
+fingerprint collision can add work but cannot change an answer.  Collision
+resistance of SHA-256 is not a correctness premise.
+
+The fixed configurations retain 2, 4, 6, or 8 hexadecimal digits, respectively
+8, 16, 24, or 32 bits.  The adaptive configurations start with either 2 or 4
+hexadecimal digits and extend colliding entries by whole bytes, through at
+most 8 hexadecimal digits.  Full 256-bit digests are transient.  They are
+never hidden in cache entries.  When an old entry needs extension bits, its
+residual is regenerated and rehashed, and that source work is charged.
+
+Adaptive stored prefixes are separated whenever their digests differ within
+the retained four-byte limit.  Prefixes still tied at that limit remain
+candidates, whether the later digest bytes differ or the complete digest
+collides, and the exact stream check continues to distinguish them.
+Eviction can remove reuse opportunities only; it cannot introduce an answer.
+
+\section{Charged experiment}
+Each solver receives a 131,072-bit cache budget and uses frontier cap 5 and
+block size 4.  The two workloads are the unsatisfiable PHP$(7,6)$ instance and
+eight satisfiable, interleaved, isomorphic dense components of width five.
+PHP supplies hundreds of distinct states and real short-prefix collisions;
+the component instance checks successful equality reuse.  Every configuration
+returns the known answer on both inputs.  All configurations make the same 892
+recursive calls and obtain the same 121 verified cache hits.  No configuration
+evicts an entry, so the table isolates fingerprint and verification costs.
+
+The cache-bit column is the maximum cache descriptor payload in one solver.
+It includes state descriptors, stored fingerprint prefixes, and answers.  The
+workspace column is the maximum charged sequential-model peak, including live
+recursion descriptors, cache, active wrapper data, normalization maps, and
+hash temporaries.  Reads, candidate comparisons, and rejected collisions are
+summed across the two workloads.
+
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrrrr}
+\toprule
+Fingerprint & Max cache & Bucket & Equality & Rejected & Literal & Recursive & Seq. peak\\
+scheme & bits & peak & replays & collisions & reads & calls & bits\\
+\midrule
+Fixed 2 hex & 49,244 & 10 & 1,278 & 1,157 & 887,763 & 892 & 51,721\\
+Fixed 4 hex & 55,396 & 2 & 122 & 1 & 833,920 & 892 & 57,577\\
+Fixed 6 hex & 61,548 & 1 & 121 & 0 & 833,889 & 892 & 63,433\\
+Fixed 8 hex & 67,700 & 1 & 121 & 0 & 833,889 & 892 & 69,289\\
+Adaptive 2--8 hex & 55,116 & 10$^{*}$ & 312 & 191 & 989,748 & 892 & 57,273\\
+Adaptive 4--8 hex & 55,412 & 2$^{*}$ & 122 & 1 & 834,328 & 892 & 57,593\\
+\bottomrule
+\end{tabular}}
+\end{center}
+
+For adaptive rows, the starred value is occupancy of the original short-prefix
+bucket.  After extension, the maximum exact stored-fingerprint bucket occupancy
+is one.  Random-access-model workspace peaks, which additionally charge the
+source clause-boundary index, are respectively 52,918, 58,774, 64,630, 70,486,
+58,470, and 58,790 bits in table order.
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+Adaptive scheme & Extended entries & Added prefix bits & Extension rehashes & Final prefix bits\\
+\midrule
+2--8 hex & 733 & 5,872 & 712 & 12,040\\
+4--8 hex & 2 & 16 & 2 & 12,352\\
+\bottomrule
+\end{tabular}
+\end{center}
+The extension count includes both old entries extended in place and new entries
+inserted with longer prefixes.  ``Extension rehashes'' counts regenerations of
+old residuals needed to discover the extra bytes.
+
+\section{Interpretation}
+The 8-bit fixed cache minimizes stored bits in this batch, but its buckets reach
+occupancy ten and it performs 1,157 rejected exact comparisons.  Moving to 16
+bits eliminates all but one rejected collision while increasing the maximum
+cache payload by 6,152 bits.  Moving from 16 to 24 bits removes that final
+collision at the cost of another 6,152 cache bits; it saves only 31 literal
+reads.  Moving from 24 to 32 bits changes neither equality work nor literal
+reads and adds another 6,152 cache bits.  Fixed 16 bits is therefore the best
+observed point for this bounded workload, not a universal optimum.
+
+Starting adaptively at 8 bits cuts rejected collisions from 1,157 to 191 and
+candidate equality replays from 1,278 to 312.  However, regeneration for 712
+extension hashes raises literal reads by 11.5 percent relative to fixed 8 bits
+and leaves the final prefix payload close to fixed 16 bits.  Starting at 16
+bits extends only the two entries involved in the sole collision.  Since that
+collision is not repeated later, adaptation cannot recover its extension cost
+in this run.
+
+The result supports a narrow engineering rule: exact short fingerprints are
+safe when full residual replay remains mandatory, but their useful length is a
+time--space choice.  Adaptive extension helps only when repeated collision
+verification costs more than regenerating and retaining the extra prefix bits.
+Nothing here supplies the missing uniform size reduction or total-branching
+bound for the proof spine.
+
+The executable artifact is \texttt{cache\_fingerprint\_experiment.py}; its
+complete measurements are in \texttt{cache\_fingerprint\_results.json}.
+
+% END_OF_VERIFIED_REPORT::CODEX::CACHE-FINGERPRINT1
+\end{document}

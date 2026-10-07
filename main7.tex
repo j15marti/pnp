@@ -1,0 +1,491 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,graphicx,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\gammats}{2\cos(\pi/7)}
+\title{Main 7: Exact Fingerprints and Adaptive Hashing in the WRAPPER}
+\author{PNP research working manuscript}
+\date{7 October 2026}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This manuscript asks whether changing a WRAPPER hash from four to six or
+eight displayed digits can supply the missing size reduction.  Exact replay
+after a hash match makes correctness independent of the hash length, but it
+also makes the number of retained semantic classes independent of the hash
+length.  Omitting replay turns collision soundness into the missing semantic
+merge theorem.  Shorter fingerprints can improve finite storage constants;
+longer or adaptive fingerprints can reduce expected collision work.  Neither
+gives the deterministic all-input contraction required by the current
+Williams endpoint.  We state the exact ledgers, recover the project's earlier
+digest and bitstream experiments, and record a collision-safe adaptive cache
+as useful infrastructure.  No proof that $P\ne NP$ is claimed.
+\end{abstract}
+
+\section{Question and conventions}
+A displayed hexadecimal digit carries four bits.  Thus four, six and eight
+hexadecimal digits mean respectively $h=16,24,32$ bits.  The existing Python
+prototype instead uses \texttt{digest\_bytes=8}, which means $64$ bits or
+sixteen hexadecimal digits.  If ``digit'' means a decimal character, the
+corresponding information is $h=d\log_2 10$ bits; this changes the numerical
+thresholds but none of the theorems below.
+
+Let $X_1,\ldots,X_Q$ be WRAPPER states generated in one realization.  Let
+$\equiv$ be the semantic congruence that is sufficient for every future use
+of a state, rather than equality of the current SAT answer alone.  Write $R$
+for the number of represented $\equiv$-classes.  An $h$-bit fingerprint is a
+map
+\[
+ H:\mathcal X\longrightarrow\{0,1\}^h,
+ \qquad B=2^h.
+\]
+The current exact cache uses $H$ only to select candidates and then compares
+the normalized residual streams.  Consequently a collision can increase
+work but cannot change the SAT answer.
+
+\section{Exact hashes do not create semantic contraction}
+\begin{theorem}[HASH-INDEX-NO-SHRINK1]
+Suppose cache reuse occurs only after an exact verifier proves
+$X_i\equiv X_j$.  If the verifier is complete, exact deduplication retains
+one representative per semantic class and therefore
+\[
+ q_{\mathrm{out}}=R.
+\]
+If the verifier is sound but incomplete, then $q_{\mathrm{out}}\ge R$.
+Neither conclusion depends on $h$.
+\end{theorem}
+\begin{proof}
+Soundness prevents representatives of two different congruence classes from
+being identified.  Completeness identifies every later representative of a
+class with the first one, leaving exactly one per class.  An incomplete test
+may leave additional representatives.  The fingerprint changes which pairs
+are sent to the verifier; it does not change the equivalence relation proved
+by that verifier.
+\end{proof}
+
+If equal hashes are merged without verification, correctness requires
+\[
+ H(x)=H(y)\Longrightarrow x\equiv y.
+\tag{1}
+\]
+Distinct semantic classes must then have distinct hash values, so
+\[
+ 2^h\ge R,\qquad h\ge\lceil\log_2R\rceil.
+\tag{2}
+\]
+Proving (1) for a cheaply constructed small-range map is already the desired
+semantic quotient theorem.  A one-bit example exposes the acquisition issue:
+$H(F)=\SAT(F)$ perfectly separates the two current-answer classes, but
+computing it is SAT itself.  It also does not justify reuse under a richer
+future interface.
+
+Input-dependent perfect hashing does not evade the theorem.  It can assign
+short collision-free labels to the $Q$ syntactic keys after inspecting them,
+but it still indexes $Q$ keys and retains $R$ semantic classes.  Its
+construction, representatives and source access must be charged.  The
+classical universal and perfect hashing results provide strong dictionary
+bounds after the key set is fixed; they do not supply a SAT congruence
+\cite{carterwegman1979,fks1984}.
+
+\section{Collision-replay ledger}
+Suppose the $Q$ states are pairwise inequivalent and bucket $z$ contains
+$m_z$ states.  In a chained exact cache, the number of unequal candidate
+comparisons is
+\[
+ P(H)=\sum_{z=1}^{B}\binom{m_z}{2}.
+\tag{3}
+\]
+
+\begin{lemma}[Balanced and hostile buckets]
+For every $h$-bit assignment of $Q$ states to buckets,
+\[
+ P(H)\ge
+ \max\left\{0,\frac{Q^2/B-Q}{2}\right\}.
+\tag{4}
+\]
+The maximum is $\binom Q2$ and occurs when all states collide.
+\end{lemma}
+\begin{proof}
+Convexity of $x\mapsto\binom{x}{2}$ makes balanced bucket sizes minimize
+(3).  Cauchy--Schwarz gives $\sum_zm_z^2\ge Q^2/B$, and substituting into
+$P=(\sum_zm_z^2-Q)/2$ gives (4).  Putting every state in one bucket gives the
+maximum.
+\end{proof}
+
+If one normalized-residual replay costs $E(M)$, collision verification costs
+$P(H)E(M)$.  A bounded cache of $K$ representatives changes the hostile
+upper bound to $O(QK E(M))$, but a cyclic sequence of $K+1$ distinct states
+has no persistent hit under ordinary eviction.  Correctness survives because
+misses recompute; no global shrinkage follows.
+
+For a fixed public map on $L$-bit descriptions, one fiber has at least
+$2^{L-h}$ members.  Hence a $Q$-state all-collision family exists whenever
+\[
+ L-h\ge\log_2Q.
+\tag{5}
+\]
+More strongly, after fixing any common prefix of length
+$p\le L-h-\log_2Q$, one bucket still contains $Q$ extensions of that prefix.
+A streaming exact comparison can then be forced to inspect $\Omega(p)$ bits
+for every rejection.  This is a lower bound on this fixed-hash cache design,
+not on arbitrary SAT algorithms or on every possible dictionary.
+
+\section{Randomized ledger and the exponent calculation}
+For independent uniform $h$-bit fingerprints,
+\[
+ \mathbb E[P]=\frac{\binom Q2}{2^h},
+\qquad
+ \Pr[\text{no collision}]
+ =\prod_{i=0}^{Q-1}\left(1-\frac{i}{2^h}\right)
+ \le \exp\left(-\frac{Q(Q-1)}{2^{h+1}}\right).
+\tag{6}
+\]
+These are the standard pair-collision and birthday calculations behind
+universal hashing and rolling fingerprints \cite{carterwegman1979,karprabin1987}.
+A union-bound guarantee of collision probability at most $\delta$ needs
+approximately
+\[
+ h\ge2\log_2Q+\log_2(1/\delta)-O(1).
+\tag{7}
+\]
+
+If
+\[
+ Q=M^{u+o(1)},\qquad E(M)=M^{v+o(1)},\qquad
+ h=\kappa\log_2M,
+\]
+then reading or hashing every state costs at least $M^{u+v+o(1)}$ in this
+streaming model, while expected collision replay has exponent
+$2u-\kappa+v$.  Thus
+\[
+ C_{\mathrm{expected}}
+ \ge\max\{u+v,2u-\kappa+v\}.
+\tag{8}
+\]
+At the clean COVER-SHRINK1 target $u=1/3$ and $v=2/3$,
+\[
+ C_{\mathrm{expected}}\ge\max\{1,4/3-\kappa\}.
+\tag{9}
+\]
+A constant-length hash has $\kappa=0$ and therefore $4/3$ expected replay
+exponent in this model.  Choosing $h=(1/3)\log_2M$ reduces expected replay to
+the linear scan exponent one.  Choosing $h=(2/3)\log_2M$ reduces the expected
+number of false-collision pairs to $O(1)$.  The tag storage
+$Qh=M^{1/3+o(1)}$ remains in the same polynomial exponent class.
+
+Equation (9) is an implementation ledger, not the missing contraction.  A
+fixed public hash still admits the hostile all-collision family, giving time
+$Q^2E=M^{4/3-o(1)}$.  Combined with $M^{2/3}$ workspace, this reaches joint
+exponent two and misses the threshold $\gammats\approx1.80194$.  Fresh random
+seeds give expected randomized bounds.  The endpoint used in the proof spine
+is deterministic, and derandomizing under $P=NP$ does not automatically
+preserve these fine-grained exponents.
+
+\section{What four, six and eight hexadecimal digits change}
+Table~\ref{tab:digits} uses a uniform-hash model.  The square-root column is
+the conventional birthday scale $\sqrt{2^h}$; the probability of a collision
+is already a constant near that population.  The existing eight-byte setting
+is included to prevent confusing bytes with displayed hexadecimal digits.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrr}
+\toprule
+display & bits $h$ & buckets $2^h$ & birthday scale & meaning\\
+\midrule
+4 hex digits & 16 & $65{,}536$ & $256$ & finite toy caches\\
+6 hex digits & 24 & $16{,}777{,}216$ & $4{,}096$ & larger finite caches\\
+8 hex digits & 32 & $4{,}294{,}967{,}296$ & $65{,}536$ & finite engineering choice\\
+8 bytes & 64 & $18{,}446{,}744{,}073{,}709{,}551{,}616$ & $2^{32}$ & current prototype\\
+\bottomrule
+\end{tabular}
+\caption{Fixed fingerprint widths.  These scales do not imply an all-input
+collision bound.}
+\label{tab:digits}
+\end{table}
+
+For example, with $Q=100{,}000$ pairwise distinct states, the expected
+numbers of colliding pairs are approximately $76{,}293$ at four hex digits,
+$298$ at six, and $1.16$ at eight.  Those differences can be substantial in
+a finite implementation.  All three widths remain $O(1)$ as $M\to\infty$,
+so none changes a polynomial exponent or defeats the fixed-map adversary.
+If the output alphabet is decimal, the birthday scales for four, six and
+eight characters are instead roughly $10^2,10^3,10^4$ states.
+
+\section{Adaptive exact fingerprint construction}
+The strongest safe engineering variant is a verified multilevel cache.
+Start with a short prefix, for example sixteen bits.  When a bucket exceeds a
+declared cap, extend only that bucket by another block of digest bits.  Repeat
+through twenty-four, thirty-two and sixty-four bits, and finally compare the
+exact normalized residual stream before every reuse.  An exact descriptor or
+source-replay fallback handles the final level.
+
+\begin{theorem}[ADAPTIVE-EXACT1]
+The verified multilevel cache returns exactly the answer returned by the same
+solver with caching disabled, for every choice of prefix lengths, bucket caps
+and hash function.
+\end{theorem}
+\begin{proof}
+A cache answer is accepted only after the final exact congruence test.
+Short prefixes and extensions merely choose the order and number of
+candidates.  A miss invokes the uncached exact computation.  Induction over
+the solver call graph therefore preserves every returned Boolean value.
+\end{proof}
+
+This construction can reduce average tag storage and average replay on
+benign inputs.  It cannot improve the deterministic worst case by itself.
+For a fixed sequence $H_1,\ldots,H_t$ of $h$-bit hashes, the concatenated
+signature has $th$ bits, and among $R$ semantic classes one signature still
+contains at least
+\[
+ \left\lceil R/2^{th}\right\rceil
+\]
+classes.  Repeated hashing accumulates the information of one longer
+fingerprint.  Fresh random rehashing gives a Las Vegas dictionary only when
+every reuse remains verified; it gives expected rather than deterministic
+resource bounds.  Deterministic seed enumeration must charge failed seeds and
+collision certification.
+
+\subsection{CACHE-FINGERPRINT1 bounded test}
+The companion program \texttt{cache\_fingerprint\_experiment.py} implements
+fixed two-, four-, six- and eight-hexadecimal-digit caches and adaptive
+$2\mathord\to8$ and $4\mathord\to8$ variants.  Each prospective hit still
+receives a full normalized-residual-stream comparison.  The old residual is
+regenerated whenever an adaptive entry needs extension bits, so extension
+does not hide source work.  Each Python process has a 25-second alarm.
+
+The final batch used unsatisfiable PHP$(7,6)$ and eight satisfiable
+interleaved isomorphic dense components.  It completed twelve answer checks
+in 2.90 seconds with no error.  All configurations made the same 892
+recursive calls and obtained the same 121 verified cache hits.
+
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrr}
+\toprule
+scheme & max cache bits & bucket peak & equality replays & rejected collisions & literal reads & peak workspace\\
+\midrule
+fixed 2 hex & 49,244 & 10 & 1,278 & 1,157 & 887,763 & 51,721\\
+fixed 4 hex & 55,396 & 2 & 122 & 1 & 833,920 & 57,577\\
+fixed 6 hex & 61,548 & 1 & 121 & 0 & 833,889 & 63,433\\
+fixed 8 hex & 67,700 & 1 & 121 & 0 & 833,889 & 69,289\\
+adaptive $2\mathord\to8$ & 55,116 & $10^*$ & 312 & 191 & 989,748 & 57,273\\
+adaptive $4\mathord\to8$ & 55,412 & $2^*$ & 122 & 1 & 834,328 & 57,593\\
+\bottomrule
+\end{tabular}}
+\end{center}
+The starred adaptive values are occupancies before extension; the final
+stored-prefix bucket peak was one.  On this finite batch, four hex digits were
+the best measured fixed tradeoff.  Moving from four to six removed one false
+collision and saved only 31 literal reads while adding 6,152 cache bits.
+Moving from six to eight added another 6,152 bits without reducing work.
+Starting adaptively at two digits reduced rejected comparisons relative to
+fixed two digits, but 712 extension rehashes increased literal reads by 11.5
+percent.  These measurements select an engineering setting for these two
+workloads; they do not establish an asymptotic optimum or a general SAT
+bound.  Complete raw data are in
+\texttt{cache\_fingerprint\_results.json}.
+
+\subsection{Collision-focused hostile controls}
+A separate finite generator searched for short-digest collisions among
+syntactically distinct residuals and then replayed each saved witness.  At
+sixteen bits and 100,000 residuals it found 29,520 colliding buckets, 18,688
+of which mixed SAT answers, with maximum occupancy nine.  At twenty-four bits
+and 250,000 residuals it found 1,796 colliding buckets, 846 cross-answer,
+with maximum occupancy three.  At thirty-two bits and 500,000 residuals it
+found 36 colliding buckets, 18 cross-answer, with maximum occupancy two.
+
+A cache that merged by the digest alone returned respectively 1,288, 404 and
+72 wrong answers on collision-focused four-pass workloads.  Full-key and
+verified-hash caches returned no wrong answer.  The verified variants paid
+10,426, 1,849 and 1,128 exact equality comparisons and, in these runs, stored
+slightly more than the full-key cache.  The control also found equal-current-
+answer residuals that became unequal after applying the same later
+restriction.  This is a concrete instance of the congruence requirement:
+the current SAT bit is not a safe recursive merge key.  The finite counts are
+\textbf{COMPUTATIONAL}; the pigeonhole and congruence lemmas supply the
+general statements.
+
+\section{Short summaries cannot select a universal restriction cover}
+There is a direct guard against using the digest itself to select the small
+family of WRAPPER children.
+
+\begin{lemma}[SUMMARY-COVER1]
+For every $x\in\{0,1\}^n$, let $F_x$ be the unit-clause CNF with unique
+satisfying assignment $x$.  Suppose a constructor sees only an $h$-bit
+summary $H(F_x)$ and, for each summary, emits at most $q$ partial assignments,
+each leaving at most $\ell$ variables free.  If these restrictions cover the
+unique satisfying assignment for every $F_x$, then
+\[
+ \boxed{h+\log_2q+\ell\ge n.}
+\tag{10}
+\]
+\end{lemma}
+\begin{proof}
+Some summary bucket contains at least $2^{n-h}$ strings $x$.  The emitted
+family is identical for every formula in this bucket.  One restriction with
+$\ell$ free variables covers at most $2^\ell$ assignments, so all $q$ cover
+at most $q2^\ell$.  Exact coverage requires
+$q2^\ell\ge2^{n-h}$, which is (10).
+\end{proof}
+
+For the ordinary encoding of these unit formulas, $M=\Theta(n\log n)$.
+Taking $h=O(\log M)$, $q=M^{1/3+o(1)}$ and
+$\ell\le M^{2/3+o(1)}$ makes the left side $o(n)$, contradicting (10).
+A constructor that continues to read and exploit the full source escapes the
+lemma.  Its source-dependent acquisition work is then exactly what the
+recursive interface must charge.  The lemma rules out summary-only covers;
+it does not rule out a stronger source-dependent SAT reduction.
+
+\section{Recovered project results}
+The past-work search found four results that constrain the present design.
+\begin{description}
+\item[] \textbf{PRIME-LINEAGE-CNF1, PROVED/EXACT.} Distinct prime or Boolean
+labels can encode syntactic provenance inside a CNF with polynomial bit
+length.  They do not force an arbitrary SAT decider to retain the lineage.
+\item[] \textbf{Shared BAD-SEED construction, PROVED/EXACT.} Exponentially
+many routes can be represented by a polynomial shared circuit and replayed
+from a short seed.  This removes route enumeration as an automatic lower
+bound, while the final SAT bit can still bypass history retention.
+\item[] \textbf{WORKSAT-0011, COMPUTATIONAL.} A rolling $O(\log N)$ stream
+fingerprint greatly reduced measured storage relative to a full transcript,
+but only fingerprint-weak sameness was obtained; injective strong sameness
+and the unrestricted zero-space floor remained unavailable.
+\item[] \textbf{WORKSAT-0017/0019, FALSIFIED as general POWER.} A truncated
+sixteen-bit lossy hash failed strong sameness.  Combining a digest with an
+adaptive pointer either answered equality only, re-solved on a miss, or
+rematerialized linear content for unrestricted access.  This is the earlier
+version of the present exactness-versus-access boundary.
+\end{description}
+
+The continuous random-bitstream proposal was likewise retained only as
+source-binding and hostile-test infrastructure.  Without exact verification
+it introduces error; with verification it supplies randomized expected
+bounds; a favorable fixed stream is advice; and a single globally fixed
+uncomputable stream is an oracle-like object.  A computable fixed stream is a
+public deterministic schedule and admits hostile inputs.
+
+\section{Literature-guided positive routes}
+The closest positive construction found in the current literature uses the
+same safe division of labor as this manuscript: a cheap fingerprint proposes
+a merge and a source-backed test certifies it.  Biere, Lagniez and Lonca first
+hash a decision-DNNF node by its variable and exact model count, then verify a
+candidate semantic merge by two provenance-based entailment checks
+\cite{bierelagniezlonca2026}.  The verifier is polynomial on the already
+compiled representation.  The initial compilation of an arbitrary CNF can
+be exponential, the model counts have growing bit length, and hash buckets
+can still contain many candidates.  This is therefore an exact realization
+of the desired merge interface after acquisition, rather than a proof of
+cheap acquisition on general SAT.
+
+Canonical decision diagrams give a second restricted route.  For a fixed
+variable order, reduced ordered BDDs are canonical and exact hash-consing
+compares the full tuple consisting of a variable and its two child identifiers
+\cite{bryant1986}.  Tree Decision Diagrams generalize this pattern.  Capelli
+et al. prove polynomial minimization for a fixed bounded-width TDD and
+$2^{O(k)}$ compilation bounds for several width-$k$ source classes
+\cite{capelli2026}.  They also exhibit functions requiring exponential TDD
+size.  A useful WRAPPER target is consequently a source-checkable theorem
+that every generated residual remains in one of these bounded-width regimes.
+No such theorem is known for arbitrary SAT.
+
+Component caching in DPLL supplies the analogous algorithmic lesson.
+Exact residual components can be reused with favorable bounds controlled by
+branchwidth, while general traces and compiled decision diagrams can remain
+exponential \cite{bacchusdalmaopitassi2014}.  Hash length is an implementation
+parameter after the structural parameter is bounded.  It does not establish
+that bound.
+
+Adaptive approximate-membership structures append fingerprint bits when
+collisions are discovered, but their theorems are randomized, permit false
+positives under a specified adversary model, and retain access to the full
+keys \cite{benderetal2018}.  They support the adaptive cache experiment as an
+engineering design, not as an exact semantic quotient.
+
+\section{Relation to the proof spines}
+In \texttt{main5.tex}, changing $h$ can improve the implementation of W3 and
+W6 after a small exact class set has been proved.  HASH-INDEX-NO-SHRINK1 says
+that it does not establish W2, W4 or W5.  In \texttt{main6.tex}, the same
+point says that a hash does not bound the forward-tree node count $Q$ or leaf
+length $M(N)$ unless a source-checkable semantic theorem already connects
+the buckets to those objects.  In \texttt{main4.tex}, finite constant-factor
+savings do not create a new achievable exponent pair.
+
+To obtain at most $M^{1/3+o(1)}$ children by declaring one child per hash
+bucket, one would naturally choose
+$h\le(1/3+o(1))\log_2M$.  Exact verification then leaves the child count at
+$R$, which the hash does not bound.  Merging all equal hashes instead requires
+proving (1) and constructing the semantic quotient within the target work and
+space bounds.  This is COVER-SHRINK1 itself.
+
+The strongest justified use is therefore:
+\[
+\begin{gathered}
+\text{source-dependent theorem proves few exact canonical classes}\\
+\Longrightarrow\quad
+\text{adaptive fingerprint indexes those classes cheaply}\\
+\Longrightarrow\quad
+\text{exact replay preserves correctness.}
+\end{gathered}
+\]
+The first arrow remains open on general SAT.  Four, six and eight digits are
+useful experimental settings for the second arrow, but none proves the first.
+P versus NP remains open.
+
+\begin{thebibliography}{9}
+\bibitem{carterwegman1979}
+J. Lawrence Carter and Mark N. Wegman,
+\emph{Universal Classes of Hash Functions},
+Journal of Computer and System Sciences 18(2):143--154, 1979.
+\url{https://doi.org/10.1016/0022-0000(79)90044-8}
+
+\bibitem{karprabin1987}
+Richard M. Karp and Michael O. Rabin,
+\emph{Efficient Randomized Pattern-Matching Algorithms},
+IBM Journal of Research and Development 31(2):249--260, 1987.
+\url{https://doi.org/10.1147/rd.312.0249}
+
+\bibitem{fks1984}
+Michael L. Fredman, J\'anos Koml\'os and Endre Szemer\'edi,
+\emph{Storing a Sparse Table with $O(1)$ Worst Case Access Time},
+Journal of the ACM 31(3):538--544, 1984.
+\url{https://doi.org/10.1145/828.1884}
+
+\bibitem{bierelagniezlonca2026}
+Armin Biere, Jean-Marie Lagniez and Emmanuel Lonca,
+\emph{Efficient Minimization of Decision-DNNF Circuits via Semantic Hashing
+and Provenance Tracking}, IJCAI 2026, pages 3774--3782.
+\url{https://www.ijcai.org/proceedings/2026/420}
+
+\bibitem{bryant1986}
+Randal E. Bryant,
+\emph{Graph-Based Algorithms for Boolean Function Manipulation},
+IEEE Transactions on Computers C-35(8):677--691, 1986.
+\url{https://doi.org/10.1109/TC.1986.1676819}
+
+\bibitem{capelli2026}
+Florent Capelli, YooJung Choi, Stefan Mengel, Mart\'in Mu\~noz and
+Guy Van den Broeck,
+\emph{A Canonical Generalization of OBDD}, SAT 2026.
+\url{https://doi.org/10.4230/LIPIcs.SAT.2026.10}
+
+\bibitem{bacchusdalmaopitassi2014}
+Fahiem Bacchus, Shannon Dalmao and Toniann Pitassi,
+\emph{Solving \#SAT and Bayesian Inference with Backtracking Search},
+Journal of Artificial Intelligence Research 34, 2009; manuscript revision
+available as arXiv:1401.3458.
+\url{https://arxiv.org/abs/1401.3458}
+
+\bibitem{benderetal2018}
+Michael A. Bender et al.,
+\emph{Bloom Filters, Adaptivity, and the Dictionary Problem},
+FOCS 2018.
+\url{https://arxiv.org/abs/1711.01616}
+\end{thebibliography}
+\end{document}

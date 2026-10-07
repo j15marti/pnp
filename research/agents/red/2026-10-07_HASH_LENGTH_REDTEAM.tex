@@ -1,0 +1,444 @@
+% IMMUTABLE RED-TEAM REPORT::HASH-LENGTH::2026-10-07
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\E}{\mathrel{\equiv}}
+\title{Hash Length Does Not Supply the Missing WRAPPER Contraction\\
+       Exact Buckets, Equality Replay, Randomness, and COVER-SHRINK1}
+\author{Independent red-team audit}
+\date{7 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This report audits the proposal that short hashes, adaptive rehashing, or an
+external random bitstream might supply the missing contraction in the SAT
+WRAPPER program.  Exact verification makes a hash an index only: the number
+of safely reusable states remains the number of true semantic congruence
+classes.  Omitting verification instead requires the hash itself to be a
+sound semantic quotient, which is the missing merge theorem.  We derive exact
+bucket and equality-replay bounds, distinguish deterministic worst-case from
+random-oracle expectation, give a restriction-cover countermodel, and apply
+the results to the concrete COVER-SHRINK1 target.  No choice of hash length
+alone establishes that target or improves the proved joint time-space
+exponent.  P versus NP remains open.
+\end{abstract}
+
+\section{Status and the concrete target}
+
+The sufficient construction target under audit is the following.  Assuming
+$P=NP$, an exact source-matched procedure on every explicit CNF of encoded
+length $M$ should output at most
+\[
+ q\le M^{1/3+o(1)}
+\]
+ordinary-CNF children, each of encoded length at most
+$M^{2/3+o(1)}$, using total local, generation, and combination work
+$M^{1+o(1)}$ and peak workspace $M^{2/3+o(1)}$.  The construction must be
+recursively closed and may not invoke the assumed SAT algorithm on an
+$M^{1-o(1)}$-length query.  We call this target \textsc{Cover-Shrink1}.
+
+The downstream composition arithmetic is not at issue here.  The question is
+whether hashing supplies the missing all-input bound on the number of exact
+children or makes their discovery cheap.  The answer is negative unless an
+additional semantic quotient theorem is supplied.
+
+\section{Exact hash-indexed reuse}
+
+Let $X_1,\ldots,X_Q$ be states generated at one scale.  Let $\E$ be an
+equivalence relation strong enough to justify every proposed future reuse.
+For a recursive WRAPPER this may be normalized residual equality,
+isomorphism, or another continuation congruence; equality of the present SAT
+answer need not suffice.  Let $R$ be the number of $\E$-classes represented
+among the $Q$ states.  Let
+\[
+ H:\mathcal X\longrightarrow\{0,1\}^h,
+ \qquad B=2^h.
+\]
+
+\begin{lemma}[HASH-INDEX-NO-SHRINK]
+Suppose a state is reused only after an exact verifier accepts it as
+equivalent to a retained representative.  If the verifier decides $\E$
+completely, complete deduplication retains exactly $R$ representatives.  If
+the verifier is merely sound, it may retain more than $R$.  In either case
+the hash length gives no upper bound on $R$.
+\end{lemma}
+
+\begin{proof}
+Hash equality only selects candidate representatives.  Exact verification
+never identifies two distinct $\E$-classes.  A complete verifier eventually
+identifies every pair in one class, leaving one representative per class.  A
+sound incomplete verifier may fail to identify members of the same class,
+leaving additional representatives.  Changing the candidate index does not
+change the underlying quotient.
+\end{proof}
+
+\begin{lemma}[Sound merge-on-hash bound]
+If equal hashes are merged without exact verification, soundness requires
+\[
+ H(x)=H(y)\quad\Longrightarrow\quad x\E y.
+ \tag{1}
+\]
+If $R$ equivalence classes occur, then
+\[
+ 2^h\ge R,
+ \qquad
+ h\ge\lceil\log_2R\rceil.
+ \tag{2}
+\]
+\end{lemma}
+
+\begin{proof}
+Two states from distinct classes cannot share a hash under (1).  Selecting
+one representative from each class therefore gives $R$ distinct hash values.
+\end{proof}
+
+For current SAT-answer equivalence, one bit is sufficient in principle:
+$H(F)=\SAT(F)$.  Constructing that hash is exactly the semantic decision
+problem, so its full acquisition cost must be charged.  For future
+restriction or continuation equivalence there can be exponentially many
+classes.  For example, the unit-clause formulas selecting different unique
+assignments are all presently satisfiable but are separated by later
+restrictions.  Hash length and hash acquisition are different resources.
+
+\section{Bucket and equality-replay bounds}
+
+Consider the chained-bucket implementation in which a new state is compared
+with earlier representatives having the same hash.  Suppose the $Q$ states
+are pairwise inequivalent and bucket $z$ contains $m_z$ states.
+
+\begin{lemma}[BUCKET-REPLAY]
+The number of rejected exact comparisons is
+\[
+ P(H)=\sum_{z=1}^{B}\binom{m_z}{2}.
+ \tag{3}
+\]
+It satisfies
+\[
+ P(H)\ge
+ \max\left\{0,\frac{Q^2/B-Q}{2}\right\},
+ \tag{4}
+\]
+and the worst case is $P(H)=\binom Q2$.
+\end{lemma}
+
+\begin{proof}
+Within a bucket, the $j$th inequivalent insertion is rejected against its
+$j-1$ predecessors.  Summing gives (3).  Since
+$\sum_zm_z^2\ge Q^2/B$, equation (4) follows from
+$P=(\sum_zm_z^2-Q)/2$.  Putting every state in one bucket attains the stated
+worst case.
+\end{proof}
+
+If one exact comparison costs $E(M)$, equality-replay work is
+$P(H)E(M)$.  A cache holding at most $K$ representatives can limit local
+comparison work to $O(QK E)$, but then it does not perform global
+deduplication.  A cyclic stream of $K+1$ different states defeats an LRU
+cache.  Cache misses preserve correctness by recomputation; they do not
+establish a smaller exact quotient.
+
+Storing all representatives costs $\Omega(QD)$ bits when each retained
+descriptor has $D$ bits, in addition to $Qh$ tag bits and table overhead.
+Short source references can replace full representatives only if every
+regeneration and exact replay is charged.
+
+\section{Fixed public hashes and adversarial fibers}
+
+\begin{lemma}[PUBLIC-FIBER]
+For a fixed map $H:\{0,1\}^L\to\{0,1\}^h$, some bucket contains at least
+$2^{L-h}$ strings.  Therefore a $Q$-element all-collision set exists whenever
+\[
+ L-h\ge\log_2Q.
+ \tag{5}
+\]
+To exclude every $Q$-fold collision on the full domain requires
+$h>L-\log_2Q$; injectivity requires $h\ge L$.
+\end{lemma}
+
+\begin{proof}
+This is the pigeonhole principle applied to $2^L$ inputs and $2^h$ buckets.
+\end{proof}
+
+The same statement for a restricted valid-state domain $\mathcal D$ replaces
+$2^L$ by $|\mathcal D|$.  There are exponentially many distinct normalized
+CNF encodings, so polynomially many hostile states remain available for a
+short fixed digest.
+
+\begin{lemma}[Long-prefix replay countermodel]
+For any integer
+\[
+ p\le L-h-\log_2Q,
+\]
+there is a set of $Q$ equal-hash strings sharing a prefix of length $p$.
+Consequently a streaming equality test can be forced to inspect
+$\Omega(p)$ bits per rejected candidate.
+\end{lemma}
+
+\begin{proof}
+Fix any prefix of length $p$.  Its extension set contains $2^{L-p}$ strings.
+One of the $2^h$ hash buckets contains at least $2^{L-p-h}\ge Q$ of them.
+They all share the fixed prefix.  Choose suffixes whose first difference
+appears only after that prefix.
+\end{proof}
+
+For $h+\log Q=o(L)$ this gives $\Omega(L)$ equality replay.  CNF states can
+realize the same pattern with a long shared clause prefix and distinguishing
+suffix clauses.  This is a countermodel for chained exact equality replay,
+not a lower bound against a secondary exact dictionary or an independently
+proved canonical representation.
+
+A fixed cryptographic digest does not alter the theorem.  A 64-, 128-, or
+256-bit output is $O(1)$ asymptotically.  Computational collision resistance
+is not mathematical collision freedom and cannot support an exact all-input
+complexity proof.  Under the contradiction hypothesis $P=NP$, relying on the
+hardness of ordinary polynomially checkable collision search is especially
+inappropriate.
+
+\section{Random-oracle expectation}
+
+For independent uniform $h$-bit hashes, pair indicators give
+\[
+ \mathbb E[P]=\frac{\binom Q2}{2^h}.
+ \tag{6}
+\]
+The no-collision probability obeys
+\[
+ \Pr[\text{no collision}]
+ =\prod_{i=0}^{Q-1}\left(1-\frac{i}{2^h}\right)
+ \le
+ \exp\left(-\frac{Q(Q-1)}{2^{h+1}}\right).
+ \tag{7}
+\]
+A union-bound guarantee of collision probability at most $\delta$ requires
+approximately
+\[
+ h\ge2\log_2Q+\log_2(1/\delta)-O(1).
+ \tag{8}
+\]
+
+Write
+\[
+ Q=M^{u+o(1)},\qquad E(M)=M^{v+o(1)},
+ \qquad h=\kappa\log_2M+O(1).
+\]
+Reading or hashing all states already costs $M^{u+v+o(1)}$ when each state
+has $M^{v+o(1)}$ relevant bits.  Equation (6) gives expected replay exponent
+$2u-\kappa+v$.  Hence
+\[
+ C_{\rm expected}\ge
+ \max\{u+v,\,2u-\kappa+v\}.
+ \tag{9}
+\]
+
+At the COVER-SHRINK1 scale $u=1/3$ and $v=2/3$,
+\[
+ C_{\rm expected}\ge\max\{1,4/3-\kappa\}.
+ \tag{10}
+\]
+Thus $h=(1/3)\log_2M$ is enough for linear expected filtering work in the
+random-oracle model, and $h=(2/3)\log_2M$ makes the expected number of false
+collisions constant.  Neither is a deterministic worst-case conclusion.  A
+fixed public hash still admits the all-collision fiber, giving
+$M^{4/3-o(1)}$ chained replay when equality costs $M^{2/3-o(1)}$.
+
+\section{Adaptive rehashing and set-dependent perfect hashing}
+
+\begin{lemma}[Public rehash sequence]
+For a fixed sequence $H_1,\ldots,H_t$ of $h$-bit hashes, the combined
+signature has $th$ bits.  Among $R$ equivalence classes, one combined-signature
+fiber contains at least
+\[
+ \left\lceil\frac{R}{2^{th}}\right\rceil
+ \tag{11}
+\]
+classes.  Excluding a common fiber of $Q$ classes requires
+\[
+ th>\log_2(R/Q).
+ \tag{12}
+\]
+\end{lemma}
+
+\begin{proof}
+Apply the pigeonhole principle to the vector map
+$(H_1,\ldots,H_t)$, whose range has size at most $2^{th}$.
+\end{proof}
+
+Repeated public rehashing therefore accumulates the information of one longer
+fingerprint.  Random rehashing plus exact verification is a Las Vegas
+dictionary and gives expected, randomized bounds.  Deterministic seed
+enumeration must charge every failed pass and its collision certification.
+
+An input-dependent minimal perfect hash can avoid collisions on the actual
+$Q$ keys with short labels.  This does not contradict the public-fiber lemma:
+the selected map depends on the set.  It indexes $Q$ distinct keys but does
+not merge semantic classes.  Its construction must inspect the keys, and its
+table, representatives, or regeneration interface must be charged.  The
+number of exact children remains $R$.
+
+\section{External random bitstreams}
+
+An external IID stream has four distinct interpretations.
+\begin{enumerate}
+\item Merge-on-random-hash without verification has nonzero error and is not
+an exact SAT decider.
+\item Las Vegas hashing with exact verification is correct but yields only
+expected or high-probability randomized resource bounds.
+\item A favorable stream selected separately for each input or input length
+is nonuniform advice.
+\item One globally fixed infinite random stream is an oracle or infinite
+advice unless it is computable.  If computable, it is a deterministic public
+schedule and is again subject to worst-case fibers.
+\end{enumerate}
+
+If correctness holds for every stream, a deterministic endpoint application
+also needs the resource bound for every stream, including an all-zero or
+otherwise hostile stream.  If performance holds only for almost every stream,
+the result does not meet the deterministic Williams endpoint.  Even a
+qualitative derandomization consequence of $P=NP$ would not automatically
+preserve the fine-grained time and space exponents required here.
+
+\section{A summary-only restriction-cover obstruction}
+
+The following countermodel applies to hash-selected restrictions or
+backdoors.  It deliberately does not claim a lower bound against arbitrary
+source-dependent semantic CNF transformations.
+
+\begin{lemma}[SUMMARY-COVER]
+For each $x\in\{0,1\}^n$, let $F_x$ be the unit-clause CNF whose unique
+satisfying assignment is $x$.  Suppose a constructor sees only an $h$-bit
+summary $H(F_x)$ and, for each summary value, outputs at most $q$
+restrictions, each leaving at most $\ell$ variables free.  Exact coverage of
+every $F_x$ requires
+\[
+ \boxed{h+\log_2q+\ell\ge n.}
+ \tag{13}
+\]
+\end{lemma}
+
+\begin{proof}
+Some summary bucket contains at least $2^{n-h}$ of the $2^n$ distinct unique
+witnesses.  Every formula in that bucket receives the same restriction
+family.  Each restriction covers at most $2^\ell$ assignments, so the family
+covers at most $q2^\ell$.  Exact coverage forces
+$q2^\ell\ge2^{n-h}$, which is equivalent to (13).
+\end{proof}
+
+Under a standard encoding, these formulas have $M=\Theta(n\log n)$ bits.
+The choices
+\[
+ h=O(\log M),\qquad q=M^{1/3+o(1)},
+ \qquad \ell\le M^{2/3+o(1)}
+\]
+make the left side of (13) $o(n)$, so they cannot cover this family.  Avoiding
+the obstruction within the summary-only architecture requires
+\[
+ h\ge n-o(n)=M^{1-o(1)},
+\]
+which is incompatible with retaining the summary inside
+$M^{2/3+o(1)}$ workspace.  A constructor that continues to read and exploit
+the full source escapes the lemma, but that additional source-dependent
+acquisition is exactly what COVER-SHRINK1 must bound.
+
+\section{Hash-length regimes at the target parameters}
+
+Let $Q=M^{1/3+o(1)}$ and let exact state replay have length or cost
+$L=M^{2/3+o(1)}$.  The conclusions are summarized below.
+
+\begin{center}
+\small
+\begin{tabular}{p{0.18\linewidth}p{0.33\linewidth}p{0.38\linewidth}}
+\toprule
+Hash choice & What it can establish & Why it does not establish COVER-SHRINK1 \\
+\midrule
+$h=O(1)$ & Constant-size bucket index & Chained exact replay can cost
+$Q^2L=M^{4/3-o(1)}$; a bounded cache avoids that cost only by forfeiting
+global deduplication. \\
+\addlinespace
+$h=\kappa\log M$ & Expected replay exponent
+$\max\{1,4/3-\kappa\}$ under uniform random hashing & Fixed public hashes
+retain all-collision worst cases.  Exact verification leaves $R$ classes;
+random expectation does not meet the deterministic endpoint. \\
+\addlinespace
+$h=o(L)$ & More buckets and smaller expected collision count & A fixed map
+still has $Q$-fold fibers whenever $L-h\ge\log Q$. \\
+\addlinespace
+$h>L-\log Q$ & Excludes $Q$-fold fibers on the full $L$-bit domain & The tag
+is essentially as long as the state.  Retaining $Q$ tags costs
+$M^{1-o(1)}$ bits, and injectivity produces no semantic merge. \\
+\addlinespace
+Set-dependent perfect hash & Collision-free indexing of the actual set &
+Construction and table storage must be charged; $Q$ distinct semantic keys
+remain $Q$ children. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+If one representative is declared per hash bucket with
+$h\le(1/3+o(1))\log M$, either exact verification separates false collisions,
+leaving $R$ children, or equal hashes are merged and condition (1) must be
+proved.  The latter is a source-checkable semantic quotient with charged
+construction cost---the missing theorem itself.
+
+Hashes can be useful infrastructure after an independent theorem proves
+$R\le M^{1/3+o(1)}$ and supplies cheap exact canonicalization or verification.
+They do not prove that class-count bound, reduce child encoding length, or
+remove current-scale acquisition.
+
+\section{Reproducible finite arithmetic audit}
+
+The companion script checks the bucket convexity inequality and the fixed
+rehash common-signature bound, and simulates uniform random buckets for the
+target powers.  It performed 1,872 bucket checks and 48 common-signature
+checks with zero errors.  Eight deterministic random seeds were used for each
+reported parameter row.  These are arithmetic sanity checks, not asymptotic
+SAT evidence.
+
+\begin{description}
+\item[Script:] \texttt{hash\_length\_redteam\_2026-10-07.py}
+\item[Results:] \texttt{hash\_length\_redteam\_results\_2026-10-07.json}
+\item[Script SHA-256:]\leavevmode\\
+\nolinkurl{a7db88107f9c99b548319bcc289cd82fbf9e1cf2c0c50452d6022892c5a18b75}
+\item[Results SHA-256:]\leavevmode\\
+\nolinkurl{0ac585e0c3599ff6cda9db4d2a36399623067a86b8b06ebe4ac38e5d83b28972}
+\end{description}
+
+\section{Final disposition}
+
+The hash-length proposal has three legitimate roles: routing to possible
+representatives, auditing provenance, and reducing ordinary dictionary
+overhead once exact equivalence is already available.  None supplies the
+load-bearing implication
+\[
+ P=NP
+ \Longrightarrow
+ \text{a recursively closed, source-matched COVER-SHRINK1 realization}.
+\]
+The remaining arrow is still a proof that the generated states have at most
+$M^{1/3+o(1)}$ safely mergeable semantic classes, and that their discovery,
+ordinary-CNF construction, exact combination, input access, and peak live
+state fit the $M^{1+o(1)}$-time and $M^{2/3+o(1)}$-space ledger.  Hashes may
+implement that theorem after it is proved; they do not imply it.
+
+\begin{thebibliography}{9}
+\bibitem{williams2010}
+R. Ryan Williams,
+\emph{Alternation-Trading Proofs, Linear Programming, and Lower Bounds},
+STACS 2010, Theorem 3.9.
+\url{https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.STACS.2010.2494}
+
+\bibitem{williamsfull}
+R. Ryan Williams,
+\emph{Alternation-Trading Proofs, Linear Programming, and Lower Bounds},
+full draft, Appendix B, Theorem B.1.
+\url{https://www.cs.cmu.edu/~ryanw/automated-lbs.pdf}
+\end{thebibliography}
+
+\end{document}
