@@ -74,7 +74,23 @@ Regenerating a child instead of storing it may reduce workspace. It does not mak
 
 \section{Architecture alternatives}
 \subsection{Double wrapper}
-The forward-only inner layer emits justified alternatives before knowing their SAT answers. The outer layer resolves these answers recursively. This removes an architectural dependence on choosing the successful route first. It leaves open the cost of enumerating alternatives, their encoded sizes, and the exact combination rule. SAT-correctness is a separate proof from resource improvement.
+The implemented prototype in \texttt{experiments/DOUBLE\_WRAPPER\_2026-10-07}
+already supplies this architecture. Its iterative inner layer uses unit propagation,
+restrictions, variable-disjoint component splitting, and exact normalized formula
+keys. It emits constants or ordinary CNF leaves with measured encoding length at
+most $\max\{2,\lfloor M^{2/3}\rfloor\}$, without a SAT query. Restriction branches
+combine by OR; variable-disjoint components combine by AND. The outer layer
+recursively applies the same construction to unresolved leaves, with strictly
+decreasing encoded size.
+
+Thus decision exactness, the enforced per-leaf cutoff, and semantic recursive
+closure are addressed for this prototype. It is inaccurate to list its combination
+rule or per-leaf encoded size as wholly unknown. The missing bounds concern
+\emph{total} construction work, total alternatives/internal gates, and simultaneous
+time and workspace. Branching until every leaf is small can do exponential work.
+The code retains full formulas and caches, and its literal-visit counters omit
+sorting, hashing, and other costs. Its local normalization is decision-preserving;
+it does not promise preservation of original variable identities or prime lineage.
 
 \subsection{Disjunction and charged backdoors}
 A decomposition $\SAT(F)=\bigvee_i\SAT(G_i)$ gives a streaming OR combiner. SAT instances may terminate early, whereas UNSAT instances require all children in the worst case. A backdoor of size $h$ may induce $2^h$ branches; finding the backdoor and solving residual instances must also be charged. An existence theorem for a small backdoor without cheap acquisition does not meet the inner contract. Nor does a small backdoor theorem for a restricted class establish coverage of arbitrary SAT.
@@ -94,7 +110,7 @@ Thus $D_r\le N^d$ implies $x\ge k-d\log_2N$ \cite{prf20145}. This is exact bookk
 
 A restricted hostile control is useful: a formula-independent family of $q$ partial assignments, each leaving at most $\ell$ variables unassigned, must satisfy $q2^\ell\ge2^n$ if it must cover every possible unique satisfying assignment. This rules out that specific oblivious construction. It does not exclude source-dependent semantic reductions or arbitrary algorithms \cite{lead0027}.
 
-\section{Open obligations and proof spine}
+\section{Interface obligations and candidate-specific status}
 \begin{description}
 \item[] \textbf{W1: semantic reduction.} Prove exactness of the candidate inner operation on the entire claimed domain.
 \item[] \textbf{W2: encoded shrinkage.} Prove a fixed exponent $b<1$ for actual standard SAT children, including every source reference needed to interpret them.
@@ -104,11 +120,17 @@ A restricted hostile control is useful: a formula-independent family of $q$ part
 \item[] \textbf{W6: joint resources.} Give one implementation with charged input access, live state, answer storage, and any portfolio scheduling.
 \item[] \textbf{W7: endpoint compatibility.} Match the machine model and encoding and preserve a strict numerical margin.
 \end{description}
+These are interface requirements, not seven uniformly unresolved claims.
+For the explicit double-wrapper prototype, W1, the per-leaf part of W2,
+and semantic W5 are addressed. W3, W4, W6 and the favorable quantitative
+closure needed by W5 are not established at the target exponents.
+Other candidates require their own status ledger.
+
 The proof spine is
 \[
 \begin{aligned}
 P=NP&\Rightarrow \text{one polynomial SAT decider }A\\
-&\xRightarrow{\text{OPEN: W1--W6}}\text{favorable recursive SAT interface}\\
+&\xRightarrow{\text{OPEN: jointly favorable interface bounds}}\text{favorable recursive SAT interface}\\
 &\xRightarrow{\text{conditional composition}}\text{one algorithm with improved joint bounds}\\
 &\xRightarrow{\text{W7 and strict margin}}\text{contradiction to the endpoint}.
 \end{aligned}
@@ -120,8 +142,10 @@ Until the open interface is proved, the valid logical statement is $(P=NP)\land 
 The achievable-region manuscript now proves a finite existential return-cycle
 lemma allowing transient time/space expansion and different uniform SAT
 machines at successive phases. This causes no mathematical status change in
-the WRAPPER route. W1--W6 remain open: a concrete wrapper must still produce
-the phase successors with exact SAT semantics and charged joint resources.
+the WRAPPER route. The jointly favorable interface remains open: the double-wrapper prototype
+supplies decision semantics and per-leaf shrinkage, while a concrete wrapper
+must still produce the phase successors with sufficiently small total work
+and simultaneous workspace.
 The existence-level lemma does not justify a growing-depth recursive solver,
 and it does not remove the access and effective-error obligations recorded
 above.
@@ -146,6 +170,32 @@ These are sufficient-budget constraints, not machine lower bounds. All preproces
 Charged backdoor costs and equality-copy quotients are likewise solved in their stated domains. Neither implies universal inexpensive decomposition. See
 \url{https://github.com/j15marti/pnp/blob/main/research/agents/lead/2026-10-07_1504_PROOF_ASSEMBLY_AUDIT.tex}.
 % END HISTORICAL ASSEMBLY AUDIT 2026-10-07
+
+
+% BEGIN VARIANT AUDIT 2026-10-07
+\section{Compatibility of recovered wrapper variants}
+The paired prime-lineage construction (LEAD-0024) makes a particular false
+lineage identification render its CNF unsatisfiable. This is a stronger
+formula-semantic statement than an external provenance check. It does not
+establish that every decision algorithm must retain that lineage.
+The double-wrapper decision cache deliberately preserves a weaker interface.
+These constructions cannot be combined by silently treating decision
+equivalence as equivalence under all later lineage-dependent restrictions.
+
+Disjunctive covers can precede the double wrapper without this mismatch:
+$\SAT(F)=\bigvee_a\SAT(F\upharpoonright a)$.
+A new bounded regression checked that composition on 271 formulas with two
+backends, giving 542 correct combined results and zero guarded reference-solver
+calls during production execution. This is COMPUTATIONAL evidence of finite
+interoperability, not an asymptotic improvement.
+The historical portfolio tests also show complementary behavior: disjunctive
+lazy evaluation wins the reported work proxy on the 12 random cases, while
+equality quotienting is much cheaper on the equality-copy control. A
+portfolio still needs uniform coverage and aggregate memory accounting.
+
+The detailed variant audit is
+\url{https://github.com/j15marti/pnp/blob/main/research/agents/lead/2026-10-07_222000_WRAPPER_VARIANTS_AUDIT.tex}.
+% END VARIANT AUDIT 2026-10-07
 
 \bibliographystyle{plain}
 \bibliography{spines}
