@@ -228,6 +228,74 @@ it does not promise preservation of original variable identities or prime lineag
 \subsection{Disjunction and charged backdoors}
 A decomposition $\SAT(F)=\bigvee_i\SAT(G_i)$ gives a streaming OR combiner. SAT instances may terminate early, whereas UNSAT instances require all children in the worst case. A backdoor of size $h$ may induce $2^h$ branches; finding the backdoor and solving residual instances must also be charged. An existence theorem for a small backdoor without cheap acquisition does not meet the inner contract. Nor does a small backdoor theorem for a restricted class establish coverage of arbitrary SAT.
 
+\subsection{Backdoor DNFs: exact cover, but not automatic power shrinkage}
+For a self-reducible tractable CNF class $\mathcal C$, a
+$\mathcal C$-backdoor DNF is a finite set $\mathcal G$ of partial
+assignments such that the corresponding DNF is a tautology and
+$F\upharpoonright\tau\in\mathcal C$ for every $\tau\in\mathcal G$.
+Consequently
+\[
+ \SAT(F)=\bigvee_{\tau\in\mathcal G}
+ \SAT(F\upharpoonright\tau).
+\]
+This is an exact forward OR plan.  Ordyniak, Schidler, and Szeider prove that
+the variables used by a backdoor DNF form a strong backdoor (Observation~1),
+and that detecting a $k$-term backdoor DNF is fixed-parameter tractable for
+$\mathcal C\in\{\mathrm{2CNF},\mathrm{Horn},\mathrm{AntiHorn},
+\mathrm{2CNF}\cup\mathrm{Horn},
+\mathrm{2CNF}\cup\mathrm{AntiHorn}\}$ (Theorem~3)
+\cite{ordyniak2021bdnf}.  Thus the construction compresses a branching
+cover; it does not imply that an unrelated general CNF has such a cover.
+The FPT statement also does not by itself provide the fixed exponents and
+live-space bound required by the present interface when $k$ grows.
+
+\begin{lemma}[BDNF-WRAPPER-GATE1]\label{lem:bdnf-gate}
+There is an explicit Horn-backdoor-DNF family with $M^{o(1)}$ terms for
+which emitting the residual CNFs certifies no child exponent $b<1$.
+This statement has a complete proof below; promotion beyond
+\textsc{Conditional} awaits independent red-team review.
+\end{lemma}
+\begin{proof}
+Use the Horn family in the proof sketch of Theorem~2 of
+\cite{ordyniak2021bdnf}.  For $s\ge1$, put $r=2^s-s$ and take variables
+$p,a_1,\ldots,a_s,q_1,\ldots,q_r$ with clauses
+\[
+ (a_i\vee p)\quad(1\le i\le s),
+ \qquad
+ (a_1\vee\cdots\vee a_s\vee q_j\vee\neg p)
+ \quad(1\le j\le r).
+\]
+The $s+2$ partial assignments
+\[
+ p=0;\qquad p=1,\ a_1=\cdots=a_s=0;\qquad
+ p=1,\ a_i=1\quad(1\le i\le s)
+\]
+form a tautological DNF, and every residual is Horn.  Hence their fanout is
+$s+2=M_s^{o(1)}$.  In an ordinary globally indexed clause-list encoding,
+the parent length is
+\[
+ M_s=\Theta(2^s s^2):
+\]
+there are $\Theta(2^s)$ long clauses with $\Theta(s)$ occurrences, and each
+index uses $\Theta(s)$ bits.  Under the second partial assignment above,
+the residual is precisely the $r$ unit clauses $(q_j)$.  Its encoded length
+is
+\[
+ L_s=\Theta(2^s s)=M_s^{1-o(1)},
+\]
+because $\log L_s/\log M_s\to1$.  Therefore this direct explicit-child
+transfer violates every fixed $L_s\le M_s^{b+o(1)}$ with $b<1$.
+\end{proof}
+
+The gate does not refute backdoor-DNF algorithms.  A procedure may solve the
+Horn residuals directly, stream them implicitly, or combine this member with
+other exact partial mechanisms.  Such a realization must charge DNF
+acquisition, tautology/coverage certification, residual access, base-class
+solving, and live state.  The paper's family also shows why the mechanism can
+still enlarge the finite portfolio: its DNF has $s+2$ terms whereas complete
+enumeration of the displayed size-$s$ strong backdoor has $2^s$ branches.
+No worst-case general-SAT coverage or favorable joint exponent follows.
+
 \subsection{Parallel portfolios}
 A fixed finite portfolio of exact solvers can be time-shared to exploit its fastest member with a constant time overhead, assuming ordinary suspendable simulations. The simulator must count all retained states. A slow competitor may consume too much memory before the winner finishes. Memory caps or staged restarts therefore require their own analysis. For a growing portfolio, scheduling and description costs are no longer automatically constant. The required coverage statement is that every input has a favorable member, with uniform correctness and a joint resource guarantee. Testing different winners on different instances is not a coverage proof.
 
@@ -605,6 +673,23 @@ fixed-power child shrinkage, and joint resource bounds remain \textsc{open}.
 The theorem neither supplies an ARC route nor changes the status of P versus
 NP.
 % END CERTIFIED PARTIAL PORTFOLIO 2026-10-07
+
+% BEGIN BACKDOOR DNF REVIEW 2026-10-07
+\paragraph{Backdoor-DNF transfer review, 7 October 2026 (RSR-0002).}
+The primary definition gives an exact tautological OR cover, and the known
+FPT detection theorem applies to Horn, AntiHorn, 2CNF, and the two stated
+heterogeneous unions.  Lemma~\ref{lem:bdnf-gate} records a new
+WRAPPER-specific limitation: on the source paper's explicit Horn family,
+$s+2=M^{o(1)}$ terms coexist with one residual of length $M^{1-o(1)}$.
+A 25-second-budget regression checked the supplied DNF through $s=12$,
+including exact brute-force semantics for $s\le3$, and verified that the
+$s=3$ instance escapes the preceding size-two strong-Horn-backdoor member.
+Thus this mechanism genuinely expands the restricted partial portfolio but
+does not establish the fixed-power child bound, favorable charged direct
+solve, or universal coverage.  The lemma remains \textsc{Conditional}
+pending independent red-team review; the joint WRAPPER interface and
+P versus NP remain \textsc{Open}.
+% END BACKDOOR DNF REVIEW 2026-10-07
 
 \bibliographystyle{plain}
 \bibliography{spines}
