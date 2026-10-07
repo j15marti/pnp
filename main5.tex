@@ -151,16 +151,48 @@ only exponent one.  On the sparse scale $M=\Theta(n\log n)$, the original
 formula already has linear clause count, so the sparsity conclusion again
 certifies no fixed $b<1$.
 
-This establishes \textbf{IPZ-POLYFANOUT-TRANSFER-GATE1}: the cited
-sparsification theorems are \textsc{Known Theorem}, and their direct use as
-the present polynomial-fanout, power-shrinking ordinary-CNF wrapper is
-\textsc{Falsified/Retired as a theorem transfer}.  It is not a lower bound on
-the actual output of the sparsification algorithm or on other transformations.
-The construction is forward-only and avoids current-scale SAT calls; its
-known guarantee fails W2, while an endpoint-compatible simultaneous-space
-bound also remains unproved.  A stronger rate such as
-$C(k,\varepsilon)=\widetilde O(\varepsilon^{-d})$ with $d<k-1$ could help on
-the dense $n^k$ scale, but would still not cover already sparse inputs.
+The quantitative calculation establishes
+\textbf{IPZ-POLYFANOUT-TRANSFER-GATE1}: the cited sparsification theorems are
+\textsc{Known Theorem}, while their published bounds do not prove the present
+power-shrinking ordinary-CNF interface.  The following red-team guard is
+stronger on the declared solution-set-preserving model.
+
+\begin{lemma}[SPARSIFICATION-SOLUTION-COVER-GATE1]
+Fix constant width $k$.  Let
+\[
+ F_m=\bigwedge_{i=1}^{m}(x_i\vee y_i),
+\]
+and suppose width-$k$ CNFs $G_1,\ldots,G_q$ over the same variable universe
+satisfy
+\[
+ \operatorname{sol}(F_m)=\bigcup_{j=1}^{q}\operatorname{sol}(G_j).
+\]
+Every satisfiable $G_j$ has at least $\lceil m/k\rceil$ clauses and at least
+$m$ literal occurrences.  Consequently its ordinary indexed-CNF length is
+$\Omega(m\log m)=\Omega(|F_m|)$.
+\end{lemma}
+\begin{proof}
+Union equality implies
+$\operatorname{sol}(G_j)\subseteq\operatorname{sol}(F_m)$.  If a satisfiable
+$G_j$ mentioned neither $x_i$ nor $y_i$ for some block $i$, take a satisfying
+assignment of $G_j$ and reset both variables to zero.  The child remains true,
+whereas $F_m$ becomes false, a contradiction.  Thus every one of the $m$
+blocks contributes a mentioned variable.  A width-$k$ clause mentions
+variables from at most $k$ blocks, proving the clause and occurrence bounds.
+The encoding conclusion follows because $m$ distinct indexed variables are
+mentioned.
+\end{proof}
+
+Hence IPZ-style same-variable, bounded-width, exact solution-set
+sparsification is \textsc{Falsified/Retired} as a universal W2 power shrinker,
+independently of fanout and independently of the quantitative sparsity rate.
+This is an actual child-size lower bound in that restricted representation,
+not an unrestricted SAT lower bound.  Decision-only OR reductions require
+only equality of SAT bits, not union equality of solution sets, and therefore
+escape the lemma.  Auxiliary projection, unbounded representations, and other
+semantic transformations also remain open.  The sparsifier is forward-only
+and avoids current-scale SAT calls; those positive properties do not repair
+W2 for this family.
 
 \subsection{Double wrapper}
 The implemented prototype in \texttt{experiments/DOUBLE\_WRAPPER\_2026-10-07}
@@ -247,6 +279,16 @@ narrows one WRAPPER transfer and causes no ARC status change.  Finite
 existential return-cycle iteration remains sufficient after a favorable
 SAT-specific successor is proved; such a successor remains \textsc{Open},
 and no growing-depth uniform algorithm is inferred.
+
+\paragraph{RED review, 2026-10-07 (RED-0001).}
+The sparsification transfer was strengthened from failure of a known upper
+bound to an exact restricted-model obstruction.  On the independent-clause
+family, every satisfiable bounded-width child in an exact solution-set union
+must mention every block and therefore retains $\Omega(M)$ indexed length.
+This retires the same-variable solution-cover mechanism, not decision-only
+semantic shrinkers.  The jointly favorable general-SAT interface remains
+\textsc{Open}; finite-depth composition remains conditional and no
+growing-depth algorithm is inferred.
 
 The companion \texttt{wrapper\_test.py} checks finite-depth exponent calculations, exact Shannon disjunction on small random CNFs against brute force, a negative example for merging equal-answer histories, and the restricted covering count. These are bounded computational checks, not verification of W1--W7 for general SAT. Each Python process has an internal 25-second deadline; larger jobs must be checkpointed and divided into separate sub-30-second batches. The JSON result records seed, counts, timing, scope, and status.
 
@@ -342,4 +384,5 @@ No mathematical status of the SAT-specific contraction changes.
 \bibliographystyle{plain}
 \bibliography{spines}
 \end{document}
+
 
