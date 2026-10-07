@@ -1,0 +1,215 @@
+% CODEX REPORT::FRONTIER-JOINT1::2026-10-07
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+\title{FRONTIER-JOINT1: Charged SAT merges across clause boundaries}
+\author{WRAPPER implementation experiment}
+\date{7 October 2026}
+\begin{document}
+\maketitle
+\paragraph{Status and target.}
+\textbf{COMPUTATIONAL; general compiler OPEN.} This run implements an explicit
+SAT-preserving merge rule and accounts for its discovery, table construction,
+source access and storage together. It does not establish a P versus NP
+separation. The symbolic invariant below is supplied for review; independent
+red-team promotion is pending. The construction is ordinary frontier dynamic
+programming, not a claim of a new general SAT algorithm.
+
+\section{Exact construction and invariant}
+Let $F=C_1\land\cdots\land C_m$, with variables labelled $1,\ldots,n$,
+$L$ literal occurrences, encoded bit length $N$, and clause width at most $q$.
+Fix the input clause order; discovering a better order is not free.
+Define the boundary after clause $i$ by
+\[
+ B_i=\operatorname{vars}(C_1,\ldots,C_i)
+       \cap\operatorname{vars}(C_{i+1},\ldots,C_m),\qquad
+ w=\max_i|B_i|.
+\]
+The table $D_i$ has one Boolean entry per assignment to $B_i$:
+\[
+ D_i(a)=1\iff \exists b\text{ on prefix variables}:
+ b|_{B_i}=a\ \land\ \bigwedge_{j\le i}C_j(b)=1.
+\]
+Initially $B_0$ is empty and $D_0(\emptyset)=1$.
+For a transition let $U=B_{i-1}\cup\operatorname{vars}(C_i)$.
+Enumerate assignments $x$ to $U$; if $D_{i-1}(x|_{B_{i-1}})=1$
+and $C_i(x)=1$, set $D_i(x|_{B_i})=1$.
+The terminal table is on the empty boundary.
+
+\paragraph{Why the merge is sound.}
+Every prefix variable outside $B_i$ is absent from the suffix. Thus two
+satisfying prefix histories that agree on $B_i$ admit exactly the same suffix
+extensions. Their provenance can be discarded for the SAT decision objective.
+The transition is exact by induction: an accepted old table entry supplies a
+prefix witness; new variables in the current clause have not appeared in the
+prefix unless already on $B_{i-1}$, so the witnesses glue consistently.
+Conversely, every satisfying prefix witness restricts to an enumerated $x$
+and a previously accepted entry. At $i=m$ the invariant is exactly SAT($F$).
+This is stronger than merging histories merely because each has answer SAT.
+No parent-scale SAT query or oracle is used to acquire the boundary.
+It does not preserve an additional external provenance requirement unless
+that requirement is also included in the state.
+
+\section{Three charged implementations}
+\paragraph{Full rescanning.}
+At every cut, scan the whole source once for each variable label to decide
+whether it occurs on both sides. This costs at most $mnL$ source-literal reads
+plus $L$ clause reads. No occurrence index is retained.
+
+\paragraph{Occurrence index.}
+One source scan constructs first and last occurrence arrays with $2(n+1)$
+integer slots. Each cut tests all labels against those arrays. Source reads are
+at most $2L$ and index probes at most $2mn$. The index consumes
+$O(n\log(m+2))$ bits. This is a real cost, even if read-only source input is
+excluded from workspace.
+
+\paragraph{Local rescanning.}
+Only variables in $U$ can belong to the next boundary. Scan the suffix for
+each variable in $U$ and retain exactly those that occur again. This avoids
+both the full occurrence index and scans for unrelated variables.
+For a completed run, source reads obey
+\[
+ R\le L+\sum_{i=1}^m |U_i|L_{>i}
+ \le L+m(w+q)L.
+\]
+The implementation intentionally scans each suffix fully; early stopping is
+not credited. A cap of 12 boundary variables is tested before allocating
+the next table. Cap exhaustion returns UNKNOWN, never UNSAT.
+
+\section{Joint resource ledger}
+All versions use the same transition rule. For completed runs,
+\[
+ E=\sum_i2^{|U_i|}\le m2^{w+q},\qquad
+ \text{simultaneous table payload}\le 2^{w+1}\ \text{bytes}.
+\]
+The table payload is not total Python memory. Lists of variable labels,
+positions, clause signs, counters and transient assignments must also be
+charged. In a conventional compact representation, the local-rescan design
+uses
+\[
+ S=O\bigl(2^w+(w+q)\log(N+2)\bigr)\quad\text{bits},
+\]
+excluding the read-only input. The constant eight bits per table byte is
+absorbed in this expression. This representation bound is not a Python RSS
+measurement.
+
+On an indexed word-RAM with $w+q=O(\log N)$, a conservative operation bound is
+\[
+ T=O\bigl(mL(w+q)+L+m2^{w+q}(w+q)^2\bigr).
+\]
+The squared factor safely charges projection and linear searches in the small
+variable lists. General larger $w$ incurs multiword integer overhead; the
+formula is not asserted as a unit-cost bound for unbounded integers.
+A conversion to a particular lower-bound machine model must be supplied
+before claiming a time-space contradiction.
+
+For fixed $q$ and $w=o(\log N)$, the local-rescan representation has
+$N^{o(1)}$ work bits and polynomial runtime. This is an achievable restricted
+region, not a uniform guarantee for arbitrary CNF. In particular, the source
+scan term can be quadratic in input size up to logarithmic factors.
+For the chain below, the first variable remains live until the final unit
+clause; scanning the successively shorter suffixes already makes
+$\Omega(n^2)$ literal reads, although $w=2$. Since $N=\Theta(n\log n)$ for
+this encoding, the implemented discovery procedure cannot attain a
+subquadratic target on this family. This is a lower bound on this scan
+procedure only; the family itself is easy.
+
+A boundary-state description uses $w$ assignment bits, but the algorithm
+retains up to $2^w$ viability entries. The distinction prevents confusing a
+short state name with a small complete table. The informal $2^k/2^x$ intuition
+corresponds to forgetting variables that no future clause can distinguish;
+it does not bound discovery cost or prove that all $2^k$ histories are feasible.
+
+\section{Reproducible tests}
+The batch tests 290 formulas: all 256 subsets of the eight full-width signed
+clauses on three variables; 18 seeded random formulas on 6, 8 and 10 variables;
+12 structured formulas on 8, 16, 32 and 64 variables; and four boundary/UNSAT
+controls. Each of three variants runs on every formula.
+There are 861 completed answer comparisons and nine cap exits. Each cap exit
+is answered correctly by the previously verified source-scanning propagation
+backend. The fallback is called after the capped solver returns, so its tables
+are no longer retained. Eighteen renaming/complementation checks also pass.
+No mismatches were found. The complete batch ran in about 0.73 seconds under
+a 25-second alarm; no long-running chunk was needed. The JSON records the
+seed, exact code SHA256, input dimensions, table payload, source reads,
+index probes, transitions and fallback metrics.
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+64-variable chain & Full scan & Local scan & Indexed\\
+\midrule
+Source literal reads & 520319 & 11909 & 254\\
+Index probes & 0 & 0 & 8192\\
+Transition assignments & 502 & 502 & 502\\
+Peak table bytes & 8 & 8 & 8\\
+Index integer slots & 0 & 0 & 130\\
+\bottomrule
+\end{tabular}
+\end{center}
+The chain is $\bigwedge_{v<n}(\neg x_v\lor x_{v+1})\land x_1$.
+The listed values are counters, not timing ratios or total memory figures.
+
+\paragraph{Order and easy-family control.}
+For 64 independent variables, interleaving $(x_v)$ and
+$(\neg x_v\lor x_v)$ yields boundary width one and three peak table bytes.
+Listing all units first and all tautologies second yields width 64 and trips
+the cap at the thirteenth unit. The formulas have exactly the same clause
+multiset and are trivially satisfiable. The fallback uses 64 propagations
+and 12480 literal reads on the delayed order. This is a hostile control for
+raw syntactic width, not evidence of SAT hardness. Tautology deletion would
+repair this particular example cheaply, but does not prove a generic
+small-width transformation. Random instances reach width ten already at ten
+variables, so the test supplies no general width-reduction guarantee.
+The fallback retains a linear-length assignment trail and has no favorable
+worst-case branching theorem; completeness of the combined procedure does
+not preserve the restricted small-space bound.
+
+\section{Literature and corpus reconciliation}
+Allender et al. study the time-space tradeoff for width-parameterized SAT
+\cite{allender2014}. Their work supports treating table space and recomputation
+time together; it does not give this project a general small-width compiler.
+No lower bound from their conjectural consequences is imported unconditionally.
+
+\paragraph{Corpus reviewed and duplication audit.}
+This experiment used the current root MAIN executive state, CODEX guide,
+repository research skill and experiment-mode protocol, the local preflight
+snapshot, the preceding source-backed code/results, repository-wide pathwidth
+search results, and the full GROK H1719 and UNIVERSALDAG1 records.
+The preflight succeeded on a partial local snapshot, not a full checkout.
+This was a targeted experiment review, not a fresh exhaustive audit of all
+historical source files. H1719 already documents clause-order sensitivity,
+separator-exactness, and the failure of ordered width to imply unrestricted
+hardness. UNIVERSALDAG1 already identifies the need to compare residual DAGs
+with OBDD/FBDD and semantic quotients. These ideas are adopted, not claimed
+as discoveries of this run. The new contribution is an executable charged
+boundary implementation, a cheaper local rescan, and a reproducible joint
+ledger with explicit cap exits.
+
+\paragraph{What changed relative to root MAIN.}
+A concrete sufficient SAT merge relation is instantiated on declared ordered
+CNF inputs. No general source-certified contraction, ordinary-CNF return
+compiler, arbitrary-algorithm lower bound or P versus NP separation is added.
+No root MAIN claim is strengthened or retired. Main4 and main5 receive the
+experiment note; executive synthesis is handed off under the ownership rule.
+
+\paragraph{Barrier audit and transfers.}
+The boundary projection is an exact dynamic-programming interface. Its
+resemblance to information passing across communication cuts is a useful
+analogy, not an unrestricted lower-bound transfer. The existing easy-family
+controls already defeat that transfer. No cryptographic or random-oracle
+assumption is introduced. Oracle access could bypass this solver's table;
+there is no nonrelativizing hinge here. Algebraic-oracle resistance and
+Natural-Proofs avoidance are not claimed. No circuit lower bound is inferred.
+
+\paragraph{Next concrete target.}
+Replace quadratic suffix rereading by a uniformly constructed small-space
+boundary-access schedule with a charged total near-linear bound, and test
+whether it applies beyond already narrow ordered formulas. Any favorable
+all-input claim must also bound $w$, or replace explicit $2^w$ tables by a
+sound cheaper representation. Both remain OPEN.
+
+\bibliographystyle{plain}
+\bibliography{frontier_refs}
+% END_OF_VERIFIED_REPORT::CODEX::FRONTIER-JOINT1
+\end{document}
