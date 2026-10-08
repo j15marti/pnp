@@ -1,0 +1,98 @@
+% PNP RESEARCH REPORT::ARC-STRENGTHEN2::2026-10-08T21:10:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{proposition}{Proposition}
+\title{ARC-STRENGTHEN2: An Infinite Coverage Gap and a Source-Checked Repair}
+\date{8 October 2026 UTC}
+\begin{document}\maketitle
+\paragraph{Status.} Exact semantic construction and symbolic resource ledger, independently reviewed; endpoint checked against primary sources. Finite validation is COMPUTATIONAL. The existing conditional elimination of $K$ is retained. P versus NP and the strict all-input ARC transition remain OPEN. This report supplies an actual partial SAT algorithm and its total fallback composition, not a new favorable global exponent pair.
+
+\section{Authenticated target and nonduplication}
+The original \nolinkurl{experiments/proof_spines/certified_partial_portfolio_test.py}, fetched directly from GitHub, already implements constants, Horn, 2-CNF, disconnected components and strong Horn backdoors of size at most two. Its SHA-256 is
+\nolinkurl{e6f51e58befc7b0a7ea570423d9c5bb208b049d201abd87450c8992af0f75d36}.
+It charges failed attempts and candidate restrictions and already includes one connected monotone formula outside coverage. Thus neither the finite-portfolio construction nor selector-free scheduling is new here. The new result is an infinite connected affine family outside that precise implemented cover, including both SAT and UNSAT cases, followed by an exact source-checking extension covering it. It is a falsification of universal coverage of those particular members, not a lower bound on SAT or all portfolios.
+
+\section{Infinite counterfamily and exact backdoor scope}
+For $m\ge2$ let distinct variables be $x,y_1,z_1,\ldots,y_m,z_m$.
+For $b\in\{0,1\}$, let $P_b(a,c,d)$ contain the four width-three clauses forbidding exactly the assignments of parity $1-b$. Consequently it is equivalent to $a\oplus c\oplus d=b$.
+For any vector $\beta\in\{0,1\}^m$ define
+\[
+ F_{m,\beta}=\bigwedge_{i=1}^m P_{\beta_i}(x,y_i,z_i),\qquad
+ G_{m,\beta}=F_{m,\beta}\wedge P_{1-\beta_1}(x,y_1,z_1).
+\]
+$F$ is satisfiable: choose $x=0,y_i=0,z_i=\beta_i$.
+$G$ is unsatisfiable because its first triple must have both parities.
+Both are connected, contain only proper width-three clauses, have no units or pure variables, and are neither Horn nor 2-CNF.
+
+\begin{proposition}
+The exact original portfolio returns FAIL on every $F_{m,\beta}$ and $G_{m,\beta}$, $m\ge2$. The least strong Horn backdoor of $F_{m,\beta}$ has size $m+1$, also under the original empty-clause shortcut semantics.
+\end{proposition}
+\begin{proof}
+In each parity block every pair of its three variables occurs positively together in a clause. A strong syntactic Horn backdoor must hit each such positive pair. Conversely hitting every positive pair ensures each remaining clause has at most one positive literal, under every assignment. The resulting obstruction graph is $m$ triangles sharing $x$. Its minimum vertex cover has size $m+1$: with $x$ included one leaf per triangle is necessary and sufficient; without $x$ both leaves of every triangle are required.
+
+For the satisfiable star this lower bound survives the implementation's empty-clause shortcut. If a positive pair is unhit, choose a full satisfying assignment that falsifies every assigned literal in a clause containing that pair. This is possible: there is at most one third literal, and each star variable can take either value in some satisfying assignment; complete its own block, then complete all remaining disjoint leaf pairs. Restrict this satisfying assignment to the proposed backdoor. No clause becomes empty, but the selected clause retains its two positive literals. The residual is non-Horn.
+
+For the contradictory family we claim only absence of a backdoor of size at most two under the executable semantics. Such an assignment cannot empty a width-three clause, so the early-empty shortcut never fires. The positive-pair obstruction therefore applies; $m+1>2$. Constants, Horn and 2-CNF members fail by syntax, and components fail by connectivity. Therefore every original member fails on both families.
+\end{proof}
+Do not extend the $m+1$ claim to $G$ under executable semantics: assigning all three variables of its contradictory block produces an empty clause for every assignment, and the implementation replaces the entire formula by that clause. For $m>2$ this is a size-three operational backdoor, despite the larger syntactic obstruction graph. The distinction between syntactic Horn and Horn plus empty-clause detection is load-bearing.
+
+\section{Constructive repair with explicit UNKNOWN}
+The new partial algorithm reads the source clauses and returns TRUE, FALSE or UNKNOWN. Empty input returns TRUE. Nonproper or non-width-three input returns UNKNOWN. For each clause's unordered triple, scan all clauses and collect the eight-bit mask of sign patterns on that same triple. Duplicate patterns do not change the mask. A full mask of eight patterns gives FALSE immediately, since every assignment to that triple is forbidden. Otherwise every triple must have exactly the four forbidden assignments of one parity, or the answer is UNKNOWN.
+
+Finally try each of the at most three variables in the first triple as a common hub. Check that every triple contains that hub, and that any two distinct triples share no other variable. If some hub passes, return TRUE; if none passes, return UNKNOWN. The check is performed by repeated source scans, not an uncharged table of triples.
+
+\begin{proposition}[Sound partial decider and strict coverage extension]
+Every Boolean answer of this algorithm is the correct SAT answer. It answers every $F_{m,\beta}$ and $G_{m,\beta}$, so prepending it to the original portfolio strictly extends that portfolio's successful domain.
+\end{proposition}
+\begin{proof}
+Eight patterns on one triple form a contradictory subformula, independently of all other clauses. In the TRUE case every clause is part of a checked parity block, and distinct blocks share only the hub. Choose the hub arbitrarily and complete each independent leaf pair to its checked parity. This satisfies all clauses. UNKNOWN carries no semantic assertion. The displayed families pass the respective checks, whereas the previous proposition proves their original failures.
+\end{proof}
+Completeness is only for this declared star family and the checked contradictory triple. A cyclic overlap of parity triples, incomplete parity blocks and arbitrary connected CNFs need not pass. No current-scale SAT query occurs in acquisition or verification. No proof object is assumed freely supplied; masks and overlap relations are computed from the actual source.
+
+\section{One-machine bit ledger and actual all-input composition}
+Let $N$ be original encoded input bit length, with a fixed self-delimiting canonical encoding of signed binary variable identifiers and clause boundaries. The input is read-only. For source pointers of $O(\log N)$ bits, identifiers can be compared bit-by-bit without storing their values. Finding the sorted order of the three identifiers, checking equality of triples, and comparing literal signs needs only constantly many such pointers and counters. The eight-bit mask and three hub candidates are constant-sized descriptors with pointers to source substrings.
+
+There are $O(N^2)$ clause-pair comparisons; a deliberately conservative $O(N\log N)$ time budget per source comparison, including copying input-address counters gives $O(N^3\log N)$ time. Parsing and duplicate handling fit that bound. All loops retain only constantly many source positions and counters, so additional workspace is $O(\log N)$. Trying three hubs multiplies time by a constant. Input address tapes are included. The Python prototype uses ordinary integer/tuple objects and does not certify physical logarithmic memory; the pointer-based bit-machine realization described here is the stated symbolic implementation. Its time bound is deliberately loose, not a claim of near-linear recognition.
+
+For every fixed uniform exact SAT decider $A$ with joint bounds $(T_A(N),S_A(N))$, build one machine $H_A$: run this scanner; output any Boolean answer; on UNKNOWN release its state and start $A$ on the unchanged read-only input. Then
+\[
+ T_{H_A}(N)=O(N^3\log N+T_A(N)),\qquad
+ S_{H_A}(N)=O(\log N+S_A(N)).
+\]
+All rejected scans are included. No parent or sibling computation is suspended, no derived input copy is retained, and the dispatch address/counter state is charged. If this scanner is instead nested inside WRAPPER, all ancestors and retained interfaces must additionally be counted; this top-level composition theorem does not erase them.
+
+Thus an achievable pair $(t,s)$ supplies the actual joint witness
+$(\max\{3,t\},s)$ for $s\ge0$, where logarithmic space is absorbed by the $N^{o(1)}$ convention. This is an all-input SAT-preserving transition with an explicitly realized improved successful domain; it is not a strict global resource improvement. A smaller global pair needs a new bound on inputs still returning UNKNOWN or a different covering member. The conclusion is stronger than just writing a recurrence in that its recognizer, acceptance semantics, negative behavior and fallback machine are defined, but weaker than the desired ARC edge.
+
+\section{Primary literature and model guard}
+Nishimura, Ragde and Szeider, \emph{Detecting Backdoor Sets with Respect to Horn and Binary Clauses}, SAT 2004, define syntactic restrictions and strong backdoors and give fixed-parameter algorithms. Their clause-occurrence input measure differs from encoded bit length; no occurrence-time result is imported as bit time here. The positive-pair/vertex-cover correspondence is proved above for the declared construction. Their theorem supplies no bound on the backdoor size of every input:
+\url{https://www.satisfiability.org/SAT04/programme/51.pdf}.
+
+Fortnow, \emph{Time-Space Tradeoffs for Satisfiability}, excludes SAT algorithms simultaneously using $N^{1+o(1)}$ time and $N^{1-\epsilon}$ workspace for fixed $\epsilon>0$ on the stated random-access Turing-machine model. This is the primary endpoint retained here; the scanner's cubic time and unchanged fallback do not approach it. No retired unrestricted sum-of-exponents line is used:
+\url{https://lance.fortnow.com/papers/files/npvsnl.pdf}.
+
+The useful cross-domain transfer is graph vertex cover on an explicitly constructed positive-pair graph, with the syntactic semantics restriction made explicit. Parallel portfolios and failover are scheduling analogies, not evidence that one favorable member exists on every SAT input. No cryptographic premise or random oracle is introduced. The construction relativizes as ordinary exact source processing and does not supply a nonrelativizing or nonalgebrizing hinge; no Natural-Proofs circuit property is used.
+
+
+\section{Independent review and recovered finite-entry theorem}
+The parent independently checked the semantic proofs and primary sources on 8 October 2026. A separate bounded test enumerates minimum operational Horn backdoors on 24 SAT/UNSAT stars and checks 256 subsets of two overlapping blocks. All pass. This independently confirms the size-three empty-clause caveat and rejects the inference from portfolio failure to hardness. The bit-time ledger above was conservatively increased by a logarithmic factor to charge copying input addresses; no exponent changes.
+
+The earlier locally available ARC-STRENGTHEN1 report was recovered as an unpublished artifact, not represented as a previously published GitHub theorem. Its exact report, bibliography, original status log and test code are preserved in this publication; its arithmetic test was rerun (419 checks). FLMV's original manuscript, dated 7 September 2004, was freshly inspected at Section 2.1, Theorem 3.1 and Corollary 5.8:
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.
+The model is deterministic random-access Turing machines, with index tapes charged and read-only input excluded from workspace. The explicit curve is
+\[
+ d(c)=\tfrac12((c+2)/c^2-c).
+\]
+For simultaneous SAT exponents, $t<c$ and $s<d(c)$ are forbidden after absorbing the local reduction's polylogarithmic overhead. At $c=1201/1000$, $d(c)=1/2+26275399/2884802000$, so $(6/5,1/2)$ is excluded. This uses the actual curve, not the retired unrestricted product line.
+
+Continuity $d(1)=1$ proves finite entry if actual all-input pairs satisfy $t_j\to1$ and eventually $s_j\le\sigma<1$. Different stages may have different uniform all-length witnesses, with no effective stage-to-program map required. Each chosen stage still needs joint time and space on one machine. Only one fixed finite stage is used. The contraction and its nonzero-error-floor variant are conditional results; no old or new coverage experiment supplies that missing transition. Conditional $K$ elimination is unchanged.
+
+\section{Validation, reconciliation and handoff}
+The executable imports an exact-byte archived original portfolio and compares it against the new scanner. It checks 56 SAT/UNSAT star variants ($m=2,3,4$, every parity vector), all of which fail the original portfolio and receive the correct new answer checked by exhaustive SAT. It exhausts all 256 subsets of the eight clauses on one triple, checking every Boolean answer. It additionally checks all 672 sign-complemented stars for $m=2,3,4$, together with injective renaming and reversed clause order; all are correctly accepted. Two explicit incomplete/cyclic-overlap controls return UNKNOWN. Total semantic checks are 984, with zero discrepancies, under a 25-second alarm. The JSON records source and runner SHA-256 hashes and actual runtime. The symbolic proofs establish the infinite-family and all-input soundness claims; finite tests do not establish favorable asymptotic SAT resources.
+
+CORPUS REVIEWED: current main4/main5, AGENTS, CODEX, research skill, FORMAL-SPINE1, CAPPED-INDEX-REPLAY1, ARC-0008 prefix guard, exact original certified and capped portfolio code/results, earlier ARC-STRENGTHEN1 and current RECOVERY-STRENGTHEN3. The parent surveyed the current tree and root/task records. DUPLICATION AUDIT: retain the existing finite-portfolio and max-envelope results; new is this infinite counterfamily, operational empty-clause caveat and concrete source-checking repair. WHAT CHANGED RELATIVE TO ROOT MAIN: coverage expands by an exact partial algorithm, with no all-input favorable pair or status closure. ADOPTED: charging, source authentication and conditional $K$ elimination. REJECTED: universal coverage of the enumerated old members; the inference from large Horn backdoor to SAT hardness. Root main ownership is preserved.
+
+The next target is a genuinely different member covering some formulas still UNKNOWN with a charged joint resource improvement, or a tight bound on the fallback domain sufficient for finite entry into a verified forbidden region. Affine address fusion alone neither recognizes this source family nor solves general acquisition. Main4/main5 should record the precise domain extension and the unchanged global ARC obligation.
+% END_OF_VERIFIED_REPORT::ARC-STRENGTHEN::ARC-STRENGTHEN2
+\end{document}
