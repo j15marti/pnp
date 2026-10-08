@@ -1102,12 +1102,84 @@ exact simplification idea \cite{davis1962dpll}, but no pure-literal or phase
 heuristic theorem supplies the missing favorable coverage of unrestricted
 CNF.
 
+\subsection{A q-Horn VALUE member and its space gate}
+
+The historical portfolio treated Horn, dual-Horn, 2-CNF, and renamable Horn
+as separate tractable islands.  The q-Horn literature shows that these are
+not independent additions: q-Horn properly contains Horn, Krom/2-CNF, and
+renamable Horn, while complementing all variables places dual-Horn inside
+renamable Horn \cite{boros1990qh_inference,boros1994qhorn,gaspers2013qhorn}.
+
+\begin{theorem}[QHORN-VALUE1]\label{thm:qhorn-value}
+There is a uniform exact zero-child partial wrapper for q-Horn CNF.  On an
+ordinary explicit CNF $F$ of encoded length $M$, it returns \textsc{fail} if
+$F$ is not q-Horn and otherwise returns the exact Boolean value
+$\SAT(F)$.  It makes no call to the hypothetical general SAT decider and runs
+in $O(M)$ time in the linear-time q-Horn recognition/decision model of
+\cite{boros1990qh_inference,boros1994qhorn}.
+\end{theorem}
+\begin{proof}
+The primary definition asks for a function
+$\beta:\operatorname{lit}(F)\to\{0,\tfrac12,1\}$ with
+$\beta(x)=1-\beta(\neg x)$ and
+$\sum_{\ell\in C}\beta(\ell)\le1$ for every clause $C$.
+Boros, Hammer, and Sun give a linear-time recognizer, and the q-Horn
+satisfiability algorithm is linear time.  Run the recognizer; failure gives
+only the partial outcome \textsc{fail}.  On success run the exact q-Horn
+decider and return its Boolean answer.  Thus every returned VALUE is exact,
+and no recursive child is emitted.
+\end{proof}
+
+\begin{lemma}[QHORN-SPACE-GATE1]\label{lem:qhorn-space-gate}
+The cited linear-time theorem does not by itself make
+Theorem~\ref{thm:qhorn-value} compatible with the Williams endpoint.  An
+explicit quadratic-cover/implication-graph implementation has the safe
+upper-bound ledger
+\[
+ C=1,\qquad \sigma=1,
+\]
+and therefore $C+\sigma=2>2\cos(\pi/7)$.  No sublinear-workspace q-Horn
+implementation with endpoint-compatible joint exponents is supplied by the
+cited transfer.
+\end{lemma}
+\begin{proof}
+The quadratic cover and its implication graph have linear size.  Explicitly
+storing this graph and the recognition/decision state costs $O(M)$ writable
+space, so the displayed pair is a valid conservative upper bound.  Linear
+time alone does not imply $M^{o(1)}$ work space.  Recomputing graph access or
+strongly connected components may trade space for time, but no cited theorem
+establishes a pair whose exponent sum is below the Williams constant.
+Consequently q-Horn recognition is a genuine domain enlargement, not the
+missing joint-resource theorem.  This is an upper-bound transfer limitation,
+not a space lower bound.
+\end{proof}
+
+A seeded bounded audit found the five-variable q-Horn formula
+\[
+\begin{split}
+ &(\neg x_2\vee\neg x_3\vee\neg x_5)
+ \wedge(\neg x_2\vee x_3\vee\neg x_4)
+ \wedge(x_1\vee\neg x_3\vee\neg x_4)\\
+ &\wedge(x_1\vee x_3\vee x_4)
+ \wedge(x_1\vee x_3\vee x_5)
+ \wedge(x_1\vee x_4\vee x_5),
+\end{split}
+\]
+certified by integer weights
+$(2\beta(x_1),\ldots,2\beta(x_5))=(0,2,1,1,1)$.
+It is neither Horn, dual-Horn, 2-CNF, nor renamable Horn, is missed by the
+all-true/all-false phases, and has no strong Horn backdoor of size at most
+two.  Thus q-Horn strictly expands the implemented partial portfolio on this
+finite witness.  This computational fact does not establish favorable
+all-input coverage or an endpoint-compatible workspace bound.
+
 \subsection{The combined partial constructor}
 
 FINAL-LINK-HYBRID1 applies unit propagation, tautology and duplicate removal,
 subsumption, component AND, Horn and 2-CNF VALUE procedures,
 bounded-frontier dynamic programming, fixed-size strong backdoors, verified
 backdoor DNFs, Theorem~\ref{thm:fixed-phase-value},
+Theorem~\ref{thm:qhorn-value},
 Theorem~\ref{thm:clause-first-cover}, Shannon branching,
 exact residual equality, oriented clause dominance, and source replay.  A
 completed plan is evaluated independently; every OR residual is regenerated
