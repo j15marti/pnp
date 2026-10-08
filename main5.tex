@@ -380,6 +380,50 @@ practical value of per-instance portfolios \cite{xu2008}, but its empirical
 selection objective is not a worst-case coverage theorem and does not transfer
 to the present resource contract.
 
+\subsection{A forward-only RUP implication selector}
+For CNFs $A$ and $B$ on a common remaining variable set, write
+$A\Rightarrow_{\mathrm{RUP}}B$ when every clause $C\in B$ has reverse unit
+propagation with respect to $A$: unit propagation on
+$A\wedge\bigwedge_{\ell\in C}\neg\ell$ derives a conflict.  This is a
+checkable sufficient condition for $A\models B$ \cite{wetzler2014drat,reeves2023pr}.
+
+\begin{theorem}[RUP-IMPLICATION-SELECT1]\label{thm:rup-select}
+Let $R_1,\ldots,R_q$ be an explicitly available OR frontier of ordinary CNFs,
+each of encoded length at most $m$.  Form the directed graph with edge
+$i\to j$ exactly when $R_i\Rightarrow_{\mathrm{RUP}}R_j$.  Condense its
+strongly connected components and retain one representative of every sink
+component.  If $K$ is the set of retained indices, then
+\[
+  \bigvee_{i=1}^{q}\SAT(R_i)=\bigvee_{i\in K}\SAT(R_i).
+\]
+The construction makes no SAT-oracle call and can be implemented in
+$O(q^2m^2)$ time and $O(qm+q^2+m)$ live space in the explicit-frontier model.
+It emits at most $q$ children, each of length at most $m$.
+\end{theorem}
+\begin{proof}
+Every graph edge is sound semantic implication.  Every discarded component
+has a directed path in the condensation DAG to some sink component, so every
+model of its representative is a model of a retained representative by
+transitivity.  Retaining a subset cannot introduce a model, hence the two
+disjunctions agree.  For each ordered pair, test at most $O(m)$ target clauses;
+one ordinary scanning unit-propagation pass costs $O(m)$, giving
+$O(q^2m^2)$ time.  Storing the explicit inputs and implication graph uses
+$O(qm+q^2)$ space, with $O(m)$ propagation scratch; SCC condensation is
+linear in the graph size.  No recursive answer is queried.
+\end{proof}
+
+The selector strictly extends raw clause inclusion.  For
+$A=(a)\wedge(\neg a\vee b)$ and $B=(b)$, neither clause set contains the
+other, but $A\Rightarrow_{\mathrm{RUP}}B$, so $A$ may be removed from
+$\SAT(A)\vee\SAT(B)$.  Conversely, the residuals in the
+CLAUSE-DOM-ANTICHAIN1 family are distinct complete unit assignments and are
+semantically incomparable, so no sound implication selector can merge them.
+This is exact pruning infrastructure, not a density theorem: acquisition of
+the explicit frontier is charged, child length is not reduced, and the
+worst-case output still has $q$ children.  Stronger PR or RAT certificate
+ladders are candidates only after certificate discovery, verification,
+density, and representation costs are jointly proved.
+
 \subsection{Prime lineage, hashes, and merging}
 In Boolean semantics, TRUE and NOT FALSE agree, as do FALSE and NOT TRUE. Assigning different primes preserves syntactic provenance, not four distinct Boolean truth values. Any prime product is charged by bit length and arithmetic cost. An ordinary hash needs collision handling for exact correctness. A common terminal node or equal SAT bits does not justify identifying histories under future operations. A merge needs a semantic congruence appropriate to the remaining computation. Compact macro-route indices can save lineage space after contraction; they do not establish contraction. A finite DAG contains no directed cycles: recursion must be described by a well-founded call graph or an unfolded DAG, not a literal cyclic DAG.
 
@@ -830,9 +874,26 @@ comparable pair.  Favorable general-SAT coverage and the joint WRAPPER
 resource implication remain \textsc{Open}; P versus NP remains open.
 % END CLAUSE DOMINANCE ANTICHAIN REVIEW 2026-10-07
 
+% BEGIN RUP IMPLICATION SELECTOR REVIEW 2026-10-07
+\paragraph{RUP implication selector, 7 October 2026 (WRP-0003).}
+Theorem~\ref{thm:rup-select} gives an exact forward-only OR-frontier selector
+strictly stronger than clause inclusion: RUP checks certify semantic
+implication without a SAT-oracle call, and sink SCC representatives preserve
+the whole disjunction.  In the explicit-frontier model the complete cost is
+$O(q^2m^2)$ time and $O(qm+q^2+m)$ live space; acquisition and storage are not
+hidden.  A seeded 25-second-budget regression passed 5,861 checks on 300
+random portfolios, a strict-extension family, renaming/complement, padding,
+independent products, and the ARC antichain.  The latter retained all 256
+children at $n=8$, so the theorem supplies no universal density, child-size
+contraction, or general-SAT coverage.  Its scoped interface theorem is
+\textsc{Proved/Exact} with independent review pending; the joint WRAPPER
+implication and P versus NP remain \textsc{Open}.
+% END RUP IMPLICATION SELECTOR REVIEW 2026-10-07
+
 \bibliographystyle{plain}
 \bibliography{spines}
 \end{document}
+
 
 
 
