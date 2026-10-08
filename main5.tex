@@ -1053,12 +1053,62 @@ assignments to the clause variables.  The theorem is semantic and local: a
 residual may still have $\Theta(M)$ encoded length, and naive repeated use may
 construct a large plan before small recursive leaves appear.
 
+\subsection{A charged fixed-phase VALUE member}
+
+The positive-product control in
+Theorem~\texttt{CLAUSE-FIRST-FANOUT-SHRINK-GUARD1} should not be sent to a
+branching member at all.  It is certified by the all-true assignment.  The
+following general interface records this escape without treating a heuristic
+phase as an oracle answer.
+
+\begin{theorem}[FIXED-PHASE-VALUE1]\label{thm:fixed-phase-value}
+For inputs of encoded length $M$, let
+$\mathcal P_M$ be a uniformly enumerable family of at most
+$M^{u+o(1)}$ complete assignments.  Suppose the value assigned to one
+referenced variable by one member of $\mathcal P_M$ can be regenerated in
+$M^{v+o(1)}$ time and $M^{s+o(1)}$ work space.  There is an exact forward
+partial wrapper which uses no SAT calls and no recursive children, has local
+time
+\[
+ M^{1+u+v+o(1)},
+\]
+and live work space $M^{s+o(1)}$ apart from read-only input and a streaming
+output.  It returns the VALUE TRUE when a tested phase satisfies every
+clause, and returns \textsc{fail} otherwise.  In particular, testing the
+all-true and all-false phases has $u=v=s=0$ and costs linear time and
+logarithmic addressing space.
+\end{theorem}
+\begin{proof}
+Enumerate the declared assignments.  For each one, scan every input literal,
+regenerating its assigned bit and retaining only the current clause flag,
+input addresses, enumerator state, and assignment-bit scratch.  If every
+clause is satisfied, return TRUE together with the assignment-program index;
+otherwise continue.  A successful index is a source-checkable certificate:
+one further scan verifies it, and witness bits can be streamed by rerunning
+the assignment program.  There are $M^{u+o(1)}$ scans, each with
+$M^{1+v+o(1)}$ time.  Failure makes no assertion about SAT, so the partial
+member is sound on all inputs.  It never returns FALSE merely because the
+phase family missed a model.
+\end{proof}
+
+This is a fixed finite portfolio member, so
+Theorem~\ref{thm:partial-portfolio} charges both successes and failures.  It
+does not provide all-CNF coverage: a satisfiable formula can reject every
+declared phase, and an UNSAT formula also returns \textsc{fail}.  If
+$v=s=0$, the VALUE member itself lies below the Williams time-space endpoint
+exactly when $1+u<2\cos(\pi/7)$; this is only a domain-specific return, not a
+general SAT algorithm.  The classical DPLL pure-literal rule is an adjacent
+exact simplification idea \cite{davis1962dpll}, but no pure-literal or phase
+heuristic theorem supplies the missing favorable coverage of unrestricted
+CNF.
+
 \subsection{The combined partial constructor}
 
 FINAL-LINK-HYBRID1 applies unit propagation, tautology and duplicate removal,
 subsumption, component AND, Horn and 2-CNF VALUE procedures,
 bounded-frontier dynamic programming, fixed-size strong backdoors, verified
-backdoor DNFs, Theorem~\ref{thm:clause-first-cover}, Shannon branching,
+backdoor DNFs, Theorem~\ref{thm:fixed-phase-value},
+Theorem~\ref{thm:clause-first-cover}, Shannon branching,
 exact residual equality, oriented clause dominance, and source replay.  A
 completed plan is evaluated independently; every OR residual is regenerated
 from its source and every reported satisfying assignment is lifted and
@@ -1209,9 +1259,27 @@ and joint resources remain \textsc{Open}; P versus NP remains open.  The test
 is \path{experiments/proof_spines/clause_first_product_guard_test.py}.
 % END LEAD ARC-0004 REVIEW 2026-10-07
 
+% BEGIN FIXED PHASE VALUE REVIEW 2026-10-07
+\paragraph{Fixed-phase VALUE member, 7 October 2026 (WRP-0004).}
+Theorem~\ref{thm:fixed-phase-value} supplies a source-checkable zero-child
+member for any bounded family of cheaply queryable complete assignments.  In
+particular, all-true/all-false testing costs one linear scan and logarithmic
+addressing space, so the positive product used by the clause-first guard is
+settled before branching.  A bounded implementation passed 668 checks,
+including all 256 subsets of full-width clauses on three variables, padding,
+signed renaming, independent products, PHP, XOR, and three planted/hub
+comparisons against the current hybrid.  The phase member is partial and
+never infers UNSAT on failure.  It expands the certified portfolio but proves
+no favorable all-CNF coverage, no new ARC point, and no P-versus-NP
+separation.  The code and raw record are
+\path{experiments/proof_spines/fixed_phase_value_test.py} and
+\path{results/raw/proof_spines/2026-10-07_181151_fixed_phase_value.json}.
+% END FIXED PHASE VALUE REVIEW 2026-10-07
+
 \bibliographystyle{plain}
 \bibliography{spines}
 \end{document}
+
 
 
 
