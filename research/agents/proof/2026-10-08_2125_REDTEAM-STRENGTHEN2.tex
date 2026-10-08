@@ -1,0 +1,201 @@
+% PNP RESEARCH REPORT::REDTEAM-STRENGTHEN2::2026-10-08T21:25:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\title{REDTEAM-STRENGTHEN2: The Remaining Portfolio Domain Contains General 3-SAT}
+\date{8 October 2026 UTC}
+\begin{document}\sloppy\maketitle
+\paragraph{Status.} PROVED/EXACT for the specified portfolio and encoding, independently audited. COMPUTATIONAL finite checks. P versus NP remains OPEN. This is a limitation of a particular cover, not a lower bound on arbitrary SAT algorithms. The existing conditional elimination of $K$ and aggregate-volume theorem survive.
+
+\section{Exact target and smallest easy miss}
+Fix the exact original certified portfolio at commit
+\nolinkurl{5dc4147396c3969887b231a8d372c00ace23d58f}, with constants,
+Horn, 2-CNF, disconnected components and strong Horn backdoors of size
+at most two, prepended by ARC-STRENGTHEN2's parity-star scanner.
+Its restriction routine replaces any residual containing an empty clause
+by the singleton empty clause. It does not perform a general pure-literal
+prepass. The scanner rejects non-width-three input before checking masks.
+Let $U$ be the set of formulas on which all these members return
+UNKNOWN/FAIL, so the total solver reaches its fallback.
+
+The satisfiable formula
+\[
+ (x_1\vee x_2\vee x_3)\wedge(x_1\vee x_2\vee x_4)
+ \wedge(x_1\vee x_3\vee x_4)
+\]
+lies in $U$. It is connected and non-Horn; its positive-pair graph is
+$K_4$, so no two variables hit all positive pairs. No assignment to two
+variables empties a width-three clause. The scanner sees incomplete
+parity blocks. This is smallest first by variable count, then clause
+count among proper exactly-width-three CNFs: on at most three variables,
+assigning all but one is a strong Horn backdoor; two triples on four
+variables share at least two variables and these two hit all positive
+pairs. Constants handle zero clauses. Finite enumeration below checks
+the same claim. This minimality order matters: two triples sharing one
+variable already give an easy miss on five variables.
+
+\section{A uniform general-SAT embedding into the failure domain}
+Let $P_0(u,v,w)$ be the four proper clauses encoding
+$u\oplus v\oplus w=0$. For every proper exactly-width-three CNF $F$
+on its occurring variables $[n]$, introduce distinct fresh variables
+$h,r,a,b,c,d,w_1,\ldots,w_n$ and define
+\[
+ G(F)=F\wedge(h\vee r)\wedge P_0(h,a,b)\wedge P_0(h,c,d)
+       \wedge\bigwedge_{v=1}^{n}(h\vee v\vee w_v).
+\]
+The two parity blocks and binary clause are fixed guards; the last
+clauses connect every source component. There is no SAT query in this
+construction.
+
+\begin{theorem}[All-input embedding for the declared domain]
+For every such $F$, $\operatorname{SAT}(G(F))=\operatorname{SAT}(F)$
+and $G(F)\in U$. In dense fixed-width binary literal encoding,
+$|G(F)|=\Theta(|F|)$, and the transformation is a uniform logspace
+transduction. Its output bits have a polylogarithmic-time,
+$O(\log |F|)$-workspace random-access generator.
+\end{theorem}
+\begin{proof}
+Any satisfying assignment of $G(F)$ satisfies $F$. Conversely extend
+any satisfying assignment of $F$ by $h=r=a=c=1$, $b=d=0$ and arbitrary
+$w_v$. Every added clause is satisfied.
+
+The binary clause forces the new scanner to return UNKNOWN. The
+formula is nonconstant, connected, non-Horn and not 2-CNF, ruling out
+four original members. Consider any backdoor candidate $B$, $|B|\le2$.
+If $B\ne\{h,r\}$, no clause can become empty under any assignment to
+$B$: the sole binary clause has an unassigned variable and every other
+clause has width three. The positive-pair graph of the two parity guards
+contains two triangles meeting at $h$; its minimum vertex cover is three.
+Some positive pair is unhit. Choose a guard clause containing that pair
+and falsify its third literal if that literal's variable belongs to $B$.
+The clause remains non-Horn. (For $P_0$, the third literal is negative,
+so falsifying it means assigning its variable TRUE.) No empty-clause
+shortcut can hide the obstruction. If $B=\{h,r\}$, use $h=1$.
+The binary clause is satisfied and the first parity block leaves the
+positive clause $(a\vee b)$. Thus this $B$ also fails. The original
+portfolio returns FAIL on every image.
+
+For encoding, let $m$ be the source clause count and require dense
+identifiers $1,\ldots,n$, each occurring, with $n\ge3$. Hence $n\le3m$.
+Encode the $n,m$ header self-delimitingly, each clause arity in a fixed
+two-bit field, and each literal by one sign bit plus
+$\lceil\log_2(n+1)\rceil$ identifier bits. Then
+$N=\Theta(m\log(n+1)+\log(m+1))$. The output has
+$n'=2n+6$ variables and $m'=m+n+9$ clauses. The sole binary clause is
+at known position $m+1$; all other records have width three. Therefore
+$N'=\Theta(N)$. An emitter copies the source literals at the new bit
+width and emits guards/connectors using counters, in $O(N\log N)$
+conservative bit time and $O(\log N)$ workspace, excluding its
+write-only output.
+
+The stronger access statement is separate from streaming. Given an
+output bit position, parse the logarithmic header and compute whether
+the position lies in the copied-source block, the binary record, one
+of eight fixed parity records, or a connector. Fixed-width record
+arithmetic uses $O(\log N)$ bits. A source-block output bit is either
+a padding bit, an arity bit, or a directly indexed original literal
+bit. Other blocks use only counters and fixed signs. Schoolbook
+arithmetic and input-address copying give $\operatorname{polylog}N$
+time and $O(\log N)$ space per request, with at most one source-payload
+bit read in addition to the header. No output array or renaming table
+is retained.
+\end{proof}
+
+This theorem uses dense occurring-variable encoding. Arbitrary long
+names or an enormous declared unused-variable universe require a
+separate renaming/normalization ledger. The theorem is not silently
+transferred to every SAT encoding.
+
+\section{Same-machine consequence and its limit}
+Suppose a fixed uniform machine $A_U$ correctly decides every formula
+in $U$, with simultaneous bounds $T_U(N),S_U(N)$ there. It need not
+recognize $U$ itself. On proper 3-CNF input $F$, simulate $A_U$ on the
+virtual input $G(F)$ using the proved bit generator. Every request,
+including repeated reads, is serviced and charged. For monotone resource
+envelopes and some fixed constant $C$, one actual simulation gives
+\[
+ T(F)\le \operatorname{polylog}N\,(1+T_U(CN)),\qquad
+ S(F)\le O(\log N)+O(S_U(CN)).
+\]
+This avoids retaining a linear output buffer. Finite control of $A_U$
+is fixed; its tape state and all input-address registers are counted.
+No ancestor is suspended in this top-level reduction. An application
+inside another wrapper must add its retained ancestors and interfaces.
+In exponent notation the same pair transfers to general proper 3-SAT.
+Thus bounding the residual domain is a general-SAT obligation for this
+portfolio, rather than merely handling a few exceptional examples.
+It remains possible to improve the portfolio or use another route.
+This result does not forbid a polynomial fallback under $P=NP$.
+
+Removing the added guard simply exposes the unchanged $F$. A recognizer
+for this image can reverse the padding cheaply, but that is not a
+fixed-power reduction of the arbitrary core. Pure-literal elimination
+also bypasses the particular guard; the theorem concerns the exact
+published portfolio, not every possible preprocessing extension.
+
+\section{Literature, endpoint and prior-work reconciliation}
+Nishimura--Ragde--Szeider's SAT 2004 paper defines strong Horn backdoors
+using literal restriction and explains their bounded-parameter detection.
+Its input measure is literal occurrences, not the bit measure above.
+The graph correspondence and guard are proved here rather than imported
+as an unrestricted SAT lower bound:
+\url{https://www.satisfiability.org/SAT04/programme/51.pdf}.
+
+FLMV's primary manuscript, Section 2.1, Theorem 3.1 and Corollary 5.8,
+was checked again. On its deterministic random-access model,
+$d(c)=((c+2)/c^2-c)/2$ gives a forbidden neighborhood for SAT exponents
+$t<c$, $s<d(c)$ after the local reduction's overhead. ARC1's strict
+margin at $(6/5,1/2)$ survives. The new fallback embedding does not
+produce a machine entering that region. Nor does a proper-CNF encoding
+alone finish the endpoint encoding transfer:
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.
+
+CORPUS REVIEWED: current tree and roots, AGENTS, CODEX, research skill,
+red-team protocol, all visible tasks, latest accessible historical
+MAIN1658, current root RETURNTRACE1/RETURNTYPE1 summaries,
+FORMAL-SPINE1, Construction2, RedTeam1, Recovery3 and ARC2 originals,
+plus original RECURCLOSE1, STREAMCOMP1, CYCLEGAIN1 and ORBITBATCH1.
+The partial local preflight snapshot passes; it is not full repository CI.
+The current tree does not contain every later MAIN named inside root;
+those root references are not represented as freshly fetched reports.
+
+DUPLICATION / CONTRADICTION AUDIT: ARC2 already supplies easy missed
+families and a sound coverage extension. New here are the smallest
+proper-3-CNF control and a locally accessible embedding of arbitrary
+proper 3-SAT into the \emph{revised} failure domain. No error in ARC2's
+soundness theorem is asserted. Aggregate resource composition and
+conditional $K$ elimination are adopted; an unproved favorable fallback
+bound is rejected. Historical unrestricted sum-of-exponents endpoint
+claims in RECURCLOSE1 remain retired. WHAT CHANGED RELATIVE TO ROOT MAIN:
+the residual-domain obligation is sharpened; separation status does not
+change, and root ownership is preserved.
+
+\section{Tests, barriers and handoff}
+The main bounded runner checks all 256 subsets of the eight clauses on
+three variables, including an UNSAT source: every image reaches fallback
+and exhaustive SAT agrees. It checks all 2,048 fixed assignment
+extensions, all 529 zero/one/two-clause proper-3-CNF controls on four
+variables, and the three-clause witness. An independent audit checks
+327 formulas (255 nonempty three-variable cases and 72 seeded cases on
+four through six variables), all candidate backdoors of sizes one/two,
+and all source assignment extensions. Python runs stay below 25 seconds;
+exact source hashes and parameters are recorded. The separate Recovery4 interface runner checks all 7,592 output bits on nine dense encodings, including identifier-width boundary crossings. These are semantic
+checks, not measured bit-machine bounds.
+
+The transformation is ordinary SAT-preserving gadget construction and
+relativizes under consistent semantic oracle replacement. Its cheap
+local addressing is a concrete instance of STREAMCOMP1's interface,
+not a contracting edge. No nonrelativizing, nonalgebrizing or Natural
+Proofs hinge is supplied. Easy monotone SAT is the smallest hostile
+control. Hash length, prime labels and graph-history multiplicity play
+no role in the argument. Graph vertex-cover reasoning transfers exactly
+to the stated syntactic clauses; it does not transfer to intrinsic
+running time. No cryptographic assumption is used.
+
+Next target: obtain a genuinely favorable joint algorithm for the
+remaining general core, or prove another covering construction with
+fully charged resource improvement. Adding recognizers for easy families
+alone does not satisfy this obligation.
+% END_OF_VERIFIED_REPORT::REDTEAM-STRENGTHEN::REDTEAM-STRENGTHEN2
+\end{document}
