@@ -5,6 +5,16 @@ Root main4.tex is the achievable-region (ARC) manuscript. Root main5.tex is the 
 
 ## Scientific memory
 
+AUTHORITATIVE CORRECTION (8 October 2026): in the historical paragraphs below,
+replace the universal product threshold gamma=2 cos(pi/7) by
+phi=(1+sqrt(5))/2. The larger universal claim was retracted in Williams's
+full version, section 4.5 footnote 9; Theorem 4.11 supplies phi.
+The 2 cos(pi/7) constant requires separately justified small-space hypotheses.
+The direct near-linear-time/strictly-sublinear-space route instead uses
+Fortnow 2000. Consult main10.tex for the corrected endpoint/model ledger.
+No archived threshold overrides this correction.
+
+
 P versus NP remains OPEN. Assume P=NP only inside the contradiction argument. A finite achievable SAT pair exists, but no SAT-specific contraction has been established.
 ARC route: R consists of joint time/space exponent pairs witnessed by one uniform exact algorithm each. The forbidden region is t+s<2 cos(pi/7), subject to exact Williams model/encoding matching. Candidate closure V(y)<=lambda V(x)+c, fixed lambda<1, c/(1-lambda)<gamma, would imply finite crossing. Different algorithms can witness successive pairs. Universal source-code compilation is NOT necessary. Matrix variants require nonnegative maps, a downward-closed forbidden region, and controlled slack. The SAT-specific closure is OPEN.
 WRAPPER route: a uniform exact inner procedure emits at most M^(a+o(1)) children of encoded size M^(b+o(1)), b<1, with all local work M^(c+o(1)). Regeneration, representation access, combination, workspace, and effective error bounds must be charged. PRF3-0018 conditionally yields C=max(c,a/(1-b)) and subpolynomial space under its full hypotheses. Explicit-child implementations may instead use sigma=max(s,b), provided their actual access and storage model justifies this. Endpoint C+sigma<gamma. The double-wrapper prototype already constructs an exact forward AND/OR DAG with no SAT calls and standard CNF leaves below its M^(2/3) cutoff, and recursively solves those leaves. Decision semantics, per-leaf size and semantic recursion must not be relabeled wholly OPEN. What remains OPEN is its jointly favorable total construction, branching/internal-gate, access and workspace bound on general inputs. Other candidates need separate status ledgers. Paired prime-lineage wrappers enforce formula-internal distinctions but preserve a stronger service than the decision-only normalized cache; composition requires a charged interface translation. Double wrappers, parallel portfolios, disjunctive covers, backdoors, and macro-merges are not established universal low-resource shrinkers.
