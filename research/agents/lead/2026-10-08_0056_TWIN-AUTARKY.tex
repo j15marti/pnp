@@ -1,0 +1,129 @@
+% BEGIN REVIEW::TWIN-AUTARKY::2026-10-08
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{Signed Twins Give One Autarky Child, Not Three Necessary Branches}
+\author{WRAPPER research team}\date{8 October 2026}
+\begin{document}\maketitle
+\section{Status and corpus reconciliation}
+P versus NP remains OPEN. WRP-0006 proved an exact three-child OR macro,
+and ARC-0009/DENSE-TWIN supplied cheap recognition on appropriate dense
+inputs. The mixed branch in that very proof already implies the stronger
+one-child result below. The earlier OR identity is true but unnecessarily
+weak for deciding satisfiability. This is an application of established
+autarky reduction, not a new general SAT phenomenon \cite{autarky}.
+Reviewed GitHub sources include the current main5 entry point and its
+WRP-0006, ARC-0009 and DENSE-TWIN components. This review is targeted,
+not an assertion that the entire historical corpus was reread.
+
+\section{Exact one-child rule}
+Let $F$ be a tautology-free CNF with no repeated variables in any clause.
+Variables are exact signed twins when their positive incidence columns
+agree and their negative incidence columns agree. Let $G$ be a class
+with at least two members. Choose one member true, another false,
+and assign the rest arbitrarily. Write $F_{\neg G}$ for the clauses
+mentioning no member of $G$.
+\begin{theorem}[Signed-twin autarky]
+$\operatorname{SAT}(F)=\operatorname{SAT}(F_{\neg G})$.
+Moreover all disjoint nontrivial signed-twin classes can be treated
+simultaneously, deleting every clause touched by any of them.
+\end{theorem}
+\begin{proof}
+A clause containing a positive member of $G$ contains all positive members;
+the same holds for negative occurrences. The fixed mixed assignment
+therefore satisfies every clause it touches. Every source model satisfies
+the untouched subformula. Conversely a model of the untouched subformula
+extends by this fixed assignment, satisfying all removed clauses.
+Different classes have disjoint variable domains. The union of their
+mixed assignments remains an autarky: a clause touched by one class is
+already satisfied by that class, regardless of other class assignments.
+\end{proof}
+An autarky is precisely a partial assignment satisfying every clause
+it touches. Its deletion preserves satisfiability \cite{autarky}.
+This proves that the old all-zero and all-one branches can be discarded.
+It also eliminates their measurement/emission costs and permits checking
+the size gate on just one residual. It does not preserve the full set
+of source models; it preserves SAT and supplies a model-extension rule.
+
+\section{Charged implementation and limits}
+Reuse the streamed signed-incidence partition from ARC-0009/DENSE-TWIN.
+Mark every variable in a class of size at least two. In subsequent
+source scans count and emit exactly the clauses containing no marked
+variable. Headers, original IDs, delimiters and output bytes are charged.
+The $O(n\log M)$ state and $M^{1+o(1)}$ time bounds follow from the prior
+linked-list partition implementation plus a constant number of scans.
+Under the checked density gate $n\le M^{2/3}$ this is
+$M^{2/3+o(1)}$ state. An accepted power-size output must fit the same
+explicit child-storage budget. A small pointer into the source is
+not treated as an ordinary child.
+
+A single pass need not produce a twin-free residual:
+\[
+ (a\lor b\lor x)\land(x\lor y\lor z)\land(z)
+ \longmapsto (x\lor y\lor z)\land(z)
+ \longmapsto (z).
+\]
+The first deletion exposes new twins $x,y$. Repeated passes require
+a new amortized resource proof; multiplying per-pass near-linear work
+by an unbounded number of passes is not free.
+
+This route cannot supply unrestricted coverage alone. If $F$ is
+minimally unsatisfiable and an autarky removes any clause, the remainder
+is a proper subset and hence satisfiable. Model extension would make
+$F$ satisfiable, a contradiction. Thus minimally unsatisfiable formulas
+have no nontrivial autarky. This is a structural obstruction to
+autarky-only progress, not a lower bound on arbitrary SAT algorithms.
+The still-open route needs an additional method for the remaining
+formulas, not merely more exhaustive autarky search.
+General maximal-autarky algorithms using SAT oracles \cite{maxaut}
+do not make those oracle calls free in the WRAPPER ledger.
+
+\section{Built model and executed tests}
+The standalone JavaScript reference model
+\path{research/agents/proof/twin_autarky_audit.js}
+builds explicit incidence signatures, detects all nontrivial classes,
+deletes their touched clauses, and checks SAT equivalence by exhaustive
+truth evaluation on bounded instances. This reference implementation
+is deliberately not the streaming resource implementation; its
+stored signatures do not establish the small-space bound.
+Its matching raw JSON records 14,393 checks:
+2,952 exhaustive formulas on three variables with at most three
+distinct proper clauses, 500 seeded formulas, 500 renaming controls,
+an independent-component fixture, an untouched unsatisfiable remainder,
+and the two-pass witness above. Seed: 20261008. Runtime was below
+one second in the available JavaScript execution runtime.
+
+The previous independent-component fixture has 1,981,360 source bits.
+Its two nontrivial classes have sizes 128 and 90; simultaneous deletion
+leaves zero clauses, encoded in 96 bits with the existing header convention.
+Adding the eight proper three-literal clauses forbidding all assignments
+to three fresh variables leaves those eight clauses exactly unchanged.
+The latter is a preservation control, not a difficult SAT instance.
+These finite tests are COMPUTATIONAL. The symbolic proof above, also
+checked independently by a separate agent, establishes correctness.
+
+\section{Operational and barrier record}
+The local execution server was unavailable during this run. Thus local
+Python preflight, filesystem logging and LaTeX compilation could not run.
+Code and tests were executed with the JavaScript runtime and preserved
+through GitHub with the report and manuscript additions. No compilation
+success is claimed.
+The argument uses ordinary combinatorial autarkies, with no new
+nonrelativizing, nonalgebrizing or Natural-Proofs breakthrough.
+Root-main's OPEN conclusion remains valid; its unrelated ownership
+regions were not changed.
+The next target is a charged reduction for the formulas left after
+autarky removal, including lean formulas, while preserving the favorable
+time and space bounds.
+\begin{thebibliography}{2}
+\bibitem{autarky} O. Kullmann. Investigations on autark assignments.
+Discrete Applied Mathematics 107 (2000), 99--137.
+\url{https://doi.org/10.1016/S0166-218X(00)00262-6}.
+\bibitem{maxaut} O. Kullmann and J. Marques-Silva.
+Computing maximal autarkies with few and simple oracle queries.
+SAT 2015, 138--155.
+\url{https://arxiv.org/abs/1505.02371}.
+\end{thebibliography}
+\end{document}
+% END REVIEW::TWIN-AUTARKY::2026-10-08
