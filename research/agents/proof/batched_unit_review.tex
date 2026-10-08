@@ -1,0 +1,15 @@
+% Independent audit snippet. Include within a document.
+\section{Independent audit of batched forced-assignment replay}
+The evolving-mask sweep is exact on proper clauses. When a scanned clause has no satisfied literal and exactly one unassigned literal, every model extending the current assignment must satisfy that literal. Applying it immediately therefore preserves precisely the extendible models. A clause with no satisfied or unassigned literal certifies conflict. Induction over scanned clauses and passes establishes correctness. A productive pass assigns a previously unassigned variable, so there are at most $n$ productive passes, followed by at most one no-change pass. The routine maintains dense masks and scalar scan state without a unit queue or occurrence index. These properties alone do not imply favorable sublinear workspace: the dense masks cost $O(n)$ bits and the inherited random-access source index remains charged separately.
+
+For a sharper order control, seed $x_1=1$ and place the implication edges $e_i=(\neg x_i\lor x_{i+1})$, $1\leq i<n$, at distinct source positions $p_i$. Let $s_i$ denote the pass assigning $x_{i+1}$. Then $s_1=1$ and
+\[
+ s_{i+1}=s_i+\mathbf 1[p_{i+1}<p_i].
+\]
+Indeed, the next edge can use the newly assigned variable in the same pass exactly when its source position lies later. Consequently the number of productive passes is
+\[
+ 1+\sum_{i=1}^{n-2}\mathbf 1[p_{i+1}<p_i].
+\]
+The actual kernel completes one additional no-change pass. Under a uniformly random permutation of the edges, each comparison is a descent with probability $1/2$, so expected productive passes equal $n/2$ for $n\geq2$. Each completed pass accesses every edge. Thus expected clause accesses equal $(n-1)(n/2+1)$, a quadratic quantity. This concerns the seeded sweep kernel, not a lower bound on the full solver: its frontier can terminate before propagation, and an unseeded source-unit position changes pass counts.
+
+The independent runner exhausts all 873 edge permutations for $2\leq n\leq7$, checking the formula against the actual kernel. It also checks 379 proper three-variable formulas under three configurations (1137 answer comparisons), 350 seeded random signed formulas against an independent truth-table oracle, three direct conflict controls, two scope-isolation controls, and an explicit false-cache-hit control. Zero-byte hash signatures force collisions; ten unequal candidates are rejected. All checks passed in approximately 0.12 seconds. Code hashes are recorded in the result JSON. The counters measure logical payloads and source accesses, not Python heap usage or a complete all-input machine-bound proof. No candidate implementation edits were made by this reviewer.

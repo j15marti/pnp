@@ -1,0 +1,185 @@
+% CODEX REPORT::BATCHED-UNIT-REPLAY1::2026-10-08
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{proposition}{Proposition}
+\title{BATCHED-UNIT-REPLAY1: Scan Sharing and an Exact Clause-Order Limit}
+\date{8 October 2026}
+\begin{document}\sloppy\maketitle
+\paragraph{Status.}
+The implementation and finite comparisons are COMPUTATIONAL.
+Unit propagation soundness and the chain sweep identity below are
+PROVED/EXACT for the declared kernel. Favorable general-SAT joint resource
+bounds and P versus NP remain OPEN. This run reduces source reads on
+some inputs without introducing a new occurrence index, and identifies
+why this optimization alone does not give a uniform favorable bound.
+
+\section{Construction and existing components}
+COMBINED-REPLAY1 already replaces retained residual CNFs and the formula
+DAG by source-backed states with bounded exact sharing. UNIT-TAIL-REPLAY1
+removes recursive frames for individual forced assignments. Its unit
+path still re-inspects the source between assignments.
+
+The new subclass enters propagation after the usual frontier attempt
+exits its cap and inspection has identified a unit. It scans the selected
+source clauses against the current assignment masks. Whenever a clause
+has exactly one unassigned literal and no true literal, it immediately
+assigns that literal true. Later clauses in the same sweep see that new
+assignment. Sweeps repeat until a no-change pass or a conflict.
+
+There is no residual CNF, unit queue, new occurrence table or collection
+of intermediate assignments. The source scope is shared. A constant
+number of dense masks, clause counters and temporary bitwise values
+are charged. The inherited source random-access index remains
+charged. The sequential replay counter records scope-location passes,
+not a complete sequential-tape literal simulation.
+
+Frontier-first entry, component AND, Shannon OR and exact bounded cache
+reuse remain. Frontier processing is not retried between individual
+assignments inside a batch. Intermediate states are not retained for
+later cache insertion. This can change reuse and work; it is not a
+claim of pointwise domination of the old solver.
+
+\section{Correctness and resource scope}
+On proper CNFs with labels in $1,\ldots,n$, every assigned literal is a
+residual unit under the assignment at the moment of its visit. Every
+satisfying extension must satisfy it. Induction over individual visits
+therefore preserves satisfiability, regardless of source order. An empty
+residual clause proves UNSAT. At most $n$ new variables are fixed;
+every changing sweep fixes at least one. A final nonchanging full sweep
+certifies unit-propagation closure. The surrounding exact recursion
+remains terminating. Cache FALSE is distinguished from a missing answer.
+
+The additional kernel payload is $O(n+\log m+\log n)$ logical bits
+beyond the source-scope reference and existing state/ancestors.
+The code charges mask scratch and clause scratch separately, including
+overlap with the caller's old state. Component scopes, branch ancestors,
+normalization maps and cache remain charged. These counters do not
+certify total machine space.
+
+This is standard Boolean constraint propagation with shared source scans.
+Chaff's two-watched-literal mechanism selectively visits affected clauses
+\cite{chaff}; the stored watch relationships and their acquisition would
+have to enter our joint ledger. The literature supplies an implementation
+clue, not a general low-space SAT compiler.
+
+\section{Exact order-sensitive chain identity}
+Seed $x_1=1$ and place clauses $e_i=(\neg x_i\lor x_{i+1})$,
+$1\le i<n$, in a fixed order. Let $p_i$ denote the position of $e_i$.
+\begin{proposition}[Forward sweep count]
+For $n\ge2$, the number of productive complete sweeps needed to assign
+$x_n$ is
+\[
+R=1+\sum_{i=1}^{n-2}[p_{i+1}<p_i].
+\]
+The implemented kernel performs one additional no-change sweep.
+For uniformly random edge order, $\mathbb E R=n/2$.
+\end{proposition}
+\begin{proof}
+Clause $e_1$ propagates in sweep one. After $e_i$ propagates,
+$e_{i+1}$ propagates in the same sweep exactly when its position is
+later. Otherwise it propagates in the next sweep. These are the only
+dependencies in the seeded chain. Induction proves the identity.
+Each adjacent edge pair has either relative order with probability
+one half. Thus $\mathbb E R=1+(n-2)/2=n/2$. Once all variables are
+true, the next sweep makes no assignment and returns.
+\end{proof}
+Every sweep visits all $n-1$ clauses and reads one or two literals
+per clause. Expected reads on uniformly shuffled chains are therefore
+$\Theta(n^2)$, as are worst-case reads on reversed chains. Forward
+order needs only linear reads. This is a limitation of the fixed-scan
+kernel on an easy Horn/2-CNF family, not a SAT lower bound.
+The surrounding frontier may solve the chain before invoking this kernel.
+The seeded theorem also differs from full-solver tests below, which
+start unassigned and include a source unit clause $(x_1)$.
+
+\section{Experiments and independent review}
+Builder tests perform 3,471 old/new/expected-answer comparisons, including
+2,952 formulas with at most three distinct proper nonempty clauses on
+three variables, 480 random budget variants, chain orders and components.
+Two additional scope/conflict checks pass. Exact replay rejects 25
+unequal candidates forced into hash collisions. Runtime is 1.67 seconds.
+
+An independent executable checks 873 edge permutations for $2\le n\le7$.
+Every sweep count and uniform mean agrees with the identity. It also
+checks 379 small formulas under three configurations (1,137 answers),
+350 random signed formulas, three direct conflicts, scope isolation
+and a cached FALSE answer. Ten forced unequal hash candidates are
+rejected. Runtime is 0.12 seconds. Both executables have 25-second
+guards. Source hashes are recorded in the independent results.
+
+At 256 variables, frontier cap zero and caching disabled:
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+Clause order/control & Unit-tail reads & Batched reads\\
+\midrule
+Forward chain & 261632 & 2555\\
+Reverse chain & 261632 & 132860\\
+Shuffled chain & 261632 & 68985\\
+Forward contradiction & 262656 & 1536\\
+\bottomrule
+\end{tabular}
+\end{center}
+Forward total source passes fall from 512 to 5; the reverse chain
+still needs 257 propagation sweeps. Forward active logical descriptors
+change from 511 to 513 bits because batching assigns the last variable.
+The broader logical payload rises from 1,530 to 2,113 bits, including
+2,048 mask-scratch bits and 62 clause-scratch bits. This is a charged
+tradeoff, not an improvement in both coordinates or a Python RSS measure.
+Inherited recursive-size counters compare batch endpoints.
+
+The zero frontier cap intentionally exposes propagation; default
+frontier behavior can already handle favorable narrow controls cheaply.
+No general exponent is inferred from the finite measurements.
+
+\section{Proof-spine effect and handoff}
+The exact source-backed solver gains a batched propagation option.
+Conditional charging, recursive $K$ elimination and cycle composition
+remain unchanged. Favorable joint discovery, branching, access/replay
+and workspace bounds on the required full domain remain OPEN.
+The order identity prevents a uniform near-linear claim for this
+scan-sharing kernel alone.
+
+The next concrete target is selectively indexed or block-indexed access,
+with an explicit storage cap, acquisition costs and cap-fallback work
+charged. Borrowing watched-literal running-time benefits while omitting
+retained relationships would mix resource realizations.
+
+\section{Corpus, novelty and barriers}
+Reviewed current tree at
+\texttt{58dcec632cf596712f0e92f41293ddad65029831};
+source-backed predecessor; COMBINED-REPLAY1 and UNIT-TAIL-REPLAY1 code;
+BATCHFRONTIER1 report; main4/main5 entry points; project governance and
+snapshot preflight. This is targeted reconciliation, not a new exhaustive
+chat search. BATCHFRONTIER1 already shares suffix scans for boundary
+acquisition. This run shares evolving unit-propagation scans, a different
+operation. Neither supplies general contraction. Historical broad
+product-endpoint shorthand is not reused.
+
+Independent review checked assignments, scope isolation, cache FALSE,
+scratch charges and the chain identity. This is a conventional propagation
+optimization, not a novel unrestricted SAT technique. No earlier valid
+result is retired. Root executive synthesis remains with its owners;
+main4/main5 receive a scoped addition. Snapshot preflight is not full CI.
+
+The semantic proof survives consistent oracle replacement and supplies
+no nonrelativizing or nonalgebrizing hinge. No cryptographic premise or
+Natural-Proofs circuit property is used. Easy-family scan costs are not
+transferred to arbitrary SAT algorithms.
+
+\paragraph{Artifacts.}
+\begin{description}
+\item[] \path{research/agents/proof/batched_unit_replay.py}
+\item[] \path{research/agents/proof/batched_unit_replay_results.json}
+\item[] \path{research/agents/proof/batched_unit_review.py}
+\item[] \path{research/agents/proof/batched_unit_review_results.json}
+\end{description}
+\begin{thebibliography}{1}
+\bibitem{chaff} M. W. Moskewicz, C. F. Madigan, Y. Zhao,
+L. Zhang and S. Malik.
+Chaff: Engineering an Efficient SAT Solver. DAC, 2001.
+\url{https://www.princeton.edu/~chaff/publication/DAC2001v56.pdf}.
+\end{thebibliography}
+% END_OF_VERIFIED_REPORT::CODEX::BATCHED-UNIT-REPLAY1
+\end{document}
