@@ -1,0 +1,146 @@
+% BEGIN VERIFIED_REVIEW::DENSE-TWIN::2026-10-08
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{Dense Signed-Twin Recognition by Streaming Partition Refinement}
+\author{WRAPPER research team}\date{8 October 2026}
+\begin{document}\maketitle
+\section{Status and prior work}
+P versus NP remains OPEN. WRP-0006-TWIN-MACRO already proved exact
+three-way signed-twin semantics, with an $O(M^3)$ repeated-scan low-space
+recognizer. We improve acquisition on a gated dense regime. We do not
+claim coverage of all CNFs, nor recursive closure of this regime.
+The latest main4/main5 files are include-based entry points; their existing
+includes and archived sources are preserved.
+
+\section{Input and construction}
+Let $M$ be actual source bits, including the DIMACS header, original
+variable identifiers, whitespace and delimiters. Let $n$ be the declared
+variable bound. A first bounded-buffer scan counts source bytes. Header
+parsing bounds numeric tokens, checks $n\ge1$, and tests $n^3\le M^2$
+before allocating variable-indexed arrays. If this gate fails, return FAIL.
+The supported syntax has clauses terminated by zero, bounded signed IDs,
+no repeated variable within a clause, and no comments. Unsupported or
+malformed syntax is rejected. Clause repetition is allowed and charged.
+
+Start with one partition block on variables $1,\ldots,n$. For each
+streamed clause refine the partition by its positive-variable subset,
+then its negative-variable subset. Store per-variable block pointers and
+doubly linked lists. Temporary buckets and counts process only blocks hit
+by the current subset. Split a block only when its intersection and
+complement are both nonempty. Consequently at most $n-1$ splits occur.
+One timestamp array checks repeated variables, including tautologies.
+After the scan, choose a largest class $G$ with $|G|\ge2$; otherwise FAIL.
+
+For this $G$, use the previously proved all-zero, all-one and fixed-mixed
+assignments. Three further scans measure the exact lengths of the raw
+residuals, retaining original IDs and explicit headers, empty clauses and
+delimiters. Return REDUCE only if every measured length $m_i$ satisfies
+$m_i^3\le M^2$. Emit each child sequentially with one further scan each.
+There is no seed SAT call, oracle, hash-based equivalence test, or uncharged
+source index. The program separately exposes inspection and emission.
+
+\begin{theorem}[Dense partial recognizer and reducer]
+For the supported source encoding, the procedure recognizes exact signed
+incidence twins and, whenever it returns REDUCE, emits at most three
+ordinary CNFs whose SAT answers OR to the source answer. Its time is
+$M^{1+o(1)}$ and its workspace is $M^{2/3+o(1)}$ in the charged
+random-access bit model. A recursively consumed materialized child of
+the gated size fits the same parent-scale workspace bound.
+\end{theorem}
+\begin{proof}
+Inductively, two variables share a partition block precisely when they
+agree on membership in every signed clause subset processed so far.
+At the end, blocks are exactly signed incidence classes.
+Refining by a listed subset $S$ costs $O(|S|)$ word operations using
+touched-block lists \cite{partition}. Summing subset lengths gives the
+literal occurrence count. Initialization and final selection use
+$O(n)$ words and at most $O(n\log n)$ operations in the implemented
+sorted test-facing representation. The parser stores at most one
+$n$-literal clause and bounded numeric tokens. All arrays and pointers
+use $O(n\log M)$ bits. The preliminary density gate therefore bounds
+them by $M^{2/3+o(1)}$. The constant number of full scans, output-size
+arithmetic, and explicit emission cost $M^{1+o(1)}$ including bit-level
+polylogarithmic overhead. No list of all children is retained.
+
+Every incident clause contains all members of $G$ with the same polarity.
+An assignment on $G$ is all-zero, all-one, or mixed. In the mixed case
+every incident clause is satisfied, so one fixed mixed representative
+suffices; clauses outside $G$ are unchanged. This proves exact OR
+semantics. The measured child-size gate bounds each materialized child.
+The parent state plus one child remains within the stated exponent.
+\end{proof}
+
+The mathematical resource proof concerns the explicit algorithm, not a
+claim that Python wall-clock measurements establish asymptotic bounds.
+The test emitter writes ordinary files; a recursive solver must count
+their materialized bytes as workspace rather than treating disk as free.
+Every continued source scan is already charged.
+
+\section{Executed tests and hostile control}
+The durable runner is
+\texttt{research/agents/proof/dense\_twin\_refinement.py}; its raw JSON
+records the code SHA-256, seed 20261008 and parameters. In less than one
+second, 8,285 checks passed: exact comparison to full signed incidence
+signatures, brute-force OR correctness on 120 small seeded formulas,
+byte-for-byte emitted-child checks, move-count bounds, malformed-clause
+rejection and allocation gating. Each invocation enforces a 25-second
+alarm. These results are COMPUTATIONAL, not an asymptotic theorem.
+
+A dense wide-clause control has $M=30,464$ bits and child lengths
+$304,304,96$ bits. It returns REDUCE. Adding an independent outside
+component gives $M=1,981,360$ bits and child lengths
+$1,951,200,1,951,200,1,950,992$ bits. It correctly returns FAIL\_SIZE.
+This demonstrates the implemented gate's limitation; it is not a hard
+SAT family or a lower bound against other algorithms.
+
+\section{Literature and failed alternative}
+The partition-refinement transfer is exact: streamed signed clause
+subsets are the pivot sets, and signed incidence equality is the target
+equivalence relation. This fills the gated recognition cost, not general
+semantic compression.
+
+We also audited Gray-order raw restriction enumeration. For $k$ assigned
+variables and proper clause $C$, let $r_C$ be its number of assigned
+variables and $t_C$ its number of unassigned literals. Across all $2^k$
+assignments the raw emitted literal count is exactly
+\[
+ V=\sum_C t_C2^{k-r_C}.
+\]
+Only the assignment falsifying its $r_C$ fixed literals leaves that clause
+unsatisfied, with $t_C$ literals remaining; summing proves the formula.
+All-assigned clauses require separate empty-clause records, counted by
+$\sum_{t_C=0}2^{k-r_C}$. Reordering assignments does not change these
+volumes. Further simplification, early stopping, merging or a different
+encoding falls outside this identity's scope.
+
+\section{Reconciliation, barriers and next target}
+Reviewed sources: WRP-0006-TWIN-MACRO, RSR-0005 source-visible density
+recognition, ARC-0008-PREFIX-GUARD, main5's prior BatchAcquire code and
+the recovered critical-boundary theorem. Independent agents checked the
+partition and signed-twin proofs and the primary literature. This is a
+targeted corpus review, not a claim that every historical file was reread.
+
+The new partial member has favorable local exponents $(1,2/3)$ on its
+accepted inputs. FAIL followed by an unchanged general solver still has
+the maximum of the two resource budgets, as ARC-0008 already establishes.
+No new all-input achievable pair follows. In proper width-three CNF,
+an occurring signed-twin class has size at most three; wide-clause
+compression cannot silently be transferred to arbitrary 3-SAT.
+Root-main's OPEN conclusion remains correct, with no unrelated ownership
+region changed.
+
+This structural algorithm makes no nonrelativizing or nonalgebrizing
+claim and constructs no natural circuit property. Hashes or cryptographic
+assumptions are unnecessary. The remaining target is a charged mechanism
+that handles the non-twin remainder or proves sufficient successful
+contractions on every input under the contradiction hypothesis.
+\begin{thebibliography}{1}
+\bibitem{partition} M. Habib, C. Paul, L. Viennot.
+A Synthesis on Partition Refinement: A Useful Routine for Strings,
+Graphs, Boolean Matrices and Automata. STACS 1998, pp. 25--38.
+Sections 2--3. \url{https://doi.org/10.1007/BFb0028546}.
+\end{thebibliography}
+\end{document}
+% END VERIFIED_REVIEW::DENSE-TWIN::2026-10-08
