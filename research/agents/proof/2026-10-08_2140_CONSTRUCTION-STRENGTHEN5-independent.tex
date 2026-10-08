@@ -1,0 +1,141 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs}
+\usepackage[T1]{fontenc}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\Pzero}{P_0}
+\title{CONSTRUCTION-STRENGTHEN5 Independent Audit\\
+The failure domain remains proper-3-SAT hard}
+\author{Independent construction audit}
+\date{2026-10-08 21:40 UTC}
+
+\begin{document}
+\maketitle
+
+\paragraph{Verdict.}
+The proposed embedding is correct with two qualifications.  It is a
+source-checkable, linear-size, locally addressable reduction into the
+\emph{failure set} of the current partial portfolio, not a favorable all-input
+wrapper and not a complexity lower bound.  The local-access conclusion also
+requires an explicit fixed-field encoding whose header exposes the source
+values $n$ and $m$.  No counterexample was found.  The two additional guard
+blocks in the proposal are sufficient but redundant.
+
+\section{Exact statement audited}
+Let $F$ be a proper, exactly-width-three CNF over the densely occurring
+variables $[n]$; hence a nonempty instance has $n\geq 3$.  Allocate fresh
+variables
+\[
+ h,r,a,b,c,d,w_1,\ldots,w_n.
+\]
+Let $\Pzero(x,y,z)$ denote the four proper clauses whose satisfying
+assignments are exactly $x\oplus y\oplus z=0$.  Define
+\[
+ H(F)=F\wedge(h\vee\neg r)\wedge(\neg h\vee r)
+ \wedge\Pzero(h,a,b)\wedge\Pzero(h,c,d)
+ \wedge\bigwedge_{v=1}^{n}\Pzero(h,v,w_v).
+\]
+Before duplicate elimination, $H(F)$ has exactly $2n+6$ variables and
+$m+4n+10$ clause occurrences.  If source clauses are distinct, these are also
+the normalized counts.
+
+\paragraph{Equisatisfiability.}
+Every satisfying assignment of $H(F)$ restricts to one of $F$.  Conversely,
+extend a satisfying assignment of $F$ by setting $h=r=0$, $w_v=v$ for every
+$v$, and $a=b$, $c=d$.  Thus
+\[
+ \SAT(H(F))\quad\Longleftrightarrow\quad\SAT(F).
+\]
+
+\paragraph{The cheap prefix is inert.}
+Every variable occurs with both signs in the displayed construction, and all
+clauses have width two or three.  Therefore there is initially neither a unit
+nor a pure literal.  Exhaustive unit propagation and pure-literal elimination
+return the formula unchanged after one complete scan.
+
+\paragraph{Current recognizers all fail.}
+The two equivalence clauses make the ARC2 parity-star recognizer return
+\textsc{unknown}, since it requires every clause to be proper width three.
+The formula is nonconstant, non-Horn, and not 2-CNF.  Its primal graph is
+connected through $h$.
+
+It remains to exclude a strong Horn backdoor $B$ of size at most two under the
+\emph{operational} restriction procedure, which immediately replaces the
+whole residual by the single empty clause if some clause is falsified.  The
+positive-pair graph of $\Pzero(h,a,b)$ is the triangle on $\{h,a,b\}$, and the
+second guard gives a triangle on $\{h,c,d\}$.  Their union has vertex-cover
+number three.  If $B\neq\{h,r\}$, choose a positive pair missed by $B$ and the
+corresponding parity clause.  If its third literal is assigned, choose its
+value to falsify that literal.  The residual clause still has two positive
+literals.  No width-three clause can be emptied by at most two assigned
+variables, and neither binary equivalence clause can be emptied because
+$B$ does not contain both $h,r$.  Hence the operational absorbing-empty rule
+does not intervene.  If $B=\{h,r\}$, the assignment $h=r=1$ satisfies both
+binary clauses and leaves $(a\vee b)$ from $(-h\vee a\vee b)$.  Thus every
+$|B|\leq2$ has a non-Horn restriction.
+
+\section{Tightening and resource qualification}
+The two guard blocks may be deleted.  Because $n\geq3$, the per-source-variable
+blocks already contain at least two positive-pair triangles sharing $h$, and
+the same proof excludes every backdoor of size at most two.  The tightened
+map uses $2n+2$ variables and $m+4n+2$ clause occurrences.  The test checked
+both forms.  Keeping the guards is harmless and makes the symbolic proof
+independent of the source blocks.
+
+For a canonical encoding with an explicit $(n,m)$ header, a fixed number of
+bits per clause, and fixed-width literal identifiers, a requested output bit
+can be produced as follows: identify its clause block arithmetically; decode
+and re-encode one source literal if it lies in the copied prefix; otherwise
+compute one of the displayed fresh labels and signs.  This uses
+$\operatorname{polylog}N$ time and $O(\log N)$ workspace on a random-access
+bit model.  Since dense occurrence gives $n\leq3m$ and
+$\log(2n+6)=\log n+O(1)$, the output bit length is $O(N)$.  Without an explicit
+header/fixed-field convention, finding $n,m$ or clause boundaries can require
+a source scan, so the polylogarithmic local-access statement must not be made
+encoding-free.
+
+There is a second, separate accounting caveat.  On the embedded family the
+unit/pure prefix stops after one scan and needs only counters.  A general
+exhaustive implementation that retains all derived assignments naively uses
+$\Theta(n)$ bits.  This audit does not prove an $O(\log N)$-workspace
+implementation of that prefix on arbitrary inputs.  Any global same-machine
+claim must charge its assignment state or supply a recomputation theorem.
+
+\section{Bounded falsification}
+The independent runner authenticated the pre-existing portfolio by SHA-256
+and enumerated all 255 nonempty formulas over the eight proper clauses on the
+triple $\{1,2,3\}$.  Both the stated and tightened embeddings were checked.
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+check & count\\
+\midrule
+source formulas & 255\\
+semantic equivalence checks & 510\\
+unit/pure fixed-point checks & 510\\
+exact old-portfolio failures & 4\\
+strong-Horn backdoor search & all subsets of size $\leq2$ on representatives\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The special restriction $B=\{h,r\}$, $h=r=1$ was checked explicitly against
+the absorbing-empty implementation.  The runner finished in under one second,
+well inside its 25-second alarm.
+
+\section{Proof status and handoff}
+This result strengthens the negative coverage diagnosis: even after adding
+the ARC2 parity-star solver and an inert unit/pure prefix, the exact failure
+domain admits a linear local reduction from every proper width-three SAT
+instance.  It therefore remains NP-hard, assuming the standard NP-hardness of
+proper 3-SAT.  This statement supplies neither an unconditional lower bound
+for the portfolio nor the missing implication from $\SAT\in P$ to a jointly
+favorable all-input time--space wrapper.  P versus NP remains open.
+
+The next construction target should operate on this embedded residual family,
+with the cost of recognizing, acquiring, replaying, and executing all children
+charged with multiplicity.  Merely adding more exact partial recognizers does
+not establish the required all-input transition.
+
+\end{document}
