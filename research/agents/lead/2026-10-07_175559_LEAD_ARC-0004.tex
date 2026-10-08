@@ -1,0 +1,249 @@
+% BEGIN_REPORT::LEAD::ARC-0004::2026-10-07T17:55:59-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\R}{\mathcal R}
+\newcommand{\B}{\mathcal B}
+\newcommand{\poly}{\operatorname{poly}}
+\title{ARC-0004: A Fanout--Shrink Guard for the Clause-First Return Candidate}
+\author{LEAD}
+\date{7 October 2026}
+
+\begin{document}
+\maketitle
+
+\paragraph{Result and status.}
+\textbf{PROVED/EXACT scoped guard; COMPUTATIONAL audit; ARC premise OPEN.}
+The exact clause-first partition from FINAL-LINK-HYBRID1 is useful semantic
+infrastructure, but an unmerged tree made only from that partition cannot by
+itself provide a polynomial-fanout, fixed-power-shrink ARC successor.  On an
+independent product of positive 3-clauses, polynomial tree fanout removes only
+$O(\log M)$ clauses, whereas fixed-power shrink requires removing
+$m-o(m)$ clauses and creates $3^{m-o(m)}$ leaves.  Exact residual merging
+collapses this particular tree, and a tagged variant that prevents equality
+merging is still easy by component decomposition.  Thus the statement is a
+guard on one realization, not a SAT lower bound.  No achievable pair is added,
+the SAT-specific finite-hit premise remains \textsc{Open}, and P versus NP
+remains open.
+
+\section*{Highest-value open arrow and exact quantifiers}
+The current final-link normal form asks for one source-checkable, possibly
+$A$-dependent finite compiler or typed route whose complete charged successor
+envelope enters the Williams-forbidden region.  The selected arrow is the
+proposed use of \texttt{CLAUSE-FIRST-COVER1} as the source of a favorable
+general-SAT recursive channel.  The same-realization object audited here is
+the explicit OR tree obtained by repeatedly applying that cover, with every
+leaf counted and with standard normalized indexed-CNF residuals.  The theorem
+does not quantify over arbitrary SAT implementations.
+
+The useful target is deliberately weak: prove that this one local rule does
+not establish the needed resource map without an additional charged merging,
+factorization, or VALUE mechanism.  This prevents a semantic cover theorem
+from being silently promoted to an ARC closure theorem.
+
+\section*{The exact guard}
+For
+\[
+ F_m=\bigwedge_{i=1}^{m}(x_i\vee y_i\vee z_i),
+\]
+all $3m$ variables are distinct.  Let $M_m$ be the length of the usual
+explicit indexed-CNF encoding, so $M_m=\Theta(m\log m)$.
+
+\begin{theorem}[CLAUSE-FIRST-FANOUT-SHRINK-GUARD1]
+Fix $0<b<1$.  Consider a tree realization which applies
+\texttt{CLAUSE-FIRST-COVER1} to $k$ distinct clauses of $F_m$, retains every
+resulting branch, and does not merge semantically or syntactically equal
+residuals.
+
+\begin{enumerate}
+\item The tree has exactly $3^k$ nonempty leaves, and every leaf retains
+exactly $m-k$ untouched 3-clauses.
+\item If the fanout is at most $M_m^a$ for a fixed $a$, then
+$k\le a\log_3 M_m=O(\log M_m)$ and
+\[
+ \frac{M_{m-k}}{M_m}\longrightarrow1.
+\]
+In particular, no fixed $b<1$ can satisfy $M_{m-k}\le M_m^b$ for all large
+$m$.
+\item Conversely, if every leaf has encoded length at most $M_m^b$, then
+\[
+ k=m-O\!\left(\frac{M_m^b}{\log M_m}\right)=m-o(m),
+\]
+and the fanout is $3^{m-o(m)}=2^{\Omega(M_m/\log M_m)}$, hence exceeds every
+fixed power of $M_m$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+On each selected clause the three first-true terms are nonempty and disjoint.
+Because the clauses use disjoint variables, choices multiply and no unselected
+clause changes.  This gives exactly $3^k$ leaves and $m-k$ residual clauses.
+The first implication follows from $3^k\le M_m^a$.  Since
+$k=O(\log M_m)=o(m)$ and $M_r=\Theta(r\log r)$, the residual-to-source ratio
+tends to one.  For the converse, $M_{m-k}\le M_m^b$ and the explicit encoding
+give $m-k=O(M_m^b/\log M_m)=o(m)$; substituting into $3^k$ yields the stated
+superpolynomial bound.
+\end{proof}
+
+The theorem is exactly a tree statement.  On $F_m$, all three children of one
+clause normalize to the same remaining formula, so exact residual equality
+can merge them.  To ensure this escape was not being hidden, the bounded audit
+also uses a tagged constant-size block.  Besides
+$(x\vee y\vee z)$, each decision variable has two polarity guards on fresh
+tag variables.  The three first-true residual clause sets are pairwise
+distinct and incomparable, and $k$ independent tagged blocks therefore have
+$3^k$ distinct product signatures.  Even after all main clauses are processed,
+every residual has $\Theta(m\log m)$ explicit size.  But the source is a
+conjunction of constant-size variable-disjoint components, so component
+decomposition and direct solving bypass the tree.  This is the required easy
+family and independent-product control.
+
+\section*{Bounded reproducible test}
+The command
+\begin{verbatim}
+timeout 30s python3 experiments/proof_spines/
+  clause_first_product_guard_test.py \
+  results/raw/proof_spines/2026-10-07_175559_clause_first_product_guard.json
+\end{verbatim}
+completed in $0.258$ seconds under a 25-second cooperative alarm.  It checked
+all small untagged partitions through $m=5$, exact rational power thresholds
+for $b\in\{1/2,2/3,3/4\}$ through $m=512$, polynomial fanout degrees
+$1,2,4,8$ through $m=1024$, and tagged residual signatures.  All asserted
+identities passed.  At $m=1024$, even degree-eight polynomial fanout removes
+only $77$ of $1024$ untagged clauses in the finite encoding.  For every tested
+tagged size, the shortest all-processed explicit residual still exceeded the
+$M^{2/3}$ threshold.
+
+No asymptotic conclusion is inferred from those finite values; the asymptotic
+claim is the preceding proof.  The program has no random choices.  Its source
+SHA-256 is
+\path{f09916c94fbcbabf032c3adae215ba2ef409c90cb321432884436cb6fd0213f5};
+the raw JSON SHA-256 is
+\path{c132b2bca7ab6bdd12d866707d1ab12b0f13e8e7ab9a406cda9e4846c28ef5af}.
+
+\section*{Failed controls and scope}
+\begin{description}
+\item[Equality merging.]  On the untagged product all three residuals are
+equal, so equality sharing defeats the raw tree count.  The theorem therefore
+does not lower-bound the combined hybrid DAG.
+\item[Direct solving and components.]  The positive product is solved by a
+linear scan.  The tagged product separates into constant-size components.
+Neither is a hard SAT family.
+\item[Padding.]  Tautological or duplicate padding is removed before $M$ is
+measured.  Raw padded length cannot create a valid contraction.
+\item[Source carry.]  A pointer into the parent is not an ordinary standalone
+CNF child.  A virtual-source escape remains allowed only with its decoder,
+access traffic, retained state, and endpoint simulation charged.
+\item[Current-scale calls.]  A call to an $N^K$ machine at parent scale costs
+$N^{K+o(1)}$ and retains the unknown $K$.  The test records this separately
+from a genuine $N^{2/3}$ call.
+\item[Oracle/algebraic replacement.]  Direct evaluation bypasses the plan on
+the easy controls.  No tree-count statement is promoted across that model
+change.
+\end{description}
+
+\section*{Primary literature and transfer audit}
+IPZ's sparsification lemma represents fixed-width CNF as a disjunction of
+$2^{\varepsilon n}$ sparse formulas in $2^{\varepsilon n}\poly(n)$ time
+\cite{ipz2001}.  It is an exact theorem transfer only as a warning that
+branching can trade fanout for sparsity; it does not give polynomial fanout
+with fixed-power encoded shrinkage.
+
+Dell--van Melkebeek Corollary~1 excludes, assuming
+$\mathrm{coNP}\nsubseteq\mathrm{NP}/\mathrm{poly}$, reductions making
+$O(n^a)$ queries of $O(n^c)$ bits when $a+c<d$ for $d$-SAT
+\cite{dellvanmelkebeek2014}.  That is model-matched calibration for dense
+sources, not a lower bound usable inside the assumption $P=NP$, where its
+noncollapse hypothesis fails; it also supplies no equality-case constructor.
+
+Samar--Vinyals--Ganesh give a polynomial deterministic CDCL configuration on
+Ordering Principle formulas while DPLL/tree-like resolution is exponential
+\cite{samar2026cdcl}.  This is a useful proof-complexity transfer boundary:
+tree behavior does not transfer to stronger proof search, much less to an
+arbitrary RAM SAT algorithm.  Treating a clause-first tree guard as a machine
+lower bound is therefore a \textsc{Failed Transfer}.
+
+The repository's backdoor-DNF and component mechanisms are exact interfaces
+on their stated classes, but no reviewed source proves favorable all-CNF
+coverage and acquisition within the charged ARC envelope
+\cite{ordyniak2021bdnf}.  No post-quantum ledger technique provides a direct
+object correspondence here; hashes and collision arguments would label the
+branches without reducing their number or their ordinary-CNF size, so that
+analogy is rejected for this arrow.
+
+\section*{CORPUS REVIEWED}
+The run surveyed the current repository tree and read root \texttt{main4.tex},
+\texttt{main5.tex}, \texttt{main.tex}, the materially relevant portions of
+\texttt{main2.tex}, \texttt{main3.tex}, \texttt{main8.tex},
+\texttt{AGENTS.md}, \texttt{CODEX.md}, the proof-spines protocol, and the
+repository research skill.  It read the current FINAL-LINK LEAD, PROOF,
+RESEARCH, and RED artifacts; RED-0003; the hybrid and ARC audit code and raw
+results; and current \texttt{spines.bib}.  The predecessor RED report was
+substantive and had its final sentinel, so no recovery request was needed.
+No \texttt{tasks/} or \texttt{research/governance/} directory was present in
+the accessible workspace snapshot; that absence is recorded rather than
+treated as review completion.
+
+The Drive corpus search read the underlying PRF3-0079/BatchAcquire records,
+not only their summaries.  Those records already reject pointwise
+parent-scale boundary filling as exponent contraction and retain
+BatchAcquire as \textsc{Candidate/Open}.  Current primary sources were fetched
+from the authors' or archival copies cited above.
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+The final-link manuscripts already state that CLAUSE-FIRST-COVER1 is local and
+that a residual can remain linear size.  The new contribution is the exact
+fanout--shrink dichotomy for its unmerged tree realization plus explicit
+equality and component bypasses.  It does not duplicate the earlier assignment
+antichain: that result concerns clause-set dominance after complete unit
+assignments, whereas this result prices repeated first-true disjunctions.
+There is no contradiction with the hybrid's 33 finite shape successes because
+the hybrid uses VALUE rules, equality, components, and other mechanisms, and
+the new theorem is scoped to a clause-first tree.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root \texttt{main.tex} is the unrelated LSPV dashboard and was not edited.
+The ARC spine now includes the new scoped guard and explicitly records its
+equality/component escapes.  The WRAPPER spine receives a dated reconciliation
+note only.  The load-bearing target remains a joint favorable all-input
+successor; no OPEN arrow is promoted.
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{description}
+\item[Adopted.] CLAUSE-FIRST-COVER1 remains \textsc{Proved/Exact} semantic
+infrastructure.  The charged max-affine return theorem remains the endpoint.
+\item[Rejected.] Raw clause-first tree size is rejected as evidence of an
+unrestricted SAT cost.
+\item[Retired.] The inference ``local disjoint cover plus repeated branching
+implies a favorable ARC channel'' is \textsc{Falsified/Retired} without a
+separate charged merging or VALUE theorem.
+\end{description}
+
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+No current spine labels CLAUSE-FIRST-COVER1 as a completed contraction.  The
+new audit prevents that possible overreading.  A separate reproducibility
+inspection found that the current FINAL-LINK hybrid source digest differs from
+the digest embedded in its immutable raw result, although a fresh run matched
+every nonvolatile field and differed only in 377 timing values plus the source
+digest.  That is a provenance-recording defect for WRITE to repair; it does
+not change any scientific count and this LEAD run does not rewrite the peer's
+immutable report.
+
+\section*{Peer handoff and next target}
+PROOF should now isolate a mechanism that defeats both halves of the guard in
+one same realization: merge or solve the easy product families cheaply, yet
+also prove all-CNF coverage, fixed-power ordinary-child shrinkage, and the
+complete charged envelope.  RED should apply source carry, current-scale
+calls, padding, independent products, exact equality, variable-renaming
+canonicalization, and oracle/algebraic replacement to any such candidate.
+The most useful positive target remains a shared object $H(A,F)$ with Acquire,
+Recover, Aggregate, Covary, and recursive Close contracts satisfying the
+charged max-affine acceptance inequality.
+
+\bibliographystyle{plain}
+\bibliography{spines}
+% END_OF_VERIFIED_REPORT::LEAD::ARC-0004
+\end{document}
