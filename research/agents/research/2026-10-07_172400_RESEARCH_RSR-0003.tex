@@ -1,0 +1,247 @@
+% BEGIN_REPORT::RESEARCH::RSR-0003::2026-10-07T17:24:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\emergencystretch=3em
+\newtheorem{theorem}{Theorem}
+\newcommand{\SAT}{\mathrm{SAT}}
+\title{RSR-0003: Fixed-Depth Nested Implication Selection}
+\author{RESEARCH, ARC/WRAPPER research team}
+\date{7 October 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Result and strict status.}
+\textbf{PROVED/EXACT for every fixed depth in the stated explicit-frontier
+model; computationally tested; independent RED review pending.}
+The RUP implication selector is the first level of a nested failed-literal
+hierarchy.  For each fixed $k$, the same sink-SCC construction is exact and
+costs $O(q^2m^{2k})$ time, $O(qm+q^2+km)$ live space, and zero SAT-oracle
+calls.  It is complete for semantic implication from sources of hardness at
+most $k$ in the $\mathrm{UC}_k$ hierarchy.  Depth two strictly recognizes an
+implication missed by RUP.  This is stronger pruning infrastructure, not a
+universal density or shrinkage theorem.  The joint WRAPPER implication, the
+SAT-specific ARC closure, and P versus NP remain \textsc{Open}.
+
+\section*{Claim card}
+\begin{description}
+\item[] \textbf{Claim ID:} NESTED-IMPLICATION-SELECT1.
+\item[] \textbf{Exact quantifiers:} for every fixed integer $k\geq1$, every
+finite $q\geq0$, and every explicit list of ordinary CNFs
+$R_1,\ldots,R_q$ of encoded length at most $m$ over a common remaining
+variable set, the stated deterministic machine returns an OR-equivalent
+sublist within the displayed bounds.
+\item[] \textbf{Model:} deterministic random-access unit-cost RAM on indexed
+ordinary CNF.  Formula input, recursive reductions, graph construction, SCC
+space, and output indices are charged.  Here $k$ is a theorem parameter fixed
+independently of input length.
+\item[] \textbf{SAME\_REALIZATION:} one machine reads the explicit frontier,
+runs every nested-reduction check depth first, builds the implication graph,
+computes SCCs, and emits retained indices.  Time and space are not combined
+from different implementations.
+\item[] \textbf{Weakest useful next theorem:} prove that some fixed $k$ gives
+favorable implication density, or a jointly favorable partial-plan coverage
+bound, on every frontier emitted by one original-SAT-scale general-CNF
+wrapper.  Completeness merely on $\mathrm{UC}_k$ sources is not enough.
+\end{description}
+
+\section*{CORPUS REVIEWED}
+The run executed the repository preflight; surveyed the current repository
+tree and GitHub history; read root \texttt{main.tex}, \texttt{main2.tex},
+\texttt{main3.tex}, the current GitHub blobs of \texttt{main4.tex} and
+\texttt{main5.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, the complete
+pnp-research skill and its mode/protocol references, all present task
+specifications, the proof-spines protocol, the newest verified ARC, PROOF,
+RESEARCH, RED and WRITE artifacts material to implication selection, and the
+cited raw experiments.  The immediately preceding WRP-0003 report exists,
+is substantive, contains both verification sentinels, and was read back from
+GitHub; no predecessor recovery was needed.
+
+The connected Drive artifacts ``Adaptive Certificate Ladder Stress Test''
+and ``Witness-Preserving Quantitative Pruning Lemma (WP-QPL)'' were fetched
+and read in full rather than accepted through a status summary.  The former
+already separates cheap certificate verification from hard acquisition and
+records that a certificate ladder still needs density or a charged failure
+theorem.  The latter already proves the abstract width/cost pruning lemma.
+Neither contains the fixed-depth nested implication selector proved here.
+
+\section*{Primary literature and exact transfer}
+Gwynne and Kullmann define $r_1$ as unit-clause propagation, $r_2$ as
+complete failed-literal elimination, and $r_{k+1}$ as the look-ahead version
+of $r_k$ \cite{gwynne2014nested}.  Their Theorem~5.7 identifies hardness at
+most $k$ with derivability of implicates by $k$-times nested input resolution
+(equivalently bounded tree-resolution Horton--Strahler number).  The same
+paper records Horn clause-sets at level one and 2-CNF at level two.  These are
+\textbf{direct theorem transfers}: for $A\in\mathrm{UC}_k$, every semantic
+implicate $C$ of $A$ is detected after falsifying $C$ by $r_k$.
+
+The transfer has two exact limitations.  Recognizing membership in
+$\mathrm{UC}_k$ is coNP-complete for each fixed $k\geq1$; the selector does
+not perform or require that recognition.  More importantly, the hierarchy is
+complete only when depth may grow.  Exhaustive failed-literal work also has
+conditional fine-grained lower-bound evidence \cite{jarvisalo2014failed};
+this is a warning, not an unconditional lower bound and not a component of
+the proof.
+
+Proof-complexity nested resolution is therefore an \textbf{EXACT
+OBJECT/THEOREM TRANSFER}.  A control-theoretic reading of $r_k$ as a bounded
+look-ahead barrier certificate is only an \textbf{ANALOGY/CANDIDATE}; no
+control theorem gives general-CNF implication density.  Collision entropy,
+Schur-square, or hash ideas from post-quantum cryptanalysis are a
+\textbf{FAILED TRANSFER} here: label collision does not orient semantic
+implication and is unnecessary once a nested-resolution certificate exists.
+
+\section*{Exact construction and proof}
+For ordinary CNFs $A,B$, write $A\Rightarrow_kB$ when, for every clause
+$C\in B$, the reduction
+\[
+ r_k\!\left(A\wedge\bigwedge_{\ell\in C}\neg\ell\right)=\{\bot\}.
+\]
+Soundness of every $r_k$ reduction gives $A\Rightarrow_kB\Longrightarrow
+A\models B$.  The relation is monotone in $k$, and
+$\Rightarrow_1$ is exactly the RUP relation used by WRP-0003.
+
+\begin{theorem}[NESTED-IMPLICATION-SELECT1]
+Fix $k\geq1$.  Given explicit CNFs $R_1,\ldots,R_q$ of encoded length at most
+$m$, form the directed graph with $i\to j$ iff $R_i\Rightarrow_kR_j$.
+Retain one representative from every sink SCC of its condensation.  For the
+retained index set $K$,
+\[
+ \bigvee_{i=1}^{q}\SAT(R_i)=\bigvee_{i\in K}\SAT(R_i).
+\]
+There are zero SAT-oracle calls.  A direct depth-first implementation takes
+$O(q^2m^{2k})$ time and $O(qm+q^2+km)$ live space.  It emits at most $q$
+children of length at most $m$.
+\end{theorem}
+\begin{proof}
+Every graph edge is sound semantic implication.  Every vertex of the finite
+condensation DAG reaches a sink, so satisfiability of a discarded residual
+implies satisfiability of a retained one.  The retained residuals form a
+subset of the original frontier, proving the reverse implication.
+
+Let $T_k(m)$ bound one $r_k$ contradiction test.  Occurrence-list unit
+propagation gives $T_1(m)=O(m)$.  At level $k+1$, at most $O(m)$ assignments
+are committed.  Before each commitment, a scan of at most $O(m)$ candidate
+literals invokes an $r_k$ test on a formula of length at most $m$.  Thus
+$T_{k+1}(m)=O(m^2T_k(m)+m^2)=O(m^{2k+1})$, whence
+$T_k(m)=O(m^{2k-1})$.  One ordered formula pair checks at most $O(m)$ target
+clauses, giving $O(m^{2k})$ time per pair and $O(q^2m^{2k})$ total time.
+Depth-first recursion stores at most one $O(m)$ reduction state per level;
+explicit inputs and the graph contribute $O(qm+q^2)$ space.  SCC computation
+is linear in graph size.
+\end{proof}
+
+\paragraph{Class-completeness corollary.}
+If $A\in\mathrm{UC}_k$ and $A\models B$, then $A\Rightarrow_kB$.  It is
+enough to apply Theorem~5.7 of \cite{gwynne2014nested} to the prime implicate
+subsuming each clause of $B$; falsifying the larger clause also falsifies the
+prime implicate.  Consequently depth one is complete for Horn sources and
+depth two for 2-CNF sources.  This corollary is conditional on the source
+class property; it is not a cheap general-CNF class recognizer.
+
+\section*{Strict level separation and hostile controls}
+Let
+\begin{align*}
+A={}&(x\vee a\vee b)\wedge(x\vee a\vee\neg b)
+\wedge(x\vee\neg a\vee b)\\
+&\wedge(x\vee\neg a\vee\neg b)\wedge(y),
+\qquad B=(x).
+\end{align*}
+Falsifying $x$ leaves four binary clauses over $a,b$ with no unit clause, so
+RUP does not detect the contradiction.  Either failed-literal branch on $a$
+creates opposite units on $b$, so $r_2$ does.  Hence $A\Rightarrow_2B$ but
+$A\not\Rightarrow_1B$.  The extra unit $(y)$ ensures $B\not\models A$, so on
+the OR frontier $[A,B]$ depth two retains only $B$ while depth one retains
+both.
+
+The complete-assignment residual family remains a semantic antichain for
+every sound depth, and therefore all $2^n$ nodes survive.  Tautological
+padding and signed variable renaming do not change the relation.  Independent
+products retain their incomparable factors.  Oracle or algebraic replacement
+can recognize easy families by other means, but that does not falsify the
+selector; it shows why the selector is not a machine lower bound.  No source
+program is inspected, and there are no original-scale/current-scale SAT
+calls.
+
+\section*{Bounded reproducible test}
+The command
+\begin{verbatim}
+timeout 30s python3 experiments/proof_spines/
+  nested_implication_selector_test.py \
+  --output results/raw/proof_spines/
+  2026-10-07_172400_nested_implication_selector.json \
+  --seed 20261007 --budget 25
+\end{verbatim}
+finished in $0.890314$ seconds and performed $67{,}067$ checks.  It verified
+the strict depth-two witness, exhaustively found no depth-two/unit-target
+witness with at most three source clauses over three variables, checked exact
+OR preservation and edge soundness on 160 random explicit portfolios,
+verified all enumerated implicates for 90 random Horn and 90 random 2-CNF
+sources, retained all complete-assignment antichains through $n=7$, and
+passed 320 renaming and tautological-padding checks.  The random portfolios
+had no depth-two-only edge; the deliberately constructed witness supplies the
+strict separation.  These are finite consistency tests, not asymptotic
+evidence.
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+RUP-IMPLICATION-SELECT1 is exactly the $k=1$ case and remains correct.
+CLAUSE-DOM-SELECT1 is subsumed whenever its inclusion certificate is a RUP
+certificate.  WP-QPL remains the general charged pruning theorem, while the
+Adaptive Certificate Ladder already warned that increasing certificate
+strength need not yield cheap density.  No earlier repository or Drive
+artifact was found to instantiate the entire fixed-depth hierarchy with the
+present SCC and resource ledger.
+
+The only stale phrasing found was the broad suggestion that all stronger
+certificate ladders await discovery and verification.  For nested
+input-resolution, fixed-depth discovery and verification are now explicit;
+only favorable general-SAT density/coverage remains open.  No previous OPEN
+arrow is promoted silently.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+The canonical dashboard \texttt{main.tex} was reviewed but left unchanged,
+as the user's proof-spines protocol reserves this run to \texttt{main4.tex}
+and \texttt{main5.tex}.  Relative to it, the new fact is an exact
+fixed-depth implication-selector hierarchy with class completeness and a
+strict $k=2$ example.  The global scientific status is unchanged.
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{description}
+\item[] \textbf{Adopted:} the RUP sink-SCC construction, WP-QPL acquisition
+ledger, and fixed safe partial-plan portfolio semantics.
+\item[] \textbf{Rejected:} inferring universal density from a stronger proof
+system or from favorable Horn/2-CNF behavior.
+\item[] \textbf{Retired:} the formulation that treats every certificate
+system stronger than RUP as lacking a deterministic verifier.  Fixed-depth
+nested input resolution has one; growing depth remains unsuitable here.
+\end{description}
+
+\section*{Finite existential iteration versus growing depth}
+For every fixed $k$, NESTED-IMPLICATION-SELECT1 names one uniform algorithm
+with a fixed polynomial exponent.  A later ARC proof may use finitely many
+such independently witnessed algorithms without compiling them into one
+universal source transformer.  By contrast, setting $k=k(m)\to\infty$ turns
+the displayed bound into $m^{2k(m)}$ and is not a fixed-polynomial uniform
+algorithm.  Completeness of the union $\bigcup_k\mathrm{UC}_k$ therefore
+cannot be promoted into an ARC closure or WRAPPER realization by choosing
+input-dependent depth.
+
+\section*{Open arrows and peer handoff}
+\textbf{OPEN:} establish one fixed depth and one original-SAT-scale wrapper
+whose explicit or implicit frontier has jointly favorable generation,
+branching, child-size, access, space, and implication-density bounds.  An
+alternative sufficient theorem is favorable coverage by a fixed finite
+portfolio containing the $\mathrm{UC}_k$ selector.  General semantic
+compression under P=NP, fixed-depth verification, and the sink-SCC semantics
+are already solved interfaces and should not be reopened.
+
+\textbf{Handoff to RED:} independently verify the $O(m^{2k-1})$ reduction
+bound and the class-completeness step from Theorem~5.7, and attack whether
+the SCC direction or a hidden representation copy invalidates the ledger.
+Then test structured 2-CNF, XOR encodings, padding, and the complete-unit
+antichain rather than only random formulas.
+
+\bibliographystyle{plain}
+\bibliography{spines}
+\end{document}
+% END_OF_VERIFIED_REPORT::RESEARCH::RSR-0003
