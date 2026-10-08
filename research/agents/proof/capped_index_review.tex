@@ -1,0 +1,50 @@
+\section*{Independent review: capped occurrence propagation}
+\textbf{Status: COMPUTATIONAL for the tests; exact kernel invariants below.}
+The reviewer inspected the candidate separately and used a set-based simultaneous
+unit-closure oracle, rather than the inherited sweep as the only oracle.
+The reviewed domain consists of proper clauses, unique valid clause IDs in the
+scope, and consistent masks over the declared variable range.
+
+The independent run passed 1,532 partial-assignment closure and source-read
+checks, 872 complete chain-order checks, three explicit empty-clause checks, and
+734 observations of released index/queue containers at fallback entry.
+Budgets include zero and one bit below, at, and above the calculated full-fit
+threshold. Source literal reads are instrumented through clause iterators and
+match acquisition plus event plus fallback-sweep counters. The run took less
+than one second. These finite tests establish no general SAT complexity bound.
+
+Every selected clause is initially queued. Thereafter every new assignment
+queues all selected clauses containing the literal it falsifies, with duplicate
+pending entries suppressed. Thus a newly unit or empty clause cannot become
+unobserved. Each implication is sound, and exhaustion yields unit closure
+unless a conflict is reported. Different conflict schedules need not return
+identical partial assignments.
+
+Let $s$ be the selected clause count, $w_i$ their original widths, and
+$L=\sum_i w_i$. On successful acquisition, at most $s+L$ event probes occur:
+one initial probe per clause and at most one trigger per indexed literal
+occurrence. More specifically the literal-read bound, including acquisition,
+is $\sum_i w_i(w_i+2)$. Counting zero-width clauses and queue/probe overhead gives
+an abstract-operation bound $O(s+\sum_i w_i(w_i+2))$, subject to the stated
+access and dictionary cost model. This is a phase bound, not the complete
+solver bound. Fixed width gives $O(s+L)$ such operations regardless of clause
+order. Unbounded-width clauses may be rescanned quadratically in their width.
+
+The packed logical cap reserves the entire queue and membership vector before
+building the occurrence table. Acquisition stops before the entry that would
+exceed the cap is retained. All reads already performed, including the failed
+entry's literal read, remain charged. Abort occurs only during construction,
+whose active iterator refers to the original source clause, not an occurrence
+list. Clearing the occurrence table, pending deque and membership set therefore
+releases their entries before sweep fallback. The current frame's mask/scalar
+scratch remains charged across that call. Ancestor descriptors, cache payload
+and the inherited source locator are additional costs outside this cap.
+
+The dictionaries, lists and deque are Python structures: the claimed cap is a
+specified logical representation budget, not a Python heap or RSS bound.
+Dictionary search, allocation and dense-integer bit operations are not given a
+complete bit-machine time accounting. The source locator enables random access;
+the sequential-replay counter does not simulate event probes on a tape.
+A partial unsuccessful index adds overhead to fallback, and a full index may
+use linear or greater encoded space. No favorable uniform time--space theorem
+or closure of the P versus NP implication is asserted.
