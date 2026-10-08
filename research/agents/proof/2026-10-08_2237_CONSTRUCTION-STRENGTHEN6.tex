@@ -1,0 +1,260 @@
+% PNP RESEARCH REPORT::CONSTRUCTION-STRENGTHEN6::2026-10-08T22:37:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,xurl}
+\emergencystretch=3em
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\MCB}{\mathsf{MCB}}
+\title{CONSTRUCTION-STRENGTHEN6:\\A Causal Cutset Compiler Meets the Relaxed Ledger\\Only with a Supplied Certificate}
+\author{Construction proof-strengthening agent}
+\date{8 October 2026 UTC}
+
+\begin{document}\sloppy\maketitle
+
+\paragraph{Status.}
+\textsc{Proved/Exact}: an explicit PRE-A, source-first compiler on a
+source-checkable annotated CNF subclass; its exact Boolean semantics and its
+encoded-bit, multiplicity, aggregate-volume, replay and simultaneous-space
+ledger.  \textsc{Computational}: a bounded executable falsification suite.
+The OR-over-assignments/AND-over-components idea and a $2^k|F|$ aggregate
+bound are standard recursive-backdoor results, not claimed as new.  The
+construction verifies a supplied certificate; it does not acquire one on
+arbitrary CNFs.  Its children need not remain annotated, so recursive closure
+and conditional elimination of the inherited exponent $K$ are not obtained.
+P versus NP remains \textsc{Open}.  The retired unrestricted
+$t+s<2\cos(\pi/7)$ endpoint is not used.
+
+\section{Target and causal guard}
+ARC-STRENGTHEN3 showed that one completed all-input phase with
+\[
+ h=\tfrac12,\qquad \eta=\tfrac35,\qquad r=\tfrac65,
+ \qquad p\le\tfrac12                                      \tag{1}
+\]
+would recursively inline to a joint SAT machine with time $N^{6/5+o(1)}$
+and space $N^{1/2+o(1)}$.  REDTEAM-STRENGTHEN3 then observed that the bare
+existence of such a phase is endpoint-equivalent: an endpoint SAT algorithm
+can simply make zero children and decide the parent locally.  The appropriate
+construction target is therefore the recovered CHARGED STRICT SUCCESSOR /
+PRE-A guard: a concrete compiler must construct and certify the strict
+children from source syntax before any parent-scale semantic SAT call.
+
+This report supplies the first current member that meets that causal guard
+and all four relaxed exponents at once.  It is deliberately a partial member.
+Its limitation isolates acquisition rather than hiding it in an existential
+phase statement.
+
+\section{Exact marked-CNF language}
+Fix the canonical binary CNF encoding used by the companion runner:
+\texttt{CNF1}, canonical unsigned variable-length integers for the maximum
+identifier and clause count, then for each clause its width and zig-zag-coded
+nonzero signed literals.  Let $N$ be the complete encoded bit length.  The
+member additionally requires $\max\operatorname{var}(F)\le N^2$, so every
+accepted identifier occupies $O(\log N)$ bits; larger sparse names return
+UNKNOWN after a charged streaming length check.  Malformed bit strings are
+rejected by the outer SAT-language parser; the construction below returns
+UNKNOWN on a well-formed CNF that fails its annotation grammar.
+
+The annotations are ordinary tautological clauses and hence do not change
+satisfiability.  Variables 1 and 2 are reserved as tags and forbidden in data
+clauses.  The raw clause stream, before tautology deletion or normalization,
+has the following grammar:
+\begin{enumerate}
+\item magic clause $(1,\neg1,1,\neg1)$;
+\item strictly increasing cut markers $(1,\neg1,c)$, $c\ge3$, defining a
+      cutset $S$, followed by terminator $(1,\neg1,1)$;
+\item zero or more global clauses whose variables lie wholly in $S$;
+\item ordered block markers $(2,\neg2,L,\neg L,R)$, each followed by its
+      data clauses.  The intervals $[L,R]$ are disjoint and increasing.
+      Every block clause contains a non-$S$ variable, and every such variable
+      lies in the current interval.
+\end{enumerate}
+An exact pattern match distinguishes every marker.  Require
+\[
+ \max\operatorname{var}(F)\le N^2,\qquad
+ |S|=k\le \left\lfloor \frac{\log_2 N}{10}\right\rfloor,
+ \qquad b\le\lfloor\sqrt N\rfloor,                         \tag{2}
+\]
+where $b$ is the number of blocks.  Marker overhead and every rejected scan
+are charged; the tautologies are not treated as free padding.
+
+For each assignment $a\in\{0,1\}^S$, syntactically restrict the global
+clauses and each block.  A falsified global clause makes the branch false.
+Satisfied clauses disappear.  An empty residual clause makes that branch
+false.  An empty block is true and produces no child.  Every other residual
+block is encoded as one ordinary CNF child $F_{a,j}$, with its complete child
+header.  The compiler accepts only if every such encoding obeys
+\[
+ |F_{a,j}|\le B(N):=\left\lfloor\sqrt N\log_2 N\right\rfloor. \tag{3}
+\]
+The logarithm in (3) is explicitly part of the $N^{1/2+o(1)}$ envelope; no
+literal $\sqrt N$ cap is claimed.
+
+\section{The actual PRE-A compiler}
+\begin{theorem}[MARKED-CUTSET-BLOCK1]
+There is one deterministic uniform source-first transducer $\MCB$ with the
+following behavior.  It first parses the complete source and performs a dry
+run over all $2^k$ assignments, checking (2), all interval/support conditions,
+and the exact length (3) of every prospective child.  It makes no SAT call
+during this stage.  If any check fails it returns UNKNOWN with zero child
+calls.  Otherwise it replays the source, emits one immutable child at a time,
+and combines child answers by
+\[
+ \SAT(F)=\bigvee_{a\in\{0,1\}^{S}}
+ \left(G(a)\wedge\bigwedge_j\SAT(F_{a,j})\right),           \tag{4}
+\]
+where $G$ is the global $S$-only subformula.  On every accepted input,
+\[
+ \begin{split}
+  \max |F_{a,j}|&\le N^{1/2+o(1)},\\
+  q_{\rm exec}&\le 2^k b\le N^{3/5},\\
+  \sum_{\rm executed}|F_{a,j}|&\le N^{11/10+o(1)},\\
+  T_{\rm local}(N)&\le N^{11/10}\operatorname{polylog}N
+                     \le N^{6/5+o(1)}.
+ \end{split}                                                \tag{5}
+\]
+Repeated identical children count repeatedly.  On a read-only source tape,
+the nonchild retained state is $\operatorname{polylog}N$ bits and the one live
+child buffer is $N^{1/2+o(1)}$ bits.  These are simultaneous bounds for this
+one implementation, including failed recognition, dry-run discovery, replay,
+headers, indexes, counters, answer combination and cleanup.
+\end{theorem}
+
+\begin{proof}
+Every annotation clause is tautological.  After fixing $a$, global clauses
+are decided.  Distinct block intervals have disjoint non-$S$ supports, so the
+remaining formula is satisfiable exactly when every nonempty residual block
+is satisfiable.  Existentially choosing $a$ gives (4).  This proves exactness
+without hashes, provenance labels, or an assumed parent solver.
+
+Equation (2) gives $2^k\le N^{1/10}$ and at most $b\le N^{1/2}$ possible
+children per assignment, hence the multiplicity bound.  More sharply, under
+one assignment every source data record is copied into at most one block;
+restriction only deletes clauses/literals.  Complete child headers contribute
+$O(b\log N)$ bits.  Therefore the aggregate over every assignment is
+\[
+ O\!\left(2^k(N+b\log N)\right)=N^{11/10+o(1)}.             \tag{6}
+\]
+The dry run and the emission replay each scan the source for every cut
+assignment and perform only polylogarithmic address arithmetic per record.
+This proves the local-time bound even when failure is discovered on the last
+assignment.  No successful-route discount is taken.
+
+The parser stores $S$, the current interval, the assignment counter, source
+position, exact length counters and constant many Boolean accumulators, using
+$O(\log^2N)$ bits.  During execution it materializes only the current child,
+whose cap is (3), and combines answers online.  It never stores the child
+batch or one answer bit per possible child.  Thus the nonchild state and live
+buffer bounds hold on the same execution.  A fixed finite table handles the
+sizes below the asymptotic threshold.
+\end{proof}
+
+For a child decider of time $m^{K+o(1)}$, $K\ge1$, the one-level charged
+child work satisfies
+\[
+ \sum_i m_i^K
+ \le (\max_i m_i)^{K-1}\sum_i m_i
+ \le N^{K/2+3/5+o(1)}.                                    \tag{7}
+\]
+Thus on accepted marked inputs this phase realizes the numerical map
+$K\mapsto\max\{6/5,3/5+K/2\}$.  This is not yet conditional $K$ elimination:
+the emitted children are ordinary CNFs and need not carry a valid recursive
+annotation.  Iterating (7) without proving closure would be an invalid
+promotion.
+
+\section{What is standard and what this run adds}
+M\"ahlmann, Siebertz and Vigny define recursive backdoors with variable
+(OR) nodes and component (AND) nodes.  Their Lemma~3.2 bounds both leaf count
+and total leaf-contained incidence vertices by $2^k|F|$, and Proposition~3.3
+uses exactly the Boolean combination in (4):
+\url{https://doi.org/10.4230/LIPIcs.MFCS.2021.73}.
+Dreier, Ordyniak and Szeider further show linear-time SAT for classes of
+bounded backdoor depth and give FPT approximation algorithms for several
+base classes:
+\url{https://doi.org/10.4230/LIPIcs.ESA.2022.46}.
+Biere and Sinz treat connected-component decomposition inside SAT solvers:
+\url{https://fmv.jku.at/papers/BiereSinz-JSAT06.pdf}.
+
+Consequently, the logical OR/AND decomposition and an occurrence/vertex
+volume bound are \emph{reused}, not new.  The project-specific advance is an
+ordinary-CNF, source-visible certificate; completion of every check before
+the first child; and the exact encoded-bit ledger (2)--(6), including headers,
+multiplicity, dry run, replay and one-machine space.  The cited parameterized
+algorithms do not prove that every general CNF admits such a certificate or
+that one can be acquired in $N^{6/5+o(1)}$ time and half-space when
+$k=(1/10)\log N$.
+
+\section{Hostile control: separators do not cover all inputs}
+The certificate cannot simply be asserted for every formula.  Let $G_n$ be a
+fixed constant-degree vertex-expander on source variables
+$x_1,\ldots,x_n$.  For each edge $e=\{u,v\}$ add a fresh $w_e$ and the four
+proper clauses $P_0(x_u,x_v,w_e)$ encoding
+$x_u\oplus x_v\oplus w_e=0$.  Define
+\[
+ E_G(F)=F\wedge\bigwedge_{e\in E(G)}P_0(x_u,x_v,w_e).       \tag{8}
+\]
+Every assignment satisfying $F$ extends uniquely on the $w_e$, while every
+model of (8) restricts to a model of $F$.  Hence $\SAT(E_G(F))=\SAT(F)$, and
+for sparse densely named $F$, the encoded size grows only linearly up to the
+same identifier factor.
+
+Assign at most $k$ arbitrary variables and let $U$ be the assigned source
+$x$-vertices.  If $u,v\notin U$, the residual parity block still connects
+$x_u$ and $x_v$; assigning $w_e$ merely leaves equality or disequality
+clauses.  Thus the residual primal graph contains $G_n-U$.  If $G_n$ has
+vertex expansion $\alpha$ and degree $d$, summing the expansion inequalities
+over all small components of $G_n-U$ gives total small-component size at most
+$dk/\alpha$.  Therefore for $k=o(n)$ one component has $n-O(k)$ source
+vertices and $\Omega(n)$ parity records.  With $k\le(1/10)\log N$, its
+encoded size is $\Omega(N)$, not $N^{1/2+o(1)}$.
+
+This is an exact hostile control for the \emph{separator-only route}, even
+for adaptive choices of at most $k$ assigned variables.  It is not a lower
+bound on all compilers: the added parity guard is recognizable and can be
+stripped, a source solver may decide special images directly, and semantic
+compression need not respect primal components.  Applying the earlier robust
+portfolio guard $H(E_G(F))$ preserves a linear-size general core but does not
+turn this structural observation into a P-versus-NP lower bound.
+
+\section{Executable falsification and reconciliation}
+The companion program
+\texttt{experiments/proof\_spines/marked\_cutset\_phase\_test.py} has SHA-256
+\nolinkurl{f8eeb02c2d2673343a9c689f52171f1f7e27c8a40ad209827bbe057b329875e5}.
+With seed \texttt{0xc075e7} and a 25-second alarm, it checked 400 randomized
+accepted formulas for exact parent/compiled SAT equality, exact child headers,
+maximum child length, executed multiplicity and aggregate volume; 40 inert
+duplicate/delay controls; and eight malformed, overlapping, cross-block,
+over-budget and oversized-child controls.  Every rejected control made zero
+child calls.  All 440 semantic cases and 400 resource cases passed in 0.068
+seconds; the largest observed aggregate-volume ratio
+$V/N^{11/10}$ was 0.232.  Python memory is not evidence for the claimed
+bit-machine space theorem.
+
+\paragraph{Corpus and duplication audit.}
+Reviewed current main4/main5, AGENTS, CODEX, the repository research skill and
+protocol, FORMAL-SPINE1, latest Construction/Recovery/ARC/Red-Team reports,
+the executable certified partial portfolio, and the cited primary papers.
+The repository already had disconnected-component AND and small strong-Horn
+backdoor OR as separate members.  It did not have recursive-backdoor
+literature, a single causal cutset-plus-component member with the relaxed
+exponents, or this exact certificate ledger.
+
+\paragraph{Proof-spine effect.}
+ADOPTED: one nonvacuous PRE-A member now realizes the relaxed exponent tuple
+on a source-checkable subclass.  PRESERVED: the conditional aggregate-volume
+composition theorem and conditional $K$ elimination under recursive all-input
+closure.  STILL OPEN: cheap acquisition of a valid certificate or an
+alternative causal contraction on every general CNF, recursive closure of
+the emitted children, and the exact local encoding transfer to the primary
+FLMV language.  No executive P-versus-NP status changes.
+
+\paragraph{Next target.}
+Replace supplied markers by a charged constructor on the guarded general
+core.  It must either find a certificate, source-decide the instance, or use a
+non-separator semantic contraction, on every input.  The first hostile test is
+(8): a proposal that only assigns $O(\log N)$ variables and then factors
+independent components will leave a linear-size residual component.
+
+% END_OF_VERIFIED_REPORT::CONSTRUCTION-STRENGTHEN::CONSTRUCTION-STRENGTHEN6
+\end{document}
