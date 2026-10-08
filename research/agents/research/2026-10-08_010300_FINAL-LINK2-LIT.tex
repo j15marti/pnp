@@ -1,0 +1,597 @@
+% IMMUTABLE RESEARCH REPORT::FINAL-LINK2-LIT::2026-10-08_010300
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,array,longtable,hyperref,xcolor}
+\setlength{\emergencystretch}{3em}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\COVER}{\textsc{Cover-Shrink}}
+\newcommand{\poly}{\operatorname{poly}}
+\newcommand{\Open}{\textsc{Open}}
+\newcommand{\NoGo}{\textsc{No-Go}}
+\newcommand{\Positive}{\textsc{Positive}}
+
+\title{FINAL-LINK2-LIT:\\Equality-Frontier Constructions and Exact No-Go Results\\for a Charged SAT Cover-Shrinker}
+\author{RESEARCH agent report}
+\date{8 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This report updates FINAL-LINK-LIT with primary results on CSP
+sparsification, streaming preprocessing, core reduction, polynomial
+OR-kernels, truth-table reductions, parallel search-to-decision, and
+fixed-solver unrolling.  The target is an exact constructor that, on every
+ordinary CNF of encoded length $M$, emits at most $M^{1/3+o(1)}$ ordinary
+SAT instances, each of length at most $M^{2/3+o(1)}$, while charging at most
+$M^{1+o(1)}$ total discovery, output, replay, and local work.  The main new
+positive result is that CSP core reduction is an efficient exact
+preprocessing rule when a constraint language has domain redundancy.  The
+main new negative result is sharper: for ordinary clause predicates,
+nonredundancy characterizations show that retaining or reweighting a
+subinstance cannot sparsify the violation objective below the dense scale;
+one-pass exact SAT preprocessing likewise needs full dense-scale space.
+Those theorems do not exclude derived clauses or a multi-query restriction
+cover.  A recent circuit-lower-bound paper identifies deterministic
+nonadaptive search-to-decision as an open bottleneck, closely matching the
+WRAPPER's route-acquisition issue, but solving that bottleneck alone would
+not shrink the encoded queries.  No primary result reviewed here constructs
+the requested equality-frontier SAT cover.  The final link remains
+\textbf{OPEN}, and the present work does not establish $P\ne NP$.
+\end{abstract}
+
+\section{The audited contract}
+
+For an explicitly represented CNF $F$ of encoded length $M$, the desired
+forward procedure must output ordinary explicit CNFs $F_1,\ldots,F_q$ and a
+source-checkable combiner $\Phi$ such that
+\begin{equation}
+ \SAT(F)=\Phi\bigl(\SAT(F_1),\ldots,\SAT(F_q)\bigr),
+\end{equation}
+with
+\begin{equation}
+ q\le M^{1/3+o(1)},\qquad
+ \max_i |F_i|\le M^{2/3+o(1)},\qquad
+ W_{\rm total}\le M^{1+o(1)}.
+\end{equation}
+Here $W_{\rm total}$ includes discovery, certification, materialization,
+replay, combination, and any preprocessing needed to formulate the child
+queries.  A source pointer, program, or oracle gate that expands to the
+entire parent is not an ordinary short CNF.  Such an object can be useful,
+but it defines a succinct or typed oracle problem and requires a separate
+return theorem to ordinary SAT.
+
+The all-input quantifier and the simultaneous nature of (2) are essential.
+A theorem that gives small children after exponential discovery, a small
+number of full-size children, or a compact object whose expansion is large
+does not meet the contract.  A randomized construction with nonzero failure
+probability also does not by itself establish the deterministic exact
+identity (1).
+
+\section{The equality frontier is still a frontier, not a construction}
+
+\begin{theorem}[Dell and van Melkebeek, Corollary 1]\label{thm:dvm}
+Fix an integer $d\ge3$ and nonnegative reals $b,c$ with $b+c<d$.  Unless
+$\mathrm{coNP}\subseteq\mathrm{NP/poly}$, there is no polynomial-time
+reduction from $n$-variable $d$-SAT to an arbitrary problem that asks
+$O(n^b)$ queries, each of bit length $O(n^c)$
+\cite{dellvanmelkebeek2014}.
+\end{theorem}
+
+For a dense $n$-variable $3$-CNF, $M=n^{3+o(1)}$.  The target (2) becomes
+\[
+ q=n^{1+o(1)},\qquad |F_i|=n^{2+o(1)},
+\]
+so $(b,c)=(1,2)$ and $b+c=3=d$.  The target saturates the theorem's
+inequality instead of violating it.  Dell and van Melkebeek describe their
+tradeoff as tight at equality because the full source can always be sent as
+one query.  That observation does not provide a balanced $n$-query,
+$n^2$-bits-per-query construction.  The equality point remains available
+but unfilled.
+
+The sparse regime is more demanding.  If $M=n^{1+o(1)}$, a child of length
+$M^{2/3+o(1)}$ cannot explicitly retain all $n$ variables.  An all-input
+theorem therefore needs actual variable elimination, factorization, or a
+semantic quotient.  A dense-only construction would not prove (2).
+
+\section{New delta I: CSP sparsification separates two objectives}
+
+Recent code and CSP sparsification results supply powerful near-linear
+sparsifiers for some counting objectives.  They also give a direct reason
+that ordinary SAT cannot use the most obvious version of this method.
+
+\subsection{A constructive positive theorem}
+
+\begin{theorem}[Khanna, Putterman, and Sudan, Theorem 1.1]
+Let $C\subseteq\mathbb F_q^m$ be a dimension-$n$ linear code.  There is a
+randomized algorithm running in
+$\poly(n,m,\log q,\varepsilon^{-1})$ time that, with high probability,
+computes a $(1\pm\varepsilon)$ code sparsifier of size
+$\widetilde O(n/\varepsilon^2)$
+\cite{khannaputtermansudan2024}.
+\end{theorem}
+
+Their CSP sparsifier preserves, for every assignment, the total weight of
+satisfied constraints up to a multiplicative $(1\pm\varepsilon)$ factor.
+For Boolean predicates they prove, among other classifications, an
+efficient $\widetilde O_r(n^{r-1}/\varepsilon^2)$ bound when the predicate
+does not have exactly one satisfying assignment, while a predicate with
+exactly one satisfying assignment has no $o(n^r)$ sparsifier.  Their
+Theorem 1.6 refines the exponent for ternary predicates through the largest
+projection to an AND predicate; their Theorem 1.9 gives efficient
+sparsification for predicates represented by low-degree polynomials over an
+Abelian group.
+
+This supplies a constructive pattern that a WRAPPER can reuse on promised
+families: identify an importance or sensitivity measure, retain a weighted
+representative subinstance, and stream the result.  It does not preserve
+SAT exactly for general CNF.  Approximating the number of satisfied clauses
+cannot distinguish $m$ satisfied clauses from $m-1$ at constant
+$\varepsilon$.  Taking $\varepsilon=O(1/m)$ so that the gap becomes visible
+changes the nominal sparsifier size from near-linear to at least quadratic
+in $m$ and destroys the desired ledger.
+
+\subsection{Why counting violations exposes the hard predicate}
+
+One may instead count violated clauses.  A CNF is satisfiable exactly when
+some assignment has violation count zero, so a multiplicative sparsifier of
+violations would preserve the zero set.  For an $r$-clause, however, the
+violation predicate is the unique falsifying assignment, equivalently a
+signed AND or singleton predicate.  This is exactly the nonsparsifiable side
+of the CSP classification.
+
+\begin{theorem}[Brakensiek and Guruswami, Theorems 1.1 and 1.2]
+For every nonlinear code $C\subseteq\{0,1\}^m$ and
+$\varepsilon\in(0,1)$,
+\[
+ \operatorname{SPR}(C,\varepsilon)
+   =O\!\left(\operatorname{NRD}(C)(\log m)^6/\varepsilon^2\right).
+\]
+For every nonempty proper predicate $R\subsetneq D^r$,
+\[
+ \operatorname{NRD}(\overline R,n)
+ \le \operatorname{SPR}(R,n,\varepsilon)
+ \le O\!\left(\operatorname{NRD}(\overline R,n)
+                 (r\log n)^6/\varepsilon^2\right),
+\]
+where $\operatorname{NRD}$ is the maximum nonredundancy of the indicated
+code or predicate family \cite{brakensiekguruswami2026}.
+\end{theorem}
+
+The same paper records
+$\operatorname{NRD}(\operatorname{OR}_r,n)=\Theta(n^r)$.  Therefore the
+complement predicate needed to preserve clause violations has full dense
+nonredundancy.  In particular, a rule that only deletes or reweights source
+clauses cannot turn every dense $r$-CNF into an exact subinstance of
+$o(n^r)$ constraints while preserving all violation counts.  For $r=3$,
+this blocks the hoped-for one-instance $n^2$ clause sparsifier inside that
+restricted model.
+
+This is an exact no-go for a specific construction class, not a no-go for
+(1).  A multi-query cover may restrict variables differently in different
+children.  A compiler may derive new clauses, introduce auxiliaries, or
+preserve only the existence of a zero rather than every assignment's
+violation value.  Those operations fall outside subinstance
+sparsification.
+
+Brakensiek and Guruswami also stress an algorithmic gap important to the
+charge ledger.  Their general theorem is existential.  The naive
+construction is polynomial in the code length, which can be exponential in
+the number of CSP variables.  Obtaining a variable-scale efficient
+construction remains open in general and is connected to CSP kernelization.
+Thus even an existential small representative need not supply cheap
+acquisition.
+
+\section{New delta II: exact streaming preprocessing and core reduction}
+
+\begin{theorem}[Sharma and Velusamy, Theorem 1.1]
+For every fixed finite CSP language $\Gamma$ on a domain of size $q$ and
+maximum arity $k$, $\SAT(\Gamma)$ has a deterministic one-pass streaming
+algorithm using
+$O_{q,k}(\operatorname{NRD}_n(\Gamma)\log n)$ space.  Every randomized
+one-pass algorithm requires
+$\Omega(\operatorname{NRD}_n(\Gamma))$ space
+\cite{sharmavelusamy2026}.
+\end{theorem}
+
+For $k$-SAT, complete clause families give
+$\operatorname{NRD}_n=\Theta(n^k)$, so an exact one-pass compact-state
+preprocessor needs the full dense scale even with randomization.  The
+positive upper bound maintains an equivalent nonredundant subinstance, but
+its redundancy test enumerates all $q^n$ assignments because the theorem
+places no restriction on time.  It therefore demonstrates that small state
+and cheap discovery are independent obligations.
+
+This streaming lower bound does not rule out all WRAPPERs.  A WRAPPER may
+reread the source, use write-only aggregate output, or ask several oracle
+queries.  The theorem does rule out treating an exact one-pass
+delete-redundant-constraints procedure as the missing universal compiler.
+
+A newer result identifies exactly when a domain-level positive rule exists.
+
+\begin{theorem}[Brakensiek, Putterman, Sharma, and Velusamy, Theorems
+1.1--1.3 and 2.1]
+For every finite predicate $R$, deterministic one-pass
+$\SAT(R)$ has space
+$\widetilde O_R(\operatorname{NRD}_n(\operatorname{core}(R)))$, and every
+randomized one-pass algorithm has matching
+$\Omega_R(\operatorname{NRD}_n(\operatorname{core}(R)))$ space.  Replacing
+each $R$-constraint by the corresponding $\operatorname{core}(R)$ constraint
+on the same scope preserves satisfiability, the minimum number of
+unsatisfied constraints, and the maximum number of satisfied constraints,
+and can be performed in a stream.  Exact-CSP has, up to polylogarithmic
+factors, space $n^d$, where $d$ is the degree of the core
+\cite{brakensiekputtermansharmavelusamy2026}.
+\end{theorem}
+
+Core reduction is a genuine source-checkable exact contraction when a
+constraint language contains redundant domain elements.  It is the
+strongest new positive mechanism in this search.  Ordinary Boolean clause
+languages are already core-like for this purpose, and signed $k$-clauses
+retain full $\Theta(n^k)$ nonredundancy.  The construction therefore gives
+a useful portfolio branch for structured CSPs, not the universal SAT
+branch required by (2).
+
+\section{New delta III: polynomial OR-kernels reveal a limited positive}
+
+Fluschnik, Heeger, and Hermelin formalize a polynomial OR-kernel as a
+nonadaptive family of oracle queries whose OR equals the source answer.
+For parameterized Clique they give a simple closed-neighborhood kernel with
+one query per vertex, each of size $O(\Delta^2)$, and substantially more
+general polylogarithmic improvements.
+
+\begin{theorem}[Fluschnik, Heeger, and Hermelin, Theorems 1 and 2]
+For each real constant $c$, Clique admits polynomial OR-kernels with
+$O(n/\log^c n)$ queries for the structural parameters studied in the paper.
+Unless $\mathrm{NP}\subseteq\mathrm{coNP/poly}$, none of those
+parameterizations admits a polynomial-size Turing kernel using
+$O(n^{1-\varepsilon})$ queries for any constant $\varepsilon>0$
+\cite{fluschnikheegerhermelin2022}.
+\end{theorem}
+
+The paper's generic lower-bound route says that a linear OR-composition plus
+a sublinear-query polynomial Turing kernel gives an oracle
+OR-distillation, and an oracle OR-distillation puts the language in
+$\mathrm{coNP/poly}$.  This gives a precise lesson for parallel wrappers.
+Local witness anchoring can reduce query count by arbitrary fixed powers of
+$\log n$, but current generic techniques do not yield a polynomial power
+saving.  Clique's local-neighborhood witness also has no direct analogue
+that makes an arbitrary SAT assignment local.
+
+The conditional lower bound does not exclude the target (2).  The target's
+aggregate output is $M^{1+o(1)}$, and its query count is expressed in the
+full input length $M$, rather than a parameter admitting the paper's linear
+OR-composition.  It does show that merely placing several familiar kernels
+in parallel is unlikely to create a hidden polynomial gain.
+
+\section{New delta IV: truth-table normalization does not provide shrinkage}
+
+\begin{theorem}[Buss and Hay]
+Polynomial-time truth-table reducibility to SAT using Boolean circuits,
+logspace truth-table reducibility to SAT using Boolean formulas, and
+logspace Turing reducibility to SAT have the same power.  A constant number
+of rounds of parallel SAT queries can be collapsed to one round
+\cite{busshay1991}.
+\end{theorem}
+
+This theorem supports the double-wrapper architecture at the level of
+adaptivity: a bounded number of query rounds can be normalized into a
+nonadaptive truth-table family with an explicit Boolean combiner.  It gives
+no bound that changes the number or encoded length of those queries.
+Consequently it can flatten an already favorable wrapper, but it cannot
+manufacture (2).
+
+The modern batch-search literature makes the remaining distinction
+especially clear.  Ren and Williams study time with bounded rounds of NP
+queries and give a circuit-output algorithm based on the
+Je\v{r}\'abek--Korten AVOID problem.
+
+\begin{theorem}[Ren and Williams, Theorem 3.1, abbreviated]
+Given the specified succinct truth-table circuit $G$ and length parameter
+$T$, their AVOID algorithm either outputs a circuit of size
+$O(|G|\log T)$ for the encoded function or outputs a nonimage, runs in
+$\poly(T,|G|)$ time, and uses $O(n+\log(T/n))$ adaptive NP-query rounds with
+witness length $n$ \cite{renwilliams2026}.
+\end{theorem}
+
+They identify the conversion of search-SAT to deterministic nonadaptive
+decision-SAT queries as an open bottleneck.  Their stronger lower-bound
+consequence assumes
+$\operatorname{searchSAT}\in\mathrm{FP}^{\mathrm{NP}}_{\rm tt}$; the paper
+notes that randomized efficient parallel search-SAT follows from isolation,
+whereas the deterministic truth-table version is known under strong circuit
+lower-bound assumptions and remains open at the desired level.
+
+This is close to the WRAPPER's need to produce alternatives before learning
+which one succeeds.  It is not the complete bridge.  Even a deterministic
+nonadaptive search-to-decision reduction may issue full-size formulas.  It
+could solve route acquisition while leaving the child-size inequality in
+(2) untouched.
+
+\section{Backdoor DNFs remain the closest exact cover syntax}
+
+Ordyniak, Schidler, and Szeider define a $\mathcal C$-backdoor DNF as a
+tautological DNF of partial assignments
+$\tau_1,\ldots,\tau_q$ such that every residual $F[\tau_i]$ belongs to a
+tractable class $\mathcal C$ \cite{ordyniakschidlerszeider2021}.  It gives
+the exact identity
+\[
+ \SAT(F)=\bigvee_{i=1}^q\SAT(F[\tau_i]).
+\]
+The paper proves fixed-parameter detection in the number of terms for Horn,
+AntiHorn, $2$CNF, and two unions of these classes.  Given a variable set
+$B$, its displayed construction includes
+$2^{3|B|+1}+3^{|B|}|F|^{O(1)}$ work.  This does not become near-linear when
+the number of terms or backdoor variables grows as a positive power of
+$M$.  Nor does the theorem guarantee that every CNF has a small backdoor DNF
+or that every residual is smaller by a fixed power.
+
+Backdoor depth is stronger than backdoor size on some structured instances.
+The fixed-parameter approximation and bounded-depth linear-time evaluation
+results for Horn, dual Horn, and Krom are valuable portfolio components
+\cite{gaspersszeider2024}.  They remain parameter-promise results; they do
+not bound backdoor depth on every formula.
+
+Thus the literature still points to the following exact missing lemma.
+
+\begin{definition}[Charged restriction cover]\label{def:cover}
+A charged restriction cover for a CNF $F$ of length $M$ consists of partial
+assignments $\tau_1,\ldots,\tau_q$ and a locally checkable coverage
+certificate such that $\bigvee_i\tau_i\equiv1$,
+\[
+ q\le M^{1/3+o(1)},\qquad
+ |F[\tau_i]|\le M^{2/3+o(1)},\qquad
+ \sum_i|F[\tau_i]|\le M^{1+o(1)},
+\]
+and the terms, certificate, and explicit residuals are discovered and
+replayed in $M^{1+o(1)}$ total work.
+\end{definition}
+
+A decision tree or disjoint cube partition can certify coverage
+syntactically.  An arbitrary DNF does not: testing DNF tautology is
+coNP-complete, and using a current-scale SAT call to establish coverage
+reintroduces the circular query.  No reviewed source proves that every CNF
+admits Definition~\ref{def:cover}.
+
+\section{Representative sets and knowledge compilation do not change the delta}
+
+Fomin, Lokshtanov, Panolan, and Saurabh compute a $q$-representative
+subfamily of a family of independent $p$-sets in a rank-$(p+q)$ linear
+matroid.  Its size is at most $\binom{p+q}{p}$ and their Theorem 1.1 gives
+explicit-family cost
+\[
+ O\!\left(\binom{p+q}{p}t p^\omega
+       +t\binom{p+q}{q}^{\omega-1}\right)
+\]
+field operations \cite{fominrepresentative2016}.  This preserves every
+future disjoint extension, exactly the semantic property a valid merge
+needs.  The theorem applies only after identifying a low-rank matroid whose
+extension relation captures SAT.  General CNF satisfiability is not such a
+relation under any construction supplied by the paper.  The explicit
+family size $t$ in (5) is also charged.
+
+Width-based knowledge compilation is similarly constructive on its promise
+domain.  Amarilli, Monet, and Senellart compile a Boolean circuit with a
+supplied width-$k$ tree decomposition into a d-SDNNF in
+$O(|T|2^{(4+\varepsilon)k})$ time for every fixed
+$\varepsilon>0$ \cite{amarillimonetsenellart2018}.  Canonical decision
+diagrams and semantic hashing can merge equivalent residual states after
+such a compilation.  Bova, Capelli, Mengel, and Slivovsky exhibit
+polynomial-size CNFs requiring strongly exponential DNNF size
+\cite{bovaetal2016}.  Their separation concerns full function
+representation, so it does not rule out a decision-only multi-query cover,
+but it rules out universal ``compile first, hash second'' as the cheap
+acquisition mechanism.
+
+Universal sets, covering codes, and split-and-list exhibit the same
+boundary.  They provide exact coverage or sharing when the relevant
+dimension is logarithmic or when exponential lists are allowed.  They do
+not establish that an arbitrary CNF has only polynomially many relevant
+assignment patterns.  Hash output length changes collision probability and
+validation work, not the exponent of the number of semantic states.
+
+\section{Fixed-solver specialization retains its exponent}
+
+Suppose the contradiction hypothesis supplies a particular polynomial-time
+SAT decider $A$ with running time
+\[
+ T_A(M)=M^{K+o(1)}.
+\]
+
+\begin{theorem}[Pippenger and Fischer, Theorem 4]
+A computation of a one-dimensional-tape transducer taking $T$ steps can be
+implemented by a combinational logic network of cost $O(T\log T)$ and depth
+$O(T)$ \cite{pippengerfischer1979}.
+\end{theorem}
+
+Unrolling $A$ on length-$M$ inputs therefore produces a circuit of size
+$M^{K+o(1)}$; a Tseitin encoding has the same polynomial scale.  This is a
+useful upper bound and a legitimate specialization construction, but it
+carries $K$.  It is not a lower bound against a different semantic
+encoding.
+
+The same issue appears in an explicit tableau split.  If a $T=M^K$ step
+tableau is divided into $M^a$ blocks, each represented at scale $M^b$, then
+the explicit-volume relation gives $a+b=K$.  If a recursive compiler reduces
+a block exponent by a factor $b<1$, the exponent accumulated across levels
+has the fixed-point form
+\[
+ \frac{a}{1-b}=\frac{K-b}{1-b}\ge K\qquad(K\ge1),
+\]
+before boundary-consistency and interface charges.  Equation (7) is an
+accounting calculation, not a literature lower bound.  It shows why
+ordinary subdivision of the known computation does not eliminate its
+unknown polynomial exponent.
+
+Instance compression under the qualitative assumption $P=NP$ has the same
+fine-grained gap.  The assumption supplies some polynomial-time solver and
+therefore some polynomial-time encoder, but it does not supply a uniform
+bound independent of its exponent.  Calling that solver to decide which
+restriction or representative is safe may cost $M^K$.  The desired proof
+needs a structural acquisition theorem with the explicit bound in (2), not
+only existence of a polynomial algorithm.
+
+\section{Construction audit}
+
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}p{0.17\textwidth}p{0.22\textwidth}p{0.27\textwidth}p{0.26\textwidth}@{}}
+\toprule
+Mechanism & Exact positive content & Quantitative obstruction & Status for (1)--(2) \\
+\midrule
+\endhead
+CSP satisfied-count sparsifier & Efficient $\widetilde O(n/\varepsilon^2)$ code sparsification and broad predicate classifications & Constant-error approximation cannot distinguish $m$ from $m-1$ satisfied clauses & Useful only on promised objectives; not exact SAT \\
+Violation-count sparsifier & Zero would be preserved multiplicatively & Clause violation is a singleton/AND predicate with $\Theta(n^r)$ nonredundancy & Deletion/reweighting-only route blocked \\
+CSP core reduction & Streaming, exact preservation of SAT, Min-CSP, and Max-CSP & Boolean clause language has no helpful domain redundancy and remains dense & Genuine positive for structured CSP, no general SAT shrinkage \\
+One-pass exact preprocessing & Matching $\widetilde O(\operatorname{NRD})$ upper bound & $k$-SAT needs $\Omega(n^k)$ space; upper bound may use exhaustive time & Compact-state universal route blocked \\
+Polynomial OR-kernel & Locally anchored Clique queries; polylogarithmic query savings & Power-saving query count conditionally excluded for studied parameters & Analogy only; no SAT locality theorem \\
+Truth-table reduction & Bounded rounds can be flattened with an explicit combiner & No query-number or query-length improvement & Normalizes a good cover, does not create one \\
+Parallel search-SAT & Randomized route through isolation; deterministic version studied explicitly & Deterministic $\mathrm{FP}^{\mathrm{NP}}_{\rm tt}$ search-SAT remains open at the needed level & Close acquisition clue, still no size reduction \\
+Backdoor DNF & Exact heterogeneous restriction cover & No every-input small cover, residual-size bound, or near-linear detection & Closest syntax; missing theorem unchanged \\
+Representative family & Exact preservation of future matroid extensions & Requires a low-rank SAT invariant; explicit family is charged & Possible implementation after a new invariant \\
+Knowledge compilation & Exact merge and canonicalization under width promises & Exponential representations occur for general polynomial-size CNFs & Valid portfolio branch, not universal \\
+Fixed-decider unrolling & Source-checkable circuit and CNF for a known computation & Size $M^{K+o(1)}$ retains the solver exponent & Cannot eliminate $K$ by itself \\
+\bottomrule
+\end{longtable}
+
+\section{What changed and what did not}
+
+FINAL-LINK2 adds three substantive facts to the previous audit.  First,
+nonredundancy now gives a theorem-level obstruction to the most natural
+clause-deletion and clause-reweighting attempts.  Second, core reduction is
+a concrete exact positive construction that should be included in any
+parallel portfolio, even though ordinary Boolean clauses do not benefit.
+Third, deterministic nonadaptive search-to-decision is independently
+recognized as an open bottleneck in current circuit-lower-bound work.  It
+validates the architectural motivation for a forward-only wrapper but does
+not supply encoded-size shrinkage.
+
+The following facts did not change.  The target lies at, not below, the
+Dell--van Melkebeek equality boundary.  OR-distillation lower bounds do not
+exclude aggregate-linear multi-query output.  Backdoors, representative
+sets, compilation, and hashing remain conditional on favorable source
+structure.  Unrolling the assumed solver retains its exponent.  No reviewed
+theorem simultaneously provides universal exactness, power-smaller
+ordinary children, polynomially few children, and near-linear acquisition.
+
+The strongest defensible remaining theorem is therefore
+\[
+ \boxed{\begin{minipage}{0.84\textwidth}
+ For every explicit CNF $F$ of length $M$, construct a locally certified
+ exact restriction or derived-instance cover with
+ $q\le M^{1/3+o(1)}$, every ordinary child of length at most
+ $M^{2/3+o(1)}$, and total discovery, materialization, replay, and local work
+ $M^{1+o(1)}$.  The construction may use several portfolio branches, but it
+ must prove that at least one branch succeeds on every input and must charge
+ the work of all failed branches.
+ \end{minipage}}
+\]
+
+Statement (8) is \Open.  It is not supplied by a known sparsification,
+kernelization, backdoor, compilation, hashing, or self-reduction theorem.
+If proved, recursive application would already give the recurrence
+\[
+ T(M)\le M^{1/3+o(1)}T(M^{2/3+o(1)})+M^{1+o(1)}
+      =M^{1+o(1)},
+\]
+which explains why (8) is the central breakthrough rather than a routine
+wrapper detail.  At present, the literature search does not complete a
+defensible proof that $P\ne NP$.
+
+\begin{thebibliography}{99}
+
+\bibitem{dellvanmelkebeek2014}
+Holger Dell and Dieter van Melkebeek,
+\emph{Satisfiability Allows No Nontrivial Sparsification Unless the
+Polynomial-Time Hierarchy Collapses},
+Journal of the ACM 61(4), Article 23, 2014.
+\url{https://eccc.weizmann.ac.il/report/2010/038/revision/1/download}
+
+\bibitem{khannaputtermansudan2024}
+Sanjeev Khanna, Aaron Putterman, and Madhu Sudan,
+\emph{Efficient Algorithms and New Characterizations for CSP
+Sparsification}, arXiv:2404.06327, 2024.
+\url{https://arxiv.org/pdf/2404.06327}
+
+\bibitem{brakensiekguruswami2026}
+Joshua Brakensiek and Venkatesan Guruswami,
+\emph{Redundancy Is All You Need (for CSP Sparsification)},
+ECCC TR26-077, 2026; extended abstract in STOC 2025.
+\url{https://eccc.weizmann.ac.il/report/2026/077/download}
+
+\bibitem{sharmavelusamy2026}
+Goutham Rajendran Sharma and Venkatesh Velusamy,
+\emph{Characterizing Streaming Decidability of CSPs via Non-Redundancy},
+arXiv:2604.21922, 2026.
+\url{https://arxiv.org/pdf/2604.21922}
+
+\bibitem{brakensiekputtermansharmavelusamy2026}
+Joshua Brakensiek, Aaron Putterman, Goutham Rajendran Sharma, and
+Venkatesh Velusamy,
+\emph{Cores Characterize the One-Pass Streaming Complexity of CSPs},
+arXiv:2610.07455, 2026.
+\url{https://arxiv.org/pdf/2610.07455}
+
+\bibitem{fluschnikheegerhermelin2022}
+Till Fluschnik, Klaus Heeger, and Danny Hermelin,
+\emph{Polynomial Turing Kernels for Clique with an Optimal Number of
+Queries}, arXiv:2110.03279, 2021; conference version, 2022.
+\url{https://arxiv.org/pdf/2110.03279}
+
+\bibitem{busshay1991}
+Samuel R. Buss and Louise Hay,
+\emph{On Truth-Table Reducibility to SAT},
+Information and Computation 91(1):86--102, 1991.
+\url{https://doi.org/10.1016/0890-5401(91)90075-D}
+
+\bibitem{renwilliams2026}
+Hanlin Ren and R. Ryan Williams,
+\emph{Near-Maximum Circuit Lower Bounds for Exponential Time with
+Merlin-Arthur Queries}, ECCC TR26-118, 2026.
+\url{https://eccc.weizmann.ac.il/report/2026/118/download}
+
+\bibitem{ordyniakschidlerszeider2021}
+Sebastian Ordyniak, Andre Schidler, and Stefan Szeider,
+\emph{Backdoor DNFs}, IJCAI 2021, pages 1403--1409.
+\url{https://www.ijcai.org/proceedings/2021/0194.pdf}
+
+\bibitem{gaspersszeider2024}
+Jan Dreier, Sebastian Ordyniak, and Stefan Szeider,
+\emph{SAT Backdoors: Depth Beats Size},
+Journal of Computer and System Sciences 142, 103520, 2024.
+\url{https://doi.org/10.1016/j.jcss.2024.103520}
+
+\bibitem{fominrepresentative2016}
+Fedor V. Fomin, Daniel Lokshtanov, Fahad Panolan, and Saket Saurabh,
+\emph{Efficient Computation of Representative Families with Applications in
+Parameterized and Exact Algorithms},
+Journal of the ACM 63(4), Article 29, 2016.
+\url{https://arxiv.org/abs/1304.4626}
+
+\bibitem{amarillimonetsenellart2018}
+Antoine Amarilli, Mika\"el Monet, and Pierre Senellart,
+\emph{Connecting Width and Structure in Knowledge Compilation},
+ICDT 2018, Article 6.
+\url{https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ICDT.2018.6}
+
+\bibitem{bovaetal2016}
+Simone Bova, Florent Capelli, Stefan Mengel, and Friedrich Slivovsky,
+\emph{A Strongly Exponential Separation of DNNFs from CNF Formulas},
+ISAAC 2016.
+\url{https://arxiv.org/abs/1411.1995}
+
+\bibitem{pippengerfischer1979}
+Nicholas Pippenger and Michael J. Fischer,
+\emph{Relations Among Complexity Measures},
+Journal of the ACM 26(2):361--381, 1979.
+\url{https://doi.org/10.1145/322123.322138}
+
+\end{thebibliography}
+
+\end{document}
+% END IMMUTABLE RESEARCH REPORT::FINAL-LINK2-LIT::2026-10-08_010300

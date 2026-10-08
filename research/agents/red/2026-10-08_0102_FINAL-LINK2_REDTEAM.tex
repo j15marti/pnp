@@ -1,0 +1,535 @@
+% PNP RESEARCH REPORT::FINAL-LINK2-REDTEAM::2026-10-08T01:02Z
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,array,xcolor,xurl,hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black,citecolor=blue!55!black}
+\setlength{\parskip}{0.28em}
+\setlength{\parindent}{0pt}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\poly}{\operatorname{poly}}
+\newcommand{\Exact}{\textsc{Proved/Exact}}
+\newcommand{\Computational}{\textsc{Computational}}
+\newcommand{\Open}{\textsc{Open}}
+\newcommand{\Scoped}{\textsc{Scoped No-Go}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+\title{FINAL-LINK2 Red-Team Audit\\
+Shared Acquisition, Delta Children, Clause-First DAGs,\\
+Amortization, Typed Cycles, and Code-Dependent Portfolios}
+\author{RED final-link run}
+\date{8 October 2026, 01:02 UTC}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This report attacks the principal relaxations left by FINAL-LINK1.  The main
+correction is positive but narrowing: a linear source-read floor does not
+block the Williams region.  At the clean target, $M^{1/3}$ children of
+$M^{2/3}$ bits have only $M$ total bits, so one shared scan and streamed
+materialization are compatible with near-linear work and $M^{2/3}$ live
+space.  Repeated full-parent scans cost $M^{4/3}$, but their necessity is not
+an information-theoretic consequence of source size.
+
+The audit proves restricted counterexamples to stronger shortcuts.  A small
+delta can name a parent-scale residual; a clause-first cover can preserve an
+arbitrary parent-scale payload; exact-residual DAG merging has an explicit
+$2^d$-state family even after unit propagation; QLEN amortization is tight on
+equal maximum-size children; a contracting typed cycle can still miss the
+endpoint; and a parent-trace acquisition rule is destroyed by extensionally
+irrelevant polynomial delays in the supplied SAT code.  A disjoint
+pointer-chain oracle supplies a precise black-box direct-sum control.  None of
+these is a general SAT lower bound.  A genuinely semantic, streamed,
+acquisition-covariant BatchAcquire construction remains logically viable and
+\Open.  Thus FINAL-LINK1 is not closed and P versus NP remains open.
+\end{abstract}
+
+\section{Claim card}
+
+\begin{center}
+\fbox{\begin{minipage}{0.92\textwidth}
+\textbf{Result.}  FINAL-LINK2 does not prove or disprove the missing
+successor theorem.  It rules out six tempting inferences:
+\begin{enumerate}
+\item a one-read lower bound rules out the $1/3,2/3$ cell;
+\item a short delta handle is a small ordinary SAT instance;
+\item clause-first disjunction plus exact residual equality guarantees a
+small DAG;
+\item aggregate query-length accounting automatically shares semantic SAT
+work;
+\item cycle product below one alone reaches the Williams endpoint; and
+\item arbitrary code dependence permits cheap acquisition of a parent trace.
+\end{enumerate}
+The weakest survivor is an exact streamed typed successor whose common
+physical-size Bellman ledger, aggregate decoder traffic, failed members, and
+workspace all fit below the endpoint.  No current artifact constructs it on
+all CNFs.
+\end{minipage}}
+\end{center}
+
+All ``no-go'' statements below are restricted to the explicitly declared
+representation or oracle model.  They must not be promoted to unrestricted
+SAT lower bounds.  Conversely, the positive accounting observations are
+possibility results, not constructions.
+
+\section{Source reads do not by themselves block the target}
+
+Let the parent have $M$ bits, let $q=M^{a+o(1)}$, and let every explicit child
+have at most $L=M^{b+o(1)}$ bits.
+
+\begin{lemma}[Equality-frontier traffic]
+If $a+b=1$, then writing all children once costs at most $M^{1+o(1)}$ bits of
+traffic.  A depth-first implementation can use one child buffer of
+$M^{b+o(1)}$ bits.  Reading the parent once is also $M^{1+o(1)}$.  In
+contrast, rescanning the full parent separately for every child costs
+$M^{1+a+o(1)}$.
+\end{lemma}
+
+\begin{proof}
+The aggregate child volume is $qL=M^{a+b+o(1)}=M^{1+o(1)}$.  Sequential
+generation and consumption retain one child at a time.  One source scan adds
+$M$ work; $q$ source scans add $qM=M^{1+a+o(1)}$.
+\end{proof}
+
+At $(a,b)=(1/3,2/3)$, the three relevant quantities are therefore
+\[
+ \text{one source scan}=M,qquad
+ \text{all explicit child bits}=M,qquad
+ \text{one root scan per child}=M^{4/3}.
+\]
+The first two fit the desired $M^{1+o(1)}$ acquisition budget.  Any argument
+based only on ``the algorithm must inspect the input'' is consequently too
+weak.  A useful negative theorem would have to force repeated access,
+superlinear semantic computation, or an incompatible time-space tradeoff.
+
+\subsection{A pivotal family calibrates the floor}
+
+Define
+\[
+ U_n=(x_1)\wedge\cdots\wedge(x_n)\wedge
+     (\neg x_1\vee\cdots\vee\neg x_n).
+\]
+$U_n$ is minimally unsatisfiable.  Replacing unit clause $(x_i)$ by
+$(\neg x_i)$ makes the formula satisfiable without changing its clause width;
+replacing the final all-negative clause by the all-positive clause also makes
+it satisfiable without changing its width.  Hence every clause cell is
+pivotal in a clause-oracle encoding, and an exact deterministic algorithm on
+this input must inspect all $n+1$ clause cells.  The executable checked this
+and deletion pivotality for $2\le n\le12$.
+
+This is a real read lower bound and it still does not hurt the target.  In the
+declared indexed bit encoding, $|U_n|=\Theta(n\log n)$, so even an
+$\Omega(M)$ bit-level strengthening would remain admissible.  The right
+conclusion is not ``reads are free,'' but ``one linear pass is affordable.''
+
+\section{Shared BatchAcquire: what is and is not refuted}
+
+\begin{proposition}[Batch composition is already the algorithm]
+Suppose a uniform procedure constructs, on every $M$-bit CNF, an exact
+counterfactually sufficient object $H$ in $M^{h+o(1)}$ time and the declared
+space.  Suppose $H$ supports every recursive child access, combination, and
+replay operation in a Bellman ledger with root budgets $(C,S)$.  Then the
+procedure together with those consumers is a SAT algorithm with budgets
+$(C,S)$; the name ``preprocessing'' gives no additional resource exemption.
+\end{proposition}
+
+The proposition is elementary but important.  BatchAcquire is not circular
+merely because it is powerful; it is the exact missing constructive theorem.
+It is circular only when one of its promised labels was itself obtained by a
+parent-scale SAT call or an uncharged replay.
+
+\subsection{A black-box direct-sum control}
+
+Consider $q$ disjoint oracle paths.  Path $i$ begins at a known label and has
+$R$ unknown next-pointer cells followed by one terminal bit.  Labels from
+different paths are disjoint, and the output must contain all $q$ terminal
+bits.
+
+\begin{lemma}[Disjoint pointer-chain direct sum]
+Every exact deterministic algorithm in this oracle model makes at least
+$q(R+1)$ cell queries in the worst case.  Interleaving paths does not improve
+the count.
+\end{lemma}
+
+\begin{proof}
+The next address on a path is unavailable before its predecessor is queried,
+so reaching one terminal needs all $R$ pointer queries.  Its terminal cell is
+pivotal: if it is unqueried, flipping only that bit preserves the complete
+observed transcript and changes a required output.  Disjoint paths share no
+queried cell, so the lower bounds add.
+\end{proof}
+
+The experiment instantiated all $(q,R)$ with $q\in\{1,2,4,8\}$ and
+$R\in\{2,4,8,16\}$ and obtained the exact count in every case.  This refutes
+a representation-free claim that multiple calls to an arbitrary black-box
+$A$ can always be batched.  It does \emph{not} refute a non-black-box sharing
+theorem exploiting CNF semantics or the finite code of $A$.
+
+\subsection{Why a one-run trace is not the required batch}
+
+Let $B$ be any exact SAT decider.  For a constant $d$, let $A_d$ run $B$,
+perform $n^d$ irrelevant steps, and then return $B$'s answer.  All $A_d$ are
+extensionally identical SAT deciders.  Any acquisition contract requiring
+reproduction of the full parent trace of the supplied code has exponent at
+least $d$.  Since $d$ is arbitrary, that contract cannot have a common
+endpoint bound.  Static code analysis may bypass a visible delay, so this is
+a no-go for \emph{trace-defined} acquisition, not for every non-black-box
+compiler.
+
+The earlier project guard ``a post-pass cannot reduce already paid work'' is
+therefore still active.  FINAL-LINK2 adds that trace cost is also non-covariant
+under harmless implementation padding.
+
+\section{Compressed delta children can hide a full child}
+
+Let $P$ be any CNF on variables disjoint from
+$C_w=(x_1\vee\cdots\vee x_w)$, and set $F=C_w\wedge P$.
+
+\begin{lemma}[Payload inheritance]
+For every clause-first term
+\[
+ \tau_i=\{x_1=0,\ldots,x_{i-1}=0,x_i=1\},
+\]
+the normalized residual $F\upharpoonright\tau_i$ is exactly $P$.  Thus all
+children can merge, but their one remaining child has expanded size $|P|$.
+If $|P|=\Theta(|F|)$, there is no power-size contraction.
+\end{lemma}
+
+\begin{proof}
+$\tau_i$ satisfies $C_w$.  No assigned variable occurs in $P$, so restriction
+does not alter $P$.
+\end{proof}
+
+The finite controls used equal-width, duplicate-free positive 3-CNF payloads.
+At the largest tested point, the parent had 2,329 indexed bits, every one of
+eight children normalized to the same 2,280-bit payload, while a crude delta
+handle needed only 48 bits.  The handle exponent was about $0.499$ but the
+expanded-child exponent was $0.997$.  Counting the former as the latter is a
+type error.
+
+\begin{lemma}[Honest delta-cycle scale]
+Suppose an explicit $M$-bit source is replaced by a handle of
+$M^{b+o(1)}$ bits, $0<b<1$, but consuming that handle as an ordinary SAT input
+requires expanding a logical child of $\Theta(M)$ bits.  Relative to handle
+size, the expansion edge has exponent at least $1/b$.  The round-trip scale
+product is at least $b(1/b)=1$.
+\end{lemma}
+
+This does not forbid virtual children.  It forces the honest alternative:
+keep the handle as a distinct typed problem, give a bit-level decoder, charge
+every decoder call and retained source dependency, and prove a model-matched
+recursive evaluator.  One may not inherit the ordinary-SAT bound at the
+handle length while silently expanding a parent-scale CNF.
+
+\section{Clause-first DAGs: an exact equality-merging control}
+
+The payload lemma shows failure of contraction even when all routes merge.
+The next family shows that exact residual equality need not merge the routes.
+
+For $d\ge2$, introduce exact-one address gadgets
+\[
+ E_i=(a_i\vee b_i)\wedge(\neg a_i\vee\neg b_i),
+ \qquad 1\le i\le d.
+\]
+For every address $\alpha\in\{0,1\}^d$, introduce $y_\alpha,u_\alpha,v_\alpha$
+and clauses
+\begin{align*}
+ S_\alpha&=\left(\bigvee_{i:\alpha_i=0}a_i\right)
+ \vee\left(\bigvee_{i:\alpha_i=1}\neg a_i\right)\vee y_\alpha,\\
+ T_\alpha&=(\neg y_\alpha\vee u_\alpha\vee v_\alpha).
+\end{align*}
+Let $D_d$ be the conjunction of all $E_i,S_\alpha,T_\alpha$.  Apply the
+two-term clause-first cover to $(a_i\vee b_i)$ in the order $i=1,\ldots,d$,
+with unit propagation and syntactic normalization after each step.
+
+\begin{theorem}[Clause-first equality-DAG gate]
+After depth $h$, $D_d$ has exactly $2^h$ distinct normalized residuals, and
+every branch extends to a model.  At depth $d$, every residual contains all
+$2^d$ tag clauses, with exactly one $T_\alpha$ shortened to
+$(u_\alpha\vee v_\alpha)$.  Therefore no two full-address residuals merge by
+syntactic equality.
+\end{theorem}
+
+\begin{proof}
+The two clause-first terms set $a_i=1,b_i=0$ or $a_i=0,b_i=1$ after the
+exclusion clause propagates.  A prefix $p$ satisfies every selector whose
+address disagrees with $p$ and retains precisely the selectors extending
+$p$.  Different prefixes retain different indexed selector sets, proving
+distinctness at depth $h$.  At a complete address $\alpha$, $S_\alpha$
+becomes the unit $y_\alpha$ while every other selector is satisfied.  Unit
+propagation shortens only $T_\alpha$.  Finally, set all $y_\alpha$ and all
+$u_\alpha$ true to extend every address branch to a model.
+\end{proof}
+
+$D_d$ has $2d+2^{d+1}$ clauses and $2d+3\cdot2^d$ variables, so its indexed
+length is $M=\Theta(2^d d)$.  The terminal DAG has $2^d=\Theta(M/\log M)$
+distinct residuals and each retains $\Theta(M)$ indexed bits.  This rules out
+the universal inference
+\[
+ \text{clause-first cover}+\text{UP}+\text{exact equality merging}
+ \Longrightarrow (q,L)=(M^{1/3+o(1)},M^{2/3+o(1)}).
+\]
+It is deliberately not a SAT-hard family: all branches are satisfiable and a
+semantic VALUE routine can bypass the DAG.  The theorem attacks an
+architecture, not all solvers.
+
+The smallest tested shape failure was $d=2$: the four terminal residuals had
+70 bits versus a 34.7-bit $M^{2/3}$ target.  At $d=3$, both coordinates failed
+(eight residuals versus $M^{1/3}=7.55$, each 146 bits versus
+$M^{2/3}=56.97$).  At $d=8$, the exact counts were 256 distinct residuals of
+8,693 bits from a 34,672-bit parent; the nominal target was 32.61 children of
+1,063.29 bits.
+
+\section{Amortization across branches}
+
+The recovered QLEN1 inequality is correct in its explicit query-writing
+model.  If $A(s)\le s^{k+o(1)}$, total written query length is
+$V=\sum_i s_i$, and $S_{\max}=\max_i s_i$, then
+\[
+ \sum_i A(s_i)\le V S_{\max}^{k-1+o(1)}.
+\]
+
+\begin{lemma}[QLEN equality control]
+For $q$ equal children of length $L$, the displayed bound is tight for the
+padded cost function $A(s)=s^k$:
+\[
+ qL^k=(qL)L^{k-1}.
+\]
+At $q=M^{1/3}$ and $L=M^{2/3}$, its exponent is
+\[
+ \frac13+\frac{2k}{3}=1+\frac23(k-1).
+\]
+\end{lemma}
+
+Thus query-length amortization faithfully charges the fanout; it does not
+erase it.  When the recursive cost itself is $T(L)=L^t$, the exponent is
+$1/3+(2/3)t$, whose fixed point is one.  That is the desired recursive
+self-improvement \emph{after} an exact cover exists.  It does not construct
+the cover or jointly answer branch-specific boundary questions.
+
+The pointer-chain lemma shows why there is no representation-free stronger
+rule: black-box branch work can be a true direct sum.  Conversely, the traffic
+lemma shows that source scanning and output writing can be fully amortized at
+the equality frontier.  Therefore the live question is semantic sharing, not
+whether amortization is categorically possible.
+
+\section{Typed cycles require two independent checks}
+
+For a two-type cycle with active affine equations
+\[
+ C_A=w_{AB}+\lambda_{AB}C_B,
+ \qquad C_B=w_{BA}+\lambda_{BA}C_A,
+\]
+and $\Lambda=\lambda_{AB}\lambda_{BA}<1$, the least fixed point is
+\[
+ C_A=\frac{w_{AB}+\lambda_{AB}w_{BA}}{1-\Lambda},
+ \qquad C_B=w_{BA}+\lambda_{BA}C_A.
+\]
+
+\begin{proposition}[Contraction is not endpoint entry]
+Cycle product below one removes dependence on an unknown starting exponent,
+but it does not imply $C_A+S_A<\gamma$, where
+$\gamma=2\cos(\pi/7)$.  For
+\[
+ \lambda_{AB}=1,\quad \lambda_{BA}=1/2,\quad
+ w_{AB}=4/5,\quad w_{BA}=1/10,
+\]
+the product is $1/2$ but $C_A=9/5$.  With space floor $S_A=1/2$, the sum is
+$23/10>\gamma$.
+\end{proposition}
+
+The executable also checked a passing control with the same scale product but
+$w_{AB}=1/5,w_{BA}=1/10$: then $C_A=3/5$ and
+$C_A+S_A=11/10<\gamma$.  Hence a typed construction needs both:
+\begin{enumerate}
+\item honest physical-scale contraction on every complete return cycle; and
+\item the full least Bellman budgets below the endpoint.
+\end{enumerate}
+
+The delta-handle lemma supplies a third guard: size measures must be coherent
+across types.  A cycle that returns to the same $\Theta(M)$ physical object
+cannot be declared contracting merely by renaming it an $M^{2/3}$ handle and
+omitting the $3/2$ expansion edge.
+
+\section{A-code-dependent portfolios}
+
+Code dependence is permitted by the intended contradiction route, but it
+does not license uncharged dynamic information.
+
+\begin{proposition}[No universal exponent extractor; conditional on a base
+decider]
+Assume there exists one polynomial-time exact SAT decider $B$.  There is no
+total computable function $E$ that, from every code $e$ of a polynomial-time
+exact SAT decider, returns a valid running-time exponent for that code.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Use the standard recursion theorem to obtain a code $e$ for a machine that
+runs $B$ and then performs $n^{E(e)+1}$ irrelevant steps.  Since $E(e)$ is a
+fixed integer, this machine remains a polynomial-time exact SAT decider, but
+its running time exceeds the exponent $E(e)$ that was claimed to bound it.
+\end{proof}
+
+This does not obstruct the existing exponent-elimination recurrence, which
+was designed not to know $K$.  It does obstruct any new portfolio argument
+that silently obtains a valid $K$ from arbitrary source code or chooses caps
+using such an extractor.
+
+The padded family $A_d$ gives the operational version.  A portfolio member
+defined by reproducing $A$'s parent trace is not acquisition-covariant under
+semantics-preserving padding.  A viable $A$-dependent member must instead do
+one of the following:
+\begin{itemize}
+\item statically normalize every allowed padding/interpreter wrapper with a
+proved resource transport theorem;
+\item extract a certificate before the padded work without already deciding
+the parent; or
+\item use $A$ only on genuinely smaller typed inputs and charge every access.
+\end{itemize}
+
+Finite portfolios remain valid: safely failing members may be tried in a
+fixed order.  The missing statement is still worst-case coverage by at least
+one favorably charged member, not a selector predicting which familiar
+structural class applies.
+
+\section{Weakest formulation not contradicted by this audit}
+
+The following target survives every control above.
+
+\begin{center}
+\fbox{\begin{minipage}{0.92\textwidth}
+\textbf{STREAMED-TYPED-SUCCESSOR2 (open).}  From the finite code of an assumed
+uniform exact polynomial-time SAT machine $A$, construct a fixed finite typed
+system.  On every ordinary CNF $F$ of physical size $M$, the system returns a
+certified VALUE or a well-founded exact Boolean plan.  Children may be
+ordinary explicit CNFs or source-queryable virtual objects.  For every
+virtual object, declare its expanded logical length, handle length, exact
+bit-decoder, aggregate decoder traffic, retained source state, and recursive
+evaluator type.  Charge one shared acquisition, every failed member, every
+source read, every decoder call, combination, replay, and all live state.
+Measure all type edges against one coherent physical-size ledger.  Require
+every reachable return cycle to contract honestly and require the least root
+Bellman budgets to satisfy
+\[
+ C_0+S_0<2\cos(\pi/7).
+\]
+No parent-scale call to $A$, parent trace, undeclared succinct-SAT oracle, or
+handle-to-expanded-size reset is allowed.
+\end{minipage}}
+\end{center}
+
+This formulation intentionally permits $M^{1+o(1)}$ shared source work.  At
+the clean explicit target it also permits $M^{1+o(1)}$ aggregate child
+traffic and $M^{2/3+o(1)}$ sequential child space.  It does not require every
+member to use the same syntax, nor does it require a witness-set cover when a
+decision-only VALUE certificate is available.
+
+\begin{longtable}{L{0.18\textwidth}L{0.19\textwidth}L{0.55\textwidth}}
+\toprule
+Relaxation & Audit result & Weakest surviving requirement\\
+\midrule
+\endfirsthead
+\toprule
+Relaxation & Audit result & Weakest surviving requirement\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Shared BatchAcquire & Not refuted & One semantic object with exact
+counterfactual coverage, aggregate access, recursive closure, and charged
+near-linear construction; not merely shared storage.\\
+Compressed deltas & Handle-size shortcut refuted & Typed decoder or ordinary
+materialization; count expanded logical scale and every source dependency.\\
+Clause-first DAG & Universal equality-merge claim refuted & Partial member
+with a proved progress potential or a charged semantic fallback covering the
+hostile family.\\
+Branch amortization & Traffic feasible; semantic sharing not automatic & A
+constructive CNF-specific sharing theorem stronger than QLEN1, or accept the
+direct-sum charge.\\
+Typed cycles & Product-only acceptance refuted & Coherent physical scale plus
+least Bellman time-space endpoint.\\
+$A$-code portfolio & Trace/exponent shortcut refuted & Acquisition-covariant
+static certificate or smaller-input uses of $A$; all failures charged.\\
+\end{longtable}
+
+\section{Executable results and reproducibility}
+
+The bounded runner completed 1,020 declared checks in 2.38 seconds under a
+25-second internal alarm and a 30-second shell cap.  It used random seed
+220260108 only for disjoint pointer labels and terminal bits; every asserted
+count is independently determined by the declared model.
+
+\begin{center}
+\small
+\begin{tabular}{@{}L{0.32\textwidth}rL{0.46\textwidth}@{}}
+\toprule
+Section & Checks & Strongest finite observation\\
+\midrule
+Equality frontier & 16 & $qL=M$ exactly at tested powers of two; repeated
+root scans cost $qM$.\\
+Pivotal source reads & 264 & Every clause of $U_n$, $2\le n\le12$, was
+deletion- and same-width-replacement-pivotal.\\
+Payload/delta & 46 & Eight 48-bit handles named the same 2,280-bit payload
+from a 2,329-bit parent.\\
+Clause-first DAG & 592 & At $d=8$: 256 satisfiable distinct residuals, each
+8,693 bits, from a 34,672-bit source.\\
+QLEN equality & 32 & Direct $qL^k$ cost equaled the QLEN envelope in all 16
+parameter rows.\\
+Pointer-chain oracle & 48 & Exact $q(R+1)$ query count on all 16 controls.\\
+Typed cycles & 9 & Same product $1/2$ produced one endpoint failure and one
+pass; delta expansion product was one.\\
+Padded-code trace & 13 & Full-trace exponent tracked arbitrary delays through
+$d=12$.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Executable:
+\path{pnp_spines/final_link2_redteam.py}
+
+Raw results:
+\path{pnp_spines/final_link2_redteam_results.json}
+
+SHA-256 of executable:
+\path{761f441cf8820f88809c9563c204a6427b096bec3b993c531f802f0fe5c316d5}
+
+SHA-256 of raw results:
+\path{2d5f21e490de4a621d33f73112b04b77fd775319657a3a6a4e1005a1d51d32f0}
+
+The report was informed by the recovered FINAL-LINK1 synthesis,
+\path{pnp_spines/main8.tex}; the ARC ledger,
+\path{research/agents/lead/2026-10-08_0032_LEAD_FINAL-LINK-ARC.tex}; the corpus
+audit,
+\path{research/agents/research/2026-10-08_003226_FINAL-LINK-CORPUS.tex}; and the
+prior red-team report,
+\path{research/agents/red/2026-10-07_1724_FINAL_LINK_REDTEAM.tex}.  It edits
+none of those manuscripts.
+
+\section{Bottom line}
+
+The cleanest negative conclusion is architectural: delta handles,
+clause-first paths, exact DAG merging, generic amortization, typed-cycle
+products, and code access each omit a different charge when used alone.  The
+cleanest positive conclusion is equally important: neither a linear source
+scan nor linear aggregate child volume blocks the desired Williams region.
+Searching for a stronger source-read lower bound is therefore not the best
+next step unless it proves unavoidable repeated scans or a space-sensitive
+tradeoff.
+
+The highest-value remaining attempt is a concrete shared $H(A,F)$ with a
+one-pass or few-pass Acquire phase, streamed child access, an exact
+counterfactual interface, and a coherent typed Bellman certificate.  It must
+be tested first on the payload family $C_w\wedge P$, the tagged address family
+$D_d$, disjoint pointer-chain oracles, padded/interpreted $A_d$, and the
+existing Tseitin/PHP controls.  Passing those controls would still be only a
+candidate; proving all-input CNF coverage and the endpoint ledger is the
+missing theorem.
+
+% END PNP RESEARCH REPORT::FINAL-LINK2-REDTEAM::2026-10-08T01:02Z
+\end{document}

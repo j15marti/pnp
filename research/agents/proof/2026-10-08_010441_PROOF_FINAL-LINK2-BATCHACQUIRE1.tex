@@ -1,0 +1,344 @@
+% PROOF REPORT::FINAL-LINK2-BATCHACQUIRE1::2026-10-08T01:04:41Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,microtype,array}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\newcommand{\Exact}{\textnormal{\textsc{Proved/Exact}}}
+\newcommand{\Comp}{\textnormal{\textsc{Computational}}}
+\newcommand{\Open}{\textnormal{\textsc{Open}}}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\res}{\mathbin{\upharpoonright}}
+\title{FINAL-LINK2-BATCHACQUIRE1:\\Exact Shared Source Acquisition and the Ordinary-CNF Interface Barrier}
+\author{PROOF agent}
+\date{8 October 2026}
+
+\begin{document}
+\maketitle
+
+\section{Result}
+
+This run constructs a genuine shared \emph{BatchAcquire} object.  Given a
+source CNF $F$ and a fixed disjoint route trie, it reads the source once,
+propagates every source clause symbolically through the trie, and stores each
+stable residual fragment at the highest node where that fragment is shared.
+For a source-matched clause cover, one additional source scan chooses the
+clauses.  A child is then reconstructed from payloads on one root-to-leaf
+path, without rereading $F$.
+
+The exact positive result is therefore stronger than a collection of
+separately acquired children:
+\[
+ \boxed{\text{one shared source acquisition, exact residual recovery, and no
+ source reread during recovery}.}
+\]
+It resolves the narrow parent-reread issue for a fixed route family.
+
+It does not close the final link.  Either the children are emitted as
+ordinary CNFs, in which case total emission and recovery costs return, or a
+child is represented by a short leaf identifier beside the shared object
+$H$, in which case the input is not a smaller ordinary CNF and an arbitrary
+SAT running-time bound cannot be applied to the identifier alone.  A hostile
+semantic antichain with a large common core made this distinction explicit:
+one source scan replaced 64 source scans, yet materializing the 64 ordinary
+children emitted 478,208 bits and required 2,204,160 charged recovery units.
+
+The scientific status remains \textbf{OPEN}.  The new theorem is an exact
+shared-acquisition theorem, not a general small-instance compiler theorem and
+not a P versus NP proof.
+
+\section{Objects and charging model}
+
+Let $F$ be a normalized CNF of encoded size $M$.  A route trie $T$ has a cube
+$\rho_v$ at every node $v$, obtained by accumulating edge assignments from
+the root.  Its leaves are pairwise inconsistent cubes.  The intended cover
+condition is
+\[
+ F\text{ satisfiable}
+ \quad\Longleftrightarrow\quad
+ \bigvee_{u\in L(T)} F\res\rho_u\text{ satisfiable}.
+\]
+For witness preservation, a model of $F\res\rho_u$ is combined with $\rho_u$.
+
+The implementation charges the following quantities in the same execution:
+\begin{itemize}
+\item[] \textbf{Discovery and construction.}  Source literal reads,
+normalization, candidate hashing, greedy clause-selection probes, route-trie
+construction, assignment-delta probes, symbolic trie visits, payload writes,
+and storage-accounting work.
+\item[] \textbf{Representation.}  The residual-fragment pool, route trie,
+node-to-fragment references, payload offsets, leaf descriptors, and the
+read-only source when reporting total logical memory.
+\item[] \textbf{Recovery.}  Payload-reference reads, emitted literals, and
+canonicalization.  The ledger separately records the total bits of all
+standalone children and the maximum encoded child size.
+\item[] \textbf{Validation only.}  Independent source replay is performed for
+every leaf.  Its reads are reported but excluded from constructor cost because
+they are test-oracle work, not part of the proposed procedure.
+\end{itemize}
+
+The input is scanned twice for clause-selected covers, once to choose clauses
+and once to compile the batch.  Shannon controls require only the compilation
+scan.  Storage metadata, including maximum variable, clause count, literal
+count, and maximum clause length, is accumulated during that scan rather than
+by an uncharged later reread.
+
+\section{Source-matched disjunctive cover}
+
+For a source clause $C=(\ell_1\vee\cdots\vee\ell_w)$, let
+\[
+ \tau_i=\{\ell_1=0,\ldots,\ell_{i-1}=0,\ell_i=1\}
+ \qquad(1\le i\le w).
+\]
+The cubes $\tau_i$ are disjoint and partition the assignments satisfying
+$C$.  Since every model of $F$ satisfies every clause selected from $F$, the
+first selected clause gives an exact OR cover of all source models.  Applying
+the same rule to the residual of each later selected clause produces a trie
+whose leaves still partition all source models.
+
+\paragraph{CLAUSE-TRIE-COVER1 (\Exact).}
+For any finite list of clauses selected syntactically from $F$, the resulting
+first-true-literal trie is pairwise disjoint, covers every model of $F$, and
+has the witness lift described above.
+
+\paragraph{Proof.}
+At one node, a source model either already satisfies the selected clause by
+the path assignment or has a unique first true literal in its residual.
+Thus it continues through exactly one outgoing edge.  Induction over selected
+clauses gives unique continuation to one leaf.  Conversely, a model of a leaf
+residual extended by the path cube satisfies $F$ by the definition of
+restriction.  \hfill$\square$
+
+This rule is source-checkable and makes no SAT call.  Its route count can
+still be the product of the selected clause widths, and selecting enough
+clauses to force size shrinkage is not known to have a favorable uniform
+tradeoff on unrestricted CNF.
+
+\section{The shared residual-delta compiler}
+
+For a source clause $C$ and trie node $v$, let $R_v(C)$ be the residual after
+the path cube $\rho_v$.  If $C$ is already satisfied, it contributes nothing
+below $v$.  Otherwise, if no variable of $R_v(C)$ is assigned on any edge
+strictly below $v$, then the residual is stable throughout that subtree and a
+single interned copy of $R_v(C)$ is stored in the payload of $v$.  If it is
+not stable, the procedure applies each child-edge delta and continues only
+into unsatisfied children.
+
+For a leaf $u$, recovery collects every fragment referenced by payloads on
+the root-to-$u$ path and canonicalizes the resulting clause multiset.  The
+shared object $H$ consists of the trie, the interned fragment pool, payload
+references, and offsets.
+
+\paragraph{TRIE-BATCHACQUIRE1 (\Exact).}
+For every CNF $F$, every finite assignment trie $T$, and every leaf $u$,
+the recovered formula is exactly the canonical residual
+\[
+                  \operatorname{Recover}(H,u)
+                  =\operatorname{canon}(F\res\rho_u).
+\]
+Compilation performs one source-literal scan after $T$ is fixed.  Recovery
+performs no source-literal read.
+
+\paragraph{Proof.}
+Fix a source clause $C$ and leaf $u$.  Symbolic propagation follows the unique
+root-to-$u$ branch until an edge satisfies $C$, or until the current residual
+is stable below the current node, or until $u$ is reached.  In the first case
+$C$ is absent from $F\res\rho_u$.  In either remaining case exactly the
+residual $C\res\rho_u$ is stored at one ancestor of $u$.  Hence the path
+payloads contain exactly one correct contribution for every unsatisfied
+source clause.  Interning and final canonicalization remove only duplicate
+clauses, exactly as canonical restriction does.  Applying this argument to
+every source clause proves the equality.  Each source clause is introduced
+only in the compilation loop, so compilation has one source scan; recovery
+accesses only $H$.  \hfill$\square$
+
+The theorem deliberately states the exact access property, not an optimistic
+time bound.  A clause may be propagated through many trie nodes, so symbolic
+delta work can still scale with the route family.  The compiler's measured
+work includes those visits.
+
+\section{Experiment}
+
+The 13-case suite included sparse and dense planted random 3-CNF, a
+repeated-clause sharing control, disjoint components, a backdoor-DNF control, satisfiable
+and odd-charge-unsatisfiable prism Tseitin encodings, PHP$(5,4)$ through
+PHP$(7,6)$, a 2-CNF chain, a 64-way semantic antichain, and the same antichain
+with a large common 2-CNF core.  Every Python run had a 25-second internal
+alarm and a 30-second shell cap.  The final run took 2.33 seconds.
+
+There were 709 exact residual recovery checks, nine source-witness route
+checks, 64 exhaustive source-model cover checks on eligible small instances,
+and 8,064 explicit semantic non-implication checks.  No check failed.  The
+two antichain controls each had 64 unique residuals, zero equality merges,
+and zero clause-subset comparable pairs.
+
+\begin{center}
+\scriptsize
+\setlength{\tabcolsep}{2.4pt}
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+Case & $M$ & $q$ & reads & save & $|H|$ & emitted & max child & recovery & $E_{\rm sh}$\\
+\midrule
+random sparse & 1040 & 27 & 270 & 13.5 & 4028 & 13557 & 722 & 14645 & 2.369\\
+random dense & 3317 & 27 & 864 & 13.5 & 19525 & 28789 & 2362 & 72772 & 2.323\\
+repeated clauses & 11045 & 27 & 2880 & 13.5 & 3313 & 4536 & 279 & 2746 & 1.564\\
+backdoor DNF & 565 & 6 & 160 & 3.0 & 473 & 120 & 85 & 94 & 1.685\\
+Tseitin odd & 925 & 27 & 240 & 13.5 & 4514 & 8251 & 577 & 8102 & 2.344\\
+PHP$(5,4)$ & 830 & 64 & 200 & 32.0 & 12571 & 6008 & 332 & 15238 & 2.346\\
+PHP$(6,5)$ & 1490 & 125 & 360 & 62.5 & 37621 & 31990 & 752 & 80638 & 2.474\\
+PHP$(7,6)$ & 2862 & 216 & 588 & 108.0 & 97388 & 140952 & 1653 & 360600 & 2.537\\
+2-CNF chain & 1847 & 8 & 320 & 4.0 & 3094 & 6910 & 1754 & 15432 & 2.263\\
+antichain & 5704 & 64 & 576 & 64.0 & 6174 & 2412 & 43 & 512 & 1.351\\
+antichain+core & 13769 & 64 & 1088 & 64.0 & 18460 & 478208 & 7472 & 2204160 & 2.308\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Here ``reads'' counts source literals read by construction, ``save'' is the
+ratio between naive per-child restriction reads and batch reads, $|H|$ is the
+shared-object encoding, ``emitted'' is the sum of standalone child encodings,
+and ``recovery'' counts path-reference access, literal emission, and
+canonicalization.  All are same-run measurements.  The displayed exponents
+are finite diagnostics, not asymptotic estimates.
+
+The repeated-clause control shows real pooling: an 11,045-bit source produced
+a 3,313-bit shared object.  PHP shows the opposite pressure: source reads are
+strongly shared, but symbolic branching makes $H$ larger than the source and
+recovery grows.  The common-core antichain is the decisive interface control.
+Every child consists of the same large core plus one private positive clause,
+so equality and oriented clause dominance cannot merge any pair.  $H$ stores
+the core once, but an ordinary-CNF consumer forces the core to be recovered
+and emitted 64 times.
+
+The portfolio diagnostics found 239 children already in Horn or 2-CNF, four
+zero-clause children, 226 explicit-empty-clause children, and 320 decomposable
+children.  These are valid special-case opportunities.  Neither the random,
+Tseitin, PHP, nor antichain results support a theorem that such opportunities
+cover every general input with the required resource bounds.
+
+\section{Correct exponent ledgers}
+
+Write
+\[
+ q=M^a,\qquad \max_i|G_i|=M^\lambda,\qquad
+ W_{\rm acquire}=M^\beta,
+\]
+and suppose the invoked SAT procedure has exponent $k=2$.  For ordinary
+all-block acquisition, the fanout must be charged.  The corrected exponent is
+\[
+             E_{\rm ordinary}=a+\beta+2\lambda.
+\]
+Under the common localization relation $a=1-\lambda$, this becomes
+$1+\beta+\lambda$, so the $4/3$ target requires
+\[
+                   \boxed{\beta+\lambda<1/3}.
+\]
+The old half-scale point $\lambda=1/2$ therefore cannot meet the target.
+
+If the batch construction is genuinely global, a deliberately optimistic
+time ledger is
+\[
+ E_{\rm shared}=\max\{\beta,\rho,a+2\lambda\},
+\]
+where $M^\rho$ is total recovery work.  This removes repeated source
+acquisition but not the cost of solving $q$ ordinary children.  The final
+column of the table reports this expression.  Every tested case was above
+$4/3$; the plain antichain was closest at 1.351.  These finite failures do not
+prove an asymptotic lower bound, but they provide no empirical closure.
+
+More importantly, the optimistic ledger applies only after the children are
+ordinary instances.  It cannot treat a leaf identifier as an $M^\lambda$-bit
+CNF while silently leaving $H$ beside the solver.
+
+\section{The interface trilemma}
+
+The experiment isolates three choices.
+\begin{itemize}
+\item[] \textbf{Standalone children.}  Emit each
+$G_u=\operatorname{Recover}(H,u)$.  Existing ordinary-CNF SAT bounds apply,
+but total recovery and output are charged.  The common-core antichain shows
+that these costs can erase source-read sharing.
+\item[] \textbf{Parent-aware descriptor.}  Give the consumer $(H,u)$.  The
+leaf identifier is short and the common core stays shared, but $(H,u)$ is not
+an ordinary CNF of the identifier's size.  A new parent-aware SAT theorem,
+including all accesses to $H$, is required.
+\item[] \textbf{Self-contained descriptor.}  Copy enough of $H$ into each
+child to restore the ordinary interface.  The child size or aggregate output
+then inherits the shared object's current-scale information, losing the
+claimed descriptor shrinkage.
+\end{itemize}
+
+This is not a claim that shared solving is impossible.  It identifies the
+exact theorem still needed: a solver or compiler whose interface explicitly
+supports the shared object, whose construction and query costs are proved for
+the same realization, and whose total exponent beats the target on every
+input.
+
+\section{Relation to recovered mechanisms and literature}
+
+Clause equality, oriented dominance, components, Horn, 2-CNF, fixed
+backdoors, and backdoor DNFs remain sound partial routes.  Backdoor DNFs are
+designed to give tautological OR covers into a tractable base class, but known
+detection results are parameterized results for named classes, not a theorem
+that every CNF has a cheaply found favorable DNF \cite{ordyniak2021bdnf}.
+Backdoor depth and recursive backdoors likewise organize tractable restricted
+instances without supplying bounded favorable depth for all CNFs
+\cite{dreier2022,maehlmann2021}.
+
+Knowledge compilation explains why a shared compiled representation can
+support efficient downstream queries once it exists.  It does not provide a
+uniform cheap compiler from unrestricted CNF into a small representation
+with the required operations \cite{darwiche2002}.  Sparsification gives exact
+disjunctive decompositions for fixed-width CNF, but its exponential-in-$n$
+fanout is not the missing polynomial-in-$M$ shared-interface theorem
+\cite{ipz2001,calabro2010}.  The present result is consistent with all of
+these boundaries.
+
+\section{Status and next theorem}
+
+\begin{itemize}
+\item[] \textbf{PROVED/EXACT.}  The source-matched clause trie is a disjoint,
+witness-preserving cover of all source models.
+\item[] \textbf{PROVED/EXACT.}  For any fixed route trie, one batch source
+scan builds an exact residual-delta object; every canonical residual is
+recovered without a source reread.
+\item[] \textbf{COMPUTATIONAL.}  All 709 residual checks and all cover,
+witness, and antichain checks passed on the stated suite with a fully exposed
+discovery, storage, recovery, emission, and workspace ledger.
+\item[] \textbf{FALSIFIED AS A CLOSURE CLAIM.}  ``The leaf identifier is the
+small child'' is invalid under the ordinary-CNF interface because it retains
+current-scale shared state.  ``Shared source reads imply cheap standalone
+children'' failed on the common-core antichain.
+\item[] \textbf{OPEN.}  No construction here proves, for every CNF, a shared
+object and consumer with simultaneous favorable construction, total query,
+recovery, recursive-size, and workspace bounds.  No P versus NP conclusion
+follows.
+\end{itemize}
+
+The sharp next target is therefore
+\[
+ \boxed{\begin{minipage}{0.82\linewidth}
+ A source-checkable, witness-preserving shared compiler and parent-aware SAT
+ consumer for general CNF, with a same-realization proof charging discovery,
+ $H$, every query to $H$, all recovery or emission, total fanout, recursive
+ size, and peak workspace, and with total exponent strictly below $4/3$.
+ \end{minipage}}
+\]
+
+\section{Reproduction}
+
+Run from the directory containing the script:
+\begin{verbatim}
+timeout 30s python3 final_link2_batch_acquire.py \
+  final_link2_batch_acquire_results.json
+\end{verbatim}
+The script installs its own 25-second alarm.  The final hashes are:
+\begin{verbatim}
+code   464cb8505a0bf6d298febeb11f12e98be83aa5afb16e6d25c3a48918339e8715
+result b141bf1719aa37fbbb7d94cd1a614c814ac5ca342b81f9bf590615c07c464b4c
+\end{verbatim}
+
+\bibliographystyle{plain}
+\bibliography{spines}
+
+% END_OF_VERIFIED_REPORT::PROOF::FINAL-LINK2-BATCHACQUIRE1
+\end{document}

@@ -1276,11 +1276,229 @@ separation.  The code and raw record are
 \path{results/raw/proof_spines/2026-10-07_181151_fixed_phase_value.json}.
 % END FIXED PHASE VALUE REVIEW 2026-10-07
 
+% BEGIN FINAL LINK2 WRAPPER BUILD 2026-10-08
+\section{FINAL-LINK2: exact shared acquisition and the surviving construction gap}
+
+The second build separates three questions that FINAL-LINK1 grouped under
+``shared BatchAcquire'': whether one source scan can support many residuals,
+whether the resulting children are small ordinary CNFs, and whether a compact
+description of the entire family is any weaker than an ordinary
+SAT-preserving shrinker.
+
+\subsection{One-scan residual acquisition for a fixed route trie}
+
+Let $T$ be a finite trie of partial assignments and let $\rho_u$ be the
+assignment on the path to a leaf $u$.  For each source clause, follow the
+trie until the clause is satisfied or its current residual is stable
+throughout the remaining subtree.  In the latter case, intern the stable
+fragment at the highest such node.  Recover a leaf residual by collecting
+the fragments on its root-to-leaf path.
+
+\begin{theorem}[TRIE-BATCHACQUIRE1]
+For every CNF $F$, fixed finite assignment trie $T$, and leaf $u$, one scan of
+the source clauses constructs an object $H(F,T)$ satisfying
+\[
+ \operatorname{Recover}(H(F,T),u)
+   =\operatorname{canon}(F\upharpoonright\rho_u).
+\]
+Recovery makes no further source-literal read.
+\end{theorem}
+
+\begin{proof}
+Fix one source clause and one leaf.  If a path edge satisfies the clause, the
+clause contributes nothing.  Otherwise propagation stops exactly when its
+residual is stable below the current node, or at the leaf, and stores that
+unique residual once on the leaf path.  Summing this invariant over all
+source clauses gives the canonical restricted CNF.  The construction loop is
+the only operation that reads the source clauses.
+\end{proof}
+
+The theorem is \textsc{Proved/Exact}; it solves the literal reread problem
+for a fixed route family.  It does not bound the number of trie probes, the
+size of $H$, route discovery, recovery work, or the emitted ordinary-child
+volume.  The executable performed 709 exact recoveries, nine witness-route
+checks, 64 exhaustive model-cover checks, and 8,064 semantic-antichain checks
+with zero errors.  On the common-core antichain, one scan replaced 64 source
+scans, but standalone child materialization still emitted 478,208 bits and
+used 2,204,160 charged recovery units.  A short pair $(H,u)$ is a parent-aware
+typed input, not an ordinary CNF whose size is $|u|$.
+
+\subsection{The exact source-major scheduling gate}
+
+Suppose $a\ge0$, $0\le b<1$, and $0\le\delta\le a$.  Let
+$q=M^{a+o(1)}$ children each have length $M^{b+o(1)}$.  Buffer
+$M^{\delta+o(1)}$ children, process buffers sequentially, and optimistically
+scan the read-only random-access source once per buffer with output-sensitive
+routing inside that buffer.  Assume no extra live state beyond the buffer and
+one active recursive call, and recursive closure of the same schedule at
+every child scale.  Its fully charged recurrence is
+\[
+ C\ge\max\{1+a-\delta,a+b,a+bC\},\qquad
+ S\ge\max\{b+\delta,bS\}.
+\]
+The least ledger is
+\[
+ C(\delta)=\max\left\{1+a-\delta,\frac{a}{1-b}\right\},
+ \qquad S(\delta)=b+\delta.
+\]
+
+\begin{theorem}[BATCH-LAYOUT-GATE1]
+For the preceding parameter range,
+\[
+ \min_\delta(C(\delta)+S(\delta))=
+ \begin{cases}
+ 1+a+b,&b\le1/(1+a),\\
+ b+a/(1-b),&b>1/(1+a).
+ \end{cases}
+\]
+Consequently $a+b=1$ with $b<1$ implies a minimum joint exponent of two.
+\end{theorem}
+
+\begin{proof}
+The objective is
+$\max\{1+a-\delta,a/(1-b)\}+\delta+b$.  It is the constant $1+a+b$
+while the scan term is active and increases with $\delta$ after the recursive
+term becomes active.  It is strictly active at $\delta=0$ exactly when
+$b>1/(1+a)$, giving the second branch.  At equality the two formulas agree
+and the theorem places the boundary in the first branch.  The omitted
+$a+b$ floor is redundant: the scan floor dominates it when $a+b\le1$, while
+$a/(1-b)\ge a+b$ when $a+b\ge1$.  If $a+b=1$ with $b<1$, the first branch
+applies and equals two.
+\end{proof}
+
+This is a \textsc{Proved/Exact} accounting theorem for the declared schedule,
+not a general SAT lower bound.  A genuinely child-major online generator
+would instead have the optimistic ledger
+\[
+ C=\max\{1,a/(1-b)\},\qquad S=b.
+\]
+At $(a,b)=(1/3,2/3)$ this gives $5/3$, while every source-major block choice
+gives two.  Thus the equality $q\cdot M^b=M$ proves only that the output
+traffic is affordable.  It does not supply the semantic transposition needed
+to emit and consume each child once.
+
+\subsection{Fixed-machine OR sharing and the generator-collapse correction}
+
+Let the selected machine $A$ run in $m^{K+o(1)}$ time on $m$-bit CNFs.  For
+$q$ explicitly listed children, one selector multiplexer, one unrolled copy
+of $A$, and a Tseitin transformation give
+\[
+ \SAT(Q)=\bigvee_{i=1}^q\SAT(G_i),\qquad
+ |Q|=m^{K+o(1)}+O(qm)\operatorname{polylog}(qm).
+\]
+This OR-MUX-COMPILE1 identity is \textsc{Proved/Exact} and replaces
+$q$ copies of the solver circuit by one.  It still returns a parent-scale
+formula when $qm=M^{1+o(1)}$.
+
+The first fixed-machine construction proposed replacing the explicit child
+table by a circuit $E_F(z)$ of size $M^{h+o(1)}$ that emits one legal
+$m=M^{b+o(1)}$-bit CNF and satisfies
+\[
+ \SAT(F)\iff\exists z\;\SAT(E_F(z)).\tag{GC}
+\]
+The following red-team correction changes the interpretation of that route.
+
+\begin{theorem}[GENERATOR-COLLAPSE1]
+Assume $0<2b\le h<1$ and require every selector value to produce a legal
+padded CNF of length at most $M^{b+o(1)}$.  Count every selector terminal,
+output terminal, embedded source bit, constant, gate, and wiring-description
+bit in $|E_F|\le M^{h+o(1)}$.  If a uniform constructor for $E_F$ satisfying
+(GC) uses time $M^{r_E+o(1)}$ and space $M^{p_E+o(1)}$, then a uniform
+quadratic CNF witness verifier composed with $E_F$ and Tseitin encoded
+produces an ordinary CNF $Q_F$ with
+\[
+ \SAT(Q_F)=\SAT(F),\qquad |Q_F|=M^{h+o(1)},
+\]
+in materialization time $M^{\max\{r_E,h\}+o(1)}$ and space
+$M^{\max\{p_E,h\}+o(1)}$.
+No assumed SAT machine is needed.
+\end{theorem}
+
+\begin{proof}
+Existentially choose the selector and one witness bit for every literal
+occurrence of the selected child.  In $m^{2+o(1)}$ bounded-fan-in gates, parse
+the encoding, require equal variable identifiers to receive consistent
+witness bits, and verify every clause.  Compose this verifier with $E_F$ and
+apply the gate-by-gate Tseitin transformation.  Its size is
+$M^{\max\{h,2b\}+o(1)}=M^{h+o(1)}$, and its satisfying assignments are
+exactly a selector and a model of the selected child.
+The constructor work plus explicit verifier and output generation gives the
+stated time maximum; retaining the materialized output gives the space
+maximum.
+\end{proof}
+
+For the proposed values $h=2/3$ and $b=1/(3K)$ with $K\ge1$, the condition
+$2b\le h$ holds.  The fixed-machine composition is valid, but it is not the
+load-bearing step.  The compact exact generator already contains the missing
+ordinary shrinker in another syntax and may impose a stronger output-width
+contract.  Conversely, an ordinary shrinker is a degenerate one-child
+generated cover, but its output-width exponent generally equals its circuit
+exponent and need not satisfy $2b\le h$.
+
+\subsection{Where the original exponent division applies}
+
+Once a strict ordinary successor has been acquired, the recovered recurrence
+does eliminate the seed exponents.  If
+\[
+ |R(F)|\le M^{h+o(1)},\quad
+ T_R(M)\le M^{r+o(1)},\quad
+ S_R(M)\le M^{p+o(1)},\qquad h<1,
+\]
+then $d$ fixed reapplications followed by $A$ give
+\[
+ T_d(M)\le M^{\max\{r,Kh^d\}+o(1)},\qquad
+ S_d(M)\le M^{\max\{h,p,Lh^d\}+o(1)}.
+\]
+At $(h,r,p)=(2/3,1,2/3)$, choose a finite hardwired $d$ so that
+$Kh^d\le1$ and $Lh^d\le2/3$.  The resulting point is $(1,2/3)$, whose sum
+$5/3$ is strictly below $2\cos(\pi/7)$.  This is the exact place for the
+original idea that repeated division by a power removes a $2^K$ contribution.
+It suppresses the leaf exponent after contraction exists.  It does not pay
+for discovering the first contraction.
+
+\subsection{Strongest surviving alternatives}
+
+The present single-type target is now direct.
+\begin{description}
+\item[] \textbf{CHARGED STRICT SUCCESSOR-$2/3$, OPEN.}
+Under $P=NP$, select one clocked uniform SAT machine $A$ and construct one
+fixed uniform algorithm $R_A$ which, on every $M$-bit ordinary CNF, uses
+$M^{1+o(1)}$ time and $M^{2/3+o(1)}$ space and returns an equivalent ordinary
+CNF of length $M^{2/3+o(1)}$.  Charge every failed route, source access,
+decoder call, replay, certificate, and output bit.  The guarantee must hold
+again on every returned CNF and may not begin with a parent-scale call to $A$.
+
+\item[] \textbf{MIXED-EPOCH FINAL LINK, OPEN.}
+Alternatively, construct a finite source-checkable epoch with charged VALUE
+leaves and typed recursive exits.  Same-scale administrative steps require a
+proved all-input potential.  Every feasible recurrent macro-cycle must
+contract.  For one fixed entry type $i_0$, require
+$C_{i_0}^*+\rho_{i_0}^*<2\cos(\pi/7)$.  If root classification can select a
+type in a fixed set $I_0$, the same-realization guard is instead
+$\max_{i\in I_0}C_i^*+\max_{i\in I_0}\rho_i^*<2\cos(\pi/7)$.
+\end{description}
+
+TRIE-BATCHACQUIRE1 is useful infrastructure for either alternative.
+BATCH-LAYOUT-GATE1 proves that source-major buffering does not realize the
+first target at aggregate-linear volume.  GENERATOR-COLLAPSE1 proves that a
+compact exact legal-child generator is a presentation of the target, not a
+derivation from $P=NP$.  The recent CSP nonredundancy results additionally
+block deletion or reweighting-only sparsification of ordinary clause
+violations, while exact core reduction remains useful for structured CSP
+languages \cite{brakensiekguruswami2026,sharmavelusamy2026,brakensiekputterman2026}.
+Bounded truth-table normalization and current search-to-decision work clarify
+route acquisition but do not shrink queries \cite{busshay1991,renwilliams2026}.
+
+No recovered theorem or experiment proves either open alternative.  The
+concrete WRAPPER spine remains conditional and P versus NP remains
+\textsc{Open}.  The complete reconciliation, proofs, experiments, and
+literature audit are recorded in \texttt{main9.tex} and the timestamped
+FINAL-LINK2 reports.
+% END FINAL LINK2 WRAPPER BUILD 2026-10-08
+
 \bibliographystyle{plain}
 \bibliography{spines}
 \end{document}
-
-
 
 
 

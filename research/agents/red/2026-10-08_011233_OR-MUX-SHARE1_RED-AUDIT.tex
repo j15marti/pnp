@@ -1,0 +1,396 @@
+% RED REPORT::OR-MUX-SHARE1::2026-10-08T01:12:33Z
+% Immutable red-team audit.  Do not overwrite; supersede with a new timestamp.
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,mathtools,amsthm}
+\usepackage{booktabs,tabularx,array}
+\usepackage[table]{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+
+\definecolor{exact}{HTML}{176B35}
+\definecolor{conditional}{HTML}{345995}
+\definecolor{openstatus}{HTML}{A45500}
+\definecolor{retired}{HTML}{9A2525}
+\definecolor{softgreen}{HTML}{EDF8F0}
+\definecolor{softorange}{HTML}{FFF4E8}
+\definecolor{softred}{HTML}{FCEEEE}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=conditional,
+  urlcolor=conditional,
+  pdftitle={Red audit of OR-MUX-SHARE1 and the compact child generator},
+  pdfauthor={P versus NP Research Project}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small RED / OR-MUX-SHARE1}
+\rhead{\small 8 October 2026}
+\cfoot{\small \thepage\ / \pageref{LastPage}}
+\setlength{\headheight}{14pt}
+\renewcommand{\arraystretch}{1.14}
+\urlstyle{tt}
+
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\size}{\operatorname{size}}
+\newcommand{\EXACT}{\textcolor{exact}{\textbf{PROVED/EXACT}}}
+\newcommand{\COND}{\textcolor{conditional}{\textbf{CONDITIONAL}}}
+\newcommand{\COMP}{\textcolor{conditional}{\textbf{COMPUTATIONAL}}}
+\newcommand{\OPEN}{\textcolor{openstatus}{\textbf{OPEN}}}
+\newcommand{\RETIRED}{\textcolor{retired}{\textbf{FALSIFIED/RETIRED}}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\newtcolorbox{resultbox}{
+  colback=softgreen,colframe=exact,boxrule=0.8pt,arc=2pt,
+  left=7pt,right=7pt,top=6pt,bottom=6pt
+}
+\newtcolorbox{openstatusbox}{
+  colback=softorange,colframe=openstatus,boxrule=0.8pt,arc=2pt,
+  left=7pt,right=7pt,top=6pt,bottom=6pt
+}
+\newtcolorbox{guardbox}{
+  colback=softred,colframe=retired,boxrule=0.8pt,arc=2pt,
+  left=7pt,right=7pt,top=6pt,bottom=6pt
+}
+
+\title{\bfseries Red Audit of OR-MUX-SHARE1\\
+and the Compact Child-Generator Bridge}
+\author{Independent quantifier, encoding, and resource audit}
+\date{8 October 2026, 01:12 UTC}
+
+\begin{document}
+\maketitle
+
+\begin{guardbox}
+\textbf{Disposition.}
+The OR-multiplexer Boolean identity is \EXACT.  Its bit-length bound needs a
+polylogarithmic correction, which does not change any exponent.  The compact
+generated-cover implication is also correct after the encoding obligations
+below are made explicit.  It does not, however, derive the missing bridge
+from one fixed polynomial SAT decider.  More strongly, the assumed generator
+already contains a sublinear SAT-preserving successor and can be compiled
+without the decider $A$.  Consequently the remaining assertion
+``$P=NP$ forces such a generator'' is the separation hinge itself, not a
+consequence presently supplied by OR multiplexing.
+\end{guardbox}
+
+\section{Objects audited}
+
+This report audits the fixed-machine proof report and its companion Python
+audit and JSON output under \path{research/agents/proof/}.
+The audit concerns the exact mux identity, ordinary-CNF bit size, selector
+width, padding, construction uniformity, recursive closure, simultaneous
+time and space, and the quantifier needed to turn $P=NP$ into the proposed
+generator.
+
+Let $L(X)$ denote the number of bits in an ordinary explicit encoding.  This
+distinguishes bit length from gate count, clause count, and literal-occurrence
+count.  Polylogarithmic factors are written with $\widetilde O$ and are
+absorbed only when an exponent statement explicitly uses $o(1)$.
+
+\section{The explicit OR multiplexer}
+
+\begin{proposition}[Corrected OR-MUX]
+Fix a deterministic Boolean circuit $C:\{0,1\}^m\to\{0,1\}$ and explicit
+strings $x_1,\ldots,x_q\in\{0,1\}^m$, where $q\ge1$.  There is a circuit
+$D$ with $\ell=\lceil\log_2 q\rceil$ free selector bits such that
+\[
+ \exists z\in\{0,1\}^{\ell}:D(z)=1
+ \quad\Longleftrightarrow\quad
+ \bigvee_{i=1}^{q}C(x_i)=1.
+\]
+Unused leaves are mapped to a fixed rejecting word.  In gate count,
+\[
+ |D|=|C|+O(qm+\log q).
+\]
+If circuit wires, gate identifiers, and CNF variable identifiers are encoded
+in binary, the ordinary Tseitin 3-CNF $Q$ has
+\[
+ L(Q)=\widetilde O\bigl(L(C)+qm+\log q\bigr).           \tag{1}
+\]
+\end{proposition}
+
+\begin{proof}
+Pad to $q'<2q$ leaves.  For each of the $m$ bit positions, a balanced tree of
+$q'-1$ two-input multiplexers selects the corresponding bit.  Each
+multiplexer uses constantly many bounded-fan-in gates.  Feed the selected word
+into one copy of $C$.  The Tseitin clauses enforce the unique value of every
+internal gate, while the output unit clause enforces acceptance.  A textual
+CNF needs $O(\log |D|)$ bits per variable identifier, which yields (1).
+\end{proof}
+
+The Boolean identity has status \EXACT.  The displayed $O(m^{K+o(1)}+qm)$
+bound in the proof report is exact only in a unit-cost gate, clause, or
+literal-occurrence measure.  For ordinary bit length it should be
+$\widetilde O(m^{K+o(1)}+qm)$, equivalently
+$m^{K+o(1)}+(qm)^{1+o(1)}$ when the parameters are polynomially bounded.
+The exponent formula $\max\{bK,v\}$ therefore survives.
+
+The finite test in \path{fixed_machine_successor_audit.py} does not construct
+a mux circuit or a Tseitin formula.  Its variables named \texttt{separate}
+and \texttt{selector} both evaluate the same family with Python
+\texttt{any}.  The 5,904 checks are therefore a tautological sanity check of
+the identity, not an implementation, size, padding, or encoding test.  The
+symbolic proof above is sufficient; the computational count should not be
+described as independent verification of a mux compiler.
+
+\section{Selector, padding, and uniformity corrections}
+
+The following repairs are mandatory but routine.
+
+\begin{itemize}
+\item[] \textbf{Selector width.}
+The successor formula contains all $\ell$ selector variables.  Its bound must
+therefore include $\ell$.  If the definition of $|E_{A,F}|$ counts every
+input terminal and its description, then $\ell\le |E_{A,F}|$ and the charge
+is already absorbed.  This convention must be retained in every use of the
+theorem; standard gate count alone does not guarantee it.
+
+\item[] \textbf{Output width.}
+Every one of the $m$ output terminals must also be counted.  Hence a circuit
+of description length $M^{h+o(1)}$ automatically has
+$m\le M^{h+o(1)}$.  A convention allowing an uncharged bus or an external
+source pointer would invalidate the contraction.
+
+\item[] \textbf{Padded language.}
+An arbitrary binary string of exactly $m$ bits is not automatically an
+ordinary CNF encoding.  Fix once and for all a total padded encoding with a
+length field and an ignored zero trailer, or a canonical padding by dummy
+variables and tautological clauses.  Define the decider and the universal
+verifier to reject malformed words.  Map every unused selector leaf to a
+valid padded UNSAT instance, rather than relying on an unspecified malformed
+word.  The conversion to the Williams endpoint encoding must be linear or
+quasilinear and charged.
+
+\item[] \textbf{Circuit uniformity.}
+For a fixed clocked multitape machine $A$, a standard uniform circuit
+simulation can be generated from $m$ and the hardwired transition table.
+The construction time and live workspace must be bounded by the emitted
+circuit description.  If $A$ is instead introduced as a RAM program, the
+claimed near-$T$ circuitization is not automatic; either first choose a
+multitape polynomial decider under $P=NP$, or prove the appropriate RAM
+simulation.
+
+\item[] \textbf{Identifier logarithms.}
+Gate and variable identifiers add logarithmic factors to both the circuit
+description and the ordinary 3-CNF.  These are harmless in
+$M^{\alpha+o(1)}$ notation but prevent a literal $O(S)$ bit-length claim.
+\end{itemize}
+
+No item above supplies the missing semantic object.  They only make the
+compiler source-checkable.
+
+\section{The generator already is the shrinker}
+
+The most important audit result is that the fixed polynomial SAT decider is
+not needed to compile a generated exact OR cover.
+
+\begin{theorem}[UNIVERSAL-VERIFY-COMPILE1]
+Fix a reasonable explicit padded CNF encoding.  Suppose a uniform constructor
+$G$ maps every length-$M$ CNF $F$ to a bounded-fan-in circuit $E_F$ with
+selector $z$, $m$ output bits, and
+\begin{align*}
+ L(E_F)&\le M^{h+o(1)}, & m&\le M^{b+o(1)},\\
+ \operatorname{time}_G(F)&\le M^{r+o(1)}, &
+ \operatorname{space}_G(F)&\le M^{p+o(1)},
+\end{align*}
+such that every output is a valid padded CNF and
+\[
+ \SAT(F)\quad\Longleftrightarrow\quad
+ \exists z\;\SAT(E_F(z)).                              \tag{2}
+\]
+Then, without calling or unrolling any SAT decider, one can construct an
+ordinary 3-CNF $Q_F$ satisfying
+\begin{align*}
+ \SAT(Q_F)&=\SAT(F),\\
+ L(Q_F)&\le M^{\max\{h,2b\}+o(1)},                     \tag{3}\\
+ \operatorname{time}(F\mapsto Q_F)
+   &\le M^{\max\{r,h,2b\}+o(1)},                       \tag{4}\\
+ \operatorname{space}(F\mapsto Q_F)
+   &\le M^{\max\{p,h,2b\}+o(1)}.                      \tag{5}
+\end{align*}
+\end{theorem}
+
+\begin{proof}
+There is a fixed deterministic verifier circuit $V_m(x,y)$ of size
+$m^{2+o(1)}$ which rejects malformed $x$ and, for a valid $m$-bit CNF
+encoding, satisfies
+\[
+ \exists y\;V_m(x,y)=1\quad\Longleftrightarrow\quad\SAT(x)=1.
+\]
+A quadratic bound is conservative.  The verifier guesses truth values for at
+most $m$ occurring variables, parses at most $m$ encoded bits, and checks
+literal values by a quadratic scan.  Standard uniform circuitization only
+adds polylogarithmic factors.
+
+Form the composed circuit
+\[
+ D_F(z,y)=V_m(E_F(z),y).
+\]
+By (2), $\exists z,y\;D_F(z,y)=1$ exactly when $F$ is satisfiable.  Apply the
+Tseitin transformation and constrain the output to one.  The circuit and
+ordinary CNF bit lengths are
+\[
+ \widetilde O\bigl(L(E_F)+m^2\bigr)
+ =M^{\max\{h,2b\}+o(1)}.
+\]
+Generating the fixed verifier topology and streaming the Tseitin clauses
+gives (4).  Retaining the materialized successor together with the
+constructor workspace gives (5).
+\end{proof}
+
+This implication is \EXACT under the displayed encoding convention.  At the
+proof report's proposed values
+\[
+ h=\frac23,\qquad b=\frac{1}{3K},\qquad K\ge1,
+\]
+we have $2b\le h$.  Therefore the same $M^{2/3+o(1)}$ successor follows
+without $C_{A,m}$, without the condition $bK\le h$, and without assuming
+$P=NP$.  The generator $E_F$ is already a sublinear nondeterministic circuit
+for the statement $\SAT(F)$: its witnesses are $(z,y)$.  Tseitin compilation
+merely makes that fact explicit.
+
+The theorem does not falsify the mux lemma.  It shows that muxing through the
+assumed deterministic decider is not the source of the desired progress.
+
+\section{Exact quantifier gap}
+
+Let $\mathsf{PolySAT}(A)$ state that $A$ is a fixed uniform polynomial-time
+SAT decider, and let $\mathsf{Gen}(A,G)$ denote the all-input generated-cover
+contract.  The current proof establishes
+\[
+ \forall A\,\forall G\;
+ \bigl(\mathsf{PolySAT}(A)\wedge\mathsf{Gen}(A,G)\bigr)
+ \Longrightarrow \mathsf{FastSAT}.                     \tag{6}
+\]
+The known endpoint excludes $\mathsf{FastSAT}$ in the claimed simultaneous
+region.  To refute $P=NP$, however, one needs
+\[
+ \bigl(\exists A\;\mathsf{PolySAT}(A)\bigr)
+ \Longrightarrow
+ \exists A\,G\;
+ \bigl(\mathsf{PolySAT}(A)\wedge\mathsf{Gen}(A,G)\bigr).\tag{7}
+\]
+Nothing in OR-MUX-COMPILE1, fixed-code hardwiring, or the finite experiment
+proves (7).  The source code of one fixed machine can specialize a uniform
+constructor, but it does not imply the input-dependent semantic summary (2)
+within near-linear time and sublinear space.
+
+Moreover, UNIVERSAL-VERIFY-COMPILE1 removes $A$ from the semantic content of
+$\mathsf{Gen}$.  The subscript $A$ can influence constants and the chosen
+number $b$, but once $E_F$ exists, it independently yields the missing
+SAT-preserving contraction.  Thus (7) is not a weak normalization lemma.  It
+is the remaining separation hinge.
+
+The phrase ``the generator is open'' should be qualified.  Given the
+Williams endpoint and the compilation above, the conjunction
+$\mathsf{PolySAT}(A)\wedge\mathsf{Gen}(A,G)$ at the proposed exponents is
+inconsistent.  What remains \OPEN is the implication (7); proving it would
+complete the contradiction.  Labeling an unconditional existence claim for
+$A$ and $G$ as merely open obscures this logical distinction.
+
+Equation (2) by itself does not merely restate SAT: the trivial generator can
+output $F$ and has linear size.  The sublinear description, tiny output,
+near-linear acquisition, and all-input closure are the substantive content.
+Together they restate the missing structured compression theorem closely
+enough that no independent bridge has yet been gained.
+
+\section{Recursive closure and simultaneous resources}
+
+Conditional on a valid all-input shrinker, the fixed-depth composition is
+sound.  The following clauses must remain in the theorem statement.
+
+\begin{itemize}
+\item[] \textbf{All-input domain.}
+The constructor must accept every ordinary CNF produced by the previous
+Tseitin level, not only the original benchmark distribution or formulas with
+a promise inherited from $F$.
+
+\item[] \textbf{One encoding.}
+Every successor must be converted to the same padded language used by the
+next invocation.  Header, padding, and variable-renaming costs contribute
+only polylogarithmic factors if implemented explicitly.
+
+\item[] \textbf{Fixed depth.}
+After choosing the hypothetical machine and certified constants, the depth
+$d$ may be hardwired.  For fixed $d$, the accumulated $o(1)$ terms remain
+$o(1)$.  Inputs below all asymptotic thresholds can be handled by a fixed
+finite table or direct computation.
+
+\item[] \textbf{Same realization.}
+Materialize $F_1$, then generate $F_2$ while retaining $F_1$, discard the
+predecessor after completion, and continue.  This single implementation has
+time dominated by the first construction and live generated storage
+$M^{h+o(1)}$.  The original input may remain on a read-only tape.  The final
+machine call or universal-verifier successor must be charged on that same
+run.
+
+\item[] \textbf{No hidden source access.}
+Neither $E_F$ nor a child may contain an uncharged pointer, oracle gate, or
+random-access wire to the $M$-bit parent.  Counting source terminals and
+wiring bits is essential.
+\end{itemize}
+
+Under these clauses, the recurrence calculation is \EXACT as a conditional
+resource statement.  None of the clauses proves the acquisition premise.
+
+\section{Corrected status ledger}
+
+\begin{center}
+{\small
+\begin{tabularx}{\textwidth}{@{}p{0.25\textwidth}p{0.25\textwidth}X@{}}
+\toprule
+Item & Status & Audit conclusion \\
+\midrule
+OR truth identity & \EXACT & One selector mux and one circuit copy realize
+the disjunction \\
+Exact ordinary bit-size formula & \COND & Replace literal $O(S+qm)$ by
+$\widetilde O(S+qm)$ unless size means clauses or literal occurrences \\
+Uniform circuitization of $A$ & \COND & Sound for a declared fixed clocked
+machine model with a uniform simulation; not automatic for an unspecified
+RAM program \\
+Selector and output charging & \EXACT & Add $\ell+m$ explicitly, or retain
+the convention that all terminals and their descriptions count in $|E|$ \\
+Padding and malformed inputs & \COND & Easily repairable after one total
+padded CNF encoding and a canonical padded UNSAT word are fixed \\
+Universal verifier compiler & \EXACT & $E_F$ alone yields a successor of scale
+$\max\{h,2b\}$; the polynomial SAT decider is unnecessary \\
+Fixed-depth closure & \COND & Correct for the same all-input constructor,
+same encoding, fixed depth, and one charged realization \\
+$P=NP\Rightarrow$ compact generator & \OPEN & This is not derived by the mux
+compiler and is the load-bearing separation hinge \\
+Finite mux experiment & \COMP & The current test compares identical
+\texttt{any} expressions and does not instantiate the compiler \\
+P versus NP & \OPEN & No implication of the form (7) has been established \\
+\bottomrule
+\end{tabularx}
+}
+\end{center}
+
+\section{Required revision to the proof spine}
+
+The honest strongest spine should state:
+\begin{resultbox}
+If $P=NP$ forced a near-linearly constructible, all-input generated exact OR
+cover of sublinear circuit size and sufficiently small output width, then the
+cover could be compiled directly, without the assumed SAT decider, into an
+ordinary strict-power SAT successor.  Fixed-depth reapplication would reach
+the forbidden Williams region.  The forcing implication remains open.
+\end{resultbox}
+
+OR-MUX-COMPILE1 remains a useful exact sharing lemma for explicit portfolios.
+It removes a factor $q$ from repeated copies of a fixed circuit.  It does not
+remove the explicit cover volume, and the compact-generator variant removes
+that volume only by assuming the missing semantic compression in circuit
+form.
+
+% END_OF_IMMUTABLE_REPORT::RED::OR-MUX-SHARE1
+\end{document}

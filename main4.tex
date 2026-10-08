@@ -986,11 +986,224 @@ SAT-specific finite-hitting premise, the joint WRAPPER implication, and
 P versus NP remain \textsc{Open}.
 % END WRP-0004 FIXED PHASE REVIEW 2026-10-07
 
+% BEGIN FINAL LINK2 ARC RECONCILIATION 2026-10-08
+\section{FINAL-LINK2: typed epochs, layout accounting, and generator collapse}
+
+The second final-link pass preserves the max-affine ARC deduction but
+changes the most useful formulation of its missing premise.  A successful
+step need not be a source-only restriction cover at every raw operation.  It
+may be a finite charged epoch containing direct VALUE exits, typed recursive
+exits, and same-scale administrative transitions.  After the entire epoch is
+collapsed, however, its least time and space budgets must be computed on one
+realization, and every feasible recurrent macro-cycle must contract.
+
+For a finite type set, let an edge $e:i\to j$ have physical child scale
+$\theta_e\in[0,1]$, fanout exponent $f_e$, one-time per-child
+generation/acquisition exponent $g_e$, per-unit recursive simulation/access
+overhead $u_e$, recursive time weight $w_e=f_e+u_e$, and retained-parent-state
+exponent $h_e$.  Let $R_i$ and $P_i$ contain all nonrecursive time and
+live-space charges of type $i$.  In particular, $R_i$ contains $f_e+g_e$ in
+addition to shared discovery, failed trials, VALUE work, and combination;
+$P_i$ contains either an explicit child buffer of exponent $\theta_e$ or the
+state of its virtual decoder/generator.  The exact Bellman ledger is
+\begin{align}
+ C_i&\ge R_i,& C_i&\ge w_e+\theta_e C_j,\label{eq:fl2-bellman-time}\\
+ \rho_i&\ge P_i,& \rho_i&\ge h_e,&
+ \rho_i&\ge\theta_e\rho_j.\label{eq:fl2-bellman-space}
+\end{align}
+Source rereads and one-time replay belong in $R_i$; repeated decoder or replay
+work belongs in $u_e$.  A parent-scale VALUE query is a scale-one solver edge,
+not a local constant.
+
+\begin{theorem}[Typed-epoch ARC criterion]
+Suppose one fixed uniform constructor gives every CNF a source-checkable
+finite epoch whose terminal channels are correct VALUE exits or recursively
+closed typed exits.  Let $I_0$ be the fixed set of possible entry types.  If
+every feasible reachable recurrent cycle has scale product below one and the
+least Bellman solution of
+\eqref{eq:fl2-bellman-time}--\eqref{eq:fl2-bellman-space} satisfies
+\[
+ \max_{i\in I_0}C_i+\max_{i\in I_0}\rho_i<2\cos(\pi/7),
+\]
+then the recursively closed epoch itself defines a uniform exact SAT
+algorithm in the Williams-forbidden region.  If the epoch is instead used as
+one compiler stage, this conclusion additionally requires uniform closure
+under finite composition with the same charged constants.
+\end{theorem}
+
+The implication is \textsc{Proved/Exact}.  The all-input epoch constructor is
+\textsc{Open}.  Same-scale raw steps can be absorbed only when a proved
+source-checkable potential bounds their total number, cost, depth, and live
+state.  Average-over-input amortization is insufficient for a worst-case SAT
+algorithm.
+
+\subsection{A block-layout gate at the aggregate-linear boundary}
+
+The equality $qL=M^{1+o(1)}$ shows that source size alone does not obstruct a
+streamed cover.  It does expose a scheduling distinction.  Let
+\[
+ q=M^{a+o(1)},\qquad L=M^{b+o(1)},\qquad
+ B=M^{\delta+o(1)}
+\]
+with $a\ge0$, $0\le b<1$, and $0\le\delta\le a$, where $B$ children are
+buffered together.  In the optimistic block-transpose schedule, blocks are
+sequential, the source is read-only random access and scanned once per block,
+and routing inside the selected block is output-sensitive.  Assume no live
+state beyond the buffer and active recursive call, and recursive closure of
+this same schedule at every child scale.  The fully charged recurrence is
+\[
+ C\ge\max\{1+a-\delta,a+b,a+bC\},\qquad
+ S\ge\max\{b+\delta,bS\}.
+\]
+Its least exponent ledger is
+\[
+ C(\delta)=\max\left\{1+a-\delta,\frac{a}{1-b}\right\},
+ \qquad S(\delta)=b+\delta.
+\]
+
+\begin{theorem}[BATCH-LAYOUT-GATE1]
+For the preceding parameter range,
+\[
+ \min_\delta(C(\delta)+S(\delta))=
+ \begin{cases}
+  1+a+b,&b\le 1/(1+a),\\
+  b+a/(1-b),&b>1/(1+a).
+ \end{cases}
+\]
+In particular, $a+b=1$ with $b<1$ implies
+\[
+ \min_\delta(C(\delta)+S(\delta))=2>
+ 2\cos(\pi/7).
+\]
+\end{theorem}
+
+\begin{proof}
+Put $A=1+a$ and $D=a/(1-b)$.  The objective is
+$\max\{A-\delta,D\}+\delta+b$.  It is the constant $A+b$ while
+$A-\delta\ge D$ and is $D+\delta+b$ afterward.  If $D>A$, its minimum is
+$D+b$ at $\delta=0$; if $D\le A$, its minimum is $A+b$ (the formulas agree
+when $D=A$).  The inequality
+$D>A$ is equivalent to $b>1/(1+a)$.  At equality both branches agree and the
+statement places the boundary in the first branch.  The omitted $a+b$ floor
+is redundant: the scan floor dominates it when $a+b\le1$, while
+$a/(1-b)\ge a+b$ when $a+b\ge1$.  On $a+b=1$ with $b<1$, the first branch
+applies and equals two.
+\end{proof}
+
+This is an exact obstruction only for the declared source-major block
+schedule.  A child-major online generator with one source pass would instead
+have the optimistic ledger
+\[
+ C=\max\{1,a/(1-b)\},\qquad S=b,
+\]
+which gives $C+S=1+b$ when $a+b=1$.  Thus the theorem does not rule out the
+desired cell.  It proves that aggregate-linear output volume alone is not
+enough: the missing construction must provide child-major semantic routing,
+a stronger shared representation, or a different typed epoch.
+
+\subsection{One-copy OR compilation and its correction}
+
+Fix one assumed polynomial SAT decider $A$ with certified time exponent $K$.
+For $q$ explicit $m$-bit CNFs $G_1,\ldots,G_q$, a selector multiplexer and one
+unrolled circuit for $A$ give an ordinary Tseitin CNF $Q$ satisfying
+\[
+ \SAT(Q)=\bigvee_{i=1}^q\SAT(G_i),\qquad
+ |Q|=m^{K+o(1)}+O(qm)\operatorname{polylog}(qm).
+\]
+This OR-MUX identity is \textsc{Proved/Exact}; circuitization of a fixed
+time-$T$ computation has $T\operatorname{polylog}T$ size in the relevant
+upper-bound construction \cite{pippengerfischer1979}.  It replaces $q$
+copies of the solver circuit by one.  At the equality-volume boundary
+$qm=M^{1+o(1)}$, however, the returned CNF is still parent-scale.
+
+Suppose instead that a source-specific circuit $E_F(z)$ of size
+$M^{h+o(1)}$ outputs an entire legal $M^{b+o(1)}$-bit child and satisfies
+\[
+ \SAT(F)\iff\exists z\;\SAT(E_F(z)).\tag{GC}
+\]
+The initial fixed-machine analysis composed $E_F$ with $A$.  A red-team
+correction shows that this gives no machine-specific advantage.
+
+\begin{theorem}[GENERATOR-COLLAPSE1]
+For an ordinary self-delimiting CNF encoding, assume $0<2b\le h<1$.  For
+every selector value, let $E_F$ in (GC) output a legal padded CNF of length at
+most $M^{b+o(1)}$.  Count every selector terminal, output terminal, embedded
+source bit, constant, gate, and wiring-description bit in
+$|E_F|\le M^{h+o(1)}$.  Suppose a uniform constructor for $E_F$ uses time
+$M^{r_E+o(1)}$ and space $M^{p_E+o(1)}$.  Then a uniform CNF witness verifier
+composed with $E_F$ and Tseitin encoded yields an ordinary CNF $Q_F$ such that
+\[
+ \SAT(Q_F)=\SAT(F),\qquad |Q_F|=M^{h+o(1)},
+\]
+and materializing $Q_F$ takes time
+$M^{\max\{r_E,h\}+o(1)}$ and space
+$M^{\max\{p_E,h\}+o(1)}$.
+No assumed SAT decider is needed.  Conversely, an ordinary shrinker gives a
+degenerate generated cover with one selector value, but its output width need
+not satisfy the stronger $2b\le h$ premise above.
+\end{theorem}
+
+\begin{proof}
+Leave $z$ and a proposed assignment $y$ existentially free.  A uniform
+bounded-fan-in circuit verifies in $M^{2b+o(1)}$ gates that $y$ satisfies the
+CNF encoded by $E_F(z)$, using a conservative quadratic check that equal
+encoded variable identifiers receive consistent witness bits.  Composing it
+with $E_F$ has
+$M^{\max\{h,2b\}+o(1)}=M^{h+o(1)}$ gates.  Constrain the verifier output to one
+and apply the gate-by-gate Tseitin transformation.  Existential projection
+gives (GC), and the encoding and wiring logarithms are absorbed by $o(1)$.
+The constructor work is followed by at most $M^{h+o(1)}$ verifier and output
+work; retaining the explicit output adds $M^{h+o(1)}$ live bits.  This gives
+the stated time and space maxima.
+The representational converse takes $E_F$ to output the already constructed
+$Q_F$; then both its circuit scale and output-width scale are $h$, so it does
+not in general satisfy $2b\le h$.
+\end{proof}
+
+This theorem is \textsc{Proved/Exact}.  It supersedes the interpretation that
+a compact legal-child generator exploits the assumed machine $A$.  Such a
+generator already entails the missing SAT-preserving shrinker and may impose
+a stronger output-width contract.
+OR-MUX remains useful for sharing explicit evaluations, but it does not
+convert the equality-volume cover into a contraction.
+
+\subsection{Current ARC status}
+
+The exact recurrence recovered from PRF2-0155 and RECURCLOSE1 still removes
+the unknown starting exponents once a strict recursively closed shrinker
+exists.  For a map with output scale $h<1$, root construction exponent $r$,
+and live-space exponent $p$, fixed-depth reapplication of a seed
+$(K,L)$ gives
+\[
+ t_d\le\max\{r,Kh^d\},\qquad
+ s_d\le\max\{p,h,Lh^d\}.
+\]
+At $(h,r,p)=(2/3,1,2/3)$, a fixed $d$ yields the conditional point
+$(1,2/3)$ and sum $5/3<2\cos(\pi/7)$.  This is exactly where the original
+``divide the $2^K$ contribution by repeated $2^x$ shrinkage'' reasoning
+belongs.  It eliminates the leaf exponent after contraction has been
+acquired; it does not construct or cheaply acquire the first contraction.
+
+The executable audits add 9,598 typed-ledger checks, 1,020 red-team checks,
+709 exact shared-trie residual recoveries, 8,064 semantic-antichain checks,
+5,904 OR-multiplexer identity checks, 372 tableau calculations, and 12,443
+layout-grid checks, all with zero reported semantic or arithmetic errors.
+These are \textsc{Computational} checks of the stated finite models.  They do
+not establish the universal epoch or shrinker.
+
+The present ARC conclusion is unchanged: no recovered result proves the
+all-input charged successor, and P versus NP remains \textsc{Open}.  The
+advance is a sharper dichotomy.  Source-major block scheduling is outside the
+endpoint at equality volume, while a compact exact legal-child generator with
+$2b\le h$ already entails the desired ordinary shrinker.  Any genuinely new
+$A$-dependent route must therefore derive a favorable epoch from the code of
+one selected $A$ without simply assuming a sublinear exact existential
+circuit for the source.
+% END FINAL LINK2 ARC RECONCILIATION 2026-10-08
+
 \bibliographystyle{plain}
 \bibliography{spines}
 \end{document}
-
-
 
 
 
