@@ -1,0 +1,57 @@
+% RSR-0005 WRAPPER review, 2026-10-08.
+\section{Source-visible two-pass realization of the restricted VALUE member}
+RSR-0005 searched GitHub and connected Drive for the file-first executable
+claimed in ARC-0005-ORBIT.  The report and manuscript text were present, but
+the executable and raw scanner output were not.  That historical
+implementation remains unsynchronized.  An independent implementation now
+exists at
+\path{experiments/proof_spines/density_php_file_recognizer.py}, with raw
+record
+\path{results/raw/proof_spines/2026-10-08_062349_density_php_file_recognizer.json}.
+
+\paragraph{Exact contract.}
+On every byte string the procedure returns FAIL or VALUE.  It accepts only a
+canonical DIMACS subset consisting of a header, $p\ge2$ positive clauses of
+one width $h\ge2$, followed by strictly lexicographically ordered negative
+binary clauses.  Its streaming tokenizer has a fixed chunk and an
+$O(\log M)$ token buffer; the first pass stores no row, vertex, or edge array.
+It checks bounded tokens, clause order, duplicate-freedom, header counts,
+$n=ph$, balance $h/2\le p\le2h$, and $e=h\binom p2$.  Therefore
+$32e^2\ge n^3$ before any indexed allocation.
+
+Only after that gate, a second pass allocates parent, component-size, degree,
+and row arrays.  It verifies that the negative graph has exactly $h$
+components, each of size $p$ and degree $p-1$, and that every component has
+exactly one variable from each positive row.  Simple-graph uniqueness plus
+degree $p-1$ makes every component a clique.  The verified formula is thus a
+renamed rectangular pigeonhole instance, so its exact value is $p\le h$.
+
+Because $e=\Omega(n^{3/2})$ and $e\le M$, all post-gate arrays and the
+$n$ sorted incidence pairs use $O(n\log M)=M^{2/3+o(1)}$ bits.  Two scans,
+union--find, and sorting cost $M^{1+o(1)}$ time.  These statements are
+\textsc{Proved/Exact} for the declared canonical encoding and this source;
+the executed tests are separately \textsc{Computational}.  The largest test,
+$\operatorname{PHP}(49,48)$, again had exactly 747,904 source bytes, and all
+nine small dimension cells, four large cases, and nine hostile controls
+passed.  Padding, malformed tokens, duplicates, deleted constraints, wrong
+incidence, balance removal, and independent products safely returned FAIL.
+
+The semi-streaming definition of Feigenbaum et al. is an exact model
+correspondence for the $O(n\operatorname{polylog}n)$ graph workspace
+\cite{rsr0005Semistream}.  Reingold's \textsc{Known Theorem} gives
+deterministic logspace undirected connectivity \cite{rsr0005Reingold}, but its
+polynomial-time random-access realization is a failed transfer to the desired
+near-linear file ledger.  Beame's \textsc{Known Theorem}
+$TS=\Omega(n^2)$ for unique elements and sorting in the stated branching-
+program/sequential-machine models \cite{rsr0005Beame} applies if one replaces
+canonical edge order by generic sorting; the present parser avoids that step
+by restricting its accepted encoding.  No theorem here supplies general-SAT
+coverage.
+
+Sequential prefix composition is unchanged:
+\[
+ (t,s)\longmapsto(\max\{1,t\},\max\{2/3,s\}).
+\]
+Consequently the realized member neither crosses the golden-ratio product
+endpoint nor supplies subpolynomial space.  The all-input inner construction,
+the joint WRAPPER implication, and P versus NP remain \textsc{Open}.
