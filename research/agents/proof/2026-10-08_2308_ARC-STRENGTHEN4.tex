@@ -1,0 +1,280 @@
+% PNP RESEARCH REPORT::ARC-STRENGTHEN4::2026-10-08T23:08:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\DTISP}{\operatorname{DTISP}}
+\title{ARC-STRENGTHEN4: A Local Fixed-Layout CNF1 Adapter\\and the Remaining Cook-Stream Obligation}
+\author{ARC proof-strengthening agent}
+\date{8 October 2026 UTC}
+
+\begin{document}\sloppy\maketitle
+
+\paragraph{Status.}
+The indexed-3CNF-to-CNF1 adapter and its simultaneous time--space ledger are
+\textsc{Proved/Exact}.  The finite test is \textsc{Computational}.  The
+identification of the locally bit-accessible FLMV Cook formula with the
+clause-indexed input required by the adapter is still \textsc{Open}.  Thus no
+unrestricted SAT transition, no finite ARC entry, and no proof that
+$P\ne NP$ is claimed.  Conditional elimination of the starting exponent
+$K$ remains intact.  The retired unrestricted
+$t+s<2\cos(\pi/7)$ endpoint is not used.
+
+\section{Selected barrier and primary endpoint}
+
+The selected target is the exact encoding/model guard identified by the
+latest red-team report.  A completed WRAPPER phase acts on the project's
+binary \texttt{CNF1} strings, whereas the primary lower bound states its
+transfer for its SAT representation.  A materialized quasi-linear reduction
+can consume more than the desired square-root workspace.  The transfer must
+therefore be local: a simulated SAT machine asks for a source bit, and that
+bit is regenerated without storing the whole source.
+
+Fortnow, Lipton, van Melkebeek and Viglas (FLMV) use deterministic
+random-access Turing machines with a read-only indexed input tape.  Work and
+index tapes are charged; the input tape and one-way write-only output tape are
+excluded from space.  Their Theorem~3.1 states that for a fixed constant $r$,
+\[
+ \SAT\in\DTISP[t,s]
+ \quad\Longrightarrow\quad
+ \operatorname{NTIME}[n]\subseteq
+ \DTISP\!\left[t(n\log^r n)\log^r n,
+                s(n\log^r n)+\log n\right].                 \tag{1}
+\]
+Its proof constructs a formula of length $d n\log n$ and computes each
+requested formula bit in polylogarithmic time and $O(\log n)$ simultaneous
+space, rather than materializing the formula.  Their Corollary~5.8 is exactly
+\[
+ \operatorname{NTIME}[n]\not\subseteq
+ \DTISP\!\left[n^c,o\!\left(n^{d(c)}\right)\right],
+ \qquad
+ d(c)=\frac12\left(\frac{c+2}{c^2}-c\right),
+ \quad 1<c.                                                  \tag{2}
+\]
+At $c=1201/1000$,
+\[
+ d(c)=\frac{1468676399}{2884802000}
+      \approx 0.5091082157>\frac12.                          \tag{3}
+\]
+Thus an actual all-input SAT machine with joint bounds
+$N^{6/5+o(1)}$ time and $N^{1/2+o(1)}$ space would enter this primary
+forbidden region after the local transfer.  Equation~(2), not the retired
+cosine endpoint, is the only endpoint used here.
+
+Primary source: L.~Fortnow, R.~Lipton, D.~van Melkebeek and A.~Viglas,
+\emph{Time-space lower bounds for satisfiability}, JACM 52(6), 835--865
+(2005), Sections 2.1, 3.1 and Corollary 5.8,
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.
+
+\section{The exact local adapter}
+
+The project encoding is the following canonical byte stream.  It begins with
+the four bytes \texttt{CNF1}; unsigned canonical ULEB128 integers give the
+largest variable identifier and the clause count; each clause contains its
+ULEB128 width followed by its nonzero signed literals under zig-zag coding.
+The complete encoded bit length is the input length $N$.  Malformed bit
+strings are rejected by the outer total-language parser.
+
+\begin{theorem}[INDEXED-3CNF-TO-CNF1]\label{thm:adapter}
+Fix one input $x$ of length $n$.  Suppose that $Q_x$ is a 3CNF with exactly
+three literal occurrences in every clause, $q\ge1$ variables and $C$ clauses,
+where
+\[
+ q,C\le n\log^{O(1)}n.                                      \tag{4}
+\]
+Suppose one uniform oracle returns the sign and identifier of occurrence
+$(j,r)\in[C]\times[3]$ in $\log^{O(1)}n$ time and $O(\log n)$ workspace, and
+$q,C$ are computable within the same bounds.  Then one can produce a
+satisfiability-equivalent \texttt{CNF1} string $R_x$ such that:
+\begin{enumerate}
+\item $|R_x|=n\log^{O(1)}n$ bits;
+\item every requested bit of $R_x$ is computable uniformly in
+      $\log^{O(1)}n$ time and $O(\log n)$ workspace;
+\item the construction stores neither $Q_x$ nor $R_x$ and uses no oracle for
+      satisfiability.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+For a positive integer $u$, canonical ULEB128 has exactly $b$ bytes precisely
+when
+\[
+ 2^{7(b-1)}\le u<2^{7b}.                                    \tag{5}
+\]
+Choose the least $b\ge1$ with $q\le2^{7b-3}$ and put
+$A=2^{7b-3}$.  Rename every variable $v\in[q]$ injectively to $A+v$, keeping
+its sign.  Under the convention
+\[
+ \operatorname{zz}(+u)=2u,
+ \qquad
+ \operatorname{zz}(-u)=2u-1,                                \tag{6}
+\]
+every renamed signed literal has zig-zag value $z$ satisfying
+\[
+ 2A+1\le z\le4A=2^{7b-1}<2^{7b},
+ \qquad 2A+1>2^{7(b-1)}.                                    \tag{7}
+\]
+Hence every signed literal occupies exactly $b$ ULEB bytes.  The largest
+identifier $A+q\le2A$ also has $b$ bytes.  Because the clause width is always
+three, each clause record has the fixed byte length
+\[
+ L=1+3b.                                                     \tag{8}
+\]
+The choice of $b$ gives $A<128q$ when $q>1$ (and $A=16$ when $q=1$), so
+$b=O(\log(q+1))$ and
+\[
+ |R_x|=8\bigl(4+b+|\operatorname{ULEB}(C)|+C(1+3b)\bigr)
+       =n\log^{O(1)}n.                                      \tag{9}
+\]
+
+To answer a requested byte, first compute the $O(\log n)$-bit header.  After
+the header, divide the byte offset by $L$ to obtain a clause index and an
+in-record offset.  Offset zero is the one-byte width.  Otherwise a division
+by $b$ identifies one of the three literal occurrences and one of its $b$
+ULEB bytes.  Invoke the supplied occurrence oracle once, add $A$, apply
+(6), and emit the selected ULEB byte or selected bit.  Arithmetic on
+$O(\log n)$-bit integers takes polylogarithmic time and $O(\log n)$ space on
+the declared random-access model.  The variable renaming is a bijection
+between assignments on variables appearing in $Q_x$ and assignments on the
+renamed set, so satisfiability is preserved.
+\end{proof}
+
+\begin{corollary}[virtual-input simulation]
+If a deterministic random-access machine decides all \texttt{CNF1} strings
+of length $M$ in time $t(M)$ and space $s(M)$, then on the indexed formulas
+of Theorem~\ref{thm:adapter} it can be simulated in
+\[
+ t(n\log^{O(1)}n)\log^{O(1)}n
+ \quad\hbox{time and}\quad
+ s(n\log^{O(1)}n)+O(\log n)\quad\hbox{space}.                \tag{10}
+\]
+All simulator state, the simulated input index, division temporaries and the
+one occurrence returned by the oracle are included.  The simulated machine's
+work and index tapes remain live at the same time, so (10) is a joint
+same-machine bound rather than separate witnesses.
+\end{corollary}
+
+\begin{proof}
+Keep the CNF1 machine's charged state and replace each read of its virtual
+read-only input by the local bit procedure above.  This multiplies time by a
+polylogarithm and adds $O(\log n)$ live workspace.  It never writes the
+virtual input to a work tape.
+\end{proof}
+
+\section{What this closes and what it does not}
+
+The theorem closes a genuine part of the endpoint guard: variable-length
+ULEB literals do not themselves force a prefix scan.  An injective offset
+renaming makes the body fixed-layout while increasing length by only a
+polylogarithmic factor.  It also shows that annotation marker clauses need
+not be stripped before an endpoint use.  They are ordinary tautologies and
+can remain in an ordinary CNF1 formula.  A promise-only marked solver,
+however, is not an all-input CNF1 solver.
+
+One source-checkable link remains.  FLMV prove local access to a Boolean
+formula bit.  The cited statement does not specify a clause-indexed 3CNF
+stream or a local map from an arbitrary requested position in their formula
+serialization to a clause/literal pair.  A generic conversion from an
+arbitrary variable-length formula stream to CNF1 can require prefix
+rank/select information; the currently justified fallback scans
+$\Theta(N)$ bits.  Therefore this report does \emph{not} claim arbitrary
+bidirectional local transcoding.
+
+The precise remaining lemma is:
+\[
+\boxed{\begin{minipage}{0.86\linewidth}
+For the oblivious Cook--Pippenger--Fischer tableau used in the proof of
+FLMV Theorem~3.1, construct directly a clause-indexed exactly-3CNF stream of
+quasi-linear encoded size whose $(j,r)$ literal is computable in
+polylogarithmic time and $O(\log n)$ space, or prove an equivalent local
+locator for the serialization actually used there.
+\end{minipage}}                                               \tag{11}
+\]
+This is a narrowly isolated implementation lemma, but it remains a
+load-bearing premise and is not promoted to \textsc{Proved} here.
+
+\section{Hostile controls on the latest construction portfolio}
+
+The independent audit supplied two controls that prevent this encoding
+advance from being mistaken for an all-input construction.
+
+First, for $m\ge3$, take cyclic triples
+$T_i=\{a_i,b_i,a_{i+1}\}$ and encode one complete three-variable parity
+constraint on each $T_i$.  The resulting 3CNF has $2m$ variables and $4m$
+clauses, is connected and satisfiable, has no common parity hub, is not Horn,
+and has no strong Horn backdoor of size two.  Indeed a strong Horn backdoor
+must meet every $T_i$ in at least two variables, while each variable occurs
+in at most two triples, so its size is at least $m$.  Thus the updated finite
+portfolio still returns UNKNOWN on an infinite easy affine family.  The
+first member of this family has six variables and twelve clauses; no global
+minimality claim is made.
+
+Second, the current parity-star implementation performs at least $16m^2$
+clause-pair probes on this UNKNOWN family.  Since its CNF1 length is
+$N=\Theta(m\log m)$, this is
+\[
+ \Omega\!\left(\frac{N^2}{\log^2N}\right),                  \tag{12}
+\]
+which exceeds the desired $N^{6/5+o(1)}$ local phase budget.  Parallel
+execution does not remove deterministic work.  This member must be capped,
+replaced, or optimized before inclusion in a favorable all-input phase; a
+cap forfeits complete recognition of its asymptotic positive family.
+
+The audit also confirmed the exact quantifier for stagewise ARC transitions:
+each selected fixed stage must supply one uniform all-length, all-input SAT
+machine jointly attaining its time and space bounds.  Per-length machines,
+per-input portfolio members, and promise domains do not establish an ARC
+point.  The present flat marked syntax is not literally hereditary because
+parent data clauses forbid reserved tags 1 and 2 while child markers use
+those tags.  A proposed nested repair is therefore only a candidate until a
+new quoted/fresh-tag grammar and its charged renumbering ledger are written.
+
+\section{Bounded reproducible validation}
+
+The companion test
+\path{research/agents/proof/2026-10-08_2308_ARC-STRENGTHEN4-test.py}
+uses seed \texttt{0xa7c2026}.  In 0.034 seconds it checked ten identifier-width
+boundary families, 320 small formulas by brute-force semantic comparison,
+and all 15,956 addressed bytes against materialized CNF1 output.  Every
+zig-zag literal occupied the predicted fixed width.  The aggregate output
+SHA-256 was
+\texttt{fbd127471d088a25c5de269f9e4bf615a1374e9b3f8705248df0fbab59dbb195}.
+The exact result is recorded in the companion JSON.  These checks validate
+the executable adapter, not the missing Cook-stream lemma and not an
+all-input WRAPPER.
+
+\section{Proof-spine update and next target}
+
+The strongest defensible spine is now:
+\begin{enumerate}
+\item \textsc{Proved/Exact}: a completed all-input phase satisfying the
+      relaxed ledger recursively composes to one joint
+      $(6/5,1/2)$ SAT machine, with conditional $K$ elimination.
+\item \textsc{Proved/Exact}: an indexed exact-3CNF stream locally converts to
+      the project's total CNF1 language with only polylogarithmic overhead.
+\item \textsc{Primary-source verified}: such an unrestricted joint machine,
+      after a complete local transfer, contradicts FLMV Corollary~5.8.
+\item \textsc{Open}: prove the clause-indexed Cook-stream lemma (11).
+\item \textsc{Open and separation-strength}: from $\SAT\in P$, construct on
+      every general CNF1 input a favorable all-input phase before any
+      parent-scale semantic query.  Existing replay solves general inputs
+      exactly but does not meet the favorable ledger; marked and nested
+      constructions remain promise-relative without cheap acquisition.
+\end{enumerate}
+
+The next ARC target is (11).  The next Construction target remains the
+all-input PRE-A acquisition edge.  Closing only (11) would verify the endpoint
+transfer but would still leave $P$ versus $NP$ \textsc{Open}.
+
+\paragraph{Corpus reviewed.}
+Current \texttt{main4.tex}, \texttt{main5.tex}, \texttt{AGENTS.md},
+\texttt{CODEX.md}, the repository research skill and protocol,
+\texttt{FORMAL-SPINE1}, and the latest Construction, Recovery, ARC and
+Red-Team reports were read.  The primary FLMV paper was checked directly.
+The most recent peer handoffs were independently reconciled above.
+
+% END_OF_VERIFIED_REPORT::ARC-STRENGTHEN::ARC-STRENGTHEN4
+\end{document}
