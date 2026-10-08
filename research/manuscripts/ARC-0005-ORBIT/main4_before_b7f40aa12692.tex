@@ -1,0 +1,1404 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{hypothesis}[theorem]{Open hypothesis}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\R}{\mathcal R_{\SAT}}
+\newcommand{\B}{\mathcal B}
+\title{Achievable-Region Contraction for SAT:\\A Conditional Proof Spine and Its Open Components}
+\author{PNP research project: ARC working manuscript}
+\date{October 8, 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+This manuscript records an existence-level route toward a contradiction from
+$P=NP$. Its central premise is an unproved SAT-specific improvement theorem
+for joint deterministic time-space bounds. We prove the scalar and matrix
+iteration implications, state the exact endpoint and uniformity obligations,
+and identify what a concrete WRAPPER could contribute. This is a conditional
+research framework, not a proof of $P\ne NP$. Numerical checks verify the
+arithmetic and demonstrate failures of weakened hypotheses; they do not
+establish the open SAT-specific premise.
+\end{abstract}
+
+\section{Status, provenance, and the logical target}
+The internal source PROOF-SYNTHESIS-0013 explicitly replaces a universal
+source-code compiler requirement by language-level achievable-region
+contraction \cite{arc0013}. PRF2-0155 supplies the affine iteration component
+\cite{prf20155}. The concrete recursive WRAPPER route is developed separately
+in \texttt{main5.tex}; its conditional composition source is PRF3-0018
+\cite{prf30018}. The present route may be justified by such a construction,
+but does not require rewriting every implementation of a SAT solver.
+
+We distinguish four statuses throughout. \textsc{Established endpoint} means
+a cited external theorem with its model restrictions. \textsc{Proved
+conditional lemma} means a mathematical implication proved here, with its
+premises retained. \textsc{Open hypothesis} means the needed SAT theorem has
+not been established. \textsc{Computational check} means a finite executable
+sanity check, which cannot establish a universal asymptotic claim.
+
+The proposed implication is
+\[
+ (P=NP)\ \land\ H_{\mathrm{ARC}}\ \Longrightarrow\ \bot.
+\]
+Until $H_{\mathrm{ARC}}$ is proved, this is not a separation. Proving
+$P=NP\Rightarrow H_{\mathrm{ARC}}$ would also suffice; an unconditional
+construction is not logically required.
+
+\section{The joint achievable region}
+Fix a deterministic random-access model compatible with the endpoint below,
+an ordinary explicit SAT encoding, and input length $N$. Space and time are
+measured simultaneously on one implementation. Any simulations or encoding
+changes must be charged before applying the endpoint.
+\begin{definition}
+The finite polynomial achievable region is
+\[
+\R=\left\{(t,s)\in\mathbb R_{\ge0}^2:
+\begin{array}{l}
+\exists\text{ one uniform exact SAT machine }A,\\
+T_A(N)\le N^{t+o(1)},\quad S_A(N)\le N^{s+o(1)}
+\end{array}\right\}.
+\]
+All asymptotic upper bounds are worst-case over inputs of the given length.
+\end{definition}
+The word ``uniform'' excludes separate advice or an independently selected
+program at each input length. One fixed finite program must decide the whole
+language. The two coordinates may not be borrowed from different machines.
+
+\begin{lemma}
+The region $\R$ is upward closed. If $P=NP$, then $\R$ contains a finite point.
+\end{lemma}
+\begin{proof}
+A witness for $(t,s)$ also witnesses any componentwise larger bounds.
+Under $P=NP$, SAT has a fixed polynomial-time deterministic decider. Its
+ordinary workspace is polynomially bounded, and conversion to the fixed
+reasonable model costs at most a polynomial. Thus some finite pair is
+achievable.
+\end{proof}
+Adding artificial delay or copying instructions to a witness does not remove
+faster achievable points. This neutralizes objections based solely on the
+syntax of a deliberately slowed implementation. It does not produce any
+new fast witness.
+
+\section{The corrected external forbidden regions}
+Set
+\[
+\begin{aligned}
+ \gamma_0&=2\cos(\pi/7)=1.8019377358\ldots,\\
+ \phi&=\frac{1+\sqrt5}{2}=1.6180339887\ldots,
+ &\B&=\{(t,s):t+s<\phi\}.
+\end{aligned}
+\]
+The published full version of Williams's paper proves, for polynomially
+bounded simultaneous time and space on the declared random-access model,
+\[
+ T(N)S(N)=\Omega_{\mathrm{i.o.}}(N^{\phi-\epsilon})
+ \quad\text{for every }\epsilon>0 \cite[Theorem~4.11]{williams2010}.
+\]
+It also explicitly retracts the extended abstract's earlier claim that the
+universal product exponent was $\gamma_0$ \cite[Section~4.5,
+footnote~9]{williams2010}.  Separately, the established subpolynomial-space
+time lower bound uses $\gamma_0$ in the $N^{o(1)}$-workspace regime;
+$\gamma_0$ is not a general product half-plane
+\cite[Theorem~1.2]{williams2008mod}\cite[Theorem~3.25]{busswilliams2015}.
+
+There is a second endpoint important to the concrete WRAPPER route:
+Fortnow proves that, for every fixed $\varepsilon>0$, SAT cannot be solved
+simultaneously in $N^{1+o(1)}$ time and $N^{1-\varepsilon}$ space on the
+model-matched random-access machine \cite{fortnow2000}.  Hence the verified
+forbidden set used in this manuscript is the union of
+\[
+ t+s<\phi,
+ \qquad
+ t\le1\ \text{ and }\ s<1,
+ \qquad
+ s=0\ \text{ and }\ t<\gamma_0,
+ \tag{END}
+\]
+where each clause is invoked only with its cited model hypotheses.  In the
+middle clause, $s<1$ means that some fixed
+$\varepsilon>0$ has $s\le1-\varepsilon$; in the last clause, $s=0$ denotes
+$N^{o(1)}$ workspace.  In particular, $(1,2/3)$ is forbidden by Fortnow,
+although
+$1+2/3>\phi$.
+
+Here $N$ is actual encoded bit length, including headers, delimiters, binary
+identifiers, padding, and embedded constants.  The endpoint machine is one
+total uniform deterministic implementation; malformed encodings are rejected
+within the charged bounds \cite[Section~2.1]{fortnowetal2005}.  Input is read-only, every writable store and
+materialized recursive query is counted, and words contain $O(\log N)$ bits.
+Parallel branches are serialized and charged by total work.  Random streams,
+per-length seeds, advice, source pointers, and unbounded-word prime or hash
+operations are not free.  A representation change is admissible only after a
+bit-local $N^{1+o(1)}$ model simulation or a fully charged explicit
+conversion; generic polynomial equivalence is insufficient.
+
+For the product branch, if $t+s=\phi-\delta$ with $\delta>0$, the eventual
+upper product is at most $N^{\phi-3\delta/4}$.  Taking
+$\epsilon=\delta/2$ contradicts the infinitely-often lower bound.  No
+assertion at equality is used.
+
+\section{Scalar achievable-region contraction}
+\begin{hypothesis}[SAT-specific ARC, scalar sufficient form]
+Under the standing hypothesis $P=NP$, there exist fixed constants
+$0<\lambda<1$ and $c\ge0$ with
+\[
+ v_*:=\frac{c}{1-\lambda}<\phi
+\]
+such that every $z=(t,s)\in\R\setminus\B$ has some
+$z'=(t',s')\in\R$ satisfying
+\[
+ t'+s'\le\lambda(t+s)+c.
+ \tag{ARC}
+\]
+\end{hypothesis}
+The constants are independent of the point being improved and of input
+length. The witness for $z'$ can differ from the witness for $z$. ARC is an
+existence implication between uniform algorithms. It is not a rule selecting
+a convenient algorithm separately for each input. No recovered construction
+has established this hypothesis for general SAT.
+
+\begin{theorem}[Finite crossing, conditional on ARC]
+If ARC holds and $\R$ contains a finite point, then
+$\R\cap\B\ne\varnothing$.
+\end{theorem}
+\begin{proof}
+Start with $z_0\in\R$ and let $v_0=t_0+s_0$. If $z_0\in\B$, we are done.
+Otherwise choose the next witness by ARC, stopping if it enters $\B$.
+For every constructed stage,
+\[
+ v_r\le\lambda^r v_0+c\sum_{j=0}^{r-1}\lambda^j
+      =v_*+\lambda^r(v_0-v_*).
+\]
+If no previous stage has entered, choose a finite integer $r$ such that
+\[
+ \lambda^r(v_0-v_*)<\phi-v_*.
+\]
+Such an integer exists because the right side is positive. The inequality
+forces $v_r<\phi$, completing the proof.
+\end{proof}
+When $v_0>\phi$, any integer strictly greater than
+\[
+\frac{\log((v_0-v_*)/(\phi-v_*))}{\log(1/\lambda)}
+\]
+is sufficient. This bound is for proof analysis; the contradiction does not
+require an algorithm that first discovers the unknown starting exponents.
+
+\begin{theorem}[Conditional separation spine]
+The model-compatible endpoint, $P=NP$, and ARC imply a contradiction.
+\end{theorem}
+\begin{proof}
+The assumption supplies a finite point. The preceding theorem supplies a
+point in $\B$. The endpoint prohibits that point.
+\end{proof}
+
+\section{More general potentials and matrix contraction}
+For a different potential $V$, require an explicit threshold $\theta$ with
+$\{z:V(z)<\theta\}\subseteq\B$, not merely a claim that smaller potential
+``suggests'' improved resources. An affine contraction with fixed point
+below $\theta$ then gives the same finite-crossing argument.
+
+\begin{hypothesis}[Matrix sufficient form]
+There are an entrywise nonnegative matrix $M\in\mathbb R^{2\times2}$ and
+vector $d\ge0$ with spectral radius $\rho(M)<1$ such that
+\[
+ z_*=(I-M)^{-1}d\in\B,
+\]
+and for every $z\in\R\setminus\B$ some $z'\in\R$ satisfies
+$z'\le Mz+d$ componentwise.
+\end{hypothesis}
+\begin{lemma}[Matrix envelope]
+This matrix hypothesis and a finite achievable starting point force finite
+entry into $\B$.
+\end{lemma}
+\begin{proof}
+Define the upper envelope $u_0=z_0$ and $u_{r+1}=Mu_r+d$.
+Nonnegativity of $M$ implies inductively $z_r\le u_r$ until entry occurs.
+Also
+\[
+ u_r=z_*+M^r(z_0-z_*)\longrightarrow z_*.
+\]
+Since $\B$ is open relative to the nonnegative quadrant, $u_r\in\B$ for
+all sufficiently large $r$. Since $\B$ is downward closed,
+$0\le z_r\le u_r$ implies $z_r\in\B$.
+\end{proof}
+The actual witness sequence need not converge; convergence of its envelope
+is enough. Spectral radius less than one does not imply that $t+s$ decreases
+at each individual step. Non-normal matrices can exhibit transient growth.
+For a general proposed forbidden set, downward closure or another valid
+order-to-membership argument must be established. An upper bound near an
+arbitrary open set does not suffice.
+
+A multi-stage improvement cycle is another option. Its composite affine map
+must satisfy the required contraction and endpoint conditions, and every
+intermediate witness must have justified joint resource bounds. Contraction
+of only one selected stage cannot cancel uncharged expansion elsewhere.
+
+\subsection{Finite existential return cycles}
+The preceding multi-stage option admits an exact existence-level formulation
+that is weaker than requiring every phase to contract. It is useful when one
+transformation improves time while worsening space and a later transformation
+reverses that trade.
+
+\begin{definition}[Finite return witness]
+Fix an entrywise nonnegative matrix $P$ and vector $q\ge0$. A finite
+$(P,q)$-return witness for $z\in\R$ is a finite list
+\[
+ z=z^{(0)},z^{(1)},\ldots,z^{(m)}=w
+ \quad\text{with every }z^{(i)}\in\R
+ \quad\text{and}\quad
+ w\le Pz+q.
+\]
+The intermediate points may expand and the length $m$ need not be uniform.
+Each point must nevertheless be witnessed by one uniform exact SAT machine
+with joint time and space bounds.
+\end{definition}
+
+\begin{hypothesis}[SAT-specific finite return closure]
+There are fixed $P\ge0$ and $q\ge0$ with $\rho(P)<1$ and
+\[
+ z_*=(I-P)^{-1}q\in\B
+\]
+such that every $z\in\R\setminus\B$ has a finite $(P,q)$-return witness.
+\end{hypothesis}
+
+\begin{theorem}[Finite return-cycle crossing]
+If the finite return closure holds and $\R$ contains a finite point, then
+$\R\cap\B\ne\varnothing$.
+\end{theorem}
+\begin{proof}
+Start from a finite $z_0\in\R$. If it is outside $\B$, choose the endpoint
+$z_1$ of one finite return witness; continue only while the selected endpoint
+is outside $\B$. Define $u_0=z_0$ and $u_{r+1}=Pu_r+q$. Nonnegativity of
+$P$ gives $z_r\le u_r$ by induction. Moreover
+\[
+ u_r=z_*+P^r(z_0-z_*)\longrightarrow z_*.
+\]
+The open, downward-closed set $\B$ therefore contains $u_r$, and hence
+$z_r$, after finitely many outer returns. Only finitely many finite witness
+chains have then been selected, so their concatenation is finite.
+\end{proof}
+
+A checkable sufficient form uses a fixed sequence of phase bounds
+\[
+ z^{(i+1)}\le M_i z^{(i)}+d_i,\qquad i=0,\ldots,m-1,
+\]
+with $M_i,d_i$ entrywise nonnegative. The composite parameters are
+\[
+ P=M_{m-1}\cdots M_0,
+ \qquad
+ q=d_{m-1}+\sum_{j=0}^{m-2}M_{m-1}\cdots M_{j+1}d_j.
+\]
+Thus it is enough that this composite has $\rho(P)<1$ and its fixed point lies
+strictly in $\B$; no individual $M_i$ must be stable. For example,
+\[
+ M_0=\begin{pmatrix}2&0\\0&1/5\end{pmatrix},\quad
+ M_1=\begin{pmatrix}1/5&0\\0&2\end{pmatrix},\quad
+ d_0=d_1=\binom{1/20}{1/20}
+\]
+give $P=(2/5)I$, $q=(3/50,3/20)^T$, and
+$z_*=(1/10,1/4)^T\in\B$, although each phase matrix has spectral radius two.
+This is an arithmetic model, not a SAT transformation.
+
+The quantifiers are important. Under $P=NP$ one first chooses one finite
+achievable pair. The return hypothesis then supplies finitely many further
+uniform-machine witnesses, possibly different at every stage. It does not
+require a universal procedure that accepts arbitrary source code and emits
+the next machine. Williams's staged Circuit-SAT self-improvement gives a
+concrete precedent for finite algorithm-to-algorithm bootstrapping, but its
+theorems do not establish the return hypothesis for ordinary SAT in the
+$P=NP$ regime; the paper lists extension to that regime as open
+\cite{williams2024}.
+
+This theorem also does not cover a single solver that performs
+$J(N)\to\infty$ transformations as input length grows. That is a growing-depth
+uniform algorithm and still needs an effective schedule, uniform error rates,
+and charged access as in PRF3-0018. In contrast, the number of returns above
+is a finite constant after the starting exponent pair has been fixed. A
+strictly decreasing sequence alone remains insufficient: the values
+$\phi+2^{-r}$ never enter $\B$.
+
+Common Lyapunov functions for arbitrarily switched linear systems provide a
+useful control-theory analogy, including the fact that polynomial Lyapunov
+degree need not be uniformly bounded \cite{mason2004}. This is not a theorem
+transfer: arbitrary physical switching is a different quantifier from the
+existential choice of uniform SAT witnesses, and it supplies no SAT-specific
+successor relation.
+
+\subsection{Cofinal seed hitting: a weaker sufficient hypothesis}
+The global closure hypotheses above are stronger than the contradiction
+argument needs.  Upward closure lets one replace an unknown achievable point
+by one member of any componentwise cofinal family, after which only one finite
+route from that fixed seed is required.
+
+\begin{definition}[Cofinal seed family]
+A set $H\subseteq\mathbb R_{\ge0}^2$ is componentwise cofinal if, for every
+finite $z\in\mathbb R_{\ge0}^2$, some $h\in H$ satisfies $z\le h$.  A finite
+$H$-route from $h$ is a list
+\[
+ h=z^{(0)},z^{(1)},\ldots,z^{(m)}
+\]
+such that every $z^{(i)}\in\R$ and $z^{(m)}\in\B$.
+\end{definition}
+
+\begin{theorem}[COFINAL-SEED-HITTING1]\label{thm:cofinal-seed-hitting}
+Assume the endpoint theorem applies in the fixed model.  If there is a
+componentwise cofinal set $H$ such that every $h\in H\cap\R$ has a finite
+$H$-route into $\B$, then $P\ne NP$.
+\end{theorem}
+\begin{proof}
+Suppose instead that $P=NP$.  Then some finite $z\in\R$.  Choose $h\in H$
+with $z\le h$.  Upward closure gives $h\in\R$, so the premise supplies a
+finite route whose last point belongs to $\R\cap\B$, contradicting the
+endpoint theorem.
+\end{proof}
+
+In particular, it suffices to use
+\[
+ H=\{(K,K):K\in S\}
+\]
+for any unbounded $S\subseteq\mathbb N$, including the powers of two.  The
+route and its length may depend on the fixed cap $K$; no common affine map,
+common contraction factor, or effective source-code compiler is required.
+Every point on the selected route must still be witnessed by one uniform exact
+SAT machine with both resource coordinates.  Thus the new load-bearing
+hypothesis is the existence of such SAT-specific routes for a cofinal seed
+family.  That hypothesis is \textsc{open}.
+
+The weakening is strict at the level of arithmetic models.  For powers of two
+$K$, start at $(K,K)$ and repeatedly multiply both coordinates by
+$\lambda_K=(K-1)/K$.  Each fixed $K$ reaches $t+s<1$, hence enters $\B$, after
+finitely many steps, although $\sup_K\lambda_K=1$ and the route lengths are
+unbounded over $K$.  Exact-rational checks for $K=2,4,\ldots,256$ give route
+lengths $3,8,21,54,131,309,708,1594$.  This is not a SAT construction.
+
+There is also no growing-depth promotion.  Under $P=NP$, first one finite
+achievable point is fixed, then one fixed $K$ dominating it is chosen, and
+finally one fixed finite route is selected.  A prescription $K=K(N)$ or a
+route depth tending to infinity with the input length would instead require a
+single uniform scheduling and error-control argument and is outside
+Theorem~\ref{thm:cofinal-seed-hitting}.
+
+\section{Errors, finite iteration, and uniformity}
+Exponent coordinates are constants, whereas $o(1)$ is a function of input
+length. Expressions such as $z'\le Mz+d+o(1)$ must therefore be interpreted
+through actual machine resource bounds, or replaced by precise constant
+slack statements. They are not inequalities between fixed points and an
+unidentified error term.
+
+For example, a scalar guarantee with a fixed additive error $\eta$ yields
+limiting envelope $(c+\eta)/(1-\lambda)$. It is sufficient that
+\[
+ 0\le\eta<(1-\lambda)\phi-c.
+\]
+If the theorem permits arbitrarily small positive exponent slack, select
+one satisfying this strict inequality. After a finite number of stages,
+finitely many $o(1)$ bounds can be absorbed into a common eventual threshold.
+
+A finite chain of existential implications does not require a computable
+selector that outputs the next machine from the previous machine. Each
+selected witness must nevertheless be a uniform finite algorithm, and its
+existence must be proved without assuming an uncomputable runtime oracle
+inside that algorithm. Finite logical selection is different from an
+unbounded input-length-dependent family. If the method instead requires
+$J(N)\to\infty$ transformations inside one solver, it must establish a
+uniform scheduling and effective error-control theorem such as the
+conditional machinery in PRF3-0018 \cite{prf30018}.
+
+\subsection{A same-realization two-stage target}
+One recovered guard is now expressible as a precise sufficient inequality.
+Suppose a model-matched first phase maps an achievable time exponent $t$ to
+one joint witness
+\[
+ (t_1,s_1)\le(qt,\alpha t),\qquad q\ge1,\quad\alpha\ge0,
+\]
+and a second SAT-specific phase maps that same witness to
+\[
+ (t_2,s_2)\le(a+bt_1+cs_1,\ d+s_1),
+ \qquad a,b,c,d\ge0.
+\]
+Both displays are hypotheses about complete algorithms, including conversion
+and access costs.  Let $\theta=bq+c\alpha$.
+
+\begin{theorem}[ARC-JOINT-TWO-STAGE1]
+If both phases exist for every point encountered, $\theta<1$, and
+\[
+ \frac{(1+\alpha)a}{1-bq-c\alpha}+d<\phi,
+ \tag{J}
+\]
+then finitely many complete returns enter the forbidden region.
+\end{theorem}
+\begin{proof}
+The return envelope is
+\[
+ t_{r+1}=a+\theta t_r,\qquad s_{r+1}=d+\alpha t_r.
+\]
+It converges to
+\[
+ t_*=\frac{a}{1-\theta},\qquad s_*=d+\alpha t_*.
+\]
+Condition (J) says $t_*+s_*<\phi$.  Strictness gives finite
+crossing, and componentwise domination transfers the envelope bound to the
+actual witnesses.
+\end{proof}
+A space simulation by itself leaves the time coordinate unchanged and cannot
+erase an arbitrary starting exponent.  The theorem therefore identifies a
+genuine two-phase target: one phase must improve time, and all space inherited
+by the second phase must belong to the same realization.  An exact-arithmetic
+audit performed 1,602 checks over 108 parameter cases; it validates the
+recurrence algebra only.  Neither phase is currently known for general SAT.
+The complete audit is recorded in
+\url{https://github.com/j15marti/pnp/blob/main/research/agents/lead/2026-10-07_162204_LEAD_LEAD-0031.tex},
+and the polynomial-regime bridge is developed in \texttt{main6.tex}.
+
+\section{What WRAPPER mechanisms could supply}
+A concrete construction proving an achievable resource map can establish
+ARC. It need not act on every syntactic representative of a resource point.
+However, it must establish the resulting machine's exact SAT correctness and
+worst-case joint bounds. The following candidate mechanisms are proposals,
+not additional proved closures of $\R$.
+\begin{description}
+\item[] \textbf{Forward-only plus recursive wrappers.} Construct justified
+children before determining which child is satisfiable; charge all child
+construction, solving, combination, and state retention. Deferring answers
+removes one possible circular dependency, not the quantitative burden.
+\item[] \textbf{Parallel portfolios.} A fixed finite portfolio can exploit
+its fastest correct member under time-sharing with bounded time overhead.
+A favorable inputwise coverage theorem and aggregate space bound are still
+necessary. Large input-dependent portfolios require their own scheduling,
+discovery, and validation charges.
+\item[] \textbf{Disjunctive and backdoor decompositions.} Exact OR identities
+are useful, but UNSAT may require all children. Backdoor discovery and all
+residual solving must be counted.
+\item[] \textbf{Merged histories.} Common SAT answers, a shared terminal
+node, prime labels, and compact route descriptions do not themselves imply
+small encoded residual instances or cheap semantic merges.
+\end{description}
+The latest compiler audit records these distinctions and the unresolved
+pre-contraction reduction requirement \cite{lead0027}.
+
+\section{Open obligations and hostile controls}
+\begin{description}
+\item[] \textbf{ARC-O1: SAT-specific closure.} Prove existence of improved
+uniform witnesses; arithmetic convergence does not create them.
+\item[] \textbf{ARC-O2: strict quantitative margin.} Prove fixed constants
+and a limiting envelope strictly inside the forbidden region. A fixed point
+on its boundary is insufficient.
+\item[] \textbf{ARC-O3: same realization.} Attach both time and space bounds
+to the same algorithm at every stage.
+\item[] \textbf{ARC-O4: full costs.} Include preprocessing, code generation
+when performed at runtime, SAT queries, recomputation, combination,
+representation lengths, and peak live workspace.
+\item[] \textbf{ARC-O5: scope and iterability.} Establish correctness on all
+inputs in scope and ensure successor witnesses remain in the domain of the
+improvement implication until crossing.
+\item[] \textbf{ARC-O6: model compatibility.} Charge changes of machine,
+encoding, or SAT variant before comparing to the endpoint.
+\end{description}
+A strictly decreasing sequence is insufficient without a finite-crossing
+argument: $v_r=\phi+2^{-r}$ never crosses. Similarly, removing
+$r=O(\log n)$ variables by ordinary exhaustive branching keeps polynomially
+many children but leaves $n-O(\log n)$ variables. This does not give a fixed
+power reduction $n^b$ with $b<1$, and variable count alone is not encoded
+formula length.
+
+The aggregate compression identity from PRF2-0145 is
+\[
+ D_r=\frac{2^k}{\prod_iG_i}=2^{k-x},\qquad
+ x=\sum_i\log_2G_i,\qquad
+ D_r\le N^d\Rightarrow x\ge k-d\log_2N.
+\]
+It is exact accounting for a specified count \cite{prf20145}. To constrain
+$\R$, a further theorem must connect that count to unavoidable machine
+resources. Merely counting assignments does not provide that theorem.
+
+\section{Initial bounded model run and maintenance protocol}
+The companion \texttt{arc\_test.py} performs deterministic arithmetic tests
+with a 25-second internal deadline, below the requested rough 30-second
+budget. The initial run completed 3,739 checks in under one second. It tests
+36 scalar contraction cases, exact positive boundary gaps, a nonnegative
+matrix with transient growth and favorable limiting point, a non-downward
+region counterexample, and the ordinary restriction count. The JSON file
+\texttt{arc\_test\_results.json} records parameters, runtime, and limitations.
+These are arithmetic model checks; they neither implement ARC for SAT nor
+prove its universal premise.
+
+The 2026-10-07 ARC-0001 return-cycle test additionally checks the exact
+two-phase example above, transient phase expansion, fixed-point crossing from
+65 seeded starting points, and hostile controls for coordinate borrowing,
+padding, non-downward target sets, asymptotic approach without crossing, and
+input-dependent growing depth. It completed 277 checks in under one second.
+The code and raw output are
+\path{experiments/proof_spines/arc_return_cycle_test.py} and
+\path{results/raw/proof_spines/2026-10-07_145738_arc_return_cycle.json}.
+These results are \textsc{Computational}; SAT-specific finite return closure
+remains \textsc{Open}.
+
+Every research update should first read the shared claim ledger and peer
+logs, verify relevant primary literature, propose or refine one mechanism,
+build a bounded model, and try a hostile control. Changes to this manuscript
+must preserve the status of each claim and cite exact evidence. A failed
+GitHub write should produce a timestamped local handoff with the attempted
+patch, parent revision, tests, and next action. A later agent must reconcile
+that patch with the current remote revision rather than overwrite intervening
+work. Longer experiments should be divided into independently recorded
+batches, each with an approximately 30-second cap.
+
+
+% BEGIN HISTORICAL ASSEMBLY AUDIT 2026-10-07
+\section{Historical reconciliation: requirements already discharged}
+The October 7 historical audit recovers REV-0030's finite-hitting criterion and REV-0031's time-only orbit race. A common affine contraction, an effectively known good iterate, and growing-depth execution are sufficient mechanisms, not necessary conditions for a strict finite endpoint crossing. ARC also does not require rewriting every supplied implementation. Each achieved pair still needs one uniform joint witness.
+
+NR-001 conditionally supplies canonical minimum SAT circuits under $P=NP$, but its polynomial construction exponent and workspace are not endpoint-certified. Thus canonicalization cannot silently substitute for the SAT-specific quantitative closure. The recovered witness-preserving pruning lemma (PROOF-SYNTHESIS-0015) is a concrete mediator: sound bounded-width pruning gives improved time only after certificate acquisition, final checking, storage and combination are charged. Neither polynomial existence nor a small label image establishes the required contraction.
+
+These findings narrow the missing theorem; they do not close it. See the full source-by-source audit, including scope and countermodels, at
+\url{https://github.com/j15marti/pnp/blob/main/research/agents/lead/2026-10-07_1504_PROOF_ASSEMBLY_AUDIT.tex}.
+% END HISTORICAL ASSEMBLY AUDIT 2026-10-07
+
+% BEGIN WRAPPER VARIANT REVIEW 2026-10-07
+\paragraph{Wrapper variant reconciliation, 7 October 2026.}
+The concrete double wrapper already supplies decision-preserving forward
+construction, small standard-CNF leaves, and terminating recursive evaluation.
+Its aggregate construction, branching, and joint-space bounds remain unresolved.
+This corrects overly broad OPEN labels in main5.tex, but supplies no new
+SAT-specific closure of the achievable region. The ARC mathematical status
+therefore remains unchanged.
+% END WRAPPER VARIANT REVIEW 2026-10-07
+
+\paragraph{WRAPPER review, 2026-10-07 (WRP-0001).}
+The exact Shannon-frontier identity followed by equality quotienting was
+tested as a two-phase return candidate.  On
+$F_m=\bigwedge_i(x_i\vee y_i)$, restricting $h$ designated variables leaves
+exactly $2^h$ distinct residual functions.  Polynomial fanout therefore
+removes only $O(\log M)$ variables and leaves encoded length
+$M^{1-o(1)}$; forcing power shrinkage makes the quotient frontier
+superpolynomial.  This retires that specific ordinary-CNF implementation,
+not arbitrary semantic transformations.  ARC-RETURN-CYCLE1 and the
+SAT-specific finite return closure retain their previous statuses:
+\textsc{Proved/Exact} conditional iteration and \textsc{Open} construction,
+respectively.
+
+\paragraph{WRAPPER review, 2026-10-07 (RSR-0001).}
+Impagliazzo--Paturi--Zane sparsification and the uniform quantitative
+Calabro--Impagliazzo--Paturi formulation were checked as an exact
+disjunctive return mechanism.  Polynomial fanout forces
+$\varepsilon=O(\!\log M/n)$, while the known
+$O((k/\varepsilon)^{3k}n)$ clause guarantee then certifies no fixed-power
+encoded shrink, even after restricting attention to dense bounded-width
+inputs.  Thus the direct theorem transfer is retired, not sparsification or
+arbitrary SAT transformations.  ARC-RETURN-CYCLE1 remains
+\textsc{Proved/Exact} conditionally, and the SAT-specific finite successor
+closure remains \textsc{Open}; no mathematical ARC status changes.
+
+\paragraph{WRAPPER review, 2026-10-07 (RED-0001).}
+The direct sparsification route now has a stronger declared-model guard.  If
+$F_m=\bigwedge_i(x_i\vee y_i)$ is written as an exact union of solution sets
+of same-variable width-$k$ CNFs, then every satisfiable child must mention at
+least one variable from every independent block.  It consequently has at
+least $m/k$ clauses and indexed length $\Omega(|F_m|)$, regardless of fanout.
+This is \textsc{Proved/Exact} for solution-set-preserving bounded-width
+decomposition and does not apply to decision-only OR shrinkers.  The ARC
+finite return theorem remains \textsc{Proved/Exact} conditionally, while its
+SAT-specific successor premise remains \textsc{Open}; no ARC mathematical
+status changes.
+
+\paragraph{WRAPPER review, 2026-10-07 (WRT-0001).}
+The block-incidence guard now permits each bounded-width CNF child to use
+arbitrary existential auxiliary variables.  Exact equality of the union of
+the children's projected solution sets still forces every satisfiable child
+to mention one original variable from every independent block, and therefore
+to carry $\Omega(|F_m|)$ ordinary indexed-CNF interface length when source
+coordinates are charged.  This \textsc{Proved/Exact} extension retires an
+auxiliary-projection escape only for exact solution covers; decision-only OR,
+circuits, and compressed non-CNF returns remain outside it.  ARC-RETURN-CYCLE1
+remains conditional and the SAT-specific successor premise remains
+\textsc{Open}; no ARC mathematical status changes.
+
+
+% BEGIN RECOVERED RESOURCE BOUNDS 2026-10-07
+\paragraph{Recovered resource bounds, 7 October 2026.}
+Resource analysis is not wholly missing: PRF3-0018 supplies conditional joint
+composition, NEW\_UNSAT-0180 bounds total fanout under fixed-power shrinkage,
+MULTICHANNEL1 absorbs multiple smaller recursive SAT-call channels, and
+STREAMCOMP1 charges implicit access. ORBITBATCH1 records shared setup and
+separate classification costs rather than mandatory independent reacquisition.
+REV-0032 and PROOF-SYNTHESIS-0007 supply sequential capped-restart scheduling
+conditional on simulation and bookkeeping assumptions; one fixed favorable
+family member is still required. SIM-2-0008's general reciprocal-cap selection
+has a gap: no integer reciprocal lies strictly between $2/5$ and $9/20$.
+The rational-cap restart route is distinct and survives that counterexample.
+The remaining task is to match a concrete SAT construction to the compatible
+joint hypotheses. Detailed source audit:
+\url{https://github.com/j15marti/pnp/blob/main/research/agents/lead/2026-10-07_1530_RESOURCE_BOUNDS_RECOVERY.tex}.
+% END RECOVERED RESOURCE BOUNDS 2026-10-07
+
+
+% BEGIN CAPPED BUILD AND BEACON 2026-10-07
+\paragraph{Capped portfolio and bitstream implementation, 7 October 2026.}
+The executable sequential restart prototype wraps flat, component and
+fast-separator solvers with OS-enforced 64 MiB process address-space limits,
+line-event budgets and wall timeouts. Forty correctness checks pass; the
+portfolio recovers after 84 fuel aborts and 38 memory aborts across 132
+attempts. The bounded schedule may return unknown and supplies no general
+small-space theorem: parent formulas and caches remain materialized.
+Search-G's recovered precommitment theorem forces storage or reacquisition,
+but a four-bit coordinate control answers all 64 delayed queries by one
+source-bit reread. Freshness and exact identity alone do not bound that cost.
+The full implementation and historical-source audit is
+\url{https://github.com/j15marti/pnp/blob/main/research/agents/lead/2026-10-07_1540_CAPPED_BUILD_BEACON.tex}.
+No mathematical status of the SAT-specific contraction changes.
+% END CAPPED BUILD AND BEACON 2026-10-07
+
+
+% BEGIN SOURCE BACKED BUILD 2026-10-07
+\paragraph{Source-backed backend experiment, 7 October 2026.}
+Two complete SAT backends now avoid retained residual CNFs: iterative prefix
+search, and source-scanning unit propagation with trail undo. Across 280 cases,
+840 answer comparisons and 280 matched prefix-traversal checks pass.
+The 48-unit control reduces measured incremental Python peak allocation from
+56,432 bytes for explicit residual frames to 1,260 bytes with source-scanning
+propagation, excluding the preallocated read-only input. This is finite evidence,
+not an asymptotic bit-space theorem. Assignment bits, trail records, root rescans
+and worst-case branching remain charged. The delayed-contradiction control is
+repaired by streaming unit propagation, while 2,048 delayed bitstream-coordinate
+audits remain answerable by deterministic source reread and recomputation.
+See
+\url{https://github.com/j15marti/pnp/blob/main/research/agents/lead/2026-10-07_1545_SOURCE_BACKED_BUILD.tex}.
+The favorable joint-resource interface remains OPEN.
+% END SOURCE BACKED BUILD 2026-10-07
+
+
+% BEGIN FRONTIER JOINT1 2026-10-07
+\paragraph{Charged frontier merge experiment, 7 October 2026.}
+For a fixed clause order, satisfying prefix histories agreeing on every
+variable occurring again in the suffix have identical suffix extensions.
+An explicit frontier-table backend now realizes this merge without SAT
+queries. Three acquisition variants were tested on 290 formulas: 861
+completed answers were correct, nine width-cap exits were correctly handled
+by the prior propagation fallback, and 18 symmetry checks passed.
+Local rescanning reduced source reads on a 64-variable chain from 520,319
+to 11,909 at eight bytes of table payload (not total memory).
+For width $w$ and fixed clause width, the compact representation uses
+$O(2^w+w\log N+\log N)$ work bits, but boundary discovery still incurs
+quadratic rescanning on a constant-width easy family.
+The generic small-width/compiler guarantee and favorable joint time-space
+bound remain OPEN. This instantiates a known dynamic-programming merge,
+not a new unrestricted SAT lower bound.
+See \url{https://github.com/j15marti/pnp/blob/main/research/agents/lead/2026-10-07_1600_FRONTIER_JOINT1.tex}.
+% END FRONTIER JOINT1 2026-10-07
+
+
+% BEGIN BOUND MATCH1 2026-10-07
+\paragraph{Implementation-to-bound reconciliation, 7 October 2026.}
+General polynomial-time semantic compression is available under $P=NP$:
+run the assumed decider and emit a fixed YES or NO instance. This retains
+the unknown construction exponent and does not imply a resource improvement.
+The existing forward double wrapper already provides exact AND/OR semantics,
+small CNF leaves, recursive termination and normalized-formula reuse.
+A fresh guarded regression passes 592 checks on 296 formulas; 492 inner
+plans reuse cached formula keys, and 377 emit zero leaves despite nonzero
+construction work. STREAMCOMP1 and ORBITBATCH1 already address implicit
+access and shared setup conditionally. The concrete double wrapper stores
+full formulas, DAG plans and answer-cache keys, so it does not automatically
+inherit the no-materialization space interface. The missing statement is a
+joint original-SAT-scale resource improvement, not generic compression
+existence or the conceptual inclusion of acquisition costs.
+ARC remains an alternative existence-to-existence route; universal source
+normalization is not necessary.
+See \url{https://github.com/j15marti/pnp/blob/main/research/agents/lead/2026-10-07_1610_BOUND_MATCH1.tex}.
+P versus NP remains OPEN.
+% END BOUND MATCH1 2026-10-07
+
+% BEGIN WRP PARTIAL PORTFOLIO REVIEW 2026-10-07
+\paragraph{WRAPPER partial-portfolio review, 7 October 2026 (WRP-0002).}
+A fixed finite family of partial inner generators can be absorbed into one
+uniform generator by sequential trials when every SUCCESS plan is exact,
+all failed work is charged and discarded, and the declared domains cover
+every input.  The global fanout, child-size, local-time, and live-space
+exponents are the coordinatewise maxima over the fixed family.  This removes
+a separate selector obligation for such a portfolio, but does not prove
+favorable general-SAT coverage or a route from any cofinal ARC seed.  The ARC
+SAT-specific hitting premise therefore remains \textsc{open} with no
+mathematical status change.
+% END WRP PARTIAL PORTFOLIO REVIEW 2026-10-07
+
+% BEGIN BDNF WRAPPER REVIEW 2026-10-07
+\paragraph{Backdoor-DNF WRAPPER review, 7 October 2026 (RSR-0002).}
+The primary backdoor-DNF construction supplies an exact tautological OR cover
+and can enlarge the fixed certified partial portfolio beyond complete
+enumeration of a small strong backdoor.  On the source paper's explicit Horn
+family, however, $M^{o(1)}$ terms coexist with an explicit residual of encoded
+length $M^{1-o(1)}$.  Hence raw residual emission does not give a fixed
+child exponent below one; direct or implicit base-class solving still needs
+charged acquisition, access, time, and space bounds on arbitrary instances.
+Independent RED review below promotes the raw-emission statement in its
+scoped model and records a decision-only escape on the displayed easy
+family.  Neither result supplies an ARC return map.  The SAT-specific finite
+hitting premise and P versus NP remain \textsc{Open}; no ARC mathematical
+status changes.
+% END BDNF WRAPPER REVIEW 2026-10-07
+
+% BEGIN BDNF RED ARC REVIEW 2026-10-07
+\paragraph{Backdoor-DNF red review, 7 October 2026 (RED-0002).}
+Independent review proves the raw residual-size gate in the declared
+ordinary indexed-CNF model, including local reindexing, but also proves a
+decision-only escape on the same easy Horn family: a one-pass
+positive-cofactor check returns TRUE with no recursive children in linear
+time and logarithmic work space.  Hence no ARC resource-map premise follows
+from residual length.  The SAT-specific finite hitting hypothesis and
+P versus NP remain \textsc{Open}; this review makes no ARC mathematical
+status change.
+% END BDNF RED ARC REVIEW 2026-10-07
+
+% BEGIN ZERO CHILD WRITE ARC REVIEW 2026-10-07
+\paragraph{Zero-child portfolio ARC review, 7 October 2026 (WRT-0002).}
+Independent verification confirms that a certified $q=0$ VALUE member is an
+exact specialization of the fixed partial-portfolio theorem: it may improve
+a restricted WRAPPER portfolio without creating a recursive child.  Its
+success domain is only partial, however, so it gives neither cofinal ARC
+coverage nor a potential contraction.  The SAT-specific finite hitting
+premise and P versus NP remain \textsc{Open}; there is no ARC mathematical
+status change.
+% END ZERO CHILD WRITE ARC REVIEW 2026-10-07
+
+% BEGIN HASH LENGTH REVIEW 2026-10-07
+\paragraph{Exact fingerprint review, 7 October 2026 (HASHLEN-0001).}
+The recovered hash, prime-lineage, precommitment, ratchet, and random-bitstream
+results solve several identity and replay subproblems after a semantic class
+has been justified.  They do not bound the number of semantic classes or
+construct the missing source-dependent restriction cover.  With exact
+residual replay, changing a cache fingerprint from four to six or eight
+hexadecimal digits changes finite verification and storage costs but leaves
+the set of mergeable states unchanged.  Merging from the digest alone instead
+requires the digest fibers to be semantic congruence classes, which is the
+missing merge theorem.  A guarded implementation completed twelve exact
+answer checks in 2.90 seconds; four hex digits were the best measured fixed
+setting on its two workloads, while hostile hash-only controls returned wrong
+answers at all three widths.  The general bucket, source-summary, adaptive,
+and exponent ledgers are proved in \texttt{main7.tex}.  These results supply
+no new achievable resource pair, so the ARC finite-hitting premise and
+P versus NP remain \textsc{Open}.
+% END HASH LENGTH REVIEW 2026-10-07
+
+% BEGIN CLAUSE DOMINANCE ANTICHAIN ARC REVIEW 2026-10-07
+\paragraph{Clause-dominance antichain review, 7 October 2026 (ARC-0003).}
+CLAUSE-DOM-SELECT1 remains an exact local selector whenever one residual's
+clause set contains another's.  The new family
+\[
+ F_n=\bigwedge_{i=1}^{n}
+ [(x_i\vee y_i)\wedge(\neg x_i\vee\neg y_i)]
+\]
+shows that the selector has no universal density guarantee: assigning all
+$x_i$ yields $2^n$ satisfiable unit residuals, all of size $n$, with pairwise
+incomparable clause sets.  Every distinct pair is nevertheless separated by
+one common later $y_j$ restriction, so equality of the current SAT bit is not
+a safe recursive merge key.  This is \textsc{Proved/Exact} for the declared
+same-parent restriction frontier and retires only the unextended
+clause-inclusion density premise.  The parent is easy affine 2-CNF, so the
+antichain is not a machine lower bound; source replay, 2-SAT, and Gaussian
+elimination are explicit escapes.  A 25-second-budget implementation
+generated all residuals through $n=14$ and exhaustively checked all pairs
+through $n=10$ with no comparable pair.  No achievable resource pair is
+added: the SAT-specific finite-hitting premise and P versus NP remain
+\textsc{Open}.
+% END CLAUSE DOMINANCE ANTICHAIN ARC REVIEW 2026-10-07
+
+% BEGIN RUP SELECTOR ARC REVIEW 2026-10-07
+\paragraph{RUP-selector ARC review, 7 October 2026 (WRP-0003).}
+The WRAPPER spine now has an exact forward-only implication selector stronger
+than clause inclusion: pairwise RUP certificates and sink-SCC retention
+preserve an explicit OR frontier with fully charged polynomial checking and
+storage.  This does not add an achievable resource pair.  It leaves the
+CLAUSE-DOM-ANTICHAIN1 assignment residuals pairwise incomparable and gives no
+universal frontier-density or fixed-power child-shrink theorem.  The
+SAT-specific ARC finite-hitting premise and P versus NP remain
+\textsc{Open}; there is no ARC mathematical status change.
+% END RUP SELECTOR ARC REVIEW 2026-10-07
+
+% BEGIN NESTED SELECTOR ARC REVIEW 2026-10-07
+\paragraph{Nested-selector ARC review, 7 October 2026 (RSR-0003).}
+The WRAPPER implication relation now has an exact fixed-depth hierarchy:
+depth $k$ is complete for implications from $\mathrm{UC}_k$ sources and has a
+fully charged $O(q^2m^{2k})$ explicit-frontier implementation.  This adds no
+achievable SAT time--space pair and does not prove a scalar, matrix, or
+multistep ARC contraction.  Fixed $k$ names one uniform algorithm and may be
+used in a finite existential chain; choosing $k$ growing with input size is
+not a fixed-polynomial algorithm and cannot be promoted to ARC closure.  The
+complete-assignment antichain still has no sound implication edge at any
+depth.  The SAT-specific finite-hitting premise and P versus NP remain
+\textsc{Open}; there is no ARC mathematical status change.
+% END NESTED SELECTOR ARC REVIEW 2026-10-07
+
+% BEGIN NESTED SELECTOR RED ARC REVIEW 2026-10-07
+\paragraph{Nested-selector red review, 7 October 2026 (RED-0003).}
+Independent audit confirms the fixed-depth nested implication theorem but
+also proves a direct-decision dominance guard.  On a promised
+$\mathrm{UC}_k$ frontier, fixed-choice $\mathrm{SLUR}_k$ decides the same
+residuals in $O(qm^{2k})$ time with no children, while pairwise selection
+costs $O(q^2m^{2k})$; complete unit assignments still form a semantic
+antichain of width $2^n$.  Thus class-complete implication recognition does
+not yield a scalar, matrix, or multistep ARC contraction.  No achievable
+resource pair is added, the SAT-specific finite-hitting premise remains
+\textsc{Open}, and P versus NP remains open.
+% END NESTED SELECTOR RED ARC REVIEW 2026-10-07
+
+% BEGIN FINAL LINK ARC RECONCILIATION 2026-10-08
+\section{Final-link refinement: charged max-affine return maps}
+
+The fixed $(a,b)=(1/3,2/3)$ WRAPPER cell is sufficient but not necessary for
+the ARC spine.  The weakest reusable target exposed by the final-link audit is
+a charged successor envelope.  Suppose a fixed finite compiler maps an
+achievable pair $(t,s)$ to another achievable pair satisfying
+\begin{align}
+ t'&\le \max\{r,\max_{j\in J}(w_j+\lambda_jt)\},\label{eq:final-link-time}\\
+ s'&\le \max\{p,\max_{j\in J}\lambda_js\},\label{eq:final-link-space}
+\end{align}
+where $J$ is finite and every $0\le\lambda_j<1$.  All discovery, failed
+portfolio attempts, fanout, child generation and access, replay, source
+rereads, combination, and retained state must occur on the same realization
+and be included in $r,p,w_j$.
+
+\begin{theorem}[Charged max-affine ARC return]
+Define
+\[
+ C_*:=\max\left\{r,\max_{j\in J}\frac{w_j}{1-\lambda_j}\right\},
+ \qquad \lambda_{\max}:=\max_j\lambda_j.
+\]
+Repeated finite returns satisfy
+\[
+ t_m\le C_*+\lambda_{\max}^m(t_0-C_*)_+,
+ \qquad
+ s_m\le p+\lambda_{\max}^m(s_0-p)_+.
+\]
+Consequently, if $C_*+p<\phi$, every finite starting pair enters the
+valid product-forbidden region after finitely many returns.
+\end{theorem}
+
+\begin{proof}
+For every channel, $w_j+\lambda_jC_*\le C_*$ and $r\le C_*$.  Thus $C_*$ is
+a common pre-fixed point of the time map.  The map is monotone and
+$\lambda_{\max}$-Lipschitz above that point, giving the first displayed
+bound by iteration.  The identical argument for space gives the second.  A
+finite return count makes the two transient terms smaller than the strict
+margin $\phi-(C_*+p)$.  Finite composition preserves uniformity.
+\end{proof}
+
+For one channel with fanout exponent $a$, child scale $b<1$, interface
+multiplicity $\beta$, access or replay exponent $g$, time floor $r$, and live
+space floor $p$, the acceptance condition is
+\begin{equation}
+ \boxed{
+ \max\left\{r,\frac{a+\beta+g}{1-b}\right\}+p<\phi.}
+ \label{eq:final-link-cell}
+\end{equation}
+Ordinary explicit children normally force $r\ge a+b$ for output traffic and
+$p\ge b$ for one live child.  The $(1/3,2/3)$ cell with linear construction
+does not satisfy the golden-ratio product inequality, since $5/3>\phi$.
+It is nevertheless a valid conditional endpoint point by Fortnow because its
+closed algorithm has time exponent exactly one and space exponent below one.
+The $(1/2,1/2)$ cell and sufficiently cheap nearby cells fit the product
+branch.  A virtual child may avoid the explicit
+$p\ge b$ floor only after a bit-level decoder, every access cost, retained
+parent state, and endpoint-model simulation are proved and charged.
+
+\subsection{The recovered SourceLocalization correction}
+
+The earlier inequality $\beta+\lambda k<C$ priced one already localized
+child.  PRF3-0079 explicitly supersedes it for an all-block schedule.  With
+$M^a$ required children, the global selected-solver exponent is
+\[
+ a+\beta+\lambda k.
+\]
+For the natural all-block cover $a=1-\lambda$, $k=2$, and $C=4/3$, the exact
+condition is
+\[
+ \boxed{\lambda+\beta<1/3.}
+\]
+Thus the old $\lambda=1/2$, $\beta<1/6$ point is not a valid global cell.
+At the valid product endpoint, half-scale ordinary children with
+$p\ge1/2$ instead require
+\[
+ \beta+g<\frac{\phi-3/2}{2}=0.0590169943\ldots.
+\]
+The conditional choice $\beta=1/20$, $g=0$ gives
+$C_*+p=8/5<\phi$, whereas $\beta=1/16$ fails strictly.  These are
+acceptance coordinates, not an acquired compiler.
+
+\subsection{What the build changed}
+
+The executable FINAL-LINK-HYBRID1 combines exact VALUE, component,
+bounded-frontier, strong-backdoor, backdoor-DNF, clause-first disjunctive,
+equality, dominance, and source-replay mechanisms.  It completed 376 exact
+answer and full replay checks on 290 formulas, plus 346 lifted-witness checks,
+with zero semantic errors.  Thirty-three of 34 heterogeneous controls met the
+finite $M^{1/3}$ fanout and $M^{2/3}$ child-size diagnostic.  PHP$(8,7)$ hit
+the 4,097-node cap after 17,117,951 charged work-proxy operations and
+3,564,050 logical workspace bits.  Zero of the 34 cases met the
+unit-coefficient $M^{2/3}$ explicit-workspace diagnostic.  This is
+\textsc{Computational} evidence that semantic composition works and
+acquisition remains the obstruction; it is not an asymptotic theorem.
+
+The literature audit places the dense 3-CNF target exactly at the
+Dell--van Melkebeek multi-query boundary: when $M=n^{3+o(1)}$, the desired
+fanout and child size are $n^{1+o(1)}$ and $n^{2+o(1)}$, so the exponent sum
+is three.  The known theorem excludes only sums below three under its
+noncollapse hypothesis and supplies no equality-case construction
+\cite{dellvanmelkebeek2014}.  IPZ sparsification and known backdoor-DNF
+detection do not give the required polynomial-fanout power shrink on every
+CNF \cite{ipz2001,ordyniak2021bdnf}.  Williams's circuit-analysis
+self-improvement paper also leaves the polynomial regime as a further
+question \cite{williams2024}.
+
+The revised highest-value ARC target is therefore not one prescribed cell.
+It is a source-checkable, possibly $A$-dependent compiler or finite typed
+route whose complete charged envelope enters one of the verified regions in
+(END), for example $C_*+p<\phi$ or $(C_*,p)=(1,s)$ with $s<1$.
+No recovered \textsc{Proved/Exact} component provides
+that strict all-input successor.  The ARC hitting premise and P versus NP
+remain \textsc{Open}.  The complete synthesis and reproducible tests are in
+\texttt{main8.tex} and the timestamped FINAL-LINK reports.
+% END FINAL LINK ARC RECONCILIATION 2026-10-08
+
+% BEGIN CLAUSE FIRST PRODUCT GUARD 2026-10-07
+\subsection{A fanout--shrink guard for the local clause-first cover}
+
+The exact \texttt{CLAUSE-FIRST-COVER1} theorem in the WRAPPER spine
+does not by itself instantiate an ARC successor.  Let
+\[
+ F_m=\bigwedge_{i=1}^{m}(x_i\vee y_i\vee z_i)
+\]
+with pairwise distinct variables, and let $M_m=\Theta(m\log m)$ be its
+normalized indexed-CNF length.
+
+\begin{theorem}[CLAUSE-FIRST-FANOUT-SHRINK-GUARD1]
+An unmerged tree which applies the first-true-literal cover to $k$ distinct
+clauses of $F_m$ has exactly $3^k$ nonempty leaves, each retaining $m-k$
+clauses.  Hence fixed polynomial fanout permits only $k=O(\log M_m)$ and
+leaves encoded size $M_m^{1-o(1)}$.  Conversely, forcing every leaf below
+$M_m^b$ for any fixed $b<1$ requires $k=m-o(m)$ and
+$3^k=2^{\Omega(M_m/\log M_m)}$ leaves.
+\end{theorem}
+
+The proof is direct multiplication of the three disjoint first-true terms,
+using $M_r=\Theta(r\log r)$.  Its scope is essential.  On this positive
+product all three residuals normalize to the same remaining formula, so exact
+equality sharing collapses the raw tree.  A tagged block variant makes the
+three residual clause sets pairwise distinct and incomparable, but its product
+splits into constant-size components and is directly easy.  Thus neither tree
+count is a machine lower bound.  The theorem retires only the inference from
+the local clause-first cover alone to a favorable ARC channel; it does not
+falsify the combined hybrid or any semantic quotient.
+
+The bounded exact-arithmetic audit checked all small partitions through
+$m=5$, rational thresholds $b\in\{1/2,2/3,3/4\}$, polynomial fanout through
+degree eight and $m=1024$, and the tagged equality/dominance control, with all
+assertions passing.  The code and raw output are
+\path{experiments/proof_spines/clause_first_product_guard_test.py} and
+\path{results/raw/proof_spines/2026-10-07_175559_clause_first_product_guard.json}.
+This is \textsc{Computational} support for a \textsc{Proved/Exact} scoped
+guard, not asymptotic evidence for SAT hardness.
+
+IPZ sparsification transfers only as a fanout--sparsity comparison, and the
+Dell--van Melkebeek multi-query theorem remains conditional on a noncollapse
+hypothesis unavailable inside $P=NP$ \cite{ipz2001,dellvanmelkebeek2014}.
+The 2026 CDCL--DPLL separation further shows why tree-like branching behavior
+does not transfer to stronger proof search or arbitrary SAT machines
+\cite{samar2026cdcl}.  No achievable pair is added.  The source-checkable
+charged successor, SAT-specific finite-hitting premise, and P versus NP all
+remain \textsc{Open}.
+% END CLAUSE FIRST PRODUCT GUARD 2026-10-07
+
+% BEGIN WRP-0004 FIXED PHASE REVIEW 2026-10-07
+\paragraph{WRAPPER fixed-phase review, 7 October 2026 (WRP-0004).}
+The exact FIXED-PHASE-VALUE1 theorem adds a charged zero-child member which
+tests $M^{u+o(1)}$ uniformly queryable complete assignments in
+$M^{1+u+v+o(1)}$ time when one assignment bit costs $M^{v+o(1)}$ time.  The
+all-true/all-false specialization catches the positive-product control from
+CLAUSE-FIRST-FANOUT-SHRINK-GUARD1 in linear time and logarithmic addressing
+space, before constructing its exponential raw tree.  This is a genuine
+restricted-domain successor and a reminder that local tree-size guards do not
+transfer to a fixed partial portfolio.  The member returns \textsc{fail}, not
+UNSAT, when its phases miss; hence it adds no all-input achievable pair.  The
+SAT-specific finite-hitting premise, the joint WRAPPER implication, and
+P versus NP remain \textsc{Open}.
+% END WRP-0004 FIXED PHASE REVIEW 2026-10-07
+
+% BEGIN FINAL LINK2 ARC RECONCILIATION 2026-10-08
+\section{FINAL-LINK2: typed epochs, layout accounting, and generator equivalence}
+
+The second final-link pass preserves the max-affine ARC deduction but
+changes the most useful formulation of its missing premise.  A successful
+step need not be a source-only restriction cover at every raw operation.  It
+may be a finite charged epoch containing direct VALUE exits, typed recursive
+exits, and same-scale administrative transitions.  After the entire epoch is
+collapsed, however, its least time and space budgets must be computed on one
+realization, and every feasible recurrent macro-cycle must contract.
+
+For a finite type set, let an edge $e:i\to j$ have physical child scale
+$\theta_e\in[0,1]$, fanout exponent $f_e$, one-time per-child
+generation/acquisition exponent $g_e$, per-unit recursive simulation/access
+overhead $u_e$, recursive time weight $w_e=f_e+u_e$, and retained-parent-state
+exponent $h_e$.  Let $R_i$ and $P_i$ contain all nonrecursive time and
+live-space charges of type $i$.  In particular, $R_i$ contains $f_e+g_e$ in
+addition to shared discovery, failed trials, VALUE work, and combination;
+$P_i$ contains either an explicit child buffer of exponent $\theta_e$ or the
+state of its virtual decoder/generator.  The exact Bellman ledger is
+\begin{align}
+ C_i&\ge R_i,& C_i&\ge w_e+\theta_e C_j,\label{eq:fl2-bellman-time}\\
+ \rho_i&\ge P_i,& \rho_i&\ge h_e,&
+ \rho_i&\ge\theta_e\rho_j.\label{eq:fl2-bellman-space}
+\end{align}
+Source rereads and one-time replay belong in $R_i$; repeated decoder or replay
+work belongs in $u_e$.  A parent-scale VALUE query is a scale-one solver edge,
+not a local constant.
+
+\begin{theorem}[Finite-depth typed seed elimination]
+Suppose one fixed deterministic uniform constructor gives every CNF a
+source-checkable finite epoch whose terminal channels are correct VALUE exits
+or typed recursive exits.  The type set is fixed and finite, every child is
+an ordinary CNF or a charged random-access view of one, and the same joint
+time/space implementation realizes all parameters above.  Let $I_0$ be the
+fixed set of possible entry types, with root classification included in the
+root floors.
+
+At outer depth zero run fixed polynomial seed solvers with exponents
+$K_i,L_i$.  At depth $d+1$ apply one epoch and then the depth-$d$ solver to
+each recursive exit.  Thus the exponent budgets obey the finite recurrences
+\begin{align*}
+ C_i^{(0)}&=K_i,&
+ C_i^{(d+1)}&=\max\{R_i,\max_{e:i\to j}(w_e+\theta_eC_j^{(d)})\},\\
+ \rho_i^{(0)}&=L_i,&
+ \rho_i^{(d+1)}&=\max\{P_i,\max_{e:i\to j}h_e,
+                         \max_{e:i\to j}\theta_e\rho_j^{(d)}\}.
+\end{align*}
+Refine the types until history-dependent feasibility is represented.  If
+every root-reachable directed cycle of this graph has scale product below
+one, put
+\[
+ q_d=\max_{\substack{|P|=d\\\operatorname{start}(P)\in I_0}}
+       \prod_{e\in P}\theta_e.
+\]
+Set $q_d=0$ if there is no such length-$d$ path.
+Then $q_d\to0$, and the finite-depth budgets converge to the least Bellman
+budgets $C_i^*,\rho_i^*$ in
+\eqref{eq:fl2-bellman-time}--\eqref{eq:fl2-bellman-space}.  In particular,
+if
+\[
+ \max_{i\in I_0}C_i^*+\max_{i\in I_0}\rho_i^*<\phi,
+ \tag{TE}
+\]
+one fixed hardwired depth gives a uniform exact SAT algorithm in the valid
+product-forbidden region.
+\end{theorem}
+
+\begin{proof}
+Expanding the finite recurrences along typed paths gives the Bellman path
+formulas plus inherited boundary terms multiplied by the path-scale product.
+Because the graph is finite and every reachable cycle contracts, a constant
+number of edges contains either no cycle or a cycle with product at most one
+fixed $\lambda<1$; hence $q_d$ decays geometrically.  With
+$K=\max_iK_i$ and $L=\max_iL_i$, the root budgets are bounded by
+$\max_iC_i^*+q_dK$ and
+$\max\{\max_i\rho_i^*,q_dL\}$, up to the finitely many common $o(1)$ terms.
+The strict margin in (TE) therefore holds at some fixed depth.  That finite
+composition is uniform and terminates at the total seed solvers.
+\end{proof}
+
+This is \textsc{Proved/Exact} conditional composition.  It replaces the
+overstrong claim that Bellman feasibility alone makes an unbounded recursive
+machine halt: a contracting self-edge can still loop forever at input length
+one if no base rule is given.  The all-input epoch constructor remains
+\textsc{Open}.  Same-scale raw work must be collapsed into one charged epoch
+by a proved source-checkable potential, or its finite control state must be
+part of the type.  Average-over-input amortization is insufficient.
+
+For a numerical check of the theorem rather than a SAT construction, take
+two types with one edge in each direction, and put
+\[
+ R_A=R_B=1,\qquad P_A=P_B=h_e=\tfrac12,\qquad
+ w_e=\tfrac14,\qquad\theta_e=\tfrac12.
+\]
+The only directed cycle has scale product $1/4$, the least budgets are
+$C_A^*=C_B^*=1$ and $\rho_A^*=\rho_B^*=1/2$, and their sum is
+$3/2<\phi$.  Thus every finite polynomial seed is eliminated at some fixed
+hardwired depth.  This arithmetic example lies in the valid product region;
+it does not supply the open all-input epoch constructor.
+
+\subsection{A block-layout gate at the aggregate-linear boundary}
+
+The equality $qL=M^{1+o(1)}$ shows that source size alone does not obstruct a
+streamed cover.  It does expose a scheduling distinction.  Let
+\[
+ q=M^{a+o(1)},\qquad L=M^{b+o(1)},\qquad
+ B=M^{\delta+o(1)}
+\]
+with $a\ge0$, $0\le b<1$, and $0\le\delta\le a$, where $B$ children are
+buffered together.  In the optimistic block-transpose schedule, blocks are
+sequential, the source is read-only random access and scanned once per block,
+and routing inside the selected block is output-sensitive.  Assume no live
+state beyond the buffer and active recursive call, and recursive closure of
+this same schedule at every child scale.  The fully charged recurrence is
+\[
+ C\ge\max\{1+a-\delta,a+b,a+bC\},\qquad
+ S\ge\max\{b+\delta,bS\}.
+\]
+Its least exponent ledger is
+\[
+ C(\delta)=\max\left\{1+a-\delta,\frac{a}{1-b}\right\},
+ \qquad S(\delta)=b+\delta.
+\]
+
+\begin{theorem}[BATCH-LAYOUT-GATE1]
+For the preceding parameter range,
+\[
+ \min_\delta(C(\delta)+S(\delta))=
+ \begin{cases}
+  1+a+b,&b\le 1/(1+a),\\
+  b+a/(1-b),&b>1/(1+a).
+ \end{cases}
+\]
+In particular, $a+b=1$ with $b<1$ implies
+\[
+ \min_\delta(C(\delta)+S(\delta))=2>
+ \phi.
+\]
+\end{theorem}
+
+\begin{proof}
+Put $A=1+a$ and $D=a/(1-b)$.  The objective is
+$\max\{A-\delta,D\}+\delta+b$.  It is the constant $A+b$ while
+$A-\delta\ge D$ and is $D+\delta+b$ afterward.  If $D>A$, its minimum is
+$D+b$ at $\delta=0$; if $D\le A$, its minimum is $A+b$ (the formulas agree
+when $D=A$).  The inequality
+$D>A$ is equivalent to $b>1/(1+a)$.  At equality both branches agree and the
+statement places the boundary in the first branch.  The omitted $a+b$ floor
+is redundant: the scan floor dominates it when $a+b\le1$, while
+$a/(1-b)\ge a+b$ when $a+b\ge1$.  On $a+b=1$ with $b<1$, the first branch
+applies and equals two.
+\end{proof}
+
+This is an exact obstruction only for the declared source-major block
+schedule.  A child-major online generator with one source pass would instead
+have the optimistic ledger
+\[
+ C=\max\{1,a/(1-b)\},\qquad S=b,
+\]
+which gives $C+S=1+b$ when $a+b=1$.  Thus the theorem does not rule out the
+desired cell.  It proves that aggregate-linear output volume alone is not
+enough: the missing construction must provide child-major semantic routing,
+a stronger shared representation, or a different typed epoch.
+
+\subsection{One-copy OR compilation and its correction}
+
+Fix one assumed polynomial SAT decider $A$ with certified time exponent $K$.
+For $q$ explicit $m$-bit CNFs $G_1,\ldots,G_q$, a selector multiplexer and one
+unrolled circuit for $A$ give an ordinary Tseitin CNF $Q$ satisfying
+\[
+ \SAT(Q)=\bigvee_{i=1}^q\SAT(G_i),\qquad
+ |Q|=m^{K+o(1)}+O(qm)\operatorname{polylog}(qm).
+\]
+This OR-MUX identity is \textsc{Proved/Exact}; circuitization of a fixed
+time-$T$ computation has $T\operatorname{polylog}T$ size in the relevant
+upper-bound construction \cite{pippengerfischer1979}.  It replaces $q$
+copies of the solver circuit by one.  At the equality-volume boundary
+$qm=M^{1+o(1)}$, however, the returned CNF is still parent-scale.
+Moreover, for explicit input CNFs, a direct guarded OR construction has
+total length $\widetilde O(qm)$ without invoking $A$.  Thus OR-MUX is an
+exact identity but supplies no favorable size exponent here.
+
+Suppose instead that a source-specific circuit $E_F(z)$ of size
+$M^{h+o(1)}$ outputs an entire legal $M^{b+o(1)}$-bit child and satisfies
+\[
+ \SAT(F)\iff\exists z\;\SAT(E_F(z)).\tag{GC}
+\]
+The initial fixed-machine analysis composed $E_F$ with $A$.  A red-team
+correction shows that this gives no machine-specific advantage.
+
+\begin{lemma}[CANONICAL-VERIFY1]
+Fix a canonical padded CNF encoding with $O(\log m)$-bit literal records.
+There is a uniform bounded-fan-in circuit $V_m(x,y)$ of description length
+$\widetilde O(m)$ such that
+\[
+ \exists y\;V_m(x,y)=1
+ \quad\Longleftrightarrow\quad
+ x\text{ is a well-formed satisfiable CNF encoding}.
+\]
+\end{lemma}
+
+\begin{proof}
+Guess one truth value per active literal occurrence and evaluate clauses in
+their original order.  In parallel, send the records
+$(\mathrm{active},\mathrm{identifier},\mathrm{value})$ through a uniform
+Batcher sorting network and reject adjacent active records with equal
+identifiers and unequal values.  There are $O(m\log^2m)$ compare-exchanges,
+and each $O(\log m)$-bit compare/swap has polylogarithmic circuit size
+\cite{batcher1968sorting}.  The parser rejects malformed headers, delimiters,
+identifiers, and padding.  Consistency plus clause acceptance is equivalent
+to one assignment satisfying the decoded formula.
+\end{proof}
+
+\begin{theorem}[GENERATOR-SHRINKER-EQUIVALENCE1]
+Let a deterministic uniform constructor emit, for every $M$-bit CNF $F$, a
+closed topologically encoded circuit $E_F$ over a fixed finite basis.  Its
+only free inputs are selector bits.  Its total bit description includes every
+input and output terminal, gate type, constant, wire endpoint and embedded
+source bit; no source pointer, implicit bus, ROM, or external object is
+available outside that description.  Assume
+\[
+ e(F):=L(E_F)\le M^{h+o(1)},\qquad 0<h<1.
+\]
+Interpret its $m$ output bits only through CANONICAL-VERIFY1, so malformed or
+unused selector outputs are rejected, and assume
+\[
+ \SAT(F)\iff\exists z,y\;V_m(E_F(z),y)=1.\tag{GC$'$}
+\]
+If the constructor uses time $M^{r_E+o(1)}$ and space
+$M^{p_E+o(1)}$, with every subcall and failed route charged, then it emits an
+ordinary equivalent 3-CNF $Q_F$ satisfying
+\[
+ L(Q_F)\le M^{h+o(1)},\quad
+ T\le M^{\max\{r_E,h\}+o(1)},\quad
+ S\le M^{\max\{p_E,h\}+o(1)}.
+\]
+Conversely, a charged ordinary shrinker yields such a constant-output
+generator with the same exponents up to polylogarithmic factors.
+\end{theorem}
+
+\begin{proof}
+Every selector terminal and output terminal is explicit, so their counts and
+in particular $m$ are at most $e(F)$.  Compose $E_F$ with
+$V_m$, constrain the verifier output to one, and introduce full
+biconditional Tseitin clauses for every gate.  For each $(z,y)$ an extension
+to gate variables exists exactly when the composed circuit accepts.  By
+(GC$'$), $Q_F$ is satisfiable exactly when $F$ is.  CANONICAL-VERIFY1 and the
+Tseitin expansion have length $\widetilde O(e(F))$, giving the stated size
+and construction time.  Retaining the materialized successor in writable
+storage gives the stated space maximum.  For the converse, topologically
+encode a constant-output circuit whose output is the already constructed
+successor.
+\end{proof}
+
+This \textsc{Proved/Exact} theorem eliminates both the quadratic verifier and
+any former auxiliary inequality relating child width to generator size.
+Under a fully closed explicit encoding,
+compact generated covers and ordinary shrinkers are equivalent up to
+polylogarithmic factors.  A source pointer, ROM lookup, compressed bus,
+external shared object, or random oracle is not a closed generator unless its
+expansion and every access are charged.
+OR-MUX remains useful for sharing explicit evaluations, but it does not
+convert the equality-volume cover into a contraction.
+
+\subsection{Current ARC status}
+
+The exact recurrence recovered from PRF2-0155 and RECURCLOSE1 still removes
+the unknown starting exponents once a strict recursively closed shrinker
+exists.  For a map with output scale $h<1$, root construction exponent $r$,
+and live-space exponent $p$, fixed-depth reapplication of a seed
+$(K,L)$ gives
+\[
+ t_d\le\max\{r,Kh^d\},\qquad
+ s_d\le\max\{p,h,Lh^d\}.
+\]
+At $(h,r,p)=(2/3,1,2/3)$, a fixed $d$ yields the conditional point
+$(1,2/3)$.  This point is not in the golden-ratio product region, since
+$5/3>\phi$; it is forbidden instead by Fortnow's theorem, for example with
+the fixed choice $\varepsilon=1/4$.  This is exactly where the original
+``divide the $2^K$ contribution by repeated $2^x$ shrinkage'' reasoning
+belongs.  It eliminates the leaf exponent after contraction has been
+acquired; it does not construct or cheaply acquire the first contraction.
+
+The executable audits add 9,598 typed-ledger checks, 1,020 red-team checks,
+709 exact shared-trie residual recoveries, 8,064 semantic-antichain checks,
+5,904 OR-multiplexer identity checks, 372 tableau calculations, and 12,443
+layout-grid checks, all with zero reported semantic or arithmetic errors.
+These are \textsc{Computational} checks of the stated finite models.  They do
+not establish the universal epoch or shrinker.
+
+The present ARC conclusion is unchanged: no recovered result proves the
+all-input charged successor, and P versus NP remains \textsc{Open}.  The
+advance is a sharper dichotomy.  Source-major block scheduling is outside the
+product endpoint at equality volume, while any compact exact legal-child
+generator satisfying the closed explicit accounting above already entails an
+ordinary shrinker of the same exponent up to polylogarithmic factors.  Any
+genuinely new $A$-dependent route must therefore derive a favorable epoch
+from the code of
+one selected $A$ without simply assuming a sublinear exact existential
+circuit for the source.
+
+The strongest current proof arrow is therefore
+\[
+\begin{gathered}
+ P=NP
+ \Longrightarrow
+ \boxed{\substack{
+   \text{\textsc{Open}: an all-input charged shrinker or typed epoch}\\
+   \text{with strict endpoint-compatible parameters}}}\\
+ \Longrightarrow
+ \boxed{\text{\textsc{Proved/Exact}: fixed-depth seed elimination}}
+ \Longrightarrow
+ \boxed{\text{one clause of (END) holds for }(t,s)}\\
+ \Longrightarrow\bot.
+\end{gathered}
+\]
+The first boxed implication is the only SAT-specific construction gap in
+this arrow; neither the generator equivalence nor the computational audits
+establish it.
+% END FINAL LINK2 ARC RECONCILIATION 2026-10-08
+
+% BEGIN RSR-0004 QHORN REVIEW 2026-10-07
+\paragraph{WRAPPER q-Horn review, 7 October 2026 (RSR-0004).}
+The known linear-time q-Horn recognition/decision theorem yields an exact
+zero-child partial portfolio member and strictly enlarges finite coverage
+beyond Horn, dual-Horn, 2-CNF, renamable Horn, two fixed phases, and size-two
+strong Horn backdoors.  It does not add an ARC point: an explicit
+quadratic-cover/implication-graph realization has the conservative pair
+$(C,\sigma)=(1,1)$, outside the golden-ratio product region, while the cited
+literature supplies no better joint time--space theorem.  Thus tractable
+base-class coverage and endpoint-compatible realization remain distinct.
+The SAT-specific finite-hitting premise, ARC closure, the joint WRAPPER
+implication, and P versus NP remain \textsc{Open}.
+% END RSR-0004 QHORN REVIEW 2026-10-07
+
+\bibliographystyle{plain}
+\section*{8 October review: strict branching slack}
+The direct conditional target also permits exact OR children with number
+$N^{\eta+o(1)}$ and size $N^{h+o(1)}$, provided $0<h<1$,
+$\eta+h<1$, fully charged local time is $N^{1+o(1)}$, and live local
+space is $N^{p+o(1)}$ for $p<1$. Sequential child processing gives
+$t_{d+1}=\max(1,\eta+ht_d)$ and
+$s_{d+1}=\max(p,h,hs_d)$. A fixed depth reaches near-linear time and
+strictly sublinear space. At $\eta+h=1$ finite-depth time need not
+reach exponent one. This is a relaxation of the sufficient hypothesis,
+not a construction; acquisition remains OPEN. Details and independent
+arithmetic controls are in the 2026-10-08 BRANCH-SLACK-REVIEW report.
+\section*{8 October reconciliation: equality is admissible under full recursion}
+The prior strict-slack paragraph concerns fixed-depth seed elimination.
+The already-recorded RECURCLOSE1 accounting also admits $\eta+h=1$:
+a single recursively closed, sequentially resumable exact OR constructor
+with uniform child count $N^{1-h+o(1)}$, child size $N^{h+o(1)}$,
+fully charged local time $N^{1+o(1)}$, and local workspace $N^{p+o(1)}$
+for fixed $h,p<1$ yields $T=N^{1+o(1)}$ and
+$S=N^{\max(p,h)+o(1)}$ by full recursion to fixed-size leaves.
+An epsilon supersolution controls the uniform errors; all descendant
+inputs and paused enumerators are charged. This reconciles an existing
+conditional result, not a new compiler. The all-input constructor is
+excluded by the matched Fortnow endpoint. The still-OPEN separation
+arrow is therefore $P=NP\Rightarrow$ existence of that constructor.
+See the 2026-10-08\_0540 CRITICAL-BOUNDARY report and exact-arithmetic tests.
+\bibliography{spines}
+\end{document}
+
+
+
+
+
+
+
+
+
+
