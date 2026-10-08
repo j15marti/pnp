@@ -467,7 +467,7 @@ def solve_two_cycle(l_ab: Fraction, l_ba: Fraction, w_ab: Fraction, w_ba: Fracti
 
 
 def typed_cycle_controls() -> dict[str, object]:
-    gamma = 2 * math.cos(math.pi / 7)
+    phi = (1 + math.sqrt(5)) / 2
     specs = [
         ("contracting_but_endpoint_bad", Fraction(1), Fraction(1, 2), Fraction(4, 5), Fraction(1, 10), Fraction(1, 2)),
         ("contracting_and_endpoint_good", Fraction(1), Fraction(1, 2), Fraction(1, 5), Fraction(1, 10), Fraction(1, 2)),
@@ -490,11 +490,11 @@ def typed_cycle_controls() -> dict[str, object]:
             "fixed_t_b": str(tb),
             "space_floor": str(p),
             "endpoint_sum_at_A": endpoint,
-            "below_gamma": endpoint < gamma,
+            "below_phi_product_region": endpoint < phi,
         })
         checks += 3
-    assert rows[0]["below_gamma"] is False
-    assert rows[1]["below_gamma"] is True
+    assert rows[0]["below_phi_product_region"] is False
+    assert rows[1]["below_phi_product_region"] is True
     checks += 2
 
     handle_b = Fraction(2, 3)
@@ -502,7 +502,7 @@ def typed_cycle_controls() -> dict[str, object]:
     assert handle_b * expansion == 1
     checks += 1
     return {
-        "gamma": gamma,
+        "phi": phi,
         "rows": rows,
         "delta_handle_cycle": {
             "explicit_to_handle_exponent": str(handle_b),
@@ -516,7 +516,6 @@ def typed_cycle_controls() -> dict[str, object]:
 
 def padded_decider_controls() -> dict[str, object]:
     base = Fraction(2)
-    endpoint_cap = 2 * math.cos(math.pi / 7)
     rows = []
     checks = 0
     for delay in range(0, 13):
@@ -525,7 +524,6 @@ def padded_decider_controls() -> dict[str, object]:
             "delay_exponent": delay,
             "base_exponent": str(base),
             "trace_acquisition_exponent": str(trace_exp),
-            "parent_trace_below_williams_gamma": float(trace_exp) < endpoint_cap,
         })
         assert trace_exp >= delay
         checks += 1
@@ -569,7 +567,7 @@ def run() -> dict[str, object]:
             "Clause-first branching can leave an identical Theta(M) payload in every child; a small delta handle does not certify an ordinary child of size M^(2/3).",
             "Exact-residual DAG merging has finite exponential controls even after unit propagation; semantic VALUE solvers may bypass them, so this is not an all-algorithm lower bound.",
             "QLEN amortization is tight on equal maximum-size children and does not erase independent semantic work by itself.",
-            "A contracting typed cycle can still miss the Williams endpoint; a delta-handle expansion cycle has honest scale product one.",
+            "A contracting typed cycle can still miss the valid golden-ratio product endpoint; a delta-handle expansion cycle has honest scale product one.",
             "Parent-trace acquisition is not invariant under extensionally irrelevant polynomial delays in the supplied SAT code.",
         ],
     }

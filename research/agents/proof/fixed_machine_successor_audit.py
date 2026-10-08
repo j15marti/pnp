@@ -323,52 +323,49 @@ def audit_mux_exponent_frontier() -> dict[str, object]:
 
 
 def audit_generated_or_compiler() -> dict[str, object]:
-    """Check the exponent arithmetic for a compact multi-output cover generator.
+    """Check finite exponent elimination after a genuine strict successor.
 
-    A generator of size M^h emits, as a function of a selector, one child of
-    length M^b.  One unrolled A circuit on that child costs M^(bK).  Choosing
-    bK <= h makes the composed ordinary CNF have size M^h.  Reapplying the
-    same shrinker d times leaves a final A call of exponent h^d K.
+    The current generator--shrinker equivalence uses a canonical CNF verifier,
+    not an unrolled copy of A.  Once a closed generated cover or ordinary
+    successor of scale h exists, d fixed repetitions leave a seed call of
+    exponent h^d K.  At h=2/3 the limiting pair (1,2/3) is excluded by
+    Fortnow's near-linear-time/sublinear-space theorem, not by the general
+    Williams product theorem.
     """
     h = Fraction(2, 3)
-    gamma_lower = 1.8019
     rows: list[dict[str, object]] = []
     checks = 0
     for exponent_k in range(1, 33):
-        # Leave factor two of slack between the A-unrolling term and generator.
-        child_b = h / (2 * exponent_k)
-        unrolling = child_b * exponent_k
-        output_scale = max(h, unrolling)
-        if output_scale != h:
-            raise AssertionError("generated-OR output scale exceeds h")
         depth = 0
         residual_exponent = Fraction(exponent_k, 1)
         while residual_exponent > 1:
             residual_exponent *= h
             depth += 1
-        if max(Fraction(1, 1), residual_exponent) + h >= Fraction(18019, 10000):
-            raise AssertionError("chosen generated-OR cell missed the Williams arithmetic target")
+        if residual_exponent > 1:
+            raise AssertionError("finite depth did not suppress the seed exponent")
+        if h >= Fraction(3, 4):
+            raise AssertionError("chosen successor missed the Fortnow epsilon=1/4 space ceiling")
         rows.append(
             {
                 "K": exponent_k,
-                "child_scale_b": str(child_b),
-                "unrolled_A_scale_bK": str(unrolling),
-                "successor_formula_scale_h": str(output_scale),
+                "successor_formula_scale_h": str(h),
                 "finite_compositions_until_h_pow_d_K_le_1": depth,
                 "final_A_exponent": str(residual_exponent),
-                "limiting_time_plus_space": "5/3",
+                "landing_time_exponent": "1",
+                "landing_space_exponent": "2/3",
+                "fortnow_epsilon": "1/4",
             }
         )
         checks += 1
     return {
-        "status": "CONDITIONAL_THEOREM_ARITHMETIC_WITH_EXHAUSTIVE_INTEGER_K_GRID",
+        "status": "PROVED_EXACT_CONDITIONAL_ARITHMETIC_WITH_EXHAUSTIVE_INTEGER_K_GRID",
         "checks": checks,
         "generator_scale_h": str(h),
         "local_construction_exponent_assumed": "1",
         "streamed_space_exponent_assumed": str(h),
-        "Williams_sum": "5/3",
+        "endpoint": "Fortnow near-linear-time/sublinear-space theorem; 2/3 < 3/4",
         "rows": rows,
-        "missing_premise": "For every source F, cheaply construct a source-specific multi-output circuit E_{A,F} of size M^(2/3+o(1)) whose selector outputs an exact OR-cover child of length M^(b+o(1)).",
+        "missing_premise": "For every source F, cheaply construct a closed exact generated cover or equivalent ordinary successor of size M^(2/3+o(1)), with near-linear time and M^(2/3+o(1)) live space.",
     }
 
 

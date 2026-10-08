@@ -7,6 +7,7 @@
 \newtheorem{lemma}{Lemma}
 \newtheorem{definition}{Definition}
 \newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\FAIL}{\textup{\textsc{fail}}}
 \title{Main 5: Concrete WRAPPER Composition Route\\Conditional Proof Spine and Open Construction Obligations}
 \author{PNP research working manuscript}
 \date{8 October 2026}
@@ -18,7 +19,42 @@ This manuscript records a conditional route from a hypothetical polynomial-time 
 \section{Status and assumptions}
 The computational model, input encoding, and charge for random access must be fixed before applying a lower bound. Let $N$ denote encoded input length, not variable count. Assume $P=NP$, and fix one uniform deterministic SAT decider $A$ with $T_A(N)\le N^{K+o(1)}$ and $S_A(N)\le N^{L+o(1)}$, where $K,L$ are finite constants. Time and space bounds below always belong to the same algorithm.
 
-The endpoint used here is the model-matched time-space product obstruction from Williams: polynomially bounded SAT time and space cannot have product $O(N^{\gamma-\varepsilon})$ for a fixed positive $\varepsilon$, where $\gamma=2\cos(\pi/7)$ \cite{williams2010}. Consequently, producing exponents $C,\sigma$ with $C+\sigma<\gamma$ would contradict the assumption. This is not a lower bound against arbitrary polynomial time with arbitrary polynomial space.
+There are three distinct model-matched endpoints, and they must not be
+interchanged.  Put
+\[
+ \phi=\frac{1+\sqrt5}{2},\qquad \gamma_0=2\cos(\pi/7).
+\]
+Williams's published full version proves the general polynomial-time,
+polynomial-space product obstruction
+\[
+ T(N)S(N)=\Omega_{\mathrm{i.o.}}(N^{\phi-\varepsilon})
+ \quad\text{for every fixed }\varepsilon>0
+\]
+in its stated random-access model \cite[Theorem~4.11]{williams2010}.  The
+same full version explicitly retracts the earlier claim that $\gamma_0$ is a
+universal product exponent \cite[Section~4.5, footnote~9]{williams2010}.
+Fortnow separately proves that, for every fixed $\varepsilon>0$, SAT cannot
+simultaneously have time $N^{1+o(1)}$ and space
+$N^{1-\varepsilon}$ \cite{fortnow2000}.  Finally, $\gamma_0$ is retained only
+for the established $N^{o(1)}$-workspace time lower-bound regime, not as a
+general product constant \cite{williams2008mod,busswilliams2015}.
+
+Accordingly, writing $T=N^{t+o(1)}$ and $S=N^{s+o(1)}$, the verified endpoint
+predicate used below is the union of:
+\[
+ t+s<\phi;\qquad
+ t=1,\ s\le 1-\varepsilon\text{ for fixed }\varepsilon>0;\qquad
+ s=0,\ t<\gamma_0.
+\tag{END}
+\]
+Here $N$ is actual encoded bit length.  The implementation is one total
+uniform deterministic algorithm on the endpoint machine model: malformed
+inputs are rejected, all writable storage and materialized queries are
+charged, and a write-only output cannot later be reread for free
+\cite[Section~2.1]{fortnowetal2005}.  Hashing,
+tries, portfolios, and parallel wrappers require deterministic worst-case
+bounds; parallel branches may be serialized only with all retained state and
+time charged.
 
 \section{The missing inner interface}
 \begin{definition}[Charged recursive interface]
@@ -56,15 +92,17 @@ S_d(N)\le N^{\max\{s,b,Lb^d\}+o(1)}.
 At level $j$, multiply the number of calls by each call's local work. At depth $d$, multiply the leaf count by the leaf running time. A sum of finitely many terms has the largest exponent. For space, process one child at a time. Stored child instances have sizes bounded by $N^{b},N^{b^2},\ldots$; the input at the root is read-only. Local states have exponents at most $s$, and the leaf decider uses exponent $Lb^d$. A fixed-depth sum has the largest exponent. The $o(1)$ errors remain $o(1)$ after a fixed number of compositions. If processing the combiner requires storing all child answers, that storage must already fit $s$; otherwise the stated space bound is unavailable.
 \end{proof}
 
-\begin{theorem}[Conditional fixed-depth contradiction]
-Suppose the charged interface and explicit-child implementation exist under $P=NP$, and
+\begin{theorem}[Conditional fixed-depth inconsistency]
+Suppose the charged interface and explicit-child implementation exist under
+$P=NP$, and
 \[
-\Delta=\gamma-\left(\max\{c,a/(1-b)\}+\max\{s,b\}\right)>0.
+\Delta=\phi-\left(\max\{c,a/(1-b)\}+\max\{s,b\}\right)>0.
 \]
-Then $P\ne NP$.
+Then the conjunction of $P=NP$ with this interface hypothesis is
+inconsistent.
 \end{theorem}
 \begin{proof}
-Under $P=NP$, choose $A$ and its finite $K,L$. Choose a fixed finite $d$ so that $(K+L)b^d<\Delta/2$. The preceding lemma gives a single uniform algorithm with joint exponent sum at most $C+\max\{s,b\}+(K+L)b^d+o(1)<\gamma$ for sufficiently large inputs. Finitely many smaller inputs may be handled by a fixed finite table without changing asymptotic exponents. Apply the model-matched endpoint. The contradiction discharges $P=NP$, provided the hypothesized interface has actually been proved.
+Under $P=NP$, choose $A$ and its finite $K,L$. Choose a fixed finite $d$ so that $(K+L)b^d<\Delta/2$. The preceding lemma gives a single uniform algorithm with joint exponent sum at most $C+\max\{s,b\}+(K+L)b^d+o(1)<\phi$ for sufficiently large inputs. Finitely many smaller inputs may be handled by a fixed finite table without changing asymptotic exponents. Apply the model-matched product endpoint. This proves $(P=NP)\land H_R\Rightarrow\bot$, where $H_R$ is the charged-interface hypothesis; it does not prove $P\ne NP$ until $H_R$ is derived independently or from $P=NP$.
 \end{proof}
 This finite-depth theorem is enough for a strict endpoint margin. The integer $d$ need not be computable from an arbitrary supplied solver: its mathematical existence allows it to be hardcoded in one finite algorithm. This observation does not supply $R_A$.
 
@@ -252,7 +290,7 @@ live-space bound required by the present interface when $k$ grows.
 \begin{lemma}[BDNF-WRAPPER-GATE1]\label{lem:bdnf-gate}
 There is an explicit Horn-backdoor-DNF family with $M^{o(1)}$ terms for
 which emitting the residual CNFs certifies no child exponent $b<1$.
-This is \textsc{Proved/Exact} for ordinary explicit indexed-CNF residuals.
+This is \textup{\textsc{Proved/Exact}} for ordinary explicit indexed-CNF residuals.
 \end{lemma}
 \begin{proof}
 Use the Horn family in the proof sketch of Theorem~2 of
@@ -301,7 +339,7 @@ hypothetical SAT decider.
 Use the fixed ordinary variable name $p=1$.  In one read-only-input scan,
 test whether setting $p=0$ satisfies a clause or leaves a nonempty clause
 containing only positive literals.  If every clause passes, return the
-constant value TRUE; otherwise return \textsc{fail}.  The accepted case is
+constant value TRUE; otherwise return \FAIL.  The accepted case is
 sound because setting every remaining variable to one satisfies the residual.
 The test stores only the variable name, input addresses, and clause flags.
 Every formula in the displayed family passes: the long clauses contain
@@ -325,21 +363,21 @@ A fixed finite portfolio of exact solvers can be time-shared to exploit its fast
 \begin{theorem}[CERTIFIED-PARTIAL-PORTFOLIO1]\label{thm:partial-portfolio}
 Fix finitely many uniform forward inner procedures $W_1,\ldots,W_k$.  On an
 ordinary SAT instance $F$ of encoded length $M$, each $W_j$ halts with either
-\textsc{fail} or a finite plan $(C_j;G_{j,1},\ldots,G_{j,q_j})$.  Assume:
-\begin{enumerate}
-\item whenever $W_j$ succeeds, its plan is exact:
+\FAIL{} or a finite plan $(C_j;G_{j,1},\ldots,G_{j,q_j})$.  Assume:
+\begin{description}
+\item[] whenever $W_j$ succeeds, its plan is exact:
 \[
  \SAT(F)=C_j\bigl(\SAT(G_{j,1}),\ldots,\SAT(G_{j,q_j})\bigr);
 \]
-\item every $F$ is covered, meaning at least one $W_j$ succeeds;
-\item success and failure, including all discarded attempts, are decided
+\item[] every $F$ is covered, meaning at least one $W_j$ succeeds;
+\item[] success and failure, including all discarded attempts, are decided
 without a current-scale SAT oracle and within
 $M^{c_j+o(1)}$ time and $M^{s_j+o(1)}$ live space;
-\item every successful plan has $q_j\le M^{a_j+o(1)}$ and children of
+\item[] every successful plan has $q_j\le M^{a_j+o(1)}$ and children of
 length at most $M^{b_j+o(1)}$, where $b_j<1$, and its actual explicit or
 implicit representation, generation, access, and combiner costs are included
 in those bounds.
-\end{enumerate}
+\end{description}
 Then sequentially running $W_1,\ldots,W_k$ until the first success is one
 uniform exact inner procedure with
 \[
@@ -547,7 +585,7 @@ For pairwise inequivalent states with bucket occupancies $m_z$, exact chained
 verification performs
 \[
  P(H)=\sum_z\binom{m_z}{2}
- \ge\max\left\{0,{Q^2/2^h-Q\over2}\right\}
+ \ge\max\left\{0,\frac{Q^2/2^h-Q}{2}\right\}
 \]
 candidate replays in the best balanced fixed map, and $\binom Q2$ in the
 all-collision worst case.  Under independent uniform fingerprints,
@@ -646,7 +684,8 @@ algorithm with
 \[
  T=N^{\max\{q,g\}+o(1)},\qquad S=N^{o(1)}.
 \]
-Consequently $\max\{q,g\}<2\cos(\pi/7)$ contradicts the endpoint.
+Consequently $\max\{q,g\}<\gamma_0$ contradicts the precisely scoped
+$N^{o(1)}$-workspace time endpoint.
 \end{theorem}
 \begin{proof}
 Fix the polynomial SAT decider supplied by $P=NP$, with finite time and space
@@ -682,9 +721,11 @@ The values
 \[
  b=s=\frac23,\qquad a=\frac13,\qquad c=1
 \]
-give $C+\sigma=5/3<2\cos(\pi/7)$.  With $b=s=2/3$, the separate sufficient
-thresholds are $a<0.378424\ldots$ and $c<1.135271\ldots$.  No recovered
-general-input WRAPPER proves these bounds.
+give the conditional closed pair $(T,S)=(N^{1+o(1)},N^{2/3+o(1)})$.
+This pair is forbidden by Fortnow's near-linear-time/sublinear-space theorem,
+for example with $\varepsilon=1/4$; it does \emph{not} enter Williams's
+general product region because $5/3>\phi$.  No recovered general-input
+WRAPPER proves the required charged bounds.
 
 \paragraph{Combined source-replay realization, 7 October 2026.}
 One executable now combines source replay, streaming unit propagation,
@@ -750,14 +791,18 @@ Each automated run must review current repository state and teammate logs, consu
 \section{Recovered alternatives beyond the one-type contract}
 WRAPPED-SELFRED1 already proves answer-preserving path exposure for every exact SAT decider. The open claim is favorable quantitative acquisition, not path exposure itself. An assumed worst-case upper bound $N^K$ must not be converted into a lower bound on every actual residual call.
 
-The one-type power-shrinker theorem above is sufficient but not necessary. CYCLEGAIN1 permits well-founded same-scale typed edges when complete return cycles contract. STREAMCOMP1 supplies a conditional implicit-input ledger. With edge multiplicity exponent $\eta_e$, logical child exponent $\theta_e$, bit-generation exponent $g_e$, generator space $s_e$, and local floors $r_i,\sigma_i$, feasible upper certificates satisfy
+The one-type power-shrinker theorem above is sufficient but not necessary.
+CYCLEGAIN1 supplies a Bellman accounting ledger for typed edges, but that
+ledger alone is not an executable unbounded recursion or a halting proof.
+The defensible use is the finite-depth seed construction proved below.
+STREAMCOMP1 supplies a conditional implicit-input ledger. With edge multiplicity exponent $\eta_e$, logical child exponent $\theta_e$, bit-generation exponent $g_e$, generator space $s_e$, and local floors $r_i,\sigma_i$, feasible upper certificates satisfy
 \[
 C_i\ge\max\{r_i,\max_{e:i\to j}(\eta_e+g_e+\theta_e C_j)\},
 \]
 \[
 \rho_i\ge\max\{\sigma_i,\max_{e:i\to j}(s_e,\theta_e\rho_j)\}.
 \]
-These are sufficient-budget constraints, not machine lower bounds. All preprocessing, nested input access, retained state, and direct original-solver calls must be included; recursion must be well founded. The available accounting theorem is distinct from the still-open construction of a favorable SAT-semantic generator system.
+These are sufficient-budget constraints, not machine lower bounds. All preprocessing, nested input access, retained state, and direct original-solver calls must be included.  A fixed finite truncation halts because it invokes a total seed solver at its boundary; Bellman feasibility by itself does not make an unbounded recursive machine halt. The available accounting theorem is distinct from the still-open construction of a favorable SAT-semantic generator system.
 
 Charged backdoor costs and equality-copy quotients are likewise solved in their stated domains. Neither implies universal inexpensive decomposition. See
 \url{https://github.com/j15marti/pnp/blob/main/research/agents/lead/2026-10-07_1504_PROOF_ASSEMBLY_AUDIT.tex}.
@@ -1074,7 +1119,7 @@ time
 \]
 and live work space $M^{s+o(1)}$ apart from read-only input and a streaming
 output.  It returns the VALUE TRUE when a tested phase satisfies every
-clause, and returns \textsc{fail} otherwise.  In particular, testing the
+clause, and returns \FAIL{} otherwise.  In particular, testing the
 all-true and all-false phases has $u=v=s=0$ and costs linear time and
 logarithmic addressing space.
 \end{theorem}
@@ -1094,10 +1139,12 @@ phase family missed a model.
 This is a fixed finite portfolio member, so
 Theorem~\ref{thm:partial-portfolio} charges both successes and failures.  It
 does not provide all-CNF coverage: a satisfiable formula can reject every
-declared phase, and an UNSAT formula also returns \textsc{fail}.  If
-$v=s=0$, the VALUE member itself lies below the Williams time-space endpoint
-exactly when $1+u<2\cos(\pi/7)$; this is only a domain-specific return, not a
-general SAT algorithm.  The classical DPLL pure-literal rule is an adjacent
+declared phase, and an UNSAT formula also returns \FAIL.  If
+$v=s=0$, its resource pair would be compatible with the precisely scoped
+$N^{o(1)}$-workspace endpoint when $1+u<\gamma_0$.  This is only a
+domain-specific return, not a general SAT algorithm, so no lower bound is
+triggered unless a charged all-input portfolio supplies coverage.  The
+classical DPLL pure-literal rule is an adjacent
 exact simplification idea \cite{davis1962dpll}, but no pure-literal or phase
 heuristic theorem supplies the missing favorable coverage of unrestricted
 CNF.
@@ -1112,7 +1159,7 @@ renamable Horn \cite{boros1990qh_inference,boros1994qhorn,gaspers2013qhorn}.
 
 \begin{theorem}[QHORN-VALUE1]\label{thm:qhorn-value}
 There is a uniform exact zero-child partial wrapper for q-Horn CNF.  On an
-ordinary explicit CNF $F$ of encoded length $M$, it returns \textsc{fail} if
+ordinary explicit CNF $F$ of encoded length $M$, it returns \FAIL{} if
 $F$ is not q-Horn and otherwise returns the exact Boolean value
 $\SAT(F)$.  It makes no call to the hypothetical general SAT decider and runs
 in $O(M)$ time in the linear-time q-Horn recognition/decision model of
@@ -1125,20 +1172,22 @@ $\beta(x)=1-\beta(\neg x)$ and
 $\sum_{\ell\in C}\beta(\ell)\le1$ for every clause $C$.
 Boros, Hammer, and Sun give a linear-time recognizer, and the q-Horn
 satisfiability algorithm is linear time.  Run the recognizer; failure gives
-only the partial outcome \textsc{fail}.  On success run the exact q-Horn
+only the partial outcome \FAIL.  On success run the exact q-Horn
 decider and return its Boolean answer.  Thus every returned VALUE is exact,
 and no recursive child is emitted.
 \end{proof}
 
 \begin{lemma}[QHORN-SPACE-GATE1]\label{lem:qhorn-space-gate}
 The cited linear-time theorem does not by itself make
-Theorem~\ref{thm:qhorn-value} compatible with the Williams endpoint.  An
+Theorem~\ref{thm:qhorn-value} compatible with any endpoint in (END).  An
 explicit quadratic-cover/implication-graph implementation has the safe
 upper-bound ledger
 \[
  C=1,\qquad \sigma=1,
 \]
-and therefore $C+\sigma=2>2\cos(\pi/7)$.  No sublinear-workspace q-Horn
+and therefore $C+\sigma=2>\phi$; its space is also linear, so neither the
+Fortnow strip nor the $N^{o(1)}$-workspace endpoint applies.  No
+sublinear-workspace q-Horn
 implementation with endpoint-compatible joint exponents is supplied by the
 cited transfer.
 \end{lemma}
@@ -1148,7 +1197,8 @@ storing this graph and the recognition/decision state costs $O(M)$ writable
 space, so the displayed pair is a valid conservative upper bound.  Linear
 time alone does not imply $M^{o(1)}$ work space.  Recomputing graph access or
 strongly connected components may trade space for time, but no cited theorem
-establishes a pair whose exponent sum is below the Williams constant.
+establishes a pair whose exponent sum is below the golden-ratio product
+constant.
 Consequently q-Horn recognition is a genuine domain enlargement, not the
 missing joint-resource theorem.  This is an upper-bound transfer limitation,
 not a space lower bound.
@@ -1236,19 +1286,85 @@ the sufficient acceptance test
 \begin{equation}
  \boxed{
  \max\left\{r,\frac{a+\beta+g}{1-b}\right\}+p
- <2\cos(\pi/7).}
+ <\phi.}
  \label{eq:final-link-wrapper-region}
 \end{equation}
-The original $(a,b,r,p)=(1/3,2/3,1,2/3)$ cell is one witness, not the only
-one.  For half-scale explicit children, the Williams test instead requires
-$\beta+g<0.1509688679\ldots$; the conditional point $\beta=1/7$, $g=0$
-fits, while $\beta=1/6$ does not.
+The original $(a,b,r,p)=(1/3,2/3,1,2/3)$ cell is not a witness to this
+product inequality because $5/3>\phi$.  When $\beta+g=0$, however, it yields
+the direct pair $(1,2/3)$ and is forbidden by Fortnow's endpoint.  For
+half-scale explicit children with $(a,b,r,p)=(1/2,1/2,1,1/2)$, the product
+test requires
+\[
+ \beta+g<\frac{\phi-3/2}{2}=0.0590169943\ldots.
+\]
+The conditional point $\beta=1/20$, $g=0$ gives joint exponent $8/5<\phi$;
+$\beta=1/16$ fails strictly.
 
-The double wrapper may be represented by a finite graph of interface types.
-A same-scale outer edge is harmless only if every reachable complete return
-cycle has scale product below one.  Every edge still carries its fanout,
-generation, access, and live-state charge.  A unit-product cycle leaves the
-unknown starting exponent unsuppressed.
+The double wrapper may instead be represented by a finite graph of interface
+types.  For an edge $e:i\to j$, let $\theta_e\in[0,1]$ be child scale,
+$w_e$ its total recursive time weight after fanout and repeated access are
+charged, and $h_e$ retained-parent-state exponent.  Let $R_i,P_i$ include
+all local work, failed routes, one-time generation, combination, and live
+state.  History-dependent feasibility must be refined into the finite type.
+
+\begin{theorem}[Finite-depth typed seed elimination]
+Suppose one fixed deterministic uniform constructor maps every CNF to a
+source-checkable finite epoch whose terminals are correct VALUE exits or
+typed recursive exits.  Children are ordinary CNFs or charged random-access
+views, and one joint implementation realizes all charges.  Let $I_0$ be the
+fixed entry-type set, with root classification charged in the root floors.
+
+At depth zero run fixed total polynomial seed solvers of exponents $K_i,L_i$.
+At depth $d+1$, run one epoch and use the depth-$d$ solver at every recursive
+exit.  The finite budgets are
+\begin{align*}
+ C_i^{(0)}&=K_i,&
+ C_i^{(d+1)}&=\max\{R_i,\max_{e:i\to j}(w_e+\theta_eC_j^{(d)})\},\\
+ \rho_i^{(0)}&=L_i,&
+ \rho_i^{(d+1)}&=\max\{P_i,\max_{e:i\to j}h_e,
+                         \max_{e:i\to j}\theta_e\rho_j^{(d)}\}.
+\end{align*}
+If every root-reachable directed cycle has scale product below one, define
+\[
+ q_d=\max_{\substack{|P|=d\\\operatorname{start}(P)\in I_0}}
+       \prod_{e\in P}\theta_e.
+\]
+Then $q_d\to0$, and these finite-depth budgets converge to the least Bellman
+budgets $C_i^*,\rho_i^*$.  If
+\[
+ \max_{i\in I_0}C_i^*+\max_{i\in I_0}\rho_i^*<\phi,
+ \tag{TE}
+\]
+one fixed hardwired depth gives a total uniform exact SAT algorithm in the
+valid product-forbidden region.
+\end{theorem}
+\begin{proof}
+Expanding the finite recurrences along typed paths gives the Bellman path
+formulas plus boundary terms multiplied by path-scale products.  The finite
+graph and strict contraction of every reachable cycle imply that $q_d$
+decays geometrically.  With $K=\max_iK_i$ and $L=\max_iL_i$, the root
+budgets are bounded by $\max_iC_i^*+q_dK$ and
+$\max\{\max_i\rho_i^*,q_dL\}$, up to finitely many common $o(1)$ terms.
+The strict margin in (TE) therefore holds at some fixed depth.  This machine
+halts explicitly because the finite expansion ends at the total seed
+solvers.
+\end{proof}
+
+This is a conditional composition theorem, not the missing constructor.  It
+also repairs an overstatement in the earlier typed account: Bellman
+feasibility alone does not make an unbounded recursive machine halt.  A
+contracting self-edge can still loop forever at a smallest encoding unless a
+base rule is given.  A unit-product cycle also leaves the seed exponent
+unsuppressed.  The favorable all-input epoch constructor remains
+\textsc{Open}.
+
+As a purely numerical acceptance control, take two types $A,B$, local floors
+$R_A=R_B=1$ and $P_A=P_B=1/2$, and one edge in each direction with
+$\theta=1/2$, retained-state exponent at most $1/2$, and time weights
+$w_{A\to B}=1/20$, $w_{B\to A}=1/5$.  The least budgets are
+$(C_A,C_B)=(1,1)$ and $(\rho_A,\rho_B)=(1/2,1/2)$, so the root maximum sum is
+$3/2<\phi$.  This verifies the arithmetic of a mixed contracting cycle; it
+does not construct such an epoch for general SAT.
 
 \subsection{Strongest conditional normal form}
 
@@ -1256,23 +1372,24 @@ Fix the code of one assumed polynomial-time exact SAT decider $A$.  A
 sufficient final-link theorem may provide a fixed finite family
 $W_{A,1},\ldots,W_{A,t}$ with the following contract.
 \begin{description}
-\item[Safe outcome.] Every member halts with recognizable FAIL or an exact
+\item[] \textbf{Safe outcome.} Every member halts with recognizable FAIL or an exact
 VALUE/AND/OR plan; zero-child VALUE plans are allowed.
-\item[Coverage.] At least one member succeeds on every ordinary CNF.
-\item[Charged attempts.] Shared setup, every failed search, certification,
+\item[] \textbf{Coverage.} At least one member succeeds on every ordinary CNF.
+\item[] \textbf{Charged attempts.} Shared setup, every failed search, certification,
 generation, access, replay, correspondence map, and combination operation fit
 one common time-space envelope.
-\item[Favorable success.] The successful plan has recursively closed ordinary
+\item[] \textbf{Favorable success.} The successful plan has recursively closed ordinary
 SAT children or a fully model-matched virtual-source interface satisfying
-Equation~\eqref{eq:final-link-wrapper-region}.
-\item[No circular parent call.] The construction does not first execute $A$
+either Equation~\eqref{eq:final-link-wrapper-region} or another explicitly
+verified branch of (END), such as the direct pair $(1,2/3)$.
+\item[] \textbf{No circular parent call.} The construction does not first execute $A$
 at the parent scale, materialize an $M^K$ trace, or call a succinct-SAT oracle
 whose cost has not been proved.
 \end{description}
 Theorem~\ref{thm:partial-portfolio} then removes the separate selector
-problem, and the recursive theorem removes the unknown exponent $K$.  The
-Coverage and Charged Attempts items together are the remaining \textsc{Open}
-premise.
+problem, and finite-depth seed elimination removes the unknown exponent $K$.
+The Coverage and Charged Attempts items together, with a strict valid
+endpoint landing, are the remaining \textsc{Open} premise.
 
 If this family were solver-independent and satisfied the specific bounds
 $q\le M^{1/3+o(1)}$, $|G_i|\le M^{2/3+o(1)}$, and
@@ -1445,67 +1562,95 @@ would instead have the optimistic ledger
  C=\max\{1,a/(1-b)\},\qquad S=b.
 \]
 At $(a,b)=(1/3,2/3)$ this gives $5/3$, while every source-major block choice
-gives two.  Thus the equality $q\cdot M^b=M$ proves only that the output
-traffic is affordable.  It does not supply the semantic transposition needed
-to emit and consume each child once.
+gives two.  The former sum exceeds $\phi$, but its actual pair
+$(C,S)=(1,2/3)$ would meet the separate Fortnow endpoint.  Thus the equality
+$q\cdot M^b=M$ proves only that the output traffic is affordable.  It does
+not supply the semantic transposition needed to emit and consume each child
+once.
 
-\subsection{Fixed-machine OR sharing and the generator-collapse correction}
+\subsection{Explicit OR sharing and generator--shrinker equivalence}
 
-Let the selected machine $A$ run in $m^{K+o(1)}$ time on $m$-bit CNFs.  For
-$q$ explicitly listed children, one selector multiplexer, one unrolled copy
-of $A$, and a Tseitin transformation give
+For $q$ explicitly listed children, a guarded-selector CNF gives directly
 \[
  \SAT(Q)=\bigvee_{i=1}^q\SAT(G_i),\qquad
- |Q|=m^{K+o(1)}+O(qm)\operatorname{polylog}(qm).
+ |Q|=\widetilde O(qm),
 \]
-This OR-MUX-COMPILE1 identity is \textsc{Proved/Exact} and replaces
-$q$ copies of the solver circuit by one.  It still returns a parent-scale
-formula when $qm=M^{1+o(1)}$.
+where $m$ bounds child length.  Selector validity must be enforced when the
+selector bit string has unused values.  This direct construction dominates
+the earlier proposal to unroll a selected SAT machine merely to express the
+same OR.  When $qm=M^{1+o(1)}$, it remains parent-scale and supplies no
+contraction.
 
-The first fixed-machine construction proposed replacing the explicit child
-table by a circuit $E_F(z)$ of size $M^{h+o(1)}$ that emits one legal
-$m=M^{b+o(1)}$-bit CNF and satisfies
+Suppose instead that a source-specific circuit $E_F(z)$ outputs a padded CNF
+encoding.  The following verifier makes the exact status of this route
+explicit.
+
+\begin{lemma}[CANONICAL-VERIFY1]
+Fix a canonical padded CNF encoding with $O(\log m)$-bit literal records.
+There is a uniform bounded-fan-in circuit $V_m(x,y)$ of description length
+$\widetilde O(m)$ such that
 \[
- \SAT(F)\iff\exists z\;\SAT(E_F(z)).\tag{GC}
+ \exists y\;V_m(x,y)=1
+ \quad\Longleftrightarrow\quad
+ x\text{ is a well-formed satisfiable CNF encoding}.
 \]
-The following red-team correction changes the interpretation of that route.
-
-\begin{theorem}[GENERATOR-COLLAPSE1]
-Assume $0<2b\le h<1$ and require every selector value to produce a legal
-padded CNF of length at most $M^{b+o(1)}$.  Count every selector terminal,
-output terminal, embedded source bit, constant, gate, and wiring-description
-bit in $|E_F|\le M^{h+o(1)}$.  If a uniform constructor for $E_F$ satisfying
-(GC) uses time $M^{r_E+o(1)}$ and space $M^{p_E+o(1)}$, then a uniform
-quadratic CNF witness verifier composed with $E_F$ and Tseitin encoded
-produces an ordinary CNF $Q_F$ with
-\[
- \SAT(Q_F)=\SAT(F),\qquad |Q_F|=M^{h+o(1)},
-\]
-in materialization time $M^{\max\{r_E,h\}+o(1)}$ and space
-$M^{\max\{p_E,h\}+o(1)}$.
-No assumed SAT machine is needed.
-\end{theorem}
-
+\end{lemma}
 \begin{proof}
-Existentially choose the selector and one witness bit for every literal
-occurrence of the selected child.  In $m^{2+o(1)}$ bounded-fan-in gates, parse
-the encoding, require equal variable identifiers to receive consistent
-witness bits, and verify every clause.  Compose this verifier with $E_F$ and
-apply the gate-by-gate Tseitin transformation.  Its size is
-$M^{\max\{h,2b\}+o(1)}=M^{h+o(1)}$, and its satisfying assignments are
-exactly a selector and a model of the selected child.
-The constructor work plus explicit verifier and output generation gives the
-stated time maximum; retaining the materialized output gives the space
-maximum.
+Guess one truth value per active literal occurrence and check clauses in
+their original order.  In parallel, send records
+$(\mathrm{active},\mathrm{identifier},\mathrm{value})$ through a uniform
+Batcher sorting network and reject adjacent active records having equal
+identifiers and unequal values.  The network has $O(m\log^2m)$
+compare-exchanges, each with polylogarithmic circuit description for
+$O(\log m)$-bit records \cite{batcher1968sorting}.  The parser rejects
+malformed headers, delimiters, identifiers, and padding.  Consistency plus
+clause acceptance is equivalent to one assignment satisfying the decoded
+formula.
 \end{proof}
 
-For the proposed values $h=2/3$ and $b=1/(3K)$ with $K\ge1$, the condition
-$2b\le h$ holds.  The fixed-machine composition is valid, but it is not the
-load-bearing step.  The compact exact generator already contains the missing
-ordinary shrinker in another syntax and may impose a stronger output-width
-contract.  Conversely, an ordinary shrinker is a degenerate one-child
-generated cover, but its output-width exponent generally equals its circuit
-exponent and need not satisfy $2b\le h$.
+\begin{theorem}[GENERATOR-SHRINKER-EQUIVALENCE1]
+Let a deterministic uniform constructor emit, for every $M$-bit CNF $F$, a
+closed topologically encoded circuit $E_F$ over a fixed finite basis.  Its
+only free inputs are selector bits.  Charge every selector terminal, output
+terminal, gate, constant, wire-description bit, and embedded source bit, and
+assume
+\[
+ e(F):=L(E_F)\le M^{h+o(1)},\qquad 0<h<1.
+\]
+Interpret its $m$ output bits only through CANONICAL-VERIFY1, so malformed or
+unused selector outputs are rejected, and assume
+\[
+ \SAT(F)\iff\exists z,y\;V_m(E_F(z),y)=1.\tag{GC$'$}
+\]
+If the constructor uses time $M^{r_E+o(1)}$ and space
+$M^{p_E+o(1)}$, with every subcall and failed route charged, then it emits an
+ordinary equivalent 3-CNF $Q_F$ satisfying
+\[
+ L(Q_F)\le M^{h+o(1)},\quad
+ T\le M^{\max\{r_E,h\}+o(1)},\quad
+ S\le M^{\max\{p_E,h\}+o(1)}.
+\]
+Conversely, a charged ordinary shrinker yields such a constant-output
+generator with the same exponents up to polylogarithmic factors.
+\end{theorem}
+\begin{proof}
+Every output terminal is explicit, so $m\le e(F)$.  Compose $E_F$ with
+$V_m$, constrain the verifier output to one, and introduce full
+biconditional Tseitin clauses for every gate.  For each $(z,y)$ an extension
+to gate variables exists exactly when the composed circuit accepts.  By
+(GC$'$), $Q_F$ is satisfiable exactly when $F$ is.  CANONICAL-VERIFY1 and the
+Tseitin expansion have length $\widetilde O(e(F))$, giving the stated size
+and construction time.  Retaining the materialized successor in writable
+storage gives the stated space maximum.  Conversely, topologically encode a
+constant-output circuit whose output is the already constructed successor.
+\end{proof}
+
+This \textsc{Proved/Exact} theorem removes the former quadratic verifier and
+the condition $2b\le h$.  Under a closed explicit encoding, a compact
+generated cover and an ordinary shrinker are equivalent up to polylogarithmic
+factors.  A parent/source pointer, ROM lookup, compressed bus, external shared
+object, or random oracle is not a closed generator unless its expansion and
+every access are charged.
 
 \subsection{Where the original exponent division applies}
 
@@ -1523,10 +1668,13 @@ then $d$ fixed reapplications followed by $A$ give
 \]
 At $(h,r,p)=(2/3,1,2/3)$, choose a finite hardwired $d$ so that
 $Kh^d\le1$ and $Lh^d\le2/3$.  The resulting point is $(1,2/3)$, whose sum
-$5/3$ is strictly below $2\cos(\pi/7)$.  This is the exact place for the
-original idea that repeated division by a power removes a $2^K$ contribution.
-It suppresses the leaf exponent after contraction exists.  It does not pay
-for discovering the first contraction.
+$5/3$ is \emph{above} $\phi$ and therefore is not a Williams-product
+contradiction.  It is forbidden instead by Fortnow's theorem, for example by
+taking $\varepsilon=1/4$ in the prohibition against simultaneous
+$N^{1+o(1)}$ time and $N^{1-\varepsilon}$ space.  This is the exact place for
+the original idea that repeated division by a power removes a $2^K$
+contribution.  It suppresses the leaf exponent after contraction exists.  It
+does not pay for discovering the first contraction.
 
 \subsection{Strongest surviving alternatives}
 
@@ -1544,17 +1692,18 @@ again on every returned CNF and may not begin with a parent-scale call to $A$.
 Alternatively, construct a finite source-checkable epoch with charged VALUE
 leaves and typed recursive exits.  Same-scale administrative steps require a
 proved all-input potential.  Every feasible recurrent macro-cycle must
-contract.  For one fixed entry type $i_0$, require
-$C_{i_0}^*+\rho_{i_0}^*<2\cos(\pi/7)$.  If root classification can select a
-type in a fixed set $I_0$, the same-realization guard is instead
-$\max_{i\in I_0}C_i^*+\max_{i\in I_0}\rho_i^*<2\cos(\pi/7)$.
+contract.  For the general product branch, require the finite-depth condition
+$\max_{i\in I_0}C_i^*+\max_{i\in I_0}\rho_i^*<\phi$.  A route aimed at the
+Fortnow strip or the subpolynomial-space endpoint must instead prove that
+specific endpoint's hypotheses on the same implementation.
 \end{description}
 
 TRIE-BATCHACQUIRE1 is useful infrastructure for either alternative.
 BATCH-LAYOUT-GATE1 proves that source-major buffering does not realize the
-first target at aggregate-linear volume.  GENERATOR-COLLAPSE1 proves that a
-compact exact legal-child generator is a presentation of the target, not a
-derivation from $P=NP$.  The recent CSP nonredundancy results additionally
+first target at aggregate-linear volume.
+GENERATOR-SHRINKER-EQUIVALENCE1 proves that a compact exact closed generator
+is a presentation of the target, not a derivation from $P=NP$.  The recent
+CSP nonredundancy results additionally
 block deletion or reweighting-only sparsification of ordinary clause
 violations, while exact core reduction remains useful for structured CSP
 languages \cite{brakensiekguruswami2026,sharmavelusamy2026,brakensiekputterman2026}.

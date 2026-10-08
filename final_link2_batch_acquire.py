@@ -802,7 +802,7 @@ def main() -> None:
             "Construction work still includes symbolic trie probes; standalone recovery still emits every child bit.",
             "A leaf descriptor is not a smaller ordinary SAT instance because it retains a current-scale shared H and requires a parent-aware consumer.",
             "The semantic-antichain control forces distinct residual payloads and blocks equality or clause-dominance collapse.",
-            "No general bound proves that the shared object, recovery, emitted bits, recursive size, and arbitrary-solver interface jointly meet the Williams target.",
+            "No general bound proves that the shared object, recovery, emitted bits, recursive size, and arbitrary-solver interface jointly enter any cited SAT time-space endpoint.",
         ],
     )
     Path(sys.argv[1]).write_text(json.dumps(result, indent=2) + "\n")
