@@ -425,6 +425,65 @@ worst-case output still has $q$ children.  Stronger PR or RAT certificate
 ladders are candidates only after certificate discovery, verification,
 density, and representation costs are jointly proved.
 
+\subsection{A fixed-depth nested implication hierarchy}
+The RUP selector is the first level of a rigorously defined ladder.  Let
+$r_1$ be unit propagation and let $r_{k+1}$ repeatedly set a literal $\ell$
+whenever $r_k$ detects contradiction after setting $\ell$ false, as in the
+nested-input-resolution hierarchy of Gwynne and Kullmann
+\cite{gwynne2014nested}.  Write $A\Rightarrow_k B$ when
+\[
+ r_k\!\left(A\wedge\bigwedge_{\ell\in C}\neg\ell\right)=\{\bot\}
+ \quad\hbox{for every clause }C\in B.
+\]
+Thus $\Rightarrow_1$ is RUP, every $\Rightarrow_k$ is a sound sufficient
+test for semantic implication, and the tests become monotonically stronger.
+
+\begin{theorem}[NESTED-IMPLICATION-SELECT1]\label{thm:nested-select}
+Fix $k\geq1$.  In Theorem~\ref{thm:rup-select}, replace the RUP edge by
+$i\to j$ exactly when $R_i\Rightarrow_kR_j$.  Sink-SCC representatives still
+preserve the exact OR frontier.  A direct depth-first implementation makes no
+SAT-oracle call and uses
+\[
+ O(q^2m^{2k})\ \text{time},\qquad O(qm+q^2+km)\ \text{live space}.
+\]
+If a source $A$ has hardness at most $k$ in the $\mathrm{UC}_k$ hierarchy,
+then $A\models B$ implies $A\Rightarrow_kB$.
+\end{theorem}
+\begin{proof}
+The SCC argument is unchanged because every edge is sound implication.  If
+$T_k(m)$ is the cost of one contradiction test, occurrence-list unit
+propagation gives $T_1(m)=O(m)$.  At the next level at most $O(m)$ committed
+assignments each scan at most $O(m)$ candidate literals and invoke the prior
+level, so $T_{k+1}(m)=O(m^2T_k(m)+m^2)$ and
+$T_k(m)=O(m^{2k-1})$.  Testing the $O(m)$ target clauses for every ordered
+pair gives the displayed time.  A depth-first implementation stores one
+$O(m)$ reduction state at each of the fixed $k$ levels in addition to the
+explicit frontier and graph.  The final assertion is Theorem~5.7 of
+\cite{gwynne2014nested}: every implicate of a $\mathrm{UC}_k$ source is
+detected at level $k$ (equivalently, its prime implicates have the stated
+nested-input-resolution proofs).
+\end{proof}
+
+The hierarchy is strictly stronger already at depth two.  Put
+\begin{align*}
+A={}&(x\vee a\vee b)\wedge(x\vee a\vee\neg b)
+\wedge(x\vee\neg a\vee b)\\
+&\wedge(x\vee\neg a\vee\neg b)\wedge(y),\qquad B=(x).
+\end{align*}
+Then $A\Rightarrow_2B$ but $A\not\Rightarrow_1B$, while $B\not\models A$.
+Depth two therefore removes $A$ from the OR frontier $[A,B]$ where RUP
+retains both.  Horn sources are complete at level one and 2-CNF sources at
+level two.  However, recognizing $\mathrm{UC}_k$ membership is coNP-complete
+for each fixed $k\geq1$, and the complete-unit-assignment antichain is
+incomparable at every level.  The selector need not recognize the source
+class, but it has no universal density guarantee.
+
+The fixed-depth quantifier is load-bearing.  Each fixed $k$ supplies one
+uniform polynomial-time algorithm and may participate in a finite
+existential ARC chain.  Taking $k=k(m)\to\infty$ changes the bound to
+$m^{2k(m)}$ and is not a uniform fixed-polynomial realization.  Completeness
+obtained only through growing depth therefore does not close either spine.
+
 \subsection{Prime lineage, hashes, and merging}
 In Boolean semantics, TRUE and NOT FALSE agree, as do FALSE and NOT TRUE. Assigning different primes preserves syntactic provenance, not four distinct Boolean truth values. Any prime product is charged by bit length and arithmetic cost. An ordinary hash needs collision handling for exact correctness. A common terminal node or equal SAT bits does not justify identifying histories under future operations. A merge needs a semantic congruence appropriate to the remaining computation. Compact macro-route indices can save lineage space after contraction; they do not establish contraction. A finite DAG contains no directed cycles: recursion must be described by a well-founded call graph or an unfolded DAG, not a literal cyclic DAG.
 
@@ -891,9 +950,21 @@ contraction, or general-SAT coverage.  Its scoped interface theorem is
 implication and P versus NP remain \textsc{Open}.
 % END RUP IMPLICATION SELECTOR REVIEW 2026-10-07
 
+% BEGIN NESTED IMPLICATION SELECTOR REVIEW 2026-10-07
+\paragraph{Nested implication review, 7 October 2026 (RSR-0003).}
+Theorem~\ref{thm:nested-select} upgrades RUP to an exact fixed-depth hierarchy
+and is complete for implications from $\mathrm{UC}_k$ sources.  A bounded
+test performed $67{,}067$ checks, including a strict depth-two witness,
+Horn/2-CNF class controls, signed renamings, padding, random frontiers, and
+the complete-assignment antichain.  This resolves fixed-depth verification,
+not favorable general-SAT density or original-scale realization.  The joint
+WRAPPER implication and P versus NP remain \textsc{Open}.
+% END NESTED IMPLICATION SELECTOR REVIEW 2026-10-07
+
 \bibliographystyle{plain}
 \bibliography{spines}
 \end{document}
+
 
 
 
