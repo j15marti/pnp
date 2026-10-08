@@ -1,0 +1,152 @@
+% CODEX REPORT::UNIT-TAIL-REPLAY1::2026-10-08
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+\title{UNIT-TAIL-REPLAY1: Removing Forced-Assignment Ancestor Frames}
+\date{8 October 2026}
+\begin{document}\sloppy\maketitle
+\paragraph{Status.}
+COMPUTATIONAL implementation improvement with a direct semantic justification.
+P versus NP remains OPEN. This run continues the recovered COMBINED-REPLAY1
+implementation rather than rebuilding its already-solved source-backed interface.
+It removes recursive frame accumulation along forced-unit paths.
+It supplies no favorable all-input time-space theorem.
+
+\section{Existing work and concrete change}
+The earlier source-backed solver already included iterative propagation and
+trail undo. COMBINED-REPLAY1 integrated frontier processing, AND/OR recursion,
+source replay and bounded exact sharing, but still recursively called itself
+on each forced unit. The new subclass replaces only that unit call by a loop.
+Frontier processing still occurs first; unit propagation begins after a
+frontier-cap exit. Component AND and Shannon OR remain recursive. Cache
+lookups still require exact normalized-stream agreement after hashing.
+
+Pre-unit states are not saved for insertion into the answer cache on unwind.
+Otherwise an auxiliary list could reproduce the removed storage cost.
+The currently resolved state may still be cached within the original budget.
+Omitting optional cache insertions preserves correctness but can change
+future reuse, work and search behavior. No general speedup or monotonic
+workspace improvement for all workloads is claimed.
+
+\section{Correctness and descriptor accounting}
+Fix an input CNF on labels $1,\ldots,n$ and state $X=(I,M,V)$.
+If its residual contains a unit literal $\ell$, every satisfying extension
+must assign $\ell$ true. Hence the residual at $X$ and the residual at
+\[
+ X'=(I,M\cup\{|\ell|\},V[|\ell|\leftarrow(\ell>0)])
+\]
+have identical satisfiability. The implementation realizes this operation
+with bit masks. The variable is unassigned before the transition, so at
+most $n$ such transitions occur without returning or entering another
+branch. Induction proves that replacing the recursive single-child call
+by the loop preserves every returned SAT value. Existing exact cache
+entries remain sound; omitted insertions cannot manufacture an answer.
+
+Let $d(I)$ denote a scope descriptor length. A retained state requires
+$O(d(I)+n)$ logical bits under the dense-mask representation.
+A chain of $u$ separately retained ancestor states has the conservative
+upper bound $O(u(d(I)+n))$; this is not a claim that a physically shared
+scope is copied $u$ times. The loop retains one current state instead.
+Temporary old/new mask overlap remains $O(d(I)+n)$ and is charged.
+Ancestors from genuine AND/OR calls, component structures, bounded cache,
+normalization maps, parsing/indexing and source access remain separate.
+This statement concerns state-descriptor payload, not total Python heap
+or an endpoint machine-space theorem.
+
+The method is ordinary iterative propagation/tail-call elimination.
+MiniSat's original implementation supplies the related standard pattern of
+a trail and rollback to decision levels; its \texttt{cancelUntil} code
+does not supply any new unrestricted SAT bound [L]. The present change
+integrates that memory-management lesson into our particular source-replay
+realization; it is not a new general SAT technique.
+
+\section{Bounded experiments}
+The builder batch performs 519 original/new/expected-answer comparisons:
+240 seeded small random formulas under two cache budgets; forward,
+reverse-order and relabelled implication chains; contradiction chains;
+and repeated components exercising AND, OR and sharing.
+Zero-byte fingerprints deliberately force hash collisions.
+All answers agree, all cache budgets hold, and no SAT oracle is called.
+The batch takes approximately 2.48 seconds under a 25-second alarm.
+
+An independent reviewer also tests all subsets of size at most three from
+the empty clause and all signed unit/binary clauses on three variables,
+with two cache budgets and forced hash collisions. All 2,320 checks agree
+with independent truth-table evaluation. Its separate executable and
+results are retained. Each Python invocation stays below 30 seconds.
+
+For the following measured cache-free controls the frontier cap is zero,
+intentionally exposing the unit path. This is not a claim that the default
+frontier would need those recursive frames on an easy implication chain.
+\begin{center}
+\begin{tabular}{rrrrr}
+\toprule
+Variables & Old active bits & New active bits & Old/new depth & Literal reads, both\\
+\midrule
+16 & 258 & 31 & 15/0 & 992\\
+32 & 1026 & 63 & 31/0 & 4032\\
+64 & 4098 & 127 & 63/0 & 16256\\
+128 & 16386 & 255 & 127/0 & 65280\\
+256 & 65538 & 511 & 255/0 & 261632\\
+\bottomrule
+\end{tabular}
+\end{center}
+Active bits are the dedicated logical descriptor-and-cache counter,
+excluding temporary processing payload. The broader inherited logical
+peak at 256 variables, which includes charged transient overlap, changes
+from 65,609 to 1,530 bits. Neither counter measures RSS or every machine
+instruction/temporary. Inherited recursive-size counters now represent
+logical transitions, including loop transitions, rather than only calls.
+
+\section{What advances and what remains}
+This removes an avoidable descriptor multiplier along unit-only paths.
+Source reads remain unchanged in the cache-free chain controls and grow
+quadratically in the displayed variable count. General fallback branching,
+scope lists and normalized-stream comparisons remain.
+Even $O(n)$ variable-mask storage does not imply $N^p$ space for fixed $p<1$
+when encoded input length is $N=\Theta(n\log n)$.
+
+The current proof spine therefore retains the exact combined wrapper,
+its concrete source-backed realization, its conditional charging and
+$K$-elimination theorems, and adds this implementation improvement.
+The OPEN implication remains favorable simultaneous resource bounds on
+all required inputs, or a proved achievable-region improvement.
+The next concrete target is to reduce repeated source access while retaining
+the corrected joint storage ledger. Source indexing must be charged; it
+cannot be treated as free read-only derived input.
+
+\section{Corpus and reconciliation}
+Reviewed: current GitHub tree at
+\texttt{a361c2eabb5740343b29d5b6b4ef4b593bc32b8e},
+COMBINED-REPLAY1 code/report, source-backed predecessor,
+REPLAY-RECOVERY, current manuscript entry points, and project governance
+already recovered in this conversation. Snapshot preflight passed;
+full repository CI was not run.
+Independent agent review checked semantic preservation and warned that
+logical metrics do not establish total machine space.
+The code revision changes no older implementation file.
+Root MAIN remains with its authorized owners; main4/main5 receive a new
+scoped addition. No earlier valid component is retired.
+
+No arbitrary-solver extraction, nonrelativizing hinge, algebraic barrier
+escape or cryptographic premise is claimed. Horn-like implication chains
+are used as easy implementation controls, not hardness examples.
+This is a representation-level improvement, not a lower bound.
+No new external theorem is imported.
+
+\paragraph{Artifacts.}
+\begin{description}
+\item[] \path{research/agents/proof/unit_tail_replay.py}
+\item[] \path{research/agents/proof/unit_tail_replay_results.json}
+\item[] \path{research/agents/proof/unit_tail_review.py}
+\item[] \path{research/agents/proof/unit_tail_review_results.json}
+\item[] Base: \path{experiments/proof_spines/combined_replay_wrapper.py},
+blob \texttt{e0c3228a448a04576d32a693183312293cafecc1}.
+\item[] [L] MiniSat original source:
+\url{https://github.com/niklasso/minisat/blob/master/minisat/core/Solver.cc}.
+Author paper: \url{https://minisat.se/downloads/MiniSat.pdf}.
+The author-hosted paper search returned the trail/rollback description;
+direct PDF retrieval timed out. Original source was read successfully.
+\end{description}
+% END_OF_VERIFIED_REPORT::CODEX::UNIT-TAIL-REPLAY1
+\end{document}
