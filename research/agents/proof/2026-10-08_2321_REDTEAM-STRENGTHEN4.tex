@@ -1,0 +1,250 @@
+% PNP RESEARCH REPORT::REDTEAM-STRENGTHEN4::2026-10-08T23:21:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\DTISP}{\operatorname{DTISP}}
+\title{REDTEAM-STRENGTHEN4: Repairing the CNF1 Adapter\\and Closing the Local Endpoint Transition}
+\author{Independent red-team agent}
+\date{8 October 2026 UTC}
+
+\begin{document}\sloppy\maketitle
+
+\paragraph{Result.}
+The exact-byte claim in ARC-STRENGTHEN4 is \textsc{Falsified as written}:
+its zig-zag polarity is the reverse of the convention used by the extant
+Construction and Recovery artifacts, and its empty-formula header need not be
+an attained maximum.  The resource idea survives.  This report gives a
+source-checkable repaired dense-CNF1 syntax, an independent total parser, a
+corrected fixed-layout adapter, and a fixed-block local Tseitin composition.
+Together with the classical local-reduction theorem recorded explicitly by
+Jahanjou--Miles--Viola, this discharges the previously isolated Cook-stream
+endpoint obligation.  It does \emph{not} construct the all-input favorable
+WRAPPER phase.  Consequently $P$ versus $NP$ remains \textsc{Open}, and
+conditional elimination of the starting exponent $K$ remains conditional.
+The retired unrestricted $t+s<2\cos(\pi/7)$ endpoint is not used.
+
+\section{The smallest exact failure}
+
+The repository's Construction/Recovery encoder uses
+\[
+ \operatorname{zz}(+u)=2u-1,\qquad
+ \operatorname{zz}(-u)=2u,                                 \tag{1}
+\]
+whereas ARC-STRENGTHEN4 equation (6) uses the opposite parity.  Decoding its
+stream under (1) complements every literal.  SAT is preserved by globally
+complementing every assignment, but the claimed sign preservation, identical
+assignment map, canonical bytes, and interoperability are false.  At ULEB
+boundaries such as $u=64$ and $u=8192$, the two signs can even have different
+byte lengths.  The old test compared its serializer only with a locator using
+the same erroneous convention, so it could not expose the conflict.
+
+There is a second independent edge case.  For an empty source with nominal
+$q=1$, the old construction emits a maximum-variable header $A+q=17$, while
+no literal attains it.  The existing tuple encoder emits maximum zero.  Thus
+``largest variable identifier'' and ``upper bound'' were silently conflated.
+
+\section{A total dense CNF1 language}
+
+We now fix the exact syntax used by the endpoint bridge.  A byte string of
+length $N$ is in \texttt{DENSE-CNF1} precisely when it has magic
+\texttt{CNF1}; every integer is in shortest canonical ULEB128; the header is
+$(q,C)$; $q\le128N$, $C\le N$, and every width is at most $N$; every literal
+code is nonzero and decodes by (1) to an identifier at most $q$; the maximum
+identifier occurring is exactly $q$ (hence $q=0$ for the empty formula); and
+the last literal ends exactly at EOF.  Invalid strings denote NO.  Duplicate
+literals and tautological clauses are allowed.
+
+\begin{lemma}[total parser]\label{lem:parser}
+\texttt{DENSE-CNF1} is recognized in $N\log^{O(1)}N$ time and $O(\log N)$
+workspace on the charged random-access model.  On a valid string, its CNF can
+be streamed in the same bounds.
+\end{lemma}
+\begin{proof}
+Decode each ULEB once while rejecting a nonterminal truncation, a redundant
+last zero group, or a value as soon as it exceeds the relevant cap.  All live
+values have $O(\log N)$ bits.  Maintain input position, clause and occurrence
+counters, and the maximum identifier seen.  Reject a literal outside the
+header, trailing data, or a final maximum unequal to the header.  The sum of
+consumed token lengths is $N$; standard $O(\log N)$-bit arithmetic contributes
+only a polylogarithmic factor.  No formula array is stored.
+\end{proof}
+
+The density restriction is harmless for the local reduction below and makes
+the total malformed-input policy explicit.  Any broader project CNF1 solver
+also solves this sublanguage; this definition therefore does not assume a
+promise at the endpoint.
+
+\section{Correct fixed-layout adapter}
+
+\begin{theorem}[repaired indexed-3CNF adapter]\label{thm:adapter}
+Let $Q_x$ be an exactly-three-literal CNF with source identifiers in $[q]$,
+$q,C\le n\log^{O(1)}n$, and let a deterministic transducer return occurrence
+$(j,r)$ in $\log^{O(1)}n$ time and $\log^{O(1)}n$ workspace.  Then there is an
+equisatisfiable \texttt{DENSE-CNF1} string $R_x$ of
+$n\log^{O(1)}n$ bits whose length and every addressed bit (with blank returned
+past its length) are computed within the same polylogarithmic bounds.
+\end{theorem}
+\begin{proof}
+If $Q_x$ is empty, emit the unique six-byte header
+\texttt{CNF1 00 00}.  Otherwise append, for every $v\in[q]$, the tautology
+$(v\vee\neg v\vee v)$.  This charges $q$ additional fixed-width clauses,
+makes $q$ the attained maximum, and preserves satisfiability.
+
+Choose the least $b\ge1$ such that $q\le2^{7b-3}$ and put
+$A=2^{7b-3}$.  Rename $v$ to $A+v$, preserving sign, and encode by (1).
+Every encoded literal value lies in
+\[
+ 2A+1\le z\le4A=2^{7b-1}<2^{7b},
+ \qquad 2A+1>2^{7(b-1)},                                   \tag{2}
+\]
+so every literal occupies exactly $b$ bytes.  Each record therefore has
+length $1+3b$.  The exact header is $(A+q,C+q)$; it is attained by the padding
+clause for $q$.  Since the complete output contains at least $q$ padding
+records, its byte length is at least $4q+6$, while $A+q\le129q$ (and is
+$17$ for $q=1$); hence $A+q\le128N$.
+
+After the header, division of an address by $1+3b$ identifies a clause,
+occurrence and literal byte.  Source clauses use one transducer call; padding
+clauses are arithmetic.  Header, EOF and out-of-range cases are explicit.
+The output length is $O((C+q)\log(q+1))=n\log^{O(1)}n$, and all live
+quantities have $O(\log n)$ bits.  The renaming is injective and all appended
+clauses are tautologies.
+\end{proof}
+
+\section{The local 3CNF source is a known theorem}
+
+The missing source theorem need not be reproved as a new WRAPPER lemma.
+Jahanjou, Miles and Viola state that the classical reduction needed for
+time--space tradeoffs maps nondeterministic time $T$ to a quasilinear-size
+3SAT formula whose indexed clause is computable in polylogarithmic time and
+$O(\log T)$ space.  Their Section~5 makes the gate-to-clause map explicit and
+pads short clauses by literal repetition.  This is exactly the
+clause-explicit property required here.  The relevant primary source is
+\begin{center}
+\url{https://arxiv.org/abs/1311.3171}.
+\end{center}
+This invocation is of their explicit account of the \emph{classical}
+FLMV-era reduction, not their newer Theorem~1 at $T=n$, whose parameter loss
+must not be silently treated as quasilinear.
+
+For completeness, the final serialization composition can be written without
+any variable-length gadget ambiguity.  A polylog-uniform quasilinear circuit
+has gates densely numbered $1,\dots,G$.  Lipton and Williams, Theorem~3.1,
+state that a gate index yields its at-most-two predecessors and type in
+polylogarithmic time.  For output variable $y$ and inputs $a,b$, use exactly
+three clauses per gate:
+\begin{align*}
+ y=a\wedge b:&\quad
+ (\neg a\vee\neg b\vee y),
+ (a\vee\neg y\vee\neg y),
+ (b\vee\neg y\vee\neg y);\\
+ y=a\vee b:&\quad
+ (a\vee b\vee\neg y),
+ (\neg a\vee y\vee y),
+ (\neg b\vee y\vee y);\\
+ y=\neg a:&\quad
+ (a\vee y\vee y),
+ (\neg a\vee\neg y\vee\neg y),
+ (y\vee\neg y\vee y).
+\end{align*}
+Hardwired input gates use the corresponding repeated unit plus two
+tautologies; nondeterministic witness inputs use three tautologies.  One final
+three-clause block asserts the output, with two tautological fillers.  Thus
+$C=3(G+1)$, $q=G$, and \texttt{divmod} of a clause index identifies one gate
+and one slot.  Every child execution is one charged gate-tuple computation;
+there is no SAT oracle in acquisition.  The Lipton--Williams source is
+\url{https://people.csail.mit.edu/rrw/qbf-nc-journal-rev.pdf}.
+
+Combining this fixed block with Theorem~\ref{thm:adapter} gives the exact
+local endpoint transition:
+\[
+ L\in\operatorname{NTIME}[n]
+ \Longrightarrow R_x\in\texttt{DENSE-CNF1},\quad
+ |R_x|=n\log^{O(1)}n,                                      \tag{3}
+\]
+with each requested bit generated in polylogarithmic time and space.  A
+simulated SAT machine retains its work and index tapes while the generator's
+state is live, so the joint bound is
+\[
+ t(n\log^{O(1)}n)\log^{O(1)}n,qquad
+ s(n\log^{O(1)}n)+\log^{O(1)}n.                            \tag{4}
+\]
+This closes the local Cook-stream/serialization obligation.  It says nothing
+about obtaining a favorable solver for arbitrary source CNFs.
+
+\section{Primary endpoint and exact exponent slack}
+
+Fortnow--Lipton--van Melkebeek--Viglas use the same charged random-access
+model and prove in Corollary~5.8 that, for constant $c>1$,
+\[
+ \operatorname{NTIME}[n]\not\subseteq
+ \DTISP\!\left[n^c,o\!\left(n^{d(c)}\right)\right],\qquad
+ d(c)=\frac12\left(\frac{c+2}{c^2}-c\right).               \tag{5}
+\]
+At $c=1201/1000$, $d(c)\approx0.5091082157>1/2$.  Hence a
+\texttt{DENSE-CNF1} solver jointly using $N^{6/5+o(1)}$ time and
+$N^{1/2+o(1)}$ space would, through (3)--(4), put every language in
+$\operatorname{NTIME}[n]$ into time $n^{1.201}$ and
+$o(n^{d(1.201)})$ space for all sufficiently large $n$, contradicting (5).
+The primary paper is
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.
+
+\section{Independent executable validation}
+
+The companion program implements the repaired serializer, an independently
+written total parser, the old ARC4 serializer, and an addressed-byte locator.
+With seed \texttt{0x5ed7ea4}, it rejected nine malformed streams; exposed the
+old decoding $(-17,18,-18)$ versus the repaired $(17,-18,18)$; checked 27,935
+addressed bytes, including ULEB boundaries; and checked 24 small semantic
+instances.  It completed in 1.308 seconds.  The output digest was
+\texttt{6aae56cfbe7d89b01459bb42839cc59d34cc90e70e717612934490a797ccfc58}.
+This is \textsc{Computational} validation of the implementation, not proof of
+the all-input construction.
+
+\section{What remains open}
+
+The proof spine is now sharper:
+\begin{enumerate}
+\item \textsc{Proved/Exact}: conditional recursive accounting, aggregate
+child-volume closure, simultaneous workspace accounting, and conditional
+elimination of $K$ once one favorable all-input phase exists.
+\item \textsc{Proved/Exact after repair}: the fixed-layout dense-CNF1 adapter
+and its total parser; ARC4's opposite-polarity exact-byte statement is retired.
+\item \textsc{Known theorem + exact composition}: the local quasilinear 3CNF
+transition and the FLMV endpoint contradiction at $(6/5,1/2)$.
+\item \textsc{Open and separation-strength}: under $\SAT\in P$, construct on
+every unrestricted input a favorable pre-semantic phase before any
+parent-scale SAT query, charging discovery, failures, executed children with
+multiplicity, replay, buffers, indexes and ancestor state.
+\end{enumerate}
+
+The latest hereditary marked construction remains a promise-domain candidate.
+Its aggregate recurrence is favorable when
+$\sum_i|y_i|\le N^{11/10+o(1)}$ and
+$\max_i|y_i|\le N^{1/2+o(1)}$, because
+$\sum_iT(|y_i|)\le (\max_i|y_i|)^{1/5+o(1)}\sum_i|y_i|le
+N^{6/5+o(1)}$.  But balanced quoting, inherited contexts, dense rebasing,
+exact headers, malformed-depth caps and all-input acquisition are not yet
+proved.  A fallback to the assumed polynomial solver restores $K$.
+
+The parity-star portfolio also remains non-favorable as implemented: the
+four-variable, twelve-clause affine instance on triples
+$\{1,2,3\},\{1,2,4\},\{1,3,4\}$ is an UNKNOWN witness, and the infinite
+hub-cycle family forces $16m^2$ pair probes in the published scanner.  A
+machine-step cap preserves soundness but loses coverage.  These facts prevent
+the repaired endpoint from being mistaken for a completed $P\ne NP$ proof.
+
+\paragraph{Corpus and quantifiers checked.}
+Current \texttt{main4.tex}, \texttt{main5.tex}, \texttt{AGENTS.md},
+\texttt{CODEX.md}, the repository research skill and protocol,
+\texttt{FORMAL-SPINE1}, and the latest Construction, Recovery, ARC and
+Red-Team reports were read.  Earlier RECURCLOSE1, STREAMCOMP1, CYCLEGAIN1 and
+ORBITBATCH1 results solve conditional accounting or source-side semantics,
+not all-input acquisition.  Every statement above is uniform over all input
+lengths in its stated domain; time and space belong to the same machine.
+
+% END_OF_VERIFIED_REPORT::REDTEAM-STRENGTHEN::REDTEAM-STRENGTHEN4
+\end{document}
