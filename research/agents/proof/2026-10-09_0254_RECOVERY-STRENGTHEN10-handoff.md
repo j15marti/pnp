@@ -1,0 +1,10 @@
+# RECOVERY-STRENGTHEN10 handoff
+
+- **Exact new theorem:** a quasilinear SAT-preserving image with charged polylogarithmic random access preserves the complete mixed terminal/recursive ledger, not merely SAT truth or time. Construction10's shielded residual is therefore the general all-input problem at the full Recovery9 ledger.
+- **Recovered unification:** aggregate implicit children with per-access exponent `g` close at `C=max{1,r,(g+v-h)/(1-h)}`. The current `(C,v,h)=(6/5,11/10,1/2)` target is saturated, so conservative access needs exponent-zero overhead or a proved batching/cache improvement.
+- **Premise provenance:** an unresolved path to the assumed `N^K` decider retains exponent `A(P)+Theta(P)K`. Alias flattening, streaming and setup/address deduplication preserve the scale coefficient of a surviving semantic dependency. Balanced pad/unpad returns product one.
+- **Critical scope:** this is an interface theorem, not a lower bound. `n/2` or `n-1` descent has coarse power label one but can close by an exact-size recurrence. Input-dependent ranks, memoization and new semantic merges remain legitimate routes if fully charged.
+- **What finishes the proof:** on every shielded input and descendant, before a parent-scale semantic call, supply either a K-free exact terminal cover or recursively covered ordinary-SAT children with `(r,v,h,p)<=(6/5,11/10,1/2,1/2)` on one machine. Recovery9 and the FLMV endpoint then complete the conditional contradiction.
+- **Validation:** 3,807 cyclic graphs, 90,096 closed walks, 23,599 balanced operation words, 116,940 affine routes and 864 virtual-source ledgers checked in 5.54 seconds; zero counterexamples. Six-page report compiled.
+- **Status:** conditional K elimination remains proved. No overlooked original report supplies the missing implementation. P versus NP remains OPEN.
+- **Next target:** exact-size/potential-based source-first descent or a batched semantic merge directly on the portfolio-stable shielded image, with discovery and joint space charged.
