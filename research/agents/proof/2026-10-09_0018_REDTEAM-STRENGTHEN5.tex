@@ -1,0 +1,229 @@
+% PNP RESEARCH REPORT::REDTEAM-STRENGTHEN5::2026-10-09T00:18:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,url}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\DTISP}{\mathsf{DTISP}}
+\newcommand{\NTIME}{\mathsf{NTIME}}
+\title{REDTEAM-STRENGTHEN5: byte-level falsification and repair of the amplified fallback theorem}
+\author{Independent red team}
+\date{9 October 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Verdict.}
+ARC-STRENGTHEN5 is \emph{false as computationally certified}: its runner uses
+the retired signed-literal convention and therefore hashes a different byte
+language.  Its symbolic amplified-guard, one-pivot noncoverage, and exact
+size-cap arguments survive.  Its achievable-region equality also survives
+after replacing one unsupported normalization sentence by the explicit local
+properization below.  None of this constructs the missing favorable phase;
+P versus NP remains \textbf{OPEN}.
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Component & Status\\\midrule
+ARC5 abstract guard and universal cap & PROVED/EXACT\\
+ARC5 old byte-level certificate & FALSIFIED/RETIRED\\
+Five-clause properization lemma & PROVED/EXACT\\
+Corrected finite experiment & COMPUTATIONAL\\
+Aggregate-volume $K$ elimination & CONDITIONAL\\
+PRE-A all-input compiler & OPEN\\
+P versus NP & OPEN\\\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Exact claim card}
+Let DENSE-CNF1 use canonical ULEB128, attained header maximum, exact EOF, and
+\[
+ \operatorname{zz}(+u)=2u-1,\qquad \operatorname{zz}(-u)=2u.
+\]
+Let proper 3CNF mean exactly three literals on three distinct variables per
+clause (clause occurrences may repeat).  Fix the exact source revisions of
+the current deterministic portfolio $P_{\rm cur}$ and define $U$ to be its
+UNKNOWN promise domain.  A machine deciding $U$ need only be correct and meet
+its bound on members of $U$.  Define $\mathcal A(D)$ by one uniform all-length
+random-access machine attaining time $N^{t+o(1)}$ and workspace
+$N^{s+o(1)}$ simultaneously on every input in $D$.  Input is read-only and
+indexed; work tapes, address tapes, generators, buffers, and repeated virtual
+input reads are charged.
+
+For every nonempty proper source $F$ with attained maximum $q$, $m$ clause
+occurrences, and $L=q+m\ge4$, ARC5's amplified formula is
+\[
+\begin{split}
+G(F)=F&\wedge(h\vee\neg r)\wedge(\neg h\vee r)\\
+ &\wedge\bigwedge_{v=1}^{q}P_0(h,v,w_v)
+ \wedge\bigwedge_{j=1}^{m}P_0(h,a_j,b_j),
+\end{split}
+\]
+where $h=q+1$, $r=q+2$, $w_v=q+2+v$,
+$a_j=2q+2j+1$, and $b_j=a_j+1$.  Here $P_0$ is the four-clause
+even-parity relation.  When a source identifier is unused, choose its value
+arbitrarily and then set $w_v=v$; $w_v$ is not independently arbitrary.
+
+\section{Smallest falsification: wrong signed bytes}
+The ARC5 test implements positive-even/negative-odd zig-zag coding.  The
+first ULEB128 boundary already distinguishes the languages:
+\[
+\begin{array}{c|cccc}
+ \ell&+64&-64&+65&-65\\\hline
+ \text{declared integer}&127&128&129&130\\
+ \text{declared bytes}&\mathtt{7f}&\mathtt{8001}&\mathtt{8101}&\mathtt{8201}\\
+ \text{ARC5 integer}&128&127&130&129
+\end{array}
+\]
+ARC5 re-encodes the source under that opposite convention, so the previous
+interoperability assertions, boundary tuples, byte lengths, and digest are
+superseded.  This is a certificate defect, not a counterexample to the
+abstract clauses.
+
+\section{Hostile re-audit of the guard}
+The SAT extension is exact: set $h=r=0$ and, for every parity block, set the
+third variable equal to the second.  Conversely $F$ is a conjunct.
+Unit/pure, Horn, 2CNF, marker, component and parity-star members remain inert:
+the equivalence pair is binary, all variables are sign-balanced, the hub
+connects the instance, and every $P_0$ supplies the forbidden positive-pair
+triangle.  The strong-Horn-backdoor-$\le2$ member fails because at least
+$L-2$ disjoint parity triangles survive; for deletion set $\{h,r\}$, choose
+$h=r=1$ and the $L$ triangles survive.
+
+For a Davis--Putnam pivot $z\ne h$, at most the single $P_0$ block containing
+$z$ is damaged, leaving $L-1$ blocks joined through $h$.  For $z=h$, the two
+binary equivalence clauses reproduce all $L$ blocks around $r$.  Tautology
+and exact-duplicate deletion do not remove those blocks; the current member
+does not perform subsumption.  Thus every completed pivot has a component
+containing at least $4(L-1)$ ternary records, hence at least $128(L-1)$ bits.
+A prior charged acquisition abort also returns UNKNOWN.  Executed child-call
+multiplicity is zero on this path.
+
+The full parent obeys, with
+$\ell=1+\lfloor\log_{128}(5L+2)\rfloor$,
+\[
+ |G(F)|\le8[6+5L+(15L+6)\ell]\le160L\log_2L.
+\]
+Consequently
+\[
+ \frac{\sqrt{160L\log_2L}\,
+  \log_2(161L\log_2L)}{128(L-1)}<1\quad(L\ge4).
+\]
+The left side is decreasing and equals $0.962526\ldots$ at $L=4$.
+Therefore the maximum-child cap fails universally.  This proof is symbolic;
+the bounded test is corroboration only.
+
+\section{Repairing the achievable-region transfer}
+ARC5 cited a ``local clause-splitting adapter'' from arbitrary CNF to proper
+3CNF.  REDTEAM4 actually supplied a fixed-width serializer from an already
+indexed exactly-three-literal stream and allowed repeated variables.  The
+following fixed five-clause block repairs the final properization step.
+
+Give source clause occurrence $j$ three private variables $a_j,b_j,c_j$.
+After deleting duplicate literals, let $C$ be its simplified clause.
+If $C$ is a tautology, output five copies of $(a_j\vee b_j\vee c_j)$.
+If $|C|=3$, output $C$ and four such fillers.  If
+$C=(x\vee y)$, output
+\[
+ (x\vee y\vee a_j),\quad(x\vee y\vee\neg a_j)
+\]
+and three fillers.  If $C=(x)$, output all four clauses
+$(x\vee \pm a_j\vee\pm b_j)$ and one filler.  Each output clause is proper,
+each block has exactly five clauses, and existentially quantifying its private
+variables gives exactly the original clause.  Blocks do not interact.
+For a clause-indexed stream with header $q$ and $C_0$ clauses, the resulting
+header is attained at $q+3C_0$, the count is $5C_0$, and any output record is
+located by quotient and remainder in polylogarithmic time and logarithmic
+workspace.
+
+For a total DENSE-CNF1 input, first run the canonical parser, mapping malformed
+strings to NO.  The standard random-access Cook construction for its
+$N\operatorname{polylog}N$-time nondeterministic verifier produces a locally
+indexed exactly-3-literal stream of $N^{1+o(1)}$ length; apply the fixed block
+above and REDTEAM4's repaired serializer.  Every virtual input bit is then
+generated in polylogarithmic time and logarithmic workspace.  Repeated reads
+are charged, so a proper-3SAT machine with joint pair $(t,s)$ yields total SAT
+time $N^{t+o(1)}$ and space $N^{s+o(1)}$ for $t\ge1,s\ge0$ (polylogarithmic
+overhead is $N^{o(1)}$ even at $s=0$).  Restriction supplies the reverse
+inclusion.  Composing with $G$ proves
+\[
+ \boxed{\mathcal A(U)=\mathcal A(\text{proper-3SAT})=
+        \mathcal A(\SAT)}.
+\]
+This is an existence-region statement, not a favorable transition.
+
+\section{Endpoint and the still-open causal link}
+The verified primary endpoint is Fortnow--Lipton--van Melkebeek--Viglas,
+Corollary 5.8, on deterministic random-access Turing machines with read-only
+indexed input and charged work/index tapes:
+\[
+ \NTIME[n]\not\subseteq
+ \DTISP[n^c,o(n^{d(c)})],\qquad
+ d(c)=\frac12\left(\frac{c+2}{c^2}-c\right).
+\]
+For $c=1201/1000$,
+$d(c)=1468676399/2884802000=0.509108\ldots$; hence $(6/5,1/2)$ has strict
+time margin $1/1000$ and space margin
+$26275399/2884802000$.  The unrestricted
+$t+s<2\cos(\pi/7)$ statement is not used.  Jahanjou--Miles--Viola gives a
+valuable local reduction, but its displayed general $T\ge n$ size formula
+must not be paraphrased as quasilinear at every $T\asymp n$; the endpoint
+composition here uses the earlier quasilinear random-access Cook machinery
+and padding already audited in REDTEAM4.
+
+Most importantly, ARC5's next-target sentence regressed past the PRE-A causal
+guard.  Merely asking for one uniform source-first phase with favorable caps
+is endpoint-equivalent: a hypothetical $(6/5,1/2)$ SAT algorithm can decide
+locally with no children.  The missing implication must instead construct,
+from the assumed clocked polynomial SAT decider, a source-visible compiler
+whose parent decision is obtained through essential source-derived strictly
+smaller children before any parent-scale semantic call.  Discovery, rejected
+trials, all child executions with multiplicity, replay, buffers, indices and
+ancestor state must meet one same-machine ledger on every input.  Only then
+does RECOVERY-STRENGTHEN7's proved aggregate-volume fixed point eliminate
+the inherited exponent $K$.
+
+\section{Reproducible validation}
+The corrected runner completed in $2.081268$ seconds: 335 source formulas,
+6,836 pivots, 198,238 raw resolution pairs, 487,232 encoded bits, and minimum
+largest-child/cap ratio $2.178723$.  It checked the closed-form cap through
+$L=200000$ (maximum at $L=4$) and all 216 signed three-literal tuples under
+all eight source assignments (1,728 properization checks).  Corrected corpus
+SHA-256 is
+\texttt{1f6dfd1837dbeef7a1e07e0bac3d834a97800c9bf82a2d66c1ad667b432f0198}.
+The exact runner body has SHA-256
+\texttt{c2bfbdd5a8ec188ad74867e0177f245e0c2ca057d11aa7d63dc595940cde7a25}.
+Finite checks do not prove the universal theorem or machine-space bound.
+
+\section{Barrier audit and handoff}
+The guard and transfer relativize, contain no nonalgebrizing hinge, and prove
+no natural-proofs-style circuit lower bound.  Iterated bounded-variable
+elimination can remove the guard and expose an almost-parent-sized source;
+there is no universal preprocessing lower bound here.  The defensible advance
+is therefore diagnostic: the current fallback is locally SAT-complete, the
+K-elimination accounting is conditional but sound, and the only load-bearing
+open task is the PRE-A causal all-input compiler.
+
+\paragraph{Corpus reconciliation.}
+I read repository-root \path{main.tex}, \path{main4.tex}, \path{main5.tex},
+\path{AGENTS.md}, \path{CODEX.md}, the repository research protocol,
+FORMAL-SPINE1, RECURCLOSE1, STREAMCOMP1, CYCLEGAIN1, ORBITBATCH1, and the
+latest Construction7, Recovery7, ARC5, and RedTeam4 reports plus their code
+and result artifacts.  Recovery7's aggregate fixed point was adopted as the
+strongest current accounting theorem; its old request to handle only the
+single guarded cyclic family was rejected as too narrow after ARC5's
+all-source image.  ARC5's guard theorem was adopted, its byte certificate was
+replaced, its normalization sentence was expanded into the properization
+lemma, and its unguarded next-target wording was downgraded.  The fallback
+transfer itself duplicates the earlier RedTeam2/Construction5 insight; ARC5's
+new content is defeat of the PIVOT member on every guarded proper source.
+Relative to root \path{main.tex}, this report changes no executive theorem and
+makes no separation claim; it reconciles only the ARC/WRAPPER companion
+manuscripts and leaves the root synthesis to its owner.
+
+Primary sources checked: Fortnow, Lipton, van Melkebeek and Viglas,
+\emph{JACM} 52(6), 2005, DOI 10.1145/1101821.1101822;
+Jahanjou, Miles and Viola, \emph{Local Reductions}, ICALP 2015,
+arXiv:1311.3171; Gurevich and Shelah, \emph{Nearly Linear Time}, 1989.
+
+% END_OF_VERIFIED_REPORT::REDTEAM-STRENGTHEN::REDTEAM-STRENGTHEN5
+\end{document}
