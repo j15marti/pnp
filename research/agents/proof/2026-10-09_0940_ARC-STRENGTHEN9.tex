@@ -1,0 +1,189 @@
+% PNP RESEARCH REPORT::ARC-STRENGTHEN9::2026-10-09T09:40:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{ARC-STRENGTHEN9: Flattened Root Replay with a Global Work Budget}
+\date{9 October 2026}
+\begin{document}\maketitle
+\paragraph{Status.} Implemented a uniform, sound three-valued partial SAT
+controller with an explicit global resource bound. This repairs nested input
+replay for this custom controller. It does not construct a random-access adapter
+for arbitrary SAT solvers. All-input coverage remains OPEN, and P versus NP
+remains OPEN. Finite validation is COMPUTATIONAL.
+
+\section{Prior work and selected barrier}
+The reviewed main5 GitHub entry ends with ARC8's exact-size acquirer. The local
+ARC8 report, code, handoff and tests; Recovery10; FORMAL-SPINE1; root status;
+CODEX and the repository research protocol provide the current dependencies.
+Preflight passes. The snapshot is incomplete for historical includes, so a
+complete corpus audit or main4/main5 compilation is not claimed. Root main.tex
+ownership is preserved. Conditional K elimination is adopted without change.
+ARC8 had sequential child emission but no cheap composed child access and a
+nonhereditary accepted domain. This run replaces the access interface with an
+actual integrated scanner. It does not merely posit an efficient generator.
+
+\section{Construction}
+Fix immutable CNF1 source $F$ of $N$ bits, with IDs at most $N$ (otherwise
+UNKNOWN), the exact ARC8 encoding, and $B=\lfloor N^{1/5}\rfloor$. A state is
+only an assignment stack $A$ and small controller frames. A scan traverses the
+original source, tests each literal against $A$, and computes the exact encoded
+size and clause statistics of $F|A$ without writing that residual. No array of
+residual clauses or descendants is stored. Satisfied clauses are discarded
+logically; assigned false literals are omitted. Counts include actual headers.
+
+A residual with an empty clause returns false. An empty residual or one
+satisfied by setting all remaining variables true or all false returns true.
+These are fully verified candidate assignments, not assumed semantic answers.
+Up to the first $B$ distinct residual IDs are collected by source order. For
+each candidate $x$, scan twice with $A\cup\{x=0\}$ and $A\cup\{x=1\}$.
+If neither branch settles the parent, ARC8's integer-certified gate accepts only
+\[
+ \sum_{i\text{ unresolved}}(m_i/m)^{6/5}\le 99/100,
+ \qquad m=|\operatorname{encode}(F|A)|.
+\]
+Children are executed sequentially by pushing a single assignment. The gate
+counts both occurrences even if their residuals happen to coincide. Child
+answers combine by three-valued OR: true if either is true, false if both
+are false, UNKNOWN otherwise. No parent-scale SAT decider is called.
+
+All nodes and failed candidates share one fuel counter
+\[
+ L=64N\max(1,\lfloor N^{1/5}\rfloor).
+\]
+Every source-byte read and candidate-list comparison is metered. Exhaustion
+returns UNKNOWN. The instrumented counter may exceed its limit by the one
+attempted charge; that charge is at most $B+1$ or the four-byte magic prefix.
+Assignment lookups, counter arithmetic, literal width computation and integer
+root comparisons contribute at most polylogarithmic bit overhead per metered
+event or scanned candidate. This is explicitly accounted below.
+
+\begin{theorem}[Sound bounded partial execution]
+On every supported valid source, the fixed controller returns either the exact
+SAT value or UNKNOWN. It admits a deterministic random-access implementation
+with time $N^{6/5+o(1)}$ and writable space $N^{1/5+o(1)}$, excluding only the
+original immutable source. These are bounds for a partial procedure, not a
+SAT decider on all inputs.
+\end{theorem}
+\begin{proof}
+Literal evaluation under the stored assignment gives precisely $F|A$.
+Terminal checks are valid evaluations or an explicit empty clause. Shannon
+expansion proves the OR combination. UNKNOWN is never interpreted as false.
+Every recursive edge has $m_i\le\alpha m$ for
+$\alpha=(99/100)^{5/6}<1$, since every unresolved child contributes to the
+moment sum. Hence there are $O(\log N)$ live frames. The stack has
+$O(\log^2 N)$ bits. Even if each suspended frame retains all $B$ IDs, each
+ID has $O(\log N)$ bits and total frame storage is
+$O(B\log^2 N)$. Parser and size counters, two child summaries, integer-gate
+operands and pending answers have at most polylogarithmic size. The original
+input is read-only and each root reference is shared, not copied.
+
+Each literal lookup traverses at most $O(\log N)$ assignments. All scalar
+arithmetic has $O(\log N)$-bit operands; fixed-power fifth-root searches cost
+polylogarithmic time. Candidate-list membership is explicitly charged by list
+length. Parsing loops read metered bytes. Each candidate gate follows a
+metered scan, and each node starts with one. Thus unmetered computation is
+bounded by a polylogarithmic factor times $L+B+1$, plus $O(B)$ startup work.
+Fuel exceptions unwind only $O(\log N)$ frames. This proves the simultaneous
+bounds. The Python harness is a reference implementation; these arguments do
+not equate Python object bytes with the bit-machine accounting.
+\end{proof}
+
+\section{What the bound does not establish}
+A scan at a tiny residual still reads the $N$-bit original input. Flattening
+removes multiplicative nesting of generators but does not make each scan
+cost proportional to residual length. Even on a moment-contracting tree,
+$\sum_v |F_v|^{6/5}=O(N^{6/5})$ does not bound the cost of scanning the root
+at every node. The fuel cap ensures bounded partial execution by permitting
+UNKNOWN. Proving that fuel never runs out, and that a terminal or accepted
+gate always exists, remains the missing all-input theorem. This construction
+is not a generic polylogarithmic child-bit accessor.
+
+\section{Validation and independent falsification}
+The bounded test exhausts all 256 clause-subsets of the eight proper three-variable
+3-clauses. It returns 255 correct SAT answers and one correct UNSAT answer,
+with no UNKNOWN on this finite set. A recorded execution uses a real recursive
+split. The previous 848-bit counterexample is now decided SAT by the verified
+constant-assignment terminal, without recursion. Zero-fuel execution returns
+UNKNOWN as required. Empty clauses, empty formulas, duplicated literals,
+tautologies and byte-width boundary IDs are checked. The run takes under
+0.1 seconds with an internal 24-second alarm and external 25-second cap.
+
+Independent review supplied a new escape family. Put
+\[
+ H_k=\bigwedge_{i=0}^{k-1}(x_{2i+2}\vee x_{2i+3})
+ \wedge(\neg x_{2i+2}\vee\neg x_{2i+3}),\qquad
+ G_k=\bigwedge_{C\in H_k}(z\vee C)\wedge(\neg z\vee C),
+\]
+where $z=x_1$. For $k=4,8,16,32$, the controller accepts the guard split,
+executes both children, and returns UNKNOWN on both, well below its fuel cap.
+Parent/child sizes are $(560,240),(1072,432),(2096,816),(4200,1608)$ bits.
+These formulas are satisfiable by opposite values in each pair, while both
+constant assignments fail. Odd disequality cycles of lengths 5,9,17,33 are
+UNSAT controls on which the controller returns UNKNOWN before branching.
+Both families are easy Krom instances after appropriate simplification;
+they refute this member's coverage, not a whole portfolio or unrestricted
+solver. Existing Krom terminals might cover them only after their invocation,
+access, recognition and resource costs have been integrated and charged.
+
+\paragraph{A successful-gate replay obstruction.}
+A separate bounded chunk wraps the UNSAT core containing all eight signed
+3-clauses in $d$ fresh two-sided guards. All tested guard splits succeed, but
+both identical children are executed because the core is UNSAT. At $d=0$
+through $6$ the controller executes $7,15,31,63,127,255,511$ nodes.
+At $d=6$, $N=41016$ bits and 15,040,297 metered events are charged against
+a 21,000,192 budget. All seven runs correctly return UNSAT.
+
+Asymptotically the uncapped version requires at least $2^d$ full-root scans.
+Its encoded root has $N=\Theta(2^d d\log d)$ bits (LEB128 variable IDs
+included). Each guard child is roughly half the parent, so these guard
+splits satisfy the moment gate for sufficiently large sizes. Consequently
+this particular no-cache full traversal costs
+$\Omega(N2^d)=\Omega(N^2/(d\log d))$, exceeding any fixed multiple of
+$N^{6/5}$ even with polylogarithmic overhead. Thus a global cap eventually
+forces UNKNOWN on a family with successful local guard contractions.
+This is a lower bound for the specified replay execution only. Recognizing
+and stripping guards, proving child equality and reusing answers, or a new
+semantic terminal can avoid this traversal, but must be implemented and
+charged. The result identifies a concrete target for a shared replay repair.
+
+\section{Primary literature and transfer scope}
+Bacchus and Dalmao, \emph{DPLL with Caching}, ECCC TR03-003,
+\url{https://eccc.weizmann.ac.il/eccc-reports/2003/TR03-003/index.html},
+provides a concrete motivation for sharing repeated subproblem work. Its
+counting/inference algorithms do not supply an all-input half-space SAT
+compiler. This implementation stores no cache; memoization keys and answer
+storage have not been silently removed from a claimed simulation.
+
+Allender, Chen, Lou, Papakonstantinou and Tang, \emph{Width-Parametrized SAT:
+Time--Space Tradeoffs}, Theory of Computing 10 (2014), 297--339,
+\url{https://doi.org/10.4086/toc.2014.v010a012}, provides algorithms parameterized
+by treewidth and exposes time penalties for space savings. Its parameter and
+polynomial factors cannot be substituted for our encoded-length exponents.
+This is a structural guide, not a theorem transfer closing our gap.
+
+The FLMV Corollary 5.8 endpoint was rechecked at
+\url{https://lance.fortnow.com/papers/files/tst.pdf}:
+$d(c)=\tfrac12((c+2)/c^2-c)$ for the deterministic random-access model and
+$\operatorname{NTIME}[n]\not\subseteq\operatorname{DTISP}[n^c,o(n^{d(c)})]$.
+As before, it applies only after an actual total SAT algorithm and a charged
+local encoding transfer are established. No forbidden achievable-region
+point is claimed here; the retired unrestricted cosine endpoint is unused.
+
+\section{Reconciliation and next target}
+New relative to ARC8: implemented recursive source-backed execution, one global
+work counter, no materialized child buffers, and explicit safe UNKNOWN behavior.
+The abstract idea of source-backed replay was already recovered; no novelty is
+claimed for DPLL or replay itself. The new component is its integration with
+the exact-size gate and a testable global resource cap. Main4/main5 receive
+scoped updates; root main remains unchanged. Independent review confirms the
+partial-solver distinction, space ledger and failure controls.
+
+The semantic argument relativizes and supplies no nonrelativizing hinge.
+No cryptographic assumption, algebraic-oracle barrier or Natural-Proofs claim
+is imported. The low-space scan is an exact mechanism; unrestricted coverage
+is still OPEN. Next, integrate a fully charged terminal or component procedure
+without a materialized residual, and prove a source-scan bound for a larger
+operational domain. Constant terminals alone do not finish the proof.
+% END_OF_VERIFIED_REPORT::ARC-STRENGTHEN::ARC-STRENGTHEN9
+\end{document}
