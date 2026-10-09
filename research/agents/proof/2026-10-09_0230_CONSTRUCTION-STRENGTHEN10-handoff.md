@@ -1,0 +1,10 @@
+# CONSTRUCTION-STRENGTHEN10 handoff
+
+- **Exact new terminal:** for every fixed radius `r`, `EXTREME-r` is complete for proper 3CNFs with a model within Hamming distance `r` of all-zero or all-one. Clause-guided DFS uses at most `2(1+3+...+3^r)` scans and `O(r log N)` writable bits; it emits no recursive SAT child.
+- **Portfolio-stable shield:** `Q_b` with `b >= r+1` and `2b > k`, inserted before the verified ARC6 isolation/guard map, defeats all fixed-radius terminals and standard structural strong Horn/dual-Horn/Krom backdoor terminals of size at most `k`. The extended UNKNOWN domain remains SAT-hard and has the same joint achievable region as SAT.
+- **Operational scope:** the current size-at-most-two backdoor terminals are covered because they cannot fully assign a proper width-three clause. For operational `k >= 3`, early empty-clause branches require a new no-small-contradictory-core guard; do not claim the general operational version.
+- **Localization:** a favorable PRE-A compiler on the shielded UNKNOWN image exists iff one exists on general proper 3SAT, up to common `o(1)` encoding overhead. This makes the residual an exact form of the original missing problem.
+- **Fallback trilemma:** using the assumed decider restores `K`; exposing the quasilinear source gives `(v,h)=(1,1)`; padding and unpadding gives typed scale product one. This blocks the present terminal/double-wrapper/padding composition, not every future compiler.
+- **Validation:** 21,956 formula/radius cases, 32 shield-equivalence cases, NAE weights/hitting numbers through four blocks, and four exact typed cycles passed with zero mismatch in 1.10 seconds under a 25-second alarm. Standalone report compiled to five pages.
+- **Status:** conditional `K` elimination and the FLMV endpoint are preserved. The all-input source-first phase and P versus NP remain OPEN.
+- **Next target:** build an essential-child member directly on the shielded image with maximum child `N^(1/2+o(1))`, aggregate volume `N^(11/10+o(1))`, local time `N^(6/5+o(1))`, and joint half-space including all replay/state.
