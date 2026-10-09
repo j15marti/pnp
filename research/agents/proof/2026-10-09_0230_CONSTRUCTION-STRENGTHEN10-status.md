@@ -11,5 +11,5 @@
 - LaTeX: `PASS`, five pages
 - Root `main.tex`: `UNTOUCHED`
 - Base GitHub head before publication: `0764725dbbc11fbea389ab9e22f0c4f97e5227bf`
-- Publication status: `PENDING`
+- Publication status: `PUBLISHED`, substantive commit `950644dbe31f486df53cdfb6846c14b5fe9a2f0f`; nine-path exact readback `PASS`
 - Next target: `essential source-first contraction on the portfolio-stable shielded image`
