@@ -1,0 +1,102 @@
+\documentclass{article}
+\usepackage{amsmath,url}
+\title{ARC12: Capped natural-run recovery without per-block rescanning}
+\date{2026-10-09}
+\begin{document}\maketitle
+\paragraph{Status.} COMPUTATIONAL prototype and correctness argument.
+This is a bounded residual-stream equality consumer, not a complete
+BatchAcquire compiler or compressed-input SAT solver. P versus NP remains
+OPEN; conditional K elimination is unchanged.
+
+\paragraph{Prior work and corpus.}
+Adopt the recovered COMBINED-REPLAY1 and TRIE-BATCHACQUIRE1 constructions,
+the REPLAY-RECOVERY correction, CAPPED-INDEX-REPLAY1, and ARC8--11 reviewed
+in this conversation. Fetch current main4.tex and main5.tex and preserve
+root main.tex ownership. Local preflight passed; local corpus is a sparse
+snapshot. ARC11 rescans the source for every sorted block. ARC12 instead
+reuses source intervals as implicit sorted runs. It is not a claim that
+replay or shared acquisition was previously absent.
+
+\paragraph{Exact domain and algorithm.}
+For every finite bounded-width CNF encoded in a read-only random-access
+array of fixed-width clause records, every fixed consistent partial
+assignment, and positive integer run cap R, normalize residual literals
+using fixed variable labels, discard satisfied and tautological clauses,
+and retain empty clauses. Scan surviving clauses in source order.
+Partition greedily into disjoint weakly monotone runs; the first unequal
+pair chooses direction. An incompatible next clause begins a new run.
+Retain source endpoints and direction only. If more than R runs are needed,
+return UNKNOWN. Otherwise use one cursor per run and a heap of current
+clauses. Read descending runs backwards. Merge in ascending order,
+discarding duplicate outputs. Compare two resulting streams exactly.
+
+\paragraph{Correctness argument.}
+Each discovered interval contains a monotone surviving sequence by the
+direction invariant. Reversing a descending run makes that sequence
+ascending. The intervals partition all surviving occurrences, so heap
+merging enumerates precisely their sorted multiset. Adjacent duplicate
+removal yields their exact clause set. Empty clause and empty conjunction
+are distinguished. Equal streams therefore justify SAT decision reuse.
+Different streams do not imply different SAT answers.
+Cap failure makes no SAT assertion. Assignments and input remain immutable.
+No first-occurrence renaming dependent on traversal direction is permitted.
+
+\paragraph{Joint resource accounting and model.}
+Let N be encoded source bits, d assignment entries, w constant width,
+and r the total runs of the two children. Use sparse sorted assignment
+records for deterministic lookup in a formal implementation.
+For a single completed comparison, discovery reads the source once per
+child, and recovery visits disjoint source intervals at most once per
+child. Endpoints, run tables, heap keys, cursors, parser buffers,
+assignment records and counters use O((r+d+1) log(N+2)) logical bits.
+There are O(N/log(N+2)) heap operations for full-width records,
+each with O(log(r+2)) comparisons of O(log(N+2))-bit keys.
+A conservative deterministic bound is N times a polylogarithmic factor
+on a random-access bit-cost model with charged address arithmetic.
+Python dictionaries and heaps are an executable functional model, not
+a certified deterministic bit-cost implementation.
+No complete child or clause-offset table is retained.
+The fixed-width source assumption is material: variable-width input
+requires charged offsets or an explicitly analyzed accessor.
+Recursive ancestors and repeated comparisons are not free:
+sum all simultaneously retained tables, or discard and charge rediscovery.
+The module supplies sequential canonical access, not constant-cost
+arbitrary child access. No endpoint/model transfer is asserted.
+
+\paragraph{Validation and counterexamples.}
+The adjacent Python file completed under timeout 25s with a 24-second
+internal alarm. 5040 permutations of seven singleton clauses and 768
+signed-clause-subset restriction checks give 5808 exact stream tests.
+Controls include duplicates, tautologies, empty clauses, and unequal
+residuals with the same UNSAT value. Sixteen scaling cases use sizes
+8,32,128,512, four order patterns, cap 4, and shuffle seed 12.
+At 512 clauses reverse order takes 12288 source-literal reads and two
+total run descriptors; the two-run pattern uses three descriptors.
+ARC11 with capacity 16 used 270336 reads on the corresponding reverse case.
+These are event counts, not full-time or same-memory byte benchmarks.
+Shuffled and alternating cases exceed the cap at larger sizes.
+The alternating positive-clause family is trivially SAT yet has linearly
+many runs. Thus low run count is representation structure, not SAT hardness
+and not a consequence established from SAT in P.
+An independent agent verified the correctness conditions and identified
+ancestor-state, assignment-lookup and random-access model obligations.
+
+\paragraph{Literature and barrier audit.}
+Natural run-adaptive sorting is established prior work:
+Munro and Wild, Nearly-Optimal Mergesorts, ESA 2018,
+doi:10.4230/LIPIcs.ESA.2018.63;
+Cawley Gelling et al., Multiway Powersort, arXiv:2209.06909.
+Primary search results were consulted for run-adaptive merging.
+We borrow the mechanism, not an unrestricted SAT time-space theorem.
+The source-order structure does not force any arbitrary solver to sort.
+No nonrelativization, nonalgebrization, or cryptographic lower-bound
+promotion is made.
+
+\paragraph{Next target.}
+Integrate the run detector as a capped portfolio branch and recover
+previous order-independent structural identifiers for the high-run case.
+Charge all failed discovery, resumed executions and retained ancestor
+tables. A uniform all-input completion theorem remains OPEN.
+\paragraph{Sentinel.} ARC12-END-OPEN.
+\end{document}
+
