@@ -11,5 +11,5 @@
 - LaTeX: `PASS`, six pages
 - Root `main.tex`: `UNTOUCHED`
 - Base GitHub head before publication: `1306dd7f8c350e6a8241cfc5015fcb5bd58ce752`
-- Publication status: `PENDING`
+- Publication status: `PUBLISHED`, substantive commit `0ebfd6ce00d7ada9517aa9e28517c5ebf6b50821`; nine-path exact readback `PASS`
 - Next target: `exact-size/potential contraction or batched semantic merge on the shielded image`
