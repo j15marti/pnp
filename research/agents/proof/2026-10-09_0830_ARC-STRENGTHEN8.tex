@@ -1,0 +1,182 @@
+% PNP RESEARCH REPORT::ARC-STRENGTHEN8::2026-10-09T08:30:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{ARC-STRENGTHEN8: An Implemented Exact-Size Split Acquirer}
+\date{9 October 2026}
+\begin{document}\maketitle
+\paragraph{Status.} A source-first, capped partial acquisition component and
+sequential child emitter have been built and tested. Its semantics and integer
+size certificate are exact. The resource closure theorem below is CONDITIONAL.
+All-input coverage and recursive low-space access remain OPEN; P versus NP
+remains OPEN. This is not a completed construction of the missing compiler.
+
+\section{Corpus and target}
+Reviewed the current GitHub main4 entry point, local main4/main5 entries,
+root main status, CODEX, repository research skill and protocol, FORMAL-SPINE1,
+Recovery10 report/handoff, ARC3 endpoint calculation, and Recovery6 CNF1 encoder.
+The accessible snapshot lacks some historical includes and task files; a complete
+historical corpus audit is not claimed. Recovery10 explicitly leaves exact-size
+recurrences open. This report adopts its conditional K elimination and rejects
+any promotion of a one-level winner into recursive coverage. Root main is untouched.
+The selected target is a causal ordinary-SAT split with actual encoded-size
+contraction, rather than a new power-exponent accounting identity.
+
+\section{Actual component and exact encoding}
+Use the existing CNF1 encoding: ASCII magic CNF1, unsigned LEB128 maximum
+variable ID and clause count, then each clause's LEB128 width and signed literal
+codes $2|x|-1$ for positive and $2|x|$ for negative literals. $N$ is total bits.
+No dense renumbering, subsumption, deduplication or free normalization is assumed.
+For the charged acquisition analysis restrict IDs to at most $N$; oversized
+labels return UNKNOWN. Malformed inputs may also return UNKNOWN. No claim of
+coverage of every valid CNF1 input follows from this restriction.
+
+The fixed procedure records the first $B=\lfloor N^{1/5}\rfloor$ distinct IDs
+in source order. For each it scans the formula twice, computing the exact
+encoded lengths of the two restrictions, including newly computed headers.
+Satisfied clauses disappear; falsified literals disappear; duplicate clauses
+and literals remain. An empty clause gives a false residual, and an empty
+formula gives a true residual. A true residual decides the parent true; two
+false residuals decide it false. Otherwise only unresolved residuals enter the
+size test. With $q=2^{20}$ compute
+\[
+ u(m,N)=\left\lceil q(m/N)^{6/5}\right\rceil
+\]
+using integer fifth-root binary search (no floating-point gate). Accept a split
+only if $100\sum_i u(m_i,N)\le99q$. Output the pivot, two branch values,
+exact lengths and terminal flags; repeated children count twice. The identity
+\[
+ \operatorname{SAT}(F)=\operatorname{SAT}(F[x=0])\vee
+ \operatorname{SAT}(F[x=1])
+\]
+proves the combination rule independently of the gate. No SAT oracle is used
+in acquisition. Truth-table solving occurs only in the test harness.
+
+\paragraph{Charged implementation bound.}
+The acquisition code parses scalar fields without retaining clauses. A scan
+holds only counters, a cursor and a candidate ID; retained candidates use
+$O(N^{1/5}\log N)$ bits. Linear search of the candidate list during discovery
+costs $O(NB\operatorname{polylog}N)$ bit operations, as do all candidate scans
+combined. Integer root operations use $O(\log N)$-bit operands since $q$ is
+fixed. Thus on a directly accessible input this component admits time
+$N^{6/5+o(1)}$ and workspace $N^{1/5+o(1)}$. All unsuccessful candidates are
+included. This is an algorithmic bound, not a measurement of CPython's memory.
+The test harness intentionally materializes expected outputs and truth tables;
+those allocations are not part of the acquisition claim.
+
+A child can be emitted sequentially with two local scans per clause, after
+one statistics pass, in $N^{1+o(1)}$ time and logarithmic auxiliary space.
+This supplies a sequential generator, NOT a random-access oracle: selecting
+the $j$th emitted bit by replay may scan the whole parent. Materializing a
+constant-fraction-size child instead requires $\Theta(N)$ writable bits.
+Neither approach establishes the desired recursive half-space interface.
+
+\section{Exact-ratio closure and its precise conditions}
+\begin{theorem}[Conditional exact-size closure]
+Fix $c>0$, $\delta>0$ and $p>0$. Suppose one uniform exact phase is total on
+a successor-closed input domain and every nonterminal execution satisfies
+\[
+ \sum_{i\text{ executed}} m_i^c\le(1-\delta)N^c.
+\]
+Suppose local work is $O(N^c\log^a(2+N))$ and local retained space is
+$O(N^p\log^b(2+N))$, including child interfaces, buffers, indexes and parent
+frames. These bounds must be physical bounds in the composed machine,
+including all ancestor input access, rather than unit-cost logical-input
+bounds. Fixed finite base cases are exact. Then sequential depth-first
+execution uses $O(N^c\log^a(2+N))$ time and
+$O(N^p\log^b(2+N))$ space.
+\end{theorem}
+\begin{proof}
+At level $d$, the sum of node-size $c$th powers is at most
+$(1-\delta)^dN^c$. Sum the local work over levels; the geometric sum is
+$1/\delta$. Each child has size at most
+$\alpha N$, $\alpha=(1-\delta)^{1/c}<1$, so recursion depth is $O(\log N)$.
+Along a live path the retained spaces sum to at most a constant times
+$N^p\log^b(2+N)\sum_d\alpha^{pd}$. All repeated executions remain in the
+level sum. Induction on decreasing size proves correctness and termination.
+\end{proof}
+This permits coarse power label $h=1$: a child of size $N/2$ has that label.
+The implemented gate supplies the moment inequality with $c=6/5$ and
+$\delta=1/100$ locally. It does not supply the other premises. Repeated
+polylogarithmic overhead at each layer of a nested accessor is also not free;
+the stated physical-access condition prevents its hidden multiplication.
+The theorem eliminates K only if UNKNOWN is never replaced by a parent-scale
+$N^K$ fallback. It does not establish that SAT in P supplies such a phase.
+
+\section{Falsification and bounded validation}
+The test exhausts all 256 subsets of the eight proper 3-clauses on three
+variables: 46 VALUE outcomes, 161 SPLIT outcomes and 49 UNKNOWN outcomes.
+It checks 1,536 generated children byte-for-byte against independently
+restricted encodings, with no mismatches. Four explicit split controls have
+parent/child bit lengths $(240;112,112)$, $(432;176,176)$,
+$(816;304,304)$ and $(1584;560,560)$.
+
+An independent reviewer supplied the connected sign-balanced occurrence-six
+family, with indices modulo $n$,
+\[
+ F_n=\bigwedge_i(x_i\vee x_{i+1}\vee\neg x_{i+2})
+ \wedge(\neg x_i\vee\neg x_{i+1}\vee x_{i+2}).
+\]
+Every pivot fails the gate for the tested $n=5,6,8,16,32,64,128$; at $n=5$
+its encoded sizes are $368\to248,248$. For large $n$, restriction changes
+only $O(\log n)$ bits while size is $\Theta(n\log n)$, hence both ratios
+approach one and their moment approaches two. All-true satisfies this family:
+it is an easy hostile control, not a whole-portfolio hardness claim.
+
+There is also exact nonclosure. Shift $F_5$ to variables 2 through 6, call
+it $H$, and form
+\[
+ G=\bigwedge_{C\in H}(x_1\vee C)\wedge(\neg x_1\vee C).
+\]
+The implemented acquirer accepts $G$ at 848 bits and emits two copies of the
+same 368-bit $H$. On $H$ it returns UNKNOWN. Both copies are charged; optional
+future equality checking and answer reuse cannot make acquisition of H free.
+Thus the locally accepted domain is not hereditary. The run completed in
+under one second with a 24-second internal alarm and 25-second external cap.
+Code hash, exact counts and results are recorded in the companion JSON.
+
+\section{Literature and endpoint audit}
+Dreier, Ordyniak and Szeider, \emph{SAT Backdoors: Depth Beats Size}, ESA 2022,
+\url{https://doi.org/10.4230/LIPIcs.ESA.2022.46}, supports recursive branching
+and tractable component structure. It supplies bounded-parameter algorithms,
+not this all-input simultaneous time-space compiler. The original work
+\emph{Recursive Backdoors for SAT}, MFCS 2021,
+\url{https://doi.org/10.4230/LIPIcs.MFCS.2021.73}, is likewise parameterized.
+Akra--Bazzi recurrence literature motivated checking exact ratios; no external
+recurrence theorem is required for the elementary proof above.
+
+The primary FLMV paper, \url{https://lance.fortnow.com/papers/files/tst.pdf},
+Section 2.1, Theorem 3.1 and Corollary 5.8, remains the endpoint:
+\[
+ \operatorname{NTIME}[n]\not\subseteq
+ \operatorname{DTISP}[n^c,o(n^{d(c)})],\quad
+ d(c)=\tfrac12((c+2)/c^2-c).
+\]
+At $c=1201/1000$, $d(c)=1468676399/2884802000>1/2$.
+The model is deterministic random-access Turing machines with charged work
+and index tapes. This report establishes no all-input pair $(6/5,1/2)$ and
+therefore invokes no contradiction. The retired cosine endpoint is unused.
+
+\section{Reconciliation, barriers and next target}
+New: concrete capped exact-size acquisition and streaming emission, plus an
+independently reviewed moment-closure statement and an explicit accepted-parent
+counterexample. Existing conditional K elimination is preserved. Main4/main5
+receive scoped references; root main ownership remains unchanged. Current
+all-input OPEN status is not stale. No claim of novelty in Shannon branching
+or geometric recurrence analysis is made.
+
+The method survives semantic-oracle replacement as bookkeeping, so no
+nonrelativizing hinge is established. No low-degree-extension, cryptographic,
+or Natural-Proofs theorem is transferred. The geometric potential is an exact
+termination/work ledger, not a lower bound on arbitrary algorithms. Easy Horn,
+Krom, independent-product and padding examples are allowed to reject; rejection
+does not imply hardness. Large IDs, tautologies, repeated literals and empty
+clauses are explicitly exercised as encoding controls.
+
+Next: implement a composed low-space child-access mechanism with a physical
+cost bound, and seek a source-first semantic reduction for bounded-occurrence
+residuals rather than another one-variable size gate. Both coverage and access
+are required; improving one does not silently discharge the other.
+% END_OF_VERIFIED_REPORT::ARC-STRENGTHEN::ARC-STRENGTHEN8
+\end{document}
