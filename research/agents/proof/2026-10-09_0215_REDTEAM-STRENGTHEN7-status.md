@@ -6,6 +6,6 @@ Proof status: PROVED/EXACT for terminal soundness/resources, strict promise enla
 
 Validation: bounded runner passed all semantic checks in 0.084 seconds; independent symbolic audit completed.
 
-Write status: exact local bodies prepared for leased GitHub publication and readback.
+Write status: published in commit `fc4ed1d0d024da45811b5d50db5d6144087c5b68`; all 16 bodies matched exact readback.
 
 Next target: attack the essential-child PRE-A compiler, using the restored hard fallback as a circularity control.

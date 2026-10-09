@@ -6,6 +6,6 @@ Proof status: PROVED/EXACT for terminal soundness, resource bounds, strictness a
 
 Validation: independent red-team audit completed; 59,350 finite formulas checked across two suites with zero recorded semantic discrepancies; edge controls cover empty and duplicate residual clauses.
 
-Write status: local exact bodies prepared for leased GitHub publication and readback.
+Write status: published with the paired independent audit in commit `fc4ed1d0d024da45811b5d50db5d6144087c5b68`; all 16 bodies matched exact readback.
 
-Next target: source-level half-space component enumeration or a shielded SAT-hard fallback resistant to `EXTREME-1`.
+Next target: source-level half-space component enumeration. The paired red-team report already supplies an exact two-NAE-block fallback shield.
