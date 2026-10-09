@@ -1,0 +1,105 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,url}
+\title{ARC11: Bounded canonical replay and its rescan obstruction}
+\date{2026-10-09}
+\begin{document}
+\maketitle
+\paragraph{Status and scope.}
+COMPUTATIONAL implementation; exact correctness argument below.
+The favorable all-input compiler and P versus NP remain OPEN.
+This implements the bounded-memory recovery/comparison component proposed
+after recovering TRIE-BATCHACQUIRE1, not a complete capped trie compiler or
+an arbitrary SAT solver consuming compressed children.
+Conditional K elimination is unchanged.
+
+\paragraph{Corpus reviewed and correction.}
+Adopt COMBINED-REPLAY1, TRIE-BATCHACQUIRE1, REPLAY-RECOVERY,
+CAPPED-INDEX-REPLAY1 and ARC8--10 recovered in this conversation.
+Current main4.tex and main5.tex were fetched before reconciliation.
+The local preflight passed; the local corpus is a sparse snapshot, not a
+complete repository mirror. Replay was already implemented in the originals.
+ARC9 was a budgeted specialization, not the first source-backed replay.
+The new component replaces order-sensitive sibling comparison with a
+bounded ordered stream. It does not replace the stronger one-scan,
+retained-object guarantee of the original BatchAcquire construction.
+Root main.tex ownership is preserved; this is an experiment handoff.
+
+\paragraph{Definition and correctness.}
+For every finite CNF F, fixed consistent partial assignment a and integer
+b at least one, normalize each surviving clause by removing repeated
+literals and sorting literals, and discard tautologies and satisfied clauses.
+Retain an empty residual clause. Repeatedly scan the immutable source,
+keeping the b lexicographically least distinct normalized clauses strictly
+above the previous block maximum. Emit that block in order.
+The invariant after each processed source clause is that the buffer contains
+the b least eligible distinct clauses seen so far. Insertion and eviction of
+the greatest element preserve it. At pass completion the next block is
+therefore exact. Strict advancement excludes duplicates across blocks.
+Finite termination and complete enumeration follow.
+Two such streams agree exactly if their normalized clause sets agree.
+Consequently a SAT answer for one may be reused for the other.
+This is syntactic normalization, not general Boolean-equivalence testing.
+No subsumption or variable-renaming canonicalization is claimed.
+
+\paragraph{Same-machine resource ledger.}
+Let N denote encoded source bits, U distinct residual clauses, w maximum
+source width, d assigned variables, and C=O(w log(N+2)) a clause-record bound
+for a conventional explicit CNF encoding. A single stream retains
+O(b C+C+d log(N+2)+log(N+2)) logical bits, including current clause,
+previous maximum, cursor and assignment. Two streams coexist during
+comparison. Temporary insertion permits b+1 references; Python object
+overhead is not certified by these logical bounds.
+No child CNF is materialized inside the comparison consumer.
+The test oracle does materialize CNFs and is excluded from candidate cost.
+The implementation uses sorted-list insertion, so comparison and movement
+costs are additional to the recorded source-read ledger.
+At most ceil(U/b)+1 full scans are used by each exhausted stream.
+Each scan redoes restriction and normalization. Discovery, failed
+comparisons and repeated invocations must all be added by any integrating
+wrapper. Ancestor state, complete SAT child executions, and arbitrary
+solver random access are not supplied by this module.
+
+\paragraph{Falsification of a favorable inference.}
+For bounded-width distinct residual clauses with U proportional to
+N/log N and C proportional to log N, choosing b proportional to B/C gives
+scan work of order N squared divided by B on this implementation.
+At B=N to the power one half this is N to the power three halves,
+already exceeding N to the power six fifths before other work.
+This is an algorithm-specific obstruction, not a SAT lower bound.
+The positive-clause scaling family is easy SAT and demonstrates precisely
+that unnecessary canonicalization can itself be expensive.
+A capped implementation can stop with UNKNOWN, but a cap proves no
+all-input coverage.
+
+\paragraph{Validation.}
+The self-contained adjacent Python file has an internal 24-second alarm
+and was run under timeout 25s; it completed successfully.
+Exhaustive 256 subsets of the eight proper signed three-variable clauses,
+three assignment settings and three capacities give 2304 normalization
+checks. Controls include duplicates, tautologies, literal/clause reversal,
+an empty clause, and distinct residuals with the same UNSAT answer.
+Twelve scaling comparisons use 8,32,128,512 distinct clauses and capacities
+1,4,16. For 512 clauses, source literal reads are respectively
+4202496,1056768,270336. Each stream buffer respects its capacity;
+the two-stream peak is not the single-buffer counter.
+The independent audit confirmed correctness conditions and the rescan
+obstruction. Measurements are source events, not certified total bit time.
+
+\paragraph{Literature and transfer audit.}
+Munro and Paterson, Selection and sorting with limited storage,
+Theoretical Computer Science 12 (1980), 315--323,
+doi:10.1016/0304-3975(80)90061-4, study read-only sequential input
+and limited internal storage. The original Warwick report and abstract
+were checked at \url{https://wrap.warwick.ac.uk/id/eprint/46321/}.
+This is a useful model analogy, not a transferred lower bound for arbitrary
+SAT machines. Our obstruction follows directly from the implemented scans.
+No cryptographic, oracle, physical, or nonuniform assumption is used.
+
+\paragraph{Next target.}
+Preserve BatchAcquire's shared fragments when they fit, but derive a
+charged block-consumer strategy for the spill case that avoids a full
+source pass per output block. Require an explicit all-input acquisition
+and composition theorem before any proof promotion.
+\paragraph{Verification sentinel.} ARC11-END-OPEN.
+\end{document}
+
