@@ -1,0 +1,170 @@
+% PNP RESEARCH REPORT::ARC-STRENGTHEN10::2026-10-09T09:50:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,booktabs}
+\newtheorem{theorem}{Theorem}
+\title{ARC-STRENGTHEN10: Exact Sibling Reuse Without a Formula Cache}
+\date{9 October 2026}
+\begin{document}\maketitle
+\paragraph{Status.} Implemented and independently reviewed a sound exact
+sibling-reuse rule in the source-backed controller. The tested repeated-guard
+bottleneck is removed. General coverage remains OPEN; P versus NP remains OPEN.
+This is an operational improvement with COMPUTATIONAL validation and a proof
+of its exact merge semantics, not a new SAT lower bound.
+
+\section{Corpus and selected target}
+Read ARC9's implementation, resource argument and repeated-guard results,
+ARC8's encoding/gate definitions, the current local main4/main5 summaries,
+and the repository protocol already active in this session. Preflight passes.
+Recovery10's distinction between address sharing and semantic child reuse is
+preserved. This run implements actual avoided child executions, beyond setup
+sharing. No claim of a complete historical corpus audit is made in this partial
+snapshot. Root main.tex remains under its designated ownership.
+
+\section{The implemented rule}
+After ARC9's two-child moment gate accepts a pivot with both children
+unresolved, compare the two residual formulas under $A\cup\{x=0\}$ and
+$A\cup\{x=1\}$. Each generator scans the original immutable CNF1 source.
+For each unsatisfied source clause it emits a tagged clause-width token and
+then its remaining signed literals in order. Satisfied clauses emit nothing.
+The two streams are compared in lockstep through simultaneous end-of-stream.
+No complete clause, residual, hash table or output string is retained.
+
+Each generator owns an immutable branch-specific assignment tuple. Sharing a
+mutable stack between lazy generators would be unsound and is deliberately
+avoided. Clause boundaries are essential: equality of an unsegmented literal
+sequence is not sufficient. With canonical CNF1 headers recomputed from clause
+contents, equality of these tagged streams is equivalent to equality of the
+canonical residual encodings. Duplicate clauses and literals are preserved;
+no uncharged sorting, subsumption or renaming is performed.
+
+If streams match, recursively execute the false branch once and return its
+true, false or UNKNOWN result. If they differ, execute the original OR rule.
+Every comparison read uses the same global fuel object as solver work; token
+comparisons are also metered. The original moment gate is retained, so no new
+termination or workspace premise is inferred from equality alone.
+
+\begin{theorem}[Sound sibling execution elimination]
+For every supported valid CNF1 source and reachable assignment, replacing two
+byte-identical unresolved siblings by one execution preserves soundness of the
+three-valued controller. It uses $O(\log^2N)$ additional live bits and
+$N\operatorname{polylog}N$ time per complete equality check, all charged.
+The global partial-procedure bounds remain $N^{6/5+o(1)}$ time and
+$N^{1/5+o(1)}$ space, with UNKNOWN allowed.
+\end{theorem}
+\begin{proof}
+Each tagged stream is precisely the ordered clause list of its restriction.
+Widths delimit clauses uniquely, including empty clauses. Equality therefore
+implies identical CNFs, so their SAT values coincide. Shannon expansion gives
+$\operatorname{SAT}(F|A)=b\lor b=b$. A sound execution on one restriction
+returns either that value or UNKNOWN. The latter is propagated without an
+UNSAT inference, even if the other history might have permitted a different
+resource outcome.
+
+The retained moment gate bounds depth by $O(\log N)$. Two generator cursors,
+scalar clause counters, tagged current tokens and two assignment snapshots
+use $O(\log^2N)$ bits on the supported IDs. The snapshots are released after
+equality checking, before recursion. Input parsing reads each original clause
+a constant number of times. Each literal checks at most $O(\log N)$ stored
+assignments and scalar bit costs are polylogarithmic. Hence comparison takes
+$N\operatorname{polylog}N$ time, including the mismatching case up to its
+stop point. The global fuel bound absorbs this work and may return UNKNOWN.
+The ancestor candidate-list accounting from ARC9 is unchanged.
+\end{proof}
+
+This rule is not a general semantic-equivalence oracle. Distinct encodings
+may represent equivalent formulas and will be rejected. Reusing UNKNOWN is
+safe but can reduce finite-budget coverage. Equality checks can also consume
+fuel on inputs where the old controller answered, so no pointwise dominance
+of ARC9's accepted domain is claimed.
+
+\section{Validation and change in the replay obstruction}
+The reproducible test compares the streaming equality result with independently
+materialized restricted CNF1 encodings on 768 sibling pairs from all 256
+subsets of the eight proper three-variable 3-clauses. There are no mismatches.
+All 256 SAT decisions remain correct (255 SAT, one UNSAT). A hostile control
+has equal-sized residuals of opposite SAT truth and is correctly rejected by
+the equality checker. This excludes size equality as a merge justification.
+
+Wrap the UNSAT core of all eight signed 3-clauses in $d$ fresh two-sided guards.
+For $d=0,\ldots,8$, every test returns UNSAT. The observed node count is $d+3$:
+each guard merges its siblings and the core itself has two further exact
+sibling merges. At $d=6$, compare the prior verified ARC9 run:
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+ & ARC9 & ARC10\\
+\midrule
+Original source bits & 41016 & 41016\\
+Executed nodes & 511 & 9\\
+Metered events & 15040297 & 445432\\
+\bottomrule
+\end{tabular}
+\end{center}
+The new event count includes every equality scan. At $d=8$ the test uses
+11 nodes and 2,773,150 events. Test runtime is about three seconds under a
+24-second internal alarm and 25-second external limit. The companion JSON
+records exact runtime, code hash and every case.
+
+For such a trace with the fresh outer guard selected first, equality is
+structural, not probabilistic. There are only $d+3$ distinct variable IDs,
+so capped discovery costs at most $O(d)$ comparisons per literal, rather
+than its general $B$ worst case. A successful $O(d)$-node merged trace thus
+costs $N\operatorname{polylog}N$, since $d=O(\log N)$, instead of exponentially
+many full-source scans in $d$. The bound describes these verified structural
+traces; finite testing is not promoted to all-input coverage.
+
+Guarded independent disequality pairs still return UNKNOWN for
+$k=4,8,16,32$. They now execute two nodes instead of three: the guard merges,
+but the remaining mixed-assignment child has no accepted pivot or terminal.
+This is an easy-family limitation of this member, not a counterexample to an
+entire portfolio. All failed comparisons and unresolved child occurrences
+remain charged; only exact certified duplicate executions are removed.
+
+\paragraph{Order-sensitivity control.}
+An independently proposed hostile wrapper places $(z\vee C)$ in the original
+clause order and $(\neg z\vee C)$ in reversed order. Its children are $F$ and
+its clause-order reversal: equisatisfiable and equally sized, but their tagged
+streams differ. Iterating this construction around the same UNSAT core gives
+observed node counts $3,7,15,31,63,127$ at depths zero through five. Every run
+is correct, but binary guard traversal returns; only core merges survive.
+The separate chunk runs in under two seconds. Thus the present improvement
+is representation-sensitive. Sorting, canonicalization, or order-independent
+exact comparison must have their own charged implementation before extending
+the merge claim. Equality of SAT answers alone remains insufficient evidence
+for an uncomputed semantic merge.
+
+\section{Literature and barrier audit}
+Primary sources checked this run were Bacchus--Dalmao,
+\emph{DPLL with Caching}, ECCC TR03-003,
+\url{https://eccc.weizmann.ac.il/eccc-reports/2003/TR03-003/index.html},
+and Sang, Bacchus, Beame, Kautz and Pitassi,
+\emph{Combining Component Caching and Clause Learning for Effective Model
+Counting}, SAT 2004,
+\url{https://www.satisfiability.org/SAT04/accepted/65.html}.
+They motivate reuse of identical residual work and warn that shared state
+and learning require careful semantics. The present implementation uses no
+clause learning or persistent cache. Its exact rule is proved above rather
+than importing a counting algorithm's time-space bounds. No novelty is
+claimed for memoization or equality-based branch reuse itself.
+
+The matched FLMV endpoint and conditional K elimination from the preceding
+reports are unchanged; no new achievable all-input pair is asserted. An exact
+local merge has been implemented, but its existence does not imply that enough
+such merges occur on every input. The rule relativizes as semantic bookkeeping
+and establishes no nonrelativizing or nonalgebrizing hinge. No cryptographic
+assumption or Natural-Proofs conclusion is used. Original read-only source is
+excluded from space; generated state, snapshots and frames are included.
+
+\section{Handoff}
+New relative to ARC9: exact low-space sibling comparison avoids actual repeated
+semantic executions and resolves the measured guard-replay blowup. Existing
+accounting lemmas remain conditional; all-input coverage remains OPEN.
+Main4/main5 receive a scoped update; root main ownership is preserved.
+Independent review checked clause delimitation, immutable generator contexts,
+fuel accounting, UNKNOWN propagation and the absence of a coverage-dominance
+claim. Next: integrate a charged residual terminal or more general certified
+merge that handles the remaining mixed-assignment children without storing
+a linear-size residual or assuming free equivalence testing.
+% END_OF_VERIFIED_REPORT::ARC-STRENGTHEN::ARC-STRENGTHEN10
+\end{document}
