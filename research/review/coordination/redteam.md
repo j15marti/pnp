@@ -1,6 +1,6 @@
 # REDTEAM audit, current run 2026-10-10
 
-Status: ongoing source and new-claim review. No completed P versus NP proof located in reviewed sources.
+Status: scoped source and new-claim review completed. No completed P versus NP proof located in reviewed sources.
 
 ## Scope and provenance
 
@@ -53,6 +53,18 @@ LOWER_BOUND's proposed oracle-immunity lemma was reviewed from its explicit draf
 
 MODEL_BRIDGE run_0001.md and model_bridge_contract.tex reviewed. Verdict: accepted at their stated conditional and bounded scope. MB1 preserves the SAT-subroutine exponent K; MB2 correctly retains a full fallback worst-case cost; MB3 includes every retained setup object in the accessor-space bound. The exact endpoint rational and recurrence checks pass. A codomain-count typo for the eight-character hash was corrected by the author: the value is 218,340,105,584,896. No substantive remaining defect identified.
 
-LOWER_BOUND-0001.md reviewed, including its generalized logarithmic randomness deficiency and polynomial-list cover. Verdict: accepted conditional argument with requested explicit positive-integer L(n) and finite-small-length conventions. The O(log n) deficiency does not need to be computable if the decoder uses a sufficiently large fixed multiple of log n. Formal manuscript pending.
+LOWER_BOUND-0001.md and LOWER_BOUND-0001_formal.tex reviewed. Verdict: accepted under their declared ordinary and matched-oracle conventions. Positive-integer L(n), finite short-length exceptions, one witness bound, final halting outputs and an integer compression coefficient are explicit. The author repaired a universality ambiguity by using plain U only: prefix-free U cannot constant-description-overhead simulate every unrestricted plain machine. The generalized immunity/list-cover argument survives.
 
-Pending final formal drafts from LOWER_BOUND and COST_CERTIFICATES.
+COST_CERTIFICATES report.md and cost_certificate_spine.tex reviewed. Verdict: accepted under repaired hypotheses. The author added one uniform asymptotic envelope, strict shortening above N0, and an exact terminating base solver; a finite-size self-loop would otherwise escape an asymptotic recurrence statement. The explicit certificate-enumeration bound and its universal-simulation bound are correct. In particular t(n)=2^(2^n) cannot admit the stated polynomial-witness cover. The explicit certificate-degree version is also valid: L(n)<=n^a and fixed polynomial universal overhead imply enumeration within 2^(d n^a+2dn+O(log n)), so a claimed t=2^(n^c) with c>max(a,1) is impossible. This does not rule out a slower fixed t or provide any verifier.
+
+PROOF_MAP proof_map.tex reviewed. The finite single-child exponent calculation and its distinction from full balanced recursion are valid. Parent identified and author repaired the small-input gap by stopping at N0 and running the fixed total seed algorithm immediately. That guard is now present in the actual manuscript.
+
+LOWER_BOUND LSPV_candidate_spine.tex reviewed. The quadratic-OR bias identity and resulting density bound are exact. O(w) bounded-fanin gate complexity and O(w log m) sparse encoding are properly distinguished. Trivial graph-separator and corrected interpolation lemmas are valid; all canonical full-range, source, Boolean projection and reconstruction obligations remain explicitly OPEN. The current author-hosted vMS journal PDF was opened independently; this reviewer does not claim full reconstruction-proof verification.
+
+Final dispositions apply to the exact snapshots hashed in reviewed_artifacts.json. No proof-assistant or whole-repository build verification is claimed. Parent owns remote publication and repository-wide checks.
+
+## Repository protocol reconciliation
+
+Read repository CODEX.md, AGENTS.md, the pnp-research skill, red-team mode and research protocol, plus root MAIN authoritative reconciliation. Preflight on the recovered source tree returned OK, while that tree lacks materialized specialist directories; this is not full repository coverage. Current ROOT MAIN's OPEN status and corrected endpoint remain unchanged. The newly identified field-polynomial wording must be repaired only at matched current statements; historical reports remain audit evidence. The current-run review adopted valid conditional results, repaired the above hypotheses, and retired no broader route without a counterexample.
+
+Single next target: audit a proposed source-checkable negative-case rule on the ARC15 UNKNOWN family, recursive descendants, and the current shielded SAT-hard fallback, with one joint operation/space ledger.
