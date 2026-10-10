@@ -240,9 +240,59 @@ current witness, verifier state and fixed inputs need be live together.
 This is an implementation upper bound, not a lower bound on every acquirer.
 If \(q(N)=N^{v+o(1)}\) and
 \(w(N)=\kappa\log_2N+o(\log N)\), this method has time exponent
-\(v+\kappa\). Hence a near-linear constructor using it needs
-\(v+\kappa\le1\). Polynomial witness length is harmless for the existential
-NP envelope but makes this generic deterministic acquisition superpolynomial.
+\(\kappa+\max\{v,1\}\) under the displayed per-candidate copying charge.
+The earlier shorthand \(v+\kappa\) is valid from that display only when
+\(v\ge1\).  The following separate implementation recovers the sharper
+bound in the declared shared-input random-access model.
+
+\begin{theorem}[Shared-input exhaustive acquirer]
+Let the fixed input tuple \(y=(1^n,p,x)\) reside on read-only random-access
+input tapes and let \(M=|y|\).  Suppose that, for a read-only candidate
+witness \(\pi\) of length at most \(w(M)\), one invocation of \(V(y,\pi)\)
+uses at most \(q(M)\) time and \(s(M)\) writable bits, including its input
+probes and address work.  Then one deterministic lexicographic acquirer
+finds the first accepted witness, or correctly reports that none exists, in
+\[
+ O\!\left((2^{w(M)+1}-1)
+       (q(M)+w(M)+\log(M+2))+w(M)\right)
+\]
+time and
+\[
+ O\bigl(s(M)+w(M)+\log(M+2)\bigr)
+\]
+writable bits.  The input tuple is not recopied between invocations.
+\end{theorem}
+\begin{proof}
+Keep one \(w+1\)-bit counter/witness buffer and reuse one verifier workspace.
+For each counter value, reset only the verifier's finite control and
+\(O(\log M)\)-bit input addresses.  Every input symbol is read directly from
+the shared read-only tapes, and its cost is already one of the \(q(M)\)
+steps.  Incrementing and exposing the candidate costs \(O(w+\log M)\);
+on success, copying the final witness costs \(O(w)\) once.  The buffers are
+sequentially reused, so their sizes add rather than multiply by the number
+of candidates.
+\end{proof}
+If \(q(M)=M^{v+o(1)}\), \(v\ge0\), and
+\(w(M)=\kappa\log_2M+o(\log M)\), this implementation has time exponent
+\(\kappa+v\) and writable-space exponent
+\(\max\{\operatorname{sexp}(s),0\}\).  This proves the formerly open
+shared-input interface C2 for an already explicit direct input.  It does not
+materialize an implicit child, recover a source from a digest, or pay for a
+nonconstant-cost bit accessor.  If one input bit costs \(M^{g+o(1)}\) to
+regenerate, the verifier bound must include that access, giving the generic
+tax \(v\mapsto v+g\).  If acquisition or verification invokes a current-scale
+SAT solver of exponent \(K\), the resulting exponent is at least \(K\), so it
+cannot eliminate \(K\).
+
+Thus a near-linear executable constructor based on exhaustive acquisition
+needs \(\kappa+v\le1\) in the shared-input model, together with compatible
+space, output, replay and ancestor bounds.  Polynomial witness length is
+harmless for the existential NP envelope but makes this generic deterministic
+acquisition superpolynomial.  The random-access convention is model-matched
+to the SAT time-space literature, where read-only input is excluded from
+writable space while input-head addresses and reduction-bit computation are
+charged \cite{flmv2005}.  It is an implementation theorem, not a universal
+lower bound on all acquirers.
 
 The initial two-list diagonal extends to a polynomial list bound \(B(n)\).
 Set
@@ -297,7 +347,13 @@ statements are elementary exact proofs; independent scheduled review is
 pending. No all-input SAT successor or PFCERT verifier is constructed, and
 P versus NP remains open.
 
+The CC-0003 shared-input harness separately exhausts witness widths through
+16, verifier step counts through 64, and direct-versus-copied input ledgers.
+It checks candidate counts, exact acceptance, peak-buffer reuse, and the
+exponent formulas.  Finite arithmetic does not prove an asymptotic SAT claim.
+
 \bibliographystyle{plain}
 \bibliography{cost_certificate_refs}
 \end{document}
+
 
