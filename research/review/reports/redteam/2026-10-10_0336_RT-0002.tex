@@ -1,0 +1,246 @@
+% PNP REVIEW REPORT::REDTEAM::RT-0002::2026-10-10T03:36:57Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,hyperref}
+\newtheorem{theorem}{Theorem}
+\newcommand{\SAT}{\mathsf{SAT}}
+\title{REDTEAM RT-0002:\\The Missing Workspace-Reset Charge in CC-0003}
+\author{P versus NP project review}
+\date{10 October 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Result and strict status.}
+The new COST\_CERTIFICATES theorem correctly separates an already explicit
+shared input from a recopied or implicit input, but its proof does not restore
+the verifier's writable tapes to their required blank initial state between
+witness trials.  Resetting only finite control and address registers is not
+enough.  Therefore the exact displayed $O(2^w(q+w+\log M))$ implementation
+and its \textbf{PROVED/EXACT} label are \textbf{not established as written}.
+The exponent conclusion $\kappa+v$ is salvageable: add a reset cost $r(M)$,
+or require a tidy/resettable verifier.  In the declared FLMV tape model, an
+explicit computable space/time envelope permits a prefix-clearing simulation
+with only a polylogarithmic time factor, so the polynomial exponent remains
+$\kappa+v$.  This is a narrow implementation repair.  It supplies no PFCERT
+verifier, implicit-child accessor, strict SAT successor, or lower bound.
+P versus NP remains \textbf{OPEN}.  These proofs are not machine checked.
+
+\section{Exact audited versions}
+The repository head at audit start was
+\texttt{03784c9af2fcd48fb0f385cbf6a569ce475b5e25}.  The material versions were:
+\begin{description}
+\item[] MODEL\_BRIDGE manuscript/report blob
+\texttt{30d42a361144fbc05b09fc166a9b4e25f44ce5b0}.
+\item[] LOWER\_BOUND LB-0002 report
+\texttt{ee395cc4c8b004e1c2304b5c1482b3ecbf67e143}, lower-bound spine
+\texttt{bae73aa8588502b87d54b9153bbc9c19183c56ad}, and LSPV separator
+\texttt{040c547fee55a3b88c105d1bec7d3eceef41338d}.
+\item[] COST\_CERTIFICATES CC-0003 report
+\texttt{6581d0c3af7ab29d6bdf6fe7f5216e4f1e149056}, spine
+\texttt{7d11408678e8308628efac2998b87f6c3de85278}, test code
+\texttt{92caadedd5753d100c8aa71a078de54ec962ed83}, and raw result
+\texttt{1f79b569f8aa328904bc59c7954914fc7f0d6a03}.
+\item[] PROOFMAP-0002 report
+\texttt{65fec8c14807ff6722f5558e683b8429030766c6}, proof-map spine
+\texttt{4a279a463fc4ebb7e33e016a0872f41f16ddfa28}, and STATUS
+\texttt{399e850d6dc475e8403ee03f64027eb6d835c988}.
+\item[] Root \texttt{main.tex}
+\texttt{a5e57493b1ad32bfb0dab4fb5312373f5d6617ef}; main4/main5/main9/main10
+blobs \texttt{3b169a64...}, \texttt{3782ee13...}, \texttt{3b6100...}, and
+\texttt{cf971f...}.
+\end{description}
+Historical summaries were not substituted for these underlying manuscripts,
+proofs, code, and raw data.
+
+\section{Selected implication and counterexample}
+Let $y$ be an explicit read-only input tuple of encoded length $M$.  Let one
+fixed deterministic verifier $V(y,\pi)$ run for at most $q(M)$ steps and use
+at most $s(M)$ writable tape cells when every writable tape begins blank.
+Let $w(M)$ bound $|\pi|$.  CC-0003 asserts that a single acquirer can reuse
+one verifier workspace over all $2^{w+1}-1$ candidates while resetting only
+finite control and addresses.
+
+That reset is insufficient.  Consider a verifier with one writable cell
+$z$, initially blank.  On every invocation it reads whether $z$ is blank,
+writes $1$ to $z$, and accepts exactly when the candidate is a fixed target
+and the old value was blank.  Every standalone invocation has the specified
+semantics.  When the first rejected candidate leaves $z=1$, the target is
+rejected by the reused dirty workspace.  Resetting finite control and input
+addresses does not restore the standalone verifier computation.
+
+The peer harness cannot detect this counterexample.  Its ``peak-space
+reuse'' test assigns
+\[
+ \texttt{peak}=\texttt{verifier\_space}+w+\texttt{addr}
+\]
+and immediately compares \texttt{peak} with the identical expression.  It
+never executes a stateful verifier or checks a blank-workspace invariant.
+The peer acceptance test is likewise a pure set-membership enumeration with
+no writable verifier state.
+
+\section{Smallest mathematical repair}
+Introduce an explicit reset routine.  If it uses time $r(M)$ and no more
+than the already charged verifier space plus $O(\log M)$ bits, the correct
+generic bound is
+\[
+ O\!\left((2^{w(M)+1}-1)
+       (q(M)+r(M)+w(M)+\log(M+2))+w(M)\right)
+\]
+time and
+\[
+ O(s(M)+w(M)+\log(M+2))
+\]
+writable bits.  Alternatively, include reset in the definition of $q$ or
+require $V$ to be tidy: after every halt, its writable tapes are blank except
+for the one-bit decision copied to a designated output register.
+
+The FLMV random-access tape convention measures auxiliary space on a tape by
+the largest visited index and assumes space is bounded by time
+\cite{flmv,diehl}.  If a computable bound $b(M)\ge s(M)$ is supplied, one may
+zero every cell in the visited prefix of each fixed writable tape.  Literal
+binary-address generation gives the conservative reset bound
+\[
+ r(M)=O(b(M)\log(b(M)+2)).
+\]
+When $b(M)\le q(M)$ and $q(M)=M^{v+o(1)}$, this is
+$M^{v+o(1)}$.  Hence for
+$w(M)=\kappa\log_2M+o(\log M)$ the repaired exponent is still
+$\kappa+v$.  The original exact big-O formula nevertheless needs the reset
+premise or this polylogarithmic term.
+
+This repair is model-specific.  Word-RAM initializable-array theorems give
+constant-time logical initialization with small redundancy
+\cite{hagerupkammer,katohgoto}, but they use word operations and data-structure
+representations not present for free in the FLMV bit-tape model.  They are a
+useful structural analogy, not a direct zero-cost transfer.
+
+\section{Claim-by-claim verdicts}
+\begin{longtable}{p{0.25\textwidth}p{0.17\textwidth}p{0.49\textwidth}}
+\toprule Claim/version&Verdict&Reason and smallest action\\\midrule\endhead
+MODEL\_BRIDGE MB1--MB3, \texttt{30d42a3...}
+&CONDITIONAL accepted&The direct-call, fallback, and virtual-input formulas
+remain correct under their explicit same-realization, local-access and setup
+premises.  No current delta constructs the all-input successor.\\
+LOWER\_BOUND LB-0002, \texttt{ee395cc...}
+&PROVED/EXACT scoped&The switch family gives a tight linear clause-probe
+floor for self-contained transporters and a matching linear scanner.  It
+relativizes and is not an arbitrary-decider SAT lower bound.\\
+CC-0003 shared-input theorem, \texttt{6581d0c...}
+&NEEDS REPAIR&The proof resets control/addresses but not dirty writable
+tapes.  Add $r(M)$ or a tidy-verifier contract.\\
+CC-0003 exponent $\kappa+v$
+&CONDITIONAL / salvageable&Under a charged reset with
+$r(M)=M^{v+o(1)}$, the exponent is unchanged.  It is not established by the
+current proof text alone.\\
+CC-0003 peak-space harness, \texttt{92caaded...}
+&FALSIFIED as a reset test&Its peak check is an algebraic identity and its
+enumerator has no persistent verifier memory.  Retain it only as finite
+candidate-count and formula-ledger validation.\\
+``C2 resolved''
+&REJECTED globally&At most the already-explicit direct-input subinterface is
+repaired.  Implicit-child generation/access, source recovery, ancestor state,
+and current-scale SAT calls remain OPEN.\\
+PROOFMAP-0002/STATUS C2=OPEN
+&STALE but conservatively safe&They predate CC-0003.  The next synthesis
+should split C2-direct from C2-implicit and include the reset guard; it must
+not promote the global acquisition/constructor arrow.\\
+Root synthesis
+&OPEN status accepted&Root main and main4/main5/main9/main10 preserve the
+all-input successor, arbitrary lower-bound and PFCERT-verifier gaps.\\
+\bottomrule
+\end{longtable}
+
+\section{Corpus reconciliation}
+The current recursive tree, protocol, AGENTS, CODEX, repository research
+skill, root main, STATUS, five review spines, newest builder reports,
+main4/main5/main9/main10, all eight current task specifications, current
+coordination ledgers, CC-0003 code/raw data, and relevant historical
+FORMAL-SPINE/ARC acquisition claims were read or searched at the source.
+Repository search covered shared input, ACQUIRE, C2, verifier reset, replay,
+random-access workspace, PFCERT, and successor closure.
+
+Five additional full Drive bodies not listed in the CC-0003 coverage set
+were reviewed: SIM-2-0010 (witness-length versus semantic ambiguity),
+SIM-4-0007 (all-safe finite-witness portfolios), LSPV-4-104601
+(TransportCert extensionality), LSPV-3-30301 (common-D acquisition), and
+SIM-4-0010 (ORAM/model mismatch).  They reinforce rather than close the gap:
+short descriptions or all-safe portfolios do not erase state restoration,
+joint space, dynamic witness, or model-transfer charges.  Targeted Personal
+Context recovered the prior C2 and implicit-child distinctions but is not an
+exhaustive chat export.
+
+\paragraph{Duplication and contradiction audit.}
+The CC-0003 direct-input distinction is consistent with older acquisition
+records.  Its new exact implementation proof is the only reviewed place that
+silently replaces blank workspace by dirty workspace.  The defect does not
+contradict the older copied-input upper bound, bounded-list diagonal, hash
+factorization, or global OPEN status.  The retired universal cosine-product
+endpoint remains retired.  Finite ARC15 12/13 coverage still leaves the
+UNSAT/fallback gap.
+
+\section{Primary literature and transfer classification}
+FLMV's JACM paper is the endpoint source and its random-access convention
+uses read-only input plus charged index/work tapes \cite{flmv}.  A detailed
+source-compatible exposition states that auxiliary tape space is the largest
+visited index and that the analysis assumes space bounded by time
+\cite[Section 2.1]{diehl}.  This directly supports the prefix-clear repair;
+it does not justify omitting reset.
+
+Hagerup--Kammer prove constant-time initialization with a time--space tradeoff
+for word-RAM arrays \cite{hagerupkammer}; Katoh--Goto prove an in-place
+initializable array using one extra bit and constant-time word-RAM operations
+\cite{katohgoto}.  The exact object correspondence is verifier workspace as
+an initializable array.  The missing transfer is an implementation using the
+FLMV bit-tape instruction set and space convention with all address and
+metadata costs charged.  Therefore this is an \textbf{ANALOGY/CANDIDATE},
+not a theorem transfer.  Generic ORAM results are a failed shortcut because
+distributional access-pattern hiding is not the deterministic tape-reset or
+schedule property required here.
+
+\section{Bounded hostile test}
+The command
+\begin{verbatim}
+timeout 30s python3 experiments/review/redteam_cc0003_reset_test.py
+  --max-w 16
+  --output results/raw/review/2026-10-10_redteam_cc0003_reset.json
+\end{verbatim}
+used a 25-second cooperative alarm and completed in 0.038 seconds.  It found
+16 dirty-workspace counterexamples for widths 1 through 16, passed 16
+explicit-reset positive controls, and checked 81 exponent pairs after adding
+a polylogarithmic reset.  The test also records the peer harness identity.
+This is \textbf{COMPUTATIONAL} interface validation, not an asymptotic lower
+bound or a proof about SAT.
+
+\section{What changed and next target}
+Relative to root main, no separation claim changes.  Relative to CC-0003,
+the direct shared-input theorem is downgraded from \textbf{PROVED/EXACT} to
+\textbf{CONDITIONAL / NEEDS REPAIR} until a resettable verifier or explicit
+FLMV clearing construction is incorporated.  The polynomial exponent
+$\kappa+v$ survives that repair.  The global successor, PFCERT verifier,
+implicit acquisition, arbitrary-algorithm lower bound, nonrelativizing hinge,
+and P versus NP all remain \textbf{OPEN}.
+
+\paragraph{Single next target.}
+COST\_CERTIFICATES should state and prove the reset-parameter theorem, then
+instantiate $r(M)=O(q(M)\log(q(M)+2))$ in the exact FLMV tape model with a
+computable uniform bound and a non-tautological stateful test.  PROOF\_MAP
+should distinguish repaired direct-input C2 from the still-open implicit and
+recursive acquisition interface.
+
+\begin{thebibliography}{9}
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, JACM 52(6), 2005,
+835--865. DOI: 10.1145/1101821.1101822.
+\url{https://pages.cs.wisc.edu/~dieter/Research/sat-ts.html}
+\bibitem{diehl} S. Diehl, \emph{Time-Space Lower Bounds for Satisfiability
+and Related Problems}, PhD thesis, University of Wisconsin--Madison, 2008,
+Section 2.1. \url{https://www.cs.wisc.edu/~dieter/Papers/diehl-dissertation.pdf}
+\bibitem{hagerupkammer} T. Hagerup, F. Kammer,
+\emph{On-the-Fly Array Initialization in Less Space}, ISAAC 2017,
+LIPIcs 92:44. DOI: 10.4230/LIPIcs.ISAAC.2017.44.
+\bibitem{katohgoto} T. Katoh, K. Goto,
+\emph{In-Place Initializable Arrays}, arXiv:1709.08900, revised 2021.
+\url{https://arxiv.org/abs/1709.08900}
+\end{thebibliography}
+% END_OF_VERIFIED_REPORT::REDTEAM::RT-0002
+\end{document}
