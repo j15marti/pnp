@@ -9,7 +9,7 @@
 \newcommand{\SAT}{\mathsf{SAT}}
 \newcommand{\PP}{\mathsf P}
 \newcommand{\NP}{\mathsf{NP}}
-\title{LOWER\_BOUND through LB-0002: Universal Quantifiers, Bounded Lists, and the Oracle Barrier}
+\title{LOWER\_BOUND through LB-0004: Universal Quantifiers, Bounded Lists, and the Oracle Barrier}
 \author{P versus NP project}
 \date{10 October 2026}
 \begin{document}
@@ -262,6 +262,147 @@ audit gives an enumeration obstruction when $t$ is sufficiently large
 relative to the verifier's witness and verification bounds. No
 all-superpolynomial-$t$ construction is asserted here.
 
+\section{Endpoint multiplicity is not accepting-path multiplicity}
+For a fixed verifier $V$, define the partial multivalued NP function
+\[
+ f_V(1^n,p)=\{x:\exists\pi,\ |x|=n,\ |\pi|\le q(n),
+                       V(1^n,p,x,\pi)=1\}.
+\]
+It is realized by an NP transducer that guesses $(x,\pi)$, verifies,
+and outputs $x$. Thus global list soundness is exactly a bound on the
+number of \emph{distinct output values}. It is not a bound on accepting
+paths and does not place the endpoint language in $\mathsf{UP}$ or
+$\mathsf{FewP}$.
+
+\begin{lemma}[Witness-union gate]
+Let $R\subseteq X\times\Pi$. If every witness fiber
+$R_\pi=\{x:(x,\pi)\in R\}$ has size at most $b$, then
+\[
+ \left|\bigcup_{\pi\in\Pi}R_\pi\right|
+ \le \min\{|X|,b|\Pi|\}.
+\]
+The bound is tight whenever $X$ contains $b|\Pi|$ elements.
+Consequently, witnesses of length at most $q$ yield only the bound
+$b(2^{q+1}-1)$ absent an overlap theorem.
+\end{lemma}
+\begin{proof}
+The union bound gives the inequality. Equality is obtained by choosing
+pairwise disjoint fibers of size $b$.
+\end{proof}
+
+\begin{theorem}[Fiber-type quotient gate]
+For a finite witness set $\Pi$, let
+\(R_\pi=\{x:V(z,x,\pi)=1\}\), put
+\[
+ b=\max_{\pi\in\Pi}|R_\pi|,
+ \qquad
+ c=\bigl|\{R_\pi:\pi\in\Pi\}\bigr|.
+\]
+Then
+\[
+ \left|\bigcup_{\pi\in\Pi}R_\pi\right|\le bc.
+\]
+The bound is tight.  Duplicating witnesses or appending ignored witness
+bits changes neither $c$ nor the endpoint union.  Thus a polynomial bound
+on the number of distinct fiber types, together with a polynomial
+per-fiber bound, is a padding-invariant sufficient condition for global
+list soundness.
+\end{theorem}
+\begin{proof}
+Choose one representative from each distinct fiber.  Their union is the
+original union, and at most $c$ representative sets of size at most $b$
+occur.  Pairwise disjoint representatives of size $b$ attain equality.
+Duplicating an existing fiber creates no new fiber type and no new endpoint.
+\end{proof}
+
+This theorem isolates a useful construction target, not an automatic
+compression.  Let the distinct fiber types have multiplicities
+$a_1,\ldots,a_c$, let $W=|\Pi|$, and define the exact collision count
+\(operatorname{Coll}=\sum_i a_i^2\).  Cauchy--Schwarz gives
+\[
+ c\ge \frac{W^2}{\operatorname{Coll}}.
+\]
+This is a lower bound on the number of types, the opposite direction from
+the required upper bound.  If a construction additionally proves
+$a_i\ge\mu$ for every type, then $c\le W/\mu$ and the endpoint union is at
+most $bW/\mu$.  Ignored witness padding can enlarge every $a_i$ without
+changing semantics, so multiplicity must be normalized or tied to a
+construction-specific witness convention.
+
+\begin{lemma}[Truth-preserving selector gate]
+Let $T_z\subseteq F_z$ be the required true endpoint set, with
+$|T_z|\le1$, and let $F_z$ be the set accepted by a permissive verifier.
+Any selector that sees only $F_z$ and returns a strict subset of some
+$F_z$ fails to preserve $T_z$ for one admissible singleton
+$T_z\subseteq F_z$.
+\end{lemma}
+\begin{proof}
+If $C(F_z)\subsetneq F_z$, choose
+$x\in F_z\setminus C(F_z)$ and take $T_z=\{x\}$.  Then
+$T_z\nsubseteq C(F_z)$.
+\end{proof}
+Consequently a generic refinement of the accepted NPMV endpoint function
+does not by itself retain the actual universal-machine output.  The
+canonicalizer needs a source/program binding predicate or another theorem
+that distinguishes the required endpoint.  Hemaspaandra--Naik--Ogihara--
+Selman show that generic unique refinements of NPMV functions have
+polynomial-hierarchy collapse consequences \cite{hnos1996}.  Inside a
+$P=NP$ contradiction argument that qualitative collapse is already
+available, but it supplies neither this truth-preserving binding nor the
+needed simultaneous exponent bounds.
+
+Already with two outputs and two witnesses, the fibers
+$R_{\pi_0}=\{x_0\}$ and $R_{\pi_1}=\{x_1\}$ are individually
+single-valued while their existential union has two values. Hence a
+per-certificate singleton claim cannot replace global list soundness.
+
+\begin{lemma}[Witness padding separates the notions]
+Appending $d$ ignored witness bits preserves $f_V(1^n,p)$ exactly and
+multiplies every accepting-witness count by $2^d$.
+\end{lemma}
+\begin{proof}
+Accept precisely when the original witness prefix is accepted, ignoring
+the new suffix. The endpoint image is unchanged, while every old
+witness has all $2^d$ suffix extensions.
+\end{proof}
+Therefore output multiplicity is invariant under harmless witness
+padding whereas $\mathsf{FewP}$-style path multiplicity is not.
+
+Lexicographic canonicalization does not repair this for free. The
+predicate that an accepted witness has no smaller accepted witness has
+a coNP universal subcondition for a polynomial-time verifier. Under
+the contradiction hypothesis $\PP=\NP$ it becomes polynomial-time
+decidable, but with an uncontrolled exponent; it is neither an
+unconditional NP-verifier construction nor a charged endpoint theorem.
+Generic reductions from multivalued to uniquely valued NP functions are
+known to have collapse consequences \cite{hnos1996}; they cannot be
+silently imported as a routine normalization.
+
+\section{Why sparse-set theorems do not follow from a per-program list}
+Mahaney's theorem \cite{mahaney1982} concerns a globally sparse
+NP-hard language under polynomial-time many-one reductions. The
+PFCERT list condition instead bounds, for each fixed $(n,p)$, the number
+of endpoint values. These are different density statements.
+
+\begin{lemma}[Fiber sparsity need not be joint sparsity]
+There is a polynomial-time relation with exactly one endpoint for every
+program but exponentially many accepted program--endpoint pairs at
+infinitely many total lengths.
+\end{lemma}
+\begin{proof}
+For each $(n-1)$-bit string $p$, accept only $x=0p$. Each program fiber
+has size one, yet there are $2^{n-1}$ accepted pairs $(p,x)$ of total
+length $2n-1$ (up to the fixed encoding overhead).
+\end{proof}
+Thus neither Mahaney's theorem nor an immunity theorem applies to the
+joint graph without a new reduction and global-density theorem.
+Likewise, current range-avoidance results under generator assumptions
+\cite{renwangzhong2026} and exact search-to-decision results in declared
+regimes \cite{hkloliveira2024} do not construct the ordinary all-input
+bounded-list cover. All arguments in this section relativize; they
+remove invalid transfers but do not supply the missing nonrelativizing
+hinge.
+
 
 \section{A linear-sharp source-probe guard}
 Consider the proper 3-CNF switch family in which forcing gadgets set
@@ -299,12 +440,15 @@ favorable charged successor or a nonrelativizing hinge.
 
 \paragraph{Verification.}
 The FLMV rational inequality and bounded-list counts were checked by exact
-integer/rational arithmetic on small parameters as a sanity check; the
-proofs above do not rely on those finite checks. An independent REDTEAM
+integer/rational arithmetic on small parameters as a sanity check.  The
+fiber-type quotient, collision direction and selector-binding controls were
+also exhaustively checked for all four-by-four relations; the proofs above
+do not rely on those finite checks. An independent REDTEAM
 agent reviewed the oracle-model and witness-bound guards.
 No full-repository build or proof-assistant check was performed.
 
 \bibliographystyle{plain}
 \bibliography{lower_bound_refs}
 \end{document}
+
 
