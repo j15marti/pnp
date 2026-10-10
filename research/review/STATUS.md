@@ -2,49 +2,31 @@
 
 Updated: 2026-10-10. **P versus NP remains OPEN.**
 
-The five-agent team has completed an initial scoped review and is configured to continue hourly, staggered at twelve-minute intervals. Read [PROTOCOL.md](PROTOCOL.md) for the every-run requirements, source locations, ownership, logging and GitHub/Drive recovery rules.
+The first scheduled builder cycle is synthesized in `PROOFMAP-0002`. No all-input SAT successor, arbitrary-algorithm lower bound, or bounded-list PFCERT verifier was constructed.
 
-## Active agents
+## Current route ranking
 
-| Start each hour, Asia/Seoul | Agent | Need addressed |
-|---|---|---|
-| :00 | MODEL_BRIDGE | All-input SAT transfer, semantic correctness and recursive closure |
-| :12 | LOWER_BOUND | Quantified lower-bound core, source-specific separators and barrier audit |
-| :24 | COST_CERTIFICATES | Fully charged construction, certificates, access, time and space |
-| :36 | REDTEAM | Independent review of the three builders' latest changes |
-| :48 | PROOF_MAP | Overall synthesis, proof-spine dependencies and cumulative coverage |
+1. **Strict successor / charged wrapper — CONDITIONAL.** Composition is exact under one uniform all-input contract. The SAT-specific ordinary-CNF successor, descendant closure, access, and same-machine resources remain OPEN.
+2. **Bounded-list PFCERT — CONDITIONAL.** Counting and time-bounded Kolmogorov immunity are exact at the endpoint. Verifier existence and executable acquisition remain OPEN.
+3. **LSPV Boolean separator — OPEN.** Representation and scoped source-probe results exist; arbitrary-SAT extraction, reconstruction, and the nonrelativizing hinge do not.
+4. **ARC15 / finite portfolios — COMPUTATIONAL.** Finite positive coverage does not close UNSAT/fallback or establish an all-input joint resource bound.
 
-First scheduled cycle starts 2026-10-10 at 11:00 Asia/Seoul. Schedules specify starts, not completion guarantees. The initial live review was performed before this cycle. Each individual agent runs once per hour, not every twelve minutes.
+## New cycle-one results
 
-## Formal working documents
-
-- [Model bridge and wrapper contract](spines/model_bridge.tex): recovered conditional composition and local-input transfer, with the all-input construction still open.
-- [Lower-bound and oracle audit](spines/lower_bound.tex): exact summary-only bound, decision bypass, relativized immunity and bounded-list conditional separation.
-- [LSPV Boolean separator candidate](spines/lspv_separator.tex): explicit separator and reconstruction obligations, a proved representation lemma, and unresolved source-specific compression.
-- [Cost and certificate spine](spines/cost_certificates.tex): charged aggregate and finite-depth closure; separate PFCERT time-window obstruction and remaining verifier target.
-- [Formal proof map](spines/proof_map.tex): shortest surviving conditional chains and exact dependencies.
-
-These are mathematical LaTeX proofs and candidate manuscripts, not proof-assistant certification. Each open premise is explicit. Related root manuscripts remain the historical and current project sources; this review does not silently replace their ownership.
+- LOWER_BOUND LB-0002 proves a tight `Theta(r)` source-probe floor for self-contained source-free exact transporters on its switch family. It relativizes and is not an unrestricted SAT lower bound.
+- COST_CERTIFICATES CC-0002 proves exact witness-string counting, a scoped bounded-list diagonal, semantic hash factorization, and collision-entropy identities.
+- One CC-0002 corollary is corrected: its displayed per-candidate-copy bound has exponent `kappa+max(v,1)` when `|p|=O(N)`, not unconditionally `v+kappa`. Recovering `v+kappa` for `v<1` requires a separate shared-read-only-input random-access implementation.
+- The newest complete REDTEAM artifact predates these two builder deltas, so independent red-team review remains pending.
 
 ## Highest-value next links
 
-1. Prove a source-checkable, fully charged SAT successor or favorable typed epoch on a declared infinite unresolved family, then establish all-input coverage and successor closure. The existing recurrence cannot supply its own construction premise.
-2. Recover the exact source and reconstruction interface for the canonical Boolean separator route; do not substitute a schematic generator or infer an arbitrary-algorithm lower bound from representation size.
-3. Quantify the actual child-access/replay and peak-state costs, and determine whether a bounded-list endpoint verifier can exist in one suitable slower time window. The large-time obstruction does not construct such a verifier.
+- MODEL_BRIDGE: one solver-independent all-input ordinary-CNF successor with strict shrink and descendant closure.
+- LOWER_BOUND: an arbitrary-decider acquisition lower bound, or a matched collapsing-oracle countermodel to that extension.
+- COST_CERTIFICATES: a fully charged shared-input exhaustive acquirer and corrected witness window.
+- REDTEAM: claim-by-claim audit of LB-0002 and CC-0002, especially the acquisition repair.
 
-## Initial reviewed findings
+## Reproducibility and scope
 
-- The current wrapper/ARC framework provides conditional implications. The missing implication from SAT in P to a favorable all-input constructor carries the main separation difficulty.
-- ARC15's method-level sample covers 12 of 13 formulas; all six newly solved cases are SAT, and an UNSAT case remains UNKNOWN. It is neither all-input coverage nor a joint resource certificate.
-- Older cosine product-endpoint wording is already superseded by the authoritative root correction. Isolated older passages must not be reused as current theorems.
-- A finite-field statement needs the distinction between nonzero formal polynomials and nonzero polynomial functions. The review gives a precise repair.
-- The attached generator ignores every nonempty cleaned seed when random draws are fixed. The finite FNV tags are not injective history encodings. A six-character collision was independently reproduced. These are implementation findings, not SAT lower bounds.
-- Independent review accepts the certificate-enumeration obstruction at its stated scope: polynomial witnesses cannot satisfy the proposed bounded-list completeness for a sufficiently large time bound such as double exponential time. Slower fixed time bounds remain open.
+The LB-0002 and CC-0002 peer tests reproduced. A new exact-integer hostile control passed eleven sublinear-verifier and eleven linear-verifier cases and exposes the exponent mismatch. Seven additional historical Drive documents and four primary sources were reviewed. This is cumulative targeted review, not a claim that all chats, repository history, Drive files, or the full corpus have been read.
 
-## Coverage and reproducibility
-
-The initial complete recursive GitHub metadata inventory contains 1,522 blobs at commit `b6948eb15a8afec37cc904120ce20b61b45a0dad`. Targeted Drive discovery contains 382 unique metadata records. These counts are inventory, not completed content review. There are 86 recorded main4/main5 include edges, 35 literal root references absent from that snapshot, and unresolved Drive pagination and chat/history coverage. Parent conversation retrieval succeeded; several child-agent retrievals reported unavailable.
-
-See [repository review queue](coverage/repository_coverage_queue.csv), [Drive source inventory](coverage/drive_source_inventory.json), [include dependencies](coverage/include_dependencies.json), and [missing source references](coverage/root_missing_references.json). Detailed source scopes and primary references appear in the initial reports and [proof synthesis](coordination/proof_map.md). [Independent audit](coordination/redteam.md) records claim-level verdicts and repairs.
-
-Every initial agent has a local log and a GitHub mirror. Publication receipts identify the commit and verified artifact digests. Future runs recover from GitHub or verified Drive fallback, never assume that scratch storage survives, and extend the queue without falsely declaring an exhaustive review complete.
+The retired universal cosine-product bound remains retired. Finite 12/13 coverage does not close the UNSAT/fallback gap. Formal LaTeX is not machine-checked unless an actual proof assistant verifies it.
