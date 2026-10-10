@@ -1,0 +1,275 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{obligation}{Open obligation}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\PP}{\mathsf P}
+\newcommand{\NP}{\mathsf{NP}}
+\title{LOWER\_BOUND-0001: Universal Quantifiers, Bounded Lists, and the Oracle Barrier}
+\author{P versus NP project}
+\date{10 October 2026}
+\begin{document}
+\maketitle
+\paragraph{Status.}
+This manuscript proves elementary model-audit lemmas and a matched-oracle
+extension of the prefix-search immunity argument in Hirahara
+\cite{hirahara2020}. It closes a barrier obligation deferred in project
+PVG-4-0001, not the existence obligation for PFCERT. No separation of
+$\PP$ and $\NP$ is claimed. These are human-readable formal proofs,
+not proof-assistant verification.
+
+\section{What history distinguishability actually proves}
+\begin{definition}[Summary-only continuation]
+Fix a set $H$ of histories, a common query set $Q$, and a response function
+$f:H\times Q\to\{0,1\}$. A summary-only implementation consists of
+$s:H\to\{0,1\}^{b}$ and one function
+$E:\{0,1\}^{b}\times Q\to\{0,1\}$ satisfying
+$E(s(h),q)=f(h,q)$. No history-dependent source, advice, oracle, or
+unrecorded state is available to $E$.
+\end{definition}
+\begin{lemma}[Summary bound]
+If $H_0\subseteq H$ has $M$ pairwise distinct response rows
+$f(h,\cdot)$, then every summary-only implementation has
+$b\ge\lceil\log_2M\rceil$.
+\end{lemma}
+\begin{proof}
+If $s(h)=s(h')$, the common evaluator has the same answer for every
+query, so the two rows are equal. Thus $s$ is injective on $H_0$.
+\end{proof}
+This proves neither $M$ time steps nor a bound for a model allowing
+source rereading. For example, let $H=\{0,1\}^{k}$ and
+$f(x,i)=x_i$. All $2^k$ rows differ, but if $x$ remains on the read-only
+random-access input tape, each query requires just its indexed input
+read and ordinary address handling. There need be no retained $k$-bit
+copy of $x$ in work space.
+
+\begin{lemma}[Endpoint bypass, recovered]
+Assume $A$ is an exact polynomial-time SAT decider. If the sole required
+output on a formula $F$ is $\SAT(F)$ and the ordinary model permits
+access to $F$ and execution of $A$, then there is a correct implementation
+that ignores every wrapper-created history and returns $A(F)$.
+\end{lemma}
+\begin{proof}
+The stated implementation has the required output and the assumed
+polynomial time bound by the definition of $A$.
+\end{proof}
+Consequently, an auxiliary witness being unique, or a false history
+destroying satisfying extensions of a wrapper CNF, does not prove that
+an arbitrary decision algorithm constructs that witness or history.
+
+\section{The current all-input gap}
+Let $\mathcal A$ be the set of simultaneous SAT time-space exponent
+pairs for one uniform all-length deterministic machine on the declared
+encoding and random-access model. The project has proved a conditional
+recursive composition rule
+\[
+ C=\max\left\{1,r,\frac{v-h}{1-h}\right\},\qquad
+ P=\max\{p,h\},
+\]
+for a uniformly hereditary, fully charged all-input phase with local
+time $N^{r+o(1)}$, aggregate executed child volume $N^{v+o(1)}$,
+maximum child length $N^{h+o(1)}$, $h<1$, and local state
+$N^{p+o(1)}$. Repeated children are counted with multiplicity.
+The proof and full contract are in FORMAL-SPINE1 and
+RECOVERY-STRENGTHEN7, identified in the companion audit report.
+
+\begin{lemma}[Existential phase equivalence, recovered]
+Suppose a phase contract permits zero children and local direct decision
+at resource bounds $(C,P)$, and recursive composition converts every
+such phase to a SAT algorithm with the same bounds. Then existence of
+an all-input phase is equivalent to $(C,P)\in\mathcal A$.
+\end{lemma}
+\begin{proof}
+The forward implication is the assumed composition theorem.
+For the reverse implication, execute the algorithm locally and issue no
+children. The child restrictions hold vacuously.
+\end{proof}
+A positive child count alone does not repair this: one can issue and
+ignore a constant SAT instance.
+
+\begin{obligation}[Source-visible all-input construction]
+Prove, under the assumption that SAT has a polynomial-time decider, the
+existence of a uniform all-length implementation satisfying a favorable
+fully charged hereditary phase contract on every root and actual
+unresolved descendant. A sufficient stronger target is an explicit
+compiler from a clocked SAT decider to a PRE-A construction that builds
+strictly smaller, semantically essential children before any parent-scale
+semantic call. Acquisition failures, replay, input access, current child
+buffers, and all ancestor state must be charged in the same machine.
+\end{obligation}
+This obligation is separation-strength for contracts whose endpoint is
+already forbidden. The following verified endpoint is a checkpoint,
+not a solution to the obligation.
+
+Fortnow--Lipton--van Melkebeek--Viglas \cite{flmv2004}, Corollary 5.8
+and the local SAT reduction, exclude $(t,s)$ with strict margins
+\[
+ t<c,\qquad
+ s<d(c):=\frac12\left(\frac{c+2}{c^2}-c\right).
+\]
+For $c=1201/1000$,
+\[
+ d(c)=\frac12+\frac{26275399}{2884802000},
+\]
+so $(6/5,1/2)$ is forbidden. Matching representation, local reduction,
+and simultaneous resource bounds are essential. This is not an
+unrestricted polynomial-time SAT lower bound.
+
+\section{Matched oracle and machine conventions}
+Fix an arbitrary oracle $O\subseteq\{0,1\}^{*}$ and a universal binary-program
+oracle machine $U^O$. Every computation and verifier in this section uses
+the same $O$. A program has at most one final output, produced when it
+halts. Query writing and ordinary tape work are counted; the oracle
+answer step has the usual unit cost.
+
+We use a plain universal machine and require efficient universality:
+for each fixed plain-description oracle machine $M$
+there is a compiler prefix of constant length independent of its input,
+and simulation by $U^O$ has polynomial overhead in input length and
+running time, uniformly in $O$. No constant-overhead claim for simulating
+arbitrary plain-description machines by a prefix-free universal machine
+is made. A self-delimiting encoding of
+$n$ of length at most $2\lceil\log_2n\rceil+O(1)$ is used.
+
+Let $t:\mathbb N\to\mathbb N$ eventually dominate every polynomial.
+Define
+\[
+ K_U^{t,O}(x)=\min\{|p|:U^O(p)\text{ halts with final output }x
+                   \text{ within }t(|x|)\text{ steps}\},
+\]
+with minimum $+\infty$ when no such program exists.
+
+\begin{theorem}[Relativized immunity with logarithmic deficiency]
+Let $b(n)$ be a nonnegative integer with
+$b(n)\le c\log_2(n+2)$ for some constant $c$. Then
+\[
+ R_b^{t,O}=\{x:K_U^{t,O}(x)\ge |x|-b(|x|)\}
+\]
+is $\PP^O$-immune.
+\end{theorem}
+\begin{proof}
+Counting programs of length strictly less than $n-b(n)$ shows that,
+for every sufficiently large $n$, at least one $n$-bit string lies in
+$R_b^{t,O}$. Thus the set is infinite.
+
+Suppose an infinite $L\in\PP^O$ were contained in $R_b^{t,O}$.
+Fix its deterministic polynomial-time decider $M^O$.
+Choose a positive integer constant $a>c+4$ and set
+$m(n)=\lceil a\log_2(n+2)\rceil$.
+All sufficiently large $n$ have $m(n)<n$; ignore the finitely many others.
+
+For any sufficiently large length $n$ at which $L$ is nonempty, choose
+one $y\in L\cap\{0,1\}^n$ and let $u$ be its first $n-m(n)$ bits.
+A fixed oracle program, given encoded $n$ and $u$, enumerates all
+$m(n)$-bit suffixes $v$, tests $M^O(uv)$, and prints the first accepted
+$uv$. Such a suffix exists. Its running time, including universal
+simulation, is polynomial in $n$: there are
+$2^{m(n)}=n^{O(1)}$ tests of a fixed polynomial-time machine. This time
+is eventually at most $t(n)$.
+
+The program description has length at most
+\[
+ n-m(n)+2\lceil\log_2 n\rceil+O(1)
+ <n-b(n)
+\]
+for all sufficiently large $n$. The selected output $x=uv$ belongs
+to $L$, but has $K_U^{t,O}(x)<n-b(n)$, a contradiction.
+\end{proof}
+
+The proof is a direct matched-oracle adaptation and logarithmic-deficiency
+extension of the published prefix-search argument, not a new
+nonrelativizing mechanism.
+
+\section{A generalized bounded-list target}
+Let $L(n)\ge1$ be an integer, polynomially bounded and polynomial-time
+computable. Define
+\[
+ \ell(n)=\lceil\log_2 L(n)\rceil,\qquad
+ k(n)=n-\ell(n)-1.
+\]
+Only sufficiently large $n$, for which $k(n)\ge0$, are relevant.
+
+\begin{definition}[Polynomially witnessed endpoint list cover]
+One fixed deterministic polynomial-time oracle verifier
+$V^O(1^n,p,x,\pi)$ and one fixed polynomial $q$ satisfy:
+\begin{description}
+\item[] \emph{Witness convention.} Every accepted witness is restricted
+to $|\pi|\le q(n)$; outputs have $|x|=n$, and $|p|\le k(n)$.
+\item[] \emph{Completeness.} If $U^O(p)$ halts with final output
+$x\in\{0,1\}^n$ within $t(n)$ steps, then some permitted $\pi$
+satisfies $V^O(1^n,p,x,\pi)=1$.
+\item[] \emph{Global list soundness.} For each fixed $(n,p)$,
+\[
+ \left|\{x\in\{0,1\}^n:\exists \pi,\ |\pi|\le q(n),\
+                 V^O(1^n,p,x,\pi)=1\}\right|\le L(n).
+\]
+This bounds the union over all permitted witnesses, not the output of
+one branch or one run.
+\end{description}
+\end{definition}
+
+\begin{theorem}[List-cover conditional separation]
+If this endpoint list cover exists, then $\PP^O\ne\NP^O$.
+\end{theorem}
+\begin{proof}
+Let $E$ be the language whose $n$-bit members are the accepted outputs
+over all $p$ of length at most $k(n)$ and permitted witnesses.
+Because $k(n)\le n$ and $q$ is polynomial, $E\in\NP^O$.
+There are $2^{k(n)+1}-1$ possible programs, so
+\[
+ |E\cap\{0,1\}^n|
+ \le L(n)(2^{k(n)+1}-1)
+ \le 2^n-L(n)<2^n.
+\]
+Thus $\overline E$ has a member at every sufficiently large length.
+By completeness, any such member satisfies
+\[
+ K_U^{t,O}(x)>k(n),\qquad
+ K_U^{t,O}(x)\ge n-\ell(n).
+\]
+After deleting finitely many short lengths, $\overline E$ is an infinite
+subset of $R_\ell^{t,O}$. Since $L$ is polynomially bounded,
+$\ell(n)=O(\log n)$, so the preceding immunity theorem applies.
+If $\PP^O=\NP^O$, then $E$ and its complement are in $\PP^O$,
+contradicting that immunity.
+\end{proof}
+
+\begin{corollary}[Historical two-valued case]
+Taking $L(n)=2$ gives $\ell(n)=1$ and $k(n)=n-2$.
+A two-valued polynomially witnessed cover of all these endpoints implies
+$\PP^O\ne\NP^O$.
+\end{corollary}
+\begin{corollary}[Collapsing-oracle obstruction]
+For every oracle $O$ with $\PP^O=\NP^O$, no endpoint list cover above
+exists. Baker--Gill--Solovay \cite{bgs1975} supplies such oracles.
+\end{corollary}
+This is a theorem about matched relativizations. It does not establish
+nonexistence at the empty oracle. At $O=\varnothing$, existence of the
+cover remains an open sufficient condition for $\PP\ne\NP$.
+
+\begin{obligation}[Ordinary bounded-list construction]
+Fix a concrete superpolynomial $t$ and construct a verifier meeting all
+three conditions for ordinary $U$. Specify the witness polynomial and
+prove the global list bound. A succinct computation notation, local
+transition checker, or short source program alone is not this construction.
+\end{obligation}
+The time function is load-bearing. The independent cost-certificate
+audit gives an enumeration obstruction when $t$ is sufficiently large
+relative to the verifier's witness and verification bounds. No
+all-superpolynomial-$t$ construction is asserted here.
+
+\paragraph{Verification.}
+The FLMV rational inequality and bounded-list counts were checked by exact
+integer/rational arithmetic on small parameters as a sanity check; the
+proofs above do not rely on those finite checks. An independent REDTEAM
+agent reviewed the oracle-model and witness-bound guards.
+No full-repository build or proof-assistant check was performed.
+
+\bibliographystyle{plain}
+\bibliography{lower_bound_refs}
+\end{document}
+

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compact 6-Character Hash Generator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f5f7;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+        h2 {
+            margin-top: 0;
+            color: #1a1a1a;
+            font-size: 22px;
+            font-weight: 600;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #666;
+            font-size: 14px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            resize: vertical;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            font-family: inherit;
+        }
+        textarea:focus {
+            border-color: #0066cc;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+        }
+        .result-box {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .hash-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #888;
+            font-weight: 600;
+        }
+        .hash-output {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 24px;
+            font-weight: bold;
+            color: #0066cc;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>6-Character Hash Generator</h2>
+    
+    <label for="inputText">Input String / Text:</label>
+    <textarea id="inputText" placeholder="Type or paste your text here..."></textarea>
+    
+    <div class="result-box">
+        <span class="hash-label">6-Char Hash</span>
+        <span id="hashOutput" class="hash-output">000000</span>
+    </div>
+</div>
+
+<script>
+function compact6CharHash(inputString) {
+    // 1. Define the 62-character alphabet (0-9, a-z, A-Z)
+    const ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const BASE = BigInt(ALPHABET.length);
+    
+    // 2. Compute 64-bit FNV-1a hash using BigInt
+    const FNV_PRIME = 0x100000001B3n;
+    let hashValue = 0xCBF29CE484222325n;
+    const MASK_64 = 0xFFFFFFFFFFFFFFFFn;
+    
+    const encoder = new TextEncoder();
+    const view = encoder.encode(inputString);
+    
+    for (const byte of view) {
+        hashValue ^= BigInt(byte);
+        hashValue = (hashValue * FNV_PRIME) & MASK_64;
+    }
+    
+    // 3. Constrain hash space to exactly fit an 6-character Base-62 ceiling (BASE^6)
+    const maxSupportedValue = BASE ** 6n;
+    let currentVal = hashValue % maxSupportedValue;
+    
+    // 4. Convert numerical value to our 6-character custom alphabet string
+    let result = [];
+    for (let i = 0; i < 6; i++) {
+        const remainder = currentVal % BASE;
+        currentVal = currentVal / BASE;
+        result.push(ALPHABET[Number(remainder)]);
+    }
+    
+    return result.reverse().join('');
+}
+
+// Attach live interface event listener
+const inputArea = document.getElementById('inputText');
+const outputSpan = document.getElementById('hashOutput');
+
+inputArea.addEventListener('input', () => {
+    outputSpan.textContent = compact6CharHash(inputArea.value);
+});
+
+// Run initially to show empty string state
+outputSpan.textContent = compact6CharHash("");
+</script>
+
+</body>
+</html>

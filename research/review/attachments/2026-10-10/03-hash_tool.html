@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8-Character Hash Generator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 550px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-top: 0;
+            color: #111;
+            text-align: center;
+        }
+        p.subtitle {
+            color: #666;
+            font-size: 14px;
+            text-align: center;
+            margin-top: -10px;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+        .output-box {
+            background-color: #f8f9fa;
+            border: 1px dashed #bcc;
+            border-radius: 6px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+        }
+        .output-label {
+            font-weight: 600;
+            font-size: 14px;
+            color: #555;
+        }
+        .output-value {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 24px;
+            font-weight: bold;
+            color: #0066cc;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>8-Char Hash Generator</h1>
+    <p class="subtitle">Base-62 High-Entropy FNV-1a Hash Tool</p>
+    
+    <div class="form-group">
+        <label for="inputString">Type your input text below:</label>
+        <textarea id="inputString" placeholder="Type something to see it update live..."></textarea>
+    </div>
+    
+    <div class="output-box">
+        <span class="output-label">Generated Hash:</span>
+        <span id="hashOutput" class="output-value">00000000</span>
+    </div>
+</div>
+
+<script>
+function compact8CharHash(inputString) {
+    const ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const BASE = BigInt(ALPHABET.length);
+    
+    const FNV_PRIME = 0x100000001B3n;
+    let hashValue = 0xCBF29CE484222325n;
+    const MASK_64 = 0xFFFFFFFFFFFFFFFFn;
+    
+    const encoder = new TextEncoder();
+    const view = encoder.encode(inputString);
+    
+    for (const byte of view) {
+        hashValue ^= BigInt(byte);
+        hashValue = (hashValue * FNV_PRIME) & MASK_64;
+    }
+    
+    const maxSupportedValue = BASE ** 8n;
+    let currentVal = hashValue % maxSupportedValue;
+    
+    let result = [];
+    for (let i = 0; i < 8; i++) {
+        const remainder = currentVal % BASE;
+        currentVal = currentVal / BASE;
+        result.push(ALPHABET[Number(remainder)]);
+    }
+    
+    return result.reverse().join('');
+}
+
+const inputArea = document.getElementById('inputString');
+const outputSpan = document.getElementById('hashOutput');
+
+// Set fallback initial view
+outputSpan.textContent = compact8CharHash("");
+
+inputArea.addEventListener('input', (e) => {
+    const val = e.target.value;
+    outputSpan.textContent = compact8CharHash(val);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,221 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\SAT}{\operatorname{SAT}}
+\title{COST-CERTIFICATES-0001: Charged Closure and a Certificate-Length Boundary}
+\author{P versus NP project review}
+\date{10 October 2026}
+\begin{document}
+\maketitle
+\paragraph{Status.} This document contains elementary conditional composition
+lemmas, an explicit diagonalization obstruction, and open construction targets.
+It is not a proof of $P\ne NP$. Mathematical novelty relative to the entire
+project or literature is not claimed. The diagonalization boundary below is a
+new deduction in this review. REDTEAM independently accepted its proof and
+the charged composition after the termination and finite-length conventions
+recorded here were made explicit.
+
+\section{Parameters and charging convention}
+Let $N$ be the complete encoded bit length of an ordinary CNF, rather than its
+variable count. Let $A$ be one fixed exact SAT decider with time $N^{K+o(1)}$
+and writable space $N^{\sigma+o(1)}$. Its finite code may be hardwired;
+length-dependent advice may not. For each actually executed phase, charge
+\[
+ W=D+V+U+R+E+X+C,
+\]
+where $D$ is successful and failed discovery, $V$ verification, $U$ update,
+$R$ replay, $E$ emission, $X$ physical source/child access, and $C$ combination.
+Terms describe disjoint charged operations, to avoid double counting.
+Peak space includes all simultaneously live states, buffers, indexes,
+certificates, and stack frames. A reused result is charged once only if its
+reuse is implemented; recomputation is charged each time.
+
+\section{Aggregate closure with physical access}
+The following restates the audited Recovery7/Recovery10 accounting with the
+interface hypotheses made explicit.
+\begin{theorem}[Conditional aggregate closure]
+Suppose a uniform exact phase covers every input and every recursively reached
+ordinary CNF. At input length $N$, local work is $N^{r+o(1)}$, total executed
+child length is at most $N^{v+o(1)}$, and every child has length at most
+$N^{h+o(1)}$ for a fixed $0<h<1$. All bounds use one uniform asymptotic
+envelope over the same reachable inputs and phases. Fix $N_0$ such that
+each child is strictly shorter than its parent for $N>N_0$, and use one
+exact terminating base solver on all lengths at most $N_0$.
+Repeated child calls count with multiplicity.
+Suppose a proved physical simulation incurs at most $N^{g+o(1)}$ cost per
+child-machine step, with no additional uncharged semantic call. Then recursive
+execution has time $N^{C+o(1)}$, where
+\[
+ C=\max\left\{1,r,\frac{g+v-h}{1-h}\right\}.
+\]
+For explicitly materialized children, $g=0$; if local retained state is
+$N^{p+o(1)}$ and depth-first composition meets the stated memory model,
+peak space is $N^{\max\{p,h\}+o(1)}$.
+\end{theorem}
+\begin{proof}
+For $c\ge1$ and child lengths $m_i$,
+\[
+ \sum_i m_i^c\le(\max_i m_i)^{c-1}\sum_i m_i
+ \le N^{v+h(c-1)+o(1)}.
+\]
+Physical simulation contributes exponent $g+v+h(c-1)$. Choose any fixed
+$c>C$. Then $c>r$ and $c>g+v+h(c-1)$, so standard induction absorbs the
+uniform $o(1)$ terms for sufficiently large inputs. Since this holds for
+every $c>C$, the exponent bound follows. Along a contracting depth-first
+path, retained states and explicit child buffers sum to the stated maximum
+exponent. This argument presupposes the actual composable access and memory
+implementation; an abstract generator does not establish it.
+\end{proof}
+
+\paragraph{Saturation.} At $(r,v,h,p)=(6/5,11/10,1/2,1/2)$, the conditional
+pair is $(C,P)=(6/5,1/2)$ when $g=0$. Any conservative per-step access exponent
+$g>0$ instead gives $C\ge6/5+2g$. Batch or cache improvements may beat this
+simulation bound but need their own proved operation ledger. This is not an
+unconditional lower bound on every possible implementation.
+
+\paragraph{Open link CC-A.} Construct the required all-input, successor-closed,
+source-visible phase, or the corrected main9 strict successor with
+$(r,h,p)=(1,2/3,2/3)$. All acquisition, failed candidates, semantic guards,
+encoding, and physical access must fit one simultaneous ledger. Conditional
+closure cannot create a transition at a portfolio's UNKNOWN state.
+
+\section{Finite exponent elimination and its limited conclusion}
+\begin{lemma}[Fixed-depth elimination]
+Suppose one uniform exact SAT-preserving shrinker emits an ordinary CNF of
+length $N^{h+o(1)}$, uses time $N^{r+o(1)}$ and space $N^{p+o(1)}$, and has
+$0<h<1$. For fixed $d$, apply it $d$ times and then run $A$. Including explicit
+successor storage, the resulting bounds are
+\[
+ T(N)\le N^{\max\{r,h,h^dK\}+o(1)},\qquad
+ S(N)\le N^{\max\{p,h,h^d\sigma\}+o(1)}.
+\]
+\end{lemma}
+\begin{proof}
+The $j$th successor has length $N^{h^j+o(1)}$. A fixed number of phases has
+total cost dominated by the first phase and the final decider call. Retaining
+the first explicit child and smaller descendants gives the space maximum.
+\end{proof}
+For $(r,h,p)=(1,2/3,2/3)$ and finite $K,\sigma$, some fixed $d$ reaches
+$(1,2/3)$. Fortnow's near-linear-time/sublinear-space theorem excludes that
+pair under the matched random-access model \cite{fortnow2000}. Therefore
+the implication from $P=NP$ to existence of the shrinker is itself the
+load-bearing unproved statement. The universal product bound
+$2\cos(\pi/7)$ is not used.
+
+\section{A separate certificate spine}
+Fix one efficiently universal plain-description machine $U$, with polynomial
+simulation overhead for each fixed machine. Fix a time bound $t(n)=n^{\omega(1)}$
+and a polynomial witness bound $L(n)$. Define a polynomial-time relation
+$V(1^n,p,x,\pi)$ and
+\[
+ I_{n,p}=\{x\in\{0,1\}^n:\exists\pi,\ |\pi|\le L(n),\ V(1^n,p,x,\pi)=1\}.
+\]
+The same bound $L$ applies throughout. Require, for all $|p|\le n-2$:
+\begin{description}
+\item[] Completeness: if $U(p)$ halts with the unique final output
+$x\in\{0,1\}^n$ within $t(n)$,
+then $x\in I_{n,p}$.
+\item[] Global ambiguity: $|I_{n,p}|\le2$, after union over all accepted proofs.
+\end{description}
+Spurious outputs are permitted within the two-element limit. This does not
+require exact pointwise endpoint soundness or polynomial-time proof discovery.
+
+\begin{theorem}[Recovered conditional two-list implication]
+Such a verifier implies $P\ne NP$.
+\end{theorem}
+\begin{proof}
+For $n\ge2$, let $E_n=\bigcup_{|p|\le n-2}I_{n,p}$. Define
+$E=\{x:|x|<2\}\cup\bigcup_{n\ge2}E_n$. The uniform polynomial bound $L$
+gives $E\in NP$. There are $2^{n-1}-1$ eligible programs, hence
+$|E_n|\le2^n-2$. Completeness implies
+\[
+ \{0,1\}^*\setminus E\subseteq
+ R_{K_U^t}:=\{x:K_U^t(x)\ge |x|-1\}.
+\]
+Under $P=NP$, the complement of $E$ is an infinite P subset of this set,
+contradicting Hirahara's immunity theorem with the same $U,t$ conventions
+\cite[Theorem 3.9]{hirahara2020}.
+\end{proof}
+\paragraph{Open link CC-B.} Existence of $V$ for a suitable fixed $t$ remains
+unproved. It is not supplied by hashes, short source code, implicit tableaux,
+or tractable-class invariants. The measure is plain time-bounded $K^t$, not
+Levin $Kt$. Proof discovery is unnecessary for membership in NP, but must be
+charged if a constructive compiler later needs it.
+
+\section{A certificate-length diagonalization boundary}
+\begin{theorem}[Exhaustive certificate search obstruction]
+Assume a fixed verifier $V$ with polynomially computable witness bound $L(n)$
+and verification-time bound $q(n)$ satisfies global ambiguity. There is a
+fixed program family $p_n$ of length $O(\log n)$ that outputs an $n$-bit
+string outside $E_n$. On a fixed direct machine, its running time is bounded
+by
+\[
+ B(n)=2^{2n+L(n)+O(1)}\operatorname{poly}(n+L(n))\max\{1,q(n)\}.
+\]
+Let $B_U(n)$ include the efficient universal simulation of this procedure.
+For all sufficiently large $n$ with $t(n)\ge B_U(n)$, completeness fails.
+Consequently, no polynomial-witness two-list verifier exists for
+$t(n)=2^{2^n}$.
+\end{theorem}
+\begin{proof}
+Enumerate $n$-bit strings $x$ lexicographically. For each $x$, enumerate all
+$p$ of length at most $n-2$ and all $\pi$ of length at most $L(n)$, checking
+$V$. Output the first $x$ with no accepted pair. Global ambiguity guarantees
+at least two such strings. At most $2^n(2^{n-1}-1)(2^{L(n)+1}-1)$ verifier
+calls suffice. Enumeration overhead yields $B(n)$.
+The machine code is fixed and only $n$ needs to be self-delimitingly encoded,
+so the resulting $U$ program has length $O(\log n)\le n-2$ for sufficiently
+large $n$. If it terminates by $t(n)$, completeness puts its output inside
+$E_n$, contradicting its construction. Efficient universal simulation gives
+$B_U(n)=2^{\operatorname{poly}(n)}$ for polynomial $L,q$; this is eventually
+less than $2^{2^n}$.
+\end{proof}
+\paragraph{Explicit exponent form.} If $L(n)\le n^a$, $q(n)\le n^b$, and
+the fixed universal simulation is bounded by a constant times the $d$th
+power of the direct running time, then
+\[
+ B_U(n)\le 2^{d n^a+2dn+O(\log n)}.
+\]
+Thus a proposed completeness bound $t(n)=2^{n^c}$ is impossible whenever
+$c>\max\{a,1\}$. This is a necessary certificate-degree constraint in that
+regime, not a converse existence theorem at equality or below.
+\paragraph{Scope.} This refutes an overbroad ``all superpolynomial time
+bounds'' certificate claim. It does not refute existence for a slower fixed
+bound, such as $n^{\log n}$. A proposed verifier must declare the witness
+degree and the decompression time together. The procedure is an elementary
+diagonalization, not a SAT lower bound.
+
+\section{Finite hash labels and provenance}
+\begin{proposition}[Hash-label capacity]
+An exact history identifier over an alphabet of size 62 with $d$ characters
+can distinguish at most $62^d$ equivalence classes. Distinguishing $2^k$
+classes requires $d\log_2 62\ge k$.
+\end{proposition}
+\begin{proof} Apply the pigeonhole principle to any injective class identifier.
+\end{proof}
+The attached 6- and 8-character FNV-1a tools have capacities at most
+$35.7252$ and $47.6336$ bits. Extra histories or transcripts may enlarge the
+state, but their representation and recovery costs must then be counted.
+Collision resistance alone would not imply that a SAT decider must invert a
+hash or retain every history.
+
+\paragraph{Exact generator defect.} In the attached randomized generator,
+let $s>0$ be cleaned seed length and let $r_0,\ldots,r_{49}$ be the random
+pool. At iteration $i=0,\ldots,6$, the index $s+7i$ does not wrap. The $i$
+previous deletions shift it to original position $s+8i$, so the output uses
+$r_0,r_8,\ldots,r_{48}$ independently of seed contents and positive seed
+length. The formatting adds an independent space placement. Thus the seed
+does not encode source provenance in this implementation.
+
+\paragraph{Finite experiment.} The companion executable evaluates the actual
+HTML scripts. It reproduces identical outputs for distinct nonempty seeds
+under identical draws, and an explicit 6-character collision. These finite
+observations support the implementation audit, not asymptotic hardness.
+
+\bibliographystyle{plain}
+\bibliography{cost_certificate_refs}
+\end{document}

@@ -1,0 +1,263 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{obligation}{Open obligation}
+\newcommand{\F}{\mathbb F}
+\title{LSPV Candidate Spine: Canonical Boolean Separators and Reconstruction}
+\author{LOWER\_BOUND-0001, P versus NP project}
+\date{10 October 2026}
+\begin{document}
+\maketitle
+\paragraph{Status and scope.}
+This document isolates a constructive candidate from recovered LSPV work.
+The algebraic density lemma below is proved; the canonical separator
+theorem, seed-indexed reconstruction interface, and final diagonal remain
+OPEN. No proof of $P\ne NP$ is claimed. The current GitHub ARC/WRAPPER
+spine is a distinct route, treated in the companion manuscript.
+
+\section{The exact object that requires compression}
+Project sources include Drive MAIN LSPV-5::58501,
+\url{https://docs.google.com/document/d/1z4Jaoi4P0ZJXU8DTemXW6Eqb3vvt5RosAZTWuVMeCG0/edit},
+and LSPV-5::26501,
+\url{https://docs.google.com/document/d/1MGtSvJDCXCOpA1ulYycq_S-iExLaSaUq7_ZeHn-8e3o/edit}.
+The latter was reviewed through search hydration in this run; the former
+was fetched in full. Current primary-source numbering is van Melkebeek
+and Mocelin Sdroievski \cite{vms2025}, Section 4.1, Definition 4.1,
+Lemma 4.2, and the commit-and-evaluate reconstruction in 4.4.
+Earlier project documents use numbering from an older manuscript.
+
+\begin{definition}[Source-fixed successful range]
+Fix a source instance $x$, a source time scale $T=T(|x|)$,
+one fully specified generator $H$ with its parameters, and one successful
+nondeterministic path $\pi$ of $H(x)$. Let
+\[
+ R_{x,\pi}\subseteq\{0,1\}^{m}
+\]
+be the entire set of output strings on that path.
+The path fixes one consistent input encoding, all chosen accepted proof
+objects, and all their low-degree extensions.
+\end{definition}
+For the published PCP/PCPP construction, the relevant output is a union
+of RMV outputs for the encoded input and the chosen proof for each output
+bit. RMV itself includes recursively generated lines and all local seeds.
+Separation of one local extractor slice, one restriction, or one proof
+polynomial is not automatically separation of this full union.
+
+\begin{definition}[Canonical Boolean separator target, Route A]
+Fix $0<\delta<1/2$ and a charged size bound $B(T)$.
+For every source instance required by the eventual endpoint, seek a
+successful path $\pi$ and one Boolean circuit $D_{x,\pi}$ such that
+\[
+ \forall z\in R_{x,\pi}\quad D_{x,\pi}(z)=0,\qquad
+ \Pr_{z\sim U_m}[D_{x,\pi}(z)=1]\ge \tfrac12+\delta,\qquad
+ \operatorname{size}(D_{x,\pi})\le B(T).
+\]
+\end{definition}
+The quantifier is $\forall x\ \exists\pi\ \exists D\ \forall z\in R_{x,\pi}$,
+not $\forall z\ \exists D_z$. The downstream soundness quantifier
+must still control every certificate the verifier permits.
+
+The circuit may be guessed existentially if the complete endpoint
+requires only a robust truth value. Its identity need not be recovered
+deterministically unless a later stage consumes it. Encoded length,
+verification, evaluation, and density checks remain charged.
+
+\section{One proved representation lemma}
+Let $\mathcal Q_m$ be the $\F_2$ vector space of reduced multilinear
+polynomials of degree at most two in $z_1,\ldots,z_m$. Its coordinates
+are $1,z_i,z_iz_j$ with $i<j$; its dimension is
+$1+m+\binom m2$. For $R\subseteq\{0,1\}^m$, define
+\[
+ K_2(R)=\{Q\in\mathcal Q_m:\ \forall z\in R,\ Q(z)=0\},
+ \qquad
+ \mu(Q)=\mathbb E_{z\sim U_m}(-1)^{Q(z)}.
+\]
+For a two-dimensional subspace $L\le K_2(R)$, let $w(L)$ be the number
+of monomial coordinates used by at least one member of $L$.
+Define
+\[
+ J_{2,\delta}(R)=
+ \min_{\substack{L\le K_2(R),\ \dim L=2\\
+                 \sum_{0\ne Q\in L}\mu(Q)\le1-4\delta}}w(L),
+\]
+with value $+\infty$ when the feasible set is empty.
+
+\begin{lemma}[Quadratic-OR separator]
+If $J_{2,\delta}(R)=w<\infty$, then a Boolean separator $D$ rejects $R$,
+accepts at least $1/2+\delta$ of the cube, and has bounded-fanin circuit
+size $O(w+1)$. A direct sparse description uses
+$O((w+1)\log(m+2))$ bits.
+\end{lemma}
+\begin{proof}
+Choose a minimizing plane $L=\langle Q_1,Q_2\rangle$ and put
+$D(z)=Q_1(z)\lor Q_2(z)$. Both quadratics vanish on $R$.
+For every $z$,
+\[
+ {\bf1}[Q_1(z)=Q_2(z)=0]
+ =\tfrac14(1+(-1)^{Q_1(z)})(1+(-1)^{Q_2(z)}).
+\]
+Averaging gives
+\[
+ \Pr[D=1]
+ =\tfrac34-\tfrac14\bigl(\mu(Q_1)+\mu(Q_2)+\mu(Q_1+Q_2)\bigr)
+ \ge\tfrac12+\delta.
+\]
+At most $w$ distinct monomials are needed. Each has at most two
+variables and is computed with at most one AND gate. Each quadratic
+is the XOR of a subset of these monomials. Bounded-fanin XOR and the
+final OR need $O(w+1)$ gates over any usual complete Boolean basis.
+Each monomial has at most two variable indices, each using
+$O(\log(m+2))$ bits, plus constant bookkeeping.
+\end{proof}
+Circuit size and descriptor length are distinct.
+In particular, $O(m)$ gates do not by themselves give a literal $O(m)$-bit
+sparse coefficient description. For $m=T^\eta$, the logarithm may be
+absorbed in $T^{\eta+o(1)}$, but only after it is charged.
+
+\begin{obligation}[LSPV-A: canonical sparse, biased kernel]
+For the exact $R_{x,\pi}$, prove the existence of a successful $\pi$
+with $J_{2,\delta}(R_{x,\pi})$ within the charged support budget,
+or construct another circuit family satisfying Route A.
+\end{obligation}
+This is sufficient for one representation class, not necessary for all
+separators. Kernel dimension, low degree, or support size alone does
+not imply the three-bias condition. The full union must be respected.
+
+\section{An alternative graph target and its cost}
+Suppose the complete range is indexed by a fully specified total map
+\[
+ G_{x,\pi}:\{0,1\}^{s}\longrightarrow\{0,1\}^{m}.
+\]
+All component indices, recursive-line choices, seeds, invalid-index
+conventions, and their distribution must be defined in the actual
+generator. A padding convention must not silently change density.
+
+\begin{definition}[Route B graph separator]
+Seek one circuit $D^*_{x,\pi}(y,z)$ satisfying
+\[
+ \forall y\quad D^*_{x,\pi}(y,G_{x,\pi}(y))=0,\qquad
+ \Pr_{(y,z)\sim U_s\times U_m}[D^*_{x,\pi}(y,z)=1]\ge p_0,\qquad
+ \operatorname{size}(D^*_{x,\pi})\le B^*(T),
+\]
+where $p_0>0$ is fixed and fits the error gap of a subsequently proved
+reconstruction theorem.
+\end{definition}
+This differs from a seed-independent $D(z)$. The published
+local-extractor definition does not, merely from its statement, give
+the strong joint-seed reconstruction required here.
+
+\begin{lemma}[Trivial graph separator and its limitation]
+If $G$ has a circuit of size $S$, then
+$D^*(y,z)={\bf1}[z\ne G(y)]$ has size $O(S+m)$ and joint density
+$1-2^{-m}$.
+\end{lemma}
+\begin{proof}
+Compute $G(y)$, XOR it coordinatewise with $z$, and OR the differences.
+For every $y$, exactly one $z$ is rejected.
+\end{proof}
+This does not make $S$ small. Hard-wiring a $T$-scale proof polynomial
+or recomputing it can consume the resource the construction intends
+to save.
+
+\begin{obligation}[LSPV-B: source-specific graph compression]
+Prove a graph separator substantially cheaper than evaluating the full
+source-specific graph, with its description, evaluation, and verifier
+within the same declared budget.
+\end{obligation}
+
+\section{Corrected interpolation guard}
+\begin{lemma}[Finite-point evaluation surjectivity]
+For distinct points $P_1,\ldots,P_m\in\F_q^d$ and arbitrary
+$a_1,\ldots,a_m\in\F_q$, there is a polynomial $p$ of total degree
+at most $m-1$ satisfying $p(P_i)=a_i$ for all $i$.
+\end{lemma}
+\begin{proof}
+For each ordered pair $i\ne j$, choose a coordinate $k(i,j)$ where
+$P_i$ and $P_j$ differ and set
+\[
+ L_i(X)=
+ \prod_{j\ne i}
+ \frac{X_{k(i,j)}-(P_j)_{k(i,j)}}
+      {(P_i)_{k(i,j)}-(P_j)_{k(i,j)}}.
+\]
+Each denominator is nonzero. Then $L_i(P_i)=1$ and
+$L_i(P_j)=0$ for $j\ne i$. The sum $p=\sum_i a_iL_i$ works.
+\end{proof}
+Arbitrary degree-bounded source polynomials can therefore realize a
+full output cube on sufficiently short distinct evaluation sequences.
+No nonzero polynomial function on that cube vanishes everywhere.
+The corresponding assertion about formal polynomials is false:
+$X_1^q-X_1$ is nonzero formally but vanishes on all of $\F_q^m$.
+Reduced representatives of individual degree below $q$ avoid the
+ambiguity. This corrects wording in MAIN::58501. The coordinate-product
+proof also avoids an unnecessary shared separating-functional assumption.
+
+Source-specific structure is indispensable. The lemma concerns the
+unrestricted polynomial class, not a proof that the canonical
+accepted-proof class has a full range.
+
+\section{Exact missing downstream obligations}
+\begin{description}
+\item[] \textbf{LSPV-SOURCE.}
+Give the canonical source-to-PCPP-to-low-degree-extension map, generator
+parameters, and full successful output union. Every object used in
+completeness must refer to the same realization.
+\item[] \textbf{LSPV-COMPRESSION.}
+Prove Route A or B on that source family for every instance used by the
+final diagonal. A toy low-degree family is not a replacement.
+\item[] \textbf{LSPV-BINARY.}
+If starting from an $\F_q$ orbit recurrence, derive a relation after
+the exact binary code-coordinate map. An odd-characteristic field
+recurrence is not automatically a relation on the exposed Boolean bits.
+\item[] \textbf{LSPV-INTERFACE.}
+Match Route A's circuit size, input length and density to the precise
+published reconstruction parameters, including constants and error.
+For Route B prove a modified joint-seed reconstruction theorem.
+Per-seed distinguishers do not supply the required single circuit.
+\item[] \textbf{LSPV-SOUNDNESS.}
+If $D$ is guessed, prove completeness for at least one certificate
+and false-endpoint soundness for every allowed certificate.
+Charge density checking, oracles and randomness. Prove whether the
+endpoint consumes only a bit or later needs $D$'s identity.
+\item[] \textbf{LSPV-RESOURCES.}
+Fix the hypothetical SAT decider and exponent $k$ once.
+Account for circuit encoding, source access, reconstruction, queries,
+derandomization, PH-collapse exponents, output and census.
+The archive's schematic $k^4$ multiplier is not promoted here to a
+proved exact compiler theorem.
+\item[] \textbf{LSPV-DIAGONAL.}
+State the exact source language/function, machine model, constructible
+time bound, input/program length relation, uniformity, simulation and
+self-reference overhead. Prove a strictly faster single algorithm
+contradicting a named applicable hierarchy/diagonal theorem.
+A sub-$T$ estimate without these data is not a contradiction.
+\item[] \textbf{LSPV-BARRIERS.}
+Identify the step that fails under legitimate common-oracle replacement.
+Same-realization binding and Boolean syntax alone do not certify
+nonrelativization or nonalgebrization.
+\end{description}
+
+\paragraph{Next falsification task.}
+For one exact canonical successful path, construct its full RMV range
+at feasible small parameters. Compute $K_2$, candidate minimum supports
+and the three biases. Compare with accepted-proof padding and relabeling
+controls. A finite counterexample can retire an overbroad claim.
+A finite success remains computational evidence until a uniform
+structural theorem is proved.
+
+\paragraph{Literature coverage.}
+The current journal PDF of \cite{vms2025} was read at the local-extractor,
+RMV, and reconstruction interfaces. This document does not rederive its
+complete reconstruction proof. The older author-PDF link returned 404;
+the current author-hosted journal PDF works:
+\url{https://pages.cs.wisc.edu/~dieter/Papers/r-am-instance-wise-cc.pdf}.
+The Shaltiel--Umans 2005 source was located through Caltech, but its
+separate PDF fetch timed out; no unverified transfer from it is used
+as a proved premise here.
+
+\bibliographystyle{plain}
+\bibliography{lspv_candidate_refs}
+\end{document}
+

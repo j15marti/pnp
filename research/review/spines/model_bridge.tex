@@ -1,0 +1,272 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,booktabs}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{hypothesis}{Open hypothesis}
+\newcommand{\SAT}{\mathsf{SAT}}
+\title{MODEL\_BRIDGE: Wrapper Closure, Fallback, and Local Reduction Contracts}
+\author{P versus NP project review, run 0001}
+\date{10 October 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Status.}
+This document formalizes elementary transfer lemmas and the project's
+existing conditional proof spine. It does not prove $P\ne NP$.
+The missing all-input construction is stated as an open hypothesis.
+These lemmas are recovered or direct consequences of standard simulation,
+not claimed new complexity results.
+
+\section{Fixed model and semantics}
+
+Fix a uniform deterministic random-access Turing machine model with
+read-only original input and charged work tapes, including index tapes.
+Every derived child buffer, cached formula, suspended frame and auxiliary
+index counts as workspace. Let $N$ denote original encoded bit length.
+All logarithmic addressing costs are absorbed only into explicitly allowed
+$N^{o(1)}$ factors. Standard random-access conventions are as in
+\cite{flmv}. Any different encoding must have a proved local simulation.
+
+An ordinary language has a fixed membership predicate on finite strings.
+A specification requiring an online interaction with an external random
+stream, or a hash of one designated solver's execution, must first specify
+its inputs, required outputs and computational resources. It is not
+automatically the ordinary $\SAT$ language.
+
+\section{Polynomial wrappers and their surviving exponent}
+
+\begin{lemma}[MB1: direct-call wrapper closure]
+Let $A$ be a fixed exact SAT decider with
+$T_A(m)\le m^{K+o(1)}$ for a fixed $K\ge1$.
+Let $W$ be a deterministic direct-call wrapper whose local work is at most
+$N^{a+o(1)}$, and which makes at most $N^{b+o(1)}$ adaptive calls to $A$,
+each on a formula of encoded length at most $N^{c+o(1)}$.
+Assume query construction, output, scheduling and simulation overhead are
+included in the local bound, apart from subpolynomial overhead per simulated
+step. Then
+\[
+T_{W[A]}(N)\le
+N^{\max\{a,b+cK\}+o(1)}.
+\]
+In particular, polynomial-time SAT implies polynomial-time execution of
+this fixed polynomial wrapper.
+\end{lemma}
+
+\begin{proof}
+All oracle answers are computed sequentially by the fixed program $A$.
+The sum of subroutine costs is bounded by the number of calls times the
+worst permitted call cost:
+\[
+N^{b+o(1)}
+ \bigl(N^{c+o(1)}\bigr)^{K+o(1)}
+ =N^{b+cK+o(1)}.
+\]
+Add the local work. Adaptivity changes which queries occur, not their
+assumed worst-case bounds.
+\end{proof}
+
+\paragraph{Scope.}
+This is an upper bound. It gives no lower bound for a wrapper's semantic
+task and no automatic elimination of $K$. A current-scale call has $c=1$.
+Requiring a specified implementation to print a long trace may make that
+implementation expensive without making its SAT decision task expensive.
+
+\section{Partial portfolios and exact fallback}
+
+\begin{definition}
+A sound partial SAT decider $B$ halts on every formula with output
+$\mathsf{SAT}$, $\mathsf{UNSAT}$, or $\mathsf{UNKNOWN}$.
+Every non-UNKNOWN output is correct.
+Its unresolved domain is
+\[
+U_B=\{F:B(F)=\mathsf{UNKNOWN}\}.
+\]
+\end{definition}
+
+\begin{lemma}[MB2: fallback composition]
+Suppose $B$ has time $N^{r+o(1)}$ and space $N^{p+o(1)}$.
+Suppose an exact solver $A$ for $U_B$ has time $N^{t+o(1)}$ and
+space $N^{s+o(1)}$ on every input in that domain, using the same input
+encoding and model. Run $B$ first; on UNKNOWN dispose of its work state
+and run $A$ on the unchanged original input.
+The result is an exact total SAT decider with
+\[
+T(N)\le N^{\max\{r,t\}+o(1)},\qquad
+S(N)\le N^{\max\{p,s\}+o(1)}.
+\]
+\end{lemma}
+
+\begin{proof}
+A non-UNKNOWN answer is correct by soundness. Otherwise the input is
+in $U_B$, where $A$ is exact. Both computations terminate. Sequential
+execution adds time; disposing of preliminary state before invoking $A$
+makes peak workspace the maximum, up to addressing and control overhead.
+\end{proof}
+
+\paragraph{Limit of the lemma.}
+The displayed envelope by itself supplies no strict improvement in $t$.
+Such improvement requires additional facts about the residual domain or a
+different exact algorithm for it. Finite coverage growth is not an
+asymptotic theorem about that domain.
+
+\section{A precise local reduction obligation}
+
+\begin{lemma}[MB3: virtual-input resource transfer]
+Let $R$ map every source instance $x$ of size $N$ into a promise domain $U$
+and preserve its Boolean answer. Suppose $|R(x)|\le N^{\lambda+o(1)}$,
+where $\lambda>0$. Assume one uniform procedure obtains the output length
+and setup data in time $N^{r+o(1)}$ using space $N^{\beta+o(1)}$.
+Assume every requested output bit is computable from the original $x$
+and charged setup data in time $N^{\alpha+o(1)}$ and additional
+space $N^{\beta+o(1)}$, uniformly for all valid bit addresses.
+All setup data retained during simulation are included in this space bound.
+
+If a uniform exact solver for $U$ uses time $m^{t+o(1)}$ and
+space $m^{s+o(1)}$, then its simulation decides the source language in
+\[
+T(N)\le
+N^{\max\{r,\lambda t+\alpha\}+o(1)},\qquad
+S(N)\le
+N^{\max\{\beta,\lambda s\}+o(1)}.
+\]
+Here $\alpha,\beta,r,s\ge0$ and $t\ge1$; logarithmic costs are included.
+\end{lemma}
+
+\begin{proof}
+Simulate the solver without materializing $R(x)$. Its ordinary internal
+steps are simulated directly. Whenever it reads its virtual input,
+call the accessor for that bit. There are at most
+$N^{\lambda t+o(1)}$ simulated steps and hence at most that many accesses.
+Multiplying by the per-access bound and adding setup proves the time
+claim. The solver work tapes and the accessor/setup workspace coexist;
+their sum has the stated maximum exponent. The accessor is deterministic
+and returns the correct bit, so induction on simulated steps proves
+correctness. The image lies in the solver's promise domain.
+\end{proof}
+
+\paragraph{Consequence for the current shield.}
+If a reduction into an UNKNOWN domain has $\lambda=1$, $\alpha=0$,
+$r\le1$, and $\beta=0$, it preserves all jointly achievable exponents
+with $t\ge1,s\ge0$, up to the allowed subpolynomial factors.
+Restriction gives the reverse direction when $U$ is a subdomain of SAT.
+This is the precise transfer underlying the project's proposed equality
+of achievable regions. It remains necessary to verify the concrete
+shield, its bit accessor, and its image-membership theorem.
+A sequential emitter alone does not satisfy the accessor premise.
+
+\section{The existing conditional proof spine}
+
+\begin{definition}[Shrinking contract $\mathcal W(h,p)$]
+For fixed $0<h<1$ and $0\le p<1$, one uniform exact resumable wrapper works
+on every input and every recursive descendant. At size $N$, it performs
+$N^{1+o(1)}$ local work, makes at most $N^{1-h+o(1)}$ recursive calls
+of size at most $N^{h+o(1)}$, and suspends using $N^{p+o(1)}$ workspace
+besides the current child buffer. Children are sequential.
+Discovery, failed attempts, access, replay, exact certification, ancestor
+state and all derived buffers are charged. Sizes strictly decrease above
+a fixed finite base threshold. One common error envelope tends to zero
+uniformly on the domain.
+\end{definition}
+
+\begin{theorem}[Recovered composition]
+The contract yields one uniform exact SAT decider with
+\[
+T(N)\le N^{1+o(1)},\qquad
+S(N)\le N^{\max\{h,p\}+o(1)}.
+\]
+\end{theorem}
+
+\begin{proof}
+For any fixed $\delta>0$, choose $\epsilon>0$ with
+$h+\epsilon<1$ and
+$\epsilon(2+\delta)<\delta(1-h)$.
+Above a fixed threshold, all error exponents are at most $\epsilon$.
+Inductively bounding smaller calls by $Cm^{1+\delta}$ gives total child
+time at most
+\[
+C N^{1-h+\epsilon+(h+\epsilon)(1+\delta)}
+=C N^{1+h\delta+\epsilon(2+\delta)},
+\]
+strictly below exponent $1+\delta$. Local work has exponent
+$1+\epsilon<1+\delta$ if necessary after reducing $\epsilon$.
+Increasing $C$ covers finite exceptions and establishes the induction.
+The same algorithm works for every $\delta$.
+
+A depth-first path has $O(\log\log N)$ large levels. At each level the
+charged suspension and child-buffer space is at most
+$N^{\max(h,p)+\epsilon}$ measured in root scale.
+Their sum, including ancestor-held buffers, has exponent
+$\max(h,p)+o(1)$. Correctness and termination follow by induction on
+strictly decreasing size.
+\end{proof}
+
+\paragraph{Published endpoint.}
+By FLMV's local SAT reduction and time-space lower bounds,
+near-linear SAT time together with a fixed sublinear workspace power
+is excluded on the matched model \cite{flmv}.
+For the finite pair used in current main4/main5, let
+\[
+c=\frac{1201}{1000},\qquad
+d(c)=\frac12\left(\frac{c+2}{c^2}-c\right)
+=\frac12+\frac{26275399}{2884802000}.
+\]
+The strict inequalities $6/5<c$ and $1/2<d(c)$ absorb the local reduction's
+polylogarithmic overhead. This excludes the joint pair $(6/5,1/2)$.
+It does not exclude unrestricted polynomial-time SAT.
+
+\begin{hypothesis}[Open bridge $\mathsf B$]
+If SAT has a uniform polynomial-time decider, then there exist fixed
+$h,p<1$ and one all-input wrapper satisfying $\mathcal W(h,p)$.
+\end{hypothesis}
+
+\begin{theorem}[Conditional separation]
+If $\mathsf B$ is proved on the matched model and encoding, then $P\ne NP$.
+\end{theorem}
+
+\begin{proof}
+Assume $P=NP$. Then SAT is in P. By $\mathsf B$, the shrinking contract
+exists. Composition gives a near-linear-time, sublinear-power-space SAT
+decider, contradicting the published endpoint.
+\end{proof}
+
+\paragraph{Logical status.}
+Since the all-input contract is already excluded by the endpoint,
+$\mathsf B$ is itself equivalent in classical logic to $P\ne NP$.
+The reverse implication is vacuous when SAT is not in P.
+A substantive source-level construction establishing $\mathsf B$ would
+therefore carry the separation, not finish a routine bookkeeping step.
+
+\section{Quantifier and output guards}
+
+\begin{description}
+\item[] An existential witness may vary with the implementation:
+$\forall A\,\exists I\,R(A,I)$ does not require one identical $I$ across
+wrappers. A counterexample must exhibit an admissible implementation with
+no qualifying witness at all.
+\item[] A membership-preserving map from SAT to a wrapper language is the
+wrong direction for transferring a lower bound of that wrapper back to
+SAT. The needed simulation must solve the wrapper using SAT with controlled
+overhead, or supply another explicitly proved bridge.
+\item[] If the sole required answer is $\SAT(F)$, provenance history can
+be discarded unless the proof establishes an independently necessary
+future service. Requiring a larger output changes the problem.
+\item[] A finite hash is not injective on an unbounded history domain.
+Exact collision resolution belongs in the merge ledger. Hash length is
+not input length or a lower-bound exponent.
+\item[] Closure and accounting facts alone do not identify the missing
+ordinary-machine premise that fails under relativization. The
+Baker--Gill--Solovay theorem requires this barrier to be addressed by a
+complete separation argument \cite{bgs}.
+\end{description}
+
+\paragraph{Next proof obligation.}
+Give a source-checkable all-input rule, or an all-input ARC transition,
+whose uncovered fallback also contracts with verified physical access and
+joint workspace bounds. Until then the construction remains OPEN.
+
+\bibliographystyle{plain}
+\bibliography{model_bridge_refs}
+\end{document}
+

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Hash Generator</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 420px;
+            box-sizing: border-box;
+        }
+        h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+            font-size: 22px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #555;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus {
+            border-color: #0066cc;
+            outline: none;
+        }
+        .counter {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            color: #888;
+            pointer-events: none;
+        }
+        .output-box {
+            background-color: #f8f9fa;
+            border: 1px dashed #bbb;
+            border-radius: 6px;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            min-height: 24px;
+        }
+        .output-text {
+            font-family: "Courier New", Courier, monospace;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #111;
+        }
+        .copy-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        .copy-btn:hover {
+            background-color: #e9ecef;
+        }
+        .copy-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: #555;
+        }
+        .generate-btn {
+            width: 100%;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .generate-btn:hover {
+            background-color: #0052a3;
+        }
+        .toast {
+            text-align: center;
+            font-size: 13px;
+            color: #28a745;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            height: 18px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Alphanumeric Hash Generator</h2>
+    
+    <div class="form-group">
+        <label for="seedInput">Custom Seed (Max 16 Characters)</label>
+        <div class="input-wrapper">
+            <input type="text" id="seedInput" maxlength="16" placeholder="Enter seed...">
+            <span class="counter" id="charCounter">0/16</span>
+        </div>
+    </div>
+
+    <label>Generated Output</label>
+    <div class="output-box">
+        <span class="output-text" id="outputText">---- ---</span>
+        <button class="copy-btn" id="copyBtn" title="Copy to clipboard">
+            <svg viewBox="0 0 24 24">
+                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+            </svg>
+        </button>
+    </div>
+    <div class="toast" id="toast">Copied to clipboard!</div>
+
+    <button class="generate-btn" id="generateBtn">Generate Hash</button>
+</div>
+
+<script>
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    
+    const seedInput = document.getElementById('seedInput');
+    const charCounter = document.getElementById('charCounter');
+    const outputText = document.getElementById('outputText');
+    const generateBtn = document.getElementById('generateBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const toast = document.getElementById('toast');
+
+    // Generate a random 8-character string for the initial seed
+    function generateRandomSeed() {
+        let result = '';
+        for (let i = 0; i < 8; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+    }
+
+    // Mix the user seed with randomness to generate a unique hash
+    function generateHash() {
+        const seedValue = seedInput.value;
+        let pool = '';
+
+        // Fill pool with random alphanumeric characters first
+        for (let i = 0; i < 50; i++) {
+            pool += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+
+        // Strip special characters from the seed and mix it into the pool if it exists
+        const cleanSeed = seedValue.replace(/[^A-Za-z0-9]/g, '');
+        if (cleanSeed.length > 0) {
+            pool = cleanSeed + pool;
+        }
+
+        // Shuffle the pool slightly based on a simple loop
+        let finalRaw = '';
+        for (let i = 0; i < 7; i++) {
+            let index = (i * 7 + (cleanSeed.length || 3)) % pool.length;
+            finalRaw += pool.charAt(index);
+            // Remove used character to avoid instant patterns
+            pool = pool.slice(0, index) + pool.slice(index + 1);
+        }
+
+        // Randomly alternate between format: 3-space-4 OR 4-space-3
+        const alternate = Math.random() < 0.5;
+        let formattedResult = '';
+
+        if (alternate) {
+            // 3 digits, space, 4 digits
+            formattedResult = finalRaw.substring(0, 3) + ' ' + finalRaw.substring(3, 7);
+        } else {
+            // 4 digits, space, 3 digits
+            formattedResult = finalRaw.substring(0, 4) + ' ' + finalRaw.substring(4, 7);
+        }
+
+        outputText.textContent = formattedResult;
+    }
+
+    // Update character limit counter
+    seedInput.addEventListener('input', () => {
+        charCounter.textContent = `${seedInput.value.length}/16`;
+    });
+
+    // Copy to clipboard functionality
+    copyBtn.addEventListener('click', () => {
+        const textToCopy = outputText.textContent;
+        if (textToCopy && textToCopy !== '---- ---') {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                toast.style.opacity = '1';
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                }, 1500);
+            });
+        }
+    });
+
+    // Main generate event
+    generateBtn.addEventListener('click', generateHash);
+
+    // Initialize with random seed and initial hash on page load
+    seedInput.value = generateRandomSeed();
+    charCounter.textContent = `${seedInput.value.length}/16`;
+    generateHash();
+</script>
+
+</body>
+</html>
