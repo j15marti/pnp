@@ -245,16 +245,18 @@ The earlier shorthand \(v+\kappa\) is valid from that display only when
 \(v\ge1\).  The following separate implementation recovers the sharper
 bound in the declared shared-input random-access model.
 
-\begin{theorem}[Shared-input exhaustive acquirer]
+\begin{theorem}[Reset-aware shared-input exhaustive acquirer]
 Let the fixed input tuple \(y=(1^n,p,x)\) reside on read-only random-access
 input tapes and let \(M=|y|\).  Suppose that, for a read-only candidate
 witness \(\pi\) of length at most \(w(M)\), one invocation of \(V(y,\pi)\)
-uses at most \(q(M)\) time and \(s(M)\) writable bits, including its input
-probes and address work.  Then one deterministic lexicographic acquirer
+starts from a blank writable configuration, uses at most \(q(M)\) time and
+\(s(M)\) writable bits, and visits at most \(b(M)\) writable cells, including
+its input probes and address work.  Let \(r(M)\) bound restoration of that
+workspace and finite control.  Then one deterministic lexicographic acquirer
 finds the first accepted witness, or correctly reports that none exists, in
 \[
  O\!\left((2^{w(M)+1}-1)
-       (q(M)+w(M)+\log(M+2))+w(M)\right)
+       (q(M)+r(M)+w(M)+\log(M+2))+w(M)\right)
 \]
 time and
 \[
@@ -264,19 +266,26 @@ writable bits.  The input tuple is not recopied between invocations.
 \end{theorem}
 \begin{proof}
 Keep one \(w+1\)-bit counter/witness buffer and reuse one verifier workspace.
-For each counter value, reset only the verifier's finite control and
-\(O(\log M)\)-bit input addresses.  Every input symbol is read directly from
+Before each counter value, restore every visited writable cell, the verifier's
+finite control, and its \(O(\log M)\)-bit input addresses.  Every input symbol is read directly from
 the shared read-only tapes, and its cost is already one of the \(q(M)\)
 steps.  Incrementing and exposing the candidate costs \(O(w+\log M)\);
 on success, copying the final witness costs \(O(w)\) once.  The buffers are
 sequentially reused, so their sizes add rather than multiply by the number
 of candidates.
 \end{proof}
-If \(q(M)=M^{v+o(1)}\), \(v\ge0\), and
+An explicit visited-cell list gives the conservative implementation
+\[
+ r(M)=O\!\left(b(M)\log(b(M)+2)\right).
+\]
+If \(b(M)\le q(M)\), \(q(M)=M^{v+o(1)}\), \(v\ge0\), and
 \(w(M)=\kappa\log_2M+o(\log M)\), this implementation has time exponent
 \(\kappa+v\) and writable-space exponent
 \(\max\{\operatorname{sexp}(s),0\}\).  This proves the formerly open
-shared-input interface C2 for an already explicit direct input.  It does not
+shared-input interface C2a for an already explicit direct input.  The earlier
+proof that reset only finite control and addresses is
+\textbf{FALSIFIED/RETIRED as a blank-start proof}: a one-cell verifier can
+make later invocations depend on dirty state.  It does not
 materialize an implicit child, recover a source from a digest, or pay for a
 nonconstant-cost bit accessor.  If one input bit costs \(M^{g+o(1)}\) to
 regenerate, the verifier bound must include that access, giving the generic
@@ -293,6 +302,75 @@ to the SAT time-space literature, where read-only input is excluded from
 writable space while input-head addresses and reduction-bit computation are
 charged \cite{flmv2005}.  It is an implementation theorem, not a universal
 lower bound on all acquirers.
+
+\section{The quasipolynomial window and pointwise binding}
+Set \(t(n)=n^{\log_2 n}=2^{(\log_2 n)^2}\).  The two-list condition above is
+extensional and global: it permits one spurious endpoint.  Replacing it by
+pointwise endpoint soundness is not a harmless implementation repair.
+
+\begin{theorem}[Pointwise quasipolynomial-window gate]
+Let \(U\) be an efficiently universal deterministic machine with polynomial
+simulation overhead.  Suppose one fixed deterministic polynomial-time
+relation \(V\) and one polynomial \(L\) have the following property for every
+\(n\), every program \(p\) of length at most \(n-2\), and every
+\(x\in\{0,1\}^n\):
+\[
+ U(p)\text{ has final output }x\text{ within }t(n)
+ \quad\Longleftrightarrow\quad
+ \exists\pi,\ |\pi|\le L(n),\ V(1^n,p,x,\pi)=1.
+\]
+Then, for every fixed \(c>0\),
+\[
+ \operatorname{DTIME}\!\left(2^{c(\log m)^2}\right)
+ \subseteq NP\cap coNP.
+\]
+Consequently this premise implies \(P\ne NP\).
+\end{theorem}
+\begin{proof}
+Fix a language \(A\) decided in time \(2^{c(\log m)^2}\), and let \(z\) have
+length \(m\).  Choose a fixed integer \(a\) large enough to absorb the fixed
+universal simulation degree, and put \(n=m^a\).  A program \(p_z\) of length
+\(O(m+\log n)\le n-2\) simulates the decider for \(A(z)\) and writes
+\(1^n\) on acceptance and \(0^n\) otherwise.  The choice of \(a\) makes this
+computation finish within
+\[
+ t(n)=2^{a^2(\log m)^2}.
+\]
+The displayed equivalence gives an NP witness for \(z\in A\) by taking
+\(x=1^n\), and an NP witness for \(z\notin A\) by taking \(x=0^n\).
+The verifier inputs have polynomial length in \(m\), so \(A\in NP\cap coNP\).
+
+If \(P=NP\), the inclusion would put every such quasipolynomial-time language
+in \(P\).  Deterministic time hierarchy supplies a language in
+\(\operatorname{DTIME}(n^{\log n})\setminus P\), a contradiction
+\cite{hartmanisstearns1965}.
+\end{proof}
+This proof relativizes with a matched oracle machine and therefore does not
+provide the missing nonrelativizing hinge.  It instead shows that pointwise
+binding is already separation-strength.  The original two-list condition
+escapes this argument precisely because a verifier may accept both
+\(0^n\) and \(1^n\) for the same program.  A generic selector that chooses
+one candidate is wrong for one possible true endpoint.
+
+\paragraph{Checkpoint conservation.}
+An explicitly expanded binary midpoint proof of a deterministic \(T\)-step
+run, recursed down to one-step transitions, has exactly \(2T-1\) nodes when
+\(T\) is a power of two.  Hence for \(T=t(n)\) its explicit witness is
+superpolynomial.  Succinct tableaux, interactive proofs, algebraic
+fingerprints, and probabilistic checking can avoid literal expansion only by
+changing the verification model or adding a new exact soundness theorem.
+Known doubly efficient interactive-proof results do not directly instantiate
+this deterministic noninteractive relation \cite{cookrothblum2023,chenetal2026}.
+
+\paragraph{PFCERT trilemma.}
+At this window the alternatives are: (i) a globally two-valued extensional
+cover, whose construction is \textbf{OPEN} and whose existence already
+implies the desired separation through Hirahara's theorem; (ii) pointwise
+endpoint binding, which the theorem above shows is itself
+separation-strength; or (iii) randomness, interaction, or oracles, which
+changes the target model and is a failed direct transfer.  Compact transcript
+descriptions do not establish cheap acquisition, exact semantics, or an
+original-SAT-scale executable wrapper.
 
 The initial two-list diagonal extends to a polynomial list bound \(B(n)\).
 Set
@@ -355,5 +433,6 @@ exponent formulas.  Finite arithmetic does not prove an asymptotic SAT claim.
 \bibliographystyle{plain}
 \bibliography{cost_certificate_refs}
 \end{document}
+
 
 
