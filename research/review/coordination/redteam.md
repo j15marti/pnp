@@ -1,5 +1,37 @@
 # REDTEAM audit, current run 2026-10-10
 
+## RT-0002 — CC-0003 workspace-reset audit (2026-10-10)
+
+Status: **NEEDS REPAIR** for the exact shared-input implementation theorem; the exponent conclusion is salvageable under an explicit reset charge. P versus NP remains **OPEN**.
+
+Exact audited head: `03784c9af2fcd48fb0f385cbf6a569ce475b5e25`. CC-0003 report blob: `6581d0c3af7ab29d6bdf6fe7f5216e4f1e149056`; cost-certificate spine: `7d11408678e8308628efac2998b87f6c3de85278`; peer test: `92caadedd5753d100c8aa71a078de54ec962ed83`.
+
+### Verdicts
+
+| Claim | Verdict | Smallest repair |
+|---|---|---|
+| CC-0003 exact time `O((2^(w+1)-1)(q+w+log M)+w)` while reusing one workspace | **NEEDS REPAIR** | Charge reset time `r(M)` on every candidate, or require a tidy/resettable verifier. |
+| CC-0003 exponent `kappa+v` | **CONDITIONAL / salvageable** | In the declared FLMV tape model, clear a computably bounded visited prefix. With `b(M)<=q(M)=M^(v+o(1))`, a conservative `r=O(b log(b+2))` preserves exponent `kappa+v`. |
+| CC-0003 peak-space harness | **FALSIFIED as a reset test** | Its peak check compares an expression with itself and its verifier is stateless. Keep it only as finite candidate-count/ledger validation. |
+| MODEL_BRIDGE MB1–MB3 | **CONDITIONAL accepted** | Retain same-realization, access, setup, and fallback premises; no all-input successor is constructed. |
+| LOWER_BOUND LB-0002 | **PROVED/EXACT scoped** | Retain as a linear clause-probe floor for self-contained transporters, not an arbitrary-SAT lower bound. |
+| PROOFMAP/STATUS C2=OPEN | Conservatively safe but stale | Split repaired direct-input acquisition from still-OPEN implicit-child/source/recursive acquisition. |
+
+### Counterexample and repair
+
+A verifier has one writable cell `z`, initially blank. On each standalone invocation it reads whether `z` is blank, writes 1, and accepts the target candidate iff the old value was blank. A rejected first candidate dirties `z`; reusing the workspace makes the later target reject. Resetting finite control and addresses does not restore standalone semantics.
+
+The corrected generic time is
+`O((2^(w+1)-1)(q+r+w+log M)+w)`
+with the same charged-space form when reset reuses the verifier workspace. The bounded hostile test found this counterexample for widths 1–16, passed explicit-reset controls, and checked the repaired exponent on 81 parameter pairs. It is computational interface validation, not an asymptotic lower bound.
+
+Full report: `research/review/reports/redteam/2026-10-10_0336_RT-0002.tex`.
+Test: `experiments/review/redteam_cc0003_reset_test.py`.
+Raw result: `results/raw/review/2026-10-10_redteam_cc0003_reset.json`.
+
+Single next target: COST_CERTIFICATES should formalize the reset-parameter theorem and its exact FLMV clearing instantiation; PROOF_MAP should keep global implicit/recursive acquisition OPEN.
+
+
 Status: scoped source and new-claim review completed. No completed P versus NP proof located in reviewed sources.
 
 ## Scope and provenance
@@ -68,3 +100,4 @@ Final dispositions apply to the exact snapshots hashed in reviewed_artifacts.jso
 Read repository CODEX.md, AGENTS.md, the pnp-research skill, red-team mode and research protocol, plus root MAIN authoritative reconciliation. Preflight on the recovered source tree returned OK, while that tree lacks materialized specialist directories; this is not full repository coverage. Current ROOT MAIN's OPEN status and corrected endpoint remain unchanged. The newly identified field-polynomial wording must be repaired only at matched current statements; historical reports remain audit evidence. The current-run review adopted valid conditional results, repaired the above hypotheses, and retired no broader route without a counterexample.
 
 Single next target: audit a proposed source-checkable negative-case rule on the ARC15 UNKNOWN family, recursive descendants, and the current shielded SAT-hard fallback, with one joint operation/space ledger.
+
