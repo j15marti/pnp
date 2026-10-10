@@ -1,0 +1,186 @@
+% PNP REVIEW REPORT::COST_CERTIFICATES::CC-0003::2026-10-10T03:20:33Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{COST\_CERTIFICATES CC-0003:\\Shared-Input Acquisition and the Exact Witness Tax}
+\author{P versus NP project}
+\date{10 October 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Result and strict status.}
+This run repairs CC-0002's acquisition exponent by separating two concrete
+implementations.  Recopying the complete verifier input for every witness
+costs exponent $\kappa+\max\{v,1\}$, while a proved shared-read-only
+random-access implementation costs $\kappa+v$.  The latter is now supplied
+with a full time/space ledger for an already explicit input.  It does not
+construct PFCERT, acquire an implicit child, or remove a current-scale SAT
+call.  P versus NP remains \textbf{OPEN}; these are human-readable proofs,
+not proof-assistant verification.
+
+\section{Exact selected implication}
+Fix one verifier $V$, explicit read-only input tuple $y=(1^n,p,x)$ of encoded
+length $M$, witness bound $w(M)$, verification time $q(M)$, and writable
+space $s(M)$.  The selected C2 implication asks whether one deterministic
+random-access realization can enumerate all $|\pi|\le w(M)$ without
+recopying $y$, while charging initialization, input probes, witness output,
+replay and simultaneous workspace.  No assumption about the existence of an
+accepted witness is made.
+
+\begin{theorem}[Shared-input exhaustive acquirer]
+If each invocation of $V(y,\pi)$ includes every random-access probe and
+address operation in $q(M)$, a lexicographic acquirer finds the first
+accepted witness or reports none in
+\[
+ O\!\left((2^{w(M)+1}-1)(q(M)+w(M)+\log(M+2))+w(M)\right)
+\]
+time and
+\[
+ O(s(M)+w(M)+\log(M+2))
+\]
+writable bits.
+\end{theorem}
+\begin{proof}
+Keep one $w+1$-bit counter/witness buffer and one reusable verifier
+workspace.  The fixed tuple $y$ remains on shared read-only input tapes.
+For each candidate, reset finite control and $O(\log M)$-bit addresses, run
+$V$, and increment the counter.  Each input read is already a verifier step.
+On success copy the witness once.  Sequential reuse makes workspace additive,
+not multiplicative in the number of candidates.
+\end{proof}
+
+When $q(M)=M^{v+o(1)}$, $v\ge0$, and
+$w(M)=\kappa\log_2M+o(\log M)$, the time exponent is $\kappa+v$.
+By contrast, CC-0002's displayed implementation included an $M$-scale copy
+inside every candidate trial and therefore has exponent
+$\kappa+\max\{v,1\}$.  Both are valid upper bounds for their declared
+machines; neither is a universal acquisition lower bound.
+
+\section{Full charge and $K$-elimination consequences}
+Initialization consists of constant control plus address and counter setup.
+Input access is direct and counted inside $q$.  Failed candidates pay a full
+verifier run.  Output copies at most $w$ bits once.  Replay is exactly the
+enumeration of distinct candidates; no result cache is assumed.  Peak space
+contains the counter/witness, verifier state, and addresses simultaneously.
+Ancestors and implicit-source access are outside this standalone interface
+and must be added by any recursive wrapper.
+
+If one requested input bit must instead be regenerated in
+$M^{g+o(1)}$ time, that cost belongs inside verification and gives the generic
+replacement $v\mapsto v+g$.  Materializing an implicit child can add a
+separate construction term.  If acquisition, canonicalization, verification,
+or replay invokes the hypothetical current-scale SAT algorithm of exponent
+$K$, the combined exponent is at least $K$; fixed-depth recursion cannot
+eliminate $K$.  Thus exhaustive acquisition can be near-linear only if
+$\kappa+v\le1$ in this shared-input model, with compatible space and ancestor
+bounds.
+
+\section{Corpus reviewed}
+The current protocol, root governance files and tree, root main,
+main4/main5/main9/main10, FORMAL-SPINE1, ARC15, the current proof-map,
+MODEL\_BRIDGE, LOWER\_BOUND, LSPV-separator and COST\_CERTIFICATES spines,
+CC-0002, LB-0002, the newest red-team ledger, tasks, cited experiments and
+raw results were inspected.  Repository searches covered PFCERT, ACQUIRE,
+shared input, random access, replay, certificate discovery, hash quotient,
+and witness tax.  Inventory was not treated as substantive review.
+
+Five additional Drive documents were fetched in full: WORKSAT-0022
+\emph{CertBuild/proof-indexed ACQUIRE vs DIGEST\_EQ}; WORKSAT-0021
+\emph{Multipass STREAM Budget}; SIM-5-0006 \emph{Finite-Witness Elimination
+and Interpreter Repair}; SIM-3-0012 \emph{Sparse Envelope KPT Trigger}; and
+NR-0001 \emph{Four-Step Hostile Audit and Deterministic PFCERT Rescue}.
+Personal Context recovered the prior CC-0002 correction and the request for
+an explicit C2 machine proof.  This is not an exhaustive chat or corpus claim.
+
+\section{Primary sources and transfer audit}
+Fortnow--Lipton--van Melkebeek--Viglas use deterministic random-access
+machines with read-only input excluded from writable space, while addresses
+and local reduction-bit computation remain charged \cite{flmv2005}.  This is
+a direct model precedent for shared read-only access, not a PFCERT
+construction.  Hirahara--Kabanets--Lu--Oliveira show exact search-to-decision
+reductions only in specified time-bounded Kolmogorov settings
+\cite{hklo2024}; they do not supply this verifier or witness acquirer.
+Bellare--Goldwasser's separation of generic decision and search under a
+complexity assumption confirms that cheap verification does not generally
+imply cheap witness discovery \cite{bellaregoldwasser1994}.
+
+The direct theorem transfer is only the machine convention and charged local
+access.  Treating certificate checking as certificate construction is a
+failed transfer.  Streaming, proof-index and digest methods remain structural
+analogies unless they provide exact random access and the same-realization
+ledger.
+
+\section{Bounded test and hostile controls}
+The command
+\begin{verbatim}
+timeout 30s python3 experiments/review/shared_input_acquirer_test.py
+  --max-w 16
+  --output results/raw/review/2026-10-10_shared_input_acquirer.json
+\end{verbatim}
+used a 25-second cooperative alarm and finished in 0.027 seconds.  It passed
+17 exact candidate-count checks, 68 acceptance controls, 612 shared-versus-
+copied ledgers, 612 peak-space reuse checks, and 81 exponent identities with
+zero failures.  This is \textbf{COMPUTATIONAL} harness validation only.
+
+Hostile controls include no accepting witness, first/last witnesses, empty
+witness, sublinear verifier exponents, large explicit inputs, padding, and a
+nonconstant implicit-bit accessor.  Shared access avoids repeated copies but
+does not avoid actual verifier probes.  Independent products multiply the
+enumerated witness space.  Hashes remain unusable for exact acquisition
+unless semantic fiber monochromaticity is separately proved.
+
+\section{Duplication, contradiction, and supersession audit}
+CC-0002 already proved the candidate count and conservative copied-input
+bound.  PROOF-MAP-0002 correctly observed that its displayed formula gives
+$\kappa+\max\{v,1\}$, not always $\kappa+v$.  CC-0003 does not erase that
+bound; it supplies the distinct shared-input implementation whose absence
+was C2.  The old Drive CertBuild and multipass experiments reject free
+content recovery from compressed proofs; they do not contradict direct
+read-only access to an input already present.
+
+SIM-5-0006's finite static-witness portfolio removes selection cost only at
+the level of polynomial exponents.  It does not supply a dynamic PFCERT
+witness or preserve joint space automatically.  NR-0001 and SIM-3-0012 keep
+the bounded-list verifier and range-avoidance/KPT bridge OPEN.  Any statement
+that C2 alone closes PFCERT, D1, or the $K$-elimination route is stale or
+overstated.
+
+\section{What changed relative to root main}
+The COST\_CERTIFICATES spine now distinguishes the copied-input and shared-
+input acquirers, proves the latter's full direct-input ledger, and records
+the implicit-access and current-scale-SAT escape clauses.  Root main remains
+scientifically correct in keeping the PFCERT verifier and all separation-
+bearing construction arrows OPEN; no old LSPV ownership region was edited.
+
+\section{Adopted, rejected, retired, and next target}
+\textbf{PROVED/EXACT:} shared-input exhaustive acquisition with time exponent
+$\kappa+v$ and additive writable space, under the declared direct random-
+access interface.
+
+\textbf{RETAINED:} CC-0002's conservative copied-input exponent
+$\kappa+\max\{v,1\}$; bounded-list diagonal and exact hash-fiber criterion.
+
+\textbf{REJECTED/RETIRED:} treating input sharing as implicit or free;
+applying the shared-input bound to virtual children without an accessor;
+claiming that short certificates imply cheap discovery; hiding a current-
+scale SAT call inside acquisition.
+
+\textbf{OPEN next target:} construct or falsify one globally two-valued
+PFCERT verifier for the concrete slower window $t(n)=n^{\log n}$, with
+declared witness length, verifier exponent, matched collapsing-oracle audit,
+and no current-scale semantic subroutine.
+
+\begin{thebibliography}{9}
+\bibitem{flmv2005} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, JACM 52(6), 2005.
+\url{https://pages.cs.wisc.edu/~dieter/Research/sat-ts.html}
+\bibitem{hklo2024} S. Hirahara, V. Kabanets, Z. Lu, I. Oliveira,
+\emph{Exact Search-To-Decision Reductions for Time-Bounded Kolmogorov
+Complexity}, CCC 2024, DOI 10.4230/LIPIcs.CCC.2024.29.
+\bibitem{bellaregoldwasser1994} M. Bellare, S. Goldwasser,
+\emph{The Complexity of Decision versus Search}, SIAM J. Comput. 23(1),
+1994, 97--119.
+\end{thebibliography}
+% END_OF_VERIFIED_REPORT::COST_CERTIFICATES::CC-0003
+\end{document}
