@@ -1,0 +1,273 @@
+% MAIN11 PROJECTION-COST AUDIT 2026-10-11
+% Independent theoretical companion to main4/main5/main9/main10.
+% STATUS: conditional composition and impossibility results only. P vs NP OPEN.
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\DTISP}{\mathsf{DTISP}}
+\title{Main 11: Existential Projection, Charged Compression, and SAT Time--Space Barriers\\
+\large Formal Theorems, Conditional Transfers, and Missing Implications}
+\author{P versus NP research program}
+\date{11 October 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+We formalize the projection-cost direction suggested by the $2^k$ compression and
+WRAPPER investigations. Polynomial-time unrestricted Boolean existential
+projection is equivalent to $P=NP$. An all-variable projection compiler with
+simultaneous resources in a known forbidden SAT time--space region is impossible.
+A charged partial-projection trilemma and a finite-step contraction principle
+are established conditionally on explicit source-level implementations.
+Neither compact representations nor Shannon counting yields a universal
+SAT decision-time lower bound. The required solver-to-low-resource projection
+transfer remains OPEN; no proof of $P\ne NP$ is claimed.
+\end{abstract}
+
+\section{Definitions and model}
+Let $C(x,y)$ be a bounded-fan-in Boolean circuit encoded in $N$ bits,
+where $x$ and $y$ are disjoint lists of input variables. Define
+$Q_y C(x)=\bigvee_{b\in\{0,1\}^{|y|}}C(x,b)$.
+A \emph{uniform unrestricted projection compiler} is a deterministic
+algorithm that, on $(C,x,y)$, outputs a bounded-fan-in circuit $G(x)$
+satisfying $G(a)=Q_yC(a)$ for every $a$. Output length, compiler time,
+working space, and subsequent evaluation time are separate resources.
+The compiler may not silently use an oracle, advice, or an uncharged
+equivalence test. The circuit input encoding, random-access word size,
+source reads, output bits, virtual accessors, query multiplicity, and
+simultaneously live memory must be included in every endpoint claim.
+
+\begin{definition}[Charged projection tuple]
+For compiler $\Pi$, input $C$, and output $G$, write
+$\mathcal R_\Pi(C)=(D_\Pi,W_\Pi,L_\Pi,E_\Pi)$, where $D_\Pi$ is
+construction time, $W_\Pi$ is peak writable workspace, $L_\Pi=|G|$
+is output encoding length, and $E_\Pi$ is the cost of the specified
+consumer of $G$. These quantities are not interchangeable.
+\end{definition}
+
+\section{Unrestricted projection equivalence}
+\begin{theorem}[Projection completeness; PROVED/EXACT]
+There exists a uniform polynomial-time unrestricted projection compiler
+for all encoded Boolean circuits and all partitions $(x,y)$ if and only
+if $P=NP$.
+\end{theorem}
+\begin{proof}
+For the forward implication, take $x$ empty. The compiler produces a
+zero-input circuit whose value equals $\exists y\,C(y)$; constructing
+and evaluating it decides Circuit-SAT in polynomial time. Circuit-SAT
+is NP-complete.
+
+Conversely assume $P=NP$. Fix a deterministic polynomial-time
+Circuit-SAT decider $A$. On input $(C,x,y)$, construct a bounded-fan-in
+circuit $G$ that, on assignment $a$ to $x$, forms the encoding of
+$C(a,y)$ and simulates $A$ on that encoding. Uniform polynomial-time
+Turing computations have uniform polynomial-size Boolean circuit
+simulations constructible in polynomial time. Hardwire the input
+description $C$ and the partition into that simulation. Then
+$G(a)=1$ exactly when $\exists b\,C(a,b)=1$. Both construction
+time and $|G|$ are polynomial in $N$.
+\end{proof}
+\begin{remark}
+The converse does not promise a minimum-size output, an efficient
+structured-d-DNNF output, near-linear construction time, or low
+working space. It also does not prove an exponent improvement over $A$.
+\end{remark}
+
+\section{Unconditional projection resource obstruction}
+Let $\mathcal F$ denote a \emph{source-verified}, model-matched forbidden
+region of simultaneous deterministic SAT time and space exponents.
+For example, the published Williams product endpoint rules out
+$t+s<\varphi=(1+\sqrt5)/2$ in its stated random-access model
+\cite{williams}. The larger $2\cos(\pi/7)$ threshold must NOT be
+used as a universal polynomial-space product frontier; the published
+full version retracts that unrestricted claim. The classical
+small-space threshold has separate hypotheses.
+
+\begin{theorem}[Complete-projection impossibility; PROVED/EXACT
+conditional on the cited model-matched endpoint]
+There is no uniform all-variable projection compiler whose complete
+construction and zero-input output evaluation together yield a SAT
+algorithm with simultaneous time-space exponents $(t,s)\in\mathcal F$.
+\end{theorem}
+\begin{proof}
+Given a circuit $C$, project all its input variables and evaluate the
+resulting constant. By exact projection semantics this decides
+Circuit-SAT. After charging the circuit-to-SAT encoding adapter and
+machine simulation in the endpoint model, a compiler with the
+claimed resources would violate the forbidden-region theorem.
+No additional SAT hypothesis is needed.
+\end{proof}
+\begin{remark}
+The endpoint must be checked for the \emph{same language encoding and
+machine model}; an unspecified polynomial-time reduction can destroy
+exponent-sensitive bounds. This theorem prohibits a low-resource
+compiler, not all polynomial-time compilers.
+\end{remark}
+
+\section{Partial projection and the cost trilemma}
+\begin{proposition}[Charged composition; PROVED/EXACT]
+Suppose $\Pi$ constructs $G(x)=Q_yC(x)$ in time $D$ and working space
+$W$, with $|G|=L$. Suppose a total algorithm decides satisfiability
+of $G$ in time $T_G(L)$ and space $S_G(L)$. If the complete $G$ is
+materialized in writable memory, the sequential composition has
+\[
+T_{\rm all}\le D+T_G(L)+O(N+L),\qquad
+S_{\rm all}\le W+O(L)+S_G(L)
+\]
+up to implementation-dependent logarithmic bookkeeping.
+If $G$ is written to an external output tape and later reread,
+the appropriate access and storage charges must instead be included.
+\end{proposition}
+\begin{proof}
+Construct $G$, retain its representation, then run the residual
+solver. The displayed bounds count the sum of sequential time and
+a conservative bound on simultaneously retained state.
+\end{proof}
+\begin{theorem}[Projection-cost trilemma; PROVED/EXACT as a logical
+disjunction]
+Fix a forbidden resource region $\mathcal F$ and a particular
+all-input, exact, model-matched partial-projection-plus-residual-solver
+scheme. At least one of its fully charged construction, retained
+workspace/output access, or residual-solving costs prevents the
+\emph{combined} algorithm from lying in $\mathcal F$.
+\end{theorem}
+\begin{proof}
+If no charged component prevented membership, the preceding
+composition would produce an all-input SAT decider in $\mathcal F$,
+contradicting the endpoint. The disjunction does not give an
+exponential lower bound for any individual component.
+\end{proof}
+\begin{remark}
+An algorithm need not perform a separate per-input equivalence
+verification when correctness of the compiler is proved once.
+Charging an unexecuted verifier is invalid.
+\end{remark}
+
+\section{Finite-step exponent transfer}
+Suppose a uniform, recursively applicable reduction makes at most
+$N^{a+o(1)}$ ordinary SAT queries of encoded length at most
+$N^{\gamma+o(1)}$, with $0<\gamma<1$, and has construction/combination
+time $N^{g+o(1)}$. Under sequential streaming and fully charged
+memory, suppose its workspace is $N^{b+o(1)}$ and one live child
+requires the scaled seed space. For a seed algorithm with exponents
+$(c,s)$, the claimed transfer is
+\[
+c'\le\max\{g,a+\gamma c\},\qquad
+s'\le\max\{b,\gamma s\}.
+\]
+These are accounting consequences of a real reduction, NOT existence
+statements.
+
+\begin{lemma}[Finite contraction; PROVED/EXACT]
+Let $0<\gamma<1$, $a,g,b\ge0$ and
+$c_{j+1}\le\max\{g,a+\gamma c_j\}$,
+$s_{j+1}\le\max\{b,\gamma s_j\}$. Set
+$c_*=\max\{g,a/(1-\gamma)\}$. Then
+\[
+c_j\le c_*+\gamma^j(c_0-c_*)_+,\qquad
+s_j\le\max\{b,\gamma^js_0\}.
+\]
+\end{lemma}
+\begin{proof}
+Both bounds follow by induction using $g\le c_*$ and
+$a+\gamma c_*\le c_*$. For space use
+$\max\{b,\gamma\max\{b,z\}\}\le\max\{b,\gamma z\}$.
+\end{proof}
+
+\begin{theorem}[Conditional forbidden-region transfer; CONDITIONAL]
+Suppose a source-level uniform transformation works for every
+polynomial-time SAT decider, is closed under any fixed finite number
+of iterations, obeys the above simultaneous resource bounds with
+constants independent of the seed algorithm, and the fixed point
+$(c_*,b)$ lies strictly inside a source-verified open forbidden region
+$\mathcal F$. Then $P\ne NP$.
+\end{theorem}
+\begin{proof}
+Assume $P=NP$ and fix one polynomial-time SAT machine with finite
+exponents $(c_0,s_0)$. Choose a sufficiently large \emph{fixed}
+iteration count so the finite-step bounds enter $\mathcal F$.
+The resulting single uniform SAT machine contradicts the endpoint.
+\end{proof}
+\begin{remark}
+The transformation premise is OPEN and carries the central
+separation-strength obligation. A limit $s_j\to0$ for fixed iteration
+indices does not establish $N^{o(1)}$ space. A positive-space
+forbidden region is preferable when a finite iteration is required.
+\end{remark}
+
+\section{Assumption and hostile-control ledger}
+\begin{itemize}
+\item[] \textbf{PROVED/EXACT:} General polynomial-time existential
+projection is equivalent to $P=NP$; conditional recurrence algebra;
+model-matched projection impossibility from a known endpoint.
+\item[] \textbf{KNOWN THEOREM:} Restricted knowledge-compilation
+languages can incur existential-quantification or intermediate
+representation blowups \cite{capelli,vinall,decolnet}. These do not
+give unrestricted SAT time lower bounds.
+\item[] \textbf{FALSIFIED GENERALIZATION:} Eliminating $r$ Boolean
+variables always costs $2^{\Omega(r)}$. For
+$C(x,y)=x\oplus y$, $\exists y\,C=1$; affine systems permit
+polynomial-time Gaussian elimination.
+\item[] \textbf{FALSIFIED GENERALIZATION:} $2^k$ assignments force
+$2^k$ computational steps. Parity, Horn, 2-SAT, affine, and
+bounded-treewidth examples defeat this inference.
+\item[] \textbf{OPEN:} A solver-independent, uniform, all-input
+projection/successor transformation with simultaneous time-space
+improvement and complete discovery, query, replay, encoding, and
+workspace charges.
+\item[] \textbf{OPEN:} Any transfer from restricted representation
+lower bounds, Shannon's almost-all-functions circuit counting, or
+semantic continuation width to arbitrary SAT decider runtime.
+\end{itemize}
+
+\section{Relation to earlier proof spines}
+The actual repository's \texttt{main4.tex} is the ARC achievable-region
+manuscript and \texttt{main5.tex} is the WRAPPER construction manuscript.
+Their current successor/acquisition gap is not closed here.
+The later \texttt{main9.tex} and \texttt{main10.tex} distinguish the
+corrected Williams golden-ratio product endpoint from the separate
+$2\cos(\pi/7)$ subpolynomial-space result. This manuscript is an
+independent formal companion, not a silent replacement or proof
+promotion of those spines. The all-input construction remains OPEN.
+
+\section{Precise next obligation}
+Construct or refute a theorem with quantifiers
+\[
+(P=NP)\Longrightarrow
+\exists A\,\exists\Pi\,\forall C:
+\quad \Pi_A(C)\equiv Q_yC
+\quad\land\quad
+\mathcal R_{\Pi_A}(C)\text{ yields a model-matched forbidden SAT bound}.
+\]
+The source-level compiler must be explicit and its construction,
+output, access, recursive calls, and live state charged on one
+realization. A statement asserting the forbidden bound without an
+independent mechanism merely renames the separation problem.
+
+\begin{thebibliography}{9}
+\bibitem{fortnow} L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, JACM 2005.
+\url{https://pages.cs.wisc.edu/~dieter/Research/sat-ts.html}.
+\bibitem{williams} R. Williams,
+\emph{Alternation-Trading Proofs, Linear Programming, and Lower Bounds},
+ACM Transactions on Computation Theory, 2013.
+\bibitem{buss} S. Buss and R. Williams,
+\emph{Limits on Alternation-Trading Proofs for Time-Space Lower Bounds},
+Computational Complexity, 2015.
+\bibitem{capelli} F. Capelli and S. Mengel,
+\emph{Knowledge Compilation, Width and Quantification}, 2018.
+\url{https://arxiv.org/abs/1807.04263}.
+\bibitem{vinall} H. Vinall-Smeeth,
+\emph{Structured d-DNNF Is Not Closed under Negation}, IJCAI 2024.
+\bibitem{decolnet} A. de Colnet and S. Mengel,
+\emph{Lower Bounds on Intermediate Results in Bottom-Up Knowledge Compilation},
+AAAI 2022.
+\end{thebibliography}
+\end{document}
