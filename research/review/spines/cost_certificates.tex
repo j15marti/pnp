@@ -6,7 +6,7 @@
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{definition}[theorem]{Definition}
 \newcommand{\SAT}{\operatorname{SAT}}
-\title{COST-CERTIFICATES-0001: Charged Closure and a Certificate-Length Boundary}
+\title{COST-CERTIFICATES: Charged Closure, Witness Windows, and Exact Hash Quotients}
 \author{P versus NP project review}
 \date{10 October 2026}
 \begin{document}
@@ -216,6 +216,88 @@ HTML scripts. It reproduces identical outputs for distinct nonempty seeds
 under identical draws, and an explicit 6-character collision. These finite
 observations support the implementation audit, not asymptotic hardness.
 
+
+\section{Witness acquisition versus existential certification}
+The bounded-list PFCERT implication above uses existential witnesses only.
+An executable wrapper that consumes a witness has a distinct acquisition
+obligation.
+
+\begin{theorem}[Exhaustive acquisition window]
+Let \(V(1^n,p,x,\pi)\) have witness bound \(w(n)\), verification time
+\(q(n)\), and verification space \(s(n)\). A lexicographic uniform acquirer
+finds the first accepted witness, or correctly reports that none exists, in
+\[
+ O\!\left((2^{w(n)+1}-1)
+ (q(n)+n+|p|+w(n)+1)\right)
+\]
+time and \(O(s(n)+n+|p|+w(n))\) writable bits.
+\end{theorem}
+\begin{proof}
+There are exactly \(2^{w+1}-1\) binary strings of length at most \(w\).
+Enumerate them with a reusable counter and run \(V\). Only the counter,
+current witness, verifier state and fixed inputs need be live together.
+\end{proof}
+This is an implementation upper bound, not a lower bound on every acquirer.
+If \(q(N)=N^{v+o(1)}\) and
+\(w(N)=\kappa\log_2N+o(\log N)\), this method has time exponent
+\(v+\kappa\). Hence a near-linear constructor using it needs
+\(v+\kappa\le1\). Polynomial witness length is harmless for the existential
+NP envelope but makes this generic deterministic acquisition superpolynomial.
+
+The initial two-list diagonal extends to a polynomial list bound \(B(n)\).
+Set
+\[
+ k(n)=n-\lceil\log_2B(n)\rceil-1.
+\]
+If \(V\) accepts at most \(B(n)\) distinct \(n\)-bit outputs for every
+program of length at most \(k(n)\), globally over all witnesses, then a fixed
+direct routine finds the first outside output within
+\[
+ O\!\left(2^n(2^{k(n)+1}-1)(2^{w(n)+1}-1)
+ (q(n)+\operatorname{poly}(n+w(n)))\right).
+\]
+Its self-delimiting program has \(O(\log n)\) bits. Therefore completeness
+is impossible whenever the declared decompression time eventually includes
+the same universal machine's simulation of this routine. This does not rule
+out a slower window such as \(n^{\log n}\).
+
+\section{Exact semantic quotients and collision entropy}
+\begin{theorem}[Finite-hash quotient criterion]
+For finite \(D,Z,Y\), a semantic map \(f:D\to Y\) factors as \(f=g\circ h\)
+through \(h:D\to Z\) if and only if every fiber of \(h\) is
+\(f\)-monochromatic:
+\[
+ h(u)=h(v)\Longrightarrow f(u)=f(v).
+\]
+\end{theorem}
+\begin{proof}
+Factorization implies the condition. Conversely, define \(g(z)\) to be the
+common semantic value on every nonempty fiber and define it arbitrarily on
+empty fibers.
+\end{proof}
+Thus a fixed \(b\)-bit hash on \(q>b\) input bits has a collision and fails
+for some Boolean semantics that separates a colliding pair. A short hash can
+still be exact for a particular problem, but proving fiber monochromaticity
+is precisely the missing quotient theorem. For fiber sizes \(a_z\),
+\[
+ \operatorname{Coll}(h)=\sum_z a_z^2,\qquad
+ |\operatorname{im}h|\ge |D|^2/\operatorname{Coll}(h).
+\]
+This collision-entropy identity is an exact object transfer. It supplies
+neither semantic fiber purity nor cheap collision discovery. Cryptographic
+collision resistance and random-oracle assumptions are not admissible
+substitutes for exact semantics.
+
+\paragraph{Verification and status.}
+The exhaustive finite harness checked 65,811 hashes with \(q\le3,b<q\),
+constructed an opposite-semantic collision for every hash, verified 65,811
+collision Cauchy--Schwarz inequalities, and checked 4,083 bounded-list
+counts. This is computational harness validation only. The symbolic
+statements are elementary exact proofs; independent scheduled review is
+pending. No all-input SAT successor or PFCERT verifier is constructed, and
+P versus NP remains open.
+
 \bibliographystyle{plain}
 \bibliography{cost_certificate_refs}
 \end{document}
+
