@@ -1,3 +1,51 @@
+# MODEL_BRIDGE run 0003: one compatibility edge, not a forced core
+
+Date: 2026-10-11 UTC. Scientific status: P versus NP OPEN.
+
+## Verified result
+
+For every total uniform deterministic exact 3-SAT decider `A`, canonical
+repeated-literal pinning constructs an external extractor `E_A` that returns
+UNSAT or one satisfying assignment. It uses at most `n+1` calls. Under the
+declared gamma-header/fixed-width-literal encoding, every call has length at
+most
+
+`L=N+gamma_len(m+n+1)-gamma_len(m+1)+3n(1+w)`.
+
+Materialized queries cost `O(n(T(L)+L)+N)` time and
+`O(S(L)+L+n)` space. A local virtual-input simulation on the declared
+read-only random-access model costs `O(n*T(L)*log L+nL)` time and
+`O(S(L)+n+log L)` space.
+
+This extracts one nonzero entry of the semantic compatibility matrix
+`H(F)`. It does not show that the original execution `A(F)` materializes the
+matrix, its rank, rows, a residual DAG, OBDD order, d-DNNF, provenance, or any
+preferred representation. Charging the extractor's new calls to `A(F)` is a
+realization error. Free full-core promotion is FALSIFIED/RETIRED.
+
+The bounded harness passed 64 formulas, 320 wrapper answer checks, 60 direct
+witness checks, 300 wrapper witness checks, 64 exact query-length checks,
+and 319 direct oracle calls in 0.071 seconds. Controls cover equality/2-SAT,
+Horn, affine pairs, treewidth-one products, duplicate padding, contradictory
+pins, random formulas, and DIRECT/DEAD/COPY/DELAY/RECOMP wrappers.
+
+Under P=NP the theorem yields polynomial-time witness search, not a
+contradiction. It relativizes and supplies no nonalgebrizing hinge.
+
+## Precise handoff
+
+`CORE-ACQUIRE1` is OPEN: force one invariant, lower-bound-bearing interface
+from the same execution of every 3-SAT decider, with compilation, access,
+replay, output, retained and transient workspace charged. Test affine
+elimination, Horn/2-SAT, bounded treewidth, padding, alternate orders,
+INTERP/RECOMP, and decide-then-emit before promotion.
+
+Report: `research/review/reports/model_bridge/2026-10-11_0456_MODELBRIDGE-0003.tex`.
+Code: `experiments/review/model_bridge_edge_extract_test.py`.
+Raw result: `results/raw/review/2026-10-11_model_bridge_edge_extract.json`.
+
+---
+
 # MODEL_BRIDGE run 0001: fixed model, source transfer, and all-input closure
 
 Date: 2026-10-10 UTC. Agent: MODEL_BRIDGE. Status: completed scoped review, not an exhaustive project review. P versus NP remains open.

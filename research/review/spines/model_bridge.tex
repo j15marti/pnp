@@ -1,3 +1,4 @@
+% PNP FORMAL SPINE::MODEL_BRIDGE::MODELBRIDGE-0003::2026-10-11T04:56:26Z
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm,hyperref,booktabs}
@@ -6,15 +7,16 @@
 \newtheorem{theorem}{Theorem}
 \newtheorem{hypothesis}{Open hypothesis}
 \newcommand{\SAT}{\mathsf{SAT}}
-\title{MODEL\_BRIDGE: Wrapper Closure, Fallback, and Local Reduction Contracts}
-\author{P versus NP project review, run 0001}
-\date{10 October 2026}
+\title{MODEL\_BRIDGE: Universal External Edge Extraction and the Open Core Transfer}
+\author{P versus NP project review, through MODELBRIDGE-0003}
+\date{11 October 2026}
 \begin{document}
 \maketitle
 
 \paragraph{Status.}
-This document formalizes elementary transfer lemmas and the project's
-existing conditional proof spine. It does not prove $P\ne NP$.
+This document formalizes elementary transfer lemmas, exact external
+search-to-decision, and the project's existing conditional proof spine.
+It does not prove $P\ne NP$.
 The missing all-input construction is stated as an open hypothesis.
 These lemmas are recovered or direct consequences of standard simulation,
 not claimed new complexity results.
@@ -156,6 +158,74 @@ of achievable regions. It remains necessary to verify the concrete
 shield, its bit accessor, and its image-membership theorem.
 A sequential emitter alone does not satisfy the accessor premise.
 
+\section{Universal external extraction: exact positive boundary}
+
+Let $F$ be a canonical exact 3-CNF on $n$ variables and $m$ clauses;
+repeated literals are permitted.  Split the variables into $X,Y$ and define
+the semantic compatibility matrix
+\[
+ H(F)_{u,v}=1\quad\Longleftrightarrow\quad F(u,v)=1.
+\]
+Use the encoding $\gamma(n)\gamma(m+1)$ followed by three signed,
+fixed-width literals per clause.  With
+$w=\max\{1,\lceil\log_2(n+1)\rceil\}$ and
+$\ell_\gamma(q)=2\lfloor\log_2q\rfloor+1$, its length is
+\[
+ N=\ell_\gamma(n)+\ell_\gamma(m+1)+3m(1+w).
+\]
+
+\begin{theorem}[MB4 / EDGE-EXTRACT1]
+For every total uniform deterministic exact 3-SAT decider $A$, one uniform
+external extractor $E_A$ finds one satisfying assignment or returns UNSAT.
+It makes at most $n+1$ calls to $A$, and every call has length at most
+\[
+ L=N+\ell_\gamma(m+n+1)-\ell_\gamma(m+1)+3n(1+w).
+\]
+If $A$ uses time $T(q)$ and space $S(q)$, materialized queries give
+\[
+ T_{E_A}=O(n(T(L)+L)+N),\qquad S_{E_A}=O(S(L)+L+n).
+\]
+On the declared read-only random-access model, a local virtual-input
+simulation gives
+\[
+ T_{E_A}=O(nT(L)\log L+nL),\qquad
+ S_{E_A}=O(S(L)+n+\log L).
+\]
+\end{theorem}
+
+\begin{proof}
+First call $A(F)$.  If it answers UNSAT, stop.  Otherwise process the
+variables in order.  At stage $i$, append repeated-literal 3-clauses pinning
+the previously chosen prefix and one candidate clause pinning $z_i=0$.
+Keep zero exactly when this query is satisfiable; otherwise keep one.
+Induction shows that the chosen prefix always extends to a satisfying
+assignment.  The length formula counts the at most $n$ appended clauses.
+Materialization proves the first ledger.  For the second, simulate each call
+while computing queried header, original-clause, or pin bits from the
+read-only source and the retained prefix.
+\end{proof}
+
+\paragraph{Exact limitation.}
+MB4 extracts one nonzero entry of $H(F)$ by invoking $A$ on new inputs.  It
+does not show that the original execution $A(F)$ materializes $H(F)$, its
+rows, rank, residual DAG, OBDD order, d-DNNF, or provenance.  Charging the
+extractor's calls to that one execution changes the measured realization.
+Equality, Horn, affine and treewidth-one controls, plus DEAD/COPY/DELAY/
+RECOMP wrappers, falsify free promotion from external witness recovery to a
+preferred internal representation.
+
+\begin{hypothesis}[CORE-ACQUIRE1, open]
+For one explicit infinite clean-core family, give a solver-independent
+same-execution transformation that maps every uniform deterministic 3-SAT
+decider to one fixed lower-bound interface, charging compilation, access,
+replay, output, retained and transient space, and preserving the lower-bound
+direction strongly enough to bound the original decider.
+\end{hypothesis}
+
+Under $P=NP$, MB4 yields polynomial-time witness search.  It gives no
+contradiction.  It relativizes and supplies no nonalgebrizing hinge.
+P versus NP remains OPEN.
+
 \section{The existing conditional proof spine}
 
 \begin{definition}[Shrinking contract $\mathcal W(h,p)$]
@@ -268,5 +338,6 @@ joint workspace bounds. Until then the construction remains OPEN.
 
 \bibliographystyle{plain}
 \bibliography{model_bridge_refs}
+% END_OF_VERIFIED_SPINE::MODEL_BRIDGE::MODELBRIDGE-0003
 \end{document}
 

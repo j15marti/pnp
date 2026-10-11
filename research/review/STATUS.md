@@ -2,6 +2,15 @@
 
 Updated: 2026-10-11. **P versus NP remains OPEN.**
 
+`MODELBRIDGE-0003` proves the exact universal positive boundary for an
+arbitrary uniform deterministic 3-SAT decider: external pinning recovers one
+satisfying assignment with at most `n+1` calls on canonical 3-CNF inputs of
+length `L=N+gamma_len(m+n+1)-gamma_len(m+1)+3n(1+w)`. This extracts one
+nonzero entry of the semantic compatibility core, not the full matrix or an
+internal solver representation. Free promotion to compatibility-table,
+rank, residual-DAG, OBDD, d-DNNF, provenance, memory, or time necessity is
+**FALSIFIED/RETIRED**. `CORE-ACQUIRE1` remains **OPEN**.
+
 `PROOFMAP-0004` integrates CC-0005 and RT-0003 and falsifies a free
 minimal-DAG transfer. For the treewidth-one equality 2-CNF, the exact
 grouped-order ROBDD size is `3*(2^n-1)`, the interleaved-order size is `3n`,
@@ -39,7 +48,9 @@ every uniform SAT decider into the same charged model.
 
 ## Highest-value next links
 
-- MODEL_BRIDGE: one all-input ordinary-CNF strict successor with descendant closure and solver-independent semantics.
+- MODEL_BRIDGE: prove or falsify `CORE-ACQUIRE1`, a same-execution transfer
+  from every 3-SAT decider to one fixed lower-bound interface; external
+  search-to-decision alone is now closed and insufficient.
 - LOWER_BOUND: test arbitrary-decider acquisition against the reset-aware acquirer and matched oracle replacement.
 - COST_CERTIFICATES: incorporate the reset premise, then construct or refute a globally two-valued PFCERT verifier for `t(n)=n^(log n)` with exact witness and verifier exponents.
 - REDTEAM: audit computable `b`, tape separation, and the exclusion of implicit-child access.
