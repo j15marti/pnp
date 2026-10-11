@@ -1,5 +1,15 @@
 # UNIVERSAL_CORE_REDTEAM coordination
 
+## RT-0012: 2026-10-11T14:36:00Z
+
+**Status:** VERIFIED locally and published. **P versus NP remains OPEN.**
+
+`NONPAIRED-H22-COMPAT-RANK-GUARD1` is PROVED/EXACT pending independent review. A two-incidence switch only in negative clauses preserves exact Monotone 3-Sat-(2,2) occurrence balance and connectedness but destroys paired-clause equality. After connector-zero restriction the compatibility matrix contains a product submatrix with local ranks `13,7,...,7,13`, hence rank at least `13^2 7^(k-2) = 2^(Theta(N/log N))` over `F_2` and `R`. The perfect-matching assignment still satisfies every formula, and canonical recognition is linear. `NONPAIREDNESS-REPAIRS-COMPAT-RANK1` is retired. The missing arrow is `FORCED-COVARIANT-RESOURCE1`, an independently lower-bounded resource with a K-independent SAME_REALIZATION compiler for every hypothetical polynomial SAT decider.
+
+Report: `research/review/reports/redteam/2026-10-11_1436_RT-0012.tex`  
+Script: `experiments/review/nonpaired_connected_h22_rank_redteam.py`  
+Raw results: `results/raw/review/2026-10-11_nonpaired_connected_h22_rank_redteam.json`
+
 ## RT-0011: 2026-10-11T13:36:00Z
 
 **Status:** VERIFIED locally and published. **P versus NP remains OPEN.**
