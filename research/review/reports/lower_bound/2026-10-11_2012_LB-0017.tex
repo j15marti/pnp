@@ -1,0 +1,300 @@
+% PNP REVIEW REPORT::LOWER_BOUND::LB-0017::2026-10-11T20:12:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\Htwo}{\mathcal H_{2,2}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{LB-0017: A Strictly Contracting Pruned Restriction Carries a Linear Partial Witness}
+\author{UNIVERSAL\_CORE\_LOWER\_BOUND}
+\date{11 October 2026, 20:12 UTC}
+\begin{document}\maketitle
+
+\begin{abstract}
+LB-0016 proves exponential output for an all-branch strict-contraction pass;
+MODELBRIDGE-0017 proves that a one-variable answer-preserving selector is
+endpoint-equivalent but makes only current-scale progress.  This run closes
+the exact quantitative gap for a single pruned child.  On a proper exact-
+$(2,2)$ clean-core source of encoded length $N=\Theta(n\log n)$, any literal
+restriction whose explicit residual has length at most $N^h$, fixed $h<1$,
+must assign at least $n/3-o(n)$ variables.  On a satisfiable source, exact
+answer preservation makes those bits an extendable partial witness.  Thus an
+explicit pruned pass avoids exponential branch volume only by selecting a
+linear-size witness fragment.  This is a theorem about the declared source
+pass, not an arbitrary SAT decider: a one-bit program need not expose the
+fragment, and under $P=NP$ ordinary self-reduction finds it in polynomial time
+while retaining the unknown exponent $K$.  The audit passed 7,127 checks.
+P versus NP remains open.
+\end{abstract}
+
+\section{Executive status and exact target}
+
+\begin{center}\small
+\begin{tabular}{@{}p{0.42\linewidth}p{0.19\linewidth}p{0.31\linewidth}@{}}
+\toprule
+Claim & Status & Scope\\ \midrule
+\texttt{PRUNED-CHILD-LINEAR-ASSIGNMENT1} & \EXACT, independent review pending &
+Single explicit restriction child of power-sublinear length.\\
+\texttt{PRUNED-YES-PARTIAL-WITNESS1} & \EXACT &
+Answer-preserving SAT child carries an extendable linear fragment.\\
+Explicit assignment serialization & \EXACT & $\Omega(n)=\Omega(N/\log N)$ bits.\\
+\texttt{PRUNED-WITNESS-FORCES-DECIDER-WORK1} & \RETIRED &
+No arbitrary-machine transfer.\\
+\texttt{IMPLICIT-PREDECISION-ACCESS1} & \OPEN &
+Bit-local $K$-independent selection/access.\\
+UCORE-TIME1 and P versus NP & \OPEN & No separation.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Let $\Htwo$ be duplicate-free proper Monotone $3$SAT-$(2,2)$.  Every
+variable occurs twice positively and twice negatively, hence $m=4n/3$.
+Under the canonical indexed clause-list encoding, complete bit length is
+$N=\Theta(n\log n)$.  The unrestricted target remains
+\[
+ \forall A\in\operatorname{Dec}_{\rm uniform}(\SAT)\ \forall d\ \forall N_0\
+ \exists F\in\Htwo:\quad |\operatorname{enc}(F)|\ge N_0\ \land\
+ T_A(F)>|\operatorname{enc}(F)|^d.                       \tag{1}
+\]
+Statement (1) is \OPEN{} and is not assumed.
+
+The tested pass chooses a partial assignment $\rho$ with domain size $q$,
+and emits the explicit residual $G=F\upharpoonright_\rho$ after deleting
+satisfied clauses and false literals.  The SAME\_REALIZATION includes
+source reading, selection, failed routes, $\rho$ or its accessor, residual
+construction/access, reconstruction, output, time and peak space.
+
+\section{Single-child incidence theorem}
+
+\begin{theorem}[\texttt{PRUNED-CHILD-LINEAR-ASSIGNMENT1}]
+Fix $0<h<1$.  Let $F_n\in\Htwo$ have $n$ variables and encoded length $N_n$.
+If a partial assignment $\rho_n$ on $q_n$ variables gives an explicit
+canonically indexed residual of length
+\[
+ |\operatorname{enc}(F_n\upharpoonright_{\rho_n})|\le N_n^h,
+\]
+then
+\[
+ q_n\ge \frac n3-o(n).                                  \tag{2}
+\]
+This conclusion is independent of how $\rho_n$ is selected.
+\end{theorem}
+
+\begin{proof}
+At most four source clauses meet each assigned variable, so at most $4q_n$
+clauses are touched.  At least
+\[
+ r_n=\frac{4n}{3}-4q_n                                  \tag{3}
+\]
+proper three-clauses avoid $\operatorname{dom}(\rho_n)$ and survive verbatim.
+Their $3r_n$ literal occurrences involve at least $3r_n/4$ live variables,
+because restriction cannot increase residual degree above four.  Even after
+compact renaming, an explicit indexed residual therefore needs
+\[
+ \Omega(r_n\log(r_n+2))                                 \tag{4}
+\]
+bits.  Since $N_n=\Theta(n\log n)$ and (4) is at most $N_n^h$, we have
+$r_n=O(N_n^h/\log N_n)=o(n)$.  Rearranging (3) gives (2).
+\end{proof}
+
+\begin{corollary}[\texttt{PRUNED-YES-PARTIAL-WITNESS1}]
+If additionally $F_n$ is satisfiable and
+\[
+ \SAT(F_n)=\SAT(F_n\upharpoonright_{\rho_n}),           \tag{5}
+\]
+then $\rho_n$ extends to a satisfying assignment of $F_n$ and fixes
+$n/3-o(n)$ witness bits.  An interface explicitly serializing $\rho_n$ emits
+$\Omega(n)=\Omega(N_n/\log N_n)$ bits before residual solving is charged.
+\end{corollary}
+
+\begin{proof}
+By (5), the residual is satisfiable.  Any satisfying residual assignment,
+combined with $\rho_n$, satisfies the source.  Theorem 1 supplies its size.
+An explicit Boolean partial assignment uses at least one value bit per
+assigned variable; addresses can only increase volume.
+\end{proof}
+
+For UNSAT sources every restriction remains UNSAT, so there is no analogous
+selection burden.  This YES/NO asymmetry is essential.  The theorem also does
+not charge $\Omega(n)$ output when an interface emits only a residual and
+neither exposes nor reconstructs $\rho$; that case needs a separate physical
+access theorem.
+
+\section{Consequence for the pruned-source route}
+
+The all-branch/pruned dichotomy is now exact within literal restrictions:
+\begin{enumerate}[leftmargin=*]
+\item emitting every block assignment costs
+$2^{n/3-o(n)}=2^{\Omega(N/\log N)}$ by LB-0016;
+\item emitting one strict-power child avoids fanout but selects an extendable
+$n/3-o(n)$-bit partial witness on YES sources;
+\item MODELBRIDGE-0017 shows that, under $\SAT\in P$, a single exact child can
+be selected bit by bit using current-scale SAT calls, so polynomial existence
+is not contradictory and the arbitrary exponent $K$ remains.
+\end{enumerate}
+
+Accordingly \texttt{PRUNED-WITNESS-FORCES-DECIDER-WORK1} is \RETIRED{} as an
+unqualified arbitrary-machine claim.  The semantic existence of a large
+extendable prefix does not mean the original one-bit execution constructs it.
+The useful remaining arrow is \texttt{IMPLICIT-PREDECISION-ACCESS1}: prove one
+source-checkable rule that supplies the necessary bits or the residual's
+local accessor in a fixed $K$-independent favorable budget, recurs
+hereditarily, and does not first decide SAT.
+
+\section{Hostile controls and barriers}
+
+Paired cubic-bipartite clean cores are satisfiable by perfect matching and
+provide explicit extendable restrictions cheaply.  Horn, 2SAT, affine/Tseitin
+and bounded-treewidth families likewise expose polynomial semantic shortcuts;
+the incidence theorem applies to the declared explicit restriction geometry
+but does not make those controls hard.  Independent products allow component-
+wise selection.  Padding, redundant clauses and alternate encodings change
+physical length and must charge parsing, de-padding, translation and access.
+Compact circuits, BDDs or affine bases leave the explicit-child model and need
+a model-preserving decoder theorem.
+
+DIRECT/DEAD/COPY/DELAY/INTERP/RECOMP wrappers preserve the one SAT bit while
+changing trace, time, space and representation.  A universal extraction claim
+must exhibit a qualifying object for each implementation in the same
+execution; optional external self-reduction does not suffice.  The final
+output may be one bit, so witness reconstruction is not automatically charged.
+
+The incidence proof relativizes and algebrizes because it is syntactic; the
+missing arbitrary-machine transfer does not arise from it.  Thus no
+Baker--Gill--Solovay or Aaronson--Wigderson barrier is crossed
+\cite{bgs,aw}.  Natural Proofs is not the immediate hinge because no large
+constructive circuit property is used \cite{rr}.  FLMV is an exact endpoint
+only after one ordinary random-access machine satisfies its simultaneous
+resource bounds; it supplies neither $\rho$ nor its accessor \cite{flmv}.
+Chavrimootoo et al. directly warn against assuming that arbitrary SAT
+algorithms follow a chosen downward-self-reduction structure \cite{chkln}.
+
+\section{Post-quantum and cross-domain transfer ledger}
+
+Schur squares, quadratic relation rank, Hilbert functions and syzygies are
+\textbf{FAILED TRANSFER}: no code representation is forced by the theorem.
+Lossiness/collision entropy can measure how many partial assignments map to
+one residual but gives no acquisition-time lower bound.  LWE-style black-box
+architecture and special-soundness collision extraction are
+\textbf{ANALOGY/CANDIDATE needing a new bridge}; no unconditional SAT
+worst-case/average-case or conflicting-opening theorem is supplied.  Hash and
+random-oracle methods are \textbf{FAILED TRANSFER}.  The same hidden
+structure may be exploitable by matching or Gaussian elimination.
+
+The incidence bound itself is a \textbf{direct theorem transfer} from bounded
+occurrence counting to the explicit clause-list pass.  VLSI routing,
+observability, distributed cuts, branching programs, proof systems and
+pebbling are \textbf{FAILED TRANSFER} to unrestricted SAT without a compiler.
+
+\section{Bounded reproducible audit}
+
+The dependency-free command
+\begin{verbatim}
+timeout 30s python3 experiments/review/pruned_restriction_witness_volume_audit.py \
+ --seed 202610112012 \
+ --output results/raw/review/2026-10-11_pruned_restriction_witness_volume.json
+\end{verbatim}
+completed in 0.105 seconds and passed 7,127 checks: 82 paired-core incidence
+floors, 82 extendable partial-witness checks through 576 variables, all 6,912
+partial restrictions of all 256 three-variable clause-cube CNFs, 27 named
+hostile controls and 24 exponent rearrangements.  The script SHA-256 is
+\nolinkurl{8b6fb42f8d142dcf84ce26d11a786f32ff72b4e16998f4768b0a2c3115d1ea66};
+the final JSON SHA-256 is
+\nolinkurl{c69dece111f9a746530f6b30422f07e4a61352325b51a5cc9b86ccec18327f4e}.
+The result is \COMP{} only; the proof establishes the theorem.
+
+\section{CORPUS REVIEWED}
+
+The run surveyed the 2,252-path GitHub corpus and the new predecessor commit;
+read root \path{main.tex}, actual \path{main4.tex}/\path{main5.tex},
+\path{AGENTS.md}, \path{CODEX.md}, the PNP protocol/modes and all tasks; and
+inspected MAIN SYNTHESIS-0012/0013, MODELBRIDGE-0017, LB-0016, TESTS-0012,
+RT-0017, SYNTHESIS-0013, TESTS-0006 and SYNTHESIS-0006.  Relevant HEC,
+VSC-HEC, G-PPC-HEC, CRS-PPC, CCSPC, RCCN and Search-G components, governance,
+scripts and raw results were reviewed.  The predecessor MODELBRIDGE-0017
+initially had no verified write because its publication procedure invoked an
+unavailable local decoder; its exact existing body was preserved, the
+procedure alone was repaired, and commit
+\nolinkurl{c3970e9031b9356b0a52ff457d1537e7c4f26695} now verifies the report,
+sentinel and log.  Primary literature was checked before substantive claims.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+LB-0016 already contains the clause-incidence inequality inside its
+all-branch proof.  This report does not rename it.  The incremental result is
+the single-child corollary: strict contraction forces a linear selected
+domain, and exact YES preservation turns it into an extendable partial
+witness.  MODELBRIDGE-0017 independently shows why polynomial selector
+existence is still endpoint-equivalent.  There is no contradiction: one is a
+restricted output theorem, the other an existence/cost classification.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN's OPEN verdict and sole source-pass target remain correct.  The
+target is narrowed to an implicit or bit-local predecision selector: explicit
+all branches cost exponentially, while one explicit strict child carries a
+linear partial witness.  This review role has no authorized root ownership
+region, so root \path{main.tex} is not edited.  Main4/main5 receive narrow
+nonpromotional includes.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+Adopted: LB-0016's incidence floor, MODELBRIDGE-0017 endpoint equivalence,
+TESTS-0012's easy one-branch island, SAME\_REALIZATION and FLMV endpoint
+discipline.  Rejected: semantic witness volume, residual clause count or
+explicit-pass output as an arbitrary-decider cost.  Retired:
+\texttt{PRUNED-WITNESS-FORCES-DECIDER-WORK1}.  Preserved OPEN:
+\texttt{IMPLICIT-PREDECISION-ACCESS1}, clean-core-hereditary return,
+arbitrary-decider transfer and the final barriers.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any statement that ``polynomial pruning'' alone repairs LB-0016 is incomplete:
+strict power shrink requires selecting $n/3-o(n)$ values on this core.  Any
+statement that this partial witness volume lower-bounds every SAT program is
+also overstated.  No active root theorem required downgrading.
+
+\section{Single next target}
+
+\texttt{IMPLICIT-PREDECISION-ACCESS1}: construct or refute one externally
+fixed, truth-independent rule that supplies random access to an extendable
+$n/3-o(n)$-bit restriction and its $N^{h+o(1)}$ residual, $h<1$, using a fixed
+$K$-independent time--space ledger.  Charge failed selection, address
+translation, serialization/replay, reconstruction, retained ancestors and
+peak space; require hereditary coverage of SAT and UNSAT descendants and
+survival of all hostile controls.  Then prove a model-matched endpoint and
+the necessary nonrelativizing/nonalgebrizing hinge.  All are \OPEN.
+
+\begin{thebibliography}{8}
+\bibitem{doecker} J.~D\"ocker, \emph{Monotone 3-Sat-$(2,2)$ is NP-complete},
+Discrete Applied Mathematics 295 (2021). \url{https://arxiv.org/abs/1912.08032}.
+\bibitem{flmv} L.~Fortnow, R.~Lipton, D.~van Melkebeek and A.~Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability}, JACM 52(6) (2005).
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{chkln} M.~Chavrimootoo et al., \emph{Evaluating the Claims of
+``SAT Requires Exhaustive Search''}, 2023. \url{https://arxiv.org/abs/2312.02071}.
+\bibitem{bgs} T.~Baker, J.~Gill and R.~Solovay, \emph{Relativizations of the
+$P=?NP$ Question}, SIAM J. Comput. 4(4) (1975).
+\bibitem{aw} S.~Aaronson and A.~Wigderson, \emph{Algebrization}, ACM TOCT
+1(1) (2009). \url{https://www.scottaaronson.com/papers/alg.pdf}.
+\bibitem{rr} A.~Razborov and S.~Rudich, \emph{Natural Proofs}, JCSS 55(1)
+(1997). \url{https://eccc.weizmann.ac.il/report/1994/010/}.
+\end{thebibliography}
+
+\paragraph{Final status.}
+\texttt{PRUNED-CHILD-LINEAR-ASSIGNMENT1} and
+\texttt{PRUNED-YES-PARTIAL-WITNESS1}: \EXACT, independent review pending.\
+Finite audit: \COMP.\
+\texttt{PRUNED-WITNESS-FORCES-DECIDER-WORK1}: \RETIRED.\
+\texttt{IMPLICIT-PREDECISION-ACCESS1}, UCORE-TIME1, arbitrary-decider
+transfer, nonrelativization, nonalgebrization and P versus NP: \OPEN.
+P versus NP remains open.
+
+% END_OF_VERIFIED_REPORT::LOWER_BOUND::LB-0017
+\end{document}
