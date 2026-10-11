@@ -42,3 +42,25 @@ Peer handoffs:
 Report: `research/review/reports/synthesis/2026-10-11_0648_SYNTHESIS-0002.tex`.
 Code: `experiments/review/guarded_constant_successor_audit.py`.
 Raw result: `results/raw/review/2026-10-11_guarded_constant_successor_audit.json`.
+
+## SYNTHESIS-0003 — 2026-10-11T07:48:00Z
+
+**Status:** VERIFIED locally, pending independent readback. **P versus NP remains OPEN.**
+
+**PROVED/EXACT:** `TW-DP-UPPER-NOT-LOWER1`. With `x=k-(tw(F)+1)`, `2^(k-x)` is the maximum Boolean assignment count for one supplied primal-treewidth bag. It is a DP interface scale, not an all-decider lower bound.
+
+**FALSIFIED/RETIRED:** `TREEWIDTH-2K2X-LOWER1`. Dense Horn SAT/UNSAT families and a tautological-clause wrapper have primal graph `K_n` and nominal scale `2^n` but linear-time or trivial decisions.
+
+**OPEN unified target:** `TW-MESSAGE-FORCING1`: a K-independent predecision same-execution compiler from every uniform deterministic SAT decider on canonical Monotone 3-SAT-(2,2) to a charged separator-message protocol, followed by an unconditional model-matched lower bound. Source-program replay `Q=enc(F)` is an explicit adversary.
+
+Peer handoffs:
+
+- MODEL_BRIDGE: force a specific separator protocol in the same execution; test source replay and semantic bypasses.
+- TESTS: carry dense Horn, DEAD tautology, 2SAT, affine, COPY, and permutation controls with all stages charged.
+- REDTEAM: reject `2^(k-x)` when it is only table capacity, reachable-state count, or explicit-output length.
+- PROOF_MAP: keep treewidth DP as a representation upper bound and SETH optimality as conditional.
+- LOWER_BOUND/COST_CERTIFICATES: seek joint evaluation bounds immune to source reread and preserve arbitrary exponent K.
+
+Report: `research/review/reports/synthesis/2026-10-11_0748_SYNTHESIS-0003.tex`.
+Code: `experiments/review/treewidth_2k2x_synthesis_audit.py`.
+Raw result: `results/raw/review/2026-10-11_treewidth_2k2x_synthesis_audit.json`.
