@@ -1,0 +1,408 @@
+% PNP REVIEW REPORT::MODEL_BRIDGE::MODELBRIDGE-0008::2026-10-11T10:00:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+\newcommand{\SAT}{\mathsf{3SAT}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{UNIVERSAL\_CORE\_BRIDGE MODELBRIDGE-0008:\\
+Maximal Three-Variable Semantics Collapses to a Linear Decision Quotient}
+\author{P versus NP project review}
+\date{11 October 2026}
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.94\linewidth}{
+\textbf{Executive status.}
+\textsf{FULLCUBE-DECISION-QUOTIENT1} is \EXACT.  The eight proper clauses
+on three variables realize all $256$ possible solution relations, but SAT is
+only the NAND of their eight presence bits.  For $b$ disjoint blocks there
+are $256^b$ distinct global product relations while one uniform streaming
+decider uses $O(b)$ word operations, $O(\log b)$ writable bits, and a
+block-major reduced OBDD with exactly $8b$ nonterminals.  Moreover, from any
+total exact SAT decider $B$ one obtains an extensionally equivalent decider
+$A_B$ that recognizes this family and takes the shortcut, using $B$ only
+off-family.  Thus, in the hypothetical $\mathsf P=\mathsf{NP}$ world, an
+arbitrary-polynomial-time decider can be wrapped to avoid materializing the
+semantic relation, compatibility table, or a $256^b$-state DAG on these
+inputs.  Semantic-state cardinality therefore does not force all-algorithm
+time, memory, communication, or exposure.  A quotient-resistant
+predecision compiler with a model-matched unconditional endpoint remains
+\OPEN.  P versus NP remains open.
+}}
+\end{center}
+
+\section{Family, encoding, and semantic compatibility}
+
+For $a=(a_1,a_2,a_3)\in\{0,1\}^3$, let
+\[
+ C_a=\bigvee_{i=1}^3 \ell_{i,a},\qquad
+ \ell_{i,a}=\begin{cases}x_i,&a_i=0,\\ \neg x_i,&a_i=1.\end{cases}
+\]
+Then $C_a$ is the unique proper clause falsified by $a$.  For a mask
+$m\in\{0,1\}^8$, define
+\[
+ F_m=\bigwedge_{a:m_a=1}C_a.                              \tag{1}
+\]
+For a split $U\mathbin{\dot\cup}V=\{x_1,x_2,x_3\}$, define the exact
+semantic compatibility matrix
+\[
+ H(F_m)(u,v)=\mathbf 1[(u,v)\models F_m].                 \tag{2}
+\]
+This is a $2^{|U|}\times2^{|V|}$ matrix with eight entries.  It is the
+complete solution relation, not a pairwise surrogate.
+
+For $b\ge1$, use disjoint triples $X_j$ and masks $m^{(j)}$, and put
+\[
+ F_{\mathbf m}=\bigwedge_{j=1}^b F_{m^{(j)}}(X_j).         \tag{3}
+\]
+The block-mask promise encoding has length
+$N_{\rm mask}=8b+O(\log b)$.  In a canonical ordinary-CNF encoding with a
+declared $3b$-variable header, sorted clause records, and
+$\lceil\log_2(3b+1)\rceil$-bit identifiers, the maximum length is
+$N_{\rm cnf}=\Theta(b\log b)$.  The theorem charges parsing, the header,
+missing-clause detection, counters, and output.  This is a proper-3CNF
+hostile-control family, not the balanced $\mathcal H_{2,2}$ target: only a
+complete block has four positive and four negative occurrences per variable.
+
+\section{Exact semantic quotient theorem}
+
+\begin{theorem}[\texttt{FULLCUBE-DECISION-QUOTIENT1}]
+For every $m\in\{0,1\}^8$,
+\[
+ \operatorname{Sol}(F_m)=\{a:m_a=0\},\qquad
+ \mathbf 1[F_m\in\SAT]=\bigvee_a(1-m_a).                 \tag{4}
+\]
+Consequently $m\mapsto H(F_m)$ is a bijection onto all $256$ Boolean
+relations on three variables, whereas the SAT quotient has exactly two
+fibers of sizes $255$ and $1$.
+
+For (3),
+\[
+ \operatorname{Sol}(F_{\mathbf m})=
+ \prod_{j=1}^b\{a:m^{(j)}_a=0\},\qquad
+ \mathbf 1[F_{\mathbf m}\in\SAT]
+ =\bigwedge_{j=1}^b\bigvee_a(1-m^{(j)}_a).                \tag{5}
+\]
+There are $256^b$ distinct global solution relations.  On the block-mask
+encoding, deterministic query complexity of the decision bit is exactly
+$8b$ in the worst case.  A block-major reduced ordered binary decision
+diagram has exactly $8b$ nonterminal nodes.  A canonical stream decider uses
+$O(b)$ word operations and $O(\log b)$ writable bits; on ordinary clause
+records its fully charged bit cost is $O(N_{\rm cnf})$.
+\end{theorem}
+
+\begin{proof}
+Clause $C_a$ eliminates exactly assignment $a$, so (4) follows entry by
+entry.  Disjoint variables make solution sets multiply, proving (5) and
+injectivity of the $b$-block relation map.
+
+For the upper bounds, keep one eight-bit presence mask for the current block
+and reject as soon as some completed block is all ones; otherwise accept
+after the last block.  The block-major OBDD is the corresponding chain of
+eight tests per block: within a block, a zero edge proves that block
+satisfiable and jumps to the next block, while the all-one path reaches the
+rejecting terminal.  At each level the two residual functions differ and
+successive suffix functions are distinct, so reduction removes no one of
+the $8b$ nodes.
+
+For the query lower bound, an adversary answers one on queried presence bits
+while retaining one unqueried zero in each unfinished block.  A correct SAT
+answer requires finding a zero in every block, and the adversary can make it
+the last queried bit in each block.  Hence some input requires $8b$ probes.
+This is a tight linear input-reading statement, not a superlinear SAT lower
+bound.
+\end{proof}
+
+Pairwise clause compatibility is maximally misleading here: every two
+distinct $C_a,C_{a'}$ are jointly satisfied by six assignments, so their
+compatibility graph is complete, but all eight clauses are jointly
+inconsistent.  Full $H(F)$ records the missing global information, yet (4)
+shows that a one-bit decider only needs its OR quotient.
+
+\section{The all-decider quantifier and wrapper countermodel}
+
+The attacked schema is
+\[
+\tag{SEMANTIC-STATE-FORCES-WORK1}
+\forall A\;\forall F\in\mathcal C_b:\quad
+A(F)=\mathbf1[F\in\SAT]
+\Longrightarrow
+A\text{ exposes or pays }\Omega(256^b)
+\text{ for }H(F)\text{ or an equivalent DAG}.
+\]
+As a proposed implication from $\SAT\in\mathsf P$, it is \RETIRED.
+Formally, for every total uniform exact decider $B$, define $A_B$ to
+recognize the canonical family (3), run the streaming rule (5) on-family,
+and run $B$ otherwise.  This is a total uniform exact SAT decider.  If $B$
+runs in polynomial time, so does $A_B$; on (3), $A_B$ uses only the charged
+linear parser and the decision quotient.  Thus under the contradiction
+hypothesis that a polynomial $B$ exists, a polynomial wrapper-equivalent
+program bypasses the purported forced object.  If no polynomial $B$ exists,
+the universal implication is vacuous and cannot prove the separation.
+
+This does not show that every solver is fast on every clean core, nor that a
+particular restricted representation lacks a lower bound.  It shows that an
+internal-exposure theorem quantified over every extensionally correct
+program must survive semantic branch wrappers; this candidate does not.
+
+The smallest meaningful repair is
+\[
+\tag{QUOTIENT-RESISTANT-COMPILER1}
+\forall B\in\mathsf{P}\text{-}\SAT\;\exists C_B\;\forall F\in\mathcal H_{2,2}:
+C_B(F)\text{ creates a fixed predecision resource }R(F)
+\]
+with $K$-independent construction cost, representation-covariance under
+equivalent wrappers, hereditary ordinary-CNF successors, and an
+unconditional lower-bound endpoint for the same realization.  This is
+\OPEN; no such compiler is supplied here.
+
+\section{One-bit output, extraction, and exact lossiness}
+
+One execution returns one bit.  The map $q(m)=\mathbf1[F_m\in\SAT]$ has
+collision count
+\[
+ \operatorname{Coll}(q)=255^2+1=65026.                    \tag{6}
+\]
+The exact Cauchy--Schwarz bound gives
+$|\operatorname{im}q|\ge256^2/65026>1$, hence the integer lower bound two,
+which is tight.  This post-quantum lossiness/collision-entropy transfer is an
+\textbf{EXACT OBJECT/THEOREM TRANSFER}; it diagnoses extreme semantic
+collapse, not hardness.
+
+From a single decision bit one cannot identify one of the $255$ satisfiable
+relations.  With source-assisted complete-assignment pinning, an external
+extractor recovers one block's eight entries in eight charged SAT queries,
+or simply reads the eight source bits.  That is external extraction, not
+SAME\_REALIZATION exposure by the original run.  It inherits the assumed
+decider cost unless the source is directly parsed.
+
+The one-block relation masks form the full code $\mathbb F_2^8$; its Schur
+square is again $\mathbb F_2^8$.  Thus raw Schur-square dimension supplies
+no distinguisher here.  Quadratic relations, Hilbert functions, syzygies, and
+graded Betti numbers are \textbf{FAILED TRANSFER} as generic hardness
+measures absent a quotient-resistant compiler.  Worst-case/average-case
+black-box extraction and collision/special-soundness ideas remain
+\textbf{ANALOGY/CANDIDATE}; cryptographic binding or random-oracle hardness
+is inadmissible in an unconditional separation.
+
+\section{Bounded reproducible audit}
+
+The dependency-free command
+\begin{verbatim}
+timeout 30s python experiments/review/fullcube_decision_quotient_audit.py \
+  --output results/raw/review/2026-10-11_fullcube_decision_quotient_audit.json
+\end{verbatim}
+completed in $15.342216$ seconds and passed $132{,}860$ explicit checks:
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Check & Count\\
+\midrule
+Clause masks / distinct solution relations & $256/256$\\
+All fixed bit orders, OBDD size always eight & $40{,}320$\\
+Complete-assignment extraction queries & $2{,}048$\\
+Two-block product instances & $65{,}536$\\
+Variable permutation/complementation checks & $24{,}576$\\
+Encoding, COPY, padding, DIRECT/INTERP/RECOMP/DELAY & $1{,}280$\\
+Horn, 2-SAT, affine/Tseitin, bounded-treewidth controls & $17$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The two-block census has $65{,}025=255^2$ SAT and $511$ UNSAT inputs.
+Every pair among the eight clauses leaves exactly six solutions; the full
+set leaves zero.  Block-major OBDD sizes for $b=1,2,3$ are $8,16,24$.
+The script checks all $8!$ bit orders for one block, all $256$ masks, and all
+$256^2$ two-block inputs.  The symbolic theorem, not this finite census,
+proves the all-$b$ statements.  The experiment was a single sub-30-second
+chunk, so no checkpoint partition was needed.
+
+\section{Hostile-control and representation audit}
+
+\begin{description}[leftmargin=3.2cm,style=nextline]
+\item[Horn and 2-SAT.]  Implication chains and equality components retain
+compact propagation/SCC descriptions.  Their easy algorithms remain direct
+countercontrols to unsigned or compatibility-count inference.
+\item[Affine/Tseitin.]  The audit includes satisfiable parity and inconsistent
+three-equation systems.  Gaussian elimination bypasses clause-state
+enumeration; algebraic structure is exploitable by the algorithm.
+\item[Bounded treewidth.]  Family (3) has primal graph a disjoint union of
+$K_3$ blocks, hence treewidth two, while still having $256^b$ distinct
+solution relations.  Semantic inventory is therefore not treewidth cost.
+\item[Independent products.]  Products amplify the relation count but the
+decision is only an AND of $b$ eight-bit NANDs.  Direct sums of semantic
+possibilities do not imply direct sums of work beyond input reading.
+\item[Encodings and padding.]  Mask, bit-vector, and canonical clause-list
+encodings agree.  Variable permutations, complementations, clause order,
+duplicates, and an independent satisfiable proper-clause pad preserve the
+decision while changing syntax and length.
+\item[Wrappers.]  DIRECT, INTERP, RECOMP, DELAY, and the branch wrapper
+$A_B$ compute the same bit without identical internal states.  COPY and
+redundant clauses inflate syntax without semantic work.
+\item[Compact representations.]  The exact $8b$ OBDD is one admissible
+representation.  Bryant's canonicity applies only after fixing the ordered
+function-graph model; it is not a lower bound for unrestricted RAM programs.
+\end{description}
+
+\section{Primary literature and barrier-transfer preflight}
+
+The two active obstacles were (i) a representation-covariant transfer from
+every uniform deterministic SAT decider to one forced semantic/DAG object,
+and (ii) a model-matched unconditional endpoint after all costs.  Primary
+literature was checked before formalization.
+
+Bryant proves that reduced ordered function graphs are canonical for a fixed
+variable order and also emphasizes order sensitivity and functions with
+exponential graphs.  This is a \textbf{DIRECTLY TRANSFERABLE THEOREM} only
+for the declared OBDD object.  It justifies the exact reduced-OBDD count
+above, not an arbitrary-program runtime claim.  FLMV prove unconditional
+SAT time--space tradeoffs on deterministic random-access Turing machines and
+give a locally computable reduction-bit transfer.  This is a
+\textbf{DIRECTLY TRANSFERABLE THEOREM} only after a construction lands in
+their simultaneous time/space region with their encoding/model costs.
+Knowledge compilation, switching networks, VLSI routing, memory hierarchy,
+and communication cuts are \textbf{USEFUL STRUCTURAL ANALOGIES} but require
+QUOTIENT-RESISTANT-COMPILER1.  Treating a large relation inventory as an
+unrestricted execution lower bound is a \textbf{MISLEADING / FAILED
+TRANSFER}.
+
+\begin{itemize}[leftmargin=*]
+\item R.~E.~Bryant, ``Graph-Based Algorithms for Boolean Function
+Manipulation,'' IEEE Transactions on Computers C-35(8) (1986), 677--691,
+\url{https://www.cs.cmu.edu/~bryant/pubdir/ieeetc86.pdf}.
+\item L.~Fortnow, R.~Lipton, D.~van Melkebeek, A.~Viglas,
+``Time--Space Lower Bounds for Satisfiability,'' JACM 52(6) (2005),
+835--865, \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\item T.~Baker, J.~Gill, R.~Solovay, ``Relativizations of the $P=?NP$
+Question,'' SIAM J. Comput. 4(4) (1975), 431--442,
+\url{https://doi.org/10.1137/0204037}.
+\item S.~Aaronson, A.~Wigderson, ``Algebrization: A New Barrier in
+Complexity Theory,'' ACM TOCT 1(1) (2009), Article 2,
+\url{https://eccc.weizmann.ac.il/report/2008/005/}.
+\item A.~Razborov, S.~Rudich, ``Natural Proofs,'' JCSS 55 (1997), 24--35,
+\url{https://eccc.weizmann.ac.il/report/1994/010/}.
+\end{itemize}
+
+The quotient theorem and wrapper relativize: if $B$ has the same oracle,
+$A_B$ does too.  Algebraic-oracle access can only make semantic shortcutting
+easier.  Hence this result cannot be the nonrelativizing or
+nonalgebrizing final hinge.  No large constructive circuit property is
+proved, so Natural Proofs is not directly invoked; any future general-circuit
+lower-bound promotion must still audit that barrier.
+
+\section{$\mathsf P=\mathsf{NP}$ and endpoint audit}
+
+Assume $\mathsf P=\mathsf{NP}$ only here and let $B$ run in
+$N^{K+o(1)}$ time.  The wrapper $A_B$ is polynomial, exact, and uses
+$O(N_{\rm cnf})$ time and $O(\log b)$ work on family (3), while retaining
+$K$ off-family.  This is fully consistent with $\mathsf P=\mathsf{NP}$ and
+supplies no contradiction.  It instead disproves the proposed necessity in
+the very world where that necessity was supposed to hold.
+
+To reach FLMV, one still needs a $K$-independent all-input transformation
+whose time and space are simultaneously inside their forbidden region.
+Neither $256^b$ relations, the $8b$ input-read lower bound, nor the
+representation-specific OBDD count supplies that transformation.  No
+premise equivalent to $\mathsf P\ne\mathsf{NP}$ is imported.
+
+\section{Corpus reconciliation}
+
+\subsection*{CORPUS REVIEWED}
+The complete authenticated tree at head
+\texttt{53d987964f4845dfdd4c0cc6ecc41068ff13c123} was surveyed.  This run
+read root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, the full
+PNP skill and protocol, all seven task specifications, actual root
+\texttt{main4.tex} and \texttt{main5.tex}, current status/coordination, the
+newest verified synthesis and the newest four peer reports
+TESTS-0003, LB-0010, MODELBRIDGE-0007, and RT-0007.  It inspected the
+materially relevant D3CAL1 and UNIVERSALDAG2 notes, MODELBRIDGE-0003--0007,
+the active HEC/CRS-PPC/CCSPC guards, cited experiment artifacts, governance
+rules, and current primary sources.  The immediate predecessor
+SYNTHESIS-0004 exists at its canonical path, is substantive, has its header
+and final sentinel, and its JSON log verifies GitHub readback; no recovery
+request was required.
+
+\subsection*{DUPLICATION / CONTRADICTION AUDIT}
+D3CAL1 already proved that a simple $m$-clause subset on three variables has
+$8-m$ solutions and that the unique eight-clause set is UNSAT.
+UNIVERSALDAG2 already recorded $D_{\rm ord}(3,8)=8$ for one fixed membership
+order and warned that this was promise bookkeeping, not intrinsic SAT cost.
+ARC-STRENGTHEN8--15 already tested all $256$ clause subsets.  None is renamed
+or claimed new.  The new result is the exact bijection to all relations, its
+two-fiber decision quotient and collision distribution, the all-$b$
+independent-product/OBDD theorem, and the arbitrary-decider branch wrapper.
+These strengthen the hostile-control interpretation and do not contradict
+the prior finite notes.
+
+\subsection*{ACTUAL MAIN4/MAIN5 COMPARISON}
+At the audited head, \texttt{main4.tex} and \texttt{main5.tex} both state
+that all $256$ proper-three-variable subsets were tested and explicitly warn
+that bounded executions do not constrain arbitrary algorithms.  They also
+include MODELBRIDGE-0007's empty-query guard.  MODELBRIDGE-0008 agrees: the
+three-variable result is a countercontrol, not an all-input construction,
+and source-backed or off-family calls retain $K$.  No manuscript claim is
+silently redefined, and no manuscript edit is warranted by this
+representation-negative result.
+
+\subsection*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root \texttt{main.tex} already states D3CAL1 and warns that its eight-node
+membership DAG is not intrinsic complexity.  This report adds a quantified
+reason: even after scaling to $256^b$ distinct semantic relations, an exact
+linear-size decision quotient and wrapper-equivalent total decider avoid
+full-state exposure.  Root ownership was not edited by this review role;
+LSPV-5 should adopt the quotient theorem as a hostile-control refinement.
+
+\subsection*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted: D3CAL1, UNIVERSALDAG2 at its fixed-order scope, MODELBRIDGE-0007's
+source-backed/one-bit trilemma, SAME\_REALIZATION, FLMV model matching, and
+the easy-family/wrapper controls.  Rejected: treating the $256$ relations as
+$256$ states inside one formula, or treating a fixed representation as an
+arbitrary-machine trace.  Retired: SEMANTIC-STATE-FORCES-WORK1 as a generic
+$\SAT\in\mathsf P$ implication.  Open: QUOTIENT-RESISTANT-COMPILER1,
+UCORE-TIME1, a matched endpoint, nonrelativization, nonalgebrization, and P
+versus NP.
+
+\subsection*{STALE OR OVERSTATED CLAIMS FOUND}
+No current verified claim was found to assert the retired universal
+implication.  Historical language calling an eight-node membership DAG a
+SAT-solving necessity is already corrected by D3CAL1 and root
+\texttt{main.tex}.  The present report preserves that correction.
+
+\section{Peer handoff and exact missing arrow}
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{SYNTHESIS/LSPV-5:} add FULLCUBE-DECISION-QUOTIENT1 beside
+D3CAL1 as the scalable semantic-state hostile control; do not replace the
+connected balanced-core target with this bounded-treewidth family.
+\item \textbf{REDTEAM:} attack the $A_B$ wrapper proof under alternative
+encodings, malformed-family recognition, nonuniform advice, and streaming
+source access; check that every claimed exposure measure is invariant under
+the branch wrapper.
+\item \textbf{TESTS:} retain the $b=2$ exhaustive census and add randomized
+larger-$b$ encoding/parser tests without extrapolating asymptotics.
+\item \textbf{LOWER\_BOUND:} formulate a predecision property not factored
+through the SAT quotient and prove why every polynomial decider, including
+$A_B$, must realize it on the connected balanced core.
+\item \textbf{MODEL\_BRIDGE:} the missing implication is
+QUOTIENT-RESISTANT-COMPILER1 plus a same-model endpoint; representation size
+or semantic inventory alone is no longer an admissible middle arrow.
+\end{itemize}
+
+\paragraph{Final verdict.}
+\textsf{FULLCUBE-DECISION-QUOTIENT1}: \EXACT.
+Finite audit: \COMP.
+\textsf{SEMANTIC-STATE-FORCES-WORK1}: \RETIRED as a generic
+$\SAT\in\mathsf P$ implication.
+\textsf{QUOTIENT-RESISTANT-COMPILER1}, UCORE-TIME1, a model-matched endpoint,
+nonrelativization, nonalgebrization, and P versus NP: \OPEN.
+P versus NP remains open.
+
+% END_OF_VERIFIED_REPORT::MODEL_BRIDGE::MODELBRIDGE-0008
+\end{document}
