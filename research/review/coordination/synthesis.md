@@ -1,5 +1,19 @@
 # UNIVERSAL_CORE_SYNTHESIS coordination
 
+## SYNTHESIS-0008 — 2026-10-11T14:48:00Z
+
+**Status:** VERIFIED, pending independent review. **P versus NP remains OPEN.**
+
+**PROVED/EXACT:** `RECOGNIZABLE-ISLAND-BARRIER1`. A uniformly recognizable constant-answer island admits a recognize-first exact wrapper with only the recognizer cost on every island member.
+
+**FALSIFIED/RETIRED:** `STRUCTURAL-POINTWISE-NECESSITY1` in its unqualified form. The theorem does not refute worst-case `forall A exists F` lower bounds.
+
+**OPEN single target:** `LOCAL-COOK-MONOTONE22STAR1`, the bit-local first leg from the exact FLMV source to Monotone 3-Sat*-(2,2). The arbitrary-exponent bootstrap, barrier crossings, UCORE-TIME1, and P versus NP remain OPEN.
+
+Report: `research/review/reports/synthesis/2026-10-11_1448_SYNTHESIS-0008.tex`.
+Code: `experiments/review/recognizable_island_quantifier_audit.py`.
+Raw result: `results/raw/review/2026-10-11_recognizable_island_quantifier.json`.
+
 ## SYNTHESIS-0001 — 2026-10-11T05:52:00Z
 
 **Status:** VERIFIED. **P versus NP remains OPEN.**
