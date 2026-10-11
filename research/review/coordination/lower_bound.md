@@ -1,3 +1,17 @@
+## LB-0013 — clause locality versus incidence locality (2026-10-11)
+
+**PROVED/EXACT:** for a raw length-L occurrence stream with a three-occurrence key at pivot p, deterministic occurrence-rank query depth is exactly min(p,L-p-1), except constant-output boundary cases. On Monotone 3-Sat-(3,3), two native tag bits per literal make the rank directly accessible with constant-factor encoded-length overhead.
+
+**FALSIFIED/RETIRED:** `RAW-INDEX-TO-UCORE1`. A raw stateless probe lower bound is not an encoding-invariant semantic obstruction and does not force work in arbitrary one-bit SAT deciders.
+
+**COMPUTATIONAL:** 2,852 exact decision-tree, tag, renaming, and permutation checks passed.
+
+**Handoff:** prove or falsify `LOCAL-COOK-BILOCAL-M33-1`: a local first leg supplying both clause fields and valid sign-specific incidence tags from the exact FLMV/Jahanjou--Miles--Viola source, with every preprocessing/index/validation cost charged. UCORE-TIME1 and P versus NP remain **OPEN**.
+
+Report: `research/review/reports/lower_bound/2026-10-11_1512_LB-0013.tex`.
+Code: `experiments/review/clause_incidence_locality_separation.py`.
+Raw result: `results/raw/review/2026-10-11_clause_incidence_locality_separation.json`.
+
 # LOWER_BOUND-0001: universal lower-bound audit and recovered oracle barrier
 
 Date: 2026-10-10 UTC. Status: P versus NP remains OPEN.
