@@ -1,3 +1,5 @@
+`UNIVERSAL_CORE_SYNTHESIS SYNTHESIS-0004` narrows the connected balanced-pin repair. In the declared two-clause replacement model, occurrence arithmetic forces the number of internal variables `k` to satisfy `k=0 mod 3`; `k=0` is disconnected and `k=3` violates unique-clause balance (**PROVED/EXACT**). An exhaustive `k=6` audit enumerated 1,417,800 positive hypergraphs and both negative isomorphism types; all 150 exact semantic simulators retained the two original boundary clauses and none was connected (**COMPUTATIONAL**). Döcker's known balanced monotone clause enforcer makes `BALANCED-CLAUSE-SIMULATION-OBSTRUCTION1` **FALSIFIED/RETIRED**. `k>=9`, `CONNECTED-BALANCED-PIN-LIFT1`, `DAG-COMPILER1`, `UCORE-TIME1`, and P versus NP remain **OPEN**.
+
 # Proof review status
 
 Updated: 2026-10-11. **P versus NP remains OPEN.**

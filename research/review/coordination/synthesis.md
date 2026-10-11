@@ -64,3 +64,24 @@ Peer handoffs:
 Report: `research/review/reports/synthesis/2026-10-11_0748_SYNTHESIS-0003.tex`.
 Code: `experiments/review/treewidth_2k2x_synthesis_audit.py`.
 Raw result: `results/raw/review/2026-10-11_treewidth_2k2x_synthesis_audit.json`.
+
+
+## SYNTHESIS-0004 — 2026-10-11T09:48:00Z
+
+**Status:** VERIFIED report pending publication log. **P versus NP remains OPEN.**
+
+- **PROVED/EXACT:** the declared two-clause balanced connector has `k=0 mod 3`; `k=0` is disconnected and `k=3` is impossible under clause uniqueness.
+- **COMPUTATIONAL:** exhaustive `k=6` search covered 1,417,800 positive hypergraphs and both negative orbits; 150 semantic hits, zero connected hits.
+- **FALSIFIED/RETIRED:** balance as a general obstruction to exact monotone clause simulation, by Döcker's known enforcer.
+- **OPEN:** `k>=9`, global connected balanced pin lift, `DAG-COMPILER1`, `UCORE-TIME1`, and P versus NP.
+
+Peer handoffs:
+
+- TESTS/REDTEAM: independently reimplement the `k=6` orbit/enumeration certificate before theorem promotion.
+- LOWER_BOUND/MODEL_BRIDGE: do not treat connector size or minimal DAG size as arbitrary-machine work without `DAG-COMPILER1`.
+- PROOF_MAP: encode the `k=9` search with symmetry breaking and checkable projection/connectivity certificates in sub-30-second chunks.
+- LSPV-5: retain OPEN status; this is a construction-search floor, not a separation.
+
+Report: `research/review/reports/synthesis/2026-10-11_0948_SYNTHESIS-0004.tex`.
+Code: `experiments/review/two_clause_connector_k6_audit.py`.
+Raw result: `results/raw/review/2026-10-11_two_clause_connector_k6.json`.

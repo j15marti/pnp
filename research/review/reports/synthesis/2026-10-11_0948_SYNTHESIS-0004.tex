@@ -1,0 +1,415 @@
+% PNP REVIEW REPORT::SYNTHESIS::SYNTHESIS-0004::2026-10-11T09:48:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\SAT}{\mathsf{3SAT}}
+\title{UNIVERSAL\_CORE\_SYNTHESIS SYNTHESIS-0004:\\
+The First Connected Balanced Clause Bridge Cannot Be Small}
+\author{P versus NP project review}
+\date{11 October 2026}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+TESTS-0003 proved that exact Monotone $3$-SAT-$(2,2)$ balance does not block
+a nonempty decision pin, but its lift is a disjoint union.  This synthesis
+attacks the smallest natural repair: replace one positive clause in each of
+two incidence components by one connected, occurrence-balanced monotone
+gadget whose existential projection is exactly the conjunction of the two
+removed clauses.  Degree arithmetic forces the number $k$ of internal
+variables to satisfy $k\equiv0\pmod3$.  The cases $k=0$ and $k=3$ are
+excluded exactly.  An exhaustive, reproducible $k=6$ audit enumerated
+$1{,}417{,}800$ positive hypergraphs and the two isomorphism types of
+negative hypergraphs.  It found 150 semantic simulators, but every one
+contains the two original boundary clauses and is disconnected.  This is a
+finite \COMP obstruction, not an asymptotic theorem; $k\ge9$ and the global
+connected lift remain \OPEN.  D\"ocker's primary construction independently
+shows that balance does not obstruct single-clause simulation.  No
+arbitrary-algorithm lower bound follows.  P versus NP remains open.
+\end{abstract}
+
+\section{Strict status and synthesis verdict}
+
+\begin{center}
+\small
+\begin{tabular}{p{0.34\linewidth}p{0.19\linewidth}p{0.39\linewidth}}
+\toprule
+Claim & Status & Meaning\\
+\midrule
+\texttt{BALANCED-CLAUSE-SIMULATION-OBSTRUCTION1} & \RETIRED &
+D\"ocker gives a finite exact $(2,2)$-balanced monotone clause enforcer.\\
+\texttt{K6-TWO-CLAUSE-CONNECTOR1} & \COMP &
+No connected exact bridge exists in the completely enumerated six-internal-variable model.\\
+\texttt{CONNECTED-BALANCED-PIN-LIFT1} & \OPEN &
+The finite obstruction does not cover $k\ge9$ or other polynomial transformations.\\
+\texttt{UCORE-TIME1} & \OPEN &
+No all-uniform-decider time lower bound is proved.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The result narrows a construction search.  It does not promote connectivity,
+balance, gadget size, minimal DAG size, or a reduction-versus-solve frontier
+into unavoidable work for an arbitrary one-bit SAT computation.
+
+\section{Preflight, predecessor, and faithful manuscript comparison}
+
+The authenticated GitHub tree at preflight had head
+\texttt{ccd1b41721a7cf1a6eb7442a500dda4a63bc7d20}.  The immediate
+predecessor, REDTEAM RT-0007, exists at its canonical path, is substantive,
+has a verified report header and final sentinel, and has a read-back JSON log.
+No predecessor recovery was needed.
+
+The run surveyed the complete tree and read root \texttt{main.tex},
+\texttt{AGENTS.md}, \texttt{CODEX.md}, the full PNP skill and protocols, all
+current tasks, current status and coordination, the active
+HEC/CRS--PPC/CCSPC/RCCN branch, governance, materially relevant historical
+MAIN/LSPV artifacts, and the experiments cited by current claims.  The newest
+four peer reports were TESTS-0003, LB-0010, MODELBRIDGE-0007, and RT-0007.
+
+The actual \texttt{main4.tex} blob
+\texttt{ef6748b50dd383b408a22ec526363ed010301ae3} is the include-driven ARC
+achievable-region manuscript.  The actual \texttt{main5.tex} blob
+\texttt{51be54b60dfb7252da6077a8fffc8f9021b31589} is the include-driven
+WRAPPER construction manuscript.  Both already include the TESTS-0003 guard:
+the balanced pin lift is a disjoint product, gives no new ARC point or strict
+WRAPPER successor, and leaves the connected lift and every all-decider arrow
+open.  This report does not redefine or rewrite either manuscript.
+
+\section{Clean core and separation-strength target}
+
+Let $\mathcal H_{2,2}$ be the canonically encoded class of duplicate-free
+monotone CNFs with three distinct variables per clause and exactly two
+positive and two negative occurrences of each variable.  If $F$ has $n$
+variables and $m$ clauses, then $3m=4n$ and its full identifier encoding has
+length $N=\Theta(n\log n)$.  D\"ocker proves that satisfiability on this
+class is NP-complete.
+
+The project endpoint remains
+\[
+\tag{UCORE-TIME1}
+\forall A\ \forall d\in\mathbb N\ \forall N_0\ \exists F\in\mathcal H_{2,2}:
+\quad |\operatorname{enc}(F)|\ge N_0\quad\wedge\quad
+T_A(\operatorname{enc}(F))>|\operatorname{enc}(F)|^d,
+\]
+where $A$ ranges over total uniform deterministic exact deciders.  This is
+separation-strength and remains \OPEN; it is never used as a premise below.
+
+\section{Exact connector model}
+
+\begin{definition}[Two-clause balanced connector]
+Let $B_1=\{b_0,b_1,b_2\}$ and $B_2=\{b_3,b_4,b_5\}$ be boundary variables,
+and let $I=\{u_1,\ldots,u_k\}$ be fresh internal variables.  A connector
+$J(B_1,B_2;I)$ is a proper, duplicate-free monotone $3$-CNF satisfying:
+\begin{enumerate}[leftmargin=*]
+\item each boundary variable occurs once positively and never negatively;
+\item each internal variable occurs exactly twice positively and twice
+negatively;
+\item for every boundary assignment $\beta$,
+\[
+ \exists\alpha\in\{0,1\}^{I}\ J(\beta,\alpha)=1
+ \quad\Longleftrightarrow\quad
+ \Bigl(\bigvee_{i=0}^{2}b_i\Bigr)\wedge
+ \Bigl(\bigvee_{i=3}^{5}b_i\Bigr)=1;
+\tag{1}
+\]
+\item the variable--clause incidence graph of $J$ is connected.
+\end{enumerate}
+Replacing two positive source clauses by such a $J$ preserves every source
+variable's $(2,2)$ degree, preserves satisfiability under projection, and
+joins the two incidence components.
+\end{definition}
+
+This is a deliberately local model.  It does not quantify over all possible
+connected lifts, preprocessing algorithms, encodings, or SAT deciders.
+
+\begin{proposition}[Exact arithmetic floor]
+Any two-clause balanced connector has $k\equiv0\pmod3$.  No such connected
+connector exists for $k=0$ or $k=3$.
+\end{proposition}
+\begin{proof}
+The positive occurrence total is $6+2k$ and the negative total is $2k$;
+both must be divisible by three, so $k\equiv0\pmod3$.  At $k=0$, (1) is a
+positive $3$-CNF in which every boundary variable occurs once.  Its two
+prime clauses must be the two displayed boundary triples, up to order, so
+the incidence graph is disconnected.  At $k=3$, the six negative internal
+occurrences require two distinct proper negative triples on three variables,
+but only one such triple exists.  Clause uniqueness makes the model
+impossible.
+\end{proof}
+
+\section{Exhaustive six-internal-variable audit}
+
+For $k=6$ the positive side has six triples with degree sequence
+$1^6 2^6$; the negative side has four triples and internal degree sequence
+$2^6$.  The script canonically chooses the least remaining positive-degree
+vertex, enumerates all choices for its incident triples, and therefore emits
+each labeled positive hypergraph exactly once.  It separately enumerates all
+75 labeled negative hypergraphs and verifies that the action of $S_6$ has
+exactly two orbits, of sizes 45 and 30.  Testing one representative per orbit
+is complete because the positive enumeration is fully labeled.
+
+Each clause is represented by its exact 4096-bit truth mask.  Existential
+projection is checked for all 64 boundary assignments.  Every semantic hit
+is then independently checked by direct assignment enumeration, and its
+incidence connectivity and presence of the two original boundary clauses are
+tested.
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Quantity & Result\\
+\midrule
+Positive labeled hypergraphs & $1{,}417{,}800$\\
+Negative labeled hypergraphs & $75$\\
+Negative isomorphism types & $2$ (orbits $45,30$)\\
+Semantic hits, type 1 / type 2 & $75/75$\\
+Hits containing both original boundary clauses & $150/150$\\
+Connected semantic hits & $0$\\
+Direct assignment cross-checks & $614{,}400$\\
+Runtime & $13.973442$ seconds\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Thus every $k=6$ simulator found is the two original disconnected boundary
+clauses conjoined with an internal balanced component.  The result is
+\COMP, despite exhaustiveness, because this run supplies executable
+enumeration and cross-checks rather than a formally checked symbolic
+classification proof.  It cannot be extrapolated to $k\ge9$.
+
+The command was
+\begin{verbatim}
+timeout 30s python experiments/review/two_clause_connector_k6_audit.py \
+  --output results/raw/review/2026-10-11_two_clause_connector_k6.json
+\end{verbatim}
+The script SHA-256 is
+\texttt{890fc23b7bd873551cdfca8a5144ef2c2897a5e3e3aedcf6b5692e86a4fe9c63};
+the raw JSON SHA-256 is
+\texttt{65bb8d28da59a3fa93bb5ab203a4a2e72d0f204ed71244412c816b80b73adbe0}.
+Bytecode compilation and JSON parsing passed.  The invocation respects the
+30-second rule and required no chunking.
+
+\section{Primary literature and transfer audit}
+
+D\"ocker's primary paper does more than establish NP-completeness.  It
+constructs a monotone enforcer $S(v_1,v_2,v_3)$ with 99 fresh variables and
+133 clauses.  Every internal variable occurs twice in each sign, and the
+existential projection on the three boundary variables is exactly
+$v_1\vee v_2\vee v_3$.  Therefore the broad claim that exact $(2,2)$ balance
+prevents clause simulation is \RETIRED.  The paper does not state the
+two-clause connected bridge (1), does not provide an all-decider compiler,
+and does not prove a SAT time lower bound.
+
+Paul--Tarjan pebbling and later branching-program results give genuine
+time--space lower bounds for computations that evaluate a declared DAG or
+belong to a declared branching-program model.  FLMV gives genuine
+simultaneous time--space exclusions for SAT in its random-access model.
+None says that an arbitrary SAT decider must first expose this connector, a
+minimal residual DAG, a separator table, or a chosen pebbling instance.
+
+\begin{description}[leftmargin=3.5cm,style=nextline]
+\item[THEOREM TRANSFER.]
+Occurrence counting transfers exactly to the clause hypergraph.  If a gadget
+satisfies Definition 1, clause replacement preserves degree, satisfiability,
+and connects the two incident components.
+\item[ANALOGY / CANDIDATE.]
+Pebbling, VLSI routing, communication cuts, and memory hierarchy motivate a
+joint acquisition--storage--recomputation measure.  A new compiler must map
+every static SAT implementation into that interface with all costs charged.
+\item[FAILED TRANSFER.]
+The absence of a small connector, or a lower bound for evaluating one fixed
+DAG, is not a lower bound for the original one-bit SAT execution.
+\end{description}
+
+\section{Reduction-versus-solving and minimal-DAG audit}
+
+For a declared representation class $\mathcal R$, the frontier
+\[
+ \Phi_{F,\mathcal R}(S)=
+ \min_{R\in\mathcal R}
+ \left[A(F,R)+P_{G_R}(S-S_R)\right]                         \tag{2}
+\]
+is a legitimate model-specific quantity: $A$ charges construction, $S_R$
+retained representation, and $P_{G_R}$ evaluation or pebbling under the
+remaining space.  Equation (2) can prove a reduction-versus-solve tradeoff
+inside $\mathcal R$.
+
+It does not itself imply UCORE-TIME1.  For one fixed formula and one decision
+bit, an answer-dependent minimal DAG is a constant.  If source-plus-program
+representations are admitted, the source is a linear-size compact DAG/service
+description but query time retains the unknown SAT exponent $K$.  If they are
+excluded, the missing implication is
+\[
+\tag{DAG-COMPILER1}
+\forall A\ \exists C_A\ \forall F:\quad
+C_A(F)\in\mathcal R
+\quad\text{before current-scale decision work, with a $K$-independent
+same-realization cost.}
+\]
+This is \OPEN.  It is the exact transfer gate already exposed by
+MODELBRIDGE-0007 and RT-0006, not a consequence of graph minimality.
+
+\section{Hostile controls and barrier audit}
+
+\begin{description}[leftmargin=3.3cm,style=nextline]
+\item[Horn, 2-SAT, affine/Tseitin, bounded treewidth.]
+Their semantic algorithms bypass a generic connector or DAG representation.
+Occurrence balance and connectivity can coexist with propagation, SCC,
+Gaussian elimination, or dynamic programming and therefore are not runtime
+resources by themselves.
+\item[Products, padding, and redundant clauses.]
+Disjoint products directly falsified the previous balance repair.  Padding
+and duplicate clauses may preserve semantics while changing connectivity,
+degrees, or the uniqueness promise.  All must be charged as representation
+changes, not computational progress.
+\item[Wrappers and one-bit output.]
+DIRECT may return only $A(F)$; RECOMP retains the source and runs an evaluator;
+COPY, DEAD, DELAY, and INTERP change the ledger but cannot force a connector
+or all service coordinates.  The requested output remains one bit.
+\item[Compact representations and nonuniformity.]
+Circuits, branching programs, source programs, advice, or semantic oracles
+can encode behavior without exposing the searched hypergraph.  Excluding
+them requires an explicit uniform representation theorem.
+\end{description}
+
+The degree argument, D\"ocker clause simulation, and finite search all
+relativize.  Algebraic-oracle access only expands possible bypasses; no
+nonalgebrizing hinge is present.  Baker--Gill--Solovay and
+Aaronson--Wigderson therefore remain active barriers.  No large constructive
+circuit property is used, so Natural Proofs is not directly invoked; any
+future promotion through a circuit property must audit it.
+
+Schur squares, quadratic-relation spaces, Hilbert functions, syzygies,
+graded Betti numbers, and collision entropy are \textbf{FAILED TRANSFER} for
+the present local connector question: the one-bit execution need not expose
+those objects.  LWE-style external black-box extraction and
+special-soundness-style collision extraction remain
+\textbf{ANALOGY / CANDIDATE} pending DAG-COMPILER1.  Hash or random-oracle
+assumptions are inadmissible in an unconditional separation.
+
+\section{$\mathsf P=\mathsf{NP}$ audit}
+
+Assume only in this section that $\mathsf P=\mathsf{NP}$, and let a uniform
+SAT decider run in $N^{K+o(1)}$ time for an unknown constant $K$.  It can
+decide the clean core and every explicitly constructed connector instance in
+polynomial time.  A source-first gadget transducer adds only polynomial
+overhead, while a source-backed DAG evaluator retains exponent $K$.  The
+finite $k\le6$ obstruction gives neither a superpolynomial acquisition cost
+nor a model-matched simultaneous time--space bound.  Hence no unconditional
+contradiction follows, and no premise has smuggled in $\mathsf P\ne\mathsf{NP}$.
+
+\section{Corpus-wide reconciliation}
+
+\subsection*{CORPUS REVIEWED}
+The authenticated tree, root main, protocol and skill, all tasks, actual
+main4/main5, current status and coordination, TESTS-0003, LB-0010,
+MODELBRIDGE-0007, RT-0007, SYNTHESIS-0001--0003, the relevant older
+TESTS/LB/RT/MODELBRIDGE reports, active causal explorations, governance,
+cited scripts/results, and the primary sources below were reviewed.
+
+\subsection*{DUPLICATION / CONTRADICTION AUDIT}
+TESTS-0003 already proved a disconnected balanced pin lift and explicitly
+left connectivity open.  D\"ocker's balanced single-clause enforcer was not
+used there and is the crucial prior theorem found in this run.  Repository
+search found no earlier two-clause connector enumeration or
+\texttt{K6-TWO-CLAUSE-CONNECTOR1}.  MODELBRIDGE-0007's empty-query trilemma,
+RT-0007's polynomial full-pinning service, and SYNTHESIS-0003's treewidth
+guard are consistent with the new local obstruction.
+
+\subsection*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root main correctly leaves every all-decider bridge open.  The change is only
+a construction-search refinement: a connector of Definition 1 needs at
+least nine internal variables if it exists.  Because this is finite
+computational evidence at $k=6$, root main and the executive synthesis were
+not edited.
+
+\subsection*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted are the canonical $\mathcal H_{2,2}$ core, TESTS-0003's balanced pin
+component, the source-program and empty-query guards, SAME\_REALIZATION, and
+the one-bit contract.  Rejected is small local connectivity as an automatic
+repair.  Retired is balance as a barrier to clause simulation.  Still open
+are $k\ge9$, a global connected pin lift, DAG-COMPILER1, a $K$-independent
+predecision contraction, a matched unconditional endpoint,
+nonrelativization, nonalgebrization, UCORE-TIME1, and P versus NP.
+
+\subsection*{STALE OR OVERSTATED CLAIMS FOUND}
+Any statement that balance alone obstructs clause simulation is stale in
+light of D\"ocker's enforcer and TESTS-0003.  Conversely, stating that this
+run proves no connected balanced lift exists would be overstated: only the
+declared $k\le6$ two-clause replacement model was excluded.
+
+\section{Peer handoff and next target}
+
+The next exact finite target is $k=9$.  It should be encoded as a SAT or
+exact-cover search with symmetry breaking and independently checkable
+projection/connectivity certificates, partitioned into sub-30-second chunks.
+In parallel, the constructive route should inspect whether D\"ocker's
+single-clause enforcer can be composed into a two-clause connected bridge
+without violating uniqueness or boundary degrees.
+
+Even a positive connector closes only a structural promise.  The highest
+P-vs-NP-relevant target remains DAG-COMPILER1/PREDECISION-CONTRACT1: derive a
+fixed, source-first, $K$-independent, strictly contracting interface from
+every hypothetical polynomial SAT decider and land the same realization in
+an unconditional model-matched forbidden region.
+
+\begin{thebibliography}{9}
+\bibitem{doecker}
+J.~D\"ocker, \emph{Monotone 3-Sat-$(2,2)$ is NP-complete},
+Discrete Applied Mathematics 295 (2021), 1--9.
+\url{https://arxiv.org/abs/1912.08032}.
+
+\bibitem{paultarjan}
+W.~J. Paul and R.~E. Tarjan,
+\emph{Time--space trade-offs in a pebble game},
+Acta Informatica 10 (1978), 111--115.
+\url{https://doi.org/10.1007/BF00264242}.
+
+\bibitem{beame}
+P.~Beame, M.~Saks, X.~Sun, and E.~Vee,
+\emph{Time--Space Tradeoffs for Branching Programs},
+Journal of Computer and System Sciences 63 (2001), 542--572.
+\url{https://eccc.weizmann.ac.il/report/1998/053/}.
+
+\bibitem{flmv}
+L.~Fortnow, R.~Lipton, D.~van Melkebeek, and A.~Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability},
+Journal of the ACM 52(6) (2005), 835--865.
+\url{https://doi.org/10.1145/1101821.1101822}.
+
+\bibitem{bgs}
+T.~Baker, J.~Gill, and R.~Solovay,
+\emph{Relativizations of the $P=?NP$ Question},
+SIAM Journal on Computing 4(4) (1975), 431--442.
+\url{https://doi.org/10.1137/0204037}.
+
+\bibitem{aw}
+S.~Aaronson and A.~Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory},
+ACM TOCT 1(1) (2009), Article 2.
+\url{https://eccc.weizmann.ac.il/report/2008/005/}.
+
+\bibitem{rr}
+A.~Razborov and S.~Rudich, \emph{Natural Proofs},
+Journal of Computer and System Sciences 55 (1997), 24--35.
+\url{https://eccc.weizmann.ac.il/report/1994/010/}.
+\end{thebibliography}
+
+\paragraph{Final verdict.}
+\texttt{BALANCED-CLAUSE-SIMULATION-OBSTRUCTION1}: \RETIRED.  The exact
+$k=0,3$ floor is \EXACT.  The complete $k=6$ enumeration is \COMP and found
+no connected hit.  \texttt{CONNECTED-BALANCED-PIN-LIFT1},
+\texttt{DAG-COMPILER1}, UCORE-TIME1, nonrelativization,
+nonalgebrization, and P versus NP remain \OPEN.  P versus NP remains open.
+
+% END_OF_VERIFIED_REPORT::SYNTHESIS::SYNTHESIS-0004
+\end{document}
