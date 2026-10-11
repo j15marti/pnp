@@ -1,0 +1,366 @@
+% PNP REVIEW REPORT::REDTEAM::RT-0006::2026-10-11T07:36:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}{Definition}
+\newcommand{\SAT}{\mathsf{3SAT}}
+\newcommand{\Pclass}{\mathsf P}
+\newcommand{\NPclass}{\mathsf{NP}}
+\newcommand{\status}[1]{\textbf{#1}}
+\title{REDTEAM RT-0006:\\
+The Source-Plus-Program Escape Closes Description-Only Service Bounds}
+\author{P versus NP project review}
+\date{11 October 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Result and strict status.}
+TESTS-0002 left open a lower bound for a succinct multi-restriction service
+after showing that explicit batch output is merely an interface cost.  This
+run attacks the strongest representation class demanded there: source reread
+and RECOMP.  The exact generic representation is the source itself together
+with a fixed evaluator that constructs the requested residual and runs the
+supplied exact SAT decider.  It has instance payload exactly $N$ bits; if the
+decider is supplied as data rather than fixed, the payload is $N+|\langle
+A\rangle|+O(1)$.
+
+\textsf{SOURCE-PROGRAM-SERVICE1} is \status{PROVED/EXACT}.  Consequently any
+version of \textsf{SUCCINCT-SERVICE-LB1} asserting superlinear description
+size, or superlinear acquisition merely to possess a service representation,
+over a class broad enough to include source plus program is
+\status{FALSIFIED/RETIRED}.  The evaluator can be slow: with a hypothetical
+$N^K$ SAT decider and residual length $N^a$, its exponent is at least $aK$
+up to the declared simulation.  Thus the surviving joint acquisition/use
+lower bound is not refuted; it is the original computation lower-bound
+problem with its arbitrary exponent still present.  \textsf{SAT-MERGE-FORCING1},
+a $K$-independent compiler, a matched time--space endpoint, and P versus NP
+remain \status{OPEN}.
+
+\section{Claim card and exact quantifiers}
+Let $\mathrm{Enc}$ be a fixed injective encoding of proper 3-CNFs, and let
+$N=|\mathrm{Enc}(F)|$.  Let $\mathcal Q_N$ be a uniformly decidable query
+set.  A uniform residual compiler $R$ maps $(F,q)$ to a legal proper 3-CNF
+$R(F,q)$ and preserves the intended query semantics.  Define
+\[
+ g_F^A(q)=A(R(F,q)).                                      \tag{1}
+\]
+The attacked description claim was, in its strongest useful form,
+\[
+ \forall A\ \exists^\infty F\quad
+ \bigl[ A\text{ total uniform exact for }\SAT\bigr]
+ \Longrightarrow
+ \text{every representation of }g_F^A\text{ has }N^{1+\Omega(1)}
+ \text{ size/acquisition}.                               \tag{2}
+\]
+Here ``every representation'' must include circuits, branching programs,
+affine evaluators, retained source, source reread, and RECOMP, as required by
+TESTS-0002.  The SAME\_REALIZATION ledger contains the exact source encoding,
+query, residual compiler, evaluator code, SAT decider, acquisition, query
+construction, query evaluation, output bit, and peak workspace.
+
+The target is \emph{not} the false stronger assertion that every one-bit run
+of $A(F)$ already answers all counterfactual queries.  That additional
+necessity is precisely \textsf{SAT-MERGE-FORCING1} and remains open.
+
+\section{Generic source-program representation}
+\begin{theorem}[SOURCE-PROGRAM-SERVICE1 --- \status{PROVED/EXACT}]
+Fix a total deterministic exact 3-SAT decider $A$ and a total uniform residual
+compiler $R$.  For every source formula $F$, the indexed service (1) has a
+representation
+\[
+ Q_{A,F}=\mathrm{Enc}(F)                                  \tag{3}
+\]
+of exactly $N$ instance bits and a fixed evaluator $E_{A,R}$ satisfying
+\[
+ E_{A,R}(Q_{A,F},q)=g_F^A(q)\qquad(\forall q\in\mathcal Q_N).  \tag{4}
+\]
+Copy-acquisition costs $O(N)$ time and $N+O(1)$ writable bits; a read-only
+handle to the already-present source costs $O(1)$ handle bits in a model that
+permits such handles, with every later source read charged.  If $R$ takes time
+$C_R(N,|q|)$ and emits length at most $L_R(N,|q|)$, then
+\[
+ T_E(N,q)\le C_R(N,|q|)+T_A(L_R(N,|q|))+O(1),             \tag{5}
+\]
+apart from the explicitly declared universal-simulation overhead, and peak
+space is bounded by the live source/residual/decider workspaces in that same
+realization.  If $A$ is not fixed, a universal evaluator uses payload
+$\mathrm{Enc}(F)\Vert\langle A\rangle$ of length
+$N+|\langle A\rangle|+O(1)$.
+\end{theorem}
+\begin{proof}
+The evaluator decodes $Q$ as $F$, computes $R(F,q)$, and runs $A$ on the
+result.  Exactness is equation (1).  Storing $\mathrm{Enc}(F)$ verbatim proves
+the size statement.  A sequential copy proves the copy-acquisition bound;
+retaining the existing read-only source proves the handle alternative.
+Equation (5) is direct sequential composition.  When a universal interpreter
+is used, its fixed code is outside the instance payload and the code of $A$
+is included explicitly.  No satisfiability assumption is used.
+\end{proof}
+
+The quantifier order matters.  For each fixed $A$, its evaluator code is a
+constant as $N\to\infty$.  There is no assertion of one constant independent
+of arbitrarily long program descriptions.  Conversely, placing $A$ in the
+payload yields the exact additive $|\langle A\rangle|$ term rather than hiding
+it.
+
+\begin{corollary}[Description-only service lower bounds fail]
+No family can have a superlinear lower bound on representation size or
+representation-acquisition time against every class containing (3), unless
+the service contract forbids retaining the source or charges a different
+operation.  An exponentially long explicit truth table may still have an
+$N+O_A(1)$-bit indexed description.
+\end{corollary}
+
+This corollary specializes the corpus's older \textsf{DESCRIPTION-CAP1},
+which already observed that a continuation truth table is described by $F$
+plus brute force.  The new contribution is the exact arbitrary-decider
+evaluator, its acquisition/use split, and its application to the current
+\textsf{SUCCINCT-SERVICE-LB1} repair.  It does not rename the older theorem.
+
+\section{The arbitrary-exponent trilemma}
+Suppose, counterfactually, $\SAT\in\Pclass$ through one fixed decider with
+\[
+ T_A(M)=M^{K+o(1)}.
+\]
+If query construction takes $N^{c+o(1)}$ time and
+$L_R(N,|q|)=N^{a+o(1)}$, then (5) gives
+\[
+ T_E(N,q)=N^{\max\{c,aK\}+o(1)}.                           \tag{6}
+\]
+For ordinary linear-size restrictions $a=1$, the unknown exponent $K$ is
+retained.  Polynomially many queries add their query-count exponent rather
+than remove $K$.  This yields an exact trilemma.
+\begin{enumerate}[leftmargin=2em]
+\item If the service lower bound allows source plus arbitrary programs and
+measures description/acquisition only, (3) falsifies it.
+\item If it measures evaluation but permits arbitrary polynomial degree,
+the representation is compatible with $\Pclass=\NPclass$ and gives no
+contradiction.
+\item If it requires a fixed degree independent of $K$, or forbids the
+source/program representation, then the missing theorem is a cost-preserving
+self-improvement/compiler forcing every $A$ into that narrower interface.
+That is separation-strength and may not be assumed.
+\end{enumerate}
+
+Pippenger--Fischer give a model-specific corroborating transfer: $t$ steps
+of a one-dimensional-tape transducer have a combinational-network simulation
+of cost $O(t\log t)$ and depth $O(t)$~\cite{pf}.  Hardwiring $F$ therefore
+turns a polynomial source-program evaluator into polynomial-size query
+circuits in that declared model, but the degree still depends on $K$.
+This is a \status{KNOWN THEOREM} transfer, not a uniform circuit constructor
+for an arbitrary RAM and not a fixed-exponent improvement.
+
+\section{Bounded reproducible hostile audit}
+The command
+\begin{verbatim}
+timeout 30s python experiments/review/source_program_service_audit.py \
+  --symbolic-blocks 24 --seed 20261011 \
+  --output results/raw/review/2026-10-11_source_program_service_audit.json
+\end{verbatim}
+completed in $0.22$ seconds.  It exhaustively checked 1,120 indexed service
+coordinates, 7,840 semantic wrapper cases, six one-bit endpoints, and 108
+exact rational exponent cells.  All assertions passed.
+
+\begin{center}
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+Control & vars & clauses & coordinates & wrapper checks\\
+\midrule
+Horn equality & 8&14&16&112\\
+2-SAT path & 8&14&16&112\\
+Affine/Tseitin chain & 7&13&16&112\\
+Bounded-treewidth path & 8&15&16&112\\
+$\mathcal H_{2,2}$ block & 6&8&32&224\\
+$\mathcal H_{2,2}$ independent product &12&16&1024&7168\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For each query the source-program answer was computed by enumerating only
+unfixed variables and compared with a service constructed independently by
+enumerating full satisfying assignments once and projecting.  COPY, DEAD,
+padding, DELAY, INTERP (renaming and complementation), and RECOMP all preserved
+answers.  The empty query agreed with the one-bit SAT endpoint.  The symbolic
+$24$-block TESTS-0002 family has $120$ query bits and
+$2^{120}$ explicit service bits, while the concrete stored-source payload in
+the audit is 20,360 bits.  This finite byte count is illustrative only; the
+theorem stores whatever fixed source encoding the model declares.
+
+Code SHA-256 is
+\nolinkurl{27c9f382eacad4f69de91fbbf9ff92a8b4582e8914b6f000e3d5f7fda815ef8e};
+raw-result SHA-256 is
+\nolinkurl{1ba21b1184b86cbb7fa1fc1d8fb17ab0a4c5219ea094f2cd59ac8e7ec0c5b066}.
+The finite audit is \status{COMPUTATIONAL}; it checks implementation and
+bookkeeping, not an asymptotic lower bound.
+
+\section{Hostile controls and wrappers}
+Affine/Tseitin instances admit Gaussian elimination, Horn admits forward
+reasoning, 2-SAT admits implication-graph algorithms, and the path controls
+have bounded treewidth.  Their source descriptions and restriction services
+remain present but cheap, so semantic service richness cannot be a hardness
+measure.  Independent products give exponentially many query coordinates
+without defeating blockwise factorization.  COPY, redundant clauses,
+padding, and alternate source encodings change $N$ and constants but not the
+source-program escape.  INTERP composes the query decoder with a variable
+renaming/complementation.  RECOMP is exactly the generic evaluator.  DELAY
+can inflate the supplied program's trace without changing its service.
+
+The one-bit decision output is decisive: ordinary SAT correctness requires
+only $A(F)$.  A wrapper that requests all coordinates creates a new interface.
+Until \textsf{SAT-MERGE-FORCING1} independently forces that interface, its
+batch or random-access cost cannot be charged to the original one-bit run.
+
+\section{Barrier and cross-domain transfer audit}
+The source-program construction relativizes: with a fixed oracle $O$,
+$E_{A^O,R}$ computes the residual and invokes $A^O$.  Baker--Gill--Solovay
+therefore blocks promoting this black-box composition into a P-versus-NP
+separation~\cite{bgs}.  Giving algebraic-extension access likewise does not
+break the construction; no nonalgebrizing hinge is supplied~\cite{aw}.
+No constructive, large, useful circuit property is proved, so Natural Proofs
+is not the immediate failure, but any future general-circuit lower-bound
+repair must audit its hypotheses~\cite{rr}.
+
+Fortnow--Lipton--van Melkebeek--Viglas prove simultaneous SAT time--space
+lower bounds in a declared general-purpose random-access model~\cite{flmv}.
+That theorem is directly transferable only after the same evaluator is shown
+to satisfy its simultaneous time and space premises and the encoding/reduction
+costs are matched.  It does not bound description length and does not remove
+an arbitrary $K$ from (6).
+
+\begin{description}[leftmargin=3.2cm,style=nextline]
+\item[THEOREM TRANSFER.] Pippenger--Fischer machine-to-network simulation for
+its exact tape/network models.  Correspondence: query evaluator computation
+to a hardwired-$F$ circuit.  Missing for the desired conclusion: a
+$K$-independent size bound, uniform acquisition, and a matched RAM simulation.
+\item[ANALOGY / CANDIDATE.] Cell-probe, VLSI, data-structure, and communication
+lower bounds can constrain an indexed service only after its memory cells,
+queries, preprocessing, and access operations are fixed.  The missing bridge
+forces an arbitrary SAT decider into that interface.
+\item[FAILED TRANSFER.] Output-size, restricted OBDD/DAG, physical routing,
+or explicit-vector lower bounds do not constrain an unrestricted one-bit
+uniform decider without the bridge.
+\end{description}
+
+\section{Post-quantum technique ledger}
+The LWE lesson of external black-box extraction is an
+\status{ANALOGY/CANDIDATE}: (4) is an exact external evaluator, but no
+worst-case/average-case reduction or hardness amplification follows.
+Collision entropy, Schur squares, quadratic-relation rank, Hilbert functions,
+and syzygies do not obstruct storing the source and rerunning a program; as a
+universal service-size transfer they are \status{FAILED TRANSFER} here unless
+a new representation-independent evaluation theorem is proved.  Hash or
+random-oracle binding is also a \status{FAILED TRANSFER} for an unconditional
+separation.  Hidden algebraic structure remains exploitable by algorithms,
+as the affine control demonstrates.
+
+\section{CORPUS REVIEWED}
+The run enumerated the current GitHub tree and read root \texttt{main.tex},
+\texttt{AGENTS.md}, \texttt{CODEX.md}, and the complete
+\texttt{pnp-research} skill with red-team protocol.  It inspected all seven
+current task specifications; actual \texttt{main4.tex} and \texttt{main5.tex};
+the newest verified historical MAIN; current review STATUS and coordination;
+TESTS-0002, RT-0005, LB-0007, MODELBRIDGE-0005, SYNTHESIS-0002, PROOFMAP-0004,
+and CC-0005; the HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC causal components;
+relevant governance; and the cited experiment/result artifacts.  Repository
+search surfaced LEAD-0022 and LEAD-0029 as the materially relevant older
+service/description attempts.  TESTS-0002 is substantive, has its expected
+header and final sentinel, and was readable from GitHub; no predecessor write
+repair was needed.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+LEAD-0029 already proves \textsf{DESCRIPTION-CAP1}: storing $F$ and brute
+forcing residuals gives an $O(N)$ plain description.  LEAD-0022 already warns
+that a continuation service may be replayed and that
+\textsf{SAT-MERGE-FORCING1}/\textsf{MERGE-SERVICE-LB1} need independent
+proofs.  This report does not claim those observations as new.  New here is
+their exact specialization to TESTS-0002's indexed service; the quantified
+source/program evaluator for arbitrary total $A$; the copy-versus-handle
+acquisition ledger; the explicit $\max\{c,aK\}$ consequence under
+$\Pclass=\NPclass$; and the current hostile-control audit.  No contradiction
+with TESTS-0002 was found: that report already required source reread and
+RECOMP to be included.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root \texttt{main.tex} remains explicit that P versus NP is OPEN and that
+arbitrary-algorithm acquisition/model transfer is missing.  It does not yet
+contain the current review stream's precise service trilemma.  The narrowed
+statement for synthesis is: service \emph{description/acquisition alone} is
+closed by source plus program; only a joint forced-interface evaluation bound
+with a $K$-independent endpoint could matter.  This review role has no
+authorized LSPV ownership region, so root \texttt{main.tex} was not edited.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{description}[leftmargin=2.8cm,style=nextline]
+\item[ADOPTED.] TESTS-0002's duplicate-free $\mathcal H_{2,2}$ service,
+DESCRIPTION-CAP1, SAT-REPLAY-CLOSE1, SAME\_REALIZATION, exact source encoding,
+charged acquisition/use, and the FLMV matched-model endpoint discipline.
+\item[REJECTED.] Any premise that excludes the original source, an arbitrary
+fixed program, replay, or recomputation merely to manufacture a service lower
+bound, unless an independent SAT-forcing theorem justifies the interface.
+\item[FALSIFIED/RETIRED.] Superlinear representation-size or
+representation-acquisition lower bounds for the continuation service over a
+class containing source plus program; any inference from explicit service
+length to one-bit SAT work.
+\item[OPEN.] Joint acquisition/evaluation lower bounds; SAT-MERGE-FORCING1;
+a cost-preserving arbitrary-solver compiler; $K$-independent self-improvement;
+strict hereditary contraction; simultaneous endpoint resources; a
+nonrelativizing and nonalgebrizing hinge.
+\end{description}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+The name \textsf{SUCCINCT-SERVICE-LB1} is too broad unless its representation
+class and cost vector are explicit.  A size-only reading is false by (3); an
+``acquisition plus use'' reading remains open but must state the number and
+adaptivity of queries, allowed source rereads, preprocessing, amortization,
+workspace, and whether the exponent may depend on $A$.  Calling the remaining
+target representation-independent without including source plus program is
+overstated.  No stale claim was silently promoted or deleted.
+
+\section{Weakest repair and next exact target}
+Replace the ambiguous service target by
+\textsf{FORCED-JOINT-SERVICE-LB1}:
+\begin{quote}
+Fix one non-product clean-core family, one query distribution or adversarial
+query protocol, and one ordinary random-access model.  Prove (i) SAT
+correctness forces every total uniform exact decider, in the same charged
+execution and before current-scale decision work, to support that service;
+and (ii) even the representation $Q=(\mathrm{Enc}(F),\langle A\rangle)$ with
+source reread, adaptive recomputation, batching, affine elimination, and
+arbitrary preprocessing violates a simultaneous time--space bound whose
+threshold is independent of $A$'s polynomial exponent $K$.
+\end{quote}
+Both conjuncts are \status{OPEN}.  If (ii) is proved unconditionally for all
+polynomial $A$, it is already a genuine SAT lower bound; if (i) is omitted,
+the wrapper has invented a counterfactual service.  P versus NP remains
+\status{OPEN}.
+
+\begin{thebibliography}{9}
+\bibitem{pf} N. Pippenger and M. J. Fischer,
+\emph{Relations Among Complexity Measures}, J. ACM 26(2) (1979), 361--381.
+\url{https://doi.org/10.1145/322123.322138}.
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability}, J. ACM 52(6) (2005),
+835--865. \url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{bgs} T. Baker, J. Gill, and R. Solovay,
+\emph{Relativizations of the $P=?NP$ Question}, SIAM J. Comput. 4(4) (1975),
+431--442. \url{https://doi.org/10.1137/0204037}.
+\bibitem{aw} S. Aaronson and A. Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory}, ACM TOCT 1(1)
+(2009). \url{https://eccc.weizmann.ac.il/report/2008/005/}.
+\bibitem{rr} A. Razborov and S. Rudich,
+\emph{Natural Proofs}, J. Comput. Syst. Sci. 55(1) (1997), 24--35.
+\url{https://eccc.weizmann.ac.il/report/1994/010/}.
+\end{thebibliography}
+
+\paragraph{Final status.}
+SOURCE-PROGRAM-SERVICE1 is \status{PROVED/EXACT}; the bounded audit is
+\status{COMPUTATIONAL}; description/acquisition-only versions of
+SUCCINCT-SERVICE-LB1 are \status{FALSIFIED/RETIRED};
+FORCED-JOINT-SERVICE-LB1 and SAT-MERGE-FORCING1 are \status{OPEN}.
+Therefore \textbf{P versus NP remains OPEN}.
+
+% END_OF_VERIFIED_REPORT::REDTEAM::RT-0006
+\end{document}

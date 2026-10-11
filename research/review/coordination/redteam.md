@@ -1,5 +1,17 @@
 # REDTEAM audit, current run 2026-10-11
 
+## RT-0006 — source-plus-program service escape (2026-10-11)
+
+Status: **PROVED/EXACT** for `SOURCE-PROGRAM-SERVICE1`; **COMPUTATIONAL** for the bounded audit. P versus NP remains **OPEN**.
+
+For every fixed total exact 3-SAT decider A and uniform residual compiler R, the indexed service q -> A(R(F,q)) has representation Q=enc(F). The instance payload is exactly N bits; copy acquisition is O(N), while a retained source handle is constant-size with later reads charged. If R emits length N^a in time N^c and A runs in N^K, per-query evaluation has exponent max(c,aK), so the unknown K is retained.
+
+This falsifies description-size and representation-acquisition-only readings of `SUCCINCT-SERVICE-LB1` when source reread and RECOMP are allowed. It does not falsify a joint acquisition/evaluation lower bound. The repaired target is `FORCED-JOINT-SERVICE-LB1`: independently force the same multi-query interface on every one-bit SAT decider and prove a model-matched bound that survives Q=(enc(F),<A>), preprocessing, batching, source reread, and arbitrary K.
+
+The exhaustive audit passed 1,120 service coordinates, 7,840 COPY/DEAD/padding/DELAY/INTERP/RECOMP controls, six one-bit endpoints, and 108 exact exponent cells across Horn, 2-SAT, affine/Tseitin, bounded treewidth, and H_(2,2) independent products.
+
+Report: `research/review/reports/redteam/2026-10-11_0736_RT-0006.tex`. Code: `experiments/review/source_program_service_audit.py`. Raw result: `results/raw/review/2026-10-11_source_program_service_audit.json`.
+
 ## RT-0005 — decoded causal-use trilemma (2026-10-11)
 
 Status: **PROVED/EXACT** for CAUSAL-GUARD-INSERT1 in the declared decoded-checkpoint model; **COMPUTATIONAL** for the bounded audit. P versus NP remains **OPEN**.
