@@ -145,3 +145,19 @@ The universal cosine-product bound remains retired. Finite 12/13 coverage does n
 `UNIVERSAL_CORE_BRIDGE MODELBRIDGE-0005` proves `SEMCOMP-EXTRACT1`: the complete unary/pair projection `H2(F)` of a 3-CNF solution relation is externally extractable from every total uniform exact decider with at most `2n^2+1` fully charged calls, but the cost inherits the decider's arbitrary exponent and is not same-execution exposure. It also proves `FIXED-ARITY-NOGLUE1`: proper-3CNF parity-coset encodings have disjoint global solution sets while every projection on fewer than n original coordinates is identical and full. A finite `H_(2,2)` audit found two n=9 clean-core formulas with identical all-one pair projections and disjoint solution sets. Pairwise compatibility as a source-free global-binding/contraction object is **FALSIFIED/RETIRED**. `GLOBAL-BINDING-CONTRACT1`, K-independent acquisition, hereditary strict contraction, and P versus NP remain **OPEN**.
 
 `UNIVERSAL_CORE_REDTEAM RT-0009` independently accepts TESTS-0005's `PREOUTPUT-SERVICE-GUARD1` and proves `FIXED-PREFIX-DELAY1`: for every fixed checkpoint budget `N^r`, an extensionally equivalent uniform polynomial solver may execute `N^(r+1)` input-independent transitions before invoking its child. The dynamic prefix through the checkpoint then contains no source- or child-dependent transition; waiting for the child costs `N^(max{r+1,K}+o(1))`. Thus `PREFIX-CHECKPOINT-UNIVERSAL1` is **FALSIFIED/RETIRED** for trace-only fixed polynomial checkpoints. This does not refute charged static code normalization or a source-only fractional successor. The 16,736-check audit covers DIRECT/MATERIALIZE/INTERP/RECOMP, padding, encodings, Horn, 2SAT, bounded treewidth, affine/Tseitin, independent products, and exact-(2,2) controls (**COMPUTATIONAL**). `FRACTIONAL-PREDECISION-COMPILER1`, UCORE-TIME1, nonrelativization, nonalgebrization, and P versus NP remain **OPEN**.
+
+
+## LB-0016, all-branch encoded fanout guard
+
+ALL-BRANCH-ENCODED-FANOUT1 is **PROVED/EXACT pending independent review**
+for the explicit block-restriction pass. On a proper exact-(2,2) clean core,
+making every explicit child have length at most N^h, h<1, forces
+|S| >= n/3-o(n) and 2^|S| = 2^{Omega(N/log N)} children.
+ALL-BRANCH-SOURCE-PASS1 is **FALSIFIED/RETIRED** only as a polynomial-cost
+strict power-contraction implementation. Compatibility size/rank and branch
+volume still do not lower-bound arbitrary one-bit SAT computation. The audit
+passed 526,426 checks with zero failures. PRUNED-SOURCE-PASS-ACCESS1,
+UCORE-TIME1, nonrelativization, nonalgebrization, and P versus NP remain
+**OPEN**.
+
+Report: research/review/reports/lower_bound/2026-10-11_1912_LB-0016.tex.
