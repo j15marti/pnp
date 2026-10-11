@@ -128,3 +128,19 @@ Coverage limitations: Personal Context returned unavailable in this agent; full 
 
 Additional constructive artifact: LSPV_candidate_spine.tex formalizes the full successful RMV union, a proved quadratic-OR separator lemma, and Route B's different graph-separator obligation. It explicitly distinguishes O(w) circuit size from O(w log m) descriptor bits. The current van Melkebeek-Mocelin Sdroievski journal PDF was checked at Section 4.1 and reconstruction interfaces: https://pages.cs.wisc.edu/~dieter/Papers/r-am-instance-wise-cc.pdf. Its Definition 4.1 and Lemma 4.2 supersede the older manuscript numbering used in archive reports. The old author-PDF URL returned 404. The Shaltiel-Umans PDF fetch timed out, so no unverified exact transfer is promoted.
 
+
+
+## LB-0006, raw causal-use guard
+
+REPLICATION-CAUSAL-GUARD1 is PROVED/EXACT in the declared checkpoint model,
+with independent red-team review pending.  Odd repetition of the complete
+work configuration defeats every polynomially bounded raw-cell intervention
+while preserving exact uniform polynomial-time behavior.  Raw-coordinate
+causal indispensability is therefore retired as a universal EXTRACTOR/G2
+premise.  A decoded representation-covariant functional remains OPEN and must
+survive DIRECT/RECOMP, charge decoding/replay, and yield strict source-scale
+contraction or another independent endpoint.
+
+Report: `research/review/reports/lower_bound/2026-10-11_0612_LB-0006.tex`.
+Experiment: `experiments/review/causal_replication_guard.py`.
+Raw result: `results/raw/review/2026-10-11_causal_replication_guard.json`.
