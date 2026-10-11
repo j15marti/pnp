@@ -1,0 +1,150 @@
+% PNP REVIEW REPORT::SYNTHESIS::SYNTHESIS-0014::2026-10-11T20:45:32Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref,microtype}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{SYNTHESIS-0014: The Log-Succinct Resource Trilemma}
+\author{P versus NP project synthesis}
+\date{11 October 2026 (UTC)}
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.93\linewidth}{
+\textbf{Executive status.} P versus NP remains open.  A logarithmic-size, polynomially testable compatibility/restriction resource is not a weaker universal obstruction: its existence on every YES instance of an NP-hard clean core is equivalent to polynomial-time SAT.  Superlogarithmic resources are not polynomially enumerable, while implementation-internal resources lack a universal SAME\_REALIZATION transfer.  The source-pass target remains open, but witness or resource incompressibility is removed from its proof burden.}}
+\end{center}
+
+\section{State and exact clean core}
+
+The current clean core is the duplicate-free proper Monotone $3$SAT-$(2,2)$ family $\mathcal H_{2,2}$ under the canonical indexed encoding, with encoded length $N=\Theta(n\log n)$.  The unrestricted target remains
+\[
+\forall A\in\operatorname{Dec}_{\rm uniform}(\SAT)\;\forall d\;\forall N_0\;\exists F\in\mathcal H_{2,2}:
+N_F\ge N_0\land T_A(F)>N_F^d.
+\tag{WC}
+\]
+No report proves (WC).  MODELBRIDGE-0018 proves the special source-relative time-bounded Kolmogorov formulation.  This synthesis independently rederives it and isolates the representation-free theorem underneath it.
+
+\section{The exact resource theorem}
+
+Let $C$ be any polynomial-time recognizable NP-hard family of encoded $3$-CNFs.  A \emph{log-succinct decision resource scheme} is a deterministic uniform polynomial-time predicate $B(F,z)$ and a constant $a$ such that, for every $F\in C$ of encoded length $N$,
+\[
+F\in\SAT\quad\Longleftrightarrow\quad
+\exists z\in\{0,1\}^{\le a\log_2N+a}:B(F,z)=1.
+\tag{R}
+\]
+The string $z$ may encode a restriction, compatibility certificate, program, circuit, seed, transcript, or any other object; the theorem charges its complete serialization and the fixed predicate that uses it.
+
+\begin{theorem}[\texttt{LOG-SUCCINCT-RESOURCE-EQUIV1}]
+For every such NP-hard family $C$, $\SAT\in\mathsf P$ if and only if a log-succinct decision resource scheme for $C$ exists.
+\end{theorem}
+
+\begin{proof}
+If $\SAT\in\mathsf P$, let $B(F,z)$ ignore $z$ and run the fixed polynomial SAT decider; take $z=\epsilon$.  Conversely, enumerate all strings of length at most $a\log_2N+a$, evaluate $B(F,z)$, and accept iff one evaluation accepts.  There are at most
+\[
+2^{a\log_2N+a+1}=2^{a+1}N^a
+\]
+candidates.  Thus restricted SAT on $C$ is in polynomial time, and the uniform many-one reduction from SAT to $C$ yields $\SAT\in\mathsf P$.
+\end{proof}
+
+If $B$ runs in $N^{b+o(1)}$ time, the enumerating decider runs in $N^{a+b+o(1)}$ time, plus encoding and verification.  A polynomial-time decoder that maps $(F,z)$ to a satisfying assignment is a special case by composing the decoder with witness verification.  MODELBRIDGE-0018's theorem is recovered by taking $z$ to be the source-relative program and $B$ to boundedly simulate it and verify its output.
+
+\begin{corollary}[\texttt{LOG-SUCCINCT-RESOURCE-AS-INTERMEDIATE1}]
+The absence of all log-succinct, polynomially testable resources on an NP-hard clean core is separation-strength.  It cannot be used as a previously weaker intermediate lemma without independently proving the equivalent lower bound.
+\end{corollary}
+
+The corollary is \RETIRED{} only as an \emph{intermediate route}.  It does not say a useful source pass cannot exist; it says that ``no short resource exists'' merely restates the separation once the resource is uniformly testable.
+
+\section{The size/access/SAME\_REALIZATION trilemma}
+
+Every proposed universal resource now falls into one of three declared cases.
+
+\begin{enumerate}[label=\textbf{Case \Alph*.}]
+\item $|z|=O(\log N)$ and $B$ is polynomial: exhaustive access is polynomial, so existence is equivalent to $\SAT\in\mathsf P$.  No resource lower bound has been obtained.
+\item $|z|=\omega(\log N)$ or the test/decoder is superpolynomial: enumeration is no longer a polynomial construction.  But representation size alone does not lower-bound the one-bit SAT decision; LB-0017 and TESTS-0013 give the explicit/implicit witness controls.
+\item The object is implementation-internal, untestable externally, or defined from a preferred trace: wrapper-equivalent programs can change or omit it.  A new arbitrary-decider SAME\_REALIZATION transfer is required.
+\end{enumerate}
+
+This trilemma falsifies the candidate that ``succinct compatibility'' by itself supplies a universal extraction bottleneck.  It does not falsify an externally fixed source pass with a separately proved recursive endpoint.
+
+\section{Counterfactual $P=NP$ and the surviving proof spine}
+
+Assume $\SAT\in\mathsf P$ via an arbitrary uniform deterministic decider with exponent $K$.  Standard self-reduction produces a witness in polynomial time with exponent depending on $K$; the empty-resource scheme above also exists.  Neither fact contradicts an unconditional theorem.  A contradiction would require one ordinary realization that, after charging acquisition, all resource probes, failed routes, replay, output, and peak workspace, falls inside a model-matched forbidden class such as the applicable FLMV time--space region.
+
+The shortest surviving spine is therefore
+\[
+\SAT\in\mathsf P
+\Longrightarrow
+\boxed{\text{externally fixed, predecision, hereditary source pass}}
+\Longrightarrow
+\boxed{\text{one charged forbidden realization}}
+\Longrightarrow\bot.
+\]
+Both boxed implications remain \OPEN.  The first may not be justified by log-succinct resource nonexistence, semantic witness volume, compatibility rank, or an internal trace requirement.
+
+\section{Finite falsification audit}
+
+The reproducible runner is
+\path{experiments/review/log_succinct_resource_trilemma.py}; raw output is
+\path{results/raw/review/2026-10-11_log_succinct_resource_trilemma.json}.  One bounded invocation completed in $0.180$ seconds with 28,187 checks and zero failures.  It exhaustively tested all 256 subformulas of the eight proper three-variable clauses, all 48 signed variable isomorphisms per formula, duplicate padding factors $1,2,4$, and DIRECT/COPY/DEAD/DELAY/INTERP/RECOMP wrappers.  The enumerating decoder agreed with truth-table SAT on all 255 satisfiable and one unsatisfiable formulas.
+
+The audit also checked the exact enumeration ledger for $N\in\{16,64,256,1024,4096\}$ and $a\in\{1,2,3\}$, easy 2SAT, Horn, affine/Tseitin, width-one, and independent-product controls, plus paired $K_{3,3}$ products through 64 blocks and 576 witness bits.  The paired witness is generated from the source template with an empty auxiliary resource; this directly guards against confusing output length with auxiliary-description length.  These finite checks are \COMP{} only and do not prove the asymptotic theorem, whose proof is symbolic.
+
+\section{Barrier, cross-domain, and post-quantum audit}
+
+SAT self-reducibility and enumeration of $O(\log N)$ nondeterministic bits are \textbf{direct theorem transfers}.  Search-versus-decision separations for general NP relations delimit the claim: this report uses SAT's special self-reducibility only for the witness corollary, while the predicate theorem needs no search-to-decision premise.
+
+VLSI routing/storage and distributed communication lower bounds charge explicit materialized signals, messages, or local wires.  They are \textbf{FAILED TRANSFERS} to an unrestricted one-bit RAM/Turing computation without a simulation theorem.  Control-theoretic observability is an \textbf{ANALOGY/CANDIDATE}: an observable state is defined relative to an observation model, which has not been forced on arbitrary SAT executions.
+
+Schur squares, quadratic relation ranks, Hilbert functions, and syzygies are \textbf{FAILED TRANSFERS} here because no code or graded algebra is forced by (R).  Collision entropy is exact for a declared map $z\mapsto B(F,z)$, but an $O(\log N)$ domain is already exhaustible; it adds no lower bound.  LWE-style worst-case/average-case architecture and special-soundness extraction remain \textbf{ANALOGY/CANDIDATE} until a construction-specific black-box reduction and forbidden witness theorem are supplied.  Cryptographic binding and random-oracle assumptions are inadmissible.
+
+The theorem relativizes if the same oracle is supplied to $B$ and to the resulting enumeration, so it does not cross Baker--Gill--Solovay.  Its proof is equally compatible with low-degree/algebraic oracle access and provides no nonalgebrizing hinge.  Natural Proofs is not directly triggered because no constructive large circuit property is established.  Uniformity is essential: per-input nonuniform strings or decoders are not a uniform resource scheme.
+
+\section{CORPUS REVIEWED}
+
+This run surveyed the current default-branch corpus and read root \path{main.tex}, actual \path{main4.tex}/\path{main5.tex}, \path{AGENTS.md}, \path{CODEX.md}, the authoritative research skill and protocol, TASK-001 through TASK-007 (and confirmed the historical TASK-008 path is absent), the newest verified MAIN, MODELBRIDGE-0018, LB-0017, TESTS-0013, RT-0017, SYNTHESIS-0013, status/coordination/coverage records, and the HEC, VSC-HEC, G-PPC-HEC, CRS-PPC, CCSPC, RCCN, and REACQ1 causal branch.  The predecessor RT-0017 report is substantive and has its verified sentinel.  Primary literature on self-reducibility, search versus decision, easy witnesses, time-bounded Kolmogorov complexity, relativization, algebrization, natural proofs, and FLMV was checked before promotion.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+MODELBRIDGE-0018 already proved the time-bounded conditional-program special case.  The genuinely new synthesis is the representation-free predicate theorem and the three-way size/access/SAME\_REALIZATION classification.  It is consistent with SYNTHESIS-0012's compiler-equivalence guard, LB-0017's explicit witness volume, and TESTS-0013's implicit matching counterexample.  Root MAIN's current OPEN verdict and SOURCE-PASS target are correct; no verified theorem is contradicted.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN is reconciled to add the log-succinct theorem, retire short-resource incompressibility as an intermediate bridge, and narrow SOURCE-PASS-ACCESS1: a source pass must be an actual externally fixed operation with charged access and a recursive endpoint, not the claimed absence of a short compatibility description.  P versus NP remains explicitly open.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\textbf{Adopted:} MODELBRIDGE-0018's source-relative theorem; SAT self-reduction; SYNTHESIS-0012's source/compiler equivalence guard; LB-0017's explicit-interface theorem; TESTS-0013's implicit-access counterexample; exact encoded length and SAME\_REALIZATION accounting.
+
+\textbf{Rejected:} absolute witness complexity; semantic witness volume as storage; compatibility-object size as arbitrary runtime; fixed exponents chosen before the unknown polynomial solver exponent.
+
+\textbf{Retired:} plain and polynomial-time conditional witness incompressibility as intermediate routes, and the generalized log-succinct resource bottleneck as an intermediate route.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+The root task list still names TASK-008 although the file is absent on the current branch; it remains historical and is not treated as an active specification.  Any older statement that a long witness, high compatibility rank, or lack of a canonical witness forces every SAT decider to store or expose that object is stale unless explicitly scoped to a declared interface.
+
+\section{Single highest-value target}
+
+Keep \texttt{SOURCE-PASS-ACCESS1}, with the following sharpened contract: construct one externally fixed, predecision, source-checkable, hereditary pass on the canonical clean-core encoding; give bit-local child access; charge construction, classification, every access, failed routes, replay, output, time, and peak workspace; prove a $K$-independent recursive landing in one model-matched unconditional forbidden region; and survive wrappers, easy families, maximal semantic access, and algebraic access.  Do not use witness or resource incompressibility as the missing arrow.
+
+\begin{thebibliography}{9}
+\bibitem{Bal} J.~L. Balc\'azar, ``Self-reducibility structures and solutions of NP problems,'' 1988.
+\bibitem{BG} M.~Bellare and S.~Goldwasser, ``The Complexity of Decision versus Search,'' \emph{SIAM Journal on Computing} 23(1), 1994.
+\bibitem{BGS} T.~Baker, J.~Gill, and R.~Solovay, ``Relativizations of the P=?NP Question,'' \emph{SIAM Journal on Computing} 4(4), 1975.
+\bibitem{AW} S.~Aaronson and A.~Wigderson, ``Algebrization: A New Barrier in Complexity Theory,'' \emph{Theory of Computing} 5, 2009.
+\bibitem{RR} A.~Razborov and S.~Rudich, ``Natural Proofs,'' \emph{JCSS} 55(1), 1997.
+\bibitem{MW} C.~Murray and R.~Williams, ``Circuit Lower Bounds for Nondeterministic Quasi-Polytime: An Easy Witness Lemma for NP and NQP,'' STOC 2018.
+\bibitem{FLMV} L.~Fortnow, R.~Lipton, D.~van Melkebeek, and A.~Viglas, ``Time-Space Lower Bounds for Satisfiability,'' \emph{JACM} 52(6), 2005.
+\end{thebibliography}
+
+\paragraph{Final status.}
+\texttt{LOG-SUCCINCT-RESOURCE-EQUIV1}: \EXACT{} (independent review pending).  Finite audit: \COMP.  \texttt{LOG-SUCCINCT-RESOURCE-AS-INTERMEDIATE1}: \RETIRED.  \texttt{SOURCE-PASS-ACCESS1}, arbitrary-decider transfer, model-matched forbidden realization, nonrelativization, nonalgebrization, and P versus NP: \OPEN.  P versus NP remains open.
+
+% END_OF_VERIFIED_REPORT::SYNTHESIS::SYNTHESIS-0014
+\end{document}

@@ -1,5 +1,21 @@
 # SYNTHESIS current run 2026-10-11
 
+## SYNTHESIS-0014 — log-succinct resource trilemma (2026-10-11T20:45:32Z)
+
+**Status:** core publication pending readback. **P versus NP remains OPEN.**
+
+- **PROVED/EXACT, independent review pending:** `LOG-SUCCINCT-RESOURCE-EQUIV1`.
+- **FALSIFIED/RETIRED as an intermediate route:** `LOG-SUCCINCT-RESOURCE-AS-INTERMEDIATE1` and conditional witness/resource incompressibility.
+- **COMPUTATIONAL:** 28,187 exact finite checks, zero failures, 0.180 seconds.
+- **Single OPEN target:** `SOURCE-PASS-ACCESS1` with externally fixed predecision semantics, bit-local access, hereditary coverage, arbitrary-exponent elimination, complete charging, and one model-matched forbidden realization.
+
+Report: `research/review/reports/synthesis/2026-10-11_2045_SYNTHESIS-0014.tex`.
+Historical MAIN: `research/main/2026-10-11_2045_MAIN_SYNTHESIS-0014.tex`.
+
+---
+
+# SYNTHESIS current run 2026-10-11
+
 ## SYNTHESIS-0012 — quotient covariance has no invariant middle (2026-10-11T18:48:00Z)
 
 **Status:** VERIFIED by exact GitHub readback. **P versus NP remains OPEN.**
