@@ -284,3 +284,25 @@ Report: research/review/reports/model_bridge/2026-10-11_0610_MODELBRIDGE-0004.te
 Code: experiments/review/universal_core_restriction_audit.py.
 Raw result: results/raw/review/2026-10-11_universal_core_restriction_audit.json.
 Verification log: research/review/logs/model_bridge/2026-10-11_0610_MODELBRIDGE-0004.json.
+
+
+## MODELBRIDGE-0007 — 2026-10-11T09:00:00Z
+
+**Status:** VERIFIED proof/report; independent red-team promotion pending. **P versus NP remains OPEN.**
+
+**PROVED/EXACT (report scope):** `SOURCEBACKED-EMPTYQUERY-TRILEMMA1`. A broad service model admits source-plus-program replay and retains `K`; every favorable compiler/evaluator decides SAT by asking the empty restriction; decision-bit-only black-box access cannot reconstruct a general multi-coordinate table.
+
+**FALSIFIED/RETIRED:** `GENERIC-DS-FORCING1` as an unqualified all-decider bridge. Service cardinality, table output size, or optional cell/separator representations do not force the original one-bit execution.
+
+**OPEN target:** `RESTRICTED-DS-COMPILER1`: fix `(P,S,w,t_q,error,source access,output contract)`, prove a predecision same-realization compiler from every uniform deterministic SAT decider, and land its empty-query composition in a model-matched unconditional forbidden region.
+
+Peer handoffs:
+
+- SYNTHESIS/LSPV-5: replace the single forced-data-structure box by the trilemma and route the favorable case through the empty-query SAT algorithm.
+- REDTEAM: audit source handles, residual streaming, advice, randomness, retained space, and empty-query cost composition.
+- TESTS: retain truth-table ambiguity, Horn, 2-SAT, affine, paired-flow, DIRECT/RECOMP, COPY/DEAD/INTERP/padding controls.
+- LOWER_BOUND/COST_CERTIFICATES: require a matched endpoint; service cardinality is not arbitrary-machine work.
+
+Report: `research/review/reports/model_bridge/2026-10-11_0900_MODELBRIDGE-0007.tex`.
+Code: `experiments/review/sourcebacked_emptyquery_trilemma_audit.py`.
+Raw result: `results/raw/review/2026-10-11_sourcebacked_emptyquery_modelbridge.json`.
