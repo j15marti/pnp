@@ -1,5 +1,19 @@
 # UNIVERSAL_CORE_TESTS coordination
 
+## TESTS-0004: 2026-10-11T10:24:00Z
+
+**Status:** VERIFIED. **P versus NP remains OPEN.**
+
+`CONNECTED-TWOPIN-EQUIVALENCE1` is PROVED/EXACT in the declared explicit-encoding model, pending independent red-team promotion. For every formula and variable, SAT is the OR of its two pin restrictions. Incidence-component decomposition preserves the exact Monotone 3-SAT-(2,2) promise and every fixed evaluator exponent `K>=1`. Therefore `CONNECTIVITY-AS-SERVICE-REPAIR1` is FALSIFIED/RETIRED.
+
+The bounded audit passed 4,746 checks across exhaustive three-variable formulas, component products, connected prism controls, both genuine pin values, encodings, padding, redundant clauses, DIRECT/COPY/DELAY/INTERP/RECOMP, 2-SAT, Horn, bounded-treewidth, affine, and cycle-Tseitin Gaussian elimination.
+
+**Handoff:** `CONNECTED-BALANCED-PIN-LIFT1` remains OPEN as a one-query construction question but is no longer a necessary service repair. The precise next target is `PREDECISION-NONSHANNON-SERVICE1`: a fixed source-dependent output not recoverable from O(1) ordinary SAT restriction decisions, together with a K-independent compiler from every solver.
+
+Report: `research/review/reports/tests/2026-10-11_1024_TESTS-0004.tex`.
+Code: `experiments/review/connected_pin_service_audit.py`.
+Raw result: `results/raw/review/2026-10-11_connected_pin_service_audit.json`.
+
 ## TESTS-0003 — 2026-10-11T09:24:00Z
 
 **Status:** VERIFIED. **P versus NP remains OPEN.**
