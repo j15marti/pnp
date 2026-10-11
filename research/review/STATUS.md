@@ -2,6 +2,8 @@
 
 Updated: 2026-10-11. **P versus NP remains OPEN.**
 
+`UNIVERSAL_CORE_TESTS TESTS-0002` proves `EXPLICIT-SERVICE-REPRESENTATION-GATE1` on a duplicate-free `H_(2,2)` independent-block family. The fixed restriction-answer service has `2^(5b)=2^(Theta(N/log N))` explicit output bits, yet a block-ordered reduced OBDD has at most `13b` nonterminal nodes and supports uniform `O(b)`-time coordinate access. Thus an explicit batch-output lower bound is an interface cost, not work forced in a one-bit SAT execution; `EXPLICIT-ANSWER-VECTOR-IMPLIES-UCORE-COST1` is **FALSIFIED/RETIRED**. The audit passed 34,160 service coordinates, 34,160 independent truth checks, 15 exact OBDD reductions, and 288 hostile wrapper controls. `SUCCINCT-SERVICE-LB1`, `SAT-MERGE-FORCING1`, the cost-preserving arbitrary-solver compiler, and P versus NP remain **OPEN**.
+
 `REDTEAM RT-0005` proves `CAUSAL-GUARD-INSERT1` in the declared decoded-checkpoint model. Any polynomial-time source functional can be made decoder-relative causally indispensable by a uniform polynomial guard without changing legal one-bit semantics; if one-bit functionals are allowed, the output bit makes existential causality trivial. Combined with RT-0004's DIRECT/RECOMP omission, decoded causal use alone does not force universal compatibility acquisition, memory, time, communication, or strict contraction. A source-rich hard-core service, cost-preserving arbitrary-solver compiler, strict successor, and nonrelativizing/nonalgebrizing endpoint remain **OPEN**. The audit passed 217,670 decoded interventions and matched dead-materialization controls across all declared hostile families and five encodings.
 
 
