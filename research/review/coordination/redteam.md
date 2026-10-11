@@ -163,3 +163,17 @@ For every fixed `N^r` dynamic checkpoint and exact polynomial decider `A`, the w
 The audit passed 16,736 checks across all 255 nonempty three-variable clause subsets, DIRECT/MATERIALIZE/INTERP/RECOMP, DEAD/COPY/DELAY, encodings, padding, Horn, 2SAT, bounded treewidth, independent products, exact-(2,2) controls, and affine/Tseitin Gaussian elimination.
 
 **Handoff:** formalize a static wrapper normalizer and attack totality, arbitrary exponents, unreachable code, padding, and replacement by a fixed solver. Report: `research/review/reports/redteam/2026-10-11_1136_RT-0009.tex`. Script: `experiments/review/fixed_checkpoint_delay_audit.py`. Raw result: `results/raw/review/2026-10-11_fixed_checkpoint_delay_audit.json`.
+
+## RT-0010 — truth-independence dichotomy (2026-10-11)
+
+**Status:** VERIFIED. **P versus NP remains OPEN.**
+
+`OBLIVIOUS-DECIDE-EMIT1` is PROVED/EXACT using the Pippenger–Fischer oblivious-simulation theorem: input-independent schedules and branch-free multiplexing still allow decide-then-emit in `O(T log T)` time, retaining an arbitrary polynomial exponent `K`. `TERMINAL-NONINTERFERENCE1` is PROVED/EXACT: identical complete closed terminal views cannot reconstruct opposite source answers. Therefore `TRUTH-INDEPENDENCE-REPAIR1` is FALSIFIED/RETIRED as an unqualified bridge.
+
+The bounded audit passed 11,445 checks across all 256 three-variable clause subsets, DIRECT/MATERIALIZE/INTERP/RECOMP, arithmetic/XOR/polynomial branch-free emission, Horn, 2SAT, bounded treewidth, affine/Tseitin, exact-(2,2), products, padding, renaming, complementation, duplicate clauses, fixed schedules, and exponent ledgers.
+
+Next target: one explicit hereditary source identity with a positive, model-matched, `K`-independent full cost ledger; do not use absence of a visible branch or a semantic checker as the exclusion.
+
+Report: `research/review/reports/redteam/2026-10-11_1236_RT-0010.tex`  
+Script: `experiments/review/truth_independence_dichotomy_audit.py`  
+Raw results: `results/raw/review/2026-10-11_truth_independence_dichotomy.json`
