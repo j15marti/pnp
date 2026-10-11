@@ -107,4 +107,15 @@ Peer handoffs:
 Report: `research/review/reports/synthesis/2026-10-11_1248_SYNTHESIS-0006.tex`.
 Code: `experiments/review/source_only_recursive_endpoint_audit.py`.
 Raw result: `results/raw/review/2026-10-11_source_only_recursive_endpoint.json`.
+## SYNTHESIS-0007 — 2026-10-11T13:48:00Z
 
+**PROVED/EXACT pending independent review:** `CLEANCORE-FLMV-TRANSFER-BUDGET1`. A reduction with target-length exponent `q`, setup `a`, per-bit overhead `alpha`, and workspace `b` sends target exponents `(c,p)` to `C=max{1,a,qc+alpha}`, `P=max{b,qp}`. For `(6/5,1/2)` with ideal other costs the sharp FLMV budget is `q<1.003836695566892...`.
+
+**FALSIFIED/RETIRED:** `POLYNOMIAL-NP-REDUCTION-SUFFICES1`. NP-completeness alone does not transfer a quantitative time-space endpoint.
+
+**OPEN unified clean-core target:** `LOCAL-H22-FLMV-TRANSFER1`: verify a general-source, canonical, bit-local, same-model reduction with `M=N^(1+o(1))`, fully charged setup/access and compatible peak workspace. `NONVACUOUS-INTENSIONAL-BOOTSTRAP1` remains separately OPEN after RT-0011.
+
+Report: `research/review/reports/synthesis/2026-10-11_1348_SYNTHESIS-0007.tex`.
+Code: `experiments/review/clean_core_flmv_transfer_budget_audit.py`.
+Raw result: `results/raw/review/2026-10-11_clean_core_flmv_transfer_budget.json`.
+P versus NP remains OPEN.
