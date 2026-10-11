@@ -327,3 +327,14 @@ Raw result: `results/raw/review/2026-10-11_sourcebacked_emptyquery_modelbridge.j
 **FALSIFIED/RETIRED:** treating arbitrary static wrapper normalization as a weaker bridge to the endpoint.
 
 **Handoff:** construct or falsify one source-defined non-Shannon successor identity independent of supplied solver code, with hereditary coverage, physical child access, all failed routes, replay, reconstruction, and peak workspace charged. Report: `research/review/reports/model_bridge/2026-10-11_1155_MODELBRIDGE-0010.tex`. Script: `experiments/review/static_normalizer_trilemma_audit.py`. Raw result: `results/raw/review/2026-10-11_static_normalizer_trilemma.json`.
+
+
+## MODELBRIDGE-0017 — restriction-selector endpoint equivalence (2026-10-11)
+
+**PROVED/EXACT, independent review pending:** a total polynomial literal one-variable restriction selector exists iff SAT is in P. Under SAT in P, one current-scale truth-bit call selects the exact child; on the exact-(2,2) core it retains the unknown exponent K.
+
+**FALSIFIED/RETIRED:** `RESTRICTION-PROVENANCE-REPAIR1`; source provenance and one-branch output do not make acquisition predecision.
+
+**OPEN:** `PREDECISION-POWER-CONTRACTION1`, arbitrary-decider SAME_REALIZATION transfer, matched endpoint, nonrelativization, nonalgebrization, P versus NP.
+
+Report: `research/review/reports/model_bridge/2026-10-11_2000_MODELBRIDGE-0017.tex`. Script: `experiments/review/restriction_selector_endpoint_audit.py`. Raw result: `results/raw/review/2026-10-11_restriction_selector_endpoint.json`.

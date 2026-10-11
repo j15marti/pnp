@@ -1,0 +1,378 @@
+% PNP REVIEW REPORT::MODEL_BRIDGE::MODELBRIDGE-0017::2026-10-11T20:00:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\Htwo}{\mathcal H_{2,2}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{MODELBRIDGE-0017: Literal Restriction Selectors Are Endpoint-Equivalent}
+\author{UNIVERSAL\_CORE\_BRIDGE}
+\date{11 October 2026, 20:00 UTC}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+LB-0016 leaves a pruned source-dependent restriction pass as the surviving
+alternative to exponential all-branch emission.  This run proves the exact
+boundary for the weakest total version of that repair.  A uniform polynomial
+machine that, on every nonterminal CNF $F$, outputs one literal one-variable
+restriction $F\upharpoonright_{x=b}$ with
+$\SAT(F)=\SAT(F\upharpoonright_{x=b})$ can be iterated to decide SAT.
+Conversely, if SAT is in P, then one call to any fixed polynomial SAT decider
+on $F\upharpoonright_{x=0}$ selects such a child: choose zero when that child
+is satisfiable and one otherwise.  Thus literal provenance, one-branch
+output, and exact compatibility preservation do not define an intermediate
+resource.  On the exact-$(2,2)$ clean core the query remains
+$N^{1-o(1)}$, so the selector retains the arbitrary decider exponent $K$ and
+does not yield a model-matched contradiction.  The predecision,
+$K$-independent, strict-power-contraction compiler remains open.  An exhaustive
+audit passed 725,007 checks.  P versus NP remains open.
+\end{abstract}
+
+\section{Executive claim card}
+
+\begin{center}\small
+\begin{tabular}{@{}p{0.42\linewidth}p{0.19\linewidth}p{0.31\linewidth}@{}}
+\toprule
+Claim & Status & Scope\\ \midrule
+\texttt{RESTRICTION-SELECTOR-ENDPOINT-EQUIV1} & \EXACT, independent review pending &
+Polynomial existence is equivalent to polynomial SAT decision.\\
+\texttt{ONE-CALL-RESTRICTION-SELECTOR1} & \EXACT &
+Under $\SAT\in\mathsf P$, one current-scale truth-bit call selects a child.\\
+\texttt{RESTRICTION-PROVENANCE-REPAIR1} & \RETIRED &
+Literal source provenance alone does not exclude decision work.\\
+Finite audit & \COMP & 725,007 checks; no asymptotic inference.\\
+\texttt{PREDECISION-POWER-CONTRACTION1} & \OPEN &
+$K$-independent, hereditary, charged source rule.\\
+UCORE-TIME1 and P versus NP & \OPEN & No separation.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The exact quantifier prefix tested is
+\[
+ \exists S\in\mathsf{FP}\ \forall F\in\mathsf{CNF},\ |\mathrm{vars}(F)|>0:
+ S(F)=(x,b,F\upharpoonright_{x=b})\ \land\
+ \SAT(F)=\SAT(F\upharpoonright_{x=b}).                 \tag{1}
+\]
+The machine is one uniform deterministic random-access machine.  All source
+reads, simplification, query construction or access, calls, output bytes,
+iteration, final evaluation and workspace are charged.  The SAME\_REALIZATION
+is the selector together with its recursive evaluator.  The report does not
+claim that an arbitrary SAT program internally exposes this selector.
+
+\section{Clean core, encoding and compatibility}
+
+Let $\Htwo$ be the duplicate-free proper Monotone $3$SAT-$(2,2)$ family:
+every variable occurs twice positively and twice negatively, so $m=4n/3$.
+D\"ocker proves this family NP-complete \cite{doecker}.  In the canonical
+indexed clause-list encoding the complete source length is
+$N=\Theta(n\log n)$.  A restriction descendant is an ordinary width-at-most-
+three CNF with the same declared variable universe; compact renaming is also
+permitted when its cost is charged.
+
+For a variable $x$, define the two-bit semantic compatibility set
+\[
+ H_x(F)=\{b\in\{0,1\}:F\upharpoonright_{x=b}\text{ is satisfiable}\}.
+\]
+Then $\SAT(F)=[H_x(F)\ne\varnothing]$.  The selector below does not enumerate
+$H_x(F)$.  It asks only whether $0\in H_x(F)$ and returns one child.
+
+\section{Exact endpoint equivalence}
+
+\begin{definition}[Exact literal restriction selector]
+A selector $S$ is a total uniform machine which, for every CNF with a live
+variable, chooses a source variable $x$, a bit $b$, and outputs the canonical
+simplification $G=F\upharpoonright_{x=b}$ such that
+\[
+ \SAT(F)=\SAT(G).                                      \tag{2}
+\]
+The output must be a literal restriction of the supplied source, not an
+unrelated constant endpoint.
+\end{definition}
+
+\begin{theorem}[\texttt{RESTRICTION-SELECTOR-ENDPOINT-EQUIV1}]
+The following are equivalent.
+\begin{enumerate}[label=(\roman*)]
+\item SAT has a total uniform deterministic polynomial-time decider.
+\item SAT has a total uniform deterministic polynomial-time exact literal
+restriction selector.
+\end{enumerate}
+If the selector uses time $N^{r+o(1)}$ and space $N^{p+o(1)}$, direct
+iteration gives a decider using time $N^{r+1+o(1)}$ and conservative writable
+space $N^{\max\{p,1\}+o(1)}$ in the explicit-child realization.
+\end{theorem}
+
+\begin{proof}
+For (ii)$\Rightarrow$(i), repeatedly apply $S$.  Each step fixes a previously
+live variable, so at most $n\le N$ steps reach a variable-free formula.
+Equation (2) preserves the answer at every step; the terminal formula is
+evaluated directly.  Restriction does not increase explicit clause-list size
+apart from fixed-format normalization, which can be implemented with linear
+overhead.  Charging $N^{r+o(1)}$ at each of at most $N$ steps proves the time
+bound.  Keeping the current explicit child and the selector workspace proves
+the conservative space bound.
+
+For (i)$\Rightarrow$(ii), fix a polynomial decider $A$ and choose, say, the
+first live variable $x$.  Construct $F_0=F\upharpoonright_{x=0}$ and run
+$A(F_0)$.  If the answer is one, output $F_0$.  Otherwise output
+$F_1=F\upharpoonright_{x=1}$.  If $F_0$ is satisfiable then both $F$ and the
+chosen child are satisfiable.  If $F_0$ is unsatisfiable, the elementary
+identity
+\[
+ \SAT(F)=\SAT(F_0)\lor\SAT(F_1)                       \tag{3}
+\]
+shows that $F$ is satisfiable exactly when $F_1$ is.  Thus (2) holds on both
+YES and NO sources.  Construction and the single call are polynomial.
+\end{proof}
+
+\begin{corollary}[\texttt{ONE-CALL-RESTRICTION-SELECTOR1}]
+Assume $\SAT\in\mathsf P$ via a decider with time exponent $K$.  The reverse
+construction makes exactly one SAT call per selected variable.  Its local
+time exponent is at least the cost of that call; the construction does not
+turn unknown $K$ into a fixed favorable exponent.
+\end{corollary}
+
+This is narrower than TESTS-0006's constant decide-then-emit theorem: the
+child here is forced to be a literal restriction of the source.  The forward
+direction is a special case of SYNTHESIS-0006's recursive endpoint closure.
+The incremental result is that the provenance restriction still admits an
+exact one-call converse rather than excluding decision-dependent acquisition.
+
+\section{Encoded query scale and the failed bridge}
+
+On $F\in\Htwo$, fixing one variable changes only its four incident clauses.
+With inherited fixed-width variable addresses, the first query has
+\[
+ M=N-\Theta(\log n)=N^{1-o(1)}.                         \tag{4}
+\]
+Under compact renaming it still contains at least $4n/3-4$ untouched proper
+clauses, so $M=\Theta(N)$ and $\log M/\log N\to1$.  Therefore a call costing
+$M^{K+o(1)}$ costs $N^{K+o(1)}$.  Repeating the selector is a standard
+search-to-decision path, not a $K$-erasing fractional bootstrap.
+
+Equation (4) gives the exact dichotomy with LB-0016.  Emit every restriction
+needed for strict power shrink and explicit volume is exponential.  Select
+one answer-preserving restriction by a SAT truth-bit call and volume is one,
+but the first calls are current-scale and retain $K$.  Neither arm supplies
+the open source pass.
+
+Requiring every child to remain in $\Htwo$ would be a different, stronger
+promise-preserving compiler theorem: ordinary literal restriction leaves the
+exact-occurrence family.  No such clean-core-hereditary normalizer is proved
+here.  Re-expanding width-at-most-three descendants to proper 3CNF is a
+linear local transformation, but returning exactly to $\Htwo$ with favorable
+physical access remains part of the broader open transfer.
+
+Thus \texttt{RESTRICTION-PROVENANCE-REPAIR1} is \RETIRED{}: literal source
+provenance, one branch, and answer preservation alone do not make the pass
+predecision or cheaper than SAT.  The smallest surviving repair is an
+externally specified, source-checkable rule whose construction is proved in a
+fixed $K$-independent budget, gives strict power-size children with charged
+access, and is hereditary without invoking the parent decision.
+
+\section{Hostile controls and SAME\_REALIZATION}
+
+\begin{description}[leftmargin=0cm,labelwidth=0cm]
+\item[] \textbf{Horn, 2SAT, affine/Tseitin, bounded treewidth.}
+The selector theorem holds, while the membership query can be answered by the
+fragment's specialized polynomial algorithm.  Large or complicated
+$H_x(F)$ is not forced computation.
+\item[] \textbf{Independent products.}
+One selected bit may be determined by one component; no simultaneous storage
+of all component compatibilities follows.
+\item[] \textbf{Paired clean-core island.}
+The selector follows a satisfying restriction path, while the first query
+scale tends to one.  The recognizable matching bypass of TESTS-0012 is
+consistent with the theorem and remains a pointwise control.
+\item[] \textbf{Padding, redundancy and alternate encodings.}
+Semantic selection survives.  Discarding padding may make the child look
+short, but parsing, validation, translation and source length conversion are
+charged; no endpoint exponent transfers for free.
+\item[] \textbf{DIRECT/DEAD/COPY/DELAY/INTERP/RECOMP.}
+Every exact implementation returns the same membership bit, so an extensional
+selector takes the same semantic branch.  Its actual time nevertheless
+includes the chosen implementation.  DELAY therefore prevents a fixed
+positive-scale exponent uniform over all polynomial implementations, exactly
+as MODELBRIDGE-0015 proves.
+\item[] \textbf{One-bit decision output.}
+The recursive evaluator returns only SAT.  It never materializes the full
+compatibility set, a witness table, proof, branching program, circuit, or
+communication transcript.
+\end{description}
+
+\section{Literature and barrier-transfer preflight}
+
+The two obstacles were (i) whether literal restriction provenance excludes
+decide-first acquisition and (ii) whether the resulting query scale can enter
+a model-matched time--space forbidden region.  Downward self-reducibility is
+well studied; Harsha--Mitropolsky--Rosen explicitly distinguish the declared
+smaller-instance oracle model and prove consequences for TFNP \cite{hmr}.
+Their results do not convert the one-query construction above into a favorable
+SAT compiler.  Chavrimootoo et al. give a directly relevant methodological
+warning: imposing a particular downward-self-reduction structure on every SAT
+algorithm is not a valid unrestricted lower-bound step \cite{chkln}.
+
+FLMV transfers exactly only after one ordinary random-access realization
+meets its simultaneous time and space hypotheses \cite{flmv}.  Here the
+current-scale call retains $K$, so that endpoint is not reached.  VLSI
+routing, control observability, distributed cuts, pebbling, proof search and
+branching-program bounds are \textbf{FAILED TRANSFER}: each constrains a
+declared interface, not every one-bit SAT computation.  Downward
+self-reduction is the only \textbf{directly transferable theorem mechanism}
+used here.  Local decoding and black-box reduction architecture are
+\textbf{ANALOGY/CANDIDATE} until they provide strict scale reduction with all
+costs charged.
+
+The proof relativizes: with a common oracle, call the oracle-relative SAT
+decider on the zero child and repeat the same logic.  Low-degree/algebraic
+oracle access does not invalidate it.  Hence the result does not cross the
+Baker--Gill--Solovay or Aaronson--Wigderson barriers \cite{bgs,aw}.  No large
+constructive circuit property is used, so Natural Proofs is not the present
+hinge \cite{rr}.  Nonuniform advice would add another acquisition/uniformity
+obligation and does not remove the charged current-scale call.
+
+\section{Post-quantum technique ledger}
+
+Schur squares, puncturing, quadratic-relation rank, Hilbert functions,
+syzygies and graded Betti numbers are \textbf{FAILED TRANSFER}: the selector
+does not encode $H_x(F)$ as a code and no such object is forced in its
+execution.  Lossiness/collision entropy is an \textbf{EXACT OBJECT
+observation} only for the chosen two-valued selector map; its large fibers are
+an exploitable compression, not a hardness theorem.  The LWE black-box lesson
+is an \textbf{ANALOGY/CANDIDATE needing a new bridge}; the one-call reduction
+is exact, but it is neither a worst-case/average-case reduction nor exponent
+improving.  Collision extraction/special soundness and hash/random-oracle
+methods are \textbf{FAILED TRANSFER} absent an unconditional conflicting-
+opening witness theorem.  No cryptographic assumption is used.
+
+\section{Bounded reproducible audit}
+
+The dependency-free invocation
+\begin{verbatim}
+timeout 30s python3 experiments/review/restriction_selector_endpoint_audit.py \
+  --output results/raw/review/2026-10-11_restriction_selector_endpoint.json
+\end{verbatim}
+completed in 1.829 seconds.  It exhaustively checked all 65,814 Boolean
+functions through four variables, 262,948 decision-equivalent path steps,
+394,884 wrapper paths, all 256 clause-cube CNFs under four representation
+variants, named tractable/product/padding controls, seven paired-$K_{3,3}$
+query scales through 576 variables, and 40 exponent-retention assertions.
+Total: 725,007 checks.  The script SHA-256 is
+\nolinkurl{2fd5c41fb9bce0559fc601e550972c2155451b03c4ecd8018b122866630ea88b};
+the final JSON SHA-256 is
+\nolinkurl{f68320bd6f5948fceaad8b9387d2e0025b55a31fc661e0ee355b3485ebfba195}.
+The evidence is \COMP{} only.  The symbolic theorem, not extrapolation,
+establishes endpoint equivalence.  One sub-30-second chunk sufficed.
+
+\section{CORPUS REVIEWED}
+
+The run surveyed all 2,252 paths at GitHub head
+\nolinkurl{41e206b9e46b42a6aafb721944a44d011f913bae}; read root
+\path{main.tex}, actual \path{main4.tex}/\path{main5.tex},
+\path{AGENTS.md}, \path{CODEX.md}, the PNP skill/mode/protocol and every task
+specification; and inspected current/historical MAIN SYNTHESIS-0012/0013.
+The latest peer reports were MODELBRIDGE-0016, LB-0016, TESTS-0012, RT-0017
+and SYNTHESIS-0013.  Materially relevant earlier artifacts included
+TESTS-0006, SYNTHESIS-0006, MODELBRIDGE-0011/0015, the source-successor,
+source-only-recursion and restriction audits, and the HEC/VSC-HEC/G-PPC-HEC/
+CRS-PPC/CCSPC/RCCN/Search-G causal branch.  Governance and cited raw results
+were checked.  SYNTHESIS-0013, the immediate stagger predecessor, had the
+expected header and final sentinel and was read back from GitHub, so no write
+recovery was needed.  Primary literature was checked before promotion.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+TESTS-0006 already proves endpoint equivalence for arbitrary constant
+decide-then-emit successors; SYNTHESIS-0006 already proves recursive source
+closure; MODELBRIDGE-0011 already eliminates strictly fractional extensional
+oracle calls.  Those results are adopted, not renamed.  The incremental
+theorem here closes the literal-restriction provenance repair with a one-call
+converse and identifies its exact current-scale cost.  It agrees with
+LB-0016's own warning about self-reduction and does not contradict its
+all-branch output theorem or TESTS-0012's promise-family bypass.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN's OPEN verdict, exact clean core, SAME\_REALIZATION guard and
+single source-pass target remain correct.  The surviving target is narrowed:
+``one pruned restriction'' is insufficient unless its selection rule is
+predecision and proved in a fixed $K$-independent budget.  This review role
+has no root ownership region, so root \path{main.tex} is not edited.
+Main4/main5 receive nonpromotional includes recording the exact guard.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+Adopted: the standard restriction identity, TESTS-0006 endpoint discipline,
+SYNTHESIS-0006 recursive closure, LB-0016 fanout theorem, TESTS-0012's
+one-branch island, and the positive-query-scale wrapper gate.  Rejected:
+literal provenance, a unique selected child, or compatibility preservation as
+evidence of predecision work.  Retired:
+\texttt{RESTRICTION-PROVENANCE-REPAIR1}.  Preserved OPEN:
+\texttt{PREDECISION-POWER-CONTRACTION1}, arbitrary-decider transfer, the
+matched endpoint, nonrelativization and nonalgebrization.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any current handoff describing a total exact pruned restriction selector as
+an intermediate resource solely because its output is source-derived is now
+overstated.  The term ``predecision'' must be an operational, charged
+restriction on construction rather than a chronology label: the one-query
+selector is extensionally source-derived but performs SAT decision work.
+No active root theorem requires downgrading.
+
+\section{Single next target}
+
+Prove or falsify \texttt{PREDECISION-POWER-CONTRACTION1}: one externally
+fixed source-checkable rule, defined independently of SAT truth and supplied
+program timing, must on every unresolved source produce polynomial aggregate
+ordinary-CNF descendants of length at most $N^{h+o(1)}$ for one fixed $h<1$,
+preserve decision, recur hereditarily, and charge discovery, failed routes,
+bit-local access, serialization, replay, reconstruction, output, retained
+ancestors and peak space.  It must survive exact paired islands, UNSAT
+sources, Horn/2SAT/affine/treewidth, products, padding, alternate encodings
+and all wrappers, then land one SAME\_REALIZATION pair in a verified
+unconditional endpoint.  This arrow, UCORE-TIME1 and P versus NP remain
+\OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{doecker} J.~D\"ocker, \emph{Monotone 3-Sat-$(2,2)$ is NP-complete},
+Discrete Applied Mathematics 295 (2021), 1--9.
+\url{https://arxiv.org/abs/1912.08032}.
+\bibitem{hmr} P.~Harsha, D.~Mitropolsky and A.~Rosen,
+\emph{Downward Self-Reducibility in TFNP}, ITCS 2023.
+\url{https://arxiv.org/abs/2209.10509}.
+\bibitem{chkln} M.~Chavrimootoo, Y.~He, M.~Kotler-Berkowitz, H.~Liuson and
+Z.~Nie, \emph{Evaluating the Claims of ``SAT Requires Exhaustive Search''},
+2023. \url{https://arxiv.org/abs/2312.02071}.
+\bibitem{flmv} L.~Fortnow, R.~Lipton, D.~van Melkebeek and A.~Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability}, JACM 52(6) (2005),
+835--865. \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{bgs} T.~Baker, J.~Gill and R.~Solovay,
+\emph{Relativizations of the $P=?NP$ Question}, SIAM J. Comput. 4(4)
+(1975), 431--442. \url{https://doi.org/10.1137/0204037}.
+\bibitem{aw} S.~Aaronson and A.~Wigderson, \emph{Algebrization},
+ACM TOCT 1(1) (2009). \url{https://www.scottaaronson.com/papers/alg.pdf}.
+\bibitem{rr} A.~Razborov and S.~Rudich, \emph{Natural Proofs}, JCSS 55(1)
+(1997), 24--35. \url{https://eccc.weizmann.ac.il/report/1994/010/}.
+\end{thebibliography}
+
+\paragraph{Final status.}
+\texttt{RESTRICTION-SELECTOR-ENDPOINT-EQUIV1} and
+\texttt{ONE-CALL-RESTRICTION-SELECTOR1}: \EXACT, independent review pending.\
+Finite audit: \COMP.\
+\texttt{RESTRICTION-PROVENANCE-REPAIR1}: \RETIRED.\
+\texttt{PREDECISION-POWER-CONTRACTION1}, arbitrary-decider SAME\_REALIZATION
+transfer, UCORE-TIME1, nonrelativization, nonalgebrization and P versus NP:
+\OPEN.  P versus NP remains open.
+
+% END_OF_VERIFIED_REPORT::MODEL_BRIDGE::MODELBRIDGE-0017
+\end{document}
