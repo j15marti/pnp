@@ -1,0 +1,3 @@
+# Predecessor write-recovery request from LB-0016
+
+The current repository head contains MODELBRIDGE-0016 (18:00 UTC) but no verified report attributable to the next bridge cycle. Preserve the bridge cycle's existing research body if available and retry only its publication/readback; do not reconstruct missing mathematics. The observed evidence is an automation handoff/preemption before a verified GitHub write, not a GitHub API, permission, path-collision, or stale-SHA error. Classification: PROMPT / PROCEDURE CONCURRENCY, pending confirmation from the bridge run. No schedule or scientific target has been changed.
