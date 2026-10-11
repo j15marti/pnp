@@ -1,0 +1,326 @@
+% PNP REVIEW REPORT::REDTEAM::RT-0005::2026-10-11T06:36:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{3SAT}}
+\newcommand{\Pclass}{\mathsf P}
+\newcommand{\NPclass}{\mathsf{NP}}
+\title{REDTEAM RT-0005:\\
+Decoded Causal Use Is Trivial, Insertable, or Implementation-Relative}
+\author{P versus NP project review}
+\date{11 October 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Result and strict status.}
+This run attacks the decoder-relative causal repair left open by RT-0004 and
+LB-0006.  It proves an exact trilemma.  First, if the candidate functional may
+be one bit, every nonconstant decider has the final output bit as a trivial
+causal functional.  Second, every polynomial-time source functional can be
+made decoder-relative causally indispensable by a uniform polynomial-time
+guard compiler, without changing the accepted language.  Third, RT-0004's
+DIRECT and RECOMP equality deciders omit the designated rich mismatch vector
+that MATERIALIZE and the new guard use.  Thus causal use by itself is neither
+a lower-bound resource nor an extensional invariant of the decision problem.
+
+\textsf{CAUSAL-GUARD-INSERT1} below is \textbf{PROVED/EXACT} in the declared
+checkpoint-intervention model.  The claim that decoded causal use alone
+forces acquisition, time, space, communication, or strict source contraction
+for every exact SAT solver is \textbf{FALSIFIED/RETIRED}.  This does not rule
+out every source-specific functional on the NP-complete clean core.  A useful
+repair must exclude the output bit and optional guards, survive DIRECT/RECOMP,
+bind cost to the same execution, and yield a strict $N^\lambda$ successor for
+one fixed $\lambda<1$ or another independent endpoint.  Those arrows and P
+versus NP remain \textbf{OPEN}.
+
+\section{Preflight, predecessor, and claim card}
+The repository was read at head
+\texttt{a30f53b8d94d31fbcc75806a2f9300230ebe0f7a}.  LB-0006 is the newest
+verified causal peer: its report is substantive, contains its unique header
+and final sentinel, and was read back from GitHub.  It defeats polynomially
+bounded raw-cell causality by majority replication but explicitly leaves
+decoded causality open.  RT-0004 already separates raw exposure, decoded
+exposure, and external derivability.  No recovery write was required.
+
+The strongest useful version of the attacked slogan has the form
+\[
+ \forall A\in\mathcal A_{\SAT}\ \forall F\in\mathcal H\quad
+ \exists Q\quad
+ \mathsf{Dcause}(Q;\tau_A(F))\wedge
+ \mathsf{LBResource}(Q,\tau_A(F)),                         \tag{1}
+\]
+where $A$ is one total uniform deterministic exact solver, $\tau_A(F)$ is its
+actual execution on the canonical read-only source, and every decoder,
+intervention, replay, output and workspace cost belongs to the same
+realization.  If $Q$ may be the output bit, the first conjunct is vacuous.  If
+$Q$ is a fixed rich source functional, DIRECT/RECOMP must be handled.  If an
+implementation is merely observed to use $Q$, the guard compiler below shows
+that this use can be optional instrumentation.
+
+The SAME\_REALIZATION objects are $A$, source $x$, the actual checkpoint,
+the encoded buffer, its declared decoder, the intervened continuation, the
+recomputed source functional and the final bit.  The weakest material result
+is to show that decoded causal use can be inserted with only polynomial
+overhead; that is enough to prevent causality alone from certifying hardness.
+
+\section{Exact decoded checkpoint model}
+\begin{definition}[Decoder-relative intervention]
+Let $q(x)\in\{0,1\}^{m(|x|)}$ be a total functional.  An implementation has a
+declared checkpoint buffer $c=e(q(x))$, where $e$ is injective and has a
+decoder $d$ satisfying $d(e(y))=y$.  A decoded intervention replaces $c$ by
+$e(y)$ for some $y\ne q(x)$, keeps the read-only source fixed, and resumes the
+same transition program.  The buffer is decoder-relative causally
+indispensable when such an intervention changes the final output.
+\end{definition}
+
+This definition is deliberately stronger than raw-coordinate occurrence and
+is invariant under the particular invertible encodings named in the model.
+It is still implementation-relative: an execution with no such buffer offers
+no checkpoint on which the intervention is defined.
+
+\section{Causal-guard insertion theorem}
+\begin{theorem}[CAUSAL-GUARD-INSERT1]
+Let $A$ be a total deterministic decider for a language $L$, and let $q$ be a
+total deterministic source functional.  Suppose $A$, $q$, $e$, and $d$ run in
+time polynomial in $N=|x|$, $|q(x)|$ is polynomially bounded, and
+$d(e(y))=y$.  There is a total uniform deterministic decider
+$G_{A,q,e}$ for $L$ with polynomial time and space such that the declared
+buffer $e(q(x))$ is decoder-relative causally indispensable on every input.
+\end{theorem}
+\begin{proof}
+On source $x$, compute $y=q(x)$, store $c=e(y)$, compute $b=A(x)$, and pause
+at the declared checkpoint.  Then compute $y'=q(x)$ again, decode
+$z=d(c)$, and output
+\[
+ G_{A,q,e}(x,c)=
+ \begin{cases}
+ b,&z=y',\\
+ 1-b,&z\ne y'.
+ \end{cases}                                               \tag{2}
+\]
+On an ordinary execution $c=e(q(x))$, so $z=y'=q(x)$ and the output is
+$A(x)$.  Under any decoded intervention $c\leftarrow e(y^*)$ with
+$y^*\ne q(x)$, equation (2) outputs $1-A(x)$.  Hence the buffer is causally
+indispensable.  The construction runs $A$ once and $q$ twice and performs
+one encoding, decoding and comparison.  Polynomial bounds and uniformity are
+preserved.
+\end{proof}
+
+The theorem is not a SAT lower bound.  It is a compiler for adding a
+counterfactual dependency that is a semantic no-op on every legal execution.
+Its cost is
+\[
+ T_G(N)=T_A(N)+2T_q(N)+T_e(N)+T_d(N)+O(m(N)),              \tag{3}
+\]
+with peak writable space bounded by the corresponding sum (or a smaller
+reused-workspace implementation).  Equation (3) preserves ``polynomial'' but
+does not remove an arbitrary exponent $K$.
+
+\begin{corollary}[One-bit triviality]
+If interventions are allowed immediately before emission, the final output
+bit of every nonconstant one-bit decider is a decoded causal functional of
+length one.  Therefore an existential statement of causal use without an
+independent richness and cost condition cannot imply a superconstant resource.
+\end{corollary}
+
+\begin{corollary}[P=NP-compatible consequence]
+Assume $\Pclass=\NPclass$ and choose the hypothesized polynomial SAT decider
+$A$.  For every $q\in\mathsf{FP}$ and every polynomial invertible encoding,
+$G_{A,q,e}$ is still a polynomial exact SAT decider.  Thus optional decoded
+causal use creates no contradiction under the hypothesis.
+\end{corollary}
+
+\section{What is actually falsified}
+RT-0004 supplies the omission side on a proper-three-CNF equality family.  A
+DIRECT solver streams comparisons into one OR bit, while RECOMP regenerates
+prefix information from the source; neither retains the length-$n$ mismatch
+vector $q=u\oplus v$.  MATERIALIZE retains $q$ but need not consume it.
+Applying CAUSAL-GUARD-INSERT1 makes the same $q$ indispensable.  All versions
+have identical unmodified one-bit semantics.
+
+Consequently the following generic implications fail:
+\[
+ \text{decoded causal use in one exact implementation}
+ \Longrightarrow \text{semantic necessity},              \tag{4}
+\]
+\[
+ \text{decoded causal use}
+ \Longrightarrow \text{large time, space, or communication},              \tag{5}
+\]
+and
+\[
+ \exists Q\ \mathsf{Dcause}(Q;\tau_A(F))
+ \Longrightarrow \text{nontrivial lower-bound object}.    \tag{6}
+\]
+Equation (4) is refuted by optional guard insertion, (5) by its polynomial
+overhead and easy controls, and (6) by the output bit.  The theorem does not
+prove that every possible $q$ can be omitted on the NP-complete
+$\mathcal H_{2,2}$ core.  A source-specific fixed-functional theorem with an
+implementation-independent interface remains \textbf{OPEN}; it must add a
+cost-preserving compiler for executions that never expose the object.
+
+\section{Bounded reproducible hostile audit}
+The command
+\begin{verbatim}
+timeout 30s python experiments/review/decoded_causal_toggle_audit.py \
+  --max-n 6 --seed 20261011 \
+  --output results/raw/review/2026-10-11_decoded_causal_toggle_audit.json
+\end{verbatim}
+completed in $0.48$ seconds.  It checked 6,760 cases, 20,280 semantic
+agreements, 33,800 encoding round trips, 217,670 decoded guard
+interventions, 217,670 dead-materialization interventions, and 6,760 each of
+DIRECT absence, RECOMP absence and output-bit interventions.  Every assertion
+passed.
+
+Controls comprise equality 2-SAT, its proper-three-CNF gadget, Horn reachability
+chains, affine/Tseitin parity paths with the Gaussian/parity shortcut,
+bounded-treewidth independent products, duplicate/padded and permuted finite
+Monotone 3-SAT-(2,2) cores, and DIRECT, MATERIALIZE, CAUSAL-GUARD, INTERP and
+RECOMP variants.  Encodings were identity, complement, reversal, alternating
+XOR, and repetition-three with majority decoding.  Code SHA-256 is
+\nolinkurl{0108feafa849f99a0fe796d1f9589dc3ff0ac00710badd5cd44bd76feb5a99d2};
+raw-result SHA-256 is
+\nolinkurl{4cef04dfec769576ed0bd89e277aa2078c271877a983e4e9a5b0deec5b58f4da}.
+
+The finite Monotone 3-SAT-(2,2) cells use brute force and do not give a
+polynomial algorithm for that NP-complete family.  The experiment validates
+the implementation and explicit cost ledger only; the theorem is the
+symbolic construction above.
+
+\section{Literature, barrier, and transfer audit}
+Halpern and Pearl formalize counterfactual interventions through structural
+models~\cite{hp}.  That semantics transfers exactly only after the program
+variables, intervention point, and structural equations are fixed.  It does
+not make causal attribution representation- or implementation-independent.
+Classification: \textbf{THEOREM/OBJECT TRANSFER} for the declared
+counterfactual model; \textbf{FAILED TRANSFER} from causal attribution to an
+unrestricted computation lower bound.  Program-dependence and database
+provenance methods have the same missing bridge: they explain one chosen
+implementation or query plan, not every extensionally equivalent SAT solver.
+
+Fortnow--Lipton--van Melkebeek--Viglas prove genuine SAT time--space lower
+bounds in a declared random-access model~\cite{flmv}.  CAUSAL-GUARD-INSERT1
+does not place $G$ inside any forbidden region and supplies no strict
+$N^\lambda$ successor.  Importing fixed-DAG pebbling, VLSI locality,
+communication cuts, or memory-hierarchy bounds remains a \textbf{FAILED
+TRANSFER} without a cost-preserving arbitrary-solver compiler.
+
+Baker--Gill--Solovay exhibit oracle worlds with opposite P-versus-NP
+answers~\cite{bgs}.  The guard theorem relativizes with one fixed common
+oracle: run $A^O$ and $q^O$ and retain the same comparison.  Aaronson--Wigderson
+show that P versus NP requires nonalgebrizing techniques~\cite{aw}; algebraic
+oracle access does not invalidate the optional guard or make it a hardness
+resource.  No Natural-Proofs property is asserted.  A future broad
+constructive, large and useful circuit property would require a separate
+Razborov--Rudich audit~\cite{rr}.
+
+The post-quantum ledger supplies no repair.  Schur squares, quadratic
+relations, Hilbert functions, syzygies and collision entropy have no exact
+object map to optional decoded causal guards and are \textbf{FAILED
+TRANSFERS} here.  LWE-style behavioral extraction and special-soundness
+binding remain \textbf{ANALOGY/CANDIDATE}: they need a new theorem binding a
+rich interface to every same execution without importing cryptographic
+hardness or random-oracle assumptions.
+
+\section{CORPUS REVIEWED}
+The current recursive GitHub tree was surveyed at the head stated above.  The
+run read root \texttt{main.tex}, actual \texttt{main4.tex}/\texttt{main5.tex},
+AGENTS, CODEX, the complete PNP skill and red-team/experiment protocols, all
+TASK-001--007 specifications, current review status and spines, SYNTHESIS-0001,
+TESTS-0001, RT-0004, LB-0006, MODELBRIDGE-0004, PROOFMAP-0004 and CC-0005.
+The newest verified historical MAIN 1658, TRACECLOSE1, governance, and the
+HEC/VSC-HEC/G-PPC/CRS-PPC/CCSPC/RCCN causal components were inspected.
+Repository search covered decoded causality, exposure, interventions,
+DIRECT/RECOMP, transcript functionals, arbitrary-algorithm acquisition,
+relativization and algebrization.  Primary literature was checked before
+formal promotion.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+RT-0004 already proves the four-way exposure table; LB-0006 already defeats
+bounded raw-cell intervention by repetition; TRACECLOSE1 already proves that
+polynomial trace functionals remain polynomial under a hypothetical
+polynomial solver.  RT-0005 does not rename those results.  Its new exact
+piece is the guard compiler quantified over every decider, every
+polynomial-time source functional, and every declared efficient invertible
+encoding.  Together with the earlier omission and output-bit controls, it
+closes ``causal use alone'' as a repair.
+
+No contradiction was found.  LB-0006 explicitly left decoder-relative
+causality open, and the present theorem shows why causality must be paired
+with an independent unavoidable-interface and cost theorem.  MODELBRIDGE-0004
+independently retires sublinear syntactic restriction; both results leave
+semantic strict contraction open.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root \texttt{main.tex} correctly states that semantic or representation
+complexity is not forced machine runtime and leaves arbitrary-algorithm
+acquisition open.  The sharper new guard is that decoded causal use is also
+insufficient: it can be a trivial output bit or optional polynomial
+instrumentation.  Root main was not edited because REDTEAM has no authorized
+LSPV ownership region.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{description}
+\item[ADOPTED.] SAME\_REALIZATION; RT-0004's exposure separation; LB-0006's
+representation guard; UCORE-CONTRACT1; the NP-complete
+$\mathcal H_{2,2}$ clean core; charged decoding, replay and output.
+\item[REJECTED.] Causal attribution as an implementation-independent
+semantic property; one-bit causality as a rich resource; optional guard work
+as unavoidable work of a different solver.
+\item[FALSIFIED/RETIRED.] Decoded causal use alone implies universal
+compatibility acquisition, memory, time, communication, or strict contraction.
+\item[OPEN.] A fixed source-rich interface unavoidable for every solver on
+$\mathcal H_{2,2}$; a cost-preserving DIRECT/RECOMP compiler; a hereditary
+$\lambda<1$ ordinary-CNF successor; model-matched endpoint entry;
+nonrelativization and nonalgebrization.
+\end{description}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+LB-0006's phrase ``decoder-relative logical influence: OPEN'' is correct as a
+broad research area, but any narrower claim that influence itself certifies a
+lower-bound resource is now overstated.  The surviving target must specify a
+nontrivial interface, a minimum information/service content beyond the output
+bit, and an independent lower bound preserved by a charged compiler.  A
+counterfactual intervention on an illegal state is evidence about the chosen
+program model, not automatically work performed on legal executions.
+
+\paragraph{Promotion guard.}
+The theorem and audit have not received independent red-team review.  They
+are therefore recorded in this standalone report and coordination handoff,
+not promoted into root \texttt{main.tex} or an executive proof chain.
+
+\paragraph{Single next target.}
+Replace ``causal use'' by \textsf{SERVICE-UCORE1}: name a source-independent
+multi-query service whose answer set excludes the final output bit, prove
+that every exact solver either implements it or is transformed into it with
+cost at most its own execution up to $N^{o(1)}$, and prove a model-matched
+lower bound for that same service.  Falsify first with DIRECT, RECOMP,
+affine elimination, compact OBDDs/circuits, padding, semantic oracles, and
+decide-then-guard wrappers.  Without this compiler and strict contraction, P
+versus NP remains \textbf{OPEN}.
+
+\begin{thebibliography}{9}
+\bibitem{hp} J. Y. Halpern and J. Pearl,
+\emph{Causes and Explanations: A Structural-Model Approach, Part I: Causes},
+British Journal for the Philosophy of Science 56 (2005), 843--887.
+\url{https://doi.org/10.1093/bjps/axi147}.
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability}, JACM 52(6) (2005),
+835--865. \url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{bgs} T. Baker, J. Gill, and R. Solovay,
+\emph{Relativizations of the $P=?NP$ Question}, SIAM Journal on Computing 4
+(1975), 431--442. \url{https://doi.org/10.1137/0204037}.
+\bibitem{aw} S. Aaronson and A. Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory}, ACM TOCT 1 (2009).
+\url{https://www.scottaaronson.com/papers/alg.pdf}.
+\bibitem{rr} A. Razborov and S. Rudich,
+\emph{Natural Proofs}, Journal of Computer and System Sciences 55 (1997),
+24--35. \url{https://doi.org/10.1006/jcss.1997.1494}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::REDTEAM::RT-0005
+\end{document}

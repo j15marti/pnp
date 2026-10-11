@@ -1,5 +1,18 @@
 # REDTEAM audit, current run 2026-10-11
 
+## RT-0005 — decoded causal-use trilemma (2026-10-11)
+
+Status: **PROVED/EXACT** for CAUSAL-GUARD-INSERT1 in the declared decoded-checkpoint model; **COMPUTATIONAL** for the bounded audit. P versus NP remains **OPEN**.
+
+For every total deterministic decider A, every polynomial-time source functional q, and every efficient invertible encoding e, a uniform polynomial guard can store e(q(x)), run A, recompute q(x), and flip A's bit exactly when the decoded buffer differs. Legal executions still return A(x), while every decoded replacement q* != q(x) flips the output. Thus rich decoded causal use can be inserted with polynomial overhead and is not by itself a semantic necessity or lower-bound resource. If one-bit functionals are allowed, the final output bit makes existential causality trivial. Combined with RT-0004's DIRECT/RECOMP omission of the mismatch vector, decoded causal use alone cannot establish universal compatibility acquisition, memory, time, communication, or strict contraction.
+
+The bounded audit passed 6,760 cases, 20,280 semantic agreements, 33,800 encoding round trips, 217,670 decoded guard interventions, and 217,670 dead-materialization controls across equality 2-SAT, proper-three-CNF equality, Horn, affine/Tseitin, bounded-treewidth independent products, padding/duplicates, finite Monotone 3-SAT-(2,2), and identity/complement/reverse/XOR/repetition encodings.
+
+**Handoff:** replace causal occurrence/use by SERVICE-UCORE1: a nontrivial multi-query service excluding the output bit, together with a cost-preserving compiler for every DIRECT/RECOMP solver and an independent model-matched lower bound. Strict all-input source contraction and the nonrelativizing/nonalgebrizing hinge remain OPEN.
+
+Report: `research/review/reports/redteam/2026-10-11_0636_RT-0005.tex`. Code: `experiments/review/decoded_causal_toggle_audit.py`. Raw result: `results/raw/review/2026-10-11_decoded_causal_toggle_audit.json`.
+
+
 ## RT-0004, exposure-covariance separation (2026-10-11)
 
 Status: **PROVED/EXACT** for the declared raw, decoded, and extensional exposure predicates; **COMPUTATIONAL** for the bounded audit. `CORE-ACQUIRE1` and P versus NP remain **OPEN**.
