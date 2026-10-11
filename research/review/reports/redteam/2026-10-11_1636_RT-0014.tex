@@ -1,0 +1,326 @@
+% PNP REVIEW REPORT::REDTEAM::RT-0014::2026-10-11T16:36:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{UNIVERSAL\_CORE\_REDTEAM RT-0014:\\
+Forward Child Locality Does Not Supply Reverse Fanout}
+\author{P versus NP project review}
+\date{11 October 2026, 16:36 UTC}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+TESTS-0009 correctly showed that a bounded-fanout circuit with a forward
+child accessor admits a linear-size, bounded-occurrence proper-3-CNF
+compilation without parent queries.  It then left source-specific
+\texttt{JMV-FORWARD-FANOUT1} open.  This report isolates the exact remaining
+gap.  In an acyclic child-only circuit oracle with one target gate and $n$
+potential later parents, deciding whether the target has fanout zero,
+enumerating its complete parent list, or certifying fanout at most a fixed
+$\Delta<n$ requires $n$ child queries in the deterministic worst case.
+This is the elementary OR adversary, stated in the correct circuit
+realization.  Therefore the generic implication ``forward child locality
+supplies a usable fanout certificate'' is false; a repair must prove
+additional structure of the particular Jahanjou--Miles--Viola labels or
+retain TESTS-0009's parent-owned clause construction.  The result is only an
+input-oracle query lower bound.  It is not a lower bound for arbitrary SAT
+deciders or global CNF compilers.  P versus NP remains open.
+\end{abstract}
+
+\section{Executive status and exact target}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{0.43\linewidth}p{0.19\linewidth}p{0.30\linewidth}@{}}
+\toprule
+Claim & Status & Verdict\\
+\midrule
+\texttt{FORWARD-FANOUT-DETECTION1} & \EXACT, pending independent review &
+$n$ child queries are necessary and sufficient in the declared oracle model.\\
+\texttt{CHILD-LOCALITY-IMPLIES-FANOUT-CERT1} & \RETIRED &
+Forward access alone contains no sublinear reverse-incidence certificate.\\
+Finite audit & \COMP & 376,370 vector/order executions through $n=12$; zero failures.\\
+\texttt{JMV-FORWARD-FANOUT1} & \OPEN &
+The source-specific label theorem has not been unfolded.\\
+Arbitrary-SAT transfer, UCORE-TIME1, P versus NP & \OPEN &
+No unrestricted computation lower bound follows.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The attacked generic candidate is
+\[
+ \forall C\ \bigl[\text{gate labels expose type and children locally}\bigr]
+ \Longrightarrow
+ \bigl[\text{fanout and complete parents are locally available}\bigr].
+\tag{CF}
+\]
+The smallest source-specific repair would replace the antecedent by the
+actual JMV label grammar and explicitly construct either (i) a bounded
+visible fanout theorem, or (ii) a locally addressable copy tree.  No such
+theorem is claimed here.
+
+\section{Child-only circuit oracle}
+
+\begin{definition}[Acyclic forward-incidence family]
+Fix an input gate $u$, private dummy input gates $d_1,\ldots,d_n$, and
+later unary gates $p_1,\ldots,p_n$.  For $z\in\{0,1\}^n$, the only child of
+$p_i$ is $u$ when $z_i=1$ and $d_i$ when $z_i=0$.  A forward query at
+$p_i$ returns that child label.  Thus
+\[
+ \operatorname{fanout}(u)=|z|_1,
+ \qquad
+ \operatorname{Parents}(u)=\{p_i:z_i=1\}.
+\]
+The graph is acyclic because all $p_i$ follow their children.  The encoded
+input length is $N=\Theta(n\log n)$ under explicit indexed labels; the
+number of oracle positions is exactly $n$.
+\end{definition}
+
+\begin{theorem}[\texttt{FORWARD-FANOUT-DETECTION1}]
+Let $A$ be any deterministic adaptive algorithm receiving the labels and
+forward child oracle of the preceding family.  Each of the following tasks
+has worst-case child-query complexity exactly $n$:
+\begin{enumerate}[nosep]
+\item decide whether $\operatorname{fanout}(u)=0$;
+\item output the complete set $\operatorname{Parents}(u)$;
+\item for fixed $0\le\Delta<n$, decide whether
+      $\operatorname{fanout}(u)\le\Delta$.
+\end{enumerate}
+Equivalently the lower bound is $\Omega(N/\log N)$ in encoded length.
+\end{theorem}
+
+\begin{proof}
+For task 1, answer every query with its private dummy.  If $A$ stops after
+fewer than $n$ queries, compare the all-zero completion with the completion
+having one at an unqueried position.  The complete transcript is identical
+but the correct answers differ.  Hence $A$ must query all $n$ positions on
+the all-zero input.  The same pair shows that a claimed parent list cannot
+be certified complete before all positions are read.
+
+For task 3, answer one on the first $\Delta$ queried positions and zero on
+later queries.  If $A$ stops before querying every position, the unqueried
+bits can be completed either all zero, of weight $\Delta$, or with one
+additional one, of weight $\Delta+1$.  Again the transcript is identical and
+the predicate differs.  Scanning all positions gives the matching upper
+bound for all three tasks.
+\end{proof}
+
+\paragraph{Accounting.}
+An offline inverse index is not a counterexample: constructing it performs
+the same $n$ child queries and stores the reverse-incidence information
+(up to $O(n\log n)$ bits for explicit parent labels).  Later constant-time
+lookups are charged only after that preprocessing.  Nonuniform advice can
+also contain the parent set, but then the advice is the missing resource and
+must be included in SAME\_REALIZATION.  A one-bit output does not reveal the
+parent list.
+
+\section{What this does and does not repair}
+
+TESTS-0009's forward-wire compilation remains valid.  If every gate has
+constant fanin, constant fanout, fixed gate templates, and a child accessor,
+then each parent may own the clauses describing its outgoing wires.  No
+target gate has to enumerate its parents.  The theorem above therefore does
+\emph{not} refute that construction; it refutes only an attempted upgrade
+from child locality to a reverse-port certificate.
+
+Conversely, a normalizer that must allocate all leaves of a target-owned
+copy tree, emit a complete target-owned incident-clause block, or certify
+that the source fanout is at most $\Delta$ inherits the $n$-query bound in
+this interface.  The bound can be evaded only by an additional source-label
+invariant, a supplied inverse index, or a different global construction.
+This is the precise missing arrow:
+\[
+ \text{JMV output-bit locality}
+ \not\Rightarrow_{\rm generic}
+ \text{bounded visible fanout or local reverse incidence}.
+\]
+
+The JMV theorem states a local clause-generation result: an explicit circuit
+produces an indexed clause, with each output bit depending on only constantly
+many index bits in the strongest regime \cite{jmv}.  It does not, by that
+statement alone, expose the complete set of labels pointing to a chosen
+gate.  A source-specific proof may still exist and remains \OPEN.
+
+\section{SAME\_REALIZATION and hostile controls}
+
+The oracle task takes a target label and must compute a reverse-incidence
+predicate.  SAT takes an encoded formula and emits one satisfiability bit.
+These are different functions.  No compiler from an arbitrary uniform
+deterministic SAT decider to the child-only reverse-incidence task is known.
+Accordingly, the theorem cannot be charged to every SAT algorithm.
+
+The exact indistinguishability pair survives permutation of labels, clause
+order, alternate encodings that do not add a reverse port, independent
+products, padding, redundant clauses, and DIRECT/COPY/DELAY/INTERP/RECOMP
+wrappers.  DELAY adds charged work but no information.  Horn, 2SAT,
+affine/Tseitin Gaussian elimination, and bounded-treewidth solvers may decide
+their formulas without reconstructing this parent set; they are controls
+against, not support for, a universal transfer.  A parent-owned global
+compiler is another valid hostile control.  Semantic fanout complexity is
+therefore not identified with actual SAT cost.
+
+\section{Bounded reproducible experiment}
+
+The dependency-free invocation
+\begin{verbatim}
+timeout 30s python3 experiments/review/forward_fanout_detection_redteam.py
+\end{verbatim}
+completed in $0.597$ seconds; bytecode compilation passed.  For each
+$1\le n\le12$, the program enumerated all $2^n$ incidence vectors and up to
+50 fixed query orders.  Across 376,370 vector/order executions, exact
+zero-fanout scanning always had worst case $n$, while complete enumeration
+always used $n$.  Every one of 2,664 capped shortcuts had an unqueried
+singleton adversary.  Thirty-two bounded-fanout transcript witnesses and
+eight hostile-control classes also passed.  These observations are
+\COMP; the theorem above is symbolic for every $n$.
+
+The script SHA-256 is
+\nolinkurl{ad0d10e9e1ae670551aa4bbdc61f644d5ba2cfd35649f6c0d09feb4129f1d956};
+the result SHA-256 is
+\nolinkurl{27fc48977d51b905a5038300a15b884b57b578944b03d849aa33a84a0803a465}.
+
+\section{Barrier and cross-domain transfer audit}
+
+\begin{description}[leftmargin=0cm,labelwidth=0cm]
+\item[] \textbf{DIRECTLY TRANSFERABLE THEOREM.}
+The OR/weight decision-tree adversary transfers exactly to the declared
+child-oracle family, because one oracle query reveals one incidence bit.
+Offline reverse indexing transfers exactly only when its full scan and
+storage are charged in the same realization.
+\item[] \textbf{USEFUL ANALOGY / CANDIDATE.}
+Reverse-adjacency data structures, VLSI fanout/routing, distributed in-neighbor
+discovery, observability, and LWE-style external extraction all suggest that
+missing inverse access must be paid for.  A new model-matched compiler is
+needed before any of them constrains an arbitrary SAT decider.
+\item[] \textbf{MISLEADING / FAILED TRANSFER.}
+Circuit fanout, routing congestion, communication cuts, proof-system size,
+Schur-square growth, quadratic relations, Hilbert functions, syzygies,
+collision entropy, special soundness, and random-oracle binding do not by
+themselves lower-bound unrestricted one-bit SAT computation.
+\end{description}
+
+The query proof relativizes and arithmetizes without difficulty; this is a
+warning, not evidence of barrier circumvention.  Baker--Gill--Solovay show
+that relativizing methods cannot settle P versus NP by themselves
+\cite{bgs}, and Aaronson--Wigderson show that algebrization is a further
+barrier \cite{aw}.  Natural Proofs is not the immediate hinge because no
+large constructive property against general circuits is proved
+\cite{rr}.  Arbitrary polynomial exponents remain untouched: an
+$\Omega(N/\log N)$ restricted query bound is polynomial and compatible with
+SAT in P.  Assuming SAT in P supplies a polynomial fallback to every
+recognizer-plus-fallback wrapper and yields no contradiction here.
+
+\paragraph{Post-quantum ledger.}
+The LWE worst-case/average-case architecture is an ANALOGY/CANDIDATE for
+external black-box extraction; the missing solver-to-oracle compiler is
+exactly the unproved bridge.  Schur-square/componentwise products, quadratic
+relation spaces, higher Hilbert invariants, collision extraction and
+collapse-binding are FAILED TRANSFERS for this inverse-incidence obstacle.
+No cryptographic assumption is admitted.
+
+\section{Corpus-wide reconciliation}
+
+\subsection*{CORPUS REVIEWED}
+The run surveyed the full repository tree and read root \texttt{main.tex},
+actual \texttt{main4.tex}/\texttt{main5.tex}, \texttt{AGENTS.md},
+\texttt{CODEX.md}, the complete pnp-research skill, red-team mode and
+protocol, all current task specifications TASK-001--007, the newest verified
+historical MAIN, current status and coordination surfaces, governance notes,
+and the HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC causal branch.  Materially
+relevant reports included TESTS-0009, MODELBRIDGE-0014, LB-0014,
+SYNTHESIS-0009 and RT-0013 with their cited artifacts.  The predecessor
+TESTS-0009 exists in its canonical GitHub directory, is substantive,
+contains its expected header and final sentinel, and was read back.
+Primary literature on local reductions and the relativization,
+algebrization and Natural Proofs barriers was checked before promotion.
+
+\subsection*{DUPLICATION / CONTRADICTION AUDIT}
+MODELBRIDGE-0014 already proved that a supplied parent port is sufficient and
+gave a permutation-oracle separation between child and parent access.
+RT-0013 separated forward tags from inverse incidence.  TESTS-0009 then
+showed that parent-owned clauses bypass parent enumeration.  The present
+result does not repeat those conclusions: it gives the exact deterministic
+$n$-query theorem for fanout-zero, complete enumeration, and bounded-fanout
+certification in an acyclic child-oracle circuit family.  It is consistent
+with, and narrows, TESTS-0009's open JMV handoff.
+
+\subsection*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root MAIN correctly records the forward child port as insufficient for
+generic reverse indexing while leaving source-specific JMV structure open.
+The new exact theorem upgrades that warning to a tight query bound and
+retires the unqualified fanout-certificate implication.  It does not change
+the executive OPEN verdict.  This review role has no authorized root-MAIN
+ownership region, so root \texttt{main.tex} is not edited; main4/main5
+receive review includes for synthesis arbitration.
+
+\subsection*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted are TESTS-0009's parent-owned forward-wire construction,
+MODELBRIDGE-0014's interface separation, RT-0013's inverse-incidence audit,
+and LB-0014's rule that optional annotations cannot be charged to arbitrary
+deciders.  Rejected is any silent inference from local child labels to a
+local reverse port.  Retired is
+\texttt{CHILD-LOCALITY-IMPLIES-FANOUT-CERT1} as an unqualified interface
+claim.  Source-specific JMV fanout and local copy-tree theorems are not
+retired.
+
+\subsection*{STALE OR OVERSTATED CLAIMS FOUND}
+Any wording that calls the JMV open arrow merely ``mechanical label
+unfolding'' is overstated until the label grammar is shown to bound or
+locally enumerate incoming references.  Conversely, wording that says a
+parent port is necessary for every bounded-occurrence compilation is stale:
+TESTS-0009's parent-owned construction is a verified counterexample.  The
+correct distinction is target-owned reverse normalization versus global
+parent-owned emission.
+
+\section{Smallest repair and synthesis handoff}
+
+The next proof obligation is source-specific and binary:
+\begin{enumerate}
+\item unfold the exact JMV gate-label grammar and prove that every relevant
+gate has $O(1)$ locally addressable parents or a locally constructible copy
+tree, including all preprocessing and label lengths; or
+\item exhibit a JMV label family realizing the child-only adversary, and
+retain parent-owned clauses instead of reverse normalization.
+\end{enumerate}
+Even a successful first branch establishes a local CNF compiler, not an
+arbitrary-SAT lower bound.  The separate load-bearing arrow remains an
+external, uniform, model-matched transformation from every hypothetical
+polynomial SAT decider to a realization that must solve an independently
+hard resource problem.  No such transformation is known.
+
+\begin{thebibliography}{9}
+\bibitem{jmv} H.~Jahanjou, E.~Miles and E.~Viola,
+\emph{Local reductions}, ICALP 2015, pp.~749--760.
+\url{https://arxiv.org/abs/1311.3171}.
+\bibitem{bgs} T.~Baker, J.~Gill and R.~Solovay,
+\emph{Relativizations of the P=?NP question}, SIAM Journal on Computing
+4(4) (1975), 431--442.
+\bibitem{aw} S.~Aaronson and A.~Wigderson,
+\emph{Algebrization: A new barrier in complexity theory}, ACM Transactions
+on Computation Theory 1(1) (2009), Article 2.
+\url{https://www.scottaaronson.com/papers/alg.pdf}.
+\bibitem{rr} A.~A.~Razborov and S.~Rudich,
+\emph{Natural proofs}, Journal of Computer and System Sciences 55(1)
+(1997), 24--35.
+\end{thebibliography}
+
+\paragraph{Final status.}
+\texttt{FORWARD-FANOUT-DETECTION1}: \EXACT, pending independent review.\\
+Finite audit: \COMP.\\
+\texttt{CHILD-LOCALITY-IMPLIES-FANOUT-CERT1}: \RETIRED.\\
+\texttt{JMV-FORWARD-FANOUT1}, arbitrary-SAT transfer, UCORE-TIME1,
+nonrelativization, nonalgebrization and P versus NP: \OPEN.
+P versus NP remains open.
+
+% END_OF_VERIFIED_REPORT::REDTEAM::RT-0014
+\end{document}
