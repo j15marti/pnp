@@ -1,0 +1,432 @@
+% PNP REVIEW REPORT::REDTEAM::RT-0008::2026-10-11T10:36:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\Htwo}{\mathcal H_{2,2}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{UNIVERSAL\_CORE\_REDTEAM RT-0008:\\
+Polynomially Many Decision Bits Remain a Polynomial Service}
+\author{P versus NP project review}
+\date{11 October 2026}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Independent review accepts TESTS-0004's connected two-pin theorem after
+making its evaluator-correctness premise explicit.  The proposed next repair,
+however, asks only for a service not recoverable from a constant number of
+ordinary SAT restriction decisions.  That condition is too weak.  If a
+uniform controller performs local work $N^{c+o(1)}$, makes at most
+$N^{b+o(1)}$ adaptive SAT calls of length at most $N^{a+o(1)}$, and a fixed
+SAT decider runs in time $M^{K+o(1)}$, direct substitution computes the full
+service in
+\[
+ N^{\max\{c,b+aK\}+o(1)}.
+\]
+This is the direct-route theorem already present in the verified corpus,
+applied here to the new service target.  Parity supplies a sharp hostile
+control: its exact black-box decision-query complexity is $q$, but it has a
+width-two ordered branching program of size $2q-1$ and polynomial sequential
+evaluation.  Thus superconstant SAT-query complexity, even for a nonmonotone
+one-bit service, does not remove the arbitrary polynomial exponent $K$ and
+does not yield a universal lower bound.  A bounded audit passed $243{,}622$
+checks.  P versus NP remains open.
+\end{abstract}
+
+\section{Executive verdict}
+
+\begin{center}
+\small
+\begin{tabular}{p{0.34\linewidth}p{0.22\linewidth}p{0.36\linewidth}}
+\toprule
+Claim & Status & Verdict\\
+\midrule
+\texttt{CONNECTED-TWOPIN-EQUIVALENCE1} & \EXACT &
+Independently verified in the declared explicit random-access model, with
+the premise that the queried evaluator is correct on every legal service
+input.\\
+\texttt{POLYQUERY-SERVICE-CLOSURE1} & \EXACT &
+Polynomially many explicit adaptive SAT calls remain polynomial under a
+fixed polynomial SAT decider, retaining its exponent $K$.\\
+\texttt{SUPERCONSTANT-QUERY-REPAIR1} & \RETIRED &
+A lower bound above $O(1)$ on SAT-oracle queries is not a lower bound on
+ordinary computation and does not eliminate $K$.\\
+\texttt{PREDECISION-NONSHANNON-SERVICE1} & \OPEN &
+The name may be retained only with a stronger, model-matched compiler and
+joint lower-bound contract stated below.\\
+\texttt{UCORE-TIME1} & \OPEN &
+No unrestricted superpolynomial SAT lower bound is proved.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Claim card and exact quantifiers}
+
+\paragraph{Target before review.}
+TESTS-0004 proposed a fixed source-dependent output not computable from
+$O(1)$ ordinary restriction-decision calls, followed by a $K$-independent
+compiler from every polynomial SAT decider into that service.
+
+\paragraph{Attacked implication.}
+The falsification target is the premise that the first condition supplies a
+meaningful computational resource:
+\[
+ Q_{\SAT}(S_N)=\omega(1)
+ \quad\Longrightarrow\quad
+ \text{$S_N$ forces superpolynomial work in arbitrary computation}.       \tag{1}
+\]
+Here $Q_{\SAT}$ is a declared black-box decision-query measure.  No such
+implication follows.
+
+\paragraph{Model and SAME\_REALIZATION.}
+Fix a uniform deterministic random-access controller $G$ on an explicit
+source $x$ of encoded length $N$.  Its local work includes source reads,
+query construction and writing, adaptivity, aggregation, output, and all
+wrapper overhead.  Every oracle query is an explicitly encoded SAT instance.
+The substituting decider $A$ is one fixed total uniform deterministic exact
+SAT decider.  SAME\_REALIZATION consists of $x,G,A$, every query and answer,
+all live buffers, the final service bit, and peak workspace.  No solver trace,
+compatibility table, or service vector is assumed to exist.
+
+\section{Independent review of TESTS-0004}
+
+Let $F\in\Htwo$ and let $F_1,\ldots,F_t$ be its incidence components.  Every
+occurrence of a variable lies in one component, so each $F_i$ inherits exact
+two-positive/two-negative occurrence balance, proper unique monotone clauses,
+and connected incidence.  For arbitrary $z_i\in V(F_i)$,
+\[
+ \SAT(F)=\bigwedge_{i=1}^t
+ \left(\SAT(F_i\upharpoonright_{z_i=0})\vee
+       \SAT(F_i\upharpoonright_{z_i=1})\right).            \tag{2}
+\]
+For a correct service evaluator $E$ with $T_E(L)\le CL^K$, $K\ge1$,
+\[
+ T(N)\le O(N)+2C\sum_iL_i^K
+ \le O(N)+2C\left(\sum_iL_i\right)^K
+ =O(N^K).                                                  \tag{3}
+\]
+The aggregate component encoding length is $O(N)$ when headers and identifiers
+are charged.  A sequential implementation has conservative space
+$O(N)+\max_iS_E(L_i)$.  The reverse pin-to-proper-3CNF compiler is inherited
+from LB-0010.
+
+The displayed quantifier prefix in TESTS-0004 wrote ``for all $A$'' while
+its prose required $A$ to be correct.  The exact repaired prefix is
+\[
+ \forall F\in\Htwo\ \forall(F_1,\ldots,F_t)\ \forall(z_1,\ldots,z_t)\
+ \forall E\,
+ \left[
+   \forall(G,z,v)\in\mathcal D\quad
+   E(G,z,v)=\mathbf1[G\upharpoonright_{z=v}\in\SAT]
+ \right]
+ \Longrightarrow (2),                                    \tag{4}
+\]
+where $\mathcal D$ is the legal connected-service domain.  This is a premise
+clarification, not a mathematical weakening.  The theorem and its retirement
+of connectivity as a service repair are independently accepted as \EXACT.
+
+\section{Polynomial-query closure}
+
+\begin{theorem}[\texttt{POLYQUERY-SERVICE-CLOSURE1}]
+Suppose $G$ on length-$N$ sources performs at most $N^{c+o(1)}$ charged local
+work and makes at most $N^{b+o(1)}$ adaptive SAT queries.  Every query has
+encoded length at most $N^{a+o(1)}$.  Fix a total deterministic exact SAT
+decider $A$ satisfying
+\[
+ T_A(M)\le M^{K+o(1)}
+\]
+for one constant $K\ge1$.  Replacing every oracle call of $G$ by $A$ yields
+a uniform deterministic service evaluator with
+\[
+ \boxed{T_{G[A]}(N)\le N^{\max\{c,b+aK\}+o(1)}}.           \tag{5}
+\]
+This holds for adaptive queries and for an arbitrary polynomial-time final
+Boolean aggregation of their answers.
+\end{theorem}
+
+\begin{proof}
+Execute $G$ exactly.  Whenever it emits a query $y$, run the same fixed $A$
+on $y$ and return the resulting bit to $G$.  Adaptivity changes later query
+contents but not the number or maximum length of calls.  The sum of all query
+times is at most
+\[
+ N^{b+o(1)}\left(N^{a+o(1)}\right)^{K+o(1)}
+ =N^{b+aK+o(1)}.
+\]
+Taking the maximum with charged local work proves (5).  Query construction,
+writing, aggregation, and output are already included in $c$.  Sequential
+simulation requires only the controller state, one live query buffer, and the
+largest live workspace of $A$; no answer vector need be materialized.
+\end{proof}
+
+The theorem is not new to the corpus.  ENVELOPE1 and root \texttt{main.tex}
+already record the direct-route exponent $\max\{c,b+aK\}$ in equivalent
+notation.  The new contribution is its application to the exact handoff from
+TESTS-0004 and the black-box parity countercontrol below.
+
+\begin{corollary}[No superconstant-query repair]
+Assume $P=NP$ and fix any polynomial SAT decider $A$.  Every service meeting
+the hypotheses of the theorem is in P, even when its output depends on
+polynomially many answer bits and is nonmonotone.  Therefore proving only
+that the service needs more than $O(1)$ SAT-oracle decisions cannot yield a
+contradiction from $P=NP$.
+\end{corollary}
+
+The exponent $K$ remains in (5).  Replacing $O(1)$ by $N^b$ adds $b$; it
+does not create a $K$-independent computation.
+
+\section{Sharp parity countercontrol}
+
+For $q\ge1$, define the abstract truth-table service
+\[
+ \operatorname{PARITYSAT}_q(F_1,\ldots,F_q)
+ =\bigoplus_{i=1}^q\mathbf1[F_i\in\SAT].                  \tag{6}
+\]
+
+\begin{theorem}[Query lower bound and compact representation]
+In the deterministic black-box model exposing only the $q$ membership bits,
+computing (6) requires exactly $q$ queries in the worst case.  Nevertheless,
+the answer function has a width-two ordered binary decision diagram with
+$2q-1$ nonterminal nodes, and sequential use of any SAT decider computes it
+with $q$ calls.
+\end{theorem}
+
+\begin{proof}
+If one bit is unqueried, two completions differing only in that bit have
+opposite parity, so no deterministic algorithm can stop correctly.  Querying
+all bits is sufficient.  The branching program stores only the running
+parity; after the root there are two residual states at every remaining
+level, giving $1+2(q-1)=2q-1$ nonterminal nodes.  Sequential evaluation is
+immediate.
+\end{proof}
+
+This is a nonmonotone service with the strongest possible deterministic
+query dependence on its $q$ input bits.  It still supplies no ordinary time
+lower bound.  On an explicit hostile family, encode bit one by one satisfiable
+proper ternary clause and bit zero by all eight clauses on the same three
+variables.  The source syntax itself reveals every bit in linear time.  Thus
+an exact oracle-query lower bound can coexist with a direct syntactic shortcut,
+compact branching program, and trivial one-bit computation.
+
+The primary bounded-query literature treats exactly this distinction.
+K\"obler, Sch\"oning, and Wagner define truth-table reductions by a polynomially
+computed Boolean circuit over oracle answers and locate the resulting
+hierarchies between NP and $P^{NP}$.  Their parity-of-SAT tuples give complete
+problems at fixed difference-hierarchy levels.  Beigel distinguishes bounded
+parallel and serial NP queries and proves conditional separations among those
+query classes.  These are exact query-model classifications, not unrestricted
+runtime lower bounds.
+
+\section{Reproducible hostile audit}
+
+The dependency-free command
+\begin{verbatim}
+timeout 30s python experiments/review/polynomial_query_service_guard.py \
+  --seed 202610111036 \
+  --output results/raw/review/2026-10-11_polynomial_query_service_guard.json
+\end{verbatim}
+completed in $0.584609$ seconds.
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Check & Count\\
+\midrule
+Parity incomplete-assignment adversaries & $86{,}526$\\
+Width-two OBDD and adaptive full-query checks & $131{,}068$\\
+Tiny-CNF parity-service checks & $4{,}606$\\
+Encoding, padding, duplicate, complement controls & $17{,}930$\\
+Independent TESTS-0004 two-pin regression & $768$\\
+Affine and cycle-Tseitin Gaussian controls & $200$\\
+Horn, 2-SAT, affine, and path controls & $4$\\
+Exact polynomial-query exponent cells & $2{,}520$\\
+\midrule
+Total & $243{,}622$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The parity adversary is exhaustive through $q=10$; the compact OBDD is
+exhaustive through $q=15$; tiny-CNF services cover every bit vector through
+$q=8$; and the exponent ledger covers $0\le b\le6$, $1\le a\le5$,
+$1\le K\le8$, and $0\le c\le8$.  The script SHA-256 is
+\nolinkurl{5464ce8456ead066cd714c516a7d1085b13d3a6eca0197d6ee5b635f7de54101};
+the raw-result SHA-256 is
+\nolinkurl{33dd7deb7c4a08842120098338140eecfca6ddc1cf55b46a8e3baeb8cb43a010}.
+The experiment is \COMP.  Theorems (2)--(6), not finite extrapolation, carry
+the symbolic conclusions.
+
+\section{Wrapper, barrier, and transfer audit}
+
+\begin{description}[leftmargin=0cm,labelwidth=0cm]
+\item[] \textbf{Easy algorithms.}
+Horn propagation, 2-SAT SCCs, affine/Tseitin Gaussian elimination, and
+bounded-treewidth dynamic programming can evaluate the relevant residuals
+without constructing any compatibility object.  Their existence defeats any
+claim that service query count alone measures hardness.
+\item[] \textbf{Independent products and compact representations.}
+Parity depends on every independent coordinate but retains a width-two OBDD.
+Semantic dependence is therefore distinct from representation size and time.
+\item[] \textbf{Padding and encodings.}
+Clause order, duplicate clauses, tautological padding, renaming, and global
+complementation preserve the service bit.  Charged parsing prevents padding
+from manufacturing hardness.
+\item[] \textbf{DEAD/COPY/DELAY/INTERP/RECOMP.}
+DEAD materialization may be skipped; COPY shares one answer; DELAY inflates
+a trace only; INTERP decodes an alternate representation; RECOMP is exactly
+the sequential substitution proof.  None forces same-execution state.
+\item[] \textbf{One-bit output.}
+The final parity, pin, or SAT answer is one bit.  An explicit answer vector is
+a different interface and its output length cannot be charged for free.
+\end{description}
+
+The closure proof relativizes: replace $A$ by $A^O$ and every call by the
+same oracle-relative computation.  Algebraic-extension access can only make
+the evaluator stronger.  Thus the result exposes, rather than crosses, the
+Baker--Gill--Solovay and Aaronson--Wigderson barriers.  No large constructive
+property against general circuits is proved, so Natural Proofs is not the
+immediate obstruction; it must be audited if a later repair asserts such a
+circuit lower bound.  Nonuniform advice can hardwire more source-specific
+information, so it cannot rescue a universal necessity claim.
+
+\begin{description}[leftmargin=0cm,labelwidth=0cm]
+\item[] \textbf{THEOREM TRANSFER.}
+Bounded truth-table and bounded adaptive-query hierarchies transfer exactly
+as classifications of oracle-query interfaces.  FLMV transfers only after
+one same machine satisfies its simultaneous time-space premises.
+\item[] \textbf{ANALOGY / CANDIDATE.}
+Communication, cell-probe, pebbling, VLSI routing, and memory-hierarchy lower
+bounds may constrain a fixed batch service.  The missing theorem maps every
+SAT decider into that exact interface with all source rereads and recomputation
+charged.
+\item[] \textbf{FAILED TRANSFER.}
+Parity decision-tree complexity, physical fan-out, explicit-vector length,
+and restricted branching-program lower bounds do not imply unrestricted SAT
+runtime without the model-preserving compiler.
+\end{description}
+
+For the post-quantum ledger, the lossiness calculation is exact and negative:
+parity maps $2^q$ answer vectors into two fibers of size $2^{q-1}$, so collision
+entropy is large while evaluation remains linear.  Schur squares, quadratic
+relation ranks, Hilbert functions, syzygies, and cryptographic binding do not
+block this quotient and are \textbf{FAILED TRANSFER} for this target.
+LWE-style external extraction and special-soundness collision extraction are
+\textbf{ANALOGY / CANDIDATE}; they still require a source-matched unconditional
+bridge.  Random-oracle assumptions are inadmissible.
+
+\section{Corpus-wide reconciliation}
+
+\subsection*{CORPUS REVIEWED}
+The run surveyed the authenticated $1{,}944$-path GitHub tree at head
+\nolinkurl{6e4e50991dc0ca168aa5875c3f792f0bd268c7b8}; root \texttt{main.tex};
+\texttt{AGENTS.md}, \texttt{CODEX.md}, the PNP skill and red-team protocol;
+all seven task specifications; current \texttt{main4.tex} and
+\texttt{main5.tex}; the newest verified historical MAIN; current status and
+coordination; TESTS-0004, MODELBRIDGE-0008, SYNTHESIS-0004, LB-0010,
+RT-0006--0007, and CC-0005; ENVELOPE1, CROSSDOM1, MULTICHANNEL1, SOURCEEDGE1,
+LOCALBIT1, KABSORB1, and COLLAPSEGATE1; active HEC/CRS-PPC/CCSPC components;
+governance; and cited scripts and raw outputs.  Primary literature on bounded
+SAT queries, truth-table/difference hierarchies, FLMV, relativization, and
+algebrization was checked before the claim was formulated.
+
+\subsection*{DUPLICATION / CONTRADICTION AUDIT}
+Equation (5) is already present as ENVELOPE1's direct route and in root MAIN's
+adaptive-replay guard.  RT-0006 also states that polynomially many service
+queries add their count exponent without removing $K$.  This report does not
+rename those results as new.  Its new work is independent promotion of
+TESTS-0004, correction of the displayed evaluator quantifier, application of
+the existing envelope to PREDECISION-NONSHANNON-SERVICE1, and the sharp
+parity/width-two hostile control.
+
+\subsection*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root MAIN already contains the correct polynomial-query simulation bound and
+keeps every load-bearing arbitrary-algorithm bridge \OPEN.  No root statement
+is mathematically contradicted.  The current review stream's handoff is now
+narrower: superconstant decision-query complexity must not be listed as a
+repair by itself.  This review role has no authorized LSPV ownership region,
+so root \texttt{main.tex} is not edited.
+
+\subsection*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted are TESTS-0004's two-pin and component identities, RT-0006's
+source-plus-program evaluator, ENVELOPE1's direct route, MULTICHANNEL1's
+fractional recursive closure, \texttt{SAME\_REALIZATION}, and all hostile controls.
+Rejected is query count as a representation-independent work measure.
+Retired is \texttt{SUPERCONSTANT-QUERY-REPAIR1}.  Restricted query hierarchy
+separations, explicit service vectors, and black-box parity lower bounds
+remain valid only in their stated models.
+
+\subsection*{STALE OR OVERSTATED CLAIMS FOUND}
+TESTS-0004's theorem is sound, but its displayed ``for all $A$'' prefix is
+overbroad unless correctness on the service domain is included as in (4).
+Its next-target wording is stale if read as making non-$O(1)$ query complexity
+the key new resource.  The second conjunct, a $K$-independent arbitrary-solver
+compiler, remains the actual load-bearing requirement.
+
+\section{Smallest repair and handoff}
+
+Replace the retired criterion by
+\texttt{FRACTIONAL-PREDECISION-COMPILER1}:
+\begin{quote}
+For every fixed polynomial SAT decider $A$, construct uniformly and before
+any current-scale decision a source-matched service realization whose local
+exponent is independent of $K$, whose SAT-dependent channels have explicitly
+charged multiplicities and strictly fractional query lengths $N^{a_j+o(1)}$
+with $a_j<1$, and whose descendants satisfy the same contract.  Then prove a
+lower bound on that same realization strong enough to enter a matched
+time-space forbidden region.
+\end{quote}
+MULTICHANNEL1 explains why fractional hereditary channels can eliminate $K$;
+ordinary polynomially many current-scale calls cannot.  The compiler, closure,
+joint lower bound, nonrelativizing hinge, nonalgebrizing hinge, UCORE-TIME1,
+and P versus NP remain \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{beigel}
+R.~Beigel,
+\emph{Bounded Queries to SAT and the Boolean Hierarchy},
+Theoretical Computer Science 84(2) (1991), 199--223.
+\url{https://cis.temple.edu/~beigel/papers/queries-SAT-tcs.html}.
+
+\bibitem{ksw}
+J.~K\"obler, U.~Sch\"oning, and K.~W.~Wagner,
+\emph{The Difference and Truth-Table Hierarchies for NP},
+RAIRO Theoretical Informatics and Applications 21(4) (1987), 419--435.
+\url{https://www.numdam.org/item/ITA_1987__21_4_419_0.pdf}.
+
+\bibitem{flmv}
+L.~Fortnow, R.~Lipton, D.~van Melkebeek, and A.~Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability},
+Journal of the ACM 52(6) (2005), 835--865.
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.
+
+\bibitem{bgs}
+T.~Baker, J.~Gill, and R.~Solovay,
+\emph{Relativizations of the $P=?NP$ Question},
+SIAM Journal on Computing 4(4) (1975), 431--442.
+\url{https://doi.org/10.1137/0204037}.
+
+\bibitem{aw}
+S.~Aaronson and A.~Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory},
+ACM TOCT 1(1) (2009), Article 2.
+\url{https://eccc.weizmann.ac.il/report/2008/005/}.
+\end{thebibliography}
+
+\paragraph{Final status.}
+\nolinkurl{CONNECTED-TWOPIN-EQUIVALENCE1} and
+\nolinkurl{POLYQUERY-SERVICE-CLOSURE1}: \EXACT.  Finite audit: \COMP.\\
+\nolinkurl{CONNECTIVITY-AS-SERVICE-REPAIR1} and
+\nolinkurl{SUPERCONSTANT-QUERY-REPAIR1}: \RETIRED.\\
+\nolinkurl{FRACTIONAL-PREDECISION-COMPILER1}, UCORE-TIME1,
+nonrelativization, nonalgebrization, and P versus NP: \OPEN.
+P versus NP remains open.
+
+% END_OF_VERIFIED_REPORT::REDTEAM::RT-0008
+\end{document}

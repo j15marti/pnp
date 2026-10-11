@@ -1,3 +1,19 @@
+# UNIVERSAL_CORE_REDTEAM coordination
+
+## RT-0008: 2026-10-11T10:36:00Z
+
+**Status:** VERIFIED. **P versus NP remains OPEN.**
+
+Independent review accepts TESTS-0004's `CONNECTED-TWOPIN-EQUIVALENCE1`, with the service-evaluator correctness premise made explicit. The exact polynomial-query closure bound `max{c,b+aK}` was already present in ENVELOPE1 and root MAIN; applying it to the new handoff proves that polynomially many adaptive SAT queries remain polynomial under `P=NP` and retain the unknown exponent `K`.
+
+Parity supplies the sharp countercontrol: it requires all `q` membership bits in the deterministic black-box model, yet has a width-two OBDD with `2q-1` nonterminals and polynomial sequential evaluation. Thus `SUPERCONSTANT-QUERY-REPAIR1` is FALSIFIED/RETIRED. The bounded audit passed 243,622 checks across parity adversaries, compact OBDDs, adaptive orders, tiny proper-CNF realizations, padding, duplicates, renaming, complementation, two-pin regression, affine/Tseitin Gaussian elimination, easy families, and exponent ledgers.
+
+**Handoff:** Replace nonconstant query complexity by `FRACTIONAL-PREDECISION-COMPILER1`: source-first local work independent of `K`, only strictly fractional SAT-call channels, hereditary closure, and a lower bound on that same realization. Every conjunct remains OPEN.
+
+Report: `research/review/reports/redteam/2026-10-11_1036_RT-0008.tex`.
+Code: `experiments/review/polynomial_query_service_guard.py`.
+Raw result: `results/raw/review/2026-10-11_polynomial_query_service_guard.json`.
+
 # REDTEAM audit, current run 2026-10-11
 
 ## RT-0006 — source-plus-program service escape (2026-10-11)
