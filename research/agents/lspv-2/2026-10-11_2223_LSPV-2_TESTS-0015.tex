@@ -1,0 +1,272 @@
+% LSPV-2 REPORT::TESTS-0015::2026-10-11T22:23:35Z
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,geometry,hyperref}
+\geometry{margin=1in}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\status}[1]{\textbf{[#1]}}
+\title{LSPV-2 TESTS-0015: Nested-Tag Semantic Erasure Audit}
+\author{UNIVERSAL\_CORE\_TESTS}
+\date{11 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\status{FALSIFIED/RETIRED} The nested-tag family introduced in LB-0019 does
+not make tag consistency a semantic obligation of SAT.  Every tag gadget in
+that construction is satisfiable and variable-disjoint from the leaf blocks.
+Consequently all tag values, including inconsistent ones, can be erased
+without changing satisfiability.  A bounded reproducible audit performed
+$1{,}354{,}166$ checks with zero failures.  This refutes only the claimed
+all-decider need to validate tag consistency; it does not refute the
+leaf-probe lower bound.  P versus NP remains open.
+\end{abstract}
+
+\section{Claim card and exact target}
+
+Let $b\ge2$, $d\ge1$, $L=b^d$, and
+$I=(b^d-1)/(b-1)$.  Let $Y_i$ be a satisfiable proper 3CNF leaf block,
+$U_i$ an unsatisfiable proper 3CNF leaf block, and let $T_{v,0},T_{v,1}$
+be the two tag gadgets at internal node $v$.  All blocks use pairwise
+disjoint variable sets.  LB-0019 uses tags as constructor metadata but
+contains no shared variables or gluing clauses that force a parent tag to
+equal a function of its children.
+
+For $s\in\{0,1\}^{L}$ and $\tau\in\{0,1\}^{I}$ define
+\[
+ G(s,\tau)=
+ \bigwedge_{i=1}^{L} B_{i,s_i}\ \wedge\
+ \bigwedge_{v=1}^{I}T_{v,\tau_v},
+ \qquad B_{i,1}=Y_i,\quad B_{i,0}=U_i .
+\]
+The tested universal claim was:
+\[
+\forall A\,[A\text{ decides 3SAT correctly}]
+\ \forall(s,\tau)\quad
+A(G(s,\tau))\text{ must validate the nested tag relations}.
+\tag{NTCN}
+\]
+The input length $N$ is the length of a conventional explicit 3CNF
+encoding.  The machine model is a deterministic uniform random-access
+machine with read-only input, work tape, and one output bit; preprocessing,
+recognition, extraction, reconstruction, and output costs are included.
+
+\section{Literature and barrier preflight}
+
+The two blocking obstacles are (i) the missing semantic coupling between
+tags and leaves, and (ii) the absent transfer from a restricted structural
+lower bound to every uniform deterministic SAT computation.  Direct-sum
+theorems for decision trees are model-specific, as are branching-program
+and resolution lower bounds.  The Fortnow--Lipton--van Melkebeek--Viglas
+SAT time--space theorem reaches a random-access computation model through a
+specific local-reduction framework; it is not a license to charge arbitrary
+semantic annotations to every SAT decider.  Thus these are useful
+model-boundary controls, not transfers proving (NTCN).
+
+\section{Exact falsification}
+
+\begin{theorem}[SATISFIABLE-COMPONENT-ERASURE1]
+\status{PROVED/EXACT} Let $F$ be a CNF and let $C_1,\ldots,C_m$ be
+satisfiable CNFs on pairwise disjoint variable sets, also disjoint from
+$F$.  Then
+\[
+F\wedge C_1\wedge\cdots\wedge C_m\in\SAT
+\quad\Longleftrightarrow\quad F\in\SAT .
+\]
+\end{theorem}
+\begin{proof}
+Restriction of a satisfying assignment proves the forward implication.
+For the reverse implication, take one satisfying assignment for each
+$C_j$ and combine them with a satisfying assignment for $F$; disjointness
+makes the union well defined.
+\end{proof}
+
+\begin{theorem}[NESTED-TAG-GLUING-ABSENCE1]
+\status{PROVED/EXACT} For every $s\in\{0,1\}^{L}$ and every tag vector
+$\tau\in\{0,1\}^{I}$,
+\[
+G(s,\tau)\in\SAT\quad\Longleftrightarrow\quad
+\bigwedge_{i=1}^{L}s_i=1.
+\]
+In particular, satisfiability is invariant under every tag mutation.
+\end{theorem}
+\begin{proof}
+Each selected tag block is satisfiable and variable-disjoint from every
+other component, so the preceding theorem erases all tags.  The remaining
+independent product of leaves is satisfiable exactly when no selected leaf
+is $U_i$.
+\end{proof}
+
+The smallest hostile control is $b=2,d=1$ with two satisfiable leaves and
+an inconsistent root tag.  The CNF
+\[
+Y_1\wedge Y_2\wedge T_{0}
+\]
+is satisfiable.  Therefore any recognizer that rejects this formula merely
+because the root tag disagrees with the leaf values is not a correct SAT
+decider on the broad syntactic island.  Hence (NTCN) is
+\status{FALSIFIED/RETIRED}.
+
+\section{Conditional wrapper and full cost ledger}
+
+Assume, only for the wrapper test, that a uniform deterministic polynomial
+time 3SAT decider $A$ exists.  Define $W_A$ to recognize the broad island
+\[
+\mathcal I_{b,d}=\{G(s,\tau):s\in\{0,1\}^{L},
+\tau\in\{0,1\}^{I}\},
+\]
+including arbitrary tag strings.  On this island it scans syntax once,
+tests each leaf template, accumulates the AND of leaf bits, scans tag blocks
+for syntax only, and ignores their values and their alleged consistency.
+Off the island it calls $A$.
+
+\begin{proposition}[FLAT-TAG-ERASURE-WRAPPER1]
+\status{CONDITIONAL} If $A$ is a polynomial-time 3SAT decider, then $W_A$
+is a polynomial-time 3SAT decider whose island path performs zero semantic
+tag evaluations, zero compatibility extraction, and zero reconstruction.
+Its explicit costs are $O(N)$ recognition time, $O(L)$ leaf-template tests,
+one accumulator bit, $O(\log N)$ address state, and one output bit.
+\end{proposition}
+\begin{proof}
+The previous theorem proves island-path correctness for every tag vector.
+The fallback proves correctness elsewhere.  All recognition work is
+charged, and the scan is linear in the encoded input length.
+\end{proof}
+
+This is not an unconditional polynomial-time algorithm for 3SAT and does
+not assume its conclusion.  It is a model-matched counterexample to a
+purported additional necessity under the hypothesis $\SAT\in\mathrm P$.
+
+\section{Reproducible bounded experiment}
+
+The program
+\texttt{experiments/review/nested\_tag\_semantic\_erasure\_audit.py}
+uses only the Python standard library and finishes in under five seconds
+on the recorded run.  Its machine-readable output is
+\texttt{results/raw/review/2026-10-11\_nested\_tag\_semantic\_erasure\_audit.json}.
+The audit made $1{,}354{,}166$ checks with zero failures in
+$4.474096110003302$ seconds:
+\begin{itemize}
+\item $41{,}112$ exhaustive vectors for $(b,d)\in
+\{(2,1),(2,2),(2,3),(3,1),(3,2)\}$;
+\item $960$ seeded trials with arities $2$--$5$, depths $1$--$6, up to
+$15{,}625$ leaves and $3{,}906$ tags;
+\item $557{,}032$ tag-mutation, $210{,}360$ encoding,
+$252{,}432$ wrapper, and $168{,}288$ padding checks;
+\item $81{,}910$ hostile controls spanning Horn, 2SAT, affine/Tseitin
+parity, bounded-treewidth paths, and independent products;
+\item five encodings and DIRECT, DEAD, COPY, DELAY, INTERP, and RECOMP
+equivalent wrappers.
+\end{itemize}
+All preprocessing and syntactic recognition are counted.  These finite
+checks support only the exact implementation and detect regressions; the
+theorem above, not extrapolation, proves semantic erasure.
+
+The script SHA-256 is
+\texttt{3cbf22863a0275324b26dfe0a64dd5dab14f52a3ecce84b6c70a843c60b28ed8};
+the JSON SHA-256 is
+\texttt{2329d635cc16c654a3176e680440a353f892a6e2bf65d5c7a8383e0fe0abc556}.
+
+\section{Post-quantum technique ledger}
+
+Let $\pi(s,\tau)=s$.  \status{EXACT OBJECT/THEOREM TRANSFER} Its collision
+count is
+\[
+\operatorname{Coll}(\pi)=2^L(2^I)^2=2^{L+2I},
+\qquad
+|\operatorname{im}\pi|
+=\frac{2^{2(L+I)}}{2^{L+2I}}=2^L .
+\]
+Thus collision-effective entropy exactly certifies loss of every tag bit.
+The Schur-square, quadratic-relation, Hilbert/syzygy, and special-soundness
+prompts are \status{FAILED TRANSFER}: the present family has no
+tag-to-leaf algebraic relation to expose.  Worst-case/average-case
+extraction is an \status{ANALOGY/CANDIDATE}; it would require a new
+black-box reduction and a barrier audit.
+
+\section{CORPUS REVIEWED}
+
+The run surveyed the repository tree; root \texttt{main.tex},
+\texttt{main4.tex}, \texttt{main5.tex}, \texttt{AGENTS.md},
+\texttt{CODEX.md}, the PNP research skill and protocol, all current task
+specifications, the newest verified MAIN, the current reports from
+LSPV-1 through LSPV-5, and materially relevant historical reports found by
+repository search.  It also inspected the HEC, VSC-HEC, G-PPC-HEC,
+CRS-PPC, CCSPC, RCCN/source-reduction branch, governance notes, and cited
+experiment artifacts.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+The general annotation-semantics trilemma was already recorded in
+\texttt{research/review/reports/lower\_bound/2026-10-11\_1612\_LB-0014.tex}.
+The new contribution is the exact instantiation against LB-0019's concrete
+nested-tag family, the minimum counterexample, the broad-island conditional
+wrapper, and the exhaustive hostile-control audit.  No claim is made that
+semantic erasure defeats the independent leaf-probe floor.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+The root MAIN statement that a recognize-first wrapper must validate all
+tag consistency is too strong.  It is replaced, in the LSPV-2 ownership
+region, by the exact statement that present tags are semantically erasable.
+The arbitrary-decider bridge and P versus NP remain \status{OPEN}.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\begin{itemize}
+\item \status{ADOPTED}: LB-0019's exact leaf count, encoded-length ledger,
+and zero-error leaf-probe statement for the promised independent product.
+\item \status{REJECTED}: treating constructor metadata as SAT semantics
+without clauses or shared variables.
+\item \status{FALSIFIED/RETIRED}: universal tag-consistency validation for
+the current nested family.
+\item \status{OPEN}: transfer from any promised or structural lower bound
+to arbitrary uniform polynomial-time 3SAT deciders.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any statement that the current recognize-first wrapper must validate
+nested tag consistency is stale.  Syntax recognition may be necessary for
+that wrapper implementation, but semantic validation of arbitrary
+satisfiable disjoint tags is not.
+
+\section{Precise handoff}
+
+The next construction target is \textbf{TAG-GLUING-GADGET1}: give explicit,
+proper, duplicate-free, bounded-occurrence 3CNF clauses or shared variables
+that enforce each parent tag as a function of its child interfaces.
+Then test affine elimination, unit propagation, bounded treewidth,
+compact-circuit representations, padding, and equivalent wrappers.  Even a
+successful gadget supplies only semantic coupling; a solver-independent
+transfer theorem to every uniform deterministic decider remains a separate
+\status{OPEN} arrow.
+
+\begin{thebibliography}{9}
+\bibitem{JKS}
+R. Jain, H. Klauck, and M. Santha,
+\emph{Optimal direct sum results for deterministic and randomized decision
+tree complexity}, Information Processing Letters 110 (2010), 893--897.
+\bibitem{FLMV}
+L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+\emph{Time-space lower bounds for satisfiability}, Journal of the ACM 52
+(2005), 835--865.
+\bibitem{Ajtai}
+M. Ajtai, \emph{A non-linear time lower bound for Boolean branching
+programs}, Theory of Computing 1 (2005), 149--176.
+\bibitem{HN}
+J. H{\aa}stad and J. Nordstr{\"o}m,
+\emph{Towards an optimal separation of space and length in resolution},
+Theory of Computing 9 (2013), 471--557.
+\end{thebibliography}
+
+\paragraph{Status.}
+The universal nested-tag consistency claim is
+\status{FALSIFIED/RETIRED}; the component-erasure theorem is
+\status{PROVED/EXACT}; the wrapper is \status{CONDITIONAL}; the
+all-algorithm transfer remains \status{OPEN}.  P versus NP remains open.
+
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::TESTS-0015
