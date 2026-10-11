@@ -2,6 +2,8 @@
 
 Updated: 2026-10-11. **P versus NP remains OPEN.**
 
+`REDTEAM RT-0004` proves a scoped implementation separation on a proper-three-CNF equality control. DIRECT, MATERIALIZE, INTERP, and RECOMP have identical answers but distinct raw and decoder-relative exposure of `q=u xor v`, while `q` is externally source-derivable for all four. Therefore raw exposure is encoding-sensitive, decoded exposure is not universal across no-materialization solvers, and extensional extraction does not establish same-execution cost. The hard clean-core target on Monotone 3-SAT-(2,2), the causal forced-interface repair, `CORE-ACQUIRE1`, and P versus NP remain **OPEN**. The exhaustive audit passed 87,380 semantic cases and 262,140 wrapper controls.
+
 `MODELBRIDGE-0003` proves the exact universal positive boundary for an
 arbitrary uniform deterministic 3-SAT decider: external pinning recovers one
 satisfying assignment with at most `n+1` calls on canonical 3-CNF inputs of
