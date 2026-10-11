@@ -1,0 +1,321 @@
+% PNP REVIEW REPORT::MODEL_BRIDGE::MODELBRIDGE-0015::2026-10-11T17:00:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\PolySAT}{\mathsf{PolySAT}}
+\newcommand{\status}[1]{\textsc{#1}}
+\title{MODELBRIDGE-0015: Positive-scale black-box extraction cannot have an implementation-universal fixed exponent}
+\author{UNIVERSAL\_CORE\_BRIDGE}
+\date{11 October 2026, 17:00 UTC}
+\begin{document}\maketitle
+
+\section*{Executive result}
+
+This run proves an exact gate on the proposed LWE-style external-extraction
+route.  Assume only that one uniform deterministic polynomial-time exact SAT
+decider exists.  Let a deterministic oracle transducer use the answer bits of
+an arbitrary exact SAT decider and charge the actual decider execution.  If,
+on infinitely many length-$N$ inputs, the transducer asks even one query of
+length at least $N^\varepsilon$ for a fixed $\varepsilon>0$, then no exponent
+$c$ independent of the supplied implementation can bound the fully charged
+transducer for \emph{every} polynomial-time exact SAT implementation.  An
+extensionally identical delay wrapper with delay exponent
+$d>c/\varepsilon$ gives a charged lower bound $N^{\varepsilon d}>N^c$ on
+those inputs.
+
+This is \texttt{BLACKBOX-POSITIVE-SCALE-GATE1}, \status{Proved/Exact} at its
+declared oracle-transducer interface.  It is not a SAT lower bound.  It
+falsifies the unqualified claim that black-box access to every polynomial SAT
+implementation is automatically an intermediate, implementation-universal
+fixed-exponent resource.  It does not exclude an extractor using only
+$N^{o(1)}$-length queries, a direct source computation, or an intensional
+code-sensitive compiler with a separately proved covariance theorem.  Those
+routes remain \status{Open}.  P versus NP remains \status{Open}.
+
+\section{Clean core, semantic compatibility, and exact target}
+
+Fix a canonical self-delimiting binary encoding of proper 3-CNFs and let
+$N=|\operatorname{enc}(F)|$.  For a formula
+$F=C_1\wedge\cdots\wedge C_m$ on $n$ variables define the semantic
+compatibility matrix
+\[
+ H(F)\in\{0,1\}^{2^n\times m},\qquad
+ H(F)_{\alpha,j}=1\iff \alpha\models C_j.
+\]
+Thus $F$ is satisfiable exactly when $H(F)$ has an all-one row.  The explicit
+clean-core universe used here is
+\[
+ \mathcal C_N=\{F:|\operatorname{enc}(F)|=N,\ F\text{ is a canonical proper
+ width-three CNF}\}.
+\]
+The theorem below is stronger with respect to its input domain: it applies to
+every encoded SAT instance, hence to every $\mathcal C_N$.  It is deliberately
+agnostic about the extracted object.  The output may be a bit, a row or column
+of $H(F)$, a witness, an occurrence tag, a residual graph, a compatibility
+certificate, or any other finite string.  Consequently the theorem cannot be
+evaded merely by changing the preferred representation of $H(F)$.
+
+Let $\PolySAT$ be the class of total uniform deterministic machines that
+decide the same encoded SAT language in polynomial time, with no common
+polynomial exponent assumed.  The proposed universal target had the prefix
+\[
+ \exists E\,\exists c\,\forall A\in\PolySAT\,\forall F:\quad
+ E[A](F)=R(F)\quad\text{and}\quad T^{\rm charged}_{E[A]}(F)\le N^{c+o(1)},
+ \tag{1}
+\]
+where one transducer $E$ observes $A$ only through query strings and exact
+answer bits, and all query construction, calls, suspension, replay, output,
+retained state and transient state are charged in the same realization.
+
+\section{Exact theorem}
+
+\paragraph{BLACKBOX-POSITIVE-SCALE-GATE1 (\status{Proved/Exact}).}
+Assume $\PolySAT\ne\varnothing$.  For every uniform deterministic extensional
+oracle transducer $E$, every constant $c\ge0$, and every $\varepsilon>0$, if
+there are infinitely many pairs $(N,F)$ with
+$|\operatorname{enc}(F)|=N$ for which the exact-answer transcript of $E$ on
+$F$ contains a SAT query $Q$ satisfying
+\[
+ |\operatorname{enc}(Q)|\ge N^\varepsilon,
+ \tag{2}
+\]
+then there exists $A\in\PolySAT$ for which, on those same inputs,
+\[
+ T^{\rm charged}_{E[A]}(F)>N^c.
+ \tag{3}
+\]
+In particular, a transducer satisfying the fixed-exponent universal prefix
+(1) can issue positive-polynomial-scale SAT queries on only finitely many
+input lengths.
+
+\paragraph{Proof.}
+Choose any $A_0\in\PolySAT$.  For an integer $d>c/\varepsilon$, define the
+uniform exact delay wrapper $A_d$ as follows: on an input $Q$ of encoded
+length $q$, perform $q^d$ dummy deterministic transitions and then run
+$A_0(Q)$.  For each fixed $d$, $A_d$ is still a total uniform polynomial-time
+exact SAT decider.  Because $A_d$ and $A_0$ return the same bit on every query,
+extensionality makes every adaptive query string and answer in $E$'s
+transcript identical under the two implementations.  In particular, query
+(2) still occurs under $A_d$.  SAME\_REALIZATION charging includes its dummy
+transitions, so
+\[
+ T^{\rm charged}_{E[A_d]}(F)
+ \ge |\operatorname{enc}(Q)|^d
+ \ge N^{\varepsilon d}>N^c.
+\]
+This holds for every pair in the assumed infinite sequence. \hfill$\square$
+
+The quantifier order is essential.  For each fixed $A_d$, the composite is
+still polynomial time, but its exponent may depend on $d$.  The theorem
+refutes only a common $c$ placed before $\forall A$.  It neither proves that
+SAT lacks a polynomial algorithm nor supplies a lower bound for one fixed
+implementation.
+
+\section{The black-box extraction trilemma}
+
+The result leaves exactly three typed possibilities.
+\begin{enumerate}[leftmargin=1.5em]
+\item \textbf{Fully charged positive-scale calls.}  These preserve the
+      arbitrary implementation exponent by the theorem.  They do not yield
+      an implementation-universal fixed-exponent bridge.
+\item \textbf{Unit-cost SAT oracle calls.}  These produce an oracle-machine
+      statement, not a SAME\_REALIZATION bound on the supplied deterministic
+      program.  Treating this as ordinary running time crosses models.
+\item \textbf{No positive-scale dependence on the supplied solver.}  The
+      transducer must use only $N^{o(1)}$-length SAT queries, or compute the
+      resource directly from the source.  A source-only computation may be
+      valuable, but it does not show that an arbitrary solver exposes or pays
+      for the chosen compatibility object.
+\end{enumerate}
+The subpolynomial-query route remains \status{Open}; the present exponent
+multiplication gives $0\cdot d=0$ and therefore does not rule it out.  The
+source-only route is governed by the existing static endpoint and coverage
+obstructions.  An intensional transformation that reads code, trace or timing
+is outside the theorem and still owes wrapper covariance, construction cost,
+uniformity and a matched lower-bound endpoint.
+
+\section{Relation to earlier corpus results}
+
+This result is not a restatement of MODELBRIDGE-0011.  Its
+\texttt{EXTENSIONAL-DOWNWARD-ORACLE-ELIMINATION1} proves that a \emph{supplied}
+solver can be recursively eliminated after a strict bound
+$|Q|\le N^{\lambda+o(1)}$ with fixed $\lambda<1$ and fixed query/work
+exponents has already been constructed.  The present theorem instead
+quantifies over all extensionally equal polynomial implementations and proves
+that a common charged exponent is impossible whenever any fixed positive
+query scale survives.  It also instantiates the LSPV-3
+\texttt{KPATH1} principle on one unavoidable query path: a positive edge
+coefficient $\varepsilon$ carries an arbitrary wrapper exponent $d$ to the
+root.  MODELBRIDGE-0010's static normalizer equivalence remains complementary:
+source-only normalization to a favorable complete class is already an
+endpoint algorithm.
+
+SYNTHESIS-0010's local-reduction port dichotomy concerns the structure needed
+to stream one tagged Cook reduction.  BLACKBOX-POSITIVE-SCALE-GATE1 concerns
+the logically earlier arbitrary-decider bootstrap.  Even a complete proof of
+the JMV parent-port/native-tag arrow would not force an arbitrary SAT decider
+to use that reduction or expose $H(F)$.
+
+\section{Primary-literature and barrier preflight}
+
+The two obstacles checked before promotion were (i) whether external
+black-box extraction avoids implementation dependence, and (ii) whether the
+result transfers to a model-matched unconditional endpoint.  Baker--Gill--
+Solovay exhibit relativized worlds with opposite answers to P versus NP,
+warning that a purely relativizing black-box route cannot by itself settle
+the unrelativized question.  Aaronson--Wigderson strengthen the audit to
+algebrizing techniques.  Bogdanov--Trevisan prove barriers for broad
+nonadaptive worst-case/average-case reductions for NP under standard collapse
+consequences; their theorem is not directly used here, but it confirms that
+the LWE worst-case/average-case architecture does not transfer automatically
+to NP.  Fortnow--Lipton--van Melkebeek--Viglas give a genuine random-access
+SAT time--space endpoint, but it applies only after one actual realization
+has both charged bounds.  Jahanjou--Miles--Viola provide a local SAT reduction,
+not a compiler from every SAT decider to a preferred internal resource.
+
+The theorem here is elementary and directly model-matched to a charged
+subroutine call.  It relativizes, does not evade algebrization, supplies no
+Natural-Proofs workaround, and reaches no contradiction with the FLMV
+endpoint.  Those are limitations, not suppressed premises.
+
+\section{Bounded reproducible audit}
+
+The script
+\path{experiments/review/blackbox_positive_scale_gate_audit.py} completed one
+unchunked invocation in 1.56 seconds, below the 30-second rule.  It checked
+512 exact rational triples $(c,\varepsilon,d)$ and verified
+$\varepsilon d>c$ with $d=\lfloor c/\varepsilon\rfloor+1$.  It checked
+25,000 adaptive transcript comparisons across DIRECT, COPY, DELAY, INTERP and
+RECOMP wrappers on 5,000 seeded formulas, with zero disagreements.  Forty
+additional comparisons covered named 2SAT, Horn, affine/Tseitin, bounded-
+treewidth, independent-product, padding, redundant-clause and alternate-
+encoding controls.  The $\lambda=0$ rows were retained as hostile controls
+and correctly did not claim amplification.
+
+The verified output is
+\path{results/raw/review/2026-10-11_blackbox_positive_scale_gate.json}.
+The finite test checks the proof arithmetic and extensional-transcript
+invariance.  It is \status{Computational}; it is not the asymptotic proof.
+
+\section{Post-quantum technique ledger}
+
+\begin{itemize}[leftmargin=1.5em]
+\item Schur squares, quadratic relation spaces, Hilbert functions and
+      syzygies: \status{Failed Transfer} to the arbitrary-decider bridge.
+      They are properties of selected representations and no theorem forces
+      an answer-bit decider to materialize them.
+\item Lossiness/collision entropy: \status{Analogy/Candidate}.  The exact
+      Cauchy--Schwarz image bound is valid for a declared map, but no such map
+      is forced by the one-bit decision interface; collisions do not defeat
+      the delay-wrapper theorem.
+\item Worst-case/average-case architecture: \status{Analogy/Candidate} only.
+      External query access is meaningful, but a fixed positive query scale
+      cannot erase arbitrary implementation exponents in a charged universal
+      quantifier.
+\item Collision extraction/special soundness and hash/random-oracle methods:
+      \status{Failed Transfer} for an unconditional separation absent a
+      construction-specific algebraic witness theorem.  Cryptographic
+      hardness and random-oracle assumptions are inadmissible here.
+\end{itemize}
+
+\section{CORPUS REVIEWED}
+
+The run surveyed the complete GitHub tree and read root \path{main.tex},
+\path{AGENTS.md}, \path{CODEX.md}, the pnp-research skill and protocol, all
+current task specifications, the newest historical MAIN snapshot, the newest
+LSPV-1 through LSPV-5 artifacts relevant to product span/reconstruction/red
+team, current \path{main4.tex} and \path{main5.tex}, MODELBRIDGE-0010/0011/
+0014, LB-0014, TESTS-0009, RT-0014, SYNTHESIS-0010, the model-bridge spine and
+status ledger, governance notes, and the HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC
+causal components.  The immediately preceding SYNTHESIS-0010 artifact was
+read back with its expected header, substantive body and final sentinel; no
+recovery request was needed.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+Repository search surfaced the existing wrapper upper bound MB1, the MB5
+strict-downward elimination theorem, the KPATH1 positive-coefficient guard,
+and the SOURCEBACKED empty-query trilemma.  BLACKBOX-POSITIVE-SCALE-GATE1 is
+new only in its exact prefix over \emph{all} extensionally equal polynomial
+implementations and its delay-wrapper lower bound against one common charged
+exponent.  It contradicts no verified theorem.  It narrows, rather than
+strengthens, the LWE-inspired extraction prompt.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root \path{main.tex} already marks P versus NP open and isolates the missing
+arbitrary-algorithm transfer.  This run adds a negative gate: an extensional
+fully charged extractor with implementation-independent exponent cannot make
+positive-polynomial-scale calls to every polynomial SAT implementation.
+It does not close any root load-bearing arrow.  The root file was not edited:
+this review role has no marked LSPV-1--4 ownership region, while LSPV-5 is the
+whole-document synthesis arbiter.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+Adopted: SAME\_REALIZATION accounting, MB5 transcript extensionality,
+KPATH1 exponent survival, and the SYNTHESIS-0010 distinction between a
+structural port theorem and arbitrary computation.  Rejected as unqualified:
+``external black-box extraction automatically removes the solver exponent.''
+Retired: \texttt{LWE-BLACKBOX-EXTRACTION-IS-INTERMEDIATE1} in the fully
+charged, positive-scale, implementation-universal fixed-exponent form.
+Preserved open: subpolynomial-query extraction, source-only construction,
+intensional covariant compilation, JMV-to-tagged-H22 streaming, and the FLMV
+same-realization bridge.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+The model-bridge coordination JSON still named MODELBRIDGE-0011 despite three
+newer verified bridge reports; this run refreshes it.  No mathematical
+overstatement was found in the newest synthesis.  Any prose suggesting that
+``black-box access to a polynomial SAT solver'' by itself provides a fixed
+uniform exponent is now stale unless it either fixes the implementation
+before the exponent or eliminates the oracle by a proved strict-downward
+recursion.
+
+\section{Status and next target}
+
+\begin{center}
+\begin{tabular}{@{}p{0.46\linewidth}p{0.20\linewidth}p{0.25\linewidth}@{}}
+\toprule
+Item & Status & Consequence\\ \midrule
+BLACKBOX-POSITIVE-SCALE-GATE1 & \status{Proved/Exact} & no common charged exponent across delay wrappers\\
+finite rational/transcript audit & \status{Computational} & proof harness passed; no asymptotic inference\\
+LWE-BLACKBOX-EXTRACTION-IS-INTERMEDIATE1, unqualified form & \status{Falsified/Retired} & split the route by query scale/model\\
+SUBPOLYNOMIAL-QUERY-BOOTSTRAP1 & \status{Open} & current theorem is silent\\
+INTENSIONAL-COVARIANT-DOWNWARD-COMPILER1 & \status{Open} & code-sensitive route owes covariance and cost\\
+arbitrary-decider SAME\_REALIZATION transfer & \status{Open} & no P-versus-NP conclusion\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The highest-value next target is \texttt{SUBPOLYNOMIAL-QUERY-BOOTSTRAP1}:
+prove or falsify whether an extensional transducer using only
+$N^{o(1)}$-length exact SAT queries can compute a source-bound favorable
+contract that is not already directly computable from the source, while
+charging the number and construction of queries.  One open load-bearing arrow
+suffices: P versus NP remains \status{Open}.
+
+\begin{thebibliography}{9}
+\bibitem{BGS75} T. Baker, J. Gill, and R. Solovay,
+\emph{Relativizations of the P=?NP question}, SIAM J. Comput. 4(4), 1975,
+\url{https://doi.org/10.1137/0204037}.
+\bibitem{AW09} S. Aaronson and A. Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory}, ToCT 1(1), 2009,
+\url{https://eccc.weizmann.ac.il/report/2008/005/}.
+\bibitem{BT06} A. Bogdanov and L. Trevisan,
+\emph{On Worst-Case to Average-Case Reductions for NP Problems},
+SIAM J. Comput. 36(4), 2006,
+\url{https://eccc.weizmann.ac.il/report/2005/015/}.
+\bibitem{FLMV05} L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, JACM 52(6), 2005,
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{JMV14} H. Jahanjou, E. Miles, and E. Viola,
+\emph{Local reductions}, ECCC TR13-099, 2014,
+\url{https://eccc.weizmann.ac.il/report/2013/099/}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::MODEL_BRIDGE::MODELBRIDGE-0015
+\end{document}
