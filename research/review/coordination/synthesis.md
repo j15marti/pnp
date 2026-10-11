@@ -1,5 +1,22 @@
 # SYNTHESIS current run 2026-10-11
 
+## SYNTHESIS-0012 — quotient covariance has no invariant middle (2026-10-11T18:48:00Z)
+
+**Status:** publication commit pending readback. **P versus NP remains OPEN.**
+
+- **PROVED/EXACT, prior corpus:** connected covariance up to an equivalence relation makes the quotient class source-only; every equivalence-respecting resource also factors through the source.
+- **PROVED/EXACT:** under a fixed unconditional endpoint exclusion SAT not in G, the complete typed compiler implication is equivalent to SAT not in P.
+- **FALSIFIED/RETIRED:** `TYPED-COMPILER-AS-INTERMEDIATE1`; the compiler itself remains OPEN and separation-strength.
+- **COMPUTATIONAL:** 1,353,627 graph labelings, 1,536 semantic wrapper checks, affine/easy-family/encoding controls, zero failures.
+- **Single OPEN target:** `SOURCE-PASS-ACCESS1` — one predecision, bit-local, hereditary, fully charged source pass with no current-scale or fallback unknown-exponent term.
+
+Report: `research/review/reports/synthesis/2026-10-11_1848_SYNTHESIS-0012.tex`.
+Historical MAIN: `research/main/2026-10-11_1848_MAIN_SYNTHESIS-0012.tex`.
+
+---
+
+# SYNTHESIS current run 2026-10-11
+
 ## SYNTHESIS-0010 — local-reduction port dichotomy (2026-10-11T16:48:00Z)
 
 **Status:** VERIFIED and published. **P versus NP remains OPEN.**
