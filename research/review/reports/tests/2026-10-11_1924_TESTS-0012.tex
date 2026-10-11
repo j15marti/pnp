@@ -1,0 +1,421 @@
+% PNP REVIEW REPORT::TESTS::TESTS-0012::2026-10-11T19:24:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\Htwo}{\mathcal H_{2,2}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newtheorem{theorem}{Theorem}
+\title{TESTS-0012: A one-branch matching bypass for all-branch clean-core fanout}
+\author{UNIVERSAL\_CORE\_TESTS}
+\date{11 October 2026, 19:24 UTC}
+\begin{document}\maketitle
+
+\begin{abstract}
+LB-0016 proves an exponential output-volume lower bound for one declared
+algorithm: explicitly restrict a variable block in every possible way and
+emit every residual.  This run tests the tempting pointwise promotion to
+source-dependent pruned passes.  It fails on an already known paired-incidence
+island.  For every cubic bipartite graph $G$, the paired positive/negative
+incidence formula $F(G)$ is proper duplicate-free Monotone
+$3$SAT-$(2,2)$.  A perfect matching selects one full restriction whose
+residual is TRUE.  Recognition, matching, restriction construction and
+verification are polynomial and fully charged, while the all-variable
+all-branch pass has $2^n$ children.  The symbolic result is a corpus-derived
+\EXACT{} corollary; the new contribution is the explicit pruned-pass
+realization and cost audit.  It does not refute a worst-case theorem over all
+clean cores and does not constrain an arbitrary SAT decider.  P versus NP
+remains \OPEN.
+\end{abstract}
+
+\section{Executive claim card}
+
+\begin{center}\small
+\begin{tabular}{p{0.39\linewidth}p{0.20\linewidth}p{0.33\linewidth}}
+\toprule
+Claim & Status & Verdict\\
+\midrule
+\texttt{PAIRED-MATCHING-ONEBRANCH1} & \EXACT, corpus-derived &
+A recognized paired cubic-bipartite core has one polynomially found
+satisfying restriction.\\
+\texttt{POINTWISE-ALLBRANCH-TO-PRUNED1} & \RETIRED &
+Exponential fanout of the explicit full cube is not a per-instance
+necessity for every source-dependent strict pass.\\
+Finite implementation/cost audit & \COMP &
+87 checks, zero failures, maximum $n=1536$.\\
+\texttt{WORSTCASE-PRUNED-SOURCE-PASS-ACCESS1} & \OPEN &
+No all-input hereditary pass or arbitrary-decider transfer is supplied.\\
+$P$ versus $NP$ & \OPEN & No separation claim.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Exact family, encoding and false promotion}
+
+Let $G=(L,R,E)$ be a simple cubic bipartite graph.  Associate one Boolean
+variable $x_e$ with each edge and define
+\[
+ F(G)=\bigwedge_{v\in L\cup R}
+ \left[
+   \left(\bigvee_{e\ni v}x_e\right)
+   \wedge
+   \left(\bigvee_{e\ni v}\neg x_e\right)
+ \right].
+ \tag{1}
+\]
+Every variable occurs positively at its two endpoints and negatively at its
+two endpoints.  Every clause has three distinct literals and is monotone.
+When the three-edge neighborhoods are distinct, the clauses are
+duplicate-free; the circulant family used below has this property.  Thus
+$F(G)\in\Htwo$.  If $n=|E|$ and $N$ is the canonical indexed clause-list
+length, then $N=\Theta(n\log n)$.
+
+LB-0016 considers the declared pass that chooses $S\subseteq[n]$ and emits
+every residual $F\upharpoonright_\alpha$ for
+$\alpha\in\{0,1\}^{S}$.  For $S=[n]$ it emits exactly $2^n$ constant
+residuals.  Its theorem correctly charges that output volume.
+
+The tempting pointwise promotion tested here was:
+\[
+ \begin{aligned}
+ \forall F\in\Htwo\quad
+ &\text{every exact source-dependent pass that replaces $F$ by strict}\\
+ &\text{explicit restriction children must expose
+ $2^{\Omega(N/\log N)}$ children.}
+ \end{aligned}
+ \tag{2}
+\]
+Statement (2) is false.  Its quantifier over every $F$ is essential.  This
+run does not falsify a worst-case statement
+$\forall P\,\exists F$ about total passes on all of $\Htwo$.
+
+\section{One-branch theorem}
+
+\begin{theorem}[PAIRED-MATCHING-ONEBRANCH1 --- \EXACT]
+There is a deterministic promise pass $P_{\rm match}$ such that for every
+paired-incidence formula $F(G)$ of (1), where $G$ is cubic bipartite,
+$P_{\rm match}$:
+\begin{enumerate}[leftmargin=1.6em]
+\item recognizes the paired clauses and recovers $G$ in polynomial time;
+\item computes a perfect matching $M$ of $G$ in polynomial time;
+\item emits the single full restriction
+\[
+ \alpha_M(x_e)=1\quad\Longleftrightarrow\quad e\in M;
+ \]
+\item produces the empty TRUE residual and verifies the assignment against
+the source formula.
+\end{enumerate}
+Consequently its fanout on this family is one, even though the explicit
+all-variable all-branch pass has $2^n=2^{\Theta(N/\log N)}$ children.
+On inputs outside the recognized promise, the tested pass returns UNKNOWN.
+\end{theorem}
+
+\begin{proof}
+Pair each positive clause with the negative clause having the same set of
+three variables.  Regard each pair as a vertex and each variable as an edge
+between the two clause-pairs containing it.  Exact $(2,2)$ occurrence gives
+two endpoints and the three-literal promise gives degree three.  Bipartite
+coloring verifies the declared graph promise.
+
+Every regular bipartite graph has a perfect matching.  Indeed, for
+$S\subseteq L$, the $3|S|$ edges incident with $S$ end in $N(S)$, whose
+vertices have total degree at most $3|N(S)|$.  Hence
+$|N(S)|\ge |S|$, and Hall's theorem applies.  A standard bipartite
+matching algorithm finds such an $M$ in polynomial time.
+
+At each vertex exactly one incident matching edge is assigned one and two
+nonmatching edges are assigned zero.  The positive clause sees the one and
+the negative clause sees the two zeros.  Thus every clause is satisfied and
+the full restriction simplifies to TRUE.  Recognition, matching, writing
+$n$ assignment bits and source verification are all polynomial.  Only one
+restriction is emitted.
+\end{proof}
+
+\paragraph{Quantifier and SAME\_REALIZATION boundary.}
+The theorem is about one explicit source pass on one recognizable promise
+family.  Appending an arbitrary exact fallback makes a total exact SAT
+decider, but gives no polynomial worst-case bound unless the fallback is
+polynomial.  Under the counterfactual $P=NP$, a polynomial fallback exists,
+so the recognize-first wrapper is polynomial; this is not a contradiction.
+Requiring every arbitrary decider to run this recognizer or expose its
+matching would violate SAME\_REALIZATION.
+
+\section{Relation to existing corpus}
+
+The mathematical ingredients are not claimed as newly discovered.
+LB-0008 already supplies paired incidence and a matching shortcut.
+LB-0012 places exponential compatibility rank on paired $K_{3,3}$ products.
+TESTS-0007 extends the shortcut to connected paired chains.
+SYNTHESIS-0008 proves the stronger
+\texttt{RECOGNIZABLE-ISLAND-BARRIER1}: an intrinsic property containing a
+uniformly recognizable monochromatic island cannot force a pointwise cost
+for every decider.  LB-0016 then proves the exact volume lower bound for the
+explicit all-branch pass.
+
+The present increment is narrower and algorithmic: it composes those known
+facts into the concrete pruned restriction interface suggested by LB-0016,
+includes recognition, graph recovery, matching, assignment construction and
+source verification in one cost ledger, and tests representation-sensitive
+failure modes.  It is evidence against promoting LB-0016 without a
+worst-case quantifier or an all-input source-pass theorem.
+
+\section{Finite reproducible audit --- \COMP}
+
+The dependency-free runner constructs connected cubic bipartite circulants
+with $r$ vertices per side, $n=3r$ variables and $4r$ clauses for
+\[
+ r\in\{4,8,16,32,64,128,256,512\}.
+\]
+For each size it verifies properness, uniqueness, monotonicity, exact
+$(2,2)$ occurrence, promise recognition, perfect matching, one emitted
+restriction, empty TRUE residual and an independently permuted/renamed
+encoding.  The largest instance has $n=1536$ and hence an explicit
+all-branch count $2^{1536}$, while the matching pass emits one branch.  Its
+meter records 19,966 primitive events across parsing, pairing, incidence
+recovery, coloring, matching scans, assignment writes and reconstruction
+checks.
+
+The run completed in 0.0462 seconds, made 87 assertions and found zero
+failures.  It was one bounded invocation, so no computation was hidden behind
+an increased timeout.  Script and raw-result SHA-256 values are
+\begin{align*}
+&\texttt{a16c0af440488a35204924114ae9eebf00fe8329d5c430bbfbcb11993535f9ad},\\
+&\texttt{65ffc55531d215decb37efec6d28ba7e3b8df81e2ccdffcb5ee29ef779a20cfb}.
+\end{align*}
+
+Artifacts:
+\begin{itemize}[leftmargin=1.5em]
+\item \path{experiments/review/pruned_matching_source_pass_audit.py};
+\item \path{results/raw/review/2026-10-11_pruned_matching_source_pass_audit.json}.
+\end{itemize}
+
+\subsection*{Hostile controls and all charged costs}
+
+\begin{center}\small
+\begin{tabular}{p{0.24\linewidth}p{0.68\linewidth}}
+\toprule
+Control & Observed role\\
+\midrule
+Clause/literal order and renaming &
+Accepted after full parse; a distinct matching witness still verifies.\\
+Single-variable complementation &
+Rejected as UNKNOWN because the paired monotone syntax is destroyed,
+although SAT semantics may be preserved.  This exposes representation
+sensitivity rather than hiding it.\\
+Duplicate clause / tautological padding &
+Rejected as UNKNOWN after charged parsing; the pass does not silently
+normalize its promise.\\
+Independent product &
+Two components, 60 variables and 80 clauses were recognized; component
+matchings yielded one global restriction.\\
+Horn &
+Forward chaining detected a contradiction in 12 metered literal scans.\\
+2SAT &
+SCC evaluation detected an unsatisfiable four-clause instance in 24 metered
+edge/DFS operations.\\
+Affine/Tseitin &
+GF(2) elimination found a consistent rank-three four-variable system in 30
+XOR operations; no compatibility table was materialized.\\
+Bounded treewidth &
+A width-one path DP counted solutions for length 64 in 252 transitions.\\
+Wrapper-equivalent programs &
+All retained the SAT answer.  Meter totals changed, so the check is semantic,
+not a cost-invariance claim.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Preprocessing, extraction, matching, restriction construction and
+reconstruction were metered separately.  The experiment does not extrapolate
+its wall time or operation slopes into an asymptotic lower bound.
+
+\section{Barrier-transfer and post-quantum audit}
+
+The two load-bearing obstacles are now sharp:
+\begin{enumerate}[leftmargin=1.6em]
+\item replace the pointwise claim by a worst-case all-input hereditary
+source pass with a complete SAT/UNSAT coverage theorem and no current-scale
+SAT fallback;
+\item transfer that pass to one ordinary uniform machine in a
+model-matched forbidden time--space region, with access, replay, failed
+selection, output and writable memory charged.
+\end{enumerate}
+
+Primary literature was checked before the candidate was tested.
+Döcker proves NP-completeness of the exact clean-core language and identifies
+the always-satisfiable paired special case.  Hall's theorem and polynomial
+bipartite matching transfer directly to the recovered graph; Hopcroft--Karp
+is a standard explicit algorithmic endpoint.  FLMV is directly transferable
+only after one ordinary random-access SAT machine satisfies its simultaneous
+resource hypotheses.  Baker--Gill--Solovay and Aaronson--Wigderson remain
+barrier checks: the matching bypass and recognize-first wrapper relativize
+and algebrize, so they cannot be the missing separation hinge.
+
+\begin{center}\small
+\begin{tabular}{p{0.29\linewidth}p{0.23\linewidth}p{0.40\linewidth}}
+\toprule
+Domain & Classification & Exact correspondence / missing bridge\\
+\midrule
+Bipartite matching & directly transferable theorem &
+Clause-pairs are vertices and variables are edges; matching produces the
+tested satisfying restriction.\\
+Communication/rank & misleading transfer &
+Large compatibility rank lower-bounds the separate matrix problem, not the
+one-bit SAT execution.\\
+VLSI fanout/routing & useful analogy requiring a bridge &
+Materialized $2^n$ wires cost volume; the pruned semantic pass materializes
+one restriction.\\
+Proof complexity/pebbling & useful restricted analogy &
+System-specific search lower bounds do not normalize arbitrary computation.\\
+Schur squares, quadratic relations, Hilbert functions and syzygies &
+FAILED TRANSFER here &
+No code object is forced; exposed algebraic structure can enable a shortcut,
+as the affine control demonstrates.\\
+Collision entropy/lossiness & analogy/candidate &
+It can count fibers of a declared selector, but supplies neither an all-input
+selector nor a runtime transfer.\\
+Worst/average-case reduction architecture & analogy/candidate &
+A black-box extraction theorem from every SAT solver remains missing and
+must confront known NP worst/average-case barriers.\\
+Special soundness/collision extraction & analogy/candidate &
+Two openings could yield a construction-specific witness, but no
+unconditional binding premise is available here.\\
+Hash/random oracle & FAILED TRANSFER &
+Removing the assumption leaves no ordinary-machine lower bound.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The paired structure is exploitable by the algorithm.  It is therefore a
+weakness, not a hardness source.  No PQ-derived idea is an exact theorem
+transfer for the surviving worst-case arrow.
+
+\section{Counterfactual $P=NP$ audit}
+
+Assume a fixed uniform deterministic SAT decider runs in time $N^K$ for some
+unknown constant $K$.  The matching pass already runs in polynomial time on
+the paired island and needs no SAT call.  Off the island, falling back to the
+hypothetical decider gives time $N^{K+O(1)}$, which is fully consistent with
+$P=NP$.  No unconditional theorem proved here forces this total machine into
+an FLMV-forbidden region.  Claiming that every nonpaired or unrecognized
+formula defeats all polynomial pruning would simply restate the missing
+separation.
+
+\section{CORPUS REVIEWED}
+
+The repository tree was surveyed at head
+\texttt{3939b913bc0c9afa76bdd0ef94e1889823c1997d}.  The predecessor LB-0016
+report was read back from GitHub and verified substantive with its expected
+header and sentinel.  Reviewed files include root \path{main.tex}, actual
+\path{main4.tex} and \path{main5.tex}, \path{AGENTS.md},
+\path{CODEX.md}, the complete \texttt{pnp-research} skill and references,
+all task specifications, MAIN SYNTHESIS-0012, LB-0016, TESTS-0011, RT-0015,
+MODELBRIDGE-0016, SYNTHESIS-0012, LB-0012, TESTS-0007 and SYNTHESIS-0008.
+The HEC, VSC-HEC, G-PPC-HEC, CRS-PPC and CCSPC exploration branch,
+governance notes, current experiment/result conventions and the
+paired/matching repository history were inspected.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+The matching shortcut, connected paired family and recognizable-island
+barrier are already in LB-0008, LB-0012, TESTS-0007 and SYNTHESIS-0008.
+They are adopted, not renamed as new mathematics.  LB-0016's all-branch
+fanout theorem is also adopted without weakening: it applies exactly to the
+pass that emits the entire cube.  The only new item is a directly tested
+one-branch realization at LB-0016's restriction interface and the associated
+all-cost ledger.  There is no contradiction because the algorithms have
+different quantifiers and output contracts.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN's OPEN verdict and SAME\_REALIZATION guard remain correct.
+The current source-pass target should explicitly say
+\emph{worst-case/all-input}; any pointwise statement covering recognizable
+constant-answer islands is already false.  No root ownership region was
+edited by this review role.  Nonpromotional main4/main5 additions record the
+narrow falsification for synthesis.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{ADOPTED:} LB-0016 all-branch fanout in its declared pass;
+paired-incidence matching; recognizable-island barrier; exact encoded length
+$N=\Theta(n\log n)$; SAME\_REALIZATION; hostile controls.
+\item \textbf{REJECTED:} any inference from all-cube branch volume,
+compatibility size/rank, graph expansion, communication, or physical fanout
+to work performed by every one-bit decider.
+\item \textbf{RETIRED:} \texttt{POINTWISE-ALLBRANCH-TO-PRUNED1}.
+\item \textbf{OPEN:} a worst-case total source-dependent pruned pass;
+hereditary SAT/UNSAT coverage; bit-local charged access; arbitrary-decider
+transfer; UCORE-TIME1; nonrelativization; nonalgebrization.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any summary saying that LB-0016 proves exponential fanout for
+\emph{source-dependent pruned} passes is overstated.  It proves exponential
+volume for explicit enumeration of every assignment to a large block.
+Conversely, describing the present matching pass as an all-input solution is
+also overstated: it returns UNKNOWN off its declared paired-incidence
+promise.  Both scope corrections are preserved.
+
+\section{Precise handoff}
+
+The next missing implication is not another pointwise clean-core adjective.
+It is:
+\[
+ \boxed{
+ \begin{minipage}{0.86\linewidth}
+ \texttt{WORSTCASE-PRUNED-SOURCE-PASS-ACCESS1}: construct one total,
+source-checkable, hereditary pass that for every clean-core parent emits only
+$\operatorname{poly}(N)$ strictly smaller ordinary-CNF children, preserves
+SAT and UNSAT exactly, provides bit-local child access, and has a complete
+$K$-independent ledger including failed selection, replay, output and
+workspace.
+ \end{minipage}}
+ \tag{3}
+\]
+It must survive the paired matching pass, affine elimination, Horn, 2SAT,
+bounded treewidth, products, padding, alternate encodings, wrappers and the
+one-bit interface.  A proof that (3) lands in an unconditional
+model-matched forbidden region would already be separation-strength.
+
+\paragraph{Final status.}
+\texttt{PAIRED-MATCHING-ONEBRANCH1}: \EXACT, corpus-derived.\
+Finite audit: \COMP.\
+\texttt{POINTWISE-ALLBRANCH-TO-PRUNED1}: \RETIRED.\
+\texttt{WORSTCASE-PRUNED-SOURCE-PASS-ACCESS1}, arbitrary-decider transfer,
+UCORE-TIME1, nonrelativization, nonalgebrization and P versus NP: \OPEN.\
+P versus NP remains open.
+
+\begin{thebibliography}{9}
+\bibitem{Doecker}
+J.~Döcker, \emph{Monotone 3-Sat-(2,2) is NP-complete}, 2019,
+\url{https://arxiv.org/abs/1912.08032}.
+\bibitem{HopcroftKarp}
+J.~E. Hopcroft and R.~M. Karp,
+\emph{An $n^{5/2}$ Algorithm for Maximum Matchings in Bipartite Graphs},
+SIAM J. Comput. 2(4), 1973,
+\url{https://doi.org/10.1137/0202019}.
+\bibitem{FLMV}
+L.~Fortnow, R.~Lipton, D.~van Melkebeek and A.~Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability}, JACM 52(6), 2005,
+\url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{BGS}
+T.~Baker, J.~Gill and R.~Solovay,
+\emph{Relativizations of the $P=?NP$ Question}, SIAM J. Comput. 4(4), 1975,
+\url{https://doi.org/10.1137/0204037}.
+\bibitem{AW}
+S.~Aaronson and A.~Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory},
+Theory of Computing 5, 2009,
+\url{https://doi.org/10.4086/toc.2009.v005a001}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::TESTS::TESTS-0012
+\end{document}
