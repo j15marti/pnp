@@ -1,3 +1,15 @@
+# REDTEAM audit, current run 2026-10-11
+
+## RT-0013 — forward-tag / inverse-incidence separation (2026-10-11T15:36:00Z)
+
+**Status:** VERIFIED and published. **P versus NP remains OPEN.**
+
+`FORWARD-TAG-INVERSE-SEPARATION1` is **PROVED/EXACT** in the deterministic permutation-oracle query model. A tagged monotone (3,3) family has one-query forward literal access and native occurrence tags, while inverse incidence requires n-1 oracle queries in the worst case. Every member is satisfiable, so a one-bit promise decider exposes neither object.
+
+`INVERSE-INCIDENCE-NECESSARY1` is **FALSIFIED/RETIRED** for the tagged second leg. `JMV-PORT-LOCALITY1`, `LOCAL-COOK-BILOCAL-M33-1`, and the arbitrary-algorithm transfer remain **OPEN**. Treat TESTS-0008's inverse table as sufficient offline infrastructure, not as a universal necessity.
+
+Full report: `research/review/reports/redteam/2026-10-11_1536_RT-0013.tex`.
+
 # UNIVERSAL_CORE_REDTEAM coordination
 
 ## RT-0012: 2026-10-11T14:36:00Z

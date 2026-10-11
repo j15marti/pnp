@@ -1,0 +1,310 @@
+% PNP REVIEW REPORT::REDTEAM::RT-0013::2026-10-11T15:36:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.83in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newcommand{\status}[1]{\textsc{#1}}
+\title{RT-0013: Forward tags do not require inverse incidence\\
+\large A black-box locality separation and an all-YES hostile control}
+\author{UNIVERSAL\_CORE\_REDTEAM}
+\date{11 October 2026, 15:36 UTC}
+
+\begin{document}
+\maketitle
+
+\section*{Executive verdict}
+
+\begin{center}
+\small
+\begin{tabular}{p{0.34\linewidth}p{0.18\linewidth}p{0.40\linewidth}}
+\toprule
+Claim & Status & Verdict \\
+\midrule
+\texttt{OFFLINE-BILOCAL-INDEX1} & \status{Proved/Exact} & Accepted at its explicit-input comparison-sort scope. \\
+\texttt{FORWARD-TAG-INVERSE-SEPARATION1} & \status{Proved/Exact} & In the deterministic permutation-oracle query model, forward tagged literal access costs one query while inverse incidence needs $n-1$ queries in the worst case. \\
+\texttt{INVERSE-INCIDENCE-NECESSARY1} & \status{Falsified/Retired} & Full inverse incidence is not necessary for the tagged second leg: the requested literal's tag can be native to its forward address. \\
+\texttt{JMV-PORT-LOCALITY1} & \status{Open} & The exact port/occurrence label in the concrete Jahanjou--Miles--Viola reduction has not been shown locally computable or locally impossible. \\
+\texttt{LOCAL-COOK-BILOCAL-M33-1} & \status{Open} & No on-demand, all-cost bridge to the Fortnow--Lipton--van Melkebeek--Viglas model is constructed. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The new separation is deliberately model-scoped.  It distinguishes forward
+generation, inverse incidence, and offline indexing; it is not a lower bound
+for arbitrary SAT algorithms.  Indeed the separating formula family is an
+all-YES promise family, so a one-bit promise decider may output YES without
+materializing any occurrence object.  P versus NP remains \status{Open}.
+
+\section{Exact candidate and quantifiers}
+
+Let $n=9b$.  On each block of nine preimage labels use the three partitions
+\[
+\begin{split}
+P_0&=\{012,345,678\},\\
+P_1&=\{036,147,258\},\\
+P_2&=\{048,156,237\}.
+\end{split}
+\]
+For every permutation $\pi:[n]\to[n]$, sign $s\in\{+,-\}$, tag
+$t\in\{0,1,2\}$ and triple $T\in P_t$, put into $F_\pi$ the monotone
+signed clause $s\pi(T)$.  A literal address contains $(s,t,\text{block},
+\text{triple},\text{slot})$.  Therefore its variable is returned with one
+query to $\pi$ and its tag $t$ is returned with no additional query.
+
+\begin{theorem}[\texttt{FORWARD-TAG-INVERSE-SEPARATION1}]
+For every $n=9b$ and permutation $\pi$, $F_\pi$ has $2n$ proper, distinct
+signed 3-clauses and each variable occurs exactly once at every tag for each
+sign, hence exactly three times positively and three times negatively.
+Forward literal and tag access use one $\pi$-query.  On the other hand, for
+every deterministic oracle algorithm $B$ that, for every permutation $\pi$
+and target $y$, outputs $\pi^{-1}(y)$, there are $\pi,y$ on which $B$ makes
+at least $n-1$ oracle queries.
+\end{theorem}
+
+\begin{proof}
+Each $P_t$ partitions every nine-element block.  Thus every preimage label
+appears exactly once at tag $t$, for each sign.  The displayed triples are
+proper and distinct; applying a permutation preserves both properties.
+
+For the inverse bound, answer the first $q<n-1$ distinct queries with
+distinct values other than a fixed target $y$.  At least two domain
+locations remain unqueried.  There are two permutation completions consistent
+with the complete transcript, obtained by placing $y$ at either location and
+swapping the remaining images.  Their correct inverse answers differ.
+Consequently no such transcript determines $\pi^{-1}(y)$.  Querying $n-1$
+locations is sufficient because bijectivity determines the last image.
+\end{proof}
+
+This is an exact oracle-query statement.  It does not become a RAM/Turing
+time lower bound merely by calling $\pi$ a succinct generator.  If the full
+permutation table is part of an explicit encoding, its inverse is obtained by
+one scan and $\Theta(n)$ records.  If an inverse table is supplied as advice,
+the online lower bound disappears.
+
+\section{Why this falsifies the proposed necessity}
+
+The tagged D\"ocker--Darmann second leg audited in
+\texttt{MODELBRIDGE-0013} asks, at a requested output literal, which one of
+the three sign-specific occurrences it represents.  The construction above
+places that tag in the forward address.  It makes inverse incidence expensive
+in the oracle model without making the forward tag expensive.  Therefore
+\[
+\text{``tag a requested forward literal''}
+\not\Rightarrow
+\text{``recover every parent incidence of a named variable.''}
+\]
+Any route that charges a full inverse index to the second leg is charging a
+strictly stronger interface than the reduction needs.  The smallest repair is
+to isolate the still-open first-leg statement:
+\begin{quote}
+For the concrete Jahanjou--Miles--Viola clause generator, compute the port or
+sign-specific occurrence label of the requested output literal in
+$\operatorname{polylog} T$ time and $O(\log T)$ workspace, or prove a
+model-matched obstruction for that exact function.
+\end{quote}
+The preceding theorem neither proves nor refutes that concrete statement.
+
+\section{One-bit, semantic and wrapper hostile controls}
+
+The nine-variable base has the satisfying preimage assignment
+\[
+(0,0,0,1,0,0,1,0,1).
+\]
+Repeating it independently in each block and transporting it through $\pi$
+satisfies $F_\pi$.  Hence every member of this separating family is
+satisfiable.  A promise decider can return one bit, YES, without constructing
+tags, incidence lists, a compatibility graph, a state exposure, or a
+reconstruction object.  This directly defeats every all-algorithm necessity
+claim whose quantified input family includes only these instances.
+
+Clause-order shuffles, within-clause reversal and arbitrary variable
+renaming preserve the exact occurrence counts.  An explicit compiler can
+sort or scan all $6n$ literal records and construct both directions; a
+streaming forward accessor need not.  Padding and redundant clauses can make
+the external encoding arbitrarily longer without increasing the semantic
+decision cost.  Conversely, storing an inverse table raises representation
+size while lowering online access cost.  No semantic-state count therefore
+implies a runtime lower bound.
+
+The usual tractable controls remain decisive.  2SAT, Horn and bounded-
+treewidth instances admit specialized polynomial algorithms; affine/Tseitin
+constraints admit Gaussian elimination; independent products can be solved
+componentwise.  None must expose this report's inverse object.  A recognizer
+can also dispatch these islands before invoking any general solver, and an
+equivalent program wrapper may delay, rename or erase internal states while
+preserving its one-bit output.
+
+\section{Bounded reproducible audit}
+
+The script
+\texttt{experiments/review/forward\_inverse\_locality\_redteam.py} used a
+fixed seed and sizes $n\in\{9,18,27,36\}$, with 32 permutations per size.
+It checked 128 instances, 5,760 clauses, 17,280 literal records, 40,192
+inverse probes, 256 wrapper transformations and 128 DIMACS-like encoding
+round trips.  Every instance had three positive and three negative
+occurrences per variable, with tag set $\{0,1,2\}$ for each sign.  The
+observed worst inverse scan was exactly $n-1$.  It separately exercised
+2SAT, Horn, affine rank, bounded-treewidth, independent-product, padding and
+redundancy controls.  Runtime was under $0.06$ seconds; no extrapolation from
+these finite checks is used in the theorem.
+
+Script SHA-256:
+\texttt{1e37b7cbe0884482ad178115d78e424d8aea7988b5faedf3264dd22d171d06e7}.
+Raw-result SHA-256:
+\texttt{7a7c84dbd93b4cd6f2dada3755bd5e430189dfa4ded107d5dde5b2dd8f6a8274}.
+
+\section{Primary-literature preflight and transfer audit}
+
+The two blocking obstacles were: (i) the JMV theorem gives highly local
+\emph{clause-output} access but does not, in the theorem statement, supply
+the inverse-incidence or port-label interface now requested; and (ii) an
+offline explicit index is not an on-demand local reduction in the FLMV
+random-access model.  The primary sources checked were:
+\begin{enumerate}[leftmargin=1.5em]
+\item Jahanjou, Miles and Viola, \emph{Local reductions},
+\url{https://arxiv.org/abs/1311.3171}.  Its advertised circuit outputs the
+$i$th clause with highly local output bits.  This is a directly transferable
+clause-access theorem, not an inverse-incidence theorem.
+\item Fortnow, Lipton, van Melkebeek and Viglas, \emph{Time-space lower
+bounds for satisfiability},
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.  Its model-matched
+transfer charges random access and local reduction work.  This is directly
+relevant, but the missing bi-local first leg remains open.
+\item Hellman, \emph{A cryptanalytic time-memory trade-off}, IEEE TIT 26(4),
+1980.  Precomputation-versus-online inversion is a useful structural analogy.
+Cryptographic hardness is not imported here; only the elementary oracle
+adversary above is used.
+\item Raman, Raman and Rao, \emph{Succinct indexable dictionaries with
+applications to encoding $k$-ary trees, prefix sums and multisets}, TALG
+3(4), 2007, and P\u{a}tra\c{s}cu,
+\emph{Succincter}, FOCS 2008.  Their rank/select indexes support the
+\status{Proved/Exact} offline compiler perspective, but do not convert a
+succinct clause generator into a free inverse accessor.
+\end{enumerate}
+
+\paragraph{Transfer classification.}
+The permutation-oracle adversary and explicit scan/index compiler are
+\status{Exact Object/Theorem Transfer} at their stated query and explicit-
+input models.  Cryptanalytic inversion tradeoffs and data-structure indexes
+are \status{Analogy/Candidate} for designing a charged compiler.  Treating
+one-way-function hardness, database terminology, or a random oracle as an
+unconditional SAT lower bound is a \status{Failed Transfer}.
+
+\section{Barrier and quantifier audit}
+
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{Relativization.}  The new lower bound is explicitly oracle-
+relative.  It therefore cannot itself cross the Baker--Gill--Solovay barrier
+or separate P from NP.
+\item \textbf{Algebrization.}  No algebraic extension is defeated.  The
+argument is a transcript ambiguity for permutations.
+\item \textbf{Natural Proofs.}  No largeness/usefulness circuit property is
+constructed, so no Natural-Proofs escape is claimed.
+\item \textbf{Nonuniformity.}  $\Theta(n\log n)$ advice bits encoding
+$\pi^{-1}$ eliminate the online query bound.  Uniform preprocessing must be
+charged if it is allowed.
+\item \textbf{Arbitrary polynomial exponents.}  The separation does not
+turn ``polynomial'' into a fixed exponent and does not compare an unknown SAT
+machine to the FLMV endpoint.
+\item \textbf{Solver-to-protocol transfer.}  A one-bit decider need not
+reveal witnesses, ports, ranks, messages, compatible states or proof nodes.
+No black-box extraction theorem is supplied.
+\item \textbf{SAME\_REALIZATION.}  Offline build time, table space, online
+queries and decision work are kept in one realization.  Mixing the offline
+table of one implementation with the workspace of the oracle accessor is
+forbidden.
+\end{itemize}
+
+\section{Post-quantum technique ledger}
+
+The LWE-style proposal to externally extract structure from black-box solver
+behavior remains \status{Analogy/Candidate}: this run shows that even an
+exact forward local interface need not expose an inverse interface.  Collision
+entropy, Schur squares, quadratic relations, Hilbert functions and special
+soundness do not match the current port-locality obstacle and are
+\status{Failed Transfer} for this run.  Hash/random-oracle arguments remain
+engineering analogies only.  As always, hidden algebraic structure may make
+an instance easier rather than provide a hardness source.
+
+\section{Corpus reviewed}
+
+The repository tree was surveyed.  The run read root \texttt{main.tex},
+\texttt{AGENTS.md}, \texttt{CODEX.md}, the pnp-research skill, every task
+specification, current \texttt{main4.tex}/\texttt{main5.tex}, the newest
+verified MAIN material, and current coordination/status files.  Materially
+relevant reports included \texttt{LB-0011--0013},
+\texttt{MODELBRIDGE-0012--0013}, \texttt{TESTS-0001/0007/0008},
+\texttt{RT-0011/0012}, and \texttt{SYNTHESIS-0007/0008}.  Historical HEC,
+VSC-HEC, G-PPC-HEC, CRS-PPC and CCSPC causal-branch explorations, governance
+notes, and cited experiment artifacts were also inspected.  The immediate
+predecessor's initially missing publication was diagnosed as a local
+write-procedure anchor mismatch; its preserved body was published and read
+back before this audit.
+
+\section{Duplication / contradiction audit}
+
+The raw rank query lower bound in \texttt{LB-0013} is not duplicated: that
+report studies occurrence rank from a raw clause stream, whereas this report
+separates a native forward tag from inverse access under a permutation
+oracle.  \texttt{TESTS-0008} already proved explicit offline indexing; the
+present report accepts rather than reproves it and rejects only an unwarranted
+necessity inference.  No verified report was found proving
+\texttt{JMV-PORT-LOCALITY1}.  The all-YES control is consistent with earlier
+Horn, affine, matching and bounded-treewidth counterexamples to universal
+resource exposure.
+
+\section{What changed relative to root MAIN}
+
+Root MAIN correctly says P versus NP remains open and identifies the missing
+arbitrary-algorithm transfer.  This run makes one local refinement: inverse
+incidence must not be listed as necessary for the tagged second leg.  The
+highest-value target is now the exact forward port-label function of the
+concrete first-leg local reduction, with preprocessing, random access and
+workspace charged.  Root \texttt{main.tex} was not edited because this review
+role owns no LSPV region or executive synthesis.
+
+\section{Adopted / rejected / retired prior components}
+
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{Adopted:} the tagged second-leg correctness theorem, raw-stream
+rank lower bound at its model, explicit offline bi-local compiler, FLMV
+model-matching requirement, SAME\_REALIZATION, and recognizable-island
+wrapper controls.
+\item \textbf{Rejected:} any implication from explicit offline indexing to
+on-demand JMV port locality, and any claim that a SAT decider must expose the
+index.
+\item \textbf{Retired:} \texttt{INVERSE-INCIDENCE-NECESSARY1} for the tagged
+second leg.  Full inverse incidence remains optional useful infrastructure.
+\end{itemize}
+
+\section{Stale or overstated claims found}
+
+The only overstatement is prospective rather than a verified theorem:
+calling the TESTS-0008 inverse table ``the missing object'' would silently
+strengthen the second-leg interface.  The report itself properly labels the
+on-demand transfer open.  Coordination and manuscript summaries should use
+``sufficient offline infrastructure,'' not ``necessary resource.''
+
+\section{Precise missing universal implication}
+
+To obtain P-vs-NP relevance one still needs, for one fixed uniform
+deterministic polynomial-time SAT decider $A$, a solver-independent theorem
+which converts $A$ and the exact concrete reduction into one FLMV-matched
+same-realization algorithm with charged clause access, forward port labels,
+preprocessing, reconstruction, time and workspace.  Alternatively, assuming
+$P=NP$, one must derive such an algorithm and contradict a model-matched
+unconditional lower bound.  No premise may already assert the absence of a
+polynomial SAT algorithm.  No such implication is proved here.
+
+\section*{Final status}
+
+\texttt{FORWARD-TAG-INVERSE-SEPARATION1} is \status{Proved/Exact} only in
+the declared oracle-query model.  The proposed necessity of full inverse
+incidence is \status{Falsified/Retired}.  The JMV port-locality target, the
+charged bi-local Cook reduction, the arbitrary-algorithm transfer, and the
+P-versus-NP problem remain \status{Open}.
+
+% END_OF_VERIFIED_REPORT::REDTEAM::RT-0013
+\end{document}
