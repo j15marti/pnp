@@ -1,0 +1,320 @@
+% PNP REVIEW REPORT::TESTS::TESTS-0008::2026-10-11T15:24:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\title{UNIVERSAL\_CORE\_TESTS TESTS-0008:\\
+Offline Bi-Local Indexing Is Linear-Size, but It Is Not an On-Demand Local Reduction}
+\author{P versus NP project review}
+\date{11 October 2026, 15:24 UTC}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+LB-0013 isolated a linear raw-probe cost for occurrence rank in an unindexed
+literal stream.  This report tests the weakest hostile repair: explicit
+preprocessing.  For every explicit CNF with $L$ literal occurrences and
+$O(\log L)$-bit identifiers, a deterministic stable sort constructs both
+clause-to-occurrence ranks and occurrence-to-clause incidence lists using
+$O(L\log L)$ comparisons and $O(L\log L)$ bits.  The index is linear in the
+standard encoded input length and gives constant-word forward and inverse
+access with exact reconstruction.  Thus \texttt{RAW-RESCAN-ONLY1} is false:
+raw rescanning is not a representation-independent obligation.  Conversely,
+this offline theorem materializes a linear-size index.  It does not provide
+Jahanjou--Miles--Viola on-demand polylogarithmic access with logarithmic
+workspace from their succinct clause generator, and it does not force an
+arbitrary one-bit SAT decider to acquire the index.  The bounded audit covers
+Horn, 2-SAT, affine/Tseitin Gaussian elimination, bounded treewidth,
+independent products, padding, redundant clauses, two encodings and
+DIRECT/COPY/INTERP/RECOMP controls.  The on-demand bi-local first leg,
+UCORE-TIME1 and P versus NP remain OPEN.
+\end{abstract}
+
+\section{Executive status and exact claim card}
+
+\begin{center}\footnotesize
+\begin{tabular}{@{}p{0.39\linewidth}p{0.19\linewidth}p{0.34\linewidth}@{}}
+\toprule Claim & Status & Verdict\\ \midrule
+\texttt{OFFLINE-BILOCAL-INDEX1} & \EXACT, pending independent review &
+linear encoded-size explicit index; exact reconstruction\\
+\texttt{RAW-RESCAN-ONLY1} & \RETIRED & preprocessing removes repeated raw
+scans in the explicit-input model\\
+Finite audit & \COMP & 35 instances; zero failures\\
+\texttt{OFFLINE-TO-ONLINE-LOCAL1} & \OPEN & no polylog-time/log-space
+accessor from a succinct clause generator\\
+\texttt{LOCAL-COOK-BILOCAL-M33-1}, UCORE-TIME1 & \OPEN & no universal
+SAT lower bound or endpoint transfer\\
+P versus NP & \OPEN & no separation claim\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Claim card.}
+The exact prefix proved is
+\[
+ \forall F\ \exists I_F\ \exists B
+ \quad B(F)=I_F,
+\]
+where $F$ is an explicitly stored CNF, $I_F$ is the two-way occurrence
+index defined below, and the single uniform deterministic compiler $B$ uses
+the declared comparison-RAM resources.  This is not
+$\forall A\,\exists F_A$ lower-bounding a SAT decider $A$.
+The model is a word RAM with word size $\Theta(\log L)$ and read-only input
+plus charged writable workspace.  The resource measures are comparison
+time, written index bits, query word accesses, and reconstruction accesses.
+The SAME\_REALIZATION object is the one explicit $F$ scanned by $B$ and the
+one indexed by $I_F$.  The theorem does not place $I_F$ in the execution of
+an unrelated SAT decider.
+
+\paragraph{Predecessor write.}
+The immediately preceding LOWER\_BOUND artifact
+\path{research/review/reports/lower_bound/2026-10-11_1512_LB-0013.tex}
+was read from GitHub.  It is substantive and contains both the expected
+header and final verification sentinel.  No recovery write was needed.
+
+\section{Primary-literature and barrier preflight}
+
+The first obstacle is an interface mismatch.  Jahanjou--Miles--Viola
+Theorem~1 produces a quasilinear-size 3CNF whose requested clause is given by
+an explicit local circuit; it does not state reverse incidence or occurrence
+rank access \cite{jmv}.  FLMV's time--space transfer needs a locally generated
+formula in its random-access Turing-machine composition and cannot silently
+receive a separately materialized linear-space table \cite{flmv}.
+
+The second obstacle is preprocessing versus query cost.  Raman--Raman--Rao
+give succinct indexable dictionaries supporting rank/select operations in
+constant RAM time after the representation is supplied \cite{rrr}.
+P\u{a}tra\c{s}cu's lower bound is a redundancy/query tradeoff in the
+cell-probe model, again for a preprocessed representation \cite{patrascu}.
+These are direct theorem transfers to the explicit index interface, not to
+work performed inside every SAT decider.
+
+The closest cross-domain analogue is a static inverted index: clause
+records are the forward file and sorted incidence records are the inverted
+file.  This is a \textbf{THEOREM TRANSFER} only for explicit construction and
+lookup.  Treating storage or cell-probe bounds as unrestricted Turing/RAM SAT
+lower bounds is a \textbf{FAILED TRANSFER}.  Routing-network locality in the
+Jahanjou--Miles--Viola construction is an \textbf{ANALOGY/CANDIDATE}: a new
+theorem must show that its particular gate/variable labels expose both
+clause fields and sign-specific occurrence ports without global inversion.
+
+\section{Exact offline compiler}
+
+\begin{definition}[Bi-local explicit index]
+Enumerate the literal positions of $F$ by $(c,s)$, clause number and slot.
+For literal $\ell_{c,s}$ define
+\[
+ r(c,s)=\bigl|\{(c',s')<(c,s):
+    \ell_{c',s'}=\ell_{c,s}\}\bigr|,
+\]
+where equality includes variable identifier and sign and the order is
+lexicographic in $(c,s)$.  The forward table stores $r(c,s)$.  The inverse
+table stores
+\[
+ J(v,\sigma,r)=(c,s)
+\]
+for the unique occurrence of signed variable $(v,\sigma)$ with rank $r$.
+\end{definition}
+
+\begin{theorem}[\texttt{OFFLINE-BILOCAL-INDEX1}]
+Let $F$ have $L$ literal occurrences, variables normalized to $[V]$ with
+$V\le L$, and a standard fixed-width encoding of bit length
+$N=\Theta(L\log L)$.  One uniform deterministic compiler constructs the
+forward and inverse tables with
+\begin{enumerate}[nosep]
+\item at most $O(L\log L)$ record comparisons;
+\item $O(L\log L)=O(N)$ writable bits and output bits;
+\item $O(1)$ word accesses for either $r(c,s)$ or $J(v,\sigma,r)$; and
+\item exact reconstruction of $F$ in $O(L)$ table accesses after retaining
+the signed literals, or by discarding the annotations when they are attached
+to the original clause records.
+\end{enumerate}
+The compiler changes neither the clauses nor their satisfiability.
+\end{theorem}
+
+\begin{proof}
+Create one record $(v,\sigma,c,s)$ for every literal occurrence and stably
+sort the $L$ records lexicographically.  Within each maximal equal
+$(v,\sigma)$ run, number records $0,1,\ldots$.  Write that number to the
+forward cell addressed by $(c,s)$ and write $(c,s)$ to the next inverse cell
+of the run.  Merge sort uses $O(L\log L)$ comparisons.  Every record and
+address has $O(\log L)$ bits, so the records and both tables occupy
+$O(L\log L)$ bits.  Array addressing gives the query bound.  Sorting and
+annotation do not alter any literal, and reading the retained literal at
+every forward position reconstructs $F$ exactly.  Hence the satisfying
+assignments are identical.
+\end{proof}
+
+\paragraph{Why this does not close the active first leg.}
+The compiler reads all $L$ occurrences and stores $\Theta(L)$ words.  A
+Jahanjou--Miles--Viola source instead supplies a succinct clause circuit;
+the requested target bit must be returned in polylogarithmic time and
+logarithmic workspace without first materializing all clauses or their
+inverse file.  Consequently \texttt{OFFLINE-TO-ONLINE-LOCAL1} remains OPEN.
+The exact missing theorem is source-specific, not a generic sorting lemma.
+
+\section{Bounded reproducible audit}
+
+The script
+\path{experiments/review/offline_bilocal_index_audit.py} was run once with
+seed \texttt{20261011}; runtime was below one second and no chunking was
+needed.  It uses a stable comparison merge sort with an exact comparison
+counter.  Raw output is at
+\path{results/raw/review/2026-10-11_offline_bilocal_index.json}.
+
+\begin{center}\small
+\begin{tabular}{@{}lr@{}}
+\toprule Item & Count\\ \midrule
+Formula/encoding/wrapper instances & 35\\
+Literal records indexed & 630\\
+Exact sort comparisons & 1,947\\
+Forward, inverse, rank and reconstruction checks & 2,520\\
+Exhaustive semantic evaluations & 5,840\\
+Wrapper equivalence/projection checks & 4,787\\
+Two-encoding checks & 140\\
+Raw-probe hostile checks & 648\\
+Independent Horn/2-SAT/Gaussian checks & 25\\
+Gaussian row operations recorded & 7\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The hostile stream lengths $16,32,64,128,256,512$ place all three copies of
+one signed key last.  Their left-scan probe counts are respectively
+$(L-2,L-1,L)$, while every indexed coordinate uses one dictionary/array
+lookup after preprocessing.  This is finite confirmation of the declared
+implementation distinction, not an asymptotic timing extrapolation.
+
+\section{Hostile controls, costs and barriers}
+
+The suite includes Horn implications, a 2-SAT implication graph, a proper
+3CNF encoding of a cycle-Tseitin affine system checked independently by
+Gaussian elimination, a path-like bounded-treewidth family, independent
+products, a DEAD tautological padding clause, a duplicate clause, fixed and
+token/record encodings, clause/slot permutations, variable-renaming INTERP,
+COPY, and RECOMP.  Construction, comparisons, table writes, forward access,
+inverse access and reconstruction are counted separately.  Python wall-clock
+measurements are recorded but not promoted to asymptotic evidence.
+
+DELAY does not change the source index and may arbitrarily inflate a solver's
+trace.  INTERP requires reindexing the renamed explicit formula, while RECOMP
+may rebuild the same index rather than store it.  A maximal semantic oracle
+can answer SAT without this syntactic index.  An algebraic oracle can likewise
+bypass occurrence order.  Therefore the index is neither a semantic
+invariant nor a universal same-execution resource.
+
+The theorem relativizes: an unrelated oracle does not affect sorting.
+Algebraization is irrelevant to the positive indexing theorem and remains a
+barrier to any later separation.  No constructive circuit property is used,
+so Natural Proofs is not the immediate issue.  Baker--Gill--Solovay and
+Aaronson--Wigderson still block unqualified promotion of a relativizing or
+algebrizing chain \cite{bgs,aw}.
+
+\paragraph{Post-quantum technique ledger.}
+Schur squares, quadratic-relation ranks, Hilbert functions and syzygies have
+no exact object correspondence to the occurrence permutation here; importing
+them is a \textbf{FAILED TRANSFER}.  Lossiness/collision entropy is also
+irrelevant because both tables are bijective on literal positions.  The
+LWE-style lesson of external black-box extraction is only an
+\textbf{ANALOGY/CANDIDATE}: external indexing demonstrates availability but
+not work paid by the target decider.  No cryptographic assumption is used.
+
+\section{Corpus-wide reconciliation}
+
+\subsection*{CORPUS REVIEWED}
+The GitHub tree at head \texttt{2c003c1e06ca12ea80561b1b5c15808c39aed287}
+was surveyed.  Reviewed sources include root \path{main.tex},
+\path{AGENTS.md}, \path{CODEX.md}, the repository research skill and
+protocol, all task specifications, current \path{main4.tex}/\path{main5.tex}
+and the relevant included SYNTHESIS-0007, MODELBRIDGE-0012/0013 and LB-0013
+manuscript additions.  The newest peer reports LB-0013, MODELBRIDGE-0013,
+RT-0012 and SYNTHESIS-0008 and prior TESTS-0007 were read in full.
+Material historical reports LB-0011/0012, MODELBRIDGE-0012, SYNTHESIS-0007,
+RT-0011 and TESTS-0001, their relevant scripts/results, the newest historical
+MAIN, governance reconciliation, and the HEC/CRS-PPC/CCSPC branch were also
+reviewed.  Current primary sources were checked before the theorem was used.
+
+\subsection*{DUPLICATION / CONTRADICTION AUDIT}
+LB-0013 already proved the raw-stream decision-tree lower bound and the
+constant-overhead native tag lift.  This report does not relabel either
+result.  Its new statement is the missing general explicit preprocessing
+upper bound with an exact two-way table, construction/storage ledger and
+hostile controls.  Raman--Raman--Rao make clear that preprocessing can buy
+constant query time; P\u{a}tra\c{s}cu makes clear that lower bounds depend on
+the redundancy/query model.  No contradiction with the OPEN on-demand
+localizer was found.
+
+\subsection*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root MAIN already keeps arbitrary-algorithm acquisition, representation-
+invariant no-sharing, nonrelativization, nonalgebrization and the final
+contradiction OPEN.  None changes.  The review branch can now record that
+explicit bi-local indexing has linear encoded size and quasilinear
+comparison construction, so it is not itself a hardness resource.
+
+\subsection*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted are Jahanjou--Miles--Viola clause locality, the FLMV local-access
+model, MODELBRIDGE-0013's tagged second leg and LB-0013's exact raw bound.
+Rejected is any inference from raw scan cost to mandatory repeated scanning.
+Retired is \texttt{RAW-RESCAN-ONLY1}.  Not retired are the source-specific
+on-demand tag localizer or any model-matched endpoint theorem.
+
+\subsection*{STALE OR OVERSTATED CLAIMS FOUND}
+The phrase ``the OPEN first leg must be bi-local in both clauses and
+incidence tags'' is sound only if ``bi-local'' means on-demand source-local
+access.  If read as requiring a hard-to-build explicit index, it is
+overstated.  The explicit index is easy to build and linear in standard
+encoded length; its linear writable space is exactly why it does not settle
+the FLMV interface.
+
+\section{Precise handoff}
+
+The next target is \texttt{JMV-PORT-LOCALITY1}.  For the exact circuit and
+3CNF labeling in Jahanjou--Miles--Viola Theorem~1, prove or falsify that a
+requested output literal comes with a sign-specific constant-size port label
+from which every required occurrence clone in the tagged Monotone
+3-Sat-$(3,3)$ first leg is generated in $\log^{O(1)}N$ time and
+$O(\log N)$ workspace.  Every invalid-label rule, gate fan-out, equality
+wire, padding clause, encoded identifier and query must be charged.  If an
+inverse-parent lookup appears, exhibit the exact source label that computes
+it or isolate the black-box inversion barrier.  This target is strictly
+stronger than the offline theorem and strictly narrower than an
+arbitrary-algorithm lower bound.
+
+\begin{thebibliography}{9}
+\bibitem{jmv} H.~Jahanjou, E.~Miles, E.~Viola,
+\emph{Local Reductions}, Information and Computation 261 (2018), 25--45.
+\url{https://arxiv.org/abs/1311.3171}.
+\bibitem{flmv} L.~Fortnow, R.~Lipton, D.~van Melkebeek, A.~Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability}, JACM 52(6) (2005).
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{rrr} R.~Raman, V.~Raman, S.~S.~Rao,
+\emph{Succinct Indexable Dictionaries with Applications to Encoding
+$k$-ary Trees, Prefix Sums and Multisets}, ACM TALG 3(4) (2007).
+\url{https://arxiv.org/abs/0705.0552}.
+\bibitem{patrascu} M.~P\u{a}tra\c{s}cu,
+\emph{A Lower Bound for Succinct Rank Queries}, SODA 2010.
+\url{https://arxiv.org/abs/0907.1103}.
+\bibitem{bgs} T.~Baker, J.~Gill, R.~Solovay,
+\emph{Relativizations of the P=?NP Question}, SIAM J. Comput. 4(4), 1975.
+\bibitem{aw} S.~Aaronson, A.~Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory}, ACM TOCT 1(1),
+2009. \url{https://eccc.weizmann.ac.il/report/2008/005/}.
+\end{thebibliography}
+
+\paragraph{Final status.}
+\texttt{OFFLINE-BILOCAL-INDEX1}: \EXACT, pending independent review.\
+Finite audit: \COMP.\
+\texttt{RAW-RESCAN-ONLY1}: \RETIRED.\
+\texttt{OFFLINE-TO-ONLINE-LOCAL1}, \texttt{JMV-PORT-LOCALITY1},
+\texttt{LOCAL-COOK-BILOCAL-M33-1}, UCORE-TIME1, arbitrary-exponent
+bootstrap, nonrelativization, nonalgebrization, and P versus NP: \OPEN.\
+P versus NP remains open.
+
+% END_OF_VERIFIED_REPORT::TESTS::TESTS-0008
+\end{document}

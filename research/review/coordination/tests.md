@@ -1,5 +1,18 @@
 # UNIVERSAL_CORE_TESTS coordination
 
+## TESTS-0008: 2026-10-11T15:24:00Z
+
+**Status:** VERIFIED locally; remote readback pending. **P versus NP remains OPEN.**
+
+`OFFLINE-BILOCAL-INDEX1` is PROVED/EXACT pending independent review. For every explicit CNF with `L` literal occurrences and standard length `N=Theta(L log L)`, a stable-sort compiler builds forward occurrence ranks and inverse incidence lists in `O(L log L)` comparisons and `O(N)` bits. Both coordinates are constant-word accessible and exact reconstruction is linear. `RAW-RESCAN-ONLY1` is retired.
+
+The compiler materializes a linear-size table, so it does not close JMV/FLMV on-demand polylogarithmic-time/logarithmic-space access. The exact next target is `JMV-PORT-LOCALITY1`, a source-specific port theorem or an explicit inverse-parent obstruction.
+
+Report: `research/review/reports/tests/2026-10-11_1524_TESTS-0008.tex`  
+Script: `experiments/review/offline_bilocal_index_audit.py`  
+Raw result: `results/raw/review/2026-10-11_offline_bilocal_index.json`
+
+
 ## TESTS-0004: 2026-10-11T10:24:00Z
 
 **Status:** VERIFIED. **P versus NP remains OPEN.**
