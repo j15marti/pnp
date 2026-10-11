@@ -1,0 +1,387 @@
+% PNP REVIEW REPORT::REDTEAM::RT-0009::2026-10-11T11:36:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{3SAT}}
+\newcommand{\Htwo}{\mathcal H_{2,2}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{UNIVERSAL\_CORE\_REDTEAM RT-0009:\\
+Fixed Trace Checkpoints Are Defeated by Polynomial Delay}
+\author{P versus NP project review}
+\date{11 October 2026}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Independent review accepts TESTS-0005's pre-output delay theorem in its
+declared model.  Its proposed repair fixes a source/interface checkpoint
+before any current-scale decision.  This report attacks the simplest
+operationalization of that repair.  For every fixed checkpoint budget
+$\tau(N)\le N^r$ and every exact polynomial-time decider $A$, a uniform
+extensionally equivalent decider $D_r[A]$ can execute $N^{r+1}$
+input-independent dummy transitions before invoking $A$.  Every trace-prefix
+observer at the checkpoint sees the same dynamic prefix, independent of the
+source and embedded implementation.  Any nontrivial checkpoint object must
+therefore come from external source/code analysis, not from paid work in the
+observed execution.  Waiting until the child begins or finishes instead costs
+$N^{\max\{r+1,K\}+o(1)}$ for an $N^{K+o(1)}$ child.  This proves a restricted
+prefix-delay trilemma, not an impossibility theorem for arbitrary white-box
+normalization.  A bounded audit passed $16{,}736$ checks.  P versus NP remains
+open.
+\end{abstract}
+
+\section{Executive status}
+
+\begin{center}
+\small
+\begin{tabular}{p{0.38\linewidth}p{0.25\linewidth}p{0.29\linewidth}}
+\toprule
+Claim & Status & Verdict\\
+\midrule
+\nolinkurl{PREOUTPUT-SERVICE-GUARD1} & \EXACT &
+TESTS-0005 is independently accepted in its declared wrapper model.\\
+\nolinkurl{FIXED-PREFIX-DELAY1} & \EXACT &
+Every fixed polynomial trace prefix is hidden by a one-higher-degree
+input-independent delay wrapper.\\
+\nolinkurl{PREFIX-CHECKPOINT-UNIVERSAL1} & \RETIRED &
+A universal predecision interface cannot be justified solely by observing a
+fixed polynomial execution prefix.\\
+\nolinkurl{PADDING-FRACTIONALITY-GUARD1} & \EXACT &
+Strict fractional size measured only against a padded presentation can be
+scale laundering; local work must be translated back to the unpadded source.\\
+\nolinkurl{FRACTIONAL-PREDECISION-COMPILER1} & \OPEN &
+Static code normalization, source-only construction, hereditary contraction,
+and the matched lower bound remain unproved.\\
+\texttt{UCORE-TIME1} and P versus NP & \OPEN &
+No unrestricted SAT lower bound follows.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Claim card and exact target}
+
+The clean core is the duplicate-free Monotone $3$SAT-$(2,2)$ family $\Htwo$
+under a complete canonical indexed encoding of length $N=\Theta(n\log n)$.
+The desired separation-strength target is
+\[
+ \forall A\ \forall d\ \forall N_0\ \exists F\in\Htwo:\quad
+ |\operatorname{enc}(F)|\ge N_0
+ \quad\land\quad T_A(F)>|\operatorname{enc}(F)|^d,       \tag{1}
+\]
+where $A$ ranges over total correct uniform deterministic deciders.  Statement
+(1) is \OPEN and is not assumed.
+
+The attacked claim is restricted and explicit.  A prefix compiler has a fixed
+constant $r$ and may inspect the dynamic transition prefix of a supplied
+decider through a source-fixed checkpoint $\tau(N)\le N^r$.  It may also read
+the source and program text using separately charged local work.  The proposed
+inference was that a useful object visible by this checkpoint certifies work
+performed by every supplied SAT execution.  The SAME\_REALIZATION objects are
+the source, supplied code, wrapper code, transition prefix, checkpoint state,
+extracted object, all external analysis, and every local/source-access cost.
+
+This model deliberately distinguishes dynamic observation from static program
+analysis.  The theorem below closes only the former route.  A compiler that
+parses, normalizes, or replaces arbitrary program text needs a separate
+correctness and resource theorem.
+
+\section{Polynomial prefix-delay theorem}
+
+\begin{definition}[Delay shell]
+For an integer $r\ge0$ and total deterministic machine $A$, define $D_r[A]$
+on an $N$-bit source to execute exactly $N^{r+1}$ dummy transitions.  Those
+transitions do not inspect source bits and do not execute a transition of
+$A$.  The shell then simulates $A$ and returns its bit.
+\end{definition}
+
+\begin{theorem}[\texttt{FIXED-PREFIX-DELAY1}]
+Let $A$ be a total correct uniform deterministic $3$SAT decider with
+$T_A(N)\le N^{K+o(1)}$, and fix $r\ge0$.
+Then:
+\begin{enumerate}[label=(\roman*)]
+\item $D_r[A]$ is total, correct, uniform, and computes exactly the same
+one-bit language as $A$;
+\item
+\[
+ T_{D_r[A]}(N)=N^{\max\{r+1,K\}+o(1)};                  \tag{2}
+\]
+\item for every checkpoint $\tau(N)\le N^r$, the projected dynamic trace
+through $\tau(N)$ consists only of the common delay shell and is independent
+of both $F$ and the embedded execution of $A$;
+\item the same statement holds for any two embedded deciders $A,B$ inside
+the identical shell.
+\end{enumerate}
+Consequently a trace-prefix extractor at that checkpoint receives no dynamic
+evidence that the child execution acquired, retained, or used its output.
+\end{theorem}
+
+\begin{proof}
+The shell changes no input and discards no child output, proving semantic
+equivalence, totality, and correctness.  Its loop bound is computed uniformly
+from $N$, so the wrapped machine is uniform.  The dummy phase and child phase
+are sequential, giving
+\[
+ N^{r+1}+N^{K+o(1)}=N^{\max\{r+1,K\}+o(1)}.
+\]
+Because $N^r<N^{r+1}$ for $N\ge2$, no checkpoint transition reaches the
+child.  By construction no dummy transition reads a source bit.  The dynamic
+prefix is therefore the same common shell prefix for every source and every
+embedded child.  This proves all four items.
+\end{proof}
+
+\begin{corollary}[Prefix-checkpoint trilemma]
+A fixed-budget predecision compiler using the supplied solver has three
+routes.
+\begin{description}[leftmargin=0cm,labelwidth=0cm]
+\item[] \textbf{Trace route.}  It observes only the bounded dynamic prefix;
+Theorem 1 removes all child-dependent work from that prefix.
+\item[] \textbf{External route.}  It derives the service by reading the source
+or statically transforming the code; then the compiler's own acquisition,
+normalization, validation, and output costs must be proved and cannot be
+charged to the original child execution.
+\item[] \textbf{Wait route.}  It waits for the shell or child; then (2) imports
+the arbitrary delay exponent and, upon completion, the child exponent $K$.
+\end{description}
+This trilemma does not rule out a new static, cost-preserving compiler.  It
+rules out fixed dynamic prefix observation as its justification.
+\end{corollary}
+
+The result is compatible with $P=NP$.  If $A$ is polynomial, so is $D_r[A]$.
+No contradiction and no lower bound is obtained.  Closure of polynomial-time
+programs under polynomial delay is elementary; Blum's axiomatic complexity
+theory is relevant only as broader context that complexity depends on the
+program and machine representation.  Blum's speedup theorem is not needed in
+the proof and does not specialize automatically to SAT.
+
+\section{Padding guard for fractional channels}
+
+Strictly fractional query length must use an honest source scale.  Let an
+$n$-bit semantic core be padded to length $N=\Theta(n^p)$ for a fixed $p>1$.
+Recovering and querying the core has apparent length
+\[
+ n=\Theta(N^{1/p}),                                      \tag{3}
+\]
+which is strictly fractional in the padded $N$.  But merely scanning the
+presented source costs $\Theta(N)=\Theta(n^p)$.  Therefore (3) does not yield
+a faster algorithm for the original $n$-bit family.  The channel exponent,
+local work, source normalization, and recursive descendants must all be
+translated to the same unpadded realization.
+
+This is the scale-laundering guard already present in the route manuscripts;
+the present audit retains it because a checkpoint repair that advertises only
+$a<1$ can otherwise pass vacuously on padded inputs.
+
+\section{Independent review of TESTS-0005}
+
+TESTS-0005's theorem is sound at its written scope.  A universal wrapper can
+simulate a total exact decider, intercept its output bit, compute the two-pin
+service with two further current-scale calls, and release the retained bit.
+The order is genuinely post-decision and pre-output, and its bound
+\[
+ T_A(N)+2T_A(cN+O(1))+O(N)=N^{K+o(1)}
+\]
+charges the added work.  Correctness of the decider makes renaming covariance
+exact and global complementation swaps the two pin coordinates.  Thus
+\texttt{PREOUTPUT-SERVICE-GUARD1} is independently promoted to \EXACT.
+
+The theorem does not prove that every source-defined checkpoint is movable.
+The present result adds only that a fixed polynomial trace prefix cannot force
+child-dependent work across delay-equivalent implementations.
+
+\section{Reproducible hostile audit}
+
+The dependency-free command
+\begin{verbatim}
+timeout 30s python experiments/review/fixed_checkpoint_delay_audit.py \
+  --seed 202610111136 \
+  --output results/raw/review/2026-10-11_fixed_checkpoint_delay_audit.json
+\end{verbatim}
+completed in $2.745439$ seconds.  Python bytecode compilation passed.
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Check & Count\\
+\midrule
+Delayed DIRECT/MATERIALIZE/INTERP/RECOMP agreements & $4{,}176$\\
+Hidden-child prefix checks & $4{,}176$\\
+Cross-implementation prefix collisions & $1{,}044$\\
+DEAD/COPY/encoding/renaming/complement controls & $1{,}566$\\
+Delay-exponent ledger cells & $5{,}103$\\
+Padding fractionality and concrete semantic checks & $395$\\
+Affine and cycle-Tseitin Gaussian controls & $240$\\
+Cross-source solver-projection collisions & $36$\\
+\midrule
+Total & $16{,}736$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The audit exhausts all 255 nonempty proper three-variable clause subsets and
+adds Horn, 2SAT, bounded-treewidth, independent-product, and connected
+exact-$(2,2)$ controls.  It checks $0\le r\le8$, $1\le K\le9$, synthetic
+lengths $2$ through $64$, padding powers $2$ through $6$, 180 seeded affine
+systems, and 30 even/odd cycle-Tseitin pairs.  The script SHA-256 is
+\nolinkurl{6fe1dfa70ffe70b06f4fc1b71a399717c52913d32e6dc2dcda0a31fc4d0575f8}.
+The audit is \COMP; Theorem 1 and equation (3), not finite extrapolation,
+establish the symbolic conclusions.
+
+\section{Barrier, wrapper, and transfer audit}
+
+DEAD and COPY add optional or shared state; DELAY is the exact obstruction;
+INTERP changes raw exposure; RECOMP avoids retention.  Horn propagation,
+2SAT SCCs, Gaussian elimination for affine/Tseitin systems, bounded-treewidth
+dynamic programming, and compact branching programs show that a checkpoint
+object may be easy or omitted.  One-bit output does not require an explicit
+service vector.
+
+Theorem 1 relativizes verbatim: the shell delays the same $A^O$.  Algebraic
+extension access can only strengthen an external compiler, so the theorem
+exposes rather than crosses the relativization and algebrization barriers.
+Li--Tell's 7 October 2026 plasticity simulations rely on explicit
+range-avoidance hardness and derandomization assumptions; Huang--Li--Zhong's
+range-avoidance equivalences fix the search object, circuit class, and
+$\mathsf{FP}^{\mathsf{NP}}$ model.  Chen--Hu--Ren show that several circuit
+lower-bound methods overcoming relativization still algebrize.  None supplies
+an arbitrary-SAT checkpoint normalizer.
+
+\begin{description}[leftmargin=0cm,labelwidth=0cm]
+\item[] \textbf{THEOREM TRANSFER.}
+Polynomial delay and the direct exponent ledger transfer exactly to the
+declared deterministic machine model.  FLMV transfers only when one matched
+machine satisfies its simultaneous time-space bounds.
+\item[] \textbf{ANALOGY / CANDIDATE.}
+Chronograms, online communication, control-theoretic observability cuts, and
+VLSI latches enforce externally declared interfaces.  The missing theorem
+compiles every static SAT decider into such an interface despite preprocessing,
+rereading, recomputation, and arbitrary polynomial delays.
+\item[] \textbf{FAILED TRANSFER.}
+Physical time, a first visible answer register, trace-prefix state, and online
+cut lower bounds do not constrain an unrestricted static SAT program without
+that compiler.
+\end{description}
+
+For the post-quantum ledger, Schur-square, quadratic-relation, Hilbert-function,
+and syzygy invariants are source-side objects and do not make a delayed child
+execute before the checkpoint; they are \textbf{FAILED TRANSFER} for this
+target.  LWE-style external extraction and special-soundness collision
+extraction are \textbf{ANALOGY / CANDIDATE}; both still need an unconditional
+cost-preserving compiler.  Cryptographic binding and random-oracle assumptions
+remain inadmissible.
+
+\section{Corpus-wide reconciliation}
+
+\subsection*{CORPUS REVIEWED}
+The run surveyed the current GitHub history and tree surfaces; root
+\texttt{main.tex}; \texttt{AGENTS.md}, \texttt{CODEX.md}, the PNP skill and
+red-team protocol; all seven task specifications; current \texttt{main4.tex}
+and \texttt{main5.tex}; the newest fetchable verified historical MAIN
+\texttt{2026-10-02\_1658\_MAIN\_1658.tex}; governance; the HEC, CRS--PPC,
+CCSPC, and RCCN causal components; RT-0004--0008, TESTS-0001 and TESTS-0005,
+MODELBRIDGE-0009, LB-0011, SYNTHESIS-0004, current coordination/status, and
+cited scripts/results.  Primary literature on axiomatic complexity, SAT
+time-space bounds, current range avoidance, relativization, and algebrization
+was checked before the theorem was promoted.
+
+\subsection*{DUPLICATION / CONTRADICTION AUDIT}
+DELAY was already a mandatory hostile wrapper; route reports already warned
+that padding cannot create contraction; TESTS-0005 already separated
+pre-output from predecision.  This report does not rename those facts.  Its
+incremental exact contribution is the quantifier-matched one-higher-degree
+delay theorem for every fixed trace budget, the resulting three-way route
+classification, and independent review of TESTS-0005.
+
+\subsection*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root MAIN already keeps arbitrary-algorithm acquisition and causal transfer
+\OPEN.  No root theorem is contradicted.  The current review stream is
+narrower: a source-fixed checkpoint must not be implemented as a fixed
+polynomial dynamic prefix unless a wrapper normalizer with charged static
+analysis is separately proved.  This review role has no authorized root
+\texttt{main.tex} ownership region, so root MAIN is not edited.
+
+\subsection*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted are TESTS-0005's pre-output theorem, LB-0011's external-source guard,
+RT-0008's exponent ledger, SAME\_REALIZATION, and the hostile-control suite.
+Rejected is fixed trace-prefix visibility as evidence of universal paid work.
+Retired is \texttt{PREFIX-CHECKPOINT-UNIVERSAL1}.  Static code analysis,
+covariant fractional extraction, and source-defined semantic interfaces are
+not retired.
+
+\subsection*{STALE OR OVERSTATED CLAIMS FOUND}
+Any wording treating ``source-fixed checkpoint'' as automatically immune to
+DELAY is overstated.  Source-fixed timing prevents solver-local output-event
+movement but does not prevent a supplied implementation from postponing every
+source-dependent transition beyond a fixed polynomial budget.  No current
+root-MAIN result claims otherwise.
+
+\section{Smallest repair and handoff}
+
+Retain \texttt{FRACTIONAL-PREDECISION-COMPILER1}, but require one of two
+explicit non-prefix mechanisms:
+\begin{enumerate}[label=(\alph*)]
+\item a uniform static normalizer that removes DEAD/COPY/DELAY/INTERP/RECOMP
+shells from every supplied solver while proving semantic preservation and
+charging analysis, access, output, and workspace; or
+\item a source-defined fractional successor constructed independently of the
+supplied trace, with its own $K$-independent local bound and hereditary
+same-realization contract.
+\end{enumerate}
+The next red-team target is the first option: formalize its exact code model
+and attack totality, arbitrary exponents, padding, unreachable code, and
+replacement by a fixed solver.  The normalizer, source-only construction,
+matched endpoint, nonrelativizing hinge, nonalgebrizing hinge, UCORE-TIME1,
+and P versus NP remain \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{blum}
+M.~Blum, \emph{A Machine-Independent Theory of the Complexity of Recursive
+Functions}, JACM 14(2) (1967), 322--336.
+\url{https://doi.org/10.1145/321386.321395}.
+
+\bibitem{flmv}
+L.~Fortnow, R.~Lipton, D.~van Melkebeek, and A.~Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability}, JACM 52(6) (2005),
+835--865. \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+
+\bibitem{hlz}
+S.~Huang, X.~Li, and Y.~Zhong,
+\emph{Range Avoidance and Remote Point: New Algorithms and Hardness},
+ECCC TR25-049, revision 5 (2025).
+\url{https://eccc.weizmann.ac.il/report/2025/049/}.
+
+\bibitem{litell}
+Z.~Li and R.~Tell,
+\emph{Trading Time, Space, and Alternations: General Plasticity for Algorithms
+from Hardness of Range Avoidance}, ECCC TR26-233, 7 October 2026.
+\url{https://eccc.weizmann.ac.il/report/2026/233/}.
+
+\bibitem{chr}
+L.~Chen, Y.~Hu, and H.~Ren,
+\emph{New Algebrization Barriers to Circuit Lower Bounds via Communication
+Complexity of Missing-String}, ECCC TR25-184 (2025).
+\url{https://eccc.weizmann.ac.il/report/2025/184/}.
+
+\bibitem{aw}
+S.~Aaronson and A.~Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory}, ACM TOCT 1(1)
+(2009), Article 2. \url{https://eccc.weizmann.ac.il/report/2008/005/}.
+\end{thebibliography}
+
+\paragraph{Final status.}
+\nolinkurl{PREOUTPUT-SERVICE-GUARD1}, \nolinkurl{FIXED-PREFIX-DELAY1}, and
+\nolinkurl{PADDING-FRACTIONALITY-GUARD1}: \EXACT.  Finite audit: \COMP.\\
+\nolinkurl{PREOUTPUT-IMPLIES-PREDECISION1} and
+\nolinkurl{PREFIX-CHECKPOINT-UNIVERSAL1}: \RETIRED.\\
+\nolinkurl{FRACTIONAL-PREDECISION-COMPILER1}, UCORE-TIME1,
+nonrelativization, nonalgebrization, and P versus NP: \OPEN.
+P versus NP remains open.
+
+% END_OF_VERIFIED_REPORT::REDTEAM::RT-0009
+\end{document}
