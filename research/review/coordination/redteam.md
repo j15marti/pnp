@@ -1,4 +1,16 @@
-# REDTEAM audit, current run 2026-10-10
+# REDTEAM audit, current run 2026-10-11
+
+## RT-0004, exposure-covariance separation (2026-10-11)
+
+Status: **PROVED/EXACT** for the declared raw, decoded, and extensional exposure predicates; **COMPUTATIONAL** for the bounded audit. `CORE-ACQUIRE1` and P versus NP remain **OPEN**.
+
+Four uniform polynomial-time deciders of the same proper-three-CNF equality family have identical one-bit semantics but different exposure profiles for the mismatch vector `q=u xor v`: DIRECT is (raw 0, decoded 0, external 1), MATERIALIZE is (1,1,1), INTERP is (0,1,1), and RECOMP is (0,0,1). Thus raw exposure is encoding-sensitive, decoded exposure is materialization-sensitive, and external source derivation does not certify internal cost. This falsifies necessity only for those declared relations, not every possible white-box extractor.
+
+The P=NP guard is explicit: if SAT is polynomial-time, a total solver can recognize this equality core, run DIRECT there, and fall back to a polynomial SAT decider elsewhere. The nontrivial clean-core target is Monotone 3-SAT-(2,2), with encoded length `N=Theta(n log n)`; its arbitrary-algorithm superpolynomial lower bound is already separation-strength and remains open.
+
+The exhaustive audit passed 87,380 semantic cases and 262,140 DEAD/DELAY/COPY wrapper controls through `n=8`. Report: `research/review/reports/redteam/2026-10-11_0512_RT-0004.tex`. Test: `experiments/review/wext_exposure_covariance_audit.py`. Raw result: `results/raw/review/2026-10-11_wext_exposure_covariance_audit.json`.
+
+Single next target: define and attack a causal-use, representation-covariant multi-query interface on the hard clean core, including a cost-preserving alternative for DIRECT/RECOMP implementations and an independent lower-bound endpoint.
 
 ## RT-0002 — CC-0003 workspace-reset audit (2026-10-10)
 
