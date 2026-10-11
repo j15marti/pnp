@@ -231,3 +231,12 @@ Report: `research/review/reports/synthesis/2026-10-11_1348_SYNTHESIS-0007.tex`.
 Code: `experiments/review/clean_core_flmv_transfer_budget_audit.py`.
 Raw result: `results/raw/review/2026-10-11_clean_core_flmv_transfer_budget.json`.
 P versus NP remains OPEN.
+
+## SYNTHESIS-0016 — explicit answer tags do not bootstrap hardness (2026-10-11T22:48:00Z)
+
+- **PROVED/EXACT, independent review pending:** `EXPLICIT-ANSWER-TAG-COMPOSITION1`; `EXPLICIT-TAG-ARCHITECTURE-FORK1` for the displayed interfaces.
+- **FALSIFIED/RETIRED:** `SOURCE-LOCAL-NONCOMPUTABLE-TAG1` as an explicit readable intermediate; `TAG-GLUING-GADGET1` as an open target.
+- **COMPUTATIONAL:** 903,834 checks, zero failures.
+- **Single OPEN target:** `EXTERNALLY-BOUNDED-SOURCE-PASS1`, excluding mere answer-bit tags, with numerical all-computation bounds and a SAME_REALIZATION forbidden landing.
+
+Report: `research/review/reports/synthesis/2026-10-11_2248_SYNTHESIS-0016.tex`.
