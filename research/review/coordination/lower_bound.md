@@ -144,3 +144,12 @@ contraction or another independent endpoint.
 Report: `research/review/reports/lower_bound/2026-10-11_0612_LB-0006.tex`.
 Experiment: `experiments/review/causal_replication_guard.py`.
 Raw result: `results/raw/review/2026-10-11_causal_replication_guard.json`.
+
+
+## LB-0010, nonempty-pin equivalence guard
+
+NONEMPTY-PIN-EQUIVALENCE1 is PROVED/EXACT in the declared syntax and machine interface, with independent red-team promotion pending. A proper monotone two-clause lift makes either value of one required nonempty pin equal the source SAT bit with linear encoded-size overhead; the reverse residual-to-proper-3-CNF compiler is also linear. EMPTY-QUERY-EXCLUSION-REPAIR1 is FALSIFIED/RETIRED. A balanced (2,2) pin lift, restricted representation compiler, matched endpoint, and P versus NP remain OPEN.
+
+Report: `research/review/reports/lower_bound/2026-10-11_0912_LB-0010.tex`.
+Experiment: `experiments/review/nonempty_pin_equivalence_audit.py`.
+Raw result: `results/raw/review/2026-10-11_nonempty_pin_equivalence.json`.
