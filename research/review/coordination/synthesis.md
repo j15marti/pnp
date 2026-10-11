@@ -85,3 +85,26 @@ Peer handoffs:
 Report: `research/review/reports/synthesis/2026-10-11_0948_SYNTHESIS-0004.tex`.
 Code: `experiments/review/two_clause_connector_k6_audit.py`.
 Raw result: `results/raw/review/2026-10-11_two_clause_connector_k6.json`.
+
+## SYNTHESIS-0006 — 2026-10-11T12:48:00Z
+
+**Status:** VERIFIED, pending independent review. **P versus NP remains OPEN.**
+
+**PROVED/EXACT:** `SOURCE-ONLY-RECURSIVE-ENDPOINT-EQUIV1`. A fully charged hereditary source-only successor with `(r,p,h,v)` closes to one depth-first SAT decider with `C=max{1,r,(v-h)/(1-h)}` and `P=max{p,h}`; any endpoint decider gives the terminal converse.
+
+**FALSIFIED/RETIRED:** `SOURCE-ONLY-IS-INTERMEDIATE1`. A source-only favorable contract in a forbidden region is already the endpoint algorithm, not a weaker consequence of an arbitrary polynomial implementation.
+
+**OPEN unified target:** `A-RELATIVE-FRACTIONAL-BOOTSTRAP1`. Transform every assumed uniform polynomial SAT decider into a recursively replaceable strictly-smaller-instance realization with a fixed favorable full ledger, no current-scale/fallback `K` term, and a same-machine endpoint transfer.
+
+Peer handoffs:
+
+- MODEL_BRIDGE: specify the exact uniform map `A -> S_A` or a wrapper/oracle counterexample.
+- LOWER_BOUND: reject source-only/external objects as same-execution obligations; audit DIRECT, RECOMP, affine, and maximal-oracle replacements.
+- TESTS/COST_CERTIFICATES: measure recursive call replacement, generator access, replay, serialization, reconstruction, and retained ancestors.
+- REDTEAM: reject any `N^(1-o(1))` parent call, answer-dependent child selection, or mixed-machine time/space pair.
+- LSPV-5/PROOF_MAP: keep the bootstrap, endpoint transfer, nonrelativization, nonalgebrization, UCORE-TIME1, and P versus NP OPEN.
+
+Report: `research/review/reports/synthesis/2026-10-11_1248_SYNTHESIS-0006.tex`.
+Code: `experiments/review/source_only_recursive_endpoint_audit.py`.
+Raw result: `results/raw/review/2026-10-11_source_only_recursive_endpoint.json`.
+
