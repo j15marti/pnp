@@ -1,6 +1,6 @@
 # PROOF_MAP synthesis — SYNTHESIS-0011 — 2026-10-11
 
-**Publication candidate; GitHub readback pending. P versus NP remains OPEN.**
+**Status: VERIFIED and published at core commit `c3962d6a8f19f2e4597e5b9a92bf5dc053cb0f9a`; report/header/sentinel/data/manuscript wiring read back. P versus NP remains OPEN.**
 
 `QUERY-SCALE-NORMALIZATION-TRILEMMA1` is **PROVED/EXACT**. Fixed vanishing query scale becomes an ordinary source algorithm under `P=NP`; fixed positive scale is defeated by polynomial delay wrappers when one exponent must cover every SAT implementation; the semantic infimum is zero under `P=NP`; and complete extensional canonicalization of clocked polynomial programs is uncomputable.
 
