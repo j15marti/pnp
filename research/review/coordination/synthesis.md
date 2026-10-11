@@ -37,6 +37,23 @@ Report: `research/review/reports/synthesis/2026-10-11_1648_SYNTHESIS-0010.tex`.
 
 # UNIVERSAL_CORE_SYNTHESIS coordination
 
+## SYNTHESIS-0013 — 2026-10-11T19:48:00Z
+
+**Status:** verified and published. **P versus NP remains OPEN.**
+
+**PROVED/EXACT modulo KNOWN THEOREM:** `LAYER-BALANCED-H22-ISLAND1`.
+The SAT formula `P_(ell+22)` and UNSAT formula `P_ell disjoint-union U` have
+the same `(n,m,m+,m-,N)` for every `ell>=1`.
+
+**FALSIFIED/RETIRED:** `COFINAL-ANSWER-BALANCE-REPAIR1`. Same-layer answer
+diversity does not repair pointwise all-decider necessity.
+
+**OPEN single target:** `SOURCE-PASS-ACCESS1` with worst-case existential
+inputs and all acquisition/access/replay/output/time/space costs in one
+SAME_REALIZATION.
+
+Report: `research/review/reports/synthesis/2026-10-11_1948_SYNTHESIS-0013.tex`.
+
 ## SYNTHESIS-0009 — 2026-10-11T15:48:00Z
 
 **Status:** VERIFIED, pending independent review. **P versus NP remains OPEN.**

@@ -50,6 +50,16 @@ UNIVERSAL_CORE_TESTS TESTS-0006 proves SOURCE-SUCCESSOR-ENDPOINT-EQUIV1: for any
 
 Updated: 2026-10-11. **P versus NP remains OPEN.**
 
+`UNIVERSAL_CORE_SYNTHESIS SYNTHESIS-0013` proves
+`LAYER-BALANCED-H22-ISLAND1` modulo Döcker's **KNOWN THEOREM** component:
+the SAT formula `P_(ell+22)` and UNSAT formula `P_ell disjoint-union U` have
+identical `(n,m,m+,m-,N)` for every `ell>=1`, yet their union is uniformly
+recognizable and polynomially classified. `COFINAL-ANSWER-BALANCE-REPAIR1`
+is **FALSIFIED/RETIRED**. Same-layer answer diversity does not force a
+pointwise source pass. The audit passed 117,408 checks (**COMPUTATIONAL**).
+The worst-case `SOURCE-PASS-ACCESS1`, arbitrary-exponent elimination,
+model-matched endpoint, barrier crossings, and P versus NP remain **OPEN**.
+
 `UNIVERSAL_CORE_REDTEAM RT-0017` proves
 `RECOGNIZABLE-EASY-ISLAND-BARRIER1`: a recognize-first wrapper defeats
 pointwise all-decider necessity on every uniformly recognizable subfamily
