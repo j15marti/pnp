@@ -1,0 +1,431 @@
+% PNP REVIEW REPORT::REDTEAM::RT-0015::2026-10-11T17:36:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{3SAT}}
+\newcommand{\PT}{\mathsf P}
+\newcommand{\Htwo}{\mathcal H_{2,2}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{UNIVERSAL\_CORE\_REDTEAM RT-0015:\\
+Extensional Query-Scale Normalization Collapses Under $P=NP$}
+\author{P versus NP project review}
+\date{11 October 2026, 17:36 UTC}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+TESTS-0010 correctly proves that actual reached SAT-query scale is a gauge of
+one program, not an extensional resource.  It suggests either an externally
+fixed source compiler or minimization over equivalent implementations.  This
+report red-teams the latter repair.  For a one-bit function $g$ computed by a
+uniform polynomial-time SAT-oracle transducer, define its normalized query
+scale as the infimum over all extensionally equivalent polynomial
+transducers.  Under $P=NP$, $P^{\SAT}=P$, so an equivalent oracle-free
+machine exists and the normalized scale is exactly zero.  Thus this semantic
+infimum cannot be the positive resource that derives a contradiction from
+$P=NP$.  Moreover, there is no total computable canonicalizer whose outputs
+are equal exactly for extensionally equal clocked polynomial-time Boolean
+programs: a direct halting reduction proves this even without SAT.  The first
+statement is an exact conditional implication; the second is unconditional.
+Neither bounds the ordinary runtime of the no-query replacement, whose
+polynomial exponent remains arbitrary.  A bounded audit passed 270,556
+checks.  The surviving repair is a source-specific, externally fixed,
+fully charged compiler into a model-matched forbidden region.  P versus NP
+remains open.
+\end{abstract}
+
+\section{Executive verdict}
+
+\begin{center}\small
+\begin{tabular}{@{}p{0.41\linewidth}p{0.19\linewidth}p{0.32\linewidth}@{}}
+\toprule
+Claim & Status & Verdict\\ \midrule
+\texttt{PNP-QUERY-SCALE-COLLAPSE1} & \EXACT{} conditional implication &
+$P=NP$ forces every extensional SAT-oracle query-scale infimum to zero.\\
+\texttt{POLY-EXTENSIONAL-CANONIZER-NOGO1} & \EXACT, pending review &
+Complete computable canonicalization of clocked polynomial-time Boolean
+programs is impossible.\\
+\texttt{SEMANTIC-INFIMUM-QUERY-LB1} & \RETIRED &
+It cannot remain positive under the counterfactual needed for the proof.\\
+Finite hostile audit & \COMP & 270,556 checks; zero failures.\\
+\texttt{WRAPPER-NORMALIZED-SOURCE-COMPILER1} & \OPEN &
+Only its broad semantic-infimum reading is retired; an explicit source
+compiler remains separation-strength.\\
+UCORE-TIME1 and P versus NP & \OPEN & No unrestricted lower bound follows.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Claim card and exact quantifiers}
+
+Let $\Htwo$ be the duplicate-free proper Monotone $3$SAT-$(2,2)$ family in
+the current synthesis, with canonical encoded bit length
+$N=\Theta(n\log n)$.  The argument below applies to every binary input
+language and therefore also to $\Htwo$.
+
+An extensional SAT-oracle transducer is one uniform deterministic machine
+$E^{\SAT}$ which, on every input $x$, halts in time $|x|^{O(1)}$, asks at most
+$|x|^{O(1)}$ explicitly written SAT queries of polynomial length, and returns
+one bit.  Let
+\[
+ q_E(N)=\max\bigl(2,\max\{|Q|:Q\text{ is reached by }E(x),\ |x|=N\}\bigr)
+\]
+and
+\[
+ \sigma(E)=\limsup_{N\to\infty}\frac{\log q_E(N)}{\log N}.
+ \tag{1}
+\]
+The constant 2 makes an oracle-free program have scale zero.  For a Boolean
+function $g$ define the semantic normalization
+\[
+ \underline\sigma(g)=
+ \inf\{\sigma(E):E^{\SAT}(x)=g(x)\text{ for every }x,
+ \ E^{\SAT}\text{ is a uniform polynomial transducer}\}.
+ \tag{2}
+\]
+The target attacked here is
+\[
+ P=NP\quad\Longrightarrow\quad
+ \exists g\in P^{\SAT}\ [\underline\sigma(g)>0],
+ \tag{NS}
+\]
+or any universal clean-core lower bound that requires such positivity.
+The exact quantifier prefix in the negation is
+\[
+ P=NP\quad\Longrightarrow\quad
+ \forall g\in P^{\SAT}\ \exists B\in P\ \forall x:
+ B(x)=g(x)\ \land\ B\text{ asks no SAT query}.
+ \tag{3}
+\]
+The SAME\_REALIZATION object in (3) is the replacement program $B$, including
+all source reads, work, space and its one-bit output.  Equation (3) does not
+claim that $B$ has a favorable time--space exponent.
+
+\section{The conditional collapse theorem}
+
+\begin{theorem}[\texttt{PNP-QUERY-SCALE-COLLAPSE1}]
+If $P=NP$, then for every Boolean function $g$ computed by a uniform
+deterministic polynomial-time SAT-oracle transducer,
+\[
+ \underline\sigma(g)=0.
+ \tag{4}
+\]
+In particular (4) holds for the SAT decision bit restricted to $\Htwo$.
+\end{theorem}
+
+\begin{proof}
+Under $P=NP$, SAT has a fixed uniform deterministic polynomial-time decider
+$A_0$.  Given a transducer $E^{\SAT}$ for $g$, replace each oracle call on an
+explicitly written query $Q$ by the ordinary computation $A_0(Q)$.  The
+number and lengths of queries are polynomial, so this composition is one
+uniform deterministic polynomial-time ordinary machine $B$ with
+$B(x)=E^{\SAT}(x)=g(x)$ for every $x$.  Machine $B$ asks no SAT queries, so
+$q_B(N)=2$ and $\sigma(B)=0$.  Nonnegativity of (1) and the definition (2)
+give $\underline\sigma(g)=0$.
+\end{proof}
+
+This theorem is stronger than deleting TESTS-0010's particular DEAD or
+CANCEL shell.  It says that under the very hypothesis used by a contradiction
+proof, the full extensional equivalence class contains an oracle-free
+representative.  It is also deliberately weaker than a useful endpoint:
+if $A_0$ runs in time $M^K$, then direct substitution may run in
+$N^{b+aK+o(1)}$.  The unknown fixed exponent $K$ survives exactly as in the
+project's polynomial-query composition ledger.  Zero query scale is not
+near-linear time or sublinear space.
+
+\begin{corollary}[Easy-family control]
+If $g\in P$ unconditionally, then $\underline\sigma(g)=0$ without assuming
+$P=NP$.  Hence Horn SAT, 2SAT, affine systems, bounded-treewidth SAT and every
+other polynomial source island defeat a universal positive normalized-scale
+claim immediately.
+\end{corollary}
+
+\section{No complete computable extensional canonicalizer}
+
+One might try to make (2) effective by canonicalizing program code first.
+The next theorem formalizes the obstruction anticipated by RED-0003 and the
+static-normalizer trilemma of MODELBRIDGE-0010.
+
+\begin{definition}[Complete polynomial-program canonicalizer]
+Let $\mathcal P_{\rm clock}$ be a decidable syntax of clocked deterministic
+programs, each carrying an explicit polynomial clock and returning one bit on
+every binary string.  A complete extensional canonicalizer is a total
+computable function $C:\mathcal P_{\rm clock}\to\{0,1\}^*$ such that
+\[
+ C(P)=C(Q)\quad\Longleftrightarrow\quad
+ \forall x\in\{0,1\}^*\ P(x)=Q(x).
+ \tag{5}
+\]
+\end{definition}
+
+\begin{theorem}[\texttt{POLY-EXTENSIONAL-CANONIZER-NOGO1}]
+No complete polynomial-program canonicalizer exists.
+\end{theorem}
+
+\begin{proof}
+Suppose $C$ exists.  Given an arbitrary Turing machine $M$ and word $w$,
+construct a clocked program $P_{M,w}$.  On input $x$ of length $n$, it
+simulates $M(w)$ for $n$ steps and returns 1 iff the simulation halted within
+those $n$ steps.  A standard universal simulation with an explicit
+polynomial clock makes $P_{M,w}\in\mathcal P_{\rm clock}$.  Let $Z$ be the
+clocked program that always returns 0.  Then
+\[
+ \forall x\ P_{M,w}(x)=Z(x)
+ \quad\Longleftrightarrow\quad M(w)\text{ never halts}.
+ \tag{6}
+\]
+Computing $C(P_{M,w})$ and $C(Z)$ and testing finite-string equality would
+therefore decide whether $M(w)$ halts, contradicting undecidability of the
+halting problem.
+\end{proof}
+
+The proof is a promised polynomial-time-program version of the semantic
+undecidability phenomenon in Rice's theorem \cite{rice}.  It does not say
+that every restricted normal form is impossible.  A finite automaton, bounded
+circuit class, proof-carrying compiler IR, or declared wrapper monoid may have
+an effective quotient.  Such a restricted quotient needs a separate coverage
+theorem for arbitrary SAT implementations and must charge certificate
+production, transport and checking.
+
+There is also a crucial distinction between theorems.  The infimum (2) is a
+well-defined semantic number even when no minimizing code can be found.
+The first theorem makes that number zero under $P=NP$; the second blocks a
+generic algorithm for producing complete canonical forms.  Neither theorem
+uses the other.
+
+\section{Finite hostile audit and full ledger}
+
+The dependency-free invocation
+\begin{verbatim}
+timeout 30s python3 experiments/review/extensional_normalizer_redteam.py
+\end{verbatim}
+completed in 0.085 seconds; bytecode compilation passed.  It recorded 270,556
+checks:
+\begin{center}\small
+\begin{tabular}{@{}lr@{}}
+\toprule
+Check class & Count\\ \midrule
+Bounded-prefix agreements for halting-horizon programs & 265,216\\
+First future separations after the tested horizon & 2,048\\
+DIRECT/DEAD/CANCEL/COPY/DELAY/INTERP/RECOMP agreement & 1,827\\
+Alternate encoding, redundancy and padding & 783\\
+Affine/Tseitin Gaussian controls & 124\\
+Query-scale representative minima & 180\\
+Polynomial-padding/no-query controls & 378\\
+\midrule
+Total & 270,556\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For each finite test cutoff $B\le256$, eight threshold programs with first 1
+at $h>B$ agree with the zero program on all lengths through $B$ and differ at
+$h$.  This is a bounded witness that finite testing cannot certify program
+equivalence; it is not the undecidability proof.  The formula suite exhausts
+all 256 subsets of the eight proper clauses on three variables and includes
+Horn, 2SAT, bounded-treewidth, independent-product and redundant-clause
+controls.  Affine cycle systems are solved by actual $\mathbb F_2$ Gaussian
+elimination.  Five positive query scales through $3/2$, nine source lengths,
+six padding degrees and the seven wrappers were audited.
+
+The script SHA-256 is
+\nolinkurl{38d26e4f104563b8b39fccfab2f553e5284963087a3bcc8a1076e51aaf7fded4};
+the raw-result SHA-256 is
+\nolinkurl{66053ec516f1e7e584caf39266a198374953e6177f96540d9d746a68680043e8}.
+The raw output is
+\path{results/raw/review/2026-10-11_extensional_normalizer_redteam.json}.
+Measurements are \COMP{} only and support no asymptotic extrapolation.
+
+\section{Hostile controls and one-bit output}
+
+\paragraph{Easy semantic shortcuts.}
+Horn closure, 2SAT strongly connected components, affine Gaussian
+elimination and bounded-treewidth dynamic programming compute their one-bit
+answers without a positive normalized SAT-query scale.  Hidden algebraic or
+graph structure is an algorithmic advantage here, not a hardness resource.
+
+\paragraph{Padding and alternate encodings.}
+Polynomial padding can change the displayed exponent of one implementation,
+and redundant clauses can change bytes without changing semantics.  Neither
+operation removes the oracle-free representative from an extensional class.
+Thus the zero in (4) is invariant under these presentation changes.
+
+\paragraph{Wrappers and compact representations.}
+DEAD and CANCEL generate irrelevant positive-scale calls; COPY and DELAY
+alter size or time; INTERP and RECOMP alter trace and retention.  Complete
+semantic minimization ignores all of them, but under $P=NP$ it also ignores
+every necessary SAT call by replacing the whole program.  Compact circuits
+or branching programs may represent particular source functions, but their
+restricted size lower bounds do not constrain an arbitrary uniform SAT
+machine without a transfer theorem.
+
+\paragraph{One-bit contract.}
+The output may be only $\SAT(F)$.  Requiring a compatibility table, proof,
+witness, canonical trace or minimum program changes the output/interface.
+No theorem here or in TESTS-0010 forces those objects to appear in every
+one-bit execution.
+
+\section{Barrier, uniformity and transfer audit}
+
+Baker--Gill--Solovay construct relativized worlds with both equality and
+separation, so a black-box relativizing query normalization cannot by itself
+settle P versus NP \cite{bgs}.  Theorem 1 is an implication inside the
+counterfactual $P=NP$; it does not provide a nonrelativizing hinge.  Theorem 2
+is oracle-free computability theory and also does not separate the classes.
+Low-degree extension access cannot restore a positive extensional query
+scale after an ordinary no-query representative exists; this gives no escape
+from the algebrization barrier \cite{aw}.  Natural Proofs is not directly
+triggered because no constructive large property against general circuits is
+proposed.
+
+Nonuniform advice could name one representative per input length or encode
+noncomputable semantic facts.  That is not the required one uniform
+deterministic compiler; the advice, its uniform generation, and every access
+must be charged.  Similarly, minimization over all codes is not acquisition.
+
+\begin{description}[leftmargin=0cm,labelwidth=0cm]
+\item[] \textbf{DIRECTLY TRANSFERABLE THEOREM.}
+The direct halting reduction transfers exactly to complete canonicalization
+of clocked polynomial-time programs.  FLMV transfers only after one ordinary
+random-access SAT realization meets its simultaneous time--space hypotheses
+\cite{flmv}; zero oracle-query scale does not meet them.
+\item[] \textbf{USEFUL STRUCTURAL ANALOGY REQUIRING A NEW TRANSFER THEOREM.}
+Certified compilers, abstract interpretation, bisimulation quotients, minimal
+automata and LWE-style external extraction suggest restricted quotients or
+black-box source compilers.  Coverage of every uniform SAT implementation,
+uniform acquisition and endpoint bounds are missing.
+\item[] \textbf{MISLEADING ANALOGY / FAILED TRANSFER.}
+VLSI routing, physical locality, proof-system size, branching-program width,
+Schur squares, quadratic-relation rank, Hilbert functions, syzygies, collision
+entropy, special soundness and cryptographic binding do not compute a complete
+program quotient or force arbitrary one-bit SAT work.
+\end{description}
+
+The post-quantum classification is ANALOGY/CANDIDATE only for external
+black-box extraction and FAILED TRANSFER for every proposed algebraic repair
+to complete program normalization.  No hardness, random-oracle or
+collapse-binding assumption is admissible or used.
+
+\section{CORPUS REVIEWED}
+
+The run enumerated the 2,179-entry GitHub tree and read root
+\path{main.tex}, actual \path{main4.tex}/\path{main5.tex},
+\path{AGENTS.md}, \path{CODEX.md}, the complete pnp-research skill,
+red-team mode, research protocol and the review-team protocol; all seven task
+specifications; the newest verified historical MAIN; current PAIRDEG1,
+DUALSHORT1-R2, KPATH1 and COLLAPSEGATE1 specialist reports; governance; the
+HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC causal branch; current status,
+coordination and coverage; and the newest TESTS-0010, LB-0015,
+MODELBRIDGE-0015, RT-0014 and SYNTHESIS-0010 reports with cited experiment
+artifacts.  Five older materially relevant items were reviewed directly:
+RED-0003 canonical minimization, RED-0007 trace noninvariance, RT-0003
+minimum-circuit transfer, LB-0011 quotient factorization and MODELBRIDGE-0010
+static normalization.  Repository search covered canonicalizers, equivalent
+programs, semantic minimization, wrapper normalization and Rice-style
+obstructions.  Primary literature was checked before promotion.  The
+immediate predecessor TESTS-0010 exists, is substantive, contains its unique
+header and final sentinel, and was read back with verified log; no recovery
+request was needed.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+RED-0003 already states the qualitative trilemma that semantic
+canonicalization approaches program minimization/equivalence.  LB-0011 proves
+that a fully implementation-invariant extract factors through the source.
+MODELBRIDGE-0010 proves promised marked-shell reachability undecidable and
+SAT-specific endpoint normalization equivalent to already having the
+endpoint.  TESTS-0010 proves the positive query scale of one reached wrapper
+is not semantic necessity.  The new contribution is not a new generic warning:
+it is the exact application to TESTS-0010's proposed semantic query-scale
+infimum, including the $P=NP\Rightarrow\underline\sigma=0$ theorem, together
+with a direct complete-canonicalizer formulation for the precise repair.
+There is no contradiction with LB-0015, which fixes one transducer and charges
+its actual calls.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN already keeps semantic-object to machine-state and arbitrary-
+algorithm transfers OPEN.  The new result narrows one proposed repair:
+minimizing SAT-query scale over all extensionally equivalent polynomial
+implementations cannot yield a positive obstruction under $P=NP$.  No root
+load-bearing arrow closes.  This review role has no marked root-MAIN ownership
+region, so root \path{main.tex} is not edited; main4/main5 receive a
+nonpromotional include and LSPV-5 remains final synthesis arbiter.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+Adopted are TESTS-0010's query-scale gauge theorem, LB-0015's fixed-program
+dichotomy, LB-0011's quotient factorization and cost ledger,
+MODELBRIDGE-0010's normalizer trilemma, exact encoded-length accounting and
+SAME\_REALIZATION.  Rejected is the claim that taking an extensional infimum
+alone repairs a universal positive-scale lower bound.  Retired is
+\texttt{SEMANTIC-INFIMUM-QUERY-LB1}.  Preserved OPEN are an externally fixed
+source compiler, a wrapper-covariant implementation-sensitive extractor,
+arbitrary-decider exposure, a favorable FLMV landing, nonrelativization,
+nonalgebrization and P versus NP.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any statement that a semantic query-scale minimum remains a positive resource
+under $P=NP$ is false.  Any statement that the minimum is automatically
+computable by canonicalization is also false for complete polynomial-program
+equivalence.  It would be equally overstated to say wrapper normalization in
+every restricted representation is impossible, or to infer favorable time
+and space from the zero-query replacement.  The safe surviving statement is
+source-specific external compilation with every cost and endpoint exponent
+proved directly.
+
+\section{Smallest repair and precise handoff}
+
+Do not minimize over all extensionally equivalent solver programs.  Fix an
+external source transformation $\mathcal T$ and prove, under $P=NP$, that for
+every input $F$ it constructs one ordinary SAT realization satisfying an
+independently known forbidden simultaneous time--space bound.  The theorem
+must charge source access, discovery, failed routes, normalization, query or
+child construction, replay, reconstruction, output and peak workspace; it
+must be uniform, hereditary where recursion is used, and independent of the
+unknown polynomial exponent $K$.  Alternatively, restrict canonicalization
+to a typed proof-carrying representation and prove a coverage compiler from
+every relevant SAT implementation.  Both targets remain \OPEN{} and are
+separation-strength.
+
+\paragraph{Final status.}
+\texttt{PNP-QUERY-SCALE-COLLAPSE1}: \EXACT{} conditional implication.\\
+\texttt{POLY-EXTENSIONAL-CANONIZER-NOGO1}: \EXACT, pending independent review.\\
+Finite audit: \COMP.\\
+\texttt{SEMANTIC-INFIMUM-QUERY-LB1}: \RETIRED.\\
+Externally fixed source compiler, arbitrary-decider transfer, UCORE-TIME1,
+nonrelativization, nonalgebrization and P versus NP: \OPEN.\\
+P versus NP remains open.
+
+\begin{thebibliography}{9}
+\bibitem{rice} H.~G.~Rice,
+\emph{Classes of Recursively Enumerable Sets and Their Decision Problems},
+Transactions of the AMS 74(2) (1953), 358--366.
+\url{https://doi.org/10.1090/S0002-9947-1953-0053041-6}.
+\bibitem{blum} M.~Blum,
+\emph{A Machine-Independent Theory of the Complexity of Recursive Functions},
+JACM 14(2) (1967), 322--336.
+\url{https://doi.org/10.1145/321386.321395}.
+\bibitem{bgs} T.~Baker, J.~Gill and R.~Solovay,
+\emph{Relativizations of the P=?NP Question}, SIAM Journal on Computing
+4(4) (1975), 431--442. \url{https://doi.org/10.1137/0204037}.
+\bibitem{aw} S.~Aaronson and A.~Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory}, ACM Transactions on
+Computation Theory 1(1) (2009), Article 2.
+\url{https://eccc.weizmann.ac.il/report/2008/005/}.
+\bibitem{flmv} L.~Fortnow, R.~Lipton, D.~van Melkebeek and A.~Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability}, JACM 52(6) (2005),
+835--865. \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::REDTEAM::RT-0015
+\end{document}

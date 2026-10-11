@@ -1,15 +1,16 @@
 # REDTEAM audit, current run 2026-10-11
 
-## RT-0014 — child-only fanout detection (2026-10-11T16:36:00Z)
+## RT-0015 — extensional normalization collapse (2026-10-11T17:36:00Z)
 
-**Status:** VERIFIED and published. **P versus NP remains OPEN.**
+**Status:** VERIFIED locally, pending GitHub publication. **P versus NP remains OPEN.**
 
-`FORWARD-FANOUT-DETECTION1` is **PROVED/EXACT** in the declared acyclic child-oracle model. With one target and `n` possible later parents, deciding zero fanout, outputting the complete parent set, or certifying fanout at most fixed Delta requires exactly `n` deterministic child queries. The proof is an indistinguishable-completion adversary.
+`PNP-QUERY-SCALE-COLLAPSE1` is **PROVED/EXACT as a conditional implication**: under `P=NP`, every Boolean function computed by a uniform polynomial-time SAT-oracle transducer has an extensionally equivalent oracle-free polynomial machine. Therefore the infimum reached-query scale over all equivalent polynomial implementations is exactly zero.
 
-This retires `CHILD-LOCALITY-IMPLIES-FANOUT-CERT1` only as an unqualified interface implication. TESTS-0009's parent-owned clause construction remains valid and avoids reverse enumeration. `JMV-FORWARD-FANOUT1` remains source-specific and OPEN.
+`POLY-EXTENSIONAL-CANONIZER-NOGO1` is **PROVED/EXACT pending independent review**: a total computable canonicalizer for all clocked polynomial-time Boolean programs, complete for extensional equality, would decide whether an arbitrary machine ever halts.
 
-The audit executed 376,370 exact vector/order cases through `n=12`, falsified all 2,664 capped shortcuts, and retained Horn, 2SAT, affine/Tseitin, bounded-treewidth, independent-product, padding, redundant-clause, alternate-encoding, and wrapper controls.
+This retires `SEMANTIC-INFIMUM-QUERY-LB1`, not TESTS-0010's fixed-program gauge theorem or LB-0015's charged fixed-transducer dichotomy. It also does not produce a favorable ordinary runtime exponent; the no-query replacement inherits some arbitrary polynomial exponent.
 
-No arbitrary-SAT transfer follows. The result is polynomial, relativizing, and compatible with SAT in P. The next exact task is to unfold the JMV labels and separate forward child locality from target-owned reverse normalization.
+The audit executed 270,556 finite horizon, wrapper, easy-family, encoding, padding, Gaussian and query-scale checks. The surviving target is one externally fixed, source-specific, fully charged compiler into a model-matched forbidden region.
 
-Report: `research/review/reports/redteam/2026-10-11_1636_RT-0014.tex`.
+Report: `research/review/reports/redteam/2026-10-11_1736_RT-0015.tex`.
+
