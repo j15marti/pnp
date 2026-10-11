@@ -338,3 +338,13 @@ Raw result: `results/raw/review/2026-10-11_sourcebacked_emptyquery_modelbridge.j
 **OPEN:** `PREDECISION-POWER-CONTRACTION1`, arbitrary-decider SAME_REALIZATION transfer, matched endpoint, nonrelativization, nonalgebrization, P versus NP.
 
 Report: `research/review/reports/model_bridge/2026-10-11_2000_MODELBRIDGE-0017.tex`. Script: `experiments/review/restriction_selector_endpoint_audit.py`. Raw result: `results/raw/review/2026-10-11_restriction_selector_endpoint.json`.
+
+## MODELBRIDGE-0019 — hidden partial recovery / white-box boundary (2026-10-11T21:06:49Z)
+
+- **PROVED/EXACT, independent review pending:** `HIDDEN-PARTIAL-RECOVERY1` — recovering `r` certified bits of a source visible only through binary answers requires exactly `r` answers.
+- **FALSIFIED/RETIRED as generic transfer:** `HIDDEN-QUERY-TO-EXPLICIT-SAT1`; explicit formula syntax may reveal the witness with zero SAT calls.
+- **COMPUTATIONAL:** 365,518 checks, zero failures, 0.361 seconds.
+- **OPEN:** `WHITEBOX-SOURCE-PASS1`, K-independent strict contraction, SAME_REALIZATION, model-matched forbidden endpoint, nonrelativization and nonalgebrization.
+- **Handoff:** charge direct source inspection and semantic shortcuts; do not infer arbitrary SAT runtime from hidden-source query count.
+
+Report: `research/review/reports/model_bridge/2026-10-11_2106_MODELBRIDGE-0019.tex`.
