@@ -1,0 +1,350 @@
+% PNP REVIEW REPORT::SYNTHESIS::SYNTHESIS-0010::2026-10-11T16:48:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{UNIVERSAL\_CORE\_SYNTHESIS SYNTHESIS-0010:\\
+The Local-Reduction Port Dichotomy}
+\author{P versus NP project synthesis}
+\date{11 October 2026, 16:48 UTC}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The latest four specialist reports appeared to disagree about whether a
+local clean-core reduction needs inverse incidence.  They do not.  This
+report proves the ownership-sensitive synthesis.  A parent-owned compiler
+for a bounded-fanout circuit can stream each gate's constant clause template
+using only gate type and child labels; no parent port is needed.  By contrast,
+if a target-owned normalizer must certify a target's complete parent set or
+bounded fanout from a child-only oracle, it needs one query for every
+potential parent in the worst case.  Thus reverse incidence is neither
+generically available nor generically necessary.  The unqualified claim
+that a parent port is the missing Local-Cook ingredient is retired.
+
+The correct concrete target is now a direct on-demand encoder from the
+Jahanjou--Miles--Viola source into the exact monotone $(2,2)$ clean core, or a
+composition of forward-only stages with the same bit-local resource bound.
+Even proving that target would only close a model-matched reduction leg; it
+would not force an arbitrary SAT decider to expose a compatibility object or
+remove its unknown polynomial exponent.  The arbitrary-decider bootstrap,
+nonrelativizing hinge, and P versus NP remain open.
+\end{abstract}
+
+\section{Executive reconciliation}
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{0.42\linewidth}p{0.19\linewidth}p{0.31\linewidth}@{}}
+\toprule
+Claim & Status & Synthesis verdict\\
+\midrule
+\texttt{LOCAL-REDUCTION-PORT-DICHOTOMY1} & \EXACT, pending independent review &
+Port necessity depends on which endpoint owns each emitted constraint.\\
+\texttt{GENERIC-REVERSE-PORT-NECESSITY1} & \RETIRED &
+Parent-owned bounded-fanout emission needs no inverse incidence.\\
+\texttt{CHILD-LOCALITY-IMPLIES-FANOUT-CERT1} & \RETIRED &
+Child access alone does not certify reverse incidence.\\
+Finite audit & \COMP & 10,432 circuits and 450,339 edge comparisons; zero failures.\\
+\texttt{JMV-TO-H22-STREAM1} & \OPEN &
+Direct exact clean-core bit encoder not supplied by the cited theorems.\\
+Arbitrary-decider bootstrap, UCORE-TIME1, P versus NP & \OPEN &
+No general computation lower bound.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Clean core and input length.}
+Let $\mathcal H_{2,2}$ be the duplicate-free proper Monotone
+3-SAT-$(2,2)$ family: every clause has three distinct literals of one sign,
+and every variable appears exactly twice with each sign.  This language is
+NP-complete \cite{doecker}.  With $n$ variables and $m$ clauses, $3m=4n$;
+under canonical indexed binary encoding,
+\[
+ N_F=|\operatorname{enc}(F)|=\Theta(n\log n).
+\]
+The separation-strength target remains
+\[
+ \forall A\in\operatorname{Dec}_{\rm unif}(3\mathrm{SAT})\ 
+ \forall d\ \forall N_0\ \exists F\in\mathcal H_{2,2}:
+ N_F\ge N_0\ \land\ T_A(\operatorname{enc}F)>N_F^d.
+\tag{UCORE-TIME1}
+\]
+It is \OPEN, and none of the interface theorems below implies it.
+
+\section{Exact port dichotomy}
+
+Consider a circuit with $s$ gates from a fixed finite gate basis.  Each gate
+has constant fanin, and a forward accessor returns its type and child labels.
+A fixed Tseitin-style template emits $O(1)$ variables and clauses per gate.
+Let $\beta$ bound the template's internal occurrences of a gate variable and
+$\alpha$ its occurrences per incident outgoing wire.
+
+\begin{theorem}[\texttt{LOCAL-REDUCTION-PORT-DICHOTOMY1}]
+The following statements hold in the same explicit indexed-label model.
+\begin{enumerate}
+\item If source fanout is at most $\Delta=O(1)$, a parent-owned emitter
+streams a proper 3-CNF of size $O(s)$ using $O(1)$ forward child queries per
+gate and zero parent queries.  Every gate variable has occurrence at most
+$\beta+\alpha\Delta=O(1)$.  Exact witness extension and projection hold.
+\item In a child-only two-layer acyclic oracle with one target $u$ and $s$
+possible later parents, every deterministic exact procedure that decides
+fanout$(u)=0$, outputs the complete parent set, or certifies
+fanout$(u)\le\Delta<s$ has worst-case query complexity exactly $s$.
+\end{enumerate}
+Consequently a reverse port is unnecessary for item 1 but cannot be inferred
+from forward locality for item 2.
+\end{theorem}
+
+\begin{proof}
+For item 1, enumerate parents, not targets.  At a gate $p$, query its constant
+list of children and emit the fixed local gate and wire clauses owned by
+$p$.  Every edge is emitted once.  Gate-local clauses contribute at most
+$\beta$ occurrences to a gate variable, and at most $\alpha$ occurrences
+arrive from each of its at most $\Delta$ parents.  Fresh Tseitin auxiliaries
+extend any circuit evaluation to a satisfying assignment, while restriction
+to the original gate variables projects every satisfying encoding to a
+consistent evaluation.  This is the verified TESTS-0009 construction.
+
+For item 2, answer every queried potential parent with a private dummy child.
+If the procedure stops before querying all positions, change one unqueried
+child to $u$.  The transcript is unchanged but both zero-fanout and complete
+enumeration change.  For the $\Delta$ predicate, answer $u$ on the first
+$\Delta$ queried positions and dummy thereafter; an unqueried position has
+completions of weights $\Delta$ and $\Delta+1$.  Scanning all positions is a
+matching upper bound.  This is RT-0014's exact adversary.
+\end{proof}
+
+The theorem resolves the apparent conflict among SYNTHESIS-0009,
+MODELBRIDGE-0014, LB-0014, TESTS-0009 and RT-0014.  A supplied parent port is
+a sufficient interface.  It is necessary only for constructions whose local
+output contract is target-owned and requires complete reverse incidence.
+Parent-owned emission bypasses that contract.  Optional annotations or
+materialized inverse indices cannot be silently charged to arbitrary
+algorithms.
+
+\section{The corrected Local-Cook target}
+
+Jahanjou--Miles--Viola prove a quasilinear-size 3-SAT reduction for which an
+explicit circuit maps a clause index to the indexed clause and, in the
+strongest regime, every output bit depends on only constantly many index
+bits \cite{jmv}.  That is a powerful forward output interface.  Its theorem
+statement does not supply target-owned reverse incidence, but the dichotomy
+shows that such incidence should not be demanded unless the next normalizer
+actually needs it.
+
+The smallest useful target is therefore direct:
+\begin{quote}
+\texttt{JMV-TO-H22-STREAM1}.  There is one uniform transducer which, given a
+source $x$, an output-bit address $(j,b)$, and the canonical output length,
+returns bit $b$ of clause $j$ of a satisfiability-equivalent formula
+$F_x\in\mathcal H_{2,2}$ in $\log^{O(1)}T$ time and $O(\log T)$ writable
+space; $|F_x|=T\log^{O(1)}T$, and all preprocessing, address translation,
+padding, uniqueness and witness maps are included.
+\end{quote}
+
+This target may be proved by composing JMV's clause generator with a
+forward-only proper/bounded-occurrence stage and a new exact Monotone
+$(2,2)$ normalizer.  Alternatively it may be proved by a direct output-bit
+construction.  Döcker's NP-completeness reductions establish polynomial
+many-one hardness of the exact clean core, but their published statements do
+not establish this bit-local, quasilinear, simultaneous-space contract
+\cite{doecker}.  Ordinary NP-completeness is insufficient: SYNTHESIS-0007's
+exact FLMV budget permits only essentially linear overhead.
+
+The concrete missing subclaims are:
+\begin{enumerate}[nosep]
+\item \texttt{JMV-FORWARD-LABEL1}: unfold the actual JMV output labels at the
+granularity consumed by parent-owned emission;
+\item \texttt{MONOTONE22-LOCAL-NORMALIZER1}: exact proper bounded-occurrence
+3-CNF to duplicate-free Monotone 3-SAT-$(2,2)$ with bit-local
+quasilinear/log-space access;
+\item \texttt{COMPOSITION-ADDRESS1}: prove that address translation and
+witness extension/projection preserve those bounds without an offline index.
+\end{enumerate}
+All three are \OPEN.  Reverse fanout is not promoted to a fourth obligation.
+
+\section{Bounded audit and full cost ledger}
+
+The dependency-free command
+\begin{verbatim}
+timeout 30s python3 experiments/review/locality_port_dichotomy_synthesis.py
+\end{verbatim}
+completed in $0.329$ seconds; bytecode compilation passed.  It checked
+10,432 two-layer acyclic circuits through $s=32$.  Exhaustion covered every
+child map through $s=5$; larger sizes used fixed hostile maps and 256 seeded
+maps each.  Parent-major emission used exactly $s$ queries, target-major
+rescan used $s^2$, and a materialized inverse index used $s$ build queries
+plus an explicit $O(s\log s)$-bit ledger.  All three representations emitted
+the same 450,339 checked edges.  The $s^2$ figure describes that concrete
+rescan implementation; it is not asserted as a universal time-space lower
+bound.  Only the per-target $s$-query adversary is universal in the declared
+oracle model.
+
+The script SHA-256 is
+\nolinkurl{0e57bfbff9b66552e347f3035a8c6479f5f7f91a9730b62b6161fd05e9598c04};
+the result SHA-256 is
+\nolinkurl{d2bb9225105677a32b98b6aab58e9a6d6a5fbb517549b82df78495d4a22a320f}.
+
+Horn, 2SAT, affine/Tseitin Gaussian elimination, bounded treewidth,
+independent products, padding, redundant clauses and alternate encodings
+were retained as explicit controls.  DIRECT, COPY, DELAY, INTERP and RECOMP
+wrappers do not create a reverse port.  More importantly, these algorithms
+may decide their inputs without emitting either representation, so the port
+audit cannot be promoted to an arbitrary-SAT cost.
+
+\section{SAME\_REALIZATION and P-versus-NP relevance}
+
+Suppose \texttt{JMV-TO-H22-STREAM1} is proved.  It would allow one machine to
+answer arbitrary target-input bit requests on demand while charging source
+reads, address translation, workspace and output length.  This closes a
+model-matched reduction leg.  It still does not perform either of the two
+separation-bearing tasks:
+\begin{enumerate}[nosep]
+\item force every uniform polynomial-time SAT decider to expose or compute a
+particular compatibility, proof, memory or communication object; or
+\item transform an arbitrary $N^{K+o(1)}$ SAT decider into one realization
+with the FLMV-forbidden $N^{6/5+o(1)}$ time and $N^{1/2+o(1)}$ space bounds,
+independently of $K$.
+\end{enumerate}
+The first requires an external solver-to-resource compiler with a lower
+bound in the same model.  The second remains
+\texttt{A-RELATIVE-FRACTIONAL-BOOTSTRAP1}.  A local reduction cannot erase
+an arbitrary oracle solver exponent: composing with the solver inherits its
+cost.  Under $P=NP$ one obtains some fixed polynomial decider, but no stated
+premise bounds its exponent or space, so no unconditional contradiction
+follows.
+
+\section{Barrier-transfer and post-quantum audit}
+
+\begin{description}[leftmargin=0cm,labelwidth=0cm]
+\item[] \textbf{DIRECT THEOREM TRANSFER.}
+JMV clause-bit locality transfers to exactly its declared indexed-output
+function.  TESTS-0009 parent-owned emission and RT-0014's OR adversary
+transfer to their declared forward-child interfaces.  No stronger interface
+is imported.
+\item[] \textbf{USEFUL ANALOGY REQUIRING A NEW TRANSFER THEOREM.}
+VLSI fanout/routing, reverse-adjacency data structures, distributed
+in-neighbor discovery, control observability, and LWE-style external
+extraction motivate interface accounting.  They do not compile an arbitrary
+SAT computation to that interface.
+\item[] \textbf{MISLEADING / FAILED TRANSFER.}
+Proof-system size, branching-program width, pebbling, semantic compatibility
+rank, Schur squares, quadratic-relation rank, Hilbert functions, syzygies,
+collision entropy, special soundness, and cryptographic binding do not
+lower-bound unrestricted one-bit SAT computation without an exact
+same-realization map.
+\end{description}
+
+The port dichotomy relativizes and algebrizes.  It therefore cannot be the
+decisive hinge in view of relativization and algebrization barriers
+\cite{bgs,aw}.  Natural Proofs is not directly triggered because no large
+constructive property against general circuits is established.  PQ-derived
+ideas are classified as ANALOGY/CANDIDATE for external extraction and FAILED
+TRANSFER for the port theorem itself; no hardness or random-oracle assumption
+is used.
+
+\section{Corpus-wide reconciliation}
+
+\subsection*{CORPUS REVIEWED}
+The run surveyed the repository tree; read root \texttt{main.tex}, actual
+\texttt{main4.tex}/\texttt{main5.tex}, \texttt{AGENTS.md},
+\texttt{CODEX.md}, the complete pnp-research skill, synthesis/red-team modes
+and protocol, every task specification TASK-001--007, the newest verified
+historical MAIN, governance notes, status and coordination surfaces, and the
+HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC causal branch.  The latest four
+material peers were MODELBRIDGE-0014, LB-0014, TESTS-0009 and RT-0014;
+SYNTHESIS-0009 and materially related historical reports were also read.
+RT-0014 was recovered through report, script, result, log, outbox,
+main4/main5, status and coordination readback before synthesis.  Primary
+literature on local reductions, exact Monotone 3-SAT-$(2,2)$ hardness and
+the computation-lower-bound barriers was checked first.
+
+\subsection*{DUPLICATION / CONTRADICTION AUDIT}
+MODELBRIDGE-0014 already established a supplied parent port as sufficient.
+LB-0014 showed optional annotation validation cannot be charged to arbitrary
+deciders.  TESTS-0009 proved the parent-owned bypass.  RT-0014 proved the
+child-only reverse-query lower bound.  The new contribution is their exact
+ownership-sensitive reconciliation and the replacement of an overbroad port
+request by the direct \texttt{JMV-TO-H22-STREAM1} contract.  No component
+claim is silently reproved or strengthened.
+
+\subsection*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root MAIN's global OPEN verdict, arbitrary-algorithm bridge, clean-core
+transfer budget and barrier ledger remain correct.  The local-reduction
+target is narrowed: inverse incidence is removed as a generic requirement,
+while direct bit-local exact-$(2,2)$ encoding remains OPEN.  This review role
+has no marked root-MAIN ownership region, so root \texttt{main.tex} is not
+edited; main4/main5 receive nonpromotional synthesis includes.
+
+\subsection*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted are TESTS-0009's parent-owned emitter, RT-0014's target-owned
+adversary, SYNTHESIS-0009's offline-index space gate, and the exact FLMV
+composition budget.  Rejected is any model-independent statement that
+``local reductions need parent ports.''  Retired are
+\texttt{GENERIC-REVERSE-PORT-NECESSITY1} and
+\texttt{CHILD-LOCALITY-IMPLIES-FANOUT-CERT1}.  Neither the source-specific
+forward-label target nor the exact $(2,2)$ normalizer is retired.
+
+\subsection*{STALE OR OVERSTATED CLAIMS FOUND}
+Calling inverse-incidence recovery the unique missing JMV step is stale after
+TESTS-0009.  Calling forward child locality sufficient for target-owned
+fanout normalization is false by RT-0014.  Calling a completed local clean-
+core reduction the missing P-versus-NP theorem would also be overstated: it
+does not establish the arbitrary-decider bootstrap.
+
+\section{Highest-value handoff}
+
+For the local-reduction team, attempt \texttt{JMV-TO-H22-STREAM1} directly
+and report the first exact failed subclaim among forward-label decoding,
+monotone balancing, uniqueness, occurrence $(2,2)$, address translation, or
+witness projection.  Do not build an offline reverse index unless its
+linear-space cost is explicitly accepted.
+
+For the separation team, the highest-value load-bearing target is unchanged:
+\[
+ \boxed{
+ A\in\mathrm{polytime\text{-}SAT}
+ \Longrightarrow
+ \mathcal T^A\in
+ \mathrm{DTISP}\bigl(N^{6/5+o(1)},N^{1/2+o(1)}\bigr)
+ }
+\]
+with $\mathcal T$ uniform, fully charged, predecision, hereditary, independent
+of $A$'s exponent, and possessing an explicit nonrelativizing or
+nonalgebrizing hinge.  This remains \OPEN.  P versus NP remains open.
+
+\begin{thebibliography}{9}
+\bibitem{jmv} H.~Jahanjou, E.~Miles and E.~Viola,
+\emph{Local reductions}, ICALP 2015, 749--760.
+\url{https://arxiv.org/abs/1311.3171}.
+\bibitem{doecker} J.~D"ocker,
+\emph{Monotone 3-Sat-$(2,2)$ is NP-complete},
+Discrete Applied Mathematics 295 (2021), 1--9.
+\url{https://arxiv.org/abs/1912.08032}.
+\bibitem{bgs} T.~Baker, J.~Gill and R.~Solovay,
+\emph{Relativizations of the P=?NP question}, SIAM Journal on Computing
+4(4) (1975), 431--442.
+\bibitem{aw} S.~Aaronson and A.~Wigderson,
+\emph{Algebrization: A new barrier in complexity theory}, ACM Transactions
+on Computation Theory 1(1) (2009), Article 2.
+\url{https://www.scottaaronson.com/papers/alg.pdf}.
+\end{thebibliography}
+
+\paragraph{Final status.}
+\texttt{LOCAL-REDUCTION-PORT-DICHOTOMY1}: \EXACT, pending independent review.\\
+Finite audit: \COMP.\\
+\texttt{GENERIC-REVERSE-PORT-NECESSITY1} and
+\texttt{CHILD-LOCALITY-IMPLIES-FANOUT-CERT1}: \RETIRED.\\
+\texttt{JMV-TO-H22-STREAM1}, arbitrary-decider bootstrap, UCORE-TIME1,
+nonrelativization, nonalgebrization and P versus NP: \OPEN.
+P versus NP remains open.
+
+% END_OF_VERIFIED_REPORT::SYNTHESIS::SYNTHESIS-0010
+\end{document}
