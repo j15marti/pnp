@@ -1,0 +1,328 @@
+% LSPV-1 REPORT::LB-0020::2026-10-11T23:09:27Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\Htwo}{\mathcal H_{2,2}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{LB-0020: A Hereditary Strict-Contraction Pass Is Already a SAT Algorithm}
+\author{UNIVERSAL\_CORE\_LOWER\_BOUND}
+\date{11 October 2026, 23:09 UTC}
+\begin{document}\maketitle
+
+\begin{abstract}
+The current synthesis asks for an externally bounded hereditary source pass.
+This run closes the generic recurrence, and thereby narrows what such a pass
+could contribute.  If a total source procedure represents satisfiability of
+an $N$-bit formula as the OR of at most $N^{\eta+o(1)}$ descendants, each of
+length at most $N^{\theta+o(1)}$ with $\theta<1$, using total local time
+$N^{r+o(1)}$ and space $N^{p+o(1)}$, and the same contract applies to every
+descendant, then depth-first evaluation is one ordinary SAT decider with
+\[
+ C=\max\left\{r,\frac{\eta}{1-\theta}\right\},\qquad
+ \rho=\max\{p,\theta\}
+\]
+under explicit one-child materialization.  All construction, addressing,
+writing, replay and peak storage are charged.  Hence a pass whose $(C,\rho)$
+lies in an established SAT time--space forbidden region is itself
+unconditionally impossible in that model; outside such a region it gives at
+most a polynomial SAT algorithm.  It is not an intermediate structural
+obligation on arbitrary deciders.  The only remaining work is the
+separation-strength acquisition of a numerically favorable pass from the
+assumption $\SAT\in\mathsf P$, without importing the unknown solver exponent.
+The audit passed 14,498 exact checks.  P versus NP remains open.
+\end{abstract}
+
+\section{Exact clean core, quantifiers, and status}
+
+Let $\Htwo$ be duplicate-free proper Monotone $3$SAT-$(2,2)$ in the canonical
+indexed clause-list encoding.  If $F$ has $n$ variables, then
+$|\operatorname{enc}(F)|=N=\Theta(n\log n)$.  The unrestricted target is
+\[
+ \forall A\in\operatorname{Dec}_{\rm uniform}(\SAT)\ \forall d\ \forall N_0\
+ \exists F\in\Htwo:\quad N_F\ge N_0\ \land\ T_A(F)>N_F^d.       \tag{1}
+\]
+It is \OPEN.  Nothing below assumes (1).
+
+\begin{center}\small
+\begin{tabular}{@{}p{0.43\linewidth}p{0.19\linewidth}p{0.30\linewidth}@{}}
+\toprule
+Claim & Status & Scope\\ \midrule
+\texttt{HEREDITARY-OR-PASS-COMPILATION1} & \EXACT, review pending & Declared total source-pass interface\\
+\texttt{FORBIDDEN-PASS-COROLLARY1} & \EXACT{} + \KNOWN & Model-matched endpoint only\\
+Finite recurrence audit & \COMP & 14,498 checks\\
+\texttt{HEREDITARY-PASS-AS-INTERMEDIATE1} & \RETIRED & Unqualified structural bridge\\
+\texttt{FAVORABLE-PASS-ACQUISITION1} & \OPEN & From every polynomial SAT decider\\
+UCORE-TIME1 and P versus NP & \OPEN & Arbitrary computation\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The initial input may lie in $\Htwo$, but restriction and normalization need
+not preserve exact $(2,2)$ syntax.  The theorem therefore explicitly requires
+a hereditary domain $\mathcal D$ containing $\Htwo$ and every emitted
+descendant.  A pass proved only on $\Htwo$ cannot silently be iterated.
+
+\section{The charged hereditary-pass theorem}
+
+\begin{theorem}[\texttt{HEREDITARY-OR-PASS-COMPILATION1}]
+Fix $0\le\eta,r,p$ and $0<\theta<1$.  Suppose one total deterministic
+uniform procedure $P$ has the following contract for every sufficiently large
+$F\in\mathcal D$ of encoded length $N$.
+\begin{enumerate}[leftmargin=*]
+\item It emits $q(F)\le N^{\eta+o(1)}$ ordinary encoded formulas
+$G_1,\ldots,G_q\in\mathcal D$, each of length at most
+$N^{\theta+o(1)}$.
+\item Exact semantics is
+\[
+ \SAT(F)=\bigvee_{i=1}^{q(F)}\SAT(G_i).                 \tag{2}
+\]
+\item Total local time, including source access, route discovery, failed
+routes, translation, child construction and output, is $N^{r+o(1)}$; local
+writable space is $N^{p+o(1)}$.
+\item Children are generated and evaluated one at a time.  The actual current
+child is materialized in writable space.  Addresses, recursion state, replay
+and retained ancestors are charged in the same realization.
+\end{enumerate}
+Then there is one ordinary deterministic uniform SAT decider on $\mathcal D$
+with
+\[
+ T(N)=N^{C+o(1)},\qquad
+ C=\max\left\{r,\frac{\eta}{1-\theta}\right\},          \tag{3}
+\]
+and
+\[
+ S(N)=N^{\rho+o(1)},\qquad \rho=\max\{p,\theta\}.       \tag{4}
+\]
+\end{theorem}
+
+\begin{proof}
+Recursively apply $P$, evaluating children depth first and stopping at the
+first YES child.  Correctness follows inductively from (2).  The maximum
+nonconstant depth is $O(\log\log N)$ because lengths follow
+$N,N^{\theta+o(1)},N^{\theta^2+o(1)},\ldots$.
+
+Ignoring subpolynomial factors until the final line, the time recurrence is
+\[
+ T(N)\le aN^r+N^\eta T(N^\theta).                       \tag{5}
+\]
+At level $j$, aggregate local work has exponent
+\[
+ r\theta^j+\eta\sum_{i<j}\theta^i,
+\]
+and the leaf multiplicity has exponent
+$\eta\sum_{i<d}\theta^i$.  The geometric sum is at most
+$\eta/(1-\theta)$, giving (3); equality contributes only a subpolynomial
+depth factor.  The standard fixed-$\varepsilon$ expansion absorbs all stated
+$o(1)$ terms.
+
+For space, a depth-first realization retains only local workspace, the one
+current child, and $O(\log N)$ bits of indices per level.  Thus
+\[
+ S(N)\le aN^p+N^{\theta+o(1)}+S(N^{\theta+o(1)}),        \tag{6}
+\]
+whose geometrically decreasing stack gives (4).  This is the same actual
+execution used for (3), so SAME\_REALIZATION is satisfied.
+\end{proof}
+
+The materialized-output contract also forces the consistency check
+$r\ge\eta+\theta$ when all children of worst-case size are written in full.
+A virtual child may evade this volume, but only by replacing item 4 with a
+precise random-access generator; its per-bit time, generator space, repeated
+queries and parent retention must then be inserted into (5)--(6).  A succinct
+descriptor is not an uncharged ordinary SAT input.
+
+\begin{corollary}[\texttt{FORBIDDEN-PASS-COROLLARY1}]
+If the machine and encoding in Theorem 1 match an unconditional SAT
+time--space lower bound and the resulting $(C,\rho)$ lies strictly in its
+forbidden region, no such hereditary pass exists.  In particular,
+$C+\rho<\varphi=(1+\sqrt5)/2$ contradicts the matched FLMV product endpoint.
+The point $(\theta,\eta,r,p)=(1/2,1/2,1,1/2)$ yields
+$(C,\rho)=(1,1/2)$ and is excluded.  The point
+$(2/3,1/3,1,2/3)$ has $C+\rho=5/3>\varphi$ and is not excluded by that
+product inequality; it needs the separately matched near-linear-time,
+sublinear-space theorem.  Endpoint models may not be interchanged.
+\end{corollary}
+
+This corollary is a lower bound on a declared source-pass interface, not a
+proof of (1).  Conversely, if $\SAT\in\mathsf P$ with time exponent $K$, a
+trivial pass may first decide $F$ and emit a fixed YES or NO formula.  It has
+$\theta=\eta=0$ but $r=K$ (and the solver's space exponent).  Therefore
+$\SAT\in\mathsf P$ supplies semantic contraction but not the favorable
+$K$-independent numerical landing needed for contradiction.
+
+\section{What the theorem falsifies and what remains}
+
+The synthesis phrase ``externally bounded hereditary source pass'' can now be
+read exactly.  Once (2), heredity and all costs are present, the pass is not a
+resource that an arbitrary SAT execution must be proved to expose.  It is
+already executable algorithmic machinery.  If its recurrence lands in a
+forbidden region, its existence is unconditionally false; if not, it merely
+constructs a polynomial SAT algorithm.  Thus
+\texttt{HEREDITARY-PASS-AS-INTERMEDIATE1} is \RETIRED.
+
+The load-bearing arrow is instead
+\texttt{FAVORABLE-PASS-ACQUISITION1}: under the counterfactual
+$\SAT\in\mathsf P$, derive one fixed pass satisfying Theorem 1 with numerical
+bounds independent of the unknown exponent $K$, without first solving the
+parent at scale $N$.  This is separation-strength and \OPEN.  LB-0016 and
+LB-0017 still constrain literal-restriction realizations: all branches have
+exponential volume, while one power-shrunk YES child fixes a linear partial
+witness.  LB-0019 supplies only a linear source-probe floor.  None transfers
+to arbitrary one-bit computation.
+
+\section{Hostile controls and barrier audit}
+
+DIRECT, DEAD, COPY, DELAY, INTERP and RECOMP cannot change (2), but their
+actual construction time and space change $r,p$ and are charged.  Padding,
+redundant clauses and alternate encodings change $N$; de-padding,
+translation and random access are charged before any endpoint comparison.
+Independent products may make (2) cheap.  Horn, 2SAT, affine/Tseitin and
+bounded-treewidth descendants can be solved by semantic shortcuts, showing
+again that contraction geometry alone is not hardness.  A final one-bit
+answer is sufficient for the recursion; witness reconstruction is not
+silently required.
+
+The theorem and its recursion relativize: the same oracle may be supplied at
+every node.  Algebraic access can only make local construction or child
+solution easier, so no nonalgebrizing hinge is present.  Natural Proofs is not
+the active obstacle because no large constructive circuit property is used.
+FLMV and Fortnow are directly transferable only after the exact random-access
+machine and simultaneous resource accounting match.  Chavrimootoo et al.'s
+critique is directly relevant to the missing acquisition arrow: an arbitrary
+SAT algorithm is not forced to implement a chosen downward self-reduction.
+
+Across other domains, divide-and-conquer master recurrences are a
+\textbf{directly transferable theorem} because (5) is the same mathematical
+object.  VLSI routing, distributed cuts, observability, proof-search and
+pebbling are \textbf{misleading analogy / failed transfer} without a compiler
+to the unrestricted random-access SAT model.
+
+\section{Post-quantum technique ledger}
+
+Schur squares, quadratic-relation ranks, Hilbert functions and syzygies are
+\textbf{FAILED TRANSFER}: Theorem 1 forces no code representation.  Collision
+entropy can count how many routes produce the same child, but it does not
+lower-bound acquisition; it is an \textbf{ANALOGY/CANDIDATE needing a new
+bridge}.  LWE-style worst-case/average-case architecture similarly suggests
+external black-box extraction but supplies no unconditional NP transfer.
+Special-soundness or collapse-binding would require two openings to yield an
+explicit forbidden algebraic witness; none is known.  Hash/random-oracle
+methods are \textbf{FAILED TRANSFER}.  Hidden algebraic structure remains a
+possible algorithmic weakness through Gaussian elimination.
+
+\section{Bounded reproducible audit}
+
+The single dependency-free invocation
+\begin{verbatim}
+timeout 30s python3 experiments/review/hereditary_source_pass_recurrence_audit.py \
+ --output results/raw/review/2026-10-11_hereditary_source_pass_recurrence.json
+\end{verbatim}
+finished in 0.427 seconds.  It passed 14,498 checks with zero failures: 528
+exact rational time-parameter rows through depth 12, 132 peak-space rows,
+111 finite encoded-size rows, four strict endpoint controls and 16 named
+hostile controls.  The calculation never expands a recursion tree; it sums
+exact exponents, so no stage approaches the 30-second limit.  Script SHA-256:
+\nolinkurl{049ba76e61d9df7cfa1beca9d59e4426d8981a0eaf6d4baebd856c3dbd8297d7}.
+JSON SHA-256:
+\nolinkurl{c25eb5bdf7a0ae631a4d39e38b2c0ea418cd539ef7748aa9a77186448b727340}.
+The audit is \COMP; the theorem is proved analytically.
+
+\section{CORPUS REVIEWED}
+
+The run surveyed the repository tree and read root \path{main.tex}, actual
+\path{main4.tex}/\path{main5.tex}, \path{AGENTS.md}, \path{CODEX.md}, the full
+PNP skill protocol and modes, all current task specifications, verified MAIN
+SYNTHESIS-0016, materially relevant historical MAIN strict-successor
+sections, LB-0016--0019, TESTS-0015, REDTAG1, TAGGLUE1 and the synthesis
+report.  Relevant HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC causal branches,
+governance, experiments and results were searched for source-pass and
+recurrence claims.  The cyclic predecessor LSPV-5 write was verified by
+reading back both the substantive SYNTHESIS-0016 report and its MAIN snapshot,
+including their expected terminal sentinels.  Primary literature was checked
+before the substantive claim.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+The scalar exponent $\eta/(1-\theta)$ already appears in historical wrapper
+and downward-oracle accounting.  This report does not rename that arithmetic.
+Its incremental result is the exact full source-pass compiler: OR semantics,
+hereditary domain, ordinary encoded children, depth-first SAME\_REALIZATION,
+explicit peak-space recurrence, and the endpoint/no-endpoint classification.
+It exposes one stale numerical danger: $5/3$ is not below the corrected FLMV
+product exponent $\varphi$; the $(1,2/3)$ point requires Fortnow's separate
+near-linear endpoint.  The current executive synthesis already distinguishes
+those endpoints, so no contradiction with current root status remains.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN's OPEN verdict is unchanged.  The LSPV-1 region is updated to state
+that a fully hereditary OR source pass is itself an ordinary SAT algorithm,
+with exact exponents (3)--(4).  The highest-value target is narrowed from the
+generic existence of a semantic pass to favorable $K$-independent acquisition
+with a declared numerical endpoint.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+Adopted: strict-successor recurrence accounting, LB-0016/0017 restriction
+guards, LB-0019's source-probe ceiling, SAME\_REALIZATION and the corrected
+FLMV/Fortnow endpoint split.  Rejected: uncharged virtual children,
+nonhereditary recursion, semantic descendant count as runtime, and any
+assumption that a decider exposes the pass.  Retired:
+\texttt{HEREDITARY-PASS-AS-INTERMEDIATE1}.  Preserved OPEN:
+\texttt{FAVORABLE-PASS-ACQUISITION1}, arbitrary-decider transfer,
+nonrelativization, nonalgebrization and the final separation.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any historical use of $C+\rho<2\cos(\pi/7)$ as the universal product endpoint
+is stale; current root MAIN correctly uses $\varphi$.  Any claim that
+$(C,\rho)=(1,2/3)$ satisfies the FLMV product inequality is false because
+$5/3>\varphi$; that point is excluded, when fully model matched, only by the
+separate near-linear theorem.  No active root claim is strengthened here.
+
+\section{Single next target}
+
+\texttt{FAVORABLE-PASS-ACQUISITION1}: assuming one arbitrary clocked
+polynomial SAT decider with unknown time/space exponents, construct or refute
+a total hereditary source pass satisfying Theorem 1 with fixed
+$K$-independent $r,p,\eta,\theta$, no parent-scale semantic call, exact
+bit-local child access, and a strict model-matched forbidden landing.  Charge
+all failed routes, construction, translation, replay, output and retained
+state.  This arrow is \OPEN{} and is the separation-strength content.
+
+\begin{thebibliography}{8}
+\bibitem{flmv} L.~Fortnow, R.~Lipton, D.~van Melkebeek and A.~Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability}, JACM 52(6), 2005.
+\url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{fortnow} L.~Fortnow, \emph{Time--Space Tradeoffs for
+Satisfiability}, JCSS 60(2), 2000.
+\url{https://lance.fortnow.com/papers/files/npvsnl.pdf}.
+\bibitem{chkln} M.~Chavrimootoo et al., \emph{Evaluating the Claims of
+``SAT Requires Exhaustive Search''}, 2023.
+\url{https://arxiv.org/abs/2312.02071}.
+\bibitem{bgs} T.~Baker, J.~Gill and R.~Solovay, \emph{Relativizations of the
+$P=?NP$ Question}, SIAM J. Comput. 4(4), 1975.
+\bibitem{aw} S.~Aaronson and A.~Wigderson, \emph{Algebrization}, ACM TOCT
+1(1), 2009. \url{https://www.scottaaronson.com/papers/alg.pdf}.
+\bibitem{rr} A.~Razborov and S.~Rudich, \emph{Natural Proofs}, JCSS 55(1),
+1997. \url{https://eccc.weizmann.ac.il/report/1994/010/}.
+\end{thebibliography}
+
+\paragraph{Final status.}
+\texttt{HEREDITARY-OR-PASS-COMPILATION1}: \EXACT, independent review pending.
+Finite audit: \COMP.
+\texttt{HEREDITARY-PASS-AS-INTERMEDIATE1}: \RETIRED.
+\texttt{FAVORABLE-PASS-ACQUISITION1}, UCORE-TIME1, arbitrary-decider
+transfer, nonrelativization, nonalgebrization and P versus NP: \OPEN.
+P versus NP remains open.
+
+% END_OF_VERIFIED_REPORT::LSPV-1::LB-0020
+\end{document}
