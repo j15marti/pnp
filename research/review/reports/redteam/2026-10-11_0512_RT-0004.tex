@@ -1,0 +1,350 @@
+% PNP REVIEW REPORT::REDTEAM::RT-0004::2026-10-11T05:12:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,hyperref}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\Pclass}{\mathsf P}
+\title{REDTEAM RT-0004:\\Raw Exposure, Decoded Exposure, and Extensional Extraction Are Different Interfaces}
+\author{P versus NP project review}
+\date{11 October 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Result and strict status.}
+This run attacks the new white-box target
+$\mathsf{WExt}(A,F,Q,\tau)$ from CC-0005 and the same-execution
+\textsf{CORE-ACQUIRE1} target from MODELBRIDGE-0003.  On one explicit proper
+three-CNF equality core, four uniform polynomial-time deciders have identical
+one-bit semantics but different admissible exposure sets for the natural
+mismatch vector $q=u\oplus v$.  Raw exposure distinguishes a materializing
+implementation from an invertibly encoded interpreter; decoder-normalized
+exposure survives that interpreter but fails on direct and recomputing
+implementations; source extraction recovers $q$ for all four but is independent
+of the measured execution.  These statements are \textbf{PROVED/EXACT} for
+the declared relations.
+
+Therefore raw or decoded materialization is not a universal extraction
+relation, while mere extensional derivability does not certify internal cost.
+This does not prove that every possible intermediate white-box relation fails.
+The surviving relation must prove a new solver-independent forced interface,
+not choose one of these two endpoints.  \textsf{CORE-ACQUIRE1}, the
+nonrelativizing and nonalgebrizing hinge, and P versus NP remain
+\textbf{OPEN}.  The proofs are human-readable, not proof-assistant checked.
+
+\section{Predecessor and newest peer verification}
+The immediately available synthesis predecessor PROOFMAP-0004 was read back
+with blob \texttt{05bda5d1934bdbcb032ee6652f6942026ce4c477}, its unique
+header, and its final verification sentinel.  RT-0003 and CC-0005 were also
+read at verified blobs \texttt{5230349aa9bf6107d49cb1f2780966a9fae262ea}
+and \texttt{e2241c6fffff1af4f94143d4df28dc471803410b}.
+MODELBRIDGE-0003 was published and verified at repository commit
+\texttt{0f3a0f0fb548a707628ab8f49559fe8bcfbc5933}; it proves external
+search-to-decision extraction of one satisfying assignment and explicitly
+leaves same-execution core acquisition open.  No predecessor recovery was
+required.
+
+A local LB-0005 draft duplicates the extensional-extractor/full-rank control
+subsequently published and verified as CC-0005, but is absent from GitHub and
+lacks a complete final document terminator in the recovered workspace copy.
+It is not counted as independent evidence and is not recovered into a
+duplicate report.
+
+\section{Claim card and exact machine model}
+The attacked candidate is
+\[
+ \forall A\ \forall F\quad
+ \operatorname{CorrectSAT}(A)Longrightarrow
+ \exists Q\;\mathsf{WExt}(A,F,Q,\tau_A(F)),                 \tag{1}
+\]
+where $Q$ is intended to carry a lower-bound-bearing compatibility object.
+Machines are total uniform deterministic random-access machines with a
+read-only canonical source and charged writable bits.  Time counts primitive
+steps or source probes; space excludes the read-only source.  The
+SAME\_REALIZATION objects are $A$, $F$, the actual execution $\tau_A(F)$,
+$Q$, its decoder or verifier, and the resource charged to that execution.
+
+Equation (1) is not useful without an independently proved transfer from the
+admissible $Q$ to a lower bound on the same execution.  Its quantifier cannot
+be weakened to ``for each implementation choose a representation for which a
+restricted lower bound is known.''  Nor may a new external simulation be
+charged retrospectively to $\tau_A(F)$.
+
+\section{Explicit proper-three-CNF control family}
+For $u,v\in\{0,1\}^n$, use the proper-three-CNF equality construction already
+proved in CC-0005: impose $x_i\leftrightarrow y_i$, replace each binary clause
+$(a\lor b)$ by
+\[
+ (a\lor b\lor z)\wedge(a\lor b\lor\neg z),
+\]
+and encode each pin literal $\ell$ by the four clauses
+\[
+ \bigwedge_{\alpha,\beta\in\{0,1\}}
+ (\ell\lor a^\alpha\lor b^\beta).
+\]
+Call the result $C_n(u,v)$.  It has $8n$ variables, $12n$ clauses, three
+distinct variables in every clause, encoded length $M=\Theta(n\log n)$, and
+\[
+ C_n(u,v)\in\SAT\quad\Longleftrightarrow\quad u=v.
+\]
+The natural candidate object is the $n$-bit mismatch vector
+$q(u,v)=u\oplus v$.
+
+After one common $O(M)$ syntax-validation pass, consider four uniform
+deciders.
+\begin{description}
+\item[] \textbf{DIRECT:} stream the coordinate comparisons into one OR bit;
+time $O(n)$ and writable space $O(\log n)$.
+\item[] \textbf{MATERIALIZE:} write the full vector $q$ and OR it; time
+$O(n)$ and writable space $O(n)$.
+\item[] \textbf{INTERP:} write only $e(q)=q\oplus1^n$ and test its decoded
+bits; time $O(n)$ and writable space $O(n)$.  The decoder $e^{-1}=e$ is fixed
+and uniform.
+\item[] \textbf{RECOMP:} recompute successive prefix ORs directly from the
+read-only source, retaining no length-$n$ vector; time $O(n^2)$ and writable
+space $O(\log n)$.
+\end{description}
+All four return the same single bit $[u=v]$.
+
+\section{Exact exposure separation}
+\begin{definition}[Three candidate relations]
+For the designated length-$n$ work buffer of a trace $\tau$, let
+$\operatorname{Raw}(q,\tau)$ mean that the buffer equals $q$ in some
+configuration.  Let $\operatorname{Dec}(q,\tau,d)$ mean that a declared
+uniform decoder $d$ maps such a buffer to $q$.  Let
+$\operatorname{Ext}(F,q)$ mean that one external uniform transducer computes
+$q$ from the read-only source $F$, without claiming that the measured decider
+did so.
+\end{definition}
+
+\begin{theorem}[EXPOSURE-COVARIANCE-SEPARATION1]
+For every $n\ge1$ and every source $C_n(u,v)$, the four deciders above have
+the same answer, but their exposure relations satisfy
+\[
+\begin{array}{c|ccc}
+ &\operatorname{Raw}(q,\tau)&\operatorname{Dec}(q,\tau,d)&
+   \operatorname{Ext}(F,q)\\ \hline
+\text{DIRECT}&0&0&1\\
+\text{MATERIALIZE}&1&1&1\\
+\text{INTERP}&0&1&1\\
+\text{RECOMP}&0&0&1.
+\end{array}                                                   \tag{2}
+\]
+Here decoder-normalized exposure uses the identity decoder for MATERIALIZE
+and $e^{-1}$ for INTERP.  Consequently neither raw nor decoded
+materialization satisfies (1) on this family, while extensional extraction is
+implementation-independent and cannot certify that an internal object was
+stored or paid for.
+\end{theorem}
+\begin{proof}
+DIRECT and RECOMP retain only indices, one current comparison bit, and an OR
+bit, so no designated $n$-bit mismatch buffer exists.  MATERIALIZE writes
+exactly $q$.  INTERP writes $q\oplus1^n$, which differs from $q$ for every
+$n\ge1$, and the fixed inverse decoder recovers $q$.  Finally, an external
+scan of the two pinned source vectors computes $q$ in $O(M)$ time regardless
+of which decider ran.  The answer in every case is one exactly when no
+coordinate of $q$ is one.
+\end{proof}
+
+\begin{lemma}[P=NP-compatible special-case guard]
+If $\SAT\in\Pclass$, there is a total polynomial-time all-input SAT decider
+that recognizes the canonical $C_n(u,v)$ syntax, runs DIRECT on those inputs,
+and invokes any fixed polynomial SAT decider otherwise.  On the control
+family it does not materialize $q$.
+\end{lemma}
+\begin{proof}
+The syntax and pin blocks are recognizable by one polynomial scan.  DIRECT
+is exact on recognized inputs.  The fallback is exact everywhere else and is
+polynomial under the hypothesis.
+\end{proof}
+This lemma prevents using the equality core itself as a contradiction under
+$P=NP$.  It does not show that a genuinely NP-complete clean core is easy.
+
+\section{A nontrivial clean-core target}
+Let $\mathcal H_{2,2}$ be Monotone 3-SAT-(2,2): every clause has exactly
+three distinct variables, every clause is all-positive or all-negative,
+clauses are unique, and every variable occurs exactly twice positively and
+twice negatively.  D\"ocker proves this restriction NP-complete
+\cite{doecker}.  If $n$ is the variable count and $m$ the clause count, then
+$3m=4n$, and the standard binary-index encoding has complete length
+$N=\Theta(n\log n)$.
+
+The honest all-algorithm lower-bound target is
+\[
+ \forall A\left[
+   \bigl(\forall F\;A(F)=\operatorname{SAT}(F)\bigr)
+   \Longrightarrow
+   \forall k\in\mathbb N\ \exists F\in\mathcal H_{2,2}:\
+   T_A(F)>|F|^k
+ \right].                                                   \tag{3}
+\]
+Because $\mathcal H_{2,2}$ is NP-complete, (3) is already separation-strength.
+It is \textbf{OPEN}.  A WExt theorem advances (3) only if it supplies an
+independent same-realization transfer whose lower-bound direction survives
+all implementations.  Merely renaming (3) as ``the resource disjunct'' or
+requiring a large $Q$ assumes the conclusion.
+
+\section{MODELBRIDGE-0003 and the smallest repair}
+MODELBRIDGE-0003 proves that an external transducer can recover one satisfying
+assignment with at most $n+1$ pinned SAT calls.  That result is exactly on the
+extensional side of (2): its extra calls constitute a new realization and do
+not prove that the original one-bit execution contained the witness,
+compatibility row, matrix, rank, OBDD, or residual DAG.
+
+The smallest plausible repair is therefore not ``white-box'' alone.  A
+future relation must state all of the following.
+\begin{description}
+\item[] \textbf{Forced interface:} every exact implementation induces the
+same declared query/function interface, not necessarily the same encoding.
+\item[] \textbf{Covariant decoder:} efficient conjugacies such as INTERP may
+change representation but preserve a uniformly decodable object.
+\item[] \textbf{No-materialization alternative:} DIRECT/RECOMP executions
+that never hold the object must enter a separately proved resource lower
+bound, not one defined from their failure to materialize it.
+\item[] \textbf{Charged verification:} extracting, decoding, verifying,
+indexing, replaying, and storing the object must be charged to the same
+realization or connected by a proved cost-preserving compiler.
+\item[] \textbf{Independent endpoint:} the resulting interface must have a
+model-matched lower bound strong enough to handle an arbitrary fixed
+polynomial exponent.
+\end{description}
+This repaired \textsf{CORE-ACQUIRE1} remains \textbf{OPEN}.
+
+\section{Bounded reproducible audit}
+The command
+\begin{verbatim}
+timeout 30s python experiments/review/wext_exposure_covariance_audit.py \
+  --max-n 8 \
+  --output results/raw/review/2026-10-11_wext_exposure_covariance_audit.json
+\end{verbatim}
+used a 25-second cooperative alarm and completed in 1.68 seconds.  It
+exhaustively checked 87,380 source pairs, 87,380 four-implementation semantic
+agreements, and 262,140 DEAD/DELAY/COPY controls.  MATERIALIZE exposed $q$ in
+all 87,380 runs; INTERP exposed it in zero raw and all decoded runs;
+DIRECT/RECOMP exposed it in neither form; external source derivation succeeded
+in all runs for every implementation.  All assertions passed.  This is
+\textbf{COMPUTATIONAL} validation only.
+
+\section{Barrier, model-transfer, and post-quantum audit}
+Baker, Gill, and Solovay give oracle worlds on both sides of P versus NP
+\cite{bgs}.  The exposure separation survives a common oracle because the
+four control algorithms need none; it identifies a relativizing obstruction
+and is not the final hinge.  Aaronson and Wigderson show that P versus NP
+requires nonalgebrizing techniques \cite{aw}.  The affine INTERP encoding is
+itself an exact warning that algebraic access or a change of coordinates does
+not force one raw state representation.
+
+No Natural-Proofs property is asserted.  If a future forced interface is a
+large constructive property of length-indexed SAT functions, largeness,
+constructivity, usefulness, and cryptographic assumptions require a separate
+Razborov--Rudich audit \cite{rr}.  Per-instance constant output circuits are
+irrelevant: (3) quantifies over one uniform decider and a variable source
+family.  Conversely, a general nonuniform circuit lower bound for SAT would
+be stronger than the requested uniform separation and cannot be inserted as
+a premise.
+
+Fortnow--Lipton--van Melkebeek--Viglas provide genuine time--space lower
+bounds in a declared random-access model \cite{flmv}; they do not provide
+the forced interface above.  Fixed-DAG pebbling, VLSI locality, communication
+cuts, and memory-hierarchy arguments are \textbf{FAILED TRANSFERS} to
+unrestricted SAT without a compiler preserving their interfaces.  The
+correspondence is exact only after that compiler exists.
+
+LWE-style behavioral extraction remains an \textbf{ANALOGY/CANDIDATE}: the
+external calls of MODELBRIDGE-0003 recover a witness but do not bind the
+original execution.  Special-soundness/collision binding remains an
+\textbf{ANALOGY/CANDIDATE} until two decoded openings yield a forbidden
+source witness.  Schur squares, quadratic-relation spaces, Hilbert functions,
+syzygies, and collision entropy have no model-matched object correspondence
+to the exposure relation in this run and are \textbf{FAILED TRANSFERS} here.
+
+\section{CORPUS REVIEWED}
+The current GitHub corpus was surveyed through verified commit
+\texttt{0f3a0f0fb548a707628ab8f49559fe8bcfbc5933}.  The run read root
+\texttt{main.tex}, \texttt{main4.tex}, \texttt{main5.tex}, AGENTS, CODEX,
+the pnp-research skill and red-team protocol, all current task specifications,
+the review STATUS and coordination ledger, governance notes, CC-0005,
+RT-0003, PROOFMAP-0004, MODELBRIDGE-0003 and their cited code/results.
+Repository searches covered EXTRACTOR/G2, WExt, CORE-ACQUIRE1, clean core,
+compatibility, DAG/OBDD, INTERP/RECOMP, SAME\_REALIZATION, oracle replacement,
+and prior acquisition counterexamples.  Historical source-reduction and
+VIEWSEP/REACQ/TRACECLOSE materials surfaced by those searches were reconciled.
+Primary literature was checked before formalization.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+CC-0005 already proves membership-only implementation indistinguishability
+and full-rank easy controls.  PROOFMAP-0004 already separates grouped OBDD,
+interleaved OBDD, and fixed-instance decision interfaces.  MODELBRIDGE-0003
+already separates external witness extraction from original-execution core
+acquisition.  RT-0004 does not rename those results: its new scoped theorem is
+the exact three-column exposure separation (2) for MATERIALIZE, INTERP,
+DIRECT, and RECOMP.
+
+No contradiction was found.  The new theorem sharpens why ``white-box'' is
+not a sufficient definition: raw white-box state is encoding-sensitive,
+decoded state is materialization-sensitive, and extensional extraction is
+execution-insensitive.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root main correctly keeps arbitrary-algorithm acquisition OPEN and already
+warns that semantic objects are not machine states.  The sharper replacement
+for an informal WExt target is the forced-interface contract above, together
+with the explicit exposure table (2).  Root main was not edited because the
+REDTEAM review role has no LSPV ownership region.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{description}
+\item[] \textbf{ADOPTED:} SAME\_REALIZATION, external EDGE-EXTRACT1,
+representation covariance, charged decoding/replay, the hard clean-core
+$\mathcal H_{2,2}$ target, and the current CORE-ACQUIRE1 label.
+\item[] \textbf{REJECTED:} raw occurrence of a compatibility object as a
+wrapper-invariant notion; decoded occurrence as universal across
+no-materialization implementations; external source derivability as evidence
+that the measured decider paid for the object.
+\item[] \textbf{FALSIFIED/RETIRED:} raw or decoded mismatch-vector
+materialization is necessary for every polynomial exact implementation of the
+declared equality core.  Any broader WExt impossibility statement remains
+unproved.
+\end{description}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+The phrase ``bind $Q$ to the actual execution without replaying $\tau$'' is
+still under-specified.  Binding can mean raw presence, decoded presence,
+derivability, causal use, or a verified functional of the trace; these are not
+equivalent.  Future reports should name which relation is used and how DIRECT,
+INTERP, and RECOMP are handled.  The unpublished local LB-0005 draft should
+not be cited as a verified GitHub artifact; CC-0005 is the verified source for
+its substantive result.
+
+\paragraph{Single next target.}
+Define a causal-use relation rather than an occurrence relation: $Q$ must
+support a declared multi-query interface consumed by the actual execution,
+while DIRECT/RECOMP implementations must be mapped into the same interface by
+a cost-preserving compiler.  Prove or falsify that compiler first on
+$\mathcal H_{2,2}$, with external pinning, compact circuits, affine
+elimination, interleaved OBDDs, padding, and matched oracle access.  Until
+that theorem and an independent interface lower bound are proved, P versus NP
+remains \textbf{OPEN}.
+
+\begin{thebibliography}{9}
+\bibitem{doecker} J. D\"ocker,
+\emph{Monotone 3-Sat-(2,2) is NP-complete}, arXiv:1912.08032, 2019.
+\url{https://arxiv.org/abs/1912.08032}.
+\bibitem{bgs} T. Baker, J. Gill, and R. Solovay,
+\emph{Relativizations of the $P=?NP$ Question}, SIAM Journal on Computing
+4(4) (1975), 431--442. \url{https://doi.org/10.1137/0204037}.
+\bibitem{aw} S. Aaronson and A. Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory}, ACM TOCT 1 (2009).
+\url{https://www.scottaaronson.com/papers/alg.pdf}.
+\bibitem{rr} A. Razborov and S. Rudich,
+\emph{Natural Proofs}, Journal of Computer and System Sciences 55 (1997),
+24--35. \url{https://doi.org/10.1006/jcss.1997.1494}.
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability}, JACM 52(6) (2005),
+835--865. \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::REDTEAM::RT-0004
+\end{document}
