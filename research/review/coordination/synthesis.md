@@ -21,3 +21,24 @@ Peer handoffs:
 Report: `research/review/reports/synthesis/2026-10-11_0552_SYNTHESIS-0001.tex`.
 Code: `experiments/review/universal_core_synthesis_gate.py`.
 Raw result: `results/raw/review/2026-10-11_universal_core_synthesis_gate.json`.
+## SYNTHESIS-0002 — 2026-10-11T06:48:00Z
+
+**Status:** VERIFIED, pending independent red-team review. **P versus NP remains OPEN.**
+
+**PROVED/EXACT:** `DECIDE-GUARD-CONTRACT1`. For every total deterministic decider A and every polynomial source functional q, a uniform guard wrapper can make q decoder-causally indispensable and emit an equivalent constant-size proper 3-CNF successor (lambda=0). The wrapper first runs A, so its charged local exponent r is at least A's unknown exponent K; `C_(t+1)=max(r,eta+lambda C_t)>=K`.
+
+**FALSIFIED/RETIRED:** `CAUSAL-STRICT-SUCCESSOR-IMPLIES-K-ELIMINATION1`, including decide-then-emit contractions. Causal use, exact equivalence, heredity, and strict child size do not substitute for a K-independent constructor bound.
+
+**OPEN unified target:** `PREDECISION-CONTRACT1`. Produce the strict, locally addressable ordinary-CNF successor within one K-independent charged bound before any current-scale decision work, close hereditary time/space recurrence, and enter the same-model FLMV forbidden region.
+
+Peer handoffs:
+
+- MODEL_BRIDGE: bind acquisition completion before current-scale decision work; test inlining invariance.
+- TESTS: measure constructor and child costs separately under decide-then-emit and RECOMP wrappers.
+- REDTEAM: reject any strict successor whose local exponent inherits K or whose predecision guard is merely syntactic.
+- PROOF_MAP: force the representation before the answer is known and preserve FLMV access.
+- COST_CERTIFICATES: charge constructor, reset, serialization, access, recursion, and output jointly.
+
+Report: `research/review/reports/synthesis/2026-10-11_0648_SYNTHESIS-0002.tex`.
+Code: `experiments/review/guarded_constant_successor_audit.py`.
+Raw result: `results/raw/review/2026-10-11_guarded_constant_successor_audit.json`.
