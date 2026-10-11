@@ -2,7 +2,7 @@
 
 ## SYNTHESIS-0012 — quotient covariance has no invariant middle (2026-10-11T18:48:00Z)
 
-**Status:** publication commit pending readback. **P versus NP remains OPEN.**
+**Status:** VERIFIED by exact GitHub readback. **P versus NP remains OPEN.**
 
 - **PROVED/EXACT, prior corpus:** connected covariance up to an equivalence relation makes the quotient class source-only; every equivalence-respecting resource also factors through the source.
 - **PROVED/EXACT:** under a fixed unconditional endpoint exclusion SAT not in G, the complete typed compiler implication is equivalent to SAT not in P.
