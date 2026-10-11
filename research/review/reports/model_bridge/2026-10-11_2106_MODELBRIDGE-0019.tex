@@ -1,0 +1,232 @@
+% PNP REVIEW REPORT::MODEL_BRIDGE::MODELBRIDGE-0019::2026-10-11T21:06:49Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref,microtype}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\title{MODELBRIDGE-0019: Hidden Partial Recovery Has an Exact Query Bound, but No White-Box SAT Transfer}
+\author{Universal Core Bridge Review}
+\date{11 October 2026 (UTC)}
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.94\linewidth}{
+\textbf{Executive status.} P versus NP remains open.  In a declared hidden-source model, every deterministic exact procedure that recovers $r$ certified coordinates of an unknown $n$-bit unique witness needs exactly $r$ binary answers.  This is an information theorem, not a SAT time lower bound.  When the formula is explicitly supplied, its syntax is an additional information channel: a unique-witness pin formula exposes all $n$ bits with zero SAT-oracle queries.  Thus generic transfer from hidden witness-query complexity to arbitrary explicit 3-CNF computation is retired.  The surviving obligation is a white-box, source-specific theorem that charges syntax access and still produces a strict, hereditary, $K$-independent pass in the same realization.}}
+\end{center}
+
+\section{Claim card and exact quantifiers}
+
+\begin{center}\small
+\begin{tabular}{@{}p{0.43\linewidth}p{0.19\linewidth}p{0.30\linewidth}@{}}
+\toprule
+Claim & Status & Scope\\ \midrule
+\texttt{HIDDEN-PARTIAL-RECOVERY1} & \EXACT & Deterministic exact hidden-string binary-query model.\\
+\texttt{HIDDEN-QUERY-TO-EXPLICIT-SAT1} & \RETIRED & No generic transfer to a machine receiving the formula syntax.\\
+Finite audit & \COMP & 365,518 checks; zero failures.\\
+\texttt{WHITEBOX-SOURCE-PASS1} & \OPEN & Actual canonical clean core, all costs and arbitrary exponents charged.\\
+P versus NP & \OPEN & No arbitrary-decider lower bound or contradiction.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Fix $n\ge 1$.  Nature chooses $x\in\{0,1\}^n$.  A deterministic adaptive extractor receives no information about $x$ except answers to binary queries; a query may be any Boolean predicate of $x$, so this model is at least as strong as subcube-membership queries.  After at most $q$ answers it must output a set $I\subseteq[n]$ and bits $b\in\{0,1\}^I$ such that
+\[
+ |I|\ge r\qquad\text{and}\qquad b=x|_I
+ \tag{1}
+\]
+for every hidden $x$.  The output coordinates may depend on the transcript.  Computation between queries is free.  This is deliberately a hidden-source model; the extractor is not given a string that may encode $x$.
+
+\begin{theorem}[\texttt{HIDDEN-PARTIAL-RECOVERY1}]
+The deterministic exact worst-case binary-query complexity of (1) is exactly $r$.
+\end{theorem}
+
+\begin{proof}
+For the upper bound, query the predicates $x_i=1$ for any fixed $r$ coordinates and output the returned bits.
+
+For the lower bound, a depth-$q$ binary decision tree has at most $2^q$ leaves.  Let $S_\ell$ be the hidden strings reaching leaf $\ell$.  Correctness of its output $(I_\ell,b_\ell)$ implies
+\[
+ S_\ell\subseteq\{x:x|_{I_\ell}=b_\ell\},
+ \qquad |S_\ell|\le 2^{n-|I_\ell|}\le2^{n-r}.
+\]
+The nonempty leaf cells partition all $2^n$ hidden strings.  Hence
+\[
+ 2^n=\sum_\ell|S_\ell|\le2^q2^{n-r},
+\]
+so $q\ge r$.
+\end{proof}
+
+The proof already permits arbitrary binary questions, arbitrary computation, adaptive coordinate choice and a variable output location.  It is stronger than a lower bound restricted to literal SAT self-reduction queries, but only because the source is hidden.
+
+\section{Why the SAT transfer fails}
+
+An ordinary SAT algorithm receives an explicit formula $F$.  Its input bits are a second channel not counted by the hidden-source theorem.  For $x\in\{0,1\}^n$, define the repeated-literal 3-CNF
+\[
+ P_x=\bigwedge_{i:x_i=1}(z_i\vee z_i\vee z_i)
+      \wedge
+      \bigwedge_{i:x_i=0}(\neg z_i\vee\neg z_i\vee\neg z_i).
+ \tag{2}
+\]
+It has the unique satisfying assignment $x$, and a linear scan of its syntax recovers every bit with zero calls to a SAT oracle.  Consequently the statement
+\[
+ \text{``recovering $r$ witness bits from explicit $F$ needs $r$ SAT answers''}
+ \tag{3}
+\]
+is false without a new promise excluding all source-side leakage and all semantic shortcuts.  Formula (2) is a hostile control, not a member of the proper duplicate-free exact-$(2,2)$ clean core.  It refutes the \emph{generic transfer}, not a future construction-specific theorem about that core.
+
+The same issue persists without visible unit pins.  Horn closure, 2SAT strongly connected components, affine/Tseitin Gaussian elimination, bounded-treewidth dynamic programming, independent-product decomposition, compact circuits and declared padding may expose or generate witness coordinates without SAT membership calls.  An alternate encoding can be decoded before extraction.  A one-bit decider need not output any witness at all.
+
+\begin{corollary}[model boundary]
+\texttt{HIDDEN-QUERY-TO-EXPLICIT-SAT1} is \RETIRED{} as a generic implication.  Any valid white-box query lower bound must charge direct inspection and computation on the explicit source and prove that those channels cannot replace the oracle answers on the same clean-core family.
+\end{corollary}
+
+This is exactly the distinction emphasized by the current search-to-decision literature.  Gharibian and Kamminga state the classical $O(n)$ SAT self-reduction and explain that its sublinear-query lower bound is conditional in the white-box model, while unconditional query lower bounds are obtained only after moving to a black-box existential-query model \cite{gk}.  Kawachi--Rossman--Watanabe prove stronger bounds for their different, nonadaptive randomized hidden-witness framework; those theorems do not transfer automatically to explicit clean-core computation \cite{krw}.  Bellare--Goldwasser show that decision-to-search is not automatic for arbitrary NP relations, conditionally separating the two; SAT's self-reducibility is a special positive case \cite{bg}.
+
+\section{Relation to the clean core and encoded length}
+
+The active core remains duplicate-free proper Monotone $3$SAT-$(2,2)$ under the indexed encoding, with
+\[
+ N=\Theta(n\log n).
+\]
+LB-0017 proves that a serialized strict pruned restriction can require $r\ge n/3-o(n)$ assigned source variables.  If one separately supplied a hidden unique-witness realization of those variables, the theorem above would give
+\[
+ q\ge r=\Omega(n)=\Omega(N/\log N)
+ \tag{4}
+\]
+binary answers.  That antecedent is not proved for the actual clean core.  More importantly, even (4) is polynomial and supplies no superpolynomial time lower bound.
+
+Assume counterfactually that SAT has a deterministic uniform decider $D$ running in time $M^K$.  Standard self-reduction finds a full witness using at most $n+1$ calls.  On exact-$(2,2)$ input, pinning a linear prefix gives query length $\Theta(N)$ under the current encoding ledger, so the charged cost is $N^{K+1+o(1)}$ with materialized queries (and comparable polynomial cost with virtual access).  This is compatible with $P=NP$.  The hidden query theorem neither removes $K$ nor turns the external extractor into an internal event of the original execution $D(F)$.
+
+\section{Bounded reproducible audit}
+
+The dependency-free script
+\begin{verbatim}
+timeout 30s python3 experiments/review/unique_partial_recovery_modelbridge.py
+\end{verbatim}
+completed in 0.361 seconds.  It made 365,518 checks with zero failures:
+\begin{itemize}
+\item all 65,808 nonempty hidden-string leaf cells for $n\le4$ obeyed $|S|\le2^{n-c(S)}$, where $c(S)$ is the number of coordinates common to every string in $S$;
+\item 45,760 finite counting instances through $n=64$ confirmed that $q<r$ leaf budgets cannot cover the universe;
+\item 98,304 coordinate-strategy instances through $n=12$ recovered the requested prefix in exactly $r$ answers;
+\item all 8,190 explicit pin formulas through $n=12$ yielded their full unique witness by syntax parsing with zero SAT calls;
+\item 49,140 DIRECT/COPY/DEAD/DELAY/INTERP/RECOMP checks preserved both the extensional oracle answers and the direct-input bypass.
+\end{itemize}
+The script SHA-256 is
+\nolinkurl{2736711cacec6618e94092b7d6458a427e681291097157fd4beb388dd54e8c7d};
+the canonical result-content digest is
+\nolinkurl{d52da73375e8a92b13ad3cfdb72fc48bb7c94acb9b2452dae8c592945e88d7ed}.
+The audit is \COMP{} only and makes no asymptotic inference.
+
+\section{SAME\_REALIZATION, wrappers and barriers}
+
+The hidden theorem concerns an external interaction transcript.  It does not show that the original one-bit decider exposes a witness coordinate, stores $r$ bits, makes any identifiable SAT queries, or realizes a compatibility object.  Extensional wrappers return the same membership bits and hence preserve the external transcript.  Intensional wrappers may alter all internal traces.  Charging an external self-reduction to the original call violates SAME\_REALIZATION; charging it as a new algorithm yields only a polynomial upper bound under $P=NP$.
+
+The counting proof relativizes and remains valid with an additional algebraic oracle only if that oracle is denied information about $x$; allowing source-revealing oracle answers simply changes the information model.  It therefore supplies neither a Baker--Gill--Solovay escape nor a nonalgebrizing hinge.  It proves no constructive large circuit property, so Natural Proofs is not the operative barrier.  Nonuniform advice depending on the hidden $x$ would invalidate the model; advice depending only on $n$ does not change the count.
+
+\section{Post-quantum and cross-domain ledger}
+
+\textbf{EXACT OBJECT/THEOREM TRANSFER:} lossiness/collision entropy applies to the transcript map $L:x\mapsto\ell$.  Every successful leaf fixes at least $r$ coordinates and therefore has fiber at most $2^{n-r}$; equivalently, at least $2^r$ leaves are necessary.  This is the exact content of the proof, not a time lower bound.
+
+\textbf{ANALOGY/CANDIDATE needing a new bridge:} the LWE lesson suggests externally extracting a resource from black-box solver behavior, but the explicit SAT source supplies a white-box channel and no NP worst-case/average-case hiding theorem is available.  VLSI routing, communication cuts, control observability, pebbling and special-soundness extraction likewise require a compiler fixing terminals, information flow and costs.
+
+\textbf{FAILED TRANSFER:} Schur squares, quadratic-relation spectra, syzygies, binding, hashes and random-oracle arguments attach to representations not forced here.  Cryptographic hiding assumptions are inadmissible in an unconditional separation.  Hidden algebraic structure may instead be an algorithmic shortcut.
+
+\section{CORPUS REVIEWED}
+
+The run surveyed the full 2,000-plus-path GitHub tree at commit
+\texttt{6d2a3ae99ec33034528597bfdf7f6976714d218f}; read root
+\texttt{main.tex}, actual \texttt{main4.tex}/\texttt{main5.tex},
+\texttt{AGENTS.md}, \texttt{CODEX.md}, the complete pnp-research skill and
+review protocol; inspected TASK-001--007; read MAIN SYNTHESIS-0014 and the
+materially relevant MODELBRIDGE-0018, LB-0017, TESTS-0013, RT-0017 and
+SYNTHESIS-0014 reports plus relevant history; and reviewed the HEC, VSC-HEC,
+G-PPC-HEC, CRS-PPC, CCSPC, RCCN, Search--G and REACQ causal branch.  Governance,
+status, coordination, coverage, model-bridge spine and cited experiment/result
+artifacts were checked.  Repository search covered witness finding,
+search-to-decision, subcubes, partial assignments, query counts, source access,
+and explicit-input bypasses.  Primary sources \cite{krw,gk,bg} were checked
+before promoting the theorem.
+
+The cyclic predecessor SYNTHESIS-0014 exists at its canonical GitHub path, is
+substantive, has the required header and final sentinel, and read back
+successfully.  No recovery request was needed.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+MODELBRIDGE-0018 and the older model-bridge spine already contain the $O(n)$
+external SAT self-reduction and warn that it does not force an internal
+representation.  Kawachi--Rossman--Watanabe and Gharibian--Kamminga already
+study richer witness-query models.  The new corpus contribution is narrower:
+the exact $r$-answer theorem for deterministic partial recovery, paired in the
+same report with an explicit zero-query white-box counterexample.  Repository
+search found no prior artifact stating this quantified pair.  There is no
+contradiction with LB-0017, which lower-bounds explicit serialization, or
+TESTS-0013, which demonstrates implicit bit-local generation.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root \texttt{main.tex} correctly keeps P versus NP open and selects
+\texttt{SOURCE-PASS-ACCESS1}.  This run sharpens its interface requirement:
+``black-box extraction'' must not hide the explicit-source channel.  A useful
+pass must be white-box and source-checkable, with direct inspection,
+preprocessing and semantic shortcuts charged.  No root-main theorem or OPEN
+arrow is strengthened.  This review role does not edit root \texttt{main.tex}.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+Adopted: SAT self-reduction, LB-0017's explicit-volume theorem, TESTS-0013's
+implicit-access counterexample, SAME\_REALIZATION, wrapper controls and exact
+encoded-length accounting.  Rejected: interpreting a binary-answer count as
+runtime, memory, communication, or internal exposure for an explicit-input
+machine.  Retired: \texttt{HIDDEN-QUERY-TO-EXPLICIT-SAT1} as a generic bridge.
+Preserved as \OPEN: a construction-specific white-box source pass and a
+model-matched forbidden endpoint.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+MODELBRIDGE-0018's handoff called for a ``genuinely external, black-box
+extraction theorem.''  Taken literally with the source hidden, that target is
+too weak: the theorem above gives an exact query lower bound but cannot
+constrain the actual explicit-formula algorithm.  The handoff must be read as
+requiring white-box source access and a separate transfer theorem.  Claims
+that each witness bit necessarily costs one SAT call are also overstated in
+the white-box model; formula syntax or algebraic structure may reveal many
+bits without any such call.
+
+\section{Highest-value handoff}
+
+The next target is \texttt{WHITEBOX-SOURCE-PASS1}: on the canonical
+exact-$(2,2)$ encoding, define an externally fixed hereditary pass $R(F)$ and
+prove, for every assumed polynomial SAT decider, that $R(F)$ is obtainable
+with $K$-independent strict-power child access after charging direct source
+inspection, classification, preprocessing, all oracle calls, failed routes,
+replay, output and peak workspace.  Then prove an unconditional lower bound
+for the same object and machine model.  Hidden-source entropy or query counts
+alone cannot supply either arrow.  P versus NP remains \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{krw}
+A.~Kawachi, B.~Rossman and O.~Watanabe,
+``The Query Complexity of Witness Finding,''
+\emph{Theory of Computing Systems} 61 (2017), 305--321;
+ECCC TR12-002, \url{https://eccc.weizmann.ac.il/report/2012/002/}.
+\bibitem{gk}
+S.~Gharibian and J.~Kamminga,
+``BQP, Meet NP: Search-To-Decision Reductions and Approximate Counting,''
+ICALP 2024, LIPIcs 297:70, doi:
+\href{https://doi.org/10.4230/LIPIcs.ICALP.2024.70}{10.4230/LIPIcs.ICALP.2024.70}.
+\bibitem{bg}
+M.~Bellare and S.~Goldwasser,
+``The Complexity of Decision versus Search,''
+\emph{SIAM Journal on Computing} 23(1), 1994, 97--119,
+doi:\href{https://doi.org/10.1137/S0097539792228289}{10.1137/S0097539792228289}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::MODEL_BRIDGE::MODELBRIDGE-0019
+\end{document}
