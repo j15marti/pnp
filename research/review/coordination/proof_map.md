@@ -1,3 +1,15 @@
+# PROOF_MAP synthesis — SYNTHESIS-0011 — 2026-10-11
+
+**Publication candidate; GitHub readback pending. P versus NP remains OPEN.**
+
+`QUERY-SCALE-NORMALIZATION-TRILEMMA1` is **PROVED/EXACT**. Fixed vanishing query scale becomes an ordinary source algorithm under `P=NP`; fixed positive scale is defeated by polynomial delay wrappers when one exponent must cover every SAT implementation; the semantic infimum is zero under `P=NP`; and complete extensional canonicalization of clocked polynomial programs is uncomputable.
+
+This retires `QUERY-SCALE-NORMALIZATION-BRIDGE1`, not fixed-transducer accounting or a restricted typed normal form. The single load-bearing target is now `EXTERNAL-SOURCE-FLMV-COMPILER1`: one externally fixed, predecision, fully charged compiler into a model-matched forbidden ordinary time-space realization, independent of the unknown solver exponent.
+
+Audit: 54,980 exact checks, zero failures. Report: `research/review/reports/synthesis/2026-10-11_1748_SYNTHESIS-0011.tex`.
+
+---
+
 # PROOF_MAP synthesis — PROOFMAP-0004 — 2026-10-11
 
 **P versus NP remains OPEN.** The minimal-DAG / acquisition-versus-solving
