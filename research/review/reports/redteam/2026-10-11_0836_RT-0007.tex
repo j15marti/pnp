@@ -1,0 +1,478 @@
+% PNP REVIEW REPORT::REDTEAM::RT-0007::2026-10-11T08:36:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,enumitem,hyperref,xcolor}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newcommand{\Status}[1]{\textbf{#1}}
+\newcommand{\OPEN}{\Status{OPEN}}
+\newcommand{\EXACT}{\Status{PROVED/EXACT}}
+\newcommand{\RETIRED}{\Status{FALSIFIED/RETIRED}}
+\title{REDTEAM RT-0007: The Full Pinning Service on the\\
+High-Treewidth Clean-Core Guard Is an Integral Flow Problem}
+\author{UNIVERSAL\_CORE\_REDTEAM}
+\date{11 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+LB-0008 constructs satisfiable duplicate-free Monotone \(3\)-SAT-\((2,2)\)
+instances of primal treewidth \(\Omega(N/\log N)\) from cubic bipartite
+expanders. This report attacks a natural attempted repair of the treewidth
+lower-bound route: require an arbitrary solver to answer the entire
+partial-assignment, or pinning, service on the same instance. The repair also
+fails. For every partial assignment, extendibility is exactly a bipartite
+degree-interval feasibility problem and hence an integral lower-bounded-flow
+problem of linear size. The service has \(3^{3r}=2^{\Theta(N/\log N)}\)
+coordinates and is nonconstant, yet any requested coordinate, including a
+witness when one exists, is computable in fixed-degree polynomial time without
+materializing the service vector or a separator table. A bounded audit checked
+22,939 service queries, including all \(3^9\) partial assignments for
+\(K_{3,3}\), against enumeration, plus hostile controls and wrappers. This is
+a clean counterexample to a proposed universal resource implication, not an
+algorithm for general \(3\)-SAT. P versus NP remains open.
+\end{abstract}
+
+\section{Result and proof status}
+
+\begin{center}
+\begin{tabular}{p{0.29\linewidth}p{0.17\linewidth}p{0.46\linewidth}}
+\toprule
+Claim & Status & Meaning\\
+\midrule
+\texttt{PINNED-FACTOR-SERVICE1} & \EXACT &
+The full ternary partial-assignment service of every paired cubic-bipartite
+clean core reduces to a linear-size integral circulation with lower and upper
+capacities.\\
+\texttt{HIGH-TW-PINNING-EVAL-NECESSITY} & \RETIRED &
+High primal treewidth, clean-core syntax, and exponentially many pinning
+coordinates do not imply expensive evaluation of a requested coordinate,
+large separator state, or explicit compatibility extraction.\\
+Arbitrary-algorithm bridge & \OPEN &
+No theorem maps every polynomial-time \(3\)-SAT decider to a model in which
+the above optional representation is necessary.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The load-bearing implication remains \OPEN. No statement in this report
+proves \(\mathsf{P}\ne\mathsf{NP}\).
+
+\section{Preflight, predecessor, and claim card}
+
+The run reviewed root \texttt{main.tex}, \texttt{AGENTS.md},
+\texttt{CODEX.md}, the PNP research skill and protocol, all current task
+specifications, the current \texttt{main4.tex} and \texttt{main5.tex}, the
+newest verified MAIN and peer reports, governance material, review status,
+relevant HEC/CRS-PPC/CCSPC/RCCN explorations, and experiment artifacts cited by
+active claims. Repository searches were used to locate prior treewidth,
+service-vector, compatibility, source-program, and wrapper formulations.
+
+The newest verified TESTS predecessor remains TESTS-0002. No later TESTS
+report with the required header and final sentinel was readable from GitHub at
+preflight. An unverified local script and result file from the interrupted
+test attempt were present. REDTEAM did not invent or publish the missing peer
+report. It independently checked the theorem, implementation, hashes, and
+finite results and adopts the neutral experiment artifacts in this verified
+report. This is classified as a single malformed/missing publication body,
+not as evidence for a scientific peer claim and not as two consecutive
+failures requiring governance repair.
+
+\paragraph{Target quantifiers.}
+The falsified universal implication can be stated as follows:
+\[
+\begin{split}
+\forall F\in{\cal C}\;[
+ &\operatorname{tw}(P(F))=\Omega(N/\log N)
+ \ \wedge\ |\{\rho:\rho\in\{*,0,1\}^{V(F)}\}|=2^{\Omega(N/\log N)}
+]\\
+&\Longrightarrow
+\text{every evaluator of }(F,\rho)\mapsto
+\mathbf 1[F\!\upharpoonright_{\rho}\text{ is satisfiable}]
+\text{ incurs superpolynomial cost}
+\end{split}
+\tag{1}
+\]
+or must materialize a large separator/compatibility object. One explicit
+family and one polynomial evaluator refute (1). This does not refute a
+carefully restricted lower bound for some specified machine model or a
+non-paired clean-core family.
+
+\section{The clean-core family and the full service}
+
+Let \(G=(U\mathbin{\dot\cup}W,E)\) be a simple \(3\)-regular bipartite graph
+with \(|U|=|W|=r\). Introduce one Boolean variable \(x_e\) for each edge.
+For every vertex \(v\), define
+\[
+ C_v^+=\bigvee_{e\ni v}x_e,\qquad
+ C_v^-=\bigvee_{e\ni v}\neg x_e,\qquad
+ F_G=\bigwedge_{v\in U\cup W}(C_v^+\wedge C_v^-).
+\tag{2}
+\]
+As established in LB-0008, \(F_G\) has \(3r\) variables and \(4r\) distinct
+clauses, is Monotone \(3\)-SAT-\((2,2)\), and has primal graph \(L(G)\).
+For the spectral-expander subfamily there is a constant \(c>0\) with
+\(\operatorname{tw}(P(F_G))\ge cr-1=\Omega(N/\log N)\) under the explicit
+encoding used there.
+
+Define the entire pinning service
+\[
+ S_G:\{*,0,1\}^{E}\longrightarrow\{0,1\},\qquad
+ S_G(\rho)=\mathbf 1[F_G\!\upharpoonright_{\rho}
+                    \text{ is satisfiable}].
+\tag{3}
+\]
+This is a one-bit decision service. Its \(3^{3r}\) possible queries cannot be
+charged as an output cost unless the task explicitly demands the whole truth
+table.
+
+\section{Exact flow reduction}
+
+\begin{theorem}[\texttt{PINNED-FACTOR-SERVICE1}]
+For every graph \(G\) in (2) and every partial assignment
+\(\rho\in\{*,0,1\}^{E}\), \(S_G(\rho)\) and, when positive, a completing
+assignment are computable by one integral lower-bounded circulation on
+\(O(r)\) vertices and arcs. In particular, a standard augmenting-path
+implementation runs in fixed-degree polynomial time and uses \(O(r)\) words.
+\end{theorem}
+
+\begin{proof}
+At a vertex \(v\), let
+\[
+ a_v=\bigl|\{e\ni v:\rho(e)=1\}\bigr|,\qquad
+ d_v=\bigl|\{e\ni v:\rho(e)=*\}\bigr|.
+\]
+If \(y_v\) unassigned incident edges are completed to \(1\), then both clauses
+at \(v\) are satisfied exactly when
+\[
+ 1\le a_v+y_v\le 2.
+\]
+Thus define
+\[
+ \ell_v=\max(0,1-a_v),\qquad
+ u_v=\min(d_v,2-a_v).
+\tag{4}
+\]
+If \(\ell_v>u_v\) for some \(v\), no extension exists. Otherwise an extension
+exists exactly when the graph \(H\) of unassigned edges contains a subset
+\(Y\subseteq E(H)\) such that
+\[
+ \ell_v\le \deg_Y(v)\le u_v\qquad\text{for every }v.
+\tag{5}
+\]
+
+Create a directed network with source \(s\), sink \(t\), the vertices of
+\(U\cup W\), and arcs
+\[
+ s\to u\ [\ell_u,u_u],\quad
+ u\to w\ [0,1]\ \text{for every unassigned }uw,\quad
+ w\to t\ [\ell_w,u_w],\quad
+ t\to s\ [0,|E|].
+\tag{6}
+\]
+A feasible integral circulation selects precisely those middle arcs carrying
+one unit, producing (5). Conversely any \(Y\) satisfying (5) gives such a
+circulation. Eliminate lower bounds in the standard way, add a super-source
+and super-sink for the resulting demands, and compute a maximum flow. All
+capacities are integral, so an integral feasible flow exists whenever a
+feasible real flow exists. Reading the middle arcs reconstructs \(Y\), hence
+the completing truth assignment. The network has \(2r+2\) original vertices
+and \(O(r)\) arcs because \(G\) is cubic. Even the deliberately elementary
+Dinic implementation used in the audit has a conservative \(O(r^3)\) bound
+here and \(O(r)\) stored graph data.
+\end{proof}
+
+\begin{corollary}
+On the LB-0008 expander subfamily, the primal treewidth is
+\(\Omega(N/\log N)\) and the service has
+\(3^{3r}=2^{\Theta(N/\log N)}\) coordinates, while each coordinate and a
+witness are computable in \(\operatorname{poly}(N)\) time. Therefore neither
+high treewidth nor the cardinality of the implicit service establishes a
+universal requirement to materialize a separator table, an explicit answer
+vector, or a large compatibility relation.
+\end{corollary}
+
+\section{SAME\_REALIZATION accounting}
+
+The measured computation includes recognition of the supplied graph
+realization, parsing the ternary query, computing every \(a_v,d_v,\ell_v,u_v\),
+building the lower-bounded network, lower-bound elimination, the complete
+max-flow computation, reconstruction of the selected edge set, verification
+of every clause, and the final one-bit output. Time and storage are charged to
+this same execution. No advice string, preprocessing oracle, omitted
+extraction pass, or unmeasured witness reconstruction is used.
+
+This is not a lower bound and does not claim optimality. It supplies only the
+polynomial upper bound needed to falsify the universal necessity claim.
+Alternative encodings can change parsing cost but cannot turn this explicit
+linear-size realization into a mandatory exponential object. A reasonable
+adjacency-list encoding has \(N=\Theta(r\log r)\); a more redundant encoding
+only adds input scanning or can be ignored after validation.
+
+\section{Bounded reproducible audit}
+
+The script
+\texttt{experiments/review/clean\_core\_pinning\_flow\_service.py} was run as
+\[
+\begin{split}
+&\texttt{python experiments/review/clean\_core\_pinning\_flow\_service.py}\\
+&\qquad\texttt{--seed 20261011 --random-queries 1500}\\
+&\qquad\texttt{--output results/raw/review/}\\
+&\qquad\texttt{2026-10-11\_clean\_core\_pinning\_flow\_service.json}.
+\end{split}
+\]
+It finished in \(3.187067\) seconds, below the per-invocation limit. No
+asymptotic inference is drawn from elapsed time. Every flow answer was checked
+against independent enumeration for the same finite instance and query; every
+positive answer had its reconstructed assignment checked directly.
+
+\begin{center}
+\begin{tabular}{rrrrr}
+\toprule
+\(r\) & edges & query regime & queries & positive queries\\
+\midrule
+3 & 9 & exhaustive & 19,683 & 12,001\\
+4 & 12 & seeded sample & 1,500 & 745\\
+5 & 15 & seeded sample & 1,500 & 653\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Across these rows the audit recorded 22,939 semantic agreements, 13,399
+verified witness reconstructions, 23,652 augmentations, 495,108 BFS edge
+scans, and 370,231 DFS edge scans. The \(r=3\) row also enumerated 102 full
+satisfying assignments. The script SHA-256 is
+\[
+\texttt{b15dbc2fd22a35a36d80ef216d9a41133a26acac8053e08e6ea42fb741307c99},
+\]
+and the raw JSON SHA-256 is
+\[
+\texttt{8aec8878b620e285114968d69e108bb965b1b93b5fb517730243ec8e1204781a}.
+\]
+The script compiled with \texttt{py\_compile}, and the result parsed as JSON.
+
+\section{Hostile controls and wrappers}
+
+The audit includes 2,048 easy-control checks across Horn formulas, \(2\)-SAT,
+affine systems solved by Gaussian elimination, and bounded-treewidth path
+instances. These controls prevent many local conditions or nontrivial
+reconstruction from being mistaken for NP-hardness.
+
+It also performs 4,096 wrapper checks covering edge renaming and alternative
+orderings, global complementation, clause permutation, copied redundant
+clauses, dead tautological clauses, unused-variable padding, delay, interpreter,
+and recomputation wrappers. A further 256 independent-product checks verify
+that component answers combine by conjunction. All checks passed. The
+wrappers demonstrate that syntax size, runtime padding, and representation
+choice cannot be silently promoted to semantic lower bounds.
+
+\section{Literature and transfer audit}
+
+Hoffman's circulation theorem with lower and upper bounds and Gabow's
+degree-constrained subgraph reductions are \Status{KNOWN THEOREM} inputs. The
+object correspondence is exact: unassigned edge variables are selectable
+edges, each vertex supplies an integral degree interval, and feasibility is
+an integral circulation. This is a directly transferable theorem, not merely
+a vocabulary analogy.
+
+The following proposed transfers remain only structural analogies requiring a
+new theorem. VLSI routing or area-time bounds need a compiler forcing an
+arbitrary word-RAM decider to route this flow in the lower-bound layout.
+Communication-cut arguments need a fixed input split and a theorem mapping an
+arbitrary centralized execution to a low-communication protocol. Pebbling
+and branching-program lower bounds need a model-preserving simulation with
+parameters strong enough to cover every polynomial exponent. None is supplied
+by primal treewidth.
+
+The misleading transfer is the inference that large separator state in a
+standard dynamic program implies large state for every algorithm. The flow
+algorithm is a concrete counterexample on the same realized instances.
+Likewise, an exponential implicit truth table is not an exponential output
+when the task requests one coordinate.
+
+\section{Post-quantum technique ledger}
+
+The degree-interval formulation is an \Status{EXACT OBJECT/THEOREM TRANSFER}
+from matching and flow theory. It is algorithmically exploitable structure,
+which is precisely why it weakens the candidate hardness source.
+
+Schur-square distinguishers, quadratic-relation rank spectra, Hilbert
+functions, syzygies, and graded Betti numbers are \Status{FAILED TRANSFER} for
+the present barrier: no code-valued object has been shown whose invariant is
+both forced on arbitrary solvers and lower-bounding their time. Collision
+entropy for a proof-to-node map is also a \Status{FAILED TRANSFER} here because
+the service evaluator requires no such map. Worst-case/average-case
+architecture and collision-extraction/special-soundness remain
+\Status{CANDIDATE} analogies only; they require an unconditional black-box
+extraction theorem and cannot import cryptographic hardness. Hash and
+random-oracle methods are not admissible proof steps.
+
+\section{Model, barrier, and \(\mathsf{P}=\mathsf{NP}\) audits}
+
+\paragraph{Arbitrary exponents.}
+The evaluator has one fixed polynomial exponent on this recognizable family.
+If \(\mathsf{P}=\mathsf{NP}\), an arbitrary polynomial-time general SAT
+algorithm may still have an unknown exponent \(K\) outside the family. A lower
+bound \(n^c\) for fixed \(c\), or a family-specific upper bound such as this
+one, cannot contradict all \(K\). Any diagonal choice depending on \(K\)
+must be uniform and avoid building the desired conclusion into the premise.
+
+\paragraph{Relativization.}
+The construction and its flow evaluator relativize: an oracle does not remove
+the ordinary polynomial algorithm. Baker--Gill--Solovay therefore blocks
+turning a purely relativizing diagonal or black-box simulation into the
+desired separation.
+
+\paragraph{Algebrization.}
+No low-degree extension argument converts this flow upper bound into a SAT
+lower bound. Algebraic-oracle access can only give an arbitrary solver more
+power. Aaronson--Wigderson's barrier remains unaudited by any purported
+algebrizing lower-bound step.
+
+\paragraph{Natural Proofs and circuit transfer.}
+No large, constructive property useful against general circuits is proved.
+Nor is a uniform time lower bound obtained from a circuit lower bound.
+Pippenger--Fischer style time-to-circuit simulation is one-way and incurs
+model-dependent overhead. Fortnow--Lipton--van Melkebeek--Viglas prove
+time-space lower bounds for specified random-access models, not an
+all-polynomial-time lower bound for SAT.
+
+\paragraph{One-bit output and nonuniformity.}
+The required output is one bit, so information about all coordinates cannot
+be charged to one query. Conversely, granting nonuniform advice or compact
+circuits would further weaken a universal materialization claim. Any repaired
+target must state whether preprocessing, advice, source size, and query time
+are uniform and how all are charged.
+
+\section{Corpus-wide reconciliation}
+
+\subsection*{CORPUS REVIEWED}
+The review covered the current repository tree; root \texttt{main.tex},
+\texttt{AGENTS.md}, \texttt{CODEX.md}, and the PNP skill; every current task
+specification; current \texttt{main4.tex} and \texttt{main5.tex}; verified
+MAIN snapshots and materially relevant historical MAIN material; the newest
+LSPV-1 through LSPV-5 reports bearing on arbitrary-algorithm extraction;
+TESTS-0002, RT-0006, SYNTHESIS-0003, MODELBRIDGE-0006, and LB-0008; governance
+notes; the HEC, VSC-HEC, G-PPC-HEC, CRS-PPC, CCSPC, and RCCN exploration
+branches; and active scripts and raw-result artifacts.
+
+\subsection*{DUPLICATION / CONTRADICTION AUDIT}
+TESTS-0002 already showed that the independent-block service can have a compact
+OBDD despite exponentially many coordinates. RT-0006 showed that a source
+program itself is a compact service representation. MODELBRIDGE-0006 showed
+that compatibility language alone can describe an easy Horn disjointness
+problem. LB-0008 showed that high treewidth can coexist with matching
+solvability. The present theorem is not a duplicate: it closes the stronger
+question left by LB-0008 by evaluating every partial-assignment coordinate on
+the same connected high-treewidth family. It agrees with, and strengthens,
+the prior negative direction.
+
+\subsection*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root \texttt{main.tex} correctly keeps P versus NP \OPEN and identifies the
+arbitrary-algorithm bridge as load-bearing. RT-0007 adds a verified
+counterexample that should be incorporated by the next synthesis: even the
+full pinning service on the LB-0008 guard has a compact polynomial evaluator.
+No root ownership region was edited because REDTEAM is not an LSPV specialist
+and has no authorized region.
+
+\subsection*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted are LB-0008's exact clean-core construction and treewidth theorem,
+SAME\_REALIZATION accounting, explicit one-bit-output accounting, wrapper
+controls, and the demand for a model-matched arbitrary-algorithm bridge.
+Rejected is the inference from standard tree-decomposition state to a
+necessary state space for all algorithms. Retired is the attempted repair
+that replaces the empty-query decision by the complete pinning service while
+retaining the same paired factor construction.
+
+\subsection*{STALE OR OVERSTATED CLAIMS FOUND}
+Any active prose suggesting that high primal treewidth plus exponentially many
+partial assignments forces extraction, communication, or memory is
+overstated unless it restricts the model and excludes this flow evaluator.
+Descriptions of the LB-0008 family as merely easy at the empty query are now
+stale. Its entire pinning service is polynomial-time evaluable.
+
+\section{Smallest repair and next target}
+
+The smallest repair is to exclude paired degree-interval factorizations and
+state a model-matched service lower bound. A viable next target must provide
+a recognizable non-paired clean-core family \({\cal H}\), an explicitly
+encoded one-bit service, and a theorem of the form
+\[
+\forall A\ \bigl[
+ A\text{ uniformly decides all }3\text{-SAT instances in }n^K
+ \Longrightarrow
+ T_A(H,\rho)\ge n^{K+\delta}
+\text{ on some }(H,\rho)\in{\cal H}
+\bigr],
+\tag{7}
+\]
+or another contradiction that quantifies over arbitrary \(K\) without
+assuming \(\mathsf{P}\ne\mathsf{NP}\). The proof must charge recognition,
+preprocessing, evaluation, and reconstruction on the same execution, survive
+compact circuit/branching-program representations and wrappers, and explain
+why affine elimination, Horn propagation, \(2\)-SAT, bounded treewidth,
+matching, and flow do not apply. No such theorem is currently known.
+
+\section{References}
+
+\begin{thebibliography}{9}
+\bibitem{hoffman1974}
+A. J. Hoffman,
+\emph{A Generalization of Max Flow--Min Cut},
+Mathematical Programming 6 (1974), 352--359.
+\href{https://doi.org/10.1007/BF01580268}{doi:10.1007/BF01580268}.
+
+\bibitem{gabow1983}
+H. N. Gabow,
+\emph{An Efficient Reduction Technique for Degree-Constrained Subgraph and
+Bidirected Network Flow Problems},
+Proceedings of STOC 1983, 448--456.
+\href{https://doi.org/10.1145/800061.808776}{doi:10.1145/800061.808776}.
+
+\bibitem{gima2024}
+T. Gima et al.,
+\emph{On the Treewidth of Generalized Line Graphs},
+arXiv:2404.08520 (2024).
+\href{https://arxiv.org/abs/2404.08520}{arXiv:2404.08520}.
+
+\bibitem{chiu1992}
+P. Chiu,
+\emph{Cubic Ramanujan Graphs},
+Combinatorica 12 (1992), 275--285.
+\href{https://doi.org/10.1007/BF01285817}{doi:10.1007/BF01285817}.
+
+\bibitem{pf1979}
+N. Pippenger and M. J. Fischer,
+\emph{Relations among Complexity Measures},
+Journal of the ACM 26 (1979), 361--381.
+\href{https://doi.org/10.1145/322123.322138}{doi:10.1145/322123.322138}.
+
+\bibitem{flmv2005}
+L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability},
+Journal of the ACM 52 (2005), 835--865.
+\href{https://doi.org/10.1145/1101821.1101822}{doi:10.1145/1101821.1101822}.
+
+\bibitem{bgs1975}
+T. Baker, J. Gill, and R. Solovay,
+\emph{Relativizations of the \(\mathsf{P}=?\mathsf{NP}\) Question},
+SIAM Journal on Computing 4 (1975), 431--442.
+\href{https://doi.org/10.1137/0204037}{doi:10.1137/0204037}.
+
+\bibitem{aw2008}
+S. Aaronson and A. Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory},
+ACM Transactions on Computation Theory 1 (2009), Article 2.
+\href{https://eccc.weizmann.ac.il/report/2008/005/}{ECCC TR08-005}.
+\end{thebibliography}
+
+\paragraph{Final verdict.}
+\texttt{PINNED-FACTOR-SERVICE1} is \EXACT.
+\texttt{HIGH-TW-PINNING-EVAL-NECESSITY} is \RETIRED.
+The universal arbitrary-algorithm implication is \OPEN.
+P versus NP remains open.
+
+% END_OF_VERIFIED_REPORT::REDTEAM::RT-0007
+\end{document}
