@@ -1,0 +1,400 @@
+% PNP REVIEW REPORT::LOWER_BOUND::LB-0011::2026-10-11T11:12:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{3SAT}}
+\newcommand{\Htwo}{\mathcal H_{2,2}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{UNIVERSAL\_CORE\_LOWER\_BOUND LB-0011:\\
+Implementation-Invariant Extraction Factors Through the Source}
+\author{P versus NP project review}
+\date{11 October 2026}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This run formalizes the obstruction left by the white-box EXTRACTOR audits.
+If an extractor applied to every exact SAT implementation produces
+representatives whose quotient class is independent of the implementation,
+then that quotient class is a function of the source formula.  If the
+extractor and a canonicalizer are uniformly efficient, one may fix any one
+exact SAT decider and compute the canonical class externally.  More
+quantitatively, if extraction performs $N^{c+o(1)}$ local work and at most
+$N^{b+o(1)}$ calls to a fixed $M^{K+o(1)}$ SAT decider on inputs of length at
+most $N^{a+o(1)}$, canonicalization costs $N^{d+o(1)}$, and all access is
+charged, then the source functional is computable in
+\[
+ N^{\max\{d,c,b+aK\}+o(1)}.
+\]
+Thus current-scale invariant extraction retains the unknown exponent $K$;
+source-only extraction does not establish same-execution cost; and an
+inefficient canonicalizer merely moves the open acquisition theorem.  This
+does not rule out a genuinely covariant, representation-sensitive extractor
+with strictly fractional hereditary channels.  A bounded audit passed 80,806
+checks.  P versus NP remains open.
+\end{abstract}
+
+\section{Executive status}
+
+\begin{center}
+\small
+\begin{tabular}{p{0.34\linewidth}p{0.20\linewidth}p{0.38\linewidth}}
+\toprule
+Claim & Status & Meaning\\
+\midrule
+\texttt{IMPLEMENTATION-QUOTIENT-FACTOR1} & \EXACT &
+An implementation-independent quotient of extracted representatives factors
+through the source formula.  Independent red-team review is pending.\\
+\texttt{CANONICAL-EXTRACTION-COST1} & \EXACT &
+Efficient canonicalization plus charged SAT calls gives exponent
+$\max\{d,c,b+aK\}$; this specializes the already verified direct-route
+composition theorem.\\
+\texttt{INVARIANCE-IMPLIES-PAID-COST1} & \RETIRED &
+Implementation invariance alone does not show that the original one-bit
+execution acquired or retained the quotient object.\\
+\texttt{COVARIANT-FRACTIONAL-EXTRACTOR1} & \OPEN &
+No theorem supplies wrapper-covariant representatives, charged transport,
+strictly fractional hereditary SAT channels, and a matched obstruction.\\
+\texttt{UCORE-TIME1} & \OPEN &
+No unrestricted superpolynomial lower bound for uniform deterministic SAT
+deciders is proved.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Claim card and clean core}
+
+The source is a canonical indexed proper 3-CNF of complete encoded bit length
+$N$.  The clean core $\Htwo$ consists of duplicate-free monotone clauses with
+three distinct variables per clause and exactly two positive and two negative
+occurrences of each variable.  Hence $m=4n/3$ and $N=\Theta(n\log n)$.
+D\"ocker proves this restriction NP-complete, but NP-completeness supplies no
+runtime lower bound.
+
+The desired target remains
+\[
+ \forall A\ \forall d\ \forall N_0\ \exists F\in\Htwo:\quad
+ |\operatorname{enc}(F)|\ge N_0
+ \quad\land\quad
+ T_A(F)>|\operatorname{enc}(F)|^d,                         \tag{1}
+\]
+where $A$ ranges over total correct uniform deterministic random-access
+deciders and every source read, work bit, and output operation is charged.
+Statement (1) is \OPEN and is not assumed below.
+
+The attacked candidate has the exact prefix
+\[
+ \forall A,B\in\mathcal A_{\SAT}\ \forall F\in\Htwo:\quad
+ \pi(E(A,F))=\pi(E(B,F)),                                  \tag{2}
+\]
+where $E$ is a uniform charged extractor, $E(A,F)$ is its representative,
+and $\pi$ is a declared quotient map.  The candidate inference was that (2)
+itself makes the quotient a cost paid by each execution of $A(F)$.  That
+inference is false.
+
+\section{Exact factorization and cost theorem}
+
+\begin{definition}[Implementation quotient]
+Let $\mathcal A_{\SAT}$ be a nonempty class of codes for total correct exact
+SAT deciders.  Let $E(A,F)\in\mathcal Q$ be a total extractor and let
+$\pi:\mathcal Q\to\mathcal Z$.  The quotient is implementation-invariant if
+(2) holds.  A canonicalizer is a total map
+$C:\pi(E(\mathcal A_{\SAT},\Htwo))\to\{0,1\}^*$ that gives one encoding for
+each quotient value.
+\end{definition}
+
+\begin{theorem}[\texttt{IMPLEMENTATION-QUOTIENT-FACTOR1}]
+If the quotient is implementation-invariant, there is a unique source
+functional $W:\Htwo\to\mathcal Z$ satisfying
+\[
+ W(F)=\pi(E(A,F))\qquad
+ \text{for every }A\in\mathcal A_{\SAT}.                  \tag{3}
+\]
+For any fixed $A_0\in\mathcal A_{\SAT}$,
+\[
+ W(F)=\pi(E(A_0,F)).                                       \tag{4}
+\]
+Consequently quotient invariance alone cannot establish that a different
+implementation $A$ materialized, retained, or causally used a representative.
+\end{theorem}
+
+\begin{proof}
+Choose any $A_0$ and define $W(F)=\pi(E(A_0,F))$.  Equation (2) makes this
+independent of the choice.  It also yields (3) and uniqueness pointwise.
+Equation (4) is the definition.  The final statement follows because (4) is
+an external source computation using $A_0$; it contains no assertion about
+the states of another implementation $A$.
+\end{proof}
+
+\begin{theorem}[\texttt{CANONICAL-EXTRACTION-COST1}]
+Fix $A_0$ with $T_{A_0}(M)\le M^{K+o(1)}$.  Suppose $E(A_0,F)$ performs at
+most $N^{c+o(1)}$ charged local work and invokes $A_0$ at most
+$N^{b+o(1)}$ times on explicitly constructed inputs of length at most
+$N^{a+o(1)}$.  Suppose $\pi$ and $C$ together cost at most $N^{d+o(1)}$,
+including representation access, decoding, output writing, and workspace.
+Then $C(W(F))$ is uniformly computable from $F$ in
+\[
+ \boxed{N^{\max\{d,c,b+aK\}+o(1)}}.                       \tag{5}
+\]
+\end{theorem}
+
+\begin{proof}
+Run the fixed program $E(A_0,F)$, substituting $A_0$ for each declared call,
+then apply $\pi$ and $C$.  The aggregate call cost is
+$N^{b+o(1)}(N^{a+o(1)})^{K+o(1)}=N^{b+aK+o(1)}$.
+Taking the maximum with the charged local and canonicalization costs proves
+(5).  This is a direct application of the verified polynomial-query
+composition ledger, now attached to the implementation quotient.
+\end{proof}
+
+\begin{corollary}[Three-way guard]
+An implementation-invariant extraction proposal satisfies at least one of the
+following.
+\begin{description}[leftmargin=0cm,labelwidth=0cm]
+\item[] \textbf{Source route.}  It uses no solver-dependent computation; then
+the object is externally source-computable and supplies no same-execution
+cost theorem.
+\item[] \textbf{Current-scale route.}  It invokes or replays a current-scale
+SAT computation, so (5) retains the unknown exponent $K$.
+\item[] \textbf{Unacquired quotient.}  Canonicalization, transport, or
+representative construction lacks the required bound, so the acquisition
+arrow remains open.
+\end{description}
+This trichotomy does not exclude strictly fractional recursive channels or a
+separately proved nonrelativizing model-matched obstruction.
+\end{corollary}
+
+\section{What survives: covariance rather than invariance}
+
+The theorem does not retire EXTRACTOR/G2.  It narrows the admissible object.
+A useful successor must be implementation-sensitive but wrapper-covariant:
+\[
+ E(w(A),F)=S_w(E(A,F)),                                    \tag{6}
+\]
+where every transport $S_w$ is explicit and charged.  It must also survive
+DIRECT and RECOMP, avoid a current-scale invocation before contraction, and
+produce either an ordinary-CNF successor with fixed scale exponent $a<1$ or
+another resource having an independently proved lower bound on the same
+realization.  If one canonicalizes (6) back to a fully invariant value, the
+factorization theorem applies to that canonical quotient.
+
+The next theorem therefore cannot merely say that all solvers have the same
+semantic object.  It must explain why acquiring an appropriate
+implementation-specific representative is unavoidable and why efficient
+transport does not collapse the claim to external source computation.
+
+\section{Reproducible finite audit}
+
+The dependency-free command
+\begin{verbatim}
+timeout 30s python experiments/review/implementation_quotient_factorization_audit.py \
+  --seed 202610111112 \
+  --output results/raw/review/2026-10-11_implementation_quotient_factorization.json
+\end{verbatim}
+completed in $0.103$ seconds.
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Check & Count\\
+\midrule
+All proper three-variable clause masks & 256\\
+DIRECT/MATERIALIZE/INTERP/RECOMP quotient checks & 1,024\\
+DEAD/COPY/DELAY wrapper checks & 3,072\\
+Permutation, complementation, duplicate, tautology controls & 1,024\\
+Exact balanced clean-core implementation checks & 64\\
+Horn, 2-SAT, bounded-treewidth, independent-product controls & 16\\
+Affine Gaussian-elimination controls & 140\\
+Raw-representation separation checks & 256\\
+Exhaustive invariant-table candidates & 74,954\\
+\midrule
+Total & 80,806\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For $r$ implementations and $s$ finite sources, the audit enumerated every
+Boolean table for $1\le r,s\le4$ and confirmed that exactly $2^s$ of the
+$2^{rs}$ tables are implementation-invariant.  Those $2^s$ tables are
+precisely the Boolean functions of the source alone.  All 256 clause-cube
+sources had distinct raw representatives across the four implementations but
+one common SAT quotient.  The script SHA-256 is
+\nolinkurl{e4cb8c2abf9e4262b04361812bccdff3ca3e56d40bbf81ac239661fc3dba381a};
+the raw JSON SHA-256 is
+\nolinkurl{76d2616090d3c888afbcfbd06497a6eedcff786f013360bce79b094cf15928b2}.
+The audit is \COMP.  The symbolic proofs, not finite extrapolation, establish
+the exact claims.
+
+\section{Literature and cross-domain transfer audit}
+
+The direct complexity literature reinforces the model boundary.  FLMV gives
+simultaneous SAT time--space lower bounds only in its declared random-access
+model; it does not force an arbitrary decider to expose this quotient.
+Huang--Li--Zhong characterize several $\mathsf{FP}^{\mathsf{NP}}$ range-
+avoidance algorithms by circuit lower bounds for specified circuit classes;
+this is an exact transfer with a fixed search object and oracle model, not a
+generic extractor from every SAT execution.  Li--Tell's 7 October 2026
+plasticity results derive low-space and alternating simulations from hardness
+of a low-space range-avoidance problem under explicit hardness and
+derandomization assumptions; those assumptions cannot enter an unconditional
+$P$ versus $NP$ proof.  Chen--Hu--Ren's 2025 results show that several circuit
+lower-bound approaches that already overcome relativization still algebrize.
+
+\begin{description}[leftmargin=0cm,labelwidth=0cm]
+\item[] \textbf{THEOREM TRANSFER.}
+Polynomial-query substitution and quotient factorization transfer exactly to
+the declared extractor model.  Range-avoidance equivalences transfer only to
+their stated circuit classes, output problem, and $\mathsf{FP}^{\mathsf{NP}}$
+model.
+\item[] \textbf{ANALOGY / CANDIDATE.}
+LWE-style external extraction, special-soundness collision extraction, and
+range avoidance suggest looking for a fixed search relation whose witness
+forces a lower-bound consequence.  The missing bridge is an unconditional,
+source-matched compiler from every SAT decider with all costs preserved.
+\item[] \textbf{FAILED TRANSFER.}
+Representation-independent data-structure, communication, VLSI, pebbling,
+and fault-tolerance bounds constrain declared interfaces.  They do not show
+that a one-bit unrestricted SAT computation instantiated that interface.
+\end{description}
+
+For the post-quantum ledger, quotient collision entropy is an exact object but
+cannot distinguish implementations once the quotient is source-only.
+Schur-square, quadratic-relation, Hilbert-function, and syzygy invariants may
+still classify source structure; without a charged covariant compiler they
+are \textbf{FAILED TRANSFER} for this target.  Cryptographic binding and
+random-oracle assumptions are inadmissible.
+
+\section{Barrier and hostile-control audit}
+
+DIRECT and RECOMP need not materialize the representatives exposed by
+MATERIALIZE or INTERP.  DEAD, COPY, and DELAY change raw traces while the
+quotient stays fixed.  Renaming, complementation, clause duplication, and
+tautological padding preserve the decision.  Horn, 2-SAT, affine/Tseitin,
+bounded-treewidth, and independent-product families show that compact
+source-derived quotients may be easy.  The one-bit SAT interface requires no
+explicit representative.
+
+The proofs relativize: fix $A_0^O$ and repeat (3)--(5) relative to the same
+oracle $O$.  Algebraic extension access can only strengthen the external
+computation.  Thus the result identifies rather than crosses the
+Baker--Gill--Solovay and Aaronson--Wigderson barriers.  No large constructive
+property of general circuits is proved, so Natural Proofs is not the present
+hinge.  Nonuniform advice would only add another representation escape.
+
+\section{Corpus-wide reconciliation}
+
+\subsection*{CORPUS REVIEWED}
+The run surveyed the current GitHub tree and recent commits through
+\nolinkurl{622e62d6234e60f68777c4bca60d500290baf3d3}; root
+\texttt{main.tex}; \texttt{main2.tex}, \texttt{main3.tex}, current
+\texttt{main4.tex} and \texttt{main5.tex}; \texttt{AGENTS.md},
+\texttt{CODEX.md}, the PNP skill and proof-spines protocol; all seven current
+task specifications; current governance; the HEC, CRS--PPC, CCSPC, RCCN and
+Search-G causal branch specifications; LB-0005--0010, CC-0005, RT-0004,
+RT-0007--0008, TESTS-0003--0004, MODELBRIDGE-0008--0009, SYNTHESIS-0004,
+LEAD-0027, and cited code/results.  Primary literature on SAT time--space,
+range avoidance, current time--space plasticity, relativization, and
+algebrization was checked before promotion.
+
+\subsection*{DUPLICATION / CONTRADICTION AUDIT}
+Root MAIN and main3 already state that complete implementation invariance can
+collapse to an extensional source function.  RT-0004 separates raw, decoded,
+and external exposure.  TRACECLOSE1 makes polynomial trace auditing
+polynomial.  RT-0008/ENVELOPE1 already proves the exponent
+$\max\{c,b+aK\}$.  LB-0011 does not rename these facts as new.  Its added
+value is the exact quotient-factorization statement, explicit canonicalizer
+cost, and the resulting three-way guard for the current
+\texttt{REPRESENTATION-INVARIANT-EXTRACTION1} handoff.
+
+\subsection*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+No root-MAIN theorem is contradicted.  The current review stream is sharper:
+full invariance plus efficient canonicalization is no longer an adequate
+repair for EXTRACTOR, because it produces an externally computable source
+functional and retains $K$ when current-scale SAT work is used.  This role
+has no authorized LSPV ownership region, so root \texttt{main.tex} is not
+edited.  Both authorized route manuscripts receive nonpromotional entries.
+
+\subsection*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted are wrapper covariance from main3, SAME\_REALIZATION, RT-0004's
+exposure separation, RT-0008's direct-route ledger, and every hostile control.
+Rejected is literal equality of extracted representatives as the only notion
+of robustness.  Retired is \texttt{INVARIANCE-IMPLIES-PAID-COST1} as a generic
+all-algorithm implication.  Covariant representation-sensitive extraction is
+not retired.
+
+\subsection*{STALE OR OVERSTATED CLAIMS FOUND}
+MODELBRIDGE-0009's next target is correct only if
+``representation-invariant'' is read to allow charged covariance or a
+nontrivial representative-level obligation.  Literal canonical invariance is
+too strong and collapses by the theorem above.  Root MAIN remains explicitly
+OPEN and contains no contradictory promotion.
+
+\section{Next target}
+
+The smallest viable repair is \texttt{COVARIANT-FRACTIONAL-EXTRACTOR1}:
+construct an extractor satisfying (6) for DIRECT, RECOMP, INTERP, padding and
+encoding wrappers, with transport cost charged; prove that every extracted
+representative supports only strictly fractional hereditary SAT channels or
+another independently forbidden same-realization resource; and show that no
+efficient canonical quotient reduces the obligation to external source
+computation.  The compiler, matched endpoint, nonrelativizing hinge,
+nonalgebrizing hinge, UCORE-TIME1, and P versus NP remain \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{doecker}
+J.~D\"ocker, \emph{Monotone 3-Sat-$(2,2)$ is NP-complete},
+Discrete Applied Mathematics 295 (2021), 1--9.
+\url{https://arxiv.org/abs/1912.08032}.
+
+\bibitem{flmv}
+L.~Fortnow, R.~Lipton, D.~van Melkebeek, and A.~Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability}, JACM 52(6) (2005),
+835--865. \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+
+\bibitem{hlz}
+S.~Huang, X.~Li, and Y.~Zhong,
+\emph{Range Avoidance and Remote Point for Low-Depth Circuits: New Algorithms
+and Hardness}, ECCC TR25-049, revision 3 (2025).
+\url{https://eccc.weizmann.ac.il/report/2025/049/}.
+
+\bibitem{litell}
+Z.~Li and R.~Tell,
+\emph{Trading Time, Space, and Alternations: General Plasticity for Algorithms
+from Hardness of Range Avoidance}, ECCC TR26-233 (7 October 2026).
+\url{https://eccc.weizmann.ac.il/report/2026/233/}.
+
+\bibitem{chr}
+L.~Chen, Y.~Hu, and H.~Ren,
+\emph{New Algebrization Barriers to Circuit Lower Bounds via Communication
+Complexity of Missing-String}, ECCC TR25-184 (2025).
+\url{https://eccc.weizmann.ac.il/report/2025/184/}.
+
+\bibitem{bgs}
+T.~Baker, J.~Gill, and R.~Solovay,
+\emph{Relativizations of the $P=?NP$ Question}, SIAM Journal on Computing
+4(4) (1975), 431--442.
+
+\bibitem{aw}
+S.~Aaronson and A.~Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory}, ACM TOCT 1(1)
+(2009), Article 2. \url{https://eccc.weizmann.ac.il/report/2008/005/}.
+\end{thebibliography}
+
+\paragraph{Final status.}
+\texttt{IMPLEMENTATION-QUOTIENT-FACTOR1} and
+\texttt{CANONICAL-EXTRACTION-COST1}: \EXACT, pending independent red-team
+review.  Finite audit: \COMP.\\
+\texttt{INVARIANCE-IMPLIES-PAID-COST1}: \RETIRED.\\
+\texttt{COVARIANT-FRACTIONAL-EXTRACTOR1}, UCORE-TIME1,
+nonrelativization, nonalgebrization, and P versus NP: \OPEN.
+P versus NP remains open.
+
+% END_OF_VERIFIED_REPORT::LOWER_BOUND::LB-0011
+\end{document}
