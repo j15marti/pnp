@@ -1,0 +1,293 @@
+% PNP REVIEW REPORT::TESTS::TESTS-0002::2026-10-11T07:24:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newcommand{\SAT}{\mathsf{3SAT}}
+\newcommand{\Pclass}{\mathsf P}
+\newcommand{\NPclass}{\mathsf{NP}}
+\title{UNIVERSAL\_CORE\_TESTS TESTS-0002:\\
+Explicit Batch Output Is Representation Cost, Not SAT Work}
+\author{P versus NP project review}
+\date{11 October 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Result and strict status.}
+This run tests the first concrete version of \textsf{PREDECISION-SERVICE1}:
+output the answer to every member of a fixed batch of restriction queries.
+It proves an exact representation gate inside the canonical clean core.
+There is a duplicate-free proper-three-CNF family
+$\{F_b\}_{b\ge1}\subseteq\mathcal H_{2,2}$ of encoded length
+$N_b=\Theta(b\log b)$ for which the restriction-answer vector has
+$2^{5b}=2^{\Theta(N_b/\log N_b)}$ coordinates.  Any sequential explicit
+emitter therefore needs that many output steps.  Nevertheless the same
+service has a block-ordered reduced OBDD with at most $13b$ nonterminal
+nodes and a uniform random-access evaluator using $O(b)$ time and
+$O(\log b)$ writable bits per coordinate.
+
+\textsf{EXPLICIT-SERVICE-REPRESENTATION-GATE1} is
+\textbf{PROVED/EXACT} in the declared encoding, service, sequential-output,
+and OBDD models.  The implication ``large explicit batch output forces large
+work in every one-bit SAT execution'' is \textbf{FALSIFIED/RETIRED}.  This
+does not prove compact representations for all clean-core formulas and does
+not refute every possible service.  A representation-independent service
+lower bound and an unavoidable cost-preserving compiler from every exact SAT
+decider remain \textbf{OPEN}.  P versus NP remains \textbf{OPEN}.
+
+\section{Claim card and exact quantifiers}
+The candidate service was the full vector of answers to a fixed family of
+partial-assignment queries.  Its hoped-for promotion was
+\[
+\begin{split}
+\forall A\,\forall F\in\mathcal H_{2,2}\quad
+ &[A\text{ is a total uniform deterministic exact SAT decider}]\\
+ &\Longrightarrow
+ \operatorname{Cost}(\tau_A(F))\ge
+ \bigl|\{\rho:\operatorname{SAT}(F\upharpoonright\rho)=1\}\bigr|
+ \quad\text{or at least the number of queried }\rho .
+\end{split}                                                     \tag{1}
+\]
+Equation (1) confuses three realizations: one one-bit execution
+$\tau_A(F)$, an external explicit vector emitter, and a possibly succinct
+evaluator for the same vector.  The SAME\_REALIZATION ledger must include
+the source, query-index encoding, representation, acquisition, random
+access, decoding, output, replay, and workspace.  The weakest useful attack
+is an ordinary clean-core family on which the explicit vector is enormous
+but one exact shared evaluator is small.
+
+\section{Clean-core block and fixed service}
+Let the six-variable hyperedge set be
+\[
+ E=\{123,345,561,246\}.
+\]
+Define the proper three-CNF block
+\[
+ B=\bigwedge_{\{i,j,k\}\in E}
+ (x_i\vee x_j\vee x_k)\wedge
+ (\neg x_i\vee\neg x_j\vee\neg x_k).                         \tag{2}
+\]
+Every variable lies in exactly two positive and two negative clauses, every
+clause is all-positive or all-negative, and the eight clauses are distinct.
+Thus $B\in\mathcal H_{2,2}$.  Let $F_b$ be the conjunction of $b$
+variable-disjoint copies of $B$.  The class is closed under this independent
+product and each $F_b$ remains in $\mathcal H_{2,2}$.
+
+For each block expose the first five variables as query bits and existentially
+quantify the sixth.  With $u^{(j)}\in\{0,1\}^5$, define
+\[
+ h(u)=1\iff\exists y\ B(u,y),
+ \qquad
+ S_b(u^{(1)},\ldots,u^{(b)})=
+ \bigwedge_{j=1}^{b}h(u^{(j)}).                               \tag{3}
+\]
+The explicit batch service writes the truth table of $S_b$ in lexicographic
+query order.  Every coordinate is a genuine SAT answer for a residual with
+one unassigned variable per block; it is not a full-assignment evaluation
+degeneracy.
+
+\begin{theorem}[EXPLICIT-SERVICE-REPRESENTATION-GATE1]
+Under the indexed self-delimiting encoding used by the current review
+corpus, $N_b=|\operatorname{enc}(F_b)|=\Theta(b\log b)$.  The explicit
+truth-table representation of $S_b$ has length $2^{5b}$, so every
+sequential emitter needs at least $2^{5b}$ output operations.  In contrast,
+$S_b$ has a block-ordered reduced OBDD with at most $13b$ nonterminal nodes.
+One coordinate can be evaluated uniformly in $O(b)$ time and $O(\log b)$
+writable space, and the OBDD description can be emitted from the canonical
+source in $O(N_b)$ time.
+\end{theorem}
+\begin{proof}
+There are $6b$ variables and $8b$ width-three clauses.  Literal indices use
+$\Theta(\log b)$ bits, giving $N_b=\Theta(b\log b)$.  There are $5b$ query
+bits, so the explicit service contains exactly $2^{5b}$ bits; a write-only
+sequential output tape requires one operation per output bit.
+
+The one-block function $h$ has a fixed reduced OBDD with 13 nonterminal
+nodes in the order $x_1,\ldots,x_5$.  For the blockwise variable order,
+replace the accepting terminal of the first copy by the root of the second,
+and continue, sharing one rejecting terminal.  This gives an OBDD for the
+conjunction in (3) with at most $13b$ nonterminal nodes.  Equivalently, an
+evaluator scans the five-bit query chunk for each block, tests the fixed
+32-entry function $h$, and rejects at the first failed block.  A block
+counter and input address take $O(\log b)$ writable bits.  The canonical
+block pattern makes acquisition a linear source transduction.
+\end{proof}
+
+The theorem gives a precise dichotomy.  If the service contract requires an
+explicit vector, its superpolynomial cost is an output-format lower bound and
+no polynomial-overhead compiler from a one-bit SAT run can satisfy it.  If
+the contract permits a succinct random-access representation, even this
+duplicate-free clean-core family has a linear-size representation.  Neither
+side proves work unavoidable in $\tau_A(F_b)$.
+
+\section{Bounded reproducible audit}
+The command
+\begin{verbatim}
+timeout 30s python experiments/review/explicit_service_representation_audit.py \
+  --max-blocks 3 --symbolic-blocks 16 --seed 20261011 \
+  --output results/raw/review/2026-10-11_explicit_service_representation_audit.json
+\end{verbatim}
+completed in under one second.  It performed 34,160 exact service-coordinate
+checks, 34,160 independent truth checks, 15 exact reduced-OBDD reductions,
+15 source-encoding checks, 288 wrapper/renaming checks, and the 12 polarity
+incidence equalities defining the six-variable $\mathcal H_{2,2}$ block.
+
+For one, two, and three clean-core blocks, the explicit service lengths were
+$32,1024,32768$, while the exact nonterminal OBDD counts were $13,26,39$.
+The true-coordinate counts were $14,196,2744=14^1,14^2,14^3$.  At the
+symbolic 16-block checkpoint the source encoding is 3,740 bits, the explicit
+service has $2^{80}=1{,}208{,}925{,}819{,}614{,}629{,}174{,}706{,}176$
+bits, and the proved OBDD upper bound is 208 nodes.  This checkpoint uses
+exact integer identities, not materialization of the $2^{80}$-bit vector.
+
+Code SHA-256 is
+\nolinkurl{f4f13ec0e3321822ef648efeec6e2e671147a3a3de0a6aec80d102d89951044c};
+raw-result SHA-256 is
+\nolinkurl{4e64521c3af4eac0157e20cafa3927b1b514118de80f183c3378f63e794bc588}.
+The finite checks validate implementations and ledgers only.  The asymptotic
+statement follows from the symbolic product construction above, not from a
+fit to these measurements.
+
+\section{Hostile controls and wrappers}
+The same audit constructs fixed block services for Horn/2-SAT equality,
+proper-three-CNF pinning, affine/Tseitin parity with one existential bit, and
+bounded-treewidth exact-one products.  Their 16-block explicit vectors have
+$2^{32}$ coordinates, while their OBDD upper bounds are respectively
+$48,16,0,$ and $32$ nonterminal nodes.  The affine service is the constant
+one function because the hidden parity bit always completes a two-bit
+prefix; this is the intended Gaussian-elimination hostile control.
+
+COPY triplication, DEAD tautologies, fixed DELAY work, query-bit
+complementation, within-block variable reversal, and RECOMP coordinate
+evaluation preserve the declared service after the corresponding decoder.
+These controls show why number of queries, number of semantic coordinates,
+and explicit bytes are representation/interface facts rather than
+unrestricted computation measures.
+
+\section{Primary literature and transfer audit}
+Bryant's reduced ordered function graphs are canonical for one fixed variable
+order and delete redundant tests and duplicate subgraphs~\cite{bryant}.
+That is a \textbf{DIRECTLY TRANSFERABLE THEOREM} to the declared OBDD model;
+the $13b$ bound here is an explicit construction, not an imported SAT lower
+bound.  Bryant also emphasizes that OBDD size may be exponential in the worst
+case while many structured functions are small.  Therefore OBDD compactness
+is a hostile representation control, not a universal promise.
+
+Besselman--G\"o\"os--Guo--Maystre--Yuan prove direct-sum theorems for
+randomized parity decision trees when the underlying lower bound comes from
+discrepancy or a product distribution~\cite{directsum}.  The theorem is exact
+in that model.  Importing it to arbitrary uniform SAT executions without a
+compiler preserving the parity-query model and distributional hypotheses is
+a \textbf{FAILED TRANSFER}.  Fortnow--van Melkebeek provide genuine SAT
+time--space tradeoffs on random-access machines~\cite{fv}; the present
+explicit-output bound does not place a one-bit solver in their forbidden
+region.
+
+The construction relativizes: a semantic oracle can answer any requested
+restriction bit, and no step distinguishes oracle worlds.  Algebraic access
+only strengthens the affine control.  Aaronson--Wigderson therefore remains
+a barrier rather than a promotion theorem~\cite{aw}.  No constructive large
+useful circuit property is asserted, so Natural Proofs is not triggered.
+
+The post-quantum ledger supplies no missing implication.  Schur squares,
+quadratic-relation ranks, Hilbert functions, syzygies, and collision entropy
+are \textbf{FAILED TRANSFERS} to explicit-output cost here.  LWE-style
+external extraction and special-soundness binding are
+\textbf{ANALOGY/CANDIDATE} only; no cryptographic or random-oracle assumption
+is admissible.
+
+\section{CORPUS REVIEWED}
+The recursive GitHub tree was surveyed at head
+\texttt{b6f7f232560aebec9032ebbac761b9cf590fb97b}.  Direct reads covered root
+\texttt{main.tex}, actual \texttt{main4.tex}/\texttt{main5.tex}, AGENTS,
+CODEX, the complete PNP skill/protocol, all TASK-001--007 specifications,
+current review status, TESTS-0001, LB-0007, MODELBRIDGE-0005, RT-0005,
+SYNTHESIS-0002, CC-0005 and PROOFMAP-0004.  Repository search covered
+PREDECISION-SERVICE1, continuation signatures, answer vectors, truth-table
+mass, OBDDs, compact evaluators, direct sums, output length, INTERP/RECOMP,
+and the HEC/VSC-HEC/G-PPC/CRS-PPC/CCSPC branch.  Material older reads
+included LEAD-0020, LEAD-0022 and LEAD-0029.  Current primary OBDD,
+direct-sum, SAT time--space and algebrization sources were checked before
+promotion.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+LEAD-0020 already states that many continuation functions may share a compact
+polynomial evaluator.  LEAD-0022 already reports that fixed-order OBDD size
+does not track hardness across finite Horn and planted-3SAT samples.
+LEAD-0029 already proves that raw truth-table semantic mass can change on
+exponentially many coordinates under one XOR gate.  TESTS-0002 does not
+rename those results.  Its new exact contribution is the explicit
+restriction-service/output theorem on a duplicate-free family inside the
+current $\mathcal H_{2,2}$ clean core, with a proved $13b$ OBDD construction
+and the current hostile-control/wrapper suite.
+
+No contradiction was found.  The result instantiates the older
+SAT-MERGE-FORCING1/MERGE-SERVICE-LB1 warning at the precise service proposed
+after LB-0007 and is consistent with TESTS-0001's nested-query batching
+separation.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root \texttt{main.tex} already requires compact-representation attacks and
+keeps representation-independent no-sharing OPEN.  The new constraint is
+that a future PREDECISION-SERVICE1 may not obtain its lower bound merely by
+requiring an explicit answer vector.  It must either prove that succinct
+random access is insufficient in a model forced by every SAT execution, or
+choose another independently hard interface.  Root main was not edited
+because this review role has no LSPV ownership region.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{description}[style=nextline,leftmargin=0pt,labelindent=0pt]
+\item[ADOPTED.] The $\mathcal H_{2,2}$ clean core; SAME\_REALIZATION;
+PREDECISION-SERVICE1 as a target; Bryant-style reduced OBDDs as a hostile
+representation; explicit acquisition/access/output/replay accounting.
+\item[REJECTED.] Counting restriction queries or explicit service bits as
+work of a different one-bit decision execution; treating explicit output as
+the only legal representation without an independently justified interface.
+\item[FALSIFIED/RETIRED.] \textsf{EXPLICIT-ANSWER-VECTOR-IMPLIES-UCORE-COST1}
+and any generic transfer from the $2^{5b}$ output floor to arbitrary SAT
+time, space, communication, or strict contraction.
+\item[OPEN.] Representation-independent \textsf{MERGE-SERVICE-LB1};
+\textsf{SAT-MERGE-FORCING1}; a cost-preserving DIRECT/RECOMP compiler; a
+$K$-independent hereditary strict successor; a model-matched endpoint; and
+nonrelativizing/nonalgebrizing hinges.
+\end{description}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+Any formulation of PREDECISION-SERVICE1 that calls an explicit answer-vector
+lower bound an ``independent computation lower bound'' is overstated.  It is
+independent only inside the explicit-output interface.  Conversely, this
+report does not claim that OBDDs are small on all $\mathcal H_{2,2}$ inputs;
+the theorem is an exact hostile family, not an all-input upper bound.
+
+\paragraph{Single next target.}
+Define \textsf{SUCCINCT-SERVICE-LB1}: one fixed random-access continuation
+service on the non-product clean core, together with a representation class
+broad enough to include circuits, OBDDs, affine evaluators, source reread and
+RECOMP, and prove or falsify a lower bound on acquisition plus service cost.
+In parallel, prove or falsify \textsf{SAT-MERGE-FORCING1}, the compiler that
+makes that service unavoidable in every exact one-bit execution with at most
+$N^{o(1)}$ overhead.  Without both arrows, P versus NP remains
+\textbf{OPEN}.
+
+\begin{thebibliography}{9}
+\bibitem{bryant} R. E. Bryant,
+\emph{Graph-Based Algorithms for Boolean Function Manipulation},
+IEEE Transactions on Computers C-35(8) (1986), 677--691.
+\url{https://www.cs.cmu.edu/~emc/15414-s14/lecture/ieeetc86.pdf}.
+\bibitem{directsum} T. Besselman, M. G\"o\"os, S. Guo, G. Maystre, and
+W. Yuan, \emph{Direct Sums for Parity Decision Trees}, CCC 2025,
+LIPIcs 339:16. \url{https://doi.org/10.4230/LIPIcs.CCC.2025.16}.
+\bibitem{fv} L. Fortnow and D. van Melkebeek,
+\emph{Time--Space Tradeoffs for Nondeterministic Computation},
+ECCC TR00-028 (2000).
+\url{https://eccc.weizmann.ac.il/report/2000/028/}.
+\bibitem{aw} S. Aaronson and A. Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory},
+ECCC TR08-005 (2008); ACM TOCT 1 (2009).
+\url{https://eccc.weizmann.ac.il/report/2008/005/}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::TESTS::TESTS-0002
+\end{document}
