@@ -1,0 +1,387 @@
+% PNP REVIEW REPORT::REDTEAM::RT-0003::2026-10-11T04:42:19Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\Ftwo}{\mathbb F_2}
+\title{REDTEAM RT-0003:\\Full Compatibility Rank Does Not Give an Exponential Circuit or Transistor Lower Bound}
+\author{P versus NP project review}
+\date{11 October 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Result and strict status.}
+The newest COST\_CERTIFICATES report correctly proves that four easy
+compatibility families can have full $2^n$ rank while admitting direct
+linear-time decision.  This audit strengthens that warning in the circuit
+model.  In a fixed bounded-fan-in basis, equality, Horn subset, affine
+complement, and a treewidth-one independent product all have compatibility
+matrices of exact rank $2^n$ over $\Ftwo$, yet explicit circuits use only
+$O(n)$ gates.  A declared static-CMOS macro realization therefore uses only
+$O(n)$ transistors.  Thus any generic implication charging rank itself as
+gate or transistor count is \textbf{FALSIFIED/RETIRED}.  The weaker
+$\log_2\operatorname{rank}=n$ scale is consistent with these upper bounds
+and still needs a model-matched transfer theorem before it applies to an
+arbitrary SAT circuit.
+
+There is a separate quantifier defect in the phrase ``minimum circuit for a
+specific SAT instance.''  For each fixed formula, satisfiability is one
+constant bit, so a zero-input circuit needs at most one constant-output gate.
+The nontrivial target is one circuit $C_N$ deciding every $N$-bit SAT
+encoding, with the basis, fan-in, uniformity and invalid-encoding convention
+declared.  A superpolynomial lower bound for such general nonuniform
+circuits would prove $\SAT\notin\mathsf{P/poly}$ and hence more than
+$P\ne NP$.  No such bound is established here.  P versus NP remains
+\textbf{OPEN}.  The proofs below are human-readable, not proof-assistant
+verification.
+
+\section{Predecessor publication and exact versions}
+The audit started from repository head
+\texttt{13240ef2b0043a00fc0bda2d144356452b5505dd}.  The immediate predecessor
+artifact
+\path{research/review/reports/cost_certificates/2026-10-11_0424_CC-0005.tex}
+has blob \texttt{e2241c6fffff1af4f94143d4df28dc471803410b}, is substantive, and contains
+both the header
+\texttt{PNP REVIEW REPORT::COST\_CERTIFICATES::CC-0005} and the required
+final sentinel.  Its code, raw result, log and cost-certificate spine were
+also present at the recorded verified blobs.  No recovery request was
+needed.
+
+The material peer versions additionally included LB-0004 report blob
+\texttt{258fe14120d649ef631fca91a7a9f1feceae166a} as read through the current path
+\path{research/review/reports/lower_bound/2026-10-10_0410_LB-0004.tex},
+RT-0002 blob \texttt{e637c1a2...}, and the current MODEL\_BRIDGE and
+PROOF\_MAP manuscripts.  Ellipses here are display abbreviations, not
+identifiers used for a write.
+
+\section{Claim card and exact quantifiers}
+The attacked generic implication is
+\[
+ \forall (R_n)_{n\ge1}\quad
+ \operatorname{rank}_{\Ftwo}M(R_n)=2^n
+ \Longrightarrow
+ \operatorname{CircuitSize}(R_n)=2^{\Omega(n)},             \tag{RANK-CIRCUIT}
+\]
+or the same statement with physical transistor count in place of Boolean
+gate count.  Here $R_n:\{0,1\}^n\times\{0,1\}^n\to\{0,1\}$, $M(R_n)$ is
+its $2^n$ by $2^n$ communication matrix, and circuits use the basis
+$\{\mathrm{AND}_2,\mathrm{OR}_2,\mathrm{NOT}\}$ with unbounded fan-out.
+The complete encoded input length is $N=2n$ bits.  The SAME\_REALIZATION
+object is one circuit computing the same relation whose matrix rank is
+measured.
+
+The weakest useful positive repair would not be (RANK-CIRCUIT).  It would
+specify a restricted circuit or protocol model, prove that every admissible
+SAT implementation induces the matrix partition used by the rank argument,
+and charge the simulation.  For unrestricted SAT circuits the missing
+quantifier is
+\[
+ \exists \{F_N\}\ \forall \{C_N\}\ \exists^\infty N:
+ C_N\text{ decides }\SAT_N\Longrightarrow |C_N|>N^k
+\]
+for every fixed $k$, or an equivalent superpolynomial formulation.  None of
+the current compatibility theorems supplies this all-circuit statement.
+
+\section{Exact counterfamilies}
+For $x,y\in\{0,1\}^n$, define
+\[
+ E_n(x,y)=[x=y],\qquad
+ H_n(x,y)=[x_i\le y_i\text{ for all }i],
+\]
+\[
+ A_n(x,y)=[y=x\oplus 1^n],\qquad
+ T_{n,k}(x,y)=\prod_{j=1}^{k}[x^{(j)}=y^{(j)}],
+\]
+where the blocks in $T_{n,k}$ partition the $n$ coordinates.
+$E_n$ is expressible by independent 2-CNF equality pairs; $H_n$ is the
+Horn implication/subset relation; $A_n$ is an affine diagonal solved by
+XOR elimination; and $T_{n,k}$ has a matching primal graph and treewidth
+one.
+
+\begin{theorem}[FULL-RANK-LINEAR-CIRCUIT1, PROVED/EXACT]
+For every $n\ge1$, each of $E_n,H_n,A_n,T_{n,k}$ has
+\[
+ \operatorname{rank}_{\Ftwo}M=2^n.
+\]
+In the declared basis, the following upper bounds hold:
+\[
+ |E_n|=|T_{n,k}|\le5n,\qquad |H_n|\le3n,
+ \qquad |A_n|\le6n.
+\]
+Using the declared macro costs
+\[
+ \mathrm{NOT}=2,qquad \mathrm{AND}_2=6,qquad
+ \mathrm{OR}_2=6
+\]
+transistors gives implementation upper bounds
+\[
+ 26n-4,qquad 14n-4,qquad 28n-4,qquad 26n-4
+\]
+respectively.  These transistor values are implementation upper bounds in
+one library, not claims of physical minimality.
+\end{theorem}
+
+\begin{proof}
+$M(E_n)$ is the identity matrix.  $M(A_n)$ is a permutation matrix.  If
+subsets are ordered by their binary masks, $M(H_n)$ has entry one exactly
+when the row subset is contained in the column subset.  It is upper
+triangular with unit diagonal, hence nonsingular over every field.
+Finally $M(T_{n,k})$ is a Kronecker product of identity matrices, so its rank
+is the product of the block ranks, namely $2^n$.
+
+For one equality coordinate compute XOR as
+\[
+ (a\lor b)\land\neg(a\land b),
+\]
+using four gates.  OR the $n$ mismatch bits with $n-1$ gates and negate once,
+for $5n$ gates.  Horn subset uses $n$ negations, $n$ conjunctions, an
+$(n-1)$-gate OR tree and one final negation, for $3n$ gates.  Affine
+complement adds one negation to each equality-coordinate mismatch, for
+$6n$ gates.  The independent product is the same coordinatewise equality
+circuit with block labels erased.  Summing the declared macro costs yields
+the transistor bounds.
+\end{proof}
+
+The theorem is an upper-bound counterexample.  It does not claim that
+communication rank is useless in every restricted model.  It proves that
+the numerical rank $2^n$ cannot be interpreted as $2^n$ mandatory gates or
+transistors.  In particular, the usual logarithmic rank scale is only $n$,
+which is compatible with the explicit linear circuits.
+
+\section{Fixed-instance hardwiring and the correct circuit target}
+\begin{lemma}[INSTANCE-HARDWIRE1, PROVED/EXACT]
+For every fixed encoded formula $F$, the Boolean function with no inputs and
+value $\SAT(F)$ has a circuit of size zero when constant rails are allowed,
+and size at most one when a constant-output gate is counted.
+\end{lemma}
+\begin{proof}
+Choose the constant $1$ circuit if $F$ is satisfiable and the constant $0$
+circuit otherwise.
+\end{proof}
+
+This is existential nonuniform hardwiring.  It does not give an efficient
+procedure for choosing the constant and therefore does not decide SAT.
+However, it makes a per-instance minimum-circuit lower bound vacuous.  The
+meaningful Boolean function is $\SAT_N:\{0,1\}^N\to\{0,1\}$ on all
+canonical $N$-bit encodings, with invalid strings assigned a fixed value.
+The relevant distinctions are:
+\begin{description}
+\item[] \textbf{One fixed instance:} constant output, no uniform acquisition
+claim.
+\item[] \textbf{One circuit per input length:} nonuniform circuit complexity,
+the $\mathsf{P/poly}$ target.
+\item[] \textbf{Uniform circuit generator:} an additional algorithmic
+uniformity condition, not implied by small nonuniform circuits alone.
+\item[] \textbf{Physical chip:} additionally requires a technology, layout,
+fan-out, wire, clock, area, delay and power model.
+\end{description}
+
+Under $P=NP$, a deterministic polynomial-time SAT algorithm exists and the
+standard time-to-circuit simulation yields a polynomial-size uniform circuit
+family.  Therefore a purported unconditional superpolynomial general-circuit
+lower bound cannot assume $P=NP$ and then derive a contradiction from an
+unproved necessity of compatibility extraction.  The lower bound itself is
+the missing separation-strength premise.
+
+\section{Wrappers, encodings and one-bit output}
+The minimum circuit ignores optional work.  DEAD adds disconnected gates;
+COPY duplicates a subcircuit; DELAY inserts two negations; RECOMP evaluates
+the same predicate twice and ANDs the answers; INTERP changes the gate-level
+representation.  All preserve the one-bit function and can increase a
+particular netlist without increasing minimum circuit size.  Padding inputs
+may be left unwired.  Duplicate clauses and alternative 2-CNF, Horn or XOR
+encodings can enlarge the source description while the semantic circuit
+remains linear in the live coordinates.
+
+Consequently, an execution or netlist property must be covariant under
+equivalent implementations before it can be a minimum-circuit resource.
+Requiring a circuit to output a compatibility table, proof, witness or state
+exposure changes the function from one-bit decision and does not lower-bound
+the original circuit without an exact reduction back to it.
+
+\section{Bounded reproducible test}
+The command
+\begin{verbatim}
+timeout 30s python3 experiments/review/redteam_rank_circuit_transfer_test.py
+  --max-exhaustive-n 8 --max-rank-n 9
+  --output results/raw/review/2026-10-11_redteam_rank_circuit_transfer.json
+\end{verbatim}
+used a 25-second cooperative alarm and completed in 7.530 seconds.  It
+performed 349,520 semantic netlist checks, 1,747,600 wrapper-equivalence
+checks, 174,760 ignored-padding checks, and 36 exact $\Ftwo$ rank checks.
+At $n=9$, all four matrices had rank 512; the gate counts were 45, 27, 54
+and 45, with declared macro transistor upper bounds 230, 122, 248 and 230.
+All assertions passed.  The experiment is \textbf{COMPUTATIONAL} finite
+validation only; the displayed theorem supplies the asymptotic proof.
+
+The script records no randomized samples.  It evaluates every pair through
+$n=8$ and computes exact ranks through $n=9$.  Larger experiments were not
+needed and no asymptotic extrapolation from timing was made.
+
+\section{Primary literature and barrier audit}
+Shannon's switching-circuit synthesis work studies realizing specified
+Boolean behavior by switching networks \cite{shannon}.  Its general counting
+perspective concerns the prevalence of hard functions, not a lower bound for
+the explicit SAT function.  The transfer ``most functions are hard, hence
+SAT is hard'' is a \textbf{FAILED TRANSFER}.
+
+Razborov and Rudich formalize a conditional barrier for large, constructive,
+useful properties proving strong general-circuit lower bounds
+\cite{razborovrudich}.  This audit proposes no such positive property; its
+linear circuits are unconditional upper bounds.  Any future use of
+compatibility rank as a broad constructive property must nevertheless state
+largeness and usefulness rather than merely cite the barrier slogan.
+
+Williams proves superpolynomial lower bounds for nonuniform $\mathrm{ACC}$,
+a restricted constant-depth circuit class \cite{williams}.  That theorem is
+a genuine lower bound in its declared model, but transferring it to
+unrestricted SAT circuits requires an absent compiler forcing arbitrary
+circuits into $\mathrm{ACC}$.  This is a \textbf{FAILED TRANSFER} as a free
+step and an \textbf{ANALOGY/CANDIDATE} only if such a compiler is separately
+specified.
+
+Baker--Gill--Solovay construct relativized worlds with both equality and
+separation of P and NP \cite{bgs}.  The counterfamilies and hardwiring lemma
+relativize, and an extensional SAT oracle makes the one-bit decision a single
+query.  Nothing here supplies a nonrelativizing hinge.  Low-degree or
+algebraic extension access likewise does not invalidate the explicit easy
+circuits, so the audit does not cross the algebrization barrier.  The PQ
+Schur-square and quadratic-relation prompts are \textbf{FAILED TRANSFERS}
+for this target unless an exact same-realization theorem converts their
+code invariants into general-circuit size; the easy full-rank controls show
+that raw algebraic abundance can coexist with simple decision circuitry.
+
+The electronics correspondence is exact only in the easy direction used
+here: each declared Boolean macro has a constant transistor implementation,
+so an $O(n)$ gate netlist gives an $O(n)$ implementation upper bound.  A
+physical VLSI area-time, routing or fan-out lower bound is model-specific and
+does not become an unrestricted circuit or Turing-machine lower bound without
+a layout-preserving simulation theorem.  That converse transfer remains
+\textbf{OPEN}.
+
+\section{Claim-by-claim verdicts}
+\begin{longtable}{p{0.26\textwidth}p{0.18\textwidth}p{0.47\textwidth}}
+\toprule Claim/version&Verdict&Reason and smallest repair\\\midrule\endhead
+CC-0005 full-rank easy families
+&PROVED/EXACT accepted&The rank identities and direct semantic algorithms
+are correct.  This audit adds explicit bounded-fan-in circuits and transistor
+macro upper bounds.\\
+Rank magnitude $2^n$ implies $2^{\Omega(n)}$ gates or transistors
+&FALSIFIED/RETIRED&Equality already has identity matrix and a $5n$-gate
+circuit.  Restrict the model and prove a same-realization simulation before
+using rank.\\
+Every exact SAT circuit must expose a compatibility table or quotient
+&OPEN / unsupported&One-bit circuits for the easy controls do not expose the
+table.  A SAT-specific white-box execution relation is required.\\
+Minimum hardware for a fixed SAT instance is hard
+&FALSIFIED as stated&The fixed answer is a constant.  Replace the target by
+the length-indexed function $\SAT_N$ and declare uniformity.\\
+General superpolynomial SAT circuit lower bound
+&OPEN&It would imply $\SAT\notin\mathsf{P/poly}$, stronger than merely
+$P\ne NP$.  No current project theorem establishes it.\\
+LB-0004 fiber-type quotient
+&PROVED/EXACT scoped accepted&It bounds an endpoint union once types and
+binding are supplied; it does not force circuit materialization of those
+types.\\
+CC-0005 $\mathsf{WExt}$ next target
+&OPEN&It must bind to the actual execution, survive equivalent wrappers, and
+avoid requiring more than one-bit decision correctness.\\
+\bottomrule
+\end{longtable}
+
+\section{CORPUS REVIEWED}
+The recursive GitHub tree at the starting head, root main, AGENTS, CODEX,
+the repository research skill and both red-team protocol references, all
+current task specifications, review protocol and STATUS, all current review
+spines, main4/main5, newest builder reports, and current coordination ledgers
+were surveyed.  Underlying reports reviewed for this target included
+MODELBRIDGE-0002, LB-0004, CC-0005 and RT-0002.
+
+Five additional underlying PROOF\_MAP artifacts were read rather than used
+through summaries: SEM-QUOTIENT-ACQUIRE1, RAM-RESIDUAL-AUDIT1,
+HEC-RAM-BRIDGE-AUDIT, DAG-SHARE-RECOVERY, and
+WEIGHTED-POTENTIAL-COUNTEREXAMPLE.  They independently preserve the same
+guard: semantic multiplicity, histories, no-reread state, DAG nodes and
+weighted syntactic mass do not become arbitrary-algorithm resources without
+a charged transfer.  Repository search covered compatibility, rank,
+circuit, transistor, semantic quotient, hardwiring, P/poly, padding and
+wrapper variants.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+CC-0005 already proved the central full-rank versus direct-decision
+separation.  The new contribution is not another rank computation: it is the
+explicit unrestricted-circuit countermodel, the fixed-instance quantifier
+repair, and the declared gate-to-transistor upper-bound ledger.  Earlier
+RAM-residual and DAG-sharing audits already rejected semantic multiplicity
+as mandatory computation, so this report adopts rather than renames that
+principle.
+
+No contradiction with LB-0004 was found.  Full-rank relations can still
+have many distinct semantic rows, while LB-0004 remains a conditional union
+bound after a verifier exposes fiber types.  Neither result forces an
+arbitrary circuit to enumerate rows or fibers.  No contradiction with the
+root OPEN status or the retired universal cosine endpoint was found.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root main already warns that structural rank does not itself create a
+SAT-semantic return and leaves arbitrary-algorithm acquisition OPEN.  This
+audit makes the circuit interpretation explicit: even full rank $2^n$ is
+compatible with $O(n)$ unrestricted bounded-fan-in circuit size, and a
+specific-instance circuit is constant by hardwiring.  Root main was not
+edited because REDTEAM has no LSPV ownership region.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{description}
+\item[] \textbf{ADOPTED:} CC-0005's four easy full-rank families and
+extensional-extractor warning; LB-0004's scoped fiber quotient; SAME\_REALIZATION;
+the one-bit output guard; explicit source, encoding, wrapper and acquisition
+charges.
+\item[] \textbf{REJECTED:} interpreting a communication-matrix dimension as
+a gate count; physical transistor language without a declared library and
+layout model; per-instance circuit minimum as the SAT-family target.
+\item[] \textbf{FALSIFIED/RETIRED:} the generic transfer from full
+compatibility rank to exponential unrestricted circuit or transistor size,
+and any claim that optional extraction circuitry is unavoidable merely
+because the semantic matrix exists.
+\end{description}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+The current formal review documents are conservatively OPEN and do not state
+the falsified exponential rank-to-gate implication.  The phrase ``minimum
+number of transistors for a specific SAT problem'' is nevertheless ambiguous
+between a fixed instance, an input-length family, and a physical universal
+chip.  Future reports should reserve circuit lower bounds for the
+length-indexed SAT function and should report transistor counts only as
+technology-specific upper or lower bounds.
+
+\paragraph{Single next target.}
+Formalize $\mathsf{WExt}(A,F,Q,\tau)$ only after fixing its circuit
+counterpart: does a verifier-observable predicate of a one-bit circuit remain
+invariant under DEAD/COPY/DELAY/INTERP/RECOMP and under replacing a direct
+affine or 2-SAT circuit by an extensionally equal circuit?  If the admissible
+$Q$ sets can be disjoint, retire universal extraction.  If not, prove the
+SAT-specific source theorem that forces their intersection and charge its
+verification without enumerating the compatibility matrix.  This bridge,
+the nonrelativizing and nonalgebrizing hinge, general SAT circuit lower
+bounds, and P versus NP remain \textbf{OPEN}.
+
+\begin{thebibliography}{9}
+\bibitem{shannon} C. E. Shannon,
+\emph{The Synthesis of Two-Terminal Switching Circuits}, Bell System
+Technical Journal 28 (1949), 59--98.
+\url{https://archive.org/download/bstj28-1-59/bstj28-1-59.pdf}.
+\bibitem{razborovrudich} A. Razborov and S. Rudich,
+\emph{Natural Proofs}, Journal of Computer and System Sciences 55 (1997),
+24--35. \url{https://mit6875.github.io/PAPERS/natural_proofs.pdf}.
+\bibitem{williams} R. Williams,
+\emph{Non-Uniform ACC Circuit Lower Bounds}, Journal of the ACM 61(1)
+(2014). \url{https://people.csail.mit.edu/rrw/acc-lbs-journal-final.pdf}.
+\bibitem{bgs} T. Baker, J. Gill, and R. Solovay,
+\emph{Relativizations of the $P=?NP$ Question}, SIAM Journal on Computing
+4 (1975), 431--442. \url{https://doi.org/10.1137/0204037}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::REDTEAM::RT-0003
+\end{document}
