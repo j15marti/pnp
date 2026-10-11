@@ -1,0 +1,309 @@
+% LSPV-4 REPORT::TAGGLUE1::2026-10-11T22:39:21Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,xurl}
+\usepackage[hidelinks]{hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\title{LSPV-4 TAGGLUE1: Actual 3CNF Gluing Repairs Semantics, Not Hardness}
+\author{UNIVERSAL\_CORE\_REDTEAM / LSPV-4}
+\date{11 October 2026, 22:39:21 UTC}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+TESTS-0015 retires the semantic use of LB-0019's disjoint satisfiable tags
+and proposes actual gluing clauses as the smallest repair.  This report builds
+that repair.  A proper, duplicate-free, bounded-occurrence 3CNF enforces every
+binary parent tag as the AND of its children and pins supplied leaf/tag values.
+The result has a trilemma: disjoint tags erase; consistent promised tags expose
+the answer at the root; arbitrary pinned tags reduce to local consistency plus
+a true root, decidable by one linear pass and logarithmic address space.
+Thus gluing repairs semantic coupling but does not create a compatibility,
+memory, communication, or superpolynomial-time lower bound.  A bounded audit
+performed 610,828 checks with zero failures.  The arbitrary-decider transfer
+and P versus NP remain \OPEN.
+\end{abstract}
+
+\section{Claim card and quantifiers}
+
+\begin{center}\small
+\begin{tabular}{p{0.35\linewidth}p{0.19\linewidth}p{0.38\linewidth}}
+\toprule
+Claim & Status & Verdict\\ \midrule
+\texttt{TAG-GLUING-SEMANTICS1} & \EXACT, review pending &
+Proper 3CNF clauses make each supplied parent tag equal child AND.\\
+\texttt{TAG-GLUING-TRILEMMA1} & \EXACT, review pending &
+Free tags erase; promised tags give a root shortcut; pinned total tags admit
+a linear local validator.\\
+\texttt{TAG-GLUING-TO-HARDNESS1} & \RETIRED &
+Local gluing alone implies neither named-object exposure nor superpolynomial
+cost.\\
+Finite audit & \COMP & 610,828 checks; zero failures.\\
+Arbitrary-decider transfer / P versus NP & \OPEN & No forbidden realization.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The attacked implication is
+\[
+\begin{split}
+&\text{explicit local 3CNF tag gluing on a clean-core island}\\
+&\quad\Longrightarrow
+\text{every polynomial SAT decider exposes a named compatibility object}\\
+&\hspace{4cm}\text{or pays a superpolynomial resource cost}.
+\end{split}\tag{TG-H}
+\]
+The model is a deterministic uniform random-access machine receiving a
+standard explicit 3CNF encoding of length \(N\), with read-only input,
+writable work space, and one output bit.  Recognition, parsing, relation
+checks, reconstruction, and fallback calls are charged.  The
+SAME\_REALIZATION object is the explicit gluing formula; no foreign internal
+state is identified with it.
+
+\section{Primary-literature and transfer preflight}
+
+The obstacles are the semantic gap in the original tags and the absent
+arbitrary-computation transfer.  Tseitin's definitional transformation is a
+direct theorem type: a fixed Boolean gate is represented by constantly many
+CNF clauses with extension variables \cite{Tseitin}.  It supplies coupling,
+not a lower bound.  Buss places Boolean formula value in ALOGTIME
+\cite{Buss}; Cook et al.\ place their more general Tree Evaluation problem in
+logDCFL and prove large branching-program bounds only under declared
+restrictions \cite{TreeEval}.  Tree structure is therefore exploitable; those
+restricted bounds do not transfer to unrestricted SAT machines.
+
+Baker--Gill--Solovay and Aaronson--Wigderson remain direct barrier theorems
+for relativizing and algebrizing strategies \cite{BGS,AW}.  VLSI routing and
+distributed cuts are \CAND{} analogies only because physical locality is
+absent from this model.
+
+\section{Explicit proper 3CNF repair}
+
+For children \(x,y\), parent \(z\), and fresh padding \(p,q\), define
+\[
+\Gamma_{\wedge}=
+(\neg x\vee\neg y\vee z)
+\wedge(x\vee\neg z\vee p)\wedge(x\vee\neg z\vee\neg p)
+\wedge(y\vee\neg z\vee q)\wedge(y\vee\neg z\vee\neg q).
+\tag{1}
+\]
+For literal \(\ell\) and fresh \(a,b\), let
+\[
+\Pi(\ell)=
+(\ell\vee a\vee b)\wedge(\ell\vee a\vee\neg b)
+\wedge(\ell\vee\neg a\vee b)\wedge(\ell\vee\neg a\vee\neg b).
+\tag{2}
+\]
+Every clause has three distinct variables, clauses are duplicate-free, and
+occurrence is bounded by a constant.  Direct truth tables give
+\[
+\exists p,q\;\Gamma_{\wedge}\Longleftrightarrow z=x\wedge y,
+\qquad
+\exists a,b\;\Pi(\ell)\Longleftrightarrow \ell=1.
+\tag{3}
+\]
+
+Fix a complete binary tree with \(L=2^d\) leaf bits \(s\) and \(I=L-1\)
+supplied internal tags \(\tau\).  Pin every leaf and tag to its supplied value,
+add (1) at every node, and assert the root true using (2).  Call the proper
+3CNF \(H_d(s,\tau)\).  Its variables, clauses, and encoded characters are
+linear in \(L+I\), up to ordinary identifiers.  This concretely realizes
+TAG-GLUING-GADGET1, though not exact Monotone 3SAT-\((2,2)\).
+
+\begin{theorem}[\texttt{TAG-GLUING-SEMANTICS1}]
+\EXACT, independent review pending.  For every \(d,s,\tau\),
+\[
+H_d(s,\tau)\in\SAT
+\Longleftrightarrow
+\tau=\operatorname{Eval}_{\wedge}(s)
+\ \land\ \bigwedge_{i=1}^{L}s_i=1.
+\tag{4}
+\]
+\end{theorem}
+\begin{proof}
+Each pin forces its advertised bit.  Equation (3) forces each internal tag to
+be the AND of its children.  Bottom-up induction makes the tag vector unique
+and the root equal \(\bigwedge_i s_i\); the root assertion proves necessity.
+Conversely, under the displayed conditions every local gadget has padding
+witnesses, so all clauses are simultaneously satisfiable.
+\end{proof}
+
+\section{The gluing trilemma}
+
+\begin{theorem}[\texttt{TAG-GLUING-TRILEMMA1}]
+\EXACT, independent review pending.
+\begin{enumerate}
+\item Variable-disjoint satisfiable tags erase, as in TESTS-0015.
+\item If \(\tau=\operatorname{Eval}_{\wedge}(s)\) is promised and the root is
+locally addressable, one root-tag probe decides \(\bigwedge_i s_i\).
+\item With arbitrary pinned \(s,\tau\), a flat pass checks every local
+equation and the root in \(O(L+I)=O(N)\) time, one Boolean accumulator,
+\(O(\log N)\) address state in heap layout, zero compatibility-table
+materialization, zero reconstruction, and one output bit.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+The first item is component erasure.  The second is the definition of a
+consistent AND tree.  For the third, scan each record, compare its supplied
+parent with its two supplied children, reject on the first mismatch, and
+finally check the root.  Equation (4) proves correctness.  Heap indices
+compute child addresses from one \(O(\log N)\)-bit index.
+\end{proof}
+
+The theorem does not claim every implementation follows this scan.  It gives
+one explicit algorithm, which retires (TG-H) for this island.  Under the audit
+hypothesis \(\SAT\in P\) with total decider \(A\), a total wrapper recognizes
+\(H_d\), runs the charged \(O(N)\) validator on-island, and invokes \(A\)
+otherwise.  The fallback keeps \(A\)'s unknown polynomial exponent, so no
+contradiction or exponent elimination follows.
+
+\section{Reproducible hostile audit}
+
+\path{experiments/review/tag_gluing_trilemma_redteam.py} exhausts every
+leaf/tag vector at depths \(1,2,3\), then runs 48 seeded trials per depth
+\(4,\ldots,12\), reaching 4,096 leaves and 4,095 tags.  Seed:
+202610112239.  One invocation performed 610,828 checks with zero failures in
+1.354872408 seconds: 33,336 cases, 66,672 semantic checks, 492 promise checks,
+33,336 tag mutations, 200,016 wrapper checks, 166,680 encoding checks,
+133,344 padding checks, and 10,288 easy-model controls.
+
+DIRECT, COPY, DEAD, DELAY, INTERP, RECOMP; heap, preorder, postorder, reverse,
+pointer layouts; Horn, 2SAT, affine/Tseitin, bounded-treewidth paths,
+independent products, and padding were checked.  Raw output:
+\path{results/raw/review/2026-10-11_tag_gluing_trilemma_redteam.json}.
+Script SHA-256:
+\texttt{fc8cd0bda272c45754e2cd8353455784f51338d9f0a74d7cf51adc0c0194596a}.
+JSON SHA-256:
+\texttt{5d67e45001e8072df70e4dfeda40fce945852814ef024521f9d43b9ee06c1bd1}.
+Finite checks validate implementation only; (3)--(4) prove the result.
+
+\section{Wrappers and barriers}
+
+DEAD, COPY, DELAY, INTERP, and RECOMP alter traces without changing the
+function.  Layouts change addresses, not the linear upper bound when locator
+metadata is charged.  Padding weakens bounds stated in padded length.  Compact
+circuits and branching programs help: the tree is already a linear circuit.
+
+The trilemma relativizes.  A semantic oracle bypasses the validator; algebraic
+access evaluates local degree-two gates without materializing our state.
+There is no nonrelativizing or nonalgebrizing hinge.  No large constructive
+circuit property is used, so Natural Proofs is not active.  Nonuniform
+circuits also evaluate the fixed-layout tree in linear size.  No
+solver-to-protocol theorem forces local consistency messages.
+
+\section{Post-quantum technique ledger}
+
+Tseitin gate encoding is an \textbf{EXACT OBJECT/THEOREM TRANSFER}.  Collision
+lossiness is exact for the root map:
+\[
+\operatorname{Coll}(\operatorname{AND})=(2^L-1)^2+1,
+\]
+but on the consistent promise it is a shortcut, not storage.  Black-box
+worst-case/average-case extraction is an \textbf{ANALOGY/CANDIDATE needing a
+new bridge}.  Schur squares, quadratic-relation rank, Hilbert functions,
+syzygies, Betti numbers, and special soundness are \textbf{FAILED TRANSFER}:
+no matching representation or conflicting openings are forced.  Hash and
+random-oracle assumptions remain inadmissible.
+
+\section{CORPUS REVIEWED}
+
+The run surveyed the GitHub tree and read root \path{main.tex},
+\path{main4.tex}, \path{main5.tex}, \path{AGENTS.md}, \path{CODEX.md}, the
+PNP skill/protocol, all seven tasks, newest verified MAIN SYNTHESIS-0015-R1,
+and relevant historical MAIN snapshots.  It read LB-0019, TESTS-0015,
+predecessor REDTAG1, MODELBRIDGE-0019, RT-0017, SYNTHESIS-0015, and older
+LSPV-4 barriers.  HEC, VSC-HEC, G-PPC-HEC, CRS-PPC, CCSPC, RCCN,
+source-reduction, governance, and cited artifacts were inspected.  Repository
+search found no earlier proper-3CNF TAG-GLUING-GADGET1 instantiation.
+
+The predecessor
+\path{research/agents/lspv-3/2026-10-11_2137_LSPV-3_REDTAG1.tex}
+is substantive, has its required header and sentinel, and was read back from
+GitHub.  No recovery was required.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+TESTS-0015 already proves free-tag erasure and requests gluing.  REDTAG1
+already proves the promise shortcut and totality seam.  RT-0017 and
+SYNTHESIS-0008 already give recognizable-island guards.  The new result is
+the proper 3CNF repair and exact three-way classification.  It contradicts no
+verified theorem: gluing removes the semantic defect but leaves the shortcut,
+island barrier, and LB-0018/LB-0019 total bit-probe floor intact.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN named TAG-GLUING-GADGET1 as the next target.  It is now instantiated
+for a bounded-occurrence proper 3CNF island, not exact Monotone
+3SAT-\((2,2)\).  The result is semantic repair only; the linear validator
+blocks promotion to hardness.  EXTERNALLY-BOUNDED-SOURCE-PASS1 and all
+load-bearing \OPEN{} arrows remain unchanged.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\textbf{ADOPTED:} TESTS-0015 erasure, REDTAG1 totality/promise distinction,
+LB-0019 encoded-length ceiling, SAME\_REALIZATION and full cost accounting.
+
+\textbf{REJECTED:} tree depth, local equations, or semantic-state count as
+unrestricted runtime; cross-model branching-program, VLSI, communication, or
+proof-system imports without a transfer theorem.
+
+\textbf{FALSIFIED/RETIRED:} \texttt{TAG-GLUING-TO-HARDNESS1} for this tree;
+semantic coupling alone forcing a large object, memory, communication, or
+superpolynomial time.
+
+\textbf{OPEN:} full-language clean-core source pass, arbitrary-decider
+transfer, arbitrary-exponent elimination, forbidden landing,
+nonrelativization, and nonalgebrization.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+The phrase \emph{add gluing clauses} is insufficient as a hardness repair:
+it may add only a polynomial-time local relation.  Claims that this forces an
+arbitrary solver to expose a chosen tree state are overstated.  Conversely,
+claims that actual gluing is semantically useless are stale: (4) makes
+inconsistent pinned tags unsatisfiable.
+
+\section{Precise handoff}
+
+Do not deepen this explicit tag tree.  The next target is
+\texttt{SOURCE-LOCAL-NONCOMPUTABLE-TAG1}: an answer-oblivious source-local
+encoding whose tag is not generated from recognizable leaf types by the same
+polynomial pass, with all bits, locators, failed routes, and replay charged.
+It must use worst-case inputs in the full canonical hard language, not an
+easy recognizable island, and connect the charged pass to one model-matched
+forbidden realization.  Computing a tag equal to \(\SAT(F)\) from syntax
+already computes the answer; leaving it existential returns to SAT search.
+This missing implication remains separation-strength.
+
+\begin{thebibliography}{9}
+\bibitem{Tseitin} G. S. Tseitin, \emph{On the complexity of derivation in
+propositional calculus}, Studies in Constructive Mathematics and Mathematical
+Logic, Part II, 1968/1970, 115--125.
+\bibitem{Buss} S. R. Buss, \emph{The Boolean formula value problem is in
+ALOGTIME}, STOC 1987, 123--131.
+\bibitem{TreeEval} S. Cook, P. McKenzie, D. Wehr, M. Braverman, and
+R. Santhanam, \emph{Pebbles and branching programs for tree evaluation},
+ACM Transactions on Computation Theory 3(2), 2012.
+\bibitem{BGS} T. Baker, J. Gill, and R. Solovay, \emph{Relativizations of the
+P=?NP question}, SIAM Journal on Computing 4 (1975), 431--442.
+\bibitem{AW} S. Aaronson and A. Wigderson, \emph{Algebrization: a new barrier
+in complexity theory}, ACM Transactions on Computation Theory 1 (2009),
+Article 2.
+\end{thebibliography}
+
+\paragraph{Final status.}
+\texttt{TAG-GLUING-SEMANTICS1} and \texttt{TAG-GLUING-TRILEMMA1}: \EXACT,
+review pending.  \texttt{TAG-GLUING-TO-HARDNESS1}: \RETIRED.  Finite audit:
+\COMP.  Arbitrary-decider transfer, forbidden realization, barrier escape,
+and P versus NP: \OPEN.  P versus NP remains open.
+
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::TAGGLUE1
