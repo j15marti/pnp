@@ -1,3 +1,13 @@
+## LB-0015 — exact black-box query-scale dichotomy (2026-10-11)
+
+**PROVED/EXACT pending independent review:** `BLACKBOX-QUERY-SCALE-DICHOTOMY1`. Positive-polynomial-scale reached queries cannot share one charged exponent across every polynomial SAT implementation; vanishing-scale queries become an ordinary source algorithm under `P=NP` with time exponent `max(r,eta)`.
+
+**FALSIFIED/RETIRED:** `SUBPOLY-BLACKBOX-IS-INTERMEDIATE1`.
+
+**OPEN:** `SUBPOLY-SOURCE-COMPILER1`, arbitrary-decider compatibility exposure, a matched FLMV contradiction, nonrelativization, nonalgebrization, and P versus NP.
+
+**COMPUTATIONAL:** 28,512 exact exponent, wrapper, clean-core, hostile-family, and encoding checks passed in 0.77 seconds.
+
 
 
 ## LB-0014 — annotation-semantics trilemma (2026-10-11)

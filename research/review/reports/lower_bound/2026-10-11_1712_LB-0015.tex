@@ -1,0 +1,333 @@
+% PNP REVIEW REPORT::LOWER_BOUND::LB-0015::2026-10-11T17:12:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\status}[1]{\textsc{#1}}
+\title{LB-0015: Exact query-scale dichotomy for extensional black-box SAT extraction}
+\author{UNIVERSAL\_CORE\_LOWER\_BOUND}
+\date{11 October 2026, 17:12 UTC}
+\begin{document}\maketitle
+
+\section*{Executive result}
+
+This run closes the query-scale loophole left by MODELBRIDGE-0015, but not in
+the direction of a SAT lower bound.  For an extensional deterministic
+transducer that asks polynomially many exact SAT questions, there are only two
+asymptotic query-scale regimes:
+\begin{enumerate}[leftmargin=1.5em]
+\item if a positive polynomial query scale occurs infinitely often, arbitrary
+      delay wrappers prevent any one fully charged exponent from holding for
+      every polynomial-time SAT implementation; but
+\item if every reached query has length $N^{o(1)}$, then under the assumption
+      $P=NP$ any one fixed polynomial SAT solver evaluates every query in
+      $N^{o(1)}$ time and space.  The full transducer becomes an ordinary
+      uniform source algorithm with time exponent equal to the larger of its
+      local-work and query-count exponents, independently of the solver's
+      fixed exponent.
+\end{enumerate}
+This is \texttt{BLACKBOX-QUERY-SCALE-DICHOTOMY1}, \status{Proved/Exact}
+pending independent review.  The vanishing-scale half is the exact $c=0$
+specialization of the repository's earlier wrapper accounting; the new
+contribution is the exhaustive dichotomy obtained by combining that fact with
+MODELBRIDGE-0015's delay-wrapper gate.
+
+Consequently \texttt{SUBPOLY-BLACKBOX-IS-INTERMEDIATE1} is
+\status{Falsified/Retired}: subpolynomial exact SAT queries do not define a
+third oracle-relative lower-bound regime.  They give a genuine ordinary
+algorithm under $P=NP$.  Constructing such an algorithm in a forbidden
+time--space region is still \status{Open} and is separation-strength.
+P versus NP remains \status{Open}.
+
+\section{Clean core and semantic compatibility}
+
+Fix a canonical self-delimiting binary encoding of proper 3-CNF and write
+$N=|\operatorname{enc}(F)|$.  The explicit clean-core universe is
+\[
+ \mathcal C_N=\{F:|\operatorname{enc}(F)|=N,
+   \ F\text{ is canonical proper width-three CNF}\}.
+\]
+For $F=C_1\wedge\cdots\wedge C_m$ on $n$ variables define
+\[
+ H(F)_{\alpha,j}=1\iff \alpha\models C_j,
+ \qquad H(F)\in\{0,1\}^{2^n\times m}.
+\]
+SAT asks only whether $H(F)$ contains an all-one row.  The theorem below is
+representation neutral: the transducer's output may be the SAT bit, a
+witness, selected entries of $H(F)$, an occurrence structure, a residual
+graph, or any other charged finite string.  Output length is included in
+local work.  Nothing requires a one-bit decider to materialize $H(F)$.
+
+\section{Exact model and quantifiers}
+
+Let $E^{\SAT}$ be one uniform deterministic extensional oracle transducer.
+On every source input $F$ of encoded length $N$, it constructs at most
+$N^{\eta+o(1)}$ adaptive SAT queries, performs $N^{r+o(1)}$ charged local
+work, and uses $N^{p+o(1)}$ charged local/retained workspace.  Query
+construction, source access, serialization, suspension, resumption,
+combining, storage and output are included.  The oracle interface consists
+only of a query string and its exact SAT bit.
+
+Because SAT is a fixed language, every exact implementation induces the same
+adaptive transcript.  Define the actual worst reached query length
+\[
+ q_E(N)=\max_{\substack{|\operatorname{enc}(F)|=N\\
+                        Q\text{ reached by }E^{\SAT}(F)}}
+       \max\{2,|\operatorname{enc}(Q)|\}
+\]
+and its scale
+\[
+ \sigma_E(N)=\frac{\log q_E(N)}{\log N}.
+\]
+The maximum is taken over actual transcripts, not over a loose declared
+upper bound.  Empty query sets use $q_E(N)=2$.
+
+\paragraph{BLACKBOX-QUERY-SCALE-DICHOTOMY1 (\status{Proved/Exact}).}
+Assume $\SAT\in P$.  Exactly one of the following holds.
+\begin{enumerate}[leftmargin=1.5em,label=(\Alph*)]
+\item $\sigma_E(N)\to0$.  For every fixed uniform polynomial-time exact SAT
+      implementation $A$,
+      \[
+       T_{E[A]}(N)\le N^{\max\{r,\eta\}+o(1)},\qquad
+       S_{E[A]}(N)\le N^{p+o(1)}+N^{o(1)}.
+       \tag{1}
+      \]
+      In particular, fixing one such $A$ produces an ordinary uniform source
+      algorithm for the output of $E$ whose leading exponents do not contain
+      the solver's polynomial exponent.
+\item $\sigma_E(N)\not\to0$.  For every proposed common exponent $c$ there is
+      a uniform polynomial-time exact SAT implementation $A_c$ and infinitely
+      many source inputs on which the fully charged execution of $E[A_c]$
+      exceeds $N^c$ time.
+\end{enumerate}
+
+\paragraph{Proof.}
+For (A), fix an exact solver $A$ with time $m^{K+o(1)}$ and space
+$m^{s+o(1)}$, where $K,s$ are fixed constants.  Write
+$q_E(N)=N^{\delta(N)}$ with $\delta(N)\to0$.  Each call costs
+\[
+ q_E(N)^{K+o(1)}=N^{\delta(N)(K+o(1))}=N^{o(1)}
+\]
+time and $N^{o(1)}$ workspace.  Bounded query lengths cause only a fixed
+constant cost.  Summing at most $N^{\eta+o(1)}$ sequential calls and adding
+local work gives (1); sequential reuse gives the workspace maximum.  All
+objects belong to this same execution.
+
+For (B), failure of convergence to zero gives some $\varepsilon>0$ and
+infinitely many $N$ with an actual reached query of length at least
+$N^\varepsilon$.  MODELBRIDGE-0015's delay-wrapper argument applies: from any
+polynomial exact solver $A_0$, choose an integer $d>c/\varepsilon$ and delay
+for $|Q|^d$ steps before running $A_0(Q)$.  Exact answers and hence the
+adaptive transcript are unchanged, while the reached query costs at least
+$N^{\varepsilon d}>N^c$.  The two alternatives are exhaustive and mutually
+exclusive. \hfill$\square$
+
+\section{What the theorem does and does not transfer}
+
+Under $P=NP$, the vanishing-scale branch is not merely an oracle program: it
+is an ordinary uniform algorithm after fixing one polynomial SAT solver.
+Thus any lower bound claimed for an extracted resource $R(F)$ must apply to
+that ordinary source computation.  Oracle terminology supplies no extra
+hardness.  If $E$ itself decides SAT and the parameters of (1) enter a
+published forbidden random-access time--space region, then $P=NP$ yields an
+unconditional contradiction.  Proving that such an $E$ exists from every
+polynomial SAT decider would therefore establish the separation; it is not a
+routine intermediate.
+
+The theorem does not prove that a vanishing-scale extractor exists, does not
+lower-bound source computation of $H(F)$, and does not force an arbitrary
+decider to expose any transcript or compatibility object.  An intensional
+compiler reading program code, traces or timing lies outside the extensional
+model and still owes wrapper covariance and all construction/transport costs.
+Unit-cost semantic-oracle calls are also a different model.
+
+\paragraph{Exact surviving target (\status{Open}).}
+\texttt{SUBPOLY-SOURCE-COMPILER1}: assuming $\SAT\in P$, construct one
+ordinary random-access SAT decider obtained from a uniformly charged
+vanishing-scale extensional transducer with
+\[
+ C=\max\{r,\eta\}<\varphi,
+ \qquad
+ p<\frac12\left(\frac{C+2}{C^2}-C\right),
+\]
+or another exactly matched published forbidden region.  Query construction,
+source reads, output, buffers and solver workspace must be included.  The
+FLMV theorem supplies the endpoint, not this compiler.
+
+\section{Primary-literature and barrier-transfer preflight}
+
+The two obstacles checked before promotion were whether bounded/small SAT
+queries carry a known unconditional lower bound and whether their cost can be
+matched to an ordinary-machine endpoint.  Fortnow--Lipton--van Melkebeek--
+Viglas prove SAT time--space lower bounds on specified random-access machine
+regions; they do not force a query transducer or compatibility object.
+Beigel--Gasarch--Kinber study exact bounded-query/frequency phenomena and give
+SAT consequences under $P\ne NP$; those conditional SAT bounds cannot be
+inserted into a proof whose counterfactual premise is $P=NP$.  Yesha's and
+the sparse-set literature's bounded truth-table reductions concern sparse
+target sets and collapse consequences, not short query strings to SAT itself.
+
+Baker--Gill--Solovay's relativization barrier and Aaronson--Wigderson's
+algebrization barrier remain fully active: both halves of the present
+dichotomy are black-box accounting statements.  No Natural-Proofs-style
+constructive circuit property is defined.  Communication/query-complexity
+``answer bandwidth'' is a \status{Analogy/Candidate}: answer bits are counted,
+but the transducer also constructs queries from the source and no theorem
+turns bandwidth into arbitrary SAT decision time.  VLSI locality and routing
+are \status{Failed Transfer} here because an unrestricted RAM can synthesize
+short queries without physical wire constraints.  The only direct theorem
+transfer is the model-matched FLMV endpoint after an actual ordinary
+time--space realization has been constructed.
+
+\section{Encoding, padding, and one-bit output audit}
+
+All exponents use the actual encoded input length $N$.  A fixed polynomial
+padding $N'=N^a$ rescales a positive query exponent $\lambda$ to
+$\lambda/a>0$ and therefore cannot enter branch (A).  Superpolynomial padding
+can make a semantic query appear subpolynomial in the padded length, but is
+not a polynomially equivalent local encoding; reading the padded parent is
+itself charged.  Renaming, complementation and linearly or polynomially
+related self-delimiting encodings preserve the stated dichotomy after the
+corresponding exponent conversion.
+
+One-bit output does not help or hurt the accounting theorem.  If the output
+is only $\SAT(F)$, the composed source algorithm returns that bit.  If a
+larger compatibility object is demanded, its writing cost is charged and the
+problem has changed.  Semantic state count, rank, communication matrices and
+representation size do not imply runtime for either output contract.
+
+\section{Bounded reproducible audit}
+
+The new script
+\path{experiments/review/blackbox_query_scale_dichotomy_audit.py} completed
+one unchunked invocation in 0.77 seconds, below the 30-second rule.  It checked
+784 exact positive-scale delay witnesses and 1,152 exact vanishing-scale
+inequalities for fixed solver exponents, with zero failures.  It also checked
+25,000 randomized DIRECT/COPY/DELAY/INTERP/RECOMP adaptive transcripts,
+1,280 exhaustive clean-core wrapper transcripts from all 256 subsets of the
+eight proper three-variable clauses, 40 named Horn, 2SAT, affine/Tseitin,
+bounded-treewidth, independent-product, padding, redundancy and alternate-
+encoding controls, and 256 fixed-polynomial padding identities.  All passed.
+
+The raw result is
+\path{results/raw/review/2026-10-11_blackbox_query_scale_dichotomy.json}.
+These checks validate arithmetic, wrappers and the harness.  They are
+\status{Computational}; the asymptotic result is the proof above.
+
+\section{Post-quantum technique ledger}
+
+\begin{itemize}[leftmargin=1.5em]
+\item Schur squares, quadratic relation spaces, Hilbert functions and
+      syzygies: \status{Failed Transfer}.  They describe selected algebraic
+      representations; the query-scale theorem neither forces nor needs them.
+\item Lossiness/collision entropy: \status{Analogy/Candidate}.  The exact
+      Cauchy--Schwarz image bound applies to a declared extraction map, but no
+      such source-bound map is forced by one-bit SAT.
+\item LWE-style external black-box extraction: \status{Analogy/Candidate}
+      narrowed by an exact theorem.  Positive-scale calls retain arbitrary
+      wrapper exponents; vanishing-scale calls compile to an ordinary source
+      algorithm under $P=NP$.  The missing bridge is now source-level.
+\item Collision extraction/special soundness and hash/random-oracle methods:
+      \status{Failed Transfer} absent a construction-specific forbidden
+      witness theorem that survives removal of cryptographic assumptions.
+\end{itemize}
+
+\section{CORPUS REVIEWED}
+
+The run enumerated the current GitHub tree and read root \path{main.tex},
+\path{AGENTS.md}, \path{CODEX.md}, the pnp-research skill and protocol, all
+seven task files, current \path{main4.tex}/\path{main5.tex}, the newest
+historical MAIN, materially relevant current LSPV-1 through LSPV-4 reports,
+MODELBRIDGE-0015, LB-0007/0009/0012/0013/0014, TESTS-0009, RT-0014,
+SYNTHESIS-0010, both lower-bound and model-bridge spines, status/coordination,
+governance, and the HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC branch.  Repository
+search covered subpolynomial queries, positive-scale paths, wrapper exponents,
+bounded-query routes and retired service claims.  The immediately preceding
+MODELBRIDGE-0015 report was nonblank and read back with its unique header and
+final sentinel; no recovery request was needed.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+The vanishing-scale simulation is not claimed novel: it is MB1 with query-
+length exponent zero, and root MAIN's 2026-10-02 simulation already records
+$N^{\max\{a,q+bK\}+o(1)}$.  MODELBRIDGE-0015 proved the complementary
+positive-scale delay gate.  LB-0015's exact new reconciliation is that
+$\sigma_E(N)\to0$ versus $\sigma_E(N)\not\to0$ is exhaustive for actual
+reached queries, leaving no third extensional query-scale regime.  This does
+not contradict MB5's recursive oracle elimination or KPATH1; it specializes
+their exponent accounting to direct black-box calls.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN already states that positive-scale branches retain the unknown
+solver exponent and that arbitrary-algorithm acquisition remains open.  The
+new result makes the complementary boundary explicit: vanishing-scale calls
+erase every fixed solver exponent but thereby become an ordinary source
+algorithm under $P=NP$.  No root load-bearing arrow closes.  Root
+\path{main.tex} is not edited because this review role has no LSPV ownership
+region; LSPV-5 remains the whole-document arbiter.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+Adopted: MB1 direct-wrapper accounting, MODELBRIDGE-0015's delay-wrapper
+gate, KPATH1 positive-coefficient survival, SAME\_REALIZATION charging and
+the FLMV endpoint discipline.  Rejected: importing conditional bounded-query
+SAT hardness under the counterfactual $P=NP$.  Retired:
+\texttt{SUBPOLY-BLACKBOX-IS-INTERMEDIATE1}.  Preserved open:
+\texttt{SUBPOLY-SOURCE-COMPILER1}, intensional wrapper-covariant compilation,
+the clean-core source lower bound, nonrelativization and nonalgebrization.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+MODELBRIDGE-0015 correctly left subpolynomial queries open, but its wording
+could be read as leaving a third oracle-relative resource regime.  That
+interpretation is now stale: under $P=NP$, polynomially many
+$N^{o(1)}$-length exact SAT calls are directly simulable with no fixed solver
+exponent in the leading power of $N$.  The construction of a favorable
+source algorithm remains open and must not be silently promoted.
+
+\section*{Strict status and next target}
+
+\begin{center}
+\begin{tabular}{@{}p{0.47\linewidth}p{0.20\linewidth}p{0.24\linewidth}@{}}
+\toprule
+Item & Status & Consequence\\ \midrule
+BLACKBOX-QUERY-SCALE-DICHOTOMY1 & \status{Proved/Exact} & exhaustive scale split, pending independent review\\
+finite exponent/wrapper audit & \status{Computational} & 28,512 checks, zero failures\\
+SUBPOLY-BLACKBOX-IS-INTERMEDIATE1 & \status{Falsified/Retired} & vanishing scale gives an ordinary source algorithm\\
+SUBPOLY-SOURCE-COMPILER1 & \status{Open} & construction would be separation-strength\\
+arbitrary-decider compatibility exposure & \status{Open} & no universal resource theorem\\
+P versus NP & \status{Open} & no separation proved\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The next highest-value target is \texttt{SUBPOLY-SOURCE-COMPILER1}, attacked
+first with the endpoint shortcut: determine whether any proposed extractor
+does more than decide the source before constructing its short queries.  It
+must survive INTERP/RECOMP, easy affine and bounded-treewidth families,
+polynomial recodings, and one-bit output while meeting one actual FLMV-
+forbidden time--space pair.  P versus NP remains \status{Open}.
+
+\begin{thebibliography}{9}
+\bibitem{BGS75} T. Baker, J. Gill, and R. Solovay,
+\emph{Relativizations of the P=?NP Question}, SIAM J. Comput. 4(4), 1975,
+\url{https://doi.org/10.1137/0204037}.
+\bibitem{AW09} S. Aaronson and A. Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory}, ToCT 1(1), 2009,
+\url{https://eccc.weizmann.ac.il/report/2008/005/}.
+\bibitem{FLMV05} L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, JACM 52(6), 2005,
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{BGK95} R. Beigel, W. Gasarch, and E. Kinber,
+\emph{Frequency Computation and Bounded Queries}, ECCC TR95-036,
+\url{https://eccc.weizmann.ac.il/report/1995/036/}.
+\bibitem{Yesha83} Y. Yesha,
+\emph{On Certain Polynomial-Time Truth-Table Reducibilities of Complete Sets
+to Sparse Sets}, SIAM J. Comput. 12(3), 1983,
+\url{https://doi.org/10.1137/0212027}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LOWER_BOUND::LB-0015
+\end{document}
