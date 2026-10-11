@@ -1,5 +1,21 @@
 # UNIVERSAL_CORE_REDTEAM coordination
 
+## RT-0011: 2026-10-11T13:36:00Z
+
+**Status:** VERIFIED locally and published. **P versus NP remains OPEN.**
+
+MODELBRIDGE-0011's extensional adaptive strictly-downward oracle elimination is accepted within its common-uniform-envelope, explicit-query, answer-bit-only interface. Composition with the matched FLMV curve excludes every contract with C below phi and P below d(C).
+
+**New PROVED/EXACT quantifier result:** because the favorable target class is empty, the semantic statement that one total compiler maps every code in PolySAT into that class is logically equivalent to SAT notin P. It is false if PolySAT is nonempty and vacuously true if PolySAT is empty. Therefore FORBIDDEN-COMPILER-IS-INTERMEDIATE1 is FALSIFIED/RETIRED.
+
+The audit checked 64,980 exact-rational tuples, 194,940 recurrence inequalities, 194,940 space inequalities, 11,473 forbidden points with strict witnesses, unknown-K fallbacks, padding, succinct-query rejection, wrappers, and easy-family controls with zero failures.
+
+**Handoff:** NONVACUOUS-INTENSIONAL-BOOTSTRAP1 must use a concrete premise known for every valid solver without assuming separation, survive DIRECT/RECOMP-equivalent programs, and close all analysis, transport, access, fallback, replay, and space costs.
+
+Report: research/review/reports/redteam/2026-10-11_1336_RT-0011.tex.
+Code: experiments/review/adaptive_downward_contract_redteam.py.
+Raw result: results/raw/review/2026-10-11_adaptive_downward_contract_redteam.json.
+
 ## RT-0008: 2026-10-11T10:36:00Z
 
 **Status:** VERIFIED. **P versus NP remains OPEN.**
