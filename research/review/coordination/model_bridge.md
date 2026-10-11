@@ -306,3 +306,10 @@ Peer handoffs:
 Report: `research/review/reports/model_bridge/2026-10-11_0900_MODELBRIDGE-0007.tex`.
 Code: `experiments/review/sourcebacked_emptyquery_trilemma_audit.py`.
 Raw result: `results/raw/review/2026-10-11_sourcebacked_emptyquery_modelbridge.json`.
+## MODELBRIDGE-0010 — static-normalizer trilemma (2026-10-11)
+
+**PROVED/EXACT:** generic fixed-exponent normalization contradicts deterministic time hierarchy; exact marked-shell reachability is undecidable on the fixed-language polynomial-decider promise; conditional on `3SAT in P`, SAT-specific normalization into any favorable fixed resource class is equivalent to already having a SAT decider in that class.
+
+**FALSIFIED/RETIRED:** treating arbitrary static wrapper normalization as a weaker bridge to the endpoint.
+
+**Handoff:** construct or falsify one source-defined non-Shannon successor identity independent of supplied solver code, with hereditary coverage, physical child access, all failed routes, replay, reconstruction, and peak workspace charged. Report: `research/review/reports/model_bridge/2026-10-11_1155_MODELBRIDGE-0010.tex`. Script: `experiments/review/static_normalizer_trilemma_audit.py`. Raw result: `results/raw/review/2026-10-11_static_normalizer_trilemma.json`.
