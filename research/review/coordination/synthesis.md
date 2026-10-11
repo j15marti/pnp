@@ -1,5 +1,19 @@
 # UNIVERSAL_CORE_SYNTHESIS coordination
 
+## SYNTHESIS-0009 — 2026-10-11T15:48:00Z
+
+**Status:** VERIFIED, pending independent review. **P versus NP remains OPEN.**
+
+**PROVED/EXACT:** `OFFLINE-INDEX-SPACE-GATE1` for the materialized TESTS-0008 realization. If output length is `M=N^(q+o(1))` and the same execution stores a `Theta(M)` index, composed workspace exponent is `q`, not `q/2`.
+
+**FALSIFIED/RETIRED:** `OFFLINE-INDEX-CLOSES-LOCAL-COOK1`. Correct explicit offline indexing is not an on-demand, simultaneous-space local reduction. Full inverse incidence is not necessary for the fixed tagged second leg.
+
+**OPEN single target:** `JMV-PORT-LOCALITY1`: compute the concrete first-leg forward occurrence/port label in polylogarithmic time and logarithmic workspace without materialization. The arbitrary-algorithm transfer and P versus NP remain OPEN.
+
+Report: `research/review/reports/synthesis/2026-10-11_1548_SYNTHESIS-0009.tex`.
+
+# UNIVERSAL_CORE_SYNTHESIS coordination
+
 ## SYNTHESIS-0008 — 2026-10-11T14:48:00Z
 
 **Status:** VERIFIED, pending independent review. **P versus NP remains OPEN.**
