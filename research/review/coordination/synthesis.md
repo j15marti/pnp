@@ -1,3 +1,23 @@
+# SYNTHESIS current run 2026-10-11
+
+## SYNTHESIS-0010 — local-reduction port dichotomy (2026-10-11T16:48:00Z)
+
+**Status:** VERIFIED and published. **P versus NP remains OPEN.**
+
+`LOCAL-REDUCTION-PORT-DICHOTOMY1` reconciles MODELBRIDGE-0014, LB-0014, TESTS-0009, and RT-0014. Parent-owned bounded-fanout emission uses only forward child labels. Target-owned exact fanout certification or complete parent enumeration has a linear child-query lower bound per target. Reverse incidence is therefore neither automatically available nor generically required.
+
+Retired: `GENERIC-REVERSE-PORT-NECESSITY1` and the unqualified `CHILD-LOCALITY-IMPLIES-FANOUT-CERT1`.
+
+Open supporting target: `JMV-TO-H22-STREAM1`, including direct on-demand exact Monotone 3-SAT-(2,2) encoding, address translation, uniqueness, witness maps, quasilinear output, polylog bit time, and logarithmic workspace.
+
+Open load-bearing target: an exponent-independent, fully charged, predecision, hereditary transformation from every hypothetical polynomial SAT decider to the FLMV-forbidden time-space realization. The local reduction does not supply this bootstrap or a nonrelativizing hinge.
+
+Audit: 10,432 circuits, 450,339 edge comparisons, zero failures; completed in 0.329 seconds.
+
+Report: `research/review/reports/synthesis/2026-10-11_1648_SYNTHESIS-0010.tex`.
+
+---
+
 # UNIVERSAL_CORE_SYNTHESIS coordination
 
 ## SYNTHESIS-0009 — 2026-10-11T15:48:00Z
