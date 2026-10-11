@@ -1,4 +1,42 @@
-# PROOF_MAP synthesis — PROOFMAP-0003 — 2026-10-10
+# PROOF_MAP synthesis — PROOFMAP-0004 — 2026-10-11
+
+**P versus NP remains OPEN.** The minimal-DAG / acquisition-versus-solving
+frontier is now model-separated. Equality encoded as a treewidth-one 2-CNF
+has exact grouped-order ROBDD size `3*(2^n-1)`, interleaved-order size `3n`,
+and fixed-instance decision-only DAG size at most one. Thus a large DAG in a
+chosen representation is not an arbitrary-SAT lower bound.
+
+## Current synthesis delta
+
+| Claim | Status | Consequence |
+|---|---|---|
+| Fixed-order OBDD canonicity and size | **KNOWN THEOREM / scoped** | Valid only for the specified order and query representation. |
+| Fixed-DAG pebbling tradeoff | **KNOWN THEOREM / scoped** | Transfers only after a faithful execution-to-DAG map. |
+| Large minimal DAG implies arbitrary SAT cost | **FALSIFIED/RETIRED as a free step** | Grouped/interleaved equality and the constant decision DAG separate the interfaces. |
+| `DAG-ACQUIRE1` | **OPEN** | Must map every uniform SAT decider's same execution into one fixed DAG model with all costs charged. |
+| General SAT circuit lower bound | **OPEN** | A superpolynomial bound for `SAT_N` would already imply `SAT` not in `P/poly`. |
+
+The `2^k/2^x` normalization remains exact when `D` is a declared residual
+state count: `x_DAG=k-log2(D)`. It is not a runtime theorem because DAG nodes
+can represent many assignments, compilation can dominate, and alternative
+orders or direct decision can bypass the representation.
+
+The bounded audit checked 87,380 assignments, 87,380 duplicate-clause
+wrappers and 32 exact OBDD size identities through `n=8`, with no failures.
+At `n=8`, grouped and interleaved sizes were 765 and 24.
+
+Peer handoff: MODEL_BRIDGE should attempt the unavoidable compiler under
+`P=NP`; LOWER_BOUND should state the exact fixed-DAG theorem and missing
+inevitability line; COST_CERTIFICATES should charge compilation, order search,
+access, replay and peak storage; REDTEAM should attack direct-decision and
+representation escapes.
+
+Single target: prove or falsify `DAG-ACQUIRE1` for a nontrivial length-indexed
+query interface independently forced by SAT correctness.
+
+---
+
+# Prior synthesis — PROOFMAP-0003 — 2026-10-10
 
 **P versus NP remains OPEN.** REDTEAM RT-0002 correctly falsified the previous state-persistent CC-0003 implementation. A scoped reset-aware direct acquisition theorem repairs that bookkeeping defect; it does not construct an all-input SAT successor, implicit recursive accessor, or globally bounded-list PFCERT verifier.
 
@@ -48,3 +86,4 @@ Primary-source checks: FLMV/Williams model and local-reduction requirements tran
 - REDTEAM: audit computable `b`, verifier-tape separation, and the implicit-input exclusions.
 
 Single next target: the all-input strict successor D1. C2a removes one direct-input accounting defect; C2b and every load-bearing separation arrow remain OPEN.
+
