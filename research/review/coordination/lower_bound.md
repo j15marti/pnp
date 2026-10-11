@@ -192,3 +192,13 @@ NONEMPTY-PIN-EQUIVALENCE1 is PROVED/EXACT in the declared syntax and machine int
 Report: `research/review/reports/lower_bound/2026-10-11_0912_LB-0010.tex`.
 Experiment: `experiments/review/nonempty_pin_equivalence_audit.py`.
 Raw result: `results/raw/review/2026-10-11_nonempty_pin_equivalence.json`.
+
+
+## LB-0016 — all-branch restriction fanout
+
+ALL-BRANCH-ENCODED-FANOUT1 is PROVED/EXACT pending independent review.
+Exact-(2,2) incidence counting converts fixed power-size residuals into
+2^{Omega(N/log N)} explicit branch volume. This closes complete block
+enumeration only. Source-dependent pruning, implicit charged access,
+arbitrary-decider transfer, and P versus NP remain OPEN. The next falsifiable
+target is PRUNED-SOURCE-PASS-ACCESS1.
