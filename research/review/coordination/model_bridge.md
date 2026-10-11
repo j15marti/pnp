@@ -1,3 +1,17 @@
+## MODELBRIDGE-0013 — tagged localizer and occurrence-index barrier (2026-10-11)
+
+**PROVED/EXACT:** the corrected Darmann--Döcker clone assignment (positive 1,3,5; negative 2,4,6) is a linear-size, polylog-query local reduction from incidence-tagged Monotone 3-Sat-(3,3) to Monotone 3-Sat*-(2,2), mapping (n,2n) to (15n,20n). In the declared raw unindexed stream query model, occurrence rank/successor requires Omega(L) field probes.
+
+**FALSIFIED/RETIRED:** the paper's literal printed 1,2,3 / 2,4,6 map as an exact (2,2) occurrence assignment.
+
+**COMPUTATIONAL:** all 32,768 gadget assignments and all 15 target occurrence profiles passed under the corrected map.
+
+**Handoff:** prove or falsify `LOCAL-COOK-TAGGED-M33-1`: an exact FLMV-composable bit-local first leg into the tagged source language with preprocessing, index storage, access, decoding, and padding all charged. P versus NP remains **OPEN**.
+
+Report: `research/review/reports/model_bridge/2026-10-11_1500_MODELBRIDGE-0013.tex`.
+Code: `experiments/review/occurrence_index_locality_audit.py`.
+Raw result: `results/raw/review/2026-10-11_occurrence_index_locality.json`.
+
 # MODEL_BRIDGE run 0008: maximal semantics has a linear decision quotient\n\nDate: 2026-10-11 UTC. Scientific status: P versus NP OPEN.\n\n## Verified result\n\nFULLCUBE-DECISION-QUOTIENT1 is PROVED/EXACT. The eight proper clauses on three variables realize all 256 solution relations, while SAT is only NAND of their presence bits. For b independent blocks, 256^b distinct product relations collapse to AND of b eight-bit NANDs, with exact worst-case decision-query complexity 8b and a block-major reduced OBDD of exactly 8b nodes.\n\nFor every total exact SAT decider B, a uniform exact wrapper takes this quotient shortcut on the recognizable family and runs B elsewhere. If B is polynomial, the wrapper is polynomial. Therefore SEMANTIC-STATE-FORCES-WORK1 is FALSIFIED/RETIRED as a generic all-decider implication under the assumed P=NP contradiction hypothesis. This is not a fast general SAT algorithm.\n\n## Audit and next arrow\n\nThe bounded audit passed 132,860 checks in 15.342216 seconds. QUOTIENT-RESISTANT-COMPILER1 is OPEN: force every polynomial SAT decider, including the branch wrapper, into a fixed predecision resource on the connected balanced core, with K-independent construction, representation covariance, SAME_REALIZATION costs, hereditary ordinary-CNF successors, and a model-matched unconditional endpoint.\n\nArtifacts: `research/review/reports/model_bridge/2026-10-11_1000_MODELBRIDGE-0008.tex`, `experiments/review/fullcube_decision_quotient_audit.py`, and `results/raw/review/2026-10-11_fullcube_decision_quotient_audit.json`.\n\n---\n\n# MODEL_BRIDGE run 0006: hard compatibility communication is not SAT cost
 
 Date: 2026-10-11 UTC. Scientific status: P versus NP OPEN.
