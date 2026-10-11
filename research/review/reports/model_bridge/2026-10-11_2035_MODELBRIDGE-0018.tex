@@ -1,0 +1,145 @@
+% PNP REVIEW REPORT::MODEL_BRIDGE::MODELBRIDGE-0018::2026-10-11T20:35:09Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,hyperref,microtype}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\title{MODELBRIDGE-0018: Conditional Witness Complexity Is a Separation-Equivalent Target}
+\author{Universal Core Bridge Review}
+\date{11 October 2026 (UTC)}
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.93\linewidth}{
+\textbf{Executive status.} P versus NP remains open.  This run proves a solver-independent equivalence, not a lower bound: a uniform polynomial-time SAT decider exists exactly when every satisfiable member of an NP-hard clean-core language has a satisfying assignment with an $O(\log N)$-bit, polynomial-time, source-relative description.  Consequently, polynomial-time conditional witness incompressibility cannot serve as an intermediate bridge unless one supplies the very separation it was meant to prove.}}
+\end{center}
+
+\section{Claim card and exact model}
+
+\paragraph{Status.}
+\texttt{CONDITIONAL-WITNESS-COMPLEXITY-EQUIV1}: \EXACT.
+\texttt{PLAIN-WITNESS-INCOMPRESSIBILITY1}: \RETIRED.
+\texttt{POLYTIME-WITNESS-INCOMPRESSIBILITY-AS-BRIDGE1}: \RETIRED\ as an intermediate route.
+\texttt{WORSTCASE-IMPLICIT-PREDECISION-ACCESS1}: \OPEN.
+
+Fix an efficient universal deterministic machine $U$.  Let $C$ be a polynomial-time recognizable language of encoded $3$-CNF instances such that the satisfiability problem restricted to $C$ is NP-hard under uniform polynomial-time many-one reductions.  A witness is an ordinary assignment to the variables of the encoded formula.  If $N=|\langle F\rangle|$, define
+\[
+K_U^t(w\mid F)=\min\{|p|: U(p,F)\text{ outputs }w\text{ within }t(N)\text{ steps}\}.
+\]
+The exponent in $t$ includes the fixed universal-simulation overhead.  Programs, the machine $U$, and the bound below are uniform and chosen before $F$; the formula itself is free conditional input.
+
+\begin{theorem}[source-relative easy-witness equivalence]
+The following statements are equivalent.
+\begin{enumerate}[label=(\roman*)]
+\item $\SAT\in\mathsf P$.
+\item There exist a polynomial $t$ and a constant $c$ such that every satisfiable $F\in C$ has a satisfying assignment $w$ with $K_U^t(w\mid F)\le c$.
+\item There exist a polynomial $t$ and a constant $a$ such that every satisfiable $F\in C$ has a satisfying assignment $w$ with $K_U^t(w\mid F)\le a\log N+a$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Assume (i), and fix a polynomial-time SAT decider $D$.  One fixed program, with $F$ as conditional input, performs standard SAT self-reduction: process variables in order, query $D$ on the restriction setting the next variable to zero, retain that branch when satisfiable, and otherwise retain the one-branch.  It makes at most $n+1$ calls, outputs the lexicographically first satisfying assignment, and runs in $N^{O(1)}$ time.  Its description length is a constant independent of $F$.  Thus (i) implies (ii), and (ii) implies (iii).
+
+Assume (iii).  On input $F\in C$, enumerate all programs of length at most $a\log N+a$, simulate each for $t(N)$ steps, and accept if any output verifies as a satisfying assignment.  There are at most $2^{a+1}N^a$ programs; simulation and verification are polynomial.  Unsatisfiable instances admit no accepted output.  Hence restricted satisfiability on $C$ is in $\mathsf P$, and the assumed uniform reduction from SAT to $C$ gives (i).
+\end{proof}
+
+The theorem is invariant under any polynomially related reasonable encoding: $O(\log N)$ changes by at most a constant factor.  It also matches the one-bit output problem; witnesses are generated only inside the proof of an equivalent decider and are not asserted to occur in every implementation.
+
+\section{Why the proposed bridge collapses}
+
+There are two distinct collapse mechanisms.
+
+\paragraph{Unbounded descriptions.}
+Plain conditional Kolmogorov complexity is already constant on every satisfiable formula.  A fixed program can enumerate assignments lexicographically until it finds one.  The time may be exponential, but the program length is $O(1)$.  Thus a claim that clean-core witnesses have growing $K(w\mid F)$ is false independently of P versus NP.
+
+\paragraph{Polynomial-time descriptions.}
+A claim excluding every $O(\log N)$ polynomial-time conditional description on some satisfiable core instance is, by the theorem, precisely the negation of an equivalent formulation of $\SAT\in\mathsf P$.  Writing the exponent explicitly, a separation-strength form is
+\[
+\forall d\,\forall a\,\exists F\in C_{\mathrm{sat}}\,\forall w\models F:
+K_U^{N^d}(w\mid F)>a\log N+a,
+\]
+with routine slack for universal-machine overhead.  This is a valid target, but it is not a derived compatibility or extraction lemma.  Proving it unconditionally proves $\mathsf P\ne\mathsf{NP}$.
+
+Absolute complexity $K^t(w)$ does not repair the route: the computation receives $F$, so charging a description that is forbidden to use the actual input is representation-dependent and model-mismatched.  Likewise, choosing one exponent $d$ before an arbitrary polynomial SAT algorithm silently excludes algorithms with larger exponents.  Under the counterfactual $\SAT\in\mathsf P$, the self-reduction inherits that algorithm's exponent plus polynomial overhead.
+
+\section{Bounded computational audit}
+
+The reproducible audit is \texttt{experiments/review/witness\_incompressibility\_quantifier\_audit.py}; its verified output is \texttt{research/review/results/model\_bridge/MODELBRIDGE-0018-witness-audit.json}.  It completed in 0.429 seconds with 25,875 checks and no failures.  It exhaustively enumerated the 256 subformulas of the eight proper clauses on three variables, identified 255 satisfiable and one unsatisfiable formula, ran self-reduction with 1,021 total decision-oracle calls, and checked all 48 signed variable isomorphisms per formula.
+
+Hostile controls included duplicate-clause padding, all six wrapper implementations \texttt{DIRECT/COPY/DEAD/DELAY/INTERP/RECOMP}, and paired $K_{3,3}$ products through 32 blocks (288 variables).  The audit also records polynomial semantic shortcuts for 2SAT (SCC), Horn SAT (forward chaining), affine/Tseitin systems (Gaussian elimination), width-one formulas (dynamic programming), and independent products (componentwise solution).  Candidate assignment counts reached $2^{48}$ for the product control and $2^{32}$ for the bounded-treewidth control while the designated outputs remained succinctly generated.  These are finite falsification controls only; they do not establish an asymptotic lower bound.
+
+\section{SAME\_REALIZATION and arbitrary-algorithm audit}
+
+The forward implication constructs one witness-finding implementation from a hypothetical decider.  It does \emph{not} infer that the original one-bit decider exposes a witness, a compatibility graph, a restriction, a transcript, or any named semantic state.  Thus SAME\_REALIZATION is respected: the result concerns existence of a uniform program relative to the input, not an internal state of every equivalent program.  COPY, delay, dead-work, recomputation, and interpreter wrappers preserve the accepted language while altering internal traces, so trace-based necessities remain unproved.
+
+The exact remaining bridge would have to show that black-box access to every polynomial SAT decider yields, in the same exponent-uniform model and with all oracle calls charged, a forbidden object covered by an unconditional lower bound.  No such transfer theorem was found.
+
+\section{Barrier and transfer audit}
+
+\begin{center}
+\begin{tabular}{p{0.27\linewidth}p{0.20\linewidth}p{0.45\linewidth}}
+\toprule
+Source or analogy & Classification & Exact assessment \\
+\midrule
+SAT self-reducibility / NP witness search & directly transferable theorem & Gives the forward implication with at most $n+1$ decider calls; it is solver-independent but existential, not an internal-state theorem. \\
+Bellare--Goldwasser search versus decision & directly relevant boundary & Shows search-to-decision is not automatic for every NP relation; SAT's self-reducibility is a special positive case. \\
+Easy Witness Lemma & useful structural analogy & Connects circuit-easy witnesses to complexity collapses, but does not impose a witness representation on an arbitrary uniform SAT execution. \\
+Time-bounded Kolmogorov search-to-decision results & useful analogy requiring a bridge & Meta-complexity theorems concern their own complete problems; no theorem transfers them to clean-core SAT without the equivalence proved above. \\
+VLSI storage/routing or control observability & misleading without a model map & They charge explicit signals or state variables; a source-relative program need not materialize the proposed semantic object. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The theorem relativizes when the same oracle is supplied to the SAT decider and to the conditional program, so it offers no route around the Baker--Gill--Solovay barrier.  It also supplies no nonalgebrizing hinge.  Razborov--Rudich natural-proofs conditions are not directly triggered because no large constructive circuit property is proved; any promotion to circuit lower bounds would require a fresh audit.  Nonuniform advice is excluded: allowing a different program per input destroys the uniform quantifiers, while polynomial advice per length does not yield the uniform conclusion.
+
+\section{Post-quantum technique ledger}
+
+Schur squares, quadratic-relation rank spectra, and Hilbert/syzygy invariants have no exact object here because no code representation is forced; transfer is \textbf{FAILED}.  Collision entropy of the map from short programs to verified witnesses is an \textbf{ANALOGY/CANDIDATE}: enumeration proves the easy direction, but a collision bound does not force computation by an arbitrary decider.  LWE-style worst-case/average-case extraction is an \textbf{ANALOGY/CANDIDATE}; it lacks a black-box reduction from every SAT decider to a charged clean-core resource and faces known worst-case/average-case barriers for NP.  Special-soundness/collision extraction is also an \textbf{ANALOGY/CANDIDATE}: no construction-specific theorem turns two openings into an unconditional forbidden witness.  Random-oracle or cryptographic binding assumptions are inadmissible here.
+
+\section{CORPUS REVIEWED}
+
+The run surveyed the complete current repository tree and read root \texttt{main.tex}, \texttt{main4.tex}, \texttt{main5.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, the research skill and protocol, all task specifications, the newest verified MAIN, the newest verified lower-bound, tests, red-team, synthesis, and model-bridge reports, and materially relevant older LSPV-4/model-bridge files.  It also inspected the HEC, VSC-HEC, G-PPC-HEC, CRS-PPC, CCSPC, and RCCN exploration branch, governance notes, and cited experiment artifacts.  Primary sources on SAT self-reducibility/search, search versus decision, easy witnesses, relativization, algebrization, and natural proofs were checked before the theorem was promoted.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+The corpus already recorded the weaker fact that $\mathsf P=\mathsf{NP}$ puts NP witness search in polynomial time.  The new contribution is the exact two-way characterization by $O(\log N)$ source-relative time-bounded descriptions and the resulting retirement of witness incompressibility as an intermediate bridge.  No prior report located in repository search stated this quantified equivalence.  The result agrees with, and sharpens, prior warnings that semantic-state counts do not imply execution time.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+No edit was made to root \texttt{main.tex}, consistent with review-role governance.  The live manuscript pair and model-bridge spine are to record one new exact equivalence, two retired routes, and one unchanged open arbitrary-algorithm arrow.  The executive status remains: P versus NP is open.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+Adopted: SAT self-reduction, encoded-length accounting, SAME\_REALIZATION, wrapper invariance, and the rule that arbitrary polynomial exponents are quantified before instance families.  Rejected: transfer from explicit witness volume, absolute description length, or semantic compatibility count to arbitrary runtime.  Retired: plain conditional witness incompressibility and polynomial-time conditional witness incompressibility as a supposedly weaker stepping stone.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any text suggesting that large witness volume or lack of a canonical witness forces a polynomial SAT decider to expose, store, or reconstruct a witness is overstated without a transfer theorem.  Any fixed-exponent lower-bound target not quantified against the solver's arbitrary polynomial exponent is also too weak or circular.  These statements should be read as candidates only.
+
+\section{Highest-value handoff}
+
+Do not seek hardness from conditional witness description length alone.  The next admissible target is a genuinely external, black-box extraction theorem:
+\[
+\forall D\,[D\text{ is a uniform polynomial SAT decider}]
+\Longrightarrow
+\mathcal E^D(F)\text{ produces a model-matched object }R(F)
+\]
+with total time, query count, representation size, and the exponent of $D$ charged, followed by an unconditional lower bound for the \emph{same} object and model.  Whether any such $R$ exists remains \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{BG} M.~Bellare and S.~Goldwasser, ``The Complexity of Decision versus Search,'' \emph{SIAM Journal on Computing} 23(1), 1994.
+\bibitem{BGS} T.~Baker, J.~Gill, and R.~Solovay, ``Relativizations of the P=?NP Question,'' \emph{SIAM Journal on Computing} 4(4), 1975.
+\bibitem{AW} S.~Aaronson and A.~Wigderson, ``Algebrization: A New Barrier in Complexity Theory,'' \emph{ACM TOCT} 1(1), 2009.
+\bibitem{RR} A.~Razborov and S.~Rudich, ``Natural Proofs,'' \emph{Journal of Computer and System Sciences} 55(1), 1997.
+\bibitem{MW} C.~Murray and R.~Williams, ``Circuit Lower Bounds for Nondeterministic Quasi-Polytime: An Easy Witness Lemma for NP and NQP,'' STOC 2018.
+\bibitem{KRW} A.~Kawachi, B.~Rossman, and O.~Watanabe, ``The Query Complexity of Witness Finding,'' computational complexity 21, 2012.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::MODEL_BRIDGE::MODELBRIDGE-0018
+\end{document}
