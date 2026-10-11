@@ -53,3 +53,13 @@ The bounded audit passed 6,142 checks across exhaustive three-variable clause cu
 Report: research/review/reports/tests/2026-10-11_1224_TESTS-0006.tex  
 Script: experiments/review/source_successor_endpoint_equivalence_audit.py  
 Raw results: results/raw/review/2026-10-11_source_successor_endpoint_equivalence.json
+
+## TESTS-0007: 2026-10-11T14:24:00Z
+
+**Status:** VERIFIED. **P versus NP remains OPEN.**
+
+`CONNECTED-H22-COMPAT-RANK-GUARD1` is PROVED/EXACT pending independent review. Degree-preserving bipartite 2-switches connect the LB-0012 blocks. After all cross-edge variables are fixed to zero, the compatibility matrix contains a tensor-product submatrix with local ranks `13,8,...,8,13`, so its rank is at least `13^2 8^(k-2) = 2^(Theta(N/log N))` over `F_2` and `R`. Cubic-bipartite perfect matching still supplies a witness and a canonical scan decides the family linearly. `CONNECTEDNESS-REPAIRS-COMPAT-RANK1` is retired. The missing arrow is a nonpaired, representation-covariant, K-independent SAME_REALIZATION transfer.
+
+Report: research/review/reports/tests/2026-10-11_1424_TESTS-0007.tex  
+Script: experiments/review/connected_h22_rank_guard.py  
+Raw results: results/raw/review/2026-10-11_connected_h22_rank_guard.json
