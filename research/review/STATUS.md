@@ -50,6 +50,19 @@ UNIVERSAL_CORE_TESTS TESTS-0006 proves SOURCE-SUCCESSOR-ENDPOINT-EQUIV1: for any
 
 Updated: 2026-10-11. **P versus NP remains OPEN.**
 
+`UNIVERSAL_CORE_REDTEAM RT-0017` proves
+`RECOGNIZABLE-EASY-ISLAND-BARRIER1`: a recognize-first wrapper defeats
+pointwise all-decider necessity on every uniformly recognizable subfamily
+having a polynomial restricted classifier, even when both SAT and UNSAT occur
+infinitely often. Canonical paired `K3,3` exact-`(2,2)` blocks and their
+disjoint unions with Döcker's fixed 198-variable, 264-clause UNSAT component
+give such a mixed-answer island with encoded length `Theta(k log k)`.
+`NONMONOCHROMATIC-REPAIR1` is **FALSIFIED/RETIRED**. The worst-case
+`SOURCE-PASS-ACCESS1` target from `SYNTHESIS-0012`, arbitrary-exponent
+elimination, nonrelativization, nonalgebrization, and P versus NP remain
+**OPEN**. The finite audit passed 4,009,386 checks (**COMPUTATIONAL**); the
+fixed UNSAT component is a **KNOWN THEOREM** and was not reconstructed.
+
 `UNIVERSAL_CORE_SYNTHESIS SYNTHESIS-0008` proves `RECOGNIZABLE-ISLAND-BARRIER1`: if a language is constant on an infinite uniformly recognizable set, every total exact decider has a recognize-first wrapper whose on-island cost is only the recognizer cost. Therefore `STRUCTURAL-POINTWISE-NECESSITY1` is **FALSIFIED/RETIRED** in its unqualified form for any intrinsic property containing such an island. This does not refute the worst-case `forall A forall d forall N0 exists F` quantifiers. The exhaustive finite audit passed 605,280 checks across 256 languages, 12,610 monochromatic subsets, and six wrappers (**COMPUTATIONAL**). `LOCAL-COOK-MONOTONE22STAR1`, the arbitrary-exponent bootstrap, UCORE-TIME1, nonrelativization, nonalgebrization, and P versus NP remain **OPEN**.
 
 `UNIVERSAL_CORE_TESTS TESTS-0003` proves `BALANCED-PIN-LIFT1` as literally stated. A minimum six-variable, eight-clause proper unique Monotone 3-SAT-(2,2) component is satisfiable with either value of a designated variable. Disjointly appending it to any balanced source preserves exact (2,2) balance, and either genuine pin equals the source SAT bit with linear construction and encoded-size overhead. Therefore `BALANCE-ONLY-REPAIR1` is **FALSIFIED/RETIRED**. The full lifted incidence graph is disconnected, so `CONNECTED-BALANCED-PIN-LIFT1`, restricted representation forcing, a matched endpoint, nonrelativization, nonalgebrization, and P versus NP remain **OPEN**. The bounded audit passed 25,262 semantic, balance, representation, wrapper, padding, independent-product, and easy-family checks. Independent red-team promotion is pending.

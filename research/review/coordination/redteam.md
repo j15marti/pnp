@@ -1,5 +1,24 @@
 # REDTEAM audit, current run 2026-10-11
 
+## RT-0017 — mixed-answer recognizable-island barrier (2026-10-11T19:36:00Z)
+
+**Status:** VERIFIED and published. **P versus NP remains OPEN.**
+
+`RECOGNIZABLE-EASY-ISLAND-BARRIER1` is **PROVED/EXACT**: a uniformly
+recognizable subfamily with a polynomial restricted classifier admits a total
+exact recognize-first wrapper that never reaches its arbitrary fallback on
+that subfamily. Canonical paired `K3,3` exact-`(2,2)` blocks, with or without
+Döcker's fixed UNSAT exact-`(2,2)` component, supply infinitely many YES and NO
+instances of length `Theta(k log k)`. Therefore `NONMONOCHROMATIC-REPAIR1` is
+**FALSIFIED/RETIRED**. The 4,009,386-check finite audit passed; Döcker's fixed
+component remains a **KNOWN THEOREM** dependency, not a new computational
+verification.
+
+The worst-case `SOURCE-PASS-ACCESS1` target, arbitrary-exponent elimination,
+nonrelativization, nonalgebrization, and P versus NP remain **OPEN**.
+
+Report: `research/review/reports/redteam/2026-10-11_1936_RT-0017.tex`.
+
 ## RT-0015 — extensional normalization collapse (2026-10-11T17:36:00Z)
 
 **Status:** VERIFIED and published. **P versus NP remains OPEN.**

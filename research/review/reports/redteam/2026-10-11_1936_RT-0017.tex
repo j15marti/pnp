@@ -1,0 +1,378 @@
+% PNP REVIEW REPORT::REDTEAM::RT-0017::2026-10-11T19:36:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.83in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\Htwo}{\mathcal H_{2,2}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{UNIVERSAL\_CORE\_REDTEAM RT-0017:\\
+Mixed-answer recognizable islands still defeat pointwise necessity}
+\author{P versus NP project review}
+\date{11 October 2026, 19:36 UTC}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+SYNTHESIS-0008 proved that a uniformly recognizable constant-answer island
+defeats any pointwise all-decider lower bound.  A tempting repair is to demand
+that every infinite clean-core subfamily contain both SAT and UNSAT instances.
+That repair fails.  If a uniformly recognizable subfamily has any uniform
+polynomial-time classifier for the language restricted to it, a recognize-first
+wrapper decides every member at recognizer-plus-classifier cost and never calls
+the arbitrary fallback solver.  This report proves that guard exactly and gives
+a mixed-answer family in ordinary Monotone 3-SAT-$(2,2)$: canonical paired
+$K_{3,3}$ blocks are satisfiable, while adjoining D\"ocker's fixed 198-variable,
+264-clause unsatisfiable component makes the disjoint union unsatisfiable.  Both
+answers occur infinitely often and encoded length is $\Theta(k\log k)$.
+Consequently, ``not monochromatic'' does not repair pointwise compatibility
+extraction, state-exposure, memory, communication, or superpolynomial-time
+necessity.  The worst-case source-pass target in SYNTHESIS-0012 is untouched.
+A bounded audit passed 4,009,386 checks.  P versus NP remains open.
+\end{abstract}
+
+\section{Executive verdict}
+
+\begin{center}\small
+\begin{tabular}{@{}p{0.42\linewidth}p{0.18\linewidth}p{0.32\linewidth}@{}}
+\toprule
+Claim & Status & Verdict\\ \midrule
+\texttt{RECOGNIZABLE-EASY-ISLAND-BARRIER1} & \EXACT &
+Recognize first and use the correct restricted classifier; the fallback is not
+reached on the island.\\
+\texttt{MIXED-H22-ISLAND1} & \EXACT{} modulo one \KNOWN{} component &
+Infinitely many canonical YES and NO formulas exist in ordinary exact
+Monotone 3-SAT-$(2,2)$ and have a polynomial syntax classifier.\\
+\texttt{NONMONOCHROMATIC-REPAIR1} & \RETIRED &
+Merely requiring both answers does not rescue pointwise necessity.\\
+Finite hostile audit & \COMP & 4,009,386 checks; zero failures.\\
+\texttt{SOURCE-PASS-ACCESS1} and P versus NP & \OPEN &
+The surviving target has worst-case existential inputs, not pointwise coverage.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Barrier-transfer literature preflight}
+
+The two obstacles were: (i) distinguishing a large semantic family from an
+unavoidable execution resource, and (ii) preserving both answers inside the
+exact clean core.  Schaefer's dichotomy supplies primary evidence that many
+nontrivial Boolean constraint languages with both answers are polynomial-time
+decidable; answer variation is not hardness \cite{schaefer}.  D\"ocker proves
+both an unsatisfiable ordinary Monotone 3-SAT-$(2,2)$ instance with 198
+variables and 264 clauses and that the complementary-clause special case is
+always satisfiable \cite{docker}.  These are directly transferable at the
+formula level.  Hopcroft--Karp is relevant only as an algorithmic analogy for
+general bipartite matching \cite{hk}; the explicit $K_{3,3}$ blocks below use
+the diagonal matching and need no matching lower bound.
+
+The electronics/VLSI slogan ``every signal must be routed'' is a misleading
+transfer here: a circuit lower bound needs fixed terminals, fan-out, locality
+and layout, none of which is forced on an arbitrary Turing-machine SAT decider.
+Control-theoretic observability is likewise only an analogy: the one-bit SAT
+output does not make a chosen compatibility object an observable state.
+Communication-cut and proof-system lower bounds remain model-specific until a
+SAME\_REALIZATION compiler is proved.  Coding-theoretic Schur squares and
+quadratic-relation spaces attach to a chosen code representation; the wrapper
+below never constructs that code.  Thus the only exact transfer used in this
+run is the finite formula construction and the source-code guard theorem.
+
+\section{Exact target and quantifiers}
+
+Let $L\subseteq\{0,1\}^*$ be a decidable language and let $C$ be a declared
+clean-core set.  A typical pointwise target has the form
+\begin{equation}
+ \exists b\ \forall A\ \exists N_0\ \forall x\in C:
+ |x|\ge N_0\Longrightarrow
+ \operatorname{cost}_{A}(x)\ge b(|x|),
+ \tag{PW}
+\end{equation}
+where $A$ ranges over all uniform deterministic total exact deciders for $L$.
+Here cost may be time, peak workspace, communication, or an asserted mandatory
+materialization event.  For a superpolynomial lower bound, $b$ eventually
+dominates every polynomial.  The extraction version replaces the last
+inequality by ``the actual execution of $A(x)$ materializes the prescribed
+compatibility object.''
+
+The project needs the different worst-case prefix
+\begin{equation}
+ \forall A\ \forall d\ \forall N_0\ \exists x\in C:
+ |x|\ge N_0\ \land\ \operatorname{time}_{A}(x)>|x|^d.
+ \tag{WC}
+\end{equation}
+The theorem below falsifies (PW) whenever $C$ contains a suitable easy island;
+it says nothing against (WC), since the wrapper can fall back elsewhere.
+
+\begin{definition}[Recognizable easy island]
+A set $S\subseteq C$ is a uniformly recognizable easy island for $L$ if one
+uniform deterministic machine $R$ recognizes $S$ and one uniform deterministic
+machine $B$ satisfies $B(x)=1$ iff $x\in L$ for every $x\in S$.  No correctness
+is required of $B$ off $S$.  Let their fully charged time/space bounds be
+$(r,s)$ and $(q,t)$, including parsing and the one-bit output.
+\end{definition}
+
+\section{The guard theorem}
+
+\begin{theorem}[\texttt{RECOGNIZABLE-EASY-ISLAND-BARRIER1}]
+For every uniform deterministic total exact decider $A$ for $L$, the machine
+\[
+ A_{R,B}(x)=
+ \begin{cases}
+ B(x),&R(x)=1,\\
+ A(x),&R(x)=0
+ \end{cases}
+ \tag{1}
+\]
+is a uniform deterministic total exact decider for $L$.  On every $x\in S$ it
+runs in $O(r(|x|)+q(|x|))$ time and
+$O(\max\{s(|x|),t(|x|)\})$ reusable workspace (or the conservative sum if
+memory is not reused).  The fallback $A$ is not invoked on those inputs.
+\end{theorem}
+
+\begin{proof}
+If $x\in S$, recognition accepts and the definition of $B$ gives the exact
+language bit.  If $x\notin S$, recognition rejects and total exactness of $A$
+gives the bit.  Sequential composition gives the displayed charges.  On
+$x\in S$, control returns after $B$, so no instruction, state, query, message,
+or representation used only by $A$ is reached.  This is one concrete execution,
+not an extensional comparison between different runs.
+\end{proof}
+
+The theorem is independent of whether $L$ is in P.  Under the hypothetical
+$P=NP$, one may choose a polynomial $A$ and obtains only another polynomial
+machine; no unconditional contradiction follows.  Conversely, demanding that
+$S$ contain both language answers changes none of the proof.
+
+\section{A mixed-answer exact-$(2,2)$ island}
+
+Use a canonical binary DIMACS-like encoding in which variable indices occupy
+$\lceil\log_2(n+1)\rceil$ bits and signed clauses and component boundaries have
+self-delimiting separators.  Let $P_k$ be the disjoint union of $k$ canonically
+numbered $K_{3,3}$ edge blocks.  For every vertex include its three incident
+edge variables as a positive clause and also the complementary negative
+clause.  Every edge variable lies in two vertex neighborhoods, hence occurs
+exactly twice positively and twice negatively.  All clauses contain three
+distinct variables and all signed clauses are distinct.  The diagonal perfect
+matching selects exactly one variable in each vertex neighborhood; therefore
+every positive clause has one true literal and every negative clause has two
+true literals.  Thus $P_k$ is satisfiable.
+
+Let $U$ be D\"ocker's fixed ordinary Monotone 3-SAT-$(2,2)$ unsatisfiable
+instance with $n_U=198$ and $m_U=264$ \cite[Proposition~1]{docker}.  This
+component is \KNOWN{}; the experiment did not reconstruct or independently
+SAT-check its 264 clauses.  With fresh canonical variable names define
+\[
+ S^+=\{\operatorname{enc}(P_k):k\ge1\},\qquad
+ S^-=\{\operatorname{enc}(P_k\sqcup U):k\ge1\},\qquad S=S^+\cup S^-.
+ \tag{2}
+\]
+Disjoint union preserves exact occurrence counts.  It preserves SAT for
+$P_k$ and is UNSAT when $U$ is a component.  Each of $S^+,S^-$ is infinite.
+For $P_k$, $n=9k$ and $m=12k$; adjoining $U$ adds constants.  Hence the
+encoded length is
+\[
+ N_k=\Theta(m\log n)=\Theta(k\log k).
+ \tag{3}
+\]
+
+A uniform recognizer parses the canonical syntax, checks the block pattern and
+optionally the fixed suffix $U$; a restricted classifier returns 1 without the
+suffix and 0 with it.  Even a simple comparison/generation implementation is
+polynomial in $N_k$.  Therefore (2) is a mixed-answer recognizable easy island.
+The guard theorem supplies a total exact SAT decider whose executions on all
+members of (2) do not enumerate assignments, expose a compatibility matrix,
+construct a residual DAG, communicate all branches, or call the fallback.
+
+\begin{corollary}[\texttt{NONMONOCHROMATIC-REPAIR1}]
+The proposed repair ``exclude only constant-answer islands'' is
+\RETIRED{}.  In particular no superpolynomial pointwise lower bound, nor a
+pointwise all-decider materialization necessity, follows from the facts that
+the family is infinite, exact-$(2,2)$, and contains infinitely many YES and NO
+instances.
+\end{corollary}
+
+This does not make all of $\Htwo$ easy.  D\"ocker's NP-completeness result is a
+\KNOWN{} worst-case theorem, and (WC) remains exactly the missing implication.
+Nor does the construction refute an input-reading lower bound: the recognizer
+must inspect enough source bits to certify canonical membership.
+
+\section{Finite experiment and hostile controls}
+
+The dependency-free invocation
+\begin{verbatim}
+timeout 30s python3 experiments/review/mixed_answer_island_redteam.py
+\end{verbatim}
+completed in 2.336 seconds and bytecode compilation passed.  It exhaustively
+checked all 510 Boolean languages on universes of sizes one through eight, all
+86,870 nonempty island choices (counted with language multiplicity), and six
+extensionally equal fallbacks.  The totals were 3,998,028 wrapper exactness
+checks, including 3,155,316 checks on genuinely mixed-answer islands and
+2,009,772 verified on-island fallback bypasses.
+
+For $1\le k\le32$, the script performed 11,184 structural and matching checks
+on the paired $K_{3,3}$ blocks.  It separately ran 72 wrapper controls, 60
+encoding/padding controls and 42 independent-product controls across 2SAT,
+Horn, affine, bounded-treewidth, product and compact branching-program
+descriptors.  Total: 4,009,386 checks, zero failures.  The fixed $U$ component
+is explicitly labelled as a literature dependency, not a computational check.
+
+The script SHA-256 is
+\nolinkurl{3272e4adc195799ca5a8643df96ebab1708a065d83dfffb52ab4f1491cfa8b5d};
+the raw-result SHA-256 is
+\nolinkurl{901ac752f3b56949a566e821aec80199562933e4908eb526531df33198cbbd0a}.  The raw
+artifact is
+\path{results/raw/review/2026-10-11_mixed_answer_island_redteam.json}.
+All measurements are \COMP{} and support no asymptotic extrapolation.
+
+\paragraph{Affine, Horn, 2SAT and bounded treewidth.}
+Each admits mixed YES/NO recognizable subfamilies and a semantic shortcut.
+Gaussian elimination, implication closure/SCCs, and bounded-width dynamic
+programming reinforce the theorem: visible combinatorial state count need not
+be the actual state exposed by the decider.
+
+\paragraph{Products, padding and redundant clauses.}
+For disjoint products the answer is the conjunction of component answers, so a
+single recognized fixed UNSAT component decides the product.  A declared
+padding grammar may be recognized and stripped at charged polynomial cost.
+Arbitrary padding, renaming, alternate serialization, or redundant clauses can
+make the canonical recognizer reject, in which case the wrapper safely calls
+$A$.  Thus the counterexample is representation-sensitive but still defeats
+the universal pointwise quantifier on its included canonical encodings; it does
+not establish a representation-invariant easy core.
+
+\paragraph{Compact representations and one-bit output.}
+A small circuit or branching program for membership in (2) is an algorithmic
+shortcut, not evidence for arbitrary 3SAT.  The interface returns only one bit;
+no reconstruction object is demanded.  Any extraction theorem must therefore
+be external and source-specific or must prove why that single bit forces the
+chosen internal object in the same run.
+
+\section{Barriers, nonuniformity and post-quantum ledger}
+
+The guard construction relativizes: $R$ and $B$ may ignore an oracle and the
+fallback may use it only off $S$.  It also survives algebraic-oracle access.
+Accordingly it cannot supply the nonrelativizing/nonalgebrizing final hinge
+required by Baker--Gill--Solovay and Aaronson--Wigderson
+\cite{bgs,aw}.  The argument is not a large constructive circuit property, so
+the Razborov--Rudich Natural Proofs framework is not the operative obstruction
+\cite{rr}; any future circuit lower bound must nevertheless audit it.  Uniform
+$R,B$ already suffice, so allowing nonuniform advice only strengthens the
+counterexample.  Polynomial exponents remain arbitrary.
+
+For the post-quantum ledger: Schur squares, shortening/puncturing, low-rank
+quadratic relations, Hilbert functions and syzygies are \textbf{FAILED
+TRANSFER} because the wrapper constructs no code.  Lossiness is an
+\textbf{EXACT OBJECT/THEOREM TRANSFER} only for the finite map actually chosen:
+the classifier collapses all of $S^+$ to 1 and all of $S^-$ to 0, demonstrating
+high collision rather than time hardness.  The LWE worst-case/average-case
+architecture and black-box solver extraction are
+\textbf{ANALOGY/CANDIDATE needing a new bridge}; no unconditional NP
+worst-case/average-case theorem is supplied.  Special soundness,
+collapse-binding and hash/random-oracle methods are \textbf{FAILED TRANSFER}
+without an explicit unconditional witness-extraction theorem.  Here hidden
+structure is exploitable by the classifier and is therefore a weakness, not a
+hardness source.
+
+\section{CORPUS REVIEWED}
+
+The run surveyed the 2,235-path default-branch tree and read root
+\path{main.tex}, actual \path{main4.tex}/\path{main5.tex}, \path{AGENTS.md},
+\path{CODEX.md}, the PNP research skill/mode/protocol, all current task
+specifications, MAIN SYNTHESIS-0012 and materially relevant MAIN history,
+TESTS-0012, LB-0016, RT-0015/RT-0012, MODELBRIDGE-0016, SYNTHESIS-0012 and
+SYNTHESIS-0008.  It also inspected HEC, VSC-HEC, G-PPC-HEC, CRS-PPC and CCSPC,
+the governance notes on reconciliation, post-quantum prompts, write recovery
+and barrier transfer, and the cited experiment/result artifacts.  Repository
+search covered recognizable islands, pointwise necessity, exact-$(2,2)$
+controls, typed covariance and the SOURCE-PASS target.  TESTS-0012, the cyclic
+predecessor, had a substantive GitHub-readable report with its required header
+and sentinel; no recovery request was needed.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+The source-code wrapper is a strict generalization of SYNTHESIS-0008's
+constant-answer theorem, not a new method.  The new content is the removal of
+the monochromatic premise and the explicit mixed-answer exact-$(2,2)$ family.
+TESTS-0012's one-branch matching shortcut supplies the paired YES side but did
+not add a recognizable UNSAT side.  RT-0012 already showed a structurally rich
+connected formula with a matching shortcut; this report does not relabel that
+finite witness as an asymptotic theorem.  LB-0016's exponential output bound
+for an explicit all-branch pass is preserved because the present decider does
+not implement that interface.
+
+The local log for RT-0016 said \texttt{PENDING\_GITHUB\_PUBLICATION} and no
+corresponding verified report was found.  Its typed-covariance content was
+independently reconciled by SYNTHESIS-0012, so this run neither reconstructs nor
+claims that missing report.  RT-0017 is a fresh path and theorem.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root \path{main.tex} correctly keeps P versus NP open and selects
+\texttt{SOURCE-PASS-ACCESS1}.  This run adds a sharper guard on its quantifiers:
+excluding constant-answer families is insufficient; every pointwise argument
+must also exclude all uniformly recognizable polynomially classified islands,
+including mixed-answer islands.  No executive theorem, exponent, or OPEN arrow
+in root main is strengthened.  This review role does not edit root main.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+Adopted: SYNTHESIS-0008's guard-wrapper method, TESTS-0012's paired matching
+family, D\"ocker's fixed unsatisfiable component, and SYNTHESIS-0012's
+worst-case SOURCE-PASS target.  Preserved: LB-0016's restricted output-volume
+theorem and all fixed-interface HEC/CCSPC results.  Rejected: semantic-state
+count as runtime, forced compatibility extraction from one-bit output, and
+cross-model VLSI/control/coding analogies without a compiler.  Retired:
+\texttt{NONMONOCHROMATIC-REPAIR1}.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+\path{research/review/STATUS.md} still foregrounded SYNTHESIS-0008 and did not
+record SYNTHESIS-0012's current SOURCE-PASS target; this run refreshes it.
+Calling ``contains both answers'' a hardness condition is now explicitly
+overstated.  No claim that exact Monotone 3-SAT-$(2,2)$ is easy is made:
+D\"ocker's worst-case NP-completeness theorem remains in force.
+
+\section{Surviving implication}
+
+The smallest viable repair is not another intrinsic richness condition.  It is
+the worst-case quantifier (WC), instantiated by one externally fixed source
+transformation whose actual execution forces a charged pass or lands in a
+model-matched unconditional lower-bound region.  Recognition, parsing,
+compiler work, child access, replay, reconstruction, peak space and the
+one-bit endpoint must be charged in the SAME\_REALIZATION.  That solver-
+independent implication, arbitrary-exponent elimination, and a
+nonrelativizing/nonalgebrizing contradiction remain \OPEN{}.  P versus NP
+remains open.
+
+\begin{thebibliography}{9}
+\bibitem{schaefer}
+T. J. Schaefer, ``The complexity of satisfiability problems,'' STOC 1978,
+doi:\href{https://doi.org/10.1145/800133.804350}{10.1145/800133.804350}.
+\bibitem{docker}
+J. D\"ocker, ``Monotone 3-Sat-(2,2) is NP-complete,'' Discrete Applied
+Mathematics 295 (2021), 1--10; primary manuscript
+\url{https://arxiv.org/abs/1912.08032}.
+\bibitem{hk}
+J. E. Hopcroft and R. M. Karp, ``An $n^{5/2}$ algorithm for maximum matchings
+in bipartite graphs,'' SIAM J. Comput. 2 (1973),
+doi:\href{https://doi.org/10.1137/0202019}{10.1137/0202019}.
+\bibitem{bgs}
+T. Baker, J. Gill and R. Solovay, ``Relativizations of the $P=?NP$ question,''
+SIAM J. Comput. 4 (1975), doi:\href{https://doi.org/10.1137/0204037}{10.1137/0204037}.
+\bibitem{aw}
+S. Aaronson and A. Wigderson, ``Algebrization: a new barrier in complexity
+theory,'' ACM TOCT 1 (2009), doi:\href{https://doi.org/10.1145/1490270.1490272}{10.1145/1490270.1490272}.
+\bibitem{rr}
+A. A. Razborov and S. Rudich, ``Natural Proofs,'' JCSS 55 (1997),
+doi:\href{https://doi.org/10.1006/jcss.1997.1494}{10.1006/jcss.1997.1494}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::REDTEAM::RT-0017
+\end{document}
