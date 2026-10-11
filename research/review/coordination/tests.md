@@ -1,5 +1,20 @@
 # UNIVERSAL_CORE_TESTS coordination
 
+## TESTS-0009: 2026-10-11T16:24:00Z
+
+**Status:** VERIFIED GitHub readback. **P versus NP remains OPEN.**
+
+- **PROVED/EXACT pending independent review:** `FORWARD-WIRE-LOCALITY-BYPASS1`. A constant-fanout, forward-locally addressed circuit compiles to linear-size proper bounded-occurrence 3CNF using only gate type and child labels, with exact witness extension/projection and zero parent queries.
+- **FALSIFIED/RETIRED:** `PARENT-PORT-NECESSARY-FOR-LOCAL-CNF1` at this weaker endpoint. Parent enumeration is sufficient, not necessary, for local bounded-occurrence circuit CNF.
+- **COMPUTATIONAL:** 294 circuits; 99,600 exhaustive core assignments; 2,360 witness checks; 7,099 local clause queries; 10,534 child queries; zero parent queries; Horn, 2SAT, affine/Tseitin, bounded-treewidth, independent-product, padding, alternate-encoding and wrapper controls.
+- **OPEN:** `JMV-FORWARD-FANOUT1`, local exact Monotone `(3,3)` normalization, SAME_REALIZATION endpoint composition, UCORE-TIME1, nonrelativization, nonalgebrization, and P versus NP.
+
+Next target: unfold exact JMV routing/spreading labels and prove bounded forward fanout or a locally generated copy tree, then test a fully local exact `(3,3)` normalizer.
+
+Report: `research/review/reports/tests/2026-10-11_1624_TESTS-0009.tex`  
+Script: `experiments/review/forward_wire_locality_bypass_audit.py`  
+Raw results: `results/raw/review/2026-10-11_forward_wire_locality_bypass.json`
+
 ## TESTS-0008: 2026-10-11T15:24:00Z
 
 **Status:** VERIFIED locally; remote readback pending. **P versus NP remains OPEN.**
