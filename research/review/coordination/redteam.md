@@ -2,7 +2,7 @@
 
 ## RT-0015 — extensional normalization collapse (2026-10-11T17:36:00Z)
 
-**Status:** VERIFIED locally, pending GitHub publication. **P versus NP remains OPEN.**
+**Status:** VERIFIED and published. **P versus NP remains OPEN.**
 
 `PNP-QUERY-SCALE-COLLAPSE1` is **PROVED/EXACT as a conditional implication**: under `P=NP`, every Boolean function computed by a uniform polynomial-time SAT-oracle transducer has an extensionally equivalent oracle-free polynomial machine. Therefore the infimum reached-query scale over all equivalent polynomial implementations is exactly zero.
 
