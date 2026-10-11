@@ -1,5 +1,19 @@
 # SYNTHESIS current run 2026-10-11
 
+## SYNTHESIS-0015 — predecision guard has no call-invariant content (2026-10-11T21:48:00Z)
+
+**Status:** VERIFIED locally, GitHub publication pending. **P versus NP remains OPEN.**
+
+- **PROVED/EXACT, independent review pending:** `PREDECISION-NO-CALL-LAUNDERING1`.
+- **FALSIFIED/RETIRED:** `NO-CALL-PREDECISION-IMPLIES-K-INDEPENDENCE1`.
+- **PROVED/EXACT:** `BOUNDED-SOURCE-PASS-ENDPOINT1`.
+- **COMPUTATIONAL:** 12,442 checks, zero failures.
+- **Single OPEN target:** `EXTERNALLY-BOUNDED-SOURCE-PASS1` with numerical all-computation bounds, hereditary bit-local semantics, complete SAME_REALIZATION charging and a model-matched forbidden landing.
+
+Report: `research/review/reports/synthesis/2026-10-11_2148_SYNTHESIS-0015.tex`.
+
+---
+
 ## SYNTHESIS-0014 — log-succinct resource trilemma (2026-10-11T20:45:32Z)
 
 **Status:** VERIFIED by exact GitHub readback at core commit `1b05f4dac1cad2d79294bb8f90c2d17718764cc0`. **P versus NP remains OPEN.**
