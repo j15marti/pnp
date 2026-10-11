@@ -1,0 +1,345 @@
+% PNP REVIEW REPORT::LOWER_BOUND::LB-0016::2026-10-11T19:12:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newtheorem{theorem}{Theorem}
+\title{LB-0016: Exact all-branch restriction fanout on the balanced clean core}
+\author{UNIVERSAL\_CORE\_LOWER\_BOUND}
+\date{11 October 2026, 19:12 UTC}
+\begin{document}\maketitle
+
+\section*{Executive result}
+
+\textbf{P versus NP remains OPEN.}  This run tests one concrete realization
+of \texttt{SOURCE-PASS-ACCESS1}: fix a block of variables, generate every
+restriction, and OR the child decisions.  On the exact-occurrence clean core,
+a power-size contraction forces exponentially many children.  The statement
+is exact for this declared source pass and does not lower-bound an arbitrary
+SAT decider.
+
+The new theorem is \texttt{ALL-BRANCH-ENCODED-FANOUT1} (\EXACT).  If every
+explicit child has canonical indexed length at most $N^h$, $0<h<1$, then the
+block has size at least $n/3-o(n)$ and the pass emits
+\[
+  2^{n/3-o(n)}=2^{\Omega(N/\log N)}
+\]
+children.  Therefore \texttt{ALL-BRANCH-SOURCE-PASS1} is \RETIRED{} as a
+polynomial-cost realization of the current source-pass target.  A pruned,
+source-dependent pass remains \OPEN; proving that an arbitrary decider must
+enumerate the block compatibility set is false at the one-bit interface.
+
+\section{Exact family, encoding, and target}
+
+Let $\mathcal C_n$ contain duplicate-free proper $3$-CNFs in which every
+variable occurs exactly twice positively and twice negatively.  Hence
+$m=4n/3$ and $n$ is a multiple of three.  The active project family is the
+monotone-clause subfamily when that promise is imposed; the theorem below
+uses only the exact four-occurrence promise and therefore applies to that
+subfamily as well.  A child is encoded as an explicit clause list after
+deleting satisfied clauses, deleting false literals, and compactly renaming
+its live variables.  Each live literal contains one sign bit and an indexed
+variable address.  Thus the source length is $N=\Theta(n\log n)$.
+
+For a block $S\subseteq[n]$, define the semantic compatibility set
+\[
+ H_S(F)=\{\alpha\in\{0,1\}^{S}:F\!\upharpoonright_\alpha
+ \text{ is satisfiable}\}.
+\]
+The exact decision identity is
+\[
+ \SAT(F)=1\quad\Longleftrightarrow\quad H_S(F)\ne\varnothing
+ \quad\Longleftrightarrow\quad
+ \bigvee_{\alpha\in\{0,1\}^{S}}
+ \SAT(F\!\upharpoonright_\alpha)=1.
+\]
+The unrestricted lower-bound target remains
+\[
+ \forall A\in\operatorname{Dec}_{\rm uniform}(\SAT)\ \forall d\ \forall N_0\
+ \exists F\in\mathcal C:\ |\operatorname{enc}(F)|\ge N_0
+ \ \wedge\ T_A(F)>|\operatorname{enc}(F)|^d .
+\]
+Nothing proved here establishes this target.
+
+\section{The declared all-branch pass}
+
+\paragraph{Definition.}
+For a chosen $S$, the all-branch pass emits all $2^{|S|}$ explicit residuals
+$F\!\upharpoonright_\alpha$, with acquisition, residual construction,
+addressing, solver calls, aggregation, and peak storage charged.  It is a
+specific algorithmic interface, not a necessary normal form for SAT.
+
+\begin{theorem}[ALL-BRANCH-ENCODED-FANOUT1 --- \EXACT]
+Fix $0<h<1$.  Let $F_n\in\mathcal C_n$ and $N_n=|\operatorname{enc}(F_n)|$.
+If a block $S_n$ has the property that every canonically encoded residual
+$F_n\!\upharpoonright_\alpha$ has length at most $N_n^h$, then
+\[
+ |S_n|\ge \frac n3-o(n),\qquad
+ 2^{|S_n|}\ge 2^{n/3-o(n)}=2^{\Omega(N_n/\log N_n)}.
+\]
+Consequently the explicit all-branch pass has superpolynomial acquisition or
+output volume before child solving is charged.
+\end{theorem}
+
+\begin{proof}
+Write $t=|S_n|$ and $m=4n/3$.  A fixed variable occurs in four clauses, so at
+most $4t$ clauses meet $S_n$.  At least
+\[
+ r=m-4t
+\]
+clauses avoid $S_n$ and survive unchanged in every residual.  Those $r$
+proper three-clauses contain $3r$ literal occurrences.  Since every live
+variable has residual degree at most four, they involve at least $3r/4$
+distinct live variables.  Even after compact renaming, the explicit indexed
+clause list therefore uses
+\[
+ \Omega\!\left(r\log(r+2)\right)
+\]
+bits.  If this is at most $N_n^h$ and $N_n=\Theta(n\log n)$, then
+$r=O(N_n^h/\log N_n)=o(n)$.  Hence
+$4n/3-4t=o(n)$, so $t\ge n/3-o(n)$.  The pass contains exactly $2^t$
+branches, giving the claimed volume.  No assumption about child
+satisfiability or solver behavior is used.
+\end{proof}
+
+\paragraph{Scope.}
+The proof is representation-robust only within explicit indexed clause-list
+encodings up to ordinary compact renaming.  It does not apply to a circuit,
+BDD, affine basis, implicit generator, or a one-bit endpoint unless the cost
+of its accessor is separately transferred to the same machine.  This is the
+SAME\_REALIZATION boundary.
+
+\section{Why compatibility does not become an arbitrary-algorithm cost}
+
+The theorem charges generation of the full cube, not $H_S(F)$ and not the
+one-bit predicate $[H_S(F)\ne\varnothing]$.  Three attempted promotions fail.
+
+\begin{enumerate}[leftmargin=1.6em]
+\item \textbf{Enumerate every branch.}  This is exactly the theorem and costs
+  $2^{\Omega(N/\log N)}$ for strict power-size children.
+\item \textbf{Choose a branch using a SAT decider $A$.}  Standard
+  self-reduction queries $A(F\!\upharpoonright_{x=0})$ and fixes a satisfying
+  bit.  The first queries have length $N-O(\log N)=N^{1-o(1)}$.  If
+  $T_A(M)=M^{K+o(1)}$, these current-scale calls retain the arbitrary exponent
+  $K$.  This is the prior \texttt{PRECONTRACTION-A-GUARD2} and
+  \texttt{BLACKBOX-QUERY-SCALE-DICHOTOMY1}, not a new universal lower bound.
+\item \textbf{Choose one branch without semantic work.}  A fixed branch rule
+  fails even for Boolean functions supported on a different branch.  A
+  formula-dependent exact rule may succeed, but computing it is precisely
+  the still-open source semantic compiler.  Calling it hard would smuggle
+  $P\ne NP$ into the premise.
+\end{enumerate}
+
+Large $|H_S(F)|$, large compatibility rank, or many semantic states do not
+force materialization.  Affine/Tseitin systems can have exponentially many
+compatible block assignments while Gaussian elimination stores a compact
+linear description and decides consistency in polynomial time.  Horn, 2SAT,
+bounded-treewidth formulas, independent products, and formulas with padding
+or redundancy similarly separate semantic multiplicity from decision cost.
+DIRECT, COPY, DEAD, DELAY, INTERP, and RECOMP wrappers preserve the language
+while changing intensional traces and resource ledgers.  The SAT interface
+returns one bit, so no transcript, witness, branch index, or reconstruction
+is universally required.
+
+\section{Counterfactual $P=NP$ audit}
+
+Assume a uniform deterministic SAT algorithm $A$ runs in time $N^K$ for an
+unknown fixed $K$.  Ordinary self-reduction obtains a satisfying assignment
+using $O(n)$ current-scale calls and time $N^{K+O(1)}$; it yields no
+contradiction.  An all-branch pass pays the exponential volume above.  A
+source pass that, before any positive-scale call to $A$, emits only
+bit-local hereditary children in a model-matched FLMV-forbidden region would
+give the desired contradiction, but constructing that pass remains \OPEN{}
+and separation-strength.  FLMV supplies a simultaneous time--space endpoint
+for its declared random-access model; it does not prove that arbitrary SAT
+programs expose $H_S(F)$ or use this pass.
+
+\section{Barrier and transfer audit}
+
+The two current obstacles are: (i) source-dependent semantic pruning without
+current-scale SAT calls, and (ii) transfer of a resulting representation to
+one ordinary machine satisfying a known simultaneous endpoint.  Primary
+literature was checked before the candidate was assessed.
+
+\begin{center}\small
+\begin{tabular}{p{0.29\linewidth}p{0.19\linewidth}p{0.43\linewidth}}
+\toprule
+Domain & Classification & Exact relevance / missing transfer\\
+\midrule
+FLMV SAT time--space & directly transferable theorem & Applies only after one random-access machine meets both bounds; it gives no source pass.\\
+Restriction/cylinder counting & directly transferable theorem & The elementary cover and incidence counts apply to the declared pass; they do not normalize arbitrary computation.\\
+Kernelization/sparsification & useful analogy & Dell--van Melkebeek constrains specified compressions under a PH consequence, not every SAT algorithm.\\
+VLSI fanout/routing & useful analogy requiring a bridge & Charges physically materialized branches; a RAM may compute one decision bit semantically.\\
+Proof complexity / switching & misleading if universalized & Lower bounds on a proof system or restricted circuit do not transfer to an arbitrary uniform decider.\\
+Schur squares, quadratic relations, syzygies & FAILED TRANSFER here & They concern algebraic representations of compatibility data; affine elimination shows structure can be an algorithmic weakness.\\
+Lossiness/collision entropy & analogy/candidate & It can quantify fibers of a proposed branch map but supplies no black-box extraction or runtime theorem.\\
+Worst/average-case and special soundness & analogy/candidate & No unconditional SAT extraction theorem follows; cryptographic assumptions are inadmissible.\\
+Hash/random oracle & FAILED TRANSFER & Engineering provenance does not yield an unconditional ordinary-machine lower bound.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The counting proof relativizes and survives algebraic oracle access; it
+therefore does not evade the Baker--Gill--Solovay or algebrization barriers.
+It is not a Natural-Proofs separation argument, but neither does it provide a
+Natural-Proofs bypass.  Any final hinge must be explicitly nonrelativizing
+and nonalgebrizing.
+
+\section{Finite reproducible audit --- \COMP}
+
+The dependency-free Python program completed in $0.791$ CPU seconds with
+526,426 assertions and zero failures.  It exhaustively checked all 65,812
+Boolean truth tables on at most four inputs and 262,948 block-restriction OR
+identities, together with 262,948 fixed-branch counterexamples.  It generated
+proper duplicate-free exact-$(2,2)$ cores for
+$n\in\{6,12,24,48,96,192\}$, verified the untouched-clause bound, and tested
+$h\in\{1/2,2/3,4/5\}$.  At $n=192$ the finite fanout-log lower bounds were
+64, 61, and 54 respectively.  These numbers are evidence for the
+implementation only; the asymptotic theorem is the proof above.
+
+Hostile controls covered Horn, unsatisfiable 2SAT, bounded treewidth,
+independent products, padding, redundancy, alternate clause/literal order,
+tautological extension, and six wrappers.  The affine control
+$x_i\oplus x_{i+4}=0$ has rank four, sixteen solutions, and all sixteen block
+assignments compatible, yet four Gaussian rows represent it exactly.  This
+directly falsifies any inference from $|H_S(F)|$ to decision work.
+
+Artifacts:
+\begin{itemize}[leftmargin=1.5em]
+\item \path{experiments/review/block_restriction_source_pass_audit.py};
+\item \path{results/raw/review/2026-10-11_block_restriction_source_pass_audit.json}.
+\end{itemize}
+
+\section{CORPUS REVIEWED}
+
+The repository tree was surveyed at head
+\texttt{5fd4287a9dffcf426189ac2cd1ca6abc30e2857e} before the predecessor-recovery
+write.  Read artifacts included root \texttt{main.tex}, \texttt{main4.tex},
+\texttt{main5.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, the complete
+\texttt{pnp-research} skill and references, every task specification,
+MAIN SYNTHESIS-0012, MODELBRIDGE-0016, LB-0015, TESTS-0011, RT-0015,
+SYNTHESIS-0001, LEAD-0027, RECOVERY-STRENGTHEN3, and the HEC, VSC-HEC,
+G-PPC-HEC, CRS-PPC, and CCSPC exploration branch.  Governance and current
+experiment/log conventions were checked.  Repository search covered
+``block restriction'', ``restriction family'', ``cylinder'',
+\texttt{PINNING-NOCONTRACT1}, and pre-contraction guards.
+
+The immediately preceding bridge cycle had no new verified artifact beyond
+MODELBRIDGE-0016.  A nonblocking recovery request was published at
+\path{research/review/outbox/model_bridge/2026-10-11_1912_RECOVERY-REQUEST-LB-0016.md}.
+The evidence indicates automation handoff/preemption before publication;
+there was no observed GitHub permission, path, rate-limit, or stale-SHA
+error.  No scientific body was reconstructed.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+LEAD-0027 already proves \texttt{OBLIVIOUS-COVER-GUARD1},
+$q2^\ell\ge2^n$, and \texttt{SUMMARY-COVER-GUARD1},
+$B+\log_2q+\ell\ge n$.  SYNTHESIS-0001 already proves standard pinning keeps
+the source and hence $\lambda=1$.  LB-0015 already proves the positive-query
+scale retains arbitrary solver exponents.  Those results are adopted and
+not claimed as new.  The new contribution is the exact-occurrence,
+compactly-renamed, encoded-length lower bound for the explicit all-branch
+pass; it does not require a unique-witness cover premise.
+
+No contradiction with ARC14/ARC15 was found: those partial constructors use
+source-dependent restrictions and may return UNKNOWN, whereas this theorem
+charges enumeration of every assignment to one block.  No contradiction
+with the root claim of OPEN status was found.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+The root's single target \texttt{SOURCE-PASS-ACCESS1} is narrowed: complete
+block enumeration cannot realize it at polynomial charged cost when all
+children have fixed power-size length.  The target itself remains \OPEN{}
+because a source-dependent pruned pass, an implicit representation with a
+charged accessor, or a different semantic construction is not ruled out.
+No root ownership region was edited by this review role.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{ADOPTED:} PRECONTRACTION-A-GUARD2,
+  PINNING-NOCONTRACT1, OBLIVIOUS-COVER-GUARD1,
+  SUMMARY-COVER-GUARD1, BLACKBOX-QUERY-SCALE-DICHOTOMY1, and the
+  SAME\_REALIZATION rule.
+\item \textbf{REJECTED:} semantic-state count, compatibility size/rank,
+  explicit branch volume, VLSI routing, proof-system size, or cryptographic
+  binding as an unqualified lower bound on arbitrary one-bit SAT decision.
+\item \textbf{RETIRED:} \texttt{ALL-BRANCH-SOURCE-PASS1} only as a
+  polynomial-cost strict power-contraction implementation.
+\item \textbf{OPEN:} a source-dependent pruned pass with bit-local hereditary
+  access and fully charged $K$-independent acquisition, replay, output, time,
+  and workspace; UCORE-TIME1; nonrelativization; nonalgebrization.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+No stale claim in root MAIN was promoted.  One scope warning is preserved:
+LEAD-0027's arbitrary-unique-witness cylinder proof is a theorem for its
+declared formula universe; it must not be silently described as a theorem
+that every witness pattern is realized inside the active monotone exact
+clean core.  The present incidence proof avoids that unproved embedding but
+has the narrower all-branch-pass premise.
+
+\section{Status ledger and next arrow}
+
+\begin{center}\small
+\begin{tabular}{p{0.43\linewidth}p{0.20\linewidth}p{0.27\linewidth}}
+\toprule
+Claim & Status & Scope\\
+\midrule
+ALL-BRANCH-ENCODED-FANOUT1 & \EXACT & explicit indexed restriction pass\\
+Finite restriction/control audit & \COMP & bounded sizes only\\
+ALL-BRANCH-SOURCE-PASS1 & \RETIRED & polynomial strict power contraction\\
+Compatibility extraction forces arbitrary work & \RETIRED & unqualified one-bit claim\\
+PRUNED-SOURCE-PASS-ACCESS1 & \OPEN & exact current target\\
+UCORE-TIME1 and $P\ne NP$ & \OPEN & arbitrary uniform computation\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The highest-value next arrow is \texttt{PRUNED-SOURCE-PASS-ACCESS1}:
+formalize a deterministic source-checkable rule selecting only
+$\operatorname{poly}(N)$ restrictions, prove that every SAT and UNSAT parent
+is covered hereditarily, implement bit-local access without positive-scale
+SAT queries, and charge failed selection attempts.  The rule must survive
+affine elimination, tractable islands, padding, wrappers, alternate
+encodings, and one-bit output.  Proving such a pass lands in a model-matched
+forbidden region would already be separation-strength.
+
+\section*{Final status}
+Every path still contains an OPEN load-bearing implication.  P versus NP
+remains \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{FLMV}
+L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, J. ACM 52(6), 2005,
+\url{https://doi.org/10.1145/1090098.1090101}.
+\bibitem{DVM}
+H. Dell and D. van Melkebeek,
+\emph{Satisfiability Allows No Nontrivial Sparsification Unless the
+Polynomial-Time Hierarchy Collapses}, J. ACM 61(4), 2014,
+\url{https://doi.org/10.1145/2629620}.
+\bibitem{BGS}
+T. Baker, J. Gill, and R. Solovay,
+\emph{Relativizations of the $P=?NP$ Question}, SIAM J. Comput. 4(4), 1975,
+\url{https://doi.org/10.1137/0204037}.
+\bibitem{AW}
+S. Aaronson and A. Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory}, Theory of
+Computing 5, 2009, \url{https://doi.org/10.4086/toc.2009.v005a001}.
+\bibitem{RR}
+A. Razborov and S. Rudich,
+\emph{Natural Proofs}, J. Comput. Syst. Sci. 55(1), 1997,
+\url{https://doi.org/10.1006/jcss.1997.1494}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LOWER_BOUND::LB-0016
+\end{document}
