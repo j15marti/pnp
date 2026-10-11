@@ -1,0 +1,181 @@
+% PNP REVIEW REPORT::MODEL_BRIDGE::MODELBRIDGE-0005::2026-10-11T07:00:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,enumitem,hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\bits}{\{0,1\}}
+\newcommand{\status}[1]{\textbf{#1}}
+\title{MODELBRIDGE-0005: Pairwise semantic compatibility is extractable but does not glue}
+\author{UNIVERSAL\_CORE\_BRIDGE}
+\date{11 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.94\linewidth}{
+\textbf{Executive status.}  \status{PROVED/EXACT}: the complete unary--pairwise projection of the satisfying-assignment relation can be extracted externally from any total uniform exact 3-SAT decider with at most $2n^2+1$ charged oracle calls.  \status{PROVED/EXACT}: no fixed-arity projection object by itself determines a globally compatible witness, by an explicit pair of Tseitin parity cosets.  \status{COMPUTATIONAL}: a bounded-occurrence monotone-polarity clean-core search found two $H_{2,2}$ formulas with identical all-one pair projections and disjoint solution sets.  Consequently pairwise compatibility is not the missing universal contraction.  \textbf{P versus NP remains OPEN.}
+}}
+\end{center}
+
+\section{Target and exact quantifiers}
+Let $F$ be an encoded proper 3-CNF on named variables $x_1,\dots,x_n$.  Let
+\[
+R(F)=\{a\in\bits^n:F(a)=1\}.
+\]
+For $i<j$ and $b,c\in\bits$, define
+\begin{align*}
+u_{i,b}(F)&=1 \iff \exists a\in R(F)\; a_i=b,\\
+p_{i,b,j,c}(F)&=1 \iff \exists a\in R(F)\; (a_i,a_j)=(b,c),
+\end{align*}
+and set $H_2(F)=(u,p)\in\bits^{2n^2}$.  The rejected bridge candidate was
+\[
+\forall A\,[A\text{ is a total uniform deterministic exact 3-SAT decider}]
+\quad\Longrightarrow\quad
+\text{a solver-independent }H_2(F)\text{ yields a strict bound-preserving successor.}
+\]
+This report separates its two arrows: extraction is exact; source-free global gluing and contraction are false.
+
+The clean control class $H_{2,2}$ consists of proper 3-CNFs in which every variable occurs exactly twice positively and twice negatively and every clause is all-positive or all-negative.  Thus $m=4n/3$ and $n$ is divisible by three.  This is the same ordinary-CNF control used in the current review corpus; it is not silently substituted for the full 3-SAT language.
+
+\section{External extraction theorem}
+\begin{theorem}[SEMCOMP-EXTRACT1 --- \status{PROVED/EXACT}]
+For every total uniform exact 3-SAT decider $A$, there is a uniform deterministic transducer $E^A$ which, on every encoded 3-CNF $F$ with $n$ named variables, outputs $(\SAT(F),H_2(F))$ using at most $2n^2+1$ calls to $A$.
+\end{theorem}
+\begin{proof}
+First query $F$.  For each $(i,b)$ query $F\wedge(x_i=b)$; for each $(i,b,j,c)$ with $i<j$ query $F\wedge(x_i=b)\wedge(x_j=c)$.  The returned decision bits are exactly the coordinates above.  There are
+\[
+1+2n+4\binom n2=2n^2+1
+\]
+queries.  A pin can be represented as the repeated-literal 3-clause $(\ell\vee\ell\vee\ell)$.  If the target syntax requires three distinct literals, replace a unit pin $\ell$ by the four proper clauses
+\[
+(\ell\vee p\vee q)\wedge(\ell\vee p\vee\neg q)
+\wedge(\ell\vee\neg p\vee q)\wedge(\ell\vee\neg p\vee\neg q),
+\]
+using two fresh variables.  This preserves satisfiability exactly and keeps each query length linear in the source length.
+\end{proof}
+
+For the length convention already fixed by MODELBRIDGE-0004, let
+\[
+w=\max(1,\lceil\log_2(n+1)\rceil),\qquad
+L_t=N+[\ell_\gamma(m+t+1)-\ell_\gamma(m+1)]+t[5+3(1+w)]
+\]
+for $t\in\{0,1,2\}$ repeated-literal pins, and $L=\max_t L_t$.  If $A$ takes time $T_A$ and space $S_A$, a literal implementation costs
+\[
+O\!\left(n^2(T_A(L)+L)\right)\text{ time},\qquad
+O(S_A(L)+L+\log n)\text{ streaming work space}.
+\]
+Materializing the $2n^2$ output bits additionally costs $\Theta(n^2)$ space.  The proper-pin adapter changes constants, not asymptotics.  Hence under $\SAT\in\mathrm P$, $H_2$ is in FP, but the extraction exponent still inherits the unknown exponent of $A$ (and adds the quadratic query loop).  This is external black-box extraction, not evidence that the same execution of $A$ exposes $H_2$.
+
+\section{Fixed-arity projections do not glue}
+\begin{theorem}[FIXED-ARITY-NOGLUE1 --- \status{PROVED/EXACT}]
+For every $n\ge 3$ there are proper 3-CNFs $P_n^0,P_n^1$ whose projected solution sets on original variables $x_1,\dots,x_n$ are respectively the even- and odd-parity cosets.  They are disjoint, yet for every $k<n$ every assignment to every $k$ original coordinates extends to a solution of both formulas.  Therefore no source-free function of all arity-at-most-$k$ semantic projections can output an assignment valid for every source realizing those projections.
+\end{theorem}
+\begin{proof}
+Encode a prefix-parity chain with the proper 3-CNF XOR gadget
+\[
+c=a\oplus b\quad\Longleftrightarrow\quad
+(a\vee b\vee\neg c)(a\vee\neg b\vee c)
+(\neg a\vee b\vee c)(\neg a\vee\neg b\vee\neg c).
+\]
+After $n-1$ gates, pin the final prefix bit to the desired parity with the four-clause proper pin gadget above.  Each formula has $2n+1$ variables and $4n$ clauses.  Its projection onto the $x$ variables is exactly one parity coset.  Given any setting of fewer than $n$ original variables and either desired parity, choose one unfixed bit to satisfy the parity equation.  Thus every proper projection is the full cube for both cosets, although the global relations are disjoint.  A function of the common projection data returns the same assignment on both inputs and therefore fails on at least one.
+\end{proof}
+
+This is also an exact coding-theoretic object transfer: the two cosets of the binary single-parity-check code have identical puncturings whenever at least one coordinate is deleted.  It is \emph{not} a transfer of a coding hardness theorem.  The same affine structure is exploitable by Gaussian elimination, so it is a warning against treating large local compatibility as hardness.
+
+\section{Finite hostile-control audit}
+The reproducible script
+\texttt{experiments/review/semantic\_pair\_projection\_audit.py} ran as one sub-30-second chunk:
+\begin{quote}\small
+\texttt{python ... --max-parity-n 8 --h22-samples 12 --h22-pair-samples 3000 --seed 20261011}
+\end{quote}
+and wrote \texttt{results/raw/review/2026-10-11\_semantic\_pair\_projection\_audit.json}.  Runtime was $4.92$ seconds.
+
+\begin{center}
+\begin{tabular}{@{}p{0.33\linewidth}rrp{0.35\linewidth}@{}}
+\toprule
+Test & Inputs/checks & Collisions & Result\\
+\midrule
+Parity gadgets, $3\le n\le8$ & 820 checks & all paired & disjoint cosets; identical all-one unary/pair projections\\
+Exhaustive $H_{2,2}$, $n=6$ & 5,625 formulas & 15,817,500 & one projection bucket; no disjoint pair at this size\\
+Random $H_{2,2}$ controls & 36 formulas & 6,300 checks & all unary/pair bits one for $n=6,9,12$ samples\\
+Sampled $H_{2,2}$, $n=9$ & 97 formulas & 4,583 & disjoint pair found; solution counts 73 and 64\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The $n=9$ witness pair below is \status{COMPUTATIONAL}, not an asymptotic lower bound.  Each row is a clause; a minus sign denotes negation.
+\begin{align*}
+F_A={}&\{123,147,\bar1\bar4\bar5,\bar1\bar7\bar9,245,
+\bar2\bar3\bar6,\bar2\bar7\bar9,367,\bar3\bar4\bar8,589,
+\bar5\bar6\bar8,689\},\\
+F_B={}&\{128,139,\bar1\bar2\bar8,\bar1\bar6\bar7,269,
+\bar2\bar4\bar7,357,\bar3\bar4\bar9,\bar3\bar5\bar8,456,
+478,\bar5\bar6\bar9\}.
+\end{align*}
+Direct enumeration verifies $R(F_A)\cap R(F_B)=\varnothing$, while both have the same all-one $162$-bit $H_2$ signature.  This gives a clean-core finite counterexample to source-free pairwise reconstruction.  It does not establish NP-hardness of the finite instance or a hard asymptotic family.
+
+\section{Why the universal contraction still fails}
+The complete accounting produces a trilemma.
+\begin{enumerate}[leftmargin=2em]
+\item Retain $F$ while using $H_2(F)$: the current-scale source remains present, so no charged strict contraction follows.
+\item Discard $F$ and retain only $H_2(F)$: FIXED-ARITY-NOGLUE1 and the finite $H_{2,2}$ collision show that global source binding is lost.
+\item Ask $A$ for enough information to decide or reconstruct globally and then emit a constant child: the expensive current-scale decision has already occurred, so the construction does not remove the unknown exponent $K$.
+\end{enumerate}
+Thus the implication
+\[
+\SAT\in\mathrm P\Longrightarrow\text{charged $K$-independent strict contraction from }H_2
+\]
+is \status{FALSIFIED/RETIRED}.  There is no unconditional contradiction and no inference from semantic-state count to runtime.
+
+\section{Barrier-transfer literature preflight}
+The two obstacles were (i) local-to-global gluing and (ii) turning black-box access into a model-matched lower bound.  Atserias--Bulatov--Dalmau prove that $k$-consistency is exact for bounded-treewidth structural regimes and provide a converse in their CSP model; Barto--Kozik characterize bounded-width constraint languages and emphasize affine/counting obstructions.  These are \status{KNOWN THEOREM} transfers only for their specified CSP objects.  They support the parity counterexample and reject a universal local-consistency claim; they do not supply a SAT time lower bound.
+
+Baker--Gill--Solovay relativization, Aaronson--Wigderson algebrization, and the Razborov--Rudich natural-proofs barrier remain audit constraints.  SEMCOMP-EXTRACT1 is a relativizing black-box self-reduction and cannot by itself evade them.  No natural-proof largeness/usefulness claim is made.  Time--space lower bounds for restricted branching programs, circuits, proof systems, or VLSI do not automatically apply to an arbitrary uniform deterministic decider; the missing simulation/transfer theorem remains explicit.
+
+Post-quantum ledger: puncturing parity cosets is an \status{EXACT OBJECT/THEOREM TRANSFER}; Schur squares, relation-rank spectra, higher syzygies, and collision entropy are \status{ANALOGY/CANDIDATE} here because no map from those invariants to arbitrary-decider time is proved.  Hash or random-oracle binding is a \status{FAILED TRANSFER} for an unconditional separation.
+
+\section{CORPUS REVIEWED}
+The run surveyed the repository tree and history; read root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, and \texttt{.codex/skills/pnp-research/SKILL.md}; inspected all current task specifications; read actual \texttt{main4.tex} and \texttt{main5.tex}; read the newest verified synthesis, red-team, lower-bound, tests, and model-bridge reports; searched older reports and the HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC branch for compatibility, reconstruction, local projection, wrapper, and contraction claims; and checked the experiment artifacts cited by the active review reports.  The predecessor synthesis report was substantive, correctly marked, and readable from GitHub, so no recovery request was required.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+The older report \texttt{2026-10-08\_010135\_FINAL-LINK2-CORPUS.tex} already proves that a 3-CNF relation equals the intersection of all projections on at most three coordinates when the exact $H_3$ data are supplied, and already records that general $H_3$ acquisition is circular/current-scale and need not shrink.  This run does \emph{not} relabel that fact as new.  New here are the exact $2n^2+1$ external-query/cost ledger for $H_2$, the all-$k<n$ parity no-gluing theorem, and a concrete $H_{2,2}$ pair-projection collision.  These agree with, rather than contradict, the latest synthesis retirement of post-decision causal contraction.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root \texttt{main.tex} remains a stale but correctly OPEN dashboard.  This role has no authorized LSPV ownership region, so it was not edited.  The bridge ledger should add: ``pairwise semantic compatibility is externally extractable but source-free gluing is false.''  No theorem in root main is strengthened.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{description}[leftmargin=2.6cm,style=nextline]
+\item[Adopted.] The exact encoding/cost convention of MODELBRIDGE-0004; SAME\_REALIZATION; charged preprocessing, extraction, and reconstruction; wrapper and affine hostile controls; the latest synthesis distinction between post-decision output and pre-decision contraction.
+\item[Rejected.] Any claim that an arbitrary program must internally materialize local compatibility, a witness, a particular memory state, or a causal guard.
+\item[Retired.] Pairwise projection as a source-free global binding object; any fixed-arity local projection as a universal witness reconstructor; deriving runtime from the number of semantic compatibility states.
+\end{description}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+Any prose treating ``compatibility extraction'' without specifying arity, acquisition cost, and source retention is overstated.  The full $H_3$ representation theorem is not a contraction theorem; $H_2$ is even weaker and fails binding.  Likewise, easy affine elimination and bounded-treewidth consistency algorithms show that visible algebraic/local structure may help an algorithm rather than impose hardness.
+
+\section{Next exact missing arrow}
+The narrowed target is \textbf{GLOBAL-BINDING-CONTRACT1}:
+\begin{quote}
+Find an explicit source-first object $J(F)$ such that (a) $J$ distinguishes every pair of clean-core sources with disjoint solution sets, including the $H_{2,2}$ pair above; (b) $J$ yields at least $n/3$ consistent variable decisions or strict ordinary-CNF children; (c) all construction, verification, and reconstruction costs are charged and independent of the assumed solver exponent $K$; (d) the child family is hereditary; and (e) the implication holds for every total uniform deterministic decider under equivalent wrappers.
+\end{quote}
+This is \status{OPEN}.  Requiring the full solution relation satisfies (a) but destroys (c); fixed-arity projections satisfy cheap external acquisition only through $K$-dependent calls and fail (a).
+
+\section*{Primary references checked}
+\begin{itemize}[leftmargin=2em]
+\item A. Atserias, A. Bulatov, and V. Dalmau, ``On the Power of $k$-Consistency,'' \emph{ICALP 2007}, primary author PDF: \url{https://www.cs.upc.edu/~atserias/papers/consistency.pdf}.
+\item L. Barto and M. Kozik, ``Constraint Satisfaction Problems Solvable by Local Consistency Methods,'' \emph{JACM} 61(1), 2014, primary author PDF: \url{https://www.cs.cmu.edu/~venkatg/teaching/logic/notes/barto-kozik.pdf}.
+\item T. J. Schaefer, ``The Complexity of Satisfiability Problems,'' \emph{STOC 1978}; affine satisfiability is polynomial by linear algebra.
+\item T. Baker, J. Gill, and R. Solovay, ``Relativizations of the P=?NP Question,'' \emph{SIAM J. Comput.} 4(4), 1975.
+\item S. Aaronson and A. Wigderson, ``Algebrization: A New Barrier in Complexity Theory,'' \emph{TOCT} 1(1), 2009.
+\item A. Razborov and S. Rudich, ``Natural Proofs,'' \emph{JCSS} 55(1), 1997.
+\end{itemize}
+
+\paragraph{Final status.}
+SEMCOMP-EXTRACT1 and FIXED-ARITY-NOGLUE1 are \status{PROVED/EXACT}; the finite $H_{2,2}$ witness is \status{COMPUTATIONAL}; GLOBAL-BINDING-CONTRACT1 is \status{OPEN}.  Therefore \textbf{P versus NP remains OPEN}.
+
+% END_OF_VERIFIED_REPORT::MODEL_BRIDGE::MODELBRIDGE-0005
+\end{document}

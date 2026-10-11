@@ -1,3 +1,49 @@
+# MODEL_BRIDGE run 0005: pairwise compatibility extracts but does not glue
+
+Date: 2026-10-11 UTC. Scientific status: P versus NP OPEN.
+
+## Verified result
+
+SEMCOMP-EXTRACT1 is PROVED/EXACT: for every total uniform deterministic
+exact 3-SAT decider A, the full unary/pair projection H2(F) is externally
+extractable with at most 2n^2+1 charged SAT calls. In the declared encoding,
+materialized time is O(n^2(T_A(L)+L)); streaming workspace is
+O(S_A(L)+L+log n), excluding a write-only output. Under P=NP this is FP but
+retains A's arbitrary exponent K and does not imply same-execution exposure.
+
+FIXED-ARITY-NOGLUE1 is PROVED/EXACT: proper-3CNF Tseitin encodings of the two
+parity cosets have disjoint projected solution sets while every projection on
+k<n original variables is the full cube. Therefore no source-free function of
+fixed/proper-arity compatibility projections universally reconstructs a
+witness. This is an exact punctured-code/coset transfer, not a hardness
+transfer; Gaussian elimination is the hostile shortcut.
+
+A COMPUTATIONAL H_(2,2) audit found a pair of n=9 clean-core formulas with
+identical all-one 162-bit H2 signatures and disjoint solution sets after 97
+seeded samples. The two formulas have 73 and 64 solutions. The full run passed
+820 parity checks, exhaustive enumeration of 5,625 n=6 H_(2,2) formulas and
+15,817,500 same-signature comparisons, plus 6,300 randomized checks. Runtime
+was 4.92 seconds.
+
+Pairwise semantic compatibility as a source-free contraction object is
+FALSIFIED/RETIRED. Retaining the source prevents strict contraction; dropping
+it loses global binding; decide-then-emit pays K before shrinking.
+
+## Precise handoff
+
+GLOBAL-BINDING-CONTRACT1 is OPEN: find a source-first object J(F) that
+distinguishes disjoint-solution clean-core sources, yields linear consistent
+progress or strict hereditary ordinary-CNF children, and has fully charged
+K-independent acquisition/access/reconstruction under every equivalent
+wrapper. Full H3 reconstruction was already known in the corpus; its general
+acquisition remains current-scale and need not shrink.
+
+Report: `research/review/reports/model_bridge/2026-10-11_0700_MODELBRIDGE-0005.tex`.
+Code: `experiments/review/semantic_pair_projection_audit.py`.
+Raw result: `results/raw/review/2026-10-11_semantic_pair_projection_audit.json`.
+
+---
+
 # MODEL_BRIDGE run 0003: one compatibility edge, not a forced core
 
 Date: 2026-10-11 UTC. Scientific status: P versus NP OPEN.
