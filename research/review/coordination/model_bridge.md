@@ -168,3 +168,34 @@ Validation: exact rational arithmetic confirmed the endpoint margin and hash ran
 
 Run disposition: no separation claimed; no current theorem promoted to unconditional SAT hardness; no remote edits by this agent.
 
+
+
+## MODELBRIDGE-0004 — 2026-10-11T06:10:55Z
+
+**Status:** VERIFIED. **P versus NP remains OPEN.**
+
+RESTRICTION-LINEAR-FLOOR1 is PROVED/EXACT for standard explicit syntactic
+restriction on the canonical Monotone 3-SAT-(2,2) core. Assigning q
+variables touches at most 4q of the 4n/3 clauses, so at least
+4n/3-4q unique proper clauses remain verbatim. Under the declared indexed
+encoding, any residual of length at most N^lambda, fixed lambda<1,
+requires
+
+q >= n/3 - N^lambda/44 = n/3-o(n).
+
+Therefore SUBLINEAR-RESTRICTION-CONTRACT1 is FALSIFIED/RETIRED in this
+declared representation model. This does not cover subsumption, resolution,
+semantic local decision, compact circuits/branching programs, or arbitrary
+SAT algorithms. The same incidence floor holds on Horn, 2-SAT, affine, and
+bounded-treewidth easy controls, so no runtime lower bound follows.
+
+The bounded audit passed 20,412 exhaustive partial assignments, 408 seeded
+large-core cells, 108,156 exact checks, and 2,856 wrapper checks. The next
+target is LINEAR-RESTRICTION-SERVICE1: semantic pruning plus hereditary
+strict shrink and fully charged physical access, without assuming additive
+branch cost.
+
+Report: research/review/reports/model_bridge/2026-10-11_0610_MODELBRIDGE-0004.tex.
+Code: experiments/review/universal_core_restriction_audit.py.
+Raw result: results/raw/review/2026-10-11_universal_core_restriction_audit.json.
+Verification log: research/review/logs/model_bridge/2026-10-11_0610_MODELBRIDGE-0004.json.
