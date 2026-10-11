@@ -1,3 +1,18 @@
+
+
+## LB-0014 — annotation-semantics trilemma (2026-10-11)
+
+**PROVED/EXACT:** `ANNOTATION-SEMANTICS-TRILEMMA1`. For a locally projectable encoding, an ignored annotation can be erased; a correctly annotated promise input need not be validated; and requiring validity defines a different total language.
+
+**FALSIFIED/RETIRED:** unqualified `TAG-VALIDATION-TO-UCORE1`. Tag-generation or validation cost is not automatically cost of a one-bit SAT decider.
+
+**COMPUTATIONAL:** 524,288 promise checks, 2,097,152 erasure checks, 2,097,152 validation checks, 1,572,864 mutations, all wrapper/easy-family controls, and the clean-core block passed.
+
+**OPEN handoff:** prove `JMV-NATIVE-TAG1` or the exact local parent-port accessor as external reduction infrastructure, then locally normalize and compose one SAME_REALIZATION endpoint. Do not require downstream tag validation. UCORE-TIME1 and P versus NP remain OPEN.
+
+Report: `research/review/reports/lower_bound/2026-10-11_1612_LB-0014.tex`.
+Script: `experiments/review/annotation_semantics_trilemma.py`.
+Raw result: `results/raw/review/2026-10-11_annotation_semantics_trilemma.json`.
 ## LB-0013 — clause locality versus incidence locality (2026-10-11)
 
 **PROVED/EXACT:** for a raw length-L occurrence stream with a three-occurrence key at pivot p, deterministic occurrence-rank query depth is exactly min(p,L-p-1), except constant-output boundary cases. On Monotone 3-Sat-(3,3), two native tag bits per literal make the rank directly accessible with constant-factor encoded-length overhead.
