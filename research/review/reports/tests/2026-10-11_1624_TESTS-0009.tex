@@ -1,0 +1,303 @@
+% PNP REVIEW REPORT::TESTS::TESTS-0009::2026-10-11T16:24:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\title{UNIVERSAL\_CORE\_TESTS TESTS-0009:\\
+Forward-Wire Locality Bypasses Parent Enumeration for Bounded-Fanout Circuit CNF}
+\author{P versus NP project review}
+\date{11 October 2026, 16:24 UTC}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For a forward-locally addressed Boolean circuit with constant fan-in,
+constant fanout, and a fixed finite gate alphabet, the standard Tseitin
+gate relation can be emitted as proper 3CNF using only a gate's type and
+children.  No parent query, inverse-incidence table, or dense occurrence
+rank is needed.  The output has linear size, constant variable occurrence,
+exact witness extension and projection, and an on-demand clause accessor
+with the source child-access costs.  This is
+\texttt{FORWARD-WIRE-LOCALITY-BYPASS1}, \EXACT\ at the declared interface.
+It retires parent enumeration as a necessary condition for locally
+generating a bounded-occurrence circuit CNF.  It does not construct the
+exact Jahanjou--Miles--Viola (JMV) source circuit, does not normalize the
+result to tagged Monotone 3-SAT-$(3,3)$, and does not force any resource
+inside an arbitrary one-bit SAT decider.  Those arrows and P versus NP
+remain \OPEN.
+\end{abstract}
+
+\section{Executive status and exact claim card}
+
+\begin{center}\footnotesize
+\begin{tabular}{@{}p{0.39\linewidth}p{0.19\linewidth}p{0.34\linewidth}@{}}
+\toprule
+Claim & Status & Verdict\\ \midrule
+\texttt{FORWARD-WIRE-LOCALITY-BYPASS1} & \EXACT, pending independent review & proper bounded-occurrence 3CNF from forward child access only\\
+\texttt{PARENT-PORT-NECESSARY-FOR-LOCAL-CNF1} & \RETIRED & parent enumeration is sufficient, not necessary, for this weaker endpoint\\
+\texttt{JMV-FORWARD-FANOUT1} & \OPEN & exact JMV labels must expose bounded fanout or a local copy-tree replacement\\
+\texttt{LOCAL-M33-NORMALIZE1}, UCORE-TIME1 & \OPEN & no exact clean-core transfer or universal lower bound\\
+P versus NP & \OPEN & no separation claim\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Target before the run.}
+The current corpus emphasizes \texttt{JMV-PARENT-PORT1}: locally enumerate
+the parents of a named gate so occurrence tags can be formed.  The
+falsification target was the weaker universal necessity claim
+\[
+  \forall C\quad
+  [\text{local bounded-occurrence 3CNF for }C]
+  \Longrightarrow [\text{local parent enumeration for }C].
+\]
+The counterconstruction below disproves this implication for
+forward-locally addressed bounded-fanout circuits.
+
+\paragraph{Exact prefix.}
+Fix a finite gate alphabet $\Gamma$ with constant-arity Boolean functions
+and fixed constant-size CNF templates, and constants $d,\Delta$.  For every
+acyclic circuit $C$ of size $s$, fan-in at most $d$, and fanout at most
+$\Delta$, supplied by a uniform accessor returning a gate's type and
+children, there exists one uniform proper-3CNF compiler $P$ with the
+properties in Theorem~\ref{thm:bypass}.  The compiler and local accessor
+are the same declared realization; no parent oracle is present.
+
+\paragraph{Predecessor write.}
+The immediately preceding lower-bound artifact
+\path{research/review/reports/lower_bound/2026-10-11_1612_LB-0014.tex}
+was read back from GitHub.  It is substantive and contains the required
+header and final sentinel.  No recovery request was needed.
+
+\section{Primary-literature and barrier preflight}
+
+The two obstacles were (i) whether JMV child locality itself supplies
+parent ports and (ii) whether parent ports are necessary even for a weaker
+bounded-occurrence circuit CNF.  Jahanjou, Miles, and Viola's Theorem~1
+gives an addressed 3CNF clause generator; their local-uniformity theorem
+returns a gate's type and children, not its parents \cite{jmv}.  Thus the
+source paper supports the forward interface used here but does not prove
+the missing JMV parent enumerator.
+
+Darmann and D\"ocker prove NP-completeness for exact Monotone
+3-SAT occurrence regimes including three positive and three negative
+occurrences \cite{dd}.  That result identifies a legitimate eventual
+target language.  It does not provide a local, model-matched normalizer
+from the JMV generator, so it cannot close the present bridge.
+
+FLMV-style SAT time--space lower bounds require one actual random-access
+realization with the reduction bits generated within the stated time and
+space costs \cite{flmv}.  A linear-size formula theorem by itself does not
+supply that realization.
+
+The exact cross-domain correspondence is a bounded-degree netlist: gate
+records name their input wires, and a local CNF record is owned by the
+receiving gate.  This is a \textbf{THEOREM TRANSFER} from fixed-template
+netlist compilation to the declared circuit interface.  VLSI reverse
+netlists and static inverted indexes are only \textbf{ANALOGY/CANDIDATE}
+for parent access.  Turning routing congestion, fanout, or index storage
+into an unrestricted SAT lower bound is a \textbf{FAILED TRANSFER}.
+
+\section{Forward-wire theorem}
+
+For clarity use $\Gamma=\{\mathrm{AND},\mathrm{OR},\mathrm{NOT},
+\mathrm{XOR}\}$.  Give gate $g$ a Boolean variable $y_g$.  Emit the usual
+constant CNF for
+\[
+ y_g=\operatorname{op}_g(y_{c_1(g)},\ldots,y_{c_k(g)}).
+\]
+For example $y=a\wedge b$ is represented by
+\[
+ (\neg a\vee\neg b\vee y)\wedge(a\vee\neg y)
+ \wedge(b\vee\neg y).
+\]
+Replace every two-clause $u\vee v$ by
+\[
+ (u\vee v\vee z)\wedge(u\vee v\vee\neg z)
+\]
+using a fresh template-local $z$.  Assert the output $o$ by the four proper
+clauses $o\vee p^{\epsilon}\vee q^{\eta}$ for
+$(\epsilon,\eta)\in\{+,-\}^2$.  Each clause address is
+$(g,\text{template slot},\text{padding branch})$ or one of four output
+addresses.
+
+\begin{theorem}[\texttt{FORWARD-WIRE-LOCALITY-BYPASS1}]
+\label{thm:bypass}
+Let $C$ satisfy the exact prefix above.  The formula $P(C)$ has:
+\begin{enumerate}[leftmargin=1.5em]
+\item $|P(C)|=O(s)$ clauses and variables;
+\item $P(C)$ satisfiable iff the asserted output of $C$ is one;
+\item extension of every accepting circuit valuation and projection of
+      every satisfying CNF valuation in $O(s)$ time;
+\item a requested-clause accessor using one type query and at most $d$
+      child-label queries, zero parent queries, $O(\log s)$ address space,
+      and only constant work beyond the source accessor;
+\item maximum occurrence at most $\beta+\alpha\Delta$, where $\alpha$ is
+      the maximum number of template occurrences contributed by one
+      parent edge and $\beta$ is the maximum own-template/output count.
+      For the displayed library, $\alpha=4$, $\beta=9$ is valid.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Every gate relation uses only its gate label, type, and child labels, so the
+addressed compiler never asks which gates use $g$ as a child.  The padding
+identity is exact because both padded clauses can hold for some (indeed
+every) $z$ exactly when $u\vee v$ holds.  The four-clause output gadget is
+satisfiable exactly when $o=1$.  Induction in topological order proves that
+all gate clauses force $y_g$ to the circuit value; conversely the circuit
+valuation, with arbitrary padding bits, satisfies all templates when the
+output is one.  There are constantly many clauses and auxiliaries per gate.
+A variable appears constantly often in its own template and in at most
+$\Delta$ parent templates, each contributing at most $\alpha$
+occurrences.  These facts prove all five items.  The construction, clause
+address, source accessor, and output formula are one realization.
+\end{proof}
+
+\paragraph{Exact scope.}
+The theorem weakens the current requirement from parent enumeration to
+forward child access plus bounded fanout.  It does not show that JMV's
+exact labels satisfy the fanout premise, nor that the proper 3CNF can be
+locally normalized to the exact Monotone $(3,3)$ target.  Parent ports may
+still be useful for that normalization; they are simply not necessary for
+the bounded-occurrence CNF endpoint proved here.
+
+\section{Bounded reproducible audit}
+
+The deterministic script
+\path{experiments/review/forward_wire_locality_bypass_audit.py} used seed
+\texttt{202610111624}.  It generated 294 circuits: 288 random
+bounded-fanout circuits at five through ten gates plus explicit Horn-like,
+2SAT-like, affine/Tseitin parity, bounded-treewidth, independent-product,
+and redundant-padding controls.  Each program invocation is a single
+sub-30-second chunk; the verified run took $0.873$ seconds.
+
+The audit performed 99,600 exhaustive core-assignment equivalence checks,
+2,360 witness reconstructions, 7,099 local clause queries, 10,534 child
+queries, zero parent queries, 4,664 occurrence-bound checks, 1,470
+DIRECT/COPY/DELAY/INTERP/RECOMP wrapper checks, 294 alternate-encoding
+checks, 16 Gaussian-parity checks, and independent Horn/2SAT solver
+controls.  The largest compiled test had 42 clauses and 29 variables; the
+maximum observed occurrence was 17.  No finite result is extrapolated to
+an asymptotic SAT lower bound.
+
+Script SHA-256:
+\texttt{a275fc7138e5575ab4f00e5201cabfc9e05ff8358d7ed02b5edf64df33cd6b0b}.
+Result SHA-256:
+\texttt{2ba695f28ceb31d2d608c0ec4d1570a8aa3a4ab7529f24d9bfc4e80d625b0f4d}.
+Raw output:
+\path{results/raw/review/2026-10-11_forward_wire_locality_bypass.json}.
+The finite audit is \COMP; the theorem follows from the symbolic proof.
+
+\section{Hostile controls, costs, and barriers}
+
+Preprocessing is $O(s)$ source queries and output work; local extraction is
+one requested template record; witness extension/projection is $O(s)$;
+serialization, parsing, copying, delaying, and recomputation are separately
+exercised.  The affine control is checked both by circuit evaluation and
+GF$(2)$ parity elimination.  Easy controls remain easy; the theorem makes
+no semantic-state-to-runtime inference.
+
+The theorem relativizes and algebrizes: an unrelated oracle or algebraic
+extension does not invalidate fixed local template expansion.  It supplies
+no nonrelativizing or nonalgebrizing hinge.  No constructive property of
+hard Boolean functions is used, so Natural Proofs is not the immediate
+issue.  A maximal semantic oracle can decide the one output bit without
+constructing $P(C)$; hence arbitrary-algorithm acquisition remains OPEN.
+DEAD, COPY, DELAY, INTERP, and RECOMP wrappers do not change the theorem's
+external compiler and do not make it unavoidable inside a solver.
+
+\paragraph{Post-quantum ledger.}
+The LWE lesson of external, construction-defined infrastructure is an
+\textbf{ANALOGY/CANDIDATE}: it suggests compiling from forward source
+labels rather than forcing a target solver to invert incidence.  It gives
+no worst-case/average-case theorem for NP.  Schur squares,
+quadratic-relation rank, Hilbert functions/syzygies, collision entropy, and
+special-soundness extraction have no exact object map to this local
+netlist compiler and are \textbf{FAILED TRANSFER}.  Hidden algebraic label
+structure could make the remaining JMV task easier, not harder.
+
+\section{Corpus-wide reconciliation}
+
+\subsection*{CORPUS REVIEWED}
+The GitHub tree at the current head was surveyed.  Reviewed artifacts
+include root \path{main.tex}, \path{AGENTS.md}, \path{CODEX.md}, the full
+pnp-research skill and protocol, all task specifications, actual
+\path{main4.tex}/\path{main5.tex}, the newest verified historical MAIN
+\path{research/main/2026-10-02_1658_MAIN_1658.tex}, current status and
+governance, TESTS-0008, RT-0013, SYNTHESIS-0009, MODELBRIDGE-0014, LB-0014,
+the earlier connected clean-core and service reports surfaced by search,
+and the HEC/G-PPC/CRS-PPC/CCSPC causal branch.  Active scripts/results cited
+by the peers were checked.  Primary literature was checked before using
+the source interfaces.
+
+\subsection*{DUPLICATION / CONTRADICTION AUDIT}
+MODELBRIDGE-0014 already proved that a parent-port oracle is sufficient and
+that child locality does not generically imply parent locality.  It
+explicitly warned that another construction-specific method might avoid
+parents.  This report supplies that missing exact method for the weaker
+bounded-fanout circuit-CNF endpoint; it does not re-prove the black-box
+permutation separation.  LB-0014 independently shows that annotation
+validation cannot be charged to a one-bit decider.  The results agree.
+
+\subsection*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root MAIN correctly keeps arbitrary-algorithm acquisition,
+representation-invariant no-sharing, static-to-HEC transfer,
+nonrelativization, nonalgebrization, and the final contradiction OPEN.
+None is strengthened.  The review branch can now replace ``parent ports
+are needed to emit any useful local CNF'' by the narrower statement that a
+source-specific port or forward-fanout mechanism is still needed for the
+exact Monotone $(3,3)$ normalization.
+
+\subsection*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted are JMV forward child locality, MODELBRIDGE-0014's sufficient
+parent-port theorem, the fixed-template Tseitin semantics, exact witness
+accounting, and SAME\_REALIZATION.  Rejected is any claim that forward
+child access alone implies inverse incidence.  Retired is
+\texttt{PARENT-PORT-NECESSARY-FOR-LOCAL-CNF1} at the bounded-fanout proper
+3CNF endpoint.  Not retired are \texttt{JMV-PARENT-PORT1} as a sufficient
+route, the exact $(3,3)$ normalizer, or the universal transfer.
+
+\subsection*{STALE OR OVERSTATED CLAIMS FOUND}
+Any unqualified statement that parent enumeration is the sole possible
+route from a local circuit to bounded-occurrence CNF is overstated.  The
+smallest repair is ``parent ports or another source-specific forward
+fanout/occurrence mechanism sufficient for the exact target.''  No
+verified claim that P differs from NP was found.
+
+\section{Precise handoff}
+
+The next target is \texttt{JMV-FORWARD-FANOUT1}: unfold the exact JMV
+routing/spreading labels and prove or falsify that every generated circuit
+variable has either (a) constant fanout already visible from the forward
+labels or (b) a locally generated bounded-fanout copy tree.  If proved,
+instantiate Theorem~\ref{thm:bypass}, then give an on-demand local
+normalizer from its bounded-occurrence proper 3CNF to the fixed tagged
+Monotone $(3,3)$ second leg, charging all labels, invalid addresses,
+auxiliaries, access, reconstruction, time, and space.  This target,
+UCORE-TIME1, the arbitrary-algorithm bridge, and the nonrelativizing and
+nonalgebrizing hinge remain \OPEN.  Therefore P versus NP remains \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{jmv}
+H.~Jahanjou, E.~Miles, and E.~Viola,
+``Local reductions,'' arXiv:1311.3171, 2014.
+\url{https://arxiv.org/abs/1311.3171}.
+\bibitem{dd}
+A.~Darmann and J.~D\"ocker,
+``On simplified NP-complete variants of Not-All-Equal 3-Sat and 3-Sat,''
+arXiv:1908.04198, 2019.
+\url{https://arxiv.org/abs/1908.04198}.
+\bibitem{flmv}
+L.~Fortnow, R.~Lipton, D.~van Melkebeek, and A.~Viglas,
+``Time-space lower bounds for satisfiability,'' JACM 52(6), 2005.
+\url{https://doi.org/10.1145/1101821.1101822}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::TESTS::TESTS-0009
+\end{document}
