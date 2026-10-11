@@ -1,0 +1,357 @@
+% PNP REVIEW REPORT::TESTS::TESTS-0010::2026-10-11T17:24:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\title{UNIVERSAL\_CORE\_TESTS TESTS-0010:\\
+Query Scale Is a Charged Program Gauge, Not a Semantic SAT Obstruction}
+\author{P versus NP project review}
+\date{11 October 2026, 17:24 UTC}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+LB-0015 proves an exact dichotomy for the largest query actually reached by
+one fixed extensional SAT-oracle transducer.  This report stress-tests the
+tempting but stronger interpretation that positive query scale witnesses a
+semantically necessary SAT resource.  It does not.  For every fixed rational
+$\lambda>0$, a uniform wrapper may prepend an ignored satisfiable proper
+3-CNF query of encoded length $\Theta(N^\lambda)$, or make its answer flow
+through the cancellation $b\oplus b$, without changing the transducer's
+extensional output on any source.  Erasing that wrapper restores the old
+query scale.  All query writing and solver execution remain genuinely
+charged; the point is non-invariance under extensionally equivalent programs,
+not free computation.
+
+Thus \texttt{QUERY-SCALE-WRAPPER-GAUGE1} is \EXACT, pending independent
+review, while \texttt{POSITIVE-SCALE-SEMANTIC-NECESSITY1} is \RETIRED.
+LB-0015's fixed-program accounting theorem survives unchanged.  A
+wrapper-normalized, solver-independent source compiler into a model-matched
+forbidden time--space region remains \OPEN.  P versus NP remains \OPEN.
+\end{abstract}
+
+\section{Executive claim card}
+
+\begin{center}\small
+\begin{tabular}{@{}p{0.42\linewidth}p{0.19\linewidth}p{0.31\linewidth}@{}}
+\toprule
+Claim & Status & Verdict\\ \midrule
+\texttt{QUERY-SCALE-WRAPPER-GAUGE1} & \EXACT, pending review & actual reached query scale is not invariant under output-equivalent DEAD/CANCEL wrappers\\
+\texttt{POSITIVE-SCALE-SEMANTIC-NECESSITY1} & \RETIRED & a positive-scale answer need not affect the source output\\
+LB-0015 fixed-program dichotomy & \EXACT, pending its review & preserved; syntactic work is still fully charged\\
+Finite hostile-control audit & \COMP & 15,534 checks, zero failures\\
+\texttt{WRAPPER-NORMALIZED-SOURCE-COMPILER1} & \OPEN & no arbitrary-decider transfer or FLMV landing\\
+P versus NP & \OPEN & no separation claim\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Target and quantifiers.}
+The falsification target was the universal implication
+\[
+ \forall E\ \bigl[\limsup_N\sigma_E(N)>0
+ \Longrightarrow
+ \text{some positive-scale SAT answer is semantically necessary for }E\bigr].
+ \tag{PSN}
+\]
+Here $E^{\SAT}$ is one uniform deterministic extensional oracle transducer,
+$N$ is the encoded source length, and $\sigma_E(N)$ is LB-0015's logarithmic
+scale of the largest actually reached query.  The same-realization objects
+are the source, the actual wrapper query, its exact SAT bit, the returned
+output, and the fully charged composed execution.  One counterexample
+transducer falsifies (PSN).
+
+\section{Exact wrapper theorem}
+
+Fix a canonical self-delimiting binary encoding of proper 3-CNF.  For a fixed
+rational $\lambda>0$, let $m_N=\lceil
+N^\lambda/(c\log(N+2))\rceil$, where $c$ is a sufficiently large encoding
+constant, and define
+\[
+ T_{N,\lambda}=\bigwedge_{i=1}^{m_N}(x_i\vee y_i\vee z_i)
+\]
+using disjoint triples of fresh variables.  Every clause is proper, the
+formula is duplicate-free, the all-$x_i$ assignment satisfies it, and
+\[
+|\operatorname{enc}(T_{N,\lambda})|=\Theta(N^\lambda).
+ \tag{1}
+\]
+
+\begin{theorem}[\texttt{QUERY-SCALE-WRAPPER-GAUGE1}]
+Let $E^{\SAT}$ be any uniform deterministic extensional SAT-oracle transducer
+with one-bit output $g(F)$.  For every fixed rational $\lambda>0$ there are uniform
+transducers $D_\lambda(E)$ and $C_\lambda(E)$ such that, for every source
+$F$ of encoded length $N$:
+\begin{enumerate}[nosep]
+\item both wrappers return exactly $g(F)$;
+\item each first constructs and queries $T_{N,\lambda}$;
+\item $D_\lambda$ ignores the answer $b$, while $C_\lambda$ returns
+      $g(F)\oplus(b\oplus b)$;
+\item their largest actual reached query length is
+\[
+ q_{D_\lambda(E)}(N)=q_{C_\lambda(E)}(N)
+ =\max\{q_E(N),|\operatorname{enc}(T_{N,\lambda})|\}
+ =\max\{q_E(N),\Theta(N^\lambda)\};
+ \tag{2}
+\]
+\item query construction and serialization add $\Theta(N^\lambda)$ work,
+      and composition with a fixed exact solver $A$ adds
+      $T_A(\Theta(N^\lambda))$ time plus the declared query-buffer cost.
+\end{enumerate}
+In particular, if $E$ has no queries or $q_E(N)=N^{o(1)}$, then the wrappers
+have positive scale $\lambda$ while the erasure that deletes the first query
+has the same extensional output and restores the old scale.
+\end{theorem}
+
+\begin{proof}
+The construction of $T_{N,\lambda}$ is uniform and (1) follows because there
+are $\Theta(N^\lambda/\log N)$ records whose fresh indices use
+$\Theta(\log N)$ bits.  Both wrappers then run $E$ unchanged.  Ignoring $b$
+proves the first equality of outputs, and $b\oplus b=0$ proves the second
+even though the answer is syntactically data-dependent.  The set of reached
+queries is exactly the old set together with $T_{N,\lambda}$, proving (2).
+Writing that explicit query costs its length.  Replacing the oracle by $A$
+executes $A$ on that same string, so the final cost statement is a direct
+same-realization ledger.  Deleting the wrapper query does not alter $E$ or
+its output. \qedhere
+\end{proof}
+
+The theorem is an exact program-transformation result.  It is not an
+asymptotic inference from the experiment below.  It directly falsifies (PSN)
+and also defeats a repair based only on syntactic answer dependence.
+
+\section{What survives from LB-0015}
+
+No line of \texttt{BLACKBOX-QUERY-SCALE-DICHOTOMY1} is contradicted.  That
+theorem fixes one transducer and charges what it actually does.  The wrapper
+really did write a polynomial-scale query and, after oracle substitution,
+really did pay the chosen solver's cost.  Therefore its positive-scale branch
+correctly admits delay-wrapper inflation.  The new theorem rules out only a
+different inference:
+\[
+ \text{charged cost in one program}
+ \not\!\Longrightarrow
+ \text{semantic cost unavoidable in every output-equivalent program}.
+\]
+
+This distinction matters for the clean-core project.  Let
+$\mathcal H_{2,2}$ denote the duplicate-free proper Monotone
+3-SAT-$(2,2)$ source family used in the current synthesis, with canonical
+encoded length $N=\Theta(n\log n)$.  The wrapper may be placed before any
+transducer on this family and does not change one source answer.  Hence its
+query scale cannot by itself lower-bound compatibility extraction, memory,
+communication, or decision time on $\mathcal H_{2,2}$.
+
+\paragraph{Smallest repair.}
+A load-bearing theorem must quantify over an externally fixed source
+compiler and prove its total ordinary-machine cost, or define a
+wrapper-normalized resource with a proved lower bound over every equivalent
+implementation.  Merely requiring a reached query, positive scale, or a
+syntactic dataflow edge is insufficient.  Taking an infimum over all
+equivalent programs does not solve the problem by definition: the project
+must still prove the lower bound and connect the minimizing resource to a
+model-matched FLMV endpoint.  That is \texttt{WRAPPER-NORMALIZED-SOURCE-
+COMPILER1}, \OPEN.
+
+\section{Bounded reproducible experiment and full ledger}
+
+The dependency-free command
+\begin{verbatim}
+timeout 30s python3 experiments/review/query_scale_wrapper_gauge_audit.py
+\end{verbatim}
+completed in $0.091$ seconds.  Bytecode compilation also passed.  The audit
+performed 15,534 recorded checks:
+\begin{center}\small
+\begin{tabular}{@{}lr@{}}
+\toprule
+Check class & Count\\ \midrule
+All source formulas (subsets of the eight proper clauses on three variables) & 256\\
+Wrapper equivalence checks & 10,752\\
+Alternate-encoding checks & 4,108\\
+Explicit scale/cost-ledger rows & 192\\
+Polynomial-padding exponent rows & 16\\
+Easy-family witness and brute-force checks & 12\\
+Renaming checks & 6\\
+Separate completeness checks for the scale-row cost ledgers & 192\\
+\midrule
+Total recorded checks & 15,534\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The six query families were independent products, Horn, lifted 2-SAT,
+affine/Tseitin parity with Gaussian elimination, bounded-primal-treewidth
+paths, and redundant clauses.  The seven program controls were DIRECT, DEAD,
+CANCEL, COPY, DELAY, INTERP, and RECOMP.  Four target scales
+$1/4,1/2,3/4,1$ and source byte lengths $64$ through $8192$ were measured.
+For every scale row the raw result records clause count, literal writes,
+encoded bytes, answer bits, construction time, extraction time,
+reconstruction time, finite effective scale, and the easy-family algorithm.
+The experiment also checked polynomial source-padding degrees one through
+four with the exact rational conversion $\lambda\mapsto\lambda/a$.
+
+The raw output is
+\path{results/raw/review/2026-10-11_query_scale_wrapper_gauge.json}.
+The script SHA-256 is
+\nolinkurl{9383dc68fa974c790072130106c37d2e2248dbded19eca6d0a066fabb3f50c07};
+the raw-result SHA-256 is
+\nolinkurl{2de38b4f69b42d539044bc66be2aab43bcd10ba3a8e766b24a4c73571268ae58}.
+Timing values are measurements, not asymptotic evidence.  The exact theorem
+comes from the proof above.
+
+\section{Hostile controls, encoding, and one-bit output}
+
+\paragraph{Affine, Horn, 2-SAT, and bounded treewidth.}
+All four admit direct polynomial algorithms, yet can be used for the padded
+query.  The answer is known and still irrelevant.  Hidden algebraic or graph
+structure therefore makes the wrapper easier, not harder.
+
+\paragraph{Independent products, redundancy, and padding.}
+Disjoint clauses give exact size control.  Duplicates and unused comments can
+change bytes without changing SAT semantics; the theorem avoids relying on
+them by using distinct proper clauses.  Fixed polynomial source padding
+rescales $\lambda$ to $\lambda/a>0$ and does not restore invariance.
+
+\paragraph{Alternate encodings and wrappers.}
+Variable reversal, clause reversal, DIMACS-like and compact text encodings
+were checked.  Constants change, not the polynomial scale.  DEAD gives direct
+irrelevance; CANCEL defeats a syntactic-dependence repair; COPY, DELAY,
+INTERP, and RECOMP preserve the output while changing trace, call count,
+reconstruction operations, or timing.
+
+\paragraph{One-bit decision.}
+The returned object may be just $\SAT(F)$.  The wrapper adds a query bit but
+does not alter that output.  Requiring a larger compatibility table changes
+the output contract and its writing cost must be charged.
+
+\section{Primary literature and barrier-transfer audit}
+
+Fortnow--Lipton--van Melkebeek--Viglas prove time--space exclusions for one
+ordinary deterministic random-access SAT machine and explain the need for a
+locally computable, model-matched reduction \cite{FLMV}.  They do not turn a
+query used by one wrapper into work common to all equivalent programs.
+Baker--Gill--Solovay formulate relativized polynomial query machines and
+construct both equality and separation oracle worlds \cite{BGS}.  The present
+wrapper theorem is black-box and relativizes.  Aaronson--Wigderson's
+algebrization barrier remains active \cite{AW}; giving low-degree extension
+access does not make the ignored bit semantically necessary.
+
+\begin{description}[leftmargin=0cm,labelwidth=0cm]
+\item[] \textbf{DIRECTLY TRANSFERABLE THEOREM.}
+FLMV transfers only after an actual ordinary-machine time/space realization
+has been constructed.  BGS and AW transfer as barrier audits for this
+relativizing/algebrizing wrapper argument.
+\item[] \textbf{USEFUL ANALOGY REQUIRING A NEW TRANSFER THEOREM.}
+Honest/length-controlled reducibilities, communication bandwidth, VLSI
+routing, data-provenance slicing, and program dependence analysis all stress
+that size and relevance are interface properties.  None forces arbitrary SAT
+deciders to use this query.
+\item[] \textbf{MISLEADING ANALOGY / FAILED TRANSFER.}
+Physical fanout, proof-system size, branching-program width, Schur squares,
+quadratic-relation rank, Hilbert functions, syzygies, collision entropy, and
+cryptographic binding do not repair wrapper invariance or give an unrestricted
+one-bit SAT lower bound.
+\end{description}
+
+The post-quantum classification is therefore FAILED TRANSFER for all selected
+algebraic invariants as an explanation of this wrapper cost.  LWE-style
+external extraction is an ANALOGY/CANDIDATE only; it still needs the missing
+uniform source compiler.  No cryptographic or random-oracle assumption is
+used.  Natural Proofs is not directly triggered because no constructive
+large property against general circuits is proposed.
+
+\section{CORPUS REVIEWED}
+
+The run enumerated the current GitHub tree and read root \path{main.tex},
+actual \path{main4.tex}/\path{main5.tex}, \path{AGENTS.md}, \path{CODEX.md},
+the complete pnp-research skill, experiment mode and research protocol, all
+seven task specifications, the newest verified historical MAIN, current
+PAIRDEG1, DUALSHORT1-R2, KPATH1 and COLLAPSEGATE1 reports, the HEC/VSC-HEC/
+G-PPC-HEC/CRS-PPC/CCSPC branch, governance, current status/coordination, and
+the latest LB-0015, MODELBRIDGE-0015, TESTS-0009, RT-0014 and SYNTHESIS-0010
+reports.  Repository search covered query scale, subpolynomial and positive
+queries, ignored tautological children, DEAD wrappers, padding, and prior
+service claims.  The immediate predecessor LB-0015 was nonblank, substantive,
+and read back with its unique header and final sentinel; no recovery was
+needed.  Primary literature was checked before promotion.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+REDTEAM-STRENGTHEN3 already observed that an ignored constant child does not
+create an essential decomposition.  MODELBRIDGE-0015 proves the positive-
+scale common-exponent delay gate, and LB-0015 combines it with vanishing-scale
+simulation.  The new contribution is narrower: it instantiates the DEAD and
+answer-cancellation transformations at an arbitrary fixed polynomial query
+scale and reconciles them with LB-0015.  It neither reproves nor weakens the
+fixed-transducer dichotomy.  No prior report found by repository search states
+the exact scale-gauge theorem or its cancellation repair failure.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN already warns that wrapper-dependent traces are not universal
+resources.  The new result specializes that guard to LB-0015's actual-query
+scale: positive versus vanishing scale is a correct property of one fixed
+transducer, not an extensional property of the source function.  No root
+load-bearing arrow closes.  This review role has no marked root-MAIN
+ownership region, so root \path{main.tex} is not edited; main4/main5 receive
+nonpromotional includes and LSPV-5 remains synthesis arbiter.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+Adopted are LB-0015's fixed-program dichotomy, MODELBRIDGE-0015's fully
+charged delay wrapper, KPATH1's implementation-specific accounting, exact
+encoded-length normalization, and SAME\_REALIZATION charging.  Rejected is
+the promotion of reached query scale to semantic necessity.  Retired is
+\texttt{POSITIVE-SCALE-SEMANTIC-NECESSITY1}.  Preserved OPEN are
+\texttt{SUBPOLY-SOURCE-COMPILER1}, its wrapper-normalized strengthening,
+arbitrary-decider compatibility exposure, nonrelativization,
+nonalgebrization, and a model-matched contradiction.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any wording that calls a positive-scale reached query an unavoidable source
+resource is overstated.  Wording that calls LB-0015 false is also wrong: the
+wrapper's query is actually reached and fully charged, exactly as LB-0015
+requires.  The safe statement is program-relative accounting plus an OPEN
+transfer to all equivalent implementations.
+
+\section{Precise handoff}
+
+The next test should attack \texttt{WRAPPER-NORMALIZED-SOURCE-COMPILER1}:
+for a proposed vanishing-scale compiler, search for a source-decide-first,
+endpoint, CANCEL, or RECOMP implementation with the same output and no
+claimed extracted resource.  If all such wrappers are excluded by a semantic
+indispensability condition, formalize that condition under maximal semantic
+and algebraic oracle replacement and prove that the compiler remains uniform,
+fully charged, and inside one FLMV-forbidden region.  No such implication is
+currently known.
+
+\paragraph{Final status.}
+\texttt{QUERY-SCALE-WRAPPER-GAUGE1}: \EXACT, pending independent review.\\
+Finite audit: \COMP.\\
+\texttt{POSITIVE-SCALE-SEMANTIC-NECESSITY1}: \RETIRED.\\
+\texttt{WRAPPER-NORMALIZED-SOURCE-COMPILER1}, arbitrary-decider transfer,
+UCORE-TIME1, nonrelativization, nonalgebrization, and P versus NP: \OPEN.
+P versus NP remains open.
+
+\begin{thebibliography}{9}
+\bibitem{FLMV} L.~Fortnow, R.~Lipton, D.~van Melkebeek and A.~Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, J. ACM 52(6), 2005,
+835--865. \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{BGS} T.~Baker, J.~Gill and R.~Solovay,
+\emph{Relativizations of the P=?NP Question}, SIAM J. Comput. 4(4), 1975,
+431--442. \url{https://doi.org/10.1137/0204037}.
+\bibitem{AW} S.~Aaronson and A.~Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory}, ACM Trans.
+Comput. Theory 1(1), 2009, Article 2.
+\url{https://eccc.weizmann.ac.il/report/2008/005/}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::TESTS::TESTS-0010
+\end{document}

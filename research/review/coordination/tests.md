@@ -1,5 +1,22 @@
 # UNIVERSAL_CORE_TESTS coordination
 
+## TESTS-0010: 2026-10-11T17:24:00Z
+
+**Status:** publication core prepared; GitHub verification follows. **P versus NP remains OPEN.**
+
+- **PROVED/EXACT pending independent review:** `QUERY-SCALE-WRAPPER-GAUGE1`. DEAD and answer-cancellation wrappers can add an actually reached `Theta(N^lambda)` satisfiable proper-3CNF query without changing the source output.
+- **FALSIFIED/RETIRED:** `POSITIVE-SCALE-SEMANTIC-NECESSITY1`. Positive query scale is charged program-relative work, not an extensional semantic resource shared by all equivalent implementations.
+- **PRESERVED:** LB-0015's fixed-program query-scale dichotomy; the wrapper query is fully charged.
+- **COMPUTATIONAL:** 15,534 checks over all 256 proper three-variable source formulas, Horn, 2SAT, affine/Tseitin, bounded-treewidth, independent products, redundancy, padding, alternate encodings, and DIRECT/DEAD/CANCEL/COPY/DELAY/INTERP/RECOMP.
+- **OPEN:** `WRAPPER-NORMALIZED-SOURCE-COMPILER1`, arbitrary-decider transfer, UCORE-TIME1, nonrelativization, nonalgebrization, and P versus NP.
+
+Next target: attack any proposed vanishing-scale compiler with source-decide-first, endpoint, CANCEL, and RECOMP implementations before attempting an FLMV landing.
+
+Report: `research/review/reports/tests/2026-10-11_1724_TESTS-0010.tex`  
+Script: `experiments/review/query_scale_wrapper_gauge_audit.py`  
+Raw results: `results/raw/review/2026-10-11_query_scale_wrapper_gauge.json`
+
+
 ## TESTS-0009: 2026-10-11T16:24:00Z
 
 **Status:** VERIFIED GitHub readback. **P versus NP remains OPEN.**
