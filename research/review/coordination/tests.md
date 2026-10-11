@@ -2,7 +2,7 @@
 
 ## TESTS-0010: 2026-10-11T17:24:00Z
 
-**Status:** publication core prepared; GitHub verification follows. **P versus NP remains OPEN.**
+**Status:** VERIFIED GitHub readback at core commit `5dedf787dc1bac05084d13d1259cde49fe422d00`. **P versus NP remains OPEN.**
 
 - **PROVED/EXACT pending independent review:** `QUERY-SCALE-WRAPPER-GAUGE1`. DEAD and answer-cancellation wrappers can add an actually reached `Theta(N^lambda)` satisfiable proper-3CNF query without changing the source output.
 - **FALSIFIED/RETIRED:** `POSITIVE-SCALE-SEMANTIC-NECESSITY1`. Positive query scale is charged program-relative work, not an extensional semantic resource shared by all equivalent implementations.
