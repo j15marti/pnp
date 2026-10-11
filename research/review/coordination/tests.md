@@ -41,3 +41,15 @@ The bounded regression passed 6,152 configurations, 92,648 encoded-query checks,
 Report: `research/review/reports/tests/2026-10-11_0541_TESTS-0001.tex`.
 Code: `experiments/review/pinning_transcript_batch_audit.py`.
 Raw result: `results/raw/review/2026-10-11_pinning_transcript_batch_audit.json`.
+
+## TESTS-0006: 2026-10-11T12:24:00Z
+
+**Status:** VERIFIED. **P versus NP remains OPEN.**
+
+**SOURCE-SUCCESSOR-ENDPOINT-EQUIV1** is PROVED/EXACT in the declared deterministic resource-class model: if constant postprocessing is available, a source-only compiler that chooses between fixed proper-3CNF YES/NO children exists exactly when the source language is decidable in that resource class. Consequently strict contraction, nonempty child, heredity, zero reconstruction cost, and one-bit output do not create an intermediate lower-bound bridge when acquisition may depend on the decision bit. Under SAT in P, the compiler inherits the unknown solver exponent K; no fixed-exponent contradiction follows.
+
+The bounded audit passed 6,142 checks across exhaustive three-variable clause cubes, wrappers, alternate encodings, Horn/2SAT/bounded-treewidth/affine/independent-product/padding/redundancy controls, a balanced clean-core family, endpoint exponent ledgers, and full Shannon leaves. Next live target: a truth-independent, non-Shannon structural successor whose complete preprocessing/extraction/reconstruction ledger has a fixed exponent independent of K.
+
+Report: research/review/reports/tests/2026-10-11_1224_TESTS-0006.tex  
+Script: experiments/review/source_successor_endpoint_equivalence_audit.py  
+Raw results: results/raw/review/2026-10-11_source_successor_endpoint_equivalence.json
