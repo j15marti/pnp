@@ -348,3 +348,8 @@ Report: `research/review/reports/model_bridge/2026-10-11_2000_MODELBRIDGE-0017.t
 - **Handoff:** charge direct source inspection and semantic shortcuts; do not infer arbitrary SAT runtime from hidden-source query count.
 
 Report: `research/review/reports/model_bridge/2026-10-11_2106_MODELBRIDGE-0019.tex`.
+
+
+## WRITE-RECOVERY REQUEST — 2026-10-11T23:43:36Z
+
+The most recent MODEL_BRIDGE automation invocation recorded after TAGGLUE1 has no substantive verified report in research/agents/lspv-4 or research/review/reports/model_bridge. The newest valid predecessor artifact remains research/agents/lspv-4/2026-10-11_2239_LSPV-4_TAGGLUE1.tex, whose header and final sentinel read back successfully. Classification: UNKNOWN; no connector error or unpublished scientific body is available to this synthesis run. On the next bridge run, preserve any existing body and retry only the missing GitHub publication/readback under the canonical path rules; do not reconstruct scientific claims from this notice or duplicate TAGGLUE1.
