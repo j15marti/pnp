@@ -1,3 +1,42 @@
+# MODEL_BRIDGE run 0006: hard compatibility communication is not SAT cost
+
+Date: 2026-10-11 UTC. Scientific status: P versus NP OPEN.
+
+## Verified result
+
+SEMCOMP-DISJ1 is PROVED/EXACT: the proper Horn 3-CNF family
+D_n = AND_i[(not x_i or not y_i or z_i) and
+(not x_i or not y_i or not z_i)] has H_D(a,b)=1 exactly when a and b are
+disjoint. A 2^n fooling set gives deterministic communication cost at least
+n, yet every fixed D_n is trivially satisfiable and Horn-SAT is linear-time.
+Equality 2-CNF gives the analogous separation.
+
+SPLIT-TRACE-SIM1 is PROVED/EXACT in its declared model: when (x,y) is itself
+the input to a deterministic centralized machine, the parties communicate
+only the owner-supplied bits read by the trace, so Dcc(g) <= R_M+1 (or
+w R_M+O(1) for w-bit cells). But every p-by-q Boolean function also has a
+send-the-shorter-side protocol of cost at most min(p,q)+1. Thus ordinary
+deterministic communication supplies at most a linear input-read lower bound
+and no central workspace lower bound.
+
+COMPAT-COMM-IMPLIES-SAT1 is FALSIFIED/RETIRED. A fixed-formula SAT execution
+does not receive the compatibility arguments a,b, and one-bit satisfiability
+does not require computing or exposing H_F. The surviving target,
+JOINT-SPLIT-RESOURCE1, is a K-independent predecision same-realization
+compiler to a model with an unconditional superpolynomial endpoint, with all
+construction, access, replay, output, and peak-space costs charged.
+
+The bounded audit passed 12 semantic-family cases, 2,667 fooling cross checks,
+18 wrapper checks, 576 split-trace ledger checks, and 8 exact H_(2,2)
+communication computations in 9.174 seconds. No asymptotic claim is inferred
+from finite testing.
+
+Report: `research/review/reports/model_bridge/2026-10-11_0800_MODELBRIDGE-0006.tex`.
+Code: `experiments/review/semantic_communication_ceiling_audit.py`.
+Raw result: `results/raw/review/2026-10-11_semantic_communication_ceiling_audit.json`.
+
+---
+
 # MODEL_BRIDGE run 0005: pairwise compatibility extracts but does not glue
 
 Date: 2026-10-11 UTC. Scientific status: P versus NP OPEN.
