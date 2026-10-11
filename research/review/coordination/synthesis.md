@@ -2,7 +2,7 @@
 
 ## SYNTHESIS-0015 — predecision guard has no call-invariant content (2026-10-11T21:48:00Z)
 
-**Status:** VERIFIED locally, GitHub publication pending. **P versus NP remains OPEN.**
+**Status:** VERIFIED by exact GitHub readback at core commit `f2d0bede7dc144aa5e79a96e96d9c5e52e2f0819`. **P versus NP remains OPEN.**
 
 - **PROVED/EXACT, independent review pending:** `PREDECISION-NO-CALL-LAUNDERING1`.
 - **FALSIFIED/RETIRED:** `NO-CALL-PREDECISION-IMPLIES-K-INDEPENDENCE1`.
