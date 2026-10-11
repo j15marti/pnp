@@ -1,0 +1,346 @@
+% PNP REVIEW REPORT::TESTS::TESTS-0011::2026-10-11T18:24:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\PolySAT}{\mathsf{PolySAT}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{TESTS-0011: Child-preserving typed wrappers do not cover arbitrary SAT implementations}
+\author{UNIVERSAL\_CORE\_TESTS}
+\date{11 October 2026, 18:24 UTC}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+MODELBRIDGE-0016 proves that covariance under all constant program
+replacements makes every extracted invariant source-only; it leaves typed
+wrapper covariance as the proposed repair.  This run tests the obvious typed
+grammar.  Programs are distinct tagged base implementations closed under
+DIRECT, DEAD, COPY, DELAY, INTERP and RECOMP constructors, each of which
+retains one child.  The terminal base tag is an exact invariant of every
+wrapper word.  Hence the transformation graph has one component per base and
+cannot cover arbitrary polynomial SAT implementations.  Assuming
+\(\SAT\in P\), inert syntactic tags produce arbitrarily many exact uniform
+polynomial SAT bases, so the failure occurs inside \(\PolySAT\).  Adding
+constant replacement joins the components, but then the factorization
+theorem of MODELBRIDGE-0016 applies.
+
+Thus \texttt{TYPED-WRAPPER-ORBIT-SEPARATION1} is \EXACT{} in the declared
+grammar, pending independent review, and
+\texttt{CHILD-PRESERVING-TYPED-COVERAGE1} is \RETIRED.  This does not rule
+out a richer non-retractable typed compiler; proving its coverage and
+resource preservation for every uniform SAT decider remains \OPEN{} and is
+separation-strength.  A bounded audit checked 12,440 programs, 3,184,640
+semantic evaluations, all preprocessing/extraction/reconstruction ledger
+events, easy-family controls and the replacement collapse in 6.46 seconds.
+P versus NP remains open.
+\end{abstract}
+
+\section{Executive verdict}
+\begin{center}\small
+\begin{tabular}{@{}p{0.42\linewidth}p{0.19\linewidth}p{0.31\linewidth}@{}}
+\toprule
+Claim & Status & Verdict\\ \midrule
+\texttt{TYPED-WRAPPER-ORBIT-SEPARATION1} & \EXACT, review pending &
+Every child-preserving wrapper word retains its terminal base, so base orbits
+are disjoint.\\
+\texttt{CHILD-PRESERVING-TYPED-COVERAGE1} & \RETIRED &
+The declared typed grammar cannot connect all polynomial SAT programs.\\
+Finite wrapper audit & \COMP & 3,184,640 semantic checks; zero failures.\\
+\texttt{NONRETRACTABLE-TYPED-COVERAGE1} & \OPEN &
+No richer uniform compiler with all-program coverage and favorable endpoint
+bounds is constructed.\\
+UCORE-TIME1 and P versus NP & \OPEN & No unrestricted lower bound follows.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Clean core and exact attacked target}
+Let \(\mathcal H_{2,2}\) be the duplicate-free proper Monotone
+\(3\SAT\)-(2,2) family used by the current synthesis.  On \(n\) variables it
+has \(4n/3\) clauses and canonical indexed bit length
+\[
+ N=|\operatorname{enc}(F)|=\Theta(n\log n).
+\]
+For \(F=C_1\wedge\cdots\wedge C_m\), set
+\[
+ H(F)_{\alpha,j}=1\quad\Longleftrightarrow\quad \alpha\models C_j.
+\]
+SAT asks only whether \(H(F)\) has an all-one row.  A one-bit decider need
+not expose \(H(F)\), an assignment, trace, state, proof, memory image or
+communication transcript.
+
+Let \(\PolySAT\) be the codes of total uniform deterministic polynomial-time
+machines deciding the same canonical SAT language, with no common exponent.
+The exact typed-coverage proposal attacked here is
+\[
+ \SAT\in P\Longrightarrow
+ \forall A,B\in\PolySAT\ \exists u,v\in\mathcal W^*:
+ u(A)=v(B),
+ \tag{TC}
+\]
+where \(\mathcal W\) contains only the declared single-child constructors
+DIRECT, DEAD, COPY, DELAY, INTERP and RECOMP.  Literal code equality in (TC)
+can be weakened to membership in the same undirected transformation
+component; the theorem still refutes it.
+
+The SAME\_REALIZATION object is the actual tagged program code together with
+its source formula and executed wrapper chain.  The argument is syntactic
+orbit bookkeeping.  It does not infer time, memory or communication from an
+orbit count.
+
+\section{Typed wrapper grammar}
+\begin{definition}[Child-preserving grammar]
+For distinct terminal symbols \(B_i\), define
+\[
+ P::=B_i\mid W(P),\qquad
+ W\in\{\mathrm{DIRECT},\mathrm{DEAD},\mathrm{COPY},
+ \mathrm{DELAY},\mathrm{INTERP},\mathrm{RECOMP}\}.
+\]
+Every constructor contains its child code as a distinguished syntactic
+subtree and returns the same SAT bit as its child.  Define
+\[
+ \operatorname{core}(B_i)=i,
+ \qquad \operatorname{core}(W(P))=\operatorname{core}(P).
+ \tag{1}
+\]
+DEAD may execute and discard an auxiliary computation; COPY may duplicate a
+bit; DELAY may add polynomial waiting; INTERP may interpret the child; RECOMP
+may recompute its answer.  All construction, execution and output work is
+charged.  None is allowed to discard its child and return an unrelated base
+program, since that is replacement rather than a child-preserving wrapper.
+\end{definition}
+
+\begin{theorem}[\texttt{TYPED-WRAPPER-ORBIT-SEPARATION1}]
+For every wrapper word \(w\in\mathcal W^*\) and every base \(B_i\),
+\[
+ \operatorname{core}(w(B_i))=i.
+ \tag{2}
+\]
+Consequently two distinct bases are in different weak components of the
+wrapper transformation graph.  If \(\SAT\in P\), then for every \(m\ge2\)
+there are \(m\) exact uniform polynomial-time SAT programs
+\(A_0,\ldots,A_{m-1}\) in pairwise distinct components.
+\end{theorem}
+
+\begin{proof}
+Equation (2) follows by induction on the word length.  The empty word fixes
+\(B_i\).  If it holds for \(w\), then (1) gives
+\(\operatorname{core}(W(w(B_i)))=\operatorname{core}(w(B_i))=i\).
+Every transformation edge therefore has endpoints with the same core, so no
+undirected path joins distinct cores.
+
+Under \(\SAT\in P\), fix one uniform polynomial SAT decider \(A\).  For each
+\(i<m\), form a program \(A_i\) whose code contains an inert distinct tag
+\(i\), ignores it and runs \(A\).  These are exact uniform polynomial SAT
+deciders with distinct base terminals.  The first paragraph places them in
+pairwise distinct components.  No common polynomial exponent is used.
+\end{proof}
+
+\begin{corollary}[Coverage/factorization boundary]
+The child-preserving typed grammar fails universal orbit coverage.  Adding
+every constant replacement \(\kappa_B(A)=B\) makes the graph connected, but
+any invariant under those maps factors through the source by
+\texttt{REPLACEMENT-COVARIANCE-FACTORIZATION1}.  Therefore this grammar gives
+no middle object that is both implementation-sensitive and universal over
+\(\PolySAT\).
+\end{corollary}
+
+This corollary does not prove that every possible typed transformation has
+the same defect.  A core-changing but nonconstant certified compiler is not
+excluded.  It must, however, be uniformly defined on every relevant program,
+preserve exact SAT behavior, charge code inspection and certificate
+generation, and land the \emph{same} ordinary realization inside a published
+forbidden resource region.  That is \texttt{NONRETRACTABLE-TYPED-COVERAGE1},
+which remains \OPEN.
+
+\section{Bounded reproducible audit}
+The dependency-free command
+\begin{verbatim}
+timeout 30s python3 experiments/review/typed_wrapper_orbit_noncoverage_audit.py
+\end{verbatim}
+completed in 6.46338 seconds and bytecode compilation passed.  With eight
+base tags, six wrappers and depth at most four, it enumerated
+\[
+ 8\sum_{d=0}^{4}6^d=12{,}440
+\]
+program nodes.  The child-preserving graph had exactly eight components;
+adding replacement edges gave one component.  All 12,440 core checks passed.
+
+For all 256 subsets of the eight signed proper three-literal clauses on
+three variables, every node returned the precomputed exact SAT bit, giving
+3,184,640 semantic checks.  The instrumentation charged 18,155,760
+preprocessing events, 14,121,240 extraction events, 12,103,920
+reconstruction events and 3,184,680 output events.  These are exact counts
+for the declared finite harness, not runtime lower bounds.
+
+The hostile suite additionally checked Horn, 2SAT, bounded-treewidth,
+independent-product and redundant-clause inputs; reversal, duplication,
+padding metadata and alternate literal-list encodings; and 64 affine/Tseitin
+systems by actual \(\mathbb F_2\) Gaussian elimination against exhaustive
+truth assignments.  There were zero failures.  The script SHA-256 is
+\nolinkurl{3de40d48717c224fb00587f0e5012bc9431d21b31a5db6f9a953f419aa7491f4};
+the raw result SHA-256 is
+\nolinkurl{a266ca9495dbf651b001e4ead4abf7ab4831df513b37920c464934d49c042105}.
+The computation is \COMP{} only; the orbit theorem is proved symbolically.
+
+\section{Semantic shortcuts, padding and one-bit output}
+Horn closure, 2SAT implication graphs, affine elimination and bounded-
+treewidth dynamic programming all show that large compatibility descriptions
+can coexist with cheap one-bit decisions.  Independent products make the
+same point componentwise.  Padding, redundant clauses and recodings change
+syntax and measured input length but do not force a particular internal
+object.  They therefore cannot repair (TC).
+
+The inert-tag construction is deliberately hostile to source semantics: all
+bases compute exactly the same bit on every input.  An extensional quotient
+would identify them, but under \(\SAT\in P\) that quotient also contains an
+ordinary source decider and cannot by itself deliver favorable time--space
+exponents.  An intensional quotient retains tags but owes coverage.  This is
+the same boundary isolated by MODELBRIDGE-0016, now tested on the proposed
+typed repair.
+
+\section{Primary literature and barrier-transfer audit}
+Fortnow--Lipton--van Melkebeek--Viglas prove simultaneous SAT time--space
+lower bounds on specified random-access machines \cite{flmv}.  Their theorem
+transfers only after one actual ordinary machine meets the endpoint bounds;
+wrapper-orbit separation supplies no such machine.  Baker--Gill--Solovay
+construct relativized worlds with opposite P-versus-NP outcomes
+\cite{bgs}, and Aaronson--Wigderson show that the central problem also
+requires methods beyond algebrization \cite{aw}.  The present syntactic
+invariant relativizes and supplies neither missing hinge.  Blum's
+machine-indexed complexity framework \cite{blum} supports explicit program
+and cost accounting, but does not identify extensionally equal program
+codes or force a canonical representative.
+
+\begin{description}[leftmargin=0cm,labelwidth=0cm]
+\item[] \textbf{DIRECTLY TRANSFERABLE THEOREM.}
+FLMV applies only after a model-matched ordinary SAT realization has been
+constructed with every cost charged.  The graph-invariant proof itself is a
+direct elementary transfer from transformation actions to orbit partitions.
+\item[] \textbf{USEFUL STRUCTURAL ANALOGY REQUIRING A NEW TRANSFER THEOREM.}
+Certified compilation, bisimulation quotients, abstract interpretation and
+LWE-style external extraction suggest nonconstant core-changing maps.  The
+missing theorem is total coverage of every uniform polynomial SAT program,
+uniform certificate acquisition and favorable SAME\_REALIZATION bounds.
+\item[] \textbf{MISLEADING ANALOGY / FAILED TRANSFER.}
+VLSI routing, distributed cuts, proof-system size, branching-program width,
+Schur squares, quadratic-relation ranks, Hilbert functions, syzygies,
+collision entropy, special soundness and hash/random-oracle binding do not
+connect program orbits or lower-bound arbitrary one-bit SAT computation.
+\end{description}
+
+The post-quantum verdict is ANALOGY/CANDIDATE for externally certified
+core-changing extraction and FAILED TRANSFER for algebraic invariants used
+without an all-program compiler.  Hidden algebraic structure remains an
+algorithmic shortcut on the affine control.
+
+\section{Predecessor write-recovery preflight}
+The expected 18:12 UTC LOWER\_BOUND artifact was absent from the 2,203-entry
+GitHub tree.  The newest available predecessor is the substantive verified
+LB-0015 report at 17:12 UTC, with the required header and sentinel.  Recent
+history instead ends at MODELBRIDGE-0016.  There is no partial LB path, empty
+body, SHA conflict or connector error to repair.  The failure is classified
+\textbf{UNKNOWN, consistent with an interrupted/overlapping scheduled turn}.
+A nonblocking recovery request is recorded in the TESTS coordination handoff:
+retry publication of the preserved predecessor body if one exists; do not
+reconstruct missing mathematics.  This is the first observed missing cycle,
+so the two-cycle governance escalation is not triggered.
+
+\section{CORPUS REVIEWED}
+The run surveyed the 2,203-entry GitHub tree and read root \path{main.tex},
+actual \path{main4.tex}/\path{main5.tex}, \path{AGENTS.md}, \path{CODEX.md},
+the complete pnp-research skill and both reference protocols, the five-agent
+protocol, all seven task specifications, current status/coordination/formal
+spines, governance and the HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC causal
+branch.  It read the underlying newest MODELBRIDGE-0016, LB-0015,
+TESTS-0010, RT-0015 and SYNTHESIS-0011 reports plus cited scripts/results and
+manuscript additions.  Historical LB-0011, MODELBRIDGE-0010, RED-0003 and
+RED-0007 were rechecked through the current synthesis for implementation
+quotients, static normalization, semantic minimization and wrapper
+noninvariance.  Primary literature was checked before theorem promotion.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+MODELBRIDGE-0016 already proves constancy on transformation components and
+source factorization under replacements.  The new contribution is not that
+general lemma: it is the exact noncoverage theorem for the proposed
+child-preserving typed grammar and the inert-tag instantiation inside
+\(\PolySAT\) under \(\SAT\in P\).  LB-0011's quotient theorem and
+MODELBRIDGE-0010's normalizer trilemma are consistent.  TESTS-0010 and
+RT-0015 show why actual wrapper costs and semantic minimization occupy the
+two opposite sides.  No contradiction was found.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root MAIN already leaves arbitrary-algorithm acquisition and
+SAME\_REALIZATION transfer open.  The typed-covariance repair is now split:
+the obvious child-preserving grammar is retired for lack of orbit coverage;
+a non-retractable, core-changing certified compiler remains open.  No root
+load-bearing arrow closes.  This review role has no root-MAIN ownership
+region, so root \path{main.tex} is not edited; main4/main5 receive a
+nonpromotional include and LSPV-5 remains synthesis arbiter.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted are MODELBRIDGE-0016's factorization theorem, TESTS-0010's wrapper
+gauge result, RT-0015's extensional-collapse guard, exact encoded-length
+accounting and SAME\_REALIZATION.  Rejected is the claim that retaining a
+child pointer makes a wrapper grammar universal.  Retired is
+\texttt{CHILD-PRESERVING-TYPED-COVERAGE1}, only in the declared grammar.
+Preserved \OPEN{} are nonconstant core-changing coverage, an external source
+compiler, arbitrary-decider transfer, UCORE-TIME1, nonrelativization,
+nonalgebrization and P versus NP.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+It is stale to present \texttt{TYPED-COVARIANCE-COVERAGE1} as one undivided
+repair.  Child-preserving wrappers provably do not cover; replacement-complete
+families provably factor.  It would be overstated to claim that every richer
+typed compiler is impossible, or that eight finite components imply an
+unrestricted runtime lower bound.  The exact remaining question is whether a
+uniform nonconstant core-changing map can have complete coverage and a
+favorable fully charged endpoint.
+
+\section{Precise handoff}
+Test \texttt{NONRETRACTABLE-TYPED-COVERAGE1}: specify a decidable typed
+intermediate language and one total uniform compiler \(C\) such that for
+every \(A\in\PolySAT\), \(C(A,F)\) preserves the SAT bit without first
+deciding it, is invariant under inert tags and DEAD/COPY/DELAY/INTERP/RECOMP,
+and produces one ordinary random-access realization in an FLMV-forbidden
+simultaneous time--space region.  Charge program inspection, failed routes,
+certificate generation/checking, source access, transport, replay,
+reconstruction, output, suspended state and peak workspace.  Falsify first
+with constant replacement, source-decide-first, affine, bounded-treewidth,
+padding and alternate encodings.  No such compiler is known.
+
+\paragraph{Final status.}
+\texttt{TYPED-WRAPPER-ORBIT-SEPARATION1}: \EXACT, pending independent review.\\
+Finite audit: \COMP.\\
+\texttt{CHILD-PRESERVING-TYPED-COVERAGE1}: \RETIRED.\\
+\texttt{NONRETRACTABLE-TYPED-COVERAGE1}, arbitrary-decider transfer,
+UCORE-TIME1, nonrelativization, nonalgebrization and P versus NP: \OPEN.\\
+P versus NP remains open.
+
+\begin{thebibliography}{9}
+\bibitem{flmv} L.~Fortnow, R.~Lipton, D.~van Melkebeek and A.~Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability}, JACM 52(6) (2005),
+835--865. \url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{bgs} T.~Baker, J.~Gill and R.~Solovay,
+\emph{Relativizations of the P=?NP Question}, SIAM Journal on Computing
+4(4) (1975), 431--442. \url{https://doi.org/10.1137/0204037}.
+\bibitem{aw} S.~Aaronson and A.~Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory}, ACM Transactions
+on Computation Theory 1(1) (2009), Article 2.
+\url{https://eccc.weizmann.ac.il/report/2008/005/}.
+\bibitem{blum} M.~Blum,
+\emph{A Machine-Independent Theory of the Complexity of Recursive Functions},
+JACM 14(2) (1967), 322--336.
+\url{https://doi.org/10.1145/321386.321395}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::TESTS::TESTS-0011
+\end{document}

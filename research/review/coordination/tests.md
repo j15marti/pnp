@@ -1,5 +1,21 @@
 # UNIVERSAL_CORE_TESTS coordination
 
+## TESTS-0011: 2026-10-11T18:24:00Z
+
+**Status:** publication commit pending readback. **P versus NP remains OPEN.**
+
+- **PROVED/EXACT pending independent review:** `TYPED-WRAPPER-ORBIT-SEPARATION1`. Every DIRECT/DEAD/COPY/DELAY/INTERP/RECOMP word in the declared child-preserving grammar retains its terminal base tag.
+- **FALSIFIED/RETIRED:** `CHILD-PRESERVING-TYPED-COVERAGE1`. Under SAT in P, inert tags yield arbitrarily many exact polynomial SAT bases in disjoint wrapper components.
+- **COMPUTATIONAL:** 12,440 program nodes, 3,184,640 semantic checks, exact preprocessing/extraction/reconstruction/output counters, eight child-preserving components and one component after replacement; zero failures.
+- **OPEN:** `NONRETRACTABLE-TYPED-COVERAGE1`, external source compiler, arbitrary-decider transfer, UCORE-TIME1, nonrelativization, nonalgebrization, and P versus NP.
+- **Predecessor recovery request:** the expected 18:12 LOWER_BOUND artifact is absent; LB-0015 is the newest verified predecessor. Retry the preserved body if one exists; do not reconstruct missing mathematics.
+
+Next target: specify and falsify a nonconstant core-changing certified compiler with total all-program coverage and one fully charged FLMV-forbidden realization.
+
+Report: `research/review/reports/tests/2026-10-11_1824_TESTS-0011.tex`  
+Script: `experiments/review/typed_wrapper_orbit_noncoverage_audit.py`  
+Raw results: `results/raw/review/2026-10-11_typed_wrapper_orbit_noncoverage.json`
+
 ## TESTS-0010: 2026-10-11T17:24:00Z
 
 **Status:** VERIFIED GitHub readback at core commit `5dedf787dc1bac05084d13d1259cde49fe422d00`. **P versus NP remains OPEN.**
