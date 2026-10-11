@@ -2,7 +2,7 @@
 
 ## SYNTHESIS-0014 — log-succinct resource trilemma (2026-10-11T20:45:32Z)
 
-**Status:** core publication pending readback. **P versus NP remains OPEN.**
+**Status:** VERIFIED by exact GitHub readback at core commit `1b05f4dac1cad2d79294bb8f90c2d17718764cc0`. **P versus NP remains OPEN.**
 
 - **PROVED/EXACT, independent review pending:** `LOG-SUCCINCT-RESOURCE-EQUIV1`.
 - **FALSIFIED/RETIRED as an intermediate route:** `LOG-SUCCINCT-RESOURCE-AS-INTERMEDIATE1` and conditional witness/resource incompressibility.
