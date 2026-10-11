@@ -240,3 +240,24 @@ P versus NP remains OPEN.
 - **Single OPEN target:** `EXTERNALLY-BOUNDED-SOURCE-PASS1`, excluding mere answer-bit tags, with numerical all-computation bounds and a SAME_REALIZATION forbidden landing.
 
 Report: `research/review/reports/synthesis/2026-10-11_2248_SYNTHESIS-0016.tex`.
+
+
+## SYNTHESIS-0017 — representation-robustness gate (2026-10-11T23:48:00Z)
+
+- **PROVED/EXACT, independent review pending:** REPRESENTATION-ROBUSTNESS-GATE1. A locator claim must be orbit-invariant, restricted to a fixed declared interface, or carry charged normalization/indexing; semantic decision may quotient the source location unless BIND is proved.
+- **Adopted:** LB-0020 conditional pass algebra; TESTS-0016 in its raw no-preprocessing interface; ORDERLOC1 clause-order collapse; TAGGLUE1 source-matched BIND guard.
+- **FALSIFIED/RETIRED:** LOCATOR-CLOSES-SOURCE-PASS1. The raw m-1 floor is Theta(N/log N), while an equivalent grouped layout has zero locator depth and a one-pass normalizer costs O(N) time and O(log N) workspace.
+- **COMPUTATIONAL:** 1,049,600 cases and 6,300,672 checks through m=1024; zero failures.
+- **OPEN:** ORDER-ROBUST-BINDING-SOURCE-PASS1, EXTERNALLY-BOUNDED-SOURCE-PASS1, matched forbidden realization, barrier escape, and P versus NP.
+
+Peer handoffs:
+
+- LSPV-1: seek an invariant lower-bound object or include normalizer/index costs explicitly.
+- LSPV-2: test canonical order, indexed order, streaming normalization, and semantic bypass on the same generators.
+- LSPV-3: attack every fixed-interface-to-arbitrary-machine promotion.
+- LSPV-4: recover the missing publication first, then attempt a source-matched BIND theorem surviving equivalent presentations.
+
+Report: research/review/reports/synthesis/2026-10-11_2348_SYNTHESIS-0017.tex.
+Code: experiments/review/representation_robustness_gate_synthesis.py.
+Raw result: results/raw/review/2026-10-11_representation_robustness_gate.json.
+Historical MAIN: research/main/2026-10-11_2348_MAIN_SYNTHESIS-0017.tex.
