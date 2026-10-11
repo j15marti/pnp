@@ -1,0 +1,316 @@
+% PNP REVIEW REPORT::LOWER_BOUND::LB-0014::2026-10-11T16:12:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newcommand{\status}[1]{\textsc{#1}}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\enc}{\operatorname{enc}}
+\newtheorem{theorem}{Theorem}
+\title{LB-0014: Annotation semantics trilemma\\Occurrence tags cannot be charged to one-bit SAT without a validation contract}
+\author{UNIVERSAL\_CORE\_LOWER\_BOUND}
+\date{11 October 2026, 16:12 UTC}
+\begin{document}\maketitle
+
+\section*{Executive result}
+
+This run proves an exact interface guard for the occurrence tags isolated by
+LB-0013 and MODELBRIDGE-0014.  An annotation has three model-distinct
+semantics.  If the annotation is ignored by the language, a decider can erase
+it.  If it is promised correct, a promise solver need not validate it.  If
+correctness is made part of a total language, validation may be required, but
+the result is no longer ordinary SAT; transferring any lower bound back needs
+a fully charged compiler that produces the valid annotation.
+
+This is \texttt{ANNOTATION-SEMANTICS-TRILEMMA1},
+\status{Proved/Exact} in the declared locally projectable encoding model.
+The unqualified implication
+\[
+ \tag{TAG-VALIDATION-TO-UCORE1}
+ \text{occurrence tags are hard to validate or generate}
+ \Longrightarrow
+ \text{every one-bit SAT decider pays that cost}
+\]
+is \status{Falsified/Retired}.  The theorem does not refute the external JMV
+reduction program: a source-defined compiler may generate valid tags and feed
+them to the fixed second leg.  It does refute charging validation to the
+target decider merely because tags are present.
+
+The exact JMV parent-port theorem, local normalization to tagged Monotone
+$3$-SAT-$(3,3)$, the all-algorithm SAME\_REALIZATION bridge, and the
+unrestricted lower bound remain \status{Open}.  P versus NP remains
+\status{Open}.
+
+\section{Clean core and exact lower-bound target}
+
+Let $\mathcal H_{2,2}$ be the canonical indexed encoding of duplicate-free
+proper Monotone $3$-SAT$^*$-$(2,2)$: each clause has three distinct variables
+and one sign, and each variable occurs exactly twice with each sign.  With
+$n$ variables its bit length is $N_F=\Theta(n\log n)$.  The desired universal
+target is
+\[
+ \tag{UCORE-TIME1}
+ \forall A\in\mathrm{Dec}_{\rm unif}(3\SAT)\ \forall d\in\mathbb N\
+ \ \forall N_0\ \exists F\in\mathcal H_{2,2}:
+ N_F\ge N_0\ \wedge\ T_A(\enc(F))>N_F^d.
+\]
+It is \status{Open}.  A theorem for every $d$ would rule out every uniform
+polynomial-time decider on this NP-complete clean-core language.  No premise
+below assumes this conclusion.
+
+The bridge currently uses a tagged Monotone $(3,3)$ source.  There are six
+literal occurrences per variable and a two-bit sign-specific rank for each,
+so the tag field adds $12n$ bits.  Hence the tagged length $M$ and untagged
+indexed length $N$ satisfy $M=\Theta(N)$.  This constant overhead does not
+make validation a SAT requirement.
+
+\section{Exact model and theorem}
+
+Let $L\subseteq\{0,1\}^*$ be any language and let
+$\tau:\{0,1\}^*\to\{0,1\}^*$ be any total annotation map.  Fix a
+self-delimiting encoding $\langle x,a\rangle$ of length $M$ with a uniform
+random-access projection from an address of $x$ to the corresponding input
+bit in $O(\operatorname{polylog}M)$ time and $O(\log M)$ writable space.
+Fixed-width per-literal occurrence tags satisfy this condition with constant
+access overhead.  Define three objects:
+\begin{align*}
+ L_{\rm erase}^{\tau}
+   &=\{\langle x,a\rangle:x\in L\},\\
+ \Pi^{\tau}_{L,Y}
+   &=\{\langle x,\tau(x)\rangle:x\in L\},\\
+ \Pi^{\tau}_{L,N}
+   &=\{\langle x,\tau(x)\rangle:x\notin L\},\\
+ L_{\rm valid}^{\tau}
+   &=\{\langle x,a\rangle:x\in L\ \wedge\ a=\tau(x)\}.
+\end{align*}
+The middle pair is a promise problem; no output is specified off its promise.
+
+\begin{theorem}[\texttt{ANNOTATION-SEMANTICS-TRILEMMA1}]
+For every deterministic uniform decider $A$ for $L$:
+\begin{enumerate}[leftmargin=1.5em]
+\item there is a uniform decider $E_A$ for $L_{\rm erase}^{\tau}$ which never
+uses the annotation bits and simulates $A$ through the local projection;
+\item the same $E_A$ solves the promise problem $\Pi_L^\tau$ and need not
+test whether $a=\tau(x)$; and
+\item a decider for $L_{\rm valid}^{\tau}$ solves a different total language.
+A lower bound for validation or for computing $\tau(x)$ transfers to $L$
+only through an explicit reduction that constructs
+$\langle x,\tau(x)\rangle$, with its construction, access, storage, and
+workspace charged in the same realization.
+\end{enumerate}
+If $A$ uses time $T_A(|x|)$ and space $S_A(|x|)$, then
+\[
+ T_{E_A}(M)=O\!\left(M+T_A(|x|)\operatorname{polylog}M\right),\qquad
+ S_{E_A}(M)=O\!\left(S_A(|x|)+\log M\right).
+\]
+For a constant-access projection, the polylogarithmic factor is constant.
+\end{theorem}
+
+\begin{proof}
+On input $\langle x,a\rangle$, $E_A$ parses the self-delimiting header and
+simulates $A$ on the virtual read-only input $x$.  Whenever $A$ requests an
+$x$-bit, $E_A$ uses the declared projection.  It never queries an address in
+$a$.  Thus its output is $\mathbf1_L(x)$ for every $a$, proving the first
+part and the resource bound.  On the promise $a=\tau(x)$ this same output is
+correct, regardless of whether equality was checked, proving the second
+part.  The third claim is definitional but load-bearing: for $x\in L$ and
+$a\ne\tau(x)$, $L_{\rm erase}^{\tau}$ accepts while
+$L_{\rm valid}^{\tau}$ rejects.  Therefore the two total languages differ.
+Reducing $L$ to the validated language by the canonical map requires actually
+producing or locally accessing $\tau(x)$; those costs are not operations of
+$A$ and cannot be omitted.
+\end{proof}
+
+The proof shows that supplied annotation bits are not universally
+\emph{read or validated}.  It does not prove that the subroutine $A$ fails to
+compute some representation-equivalent object from $x$ for its own reasons.
+That stronger arbitrary-algorithm claim remains \status{Open}.
+
+\section{Consequences under the counterfactual $P=NP$}
+
+Assume $\SAT\in P$ via some uniform deterministic decider $A$.  Then for
+every annotation map $\tau$, even one expensive to validate, the erased total
+language and the correctly tagged promise problem are in P by $E_A$.  There
+is no contradiction: the promise solver is not required to establish the
+promise.  If $L_{\rm valid}^{\tau}$ is hard because it checks $a=\tau(x)$,
+that hardness belongs to a new language.  Claiming it for SAT silently adds
+the validation predicate.
+
+For the current bridge, the safe route is external.  Prove that the exact
+JMV source construction supplies each valid occurrence tag on demand, then
+compose that compiler with MODELBRIDGE-0013's fixed second leg.  Every local
+query and transient state is charged to the reduction realization.  The
+unsafe route is to say that an arbitrary target SAT decider must reconstruct
+or check the tags simply because they were attached to a formula.
+
+\section{Bounded reproducible audit}
+
+The script
+\texttt{experiments/review/annotation\_semantics\_trilemma.py} exhausts all
+256 languages on three-bit sources and all 256 affine maps
+$\mathbb F_2^3\to\mathbb F_2^2$.  It checked 524,288 promised inputs,
+2,097,152 erased-language cases, 2,097,152 validated-language cases, and
+1,572,864 wrong-tag mutations.  Every erased decision was annotation
+invariant; every validated decision rejected exactly the wrong annotation.
+
+The CNF controls comprised equality 2SAT, Horn implication, affine/Tseitin
+parity, bounded-treewidth chains, independent products, duplicate and
+tautological padding, an explicit contradiction, and the paired $K_{3,3}$
+proper unique Monotone $(2,2)$ clean-core block.  DIRECT, COPY, DELAY, INTERP,
+and RECOMP wrapper labels gave 80 one-bit invariance checks.  Sixteen tag
+validation checks distinguished the validated language.  A seeded
+permutation control retained the $7,15,31,63$ inverse-probe witnesses for
+$n=8,16,32,64$.  All checks passed in 1.09 seconds.
+
+The script SHA-256 is
+\texttt{4ade2467efd1b8aa20733d0d5a5e0530abb55f7c4e41bf8ea71de42297a074dd};
+the raw-result SHA-256 is
+\texttt{0e5df358d0f95243182a26214778c16e26bc3c984e5046ac3dc7e59ba42a9015}.
+The experiment is \status{Computational}; the theorem is established by the
+symbolic proof, not by finite enumeration.
+
+\section{Primary-literature and barrier-transfer preflight}
+
+The two obstacles were (i) whether local clause access implies a required
+annotation contract, and (ii) whether a promised valid annotation must be
+validated.  Jahanjou--Miles--Viola, \emph{Local reductions}, ECCC TR13-099,
+Theorem 1, maps a clause index to the addressed 3-CNF clause; its local
+uniformity definition outputs a gate's type and children.  It does not state
+that a SAT decider validates occurrence tags or enumerates parents.
+Even--Selman--Yacobi, \emph{The complexity of promise problems with
+applications to public-key cryptography}, Information and Control 61 (1984),
+formalizes promise problems as partial decision problems; correctness is
+required only on the promise.  These source models agree with the trilemma.
+
+Fortnow--Lipton--van Melkebeek--Viglas, \emph{Time-Space Lower Bounds for
+Satisfiability}, uses a deterministic random-access model and a specific
+on-demand Cook reduction.  Its endpoint constrains one machine's simultaneous
+time and space; it does not convert a tag-validation lower bound into a SAT
+lower bound.  Aaronson--Wigderson, \emph{Algebrization}, explains why P versus
+NP requires a nonalgebrizing ingredient.  The erasure theorem relativizes
+and algebrizes; it is a guard, not that missing ingredient.
+
+Annotated streaming and online Merlin--Arthur lower bounds are
+\status{Analogy/Candidate}: their verifier/help contracts make annotations
+part of the specified problem.  A transfer would have to prove the same
+contract for ordinary one-bit SAT.  Proof-carrying code and authenticated
+data structures are likewise analogy only.  Error-detecting codes and VLSI
+fault checks are a \status{Failed Transfer}: physical or adversarial
+validation is absent when the semantic quotient discards the tag.
+
+\section{SAME\_REALIZATION, hostile controls, and barriers}
+
+The erasure wrapper, projection accessor, base decider, input head, all
+buffers, and one output bit are one realization.  The tag generator is
+deliberately absent.  Conversely, a reduction to $L_{\rm valid}^{\tau}$ must
+include that generator in the same realization; it cannot borrow the time of
+an online accessor and the space of a precomputed index from different
+implementations.
+
+Renaming, variable complementation, clause/literal permutations, redundant
+clauses, padding, and alternative fixed-width encodings preserve the theorem
+whenever the erasure projection remains local.  Horn, 2SAT, affine Gaussian
+elimination, bounded treewidth, independent products, and the all-YES tagged
+permutation family demonstrate that semantic shortcuts remain possible.
+The output is one bit; no witness, parent map, tag list, compatibility matrix,
+communication transcript, or state exposure is specified.
+
+The proof relativizes: an oracle decider can still be simulated after erasing
+the annotation.  Giving an algebraic oracle low-degree extension access does
+not create a validation obligation.  No Natural-Proofs property is defined.
+Nonuniform advice containing tags changes neither the semantic distinction
+nor the need to charge its construction in a uniform reduction.
+
+\section{Post-quantum technique ledger}
+
+The LWE lesson of externally supplied, construction-defined reduction
+infrastructure is an \status{Analogy/Candidate}: it recommends proving the
+tag accessor outside the arbitrary SAT computation.  No NP
+worst-case/average-case reduction is obtained.  Collision extraction and
+special-soundness binding are a \status{Failed Transfer} unless the target
+language explicitly asks to validate openings.  Schur squares,
+quadratic-relation spaces, Hilbert functions, syzygies, graded Betti numbers,
+and collision entropy do not supply the missing annotation-to-SAT contract
+and are \status{Failed Transfer} here.  Hash and random-oracle assumptions
+remain inadmissible; a decider may erase such metadata as well.
+
+\section{Corpus reviewed}
+
+The current GitHub corpus was surveyed before substantive work.  Reviewed
+artifacts include root \texttt{main.tex}, \texttt{AGENTS.md},
+\texttt{CODEX.md}, the pnp-research skill and full protocol, current task
+specifications, the newest verified MAIN 1658 and materially relevant MAIN
+history, actual \texttt{main4.tex}/\texttt{main5.tex}, the lower-bound spine,
+status and coordination ledgers, and the verified peer chain LB-0013,
+TESTS-0008, RT-0013, SYNTHESIS-0009, and MODELBRIDGE-0014.  The predecessor
+MODELBRIDGE-0014 report was nonblank and read back with its expected header
+and final sentinel.
+
+Older relevant material was read rather than inferred from peer summaries:
+LB-0007, MODELBRIDGE-0010, SYNTHESIS-0008, CONSTRUCTION-STRENGTHEN6,
+RECOVERY-STRENGTHEN6, PRIME-LQP, PRIME-PH, and the HEC/CRS-PPC/CCSPC causal
+branch.  Repository searches covered annotation, promise, tag, parent-port,
+one-bit-output, provenance, and ignored-metadata formulations.  Cited scripts
+and result surfaces for the active occurrence-index chain were inspected.
+
+\section{Duplication / contradiction audit}
+
+TESTS-0008 already notes that annotations can be discarded and that its
+offline index is not forced on a one-bit decider.  RT-0013 supplies an all-YES
+promise control, and historical PRIME-LQP says a semantic oracle may ignore
+annotations.  This run does not relabel those observations as new.  Its new
+contribution is the exact three-object theorem separating the erased total
+language, correctly annotated promise problem, and validated total language,
+including the locally projected time/space ledger and the $P=NP$ consequence.
+
+There is no contradiction with MODELBRIDGE-0014.  Parent ports remain a
+sufficient external interface for generating tags; this report shows only
+that their validation cannot be assigned to an arbitrary downstream SAT
+decider.  There is no contradiction with LB-0013's raw query lower bound,
+whose representation scope is preserved.
+
+\section{What changed relative to root MAIN}
+
+Root MAIN already states that arbitrary-algorithm acquisition and the final
+contradiction are open.  That status is correct.  The present theorem adds a
+formal guard missing from the living executive chain: an annotation-based
+route must declare whether correctness is ignored, promised, or validated.
+Only the last creates a validation problem, and then a charged reduction back
+to ordinary SAT is mandatory.  Root \texttt{main.tex} was not edited because
+this review role owns no LSPV region; the lower-bound spine and scoped
+\texttt{main4.tex}/\texttt{main5.tex} additions receive the reconciliation.
+
+\section{Adopted / rejected / retired prior components}
+
+\textbf{Adopted:} LB-0013's raw incidence lower bound and constant-overhead
+tag lift; TESTS-0008's correct offline compiler; RT-0013's forward/inverse
+separation; SYNTHESIS-0009's materialized-space gate; MODELBRIDGE-0014's
+parent-port sufficiency theorem; JMV clause locality at its stated interface;
+and FLMV at its stated machine model.  \textbf{Rejected:} silently treating a
+promise as a total validation language, or charging external tag construction
+to the target decider.  \textbf{Retired:}
+\texttt{TAG-VALIDATION-TO-UCORE1} as an unqualified implication.
+
+\section{Stale or overstated claims found}
+
+Any report or handoff saying ``the tagged clean-core decider must validate
+the tags'' is overstated unless the total language explicitly includes tag
+validity.  If validity is a promise, it need not be checked; if tags are
+metadata, they can be erased.  Any statement that a hard validation language
+is simply SAT must be downgraded until a fully charged SAT-to-valid-tag
+compiler is proved.  No current verified peer claims a completed such
+transfer.
+
+\section*{Single next target}
+
+\texttt{JMV-NATIVE-TAG1}: for the exact JMV clause labels, construct the
+sign-specific occurrence tag directly, or prove MODELBRIDGE-0014's local
+parent-port enumerator, in polylogarithmic time and logarithmic writable
+space.  Treat the tagger as external reduction infrastructure, locally
+normalize to exact tagged Monotone $(3,3)$, and compose one fully charged
+realization with the fixed second leg.  Do not require the downstream SAT
+decider to validate tags.  This arrow and UCORE-TIME1 remain \status{Open};
+therefore P versus NP remains \status{Open}.
+
+% END_OF_VERIFIED_REPORT::LOWER_BOUND::LB-0014
+\end{document}
