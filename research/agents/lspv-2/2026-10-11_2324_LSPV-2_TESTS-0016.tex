@@ -1,0 +1,381 @@
+% LSPV-2 REPORT::TESTS-0016::2026-10-11T23:24:08Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,array}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\status}[1]{\textbf{[#1]}}
+\title{LSPV-2 TESTS-0016: A One-Survivor Locality Separation\\
+and the Charged Virtual-Child Boundary}
+\author{UNIVERSAL\_CORE\_TESTS}
+\date{11 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\status{PROVED/EXACT} A proper Horn 3CNF with $m$ physical clause records can
+have, after one one-bit restriction, a residual containing exactly one
+two-literal clause, while a deterministic no-preprocessing clause-probe
+accessor needs exactly $m-1$ probes in the worst case to locate that clause.
+In the declared indexed encoding the parent length is
+$N=\Theta(m\log m)$ and the residual length is $O(\log m)$, so small semantic
+or explicit residual size alone does not imply cheap local access.  One
+charged scan and a $\lceil\log_2m\rceil$-bit locator restore constant-time
+access.  Thus the result separates child existence/size from acquisition;
+it is an input-access fact on an easy Horn family, not a SAT hardness result.
+The finite audit passed $152{,}740$ checks in $2.167364$ seconds.  The prior
+VIRTUAL-CHILD-SPACE1 and STREAMCOMP1 accounting theorems are adopted, not
+reproved as new.  P versus NP remains open.
+\end{abstract}
+
+\section{Predecessor and primary-literature preflight}
+
+The immediately preceding LSPV-1 artifact
+\path{research/agents/lspv-1/2026-10-11_2309_LSPV-1_LB-0020.tex}
+was read back from GitHub, was substantive, and contained both its required
+header and final verification sentinel.  No predecessor recovery was needed.
+
+The two obstacles selected before substantive work were:
+\begin{enumerate}
+\item LB-0020's explicit-child hypothesis is not an arbitrary-algorithm
+theorem; replacing materialization by a virtual child requires a uniform
+bit generator whose construction and repeated use are charged.
+\item Even if the residual is tiny, its locations inside a large parent may
+not be locally discoverable without an index or a scan.
+\end{enumerate}
+Primary rank/select literature was checked against the second obstacle.
+Raman--Raman--Rao construct succinct indexable dictionaries supporting
+constant-time rank/select after an explicit representation/index is built
+\cite{RRR}.  Golynski--Orlandi--Raman--Rao prove density-sensitive index and
+probe tradeoffs for sparse bit vectors \cite{GORR}.  These are directly
+transferable to a materialized survival mask; they do not give a free index
+from CNF semantics.  Fortnow--Lipton--van Melkebeek--Viglas remains the
+model-matched SAT time--space endpoint control \cite{FLMV}; it supplies no
+child extractor or local accessor.
+
+\section{Exact model and the claim attacked}
+
+The parent is a conventional indexed CNF stream of $m$ constant-arity
+clause records.  Variable identifiers occupy $\Theta(\log m)$ bits, so the
+encoded length is $N=\Theta(m\log m)$.  One \emph{clause probe} reads one
+$\Theta(\log N)$-bit record.  A no-preprocessing accessor receives the parent
+and a restriction but no survivor list, rank/select index, or hidden locator.
+All probes used to locate the requested residual record count.  A
+preprocessing algorithm may instead scan the parent, but its time and stored
+index are charged.
+
+The attacked inference is
+\begin{equation}
+\tag{SCL}
+\begin{aligned}
+|R(F,\alpha)|&\le N^{\theta+o(1)},\quad\theta<1\\
+&\Longrightarrow
+\text{ every requested residual bit/record is obtainable in }N^{o(1)}
+\text{ time without charged acquisition.}
+\end{aligned}
+\end{equation}
+This is stronger than VIRTUAL-CHILD-SPACE1, whose premise explicitly
+\emph{supplies} the local transducer.  It is also stronger than LB-0020,
+which explicitly materializes a child and charges that work.
+
+\section{The one-survivor family}
+
+Fix $m\ge2$ and a hidden location $t\in[m]$.  On variables
+$x,a_1,b_1,\ldots,a_m,b_m$, define the proper Horn 3CNF
+\begin{equation}
+H_{m,t}=
+\left(\bigwedge_{i\ne t}(\neg x\vee\neg a_i\vee\neg b_i)\right)
+\wedge (x\vee\neg a_t\vee\neg b_t).
+\tag{1}
+\end{equation}
+Every clause has three distinct variables and the formula is Horn.  Under
+the restriction $x=0$, every clause with $i\ne t$ is satisfied and deleted,
+while the unique survivor is
+\begin{equation}
+R(H_{m,t},x=0)=(\neg a_t\vee\neg b_t).
+\tag{2}
+\end{equation}
+Thus the residual has one physical clause and encoded length $O(\log m)$ if
+original names are retained.  With local renaming its logical clause content
+is constant-size, but reconstruction metadata still includes the source
+location $t$.
+
+There is an even simpler 2CNF/Horn control: use
+$(\neg x\vee\neg a_i)$ for $i\ne t$ and $(x\vee\neg a_t)$ at $t$.
+Restriction $x=0$ leaves the single unit clause $\neg a_t$.
+
+\begin{theorem}[ONE-SURVIVOR-LOCALITY-SEPARATION1]
+\status{PROVED/EXACT} In the declared no-preprocessing clause-probe model,
+locating the unique record of $R(H_{m,t},x=0)$ has deterministic worst-case
+query complexity exactly $m-1$.  Nevertheless one preprocessing scan plus a
+$\lceil\log_2m\rceil$-bit locator gives constant-time access thereafter.
+Consequently (SCL) is \status{FALSIFIED/RETIRED}.
+\end{theorem}
+
+\begin{proof}
+Encode the signs of the $x$-literals as a length-$m$ mask with exactly one
+one, at $t$.  An accessor can probe $m-1$ records; if all answers are zero,
+the unprobed location is $t$, so $m-1$ probes suffice.  Conversely, let an
+adversary answer zero to every probe.  Before $m-1$ distinct locations have
+been probed, two unqueried locations remain, and either can be the unique one.
+They induce different correct source locations, so a deterministic accessor
+cannot yet answer.  A single scan finds $t$ and storing $t$ costs
+$\lceil\log_2m\rceil$ bits.  Equation (2) gives a child of $O(\log m)$ bits,
+whereas the no-index location cost is $m-1=\Omega(N/\log N)$ clause probes.
+\end{proof}
+
+The lower bound is intentionally weak and model-specific.  It is merely a
+nearly linear input-location cost, and the scan/index upper bound matches it.
+Because (1) is Horn, linear-time Horn algorithms are a positive control, not
+an attack on the theorem.
+
+\section{Adopted virtual-child accounting}
+
+The corpus already contains VIRTUAL-CHILD-SPACE1 and the more general
+STREAMCOMP1.  For one recursive type with at most
+$N^{\eta+o(1)}$ children, logical child length
+$N^{\theta+o(1)}$, local work $N^{r+o(1)}$, per-request generator time
+$N^{g+o(1)}$, local space $N^{p+o(1)}$, and generator space
+$N^{s+o(1)}$, their exact conservative inequalities specialize to
+\begin{align}
+C&\ge\max\{r,\eta+g+\theta C\},
+& C&=\max\left\{r,\frac{\eta+g}{1-\theta}\right\},\tag{3}\\
+\rho&\ge\max\{p,s,\theta\rho\},
+& \rho&=\max\{p,s\}.\tag{4}
+\end{align}
+Descriptions, preprocessing, retained parent state, nested generators,
+caches, repeated reads, output and reconstruction remain charged.  Setting
+$g=s=0$ recovers the subpolynomial local-addressability case.  LB-0020's
+explicit materialization statement is therefore accepted at its declared
+scope; the present result shows why a virtual replacement needs an
+independent locator/transducer premise.
+
+\begin{proposition}[FAVORABLE-PASS-LOCAL-ADDRESSABILITY1]
+\status{OPEN} A P-versus-NP-relevant pass still needs, for one fixed uniform
+deterministic SAT decider and on every recursive successor actually used, a
+K-independent hereditary ordinary-CNF pass together with either charged
+explicit emission or a source-matched random-access generator satisfying
+favorable instances of (3)--(4).  Semantic residual size does not supply
+this interface.
+\end{proposition}
+
+\section{Reproducible bounded experiment}
+
+The standard-library program
+\path{experiments/review/virtual_child_select_accessor_audit.py}
+writes
+\path{results/raw/review/2026-10-11_virtual_child_select_accessor.json}.
+One bounded invocation completed in $2.167364$ seconds; no timeout increase
+or chunk was needed.  It passed $152{,}740$ checks with zero failures:
+\begin{itemize}
+\item $120$ exact optimal decision-tree cases for every fixed-weight/rank
+select problem through mask length $9$;
+\item $45{,}057$ exhaustive compacted-accessor semantic cases through mask
+length $12$;
+\item $8{,}255$ Horn 3CNF and $8{,}255$ 2CNF one-survivor cases for
+$2\le m\le128$ and every survivor location;
+\item $720$ exact exponent-ledger cases for (3)--(4);
+\item sixteen hostile controls covering Horn, 2SAT, affine/Tseitin,
+bounded treewidth, independent products, padding, duplicate records,
+alternate encodings, one-bit output, rank/select indexing and
+DIRECT/DEAD/COPY/DELAY/INTERP/RECOMP wrappers.
+\end{itemize}
+The largest independently optimized case was singleton-select at $m=9$,
+whose exact decision-tree depth was $8$.  These finite checks verify the
+implementation and search for small counterexamples; they are not used to
+extrapolate the theorem.
+
+The script SHA-256 is
+\texttt{7b30ed43ef20c647d97ea6c04c03302502c17390ebcc93afa617a81860fec309};
+the JSON SHA-256 is
+\texttt{b376deeb57555c6719aac0d558a06dede04f077f63dd4e6ce641392362904cf8}.
+
+\section{Hostile controls, wrappers, and barriers}
+
+\paragraph{Easy-family controls.}
+Horn forward chaining, implication-graph 2SAT, Gaussian elimination for
+affine/Tseitin systems, and bounded-treewidth dynamic programming may bypass
+generic residual interfaces.  Independent products may expose component
+arithmetic.  None is charged for an object it does not construct.  The
+one-bit SAT output needs neither a witness nor the source locator $t$.
+
+\paragraph{Representations.}
+An explicit survivor list, sparse dictionary, bitvector plus rank/select
+index, or a constructor that passes $t$ as metadata gives cheap access only
+after its acquisition and stored bits are charged.  Alternate clause order,
+padding and duplicate records change the physical mask and the actual encoded
+length $N$; exponents are always measured in that padded length.  Local
+renaming can erase the clause names but cannot provide reconstruction for
+free.  INTERP and RECOMP are charged by their realized probe/generator work;
+DEAD and DELAY cannot prove necessity; COPY changes representation size.
+
+\paragraph{Barrier audit.}
+The adversary proof relativizes, survives algebraic oracles only as the same
+declared raw-record query statement, and supplies no nonrelativizing or
+nonalgebrizing hinge.  Baker--Gill--Solovay and Aaronson--Wigderson therefore
+remain active barriers \cite{BGS,AW}.  Natural Proofs is not crossed: no large
+constructive property separating general circuits is proposed \cite{RR}.
+No solver-to-protocol, proof-system-to-algorithm, or nonuniform-to-uniform
+transfer is inferred.
+
+\section{Post-quantum and cross-domain transfer ledger}
+
+\begin{center}
+\begin{tabular}{>{\raggedright\arraybackslash}p{.28\linewidth}
+                >{\raggedright\arraybackslash}p{.25\linewidth}
+                >{\raggedright\arraybackslash}p{.39\linewidth}}
+\toprule
+Object & Classification & Exact use or missing bridge\\
+\midrule
+Sparse bitvector rank/select & \status{EXACT OBJECT/THEOREM TRANSFER} &
+The survival mask is literally a sparse bitvector.  Succinct indexes give
+fast queries only with their construction/space charged.\\
+Lossiness of local renaming & \status{EXACT OBJECT/THEOREM TRANSFER} &
+If the renamed one-clause child discards $t$, the map from $m$ source
+locations to child content has image size one and collision count $m^2$.
+This is lossiness, not a hidden work obligation.\\
+Schur squares, quadratic relations, Hilbert functions &
+\status{FAILED TRANSFER} & No code-derived invariant forces a one-bit Horn
+decision computation to locate the physical survivor.\\
+Worst-case/average-case extraction & \status{ANALOGY/CANDIDATE} & A black-box
+solver-to-accessor extractor would need a new uniform reduction and the known
+NP worst-case/average-case barriers must be audited.\\
+Special soundness/collision extraction & \status{FAILED TRANSFER} & Two
+openings are not needed for SAT decision; cryptographic binding assumptions
+are inadmissible in an unconditional proof.\\
+VLSI routing and control observability & \status{ANALOGY/CANDIDATE} & They
+suggest charging locators/state, but no model-preserving map from arbitrary
+SAT computation is known.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The same hidden structure may be algorithmically helpful: here the single
+exception can be indexed in logarithmic space.  It is therefore a weakness,
+not a hardness source.
+
+\section{CORPUS REVIEWED}
+
+The run surveyed the default-branch repository tree and read root
+\path{main.tex}, \path{main4.tex}, \path{main5.tex}, \path{AGENTS.md},
+\path{CODEX.md}, and the complete PNP research skill/protocol.  It inspected
+all seven task specifications currently present under \path{tasks/}; root
+MAIN's referenced \path{tasks/TASK-008_SLICE-UNSAT.md} returned 404 and is
+recorded below rather than silently treated as present.  It read the newest
+verified MAIN, the newest reports from LSPV-1 through LSPV-5, and materially
+relevant historical reports surfaced by repository search, including
+VIRTUAL-CHILD-SPACE1, LOCALITY-NOT-CONTRACTION1, STREAMCOMP1,
+RECOVERY-STRENGTHEN7, FINAL-LINK2-CORPUS, and the source-backed residual
+access experiment.  It also read the underlying CCSPC, CRS-PPC and RCCN
+causal components, governance/accounting rules, and the experiment/result
+artifacts cited by the active claims.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+The conceptual warning that a smaller semantic residual need not have access
+cost depending only on residual length already appears in REPLAY-RECOVERY.
+VIRTUAL-CHILD-SPACE1 already proves virtualization under a supplied
+subpolynomial bit transducer; STREAMCOMP1 already gives the charged generator
+recurrence (3)--(4); LOCALITY-NOT-CONTRACTION1 already separates cheap local
+access from global contraction.  Those components are not renamed as new.
+
+The incremental result here is the converse finite separation needed by
+LB-0020: an explicit proper Horn 3CNF family with a one-clause residual, an
+exact $m-1$ no-index locator lower bound, a matching scan-plus-logarithmic-
+locator upper bound, and a bounded exhaustive implementation audit.  It does
+not contradict LB-0020, because that report charges explicit materialization.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN already keeps local addressability and acquisition open.  This run
+adds a sharp hostile control: one-clause residual size does not establish a
+virtual-child accessor, even for proper Horn 3CNF.  The LSPV-2 ownership
+region should therefore adopt LB-0020's hereditary-pass theorem only with its
+explicit-emission premise, retain VIRTUAL-CHILD-SPACE1/STREAMCOMP1 at their
+declared interfaces, and mark the unqualified small-child-to-locality
+inference \status{FALSIFIED/RETIRED}.  No executive claim is strengthened.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\begin{itemize}
+\item \status{ADOPTED}: HEREDITARY-OR-PASS-COMPILATION1 with explicit child
+materialization and all costs charged.
+\item \status{ADOPTED}: VIRTUAL-CHILD-SPACE1 and STREAMCOMP1 under their
+source-matched generator, recursive composition and SAME\_REALIZATION
+hypotheses.
+\item \status{REJECTED}: inferring a supplied local transducer from residual
+cardinality or encoded child length.
+\item \status{FALSIFIED/RETIRED}: (SCL), the unqualified
+SMALL-CHILD-IMPLIES-CHEAP-LOCALITY1 route.
+\item \status{OPEN}: favorable hereditary pass acquisition/local
+addressability for arbitrary uniform polynomial-time SAT computation, its
+model-matched endpoint, nonrelativization and nonalgebrization.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any text treating VIRTUAL-CHILD-SPACE1 as constructing a local accessor, or
+treating a small residual as proving cheap access, is overstated.  The exact
+theorem assumes that accessor.  Root MAIN also lists
+\path{tasks/TASK-008_SLICE-UNSAT.md} as a task file, but the file is absent on
+the current default branch; the scientific branch may remain OPEN, but the
+path should not be described as an extant task specification until restored.
+
+\section{Precise handoff}
+
+The missing implication is now:
+\begin{quote}
+\textbf{FAVORABLE-PASS-LOCAL-ADDRESSABILITY1 (OPEN).}  From one fixed uniform
+polynomial-time SAT decider, construct on every input an exact K-independent,
+hereditary, ordinary-CNF pass with favorable fanout/shrink/local-work
+exponents, and for each virtual child construct a source-matched bit
+transducer whose preprocessing, metadata, per-bit time, repeated queries,
+workspace, parent retention, reconstruction and recursive composition satisfy
+(3)--(4) on the same realization.
+\end{quote}
+The theorem must survive explicit survivor-list and rank/select upper bounds,
+Horn/2SAT/affine/treewidth shortcuts, independent products, padding,
+duplicate clauses, alternate encodings, and equivalent wrappers.  Even if
+proved, a model-matched unconditional endpoint and a nonrelativizing,
+nonalgebrizing hinge remain separately \status{OPEN}.
+
+\begin{thebibliography}{9}
+\bibitem{RRR}
+R. Raman, V. Raman, and S. S. Rao,
+\emph{Succinct indexable dictionaries with applications to encoding
+$k$-ary trees, prefix sums and multisets}, ACM Transactions on Algorithms 3
+(2007), Article 43; arXiv:0705.0552.
+\bibitem{GORR}
+A. Golynski, A. Orlandi, R. Raman, and S. S. Rao,
+\emph{Optimal indexes for sparse bit vectors}, arXiv:1108.2157 (2011).
+\bibitem{FLMV}
+L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+\emph{Time-space lower bounds for satisfiability}, Journal of the ACM 52
+(2005), 835--865.
+\bibitem{BGS}
+T. Baker, J. Gill, and R. Solovay,
+\emph{Relativizations of the $P=?NP$ question}, SIAM Journal on Computing 4
+(1975), 431--442.
+\bibitem{AW}
+S. Aaronson and A. Wigderson,
+\emph{Algebrization: a new barrier in complexity theory}, ACM Transactions
+on Computation Theory 1 (2009), Article 2.
+\bibitem{RR}
+A. Razborov and S. Rudich,
+\emph{Natural proofs}, Journal of Computer and System Sciences 55 (1997),
+24--35.
+\end{thebibliography}
+
+\paragraph{Final status.}
+ONE-SURVIVOR-LOCALITY-SEPARATION1 is \status{PROVED/EXACT} in its declared
+clause-probe model; the finite implementation is \status{COMPUTATIONAL}; the
+virtual-child recurrence is an adopted prior \status{PROVED/EXACT}
+accounting theorem; FAVORABLE-PASS-LOCAL-ADDRESSABILITY1 and every
+P-versus-NP load-bearing transfer remain \status{OPEN}.  P versus NP remains
+open.
+
+% END_OF_VERIFIED_REPORT::LSPV-2::TESTS-0016
+\end{document}
