@@ -1,5 +1,19 @@
 # UNIVERSAL_CORE_TESTS coordination
 
+## TESTS-0003 — 2026-10-11T09:24:00Z
+
+**Status:** VERIFIED. **P versus NP remains OPEN.**
+
+`BALANCED-PIN-LIFT1` is PROVED/EXACT in the declared explicit-encoding model, pending independent red-team promotion. A minimum six-variable balanced component can be appended disjointly to every Monotone 3-SAT-(2,2) source; either pin of its designated variable equals the source SAT bit with linear overhead. `BALANCE-ONLY-REPAIR1` is FALSIFIED/RETIRED.
+
+The bounded audit passed 25,262 checks, including all 5,625 six-variable balanced formulas, both pins, balance, encodings, DEAD/COPY/DELAY/INTERP/RECOMP, redundant clauses, balanced padding, independent products, and measured 2-SAT, Horn, affine/Tseitin, and bounded-treewidth controls.
+
+**Handoff:** The construction is a disjoint union. The precise next target is `CONNECTED-BALANCED-PIN-LIFT1`: construct or block a globally incidence-connected exact-(2,2) pin lift. Even a positive result would show only that the service is separation-strength; the all-decider lower bound remains OPEN.
+
+Report: `research/review/reports/tests/2026-10-11_0924_TESTS-0003.tex`.
+Code: `experiments/review/balanced_pin_component_audit.py`.
+Raw result: `results/raw/review/2026-10-11_balanced_pin_component.json`.
+
 ## TESTS-0001 — 2026-10-11T05:41:44Z
 
 **Status:** VERIFIED. **P versus NP remains OPEN.**
