@@ -1,0 +1,328 @@
+% PNP REVIEW REPORT::TESTS::TESTS-0013::2026-10-11T20:24:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newtheorem{theorem}{Theorem}
+\title{TESTS-0013: Implicit matching restrictions defeat witness-volume-to-storage promotion}
+\author{UNIVERSAL\_CORE\_TESTS}
+\date{11 October 2026, 20:24 UTC}
+\begin{document}\maketitle
+
+\begin{abstract}
+LB-0017 proves that an explicit literal restriction shrinking an exact-$(2,2)$
+clean core to encoded length $N^h$, fixed $h<1$, assigns
+$n/3-o(n)$ variables; on a satisfiable child it is an extendable partial
+witness.  This run tests the next promotion: that the semantic witness volume
+forces every polynomial SAT decider, or even every locally accessible
+restriction realization, to store or serialize that many bits.  The promotion
+is false on canonical products of paired $K_{3,3}$ blocks.  The diagonal
+perfect-matching restriction has $n=9k$ bits, but bit $i$ is computed from its
+address by one quotient/remainder test; the residual is TRUE and has a local
+constant accessor.  A canonical recognizer scans the source in $O(N)$ time
+and $O(\log N)$ workspace and accepts without materializing the witness.
+The exact result is pointwise and representation-sensitive.  It leaves the
+worst-case all-input implicit-access lower bound, SAME\_REALIZATION transfer,
+and every P-versus-NP load-bearing arrow \OPEN.  P versus NP remains open.
+\end{abstract}
+
+\section{Claim card}
+\begin{center}\small
+\begin{tabular}{p{0.39\linewidth}p{0.20\linewidth}p{0.33\linewidth}}
+\toprule
+Claim & Status & Verdict\\
+\midrule
+\texttt{PAIRED-IMPLICIT-RESTRICTION-ACCESS1} & \EXACT, pending review &
+The $9k$-bit diagonal restriction and TRUE residual admit uniform local
+access from $O(\log k)$ data.\\
+\texttt{EXPLICIT-WITNESS-VOLUME-TO-STORAGE1} & \RETIRED &
+Linear semantic witness length does not force a one-bit decider to hold or
+write the witness.\\
+Bounded audit & \COMP & 8,470 checks, zero failures, 0.018475 seconds.\\
+\texttt{WORSTCASE-IMPLICIT-PREDECISION-ACCESS1} & \OPEN &
+No worst-case lower bound for all uniform polynomial SAT deciders follows.\\
+$P$ versus $NP$ & \OPEN & No separation claim.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Exact family and local accessor}
+Let $B$ be the paired-incidence formula of $K_{3,3}$.  For block $b$, row
+$r\in\{0,1,2\}$ and column $c\in\{0,1,2\}$, let $x_{b,r,c}$ denote the
+corresponding edge variable.  At every row and column vertex include both the
+positive clause on its three incident edges and the negative clause on the
+same edges.  Let $F_k$ be the conjunction of $k$ variable-disjoint copies.
+Then
+\[
+ n_k=9k,\qquad m_k=12k,\qquad N_k=\Theta(k\log k),
+\]
+and $F_k$ is a duplicate-free proper Monotone $3$SAT-$(2,2)$ formula.
+
+Define the full restriction
+\[
+ \rho_k(x_{b,r,c})=1\quad\Longleftrightarrow\quad r=c.
+ \tag{1}
+\]
+It selects the diagonal perfect matching in every block.  Each positive
+vertex clause contains exactly one true literal and each negative vertex
+clause contains exactly two true literals.  Hence
+$F_k\upharpoonright\rho_k=\top$.
+
+\begin{theorem}[PAIRED-IMPLICIT-RESTRICTION-ACCESS1 --- \EXACT]
+For the canonical indexed encoding of $F_k$, there is one uniform
+deterministic implementation with the following charged bounds.
+\begin{enumerate}[leftmargin=1.6em]
+\item It recognizes the source in $O(N_k)$ time and $O(\log N_k)$ writable
+bits by comparing the input stream against the block template.
+\item Given a variable address $i$, it returns $\rho_k(i)$ using
+$O(1)$ word operations and $O(\log N_k)$ bits: reduce $i$ modulo nine and
+test whether its row and column digits are equal.
+\item Given a residual-clause request, it returns the TRUE/empty marker
+without storing the $9k$ restriction bits.
+\item On a recognized input, a one-bit SAT decider returns YES after the
+charged recognition scan and never materializes $\rho_k$.
+\end{enumerate}
+The uniform program is fixed; its instance descriptor contains only $k$, so
+the non-input data are $O(\log k)$ bits.
+\end{theorem}
+\begin{proof}
+The source syntax and satisfaction calculation were established above.
+For variable number $i=9b+3r+c$, quotient/remainder arithmetic recovers
+$(r,c)$ and (1) returns the correct bit.  Since every canonical source clause
+is satisfied under (1), simplification emits no residual clauses.  Streaming
+template comparison needs only the input position and $k$.  The recognize-first
+one-bit program may therefore accept immediately after the comparison.
+\end{proof}
+
+If an external caller requests all $9k$ restriction bits, answering all
+requests costs $\Theta(k)$ time and the output channel carries $\Theta(k)$
+bits.  That is an interface charge, not an intrinsic stored-state lower
+bound.  The theorem does not compress an explicitly required output; it
+falsifies the inference that semantic length forces materialization even
+when only local access or one-bit decision is required.
+
+\section{Exact quantifier falsified}
+The invalid promotion has the pointwise form
+\[
+ \forall A\ \forall F\in\mathcal H_{2,2}:
+ \bigl[\text{$A$ decides $F$ or locally realizes a strict restriction}\bigr]
+ \Rightarrow \text{$A$ stores or writes $\Omega(n)$ witness bits}.
+ \tag{2}
+\]
+The theorem gives a direct counterexample to (2) on infinitely many encoded
+lengths.  Under the counterfactual $\SAT\in P$, if $S$ is any uniform
+polynomial exact SAT decider, the wrapper
+\[
+ A(F)=\begin{cases}
+ 1,&F\text{ is the canonical }F_k\text{ for some }k,\\
+ S(F),&\text{otherwise}
+ \end{cases}
+\]
+is a uniform polynomial exact decider and uses the small recognizer state on
+the island.  This is model-matched and creates no contradiction.
+
+The surviving worst-case quantifier is different:
+\[
+ \forall A\in\mathrm{uP\text{-}SAT}\ \exists F:
+ \text{$A$ pays a charged implicit-access or time--space cost on $F$}.
+ \tag{3}
+\]
+No experiment or theorem here refutes or proves (3).  In particular, the
+fallback path can retain an unknown polynomial exponent $K$.
+
+\section{Finite reproducible audit --- \COMP}
+The dependency-free runner materialized canonical products for
+$k\in\{1,2,4,8,16,32,64,128\}$.  For every variable it compared the local
+accessor with the diagonal matching and for every clause it independently
+evaluated satisfaction and residual deletion.  Analytic, nonmaterializing
+checks extended through $k=16384$, where the explicit restriction has
+147,456 bits and the instance descriptor has 15 data bits.  This is a
+description-length comparison, not a claim that uniform program code is free;
+the same fixed code serves every $k$.
+
+The single bounded invocation finished in 0.018475 seconds, performed 8,470
+checks and found zero failures.  No timeout was enlarged and no asymptotic
+claim is inferred from wall time.  Artifact SHA-256 values are
+\begin{align*}
+ &\texttt{0cebdd158dfd691a7f0cca0d5ca89930122a07605d9f7be402e2c01f2c3d4bdd},\\
+ &\texttt{0e8858b86290675f55858e14df877e83a3947379506e2a7b270b83e3187279ad}.
+\end{align*}
+Artifacts are
+\path{experiments/review/implicit_matching_restriction_accessor_audit.py}
+and
+\path{results/raw/review/2026-10-11_implicit_matching_restriction_accessor.json}.
+
+\subsection*{Hostile controls and all costs}
+Reversed clause order, one redundant duplicate, and tautological padding
+preserved satisfaction under the same assignment but were rejected by the
+canonical recognizer.  This exposes representation sensitivity; the wrapper
+falls back instead of silently normalizing.  DIRECT, DEAD, COPY, DELAY,
+INTERP and RECOMP wrappers returned the same SAT bit while having different
+traces.  The audit also recorded 2SAT/SCC, Horn forward chaining, affine
+Gaussian elimination, width-one dynamic programming and independent-product
+controls.  Their large semantic state spaces did not equal stored state.
+No runtime or memory lower bound was extrapolated from those controls.
+
+Recognition reads $N_k$ source bits up to encoding constants.  The position,
+$k$, quotient/remainder temporaries and output bit fit in $O(\log N_k)$
+writable space.  There is no preprocessing table, matching object, witness
+buffer or reconstruction pass.  A request for an alternate encoding either
+charges a map/normalizer or reaches the fallback; neither option strengthens
+the pointwise theorem.
+
+\section{Barrier-transfer and post-quantum audit}
+The two current obstacles are: (i) prove a worst-case all-input implicit
+access obligation immune to recognizable islands and address-local
+generators; and (ii) transfer it to the same ordinary uniform machine in an
+unconditional forbidden time--space region.  Primary sources were checked
+before this construction: D\"ocker for the exact clean core and paired
+matching shortcut; FLMV for the model-specific SAT time--space endpoint;
+Baker--Gill--Solovay, Razborov--Rudich and Aaronson--Wigderson for the
+relativization, Natural Proofs and algebrization barriers.  Downward
+self-reducibility and recent exact search-to-decision work permit external
+query constructions but do not force an arbitrary solver to expose a chosen
+witness representation.
+
+\begin{center}\small
+\begin{tabular}{p{0.31\linewidth}p{0.24\linewidth}p{0.37\linewidth}}
+\toprule
+Source domain & Classification & Object correspondence / missing theorem\\
+\midrule
+Paired incidence and matching & directly transferable theorem &
+Edges are variables; the diagonal perfect matching is exactly restriction
+(1).\\
+Succinct/local decoding & useful analogy needing a bridge &
+Address-local witness bits exist here; no theorem gives such access for all
+hard cores or lower-bounds every alternative accessor.\\
+VLSI routing/fanout & misleading without a bridge &
+Explicit wires carry linear volume, while this realization computes a bit
+only when addressed.\\
+Communication/rank & FAILED TRANSFER &
+The compatibility matrix can have exponential rank although the SAT island
+has a logarithmic-state recognizer.\\
+Schur squares, quadratic relations, Hilbert functions, syzygies &
+ANALOGY/CANDIDATE & No code representation is forced; hidden structure is
+exploitable and therefore a weakness here.\\
+Lossiness/collision entropy & ANALOGY/CANDIDATE &
+It counts fibers of a declared map but does not force that map into a
+one-bit computation.\\
+Worst/average-case architecture & ANALOGY/CANDIDATE &
+A black-box extractor from every solver is missing and must survive known NP
+worst/average-case barriers.\\
+Special soundness/collapse binding & ANALOGY/CANDIDATE &
+No construction-specific theorem turns two local openings into an
+unconditional forbidden witness.\\
+Hash/random oracle & FAILED TRANSFER & Removing the assumption removes the
+claimed lower bound.\\
+\bottomrule
+\end{tabular}
+\end{center}
+All arguments used for the bypass relativize, and its arithmetic description
+also survives ordinary algebraic access.  It cannot be the required
+nonrelativizing/nonalgebrizing hinge.
+
+\section{CORPUS REVIEWED}
+The full repository tree was surveyed before substantive work.  Reviewed
+artifacts include root \path{main.tex}; actual \path{main4.tex} and
+\path{main5.tex}; \path{AGENTS.md}, \path{CODEX.md}, the complete
+\texttt{pnp-research} skill, protocol and all current task specifications;
+the newest verified MAIN and the latest MODELBRIDGE, LB, TESTS, REDTEAM and
+SYNTHESIS reports; LB-0012, LB-0016, TESTS-0007, TESTS-0012,
+SYNTHESIS-0008 and the paired-incidence history.  The HEC, VSC-HEC,
+G-PPC-HEC, CRS-PPC and CCSPC causal branch, governance notes, status files,
+and cited experiment/result artifacts were inspected.  Predecessor LB-0017
+was recovered, published, and read back with its required header and sentinel
+at core commit \texttt{e1f4c3b5bae74f6ae65d888682a7fe35bba891c3}; its
+verification log is commit
+\texttt{ee4637136e064abfeebfed555215ec8eab317454}.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+The paired block, perfect-matching witness, high compatibility rank and
+recognizable-island barrier are established in earlier reports.  They are
+adopted, not relabeled as new discoveries.  TESTS-0012 already emits one
+explicit full restriction.  The new theorem removes its $n$-bit assignment
+buffer and gives an address-local accessor plus a direct one-bit recognizer.
+LB-0017 is not contradicted: its explicit restriction has linear semantic
+length.  The falsified step is exactly the promotion from semantic length to
+necessary storage/output by every realization.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root MAIN's OPEN verdict, SAME\_REALIZATION discipline and worst-case target
+remain correct.  The new correction is that ``linear partial witness'' may
+be charged as linear output only when the interface explicitly requires
+serialization.  It is not automatically linear workspace or an arbitrary
+decider obligation.  This review role did not edit root \path{main.tex};
+nonpromotional main4/main5 additions record the scope correction.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{ADOPTED:} LB-0017's explicit witness-volume theorem;
+TESTS-0012's paired matching pass; the exact $N=\Theta(n\log n)$ ledger;
+recognizable-island and wrapper guards; SAME\_REALIZATION.
+\item \textbf{REJECTED:} any inference from partial-witness length,
+compatibility count/rank, explicit wire volume, or reconstruction length to
+workspace/time of every one-bit decider.
+\item \textbf{RETIRED:} \texttt{EXPLICIT-WITNESS-VOLUME-TO-STORAGE1} and
+\texttt{POINTWISE-PRUNED-VOLUME-TO-IMPLICIT-COST1}.
+\item \textbf{OPEN:} worst-case implicit predecision access, all-input
+hereditary coverage, a model-matched unconditional endpoint, nonrelativization,
+nonalgebrization and P versus NP.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+Any summary saying that LB-0017 forces linear memory, linear output, or
+explicit witness exposure by arbitrary SAT algorithms is overstated.  It
+forces those costs only for an interface that materializes the literal
+restriction.  Conversely, saying that the current accessor handles arbitrary
+encodings or hard clean cores is also overstated; it is a canonical
+recognizable-island counterexample.
+
+\section{Precise handoff}
+The remaining implication is
+\[
+ \boxed{\texttt{WORSTCASE-IMPLICIT-PREDECISION-ACCESS1}}
+\]
+with exact target: for every uniform deterministic polynomial-time 3SAT
+decider $A$ (under the hypothesis such a decider exists), prove that for some
+length-$N$ clean-core input, before its one-bit answer is determined, the
+same execution must perform a model-specified charged operation whose
+unconditional lower bound places that execution outside every polynomial
+time exponent or in a model-matched FLMV-forbidden joint region.  The
+operation must be invariant under recognize-first wrappers, address-local
+generators, alternate encodings, padding, affine/Horn/2SAT/treewidth
+shortcuts and one-bit output.  No such implication is known here; proving it
+is separation-strength.
+
+\paragraph{Final status.}
+\texttt{PAIRED-IMPLICIT-RESTRICTION-ACCESS1}: \EXACT, pending independent
+review.  Bounded audit: \COMP.  The two pointwise witness-volume promotions:
+\RETIRED.  \texttt{WORSTCASE-IMPLICIT-PREDECISION-ACCESS1},
+SAME\_REALIZATION transfer, UCORE-TIME1, nonrelativization,
+nonalgebrization and P versus NP: \OPEN.  P versus NP remains open.
+
+\begin{thebibliography}{9}
+\bibitem{Doecker} J.~D\"ocker, \emph{Monotone 3-Sat-(2,2) is NP-complete},
+Discrete Applied Mathematics 292 (2021), 1--7,
+\url{https://doi.org/10.1016/j.dam.2020.12.021}.
+\bibitem{FLMV} L.~Fortnow, R.~Lipton, D.~van Melkebeek and A.~Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability}, JACM 52(6), 2005,
+\url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{BGS} T.~Baker, J.~Gill and R.~Solovay,
+\emph{Relativizations of the $P=?NP$ Question}, SIAM J. Comput. 4(4), 1975,
+\url{https://doi.org/10.1137/0204037}.
+\bibitem{RR} A.~Razborov and S.~Rudich, \emph{Natural Proofs},
+J. Comput. System Sci. 55(1), 1997,
+\url{https://doi.org/10.1006/jcss.1997.1494}.
+\bibitem{AW} S.~Aaronson and A.~Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory},
+Theory of Computing 5, 2009,
+\url{https://doi.org/10.4086/toc.2009.v005a001}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::TESTS::TESTS-0013
+\end{document}
