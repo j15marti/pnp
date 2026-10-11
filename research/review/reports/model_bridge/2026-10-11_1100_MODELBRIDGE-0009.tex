@@ -1,0 +1,304 @@
+% PNP REVIEW REPORT::MODEL_BRIDGE::MODELBRIDGE-0009::2026-10-11T11:00:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newcommand{\SAT}{\mathsf{3SAT}}
+\newcommand{\Htwo}{\mathcal H_{2,2}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{UNIVERSAL\_CORE\_BRIDGE MODELBRIDGE-0009:\\
+Fixed Predecision Portfolios Do Not Yield a Universal SAT Transfer}
+\author{P versus NP project review}
+\date{11 October 2026}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This run tested a precise candidate bridge: every polynomial-time SAT decider
+must expose, before its final decision, one object from a fixed portfolio of
+tractable recognizers, decompositions, small autarkies, small backdoors, or
+symmetry rules.  The claim fails at the required quantifier.  A partial exact
+controller $P$ can return a correct bit or $\bot$; for any total SAT decider
+$B$, the wrapper ``use $P$, otherwise use $B$'' is total, exact, uniform, and
+polynomial whenever $B$ is.  On an input where $P$ returns $\bot$, correctness
+of the wrapper supplies no successful portfolio transcript.  A bounded audit
+of an explicit eight-rule portfolio found 26 noncovered instances among 36
+seeded Monotone $3$-SAT-$(2,2)$ clean cores, while easy Horn, 2-CNF,
+decomposable, and affine controls behaved as expected.  Noncoverage is not
+hardness, and the experiment is not an asymptotic theorem.  The result blocks
+only a source-local fixed-portfolio transfer; it does not prove that an
+arbitrary SAT computation avoids every possible semantic object.  The missing
+arrow remains an all-input, representation-invariant extraction theorem with
+fully charged acquisition cost.  P versus NP remains open.
+\end{abstract}
+
+\section{Executive status}
+
+\begin{center}
+\small
+\begin{tabular}{p{0.34\linewidth}p{0.20\linewidth}p{0.38\linewidth}}
+\toprule
+Claim & Status & Meaning\\
+\midrule
+\texttt{PARTIAL-CONTROLLER-WRAPPER1} & \EXACT &
+A sound polynomial partial controller composes with any total polynomial
+SAT decider without becoming an all-input successful extractor.\\
+\texttt{FIXED-PORTFOLIO-COVER1} & \RETIRED &
+The declared eight-rule portfolio is not total even on the tested clean-core
+instances; arbitrary-decider correctness cannot repair that logical gap.\\
+\texttt{PORTFOLIO-ESCAPE-AUDIT1} & \COMP &
+The deterministic finite audit found 26 escapes in 36 samples and checked the
+wrapper decision against exhaustive semantics.\\
+\texttt{REPRESENTATION-INVARIANT-EXTRACTION1} & \OPEN &
+No theorem forces every uniform deterministic SAT decider to yield the same
+charged semantic interface on every input.\\
+\texttt{UCORE-TIME1} & \OPEN &
+No superpolynomial lower bound for arbitrary SAT computation is proved.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Encoding, clean core, and semantic compatibility}
+
+The input is a canonical indexed 3-CNF.  Its bit length $N$ charges clause
+delimiters, literal signs, and $\lceil\log_2(n+1)\rceil$-bit variable indices.
+Let $\Htwo$ be the duplicate-free family in which every clause contains three
+distinct literals of one sign and every variable occurs exactly twice
+positively and twice negatively.  Thus $m=4n/3$ and
+$N=\Theta(n\log n)$.
+
+For a declared split $V(F)=L\mathbin{\dot\cup}R$, define the complete semantic
+compatibility relation
+\[
+ H_{F,L}(a,b)=1 \quad\Longleftrightarrow\quad (a,b)\models F,
+ \qquad a\in\{0,1\}^{L},\ b\in\{0,1\}^{R}.                 \tag{1}
+\]
+A decision algorithm need output only
+$\bigvee_{a,b}H_{F,L}(a,b)$, one bit.  It is not required by the problem
+specification to materialize (1), a satisfying assignment, a cut table, an
+autarky, a backdoor, or any intermediate certificate.  A transfer theorem
+must therefore derive its requested object from the charged execution of
+every decider; semantic state count alone is not runtime.
+
+The desired lower-bound target is still
+\[
+ \forall A\ \forall d\ \forall N_0\ \exists F\in\Htwo:
+ |\operatorname{enc}(F)|\ge N_0\ \land\
+ T_A(F)>|\operatorname{enc}(F)|^d,                          \tag{2}
+\]
+where $A$ ranges over total correct uniform deterministic deciders.  Statement
+(2) is \OPEN and is not used as a premise.
+
+\section{Candidate and exact wrapper theorem}
+
+\begin{definition}[Polynomial partial controller]
+A deterministic uniform procedure $P$ maps an encoded formula to
+$\{0,1,\bot\}$ in time $N^{d_P+o(1)}$.  It is sound if every Boolean answer
+equals $\SAT(F)$.  Its success domain is
+$D_P=\{F:P(F)\ne\bot\}$.  A successful transcript contains the declared
+portfolio rule, all acquired data, and the returned bit; a $\bot$ trace is not
+a successful extraction.
+\end{definition}
+
+The explicit portfolio audited below lets $P$ succeed when it detects at
+least one of: unit/pure simplification, disconnected incidence components,
+Horn, dual-Horn, 2-CNF, an autarky supported on at most two variables, a
+strong backdoor of size at most two to the union of Horn/dual-Horn/2-CNF, or
+identical signed incidence signatures.  Each declared test is polynomial;
+the constant support bound is part of the rule.  Affine XOR systems are kept
+as a hostile control because Gaussian elimination is a different
+representation and must not be smuggled into an ordinary-CNF recognizer.
+
+\begin{theorem}[\texttt{PARTIAL-CONTROLLER-WRAPPER1}]
+Let $P$ be any sound polynomial partial controller, and let $B$ be any total
+correct uniform deterministic SAT decider.  Define
+\[
+ A_{P,B}(F)=
+ \begin{cases}
+ P(F),&P(F)\in\{0,1\},\\
+ B(F),&P(F)=\bot.
+ \end{cases}                                                \tag{3}
+\]
+Then $A_{P,B}$ is total, correct, and uniform.  If
+$T_B(N)=N^{c_B+o(1)}$, then
+\[
+ T_{A_{P,B}}(N)=N^{\max\{d_P,c_B\}+o(1)}.                  \tag{4}
+\]
+For every $F\notin D_P$, the source-level $P$ phase of this realization has no
+successful portfolio transcript.  Hence $\SAT\in\mathsf P$ does not by itself
+imply that $P$ covers all inputs or succeeds on every member of $\Htwo$.
+\end{theorem}
+
+\begin{proof}
+Run $P$ and inspect its three-valued output.  Soundness proves correctness on
+$D_P$, and correctness of $B$ proves it on the complement.  Uniformity is
+closed under this fixed composition.  The costs add, yielding (4).  When
+$P(F)=\bot$, the declared success predicate is false by definition; the mere
+existence or correctness of $B$ cannot change that trace.  No premise about
+$\mathsf P\ne\mathsf{NP}$ is used.
+\end{proof}
+
+The theorem does \emph{not} show that $B$ internally avoids all analogous
+information.  A stronger, representation-invariant extractor might inspect
+$B$'s execution and derive another object.  That is precisely the missing
+universal implication; it cannot be replaced by coverage of a chosen front
+end.  The wrapper observation is consistent with and specializes the
+source-code/wrapper warning in MODELBRIDGE-0008.
+
+\section{Bounded reproducible falsification test}
+
+The script
+\path{experiments/review/predecision_portfolio_escape_audit.py} used seed
+202610111100.  For each $n\in\{6,9,12\}$ it generated 12 exact members of
+$\Htwo$, exhaustively evaluated all $2^n$ assignments, ran the eight-rule
+portfolio, and compared a wrapper's answer to direct semantics.  All 36
+wrapper comparisons passed in 0.311 seconds.
+
+\begin{center}
+\begin{tabular}{rrrrr}
+\toprule
+$n$ & samples & portfolio escapes & satisfiable & solution-count range\\
+\midrule
+6  & 12 & 2  & 12 & 18--26\\
+9  & 12 & 12 & 12 & 74--90\\
+12 & 12 & 12 & 12 & 232--366\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Across all sizes, the strong-backdoor rule hit 10 instances, the small
+autarky rule hit one, and signed twins hit one (hits can overlap); 26 formulas
+escaped every declared rule.  The raw JSON records every formula, hit list,
+truth value, and exact solution count.  Horn, 2-CNF, disconnected-product,
+unit, and small-autarky controls triggered expected portfolio branches.  An
+affine XOR control records Gaussian elimination as an external semantic
+shortcut.
+
+These are deliberately hostile controls against overclaiming.  Every sampled
+clean core happened to be satisfiable, and the experiment says nothing about
+the asymptotic density of escapes.  An escape is not hard: it merely refutes
+coverage by this fixed portfolio.  Conversely, a portfolio hit does not
+measure the runtime of an arbitrary decider.  The exact result is the wrapper
+theorem, not an extrapolation from 36 instances.
+
+\section{Transfer and barrier audit}
+
+\begin{description}[leftmargin=3.4cm,style=nextline]
+\item[THEOREM TRANSFER.]
+Schaefer's dichotomy legitimizes Horn, dual-Horn, bijunctive, and affine
+tractable controls for fixed Boolean constraint languages.  It does not say
+that every 3-CNF execution must expose which tractable relation it used.
+The wrapper theorem transfers exactly to any sound polynomial partial
+controller.
+
+\item[FAILED TRANSFER.]
+Noncoverage by a preprocessing portfolio, large $H_{F,L}$, large treewidth,
+or a difficult decomposition is not a lower bound for arbitrary computation.
+The one-bit decision interface permits semantic shortcuts, alternate
+encodings, and algorithms whose states do not name the proposed object.
+
+\item[RELATIVIZATION.]
+Equation (3) relativizes: for every oracle $O$, a sound $P^O$ composes with a
+total $B^O$.  Thus this lemma cannot overcome the Baker--Gill--Solovay barrier
+and supplies no oracle-independent separation.
+
+\item[ALGEBRIZATION.]
+The proof is only closure under program composition and makes no arithmetized
+lower-bound claim.  It does not evade the Aaronson--Wigderson barrier.
+
+\item[NATURAL PROOFS.]
+No large constructive property of Boolean functions and no general-circuit
+lower bound is claimed, so the Razborov--Rudich framework is not directly
+invoked.  Any later transfer to unrestricted circuit lower bounds must be
+audited separately.
+
+\item[NONUNIFORMITY AND EXPONENTS.]
+Both $P$ and $B$ are uniform; no advice is introduced.  The exponent $c_B$ is
+algorithm-dependent and is never bounded by a project-wide constant.  All
+portfolio recognition, parsing, and fallback work is charged in (4).
+\end{description}
+
+Padding and equivalent wrappers sharpen the warning.  They can alter traces,
+timing, and syntactic exposure without changing the decided language.
+Therefore a universal result must be invariant under such transformations or
+fix one SAME\_REALIZATION and prove its simulation cost.  Circuit, branching-
+program, communication, pebbling, and time--space lower bounds remain
+model-specific until that compiler is supplied.
+
+\section{Precise surviving arrow}
+
+The next admissible bridge must prove, not assume, an implication of the form
+\begin{align}
+ &\forall B\,[B\text{ is a total correct uniform polytime SAT decider}]
+ \notag\\[-2pt]
+ &\quad\Longrightarrow\quad
+ \forall F\in\Htwo\ \exists W:\quad
+ \begin{cases}
+ W=E(B,F),\\
+ \operatorname{cost}(E)+\operatorname{cost}(W)\le N^{O(1)},\\
+ W\text{ satisfies a model-matched obstruction}.
+ \end{cases}                                                \tag{5}
+\end{align}
+where $E$ is representation-invariant or tied to a fully specified charged
+simulation, includes acquisition and reconstruction, tolerates the unknown
+exponent of $B$, and yields an unconditional contradiction in the same model.
+No such $E$ or obstruction is known here.  Requiring a fixed portfolio rule
+to succeed is not (5).  This is the exact missing universal implication.
+
+\section{Primary literature and proof status}
+
+Schaefer supplies the relevant tractable Boolean-relation classification;
+D"ocker supplies NP-completeness of the balanced monotone clean core.  FLMV
+gives a genuine SAT time--space lower bound only for its specified machine
+model and does not automatically constrain arbitrary polynomial deciders.
+Baker--Gill--Solovay, Razborov--Rudich, and Aaronson--Wigderson remain the
+appropriate barrier checks.  None of these sources supplies (5).
+
+\begin{thebibliography}{9}
+\bibitem{schaefer}
+T.~J. Schaefer, \emph{The Complexity of Satisfiability Problems},
+STOC 1978, 216--226. \url{https://doi.org/10.1145/800133.804350}.
+
+\bibitem{doecker}
+J.~D"ocker, \emph{Monotone 3-Sat-$(2,2)$ is NP-complete},
+Discrete Applied Mathematics 295 (2021), 1--9.
+\url{https://arxiv.org/abs/1912.08032}.
+
+\bibitem{flmv}
+L.~Fortnow, R.~Lipton, D.~van Melkebeek, and A.~Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability},
+Journal of the ACM 52(6) (2005), 835--865.
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.
+
+\bibitem{bgs}
+T.~Baker, J.~Gill, and R.~Solovay,
+\emph{Relativizations of the $P=?NP$ Question},
+SIAM Journal on Computing 4(4) (1975), 431--442.
+
+\bibitem{rr}
+A.~Razborov and S.~Rudich, \emph{Natural Proofs},
+Journal of Computer and System Sciences 55(1) (1997), 24--35.
+\url{https://doi.org/10.1006/jcss.1997.1494}.
+
+\bibitem{aw}
+S.~Aaronson and A.~Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory},
+ACM Transactions on Computation Theory 1(1) (2009), Article 2.
+\url{https://www.scottaaronson.com/papers/alg.pdf}.
+\end{thebibliography}
+
+\section*{Verdict}
+
+\texttt{PARTIAL-CONTROLLER-WRAPPER1}: \EXACT.
+\texttt{FIXED-PORTFOLIO-COVER1}: \RETIRED for the declared portfolio.
+\texttt{PORTFOLIO-ESCAPE-AUDIT1}: \COMP.
+\texttt{REPRESENTATION-INVARIANT-EXTRACTION1}: \OPEN.
+No arbitrary-algorithm lower bound follows.  P versus NP remains \OPEN.
+
+% END_OF_VERIFIED_REPORT::MODEL_BRIDGE::MODELBRIDGE-0009
+\end{document}
