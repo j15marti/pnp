@@ -154,3 +154,12 @@ Read repository CODEX.md, AGENTS.md, the pnp-research skill, red-team mode and r
 
 Single next target: audit a proposed source-checkable negative-case rule on the ARC15 UNKNOWN family, recursive descendants, and the current shielded SAT-hard fallback, with one joint operation/space ledger.
 
+## RT-0009 — fixed trace checkpoints are delay-sensitive (2026-10-11)
+
+Status: **PROVED/EXACT** for `FIXED-PREFIX-DELAY1`; **FALSIFIED/RETIRED** for `PREFIX-CHECKPOINT-UNIVERSAL1`; **COMPUTATIONAL** for the bounded audit. P versus NP remains **OPEN**.
+
+For every fixed `N^r` dynamic checkpoint and exact polynomial decider `A`, the wrapper `D_r[A]` performs `N^(r+1)` input-independent steps before running `A`. Its prefix through the checkpoint is the same common shell for every source and embedded implementation, while full runtime is `N^(max{r+1,K}+o(1))`. A checkpoint compiler must therefore use charged static source/code analysis or wait and inherit the delay/solver exponent. The result is restricted to trace-prefix extraction and does not prove that arbitrary white-box normalization is impossible.
+
+The audit passed 16,736 checks across all 255 nonempty three-variable clause subsets, DIRECT/MATERIALIZE/INTERP/RECOMP, DEAD/COPY/DELAY, encodings, padding, Horn, 2SAT, bounded treewidth, independent products, exact-(2,2) controls, and affine/Tseitin Gaussian elimination.
+
+**Handoff:** formalize a static wrapper normalizer and attack totality, arbitrary exponents, unreachable code, padding, and replacement by a fixed solver. Report: `research/review/reports/redteam/2026-10-11_1136_RT-0009.tex`. Script: `experiments/review/fixed_checkpoint_delay_audit.py`. Raw result: `results/raw/review/2026-10-11_fixed_checkpoint_delay_audit.json`.
