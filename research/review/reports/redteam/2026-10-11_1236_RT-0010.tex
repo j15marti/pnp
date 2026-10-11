@@ -1,0 +1,412 @@
+% PNP REVIEW REPORT::REDTEAM::RT-0010::2026-10-11T12:36:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{3SAT}}
+\newcommand{\Htwo}{\mathcal H_{2,2}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{UNIVERSAL\_CORE\_REDTEAM RT-0010:\\
+Truth-Independent Successors Have No Middle Definition}
+\author{P versus NP project review}
+\date{11 October 2026}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+TESTS-0006 leaves a ``truth-independent, non-Shannon structural successor''
+as the proposed repair of decide-then-emit.  This report separates three
+meanings of truth independence.  Fixed program text is automatic for every
+uniform algorithm.  A fixed operation or address schedule is also too weak:
+Pippenger--Fischer oblivious simulation followed by a branch-free multiplexer
+first decides the source and then emits one of two constant proper 3-CNFs in
+$O(T\log T)$ time.  It retains the unknown solver exponent $K$.  At the other
+extreme, semantic noninterference of the complete terminal view is too strong:
+if a yes source and a no source have the same closed view, deterministic
+reconstruction gives the same answer.  Therefore the phrase
+``truth-independent'' supplies no intermediate resource theorem.  A viable
+repair must positively specify one source transform and prove its fixed
+$K$-independent full ledger; it cannot rely on syntactic absence of a decision
+branch.  A bounded hostile audit passed $11{,}445$ checks.  P versus NP
+remains open.
+\end{abstract}
+
+\section{Executive status}
+
+\begin{center}
+\small
+\begin{tabular}{p{0.34\linewidth}p{0.23\linewidth}p{0.35\linewidth}}
+\toprule
+Claim & Status & Verdict\\
+\midrule
+\texttt{OBLIVIOUS-DECIDE-}\allowbreak\texttt{EMIT1} & \EXACT, using a \KNOWN &
+Input-independent schedules and branch-free emission still permit
+decide-then-emit with time $O(T\log T)$.\\
+\texttt{TERMINAL-}\allowbreak\texttt{NONINTERFERENCE1} & \EXACT &
+A closed terminal view common to opposite-answer sources cannot reconstruct
+both answers.\\
+\texttt{TRUTH-}\newline\texttt{INDEPENDENCE-}\newline\texttt{REPAIR1} & \RETIRED &
+As an unqualified guard it is either too weak or incompatible with exactness.\\
+\texttt{FIXED-LEDGER-}\allowbreak\texttt{STRUCTURAL-SUCCESSOR1} & \OPEN &
+No explicit hereditary source identity with a fixed $K$-independent complete
+ledger is supplied.\\
+\texttt{UCORE-TIME1} and P versus NP & \OPEN &
+No arbitrary deterministic SAT lower bound follows.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Claim card, clean core, and quantifiers}
+
+The clean core remains duplicate-free Monotone $3$SAT-$(2,2)$, denoted
+$\Htwo$, under the canonical indexed encoding.  Every variable occurs twice
+positively and twice negatively, $m=4n/3$, and encoded bit length is
+$N=\Theta(n\log n)$.  Its NP-completeness is a source fact, not a time lower
+bound \cite{doecker}.
+
+The all-algorithm target is still
+\[
+ \forall A\ \forall d\ \forall N_0\ \exists F\in\Htwo:\quad
+ |\operatorname{enc}(F)|\ge N_0
+ \ \land\ T_A(F)>|\operatorname{enc}(F)|^d,             \tag{1}
+\]
+where $A$ is a total correct uniform deterministic random-access SAT decider
+and all source access, construction, output, reconstruction, and workspace are
+charged.  Statement (1) is \OPEN.
+
+The claim attacked in this run has prefix
+\begin{equation}
+\begin{aligned}
+ \forall D\,[D\text{ decides }L\text{ in time }T(N)]\quad
+ \exists C_D\,[&C_D\text{ has a truth-independent schedule}\notag\\
+                &\text{and emits a constant exact successor}].
+\end{aligned}                                             \tag{2}
+\end{equation}
+The SAME\_REALIZATION contains $D$ or its simulation, the decision bit,
+terminal-child construction, emitted bytes, reconstruction, final output,
+and peak storage.  The weakest material advance is to show that (2) retains
+$T$, so schedule language does not produce a $K$-independent constructor.
+
+\section{Three definitions of truth independence}
+
+\begin{definition}[Code independence]
+One fixed finite program is used on every input of a given length.  This is
+already part of uniform deterministic computation and excludes nothing.
+\end{definition}
+
+\begin{definition}[Schedule obliviousness]
+In the sequential-tape model of Pippenger--Fischer, head positions at each
+time are functions of time and input length, not of the input contents.  Tape
+symbols and the final output may still depend on the input \cite{pf}.
+\end{definition}
+
+\begin{definition}[Closed-view noninterference]
+A terminal compiler has complete view $V_C(x)$ consisting of every emitted
+child bit, accessor, combiner, and reconstruction datum available after
+acquisition.  It is semantically noninterfering across a pair $x,x'$ when
+$V_C(x)=V_C(x')$.  No later source read or SAT channel is permitted in this
+terminal definition.
+\end{definition}
+
+The first definition is vacuous.  The next two yield the promised dichotomy.
+
+\section{Exact branch-free countermodel}
+
+Fix equal-length proper width-three CNFs $Y$ and $U$.  Formula $Y$ repeats the
+clause $(z_1\vee z_2\vee z_3)$ eight times.  Formula $U$ contains all eight
+sign patterns on $z_1,z_2,z_3$.  Hence $Y$ is satisfiable and $U$ is
+unsatisfiable.  Clause repetition is irrelevant to semantics and both fixed
+encodings can be padded to one constant length.
+
+\begin{theorem}[\texttt{OBLIVIOUS-DECIDE-EMIT1}]
+Let $D$ decide a language $L$ on the one-dimensional-tape model in time
+$T(N)\ge N$.  There is a uniform schedule-oblivious terminal compiler $C_D$
+that emits $Y$ exactly on $x\in L$ and emits $U$ otherwise in
+\[
+ O(T(N)\log T(N))+O(1)                                  \tag{3}
+\]
+time.  The emission scan is branch-free.  Consequently, if
+$T(N)=N^{K+o(1)}$, then (3) is $N^{K+o(1)}$ and retains $K$.
+\end{theorem}
+
+\begin{proof}
+Pippenger and Fischer prove that a machine with one-dimensional tapes can be
+simulated online by an oblivious machine with two one-dimensional tapes in
+$O(T\log T)$ time, where head positions are input-independent \cite{pf}.
+Run that simulation and let $b\in\{0,1\}$ be its answer.  Write the fixed
+equal-length encodings $y,u$ coordinatewise using
+\[
+ c_i=u_i\oplus\bigl(b\wedge(u_i\oplus y_i)\bigr).        \tag{4}
+\]
+The same Boolean operations and output positions are visited for both values
+of $b$.  Equation (4) writes $Y$ when $b=1$ and $U$ when $b=0$.  The fixed
+scan adds constant work because $Y,U$ have constant length.  Multiplication
+by a logarithm changes only the $o(1)$ term of a polynomial exponent.
+\end{proof}
+
+The theorem is deliberately model-scoped.  It does not assert a
+space-preserving FLMV random-access simulation.  It suffices to refute an
+unqualified claim that input-independent schedules exclude deciding first.
+In an instruction-oblivious RAM reading, ordinary predication already gives
+the same conclusion; address-obliviousness requires the declared simulation
+theorem and its overhead.
+
+\begin{theorem}[\texttt{TERMINAL-NONINTERFERENCE1}]
+Let $C$ be a closed terminal compiler for a nonconstant language $L$, and let
+$R$ be a deterministic reconstruction function of the complete view.  If
+there are $x\in L$ and $x'\notin L$ with $V_C(x)=V_C(x')$, then $R$ is
+incorrect on at least one of $x,x'$.
+\end{theorem}
+
+\begin{proof}
+Determinism gives
+$R(V_C(x))=R(V_C(x'))$, whereas exactness requires the two values to be one
+and zero.  This is impossible.
+\end{proof}
+
+\begin{corollary}[Truth-independence dichotomy]
+If truth independence constrains program text or schedule but permits
+data-dependent values, \texttt{OBLIVIOUS-DECIDE-EMIT1} passes it and inherits
+$K$.  If it requires noninterference of the complete closed view,
+\texttt{TERMINAL-NONINTERFERENCE1} makes exact terminal reconstruction
+impossible.  Therefore truth independence alone supplies no intermediate
+lower-bound bridge.
+\end{corollary}
+
+For nonterminal identities, a later child-SAT channel may carry the missing
+bit.  Its construction, query length, count, evaluation, and recursion then
+belong in the same ledger.  Calling the earlier phase noninterfering does not
+charge that later channel or remove $K$.
+
+\section{P equals NP and arbitrary-exponent audit}
+
+Assume $\SAT\in\mathsf P$ and choose a fixed decider $D$ with arbitrary
+polynomial exponent $K$.  The theorem produces a uniform oblivious,
+branch-free, non-Shannon, source-only, one-child successor of scale
+$\lambda=0$ on every source, including $\Htwo$.  Its construction time is
+$N^{K+o(1)}$.  This is fully compatible with $\mathsf P=\mathsf{NP}$ and
+does not enter a fixed unconditional forbidden region.  No premise assumes
+$\mathsf P\ne\mathsf{NP}$.
+
+Inlining, predication, arithmetic selection, lookup tables, and circuit
+unrolling also show why a syntactic ban on a named SAT call or an explicit
+\texttt{if} instruction is not representation-covariant.  A total analyzer
+that instead recognizes a nontrivial semantic program property encounters
+the same undecidability boundary already isolated by MODELBRIDGE-0010 and
+Rice's theorem \cite{rice}.  This run does not relabel that prior theorem as
+new.
+
+\section{Bounded reproducible audit}
+
+The dependency-free command
+\begin{verbatim}
+timeout 30s python experiments/review/truth_independence_dichotomy_audit.py \
+  --seed 202610111236 \
+  --output results/raw/review/2026-10-11_truth_independence_dichotomy.json
+\end{verbatim}
+completed in $0.193191$ seconds; bytecode compilation passed.
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+Check & Count\\
+\midrule
+Wrapper semantic agreements & 1,048\\
+Branch/arithmetic/XOR/polynomial terminal round trips & 4,192\\
+Branch-free schedule collisions across opposite bits & 3,144\\
+RECOMP terminal round trips & 1,048\\
+Clause order, COPY, rename, complement, padding controls & 1,310\\
+Fixed exhaustive schedules & 262\\
+Affine/Tseitin Gaussian-elimination controls & 168\\
+Arbitrary-exponent ledger cells & 272\\
+Terminal-view separation check & 1\\
+\midrule
+Total & 11,445\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The 262 source cases comprise all 256 subsets of the eight proper clauses on
+three variables plus Horn, 2SAT, bounded-treewidth, independent-product,
+exact-$(2,2)$, and exact-$(2,2)$ product controls.  DIRECT, MATERIALIZE,
+INTERP, RECOMP, padding, duplicate clauses, renaming, complementation, and
+fixed-schedule exhaustive evaluation were tested.  Random affine systems for
+$2\le n\le8$ were checked by both brute force and Gaussian elimination.
+The script SHA-256 is
+\nolinkurl{aecd837959010f9ca595c825adacbdf6b4dcad4c2eaa08c9e7cde530fa04f07e};
+the raw JSON SHA-256 is
+\nolinkurl{bf6e93b4639c99d5cc591d35a17d0dbcced0462d9f8f71a0f644325ac46abc93}.
+The audit is \COMP; the symbolic results do not depend on finite extrapolation.
+
+\section{Literature, barriers, and cross-domain transfer}
+
+Pippenger--Fischer is a direct warning that oblivious schedule is not
+semantic ignorance: arbitrary sequential-tape computation has an oblivious
+online simulation with logarithmic time overhead \cite{pf}.  Goguen--Meseguer
+noninterference formalizes an output-invariance condition, not a runtime lower
+bound \cite{gm}.  The terminal theorem above uses only its elementary
+functional core.  FLMV applies only after one total evaluator inhabits its
+specified random-access model with simultaneous charged resources
+\cite{flmv}; equation (3) supplies no such favorable landing.
+
+The countermodel relativizes: simulate $D^O$ obliviously relative to the same
+fixed oracle interface and multiplex the answer.  Its algebraic-oracle
+version similarly forwards the oracle-produced bit.  Thus it identifies, not
+crosses, the Baker--Gill--Solovay and Aaronson--Wigderson barriers
+\cite{bgs,aw}.  No broad constructive property of general circuits is used;
+Natural Proofs remains a future trigger rather than a theorem establishing or
+refuting this composition \cite{rr}.
+
+\begin{description}[leftmargin=0cm,labelwidth=0cm]
+\item[] \textbf{THEOREM TRANSFER.}
+Pippenger--Fischer transfers exactly in its sequential-tape model and proves
+schedule obliviousness with $O(T\log T)$ time.  FLMV transfers only after a
+separate exact model conversion with all space and access costs.
+\item[] \textbf{ANALOGY / CANDIDATE.}
+Security noninterference, constant-time programming, ORAM, circuit
+predication, and control-theoretic unobservability clarify possible
+definitions.  None supplies a universal SAT lower bound without a
+model-preserving compiler.
+\item[] \textbf{FAILED TRANSFER.}
+VLSI locality, branching-program/OBDD size, pebbling, fixed memory access,
+and absence of explicit control branches do not lower-bound arbitrary
+uniform SAT computation.
+\end{description}
+
+For the post-quantum ledger, the map from bounded sources to terminal views
+has image exactly $\{Y,U\}$.  Its collision count is
+\[
+ \operatorname{Coll}(C)=|L\cap A|^2+|A\setminus L|^2,
+ \qquad |\operatorname{im}C|\ge |A|^2/\operatorname{Coll}(C). \tag{5}
+\]
+Equation (5) is an \textbf{EXACT OBJECT/THEOREM TRANSFER} of the elementary
+collision-entropy identity, but it yields no acquisition lower bound; the
+algorithm deliberately exploits the two-class quotient.  Schur squares,
+quadratic relations, Hilbert functions, syzygies, and special-soundness
+binding are \textbf{FAILED TRANSFER} for this terminal target absent a new
+source-structural theorem.  LWE-style black-box extraction remains
+\textbf{ANALOGY / CANDIDATE}; cryptographic hardness and random-oracle
+assumptions are inadmissible.
+
+\section{Corpus-wide reconciliation}
+
+\subsection*{CORPUS REVIEWED}
+The run surveyed the current GitHub tree and repository search/history;
+root \texttt{main.tex}; current \texttt{main4.tex} and \texttt{main5.tex};
+\texttt{AGENTS.md}, \texttt{CODEX.md}, the PNP skill, red-team mode and
+protocol; all seven published tasks; the latest accessible historical MAIN
+and root-embedded later reconciliations; HEC, VSC-HEC, G-PPC-HEC, CRS-PPC,
+CCSPC, RCCN and Search-G components; governance/status/coordination;
+SYNTHESIS-0002/0004, LB-0011, TESTS-0005/0006, RT-0008/0009,
+MODELBRIDGE-0010, and cited scripts/results.  TESTS-0006 exists at its
+canonical path, is substantive, has the expected header and final sentinel,
+and was read back; no predecessor recovery is needed.  Primary literature on
+oblivious simulation, noninterference, semantic program properties, SAT
+time--space bounds, relativization, algebrization, and Natural Proofs was
+checked before promotion.
+
+\subsection*{DUPLICATION / CONTRADICTION AUDIT}
+SYNTHESIS-0002 and TESTS-0006 already show that ordinary decide-then-emit
+retains $K$.  MODELBRIDGE-0010 already proves the program-analysis and
+endpoint-equivalence trilemma.  RT-0009 already defeats fixed dynamic
+prefixes.  The incremental contribution here is narrower: even an
+input-independent operation/head schedule and branch-free child emission do
+not express the desired exclusion, while complete semantic noninterference
+is incompatible with exact terminal reconstruction.  No earlier theorem is
+renamed.
+
+\subsection*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root MAIN already calls for a source-specific decision-oblivious return and
+keeps every arbitrary-algorithm bridge \OPEN.  The new correction is that
+``decision-oblivious'' cannot mean only fixed schedule or absence of an
+explicit decision branch.  It must be replaced by a positive source transform
+and a fixed fully charged ledger.  This review role has no root ownership
+region, so root \texttt{main.tex} is not edited; the result is handed to the
+synthesis arbiter.  Main4/main5 receive nonpromotional includes.
+
+\subsection*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted are SAME\_REALIZATION, TESTS-0006 endpoint equivalence,
+SYNTHESIS-0002 construction dominance, RT-0009 delay sensitivity, and
+MODELBRIDGE-0010's semantic-analysis guard.  Rejected are fixed program text,
+fixed schedule, branch-free emission, or the word ``non-Shannon'' as evidence
+of decision-independent acquisition.  Retired is
+\texttt{TRUTH-INDEPENDENCE-REPAIR1} as an unqualified bridge.  Explicit
+source identities with proved positive resource bounds are not retired.
+
+\subsection*{STALE OR OVERSTATED CLAIMS FOUND}
+Root MAIN cites several later historical MAIN paths that are absent from the
+current tree; the root-embedded reconciliation text remains readable, but the
+missing snapshots are not independently verified.  TESTS-0006 already notes
+that MODELBRIDGE-0010 cites a missing SYNTHESIS-0005 body.  Any status or
+handoff treating truth independence, operation-obliviousness, or absence of a
+visible branch as the missing construction theorem is now overstated.
+
+\section{Smallest repair and handoff}
+
+Replace the negative slogan by
+\texttt{FIXED-LEDGER-STRUCTURAL-SUCCESSOR1}: exhibit one concrete uniform
+source transform $S$ and prove, without inspecting arbitrary solver code,
+\[
+ \SAT(F)=\mathcal B_F(\SAT(G_1),\ldots,\SAT(G_q)),        \tag{6}
+\]
+where $S$ constructs the combiner and locally addressable ordinary-CNF
+children in fixed $N^{r+o(1)}$ time and $N^{\sigma+o(1)}$ space independent
+of the unknown solver exponent $K$; every child has length
+$N^{\lambda+o(1)}$ for one $\lambda<1$; $q\le N^{\eta+o(1)}$; the contract is
+hereditary; and acquisition, failed routes, access, serialization, replay,
+reconstruction, ancestor state, final output, and peak workspace close in one
+model-matched forbidden region.  The proof must establish the positive bound,
+not ask an undecidable syntactic or semantic checker to certify that $S$
+``did not decide SAT.''
+
+Then attack the actual transform with Horn, 2SAT, affine/Tseitin,
+bounded-treewidth, independent products, padding, alternate encodings,
+DIRECT, INTERP, RECOMP, semantic oracles, and algebraic oracles.  Equation
+(6), its hereditary fixed ledger, the FLMV model conversion, a
+nonrelativizing and nonalgebrizing hinge, UCORE-TIME1, and P versus NP remain
+\OPEN.
+
+\begin{thebibliography}{10}
+\bibitem{pf} N.~Pippenger and M.~J. Fischer,
+\emph{Relations among complexity measures}, JACM 26(2) (1979), 361--381.
+\url{https://doi.org/10.1145/322123.322138}.
+\bibitem{gm} J.~A. Goguen and J.~Meseguer,
+\emph{Security Policies and Security Models}, IEEE Symposium on Security and
+Privacy (1982), 11--20. \url{https://doi.org/10.1109/SP.1982.10014}.
+\bibitem{rice} H.~G. Rice,
+\emph{Classes of Recursively Enumerable Sets and Their Decision Problems},
+Trans. AMS 74 (1953), 358--366. \url{https://doi.org/10.2307/1990888}.
+\bibitem{doecker} J.~D\"ocker,
+\emph{Monotone 3-Sat-$(2,2)$ is NP-complete}, Discrete Applied Mathematics
+295 (2021), 1--9. \url{https://arxiv.org/abs/1912.08032}.
+\bibitem{flmv} L.~Fortnow, R.~Lipton, D.~van Melkebeek, and A.~Viglas,
+\emph{Time--Space Lower Bounds for Satisfiability}, JACM 52(6) (2005),
+835--865. \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{bgs} T.~Baker, J.~Gill, and R.~Solovay,
+\emph{Relativizations of the $P=?NP$ Question}, SIAM J. Comput. 4(4) (1975).
+\bibitem{aw} S.~Aaronson and A.~Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory}, ACM TOCT 1 (2009).
+\url{https://eccc.weizmann.ac.il/report/2008/005/}.
+\bibitem{rr} A.~Razborov and S.~Rudich,
+\emph{Natural Proofs}, JCSS 55(1) (1997), 24--35.
+\url{https://eccc.weizmann.ac.il/report/1994/010/}.
+\end{thebibliography}
+
+\paragraph{Final status.}
+\texttt{OBLIVIOUS-DECIDE-EMIT1} and
+\texttt{TERMINAL-NONINTERFERENCE1}: \EXACT, pending independent review.
+Finite audit: \COMP.\\
+\texttt{TRUTH-INDEPENDENCE-REPAIR1}: \RETIRED.\\
+\texttt{FIXED-LEDGER-STRUCTURAL-SUCCESSOR1}, UCORE-TIME1,
+nonrelativization, nonalgebrization, and P versus NP: \OPEN.
+P versus NP remains open.
+
+% END_OF_VERIFIED_REPORT::REDTEAM::RT-0010
+\end{document}
