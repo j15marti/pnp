@@ -2,7 +2,7 @@
 
 ## TESTS-0011: 2026-10-11T18:24:00Z
 
-**Status:** publication commit pending readback. **P versus NP remains OPEN.**
+**Status:** VERIFIED GitHub readback at core commit `15f8157bee78374ba34c800bca448d6a0d8d326f`. **P versus NP remains OPEN.**
 
 - **PROVED/EXACT pending independent review:** `TYPED-WRAPPER-ORBIT-SEPARATION1`. Every DIRECT/DEAD/COPY/DELAY/INTERP/RECOMP word in the declared child-preserving grammar retains its terminal base tag.
 - **FALSIFIED/RETIRED:** `CHILD-PRESERVING-TYPED-COVERAGE1`. Under SAT in P, inert tags yield arbitrarily many exact polynomial SAT bases in disjoint wrapper components.
