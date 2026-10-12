@@ -1,0 +1,220 @@
+% LSPV-2 REPORT::BBTEST1::2026-10-12T20:28:23Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,enumitem,hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newcommand{\Status}[1]{\textbf{Status: #1.}}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\Tr}{\mathsf{Tr}}
+\newcommand{\Obs}{\mathsf{Obs}}
+\title{LSPV-2 Universal-Core Test: Finite Black-Box Trace Sampling Cannot Certify a Universal Program Property}
+\author{LSPV-2 / UNIVERSAL\_CORE\_TESTS}
+\date{2026-10-13 05:28 KST}
+
+\begin{document}
+\maketitle
+
+\paragraph{Executive status.}
+\Status{PROVED/EXACT negative theorem; COMPUTATIONAL finite checks.}
+This run proves a quantitative obstruction to a proposed repair of the arbitrary-algorithm bridge.  If an auditor sees at most $q$ black-box input/trace observations on a finite layer of $M$ inputs, then a semantics-preserving one-input trace mutation exists whose detection probability is at most $q/M$.  Random sampling, canonical hashes of sampled traces, and a finite hostile-wrapper battery therefore cannot establish a trace property for \emph{every} equivalent polynomial-time SAT program unless an independently justified complete fault domain is supplied.  This is not a SAT runtime lower bound.  P versus NP remains open.
+
+\section{Preflight and target}
+
+\subsection*{Predecessor write-recovery preflight}
+The immediate predecessor, LSPV-1, has a substantive canonical report
+\texttt{research/agents/lspv-1/2026-10-13\_0508\_LSPV-1\_QNORM1.tex}; its required header and final sentinel read back from GitHub, and root \texttt{main.tex} reflects QNORM1.  No recovery request or duplicate file was needed.
+
+\subsection*{Major obstacles and primary-literature search}
+The two obstacles were (i) finite behavioral evidence versus a universal program/input quantifier and (ii) whether randomized sampling can close that gap.  Primary sources were checked before substantive work.  Goodenough--Gerhart make test reliability conditional on the selection criterion and its assumptions \cite{goodenough1975}; Weyuker isolates the oracle problem for non-testable programs \cite{weyuker1982}; classical finite-state conformance testing obtains finite complete suites only relative to an implementation/fault-domain bound \cite{vasilevskii1973,chow1978}.  Rice's theorem concerns undecidable semantic program properties \cite{rice1953}; it is not used to prove the finite-query bound below.
+
+\paragraph{Transfer classification.}
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Directly transferable theorem:} the elementary decision-tree indistinguishability/averaging argument below applies exactly to a black-box auditor and its queried layer.
+\item \textbf{Useful analogy requiring a new transfer theorem:} complete conformance suites become relevant only after proving that arbitrary uniform SAT programs lie in a specified finite fault domain (for example, a state bound plus an observation model).
+\item \textbf{Misleading analogy / failed transfer:} neither the software-testing oracle problem nor Rice's theorem implies a time, memory, extraction, or communication lower bound for arbitrary SAT deciders.
+\end{enumerate}
+
+\section{Exact model and quantified claim}
+
+Fix an encoded input length $N$ and a finite layer $X_N$ of size $M_N$.  A total deterministic program $P$ returns one bit $P(x)$ and an auditor may request a declared observation $\Obs(P,x)$, which can contain a trace projection, extracted object, state summary, or hash.  A tester $T$ adaptively queries at most $q_N$ points.  Let $R(P,x)$ be a nontrivial property of this observation.
+
+The needed \emph{surgical-wrapper hypothesis} is explicit: for every $y\in X_N$ there is a total polynomial-time $P_y$ such that
+\begin{align}
+P_y(x)&=P(x) &&\text{for every }x,\label{eq:semantic}\\
+\Obs(P_y,x)&=\Obs(P,x) &&\text{for }x\ne y,\label{eq:outside}\\
+R(P_y,y)&\ne R(P,y). &&\label{eq:needle}
+\end{align}
+For finite $y$, $P_y$ can hard-code $y$, test equality in $O(N)$ time, and execute a local trace-only wrapper while preserving the decision bit.  The construction is uniform for each resulting program: its finite constant $y$ is part of the program text.  No claim is made that one fixed $P_y$ defeats all lengths.
+
+\paragraph{Theorem BBTEST1 (finite black-box non-certification).}
+\Status{PROVED/EXACT.}
+Assume \eqref{eq:semantic}--\eqref{eq:needle}.
+\begin{enumerate}[leftmargin=*]
+\item For every deterministic adaptive $q_N$-query tester $T$ and reference $P$, if $q_N<M_N$, there are $y$ and $P_y\equiv P$ whose complete tester transcripts are identical although $\forall x\,R(P,x)$ and $\forall x\,R(P_y,x)$ differ.
+\item For every randomized adaptive tester making at most $q_N$ queries, there exists $y$ such that
+\[
+  \Pr[T^P\text{ queries }y]\le \frac{q_N}{M_N},
+\]
+and the total-variation distance between the transcript distributions under $P$ and $P_y$ is at most $q_N/M_N$.  Thus a tester accepting $P$ with probability $a$ accepts this bad $P_y$ with probability at least $a-q_N/M_N$.
+\end{enumerate}
+
+\paragraph{Proof.}
+For a deterministic run on $P$, let $Q\subseteq X_N$ be the adaptively generated query set.  Since $|Q|\le q_N<M_N$, choose $y\notin Q$.  Equations \eqref{eq:outside} and adaptivity induction give the same answer to each query, hence the same next query and final transcript; equation \eqref{eq:needle} changes the universal property.
+
+For a randomized tester, expose its random coins and let $Q(\rho)$ be the queried set on $P$.  Averaging over a uniform $Y\in X_N$ gives
+\[
+ \frac1{M_N}\sum_{y\in X_N}\Pr_\rho[y\in Q(\rho)]
+ =\frac{\mathbb E_\rho |Q(\rho)|}{M_N}\le\frac{q_N}{M_N}.
+\]
+Some $y$ has inclusion probability at most $q_N/M_N$.  Couple both runs with the same coins.  Until $y$ is queried the transcripts, and therefore all adaptive choices, coincide.  The coupling inequality gives the stated total-variation bound. \hfill$\square$
+
+\paragraph{Exact consequence for exponential layers.}
+If $M_N\ge 2^{\alpha N}$ and $q_N\le N^c$ for fixed $\alpha>0,c$, detection of the selected needle is at most $N^c/2^{\alpha N}$.  This is an auditor query lower bound for certifying a universal trace property under the surgical-wrapper hypothesis.  It is \emph{not} a lower bound on deciding SAT, because the mutation preserves the one-bit language.
+
+\section{SAME\_REALIZATION and complete cost ledger}
+
+The same realization contains: the tester $T$, the reference $P$, the hard-coded-needle program $P_y$, the actual tester coins, the actual queried inputs, and the declared observations returned on those inputs.  The coupling never combines probabilities from one run with traces from another.  The charged costs are:
+\begin{itemize}[leftmargin=*]
+\item auditor preprocessing, adaptive query selection, all $q_N$ program invocations, trace extraction/hashing, and final certification;
+\item for $P_y$, input read plus an $O(N)$ equality test, the full cost of $P$, local wrapper work, reconstruction (zero in the tested construction), and one-bit output;
+\item no tester cost is charged to the SAT decider, and no semantic-state count is converted into decider runtime.
+\end{itemize}
+Alternate encodings only change the equality-test constant; padding can enlarge $N$ or $M_N$ and therefore cannot establish an encoding-invariant SAT lower bound without a normalization theorem.
+
+\section{Bounded reproducible experiment}
+
+The script
+\begin{center}
+\texttt{experiments/review/finite\_black\_box\_trace\_sampling\_audit.py}
+\end{center}
+uses seed 20261013 and writes
+\begin{center}
+\texttt{results/raw/review/2026-10-13\_finite\_black\_box\_trace\_sampling.json}.
+\end{center}
+Runtime was $0.3881$ seconds; no chunking was needed.  Script SHA-256 is
+\texttt{37affeb9386319c524a99abe43ee6999599e204f43d829dc4756a14ea9c63fff}; result SHA-256 is
+\texttt{c7348fa8653356e153b110d8ea9a8163be67e84eaead148c9d9ad38ff91443d1}.
+
+\begin{table}[ht]
+\centering
+\caption{Exact exhaustive query-set/needle pairs.}
+\begin{tabular}{rrrrrr}
+\toprule
+$n$ & $M$ & $q$ & detected & missed & detected fraction\\
+\midrule
+2&4&1&4&12&$1/4$\\
+3&8&2&56&168&$1/4$\\
+4&16&4&7280&21840&$1/4$\\
+5&32&4&143840&1006880&$1/8$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All 19 rows for $2\le n\le5$ and $0\le q\le4$ matched exactly $q/M$.  Seeded randomized controls covered $n\in\{8,10,12\}$ and $q\in\{1,2,4,8,16\}$ with 4000 trials per cell; in every cell the least-queried point had empirical frequency at most $q/M$, as the averaging proof requires.  These samples illustrate, but do not prove asymptotics.
+
+The hostile grid checked 23,808 executions over 2SAT, Horn, affine/parity, bounded-treewidth path, independent-product, padding, redundant-constraint, and alternate-encoding controls, crossed with DIRECT, COPY, DEAD, DELAY, INTERP, and RECOMP wrappers for $4\le n\le8$.  There were zero semantic failures, zero differences on queried non-needle observations, and zero failures to alter the hidden trace.  Maximum fully charged finite-grid cost was 67 primitive units; extraction and reconstruction were explicitly recorded as zero rather than omitted.
+
+\section{Hostile controls and scope}
+
+\begin{center}
+\begin{tabular}{p{0.24\linewidth}p{0.68\linewidth}}
+\toprule
+Control & Result\\
+\midrule
+2SAT/Horn/bounded treewidth & Easy semantic decision did not prevent a hidden trace-only mutation; therefore trace diversity is not decision hardness.\\
+Affine/Tseitin parity & Gaussian/elimination-style semantics remained compact; the local wrapper still changed the observation without changing the bit.\\
+Independent products & Component factorization supplied a shortcut, not a universal extraction obligation.\\
+Padding/redundancy & Changed representation and charged equality/preprocessing cost; did not rescue a representation-independent inference.\\
+Alternate encodings & Preserved the decision and exposed the need for an encoding-normalization theorem.\\
+COPY/DEAD/DELAY/INTERP/RECOMP & Equivalent wrappers preserved all sampled observations outside the needle and defeated finite behavioral coverage.\\
+One-bit output & The output was identical in every paired run; all distinguishing information lived in the extra observation interface.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The theorem does not apply to white-box proof systems, code inspection with a sound complete logic, or conformance testing with a proved finite fault domain.  Those are possible repairs, but transferring any of them to \emph{all} uniform polynomial-time SAT deciders is the missing universal implication.
+
+\section{Barrier and post-quantum ledgers}
+
+\paragraph{Relativization/algebrization.}
+The negative theorem relativizes to any fixed oracle included symmetrically in $P$ and $P_y$ and survives algebraic trace encodings: an unqueried point remains unobserved.  An oracle that directly answers the global property changes the interface and defeats the hypothesis rather than the proof.  Hence this no-go theorem does not evade the Baker--Gill--Solovay or Aaronson--Wigderson barriers and supplies no P-versus-NP separation.
+
+\paragraph{Natural Proofs.}
+No circuit largeness/usefulness property is constructed, so the Razborov--Rudich framework is not the active issue.  The active gap is black-box coverage versus a universal program/input quantifier.
+
+\paragraph{Post-quantum technique ledger.}
+\begin{itemize}[leftmargin=*]
+\item \textbf{Lossiness/collision entropy --- EXACT OBJECT/THEOREM TRANSFER only for the audit transcript map.}  Many program/input realizations collide on the same sampled transcript; the theorem exploits a collision explicitly.  This does not transfer to a SAT runtime lower bound.
+\item \textbf{Schur squares, quadratic-relation ranks, Hilbert/syzygy invariants --- FAILED TRANSFER for this barrier.}  They may distinguish a fully available code, but a black-box tester that never queries $y$ receives the same sampled words/invariants.
+\item \textbf{Worst-case/average-case architecture --- ANALOGY/CANDIDATE.}  A distribution exposing every bad program would need a new solver-independent reduction; average sampling alone has the $q/M$ needle obstruction.
+\item \textbf{Collision extraction/special soundness --- ANALOGY/CANDIDATE.}  Two conflicting sampled transcripts can expose a witness, but the paired programs collide on every queried transcript.  A construction-specific extractor must first force the conflict into the observed set.
+\item \textbf{Hash/random-oracle methods --- FAILED TRANSFER.}  Hashing identical sampled transcripts yields identical digests.  A random oracle does not reveal an unqueried trace without adding a hardness/randomness premise.
+\end{itemize}
+In every case hidden structure can be an algorithmic shortcut; no hardness claim follows from its presence.
+
+\section{Corpus reconciliation}
+
+\subsection*{CORPUS REVIEWED}
+The canonical GitHub tree was enumerated.  I read root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, \texttt{.codex/skills/pnp-research/SKILL.md}, all current task specifications, actual \texttt{main4.tex}/\texttt{main5.tex}, newest MAIN snapshots REPPROMISE1 and TRACECONJ1, newest specialist reports QNORM1, COVERCOF1, LOGCOF1, and PHASEBRIDGE1, and older WRAPORBIT1 and FIELDMASK1.  Repository search covered all LSPV directories for testing, wrapper, orbit, hash, sampling, and conformance formulations.  I inspected the HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC causal branch and its theorem index, current governance notes, and the experiment/result artifacts cited by active claims.
+
+\subsection*{DUPLICATION / CONTRADICTION AUDIT}
+WRAPORBIT1 already proves qualitatively that a finite generated wrapper orbit is not all equivalent programs.  BBTEST1 does not rename that result: it adds an adaptive randomized black-box theorem, the exact $q/M$ detection and total-variation bounds, and an explicit surgical-wrapper hypothesis.  FIELDMASK1 already rejects fixed finite trace masks; the current result additionally covers adaptive selection and sampled hashes.  No contradiction with COVERCOF1/LOGCOF1 was found: those cofactor wrappers are semantic upper-bound controls, while BBTEST1 is a certification no-go theorem.
+
+\subsection*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root \texttt{main.tex} had not yet incorporated COVERCOF1 and contained only the qualitative wrapper-orbit guard.  The LSPV-2 region is reconciled to include (i) COVERCOF1's post-coverage-work refutation and (ii) BBTEST1's quantitative finite-query non-certification theorem.  Executive synthesis remains under LSPV-5 authority.
+
+\subsection*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{itemize}[leftmargin=*]
+\item \textbf{ADOPTED:} SAME\_REALIZATION, exact cost charging, WRAPORBIT1's orbit/all-program distinction, FIELDMASK1's trace-mask trilemma, and the compiler-gated causal lower bounds as restricted-model evidence.
+\item \textbf{REJECTED:} converting semantic compatibility count, trace diversity, sample hashes, or a finite wrapper battery into arbitrary-decider time/memory/extraction cost.
+\item \textbf{RETIRED:} random input sampling as a standalone repair for the universal wrapper-invariance premise.  It can be revived only with a proved density/fault-domain theorem applying to all relevant programs.
+\end{itemize}
+
+\subsection*{STALE OR OVERSTATED CLAIMS FOUND}
+The living LSPV-2 region was stale because it omitted the verified COVERCOF1 report.  Any wording suggesting that passing the current finite wrapper battery certifies arbitrary-program invariance is overstated and is replaced by the quantified limitation above.  The historical main4/main5 compatibility-count language remains structural and does not establish an all-algorithm lower bound.
+
+\section{Handoff and missing universal implication}
+
+The precise missing arrow for synthesis is now:
+\begin{center}
+\fbox{
+\begin{minipage}{0.88\linewidth}
+Prove a solver-independent complete fault-domain/density theorem saying that every total uniform polynomial-time SAT decider violating the target trace/extraction property must reveal the violation on a polynomially hittable set of inputs under a specified, efficiently samplable distribution---or replace behavioral certification by a sound white-box proof system that applies to every such decider.  The theorem must include encoding normalization, all auditor and solver costs, and must not assume P$\ne$NP.
+\end{minipage}}
+\end{center}
+BBTEST1 shows that without such a theorem, a single hard-coded exceptional input suffices to defeat any polynomial-query audit on an exponential layer.  No existing HEC/causal result supplies this arrow.  P versus NP remains open.
+
+\begin{thebibliography}{9}
+\bibitem{goodenough1975}
+J. B. Goodenough and S. L. Gerhart,
+``Toward a Theory of Test Data Selection,''
+\emph{IEEE Transactions on Software Engineering} SE-1(2), 1975,
+\url{https://doi.org/10.1109/TSE.1975.6312836}.
+
+\bibitem{weyuker1982}
+E. J. Weyuker,
+``On Testing Non-Testable Programs,''
+\emph{The Computer Journal} 25(4), 1982,
+\url{https://doi.org/10.1093/comjnl/25.4.465}.
+
+\bibitem{vasilevskii1973}
+M. P. Vasilevskii,
+``Failure Diagnosis of Automata,''
+\emph{Cybernetics} 9, 1973,
+\url{https://doi.org/10.1007/BF01068590}.
+
+\bibitem{chow1978}
+T. S. Chow,
+``Testing Software Design Modeled by Finite-State Machines,''
+\emph{IEEE Transactions on Software Engineering} SE-4(3), 1978,
+\url{https://doi.org/10.1109/TSE.1978.231496}.
+
+\bibitem{rice1953}
+H. G. Rice,
+``Classes of Recursively Enumerable Sets and Their Decision Problems,''
+\emph{Transactions of the American Mathematical Society} 74(2), 1953,
+\url{https://doi.org/10.1090/S0002-9947-1953-0053041-6}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LSPV-2::BBTEST1
+\end{document}
