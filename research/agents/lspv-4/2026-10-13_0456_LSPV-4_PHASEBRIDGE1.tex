@@ -1,0 +1,282 @@
+% LSPV-4 REPORT::PHASEBRIDGE1::2026-10-12T19:56:07Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,booktabs,longtable}
+\usepackage[hidelinks]{hyperref}
+\newcommand{\PROVED}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\COND}{\textbf{CONDITIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RET}{\textbf{FALSIFIED/RETIRED}}
+\begin{document}
+
+\section*{PHASEBRIDGE1: source coverage does not force paid compatibility}
+\textbf{Role:} LSPV-4 / universal-core bridge. \quad
+\textbf{Timestamp:} 2026-10-12T19:56:07Z.
+
+\paragraph{Executive status.}
+\textbf{P versus NP remains OPEN.}
+This run proves \textsf{SOURCE-COVERAGE-NO-SEMANTIC-CHARGE1}
+(\PROVED, independent review pending). For any total deterministic
+random-access decider, all decision work on \(2^k\) completions may be moved
+before the final \(k\) source reads. For \(k=O(\log N)\), polynomial time is
+preserved and the suffix after complete source coverage is only a lookup and
+one-bit output. The construction does not evaluate the full compatibility
+relation
+\[
+H(F,\alpha)=\operatorname{SAT}(F\upharpoonright\alpha)
+\]
+and does not force the original solver to expose it. Therefore
+\texttt{POST-COVERAGE-PAID-COMPATIBILITY1} is \RET. The fully charged
+whole-execution lower bound remains \OPEN.
+
+\section*{Predecessor write-recovery preflight}
+The immediately preceding LSPV-3 report
+\path{research/agents/lspv-3/2026-10-13_0432_LSPV-3_LOGCOF1.tex} exists in
+the canonical directory, is substantive, and was read back with its required
+header and final sentinel. No predecessor retry was needed. The older
+MODELBRIDGE-0022 recovery condition is already satisfied by the verified
+canonical artifact
+\path{research/agents/lspv-4/2026-10-12_1002_LSPV-4_MODELBRIDGE-0022.tex};
+it was not duplicated or reconstructed.
+
+\section*{Exact model and quantifiers}
+Inputs are strings \(x\in\{0,1\}^N\) in one fixed self-delimiting encoding.
+The machine is a uniform deterministic random-access word RAM with
+\(\Theta(\log N)\)-bit words. Input reads, buffering, simulation, table
+storage, reconstruction, and output are charged. Let \(L\subseteq\{0,1\}^*\)
+be decidable, let \(A\) be any total deterministic decider of \(L\), and let
+\(W\subseteq[N]\) contain \(k\) source positions. The P-vs-NP application
+uses the fixed NP-complete signed Monotone \(3\)-SAT-\((2,2)\) core, but the
+negative theorem applies to every decidable language.
+
+For a formula encoding \(F\), semantic compatibility is external:
+\[
+H(F,\alpha)=1 \iff F\upharpoonright\alpha \text{ is satisfiable}.
+\]
+The decider's contract is only the single bit \(\operatorname{SAT}(F)\).
+Recovering all values of \(H(F,\cdot)\) is a stronger output problem and
+cannot be assumed to occur internally.
+
+\section*{SOURCE-COVERAGE-NO-SEMANTIC-CHARGE1}
+\textbf{Theorem (\PROVED, independent review pending).}
+For every \(A,L,N,W\) as above there is an extensionally equivalent uniform
+deterministic decider \(B_{A,W}\) that, before reading \(W\), simulates
+\(A\) on all \(2^k\) virtual completions and stores their output bits. It
+then reads \(x|_W\), selects the corresponding bit, and returns it. Its costs
+are
+\[
+T_B(N)=O\!\left(N+2^kT_A(N)+2^k\right),\qquad
+S_B(N)=O\!\left(N+S_A(N)+2^k+\log N\right).
+\]
+After the final source read, \(B\) uses \(O(1)\) word operations when
+\(k=O(\log N)\), or \(O(k)\) bit operations.
+
+\paragraph{Proof.}
+Read and buffer positions outside \(W\). For each
+\(\beta\in\{0,1\}^k\), simulate \(A\) while answering probes in \(W\) from
+\(\beta\) and all other probes from the buffer. Totality makes each
+simulation halt. The table entry at \(\beta\) is \(L(x^{(\beta)})\).
+After reading the actual \(\beta^\star=x|_W\), output its entry, which is
+\(L(x)\). Sequential simulation reuses the \(A\)-workspace, yielding the
+claimed bounds. \(\square\)
+
+\paragraph{Bridge consequence.}
+Assume SAT is in P with an arbitrary exponent \(K_A\). For
+\(k\le c\log N\), the compiler remains polynomial but retains \(K_A+c\).
+Thus it produces no fixed-exponent contraction into an unconditional
+time-space lower-bound region. More strongly, an implication of the form
+\[
+\forall A\;\exists F:
+\operatorname{work}_{A,F}(\text{after complete source coverage and before
+output})>N^d
+\]
+is false for every decidable language. A whole-execution statement is not
+refuted; it is simply the desired lower bound itself.
+
+\paragraph{Compatibility consequence.}
+The source buffer plus the final \(k\) bits extensionally determines \(F\),
+so an external extractor may separately compute \(H(F,\alpha)\). That
+computation must be charged and may retain the arbitrary solver exponent.
+Nothing in the actual suffix of \(B\) evaluates \(H\), materializes a
+compatibility graph, produces a witness, or reconstructs a proof. Hence
+source availability is not solver-paid semantic exposure.
+
+\paragraph{Wrapper gauge and SAME\_REALIZATION.}
+An equivalent DELAY wrapper can place \(N^p\) dead steps after the final read
+for any fixed \(p\), while the cofactor wrapper leaves only lookup/output.
+Late-phase work is therefore presentation-dependent. The compiler preserves
+the same input/output realization but intentionally changes the internal
+trace; this is enough to refute a universal claim over all deciders, not to
+claim that \(A\)'s original trace was normalized.
+
+\section*{Bounded reproducible audit}
+The new script
+\path{experiments/review/source_coverage_phase_gauge_synthesis.py} checked
+sizes 1--9 with up to three withheld bits. Hostile controls were 2-SAT/OR,
+Horn/AND, affine parity, bounded-treewidth predicates, independent products,
+padding, redundant clauses, three encodings, and
+DIRECT/COPY/DEAD/DELAY/INTERP/RECOMP wrappers. It passed 58,758 semantic
+cofactor identities, 470,064 wrapper checks, and 470,064 cost checks with
+zero failures in 0.472 seconds. Results:
+\path{results/raw/review/2026-10-13_source_coverage_phase_gauge.json}.
+Payload digest:
+\texttt{ce6cfa3c666e002147551a5a0cf437f65e170040a9de65478a0905c4f83b5558}.
+Status: \COMP. No asymptotic conclusion is inferred from the finite audit.
+
+\section*{Primary-literature and transfer preflight}
+The two obstacles are (i) forcing an implementation-invariant semantic object
+from every arbitrary SAT decider and (ii) transferring that exact resource to
+an unconditional lower bound in the same machine model. Primary sources
+rechecked were Baker--Gill--Solovay on relativization,
+Aaronson--Wigderson on algebrization, Razborov--Rudich on Natural Proofs,
+Fortnow--Lipton--van Melkebeek--Viglas on restricted-model SAT time-space
+bounds, Pippenger--Fischer on simulation, and the classical decision-tree
+literature used by READFLOOR1. None gives an arbitrary-random-access
+solver-to-protocol transfer.
+
+\begin{center}
+\begin{tabular}{p{0.25\linewidth}p{0.20\linewidth}p{0.45\linewidth}}
+\toprule Domain & Classification & Exact correspondence / missing theorem\\
+\midrule
+Decision trees & directly transferable theorem &
+READFLOOR1's input-probe floor applies in its declared query model, but easy
+controls share it and it does not lower-bound total SAT time.\\
+Communication / branching programs / VLSI & useful structural analogy &
+Cut states and routing correspond only after a compiler preserving random
+access, rereads, recomputation, preprocessing, and SAME\_REALIZATION.\\
+Proof complexity & useful structural analogy &
+Proof-size lower bounds require a solver-to-proof-system transfer that is
+absent here.\\
+Random-oracle / cryptographic binding & misleading analogy / failed transfer &
+Assumptions and ideal oracles are not unconditional P-vs-NP endpoints.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The negative compiler relativizes and algebrizes; it is a guard, not a barrier
+escape. No large constructive circuit property is used, so Natural Proofs is
+not directly triggered, though any later circuit endpoint must audit it.
+
+\section*{Post-quantum technique ledger}
+Lossiness has an exact object correspondence: the completion-to-output map has
+\(2^k\) inputs and a one-bit image, but its collision entropy measures
+semantic compression, not runtime. Schur squares, quadratic relation ranks,
+Hilbert functions, and syzygies are \textbf{FAILED TRANSFER} here because no
+code-algebra theorem constrains arbitrary execution. Worst-case/average-case
+and collision-extraction ideas remain \textbf{ANALOGY/CANDIDATE} pending a
+model-matched external extraction theorem. Hash/random-oracle methods are
+\textbf{FAILED TRANSFER} as unconditional endpoints. The algebraic structure
+is exploitable by the algorithm: the small cofactor table is the shortcut.
+
+\section*{CORPUS REVIEWED}
+This run surveyed the current GitHub tree and read root \path{main.tex},
+\path{AGENTS.md}, \path{CODEX.md}, the complete PNP research skill, all
+TASK-001--TASK-007 specifications, relevant governance, actual
+\path{main4.tex} and \path{main5.tex}, the newest verified MAIN REPPROMISE1,
+and the newest reports HIERFIRE1, COVERCOF1, LOGCOF1, and READFLOOR1.
+Searches included READCEIL1, prior trace/extraction and wrapper results, and
+the HEC, VSC-HEC, G-PPC-HEC, CRS-PPC, CCSPC, RCCN, and Search-G components.
+The cited experiment/result artifacts were inspected. Optional skill
+references \path{references/modes.md} and
+\path{references/research-protocol.md} were missing locally; AGENTS, the
+complete SKILL, and canonical \path{research/review/PROTOCOL.md} governed.
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+COVERCOF1 already proved the one-bit version and retired post-coverage
+selection work. LOGCOF1 already proved the logarithmic-width version.
+READFLOOR1 proved a near-linear source-query floor and explicitly denied a
+P-vs-NP bridge. This report does not claim those peer results as new. Its new
+bridge contribution is the exact compatibility consequence: complete source
+coverage makes \(H\) externally computable but does not imply solver-paid
+\(H\)-exposure, and the phase-local universal transfer is false.
+
+There is no conflict with READFLOOR1. A decider may be forced to read nearly
+all positions while doing its semantic work before the final logarithmic
+block. Input acquisition and decision-selection phase are distinct resources.
+
+\section*{Faithful main4/main5 comparison}
+\path{main4.tex} remains the ARC achievable-region manuscript, with all-input
+acquisition and arbitrary-algorithm closure open. \path{main5.tex} remains
+the WRAPPER construction manuscript, with acquisition, return, and
+fully-charged closure open. Neither contains the theorem proved here, and
+neither partial construction is redefined or promoted.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+The pre-run root LSPV-4 region ended with READFLOOR1 and left
+\texttt{DECISION-SELECTION-WORK1} OPEN. This report splits the label:
+\begin{itemize}
+\item phase-local/post-coverage decision-selection work: \RET;
+\item fully charged whole-execution clean-core obstruction: \OPEN;
+\item full compatibility exposure from source coverage: \RET;
+\item external charged compatibility extraction: possible but not
+same-execution exposure and not an exponent contraction.
+\end{itemize}
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{longtable}{p{0.34\linewidth}p{0.18\linewidth}p{0.38\linewidth}}
+\toprule Component & Status & Disposition\\ \midrule
+COVERCOF1 / LOGCOF1 compiler & \PROVED & Adopted with full costs.\\
+READFLOOR1 query floor & \PROVED & Adopted only as input access.\\
+READCEIL1 certificate ceiling & \PROVED & Adopted; size bridge retired.\\
+REPPROMISE1 endpoint trilemma & \PROVED & Adopted; hard endpoint absent.\\
+Post-coverage paid compatibility & \RET & Refuted by compiler and one-bit output.\\
+Probe floor as SAT-hardness bridge & \RET & Easy controls share it.\\
+Causal restricted-model bounds & \COND & Static arbitrary-solver compiler open.\\
+\bottomrule
+\end{longtable}
+
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+The undivided root label \texttt{DECISION-SELECTION-WORK1} was ambiguous:
+READCEIL1's whole-execution wording remains open, while the later
+post-coverage reading is refuted by COVERCOF1 and LOGCOF1. Treating complete
+source coverage as paid compatibility exposure was also overstated. The old
+MODELBRIDGE-0022 recovery request is stale because that canonical report now
+verifies.
+
+\section*{Strict status ledger and next target}
+\begin{center}
+\begin{tabular}{p{0.57\linewidth}p{0.23\linewidth}}
+\toprule Claim & Status\\ \midrule
+SOURCE-COVERAGE-NO-SEMANTIC-CHARGE1 & \PROVED, review pending\\
+Finite hostile-control audit & \COMP\\
+POST-COVERAGE-PAID-COMPATIBILITY1 & \RET\\
+Phase-local DECISION-SELECTION-WORK1 & \RET\\
+TOTAL-COST-CLEAN-CORE-OBSTRUCTION1 & \OPEN\\
+SAME-TRACE-PAID-RELATIONAL-TRANSFER1 & \OPEN\\
+Model-matched unconditional endpoint & \OPEN\\
+P versus NP & \OPEN\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Highest-value handoff.}
+Any replacement must be whole-execution and wrapper invariant. It must allow
+complete reads, cofactor precomputation, replay, padding, alternate
+representations, and arbitrary polynomial exponents; either prove a direct
+superpolynomial lower bound for the fixed core or externally extract a
+specific resource from black-box behavior and transfer the same realization
+to an unconditional lower bound in the same model.
+
+\section*{Primary references}
+\begin{itemize}
+\item Baker, Gill, Solovay, \emph{SIAM J. Comput.} 4(4), 1975,
+\url{https://doi.org/10.1137/0204037}.
+\item Aaronson, Wigderson, \emph{ACM TOCT} 1(1), 2009,
+\url{https://doi.org/10.1145/1490270.1490272}.
+\item Razborov, Rudich, \emph{JCSS} 55(1), 1997,
+\url{https://doi.org/10.1006/jcss.1997.1494}.
+\item Fortnow, Lipton, van Melkebeek, Viglas, \emph{JACM} 52(6), 2005,
+\url{https://doi.org/10.1145/1101821.1101822}.
+\item Pippenger, Fischer, \emph{JACM} 26(2), 1979,
+\url{https://doi.org/10.1145/322123.322138}.
+\end{itemize}
+
+\bigskip
+\noindent\textbf{Final status: P versus NP remains OPEN.}
+
+% END_OF_VERIFIED_REPORT::LSPV-4::PHASEBRIDGE1
+\end{document}
