@@ -1,0 +1,359 @@
+% LSPV-3 REPORT::EARLY22RED1::2026-10-12T23:31:29Z
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,tabularx,xurl,hyperref}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\Res}{\mathsf{Res}}
+\newcommand{\Ftwo}{\mathbb F_2}
+\title{LSPV-3 red-team report: EARLY22 exact-$(2,2)$ scope repair}
+\author{UNIVERSAL\_CORE\_REDTEAM}
+\date{13 October 2026 (KST)}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Executive status: OPEN.}
+This run independently rechecked the recovered EARLY22 exact-$(2,2)$
+compiler branch.  The compiler, its structured minimal-unsatisfiability
+theorem, and its Resolution projection survive within their stated models.
+The attempted promotion to an arbitrary-algorithm lower bound does not.
+The decisive repair is to keep four scopes separate: the exact-$(2,2)$
+compiler, structured minimality, Resolution projection, and affine
+continuation for source-clause punctures.  None is an unconditional time
+lower bound for every deterministic uniform SAT decider.  P versus NP remains
+open.
+
+\section{Barrier and primary-literature preflight}
+
+The two current obstacles are:
+\begin{enumerate}
+  \item \textbf{scope collision:} a representation theorem or a Resolution
+  lower bound is being asked to imply a lower bound for arbitrary uniform
+  computation without an exact solver-to-model transfer theorem;
+  \item \textbf{continuation overreach:} the verified affine evaluator is for
+  a particular source-clause-punctured compiler, not for every deletion in
+  the target and not for arbitrary SAT encodings.
+\end{enumerate}
+
+The primary sources checked before the audit were D{"o}cker's NP-completeness
+theorem for Monotone 3-SAT-$(2,2)$ (arXiv:1912.08032); Urquhart's hard
+Resolution examples (JACM 34(1), 1987); Ben-Sasson--Wigderson's
+width--size method (JACM 48(2), 2001, DOI
+\href{https://doi.org/10.1145/375827.375835}{10.1145/375827.375835});
+Baker--Gill--Solovay relativization (SIAM J. Comput. 4(4), 1975);
+Razborov--Rudich Natural Proofs (STOC 1994, DOI
+\href{https://doi.org/10.1145/195058.195134}{10.1145/195058.195134}); and
+Aaronson--Wigderson algebrization (TOCT 1(1), 2009, DOI
+\href{https://doi.org/10.1145/1490270.1490272}{10.1145/1490270.1490272}).
+The directly transferable statements concern the named formula class or the
+named proof system.  They do not supply the missing all-decider transfer.
+
+\section{Corpus reviewed}
+
+\textbf{CORPUS REVIEWED.}
+I surveyed the current GitHub tree and read root \path{main.tex},
+\path{AGENTS.md}, \path{CODEX.md}, the full
+\path{.codex/skills/pnp-research/SKILL.md} protocol and experiment mode,
+all current \path{tasks/} specifications, \path{main4.tex},
+\path{main5.tex}, the newest verified MAIN snapshot
+\path{research/main/2026-10-13_0743_MAIN_SYNTHESIS-0027.tex}, and the newest
+verified LSPV-1--4 reports available at preflight.  I also inspected the HEC,
+VSC-HEC, G-PPC-HEC, CRS-PPC, and CCSPC exploration branch and searched the
+repository for the relevant compiler, projection, continuation, and
+zero-boundary claims.
+
+For EARLY22 recovery I read
+\path{research/governance/2026-10-13_0810_EARLY22-INTEGRATION1.tex}, the
+linked exact Drive snapshot, Living Log passages for Claims 40--45 and 59,
+the Claim Ledger entries and supersession notices, the original
+LBO3SAT-0031/0032 and PROOF-0034 proof passages, PRF2-0130, both continuation
+companions ``21 P C'' and ``21 P C A'', and the CLAUDE-0021/0033 witness
+records.  The Drive ledger records the exact snapshot SHA-256 as
+\texttt{b6be320498d5e848ba4d6a023bf03b18d8085ebabec1d92368180a9739025dac}.
+
+\paragraph{EARLY22-INTEGRATION1 acknowledgement.}
+Status: \textbf{INTEGRATED WITH SCOPE REPAIR}.  The exact manuscript location
+is this report, Sections 3--8, and the first paragraph of the reconciled
+LSPV-3 ownership region in root \path{main.tex}.  The next check is an
+independent continuation audit after deleting one padded implication or one
+internal gadget clause; those cases are not claimed by the source-puncture
+affine theorem.
+
+\section{Exact objects and quantifiers}
+
+Let $F$ be a proper exact-$(4,4)$ 3-CNF on $n$ variables.  Thus each source
+variable occurs four times positively and four times negatively, and
+$m=8n/3$.  LBO3SAT-0031 constructs in polynomial time a proper
+exact-$(2,2)$ 3-CNF $P(F)$ with
+\[
+  v(P(F))=24n,\qquad m(P(F))=32n=\frac43v(P(F)).
+\]
+Each occurrence is replaced by one of four clones.  The four clones of a
+source variable are connected by a directed implication cycle.  Every three
+binary implications are padded by one copy of
+$Q=W_1\setminus\{(x_1\vee x_7\vee x_{13})\}$, whose three deleted-clause
+ports are forced false in all 244 models of $Q$.
+
+The exact substitution $\sigma$ identifies all four clones with their source
+variable and maps all gadget variables to zero.  It sends the source clauses
+back to $F$, each padded implication to a tautology, and every internal
+$Q$-clause to true.  Hence
+\[
+       F\in\SAT \iff P(F)\in\SAT .
+\]
+Here historical $N$ counts variables.  For any explicit ordinary clause-list
+encoding, the bit length is instead
+\[
+ |\langle P(F)\rangle|=Theta(m(P(F))\log v(P(F)))=Theta(n\log n),
+\]
+up to the declared literal and delimiter convention.  No lower bound stated
+only as a function of variable count may silently be relabelled as a lower
+bound in encoded bits.
+
+LBO3SAT-0032 adds a structured endpoint-local pairing for Tseitin sources.
+At a degree-three vertex $u$, the two endpoint clones $a_u,b_u$ for an edge
+$e$ are selected according to the falsifying value of a designated other
+incident edge $y$.  For $e=uv$ the implication cycle is
+\[
+        a_u\to b_u\to a_v\to b_v\to a_u.
+\]
+The preservation of minimal unsatisfiability uses the stated graph
+hypotheses (in particular, the structured connected/bridgeless or
+2-vertex-connected conditions in the corresponding proof).  It is not a
+theorem about all proper exact-$(4,4)$ sources.  For reproducibility, this run
+fixes the missing numerical convention: order vertices and edges, sort the
+three incident edges at every vertex, and for occurrence edge $e_i$ choose
+$y=e_{i+1\bmod 3}$.  This convention is not mathematically load-bearing but
+removes an implementation ambiguity in the K4 fingerprint.
+
+PROOF-0034 proves a model-matched Resolution projection.  For each
+non-tautological substituted line, maintain a Resolution-derivable subclause;
+the induction handles constant pivots, identified pivots, tautological
+parents, and disappeared pivots without increasing the number of proof
+lines.  The conclusion is a statement about \emph{Resolution refutations}.
+It neither compiles arbitrary algorithms into Resolution nor proves that an
+arbitrary SAT decider materializes the substituted proof.
+
+\section{Candidate attacked and smallest valid repair}
+
+Consider the following tempting promotion.
+
+\medskip
+\noindent\texttt{UNSCOPED-COMPILER-TRANSFER1}: for every minimally
+unsatisfiable proper exact-$(4,4)$ source $F$, $P(F)$ is minimally
+unsatisfiable; every one-clause puncture of $P(F)$ has the recovered affine
+continuation; and the Resolution projection therefore forces every uniform
+deterministic exact-$(2,2)$ SAT decider to take superpolynomial time.
+
+\medskip
+\noindent\textbf{Status: FALSIFIED/RETIRED as stated.}
+Three quantifier/model failures are independent:
+\begin{enumerate}
+  \item the minimality theorem needs the structured pairing and graph
+  hypotheses, not merely proper exact-$(4,4)$ minimal unsatisfiability;
+  \item the affine continuation in ``21 P C A'' covers source-clause
+  punctures of the specified compiler.  It does not cover deletion of a
+  padded implication or an internal $Q$ clause;
+  \item Resolution hardness is not a time lower bound for arbitrary Turing
+  machines, RAMs, circuits, branching programs, or one-bit deciders.
+\end{enumerate}
+
+The smallest repair is therefore a typed ledger:
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}lXl@{}}
+\toprule
+component & exact scope & status\\
+\midrule
+LBO3SAT-0031 & polynomial equisatisfiable compiler from proper
+exact-$(4,4)$ to proper exact-$(2,2)$ & PROVED/EXACT\\
+LBO3SAT-0032 & minimality for the structured endpoint-local Tseitin family
+under its graph hypotheses & PROVED/EXACT\\
+PROOF-0034 & line-nonincreasing substitution projection in Resolution &
+PROVED/EXACT\\
+21 P C A & arbitrary target partial assignments for a
+source-clause-punctured compiled instance admit the stated local-plus-affine
+evaluator & PROVED/EXACT in that puncture scope\\
+all-decider lower bound & solver-to-Resolution or direct same-model transfer
+for every uniform deterministic decider & OPEN\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+No extension to broader SAT inputs is required if one eventually proves a
+direct non-P theorem for this fixed NP problem.  What is required is an
+unconditional lower bound in the actual model of that fixed problem.  The
+present Resolution theorem is not such a result.
+
+\section{Bounded independent audit}
+
+The executable audit is
+\path{experiments/review/early22_compiler_redteam_audit.py}; its JSON record is
+\path{results/raw/review/2026-10-13_early22_compiler_redteam.json}.  SHA-256:
+\texttt{a6aaa0a69f07d4355296d870875f9d15532902dd0c0f66daf0fc73507202719b}
+and
+\texttt{a631dad6a7649c544203995dc80da041361c88b119b8d5a4d848d2501cd63ed4},
+respectively.  One invocation completed in 5.4 seconds; no stage exceeded the
+30-second budget.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+check & independently reproduced result\\
+\midrule
+$W_1$ and $Q$ & $W_1$ is proper exact-$(2,2)$, unsatisfiable, and every one
+of its 20 clause deletions is satisfiable.  $Q$ has exactly 244 models and
+forces ports $x_1,x_7,x_{13}$ false.\\
+K4 output & 144 variables, 192 distinct proper clauses, exactly two positive
+and two negative occurrences per variable.\\
+substitution & 16 source images, 24 tautological padded-implication images,
+152 constant-true internal-gadget images; the 16-source-clause multiset is
+recovered exactly.\\
+minimality & explicit satisfying witnesses verified after each of the 16
+source-clause deletions, 24 padded-implication deletions, and 152 internal
+$Q$-clause deletions.  No $2^{144}$ assignment enumeration was used.\\
+zero boundary & 192 singleton support-parity blocks, distinct unsigned
+supports, incidence rank 140, kernel dimension 52, and a verified even-boundary
+kernel word of weight 96.\\
+affine control & each of the 16 K4 source-clause punctures has exactly two
+source solutions and is affine.  This test deliberately makes no statement
+about the other 176 deletion types.\\
+monotone control & 75 cubic positive halves and 5,625 ordered pairs; all are
+satisfiable, with model histogram
+$18{:}450,19{:}240,20{:}1080,21{:}1440,22{:}1650,24{:}720,26{:}45$.
+All 360,000 assignment/edge-cover equivalence checks passed.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+The three deletion-witness constructions were audited separately.  A deleted
+source clause uses a source deletion witness, identifies all clones with the
+source value, and sets every gadget variable to zero.  A deleted padded
+implication uses a satisfying assignment of the 24-variable clone skeleton
+with that implication removed and sets all gadgets to zero.  A deleted
+internal $Q$ clause uses a witness for $W_1\setminus D$; minimality of $W_1$
+makes at least one deleted-clause port true, and the clone skeleton witness is
+chosen after deleting the corresponding padded implication.  The audit then
+evaluates every remaining target clause directly.
+
+\section{Separate monotone and affine controls}
+
+LBO3SAT-0007/0008 is a different representation.  A monotone cubic-pair
+formula is satisfiable exactly when a chosen edge set covers every positive
+clause vertex and its complement covers every negative clause vertex.  The
+bounded $n=6$ enumeration above confirms that map and the historical
+fingerprint.  It is not the clone-and-forced-port exact-$(2,2)$ compiler and
+must not inherit the latter's minimality or Resolution statements.
+
+The two continuation companions must also be read together.  ``21 P C'' left
+arbitrary target restrictions open.  ``21 P C A'' supersedes that entry for
+the \emph{source-clause-punctured} construction: target satisfiability under
+an arbitrary partial assignment is equivalent to local $Q$ compatibility,
+clone consistency, and consistency of the punctured affine source system.
+That makes hidden algebraic structure an algorithmic shortcut, not a hardness
+source.  The limitation remains attached: the theorem has not been shown for
+padded-implication or internal-gadget punctures.
+
+\section{Zero-boundary and transfer audit}
+
+The K4 zero-boundary fingerprint was reproduced, but the subsidiary statement
+is only as strong as its premises: singleton support-parity blocks rely on the
+simple source and the chosen proper compiler instance.  Rank 140 and a
+weight-96 kernel vector are finite linear-algebra facts.  They neither imply a
+large Resolution refutation nor charge arbitrary computation.  Accordingly I
+found no defect that retires LBO3SAT-0031/0032 or PROOF-0034; the defect is the
+attempted promotion of their subsidiary fingerprints beyond the represented
+model.
+
+Transfer classification under the repository protocol is:
+\begin{itemize}
+  \item \textbf{EXACT OBJECT/THEOREM TRANSFER:} substitution projection of
+  this target formula into the source formula inside Resolution;
+  \item \textbf{ANALOGY/CANDIDATE needing a new bridge:} treating proof width,
+  VLSI routing, communication cuts, observability, branching-program width,
+  or collision entropy as a cost of every uniform SAT decider;
+  \item \textbf{FAILED TRANSFER:} inferring runtime from 192 singleton
+  support-parity blocks, rank 140, a 52-dimensional kernel, 244 gadget models,
+  or a hard Resolution family alone.
+\end{itemize}
+
+The post-quantum ledger does not change this conclusion.  Schur squares,
+quadratic relation spaces, syzygies, and collision distributions are legitimate
+invariants of an explicitly chosen code or proof-to-node map.  Here the affine
+continuation shows that algebraic structure can help the algorithm.  No
+cryptographic binding, random oracle, or worst-case/average-case assumption is
+admissible as an unconditional bridge.
+
+\section{Universal-decider and barrier audit}
+
+Let $A$ range over all total uniform deterministic machines deciding the fixed
+explicit encoding of exact-$(2,2)$ SAT.  The desired theorem would have to
+state, for every such $A$, a lower bound in encoded input length
+$N=|\langle F\rangle|$ on the same computation of $A(\langle F\rangle)$.
+Neither the compiler nor the projection identifies an internal object that
+every $A$ must expose.  A one-bit decider may use Gaussian elimination on an
+affine island, dynamic programming on bounded treewidth, implication-graph or
+Horn propagation on recognized islands, compact circuit or branching-program
+representations, padding-insensitive parsing, or an equivalent wrapper around
+another solver.  These controls do not solve the NP-complete full domain, but
+they refute universal internal-resource claims that quantify over inputs
+without excluding such islands.
+
+Assuming exact-$(2,2)$ SAT is in P yields a polynomial algorithm with some
+unknown exponent $k$.  Composing it with LBO3SAT-0031 remains polynomial and
+preserves an unknown polynomial exponent.  No cited unconditional theorem
+for Turing machines or RAMs forbids that consequence.  The argument
+relativizes at the reduction layer and uses low-degree substitutions; it does
+not by itself cross relativization or algebrization.  Natural Proofs is not
+directly triggered because no large constructive circuit property has been
+proved, but it is an additional warning against an unqualified circuit
+promotion.  Nonuniform circuits, uniform algorithms, Resolution proofs, and
+communication/VLSI implementations remain different models.
+
+\section{Reconciliation entries}
+
+\textbf{DUPLICATION / CONTRADICTION AUDIT.}
+The compiler/minimality/projection results are recovered prior work, not new
+theorems of this run.  The numerical K4, $Q$, zero-boundary, affine-puncture,
+and monotone-pair findings reproduce recorded fingerprints.  The new content
+is the bounded independent three-case witness audit, the explicit deterministic
+endpoint-order convention, and the consolidated scope repair.  No contradiction
+with the current MAIN or specialist reports was found.
+
+\textbf{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+Root MAIN did not yet carry the EARLY22 integration ledger in the LSPV-3
+region.  This run adds the recovered exact results, records the source-puncture
+supersession, separates the monotone cubic-pair map, attaches the variable-to-bit
+length conversion, and makes the missing arbitrary-algorithm arrow explicit.
+
+\textbf{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopted: LBO3SAT-0031/0032, PROOF-0034, the corrected Claim 40--45/59 ledger,
+and 21 P C A within their hypotheses.  Rejected: treating the exact-$(2,2)$
+compiler and the monotone cubic-pair map as interchangeable.  Retired:
+\texttt{UNSCOPED-COMPILER-TRANSFER1} and any inference from Resolution hardness
+alone to arbitrary-decider time.
+
+\textbf{STALE OR OVERSTATED CLAIMS FOUND.}
+The ``arbitrary target restriction remains open'' entry in ``21 P C'' is stale
+for source-clause punctures because ``21 P C A'' supplies that evaluator.  It
+is not stale for the other two deletion types.  Any unqualified statement that
+structured minimality holds for every proper exact-$(4,4)$ MU source, or that
+historical variable $N$ already denotes encoded bits, is overbroad.
+
+\section{Single next check}
+
+The next bounded check is
+\texttt{NON-SOURCE-PUNCTURE-CONTINUATION1}: for one deleted padded implication
+and one deleted internal $Q$ clause in the deterministic K4 realization,
+classify restricted target satisfiability and test whether it remains affine,
+becomes a finite union of affine fibers, or genuinely depends on the local
+non-affine gadget relation.  This is a continuation-structure question only.
+Even a negative result would not yield an arbitrary-algorithm lower bound.
+The load-bearing theorem remains a direct same-model lower bound for the fixed
+NP problem, or an exact all-decider transfer into an existing unconditional
+lower bound.  That theorem is OPEN.  P versus NP remains OPEN.
+
+% END_OF_VERIFIED_REPORT::LSPV-3::EARLY22RED1
+\end{document}
