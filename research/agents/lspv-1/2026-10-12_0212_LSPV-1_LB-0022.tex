@@ -1,0 +1,248 @@
+% LSPV-1 REPORT::LB-0022::2026-10-12T02:12:00Z
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,enumitem,xurl,hyperref,microtype}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\PolySAT}{\mathsf{PolySAT}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\COND}{\textbf{CONDITIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\title{LB-0022: Exponential Compatibility Rows Collapse to One Parity Bit on a Canonical Tseitin Clean Core}
+\author{LSPV-1 --- Universal Core Lower Bound}
+\date{12 October 2026 (UTC)}
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.94\linewidth}{
+\textbf{Executive status.} P versus NP remains open.  This run gives a concrete all-algorithm counter-control for compatibility extraction and positive-scale state exposure.  A canonical connected cubic Tseitin 3-CNF on $3r$ variables has a semantic compatibility matrix with $2^{3r}$ rows and, when satisfiable, exactly $2^{r+1}$ witnesses.  Nevertheless, after streaming validation of the canonical source, satisfiability is exactly one parity bit.  Under the conditional premise that any polynomial SAT decider exists, a uniform recognizable-island wrapper uses this shortcut on the whole clean core and invokes the supplied solver elsewhere.  Thus semantic-state count, witness multiplicity, and proof-complexity hardness do not force every exact SAT execution to materialize a compatibility row, expose a witness, or retain $\Omega(r)$ work bits.  The wrapper has linear input time and logarithmic workspace on the island; it supplies no favorable all-input FLMV contradiction.}}
+\end{center}
+
+\section{Claim card}
+
+\begin{center}\small
+\begin{tabular}{@{}p{0.43\linewidth}p{0.18\linewidth}p{0.31\linewidth}@{}}
+\toprule
+Claim & Status & Scope \\ \midrule
+\texttt{H44-TSEITIN-PARITY-SHORTCUT1} & \EXACT & Canonical prism-graph Tseitin proper exact-$(4,4)$ 3-CNF family.\\
+\texttt{RECOGNIZABLE-ISLAND-WRAPPER1} & \EXACT & Every supplied total exact SAT decider; polynomial if the supplied decider is polynomial.\\
+\texttt{H-EXTRACTION-NECESSARY1} & \RETIRED & False on this clean core for arbitrary exact deciders under $\SAT\in P$.\\
+\texttt{POSITIVE-STATE-NECESSARY1} & \RETIRED & No $\Omega(r)$ work-state exposure on the island.\\
+Finite audit & \COMP & 761,034 checks, zero failures.\\
+\texttt{FAVORABLE-SOURCE-FORK-ENDPOINT1} & \OPEN & Full-language, same-realization forbidden endpoint.\\
+P versus NP & \OPEN & No separation or polynomial SAT algorithm.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Explicit clean-core family and encoded length}
+
+For $r\ge3$, let $P_r$ be the prism graph with two $r$-cycles and a perfect matching between corresponding cycle vertices.  It is connected and cubic, with
+\[
+ v=|V(P_r)|=2r,\qquad e=|E(P_r)|=3r.
+ \tag{1}
+\]
+Associate a Boolean variable $x_e$ with every edge.  For a charge vector $c\in\{0,1\}^{2r}$, impose at every vertex $u$ the equation
+\[
+ \bigoplus_{e\ni u}x_e=c_u.
+ \tag{2}
+\]
+Encode each degree-three equation by the four proper 3-clauses excluding the four assignments of the wrong parity.  Write the resulting formula as $T_r(c)$ and fix the canonical encoding in vertex order, template order, and signed binary literal-index format.
+
+\begin{definition}[Canonical Tseitin clean core]
+\[
+ \mathcal T=\{T_r(c):r\ge3,\ c\in\{0,1\}^{2r}\}.
+ \tag{3}
+\]
+Every $T_r(c)$ has $n_r=3r$ variables and $m_r=8r$ clauses.  Each variable occurs exactly four times positively and four times negatively, so (3) is a proper exact-$(4,4)$ 3-CNF family.  Its encoded bit length is
+\[
+ N_r=\Theta(r\log r).
+ \tag{4}
+\]
+\end{definition}
+
+For any 3-CNF $F=C_1\wedge\cdots\wedge C_m$, define the semantic compatibility matrix
+\[
+ H(F)_{\alpha,j}=1\Longleftrightarrow \alpha\models C_j,
+ \qquad H(F)\in\{0,1\}^{2^n\times m}.
+ \tag{5}
+\]
+Then $F\in\SAT$ iff $H(F)$ has an all-one row.  For $T_r(c)$, (5) has
+\[
+ 2^{3r}=2^{\Theta(N_r/\log N_r)}
+ \tag{6}
+\]
+rows.  The proposed universal target under attack asserted that every uniform deterministic polynomial-time exact SAT decider, on infinitely many formulas from (3), must expose or pay positive-scale time, memory, communication, or state for a compatibility row or an equivalent object.
+
+\section{Exact parity shortcut}
+
+\begin{theorem}[\texttt{H44-TSEITIN-PARITY-SHORTCUT1}]
+For every $r\ge3$ and $c\in\{0,1\}^{2r}$,
+\[
+ T_r(c)\in\SAT
+ \Longleftrightarrow
+ \bigoplus_{u\in V(P_r)}c_u=0.
+ \tag{7}
+\]
+If (7) holds, then $T_r(c)$ has exactly
+\[
+ 2^{e-v+1}=2^{r+1}
+ \tag{8}
+\]
+satisfying assignments; otherwise it has none.  There is a uniform deterministic machine that, on the canonical encoding (3), validates the source and decides (7) in $O(N_r)$ time and $O(\log N_r)$ workspace, returning one bit and never materializing $H(T_r(c))$ or a witness.
+\end{theorem}
+
+\begin{proof}
+Summing all vertex equations (2) over $\mathbb F_2$ cancels every edge variable exactly twice, so consistency requires the right-hand sides to have even total parity.  Conversely, the vertex-edge incidence matrix of a connected graph has rank $v-1$ over $\mathbb F_2$, and its image is precisely the even-parity subspace.  This proves (7).  When consistent, the affine solution space has dimension $e-(v-1)=e-v+1$, proving (8).
+
+In each four-clause degree-three template, every incident variable occurs twice in each polarity.  Each edge has two endpoints, hence four occurrences in each polarity.  A canonical streaming recognizer uses counters for the current vertex, edge indices, template position, and one parity accumulator.  It validates all clause templates and graph positions, toggles the accumulator when the decoded charge is one, and returns its complement as the SAT bit.  Its counters use $O(\log N_r)$ bits; no assignment row or compatibility table is formed.
+\end{proof}
+
+Equation (6) therefore does not imply work proportional to the number of semantic rows.  Even (8), an exponential witness set, is compressed by the source equations to one decision bit.  The exact object correspondence to coding theory is favorable to the algorithm: the satisfying assignments form an affine coset of the cycle space of $P_r$.  Hidden algebraic structure is a weakness, not a hardness certificate.
+
+\section{Wrapper transfer to arbitrary exact SAT deciders}
+
+Let $A$ be any uniform deterministic total exact SAT decider, without assuming a running-time bound.  Define
+\[
+ W_A(F)=
+ \begin{cases}
+ \bigl[\bigoplus_u c_u=0\bigr],&\text{if $F$ validates as canonical $T_r(c)\in\mathcal T$},\\
+ A(F),&\text{otherwise}.
+ \end{cases}
+ \tag{9}
+\]
+
+\begin{theorem}[\texttt{RECOGNIZABLE-ISLAND-WRAPPER1}]
+$W_A$ is a uniform deterministic total exact SAT decider.  On every input in $\mathcal T$ it uses $O(N)$ time and $O(\log N)$ workspace beyond fixed control, returns only the decision bit, and its semantic work after recognition is one parity accumulator.  If $A$ runs in polynomial time and space, so does $W_A$.
+\end{theorem}
+
+\begin{proof}
+The branches in (9) are disjoint and exhaustive.  Correctness on the recognized branch is Theorem 1; correctness elsewhere is correctness of $A$.  Validation charges every source read and does not trust a promise.  The resource bounds are the maximum of the recognizer and $A$ off the island.  On the island, $A$ is never invoked.
+\end{proof}
+
+Consequently, under the counterfactual $\SAT\in P$ (so $\PolySAT\ne\varnothing$), choose any $A\in\PolySAT$ and construct $W_A\in\PolySAT$.  This single exact polynomial decider falsifies an assertion quantified over \emph{every} member of $\PolySAT$ that demands compatibility-row extraction, witness exposure, or $\Omega(r)$ work-state on (3).  The argument does not assume $P\ne NP$; it holds precisely inside the $P=NP$ counterfactual where the universal target was meant to create a contradiction.
+
+The conclusion is deliberately limited.  Sequential validation costs $O(N)$ time.  The theorem proves no sublinear probe bound and no superlinear time lower bound.  It does not show that a full SAT decider uses logarithmic space on arbitrary formulas: off (3), $W_A$ inherits $A$.  Nor does a proof-system lower bound transfer to (9).  Tseitin contradictions can be hard for resolution, regular resolution, DNNF, or bounded-depth proof systems while their canonical decision bit remains the parity in (7).
+
+\section{Memory, communication, encoding, and one-bit audits}
+
+\paragraph{Memory.}
+The live summary after each validated vertex block is one parity bit plus logarithmic indices.  Thus semantic witness count does not force linear memory.  A claim about retaining an explicit $\Theta(r)$ charge vector is false on the canonical stream.
+
+\paragraph{Communication.}
+If vertex blocks are streamed by separate producers under the validated canonical interface, each contributes one charge bit and the consumer XORs them.  This is a declared protocol fact, not a lower bound on arbitrary SAT communication.  Changing the partition or requiring adversarial consistency needs a new model.
+
+\paragraph{Alternative encodings.}
+Clause and literal permutations preserve (7), but an on-line $O(\log N)$ recognizer is proved here only for the canonical order.  A noncanonical encoding may require sorting, repeated scans, or more workspace; it does not revive a representation-independent compatibility-extraction theorem.  Comment padding changes $M$ and input-reading cost without changing the parity bit.  A trusted global answer annotation trivially collapses the island further, while an untrusted annotation must be validated.
+
+\paragraph{Affine elimination and semantic shortcuts.}
+Full Gaussian elimination solves arbitrary XOR systems in polynomial time.  Connected Tseitin structure makes even that unnecessary: rank and consistency reduce to (7).  Horn, 2SAT, bounded-treewidth formulas, and independent products provide parallel hostile controls in which large semantic relations also coexist with specialized polynomial algorithms.
+
+\paragraph{One-bit output.}
+$W_A$ produces exactly one bit.  Extracting an assignment by self-reduction is a different execution with additional calls and cannot be charged to (9) under SAME\_REALIZATION.
+
+\section{Finite reproducible audit}
+
+The dependency-free script
+\begin{verbatim}
+timeout 30s python3 experiments/review/tseitin_streaming_shortcut_audit.py
+\end{verbatim}
+completed in 5.991 seconds.  It tested prism parameters $3\le r\le8$; all charge vectors through ten vertices and 1,024 deterministic charges at each larger size; incidence ranks; exact clause and occurrence counts; three encodings; four padding lengths; seven wrappers; Horn, 2SAT, bounded-treewidth and independent-product controls; and exhaustive assignment counts for the six- and eight-vertex prisms.  It made 761,034 assertions with zero failures.  The largest semantic matrix represented only by its dimensions had $2^{24}=16{,}777{,}216$ rows; it was not materialized.
+
+Script SHA-256:
+\begin{verbatim}
+a901a59cb6a2391a09bb43fc2af5d97c9967369544f638e24c24f41624902248
+\end{verbatim}
+Result SHA-256:
+\begin{verbatim}
+5a45f17e54c285a8595753bf50546b44024dd127ffc569ec5a204a83b48c3023
+\end{verbatim}
+The audit is \COMP, not asymptotic evidence.  The general statements follow from the incidence-rank proof.
+
+\section{Barrier-transfer and post-quantum ledger}
+
+The two blocking obstacles are (i) deriving a fixed favorable all-input resource bound from arbitrary SAT computation without selecting a chosen representation, and (ii) reaching an unconditional lower bound in the same ordinary random-access realization with all construction, validation, replay, failure, output, and peak-space costs charged.
+
+\begin{itemize}
+\item \textbf{Directly transferable theorem.}  The graph incidence rank, parity consistency criterion, and affine model count transfer exactly to (2).  This is the algorithmic shortcut proved above.  FLMV transfers only after one ordinary machine meets its simultaneous time-space hypotheses; it supplies no acquisition theorem.
+\item \textbf{Useful analogy needing a new transfer theorem.}  VLSI cut/routing bounds, distributed parity, control observability, locally decodable codes, and proof-complexity interpolation all require a declared layout, cut, observation map, decoder, or proof system.  To constrain every SAT decider, one must prove that arbitrary computation preserves that interface and pays its costs.
+\item \textbf{Misleading or failed transfer.}  Resolution/DNNF lower bounds for Tseitin formulas do not lower-bound unrestricted SAT decision.  Large $H(F)$, high proof width, expansion, or many witnesses do not imply time or state exposure.  Relativizing simulation cannot alone resolve $P$ versus $NP$, and algebrizing extensions remain blocked.
+\end{itemize}
+
+For the post-quantum prompts: the exact solution object is an affine code coset, so Schur squares, duals, quadratic relations, Hilbert functions, and syzygies may reveal more exploitable structure; no hardness transfer follows.  For the map $c\mapsto\bigoplus c$, each of two fibers has size $2^{2r-1}$ and
+\[
+ \operatorname{Coll}=2\,(2^{2r-1})^2=2^{4r-1},\qquad |\operatorname{im}|=2.
+\tag{10}
+\]
+This is an \textbf{EXACT OBJECT/THEOREM TRANSFER} of the collision ledger, and it diagnoses extreme lossiness as the reason for the shortcut.  LWE-style external extraction, special soundness, collapse binding, hashes, and random oracles remain \textbf{ANALOGY/CANDIDATE} or \textbf{FAILED TRANSFER}; no unconditional arbitrary-decider bridge results.
+
+\section{CORPUS REVIEWED}
+
+Before substantive work, the run surveyed the current repository tree and read root \texttt{main.tex}, actual \texttt{main4.tex}/\texttt{main5.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, the full PNP research skill/protocol, and every task specification under \texttt{tasks/}.  It verified the cyclic predecessor main snapshot \texttt{SYNTHESIS-0019}, then read the newest LSPV-1 through LSPV-4 reports and synthesis report.  Material historical reads/searches covered LB-0018 through LB-0021, paired-$K_{3,3}$ and affine/Tseitin controls, compatibility extraction, wrapper factorization, padding quotients, HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC, governance, scripts, raw results, coordination, and retired routes.  Primary literature on Tseitin formulas, their solution counts and proof complexity, SAT time-space endpoints, relativization, and algebrization was checked first.  This is a corpus-wide tree survey plus material reading, not a claim that every historical byte was reread.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+Earlier reports repeatedly listed affine/Tseitin elimination as a hostile control and LB-0018 showed that a linear probe floor can coexist with easy product languages.  No prior report located by repository search stated the canonical prism exact-$(4,4)$ family, its simultaneous formulas (6)--(8), the logarithmic-state full-SAT wrapper (9), and the all-decider falsification with these exact quantifiers.  The result strengthens, rather than contradicts, the corpus warning that semantic-state count does not imply arbitrary computational work.  It also explains why proof-complexity hardness of Tseitin contradictions is not the missing universal bridge.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root \texttt{main.tex} already marks compatibility/state-count transfer as open or retired in broader forms and names \texttt{FAVORABLE-SOURCE-FORK-ENDPOINT1} as the current LSPV-1 target.  This run adds a fully explicit exact-$(4,4)$ clean-core counterexample showing that exponential $H$ rows and exponentially many witnesses can collapse to one parity bit with logarithmic state.  The LSPV-1 ownership region is reconciled to retain LB-0018--LB-0021 and add LB-0022 as a negative universal-transfer result.  The highest-value target is unchanged but narrowed: it must exclude recognizable algebraic islands and cannot use semantic cardinality as its charge.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+Adopted: exact encoded-length accounting, H22/H44 occurrence discipline, wrapper replacement tests, affine elimination, one-bit output, SAME\_REALIZATION, and FLMV only as a matched endpoint.  Rejected: raw compatibility rows, witness count, resolution width, DNNF size, or algebraic relation count as unconditional arbitrary-decider costs.  Retired on $\mathcal T$: \texttt{H-EXTRACTION-NECESSARY1} and \texttt{POSITIVE-STATE-NECESSARY1}.  Still \OPEN: a full-language source compiler with fixed favorable exponents and a nonrelativizing, nonalgebrizing, model-matched endpoint.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+The newest root synthesis did not require scientific reversal.  Any statement that ``Tseitin is hard'' without naming a proof system, representation, or machine model is overstated: canonical decision is the parity test (7), even though some proof representations are exponentially large.  Actual GitHub \texttt{main4.tex} and \texttt{main5.tex} also contain a split bibliography \verb|\let| statement and doubled-backslash input tokens near recently inserted additions; these are entry-point syntax defects for the synthesis/bridge owners to repair and are not evidence for or against a mathematical claim.
+
+\section{Open handoff}
+
+The next candidate must survive the following exact hostile condition:
+\begin{quote}
+For every proposed source resource $R(F)$, first search for a polynomial-time recognizable island on which $R(F)$ is exponentially large but the SAT bit is a logarithmic-state homomorphic summary.  Only after excluding such islands may one seek a full-language compiler whose fixed exponent pair lies in a known forbidden random-access region.
+\end{quote}
+The surviving \texttt{FAVORABLE-SOURCE-FORK-ENDPOINT1} must be all-input, hereditary, solver-exponent independent, and charged in one realization.  One load-bearing arrow remains \OPEN; hence P versus NP remains \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{tseitin-modern}
+A. de Colnet and S. Mengel,
+``Characterizing Tseitin-Formulas with Short Regular Resolution Refutations,''
+\emph{Journal of Artificial Intelligence Research} 76 (2023), 369--405.
+\url{https://www.jair.org/index.php/jair/article/view/13521}
+
+\bibitem{urquhart}
+A. Urquhart,
+``Hard examples for resolution,''
+\emph{Journal of the ACM} 34(1), 1987, 209--219.
+\url{https://doi.org/10.1145/7531.8928}
+
+\bibitem{flmv}
+L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+``Time-space lower bounds for satisfiability,''
+\emph{Journal of the ACM} 52(6), 2005, 835--865.
+\url{https://doi.org/10.1145/1101821.1101828}
+
+\bibitem{bgs}
+T. Baker, J. Gill, and R. Solovay,
+``Relativizations of the $P=?NP$ question,''
+\emph{SIAM Journal on Computing} 4(4), 1975, 431--442.
+\url{https://doi.org/10.1137/0204037}
+
+\bibitem{aw}
+S. Aaronson and A. Wigderson,
+``Algebrization: A New Barrier in Complexity Theory,''
+\emph{ACM Transactions on Computation Theory} 1(1), 2009.
+\url{https://eccc.weizmann.ac.il/report/2008/034/}
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LSPV-1::LB-0022
+\end{document}
