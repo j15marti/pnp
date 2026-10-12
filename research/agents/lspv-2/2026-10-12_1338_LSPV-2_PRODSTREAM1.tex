@@ -1,0 +1,389 @@
+% LSPV-2 REPORT::PRODSTREAM1::2026-10-12T13:38:00Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{fontspec,amsmath,amssymb,amsthm,booktabs,array,enumitem,xurl,hyperref,microtype}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\claim}[1]{\texttt{\detokenize{#1}}}
+
+\title{LSPV-2 PRODSTREAM1:\\
+Independent SAT Products Do Not Force an Answer Vector or Additive Peak Space}
+\author{UNIVERSAL\_CORE\_TESTS}
+\date{12 October 2026, 13:38 UTC}
+
+\begin{document}
+\sloppy
+\maketitle
+
+\begin{abstract}
+P versus NP remains \OPEN.  This run closes the nonidentical-product case left
+open by REPDIRSUM1 at the level of peak workspace and answer exposure.  On a
+read-only CNF encoding, a total exact decider can enumerate incidence
+components in logarithmic workspace, copy one locally renamed component,
+solve it exhaustively, discard it, and short-circuit on the first NO.  For
+component encodings of lengths $n_1,\ldots,n_k$, the resulting unconditional
+decider has peak writable workspace
+\[
+             O\!\left(\log N+\max_i n_i\right),
+\]
+not an additive $\sum_i n_i$ bound, and it retains one accumulator bit rather
+than a $k$-bit answer vector.  The components may be distinct and need not be
+cache-equivalent.  Time remains polynomial preprocessing plus the sum of the
+component exhaustive-search times; no faster exact-SAT base is claimed.
+The result does not address connected hard instances and does not refute a
+worst-case time statement with prefix $\forall A\,\exists F_A$.
+\end{abstract}
+
+\section{Strict result ledger}
+
+\begin{center}\small
+\begin{tabular}{@{}p{0.44\linewidth}p{0.20\linewidth}p{0.29\linewidth}@{}}
+\toprule
+Claim & Status & Scope\\ \midrule
+\claim{PRODUCT-STREAM-SPACE-UPPER-BOUND1} & \EXACT & Read-only-input deterministic workspace; arbitrary valid CNFs.\\
+\claim{PRODUCT-ANSWER-VECTOR-NECESSITY1} & \RETIRED & A one-bit component conjunction needs no stored vector.\\
+\claim{ADDITIVE-PRODUCT-PEAK-SPACE1} & \RETIRED & Balanced disconnected products; peak space can be max-type.\\
+Finite hostile-control audit & \COMP & 1,641 checks, 306 ledgers, zero failures.\\
+Connected-core arbitrary-decider time obstruction & \OPEN & No transfer or forbidden endpoint.\\
+P versus NP & \OPEN & No separation and no polynomial SAT algorithm.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Claim card: target, quantifiers, model, and SAME\_REALIZATION}
+
+Fix the standard self-delimiting indexed CNF encoding.  The input tape is
+read-only; writable work tapes are charged; $N=|\operatorname{enc}(F)|$.
+Malformed inputs follow one fixed convention.  Let the variable--clause
+incidence components of a valid $F$ be $C_1,\ldots,C_k$.  Let $n_i$ be the
+length of the canonical local-rank encoding of $C_i$, and let $v_i$ be its
+number of variables.  Parsing, connectivity tests, component enumeration,
+local renaming, copied component buffers, exhaustive assignments, rereads,
+short-circuiting, and the output bit are charged.
+
+The attacked promotion was not semantic factorization itself, which is true,
+but either of the following computational necessities:
+\begin{align*}
+ &\text{every exact decider materializes }(\SAT(C_1),\ldots,\SAT(C_k));
+                                                               \tag{VEC}\\
+ &\text{every exact decider uses }\Omega\!\left(\sum_i n_i\right)
+   \text{ peak writable space on balanced products}.          \tag{ADDSPACE}
+\end{align*}
+One total exact decider falsifies both universal assertions.
+
+\paragraph{Exact quantifier proved.}
+There exists one uniform total deterministic exact SAT decider $B$ and a
+constant $c$ such that for every valid CNF $F$,
+\[
+ S_B(F)\le c\left(\log N+\max_i n_i\right),
+ \qquad
+ T_B(F)\le N^c+\sum_{i=1}^{j(F)}2^{v_i}n_i^c,                 \tag{1}
+\]
+where $j(F)\le k$ is the first unsatisfiable component index, or $k$ if all
+components are satisfiable.  The machine stores one Boolean accumulator and
+never constructs the answer vector.  The entire parsing--enumeration--copy--
+search--discard--output execution is the single \textsc{same\_realization}.
+
+\section{Primary-literature and barrier-transfer preflight}
+
+The two obstacles are: (i) a multi-output direct-sum theorem does not
+automatically apply to the one-bit AND of component answers, and (ii) peak
+space is reusable across sequential subcomputations.  Reingold proves
+deterministic undirected $s$--$t$ connectivity in logarithmic space and
+polynomial time\footnote{O.~Reingold, ``Undirected Connectivity in
+Log-Space,'' \emph{J. ACM} 55(4), 2008,
+\url{https://omereingold.wordpress.com/wp-content/uploads/2014/10/sl.pdf}.}.
+This is a \textbf{directly transferable theorem}: the incidence graph is an
+undirected graph presented by a log-space adjacency predicate, so component
+membership can be tested without a visited bitmap.  Biere and Sinz explicitly
+decompose SAT instances into connected components\footnote{A.~Biere and
+C.~Sinz, ``Decomposing SAT Problems into Connected Components,''
+\emph{JSAT} 2 (2006), 201--208,
+\url{https://journals.sagepub.com/doi/pdf/10.3233/SAT190022}.}; their algorithmic
+decomposition supports the Boolean identity but is not a lower bound.
+
+Jain, Klauck and Santha prove optimal direct-sum theorems for deterministic
+and randomized decision trees computing independent outputs\footnote{R.~Jain,
+H.~Klauck and M.~Santha, ``Optimal Direct Sum Results for Deterministic and
+Randomized Decision Tree Complexity,'' 2010,
+\url{https://arxiv.org/abs/1004.0105}.}.  Applying that lower bound to an
+unrestricted Turing/RAM SAT decider with one conjunction bit is a
+\textbf{FAILED TRANSFER}: both the machine model and output interface differ.
+Hong--Kung red--blue pebbling gives exact I/O bounds for a fixed computation
+DAG and two-level memory, but supplies only an \textbf{ANALOGY/CANDIDATE}
+here; no theorem forces every SAT decider to realize that DAG or memory
+hierarchy.  HEC multi-epoch state accumulation is likewise exact only in its
+declared future-challenge/no-reread model.  Static reread and recomputation are
+precisely the missing transfer.
+
+FLMV remains a directly usable time--space exclusion only after one ordinary
+machine has been placed in its forbidden simultaneous region.  The present
+upper bound supplies no such landing.
+
+\section{Exact streaming theorem}
+
+\begin{theorem}[\claim{PRODUCT-STREAM-SPACE-UPPER-BOUND1}]
+There is a uniform total deterministic exact SAT decider $B$ satisfying (1).
+On every valid input it exposes no component-answer vector, compatibility
+table, witness, or reconstruction transcript; it outputs one bit.
+\end{theorem}
+
+\begin{proof}
+Handle an empty clause immediately.  On the remaining valid CNF, regard
+clauses and variables as the vertices of its undirected incidence graph.  By
+Reingold's theorem, membership of two vertices in the same component is
+decidable in $O(\log N)$ workspace and polynomial time.
+
+Scan graph vertices in their encoded order.  A vertex is the representative
+of its component exactly when no earlier vertex is connected to it.  This
+predicate is evaluated by repeated log-space connectivity calls, so no
+visited set is stored.  For each representative, rescan the source and emit
+exactly the clauses in that component into one reusable work buffer.  Replace
+each global variable identifier $x$ by one plus the number of smaller
+variable identifiers connected to the representative; this rank can again be
+computed by source scans and connectivity tests in $O(\log N)$ auxiliary
+space.  The buffer therefore has length $n_i$.
+
+Enumerate the $2^{v_i}$ assignments using $O(v_i)$ bits, rescan the component
+buffer to test each assignment, and retain only its SAT bit.  If that bit is
+zero, output zero and halt.  Otherwise erase/reuse the component buffer and
+continue.  If every component accepts, output one.  Since variables of
+different incidence components are disjoint,
+\[
+                 \SAT(F)=\bigwedge_{i=1}^k\SAT(C_i),           \tag{2}
+\]
+so the machine is exact.  At any instant it stores log-space enumeration
+state, one component buffer, one assignment, and one accumulator bit, proving
+the space bound.  Repeated connectivity/source scans are polynomial; summing
+the exhaustive component searches through the first NO gives the time bound.
+Malformed-input recognition can precede this computation within the same
+polynomial/log-space overhead.  Thus the machine is total and uniform.
+\end{proof}
+
+\begin{corollary}[Nonadditive peak space and no vector]
+For any balanced product sequence with $k\to\infty$ and
+$m\le n_i\le 2m$,
+\[
+ \frac{S_B(F)}{\sum_i n_i}
+ =O\!\left(\frac1k+\frac{\log(km)}{km}\right)=o(1).
+\]
+Hence \claim{ADDITIVE-PRODUCT-PEAK-SPACE1} and
+\claim{PRODUCT-ANSWER-VECTOR-NECESSITY1} are \RETIRED.  This conclusion is
+unchanged when the components are pairwise distinct.  In a disjoint union of
+proper duplicate-free signed Monotone $3$SAT-$(2,2)$ components, the union
+remains within the same clean syntax, so the counterexample also applies to
+disconnected clean-core products.
+\end{corollary}
+
+The theorem deliberately makes no favorable time claim.  On an all-YES
+product it performs one exhaustive search per component.  A time direct-sum
+lower bound for every unrestricted SAT decider remains unproved, and a
+connected input has $k=1$.
+
+\section{Bounded reproducible hostile-control audit --- \COMP}
+
+The script
+\path{experiments/review/product_answer_streaming_collapse_audit.py}
+writes
+\path{results/raw/review/2026-10-12_product_answer_streaming_collapse.json}.
+One deterministic invocation with seed $20261012$ completed in $6.2840$
+seconds, below the 30-second limit, so no chunking was required.  It emitted
+306 full ledgers and passed 1,641 assertions with zero failures.
+
+The fixed suite covered satisfiable and unsatisfiable 2SAT, Horn,
+affine/Tseitin parity, bounded-treewidth XOR paths, paired-$K_{3,3}$ signed
+clean cores, independent mixed products, redundant/tautological padding,
+three encodings, $k\in\{1,2,4,8,16,32\}$, early and late UNSAT, and
+DIRECT/COPY/DEAD/DELAY/INTERP/RECOMP wrappers.  Every decision path reported
+zero answer-vector bits, zero compatibility-extraction calls, zero
+reconstruction calls, one accumulator bit and one output bit.  RECOMP doubled
+work but reused the same peak buffer.  Feasible small products were also
+checked against monolithic exhaustive search.
+
+Semantic model counts were computed on a separately identified audit path;
+they were not laundered into decision cost.  Script SHA-256 is
+\nolinkurl{a0eea1ac7acbcd1cfdae7900c59fd47931fa391b3783e02aca39ca75b14c6455};
+raw-result SHA-256 is
+\nolinkurl{426d89cda7287367e05e8e329b528fb6a5aa49febb6faca32883a5b0e615f073}.
+The executable uses ordinary adjacency storage for convenience; the symbolic
+log-space theorem relies on Reingold and is not inferred from the finite run.
+
+\section{Hostile controls, wrappers, and exact scope}
+
+Affine elimination, implication-graph SCC, Horn propagation and bounded-
+treewidth dynamic programming could replace exhaustive component search and
+make the corresponding controls cheaper; none is needed for the theorem.
+Padding, redundant clauses and alternate encodings change scans and buffer
+sizes but not the sequential-reuse proof.  COPY, DEAD, DELAY and INTERP add
+real work; RECOMP adds replay; none forces simultaneous component retention.
+A compact circuit or branching program may compress a component further and
+therefore cannot rescue an additive lower bound.  A maximal semantic oracle
+or algebraic oracle only makes component answers cheaper.
+
+The result is strongest against memory/exposure language.  It does not show
+that all products are polynomial-time easy, does not exclude a time lower
+bound in a declared multiple-output/query model, and does not touch connected
+worst-case clean-core instances.  It therefore coexists with QGUARD1 and
+ANTISHARE1.
+
+\section{Post-quantum technique ledger}
+
+For the semantic answer-vector map
+$L:\{0,1\}^k\to\{0,1\}$, $L(a)=\bigwedge_i a_i$, the two fibers have sizes
+$2^k-1$ and $1$, so
+\[
+ \operatorname{Coll}(L)=(2^k-1)^2+1,
+ \qquad |\operatorname{im}L|=2.                                \tag{3}
+\]
+Equation (3) and
+$|\operatorname{im}L|\ge 4^k/\operatorname{Coll}(L)$ are an
+\textbf{EXACT OBJECT/THEOREM TRANSFER} of the collision ledger.  The map is
+extremely lossy, and the algorithm exploits that lossiness; transferring
+collision multiplicity to a time or space lower bound is a
+\textbf{FAILED TRANSFER}.
+
+Schur squares, quadratic-relation ranks, Hilbert functions, syzygies and
+graded Betti numbers are \textbf{FAILED TRANSFER} for this obligation because
+no code representation is forced and components may be discarded.  LWE-style
+external black-box extraction is an \textbf{ANALOGY/CANDIDATE} requiring a
+solver-independent worst-case reduction.  Special-soundness collision
+extraction requires an actual common-commitment interface, absent here.
+Cryptographic binding and random-oracle assumptions are inadmissible.
+
+\section{Barrier audit}
+
+The streaming upper bound relativizes and algebrizes: oracle or algebraic-
+oracle instructions can be used inside each reused component computation
+without forcing simultaneous retention.  It supplies no nonrelativizing or
+nonalgebrizing hinge.  No constructive large property of circuit functions is
+defined, so Natural Proofs is not invoked or escaped.  No nonuniform advice
+is used.  The theorem holds unconditionally and does not assume $P=NP$; if
+$P=NP$, substituting a polynomial component solver makes the same wrapper
+polynomial but yields no contradiction.  FLMV remains unavailable because no
+single same-machine forbidden simultaneous time--space pair has been proved.
+
+\section{CORPUS REVIEWED}
+
+This run enumerated the complete 2,585-path GitHub tree and read root
+\path{main.tex}, \path{AGENTS.md}, \path{CODEX.md}, the complete
+\path{.codex/skills/pnp-research/SKILL.md} plus experiment mode and research
+protocol, every current file under \path{tasks/}, actual \path{main4.tex} and
+\path{main5.tex}, and verified MAIN snapshot
+\path{research/main/2026-10-12_0850_MAIN_SYNTHESIS-0023.tex}.  It read newest
+verified LSPV-1 PROMFAST1, LSPV-2 REPDIRSUM1, LSPV-3 WRAPORBIT1 and LSPV-4
+MODELBRIDGE-0025, plus materially relevant TESTS-0001, TESTS-0021, QGUARD1,
+APIFLAT1 and ANTISHARE1 surfaced by repository search.
+
+The HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC causal branch, current governance,
+and cited experiment/result surfaces were inspected.  Repository searches
+covered component streaming, answer vectors, additive memory, direct sums,
+short-circuiting and sequential workspace.
+
+The newest canonical predecessor artifact was LSPV-1 PROMFAST1 at 12:16 UTC;
+no artifact attributable to the immediately preceding scheduled opportunity
+was found.  The exact missing body was unavailable, so it was not
+reconstructed.  A nonblocking recovery request was written and read back at
+\path{research/review/outbox/tests/2026-10-12_1338_LSPV1-RETRY.md}; the failure
+classification remains UNKNOWN / missing canonical artifact.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+TESTS-0001 already showed that summed query volume need not be peak workspace.
+REPDIRSUM1 proved one-call collapse for repeated isomorphic components and
+noted short-circuit UNSAT, while leaving nonidentical products live.
+ANTISHARE1 showed that syntactic diversity does not imply hardness.
+APIFLAT1 erased named APIs.  PRODSTREAM1 does not rename those results: its
+nonduplicate increment is a general, unconditional component-streaming
+workspace theorem for arbitrary distinct components, with Reingold-based
+enumeration, explicit encoded-length bounds, and answer-vector erasure.
+
+There is no contradiction with HEC's multi-epoch state sum: HEC forbids
+rereading erased payloads after fresh challenges, whereas a static CNF remains
+available on a read-only input tape and the component buffer is explicitly
+recomputed.  There is no contradiction with FLMV because the present machine
+may take exponential time.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN already rejects semantic-state-count-to-runtime inference and
+records the repeated-component collapse.  This run strengthens only the
+LSPV-2 negative ledger: even pairwise distinct independent components do not
+force additive \emph{peak} workspace or an exposed component-answer vector.
+The live product question narrows to time in a precisely declared model, or
+to an external future-challenge/no-reread interface plus an all-decider static
+compiler.  The executive OPEN status and highest-value full-domain target do
+not change.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\textbf{Adopted:} REPDIRSUM1's semantic product identity and charged
+component parsing; QGUARD1's quantifier guard; ANTISHARE1's semantic-shortcut
+guard; Reingold USTCON; read-only input/writable workspace accounting;
+SAME\_REALIZATION; explicit wrapper costs.  \textbf{Rejected:} transfer from
+multi-output decision-tree direct sum, HEC no-reread state accumulation,
+fixed-DAG pebbling, or model-count products to unrestricted static SAT peak
+space.  \textbf{FALSIFIED/RETIRED:}
+\claim{PRODUCT-ANSWER-VECTOR-NECESSITY1} and
+\claim{ADDITIVE-PRODUCT-PEAK-SPACE1}.  \textbf{OPEN:} arbitrary-decider
+time obstruction on connected clean cores, model-preserving online transfer,
+solver-independent exponents, and a model-matched contradiction.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any statement that ``independent components require simultaneous states'' or
+``direct sum means additive peak memory'' is overstated for a static one-bit
+SAT decision interface.  Semantic factorization proves (2), not simultaneous
+storage.  Conversely, the theorem does not show a subadditive \emph{time}
+bound: on all-YES products its displayed implementation sums component work.
+
+\section{Precise handoff and missing universal implication}
+
+The product branch should now target one of two explicitly typed statements:
+(i) a time direct-sum theorem in a fixed query/communication model with the
+actual output interface stated, followed by a model-preserving compiler from
+every ordinary SAT decider; or (ii) a future-challenge/no-reread relation for
+which sequential buffer reuse is illegal, followed by a charged staticization
+theorem.  Either route must handle connected clean cores, external acquisition,
+all preprocessing/rereads/recomputation, arbitrary solver exponents, wrappers,
+and one SAME\_REALIZATION FLMV landing.  No corpus theorem supplies these
+arrows.  P versus NP remains \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{Reingold08} O.~Reingold, ``Undirected Connectivity in Log-Space,''
+\emph{J. ACM} 55(4), 2008.
+\bibitem{BiereSinz06} A.~Biere and C.~Sinz, ``Decomposing SAT Problems into
+Connected Components,'' \emph{JSAT} 2 (2006), 201--208.
+\bibitem{JKS10} R.~Jain, H.~Klauck and M.~Santha, ``Optimal Direct Sum Results
+for Deterministic and Randomized Decision Tree Complexity,'' 2010.
+\bibitem{HK81} J.-W.~Hong and H.~T.~Kung, ``I/O Complexity: The Red--Blue
+Pebble Game,'' STOC 1981.
+\bibitem{FLMV05} L.~Fortnow, R.~Lipton, D.~van Melkebeek and A.~Viglas,
+``Time--Space Lower Bounds for Satisfiability,'' \emph{J. ACM} 52(6), 2005.
+\bibitem{BGS75} T.~Baker, J.~Gill and R.~Solovay, ``Relativizations of the
+$P=?NP$ Question,'' \emph{SIAM J. Comput.} 4(4), 1975.
+\bibitem{AW09} S.~Aaronson and A.~Wigderson, ``Algebrization: A New Barrier in
+Complexity Theory,'' \emph{ACM TOCT} 1(1), 2009.
+\bibitem{RR97} A.~Razborov and S.~Rudich, ``Natural Proofs,'' \emph{JCSS}
+55(1), 1997.
+\end{thebibliography}
+
+\noindent\textbf{Final status.}
+\claim{PRODUCT-STREAM-SPACE-UPPER-BOUND1} is \EXACT pending independent
+review; the finite audit is \COMP;
+\claim{PRODUCT-ANSWER-VECTOR-NECESSITY1} and
+\claim{ADDITIVE-PRODUCT-PEAK-SPACE1} are \RETIRED.  Connected-core time,
+all-decider transfer, the model-matched endpoint, nonrelativization,
+nonalgebrization, UCORE-TIME1, and P versus NP remain \OPEN.
+
+% END_OF_VERIFIED_REPORT::LSPV-2::PRODSTREAM1
+\end{document}
