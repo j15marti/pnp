@@ -1,0 +1,279 @@
+% LSPV-3 REPORT::ONETRANS1::2026-10-12T00:36:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,hyperref}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue}
+\newcommand{\st}[1]{\textbf{#1}}
+\title{LSPV-3 ONETRANS1: The Single-Transcript Barrier to Special-Soundness Extraction}
+\author{LSPV-3 Universal Core Red Team}
+\date{2026-10-12 00:36 UTC}
+
+\begin{document}
+\maketitle
+
+\section*{Executive result}
+
+\st{PROVED/EXACT} (independent review pending): a deterministic black-box
+interaction with a deterministic one-bit SAT decider has one transcript after
+the source, extractor coins, and query policy are fixed.  Replaying the same
+interaction cannot create the two accepting, same-commitment,
+different-challenge transcripts required by special soundness.  A fork must
+instead vary an external challenge/query, inspect implementation internals, or
+change the source.  Those options respectively require a new interactive
+compiler, violate black-box SAME\_REALIZATION, or violate same-source binding.
+Thus \texttt{ONEBIT-SPECIAL-SOUNDNESS-TRANSFER1} is
+\st{FALSIFIED/RETIRED} in its unqualified form.  This does not refute a future
+source-matched interactive compiler.  That compiler remains \st{OPEN}, and P
+versus NP remains open.
+
+\section*{Claim card}
+
+\begin{description}
+\item[Status before run.] \st{CANDIDATE}: enrich ordinary SAT witnesses into
+opening transcripts and use special-soundness-style collision extraction.
+\item[Exact quantifiers attacked.] For every uniform deterministic exact SAT
+decider $A$, every source $F$, and a black-box extractor $E$, replay $A$ at one
+fixed source/address to obtain two accepting openings with one commitment and
+distinct challenges.
+\item[Machine/model.] Deterministic oracle transducer $E^{A}$; $A$ exposes only
+the exact decision bit $\mathrm{SAT}(q)$ on each queried formula $q$.
+\item[SAME\_REALIZATION objects.] The source $F$, address $a$, extractor coins
+$\rho$, query policy, oracle answers, commitment prefix, challenge, and reply.
+\item[Weakest useful repair.] An explicit compiler must create a genuine
+challenge-response interface from the same static source, keep the commitment
+fixed before the challenge, make both responses solver-derived, and charge
+construction, rewind/replay, validation, time, space, and query lengths.
+\end{description}
+
+\section*{Exact theorem}
+
+Let $A:\{0,1\}^*\to\{0,1\}$ be deterministic.  Let $E$ be a deterministic
+oracle transducer after fixing source $F$, auxiliary input $a$, and coins
+$\rho$.  Its transcript is
+\[
+ T(E,A;F,a,\rho)=
+ (q_1,A(q_1),\ldots,q_s,A(q_s),z),
+\]
+where every next query and the final output are deterministic functions of the
+fixed data and preceding query-answer pairs.
+
+\paragraph{Theorem (fixed-replay uniqueness).}
+For every $E,A,F,a,\rho$, the transcript $T(E,A;F,a,\rho)$ is unique.  Rewinding
+and replaying from the same fixed state yields exactly the same transcript.
+
+\paragraph{Proof.}
+Induct on the oracle-call index.  Before the first call all fixed data agree,
+so determinism gives the same $q_1$; determinism of $A$ gives the same answer.
+If the first $i$ query-answer pairs agree, determinism of $E$ gives the same
+$q_{i+1}$ and determinism of $A$ gives the same answer.  The halting decision
+and final output therefore also agree. \hfill$\square$
+
+\paragraph{Fork trilemma.}
+Suppose two putative transcripts have the same commitment prefix but distinct
+challenges.  By the theorem, they cannot both arise from fixed replay.  At
+least one of the following must hold:
+\begin{enumerate}
+\item the extractor varies external coins/challenge/query, so the fork is
+created by the extractor/compiler rather than forced by the one-bit decider;
+\item the source or address changes, so the transcripts do not satisfy the
+same-source premise;
+\item the procedure reads or controls internal machine state, so it is
+non-black-box and must survive DEAD/COPY/DELAY/INTERP/RECOMP covariance.
+\end{enumerate}
+This is exhaustive under the declared deterministic oracle interface.
+
+\paragraph{Extensional corollary.}
+All correct exact SAT deciders implement the same Boolean oracle.  Hence a
+black-box transcript with fixed $E,F,a,\rho$ is independent of which correct
+implementation is installed.  It can establish a source/extractor property,
+not an implementation-specific exposure or cost, unless an additional charged
+realization theorem is supplied.
+
+\section*{Why cryptographic special soundness does not transfer directly}
+
+In a standard $\Sigma$-protocol the prover first sends a commitment, the
+verifier then sends a fresh challenge, and special soundness assumes two
+accepting conversations with the same commitment and different challenges.
+The theorem above does not dispute that cryptographic definition.  It shows
+that a static deterministic one-bit SAT decision interface does not provide
+its interactive premise.  Forking-lemma analyses explicitly rerun while
+changing random-oracle/challenge behavior; that is an extractor-controlled
+fork, not a theorem that a deterministic SAT decider exposes two openings.
+Cryptographic hardness, random-oracle programmability, and collapse binding
+remain inadmissible in an unconditional P-versus-NP proof.
+
+\section*{Reproducible finite audit}
+
+The script
+\path{experiments/review/single_transcript_special_soundness_audit.py}
+exhaustively enumerated all $256$ Boolean decision oracles on an eight-query
+domain and all $8^3=512$ choices of a fixed prefix query and two
+challenge-selected second queries.  It compared DIRECT, COPY, DEAD, DELAY,
+INTERP, and RECOMP wrappers and included constant, Horn-like, Krom/2SAT-like,
+affine parity, and bounded-treewidth projection controls.
+
+It performed $2{,}097{,}440$ checks with zero failures in $0.584658$ seconds:
+$262{,}144$ deterministic replay checks, $1{,}572{,}864$ wrapper-observation
+checks, $131{,}072$ fork pairs, and $288$ named-control checks.  All $114{,}688$
+second-query divergences were externally challenge-selected; same-query
+response divergences and oracle-generated distinct challenges were both zero.
+The result is \st{COMPUTATIONAL}; the theorem is symbolic.
+
+Artifacts and SHA-256 values:
+\begin{align*}
+\text{script}&:\ \texttt{764604c8bdf928365a010d5f5474836361b331943d2f3c0f3f4e66bb54b3cb1f},\\
+\text{JSON}&:\ \texttt{4a875cabf2ea4a6268997f129400c059eb88efa06734593e8431e3358f990aa3}.
+\end{align*}
+The run was one bounded stage below 30 seconds; no asymptotic claim is inferred
+from the finite enumeration.
+
+\section*{Hostile controls and exact limits}
+
+Horn, 2SAT, affine/Tseitin Gaussian-elimination, bounded-treewidth, independent
+product, padding, redundant clauses, and alternative encoding controls do not
+repair the missing interactive premise.  They may change the query language
+or make the source easy, but a deterministic reply to an identical query
+remains identical.  Wrapper variants can change arbitrarily much internal
+trace while leaving the black-box transcript fixed.  A maximal semantic SAT
+oracle makes this point exact; an algebraic oracle can only add source-derived
+answers and still does not force an implementation-specific opening.
+
+The theorem does \emph{not} say that no interactive proof can be compiled from
+SAT.  It says such an interface is an added construction, not a free property
+of an arbitrary one-bit decider.  Its complete costs and its relation to the
+original static execution must be proved.
+
+\section*{P=NP and exponent audit}
+
+Assume SAT$\in P$ and let $A$ be any polynomial SAT decider.  The fixed-replay
+theorem still holds, and a recognize-first or direct source algorithm may emit
+only the answer bit.  A polynomial-time verifier relation for enriched
+openings can itself be searched via SAT self-reduction under P$=$NP, so
+canonicalizing one opening produces no contradiction.  Conversely, obtaining
+two openings by running $A$ on distinct challenge-derived formulas incurs the
+unknown exponent of $A$ at their actual sizes unless an exponent-independent
+compiler theorem removes it.  Neither branch supplies an unconditional
+model-matched contradiction.
+
+\section*{Barrier and transfer ledger}
+
+\begin{center}
+\begin{tabular}{p{0.27\linewidth}p{0.23\linewidth}p{0.42\linewidth}}
+\toprule
+Object or analogy & Classification & Audit \\
+\midrule
+Deterministic transcript induction & EXACT OBJECT/THEOREM TRANSFER & Applies exactly to the declared oracle transducer. \\
+Special soundness & ANALOGY/CANDIDATE needing a new bridge & Requires two accepting same-commitment, different-challenge transcripts; the SAT interface supplies only one fixed replay. \\
+Forking lemma & FAILED TRANSFER as a free SAT property & Reprogrammed/random challenge behavior is additional extractor power. \\
+LWE worst/average architecture & ANALOGY/CANDIDATE needing a new bridge & A source-specific interactive compiler might externalize openings, but generic NP self-correction is not free. \\
+Collision entropy & EXACT OBJECT/THEOREM TRANSFER on a declared map & TESTS-0017's collisions are valid witnesses and do not create the missing fork. \\
+Schur squares, quadratic relations, syzygies & FAILED TRANSFER here & No code or relation space is forced by a one-bit deterministic transcript. \\
+VLSI, control, communication, proof complexity & FAILED TRANSFER here & No exact model correspondence converts their restricted resource into arbitrary SAT time. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The argument relativizes: replace SAT by any fixed Boolean oracle and the
+induction is unchanged.  It also survives algebraic-oracle strengthening and
+therefore supplies no algebrization escape.  It defines no constructive large
+circuit property, so Natural Proofs is not the operative barrier.  Its role is
+negative: it blocks a purported transfer, not P$\ne$NP.
+
+\section*{CORPUS REVIEWED}
+
+The live GitHub tree (2,362 paths) was surveyed.  The run read root
+\path{main.tex}, actual \path{main4.tex}/\path{main5.tex}, \path{AGENTS.md},
+\path{CODEX.md}, the complete pnp-research protocol, all current task
+specifications, the newest verified MAIN, and materially relevant reports
+across LSPV-1 through LSPV-4.  In particular it read TESTS-0017, ORDERLOC1,
+ORDERBIND1, LB-0015, MODELBRIDGE-0015, RT-0015, and the HEC, CRS-PPC, CCSPC,
+RCCN and Search-G branches, plus governance and cited audit artifacts.  The
+immediate predecessor TESTS-0017 was read back from GitHub, was substantive,
+and had its required header and sentinel; no recovery request was needed.
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+
+LB-0015 and MODELBRIDGE-0015 already prove query-scale/delay barriers for
+fixed extensional transducers.  RT-0015 rules out complete extensional
+canonicalization, and the quotient reports already warn that a black-box
+object becomes source-only.  TESTS-0017 newly falsifies ordinary-witness
+binding.  ONETRANS1 does not relabel those results: its new contribution is
+the exact fixed-replay theorem and exhaustive fork trilemma for the proposed
+\emph{enriched} special-soundness repair.  It is consistent with ORDERBIND1,
+which asked for a construction-specific semantic opening relation rather than
+claiming one already exists.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN correctly leaves semantic opening binding and arbitrary-decider
+transfer open.  This run narrows that target: the required two-opening premise
+cannot be obtained by replaying a deterministic one-bit decider at fixed
+source, address, policy, and coins.  An explicit external challenge-response
+compiler is now part of the statement, not an optional implementation detail.
+No executive conclusion is strengthened.
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+Retained are TESTS-0017's ordinary-witness collision theorem, ORDERBIND1's
+request for a construction-specific relation, extensional quotient guards,
+SAME\_REALIZATION, and full cost accounting.  Excluded is the inference that
+rewinding a deterministic Boolean decider automatically yields a cryptographic
+fork.  \texttt{ONEBIT-SPECIAL-SOUNDNESS-TRANSFER1} is
+\st{FALSIFIED/RETIRED}.  The explicit interactive-compiler repair remains
+\st{OPEN}.
+
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any text treating ``two conflicting openings'' as automatically available
+from black-box replay of an arbitrary deterministic SAT decider is overstated.
+Special soundness is a conditional extraction theorem once two appropriate
+transcripts exist; it is not an acquisition theorem for those transcripts.
+Likewise, external challenge diversity must not be charged as internal solver
+state or as evidence of two solver-produced openings.
+
+\section*{Smallest repair and handoff}
+
+Define a source compiler $C$ and verifier $V$ with explicit transcript syntax
+$(F,c,e,z)$ and prove all of the following on one realization:
+\begin{enumerate}
+\item $c$ is fixed before an independently selected challenge $e$;
+\item for two challenges $e\ne e'$, both replies $z,z'$ are compelled by the
+same arbitrary SAT execution or by a charged model-preserving simulation;
+\item $V(F,c,e,z)=V(F,c,e',z')=1$ and $(e,z)\not\sim(e',z')$ imply an explicit
+unconditionally forbidden object;
+\item acquisition, challenge generation, rewind/replay, query construction,
+normalization, validation, output, time, and workspace are fully charged;
+\item the theorem survives one-bit output, alternative encodings, wrappers,
+semantic/algebraic oracles, arbitrary polynomial exponents, relativization,
+and algebrization audits.
+\end{enumerate}
+Absent this package, semantic-opening binding remains \st{OPEN}.
+
+\section*{Primary references}
+
+\begin{itemize}
+\item I. Damg\aa rd, ``On $\Sigma$-protocols,'' definition and extraction from
+two accepting conversations with one first message and distinct challenges,
+\url{https://www.cs.au.dk/~ivan/Sigma.pdf}.
+\item D. Pointcheval and J. Stern, ``Security Arguments for Digital
+Signatures and Blind Signatures,'' \emph{Journal of Cryptology} 13(3),
+361--396 (2000).
+\item A. Bogdanov and L. Trevisan, ``On Worst-Case to Average-Case Reductions
+for NP Problems,'' \emph{SIAM J. Comput.} 36(4), 1119--1159 (2006),
+\url{https://lucatrevisan.github.io/pubs/redux-sicomp.pdf}.
+\item T. Baker, J. Gill, and R. Solovay, ``Relativizations of the P=?NP
+Question,'' \emph{SIAM J. Comput.} 4(4), 1975.
+\item S. Aaronson and A. Wigderson, ``Algebrization: A New Barrier in
+Complexity Theory,'' \emph{ACM TOCT} 1(1), 2009.
+\end{itemize}
+
+\section*{Final status}
+
+Fixed-replay uniqueness and the fork trilemma are \st{PROVED/EXACT} pending
+independent review.  The exhaustive finite audit is \st{COMPUTATIONAL}.
+Unqualified one-bit special-soundness transfer is \st{FALSIFIED/RETIRED}.
+The explicit interactive compiler, arbitrary-decider SAME\_REALIZATION bridge,
+nonrelativizing/nonalgebrizing endpoint, and P versus NP remain \st{OPEN}.
+
+% END_OF_VERIFIED_REPORT::LSPV-3::ONETRANS1
+\end{document}
