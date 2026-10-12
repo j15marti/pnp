@@ -1,0 +1,382 @@
+% LSPV-4 REPORT::MODELBRIDGE-0023::2026-10-12T10:57:01Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,enumitem,hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\Pclass}{\mathsf{P}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\same}{\textsc{same\_realization}}
+\title{MODELBRIDGE-0023: Black-box extraction plus lazy access still composes away}
+\author{LSPV-4 / UNIVERSAL\_CORE\_BRIDGE}
+\date{12 October 2026, 10:57 UTC}
+
+\begin{document}
+\maketitle
+
+\section*{Executive result}
+\textbf{P versus NP remains OPEN.}  This run combines two independently
+verified guards: MODELBRIDGE-0022's separation of an external SAT-oracle
+extractor from the queried decision run, and LSPV-3 LAZYACCESS1's inlining of
+a polynomial-query accessor for an exponentially long virtual object.  The
+combined candidate
+\texttt{BLACKBOX-LAZY-TO-ORIGINAL-RUN1} is \RETIRED.
+
+The replacement theorem
+\texttt{BLACKBOX-LAZY-COMPOSITION-GATE1} is \EXACT{} pending independent
+review.  If \(\SAT\in\Pclass\), a fixed uniform deterministic black-box
+extractor, a fixed uniform lazy accessor, and a fixed uniform adaptive
+evaluator, each with polynomially bounded charged work, query counts, query
+lengths and address lengths, inline to one ordinary uniform polynomial-time
+machine.  The inlined machine is a new realization that pays for the entire
+composition.  The theorem neither charges nor reveals any richer object in
+the original one-bit execution \(D(F)\), and its polynomial exponent depends
+on the arbitrary exponent of the assumed SAT decider.  It therefore gives no
+solver-independent contraction into a fixed unconditional forbidden region.
+
+\section{Claim card, encoding, and exact quantifiers}
+Fix one self-delimiting binary encoding of CNF formulas.  Let \(|F|=n\) be
+encoded input length, not variable count.  Let \(\mathcal D_{\SAT}\) be the
+class of total deterministic uniform exact SAT deciders:
+\[
+ \forall D\in\mathcal D_{\SAT}\ \forall G,\qquad
+ D(G)=\mathbf 1[G\in\SAT].
+\]
+Fix three uniform deterministic machines, independent of \(D\):
+\begin{enumerate}[leftmargin=*]
+\item an adaptive oracle extractor \(E\), which on \(F\) issues queries
+\(G_1,\ldots,G_q\) and produces transcript \(\tau\);
+\item an accessor \(A(F,\tau,i)\) for a possibly exponentially long virtual
+object \(Z(F,\tau)\); and
+\item an evaluator \(V\), which adaptively chooses
+\(i_1,\ldots,i_r\), receives the accessor bits, and outputs one bit.
+\end{enumerate}
+All parsing, query generation, encoding, calls, failed routes, transcript
+retention or replay, address generation, access, reconstruction, validation,
+and output are charged.  There is no free table, advice string, persistent
+cross-call state, or oracle other than the displayed SAT calls.
+
+The false candidate asserted that any successful such construction shows that
+the original single run \(D(F)\) exposed or paid for \(\tau\), \(Z\), or the
+queried bits.  The exact quantifier mismatch is
+\[
+ \underbrace{D(F)}_{\text{one selected run}}
+ \quad\ne\quad
+ \underbrace{V^{A(F,E^D(F),\cdot)}(F)}_{\text{new composed execution}}.
+\]
+
+\section{Clean-core semantic compatibility}
+For a CNF \(F\) and consistent partial assignment \(\alpha\), define
+\[
+ H(F,\alpha)=1
+ \quad\Longleftrightarrow\quad
+ \exists\beta\supseteq\alpha\;[\beta\models F].
+\]
+This is a semantic object.  Any selected value is externally decidable by a
+separate call on \(F\upharpoonright\alpha\); a lexicographically least
+witness is externally recoverable by at most one initial SAT query plus one
+restriction query per variable.  Those facts do not imply that \(D(F)\)
+materializes the table of \(H\), a witness, a frontier, or a canonical
+representation.  A decision algorithm is required to return only one bit.
+
+The corrected signed Monotone \(3\)SAT-\((2,2)\) clean core is NP-complete.
+Accordingly, a direct all-algorithm superpolynomial lower bound on that fixed
+encoded core would itself separate \(P\) from \(NP\); no extension from the
+core to every unrestricted 3-CNF family is required.  The missing statement
+is still universal over every uniform decider for that core, so easy
+subfamilies and equivalent wrappers remain decisive hostile controls against
+an unqualified exposure claim.
+
+\section{Exact composition theorem}
+\paragraph{Theorem (black-box lazy composition gate).}
+Assume \(\SAT\in\Pclass\), witnessed by a total deterministic uniform decider
+\(D\) satisfying \(T_D(m)\le m^K\) for all sufficiently large \(m\), for
+some finite \(K\).  Suppose, on every length-\(n\) source input:
+\begin{itemize}[leftmargin=*]
+\item \(E\) has charged local work \(t_E(n)\), makes
+\(q(n)\le n^b\) SAT queries, and every query has length at most \(n^c\);
+\item \(V\) has charged local work \(t_V(n)\), makes
+\(r(n)\le n^e\) accessor calls, and every address has length at most
+\(n^d\); and
+\item one accessor call, including source/transcript reads, costs at most
+\(n^{a\max\{1,d\}}\), with every transcript replay or retained-state cost
+included.
+\end{itemize}
+If \(t_E,t_V\) and all encoding/output costs are polynomial, then there is
+one ordinary deterministic uniform polynomial-time machine \(C_D\) producing
+the same output as the extractor--accessor--evaluator composition.
+
+\paragraph{Proof.}
+Inline every oracle instruction of \(E\) with a fresh run of \(D\).  Store or
+replay the resulting transcript exactly as specified.  Inline each accessor
+call made by \(V\), including construction of its address and every read of
+\(F\) or \(\tau\).  Determinism and exactness of \(D\) preserve the entire
+adaptive transcript.  The resulting ordinary machine has time
+\[
+\begin{split}
+T_{C_D}(F)\ \le\ &t_E(F)+\sum_{j=1}^{q(F)}T_D(G_j)+t_V(F)\\
+&+\sum_{\ell=1}^{r(F)}T_A(F,\tau,i_\ell)
++T_{\rm enc/replay/out}(F).
+\end{split}
+\]
+The oracle part is at most \(n^{b+cK+o(1)}\), and the accessor part is at
+most \(n^{e+a\max\{1,d\}+o(1)}\).  Taking the maximum with the fixed local
+exponents proves polynomial time.  Peak workspace is the retained extractor
+and evaluator state, query/address buffers, transcript storage or replay
+state, and the maximum workspace of one active subcall; it is not obtained by
+adding time to space. \hfill\(\square\)
+
+\paragraph{Transcript extensionality.}
+For any two exact deciders \(D_0,D_1\), induction on the adaptive query
+number gives the same query strings and SAT-answer bits.  Hence \(E^{D_0}(F)\)
+and \(E^{D_1}(F)\) produce the same transcript, and the fixed accessor and
+evaluator produce the same semantic output.  Internal traces and costs may
+differ arbitrarily.
+
+\paragraph{Trilemma.}
+There are only three accounting outcomes for this architecture:
+\begin{enumerate}[leftmargin=*]
+\item polynomially many polynomial-length charged calls with polynomial
+local work compose to an ordinary \(\Pclass\) machine;
+\item a superpolynomial call count, query/address length, accessor, replay, or
+local component leaves the desired polynomial bridge unproved; or
+\item free table bits, uncharged calls, or per-length hardwiring introduce
+advice/oracle/nonuniform power and change the model.
+\end{enumerate}
+
+\paragraph{No fixed landing.}
+Even in the first branch the bound contains \(b+cK\).  Since the hypothesis
+``\(\SAT\in\Pclass\)'' supplies some finite but otherwise arbitrary \(K\),
+the composition theorem provides no fixed solver-independent exponent and no
+contraction into a prescribed Fortnow--Lipton--van Melkebeek--Viglas
+time--space forbidden region.  A theorem removing that dependence would be a
+new load-bearing result, not an accounting corollary.
+
+\section{Hostile controls and finite audit}
+The reproducible script
+\path{experiments/review/blackbox_lazy_composition_gate.py} uses ten bounded
+families: Horn, 2SAT, affine/Tseitin, bounded treewidth, a signed toy core,
+UNSAT, padding, redundant clauses, independent products, and alternate
+encodings.  It compares six exact wrappers: DIRECT, COPY, DEAD, DELAY,
+INTERP, and RECOMP.  The extractor performs lexicographic search-to-decision;
+the evaluator makes nine adaptive accesses to an input/transcript-dependent
+virtual string.
+
+The audit checked \(312{,}897\) assertions, \(228\) separately charged oracle
+calls, and all \(5^7=78{,}125\) tuples in the bounded exponent ledger, with
+zero failures in \(0.065\) seconds.  Semantic transcripts and virtual outputs
+were wrapper invariant, while original-run, extraction, access, and composite
+costs stayed distinct.  Script SHA-256 is
+\texttt{f8961f6b2e186359267b80306828afb159b8b3e6728b16ec57dddd886be71968};
+result SHA-256 is
+\texttt{e5056aa2b30af865911e4882dd1d247ad40fabe5821300af0b0185d05926643a}.
+The result file is
+\path{results/raw/review/2026-10-12_blackbox_lazy_composition_gate.json}.
+This evidence is \COMP{} only and is not extrapolated to a SAT lower bound.
+
+\section{Primary-literature and transfer preflight}
+The two current obstacles are (i) a source-defined transfer into the same
+fully charged ordinary realization and (ii) an absolute endpoint whose
+parameters do not depend on an arbitrary source exponent.
+\begin{itemize}[leftmargin=*]
+\item Cook's NP-completeness theorem is directly transferable: a lower bound
+for every uniform polynomial decider of one fixed NP-complete clean core is a
+separation, not merely evidence about an exact-SAT base.
+\item Baker--Gill--Solovay relativization and Aaronson--Wigderson
+algebrization are \KNOWN{} barriers.  The transcript and inlining arguments
+relativize and algebrize; they are guards, not escapes.
+\item Galperin--Wigderson's succinct-representation phenomenon is a useful
+direct warning: exponentially large semantic objects can have compact
+generators, so length alone is not runtime.
+\item Bogdanov--Trevisan's worst-case/average-case barriers make an LWE-style
+external-extraction analogy nonautomatic.  Their theorem is not imported as
+a SAT lower bound.
+\item FLMV time--space lower bounds are directly transferable only after the
+same fully charged ordinary realization is proved to lie in the theorem's
+exact model and simultaneous resource region.  No such landing is obtained.
+\end{itemize}
+
+Electronics/VLSI congestion, control observability, distributed
+communication cuts, feasible interpolation, and local-to-global gluing are
+useful structural analogies requiring a new interface-preserving transfer
+theorem.  Treating work performed by an external module as work performed by
+the queried component is a misleading analogy and is rejected.
+
+\section{Barrier audit}
+\paragraph{SAME\_REALIZATION.}
+The theorem preserves it only for \(C_D\), which pays for every component.
+It gives no retrospective charge to the original selected run \(D(F)\).
+
+\paragraph{Wrappers and alternate representations.}
+COPY, DEAD, DELAY, INTERP, and RECOMP preserve the decision function while
+changing traces and costs.  Any internal-state necessity not invariant under
+these transformations remains implementation dependent.
+
+\paragraph{Nonuniformity and pointwise minimization.}
+A different precomputed table or decider per input length is advice.  The
+POINTINF1 pointwise infimum \(\forall n\exists A_n\) does not yield one
+uniform \(\exists A\forall n\) decider and is not used.
+
+\paragraph{Natural Proofs.}
+No constructive large circuit property is given.  This theorem neither
+invokes nor escapes the Razborov--Rudich barrier.
+
+\paragraph{Protocol transfer.}
+HEC, VSC-HEC, G-PPC-HEC, CRS-PPC, RCCN, and CCSPC retain exact restricted
+state/causal results.  They still lack a total compiler from every static
+decider and a model-matched unconditional endpoint.  Combining them with a
+black-box accessor does not fill either arrow.
+
+\section{Post-quantum technique ledger}
+\begin{itemize}[leftmargin=*]
+\item Schur squares, shortening/puncturing/duals, quadratic relation ranks,
+Hilbert functions, syzygies, and Betti data: \textbf{FAILED TRANSFER} here.
+No such representation is forced by a one-bit decider, and visible algebraic
+structure may make the instance easier.
+\item Collision entropy: \textbf{EXACT OBJECT/THEOREM TRANSFER} only for a
+declared map \(L\), where
+\(|\operatorname{im}L|\ge |A|^2/\operatorname{Coll}(L)\).  It does not price
+the computation or identify its work with \(D(F)\).
+\item LWE-style worst-case/average-case extraction:
+\textbf{ANALOGY/CANDIDATE needing a new bridge}.  The black-box output is
+extensional, but no same-realization forbidden landing follows.
+\item Collision extraction/special soundness:
+\textbf{ANALOGY/CANDIDATE needing a construction-specific relation}.
+Cryptographic binding assumptions are inadmissible in an unconditional
+separation.
+\item Hash/random-oracle methods: \textbf{FAILED TRANSFER} unless all
+hardness and random-oracle assumptions are removed.
+\end{itemize}
+
+\section{CORPUS REVIEWED}
+The run enumerated the current GitHub tree and read root \path{main.tex},
+\path{main4.tex}, \path{main5.tex}, \path{AGENTS.md}, \path{CODEX.md}, the
+pnp-research skill and both protocol references, and all current task
+specifications.  It inspected newest verified MAIN SYNTHESIS-0023, latest
+POINTINF1, UGENCOMP1, LAZYACCESS1, CALQNT1, and the exact MODELBRIDGE-0022
+body, together with materially relevant historical COREDTCH1, COREEQUIV1,
+FIBERDICH1, APIFLAT1, FORKFACTOR1, COVCOLL1, SATQUOT1, and the
+HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC branch.  Governance notes and cited
+experiment/result artifacts were surveyed.  Repository searches were used to
+locate duplicate formulations, retired routes, and stale manuscript hooks.
+
+The immediate predecessor LSPV-3 report LAZYACCESS1 exists in its canonical
+directory, is substantive, contains the required header and final sentinel,
+and was read back from GitHub.  No predecessor recovery was required.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+MODELBRIDGE-0022 already proves adaptive black-box transcript extensionality
+and separates extractor cost from the original call.  LAZYACCESS1 already
+proves inlining for a polynomial-query accessor without the extractor.
+UGENCOMP1 classifies uniform succinct generation/evaluation, and POINTINF1
+retires pointwise best presentations.  The new increment is their integrated
+same-realization and exponent ledger: black-box extraction followed by lazy
+access still composes to one charged machine, but the landing exponent retains
+the source solver's arbitrary \(K\).  This closes the proposed combination,
+not either theorem in isolation.  No verified corpus result is contradicted.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root MAIN already marks the universal-core transfer and model-matched landing
+\OPEN.  This report does not strengthen them.  It adds an exact combined gate
+and retires the proposed route from an external extractor plus a virtual
+object to original-run exposure.  It also records the important scope
+clarification that a direct universal lower bound on the fixed NP-complete
+clean core would suffice for \(P\ne NP\); the missing formula-family extension
+is not load bearing.  The all-decider transfer and endpoint remain load
+bearing.
+
+Actual \path{main4.tex} and \path{main5.tex} were read as the ARC
+achievable-region and WRAPPER construction manuscripts.  Their promise-class
+and conditional constructions, including all-input acquisition gaps, remain
+unchanged and are not silently redefined as an arbitrary-algorithm lower
+bound.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{itemize}[leftmargin=*]
+\item \textbf{ADOPTED:} corrected signed NP-complete core; exact encoded
+length; \(H(F,\alpha)\); fully charged uniform composition; hostile wrappers;
+\same{}; absolute model-matched endpoints.
+\item \textbf{REJECTED:} semantic-state count as runtime; free virtual bits;
+uncharged extraction or replay; per-length tables; a named internal API;
+cryptographic assumptions.
+\item \textbf{FALSIFIED/RETIRED:}
+\texttt{BLACKBOX-LAZY-TO-ORIGINAL-RUN1}; the composition is a separate
+execution and cannot be charged to \(D(F)\).
+\item \textbf{OPEN:} a uniform source-defined construction whose same fully
+charged ordinary realization lands in a cited unconditional forbidden region
+without an arbitrary-exponent loophole.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+The canonical LSPV-4 directory lagged the exact MODELBRIDGE-0022 body, which
+existed only under a review-report path.  The exact body was recovered without
+scientific reconstruction at
+\path{research/agents/lspv-4/2026-10-12_1002_LSPV-4_MODELBRIDGE-0022.tex}
+with required markers and verified readback.  The failure was a write-procedure
+contradiction: the older bridge workflow did not require the canonical LSPV-4
+path, sentinel, or root ownership reconciliation.  The smallest procedural
+repair was applied while preserving the scientific target.
+
+Any statement that an externally recoverable compatibility value or lazy
+virtual object was thereby exposed by the original SAT run is overstated and
+must be retired.  Any fixed forbidden exponent obtained by suppressing the
+source solver exponent \(K\) is likewise overstated.
+
+\section{Strict status ledger and handoff}
+\begin{center}
+\begin{tabular}{p{0.48\linewidth}p{0.19\linewidth}p{0.25\linewidth}}
+\toprule
+Item & Status & Reason \\
+\midrule
+\texttt{BLACKBOX-LAZY-COMPOSITION-GATE1} & \EXACT & Direct inlining and complete cost sum\\
+Finite family/wrapper/exponent audit & \COMP & 312,897 assertions; zero failures\\
+\texttt{BLACKBOX-LAZY-TO-ORIGINAL-RUN1} & \RETIRED & New execution, not original-run charge\\
+Fixed solver-independent FLMV landing & \OPEN & Bound retains arbitrary \(K\)\\
+Arbitrary-decider clean-core transfer & \OPEN & No source-defined same-run obligation\\
+P versus NP & \OPEN & Load-bearing arrows remain\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Precise surviving target.}
+Assume one arbitrary uniform polynomial-time decider for the fixed
+NP-complete clean core, with unknown finite exponents.  Construct, uniformly
+and with all costs charged, a source-defined ordinary machine whose same
+realization satisfies a cited unconditional lower-bound theorem in exactly
+its stated model.  The construction must either absorb the arbitrary source
+exponent without assuming the desired separation, or use a genuinely
+exponent-free obstruction.  It must survive Horn, 2SAT, affine/Tseitin,
+bounded-treewidth, padding, redundant-clause, independent-product, alternate
+encoding, and wrapper controls.  This target is \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{Cook71} S. Cook, ``The complexity of theorem-proving procedures,''
+STOC 1971, 151--158.
+\bibitem{BGS75} T. Baker, J. Gill, and R. Solovay,
+``Relativizations of the \(P=?NP\) question,'' \emph{SIAM J. Comput.} 4(4),
+431--442, 1975.
+\bibitem{RR97} A. Razborov and S. Rudich, ``Natural Proofs,''
+\emph{J. Comput. Syst. Sci.} 55(1), 24--35, 1997.
+\bibitem{AW09} S. Aaronson and A. Wigderson,
+``Algebrization: A New Barrier in Complexity Theory,'' \emph{ACM TOCT} 1(1),
+2009; ECCC TR08-005.
+\bibitem{GW83} H. Galperin and A. Wigderson,
+``Succinct representations of graphs,'' \emph{Information and Control} 56,
+183--198, 1983.
+\bibitem{BT06} A. Bogdanov and L. Trevisan,
+``On Worst-Case to Average-Case Reductions for NP Problems,''
+\emph{SIAM J. Comput.} 36(4), 1119--1159, 2006.
+\bibitem{FLMV05} L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+``Time-space lower bounds for satisfiability,'' \emph{J. ACM} 52(6),
+835--865, 2005.
+\end{thebibliography}
+
+\noindent\textbf{Final verification sentinel:} report body complete; exact
+quantifiers and all charges stated; strict statuses preserved; P versus NP
+remains \OPEN.
+% END_OF_VERIFIED_REPORT::LSPV-4::MODELBRIDGE-0023
+\end{document}
