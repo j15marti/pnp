@@ -1,0 +1,330 @@
+% LSPV-2 REPORT::TESTS-0018::2026-10-12T01:24:00Z
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newtheorem{theorem}{Theorem}
+\newcommand{\SAT}{\mathrm{SAT}}
+\title{LSPV-2 TESTS-0018\\Clean-core fork multiplicity is a padding gauge}
+\author{UNIVERSAL\_CORE\_TESTS}
+\date{12 October 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Executive result.}
+\textbf{PROVED/EXACT, independent review pending:} exponentially many
+same-commitment challenge openings can be manufactured inside the exact
+paired-sign duplicate-free proper $3$SAT-$(2,2)$ clean core by adjoining
+independent paired-$K_{3,3}$ blocks.  The construction preserves
+satisfiability, has linear-size overhead per challenge bit, and every
+canonical opening projects to an ordinary source witness.  Consequently
+\texttt{FORK-MULTIPLICITY-AS-FORBIDDEN-ENDPOINT1} is
+\textbf{FALSIFIED/RETIRED}.  This does not refute a construction-specific
+extractor that yields a genuinely forbidden object.  That endpoint and its
+arbitrary-decider SAME\_REALIZATION transfer remain \textbf{OPEN}; P versus
+NP remains open.
+
+\section{Claim card and exact quantifiers}
+
+\paragraph{Target before the run.}
+LB-0021 leaves \texttt{FAVORABLE-SOURCE-FORK-ENDPOINT1} \textbf{OPEN}.
+The attacked subclaim was that common-commitment fork multiplicity, collision
+count, or challenge entropy can itself supply the forbidden endpoint.
+
+\paragraph{Input family and encoding.}
+Let $\mathcal H_{2,2}^{\pm}$ contain duplicate-free proper $3$CNFs in which
+every clause has three distinct variables and one sign, and every variable
+occurs exactly twice positively and twice negatively.  This is the exact
+paired-sign clean-core convention used by the repository's paired-$K_{3,3}$
+block.  Inputs use explicit indexed encoding; if $F$ has $n$ variables,
+$N=|\operatorname{enc}(F)|=\Theta(n\log n)$ in the bounded-occurrence regime.
+
+\paragraph{Quantifier prefix.}
+The proved statement has the form
+\[
+ \forall F\in(\mathcal H_{2,2}^{\pm})_{\rm sat}\;
+ \forall k\ge1\;\exists T_k(F)\in(\mathcal H_{2,2}^{\pm})_{\rm sat}\;
+ \forall e\in\{0,1\}^k\;\forall w\models F\;\exists z:\
+ V(F,k,c,e,z)=1.
+\]
+The transformation and verifier are fixed uniform algorithms.  The theorem
+does not assume $P\ne NP$.  It asserts opening existence conditional on a
+source witness; it does not make witness acquisition free.
+
+\paragraph{Machine, resource and SAME\_REALIZATION.}
+The construction is an ordinary deterministic streaming transformation of an
+explicit CNF.  Source reading, variable renumbering, clause writing,
+commitment construction, opening length, verification, projection and output
+are charged.  The source witness, transformed formula, commitment, challenge,
+response and projected witness all belong to the same declared realization.
+No semantic-state count is converted into runtime.
+
+\section{Exact padding theorem}
+
+Let $B$ be the paired-$K_{3,3}$ formula on variables $x_{ij}$,
+$i,j\in\{1,2,3\}$, with, for each row and column triple, both its all-positive
+and all-negative clause.  Thus $B$ has nine variables and twelve distinct
+proper clauses.  Each variable occurs twice in each sign.  Direct enumeration
+gives 102 satisfying assignments; only the existence of two distinct fixed
+witnesses $b_0,b_1\models B$ is needed below.
+
+\begin{theorem}[Clean-core fork-padding gauge]
+\label{thm:gauge}
+For every $F\in\mathcal H_{2,2}^{\pm}$ and $k\ge1$, define
+\[
+ T_k(F)=F\wedge B_1\wedge\cdots\wedge B_k,
+\]
+where the $B_i$ are variable-disjoint copies of $B$.  Then:
+\begin{enumerate}
+\item $T_k(F)\in\mathcal H_{2,2}^{\pm}$ and
+      $T_k(F)\in\SAT\iff F\in\SAT$;
+\item its encoded length is
+\[
+ N_k=N+O\!\left(k\log(n+k)\right);
+\]
+\item with common commitment $c=\operatorname{enc}(T_k(F))$, challenge
+$e=(e_1,\ldots,e_k)$ and response
+\[
+ z(w,e)=w\,\|\,b_{e_1}\,\|\cdots\|\,b_{e_k},
+\]
+the fixed verifier accepting exactly these canonical forms has, for every
+$w\models F$, all $2^k$ distinct challenge openings;
+\item projection $\pi(z)=w$ extracts an ordinary witness of $F$ from one
+opening.  Two distinct-challenge openings yield no stronger object;
+\item if $A_F$ is the set of canonical openings and $L:A_F\to\{c\}$ is the
+constant proof-to-commitment map, then
+\[
+ |A_F|=|W(F)|2^k,qquad
+ \operatorname{Coll}(L)=|W(F)|^2 2^{2k},
+\qquad
+ \frac{|A_F|^2}{\operatorname{Coll}(L)}=1.
+\]
+\end{enumerate}
+For $k=\Theta(n)$, $N_k=\Theta(N)$ while there are
+$2^{\Theta(n)}=2^{\Theta(N/\log N)}$ canonical challenges per source witness.
+\end{theorem}
+
+\begin{proof}
+All variables of the $B_i$ are fresh.  Hence no new clause duplicates a
+source clause or a clause in another block, and every source occurrence count
+is unchanged.  Each new variable inherits exactly two positive and two
+negative occurrences.  This proves clean-core closure.  Since every $B_i$ is
+satisfiable and variable-disjoint, conjunction with them preserves
+satisfiability.
+
+Writing one block adds nine indexed variables and twelve clauses, so explicit
+renumbering and serialization cost $O(k\log(n+k))$ bits beyond copying the
+source.  For any $w\models F$ and challenge $e$, the displayed concatenation
+satisfies every independent conjunct.  Distinct challenges differ in at
+least one block because $b_0\ne b_1$.  The verifier checks the source witness,
+the selected fixed block witnesses and the written formula in time linear in
+the represented input/opening; projection discards the suffix.  The counting
+identities follow because there is one canonical response for each pair
+$(w,e)$ and $L$ is constant.  Finally, bounded occurrence gives
+$N=\Theta(n\log n)$; taking $k=\Theta(n)$ preserves this order while producing
+$2^k$ challenges.
+\end{proof}
+
+\paragraph{Status consequence.}
+\texttt{CLEAN-CORE-FORK-PADDING-GAUGE1} is \textbf{PROVED/EXACT}
+(independent review pending).  The claim that fork count, challenge entropy or
+constant-map collision count is itself a forbidden lower-bound object is
+\textbf{FALSIFIED/RETIRED}.  A valid repair must normalize away independent
+padding and prove that two openings yield an object ruled out by an
+unconditional model-matched theorem, not merely a standard SAT witness.
+
+\section{Bounded reproducible audit}
+
+The audit program is
+\path{experiments/review/clean_core_fork_padding_gauge_audit.py}; raw output is
+\path{results/raw/review/2026-10-12_clean_core_fork_padding_gauge.json}.
+One deterministic invocation, with no random sampling, completed in 5.853068
+seconds, below the 30-second limit.
+
+\begin{center}
+\begin{tabular}{@{}p{0.42\linewidth}r@{}}
+\toprule
+Check & Result\\
+\midrule
+Total assertions/predicates & 158,897\\
+Failures & 0\\
+Paired-$K_{3,3}$ witnesses exhausted & 102\\
+Maximum challenge length exhausted & 8 bits\\
+Maximum canonical openings checked & 26,112\\
+Ordered collisions at that point & 681,836,544\\
+Wrapper-equivalent verifier checks & 96\\
+UNSAT candidate openings rejected & 2,048\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+At $k=8$ the checked transformed instance had 81 variables and 108 clauses.
+The audit explicitly counted 12 source-clause preprocessing reads, 108 written
+clauses, 3,133,440 verifier clause visits and 235,008 projected source bits
+across that row.  These are real costs of the test, not asymptotic runtime
+claims.  The exact asymptotic statements are proved symbolically in
+Theorem~\ref{thm:gauge}.
+
+\section{Hostile controls}
+
+The same canonical fork form was checked on 2SAT/treewidth-one tautologies, a
+Horn implication chain, the four-clause proper-3CNF encoding of an even
+three-variable affine/Tseitin constraint, an independent product, redundant
+clauses, unit/short-clause padding, and an UNSAT unit pair.  The UNSAT source
+had no accepted opening.  Tuple, DIMACS, JSON and reversed-clause-order
+encodings were compared.  DIRECT, COPY, DEAD, DELAY, INTERP and RECOMP
+verifier wrappers preserved acceptance.  None turns fork multiplicity into an
+arbitrary-decider time, memory, communication or state-exposure obligation.
+
+\textbf{COMPUTATIONAL:} finite checks validate the implementation and small
+instances only.  They neither extrapolate solver runtime nor prove a SAT
+upper bound.  Witness acquisition remains separately charged.
+
+\section{Primary literature and transfer audit}
+
+\paragraph{Special soundness.}
+Cramer--Damg\aa rd--Schoenmakers introduced the standard partial-knowledge
+and witness-hiding protocol framework \cite{CDS94}; modern formal definitions
+state that two accepting transcripts with a common first message and distinct
+challenges permit extraction of a witness for the declared relation.  That is
+an \textbf{EXACT OBJECT/THEOREM TRANSFER} only after the interactive relation
+and both transcripts exist.  The extracted object is a relation witness, not
+an unconditional contradiction.  Theorem~\ref{thm:gauge} realizes precisely
+this benign case.
+
+\paragraph{Time--space endpoint.}
+Fortnow--Lipton--van Melkebeek--Viglas give a deterministic random-access SAT
+time--space lower bound in encoded input length \cite{FLMV05}.  This is a
+\textbf{directly transferable theorem} only after the same ordinary machine,
+with every construction and extraction cost, lies in its stated forbidden
+region.  Fork count alone supplies no such placement.
+
+\paragraph{Worst-case/average-case architecture.}
+The LWE-style hope of externally extracting structure from black-box solver
+behavior is an \textbf{ANALOGY/CANDIDATE needing a new bridge}.  Known barriers
+to generic NP worst-case/average-case reductions reinforce the need for an
+explicit, model-matched compiler; they do not prove the desired SAT transfer.
+
+\paragraph{Cross-domain comparison.}
+Direct sums in coding theory and replicated challenge ports in circuit/VLSI
+design correspond to the independent blocks $B_i$.  Their exact transfer is
+only the additive representation cost and multiplicative response set.  No
+physical fan-out, routing or locality constraint applies to an unrestricted
+random-access SAT decider.  Promoting those restrictions is a
+\textbf{misleading analogy / failed transfer} without a compiler.
+
+\section{Barrier and post-quantum ledger}
+
+The padding theorem relativizes and algebraizes: a semantic or algebraic
+oracle does not alter its combinatorial identities.  It is therefore a route
+retirement, not a nonrelativizing hinge.  It defines no constructive large
+property of truth tables, so Natural Proofs supplies no direct theorem.
+
+Collision entropy is an \textbf{EXACT OBJECT/THEOREM TRANSFER}: the
+Cauchy--Schwarz image bound is exactly tight for the constant map above.  Its
+promotion to computation time is a \textbf{FAILED TRANSFER}.  Special
+soundness is also exact at the declared relation level, but extracts only
+$w\models F$ here.  Schur squares, quadratic-relation ranks, Hilbert functions
+and syzygies are \textbf{FAILED TRANSFER} for this claim because the verifier
+and one-bit decision output require no code representation.  Random-oracle or
+cryptographic binding assumptions would be inadmissible in an unconditional
+P-versus-NP proof.
+
+\section{SAME\_REALIZATION audit}
+
+The construction reads and writes an explicit formula; the verifier reads an
+explicit response; projection reads/writes the source assignment.  No cost is
+hidden in a succinct descriptor.  However, obtaining $w$ from $F$ is not part
+of the padding transformation.  Under $P=NP$, self-reduction can acquire it in
+polynomial time, but the solver exponent remains unknown and LB-0021's scale
+trilemma applies.  Thus this report does not claim the favorable endpoint.
+
+\section{CORPUS REVIEWED}
+
+The current GitHub tree was enumerated (2,378 entries).  Root
+\path{main.tex}, \path{AGENTS.md}, \path{CODEX.md}, the complete pnp-research
+skill and protocol, \path{main4.tex}, \path{main5.tex}, all TASK-001--007
+specifications, the newest verified MAIN and SYNTHESIS-0018, LB-0021,
+TESTS-0017, ONETRANS1 and FORKFACTOR1 were read.  Materially relevant older
+TESTS-0014--0016 reports and their cited artifacts were inspected.  The
+HEC-SAT core, VSC-HEC, G-PPC-HEC, CRS-PPC and CCSPC causal files, governance
+reconciliation, wrapper controls and witness-opening experiment were checked.
+Repository search covered dummy/free-bit forks, challenge extensions,
+opening collisions, padding, source factorization and prior retired routes.
+
+The immediately preceding LB-0021 report exists at its canonical path, is
+substantive, contains the expected header and final sentinel, and was read
+back from GitHub.  No predecessor recovery was required.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+TESTS-0017 already proves that ordinary witness collisions are not binding
+conflicts.  ONETRANS1 proves fixed replay cannot generate distinct challenges.
+FORKFACTOR1 proves full replacement covariance makes the commitment
+source-only.  LB-0021 combines query scale with those guards.  The new content
+is narrower: an explicit all-$k$ construction shows that even within the
+exact clean core, a source-only common fork and exponentially many challenge
+openings can be added by linear padding and extract only a witness.  No prior
+report located by repository search states this padding-gauge theorem.  It
+does not contradict the prior reports; it supplies their missing hostile
+control.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+The LSPV-2 region now retires fork multiplicity/collision count as a forbidden
+endpoint and strengthens the surviving target.  The target is not merely two
+openings; it is a padding-normalized, construction-specific extractor whose
+output is subject to a known unconditional lower bound in the same realized
+machine.  The root's explicit OPEN status remains correct.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\begin{center}
+\begin{tabular}{@{}p{0.31\linewidth}p{0.19\linewidth}p{0.42\linewidth}@{}}
+\toprule
+Component & Status & Disposition\\
+\midrule
+LB-0021 scale trilemma & PROVED/EXACT & Adopted.\\
+TESTS-0017 ordinary-witness collision result & PROVED/EXACT & Adopted and strengthened by clean-core padding.\\
+FORKFACTOR1 source factorization & PROVED/EXACT & Adopted under full replacement covariance.\\
+Fork/challenge multiplicity as endpoint & FALSIFIED/RETIRED & Retired by Theorem~\ref{thm:gauge}.\\
+Collision entropy as runtime & FALSIFIED/RETIRED & Remains retired; exact only for the declared map.\\
+Construction-specific forbidden extractor & OPEN & Retained with padding-normalization requirement.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any wording that treats ``two challenges'' or exponentially many accepting
+openings as inherently hard is overstated.  They can be independently padded
+into the exact clean core.  Any wording that calls a standard satisfying
+assignment a forbidden special-soundness witness is stale: it certifies a YES
+instance and creates no contradiction.  No verified source-pass or FLMV
+endpoint was silently strengthened.
+
+\section{Precise handoff}
+
+The next target is \texttt{PADDING-NORMALIZED-FORBIDDEN-EXTRACTOR1}
+(\textbf{OPEN}): define a full-language source relation whose common-fork
+extractor (i) is invariant under disjoint paired-block padding and alternate
+encodings, (ii) outputs an object forbidden by an unconditional theorem rather
+than a SAT witness, (iii) is acquired from every arbitrary deterministic
+polynomial SAT decider with fixed exponent-independent costs, and (iv) places
+the same ordinary random-access realization in the endpoint model.  Affine,
+Horn, 2SAT, treewidth, products, padding and wrappers remain mandatory.
+
+\begin{thebibliography}{9}
+\bibitem{CDS94}
+R. Cramer, I. Damg\aa rd, and B. Schoenmakers,
+Proofs of partial knowledge and simplified design of witness hiding protocols,
+\emph{CRYPTO 1994}, LNCS 839, pp. 174--187, 1994.
+\bibitem{FLMV05}
+L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+Time-space lower bounds for satisfiability,
+\emph{Journal of the ACM} 52(6):835--865, 2005.
+DOI: \href{https://doi.org/10.1145/1101821.1101822}{10.1145/1101821.1101822}.
+\end{thebibliography}
+
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::TESTS-0018
