@@ -1,0 +1,347 @@
+% LSPV-2 REPORT::TESTS-0019::2026-10-12T02:24:00Z
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,enumitem,xurl,hyperref,microtype}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\COND}{\textbf{CONDITIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\title{LSPV-2 TESTS-0019\\Unique binding pointers need not persist in SAT decision state}
+\author{UNIVERSAL\_CORE\_TESTS}
+\date{12 October 2026 (UTC)}
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.94\linewidth}{
+\textbf{Executive status.} P versus NP remains open.  The newest bridge
+result shows that auxiliary provenance can be erased.  This run tests the
+smallest apparent repair: make the pointer unique, source-binding, and part of
+the accepted language.  The repair still does not force pointer-sized
+persistent state.  Whenever the unique pointer is bit-locally computable from
+the read-only source, a deterministic exact decider can validate it
+sequentially, discard every pointer bit immediately, and then invoke the
+source decider.  All pointer reads and regeneration work are charged.  The
+result retires only a pointer-persistence or pointer-communication necessity;
+it does not make validation free and does not address an online protocol in
+which the source disappears before a future challenge.}}
+\end{center}
+
+\section{Claim card and exact target}
+
+\begin{center}\small
+\begin{tabular}{@{}p{0.43\linewidth}p{0.19\linewidth}p{0.30\linewidth}@{}}
+\toprule
+Claim & Status & Scope\\ \midrule
+\texttt{BITLOCAL-UNIQUE-POINTER-ERASURE1} & \EXACT & Read-only source and pointer; deterministic bit-local generator.\\
+\texttt{UNIQUE-BINDING-POINTER-PERSISTENCE1} & \RETIRED & Unqualified $\Omega(|u|)$ persistent-state or post-validation exposure claim.\\
+Finite hostile audit & \COMP & 47,308 checks; zero failures.\\
+Validation/input-reading cost & \EXACT & Explicitly retained in time ledger.\\
+\texttt{SOURCE-SEMANTIC-ONLINE-OBLIGATION1} & \OPEN & Source unavailable after a causally later challenge.\\
+P versus NP & \OPEN & No all-input SAT lower bound or contradiction.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The attacked statement was:
+\begin{quote}
+For every uniform deterministic exact decider of a pointed SAT language, a
+unique binding pointer $u$ of length $p(N)$ must be retained, exposed, or
+communicated at positive scale after validation.
+\end{quote}
+Its quantifier over every decider makes one uniform erasure implementation a
+counterexample.  This is deliberately distinct from the true claim that an
+exact validator may have to inspect every explicit pointer coordinate on a
+worst-case malformed input.
+
+\section{Bit-local unique-pointer erasure theorem}
+
+\begin{definition}[Bit-local pointer]
+Let $g:\{0,1\}^*\to\{0,1\}^*$ have output length $p(N)$ on inputs of
+length $N$.  It is $(t_g,s_g)$ bit-local if one fixed deterministic machine,
+given read-only $x$ and $j<p(N)$, returns $g(x)_j$ in time $t_g(N)$ and
+workspace $s_g(N)$.  Define
+\[
+ L_g=\{\langle x,u\rangle:u=g(x)\text{ and }x\in L\}
+ \tag{1}
+\]
+under a self-delimiting pairing of total length $M$.
+\end{definition}
+
+\begin{theorem}[\texttt{BITLOCAL-UNIQUE-POINTER-ERASURE1}]
+For every uniform deterministic exact decider $A$ for $L$, there is a uniform
+deterministic exact decider $B_{A,g}$ for $L_g$ with
+\[
+ T_B(M)\le O(M)+p(N)t_g(N)+T_A(N)+O(1),
+ \tag{2}
+\]
+and
+\[
+ S_B(M)\le
+ \max\{S_A(N),s_g(N)\}+O(\log M).
+ \tag{3}
+\]
+After validation, $B_{A,g}$ retains no pointer bit and its remaining trace is
+independent of the representation of $u$.  Equations (2)--(3) hold even when
+$g$ is injective, so that the valid pointer is unique and exactly binds the
+source.
+\end{theorem}
+
+\begin{proof}
+Parse the two self-delimiting fields and verify their lengths.  For
+$j=0,\ldots,p(N)-1$, read the $j$th supplied pointer bit, run the bit-local
+machine on $(x,j)$, and reject if the bits differ.  Only $j$, the current
+supplied bit, the generated bit, and the generator workspace are live.  Once
+the loop succeeds, discard these temporary values and simulate $A(x)$ on the
+unchanged read-only source field.  Accept exactly when $A$ accepts.
+
+Correctness is immediate from (1).  The sequential phases give the maximum,
+not the sum, of their workspaces.  The time bound charges parsing, every
+pointer read, every regeneration, source access, the complete execution of
+$A$, and the final output.  No pointer-sized buffer, witness, compatibility
+row, or reconstruction is present.
+\end{proof}
+
+\begin{corollary}[Injective repetition control]
+Let $e(x)$ be an injective canonical source encoding with random-access bits
+and let $r(N)$ be polynomially bounded.  For
+\[
+ g_r(x)=e(x)^{r(N)},
+ \tag{4}
+\]
+the pointer is unique, injective, and has length $r(N)|e(x)|$, but exact
+validation uses only $O(\log M)$ control workspace beyond $A$ and retains zero
+pointer bits afterward.  If $A$ and $r$ are polynomial, the complete decider
+is polynomial time.
+\end{corollary}
+
+Thus \texttt{UNIQUE-BINDING-POINTER-PERSISTENCE1} is
+\RETIRED.  Binding and persistence are different properties.  If pointer
+validity is not part of membership, MODELBRIDGE-0020's stronger cylinder
+erasure skips validation altogether.  If validity is part of membership,
+Theorem 1 pays for validation but still defeats the persistent-state claim.
+
+\section{What the theorem does not erase}
+
+The theorem does not establish sublinear input time.  On an explicit
+sequential pointer, an adversary can flip the last bit, so the displayed
+validator reads all $p(N)$ bits on that input.  It also does not apply when
+the source is destroyed before a later challenge, when pointer bits are
+received by a remote party that cannot access the source, or when the claimed
+resource is an independently proved online communication transcript.  Those
+are different models and require a model-preserving compiler from ordinary
+static SAT.
+
+Under the counterfactual $P=NP$, take a polynomial SAT decider $A$ in
+Theorem 1.  Every polynomial-length bit-local unique-pointer language (1) is
+then decided in polynomial time by the same construction.  This is compatible
+with $P=NP$ and yields no unconditional contradiction.  Requiring $g$ itself
+to need superpolynomial generation would insert the desired hardness into the
+premise unless that lower bound and the SAT-to-$g$ transfer were independently
+proved.
+
+\section{Bounded reproducible audit}
+
+The dependency-free program
+\begin{verbatim}
+timeout 30s python3 experiments/review/unique_pointer_stream_erasure_audit.py
+\end{verbatim}
+completed in 4.216635 seconds.  It used no randomness.  Eight source families
+were included: the paired-$K_{3,3}$ exact-$(2,2)$ core, Horn, 2SAT, a
+four-clause affine/Tseitin encoding, bounded treewidth, an independent
+product, redundant padding, and an UNSAT control.  Five injective pointer
+encodings (repeat, duplicate, mirror, framed, and index-XOR) and repetition
+factors $1,2,4$ were tested.
+
+\begin{center}\small
+\begin{tabular}{@{}lr@{}}
+\toprule
+Metric & Value\\ \midrule
+Total checks & 47,308\\
+Exhaustive single-bit corruptions & 45,268\\
+Wrapper checks & 1,680\\
+Pointer-bit reads, fully charged & 21,454,875\\
+Maximum explicit pointer & 2,912 bits\\
+Maximum validator control-state upper bound & 15 bits\\
+Pointer bits retained after validation & 0\\
+Compatibility extractions / witness reconstructions & 0 / 0\\
+Failures & 0\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+DIRECT, COPY, DEAD, DELAY, INTERP, RECOMP, and STREAM\_ERASE wrappers agreed
+on every valid input and rejected the tested corrupt pointer under the exact
+language.  Every one-bit corruption of every generated pointer was rejected.
+The COPY wrapper demonstrates that an implementation may retain the pointer;
+STREAM\_ERASE demonstrates that correctness does not require it.  The audit
+is \COMP only and does not extrapolate SAT runtime.
+
+Script SHA-256:
+\begin{verbatim}
+32dc04c6f28aa0ef871959e9f09635bad8d2c4a751238f46f022f7ee306b694c
+\end{verbatim}
+Result SHA-256:
+\begin{verbatim}
+4a2c5a7eac2dde2640676b8d8cbd6a09c8b29ab092d6043f199477ef2a83975b
+\end{verbatim}
+
+\section{Literature, barrier, and cross-domain transfer audit}
+
+The two obstacles were identified before the construction: binding does not
+imply persistent state on a random-access machine, and a restricted online or
+communication lower bound does not constrain ordinary static SAT without a
+compiler.  Primary literature was checked first.  Yao's communication model
+formalizes distributed information cost \cite{Yao79}; it is not the present
+one-machine model with both fields locally readable.  Classical pebbling and
+sorting time--space tradeoffs constrain declared graph or sequential models,
+not arbitrary SAT implementations \cite{Pippenger81,BorodinCook82}.  FLMV is
+a directly usable SAT endpoint only after the same ordinary random-access
+machine satisfies its simultaneous hypotheses \cite{FLMV05}.
+
+The transfer taxonomy is:
+\begin{itemize}
+\item \textbf{Directly transferable theorem.}  Bitwise regeneration and
+sequential comparison apply literally; Theorem 1 proves their full accounting.
+\item \textbf{Useful structural analogy requiring a new transfer theorem.}
+Streaming validators, read-only recomputation, proof labels, observable
+control states, and communication cuts suggest interfaces.  A bridge must
+prove that every SAT computation inherits the interface after the source is
+removed or partitioned.
+\item \textbf{Misleading analogy / failed transfer.}  Cryptographic binding,
+random-oracle hashes, VLSI routing, proof-system lower bounds, and
+communication equality cannot be imported as persistent-memory lower bounds
+for a local random-access decider.
+\end{itemize}
+
+The construction relativizes and algebraizes: replace $A$ by a semantic or
+algebraic oracle and the same streaming validation still works.  It therefore
+retires a route rather than escaping Baker--Gill--Solovay or
+Aaronson--Wigderson \cite{BGS75,AW09}.  It defines no large constructive truth-
+table property, so Natural Proofs supplies no positive bridge.
+
+For the post-quantum ledger, exact injective binding is stronger than a
+collision-resistant-hash analogy but still supplies no persistent-state
+theorem.  For the source-to-pointer map, collision count is minimal on the
+tested finite source set, yet validation remains streaming; collision entropy
+therefore does not promote to memory.  This is an
+\textbf{EXACT OBJECT/THEOREM TRANSFER} for the map and a
+\textbf{FAILED TRANSFER} to arbitrary computation.  Special soundness,
+collapse binding, Schur squares, quadratic relations, Hilbert functions, and
+syzygies require additional protocol or algebraic representations and are
+\textbf{ANALOGY/CANDIDATE} or \textbf{FAILED TRANSFER} here.
+
+\section{SAME\_REALIZATION audit}
+
+The validator, source field, pointer field, bit generator, supplied SAT
+decider, output bit, elapsed time, and peak workspace belong to one machine.
+There is no external lookup or uncharged canonicalizer.  Pointer generation
+is not charged to the input decider because the pointer is already part of
+the input; every bit needed for validation is regenerated and charged.  If a
+future compiler must itself write the pointer, its $p(N)$ output work is an
+additional charged term, strengthening rather than weakening the negative
+result about persistence.
+
+\section{CORPUS REVIEWED}
+
+The current GitHub tree (2,403 entries) was surveyed.  Root \path{main.tex},
+actual \path{main4.tex}/\path{main5.tex}, \path{AGENTS.md},
+\path{CODEX.md}, the complete pnp-research skill, experiment mode, and full
+research protocol were read.  Every active task specification was inspected.
+The newest verified MAIN/SYNTHESIS-0019, predecessor LB-0022, TESTS-0018,
+PADQUOT1, FORKFACTOR1, and MODELBRIDGE-0020 were read from their underlying
+files.  Material historical search/read covered source-successor equivalence,
+unique auxiliary witnesses, padding gauges, recognizable islands, pointer
+erasure, HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC, Search-G/RCCN, governance,
+experiments, results, and review spines.  The predecessor LB-0022 file exists
+at its canonical path, is substantive, has the correct header and final
+sentinel, and was read back; no recovery request was needed.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+The lower-bound spine already states qualitatively that uniqueness of an
+auxiliary witness does not force its construction.  MODELBRIDGE-0020 proves
+cylinder erasure and observes that a polynomial validity predicate can be
+checked.  The new contribution is the exact bit-local theorem (2)--(3), its
+post-validation zero-retention statement even for injective binding maps, and
+the exhaustive corruption/state audit.  It strengthens rather than
+contradicts those reports.  It does not duplicate TESTS-0018: fork padding
+attacks multiplicity; this report attacks the proposed uniqueness repair.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN correctly leaves the pointed source-compiler endpoint \OPEN and
+warns that compiler provenance is not solver exposure.  The LSPV-2 region is
+now sharpened: making a pointer unique and semantically validated still does
+not force pointer-sized persistent state when the pointer is bit-local from a
+readable source.  Validation time stays charged.  The repaired target must
+remove or partition the source before a genuinely later obligation, then
+prove a model-preserving bridge from ordinary SAT.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+Adopted: MODELBRIDGE-0020's pointer-origin trichotomy, exact input-cost
+accounting, wrapper replacement, one-bit output, and SAME\_REALIZATION.
+Rejected: uniqueness, injectivity, canonicalization, or cryptographic binding
+as sufficient evidence of persistent solver state.  Retired:
+\texttt{UNIQUE-BINDING-POINTER-PERSISTENCE1} in the bit-local read-only model.
+Retained \OPEN: a source-semantic online obligation with a proved static-SAT
+compiler and a model-matched unconditional endpoint.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any wording that upgrades ``unique binding pointer'' to ``the SAT solver must
+store the pointer'' is overstated.  Any communication or VLSI statement that
+forgets both fields are local is a model mismatch.  No newest root theorem
+requires reversal; the added guard narrows how the pointed repair may be used.
+
+\section{Precise handoff}
+
+The next target is \texttt{SOURCE-SEMANTIC-ONLINE-OBLIGATION1} (\OPEN): define
+one fixed ordinary-SAT compiler in which a source-derived object becomes
+necessary only after the source is no longer freely reread, prove this timing
+or partition semantically rather than by solver-relative instrumentation, and
+charge preprocessing, pointer writing, validation, communication, rereads,
+recomputation, reconstruction, output, and peak space in the same realization.
+It must survive STREAM\_ERASE, RECOMP, affine/Tseitin, Horn, 2SAT,
+bounded-treewidth, products, padding, alternate encodings, semantic oracles,
+and algebraic oracles.  Until that bridge and a forbidden endpoint are proved,
+P versus NP remains \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{Yao79}
+A. C.-C. Yao, ``Some complexity questions related to distributive
+computing,'' \emph{STOC 1979}, pp. 209--213.
+\url{https://doi.org/10.1145/800135.804414}
+\bibitem{Pippenger81}
+N. Pippenger, ``Pebbling with an auxiliary pushdown,''
+\emph{Journal of Computer and System Sciences} 23(2), 1981.
+\url{https://doi.org/10.1016/0022-0000(81)90011-8}
+\bibitem{BorodinCook82}
+A. Borodin and S. Cook, ``A time--space tradeoff for sorting on a general
+sequential model of computation,'' \emph{SIAM J. Comput.} 11(2), 1982.
+\url{https://doi.org/10.1137/0211022}
+\bibitem{FLMV05}
+L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+``Time-space lower bounds for satisfiability,'' \emph{J. ACM} 52(6), 2005.
+\url{https://doi.org/10.1145/1101821.1101828}
+\bibitem{BGS75}
+T. Baker, J. Gill, and R. Solovay, ``Relativizations of the $P=?NP$
+question,'' \emph{SIAM J. Comput.} 4(4), 1975.
+\url{https://doi.org/10.1137/0204037}
+\bibitem{AW09}
+S. Aaronson and A. Wigderson, ``Algebrization: A New Barrier in Complexity
+Theory,'' \emph{ACM Trans. Comput. Theory} 1(1), 2009.
+\url{https://eccc.weizmann.ac.il/report/2008/034/}
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LSPV-2::TESTS-0019
+\end{document}
