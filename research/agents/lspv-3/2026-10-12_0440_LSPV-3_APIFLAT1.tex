@@ -1,0 +1,329 @@
+% LSPV-3 REPORT::APIFLAT1::2026-10-12T04:40:50Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,hyperref,xcolor}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\newcommand{\Exact}{\textbf{PROVED/EXACT}}
+\newcommand{\Known}{\textbf{KNOWN THEOREM}}
+\newcommand{\Comp}{\textbf{COMPUTATIONAL}}
+\newcommand{\Cand}{\textbf{CANDIDATE}}
+\newcommand{\Open}{\textbf{OPEN}}
+\newcommand{\Retired}{\textbf{FALSIFIED/RETIRED}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\title{LSPV-3 Red Team: Named extractor calls are not a universal resource}
+\author{UNIVERSAL\_CORE\_REDTEAM}
+\date{12 October 2026, 04:40 UTC}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.94\linewidth}{
+\textbf{Executive status.} \Exact: every fixed deterministic finite-control
+program has an equivalent single-dispatcher realization with no host-language
+calls to any selected finite set of named internal procedures, at constant-factor
+time and space overhead.  Therefore, conditional on SAT being in P, there is a
+uniform polynomial-time SAT decider with zero named extractor/reconstructor
+calls.  This retires named-call count as a solver-independent resource.  It does
+\emph{not} erase externally observable protocol events or ordinary time/space,
+and it proves no SAT lower bound.  P versus NP remains \Open.
+}}
+\end{center}
+
+\section{Target and exact quantifiers}
+Let $\mathcal M$ be a standard deterministic uniform finite-program model
+(multitape Turing machine, or word-RAM with every memory access charged), and
+let $P$ be a fixed program.  Let $\mathcal E$ be a finite set of procedure
+names designated ``extractor'', ``reconstructor'', or any other internal API.
+Write
+\[
+ h_{\mathcal E}(P,x)
+ =\#\{\hbox{host-level procedure calls from the run of $P(x)$ into
+             a member of $\mathcal E$}\}.
+\]
+The attacked lower-bound target is the program-syntax statement
+\begin{equation}
+ \tag{NCALL}
+ \mathsf{SAT}\in\mathsf P
+ \Longrightarrow
+ \forall A\in\mathsf{PolySAT}\;\exists F\in\mathcal C:
+ h_{\mathcal E}(A,F)>0,
+\end{equation}
+or any stronger positive/superconstant lower bound on the same meter.  Here
+$F$ is an explicitly encoded CNF of bit length $N=|\operatorname{enc}(F)|$;
+all parsing, simulated stack, and output costs are charged.  No property of
+the proposed clean-core family $\mathcal C$ is needed for the attack.
+
+The statement $\forall A\in\mathsf{PolySAT}$ alone may be vacuous if
+$\mathsf{SAT}\notin\mathsf P$.  The result below instead proves the exact
+conditional negation needed for a P=NP proof-by-contradiction architecture:
+if one polynomial SAT decider exists, a zero-named-call one exists too.
+
+\section{Literature preflight and transfer classification}
+The two blocking obstacles were (i) distinguishing semantic preservation from
+preservation of a chosen internal instrumentation, and (ii) preserving the
+machine model and all resource charges during flattening.  Primary literature
+was checked before the proof.  Leroy's verified CompCert back end proves
+semantic preservation across multiple intermediate representations and target
+assembly \cite{Leroy2009}; Vellvm provides formal semantics and simulation
+machinery for verified LLVM transformations \cite{Zhao2012,Zakowski2021}.
+
+\begin{enumerate}[leftmargin=1.5em]
+\item \textbf{Directly transferable theorem.}  None of those compiler theorems
+is imported as a SAT lower bound.  The elementary finite-control simulation
+below is proved directly in the declared model.
+\item \textbf{Useful structural analogy requiring a new transfer theorem.}
+Compiler correctness illustrates that extensional behavior can be preserved
+while internal control-flow and memory representation change.  To make a
+runtime event load-bearing here, one still needs an invariant event relation
+and an arbitrary-decider compiler into that relation.
+\item \textbf{Misleading analogy / failed transfer.}  Verified compilation
+does not imply a superpolynomial lower bound, preserve arbitrary side-channel
+meters, or turn a source-side compatibility object into an obligatory runtime
+object.
+\end{enumerate}
+
+\section{A single-dispatcher erasure theorem}
+For a fixed program $P$, number all instructions in all of its procedures by a
+finite program-counter set $Q_P$.  A state of $P$ is encoded by its ordinary
+data state, current counter, and call stack.  Define $\operatorname{Flat}(P)$
+to be one host procedure containing one dispatcher loop.  Its cases implement
+every instruction of $P$.  A guest call pushes a return counter and changes the
+simulated counter; a guest return pops it.  These are assignments and branches
+inside the one dispatcher, not host calls to a member of $\mathcal E$.
+
+\begin{theorem}[FLAT-CFG-API-ERASURE1]
+For every fixed deterministic finite-control program $P$ and finite named set
+$\mathcal E$, there is an effectively constructible program
+$\operatorname{Flat}_{\mathcal E}(P)$ such that for every encoded input $x$:
+\begin{align*}
+ \operatorname{Flat}_{\mathcal E}(P)(x)&=P(x),\\
+ T_{\operatorname{Flat}(P)}(x)&\le c_P T_P(x)+c_P,\\
+ S_{\operatorname{Flat}(P)}(x)&\le c_P S_P(x)+c_P,\\
+ h_{\mathcal E}(\operatorname{Flat}_{\mathcal E}(P),x)&=0,
+\end{align*}
+for a constant $c_P$ independent of $x$.
+\end{theorem}
+
+\begin{proof}
+Relate each source configuration to the flat configuration containing the same
+data, current instruction number, and encoded call stack.  Each non-call source
+instruction is implemented by one fixed dispatcher case.  A source call is
+implemented by pushing the numbered return site and changing the counter; a
+source return pops it.  Induction on source steps proves identical termination
+and output.  Since $P$ has finitely many instructions, dispatch and each case
+cost at most a $P$-dependent constant.  The flat state stores the same source
+data and call stack plus a constant-size counter and fixed control overhead.
+No transition invokes a host procedure named in $\mathcal E$.  On a multitape
+TM the finite counter can be absorbed into finite control; on a charged word-RAM
+the fixed dispatcher has constant cost.  Thus the stated bounds hold.
+\end{proof}
+
+\begin{corollary}[Conditional zero-call representative]
+If $\mathsf{SAT}\in\mathsf P$, then there exists a deterministic uniform
+polynomial-time SAT decider $B$ satisfying
+$h_{\mathcal E}(B,F)=0$ for every encoded CNF $F$.
+\end{corollary}
+\begin{proof}
+Choose any polynomial-time SAT decider $A$ and set
+$B=\operatorname{Flat}_{\mathcal E}(A)$.  The theorem preserves correctness and
+polynomial time.
+\end{proof}
+
+Hence (NCALL) is \Retired as a universal bridge.  The result is intentionally
+syntax-sensitive: it says nothing about an event meter defined on the simulated
+guest trace.  In fact, the construction can preserve every guest logical call
+while erasing every host call.  That is the diagnostic, not a loophole.
+
+\section{What survives the attack}
+The smallest valid repair is one of the following.
+\begin{enumerate}[leftmargin=1.5em]
+\item Fix an \emph{external} interface (messages, probes, commitments, or output
+symbols) and prove the required events are observable under a representation-
+independent trace equivalence.  Inlining cannot erase an actual external
+message, but an arbitrary static SAT decider is not thereby forced to implement
+the protocol.
+\item Count ordinary time, writable space, input probes, or output length in the
+same realization.  These resources survive flattening, but a new unconditional
+model-matched lower bound is required.
+\item If ``logical extraction events'' are decoded from machine traces, specify
+the decoder, prove invariance under compiler/interpreter wrappers, charge the
+decoder, and prove that every SAT decider admits the required decoded event.
+That universal transfer is \Open.
+\end{enumerate}
+
+The theorem does not claim that a particular fixed program did not perform its
+own source-level helper calls.  Universality is what makes the transformation
+fatal: an all-algorithm theorem must also cover the equivalent flattened
+program.  SAME\_REALIZATION remains mandatory after a model-preserving compiler
+has selected the realization to be charged.
+
+\section{Bounded reproducible hostile-control audit}
+The script
+\begin{center}
+\texttt{experiments/review/api\_call\_flattening\_audit.py}
+\end{center}
+was run once; it finished in 4.2 seconds, so no chunking was required.  Raw
+output is
+\begin{center}
+\texttt{results/raw/review/2026-10-12\_api\_call\_flattening.json}.
+\end{center}
+The script SHA-256 is
+\texttt{a090dd22cd94c40a13f26a9310527af134db7a4ff96276f70a09ceaae56d36b9};
+the JSON file SHA-256 is
+\texttt{709bb477a19b0d59e4ca1f4e12b894d0bb9c5c63efaa1a8c2d084c4868e3ec4a}.
+
+Ten finite formulas cover 2-SAT implication, Horn chaining, contradictory
+affine/Tseitin constraints, a bounded-treewidth path, satisfiable and
+unsatisfiable graph-coloring controls, independent products, redundant
+clauses, alternate literal order, and tautological padding.  Five exhaustive
+deciders were compared: EXPLICIT, INLINE, FUSED, DISPATCH, and TABLE.
+All 50 answer comparisons agreed.  EXPLICIT had positive host API-call count in
+all ten cases; the other four variants had zero host API calls in all 40 checks.
+DISPATCH retained a positive simulated guest-call count in all ten cases.
+Thus 100 asserted checks passed.  These measurements are \Comp only and support
+no asymptotic runtime inference.  The theorem above supplies the general result.
+
+Affine elimination, SCC for 2-SAT, Horn propagation, and treewidth dynamic
+programming would only make the easy controls cheaper; exhaustive search was
+used solely to hold the Boolean function fixed while changing program shape.
+The one-bit decision output supplies no canonical reconstruction transcript.
+
+\section{Barrier audit}
+\paragraph{Relativization.}
+The flattening simulation treats an oracle query instruction as another guest
+instruction.  It therefore relativizes.  No oracle separation is crossed.
+
+\paragraph{Algebrization.}
+Nothing depends on field structure; the simulation also works with algebraic
+oracle instructions.  No nonalgebrizing hinge is present.
+
+\paragraph{Natural Proofs.}
+No constructive large property separating circuit classes is defined.  The
+result neither invokes nor evades the Natural Proofs barrier.
+
+\paragraph{Nonuniformity and arbitrary exponents.}
+The construction is uniform and preserves each fixed program's exponent up to
+a constant factor.  It supplies no exponent uniform over all polynomial
+implementations.  Delay wrappers remain an independent guard against such a
+uniform exponent.
+
+\paragraph{Solver-to-protocol transfer.}
+External protocol events do survive inlining, but no theorem forces arbitrary
+SAT deciders to expose the chosen protocol.  This missing compiler is the same
+load-bearing static-to-online seam found in the HEC/CRS-PPC/CCSPC corpus.
+
+\section{Post-quantum technique ledger}
+\begin{tabular}{p{0.27\linewidth}p{0.18\linewidth}p{0.48\linewidth}}
+\toprule
+Technique & Classification & Result here\\
+\midrule
+Schur squares; quadratic relations; Hilbert functions/syzygies
+& FAILED TRANSFER & No code $C_H$ is forced into the execution of an arbitrary decider; hidden algebraic structure could instead be an algorithmic shortcut.\\
+Collision entropy $|\mathrm{im}L|\ge |A|^2/\mathrm{Coll}(L)$
+& EXACT OBJECT/THEOREM TRANSFER only after $L$ is fixed & The inequality is exact, but flattening shows that a host call materializing $L$ is not forced.\\
+LWE worst-/average-case architecture
+& ANALOGY/CANDIDATE & Black-box external extraction avoids internal-materialization language, but needs a solver-independent reduction and must confront known NP worst-/average-case barriers.\\
+Special soundness / collision extraction
+& ANALOGY/CANDIDATE & Two conflicting externally valid openings may yield a witness only after the commitment/challenge interface is construction-specific and forced.\\
+Hash/random oracle
+& FAILED TRANSFER & Assumptions or ideal-oracle access are inadmissible in an unconditional P-versus-NP proof.\\
+\bottomrule
+\end{tabular}
+
+\section{CORPUS REVIEWED}
+The current GitHub tree was surveyed before substantive work.  This run read
+root \texttt{main.tex}, \texttt{main4.tex}, \texttt{main5.tex},
+\texttt{AGENTS.md}, \texttt{CODEX.md}, the pnp-research skill and red-team
+protocol; all task specifications TASK-001--007; newest verified MAIN
+SYNTHESIS-0021 and materially relevant SYNTHESIS-0012/0015/0019/0020; newest
+LSPV-1 RESOURCEAXIS1, predecessor LSPV-2 TESTS-0021, prior LSPV-3 QGUARD1,
+and newest LSPV-4 COREEQUIV1; RT-0004; MODELBRIDGE-0018; and the cited scripts
+and JSON results.  The HEC, VSC-HEC, G-PPC-HEC, CRS-PPC, CCSPC, and RCCN
+causal branch was inspected at its underlying artifacts, not only peer
+summaries.  Repository search was used for earlier ``call'', ``inline'',
+``extractor'', and ``flatten'' formulations.  The predecessor TESTS-0021 file
+was substantive, had the required header/sentinel, and was read back from
+GitHub, so no recovery request was needed.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+This result does not rename earlier work.  RT-0004 already separated raw and
+decoded exposure on finite equality controls; SYNTHESIS-0012 showed wrapper
+covariance failures; SYNTHESIS-0015 proved predecision no-call laundering by
+running a decider and emitting a fixed answer-tagged child; TESTS-0021 measured
+zero extraction/reconstruction calls for direct one-bit decision.  APIFLAT1's
+new content is the all-input, all-program finite-control theorem that erases a
+chosen finite set of named \emph{internal} procedure calls while preserving the
+same decision computation and its charged resources up to constant factors.
+It explicitly preserves decoded guest events, thereby separating the new claim
+from the older source-transducer laundering theorem.
+
+No contradiction was found with the verified corpus.  A wording contradiction
+would arise only if ``zero named calls'' were reported as ``zero logical
+events''; this report forbids that strengthening.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+The LSPV-3 ledger gains FLAT-CFG-API-ERASURE1 and retires unqualified named
+extractor/reconstructor invocation counts as universal resources.  The highest-
+value red-team repair target is narrowed to an externally observable or
+trace-equivalence-invariant event relation plus an arbitrary-static-decider
+compiler, with all time/space/communication charged in one realization.
+No executive claim, exponent bound, or P-versus-NP status changes.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{ADOPTED:} RT-0004's raw/decoded exposure distinction; TESTS-0021's
+one-bit direct-decision control; QGUARD1's quotient/covariance guard; the HEC
+static-to-online transfer requirement; SAME\_REALIZATION accounting.
+\item \textbf{REJECTED:} interpreting a procedure name, module boundary, or
+materialized compatibility vector as an implementation-independent event.
+\item \textbf{RETIRED:} positive lower bounds on unqualified named internal
+extractor/reconstructor calls, including superconstant variants of (NCALL).
+\item \textbf{RETAINED OPEN:} ordinary time/space/input-probe lower bounds,
+external communication lower bounds after a forced protocol compiler, and a
+nonrelativizing/nonalgebrizing arbitrary-algorithm transfer.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+Any corpus prose that treats ``the solver invokes the extractor'' as a semantic
+necessity without a machine-independent event decoder is overstated.  Likewise,
+zero named calls do not establish zero semantic extraction work.  The current
+root already marks the bridge open, so the repair is a clarification and
+retirement of one resource axis, not a reversal of a claimed proof.
+
+\section{Handoff and exact missing implication}
+The next synthesis should enforce the following gate:
+\begin{enumerate}[leftmargin=1.5em]
+\item $\mathsf{SAT}\in\mathsf P$ implies that every polynomial SAT decider
+compiles to a fixed external relation $R$.
+\item The compiler preserves one charged realization, and every valid
+$R$-realization violates a model-matched unconditional bound.
+\end{enumerate}
+The event/resource must be invariant under INLINE, FUSED, DISPATCH, TABLE,
+INTERP, RECOMP, padding, and alternate encodings.  Proving the first line is
+\Open; proving the second with a lower bound strong enough for arbitrary
+polynomial exponents is \Open.  Until both are closed, P versus NP remains
+\Open.
+
+\begin{thebibliography}{9}
+\bibitem{Leroy2009}
+X. Leroy, ``A formally verified compiler back-end,'' \emph{Journal of Automated
+Reasoning} 43 (2009), 363--446.
+\url{https://xavierleroy.org/publi/compcert-backend.pdf}
+
+\bibitem{Zhao2012}
+J. Zhao, S. Nagarakatte, M. M. K. Martin, and S. Zdancewic,
+``Formalizing the LLVM Intermediate Representation for Verified Program
+Transformations,'' \emph{POPL} (2012).
+\url{https://www.cis.upenn.edu/~stevez/papers/ZhaoZDM12.pdf}
+
+\bibitem{Zakowski2021}
+Y. Zakowski et al., ``Modular, Compositional, and Executable Formal Semantics
+for LLVM IR,'' \emph{ICFP} (2021).
+\url{https://cambium.inria.fr/~yzakowsk/papers/vellvm-design.pdf}
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LSPV-3::APIFLAT1
+\end{document}
