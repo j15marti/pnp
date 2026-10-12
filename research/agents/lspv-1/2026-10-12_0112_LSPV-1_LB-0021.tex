@@ -1,0 +1,377 @@
+% LSPV-1 REPORT::LB-0021::2026-10-12T01:15:30Z
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newtheorem{theorem}{Theorem}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\Hcore}{\mathcal H_{2,2}}
+\title{LSPV-1 Lower-Bound Report LB-0021\\Black-box fork scale is not an intermediate obstruction}
+\author{UNIVERSAL\_CORE\_LOWER\_BOUND}
+\date{12 October 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Executive status.}
+\textbf{FALSIFIED/RETIRED:} an unqualified extensional black-box
+fork/extraction stage cannot serve as a solver-independent intermediate
+lower-bound target for every uniform deterministic polynomial-time SAT
+decider.  Positive-polynomial query scale is vulnerable to exact delay
+wrappers; subpolynomial query scale collapses, after fixing any polynomial
+SAT solver under $\SAT\in\mathrm P$, to an ordinary source computation;
+implementation-sensitive escape routes lose full replacement covariance.
+This is a barrier theorem and not a separation.  \textbf{OPEN:} a
+full-language source-only compiler whose \emph{same realized ordinary
+machine}, including construction, verification, extraction and writing
+costs, lies in a model-matched unconditional forbidden region.  Therefore
+\textbf{P versus NP remains open}.
+
+\section{Claim card}
+
+\paragraph{Claim ID.}
+\texttt{BLACKBOX-FORK-SCALE-TRILEMMA1}.
+
+\paragraph{Run mode.}
+Red-team: attempt to falsify a proposed all-algorithm necessity.
+
+\paragraph{Source clean core and encoding.}
+Let $\Hcore$ be the duplicate-free proper monotone
+$\mathrm{3SAT}\text{-}(2,2)$ family: every clause contains three distinct
+positive literals; every variable occurs in exactly two clauses; duplicate
+clauses are forbidden.  Inputs use the repository's explicit variable-index
+encoding.  For $n$ variables and $m=2n/3$ clauses,
+\[
+        N:=|\operatorname{enc}(F)|=\Theta(n\log n).
+\]
+For any ordered vertex interface $S=(x_1,\ldots,x_t)$ define the semantic
+compatibility object
+\[
+ H_S(F):=\{a\in\{0,1\}^{t}:\exists b\in\{0,1\}^{n-t}\ F(a,b)=1\}.
+\]
+This object is representation-independent, but its cardinality is not a
+runtime lower bound and an exact decider need only output one bit.
+
+\paragraph{Purported universal intermediate.}
+Let $\mathsf{PolySAT}$ be the set of uniform deterministic exact SAT
+deciders running in polynomial time.  Assume only for the conditional audit
+that $\SAT\in\mathrm P$, hence $\mathsf{PolySAT}\ne\varnothing$.
+Fix one deterministic extensional oracle compiler $E$.  On source $F$,
+challenge $e$, and oracle access to $A\in\mathsf{PolySAT}$, it returns a
+commitment/opening pair $(c,z)$ and makes at most
+$N^{\eta+o(1)}$ adaptive SAT queries.  Its non-oracle time and space are
+$N^{r+o(1)}$ and $N^{p+o(1)}$.  Let
+\[
+ q_E(N):=\max_{|F|=N,e,\text{ reached query }Q}|Q|=N^{\sigma_E(N)}.
+\]
+The attacked claim demanded a fixed charged exponent, independent of the
+choice of $A$, and a common commitment admitting two valid openings for
+distinct challenges.
+
+\paragraph{Quantifiers.}
+The rejected form is
+\[
+ \exists E\,\exists c\,\forall A\in\mathsf{PolySAT}\,
+ \forall^{\infty}N\,\forall F\in\Hcore\cap\{0,1\}^{N}:
+ \quad E^A(F,\cdot)\text{ realizes the charged fork within }N^{c+o(1)}.
+\]
+The quantifier $\forall A$ includes semantically identical exact delay
+wrappers.  No premise asserts $\mathrm P\ne\mathrm{NP}$.
+
+\paragraph{SAME\_REALIZATION ledger.}
+The charged realization is the single ordinary computation obtained by
+executing $E$, constructing every query, running the chosen $A$, storing and
+checking answers, producing both openings, applying the proposed extractor,
+and writing all explicit output.  Semantic-state counts, proof-system size,
+and a different reconstruction algorithm are not charged to this machine.
+
+\section{Exact result}
+
+\begin{theorem}[Black-box fork-scale trilemma]
+\label{thm:trilemma}
+Assume $\SAT\in\mathrm P$ and let $E$ satisfy the claim-card bounds.
+\begin{enumerate}
+\item If $\limsup_N\sigma_E(N)>0$, then no fixed exponent $c$ upper-bounds
+the realized running time of $E^A$ for every $A\in\mathsf{PolySAT}$ on all
+sufficiently large source lengths.
+\item If $\sigma_E(N)\to0$, then after fixing any
+$A\in\mathsf{PolySAT}$ with running time $|Q|^{K+o(1)}$, the oracle calls can
+be inlined and $E^A$ is an ordinary source algorithm with
+\[
+ T(N)=N^{\max\{r,\eta\}+o(1)},\qquad
+ S(N)=N^{p+o(1)}+N^{o(1)}.
+\]
+If the two-opening relation is balanced, polynomially decidable and total,
+then under $\SAT\in\mathrm P$ its lexicographically first tuple is itself
+source-searchable in polynomial time by standard NP prefix search.  Thus the
+fork is not an intermediate problem strictly between SAT and a known
+unconditional endpoint.
+\item If $E$ avoids the first two alternatives by allowing the commitment
+or accepted relation to depend on code, trace, timing or representation of
+the oracle implementation, then full constant-replacement covariance fails.
+Any replacement-covariant commitment factors through the source:
+$c_A(F)=r(F)$.  Covering all arbitrary deciders then requires a new typed
+orbit-coverage theorem and is not implied by semantic correctness.
+\end{enumerate}
+Consequently the unqualified candidate
+\texttt{UNIVERSAL-BLACKBOX-FORK-INTERMEDIATE1} is
+\textbf{FALSIFIED/RETIRED}.
+\end{theorem}
+
+\begin{proof}
+For (1), choose $\epsilon>0$ and infinitely many $N$ for which a reached
+query has length at least $N^\epsilon$.  Given an exact polynomial SAT
+decider $A_0$, define the extensionally identical uniform wrapper
+\[
+       A_d(Q):=\text{wait exactly }|Q|^d\text{ steps, then run }A_0(Q).
+\]
+For any proposed common exponent $c$, choose an integer $d>c/\epsilon$.
+The realized execution on that reached query alone costs at least
+$N^{\epsilon d}>N^c$.  The output language and every oracle answer are
+unchanged.  Therefore a common all-decider exponent cannot be extensional.
+
+For (2), a reached query of length $q_E(N)=N^{\sigma_E(N)}$ costs
+\[
+ q_E(N)^{K+o(1)}=N^{K\sigma_E(N)+o(1)}=N^{o(1)}
+\]
+for the fixed $K$.  Multiplying by at most $N^{\eta+o(1)}$ queries and
+including local computation gives the displayed time bound; storing a query
+and the fixed-solver workspace adds only $N^{o(1)}$ beyond the stated local
+space bound.  The source-searchability statement is the usual polynomially
+balanced NP search-to-decision reduction: encode the relation and recover
+the lexicographically first tuple one prefix bit at a time.  This implication
+is conditional on $\SAT\in\mathrm P$ and supplies no contradiction by itself.
+
+For (3), let $c_A(F)$ be invariant under replacement of $A$ by every exact
+implementation $B\in\mathsf{PolySAT}$.  Fix any $A_\star$ and set
+$r(F)=c_{A_\star}(F)$.  Replacement covariance gives
+$c_A(F)=c_{A_\star}(F)=r(F)$ for every $A$.  Conversely, implementation
+dependence violates that invariance.  The three alternatives exhaust,
+respectively, positive-scale extensional access, vanishing-scale extensional
+access, and nonextensional access.  None establishes an unconditional
+general-computation lower bound.
+\end{proof}
+
+\section{Finite hostile-control audit}
+
+The reproducible script is
+\path{experiments/review/blackbox_fork_scale_trilemma_audit.py}; its checked
+output is
+\path{results/raw/review/2026-10-12_blackbox_fork_scale_trilemma.json}.
+Each invocation is a single sub-second chunk, below the 30-second runtime
+rule.
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Control & Result & Interpretation\\
+\midrule
+Delay wrappers & 240/240 inequalities passed &
+for $\epsilon=1/j$, $d=cj+1$ gives $\epsilon d>c$\\
+Vanishing scales & 30/30 checks passed &
+fixed $K/j$ decreases along the tested schedule\\
+Replacement maps & 512 exhaustive maps &
+exactly $8=2^3$ factor through three sources\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+\textbf{COMPUTATIONAL:} these are finite arithmetic and toy covariance
+checks only.  They do not prove either asymptotic premise.  Hostile controls
+also include one-bit output, exact delay wrappers, padding, alternate
+encodings, Horn/2SAT/affine/Tseitin shortcuts, bounded treewidth, independent
+products, redundant clauses, and compact circuit or branching-program
+representations.  These controls reinforce the requirement that a genuine
+endpoint concern the same ordinary computation, not the size of $H_S(F)$ or
+a chosen explicit representation of it.
+
+\section{Barrier and transfer audit}
+
+\paragraph{Relativization.}
+Baker--Gill--Solovay exhibit oracles giving opposite answers to relativized
+P versus NP.  The positive-scale branch here is deliberately black-box and
+relativizing.  It is used only to retire a route, not to claim a separation.
+A surviving proof must identify a nonrelativizing, source-level endpoint.
+
+\paragraph{Algebrization.}
+No polynomial-extension or arithmetization step appears in the theorem.
+Aaronson--Wigderson therefore supplies a warning, not a transferred lower
+bound.  Status: \textbf{useful structural analogy requiring a new transfer
+theorem}.
+
+\paragraph{Natural Proofs.}
+Razborov--Rudich concerns constructive large properties against circuit
+classes under pseudorandomness assumptions.  The present theorem is about
+uniform oracle composition and exact delay wrappers, not a large property
+of truth tables.  Status: \textbf{misleading analogy / failed transfer} as a
+direct proof; no Natural-Proofs conclusion is claimed.
+
+\paragraph{Model-matched endpoint.}
+Fortnow--Lipton--van Melkebeek--Viglas prove that for every
+$c<\varphi=(1+\sqrt5)/2$ there is $d>0$ such that SAT has no deterministic
+random-access-Turing-machine algorithm simultaneously using time $N^c$ and
+space $N^d$.  This is a \textbf{directly transferable theorem} only after a
+full-language compiler yields the same ordinary random-access machine with
+all costs counted.  The present fork relation supplies no such compiler.
+
+\paragraph{Cross-domain preflight.}
+Cryptographic special soundness explains why two valid openings for a
+common commitment can yield a witness, but it presupposes acquisition of
+those openings.  VLSI routing and communication-cut lower bounds charge
+local wires/messages in restricted architectures; they do not lower-bound
+an arbitrary random-access decider.  Observability in control theory
+concerns recovery of state in a specified dynamical model; a SAT decider is
+not obliged to expose that state.  These are \textbf{useful structural
+analogies requiring a new transfer theorem}, not direct imports.
+
+\paragraph{Post-quantum technique ledger.}
+Schur squares, quadratic-relation ranks, Hilbert functions and syzygies
+apply exactly to the repository's code objects, but no theorem forces an
+arbitrary SAT decider to materialize those representations.  Status:
+\textbf{ANALOGY/CANDIDATE needing a new bridge}.  Collision entropy gives
+the exact inequality
+\[
+        |\operatorname{im}L|\ge |A|^2/\operatorname{Coll}(L),
+\]
+but it lower-bounds an image of a specified map, not arbitrary decision
+time; direct transfer is \textbf{FAILED TRANSFER}.  The LWE
+worst-case/average-case architecture motivates external black-box
+extraction, but known NP reduction barriers and the scale trilemma leave the
+needed bridge \textbf{OPEN}.  Special-soundness/collapse-binding is an exact
+object-level analogy only after a common fork is obtained; cryptographic
+assumptions and random-oracle methods are inadmissible as unconditional
+endpoints.
+
+\section{CORPUS REVIEWED}
+
+The repository tree was surveyed before substantive work.  Directly read
+artifacts included root \path{main.tex}, \path{AGENTS.md},
+\path{CODEX.md}, the complete
+\path{.codex/skills/pnp-research/SKILL.md}, every current specification in
+\path{tasks/}, \path{main4.tex}, \path{main5.tex}, the newest verified
+LSPV-5 synthesis
+\path{research/review/reports/synthesis/2026-10-12_0048_SYNTHESIS-0018.tex}
+and its MAIN snapshot, LSPV-1 reports LB-0015 and LB-0020, LSPV-2
+TESTS-0017, LSPV-3 ONETRANS1, and LSPV-4 MODELBRIDGE-0016,
+MODELBRIDGE-0018, and FORKFACTOR1.  Relevant HEC, VSC-HEC, G-PPC-HEC,
+CRS-PPC and CCSPC exploration files, governance notes, cited scripts and raw
+results were inspected.  Repository-wide searches covered query scale,
+delay wrappers, fork acquisition, replacement covariance, source
+factorization, compatibility extraction, and prior retired intermediates.
+The immediately preceding LSPV-5 artifact had a valid header, substantive
+body and final verification sentinel and was readable from GitHub.
+
+Primary-literature preflight covered the FLMV random-access SAT time--space
+lower bound, Baker--Gill--Solovay relativization, Aaronson--Wigderson
+algebrization, Razborov--Rudich Natural Proofs, and worst-case/average-case
+reduction barriers.  The two active obstacles are (i) acquiring a
+source-level common fork without charging an unknown solver exponent and
+(ii) transferring the resulting object to the same model-matched ordinary
+machine in an unconditional forbidden region.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+The ingredients are not new individually.  LB-0015 proved the black-box
+query-scale dichotomy.  SYNTHESIS-0018 proved the opening-acquisition
+trilemma.  ONETRANS1 already observed that challenge-derived positive-scale
+queries inherit the unknown solver exponent.  FORKFACTOR1 proved source
+factorization from replacement covariance.  The new contribution is only
+their exact quantified composition into Theorem~\ref{thm:trilemma} and its
+application to the black-box fork intermediate.  No report was found that
+previously stated this complete three-way theorem with encoded-length
+accounting.  There is no contradiction with LB-0020: its hereditary OR-pass
+composition remains exact, while its acquisition arrow remains open.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+The LSPV-1 specialty state now adds one negative theorem:
+\texttt{UNIVERSAL-BLACKBOX-FORK-INTERMEDIATE1} is
+\textbf{FALSIFIED/RETIRED}.  The highest-value target is narrowed from an
+unspecified favorable pass to a source-only, subpolynomial-query compiler
+plus model-matched endpoint:
+\[
+\begin{split}
+\texttt{FAVORABLE-SOURCE-FORK-ENDPOINT1}:\quad
+&\exists E\ \forall F\in\mathrm{SAT},\
+E(F)\text{ yields the charged common-fork object},\\
+&\sigma_E(N)\to0,\quad
+T_E(N)=N^{a+o(1)},\quad S_E(N)=N^{b+o(1)},\\
+&\text{the same realized random-access machine lies in a known}\\
+&\text{forbidden time--space region after all costs.}
+\end{split}
+\]
+Status: \textbf{OPEN}.  This target is separation-strength: proving it from
+$\SAT\in\mathrm P$ would supply the missing contradiction rather than an
+easier intermediate lemma.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\begin{center}
+\begin{tabular}{@{}p{0.28\linewidth}p{0.16\linewidth}p{0.48\linewidth}@{}}
+\toprule
+Component & Status & Disposition\\
+\midrule
+Encoded $\Hcore$ and $H_S(F)$ & PROVED/EXACT &
+Adopted as a semantic test family; not a runtime measure.\\
+LB-0015 query-scale dichotomy & PROVED/EXACT &
+Adopted verbatim as the scale component.\\
+SYNTHESIS-0018 opening acquisition & PROVED/EXACT &
+Adopted; ordinary witnesses do not supply binding conflicts.\\
+FORKFACTOR1 source factorization & PROVED/EXACT &
+Adopted under full replacement covariance.\\
+Universal black-box fork intermediate & FALSIFIED/RETIRED &
+Retired by Theorem~\ref{thm:trilemma}.\\
+Proof-system/code/Schur-square size as arbitrary runtime & FALSIFIED/RETIRED &
+Remains retired absent a same-realization transfer.\\
+Favorable source-fork endpoint & OPEN &
+Retained as the load-bearing target.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any wording suggesting that two ordinary satisfying assignments create a
+special-soundness fork is stale: distinct challenges and a common binding
+commitment are additional requirements.  Any wording treating replacement
+covariance as evidence that the original solver exposed the commitment is
+overstated: it proves source factorization.  Any claim of a fixed all-solver
+exponent for positive-scale black-box calls is false under exact delay
+wrappers.  Root MAIN already marked the relevant acquisition and transfer
+arrows \textbf{OPEN}; no verified theorem was silently downgraded or
+strengthened.
+
+\section{Handoff}
+
+LSPV-2 should add challenge-dependent affine/Tseitin and bounded-treewidth
+controls to test whether a proposed source compiler merely recognizes a
+tractable representation.  LSPV-3 should formulate the minimal
+full-language source compiler with explicit challenge generation and
+complete reconstruction cost.  LSPV-4 should search only for a typed
+orbit-coverage theorem whose statement survives exact wrappers and
+alternative encodings.  LSPV-5 should retain
+\texttt{FAVORABLE-SOURCE-FORK-ENDPOINT1} as \textbf{OPEN} and keep the
+project status explicit: P versus NP remains open.
+
+\begin{thebibliography}{9}
+\bibitem{FLMV}
+L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+Time-space lower bounds for satisfiability,
+\emph{Journal of the ACM} 52(6):835--865, 2005.
+DOI: \href{https://doi.org/10.1145/1101821.1101822}{10.1145/1101821.1101822}.
+\bibitem{BGS}
+T. Baker, J. Gill, and R. Solovay,
+Relativizations of the P=?NP question,
+\emph{SIAM Journal on Computing} 4(4):431--442, 1975.
+\bibitem{AW}
+S. Aaronson and A. Wigderson,
+Algebrization: A new barrier in complexity theory,
+\emph{ACM Transactions on Computation Theory} 1(1), 2009.
+DOI: \href{https://doi.org/10.1145/1490270.1490272}{10.1145/1490270.1490272}.
+\bibitem{RR}
+A. Razborov and S. Rudich,
+Natural proofs,
+\emph{Journal of Computer and System Sciences} 55(1):24--35, 1997.
+\end{thebibliography}
+
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::LB-0021
