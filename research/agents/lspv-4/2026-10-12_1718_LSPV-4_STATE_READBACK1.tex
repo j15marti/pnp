@@ -1,0 +1,364 @@
+% LSPV-4 REPORT::STATE_READBACK1::2026-10-12T17:18:45Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,hyperref,xurl,microtype}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\rank}{\operatorname{rank}}
+\title{STATE\_READBACK1: Data-Dependent Checkpoints\\and Charged Source Access}
+\author{LSPV-4 / UNIVERSAL\_CORE\_BRIDGE}
+\date{12 October 2026, 17:18 UTC}
+\begin{document}
+\maketitle
+\begin{abstract}
+We replace trace-field selection by a joint, explicit checkpoint/access
+interface. For any deterministic exact Boolean relation service whose
+source-dependent state has at most $2^B$ values and whose later query makes
+at most $q$ original-source bit probes, its relation matrix has real rank at
+most $2^B\sum_{j\le q}\binom Nj$. The proof is elementary decision-tree
+polynomial factorization. A Hamming-code construction disproves the
+stronger additive guess $B+q\ge\log_2\rank H$: equality on seven source
+bits needs only five retained bits and one later source-bit probe.
+We instantiate this construction on 128 actual signed Monotone
+3-SAT-$(2,2)$ formulas and verify all 16,384 selected compatibility queries.
+The statement constrains a specified relation service; it does not force a
+one-bit SAT decider to provide that service. P versus NP remains OPEN.
+\end{abstract}
+
+\section{What changes, and what is not claimed}
+MODELBRIDGE-0028 gives two equal-length, same-YES clean-core formulas with
+opposite residual compatibility. A data-free schedule and the decision bit
+therefore cannot reconstruct their compatibility. FIELDMASK1, CAUSALCANCEL1,
+and TRACECONJ1 separately show why field masks, live causal paths, and
+source-injective traces do not establish solver-paid semantic exposure.
+The September 26 continuation-vector report already identifies the central
+repair: charge the actual continuation service, including restart and reread.
+We adopt that interface requirement rather than claim it as new.
+
+The present advance is a precise quantitative bound for a data-bearing
+checkpoint plus its allowed later source access, and a constructive
+counterexample to naive bit addition. The scoped mathematical implications
+below are PROVED/EXACT by the supplied proofs, with independent review
+pending. Finite tests are COMPUTATIONAL. No proof assistant was used. No
+unrestricted SAT resource pair, all-input compiler, or separation is claimed.
+
+\section{Exact interface and quantifiers}
+Fix $N$, a nonempty source domain $X\subseteq\{0,1\}^N$, a finite query set
+$\mathcal A$, and a Boolean relation $H:X\times\mathcal A\to\{0,1\}$.
+A deterministic preprocessing procedure reads $x$ before receiving $a$ and
+leaves state $s(x)\in\mathcal S$. We require $|\operatorname{im}s|\le2^B$.
+The later procedure receives $s(x),a$, and read-only bit access to $x$, and
+must return $H(x,a)$ exactly using at most $q$ such bit probes on every legal
+pair. It may choose each address adaptively.
+
+Here $B$ measures all retained source-dependent information, including any
+relevant program counter, head positions, selected cut identifier, and clock
+information. Public length and fixed program text are not source-dependent.
+A bound on variable-length payload alone is insufficient if its length or
+location carries uncounted information. The state may be an arbitrary
+nonlinear function of the source; no special trace representation is imposed.
+
+The quantifier order is
+\[
+ \forall N,X,\mathcal A,H\ \forall s\ \forall Q:
+ \bigl[\forall x\in X\ \forall a\in\mathcal A,
+ Q^{x}(s(x),a)=H(x,a),\ \#\mathrm{probes}\le q\bigr].
+\]
+Preprocessing and query computation are not free when applying this model to
+an ordinary machine. The lower bound deliberately ignores their cost, which
+only strengthens its validity for the specified service. A source-dependent
+whole-formula oracle, an externally supplied source pointer with a powerful
+decoder, or an uncounted word read is not a single bit probe.
+
+For SAT, the candidate relation is
+\[
+ H(F,\alpha)=1\iff\exists w\succeq\alpha\quad w\models F.
+\]
+It is a two-argument service. Its empty-restriction value is the ordinary
+SAT decision, but the ordinary decision task does not require all the other
+queries. Direct non-$P$ decision on a fixed NP-complete core would suffice
+for $P\ne NP$ without an additional transfer to broader SAT syntax.
+
+\section{A checkpoint-conditioned rank/access theorem}
+Put
+\[
+ D(N,q)=\sum_{j=0}^{\min(q,N)}\binom Nj,
+ \qquad H_s=H\big|_{s^{-1}(s)\times\mathcal A}.
+\]
+\begin{theorem}[STATE-CONDITIONED-RANK-ACCESS1]
+For every service satisfying the preceding interface,
+\[
+ \rank_{\mathbb R}H_s\le D(N,q),\qquad
+ \boxed{\rank_{\mathbb R}H\le |\operatorname{im}s|D(N,q)
+                         \le2^B D(N,q).}
+ \tag{1}
+\]
+Thus, when $H$ has nonzero rank,
+\[
+ \log_2\rank H\le B+\log_2 D(N,q).
+ \tag{2}
+\]
+\end{theorem}
+\begin{proof}
+Fix a state value $s$ and query $a$. The future deterministic source access
+is a binary decision tree of depth at most $q$ on its legal state fiber.
+Unreachable branches can be filled arbitrarily; no algorithm for discovering
+these branches is asserted. Each accepting leaf contributes the product of
+at most $q$ tested literals $x_i$ or $1-x_i$. Summing these products and
+multilinearizing gives a polynomial $p_{s,a}$ of degree at most $q$ agreeing
+with the output on the fiber. Repeated reads do not increase this bound.
+
+Let $V_s$ be the evaluation matrix, on sources in the fiber, of all monomials
+of degree at most $q$. Each column of $H_s$ lies in its column span. Hence
+$H_s=V_s C_s$ for some coefficient matrix and $\rank H_s\le D(N,q)$.
+Stacking the state-fiber row blocks yields
+$\rank H\le\sum_s\rank H_s$, which proves (1). Taking logarithms proves (2).
+The proof is valid for arbitrary promise subsets and arbitrary state maps.
+\end{proof}
+
+At $q=0$, rank is bounded by the number of states. With later access,
+query-dependent addresses give a much larger family of possible tests than
+one fixed $q$-bit message. This is why replacing $\log D(N,q)$ by $q$ is
+invalid. A $w$-bit word probe can be simulated by $w$ bit probes, giving the
+conservative replacement $q\mapsto wq$, not the original $q$.
+
+For any fixed $q$, (2) also gives
+$B\ge\log_2\rank H-O(q\log N)$. It is an interface tradeoff, not an
+exponential-state materialization theorem. Even its strongest source-probe
+conclusion cannot require more than reading all $N$ bits when local
+computation is unrestricted. Additional computation bounds require their
+own argument.
+
+\section{Hamming coding defeats additive state-plus-probe counting}
+Let $m=2^r-1$, $r\ge2$. Index the coordinates by all nonzero $r$-bit vectors,
+equivalently the integers $1,\ldots,m$. Define
+\[
+ \sigma(x)=\bigoplus_{i:x_i=1}i,
+ \qquad \mathcal C=\{c:\sigma(c)=0\}.
+\]
+The parity-check matrix has rank $r$, so $|\mathcal C|=2^{m-r}$.
+For each $x$, let $c(x)=x$ if $\sigma(x)=0$, and otherwise let
+$c(x)=x\oplus e_{\sigma(x)}$. Then $c(x)\in\mathcal C$ and is the unique
+codeword within distance one. Uniqueness follows because neither one nor
+two distinct nonzero columns sum to zero. This is the usual single-error
+Hamming-code geometry \cite{hamming1950}; all needed properties are proved
+here rather than imported as an unexplained coding oracle.
+
+Store the $m-r$ systematic information bits of $c(x)$ plus one flag recording
+whether $x=c(x)$. Thus
+\[
+ B=m-r+1.
+\]
+On a later equality query $y$, compute its corresponding summary.
+If summaries differ, answer NO. If both summaries describe the same center,
+answer YES. Otherwise $x=c\oplus e_i$ and $y=c\oplus e_j$ are in the same
+neighbor sphere. Probe $x_j$ and compare it with $y_j$. The values agree
+exactly when $i=j$. This gives exact equality using at most one source-bit
+probe.
+
+\begin{proposition}[Failure of additive counting]
+For equality on $m=2^r-1$ source bits, the above deterministic service has
+$\rank H=2^m$, $q=1$, and $B=m-r+1$. For $r\ge3$,
+\[
+ B+q=m-r+2<m=\log_2\rank H.
+\]
+Consequently the generic inequality $B+q\ge\log_2\rank H$ is
+FALSIFIED/RETIRED. Inequality (1) remains valid.
+\end{proposition}
+
+For $m=7$, there are 16 codewords and 32 retained states, with fibers of size
+one or seven. Five stored bits and one probe answer all 16,384 equality
+pairs. This does not recover the entire source from six fixed bits: the
+address changes with the requested comparison. For $m=15$, $B=12$ and the
+same one-probe scheme applies.
+
+\section{An actual signed clean-core realization}
+Use the two six-variable templates recovered from MODELBRIDGE-0028:
+\begin{align*}
+ P={}&\{(1,2,3),(1,2,4),(3,5,6),(4,5,6)\},\\
+ Q_0={}&\{(-1,-2,-3),(-1,-2,-4),(-3,-5,-6),(-4,-5,-6)\},\\
+ Q_1={}&\{(-1,-2,-4),(-1,-2,-5),(-3,-4,-6),(-3,-5,-6)\},\\
+ F_0={}&P\land Q_0,\qquad F_1=P\land Q_1.
+\end{align*}
+Tuple notation denotes disjunctive clauses. Both templates are proper,
+duplicate-free, sign-monochromatic, with two occurrences of each sign per
+variable. Assignment integers use variable $i$ at bit $i-1$.
+The exhaustive six-variable check gives assignments $a_0=19$ satisfying
+only $F_0$, $a_1=39$ satisfying only $F_1$, and $a_*=12$ satisfying both.
+
+For $x\in\{0,1\}^m$, form $F_x$ from $m$ variable-disjoint shifted copies
+of $F_{x_j}$. Every $F_x$ is still in signed Monotone 3-SAT-$(2,2)$ and is
+satisfiable. Let $\alpha_y$ fully assign block $j$ to $a_{y_j}$. Then
+\[
+ \boxed{H(F_x,\alpha_y)=1\iff x=y.}
+ \tag{3}
+\]
+Thus the selected compatibility matrix is an identity matrix of rank $2^m$.
+This is an easy product subfamily inside the syntax, not an assertion that
+this subfamily is itself NP-hard or connected. It is a control against
+unqualified per-instance resource transfer.
+
+The source encoding is $\gamma(n)\gamma(k+1)$ followed by $k$ clauses of
+three sign-plus-identifier records. Here $n=6m$, $k=8m$, and
+$w=\operatorname{bitlength}(6m)$, so
+\[
+ N=\ell_\gamma(6m)+\ell_\gamma(8m+1)+24m(1+w)=\Theta(m\log m).
+\]
+Positive blocks precede negative blocks. In the first negative clause of
+block $j$, the last identifier is $6j+3$ for template zero and $6j+4$ for
+template one. Its least significant bit therefore reveals $1-x_j$ in one
+actual source-bit probe at a public computable address.
+
+The implementation validates the whole source in one sequential pass before
+creating the sketch. It checks all clause records, not merely an external
+template promise; malformed inputs are rejected by this recognizer. A
+negative four-clause block and the selector vector are the only temporary
+source-dependent construction state needed. Query $y$ names the explicitly
+defined $\alpha_y$; this does not implement arbitrary partial-assignment
+compatibility. Every encoding bit is a constant, $x_j$, or $1-x_j$; hence
+for this subfamily the degree argument may use selector dimension $m$
+instead of the weaker encoded dimension $N$.
+
+At $m=7$, the test uses 42 variables, 56 clauses, 1,198 encoded bits, and all
+128 formulas. It validates all sources and checks all 16,384 actual CNF
+assignment evaluations against the one-probe service. The common witness
+$a_*$ verifies that ordinary SAT is YES on every member.
+
+\section{Costs and the unresolved decision bridge}
+The code records every source read during preprocessing and every later
+source-bit query. Preprocessing reads all $N$ encoded bits, so it is not
+free. The Python integer implementation conservatively takes polynomial
+bit work: $O(N\log N+m^2)$ preprocessing and $O(m^2)$ query-side bit work,
+with $O(m+\log N)$ auxiliary bits in a bit-level implementation of the
+stated operations. The test harness itself materializes formulas, expected
+answers and matrices and has no small-space claim.
+
+Crucially, $B$ is retained state between stages, not total peak workspace.
+The query uses temporary state and reads its $m$-bit context. A constant
+number of source probes does not establish constant running time. No
+near-linear-time/sublinear-space SAT endpoint is claimed for the prototype.
+
+The actual transfer conditions still to prove for a SAT application are:
+\begin{description}
+\item[] An actual computation must supply the specified contexts or an exact
+cost-preserving reduction to them. A one-bit SAT contract does not do so.
+\item[] The retained state must be formed without access to the later context;
+otherwise it may simply store $H(x,a)$ in one bit.
+\item[] All source-dependent side channels, cut identifiers, input addresses,
+and later decoded accesses must be counted in the same execution.
+\item[] Any lower bound on the resulting interface must exceed what its
+compiler and unrestricted local computation already permit. Rank and source
+probes alone do not establish a superpolynomial time lower bound.
+\end{description}
+This improves a necessary interface theorem without declaring its SAT
+realization solved. No universal implementation compiler is demanded.
+Fixed code or exponents may be chosen inside a contradiction argument, but
+no such selection in this report creates the missing service obligation.
+
+\section{Primary literature and transfer status}
+The proof of (1) is a classical decision-tree polynomial argument, developed
+explicitly here. Beals et al., Sections 3.1--3.2 and Lemmas 4.1--4.2, are
+primary background for query/polynomial modeling; their quantum degree
+factor is not substituted for the classical degree-$q$ proof
+\cite{beals1998}. G\'al--Miltersen define systematic input-plus-index
+structures in Section 1 and prove problem-specific tradeoffs, including
+Theorem 2 for prefix sum. Their numerical lower bounds are not imported
+into SAT \cite{gal2003}.
+
+A closely matching 2026 framework is Garg et al.'s query-with-sketch model.
+Its Lemma 3 reduces a systematic data structure to query-with-sketch, and
+Lemma 8 gives a conditional min-entropy route to probe lower bounds
+\cite{garg2026}. This supports treating source rereads and retained summaries
+jointly. Applying its matrix-powering bounds to SAT would need a new exact
+reduction and satisfied entropy hypotheses; no such transfer is claimed.
+The final primary CCC PDF was retrieved after the arXiv HTML/PDF fetches
+failed. Hamming's construction is a genuine coding-to-service construction,
+not a cryptographic hardness assumption.
+
+Our rank theorem is stable under relabeling retained states and source bit
+permutations/complements. A fixed oracle whose arguments are constructed
+only from state, context and counted probe answers does not add source
+information; its real running cost must nevertheless be charged. A
+whole-source oracle or low-degree-extension oracle is a different access
+primitive and invalidates that comparison. The work is not claimed to
+cross relativization, algebrization, or Natural Proofs; see
+Aaronson--Wigderson for the precise barrier distinction \cite{aw2009}.
+
+\section{Reproducible tests}
+All four invocations use a 25-second alarm and a 30-second shell timeout.
+All arithmetic ranks are exact integer elimination, not floating point.
+The seed is 202610121659. The finite experiment is not a proof of the
+universal rank theorem; that theorem has the symbolic proof above.
+\begin{center}
+\begin{tabular}{p{0.50\linewidth}rr}
+\toprule Audit & Assertions & Seconds\\\midrule
+Core CNFs and exhaustive Hamming $m=3,7$ & 67,354 & 0.327\\
+Adaptive-tree degree and state-fiber rank & 5,573 & 0.119\\
+Hamming $m=15$, all fibers and seeded pairs & 1,064,964 & 3.805\\
+Eight easy-family and semantic wrapper controls & 1,058 & 0.040\\\midrule
+Total & 1,138,949 & 4.291\\\bottomrule
+\end{tabular}
+\end{center}
+No failure occurred. The rank audit covers 189 parameter cells, 4,968 tree
+degree checks, 414 state-fiber ranks, and 189 global ranks. The $m=15$ test
+checks all 32,768 summaries and 499,712 pairs, not every pair in the full
+$2^{15}\times2^{15}$ domain. The easy controls cover Horn, 2-SAT, affine
+parity, treewidth-one, independent products, an UNSAT unit pair, redundancy,
+and the signed core. Wrapper tests are semantic identity checks, not timed
+simulations of every named wrapper. Two hostile controls invalidate the
+query-independent checkpoint and original-bit-access hypotheses.
+
+\section{Corpus coverage, reconciliation and handoff}
+Actual main4/main5 entry points, the current root synthesis, AGENTS, CODEX,
+and the repository research skill were read. Additional substantive reads
+include MODELBRIDGE-0028, FIELDMASK1, CAUSALCANCEL1, TRACECONJ1, and the original
+Drive continuation-vector report (modified 27 September). The canonical
+MODELBRIDGE-0022 report is already present; no recovery body was invented.
+GitHub Hamming, readback, and sketch/rank searches did not surface this
+specific Hamming equality construction, but no exhaustive novelty or whole
+corpus review is claimed. Personal Context search was discovery only.
+
+The old continuation-service requirement is adopted. Bare trace-field,
+causal-path, and schedule criteria remain retired in their proved scopes.
+The new theorem constrains an actual data-bearing service without choosing
+an invariant internal representation. ARC/WRAPPER semantic exactness and
+conditional composition remain credited; no all-input coverage status changes.
+
+The local environment lacks a full repository checkout (git hostname
+resolution failed), so no repository-wide preflight or full root build is
+claimed. Exact source bodies, script, raw outputs and a narrow LSPV-4
+reconciliation patch are preserved separately from publication status. Remote
+publication and any blocked root update are recorded in the JSON run log.
+
+\paragraph{Next target.}
+Identify a decision-required, context-independent checkpoint or a
+cost-preserving decision reduction whose continuation must answer a relation
+with a nontrivial rank/access or conditional min-entropy lower bound. First
+prove that actual interface connection; do not manufacture a future-query
+obligation by changing ordinary SAT into a stronger service. A direct
+all-algorithm lower bound for the fixed core remains an alternative.
+
+\begin{thebibliography}{9}
+\bibitem{beals1998} R. Beals, H. Buhrman, R. Cleve, M. Mosca and R. de Wolf.
+Quantum lower bounds by polynomials. arXiv:quant-ph/9802049v3, 1998.
+\url{https://arxiv.org/pdf/quant-ph/9802049}.
+\bibitem{gal2003} A. G\'al and P. B. Miltersen.
+The cell probe complexity of succinct data structures. BRICS RS-03-44, 2003.
+\url{https://www.brics.dk/RS/03/44/BRICS-RS-03-44.pdf}.
+\bibitem{hamming1950} R. W. Hamming. Error detecting and error correcting codes.
+Bell System Technical Journal 29(2):147--160, 1950.
+\url{https://doi.org/10.1002/j.1538-7305.1950.tb00463.x}.
+\bibitem{garg2026} S. Garg, S. He, Y. Li, P. A. Papakonstantinou and X. Yang.
+Systematic data structure lower bounds via the query-with-sketch model.
+CCC 2026, LIPIcs 383, 41:1--41:44. Lemmas 3 and 8.
+\url{https://doi.org/10.4230/LIPIcs.CCC.2026.41}.
+\bibitem{aw2009} S. Aaronson and A. Wigderson.
+Algebrization: A new barrier in complexity theory. ACM TOCT 1(1), 2009.
+\url{https://www.scottaaronson.com/papers/alg.pdf}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::STATE_READBACK1
