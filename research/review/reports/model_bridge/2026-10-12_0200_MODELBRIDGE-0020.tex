@@ -1,0 +1,207 @@
+% PNP REVIEW REPORT::MODEL_BRIDGE::MODELBRIDGE-0020::2026-10-12T02:00:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,xurl,hyperref,microtype}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\Htwo}{\mathcal H_{2,2}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\COND}{\textbf{CONDITIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\title{MODELBRIDGE-0020: Auxiliary Root Pointers Are Erasable Metadata, Not a Universal SAT Resource}
+\author{Universal Core Bridge Review}
+\date{12 October 2026 (UTC)}
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.94\linewidth}{
+\textbf{Executive status.} P versus NP remains open.  This run closes one tempting repair of the unpointed-padding collapse: merely supplying a compiler-designated root pointer as auxiliary input does not force an arbitrary exact one-bit SAT decider to retain, expose, or pay for that pointer.  A uniform erasure wrapper projects the formula, discards the pointer, and invokes the original decider.  The exact result is a cylinder-language theorem; it does not cover a new language in which pointer validity is semantic, nor a source compiler that already proves the forbidden endpoint.  Combined with the verified replacement-covariance factorization, it yields a provenance trichotomy: auxiliary pointers are erasable, implementation-independent pointers are source data, and implementation-dependent pointers are not universal under solver replacement.  The surviving load-bearing arrow is still a source-defined, predecision, same-realization compiler whose forbidden endpoint is model matched.}}
+\end{center}
+
+\section{Claim card and exact target}
+
+\begin{center}\small
+\begin{tabular}{@{}p{0.43\linewidth}p{0.19\linewidth}p{0.30\linewidth}@{}}
+\toprule
+Claim & Status & Scope \\ \midrule
+\texttt{POINTED-METADATA-ERASURE1} & \EXACT & Self-delimiting cylinder encoding, every uniform exact decider.\\
+\texttt{POINTED-ORIGIN-TRICHOTOMY1} & \EXACT & Declared auxiliary/source/implementation interfaces plus full replacement covariance.\\
+\texttt{COMPILER-POINTER-AS-SOLVER-RESOURCE1} & \RETIRED & False when the pointer is auxiliary provenance.\\
+Finite hostile audit & \COMP & 49,056 checks, zero failures.\\
+\texttt{POINTED-SOURCE-COMPILER-ENDPOINT1} & \OPEN & Source compiler plus same-realization forbidden endpoint.\\
+P versus NP & \OPEN & No arbitrary-decider lower bound or contradiction.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Let $F=C_1\wedge\cdots\wedge C_m$ be a proper 3-CNF on $n$ variables.  Its semantic compatibility matrix is
+\[
+ H(F)\in\{0,1\}^{2^n\times m},\qquad
+ H(F)_{\alpha,j}=1\Longleftrightarrow \alpha\models C_j.
+ \tag{1}
+\]
+Thus $F$ is satisfiable exactly when $H(F)$ has an all-one row.  Equation (1) defines a semantic object; it does not imply that a decider materializes, scans, stores, or communicates any row of $H(F)$.
+
+The clean source class for this run is
+\[
+ \Htwo=\{F:\text{$F$ is proper 3-CNF and every variable occurs exactly twice in each polarity}\}.
+ \tag{2}
+\]
+Under the standard signed-literal index encoding, a family with $m=\Theta(n)$ has encoded length $N=\Theta(n\log n)$.  Define a self-delimiting pairing $\langle F,u\rangle$ with arbitrary provenance $u\in\{0,1\}^*$ and total encoded length $M$.  The pointed cylinder language is
+\[
+ \operatorname{PCSAT}_{2,2}
+ =\{\langle F,u\rangle:F\in\Htwo\ \text{and}\ F\in\SAT\}.
+ \tag{3}
+\]
+Membership in (3) is independent of $u$.  The proposed universal target under attack was:
+\begin{quote}
+for every uniform deterministic exact decider $B$ for (3), some nonconstant pointer-dependent state, transcript, communication object, or positive-scale cost is necessary on infinitely many lengths.
+\end{quote}
+The quantifier over every $B$ makes one counter-wrapper sufficient to refute this target.
+
+\section{Exact erasure theorem}
+
+\begin{theorem}[\texttt{POINTED-METADATA-ERASURE1}]
+Let $L\subseteq\{0,1\}^*$ and
+\[
+ L^{\uparrow}=\{\langle x,u\rangle:x\in L,\ u\in\{0,1\}^*\}
+\]
+under a uniform self-delimiting pairing.  For every uniform deterministic exact decider $A$ for $L$ with time $T_A(N)$ and workspace $S_A(N)$, there is a uniform deterministic exact decider $\operatorname{Erase}[A]$ for $L^{\uparrow}$ satisfying
+\[
+ T_{\operatorname{Erase}[A]}(M)
+ \le O(M)+T_A(N)+O(1),\qquad
+ S_{\operatorname{Erase}[A]}(M)
+ \le S_A(N)+O(\log M),
+ \tag{4}
+\]
+where $N=|x|$.  After projection to $x$, its computation and one-bit output are independent of $u$.  In a random-access representation whose formula interval is given in a header, the projection overhead may be charged as address bookkeeping plus the input accesses actually made by $A$; (4) is the conservative sequential bound.
+\end{theorem}
+
+\begin{proof}
+Parse the self-delimiting formula field, reject malformed pairs, discard the provenance field, and simulate $A(x)$.  Return exactly the bit returned by $A$.  Correctness follows from
+\[
+ \langle x,u\rangle\in L^{\uparrow}\Longleftrightarrow x\in L.
+\]
+Parsing and projection use one pass and logarithmic counters.  The simulated machine receives the same $x$ for every $u$, so all post-projection configurations are identical.  No pointer-dependent object is necessary.  All costs in (4), including validation, input traversal, simulation, and output, are charged.
+\end{proof}
+
+\begin{corollary}
+The universal target following (3) is false.  In particular, a compiler-supplied pointer that is only auxiliary provenance cannot be the load-bearing resource of every SAT execution.
+\end{corollary}
+
+This does not say that reading an $M$-bit sequential input is free; the $O(M)$ term is explicit.  Padding can therefore inflate raw runtime while decreasing normalized exponents, so no encoded-length lower bound should be inferred from the pointer field.  Nor does the theorem say that a pointer-dependent language is the same problem.  If validity is a polynomial predicate $V(F,u)$ and the language is
+\[
+ \{\langle F,u\rangle:V(F,u)=1\ \wedge\ F\in\SAT\},
+ \tag{5}
+\]
+the wrapper checks $V$ and runs $A(F)$.  This forces only the declared validation cost; it does not force a particular root state, fork, compatibility table, or solver-internal representation.  If validity changes the semantic answer beyond a polynomial check, (5) is a new language and requires a reduction back to ordinary SAT with all costs and quantifiers stated.
+
+\section{Pointer-origin trichotomy and the $P=NP$ audit}
+
+The current corpus already proves the replacement-covariance factorization: a wrapper-covariant resource that is unchanged under replacing an exact solver by any extensionally equivalent exact solver factors through the source.  Combining that result with the theorem above gives the following model audit.
+
+\begin{theorem}[\texttt{POINTED-ORIGIN-TRICHOTOMY1}]
+For a proposed compiler root pointer $p(F,A)$ associated with source $F$ and exact solver $A$, exactly one of the following declared roles must carry the argument.
+\begin{enumerate}[label=(\roman*)]
+\item If the pointer is an auxiliary field whose value does not affect membership, it is erasable by \texttt{POINTED-METADATA-ERASURE1}.
+\item If it is invariant under full extensional replacement of $A$, then under the verified covariance hypothesis it factors through $F$ and is source data, not evidence that the chosen execution exposed it.
+\item If it changes under extensionally equivalent solver replacement, it is implementation dependent and cannot support a universal all-decider claim satisfying replacement covariance.
+\end{enumerate}
+Hybrid encodings split into their invariant source component and noninvariant implementation component and fall under the same alternatives.
+\end{theorem}
+
+The theorem is classification, not a forbidden endpoint.  Under the temporary assumption $P=NP$, if a source pointer is specified by a polynomially balanced, polynomial-time verifiable total NP relation $R(F,p)$, standard decision-to-search self-reduction yields some valid $p$ in polynomial time.  Its exponent may depend on the assumed SAT decider.  This supplies no unconditional contradiction and cannot be charged retroactively to the original one-bit call.  Conversely, demanding a pointer relation that cannot be found in polynomial time under $P=NP$ would hide the desired conclusion in the premise unless a model-matched unconditional lower bound is separately proved.
+
+\section{Hostile controls and reproducible finite test}
+
+The dependency-free script
+\begin{verbatim}
+timeout 30s python3 experiments/review/pointed_metadata_erasure_audit.py
+\end{verbatim}
+exhausted all 511 binary pointers of lengths zero through eight on eight formula families: the paired $K_{3,3}$ exact-$(2,2)$ core, Horn, 2SAT, an affine parity encoding, bounded treewidth, an independent product, redundant/tautological padding, and an UNSAT control.  It tested five pointer encodings and seven wrappers (DIRECT, COPY, DEAD, DELAY, INTERP, RECOMP, ERASE).  The paired core has nine variables, twelve clauses, and exactly 102 witnesses.
+
+There were 49,056 checks and zero failures in 0.047 seconds.  Every pointer-sensitive wrapper had varying traces on all eight source families; ERASE had exactly one trace per source family, while preserving the one-bit decision.  Script SHA-256:
+\begin{verbatim}
+58b6356cd2b370abbbf6fd7f639f8c972f43c0ed104448b37d2dcbd33f7bc848
+\end{verbatim}
+Result SHA-256:
+\begin{verbatim}
+733f9c3730210e0c38f743fdbdde06a0f63c0e869a434675090fc9eb587bdeb5
+\end{verbatim}
+This is a bounded implementation check, not asymptotic evidence and not a SAT lower bound.
+
+\section{Barrier and cross-domain transfer preflight}
+
+The two major obstacles are now explicit:
+\begin{enumerate}
+\item \textbf{Acquisition/SAME\_REALIZATION.}  A semantic object, externally reconstructible witness, or compiler annotation is not automatically a state or cost of every one-bit SAT execution.
+\item \textbf{Model-matched endpoint.}  A source compiler must produce a strict hereditary consequence that contradicts an unconditional theorem in the same machine model, with arbitrary polynomial exponents, source inspection, reconstruction, failed branches, and memory charged.
+\end{enumerate}
+
+Primary literature was checked before the claim was formed.  Baker--Gill--Solovay's oracle result blocks relativizing conclusions from settling $P$ versus $NP$; Aaronson--Wigderson extends the warning to algebrizing methods.  Fortnow--Lipton--van Melkebeek--Viglas gives concrete SAT time--space lower bounds only in a restricted random-access model and does not transfer to arbitrary polynomial-time deciders.  None supplies the missing pointer-to-execution theorem.
+
+The transfer taxonomy is:
+\begin{itemize}
+\item \textbf{EXACT OBJECT/THEOREM TRANSFER.}  Cylinder languages and projection wrappers apply literally here.  The lossiness/collision ledger also applies exactly to a pointer map $F\mapsto p$, but collision entropy bounds the image/fibers of that map, not arbitrary SAT time.
+\item \textbf{ANALOGY/CANDIDATE needing a new bridge.}  Compiler roots resemble designated ports in circuits, observable states in control, local decoders in coding, or terminals in communication lower bounds.  A transfer requires a theorem that ordinary SAT syntax and every uniform decider preserve those designated terminals and charge their acquisition in the same realization.
+\item \textbf{FAILED TRANSFER.}  Cryptographic binding, random-oracle hashes, special soundness, VLSI routing congestion, and proof-system lower bounds do not constrain an unrestricted deterministic SAT decider without a model-preserving reduction.  Schur squares, quadratic relation spaces, Hilbert functions, and syzygies concern algebraic representations and may expose exploitable structure rather than hardness.
+\end{itemize}
+The LWE worst-case/average-case lesson remains only a candidate architecture: no unconditional black-box extraction of a nontrivial pointer from arbitrary SAT behavior is supplied, and known NP worst-case/average-case barriers must be faced.
+
+\section{CORPUS REVIEWED}
+
+The run surveyed the current GitHub tree at the pre-run head \texttt{2ea1beee1f1d4f7fe022e0440239bbd4d968fbd9}; read root \texttt{main.tex}, \texttt{main4.tex}, \texttt{main5.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, the PNP research skill and protocol; inspected every specification under \texttt{tasks/}; verified the newest LSPV-4 predecessor report \texttt{FORKFACTOR1}; read the newest LSPV-1 through LSPV-4 reports and newest \texttt{SYNTHESIS-0019}; and reviewed materially relevant historical bridge reports \texttt{MODELBRIDGE-0015}, \texttt{-0016}, \texttt{-0018}, and \texttt{-0019}.  Repository search also covered older pointer, pointed-source, replacement-covariance, wrapper, padding, HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC, governance, experiment, result, status, coordination, and outbox artifacts.  Relevant primary sources were checked independently.  This is total-corpus reconciliation by tree survey and material relevance, not a claim that every historical byte was reread.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+\texttt{PADQUOT1} already observed informally that a pointed repair carries external provenance and had not shown solver exposure.  The new contribution is the exact all-decider cylinder theorem with encoded-length time/space accounting, plus its composition with replacement-covariance into a pointer-origin trichotomy.  No prior artifact located by repository search stated \texttt{POINTED-METADATA-ERASURE1} or supplied this finite audit.  The result agrees with \texttt{FORKFACTOR1}, \texttt{MODELBRIDGE-0016}, and current synthesis; it contradicts only any reading that treats a compiler annotation itself as a necessary state of the original decider.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root \texttt{main.tex} already lists \texttt{POINTED-SOURCE-COMPILER-ENDPOINT1} as the highest-value surviving target and warns that an external pointer is not yet solver exposure.  This run sharpens that warning to a proved counter-wrapper for auxiliary-pointer encodings and retires \texttt{COMPILER-POINTER-AS-SOLVER-RESOURCE1} in that scope.  Root executive text is not edited by this specialist bridge run; LSPV-5 should incorporate the exact theorem and retain the pointed source-compiler endpoint only with pointer acquisition removed as the charged middle resource.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+Adopted: the exact $(2,2)$ source class, wrapper covariance, source factorization, explicit input-cost accounting, and the current pointed compiler endpoint as an open source-level target.  Rejected: semantic-state count as runtime evidence, external self-reduction as same-execution exposure, and padding as hardness amplification.  Retired in the declared scope: auxiliary compiler pointer as a universal execution resource.  Retained as \OPEN: a source-only predecision compiler with hereditary strict progress and a model-matched unconditional endpoint.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+No mathematical claim in the newest root synthesis required reversal.  Both current \texttt{main4.tex} and \texttt{main5.tex} contained a split \verb|\let| statement and three additions inserted inside that statement, including two doubled-backslash \verb|\\input| tokens; they also contained a doubled-backslash include for \texttt{SYNTHESIS-0015-PREDECISION-GUARD}.  These were concrete entry-point syntax defects, despite earlier assertions that the entry points were clean.  This run restores the bibliography alias, moves the three additions inside the bibliography wrapper, repairs the synthesis include, and adds the new bridge note.  Older prose that calls a compiler-supplied pointer a ``repair'' should now be read only as a source-interface candidate, not as arbitrary-solver exposure.
+
+\section{Open handoff}
+
+The precise next arrow is not to enrich the pointer.  It is:
+\begin{quote}
+construct, from the canonical clean source alone and before using the SAT answer, a fully charged strict hereditary successor whose forbidden endpoint is unconditional in the same model; prove that the construction remains valid after deleting all auxiliary provenance and replacing the solver by any extensionally equivalent uniform decider.
+\end{quote}
+Any future pointed proposal should first run the erasure test.  If deletion leaves membership unchanged, the pointer is not load bearing.  If deletion changes the problem, state the new language and prove a model-preserving reduction.  If the pointer depends on the solver, run full replacement covariance.  P versus NP remains \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{bgs}
+T. Baker, J. Gill, and R. Solovay,
+``Relativizations of the $P=?NP$ question,''
+\emph{SIAM Journal on Computing} 4(4), 1975.
+\url{https://doi.org/10.1137/0204037}
+
+\bibitem{aw}
+S. Aaronson and A. Wigderson,
+``Algebrization: A New Barrier in Complexity Theory,''
+\emph{ACM Transactions on Computation Theory} 1(1), 2009.
+\url{https://eccc.weizmann.ac.il/report/2008/034/}
+
+\bibitem{flmv}
+L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+``Time-space lower bounds for satisfiability,''
+\emph{Journal of the ACM} 52(6), 2005.
+\url{https://doi.org/10.1145/1101821.1101828}
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::MODEL_BRIDGE::MODELBRIDGE-0020
+\end{document}
