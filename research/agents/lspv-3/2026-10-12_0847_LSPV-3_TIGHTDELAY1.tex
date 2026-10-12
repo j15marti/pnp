@@ -1,0 +1,383 @@
+% LSPV-3 REPORT::TIGHTDELAY1::2026-10-12T08:47:10Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,enumitem,xurl,hyperref,microtype}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\PolySAT}{\mathsf{PolySAT}}
+\newcommand{\Hsigned}{\mathcal H^{\pm}_{2,2}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\COND}{\textbf{CONDITIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\same}{\textsc{same\_realization}}
+
+\title{TIGHTDELAY1: Exact Runtime Clocks Still Admit a Delay Gauge}
+\author{LSPV-3 / UNIVERSAL\_CORE\_REDTEAM}
+\date{12 October 2026, 08:47 UTC}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.94\linewidth}{
+\textbf{Executive status.} P versus NP remains \OPEN.  CLKSLACK1 showed that
+a supplied polynomial clock can be loosened without changing the machine.
+This run tests the obvious repair: replace the supplied clock by the machine's
+exact worst-case running time.  That repair is insufficient.  For every
+total deterministic decider $A$ and fixed integer $q\ge2$, a uniform
+language-preserving wrapper $D_q(A)$ performs at least $L^q$ real dummy
+transitions after an $L$-step run of $A$.  Its exact tight clock therefore
+dominates the $q$th power of $A$'s exact tight clock, while a syntactic
+stripper returns the unchanged embedded $A$.  Thus a strict power contraction
+from a chosen implementation, even measured against its exact clock, need not
+be algorithmic progress.  Wrapper-invariant, fully charged, model-matched
+cross-regime transfer remains \OPEN.}}
+\end{center}
+
+\section{Claim card and exact falsification target}
+
+The current clean source is the canonically encoded signed, duplicate-free,
+proper Monotone $3$SAT-$(2,2)$ family $\Hsigned$, with encoded input length
+$N=|F|$.  The theorem below is language-generic and hence applies to this
+family and to unrestricted $3$SAT.
+
+For a total deterministic machine $A$, let $T_A(x)$ be its actual number of
+steps on $x$ in one fixed ordinary machine model, and define the exact-length
+tight clock
+\[
+              \tau_A(n)=\max_{|x|=n} T_A(x).                 \tag{1}
+\]
+The red-team target is the inference
+\begin{equation}
+\begin{split}
+&\exists\alpha\in(0,1)\ \exists C\ \forall A\in\PolySAT:\quad
+  C(A)=B,\quad \tau_B(n)\le \tau_A(n)^\alpha\;\text{eventually}\\
+&\hspace{4em}\Longrightarrow
+  \text{$C$ has extracted a solver-independent computational resource.}
+\end{split}
+\tag{TC}
+\end{equation}
+Even the per-instance antecedent ``$C$ strictly contracts an exact clock'' is
+not evidence for the conclusion unless $C$ is invariant under equivalent
+wrappers or the chosen presentation is justified independently.  One
+counterexample presentation suffices to refute that inference.  This report
+does \emph{not} refute the stronger, still-\OPEN{} task of constructing one
+wrapper-invariant $C$ that works for every exact SAT decider and lands in a
+cited unconditional forbidden region.
+
+\section{Primary-literature and obstacle preflight}
+
+The two active obstacles are (i) \emph{presentation invariance}: running time
+is a property of an implementation, not merely of the language, and
+(ii) \emph{endpoint transfer}: a contraction must yield one ordinary machine
+inside the hypotheses of a proved lower bound.  Hartmanis--Stearns introduced
+machine running-time classes, while Blum's axioms make the indexed-program
+dependence of a complexity measure explicit~\cite{HS65,Blum67}.  Neither
+forces an arbitrary SAT computation to expose a preferred clean-core object.
+FLMV supplies a genuine SAT time--space endpoint only for its stated ordinary
+machine and simultaneous resource region~\cite{FLMV05}; it does not quotient
+away delay-equivalent implementations.
+
+Baker--Gill--Solovay and Aaronson--Wigderson remain the relevant barrier
+checks~\cite{BGS75,AW09}.  The theorem proved below relativizes and survives
+algebraic oracle access, so it is a guard, not the missing separation hinge.
+
+\section{Exact tight clocks and the delay wrapper}
+
+\begin{theorem}[\texttt{TIGHT-CLOCK-DELAY-GAUGE1}]              \label{thm:gauge}
+Let $A$ be any total deterministic one-bit decider, and let $q\ge2$ be a
+fixed integer.  There is a uniform syntactic wrapper $D_q$ such that:
+\begin{enumerate}[label=(\roman*),leftmargin=1.7em]
+\item $D_q(A)(x)=A(x)$ for every input $x$;
+\item if $A$ takes $L$ steps on $x$, then $D_q(A)$ performs at least $L^q$
+      additional transitions before returning the stored bit;
+\item $\tau_{D_q(A)}(n)\ge\tau_A(n)^q$ for every $n$;
+\item for every rational $0<\alpha<1$ with $q\alpha\ge1$,
+\[
+                  \tau_A(n)\le \tau_{D_q(A)}(n)^\alpha
+                  \qquad\text{for every }n;                  \tag{2}
+\]
+\item a fixed parser $S_q$ on the declared wrapper syntax satisfies
+      $S_q(D_q(A))=A$; and
+\item if $A$ runs in polynomial time, then so does $D_q(A)$.
+\end{enumerate}
+Moreover, given code for $A$ and any total valid clock for it, the function
+$\tau_A$ in (1) is total computable (not claimed polynomial-time computable).
+\end{theorem}
+
+\begin{proof}
+Run $A(x)$ while counting its transitions.  If the count is $L$, store the
+one-bit result and execute a fixed nested-counter loop with at least $L^q$
+dummy transitions, then return the stored bit.  This proves (i), (ii), and
+(vi).  Choose an input $x_n$ attaining the finite maximum in (1).  On that
+same input the wrapper performs at least $\tau_A(n)^q$ post-computation
+transitions, proving (iii).  If $\alpha=p/r$ in lowest terms and
+$q p\ge r$, then
+\[
+ \tau_A(n)^r\le \tau_A(n)^{qp}
+              \le \tau_{D_q(A)}(n)^p,
+\]
+which is exactly (2).  The declared wrapper has a fixed tagged syntax
+containing the code of $A$, so parsing that field proves (v); this is not a
+claim about recognizing arbitrary semantic delay.
+
+For the last statement, enumerate all $2^n$ strings of length $n$, simulate
+$A$ on each up to its supplied valid clock, and return the largest observed
+step count.  Totality of the clock makes this procedure total.  Its exponential
+enumeration cost is charged and no efficient-clock claim is made.
+\end{proof}
+
+\begin{corollary}[Failure of the tight-clock-only repair]
+\texttt{TIGHT-CLOCK-POWER-CONTRACTION-AS-RESOURCE1} is \RETIRED.  An apparent
+strict power improvement between two extensionally equivalent programs can
+be created entirely by delaying the source program and stripping the known
+wrapper.  Exactness of the source clock does not make the comparison
+presentation-invariant.
+\end{corollary}
+
+This corollary is narrower than ``no cross-regime theorem exists.''  It says
+that (TC)'s conclusion does not follow from the displayed power inequality
+alone.  The output $A$ is not a newly optimized realization; it was already
+embedded verbatim in the source code.
+
+\section{Smallest surviving repair and full charge ledger}
+
+The smallest repair is \texttt{WRAPPER-INVARIANT-CROSSREGIME1}:
+specify one transformation and resource relation whose truth is unchanged by
+actual semantics-preserving DELAY/COPY/DEAD/INTERP/RECOMP presentations, or
+specify a restricted normal form and prove, with all costs, that every source
+program reaches it.  A valid theorem must state
+\[
+ \forall A\in\PolySAT\ \exists M_A\ \forall F\in\Hsigned
+\]
+with one ordinary, uniform, fully charged realization $M_A$ in the \emph{same}
+unconditional forbidden region.  Its time ledger must include
+\[
+ \tau_{\rm parse}+\tau_{\rm normalize}+\tau_{\rm source}
+ +\tau_{\rm extract}+\tau_{\rm compile}+\tau_{\rm output}
+ +\tau_{\rm reconstruct}+\tau_{\rm transport},                \tag{3}
+\]
+and space must be charged separately.  The normalizer cannot be defined by
+assuming the favorable endpoint.  Prior SYNTHESIS-0011 also blocks a total
+extensional canonicalizer on all polynomial programs by a halting reduction.
+
+\paragraph{\same{} audit.}
+The delayed source and stripped output are deliberately different
+realizations.  The theorem is a gauge counterexample, not a transfer of
+source work into output work.  Any positive result must charge the execution
+of one final $M_A$ and may not combine the large source clock with the inner
+program's trace as if they were one execution.
+
+\section{Bounded reproducible hostile-control audit}
+
+The dependency-free command
+\begin{verbatim}
+timeout 30s python3 experiments/review/tight_clock_delay_gauge_redteam.py
+\end{verbatim}
+completed in $0.022$ seconds.  Bytecode compilation passed.  The finite audit
+performed 17,569 exact checks with zero failures and emitted 270 complete
+ledger rows.  It covered nine semantic families (proper $3$CNF, Horn, $2$SAT,
+affine/Tseitin parity, bounded treewidth, independent products, tautological
+padding, redundant clauses, and an unsatisfiable unit pair), five encodings,
+and DIRECT/COPY/DEAD/INTERP/RECOMP/PREDELAY wrappers.  For delay powers
+$q=2,\ldots,10$ and rational exponents
+$1/2,2/3,3/4,4/5,9/10$, every applicable inequality was checked in the exact
+integer form
+\[
+             L^r\le (L+L^q)^p\qquad(\alpha=p/r,\;q\alpha\ge1).
+\]
+The ledger records encoded bytes, preprocessing, solver and wrapper
+operations, and zero extraction, reconstruction, and communication where no
+such interface was posited.  Timing is a bounded measurement, not asymptotic
+evidence; Theorem~\ref{thm:gauge} is proved independently.
+
+The script is
+\path{experiments/review/tight_clock_delay_gauge_redteam.py}, SHA-256
+\nolinkurl{0b7f071a2eed831ed3c4303e4a28a8bdd87837b29b9202fc7d88e3428c35f9ba}.
+The raw result is
+\path{results/raw/review/2026-10-12_tight_clock_delay_gauge.json}, SHA-256
+\nolinkurl{701be8e040e4cafcfa4015d0115e4c3630955bc6419f7d7456564c85807fd3dd}.
+No chunking was required; the invocation stayed below the 30-second rule.
+
+\section{Hostile controls and barrier audit}
+
+\paragraph{Easy semantic shortcuts.}
+Horn propagation, implication-graph $2$SAT, affine Gaussian elimination, and
+bounded-treewidth dynamic programming may be substituted for brute force.
+The delay theorem is unchanged: hidden structure is exploitable and does not
+force compatibility exposure.
+
+\paragraph{Padding, redundant clauses, encodings, and one-bit output.}
+All alter finite representation and preprocessing charges, but the wrapper
+stores only the final bit.  Requiring an assignment, table, transcript, or
+communication object would change the output contract and must charge its
+construction and writing.  Independent products do not change this fact.
+
+\paragraph{Compact circuits and branching programs.}
+An implementation may encode its control compactly or recompute state.
+The theorem concerns actual machine transitions, so the post-run loop remains
+real work.  Conversely, no circuit-size or branching-program lower bound is
+promoted to an unrestricted Turing/RAM lower bound.
+
+\paragraph{Relativization, algebrization, Natural Proofs, and nonuniformity.}
+The construction works relative to any oracle and with algebraic-oracle
+access; it supplies no nonrelativizing or nonalgebrizing hinge.  It defines no
+constructive large property against circuits, so Natural Proofs is not the
+direct stopping theorem.  The wrapper is uniform for fixed $q$ and uses no
+advice.  Allowing nonuniformity only enlarges the hostile implementation set.
+
+\paragraph{Arbitrary polynomial exponents and hidden assumptions.}
+The theorem quantifies over every fixed $q$ and every polynomial-time $A$;
+it does not assume a canonical polynomial exponent.  EXPINV1 already shows
+that a declared exponent can be inflated, CLKSLACK1 shows that a valid clock
+can be loosened, and the present theorem shows that even the exact clock can
+be inflated by changing the implementation.  No premise equivalent to
+$P\ne NP$ is inserted.
+
+\section{Barrier-transfer and post-quantum ledger}
+
+\textbf{DIRECTLY TRANSFERABLE THEOREM.}  Standard machine step counts and
+FLMV's endpoint discipline transfer only in their stated models.  The delay
+theorem itself is an exact program construction.
+
+\textbf{USEFUL STRUCTURAL ANALOGY REQUIRING A NEW TRANSFER THEOREM.}
+Robust compilation, amortized potentials, and VLSI clock/retiming language
+highlight normalization and physical cost, but none supplies a universal SAT
+normalizer or ordinary-machine lower bound.  LWE-style external extraction is
+likewise a \CAND{} only: it would need an unconditional worst-case, all-solver
+extractor with (3).
+
+\textbf{MISLEADING ANALOGY / FAILED TRANSFER.}  Physical clock frequency,
+routing congestion, proof-system size, communication cuts, and control-system
+observability are model-mismatched here.  Schur squares, quadratic-relation
+ranks, Hilbert functions, syzygies, and graded Betti numbers have no forced
+code object in a one-bit delay wrapper.  Collision entropy of the map
+$D_q(A)\mapsto A$ measures presentation redundancy, not a time lower bound.
+Special soundness needs conflicting openings absent from this interface.
+Cryptographic binding, hashes, and random oracles are inadmissible for an
+unconditional separation.  These PQ-derived routes are \textbf{FAILED
+TRANSFER} for the present barrier, except the external-extraction architecture,
+which remains an analogy needing a new bridge.
+
+\section{CORPUS REVIEWED}
+
+The run enumerated the current GitHub tree and read root \path{main.tex},
+actual \path{main4.tex}/\path{main5.tex}, \path{AGENTS.md}, \path{CODEX.md},
+the complete P-vs-NP research skill, red-team mode, research protocol, and all
+seven task specifications.  It read newest verified historical MAIN
+SYNTHESIS-0022 and materially relevant SYNTHESIS-0011/0019--0021; current
+TDLG1, CLKSLACK1, MINFRONT1, CALQNT1 and COVCOLL1; EXPINV1, KABSORB1, KPATH1,
+DELAYOR1, RT-0009, TESTS-0010, and their cited artifacts.  It inspected the
+HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC causal branch, governance, coordination,
+and experiment/result artifacts surfaced by repository search.  The newest
+LSPV-2 predecessor CLKSLACK1 is substantive, has the required header and
+sentinel, and was read back from GitHub; no recovery was required.
+
+Primary literature was searched before substantive promotion: Hartmanis--
+Stearns, Blum, FLMV, Baker--Gill--Solovay, and Aaronson--Wigderson.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+EXPINV1 concerns inflation of a \emph{declared exponent}.  CLKSLACK1 concerns
+inflation of a \emph{supplied valid clock} for the same implementation.
+DELAYOR1 uses delayed solvers to lower-bound the inherited coefficient of a
+fixed black-box oracle transformation.  RT-0009 proves that a fixed dynamic
+checkpoint can be hidden behind a longer prefix.  TESTS-0010 proves that
+reached query scale is a program gauge.  The new statement isolates the one
+remaining proposed repair: even the exact worst-case clock of a source
+implementation admits a power delay gauge, and the apparent contraction can
+be merely removal of a declared wrapper.  It neither reproves DELAYOR1's
+coefficient theorem nor refutes fixed-program accounting.
+
+No contradiction was found.  All prior theorems remain valid at their stated
+scope.  In particular CLKSLACK1 and TIGHTDELAY1 are complementary: the former
+changes only the annotation, while the latter performs actual extra work and
+therefore changes the exact clock.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN already makes wrapper equivalence part of the next cross-regime
+target.  This run proves that requirement is load-bearing even after replacing
+loose clocks by exact tight clocks.  The root LSPV-3 region is reconciled to
+record \texttt{TIGHT-CLOCK-DELAY-GAUGE1}, retire tight-clock contraction alone
+as a resource, and retain the wrapper-invariant external relation plus
+model-matched endpoint as the single \OPEN{} target.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\textbf{Adopted:} EXPINV1's exponent normalization guard; CLKSLACK1's clock
+slack gauge; DELAYOR1's fixed-transformation coefficient theorem; RT-0009's
+checkpoint guard; TESTS-0010/SYNTHESIS-0011's program-gauge and canonicalizer
+guards; exact encoded-length normalization; full charges; \same{}.
+
+\textbf{Rejected as sufficient:} exact tight clocks; syntactic removal of a
+known wrapper; a strict source/output power inequality; rich clean-core
+semantics; compact representations; or a one-bit output, taken alone.
+
+\textbf{FALSIFIED/RETIRED:}
+\texttt{TIGHT-CLOCK-POWER-CONTRACTION-AS-RESOURCE1}.  No verified
+wrapper-invariant cross-regime theorem is retired.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any statement that upgrading a supplied clock to the exact function (1)
+automatically turns a strict power comparison into an intrinsic algorithmic
+improvement is overstated.  Conversely, saying that actual runtime accounting
+is meaningless would also be false: the delayed execution really pays the
+dummy work.  The correct distinction is fixed-implementation accounting
+versus an implementation-invariant lower-bound resource.
+
+\section{Strict status and precise handoff}
+
+\begin{center}\small
+\begin{tabular}{p{0.47\linewidth}p{0.18\linewidth}p{0.27\linewidth}}
+\toprule
+Item & Status & Reason\\ \midrule
+\texttt{TIGHT-CLOCK-DELAY-GAUGE1} & \EXACT & Complete machine construction\\
+Exact-clock computability from a valid clock & \EXACT & Finite enumeration; no efficiency claim\\
+Finite hostile-control audit & \COMP & 17,569 checks; zero failures\\
+\texttt{TIGHT-CLOCK-POWER-CONTRACTION-AS-RESOURCE1} & \RETIRED & Delay then strip\\
+\texttt{WRAPPER-INVARIANT-CROSSREGIME1} & \OPEN & Coverage and endpoint missing\\
+P versus NP & \OPEN & No contradiction\\ \bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Precise next target.}  State one relation $R(A,F,Y)$ on the full
+signed clean core that is invariant under actual DELAY/COPY/DEAD/INTERP/
+RECOMP presentations, externally extractable from every uniform polynomial
+SAT decider without a parent-scale semantic call, and whose fully charged
+ordinary realization has fixed time and space exponents inside one cited
+FLMV-forbidden region.  Prove the same $Y$ and the same final machine satisfy
+all clauses.  Until that relation, its coverage theorem, and a
+nonrelativizing/nonalgebrizing hinge are supplied, P versus NP remains \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{HS65} J.~Hartmanis and R.~E.~Stearns,
+\emph{On the Computational Complexity of Algorithms}, Trans. Amer. Math.
+Soc. 117 (1965), 285--306.
+\url{https://doi.org/10.1090/S0002-9947-1965-0170805-7}.
+\bibitem{Blum67} M.~Blum,
+\emph{A Machine-Independent Theory of the Complexity of Recursive Functions},
+J. ACM 14(2) (1967), 322--336.
+\url{https://doi.org/10.1145/321386.321395}.
+\bibitem{FLMV05} L.~Fortnow, R.~Lipton, D.~van Melkebeek, and A.~Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, J. ACM 52(6) (2005),
+835--865. \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{BGS75} T.~Baker, J.~Gill, and R.~Solovay,
+\emph{Relativizations of the $P=?NP$ Question}, SIAM J. Comput. 4(4)
+(1975), 431--442. \url{https://doi.org/10.1137/0204037}.
+\bibitem{AW09} S.~Aaronson and A.~Wigderson,
+\emph{Algebrization: A New Barrier in Complexity Theory}, ACM Trans.
+Comput. Theory 1(1) (2009), Article 2.
+\url{https://eccc.weizmann.ac.il/report/2008/005/}.
+\end{thebibliography}
+
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-3::TIGHTDELAY1
