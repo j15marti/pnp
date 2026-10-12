@@ -1,0 +1,354 @@
+% LSPV-2 REPORT::UGENCOMP1::2026-10-12T10:22:04Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\Pclass}{\mathsf{P}}
+\newcommand{\PROVED}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RET}{\textbf{FALSIFIED/RETIRED}}
+
+\title{LSPV-2 UGENCOMP1: Charged Uniform Per-Length Compilation Is Exactly Uniform Decision}
+\author{Universal Core Tests}
+\date{12 October 2026, 10:22 UTC}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+POINTINF1 showed that minimizing independently over a new finite machine at
+each input length collapses by exponential hardwiring.  We test the strongest
+obvious repair: require one uniform generator for the length-specific code and
+charge generation, code output, access, simulation and the final decision.
+The repair is exact but not intermediate.  A polynomial-time generator and a
+polynomial-time evaluator compose into one polynomial-time global decider;
+conversely every polynomial-time global decider supplies such a family using
+constant code.  Thus \texttt{CHARGED-UNIFORM-FAMILY-EQUIV1} is
+\PROVED, while \texttt{UNIFORM-PER-LENGTH-COMPILATION-AS-WEAKER-BRIDGE1}
+is \RET.  For SAT the repaired condition is equivalent to \(P=NP\), not a
+new route to it.  A bounded audit made 1,134,422 assertions with zero
+failures.  P versus NP remains \OPEN.
+\end{abstract}
+
+\section{Target, encoding and exact quantifiers}
+
+Let \(L\subseteq\{0,1\}^*\) be a decision language in the ordinary uniform
+deterministic multitape model with read-only input and sequential explicit
+output.  A \emph{charged uniform per-length family} is one fixed pair
+\((G,U)\) such that, for every \(n\), the generator \(G(1^n)\) emits a finite
+code \(z_n\), and
+\[
+  \forall n\;\forall x\in\{0,1\}^n:\qquad
+  U(z_n,x)=L(x).                                      \tag{1}
+\]
+The same \(G\) and \(U\) serve all lengths.  Let \(g(n),h(n)\) be generation
+time and workspace, \(\ell(n)=|z_n|\), and \(t(n),s(n)\) the time and
+workspace of the declared evaluation on \((z_n,x)\).  Generation, every code
+write, code storage or virtual access, universal simulation, input scan and
+one-bit output are charged.  In particular, sequential explicit output gives
+\[
+  \ell(n)\le g(n)+O(1).                               \tag{2}
+\]
+
+The candidate under test was whether polynomial \(g,h,\ell,t,s\) repair the
+quantifier failure of POINTINF1 while leaving a weaker obstruction than the
+original uniform decision problem.  It does repair the quantifiers, but the
+claimed intermediate status is false.
+
+\section{Exact composition theorem}
+
+\begin{theorem}[CHARGED-UNIFORM-FAMILY-EQUIV1]
+For every decidable language \(L\), the following are equivalent.
+\begin{enumerate}
+\item \(L\in\Pclass\).
+\item There is one charged uniform per-length family \((G,U)\) satisfying
+(1), with fixed polynomial bounds on generation and evaluation including all
+code-access costs.
+\end{enumerate}
+More precisely, the composed machine \(D\) has
+\[
+ T_D(n)\le O(n)+g(n)+t(n)+O(1),                       \tag{3}
+\]
+when \(t\) already includes access/simulation, and under explicit retained
+code
+\[
+ S_D(n)\le O(\log n)+h(n)+\ell(n)+s(n)+O(1).          \tag{4}
+\]
+If code is streamed, recomputed or accessed virtually, the corresponding
+cost must instead occur in \(g,h,t,s\); it is not free.
+\end{theorem}
+
+\begin{proof}
+Assume (2) of the theorem.  Define one ordinary machine \(D\).  On input
+\(x\), it computes \(n=|x|\), runs the fixed generator \(G(1^n)\), and then
+runs the fixed evaluator \(U(z_n,x)\).  Correctness is (1).  Equations
+(3)--(4) follow by literal sequential composition.  Since all component
+bounds have fixed polynomial exponents and (2) bounds the materialized code
+length, \(D\) is a uniform polynomial-time decider for \(L\).
+
+Conversely, let one fixed machine \(B\) decide \(L\) in polynomial time.
+Choose a fixed interpreter \(U\), let \(z\) be the constant code of \(B\),
+and let \(G(1^n)=z\) for every \(n\).  Universal simulation has a fixed
+polynomial overhead, so the resulting generator/evaluator family satisfies
+(1) with polynomial charged bounds.  No nonuniform advice is used. \qed
+\end{proof}
+
+\begin{corollary}[SAT endpoint equivalence]
+A charged uniform per-length polynomial family for SAT exists if and only if
+\(P=NP\).  Consequently, assuming such a family to prove \(P\ne NP\) assumes
+the contradiction hypothesis in a different syntax; disproving it for SAT is
+already the desired separation.
+\end{corollary}
+
+\paragraph{SAME\_REALIZATION.}
+The theorem uses one composed machine \(D\) at every length.  Generator,
+evaluator, code and output are parts of that same execution.  This is exactly
+the missing cross-length realization in POINTINF1.  Once imposed and fully
+charged, however, it is simply uniform computation.
+
+\section{Explicit-code/advice trilemma}
+
+POINTINF1's hardwired depth-\(n\) truth-table machine uses
+\(2^{n+1}-1\) prefix states and contains \(2^n\) answer bits in its finite
+description.  A purported repair has only three possibilities.
+\begin{enumerate}
+\item \textbf{Explicit code.}  Emitting \(2^n\) table bits costs at least
+\(2^n\) sequential writes.  The hidden hardwiring cost reappears.
+\item \textbf{Succinct generated code.}  If both generation and evaluation,
+including every access and simulation step, are polynomial, the composition
+theorem gives a single polynomial decider.
+\item \textbf{Opaque external table/oracle.}  If a length-indexed object is
+supplied without generation or access cost, the model has changed to advice
+or oracle computation.  It is not an ordinary uniform SAT decider.
+\end{enumerate}
+This proves \texttt{GENERATOR-CHARGE-TRILEMMA1} as an exact accounting
+classification.  It does not establish which case SAT occupies.
+
+\section{Bounded reproducible audit}
+
+The deterministic script
+\path{experiments/review/uniform_generator_composition_audit.py} exhausts all
+65,814 Boolean languages on lengths \(0\) through \(4\), covering 1,050,698
+input evaluations.  For explicit tables it counts one charged generator bit
+write and one evaluator table read per input word and checks the exact prefix
+tree size.  It separately checks all \(7^4=2,401\) generation/code/evaluation
+exponent ledgers on seven finite sizes and all \(7^3=343\) retained-workspace
+ledgers on three sizes.  The audit made 1,134,422 assertions with zero
+failures in 0.264 seconds; no chunking was needed.
+
+Raw output is
+\path{results/raw/review/2026-10-12_uniform_generator_composition.json}.
+The script SHA-256 is
+\texttt{229af0187f4b1b226c4ff56e72d185b77874be23039bfdb3bd7d1cb998d282a7}.
+This evidence is \COMP.  It does not prove the asymptotic theorem, benchmark a
+SAT solver or justify extrapolation.  The theorem is proved by composition.
+
+Preprocessing is exactly the charged run of \(G\) and its writes.  Extraction
+and witness reconstruction are absent.  Evaluation includes input scanning,
+code access and simulation.  The output is one bit.  Retained code counts as
+workspace; streamed or virtual code moves the same obligation into access or
+recomputation cost.
+
+\section{Hostile controls and semantic cost comparison}
+
+The theorem is language-general, so 2SAT, Horn, affine/Tseitin with Gaussian
+elimination, bounded treewidth, the signed clean core, independent products,
+padding, redundant clauses and alternate encodings do not affect the
+composition.  Easy subclasses may have compact polynomial generators and
+evaluators; that is an algorithmic shortcut, not evidence of a universal
+compatibility bottleneck.  DIRECT/COPY/DEAD/DELAY/INTERP/RECOMP wrappers can
+inflate a chosen implementation but cannot invalidate the existence of the
+composed decider.  A one-bit shell is already the declared output contract.
+
+Thus semantic table size, number of satisfying assignments, compatibility
+states, code Schur-square dimension or truth-table entropy cannot be converted
+to runtime without a theorem forcing the same ordinary computation to acquire
+or access that representation.  The present result only says that when an
+effective polynomial acquisition procedure is supplied, it is itself part of
+a polynomial decider.
+
+\section{Primary-literature and barrier-transfer preflight}
+
+The two blocking obstacles were (i) cross-length uniform selection and
+(ii) a model-matched unconditional landing after all generation/access costs
+are charged.  Primary sources were checked before the new theorem.
+
+\begin{itemize}
+\item Karp--Lipton's advice-machine formalism is the directly relevant
+uniform/nonuniform distinction.  It is \KNOWN context; no collapse theorem is
+used here.  An ungenerated \(z_n\) is advice, while a polynomially generated
+and evaluated \(z_n\) composes into a uniform algorithm.
+\item Ruzzo's uniform-circuit framework is a directly relevant structural
+analogy: a uniform family needs an effective cross-length description
+mechanism.  Its alternating-machine characterizations do not prove the
+present ordinary-decider theorem; importing circuit depth or gate lower bounds
+would require a new model transfer.
+\item Fortnow--Lipton--van Melkebeek--Viglas give \KNOWN model-matched SAT
+time--space lower bounds for one general machine.  They do not forbid a
+polynomial generator/evaluator family without the composition above, and the
+composition does not land in their forbidden region.  That landing remains
+\OPEN.
+\end{itemize}
+
+The electronics analogy of fabricating one chip per width is useful only when
+fabrication description, area and access are charged.  Treating chips as free
+ordinary-TM finite control is a misleading analogy / failed transfer.  The
+exact transferable fact is merely sequential output length lower-bounds
+generator time.  VLSI area--time tradeoffs, communication cuts, proof-system
+interpolation and pebbling remain useful analogies requiring separate
+all-decider compilers.
+
+\section{Barrier audit}
+
+\paragraph{Relativization.}
+The composition proof relativizes: if the fixed generator/evaluator use the
+same oracle, their composition does too.  Therefore it is a no-go theorem, not
+a nonrelativizing hinge.
+
+\paragraph{Algebrization.}
+The proof is representation-agnostic and survives algebraic oracle access
+when all such access is charged in the declared model.  It supplies no
+nonalgebrizing step.
+
+\paragraph{Natural Proofs.}
+No large constructive circuit property is asserted.  The result neither
+invokes nor escapes the Natural Proofs barrier.
+
+\paragraph{Arbitrary exponents.}
+The exponents of \(G\) and \(U\) may be arbitrary fixed constants; the
+composed exponent is their maximum up to fixed simulation overhead.  No
+solver-independent small exponent is obtained.  This is precisely why the
+result cannot produce an FLMV contradiction.
+
+\section{Post-quantum technique ledger}
+
+\begin{itemize}
+\item Schur squares, shortening/puncturing, quadratic-relation ranks, Hilbert
+functions, syzygies and Betti numbers: \textbf{FAILED TRANSFER}.  No code
+representation is forced, and exploitable structure may make \(G,U\) easier.
+\item Collision entropy: \textbf{EXACT OBJECT/THEOREM TRANSFER} only for a
+fixed specified map, via
+\[
+ |\operatorname{im}f|\ge
+ |A|^2/|\{(y,y'):f(y)=f(y')\}|.
+\]
+It does not supply a uniform generator or a runtime lower bound.
+\item LWE-style worst-case/average-case extraction:
+\textbf{ANALOGY/CANDIDATE needing a new bridge}.  Any black-box extractor and
+all solver calls compose into a separately charged algorithm.
+\item Collision extraction/special soundness:
+\textbf{ANALOGY/CANDIDATE needing a construction-specific relation}.  It does
+not bind codes across lengths.
+\item Hash/random-oracle methods: \textbf{FAILED TRANSFER} unless the oracle
+or cryptographic assumption is removed unconditionally.
+\end{itemize}
+
+\section{CORPUS REVIEWED}
+
+The run surveyed the current GitHub tree and read root \path{main.tex}, actual
+\path{main4.tex} and \path{main5.tex}, \path{AGENTS.md}, \path{CODEX.md}, the
+pnp-research skill and protocol, and every current task specification.  It
+read newest verified MAIN SYNTHESIS-0023 and historical SYNTHESIS-0022; newest
+verified specialist reports POINTINF1, CLKSLACK1, JOINTGAUGE1 and CALQNT1;
+and relevant older TESTS, red-team, lower-bound and fixed-program reports.
+
+Repository search covered ``uniform generator'', ``per-length'', ``advice'',
+``hardwiring'', ``length-indexed table'', ``compiler'' and ``P-uniform''.
+The run inspected FIXED-CODE-ERASURE1 in the defended \path{main9.tex} spine,
+INSTANCE-HARDWIRE1, BINARYDOF\_UNIFORM1, POINTINF1 and their cited raw data.
+It inspected the HEC, VSC-HEC, G-PPC-HEC, CRS-PPC, CCSPC and RCCN causal
+components, governance/write-repair notes, and the current experiment/result
+ledger.  LSPV-1's predecessor report POINTINF1 was nonblank, had the required
+header and sentinel, and was readable from GitHub; no recovery request was
+needed.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+FIXED-CODE-ERASURE1 already says that a length-indexed table is either
+generated at charged cost or is nonuniform advice.  POINTINF1 already says
+that requiring a polynomial generator would repair its quantifier failure.
+Those warnings are adopted, not claimed as new.  The new increment is the
+two-way theorem that the repaired polynomial generator/evaluator condition is
+exactly membership in \(\Pclass\), with the explicit SAME\_REALIZATION and
+time/space equations (3)--(4), plus the exhaustive accounting audit.
+
+No contradiction was found.  POINTINF1's \(\forall n\exists A_n\) machines
+need not be uniformly generated.  UGENCOMP1 instead assumes one \(G\) before
+all lengths, so composition is legal.  HEC/CRS/CCSPC lower bounds remain in
+restricted online models and do not provide this family for arbitrary static
+SAT deciders.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN already excludes pointwise per-length minimization through the
+LSPV-1 ownership region.  This run closes the immediate repair: adding a
+fully charged polynomial uniform selector does not yield a weaker semantic
+resource; it restates the global polynomial decision problem.  The LSPV-2
+region is reconciled with this trilemma.  No executive theorem, clean-core
+definition or exponent endpoint is strengthened.  The global status remains
+\OPEN.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\begin{itemize}
+\item \textbf{ADOPTED:} POINTINF1's hardwiring theorem and quantifier guard;
+FIXED-CODE-ERASURE1; ordinary uniform encoding; SAME\_REALIZATION; full
+generation/access accounting; and FLMV only in its declared model.
+\item \textbf{REJECTED as free transfers:} per-width fabricated hardware,
+P-uniform circuit depth/size conclusions, online HEC state bounds, proof-system
+lower bounds and advice tables as statements about arbitrary SAT machines.
+\item \textbf{RETIRED:}
+\texttt{UNIFORM-PER-LENGTH-COMPILATION-AS-WEAKER-BRIDGE1}.  A polynomial
+charged version is \(L\in\Pclass\); an uncharged version is advice/model
+change; an explicit truth-table version pays exponential output.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+The phrase ``requiring a uniform polynomial-time compiler is stronger still''
+is correct but incomplete if presented as a promising intermediate for the
+decision language.  With a polynomial evaluator it is exactly the original
+uniform polynomial-time decision condition.  Root MAIN did not claim
+otherwise, so no root theorem is contradicted.  Any future statement must
+distinguish a generator for a restricted representation from a generator whose
+output is already polynomially evaluable on every input.
+
+\section{Surviving missing implication}
+
+The highest-value missing arrow is not another selector for per-length SAT
+code.  It is a genuinely resource-improving, model-preserving transformation:
+from one assumed polynomial SAT decider of arbitrary exponent, construct the
+same fully charged ordinary realization in an unconditional forbidden
+time--space region, with exponents independent of that source exponent.
+Equivalently, a structural generator is useful only if a separately proved
+lower bound constrains its generated representation and an all-decider
+compiler lands every assumed solver there without already solving SAT as its
+premise.  This remains \OPEN.
+
+One load-bearing arrow is OPEN; therefore P versus NP remains OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{KarpLipton1982}
+R. M. Karp and R. J. Lipton, ``Turing machines that take advice,''
+\emph{L'Enseignement Math\'ematique} 28, 191--209, 1982.
+
+\bibitem{Ruzzo1981}
+W. L. Ruzzo, ``On uniform circuit complexity,'' \emph{Journal of Computer
+and System Sciences} 22(3), 365--383, 1981.
+doi:10.1016/0022-0000(81)90038-6.
+
+\bibitem{FLMV2005}
+L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+``Time-space lower bounds for satisfiability,'' \emph{Journal of the ACM}
+52(6), 835--865, 2005. doi:10.1145/1101821.1101822.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LSPV-2::UGENCOMP1
+\end{document}
