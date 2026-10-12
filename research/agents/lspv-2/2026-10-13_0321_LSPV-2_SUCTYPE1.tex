@@ -1,0 +1,298 @@
+% LSPV-2 REPORT::SUCTYPE1::2026-10-12T18:21:16Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,hyperref}
+\usepackage[T1]{fontenc}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\newcommand{\SAT}{\mathsf{3SAT}_{\rm exp}}
+\newcommand{\SSAT}{\mathsf{Succinct\mbox{-}3SAT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\RET}{\textbf{FALSIFIED/RETIRED}}
+
+\title{LSPV-2 SUCTYPE1: the succinct-tableau type firewall}
+\author{UNIVERSAL\_CORE\_TESTS (LSPV-2)}
+\date{2026-10-13 03:21 KST}
+
+\begin{document}
+\maketitle
+
+\section*{Executive status}
+\textbf{Result.}  A succinct circuit descriptor is not an input to an ordinary
+explicit-input SAT decider.  There are exactly two direct ways to connect the
+objects: materialize the represented formula, paying its output size, or build
+a new lazy-oracle simulation and charge every descriptor evaluation.  Treating
+the descriptor itself as a SAT instance instead defines succinct SAT, an
+NEXP-complete language.  This closes a representation loophole in the current
+encoding-scale firewall but gives no lower bound for ordinary explicit 3-SAT.
+
+\begin{center}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.42\linewidth}p{0.18\linewidth}p{0.30\linewidth}}
+\toprule
+Claim & Status & Consequence\\
+\midrule
+SUCCINCT-TABLEAU-TYPE-FIREWALL1 & \EXACT{} & Type and all bridge costs are explicit.\\
+Succinct 3-SAT is NEXP-complete & \KNOWN{} & A descriptor solver is not an ordinary SAT solver.\\
+SUCCINCT-DESCRIPTOR-AS-ORDINARY-SAT-CONTRACTION1 & \RET{} & It silently changes the input language/model.\\
+Universal clean-core transfer to every polynomial-time SAT decider & \OPEN{} & No extraction or model-matched contradiction is known.\\
+P versus NP & \OPEN{} & This report proves neither separation nor equality.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Predecessor write-recovery preflight}
+The immediately preceding LSPV-1 run was verified directly from GitHub at
+\texttt{research/agents/lspv-1/2026-10-13\_0311\_LSPV-1\_HIERFIRE1.tex}.
+It is substantive and contains both the required LSPV-1 header and final
+sentinel.  No recovery prompt or repair was required.
+
+\section*{Barrier-transfer literature preflight}
+The two active obstacles were: (i) an input of length $s$ describing an object
+of length $L$ had been compared to an algorithm whose input convention is the
+$L$-bit explicit object; and (ii) lazy access had not been separated from a
+direct call to that explicit-input algorithm.  Primary literature was checked
+before the analysis.  Papadimitriou and Yannakakis prove the representation
+shift for succinct encodings and, in particular, the NEXP phenomenon for
+succinct versions of NP-complete problems \cite{PY1986}.  Cook's
+nondeterministic time hierarchy supplies the unconditional class-separation
+context \cite{Cook1973}.  Cook--Levin supplies the explicit tableau baseline
+\cite{Cook1971}.
+
+\begin{itemize}
+\item \textbf{Directly transferable theorem:} a circuit-succinct version of
+3-SAT is NEXP-complete under the standard succinct representation.  Object
+correspondence: descriptor circuit $D$ $\leftrightarrow$ the bits of an
+explicit formula $y_D$.  This theorem concerns the descriptor language, not
+ordinary explicit 3-SAT.
+\item \textbf{Useful structural analogy requiring a new transfer theorem:}
+compressed-data random access and VLSI decompression emphasize access and
+routing costs, but neither proves a lower bound for an unrestricted uniform
+SAT machine.
+\item \textbf{Misleading analogy / failed transfer:} ``the descriptor is
+short, so run the polynomial-time SAT decider on it.''  The descriptor is not a
+well-typed input to that decider.
+\end{itemize}
+
+\section*{Claim card and exact quantifiers}
+Fix a binary, self-delimiting, explicit encoding of 3-CNF formulas and let
+$\SAT\subseteq\{0,1\}^*$ denote the resulting language.  A descriptor is a
+Boolean circuit $D$ with $a$ address inputs and one output.  Together with a
+length field $L\leq 2^a$, it denotes
+\[
+       y_D=D(0)D(1)\cdots D(L-1)\in\{0,1\}^L.
+\]
+Malformed strings are rejected by the explicit syntax checker.  Let
+$A$ be any deterministic uniform machine that decides $\SAT$ and whose
+worst-case time on length-$N$ explicit inputs is $t_A(N)$; under the conditional
+assumption SAT$\in$P, $t_A(N)\leq N^{K_A+o(1)}$ for some algorithm-dependent
+constant $K_A\geq 1$.
+
+\paragraph{Target tested.}
+For every such $A$, can a circuit descriptor of a tableau formula be fed to
+$A$ at cost polynomial in $|D|$, thereby avoiding the explicit encoding scale?
+The answer is no for a direct call; any repair is one of the two charged
+bridges below or a different language.
+
+\section*{SUCCINCT-TABLEAU-TYPE-FIREWALL1}
+\textbf{Theorem (\EXACT{}, pending independent review).}
+For every descriptor $(D,L)$ and every explicit-input decider $A$ above:
+\begin{enumerate}
+\item $A(D)$ has no reason to equal $[y_D\in\SAT]$.  It applies $A$ to the
+literal encoding of the circuit, not to the represented $L$-bit formula.
+\item An eager bridge that writes $y_D$ before invoking $A$ costs at least
+$\Omega(L)$ bit writes in a bit-cost multitape model, or
+$\Omega(L/\log L)$ word writes on a word RAM with word size
+$\Theta(\log L)$, in addition to descriptor evaluation and $t_A(L)$.
+\item A lazy bridge must define a new composed machine.  If its simulation
+makes $q$ logical input-bit probes and one evaluation of $D(i)$ costs
+$\tau_D(i)$, then the access charge is exactly
+$\sum_{j=1}^{q}\tau_D(i_j)$, plus the simulated machine's remaining work.
+There is no universal theorem here forcing $q=L$, nor one bounding the full
+simulation by a polynomial in $|D|$.
+\item A machine that accepts $(D,L)$ exactly when $y_D\in\SAT$ decides
+$\SSAT$, not $\SAT$.  For the standard circuit representation this language
+is NEXP-complete \cite{PY1986}.  By nondeterministic time hierarchy it is not
+in P.  The assumption P$=$NP does not turn this descriptor problem into an
+ordinary polynomial-time problem.
+\end{enumerate}
+
+\paragraph{Proof.}
+Item 1 is the definition of a language as a set of strings: $D$ and $y_D$ are
+different strings with different parsers.  In item 2, the output interface must
+emit $L$ bits (or $\lceil L/w\rceil$ words), so the stated write lower bound is
+model-matched and independent of the formula semantics.  Item 3 is exact
+accounting for the oracle substitution $y_D[i]\mapsto D(i)$; it deliberately
+makes no all-algorithm probe lower bound.  Item 4 is the standard succinct
+representation theorem together with the nondeterministic hierarchy theorem.
+None of the four steps uses P$\ne$NP. \hfill$\square$
+
+For a $T$-step Cook--Levin-style tableau whose explicit formula length is
+$L=T^{1+o(1)}$, eager use of a hypothetical polynomial-time SAT decider costs
+\[
+  T^{1+o(1)}+t_A(T^{1+o(1)})=T^{K_A+o(1)}
+\]
+when $K_A\geq1$.  Thus it does not evade the current HIERFIRE1 inequality
+$\max\{\rho,\lambda K_A\}<1$ with standard $\lambda=1$.  This is an input/output
+accounting conclusion, not a SAT time lower bound.
+
+\section*{Bounded reproducible hostile-control audit}
+The deterministic script
+\texttt{experiments/review/succinct\_tableau\_type\_firewall\_audit.py}
+constructed explicit fixed-width encodings and random-access descriptors for
+eight families at $n\in\{4,8,16,32,64,128,256\}$:
+2SAT, Horn, affine/Tseitin, bounded treewidth, independent products, padding,
+redundant clauses, and an alternate encoding.  It audited six equivalent
+wrappers (DIRECT, COPY, DEAD, DELAY, INTERP, RECOMP), eight arbitrary polynomial
+exponents $K=1,\dots,8$, and separated descriptor construction, materialization
+bit/word writes, lazy decoding, extraction, reconstruction, and one-bit output.
+For $n\leq8$ it also exhaustively checked the represented formula semantics.
+
+The run completed in $3.2$ seconds as one sub-30-second chunk: 1,484 exact
+checks, 56 family-size rows, 448 exponent ledgers, 336 wrapper rows, and zero
+failures.  The largest observed finite compression ratio was $723.2$: an
+85-bit descriptor generated a 61,472-bit padding formula at $n=256$.  That
+formula is a conjunction of tautologies and is easy.  Hence a large
+description/expansion ratio is not a hardness witness.  At $n=8$ the exact
+model counts were respectively $9,9,4,9,81,256,128,81$ for the eight families,
+while all decision outputs remained one bit.
+
+Result file:
+\texttt{results/raw/review/2026-10-13\_succinct\_tableau\_type\_firewall.json}.
+Script SHA-256:
+\texttt{4ebebcbac46c605421c5c9e3cabeb0609c2cb0023ca3a29aaa61fb43142e29d4}.
+Result SHA-256:
+\texttt{d71a500e686991afadba1cdb26d745211fb9351a38b1b49e087a68278d666d8c}.
+The audit is \COMP{} and does not establish an asymptotic lower bound.
+
+\section*{SAME\_REALIZATION and complete cost ledger}
+The descriptor circuit, its expanded formula, and a run of $A$ are three
+distinct realizations.  They may be equated only after one of these interfaces
+is specified and charged:
+\[
+\begin{array}{ll}
+\text{eager:}& C_{\rm build}(D)+C_{\rm eval}(D,L)+C_{\rm write}(L)+t_A(L),\\
+\text{lazy:}& C_{\rm build}(D)+\sum_{j\le q}\tau_D(i_j)+C_{\rm sim}(A,q),\\
+\text{direct succinct:}& t_B(|D|+\log L)\text{ for a different algorithm }B.
+\end{array}
+\]
+Extraction and reconstruction are zero in the decision-only controls; the final
+output is one bit.  No semantic-state count is converted into runtime.  COPY,
+DEAD, DELAY, INTERP, and RECOMP wrappers preserve the answer while changing
+internal traces and costs, so no unqualified exposure theorem can be invariant
+over implementations.
+
+\section*{Relativization, algebrization, Natural Proofs, and nonuniformity}
+The type distinction and output-write charge relativize and survive arbitrary
+oracles; they therefore do not bypass the Baker--Gill--Solovay barrier.  They
+are not an algebraic lower-bound argument and do not evade algebrization.  No
+large constructive circuit property is proposed, so the Natural Proofs
+framework is not a positive route here.  A nonuniform family of descriptors
+also does not yield a uniform ordinary-input SAT algorithm: a uniform
+descriptor constructor and every access/compilation cost must still be charged.
+The result is a firewall against a false shortcut, not a nonrelativizing
+separation technique.
+
+\section*{Post-quantum technique ledger}
+\begin{itemize}
+\item Schur squares, quadratic-form relation spaces, Hilbert functions, and
+syzygies: \textbf{FAILED TRANSFER} for this input-type obstacle; there is no
+code multiplication map in the theorem.
+\item Lossiness/collision entropy: \textbf{ANALOGY/CANDIDATE}.  A short
+descriptor can have a huge expansion fiber, but the padding control shows that
+collision/compression alone can expose easy structure rather than hardness.
+No bridge to an arbitrary SAT decider is known.
+\item Worst-case/average-case and external extraction (LWE lesson):
+\textbf{ANALOGY/CANDIDATE}.  Black-box extraction could avoid claims about an
+algorithm's internals, but no worst-case/average-case reduction or extractor
+for this clean core is known.
+\item Special soundness/collision extraction and hash/random-oracle methods:
+\textbf{FAILED TRANSFER} absent a construction-specific unconditional witness.
+Cryptographic assumptions are inadmissible for the target separation.
+\end{itemize}
+
+\section*{CORPUS REVIEWED}
+The GitHub tree was surveyed before substantive work.  Reviewed sources include
+root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, and the complete
+\texttt{.codex/skills/pnp-research/SKILL.md} protocol and references; all task
+specifications under \texttt{tasks/}; actual \texttt{main4.tex} and
+\texttt{main5.tex}; the newest verified MAIN
+\texttt{2026-10-13\_0148\_MAIN\_TRACECONJ1.tex}; the materially relevant
+historical MAIN \texttt{SYNTHESIS-0024}; newest verified LSPV-1 HIERFIRE1,
+LSPV-2 INFOFLOWCHAIN1, LSPV-3 REVUNCOMP1, and LSPV-4 READCEIL1; historical
+LSPV-2 RECURCLOSE1; the cost-certificate spine; the HEC, VSC-HEC, G-PPC-HEC,
+CRS-PPC, CCSPC, and search-spine explorations; relevant governance notes; and
+the experiment/result artifacts cited by active claims.  Repository searches
+covered ``succinct tableau'', ``succinct SAT'', ``reduction image'',
+``descriptor'', and the retired resource routes.
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+The corpus already said qualitatively that succinct tableaux change the
+problem and require compilation costs.  The new contribution is the exact
+ordinary-input type statement, the exhaustive eager/lazy/direct trichotomy,
+the bit- and word-write charges, the NEXP class ledger, and a hostile-control
+experiment.  It does not duplicate LOG-SUCCINCT-RESOURCE, which concerned
+resource equivalence, or RECURCLOSE1, which concerned recursive closure over a
+reduction image.  No verified theorem was contradicted.  The new result closes
+only the succinct-representation loophole in HIERFIRE1.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+The root LSPV-2 region previously ended at INFOFLOWCHAIN1 and listed succinct
+verification only as a caution.  It is reconciled to add SUCTYPE1 as an exact
+type/cost firewall, to retire the descriptor-as-ordinary-SAT shortcut, and to
+retain the universal transfer theorem as OPEN.  No executive or other
+specialist-owned text is changed by LSPV-2.
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{itemize}
+\item \textbf{ADOPTED:} HIERFIRE1's exact
+$T^{\max\{\rho,\lambda K_A\}+o(1)}$ accounting; INFOFLOWCHAIN1's rejection of
+state-count-to-time inference; the one-bit decision-output control; and the
+wrapper-invariance requirement.
+\item \textbf{REJECTED:} any premise that every algorithm must materialize a
+chosen compatibility object or read all represented bits.
+\item \textbf{RETIRED:} SUCCINCT-DESCRIPTOR-AS-ORDINARY-SAT-CONTRACTION1 and
+any uncharged substitution of $|D|$ for the explicit input length $L$.
+\end{itemize}
+
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+Any prose reading ``a succinct tableau gives a short SAT instance'' without
+naming the descriptor language is overstated.  The short string is an instance
+of a succinct language; expanding it reinstates the explicit length, and lazy
+access defines a new composed computation.  The root MAIN already warned about
+this distinction, so the repair is a formal strengthening rather than a
+reversal.  No current verified claim that P$\ne$NP was found.
+
+\section*{Faithful comparison to main4/main5 and handoff}
+The actual \texttt{main4.tex} and \texttt{main5.tex} describe compatibility
+maps, semantic histories, reconstruction, and universal-cost ambitions; they
+do not contain a theorem making a descriptor a well-typed input to every SAT
+decider.  This report does not redefine their clean-core objects.  It removes
+one proposed bridge and leaves the same load-bearing target:
+\[
+\boxed{\text{Find a representation-invariant, all-algorithm transfer theorem
+with a model-matched unconditional lower bound.}}
+\]
+The best next test is a special-image promise formulation: quantify exactly
+over algorithms correct on all explicit formulas, restrict their inputs to a
+uniform tableau image, and ask for an externally observable resource whose
+extraction cost includes image recognition and all descriptor/expansion work.
+Until that arrow is proved, P versus NP remains open.
+
+\begin{thebibliography}{9}
+\bibitem{Cook1971}
+S. A. Cook, ``The complexity of theorem-proving procedures,''
+\emph{Proceedings of STOC}, 1971, pp. 151--158.
+\bibitem{Cook1973}
+S. A. Cook, ``A hierarchy for nondeterministic time complexity,''
+\emph{Journal of Computer and System Sciences} 7(4), 1973, pp. 343--353,
+doi:10.1016/S0022-0000(73)80028-5.
+\bibitem{PY1986}
+C. H. Papadimitriou and M. Yannakakis, ``A note on succinct representations
+of graphs,'' \emph{Information and Control} 71(3), 1986, pp. 181--185,
+doi:10.1016/S0019-9958(86)80009-2.
+\end{thebibliography}
+
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::SUCTYPE1
