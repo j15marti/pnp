@@ -1,0 +1,378 @@
+% LSPV-4 REPORT::MODELBRIDGE-0027::2026-10-12T14:58:27Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{fontspec,amsmath,amssymb,amsthm,booktabs,longtable,array,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\same}{\textsc{same\_realization}}
+\title{MODELBRIDGE-0027:\\Bare Full-Trace Factorization Leaks the Source and Supplies No SAT Lower Bound}
+\author{LSPV-4 --- Universal Core Bridge}
+\date{12 October 2026}
+
+\begin{document}
+\sloppy
+\maketitle
+
+\begin{abstract}
+The newest MAIN synthesis reduces program-specific checkpoint schedules to
+full-trace observation and asks whether clean-core compatibility factors
+through the same realized trace.  This report proves a sharp qualification.
+In the standard machine model, the full trace contains the initial
+configuration and therefore the encoded formula.  Any pointwise compatibility
+service computable from the formula under a hypothetical polynomial SAT
+decider consequently factors through the trace by an extractor that ignores
+all later solver states and performs separately charged computation.  Its cost
+retains the arbitrary solver exponent.  If the target is instead the explicit
+full compatibility table, output length is exponential but that is only a
+representation/output lower bound, not a lower bound for one-bit SAT decision.
+Thus \texttt{BARE-FULL-TRACE-FACTORIZATION-AS-BRIDGE1} is retired.  A
+nontrivial internally derived trace projection or a direct lower bound for all
+algorithms deciding the fixed NP-complete clean core remains open.  P versus
+NP remains open.
+\end{abstract}
+
+\section{Executive result and claim card}
+\begin{center}\footnotesize
+\begin{tabular}{p{0.43\linewidth}p{0.26\linewidth}p{0.23\linewidth}}
+\toprule
+Item & Status & Reason\\
+\midrule
+\texttt{INPUT-TRACE-SOURCE-LEAKAGE1} & \EXACT & Initial trace state decodes the source\\
+Finite hostile-control audit & \COMP & 104,805 assertions, zero failures\\
+\texttt{BARE-FULL-TRACE-FACTORIZATION-AS-BRIDGE1} & \RETIRED & Extractor may ignore the computation\\
+\texttt{INTERNAL-DERIVED-TRACE-OR-DIRECT-CORE-LB1} & \OPEN & No universal transfer or lower bound\\
+P versus NP & \OPEN & Load-bearing arrow remains\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Claim card.}
+The status before this run was \OPEN.  The attacked implication was
+\[
+ \forall A\in\mathsf{PolyDec}(K)\ \exists E_A\ \forall F,\alpha:
+ E_A(\operatorname{Tr}_A(F),\alpha)=H(F,\alpha)
+ \quad\Longrightarrow\quad
+ A(F)\text{ exposed or paid for }H.                       \tag{1}
+\]
+Here $K$ is the canonical duplicate-free proper signed Monotone
+$3$SAT-$(2,2)$ clean-core language, $N=|\operatorname{enc}(F)|$, $A$ is a
+uniform deterministic exact decider, and $\operatorname{Tr}_A(F)$ is the
+complete exact-clock configuration trace including time zero.  The resource
+measure is joint time/space of one declared ordinary realization.  The
+\same{} object is the run of $A$ on $F$.  A single counterexample extractor
+that ignores every state after time zero falsifies the claimed implication.
+
+\section{Exact compatibility variants}
+For a consistent partial assignment $\alpha\in\{0,1,\star\}^n$, distinguish
+the pointwise service
+\[
+ h(F,\alpha)=1
+ \quad\Longleftrightarrow\quad
+ \exists\beta\supseteq\alpha\;[\beta\models F]             \tag{2}
+\]
+from the explicit compatibility relation
+\[
+ \mathcal H_F=\{(\alpha,h(F,\alpha)):
+                 \alpha\in\{0,1,\star\}^n\}.              \tag{3}
+\]
+The first returns one bit.  The second has $3^n$ indexed entries before any
+compression.  Conflating them makes the transfer target ambiguous.
+
+The clean-core promise is not preserved by restriction.  Therefore a query
+to a clean-core decider must use a polynomial reduction
+$r(F\upharpoonright\alpha)$ back to $K$, as established in
+MODELBRIDGE-0025.  This adapter is part of the extractor cost.
+
+\section{INPUT-TRACE-SOURCE-LEAKAGE1}
+\begin{theorem}[Source leakage from the full trace]
+Let $M$ be any standard deterministic machine whose initial configuration
+$C_0(x)$ contains a decodable self-delimiting input string $x$.  Let
+\[
+ \operatorname{Tr}_M(x)=(C_0(x),C_1(x),\ldots,C_{T_M(x)}(x)).
+\]
+For every partial function $g$ and every algorithm $B$ computing $g(x)$,
+there is an extractor $E_{M,B}$ such that
+\[
+ E_{M,B}(\operatorname{Tr}_M(x))=g(x),                     \tag{4}
+\]
+and $E_{M,B}$ reads no configuration after $C_0(x)$ except to parse the trace
+container.  Its work is the input-decoding cost plus the work of $B$; that
+work is not work performed by the original execution $M(x)$.
+\end{theorem}
+
+\begin{proof}
+Read $C_0(x)$, apply the fixed decoder for the machine/input convention to
+recover $x$, and run $B(x)$.  Equation (4) follows by correctness of the
+decoder and $B$.  The construction never inspects the transition from $C_0$
+to $C_1$, so it cannot certify that the original computation derived,
+materialized, retained, or paid for $g(x)$.  The extractor is a second
+execution with its own time and space. \qed
+\end{proof}
+
+\begin{corollary}[Pointwise compatibility factorization is vacuous under
+$K\in P$]
+Assume the clean-core language $K$ has a uniform deterministic decider $A$
+with time $m^{k+o(1)}$ and space $m^{d+o(1)}$.  If the restriction adapter has
+length $|r(F\upharpoonright\alpha)|\le N^{\lambda+o(1)}$, construction time
+$N^{u+o(1)}$, and workspace $N^{v+o(1)}$, then the extractor that uses only
+the initial trace state and calls $A$ satisfies
+\[
+ T_E(N)\le N^{\max\{u,\lambda k\}+o(1)},\qquad
+ S_E(N)\le N^{\max\{v,\lambda d\}+o(1)}.                  \tag{5}
+\]
+With $N^b$ adaptive queries, the time exponent includes $b+\lambda k$.
+Thus pointwise $h(F,\alpha)$ factors through the full trace whenever $K\in P$,
+but the arbitrary exponents of the assumed decider remain and no fixed
+forbidden endpoint is reached.
+\end{corollary}
+
+\begin{proof}
+Decode $F$ from $C_0(F)$, construct $r(F\upharpoonright\alpha)$, and invoke
+$A$.  Charge the adapter and the invoked run.  Taking the maximum of the
+polynomial exponents gives (5); query multiplicity adds $b$. \qed
+\end{proof}
+
+\begin{corollary}[Explicit-table output does not lower-bound decision]
+Any literal serialization of (3) writes at least $3^n$ answer positions.
+This is an output-size lower bound for that representation.  It does not imply
+that deciding the single bit $h(F,\star^n)$ takes superpolynomial time or
+space, because an arbitrary decider need not enumerate (3).
+\end{corollary}
+
+\section{Falsification and weakest repair}
+The source-leakage theorem falsifies (1).  Bare existence of
+$E_A(\operatorname{Tr}_A(F),\alpha)$ is too weak: it can hold solely because
+the trace transports the original input.  The factorization statement must
+therefore specify at least one of the following nontrivial repairs.
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Derived-state repair:} the extractor receives only a declared
+projection of states after input erasure and cannot recover the formula by a
+fixed decoder.  This immediately reopens wrapper and alternate-representation
+attacks; no implementation-invariant projection is known.
+\item \textbf{Internal-cost repair:} the resource inequality is proved for the
+same deciding execution, without running $A$ again or invoking an external
+restriction adapter.  This is the genuine \same{} target and remains \OPEN.
+\item \textbf{Direct-core repair:} bypass semantic exposure and prove that no
+uniform deterministic polynomial-time algorithm decides the fixed NP-complete
+clean-core language.  This would suffice for $P\ne NP$ without transfer to
+unrestricted SAT, but it is exactly the open lower-bound objective.
+\end{enumerate}
+
+The weakest useful next theorem is therefore not bare factorization but a
+cost-preserving internal trace inequality that survives decoding, wrappers,
+and program-specific state encodings, or a direct all-algorithm lower bound on
+$K$.
+
+\section{Bounded reproducible audit}
+The script
+\path{experiments/review/full_trace_source_leakage_audit.py} exhaustively
+tested 9 finite families, 5 encodings, and 6 wrappers, for 270 traces.  It
+decoded the source solely from time zero, compared pointwise compatibility on
+all ternary partial assignments, and verified that later trace suffixes differ
+across DIRECT, DEAD, COPY, DELAY, INTERP, and RECOMP presentations.  All
+104,805 assertions passed; 104,490 point queries and 104,490 explicit table
+entries were checked in 2.121457 seconds.  The raw result is
+\path{results/raw/review/2026-10-12_full_trace_source_leakage.json}.
+
+This audit is \COMP.  It checks finite identities only; the symbolic theorem
+above is what establishes the general source-leakage result.  The invocation
+was one bounded chunk and completed below the repository's 30-second limit.
+
+\section{Hostile controls and alternate representations}
+\begin{longtable}{p{0.30\linewidth}p{0.61\linewidth}}
+\toprule
+Control & Outcome\\
+\midrule
+Horn, 2SAT, affine/Tseitin, bounded treewidth & Source decoding and external point queries work even where compatibility is easy; no hardness signal is isolated.\\
+Independent products & Point queries stream; no answer vector or additive peak space is forced.\\
+Padding and redundant clauses & Initial input size and adapter work are charged; semantic redundancy does not become solver-paid exposure.\\
+DIRECT, DEAD, COPY, DELAY & Later traces and resource use change while the time-zero source remains decodable.\\
+INTERP/RECOMP & Alternate internal presentations do not affect source extraction from $C_0$.\\
+Circuit-envelope encoding & A fixed decoder recovers the source; encoding changes do not make later states necessary.\\
+One-bit decision output & Only $h(F,\star^n)$ is required; explicit $3^n$ output is optional work.\\
+\bottomrule
+\end{longtable}
+
+\section{Primary-literature preflight and model matching}
+The major obstacles are (i) separating information merely transported in the
+input from information internally derived by the computation, and (ii)
+connecting any derived trace property to an unconditional lower bound in the
+same machine model.
+
+\begin{itemize}[leftmargin=*]
+\item Cook's SAT completeness theorem is a \KNOWN{} direct transfer for
+language membership.  It justifies the reduction adapter and the fact that a
+direct non-$P$ proof for one NP-complete core would finish the objective.  It
+does not provide the missing lower bound.
+\item Pippenger--Fischer oblivious simulation is a \KNOWN{} theorem about
+simulating access patterns with $O(T\log T)$ time.  It does not distinguish
+input-carried from derived semantics or force $H$ into mutable state.
+\item Fortnow--Lipton--van Melkebeek--Viglas supply \KNOWN{} SAT time--space
+lower bounds in stated random-access/small-space regimes.  Equation (5) retains
+the arbitrary exponent $k$, so no model-matched landing follows.
+\item Baker--Gill--Solovay and Aaronson--Wigderson are \KNOWN{} barrier results.
+Source decoding and external SAT calls relativize and algebrize; this theorem
+is a guard, not a barrier escape.
+\end{itemize}
+
+\paragraph{Cross-domain transfer.}
+Control-theoretic observability assumes a fixed state/output map; here the
+time-zero output already contains the input and equivalent programs change
+later state coordinates.  It is a \textbf{FAILED TRANSFER} as an unrestricted
+lower-bound theorem.  Information-flow taint or provenance systems exactly
+distinguish source carriage from derivation only relative to a declared
+operational semantics; applying them to arbitrary equivalent Turing/RAM
+programs is an \textbf{ANALOGY/CANDIDATE} needing an invariant compiler.
+VLSI locality, proof-system interpolation, and communication cuts remain
+restricted-model analogies without an all-algorithm simulation theorem.
+
+\section{Relativization, algebrization, Natural Proofs, and uniformity}
+\paragraph{Relativization.}
+Give the extractor and decider the same oracle.  Recovering $F$ from $C_0$ and
+issuing oracle-relative restriction queries still works.  No line separates
+$P^O$ from $NP^O$.
+
+\paragraph{Algebrization.}
+Replacing an oracle by its low-degree extension does not attribute the
+extractor's second computation to the original run.  The result survives and
+supplies no nonalgebrizing hinge.
+
+\paragraph{Natural Proofs.}
+No constructive large circuit property is asserted.  If a future trace
+projection is promoted to a circuit property, constructivity, largeness,
+usefulness, and the exact circuit class must be audited.
+
+\paragraph{Uniformity and quantifiers.}
+The extractor is allowed to depend on the fixed program $A$, but one finite
+$E_A$ must work for all input lengths.  Equation (5) uses
+$\forall A\,\exists k,d,E_A$; it does not assume a common polynomial exponent.
+Hardwiring an answer table per length is not allowed.
+
+\section{Post-quantum technique ledger}
+\begin{itemize}[leftmargin=*]
+\item Schur squares, quadratic relation spaces, Hilbert functions, syzygies,
+and graded Betti numbers: \textbf{FAILED TRANSFER} for bare full-trace
+factorization.  A source decoder can reconstruct and analyze any chosen
+algebra externally; no such algebra is forced into solver state.
+\item Collision entropy: \textbf{EXACT OBJECT/THEOREM TRANSFER} only for a
+fixed map $L$, with
+$|\operatorname{im}L|\ge |A|^2/\operatorname{Coll}(L)$.  It lower-bounds an
+image, not the original decision cost.
+\item LWE-style black-box extraction and special-soundness collision
+extraction: \textbf{ANALOGY/CANDIDATE}.  They require a new cost-preserving
+compiler; cryptographic assumptions cannot be the unconditional endpoint.
+\item Hash/random-oracle binding: \textbf{FAILED TRANSFER} unless all hardness
+and random-oracle assumptions are removed.
+\end{itemize}
+
+\section{CORPUS REVIEWED}
+This run surveyed the current GitHub corpus and read root \path{main.tex},
+\path{AGENTS.md}, \path{CODEX.md}, the pnp-research skill and protocol
+references, all current task specifications, the newest verified MAIN
+SYNTHESIS-0024, the actual \path{main4.tex}/\path{main5.tex}, and the newest
+verified LSPV-1 through LSPV-4 reports.  Materially relevant historical reports
+included HEVALLB1, APIFLAT1, MODELBRIDGE-0022 through MODELBRIDGE-0026, CUTGAP1,
+PRODSTREAM1, and EXOGATE1.  Repository searches covered full trace, input
+configuration, compatibility, restriction adapter, source factorization,
+wrappers, and the HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC causal branch.  Relevant
+governance notes and cited experiment/result artifacts were inspected.
+
+The predecessor LSPV-3 artifact
+\path{research/agents/lspv-3/2026-10-12_2338_LSPV-3_EXOGATE1.tex} is
+substantive and has the required header and final sentinel.  The requested
+recovery path for MODELBRIDGE-0022 now exists canonically at
+\path{research/agents/lspv-4/2026-10-12_1002_LSPV-4_MODELBRIDGE-0022.tex}; it
+was read back successfully, so no duplicate recovery file was created.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+MODELBRIDGE-0022 already proves that black-box extraction is a separately
+charged computation.  MODELBRIDGE-0023 and -0025 already retain the arbitrary
+solver exponent and charge the clean-core restriction adapter.  The new
+increment is to apply those guards to SYNTHESIS-0024's exact full-trace target:
+because a full trace contains $C_0(F)$, even a nominally ``trace-only''
+extractor can be source-only.  This narrows, rather than contradicts, the
+synthesis.  No earlier verified theorem established internal full-trace
+factorization.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root MAIN correctly marks full-trace semantic factorization \OPEN.  This
+report shows that the bare equation
+$E_A(\operatorname{Tr}_A(F))=h(F,\alpha)$ is not a sufficient bridge, because
+it is satisfied by time-zero source decoding plus external computation.  The
+living LSPV-4 region should distinguish source-carried factorization from an
+internally derived, cost-preserving \same{} trace inequality.
+
+The actual \path{main4.tex} remains an achievable-region framework whose
+SAT-specific contraction is open.  The actual \path{main5.tex} remains a
+conditional WRAPPER composition manuscript whose all-input cheap acquisition
+contract is open.  Neither is redefined as a full-trace lower bound.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{itemize}[leftmargin=*]
+\item \textbf{ADOPTED:} exact-clock full traces; corrected clean core;
+restriction adapters; wrapper controls; explicit all-cost accounting; direct
+clean-core non-$P$ as a sufficient final target.
+\item \textbf{REJECTED:} treating input carriage as semantic derivation;
+uncharged calls by $E_A$; transferring explicit compatibility-table output
+size to one-bit decision time.
+\item \textbf{FALSIFIED/RETIRED:}
+\texttt{BARE-FULL-TRACE-FACTORIZATION-AS-BRIDGE1}.
+\item \textbf{OPEN:} an implementation-invariant derived trace projection; an
+internal \same{} cost inequality; a direct all-algorithm lower bound for $K$;
+a model-matched unconditional contradiction.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+Any wording that treats ``computable from the full trace'' as synonymous with
+``computed, exposed, or paid for by the deciding execution'' is overstated.
+Any wording that treats the $3^n$ explicit compatibility table as necessary
+output of SAT decision is likewise overstated.  These must be read as
+\RETIRED{} unless a derived-state and same-realization theorem is supplied.
+
+\section{Precise next target}
+Define a projection $D_A(F)$ of the realized trace that excludes the decodable
+input carrier yet is invariant under polynomial-delay, copying,
+recomputation, interpretation, and alternate state encodings.  Then prove one
+of the following with all costs charged:
+\[
+ \forall A\in\mathsf{PolyDec}(K)\ \exists E_A\ \forall F,\alpha:
+ E_A(D_A(F),\alpha)=h(F,\alpha),                          \tag{6}
+\]
+where (6) yields a resource inequality for the same execution, or a direct
+superpolynomial lower bound for every uniform deterministic decider of $K$.
+If no nontrivial invariant $D_A$ survives the wrapper tests, retire the trace
+factorization branch and concentrate on the direct clean-core/constructive
+WRAPPER routes.
+
+\begin{thebibliography}{9}
+\bibitem{Cook71} S. Cook, ``The complexity of theorem-proving procedures,''
+STOC 1971, 151--158, \url{https://doi.org/10.1145/800157.805047}.
+\bibitem{PF79} N. Pippenger and M. J. Fischer, ``Relations among complexity
+measures,'' \emph{J. ACM} 26(2), 361--381, 1979,
+\url{https://doi.org/10.1145/322123.322138}.
+\bibitem{BGS75} T. Baker, J. Gill, and R. Solovay, ``Relativizations of the
+$P=?NP$ question,'' \emph{SIAM J. Comput.} 4(4), 431--442, 1975,
+\url{https://doi.org/10.1137/0204037}.
+\bibitem{AW09} S. Aaronson and A. Wigderson, ``Algebrization: A New Barrier in
+Complexity Theory,'' \emph{ACM TOCT} 1(1), 2009, ECCC TR08-005.
+\bibitem{FLMV05} L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+``Time--space lower bounds for satisfiability,'' \emph{J. ACM} 52(6),
+835--865, 2005, \url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{DD21} A. Darmann and J. D\"ocker, ``On simplified NP-complete
+variants of Monotone 3-Sat,'' \emph{Discrete Applied Mathematics} 292,
+45--58, 2021, \url{https://doi.org/10.1016/j.dam.2020.12.010}.
+\end{thebibliography}
+
+\noindent\textbf{Final verification sentinel:} report body complete; strict
+statuses preserved; P versus NP remains \OPEN.
+% END_OF_VERIFIED_REPORT::LSPV-4::MODELBRIDGE-0027
+\end{document}
