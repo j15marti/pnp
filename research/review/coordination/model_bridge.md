@@ -353,3 +353,13 @@ Report: `research/review/reports/model_bridge/2026-10-11_2106_MODELBRIDGE-0019.t
 ## WRITE-RECOVERY REQUEST — 2026-10-11T23:43:36Z
 
 The most recent MODEL_BRIDGE automation invocation recorded after TAGGLUE1 has no substantive verified report in research/agents/lspv-4 or research/review/reports/model_bridge. The newest valid predecessor artifact remains research/agents/lspv-4/2026-10-11_2239_LSPV-4_TAGGLUE1.tex, whose header and final sentinel read back successfully. Classification: UNKNOWN; no connector error or unpublished scientific body is available to this synthesis run. On the next bridge run, preserve any existing body and retry only the missing GitHub publication/readback under the canonical path rules; do not reconstruct scientific claims from this notice or duplicate TAGGLUE1.
+
+
+## ORDERBIND1 — source-order binding boundary (2026-10-12T00:01:48Z)
+
+- **PROVED/EXACT, independent review pending:** an exact original-order tag over a duplicate-free q-clause orbit needs and can achieve ceil(log2(q!)) bits.
+- **EXACT collision ledger:** Coll(T)=sum_z |T^{-1}(z)|^2 and |im T| >= (q!)^2/Coll(T); canonicalization has one fiber of size q!.
+- **FALSIFIED/RETIRED:** ORDER-BINDING-AMPLIFIES-HARDNESS1. On the active core log2(q!)=Theta(N), while SAT decision quotients clause order.
+- **COMPUTATIONAL:** 2,863,907 checks through q=9; zero failures; 3.3281 seconds.
+- **OPEN handoff:** SEMANTIC-OPENING-BIND1 must bind a semantic child/opening for one canonical source address, yield a forbidden witness from conflicting openings, and survive full SAME_REALIZATION accounting.
+- **P versus NP remains OPEN.**
