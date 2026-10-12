@@ -1,0 +1,318 @@
+% LSPV-1 REPORT::CUTGAP1::2026-10-12T14:14:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable}
+\usepackage{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\FALSIFIED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\begin{document}
+
+\section*{CUTGAP1: polynomial scheduled cuts do not force compatibility exposure}
+
+\paragraph{Executive status.}
+\EXACT: a polynomial-size, uniformly predeclared schedule of normalized checkpoints can
+be avoided by an extensionally equivalent polynomial wrapper.  The wrapper confines all
+source-dependent work, including a simulation of the child decider and cleanup, to one
+checkpoint-free interval.  At every scheduled cut its mutable state depends only on
+encoded length and, after the hidden interval, the one-bit answer.  Hence no such state
+vector is universally forced to determine a non-output semantic compatibility object.
+This strictly extends the single-cut result of MODELBRIDGE-0026.  It is a negative
+modeling theorem, not a superpolynomial lower bound: adaptive or exogenous cuts,
+all-time/peak obligations, and a solver-independent transfer remain \OPEN.  P versus NP
+remains open.
+
+\section{Barrier-transfer literature preflight}
+
+The two obstacles are (i) wrapper scheduling freedom and cleanup erase observations at
+chosen internal times, and (ii) known SAT time--space lower bounds apply only on restricted
+resource axes and do not force arbitrary polynomial-time deciders to materialize a chosen
+semantic object.  Fortnow--van Melkebeek prove nontrivial SAT time--space tradeoffs on
+random-access machines, not a superpolynomial lower bound against all polynomial time
+\cite{fvm}.  Baker--Gill--Solovay exhibit relativized worlds on both sides of P versus NP
+\cite{bgs}, and Aaronson--Wigderson show that even many arithmetizing methods face the
+algebrization barrier \cite{aw}.  D\"ocker proves NP-completeness of the exact monotone
+clean core used below \cite{docker}.
+
+\begin{longtable}{p{.23\linewidth}p{.69\linewidth}}
+\toprule
+Transfer class & Assessment \\
+\midrule
+Directly transferable theorem & Exact-clock padding and deterministic cleanup are used
+inside the same uniform deterministic machine model.  The elementary largest-gap lemma
+below transfers without changing models. \\
+Useful analogy requiring a new theorem & Cell-probe chronograms, distributed cut
+arguments, control-theoretic observability, and VLSI clock/routing constraints become
+relevant only when observation times or interfaces are externally fixed.  A theorem
+making SAT computation obey such an exogenous interface is missing. \\
+Misleading / failed transfer & Physical clocking, communication cuts, and proof-system
+state lower bounds do not by themselves constrain an arbitrary single-tape or RAM SAT
+decider.  Counting semantic states is not a running-time lower bound. \\
+\bottomrule
+\end{longtable}
+
+\section{Explicit clean core and semantic compatibility}
+
+Let $\mathcal K_N$ be the canonical encodings of duplicate-free monotone 3-CNF formulas
+of encoded length $N$ in which every clause contains three distinct variables and each
+variable occurs exactly twice positively and twice negatively.  Monotone means that each
+clause is all-positive or all-negative.  SAT restricted to this family is NP-complete
+\cite{docker}.  For a partial assignment $\alpha$ define
+\[
+ H(F,\alpha)=1 \quad\Longleftrightarrow\quad
+ \exists z\supseteq\alpha\; F(z)=1.
+\]
+This is a semantic object, not a required internal representation.
+
+The finite witness in the accompanying result file gives two six-variable, eight-clause
+members $F_0,F_1\in\mathcal K_N$ with
+\[
+ \operatorname{SAT}(F_0)=\operatorname{SAT}(F_1)=1,
+ \qquad H(F_0,x_1=x_2=0)=0,
+ \qquad H(F_1,x_1=x_2=0)=1.
+\]
+Thus $H$ is nonconstant inside one equal-length YES fiber.  The complete clauses and
+model sets are recorded, rather than inferred, in
+\path{results/raw/review/2026-10-12_polynomial_checkpoint_gap_hiding.json}.
+
+\section{Exact quantified target}
+
+The universal necessity attacked in this run was:
+\begin{quote}
+For every uniform deterministic polynomial-time decider $A$ for SAT, there exists a
+uniformly predeclared polynomial-size normalized schedule of internal checkpoints such
+that the vector of mutable configurations at those checkpoints determines
+$H(F,\alpha)$ on $\mathcal K_N$.
+\end{quote}
+Here ``mutable configuration'' excludes the immutable read-only input.  Including the
+input would make ``exposure'' tautological and would still give no runtime lower bound.
+The schedule is a uniformly computable list
+\[
+ C_N=(c_{N,1},\ldots,c_{N,m(N)})\subseteq\mathbb Q\cap[0,1],
+ \quad m(N)\le N^d,
+\]
+whose rational descriptions and computation time are polynomial in $N$.  A cut $c$ of an
+exact $Q(N)$-step run observes the configuration at step $\lfloor cQ(N)\rfloor$.
+
+\section{Largest-gap wrapper theorem}
+
+\begin{lemma}[interior grid cell]
+Let $C\subseteq[0,1]$ contain at most $m$ points and put $M=8(m+1)$.  Some adjacent
+points $a<b$ of $\{0,1\}\cup C$ satisfy $b-a\ge 1/(m+1)=8/M$.  Consequently there is an
+integer $j$ with
+\[
+ a<\frac jM<\frac{j+1}{M}<b.
+\]
+\end{lemma}
+\begin{proof}
+The $|C|+1$ gaps have total length one, proving the first statement.  An interval of
+length at least eight grid spacings contains a full grid cell after discarding boundary
+cells; choosing any remaining cell gives both strict inequalities.
+\end{proof}
+
+\begin{theorem}[polynomial scheduled-cut hiding]
+Let $A$ be any total uniform deterministic decider running in time at most $N^k$, and let
+$C_N$ satisfy the conditions above.  There is a total uniform deterministic decider
+$W_{A,C}$ such that, for every encoded input $x$ of length $N$:
+\begin{enumerate}
+\item $W_{A,C}(x)=A(x)$;
+\item $W_{A,C}$ has an exact input-length-dependent halting time $Q(N)$ and runs in
+polynomial time;
+\item the vector of mutable configurations at every $c\in C_N$ is a function only of
+$(N,A(x))$; and
+\item its space is $O(s_A(N)+p_C(N)+\log N)$, where $s_A$ is the child's workspace and
+$p_C$ is polynomial workspace sufficient to compute and sort the schedule.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+On a read-only input, first determine $N$ by a symbol-oblivious scan.  Compute and sort
+$C_N$, choose the largest gap and the interior grid cell
+$I=[j/M,(j+1)/M]$.  Choose an exactly clocked polynomial block length $B(N)$ dominating
+the schedule computation, the $N^k$-step padded simulation of $A$, and a full cleanup of
+all child work tapes.  Because the chosen cell is strictly interior, $j\ge1$, so the
+first $j$ blocks suffice for the length-only schedule computation and source-independent
+delay.  In block $j$, simulate $A$, retain its decision bit, erase all child-dependent
+mutable state, and pad to exactly $B(N)$ steps.  Use source-independent delay for the
+remaining $M-j-1$ blocks.  Halt after
+\[
+ Q(N)=M B(N)=8(m(N)+1)B(N)
+\]
+steps and output the retained bit.
+
+No scheduled $c$ lies in $I$.  If $c<j/M$, then
+$\lfloor cQ(N)\rfloor<jB(N)$ and the observed state is produced only by computation on
+$N$ and $C_N$.  If $c>(j+1)/M$, the simulation and cleanup have finished, so the state
+depends only on $N$, the cut index, and $A(x)$.  Exact clocks make these claims literal,
+not asymptotic.  Computing the schedule, padding, simulation, and erasure are all charged;
+$M$ and $B$ are polynomial.  The input is read-only and is not counted as exposed mutable
+work state.
+\end{proof}
+
+\paragraph{Corollary.}
+For the clean-core pair $F_0,F_1$ above, every scheduled state vector is identical because
+the inputs have equal length and equal answer, while $H$ differs.  Therefore no function
+of that vector alone determines $H$.  The target universal necessity is
+\FALSIFIED.  The theorem does not say that an extractor also given $F$ cannot recompute
+$H$; that stronger statement is precisely a complexity claim and is not obtained here.
+
+\section{Reproducible finite audit and hostile controls}
+
+The script
+\path{experiments/review/polynomial_checkpoint_gap_hiding_audit.py} enumerated 288
+schedules with $m\in\{1,2,3,4,8,16,32,64,128\}$, including even, clustered, endpoint,
+and seeded-random schedules.  For each it verified a strict interior cell, absence of a
+scheduled cut in the closed child interval, and equality of symbolic state fingerprints
+for equal-length/equal-answer inputs.  It separately constructed and exhaustively checked
+the clean-core pair.  Runtime was 2.259 seconds; no invocation exceeded 30 seconds.
+\[
+ \operatorname{SHA256}(\text{script})=
+ \texttt{7f81303fe69489a2c83ba95e6c53f6f18100940f9a2b02f4dad5b21d5b01899b},
+\]
+\[
+ \operatorname{SHA256}(\text{result})=
+ \texttt{70a285cbbcb2248dfab06dbe4d1724f2a6f3e7b5394694a07af74db2c8f0c4f1}.
+\]
+The control ledger names 2SAT, Horn, affine/Tseitin, bounded treewidth, independent
+products, padding, redundant clauses, alternate encodings, and wrapper-equivalent
+programs.  The exact theorem uses only equal encoded length and equal decision bit, so
+these controls cannot restore a scheduled-cut obligation.  This is a domain-independent
+symbolic statement, not an empirical runtime comparison and not an asymptotic
+extrapolation from the 288 cases.
+
+\section{Relativization, algebrization, nonuniformity, and one-bit output}
+
+The wrapper construction relativizes: an oracle call made by $A$ can be simulated inside
+the hidden block.  That is evidence only for the negative theorem and cannot support a
+P-versus-NP separation in view of Baker--Gill--Solovay.  No algebraic lower-bound method
+is used; the algebrization barrier remains untouched.  A nonuniform checkpoint list of
+polynomial description can likewise be hidden if the wrapper receives or contains that
+list, so nonuniformity does not rescue this target.  Conversely, an exponentially large
+or adaptively chosen list is outside the theorem.  The one-bit output is decisive: after
+cleanup, a correct decider is obligated to retain only that bit.
+
+\section{Post-quantum technique ledger}
+
+\begin{longtable}{p{.30\linewidth}p{.62\linewidth}}
+\toprule
+Technique & Classification and consequence \\
+\midrule
+Schur squares; quadratic relations; Hilbert/syzygy invariants & \textbf{FAILED TRANSFER}
+for this barrier.  These invariants concern a selected algebraic representation; the
+wrapper theorem changes only timing and applies before any such representation is forced.
+Hidden algebraic structure could instead be an algorithmic shortcut. \\
+Lossiness/collision entropy & \textbf{ANALOGY/CANDIDATE}.  The scheduled observation map
+has a large exact decision-fiber collision, but collision counting alone is not a time or
+space lower bound. \\
+Worst-case/average-case external extraction & \textbf{ANALOGY/CANDIDATE}.  Black-box
+adaptive challenges might remove predeclaration, but no unconditional SAT transfer is
+known and NP worst-case/average-case barriers must be audited. \\
+Special soundness/collapse binding & \textbf{ANALOGY/CANDIDATE}.  Two conflicting
+openings would need to yield a concrete forbidden witness in the same realization; no
+such theorem is supplied. \\
+Hash/random-oracle methods & \textbf{FAILED TRANSFER} for an unconditional proof unless
+all hardness and random-oracle assumptions are removed. \\
+\bottomrule
+\end{longtable}
+
+\section{CORPUS REVIEWED}
+
+The repository tree was surveyed at Git commit
+\texttt{2fc102d2d4ea1aceda0be99305a54490b5143435}.  Read directly: root
+\path{main.tex}, \path{AGENTS.md}, \path{CODEX.md}, the complete PNP research skill and
+mode/protocol references, every specification under \path{tasks/}, actual
+\path{main4.tex} and \path{main5.tex}, newest verified MAIN
+\path{research/main/2026-10-12_0850_MAIN_SYNTHESIS-0023.tex}, and materially relevant
+historical MAIN material.  Specialist reports reviewed include HALTCANON1,
+RESOURCEAXIS1, HEVALLB1, TDLG1, MAJORANTNOGO1, PRODSTREAM1, WRAPORBIT1, and
+MODELBRIDGE-0026, plus the earlier LB-0006, MODELBRIDGE-0002,
+CONSTRUCTION-STRENGTHEN9, and review STATUS artifacts surfaced by repository search.
+The HEC, VSC-HEC, G-PPC-HEC, CRS-PPC, CCSPC, RCCN, and random-challenge exploration
+branches, governance notes, and cited experiment/result paths were surveyed for a total
+arbitrary-algorithm bridge.
+
+The predecessor LSPV-5 check found no canonical artifact newer than SYNTHESIS-0023.
+Because this repeated across more than two cycles, the synthesis automation prompt was
+inspected and minimally repaired without changing its schedule or scientific target;
+the evidence and rollback are in
+\path{research/governance/2026-10-12_1414_LSPV5-WRITE-REPAIR-003.tex}.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+Repository search for ``polynomially many checkpoints'', ``normalized-time checkpoints'',
+and ``checkpoint vector exposure'' found no prior theorem hiding a whole polynomial
+predeclared schedule.  MODELBRIDGE-0026 proves the one-fixed-cut case; RT-0009 covers a
+fixed prefix; HALTCANON1 covers the final retained state.  CUTGAP1 strictly combines and
+extends those negative results.  It does not contradict LB-0006's causal-cell route,
+because that route requires an externally compiled/admissible checkpoint interface rather
+than arbitrary internally normalized times.  It also does not contradict known
+time--space tradeoffs, which impose resource hypotheses absent here.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+The LSPV-1 specialty state is sharpened from ``one normalized cut can be pre-delayed'' to
+``every uniformly predeclared polynomial-size normalized schedule can be avoided in one
+largest gap.''  A valid observation-based route must now use an adaptive or exogenous
+checkpoint, an all-times/peak property, or a model restriction that makes the charged
+interval unreschedulable.  No executive claim, exponent, or proof status is strengthened
+to a P-versus-NP result.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\begin{itemize}
+\item \textbf{ADOPTED:} read-only input convention, exact clocks, cleanup accounting,
+same-realization discipline, and the equal-length/equal-answer hostile pair.
+\item \textbf{ADOPTED:} MODELBRIDGE-0026's normalized-time attack as the one-cut base case.
+\item \textbf{REJECTED:} inferring runtime or memory from the number of possible semantic
+compatibility states.
+\item \textbf{RETIRED:} every universal claim that some fixed polynomial predeclared set
+of normalized cuts must expose $H$ in mutable state.
+\item \textbf{RETAINED OPEN:} exogenous online challenges, adaptive cuts unknown to the
+program, peak/all-time obligations, and a same-model transfer from any such property to an
+unconditional lower bound.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any root or historical wording that treats a finite or polynomial observation schedule as
+representative of an entire run is overstated unless the schedule is exogenous and
+unreschedulable.  Likewise, a lower bound on a proof system, branching program, circuit,
+communication protocol, or chosen representation is not a lower bound for every uniform
+deterministic SAT decider without a total compiler preserving the charged resource in the
+same realization.  The actual main4/main5 frameworks remain conditional and may not be
+silently promoted.
+
+\section{Highest-value missing implication}
+
+The surviving target is an externally enforced interface theorem:
+\begin{quote}
+From every uniform deterministic polynomial-time decider for the NP-complete clean core,
+construct in polynomial total cost an adaptive/exogenous observation or communication
+experiment whose challenge cannot be predicted, delayed around, cleaned before, or
+answered using only the decision bit, and whose success contradicts a model-matched
+unconditional lower bound in the same realization.
+\end{quote}
+No such theorem is known here.  At least one load-bearing arrow is \OPEN; therefore P
+versus NP remains open.
+
+\begin{thebibliography}{9}
+\bibitem{docker} J. D\"ocker, ``Monotone 3-Sat-(2,2) is NP-complete,'' 2019,
+\url{https://arxiv.org/abs/1912.08032}.
+\bibitem{fvm} L. Fortnow and D. van Melkebeek, ``Time-Space Tradeoffs for
+Nondeterministic Computation,'' ECCC TR00-028, 2000,
+\url{https://eccc.weizmann.ac.il/report/2000/028/}.
+\bibitem{bgs} T. Baker, J. Gill, and R. Solovay, ``Relativizations of the
+$\mathcal P=?\mathcal{NP}$ Question,'' \emph{SIAM J. Comput.} 4 (1975), 431--442,
+\url{https://epubs.siam.org/doi/10.1137/0204037}.
+\bibitem{aw} S. Aaronson and A. Wigderson, ``Algebrization: A New Barrier in Complexity
+Theory,'' \emph{TOCT} 1(1), 2009,
+\url{https://dl.acm.org/doi/10.1145/1490270.1490272}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LSPV-1::CUTGAP1
+\end{document}
