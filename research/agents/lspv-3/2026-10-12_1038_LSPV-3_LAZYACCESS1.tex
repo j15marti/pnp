@@ -1,0 +1,331 @@
+% LSPV-3 REPORT::LAZYACCESS1::2026-10-12T10:38:30Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\Pclass}{\mathsf{P}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\RET}{\textbf{FALSIFIED/RETIRED}}
+\title{LSPV-3 LAZYACCESS1: Polynomial Adaptive Access to a Virtual Code Inlines to the Original Decision Problem}
+\author{UNIVERSAL\_CORE\_REDTEAM}
+\date{2026-10-12 10:38 UTC}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This run attacks the proposed repair that hides a superpolynomial clean-core
+code behind random access and charges only the polynomially many coordinates
+actually queried.  The repair is exact but gives no intermediate lower-bound
+resource.  If one fixed deterministic accessor computes every requested bit
+in polynomial time and one fixed deterministic evaluator makes polynomially
+many adaptive requests with polynomial local work, literal inlining gives one
+uniform polynomial-time decider.  If access is superpolynomial, no polynomial
+bridge has been proved; if bits are supplied for free, the model has changed
+to an oracle/advice interface.  This strengthens UGENCOMP1 from explicit
+per-length generation to input-dependent, exponentially long virtual objects
+and adaptive queries.  It does not construct the missing favorable accessor
+for arbitrary SAT deciders.  The finite audit made 2,098,198 assertions with
+zero failures.  P versus NP remains \OPEN.
+\end{abstract}
+
+\section{Predecessor and barrier preflight}
+The immediately preceding LSPV-2 artifact,
+\path{research/agents/lspv-2/2026-10-12_1022_LSPV-2_UGENCOMP1.tex},
+was read back from GitHub, is substantive, and contains both required
+markers.  No predecessor recovery write was necessary.
+
+The two current obstacles are: (i) a virtual representation may have
+superpolynomial nominal length even when only polynomially many positions are
+used; and (ii) adaptive access can obscure whether the accessor and evaluator
+belong to one charged realization.  Primary succinct-representation
+literature shows that changing from explicit objects to circuit-succinct
+inputs can raise complexity by an exponential level \cite{GW83,PY86}; it does
+not license free access to an ungenerated object.  Locally decodable codes
+make query complexity meaningful only relative to an encoded codeword and a
+declared decoder/noise model \cite{Yekhanin11}.  These sources motivate the
+typing audit below but do not themselves prove a SAT lower bound.
+
+\section{Claim card and exact quantifiers}
+Fix a language $L\subseteq\{0,1\}^*$.  A \emph{uniform lazy-access
+realization} consists of two fixed deterministic machines:
+\begin{itemize}
+\item an accessor $A(x,i)$ returning one bit $c_x[i]$ for every legal binary
+address $i$; and
+\item an evaluator $E^{c_x}(x)$ whose oracle requests may depend on all prior
+answers.
+\end{itemize}
+All parsing, address formation, saved evaluator state, repeated queries,
+accessor calls, caches, and the final one-bit output are charged.  The virtual
+length $M(x)$ may be as large as $2^{p(|x|)}$; no complete codeword need be
+materialized.
+
+The attacked claim was that such a virtual object could be a weaker
+P-versus-NP bridge even when $E$ makes only polynomially many polynomial-cost
+accesses.  Its exact repaired form is
+\[
+\begin{split}
+&\exists A,E\;\exists\text{ polynomials }p,q,a\;\forall x:\qquad\\
+&E^{c_x}(x)=\mathbf 1_L(x),\quad
+T_E^{\rm local}(x)\le p(n),\quad Q_E(x)\le q(n),\\
+&|i|\le p(n)\text{ for every query }i,qquad
+T_A(x,i)\le a(n+|i|),\qquad n=|x|.
+\end{split}\tag{1}
+\]
+The machines precede all input lengths.  This is uniform, deterministic and
+exact; no advice string, semantic oracle, random oracle or uncharged hardware
+table is present.
+
+\section{Adaptive lazy-access composition theorem}
+\begin{theorem}[LAZY-ACCESS-INLINING1]
+Condition (1) holds for a language $L$ if and only if $L\in\Pclass$.
+More precisely, the forward direction has one deterministic uniform decider
+$D$ satisfying
+\[
+ T_D(x)\le p(n)+q(n)\,a(n+p(n))+O(q(n)),                 \tag{2}
+\]
+and, for standard sequential subroutine simulation,
+\[
+ S_D(x)\le S_E(x)+\max_i S_A(x,i)+p(n)+O(\log q(n)).     \tag{3}
+\]
+The bound permits arbitrary adaptive query choice and arbitrary finite
+virtual length addressable with at most $p(n)$ bits.
+\end{theorem}
+
+\begin{proof}
+Simulate $E$ step by step.  Whenever $E$ produces address $i$, retain its
+current configuration, run the fixed machine $A(x,i)$ to completion, return
+that bit, and resume the same configuration.  Induction on the query number
+shows that the simulated transcript, all later adaptive addresses and the
+final bit are identical to the oracle-style execution.  Summing local work
+and at most $q(n)$ accessor calls gives (2); reusing the accessor workspace
+sequentially gives (3).  All bounds are polynomial.  Conversely, for any
+$D\in\Pclass$, let $E$ run $D$ and make zero queries; choose any constant
+accessor.  Thus (1) is equivalent to $L\in\Pclass$.
+\end{proof}
+
+\paragraph{SAME\_REALIZATION.}
+The saved evaluator configuration and every accessor execution occur in the
+single machine $D$.  There is no transfer from a structural object to an
+unrelated algorithm, no inference from semantic-state count to runtime, and
+no uncharged reconstruction.  Repeated requests are charged repeatedly
+unless the same execution builds and charges a cache.
+
+\begin{corollary}[VIRTUAL-CODE-BRIDGE-TRILEMMA1]
+For an input-dependent or per-length implicit code, exactly one of the
+following applies.
+\begin{enumerate}
+\item Polynomially many adaptive accesses and polynomial accessor/local cost
+inline to an ordinary polynomial decider.
+\item Some required query count, accessor, construction or local evaluation
+is superpolynomial, so the claimed polynomial bridge is absent.
+\item The bits are externally supplied without their generation/access cost,
+so the model is oracle/advice/nonuniform rather than ordinary uniform SAT.
+\end{enumerate}
+Hence \texttt{LAZY-SUPERPOLYNOMIAL-CODE-AS-INTERMEDIATE1} is \RET.
+\end{corollary}
+
+\section{What is and is not new}
+UGENCOMP1 proved that a fully charged uniform per-length generator followed
+by a polynomial evaluator is exactly uniform decision.  STREAMCOMP1 and
+VIRTUAL-CHILD-SPACE1 already charge a supplied bit generator inside recursive
+composition.  TESTS-0016 proved that a small residual does not itself provide
+cheap local access.  The new increment is limited but exact: Theorem 1 removes
+whole-code generation entirely, allows $c_x$ to depend on the particular
+input, allows exponentially many potential coordinates, and permits adaptive
+random access.  Even in that stronger interface, polynomial charged access
+inlines.  This report neither renames the earlier composition results nor
+constructs a favorable all-input child accessor.
+
+The actual \path{main4.tex} and \path{main5.tex} say that virtual aliases,
+streaming, and locally addressable descendants are conditional constructions
+and that all-input acquisition remains open.  The theorem here is consistent
+with those texts: it closes only the proposed claim that a supplied
+polynomial lazy accessor is itself a weaker intermediate.
+
+\section{Bounded reproducible audit}
+The script
+\path{experiments/review/lazy_uniform_access_composition_audit.py}
+(SHA-256 \texttt{ac4e80480910aea9d0093343aec8db999009c3ee51d9b6ab799f2b65bf156cb0})
+and raw output
+\path{results/raw/review/2026-10-12_lazy_uniform_access_composition.json}
+(SHA-256 \texttt{d89f1b2f563c1ccec854a7cb514c0c3e825f993997a2cd03cd1505ba33b93220})
+record seed 202610121934.  One invocation completed in 1.372 seconds and made
+2,098,198 assertions with zero failures.
+
+It exhaustively checked all $4^7=16{,}384$ binary adaptive depth-three query
+policies against all $16$ four-bit accessors, then checked DIRECT, COPY, DEAD,
+DELAY, INTERP and RECOMP presentations.  A separate virtual-object battery
+used lengths $2^n$ for $1\le n\le20$ without materialization and charged every
+adaptive access on Horn, affine/Tseitin, 2SAT, bounded-treewidth, padding and
+redundant controls.  Finally, all exponent triples in $\{0,\ldots,6\}^3$ were
+checked against the exact upper-bound ledger
+\[
+ e_{\rm composed}=\max\{e_{\rm local},e_{\rm query}+e_{\rm access}\}.
+\]
+The audit is \COMP only and establishes no asymptotic lower bound.  The
+asymptotic theorem is the preceding proof by composition.  The program was
+not chunked because the complete invocation is far below 30 seconds.
+
+\section{Representation, hostile-control and one-bit audit}
+Horn, affine/Tseitin, 2SAT and bounded-treewidth virtual families may have
+very large nominal code spaces while their requested bits remain cheaply
+computable.  They therefore demonstrate that large implicit semantic extent
+does not force materialization, memory or time.  Padding and redundant clauses
+can enlarge the virtual address space without changing the evaluator.  COPY,
+DEAD and DELAY alter implementation presentation; INTERP relabels addresses;
+RECOMP regenerates requested bits.  The inlining proof survives each wrapper
+because it charges the realized accessor calls.  The only required output is
+one bit; no witness, compatibility table, branching program, circuit, proof
+or codeword must be exposed.
+
+Compact circuits and branching programs fit the theorem when their bit
+evaluation and the caller's accesses are polynomial.  A lower bound for the
+size of one chosen representation remains a representation lower bound until
+an arbitrary-algorithm acquisition theorem forces that representation in the
+same execution.
+
+\section{Literature and barrier-transfer ledger}
+\begin{center}
+\begin{tabular}{p{.24\linewidth}p{.22\linewidth}p{.46\linewidth}}
+\toprule
+Domain/result & Classification & Exact correspondence and missing arrow\\
+\midrule
+Succinct circuit graph inputs \cite{GW83,PY86} & \textbf{DIRECTLY TRANSFERABLE THEOREM} for representation typing & A circuit answers bits of an exponentially larger explicit object, and the succinct input length is the charged length.  Their complexity blowups do not force a SAT decider to create any chosen code.\\
+Locally decodable codes \cite{Yekhanin11} & \textbf{USEFUL STRUCTURAL ANALOGY requiring a new transfer theorem} & Query complexity is exact once an encoding and noisy codeword are fixed.  A SAT bridge would still need a uniform charged encoder/accessor and a deterministic exact evaluator.\\
+RAM/VLSI memory hierarchy & \textbf{USEFUL STRUCTURAL ANALOGY requiring a new transfer theorem} & Access time, storage and routing are physical costs in the declared machine.  A free prebuilt chip/table is nonuniform advice; no VLSI bound transfers to arbitrary SAT without compilation.\\
+HEC/CRS-PPC/RCCN delayed access & \textbf{MISLEADING ANALOGY / FAILED TRANSFER} without staticization & No-reread state lower bounds are exact in their causal models, but ordinary static random access permits reacquisition.  The static-SAT compiler is still open.\\
+FLMV SAT time--space endpoint & \textbf{DIRECTLY TRANSFERABLE only after landing} & Once the same ordinary random-access machine is in the cited forbidden time--space region, the theorem applies.  Lazy-access inlining supplies no such strict endpoint.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Relativization, algebrization, Natural Proofs and nonuniformity}
+The proof relativizes when $A$ and $E$ share an oracle: their oracle calls can
+be preserved under composition.  It also survives algebraic access when each
+algebraic subroutine is charged.  It therefore supplies no nonrelativizing or
+nonalgebrizing hinge.  No largeness/constructivity property of Boolean
+functions is used, so the Natural Proofs barrier is not crossed.  A separate
+access table $c_n$ for each length, supplied without one uniform constructor
+or accessor, is advice/nonuniformity; treating it as a uniform SAT algorithm
+would silently change the quantifiers.  Arbitrary polynomial exponents are
+retained: if local, query and access exponents are fixed constants depending
+on the fixed machines, (2) is polynomial but need not enter any unconditional
+forbidden regime.
+
+\section{Post-quantum technique ledger}
+\begin{itemize}
+\item Schur squares, quadratic-relation ranks, Hilbert functions, syzygies and
+graded Betti numbers are \textbf{FAILED TRANSFERS} here: they may distinguish
+a fixed code, but no theorem forces an arbitrary one-bit decider to acquire
+or query that code.
+\item Collision entropy is an \textbf{EXACT OBJECT/THEOREM TRANSFER} for a
+fixed accessor map.  The Cauchy--Schwarz image bound remains correct, but a
+lossy or injective map does not lower-bound the time of the inlined decider.
+\item Worst-case/average-case black-box extraction is an
+\textbf{ANALOGY/CANDIDATE needing a new bridge}.  It would need to extract a
+source-matched virtual object from every SAT solver while charging all calls;
+known NP worst-case/average-case barriers must then be audited.
+\item Collision extraction/special soundness is a \textbf{FAILED TRANSFER}
+for one deterministic transcript.  A second conflicting opening is not
+created by adaptive reads of one fixed code.
+\item Hash/random-oracle access is a \textbf{FAILED TRANSFER} if treated as
+free.  With a charged uniform hash it inlines; with a random oracle the model
+has changed.  Hidden algebraic structure may make access easier, not harder.
+\end{itemize}
+
+\section{CORPUS REVIEWED}
+The current default-branch tree (SHA
+\texttt{3ec407cc40b9d0469f9210543dab02107b2a82d2}) contains 2,547 entries and
+was surveyed by path.  This run read root \path{main.tex}, \path{AGENTS.md},
+\path{CODEX.md}, the complete P-vs-NP skill and references, every current
+\path{tasks/} specification, actual \path{main4.tex}/\path{main5.tex}, newest
+verified MAIN SYNTHESIS-0023, current governance, and the newest specialist
+reports.  Materially relevant older artifacts included TESTS-0016,
+TESTS-0019, STREAMCOMP1, VIRTUAL-CHILD-SPACE1, UGENCOMP1,
+POLY-EXTENSIONAL-CANONIZER-NOGO1, and the HEC, VSC-HEC, G-PPC-HEC, CRS-PPC,
+CCSPC and RCCN causal branch.  The cited experiment/result artifacts were
+inspected or regenerated.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+The corpus already knew three adjacent facts: an explicitly generated
+per-length code composes (UGENCOMP1); a supplied virtual-child accessor must
+be charged (STREAMCOMP1/VIRTUAL-CHILD-SPACE1); and small residual size does
+not produce locality (TESTS-0016).  LAZYACCESS1 does not claim these again.
+Its additional quantified case is an input-dependent, nonmaterialized,
+possibly exponential virtual object with adaptive random access.  Repository
+search also found the extensional-canonicalization halting no-go in RT-0015,
+so that tempting route was rejected as duplicate before research.  No
+contradiction with main4/main5 or current root MAIN was found.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root MAIN already said virtual access must be charged but did not state the
+full adaptive input-dependent equivalence.  The LSPV-3 region should now add
+LAZY-ACCESS-INLINING1 and retire the virtual-superpolynomial-code repair as an
+intermediate.  No executive theorem, manuscript construction or exponent
+endpoint is strengthened.  The all-decider acquisition and model-matched
+landing arrows remain \OPEN.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{itemize}
+\item \textbf{ADOPTED}: UGENCOMP1 explicit-code composition;
+STREAMCOMP1/VIRTUAL-CHILD-SPACE1 charged accessor accounting; TESTS-0016
+locality separation; static random-access bypasses in the causal branch.
+\item \textbf{REJECTED}: importing LDC, succinct-graph, VLSI, proof-system or
+online lower bounds without matching their objects and machine models.
+\item \textbf{RETIRED}: \texttt{LAZY-SUPERPOLYNOMIAL-CODE-AS-INTERMEDIATE1}
+under polynomial charged query/access bounds.
+\item \textbf{OPEN}: constructing a source-matched favorable accessor from
+every hypothetical polynomial-time SAT decider and landing the resulting
+same realization in an unconditional forbidden region.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+Any claim that ``the virtual code has exponentially many coordinates, so the
+solver must pay exponential cost'' is overstated: unqueried coordinates are
+irrelevant when queried bits are uniformly cheap.  Conversely, any claim
+that local decoding makes the encoder/codeword free is also overstated.  The
+current root and manuscripts mostly preserve these distinctions; no verified
+root theorem required downgrading beyond making the adaptive inlining guard
+explicit.
+
+\section{Precise synthesis handoff}
+The smallest surviving repair is not another representation.  It is an
+external, solver-independent relation with a proved compiler
+\[
+\forall D\in\mathrm{Dec}_{\rm poly}(\SAT)\;\exists x:
+D(x)\text{ in the same execution incurs a charged event }R(D,x),
+\]
+where $R$ is invariant under DEAD/COPY/DELAY/INTERP/RECOMP, cannot be answered
+by a polynomial uniform accessor, and the fully charged composed machine
+lands in one model-matched unconditional lower bound.  The relation,
+compiler, forbidden endpoint and nonrelativizing/nonalgebrizing hinge are all
+\OPEN.  One open load-bearing arrow suffices: P versus NP remains open.
+
+\begin{thebibliography}{9}
+\bibitem{GW83} H. Galperin and A. Wigderson,
+``Succinct representations of graphs,'' \emph{Information and Control}
+56 (1983), 183--198. doi:10.1016/S0019-9958(83)80004-7.
+\bibitem{PY86} C. H. Papadimitriou and M. Yannakakis,
+``A note on succinct representations of graphs,'' \emph{Information and
+Computation} 71 (1986), 181--185. doi:10.1016/S0019-9958(86)80009-2.
+\bibitem{Yekhanin11} S. Yekhanin, ``Locally Decodable Codes,''
+\emph{Foundations and Trends in Theoretical Computer Science} 6(3), 2011.
+doi:10.1561/0400000030.
+\bibitem{BGS75} T. Baker, J. Gill and R. Solovay,
+``Relativizations of the P=?NP question,'' \emph{SIAM J. Comput.} 4(4), 1975.
+\bibitem{RR97} A. Razborov and S. Rudich, ``Natural Proofs,''
+\emph{J. Comput. Syst. Sci.} 55(1), 1997.
+\bibitem{AW09} S. Aaronson and A. Wigderson, ``Algebrization: A New Barrier
+in Complexity Theory,'' \emph{ACM Trans. Comput. Theory} 1(1), 2009.
+\bibitem{FLMV05} L. Fortnow and D. van Melkebeek,
+``Time-space lower bounds for satisfiability,'' \emph{J. ACM} 52(6), 2005.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LSPV-3::LAZYACCESS1
+\end{document}
