@@ -1,0 +1,314 @@
+% LSPV-4 REPORT::MODELBRIDGE-0022::2026-10-12T10:02:17Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,enumitem,hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\same}{\textsc{same\_realization}}
+\title{MODELBRIDGE-0022: Black-box extraction is a separate charged computation}
+\author{UNIVERSAL\_CORE\_BRIDGE}
+\date{12 October 2026, 10:02 UTC}
+
+\begin{document}
+\maketitle
+
+\section*{Executive result}
+\textbf{P versus NP remains OPEN.}  This run tests the surviving suggestion
+from APIFLAT1: replace an internal ``the solver must expose $H(F)$'' claim by
+an external black-box extractor that interrogates an arbitrary exact SAT
+decider.  The resulting candidate
+\texttt{BLACKBOX-EXTRACTION-TO-SAME-RUN-CHARGE1} is \RETIRED.
+
+The exact replacement theorem is
+\texttt{BLACKBOX-EXTRACTION-CHARGE-SEPARATION1} (\EXACT, pending independent
+review): a deterministic adaptive machine that sees an exact SAT decider only
+through its one-bit answers has the same query/answer transcript for every
+exact implementation.  Its output is therefore a source-defined
+$\mathsf{FP}^{\SAT}$ computation.  Its work and all of its oracle invocations
+belong to the composed extractor machine; they are not work performed by, or
+state exposed in, the original single execution $A(F)$.
+
+\section{Claim card and exact quantifiers}
+Let $\mathcal D_{\SAT}$ be the class of total deterministic exact SAT deciders
+on one fixed self-delimiting CNF encoding.  Thus
+\[
+  \forall A\in\mathcal D_{\SAT}\ \forall G,\qquad
+  A(G)=\mathbf 1[G\in\SAT].
+\]
+Let $E$ be a deterministic adaptive oracle machine.  On source formula $F$ it
+may form queries $G_1,G_2,\ldots,G_q$, with $G_i$ depending on earlier answer
+bits, and finally output an object $W$.  The candidate under attack asserted
+that, if $E^A(F)$ recovers a compatibility object for every exact $A$, then the
+original run $A(F)$ exposed or paid for that object.
+
+The candidate silently identifies two different executions:
+\[
+  \underbrace{A(F)}_{\text{one decision run}}
+  \qquad\text{and}\qquad
+  \underbrace{E^A(F)}_{\text{extractor work plus many separate calls}}.
+\]
+That identification is false without a new compiler theorem.
+
+\section{Clean-core semantic compatibility}
+For a CNF $F$ and a consistent partial assignment $\alpha$, define
+\[
+ H(F,\alpha)=1
+ \quad\Longleftrightarrow\quad
+ \exists\beta\supseteq\alpha\;[\beta\models F].
+\]
+On the corrected signed Monotone $3$SAT-$(2,2)$ clean core this is still just
+SAT of the restricted formula $F\upharpoonright\alpha$.  A lexicographically
+least satisfying assignment is externally recoverable using at most $n+1$
+adaptive decision calls: query $F$, then query whether the current prefix can
+be extended with $x_i=0$, choosing $0$ if YES and $1$ otherwise.  This fact is
+useful, but it is a search-to-decision computation carried out by the
+extractor.  It does not force the original call $A(F)$ to materialize the
+table of $H$, a witness, a frontier, or a transcript.
+
+\section{Exact black-box theorem}
+\paragraph{Theorem (transcript extensionality).}
+For every deterministic adaptive oracle machine $E$, every input $F$, and
+every $A,B\in\mathcal D_{\SAT}$, the ordered query/answer transcript of
+$E^A(F)$ equals that of $E^B(F)$.  In particular, whenever both halt,
+\[
+ E^A(F)=E^B(F).
+\]
+
+\paragraph{Proof.}
+Induct on the query number.  Before the first query the deterministic
+configurations agree, so the first query string agrees.  Exactness gives
+$A(G_1)=B(G_1)=\mathbf 1[G_1\in\SAT]$.  If configurations and answer bits
+agree through query $i-1$, determinism gives the same $i$th query, and
+exactness gives the same $i$th answer.  The final configurations and outputs
+therefore agree. \hfill$\square$
+
+\paragraph{Corollary (source factorization).}
+Every total output of such an extractor is a function of $F$ and the SAT
+language, not of the chosen exact implementation.  If $E$ has polynomial own
+work, makes polynomially many polynomial-length queries, and $\SAT\in\mathsf
+P$, then the output is in $\mathsf{FP}$ by replacing the oracle with the
+assumed polynomial SAT decider.  This conclusion concerns the new machine
+$E^A$, not the internal state of $A(F)$.
+
+\paragraph{Corollary (exact charge).}
+If $E$ performs $t_E(F)$ ordinary steps and issues queries
+$G_1,\ldots,G_q$ to $A$, then a sequential simulation has
+\[
+ T_{E^A}(F)=t_E(F)+\sum_{i=1}^{q}T_A(G_i)+T_{\rm encode}(F),
+\]
+up to the declared universal-machine constants.  Peak workspace includes
+the extractor state, query storage, and the peak workspace of each invoked
+run.  None of the terms $T_A(G_i)$ for $G_i\ne F$, and none of $t_E$, is a
+cost of the original execution $A(F)$.  Even when $G_1=F$, subsequent calls
+remain distinct executions.  Thus black-box recovery alone gives no
+\same{} transfer.
+
+\section{Primary-literature and obstacle preflight}
+The two major obstacles are (i) attribution of an external oracle
+computation to one selected ordinary execution and (ii) a model-matched
+absolute time--space landing after all oracle calls are compiled away.
+
+\begin{itemize}[leftmargin=*]
+\item Baker--Gill--Solovay's relativization theorem is a \KNOWN{} barrier:
+opposite $P$ versus $NP$ outcomes occur relative to different oracles.  The
+transcript theorem above relativizes and therefore supplies no escape.
+\item Aaronson--Wigderson's algebrization framework is a \KNOWN{} stronger
+warning.  Replacing an exact answer oracle by its algebraic extension does not
+turn the extractor's separate executions into the run $A(F)$.
+\item Bogdanov--Trevisan prove barriers for broad nonadaptive worst-case to
+average-case reductions for NP problems.  Their theorem does not prove the
+elementary transcript lemma and is not imported as a SAT lower bound; it makes
+the LWE-style extraction analogy especially nonautomatic.
+\item Classical SAT search-to-decision is a directly transferable algorithmic
+fact.  It establishes external recoverability, not internal exposure.
+\end{itemize}
+
+\section{Bounded reproducible audit}
+The script
+\path{experiments/review/blackbox_extraction_charge_audit.py} tests ten finite
+families: Horn, 2SAT, affine/Tseitin parity, bounded treewidth, a signed block,
+an UNSAT control, padding, redundant clauses, an independent product, and an
+alternate encoding.  It runs the same adaptive lexicographic extractor
+against DIRECT, COPY, DEAD, DELAY, INTERP, and RECOMP exact wrappers.
+
+The audit made 312 separately charged oracle invocations and checked 310
+assertions with zero failures.  Query strings, answer bits, and extracted
+witnesses were identical across wrappers.  Internal trace tags, total steps,
+and peak workspace differed.  The result file is
+\path{results/raw/review/2026-10-12_blackbox_extraction_charge.json}.
+This is \COMP{} evidence only; the theorem is established symbolically above.
+
+\section{Hostile controls and all costs}
+\begin{center}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.25\linewidth}p{0.65\linewidth}}
+\toprule
+Control & Outcome \\
+\midrule
+One-bit decision & Determines every oracle answer; exposes no canonical richer object.\\
+COPY/DEAD/DELAY & Preserve all answers while changing implementation cost and trace.\\
+INTERP/RECOMP & Preserve all answers under alternate representations and replay.\\
+Horn/2SAT/affine/treewidth & External extraction is easy; no universal hardness follows.\\
+Padding/redundancy/product & Transcript extensionality survives; input construction is charged.\\
+Arbitrary exponent & $q$ calls to an $N^K$ solver remain a composed $N^{O(K)}$ computation, not a solver-independent contraction.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Barrier and transfer audit}
+\paragraph{SAME\_REALIZATION.}
+Fails at the exact boundary above.  The selected ordinary machine must be
+$E^A$ if the extractor's work is used.  A lower bound must apply to that same
+fully charged machine, not retroactively to $A(F)$.
+
+\paragraph{Relativization and algebrization.}
+The proof uses only equality of exact oracle answers and survives oracle
+replacement.  It is a no-go guard, not a nonrelativizing or nonalgebrizing
+separation step.
+
+\paragraph{Natural Proofs and nonuniformity.}
+No constructive large circuit property is asserted.  The extractor is one
+uniform program; allowing a different extractor or hardwired answer table per
+length would introduce a separate nonuniformity gap and is not used.
+
+\paragraph{Solver-to-protocol transfer.}
+HEC, VSC-HEC, G-PPC-HEC, CRS-PPC, RCCN, and CCSPC contain exact restricted-model
+state or causal guards, but their static-to-online compilers remain \OPEN.
+An extensional SAT oracle transcript cannot by itself supply the missing
+predecision state, anti-batching, or no-reread hypotheses.
+
+\paragraph{Cross-domain classification.}
+Oracle-query accounting and SAT search-to-decision are directly transferable.
+VLSI module calls, control-theoretic observability, communication transcripts,
+and proof-system interpolation are useful structural analogies only; each
+requires an interface-preserving theorem before it can constrain an arbitrary
+ordinary SAT decider.  Treating an external module's work as work of the
+queried component is a misleading analogy.
+
+\section{Post-quantum technique ledger}
+\begin{itemize}[leftmargin=*]
+\item Schur squares, quadratic relation spaces, Hilbert functions, syzygies,
+and graded Betti data: \textbf{FAILED TRANSFER} here.  No code or graded
+algebra is forced by the one-bit interface; such structure may be exploitable
+rather than hard.
+\item Collision entropy: \textbf{EXACT OBJECT/THEOREM TRANSFER} only after a
+specific extractor map $L$ is supplied; then
+$|\operatorname{im}L|\ge |A|^2/\operatorname{Coll}(L)$.  The inequality does
+not identify its cost with $A(F)$.
+\item LWE-style worst-case/average-case black-box extraction:
+\textbf{ANALOGY/CANDIDATE needing a new bridge}.  The exact transcript theorem
+says the output is extensional; it does not provide a forbidden endpoint.
+\item Collision extraction/special soundness:
+\textbf{ANALOGY/CANDIDATE needing a construction-specific relation}.  Generic
+binding assumptions are inadmissible.
+\item Hash/random-oracle methods: \textbf{FAILED TRANSFER} for an
+unconditional separation unless the assumption is removed.
+\end{itemize}
+
+\section{CORPUS REVIEWED}
+The run surveyed the current repository tree and read root
+\path{main.tex}, \path{main4.tex}, \path{main5.tex}, \path{AGENTS.md},
+\path{CODEX.md}, the pnp-research skill and both protocol references, all
+seven task specifications, the newest verified MAIN snapshot
+SYNTHESIS-0023, the newest reports MAJORANTNOGO1, CLKSLACK1, JOINTGAUGE1,
+CALQNT1, and the previous bridge MODELBRIDGE-0021.  Historical searches
+surfaced and were read at APIFLAT1, FORKFACTOR1, COVCOLL1, SATQUOT1, and the
+HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC causal branch.  The two current governance
+write-repair notes and the cited experiment/result artifacts were inspected.
+
+The newest LSPV-1 predecessor artifact, MAJORANTNOGO1, is substantive and has
+the required header and final sentinel on GitHub; no recovery write was
+needed.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+APIFLAT1 already proves that naming an internal extractor API is not a
+universal resource.  HEVALLB1 already records that evaluating $H(F,\alpha)$
+by calls on restricted formulas uses separate executions.  FORKFACTOR1 shows
+that replacement-invariant fork data factors through the source, while
+COVCOLL1 and SATQUOT1 constrain replacement-covariant resources.  The new
+increment is narrower and exact: it closes the external black-box escape by
+proving adaptive transcript invariance and writing the complete charge
+equation that prevents attribution to the original run.  No verified theorem
+is contradicted.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root MAIN already leaves the arbitrary-decider bridge and
+\same{} landing \OPEN.  This report does not strengthen either.  It retires
+one proposed method of closing them: external black-box extraction cannot be
+relabelled as resource exposure by the queried run.  The surviving target is
+now explicitly an embedded, selected-output compiler whose own fully charged
+ordinary realization reaches an absolute forbidden region.
+
+Actual \path{main4.tex} and \path{main5.tex} remain, respectively, the ARC
+achievable-region and WRAPPER construction manuscripts.  Their accumulated
+finite promise/subclass results, conditional $K$ elimination, and all-input
+acquisition gaps are unchanged; this report does not redefine them as a
+universal lower bound.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{itemize}[leftmargin=*]
+\item \textbf{ADOPTED:} corrected signed clean core; exact encoded-length
+accounting; wrapper hostile controls; $H(F,\alpha)$; \same{} discipline;
+absolute model-matched endpoints.
+\item \textbf{REJECTED:} semantic-state count as runtime; uncharged oracle
+calls; a named extractor API; cryptographic hardness assumptions.
+\item \textbf{FALSIFIED/RETIRED:} black-box extraction alone implies the
+original decision execution exposed or paid for the extracted object.
+\item \textbf{OPEN:} a uniform embedded compiler producing one fully charged
+ordinary machine in a known forbidden absolute time--space region.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+The ARC/WRAPPER hook lists stopped at MODELBRIDGE-0020, so they did not record
+MODELBRIDGE-0021 or this black-box charge boundary.  This is a manuscript
+reconciliation omission, not a false theorem.  Any prose equating
+``externally recoverable from SAT decisions'' with ``exposed by the original
+SAT run'' is overstated and must be downgraded to \OPEN{} pending an embedded
+compiler.
+
+\section{Strict status ledger and handoff}
+\begin{center}
+\begin{tabular}{p{0.48\linewidth}p{0.19\linewidth}p{0.25\linewidth}}
+\toprule
+Item & Status & Reason \\
+\midrule
+\texttt{BLACKBOX-EXTRACTION-CHARGE-SEPARATION1} & \EXACT & Induction on transcript; explicit cost sum\\
+Finite wrapper/family audit & \COMP & 310 assertions, zero failures\\
+\texttt{BLACKBOX-EXTRACTION-TO-SAME-RUN-CHARGE1} & \RETIRED & Extractor is a separate computation\\
+\texttt{EMBEDDED-SELECTED-OUTPUT-ABSOLUTE-LANDING1} & \OPEN & No compiler or endpoint landing\\
+P versus NP & \OPEN & Load-bearing arrow remains\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Precise next target.}
+Fix a hypothetical uniform polynomial SAT decider $A$ with valid finite time
+and space exponents.  Construct one uniform ordinary machine $M_A$ which
+embeds any required extraction, charges every query and reconstruction step,
+and proves an absolute joint bound for that same $M_A$ inside a model-matched
+unconditional forbidden region.  Without that same-realization landing, the
+bridge remains \OPEN{} and P versus NP remains \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{BGS75} T. Baker, J. Gill, and R. Solovay,
+``Relativizations of the $P=?NP$ question,'' \emph{SIAM J. Comput.} 4(4),
+431--442, 1975.
+\bibitem{AW09} S. Aaronson and A. Wigderson,
+``Algebrization: A New Barrier in Complexity Theory,'' \emph{ACM TOCT} 1(1),
+2009; ECCC TR08-005.
+\bibitem{BT06} A. Bogdanov and L. Trevisan,
+``On Worst-Case to Average-Case Reductions for NP Problems,''
+\emph{SIAM J. Comput.} 36(4), 1119--1159, 2006.
+\bibitem{Cook71} S. Cook, ``The complexity of theorem-proving procedures,''
+STOC 1971, 151--158.
+\end{thebibliography}
+
+\noindent\textbf{Final verification sentinel:} report body complete; strict
+statuses preserved; P versus NP remains \OPEN.
+% END_OF_VERIFIED_REPORT::LSPV-4::MODELBRIDGE-0022
+\end{document}
