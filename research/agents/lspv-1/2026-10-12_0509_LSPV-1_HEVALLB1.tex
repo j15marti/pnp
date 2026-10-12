@@ -1,0 +1,431 @@
+% LSPV-1 REPORT::HEVALLB1::2026-10-12T05:09:35Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,enumitem,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\newtheorem{definition}{Definition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\Hsigned}{\mathcal H^{\pm}_{2,2}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\COND}{\textbf{CONDITIONAL}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\title{HEVALLB1: Uniform evaluation of the full partial-assignment\\
+compatibility function is exactly SAT-in-P strength}
+\author{LSPV-1 --- Universal Core Lower Bound}
+\date{12 October 2026 (UTC)}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.94\linewidth}{
+\textbf{Executive status.} P versus NP remains open.  This run fixes a
+canonical semantic compatibility object and proves its exact complexity
+boundary.  For a CNF $F$ and a partial assignment $\alpha$, let
+$H(F,\alpha)=1$ iff $\alpha$ extends to a satisfying assignment.  A single
+uniform polynomial-time evaluator for all pairs $(F,\alpha)$ exists if and
+only if $\SAT\in\mathsf P$; the same equivalence holds when $F$ is restricted
+to any polynomial-time many-one NP-hard clean core, including the corrected
+signed Monotone $3$SAT-$(2,2)$ family.  Under $\SAT\in\mathsf P$, $H_F$ has a
+linear-size program descriptor and polynomial-size uniformly constructible
+circuits, but their exponent inherits the unknown SAT exponent.  Therefore
+the $3^n$ semantic domain or explicit truth-table size cannot force
+materialization, memory, communication, or runtime for an arbitrary one-bit
+SAT execution.  The evaluator is an external new execution, not a
+SAME\_REALIZATION exposure theorem.}}
+\end{center}
+
+\section{Claim card and exact quantifiers}
+
+\begin{description}[leftmargin=3.0cm,style=nextline]
+\item[Claim ID.] \texttt{PARTIAL-COMPAT-EVAL-EQUIV1}.
+\item[Status before run.] \OPEN; fixed-split compatibility was already known
+not to transfer automatically to one-bit SAT computation.
+\item[Desired conclusion.] Classify the complexity of evaluating the complete
+partial-assignment compatibility function without enumerating it.
+\item[Exact prefix.] $\exists E\,\exists c\,\forall F\,\forall\alpha$ for the
+upper-bound side; the clean-core reverse direction also quantifies over one
+fixed polynomial many-one reduction into the core.
+\item[Model.] Uniform deterministic multitape Turing machine on a complete
+self-delimiting encoding.  Malformed inputs may be rejected.  All restriction,
+encoding and output work is charged.
+\item[Input measure.] $L=|\operatorname{enc}(F,\alpha)|$; for the canonical
+encoding $L=N+O(n)$ and $n\le N+O(1)$.
+\item[SAME\_REALIZATION.] \texttt{EVAL(F,alpha)} is a new two-input execution.
+It is not identified with the original one-input run $A(F)$.
+\item[Weakest useful theorem.] An iff classification, plus a precise account
+of what compact descriptors and circuits do not transfer back to $A(F)$.
+\item[Falsifier.] A family on which $H$ cannot be evaluated by restriction
+followed by a SAT decider, or a proof that one-bit SAT forces the whole table
+to be output.  Neither occurs.
+\end{description}
+
+\section{Canonical semantic compatibility}
+
+\begin{definition}[Partial-assignment compatibility]
+Let $F$ be a CNF on indexed variables $x_1,\ldots,x_n$ and let
+$\alpha\in\{0,1,\star\}^n$.  Write $F\upharpoonright\alpha$ for the CNF
+obtained by deleting clauses satisfied by $\alpha$ and deleting falsified
+literals from the remaining clauses.  Define
+\[
+ H(F,\alpha)=H_F(\alpha)=1
+ \quad\Longleftrightarrow\quad
+ \exists\beta\in\{0,1\}^n\ [\beta\succeq\alpha\ \wedge\ F(\beta)=1].
+ \tag{1}
+\]
+Equivalently, $H_F(\alpha)=\SAT(F\upharpoonright\alpha)$.  The table of
+$H_F$ has $3^n$ entries, but (1) does not prescribe a representation.
+\end{definition}
+
+The empty partial assignment is denoted $\star^n$.  It gives the exact
+one-bit boundary
+\[
+ H_F(\star^n)=\SAT(F).                                      \tag{2}
+\]
+
+\begin{theorem}[Uniform evaluator equivalence]
+\label{thm:eval}
+For canonically encoded CNFs, the following are equivalent.
+\begin{enumerate}[label=(\roman*)]
+\item $\SAT\in\mathsf P$.
+\item There are a uniform deterministic machine $E$ and a constant $c$ such
+that for every valid $F$ and every $\alpha\in\{0,1,\star\}^{n(F)}$,
+\[
+ E(\operatorname{enc}(F,\alpha))=H_F(\alpha),\qquad
+ T_E(F,\alpha)\le |\operatorname{enc}(F,\alpha)|^c.       \tag{3}
+\]
+\end{enumerate}
+Moreover, let $K$ be any canonically encoded SAT promise family admitting a
+polynomial-time many-one reduction $r:\SAT\le_m^p \SAT|_K$.  Then (i) is also
+equivalent to (3) restricted to $F\in K$.
+\end{theorem}
+
+\begin{proof}
+Assume (i), and fix a polynomial-time SAT decider $A$.  On $(F,\alpha)$,
+$E$ validates the indices and the trit encoding, constructs
+$F\upharpoonright\alpha$ in one scan, and runs $A$ on that residual.  The
+residual has length $O(L)$, so the total time is polynomial in $L$.  Equation
+(1) proves correctness.  This charges validation and restriction rather than
+treating them as free.
+
+Conversely, assume (ii).  Given $F$, form $\alpha=\star^{n(F)}$ in linear
+time and return $E(F,\alpha)$.  Equation (2) gives a polynomial SAT decider.
+
+For the core-restricted form, the forward implication is a restriction of
+the preceding evaluator.  In the reverse direction, map an arbitrary SAT
+instance $G$ to $F=r(G)\in K$, construct $\star^{n(F)}$, and invoke the core
+evaluator.  The reduction, empty assignment and evaluator all have
+polynomial cost.  No promise recognition outside the image of $r$ is needed.
+\end{proof}
+
+\begin{corollary}[Compact evaluator and circuit representation]
+\label{cor:compact}
+Suppose a fixed SAT decider $A$ runs in time $p(N)$.  For every $F$, the pair
+$\langle A,F\rangle$ is a descriptor of length $N+O_A(1)$ for $H_F$: on input
+$\alpha$, construct $F\upharpoonright\alpha$ and run $A$.  Standard
+time-to-circuit simulation, with $F$ hardwired, yields a uniformly
+constructible Boolean circuit for $H_F$ of size polynomial in
+$N+p(O(N))$.  In particular, if $p(N)=N^K$, the size is $N^{O(K)}$.
+\end{corollary}
+
+This is \COND{} on $\SAT\in\mathsf P$, not a fixed-exponent contraction.
+The exponent depends on the unknown $K$.  A bare assertion that each $H_F$
+has a small circuit without a uniform constructor is weaker still: the advice
+is indexed by the individual formula $F$, not merely by its length, and does
+not by itself place SAT in a standard nonuniform class.
+
+\section{What the theorem falsifies---and what it does not}
+
+The implication
+\[
+ |\operatorname{dom}H_F|=3^n
+ \Longrightarrow
+ \text{every SAT execution materializes }\Omega(3^n)\text{ bits}           \tag{4}
+\]
+is false.  A function can have an exponential domain and a linear descriptor;
+under $\SAT\in\mathsf P$, Corollary~\ref{cor:compact} gives exactly such a
+descriptor for every $H_F$.  Independently of $P$ versus $NP$, the one-bit
+contract asks only for (2), not all table entries.  Thus
+\texttt{EXPLICIT-COMPAT-TABLE-NECESSITY1} is \RETIRED.
+
+No polynomial-size OBDD or branching program is claimed for every $H_F$.
+Knowledge-compilation languages have representation-specific succinctness
+and query tradeoffs.  An OBDD, d-DNNF, communication, proof-system, or
+pebbling lower bound can therefore remain correct in its declared model while
+having no automatic consequence for unrestricted one-bit computation.
+
+The construction $A\mapsto E_A$, where
+\[
+ E_A(F,\alpha)=A(F\upharpoonright\alpha),                 \tag{5}
+\]
+is an exact black-box external extraction theorem.  It does not show that the
+trace of $A(F)$ contains, exposes, stores or pays for $H_F$.  Equation (5)
+runs $A$ on a different input and may do so separately for every queried
+$\alpha$.  Acquisition, repeated calls and output are not free.  Therefore
+the arbitrary-decider SAME\_REALIZATION bridge remains \OPEN.
+
+\section{Primary-literature and barrier preflight}
+
+The first obstacle was whether restriction evaluation is a genuine uniform
+decision problem or an implicit compilation requirement.  Cook's original
+SAT completeness theorem supplies the standard reduction/encoding basis
+\cite{Cook71}; Pippenger--Fischer supplies the standard machine/circuit
+simulation perspective used only for Corollary~\ref{cor:compact}
+\cite{PF79}.  These are \textbf{direct theorem transfers}: their objects are
+ordinary uniform computations and Boolean circuits.
+
+The second obstacle was representation dependence.  Darwiche--Marquis
+classifies knowledge-compilation targets by succinctness and supported
+queries \cite{DM02}.  This is an exact source theorem about compilation
+languages, but using an OBDD or d-DNNF lower bound against unrestricted SAT
+would be an \textbf{analogy requiring a new transfer theorem}.  FLMV's
+time--space exclusion is likewise exact only in its stated random-access
+machine model \cite{FLMV05}; the compiler landing the same realization there
+is absent.
+
+No literature result found supplies the missing all-decider compiler.
+The evaluator equivalence relativizes, so Baker--Gill--Solovay remains a
+direct warning \cite{BGS75}; it also survives algebraic-oracle enrichment and
+therefore does not evade algebrization \cite{AW09}.
+
+\section{Comparison with the actual manuscript entry points}
+
+Actual \path{main4.tex} is the ARC achievable-region/source-pass entry point.
+It records partial promise regions, replay, exact-size split acquisition and
+successor-coverage failures.  Actual \path{main5.tex} is the WRAPPER entry
+point with the corresponding construction ledger.  Both explicitly preserve
+all-input acquisition and SAME\_REALIZATION as open.  Neither defines (1) as
+an object that every solver must materialize.  HEVALLB1 does not rename or
+strengthen either manuscript: it only proves that an externally evaluable
+semantic object remains representation- and realization-distinct.
+
+\section{Bounded reproducible audit}
+
+The deterministic script
+\path{experiments/review/semantic_compatibility_evaluator_audit.py} exhausts
+all partial assignments for ten formulas: trivial SAT and UNSAT, 2SAT, Horn,
+affine XOR, an inconsistent Tseitin cycle, bounded-treewidth path, independent
+XOR products, signed 3CNF and unused-variable padding.  For each partial
+assignment it compares direct extension search with explicit restriction and
+residual SAT, verifies downward closure of incompatibility, and checks
+DIRECT, COPY, clause order, literal order, tautological padding and INTERP
+variable-permutation wrappers.
+
+The run completed in $0.209065$ seconds: $4{,}836$ partial assignments,
+$29{,}016$ wrapper checks and $39{,}998$ assertions, with zero failures.
+Every full table used $3^n$ evaluator calls while the SAT answer used the
+single empty-partial call.  The raw result is
+\path{results/raw/review/2026-10-12_semantic_compatibility_evaluator.json}.
+SHA-256 values are
+\path{570f55e18bc3995ffbf27e73dae793d2e189783eaecb512079fe340e5abdacca}
+for the script and
+\path{7936a592a3acec3f5090592312fa8113d55782e929fc96f0bd967d97cf42643d}
+for the JSON.  This evidence is \COMP{} and supports no asymptotic inference.
+
+\section{Hostile controls and representation audit}
+
+\begin{center}\small
+\begin{tabular}{@{}p{0.25\linewidth}p{0.67\linewidth}@{}}
+\toprule
+Control & Result\\ \midrule
+Horn / 2SAT / affine / Tseitin / bounded treewidth & The same $H$ definition
+is valid, but family-specific polynomial algorithms evaluate it without a
+generic compatibility table.  A large table would be an optional interface.\\
+Independent products & $H_{F\wedge G}(\alpha,\beta)=H_F(\alpha)H_G(\beta)$
+on disjoint variables; product-domain growth does not force product-table
+materialization.\\
+Padding / redundant clauses & COPY, tautologies and unused variables can
+inflate encodings or domains without changing the decision bit.\\
+Alternate encodings / INTERP & Variable permutation conjugates the evaluator;
+it does not create a semantic cost lower bound.\\
+DEAD / DELAY / RECOMP & DEAD tables may be skipped, DELAY only inflates a
+chosen trace, and RECOMP pays for repeated evaluations.  None is unavoidable.\\
+One-bit wrapper & It requests only $H_F(\star^n)$.\\
+Compact circuits & Conditional exact upper bound, with exponent inherited
+from the assumed SAT decider.\\
+Branching programs / OBDDs & No universal compactness claim and no transfer
+from a restricted representation lower bound.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Barrier and post-quantum ledgers}
+
+\paragraph{Relativization.}
+The proof is restriction plus one call to the assumed decision procedure and
+the empty-partial reverse call.  The same syntax works relative to an oracle
+for the corresponding restriction-closed language.  Hence HEVALLB1 is a guard,
+not a nonrelativizing separation step.
+
+\paragraph{Algebrization.}
+Low-degree extension access can only make some residual queries easier; no
+proof line blocks it.  There is no nonalgebrizing hinge.
+
+\paragraph{Natural Proofs.}
+No large constructive property useful against general circuits is asserted.
+Trying to turn truth-table or representation rank into such a property would
+need a separate Razborov--Rudich audit; HEVALLB1 neither supplies nor evades it.
+
+\paragraph{Unknown exponents and model matching.}
+If $A$ takes $N^K$ time, (5) and its circuits retain $N^{O(K)}$ cost.  They do
+not yield the solver-exponent-independent contraction required to enter an
+FLMV-forbidden region.  The source, residual inputs and repeated evaluator
+runs are different realizations from $A(F)$.
+
+\paragraph{Post-quantum techniques.}
+Schur squares, quadratic-relation ranks, Hilbert functions and syzygies are
+\textbf{FAILED TRANSFERS} here: they concern chosen representations and do
+not change Theorem~\ref{thm:eval}.  Collision entropy and special-soundness
+forks are \textbf{ANALOGY/CANDIDATE} only; a collision-to-forbidden-witness
+theorem is absent.  The LWE-style black-box lesson has one exact but negative
+transfer: (5) externally extracts coordinate access to $H$ from a SAT solver,
+but produces a new execution and inherits its exponent.  Hash/random-oracle
+methods remain inadmissible for an unconditional separation.  Compact
+algebraic structure must also be tested as an algorithmic shortcut, as the
+affine controls demonstrate.
+
+\section{CORPUS REVIEWED}
+
+The GitHub tree at starting head
+\texttt{d437c27d1497b2a80bd87036018770c04297191b} was surveyed.  The run read
+root \path{main.tex}, \path{AGENTS.md}, \path{CODEX.md}, the complete
+pnp-research skill and mode/protocol references, every current task under
+\path{tasks/}, actual \path{main4.tex} and \path{main5.tex}, historical MAIN
+SYNTHESIS-0022, newest RESOURCEAXIS1, TESTS-0021, APIFLAT1 and COREEQUIV1,
+and materially relevant earlier compatibility/communication and cost-certificate
+reports.  The HEC, VSC-HEC, G-PPC-HEC, CRS-PPC, CCSPC and RCCN causal
+explorations, governance tree, and cited experimental artifacts were
+inspected.  Repository search covered \texttt{H\_F}, semantic compatibility,
+truth-table materialization, compact representations and prior retired routes.
+
+The predecessor synthesis snapshot
+\path{research/main/2026-10-12_0448_MAIN_SYNTHESIS-0022.tex} was read back
+from GitHub.  It is substantive and contains the expected MAIN header and
+final verification sentinel; no recovery request was needed.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+MODELBRIDGE-0006 already defines fixed-split
+$H_F^{X\mid Y}(a,b)=\exists z\,F(a,b,z)$ and retires the transfer from its
+communication complexity to a fixed one-bit SAT run.  CC-0005 already says
+truth-table acquisition need not enumerate the table.  Those results are
+adopted, not renamed.  HEVALLB1 adds only the exact all-partial-assignment
+uniform evaluator iff, the NP-hard-core restriction, and the conditional
+descriptor/circuit corollary with unknown-exponent accounting.
+
+There is no contradiction with APIFLAT1: named APIs can be erased while the
+external evaluator (5) remains definable.  There is no contradiction with
+COREEQUIV1 or RESOURCEAXIS1: an unconditional superpolynomial evaluator lower
+bound on an NP-hard core is another presentation of the separation, while a
+conditional polynomial evaluator carries the unknown exponent.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+Root MAIN says that no theorem forces compatibility extraction.  HEVALLB1
+sharpens this with a canonical $H(F,\alpha)$ and an exact boundary:
+uniform polynomial evaluation is equivalent to $\SAT\in\mathsf P$, and
+explicit table size is not an intermediate resource lower bound.  The
+arbitrary-decider compiler, fixed-exponent contraction and model-matched
+forbidden endpoint remain \OPEN.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\textbf{Adopted:} MODELBRIDGE-0006's fixed-function/one-run distinction;
+CC-0005's semantic-object/machine-state guard; TESTS-0021's zero-interface
+one-bit decider; APIFLAT1's API-erasure theorem; COREEQUIV1's separation
+boundary; and actual main4/main5 only in their stated partial construction
+scope.
+
+\textbf{Rejected:} charging $3^n$ table entries to one evaluation; treating a
+small per-formula nonuniform circuit as a uniform SAT algorithm; inferring
+ordinary runtime from OBDD, communication, proof or pebbling size; and hiding
+the SAT exponent inside ``polynomial.''
+
+\textbf{FALSIFIED/RETIRED:}
+\path{EXPLICIT-COMPAT-TABLE-NECESSITY1} and
+\path{COMPAT-EVALUATOR-AS-FIXED-CONTRACTION1}.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any current or future wording that treats an exponential compatibility domain
+as an exponential machine obligation is overstated unless it names an output
+or interface that requires all entries.  Any claim that ``$P=NP$ makes $H$
+compact'' must state the representation: a uniform evaluator and circuits are
+compact with solver-dependent exponent; compact OBDDs or uniformly acquired
+canonical representations do not follow.  No verified result in the current
+root MAIN needs promotion beyond its present status.
+
+\section{Strict status and handoff}
+
+\begin{center}\scriptsize
+\begin{tabular}{@{}p{0.47\linewidth}p{0.21\linewidth}p{0.24\linewidth}@{}}
+\toprule
+Claim & Status & Scope\\ \midrule
+\texttt{PARTIAL-COMPAT-EVAL-EQUIV1} & \EXACT & Uniform evaluator, all CNF / NP-hard core\\
+Compact program descriptor and circuits & \COND & Assumes $\SAT\in\mathsf P$; exponent inherited\\
+Finite ten-family audit & \COMP & $39{,}998$ assertions\\
+Explicit-table necessity & \RETIRED & Not forced by one-bit semantics\\
+Arbitrary-decider internal exposure & \OPEN & No SAME\_REALIZATION theorem\\
+Solver-independent contraction / FLMV landing & \OPEN & Unknown exponent and model transfer\\
+$P\ne NP$ & \OPEN & No proof\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The precise next target is not another compatibility representation.  It is
+one externally fixed compiler $C$ with
+\[
+ \begin{aligned}
+ \SAT\in\mathsf P\Longrightarrow{}& C(A)\text{ is the same fully charged}\\
+ &\text{ordinary machine in a cited solver-exponent-independent}\\
+ &\text{forbidden region}.
+ \end{aligned}                                                         \tag{6}
+\]
+All preprocessing, source access, residual construction, evaluator calls,
+replay, reconstruction, output, time and peak space must be charged.  Both
+the compiler and the landing in (6) remain \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{Cook71}
+S. A. Cook, ``The Complexity of Theorem-Proving Procedures,''
+\emph{STOC}, 1971, pp. 151--158.
+\url{https://doi.org/10.1145/800157.805047}
+
+\bibitem{PF79}
+N. Pippenger and M. J. Fischer, ``Relations Among Complexity Measures,''
+\emph{J. ACM} 26(2), 1979, pp. 361--381.
+\url{https://doi.org/10.1145/322123.322138}
+
+\bibitem{DM02}
+A. Darwiche and P. Marquis, ``A Knowledge Compilation Map,''
+\emph{J. Artificial Intelligence Research} 17, 2002, pp. 229--264.
+\url{https://www.cs.cmu.edu/afs/cs.cmu.edu/project/jair/pub/volume17/darwiche02a.pdf}
+
+\bibitem{FLMV05}
+L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+``Time-Space Lower Bounds for Satisfiability,'' \emph{J. ACM} 52(6), 2005.
+\url{https://doi.org/10.1145/1101821.1101822}
+
+\bibitem{BGS75}
+T. Baker, J. Gill, and R. Solovay, ``Relativizations of the $P=?NP$
+Question,'' \emph{SIAM J. Comput.} 4(4), 1975, pp. 431--442.
+\url{https://doi.org/10.1137/0204037}
+
+\bibitem{AW09}
+S. Aaronson and A. Wigderson, ``Algebrization: A New Barrier in Complexity
+Theory,'' \emph{ACM TOCT} 1(1), 2009.
+\url{https://eccc.weizmann.ac.il/report/2008/034/}
+\end{thebibliography}
+
+\noindent\textbf{Final status:} P versus NP remains \OPEN.
+
+% END_OF_VERIFIED_REPORT::LSPV-1::HEVALLB1
+\end{document}
+
