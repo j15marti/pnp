@@ -1,0 +1,365 @@
+% LSPV-4 REPORT::READFLOOR1::2026-10-12T18:55:44Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage{fontspec}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,longtable,tabularx,array,enumitem,xurl,hyperref,microtype}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newcommand{\Core}{\mathcal C_{2,2}^{\pm}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RET}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\same}{\textsc{same\_realization}}
+
+\title{READFLOOR1: A near-linear clean-core probe floor\\
+is universal but not a hardness bridge}
+\author{LSPV-4 / UNIVERSAL\_CORE\_BRIDGE}
+\date{12 October 2026, 18:55 UTC}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.94\linewidth}{
+\textbf{Executive status.} P versus NP remains \OPEN.  On the fixed
+duplicate-free signed Monotone \(3\)SAT-\((2,2)\) core, every deterministic
+decider has an explicit satisfiable length-\(N_k\) input on which it must read
+at least \(k=\Omega(N_k/\log N_k)\) distinct input positions.  This is
+\EXACT{} in the stated random-access bit model.  The same block adversary
+holds for linear-time Horn/2SAT, affine, and bounded-treewidth languages, and
+READCEIL1 gives the matching universal ceiling \(N_k\).  Therefore
+\texttt{INPUT-PROBE-FLOOR-AS-DECISION-SELECTION-BRIDGE1} is \RET.  The
+post-read computation needed to select the SAT bit remains \OPEN.}}
+\end{center}
+
+\section{Claim card, predecessor, and obstacles}
+\begin{description}[leftmargin=0cm,labelwidth=0cm]
+\item[Claim ID.] \texttt{CLEAN-CORE-PRODUCT-READ-FLOOR1}.
+\item[Input family.] \(\Core\), the canonical indexed encodings of
+duplicate-free proper signed Monotone \(3\)SAT-\((2,2)\).
+\item[Algorithm quantifier.] Every deterministic machine correct on every
+valid core encoding; uniformity and a polynomial clock are not needed for the
+probe lemma.
+\item[Model and cost.] Random-access read-only input bits, arbitrary charged
+work tapes, and one output bit.  Every distinct queried input position costs
+one; all other time is still charged but is not lower-bounded by this lemma.
+\item[Two obstacles.] First, force a resource for every decider rather than a
+chosen representation.  Second, make the forced resource strong enough to
+contradict polynomial time.  The theorem solves the first only at a near-linear
+probe scale and the easy controls falsify the second.
+\end{description}
+
+The cyclic predecessor is LSPV-3.  Its newest report,
+\path{research/agents/lspv-3/2026-10-13_0236_LSPV-3_REVUNCOMP1.tex}, was read
+back from GitHub with the required header and final sentinel.  No recovery was
+needed.  The earlier MODELBRIDGE-0022 repair is also already canonical at
+\path{research/agents/lspv-4/2026-10-12_1002_LSPV-4_MODELBRIDGE-0022.tex}; it
+was not duplicated or reconstructed.
+
+\section{Exact clean blocks and encoding}
+Let \(S\) have variables \(x_1,\ldots,x_6\), positive supports
+\[
+ 123,\quad145,\quad246,\quad356,
+\]
+and the same four supports as negative clauses.  Every variable occurs twice
+positively and twice negatively, all clauses are distinct and proper, and
+\((x_1,\ldots,x_6)=(0,0,1,1,0,0)\) satisfies \(S\).  Hence \(S\in\Core\).
+
+Döcker constructs an unsatisfiable \(U\in\Core\) with 198 variables and 264
+clauses~\cite[Proposition~1]{Doecker19}.  Let \(B_1\) be the disjoint union of
+33 copies of \(S\), and let \(B_0=U\).  Both have 198 variables and 264
+clauses; \(B_1\) is satisfiable and \(B_0\) is not.  Disjoint union preserves
+properness, clause uniqueness, monotonicity, and exactly two occurrences of
+each sign.
+
+For \(k\ge1\), allocate \(k\) consecutive 198-variable intervals.  Define
+\[
+ F_k^*=B_1^{\sqcup k},\qquad
+ F_k^{(j)}=B_1^{\sqcup(j-1)}\sqcup B_0\sqcup
+ B_1^{\sqcup(k-j)}.                                      \tag{1}
+\]
+Thus \(F_k^*\) is satisfiable while every \(F_k^{(j)}\) is unsatisfiable.
+
+The declared encoding writes the common header
+\((n,m)=(198k,264k)\), followed by the \(k\) block payloads in interval order;
+clauses inside a block use one fixed canonical order.  With
+\(w_k=\lceil\log_2(198k+1)\rceil\), every signed literal uses one sign bit and
+\(w_k\) identifier bits.  Consequently
+\[
+ N_k=h(k)+792k(1+w_k)+O(k)=\Theta(k\log k),                \tag{2}
+\]
+where the header \(h(k)=O(\log k)\).  All strings in (1) have exactly the same
+length and header.
+
+\section{Universal product probe theorem}
+For each \(j\), let \(D_j\) be the nonempty set of payload positions where
+\(\operatorname{enc}(F_k^*)\) and
+\(\operatorname{enc}(F_k^{(j)})\) differ.  The fixed block layout makes the
+sets \(D_1,\ldots,D_k\) pairwise disjoint.
+
+\begin{theorem}[\texttt{CLEAN-CORE-PRODUCT-READ-FLOOR1}]
+For every deterministic decider \(A\) correct on \(\Core\) and every
+\(k\ge1\), the run of \(A\) on \(\operatorname{enc}(F_k^*)\) queries at least
+one position in every \(D_j\).  Hence it makes at least
+\[
+ k=\Omega(N_k/\log N_k)                                  \tag{3}
+\]
+distinct input probes and at least that much time.
+\end{theorem}
+
+\begin{proof}
+Fix \(j\).  If the realized run on \(F_k^*\) never queries \(D_j\), then
+\(F_k^*\) and \(F_k^{(j)}\) agree at every queried address.  Induction on the
+deterministic transitions gives the same internal states, next addresses,
+read values, halt time, and output on both inputs.  This contradicts their
+opposite satisfiability labels.  Thus the run queries every \(D_j\).  Since
+the \(D_j\)'s are disjoint, it queries at least \(k\) distinct positions.
+Equation (2) yields (3).
+\end{proof}
+
+The quantifiers are worth making explicit:
+\[
+ \forall A\in\operatorname{Dec}(\Core)\ \forall k\ge1:\quad
+ q_A(F_k^*)\ge k.                                         \tag{4}
+\]
+There is no algorithm-dependent construction, hidden exponent, or witness
+output.  The proof charges one realized run.  Yet (3) is at most near-linear,
+while READCEIL1 gives \(q_A(F)\le |\operatorname{enc}(F)|\) for every input.
+
+\section{Compatibility semantics and why the bridge fails}
+For any partial assignment \(\alpha\), retain the semantic object
+\[
+ H(F,\alpha)=\{\beta:\alpha\cup\beta\models F\}.           \tag{5}
+\]
+Equation (1) ensures \(H(F_k^*,\varnothing)\ne\varnothing\) and
+\(H(F_k^{(j)},\varnothing)=\varnothing\).  The theorem forces enough source
+observation to distinguish these emptiness cases.  It does not force the
+machine to materialize a member of (5), a residual table, a decomposition, or
+any compatibility representation.  After all required positions have been
+read, the computation choosing the one-bit label may use Gaussian elimination,
+dynamic programming, a compact circuit, recomputation, or any other uniform
+method.  No superpolynomial lower bound follows from (3).
+
+Assuming \(\Core\in\mathsf P\), a polynomial decider is fully consistent with
+the floor: scanning the whole input costs \(O(N_k)\), after which the assumed
+algorithm runs in \(N_k^{K_A}\).  Banning that branch would merely assume the
+desired separation.  Thus the surviving arrow is
+\[
+ \Core\in\mathsf P
+ \Longrightarrow \text{near-linear source probes}
+ \xRightarrow[\text{not proved}]{\OPEN}
+ \text{superpolynomial post-read decision work}
+ \Longrightarrow\bot .                                   \tag{6}
+\]
+
+\section{Hostile controls and representation audit}
+The same indistinguishability proof is present in easy languages.  For each
+block, use the padded Horn/2CNF pair
+\[
+ (x\vee x)\wedge(x\vee\neg x)
+ \quad\hbox{versus}\quad
+ (x\vee x)\wedge(\neg x\vee\neg x),                      \tag{7}
+\]
+or the affine pair \(x=0,x=0\) versus \(x=0,x=1\).  A product decider must
+touch one differing region per block on the all-satisfiable product, although
+both families are solvable in polynomial time (indeed linearly for these
+products).  The 2CNF pair also has bounded primal treewidth.  Therefore the
+probe floor detects input sensitivity, not NP hardness.
+
+COPY, DEAD, DELAY, INTERP, RECOMP, and equivalent wrappers do not evade the
+indistinguishability statement for their actual read trace; delays can add
+arbitrary work without strengthening the lower bound.  Redundant clauses can
+be added symmetrically.  An alternate fixed block code preserves the
+\(\Omega(k)\) statement, but padding by ignored bits can make its expression in
+total encoded length arbitrarily weaker.  Hence (3) is encoding-aware rather
+than a representation-invariant superlinear resource.
+
+\section{Bounded reproducible experiment}
+The script
+\path{experiments/review/clean_core_product_read_floor.py} writes
+\path{results/raw/review/2026-10-13_clean_core_product_read_floor.json}.  One
+invocation completed in 0.4 seconds; no chunking was needed.  It made nine
+top-level checks with zero failures.  It verified the six-variable clean SAT
+block and the arithmetic \(33\cdot6=198\), \(33\cdot8=264\); independently
+searched a small equal-size proper 3-CNF SAT/UNSAT pair; exhaustively checked
+its truth tables; and checked disjoint difference sets for
+\(k=1,2,4,8,16,32,64,128\).  The largest synthetic payload was 38,016 bits.
+It also records Horn/2SAT, affine, wrapper, and padding controls.
+
+The script SHA-256 is
+\path{80d444be91c9e7e4a1655291c2252cc01c3a243c5ef1648ff89b177e4c8aae47};
+the JSON SHA-256 is
+\path{c95f87e36a61d5b7705d331df31e29241eb022de8c8af8d3664b5a78c9a4c884}.
+The published 198-variable unsatisfiable block is used symbolically from the
+cited theorem and is not reconstructed by the harness.  The finite checks do
+not establish any asymptotic runtime claim.
+
+\section{Faithful main4/main5 and peer reconciliation}
+The actual \path{main4.tex} remains the ARC achievable-region manuscript and
+\path{main5.tex} remains the WRAPPER construction manuscript.  Neither says
+that every uniform SAT decider realizes its DAG, proof, compatibility object,
+or wrapper.  Their all-input acquisition and P-versus-NP arrows remain open.
+
+The newest MAIN REPPROMISE1 proves the representation/promise endpoint
+trilemma and leaves \texttt{DECISION-SELECTION-WORK1} open.  HIERFIRE1 retains
+arbitrary solver exponents; SUCTYPE1 separates explicit from succinct return
+types; REVUNCOMP1 defeats universal erasure charges; READCEIL1 proves the
+linear read ceiling.  READFLOOR1 adds the complementary clean-core lower floor
+but, because (7) has the same floor, narrows rather than closes the decision-
+selection target.  The older BLACKBOX-QUERY-SCALE-DICHOTOMY1 already closes
+the subpolynomial versus positive-scale black-box query split; that route was
+not renamed or reproved here.
+
+\section{Literature and transfer classification}
+Döcker's explicit unsatisfiable core and NP-completeness theorem are
+\textbf{DIRECTLY TRANSFERABLE} to the blocks above~\cite{Doecker19}.  The
+Rivest--Vuillemin evasiveness method is a primary decision-tree precedent for
+adversarial indistinguishability~\cite{RV76}: \textbf{DIRECTLY TRANSFERABLE}
+only in the input-query model.  It does not turn a probe bound into an
+unrestricted RAM/Turing time lower bound.
+
+Circuit, branching-program, proof-system, VLSI, communication-cut, streaming,
+and time--space lower bounds are \textbf{FAILED TRANSFERS} without a compiler
+placing the same solver realization in the cited model with all costs charged.
+Control-theoretic observability is a \textbf{USEFUL STRUCTURAL ANALOGY} for
+distinguishing the block substitutions, but it supplies no computation lower
+bound after the input is observed.
+
+The theorem and its easy controls relativize; they do not escape the
+Baker--Gill--Solovay barrier~\cite{BGS75}.  They also algebrize in the relevant
+sense and provide no Aaronson--Wigderson escape~\cite{AW09}.  No large useful
+constructive circuit property is produced, so Natural Proofs is not directly
+triggered~\cite{RR97}.  These audits are barriers, not premises in the proof.
+
+\section{Post-quantum technique ledger}
+\begin{longtable}{p{0.29\linewidth}p{0.64\linewidth}}
+\toprule Technique & Classification and consequence\\ \midrule\endhead
+Schur squares, shortening, puncturing, dualization & \textbf{FAILED TRANSFER}:
+the queried coordinates do not form a forced linear code representation.\\
+Quadratic relations, Hilbert functions, syzygies & \textbf{FAILED TRANSFER}
+without a forced graded algebra; hidden structure could instead make the
+input easier.\\
+Lossiness/collision entropy & \textbf{EXACT OBJECT/THEOREM TRANSFER} for the
+map from inputs to read certificates: an unread \(D_j\) would create a
+cross-label collision.  Eliminating such collisions costs only one probe per
+block.\\
+Worst-case/average-case architecture & \textbf{ANALOGY/CANDIDATE}: an external
+extractor would need a new distributional theorem and a fully charged
+same-realization reduction.\\
+Special soundness / conflicting openings & \textbf{FAILED TRANSFER}: the two
+formulas are different statements, not two openings of one commitment.\\
+Hash/random oracle & \textbf{FAILED TRANSFER} absent unconditional removal of
+the assumption.\\ \bottomrule
+\end{longtable}
+
+\section{CORPUS REVIEWED}
+This run surveyed the GitHub repository tree; read root \path{main.tex},
+\path{AGENTS.md}, \path{CODEX.md}, the PNP skill and linked protocol/mode
+files, all current \path{tasks/}, actual \path{main4.tex}/\path{main5.tex},
+newest verified MAIN REPPROMISE1, and newest LSPV reports HIERFIRE1, SUCTYPE1,
+REVUNCOMP1, and READCEIL1.  It inspected materially relevant historical MAIN
+snapshots, the black-box query-scale dichotomy, readback/certificate reports,
+and the HEC, VSC-HEC, G-PPC-HEC, CRS-PPC, CCSPC, RCCN, and Search-G branches;
+governance and cited experiment/result artifacts were also surveyed.  Search
+covered product adversaries, input probes, block sensitivity, query scales,
+wrappers, padding, core encodings, relativization, algebrization, and current
+primary literature.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+The transcript-indistinguishability argument is elementary decision-tree
+methodology, not claimed as a new field theorem.  The new corpus contribution
+is the exact equal-size \(\Core\) instantiation, its quantifiers, and the
+floor/ceiling/easy-control reconciliation.  DELAYOR1 and
+BLACKBOX-POSITIVE-SCALE-GATE1 already handle arbitrary query-length exponents;
+BLACKBOX-QUERY-SCALE-DICHOTOMY1 already unifies those regimes.  This report
+does not duplicate them.  No main4/main5 assertion is strengthened.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+The root previously recorded only the universal read-certificate theorem and
+ceiling.  This run adds
+\[
+ \Omega(N/\log N)\le \max_{F\in\Core,|F|=N}q_A(F)\le N
+\]
+along the explicit product subsequence \(N=N_k\), for every deterministic
+core decider.  It then falsifies the lower floor as a hardness hinge using
+easy block products and narrows the open target to post-read decision work or
+another obligation strictly stronger than source sensitivity.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\textbf{Adopted:} the corrected signed \((2,2)\) core, canonical indexed
+encoding, READCEIL1 transition induction, one-bit output, full accounting,
+\same{}, arbitrary solver exponents, and the explicit 198-variable published
+unsatisfiable core.
+
+\textbf{Rejected as universal transfers:} semantic multiplicity to runtime;
+probe count to post-read computation; easy product sensitivity to NP hardness;
+and circuit, proof, communication, VLSI, streaming, or service-interface
+lower bounds to arbitrary computation.
+
+\textbf{FALSIFIED/RETIRED:}
+\texttt{INPUT-PROBE-FLOOR-AS-DECISION-SELECTION-BRIDGE1}; previously retired
+read-certificate cardinality, trace materialization, generic erasure, and
+black-box scale routes remain retired.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+It is stale to say only that a decider \emph{may} read the full source: the
+product theorem forces it to touch every one of \(k\) disjoint difference
+regions on the explicit all-satisfiable input.  It is nevertheless overstated
+to call that source sensitivity a SAT-hard computation lower bound, since the
+identical adversary occurs in (7) and affine systems.  A semantic-state count
+still gives no runtime bound.
+
+\section{Strict status and handoff}
+\begin{center}
+\begin{tabularx}{0.98\linewidth}{Xp{0.22\linewidth}X}
+\toprule Item & Status & Reason\\ \midrule
+Clean-core product probe floor & \EXACT & Deterministic transcript proof\\
+Published \(198/264\) unsatisfiable clean block & \KNOWN & Döcker Prop.~1\\
+Finite block/encoding/control audit & \COMP & Nine checks, zero failures\\
+Probe floor as decision-selection bridge & \RET & Easy P controls share it\\
+Post-read decision-selection work & \OPEN & No general-machine lower bound\\
+Model-matched unconditional contradiction & \OPEN & Transfer absent\\
+P versus NP & \OPEN & Load-bearing arrow open\\ \bottomrule
+\end{tabularx}
+\end{center}
+
+LSPV-1 should test post-read state obligations against arbitrary solver
+exponents.  LSPV-2 should search for a relational observable not already
+present in easy block products.  LSPV-3 should apply recoding, padding,
+affine/Horn/treewidth controls and equivalent wrappers.  LSPV-5 should record
+the clean-core floor/ceiling band but keep \texttt{DECISION-SELECTION-WORK1}
+and the model-matched contradiction open.
+
+\textbf{Highest-value next target.} Define an externally testable one-bit
+decision obligation that remains nontrivial after all source positions are
+available, fails on at least the Horn/2SAT and affine controls, is invariant
+under equivalent wrappers and alternate encodings, and carries a
+solver-independent superpolynomial lower bound in the same general machine
+model.  No such obligation is presently known.
+
+\begin{thebibliography}{99}
+\bibitem{Doecker19} J. Döcker, ``Monotone 3-Sat-(2,2) is NP-complete,''
+arXiv:1912.08032, 2019, \url{https://arxiv.org/abs/1912.08032}.
+\bibitem{RV76} R. L. Rivest and J. Vuillemin, ``On recognizing graph
+properties from adjacency matrices,'' \emph{Theoretical Computer Science}
+3(3), 371--384, 1976,
+\url{https://doi.org/10.1016/0304-3975(76)90053-0}.
+\bibitem{BGS75} T. Baker, J. Gill, and R. Solovay, ``Relativizations of the
+P=?NP question,'' \emph{SIAM J. Comput.} 4(4), 431--442, 1975,
+\url{https://doi.org/10.1137/0204037}.
+\bibitem{AW09} S. Aaronson and A. Wigderson, ``Algebrization: a new barrier in
+complexity theory,'' \emph{ACM TOCT} 1(1), 2009,
+\url{https://doi.org/10.1145/1490270.1490272}.
+\bibitem{RR97} A. Razborov and S. Rudich, ``Natural proofs,'' \emph{JCSS}
+55(1), 24--35, 1997,
+\url{https://doi.org/10.1006/jcss.1997.1494}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LSPV-4::READFLOOR1
+\end{document}
