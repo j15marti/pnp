@@ -1,0 +1,297 @@
+% LSPV-2 REPORT::TESTS-0017::2026-10-12T00:24:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\newcommand{\status}[1]{\textbf{#1}}
+\title{LSPV-2 TESTS-0017: Ordinary SAT Witnesses Do Not Supply Opening Binding}
+\author{LSPV-2 Universal Core Tests}
+\date{2026-10-12 00:24 UTC}
+
+\begin{document}
+\maketitle
+
+\section*{Executive result}
+
+\status{PROVED/EXACT} (independent review pending): on the paired-$K_{3,3}$ clean-core product family, ordinary satisfying assignments give exponentially many mutually distinct valid openings for one fixed formula/address.  Hence the generic inference
+\[
+  \operatorname{Open}(F,a,y)\wedge \operatorname{Open}(F,a,y')\wedge y\ne y'
+  \Longrightarrow \text{a forbidden witness}
+\]
+is false when $\operatorname{Open}$ means only ``is a satisfying assignment.''  A construction-specific transcript relation may still be binding; that is a different and currently \status{OPEN} theorem.  This result concerns semantic multiplicity, not an algorithmic time, space, or communication lower bound.  P versus NP remains open.
+
+\section*{Claim card and exact quantifiers}
+
+Let $B$ be the twelve-clause paired-$K_{3,3}$ block on variables
+$x_1,x_2,x_3,y_1,y_2,y_3,e_{12},e_{23},e_{31}$ used in the verified lower-bound corpus.  Direct enumeration gives
+$|\operatorname{SAT}(B)|=102$.  For $k\geq1$, let
+\[
+ F_k=\bigwedge_{i=1}^{k} B_i,
+ \qquad W_k=\{w:w\models F_k\},
+ \qquad L_k(w)=\star,
+\]
+where the $B_i$ have disjoint variables and $\star$ is one fixed child/acceptance address.  Define the ordinary opening relation
+\[
+  O_k(F_k,\star,w)=1\quad\Longleftrightarrow\quad w\in W_k.
+\]
+The attacked universal premise is
+\[
+  \forall k\ \forall w\ne w'\in W_k:\quad
+  O_k(F_k,\star,w)\wedge O_k(F_k,\star,w')
+  \Longrightarrow \bot.
+\]
+It is refuted for every $k\geq1$: every distinct $w,w'\in W_k$ is a pair of valid openings of the same source and address.  The encoded input length in the corpus encoding is $N_k=\Theta(k\log k)$, while
+\[
+  |W_k|=102^k=2^{\Theta(N_k/\log N_k)}.
+\]
+This equation is a witness-count statement only.
+
+\section*{Exact collision theorem}
+
+\paragraph{Theorem.}
+For every $k\geq1$,
+\[
+ |W_k|=102^k,
+ \qquad |\operatorname{im}L_k|=1,
+ \qquad \operatorname{Coll}(L_k)
+ =|\{(w,w'):L_k(w)=L_k(w')\}|=102^{2k}.
+\]
+The collision Cauchy--Schwarz inequality is tight:
+\[
+ |\operatorname{im}L_k|
+ \geq \frac{|W_k|^2}{\operatorname{Coll}(L_k)}=1.
+\]
+
+\paragraph{Proof.}
+The blocks are variable-disjoint, so restriction to blocks is a bijection
+$W_k\cong\operatorname{SAT}(B)^k$ and $|W_k|=102^k$.
+The map $L_k$ is constant, hence its image has size one and every ordered
+pair in $W_k^2$ collides.  Substitution gives equality in the displayed
+Cauchy--Schwarz bound. \hfill$\square$
+
+\paragraph{Consequence.}
+The large collision set is not itself a contradiction: it consists of valid
+SAT witnesses.  Therefore \status{ORDINARY-WITNESS-BINDING1} is
+\status{FALSIFIED/RETIRED}.  The narrower
+\status{SEMANTIC-OPENING-BIND1} target remains \status{OPEN}: it must define
+additional, construction-specific opening semantics under which two
+conflicting valid openings yield an explicit forbidden algebraic object, and
+then prove that every arbitrary SAT decider must realize or pay for that same
+relation.
+
+\section*{Bounded reproducible experiment}
+
+The script
+\path{experiments/review/witness_opening_binding_audit.py} ran in one bounded
+stage (no chunk exceeded 30 seconds) and wrote
+\path{results/raw/review/2026-10-12_witness_opening_binding.json}.
+It performed 303,594 checks in 1.07649 seconds with zero failures.  SHA-256:
+\begin{align*}
+\text{script}&:\ \texttt{2ada37c271d91c1cc007a25ce6111950c0de07d453e99ba7b2bf7e8cb8e14cc6},\\
+\text{JSON file}&:\ \texttt{7bc61b7a2de39a624ac9e734bb739b736e22d8bc4140101b3d3900f40601ef15},\\
+\text{canonical payload}&:\ \texttt{62768dbae9457c442e098b97e362a89ab1381d0670a20b21ca488e450f2ccbae}.
+\end{align*}
+
+The audit independently enumerated 102 base witnesses and $102^2=10{,}404$
+two-block witnesses, checked 5,151 unordered distinct base-witness pairs,
+verified the exact Hamming-distance distribution
+\[
+ (216,504,804,1026,1026,804,504,216,51)
+\]
+for distances $1$ through $9$, and matched brute-force and self-reduced
+lexicographic witnesses.  It checked product identities through $k=64$.
+These finite observations have status \status{COMPUTATIONAL}; the theorem
+above is proved independently of the measurements.
+
+\section*{Hostile controls and all measured costs}
+
+The same run included sixteen variable-renaming/complement controls and the
+following easy families for sizes two through ten: tautological 2SAT and
+treewidth-one instances with $2^n$ witnesses, Horn implication chains with
+$n+1$ witnesses, affine parity instances with $2^{n-1}$ witnesses, and
+duplicate-clause padding.  The affine cases were decided and reconstructed by
+Gaussian elimination logic, not by enumerating a purported compatibility
+state space.  Duplicate padding changed encoded length and scan cost but not
+the solution set.
+
+Six extensionally equivalent wrappers were checked conceptually and in the
+test ledger: DIRECT, COPY, DEAD, DELAY, INTERP, and RECOMP.  They preserve the
+one-bit SAT output while changing internal traces.  A recognize-first wrapper
+can dispatch this clean-core family to its direct product rule and delegate all
+other formulas to any assumed fallback decider.  Preprocessing, witness
+enumeration, lexicographic extraction, reconstruction, wrapper dispatch, and
+validation counters are recorded separately in the JSON; no measured timing
+is extrapolated asymptotically.
+
+\section*{Canonicalization and the $P=NP$ audit}
+
+A total polynomial-time machine that outputs the lexicographically least
+satisfying assignment or $\bot$ decides SAT by testing whether its output is
+$\bot$.  Conversely, if SAT is in P, standard variable-by-variable
+self-reduction produces that canonical assignment in polynomial time.
+Thus demanding efficient canonical witness generation is equivalent to the
+missing separation rather than an independently established obstruction.
+Valiant--Vazirani isolation supplies randomized uniqueness under randomized
+reductions; it does not provide deterministic, pointwise binding at the same
+source/address.  Under the assumption SAT$\in$P, the recognize-first wrapper
+plus the polynomial fallback remains polynomial and yields no model-matched
+unconditional contradiction.
+
+\section*{Primary-literature and barrier preflight}
+
+The two major obstacles are (i) transferring a representation-level opening
+relation to every uniform deterministic SAT decider and (ii) obtaining a
+nonrelativizing, nonalgebrizing lower bound for that same machine model.
+The preflight checked the original Valiant--Vazirani isolation paper, the
+Baker--Gill--Solovay relativization barrier, Aaronson--Wigderson algebraization,
+Razborov--Rudich Natural Proofs, the Fortnow--Lipton--van Melkebeek--Viglas
+time--space framework, and primary bounded-occurrence monotone 3SAT literature.
+No cited theorem supplies the missing arbitrary-decider transfer.
+
+The present collision counterexample relativizes: adding any oracle does not
+alter the truth that two ordinary satisfying assignments can open the same
+formula/address.  It also algebraizes in the relevant weak sense; no
+arithmetization step prevents the collision.  It is not a Natural-Proofs
+property against circuit size.  FLMV-style time--space lower bounds require a
+fully matched computational model and realization; witness counts alone do
+not instantiate their hypotheses.
+
+\section*{Post-quantum and cross-domain transfer ledger}
+
+\begin{center}
+\begin{tabular}{p{0.27\linewidth}p{0.22\linewidth}p{0.43\linewidth}}
+\toprule
+Technique & Classification & Finding \\
+\midrule
+Lossiness/collision entropy & EXACT OBJECT/THEOREM TRANSFER & $L_k:W_k\to\{\star\}$ is an exact map and the collision lower bound is attained with equality. \\
+Collision extraction/special soundness & FAILED TRANSFER for ordinary witnesses; ANALOGY/CANDIDATE for enriched openings & Two different valid SAT witnesses yield no forbidden object.  A new transcript algebra and extraction theorem are required. \\
+Valiant--Vazirani isolation & ANALOGY/CANDIDATE & Randomized isolation is useful architecture, but a deterministic full-language, same-realization transfer is missing. \\
+Schur squares, quadratic relations, syzygies & FAILED TRANSFER here & The ordinary opening map forces no code, multiplication map, or graded module on an arbitrary decider. \\
+Hash/random-oracle binding & FAILED TRANSFER & Computational or random-oracle assumptions are inadmissible for an unconditional separation. \\
+VLSI, communication, control analogies & FAILED TRANSFER here & No exact fan-out, cut, observability, or state-variable correspondence to an unrestricted Turing decider is proved. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Hidden algebraic structure can make the family easier: the affine controls are
+the explicit warning.  No structural invariant is charged as hardness unless
+the same structure is proved necessary for the algorithm under examination.
+
+\section*{SAME\_REALIZATION audit}
+
+The objects $W_k$, $L_k$, and $O_k$ are semantic sets and relations.  They are
+not machine configurations, memory cells, messages, or branches.  An arbitrary
+uniform deterministic decider may compute only the output bit, use an
+alternative encoding, or exploit a direct recognizer.  Therefore no time,
+space, memory, communication, or state-exposure lower bound follows without a
+new theorem mapping every decider on the same encoded input to the same
+opening resource with all extraction costs included.  That arrow remains
+\status{OPEN}.
+
+\section*{CORPUS REVIEWED}
+
+The run surveyed the repository tree and read root \path{main.tex},
+\path{AGENTS.md}, \path{CODEX.md}, the complete pnp-research skill and protocol,
+all current files under \path{tasks/}, the newest verified MAIN and synthesis,
+the newest LSPV-1 through LSPV-4 reports, and older reports found by searches
+for clean core, witness, binding, locator, collision, canonicalization, and
+arbitrary-algorithm transfer.  Materially relevant items included LB-0012,
+MODELBRIDGE-0018/0019, TESTS-0016, ORDERLOC1, ORDERBIND1, PHCLOSE1, and the
+HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC causal branch.  Relevant governance notes,
+experiment artifacts, and write/reconciliation rules were also inspected.
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+
+The exact $102^k$ product count is adopted from LB-0012 and rechecked, not
+claimed as new.  The canonical-witness equivalence is adopted from
+MODELBRIDGE-0018 and PHCLOSE1.  ORDERBIND1 had already retired physical clause
+order as a hardness source and handed off semantic opening binding; the new
+contribution is the exact counterexample showing that ordinary witness
+multiplicity cannot be that binding relation.  No contradiction was found
+with the current MAIN once the distinction between ordinary and enriched
+openings is maintained.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+The active LSPV-2 state now contains an exact negative result:
+ordinary satisfying assignments do not satisfy collision binding even on the
+explicit paired-$K_{3,3}$ clean core.  The surviving target is narrowed to an
+enriched construction-specific opening relation plus a universal transfer
+theorem.  No global proof status is strengthened; P versus NP remains open.
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\begin{itemize}
+\item \status{ADOPTED}: the paired-$K_{3,3}$ block, its 102 assignments, the
+independent-product encoding, collision-effective entropy, SAME\_REALIZATION,
+and wrapper hostility.
+\item \status{ADOPTED}: randomized isolation as literature context only.
+\item \status{REJECTED}: inferring runtime from witness count, compatibility
+state count, or a representation-specific trace.
+\item \status{FALSIFIED/RETIRED}: generic ordinary-witness collision binding.
+\item \status{RETIRED}: physical order, raw locators, cryptographic binding
+assumptions, and oracle/hash idealizations as unconditional bridges.
+\end{itemize}
+
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any statement that ``two different valid SAT witnesses for the same formula
+and acceptance address are inconsistent'' is false without extra opening
+semantics.  Any statement turning $102^k$ witnesses into $102^k$ time or
+states is also overstated.  Historical conditional constructors remain useful
+as conditional objects, but their all-input acquisition and arbitrary-decider
+transfer arrows remain open.
+
+\section*{Predecessor recovery status}
+
+At preflight, the newest readable verified LSPV-1 artifact was LB-0020; no
+newer substantive report attributable to the immediately preceding cycle was
+present.  The missing body could not be reconstructed without inventing
+mathematics.  This is recorded nonblockingly as MALFORMED/EMPTY BODY or UNKNOWN
+(interrupted-cycle evidence), with a retry handoff that requests preservation
+of any extant body and a fresh verified write rather than a research rerun.
+
+\section*{Precise handoff}
+
+The next load-bearing target is:
+\[
+\begin{split}
+\text{find }&O^\dagger(F,a,t)\text{ and an explicit extractor }E\text{ such that}\\
+&O^\dagger(F,a,t)\wedge O^\dagger(F,a,t')\wedge t\not\sim t'
+  \Longrightarrow E(F,a,t,t')\in\mathcal{B},\\
+&\text{where membership in }\mathcal{B}\text{ is unconditionally impossible, and}\\
+&\text{every uniform deterministic SAT decider is proved, on the same encoded}
+  \text{ inputs, to realize or pay for }O^\dagger.
+\end{split}
+\]
+The equivalence relation $\sim$, transcript alphabet, address $a$, extraction
+cost, and forbidden class $\mathcal B$ must all be explicit.  Ordinary
+satisfying assignments cannot fill this role.
+
+\section*{References}
+
+\begin{itemize}
+\item L. Valiant and V. Vazirani, ``NP is as easy as detecting unique
+solutions,'' \emph{Theoretical Computer Science} 47 (1986), 85--93,
+\url{https://doi.org/10.1016/0304-3975(86)90135-0}.
+\item T. Baker, J. Gill, and R. Solovay, ``Relativizations of the P=?NP
+question,'' \emph{SIAM Journal on Computing} 4(4), 1975.
+\item S. Aaronson and A. Wigderson, ``Algebrization: A New Barrier in
+Complexity Theory,'' \emph{ACM TOCT} 1(1), 2009.
+\item A. Razborov and S. Rudich, ``Natural Proofs,'' \emph{JCSS} 55(1), 1997.
+\item L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+``Time-space lower bounds for satisfiability,'' \emph{JACM} 52(6), 2005,
+\url{https://doi.org/10.1145/1101821.1101822}.
+\item J. D\"ocker, ``Monotone 3-Sat-(2,2) is NP-complete,'' arXiv:1912.08032.
+\end{itemize}
+
+\section*{Final status}
+
+\status{PROVED/EXACT}: the product and collision identities above.
+\status{COMPUTATIONAL}: the bounded finite audit and hostile controls.
+\status{FALSIFIED/RETIRED}: ordinary-witness binding as a universal clean-core
+obstruction.  \status{OPEN}: enriched semantic opening binding, its
+same-realization arbitrary-decider transfer, and P versus NP.
+
+% END_OF_VERIFIED_REPORT::LSPV-2::TESTS-0017
+\end{document}
