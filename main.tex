@@ -3428,10 +3428,49 @@ Verified supporting reports include
 \subsection{LSPV-4 --- Universal-core bridge}
 \textbf{STATUS: OPEN.} P versus NP remains open.
 
+\paragraph{A fixed normalized-time cut is not wrapper invariant
+(MODELBRIDGE-0026).}
+For any total uniform deterministic decider \(A\) with an exact-clock
+polynomial suffix bound \(S(N)\), and any fixed rational
+\(\alpha=a/b\in(0,1)\), define
+\[
+ D(N)=L(N)+\left\lceil\frac{aS(N)+b}{b-a}\right\rceil,
+ \qquad Q(N)=D(N)+S(N),
+\]
+where \(L(N)\) is a symbol-oblivious length-scan/reset time. The extensionally
+equivalent wrapper first executes the \(D(N)\)-step input-oblivious prelude,
+then simulates \(A\) under the exact \(S(N)\) clock, retains its output bit,
+and pads to the clock. Since
+\[
+ (b-a)D(N)\ge aS(N)+b,
+ \qquad \lfloor\alpha Q(N)\rfloor<D(N),
+\]
+its mutable configuration at time \(\lfloor\alpha Q(N)\rfloor\) is a function
+of input length and wrapper only, not of the input contents. Thus
+\texttt{NORMALIZED-CUT-PREDELAY1} is \textbf{PROVED/EXACT}, while
+\texttt{FIXED-FRACTION-CUT-EXPOSURE1} is
+\textbf{FALSIFIED/RETIRED}. This extends RT-0009's fixed-\(N^r\)-prefix
+theorem to a cut defined as a fixed fraction of the wrapper's own exact
+runtime; it does not rename that earlier result.
+
+The projection excludes read-only input contents. Counting the unchanged
+source as ``exposed state'' is an external source route, not solver-paid
+acquisition. The theorem does not settle peak workspace, all times in an
+interval, an adaptive trace-selected cut, or an exogenous challenge after a
+certified irrevocable commitment. Its bounded audit checked \(1{,}533{,}168\)
+cells over clean-core, Horn, 2SAT, affine/Tseitin, bounded-treewidth,
+independent-product, parity, padding, alternate encodings and
+DIRECT/DEAD/COPY/DELAY/INTERP/RECOMP controls; this is
+\textbf{COMPUTATIONAL} support only.
+
+\path{research/agents/lspv-4/2026-10-12_1400_LSPV-4_MODELBRIDGE-0026.tex};\\
+\path{experiments/review/normalized_cut_predelay_audit.py};\\
+\path{results/raw/review/2026-10-12_normalized_cut_predelay.json}.
+
 \paragraph{Clean-core residual queries require a typed external adapter
 (MODELBRIDGE-0025).}
 Let \(K\) be the canonical duplicate-free proper signed Monotone
-\(3\)SAT-\((2,2)\) encoding domain and
+\(3\)SAT-\((2,2)\) encoding domain and let
 \(L_K=\{x\in K:x\text{ is satisfiable}\}\), with off-core strings rejected.
 For
 \[
@@ -3439,167 +3478,104 @@ For
  \exists\beta\succeq\alpha\;[\beta\models F]
  \iff F\upharpoonright\alpha\in\SAT,
 \]
-fix a polynomial many-one reduction \(r:\SAT\le_m^p L_K\).  Then
-\texttt{CORE-RESIDUAL-ADAPTER1} is \textbf{PROVED/EXACT} (independent review
-pending):
+a fixed polynomial reduction \(r:\SAT\le_m^p L_K\) gives the exact external
+evaluator
 \[
- \exists r\in\mathsf{FP}\;
- \forall A_K\in\operatorname{Dec}_{\rm det,unif}(L_K)\;
- \exists E^{A_K}\;\forall(F,\alpha):\quad
- E^{A_K}(F,\alpha)
- =A_K(r(\operatorname{enc}(F\upharpoonright\alpha)))
- =H(F,\alpha).
+ E^{A_K}(F,\alpha)=
+ A_K(r(\operatorname{enc}(F\upharpoonright\alpha)))=H(F,\alpha).
 \]
-This is one fully charged ordinary realization of the \emph{external}
-evaluator, not the original execution \(A_K(F)\).  If restriction/encoding
-takes \(L^{u+o(1)}\) time, \(r\) takes \(L^{b+o(1)}\) time and outputs
-\(L^{a+o(1)}\) bits, and \(A_K\) has time exponent \(K\), then
+This is \texttt{CORE-RESIDUAL-ADAPTER1}, \textbf{PROVED/EXACT} (independent
+review pending), but it is a composed execution rather than exposure by the
+original call \(A_K(F)\). If restriction/encoding, reduction, output length,
+and arbitrary solver exponents are \(u,b,a,K\), respectively, then
 \[
  T_E(L)\le L^{\max\{u,b,aK\}+o(1)}.
 \]
-For local-buffer exponent \(v\) and source workspace exponent \(S\), the
-explicit-buffer realization has
-\[
- S_E(L)\le L^{\max\{v,a,aS\}+o(1)}.
-\]
-Thus neither the reduction nor the arbitrary source exponent disappears.
-
-A paired \(K_{3,3}\) clean-core instance supplies the exact typing
-counterexample.  Every one-variable restriction is satisfiable but has two
-binary and eight ternary clauses, hence lies outside \(K\).  Therefore the
-total core-language decider returns \(0\) on the residual while \(H=1\).
-Accordingly \texttt{DIRECT-CORE-RESIDUAL-CALL1} and
-\texttt{ADAPTER-TO-ORIGINAL-EXPOSURE1} are
-\textbf{FALSIFIED/RETIRED}.  The bounded audit checked \(1{,}436\) assertions
-with zero failures; this is \textbf{COMPUTATIONAL} only.
+A paired \(K_{3,3}\) instance gives the exact typing counterexample: its
+one-variable residual is satisfiable but outside \(K\). Hence
+\texttt{DIRECT-CORE-RESIDUAL-CALL1} and
+\texttt{ADAPTER-TO-ORIGINAL-EXPOSURE1} remain
+\textbf{FALSIFIED/RETIRED}.
 
 \path{research/agents/lspv-4/2026-10-12_1303_LSPV-4_MODELBRIDGE-0025.tex};\\
 \path{experiments/review/core_residual_adapter_audit.py};\\
 \path{results/raw/review/2026-10-12_core_residual_adapter.json}.
 
-\paragraph{The fixed NP-complete core is a legitimate final target
-(COREEQUIV1).}
-For every polynomial-time many-one NP-hard encoded SAT family \(K\),
-\[
-\begin{split}
-&\forall A\in\operatorname{Dec}_{\rm uniform}(\SAT)\;
-\forall d\;\forall N_0\;\exists F\in K:\\
-&\hspace{28mm}|F|\ge N_0\ \wedge\ T_A(F)>|F|^d
-\end{split}
-\quad\Longleftrightarrow\quad P\ne NP.
-\]
-This is \textbf{PROVED/EXACT, independent review pending}.  Hence a direct
-all-algorithm lower bound on the corrected signed NP-complete clean core
-suffices; no transfer from that core to every unrestricted formula family is
-load bearing.  But
-\texttt{SIGNED-CLEANCORE-WORSTCASE-AS-INTERMEDIATE1} remains
-\textbf{FALSIFIED/RETIRED}: the target is separation-equivalent, not a weaker
-lemma available under \(P=NP\).
+\paragraph{Exact language-level boundaries retained.}
+For every polynomial-time many-one NP-hard encoded SAT family \(K\), a direct
+all-uniform-decider superpolynomial lower bound on inputs in \(K\) is
+equivalent to \(P\ne NP\). This is \texttt{COREEQUIV1},
+\textbf{PROVED/EXACT}; the fixed signed clean core is a legitimate final
+target, not an easier intermediate theorem under \(P=NP\).
+\texttt{SIGNED-CLEANCORE-WORSTCASE-AS-INTERMEDIATE1} is therefore
+\textbf{FALSIFIED/RETIRED}.
 
-\paragraph{Recognizable-promise and complexity-core boundaries
-(PROMFAST1/MODELBRIDGE-0024).}
-A polynomial-time recognizable promise admits one exact global decider
-polynomial on that promise exactly when the restricted problem lies in
-\(\mathsf{PromiseP}\).  Thus every recognizable monochromatic yes- or
-no-family has a constant-output fast path and cannot be a universal hard
-core.  The active mixed signed core is NP-complete, so this guard does not
-make it easy.
-
-For a fixed recursive NP-complete language, existence of one recursive set
-on which every decider is eventually slower than every polynomial is,
-by Lynch's complexity-core theorem plus the converse,
-\[
- K\text{ has a polynomial complexity core}
- \Longleftrightarrow K\notin\mathsf P
- \Longleftrightarrow \mathsf P\ne\mathsf{NP}.
-\]
-The specialization is \textbf{PROVED/EXACT}; Lynch's result is a
-\textbf{KNOWN THEOREM}.  Therefore
+PROMFAST1/MODELBRIDGE-0024 retain the recognizable-promise guard: a
+polynomial-time recognizable promise has one exact globally defined decider
+polynomial on that promise exactly when its restriction is in
+\(\mathsf{PromiseP}\). Monochromatic yes/no promises admit constant-output
+fast paths. Lynch's polynomial complexity-core theorem, specialized to a
+fixed recursive NP-complete language, yields a polynomial complexity core
+exactly when \(P\ne NP\); it is not an independent bridge.
 \texttt{COMPLEXITY-CORE-AS-BRIDGE1} remains
 \textbf{FALSIFIED/RETIRED}.
 
 \path{research/agents/lspv-1/2026-10-12_1216_LSPV-1_PROMFAST1.tex};\\
 \path{research/agents/lspv-4/2026-10-12_1155_LSPV-4_MODELBRIDGE-0024.tex}.
 
-\paragraph{Black-box extraction plus lazy access composes away
-(MODELBRIDGE-0022/0023).}
-An external deterministic extractor may recover selected values of \(H\), or
-a witness, by separate SAT calls.  \texttt{BLACKBOX-EXTRACTION-CHARGE-SEPARATION1}
-is \textbf{PROVED/EXACT}: every exact one-bit decider gives a fixed adaptive
-extractor the same query/answer transcript, but the extractor's work and calls
-belong to the composed execution \(E^D(F)\), not the original call \(D(F)\).
-
-If the extractor makes \(q(n)\le n^b\) queries of length at most \(n^c\),
-a lazy evaluator makes \(r(n)\le n^e\) adaptive accesses with address length
-at most \(n^d\), one access costs \(n^{a\max\{1,d\}}\), and
-\(T_D(m)\le m^K\), then full inlining gives one ordinary uniform machine with
-oracle and access contributions bounded by
-\[
- n^{b+cK+o(1)}
- \quad\text{and}\quad
- n^{e+a\max\{1,d\}+o(1)}.
-\]
-This is \textbf{PROVED/EXACT, independent review pending}.  Peak workspace is
-the retained controller state and buffers plus the maximum active subcall
-workspace.  Polynomial charged access composes to a \(\mathsf P\) machine;
-a superpolynomial component leaves the bridge open; a free table, uncharged
-oracle, or per-length hardwiring changes the model.  Consequently
-\texttt{BLACKBOX-LAZY-TO-ORIGINAL-RUN1} remains
+\paragraph{External extraction and wrapper controls retained.}
+MODELBRIDGE-0022/0023 prove exact charged composition ledgers for black-box
+extraction and lazy access. The extractor's calls, query generation, replay,
+storage and output belong to the composed evaluator, not the original one-bit
+run. Inlining polynomial charged access produces an ordinary polynomial
+machine; a free table, uncharged oracle or per-length hardwiring changes the
+model. Thus \texttt{BLACKBOX-LAZY-TO-ORIGINAL-RUN1} remains
 \textbf{FALSIFIED/RETIRED}.
 
-\path{research/agents/lspv-4/2026-10-12_1002_LSPV-4_MODELBRIDGE-0022.tex};\\
-\path{research/agents/lspv-4/2026-10-12_1057_LSPV-4_MODELBRIDGE-0023.tex}.
+REPDIRSUM1 and PRODSTREAM1 show that independent semantic products do not
+force additive peak space: components may be solved and discarded
+sequentially. WRAPORBIT1 shows that invariance under a finite generated
+wrapper monoid proves only orbit-local invariance; universal coverage,
+extensional quotienting, or covariant transport is still missing. HALTCANON1
+retires any final-retained-state obligation: a one-bit decider may blank all
+mutable tapes before halting. TIGHTDELAY1 charges real delay and marked space
+but does not make either necessary for all deciders. APIFLAT1, FIBERDICH1,
+FORKFACTOR1, REREAD1, REACQ1, STATICNP1, ORDERBIND1, POINTINF1, UGENCOMP1,
+LAZYACCESS1, CALQNT1 and COREDTCH1 remain adopted only in their declared
+scopes.
 
-\paragraph{Direct sums, wrappers, and representation guards.}
-REPDIRSUM1 shows that repeated isomorphic components can multiply witness and
-compatibility states while a charged recognizer solves one component once;
-semantic products do not force an algorithmic direct sum.  WRAPORBIT1 proves
-that invariance under every finite composition of a tested wrapper-generator
-set certifies only the generated orbit.  Universal invariance still needs a
-coverage, extensional-quotient, or covariance theorem.  APIFLAT1 similarly
-flattens finite named APIs.  FIBERDICH1's answer-only responder exists exactly
-when allowed-response sets intersect in each same-answer decision fiber;
-empty intersection proves source specificity, not original-run exposure.
-FORKFACTOR1, REREAD1, REACQ1, STATICNP1, ORDERBIND1, POINTINF1, UGENCOMP1
-and LAZYACCESS1 remain adopted in their declared scopes.
-
-CALQNT1 still classifies a guarded compiler plus unconditional forbidden
-landing as separation-equivalent.  COREDTCH1 still shows that an isolated
-large semantic component can be validated and stripped before the residual
-solver call.  Horn, dual-Horn, 2SAT, affine/Tseitin, bounded-treewidth,
-independent-product, padding, redundant-clause, alternate-encoding and
-one-bit-output controls therefore block every unqualified
-semantic-to-runtime promotion.
-
-\paragraph{Barrier and post-quantum guards retained.}
-The exact reduction adapter, external extraction, and wrapper counterexamples
-relativize and algebrize; they provide no Natural Proofs escape.  Schur
-squares, shortening/puncturing, low-rank quadratic relations, Hilbert
-functions, syzygies and Betti numbers are \textbf{FAILED TRANSFER} unless a
-forced representation is proved, and visible algebra may instead be
-exploitable.  Collision entropy is exact only for a declared map and does not
-price arbitrary decision time.  LWE-style extraction is an
-\textbf{ANALOGY/CANDIDATE} needing a new bridge.  Special soundness and
-hash/random-oracle methods are \textbf{FAILED TRANSFER} absent an
-unconditional conflicting-opening witness theorem.  VLSI, communication
-cuts, observability, pebbling and feasible interpolation remain restricted-
-model results until an interface-preserving compiler is proved.
+\paragraph{Barrier and post-quantum classification.}
+The residual adapter and pre-delay wrapper relativize and algebrize, so they
+do not cross Baker--Gill--Solovay or the algebrization barrier. No large
+constructive circuit property is used, so Natural Proofs is not the immediate
+hinge. Schur squares, shortening/puncturing, low-rank quadratic relations,
+Hilbert functions, syzygies and Betti numbers are \textbf{FAILED TRANSFER}
+absent a forced representation; visible algebra may instead help the
+algorithm. Collision entropy is exact only for a declared map and does not
+price arbitrary decision time. LWE-style black-box extraction and
+special-soundness collision extraction are \textbf{ANALOGY/CANDIDATE};
+cryptographic binding and random-oracle assumptions are inadmissible. VLSI
+clocking, online chronograms, communication cuts, observability, pebbling and
+feasible interpolation are restricted-model analogies until a compiler
+preserves their interfaces.
 
 HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/RCCN/CCSPC still lack a total compiler from
-every static core decider and a model-matched unconditional endpoint.
+every static core decider and a model-matched unconditional endpoint. Actual
+\texttt{main4.tex} remains a conditional ARC framework and actual
+\texttt{main5.tex} a conditional wrapper/charged-contraction framework;
+neither contains the missing compiler.
 
-\textbf{OPEN:} \texttt{DECISION-ENTANGLED-CLEANCORE-TRANSFER1}.  From every
-uniform polynomial-time decider for the fixed NP-complete clean core, with
-unknown finite exponents, construct a source-defined ordinary machine whose
-same fully charged realization lies in a cited unconditional forbidden
-region.  The construction must charge core recognition, residual typing,
-reductions, source reads, query generation, calls, failed routes, validation,
-transcript storage or replay, lazy access, reconstruction, output, time and
-peak workspace; absorb the arbitrary source exponent without assuming the
-desired separation; and survive all listed easy-family, padding,
-representation and wrapper controls.  Nonrelativization, nonalgebrization,
-the \textsc{same\_realization} landing, and P versus NP remain
-\textbf{OPEN}.
+\textbf{OPEN:} \texttt{EXOGENOUS-CHALLENGE-COMPILER1}. From every uniform
+polynomial-time decider for the fixed NP-complete signed clean core, with
+unknown finite exponents, construct a source-defined ordinary machine with
+an irrevocable commitment before an externally timed challenge that cannot
+be rescheduled by DEAD/COPY/DELAY/INTERP/RECOMP. Charge recognition,
+preprocessing, source reads, reductions, query generation, calls,
+validation, replay, lazy access, reconstruction, output, time and peak
+workspace. The same fully charged realization must lie in a cited
+unconditional forbidden region without assuming \(P\ne NP\). Peak/all-cuts
+transfer, nonrelativization, nonalgebrization, the
+\textsc{same\_realization} landing, and P versus NP remain \textbf{OPEN}.
 % END LSPV-4 OWNED
 
 
