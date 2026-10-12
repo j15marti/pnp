@@ -1,0 +1,273 @@
+% LSPV-4 REPORT::COMPATCARD1::2026-10-12T21:55:57Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,enumitem,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newcommand{\Status}[1]{\textbf{#1}}
+\newcommand{\Core}{\mathcal C}
+\title{COMPATCARD1: Compatibility Diversity Does Not Force Solver Work}
+\author{LSPV-4 / Universal Core Bridge}
+\date{2026-10-13 06:55 KST}
+\begin{document}
+\maketitle
+
+\paragraph{Executive status.}
+\Status{PROVED/EXACT:} on an explicit clean-core layer of encoded length
+\(N_k=\Theta(k\log k)\), the functions
+\[
+ H_F:\{0,1,*\}^{n(F)}\to\{0,1\},\qquad
+ H_F(\alpha)=\operatorname{SAT}(F\upharpoonright\alpha),
+\]
+take \(2^k\) distinct values.  A \(k\)-query fingerprint recovers the layer
+index exactly.  Nevertheless the layer is uniformly recognizable and all-YES,
+so a wrapper answers without evaluating, representing, storing, or
+reconstructing any compatibility value.  Compatibility-family cardinality is
+therefore not an all-decider time, memory, communication, or state-exposure
+lower bound.  The wrapper-invariant superpolynomial total-cost obstruction
+remains \Status{OPEN}.  P versus NP remains \Status{OPEN}.
+
+\section{Barrier and primary-literature preflight}
+The two blocking arrows are (i) transferring a structural count for \(H_F\)
+to a resource paid by the \emph{same execution} of every SAT decider, and
+(ii) transferring that resource to an unconditional lower bound in the same
+general-machine model.  Bryant's reduced ordered BDD theory gives an exact
+representation theorem for a fixed order: distinct residual functions require
+distinct OBDD nodes~\cite{Bryant86}.  That theorem transfers only after an
+OBDD realization is supplied; it does not make an arbitrary RAM or Turing
+machine materialize those residuals.  Baker--Gill--Solovay and
+Aaronson--Wigderson warn that relativizing or algebrizing semantic counts do
+not by themselves resolve \(P\) versus \(NP\)~\cite{BGS75,AW09}.
+Bogdanov--Trevisan similarly blocks treating black-box worst-case/average-case
+extraction as free~\cite{BT06}.
+
+The useful knowledge-compilation analogy is residual-state sharing.  The
+missing theorem would be
+\[
+ \text{many }H_F\text{ residuals}\Longrightarrow
+ \text{many paid states in every unrestricted realization}.              \tag{1}
+\]
+This run falsifies (1) when the antecedent merely counts compatibility
+functions across an easy clean-core layer.
+
+\section{Explicit family and exact quantified target}
+Use the DENSNOGO1 blocks.  Both have positive supports
+\[
+123,\quad145,\quad246,\quad356.
+\]
+Their negative supports are
+\[
+N_0=\{135,146,236,245\},\qquad N_1=\{136,145,235,246\},
+\]
+where \(abc\) denotes
+\((\neg x_a\vee\neg x_b\vee\neg x_c)\).  Call the formulas \(G_0,G_1\).
+Each variable occurs twice with each sign, all clauses are proper and
+distinct, and \(001011\) satisfies both.  Thus \(G_0,G_1\in\Core\) and have
+equal encoded length.
+
+For \(u\in\{0,1\}^k\), with disjoint variable intervals and fixed clause
+order, set
+\[
+F_u=G_{u_1}\sqcup\cdots\sqcup G_{u_k},\qquad
+D_k=\{F_u:u\in\{0,1\}^k\}.                              \tag{2}
+\]
+Every \(F_u\) is satisfiable, \(|D_k|=2^k\), and under the repository encoding
+\[
+N_k=h(k)+24k(1+\lceil\log_2(6k+1)\rceil)=\Theta(k\log k), \tag{3}
+\]
+with \(h(k)=O(\log k)\).
+
+The falsification target is
+\begin{equation}
+\begin{split}
+&|\{H_F:F\in D_k\}|=2^{\Omega(N_k/\log N_k)}\\
+&\quad\Longrightarrow
+\text{every uniform polynomial-time SAT decider pays for or exposes }H_F
+\text{ on }D_k.
+\end{split}
+\tag{4}
+\end{equation}
+The quantifier over polynomial-time SAT deciders is tested under
+\(\operatorname{SAT}\in\mathsf P\); their existence is not assumed
+unconditionally.
+
+\section{Exact compatibility injection}
+Let \(\beta=(0,*,0,*,0,*)\).  Exhaustive evaluation gives
+\[
+H_{G_0}(\beta)=1,\qquad H_{G_1}(\beta)=0.                 \tag{5}
+\]
+For \(i\in[k]\), let \(\alpha_i\) place \(\beta\) on block \(i\) and leave
+all other blocks unset.
+
+\begin{proposition}[\texttt{COMPATIBILITY-FINGERPRINT-INJECTION1}]
+For every \(u\in\{0,1\}^k\),
+\[
+(H_{F_u}(\alpha_1),\ldots,H_{F_u}(\alpha_k))
+ =(1-u_1,\ldots,1-u_k).                                  \tag{6}
+\]
+Hence \(u\mapsto H_{F_u}\) is injective and
+\[
+|\{H_F:F\in D_k\}|=2^k=2^{\Theta(N_k/\log N_k)}.          \tag{7}
+\]
+\end{proposition}
+\begin{proof}
+Compatibility of a disjoint conjunction factors over blocks.  Every
+unrestricted block is satisfiable by \(001011\), while the restricted block
+has value \(H_{G_{u_i}}(\beta)=1-u_i\) by (5).  Thus (6) separates all
+\(u\ne v\), and (3) yields (7).
+\end{proof}
+On this \(k\)-point probe set, fingerprint distance is exactly
+\(d_H(u,v)\), stronger than mere cardinality.
+
+\section{Wrapper theorem}
+The union \(D=\bigcup_kD_k\) is recognizable in \(O(N)\) time by parsing the
+fixed blocks.  For any total exact SAT decider \(A\), define
+\[
+W[A](F)=\begin{cases}1,&F\in D,\\ A(F),&F\notin D.\end{cases} \tag{8}
+\]
+\begin{theorem}[\texttt{COMPATIBILITY-CARDINALITY-NO-COST1}]
+\(W[A]\) is a uniform exact SAT decider.  On every \(F\in D\), it makes zero
+calls to \(A\), performs zero compatibility queries, and need not evaluate,
+represent, store, or reconstruct \(H_F\).  If \(A\) is polynomial time, then
+so is \(W[A]\).  Therefore
+\[
+\operatorname{SAT}\in\mathsf P\Longrightarrow
+\exists\text{ a uniform polynomial-time SAT decider violating (4).}       \tag{9}
+\]
+\end{theorem}
+\begin{proof}
+Every member of \(D\) is satisfiable, so the first branch is correct; the
+second inherits correctness from \(A\).  Recognition costs \(O(N)\).  On
+\(D\), the fallback is not invoked, despite the exact recovery in (6).
+\end{proof}
+Equation (9) is the required model-matched consequence under the hypothetical
+\(\operatorname{SAT}\in\mathsf P\); no \(P\ne NP\) premise is hidden.
+
+\section{Finite audit and hostile controls}
+The program
+\texttt{experiments/review/compatibility\_cardinality\_nocost\_audit.py}
+completed in 1.78 seconds.  It exhausted all \(3^6=729\) partial assignments,
+found 88 disagreements (minimum support three; support histogram
+\(8,42,32,6\)), verified (6) for all \(1\le k\le14\) and 32,766 distinct
+fingerprints, performed 258 direct product checks, and performed 4,590
+encoding/wrapper invariance checks.  All assertions passed.  The uncached
+version was stopped at the 30-second ceiling; memoization of the finite table
+brought the complete run below two seconds.  No asymptotic runtime claim is
+extrapolated.  Results:
+\texttt{results/raw/review/2026-10-13\_compatibility\_cardinality\_nocost.json};
+payload SHA-256
+\texttt{102f64100962abb4ae93e01eff4e75f2c5424e10ed13fc7836aa037aacacd7d1}.
+
+Independent products are the construction.  Padding, redundant tags,
+renaming, alternate encodings, and precheck wrappers preserve the semantic
+fingerprint and the shortcut.  Horn, 2SAT, affine, and bounded-treewidth
+formulas remain hostile controls for the general inference because each has
+polynomial semantic shortcuts.  This report does not claim that the particular
+\(G_0,G_1\) blocks lie in those subclasses.
+
+\section{Barriers and post-quantum ledger}
+The wrapper proof relativizes and is algebraic-oracle compatible; it offers no
+nonalgebrizing hinge.  The one-bit output is decisive: all \(2^k\) formulas
+have the same SAT bit while their compatibility functions are pairwise
+distinct.
+
+For
+\[
+P_k(u)=(H_{F_u}(\alpha_1),\ldots,H_{F_u}(\alpha_k)),
+\]
+lossiness/collision entropy is an \Status{EXACT OBJECT/THEOREM TRANSFER}:
+\[
+\operatorname{Coll}(P_k)=2^k,\qquad
+|\operatorname{im}P_k|=\frac{|\{0,1\}^k|^2}
+{\operatorname{Coll}(P_k)}=2^k.                          \tag{10}
+\]
+Equality creates no solver cost; the wrapper exploits the SAT-bit quotient.
+Schur squares, quadratic relations, Hilbert functions, syzygies, graded Betti
+numbers, and special-soundness extraction are \Status{FAILED TRANSFERS} here:
+no such object is forced in the execution.  LWE-style external extraction is
+an \Status{ANALOGY/CANDIDATE} needing a charged black-box reduction.
+Hash/random-oracle binding is inadmissible.  Visible product structure is an
+algorithmic weakness, not a hardness source.
+
+\section{CORPUS REVIEWED}
+The current GitHub tree was surveyed.  Directly read were root
+\texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, the
+\texttt{pnp-research} skill and protocol/mode references, all current task
+specifications, actual \texttt{main4.tex}/\texttt{main5.tex}, MAIN
+SYNTHESIS-0026, and peers DENSNOGO1, TAGDILUTE1, EASYDENS1, and PHASEBRIDGE1.
+Search also reconciled QNORM1, MODELBRIDGE-0025--0028, INFONOGO1, READCEIL1,
+READFLOOR1, FIBERDICH1, COVERCOF1, LOGCOF1, historical MAIN snapshots, the
+HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC/RCCN/Search-G branch, governance notes,
+and cited experiments.  Predecessor EASYDENS1 has its required GitHub header
+and final sentinel.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+This report adopts DENSNOGO1's blocks and EASYDENS1's recognizer; it does not
+re-prove their density or wrapper theorems.  New here are the minimum-support
+separator (5), exact fingerprint (6), count (7), and their use against
+compatibility cardinality.  This strengthens EASYDENS1 without contradiction.
+MODELBRIDGE-0027 retired source-coordinate entropy, MODELBRIDGE-0028 showed
+control plus decision does not recover \(H\), INFONOGO1 retired mutual
+information, READCEIL1/READFLOOR1 retired input-probe count, and PHASEBRIDGE1
+retired phase-local cost.  COMPATCARD1 closes the distinct family-cardinality
+variant.  No contradiction with root MAIN was found.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Add \texttt{COMPATIBILITY-FINGERPRINT-INJECTION1} and
+\texttt{COMPATIBILITY-CARDINALITY-NO-COST1} as \Status{PROVED/EXACT}.
+Retire \texttt{COMPATIBILITY-FAMILY-CARDINALITY-AS-COST1}.  Preserve
+\texttt{TOTAL-COST-CLEAN-CORE-OBSTRUCTION1},
+\texttt{SAME-TRACE-PAID-RELATIONAL-TRANSFER1}, arbitrary polynomial
+exponents, and the model-matched endpoint as \Status{OPEN}.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{description}[leftmargin=3.2cm,style=nextline]
+\item[ADOPTED] Fixed clean core, DENSNOGO1 products, EASYDENS1 recognizer,
+PHASEBRIDGE1 same-realization discipline, exact encoding, one-bit output, and
+wrapper controls.
+\item[REJECTED] OBDD residual counting without an exact OBDD compiler;
+charging external compatibility queries to the original solver; importing
+cryptographic hardness assumptions.
+\item[RETIRED] Compatibility-family cardinality, compatibility-fingerprint
+entropy, and injective collision profiles as all-decider resource proxies.
+\end{description}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+Any claim that exponentially many possible compatibility functions evidences
+solver-paid exponential state is now \Status{FALSIFIED/RETIRED}.  Root MAIN's
+whole-execution obstruction remains correctly open.  The instruction to
+recover MODELBRIDGE-0022 is stale because later canonical LSPV-4 reports
+through PHASEBRIDGE1 already verify; no duplicate was created.
+
+\section{Handoff}
+The exact missing implication is a wrapper-invariant observable of the
+actual one-bit execution, stable under recognizer shortcuts, replay,
+precomputation, padding, encoding changes, and wrappers, that forces a
+superpolynomial lower bound for the same unrestricted realization with all
+extraction and reconstruction charged.  Proving it on the fixed NP-complete
+core would already be a \(P\ne NP\)-strength result and cannot be assumed.
+
+\begin{thebibliography}{9}
+\bibitem{Bryant86} R.~E. Bryant, \emph{Graph-Based Algorithms for Boolean
+Function Manipulation}, IEEE TC 35(8):677--691, 1986.
+\href{https://doi.org/10.1109/TC.1986.1676819}{DOI}.
+\bibitem{BGS75} T.~Baker, J.~Gill, R.~Solovay,
+\emph{Relativizations of the \(P=?NP\) Question}, SIAM J. Comput. 4(4), 1975.
+\href{https://doi.org/10.1137/0204037}{DOI}.
+\bibitem{AW09} S.~Aaronson, A.~Wigderson, \emph{Algebrization: A New Barrier
+in Complexity Theory}, ACM TOCT 1(1), 2009.
+\href{https://eccc.weizmann.ac.il/report/2008/034/}{ECCC TR08-034}.
+\bibitem{BT06} A.~Bogdanov, L.~Trevisan, \emph{On Worst-Case to Average-Case
+Reductions for NP Problems}, SIAM J. Comput. 36(4), 2006.
+\href{https://doi.org/10.1137/S0097539705446974}{DOI}.
+\end{thebibliography}
+
+\paragraph{Final status.}
+The two COMPATCARD1 statements are \Status{PROVED/EXACT}; the audit is
+\Status{COMPUTATIONAL}; compatibility-family cardinality as a cost proxy is
+\Status{FALSIFIED/RETIRED}.  The arbitrary-algorithm total-cost transfer and
+model-matched endpoint are \Status{OPEN}.  P versus NP remains \Status{OPEN}.
+
+% END_OF_VERIFIED_REPORT::LSPV-4::COMPATCARD1
+\end{document}
