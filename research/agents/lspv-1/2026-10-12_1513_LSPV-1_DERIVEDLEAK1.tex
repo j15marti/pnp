@@ -1,0 +1,333 @@
+% LSPV-1 REPORT::DERIVEDLEAK1::2026-10-12T15:13:18Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{fontspec,amsmath,amssymb,amsthm,booktabs,longtable,array,enumitem,xurl,hyperref,microtype}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,citecolor=blue}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\COND}{\textbf{CONDITIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\same}{\textsc{same\_realization}}
+\newcommand{\claim}[1]{\texttt{\detokenize{#1}}}
+
+\title{DERIVEDLEAK1:\\Input-Erased Mutable Traces Can Copy the Entire Source at Linear Overhead}
+\author{LSPV-1 / UNIVERSAL\_CORE\_LOWER\_BOUND}
+\date{12 October 2026, 15:13 UTC}
+
+\begin{document}
+\sloppy
+\maketitle
+
+\begin{abstract}
+P versus NP remains \OPEN.  The newest bridge report correctly rejects bare
+full-trace factorization because the initial configuration contains the
+source, and proposes deleting that carrier.  This run proves that deletion of
+the read-only input field is not enough.  For every deterministic decider and
+every finite input family, an extensionally equivalent uniform wrapper copies
+the encoded source to a mutable work track in linear time.  The input-erased
+mutable trace is then source-injective at one configuration.  Its image can
+have size $2^N$ on $N$-bit sources although acquisition costs only $O(N)$.
+Conversely, a cleaned terminal projection contains only the answer bit.  Thus
+mutable-trace image size, collision entropy, source specificity, and terminal
+state are presentation-sensitive and do not yield a solver-independent SAT
+lower bound.  The surviving target is an implementation-invariant resource
+inequality charged to one execution, or a direct lower bound for a fixed
+NP-complete clean core.
+\end{abstract}
+
+\section{Strict status ledger}
+\begin{center}\small
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.37\linewidth}>{\raggedright\arraybackslash}p{0.27\linewidth}>{\raggedright\arraybackslash}p{0.23\linewidth}@{}}
+\toprule
+Claim & Status & Scope\\ \midrule
+\texttt{MUTABLE-TRACE-COPY-}\newline\texttt{LEAKAGE1} & \EXACT & Every deterministic decider; input-excluded mutable trace\\
+\texttt{DERIVED-TRACE-RANGE-}\newline\texttt{AS-HARDNESS1} & \RETIRED & Image/cardinality/entropy alone\\
+Finite hostile-control audit & \COMP & 1,153 assertions, 8,190 binary strings, zero failures\\
+\path{INVARIANT-DERIVED-TRACE-COST1} & \OPEN & All implementations; same execution\\
+Direct clean-core superpolynomial lower bound & \OPEN & Uniform deterministic RAM/TM\\
+$P\ne NP$ & \OPEN & No separation proved\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Explicit clean core and exact target}
+Let $K$ be signed Monotone $3$SAT-$(2,2)$: every clause contains three
+distinct variables and is all-positive or all-negative, clauses are unique,
+and every variable occurs exactly twice with each sign.  D\"ocker proves that
+$K$ is NP-complete\footnote{J.~D\"ocker, ``Monotone 3-Sat-(2,2) is
+NP-complete,'' 2019, \url{https://arxiv.org/abs/1912.08032}.}.  Fix a
+self-delimiting binary encoding and write $N=|\langle F\rangle|$.
+
+The direct target is
+\begin{equation}
+ \forall A\ \forall d\ \forall N_0\ \exists F\in K:\quad
+ |\langle F\rangle|\ge N_0\ \land\
+ T_A(\langle F\rangle)>|\langle F\rangle|^d,              \tag{1}
+\end{equation}
+where $A$ ranges over total correct uniform deterministic deciders in one
+fixed random-access or multitape model and parsing, source access, output,
+time, and peak workspace are charged.  Statement (1) is \OPEN; because $K$ is
+NP-complete, proving it would separate $P$ from $NP$.
+
+The attacked bridge was weaker in appearance: after deleting the raw input
+carrier, require every polynomial-time $A$ to expose a derived trace object
+with many distinguishable values, then infer time, space, or communication.
+The next theorem falsifies the inference from range alone without assuming
+$P\ne NP$.
+
+\section{Exact wrapper theorem}
+Let $X\subseteq\{0,1\}^*$ be any finite or infinite input set.  For a machine
+$M$, let $\operatorname{MTr}_M(x)$ denote the sequence of control states,
+head positions, and mutable work-store contents, explicitly excluding the
+read-only input tape.
+
+\begin{theorem}[\claim{MUTABLE-TRACE-COPY-LEAKAGE1}]
+For every total deterministic decider $A$ there is a uniform total
+deterministic decider $W[A]$ computing the same language such that, for every
+input $x$ of length $N$:
+\begin{enumerate}[label=(\roman*)]
+\item $W[A]$ copies $x$ to a designated mutable work track and reaches a
+configuration $C^{\rm copy}(x)$ before simulating $A$;
+\item $x\mapsto C^{\rm copy}(x)$ is injective although the read-only input is
+excluded from the observed configuration;
+\item
+\[
+ T_{W[A]}(x)=T_A(x)+O(N),\qquad
+ S_{W[A]}(x)\le \max\{S_A(x),N\}+O(1);
+\]
+\item on every length layer $X_N$, the projection selecting the copy track
+has image exactly $|X_N|$; copying only the first $j\le N$ source bits costs
+$O(j)$ and realizes every prefix value present in $X_N$.
+\end{enumerate}
+After the simulated decision, the wrapper may erase its work and halt in one
+of two answer states, so its terminal mutable-state projection has range at
+most two.
+\end{theorem}
+
+\begin{proof}
+Scan the input from left to right, writing each bit and one end marker to a
+fresh work track.  This uses $N+O(1)$ transitions and $N+O(1)$ writable cells.
+At the end of the scan, the work track contains a self-delimiting copy of
+$x$, so decoding is fixed and injectivity is immediate.  Reposition the input
+head if required and simulate $A$ with constant-factor universal-simulation
+overhead absorbed into the machine-dependent constants.  The same-language
+property follows from correctness of the simulation.  The displayed time and
+space bounds follow by charging the scan, copy, repositioning, simulation,
+and maximum simultaneous store.  The prefix variant stops after $j$ bits.
+Finally retain $A(x)$, overwrite the wrapper's designated tracks, and enter
+one of two fixed halt states.  This cleanup changes neither the language nor
+the asymptotic time bound.  It is the same realized wrapper execution, not an
+external extractor.
+\end{proof}
+
+\begin{corollary}[Exponential image is compatible with linear acquisition]
+On $X_N=\{0,1\}^N$, the copy configuration has $2^N$ distinct values and is
+produced using $N+O(1)$ reads and writes.  Therefore a counting argument from
+$|\operatorname{im}\pi(\operatorname{MTr})|=2^N$ to $2^{\Omega(N)}$ time is
+false.  At most the literal output/copy size is forced for this declared
+representation.
+\end{corollary}
+
+\begin{corollary}[The proposed input-erasure repair is insufficient]
+Deleting $C_0$ or the read-only tape from a trace does not establish
+noninterference, internal semantic derivation, or unavoidable cost.  A
+projection that sees named mutable coordinates is presentation-sensitive:
+COPY can make it source-injective and cleanup can collapse its terminal
+range.  Hence \claim{DERIVED-TRACE-RANGE-AS-HARDNESS1} is \RETIRED.
+\end{corollary}
+
+This does not prove that every conceivable derived projection is useless.
+It shows the next definition must be invariant under extensionally equivalent
+source-copy, delay, interpreter, recomputation, and cleanup wrappers while
+still faithfully lower-bounding a resource of the same execution.  No such
+projection theorem is known.
+
+\section{Bounded reproducible hostile-control audit --- \COMP}
+The script
+\path{experiments/review/input_erased_mutable_trace_copy_audit.py} wrote
+\path{results/raw/review/2026-10-12_input_erased_mutable_trace_copy.json}.
+One deterministic invocation completed in $0.106090$ seconds, so no chunking
+was required.  It passed 1,153 assertions with zero failures.
+
+The suite used nine families: a proper duplicate-free signed monotone
+$3$SAT-$(2,2)$ control, satisfiable and unsatisfiable 2SAT, Horn,
+affine/Tseitin CNF, bounded treewidth, independent products, tautological
+padding, and redundant clauses.  It crossed five encodings with DIRECT,
+DEAD, COPY, DELAY, INTERP, and RECOMP wrappers, producing 270 traces.  Every
+trace projection excluded any raw-input field.  Nevertheless its mutable
+copy reconstructed the exact encoded source in all 270 cases.
+
+Across the 45 distinct family/encoding pairs, the full-copy and 16-hex-digit
+digest projections each had 45 images, while a 16-byte prefix had eight.
+The scrubbed terminal projection had one image per decision fiber.  A fixed
+partial-compatibility query varied within the satisfiable fiber, confirming
+that the terminal answer bit does not reconstruct it.  Separately, all 8,190
+binary strings of lengths 1 through 12 verified exact $2^N$ full-copy range
+and $2^{\min\{N,5\}}$ prefix range.
+
+All finite costs were recorded: 3,601 preprocessing byte reads; 21,606 copy
+writes; 21,606 extraction reads; 21,606 reconstruction writes; 196 brute-force
+assignments; and 647 clause tests.  The SHA-256 values are
+\nolinkurl{eaf8b9cca1f32f14fe4a75bc514e7ebbac11236953bdc1469e100dc2fab6deca}
+for the script and
+\nolinkurl{06bf1119ce8be0819a0f5e38b4bf5397f268a1e22fe668167ab2cf092487bc1a}
+for the result.  The experiment supports only finite identities; the theorem
+supplies the general statement.
+
+\section{Primary-literature and barrier-transfer preflight}
+The two main obstacles were (i) distinguishing transported source bits from
+internally derived semantics, and (ii) converting any trace property into a
+model-matched lower bound for arbitrary computation.
+
+Goguen--Meseguer noninterference compares outputs under changes to designated
+high inputs\footnote{J.~A.~Goguen and J.~Meseguer, ``Security Policies and
+Security Models,'' 1982 IEEE Symposium on Security and Privacy,
+\url{https://www.cs.purdue.edu/homes/ninghui/readings/AccessControl/goguen_meseguer_82.pdf}.}.
+This is a \textbf{directly transferable definition} once the observation map
+is fixed; it is not a runtime lower bound and arbitrary equivalent SAT
+programs need not share an observation map.  Information-flow taint systems
+and control-theoretic observability are therefore \textbf{useful structural
+analogies requiring a new transfer theorem}.  They become misleading when
+``observable'' is silently replaced by ``computationally expensive.''
+
+Fortnow--Lipton--van Melkebeek--Viglas give unconditional SAT time--space
+tradeoffs in their specified random-access model\footnote{L.~Fortnow,
+R.~Lipton, D.~van Melkebeek, and A.~Viglas, ``Time-space lower bounds for
+satisfiability,'' \emph{J. ACM} 52(6), 2005,
+\url{https://doi.org/10.1145/1101821.1101822}.}.  This is a directly usable
+endpoint only after one \same{} machine is placed in its forbidden joint
+region.  The copy theorem gives no such landing.
+
+Baker--Gill--Solovay exhibit oracles with opposite $P$ versus $NP$
+relationships\footnote{T.~Baker, J.~Gill, and R.~Solovay,
+``Relativizations of the $P=?NP$ Question,'' \emph{SIAM J. Comput.} 4(4),
+1975, \url{https://doi.org/10.1137/0204037}.}; Aaronson--Wigderson formalize
+the stronger algebrization barrier\footnote{S.~Aaronson and A.~Wigderson,
+``Algebrization: A New Barrier in Complexity Theory,'' 2009,
+\url{https://eccc.weizmann.ac.il/eccc-reports/2008/TR08-005/Paper.pdf}.}.
+Source copying relativizes and algebrizes, so this negative result crosses
+neither barrier.  Natural Proofs is not directly invoked: no constructive
+large circuit property is asserted.
+
+\section{Assuming \texorpdfstring{$P=NP$}{P=NP}: model-matched consequence}
+Assume $K\in P$ and fix a total uniform decider $A$ with time $N^{k+o(1)}$
+and space $N^{s+o(1)}$, where $k,s$ are finite but otherwise arbitrary.  The
+wrapper theorem yields a source-injective input-erased mutable trace in
+$N^{\max\{1,k\}+o(1)}$ time and $N^{\max\{1,s\}+o(1)}$ space.  Large trace
+range is therefore fully compatible with the assumption.  Conversely,
+cleanup gives an answer-only terminal state.  Neither branch creates a fixed
+FLMV-forbidden exponent pair.  No premise assumes the desired conclusion.
+
+An explicit table of all compatibility answers may require exponential
+output, but the original SAT decider outputs one bit.  Affine/Tseitin systems
+may expose enormous semantic assignment sets while Gaussian elimination
+decides them compactly.  Bounded-treewidth formulas admit compact dynamic
+programs; independent products can stream and reuse memory.  These controls
+show why semantic-state cardinality is not actual algorithmic cost.
+
+\section{Post-quantum technique ledger}
+Collision entropy is an \textbf{EXACT OBJECT/THEOREM TRANSFER} for a fixed
+map $L$: $|\operatorname{im}L|\ge |A|^2/\operatorname{Coll}(L)$.  The copy
+wrapper has minimum collisions and remains linear-time, so low collision is
+not a SAT lower bound.  Hashes and random oracles are a \textbf{FAILED
+TRANSFER} for unconditional complexity; the audit's digest is only a hostile
+representation control.  LWE-style black-box extraction is an
+\textbf{ANALOGY/CANDIDATE} needing an unconditional worst-case static-SAT
+compiler.  Schur squares, quadratic relations, Hilbert functions, syzygies,
+and special-soundness extraction are \textbf{FAILED TRANSFERS} here because
+no forced code, graded algebra, commitment, or pair of valid openings exists.
+Any hidden algebraic structure could instead be an algorithmic weakness, as
+the affine control demonstrates.
+
+\section{CORPUS REVIEWED}
+The repository tree and history were surveyed before theorem formation.
+Files read directly include root \path{main.tex}, \path{AGENTS.md},
+\path{CODEX.md}, the full PNP research skill, actual \path{main4.tex} and
+\path{main5.tex}, verified MAIN \path{research/main/2026-10-12_2349_MAIN_SYNTHESIS-0024.tex},
+predecessor CUTGAP1, COVCOLL1, PRODSTREAM1, EXOGATE1, and MODELBRIDGE-0027.
+Historical results surfaced by content search and inspected include
+FIBERDICH1, SOURCE-SPECIFICITY-NO-HARDNESS1, RT-0010, HEVALLB1,
+MAJORANTNOGO1, HALTCANON1, and earlier trace-insertion/invariance controls.
+All current task specifications TASK-001 through TASK-007 were surveyed;
+TASK-002 and TASK-003 directly governed the hostile controls, while the HEC,
+CRS-PPC, RCCN, and Search-G specifications retain an unproved static compiler.
+The relevant random-challenge causal branch, governance/write rules, scripts,
+raw results, and outbox handoffs were also surveyed.
+
+The newest predecessor MAIN contains the required MAIN header and final
+verification sentinel and was read back from GitHub.  No predecessor recovery
+write was needed.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+SOURCE-SPECIFICITY-NO-HARDNESS1 already proves that a singleton tag constant
+on decision fibers factors through the answer, while a varying cheap source
+tag need not be hard.  DERIVEDLEAK1 does not rename that theorem.  Its new
+specialization is operational and trace-level: even after deleting the raw
+input carrier, one linear wrapper makes the mutable trace source-injective,
+with exact time/space charges.  MODELBRIDGE-0027 proves leakage from the
+initial configuration; the present theorem closes its proposed bare
+``input-erased derived trace'' repair.  HALTCANON1 supplies the complementary
+terminal cleanup boundary.  No contradiction was found; the results form a
+wrapper trilemma rather than a positive lower bound.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+The current root LSPV-1 region predates the newest universal-core cycle and
+overemphasizes the older RMV structural program.  The reconciled region for
+this run will preserve that work as historical/conditional evidence but make
+the verified universal-core status current: fixed schedules are avoidable;
+halt state is cleanable; full trace leaks the initial source; input-erased
+mutable trace can cheaply copy it; image size and source specificity are not
+runtime lower bounds.  The highest-value target becomes
+\claim{INVARIANT-DERIVED-TRACE-COST1}, or direct target (1).
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{description}[leftmargin=2.5cm,style=nextline]
+\item[Adopted.] The NP-complete signed monotone $3$SAT-$(2,2)$ core; exact
+encoding length; \same{} charging; MODELBRIDGE-0027's input-carrier warning;
+HALTCANON1 cleanup; wrapper and tractable-family controls; FLMV only in its
+declared machine model.
+\item[Rejected.] Treating a named mutable coordinate, digest, provenance tag,
+compatibility table, or trace image as implementation-invariant without a
+compiler theorem.
+\item[Retired.] \claim{DERIVED-TRACE-RANGE-AS-HARDNESS1}; raw collision
+entropy or source specificity as an arbitrary-SAT cost certificate; any
+exponential decision-time inference from optional explicit-table output.
+\end{description}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+The live root's LSPV-1 text does not yet mention CUTGAP1, HALTCANON1, the
+full-trace quadrilemma, or MODELBRIDGE-0027, so its ``current'' specialty
+summary is stale even though its older algebraic formulas remain correctly
+typed as finite, conditional, or open.  MAIN SYNTHESIS-0024's surviving
+``full trace factorization'' spine is superseded in one narrow respect by
+MODELBRIDGE-0027: bare factorization is vacuous because of $C_0$.  Its proposed
+input-erasure repair is now also insufficient unless it forbids cheap mutable
+source copying by an invariant theorem.  Neither correction strengthens any
+claim toward $P\ne NP$.
+
+\section{Precise handoff}
+The next load-bearing implication must state a projection $\Pi_A$ and resource
+$R_A$ satisfying, with exact quantifiers:
+\begin{enumerate}[leftmargin=*]
+\item invariance or covariance under COPY, DEAD, DELAY, INTERP, RECOMP,
+cleanup, and alternate encodings;
+\item no fixed decoding path from raw or copied source bits;
+\item a lower bound $R_A(F)\ge L(N)$ on the same realized decision execution,
+not on an external extractor or optional serializer;
+\item a proved simulation into the identical machine model used by the
+unconditional endpoint;
+\item a nonrelativizing and nonalgebrizing hinge.
+\end{enumerate}
+Absent such a theorem, pursue direct clean-core statement (1).  P versus NP
+remains \OPEN.
+
+% END_OF_VERIFIED_REPORT::LSPV-1::DERIVEDLEAK1
+\end{document}
