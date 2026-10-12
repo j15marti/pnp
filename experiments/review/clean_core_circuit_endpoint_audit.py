@@ -76,15 +76,21 @@ def wrapper_outputs(clauses: list[tuple[int, ...]], nvars: int) -> dict[str, boo
 
 def main() -> None:
     # If f has output length <= n^a, the reduction circuit has size <= n^r,
-    # and the target slice has size <= m^c, composition is polynomial with
-    # exponent max(r, a*c).  Padding M=N^p rescales exponent c to p*c.
+    # and the target slice has size <= m^c, an exact-length reduction composes
+    # with exponent max(r,a*c).  In general the output length varies; summing
+    # the target circuits for all m <= n^a gives max(r,a*(c+1)).
+    # Padding M=N^p rescales exponent c to p*c.
     exponent_rows = []
     for a, r, c, p in itertools.product(range(1, 9), repeat=4):
-        composed = max(r, a * c)
+        composed_exact_length = max(r, a * c)
+        composed_general = max(r, a * (c + 1))
         padded = p * c
-        assert composed >= r and composed >= a * c
+        assert composed_exact_length >= r and composed_exact_length >= a * c
+        assert composed_general >= composed_exact_length
         assert padded >= c
-        exponent_rows.append((a, r, c, p, composed, padded))
+        exponent_rows.append(
+            (a, r, c, p, composed_exact_length, composed_general, padded)
+        )
 
     affine_eqs = [
         (0b00111, 1),
@@ -144,10 +150,14 @@ def main() -> None:
         "exponent_grid": {
             "ranges": "a,r,c,p in [1,8]",
             "rows": len(exponent_rows),
-            "composition_rule": "max(r,a*c)",
+            "exact_length_composition_rule": "max(r,a*c)",
+            "general_variable_length_composition_rule": "max(r,a*(c+1))",
             "padding_rule": "p*c",
-            "max_composed_exponent": max(row[4] for row in exponent_rows),
-            "max_padding_exponent": max(row[5] for row in exponent_rows),
+            "max_exact_length_composed_exponent": max(
+                row[4] for row in exponent_rows
+            ),
+            "max_general_composed_exponent": max(row[5] for row in exponent_rows),
+            "max_padding_exponent": max(row[6] for row in exponent_rows),
         },
         "families": family_rows,
         "checks": {
