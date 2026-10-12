@@ -1,0 +1,371 @@
+% !TEX program = xelatex
+% LSPV-3 REPORT::MINFRONT1::2026-10-12T05:32:10Z
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,array,enumitem,xcolor,hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\proved}{\textbf{PROVED/EXACT}}
+\newcommand{\known}{\textbf{KNOWN THEOREM}}
+\newcommand{\comp}{\textbf{COMPUTATIONAL}}
+\newcommand{\cand}{\textbf{CANDIDATE}}
+\newcommand{\retired}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\same}{\textsc{same\_realization}}
+
+\title{LSPV-3 MINFRONT1: an exponential minimal-incompatibility frontier with a linear evaluator}
+\author{UNIVERSAL\_CORE\_REDTEAM}
+\date{12 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.94\linewidth}{
+\textbf{Executive status.} P versus NP remains \OPEN.  This report proves an
+exact structural counterexample: a proper duplicate-free 3-CNF family has
+$2^{n-1}$ minimal incompatible source partial assignments, but its projected
+compatibility predicate is evaluated by one linear scan with logarithmic
+address space.  Therefore semantic frontier cardinality, even for an antichain
+of minimal obstructions, does not by itself force materialization, extraction,
+communication, substantial workspace, or superpolynomial time in an arbitrary
+one-bit SAT computation.  The result is an easy-island falsification only; by
+QGUARD1 it does not refute the surviving full-domain worst-case transfer.}}
+\end{center}
+
+\section{Target and exact quantifiers}
+
+Let $X$ be the encoded 3-CNF domain and let $\mathcal D$ be deterministic
+uniform exact SAT deciders.  The attacked claim was the unqualified promotion
+schema
+\begin{equation}
+\tag{MIFO1}
+\forall A\in\mathcal D\;\forall F\in\mathcal C:\quad
+|\operatorname{MinBad}(H_F)|\ge 2^{\Omega(n(F))}
+\Longrightarrow A(F)\text{ exposes or pays }2^{\Omega(n(F))}.
+\end{equation}
+Here ``pays'' was intended to cover time, writable memory, ordinary external
+communication, explicit extraction, or reconstruction.  Without a separately
+proved execution relation, this implication is false.
+
+For a 3-CNF $F(X,Z)$ with declared source variables $X=(x_1,\ldots,x_n)$ and
+auxiliaries $Z$, define the projected compatibility predicate
+\[
+H_F(\alpha)=1\quad\Longleftrightarrow\quad
+\exists x\succeq\alpha\ \exists z\;F(x,z)=1,
+\qquad \alpha\in\{0,1,\star\}^n.
+\]
+Order partial assignments by extension.  A minimal incompatible assignment is
+an $\alpha$ with $H_F(\alpha)=0$ such that every strict weakening obtained by
+replacing an assigned bit by $\star$ has compatibility one.
+
+The model is an ordinary multi-tape deterministic machine receiving an indexed
+3-CNF bit string of length $N$.  The source-variable declaration is part of the
+family specification, not hidden advice.  Ordinary SAT output is one bit.  All
+preprocessing, clause generation, clause checks, evaluator calls, extraction,
+reconstruction and communication are separately metered in the audit.
+
+\section{The parity-source family}
+
+Fix $n\ge1$ and $b\in\{0,1\}$.  Let $P_{n,b}^{\rho}$ be the proper
+duplicate-free 3-CNF obtained from a left-chain or balanced binary XOR circuit
+for
+\[
+x_1\oplus\cdots\oplus x_n=b.
+\]
+Each gate $z=a\oplus c$ is encoded by the four clauses
+\[
+(a\vee c\vee\neg z),\quad(a\vee\neg c\vee z),\quad
+(\neg a\vee c\vee z),\quad(\neg a\vee\neg c\vee\neg z).
+\]
+The final output literal $\ell$ is forced true, without repeated literals, by
+fresh variables $p,q$ and
+\[
+(\ell\vee p\vee q),\ (\ell\vee p\vee\neg q),\
+(\ell\vee\neg p\vee q),\ (\ell\vee\neg p\vee\neg q).
+\]
+For $n\ge2$ there are $4n$ clauses and $2n+1$ variables.  Indexed-literal
+encoding has $N=\Theta(n\log n)$ bits.  Bags equal to the three variables of
+each XOR gate, with the force bag attached to the output gate, give a width-two
+primal tree decomposition for either layout.
+
+\subsection{Exact theorem}
+
+\paragraph{PARITY-PROJECTED-FRONTIER1 (\proved, pending independent review).}
+For every $n\ge1$, $b\in\{0,1\}$ and either layout $\rho$,
+\begin{align*}
+H_{P_{n,b}^{\rho}}(\alpha)=1
+&\Longleftrightarrow
+\bigl(\exists i:\alpha_i=\star\bigr)
+\ \vee\
+\bigl(\alpha\in\{0,1\}^n\land\bigoplus_i\alpha_i=b\bigr),\\
+|\operatorname{MinBad}(H_{P_{n,b}^{\rho}})|&=2^{n-1}.
+\end{align*}
+Every member of $\operatorname{MinBad}$ is a full wrong-parity assignment, and
+these assignments form an antichain.
+
+\paragraph{Proof.}
+If a source coordinate is unassigned, choose all other unassigned coordinates
+arbitrarily and choose the last one to achieve target parity $b$.  The XOR-gate
+values are then uniquely extended and the force clauses are satisfiable.  If
+the source is fully assigned, the gate clauses and final force are satisfiable
+exactly when its parity is $b$.  Exactly half of the $2^n$ full assignments have
+wrong parity.  Weakening any one of them introduces a star and therefore
+restores compatibility.  Hence all and only those $2^{n-1}$ assignments are
+minimal incompatible.  The displayed evaluator scans once for a star and,
+only if none exists, accumulates parity.  It runs in $O(n)$ time and
+$O(\log n)$ address space (one parity bit plus scan index). \hfill$\square$
+
+\paragraph{MINIMAL-INCOMPATIBILITY-FRONTIER-OBLIGATION1 (\retired).}
+The family has an exponentially large minimal-incompatibility antichain but a
+compact direct evaluator.  Its SAT answer is always YES after canonical-family
+recognition.  Thus no conclusion about materializing the frontier, executing
+one operation per frontier element, communicating it, or using exponential
+time/space follows from its cardinality.
+
+\section{Arbitrary deciders, wrappers and the quantifier guard}
+
+Under the counterfactual assumption $\mathrm{SAT}\in\mathrm P$, let $A$ be any
+polynomial SAT decider.  Define the uniform recognize-first wrapper
+\[
+W_A(F)=\begin{cases}
+1,&F\text{ is a canonical }P_{n,b}^{\rho},\\
+A(F),&\text{otherwise.}
+\end{cases}
+\]
+Canonical recognition and parity-family validation are polynomial in encoded
+length.  Hence $W_A$ is a polynomial exact SAT decider that need not enumerate
+or expose $\operatorname{MinBad}$ on these inputs.  COPY, DELAY, RECOMP,
+clause-order, literal-order, redundant-clause, interpreter and DEAD wrappers
+further show that named internal events are not representation-invariant.
+
+This does \emph{not} negate
+\[
+\forall A\in\mathcal D\ \exists F\in X:\ R(A,F),
+\]
+because the counterexample is an easy island.  QGUARD1 proves that avoiding an
+obligation on a proper island is compatible with a worst-case obligation on
+the full language.  The surviving repair must therefore be full-domain and
+existential-in-input, or provide a reduction mapping every hard source to the
+charged family while preserving the claimed execution obligation.
+
+\section{Reproducible audit}
+
+Program:
+\path{experiments/review/minimal_incompatibility_frontier_audit.py}.
+Result:
+\path{results/raw/review/2026-10-12_minimal_incompatibility_frontier.json}.
+The invocation was
+\begin{quote}\small
+\texttt{python minimal\_incompatibility\_frontier\_audit.py
+--max-exhaustive-n 8 --seed 20261012 --output <result>}.\normalsize
+\end{quote}
+It completed in $2.4813$ seconds.  Exhaustive checks covered $n=1,\ldots,8$,
+both parity targets, both chain layouts, all $3^n$ source partial assignments,
+all source completions and the relevant auxiliary extensions.  The audit also
+validated the declared width-two decomposition, an independent-product
+control, Horn and 2SAT controls, GF(2) Gaussian consistency controls, and the
+wrapper family above.  Larger $n\in\{16,32,64,128,256,512\}$ used only the
+proved closed form and deterministic parity samples; no asymptotic conclusion
+is inferred from those samples.
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+meter & value\\
+\midrule
+assertions & 40,582\\
+source partial assignments & 39,360\\
+compatibility evaluations & 88,147\\
+completion checks & 118,180\\
+CNF clause checks & 3,419,312\\
+frontier entries explicitly examined & 1,020\\
+preprocessing operations & 650,274\\
+one-bit SAT decisions & 32\\
+extraction / reconstruction / communication & 0 / 0 / 0\\
+failures & 0\\
+\bottomrule
+\end{tabular}
+\end{center}
+At $n=8$ the exhaustive frontier size was 128 for each target and layout; at
+$n=512$ the proved frontier size is $2^{511}$ while evaluation remains one
+512-bit scan.  Script SHA-256 is
+\texttt{f1925d9e1a4afba80029c43ffc21832e0e55dd4c666de2c8614bc74f725b7f09};
+result SHA-256 is
+\texttt{df830bb50ac1180bb4ae2d5abb83613f1409bd3f6d9c7fb60ed3336560843094}.
+
+\section{Literature and barrier-transfer preflight}
+
+The two blocking obstacles were: (i) turning a structural compatibility object
+into an unavoidable event of every arbitrary computation, and (ii) landing
+the resulting charge in one unconditional lower bound for the same ordinary
+machine realization.  Primary literature was checked before the construction.
+
+\begin{longtable}{p{0.20\linewidth}p{0.33\linewidth}p{0.38\linewidth}}
+\toprule
+source/domain & exact usable content & transfer classification\\
+\midrule
+Schaefer's Boolean CSP dichotomy & affine relations are polynomial-time
+tractable; the present family is an explicit affine instance &
+\textbf{directly transferable theorem}; it predicts the semantic shortcut,
+not a hardness source\\
+Tseitin transformations and parity formulas & linear-size gate encoding and
+parity semantics & \textbf{directly transferable} after the four-clause gate
+is proved here; proof-system hardness does not transfer to arbitrary SAT time\\
+Samer--Szeider incidence-treewidth algorithms & SAT/\#SAT become tractable
+under the declared decomposition parameter & \textbf{directly transferable}
+to the structural parameter, but not needed for the sharper scan evaluator\\
+Tseitin proof-complexity lower bounds & hardness for named proof systems &
+\textbf{misleading analogy / failed transfer} to unrestricted computation\\
+coding-theory Schur powers, relation spaces and syzygies & parity sources have
+linear-code structure & \textbf{exact object correspondence}, but the
+structure is algorithmically exploitable and supplies no runtime transfer\\
+communication cuts, VLSI routing, observability and special soundness & lower
+bounds in declared external/interface models & \textbf{useful analogy needing
+a new transfer theorem}; arbitrary one-bit SAT exposes no such interface\\
+\bottomrule
+\end{longtable}
+
+\paragraph{Post-quantum ledger.}
+The source solution set is an affine code and its quadratic/Schur invariants
+are exact algebraic objects, but Gaussian elimination and a parity accumulator
+exploit them; classification: \textbf{FAILED TRANSFER} as hardness.  Collision
+entropy, LWE-style worst/average-case architecture, and special-soundness
+forking remain \textbf{ANALOGY/CANDIDATE} until a charged black-box extractor
+from an arbitrary SAT decider is proved.  Hash/random-oracle binding is not an
+unconditional theorem and is a \textbf{FAILED TRANSFER} for P versus NP.
+
+\section{Barrier audit}
+
+\paragraph{Relativization.}
+The family theorem and recognize-first wrapper continue to hold relative to an
+arbitrary oracle.  They cannot be the nonrelativizing hinge needed for a final
+P-versus-NP proof.
+
+\paragraph{Algebrization.}
+The construction is affine and becomes easier with algebraic access.  It gives
+no nonalgebrizing step.
+
+\paragraph{Natural Proofs.}
+No large constructive circuit property or unrestricted circuit lower bound is
+proved, so the Natural Proofs barrier is not triggered or escaped.
+
+\paragraph{Nonuniformity and arbitrary exponents.}
+The evaluator is uniform.  Nothing bounds the unknown exponent of a hypothetical
+full SAT decider, and no compiler maps it into a cited forbidden time--space
+region.  Any claim suppressing that exponent would be circular.
+
+\paragraph{\same.}
+Running the displayed compatibility evaluator is a new computation chosen by
+the analyst.  It is not a trace fact about an arbitrary execution of $A(F)$.
+Conversely, counting semantic frontier members does not charge the one-bit run.
+
+\section{Corpus reviewed}
+
+\textbf{CORPUS REVIEWED.}  The full repository tree was surveyed.  Root
+\path{main.tex}, \path{main4.tex}, \path{main5.tex}, \path{AGENTS.md},
+\path{CODEX.md}, the complete pnp-research skill and all current
+\path{tasks/} were read.  Materially relevant artifacts included newest MAIN
+SYNTHESIS-0022; HEVALLB1; predecessor TESTS-0021; APIFLAT1; COREEQUIV1;
+QGUARD1; VIEWSEP1; LB-0022; TESTS-0018/0020; the HEC, VSC-HEC, G-PPC-HEC,
+CRS-PPC, CCSPC and RCCN causal branch; governance notes; and cited experiment
+artifacts.  Repository search covered earlier ``minimal incompatible'',
+``frontier'', ``partial assignment'', parity and compatibility formulations.
+
+\textbf{PREDECESSOR WRITE-RECOVERY PREFLIGHT.}  The newest verified LSPV-2
+artifact remains TESTS-0021 at 04:27 UTC, with valid header and sentinel.  No
+substantive LSPV-2 artifact for the next scheduled cycle was present when this
+run began.  The failure is classified \textbf{UNKNOWN}: there is no malformed
+or partial target path and no connector error body from which to diagnose a
+SHA conflict.  A body-preserving retry request is included in the handoff; no
+scientific content was reconstructed.
+
+\textbf{DUPLICATION / CONTRADICTION AUDIT.}  LB-0022 already showed exponentially
+many full compatibility rows with one streaming parity bit.  HEVALLB1 showed
+that a general full compatibility evaluator is polynomial exactly if SAT is.
+VIEWSEP1 permitted compact separating evaluators.  The new contribution is
+narrower: an exact $2^{n-1}$ antichain of \emph{minimal incompatible projected
+partial assignments}, two concrete 3-CNF layouts, and a direct scan evaluator.
+It strengthens the negative control but does not supersede QGUARD1.
+
+\textbf{WHAT CHANGED RELATIVE TO ROOT MAIN.}  One stronger semantic-count
+promotion is retired: minimality and antichain structure do not repair the
+state-count-to-runtime gap.  The full-domain transfer and time--space landing
+remain unchanged and OPEN.
+
+\textbf{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}  Adopted: QGUARD1's
+quantifier discipline, TESTS-0021's resource ledger, APIFLAT1's wrapper/API
+guard, VIEWSEP1's compact-evaluator allowance, and COREEQUIV1's exact time-axis
+boundary.  Rejected as transfers: proof-system Tseitin hardness, raw Schur or
+Hilbert invariant size, and interface-model lower bounds without a compiler.
+Retired: MIFO1 and any claim that making incompatible states minimal forces
+their enumeration.
+
+\textbf{STALE OR OVERSTATED CLAIMS FOUND.}  Any project prose that promotes an
+exponential compatibility frontier directly to arbitrary computation cost is
+overstated unless it names a full-domain execution relation and proves bounded
+aggregation for the same realization.  No verified theorem establishing that
+promotion was found.
+
+\section{Status and handoff}
+
+\begin{center}
+\begin{tabular}{p{0.50\linewidth}p{0.28\linewidth}}
+\toprule
+claim & status\\
+\midrule
+PARITY-PROJECTED-FRONTIER1 & \proved, pending review\\
+finite implementation and hostile-control audit & \comp\\
+MINIMAL-INCOMPATIBILITY-FRONTIER-OBLIGATION1 & \retired\\
+full-domain worst-case compatibility/execution transfer & \OPEN\\
+model-matched nonrelativizing contradiction & \OPEN\\
+P versus NP & \OPEN\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Smallest surviving repair.}
+Prove a representation-invariant external relation $R(A,F,y)$ with the exact
+prefix
+\[
+\forall A\in\mathcal D_{\mathrm{poly}}\ \exists F\in X_N\ \forall N\ge N_0(A):
+\quad R(A,F,y)\text{ forces a charged event of the same execution},
+\]
+or correct that prefix explicitly, then show bounded aggregation and reduce the
+resulting charge to one cited unconditional lower bound for the same uniform
+random-access machine.  Easy islands, proof objects and analyst-run evaluators
+cannot supply this arrow.
+
+\paragraph{What this does not prove.}
+It proves neither a general SAT algorithm nor a SAT lower bound; it does not
+show that every hard family has compact compatibility; it does not refute a
+properly quantified worst-case transfer; and it does not resolve P versus NP.
+
+\begin{thebibliography}{10}
+\bibitem{Schaefer1978}
+T.~J. Schaefer, ``The complexity of satisfiability problems,''
+\emph{Proceedings of STOC}, 1978, pp.~216--226.
+
+\bibitem{Tseitin1968}
+G.~S. Tseitin, ``On the complexity of derivation in propositional calculus,''
+in \emph{Studies in Constructive Mathematics and Mathematical Logic}, 1968.
+
+\bibitem{SamerSzeider2010}
+M.~Samer and S.~Szeider, ``Algorithms for propositional model counting,''
+\emph{Journal of Discrete Algorithms} 8(1), 2010, pp.~50--64,
+\url{https://arxiv.org/abs/0610174}.
+
+\bibitem{BGS1975}
+T.~Baker, J.~Gill and R.~Solovay, ``Relativizations of the $P=?NP$ question,''
+\emph{SIAM Journal on Computing} 4(4), 1975, pp.~431--442.
+
+\bibitem{AW2009}
+S.~Aaronson and A.~Wigderson, ``Algebrization: a new barrier in complexity
+theory,'' \emph{ACM Transactions on Computation Theory} 1(1), 2009.
+
+\bibitem{RR1997}
+A.~Razborov and S.~Rudich, ``Natural proofs,'' \emph{Journal of Computer and
+System Sciences} 55(1), 1997, pp.~24--35.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LSPV-3::MINFRONT1
+\end{document}
