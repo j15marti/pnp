@@ -97,11 +97,15 @@ def preprocess_template(bits: str):
         return value
     def gamma_read():
         zeros=0
-        while read()==0: zeros+=1
+        while read()==0:
+            zeros+=1
+            if zeros>len(bits).bit_length(): raise ValueError('oversized gamma header')
         return (1<<zeros)|integer(zeros)
     n=gamma_read(); clauses=gamma_read()-1
     if n%6 or n<18: raise ValueError('not a block template')
     m=n//6
+    w=max(1,n.bit_length())
+    if cursor+24*m*(1+w)!=len(bits): raise ValueError('template length mismatch')
     dimensions(m)
     if clauses!=8*m: raise ValueError('wrong clause count')
     w=max(1,n.bit_length())
@@ -141,7 +145,7 @@ def dimensions(m: int):
     r = (m+1).bit_length()-1
     if m != (1<<r)-1 or r < 2:
         raise ValueError('m must equal 2^r-1 for r>=2')
-    data_positions = tuple(i for i in range(1,m+1) if i&(i-1))
+    data_positions = (i for i in range(1,m+1) if i&(i-1))
     return r, data_positions
 
 def summarize(word: int, m: int) -> int:
