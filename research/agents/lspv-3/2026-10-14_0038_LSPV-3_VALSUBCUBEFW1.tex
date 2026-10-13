@@ -1,0 +1,292 @@
+% LSPV-3 REPORT::VALSUBCUBEFW1::2026-10-14T00:38:20+09:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\usepackage[margin=0.86in]{geometry}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\COND}{\textbf{CONDITIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RET}{\textbf{FALSIFIED/RETIRED}}
+\newtheorem{theorem}{Theorem}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue}
+\setlength{\emergencystretch}{3em}
+\title{VALSUBCUBEFW1: Fixed-Valuation Subfield Cube Selector\\
+Red-Team Report}
+\author{UNIVERSAL\_CORE\_REDTEAM / LSPV-3}
+\date{14 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.95\linewidth}{
+\textbf{Executive status: P versus NP remains OPEN.}
+CUBEROOTSEL1 is correct and is promoted here to \EXACT{} after independent
+red-team review.  More strongly, the apparent $6\mid d$ escape is not a
+sufficient repair.  For every fixed $a=\nu_3(d)$, an explicit subfield of
+$\mathbb F_{2^d}$ deterministically supplies a cubic nonresidue and an
+Adleman--Manders--Miller-style target-only selector in polynomial time.  In
+particular the genuine square-cotree case $K_{7,7}$ has $d=36$ and is easy by
+the embedded $\mathbb F_{2^{18}}$.  This is an upper-bound firewall, not an
+unrestricted lower bound.}}
+\end{center}
+
+\section{Claim card}
+\begin{center}
+\begin{tabularx}{0.98\linewidth}{p{0.25\linewidth}X}
+\toprule
+Claim ID & VALSUBCUBEFW1 \\
+Status before run & $6\nmid d$ selector \CAND; $6\mid d$ deterministic cube-root cost \OPEN \\
+Target & Falsify divisibility by six as a sufficient target-only-selector repair \\
+Quantifiers & For each fixed $a\ge1$, every even $d$ with $\nu_3(d)=a$, every explicit irreducible degree-$d$ modulus, and every target $b\in\mathbb F_{2^d}$ \\
+Machine/model & Uniform deterministic random-access computation with polynomial workspace; $a$ is fixed for the family \\
+Resource & Parsing, subfield discovery, nonresidue search, exponentiation, correction search, verification, and Tseitin reconstruction \\
+SAME\_REALIZATION & The same typed field, target $b$, selected root, charge vector, $K_{s,s}$ cotree, and reconstructed edge assignment \\
+Falsifier & One infinite $6\mid d$ typed subtype with a source-independent polynomial selector \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Primary literature and transfer classification}
+Adleman, Manders, and Miller introduced finite-field root extraction with a
+supplied nonresidue \cite{AMM}; the detailed cubic correction structure was
+later made explicit by Cao, Sha, and Fan \cite{Cao}.  Sze gives deterministic
+root extraction without a supplied nonresidue under additional arithmetic
+hypotheses and explicitly warns that efficiency is conditional on the
+factor/roots-of-unity regime \cite{Sze}.  Barreto--Voloch exploit exponent
+periodicity in complementary extension regimes \cite{BV}.
+
+The classification is exact.  Finite-field root extraction with a derived
+nonresidue is a \textbf{directly transferable theorem mechanism}: its field,
+input and operations are exactly those of the residual.  Cryptographic
+root-extraction hardness is a \textbf{misleading analogy / failed transfer}:
+no hardness assumption is admissible here, and the typed subfield is instead
+an algorithmic weakness.  General deterministic root finding without the
+stated arithmetic hypotheses remains \OPEN{} and is not inferred from these
+papers.
+
+\section{Independent review of CUBEROOTSEL1}
+Let $d\ge4$ be even with $6\nmid d$, put
+$q=2^d$ and $m=(q-1)/3$.  Then $3\nmid m$.  For
+$e=3^{-1}\pmod m$, every nonzero cube $b$ lies in the subgroup of order $m$,
+so
+\[
+  (b^e)^3=b^{3e}=b^{1+km}=b.
+\]
+Zero is handled separately, and recomputation rejects off-image targets.
+The proof, bit-length accounting, affine-conjugation rule, and executable
+audit in CUBEROOTSEL1 are correct.  CUBEROOTSEL1 is therefore \EXACT{} after
+this independent review; its finite measurements remain \COMP{}.
+
+\section{Fixed-valuation subfield selector theorem}
+\begin{theorem}[fixed-$3$-adic-valuation selector]
+Fix $a\ge1$.  There is a uniform deterministic algorithm $R_a$ with runtime
+polynomial in $d$ such that, for every even $d$ satisfying $\nu_3(d)=a$, every
+explicit irreducible $f\in\mathbb F_2[X]$ of degree $d$, and every
+$b\in K=\mathbb F_2[X]/(f)$, the algorithm returns an $x$ with $x^3=b$ iff
+$b$ is a cube, and otherwise rejects.  The input contains no source preimage
+and no nonresidue advice.
+\end{theorem}
+
+\begin{proof}
+Set
+\[
+ r=2\cdot3^a,\qquad q=2^d,
+ \qquad q-1=3^{a+1}m,
+ \qquad 3\nmid m.
+\]
+Because $d/3^a$ is even, $r\mid d$.  The lifting-the-exponent identity gives
+\[
+ \nu_3(2^d-1)=1+\nu_3(d)=a+1
+ =\nu_3(2^r-1).
+\]
+Thus $K$ contains the unique subfield $K_0\cong\mathbb F_{2^r}$ and $K_0^*$
+has the full $3$-primary order of $K^*$.
+
+From the polynomial-basis representation of $K$, construct the matrix of the
+$\mathbb F_2$-linear map $z\mapsto z^{2^r}+z$.  Gaussian elimination returns
+an $r$-element basis of its kernel, namely $K_0$.  Since $a$ is fixed,
+enumerating the $2^r$ elements is a family-dependent constant.  Test each
+nonzero $c$ by
+\[
+ c^{(q-1)/3}\ne1.
+\]
+Such a $c$ exists: a generator of $K_0^*$ is not a cube in $K$ because the
+cofactor $(q-1)/(2^r-1)$ is prime to $3$.
+
+For nonzero promised cube $b$, compute $e=3^{-1}\pmod m$, $y=b^e$, and
+$\eta=c^m$.  The element $\eta$ has order $3^{a+1}$.  Because $b$ is a cube,
+$y^3/b$ lies in $\langle\eta^3\rangle$.  Therefore exactly one of the
+$3^a$ candidates
+\[
+ x_j=y\eta^j,\qquad 0\le j<3^a,
+\]
+satisfies $x_j^3=b$.  Test the candidates and return the successful one;
+return zero on $b=0$ and reject if none succeeds.  Subfield linear algebra,
+enumeration for fixed $a$, repeated squaring, candidate testing, and output
+all cost $\operatorname{poly}(d)$ bit operations under the declared field
+representation.  No source witness is accessed.
+\end{proof}
+
+The theorem is \CAND{} pending a second independent review, as required for
+project promotion.  Its proof is elementary and does not assume GRH,
+randomness, ETH, cryptographic hardness, or a root oracle.
+
+\section{Square-cotree corollary}
+For $K_{s,s}$ the cotree dimension is $d=(s-1)^2$.  Fix
+$h=\nu_3(s-1)\ge1$.  Then $\nu_3(d)=2h$ is fixed and the theorem applies.
+In particular, $s=6u+1$ with $3\nmid u$ gives an infinite family with
+$d=(6u)^2$, and its selector derives a nonresidue from the fixed subfield
+$\mathbb F_{2^{18}}$.  The first member $s=7$ has $d=36$ and unbounded
+extensions retain the same target-only algorithm.  Hence the condition
+$6\mid d$, even together with square cotree geometry and unbounded
+treewidth, is \RET{} as a sufficient hardness repair.
+
+This does not cover a single family in which $\nu_3(d)$ grows without bound.
+It also does not show that such a family is hard.  It merely sharpens the
+next hostile control: any proposed cube residual must defeat typed subfield
+discovery and nonresidue-assisted correction on its actual degrees.
+
+\section{Bounded reproducible audit}
+The dependency-free program
+\path{experiments/review/fixed_valuation_cube_selector_redteam.py} ran in
+1.702 seconds with seed 38142026.  It used exact polynomial-basis arithmetic
+and passed 7,659 assertions with zero failures:
+\begin{itemize}
+\item degrees $d=6,12,18,36$ with $\nu_3(d)=1,1,2,2$;
+\item derived subfields of degrees $6,6,18,18$ and no supplied nonresidue;
+\item 5,184 promised-image targets and 1,368 off-image rejections;
+\item 3,485 selected roots differing from the erased source root;
+\item 256 public scalar-affine conjugation controls;
+\item 192 complete $K_{7,7}$ Tseitin witness reconstructions at $d=36$;
+\item even/odd charge, malformed subfield degree, irreducibility, target
+verification, and off-image controls.
+\end{itemize}
+The finite audit is \COMP{}.  It checks only $a=1,2$; the general fixed-$a$
+claim rests on the symbolic proof, not runtime extrapolation.  Raw output is
+\path{results/raw/review/2026-10-14_0038_fixed_valuation_cube_selector.json}.
+The code SHA-256 is
+\texttt{fe6a33517c02d112b0f0acd892d659d81a996578ef20686c63e90f7dcfc7c7d1}.
+
+\section{Hostile controls and barrier audit}
+The selector has full target access, polynomial workspace, explicit field
+arithmetic, and charged subfield discovery, nonresidue search, correction,
+verification, forest reconstruction, and output.  It is source-independent,
+survives public affine phase/scaling changes, and rejects off-image targets.
+Horn, Krom, affine Gaussian elimination, bounded-treewidth, products,
+renaming, complementation, and padding remain easy-family controls from the
+verified predecessor suite; none is used to infer this theorem.
+
+The firewall relativizes and algebrizes: semantic or algebraic oracle access
+can only make the displayed selector easier.  Natural Proofs is not invoked.
+Restricted DNNF, PC/PCR, Resolution, pebbling, one-tape, circuit, or
+communication lower bounds supply no same-realization runtime lower bound.
+DEAD/COPY/DELAY wrappers do not remove the selector; INTERP/RECOMP can execute
+it directly.  Program length is distinct from workspace, and no fixed
+percentage overhead is promoted to an exponent gap.
+
+For the post-quantum ledger, the finite-field multiplication and subfield
+object are an \textbf{EXACT OBJECT/THEOREM TRANSFER}.  Schur-square,
+quadratic-relation, Hilbert/syzygy, collision-entropy, and LWE-style external
+extraction ideas are \textbf{FAILED TRANSFERS} to unrestricted runtime here:
+the algebraic structure is explicitly exploitable by the selector.  Generic
+binding language is only an \textbf{ANALOGY/CANDIDATE} and supplies no
+unconditional lower bound.
+
+\section{CORPUS REVIEWED}
+The run surveyed the current GitHub tree; root \path{main.tex};
+\path{AGENTS.md}, \path{CODEX.md}, the complete PNP research skill and all
+seven task specifications; newest MAIN PROMISEGATE1 and historical
+CUBEPERMFW1; AFFINE-RESIDUAL-REDIRECT1, EARLY22-INTEGRATION1 and
+SINGLE22-SEPARATION1; AFFINE-RESIDUAL-RANK1; the CCSPC, HEC, G-PPC-HEC and
+CRS-PPC causal components; current PLANTEDCUBEFW1, CUBEROOTSEL1,
+CHECKABLEPERM1 and relevant LSPV-3 firewall reports; and the exact predecessor
+code/raw output.  The immediately preceding LSPV-2 report has a verified
+header, substantive body and final sentinel, so no write recovery was needed.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+Repository searches for fixed $3$-adic valuation, subfield cubic nonresidue,
+AMM cube correction, and unbounded valuation found no prior project theorem
+matching VALSUBCUBEFW1.  CUBEROOTSEL1 handles only $\nu_3(d)=0$ by exponent
+inversion.  PLANTEDCUBEFW1 uses a source section.  CUBEPERMFW1 handles odd
+$d$.  The present target-only subfield selector is therefore new to the
+corpus and contradicts no valid prior theorem.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+\begin{itemize}
+\item CUBEROOTSEL1 is independently verified and may be promoted from
+\CAND{} to \EXACT{} by synthesis.
+\item The root statement that $6\mid d$ is an open algorithmic case remains
+literally true in full generality, but is too coarse: every fixed
+$\nu_3(d)$ stratum has a polynomial selector.
+\item The repair ``require $6\mid d$'' is retired as sufficient, including
+an infinite genuine $K_{s,s}$ square-cotree subtype.
+\item The unrestricted lower-bound arrow and P versus NP status are unchanged.
+\end{itemize}
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\textbf{Adopted:} strict typed-field recognition, polynomial-basis
+arithmetic, target verification, the exact forest lift, and all valid
+exact-$(2,2)$ compiler/proof-system results at their restricted scope.
+\textbf{Rejected:} an unstated nonresidue, probabilistic expected time, or a
+cryptographic root-extraction assumption as an unconditional selector.
+\textbf{Retired:} divisibility by six, square cotree geometry, and erased
+source roots as a sufficient joint obstruction on fixed-valuation strata.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+The phrase ``remaining $6\mid d$ cube subtype'' in CUBEROOTSEL1 is not false,
+but it overstates how much of that region remains algorithmically unresolved.
+Only strata with unbounded $\nu_3(d)$ evade this fixed-subfield enumeration;
+even there, no hardness conclusion follows.  No valid compiler, affine
+elimination, projected-rank, or restricted proof-system theorem is affected.
+
+\section{Status and handoff}
+\begin{center}
+\begin{tabularx}{0.98\linewidth}{p{0.39\linewidth}p{0.20\linewidth}X}
+\toprule
+Claim & Status & Scope \\
+\midrule
+CUBEROOTSEL1 image exponent theorem & \EXACT & Independent red-team proof review complete \\
+Fixed-$\nu_3(d)$ subfield selector & \CAND & Complete proof here; second review pending \\
+Finite field/affine/$K_{7,7}$ audit & \COMP & 7,659 assertions, zero failures \\
+$6\mid d$ as sufficient cube repair & \RET & Infinite fixed-valuation square-cotree subtype is easy \\
+Unbounded-$\nu_3(d)$ target selector & \OPEN & Fixed-subfield enumeration no longer polynomial uniformly \\
+Unrestricted all-program lower bound & \OPEN & No model-matched transfer \\
+P versus NP separation & \OPEN & Load-bearing implication remains open \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{Single next target.}  Audit the unbounded-$\nu_3(d)$ regime using a
+uniform tower algorithm: derive the required $3$-primary generator without
+enumerating $2^{2\cdot3^{\nu_3(d)}}$ elements, and test Sze-style
+nonresidue-free extraction on the exact typed representation.  Failure of
+known algorithms is not a lower bound.
+
+\bigskip
+\noindent P versus NP remains open.
+
+\begin{thebibliography}{9}
+\bibitem{AMM}
+L. Adleman, K. Manders, and G. Miller,
+\emph{On Taking Roots in Finite Fields}, 18th FOCS, 1977, 175--178.
+\bibitem{Cao}
+Z. Cao, Q. Sha, and X. Fan,
+\emph{Adleman--Manders--Miller Root Extraction Method Revisited},
+arXiv:1111.4877, 2011.
+\bibitem{Sze}
+T.-W. Sze,
+\emph{On Taking $r$-th Roots without $r$-th Nonresidues over Finite Fields
+and Its Applications}, arXiv:1105.5852, 2011.
+\bibitem{BV}
+P. S. L. M. Barreto and J. F. Voloch,
+\emph{Efficient Computation of Roots in Finite Fields},
+Designs, Codes and Cryptography 39 (2006), 275--280.
+\end{thebibliography}
+
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-3::VALSUBCUBEFW1
