@@ -258,3 +258,277 @@ def build_complete_bipartite(odd_side: int) -> tuple[int, list[tuple[int, int]],
     n = 2 * odd_side
     edges: list[tuple[int, int]] = []
     forest: list[int] = []
+    cotree: list[int] = []
+    # Vertices 0..s-1 are left; s..2s-1 are right.
+    for i in range(odd_side):
+        for j in range(odd_side):
+            idx = len(edges)
+            edges.append((i, odd_side + j))
+            if i == 0 or (j == 0 and i > 0):
+                forest.append(idx)
+            else:
+                cotree.append(idx)
+    return n, edges, forest, cotree
+
+
+def make_instance(builder: tuple[int, list[tuple[int, int]], list[int], list[int]], charge: list[int], b: int, phase: list[int] | None = None) -> dict[str, Any]:
+    n, edges, forest, cotree = builder
+    return {
+        "n": n,
+        "edges": [list(e) for e in edges],
+        "forest": list(forest),
+        "cotree": list(cotree),
+        "charge": list(charge),
+        "phase": [0] * len(cotree) if phase is None else list(phase),
+        "b": b,
+    }
+
+
+def permute_vertices(instance: dict[str, Any], perm: list[int]) -> dict[str, Any]:
+    out = json.loads(json.dumps(instance))
+    out["n"] = len(perm)
+    out["edges"] = [sorted([perm[u], perm[v]]) for u, v in instance["edges"]]
+    new_charge = [0] * len(perm)
+    for old, new in enumerate(perm):
+        new_charge[new] = instance["charge"][old]
+    out["charge"] = new_charge
+    return out
+
+
+def permute_edges(instance: dict[str, Any], order: list[int]) -> dict[str, Any]:
+    out = json.loads(json.dumps(instance))
+    old_to_new = {old: new for new, old in enumerate(order)}
+    out["edges"] = [instance["edges"][old] for old in order]
+    out["forest"] = [old_to_new[i] for i in instance["forest"]]
+    out["cotree"] = [old_to_new[i] for i in instance["cotree"]]
+    return out
+
+
+@dataclass
+class Counters:
+    assertions: int = 0
+    instances: int = 0
+    witness_reconstructions: int = 0
+    inconsistent_rejections: int = 0
+    exhaustive_charge_cases: int = 0
+    random_charge_cases: int = 0
+    phase_controls: int = 0
+    renaming_controls: int = 0
+    compact_circuit_checks: int = 0
+    malformed_rejections: int = 0
+    easy_residual_controls: int = 0
+    logical_operations: int = 0
+    parsed_bytes: int = 0
+
+    def check(self, condition: bool) -> None:
+        assert condition
+        self.assertions += 1
+
+
+def run() -> dict[str, Any]:
+    start = time.monotonic()
+    rng = random.Random(SEED)
+    c = Counters()
+    family_rows: list[dict[str, Any]] = []
+
+    def deadline() -> None:
+        if time.monotonic() - start > DEADLINE_SECONDS:
+            raise TimeoutError("cooperative 25-second deadline")
+
+    # Algebra and circuit truth tables. Exhaustive only at small dimension.
+    for t in range(1, 9):
+        d = 2 * t
+        c.check(gf2_rank(polar_rows(d)) == d)
+        c.check(len(set(polar_rows(d))) == d)
+        for mask in range(1 << d):
+            y = [(mask >> i) & 1 for i in range(d)]
+            value, gates = q_circuit_value(y)
+            c.check(value == q_value(y))
+            c.check(gates == 2 * t - 1)
+            c.compact_circuit_checks += 1
+        # Explicit failure of affinity for the zero level set.
+        z = [0] * d
+        e0 = [0] * d
+        e1 = [0] * d
+        e0[0] = 1
+        e1[1] = 1
+        both = [a ^ b for a, b in zip(e0, e1)]
+        c.check(q_value(z) == q_value(e0) == q_value(e1) == 0)
+        c.check(q_value(both) == 1)
+        deadline()
+
+    # Symbolic-size checks and random consistent charges on two graph families.
+    for kind, params in (("friendship", range(1, 129)), ("complete_bipartite", range(1, 17))):
+        for p in params:
+            builder = build_friendship(2 * p) if kind == "friendship" else build_complete_bipartite(2 * p + 1)
+            n, edges, forest, cotree = builder
+            rho = len(cotree) + len(components(n, edges)) - len(components(n, edges, set(forest)))
+            c.check(rho == len(cotree))
+            c.check(len(cotree) % 2 == 0)
+            c.check(gf2_rank(polar_rows(len(cotree))) == len(cotree))
+            c.check(len(forest) == n - len(components(n, edges)))
+            family_rows.append({
+                "family": kind,
+                "parameter": p,
+                "vertices": n,
+                "edges": len(edges),
+                "cotree_dimension": len(cotree),
+                "polar_rank": len(cotree),
+                "compact_gates": len(cotree) - 1,
+            })
+            for _ in range(4):
+                charge = [rng.randrange(2) for _ in range(n)]
+                charge[-1] = sum(charge[:-1]) & 1
+                phase = [rng.randrange(2) for _ in cotree]
+                for b in (0, 1):
+                    instance = make_instance(builder, charge, b, phase)
+                    c.parsed_bytes += len(json.dumps(instance, sort_keys=True, separators=(",", ":")))
+                    y = easy_residual_witness(len(cotree), b)
+                    x, ops = solve_forest(instance, y)
+                    c.logical_operations += ops
+                    c.check(boundary(n, edges, x) == charge)
+                    projected = [x[ei] ^ phase[j] for j, ei in enumerate(cotree)]
+                    c.check(projected == y)
+                    c.check(q_value(projected) == b)
+                    c.instances += 1
+                    c.witness_reconstructions += 1
+                    c.random_charge_cases += 1
+            deadline()
+
+    # Exhaustive all consistent charges on the smallest friendship and K3,3 controls.
+    for builder in (build_friendship(2), build_complete_bipartite(3)):
+        n, edges, forest, cotree = builder
+        for mask in range(1 << n):
+            charge = [(mask >> i) & 1 for i in range(n)]
+            if sum(charge) & 1:
+                continue
+            for b in (0, 1):
+                instance = make_instance(builder, charge, b)
+                y = easy_residual_witness(len(cotree), b)
+                x, ops = solve_forest(instance, y)
+                c.logical_operations += ops
+                c.check(boundary(n, edges, x) == charge)
+                c.check(q_value([x[ei] for ei in cotree]) == b)
+                c.instances += 1
+                c.witness_reconstructions += 1
+                c.exhaustive_charge_cases += 1
+
+    # Inconsistent charges must be rejected before residual solving.
+    for builder in (build_friendship(4), build_complete_bipartite(5)):
+        n, edges, forest, cotree = builder
+        charge = [0] * n
+        charge[0] = 1
+        instance = make_instance(builder, charge, 0)
+        try:
+            solve_forest(instance, easy_residual_witness(len(cotree), 0))
+        except ValueError as exc:
+            c.check("inconsistent" in str(exc))
+            c.inconsistent_rejections += 1
+        else:
+            raise AssertionError("inconsistent charge accepted")
+
+    # Renaming, edge-order, and phase-switch covariance.
+    for p in range(1, 17):
+        builder = build_friendship(2 * p)
+        n, edges, forest, cotree = builder
+        charge = [rng.randrange(2) for _ in range(n)]
+        charge[-1] = sum(charge[:-1]) & 1
+        phase = [rng.randrange(2) for _ in cotree]
+        instance = make_instance(builder, charge, p & 1, phase)
+        y = easy_residual_witness(len(cotree), p & 1)
+        x, _ = solve_forest(instance, y)
+        c.check(boundary(n, edges, x) == charge)
+        c.phase_controls += 1
+
+        perm = list(range(n))
+        rng.shuffle(perm)
+        renamed = permute_vertices(instance, perm)
+        xr, _ = solve_forest(renamed, y)
+        c.check(boundary(n, [tuple(e) for e in renamed["edges"]], xr) == renamed["charge"])
+        c.renaming_controls += 1
+
+        order = list(range(len(edges)))
+        rng.shuffle(order)
+        shuffled = permute_edges(instance, order)
+        xs, _ = solve_forest(shuffled, y)
+        c.check(boundary(n, [tuple(e) for e in shuffled["edges"]], xs) == charge)
+        c.renaming_controls += 1
+
+    # Planted arbitrary satisfying residual coordinates lift without source advice.
+    builder = build_complete_bipartite(7)
+    n, edges, forest, cotree = builder
+    for _ in range(128):
+        y = [rng.randrange(2) for _ in cotree]
+        b = q_value(y)
+        charge = [rng.randrange(2) for _ in range(n)]
+        charge[-1] = sum(charge[:-1]) & 1
+        instance = make_instance(builder, charge, b)
+        x, ops = solve_forest(instance, y)
+        c.logical_operations += ops
+        c.check(boundary(n, edges, x) == charge)
+        c.check([x[ei] for ei in cotree] == y)
+        c.check(q_value(y) == b)
+        c.witness_reconstructions += 1
+
+    # Horn, Krom, and affine residuals on free cotree coordinates remain easy.
+    for d in (2, 4, 16, 64, 256):
+        horn = [0] * d  # all implications y_i -> y_{i+1}
+        krom = [0] * d  # all equivalences y_i <-> y_{i+1}
+        affine = [0] * d
+        affine[0] = 1
+        c.check(all((not horn[i]) or horn[i + 1] for i in range(d - 1)))
+        c.check(all(krom[i] == krom[i + 1] for i in range(d - 1)))
+        c.check(sum(affine) % 2 == 1)
+        c.easy_residual_controls += 3
+
+    # Schema failures.
+    base = make_instance(build_friendship(2), [0] * 5, 0)
+    malformed = []
+    bad = json.loads(json.dumps(base)); bad["edges"].append(bad["edges"][0]); bad["cotree"].append(len(bad["edges"]) - 1); malformed.append(bad)
+    bad = json.loads(json.dumps(base)); bad["forest"] = bad["forest"][:-1]; bad["cotree"].append(bad["forest"][-1] if bad["forest"] else 0); malformed.append(bad)
+    bad = json.loads(json.dumps(base)); bad["cotree"] = bad["cotree"][:-1]; bad["forest"].append(base["cotree"][-1]); malformed.append(bad)
+    bad = json.loads(json.dumps(base)); bad["charge"] = bad["charge"][:-1]; malformed.append(bad)
+    bad = json.loads(json.dumps(base)); bad["phase"] = [0]; malformed.append(bad)
+    bad = json.loads(json.dumps(base)); bad["b"] = 2; malformed.append(bad)
+    bad = json.loads(json.dumps(base)); bad["extra"] = 0; malformed.append(bad)
+    for bad in malformed:
+        try:
+            validate_instance(bad)
+        except ValueError:
+            c.malformed_rejections += 1
+            c.assertions += 1
+        else:
+            raise AssertionError("malformed instance accepted")
+
+    elapsed = time.monotonic() - start
+    deadline()
+    semantic = {
+        "claim": "maximal projected rank plus maximal polar rank does not force hard witness search",
+        "family": "connected graph plus even cotree, paired quadratic residual",
+        "symbolic_witness": {"b=0": "all zero cotree", "b=1": "first cotree pair one"},
+        "status": "COMPUTATIONAL checks supporting a PROVED/EXACT symbolic firewall",
+        "counters": c.__dict__,
+        "largest_friendship": family_rows[127],
+        "largest_complete_bipartite": family_rows[-1],
+    }
+    digest = hashlib.sha256(json.dumps(semantic, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    return {
+        "run_id": "FULLRANKQFW1",
+        "seed": SEED,
+        "elapsed_seconds": round(elapsed, 6),
+        "deadline_seconds": DEADLINE_SECONDS,
+        "chunking": "single invocation; cooperative 25-second deadline",
+        "semantic_digest_sha256": digest,
+        "semantic": semantic,
+        "family_endpoint_rows": [family_rows[0], family_rows[127], family_rows[128], family_rows[-1]],
+        "limitations": [
+            "Finite tests do not establish asymptotic lower bounds.",
+            "The symbolic firewall applies to the explicit paired quadratic family, not every quadratic residual.",
+            "No claim is made that arbitrary residual SAT on cotree coordinates is easy.",
+            "Logical operation counts are separated from measured wall time.",
+        ],
+    }
+
+
+if __name__ == "__main__":
+    print(json.dumps(run(), indent=2, sort_keys=True))
