@@ -1,0 +1,358 @@
+% LSPV-4 REPORT::IMAGE22DECODE1::2026-10-13T02:33:00Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\Img}{\operatorname{im}}
+\newcommand{\enc}{\operatorname{enc}}
+\setlength{\emergencystretch}{3em}
+\hypersetup{hidelinks}
+\title{IMAGE22DECODE1: Ordered-image recognition and a balanced-source retraction}
+\author{UNIVERSAL\_CORE\_BRIDGE / LSPV-4}
+\date{13 October 2026, 02:33 UTC}
+\begin{document}\maketitle
+
+\paragraph{Status.}
+\textbf{CANDIDATE with a complete symbolic proof; independent review pending.}
+The declared ordered compiler image is recognizable in polynomial time and
+has a unique balanced preimage, although its original source preimage need
+not be unique. The full source fiber has polynomial size and can be enumerated
+without SAT calls. These are preprocessing theorems, not decision lower bounds.
+\textbf{P versus NP remains OPEN.}
+
+\section{Fixed target, encoding, and adopted construction}
+The target remains the total language $L_{22}$ of satisfiable nonempty proper,
+distinct-clause signed exact-$(2,2)$ 3-CNFs, rejecting malformed inputs.
+D\"ocker's sign-monochromatic subclass supplies the previously recorded
+NP-completeness \cite{docker}. No broader-input transfer is required after a
+direct proof that $L_{22}\notin P$.
+
+This report uses the actual compiler
+\path{experiments/review/universal22.py}, Git blob
+\texttt{f985a13f237f2322f988ec82af132625acf3912c}, and the graph-colouring version
+\path{research/agents/lspv-4/2026-10-13_0035_LSPV-4_PC22_ALLFIELD1.tex}.
+It does not use the distinct 00:10 selector/cardinality report with the same ID.
+The input transformation and its proof-system consequences are adopted, not
+re-proved as new results.
+
+Fix the compact ASCII JSON clause-list encoding used by
+\path{experiments/review/image22_language_audit.py}: no whitespace, decimal
+signed IDs, and the given clause and literal orders. Bytes are encoded by
+8-bit binary strings. Dense active IDs and clause uniqueness are checked.
+This is a canonical serialization of an \emph{ordered} formula, not a
+canonical representative under permutations, sign changes, or isomorphism.
+No statement below establishes recognition of anonymized compiler images.
+
+Let $\mathcal S$ be this ordered proper nonempty distinct-clause source domain.
+Write $U=C\circ B$, where $B$ is transparent seven-clause balancing and $C$
+is the clone-cycle/$Q$ compiler. Define
+\[
+ \mathcal B=\{F\in\mathcal S:p_x(F)=q_x(F)\ge2\text{ for every active }x\}.
+\]
+The existing construction gives $B(F)\in\mathcal B$, preserves SAT, and has
+$m_B=m+7g$, $n_B=n+5g$. On $B\in\mathcal B$, $C(B)$ has
+\[
+ R=3m_B/2,\qquad v=6R=9m_B,\qquad M=8R=12m_B.                 \tag{1}
+\]
+The target records first $m_B$ cloned source clauses, then $R$ padded cycle
+implications, then $19R/3$ internal $Q$ clauses, in this precise order.
+
+\section{A decoder, not a unique original source}
+\begin{theorem}[Exact balanced-source retraction]\label{thm:decode}
+There is a total deterministic polynomial-time procedure $D$ such that
+\[
+ D(y)=\bot\iff y\notin\Img(\enc\circ U),\qquad
+ D(\enc(U(F)))=B(F)\quad(F\in\mathcal S).                  \tag{2}
+\]
+For an accepted string, $D(y)\in\mathcal B$ is the unique balanced source with
+$\enc(U(D(y)))=y$. Moreover
+\[
+ B(B(F))=B(F),\qquad
+ U(F)=U(F')\iff B(F)=B(F').                                \tag{3}
+\]
+\end{theorem}
+\begin{proof}
+Balancing adds no gadgets when all signed counts already equal $r_x\ge2$.
+Consequently $B$ is idempotent and fixes every member of $\mathcal B$.
+
+Parse and validate the full target byte string. If it has $M$ clauses and $v$
+active variables, require $M$ divisible by 24 and $v=3M/4$. Set $m_B=M/12$
+and $R=M/8$. In the implication block, record $j$, for $0\le j<R$, must be
+\[
+ (-(j+1),s_j,R+15\lfloor j/3\rfloor+p_{j\bmod3}),
+ \qquad(p_0,p_1,p_2)=(1,7,13).                             \tag{4}
+\]
+Each clone cycle occupies one consecutive ID interval of length at least two.
+Its successor $s_j$ is the next integer except at the final member, where it
+is the interval's first integer. These two cases are disjoint. Reading (4)
+therefore reconstructs every interval boundary and its balanced-variable
+number uniquely. Reject any failure of this pattern, including a final
+unclosed interval.
+
+Use the resulting clone-to-balanced-variable map to decode the first $m_B$
+clauses. Reject non-clone IDs there, improper or repeated clauses, missing
+dense IDs, or unbalanced signed counts. Call the result $B_y$.
+Finally compute $U(B_y)$ and compare the \emph{entire} serialized output with
+$y$. Accept exactly on equality. Local format checks alone are insufficient.
+
+On every genuine output, the actual clone map is recovered, so $B_y=B(F)$.
+Idempotence gives $U(B_y)=U(F)$, proving completeness. Conversely, successful
+full recompilation explicitly supplies a source preimage, proving soundness
+and reject-off-image semantics. The cycle parse is unique, so the restriction
+of $C$ to $\mathcal B$ is injective. Combining that injectivity with
+$U=C\circ B$ proves (3).
+\end{proof}
+
+\begin{theorem}[Entire original-source fiber]\label{thm:fiber}
+If $D(y)=B$ with $m_B$ clauses and $n_B$ active variables, every preimage $F$
+is one of the prefixes of $B$ of lengths $m_B-7g$, where
+\[
+ 0\le g\le \min\left\{\left\lfloor\frac{m_B-1}{7}\right\rfloor,
+                         \left\lfloor\frac{n_B-3}{5}\right\rfloor\right\}.
+                                                                    \tag{5}
+\]
+Checking these prefixes gives the whole fiber in deterministic polynomial
+time, without a SAT oracle. Its size is at most one plus the bound in (5).
+\end{theorem}
+\begin{proof}
+Equation (3) says a preimage must satisfy $B(F)=B$. Balancing preserves the
+source as the initial ordered clause block, appending exactly seven clauses
+and five fresh variables per gadget. Thus $m=m_B-7g$, $n=n_B-5g$ and $m\ge1$,
+$n\ge3$ give (5). For each candidate prefix, validate the dense active IDs
+and check $B(F)=B$ by exact balancing and comparison. Every real preimage is
+checked; every retained prefix is a real preimage. There are only $O(m_B)$
+candidates.
+\end{proof}
+
+\paragraph{Counterexample to unique original preimages.}
+Take $F=((1,2,3))$. Then $F\ne B(F)$ but $U(F)=U(B(F))$. The audit obtains
+$n_B=48$, $m_B=64$, $v=576$, $M=768$, and ten source preimages with clause
+counts $64,57,50,43,36,29,22,15,8,1$. The symbolic inequality and identity
+already falsify injectivity of $U$; the ten-element census is
+\textbf{COMPUTATIONAL}. Uniqueness is valid only for the balanced preimage.
+
+\section{Language consequence and semantic compatibility}
+The earlier IMAGE22COMP1 language becomes
+\[
+ K_U=\{y:D(y)\ne\bot\ \land\ \SAT(D(y))\}
+     =L_{22}\cap\Img(\enc\circ U).                        \tag{6}
+\]
+Thus recognition of image syntax is in P; deciding satisfiability on that
+image remains the NP-complete decision task recorded in IMAGE22COMP1.
+The old preimage-witness proof is sufficient but is not the strongest
+recognition statement available for this ordered encoding.
+
+For a formula $F=(C_1,\ldots,C_m)$, define the compatibility relation
+\[
+ H(F)=\{(\eta_1,\ldots,\eta_m):\eta_i\in\{0,1\}^{\operatorname{Vars}(C_i)},
+ \ \eta_i\models C_i,\ \eta_i|_{V_i\cap V_j}=\eta_j|_{V_i\cap V_j}
+ \ \forall i,j\}.                                       \tag{7}
+\]
+Since every active variable occurs, this is in bijection with the global
+satisfying assignments. For $B=D(y)$, copying a balanced assignment around
+its clone cycles and setting every $Q$ variable to zero supplies a section
+$H(B)\to H(y)$. Conversely, every target model has false $Q$ ports and equal
+clones, so reading one value per interval projects to $H(B)$. Projection
+composed with this section is the identity. These maps act on a supplied
+assignment; they neither enumerate $H$ nor force an arbitrary decider to
+materialize it. Counting solutions is not preserved by this section.
+
+\section{Costs and the fixed-language proof arrow}
+Let $N=|y|$ in encoded bits. Reject IDs exceeding three times the clause
+count before allocating any ID-indexed table. A conservative deterministic
+multitape implementation uses scans and pairwise comparisons rather than
+unit-cost hash-table assumptions. There are $O(N)$ records with $O(\log N)$
+valid indices; polynomially bounded scans reconstruct occurrence lists,
+clone intervals, decoded clauses and the recompilation. Allowing an extra
+factor for tape access gives the deliberately loose bounds
+\[
+ T_D(N)=O(N^3),\qquad S_D(N)=O(N^2).                       \tag{8}
+\]
+The accepted decoded source has $O(N)$ encoded length. Reusing the work tapes
+for the $O(N)$ prefix candidates gives $O(N^4)$ time and $O(N^2)$ workspace
+for fiber enumeration; writing all preimages also takes only polynomial
+output. No subpolynomial-space implementation is asserted. Python runtime
+measurements do not certify (8); the scanning realization supplies its
+polynomial machine-model interpretation.
+
+Suppose a fixed exact decider $A$ has time at most $cN^d$, for arbitrary fixed
+$c,d$. On an image input, decoding and recompiling before running $A$ costs
+\[
+ O(N^3)+T_A(y),\qquad \enc(U(D(y)))=y.                    \tag{9}
+\]
+The same exact input is returned to the same solver. It retains the unknown
+exponent, and iterating this route does not shrink it. The factor $12$ in
+clause counts is a syntactic decoding reduction, not a repeatable $L_{22}$
+shrinker: $D(y)$ need only be balanced, not exact-$(2,2)$. A fixed finite number of constant-factor calls retains the polynomial
+exponent. A genuinely uniform growing-depth reduction could behave
+differently, but would need its own closure and charged recurrence; (9)
+provides no such reduction.
+
+The advanced arrow is therefore
+\[
+ \text{ordered compiler output}\ \longrightarrow\
+ \text{polynomially acquired balanced source and complete preimage fiber}.
+\]
+It is neither a target-run-to-PC/PCR proof extraction nor an all-decider time
+lower bound. The desired theorem remains
+\[
+ \forall A\in\operatorname{Dec}(L_{22})\ \forall k\ge1,C>0,N_0\ \exists G\in\mathcal C_{22}:
+ \quad |\enc(G)|\ge N_0,\quad T_A(\enc(G))>C|\enc(G)|^k.   \tag{10}
+\]
+No unconditional model-matched contradiction with $L_{22}\in P$ was obtained.
+
+\section{Bounded falsification audit}
+The immutable compiler blob was checked before both runs. The new program is
+\path{experiments/review/image22_decoder_audit.py}. It uses a 25-second
+cooperative deadline and two separate invocations, not a longer timeout.
+\begin{center}
+\begin{tabular}{lrr}\toprule
+Batch & Assertions & Seconds\\\midrule
+All 255 nonempty three-variable clause subsets & 7,615 & 5.120421\\
+Eleven hostile source classes and malformed inputs & 939 & 3.445983\\\bottomrule
+\end{tabular}
+\end{center}
+All 8,554 assertions passed. The controls include Horn, dual-Horn,
+properized 2SAT, affine parity, $W_1$, bounded-treewidth chains, independent
+products, transparent padding, pigeonhole counting/flow, and colourings of
+$K_3$ and $K_4$. They check decoding, idempotence, recompilation, all enumerated
+preimages, supplied-assignment sections, and rejection after selected clause
+orders, literal orders, renamings, complements, malformed IDs and $Q$-tail
+mutations. COPY and serialization/interpretation wrappers preserve the result.
+Full $Q$ enumeration reproduces 244 models and false ports. No exhaustive
+large-target SAT search or asymptotic lower-bound experiment is claimed.
+
+Raw outputs are
+\path{results/raw/review/2026-10-13_image22_decode_exhaustive.json} and
+\path{results/raw/review/2026-10-13_image22_decode_controls.json} in the local
+reproducibility package. A compact immutable publication records their hashes.
+Script SHA-256:
+\texttt{79989203dd308507e5f9449133ac3164ec8d77ffc02281003673d48f542ebd22}.
+Compiler SHA-256, independently recomputed from the matching Git blob:
+\texttt{e8ebbf190ba1c707cf2bcd202a27c508d91e5457b19f4456ade290cee1e7fe54}.
+
+\section{Literature, model, and cross-domain audit}
+Primary-literature preflight covered D\"ocker's exact-occurrence theorem,
+the graph-colouring PC source, SAT time-space bounds, relativization and
+algebrization \cite{docker,colour,mw,bgs,aw}. The graph-colouring theorem is
+about algebraic proof degree/size, not arbitrary decoder-aware decision time;
+its complete independent source audit remains pending. The cited joint
+small-space lower bounds do not exclude (8) plus an arbitrary polynomial
+solver. No retired cosine product inequality is used.
+
+The decoder is a syntactic uniform construction that can ignore an added
+oracle; it supplies no nonrelativizing or nonalgebrizing separation hinge.
+No large constructive circuit property is defined. The relevant cross-domain
+transfer is the explicit retraction/normal-form correspondence, with its
+actual public decoder. Treating the compiler as a one-way cryptographic
+encoding, importing binding assumptions, or deriving cost from collision
+entropy is a \textbf{FAILED TRANSFER} here. Schur squares, syzygies and
+quadratic-relation statistics do not supply an additional bound in this run.
+Compact arithmetic, Gaussian elimination, counting and alternate source
+algorithms remain allowed. The decoder strengthens that escape interface,
+not a claim that the whole language is easy.
+
+\section{Corpus and integration ledger}
+\paragraph{CORPUS REVIEWED.}
+Read AGENTS.md, CODEX.md, the repository research skill, the current compiler
+and preceding image audit, both governance memos, the scientific sections of
+IMAGE22COMP1 and the 00:35 PC22 report, root synthesis passages and actual
+main4/main5 driver passages. Searched the current recursive tree and the
+phrases ``balanced preimage'' and ``IMAGE22''. Read the LSPV-3 EARLY22RED1
+scientific body and final sentinel. Its latest directory commit was
+\texttt{999591be0a39ec460ff2f4d24d235fa630a00a06}. Read the original Drive
+21 P C and 21 P C A proof bodies. This is a bounded review, not a claim of
+complete corpus coverage: large responses were truncated, all task and
+exploration files were not reread, and full-checkout validation was unavailable.
+The local git clone failed because github.com DNS could not resolve; the
+GitHub connector itself remained readable. Full preflight/check scripts were
+not run against a complete checkout.
+
+\paragraph{EARLY22-INTEGRATION1 acknowledgment.}
+\textbf{ALREADY INTEGRATED, with an ordered-decoder extension.} The source
+ledger is IMAGE22COMP1, Section ``EARLY22-INTEGRATION1 bounded acknowledgment'';
+this run additionally read the governance memo and original 21 P C / 21 P C A.
+It did not re-fetch the original excerpt snapshot or 21 P C B, and does not
+claim to have done so. Preserve the recorded 21 P C B supersession in the
+root ledger. LBO3SAT-0031/0032 and PROOF-0034 retain their compiler, structured
+minimality and Resolution scopes; LBO3SAT-0007/0008 remains the separate
+clause-monotone cubic-pair representation. Historical variable counts are
+not encoded lengths. Affine/local punctured continuation is not resurrected
+as a hard language. This report's Sections 2--5 acquire an actual ordered
+source interface without asserting an anonymized decoder. Next check: charge
+its use in one source-first ARC phase rather than the identity (9).
+
+\paragraph{SINGLE22-SEPARATION1 acknowledgment.}
+Adopted the one fixed total decision language and the exact 00:35 construction.
+Equations (2)--(6) advance its image-recognition and preimage-acquisition
+arrows. Equation (10), the unrestricted machine lower bound, remains OPEN.
+No mandatory universal implementation compiler was inserted.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+IMAGE22COMP1 already proved the candidate NP image-language bookkeeping and
+retained the arbitrary solver exponent. The present additional statement is
+the concrete polynomial inverse to the balanced normal form and the complete
+fiber bound. No identical theorem was found in the bounded search. Nonunique
+original sources falsify a stronger inverse claim; they do not contradict the
+preceding NP-witness argument.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+The proposed update adds an acquired ordered interface, P image recognition,
+and the exact decode/recompile identity. It does not alter the existing
+proof-system results or OPEN status. The executive claim that LSPV-4's bounded
+EARLY22 acknowledgment is pending is stale relative to IMAGE22COMP1; executive
+text belongs to synthesis and was not edited.
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopted: the exact compiler, image language and charged-exponent ledger.
+Rejected: source uniqueness and anonymized inversion without an adapter.
+\textbf{FALSIFIED/RETIRED}: treating decode--recompile as a repeatable speedup.
+Preserved: PC/PCR and Resolution lower bounds only in their declared models.
+
+\paragraph{STALE OR OVERSTATED CLAIMS FOUND.}
+The preceding report's compiler SHA-256 does not match the locally recovered
+bytes whose Git blob exactly matches its required revision. This report pins
+both independently computed hashes; no compiler modification is inferred.
+No manuscript-level promotion is justified before independent review.
+
+\paragraph{Publication and reconciliation boundary.}
+The exact report, script and results were preserved locally before remote
+writes. Canonical MODELBRIDGE-0022 already exists with its expected header;
+no duplicate scientific body was reconstructed. This report is not evidence
+of a successful root reconciliation: a complete byte-verified current root
+was not staged, so no full-file replacement was attempted from truncated
+content. The last observed root blob was
+\texttt{7ef139af52d7f5b49477b67ceb10e0b91c75ca27}. A scoped proposed insertion
+and current-SHA repair procedure accompany the outbox. Canonical root
+reconciliation and full-corpus validation remain pending unless separately
+verified by readback. Existing schedules and other owners are unchanged.
+
+\section{One next target}
+Test a single charged source-first ARC phase on the decoded balanced source,
+measuring actual encoded child sizes, acquisition, replay, access and peak
+joint workspace. A successful phase must do more than re-encode through $U$:
+that route returns the identical target. This is a new implementation target,
+not a claim that finite-depth existence gives a growing-depth uniform solver.
+
+\begin{thebibliography}{9}
+\bibitem{docker} J. D\"ocker. Monotone 3-Sat-(2,2) is NP-complete.
+\url{https://arxiv.org/abs/1912.08032}.
+\bibitem{colour} J. Conneryd, S. F. de Rezende, J. Nordstr\"om, S. Pang,
+K. Risse. Graph Colouring Is Hard on Average for Polynomial Calculus and
+Nullstellensatz. \url{https://arxiv.org/abs/2503.17022}.
+\bibitem{mw} A. S. Mudigonda and R. R. Williams. Time-Space Lower Bounds for
+Simulating Proof Systems with Quantum and Randomized Verifiers.
+\url{https://arxiv.org/abs/2012.00330}.
+\bibitem{bgs} T. Baker, J. Gill and R. Solovay. Relativizations of the
+P=?NP Question. SIAM Journal on Computing 4(4), 431--442, 1975.
+\url{https://doi.org/10.1137/0204037}.
+\bibitem{aw} S. Aaronson and A. Wigderson. Algebrization: A New Barrier in
+Complexity Theory. ACM TOCT 1(1), 2009.
+\url{https://www.scottaaronson.com/papers/alg.pdf}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::IMAGE22DECODE1
