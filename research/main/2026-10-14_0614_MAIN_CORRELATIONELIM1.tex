@@ -1,0 +1,453 @@
+% MAIN SNAPSHOT — LSPV/RMV::CORRELATIONELIM1::2026-10-14T06:14:47.416841+09:00
+% !TEX program = pdflatex
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\usepackage[margin=0.88in]{geometry}
+\hypersetup{hidelinks}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\C}{\{1,\omega,1+\omega\}}
+\newcommand{\F}{\mathbb F}
+\title{CORRELATIONELIM1: Exact Elimination Without a False Width Lower Bound}
+\author{UNIVERSAL\_CORE\_SYNTHESIS / LSPV-5}
+\date{14 October 2026}
+\begin{document}
+\maketitle
+\begin{center}\fbox{\parbox{0.94\linewidth}{
+\textbf{P versus NP remains OPEN.} A correlation-preserving elimination
+algorithm now has exact intermediate-state and witness tests. Its first
+projection requires ternary information; its second can require quaternary
+information. More strongly, an explicit tree family has boundary relations
+with every proper projection full, but uniformly constructible linear-size
+Boolean circuits and polynomial witness reconstruction. Thus irreducible
+correlation arity, even together with exponential table size, does not force
+unrestricted computational work. The new general theorem has a complete
+proof below and remains \textbf{CANDIDATE} pending independent peer review.
+Finite evidence is \textbf{COMPUTATIONAL}.}}
+\end{center}
+
+\section{Target, exact language, and literature preflight}
+The run attacks one concrete candidate: replace ROOTGLUE1's independent
+local-root selection by exact elimination, then test whether the size or arity
+of its retained correlations is unavoidable work. The answer is twofold:
+exact elimination is sound, but those proposed resource measures are defeated
+by a compact, source-visible tree implementation.
+
+Retain ROOTGLUE1's fixed graph language: header \texttt{01011010}, then
+$1^n0$ with $n\ge1$, then the $\binom n2$ adjacency bits of a simple labelled
+graph in lexicographic pair order; reject every other string. It has
+$N=9+n+\binom n2$ bits and $2n$ Boolean witness bits. Its field form is
+\[
+ C_\Gamma(w)=\bigwedge_v[w_v^3=1]\land
+ \bigwedge_{uv\in E(\Gamma)}[(w_u+w_v)^3=1],
+ \qquad w_v\in\F_4.
+\]
+The allowed colors are the three nonzero field elements $\C$. These equations
+are proper 3-colouring, with the exact triangle-carrier witness bijection
+already specified in ROOTGLUE1. The audit labels the three nonzero field colors by 0, 1, 2; these are
+labels, not a permission to use the zero field element. The current code
+operates on validated parsed graphs, not a new replacement bit parser; the previous bit parser is retained.
+
+All new quantifiers are uniform: one algorithm works for every declared
+finite input and order, and one compiler works for every declared tree.
+The input, projected relation, selected boundary assignment and complete
+reconstructed witness are the same realization. Arbitrary polynomial
+workspace and access to the original input are allowed. Neither an optimal
+order nor a compact representation is assumed to arrive for free.
+
+The direct literature is variable/bucket elimination and tree clustering.
+Dechter's formulation predates this project \cite{dechter}; Kask, Dechter,
+Larrosa and Cozman state their correctness and complexity with an explicit
+\emph{tabular representation} convention \cite{kask}. Pages 2 and 4 of that
+primary PDF were inspected visually. The present exact rule is an
+instantiation, not a new foundational elimination algorithm. Meijer's
+3-colouring paper uses removal of degree-below-three vertices as one
+preprocessing component \cite{meijer}; this run does not pursue exponential
+base improvement. Constraint inference provides an exact model-matched
+transfer; a table-size lower bound for arbitrary machines is a failed
+transfer. The correlation/circuit distinction below is proved directly.
+
+\section{The exact elimination rule and charged witness return}
+Suppose the current conjunction consists of relations $f$ on subsets of the
+remaining variables. For the next variable $v$, collect \emph{all} factors
+containing $v$ into its bucket $\mathcal B_v$. Write
+$S=(\bigcup_{f\in\mathcal B_v}\operatorname{scope}(f))\setminus\{v\}$.
+Replace that bucket by
+\begin{equation}\label{eq:bucket}
+ g_v(s)=\bigvee_{c\in\C}\bigwedge_{f\in\mathcal B_v} f(s,v=c).
+\end{equation}
+Retain the three-bit support mask
+\[
+ M_v(s)=\{c\in\C:\text{every }f\in\mathcal B_v
+                       \text{ accepts the same }(s,c)\}.
+\]
+All other factors are left unchanged. Formula \eqref{eq:bucket} is precisely
+existential quantification, not separate existential choices for different
+factors. Induction proves that after any prefix of the order, the active
+conjunction is exactly the projection of the original solution relation.
+
+If the final zero-variable relation accepts, reconstruct in reverse order:
+the later variables determine $s$, and choose any color in the stored
+$M_v(s)$. By induction the choice satisfies the removed bucket. Recheck the
+original graph at the end. Project the resulting field bits to the same
+triangle cotree and reconstruct the full Tseitin witness; the code checks
+all original incidence equations, not merely the projected color constraints.
+
+\paragraph{Resource ledger.}
+For boundary sizes $b_i$, the executable tests exactly
+$\sum_i3^{b_i+1}$ color candidates and retains $\sum_i3^{b_i}$ support rows.
+Tuple construction, lookups, factor scans, order discovery and verification
+are additional work; those counts are not bit-operation counts. A dense-array
+implementation gives the familiar $3^{O(w)}\operatorname{poly}(N)$ algorithmic
+upper bound, where $w=\max b_i$. Retaining all reconstruction tables has
+exponential worst-case space. This is an implemented \emph{particular}
+algorithm, not a lower bound against programs allowed polynomial space,
+recomputation or compact circuits. Natural, reversed and polynomially computed
+min-fill orders are all audited; an optimal order is never supplied free.
+
+\section{First and second projection: information that cannot be discarded}
+For a vertex with neighbor colors $a_1,\ldots,a_d$, eliminating that vertex
+is equivalent to
+\[
+ |\{a_1,\ldots,a_d\}|\le2.
+\]
+An absent third color reconstructs its witness. For $d\le2$ the constraint
+is automatic. For $d=3$ it becomes
+\[
+ R_3(a,b,c)\iff (a=b)\lor(a=c)\lor(b=c).
+\]
+Over $\F_4$ it can also be written
+$(a+b)(a+c)(b+c)=0$. Every two-variable projection of $R_3$ is full, while
+$R_3$ rejects the six rainbow tuples. Consequently no conjunction of unary
+or binary predicates on just these variables can represent it exactly.
+Auxiliary variables or a different representation are not excluded.
+
+Already the next exact projection can leave this ternary family:
+\[
+ R_4(a,b,c,d)=\exists y\,[R_3(y,a,b)\land y\ne c\land y\ne d].
+\]
+If $a=b$, the first condition is automatic. If $a\ne b$, it restricts
+$y$ to $\{a,b\}$. Hence
+\begin{equation}\label{eq:r4}
+ R_4(a,b,c,d)\iff
+ \neg\bigl[a\ne b\land c\ne d\land\{a,b\}=\{c,d\}\bigr].
+\end{equation}
+Exactly 69 of the 81 tuples satisfy it. Every three-variable projection is
+full: one can always fill the omitted entry to set $a=b$ or $c=d$.
+It cannot be represented as a conjunction of predicates on proper subsets
+of its four variables, without auxiliaries.
+
+The original gadget is nevertheless just the six-vertex tree with edges
+$xa,xb,xy,yc,yd$. Thus required four-way correlation is not even evidence of
+a difficult original graph. The complete-graph control $K_4$ is rejected by
+the exact bucket algorithm; $K_3$ is accepted and reconstructed. Discarding
+the first ternary relation would have lost the contradiction in $K_4$.
+
+\section{An unbounded-arity theorem with a compact algorithm}
+Let $T$ be a finite tree whose leaves form $B$, with $b=|B|\ge2$, and every
+nonleaf has degree three. Such a tree has $2b-2$ vertices and $2b-3$ edges.
+Let
+\[
+ R_T=\{\alpha\in\C^B:\alpha\text{ extends to a proper 3-colouring of }T\}.
+\]
+An explicit family for every $b$ is obtained by starting with one edge and
+repeatedly subdividing an edge incident to a fixed leaf, adding a new leaf
+at the subdivision vertex. The balanced family used in additional tests is
+two full binary trees of equal height, with their roots joined.
+
+\begin{theorem}[Maximal projected arity does not force large circuits]
+For every such $T$:
+\begin{equation}\label{eq:count}
+ |R_T|=3^b-3\cdot2^{b-2},\qquad
+ \pi_S(R_T)=\C^S\quad\text{for every }S\subsetneq B.
+\end{equation}
+No conjunction of arbitrary predicates, each on fewer than $b$ boundary
+variables and using no auxiliaries, defines $R_T$.
+Nevertheless a uniform algorithm constructs a quantifier-free Boolean
+circuit of $O(b)$ gates recognizing $R_T$ from its boundary colors. It also
+decides extension of partially assigned boundary colors and constructs a
+complete coloring with polynomial time and workspace. These claims concern
+the original explicit tree and input; no hidden advice is provided.
+\end{theorem}
+\begin{proof}
+Root any full binary subtree at a nonboundary vertex, with its terminal
+leaves prescribed. Every subtree has a nonempty feasible-color set at its
+root: each of its two children forbids at most one parent color, and two
+forbidden colors cannot exhaust a three-color domain. The parent becomes
+forced to color $c$ exactly when both children are forced to the other two
+colors, in either order.
+
+For a rooted full binary tree with $\ell$ terminal leaves, let $f(c)$ count
+leaf assignments forcing its root to $c$. For a one-leaf tree $f(c)=1$.
+If its two subtrees have $\ell_1,\ell_2$ leaves, induction yields
+\[
+ f(c)=2\cdot2^{\ell_1-1}\cdot2^{\ell_2-1}=2^{\ell-1}.
+\]
+Root $T$ at any boundary leaf $r$. Its neighbor is the root of a full binary
+tree with $b-1$ other boundary leaves. A complete boundary assignment fails
+exactly when that neighbor is forced to the color prescribed at $r$.
+There are three choices for that color and $2^{b-2}$ assignments forcing it,
+which proves the first identity in \eqref{eq:count}. For $b=2$ the neighbor
+is itself a leaf and the same base case applies.
+
+For the second identity, take an unassigned boundary leaf $r\notin S$ and
+root there. The child subtrees have at most two children per internal vertex;
+unassigned terminal leaves start with all three colors. The same induction
+gives a nonempty feasible set at the neighbor of $r$, and then $r$ can take
+any different color. Thus every assignment on $S$ extends.
+
+If $R_T$ were a conjunction of predicates on proper subsets $S_j\subsetneq B$,
+each predicate would have to accept every tuple in $\pi_{S_j}(R_T)=\C^{S_j}$.
+All factors would be tautologies, contradicting $R_T\ne\C^B$. This proves
+only a lower bound on conjunctive factor arity in the specified no-auxiliary
+representation.
+
+For the circuit and algorithm, orient the tree from a selected root. For each
+vertex and color form the Boolean feasibility bit
+\[
+ A_v(c)=I_v(c)\land\bigwedge_{u\text{ child of }v}
+                 \bigvee_{a\in\C\setminus\{c\}}A_u(a).
+\]
+At a boundary leaf, $I_v(c)$ is the input bit allowing color $c$; at other
+vertices it is constant true. The final answer is $\bigvee_c A_r(c)$.
+There are three input bits per boundary vertex, at most six two-input
+Boolean gates per tree edge, and two final OR gates. This is a genuine
+quantifier-free shared circuit, constructed bottom-up, not a circuit with
+an unevaluated existential quantifier. Decode a full boundary color into its
+three one-hot bits at constant cost per leaf.
+
+Store the three feasible bits per vertex. Choose a feasible root color and
+then a feasible child color different from its parent. The recurrence proves
+that such a choice exists. Verify every original edge and supplied boundary
+pin. With explicit indices the encoding uses $O(b\log(b+2))$ bits; input
+validation, circuit generation, evaluation and reconstruction are polynomial
+in encoded length on an ordinary deterministic bit machine. The linear gate
+count is not a claim of linear multitape bit runtime or constant program
+workspace. Every source read and output bit is charged.
+\end{proof}
+
+The proof is complete, but this new project theorem is \textbf{CANDIDATE}
+until an independent specialist reviews it. The bucket identity and
+small-tree dynamic-programming mechanism are established algorithmic ideas,
+not claimed as foundational discoveries.
+
+\section{A second compactness control: the high-degree star}
+Eliminating the center of a $d$-leaf star gives the at-most-two-colors relation.
+For $d\ge1$ its positive table has $3\cdot2^d-3$ rows. Even quotienting by
+all color permutations leaves $2^{d-1}$ accepted equality patterns. Yet one
+three-bit occurrence mask checks a boundary tuple in $O(d)$ color reads and
+returns an absent color. A Boolean circuit recording the presence of each
+of three colors has $O(d)$ gates. The formula using all no-rainbow triples
+has only $\binom d3$ factors, also polynomial, rather than exponentially many
+rows. A leaf-first elimination order also avoids the large center-first
+boundary entirely. None of these alternatives is excluded for arbitrary
+SAT deciders.
+
+The trivalent-tree theorem is stronger than this star-order control: its
+boundary relation cannot be decomposed into factors of any fixed smaller
+arity, but still has a small circuit and an input-assisted witness algorithm.
+Thus even essential arity plus a large table does not measure unavoidable
+computation. An easy YES family remains easy; a minimal incompatible boundary
+pattern is not a common-input satisfiable UWI obstruction.
+
+\section{Executed finite evidence}
+Eight final checkpointed invocations passed \textbf{56,313 assertions}, with
+zero failures. Of these, 54,151 are new CORRELATIONELIM1 checks and 2,162 are
+an unchanged ROOTGLUE1 affine-domain regression. The longest invocation took
+1.451 seconds rounded upward; the sum of recorded execution times is 2.998
+seconds rounded upward. The new batches are deterministic/exhaustive; the
+unchanged affine regression uses its fixed pseudorandom seed. Each audit had
+a cooperative 25-second limit. Algorithmic routines have no fixed degree cap.
+\begin{center}\small
+\begin{tabularx}{\linewidth}{p{0.24\linewidth}Xr}
+\toprule
+Batch & Coverage & Assertions\\\midrule
+Local projection & Exhaustive stars through degree 8, R3/R4 relations,
+F4 product identity, K3/K4 and symbolic-size star controls & 11,485\\
+Graph elimination & All 1,099 labelled graphs through five vertices, three
+orders per graph, exact intermediate projections and full witnesses & 25,905\\
+Tree family & 18 balanced/caterpillar trees; 512 boundary variables and
+1,022 vertices at the largest size; full small boundary oracles & 16,761\\
+Affine regression & Original 360 affine-domain cases on 11,475 assignments & 2,162\\
+\bottomrule
+\end{tabularx}\end{center}
+
+The graph audit checks 16,215 intermediate relations against projections of
+independently enumerated original graph models. It reconstructs 3,096 full
+Tseitin witnesses across the three orders on the 1,032 YES graphs; 67 graphs
+are NO. The tree audit compares exhaustive boundary relations with an oracle
+that enumerates proper colorings of the original tree, not the DP recurrence.
+It checks removal of every individual boundary pin from the constructed
+incompatible assignments, with complete original witnesses returned.
+
+On the largest tree, the executable builds 4,598 two-input Boolean gates and
+1,536 input nodes. It does not construct its $3^{512}$-row truth table.
+Full boundary enumeration stops at $b=8$, where the exact accepted count is
+6,369 out of 6,561. For $b=4$ it is 69 out of 81; for $b=2$ it is 6 out of 9.
+Larger finite tests validate particular instances, not the all-tree theorem.
+The general count and projection claims come from the proof above.
+
+Source: \path{experiments/review/correlation_elimination_audit.py}, SHA-256
+\path{ca19c7b019db7bb4463e93a23a318c2b74a328fc349b370bdd14ee13245c7a0c}. The canonical audit ledger is
+\path{results/raw/review/CORRELATIONELIM1_audit_ledger.json}. It records every
+checkpoint's counters and content hash. The downloadable package retains
+complete per-graph orders, supports-resource metrics, witnesses, tree pins,
+restored colors and independent regression checkpoints. The regression code
+has its own unchanged SHA-256; its checks are not attributed to the new source.
+
+\section{Peer integration and exact predecessor recovery}
+The newest located Bridge report is OUTQUAD64, not TRACEISO1. Its actual
+source, raw-solver identity-acquisition/solve routines and publication handoff
+were read. It gives, for $v=u^3+u^8$, the identity
+\[
+ u^{64}+u^4+vu^{16}+v^2u^8+vu+v^3+v^8=0.
+\]
+The displayed cancellations were independently checked. For fixed output the
+identity is affine-linear in the hidden input, with ordinary polynomial degree
+64. The report acquires all identities affine in input, bilinear in
+input/output and quadratic in output from raw ANF coefficients. It therefore
+claims an enclosure of at most 64 candidates on its stated hidden-map family.
+This is adopted as \textbf{CANDIDATE}, with full independent end-to-end review
+pending. Its reported 57,446 tests are not added to this run's counts and were
+not rerun. Outside its promise it can return UNKNOWN. It does not solve shared
+nonlinear compatibility, so it agrees with the present work.
+
+OUTQUAD64's canonical report exists, while its handoff documents a failed
+root update because the then-current root was a placeholder with no ownership
+markers. ROOTGLUE1 subsequently restored the root from exact history.
+The current root was read substantively at blob
+\path{99e1f614a7efe74cf7629097f6c911b258ce1d64}; its bytes match the supplied
+exact ROOTGLUE1 package. No missing report body is reconstructed or duplicated.
+The present synthesis integrates OUTQUAD64 in the Bridge region, closing that
+specific root-integration handoff without changing its proof status.
+
+The latest located LSPV-1/2/3 reports remain CYCLOROOTFW1, CUBEROOTSEL1 and
+VALSUBCUBEFW1, respectively, as confirmed from current directory commit
+history. Their actual earlier-read proof sources remain available in the
+conversation and retain their scope. ROOTGLUE1's new interfaces and the new
+CORRELATIONELIM1 theorem still await fresh specialist acknowledgments; no
+independent review is invented. The Grok review did not promote those pending
+interfaces. Existing hourly offsets are unchanged and no new team is created.
+
+\section{Corpus and contradiction reconciliation}
+\paragraph{CORPUS REVIEWED.}
+Surveyed the current recursive tree, live root and relevant source history,
+current AGENTS.md and research skill, the affine redirect, actual main4 driver
+and the previously read main5 driver, newest ROOTGLUE1 source/code/raw package,
+TRACEISO1 and OUTQUAD64 source material, and current specialist commit histories.
+The unchanged CODEX, task and skill-reference texts read earlier in this
+conversation were retained; no full reread of all historical includes or
+Drive proofs is claimed. Direct container access to GitHub failed DNS
+resolution, so a complete checkout and repository-wide preflight/CI were not
+run. Targeted executable tests and source/readback checks are recorded instead.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+Targeted repository searches for the proposed elimination/rainbow terminology,
+ROOTGLUE and trivalent trees returned no matching earlier trivalent-boundary
+report. This is a bounded search, not an originality theorem. Bucket
+elimination and tree inference are known. The new project contribution is the
+explicit source-matched arity-versus-circuit obstruction, with exact tests.
+OUTQUAD64 was missed by the previous root's executive integration and is
+now retained at candidate status. Its UNKNOWN behavior is not SAT hardness.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+The previous next assignment, construct an exact correlation-preserving rule,
+now has a verified finite implementation, full reconstruction and an explicit
+resource ledger. Merely measuring its table growth or essential factor arity
+is rejected as a universal work measure. A small-circuit/tree-lift alternative
+is explicit. No whole-machine lower bound or UWI amplification is promoted.
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopted: exact affine normalization, complete root lists, all shared-variable
+constraints, the unchanged affine-root solver, source-visible forest lifts,
+and the conditional amplification implication. Rejected: independent local
+witnesses, unary/binary closure of the first projection, ternary closure of
+the second projection, and table/arity growth as unrestricted runtime.
+Retained as candidate: OUTQUAD64's hidden-map upper bound and the new general
+trivalent-tree theorem. No exact historical theorem is silently strengthened.
+
+\paragraph{EARLY22/SINGLE22 bounded acknowledgment.}
+Already integrated through ROOTGLUE1's retained historical ledger. Preserve
+separately the signed exact-$(2,2)$ compiled minimal-UNSAT/Resolution family,
+the clause-monotone cubic-pair theorem/calibrations, and the affine-continuation
+limitation. LBO3SAT-0031/0032 and PROOF-0034 retain original hypotheses;
+historical $N$ means variables, not bits. Neither this tree family nor
+OUTQUAD64 inherits PC22 compiler/minimality/projection claims. Original Drive
+passages were not newly reread. Location: this paragraph and the unchanged
+historical section of root. Next check is the new source/witness interface,
+not a routine reproof of the historical compiler.
+
+\paragraph{Actual main4/main5 comparison.}
+The achievable-region driver main4 and WRAPPER driver main5 retain partial
+acquisition/replay, completed-phase accounting and conditional closure with
+open all-input coverage. No favorable resource point or general acquirer is
+constructed here, and neither driver is redefined or edited.
+
+\section{Barrier and same-realization ledger}
+The new positive programs use the same explicit input, boundary data, compact
+circuit and returned witness. Input-assisted reconstruction defeats the
+proposed representation cost. A fixed program can use polynomial memory;
+program description size is not memory. Circuit size here is an upper bound
+for an easy subtype, not a general circuit lower bound. Exhaustive projection
+audits are verification experiments, not mandatory solver operations.
+
+All affine, product, padding, renaming, color-permutation, bounded-full-treewidth
+and compact-algebra controls retain their algorithmic escapes. The explicit
+affine regression is rerun. DEAD/COPY/DELAY cannot force an arbitrary solver
+to build the table; INTERP/RECOMP can evaluate the compact circuit or reread
+the tree. A semantic oracle only helps. No nonrelativizing or nonalgebrizing
+hinge is supplied and Natural Proofs is not invoked. No ETH, GRH, cryptographic
+or random-oracle premise appears.
+
+For the post-quantum ledger, exact input-output identities in OUTQUAD64 are
+an exact constructive object transfer, with the new independent integration
+remaining candidate. Graph-relation arity, Schur-square rank, collision entropy
+and syzygy language do not yield arbitrary runtime without a new theorem.
+The compact tree circuit is a concrete failed transfer for the correlation
+version, not merely an analogy.
+
+\section{Current proof chain and one next assignment}
+The current chain is
+\[
+ \begin{gathered}\text{affine elimination}\longrightarrow\text{root-list compatibility}\\
+ \longrightarrow\text{exact projected relations and witness return}.\end{gathered}
+\]
+The nonlinear graph language remains NP-complete; a direct proof that it is
+outside P would suffice without further broadening. The hard input may depend
+on the total uniform decider. The common-input benchmark
+\[
+ H(F)=\min_{|p|\le b_0+\lfloor\log_2(|F|+2)\rfloor}
+                 (t_p(F)+q(|F|)+1)
+\]
+has different quantifiers and only concerns satisfiable formulas. Its
+polynomial-boundedness equivalence with P=NP remains an equivalence, not a
+lower bound. The conditional growing-factor premise
+$H(F_{j+1})\ge H(F_j)r(s_j)/B$, $s_{j+1}\le As_j$, $r(s)\to\infty$
+is not established by the present easy tree family or by a failed tabular solver.
+
+\textbf{One next assignment:} eliminate one variable shared by three compact
+tree-summary circuits, preserving a shared DAG rather than expanding a table.
+Compute and test the exact output circuit and reconstruction contract against
+original constraints. Charge all substitution, sharing and acquisition.
+This tests closure under overlapping summaries, the specific operation not
+settled by the easy-tree compiler; failure of that implementation is not a
+lower bound against all algorithms. Bridge reviews the source/lift interface;
+Tests independently replays projections and the compiler; Redteam checks the
+all-proper-projections and no-auxiliary qualifications; Lower Bound attacks
+any proposed universal cost with this compact alternative. Reviews are pending.
+
+\begin{thebibliography}{9}
+\bibitem{dechter} R. Dechter. Bucket Elimination: A Unifying Framework for
+Several Probabilistic Inference. UAI 1996, pp. 211--219.
+\url{https://arxiv.org/abs/1302.3572}.
+\bibitem{kask} K. Kask, R. Dechter, J. Larrosa, F. Cozman.
+Bucket-Tree Elimination for Automated Reasoning. Primary author manuscript,
+Definition 2.1 and Theorems 3.2--3.3.
+\url{https://www.ics.uci.edu/~csp/r92.pdf}.
+\bibitem{meijer} L. Meijer. 3-Coloring in Time $O(1.3217^n)$.
+2023. \url{https://arxiv.org/abs/2302.13644}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_MAIN::CORRELATIONELIM1
