@@ -1,0 +1,232 @@
+% LSPV-2 REPORT::COMPOSEPROJ1::2026-10-13T11:22:38+09:00
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,hyperref}
+\hypersetup{colorlinks=true,urlcolor=blue}
+\newtheorem{theorem}{Theorem}
+\newcommand{\status}[1]{\textbf{[#1]}}
+\title{COMPOSEPROJ1: Closing the graph-adapter projection interface}
+\author{LSPV-2 --- Universal-core tests}
+\date{13 October 2026}
+\begin{document}
+\maketitle
+
+\section*{Status}
+\status{PROVED/EXACT} The binary-clause properization map and the universal
+exact-$(2,2)$ compiler map compose to one explicit target-to-graph-CNF
+variable/zero substitution.  Every target clause maps to one original source
+clause or to true.  The public \texttt{Compiled.projection} object alone ends at
+the properized 3-CNF and therefore must not be described as the final graph
+projection.
+
+\status{COMPUTATIONAL} Thirteen YES/NO and hostile-control cases passed 73
+independent checks in 0.3263 seconds.  No compiled target assignment space was
+enumerated.
+
+\status{OPEN} This is a source/proof projection, not a transformation of an
+arbitrary $L_{22}$ decider execution.  It gives no superpolynomial
+whole-computation lower bound.  P versus NP remains open.
+
+\section{Language and exact target}
+The fixed language $L_{22}$ consists of satisfiable encodings of nonempty,
+proper, distinct-clause signed exact-$(2,2)$ 3-CNF; malformed and out-of-domain
+strings are rejected.  The required theorem is
+\[
+\forall A\ \forall k\ \forall C>0\ \forall N_0\ \exists G,\quad
+|G|=N\ge N_0,\qquad T_A(G)>CN^k ,
+\]
+for every total deterministic uniform decider $A$ of this one language.
+The graph-colouring compiler is an input reduction into $L_{22}$, not this
+time lower bound.
+
+\section{Primary-literature preflight}
+The active obstacles were (i) whether the graph-colouring axiom adapter and the
+two syntactic compilers really form one model-matched substitution, and (ii)
+whether the resulting proof transfer says anything about arbitrary computation.
+Conneryd, de Rezende, Nordstr\"om, Pang and Risse prove linear polynomial-calculus
+degree, hence exponential expanded-monomial size, for sparse random graph
+3-colouring over every field \cite{conneryd}.  This directly transfers only
+after the declared low-degree source/encoding substitutions.  The paper does
+not state a lower bound for general Boolean circuits or deterministic deciders.
+The all-field theorem is therefore a directly transferable proof-system result;
+using it as an unrestricted runtime theorem is a failed transfer.
+
+\section{Exact composed projection}
+Let $F$ be a proper width-2/3 CNF.  Properization $P$ leaves each ternary clause
+unchanged and replaces each binary clause $D$ by
+\[
+(D\lor z_D)\land(D\lor\neg z_D)
+\]
+for fresh $z_D$.  Define $\tau$ by $\tau(x)=x$ for original variables and
+$\tau(z_D)=0$.  One clause in the displayed pair maps to $D$ and the other to
+true.
+
+Let $U$ be the transparent seven-clause balancing compiler followed by the
+clone-cycle/$Q$ compiler, and let $\rho$ be its proved target-to-$P(F)$/zero
+substitution.  The implementation returns precisely this $\rho$ as
+\texttt{Compiled.projection}.
+
+\begin{theorem}[Adapter composition]
+For $\sigma=\tau\circ\rho$, the nontrue clause images of $U(P(F))$ form exactly
+the multiset of clauses of $F$.  Hence the existing PC/PCR projection to
+$P(F)$ and the binary-clause adapter to $F$ are a single explicit polynomial
+map.  Its acquisition, storage, and application are linear in the target
+manifest size up to normal encoding factors.
+\end{theorem}
+\begin{proof}
+Under $\rho$, compiler source clauses become the clauses of $P(F)$; balancing
+clauses, clone implications, and internal $Q$ clauses become true or Boolean
+tautologies.  Applying $\tau$ fixes ternary source clauses.  For every
+properized binary pair, $\tau(D\lor z_D)=D$ and
+$\tau(D\lor\neg z_D)=\mathrm{true}$.  No other nontrue images remain.
+\end{proof}
+
+This closes a proof-interface bookkeeping seam, not a complexity seam.
+Decoding a target formula and then solving its source is merely another
+algorithm with all preprocessing, access, source-solving, and reconstruction
+costs charged.  The size-increasing $U$ is not a contraction.  An arbitrary
+$L_{22}$ decider need not compute $\sigma$, recognize the compiler image, or
+emit a PC/PCR proof.
+
+\section{Reproducible audit}
+The tested source version was
+\texttt{research/agents/lspv-4/2026-10-13\_0035\_LSPV-4\_PC22\_ALLFIELD1.tex}
+(blob \texttt{4166635f614e8baa6a94bff5cf47e76815e971f5}) with
+\texttt{experiments/review/universal22.py}.  The new independent program is
+\texttt{experiments/review/composed\_graph\_projection\_audit.py}; raw output is
+\texttt{results/raw/review/2026-10-13\_1122\_composed\_graph\_projection.json}.
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+case & source clauses & target variables & target clauses & source models\\
+\midrule
+triangle YES & 21 & 6588 & 8784 & 6\\
+$K_4$ NO & 34 & 11160 & 14880 & 0\\
+2SAT YES/NO & 2/4 & 540/576 & 720/768 & 2/0\\
+Horn YES & 2 & 468 & 624 & 5\\
+affine XOR & 4 & 36 & 48 & 4\\
+path / independent product & 18/2 & 5400/1152 & 7200/1536 & 12/49\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The suite also tested a redundant implied clause and four actual variable
+permutations, phase switches, clause reversals, and literal reversals.  In all
+13 compiled cases, the composed images equal the original clause multiset,
+properness and exact signed occurrences hold, and each available source model
+lifts through both transformations.
+
+The raw map deliberately failed the final-interface criterion exactly when
+binary properization variables existed.  For $K_4$, 60 target variables mapped
+to 30 adapter variables that must subsequently map to zero.  This is not a
+mathematical counterexample to the source report, which states composition; it
+is a concrete guard against callers treating \texttt{comp.projection} as the
+already-composed graph map.
+
+Malformed empty, duplicate, repeated-variable, sparse-ID, and unit inputs were
+all rejected.  W1 and a real phase switch of W1 were proper exact-$(2,2)$ valid
+$L_{22}$ inputs but outside the tested compiler manifest.  Therefore an
+image-decoder may reject them only to a correct fallback; manifest rejection
+is not a total $L_{22}$ decision procedure.  A separate GF(2) elimination
+control accepted a consistent affine system and rejected a contradictory one.
+
+Measured wall-clock components were recorded separately for properization,
+compilation, projection composition/application, source decision, and witness
+lift.  The full run took 0.3263 seconds under a 30-second cap.  These finite
+measurements establish no asymptotic runtime lower bound.
+
+\section{EARLY22-INTEGRATION1 acknowledgment}
+\status{ALREADY INTEGRATED; SOURCES READ.}  This run read the verified governance
+memo, the original Drive excerpts with SHA-256
+\texttt{b6be320498d5e848ba4d6a023bf03b18d8085ebabec1d92368180a9739025dac},
+and EARLY22RED1.  The ledger already independently reproduced $Q$'s 244 models
+and forced ports, K4's historical 144/192 compiler output, exact occurrences,
+substitution, all three deletion-witness types, the monotone cubic-pair
+calibration, and the affine-continuation limitation.  Per the memo, these were
+not redundantly re-proved.  They remain in root LSPV-2 under the recovered
+exact-$(2,2)$ ledger cross-reference.  Next check: compare the composed graph
+projection with a proof-checker trace, line by line, over two small finite fields.
+
+\section{SINGLE22-SEPARATION1 acknowledgment}
+\status{INTEGRATED.}  The arrow advanced is the exact composition
+\[
+U(P(F_G))\longrightarrow P(F_G)\longrightarrow F_G
+\]
+for source/proof objects, with explicit costs and off-image semantics.  The
+arrow that did not advance is arbitrary-$L_{22}$-execution $\to$ proof:
+compact circuits, other algebra, integer flow/counting, Gaussian elimination,
+bounded-treewidth methods, decoding, and preprocessing remain allowed.
+The next test is a line-by-line PC/PCR proof substitution audit using the
+composed map, while explicitly refusing to infer a general-machine bound.
+
+\section{Corpus reviewed}
+The repository tree was surveyed.  Read or searched were root
+\texttt{main.tex}, \texttt{main4.tex}, \texttt{main5.tex},
+\texttt{AGENTS.md}, \texttt{CODEX.md}, the full pnp-research skill and protocol;
+all task specifications; newest verified MAIN
+\texttt{2026-10-13\_0948\_MAIN\_BLACKBOXQ1.tex}; newest relevant LSPV-1--4
+reports; the full PC22 source and both compiler programs; EARLY22RED1; both
+governance memos and the recovered Drive excerpts; relevant HEC/VSC-HEC/
+G-PPC-HEC/CRS-PPC/CCSPC explorations; and repository hits for projection,
+properization, graph colouring, image decoding, affine continuation, and
+exact-$(2,2)$.
+
+\section{Duplication / contradiction audit}
+The old audit checked $\rho$ and $\tau$ separately.  This run adds their
+end-to-end composition and shows why the raw implementation object is only the
+first map.  It does not duplicate EARLY22RED1's historical K4 audit.  No
+contradiction was found with PC22: the report verbally composes the maps.  No
+claim is strengthened beyond its proof model.
+
+\section{What changed relative to root main}
+The LSPV-2 owned region is reconciled to record the composed adapter theorem,
+the implementation guard, off-image fallback obligation, explicit finite
+costs, and the still-open arbitrary-execution arrow.  Material outside the
+LSPV-2 region is preserved.
+
+\section{Adopted / rejected / retired prior components}
+\begin{itemize}[leftmargin=*]
+\item \textbf{ADOPTED:} exact properization, universal compiler, composed
+variable/zero proof projection, all-field PC/PCR result within its model,
+and the recovered exact-$(2,2)$ compiler/minimality/Resolution results.
+\item \textbf{REJECTED:} interpreting \texttt{Compiled.projection} alone as
+the final graph map; treating image rejection as an $L_{22}$ decision;
+or requiring every decider to expose the map.
+\item \textbf{RETIRED:} proof-projection hardness as an unrestricted runtime
+lower bound; finite count or timing extrapolation; and affine continuation
+as a hard language.
+\end{itemize}
+
+\section{Stale or overstated claims found}
+Any artifact saying the raw Python projection directly recovers the
+width-2/3 graph CNF is incomplete unless it composes the returned adapter map.
+The source theorem itself states composition and survives.  Historical $N$
+in the recovered compiler counts variables, not encoded bits.
+
+\section{Predecessor write recovery}
+At preflight, the newest canonical LSPV-1 artifact was
+\texttt{2026-10-13\_0912\_LSPV-1\_TRACESIMQ1.tex}; no canonical report for the
+immediately preceding 11:14 cycle was present.  Failure class:
+\status{UNKNOWN/PENDING} because no GitHub API error was available.  A retry is
+requested from the predecessor using its exact saved body only; this run does
+not reconstruct or publish LSPV-1 scientific content.
+
+\section{Post-quantum technique ledger}
+The composed substitution is an \status{EXACT OBJECT/THEOREM TRANSFER} for the
+declared proof objects.  Schur squares, quadratic relations, syzygies, and
+collision entropy are \status{NOT APPLICABLE} to this interface repair.
+Worst-case/average-case and collision-extraction ideas remain
+\status{ANALOGY/CANDIDATE}; no black-box behavior-to-proof extractor is supplied.
+Hidden algebraic structure can be an algorithmic weakness, as the Gaussian
+control emphasizes.
+
+\begin{thebibliography}{9}
+\bibitem{conneryd}
+J. Conneryd, S. F. de Rezende, J. Nordstr\"om, S. Pang, and K. Risse,
+\emph{Graph Colouring Is Hard on Average for Polynomial Calculus and
+Nullstellensatz}, arXiv:2503.17022 (2025),
+\url{https://arxiv.org/abs/2503.17022}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::COMPOSEPROJ1
