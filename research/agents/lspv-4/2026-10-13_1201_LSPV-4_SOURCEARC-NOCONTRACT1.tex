@@ -1,0 +1,251 @@
+% LSPV-4 REPORT::SOURCEARC-NOCONTRACT1::2026-10-13T12:01:00+09:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\setlength{\emergencystretch}{3em}
+\hypersetup{hidelinks}
+\title{SOURCEARC-NOCONTRACT1: the natural decoded one-variable ARC expands the fixed language}
+\author{UNIVERSAL\_CORE\_BRIDGE / LSPV-4}
+\date{13 October 2026, 12:01 KST}
+\begin{document}\maketitle
+
+\paragraph{Status.}
+\textbf{PROVED/EXACT} for the stated one-variable restriction,
+binary-clause repair, and graph/transparent compiler route; the finite
+implementation audit is \textbf{COMPUTATIONAL}.  This retires one proposed
+source-first contraction, not all possible direct lower bounds or batch
+restrictions.  \textbf{P versus NP remains OPEN.}
+
+\section{Fixed language and exact candidate}
+Let $\mathcal C_{22}$ be the nonempty proper distinct-clause signed
+exact-$(2,2)$ 3-CNF domain under the declared dense ordered encoding, and
+let $L_{22}$ contain exactly its satisfiable encodings; malformed and
+out-of-domain strings are rejected.  The previously verified IMAGE22COMP1
+reduction establishes NP-completeness.  The current goal remains
+\[
+ \forall A\in\operatorname{Dec}(L_{22})\ \forall k\ge1,C>0,N_0\ \exists G\in\mathcal C_{22}:
+ |\operatorname{enc}(G)|\ge N_0\ \land\
+ T_A(\operatorname{enc}(G))>C|\operatorname{enc}(G)|^k.       \tag{1}
+\]
+No broad-input transfer is required if (1) is proved.
+
+This run tests the next step proposed by IMAGE22DECODE1.  On an ordered
+compiler image $y=U(F)$, decode its unique balanced source $B=D(y)$, branch
+on one source variable $x$, convert the residual binary clauses back to
+proper 3-CNF, and recompile each child through the actual graph-colouring /
+transparent-seven-clause compiler $U$.  All decoding, restriction, repair,
+serialization, and recompilation costs belong to the external construction.
+
+\section{Exact no-contraction theorem}
+For a balanced proper 3-CNF $B$, write $m=|B|$ and suppose $x$ has exactly
+$p\ge2$ positive and $p$ negative occurrences.  For $b\in\{0,1\}$, let
+$R_b$ be the result of setting $x=b$, deleting satisfied clauses, deleting
+the falsified literal in the other incident clauses, and densely renaming
+the remaining variables.  Replace every binary clause $(a\vee b)$ of $R_b$
+by the standard fresh-variable pair
+\[
+ (a\vee b\vee z)\ \wedge\ (a\vee b\vee\neg z),             \tag{2}
+\]
+using a distinct $z$ per binary clause.  Call the resulting proper 3-CNF
+$P_b$.
+
+\begin{theorem}[Decoded one-variable ARC is not a target contraction]
+For every $B,x,b$ as above,
+\[
+ \SAT(B)\Longleftrightarrow \SAT(P_0)\lor\SAT(P_1),          \tag{3}
+\]
+and, for each branch,
+\[
+ |R_b|=m-p,\qquad |P_b|=m.                                  \tag{4}
+\]
+Moreover transparent balancing adds at least $2p$ seven-clause gadgets to
+$P_b$.  Hence the actual compiler satisfies
+\[
+ \begin{aligned}
+ v(U(B))&=9m,& M(U(B))&=12m,\\
+ v(U(P_b))&=9(m+7g_b),&M(U(P_b))&=12(m+7g_b),
+ \end{aligned}                                               \tag{5}
+\]
+where $g_b\ge2p$, and therefore
+\[
+ v(U(P_b))\ge9(m+14p)>v(U(B)),\quad
+ M(U(P_b))\ge12(m+14p)>M(U(B)).                              \tag{6}
+\]
+Thus neither child is a smaller $L_{22}$ query in variables or clauses.
+\end{theorem}
+
+\begin{proof}
+In either restriction, $p$ incident clauses are satisfied and deleted, and
+the other $p$ incident clauses become binary; all $m-2p$ nonincident clauses
+remain.  This proves $|R_b|=m-p$.  Transformation (2) is equisatisfiable and
+replaces each of the $p$ binary clauses by two ternary clauses, proving
+$|P_b|=m$.  The ordinary restriction identity gives (3).
+
+Each of the $p$ fresh repair variables occurs once positively and once
+negatively.  The transparent balancer raises both signed counts to at least
+two, requiring one positive-port and one negative-port seven-clause gadget
+for each fresh variable.  Hence $g_b\ge2p$ even before accounting for any
+deficits of surviving old variables.  IMAGE22DECODE1's audited compiler
+identities on a balanced source are $v=9m_B$ and $M=12m_B$; here the balanced
+intermediate has $m_B=m+7g_b$.  Equations (5)--(6) follow.
+\end{proof}
+
+\paragraph{Encoding and recurrence consequence.}
+Under the actual compact JSON encoding used by IMAGE22DECODE1, every added
+clause contributes syntax and three signed indices, so the child is also
+strictly longer in the tested realizations.  The structural theorem needs no
+byte-ratio claim: (6) already denies the strict formula-size contraction
+required by this ARC.  Querying an $L_{22}$ decider on both recompiled
+children creates two \emph{larger} target queries.  Querying it directly on
+$R_b$ is invalid because $R_b$ contains binary clauses and is outside the
+fixed language.  Calling a general-SAT solver would silently change the
+assumption.  The size-increasing $U$ is not a shrinker.
+
+This theorem does not exclude a batch restriction with a different exact
+repair, an orbit-valued child, an adaptive selector with a proved pruning
+property, or a direct whole-machine argument.  Any such proposal must give
+its own domain closure, exact encoded recurrence, and arbitrary-exponent
+accounting.
+
+\section{Bounded implementation audit}
+The standalone program
+\path{experiments/review/source_first_arc_nocontraction.py} reproduces the
+transparent balancer and clone-cycle/$Q$ compiler.  It checks a satisfiable
+balanced four-clause source and the $20$-clause minimally-unsatisfiable
+$W_1$ source.  All $36$ one-variable branches are restricted, repaired,
+rebalanced, compiled, serialized, and checked for properness and exact
+$(2,2)$ occurrences.  Selected branches are brute-force checked for (2).
+
+All $2{,}509$ assertions passed in $1.256$ seconds under a cooperative
+25-second deadline.  No branch contracted.  The minimum child/parent target
+clause ratio was $3.1$ and the minimum encoded-byte ratio was
+$3.3751900273$.  For the satisfiable control, the parent had $48$ target
+clauses and both children had $384$; for $W_1$, the parent had $240$ and
+children ranged from $744$ to $1248$.  These magnitudes are finite
+calibrations, not asymptotic lower bounds.
+
+Script SHA-256:
+\texttt{78788eaa30ced2dc9dfeb7669958fd98e6705e6db3a9ea7fd74e48e644d92551}.
+Raw-result SHA-256:
+\texttt{b7504a134f7c3b0778ae4671075f7f32bc41d6ae8b42373b2c584c87a866a5af}.
+
+\section{Literature, barrier, and transfer audit}
+The two active obstacles are fixed-language closure under a decreasing
+self-reduction and the still-missing implication from arbitrary uniform
+computation to an unconditional lower-bound model.  SAT's usual
+length-decreasing self-reduction acts on unrestricted formulas, not
+automatically on $\mathcal C_{22}$; the exact repair calculation above is
+the missing domain check.  Hemaspaandra's primary tutorial states the
+ordinary two-child SAT identity and explicitly notes that self-reducibility
+alone does not put SAT in P \cite{hemaspaandra}.  Chavrimootoo et al. identify
+the same logical hazard in a claimed SAT lower bound: a desired algorithmic
+structure cannot simply be imposed on every solver \cite{critique}.
+D\"ocker supplies the fixed exact-occurrence NP-complete subclass, not a
+closed decreasing self-reduction \cite{docker}.
+
+The theorem in this report is an \textbf{EXACT OBJECT/THEOREM TRANSFER} from
+the implemented compiler identities to this particular ARC.  Classical SAT
+self-reducibility is a \textbf{USEFUL STRUCTURAL ANALOGY REQUIRING A NEW
+TRANSFER THEOREM} because its children leave $L_{22}$.  Treating proof-system
+hardness, Schur-square statistics, collision entropy, quadratic relations,
+syzygies, cryptographic binding, or random-oracle behavior as arbitrary
+machine time is a \textbf{FAILED TRANSFER} here.  The visible algebraic
+normal form may help an algorithm; it is not presumed hard.
+
+The argument relativizes and algebrizes and defines no large constructive
+circuit property.  It is a negative closure theorem, not a Natural-Proofs
+escape.  Horn, 2SAT, affine/Gaussian, bounded-treewidth, compact arithmetic,
+integer counting/flow, decoding, padding, products, wrappers and one-bit
+output remain permitted hostile controls.  No semantic-state count is used
+as time.
+
+\section{Corpus reconciliation}
+\paragraph{CORPUS REVIEWED.}
+The immediate preflight and preceding synthesis read the current recursive
+tree, root \path{main.tex}, \path{AGENTS.md}, \path{CODEX.md}, the research
+skill, all current task specifications, actual \path{main4.tex} and
+\path{main5.tex}, the newest verified MAIN and four newest specialist
+reports, the relevant HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC branch, governance
+notes, and cited experiments.  This Bridge continuation additionally read
+the original graph/transparent report at
+\path{research/agents/lspv-4/2026-10-13_0035_LSPV-4_PC22_ALLFIELD1.tex}
+(blob \texttt{4166635f614e8baa6a94bff5cf47e76815e971f5}), IMAGE22COMP1,
+IMAGE22DECODE1, the current compiler scripts, EARLY22-INTEGRATION1 and
+SINGLE22-SEPARATION1.  The immediately preceding LSPV-3 report
+MONOCIRCFW1 has its required marker and sentinel and was readable from
+GitHub; no recovery prompt was needed.  MODELBRIDGE-0022 already exists
+canonically, so no duplicate recovery write was made.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+IMAGE22DECODE1 explicitly proposed this source-first ARC as the next check but
+did not analyze its repaired target sizes.  The present theorem supplies
+that missing calculation.  It is consistent with its decode--recompile
+identity and with IMAGE22COMP1's warning that $U$ is not a shrinker.  It does
+not contradict the separate PC/PCR, CP, or Resolution projections.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+The LSPV-4 region now records that the natural one-variable
+decode/restrict/properize/recompile route expands every child by at least
+$14p$ balanced-source clauses before the $9/12$ compiler factors.  The
+ordered decoder remains a positive preprocessing theorem; its suggested
+single-variable ARC is retired.
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopted: $L_{22}$ NP-completeness, the exact ordered balanced-source decoder,
+and the graph/transparent compiler counts.  Rejected as unsupported: calling
+the ordinary residual with the fixed-language oracle.  \textbf{FALSIFIED /
+RETIRED}: this precise one-variable source-first contraction.  Preserved:
+all restricted proof-system theorems within their models.
+
+\paragraph{STALE OR OVERSTATED CLAIMS FOUND.}
+The suggestion that source clause count alone might yield an ARC missed the
+proper-3-CNF repair and subsequent balancing cost.  No broader claim is
+retired.  Historical $N$ remains a variable count, not encoded bits.
+
+\paragraph{EARLY22-INTEGRATION1 acknowledgment.}
+The original integration ledger, exact compiler/minimality/projection scope,
+separate monotone cubic-pair result, and affine-continuation limitation were
+read and remain integrated at IMAGE22COMP1 and the LSPV-4 root region.  They
+are not re-proved here.  This report's exact new location is Theorem 1.
+Next check: determine whether any polynomial-size exact proper-3-CNF repair
+of both one-variable residuals can avoid a nondecreasing $L_{22}$ target, or
+prove a lower bound for that repair problem without assuming separation.
+
+\paragraph{SINGLE22-SEPARATION1 acknowledgment.}
+The fixed-language priority and exact 00:35 graph construction were used.
+The arrow advanced is negative but specific:
+\[
+ \text{ordered image}\to\text{decoded balanced source}
+ \not\to\text{smaller one-variable }L_{22}\text{ children}
+\]
+for the natural exact repair and actual compiler.  Equation (1), the
+all-decider whole-computation lower bound, remains OPEN.
+
+\section{Highest-value next obligation}
+The next useful target is a repair-minimality theorem: characterize the least
+balanced proper exact-$(2,2)$ representation of the two conditioned residual
+functions and test whether a batch of $t$ conditioned variables can produce
+total compiled child volume small enough to offset $2^t$.  This must charge
+recognition, decoding, repair, serialization, all oracle calls, reconstruction
+and joint workspace.  A failure should redirect effort to a direct
+whole-machine mechanism rather than another uncharged self-reduction.
+
+\begin{thebibliography}{9}
+\bibitem{docker} J. D\"ocker, ``Monotone 3-Sat-(2,2) is NP-complete,''
+arXiv:1912.08032, 2019. \url{https://arxiv.org/abs/1912.08032}.
+\bibitem{hemaspaandra} L. A. Hemaspaandra, ``The Power of Self-Reducibility:
+Selectivity, Information, and Approximation,'' arXiv:1902.08299v3, 2019.
+\url{https://arxiv.org/abs/1902.08299}.
+\bibitem{critique} M. C. Chavrimootoo, Y. He, M. Kotler-Berkowitz,
+H. Liu, and Z. Nie, ``Evaluating the Claims of `SAT Requires Exhaustive
+Search','' arXiv:2312.02071, 2023.
+\url{https://arxiv.org/abs/2312.02071}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::SOURCEARC-NOCONTRACT1
