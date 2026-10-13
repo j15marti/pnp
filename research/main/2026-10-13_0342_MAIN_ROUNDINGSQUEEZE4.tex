@@ -1,0 +1,329 @@
+% MAIN SNAPSHOT — LSPV/RMV::ROUNDINGSQUEEZE4::2026-10-13T03:42:00Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\usepackage[margin=0.9in]{geometry}
+\hypersetup{hidelinks}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\IND}{\operatorname{IND}}
+\title{ROUNDINGSQUEEZE4: A Spread-Budget Repair\\of the Actual-Dimension Lifting Obstruction}
+\author{UNIVERSAL\_CORE\_SYNTHESIS / manual continuation}
+\date{13 October 2026, 03:42 UTC}
+\begin{document}
+\maketitle
+\noindent\textbf{Status: CANDIDATE with a complete proposed argument; independent mathematical review pending. P versus NP remains OPEN.}
+
+This report proposes a repair of the precise parameter obstruction in
+ROUNDINGSQUEEZE3 and current LIFTDIM-FIREWALL1. It does not refute that
+obstruction within its old sufficient-bound package. It replaces the
+probabilistic full-image estimate and rebuilds the subsequent cover/error
+argument. The result concerns proof size and depth in named models, not
+arbitrary SAT-machine runtime. The source family and general lifting
+architecture belong to de Rezende et al.; the normalized spread theorem is
+known. Appendix B, Remark B.2 of their full paper already points to stronger
+spread estimates. No novelty claim is made for that observation.
+
+\section{Statement and conventions}
+Let $F$ be an unsatisfiable CNF on its actual $\nu$ variables, let $b\ge3$
+be an integer, $1\le w\le\nu$, and $0<\delta<1-1/\log_2b$. Rows are
+$x\in[b]^\nu$, columns are $y\in\{0,1\}^{b\nu}$, and
+$\IND(x,y)_i=y_{i,x_i}$. A triangle has row neighborhoods linearly ordered
+by inclusion. A binary triangle DAG has a full-domain root, internal nodes
+contained in the union of their two children, and each leaf contained in the
+violation set of one fixed clause after applying $\IND$. Its size $s$ counts
+nodes; depth $d$ counts edges on a longest dependency path.
+
+\begin{theorem}[Proposed spread-budget lifting]
+There is a universal constant $A$ such that if
+\[
+ b^\delta\ge A(w+1)\log_2(2\nu)\log_2(2b\nu),\qquad
+ s\le\tfrac12 b^{(1-\delta)w},                              \tag{1}
+\]
+then a triangle DAG of size $s$ and depth $d$ solving
+$\operatorname{Search}(F)\circ\IND_b^\nu$ yields a Resolution refutation
+of $F$ of width at most $w$ and depth at most $(w+1)d+1$.
+No upper bound on the extracted Resolution proof size is asserted.
+\end{theorem}
+The construction below temporarily allows weakening. Replacing each derived
+line by an available subclause removes weakening without increasing width
+or depth. All logarithms below are base two.
+
+\section{Normalized spread and robust full image}
+Theorem 1.2 of Mossel--Niles-Weed--Sun--Zadik supplies a universal constant
+$C\ge1$ with the following consequence. If a probability measure on sets of
+size at most $\nu$ is $R$-spread, meaning
+$\Pr[S\subseteq A]\le R^{-|S|}$ for every fixed $S$, then an independent
+Bernoulli-$p$ set contains a supported set with probability at least $0.9$
+when $p\ge C\log(2\nu)/R$. We absorb the logarithm convention in $C$;
+for $\nu=1$ use their stated size cap $k=2$. This is the normalized
+probability convention, not an unproved conversion from an absolute
+family-cardinality spread convention.
+
+\begin{lemma}[Amplified full image]
+Suppose uniform $x\in X\subseteq[b]^\nu$ satisfies
+\[
+ \Pr[x_I=\alpha]\le2b^{-\delta|I|}\quad(\varnothing\ne I\subseteq[\nu]).
+\]
+Put $\ell=\log(2\nu)$ and
+$T=\lfloor b^\delta/(4C\ell)\rfloor\ge1$. If
+$|Y|\ge2^{b\nu-h}$ with $h<T$, then some single row $x\in X$ satisfies
+$\IND(\{x\}\times Y)=\{0,1\}^\nu$.
+\end{lemma}
+\begin{proof}
+The sets $A_x=\{(i,x_i):i\in[\nu]\}$ carry an $R$-spread measure for
+$R=b^\delta/2$, since $2b^{-\delta r}\le R^{-r}$ for $r\ge1$.
+Take $p_0=C\ell/R$. Each Bernoulli-$p_0$ sample misses all $A_x$ with
+probability at most $1/10$. The union of $T$ independent samples has
+Bernoulli parameter $q=1-(1-p_0)^T\le Tp_0\le1/2$. Missing all $A_x$ in
+that union implies missing them in every sample, so its probability is at
+most $10^{-T}$. A fair Bernoulli set has no larger miss probability.
+
+If every row misses some output $z_x$, then every column of $Y$ satisfies
+the CNF forbidding $z_x$ at positions $A_x$. Making every literal in this
+CNF negative cannot decrease its number of models: with all coordinates
+but one fixed, the number of allowed bit values changes from
+$\mathbf1[P]+\mathbf1[N]$ to $1+\mathbf1[P\land N]$, where $P,N$ are the
+positive and negative residual requirements. Iterate this operation.
+The all-negative CNF holds precisely when the set of one-bits contains no
+$A_x$. Its density is at most $10^{-T}<2^{-T}$, contradicting the assumed
+density of $Y$. This uses the same monotonization principle as Fact B.3
+of the source paper, with a different probabilistic tail bound.
+\end{proof}
+A subset of at least half a dense row set loses at most one bit in the
+marginal condition. Half of a column set of deficiency $\Delta$ has
+deficiency at most $\Delta+1$. Fixing a pointer and projecting to the free
+blocks does not increase column deficiency. Thus the lemma remains usable
+after these two losses when $T>\Delta+1$. With no free block, the output
+cube is a singleton and no spread lemma is needed.
+
+\section{A parameterized cover with actual neighborhoods}
+Call a row set $\delta$-dense if
+$\Pr[x_I=\alpha]\le b^{-\delta|I|}$ for every nonempty $I$.
+A pointer fixes some coordinates; predensity means containing a nonempty
+subset dense on the free coordinates.
+
+Order the rows of a triangle $U$ by decreasing neighborhood. For each
+pointer $\alpha$ fixing $I$ with $|I|\le w$ whose matching rows $S_\alpha$
+are predense, choose the earliest prefix containing a dense witness
+$D_\alpha$, and let $x_\alpha$ be its last row. Secure every matching row
+at or below $x_\alpha$. For every output pattern $\beta\in\{0,1\}^I$ set
+\[
+ Y_{\alpha,\beta}=U[x_\alpha]\cap
+       \{y:\IND(\alpha_I,y_I)=\beta\}.                       \tag{2}
+\]
+Accept the cell $S_\alpha\times Y_{\alpha,\beta}$ when
+$|Y_{\alpha,\beta}|\ge2^{b\nu-\Delta}$; otherwise mark its columns as
+errors. An accepted cell has inner rectangle
+$D_\alpha\times Y_{\alpha,\beta}\subseteq U$.
+
+The intersection with the actual neighborhood in (2) is essential.
+A global output-pattern fiber does not generally give an inner rectangle.
+We do not invoke the source Triangle Lemma's stronger maximality property;
+we handle the root directly.
+
+The error densities obey
+\[
+ |X_{\rm err}|<b^{\nu-(1-\delta)w},\qquad
+ |Y_{\rm err}|/2^{b\nu}\le M2^{-\Delta},\quad
+ M=\sum_{j=0}^w\binom\nu j(2b)^j\le(2b\nu)^{w+1}.             \tag{3}
+\]
+Security holds for every strip securing a row: its accepted cells and column
+errors cover that row's entire neighborhood. Indeed the neighborhood is
+contained in $U[x_\alpha]$ and the cells partition the latter.
+
+Here is the row bound in detail. If the unsecured set $E$ had cardinality at
+least $b^{\nu-(1-\delta)w}$, either $E$ is dense, or choose an
+inclusion-maximal coordinate set $I$ with some fiber of probability greater
+than $b^{-\delta|I|}$. The elementary bound on a fiber's size gives
+$|I|<w$. Conditional on this fiber the remaining coordinates are dense;
+otherwise a violating conditional fiber would enlarge $I$. In the dense
+case use the empty pointer. In either case a dense fiber in $E$ has a last
+row at or below the associated strip threshold, so that row is secured, a
+contradiction. The column bound simply counts all pointer/output pairs and
+sums their rejected cell densities.
+
+\section{Proof of the lifting statement}
+Set $A=64C$, $h_0=\log(2b\nu)$ and $\Delta=2(w+1)h_0+2$.
+Condition (1) ensures
+$T=\lfloor b^\delta/(4C\log(2\nu))\rfloor\ge\Delta+2$.
+Process the DAG from leaves to root. Before making strips at a node, remove
+all whole rows and columns placed in earlier error sets. After making the
+strips, add that node's errors to the global sets. Triangles remain
+triangles. There are at most $s$ error contributions. Row-error density is
+less than $1/2$, and column-error density is bounded by
+\[
+ sM2^{-\Delta}
+ \le(2b\nu)^w(2b\nu)^{w+1}2^{-\Delta}<1/2.                  \tag{4}
+\]
+A parent avoids every child error, including errors present when the child's
+strips were formed. Its inner rectangles are therefore still covered by the
+corresponding cleaned child triangles.
+
+To each accepted cell associate the clause $C_\beta$ falsified precisely by
+the cube $z_I=\beta$. The full-image lemma implies that at a leaf this cube
+falsifies the leaf's fixed source clause, so $C_\beta$ is a weakening of it.
+At the root, the remaining row and column densities are at least one half.
+The rows are dense since
+$2b^{-|I|}\le b^{-\delta|I|}$ under $\delta<1-1/\log b$. All root
+neighborhoods equal the same remaining column set, of deficiency at most
+one. Hence the empty pointer gives an accepted cell and the empty clause.
+No maximality property is used.
+
+For an internal node, take an accepted inner rectangle $D\times Y_0$.
+A rectangle covered by two triangles has a subrectangle in one child with
+at least half of each marginal. For a proof, order rows by the first child's
+neighborhoods and take a median row. If that row sees at least half the
+columns, the upper half of rows works in that child. Otherwise the lower
+half of rows and complementary columns are outside the first child and
+hence inside the second. Including the median handles odd sizes.
+
+The robust full-image lemma supplies one row $x$ in this subrectangle that
+realizes the entire parent output cube using its columns. Since $x$ is not
+a child-error row, some child strip secures it, with pointer support $J$,
+$|J|\le w$. Security and absence of child column errors imply that the
+retained clauses of this single strip, all supported on the same $J$,
+block every assignment in the parent cube. In particular each assignment on
+$J$ compatible with $z_I=\beta$ has its corresponding blocking clause.
+Resolve these clauses in a complete binary tree on $J\setminus I$.
+This gives the restriction of $C_\beta$ to $J$ at depth at most
+$|J\setminus I|$ and width at most $w$; one weakening gives $C_\beta$.
+Thus each DAG edge adds at most $w+1$ depth, with one possible leaf
+weakening, proving $(w+1)d+1$.
+
+The extraction may enumerate enormous row and cell families. It is a
+proof-existence simulation with controlled width and depth, not an efficient
+SAT procedure. Error union bounds count original DAG nodes, not unfolded
+path multiplicities.
+
+\section{Exact-(2,2) transfer and fixed-parameter repair}
+Let $d_F(w)$ be minimum source Resolution depth at width at most $w$.
+For $H=\mathcal T(P(\widetilde{\IND}_b(F)))$, the supplied
+ROUNDINGSQUEEZE2 semantic projection uses at most $s+1$ lines and depth
+$D+1$. The separated index extension induces the corresponding triangle
+DAG, as in the source's Section 2.6. Consequently, under (1),
+\[
+ s+1\le\tfrac12b^{(1-\delta)w}
+ \quad\Longrightarrow\quad
+ D\ge\frac{d_F(w)-1}{w+1}-1.                                \tag{5}
+\]
+This retains the helper-line and depth losses; it is conditional on the
+stated preceding compiler interfaces as well as the candidate proof above.
+
+The source width-depth theorem provides bases with
+$2k^2t^{c+1}\le\nu\le40k^2(2t)^{c+1}$, a Resolution refutation of width
+$k+3$ and size $O(k^2(4t)^k)$, and depth $\Omega(t^k)$ for every refutation
+of width at most $k+c$. Fix
+\[
+ k=400000,\ c=164000,\ w=564000,\ \delta=1/200,\ b=t^{500}.
+\]
+For large $t$ all source hypotheses hold. The left side of (1) is $t^{5/2}$;
+its right side is $O_{k,c}((\log t)^2)$ at the actual dimension. Thus the
+new sufficient bound holds, unlike the old one. The constant $C$ is
+symbolic, so no finite threshold $t$ is certified.
+
+The final target has encoded length $L_t=O_{k,c}(t^q\log t)$, known
+Resolution proof size $O_{k,c}(t^u)$, and lifting cap $\tfrac12t^z$, with
+\[
+ q=166001,\quad u=200402000,\quad z=280590000.
+\]
+The last compiler preserves the known Resolution line bound linearly:
+recover properized clauses, derive Q ports, telescope clone implication
+cycles in both directions, recover selector-guarded source clauses, and
+simulate the supplied Resolution proof twice with opposite guards. This
+uses $O(m+S)$ lines, not an unknown polynomial power. The compiler map is
+supplied or computed from the source, not recovered anonymously for free.
+
+Take the named proof budget $r_t=t^{u+1}$. The exact margins are
+\[
+ k-\tfrac{12}{5}q=\tfrac{7988}{5}>0,\qquad
+ z-\tfrac75(u+1)=\tfrac{135993}{5}>0.
+\]
+For large $t$ the target has a Resolution proof of at most $r_t$ lines,
+while every semantic Cutting Planes proof of size at most $r_t^{7/5}$ has
+depth $\Omega(t^k)$ and hence $\Omega(L_t^{12/5})$. The logarithm in the
+encoding is absorbed by the strict margin. The size cap is essential and
+nonvacuous; $r_t$ is polynomially bounded in $L_t$. This is a candidate
+repair of the fixed-parameter application, not independent verification of
+all regimes of the original paper.
+
+\section{Evidence, reconciliation, and handoff}
+The complete standard-library program supplied with the expanded eight-page
+local report was executed in four separate batches, each with a 30-second
+external limit and 25-second cooperative budget. Final counts are:
+\begin{center}
+\begin{tabular}{lrr}\toprule
+Mode & Assertions & Seconds\\\midrule
+Full image and monotonization &983777&0.645\\
+Triangle covers &47885&0.982\\
+Quadrants and Resolution trees &6948&0.020\\
+Amplification and parameters &40543&0.066\\\midrule
+Total &1079153&1.713\\\bottomrule
+\end{tabular}
+\end{center}
+There were zero failures. Checks include all 983025 nonempty tiny rectangles,
+624 missing-pattern choices, 768 random triangles, 10709 accepted cells,
+6135 rectangle-covering pairs among 230 distinct $3\times3$ triangles,
+216 explicit Resolution trees, 6400 amplification pairs and 9216 symbolic
+budget rows. The global-fiber inner-rectangle shortcut was rejected in
+22820 intentional hostile checks. Product controls retain the nonzero
+dimension effect. No asymptotic hard instance, minimum proof depth, numeric
+spread constant, or proof-assistant verification was computed.
+
+\paragraph{CORPUS REVIEWED.}
+Read supplied ROUNDINGSQUEEZE3 and prior interfaces; its current GitHub
+outbox; AGENTS; current root main.tex's LIFTDIM-FIREWALL1 opening and root
+recovery notice; actual main4/main5 driver openings; and the primary
+full lifting and spread proofs. This is scoped manual review, not full
+repository preflight, latest-four-specialist review, or CI.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+The normalized spread theorem is known; stronger spread estimates were
+already noted by the source authors. Our proposal explicitly repairs the
+convention and all later error bookkeeping. LIFTDIM-FIREWALL1 stays exact
+for the old sufficient-bound package. No whole-paper falsification follows
+from the old mismatch. Root recovery and other agents' content are not
+altered by this report.
+
+\paragraph{EARLY22 acknowledgment.}
+Already integrated through the existing ledger, not reverified here. Keep
+separate the compiled signed exact-(2,2) Resolution-hard MU family, the
+clause-monotone cubic-pair theorem and finite calibrations, and the affine
+continuation limitation with the 21 P C B supersession. Do not promote
+specialist acknowledgment states or transfer MU/monotonicity to this new
+family. New report locations are the lifting theorem and Section 5.
+
+\paragraph{SAME\_REALIZATION and barriers.}
+This transfers named proof-model resources only. It supplies no arbitrary
+uniform-decider compiler, all-input shrinking successor, unknown-exponent
+elimination, ordinary-machine time--space contradiction, nonrelativizing or
+nonalgebrizing separation, or Natural-Proofs escape. Main4 remains ARC and
+main5 remains WRAPPER. A direct fixed-NP-language non-P theorem would need
+no family broadening; none is proved here.
+
+\paragraph{One next independent check.}
+Audit the half-by-half full-image application, same-pointer child-clause
+inference, and linear-line Resolution upper transport. Those interfaces,
+not more tiny examples, determine whether the composed candidate survives.
+Root main.tex integration remains a separate SHA-safe action. No unperformed
+root update or full workflow completion is asserted.
+
+\begin{thebibliography}{9}
+\bibitem{spread} E. Mossel, J. Niles-Weed, N. Sun, I. Zadik.
+\emph{A Second Moment Proof of the Spread Lemma}.
+arXiv:2209.11347v2 (2022), Definition 1.1 and Theorem 1.2.
+\url{https://arxiv.org/abs/2209.11347}.
+\bibitem{lifting} S. F. de Rezende, N. Fleming, D. A. Janett,
+J. Nordstr\"om, S. Pang. \emph{Truly Supercritical Trade-Offs for
+Resolution, Cutting Planes, Monotone Circuits, and Weisfeiler--Leman}.
+arXiv:2411.14267v1; STOC 2025. References above use full-preprint numbering.
+\url{https://arxiv.org/abs/2411.14267}.
+\bibitem{prior} P versus NP project. CP22LIFT1, ROUNDINGSQUEEZE2,
+ROUNDINGSQUEEZE3 (2026), supplied reports and programs. Independent review
+pending. Canonical compiler report:
+\path{research/main/2026-10-13_0140_MAIN_CP22LIFT1.tex}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_MAIN::ROUNDINGSQUEEZE4
