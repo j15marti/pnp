@@ -130,6 +130,30 @@ def boundary(n: int, edges: list[tuple[int, int]], x: list[int]) -> list[int]:
     return out
 
 
+def component_count(n: int, edges: list[tuple[int, int]]) -> int:
+    adjacency = [[] for _ in range(n)]
+    for u, v in edges:
+        adjacency[u].append(v); adjacency[v].append(u)
+    seen, count = set(), 0
+    for root in range(n):
+        if root in seen:
+            continue
+        count += 1; seen.add(root); stack = [root]
+        while stack:
+            u = stack.pop()
+            for v in adjacency[u]:
+                if v not in seen:
+                    seen.add(v); stack.append(v)
+    return count
+
+
+def incidence_rows(n: int, edges: list[tuple[int, int]]) -> list[int]:
+    rows = [0] * n
+    for j, (u, v) in enumerate(edges):
+        rows[u] |= 1 << j; rows[v] |= 1 << j
+    return rows
+
+
 def lift(n, edges, forest, cotree, charge, y):
     if len(charge) != n or any(type(b) is not int or b not in (0, 1) for b in charge) or sum(charge) & 1:
         raise ValueError("charge must be a consistent n-bit vector")
@@ -238,6 +262,19 @@ def run():
     # Contradictory duplicate-equation NO control.
     c.check(not any(q_repeated(MASK0, z, 4) == 0 and q_repeated(MASK0, z, 4) == 1 for z in range(16)))
     c.unsat_controls += 1
+
+    # Disconnected graph with an isolate: exhaust every support R and verify
+    # rho=|R|+cc(X)-cc(X-R), with isolates included in both component counts.
+    control_n = 7
+    control_edges = [(0, 1), (1, 2), (2, 0), (3, 4), (4, 5)]
+    base_cc = component_count(control_n, control_edges)
+    base_nullity = len(control_edges) - gf2_rank(incidence_rows(control_n, control_edges), len(control_edges))
+    for support_mask in range(1 << len(control_edges)):
+        kept = [e for j, e in enumerate(control_edges) if not ((support_mask >> j) & 1)]
+        rho_formula = support_mask.bit_count() + base_cc - component_count(control_n, kept)
+        kept_nullity = len(kept) - gf2_rank(incidence_rows(control_n, kept), len(kept))
+        c.check(base_nullity - kept_nullity == rho_formula)
+        c.hostile_controls += 1
 
     for side in (3, 5, 7, 9, 17):
         n, edges, forest, cotree = k_bipartite(side); d = len(cotree)
