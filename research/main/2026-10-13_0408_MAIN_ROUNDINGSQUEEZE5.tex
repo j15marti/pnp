@@ -1,0 +1,637 @@
+% MAIN SNAPSHOT — LSPV/RMV::ROUNDINGSQUEEZE5::2026-10-13T04:08:00Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,booktabs,tabularx,array,xurl,hyperref,fancyhdr}
+\usepackage[margin=0.87in]{geometry}
+\hypersetup{hidelinks,pdftitle={ROUNDINGSQUEEZE5: Formal Spread Lifting and Exact-(2,2) Transfer}}
+\setlength{\emergencystretch}{3em}
+\setlength{\headheight}{14pt}
+\pagestyle{fancy}\fancyhf{}\lhead{\small ROUNDINGSQUEEZE5}\rhead{\small Formal proof-model argument}\cfoot{\thepage}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\IND}{\operatorname{IND}}
+\newcommand{\Res}{\mathsf{Res}}
+\newcommand{\sCP}{\mathsf{sCP}}
+\newcommand{\Cdom}{\mathcal C_{22}}
+\newcommand{\Tcomp}{\mathcal T}
+\newcommand{\ceil}[1]{\left\lceil #1\right\rceil}
+\newcommand{\floor}[1]{\left\lfloor #1\right\rfloor}
+\title{\textbf{ROUNDINGSQUEEZE5}\\[.35em]\Large Formal Spread-Budget Lifting,\\No-Weakening Extraction, and Exact-$(2,2)$ Transfer}
+\author{UNIVERSAL\_CORE\_SYNTHESIS / LSPV-5, manual continuation}
+\date{13 October 2026, 04:08 UTC}
+\begin{document}\maketitle
+\begin{center}\fbox{\parbox{.94\linewidth}{
+\textbf{P versus NP remains OPEN.} This is a complete proposed mathematical
+proof of a statement in named proof models, with explicit external theorem
+dependencies. The combined lifting theorem remains \textbf{CANDIDATE pending
+independent mathematical review}. Elementary local lemmas have full proofs;
+the supplied checker verifies concrete Resolution certificates, not this
+entire asymptotic argument. No Lean, Coq, or Isabelle verification is claimed.
+}}
+\end{center}
+
+\section{The theorem being formalized and its role}
+Fix the total language
+\[
+ L_{22}=\{\operatorname{enc}(G):G\in\Cdom,\ G\text{ is satisfiable}\},
+\]
+where $\Cdom$ consists of nonempty proper, distinct-clause \emph{signed}
+3-CNFs with exactly two positive and two negative occurrences of every
+active variable. Malformed and out-of-domain strings are rejected. The
+existing fixed-language compiler/completeness record is retained; this
+report does not replace it with an all-NO benchmark. An input is encoded by
+self-delimiting counts followed by indexed literal triples. For $v$ active
+variables in this domain, $M=4v/3$ clauses and encoded length is
+$L=\Theta(v\log(v+2))$.
+
+Our immediate goal is to formalize the RS4 probabilistic repair, not assume
+that a SAT decider produces a proof in a fixed system. The actual result
+being proposed is the following: for any fixed rational $p>1$ and
+\[
+                      1<\beta<1+1/p,                    \tag{1}
+\]
+there is a family $H_t\in\Cdom$ and a named budget $r_t$, polynomial in its
+encoded length $L_t$, such that $H_t$ has a Resolution refutation of at most
+$r_t$ lines, while every semantic Cutting Planes refutation with at most
+$r_t^\beta$ lines has depth $\Omega(L_t^p)$. Section~\ref{sec:parameters}
+gives constructive parameter choices. This is a size--depth trade-off for
+\emph{proofs}, not a time lower bound for all deciders of $L_{22}$.
+
+No literature-novelty claim is made. The new interfaces in this project are a no-weakening subclause invariant, an explicit
+$wd$ depth bound, a finite extracted-proof-size bound, and a verified
+linear-line Resolution lift through the exact selector compiler. The
+source width--depth construction is due to de Rezende et al.~\cite{tradeoff};
+the normalized spread theorem is due to the prior spread literature in the
+form stated by Mossel et al.~\cite{spread}. RS4's proposed replacement of the
+probabilistic estimate is made explicit below; it is not attributed to the
+source authors as an already published strengthening.
+
+\section{Definitions and external dependencies}
+All logarithms except an explicitly written $\ln$ are base two. For integer
+$b\ge3$ and $\nu\ge1$, put
+\[
+ X_0=[b]^\nu,\qquad Y_0=\{0,1\}^{b\nu},\qquad
+ \IND(x,y)_i=y_{i,x_i}.
+\]
+A pointer $\alpha$ fixes a subset $I\subseteq[\nu]$ to elements of $[b]$.
+A nonempty row set $D$ is $\alpha$-dense if all rows agree with $\alpha$
+and, on the free coordinates, uniform $x\in D$ satisfies
+\[
+ \Pr[x_J=a]\le b^{-\delta|J|}
+ \quad(\varnothing\ne J\subseteq[\nu]\setminus I).        \tag{2}
+\]
+A row set is $\alpha$-predense if it contains an $\alpha$-dense subset.
+For nonempty columns $Y$, let
+\[
+ \operatorname{def}(Y)=b\nu-\log|Y|.
+\]
+The clause $C_{I,\eta}$ is falsified exactly when $z_I=\eta$:
+\[
+ C_{I,\eta}=\bigvee_{i\in I}\begin{cases}z_i,&\eta_i=0,\\
+                                     \neg z_i,&\eta_i=1.\end{cases}
+\]
+In particular $C_{\varnothing,\varnothing}$ is empty.
+
+A triangle is a relation whose row neighborhoods are nested by inclusion.
+A binary triangle DAG for $\operatorname{Search}(F)\circ\IND$ has full root
+$X_0\times Y_0$, each internal node contained in the union of its at most
+two children, and every leaf contained in the pairs falsifying one specified
+clause of $F$. Unary nodes may repeat a child. Size is number of original
+DAG nodes; depth counts edges. This agrees with the source shape-DAG
+interface~\cite[Section 2.6]{tradeoff}.
+
+Resolution clauses have distinct underlying variables and no tautologies.
+The only inference in our certificate format is binary Resolution. An input
+clause has depth zero. Semantic Cutting Planes uses integer-affine
+inequalities; each noninitial line is entailed, on all Boolean assignments,
+by at most two previous lines. Its size here is line count. \emph{Neither}
+line count nor expanded monomial count is identified with binary proof size
+or arbitrary machine time.
+
+\paragraph{External theorem S: normalized spread.}
+There is an absolute $C\ge1$ such that any probability measure on sets of
+size at most $\nu$, satisfying
+$\Pr[B\subseteq A]\le R^{-|B|}$ for every fixed $B$, is hit with probability
+at least $0.9$ by an independent Bernoulli-$q$ set whenever
+$q\ge C\log(2\nu)/R$. This is Definition 1.1 and Theorem 1.2 of
+\cite{spread}, with the constant enlarged for the logarithm convention and
+for $\nu=1$. The constant remains symbolic.
+
+\paragraph{External theorem W: source width--depth family.}
+For $3\le c\le k-1<t/(2\ln t)$, Theorem 2.3 of \cite{tradeoff} gives a
+linear-size 4-CNF $F_{t,k,c}$ with
+\[
+ 2k^2t^{c+1}\le\nu\le40k^2(2t)^{c+1},                    \tag{3}
+\]
+a Resolution refutation of width $k+3$ and length $O(k^2(4t)^k)$, while any
+Resolution refutation of width at most $k+c$ has depth $\Omega(t^k)$.
+We use fixed $k,c$ below. Hidden constants are therefore fixed before $t$
+grows; no growing-parameter uniformity is inferred from them.
+
+\section{Robust full image: complete amplification argument}
+Set $\ell=\ceil{\log(2\nu)}$. Suppose a nonempty $X\subseteq[b]^\nu$ obeys
+\[
+ \Pr[x_J=a]\le2b^{-\delta|J|}
+ \quad(\varnothing\ne J\subseteq[\nu]).                  \tag{4}
+\]
+Define
+\[
+             T=\floor{\frac{b^\delta}{4C\ell}}.
+\]
+\begin{lemma}[Robust full image]\label{lem:image}
+If $T\ge1$ and $\operatorname{def}(Y)<T$, one row $x\in X$ satisfies
+$\IND(\{x\}\times Y)=\{0,1\}^\nu$.
+\end{lemma}
+\begin{proof}
+Associate $x$ with $A_x=\{(i,x_i):i\in[\nu]\}$. The induced probability
+measure is $R$-spread for $R=b^\delta/2$: a consistent set of $j\ge1$
+positions has containment probability at most $2b^{-\delta j}\le R^{-j}$;
+an inconsistent set has probability zero. Let $q_0=2C\ell/b^\delta$.
+Then $q_0\le1/2$ and $Tq_0\le1/2$. Each Bernoulli-$q_0$ sample misses all
+supported $A_x$ with probability at most $1/10$. The union of $T$
+independent samples misses them only if every sample misses them, with
+probability at most $10^{-T}$. Its coordinates are independent with
+parameter $q=1-(1-q_0)^T\le Tq_0\le1/2$. Coupling with a fair Bernoulli set
+shows that the latter's miss probability is at most $10^{-T}$.
+
+If the conclusion failed, choose for every row $x$ one missing output
+$z_x$. Every column in $Y$ satisfies the clause forbidding pattern $z_x$
+at positions $A_x$. Replace both signs of each underlying bit by the
+negative sign, one bit at a time. For a fixed assignment to all other bits,
+the number of permitted values changes from
+$\mathbf1[P]+\mathbf1[N]$ to $1+\mathbf1[P\wedge N]$, unless a clause
+independent of this bit is already false, in which case both counts are
+zero. The count never decreases. After all replacements the CNF says
+that the one-bit set contains no $A_x$. Its density is at most
+$10^{-T}<2^{-T}$, whereas $Y$ has density strictly greater than $2^{-T}$.
+This is impossible.
+\end{proof}
+
+The clause-sign argument is the monotonization mechanism in Appendix B of
+\cite{tradeoff}; the normalized spread amplification changes its quantitative
+bound. After fixing a pointer, apply the lemma to free blocks. Projection
+of $Y$ to free blocks cannot increase deficiency. A subset of at least half
+of a dense row set satisfies (4), and a subset of at least half the columns
+increases deficiency by at most one. If no free blocks remain, the required
+image is the singleton and follows from nonemptiness.
+
+\section{A cover with an explicit global error budget}
+Fix a cleaned triangle $U\subseteq X\times Y$, with rows ordered from
+largest to smallest neighborhoods, and an integer threshold $\Delta>0$.
+For each pointer $\alpha$ fixing at most $w$ coordinates whose matching row
+set $S_\alpha$ is predense, choose the earliest prefix of $S_\alpha$
+containing a dense witness $D_\alpha$. Write $x_\alpha$ for its last row.
+All matching rows at or below this row are called secured by this strip.
+For each output pattern $\eta$ on $I=\operatorname{fix}(\alpha)$ form
+\[
+ Y_{\alpha,\eta}=U[x_\alpha]\cap
+       \{y:y_{i,\alpha_i}=\eta_i\ \text{for }i\in I\}.      \tag{5}
+\]
+Accept a nonempty cell if $|Y_{\alpha,\eta}|\ge2^{b\nu-\Delta}$;
+otherwise put its columns into this node's error set. The inner rectangle
+$D_\alpha\times Y_{\alpha,\eta}$ of an accepted cell lies in $U$. The
+neighborhood intersection in (5) is indispensable.
+
+\begin{lemma}[Cover and density bounds]\label{lem:cover}
+The unsecured rows are fewer than $b^{\nu-(1-\delta)w}$. There are at most
+\[
+ M_w=\sum_{j=0}^w\binom\nu j(2b)^j\le(2b\nu)^{w+1}        \tag{6}
+\]
+pointer/output cells, and the column-error density is at most
+$M_w2^{-\Delta}$. For a secured row and any strip securing it, every
+neighbor not in the column-error set lies in an accepted cell of that strip.
+\end{lemma}
+\begin{proof}
+The last statement follows by partitioning $U[x_\alpha]$ into output cells
+and using neighborhood inclusion. Summing the densities of rejected cells
+gives the column bound.
+
+Let $E$ be the unsecured rows and suppose
+$|E|\ge b^{\nu-(1-\delta)w}$. If uniform $E$ is dense, its empty-pointer
+strip exists. Otherwise choose an inclusion-maximal nonempty coordinate
+set $I$ with a fiber $E_{I=a}$ whose probability exceeds
+$b^{-\delta|I|}$. Its cardinality is at most $b^{\nu-|I|}$, so
+\[
+ b^{\nu-(1-\delta)w-\delta|I|}
+ < |E_{I=a}|\le b^{\nu-|I|}
+ \quad\Longrightarrow\quad |I|<w.
+\]
+Maximality implies that the conditional fiber is dense on free coordinates:
+a violating free-coordinate fiber would give a violating strict superset
+of $I$. In either case a dense fiber of $E$ is a witness for an allowed
+strip. That strip's threshold is no later than the fiber's last row, so
+that last row is secured. This contradicts its membership in $E$.
+\end{proof}
+
+\section{The no-weakening inference invariant}
+The following lemma is the new local formalization. It works even when
+some child clauses have already been replaced by strictly stronger
+subclauses. The code emits ordinary Resolution only.
+
+\begin{lemma}[Cube-subclause derivation]\label{lem:subclause}
+Let $I,J\subseteq[\nu]$ and let $\eta\in\{0,1\}^I$. For every
+$\sigma\in\{0,1\}^J$ agreeing with $\eta$ on $I\cap J$, suppose a clause
+$E_\sigma\subseteq C_{J,\sigma}$ has already been derived. There is a
+Resolution derivation from these clauses of a clause
+\[
+                E\subseteq C_{I\cap J,\eta}\subseteq C_{I,\eta}
+\]
+with additional depth at most $|J\setminus I|$, width at most $|J|$, and
+at most $2^{|J\setminus I|}-1$ new Resolution inferences. No weakening is used.
+\end{lemma}
+\begin{proof}
+Order the free variables $J\setminus I$ and construct the full binary tree
+of their assignments. At a leaf use $E_\sigma$. At a branch on variable
+$v$, the two recursively returned clauses are subclauses of the appropriate
+common prefix clause with $v$ and $\neg v$, respectively. If the first
+clause lacks $v$, return it unchanged. Otherwise, if the second lacks
+$\neg v$, return that clause unchanged. If both pivots are present, resolve
+them. Nonpivot literals agree with the common prefix, so no tautological
+resolvent is introduced. Induction on the remaining variables proves the
+subclause invariant. Each root-to-leaf path adds at most one inference per
+free variable; width never exceeds $|J|$. The full binary tree has at most
+$2^{|J\setminus I|}-1$ internal vertices, and skipped branches only reduce
+that count. Returning a previous line is not a new inference.
+\end{proof}
+
+This is a constructive subclause-pruning argument, not the invalid operation
+of deleting a weakening line while leaving all its later inferences
+unchanged. The invariant permits the later pivots to disappear and prunes
+those inferences as well.
+
+\section{Formal spread-budget lifting theorem}\label{sec:lift}
+\begin{theorem}[No-weakening spread lifting]\label{thm:lift}
+Fix $C$ from theorem S. Let $F$ be an unsatisfiable CNF on $\nu\ge1$
+variables; let $b\ge3$, $1\le w\le\nu$ be integers and
+$0<\delta<1-1/\log b$. Put
+\[
+ \ell=\ceil{\log(2\nu)},\qquad h=\ceil{\log(2b\nu)}.
+\]
+If
+\[
+             b^\delta\ge64C(w+1)\ell h,                 \tag{7}
+\]
+then any binary triangle DAG of size $s\le\tfrac12b^{(1-\delta)w}$ and
+depth $d$ solving $\operatorname{Search}(F)\circ\IND_b^\nu$ gives a
+strict Resolution refutation of $F$ with
+\[
+ W\le w,\qquad D\le wd,\qquad S\le s M_w2^w.            \tag{8}
+\]
+These are proof-existence bounds. No polynomial-time discovery procedure for
+the strips or the full-image row is asserted.
+\end{theorem}
+\begin{proof}
+Take $\Delta=2(w+1)h+2$. Equation (7) gives
+\[
+ T=\floor{b^\delta/(4C\ell)}\ge16(w+1)h\ge\Delta+2.
+\]
+Process the original DAG once in a topological order from leaves to root.
+Before processing a node remove all rows and columns placed in error sets
+by earlier nodes. Construct and save its strips, then add its own errors
+to the global sets. Removing whole rows and columns preserves nested
+neighborhoods. There are at most $s$ row-error contributions, so their
+union has density less than $1/2$ by Lemma~\ref{lem:cover}. The column union
+has density at most
+\[
+ sM_w2^{-\Delta}
+ \le 2^{wh-1+(w+1)h-2(w+1)h-2}=2^{-h-3}<1/2.            \tag{9}
+\]
+The estimate uses original nodes, not occurrences in an unfolded tree.
+
+For each accepted cell indexed by $(I,\eta)$ we maintain a \emph{derived
+subclause} of $C_{I,\eta}$. At a leaf, the full-image lemma on the inner
+rectangle realizes the entire cube $z_I=\eta$. Every such assignment
+falsifies the source clause labelling that leaf. This source clause must be
+a subclause of $C_{I,\eta}$, and is used directly as an axiom of depth zero.
+
+At an internal node, fix an accepted inner rectangle $D\times Y'$. It is
+covered by the two original children and, because of the topological
+cleaning, by the children as they existed when their own strips were saved.
+There is a half-by-half subrectangle in one child: order rows by the first
+child's neighborhoods and choose a median. If its neighborhood contains at
+least half the columns, use the earlier half of rows and those columns;
+otherwise use the later half and its column complement in the other child.
+Include the median on both sides so odd cardinalities are covered.
+
+The free-coordinate row density loses at most one bit, and column
+deficiency is at most $\Delta+1<T$. Lemma~\ref{lem:image} therefore supplies
+\emph{one row} $x$ of that subrectangle realizing the whole parent cube.
+It avoids the child's own error rows, so some child strip secures it. Let
+$J$ be that one strip's pointer support. All columns in the chosen
+subrectangle avoid the child's errors. By security, for every $J$-pattern
+compatible with the parent cube the corresponding child cell was accepted.
+The inductive hypothesis already supplies a subclause of each such child's
+clause. Lemma~\ref{lem:subclause} produces a subclause of the parent clause
+with at most $w$ added depth and $2^w-1$ new inferences. The row $x$ is fixed
+before varying the output assignment. Exchanging these quantifiers would
+invalidate this step.
+
+At the root the cleaned row and column sets each have density at least
+$1/2$. For a nonempty coordinate set $J$,
+\[
+ \Pr[x_J=a]\le2b^{-|J|}\le b^{-\delta|J|},
+\]
+using $b^{1-\delta}>2$. Hence the whole remaining row set is dense. Root
+neighborhoods all equal the remaining columns, of deficiency at most one.
+Its empty-pointer cell is accepted. The maintained subclause of its empty
+clause is itself empty. Along any original path at most $w$ new depth is
+added per edge, proving $D\le wd$. Each node has at most $M_w$ cells; a leaf
+cell requires one input line and an internal cell at most $2^w-1$ new lines.
+Sharing all previously derived child clauses gives the line bound in (8).
+\end{proof}
+
+\section{The exact compiler interfaces, fully separated}
+The fixed primary $L_{22}$ graph-colouring record uses transparent
+seven-clause padding at the 00:35 PC22\_ALLFIELD1 path. The present transfer
+uses the \emph{different} 00:10 selector-and-duplication compiler, denoted
+$\Tcomp$, as implemented in CP22LIFT1. Both targets lie in $\Cdom$; this does
+not transfer graph-colouring statements to the cylinder source. Neither
+minimal unsatisfiability nor clause-monotonicity is asserted here.
+
+For a nonempty proper 3-CNF occurrence list $K$ with $m$ clauses,
+$\Tcomp(K)$ has $72m$ variables and $96m$ distinct clauses. It first splits
+each $(a\vee b\vee c)$ into
+\[
+ (s\vee a\vee y),\ (\neg y\vee b\vee c),\
+ (\neg s\vee\neg a\vee z),\ (\neg z\vee\neg b\vee\neg c),
+\]
+duplicates the occurrence list, pairs opposite occurrences into $R=12m$
+clones, equates each clone group by a directed cycle, and pads triples of
+implications with copies of the fixed forced-zero-port gadget $Q$.
+Intermediate duplication is intentional and must not be deduplicated.
+
+\begin{lemma}[Explicit linear-line Resolution lift]\label{lem:upper}
+Given a strict Resolution refutation $\pi$ of $K$ with $S$ lines, the actual
+selector compiler has a strict Resolution refutation with
+\[
+                 S'\le342m+2S+1,\qquad
+                 W'\le\max\{4,W(\pi)+1\}.              \tag{10}
+\]
+The translation is uniform and has polynomial bit cost in its explicit input
+and output. It uses the known source/compiler map, not anonymous inversion.
+\end{lemma}
+\begin{proof}
+The fixed width-three $Q$ port proof has 69 ancestor nodes and is explicitly
+reconstructed and checked in the supplied program. There are $4m$ copies,
+costing $276m$ lines. At most $2R=24m$ lines introduce and unpad the $R$
+implications. Prefix and suffix paths around the cycles derive both
+implication directions to the representative in at most $2R=24m$ additional
+Resolution lines. Recovering the $4m$ representative split clauses costs
+at most $16m$ lines, including their input clauses. Resolving each split pair
+costs another $2m$ lines and gives the two selector-guarded versions of
+each source clause. Simulate $\pi$ twice, once with $s$ appended and once
+with all source variables complemented and $\neg s$ appended. The selector
+is fresh, so every source pivot remains a legal pivot. The branches derive
+$s$ and $\neg s$, followed by one final Resolution step. This costs at most
+$2S+1$ lines. Summing gives (10). The extra guard raises source width by one;
+all preparatory clauses have width at most four. Binary variable indices and
+parent references are charged, so (10) is a line-count bound, not a linear
+bit-cost assertion.
+\end{proof}
+
+\paragraph{Semantic projection with the one-line allowance.}
+Under clone identification, $s=0$, $y=\neg a$, $z=0$, and all gadget
+variables zero, every target clause becomes a source clause or an inequality
+valid on the Boolean cube. A valid projected inequality follows semantically
+from any one source axiom. One shared helper axiom suffices, so the projected
+semantic-CP proof has size at most $s+1$ and depth at most $D+1$. Literal
+substitution preserves the Boolean entailment of every inference. The same
+argument composes with properization by directly substituting its fresh
+variables, instead of adding a helper once per stage. This is the previously
+proved RS2 interface, restated to fix its cost convention. It is \emph{not}
+a cheap ordinary-CP proof-search step.
+
+The separated index encoding of a width-four source introduces extension
+variables assigned by functions of only the row side or only the column
+side. Pulling back a linear inequality therefore gives a triangle. Source
+\cite[Section 2.6]{tradeoff} gives the exact search-relation reduction.
+Combining it with Theorem~\ref{thm:lift} yields, for
+$H=\Tcomp(P(\widetilde{\IND}_b(F)))$,
+\[
+ s+1\le\tfrac12b^{(1-\delta)w}
+ \quad\Longrightarrow\quad
+ D\ge\frac{d_F(w)}{w}-1.                                \tag{11}
+\]
+This sharpens RS4's conservative $((d_F(w)-1)/(w+1))-1$ bound.
+
+\section{A constructive region of fixed-parameter trade-offs}\label{sec:parameters}
+For fixed $k,c,a,\delta$ and $b=t^a$, the source bounds and index encoding,
+properization, and Lemma~\ref{lem:upper} give
+\[
+ L_t=O(t^q\log t),\quad S_{\Res}(H_t)=O(t^u),\quad
+ q=4a+c+1,\quad u=a(k+4)+k,\quad z=a(1-\delta)(k+c).       \tag{12}
+\]
+Here $\tfrac12t^z$ is the admissible lifting cap. The number of variables is
+still the actual $\nu=\Theta_{k,c}(t^{c+1})$; only its logarithm occurs in
+(7). For any fixed $a\delta>0$, (7) holds for all sufficiently large $t$.
+No numerical threshold is asserted for the external constant $C$.
+
+\begin{theorem}[Formal fixed-parameter region]\label{thm:region}
+Subject to the external theorems S and W and the stated index-encoding
+interface, for every fixed rational $p>1$ and $1<\beta<1+1/p$ there are
+fixed rational/integer parameters producing a family $H_t\in\Cdom$ and
+$r_t=t^{u+1}$ with a Resolution proof of size at most $r_t$ and
+\[
+ \forall\tau:\ H_t\vdash_{\sCP}\bot,
+ \quad S(\tau)\le r_t^\beta
+ \quad\Longrightarrow\quad D(\tau)=\Omega(L_t^p).        \tag{13}
+\]
+The bound is nonvacuous and $r_t$ is polynomially bounded in $L_t$.
+\end{theorem}
+\begin{proof}
+Choose a rational $\rho$ strictly between $\beta-1$ and $1/p$. Put
+\[
+ g=1+\rho-\beta>0,\qquad
+ \delta=\frac{g}{2(1+\rho)},\qquad
+ a=\ceil{4\beta/g},\qquad H_0=ag/2-\beta>0.
+\]
+Choose an integer $k$ strictly larger than
+\[
+ \max\left\{
+ \frac{p(4a+1)}{1-p\rho},\quad
+ \frac{a(1-\delta)+\beta(4a+1)}{H_0},\quad
+ \frac4\rho,\quad4\right\},\qquad c=\floor{\rho k}.       \tag{14}
+\]
+Then $3\le c<k$ and
+\[
+ k-pq\ge(1-p\rho)k-p(4a+1)>0,
+\]
+\[
+ z-\beta(u+1)
+ \ge H_0 k-a(1-\delta)-\beta(4a+1)>0.                    \tag{15}
+\]
+All these choices are made once, before $t$ grows. For sufficiently large
+$t$, the source graph hypotheses, the root-density condition, and (7) hold.
+The upper proof is $O(t^u)\le r_t$. By the second margin in (15), every
+proof of size at most $r_t^\beta$ satisfies the cap in (11), including the
+$+1$ and the factor $1/2$. The source width--depth lower bound gives depth
+$\Omega(t^k)$, and the first strict margin absorbs $(\log t)^p$ to imply
+$\Omega(L_t^p)$. Finally $L_t\ge\nu\ge2k^2t^{c+1}$ for the explicit
+construction, so $r_t$ is bounded by a fixed power of $L_t$.
+\end{proof}
+
+Equation (1) is a sufficient feasible region for this fixed-parameter ledger,
+not a universal boundary for all constructions. It also follows as a
+necessary asymptotic ratio condition within this particular ledger: writing
+$c/k\to\rho$, depth requires $\rho<1/p$, while the size-cap condition in
+the ideal $a\to\infty,\delta\to0$ limit requires $\rho>\beta-1$.
+No impossibility claim outside the displayed sufficient-bound framework is made.
+
+\paragraph{Two concrete choices.}
+The earlier RS4 constants $k=400000,c=164000,a=500,\delta=1/200$ satisfy
+\[
+ k-\tfrac{12}{5}q=\tfrac{7988}{5},\qquad
+ z-\tfrac75(u+1)=\tfrac{135993}{5}.
+\]
+The automatic rational recipe for $(p,\beta)=(12/5,7/5)$ instead gives
+$\rho=49/120$, $\delta=1/338$, $a=672$, $k=322681$, $c=131761$.
+Its depth margin is exactly one and its size-cap margin is
+$378319354/845$. Both choices use the true dimension. These are asymptotic
+parameter specifications, not practical SAT instances.
+
+\paragraph{The quantifier limit.}
+The theorem is $\forall(p,\beta)\ \exists(H_t)$ in the stated region. It is
+not $\exists(H_t)\ \forall p$, and does not supply a single-family
+superpolynomial lower bound by allowing $p$ to grow. It certainly does not
+replace the separate quantifier over every total uniform $L_{22}$ decider.
+
+\section{Certificate evidence and verification boundary}
+All new code uses exact integer or rational arithmetic. The independent
+Resolution checker accepts only input axioms and genuine binary resolution,
+checks all parent indices and pivots, and rejects weakening or semantic
+inference. The local audit exhausts every parent/child support, compatible
+pattern, and choice of child subclauses over at most two variables. Larger
+subclause tests use fixed seeds. The compiler audit emits full certificates
+and then performs a genuine signed renaming and clause/literal permutation.
+\begin{center}\small
+\begin{tabular}{lrr}\toprule
+New audit & Counted checks & Certificate lines replayed\\\midrule
+Subclause pruning &4293&5296\\
+Linear Resolution compiler &21&53166\\
+Integral budget bounds &10962&0\\
+Rational parameter synthesis &8820&0\\\midrule
+Total &24096&58462\\\bottomrule
+\end{tabular}
+\end{center}
+The local tests cover 405 exhaustive cases and 1024 randomized cases, with
+1569 skipped inferences. Five malformed local certificates and seven
+malformed compiled certificates are rejected. A missing leaf-pattern control
+is rejected separately. The parameter recipe checks 1710 feasible pairs and
+rejects 270 invalid/boundary choices. No failures occurred.
+
+The exact full-three-variable source has a 15-line Resolution refutation.
+The emitted target has 576 variables, 768 clauses, and a checked 2631-line
+strict Resolution certificate, below the proved bound 2767. This complete
+certificate is included. The largest control has 1440 variables and 1920
+clauses; its certificate has 6571 lines. These are supplied-proof lengths,
+not minimum lengths or lower-bound measurements.
+
+The unchanged RS4 script was also rerun in four separate modes, reproducing
+its 1,079,153 checks. They remain attributed to RS4 and are not added to the
+new-check total. Its small tests verify monotonization, nested-neighborhood
+covers, quadrant selection, and amplification arithmetic; they do not prove
+the external spread theorem. Every invocation was individually capped at
+30 seconds. The seven-case compiler batch took about 9.76 seconds; the other
+new modes each took under 0.1 seconds in this environment.
+
+\section{Proof spine, corpus, and review handoff}
+\paragraph{SAME\_REALIZATION.}
+Every size and depth pair above refers to the same given proof or to one
+explicitly described transformed proof. Node sharing is preserved, and all
+compiler/proof output costs belong to their own transducers. The strip
+search may be exponentially expensive; no cost of it is retroactively
+charged to an arbitrary one-bit SAT execution. Coefficient bit complexity
+and inequality acquisition are not hidden in a claim about ordinary machine
+running time. A general SAT decider may use neither Resolution nor semantic
+Cutting Planes. Thus no nonrelativizing, nonalgebrizing, or Natural-Proofs
+escape is asserted. This probabilistic set-system argument transfers between
+specific proof models only.
+
+\paragraph{Actual current manuscripts and scope.}
+The current root opening reviewed in this run is BALMIXFW1, with the
+LIFTDIM-FIREWALL1 record below it. The old no-retuning statement remains
+correct under its older sufficient bounds. The present theorem changes the
+full-image estimate, so it is not a counterexample to that algebraic
+statement. Main4 remains the ARC driver and main5 remains WRAPPER. Nothing
+here supplies all-input successor acquisition, an unknown-exponent
+contraction, or an ordinary-machine time--space contradiction.
+
+\paragraph{CORPUS REVIEWED.}
+This manual continuation read the supplied RS2/RS4 mathematical bodies,
+previous compiler programs, current root and governance passages, and the
+relevant current specialist passages of TRACECR-FIREWALL1, EFFDIMSQUEEZE1,
+NOBIASFW1 and SOURCEARC-NOCONTRACT1. Primary reads covered the normalized
+spread theorem and the full source lifting/model/source-family statements.
+This is a targeted proof audit, not a claim of a full local repository
+checkout, all historical bytes, a full latest-artifact inventory or CI.
+The last canonical RS4 report is already present; no missing body was
+reconstructed or duplicated.
+
+\paragraph{SINGLE22 acknowledgment.}
+\textbf{Integrated with an additional restricted-model arrow.} The fixed
+decision language is unchanged. The transparent graph-colouring compiler at
+\path{research/agents/lspv-4/2026-10-13_0035_LSPV-4_PC22_ALLFIELD1.tex}
+is not the selector compiler at the 00:10 path used here. The new formal
+arrow is Theorem~\ref{thm:lift} plus Lemma~\ref{lem:upper}, yielding
+Theorem~\ref{thm:region} inside the signed exact-$(2,2)$ domain. Existing
+specialist acknowledgments are not upgraded to independent approval of this
+new theorem. The two algebraic/counting controls do not solve the current
+colouring family by assertion.
+
+\paragraph{EARLY22 acknowledgment.}
+\textbf{Already integrated through the existing ledger, not newly reverified.}
+Retain three separate entries: the compiled exact-$(2,2)$ Resolution-hard
+MU family under its original hypotheses; the genuine monotone cubic-pair
+representation and finite calibrations; and the affine-continuation
+limitation with the 21 P C B supersession. The present family inherits no
+old minimality, monotonicity or decoder claim. The new integration locations
+are Sections 5--8. Attribution for the old rounding-guard trick remains with
+Lauria--Nordstr\"om~\cite{lauria}, rather than being relabelled as a new theorem.
+
+\paragraph{Publication and pending review.}
+Canonical publication and root synchronization are logged separately. No
+unperformed root edit is asserted. The next independent review should audit
+Theorem~\ref{thm:lift}'s normalized amplification, saved-strip chronology,
+and same-row inference. The current chain is
+\[
+\text{spread}\ \Longrightarrow\ \text{triangle lifting}\
+\Longrightarrow\ \text{size--depth obstruction in }\Cdom .
+\]
+The whole-computation statement
+$\forall A\in\operatorname{Dec}(L_{22})\ \forall d,C,N_0\ \exists x$
+with $|x|\ge N_0$ and $T_A(x)>C|x|^d$ remains \textbf{OPEN}. A direct proof
+of it would need no subsequent broadening to other SAT families.
+
+\begin{thebibliography}{1}
+
+\bibitem{tradeoff}
+Susanna~F. de~Rezende, Noah Fleming, Duri~Andrea Janett, Jakob Nordstr{\"o}m,
+  and Shuo Pang.
+\newblock Truly supercritical trade-offs for resolution, cutting planes,
+  monotone circuits, and weisfeiler--leman.
+\newblock arXiv:2411.14267v1; conference version STOC 2025, 2024.
+\newblock Theorem 2.3, Section 2.6, Section 7, Appendix B. Theorem numbers in
+  this note refer to the full preprint.
+
+\bibitem{lauria}
+Massimo Lauria and Jakob Nordstr{\"o}m.
+\newblock Graph colouring is hard for algorithms based on hilbert's
+  nullstellensatz and gr{\"o}bner bases.
+\newblock arXiv:2306.00125, 2023.
+\newblock Section 2.1 and Lemma 4.1; source attribution for guard-divisibility
+  repair.
+
+\bibitem{spread}
+Elchanan Mossel, Jonathan Niles-Weed, Nike Sun, and Ilias Zadik.
+\newblock A second moment proof of the spread lemma.
+\newblock arXiv:2209.11347v2, 2022.
+\newblock Definition 1.1 and Theorem 1.2; probability-normalized spread
+  convention.
+
+\end{thebibliography}
+
+\end{document}
+% END_OF_VERIFIED_MAIN::ROUNDINGSQUEEZE5
