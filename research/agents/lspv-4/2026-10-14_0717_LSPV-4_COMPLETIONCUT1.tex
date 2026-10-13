@@ -1,0 +1,346 @@
+% LSPV-4 REPORT::COMPLETIONCUT1::2026-10-13T22:17:40+00:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\usepackage[margin=0.9in]{geometry}
+\hypersetup{hidelinks}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\poly}{\operatorname{poly}}
+\title{COMPLETIONCUT1: What Completion-Time Hashes Supply\\
+\large Freshness, replay inputs, and a simultaneous preprediction bound}
+\author{UNIVERSAL\_CORE\_BRIDGE / LSPV-4}
+\date{14 October 2026, 07:17 KST}
+\begin{document}\maketitle
+\paragraph{Status.}
+\textbf{CANDIDATE with complete elementary proofs; independent review pending.}
+The original completion-time sampler contributes a causal information boundary
+and a precise source-accounting rule. A finite-family union bound turns
+individual preprediction limits into simultaneous failure on one common stream.
+This does not yield a fixed SAT input hard for all programs, and does not
+bound post-release computation. \textbf{P versus NP remains OPEN.}
+
+\section{The user's actual construction and its recovered scope}
+An algorithm completes an event with result $e_i$ at time $\tau_i$. The wrapper
+samples $R_i$ from the continuously evolving external source and updates
+\[
+ h_i=H(h_{i-1},e_i,R_i),\qquad F_{i+1}=C(F_i,h_i).
+\]
+The event type must distinguish a completed SAT/UNSAT subroutine from a
+primitive machine transition. Timestamps or internal configurations may be
+additional hash inputs; their inclusion is recorded, not silently erased.
+
+The controlling condition for the present probability statements is
+\[
+ \mathcal L(R_i\mid\mathcal H_i)=U(\{0,1\}^{\ell_i}),       \tag{1}
+\]
+where $\mathcal H_i$ is all information available when the event and any
+preprediction are fixed, before the sampled block is exposed. This includes
+the code, input, prior samples, current result and available internal state.
+For a blind-between-snapshots IID stream, a block of fresh bits beginning
+immediately after a stopping boundary satisfies (1). Sampling a current or
+recent block at completion also needs (1), or an appropriate weaker entropy
+bound; observing the stream to choose a favorable stopping bit violates it.
+Overlapping previously exposed bits cannot be charged as fully fresh.
+The experiments implement a fresh block latched after the boundary, charging
+two sampling ticks. They do not assert that every physical sampling device
+implements this rule.
+
+The original CRS-PPC-SAT1 already establishes fresh snapshots, timing-sensitive
+paths, reference replay and the solver-relative/static-problem distinction
+\cite{crs}. LEAD-0016 proves deterministic execution-hash simulation closure
+\cite{lead16}. LEAD-0017 places provenance in SRAS history, source lineage,
+access and authority coordinates, rather than semantic SAT identity
+\cite{lead17}. CORPUS-HASH-RECOVERY1 separates hash indexing from exact semantic
+reuse \cite{recovery}. These are retained, not presented as new discoveries.
+
+\section{Replay must retain the external sample inputs}
+For a deterministic algorithm and controller, the correct live object is
+\[
+             P_A(F,G),\quad\text{not generally }P_A(F),     \tag{2}
+\]
+where $G$ is the actual external stream. Different sampled blocks can give
+different records even for identical $A,F$. This qualifies the deterministic
+replay theorem; it does not contradict its original hypotheses.
+
+If the only stream access is through the recorded snapshots, an exact replay
+can instead receive the finite event log
+\[
+ \mathcal R=((\tau_i,e_i,R_i))_{i=1}^k.
+\]
+For modeled deterministic step-count timing, the simulator can recompute the
+events and their times from the code, input and samples. For externally
+measured latencies, their actual observations must also be supplied. With
+maximum timestamp $T$, the log length is
+\[
+ O\!\left(\sum_i |e_i|+\sum_i\ell_i+k\log(T+2)\right).    \tag{3}
+\]
+Unused stream bits are not required merely to replay this specified interface.
+Equation (3) is not a method of authenticating historical samples: checking
+that a recorded block really came from the external source at a claimed time
+needs the trusted sampler/source record or an independently justified protocol.
+
+The charged execution includes solver work, controller work, sampling access,
+hash updates, any log output, replay and verification. Retained observer state
+is distinct from the solver's own workspace. Under polynomial solver time,
+polynomially many bounded-size events and polynomial per-update cost, replay
+\emph{with the samples supplied} remains polynomial. No theorem says that
+those external samples are reconstructible from $A,F$ alone.
+
+For exact mathematical provenance, retain an injective event encoding or an
+exact replay check. A short hash is a possibly colliding index. In particular,
+for a fixed history $s$, let
+\[
+ \mu(s)=\max_y\Pr[H(s,R)=y\mid s].                        \tag{4}
+\]
+A precomputed list of $q$ digest values succeeds with probability at most
+$\min\{1,q\mu(s)\}$. Without a proved bound on (4), raw-block entropy cannot
+be assigned to the digest. No random-oracle or collision-resistance hypothesis
+is used in this report.
+
+\section{A precise contribution to simultaneous quantifiers}
+\begin{theorem}[Common-stream preprediction bound]\label{thm:union}
+Fix $M$ deterministic causal programs and one IID bitstream $G$. Program $p$
+has its own almost-surely finite stopping boundary $\tau_p$, and fixes a list
+$L_p$ of at most $q$ candidate $\ell$-bit blocks using only its available past.
+The sampled block $R_p$ satisfies (1) at that boundary. Then
+\[
+ \Pr_G[R_p\in L_p]\le q2^{-\ell},\qquad
+ \Pr_G[\exists p:\ R_p\in L_p]\le Mq2^{-\ell}.            \tag{5}
+\]
+If $Mq<2^\ell$, a common stream exists on which all $M$ prepredictions fail.
+The programs may stop at different times and their samples may be mutually
+correlated. No independence between the programs' success events is required.
+\end{theorem}
+\begin{proof}
+Condition on the history fixing $\tau_p$ and $L_p$. At most $q$ of the
+$2^\ell$ equiprobable fresh blocks are in the list. Average this conditional
+bound and apply the union bound to the $M$ events. If their union has measure
+less than one, its complement is nonempty.
+\end{proof}
+
+For all binary descriptions of length at most
+$L_N=b_0+\lfloor\log_2(N+2)\rfloor$, the number of programs is at most
+\[
+ 2^{L_N+1}-1<2^{b_0+1}(N+2).
+\]
+Thus $\ell\ge\lceil\log_2(Mq)\rceil+\lambda$ gives union probability at most
+$2^{-\lambda}$. With polynomial $q$, a logarithmic-size fresh challenge
+suffices for this finite-family preprediction property. This is a standard
+probabilistic-method calculation applied to the recovered timing interface,
+not a new complexity separation.
+
+\paragraph{Three indispensable qualifications.}
+The theorem bounds \emph{precommitted values}, not compact programs that compute
+a response after reading $R_p$. The function $r\mapsto r$ defeats any attempt
+to turn a large precomputed answer table into necessary work. Also, one common
+stream is not necessarily one common SAT instance: hash-routed later formulas
+can depend on each program's completion schedule. Finally, fixing a successful
+stream as a static input can reveal precisely the information assumed hidden
+in (1). A resource-preserving static transfer must address that change.
+
+The oracle audit is exact. A fixed oracle independent of $G$ can be included
+in the prior information without invalidating (1)--(5). Hence the bound also
+holds with an equality oracle $P^O=NP^O$ supplied by Baker--Gill--Solovay
+\cite{bgs}. This freshness argument alone is not the required nonrelativizing
+hinge. Giving the oracle access to the future stream would instead violate
+its independence assumption, rather than refute the lemma.
+
+\section{Different paths can have identical event distributions}
+\begin{theorem}[Clock-free event-law lemma]\label{thm:law}
+Suppose a controller makes a fixed finite number $k$ of semantic decisions.
+Its next state is a deterministic function of its prior logical state, the
+correct decision bit, and a fresh independent block. The controller does not
+consume completion times, implementation identity, or internal solver states.
+All compared exact deciders halt at every stage. Then the logical event
+transcript, including hash updates, has the same distribution for every such
+decider, regardless of their completion-time schedules.
+\end{theorem}
+\begin{proof}
+The initial state is common. Conditional on any common logical history, both
+controllers ask the same decision question and obtain the same correct answer.
+By (1), their newly sampled blocks have the same independent uniform law.
+Applying the same state-update function gives the same next-state conditional
+law. Induction proves equality of the entire $k$-stage distribution.
+\end{proof}
+
+This is equality in distribution, not pathwise equality on a shared physical
+stream, and not free replay of a specified reference run. When time or internal
+states feed the hash/controller, the hypothesis fails and this lemma cannot
+be used. Subject to polynomial event count, query size and controller cost,
+a SAT-oracle controller can generate the same clock-free law in polynomial
+work. That observation does not reproduce reference timestamps.
+
+A complementary event-level control computes a stage answer early and waits
+until the prescribed release time. If the recorded event contains only the
+answer, timestamp and sampled block, it can give the identical timed hash
+record while spending different active work before release. A digest of every
+primitive state would be a different interface, not covered by this control.
+Even such a digest needs an independent theorem connecting mandatory ordinary
+lineage to the original decision obligation.
+
+\section{Where this attaches to the proof chain}
+The available positive arrows are
+\[
+ \begin{gathered}
+ \text{completion boundary}\ \longrightarrow\
+ \text{fresh source acquisition}\\
+ \longrightarrow\ \text{preprediction bound and explicit replay inputs}.
+ \end{gathered} \tag{6}
+\]
+They belong in SRAS $H,J,P,\mathsf A,\Omega_D,\Omega_G$ and a specified
+provenance-sensitive consumer. They do not change the semantic continuation
+quantity $\kappa_U$ merely by increasing the number of recorded histories.
+Current main4/main5 accounting still needs source-relevant correctness,
+acquisition, successor coverage and charged replay; (6) supplies no missing
+contraction by itself. The fixed-language route is still allowed and needs
+no mandatory universal implementation compiler.
+
+A valid probabilistic route to the common-input UWI target would use a
+\emph{single} instance generator $F(G)$ independent of the candidate program,
+with satisfiable outputs of the declared encoded size, and prove
+\[
+ \forall p\in\mathcal P_N:\quad
+ \Pr_G[p\text{ succeeds on }F(G)\text{ within the native budget}]
+ \le\varepsilon_N,\qquad |\mathcal P_N|\varepsilon_N<1.   \tag{7}
+\]
+The union bound would then give one hard input; an efficient method for finding
+the good seed is not necessary for a worst-case nonexistence proof. But (5)
+is not (7): pre-release guessing is a different success event from solving a
+fully available fixed instance. An external reduction from a hypothetical
+polynomial decider into a prohibited live strategy would also suffice, if its
+correctness, information access and all costs were proved. Neither transfer
+is established here.
+
+The next useful dependency is consequently a response predicate on the actual
+residual source that remains costly \emph{after} the challenge is available,
+or a proved reduction connecting a forbidden timing obligation to that source.
+The present two-tree/shared-compatibility source in main.tex provides a fixed
+problem to test; requiring its witness to carry our favorite historical hash
+would not itself prove the connection. Exact source/witness maps and the older
+EARLY22/SINGLE22 compilers remain valid only in their recorded scope.
+
+\section{Bounded exhaustive tests}
+The dependency-free program
+\path{experiments/review/completion_cut_audit.py} runs three separately bounded
+batches with a 25-second cooperative cap. All 15,820 assertions passed. The
+summed measured runtime was 0.094733 seconds, excluding tool overhead.
+No random seed is used: all finite source streams in each stated domain are
+enumerated. Timing does not establish an asymptotic result.
+\begin{center}
+\begin{tabular}{lrr}\toprule
+Batch & Assertions & Seconds\\\midrule
+Stopped precommitment and common stream & 3,510 & 0.007822\\
+Replay, scheduling and event distributions & 12,292 & 0.086339\\
+Hash fibers and stopping-bit bias & 18 & 0.000572\\\bottomrule
+\end{tabular}
+\end{center}
+Four precommitment settings use $(\ell,M,q)=(2,2,1),(3,4,1),(4,8,1),(5,8,2)$.
+They enumerate respectively 32, 64, 128 and 256 full streams. In the
+$(4,8,1)$ setting, all eight policies fail on 74 of 128 streams; the union
+success probability is $27/64\le1/2$. Each policy has exactly $1/16$ success,
+even though its completion time depends on the observed prefix.
+
+The replay batch exhausts all 4,096 twelve-bit streams through three
+hash-routed tiny 3-CNF decision stages. Correct SAT and UNSAT bits are computed
+from actual three-variable clauses. Two different duration policies have
+different logical paths on 4,032 streams, namely $63/64$, but identical logical
+transcript distributions with 64 possible transcripts. Every sampled-block
+replay matches its original timed record. All 4,096 early-compute/wait controls
+match the reference completion record. Making the hash consume timestamps
+changes the distribution, confirming the clock-free hypothesis is essential.
+The active/wait counters are stipulated logical protocol costs, not measured
+primitive CPU instruction counts or a fastest-solver comparison.
+
+Eight exact digest-fiber tables enumerate 64 raw blocks for a two-bit truncated
+SHA-256 output. No security assumption is inferred from the library primitive.
+A selected-current-bit control stops at the first observed one among three
+positions: that bit is one on 28 of 32 five-bit streams. In contrast, the next
+two fresh bits have each possible value on exactly eight streams. This verifies
+why ``sample at completion'' needs a genuine freshness condition.
+
+\section{Corpus and publication discipline}
+\paragraph{CORPUS REVIEWED.}
+The live repository tree was surveyed at
+\path{5deaed6ff5b158e91d8cf7fe4e2b249353d4504a}; the displayed recursive
+response was truncated. Fresh reads included AGENTS.md, CODEX.md, the research
+skill, current root main.tex (TWOTREEBRIDGE1), the relevant actual main5
+accounting section, CRS-PPC-SAT1 and LEAD-0017. Earlier full LEAD-0016 and
+CORPUS-HASH-RECOVERY1 reads in this conversation were reused with their exact
+bodies; current searches located the same routes. Relevant main4/task,
+EARLY22/SINGLE22 and redirect passages already supplied in this conversation
+were retained rather than claimed freshly reread in full. Personal-context
+retrieval was used only to locate prior work, not as proof evidence.
+Local git access failed DNS resolution, so no full checkout, repository-wide
+preflight or CI run is claimed. This is a bounded source review, not complete
+corpus certification. No schedule or peer automation was modified.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+Freshness and machine-relative transcripts are already CRS-PPC results.
+Replay and lossy-hash guards are already LEAD-0016/0017 and hash recovery.
+This report makes their joint use explicit, adds the finite-family calculation
+(5), and proves the clock-free law statement with its exact exclusions.
+The elementary results are not claimed literature-wide novel. Searches for
+completion/union-bound and clock-erasure phrasing did not recover an identical
+project statement; truncated search coverage cannot prove absence.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+The proposed bridge entry adds a qualified use of completion-time provenance:
+external samples are necessary replay inputs; finite preprediction guarantees
+are available; same-stream timing divergence need not change the event law.
+No restricted proof projection, nonlinear solver, or fixed-language conclusion
+is strengthened. The current compatibility target remains intact.
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopted: typed completion events, blind-source freshness, exact replay,
+source-authority accounting and explicit consumer obligations. Rejected:
+reconstructing true random samples from code/input alone, collision-free hash
+identity without proof, or interpreting a precomputed-value bound as a bound
+on arbitrary post-release programs. Retained OPEN: fixed-source transfer,
+all-decider non-P theorem and nonrelativizing/nonalgebrizing implication.
+
+\paragraph{Literature transfer.}
+Baker--Gill--Solovay supplies the exact oracle control \cite{bgs}. Interactive
+proof chronology is a model analogy \cite{gmr}; online Merlin--Arthur bounds
+are bounds in their declared communication/streaming models \cite{gs}, not
+unrestricted SAT time. The code uses no cryptographic hardness, ETH, or
+random-oracle premise. No circuit largeness property for Natural Proofs is
+asserted. The freshness bound survives independent oracle or algebraic advice;
+calling an observed step ORDINARY does not prove ordinary lineage is forced.
+
+\paragraph{Publication.}
+The exact LaTeX, code and raw outputs are preserved locally before remote
+writes. Canonical write and root-reconciliation outcomes are recorded in a
+separate publication manifest after actual readbacks. A failed or unverified
+shared write is not success. Only the LSPV-4 ownership region may be changed;
+full-current-root SHA and unchanged exterior bytes must be verified.
+
+\paragraph{One next target.}
+Specify one actual two-tree/residual response consumer, substitute a different
+correct witness or a compact post-challenge evaluator, and identify a required
+semantic check that fails beyond the metadata hash. If none fails, record the
+provenance as non-load-bearing for that consumer. P versus NP remains OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{crs} CRS-PPC-SAT1. Causal Random-Snapshot Pointer-Pebbling SAT.
+\path{research/explorations/random-challenge/2026-10-01_CRS-PPC-SAT1.md}.
+\bibitem{lead16} LEAD-0016. Execution-Hash / $2^k$-to-$2^x$ Audit.
+\path{research/agents/lead/2026-10-06_0958_LEAD-0016_EXECUTION_HASH_AUDIT.md}.
+\bibitem{lead17} LEAD-0017. SRAS Review of Execution-Fingerprint Provenance.
+\path{research/agents/lead/2026-10-06_1022_LEAD-0017_SRAS_PROVENANCE_AUDIT.md}.
+\bibitem{recovery} CORPUS-HASH-RECOVERY1.
+\path{research/agents/research/2026-10-07_2345_CORPUS_HASH_RECOVERY.tex}.
+\bibitem{bgs} T. Baker, J. Gill, R. Solovay. Relativizations of the
+$\mathcal P=?\mathcal{NP}$ Question. SIAM J. Comput. 4(4), 431--442, 1975.
+\url{https://doi.org/10.1137/0204037}.
+\bibitem{gmr} S. Goldwasser, S. Micali, C. Rackoff. The Knowledge Complexity
+of Interactive Proof Systems. SIAM J. Comput. 18(1), 186--208, 1989.
+\url{https://doi.org/10.1137/0218012}.
+\bibitem{gs} P. Ghosh, V. Shah. New Lower Bounds in Merlin-Arthur Communication
+and Graph Streaming Verification. ITCS 2024, LIPIcs 287:53.
+\url{https://doi.org/10.4230/LIPIcs.ITCS.2024.53}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::COMPLETIONCUT1
