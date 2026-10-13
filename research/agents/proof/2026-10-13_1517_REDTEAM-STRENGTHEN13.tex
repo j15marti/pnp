@@ -1,0 +1,375 @@
+% REDTEAM-STRENGTHEN REPORT::REDTEAM-STRENGTHEN13::2026-10-13T15:17:00+09:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,longtable,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\Res}{\mathsf{Res}}
+\newcommand{\sCP}{\mathsf{sCP}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\COND}{\textbf{CONDITIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RET}{\textbf{FALSIFIED/RETIRED}}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue}
+\title{REDTEAM-STRENGTHEN13:\\Strictifying the Explicit DPLL Certificate Bridge}
+\author{Independent Red Team}
+\date{13 October 2026}
+
+\begin{document}
+\sloppy
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.94\linewidth}{
+\textbf{Result.}  The newest CERTDPLL-BRIDGE1 claim contains a real but
+repairable accounting seam.  Berger--Lawrence--Nordvall Forsberg--
+Seisenberger count subsumption leaves at zero cost, so directly emitting one
+semantic-Cutting-Planes line for every such leaf does \emph{not} justify the
+claimed $n+O(|H|)$ bound.  A redundant-split family falsifies that direct
+materialization.  A subclause-preserving strictification removes all free
+subsumption and yields at most $n$ genuine Resolution inferences from original
+input clauses.  Therefore the restricted bridge from an \emph{explicit,
+tree-encoded DPLL derivation with one record per rule occurrence} to a
+polynomial-bit semantic-CP certificate is \textbf{PROVED/EXACT}.  Pointer,
+macro, or DAG-compressed certificates are outside this theorem.  No arbitrary
+one-bit SAT decider is converted to such a derivation.  P versus NP remains
+\textbf{OPEN}.}}
+\end{center}
+
+\section{Claim card and selected barrier}
+\begin{description}
+\item[] \textbf{Claim ID:} CERTDPLL-STRICT1.
+\item[] \textbf{Audited predecessor:} LSPV-4 report
+\path{research/agents/lspv-4/2026-10-13_1455_LSPV-4_CERTDPLL-BRIDGE1.tex}.
+\item[] \textbf{Input object:} a CNF $H$ and an explicit tree-encoded DPLL
+derivation $\Pi$ in the calculus of Berger et al., with one record for each
+rule occurrence.  Let $n$ be the number of charged DPLL rule occurrences and
+$B$ the bit length of the complete certificate.
+\item[] \textbf{Output object:} a strict binary-Resolution derivation using
+only clauses of $H$ as axioms, followed by its clause-inequality embedding in
+semantic Cutting Planes.
+\item[] \textbf{Exact quantifier:} for every such $(H,\Pi)$, the translator
+returns a strict proof whose conclusion is a subclause of the clause promised
+by the free-subsumption translation.  In particular, for an unsatisfiability
+derivation from the empty valuation, the conclusion is the empty clause.
+\item[] \textbf{Not claimed:} for every uniform SAT decider there exists, or
+can be extracted, a polynomial-size DPLL, Resolution, or semantic-CP proof.
+\end{description}
+
+The two major obstacles were (i) the mismatch between zero-cost subsumption
+in the cited Resolution calculus and charged semantic-CP output lines, and
+(ii) the encoding ambiguity between expanded rule occurrences and a succinct
+pointer/macro representation.  The first is repaired below; the second is an
+explicit scope boundary.
+
+\section{Primary-literature and model preflight}
+Berger et al. define Resolution with a zero-cost subsumption rule and a
+charged binary resolution rule.  Their published Theorem 3.7 states that for
+every consistent valuation $\Gamma$, if
+$\Gamma\vdash_{\mathrm{DPLL}}^n\Delta$, then
+$\Delta\vdash_{\Res}^m\overline\Gamma$ for some $m\le n$
+\cite{berger}.  Thus $m$ counts Resolution inferences, not the number of
+displayed subsumption leaves.  This distinction is exactly the audited seam.
+
+The independent ordinary-machine endpoint was also rechecked in the primary
+source.  Fortnow--Lipton--van Melkebeek--Viglas Corollary 5.8 is
+\[
+ \operatorname{NTIME}[N]\not\subseteq
+ \operatorname{DTISP}\!\left[
+ N^c,o\!\left(N^{\frac12((c+2)/c^2-c)}\right)\right],\qquad c>1. \tag{1}
+\]
+Their model is a random-access Turing machine with indexed read-only input
+and write-only one-directional output; input and output tapes are excluded
+from workspace \cite{flmv}.  At $c=6/5$, the space exponent is $23/45$.
+Equation (1) is not used to prove the certificate bridge.  The retired
+unrestricted endpoint $t+s<2\cos(\pi/7)$ is not used.
+
+\section{The free-subsumption counterexample}
+Take the one-clause formula $H=\{\emptyset\}$.  Above its conflict leaf,
+insert $r$ logically useless consistent splits.  The Berger translation has
+\[
+       n=2^r-1\quad\hbox{charged Resolution inferences},
+       \qquad 2^r\quad\hbox{free subsumption leaves}.      \tag{2}
+\]
+A direct line-by-line semantic-CP materialization has $2^{r+1}-1$ lines,
+whereas the asserted budget $n+|H|$ is $2^r$.  The first counterexample is
+$r=1$.  Thus the following interpretation is \RET{}:
+\begin{quote}
+Every leaf of Berger's free-subsumption proof can be emitted as a separate
+semantic-CP line while retaining the exact $n+O(|H|)$ line count.
+\end{quote}
+This does not refute Theorem 3.7 and does not refute the repaired bridge.
+
+\section{Strictification theorem}
+Write clauses as sets of signed literals.  A free-subsumption derivation has
+leaves $A\subseteq C$ with $A\in H$, and internal steps
+\[
+     \frac{C\vee\neg p\qquad D\vee p}{C\vee D}.          \tag{3}
+\]
+
+\begin{lemma}[No-weakening subclause invariant]
+For every node $v$ of a free-subsumption Resolution derivation with displayed
+clause $C_v$, one can construct from original axioms and strict binary
+resolution only a clause $A_v\subseteq C_v$.  The construction uses at most
+one strict inference for each charged Resolution node below $v$ and has no
+greater inference depth.
+\end{lemma}
+
+\begin{proof}
+At a subsumption leaf $A\subseteq C_v$, return the original axiom $A$; emit
+no weakening line.  At an internal node (3), recursively obtain
+$A\subseteq C\cup\{\neg p\}$ and $B\subseteq D\cup\{p\}$.
+If both $\neg p\in A$ and $p\in B$, emit their genuine resolvent
+\[
+              (A\setminus\{\neg p\})\cup(B\setminus\{p\})
+              \subseteq C\cup D.                         \tag{4}
+\]
+If $\neg p\notin A$, return $A$ unchanged; then $A\subseteq C\subseteq
+C\cup D$.  Symmetrically, if $p\notin B$, return $B$.  Hence an internal
+node emits either one strict resolution or no line.  Induction proves the
+subclause, count, and depth claims.
+\end{proof}
+
+\begin{theorem}[Explicit DPLL certificate to strict Resolution]
+Let $\Gamma$ be consistent and let
+$\Gamma\vdash_{\mathrm{DPLL}}^n H$ be an explicit tree derivation in the
+Berger calculus.  There is a strict Resolution derivation from clauses of
+$H$ of a clause $C\subseteq\overline\Gamma$ with at most $n$ derived
+resolution nodes.  For $\Gamma=\emptyset$, $C=\emptyset$.
+\end{theorem}
+
+\begin{proof}
+Apply Berger et al.'s \KNOWN{} translation to obtain a free-subsumption
+Resolution derivation of $\overline\Gamma$ with at most $n$ charged
+resolution nodes, then apply the lemma.  When $\Gamma=\emptyset$, the only
+subclause of $\overline\Gamma=\emptyset$ is $\emptyset$.
+\end{proof}
+
+This is a theorem about the supplied certificate, not an invocation of a SAT
+oracle and not a search theorem.
+
+\section{Semantic-CP embedding and bit-cost ledger}
+Encode a clause $C=P\cup\{\neg x_j:j\in M\}$ as
+\[
+             \sum_{i\in P}x_i-\sum_{j\in M}x_j
+             \ge 1-|M|.                                  \tag{5}
+\]
+Each original clause of $H$ is emitted at most once.  Every strict Resolution
+step is a sound two-parent semantic consequence, so (5) embeds the proof in
+semantic CP using at most
+\[
+                        |H|+n                              \tag{6}
+\]
+lines.  Variable coefficients lie in $\{-1,0,1\}$ and the right-hand side
+has $O(\log(N+2))$ bits, where $N$ is the encoded input length.  Inference
+depth is at most $n+O(1)$.
+
+For an implementation, sort literal identifiers and maintain a table from
+original clauses to their emitted line indices.  A deliberately conservative
+simultaneous bound for reading a $B$-bit explicit certificate, constructing
+all subclauses, parent indices and pivots, and writing all output bits is
+\[
+ O\!\left((B+(|H|+n)N)\log(B+N+2)\right)                 \tag{7}
+\]
+time and the same order of working bits if all intermediate clauses are
+retained.  Streaming can improve space, but no improvement is needed here.
+If a uniform proof-emitting machine runs in $T_A(H)$ bit steps and its
+write-only output is charged, then $B,n\le T_A(H)$, so (7) is polynomial in
+$N+T_A(H)$.  Discovery, rejected branches, repeated rule occurrences,
+certificate parsing, replay, buffers, clause dictionaries, parent indexes,
+ancestor state, and output are therefore not free.  Time and space refer to
+this same translator execution.
+
+The result is \EXACT{} for the explicit tree-certificate class.  It is not a
+claim that arbitrary polynomial-time deciders emit certificates.
+
+\section{Encoding firewall: trees are not pointer macros}
+The size $n$ in Berger et al. is defined inductively by expanded rule
+occurrences.  Consider the macro
+\[
+        P_r=\operatorname{Split}(y_r,P_{r-1},P_{r-1}).    \tag{8}
+\]
+A pointer representation has $r+1$ records, whereas its expanded tree has
+$2^{r+1}-1$ occurrences.  At $r=30$ these are respectively $31$ and
+$2{,}147{,}483{,}647$.  Therefore this report does not silently substitute
+pointer-record count for theorem size.  A DAG- or macro-compressed DPLL
+certificate requires a separate, model-matched simulation theorem.  The
+same warning applies to clause-learning solvers: proof logging, restarts,
+learned clauses and deletion require their own proof-system analysis.
+
+\section{Bounded reproducible falsification attempt}
+The deterministic program
+\path{research/agents/proof/2026-10-13_1517_REDTEAM-STRENGTHEN13-test.py}
+ran under a 24-second alarm and completed in $0.676629$ seconds.  It performed
+$26{,}244$ exhaustive local subclause-rule checks; strictified $1{,}200$
+seeded valid free-subsumption trees containing $66{,}255$ charged free
+resolution inferences and $67{,}455$ subsumption leaves; and verified every
+reachable strict node.  It also checked redundant-split depths $1$ through
+$20$ and pointer-macro depths $1$ through $30$.
+
+The exact result file is
+\path{research/agents/proof/2026-10-13_1517_REDTEAM-STRENGTHEN13-results.json}
+with semantic digest
+\texttt{993d295cad0c280269a27747b4907b9930e3579383299ce3ab6a7adde5527ffe}.
+Among the random trees, $21{,}059$ local strict resolutions were created and
+$45{,}196$ pivot-missing steps were skipped; later pruning left $5{,}848$
+reachable strict nodes.  The finite run is \COMP{} evidence for the
+implementation.  The symbolic lemma supplies the universal proof.
+
+\section{Hostile controls and proof barriers}
+\begin{longtable}{p{0.25\linewidth}p{0.67\linewidth}}
+\toprule
+Control & Verdict \\
+\midrule
+Naive free-leaf emission & \RET{} by (2); repaired by strictification.\\
+Pointer/macro certificate & Outside the theorem; exponential expansion in
+(8) blocks identification with occurrence count.\\
+Arbitrary one-bit decider & \OPEN{}; the decider need not expose a search tree,
+conflict clause, or proof log.\\
+Uniformity and encoding & \EXACT{} for the explicit translator with bound
+(7); no unit-cost large integers or free output.\\
+SAME\_REALIZATION & Preserved: time and space are charged to one translator
+run on one supplied certificate.\\
+Conditional $K$ elimination & Unchanged and still conditional; this local
+bridge does not remove it.\\
+Relativization & The local syntactic translation relativizes only if the
+same explicit proof object is supplied; it does not extract such an object
+from oracle answers.\\
+Algebrization / Natural Proofs & No circuit-property lower bound or
+arithmetization is asserted.  These audits do not close the missing
+decider-to-certificate implication.\\
+\bottomrule
+\end{longtable}
+
+\section{Barrier-transfer and post-quantum ledger}
+The Berger DPLL-to-Resolution theorem is a \textbf{directly transferable
+theorem}: its proof objects and occurrence measure match the first stage.
+The strict Resolution-to-semantic-CP map is an \textbf{EXACT OBJECT/THEOREM
+TRANSFER} after eliminating free subsumption.  Proof-logging results for
+CDCL are only \textbf{ANALOGY/CANDIDATE} until a precise solver model, log
+format, replay cost and simulation theorem are fixed.
+
+VLSI fan-out and memory hierarchy correctly warn that a shared pointer is
+not a free expanded tree, but supply no lower bound in this proof model; this
+is a useful structural analogy requiring a new transfer theorem.
+Control-theoretic observability is a misleading analogy here because the
+certificate is already explicit.
+
+Schur-square distinguishers, quadratic-relation ranks, Hilbert functions,
+syzygies and collision entropy are \textbf{FAILED TRANSFERS}: the audited
+object is a syntactic propositional proof, not a code or evaluation map.
+Worst-case/average-case extraction and special-soundness collision ideas are
+\textbf{ANALOGY/CANDIDATE} for the missing arbitrary-decider bridge, but no
+black-box extraction theorem is known here.  Hash or random-oracle arguments
+would be conditional and are inadmissible.  The exposed DPLL structure is
+algorithmically exploitable by the translator, which is why the theorem is a
+restricted positive result rather than a hardness result.
+
+\section{CORPUS REVIEWED}
+The run enumerated the current GitHub tree and read root \path{main.tex},
+\path{main4.tex}, \path{main5.tex}, \path{AGENTS.md}, \path{CODEX.md}, the
+repository research skill and its red-team/research protocols, every current
+task specification, FORMAL-SPINE1, the newest verified MAIN, the newest
+verified LSPV-1 through LSPV-4 reports, all current Construction/Recovery/ARC/
+Red-Team handoffs bearing on the wrapper, and older reports surfaced by
+search for DPLL, Resolution, weakening, semantic CP and certificate transfer.
+The causal HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC branch, governance notes and
+the experiment artifacts cited by active claims were also inspected.
+
+The immediate predecessor LSPV-4 artifact CERTDPLL-BRIDGE1 is substantive,
+contains its expected header and verification sentinel, and was readable
+from GitHub.  No predecessor write recovery was required.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+CERTDPLL-BRIDGE1 already imported the Berger theorem and proposed the
+restricted semantic-CP bridge.  REDTEAM-STRENGTHEN12 already used the same
+pivot-disappears subclause idea inside a different spread-lift proof.  The new
+contribution is to apply that invariant to the newest DPLL bridge, exhibit
+the smallest redundant-split counterexample to the naive line accounting,
+prove the corrected exact bound, and enforce the expanded-tree encoding
+guard.
+
+The contradiction is local and resolved: ``subsumption has zero proof size''
+in the primary calculus does not mean ``its displayed leaf costs zero output
+bits'' in a semantic-CP file.  The strictification avoids emitting the leaf
+as a weakened clause and restores (6).  No contradiction was found with the
+primary theorem itself.
+
+During this run, the repository head changed to commit
+\texttt{3be89e9a83f47f...}, whose commit message says that root
+\path{main.tex} was restored but whose actual root blob is the 28-byte body
+\texttt{PLACEHOLDER\_FOR\_FULL\_CONTENT} (blob prefix
+\texttt{725bf15...}).  This is a concurrent malformed-body incident, not a
+scientific result.  Root \path{main.tex} is outside this role's write scope
+and was left untouched.  The current substantive \path{main4.tex} and
+\path{main5.tex} blobs remained available for authorized reconciliation.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+The restricted explicit-certificate arrow can be sharpened from
+\CAND{} to \EXACT{} only after adding the no-weakening strictification and
+tree-occurrence scope guard.  The load-bearing arbitrary uniform-decider to
+certificate arrow remains \OPEN{}.  Because the live root file was replaced
+concurrently by a malformed placeholder, no root prose was edited or treated
+as authoritative for promotion.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{description}
+\item[] \textbf{Adopted:} Berger et al.'s DPLL-to-free-subsumption-Resolution
+theorem with its exact occurrence measure.
+\item[] \textbf{Adopted:} REDTEAM-STRENGTHEN12's subclause/no-weakening
+pattern, now proved for arbitrary free-subsumption Resolution trees.
+\item[] \textbf{Rejected:} identifying zero-cost subsumption with zero-cost
+serialized proof lines.
+\item[] \textbf{Rejected:} identifying pointer/macro records with expanded
+DPLL rule occurrences.
+\item[] \textbf{Retired:} the unrestricted
+$t+s<2\cos(\pi/7)$ endpoint; only the exact primary Corollary 5.8 statement
+in (1) is recorded.
+\end{description}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+The sentence ``at most $n+O(|H|)$ semantic-CP lines'' is overstated if it
+means direct materialization of every node in Berger's free-subsumption
+derivation.  It is correct after the strictification theorem, with the sharper
+bound $|H|+n$.  Any statement that omits ``explicit tree-encoded, one record
+per rule occurrence'' is also too broad.  These repairs do not promote the
+global wrapper.
+
+\section{Proof status and next target}
+\[
+\boxed{
+ \begin{array}{l}
+ \text{explicit tree-DPLL certificate}\Rightarrow
+ \text{strict Resolution}\Rightarrow\text{semantic CP}:\ \EXACT,\\
+ \text{arbitrary uniform SAT decider}\Rightarrow
+ \text{such a certificate}:\ \OPEN,\\
+ \mathrm{P}\stackrel{?}{\ne}\mathrm{NP}:\ \OPEN.
+ \end{array}}
+\]
+The next bounded target is a precise proof-logging CDCL/DRAT-like machine
+class: fix its log syntax, charge restarts, deletions and replay, and locate a
+primary simulation theorem before asking whether strict no-weakening and bit
+depth survive.  The highest-value global target remains the arbitrary
+one-bit-decider-to-certificate implication; no current report proves it.
+
+\begin{thebibliography}{9}
+\bibitem{berger}
+U. Berger, A. Lawrence, F. Nordvall Forsberg, and M. Seisenberger,
+``Extracting verified decision procedures: DPLL and Resolution,''
+\emph{Logical Methods in Computer Science} 11(1:6), 2015.
+\url{https://doi.org/10.2168/LMCS-11(1:6)2015}.
+
+\bibitem{flmv}
+L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas,
+``Time-Space Lower Bounds for Satisfiability,''
+\emph{Journal of the ACM} 52(6):835--865, 2005.
+\url{https://doi.org/10.1145/1101821.1101822}.
+\end{thebibliography}
+
+\end{document}
+% END_OF_VERIFIED_REPORT::REDTEAM-STRENGTHEN::REDTEAM-STRENGTHEN13
