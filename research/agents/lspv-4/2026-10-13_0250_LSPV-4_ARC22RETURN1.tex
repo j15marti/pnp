@@ -1,0 +1,358 @@
+% LSPV-4 REPORT::ARC22RETURN1::2026-10-13T02:50:02Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\usepackage[margin=0.9in]{geometry}
+\hypersetup{hidelinks}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\enc}{\operatorname{enc}}
+\title{ARC22RETURN1: A Source-First Phase\\\large Typed Depadding Works; Restriction--Reencoding Expands}
+\author{UNIVERSAL\_CORE\_BRIDGE / LSPV-4}
+\date{13 October 2026; run begun 02:50 UTC}
+\begin{document}\maketitle
+\paragraph{Status.}
+\textbf{CANDIDATE with complete symbolic proofs; independent research review pending.}
+A concrete source-first phase is sound, but its ordinary restriction/properization/$U$
+return path expands every child of a balanced source. A typed bypass instead
+removes arbitrarily many recognizable $U$ layers in polynomial total cost.
+Neither result lower-bounds arbitrary decision time. \textbf{P versus NP remains OPEN.}
+
+\section{One fixed language and one precise phase}
+Keep $L_{22}$, the satisfiable encodings of nonempty proper distinct-clause
+signed exact-$(2,2)$ 3-CNF, rejecting malformed or out-of-domain inputs.
+NP-completeness is reused from IMAGE22COMP1 and D\"ocker's hard subclass
+\cite{docker}; it is not a new result of this run.
+
+Use the exact 00:35 graph-colouring/transparent-padding version of
+PC22\_ALLFIELD1, not its different 00:10 namesake. The unchanged compiler is
+\path{experiments/review/universal22.py}, blob
+\path{f985a13f237f2322f988ec82af132625acf3912c}.
+The decoder is \path{experiments/review/image22_decoder_audit.py}, blob
+\path{d5a551a1ee0082566d6a370e32df9e5fbdab70e0}.
+Both local files were matched to current GitHub blob SHAs before testing.
+Use compact ordered ASCII JSON, eight bits per byte, as in IMAGE22DECODE1.
+This is not an isomorphism-canonical encoding.
+
+Write $U=C\circ B$, where $B$ balances signed occurrences and $C$ is the
+clone-cycle/$Q$ compiler. On a recognized input $y$, the existing decoder
+returns a balanced formula $F=D(y)$, with counts $p_z=q_z\ge2$, and
+$y=\enc(U(F))$. For a selected variable $x$, the baseline phase constructs
+\[
+ R_b=\operatorname{dense}(F|_{x=b}),\qquad
+ P_b=P(R_b),\qquad y_b=\enc(U(P_b)),\quad b\in\{0,1\}.       \tag{1}
+\]
+Here $P$ leaves ternary clauses alone and replaces a binary $D$ by
+$(D\lor z)\land(D\lor\neg z)$ with a fresh variable. No unit propagation,
+subsumption, native terminal, or other SAT preprocessing is inserted in (1).
+Their use is allowed by other algorithms and is not covered by the obstruction.
+COMPOSEPROJ1 already establishes the composed source/zero interface.
+
+The exact semantic implication is
+\[
+ y\in L_{22}\iff y_0\in L_{22}\ \lor\ y_1\in L_{22}.        \tag{2}
+\]
+This follows from decoder equivalence, Shannon restriction, and the two
+satisfiability-preserving compilers. It is an external computation, not an
+extraction from the original decider's execution. On off-image inputs, an
+$L_{22}$ decider requires its correct fallback; decoder rejection is not UNSAT.
+
+\section{Exact return-size obstruction}
+\begin{theorem}[Balanced restriction--return expansion]\label{thm:return}
+Let $F$ be any proper distinct-clause balanced 3-CNF with $m$ clauses and let
+$x$ occur $r$ times with each sign, $r\ge2$. In (1), for each $b$,
+\[
+ |R_b|_{\rm clauses}=m-r,\qquad |P_b|_{\rm clauses}=m,
+ \qquad 2r\le g(P_b)\le6r.                              \tag{3}
+\]
+Consequently the parent has $M=12m$ clauses, while
+\[
+ M_b=12\bigl(m+7g(P_b)\bigr)\ge12(m+14r)>M.              \tag{4}
+\]
+Both returned children are strictly longer in the declared encoded bits.
+\end{theorem}
+\begin{proof}
+Assigning $x$ deletes its $r$ satisfied clauses and shortens its $r$ opposite
+clauses. The remaining clauses comprise $m-2r$ ternary and $r$ binary clauses.
+There are no duplicate binary clauses: duplicates would have arisen from
+identical source clauses containing the same falsified literal. The unchanged
+ternary clauses are distinct as well. Dense relabelling is injective.
+Replacing each binary by two proper ternaries therefore gives $m$ clauses.
+
+Each of the $r$ fresh properization variables has signed counts $(1,1)$ and
+requires two balancing gadgets. This proves the lower bound in (3). For the
+upper bound, use
+\[
+ f(p,q)=2\max\{p,q,2\}-p-q.
+\]
+It is 1-Lipschitz under a unit change in either count. Initially $f=0$ for
+every old variable. Apart from $x$, deletion of satisfied clauses removes
+$2r$ literal occurrences, and duplication of shortened clauses adds $2r$.
+Their total contribution to the new balancing deficit is at most $4r$.
+Dropping variables with no remaining occurrences cannot increase that sum.
+The fresh variables contribute $2r$, giving $g(P_b)\le6r$.
+The established compiler count now gives (4).
+
+For any dense exact-$(2,2)$ proper 3-CNF on $v$ variables and $M=4v/3$
+clauses, its compact JSON length is exactly
+\[
+ J(v)=5M+2v+4\sum_{i=1}^{v}\operatorname{digits}_{10}(i)+1
+ \quad\text{bytes}.                                      \tag{5}
+\]
+Each ID occurs four times, twice negatively; clause punctuation contributes
+$5M+1$ characters. This strictly increasing function is independent of clause
+and literal order. The parent has $v=9m$ and each child has
+$v_b=9(m+7g(P_b))>v$. Hence $8J(v_b)>8J(v)$.
+\end{proof}
+
+For every $\alpha>0$, this particular two-query return satisfies
+\[
+ \sum_{b=0}^{1}\left(\frac{|y_b|}{|y|}\right)^\alpha>2,    \tag{6}
+\]
+so it cannot meet the existing ARC gate of at most $0.99$, including
+$\alpha=6/5$. This is stronger than the earlier identity
+$U(D(y))=y$: even intervening one-variable branching does not make this
+return compiler contract. It is \textbf{FALSIFIED/RETIRED} as a mandatory
+contracting implementation, not as a sound SAT reduction.
+
+This theorem bounds query lengths for (1), not the runtimes of arbitrary
+algorithms on those queries. A larger formula can still be easy.
+
+\section{The useful repair: typed iterative depadding}
+\begin{theorem}[A uniform typed bypass]\label{thm:depad}
+If $F=D(y)$ is already in the syntactic domain $\mathcal C_{22}$, return the
+single query $\enc(F)$ without reapplying $U$. It preserves the $L_{22}$
+answer and has length strictly less than $|y|/12$. Repeating this rule while
+its type check succeeds defines one uniform polynomial-time, SAT-preserving,
+idempotent normalizer $E$ on $\mathcal C_{22}$.
+\end{theorem}
+\begin{proof}
+For $F\in\mathcal C_{22}$ on $v$ variables, $m=4v/3$ and $U(F)$ has $12v$
+variables. Let $S(v)=\sum_{i=1}^{v}\operatorname{digits}_{10}(i)$.
+Partition $1,\ldots,12v$ into blocks of 12. Every number in block $i$ is at
+least $i$, so $S(12v)\ge12S(v)+3$, with the extra three contributed already
+by 10, 11, and 12. Formula (5) yields
+\[
+ J(12v)-12J(v)=4\bigl(S(12v)-12S(v)\bigr)-11\ge1.         \tag{7}
+\]
+Thus the replacement has the stated strict contraction and remains in the
+same decision domain. The implementation loops on this test; it does not use
+an advice string depending on depth. When the decoder fails, or returns a
+balanced source not in $\mathcal C_{22}$, it stops with the unresolved current
+formula. It never substitutes a NO answer for failed decoding.
+
+Lengths decrease geometrically, so there are $O(\log N)$ successful steps.
+Using the preceding conservative decoder bounds, sequentially discarding old
+buffers gives
+\[
+ \sum_j O((N/12^j)^3)=O(N^3),\qquad S_E(N)=O(N^2).        \tag{8}
+\]
+The unsuccessful final check is charged. The terminal object satisfies the
+same stop condition on the next call, proving idempotence.
+\end{proof}
+
+This removes growing-depth padding without claiming growing-depth SAT
+solving. For $y=U^t(F)$ with $F\in\mathcal C_{22}$, the recognizable outer
+layers can be removed, but $F$ still needs its decision. For a fixed decider
+$A$ with arbitrary constants $c_A,k_A$,
+\[
+ T_{E;A}(y)\le O(N^3)+c_A|E(y)|^{k_A}.                   \tag{9}
+\]
+There are inputs on which $E(y)=y$. No worst-case polynomial exponent is
+erased. The fixed NP-complete language is not replaced by an all-NO benchmark.
+
+\section{Charging the actual source-first execution}
+The tested phase parses and validates the entire parent, reconstructs its
+clone map, recompiles for image verification, materializes the balanced source,
+counts occurrences, scans all $3m$ source literals for each branch, renumbers
+active variables, properizes, balances, compiles, serializes and consumes every
+query byte. Children are built and consumed sequentially. No SAT oracle was
+called during this construction. The output consumer computes a digest; its
+cost is not represented as a decision procedure.
+
+Theorems 1 and (3) give $v_b\le22v$, hence $|y_b|=O(N)$ in (5). All local
+processing admits the conservative deterministic bit-cost bound $O(N^3)$
+and workspace $O(N^2)$, with buffers and maps charged. If a fixed decider
+is then called, the joint ledger is
+\[
+ T=T_{\rm phase}+T_A(y_0)+T_A(y_1),\qquad
+ S\le S_{\rm phase}+\max_b S_A(y_b).                     \tag{10}
+\]
+Parent data retained during a call are included in $S_{\rm phase}$. There is
+no recursion in the one-phase experiment. Any multi-phase recursion needs
+its own ancestor/replay accounting. The alternate shortest-preimage experiment
+also charges the full fiber search; its conservative acquisition bound remains
+$O(N^4)$, not free source access.
+
+Python-managed allocation profiles cover decoding, both sequential returns,
+serialization and output consumption. The immutable initial input is excluded.
+For W1, peak traced allocation was 402,894 bytes on a 3,289-byte input, with
+28,710 Python line events across the phase, decoder and compiler. For the
+$K_4$ colouring source, peak was 10,553,700 bytes on 275,497 input bytes.
+These are not total process RSS, bit-operation counts, or subpolynomial-space
+certificates. Native terminal checks were disabled for the profiled baseline.
+
+\section{Bounded results and hostile controls}
+The main runner made 10,893 assertions; a separately written arithmetic
+verifier made 6,132 more. \textbf{All 17,025 assertions passed.} The two scripts
+are not independent human proof review. Four chunks covered all 255 nonempty
+subsets of the eight proper three-variable clauses, testing the first and last
+decoded variable and both branches. Controls covered 13 source cases plus
+four source-order/sign/renaming variants. Two additional invocations profiled
+workspace; one tested typed depadding. Every invocation finished below 2.1
+seconds in this environment, with 25-second cooperative limits.
+
+\begin{center}\small
+\begin{tabular}{lrrr}\toprule
+Source & Parent bytes & Native residual bytes & Returned query bytes\\\midrule
+Eight-clause cube & 1,165 & 29 / 29 & 11,473 / 11,473\\
+W1 & 3,289 & 185 / 187 & 13,705 / 13,705\\
+$K_3$ colouring & 158,077 & 10,585 / 10,575 & 232,669 / 220,237\\
+$K_4$ colouring & 275,497 & 18,294 / 18,283 & 383,857 / 365,797\\\bottomrule
+\end{tabular}\end{center}
+The displayed rows use pivot 1. Native residuals passed the finite ARC moment
+gate, but are width-2/3 CNFs, not automatically legal calls to an $L_{22}$
+decider. All baseline returns failed that gate. The cube residuals are 2-SAT,
+so a native solver can bypass their expanding return. W1's decoded source is
+already exact-$(2,2)$ and admits the typed bypass. These easy examples are
+controls, not proposed general-machine hard inputs.
+
+The broader controls include Horn, dual-Horn, properized 2-SAT, affine parity,
+bounded-treewidth chains, independent products, transparent padding and a
+pigeonhole counting/flow encoding. Native 2-SAT and Horn/dual-Horn terminals
+were implemented and checked on bounded cases. No new general Gaussian,
+flow, or treewidth solver is claimed. Compact arithmetic and other
+preprocessing remain allowed. Acquiring the shortest original preimage helped
+some padded cases but did not establish universal moment contraction.
+
+Uniform depadding recovered the same 215-byte W1 source at depths 0 through 3
+from inputs of 215, 3,289, 48,853 and 698,617 bytes. A satisfiable affine
+control similarly stopped at its 39-byte source. The balanced non-exact cube
+stopped without returning a false decision. Valid off-image W1 was retained
+as an unresolved core, not rejected from $L_{22}$.
+
+\section{Literature and model audit}
+The two obstacles reviewed first were return-domain restoration and joint
+resource preservation. Primary searches checked D\"ocker's exact-occurrence
+language, the all-field graph-colouring proof theorem, SAT time--space bounds,
+relativization, algebrization, sparsification and strong backdoors
+\cite{docker,colour,mw,bgs,aw,ipz,gs}. Sparse decompositions and strong
+backdoors supply legitimate restricted algorithms, not an all-input phase
+with this resource ledger. The graph-colouring result is about the declared
+algebraic proof system; it is not used as a machine-time endpoint here.
+The small-space SAT exclusions do not exclude (8)--(10), which retain an
+arbitrary solver exponent and polynomial workspace. No retired cosine
+product inequality is used.
+
+The syntactic count theorem and depadding algorithm survive adding an oracle;
+no nonrelativizing or nonalgebrizing separation hinge appears. No large
+constructive circuit property is introduced. The useful cross-domain analogy
+is a typed retraction with an explicitly acquired inverse. Its actual instance
+is an exact object transfer here. Importing entropy, Schur squares, hidden
+algebra, hash binding, or cryptographic one-wayness as arbitrary-SAT cost is
+a failed transfer. This compiler's visible redundancy is removable.
+
+\section{Corpus, integration, and publication boundaries}
+\paragraph{CORPUS REVIEWED.}
+Read current AGENTS.md, CODEX.md, the research skill and mode guide, all seven
+listed task specifications, actual main4/main5 ARC and WRAPPER passages,
+root synthesis passages, BLACKBOXQ1, current COMPOSEPROJ1 and MONOCIRCFW1,
+prior IMAGE22DECODE1 and its exact local package, and the unchanged compiler
+and decoder. Surveyed the root tree and task/agent directories and searched
+for source-first and properization-return overlaps. This was a bounded
+corpus review, not a claim that every historical or exploration file was
+reread. The local checkout failed because github.com did not resolve, so
+full-checkout preflight and repository-wide validation were not completed.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+ARC-STRENGTHEN8 and ARC14 already separate native child size from acquisition,
+access and closure. IMAGE22DECODE1 already supplies the decoder and the
+no-op $U(D(y))=y$ guard. COMPOSEPROJ1 supplies the properization projection.
+The additions here are the exact post-branch deficit interval and encoded
+expansion theorem, plus an implemented growing-depth typed bypass. No broad
+novelty claim is made. MONOCIRCFW1's compact-representation guard is retained.
+
+\paragraph{EARLY22-INTEGRATION1.}
+\textbf{ALREADY INTEGRATED.} Cite IMAGE22COMP1's bounded acknowledgment and
+IMAGE22DECODE1's ledger rather than reconstructing old proofs. This run read
+those supplied records and the current peer supersession account, not the
+original Drive excerpt anew. LBO3SAT-0031/0032 and PROOF-0034 retain their
+compiler/minimality/Resolution hypotheses; the monotone cubic-pair map stays
+separate. Historical variables are not encoded bits. The 21 P C B
+local-plus-affine limitation remains attached. Exact new location: Sections
+2--4 here and the proposed LSPV-4 ownership insertion. Next check: audit a
+native residual consumer, not the retired affine continuation route.
+
+\paragraph{SINGLE22-SEPARATION1.}
+The fixed $L_{22}$ target and exact 00:35 $U$ version are retained. The arrow
+advanced is source acquisition to an actual, typed, charged transformation:
+a positive depadding case and a falsified post-branch return. No demand that
+an original computation expose $H$, a PC proof or source code is introduced.
+The existing compatibility relation $H$ is used only through supplied-model
+restriction/projection, never through its cardinality as a runtime proxy.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+Add Theorems 1--2 and distinguish a real typed bypass from the previous
+identity-return warning. Preserve all existing proof-system scopes and OPEN
+status. No executive or other-owner text is changed by this report.
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopted: $U$, the decoder, composed projection, ARC accounting and hostile
+controls. Retired only: treating (1) as a contracting return on balanced
+sources. Rejected: inferring arbitrary-decider runtime from return size or
+from PC/PCR expanded monomial count. Typed depadding remains a positive
+partial-domain operation, not a separation.
+
+\paragraph{STALE OR OVERSTATED CLAIMS FOUND.}
+An unqualified claim that no decoder use can shrink is too broad: the
+exact-$\mathcal C_{22}$ type check permits Theorem 2. The preceding report's
+specific decode--recompile identity remains correct. No prior positive
+compiler or proof-system theorem is retracted.
+
+\paragraph{Safe publication.}
+Exact report, both scripts and complete raw outputs were preserved locally
+before publication. Canonical MODELBRIDGE-0022 was already recorded as
+verified; no missing scientific body was reconstructed. The newest predecessor
+MONOCIRCFW1 was read; no scientific retry was invented. Full-root readback
+and SHA-safe reconciliation remain pending: the observed root is 261,492
+bytes, and a complete current byte image was not staged. No replacement is
+attempted from truncated text. The exact owned-region proposal is preserved
+in the outbox; it is not canonical root success. Existing schedules and
+other ownership boundaries are unchanged.
+
+\section{Remaining proof arrow and one next check}
+The objective remains
+\[
+ \forall A\in\operatorname{Dec}(L_{22})\ \forall k\ge1,C>0,N_0\ \exists y\in\enc(\mathcal C_{22}):
+ |y|\ge N_0\ \land\ T_A(y)>C|y|^k.                       \tag{11}
+\]
+It is \textbf{OPEN}. The next check is a source-native residual consumer that
+avoids rebalancing and proves its own successor coverage and charged joint
+resources. It must not silently treat arbitrary width-2/3 CNF as an input to
+the assumed $L_{22}$ solver. Native shrinkage alone is not the missing theorem.
+
+\begin{thebibliography}{9}
+\bibitem{docker} J. D\"ocker. Monotone 3-Sat-(2,2) is NP-complete.
+\url{https://arxiv.org/abs/1912.08032}.
+\bibitem{colour} J. Conneryd et al. Graph Colouring Is Hard on Average for
+Polynomial Calculus and Nullstellensatz. \url{https://arxiv.org/abs/2503.17022}.
+\bibitem{mw} A. S. Mudigonda and R. R. Williams. Time-Space Lower Bounds for
+Simulating Proof Systems with Quantum and Randomized Verifiers.
+\url{https://arxiv.org/abs/2012.00330}.
+\bibitem{bgs} T. Baker, J. Gill and R. Solovay. Relativizations of the
+P=?NP Question. SIAM J. Comput. 4(4), 431--442, 1975.
+\url{https://doi.org/10.1137/0204037}.
+\bibitem{aw} S. Aaronson and A. Wigderson. Algebrization: A New Barrier in
+Complexity Theory. ECCC TR08-005, 2008.
+\url{https://eccc.weizmann.ac.il/eccc-reports/2008/TR08-005/}.
+\bibitem{ipz} R. Impagliazzo, R. Paturi and F. Zane. Which Problems Have
+Strongly Exponential Complexity? FOCS 1998.
+\url{https://doi.org/10.1109/SFCS.1998.743516}.
+\bibitem{gs} S. Gaspers and S. Szeider. Strong Backdoors to Bounded Treewidth
+SAT. \url{https://arxiv.org/abs/1204.6233}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::ARC22RETURN1
