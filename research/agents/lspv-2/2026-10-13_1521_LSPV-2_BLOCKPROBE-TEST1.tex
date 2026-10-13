@@ -1,0 +1,322 @@
+% LSPV-2 REPORT::BLOCKPROBE-TEST1::2026-10-13T15:21:43+09:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,xurl,hyperref,enumitem}
+\hypersetup{hidelinks,pdftitle={BLOCKPROBE-TEST1: disjoint-block minimal-work audit}}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\Ltwo}{L_{22}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\RET}{\textbf{FALSIFIED/RETIRED}}
+\setlength{\emergencystretch}{3em}
+\title{BLOCKPROBE-TEST1: Disjoint Compiler-Image Blocks Force Only\\Near-Linear Minimal Input Work}
+\author{UNIVERSAL\_CORE\_TESTS / LSPV-2}
+\date{13 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.94\linewidth}{
+\textbf{Executive status.}  A same-realization byte-probe adversary yields an
+unconditional $\Omega(N/\log N)$ worst-case lower bound on an explicit infinite
+compiler-image subfamily of the fixed NP-complete language $\Ltwo$.  The same
+subfamily has a linear-time promise recognizer.  Therefore constant-size
+independent products cannot amplify this minimal-work argument to a
+superpolynomial whole-computation lower bound.  The result is a candidate
+theorem pending independent proof review; the bounded implementation evidence
+is computational.  \textbf{P versus NP remains OPEN.}
+}}
+\end{center}
+
+\section{Claim card and exact target}
+The project target is the fixed language of satisfiable encodings of nonempty,
+proper, distinct-clause signed exact-$(2,2)$ 3-CNFs; malformed strings are
+rejected.  The desired endpoint is
+\[
+ \forall A\,\forall k\in\mathbb N\,\forall C>0\,\forall N_0\,
+ \exists G\in\mathcal C_{22}:\quad
+ |\operatorname{enc}G|\ge N_0\ \land\
+ T_A(G)>C|\operatorname{enc}G|^k .
+\]
+This report does not prove that endpoint.  It tests the narrower candidate
+that many independent compiler-image blocks force superpolynomial minimal
+work for every deterministic decider.
+
+\section{Construction}
+Let $Y$ be the six-vertex graph with edges
+\[
+ 02,03,05,12,13,14,23
+\]
+and let $Z$ have edges
+\[
+ 01,02,03,12,13,23,45.
+\]
+Both have labelled degree vector $(3,3,3,3,1,1)$ and seven edges.  Exhaustive
+enumeration gives 24 proper 3-colourings of $Y$ and none of $Z$.
+Apply the actual repository pipeline
+\[
+G\mapsto \operatorname{colouring\_cnf}(G)
+\mapsto \operatorname{properize23}(G)
+\mapsto U(G)=\operatorname{compile22}(G).
+\]
+The proper sources for $Y,Z$ each have 57 variables and 84 clauses.  For
+$r\ge1$, concatenate $r$ variable-disjoint copies before applying $U$.
+Write $X_r$ for the all-$Y$ target and $X_{r,i}$ for the target with block $i$
+replaced by $Z$.  Then $X_r\in\Ltwo$ and $X_{r,i}\notin\Ltwo$.
+
+\section{Candidate theorem: exact byte-probe baseline}
+Fix the compact ordered JSON byte encoding used by the audit.  Let $D_i$ be
+the byte positions on which $\operatorname{enc}X_r$ and
+$\operatorname{enc}X_{r,i}$ differ.
+
+\begin{theorem}[CANDIDATE pending independent review]\label{thm:blockprobe}
+For every $r$, the sets $D_1,\ldots,D_r$ are nonempty and pairwise disjoint.
+Every deterministic adaptive byte-query algorithm that is correct on all
+valid $\Ltwo$ encodings queries at least $r$ bytes on
+$\operatorname{enc}X_r$.  Under this encoding,
+\[
+  N_r=|\operatorname{enc}X_r|=\Theta(r\log r),
+\]
+so this gives $\Omega(N_r/\log N_r)$ byte probes and hence the same lower
+bound on any model charging unit cost per byte probe.
+\end{theorem}
+
+\begin{proof}
+The compiler preserves the proper source clauses as an initial ordered prefix.
+Because the two block templates have the same source variable and clause
+counts and the same labelled degree profile, the balancing deficits, clone
+counts, gadget layout, total variable count and total clause count agree.
+Changing block $i$ changes a nonempty set of bytes inside that block's
+source-prefix interval and no other block's interval.  Hence the $D_i$ are
+nonempty and disjoint.
+
+Run a deterministic byte-query algorithm on $X_r$.  If it never queries a
+position in $D_i$, every answer in its adaptive transcript is identical on
+$X_r$ and $X_{r,i}$.  It must then return the same bit on a YES and a NO input,
+a contradiction.  Thus the run on the single realization $X_r$ intersects
+every $D_i$ and makes at least $r$ probes.  Target variables and clauses are
+linear in $r$; printed variable identifiers need $\Theta(\log r)$ digits, so
+the selected byte encoding has length $\Theta(r\log r)$.
+\end{proof}
+
+\paragraph{Model boundary.}
+This is a byte-query theorem, not an unrestricted RAM, circuit, arithmetic,
+proof-system, or time lower bound.  Wider word reads require a separately
+stated word-size accounting.  Query complexity and full computation time are
+not silently identified.
+
+\section{The matching algorithmic escape}
+The promise support $\{X_r,X_{r,i}:1\le i\le r\}$ has a direct
+$O(N_r)$ recognizer: scan the source-clause prefix block by block and compare
+each block with the fixed $Y/Z$ templates.  This charges parsing, access and
+comparison.  It does not decide arbitrary $\Ltwo$ inputs, but it proves that
+the direct product does not create a hard promise.  OR and parity give the
+same structural warning: block sensitivity can be linear while a single scan
+is polynomial.
+
+Therefore the proposed amplification
+\[
+ \text{polynomially many independent constant-size hard-looking blocks}
+ \Longrightarrow \text{superpolynomial whole-machine time}
+\]
+is \RET.  The positive input-probe baseline in
+Theorem~\ref{thm:blockprobe} remains intact.
+
+\section{Bounded reproducible audit}
+The script
+\path{experiments/review/l22_disjoint_block_probe_audit.py}
+ran for 6.18 seconds under a 30-second shell timeout and a cooperative
+25-second deadline.  No chunking was needed.  Its SHA-256 is
+\texttt{f4c7342039e11966547f421f8a4b1addcaa13e0f3ae7491dcdc4ecb766a056b9}.
+The raw result is
+\path{results/raw/review/2026-10-13_1521_l22_disjoint_block_probe.json},
+SHA-256
+\texttt{fc00a7c0d85e5d85e65e63418dccc955397039deeeb4365c63449095705fff00},
+semantic digest
+\texttt{48828f0c71788cd6189c63dd38bfe62d84ac9b74896578bc8907559d474f2919}.
+
+\begin{center}
+\begin{tabular}{rrrrr}
+\toprule
+$r$ & encoded bytes & target variables & target clauses & disjoint hits\\
+\midrule
+1 & 367345 & 14364 & 19152 & 1\\
+2 & 779113 & 28728 & 38304 & 2\\
+3 & 1190881 & 43092 & 57456 & 3\\
+4 & 1602649 & 57456 & 76608 & 4\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+All ten single-bad-block variants were valid exact-$(2,2)$ targets with the
+same target counts and byte length as their all-YES mate.  The audit found
+2475 differing bytes and passed all ten pairwise-disjointness checks.  Twelve
+COPY, interpreter/re-encode and DEAD-suffix wrapper controls passed.  It also
+ran concrete small controls for 2SAT, Horn forward semantics, affine Gaussian
+elimination, bounded-treewidth path DP, independent products, redundant
+clauses, tautological padding, compact/pretty encodings, OR and parity.  These
+are finite controls only; no asymptotic hardness is inferred.
+
+\section{SAME\_REALIZATION and cost audit}
+The lower-bound transcript is the actual run on $X_r$; the $X_{r,i}$ are only
+adversary witnesses.  Construction and discovery are not credited as work
+performed by the tested decider.  The explicit promise recognizer is charged
+for decoding, reading every source-prefix byte, template comparisons and its
+one-bit output.  Reconstruction is unnecessary because the decision language
+asks only for a bit.  This removes any appeal to mandatory compatibility
+extraction, proof emission or hidden semantic state.
+
+\section{Literature and barrier-transfer preflight}
+\begin{itemize}[leftmargin=*]
+\item \textbf{Directly transferable theorem/model.}  Nisan's block-sensitivity
+work relates block sensitivity and deterministic decision-tree complexity in
+an explicit query model.  The elementary transcript proof above is stated
+directly for our byte-query model and does not import a whole-machine bound.
+\item \textbf{Useful analogy requiring a new transfer theorem.}  Rivest and
+Vuillemin prove substantial adjacency-query lower bounds for monotone graph
+properties.  Our property, representation and machine model differ; their
+result motivates the probe audit but does not lower-bound arbitrary $\Ltwo$
+computation.
+\item \textbf{Known theorem with incompatible resource promise.}  Fortnow's
+SAT time--space tradeoffs and later refinements give unconditional bounds only
+under joint small-space/time hypotheses.  They do not cover an arbitrary
+polynomial-time decider with unrestricted polynomial space.
+\item \textbf{Barrier.}  Aaronson--Wigderson algebrization reinforces that an
+algebraic or query invariant is not by itself a general Boolean lower bound.
+No nonrelativizing transfer is supplied here.
+\end{itemize}
+
+\section{Post-quantum technique ledger}
+Schur squares, quadratic relation ranks and Hilbert/syzygy invariants are not
+used: the candidate is defeated before algebraic structure becomes relevant.
+Collision entropy is an \textbf{ANALOGY/CANDIDATE}: independent blocks give a
+transparent collision partition, but its effective entropy is exploitable by
+the linear recognizer.  LWE-style worst-case/average-case architecture is a
+\textbf{FAILED TRANSFER} here because no balanced hard distribution or charged
+reduction is present.  The same visible structure is an algorithmic weakness.
+
+\section{CORPUS REVIEWED}
+The run surveyed the current repository tree and read root \path{main.tex},
+\path{AGENTS.md}, \path{CODEX.md}, the complete
+\path{.codex/skills/pnp-research/SKILL.md} and referenced protocol files, all
+current task specifications, actual \path{main4.tex}/\path{main5.tex}, newest
+verified MAIN \path{research/main/2026-10-13_1444_MAIN_RS5REVIEW1.tex}, the
+newest LSPV-1--4 reports, SINGLE22 and EARLY22 governance notes, the original
+\path{research/agents/lspv-4/2026-10-13_0035_LSPV-4_PC22_ALLFIELD1.tex},
+\path{universal22.py}, \path{audit_universal22.py}, relevant historical
+compiler/projection reports, and the HEC/VSC-HEC/G-PPC-HEC/CRS-PPC/CCSPC
+arbitrary-algorithm branch.  Repository searches found no prior
+BLOCKPROBE formulation.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+This result does not alter COMPOSEPROJ1, the exact compiler, the exact-(2,2)
+minimality theorem, Resolution projection, or PC/PCR projection.  It is
+consistent with NOBIASFW1, EQSPECTRAL1 and COSPECBLOWRED1: conspicuous
+structure may make a promised compiler-image family easy.  It contradicts
+only an overbroad inference from many independent sensitive blocks to
+superpolynomial computation.  Expanded-monomial proof size is still not
+arbitrary runtime.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{itemize}[leftmargin=*]
+\item \textbf{ADOPTED:} the verified graph-colouring adapter, transparent
+seven-clause padding, exact-$(2,2)$ compiler, explicit encoding and invalid
+input rejection convention.
+\item \textbf{ADOPTED:} the requirement that a direct proof for the one fixed
+language $\Ltwo$ needs no later broad-SAT transfer.
+\item \textbf{REJECTED:} mandatory extraction of $H(F)$, a PC proof, a DPLL
+certificate, or a universal implementation compiler.
+\item \textbf{RETIRED:} constant-size independent-block amplification as a
+route from input sensitivity to superpolynomial whole-machine time.
+\end{itemize}
+
+\section{EARLY22-INTEGRATION1 acknowledgment}
+Sources actually read include the verified governance memo, original compiler
+and projection reports surfaced by its ledger, current supersession notices,
+and the graph-colouring successor construction.  The exact-(2,2) compiler,
+minimality and restricted Resolution results are integrated only within their
+hypotheses; the monotone cubic-pair result and affine-continuation limitation
+remain separate.  Exact location: this section and the status/root notes below.
+Next check: test whether a growing-block replacement preserves disjoint
+sensitivity after canonical decoding while defeating template recognition.
+
+\section{SINGLE22-SEPARATION1 acknowledgment}
+The tested source is the graph-colouring/transparent-seven-clause report at
+the full path and blob specified by governance, plus current repository
+\path{universal22.py}; the earlier selector/cardinality body was not
+substituted.  The fixed language remains $\Ltwo$, not one formula or a NO-only
+benchmark.  What changed is exact: we now have a direct all-decider
+byte-probe baseline on an infinite valid family, and a matching polynomial
+promise algorithm that sharply limits its use.  The whole-computation arrow
+needed for $\Ltwo\notin\mathsf P$ remains open.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+The current default-branch \path{main.tex} readback is a markerless placeholder
+with blob SHA \texttt{725bf15b399d4efbc3659164bda03f0ebda2cb16}.
+Because the required LSPV-2 ownership markers are absent, AGENTS.md forbids a
+specialist from restructuring it.  No root write is attempted.  LSPV-5 must
+restore the living document from a verified MAIN snapshot before specialist
+reconciliation can resume.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+The root placeholder is stale relative to verified MAIN and specialist
+artifacts.  Any statement that block sensitivity, adjacency probes, number of
+semantic states, or explicit-monomial proof size already lower-bounds every
+deterministic $\Ltwo$ computation is overstated and must remain retired.
+
+\section{Predecessor write recovery}
+The LSPV-1 artifact
+\path{research/agents/lspv-1/2026-10-13_1409_LSPV-1_TRACEAXIOM-FIREWALL1.tex}
+verifies.  No canonical artifact exists for the immediately following LSPV-1
+cycle.  Its exact unfinished body is not available from GitHub, so this run
+issues a recovery request to preserve and retry that body without reconstructing
+scientific content.  Failure classification: \textbf{UNKNOWN / unpublished
+body}; the current run is not blocked.
+
+\section{Status and next obligation}
+\begin{center}
+\begin{tabular}{p{0.20\linewidth}p{0.72\linewidth}}
+\toprule
+Status & Result\\
+\midrule
+CANDIDATE & Theorem~\ref{thm:blockprobe}, pending independent proof review.\\
+COMPUTATIONAL & Exact compiler/encoding checks for $r\le4$ and hostile controls.\\
+FALSIFIED/RETIRED & Constant-size independent blocks as superpolynomial amplification.\\
+OPEN & A growing internally hard and nonlocally coupled valid family, plus a
+model-matched whole-computation lower bound for every total deterministic
+uniform decider and every polynomial exponent.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The highest-value next test is a growing-block family with equalized syntax
+whose decoded quotient is not fixed, followed by canonicalization, WL,
+Gaussian, flow/counting, bounded-treewidth and template-recognition attacks
+before compilation.  \textbf{P versus NP remains OPEN.}
+
+\begin{thebibliography}{9}
+\bibitem{Nisan1991}
+N.~Nisan, ``CREW PRAMs and Decision Trees,'' \emph{SIAM Journal on Computing}
+20(6):999--1007, 1991. DOI: \url{https://doi.org/10.1137/0220062}.
+\bibitem{RV1976}
+R.~L. Rivest and J.~Vuillemin, ``On recognizing graph properties from
+adjacency matrices,'' \emph{Theoretical Computer Science} 3(3):371--384,
+1976. DOI: \url{https://doi.org/10.1016/0304-3975(76)90053-0}.
+\bibitem{Fortnow2000}
+L.~Fortnow, ``Time--Space Tradeoffs for Satisfiability,'' \emph{Journal of
+Computer and System Sciences} 60(2):337--353, 2000.
+DOI: \url{https://doi.org/10.1006/jcss.1999.1671}.
+\bibitem{AW2009}
+S.~Aaronson and A.~Wigderson, ``Algebrization: A New Barrier in Complexity
+Theory,'' \emph{ACM Transactions on Computation Theory} 1(1), 2009.
+DOI: \url{https://doi.org/10.1145/1490270.1490272}.
+\end{thebibliography}
+
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::BLOCKPROBE-TEST1
