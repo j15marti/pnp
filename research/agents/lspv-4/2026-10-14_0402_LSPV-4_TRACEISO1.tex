@@ -1,0 +1,325 @@
+% LSPV-4 REPORT::TRACEISO1::2026-10-14T04:02:00+09:00
+% !TEX program = pdflatex
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\usepackage[margin=0.80in]{geometry}
+\hypersetup{hidelinks}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\F}{\mathbb F}
+\title{TRACEISO1: Deterministic Trace Root Isolation\\\large All Explicit Binary-Field Cube Residuals and a Constructive Isomorphism Bridge}
+\author{UNIVERSAL\_CORE\_BRIDGE / LSPV-4}
+\date{14 October 2026, 04:02 KST}
+\begin{document}\maketitle
+\paragraph{Status.}
+\textbf{CANDIDATE integrated bridge; complete proof, independent specialist review pending.}
+Finite-field factorization and isomorphism are established algorithmic subjects,
+not new foundational discoveries of this run. The new project contribution is
+an explicit, tested characteristic-two selector and its charged Tseitin interface.
+It closes the previously stated arbitrary-polynomial-basis cube-selection gap
+for every degree, not only the cyclotomic sequence. It does not recover hidden
+field structure from arbitrary quadratic equations. \textbf{P versus NP remains OPEN.}
+
+\section{Target, representation, and literature correction}
+The starting question was whether the CYCLOROOTFW1 selector on
+$d=2\cdot3^a$ can be transported to arbitrary irreducible presentations.
+Lenstra's deterministic polynomial-time finite-field isomorphism theorem is
+already established \cite{lenstra}; its statement and explicit-data convention
+are confirmed in the later primary research paper of Brieulle et al.
+\cite{brieulle}. Berlekamp's factorization work provides the classical
+linear-algebra/GCD background \cite{berlekamp}. We give a self-contained
+specialized proof rather than assuming a black-box isomorphism algorithm.
+The original Lenstra proof was not retrieved in full; this report does not
+claim to have re-audited that proof.
+
+A stronger route bypasses the isomorphism entirely. The field is
+$K=\F_2[X]/(f)$, where the input explicitly lists all $d+1$ coefficients of
+an irreducible degree-$d$ polynomial. Elements have $d$ coefficient bits.
+Our input is not a succinct exponent description, unknown multiplication
+oracle, or anonymized quadratic ANF. Irreducibility and types are checked.
+No source root, cubic nonresidue, randomness, or nonuniform advice is supplied.
+
+\section{One concrete lemma: deterministic trace separation}
+\begin{theorem}[Explicit binary-field root isolation]\label{thm:root}
+One deterministic uniform algorithm, given $d\ge1$, irreducible
+$f\in\F_2[X]$ of degree $d$, and a densely represented univariate
+$p(T)\in K[T]$ of degree at most $m$, returns a root in $K$ if one exists
+and otherwise reports no root. Its time and workspace are polynomial in
+$d+m$ and the explicit coefficient length.
+\end{theorem}
+\begin{proof}
+Handle the zero polynomial by returning zero, and a nonzero constant by
+rejecting. Otherwise replace $p$ by its monic associate. Compute
+\[
+ g=\gcd\bigl(p,T^{2^d}-T\bigr)                         \tag{1}
+\]
+using $d$ successive squarings modulo $p$, not an expanded polynomial of
+exponential degree. Since $T^{2^d}-T$ has every element of $K$ as a simple
+root, $g$ is exactly the squarefree product of all field-linear factors of
+$p$. If $g=1$, there is no field root.
+
+Use the public basis $\beta_j=X^j\bmod f$, $0\le j<d$. For each $j$ while
+$\deg g>1$, compute
+\[
+ h_j(T)=\sum_{i=0}^{d-1}(\beta_j T)^{2^i}\bmod g,
+ \qquad g_0=\gcd(g,h_j).                              \tag{2}
+\]
+Again only modular squarings are used. At a root $r$ of $g$, $h_j(r)$ equals
+$\Tr_{K/\F_2}(\beta_jr)\in\{0,1\}$. If $g_0$ is nonconstant retain
+$g_0$; otherwise retain $g$, whose remaining roots all have trace coordinate
+one. The retained root set is never empty, and all retained roots agree on
+every coordinate processed so far.
+
+The pairing $(s,t)\mapsto\Tr(st)$ is nondegenerate. Indeed, the trace
+polynomial $Z+Z^2+\cdots+Z^{2^{d-1}}$ is nonzero and has degree less than
+$2^d$, so it cannot vanish on all of $K$. Multiplication by any nonzero
+$\delta$ permutes $K$. Therefore $\Tr(\beta_j\delta)$ cannot vanish for
+all members of a basis. Taking $\delta=r+s$ shows that any two distinct
+roots differ in at least one of the $d$ trace coordinates.
+
+After processing the basis, the retained nonempty set consequently contains
+one root. The final factor is $T+r$. Return $r$ and verify $p(r)=0$ against
+the original coefficients. This proves existence, correctness, termination,
+and rejection of rootless inputs without enumerating $K$.
+\end{proof}
+
+\paragraph{Charged cost.}
+Naive polynomial arithmetic uses $O(d^2(m+1)^2)$ field operations for
+(1)--(2), including polynomial GCD work. Polynomial-basis field arithmetic
+and inversion use polynomial bit time; irreducibility is checked by
+successive Frobenius powers and binary polynomial GCDs. A deliberately loose
+multitape bound allowing linear scans for coefficient access is
+\[
+ O\bigl(d^5(m+1)^3+d^4\bigr)\text{ bit time},
+ \qquad O\bigl((d+m+1)^3\bigr)\text{ writable bits}.     \tag{3}
+\]
+These are conservative algorithmic upper bounds, not measured instruction
+counts or optimality claims. Counters and temporary polynomials are included.
+The audit's 25-second deadline applies only to test invocations; imported
+production routines have no fixed timeout and no fixed degree cap.
+
+\begin{corollary}[All-degree target-only cube selector]\label{cor:cube}
+For every $d\ge1$, every explicit irreducible degree-$d$ binary modulus,
+and every $b\in K$, a single deterministic polynomial-time program returns
+$z$ satisfying $z^3=b$ exactly when one exists.
+\end{corollary}
+\begin{proof}
+Apply Theorem~\ref{thm:root} to $p(T)=T^3+b$. Equation (1) also handles
+$b=0$ and repeated roots correctly. The degree $m=3$ is constant in (3).
+\end{proof}
+
+Thus fixed valuation, a logarithmic subfield window, a public nonresidue,
+and the canonical cyclotomic modulus are not necessary for polynomial
+cube selection in this explicit characteristic-two model. This supersedes
+only the corresponding open algorithmic regime, not any earlier valid
+selector or restricted proof-system theorem.
+
+\section{The originally requested representation bridge}
+\begin{corollary}[Constructive binary-field isomorphism]\label{cor:iso}
+Given two irreducible degree-$d$ binary moduli $f,g$, one can compute
+forward and inverse $\F_2$-linear field-isomorphism matrices in deterministic
+polynomial time.
+\end{corollary}
+\begin{proof}
+In $K_g=\F_2[Y]/(g)$, the polynomial $f(T)$ splits completely: its degree-$d$
+roots lie in the unique field with $2^d$ elements. Find one root $\alpha$
+by Theorem~\ref{thm:root}. Evaluation gives
+\[
+ \varphi\left(\sum_{i=0}^{d-1}c_iX^i\right)
+       =\sum_{i=0}^{d-1}c_i\alpha^i.                    \tag{4}
+\]
+Irreducibility makes $1,\alpha,\ldots,\alpha^{d-1}$ a basis, so (4) is a
+field isomorphism. These powers are the columns of a binary $d\times d$
+matrix. Gaussian elimination constructs its inverse. Matrix generation,
+storage, evaluation and inverse evaluation are all charged. Substituting
+$m=d$ in (3) gives the coarse $O(d^8)$ bit-time bound; matrices use $O(d^2)$ bits.
+\end{proof}
+
+For $d=2\cdot3^a$, take $g(Y)=Y^d+Y^{d/2}+1$ from CYCLOROOTFW1.
+The implemented comparison transports a target into this canonical field,
+uses its separately implemented correction selector, and transports the
+root back. Direct and transported selectors need not return the same root;
+both must return a valid root or reject a noncube. The direct trace selector
+needs no cyclotomic representation at all.
+
+\section{Coupled Tseitin family and witness maps}
+Let $X=(V,E)$ be an explicitly listed simple graph, retaining isolated
+vertices. Fix a deterministic spanning forest $T$ and ordered cotree
+$C=E\setminus T$. Put $d=|C|\ge1$. For a charge $c\in\F_2^V$ and a field
+target $b\in K$, define
+\[
+ G_{X,f,c,b}(x)=[B_Xx=c]\ \land\ [(\pi_Cx)^3=b].        \tag{5}
+\]
+The record checks vertex/edge types, endpoints, uniqueness, degree agreement,
+field irreducibility and component charge parity. Every component, including
+an isolate, must have even total charge. Malformed records are distinct from
+well-formed NO instances with inconsistent charge or a noncube target.
+The executable raises a validation error on malformed records; a total
+language decider maps that error to rejection.
+
+Set $a=\operatorname{Lift}_T(c,0)$ by leaf-to-root forest solution. For each
+cotree coordinate $j$, set $L_j=\operatorname{Lift}_T(0,e_j)$. Then
+\[
+ B_Xa=c,\qquad B_XL=0,\qquad \pi_CL=I_d,
+ \qquad x=a+Lz.                                       \tag{6}
+\]
+The residual in (5) is precisely $z^3=b$. Select $z$ using
+Corollary~\ref{cor:cube}, then reconstruct $x$ with the same forest. Projection
+and lifting are inverse witness maps between residual roots and full models
+of (5). Enumeration of the full solution set is unnecessary. Materializing
+$L$ would use $O(|E|d)$ bits; the implementation instead lifts directly and
+also explicitly audits basis columns and $a+Lz$ on small instances.
+
+The explicit record length is polynomial in
+$(|V|+|E|)\log(|V|+|E|+2)+d$. Forest discovery, component testing, selection,
+reconstruction, original-equation verification and output are all polynomial
+in that length. Boolean cubing is quadratic because squaring is linear over
+$\F_2$ and multiplication is bilinear. Its auxiliary Boolean circuit has
+polynomial size; encoding it does not license recognition of arbitrary
+untagged SAT presentations as this typed family.
+
+For a general residual support $R$, retain the existing exact identity
+\[
+ \rho=\dim\pi_R\ker B_X
+       =|R|+\operatorname{cc}(X)-\operatorname{cc}(X-R). \tag{7}
+\]
+The kernel of this projection is the cycle space of $X-R$, which proves
+(7) by subtracting cycle-space dimensions, with all isolates included.
+For $R=C$, $\rho=d$. The familiar $2^\rho$ enumeration is an upper bound;
+(5) has a polynomial selector despite full projected rank.
+
+\paragraph{Source compatibility limitation.}
+With a source conjunct $F(u)$ and circuits $b(u),c(u)$, fixing a supplied
+$u$ lets us evaluate the circuits, test parity and cube-image membership,
+and select an extension in polynomial time. This does not find $u\models F$
+and does not guarantee that every source witness is compatible: noncube
+$b(u)$ can destroy satisfiability. For odd $d$ all targets are cubes; for even
+$d$ the nonzero cube image is proper. No generic amplification follows.
+
+\section{Actual bounded experiments}
+Nineteen completed, separately checkpointed invocations made
+\textbf{26,359 assertions with zero failures}. All outputs pin the code
+SHA-256 and test seed. The slow independent carryless multiplication routine
+checks the exhaustive cube truth tables; a second checker verifies coupled
+witnesses using both original parity equations and $a+Lz$. These are separate
+checks by the same author, not independent specialist review.
+\begin{center}\small
+\begin{tabularx}{\linewidth}{p{0.30\linewidth}Xr}\toprule
+Batch group & Coverage & Assertions\\\midrule
+Exhaustive binary fields & All 71 monic irreducible presentations at degrees
+1--8; all 10,824 targets & 16,138\\
+Explicit isomorphisms & Seven presentations at degrees 6, 18, 54; forward/inverse
+basis tests and every basis-product pair & 7,696\\
+Larger direct selectors & Degrees 12, 31, 36, 100, 162, 486; seeded targets,
+noncubes, forest witnesses & 1,052\\
+Structural/typing controls & 729 projected-rank cases with isolates, 40 public
+affine conjugations, source and polynomial controls & 952\\
+Separate coupled checker & 192 target/charge cases, 66 positive witnesses,
+128 inconsistent-charge rejections & 521\\\bottomrule
+\end{tabularx}\end{center}
+The largest completed batch took 4.645 seconds. The largest isomorphism
+actually tested has degree 54; the degree-486 tests are direct cube selection,
+not an isomorphism benchmark. There were 376 positive complete witness
+reconstructions across the larger/isomorphism batches and the separate checker.
+Ten malformed field records, four malformed graph cases and three malformed
+coupled records were rejected. Source controls include Horn, Krom, affine,
+independent-product, general 3-CNF and UNSAT cases. Production selection is
+deterministic; random generation of large test moduli and targets is not part
+of its claimed algorithm. No exhaustive large-field scan is performed.
+
+One shell command grouping several early invocations exceeded its outer tool
+timeout. Completed outputs were retained and the remaining batches rerun
+separately. No final completed invocation exceeded its cooperative 25-second
+budget. The draft duplicate test is excluded from the final totals and package.
+Operation counters are diagnostic, not full bit-operation or memory profiles.
+Finite results are \textbf{COMPUTATIONAL}; the asymptotic argument is the proof above.
+
+\section{Corpus, integration, and barrier audit}
+\paragraph{CORPUS REVIEWED.}
+Read current AGENTS.md, CODEX.md, the repository research skill, the redirect,
+root main.tex, the current recursive tree, actual main4/main5 driver portions,
+CYCLOROOTFW1, VALSUBCUBEFW1 and MAIN VALSUBREVIEW1. Read the predecessor's
+required header/body/final sentinel; its latest located directory artifact
+is VALSUBCUBEFW1. Searched the corpus for the cyclotomic/valuation claims and
+trace splitting. Earlier task and EARLY22/SINGLE22 sources remain in the
+conversation record; this run did not newly reread every task, historic
+manuscript include, original Drive passage or exploration file. No complete
+local checkout was available because local GitHub DNS resolution failed.
+Repository-wide preflight/validator execution is not claimed.
+
+\paragraph{EARLY22/SINGLE22 acknowledgment.}
+\textbf{ALREADY INTEGRATED}, via their retained ledger in root main.tex and
+IMAGE22COMP1. Existing signed exact-$(2,2)$ compilers, structured minimality,
+Resolution/PC projections and the separate clause-monotone construction keep
+their hypotheses; historical variable counts are not encoded bit lengths.
+The affine continuation limitation remains attached. No original missing
+scientific body is reconstructed. Exact new location: Sections 2--5 here and
+the proposed LSPV-4 root block. Next check is raw-ANF recognition, not another
+punctured-affine or proof-size-to-runtime promotion.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+General finite-field algorithms are known literature, not novel project
+claims. No matching all-degree trace selector was found in the bounded
+project search. Earlier nonresidue/subfield selectors remain valid specialized
+algorithms. Their statement that growing valuation or arbitrary explicit
+binary modulus leaves cube selection open is superseded by Theorem~\ref{thm:root}.
+An opaque multiplication structure is a different input model.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+The bridge no longer needs fixed valuation, a subfield enumeration window,
+a canonical modulus or a supplied nonresidue. It has a direct all-degree
+selector and constructive forward/inverse representation maps. Only the
+LSPV-4 ownership region is authorized for reconciliation. Stale executive or
+other-specialist regime descriptions are a synthesis handoff, not permission
+to edit their bytes.
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopted: affine elimination, projected-rank identity, strict types, forest
+lifting, public field arithmetic and existing exact proof projections.
+Rejected as unproved: arbitrary hidden-field recovery and universal source
+compatibility. The proposed explicit-field cube family as an unavoidable
+superpolynomial-work source is \textbf{FALSIFIED/RETIRED}, subject to review
+of this integrated proof. P versus NP and the general nonlinear residual
+lower bound remain \textbf{OPEN}.
+
+\paragraph{Models and transfers.}
+This is an exact transfer of finite-field root algorithms to their actual
+residual object. It is not a transfer from DNNF size or regular Resolution
+\cite{colnet} to witness-search time. Arbitrary polynomial workspace is
+allowed, separately from constant program length. With the declared decoder,
+the uniform selector gives an eventual eligible short-program polynomial
+upper bound on this typed UWI subfamily, not on all satisfiable formulas.
+Public affine conjugations can be inverted and charged; hidden conjugations
+cannot be assumed available. Added semantic or algebraic oracles only help
+this algorithm; it supplies no nonrelativizing separation step. No broad
+constructive circuit property, ETH, GRH, cryptographic or random-oracle
+hypothesis is used. The coding/finite-field transfer is exact; generic PQ
+binding, collision entropy, Schur-square or syzygy language supplies no
+additional lower bound here.
+
+\section{One next target}
+Determine whether a field-cube representation can be recovered from the
+explicit quadratic ANF when neither the field modulus nor the invertible
+coordinate maps are supplied. State the recognizable domain and charge any
+recovery before invoking the selector. A failure of that particular recovery
+algorithm would not itself establish a runtime lower bound.
+
+\begin{thebibliography}{9}
+\bibitem{lenstra} H. W. Lenstra, Jr. Finding isomorphisms between finite
+fields. Mathematics of Computation 56(193), 329--347, 1991.
+DOI: 10.1090/S0025-5718-1991-1052099-2.
+\bibitem{brieulle} L. Brieulle, L. De Feo, J. Doliskani, J.-P. Flori,
+E. Schost. Computing isomorphisms and embeddings of finite fields.
+\url{https://arxiv.org/abs/1705.01221}.
+\bibitem{berlekamp} E. R. Berlekamp. Factoring polynomials over finite
+fields. Bell System Technical Journal 46(8), 1853--1859, 1967.
+DOI: 10.1002/j.1538-7305.1967.tb03174.x.
+\bibitem{colnet} A. de Colnet and S. Mengel. Characterizing Tseitin-formulas
+with short regular resolution refutations. JAIR 76, 265--286, 2023.
+\url{https://arxiv.org/abs/2103.09609}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::TRACEISO1
