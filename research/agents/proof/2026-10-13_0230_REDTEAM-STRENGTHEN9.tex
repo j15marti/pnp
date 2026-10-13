@@ -1,0 +1,326 @@
+% PNP RESEARCH REPORT::REDTEAM-STRENGTHEN9::2026-10-13T02:30:00Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\enc}{\operatorname{enc}}
+\newcommand{\poly}{\operatorname{poly}}
+\setlength{\emergencystretch}{3em}
+\title{REDTEAM-STRENGTHEN9\\\large Compiler-image review, a source decoder, and the recursive-closure trap}
+\author{Independent Red Team}
+\date{13 October 2026 UTC}
+\begin{document}\maketitle
+
+\paragraph{Verdict.}
+\textbf{P versus NP remains OPEN.} IMAGE22COMP1's polynomial preimage bound,
+NP-membership argument and charged arbitrary-exponent composition survive
+independent review, with an explicit malformed-source totalization below.
+The concrete ordered compiler image admits a polynomial-time recognizer and
+source decoder. This extends the earlier canonical inverse for a different
+compiler, rather than introducing inverse decoding as a new general idea.
+The proposed promotion from decoding to a recursively closed PRE-A phase is
+\textbf{FALSIFIED/RETIRED}: the recovered child can leave the image after one
+step. The decoder theorem is \textbf{CANDIDATE}, with complete proof and
+bounded tests, pending independent review of this new implementation.
+Conditional $K$ elimination remains intact and uninstantiated.
+
+\section{Target, literature preflight, and model}
+The two obstacles are the precise language decided on and off a compiler
+image, and closure when a decoder emits a smaller source. Let $\mathcal S$
+consist of nonempty ordered proper 3-CNFs with distinct clauses and dense
+active identifiers. Clause order and literal order are part of the input;
+``canonical'' here means unique bytes for an ordered list, not canonical
+under renaming or clause permutation. $U$ is the deterministic transparent
+seven-clause balancing plus clone-cycle compiler in
+\path{experiments/review/universal22.py}.
+
+The test instantiates $\enc$ as compact ASCII JSON arrays of signed integers,
+without spaces or trailing bytes; $N=8|\enc(G)|$ is encoded input bit length.
+The proof also works with a polynomial-time parsable order-preserving binary
+encoding. It does not apply without a new argument if a serializer first
+sorts all clauses or quotients variable names. No succinct formulas, advice,
+semantic oracle, or unit-cost large integers are supplied.
+
+D\"ocker proves NP-completeness for unique sign-monochromatic proper
+3-clauses with exactly two occurrences of each sign \cite{docker}. This is
+a subset of the signed target domain and of $\mathcal S$, after dense
+renaming. The promise-problem framework distinguishes correctness on a
+domain from rejection outside it \cite{esy}. The exact endpoint is FLMV's
+random-access Turing-machine result, not a bound on an unrestricted sum of
+time and space exponents \cite{flmv}. These primary sources were searched
+and checked before formalizing the candidate.
+
+\section{Independent review of IMAGE22COMP1}
+Write $m=|F|_{\rm clauses}$, $g=g(F)\le9m$, and $b=m+7g$.
+The source compiler gives
+\[
+ |U(F)|_{\rm clauses}=12b,\quad v(U(F))=9b,\quad
+ \SAT(U(F))=\SAT(F).
+\]
+Let $I=\{\enc(U(F)):F\in\mathcal S\}$ and
+\[
+ K_U=\{\enc(U(F)):F\in\mathcal S,\ F\in\SAT\}.
+\]
+These are different languages. A compiled UNSAT formula is in $I$ and is
+not in $K_U$; a satisfiable off-image formula is not in either.
+
+\begin{proposition}[Reviewed completeness and totalization]
+Under the compiler's verified semantic hypotheses, $K_U$ is NP-complete.
+No polynomial-time image recognizer is needed for this conclusion.
+\end{proposition}
+\begin{proof}
+Given target bytes $y$, an NP witness supplies $F$ and an assignment. Check
+the proper dense source syntax, regenerate $U(F)$, compare every output
+byte to $y$, and check the assignment on $F$. For any successful preimage,
+$m\le |U(F)|_{\rm clauses}/12$ and $v(F)\le3m$, whence
+\[
+ |\enc(F)|=O(m\log(m+2))=O(N\log(N+2)).
+\]
+Thus witnesses and verification are polynomial in target bits. Different
+preimages of the same output cannot disagree in satisfiability, because
+both have the output's SAT value. For hardness use D\"ocker's language,
+densely renumber a syntactically valid input and apply $U$. To make the
+reduction total on arbitrary strings, send a malformed or out-of-domain
+source to $U(C_\bot)$, where $C_\bot$ is the eight proper clauses on three
+variables, one falsified by each assignment. This is a fixed NO image.
+All steps are polynomial.\qedhere
+\end{proof}
+
+The reviewed composition law is exactly
+\[
+ T_{A\circ U}(s)\le O(s^a)+c_A O(s^{qd_A})
+       =s^{O(\max\{a,qd_A\})}.
+\]
+Every fixed $d_A$ remains polynomial. It is not eliminated. This verifies
+the two peer claims as \textbf{PROVED/EXACT} within the stated compiler and
+encoding hypotheses. It is ordinary Karp transfer, not a separation.
+
+\section{CANDIDATE: exact ordered-image inversion}
+For the exact output order of \texttt{compile22}, the first $b$ clauses are
+the cloned balanced source, the next $R=3b/2$ clauses are padded directed
+cycle edges, and the final $19R/3$ clauses are $Q$ copies. Clones are numbered
+consecutively in increasing balanced-variable order. Every cycle has length
+at least two. The $j$th edge, indexed from zero, is
+\[
+ (-(j+1),v_j,R+15\lfloor j/3\rfloor+p_{j\bmod3}),
+ \qquad (p_0,p_1,p_2)=(1,7,13).
+\]
+Within a cycle $v_j=j+2$; on its last edge it is the first clone of the cycle.
+
+\begin{theorem}[ORDERED-IMAGE22-INVERSE1]
+There is one uniform deterministic polynomial-time algorithm $D$ on all
+byte strings such that $D(y)=\bot$ exactly when $y\notin I$; otherwise it
+returns some $F\in\mathcal S$ with $\enc(U(F))=y$. No SAT query is made.
+\end{theorem}
+\begin{proof}
+Reject invalid noncanonical syntax, noninteger literals, nonternary clauses,
+and identifiers exceeding three times the target clause count. A genuine
+image never violates these conditions. From target clause count $M$ require
+$12\mid M$, put $b=M/12$, require $b$ even, and set $R=3b/2$.
+
+Read the declared edge block. Require each first literal and padding port
+to equal the displayed values. Track the start of the current consecutive
+cycle; each second literal must either advance to the next clone or close
+the current cycle of length at least two. Reject unterminated cycles. This
+recovers the clone-to-balanced-variable map in its original order. Decode
+the first $b$ clauses through this map, rejecting out-of-range clone IDs.
+The result is a candidate balanced source $B$.
+
+For every $1\le t\le b$, take the first $t$ clauses of $B$. If they form an
+eligible source $F_t$, regenerate $U(F_t)$ and compare its complete canonical
+bytes with $y$. Return the first exact match; otherwise return $\bot$.
+Every accepted string is an image by the final equality, even if earlier
+syntactic checks could admit a forged gadget. Conversely, for $y=\enc(U(F))$
+the genuine cycle partition is recovered, $B=B(F)$, and its prefix with
+$t=m$ is exactly $F$. That attempt succeeds. No uniqueness assumption is
+needed.
+
+There are at most $b\le N$ attempts. Each decoded candidate has at most $b$
+clauses and identifiers at most $R$. The compiler adds at most $9b$ gadgets
+and produces $O(b)$ clauses with $O(\log(N+2))$-bit identifiers. Validating,
+regenerating and fully comparing each candidate has polynomial bit cost;
+the loop therefore has polynomial total cost. All attempts terminate.
+\end{proof}
+
+\paragraph{Charged implementation.}
+The input parse, cycle map, decoded prefix, candidate compiler structures,
+regenerated output and equality scan are charged. Sequential attempts allow
+discarding each failed output; they do not make it free. A direct deterministic
+array/sorting implementation uses $N^{O(1)}$ time and
+$O(N\log(N+2))$ writable bits. The Python prototype likewise materializes
+these objects and does not claim sublinear space. In particular the counter
+of comparison bytes is a work proxy, not a complete Python bit-operation
+measurement. There is no recursive child execution in the recognizer.
+
+\paragraph{Useful consequence and explicit scope.}
+For this ordered encoding, $I\in P$ and
+\[
+ K_U=I\cap\SAT.
+\]
+A total general-SAT decider can decide $K_U$ after the charged image test;
+using a SAT decider alone on off-image strings can give a wrong answer for
+$K_U$. For example the one-clause formula $(x_1\lor x_2\lor x_3)$ is SAT
+but is not in $I$, because its clause count is not a multiple of 12.
+On the promised image, $D$ recovers a source with the same answer.
+This is a useful syntactic reduction. It is not a polynomial SAT solver.
+
+\section{Smallest source counterexample to recursive closure}
+Take $F=(x_1\lor x_2\lor x_3)$. Each of its three variables requires three
+balancing gadgets, so $g=9$, $b=64$, and $U(F)$ has 576 variables and 768
+clauses. Decoding recovers $F$. But $F\notin I$, as just shown. A second
+decoder invocation rejects. This is the smallest nonempty proper source in
+clause count; no claim is made about smallest target byte count.
+
+Consequently
+\[
+ y\in I\quad\Longrightarrow\quad D(y)\in\mathcal S
+ \qquad\not\Longrightarrow\qquad D(y)\in I.
+\]
+The candidate ``inverse decoding automatically supplies recursive PRE-A
+coverage'' is \textbf{FALSIFIED/RETIRED}. Wrapping the decoded child back
+through $U$ returns the exact parent bytes and gives a nonshrinking cycle.
+Calling an assumed $s^K$ solver on the recovered source retains its exponent.
+The source is linearly related to the target clause count within constants;
+this does not establish a maximum-child bound $N^{1/2+o(1)}$.
+Constant-factor descent remains legitimate under a suitable full recurrence,
+but this decoder alone supplies neither recursive closure nor the joint
+resource bound. Construction10, Recovery10 and conditional $K$ elimination
+are preserved.
+
+\section{Endpoint, model and barrier audit}
+FLMV Section 2.1 charges index and work tapes on one random-access Turing
+machine; only original input and write-only output are exempt. Corollary 5.8
+states, for constants $c>1$,
+\[
+ \operatorname{NTIME}[n]\not\subseteq
+ \operatorname{DTISP}[n^c,o(n^{d(c)})],\qquad
+ d(c)=\tfrac12\bigl((c+2)/c^2-c\bigr).
+\]
+At $c=6/5$, $d(c)=23/45$ and $d(c)-1/2=1/90$. To absorb $o(1)$ errors and
+polylogarithmic transfer overhead, choose a slightly larger fixed $c'>6/5$
+with $d(c')>1/2$. Theorem 3.1 supplies a locally computable quasilinear
+reduction to its SAT encoding. It does not say every polynomial Karp
+reduction preserves a joint near-linear-time, half-space bound.
+The present materialized image decoder does not meet that endpoint contract.
+
+The main theorem transfers only deterministic parsing, regeneration and
+byte equality. Compiler inversion is a useful transfer from program
+verification: recovered source and recompiled output have an exact round-trip
+specification. No circuit, VLSI, communication or proof-system lower bound
+is transferred. The image recognizer is expressly an algorithmic exploitation
+of algebraic/combinatorial structure, not evidence of hardness. PC/PCR and
+Resolution size retain their own declared representation models.
+
+The algorithms and the closure counterexample relativize; no oracle answer
+is needed. Algebraic-oracle access supplies no separation hinge. No large
+constructive circuit property is defined, so no Natural-Proofs evasion is
+claimed. COPY, DEAD, DELAY and RECOMP may increase costs but cannot force a
+solver to use the decoder. Exact comparison replaces hash equality. Hash or
+random-oracle binding is a \textbf{FAILED TRANSFER} to unconditional hardness.
+Schur squares, quadratic ranks and syzygies do not address this interface and
+are \textbf{FAILED TRANSFERS} here. LWE-style black-box extraction remains
+\textbf{ANALOGY/CANDIDATE}; no cryptographic hypothesis is used. Collision
+entropy is an \textbf{EXACT OBJECT/THEOREM TRANSFER} only for a specified map
+and supplies no runtime bound for this decoder.
+
+\section{Bounded reproducible validation}
+The accompanying test imports the unchanged canonical compiler with SHA-256
+\path{f5d1ba8d171400b6d15691b3884336274faeb1a4e43da126d2312b6e0d042ee8}.
+Its five separately checkpointed stages each use a 24-second alarm and a
+25-second external timeout. Maximum measured stage duration was 0.515 seconds.
+There are 4,572 passing assertions and 264 cases: all 255 nonempty subsets of
+the eight proper clauses on three variables, plus nine named controls.
+
+\begin{center}\begin{tabular}{lr}\toprule
+Check & Count\\\midrule
+Accepted images / exact round trips / source truth checks & 264 each\\
+Zero-lift assignment identities & 2,192\\
+Recovered children outside the image & 256\\
+Broken cycle / noncanonical bytes / reordered implication rejection & 264 each\\
+Malformed strings & 9\\
+Off-image SAT controls & 10\\
+Exponent identities / endpoint slack identity & 256 / 1\\\bottomrule
+\end{tabular}\end{center}
+Named controls include Horn, dual-Horn, properized Krom, affine SAT/UNSAT,
+independent products, actual source renaming, complementation and reordering.
+Reversing the literal order in a target implication leaves its SAT semantics
+unchanged but is rejected by the exact ordered-image recognizer. This is
+intended behavior, not a formula-orbit recognition theorem.
+All 1,056 candidate prefix regenerations, including failures, are counted;
+they generated 7,831,464 bytes. Full target SAT is not brute-forced: finite
+semantic checks compare source truth and explicit lifted assignments. The
+proof, not extrapolation from these tests, supports the inversion claim.
+
+\section{CORPUS REVIEWED}
+The current recursive GitHub tree was surveyed at
+\texttt{4d24637f10cb32055d1b29c6287b4f0a54ee630c} (2,789 entries, untruncated).
+Read root \path{main.tex}, \path{AGENTS.md}, \path{CODEX.md}, research skill
+and red-team/protocol references; all eight files under \path{tasks/}; actual
+\path{main4.tex}, \path{main5.tex}; FORMAL-SPINE1; MAIN BLACKBOXQ1,
+TRACEFRONT1 and REPPROMISE1; LSPV-1 TRACESIMQ1, LSPV-2 LOGFPRINT1,
+LSPV-3 EARLY22RED1, LSPV-4 IMAGE22COMP1; and relevant portions of both
+distinct PC22\_ALLFIELD1 reports (00:10 and 00:35).
+Construction10 and Recovery10 reports, handoffs and results, ARC15 report and
+results, and RedTeam8 report, handoff and results were fetched from GitHub.
+Their successful existing writes do not require duplicate recovery artifacts.
+Reviewed SINGLE22 governance, the CCSPC component, and the historical
+recognizable-island and mixed-answer-island manuscript additions. Task
+specifications identify the broader HEC/CRS-PPC interfaces; no claim from an
+unread underlying exploration is newly promoted.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+Repository searches for image recognition, clone cycles and prefixes located
+the original 00:10 selector/cardinality compiler inverse. That mechanism is
+adopted as prior work. The new delta is inversion of the different 00:35
+transparent-padding compiler by enumerating its unknown source-prefix
+boundary, complete byte regeneration, and an explicit one-step closure
+counterexample. IMAGE22COMP1 had not assumed image recognition, so the new
+decoder strengthens its concrete ordered instantiation without falsifying
+its NP-completeness proof. Mixed-answer and recognizable-island barriers are
+already in the corpus and are not claimed as new.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+Independent review supports IMAGE22COMP1's existing completeness and exponent
+claims after totalization. The decoder is a new candidate and not a machine
+lower bound. Root ownership is preserved; only main4/main5 receive scoped
+additions. BLACKBOXQ1's explicit hard-endpoint warning remains applicable.
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopt the universal compiler, exact-$(2,2)$ language, recovered inverse
+mechanism, conditional recurrence, full same-machine accounting, and FLMV
+endpoint. Reject interpreting image recognition as SAT decision, formula-orbit
+recognition, or half-space access. Retire only the proposed automatic
+recursive-closure implication. Existing restricted proof-system results and
+the arbitrary-algorithm OPEN target retain their scopes.
+
+\paragraph{STALE OR OVERSTATED CLAIMS FOUND.}
+It is no longer necessary to leave recognition of this exact ordered image
+unspecified once the decoder theorem is independently accepted. This does not
+justify saying every canonicalizer or arbitrary renamed image is recognizable
+by this procedure. A larger proof-system lower bound on one benchmark remains
+insufficient for an arbitrary-decider lower bound.
+
+\paragraph{Single next target.}
+Independently review the prefix decoder and then specify a successor domain
+containing its recovered sources. Any recursive use must supply a new charged
+rule on that domain, including failed discovery, child multiplicity, replay,
+buffers, indexes and ancestor state. Recompilation alone returns to the same
+parent and supplies no contraction. P versus NP remains OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{docker} J. D\"ocker, \emph{Monotone 3-Sat-$(2,2)$ is NP-complete},
+2019. \url{https://arxiv.org/abs/1912.08032}.
+\bibitem{esy} S. Even, A. L. Selman and Y. Yacobi,
+\emph{The complexity of promise problems with applications to public-key
+cryptography}, Information and Control 61 (1984), 159--173.
+\url{https://doi.org/10.1016/S0019-9958(84)80056-X}.
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek and A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, author manuscript,
+7 September 2004, Sections 2.1 and 3.1, Theorem 3.1 and Corollary 5.8.
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\end{thebibliography}
+% END_OF_VERIFIED_REPORT::REDTEAM-STRENGTHEN9
+\end{document}
