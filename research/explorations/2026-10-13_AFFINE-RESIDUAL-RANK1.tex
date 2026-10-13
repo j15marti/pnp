@@ -1,0 +1,121 @@
+% EXPLORATION::AFFINE-RESIDUAL-RANK1::2026-10-13
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\F}{\mathbb F_2}
+\newcommand{\cc}{\operatorname{cc}}
+\begin{document}
+\title{Exact Nonlinear-Interface Contraction After Tseitin Elimination}
+\author{P versus NP project: lead exploration and agent handoff}
+\date{13 October 2026}
+\maketitle
+\paragraph{Status.} Complete elementary proofs are given below; independent agent review is pending. Finite tests are COMPUTATIONAL. This is not an unrestricted SAT lower bound or a proof of P versus NP. No priority claim over graph or coding theory is made.
+\section{Scope}
+The current target is a structured input $(X,c,Q)$, or a CNF family with a proved polynomial-time decoder recovering that structure. Discovering a hidden decomposition in an arbitrary untagged CNF is not assumed free. The formula is
+\[
+(B_Xx=c)\land Q(x_R),
+\]
+where $X=(V,E)$ is a finite simple undirected graph, $B_X$ is its incidence matrix over $\F$, and $Q$ is an explicitly described Boolean circuit or CNF whose edge-variable support is $R\subseteq E$. Its description and evaluation cost are charged in the bit length $N$.
+Write $n=|V|$, $m=|E|$, $k=\cc(X)$, and $k_R=\cc(X-R)$, retaining every vertex when deleting edges. Isolated vertices count. Assume the XOR of charges on each component of $X$ is zero. Inconsistent inputs are rejected polynomially.
+
+This continues the previous affine-elimination audit. The DNNF theorem of de Colnet and Mengel is a representation lower bound, not a lower bound on finding one witness. Their result is retained in its stated model. The new question is exactly what constraints survive on the variables read by $Q$.
+\section{Exact contraction}
+\begin{theorem}[Projected compatibility]
+For $y\in\F^R$, there is an $x$ with $B_Xx=c$ and $x_R=y$ if and only if, for every component $C$ of $X-R$,
+\[
+\bigoplus_{e\in\delta_X(C)}y_e
+=
+\bigoplus_{v\in C}c_v. \tag{1}
+\]
+Every edge in this boundary belongs to $R$. A compatible assignment can be extended in polynomial time.
+\end{theorem}
+\begin{proof}
+XOR the equations at vertices of $C$. Internal edges occur twice and cancel, proving necessity. Conversely, after fixing $x_R=y$, define
+\[
+c'_v=c_v\oplus\bigoplus_{e\in R:e\ni v}y_e.
+\]
+Equation (1) gives even total residual charge on each component of $X-R$. Choose a spanning tree of each component, set its non-tree edges to zero, and process tree vertices from leaves to the root. Each parent edge is chosen to satisfy the child equation. The root equation follows from even total charge. All discovery, access, and reconstruction costs are polynomial in the explicit input size.
+\end{proof}
+
+Thus the affine part can be contracted to the components of $X-R$, keeping the $R$ variables. An $R$-edge internal to one component becomes a loop and contributes no parity constraint, although $Q$ may still read that variable. The contracted vertex charge is the XOR of charges in its component. For connected $X$, at most $|R|+1$ quotient vertices and at most $2|R|$ parity incidences remain. Shared XOR circuits and gate encoding give an $O(|R|)$ combinatorial-size affine encoding; binary-index costs are still charged. The quotient need not retain bounded degree.
+\section{Rank, cardinality, and search}
+Set
+\[
+\rho=\dim\pi_R(\ker B_X).
+\]
+\begin{theorem}[Exact interface rank]
+\[
+\boxed{\rho=|R|+k-k_R.} \tag{2}
+\]
+The feasible interface has $2^\rho$ assignments. Each has exactly
+\[
+2^{m-|R|-n+k_R}
+\]
+full extensions.
+\end{theorem}
+\begin{proof}
+A spanning forest gives $n-k$ independent incidence columns. The XOR of vertex rows on each component is zero, so $\operatorname{rank}B_X=n-k$ and $\dim\ker B_X=m-n+k$. The kernel of projection restricted to $\ker B_X$ consists of cycle vectors supported in $E\setminus R$, hence has dimension $m-|R|-n+k_R$. Rank-nullity gives (2). A consistent charge vector translates this linear solution space by one particular solution; it changes neither projection dimension nor fiber size.
+\end{proof}
+
+\begin{theorem}[Charged upper bound]
+Given the specified input or a polynomial decoder, satisfiability and witness finding for $(B_Xx=c)\land Q(x_R)$ take
+\[
+2^\rho\operatorname{poly}(N)
+\]
+deterministic time and polynomial workspace on an ordinary bit-level machine. If $Q$ also uses $h$ external free Boolean variables, the direct bound is $2^{\rho+h}\operatorname{poly}(N)$.
+\end{theorem}
+\begin{proof}
+Compute a particular solution $a$ and a kernel basis in polynomial time. Project the basis to $R$, retain $\rho$ independent vectors and their full kernel preimages, and enumerate their linear combinations. Test $Q$ at each translated projected point. The retained preimages immediately construct a full affine extension when $Q$ accepts. Exhaustion rejects correctly because every feasible projection was included. All basis discovery, representation, input access, testing, reconstruction and verification are polynomial per projected point. A Gray-code counter and one current assignment avoid storing the entire enumeration. External variables can be enumerated separately.
+\end{proof}
+
+In particular $\rho=O(\log N)$, with a uniform fixed constant, is a polynomial-time escape for the stated no-external-variable class. Large $\rho$ is not a lower bound. For example, a large free interface and a positive monotone $Q$ have an immediate all-one interface witness.
+\section{A linear-sized nonlinear interface can remain completely free}
+\begin{corollary}[Connected-complement bypass]
+If both $X$ and $X-R$ are connected and total charge is even, then every $y\in\F^R$ extends. Thus
+\[
+\exists x\,[B_Xx=c\land Q(x_R)]
+\iff
+\exists y\,Q(y). \tag{3}
+\]
+Restriction and witness lifting are polynomial-time operations.
+\end{corollary}
+\begin{proof}
+The sole component of $X-R$ is $V$, with empty boundary. Its compatibility equation is merely the assumed global even parity and is independent of $y$. Apply the first theorem.
+\end{proof}
+
+In particular, choose any spanning tree $T$ and take $R=E\setminus T$. Then
+\[
+\rho=|R|=m-n+1,
+\]
+and every interface assignment has a unique extension, because the complement $T$ has cycle dimension zero. Arbitrary 3SAT placed on these cotree variables is in a polynomially computable witness bijection with the resulting Tseitin-plus-3SAT formula. The construction relocates that search problem rather than establishing compulsory amplification.
+
+For a connected cubic graph this permits $n/2+1$ completely free interface bits. It applies to expanders and every even charge vector, including incompressible vectors: the input supplies the charges. No efficient prediction of charges is needed. Nonlinearity, linear-sized support and expansion therefore do not by themselves prove unavoidable entangled work.
+\section{Exact remaining proof obligation}
+Retain the conditional UWI criterion: if $s_j=|F_j|+2\to\infty$, $s_{j+1}\le As_j$ for fixed $A>1$, and
+\[
+H(F_{j+1})\ge H(F_j)r(s_j)/B
+\]
+for fixed $B$ and $r(s)\to\infty$, then $H$ is not polynomially bounded. This is not proved by the rank identity. Any claimed net multiplier must survive the quotient reduction, compact affine summaries, source-witness lifting, arbitrary polynomial workspace and all encoding/discovery losses. A fixed percentage overhead is not an exponent gap.
+
+No conclusion is made about an unspecified graph-colouring $L_{22}$ source or signed exact-$(2,2)$ compiler. Standard Tseitin is not automatically exact-$(2,2)$. Existing proof-system and normalization results retain their own hypotheses. Recognition of the decomposition and compatibility of every supplied source witness must be proved before applying recursive witness-lifting arguments.
+\section{Executed tests}
+The standard-library Python audit exhaustively examined all 75 labeled simple graphs on one through four vertices and all 760 graph/support pairs. It checked every charge vector and interface assignment, giving 760 rank comparisons, 66,066 boundary-membership comparisons, 5,484 consistent charge/support cases, and 13,752 full projection-witness checks.
+
+On $K_{3,3}$, it tested every subset of the eight proper clauses on three cotree variables, for all 32 consistent charge vectors: 8,192 cases, of which 8,160 were SAT and 32 UNSAT. Returned witnesses and complete model counts matched brute force. Another 400 random general-support CNFs and 400 edge-renamed/clause-reordered versions also matched. Seed: 20261013. These are structured inputs, not hidden-decomposition recognition tests. Finite checks prove no asymptotic lower bound.
+
+The code and final raw result are intended for the matching AFFINE-RESIDUAL-RANK1 handoff. Final code SHA-256:
+\begin{center}\small\texttt{8ad75aef2394c8b5789c1d3c6d6368ccc6c8b9747612a0ab6f4ebde3a5423ee4}\end{center}
+Each supported chunk and the full run complete below one second in the measured environment; the code supports separate graph/nonlinear chunks.
+\section{Corpus scope and agent handoff}
+Read the supplied UWI-1 text, conversation audits, mounted predecessor solver, AGENTS.md, CODEX.md, pnp-research skill, current root main.tex, and targeted repository search results for affine projection/cycle work. Earlier shortening/puncturing and compact-representation controls were surfaced. No corpus-wide originality claim is made. Full local-checkout preflight was not run in this connector-based lead exploration.
+
+The inspected root blob \texttt{a5d8bd4f37e5a7faa704e5d5fd5bdbd7775cc9d7} remains explicitly OPEN and describes a separate restricted triangle/Resolution chain. It lacks specialist ownership markers; no root rewrite is attempted here. LSPV-5 should independently reconcile this handoff without discarding valid prior results.
+
+The five existing Universal Core tasks were successfully updated to hourly offsets 00/12/24/36/48 under verified governance AFFINE-RESIDUAL-REDIRECT1. Bridge should audit the exact reductions, Lower Bound attack a genuinely residual-dependent work claim, Tests independently reproduce these checks, Redteam test all hypotheses, and Synthesis reconcile verified evidence. Scheduling is not evidence that a future run has already completed.
+\begin{thebibliography}{1}
+\bibitem{dcm} A. de Colnet and S. Mengel, Characterizing Tseitin-Formulas with Short Regular Resolution Refutations, Journal of Artificial Intelligence Research 76 (2023), 265--286. doi:10.1613/jair.1.13521. arXiv:2103.09609. Used only for the earlier representation-bound context.
+\end{thebibliography}
+\end{document}
+% END_OF_EXPLORATION::AFFINE-RESIDUAL-RANK1
