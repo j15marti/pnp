@@ -1,0 +1,266 @@
+% LSPV-3 REPORT::POLARKERNEL1::2026-10-13T22:36:00+09:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\usepackage[margin=0.86in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newcommand{\F}{\mathbb F_2}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RET}{\textbf{FALSIFIED/RETIRED}}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue}
+\setlength{\emergencystretch}{3em}
+\title{POLARKERNEL1: Recovering the Hidden Shear Key\\from the Raw Quadratic ANF}
+\author{UNIVERSAL\_CORE\_REDTEAM / LSPV-3}
+\date{13 October 2026, 22:36 KST}
+
+\begin{document}
+\maketitle
+\begin{center}
+\fbox{\parbox{0.95\linewidth}{
+\textbf{Status: P versus NP remains OPEN.}
+Independent review confirms the QUADSHEAR1 algebraic theorem.  More sharply,
+when the quadratic polar components of its payload are independent, the raw
+expanded ANF itself exposes an $m$-dimensional kernel of quadratic output
+combinations.  Gaussian elimination on that kernel fixes the hidden shear
+quotient; the rest is one affine solve.  The new theorem is \CAND{} pending a
+second independent review; 472 bounded checks are \COMP{}.  Suppressing the
+shear tag is \RET{} as a repair.  No arbitrary-MQ algorithm or unrestricted
+lower bound follows.}}
+\end{center}
+
+\section{Claim card and target}
+\begin{tabularx}{\linewidth}{p{0.27\linewidth}X}
+\toprule
+Claim ID & POLARKERNEL1 \\
+Target & QUADSHEAR1 with the split, payload, and conjugating maps removed \\
+Quantifiers & Every $m,n\ge1$, every quadratic $P:\F^m\to\F^n$ with independent
+polar components, every invertible affine conjugation, and every target \\
+Input/model & Expanded Boolean quadratic ANF; uniform deterministic random
+access with polynomial workspace \\
+SAME\_REALIZATION & One ANF supplies the kernel, quotient, fiber solve,
+preimage, and final verification \\
+Falsifier & A valid hidden conjugate for which intrinsic recovery fails or
+uses uncharged decomposition advice \\
+\bottomrule
+\end{tabularx}
+
+\section{Primary literature and transfer preflight}
+Berthomieu, Faug\`ere, and Perret reduce quadratic polynomial isomorphism to
+linear algebra on Hessian/polar matrices and give polynomial algorithms for
+regular cases, including characteristic-two treatment \cite{BFP}.
+Pl\^ut, Fouque, and Macario-Rat solve two-form IP2S over odd characteristic
+using quadratic pencils \cite{PFM}.  These are directly relevant algorithmic
+warnings: affine masking need not destroy recoverable quadratic structure.
+They do not imply the theorem below, an unrestricted SAT algorithm, or a
+lower bound.  The proof here is self-contained over the exact Boolean ANF.
+
+The current obstacles are (i) acquiring useful structure from the same input
+without hidden advice and (ii) converting any residual invariant into a
+lower bound against every polynomial selector.  This run solves (i) for the
+shear family and supplies contrary evidence for (ii).
+
+\section{Intrinsic polar-output kernel}
+For a quadratic map $F:V\to W$, $V=W=\F^d$, define
+\[
+ \Phi_F:W^*\to\operatorname{Alt}(V),\qquad
+ \Phi_F(\lambda)(x,y)=\lambda\cdot
+ (F(x+y)+F(x)+F(y)+F(0)).                              \tag{1}
+\]
+The space $K_F=\ker\Phi_F$ is obtained by Gaussian elimination on the
+quadratic coefficient vectors.  Exactly the combinations
+$\lambda\cdot F$, $\lambda\in K_F$, are affine.
+
+\begin{theorem}[polar-kernel recovery]
+Let $d=m+n$, let $P=(P_1,\ldots,P_n):\F^m\to\F^n$ have linearly independent
+polar forms, set $S_P(u,v)=(u,v+P(u))$, and let
+\[
+ F(y)=B S_P(Ay+p)+q                                      \tag{2}
+\]
+for $A,B\in\mathrm{GL}_d(\F)$.  From the expanded ANF of $F$ alone one can
+compute $K_F$ with $\dim K_F=m$, compute an $m$-dimensional affine quotient
+whose value fixes $\pi_u(Ay+p)$, and recover the unique preimage of every
+target by Gaussian elimination in time polynomial in the ANF length.
+\end{theorem}
+
+\begin{proof}
+For $\lambda\in W^*$ put $c=B^{\mathsf T}\lambda=(c_u,c_v)$.  Translation
+changes only affine terms, while invertible input substitution acts on polar
+forms by congruence.  Hence
+\[
+ \Phi_F(\lambda)=A^{\mathsf T}
+ \left(\sum_{j=1}^n(c_v)_j\Phi_{P_j}\right)A.            \tag{3}
+\]
+Independence gives
+\[
+ K_F=B^{-\mathsf T}(\F^m\times\{0\}),\qquad \dim K_F=m. \tag{4}
+\]
+For $\lambda\in K_F$, $\lambda\cdot F(y)$ is an affine combination of the
+first $m$ coordinates of $Ay+p$.  A basis of these affine functions has
+linear rank $m$, because $B^{\mathsf T}$ maps $K_F$ isomorphically onto
+$\F^m\times\{0\}$ and $A$ is invertible.  Equating them to
+$\lambda\cdot b$ fixes $u=\pi_u(Ay+p)$ and leaves an $n$-dimensional affine
+fiber.  On that fiber $P(u)$ is constant, so $F$ is affine in the remaining
+$v$ coordinates.  Its rank is $n$, or else the permutation (2) would collide.
+A second Gaussian solve recovers the point, and direct evaluation verifies it.
+Every matrix used is read from the same ANF.
+\end{proof}
+
+\paragraph{Recognition and off-image behavior.}
+The implementation computes $K_F$ without assuming (2).  It checks
+$0<\dim K_F<d$, full rank of the affine quotient, vanishing of every polar
+form on pairs of quotient-fiber directions, and full column rank of the
+restricted affine map.  It solves and verifies accepted targets; otherwise it
+rejects this structured promise and hands the input to a fallback.  Rejection
+is not a claim about arbitrary MQ.  For an expanded ANF of
+$N=\Theta(d^3)$ bits, parsing, discovery, solves, reconstruction, and
+verification are polynomial in $N$.
+
+\section{Independent QUADSHEAR1 review}
+The predecessor report
+\path{research/agents/lspv-2/2026-10-13_2224_LSPV-2_QUADSHEAR1.tex}
+exists at blob \texttt{dae6cee4dd1e1d9f4a9471c8bf5b8509c6265127}, is
+substantive, and has the required header and sentinel.  Its involution,
+conjugate inverse, all-coordinate nonlinearity condition, encoded costs, and
+cotree forest lift were checked against its code and raw result.  Its algebraic
+theorem and typed lift are promoted to \EXACT{}; its 851-check audit remains
+\COMP{}.  POLARKERNEL1 strengthens it: explicit decomposition fields are not
+needed on the independent-polar subclass.
+
+\section{Bounded reproducible audit}
+The program
+\path{experiments/review/polar_kernel_shear_redteam.py}
+has SHA-256
+\texttt{d5b27313e23a66ad423a19eed70ae974c1df3cce99a049d55f3131ef53dad334}.
+Seed \texttt{22362026} passed 472 assertions in 1.554674 seconds.
+
+It reacquired raw ANFs in dimensions $7,16,36,64$ with respectively
+$29,137,667,2081=1+d+\binom d2$ charged evaluations.  In each case the raw
+quadratic rank was $n$, $\dim K_F=m$, the quotient rank was $m$, all displayed
+coordinates were nonlinear, and the residual fiber dimension was $n$.  It
+inverted 128 exhaustive targets at $d=7$ and 96 seeded targets at larger
+dimensions.  A dependent-payload control was also recognized and inverted,
+with a larger affine quotient.  Affine identity, zero-map, and random
+quadratic off-image controls were rejected rather than misclassified.
+
+The raw file
+\path{results/raw/review/2026-10-13_2236_polar_kernel_shear_redteam.json}
+has SHA-256
+\texttt{6b77a942c8d8e5d1bb7a11480c6d89037153498423834c33e95f8ba8f90f9642}.
+No invocation exceeded thirty seconds; no chunking was needed.  Finite checks
+are \COMP{} and the general statement rests on the proof above.
+
+\section{Hostile controls, barriers, and surviving repair}
+The recovery is intrinsic under arbitrary affine input/output mixing and
+phases.  DEAD/COPY/DELAY/INTERP/RECOMP wrappers cannot erase the ANF kernel
+when recognition and replay are charged.  The algorithm uses polynomial
+workspace and emits no DNNF, PC/PCR proof, Resolution proof, pebbling, or
+semantic-state table.  Program length is not confused with workspace.
+
+The theorem does not make arbitrary MQ easy.  A repair must at least defeat
+$K_F$, but $K_F=0$ is not sufficient: FIELDTRACEFW1 has injective
+output-to-polar map and a uniform selector through large fibers.  Singleton
+fibers are not sufficient: QUADSHEAR1 is a permutation.  The smallest current
+structural corner is therefore the joint regime
+\[
+ K_F=0,\qquad |F^{-1}(b)|\le\operatorname{poly}(d)
+ \quad\text{(ideally one)},                              \tag{5}
+\]
+plus exclusion of every other polynomial selector.  Even (5) is only a
+candidate filter, not a lower bound.
+
+The inverter relativizes and algebrizes; no barrier-crossing hinge is found.
+Natural Proofs is not invoked.  ETH, cryptographic hardness, and random
+oracles are absent.
+
+\paragraph{Post-quantum ledger.}
+$K_F$ is an \textbf{EXACT OBJECT/THEOREM TRANSFER} from quadratic-form
+relation-space diagnostics and here exposes an algorithmic weakness.
+Inferring runtime from relation dimension, Schur powers, syzygies, or graded
+Betti numbers is a \textbf{FAILED TRANSFER}.  Higher invariants after imposing
+$K_F=0$ remain an \textbf{ANALOGY/CANDIDATE} without a computation theorem.
+
+\section{CORPUS REVIEWED}
+The run surveyed the current GitHub tree and read root \path{main.tex},
+\path{AGENTS.md}, \path{CODEX.md}, the complete pnp-research skill/red-team
+protocol, all seven tasks, root \path{main4.tex} and \path{main5.tex},
+AFFINE-RESIDUAL-REDIRECT1, newest MAIN FIELDTRACEFW1, and the material
+RANKNONLINFW1, FULLRANKQFW1, TWOQCOLLAPSE1, THREEPENCILFW1,
+FIELDTRACELIFT1, BIJECTIVEQFW1, and QUADSHEAR1 reports and evidence.  The
+affine-residual exploration and CCSPC/HEC/CRS-PPC branch were checked for
+model-transfer conflicts.  EARLY22 and SINGLE22 exact-$(2,2)$ compiler and
+proof-system results remain preserved only at their stated scope.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+Repository searches for polar-kernel, affine-quotient, and output-combination
+recovery found no prior statement of this theorem.  Earlier work measures
+projected cycle rank or ranks of individual/pencil polar forms; it does not
+use the kernel from output covectors to polar forms to invert a hidden shear.
+There is no contradiction with general MQ hardness, FIELDTRACEFW1,
+exact-$(2,2)$ NP-completeness, or restricted proof-system bounds: the models
+and quantifiers differ.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root main records QUADSHEAR1 as a decomposition-exposed selector firewall.
+This run removes ``exposed'' as a necessary limitation: the quotient and
+inverse are uniformly recoverable from raw ANF.  It narrows the next repair to
+the joint zero-kernel/small-fiber corner (5), while all-selector hardness stays
+\OPEN{}.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{itemize}
+\item \textbf{Adopted:} QUADSHEAR1 involution, affine conjugation, costs,
+cotree lift, and all-coordinate nonlinearity, now independently reviewed.
+\item \textbf{Preserved:} projected-rank enumeration, FIELDTRACEFW1's
+zero-kernel large-fiber selector, and scoped EARLY22/SINGLE22 results.
+\item \textbf{Rejected:} free decomposition advice, state-count inference,
+and proof-size-to-runtime transfer.
+\item \textbf{Retired:} absence of an advertised shear tag as a repair; dense
+all-output nonlinearity plus singleton fibers plus payload rank is insufficient.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+QUADSHEAR1's description of an ``exposed'' decomposition understates its
+counterexample: raw ANF already exposes an intrinsic affine quotient.  It
+would also be overstated to say $K_F=0$ forces work; FIELDTRACEFW1 refutes it.
+
+\section{Status and handoff}
+\begin{tabularx}{\linewidth}{p{0.41\linewidth}p{0.18\linewidth}X}
+\toprule
+Item & Status & Result \\
+\midrule
+QUADSHEAR1 theorem and typed lift & \EXACT & Independent proof/source review complete.\\
+POLARKERNEL1 raw-ANF theorem & \CAND & Complete proof; second review pending.\\
+Bounded raw-ANF audit & \COMP & 472 assertions; no failures.\\
+Unadvertised shear tag as repair & \RET & Intrinsic kernel recovers it.\\
+Joint $K_F=0$ plus small fibers & \OPEN & No lower bound or counterexample yet.\\
+Unrestricted UWI/SAT lower bound & \OPEN & All-program implication missing.\\
+\bottomrule
+\end{tabularx}
+
+The current chain is
+\[
+ \text{raw ANF}\Longrightarrow K_F\text{ and affine quotient}
+ \Longrightarrow\text{charged shear inversion}\quad(\CAND),
+\]
+while a superpolynomial lower bound for every eligible program remains
+\OPEN{}.  P versus NP remains open.
+
+\textbf{Next target.}  Search the smallest quadratic permutation
+$F:\F^d\to\F^d$ with $K_F=0$.  Attack any example first with intrinsic polar
+spaces, tame/Feistel forms, field/tensor structure, and source-witness
+extension.  Finite absence must not be extrapolated asymptotically.
+
+\begin{thebibliography}{9}
+\bibitem{BFP} J. Berthomieu, J.-C. Faug\`ere, and L. Perret,
+``Polynomial-Time Algorithms for Quadratic Isomorphism of Polynomials: The
+Regular Case,'' 2013, \url{https://arxiv.org/abs/1307.4974}.
+\bibitem{PFM} J. Pl\^ut, P.-A. Fouque, and G. Macario-Rat,
+``Solving the Isomorphism of Polynomials with Two Secrets Problem for all
+Pairs of Quadratic Forms,'' 2014, \url{https://arxiv.org/abs/1406.3163}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-3::POLARKERNEL1
