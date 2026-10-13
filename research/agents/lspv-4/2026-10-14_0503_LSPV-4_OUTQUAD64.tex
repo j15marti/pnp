@@ -1,0 +1,362 @@
+% LSPV-4 REPORT::OUTQUAD64::2026-10-13T20:03:06+00:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\usepackage[margin=0.88in]{geometry}
+\hypersetup{hidelinks}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\F}{\mathbb F_2}
+\newcommand{\SAT}{\operatorname{SAT}}
+\title{OUTQUAD64: A Quadratic-Output Identity\\
+\large Raw-coordinate inversion of the hidden map $u^3+u^8$}
+\author{UNIVERSAL\_CORE\_BRIDGE / LSPV-4}
+\date{14 October 2026, KST}
+\begin{document}\maketitle
+\paragraph{Status.}
+\textbf{CANDIDATE with a complete symbolic proof; independent research review pending.}
+A deterministic polynomial-time procedure, given only raw quadratic Boolean
+coefficients, solves every target of an affine-hidden $u^3+u^8$ map using an
+explicitly acquired affine enclosure of at most 64 points. On arbitrary
+quadratic maps the same procedure is sound and partial. The statement is a
+constructive upper bound, not a separation. \textbf{P versus NP remains OPEN.}
+
+\section{The precise repair to BILINCUBE1}
+BILINCUBE1 recovered identities affine in both input and output, obtaining an
+all-target four-point bound for hidden $u^3+\lambda u$. Its nearby control
+$u^3+u^8$ over $\mathbb F_{256}$ had six roots at zero, so that bound could not
+apply unchanged. The present repair adds only \emph{pure output-quadratic}
+terms, not products involving two unknown input bits.
+
+Fix a binary field $K$ of degree $d\ge1$ and a coordinate identification
+$K\cong\F^d$. Let $A,C$ be invertible binary-linear maps and let
+$\alpha,\beta\in K$. Consider
+\[
+ P(z)=C\big((Az+\alpha)^3+(Az+\alpha)^8\big)+\beta.       \tag{1}
+\]
+The solver receives $d$, the complete squarefree quadratic coefficient table
+of $P$, and $b\in\F^d$. It is \emph{not} given $K$'s modulus, $A,C,\alpha,\beta$,
+or a source preimage. Arithmetic in the proof's hidden coordinates is field
+arithmetic; arithmetic in the solver is Boolean coefficient matching and
+binary linear algebra.
+
+The raw encoding orders coefficients as constant, $d$ linear terms and
+lexicographic pairs $i<j$, with each coefficient a $d$-bit output vector.
+The implementation serializes these vectors as nonnegative JSON integers and
+validates the explicit coefficient count before dimension-indexed allocation.
+A dense fixed-width binary table has $\Theta(d^3)$ bits; the JSON version is
+polynomially related. No succinct circuit expansion is free.
+
+\section{An exact identity valid in every binary field}
+\begin{lemma}[Quadratic-output identity]\label{lem:id}
+Whenever $v=u^3+u^8$ in a field of characteristic two,
+\[
+ u^{64}+u^4+vu^{16}+v^2u^8+vu+v^3+v^8=0.               \tag{2}
+\]
+For fixed $v=b$, its left side is an affine binary-linear function of $u$,
+and the corresponding polynomial has at most 64 roots.
+\end{lemma}
+\begin{proof}
+Substitution gives
+\begin{align*}
+vu^{16}&=u^{19}+u^{24}, &v^2u^8&=u^{14}+u^{24},\\
+vu&=u^4+u^9, &v^3&=u^9+u^{14}+u^{19}+u^{24},\\
+v^8&=u^{24}+u^{64}.
+\end{align*}
+Each monomial cancels in (2), proving an identity in the ordinary polynomial
+ring $\F[u]$, not merely at finitely many tested field points.
+For fixed $b$, define
+\[
+ \mathcal L_b(u)=u^{64}+bu^{16}+b^2u^8+u^4+bu.
+\]
+The desired equation is $\mathcal L_b(u)=b^3+b^8$. Frobenius powers are
+binary-linear, so its solutions form an affine space or the empty set.
+As an ordinary polynomial $\mathcal L_b(u)+b^3+b^8$ is monic of degree 64.
+The elementary polynomial root bound gives at most 64 roots, for all $d$,
+including fields of fewer than 64 elements.
+\end{proof}
+
+The new term $v^3$ has Boolean degree two, whereas $v^8$ is binary-linear.
+The mixed terms are still bilinear in the input and output coordinates.
+Thus independent invertible affine changes in input and output keep every
+coordinate of (2) in the following template:
+\[
+ R(z,y)=c+\sum_i a_i z_i+\sum_j b_j y_j+
+ \sum_{i,j}M_{ij}z_i y_j+\sum_{j<k}D_{jk}y_jy_k.         \tag{3}
+\]
+No field representation needs to be recovered to search this template.
+
+\section{Acquiring the identities and solving every target}
+Let $\mathcal I(P)$ be the vector space of all coefficient arrays in (3)
+satisfying $R(z,P(z))\equiv0$ in the Boolean ring
+$\F[z_1,\ldots,z_d]/(z_i^2-z_i)$. The template has
+\[
+ c_d=(d+1)^2+\binom d2                                  \tag{4}
+\]
+unknowns. After substitution, Boolean degree is at most four, so matching
+coefficients gives at most
+\[
+ r_d=\sum_{j=0}^{\min(4,d)}\binom dj                    \tag{5}
+\]
+linear equations. Compute a basis of the entire nullspace, then recheck each
+basis element against every stored coefficient row. Absent rows are zero.
+This uses the explicit ANF, not random evaluations or a sampled graph table.
+
+For target $b$, substitute $y=b$ in every basis identity and solve the resulting
+affine-linear system in $z$. Call its solution set $E_b$.
+\begin{theorem}[Raw-coordinate 64-point selector]\label{thm:main}
+One deterministic uniform algorithm, given only the raw coefficient table of
+any map (1) and a target $b$, outputs the complete set $P^{-1}(b)$ in polynomial
+bit time and polynomial workspace. It acquires $E_b$ by (3)--(5), and evaluates
+at most 64 candidate inputs. No recognition algorithm for membership in the
+hidden-map orbit is assumed.
+\end{theorem}
+\begin{proof}
+Every graph identity vanishes at a real solution, hence $P^{-1}(b)\subseteq E_b$.
+Write the hidden variables as $u=Az+\alpha$ and
+$v=C^{-1}(y+\beta)$. Every binary coordinate of (2), expressed in $(z,y)$,
+belongs to (3) and vanishes identically on the graph of $P$. It therefore
+belongs to the computed full nullspace, whether or not the solver identifies
+it as a field-derived relation. After fixing $y=b$, the equations defining
+$E_b$ imply all coordinates of
+$\mathcal L_{C^{-1}(b+\beta)}(Az+\alpha)=
+(C^{-1}(b+\beta))^3+(C^{-1}(b+\beta))^8$.
+Lemma~\ref{lem:id} and the bijectivity of $z\mapsto Az+\alpha$ imply
+$|E_b|\le64$. Binary Gaussian elimination either reports inconsistency or
+returns a particular point and a basis of dimension at most six. Enumerate
+that affine set and retain precisely points satisfying the supplied $P(z)=b$.
+This returns all and only the actual preimages, including correct empty
+answers for targets outside the image.
+\end{proof}
+
+\paragraph{Sound partial behavior outside the promise.}
+For any syntactically valid quadratic map, identities still imply
+$P^{-1}(b)\subseteq E_b$. If $E_b$ is inconsistent or has dimension at most six,
+the algorithm returns an exact answer after checking its entire enclosure.
+If its dimension is larger, it returns \texttt{UNKNOWN}, not UNSAT and not an
+assertion that the map lies outside the hidden orbit. Malformed maps and
+out-of-range targets return \texttt{INVALID}. This is not a claimed total
+decider of the language consisting of recognized hidden-map encodings.
+
+\paragraph{Costs.}
+Matrix dimensions are $O(d^4)$ by $O(d^2)$, with $O(d^6)$ dense matrix bits.
+Schoolbook elimination uses $O(d^8)$ elementary Boolean coefficient operations;
+the direct coefficient products also have polynomial construction cost.
+Address arithmetic adds ordinary indexing overhead, not free large-word
+operations. A conservative multitape realization by explicit scans is bounded
+by $O(d^{12})$ bit time and polynomial workspace. The target substitution,
+linear solve, and at most 64 raw-map evaluations are polynomial. Neither these
+loose upper bounds nor Python timings are small-space certificates. They do
+not establish any forbidden joint time-space point.
+
+\section{Coupled Tseitin witnesses and the exact scope}
+For a supplied simple graph $X$, charge vector $c$, and the deterministic
+ordered cotree $C_X$ of size $d$, consider
+\[
+ [B_Xx=c]\ \land\ [P(\pi_{C_X}x)=b].                   \tag{6}
+\]
+The parser validates endpoints, edge uniqueness, explicit charges and cotree
+dimension. Isolated vertices remain in the graph. Inconsistent component
+charges give UNSAT; otherwise the forest lift produces
+\[
+ B_Xa=c,\quad B_XL=0,\quad\pi_{C_X}a=0,
+ \quad\pi_{C_X}L=I,\qquad x=a+Lz.                       \tag{7}
+\]
+For every root returned by Theorem~\ref{thm:main}, reconstruct and verify the
+complete edge witness. Conversely every edge witness projects to one returned
+root. Forest discovery, charge adjustment, reconstruction, source access,
+output and verification are charged. The implementation returns every witness;
+a decision or single-witness consumer may stop after one verified root.
+
+For arbitrary edge support $R$, retain the existing exact identity
+\[
+ \rho=\dim\pi_R\ker B_X=|R|+\operatorname{cc}(X)
+                        -\operatorname{cc}(X-R),          \tag{8}
+\]
+where deletion keeps the whole vertex set, including isolates. Its
+$2^{\rho+h}\operatorname{poly}(N)$ enumeration bound with $h$ external bits
+is an upper bound, not an unavoidable-work statement. The present procedure
+avoids that enumeration on the specific cotree residual (6).
+
+An arbitrary source conjunct $F(w)$ is not solved by extending a supplied $w$.
+Different easy conditions on a shared cotree may be incompatible. Finding a
+source assignment and finding its extension remain different obligations.
+Exact-(2,2) normalization may be applied only with its own charged encoding
+and decoding interface; this report does not give a recognizer for arbitrary
+anonymized normalized CNFs or transfer structured minimality to a new source.
+
+\section{Reproducible experiments and falsification attempts}
+The full record has 57,446 assertions in 15 independent invocations,
+zero failures, total recorded time 25.823 seconds and longest invocation
+17.436 seconds. Each audit invocation used a 25-second cooperative cap and
+a 30-second external cap; no timeout occurred. These are \textbf{COMPUTATIONAL}
+results, not asymptotic evidence. The symbolic theorem rests on its proof.
+
+The small suite exhausts all 71 irreducible binary moduli of degrees one
+through eight, using one seeded hidden affine map per modulus and all 10,824
+targets. It compares complete root sets with brute force. It does not exhaust
+all affine conjugations. Three larger maps at $d=16,24,32$ use twelve targets
+each, with a different oracle: field-polynomial gcd with $Y^{2^d}-Y$ followed
+by absolute-trace factor splitting. The raw solver never receives that oracle
+or its secrets. A separate GF256 smoke suite tests 512 targets of canonical
+and affine-hidden maps. A new-process isolation test contains only the
+standalone solver and raw input JSON; no field or fixture module is present.
+
+\begin{center}
+\begin{tabular}{rrrrr}\toprule
+$d$ & Old identities & New identities & Preprocessing (s) & Tested enclosure dimensions\\\midrule
+16 & 1 & 17 & 0.232 & $0,2,4$, or empty\\
+24 & 1 & 25 & 2.010 & $0,2,4$, or empty\\
+32 & 1 & 33 & 16.884 & $0,2,4$, or empty\\\bottomrule
+\end{tabular}
+\end{center}
+At $d=32$ the prior identities leave dimension 32 at the translated zero
+target and dimension 31 at the other tested targets. The new system leaves
+at most four dimensions there. The theorem guarantees at most six, not an
+empirically inferred four-dimensional bound.
+
+\paragraph{The exact preceding counterexample is resolved.}
+For $K=\F[T]/(T^8+T^4+T^3+T+1)$ and $P(u)=u^3+u^8$, the old space has five
+identities and the new space thirteen. At target zero, the new affine
+enclosure has sixteen points. Evaluation returns exactly
+\[
+ \{0,1,12,80,176,237\},                                  \tag{9}
+\]
+using coefficient-bit integer encoding. Across all 256 targets, the output is
+171 SAT and 85 UNSAT. Eighty of the latter are rejected directly by inconsistent
+identities; five have a spurious singleton eliminated by verification.
+
+\paragraph{A useful limitation, not hardness.}
+Two independent copies of the same GF256 map have 36 roots at target $(0,0)$
+and an eight-dimensional identity enclosure. The global six-dimensional cap
+returns UNKNOWN. Recognizing the independent factors permits separate solves;
+this easy product is not evidence of a machine lower bound. Constant,
+projection, affine/parity, independent AND and generic quadratic controls
+likewise receive only sound exact answers or explicit UNKNOWN.
+
+The graph audit reconstructs 59 complete witnesses, checks 37 kernel columns,
+four particular solutions and 48 projected ranks including isolates. It tests
+four inconsistent charged isolates, sixteen malformed coupled records and a
+shared-target incompatibility. Raw-map tests reject eight malformed maps and
+four invalid targets. Full seeds, individual rows, timestamps and SHA-256
+hashes are retained in the reproduction package and audit summary.
+
+\section{Literature and theorem-transfer audit}
+Patarin's input-output linearization and Diene et al.'s study of its relation
+space are the methodological context \cite{patarin,diene}. The new task-specific
+step here is the explicit identity (2) and its all-target bound in the expanded
+template (3). No novelty claim about a general cryptanalytic method is made.
+Gorla, Mueller and Petit study broader upper bounds for HFE polynomial systems
+\cite{hfe}; those results are context, not an unverified premise of this proof.
+The primary publisher/author abstracts and metadata were consulted in this
+run; subscription full texts were not claimed read. All load-bearing algebra
+in this report is given explicitly.
+
+De Colnet and Mengel's Tseitin result concerns DNNF representation size and
+regular-Resolution refutations \cite{tseitin}. A successful witness computation
+need not construct either object. It cannot be turned into an arbitrary-machine
+lower bound by counting all semantic states. The present fixed program has a
+polynomial execution on the stated promise family even with hidden coordinates
+and polynomial workspace. Its program description does not grow with that
+workspace.
+
+The upper bound survives stronger oracle access and supplies no
+nonrelativizing or nonalgebrizing lower-bound mechanism. Natural Proofs is not
+invoked. For the post-quantum ledger, input-output relation spaces give an
+\textbf{EXACT OBJECT/THEOREM TRANSFER} at the constructive level. Treating
+large rank, nonlinear support, collision counts or cryptographic conjectures
+as unconditional runtime lower bounds remains a \textbf{FAILED TRANSFER}.
+No ETH, GRH, cryptographic or average-case MQ hypothesis is used.
+
+\section{Corpus, integration and publication record}
+\paragraph{CORPUS REVIEWED.}
+The live AGENTS.md, CODEX.md, research skill, redirect directive, root main.tex
+and main4/main5 driver passages were fetched. The current recursive tree was
+surveyed, though its displayed response was truncated; its root was
+\path{92e5412bf9b5a4303d9a38d33c4492552523901f}, matching the previous read
+before new publication. Relevant prior canonical MAIN, peer, task and
+EARLY22/SINGLE22 bodies already read in this conversation were reused within
+that unchanged snapshot rather than claimed freshly reread in full.
+The exact local BILINCUBE1 report, solver, fixture, graph and boundary audit
+bodies were inspected. A repository search for BILINCUBE1 returned no result,
+consistent with its recorded local-only publication. No full-checkout preflight
+or repository-wide validation is claimed.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+BILINCUBE1 already provides raw coefficient matching and the four-point cube
+bound. Its $u^3+u^8$ control is the precise input to this run, not a new
+counterexample. OUTQUAD64 adds pure output-quadratic columns, identity (2),
+and the proved 64-point all-target bound. The bounded search did not establish
+literature-wide novelty. No prior compiler or restricted proof theorem is
+contradicted.
+
+\paragraph{EARLY22 / SINGLE22 acknowledgment.}
+\textbf{ALREADY INTEGRATED, not extended beyond scope.} Refer to BILINCUBE1's
+exact retained ledger and the earlier IMAGE22/ARC22 reports. LBO3SAT-0031/0032
+and PROOF-0034 retain their signed exact-(2,2), minimality and Resolution
+hypotheses; the clause-monotone cubic-pair map is separate. Historical variable
+counts are not encoded bit lengths. The affine continuation limitations are
+not reopened. The manuscript location of the new interface is Sections 3--4
+here. Its next check is parameter-uniform extension of the new identity, not
+an arbitrary-decider-to-proof extraction.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+The live root was the markerless string \texttt{PLACEHOLDER\_FOR\_FULL\_MAIN},
+blob \path{1cabdc5356780d0397cb47b865c525610f42c089}. It supplies no ownership
+region to reconcile. No replacement or reconstruction is authorized for this
+specialist. The scientific change relative to the last intact record is a new
+upper-bound escape for hidden $u^3+u^8$; the missing unrestricted lower-bound
+implication is unchanged.
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopted: exact raw-ANF identities, charged binary elimination, forest lifting
+and off-promise UNKNOWN. Rejected: treating hidden field recovery as necessary
+for this subtype. The proposal that the eight-power perturbation alone defeats
+all polynomial selectors is \textbf{FALSIFIED/RETIRED} on the stated affine
+orbit. General quadratic SAT, conjoined source search and common-input UWI
+amplification remain \textbf{OPEN}.
+
+\paragraph{Publication boundary.}
+Exact code, raw outputs, report and prior report bodies were preserved locally.
+GitHub write actions became available in this run. Canonical write/readback
+outcomes are recorded separately in the outbox manifest, not inferred from
+local success. Root reconciliation must wait for a legitimate LSPV-5 restoration
+of unique ownership regions. Existing schedules and other owners are unchanged.
+
+\paragraph{Canonical artifact paths.}
+The standalone raw solver is
+\path{experiments/review/outquad64_solver.py}; its independently coded finite
+GF256 smoke audit is \path{experiments/review/outquad64_smoke_audit.py}.
+The aggregate record is
+\path{results/raw/review/2026-10-14_0503_outquad64_audit_summary.json}.
+The full test harness, all rows and exact prior reports remain in the
+reproducibility package. A separate implementation in the same run is not
+independent research review.
+
+\section{One next target}
+Derive and test the dependence on a \emph{growing} exponent parameter $t$ for
+hidden $u^3+u^{2^t}$, charging identity-template dimension and candidate count
+as functions of both $d$ and $t$. Fixed $t=3$ is now an upper-bound escape;
+raising a constant or observing failure of this particular solver does not
+supply the required all-program lower bound. P versus NP remains OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{patarin} J. Patarin. Cryptanalysis of the Matsumoto and Imai Public
+Key Scheme of Eurocrypt'88. CRYPTO 1995, LNCS 963, 248--261.
+\url{https://doi.org/10.1007/3-540-44750-4_20}.
+\bibitem{diene} A. Diene, J. Ding, J. E. Gower, T. J. Hodges and Z. Yin.
+Dimension of the Linearization Equations of the Matsumoto-Imai Cryptosystems.
+WCC 2005 revised papers, LNCS 3969, 242--251, 2006.
+\url{https://doi.org/10.1007/11779360_20}.
+\bibitem{hfe} E. Gorla, D. Mueller and C. Petit. Stronger bounds on the cost
+of computing Groebner bases for HFE systems. Journal of Symbolic Computation
+109, 386--398, 2022. \url{https://arxiv.org/abs/2011.01050}.
+\bibitem{tseitin} A. de Colnet and S. Mengel. Characterizing Tseitin-Formulas
+with Short Regular Resolution Refutations. JAIR 76, 265--286, 2023.
+\url{https://arxiv.org/abs/2103.09609}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::OUTQUAD64
