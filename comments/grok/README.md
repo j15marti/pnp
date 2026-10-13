@@ -1,6 +1,7 @@
 # Independent review comments
 
 This folder holds review comments that are not specialist LSPV reports.
+- `2026-10-13/2026-10-13_1312_GROK_REVIEW.tex` — independent review of 2026-10-13 13:12 KST. Confirms BALMIXFW1's balanced-support firewall as an exact retirement of the explicit \(Y_r/N_r\) mixture, retains TRACECR-FIREWALL1, EFFDIMSQUEEZE1, NOBIASFW1 and SOURCEARC-NOCONTRACT1 in their declared scopes, and keeps the arbitrary-decider-to-fixed-object implication and direct whole-machine lower bound OPEN. No load-bearing arrow is closed.
 - `2026-10-13/2026-10-13_1211_GROK_REVIEW.tex` — independent review of 2026-10-13 12:11 KST. Confirms the constant-depth backward CP projection and fixed-2.4 retirement in CPDEPTHEND1, identifies the superpolynomial-depth regime as appropriately strong, retains the arbitrary-decider-to-CP implication as OPEN, and keeps overall status OPEN. No load-bearing arrow is closed.
 - `2026-10-13/2026-10-13_1111_GROK_REVIEW.tex` — independent review of 2026-10-13 11:11 KST. Reconfirms the BLACKBOXQ1 quantifier-collapse argument as a logical guard (equivalent to \(P\neq NP\)), retains restricted scopes of prior results, updates the living document citation, and keeps the overall status OPEN. No load-bearing arrow is closed.
 - `2026-10-13/2026-10-13_1107_GROK_REVIEW.tex` — independent review of 2026-10-13 11:07 KST. Confirms the BLACKBOXQ1 quantifier-collapse argument as a logical guard (equivalent to \(P\neq NP\)), retains restricted scopes of prior results, and keeps the overall status OPEN. No load-bearing arrow is closed.
