@@ -1,0 +1,378 @@
+% LSPV-4 REPORT::LIVEPREFIX1::2026-10-13T22:52:00Z
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\usepackage[margin=0.9in]{geometry}
+\hypersetup{hidelinks}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\poly}{\operatorname{poly}}
+\newcommand{\SAT}{\operatorname{SAT}}
+\title{LIVEPREFIX1: A Charged Post-Disclosure Solver\\
+\large Active hash constraints, causal commitments, and a two-tree witness test}
+\author{UNIVERSAL\_CORE\_BRIDGE / LSPV-4}
+\date{14 October 2026, 07:52 KST}
+\begin{document}\maketitle
+\paragraph{Status.}
+\textbf{CANDIDATE with complete elementary proofs; independent review pending.}
+The principal implication is \textbf{CONDITIONAL} on a polynomial decider for
+one fixed NP-complete language. The result extends the current wrapper audit
+to hashes that participate in actual witness constraints, not just record tags.
+It does not establish a contradiction: an impossible advance commitment is
+not implied by post-disclosure witness search. \textbf{P versus NP remains OPEN.}
+
+\section{The selected contradiction attempt}
+Fix $L=L_{\mathrm{mono22}}$: satisfiable encodings of nonempty proper,
+distinct-clause, clause-monotone exact-$(2,2)$ 3-CNF. Malformed encodings reject.
+Each clause is entirely positive or entirely negative; the formula need not
+have only one polarity. This fixed language is NP-complete \cite{docker}.
+Assume a total deterministic uniform decider $A$ with
+\[
+ T_A(y)\le C_A(|y|+2)^k                                  \tag{1}
+\]
+for arbitrary fixed $C_A,k$. The intended contradiction was to use a charged
+WRAPPER to turn $A$ into a strategy violating the fresh-challenge boundary.
+No exponential numerical lower bound or broader-input transfer is required
+for a direct contradiction to (1).
+
+The question here is whether making the hash part of the accepted witness
+relation, rather than a mere metadata field, supplies that contradiction.
+The answer is negative for the explicit bounded local-verifier interface
+below. This is not an impossibility theorem for every wrapper design.
+
+\section{Exact active-constraint interface}
+Let $N\ge2$ be the original explicit input length. A fixed controller has at
+most $N^a$ rounds. At round $i$, it receives a currently disclosed challenge
+$r_i$ and a retained history $h_i$. A fixed polynomial-time predicate
+\[
+ V(x,h_i,r_i,w)=1                                       \tag{2}
+\]
+checks a response $w$ of padded length $m(N)\le N^b$. In the original
+completion-first ordering, this is the next response after the preceding
+sample; the sample is not moved before the event that produced it. The full prefix-query
+record, including $x,h_i,r_i$ and a tentative prefix of $w$, has length
+polynomial in $N$. Lengths and clocks are explicit, not succinct exponential
+bounds. The controller, sample acquisition, exact record output, any replay,
+and hash updates together have an independently established $O(N^g)$ cost.
+Exogenous waits are excluded from active work; a classical elapsed-time
+claim additionally needs those waits polynomially bounded.
+
+The verifier may enforce source satisfaction, old commitments, new pinning
+constraints, shared witnesses, $H(h_i,w)=r_i$, or another fixed
+polynomially checkable hash equation. No assumption about finding hash
+preimages or avoiding collisions is used. A digest is not an injective record.
+Actual sampled blocks needed for replay are retained as input data.
+
+For a prefix $s$, define the single language
+\[
+ E_V=\{(x,h,r,s):\exists w\in\{0,1\}^{m(N)},\ s\preceq w,
+                         \ V(x,h,r,w)=1\}.             \tag{3}
+\]
+It lies in NP. Fix a polynomial many-one reduction $\rho:E_V\to L$.
+On records generated here, write its charged construction cost as $O(N^p)$
+and its output length as $O(N^q)$. These constants depend on the fixed
+verifier and encodings, not on $A$ or its exponent. This is an ordinary
+NP-completeness use; no local-indexing or near-linear reduction is claimed.
+The finite experiments do not implement this monotone compiler.
+
+\begin{theorem}[Post-disclosure prefix selector]\label{thm:prefix}
+Under (1), one deterministic uniform algorithm $B_A$ returns the
+lexicographically first response satisfying (2), or correctly returns
+\textnormal{NO\_EXTENSION}, on every currently supplied round. For the whole
+bounded interaction its active time is
+\[
+ O_A\!\left(N^{a+b+p}+N^{a+b+qk}+N^g\right).             \tag{4}
+\]
+The algorithm is causal: it uses no later $r_j$. Polynomial arbitrary
+workspace is allowed and charged. The claim holds even if the current
+challenge and its constraints depend on all prior actual hash values.
+\end{theorem}
+\begin{proof}
+Ask $A(\rho(x,h,r,\epsilon))$. If the answer is NO, no feasible response
+exists. Otherwise maintain a prefix $s$ known to extend to a feasible $w$.
+Ask whether $s0$ extends. On YES, append zero; on NO, append one, which must
+extend by the invariant. After $m(N)$ bits, verify (2) directly and output
+$w$. Thus at most $m(N)+1$ decisions are needed per round. Apply (1) to the
+$O(N^q)$-bit queries and charge each $O(N^p)$ construction. Summing over
+$N^a$ rounds and adding controller work proves (4). All inputs to the
+current computation are already disclosed, proving causality.
+
+Constants in (4) may depend on $A,k$ and the fixed reduction, but not $N$.
+The same finite program serves all input lengths; it does not choose a
+new program or advice for each length. Knowing an optimal $k$ is unnecessary.
+\end{proof}
+
+A conservative joint-space ledger is
+\[
+ S_{B_A}(N)\le S_{\rm controller}(N)+S_\rho(N)+m(N)
+                        +S_A(O(N^q)).                  \tag{5}
+\]
+Retained input, pins, transcript, sample records, reduction buffers and
+response output are included. Since space is bounded by time for the
+ordinary simulation, (5) is polynomial under (1), not subpolynomial.
+No cited small-space SAT exclusion contradicts (4)--(5) \cite{mw}.
+
+\paragraph{What full online success additionally requires.}
+The theorem does not assert that a feasible response always exists, or that
+an arbitrary locally valid response preserves all future choices. If every
+reachable locally valid history and every allowed challenge have a feasible
+successor, and terminal local validity is the desired success condition,
+induction gives a complete successful interaction. That is an explicit
+hereditary-totality hypothesis, not something silently inferred from NP.
+If it fails, NO\_EXTENSION identifies an infeasible current response problem;
+it is not necessarily UNSAT of the original source.
+
+\paragraph{Decision stages and reference execution.}
+For the original rule $e_i=A(F_i)$, sample $r_i$ after completion, then set
+$F_{i+1}=C(F_i,H(h_i,e_i,r_i))$, polynomial round count and query size already
+give a polynomial own-run simulation under (1). Theorem~\ref{thm:prefix}
+adds witness constraints to that closure. It does not reproduce another
+implementation's completion times, internal states, sampled blocks, or hash.
+Producing a specified reference transcript is a different interface and
+requires its actual external observations and charged simulation.
+
+\section{A source-matched two-tree repair}
+Retain TWOTREEBRIDGE1's exact construction: split source-graph occurrences;
+link consecutive copies with a diamond having edges $xa,xb,ab,ay,by$;
+partition them as $\{xa,ab,by\}$ and $\{xb,ay\}$; place source edges in the
+second forest; connect each forest's components by private two-edge hub paths.
+The current source code is
+\path{experiments/review/two_tree_bridge_audit.py}, blob
+\path{861b509c25fb2067c59de1695a0d953f31a55f5c}.
+This run implements and tests that specified construction, not a replacement
+for its pending general independent review.
+
+The target encoding uses the existing eight-bit header, unary universe size
+$h$, two membership vectors and two adjacency triangles. Its exact length is
+$9+h^2+2h$ bits. The decoder checks lengths, endpoints, tree connectivity and
+coverage of the universe. Wrong syntactic records reject; a valid but
+incompatible pair remains a legitimate NO instance.
+
+Let $V_I(w)$ check a complete common 3-colouring of the two supplied trees.
+This relation is polynomial-time checkable. Its prefix language has (3)'s
+form. Therefore (1) supplies a polynomial post-disclosure selector for
+arbitrary currently imposed polynomially checkable pins and hash conditions,
+not merely the already solved individual trees. This does not create an
+unconditional algorithm for the NP-complete compatibility problem.
+
+\begin{lemma}[One revealed colour can be repaired from a witness]\label{lem:palette}
+For any compatible pair of trees, any complete common colouring $w$, vertex
+$v$, and newly disclosed colour $c\in\{0,1,2\}$, a complete colouring $w'$
+with $w'(v)=c$ is computable in $O(h)$ colour operations from $w$.
+\end{lemma}
+\begin{proof}
+Apply the same permutation of the three colour names at every vertex,
+swapping $w(v)$ and $c$. Equality and inequality of colours are preserved,
+so every edge remains properly coloured. Output and verification have
+polynomial encoded cost. No source-solving call is needed.
+\end{proof}
+This lemma permits global recolouring and has no other immutable colour
+pins. It is not a theorem that arbitrary multiple pins can be repaired, or
+that previously committed colour names may be silently changed.
+
+If the wrapper instead requires $w(v)$ to be committed before $c$ arrives
+and forbids changes, a uniform independent $c$ is matched with probability
+exactly $1/3$ by any committed colour, even with unlimited computation.
+Both statements apply to the same elementary source relation. Hashing the
+old commitment does not turn the latter obligation into ordinary static
+colourability. A polynomial decider is required to decide the given problem,
+not to predict the later pin.
+
+\section{The load-bearing quantifier distinction}
+For a two-round acceptance relation $W(r_0,w_0,r_1,w_1)$, distinguish
+\[
+ \underbrace{\forall r_0,r_1\ \exists w_0,w_1\ W}_{\text{offline completion}}
+ \qquad\text{and}\qquad
+ \underbrace{\forall r_0\ \exists w_0\ \forall r_1\ \exists w_1\ W}
+ _{\text{causal winning responses}}.                    \tag{6}
+\]
+The predicate $W\equiv(w_0=r_1)$ makes the first true and the second false.
+Static completion can be easy while advance prediction is impossible.
+A reduction cannot exchange these orders without a proved source-specific
+argument. The example is not evidence against P=NP.
+
+All $2^{16}=65,536$ Boolean relations on four bits were checked. Exactly
+$15^4=50,625$ satisfy offline completion. For each fixed $r_0$, the two
+candidate $w_0$ rows each admit all future challenges in 9 of their 16
+possible four-bit relations. Thus the number of winning eight-bit blocks
+is $16^2-7^2=207$, giving $207^2=42,849$ causal relations. Exactly
+$7,776$ relations satisfy the offline condition without the causal one.
+The exhaustive code agrees with independent direct strategy enumeration.
+
+CONTGAME1 already records the fixed-versus-growing continuation distinction:
+a bounded number of future quantifier blocks lies at a fixed PH level;
+polynomially many alternating rounds have a PSPACE upper bound, matching
+the standard alternation theorem \cite{cks}. The present derivation does not
+establish a general PSPACE collapse from P=NP. Requiring a global winning
+strategy needs a different reduction, not another name for (3).
+
+\section{What survives as a possible contradiction route}
+The correctly acquired consequence of (1) is a polynomial, post-disclosure,
+source-matched responder with exponent (4). The intended forbidden outcome
+was an advance predictor. That final arrow is still \textbf{OPEN}:
+\[
+ A\in\mathrm P\text{ deciding }L
+ \Longrightarrow B_A\text{ as in Theorem 1}
+ \quad\not\Longrightarrow\quad
+ \text{successful predictor of an unreleased block}.    \tag{7}
+\]
+The palette example falsifies automatic conversion, including when the
+challenge genuinely changes the required witness. A successful continuation
+of this route must prove a source-specific commitment-forcing theorem with
+information access, uniformity and resources unchanged. No general mandatory
+implementation compiler is required by every possible P-vs-NP argument;
+it is this particular live-prediction route that needs its proposed transfer.
+
+A direct non-P proof for $L$, or a model-matched resource contradiction,
+remains allowed. Theorem 1 does not eliminate the arbitrary exponent $k$.
+Repeated oracle calls that are polynomially bounded in number and size
+preserve polynomial time, and fixed additive or multiplicative overhead does
+not contradict (1). Hashes remain valuable for exact accounting and replay,
+not an assumed source of cryptographic or information-theoretic hardness.
+
+\section{Bounded evidence}
+Four independent invocations, each with a 25-second guard, passed
+\textbf{179,370 assertions}, with zero failures and zero timeouts. Their
+recorded times total 1.449 seconds; the longest was 0.573 seconds rounded up.
+No random seed was used. These are finite tests, not a polynomial SAT solver.
+\begin{center}\small
+\begin{tabular}{lrr}\toprule
+Batch & Assertions & Seconds\\\midrule
+All four-bit transcript relations &131,074&0.512\\
+Source/target trees and prefixes &41,133&0.364\\
+Active hash/pin histories and exact replay &7,007&0.572\\
+Horn/Krom/affine/product controls &156&0.001\\\bottomrule
+\end{tabular}\end{center}
+The tree batch covers all 75 labelled graphs on one through four vertices,
+1,776 source colourings, 20,826 palette repairs, 8,094 prefix instances,
+224 independent target backtracking decisions and 185 reverse witnesses.
+The target solver is distinct from the canonical forward lift. The finite
+prefix oracle scans full source solution lists: its 746,401 examined rows
+are explicitly recorded, not charged as constant-time decisions.
+
+The hash batch covers 1,152 three-round fixtures with 2,620 events and 2,080
+verified witnesses. Both replaceable single pins and retained multiple pins
+are tested. It records 540 local NO\_EXTENSION events, 15,738 finite oracle
+queries and 116,087 source-solution rows scanned. SHA-256 is used at widths
+256, 2 and zero bits. The zero-bit case is a constant digest: exact-record
+checks still work, while digest equality alone says nothing. All replay
+checks receive the actual supplied sample tape. They do not authenticate
+physical sampling from an untrusted event record.
+
+Binary source controls include Horn, dual-Horn, 2-SAT, affine parity,
+bounded-treewidth paths, independent products, unused-variable padding and
+an inconsistent formula. No operation count for these solvers becomes a
+minimum-work claim. COPY/replay and source-aware reconstruction are explicit;
+no primitive trace or wall-clock benchmark is reported.
+
+\section{Barrier and corpus audit}
+\paragraph{Literature first.}
+The selected obstacles were post-release response acquisition and the
+static-to-causal quantifier transfer. Primary sources checked include Cook's
+reducibility theorem, D\"ocker's exact occurrence language, Chandra--Kozen--
+Stockmeyer alternation, Baker--Gill--Solovay relativization, Aaronson--Wigderson
+algebrization, and the Mudigonda--Williams joint-resource bounds
+\cite{cook,docker,cks,bgs,aw,mw}. Search-to-decision and causal games are direct
+model-matched imports. State entropy and fixed proof-system size are not used
+as unrestricted time measures.
+
+\paragraph{Oracle and algebraic audit.}
+The finite causal impossibility survives an oracle independent of the future
+sample. Under an equality oracle $P^O=NP^O$, the ordinary prefix language
+(3) is also solvable in polynomial oracle time, while advance prediction
+still fails. No contradiction arises because (7)'s last arrow is unproved.
+Ordinary $L$ is not silently called NP$^O$-complete; its original reduction
+still suffices for ordinary (3). No nonrelativizing/nonalgebrizing hinge is
+claimed. Natural Proofs is not invoked. Hash security, ETH and random-oracle
+hardness are not assumed. The useful PQ transfer is polynomially verified
+preimage/response search; cryptographic binding as an unconditional cost
+premise is a \textbf{FAILED TRANSFER}.
+
+\paragraph{CORPUS REVIEWED.}
+Fresh reads include AGENTS.md, CODEX.md, the research skill and mode guide,
+root main.tex through its complete bridge/synthesis region, actual main4
+and relevant main5 driver text, the recursive tree survey (truncated), task
+directory and TASK-004/005, AFFINE-RESIDUAL-REDIRECT1, COMPLETIONCUT1,
+CONTGAME1 and the exact two-tree construction/encoding code. The current root
+records the latest TWOTREEBRIDGE1 MAIN. Its source bridge code and both
+witness directions were inspected and independently tested here. The latest
+LSPV-3 directory commit points to VALSUBCUBEFW1; no missing scientific body
+was reconstructed. MODELBRIDGE-0022's canonical path and original header
+were confirmed present, so no duplicate recovery was attempted.
+Local git failed DNS resolution. No full checkout, repository-wide preflight
+or CI, exhaustive historical survey, or fresh original Drive-proof reread
+is claimed. Unread task sections are not certified as reviewed. This is a
+bounded source review, with the limitation preserved in the outbox.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+CONTGAME1/ROUNDABSORB1 already contain the abstract local-PH versus global
+continuation boundary. COMPLETIONCUT1 already separates future prediction
+from post-release work and specifies actual sample replay. TWOTREEBRIDGE1
+already supplies a conditional extension checker under P=NP. These are not
+rebranded as new discoveries. This report makes their composition explicit
+for an active hash-dependent verifier, supplies the arbitrary-$k$ ledger,
+and tests source-matched palette substitution, independent target witnesses,
+and all four-bit causal/offline relations. No literature-wide novelty claim.
+
+\paragraph{EARLY22 / SINGLE22 acknowledgment.}
+\textbf{Already integrated} at root main.tex, Historical interfaces preserved;
+the original recovered proofs were not reaudited this run. Signed exact-$(2,2)$
+compiler/minimality/Resolution claims remain distinct from clause-monotone
+cubic-pair representations and affine-continuation limits. The present use of
+$L_{\mathrm{mono22}}$ relies on its published NP-completeness, not an
+unproved monotonicity property of the signed compiler. No proof projection
+is promoted to a decider lower bound. Exact new location: Sections 1--4 here
+and the proposed LIVEPREFIX1 paragraph inside LSPV-4 ownership. One next
+check is the commitment-forcing arrow (7), not reconstruction of old proofs.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+The bridge now distinguishes exact active-constraint response from metadata
+replay, and supplies a source-level recolouring substitution with positive
+and negative target controls. It adds no new restricted-proof lower bound
+and does not change the all-algorithm OPEN status.
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopted: exact source/target maps, COMPLETIONCUT1, CONTGAME1, full sample
+accounting and source-aware recomputation. Rejected: swapping offline and
+causal quantifiers, treating a changed reference hash as a semantic failure,
+or silently importing small-space bounds into a polynomial-workspace
+execution. Automatic commitment forcing is \textbf{FALSIFIED/RETIRED}; an
+explicit source-specific transfer remains \textbf{OPEN}.
+
+\paragraph{STALE OR OVERSTATED CLAIMS FOUND.}
+No valid older theorem is retracted. The statement ``putting the hash inside
+the constraints prevents the polynomial selector'' is false under the stated
+bounded local-verifier assumptions. The stronger claim for arbitrary global
+continuation games is not made in either direction.
+
+\paragraph{Publication discipline and next target.}
+Exact code, four raw batches and this body are preserved before publication.
+Canonical report and root success require separate readbacks; the publication
+manifest records actual outcomes. Only the LSPV-4 ownership region may change.
+No schedule or team membership is modified. The next target is a concrete
+commitment-forcing transformation on the two-tree source that preserves the
+information boundary and every cost, rather than requiring advance knowledge
+by definition. P versus NP remains \textbf{OPEN}.
+
+\begin{thebibliography}{9}
+\bibitem{docker} J. D\"ocker. Monotone 3-Sat-(2,2) is NP-complete.
+\url{https://arxiv.org/abs/1912.08032}.
+\bibitem{cook} S. A. Cook. The complexity of theorem-proving procedures.
+STOC 1971, 151--158. \url{https://doi.org/10.1145/800157.805047}.
+\bibitem{cks} A. K. Chandra, D. C. Kozen and L. J. Stockmeyer.
+Alternation. JACM 28(1), 114--133, 1981.
+\url{https://doi.org/10.1145/322234.322243}.
+\bibitem{bgs} T. Baker, J. Gill and R. Solovay. Relativizations of the
+P=?NP Question. SIAM J. Comput. 4(4), 431--442, 1975.
+\url{https://doi.org/10.1137/0204037}.
+\bibitem{aw} S. Aaronson and A. Wigderson. Algebrization: A New Barrier
+in Complexity Theory. ECCC TR08-005, 2008.
+\url{https://eccc.weizmann.ac.il/eccc-reports/2008/TR08-005/index.html}.
+\bibitem{mw} A. S. Mudigonda and R. R. Williams. Time-Space Lower Bounds
+for Simulating Proof Systems with Quantum and Randomized Verifiers.
+\url{https://arxiv.org/abs/2012.00330}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::LIVEPREFIX1
