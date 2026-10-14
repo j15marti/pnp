@@ -1,0 +1,69 @@
+% CHAINPOLY2 compact independently readable research edition; full 7-page report and executable checks preserved in local research bundle.
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,hyperref}
+\usepackage[margin=0.85in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{CHAINPOLY2: Two-Predecessor Exponential Tape With Polynomial-Width Source Counting}
+\author{LSPV-5}
+\date{15 October 2026, 02:53 KST}
+\begin{document}\maketitle
+\noindent \textbf{PROVED/EXACT} for the typed source theorem with independent review pending. \textbf{COMPUTATIONAL} for finite checks. Previously established matched-oracle diagnostic is retained, not claimed new. Universal PFCERT, the arbitrary-machine transfer, nonalgebrization and $P\ne NP$ remain \textbf{OPEN}.
+\section{IDEAS PROPOSED BEFORE LITERATURE}
+Four original \textbf{CANDIDATES} were frozen before the external literature search in a separate text register; SHA256 \texttt{92e4e30bcfbf6e8cf239d0e2e40e0625e15d6c9c3bbd27621793c2248c184fc8}. (A) Residue-automaton count for a two-predecessor tape whose source is an explicit width-$w$ read-once branching program. Required hypothesis: polynomial explicit width; falsifier: independently replay tape and compare all probes. (B) A schematic inductive invariant for all $2^k$ tape cells. Required hypothesis: fixed transition grammar, not arbitrary interpreter; falsifier: COPY/OVERWRITE. (C) Exact parity-of-SAT reduction to a two-tap tape with arbitrary circuit source. Required hypothesis: polynomial quotient encoding; falsifier: exhaustive small circuit parity. (D) matched-oracle $K^{t,O}$ PFCERT no-go, requiring the SAME oracle for $U,V$ and $P^O$, falsifier: misplaced time/length convention or a verifier accepting more than two outputs over all proofs.
+\section{LITERATURE CHECK AND REVISIONS}
+Hirahara, STOC 2020, Theorem 3.9, printed page 29, establishes $P$-immunity for superpolynomial time-bounded description-length $K^t$, not the stronger full $P$-immunity claim for Levin's distinct $Kt$. Its short-prefix/suffix-search proof admits a same-oracle formulation given efficient oracle universality. Baker--Gill--Solovay (1975) give a recursive collapsing oracle. Bryant (1986) introduces ordered BDDs and size-polynomial diagram operations; residue-augmented modular counting is a standard finite-automaton-type extension and not an unrestricted new algorithm. Valiant's counting framework supplies $\oplus P$. Aaronson--Wigderson (2008) identify nonalgebrization as a separate requirement.
+Previous PHASESWEEP1 and LANECHAIN1 already contained the matched-oracle no-go. LANECHAIN1 also supplied polynomial source evaluation for a ONE-predecessor distance-$2^\ell$ tape with affine-system indicators, and $\oplus P$-hardness after changing that source to arbitrary circuits. The new project-specific statement below covers TWO predecessors with an explicit low-width ordered branching program; changing to an unrestricted circuit again creates a parity endpoint. None of the reviewed primary results supplies universal PFCERT existence.
+\section{CONSTRUCTION OR PROOF ATTEMPT}
+A literal source $S$ supplies $1\le k\le N$, $1\le w\le N$, $k$ complete deterministic transition tables $\delta_t:[w]\times\{0,1\}\to[w]$, an initial state zero, a final accepting-bit vector $a:[w]\to\{0,1\}$, and polynomially many probe addresses. Given a $k$-bit address $i$, its ordered branching program reads bits from most to least significant and outputs $g_S(i)=a(q_{\rm final})$. The \emph{actual} exponentially sized tape has $M=2^k$ initially zero cells. It writes in increasing address order
+\[
+T[i]\leftarrow g_S(i)\oplus T[i-1]\oplus T[i-2],
+\qquad T[-2]=T[-1]=0,\quad i=0,\ldots,M-1.
+\]
+No other writes are legal. Its physical time and tape length are exponential and not claimed polynomial.
+\begin{lemma}[Exact impulse response]
+Let $h_d=1$ for $d\bmod3\in\{0,1\}$ and zero for $d\bmod3=2$. The value finally stored in cell $j$ is
+\[
+P_S(j)=\bigoplus_{i=0}^{j}h_{j-i}g_S(i).
+\]
+\end{lemma}
+\begin{proof}
+The binary linear recurrence $h_0=h_1=1$, $h_d=h_{d-1}\oplus h_{d-2}$ is $110$ periodic. By direct induction, the convolution satisfies the tape's boundary conditions and the two-predecessor update. Equivalently $P(x)=G(x)/(1+x+x^2)$ over $\mathbb F_2[[x]]$.
+\end{proof}
+\begin{theorem}[Uniform exact source evaluator]
+For all well-formed $S$ and every binary probe $j<M$, one deterministic machine computes $P_S(j)$ with $O(kw)$ parity-DP state updates, polynomial bit-time in $N$ (conservatively $O(N^4)$), and polynomial workspace. Polynomially many probe bits are obtained in polynomial total time.
+\end{theorem}
+\begin{proof}
+Maintain $D_t(q,b,z)\in\mathbb F_2$: parity count of length-$t$ prefixes of $i$ reaching ROBP state $q$, being strictly less than $j$ if $b=1$, and having residue $z\pmod3$. Initialize only $(q,b,z)=(0,0,0)$ at $t=0$. Extend each prefix by bit $e=0,1$ if it does not exceed the corresponding $j$ prefix, update $q$ via $\delta_t$, $b$ by lexicographic comparison and $z\mapsto(2z+e)\bmod3$, and XOR path counts. At $t=k$, XOR states with $a(q)=1$ and $(j-z)\bmod3=0$ or $1$. Every $i\le j$ contributes exactly once, and no $i>j$ contributes; hence the result is the convolution above. There are $6w$ parity states and two transitions per state and input bit. Names, parsing, access, and output serialization have polynomial bit cost; no $2^k$-entry table is constructed.
+\end{proof}
+\begin{theorem}[Source-only invariant and global output binding]
+The intensional schema
+\[
+I_S(i,T):=(\forall j<i\;T[j]=P_S(j))\land(\forall j\ge i\;T[j]=0)
+\]
+holds at each reachable tape cut. Its initiality, consecution, and terminal probe conclusion have a polynomial source-described proof with polynomial grammar/identity verification. The verifier that accepts only output tuples exactly matching the computed source probe values accepts at most ONE tuple over all proof strings for each fixed source.
+\end{theorem}
+\begin{proof}
+At $i=0$ the tape is zero. At step $i$, both predecessors are earlier correct cells or fixed negative zeros; the convolution recurrence yields $T[i]=P_S(i)$, and no other cell changes. Induct through $M$ writes. Fixed source validation and the previous evaluator determine a unique terminal tuple. Any accepted proof string must present this same tuple. This does NOT give polynomial-time membership testing of $I_S(i,T)$ on an arbitrary physical $2^k$-cell tape: a flipped unqueried cell defeats every fewer-than-$2^k$ deterministic point-query test already at cut zero.
+\end{proof}
+\begin{theorem}[Two-tap circuit-source boundary]
+If $g$ is supplied instead by an arbitrary Boolean circuit, deciding the final bit after the same two-predecessor tape run is $\oplus P$-complete under polynomial-time many-one reductions.
+\end{theorem}
+\begin{proof}
+For membership, guess an address $i$ and accept exactly if $g(i)=1$ and $h_{M-1-i}=1$; path parity equals the final tape bit. For hardness, take $C:\{0,1\}^k\to\{0,1\}$ and let $m=k+2$, $j=2^m-1$. Form a polynomial-size Boolean circuit $G(i)$ which outputs $C(i/3)$ iff $3\mid i$ and $i/3<2^k$, else zero; long binary division by the constant three has polynomial-size circuits. The contributing addresses $i=3z$ are injective and valid. Since $j\bmod3\in\{0,1\}$, $h_{j-3z}=1$. Thus $P_G(j)=\bigoplus_z C(z)$, the parity of satisfying assignments. Standard acceptance-predicate circuit simulation gives hardness for all $\oplus P$. A polynomial evaluator for arbitrary $G$ would imply $P=\oplus P$; no unconditional separation follows.
+\end{proof}
+\paragraph{Matched-oracle diagnostic and nonrelativization.}
+With one legitimate oracle $O$ and efficiently universal $U^O$, let $R_U^{t,O}=\{x:K_U^{t,O}(x)\ge|x|-1\}$ for $t(n)=n^{\omega(1)}$. If an infinite $S\subseteq R_U^{t,O}$ were in $P^O$, hardcode $n-\lceil4\log n\rceil$ bits of some length-$n$ accepted word and enumerate polynomially many suffixes with the SAME $O$; the resulting program has length below $n-1$ and polynomial time, contradiction. Hence $R_U^{t,O}$ is $P^O$-immune. If $P^O=NP^O$, an $NP^O$ verifier covering all $t(n)$-bounded $n$-bit endpoints of programs $|p|\le n-2$, but accepting at most two distinct $x$ per $(n,p)$ over ALL proof strings, yields an $E\in NP^O=P^O$ with $|E\cap\{0,1\}^n|\le 2(2^{n-1}-1)=2^n-2$. Its infinite $P^O$ complement lies inside the immune $R_U^{t,O}$, contradiction. This was already proved in the project, and diagnoses necessity of a nonrelativizing bridge, not its existence. Completion-time bitstream freshness or hashes distinguish online pre-release prediction from offline post-release computation but do not force SAT hardness. The present algebraic syntax does not establish nonalgebrization.
+\section{TESTS AND OUTCOME}
+Five independently checkpointed seeded standard-library Python batches, all shorter than two seconds individually, passed 15,261 exact assertions. B1: 6,048 (seed 803197, exhaustive probe positions of generated small ROBPs); B2: 1,790 (803199, larger widths and probes); B3: 1,020 (803201, parity-of-SAT against two-tap embedding); B4: 1,000 (803203, convolution/tape/DP triple check); B5: 5,403 (803205, global output uniqueness and malformed source rejection). Raw \texttt{checkpoint\_B1..B5.json}, reproducible \texttt{chainpoly\_audit.py}, original preregistration and full seven-page manuscript are preserved separately. Audit script SHA256: \texttt{b36cb4d6d9fcd480ebce61cd15485b35315b3701a5bd9a74be9255b76359cf48}. Finite checks are COMPUTATIONAL, not asymptotic tests. Easy affine/finite-state sources, source padding and duplicate proofs do not falsify the restricted theorem. Arbitrary CIRCUIT/INTERP, COPY, DELAY, DEAD, RECOMP and data-dependent write-address variants fall outside the source grammar; no universal PFCERT is inferred.
+\paragraph{Cross-track status and next target.}
+LSPV-1: arbitrary fully charged SAT contractor OPEN. LSPV-2: full RS5 lifting and arbitrary-decider semantic-CP existence OPEN, despite polynomial coefficient normalization. LSPV-3: universal common-input witness or two-tree non-P OPEN, despite all-order OBDD fiber lower bounds. LSPV-4: near-time one-machine simulation and nonalgebrization OPEN. LSPV-5: universal source-grounded bounded-output certificate existence OPEN. Current root \texttt{main.tex} remains truncated; historical complete MERGEGUARD1 body at commit \texttt{290c060b2ecfcc35056e533f911bcc30522d796b} includes all five balanced ownership sections. Any root restoration must preserve those sections and genuine later review entries. One next target: allow one low-width, source-certified DATA-dependent predecessor guard; either extend the polynomial exact evaluator or derive a sharp hardness boundary.
+\begin{thebibliography}{9}
+\bibitem{h} Hirahara, STOC 2020, ECCC TR20-050. \url{https://eccc.weizmann.ac.il/report/2020/050/}.
+\bibitem{b} Baker, Gill, Solovay, SIAM J. Comput. 1975. \url{https://doi.org/10.1137/0204037}.
+\bibitem{br} Bryant, IEEE Trans. Computers 1986. \url{https://doi.org/10.1109/TC.1986.1676819}.
+\bibitem{v} Valiant, SIAM J. Comput. 1979. \url{https://doi.org/10.1137/0208032}.
+\bibitem{aw} Aaronson and Wigderson, STOC 2008. \url{https://eccc.weizmann.ac.il/eccc-reports/2008/TR08-005/Paper.pdf}.
+\end{thebibliography}\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::CHAINPOLY2::COMPACT::2026-10-15_0253KST
