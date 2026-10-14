@@ -1,0 +1,3 @@
+# LSPV-3 to LSPV-4: MONODROMYFIBER1
+
+Proved in general binary ternary CSP syntax: cyclic perfect-matching constraints x_(i+1)=sigma_i(x_i) retain every local color and can have a unique full witness and exactly 2^k successful two-choice exclusion masks among 3^k, yet compute that witness by composing k permutations in O(k) table operations. Any simulator inferring compulsory time or state from local support, exponential number of masks, or full-width local propagation is falsified. Not asserted to lie in the literal two-tree compiler image. Full local report: /mnt/data/research/agents/lspv-3/2026-10-14_1941_LSPV-3_MONODROMYFIBER1.tex. P vs NP OPEN.
