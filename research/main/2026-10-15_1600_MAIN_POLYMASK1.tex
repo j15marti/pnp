@@ -1,0 +1,66 @@
+% LSPV-5 POLYMASK1 | 2026-10-15 16:00 Asia/Seoul
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm,url}
+\newtheorem{theorem}{Theorem}
+\title{POLYMASK1: Degree-Certified Nonlinear Address and Mask Packets}
+\author{LSPV-5}
+\date{15 October 2026}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT for a restricted ordinary-source grammar, pending independent review.} Universal PFCERT, nonrelativization, nonalgebrization and $P\ne NP$ remain \textbf{OPEN}. The algebraic identity is classical.
+
+\section{IDEAS PROPOSED BEFORE LITERATURE}
+An unchanged, pre-search idea card is preserved locally (SHA256: \texttt{83ac87f7b00e58a08b0d719830dcb001da302a02b22835dd7b5b852ad2ffb9b4}). Candidate A proposes degree-limited nonlinear memory addresses and nonuniform masks, predicting complete-packet neutrality if $e+sD<k$; it fails if snapshots are not frozen. Candidate B proposes a source-verifiable ordinary RAM XOR-store loop, predicting rejection of hidden STORE, COPY, INTERP and early HALT; arbitrary source equivalence is not assumed. Candidate C uses conservative per-gate degree propagation rather than exponential ANF expansion, predicting soundness but possible incompleteness. Candidate D proposes that verifying unrestricted per-iteration masks is coNP-complete, even for an ordinary complete two-step packet; a Circuit-UNSAT encoding tests this.
+
+\section{LITERATURE CHECK AND REVISIONS}
+Knudsen (1995, following Lai) treats vanishing higher-order derivatives of low-degree Boolean functions. Reed's classical evaluation codes supply the coding context. Our cube identity is therefore a known theorem, not a new coding lower bound. Hirahara (STOC 2020), Theorem 3.9, establishes P-immunity for superpolynomial \emph{ordinary time-bounded} $K^t$; Theorem 3.10 concerns the different Levin $Kt$. Baker, Gill and Solovay (1975) use query machines and construct a recursive oracle $O$ with $P^O=NP^O$. Candidates A--C survive only for the explicitly restricted source syntax, while D becomes an exact two-write hardness example. No result supplies a universal source-to-certificate compiler.
+
+\section{CONSTRUCTION OR PROOF ATTEMPT}
+Fix constant $s\ge0$, integers $1\le k\le d$, an initial $2^d$-cell Boolean array $X$ encoded as zero plus at most $N$ explicit XOR initializers, and $k$ loop index bits $u\in\mathbb F_2^k$. A short source contains a scratch-only controller, source-coded Boolean gate DAGs
+$A:\mathbb F_2^{k+m}\to\mathbb F_2^d$ and $B:\mathbb F_2^{k+m}\to\mathbb F_2$, and an output circuit $G$. The controller may perform arbitrary nonlinear computation and read protected cells \emph{between} packets. It freezes a snapshot $z$, then a standard RAM loop traverses all $2^k$ indices and executes
+\[
+a=A(u,z),\qquad X_a\leftarrow X_a\oplus B(u,z).
+\]
+Its instruction sites are fully inspected; it has no hidden protected writes, dynamic controller entry, self-modification, midloop HALT or live snapshot update. There is no privileged moment-neutrality opcode. This is a syntactically recognizable subset of ordinary programs, not a general semantic analysis.
+
+Define $Q_R(X)=\bigoplus_a X_a \prod_{i\in R}a_i$ for $|R|\le s$. Suppose the Boolean algebraic-normal-form degrees in $u$, for every frozen $z$, satisfy $\deg A_i\le D$ and $\deg B\le e$.
+
+\begin{theorem}[Packet neutrality]
+If $e+sD<k$, every complete packet preserves every $Q_R$ for $|R|\le s$, for every initial array, every snapshot, and arbitrary address collisions. Any adaptively chosen sequence of complete packets preserves the moments at all packet boundaries.
+\end{theorem}
+\begin{proof}
+For each moment,
+\[
+\Delta Q_R=\bigoplus_{u\in\mathbb F_2^k} B(u,z)\prod_{i\in R}A_i(u,z).
+\]
+The integrand has multilinear degree at most $e+sD<k$. The XOR over the full cube of every degree-less-than-$k$ Boolean polynomial is zero, since a monomial missing any variable has an even number of satisfying assignments. Repeated-address XOR writes cancel correctly. Induct over completed packets.
+\end{proof}
+The inequality is worst-case sharp. For $k=e+sD$, partition the index bits into $s$ groups of size $D$ and one of size $e$; take the selected address coordinates as the respective group products and $B$ as the final group product. The degree-$s$ moment changes by $\bigoplus_u\prod_{j=1}^k u_j=1$.
+
+\begin{theorem}[Source-grounded bounded-output verifier]
+For each fixed $s$, a deterministic verifier parses the full restricted source, checks the only protected update sites and loop completion, recomputes a DAG-based upper bound on each index degree (XOR: maximum; AND: sum; snapshot: zero), and computes the initial moment vector $q^0$ directly from the sparse initializer list. It uses polynomial certificate length and conservative simultaneous bounds
+\[
+T_V(N)=O_s((N+2)^{s+7}),\qquad S_V(N)=O_s((N+2)^{s+5}).
+\]
+Every legal public termination outputs $G(q^0,e)$ for one private bit $e$. The verifier accepts $y$ only if $y$ equals one of the source-canonical pair $G(q^0,0),G(q^0,1)$ and the source manifest checks. Globally over \emph{all} accepted proofs, at most two different $y$ exist.
+\end{theorem}
+\begin{proof}
+There are $\sum_{j\le s}\binom dj=O_s(N^s)$ tracked moments. Sparse initialization and syntax-based degree bounds are polynomial. Packet neutrality proves consecution; output grammar proves terminal coverage. Alternative manifests cannot create a third output because the verifier independently computes the same pair from the source. Its cost does not include the physical execution, which can modify $2^{\Theta(N)}$ cells or use exponential scratch memory.
+\end{proof}
+
+\begin{theorem}[Complete-loop semantic obstruction]
+Given an unrestricted Boolean mask circuit, deciding whether a fixed complete two-write packet preserves global parity for all snapshots is coNP-complete.
+\end{theorem}
+\begin{proof}
+Choose $k=d=1$, addresses $A(0)=0,A(1)=1$, masks $B(0,z)=C(z)$ and $B(1,z)=0$. Both writes execute; parity changes iff $C(z)=1$. Universal preservation is precisely Circuit-UNSAT, a coNP-complete problem. A violating snapshot is a polynomial witness for the complement.
+\end{proof}
+
+\paragraph{Matched-oracle diagnostic.}
+Let $U^O$ be one efficient universal oracle machine and $t(n)=n^{\omega(1)}$. For every oracle $O$, time-bounded random strings $R_t^O=\{y:K_U^{t,O}(y)\ge |y|-1\}$ form an infinite $P^O$-immune set: from an infinite $P^O$ subset, hardcode an $n-O(\log n)$ prefix and search polynomially many suffixes using the \emph{same oracle} to output a too-shortly described member. With Baker--Gill--Solovay's collapsing oracle $P^O=NP^O$, a universal polynomial $O$-verifier covering every $U^O(p)$ output for $|p|\le n-2$, globally accepting at most two outputs per $p$, yields an NP$^O$ envelope of at most $2(2^{n-1}-1)=2^n-2$ strings. Its infinite P$^O$ complement would lie in $R_t^O$, contradiction. This forbids a universal relativizing PFCERT, not source-specific certificates. POLYMASK1 itself relativizes; no nonalgebrization or cryptographic-hardness argument is supplied.
+
+\section{TESTS AND OUTCOME}
+Six independent atomic raw JSON batches using seed 20261015 completed 18,393 finite cases and 33,412 assertions, with zero discrepancies: gate-degree checks against exact ANF, exhaustive small source maps, adaptive nonlinear memory packets, sharp-threshold and alias controls, COPY/DELAY/INTERP/RECOMP source controls, complete-loop Circuit-UNSAT and post-release WRAPPER tests. Code SHA256 \texttt{bcd0fd846b624c26c27de49254a5982f89570264b405346699245d224db44b67}. The expanded local manuscript preserves code, seeds, raw results and exact proof statuses. All finite evidence is \textbf{COMPUTATIONAL}.
+The newest LSPV-1 through LSPV-4 peer reports have all mandatory four sections. Their source-restricted contributions do not close the all-input contraction, CP proof transport, common-input UWI, or general Williams-style simulation implications. The canonical root \texttt{main.tex} is truncated; complete historical bodies with balanced markers have been verified and restoration attempted without replacement by a summary. Schedules were unchanged.
+
+\paragraph{Next target.} Allow within-packet protected-memory feedback and derive a verifiable state invariant without installing a restricted output alphabet or assuming general circuit equivalence.
+\end{document}
+% FINAL_VERIFICATION_SENTINEL::LSPV5::POLYMASK1::2026-10-15_1600::P_VS_NP_OPEN
