@@ -1,0 +1,77 @@
+% SLICECORE1 condensed GitHub report, 2026-10-15 18:15 Asia/Seoul
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\title{SLICECORE1: Exact-Density 3-SAT as a Boolean Slice Function}
+\author{P versus NP project synthesis research}
+\date{15 October 2026}
+\begin{document}\maketitle
+\noindent\textbf{Status.} Exact-density padding, the total slice construction, and the constant-weight monotone-map obstruction are \textbf{PROVED/EXACT} at the stated Boolean models, pending independent review. Valiant's slice theorem and Tovey's bounded-occurrence 3-SAT theorem are \textbf{KNOWN THEOREMS}. The superpolynomial monotone-circuit lower bound below is \textbf{OPEN}; hence $P\ne NP$ is \textbf{OPEN}.
+
+\section{IDEAS PROPOSED BEFORE LITERATURE}
+Four candidates were frozen first. \textbf{A, CANDIDATE:} represent exact-$q$-clause UNSAT as a Valiant slice and use a monotone lower bound plus Valiant to obtain an unrestricted circuit lower bound. Missing theorem: superpolynomial monotone complexity of this explicit slice. \textbf{B, CANDIDATE:} import CLIQUE/perfect-matching monotone hardness through a monotone fixed-weight encoding. Falsifier: every such encoding is constant. \textbf{C, CANDIDATE:} prove the lower bound directly by a Razborov/robust-sunflower approximation with uniform exact-$q$ SAT inputs as negatives and a spread large-core UNSAT family as positives. \textbf{D, CANDIDATE:} formulate the exact layer as a structured set-cover/Karchmer--Wigderson object and lower-bound arbitrary monotone DAG sharing.
+
+\section{LITERATURE CHECK AND REVISIONS}
+Valiant (SIAM J. Comput. 1986) studies total Boolean slice functions: zero below one Hamming layer, one above it, arbitrary on the layer, and proves monotone complexity is at most a constant factor above general circuit complexity plus $O(N\log^2N)$. Tovey (1984) proves NP-completeness of proper 3-SAT with at most four clause occurrences per variable. The project reports SLICEDENSITY1 (commit 71746147508a325a5e7ddbb581c916c616080841) and SLICELIFT2 (commit 6c6437dbefa18c95b52d7993acd74909f9b5bb1f) were recovered and independently audited. Wegener's slice work warns that standard monotone lower-bound methods do not automatically survive slicing. Robust-sunflower lower bounds are function-specific, not consequences of NP-hardness.
+
+Post-search: A survives after making the slice total. B is \textbf{FALSIFIED/RETIRED} in coordinatewise-monotone form by the theorem below. C is the primary constructive route. D remains a reformulation, not a lower bound.
+
+\section{CONSTRUCTION OR PROOF ATTEMPT}
+Let $\mathcal C_q$ be all proper signed 3-clauses on $q$ variables and $M(q)=8\binom q3$.
+
+\begin{theorem}[Exact-density proper 3-SAT]
+Proper distinct-clause 3-SAT restricted to exactly $q$ clauses on a declared universe of $q$ variables is NP-complete, already for even $q$.
+\end{theorem}
+\begin{proof}
+Start from Tovey bounded-occurrence proper 3-SAT on $n$ variables. After duplicate deletion, $m\le4n/3$. Set $q=2n$ and add controls $c_1,\ldots,c_n$. Let $d=q-m\le2n$. For each $i$, use two distinct fillers $(c_i\vee x_1\vee x_2)$ and $(c_i\vee x_1\vee\neg x_2)$. Add the first $d$. They are distinct from source clauses and all are satisfied by setting controls to one. Thus the target has exactly $q$ variables and $q$ distinct proper clauses and is satisfiable iff the source is. The construction is polynomial.
+\end{proof}
+
+Define $U_q:\{0,1\}^{M(q)}\to\{0,1\}$ by $U_q(z)=0$ for $|z|<q$, $U_q(z)=1$ for $|z|>q$, and on $|z|=q$ let $U_q(z)=1$ iff the selected formula is UNSAT.
+
+\begin{lemma}[Exact Valiant slice]
+$U_q$ is a total monotone slice function. The uniform language $U=\{(1^q,z):U_q(z)=1\}$ is coNP-complete.
+\end{lemma}
+\begin{proof}
+Below and above the layer monotonicity is forced by constants. Distinct equal-weight vectors are incomparable, so arbitrary exact-layer values are allowed. The complement has a satisfying assignment as a witness on the exact layer, and exact-density SAT is NP-hard by the preceding theorem.
+\end{proof}
+
+\begin{corollary}[Conditional separation spine]
+If $C_{\rm mon}(U_q)=M(q)^{\omega(1)}$, then coNP is not contained in $P/\mathrm{poly}$ and in particular $P\ne NP$.
+\end{corollary}
+\begin{proof}
+Valiant gives $C_{\rm mon}(U_q)\le O(C_{\rm gen}(U_q))+O(M(q)\log^2M(q))$. Hence a superpolynomial monotone lower bound forces a superpolynomial unrestricted circuit lower bound. If $P=NP$, then coNP=P and the uniform language has polynomial-size circuits, contradiction.
+\end{proof}
+
+\begin{theorem}[Constant-weight monotone maps are constant]
+Let $\Phi:\{0,1\}^m\to\{0,1\}^N$ be coordinatewise monotone. If $|\Phi(x)|=t$ for every $x$, then $\Phi$ is constant.
+\end{theorem}
+\begin{proof}
+For every $x$, $0^m\le x\le1^m$, hence $\Phi(0^m)\le\Phi(x)\le\Phi(1^m)$. All three outputs have weight $t$. Comparable Boolean vectors of equal weight are equal, so all outputs coincide.
+\end{proof}
+
+Therefore no ordinary coordinatewise monotone projection can transfer a known monotone-hard full-cube function into one exact Hamming layer. This eliminates the most direct CLIQUE/perfect-matching import and forces an intrinsic slice lower bound or a different lower-bound-preserving notion.
+
+For assignment $a$, let $B_a\subseteq\mathcal C_q$ be clauses falsified by $a$. Exactly one signed clause per variable triple is falsified, so $|B_a|=\binom q3$. On $|z|=q$,
+\[U_q(z)=1\iff \forall a\in\{0,1\}^q,\;\operatorname{supp}(z)\cap B_a\ne\varnothing.\]
+Thus the target is a structured exact-cardinality set-cover function.
+
+\section{TESTS AND OUTCOME}
+Three independent finite audit batches, seed 20261015, script SHA-256 877b127ccb88684f68ad19dc4bd10e2dff1e6a4ab339dc8ad4d024e0db85c47a: (1) 320 brute-force source/padded SAT-equivalence cases for $n=3,\ldots,6$, zero mismatches; (2) all 6561 comparable pairs in the $q=3$ slice universe, zero monotonicity violations; (3) exhaustive monotone coordinate maps from a 2-bit cube to three coordinates, all constant-weight maps constant. These are \textbf{COMPUTATIONAL}; the asymptotic statements use the proofs above.
+
+The load-bearing implication remains exactly
+\[\boxed{C_{\rm mon}(U_q)=M(q)^{\omega(1)}.}\]
+The next target is a function-specific monotone approximation lower bound using a spread, large-core exact-$q$ UNSAT positive family against the uniform exact-$q$ SAT negative distribution, with immediate hostile tests against affine/Tseitin, Horn, 2-SAT, bounded-treewidth, planted-family recognition, compact source recognizers, and arbitrary DAG sharing.
+
+Root main.tex remains truncated and was not replaced. Full local report, code, raw outputs, and PDF are preserved separately.
+
+\begin{thebibliography}{5}
+\bibitem{Valiant86} L. G. Valiant, \emph{Negation is Powerless for Boolean Slice Functions}, SIAM J. Comput. 15(2):531--535, 1986.
+\bibitem{Tovey84} C. A. Tovey, \emph{A Simplified NP-Complete Satisfiability Problem}, Discrete Appl. Math. 8(1):85--89, 1984.
+\bibitem{Wegener85} I. Wegener, \emph{On the Complexity of Slice Functions}, Theor. Comput. Sci. 38:55--68, 1985.
+\bibitem{Dunne86} P. E. Dunne, \emph{The Complexity of Central Slice Functions}, Theor. Comput. Sci. 44:247--257, 1986.
+\bibitem{CKR22} B. Cavalar, M. Kumar, B. Rossman, \emph{Monotone Circuit Lower Bounds from Robust Sunflowers}, Algorithmica 84:3655--3685, 2022.
+\end{thebibliography}
+\end{document}
+% FINAL_VERIFICATION_SENTINEL::MAIN::SLICECORE1::2026-10-15_1815::P_VS_NP_OPEN
