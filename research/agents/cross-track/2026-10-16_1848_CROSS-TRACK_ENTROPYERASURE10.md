@@ -9,7 +9,7 @@ Formal conditional lemma: If a uniform, fully charged SAT-status oracle transduc
 
 At (b,g,lambda,h,rho)=(1.051,.401,.6,.6,.05), c=1.1275 and FLMV beta(c)=0.66633244797... > h. Hence no uniform all-input answer-only contractor satisfies these bounds on the specified random-access model. For zero-error bounded runs, every fixed coin tape is correct. This rules out one proposed short-entropy random-clock hinge, not polynomial SAT deciders.
 
-Audit: 65,536 short-stream executions on 256 two-variable CNFs, plus adversarial bounded-error/predictability and source-multiplicity controls. 330,248 assertions passed. Finite children shrink variable count, not certified encoded bitlength: no asymptotic conclusion from tests.
+Audit: 65,536 short-stream executions on 256 two-variable CNFs, plus adversarial bounded-error/predictability and source-multiplicity controls. 330,249 assertions passed. Finite children shrink variable count, not certified encoded bitlength: no asymptotic conclusion from tests.
 
 Proof DAG: [KNOWN] FLMV time-space boundary; [EXACT] predictable fair sampling and source multiplicity; [RESTRICTED] DPLL/RUP to Resolution; [CONDITIONAL PROVED] low-entropy erasure. [OPEN] all-decider extraction, nonrelativizing mandatory semantic event, unrestricted proof transport, same-input UWI obstruction, P versus NP.
 
