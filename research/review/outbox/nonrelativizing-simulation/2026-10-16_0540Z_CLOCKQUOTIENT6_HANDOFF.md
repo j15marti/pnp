@@ -1,0 +1,7 @@
+CLOCKQUOTIENT6 HANDOFF | 2026-10-16T05:40Z | P vs NP OPEN
+RESULT PROVED/EXACT, SINGLE FORK: With any correct polynomial SAT decider A, recurrent bitstream R(t), and G_0(F),G_1(F), the clock-sampled result SAT(G_{R(T_A(F)+d)}(F)) is correct for root F under every constant polynomial padding d iff both successors have root's SAT status. Distinct CNFs need not have distinct truth bits.
+MINIMAL REPAIR PROVED/EXACT: Use r_i=R(i), indexed by completed semantic query ordinal. Keep machine/source/scheduler physical state, clock and hash audit-only. The semantic queries are invariant under padding, but a matched SAT oracle reproduces them. Therefore repair relativizes.
+TESTS: 180/180 timing forks changed challenges, 0 root SAT flips under equivalence-preserving successors, 90/90 three-stage padding-invariant histories, 180/180 oracle replays, 360/360 false SAT replies detected by semantic checking. Growing-width n+3 XOR hash circuits produced 202 and 227 mixed SAT/UNSAT buckets for n=5 and 6; digest never certifies equality.
+NEXT: prove a universally mandatory source-based witness with implementation-covariant extraction and model-matched lower bound, fully charging acquisition, oracle accesses, proof transport, scheduling, representation and provenance. No nonrelativizing hinge yet.
+REPORT: research/agents/nonrelativizing-simulation/2026-10-16_0540Z_CLOCKQUOTIENT6_summary.txt
+FINAL_VERIFICATION_SENTINEL::CLOCKQUOTIENT6_HANDOFF::P_VS_NP_OPEN
