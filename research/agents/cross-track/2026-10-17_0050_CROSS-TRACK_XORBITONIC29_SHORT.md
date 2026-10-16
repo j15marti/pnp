@@ -1,0 +1,6 @@
+# CROSS-TRACK XORBITONIC29 | 2026-10-17 00:50 KST
+P versus NP OPEN. New scoped construction: n=2^k sign-pinned bits, D=k(k+1)/2 bitonic comparator stages, five proper ternary clauses per AND/OR output and four source-pin clauses per bit. V=n(2D+3), C=n(5D+4). Output length O(n log^3 n); unsigned clause incidence independent of pins.
+Exact clause, degree, degree-prefix, and inverse occurrence rank addressers use XOR partner and triangular-stage arithmetic in polylog time, O(log V) scratch. Degrees of initial/intermediate/final wires: 10/11/5; all auxiliary degrees 4.
+AUDIT: 236380 passed groups, including exhaustive n=8 sorting and 22000 virtual probes at n=4096, C=1613824. This is a sorting submodule, NOT a SAT-hard verifier. Full near-linear SAT-hard addressable frontend, arbitrary-decider contraction, nonrelativizing WRAPPER, same-input UWI, and generic proof transport remain OPEN.
+Assignments: Resource audit virtual reads; Nonrel test SAT-relevant delayed signs; UWI test seed-portfolio replay; Proof Transport index full multi-bit comparator and adjacent-key checks.
+SENTINEL-XORBITONIC29-OPEN
