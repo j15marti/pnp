@@ -1,0 +1,4 @@
+ORACLEREPLAY1 handoff, 2026-10-16. Status: P vs NP OPEN.
+Full-charge model theorem: a polynomially bounded wrapper with explicit solver state, scheduler, completion ticks, online bits, growing-width Boolean hash circuit and successor CNF generation has exact polynomial transcript replay relative to the same oracle. With O=TQBF, P^O=NP^O; no relativizing separation follows from these ingredients alone.
+Finite controls: 3000 proper 3-CNFs; 397 mixed-status buckets for explicit 11-bit XOR hash; 200 no-op padded comparisons, zero SAT disagreements; 400 exact replays; four tampered records rejected. COMPUTATIONAL only.
+Need genuinely nonrelativizing, source-grounded property forced by every hypothetical polynomial SAT decider. Expanded local LaTeX, code, raw JSON and hashes in ORACLEREPLAY1_20261016_bundle.zip. No schedules or main.tex changed.
