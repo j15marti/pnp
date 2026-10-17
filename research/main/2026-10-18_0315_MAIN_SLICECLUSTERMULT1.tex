@@ -1,0 +1,356 @@
+% SLICECLUSTERMULT1 2026-10-18 03:15 Asia/Seoul
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm,booktabs,hyperref}
+\usepackage[margin=.9in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RET}{\textbf{FALSIFIED/RETIRED}}
+\title{SLICECLUSTERMULT1:\\Term-Count-Free Transfer for Arbitrary Bounded-Width DNFs via Spread-Cluster Multiplicity}
+\author{P versus NP project}
+\date{18 October 2026}
+\begin{document}\maketitle
+
+\noindent\textbf{Status.}
+The canonical spread-cluster decomposition, exact-layer cluster multiplicity bound, conditional cluster-transfer theorem, and logarithmic-width transfer cone are \EXACT at the declared distributional models, pending independent review. The finite exhaustive/random audit is \COMP. CKR's robust-sunflower approximation and Rao's spread-matching method are \KNOWN. No circuit-to-DNF theorem with the required error profile is proved here; no unrestricted set-circuit lower bound or $P\ne NP$ proof is obtained.
+
+\section{IDEAS PROPOSED BEFORE LITERATURE}
+\paragraph{A: unique-core spread decomposition.}
+Decompose an arbitrary bounded-width term family into spread residual families, then merge all leaves having the same core and residual width. Prediction: the number of clusters that can fire on one exact-$t$ input is bounded by a function of $t$ and width only, independent of the raw term count.
+
+\paragraph{B: fully conditional cluster transfer.}
+Condition simultaneously on a cluster core under the uniform exact slice and under the pseudorandom UNSAT distribution. Use two-sided relative moment matching to transfer residual terms and the exact-slice second-moment bound to remove the number of terms.
+
+\paragraph{C: constant-width CKR repair.}
+Ask whether the standard robust-sunflower approximation can approximate size-$N^K$ circuits using width $O_{K,B}(1)$ with inverse-polynomial error. Falsifier: the published gate-by-gate error is $\operatorname{size}(C)2^{-\Omega(c)}$, forcing $c=\Omega(\log N)$ for polynomial-size circuits.
+
+\paragraph{D: logarithmic-width asymptotic cone.}
+If constant width fails, retain width $W=\kappa\log q$ inside NAEGAUGEHIGHGIRTH1's moment window and characterize exactly how small the negative DNF acceptance must be to overcome cluster multiplicity.
+
+\section{LITERATURE CHECK AND REVISIONS}
+Cavalar--Kumar--Rossman's gate-by-gate approximator has total two-distribution error bounded by
+\[
+\operatorname{size}(C)\,2^{-\Omega(c)}.
+\]
+Thus their stock approximation requires $c=\Omega(\log N)$ against size $N^K$ circuits; Candidate C is not available from the published theorem without a new argument. Their closure/trimming framework remains valuable because it produces bounded-width minterm families.
+
+Rao's spread-matching lower bound proves much stronger problem-specific monotone lower bounds, but its spread lemma necessarily has parameter dependence on both the object size and $\log(1/\varepsilon)$. The paper explicitly gives examples showing $\Omega(\log(1/\varepsilon))$ spread is necessary. Hence Rao's current theorem also does not supply a constant-parameter arbitrary-error approximation of our slice.
+
+Kahn--Linial--Samorodnitsky show that low-order inclusion--exclusion data do not approximate arbitrary unions without structural hypotheses. Therefore a spread/cluster condition cannot be omitted.
+
+The project already supplies the positive distribution needed below. NAEGAUGEHIGHGIRTH1 constructs, along an infinite sequence, an exact-density-$4/3$ UNSAT distribution $\mu_q^+$ with
+\[
+\Pr_{\mu_q^+}[A\subseteq X]=(1+o(1))\frac{(t)_{|A|}}{(M)_{|A|}}
+\]
+uniformly for every $|A|\le c\log q$ and every fixed $c<c_*$, where
+\[
+c_*=\frac{2}{3\log11+2\log(13/4)}=0.20940225\ldots.
+\]
+This run treats that theorem as the moment input and develops the missing arbitrary-DNF transfer.
+
+\section{CONSTRUCTION OR PROOF ATTEMPT}
+Let $\nu$ be the uniform exact-$t$ distribution on $\binom{[N]}t$. A monotone term family $\mathcal F$ of width at most $W$ represents
+\[
+D_{\mathcal F}(x)=\bigvee_{T\in\mathcal F}x_T,\qquad x_T=\prod_{i\in T}x_i.
+\]
+
+\subsection{Canonical spread-cluster decomposition}
+A $w$-uniform family $\mathcal G$ is $\rho$-spread if
+\[
+d_{\mathcal G}(A):=|\{R\in\mathcal G:A\subseteq R\}|
+\le |\mathcal G|\rho^{-|A|}
+\]
+for every $A$.
+
+A cluster is a triple $(C,w,\mathcal G)$ representing the terms
+\[
+\{C\cup R:R\in\mathcal G\},
+\]
+where each $R$ is disjoint from $C$, has size $w$, and $\mathcal G$ is $\rho$-spread.
+
+\begin{theorem}[Unique-core spread decomposition]
+For every finite term family $\mathcal F$ of width at most $W$ and every $\rho\ge1$, there is a partition of $\mathcal F$ into $\rho$-spread clusters with at most one cluster for each pair $(C,w)$ satisfying
+\[
+|C|+w\le W.
+\]
+\end{theorem}
+\begin{proof}
+First partition $\mathcal F$ by term size. For a uniform family $\mathcal H$, if it is $\rho$-spread, output it. Otherwise choose a nonempty witness $A$ with
+\[
+d_{\mathcal H}(A)>|\mathcal H|\rho^{-|A|}.
+\]
+Partition $\mathcal H$ into terms containing $A$ and terms not containing $A$. Strip $A$ from the former and add it to the core; recurse on both branches. Core size strictly increases on every containing branch, while every partition strictly reduces unresolved term mass, so the recursion terminates.
+
+The leaves partition the original terms. Finally merge all leaves having the same core $C$ and residual width $w$. The union of $\rho$-spread $w$-uniform families is $\rho$-spread because both codegrees and family sizes add. Thus there is at most one cluster per $(C,w)$.
+\end{proof}
+
+\subsection{One-input cluster multiplicity}
+For an exact-$t$ input $X$, a cluster can fire only if its core is contained in $X$.
+
+\begin{theorem}[Cluster multiplicity]
+For every exact-$t$ input $X$ and every width-$W$ term family,
+\[
+\#\{\text{clusters firing on }X\}
+\le
+\mathfrak M_W(t)
+:=
+\sum_{c=0}^W (W-c+1)\binom tc.
+\]
+Consequently, if $E_j$ are the cluster events under any distribution supported on the exact layer,
+\[
+\sum_j\Pr[E_j]\le \mathfrak M_W(t)\Pr\!\left[\bigcup_jE_j\right].
+\]
+\end{theorem}
+\begin{proof}
+For core size $c$, at most $\binom tc$ cores can be subsets of $X$, and for each core there are at most $W-c+1$ possible residual widths. This proves the pointwise multiplicity bound. Taking expectations of
+\[
+\sum_j1_{E_j}(X)\le \mathfrak M_W(t)1_{\cup_jE_j}(X)
+\]
+proves the probability inequality.
+\end{proof}
+
+This removes the global cluster-count parameter. An arbitrary number of mass-produced terms may exist; only clusters simultaneously compatible with one exact-layer input are charged.
+
+\subsection{Conditional spread transfer}
+Let $\mu$ be another distribution on the exact layer and assume two-sided relative moment matching through order $W$:
+\[
+(1-\delta)\nu[A]\le\mu[A]\le(1+\delta)\nu[A],
+\qquad |A|\le W,
+\]
+where $0\le\delta<1$.
+
+Fix one cluster $(C,w,\mathcal G)$ and put
+\[
+c=|C|,\quad
+N_c=N-c,\quad
+t_c=t-c,\quad
+p_c=t_c/N_c.
+\]
+Conditioned on $C\subseteq X$, $\nu$ is exactly the uniform $t_c$-slice on the remaining $N_c$ coordinates. Let
+\[
+\eta_C=\Pr_{\nu}[D_{\mathcal G}=1\mid C],
+\quad
+c_0=\exp\!\left(-\frac{w(w-1)}{t_c}\right),
+\quad
+a=\frac{w}{\rho p_c},
+\quad
+r_\delta=\frac{1+\delta}{1-\delta}.
+\]
+
+\begin{theorem}[Conditional cluster transfer]
+If $w\le t_c/2$, then
+\[
+\Pr_\mu[C\wedge D_{\mathcal G}]
+\le
+K(C,w)\,
+\Pr_\nu[C\wedge D_{\mathcal G}],
+\]
+where
+\[
+K(C,w)
+=
+\frac{2(1+\delta)}{c_0^2}
+\max\{r_\delta,e^a\}.
+\]
+\end{theorem}
+\begin{proof}
+For every residual $A$ with $|C|+|A|\le W$,
+\[
+\Pr_\mu[A\mid C]
+=
+\frac{\Pr_\mu[A\cup C]}{\Pr_\mu[C]}
+\le
+r_\delta\,\Pr_\nu[A\mid C].
+\]
+The exact-slice spread-DNF theorem applied conditionally gives
+\[
+\eta_C\ge\frac{c_0^2\lambda_C}{1+e^a\lambda_C},
+\qquad
+\lambda_C=|\mathcal G|p_c^w.
+\]
+If $\eta_C\le c_0^2/(2e^a)$, rearranging yields
+\[
+\lambda_C\le 2\eta_C/c_0^2.
+\]
+A union bound and conditional relative moments give
+\[
+\Pr_\mu[D_{\mathcal G}\mid C]
+\le r_\delta\lambda_C
+\le 2r_\delta\eta_C/c_0^2.
+\]
+If $\eta_C>c_0^2/(2e^a)$, the trivial upper bound $1$ is at most
+\[
+2e^a\eta_C/c_0^2.
+\]
+Multiplying by $\Pr_\mu[C]\le(1+\delta)\Pr_\nu[C]$ proves the claim.
+\end{proof}
+
+\subsection{Arbitrary bounded-width DNF transfer}
+Combine the preceding two theorems.
+
+\begin{corollary}[Term-count-free bounded-width transfer]
+Assume the moment condition through order $W$, and choose $\rho$ so that
+\[
+\inf_{0\le c\le W}\rho\,\frac{t-c}{N-c}\ge\theta>0.
+\]
+Then every monotone DNF of width at most $W$ satisfies
+\[
+\boxed{
+\Pr_\mu[D_{\mathcal F}=1]
+\le
+K_W(\delta,\theta,t)\,
+\mathfrak M_W(t)\,
+\Pr_\nu[D_{\mathcal F}=1],
+}
+\]
+where
+\[
+K_W
+=
+2(1+\delta)
+\exp\!\left(\frac{2W(W-1)}{t-W}\right)
+\max\!\left\{\frac{1+\delta}{1-\delta},e^{W/\theta}\right\}.
+\]
+The bound is independent of $|\mathcal F|$.
+\end{corollary}
+
+For fixed $W$ and $\delta=o(1)$, this costs only $O_W(t^W)$. For logarithmic width it yields an explicit asymptotic cone.
+
+\subsection{Logarithmic-width transfer cone}
+Let
+\[
+t=\Theta(q),\qquad W=\kappa\log q,\qquad 0<\kappa<c_*.
+\]
+Choose $\rho=\theta/p$ with fixed $\theta>0$ and $p=t/N$. Since $W=o(t)$,
+\[
+\log K_W=O(W)=O(\log q).
+\]
+Moreover
+\[
+\mathfrak M_W(t)
+\le
+(W+1)^2\left(\frac{et}{W}\right)^W,
+\]
+and hence
+\[
+\boxed{
+\log\mathfrak M_W(t)
+=
+\kappa(\log q)^2
+-\kappa\log q\log\log q
++O_\kappa(\log q).
+}
+\]
+
+\begin{corollary}[NAE logarithmic-width invisibility cone]
+Let $\mu_q^+$ be the NAEGAUGEHIGHGIRTH1 UNSAT distribution and $\nu_q$ the uniform exact-density-$4/3$ layer. Fix
+\[
+0<\kappa<c_*.
+\]
+For every width-$W_q\le\kappa\log q$ monotone DNF,
+\[
+\boxed{
+\Pr_{\mu_q^+}[D=1]
+\le
+\exp\!\left((\kappa+o(1))(\log q)^2\right)
+\Pr_{\nu_q}[D=1].
+}
+\]
+Therefore, if for some fixed $\varepsilon>0$
+\[
+\Pr_{\nu_q}[D=1]
+\le
+\exp\!\left(-(\kappa+\varepsilon)(\log q)^2\right),
+\]
+then
+\[
+\Pr_{\mu_q^+}[D=1]=o(1).
+\]
+\end{corollary}
+
+This is the main new conclusion. It applies to \emph{arbitrary} monotone DNFs inside the logarithmic moment window, regardless of their number of terms.
+
+\subsection{What is still needed for circuits}
+The stock CKR and Rao frameworks do not yet provide the required final approximation. Their error scales force a logarithmic approximation parameter for polynomial-size circuits, which is compatible with the moment window, but the present DNF transfer then requires negative acceptance on the scale
+\[
+\exp(-\Theta((\log q)^2)),
+\]
+not merely $q^{-O(1)}$.
+
+A sufficient final circuit theorem can therefore be stated cleanly.
+
+\begin{definition}[Required approximation profile]
+For each fixed polynomial circuit exponent $K$, find constants
+\[
+0<\kappa_K<c_*,\qquad \varepsilon_K>0
+\]
+such that every size-$M^K$ monotone circuit computing the NAE slice has an approximating monotone DNF $D$ of width at most $\kappa_K\log q$ satisfying
+\[
+\Pr_{\mu_q^+}[C=1,D=0]=o(1)
+\]
+and
+\[
+\Pr_{\nu_q}[D=1]\le
+\exp\!\left(-(\kappa_K+\varepsilon_K)(\log q)^2\right).
+\]
+\end{definition}
+
+If this profile holds, the logarithmic-width invisibility corollary makes $\Pr_{\mu_q^+}[D=1]=o(1)$, contradicting the fact that $C=1$ on every positive input.
+
+This avoids selecting one universal numerical parameter tuple. It is an open asymptotic region indexed by the hypothetical circuit exponent $K$.
+
+\section{TESTS AND OUTCOME}
+The dependency-free audit used seed 20261018 and tested random term families in three exact-slice regimes:
+\[
+(N,t,W,\rho)=(8,3,2,2),\ (9,4,3,2),\ (10,4,3,2.5).
+\]
+For each regime it generated 40 random families, recursively decomposed and merged them, and exhaustively enumerated all exact-layer inputs.
+
+It checked:
+\begin{itemize}
+\item exact reconstruction of every original term family from the clusters;
+\item uniqueness of every $(C,w)$ key;
+\item spreadness of every residual family;
+\item the pointwise cluster-multiplicity bound;
+\item $\sum_j\Pr_\nu[E_j]\le\mathfrak M_W(t)\Pr_\nu[D]$;
+\item the conditional exact-slice spread second-moment lower bound whenever its hypotheses applied.
+\end{itemize}
+
+There were 17,385 declared assertions across 120 test families, zero failures, at most 19 produced clusters, and at most 7 simultaneously firing clusters. Script SHA-256:
+\[
+\texttt{93c6dcce0762ddcf52df379be8b74c2595dab7f45c1975be1c7657d5dacdfd6c}.
+\]
+Raw-result SHA-256:
+\[
+\texttt{a1ace045db8c3c7d46f24a64693e0fb3bbce62de448b01d1c543b7422aa36ac5}.
+\]
+
+\paragraph{Outcome.}
+Candidate A is \EXACT and stronger than originally proposed: raw cluster count disappears in favor of exact-layer firing multiplicity. Candidate B is \EXACT. Candidate C is \RET in the stock CKR/Rao forms because polynomial circuit size forces a logarithmically growing approximation parameter. Candidate D survives in a precise form: logarithmic width is compatible with the existing NAE moment window, but it demands quasi-polynomially small negative acceptance.
+
+\paragraph{Next target.}
+The highest-value next step is to remove the remaining $\mathfrak M_W(t)$ loss by exploiting \emph{weighted core rarity} rather than worst-case firing multiplicity. Search for a canonical dense-core decomposition satisfying
+\[
+\sum_{\text{clusters}}\Pr_\nu[C]
+\le q^{O(W)}\quad\text{or ideally }\exp(O(W\log W)),
+\]
+with the residual transfer charged relative to the conditional cluster acceptance rather than one per possible core. A bound $\exp(O(W\log W))$ would turn $W=\Theta(\log q)$ into only $\exp(O(\log q\log\log q))$ loss and would reduce the needed negative error from $\exp(-\Theta((\log q)^2))$ to quasi-polynomially milder scale.
+
+In parallel, construct a SAT-supported companion distribution to $\mu_q^+$ with the same gauge/high-girth local moments. Such a pair would remove the residual contribution of rare UNSAT formulas from the uniform negative layer and is the cleanest interface for CKR-style two-distribution approximation.
+
+Root \texttt{main.tex} remains truncated and was not modified.
+
+\begin{thebibliography}{4}
+\bibitem{CKR22} B. P. Cavalar, M. Kumar, B. Rossman, \emph{Monotone Circuit Lower Bounds from Robust Sunflowers}, Algorithmica 84, 2022.
+\bibitem{Rao26} A. Rao, \emph{Monotone Circuit Lower Bounds from Spread Matchings}, ECCC TR26-129, 2026.
+\bibitem{KLS96} J. Kahn, N. Linial, A. Samorodnitsky, \emph{Inclusion-exclusion: Exact and approximate}, Combinatorica 16, 1996.
+\bibitem{NAE} Project report NAEGAUGEHIGHGIRTH1, 17 October 2026.
+\end{thebibliography}
+\end{document}
+% FINAL_VERIFICATION_SENTINEL::MAIN::SLICECLUSTERMULT1::2026-10-18_0315::P_VS_NP_OPEN
