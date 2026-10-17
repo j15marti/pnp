@@ -1,0 +1,3 @@
+DISJPOWER40 2026-10-17 10:52 KST. P versus NP OPEN.
+Exact restricted result: the reversible transition z_i' = z_i XOR ((1 XOR x_i*y_i)*z_(i-1)) yields set disjointness at step m, with 2^m expanded ANF terms but a linear-time source-visible decider. Exact deterministic separated one-way state requires m bits, whereas random-access source use needs logarithmic scratch. Proper fixed-incidence signed 3CNF carrier uses 12m+5 variables and 18m+8 clauses. Audit: 35732 checks, zero failures. Conditional PC22 OR transport does not entail that SAT deciders construct PC proofs. Universal contraction, WRAPPER necessity, UWI, and P != NP remain OPEN.
+END_DISJPOWER40_READBACK
