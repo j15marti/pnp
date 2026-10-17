@@ -1,0 +1,3 @@
+# SEMQUOTIENT38 2026-10-17
+Scoped theorem: On canonical proper 3CNF carriers encoding b AND phi(y), a correct SAT decider's two prefix checkpoint residuals are 0 and phi(y). They are equivalent on every legal suffix exactly when phi is unsatisfiable. Exact equivalence is coNP-complete. Fully charged uniform equivalence testing at time N^(6/5+o(1)), space N^(1/2+o(1)) would contradict Fortnow et al. JACM 2005 Corollary 5.8 after virtual-input reduction. This blocks generic cheap semantic state minimization, not other solver-dependent decompositions. Tested 24,285 assertions, 336 proper 3CNF carriers and 120 independent MILP checks, all passed. P versus NP OPEN.
+END_SEMQUOTIENT38_HANDOFF
