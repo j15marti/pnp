@@ -364,6 +364,32 @@ This is structurally analogous to the coherent-randomness problem in GapMOCSP.
 
 ---
 
+## 7.1 Exact polynomial-output obstruction for the slice construction
+
+There is an even simpler obstruction than the cost of evaluating (SAT_n(y)).
+
+If (arphi) has (m) witness bits, then (F_{arphi,n}) has (n+m) input bits. Its explicit truth table therefore has length
+
+[
+2^{n+m}ge 2^m.
+]
+
+Hence the map
+
+[
+arphimapsto TT(F_{arphi,n})
+]
+
+cannot be a polynomial-output many-one reduction from ordinary SAT, regardless of how cheaply individual target bits are generated.
+
+This is an exact no-go theorem for the naive slice construction.
+
+The witness coordinate cannot simply be exposed as part of an explicit truth-table domain. A successful GATED-HARDTABLE1 construction must instead compress the witness/semantic gate into the target representation without causing an exponential output blowup and without evaluating SAT inside the reduction.
+
+This is the point at which PCP-style local verification, oracle-minimization constructions, or another witness-compression mechanism would have to enter. None is currently proved to preserve both the fixed-resource hardness gap and the low succinct complexity required by META-LIFT.
+
+---
+
 ## 8. Why the advice lower bound nevertheless improves the project
 
 The earlier MOCSP direction needed a table of provably large unrestricted circuit complexity.
