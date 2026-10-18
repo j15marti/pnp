@@ -1,0 +1,3 @@
+# SIGNED-FIBER22, 2026-10-19 03:49 KST
+
+For finite probability distributions P,Q and quotient F, let A_z be total positive signed difference P-Q in fiber z and B_z the total negative signed difference. Exact identity: TV(P,Q)-TV(F#P,F#Q)=sum_z min(A_z,B_z). This gives exact stagewise additive loss accounting. A toy 16-to-8-to-4 parity example has TV 4095/4096, 15/16, 0. Explicit three-bit-seed to two-bit-output counts (5,1,1,1) retain TV 3/8 but range membership is constant. Application to the actual CHMY generator and an efficiently decidable joint target remains OPEN. See local report/code PNP_SIGNED_FIBER_LOSS22_2026-10-19.zip. P versus NP OPEN.
