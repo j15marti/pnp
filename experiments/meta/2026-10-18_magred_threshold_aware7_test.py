@@ -83,6 +83,6 @@ def run(n, k):
 
 out = {'theorem': 'MAGRED-KWISE-YESBUDGET7', 'method': 'exhaustive finite field polynomial coefficients and distinct-address subsets',
        'results': [run(3, 3), run(4, 3)], 'note': 'Finite controls only. Standard circuit-size upper bound proven separately.'}
-path = Path('/mnt/data/magred_threshold_aware7_results.json')
+path = Path(__file__).resolve().with_name('MAGRED_KWISE_YESBUDGET7_raw.json')
 path.write_text(json.dumps(out, indent=2) + '\n')
 print(json.dumps(out, indent=2))
