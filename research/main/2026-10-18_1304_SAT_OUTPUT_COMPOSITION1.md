@@ -46,3 +46,23 @@ Reviewed K-ELIMINATION-TRANSFER4, PCP-GATE1, and MAGRED-PROMISESLOPE1. The recov
 3. M. Alekhnovich, E. Hirsch, D. Itsykson, *Exponential lower bounds for the running time of DPLL algorithms on satisfiable formulas*, JAR 35 (2005), 51–72. https://doi.org/10.1007/s10817-005-9006-x
 4. A. Garg, M. Göös, P. Kamath, D. Sokolov, *Monotone Circuit Lower Bounds from Resolution*, ToC 16(13) (2020). https://doi.org/10.4086/toc.2020.v016a013
 5. I. C. Oliveira, J. Pich, R. Santhanam, *Hardness Magnification Near State-of-the-Art Lower Bounds*, ToC 17(11) (2021). https://www.theoryofcomputing.org/articles/v017a011/
+
+
+## Follow-up: monotone CLIQUE outer and one-sided witness gate
+
+Replace the parity/Tseitin outer with the CLIQUE decision function. Let (m=\binom v2), choose one independently supplied 3-CNF (F_e) for each possible graph edge, and put (b_e=\mathrm{SAT}(F_e)). The outer Circuit-SAT has existential vertices (z) describing a size-(k) subset (S) and accepts iff every edge inside (S) has (b_e=1):
+[
+H_{v,k}((F_e))=1
+\iff
+\exists S\subseteq[v],\ |S|=k:\forall e\in\binom S2,\ \mathrm{SAT}(F_e)=1.
+]
+
+**Exact positive-only compilation (ESTABLISHED):** This entire language is in NP. One polynomial-size certificate consists of the chosen (S), plus a separate satisfying assignment for each (F_e) with (e\subseteq S). Verification is polynomial in total input size. It needs no UNSAT certificates for unused edges and therefore avoids the two-sided SAT-output gate obstruction. The witness verifier converts to an ordinary Circuit-SAT instance via standard gate encoding.
+
+The full Boolean CLIQUE function on the supplied (b_e) has known superpolynomial (and in specified ranges exponential) **monotone circuit** lower bounds (Razborov 1985; Alon-Boppana 1987). These bounds are NOT unrestricted Circuit-SAT runtime lower bounds. The existence of a polynomial-size witness verifier is consistent with their monotone circuit lower bounds.
+
+**Finite test (ESTABLISHED):** For all (2^6=64) possible SAT output vectors of six inner (K_4) Tseitin 3-CNF instances, the positive-only witness gate agreed with direct 3-CLIQUE checking on a 4-vertex graph: 23 SAT and 41 UNSAT. The dependency-free project experiment prints this result.
+
+**Highest-value target:** CLIQUE-OUTPUT-TRANSPORT1 / ROBUST-OUTER-RESTRICTION1. Develop a model-matched lifting theorem in which the outer monotone circuit lower-bound invariant survives substituting inner SAT-result gadgets through polynomial-size positive witness gates. Precisely state what restricted model survives; do not infer general SAT time hardness or MCSP magnification without a separate machine/threshold/gap preserving bridge.
+
+Primary sources: https://www.people.cs.uchicago.edu/~razborov/research.html and https://doi.org/10.1007/BF02579196 .
