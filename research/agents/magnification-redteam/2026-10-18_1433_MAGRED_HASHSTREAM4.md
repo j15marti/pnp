@@ -23,3 +23,6 @@ A 7/8-correct reduction plus a 2/3-correct target solver guarantees only 7/12 su
 Exhaustively checked all 504 field seeds for b=3..8; 936 basis and 3342 suffix-dependency assertions passed, plus full 2^b prefix image for one full-degree seed per field. Full-degree counts: 6,12,30,54,126,240. Source: experiments/meta/2026-10-18_magred_hashstream4.py. Raw: results/raw/meta/2026-10-18_MAGRED_HASHSTREAM4.json.
 
 NEXT: HASH-IMAGE-BRIDGE1 needs a joint-beta uniform verifier and one-work-tape, promise-preserving, error-controlled compiler charging b-bit space, source sweep and target access. No lambda/rho improvement is established.
+
+## EXPONENT-SLOPE HOSTILE CONTROL
+In THRES-HASHBRIDGE4 the output width b is N^(beta+o(1)). Consequently HASH-STREAM-RANK4 supplies only the one-pass memory lower exponent g(beta)=beta+o(1), so g(beta)/beta approaches 1 for each fixed beta and is not the omega(1) slope required by ASYMPTOTIC-CONE5. This is a restricted-model obstruction to claiming new magnification from the hash's memory cost. It neither falsifies the conditional slope theorem nor transfers to arbitrary decider time.
