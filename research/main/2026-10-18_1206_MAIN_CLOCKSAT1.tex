@@ -1,0 +1,229 @@
+% CLOCKSAT1 2026-10-18 12:06 Asia/Seoul
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{CLOCKSAT1: Clock-Indexed Diagonals and the Remaining Workspace Barrier}
+\date{18 October 2026}
+\begin{document}\maketitle
+\noindent\textbf{Status.} Exact theorems at a fixed decoder-space exponent,
+conditional polynomial-seed extension, exact joint-uniform clock lemma.
+Full CLOCK-INDEPENDENT-GATE1 and \(P\ne NP\), \(P\ne PSPACE\) OPEN.
+Independent review pending.
+
+\section{IDEAS PROPOSED BEFORE LITERATURE}
+\item[] A. Encode the entire initial segment of clock exponents into
+different output coordinates rather than selecting one external \(c\).
+\item[] B. Freeze the decoder workspace exponent \(\sigma\) while
+diagonalizing over all fixed clocks.
+\item[] C. Mask each decoder diagonal by one SAT-witness predicate,
+then quantify the explicit output-size loss.
+\item[] D. Replace literal clock-independence by one
+jointly PSPACE-uniform predicate on input \((1^c,D,i)\).
+
+\section{LITERATURE CHECK AND CORPUS}
+Reviewed K-ELIMINATION-TRANSFER4, LOCALITY-BOUNDARY3,
+UNIFORM-LOCAL-DIAG2, META-LIFT2, ADVICE-HIERARCHY1, PCP-GATE1,
+AGENTS.md, CODEX.md, and the repository research skill.
+Korten--Pitassi--Impagliazzo (ECCC TR25-030) supply remote
+points for sufficiently stretched two-probe generators.
+The project's streamed trace-moment low-space implementation
+requires independent verification. Schaefer's majority polymorphism
+for bijunctive relations blocks direct 2CNF/auxiliary-variable
+implementations of ternary OR. This last point duplicates prior
+CLOCKGATE-MAJORITY1 evidence and is not a new result.
+
+\section{Exact clock-index construction}
+Let \(M=2^m\), fix constants
+\(0<\alpha,\beta\), \(\alpha+\beta<1\), and \(\sigma\ge1\).
+Put
+\[
+D=\lfloor\alpha m\rfloor,\quad
+S=\lfloor\beta m\rfloor,\quad
+C(m)=\max\{1,\lfloor m/\log_2m\rfloor\}.
+\]
+There are fewer than
+\(C(m)2^{D+1+S}=M^{\alpha+\beta+o(1)}<M\)
+triples \((c,d,z)\) with \(1\le c\le C(m)\),
+decoder descriptions \(|d|\le D\),
+and seeds \(z\in\{0,1\}^S\).
+Assign each an injective output coordinate \(i(c,d,z)\).
+
+Define \(U_{c,\sigma}(d,i;z)\) by running decoder \(d\)
+on output coordinate \(i\) for at most \(m^c\) steps
+and \(m^\sigma\) work cells, then evaluating the resulting
+depth-two adaptive decision tree on seed \(z\).
+Return zero on invalidity or timeout at the \emph{specified}
+clock \(c\), including per-coordinate timeout.
+Define a single string \(H_m^\sigma\) by
+\[
+ H_m^\sigma[i(c,d,z)]
+ =1-U_{c,\sigma}(d,i(c,d,z);z),
+\]
+and set all remaining coordinates to zero.
+
+\begin{theorem}[CLOCK-INDEX-DIAG1, PROVED/EXACT]
+The bit language \(H_m^\sigma[i]\) is computable in
+\(m^{O(\sigma+1)}\) writable space, independent of
+a later fixed clock \(c_0\).
+For every fixed \(c_0\), for sufficiently large \(m\),
+\[
+\forall |d|\le D\ \forall z\in\{0,1\}^S:
+\quad H_m^\sigma\ne G_{c_0,\sigma,d}(z).
+\]
+\end{theorem}
+\begin{proof}
+For fixed \(c_0\), eventually \(c_0\le C(m)\).
+If \(G_{c_0,\sigma,d}(z)=H_m^\sigma\), then at
+\(i(c_0,d,z)\) the two outputs would be complements.
+For access, decode the triple from \(i\) using \(O(m)\)
+bits and simulate its exact clocked computation.
+For \(c\le C(m)\),
+\(m^c\le m^{m/\log_2m}=2^m=M\);
+the universal simulation uses fixed
+\(m^{O(\sigma+1)}\) space. Its runtime may be exponential
+in \(m\), which is allowed for PSPACE bit access.
+\end{proof}
+
+This obtains one clock-independent hard bit family for
+\emph{all fixed polynomial time clocks} in the class with
+\emph{one fixed workspace exponent} \(\sigma\).
+It does not cover decoders with workspace \(m^c\).
+
+\section{Source masking and the exact failure}
+For a witness predicate \(F:\{0,1\}^w\to\{0,1\}\),
+allocate a separate coordinate for each
+\((a,c,d,z)\) and set
+\[
+ B_F[i(a,c,d,z)]
+ =F(a)\,[1-U_{c,\sigma}(d,i(a,c,d,z);z)].
+\]
+When \(F\equiv0\), the target is constant zero.
+If \(F(a^\star)=1\), then for every fixed
+\(c_0\) all decoder/seed pairs are refuted at
+\(i(a^\star,c_0,d,z)\) for large lengths.
+Thus source semantics is correct and the bit
+map is independent of the later chosen \(c_0\);
+it evaluates \(F(a)\), not SAT.
+However \(2^w\) witness addresses require
+at least \(2^w\) output positions.
+For general SAT with \(w=\omega(\log N)\),
+the output is superpolynomial in source size \(N\).
+Hence this is NOT the required weak reduction.
+
+\begin{theorem}[QUERY-COVERAGE1, PROVED/EXACT]
+Let output \(B(F)\in\{0,1\}^L\) access a
+\(W\)-bit witness-validity oracle \(F\).
+If each output bit makes at most \(q\) adaptive
+oracle queries along the all-zero transcript, and
+\(B(0)\ne B(e_a)\) for each singleton witness
+\(e_a\), then \(Lq\ge W\).
+\end{theorem}
+\begin{proof}
+The union of zero-transcript query addresses over all
+\(L\) output bits contains at most \(Lq\) positions.
+An unqueried singleton witness gives exactly the
+same full output as the zero oracle.
+\end{proof}
+This applies only to black-box witness access.
+Direct inspection of CNF syntax is an uncharged escape
+unless analyzed separately. Short hashes do not
+invalidate the theorem.
+
+\section{Joint PSPACE uniformity as a replacement}
+\begin{lemma}[JOINT-UNIFORM-CLOCK-ABSORB1, PROVED/EXACT]
+Suppose one predicate \(\widehat B(1^c,D,i)\)
+lies in PSPACE with one fixed polynomial space bound
+in the combined input length, and define
+\(B_c(D,i)=\widehat B(1^c,D,i)\).
+Under \(P=PSPACE\), a single polynomial algorithm
+\(A\) computes the entire joint predicate with
+one fixed exponent \(K\) independent of \(c\).
+For a sufficiently large fixed \(c>K\),
+a decoder containing \(\langle A,1^c,D\rangle\)
+computes \(B_c(D,i)\) within the
+\((\log M)^c\) clock, provided the established
+encoding/padding makes its description at most
+\(\alpha\log M\).
+\end{lemma}
+\begin{proof}
+The hypothesis gives one deterministic polynomial
+algorithm for all triples \((1^c,D,i)\), not one
+separate algorithm per \(c\).
+Hardwire one fixed \(c>K\) and \(D\) in the decoder;
+all bit queries then have polynomial time exponent \(K\),
+dominated by the selected clock after fixed padding.
+\end{proof}
+Hence literal independence of \(B\) from \(c\)
+is sufficient but not necessary.
+The older assertion \(\forall c\,[B_c\in PSPACE]\)
+only gives \(\forall c\,\exists K(c)\) under collapse;
+it does not imply \(\exists K\,\forall c\).
+The existing \(c\)-clocked remote-point implementation
+uses known space \(m^{O(c)}\), not one fixed polynomial
+in \(m+c\). This is an implementation-accounting
+obstruction, not a general space lower bound.
+
+\section{Conditional polynomial-seed extension}
+Assuming the low-space KPI refinement POLYLOG-REMOTE2,
+partition the \(M\) outputs into one block for each
+\((c,d)\), with \(1\le c\le C(m)\).
+There are \(M^{\alpha+o(1)}\) blocks, each of length
+\(M^{1-\alpha-o(1)}\).
+For seed length \(S=M^\beta\), \(\alpha+\beta<1\)
+ensures the locality-two KPI stretch condition
+\(m_{\rm block}\gg S\log S\).
+A remote point for each block gives the same
+all-fixed-clock diagonal against polynomial-length
+seeds, with fixed decoder workspace \(m^\sigma\).
+PSPACE bit access depends on the project's
+unverified low-space remote-point implementation.
+Status: CONDITIONAL, not promoted to exact.
+
+\section{Computational controls, audit, and handoff}
+Runner:
+\texttt{experiments/meta\_lift/2026-10-18\_clock\_saturation1.py}
+(commit \texttt{13ced368681900009dd7160e56955b76a689249f}).
+Raw result:
+\texttt{results/raw/2026-10-18\_CLOCKSAT1.json}
+(commit \texttt{48bbcf83730f3920f7c0a27bf2673e83c51c5423}).
+Parameters \(M=256,D=2,S=2,C=2,W=4\);
+all 16 witness masks and 480 adversarial
+clock/decoder/seed combinations were tested,
+with zero failures and two easy all-zero controls.
+The toy program includes adaptive second probes
+and per-coordinate timeout defaults. Tests are
+COMPUTATIONAL finite checks only.
+
+Root main.tex was not modified: no exclusive ownership
+region was identified.
+Adopted: KPI published remote-point theorem,
+cofinal-K ledger and binary CSP majority closure.
+Retired: using one long timeout as equivalent to
+every shorter per-coordinate timeout.
+Remaining OPEN: a polynomial-output,
+polylog-space source gate and coverage of full
+decoder workspace \(m^c\).
+Highest-value next target: exploit structured CNF
+information to beat the \(Lq\ge2^w\) black-box
+coverage bound without collapsing the witness
+relation to a 2CNF projection.
+
+\begin{thebibliography}{4}
+\bibitem{KPI} O. Korten, T. Pitassi, R. Impagliazzo,
+\emph{Stronger Cell Probe Lower Bounds via Local PRGs},
+FOCS 2025, ECCC TR25-030.
+\url{https://eccc.weizmann.ac.il/report/2025/030/}.
+\bibitem{AHK} E. Allender, D. Holden, V. Kabanets,
+\emph{The Minimum Oracle Circuit Size Problem},
+STACS 2015.
+\url{https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.STACS.2015.21}.
+\bibitem{Schaefer} T. Schaefer,
+\emph{The Complexity of Satisfiability Problems},
+STOC 1978.
+\bibitem{Fuerer} M. F\"urer,
+\emph{The Tight Deterministic Time Hierarchy},
+STOC 1982.
+\end{thebibliography}
+\end{document}
+% FINAL_VERIFICATION_SENTINEL::MAIN::CLOCKSAT1::2026-10-18_1206::P_VS_NP_OPEN
