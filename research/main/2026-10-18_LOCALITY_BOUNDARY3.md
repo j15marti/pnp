@@ -589,9 +589,9 @@ This appears to be the cleanest point at which the old and new proof spines can 
 
 ## 13. Current best targets
 
-### A. POLYLOG-DESCRIPTION-DIAG1
+### A. CLOCK-INDEPENDENT-GATE1
 
-Hardness against decoder descriptions of every polynomial size in \(\log M\).
+Build one source-to-target bit map independent of the eventual fixed clock exponent. Cofinal clock selection then absorbs the unknown P-time exponent without expanded circuit descriptions.
 
 ### B. DESCRIPTION-CONTRACT1
 
@@ -647,7 +647,7 @@ The remaining opening is therefore not “use a slightly stronger CSP.”
 
 It is a genuinely meta-complexity phenomenon: construct a representation class that is hard on explicit strings but automatically easy on strings already given by small circuits.
 
-The next quantitative target is POLYLOG-DESCRIPTION-DIAG1, because it isolates the unknown-polynomial-exponent problem in its cleanest current form.
+Subsequent recovery of the earlier cofinal K-elimination work changes this priority. For collapse-generated **uniform** bit decoders, expanding the polynomial-time algorithm into a \((\log M)^K\)-size circuit is unnecessary: store the fixed algorithm code plus source descriptor in an \(O(\log M)\)-bit clocked program and choose one fixed clock exponent after the hypothetical P algorithm is selected. See `2026-10-18_K_ELIMINATION_TRANSFER4.md`. The primary target is therefore now **CLOCK-INDEPENDENT-GATE1**, not generic POLYLOG-DESCRIPTION-DIAG1.
 
 ---
 
