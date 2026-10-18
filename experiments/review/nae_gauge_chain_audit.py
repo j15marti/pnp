@@ -354,6 +354,8 @@ def main() -> None:
     invalid_rejections = 0
     max_aux_occurrence = 0
     count_rows = []
+    sat_source_cases = 0
+    unsat_source_cases = 0
     for n in range(3, 7):
         for m in range(1, 8):
             for _ in range(12):
@@ -379,6 +381,10 @@ def main() -> None:
                     failures.append("source occurrence not preserved")
 
                 sm = any_model(n, lambda a: source_sat(source, a))
+                if sm is None:
+                    unsat_source_cases += 1
+                else:
+                    sat_source_cases += 1
                 # Eliminate equality auxiliaries symbolically (all z_i equal) and
                 # enumerate only the n source coordinates plus one gauge bit.
                 tm_core = None
@@ -450,6 +456,28 @@ def main() -> None:
                 if not count_rows or count_rows[-1][0] != (n, m):
                     count_rows.append(((n, m), comp.n_target, len(comp.clauses), aux_max, exact_bits, len(packed)))
 
+    # Deterministic UNSAT control: the eight proper clauses on one support,
+    # one clause falsified by each of the eight assignments.
+    unsat_source = [
+        tuple(Lit(v, bool(bits[v])) for v in range(3))
+        for bits in itertools.product((0, 1), repeat=3)
+    ]
+    unsat_comp = compile_formula(3, unsat_source)
+    if any_model(3, lambda a: source_sat(unsat_source, a)) is not None:
+        failures.append("deterministic UNSAT source became SAT")
+    if any(front_formula_model(unsat_source, x, z)
+           for x in itertools.product((0, 1), repeat=3) for z in (0, 1)):
+        failures.append("deterministic UNSAT target became SAT")
+    packed, exact_bits = pack_formula(unsat_comp)
+    dn, dc, decoded_bits = unpack_formula(packed)
+    rn, recovered = recognize_image(dn, dc)
+    if rn != 3 or recovered != unsat_source or exact_bits != decoded_bits:
+        failures.append("deterministic UNSAT codec/image mismatch")
+    formula_cases += 1
+    codec_cases += 1
+    unsat_source_cases += 1
+    checks["formula_decision"] += 1
+
     # Explicit malformed source controls.
     malformed = [
         (3, []),
@@ -497,6 +525,8 @@ def main() -> None:
         "eq_projection": eq_projection,
         "front_projection": front_projection,
         "formula_cases": formula_cases,
+        "sat_source_cases": sat_source_cases,
+        "unsat_source_cases": unsat_source_cases,
         "projection_models_checked": projection_models,
         "extension_models_checked": extension_models,
         "codec_roundtrips": codec_cases,
