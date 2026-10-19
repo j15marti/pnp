@@ -1,0 +1,14 @@
+# PHYSICAL WIRE-EQUIV-ELIM3 | 2026-10-19 09:36 KST
+Status: PROVED/EXACT for canonical REVFIX semantic normalization; COMPUTATIONAL for finite checks; physical layout and arbitrary SAT runtime OPEN. P versus NP OPEN.
+
+CORPUS: root main/main4/main5, WIRE_LEDGER1, WIRE_REPLAY2, original REVFIXGATEAUDIT1 and its Python gate emitter, COMBINED-REPLAY1, RECURCLOSE1 and PRIME-LQP1 fetched before research. Attacks selected BEFORE literature: (1) XOR-equality elimination (2) shears/one-clause boundary (3) wire vs CNF literal categories (4) canonical source stripping and charged access. Primary crosschecks: Tseitin 1968; Eén-Biere SAT 2005; Thompson STOC 1979; Fortnow-Lipton-van Melkebeek-Viglas JACM 2005.
+
+THEOREM. Original emits yp_i=y_i XOR h_i and constrains yp_i=y_i. For existential SAT this is exactly h_i=0 with y_i arbitrary. Anchored h_0=v_0; h_i=t_i=v_i XOR (a_i AND v_(i-1)): all h=0 iff every source clause-violation v_i=0. In the m>=2 two-shear variant, h_i=t_i (i>=1), so t_(m-1)=0; h_0=v_0 XOR (a_0 AND t_(m-1))=v_0. Induction finishes. m=1 cyclic is unsound, witnessed by (NOT x0 OR x1 OR x2), x=(1,0,0).
+
+WIRE LEDGER m>=2: anchored AND=3m-1 XOR=2m-1 equality constraints=m, original declared NAND2 upper bound=19m-6, proper clauses=27m-9, literal incidences=81m-27. Two-shear AND=3m XOR=2m equality=m; declared NAND2=19m, proper clauses=27m, literal incidences=81m, named functional nets=n+6m, NAND input pins=38m, original total terminal incidences=12m. AFTER algebraic cancellation: anchored AND=3m-1 XOR=m-1 mapped NAND2=10m-6; two-shear AND=3m XOR=m mapped NAND2=10m. Both retain m zero-output acceptance conditions and possible source literal inversion, fanout buffering, routing. Canonical source extraction further leaves m original clauses, NOT a small SAT DECIDER.
+
+m=2 n=3 two-shear control: 31 CNF variables, 54 clauses, 162 literal instances, 38 declared NAND2 vs 20 after feedback normalization (plus acceptance and inversion), named nets 15 before vs 11 after; source body 20 bits vs target body 1026 under a declared packed fixed-index encoding. For m=500 on three repeatedly used source variables, max named fanout 500 and an illustrative fanout-2 tree needs 1992 buffers, not a transistor optimum.
+
+FINITES: 332032 exact feedback cancellation checks; 331904 sound source-equivalence cases; eight expected signed one-clause cyclic failures; 998 anchored/two-shear size rows for m=2..500; zero unexpected failures. This is an explicit canonical-image preprocessing shortcut, not a solution to SAT. O(B) streaming source extraction presumes compiler's ordered blocks; any later SAT solver's work-tape storage, replay, source access, and cache remain fully chargeable. NAND2 counts are library-dependent upper-bound component censuses, never physical minima. CNF literal incidences are syntactic.
+
+Local full report/code/raw: PNP_PHYSICAL_WIRE_EQUIV_ELIM3_2026-10-19.zip. No claim of P vs NP separation.
