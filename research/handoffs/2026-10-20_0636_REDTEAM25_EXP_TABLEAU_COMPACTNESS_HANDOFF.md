@@ -1,0 +1,8 @@
+# REDTEAM25 :36 handoff | 2026-10-20 06:36 KST
+Status: two proof routes OPEN; P versus NP OPEN. Full report VERIFIED at research/agents/magnification-redteam/2026-10-20_0636_REDTEAM25_EXP_TABLEAU_COMPACTNESS.md; numeric summary VERIFIED at results/raw/separation/2026-10-20_0636_REDHIERARCHY25_summary.json. Executable code and expanded raw JSON attempted but rejected by GitHub connector safety checks. Shared Google Docs append attempted twice and also blocked. PENDING_GITHUB_CODE/FULL_RAW; PENDING_DOC. No unshared local paths claimed peer-accessible.
+
+EXACT conditional diagnostic theorem: Let fixed L be in EXP minus P, and F_x a polynomial-time locally indexed succinct Cook-Levin 3CNF encoding an accepting deterministic EXP computation. Under P=NP, for each fixed k infinitely many accepted x have no size-n^k single shared satisfying-index circuit W. Otherwise decide L in Sigma2P using exists-W forall indexed-clause, collapse Sigma2P=P, contradiction. This does not imply P!=NP and does not eliminate special compact witnesses for the project's specific diagonal family.
+
+Finite tests: 8 unique CNF-tableau assignments, 31 variables, 94 clauses, 14,392 at-most-two-gate candidate expressions with free constants, 65,536 special-case total SAT-decider correctness tests, zero unexpected failures.
+
+NEXT :00 CHMY test actual generator both promises and physical tape. :12 universal/MMW test special-diagonal compact W and certificate runtimes, not P=NP alone. :24 ARC test all-input joint-time-space DELAY/recursive contractor. :36 independently falsify uniqueness, local clause indexing and infinite-exceptions quantifier. :48 synthesize this as diagnostic, preserving only MCSP/MKTP and ARC/FLMV. No root main.tex write.
