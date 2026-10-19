@@ -1,0 +1,133 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,xurl,hyperref}
+\title{OVERLAP-PROMISE-DECIDER4: Exact Normalization and a Scope Firewall}
+\author{Independent synthesis and proof-path allocation}
+\date{19 October 2026, 20:48 KST}
+\begin{document}
+\maketitle
+
+\paragraph{Executive status.}
+P versus NP remains OPEN.  A new project theorem for exactly $2^k+1$
+proper width-$k$ clauses yields an exact deterministic promise decider after
+normalization.  The normalization eliminates the ambient variable count $n$,
+but it also exposes why the theorem is not a general 3-SAT algorithm, an MCSP
+threshold descent, a search-MCSP streaming lower bound, a GapMCSP circuit lower
+bound, or an all-input ARC contractor.
+
+\section{Recovered result and pre-literature candidates}
+The post-synthesis artifact SAT5X9-OVERLAP-CIRCUITS1 proves the following.  Let
+$F=(C_1,\ldots,C_m)$ contain $m=2^k+1$ clauses, each using $k$ distinct
+variables, and let $S_i$ be the subcube of assignments falsifying $C_i$.  Then
+\[
+ F\text{ is unsatisfiable}\quad\Longleftrightarrow\quad
+ W(F):=\sum_{i<j}|S_i\cap S_j|=2^{n-k}.
+\]
+Before the source check, four candidate consequences were fixed: normalize
+$W$ to remove $n$; implement a store-all one-pass decider; test closure under
+padding and restriction; and compare the exact-count promise with the cofinal
+quantifiers in MCSP magnification.
+
+\section{Exact normalized decider}
+For a compatible pair of clauses, let
+$u_{ij}=|\operatorname{var}(C_i)\cup\operatorname{var}(C_j)|$; a pair is
+incompatible when a shared variable occurs with opposite signs, since its two
+falsifying requirements disagree.  Define
+\[
+ Q(F)=\sum_{\substack{i<j\\\text{compatible}}}2^{2k-u_{ij}}.
+\]
+
+\paragraph{Theorem (PROVED/EXACT).}
+On the stated promise,
+\[
+ F\text{ is unsatisfiable}\quad\Longleftrightarrow\quad Q(F)=2^k.
+\]
+After canonical sorting of the literals in each clause, $Q$ is computable in
+$O(mk\log k+m^2k)$ deterministic time.  A left-to-right input pass that stores
+all clauses uses $O(mk\log n)$ bits for their signed variable names and an
+$O(k)$-bit accumulator.
+
+\paragraph{Proof.}
+For a compatible pair, the common falsifying subcube fixes exactly $u_{ij}$
+variables, so $|S_i\cap S_j|=2^{n-u_{ij}}$.  Incompatible pairs contribute
+zero.  Hence
+\[
+ W(F)=2^{n-2k}Q(F),
+\]
+and the recovered overlap theorem is equivalent to $Q(F)=2^k$; this algebra
+remains valid when $n<2k$.  A merge of two sorted clauses determines
+compatibility and $u_{ij}$ in $O(k)$ time.  Since
+$m=2^k+1$, the largest possible sum is below
+$\binom m2 2^k<2^{3k+1}$, so the counter has $O(k)$ bits. \hfill$\square$
+
+\paragraph{Strongest falsifier and scope.}
+For 3-SAT, $k=3$ forces exactly nine clauses.  Such an instance mentions at
+most 27 variables, irrespective of a declared ambient $n$, and is therefore a
+bounded-clause promise rather than unrestricted 3-SAT.  Adding unused variables
+preserves $Q$, but duplicating/adding clauses exits $m=2^k+1$, while restrictions
+can destroy uniform width and exact clause count.  Thus the promise is not the
+all-input hereditary domain required by ARC.  Its input is a clause list and
+its output is one decision bit, not an $N$-bit truth table with a circuit-or-
+reject search output; it therefore supplies no MMW search-MCSP lower bound.
+
+\section{Independent computational audit}
+The verifier enumerated all multisets (duplicates included) in the following
+ranges: $k=1,n=1,\ldots,4$; $k=2,n=2,3,4$; and $k=3,n=3$.  It additionally
+sampled $10{,}000$ formulas for $k=3,n=4,\ldots,8$ and $2{,}000$ for
+$k=4,n=4,\ldots,7$.  Totals were 114,344 exhaustive formulas, 12,000 random
+formulas, 75,164 duplicate-containing formulas, 2,813,624 assignment checks,
+and 2,071,480 pair terms.  Direct $W$, normalized $Q$, and brute-force
+satisfiability agreed in every case; failures were zero.  This is
+COMPUTATIONAL support, not a replacement for the proof.
+
+\section{Primary-source model audit}
+Cheraghchi--Hirahara--Myrisiotis--Yoshida prove a randomized two-sided-error
+one-tape MCSP lower bound with an additional one-way read-only input tape at a
+particular threshold; the clause-list promise above does not instantiate that
+machine problem.  McKay--Murray--Williams search-MCSP requires production of a
+small circuit or correct rejection in a one-pass streaming model; a one-bit
+promise decider is type-incompatible.  Oliveira--Pich--Santhanam require a
+GapMCSP circuit lower bound for every sufficiently small $\beta>0$; one exact
+clause-count identity has the wrong quantifiers.  Fortnow--Lipton--van
+Melkebeek--Viglas concern deterministic random-access SAT time and space; no
+iterable, jointly charged all-input transition is constructed here.
+
+Primary records checked: CHMY, LIPIcs STACS 2021, DOI
+\url{https://doi.org/10.4230/LIPIcs.STACS.2021.23}; MMW search-MCSP statement as
+recorded in ECCC TR19-118, \url{https://eccc.weizmann.ac.il/report/2019/118};
+OPS, Theory of Computing 17(11), 2021, DOI
+\url{https://doi.org/10.4086/toc.2021.v017a011}; and FLMV, JACM 52(6), 2005,
+\url{https://pages.cs.wisc.edu/~dieter/Research/sat-ts.html}.
+
+\section{Versioned proof DAG and allocation}
+\begin{center}
+\begin{tabular}{p{0.18\linewidth}p{0.73\linewidth}}
+\toprule
+Status & Arrow or claim \\
+\midrule
+ESTABLISHED & Exact $2^k+1$-clause overlap identity; normalized promise decider above. \\
+COMPUTATIONAL & 126,344 formulas and 2,813,624 assignments checked with zero failures. \\
+CONDITIONAL & OUTPUT-CARDINALITY-CEILING3 and the ARC fixed-point calculation remain valid only within their stated models; DETREE still lacks an actual CHMY-generator transfer. \\
+OPEN & Same-model cofinal MCSP threshold descent; full search-MCSP $s^{\omega(1)}$ space lower bound; OPS GapMCSP excess for every small $\beta$; universal jointly charged ARC contractor. \\
+FALSIFIED/RETIRED & Promoting the fixed nine-clause 3-SAT identity, static circuit counts, or a one-bit promise decider to an unrestricted SAT or MCSP lower bound. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Narrow next tests.}
+The :00 role should test DETREE only on an explicit CHMY generator and both
+threshold promises.  The :12 role should seek state collisions where identical
+stream states force different valid circuit-or-reject outputs, not merely
+different decision bits.  The :24 role should submit one all-input ARC stage
+with source scan, construction, queries, replay, output, and peak live space all
+charged.  The :36 role should attack the overlap theorem under clause padding,
+width loss, and malformed encodings, and should reject any transfer that leaves
+the promise.  The :48 role should preserve this result as a corrected
+comparison-only SAT deliverable and prioritize the three load-bearing arrows.
+
+Root \texttt{main.tex} remains protected: its living-status body is not a
+verified merge target for this report.  No root edit is attempted.
+
+\vfill
+\noindent\texttt{FINAL\_VERIFICATION\_SENTINEL::MAIN::OVERLAP-PROMISE-DECIDER4::P\_VS\_NP\_OPEN}
+\end{document}
