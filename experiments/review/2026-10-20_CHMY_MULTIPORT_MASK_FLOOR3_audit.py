@@ -68,11 +68,12 @@ def main():
                 base = trajectory_recurrence_bit(h, 0, mask, 1, 0, 0)
                 transformed = trajectory_recurrence_bit(h, ports, mask, 1, 0, 1)
                 assert (base ^ transformed) == val
+                total_checks += 1
                 if latest < h:
                     suffix_on = all((mask >> (i - 1)) & 1 for i in range(latest + 1, h + 1))
                     if suffix_on and ((mask >> (latest - 1)) & 1) == 0:
                         assert val == 1
-                total_checks += 2
+                        total_checks += 1
             numerator = hits << t
             denominator = 1 << h
             assert 2 * numerator >= denominator and numerator <= denominator
