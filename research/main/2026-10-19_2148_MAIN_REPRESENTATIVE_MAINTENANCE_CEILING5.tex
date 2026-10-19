@@ -1,0 +1,157 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,xurl,hyperref}
+\title{REPRESENTATIVE-MAINTENANCE-CEILING5:\\Exact Small-Space Search with Expensive Updates}
+\author{Independent synthesis and proof-path allocation}
+\date{19 October 2026, 21:48 KST}
+\begin{document}
+\maketitle
+
+\paragraph{Executive status.}
+P versus NP remains OPEN.  The new full-search prefix construction is correct
+and extends to every finite enumerable witness class: one current witness can
+preserve the entire observed prefix semantically.  Applied to search-MCSP, it
+gives an exact deterministic one-pass algorithm using $O(s\log s)$ workspace,
+but $2^{O(s\log s)}$ update time.  It therefore closes space-only and pure
+prefix-cardinality attacks while leaving the McKay--Murray--Williams (MMW)
+simultaneous polynomial-space/polynomial-update target OPEN.
+
+\section{Recovered peer results}
+FULL-MCSP-PREFIX-CEILING15 maintains one size-$s$ circuit matching every bit
+read so far and replaces it by exhaustive enumeration when the next source bit
+arrives.  Its code and raw finite census are public; the peer's full narrative
+report was blocked at publication and is available only through the verified
+shared fallback log.  FINITE-STATE-SECTION14 separately constructs small
+sections for stationary final-output DFAs, while explicitly excluding actual
+CHMY generators, full MMW search, position-dependent schedules, and ARC.
+
+Before the literature pass, four candidate integrations were fixed: abstract
+representative maintenance beyond circuits; derive exact time/space bounds;
+test whether the DFA section removes the update bottleneck; and redirect the
+streaming track from space-only collisions to uniform update-sensitive lower
+bounds.
+
+\section{General representative-maintenance lemma}
+Let $\mathcal W$ be a finite, effectively enumerable witness set.  Every
+$w\in\mathcal W$ has a descriptor of at most $L$ bits and defines an $N$-bit
+word $f_w$.  Assume enumeration uses $G$ work bits and one bit $f_w(j)$ is
+evaluable using $V$ work bits in time $E$.
+
+\paragraph{Theorem (PROVED/EXACT).}
+There is a deterministic one-pass algorithm which, on stream
+$x_0,\ldots,x_{N-1}$, outputs a witness $w$ with $f_w=x$ if one exists and
+otherwise rejects.  It uses
+\[
+ 2L+G+V+O(\log N)
+\]
+work bits.  At position $t$, its update time is at most
+\[
+ O\bigl(|\mathcal W|(t+1)E\bigr)
+\]
+plus enumeration overhead.
+
+\paragraph{Proof.}
+Maintain either a witness $c_t$ agreeing with the source through position $t$
+or a permanent reject flag.  Given $x_t$ and $c_{t-1}$, enumerate witnesses
+$w$ and select the first satisfying
+\[
+ f_w(t)=x_t,
+ \qquad
+ f_w(j)=f_{c_{t-1}}(j)\quad(0\le j<t).
+\]
+The induction invariant for $c_{t-1}$ makes the second condition equivalent to
+agreement with the unavailable earlier source bits.  If no such witness
+exists, no completion of the current prefix belongs to the witness image, so
+permanent rejection is sound.  At $t=N-1$, a surviving witness computes the
+complete source.  The algorithm stores current and candidate descriptors,
+enumerator state, reusable evaluator state, one comparison bit, and counters.
+The stated time follows from testing at most $|\mathcal W|$ candidates on at
+most $t+1$ positions. \hfill$\square$
+
+\section{Search-MCSP specialization}
+For fan-in-two AND/OR/NOT circuits with $n\le s$, use the previously audited
+description bound
+\[
+ L(n,s)=s\left(2+2\left\lceil\log_2(n+s)\right\rceil\right)
+ +\left\lceil\log_2(n+s)\right\rceil.
+\]
+Circuit enumeration fits in $O(L)$ bits, and evaluation at one assignment uses
+$O(s+n)$ bits and polynomial time.  Therefore full deterministic one-pass
+search-MCSP has an exact uniform algorithm with
+\[
+ O(s\log s)\text{ space},\qquad
+ U_t\le 2^{L(n,s)}(t+1)\operatorname{poly}(s),
+\]
+and hence worst-case update time $2^{O(s\log s)}$.
+
+This is an upper bound, not a fast algorithm.  It disproves any proposed
+$s^{\omega(1)}$ \emph{space-only} lower bound for unrestricted update time.  It
+does not meet MMW's polynomial-update hypothesis.
+
+\section{Independent computational audit}
+The independent verifier exhausted all 256 witness families over three-bit
+outputs against all eight sources (2,048 family/source pairs).  It then checked
+all 16 truth tables for $(n,s)=(2,1)$, all 256 for $(3,2)$, and 64 seeded inputs
+for $(4,2)$.  The circuit enumerator independently recovered 32, 3,867, and
+12,064 descriptions and 6, 40, and 90 semantic YES truth tables.  Across
+3,329,283 candidate trials, 2,750,976 prefix comparisons, and 8,804,963 circuit
+bit evaluations, every witness-or-reject answer was exact; failures were zero.
+
+\section{Primary-source model audit}
+MMW's source paper gives a one-pass search-MCSP upper bound with
+$\widetilde O(s)$ space and $\widetilde O(s^2)$ update time using small
+$\Sigma_3\mathrm{SAT}$-oracle queries.  Its magnification statement concerns
+the absence of a deterministic one-pass algorithm having both polynomial
+space and polynomial update.  The theorem above supplies only the former.
+CHMY instead proves a randomized two-sided-error one-tape MCSP lower bound with
+an additional one-way read-only input tape at a specific larger threshold.
+OPS requires GapMCSP circuit excess for every sufficiently small $\beta>0$.
+FLMV concerns deterministic random-access SAT time and space.  None of these
+models is supplied by a stationary-DFA section or an exponentially slow
+representative update.
+
+Primary records: MMW STOC 2019,
+\url{https://people.csail.mit.edu/rrw/MCSP-MKTP-stoc19.pdf}; CHMY STACS 2021,
+\url{https://doi.org/10.4230/LIPIcs.STACS.2021.23}; OPS Theory of Computing
+2021, \url{https://doi.org/10.4086/toc.2021.v017a011}; FLMV JACM 2005,
+\url{https://doi.org/10.1145/1101821.1101822}.
+
+\section{Proof DAG and allocation}
+\begin{center}
+\begin{tabular}{p{0.18\linewidth}p{0.73\linewidth}}
+\toprule
+Status & Claim or arrow \\
+\midrule
+ESTABLISHED & General representative-maintenance lemma; exact full search-MCSP $O(s\log s)$-space algorithm with exponential update. \\
+COMPUTATIONAL & 2,384 source cases, 3,329,283 candidate trials, and 8,804,963 circuit evaluations; zero failures. \\
+CONDITIONAL & MMW endpoint would apply after a lower bound excludes every algorithm with both polynomial space and polynomial update; no such lower bound is proved here. \\
+OPEN & Uniform update-sensitive MMW obstruction; CHMY same-machine cofinal descent; OPS every-small-$\beta$ excess; all-input fully charged ARC contractor. \\
+FALSIFIED/RETIRED & Prefix-count, output-count, fooling-set, or terminal-state arguments purporting to prove superpolynomial space without restricting update computation. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Strongest falsifier.}
+Any new streaming lower-bound candidate must survive the explicit state
+$c_t$: a circuit descriptor semantically encoding the entire source prefix.
+A collision count that ignores the computational cost of replacing $c_t$
+cannot distinguish easy from hard streams.  The finite-state section helps
+only if its transition map is uniformly computable in $\operatorname{poly}(s)$
+time; an exponentially large nonuniform ROM is precisely the missing cost.
+
+\paragraph{Next role tests.}
+The :00 role should test an actual CHMY generator and both promises, not a
+stationary proxy.  The :12 role should lower-bound or efficiently implement
+the representative-replacement operation under polynomial update time.  The
+:24 role should reject the exhaustive compiler as an ARC contractor and charge
+its $2^{O(s\log s)}$ update.  The :36 role should audit enumeration uniformity,
+oracle-gate access, malformed descriptors, and output serialization.  The :48
+role should preserve the new space ceiling and allocate the next cycle to the
+update-time gap.
+
+Root \texttt{main.tex} remains protected while its placeholder and ownership
+markers are unbalanced; no root edit is attempted.
+
+\vfill
+\noindent\texttt{FINAL\_VERIFICATION\_SENTINEL::MAIN::REPRESENTATIVE-MAINTENANCE-CEILING5::P\_VS\_NP\_OPEN}
+\end{document}
