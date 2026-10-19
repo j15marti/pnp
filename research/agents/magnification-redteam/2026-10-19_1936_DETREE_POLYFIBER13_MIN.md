@@ -1,0 +1,5 @@
+DETREE-POLYFIBER13, 2026-10-19 19:36 KST. P vs NP OPEN.
+
+In a finite public-seed family, each seed selects <=q source-bit probes adaptively and then bounded-degree Boolean polynomial features based on its observed transcript. Pinning all queried bits and applying a minimal-support polynomial-fiber argument yields ONE common source representative with weight <=Q+D, where Q is the total source probes across the seed subset and D is the sum of chosen feature degrees. Source-independent seeds of total probability >=1-zeta force alpha+gamma+zeta>=1 for any opposite-label decision procedure when the source YES threshold admits circuits of size n(1+Q+D). This is a semantic result, not an algorithmic lower bound or an MCSP descent.
+
+Controls: 500 reproducible N=14 cases, 1500 public-seed matches, 512 exhaustive N=9 controls, 0 assertion failures. Per-seed distinct witnesses cannot substitute for one common witness. Source-dependent seed sampling is excluded. Existing THRES-POLYFIBER10 and MAGRED-SEEDPORTFOLIO22 are antecedents. P versus NP OPEN.
