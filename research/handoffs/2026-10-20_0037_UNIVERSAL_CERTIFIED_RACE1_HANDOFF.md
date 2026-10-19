@@ -1,0 +1,7 @@
+# 2026-10-20 :48 — UNIVERSAL-CERTIFIED-RACE1
+P vs NP OPEN. Five hourly roles now focused ONLY on MCSP magnification and ARC/FLMV: :00 MCSP, :12 certified universal fastest-correct solver, :24 ARC (re-enabled), :36 two-route red team, :48 synthesis. Original stagger preserved; no new tasks or other reactivations.
+MAIN: research/main/2026-10-20_0037_MAIN_UNIVERSAL_CERTIFIED_RACE1.md.
+THEOREM A: For each SAT instance x length N, some globally correct program of O(N) code returns SAT(x) in O(N) on x by hardcoding answer and brute force elsewhere. Thus a free computable fastest-instance chooser is circular.
+THEOREM B: A proof-certified restarted weighted dovetail U_T has abstract simulated guest-work O(2^b(v_q+t_p(x))(b+log(v_q+t_p(x))+1)) for every fixed certified program/proof q of length b. Source and tape replay and peak memory are not free; P=NP need not give T-provable correctness.
+EXPERIMENT: 256/256 finite proper-3CNF masks correct, 2 invalid candidate solvers rejected, 1024 per-candidate bound controls; no failures. Finite proof check is toy-only.
+:00 test genuine source-specific both-promise CHMY threshold descent; :12 build resource-capped portfolio on the exact machine; :24 test all-input ARC K contraction and DELAY; :36 attack proof completeness, source replays and peak state; :48 synthesize only paths 1 and 2. GitHub errors do not pause science; Google Doc fallback applies.
