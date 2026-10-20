@@ -71,6 +71,16 @@ proposal 4 only as the already-known access-composition ledger.
 - Ilango's MCSP/SAT hardness evidence is a random-oracle result and does not
   supply the missing deterministic standard-model construction:
   <https://doi.org/10.1137/24M1652568>.
+- Levin's universal sequential search theorem, Hutter's proof-certified
+  fastest-program construction, and Blum's axiomatic complexity/speed-up
+  results do not provide a uniform numerical bound on the unknown exponent of
+  an arbitrary hypothetical P=NP SAT solver. Hutter competes only with
+  programs carrying the required formal correctness/time proofs, with
+  program-dependent additive terms. These frameworks therefore do not turn a
+  one-bit semantic tag into a high-KT target:
+  <https://www.mathnet.ru/eng/ppi914>,
+  <https://arxiv.org/abs/cs/0206022>, and
+  <https://doi.org/10.1145/321386.321395>.
 
 ## 4. Exact theorem: short tags and local expansions remain low-KT
 
