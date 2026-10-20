@@ -29,7 +29,7 @@ time, `O(log N)` counter workspace, and emits `N` bits. If
 `u=o(s/log N)`, then `K=o(s)`, but the target threshold is still
 `(1+o(1))s`: **there is no exponent descent.**
 
-Audit: `450,916` assertions, zero failures. Exact minimum gate counts were
+Audit: `450,916` assertions, zero failures. Exact minimum formula-gate counts were
 computed for every function on up to three inputs over
 `{NOT,AND,OR,XOR}`; reconstruction/fiber identities were exhaustively checked
 for five suffix erasures over all 16-bit truth tables.
