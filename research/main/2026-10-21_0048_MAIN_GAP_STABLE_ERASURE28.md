@@ -183,7 +183,7 @@ For `s=N^beta` and `u=N^alpha` with fixed `alpha<beta`,
 `experiments/review/2026-10-21_gap_stable_erasure28.py` performed **450,916**
 assertions with **zero failures**:
 
-- exact minimum circuit sizes for every Boolean function on one, two, and
+- exact minimum formula sizes for every Boolean function on one, two, and
   three variables over `{NOT,AND,OR,XOR}`;
 - every coordinate set of size at most three in those universes;
 - reconstruction identities, safe complexity distortion, additive YES/NO
