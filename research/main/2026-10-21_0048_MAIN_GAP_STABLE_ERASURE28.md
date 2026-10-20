@@ -49,7 +49,7 @@ CC(f) > s+2K    => CC(E_U(f)) > s+K.
 This is an exact reduction from an additive GapMCSP promise to ordinary MCSP
 at the shifted threshold. It is not a cofinal threshold descent: if
 `u=o(s/log N)`, then `s+K=(1+o(1))s`, so the exponent remains unchanged.
-The result constructs the first explicit project example of a lossy,
+The result constructs an explicit project example of a lossy,
 full-scan, promise-label-monochromatic fiber, while also showing precisely why
 that alone does not reach CHMY, MMW, OPS magnification, ARC, or FLMV.
 
