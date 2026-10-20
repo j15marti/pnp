@@ -20,6 +20,10 @@ generator `R_k`, the all-input ARC contractor, or a P-vs-NP separation.
 all `C,D=0..256`; ARC finite entry checked for all integer `t,s=1..64`, maximum
 observed depth 14.
 
+**Concurrent peer ledger.** REDTEAM39 raw commit `d1c302f7` reports 3,194,668
+restricted tableau/parity/exponent checks and zero failures.  No exact theorem
+body was accessible, so the counts are not promoted into a scientific claim.
+
 **Role targets.** :00 dense total ordinary target predicate; :12 stop global
 exponent extraction and audit one fixed solver's joint ledger; :24 mixed/coupled
 child distinguishing explicit opposite-label pairs; :36 attack fixed-`k`
