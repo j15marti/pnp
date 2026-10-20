@@ -2,7 +2,7 @@
 """Exact controls for GAP-STABLE-ERASURE28.
 
 This audits a deterministic fixed-coordinate erasure map on small truth
-tables.  It checks the algebraic reconstruction identities, exact circuit
+tables.  It checks the algebraic reconstruction identities, exact formula
 complexities for n <= 3 over {NOT, AND, OR, XOR}, fiber cardinalities, and
 the additive-gap transfer.  It is a finite control, not a lower bound.
 """
@@ -31,8 +31,8 @@ def var_table(n: int, coordinate: int) -> int:
     return table
 
 
-def exact_circuit_complexities(n: int) -> list[int]:
-    """Minimum formula-DAG gate counts over a fixed finite fan-in-two basis."""
+def exact_formula_complexities(n: int) -> list[int]:
+    """Minimum formula gate counts over a fixed finite fan-in-two basis."""
     N = 1 << n
     full = (1 << N) - 1
     infinity = 10**9
@@ -81,10 +81,10 @@ def patch(table: int, original: int, U: tuple[int, ...]) -> int:
     return result
 
 
-exact_complexity_summaries = []
+exact_formula_size_summaries = []
 for n in (1, 2, 3):
     N = 1 << n
-    complexity = exact_circuit_complexities(n)
+    complexity = exact_formula_complexities(n)
     max_complexity = max(complexity)
     cases = 0
     for u in range(0, min(3, N) + 1):
@@ -98,7 +98,7 @@ for n in (1, 2, 3):
                 fibers[e] = fibers.get(e, 0) + 1
                 check(patch(e, f, U) == f, f"reconstruct:n={n}:U={U}:f={f}")
                 check(abs(complexity[f] - complexity[e]) <= K,
-                      f"complexity-Lipschitz:n={n}:U={U}:f={f}")
+                      f"formula-Lipschitz:n={n}:U={U}:f={f}")
                 for s in range(max_complexity + 1):
                     if complexity[f] <= s:
                         check(complexity[e] <= s + K,
@@ -109,10 +109,10 @@ for n in (1, 2, 3):
             check(len(fibers) == 1 << (N - u), f"fiber-count:n={n}:U={U}")
             for e, size in fibers.items():
                 check(size == 1 << u, f"fiber-size:n={n}:U={U}:e={e}")
-    exact_complexity_summaries.append({
+    exact_formula_size_summaries.append({
         "n": n,
         "truth_table_length": N,
-        "maximum_exact_gate_count": max_complexity,
+        "maximum_exact_formula_gate_count": max_complexity,
         "erasure_cases": cases,
     })
 
@@ -158,7 +158,7 @@ result = {
     "checks": checks,
     "failures": failures[:20],
     "basis": ["NOT", "AND", "OR", "XOR"],
-    "exact_complexity_summaries": exact_complexity_summaries,
+    "exact_formula_size_summaries": exact_formula_size_summaries,
     "n4_structural_cases": structural_cases,
     "rational_exponent_cases": len(exponent_cases),
     "proved_scope": (
