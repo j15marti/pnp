@@ -26,9 +26,12 @@ Newest exact material recovered before this synthesis:
   ARC-SIGN-COLOR-GLUE4: Horn and dual-Horn projections are separately
   satisfiable even when their conjunction is unsatisfiable.  Status-only gluing
   is therefore invalid despite a favorable packing ledger.
-* **:36 red team.**  No newer accessible exact body than REDTEAM37 was present
-  in GitHub or the fallback log at read time.  This is an accessibility
-  statement, not a claim that no work occurred.
+* **:36 red team.**  A REDTEAM39 raw ledger arrived concurrently with this
+  publication (`d1c302f7081ba8b0376bbfa00773a42a4bc36bee`).  It records
+  3,194,668 restricted tableau/parity/exponent checks and zero failures in a
+  locally indexed tableau and parity-subset-query model.  No exact scientific
+  body or theorem statement was accessible at readback, so no stronger claim is
+  inferred from these counts.
 
 The root `main.tex` was fetched at blob
 `726d536b1644639bb7a9100907031dc36b80e173`; it was not modified.
