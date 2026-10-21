@@ -92,6 +92,6 @@ Finite audit: 49,380 assertions, including 160 random proper-3CNF coherence chec
 
 - Repository primary instance: [`example_dag.json`](https://github.com/j15marti/pnp/blob/main/experiments/DOUBLE_WRAPPER_2026-10-07/example_dag.json).
 - Repository quantifier comparison: [`wrapper_sat_quantifier_demo.py`](https://github.com/j15marti/pnp/blob/main/experiments/wrapped_dag/wrapper_sat_quantifier_demo.py).
-- Audit program: `experiments/review/2026-10-22_clause_join_frontier56_audit.py`.
+- Audit program: [`2026-10-22_clause_join_frontier56_audit.py`](https://github.com/j15marti/pnp/blob/main/experiments/review/2026-10-22_clause_join_frontier56_audit.py).
 
-Publication state is recorded only after commit and raw-file readback. No root manuscript was edited.
+**GitHub verified by raw-file readback:** report commit `dabfecb3f534e6d1f49d16952fcbe2edc8a6946a`; audit `203adcf97b8411cf5b6b26c02ce08b04b050d558`; raw results `5da581ff1565dfa083983906e480e45ba559febc`; handoff `8eb4d66778d408b454a55132d1ba5a01f4be1dbe`. The shared Drive fallback was readable but was not modified because GitHub publication succeeded. No root manuscript was edited.
