@@ -28,7 +28,7 @@ V_{\rm bit}(x,r)=D(x)\wedge r_1,\qquad
 V_0(x,r)=D(x).
 \]
 
-**Lemma 54A (ESTABLISHED).** `V_B`, `V_bit`, and `V_0` recognize the same language `L` with one-sided error. `V_B` and `V_bit` have exact YES-input acceptance probability `1/2`; `V_0` ignores randomness and accepts every random tape on YES inputs. Their circuit, certificate, residual, polynomial, trace, and digest structures may differ arbitrarily with the decorator.
+**Lemma 54A (ESTABLISHED).** `V_B`, `V_bit`, and `V_0` recognize the same language `L` with one-sided error. `V_B` and `V_bit` have exact YES-input acceptance probability `1/2`; `V_0` ignores randomness and accepts every random tape on YES inputs. Their circuit, certificate, residual, polynomial, trace, and digest structures can vary with the decorator; the concrete family below witnesses simultaneous large differences in several of these measures.
 
 **Proof.** If `x` is not in `L`, then `D(x)=0`, so all three verifiers reject every tape. If `x` is in `L`, then `D(x)=1`; the first two acceptance probabilities are the densities of `B_n` and `r_1`, both `1/2`, while the last accepts surely. Uniformity and polynomial running time follow by composing `D` with the stated circuits. ∎
 
