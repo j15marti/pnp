@@ -1,0 +1,100 @@
+% RP-REPLAY-STATE6, 2026-10-21 12:12 Asia/Seoul
+% P versus RP OPEN; P versus NP OPEN
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{observation}{Observation}
+\newcommand{\RP}{\mathsf{RP}}
+\newcommand{\PP}{\mathsf{P}}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\poly}{\operatorname{poly}}
+\title{RP-REPLAY-STATE6: Persistent Random-Tape Replay,\newline Configuration-Graph Derandomization and\newline a SAT-Compatibility Boundary}
+\author{Independent project audit}
+\date{October 21, 2026, 12:12 Asia/Seoul}
+\begin{document}
+\maketitle
+\noindent\textbf{Status:} Both $\PP\stackrel{?}{=}\RP$ and $\PP\stackrel{?}{\ne}\RP$ remain OPEN. The P versus NP question remains OPEN.
+
+\section{Four preregistered approaches}
+The separately preserved \texttt{PROPOSALS\_PREREGISTERED.md} was created before the present run's primary-literature searches. It identifies four falsifiable approaches: polynomial replay-footprint reachability; persistent-versus-fresh Boolean witness testing; completion-time hash normal forms; and unique-witness density amplification. The first two were constructed and tested. The latter two remain open beyond the controls specified below.
+
+\section{Random-tape semantics}
+An $\RP$ verifier $R(x,r)$ uses a fixed binary tape $r\in\{0,1\}^{m(N)}$ with $m(N)=\poly(N)$. The machine halts in polynomial time for all tapes. On NO inputs every tape rejects; on YES inputs at least half the tapes accept. A repeated address read returns the earlier bit. This consistency requirement cannot be discarded while keeping the language unchanged.
+
+\begin{theorem}[Bounded persistent-address footprint, ESTABLISHED]
+Fix a uniform polynomial-clock randomized verifier $R$. Suppose the number of nonrandom configurations on length-$N$ inputs is $C(N)=N^{O(1)}$. Suppose a deterministic polynomial-time routine produces for each $x$ a list $S_x$ of at most $q(N)\le c\log_2 N$ random-tape addresses such that along every computation path, no address outside $S_x$ is read more than once. Addresses inside $S_x$ may be revisited adaptively. Then the language recognized by $R$ with one-sided error lies in deterministic $\PP$. If the machine has an accepting tape, one can recover one in polynomial time.
+\end{theorem}
+\begin{proof}
+Introduce a ternary valuation $a\in\{?,0,1\}^{S_x}$. Build the directed graph of configurations $(t,c,a)$, where $t\le T(N)$, $c$ is an ordinary configuration, and $a$ records which persistent addresses have been sampled. At a read from $S_x$, use an already fixed bit or branch over $0,1$ and record it. At every other random read, branch over $0,1$ without recording it. Deterministic operations follow the original machine exactly.
+
+Each actual random tape induces a graph path. Conversely, take any graph path to acceptance. Every address in $S_x$ has a consistent recorded value. For an address outside $S_x$, a hypothetical second read would contradict the promise that no genuine computation may repeat such an address: before that first repeated read the branch choices are consistent with some physical tape, hence that prefix is a genuine computation. Thus all unrecorded addresses are read at most once on the graph path. Assign them their chosen values, and fill unread tape addresses arbitrarily. This yields an actual single fixed tape realizing the complete path.
+
+The graph contains at most $(T(N)+1)C(N)3^{q(N)}$ vertices and outdegree at most two, and every adjacency test is polynomial-time, including all source reads and interpreter operations. Ordinary deterministic breadth-first search takes $\poly(N)(T(N)+1)C(N)3^{q(N)}$ time and polynomial memory. Since $q=O(\log N)$, both are polynomial. An $\RP$ YES instance has at least one accepted tape and an $\RP$ NO instance has none. Backpointers produce an accepting tape while preserving all repeated bits.
+\end{proof}
+
+\noindent This is a restricted extension of the standard finite-configuration/reachability method. The theorem does not assume or prove $\PP=\RP$, because arbitrary polynomial-time randomized machines may have exponentially many configurations or more than logarithmically many recurring random-tape addresses. The address set must be computable in polynomial time and include every recurrent address across all paths, not just those seen in a single sampled run.
+
+\section{Source-accessible \#SAT replay counterexample}
+\begin{proposition}[Exact assignment-tape acceptance density]
+Let $W(F,r)$ accept if a proper CNF formula $F$ is satisfied by a fixed uniform assignment tape $r\in\{0,1\}^{n}$. The same random address $r_j$ is reused for every literal occurrence of variable $j$. Then
+\[
+\Pr_r[W(F,r)=1]=\frac{\#\SAT(F)}{2^n}.
+\]
+The checker uses $O(\log N)$ work space and polynomial running time with a read-only random-access assignment tape.
+\end{proposition}
+\begin{proof}
+Each tape corresponds to exactly one Boolean assignment and the checker is correct on that assignment. Counting tapes gives the formula. A streaming CNF parser, input cursor, binary variable index and clause-success flag use logarithmic work space; moving the random head and rereading the input are counted as polynomial-time operations.
+\end{proof}
+
+For a genuine all-input $\RP$ machine whose recognized language is already in $\PP$, define
+\[
+E(F,b,r)=\mathbf 1_{\mathrm{valid\ CNF}(F)}\cdot
+ \bigl[b\lor W(F,r)\bigr],
+\]
+using $n+1$ independent unbiased tape bits. Invalid sources reject every tape, while valid sources accept with density
+\[
+\frac12+\frac{\#\SAT(F)}{2^{n+1}}\ge\frac12.
+\]
+Hence this machine decides the easy language of well-formed CNF encodings, yet computing its exact acceptance density computes $\#\SAT(F)$, a $\#\mathrm P$-hard function. A hard numerical property of a verifier is not a lower bound against every deterministic decider of its language.
+
+\begin{proposition}[Fresh-per-literal failure of one-sided soundness]
+Take the eight proper clauses over $(x_1,x_2,x_3)$, one for each sign pattern, and conjoin them into $F_8$. This formula is minimally UNSAT. Under a consistent three-bit assignment tape, its acceptance probability is zero. Under the modified evaluator which samples a fresh independent bit for every literal occurrence,
+\[
+\Pr[\mathrm{modified\ evaluator}(F_8)=1]
+=\left(\frac78\right)^8
+=\frac{5764801}{16777216}>0.
+\]
+Thus replacing recurring random accesses with independent samples violates RP NO-input soundness.
+\end{proposition}
+\begin{proof}
+Each sign-pattern clause is false on exactly one of the eight assignments. All eight clauses exclude every assignment, while deleting any one restores exactly one. With independent bit sampling per literal, each three-literal clause succeeds with probability $7/8$ and all eight clause events are independent. Multiplication gives the stated probability.
+\end{proof}
+
+\section{Independent RP language and exact finite controls}
+The candidate formal arithmetic-circuit NONIDENTITY language over an explicit prime field is in $\RP$ by a bounded-rejection-sampling polynomial identity test. For an $s$-gate circuit with degree $D\le2^s$, require a prime $p>8D$; verify primality deterministically by the AKS method. With $v$ variables, give each variable at most $h=\lceil\log_2(8\max(1,v))\rceil$ independent attempts of $\lceil\log_2p\rceil$ bits. Reject if any coordinate is not sampled. Probability all variables obtain exactly uniform field values is at least $7/8$. For a formally nonzero polynomial, Schwartz--Zippel gives evaluation-success probability greater than $7/8$; hence overall acceptance exceeds $49/64$. A zero polynomial rejects every tape. Total randomness, time, input inspection and workspace are polynomial. A deterministic lower bound for this language is not proved.
+
+The previously tested clause-product polynomial does not produce a SAT-to-NONIDENTITY reduction, because the product is formally nonzero even for UNSAT. The present independent checker confirms that the eight-clause UNSAT cube has product value $208$ modulo $257$ at $(2,2,2)$.
+
+The complete Python checker \texttt{rp\_replay6\_audit.py} examined all 256 subsets of the eight three-variable clauses, all 5,984 unordered three-clause multisets from the 32 proper clauses on four variables, all eight deletions of the minimal UNSAT cube, a one-sided easy-language verifier and the finite-field controls. It executed \textbf{14,880} assertion-accounted checks, with \textbf{zero failures}. These finite checks validate the code, not the asymptotic theorem, whose proof is above.
+
+\section{Quantifier firewall and first open arrow}
+The theorem has the form
+\[
+\forall R\in \mathcal C_{\mathrm{polyconfig},\,q=O(\log N)}:\quad L(R)\in\PP.
+\]
+It is not the form $\forall R\in\RP:L(R)\in\PP$ and cannot prove unrestricted derandomization. The CNF sampler with persistent tape bits has YES success as small as $2^{-n}$, so it is not an RP algorithm for SAT. The easy syntactic RP machine has $\#\mathrm P$-hard acceptance-density evaluation yet a deterministic language bypass. The highest-value missing arrow for an unconditional separation is still an explicit single language $L\in\RP$ together with proof that \emph{every} deterministic polynomial-time decider fails on some input. Neither trace entropy, arithmetic PIT membership, fixed-point seed selection nor exact probability counting supplies that arrow.
+
+\section{Source audit status}
+The cumulative ledger retains 140 prior identified records and appends nine distinct newly identified source entries; it explicitly distinguishes direct source readback from inherited claims and metadata-only primary checks. Large Drive Living Logs, archival wrapper audits, prior ChatGPT transcripts and complete original paper bodies remain partly unread. No comprehensive-corpus claim is made.
+
+\paragraph{Next exact test.} Instrument the generalized completion-time/prime-lineage wrapper's recurrent random tape address superset $S_x$, full nonrandom configurations, source tape rereads, prime product bit growth and deterministic semantic bypass. If its architecture satisfies the bounded-replay theorem, it is in $\PP$ as a language decision mechanism. If not, identify the first failed structural hypothesis and still prove an unrestricted language lower bound before any separation claim.
+
+\paragraph{Synchronization.} Publication requires verified GitHub write/readback or an independently checked Google Doc. Local report generation by itself is not cross-agent sharing. Neither root manuscript nor schedules were modified.
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{rp_replay6}
+\end{document}
+% FINAL_VERIFICATION_SENTINEL::RP_REPLAY_STATE6::P_VS_RP_OPEN::P_VS_NP_OPEN
