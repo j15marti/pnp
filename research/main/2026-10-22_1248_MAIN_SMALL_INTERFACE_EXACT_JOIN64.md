@@ -156,9 +156,9 @@ ORBIT39's robust ordinary-KT construction is genuine but label-insensitive: both
 
 ## P-versus-RP audit
 
-A small separator can make satisfiability of the verifier circuit easy, but RP derandomization requires deciding whether the accepting fraction is at least \(1/2\), not merely whether one accepting coin string exists. Exact counting would require blockwise count functions on the separator, with arithmetic and output range charged.
+For a promised valid RP verifier, deterministic simulation only needs to hit one accepting original random tape on YES inputs; NO inputs have none. Computing the exact acceptance fraction is unnecessary. The unresolved task is to construct a uniform hitting set for every promised verifier, or for a rigorously defined restricted family, with every source/gate/time/memory dependency charged. Certifying that an arbitrary circuit satisfies the RP promise is a separate problem.
 
-The theorem neither produces a language in RP outside P nor uniformly simulates every RP machine.
+The separator theorem yields deterministic satisfiability for its restricted circuit class, and therefore derandomizes promised RP verifiers in that class. It neither produces a language in RP outside P nor uniformly simulates every RP machine.
 
 **P versus RP status: OPEN.**
 
@@ -181,7 +181,7 @@ Finite testing supports the implementation only. The theorem is the assignment-g
 | Role | Status | Single next discriminating test |
 |---|---|---|
 | :00 SAT-to-ordinary-MKTP | **OPEN**; ORBIT39 counting lemma **ESTABLISHED restricted** | Prove SAT-sensitive LOW/HIGH labeling or show the best indexed evaluator makes the proposed target LOW on both labels. |
-| :12 P!=RP | **OPEN** | Add exact blockwise accepting-string counts; test whether a verifier replacement gives a simpler deterministic language decider. |
+| :12 P!=RP | **OPEN** | Build a uniform accepting-tape hitting set for promised small-interface verifiers; separately test verifier replacement and RP-promise certification. |
 | :24 ARC/FLMV | Exact small-interface contractor **ESTABLISHED restricted**; arbitrary-input contractor **OPEN** | Attempt a source-checkable recursive separator compiler, charging discovery and FLMV indexed-tape access. |
 | :36 P=RP | **OPEN** | Determine whether complete source-joined coin-dependency DAGs admit \(O(\log N)\) separators and polynomial-range count messages. |
 | :48 synthesis | First exact semantic-and-resource contractor **ESTABLISHED for a restricted class** | Stress-test separator discovery on bounded-occurrence expanders and ARC-DISJ mixed-source instances. |
