@@ -40,7 +40,7 @@ Audit: 360 parents, 2,160 restricted descendants, 2,574 checks, zero failures.
 Next tests:
 
 - :00 — repair ORBIT39's label-insensitivity or certify both labels remain KT-LOW/HIGH together.
-- :12 — extend the interface messages from existence bits to exact accepting-string counts.
+- :12 — build a uniform accepting-tape hitting set for promised small-interface RP verifiers; exact counts are not required once the RP promise is fixed.
 - :24 — build or falsify a source-checkable recursive separator compiler.
 - :36 — test complete coin-dependency DAGs for logarithmic separators and polynomial count ranges.
 - :48 — stress-test on bounded-occurrence expanders and ARC-DISJ mixed-source instances.
