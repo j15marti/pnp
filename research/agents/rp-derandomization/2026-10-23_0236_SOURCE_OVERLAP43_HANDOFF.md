@@ -1,0 +1,16 @@
+# SOURCE-OVERLAP43: Uniform NNF source-overlap hitting
+Date 2026-10-23 Asia/Seoul. Classification: ESTABLISHED restricted; general P vs RP OPEN.
+
+PRE-SOURCE constructions: (1) source-overlap conditioning, (2) exponential-ANF DNNF family, (3) source-coherence NO control. This run consulted original double_wrapper.py, example_dag.json, SOURCE-CUTSET22, and Darwiche/Marquis/Valiant literature.
+
+Theorem: Given a faithful uniform NNF DAG C_x(r), compute U as the union, over all AND gates (a,b), of syntactic original-random-source supports S(a)∩S(b). If k=|U|, a deterministic 2^k poly(S,m) method enumerates U assignments, evaluates the remaining decomposable NNF for SAT, and extracts actual original source tapes. OR determinism and exact counts are unnecessary. If compilation is uniform polynomial and k=O(log n), the represented RP language belongs to P. Never sample auxiliary gates independently; replay unchanged verifier for exact NO rejection.
+
+Orthogonality: T_n=OR_i(a_i AND b_i) has k=0, 4n+1 NNF nodes, original ANF support 2^n-1 and degree 2n. Guard R(x,r)=x AND T_n gives YES acceptance 1-(3/4)^n≥1/2 for n≥3, NO=0, recognizing an easy language. Moreover k=0 2-DNF exact counting can be #P-complete: count accept =2^|V|-#IndependentSets(G). The witness algorithm is not a model counter.
+
+Independent finite audit: 260 randomized source-faithful NNF DAGs, 18,208 primary tape checks, 222 satisfiable and 38 unsatisfiable; all 260 NO guards rejected. Seventy randomized k=0 graph DNFs with 4,568 tapes verified the independent-set counting identity. A 3-bit nondeterministic OR example had actual acceptance count 3, while branch-sum yielded 4. Source-resampling conflict r AND NOT r was UNSAT after join.
+
+Actual project root: 14 original variables, 20 clauses, 60 literal occurrences; raw CNF NNF k=14. Reconstructed SOURCE-CUTSET22 control {x1,x2}, four 3-variable components and block counts (3,4,5,6),(4,4,3,6),(5,4,6,5),(7,5,5,4). Explicit 148-node (28 shared literals,64 AND,56 OR) source-faithful DNNF has k=0 and accepted 1,948/16,384 primary tapes. All 16,384 tapes checked against original CNF with zero differences; ANF degree12, support601. Root compilation cost: 240 literal inspections in four passes, 440 local literal tests across 128 local valuations. Functional 2-source/3-gate Tseitin toy has exactly one auxiliary extension per primary tape.
+
+The original executable performs at least 180 pre-metric literal inspections at the 60-occurrence root; q_budget=N_bits^(1/3) is NOT q summary bits. Its clause reads are outside an uncharged digest-only q+bt interface. No numeric violation of a correctly charged channel bound is claimed. No SHA/timer growing compiler demonstrated.
+
+Next: extract full growing SHA/timer verifier into source-faithful NNF, track S(n), k(n), compiler cost, literal and gate reads, ANF, transcript limits, and NO controls. P=RP, P!=RP, P!=NP all OPEN. Local script / reports exist only in investigator runtime; do not assume paths are shared.
