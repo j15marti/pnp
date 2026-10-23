@@ -1,0 +1,111 @@
+% LSPV-2 REPORT::QUIET_EQUIV67::2026-10-24T06:22:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,url}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{QUIET-EQUIV67: Unit-Free SCC Equivalence Collapse in a State-Adaptive Backward SAT Solver}
+\author{LSPV-2: Constructive Backward SAT Algorithms}
+\date{24 October 2026, Asia/Seoul}
+\begin{document}\maketitle
+\begin{center}\textbf{P versus NP remains OPEN. Restricted mathematical statements await independent peer review.}\end{center}
+
+\section{Target and three falsifiable mechanisms}
+The common five-role question is whether an arbitrary exact SAT decider must construct a rich continuation relation or pay a similarly large alternative cost. No such universal dichotomy is assumed. The present mechanism tests a state-adaptive, source-coherent policy that changes its representation from mixed CNF to binary implication classes to a reduced binary CNF, even when no literal is initially forced.
+
+\noindent\textbf{M1, tested and PROVED/EXACT restricted:} a complete, paid SCC computation on a satisfiable binary subformula may collapse linearly many genuine ternary clauses to binary/unit clauses without any initial unit or implied source literal.
+
+\noindent\textbf{M2, tested and FALSIFIED/RETIRED as a universal inference:} a linear minimum \emph{raw syntactic} strong 2-CNF backdoor $h$ necessarily causes $2^{\Omega(h)}$ work for all exact deciders. The matched both-label family below has $h=\Theta(n)$ and a linear-time exact uniform hybrid.
+
+\noindent\textbf{M3, restricted comparator:} a specifically declared policy that fully enumerates every strong-backdoor assignment before calling SCC pays $2^h$ child calls on both labels. This is an exact cost of that policy only. Dynamic DPLL, propagation, direct source inspection, and arbitrary alternative symbolic methods are not covered.
+
+\section{An exact paid SCC-equivalence rule}
+Let $F=B\wedge T$, where $B$ is 2-CNF over original source names and $T$ consists of proper ternary clauses. First verify and index the source, then run SCC on the implication graph of $B$. If $B$ is UNSAT, reject with that sound certificate. If $B$ is SAT, assign each signed literal $\ell$ a representative $\rho(\ell)$ from the same implication SCC. Transform each ternary by replacing its literals with their representatives, eliminating duplicate signed literals, and dropping a clause only if syntactically complementary representatives occur. Call the result $T'$.
+
+\begin{lemma}[Exact source-relative equivalence]\label{lem:scc}
+For every original-source assignment satisfying $B$,
+\[
+T(\alpha)=T'(\alpha).
+\]
+Consequently $F$ and $B\wedge T'$ have \emph{exactly the same satisfying source assignments}. If every clause of $T'$ has width at most two, SCC decides $F$ and reconstructs a source witness in $O(n+m)$ addressed-word operations after the paid source read, with $O(n+m)$ live logical words.
+\end{lemma}
+\begin{proof}
+Mutually reachable literals in the implication graph of a satisfiable 2-CNF have identical truth values under every model of that 2-CNF. Replacing a literal by a representative thus preserves each clause's value under $B$. Deduplication preserves OR; syntactically complementary representatives form an always-TRUE disjunction. Conjoin with $B$ and apply the standard linear SCC algorithm. The returned assignment satisfies the original formula; replay every original signed clause before acceptance. Building and scanning all implication edges, SCCs, representatives and clauses is linear. A rejected recognition invokes a separate exact DPLL fallback; no all-input polynomial claim is made.
+\end{proof}
+
+\section{Connected scalable SAT and UNSAT controls without binary units}
+Fix $q\ge2$, $n=3q$, and original source variables $x_1,\ldots,x_{3q}$. Define
+\[
+B_q=\bigwedge_{i=1}^{3q-1}
+[(\neg x_i\vee x_{i+1})\wedge(x_i\vee\neg x_{i+1})],
+\quad
+C_i=(x_{3i+1}\vee x_{3i+2}\vee x_{3i+3})
+\]
+for $i=0,\ldots,q-1$. Set
+\[
+F_q^+=B_q\wedge\bigwedge_{i=0}^{q-1}C_i,\qquad
+F_q^-=B_q\wedge\bigwedge_{i=0}^{q-2}C_i\wedge
+(\neg x_{3q-2}\vee\neg x_{3q-1}\vee\neg x_{3q}).
+\]
+These inputs have identical unsigned clause supports and encoded length. Their entire incidence graphs are connected. There are no unit clauses. The binary skeleton $B_q$ has two satisfying assignments, all-zero and all-one, hence it forces no individual source literal; raw unit propagation on the full input has no starting unit.
+
+\begin{theorem}[Unit-free quotient collapse; restricted, peer review pending]
+Both labels are exact:
+\[
+F_q^+\in\mathrm{SAT},\qquad F_q^-\notin\mathrm{SAT}.
+\]
+The minimum raw syntactic strong 2-CNF backdoor for either formula is $h=q$. Nevertheless, the uniform SCC-equivalence hybrid from Lemma~\ref{lem:scc}, with source acquisition and source witness replay fully charged, solves both in $O(N/w)=O(q)$ word operations and $O(q)$ live logical words. Its trajectory moves from $q$ ternaries to zero without a binary-backbone unit implication.
+\end{theorem}
+\begin{proof}
+All clauses of $B_q$ force $x_1=\cdots=x_{3q}$. Every $C_i$ therefore requires the common value $1$; the final negative triple in $F_q^-$ requires it to be $0$. The all-one assignment witnesses $F_q^+$. The $q$ ternary variable supports are pairwise disjoint. Any raw strong deletion backdoor to 2-CNF must meet all $q$ supports, and one chosen variable per support is sufficient, proving $h=q$. The SCCs of $B_q$ identify every positive literal, and separately every negative literal. Each ternary consequently becomes a unit on the same representative, making $B_q\wedge T'$ a 2-CNF. One more SCC finds either a witness or conflicting unit requirements. Neither the $q$ source-variable assignments nor all $2^q$ selector possibilities are enumerated.
+\end{proof}
+
+With $m_2=6q-2$, $k=q$, and $m=7q-2$, the fixed-record encoding has
+\[
+w=\lceil\log_2(64(n+m+1))\rceil,\qquad N=(4m+2)w.
+\]
+The assignment-evaluation circuit, \emph{not} a SAT-decider circuit, has $8q-2$ OR2 gates, $7q-3$ AND2 gates and $3q$ source NOT gates, hence $18q-5$ gates and $33q-10$ directed gate-input wires. With a forced-TRUE output and functional trace, it has $51q-14$ Tseitin clauses (including the output unit). Backward output TRUE demands every clause TRUE, but requires only one consistent TRUE witness per clause, not exactly one TRUE original literal.
+
+\section{Adaptive state, acquisition, policy and accounting}
+The operational state retains original clauses, the binary implication graph, partial assignment, cached SCC data, residual clause records, remaining budget and selected representation. A structural parameter is never presumed free or inferred from elapsed runtime.
+
+\begin{center}\small
+\begin{tabular}{p{.18\linewidth}p{.24\linewidth}p{.27\linewidth}p{.22\linewidth}}
+\toprule
+Stage & Acquired, accessible parameters & Rule selected; alternatives considered & Correctness and charge\\\midrule
+$S_0$ original mixed CNF & $n,m,k=q$ from paid signed reads; $h=q$ analysis-only & inspect binary backbone; no label known & $15q-4$ literal reads; source stored\\
+$S_1$ SCC representation & two certified signed SCC classes, no binary forced literals & quotient ternaries; static backdoor or DPLL deferred & $12q-4$ first-pass implication arcs; all scans paid\\
+$S_2$ reduced binary & $k'=0$, $q$ source-relative units, possible conflict & switch to SCC over full reduced CNF & $13q-4$ second-pass arcs; exact source coherence\\
+$S_3^+$ terminal SAT & acquired consistent SCC witness & replay all original clauses & $15q-4$ replay reads; no search branches\\
+$S_3^-$ terminal UNSAT & opposing unit requirements observed & reject without witness & no original-model enumeration\\
+Outside recognized class & failed checks and residual genuine ternaries retained & complete DPLL fallback & complete search and failed rules are charged; may be exponential\\
+\bottomrule
+\end{tabular}
+\end{center}
+Total constructed implication arcs are exactly $25q-8$ in the specified two-SCC procedure. Additional SCC node visits, representative construction, policy checks, source reads, and reconstruction are linear. Live-word accounting is $O(n+m)$; reported numerical peak is a conservative logical allocation proxy, not measured Python heap. All code is deterministic, source-preserving, and returns an exact SAT/UNSAT label on the tested family without being told the label.
+
+\section{Comparators and genuine signed exact-$(2,2)$ controls}
+For the explicitly defined \emph{fixed complete-backdoor enumerator}, choose one source variable from every disjoint ternary support; enumerate their $2^q$ complete Boolean assignments in lexicographic order and only then call SCC on each residual 2-CNF. On $F_q^+$, only the last all-one backdoor assignment extends; on $F_q^-$ none does. This comparator thus makes \emph{exactly} $2^q$ calls for either label. This is a policy-specific count, not an unavoidable SAT lower bound. A direct source recognizer or propagation after an intelligently chosen decision could also solve these instances quickly.
+
+The $F_q^\pm$ family contains binary clauses and is \emph{not} strict signed exact-$(2,2)$ 3-CNF. To guard against improper language transfer, the audit separately generates strict quartet controls ($3p$ sources, $4p$ proper ternaries, two occurrences of each sign per source). Our SCC recognizer does \emph{not} eliminate those unsupported ternaries and correctly invokes exact DPLL. It also reads the independently source-checked D\"ocker 198-variable/264-clause strict signed exact-$(2,2)$ UNSAT source $U$ and the two-sign SAT neighbor $V$: both are marked \texttt{UNSUPPORTED} by this recognizer, all 264 ternaries remain, and $V$'s published complete witness is replayed. The UNSAT label for $U$ depends on previously checked DOECKER-CORE-CERT61; this run does \emph{not} independently regenerate that proof. No false shortcut SAT decision is emitted on $U$.
+
+\section{Reproducible evidence, corpus and limitations}
+\textbf{COMPUTATIONAL.} One local standard-library audit, seed identifier 202610240612 (no stochastic draws), executes 32 assertion-accounted case groups, zero failures: six exhaustive opposite-label controls ($q=2,3,4$), 22 larger opposite-label controls through $q=512$, three strict quartet controls, and the source-checked $U,V$ comparator. For $q=10$, the stated fixed enumerator takes 1024 calls per label, versus two SCC computations with 242 implication-arc writes in the hybrid; for $q=512$, $n=1536,m=3582,N=272270$ bits, two SCC passes write 12792 arcs with no search branches. The full local audit SHA-256 is \texttt{1593ab4309a14955c7059af81d24f5c78026113a212ac2efe93cb3e45c3b6261}. Raw machine-readable results and exact source records are in the companion research package.
+
+\textbf{CORPUS REVIEWED.} Current repository tree and task specifications; root \path{main.tex}, \path{AGENTS.md}, \path{CODEX.md}, research skill; MAIN ROOT-LABEL-QUOTIENT85, SMALL-INTERFACE-EXACT-JOIN64, TERNARY-PROJECTION-KERNEL88, ADAPTIVE-TRAJECTORY-FIREWALL107; Roles 1 CUBICCOVER75 and PAIRPATH73, 2 DOMAIN-COLLAPSE55, ADAPTIVE-BIDIR65 and AFFINE-ISLAND66, 3 ADAPTIVE-COVER75, and 4 ADAPTIVE-TERNARY-COLLAPSE69. Primary literature includes SCC-based 2-SAT \cite{apt} and heterogeneous backdoors \cite{hetero}.
+
+\textbf{DUPLICATION/CONTRADICTION AUDIT.} SCC implication equivalence is known, not a novel polynomial SAT primitive. Role 4 already showed a one-seed binary implication that collapses linearly many ternaries; the present hostile control is distinct because the entire binary backbone has \emph{no forced source literal} and the collapse requires a different acquisition, namely SCC equivalence classes. The current MAIN already has an exact 2-CNF projection kernel, so that known theorem is adopted rather than relabelled new. AFFINE-ISLAND66 handles independent strict exact-$(2,2)$ quartets and certified opposite-label fixed cores; we do not claim an advance on the genuine NP-complete strict class.
+
+\textbf{WHAT CHANGED RELATIVE TO ROOT MAIN.} The explicit new control falsifies initial syntactic backdoor work potential even after excluding simple forced-unit shortcuts. The state trajectory is $h=q\to h'=0$ through a paid SCC quotient, with correct SAT/UNSAT decisions and a reproducible rule-selection ledger. Both initial parameter-only exponential lower bounds and any claim of exhaustive selection necessity remain \textbf{FALSIFIED/RETIRED}. The adaptive policy is a restricted \emph{upper-bound} result. All-decider representation extraction, compression-cost lower bounds, and a polynomial algorithm for arbitrary exact-$(2,2)$ SAT remain \textbf{OPEN}. Neither $P=NP$ nor $P\ne NP$ is proved.
+
+\textbf{NEXT MISSING LEMMA (OPEN).} Find a source-computable, decision-only, state-adaptive progress potential whose per-transition inequality survives paid SCC-equivalence collapse \emph{without} forced units, affine elimination, paired matching, source rereads, direct decision and source-coherent joins. Alternatively develop a uniform polynomial algorithm covering the strict exact-$(2,2)$ UNSAT inputs that decline this recognizer. A finite rule menu and its success trajectory are not coverage of arbitrary exact deciders. Control-theoretic potential reasoning is an analogy requiring a model-matched proof; cryptographic/hashing analogies do not provide unconditional bounds.
+
+\begin{thebibliography}{5}
+\bibitem{apt} B. Aspvall, M. F. Plass and R. E. Tarjan, A linear-time algorithm for testing the truth of certain quantified Boolean formulas, \emph{Information Processing Letters} 8(3), 121--123 (1979), doi:10.1016/0020-0190(79)90002-4.
+\bibitem{hetero} S. Gaspers, N. Misra, S. Ordyniak, S. Szeider and S. \v{Z}ivn\'y, Backdoors into heterogeneous classes of SAT and CSP, \emph{J. Computer and System Sciences} 85, 38--56 (2017), doi:10.1016/j.jcss.2016.10.007.
+\bibitem{docker} J. D\"ocker, Monotone 3-Sat-(2,2) is NP-complete, arXiv:1912.08032 (2019).
+\bibitem{project} j15marti/pnp, verified root and agent research records, October 2026.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::QUIET_EQUIV67
