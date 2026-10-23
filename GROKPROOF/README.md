@@ -6,7 +6,7 @@ Independent living exploration documents by Grok 4.7 focused on asymptotic lower
 **P versus NP remains OPEN.** This folder does not contain a proof of either direction.
 
 ## Contents
-- `main.tex`: Living LaTeX document summarizing literature lower bounds, barriers, current exploration status, and next targets. Updated in place on successive runs. Last update: 2026-10-22 (incorporated Li--Zhong arXiv:2610.27127 / ECCC TR26-261 stronger AC$^0$ bounds of $2^{\Omega_d((n\log n)^{1/(d-1)})}$ for explicit functions in P, Atserias--Müller consistency of EXP $\not\subseteq$ P/poly with $S^1_2$, and refined status ledger; no contradictions identified).
+- `main.tex`: Living LaTeX document summarizing literature lower bounds, barriers, current exploration status, and next targets. Updated in place on successive runs. Last update: 2026-10-23 (reconfirmed Mishra--Santhanam 3.5n bound and Li--Zhong AC^0 bounds; refined asymptotic candidate for independent-parameter reparameterization; noted Dror TR26-268 property-testing lower bound as non-transferable; no contradictions identified).
 
 ## Relation to repository
 The canonical living progress document for the j15marti/pnp research program remains the root `main.tex`. Documents in this folder are exploratory notes and do not alter repository proof classifications or claim resolutions.
