@@ -1,0 +1,40 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-10-23, run 1
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{lemma}{Lemma}\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: stepwise wire/gate lower bounds for Circuit-SAT}
+\date{Living document; last updated 2026-10-23}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains open.} Nothing here is a superpolynomial lower bound. Labels: PROVED, COMPUTATIONAL, KNOWN, OPEN.
+
+\section{Method}
+Model: fan-in-2 circuits over the full basis $B_2$; size $=$ number of gates $g$; wires $w=2g$ (gate inputs) plus output wire. Ladder: take a SAT-type function $F_k$ at level $k$, record (i) proven lower bound, (ii) best upper bound, (iii) exact value when computed, then move to level $k+1$ (more variables / clause types).
+
+\section{Elementary lemmas}
+\begin{lemma}[PROVED, connectivity] If $f$ depends essentially on $m$ inputs, every $B_2$ circuit for $f$ has $\ge m-1$ gates, hence $\ge 2(m-1)$ gate-input wires.\end{lemma}
+\emph{Proof.} Each essential input must have a path to the output; the sub-DAG reaching the output with $m$ source leaves and fan-in $2$ has at least $m-1$ internal nodes. \qed
+
+\section{Ladder}
+Encode a CNF over $n$ variables by presence bits, one per possible clause. $\mathrm{SAT}^{(k)}_n(x)=1$ iff the CNF is satisfiable.
+
+\begin{prop}[Level 1, unit clauses; PROVED] Presence bits $p_i,q_i$ for $x_i,\neg x_i$ ($2n$ inputs). $\mathrm{SAT}^{(1)}_n=\bigwedge_i\neg(p_i\wedge q_i)$ has circuit complexity exactly $2n-1$ (upper: $n$ NANDs $+\,(n-1)$ ANDs; lower: Lemma, all $2n$ inputs essential). Wires $=2(2n-1)$.\end{prop}
+
+\begin{prop}[Level 2a, all four 2-clauses on 2 variables; PROVED] Each assignment falsifies exactly one clause, so $\mathrm{SAT}=\mathrm{NAND}_4$; exact size $3=4-1$.\end{prop}
+
+\begin{prop}[Level 2b, all 2-clauses on $n$ variables; upper bound] $\binom n2\cdot4$ inputs. $\mathrm{SAT}=\bigvee_{a\in\{0,1\}^n}\bigwedge_{c\text{ falsified by }a}\neg x_c$ (each $a$ falsifies $\binom n2$ clauses), giving size $O(2^n n^2)$ directly; lower bound from the Lemma only $4\binom n2-1$. Gap is OPEN (and 2-SAT is in P, so this level is expected to admit polynomial circuits; the question for the ladder is the exact polynomial).\end{prop}
+
+\subsection*{Exact data (COMPUTATIONAL)}
+Exhaustive search over all circuits ($\le4$ gates, 4 inputs; script \texttt{scripts/circuitsat\_exact\_small.py}):
+\begin{center}\begin{tabular}{lcc}function&inputs&min gates\\ \hline $\mathrm{SAT}^{(1)}_1$&2&1\\ $\mathrm{SAT}^{(1)}_2$&4&3\\ $\mathrm{SAT}^{(2a)}_2=\mathrm{NAND}_4$&4&3\end{tabular}\end{center}
+All match the connectivity bound $m-1$: these levels are ``wire-tight''. Search is doubly-exponential; it does not scale past $\approx5$ inputs without SAT-based synthesis (pysat/z3 not installed in the run environment).
+
+\section{Barriers (KNOWN)}
+Best explicit lower bound for $B_2$ circuits is $\approx3.1n$ (Li--Yang, STOC 2022); gate elimination, natural proofs, relativization and algebrization do not give superlinear bounds. A ladder of exact small values is evidence-gathering only; extrapolation to $n^{\omega(1)}$ requires a structural theorem not present here.
+
+\section{Repository cross-check}
+Run 1 surveyed repo layout only (root \texttt{main.tex} has LSPV ownership regions; no existing circuit-gate ladder found by file-name search). Full reconciliation with \texttt{main.tex}/LSPV reports is OPEN for next runs. This file is not an LSPV ownership region and edits no other document.
+
+\section{Next steps}
+(1) Install a SAT-based exact-synthesis tool and compute $\mathrm{SAT}^{(2)}_3$ (12 inputs) bounds. (2) Level 3: 3-clauses, $n=3$ (8 inputs; exact size via SAT synthesis). (3) Track wires vs.\ fan-out to test whether fan-out $\ge2$ forces extra gates (gate-elimination style). (4) Read repo LSPV reports for reusable invariants.
+% END_OF_CLAUDECIRCUITSAT_RUN::1
+\end{document}
