@@ -1,0 +1,64 @@
+% ClaudeCircuitSAT living document -- last updated 2026-10-23 (run 1)
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs,url}
+\newtheorem{lemma}{Lemma}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\title{Circuit-SAT Lower Bounds: a Wire-by-Wire Ladder}
+\author{Claude (scheduled hourly run)}
+\date{23 October 2026}
+\begin{document}\maketitle
+
+\fbox{\parbox{0.95\linewidth}{\textbf{Status.} No superlinear (let alone superpolynomial) circuit lower bound for an NP-complete problem is claimed. P versus NP remains \OPEN{}. This document is a ledger of exact small-case facts and the ladder we intend to climb.}}
+
+\section{Model and the ladder}
+Circuits: DAGs of fan-in-2 gates over the full binary basis $B_2$ (all 16 operations, negation free); size $=$ number of gates $g$; \emph{wires} $=2g$ gate-input connections (each input/gate may fan out). Ladder rung $(n,\mathcal F)$: all functions of $n$ Boolean inputs in a class $\mathcal F$; tracked quantity: $C(f)$ and wires $2C(f)$.
+
+Ladder of problems (simplest first): single clause $\to$ conjunction of clauses $\to$ 2-CNF-SAT verifier $\to$ 3-CNF verifier $\to$ circuit-evaluation verifier. For a fixed formula $\varphi$ on $n$ variables, the \emph{verifier} $V_\varphi(x)=\varphi(x)$ is a function with $C(V_\varphi)\le O(|\varphi|)$; SAT itself asks for $\exists x\, V_\varphi(x)$, whose lower bounds are query/size questions for a \emph{solver}, a strictly harder object. We keep the two apart.
+
+\section{Proved basics}
+\begin{lemma}[connectivity, \EXACT]
+If $f$ depends essentially on all $n$ inputs then every circuit for $f$ has $g\ge n-1$ gates, hence $\ge 2n-2$ wires.
+\end{lemma}
+\noindent\emph{Proof.} The circuit's underlying graph restricted to the cone of the output must be connected and contain all $n$ inputs; a connected graph on $n+g$ nodes has $\ge n+g-1$ edges, while edges $=2g$, so $2g\ge n+g-1$. \qed
+
+\section{Computational ladder (exhaustive, \COMP)}
+Script: \path{scripts/circuitsat_exact_b2.c} (DFS over all circuits up to depth $D$, deduplicating gates equal to an existing node or its complement; run time $<20$s each).
+
+\begin{center}\begin{tabular}{rrrrrr}\toprule
+$n$ & $g=1$ & $g=2$ & $g=3$ & $g=4$ & non-trivial total\\\midrule
+2 & 10 & 0 & -- & -- & 10 of 16\\
+3 & 30 & 114 & 80 & 24 & 248 of 256\\
+4 & 60 & 456 & 2474 & 10624 & partial ($D=4$ only)\\\bottomrule\end{tabular}\end{center}
+(The two constant functions are removed from the $g=2$ count: they arise as artefacts $g_1\wedge\neg x$.) Hence $\max_f C(f)=1,4$ for $n=2,3$.
+
+Named functions, $n=3$ ($C$ exact):
+\begin{center}\begin{tabular}{lc}\toprule function & $C$ (wires $=2C$)\\\midrule
+$a\wedge b\wedge c$ & 2 (4)\\ $a\oplus b\oplus c$ & 2 (4)\\ MUX & 3 (6)\\
+$(a\vee b)\wedge(\neg b\vee c)$ (2-CNF) & 3 (6)\\ $\mathrm{NAE}(a,b,c)$ (3-CNF) & 3 (6)\\
+MAJ$_3$ & 4 (8)\\ EXACT-1$(a,b,c)$ & 4 (8)\\\bottomrule\end{tabular}\end{center}
+Observation: already at $n=3$ the SAT-verifier-type functions meet the connectivity bound $n-1=2$ only for AND/XOR; clause interaction ($b$ shared) costs one extra gate.
+$n=4$: the maximum is $7$ gates (Knuth, TAOCP 7.1.2) -- \KNOWN{}, quoted from memory, not recomputed here; extending the search to $D=5..7$ needs chunked/symmetry-reduced search.
+
+\section{What is known at scale (\KNOWN, to be re-verified against primary sources)}
+Gate elimination gives explicit functions in $\mathrm{P}$ with $C\ge 3n-o(n)$ in $B_2$ (Blum; later improvements to about $3.1n$ by Find--Golovnev--Hirsch--Kulikov and Li--Yu); nothing superlinear is known for any explicit function, and for NP-complete problems the best general circuit bounds are linear. Natural-proofs, relativization and algebrization barriers apply to any route via random-like functions.
+
+\section{Open arrows / next rungs}
+\begin{enumerate}
+\item \OPEN: compute exact $C$ for the full $n=4$ class (needs $D=7$ with symmetry reduction or SAT-based synthesis; split by NPN class, checkpoint results).
+\item \OPEN: exact $C$ of $k$-clause $\varphi$ verifiers as $(n,k)$ grows; fit against $n+k-1$-type bounds and test whether sharing of variables forces extra wires.
+\item \OPEN: relate verifier wire counts to repository work (\path{main.tex}): fixed-width acquisition bound $\Omega(N/\log N)$ is a probe bound, not a circuit-size bound.
+\item \OPEN: any bridge from solver circuits to verifier wire counts (worst/average-case barrier).
+\end{enumerate}
+
+\section{Repository cross-check (run 1)}
+Surveyed root \path{main.tex} (LSPV-1..5 regions, all still OPEN), \path{tasks/}. Nothing there yields a circuit-size lower bound; its probe/acquisition results are in a different model. No transfer claimed.
+
+\section{Run log}
+Run 1 (2026-10-23): created document; Lemma 1; exhaustive $B_2$ tables for $n\le 3$.
+\end{document}
+% END_OF_CLAUDECIRCUITSAT_RUN1
