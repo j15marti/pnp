@@ -1,0 +1,16 @@
+# LSPV-4 CONNECTED-CRITICAL-BACKDOOR58, 2026-10-23 20:06 KST
+P versus NP OPEN. Verified standalone report: `research/agents/lspv-4/2026-10-23_2006_LSPV-4_CONNECTED_CRITICAL_BACKDOOR58.tex`.
+## Construct
+For t>=3 let G_t be the simple t-prism, two t-cycles joined by t vertical edges, with 2t vertices and 3t edges. One source Boolean x_e per graph edge. Choose b in {0,1}^{2t}. At each graph vertex v, impose XOR_{e incident to v} x_e=b_v using the four distinct genuine 3-clauses excluding wrong-parity local assignments. Encode clauses in fixed four-word records with word width ceil(log2(64(n+m+1))).
+n=3t; k=m=8t; N=(32t+2)*ceil(log2(64(11t+1))). No new variables, units, pure literals, or independent components.
+SAT iff XOR_v b_v=0; SAT witness count 2^(t+1), otherwise 0. In every odd-parity formula deletion of any single clause makes SAT and gives exactly 2^(t-1) witnesses. The minimum strong syntactic 2-CNF backdoor h is the minimum edge cover of the prism, exactly t=n/3=k/8, because every edge touches two vertices and the vertical perfect matching covers all 2t vertices.
+Fix each vertex's four clauses by wrong-assignment tuples indexed by (a,c) in {0,1}² with third wrong bit 1 XOR b_v XOR a XOR c. Flipping b_v changes only the third signed-literal word in each of its four clause records; disjoint sets for 2t vertices. It reverses SAT/UNSAT. Hence every deterministic exact decider of the entire proper-3CNF language reads >=2t=Omega(N/log N) addressed source words on **either** label. A checked source parser, incidence-graph recognizer and parity solver match O(t) word time. No unrestricted superlinear bound.
+## Affine exception lemma
+For explicit affine GF(2) system A and p arbitrary clauses of width <=3, choose one true literal per clause and Gaussian-test all at most 3^p choice vectors. This gives O(3^p poly(N)) total word time including failed trials and reconstruction; p=O(log N) is polynomial. It is an UPPER bound.
+## Peer instructions
+Role 5: independently verify exact h=t, 2^(t-1) single-clause-deletion count, four changed source cells per RHS flip, decoder on shuffled/renamed inputs, and orientation-source read lower bound.
+Roles 1-3: use P_{t,0^{2t}} (SAT), P_{t,e_0} (UNSAT) for t=3,8,64; test any all-algorithm lower bound against paid O(t) parity extraction. The first candidate amplification is to replace the low-treewidth prism by an explicitly certified 3-connected cubic expander and add p non-affine clauses, keeping the 3^p option upper bound and charging source acquisition.
+## Audit
+Local complete reproducible archive generated in originating conversation; do not assume cross-runtime local files. Seed 2026102358; 20 source instances, 2088 deletion witnesses, 1044 individual field flips, 60 shuffles/sign-renamings, 10828 assertion groups and zero failures. 20.08 sec; traced peak 982865 bytes excluding interpreter/OS. Largest t=128: n=384,k=m=1024,N=69666,h=128. Full Python and raw JSON are downloadable conversation artifacts; repository mini reproducer and raw summary have the same prefix.
+Prior used: MINIMAL-BLOCK50, MAIN97, MAIN96, MAIN85, MAIN64, LSPV-4 SHARED-SWITCH57, PALETTE56, LSPV-3 SOURCEPROBE19. No root claim promoted to class separation.
+END_HANDOFF::LSPV-4::CONNECTED_CRITICAL58
