@@ -22,7 +22,7 @@
 \begin{center}
 \fbox{\parbox{0.9\linewidth}{
 \textbf{Status: P versus NP remains OPEN.}
-This document does not assume the truth of either equality or separation. It records known theorems, barriers, asymptotic hierarchy results, and consistency checks across complexity-theoretic universes that constrain possible resolutions. It incorporates verified findings from the concurrent LSPV/RMV investigations in this repository and recent literature through October 2026, including an analysis of dynamic and reverse dynamic programming approaches to Circuit-SAT and 3-SAT.
+This document does not assume the truth of either equality or separation. It records known theorems, barriers, asymptotic hierarchy results, and consistency checks across complexity-theoretic universes that constrain possible resolutions. It incorporates verified findings from the concurrent LSPV/RMV investigations in this repository and recent literature through October 2026, including a parameterized analysis of forward and reverse dynamic programming for Circuit-SAT and 3-SAT.
 }}
 \end{center}
 
@@ -80,6 +80,22 @@ Dynamic programming yields polynomial-time algorithms precisely when a structura
 
 Reverse (or backward) dynamic programming corresponds to reasoning from the output gate toward the inputs, or, in the reversible-computation model, to evaluating the inverse of a bijective circuit. Reversible Circuit-SAT remains NP-complete for any universal reversible gate set (with suitable initialization and finalization alphabets). While reversible synthesis techniques can produce circuits whose forward and backward evaluation are both efficient for special families, no general reverse-DP procedure is known that improves the exponential dependence on the number of free variables for arbitrary Circuit-SAT or 3-SAT instances. In particular, the existence of a polynomial-time reverse-DP algorithm for either problem would place both in P and collapse NP to P; no evidence for such an algorithm appears in the literature, and the standard barriers (relativization, algebrization, natural proofs) continue to apply.
 
+\subsection{Parameterized Forward and Reverse Dynamic Programming}
+We parameterize both forward and reverse dynamic programming by the size of the active state maintained at each step of a topological (or reverse-topological) traversal of a Circuit-SAT instance. Let $C$ be a Boolean circuit with $n$ inputs, $m$ gates, and a designated output gate. Order the gates $g_1,\dots,g_m$ in topological order so that every gate depends only on earlier gates or inputs.
+
+\paragraph{Forward DP.}
+At step $i$ the forward state $S_i$ is the set of all assignments to the frontier $F_i$ (the wires that leave the set of gates $\{g_1,\dots,g_i\}$ and are still used by later gates) that are consistent with some partial assignment to the inputs processed so far and that produce the computed values of $g_1,\dots,g_i$. The parameter at step $i$ is $p_i := |F_i|$ (or, equivalently, $\log_2 |S_i|$ when the state is stored explicitly). The transition from $S_i$ to $S_{i+1}$ enumerates, for each state in $S_i$, the possible values of the inputs to $g_{i+1}$ and retains those that match the gate function. The time for the transition is $O(|S_i|\cdot\mathrm{poly}(n))$. Consequently the total running time is bounded by $\mathrm{poly}(n)\sum_i 2^{O(p_i)}$.
+
+When the circuit is arbitrary, there exist cuts whose frontier has size $\Theta(n)$; the corresponding parameter satisfies $p_i=\Theta(n)$ and the algorithm requires $2^{\Theta(n)}$ time, matching the trivial exhaustive search. When a tree decomposition of width $w$ is available the frontier can be chosen of size $O(w)$ at every step, recovering the classical $2^{O(w)}\mathrm{poly}(n)$ bound.
+
+\paragraph{Reverse DP.}
+Begin with the output gate fixed to the value 1 and process the gates in reverse topological order. At step $i$ (counting backwards) the reverse state $R_i$ consists of the partial assignments to the current frontier that are compatible with the already-constrained downstream gates and that admit at least one extension making the output equal to 1. The parameter $q_i$ is the size of this reverse frontier. Transitions again cost $2^{O(q_i)}\mathrm{poly}(n)$ time. For reversible circuits the forward and reverse frontiers are of comparable size by bijectivity; for ordinary circuits the reverse frontier can still reach size $\Theta(n)$ on some instances.
+
+\paragraph{Joint analysis and lower-bound implications.}
+Any algorithm that decides Circuit-SAT by maintaining an explicit state at each of the $m$ steps must, on some instances, encounter a step whose parameter is $\Omega(n)$. This follows from the existence of circuits whose every topological cut has large frontier (for example, a complete binary tree of depth $\log n$ with all leaves being distinct inputs, or a layered circuit of constant depth and linear width). The resulting time lower bound of $2^{\Omega(n)}$ holds for this particular algorithmic paradigm; it does not yet transfer to arbitrary Turing machines. The same parameterization applied after the standard Circuit-SAT to 3-SAT reduction yields an analogous statement for 3-CNF formulas whose incidence graphs have large treewidth.
+
+In both the P = NP and the P $\neq$ NP universes the existence of instances forcing an exponential parameter at some step is consistent: under P = NP a different, non-explicit-state algorithm must exist, while under P $\neq$ NP the exponential barrier for the DP paradigm is expected. No residual positive transport remainder that would force a separation outside the DP model has been identified. The standard barriers continue to apply to any attempt to convert the per-step parameter lower bound into an unrestricted time lower bound.
+
 In the P = NP universe such a DP or reverse-DP algorithm must exist, yet the known width-based and ACC$^0$-based procedures remain exponentially bounded in the unrestricted case and therefore supply no contradiction. In the P $\neq$ NP universe the same procedures are consistent with the Exponential Time Hypothesis and with the failure of superpolynomial circuit lower bounds for NP. Thus dynamic and reverse dynamic programming currently furnish useful algorithms for restricted circuit classes and for formulas of small width, but do not yet produce an asymptotic forcing of either resolution of P versus NP.
 
 \section{Consistency Across Universes}
@@ -126,6 +142,7 @@ The charged transport inequality requires a positive numerator after subtracting
 \item Evaluate conditional lower bounds under NSETH or Orthogonal Vectors conjecture for possible transfer to unrestricted models.
 \item Monitor consistency results in bounded arithmetic (Thapen and predecessors) for stronger NEXP lower bounds and their implications for possible proof techniques.
 \item Investigate whether further refinements of width-based or reversible DP procedures can be combined with the repository's charged-transport ceilings to produce a residual positive remainder in an unrestricted model.
+\item Analyze whether the per-step parameter lower bound for explicit-state forward/reverse DP can be amplified, via charged transport or other means, beyond the DP paradigm itself.
 \end{itemize}
 
 \section*{References}
