@@ -1,0 +1,79 @@
+% LSPV-1 REPORT::AFFINECORE69::2026-10-23T16:58:04+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=0.91in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,url}
+\newtheorem{theorem}{Theorem}
+\title{AFFINECORE69: Untagged XOR-3 Extraction and Charged Exceptional-Clause Continuation}
+\author{LSPV-1: Independent Obstruction and Amortization}
+\date{23 October 2026, 16:58 Asia/Seoul}
+\begin{document}
+\maketitle
+\begin{center}\textbf{P versus NP remains OPEN.}\end{center}
+\section{Three falsifiable mechanisms and model}
+\noindent A: extract exact XOR-3 constraints from four-ternary parity quartets without tags; falsify by any input assignment violating equivalence. B: branch only on remaining ternaries and solve the affine core by Gaussian elimination; falsify by a SAT mismatch or more than $3^\kappa$ choices. C: recover graph-complete Tseitin CNFs after clause permutation, variable renaming and whole-variable complementation; falsify with incorrect SAT labels, model counts, deletion sensitivities or acceptance of malformed blocks.
+
+The input is ordinary proper-3CNF using signed identifiers. There are $n$ variables, $m$ clause records, word width $w=\lceil\log_2(16(n+m+1))\rceil$, and $N=(2+4m)w$ bits in the declared aligned four-word-record encoding. The deterministic uniform word RAM charges source reads, sorting, extraction, failed branches, Gaussian checks, witness reconstruction, replay, output and peak live space. The older $k$ denotes the number of added ternary clauses over a 2CNF; our independently defined affine residue $\kappa$ is \emph{not} $k$. Syntactic residual $r=n-d$ and $v=n/r$ use $d$ eliminated source variables, with $v$ defined only for $r>0$.
+
+\section{Exact untagged normalization}
+For every unordered variable triple $S=\{x,y,z\}$, a proper ternary clause prohibits one three-bit assignment $a$, with $a_x=1$ when $\neg x$ appears. Four distinct clauses whose prohibited assignments have the same XOR parity $p$ are equivalent to one affine equation $x\oplus y\oplus z=1-p$. Sort all clauses by variable triple and prohibited mask; select one copy of each even-parity mask if the quartet is complete, otherwise one copy of each odd-parity mask if complete; leave all unselected clauses as literal original records. For ties choose even first. Let $\mathcal E(F)$ contain selected XOR equations and $\mathcal R(F)$ the remaining physical clause records. Define independently of solver performance
+\[
+\boxed{\kappa_{\oplus}(F)=|\mathcal R(F)|,\qquad m=4|\mathcal E(F)|+\kappa_{\oplus}(F).}
+\]
+\begin{theorem}[PROVED/EXACT]
+A total deterministic uniform source-checked normalizer computes the above partition in $O(m\log(m+2))$ word time and $O(n+m)$ working words, and preserves the full Boolean function:
+\[
+F\equiv\bigwedge_{E\in\mathcal E(F)}E\land\bigwedge_{C\in\mathcal R(F)}C.
+\]
+\end{theorem}
+\begin{proof}
+A selected parity quartet forbids exactly the four local assignments with XOR parity $p$ and hence asserts the complementary XOR equation. Every original physical clause record is either in exactly one quartet or remains as an exception. The equivalence holds assignment-by-assignment, including duplicates. Sorting and constant-size mask checks give the cost. Clause and variable permutations or whole-variable complementation preserve $\kappa$.
+\end{proof}
+\begin{theorem}[PROVED/EXACT, upper bound]
+Every ordinary proper-3CNF has a uniform deterministic SAT algorithm with
+\[
+T(F)=O\big(m\log(m+2)+(1+3^{\kappa_\oplus(F)})(n+m+1)^3\big)
+\]
+word operations and polynomial peak working space. In particular $\kappa_\oplus(F)=O(\log N)$ defines a polynomial-time decidable subfamily.
+\end{theorem}
+\begin{proof}
+After the charged partition, test affine consistency. Enumerate one chosen true literal from each remaining clause, at most $3^\kappa$ tuples. For each tuple adjoin its unit equations to the affine equations and solve by Gaussian elimination over $\mathbb F_2$. A CNF witness induces one of those tuples, and any consistent tuple yields a CNF witness. Each failed tuple and its Gaussian system are charged by the polynomial factor; store only the current tuple and linear system.
+\end{proof}
+\begin{theorem}[PROVED/EXACT, restricted amortization]
+Fix the explicit certified-extraction calculus in which every physical clause record must be read and validated to produce the complete source-closed partition. If $a_t$ distinct records have been validated, the noncircular remaining-record potential $\Phi_t=m-a_t$ falls by at most one per record validation. A complete partition therefore costs at least $m=4|\mathcal E|+\kappa$ record reads, achieved by the charged scan. A full literal-choice continuation path selects at most $\kappa$ residual clauses and branches at most three ways at each such node.
+\end{theorem}
+\begin{proof}
+Distinct-record reading is one declared primitive. The partition must account for every input record; each read increments $a_t$ by at most one. The branching count follows directly from the three literals of a residual clause.
+\end{proof}
+The amortization lower bound applies to \emph{certified extraction}, not every SAT decider. $3^\kappa$ is an upper bound; no $3^{\Omega(\kappa)}$ lower bound is claimed.
+
+\section{Permutation-robust cubic Tseitin shortcut}
+A proper-3CNF is graph-complete when each variable triple has exactly one full quartet, every variable occurs in exactly two distinct triples, and no two triples share two variables. Its triple supports are vertices of a reconstructed simple cubic graph and its source variables are edges. Its signed forbidden quartets uniquely determine parity charges $b_v$.
+\begin{theorem}[PROVED/EXACT]
+Recognize any graph-complete CNF, recover its graph and charges, return SAT/UNSAT, a satisfying assignment when SAT and its exact binary model count in deterministic $O(N\log N)$ word time and $O(N)$ live words. With $E$ edges, $V$ vertices, $c$ components,
+\[
+F\in SAT\iff \bigoplus_{v\in C}b_v=0\ \ \forall C,\qquad
+\#SAT(F)=2^{E-V+c}\quad\text{when SAT}.
+\]
+\end{theorem}
+\begin{proof}
+Sort records into signed parity quartets, and associate each edge variable with its two supported triples; validate all incidences. Each graph component's $\mathbb F_2$ incidence matrix has rank $|V_C|-1$ by spanning-tree elimination. Its parity rows are consistent exactly when its charge XOR is zero; otherwise no assignment exists. The consistent system has $2^{|E_C|-|V_C|+1}$ solutions. Assign non-tree edge variables zero and solve tree edges bottom-up for an explicit witness. All parsing, sorting, checks, reconstruction and output are charged.
+\end{proof}
+This source-recognizer works without canonical graph labels or clause order. On cubic Tseitin expanders it gives polynomial decision despite large syntactic $r=n$, complete clause criticality for two-vertex-connected sources, and exponential \emph{ordinary resolution} proof size. CUTVERTEX68's established critical-clause count for a connected odd-charge graph is $\sum_v2^{3-c_v}$ where $c_v=\#\operatorname{cc}(G-v)$. With one odd component the sum is restricted to that component; with two odd components no single clause deletion changes the whole SAT label. Sensitive sign words force an input-order $\Omega(m)$ probe bound in the aligned model, but the new recognizer nearly matches it.
+
+\section{2CNF ladder, controls, corpus, and first missing arrow}
+Role-4's ladder with $z_0=1,z_q=0$ and $C_i(1)=(\neg z_{i-1}\vee z_i)$, $C_i(0)=(\neg z_{i-1}\vee\neg z_i)$ is UNSAT iff every orientation is one; all $q$ fields are sensitive on $1^q$. For $q=4$, $1111$ is UNSAT and $1101$ is SAT with witness $(1,1,1,0,0)$. Yet SCC decides 2CNF linearly. Arbitrary 2CNF plus $k$ ternaries has a $2^k\mathrm{poly}(N)$ certified upper bound by assigning at most one variable meeting each ternary. This parameter $k$ must not be confused with $\kappa_\oplus$.
+
+The stdlib audit uses seeds 202610231658 and 202610231659. Graph recognition tested nine cubic/disconnected structures and 162 sources, 65 SAT and 97 UNSAT, 776 GF(2) deletion checks, 27 malformed sign changes, and 12 exhaustive small model counts: 867 assertions, zero failures. The general extraction audit tested 600 random proper-3CNFs, 450 affine-core-plus-exception formulas, 1,056 independent brute checks and 10,024,550 Gaussian checks: 3,573 assertions, zero failures. Total \textbf{4,440 assertions, zero failures}. These are COMPUTATIONAL tests, not proofs of asymptotic hardness.
+
+CORPUS: root main.tex; AGENTS.md; CODEX.md; research skill; MAIN64/85/92/94; LSPV-1 LOCALPARITY1, PAIRHELLY67 and CUTVERTEX68; LSPV-2 STAR-CHOICE53; LSPV-3 QUANTIFIER60; LSPV-4 WHEEL52; SOURCEPROBE19. MAIN94 already gives a three-valued affine-exception upper bound; the present distinct source-calculus is the untagged Boolean quartet representation. SCC, Horn propagation, affine elimination, components, caching, learned clauses, alternative representations and decide-first preprocessing remain legal. The parameter and restricted output obligation do not apply to all those alternatives. No gate, wire, switch or general SAT-circuit lower bound is inferred.
+
+\textbf{FALSIFIED/RETIRED:} inference that large local residual, clause sensitivity, or affine exception count alone compels exponential decision time. \textbf{OPEN:} show for every uniform deterministic total exact decider of a fixed NP-complete language that some growing inputs force superpolynomial acquisition, semantic compression or direct continuation, without making an optional representation mandatory. P versus NP remains OPEN.
+
+\section{Sources}
+Aspvall--Plass--Tarjan (1979), \emph{Information Processing Letters}, doi:10.1016/0020-0190(79)90002-4.
+Tarjan (1972), \emph{SIAM Journal on Computing}, doi:10.1137/0201010.
+Urquhart (1987), \emph{JACM}, doi:10.1145/7531.8928.
+Project EXCEPTION-KERNEL94: \path{research/main/2026-10-23_1648_MAIN_EXCEPTION_KERNEL94.tex}.
+Project CUTVERTEX68: \path{research/agents/lspv-1/2026-10-23_1629_LSPV-1_CUTVERTEX68.tex}.
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::AFFINECORE69
