@@ -1,0 +1,86 @@
+% GROK NOTE::REWIRE pass-1 foundations::2026-10-23_1406
+\documentclass[11pt]{article}
+\usepackage{fontspec}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,xurl,hyperref}
+\title{GROK REWIRE Pass~1: Tiny Circuit-SAT Config Library Foundations}
+\author{Grok Bot}
+\date{23 October 2026, 14:06 PT}
+\begin{document}\maketitle
+\paragraph{Status sentence.}
+Circuit-SAT and P versus NP remain OPEN: this pass only builds a minimal REWIRE prototype (local NPN-keyed config library + rewrite toward simpler equivalent cones) on the smallest AND/OR/NOT circuits; no Circuit-SAT lower bound is claimed, and the lower-bound route via library growth or forced rewrites is CANDIDATE.
+
+\section{Corpus reviewed}
+Read: root \texttt{AGENTS.md}, \texttt{CODEX.md}, \texttt{.codex/skills/pnp-research/SKILL.md}, living \texttt{main.tex} (head SHA \texttt{22711851}; executive status OPEN), and prior GROK note \texttt{research/agents/grok/2026-10-12\_1859\_GROK\_FL2.tex}. Repository code search for \texttt{rewire}/\texttt{NPN}/\texttt{AIG} in \texttt{j15marti/pnp} returned no matches; no peer REWIRE artifact exists yet. Same-day peer commits on main concern adaptive-trajectory firewalls and GROKPROOF Circuit-SAT DP notes, not configuration-library rewriting. Per standing GROK rule, root \texttt{main.tex} was \emph{not} edited.
+
+\section{Target}
+Start from the most simple Circuit-SAT instances and lay foundations for algorithm REWIRE: a library of local circuit configurations with lookup that proposes a rewiring to a simpler equivalent form, while actively avoiding exponential library growth.
+
+\section{Literature (brief, primary)}
+\begin{itemize}
+\item \textbf{DAG-aware AIG rewriting (KNOWN THEOREM / engineering).}
+  Mishchenko, Chatterjee, Brayton, DAC 2006: precomputed AIG replacements for $K$-feasible cuts (typically $K{=}4$), keyed by Boolean function / NPN class; ABC \texttt{rewrite}/\texttt{resyn2}. This is the closest industrial analogue of a REWIRE library, but it is a synthesis heuristic, not a Circuit-SAT lower-bound theorem.
+\item \textbf{NPN classification / Boolean matching.}
+  Mishchenko--Chatterjee--Brayton style NPN libraries: 222 NPN classes on 4 inputs; practical rewriting uses a sparse subset. Fast NPN matching: Mishchenko et al., ICFPT 2013. Influence-aided exact NPN: arXiv:2308.12311 (2023).
+\item \textbf{Minimum-structure libraries.}
+  Enumeration of minimum fanout-free structures per NPN class up to 5 inputs (Mishchenko et al., IWLS 2019) for peephole rewriting.
+\item \textbf{Memoization and Circuit-SAT.}
+  Memoization as a lower-bound/algorithm technique goes back to Nechiporuk; recent \#SAT/threshold work (MFCS 2025) again notes that memoization needs a strong upper bound on the number of functions of a given size---exactly the growth question REWIRE must face.
+\item \textbf{Gate elimination as rewriting.}
+  Carmosino--Dang--Jackman (arXiv:2602.17942, 2026): convergent term-graph rewriting formalization of DeMorgan gate elimination. Analogy only: REWIRE aims at a \emph{library} of remembered configs, not only local identities.
+\end{itemize}
+Cross-domain import class: \textbf{ANALOGY / CANDIDATE}. AIG/NPN libraries transfer as engineering templates for keys and growth control; they do not by themselves yield a Circuit-SAT time lower bound.
+
+\section{Prototype (own code)}
+Path: \texttt{/workspace/rewire\_pass1/rewire.py} (SHA256 \texttt{87bc6157370dfda3}\ldots), plus \texttt{rewire\_sat.py}, \texttt{results.json}, \texttt{results\_sat.json}.
+Design choices against exponential growth:
+\begin{enumerate}
+\item Keys are NPN-canonical truth tables for $n\le 3$ inputs (exhaustive orbit min); $n>3$ uses raw TT keys and is \emph{not} stored wholesale.
+\item Store only configs that \emph{strictly simplify} some observed cone (or seed minimals); non-improving configs are rejected.
+\item LRU cap (\texttt{max\_entries}=128); unused entries evictable.
+\item Discovery budget capped at $\le 2$ gates when searching for a smaller realization (avoids exhaustive 3-gate blow-up).
+\item Sub-configs share the same NPN key space (one entry per class, not per embedding).
+\end{enumerate}
+
+\section{Tests (COMPUTATIONAL)}
+Seed library: 7 NPN-minimal entries ($n\le 2$). After all tests: library size \textbf{12}, lookups 790, hits 780, hit rate \textbf{0.9873}, stores 12, evictions 0, rejected nonsimplifying 562. Library/lookups ratio $0.0152$.
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+instance & size before & size after & notes \\
+\midrule
+idempotent OR($x,x$) & 1 & 0 & wire \\
+NOT NOT AND & 3 & 1 & double-neg \\
+absorb $x\lor(x\land y)$ & 2 & 0 & wire \\
+XOR as SOP & 5 & 5 & discovery budget miss \\
+AND-chain 2 / 3 & 1 / 2 & 1 / 2 & already minimal \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Hostile growth (20 random 3-input circuits per gate count $g\in\{3,5,8,12,16\}$): mean size before $=g$, mean size after $\in[0.75,1.0]$; library size plateaued at \textbf{12} across the whole ladder (no explosion). On these tiny $n{=}3$ instances, global TT rewriting collapses many circuits to near-minimal forms; the library stayed sub-exponential relative to cones scanned.
+
+Circuit-SAT layer (\texttt{rewire\_sat.py}): UNSAT $x\land\neg x$ and a 2-var contradiction both rewrote to CONST0 (correct); OR stayed residual-SAT (correct). 40 random 3-input/10-gate Circuit-SAT checks: \textbf{0 mismatches} vs brute force; shared library size 12, hit rate $0.9865$. Warning probe: 50 random 4-input/8-gate circuits produced \textbf{34 distinct raw (non-NPN) keys}---unnormalized storage at $n{=}4$ would grow fast; NPN/canonicalization remains mandatory.
+
+\section{What is not claimed}
+\begin{itemize}
+\item No asymptotic Circuit-SAT lower bound (OPEN).
+\item No claim that REWIRE decides Circuit-SAT in sub-exponential time (CANDIDATE algorithm idea only).
+\item Pass-1 discovery misses some known simplifications (e.g.\ XOR SOP $5\to 4$) when the gate budget is capped.
+\item Collapse on $n\le 3$ is helped by exhaustive TT methods; the hard regime is large $n$ with local cuts only.
+\end{itemize}
+
+\section{Statuses}
+\begin{itemize}
+\item REWIRE prototype mechanics on tiny instances: \textbf{COMPUTATIONAL}.
+\item Growth-control design (NPN keys, simplify-only store, LRU, discovery cap): \textbf{CANDIDATE} engineering invariant, empirically held on tests.
+\item Circuit-SAT / P vs NP lower bound via REWIRE: \textbf{OPEN}.
+\item Product-span / SAT-decider compiler arrows from prior tracks: unchanged, still \textbf{OPEN}.
+\end{itemize}
+
+\section{Next smallest open step}
+Grow from 1--3 gate / $\le 3$-input cones to \textbf{4-input NPN-keyed cuts} (222 classes; store only classes that earn a simplification hit), measure library size vs cut count on random and hostile structured families (e.g.\ unsat chains, planted SAT), and separate \emph{local} rewrite gain from global TT collapse---without claiming a lower bound.
+
+% END_OF_VERIFIED_REPORT::GROK::REWIRE_PASS1
+\end{document}
