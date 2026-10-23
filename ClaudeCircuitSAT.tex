@@ -1,0 +1,79 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT::RUN-2026-10-23T17
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: A Wire-by-Wire Ladder of Lower Bounds for Circuit-SAT}
+\author{Living document (hourly Claude runs)}
+\date{Last updated 2026-10-23}
+\begin{document}
+\maketitle
+\begin{center}\fbox{\parbox{0.92\linewidth}{\textbf{Status: P versus NP remains OPEN.}
+Only restricted (query-model, monotone-ladder) lower bounds below are proved. No
+unrestricted superpolynomial lower bound for Circuit-SAT is claimed. Labels:
+PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.}}\end{center}
+
+\section{Goal and method}
+CIRCUIT-SAT: given a fan-in-2 circuit $C$ over $n$ inputs with $m$ gates ($2m$ wires), decide $\exists x\,C(x)=1$.
+Plan: start at the smallest instances, track exactly (i) the minimum number of gates/wires needed to \emph{build}
+each function, and (ii) the work forced on any \emph{solver}; then raise $n$ step by step and look for the
+growth law. Two quantities must not be conflated: construction size $s(f)$ of a circuit for $f$ (a circuit-complexity
+quantity) versus solver time on input $C$ (the uniform-time quantity relevant to P vs NP).
+
+\section{Ladder, step by step}
+\subsection*{Step 0: $n=0,1$}
+$n=0$: the circuit is a constant, SAT is a read. $n=1$: $f\in\{0,1,x,\bar x\}$, all cost $0$ gates in the basis $B_2$ (negation free).
+
+\subsection*{Step 1: $n=2$ (COMPUTATIONAL, exhaustive)}
+Of the 16 functions, 6 need $0$ gates, 10 need $1$ gate ($2$ wires). Every function depending on both inputs needs $\ge 1$ gate.
+
+\subsection*{Step 2: $n=3$ (COMPUTATIONAL, exhaustive; matches known max size 4)}
+Min-gate histogram over $B_2$, all 256 functions: $0{:}8,\ 1{:}30,\ 2{:}114,\ 3{:}80,\ 4{:}24$.
+$\mathrm{AND}_3,\mathrm{OR}_3,\mathrm{XOR}_3$ need 2 gates (4 wires); $\mathrm{MAJ}_3$ needs 4 gates (8 wires).
+Script: \texttt{experiments/claude\_circuitsat/minsize.py}; data: \texttt{results/claude\_circuitsat\_minsize\_n2\_n3.json}.
+
+\subsection*{Step 3: $n=4$ (not completed)}
+Naive state-set BFS over gate multisets exceeded the 30-second budget at size 4 (timed out, no result).
+Next: SAT/ILP-based exact synthesis, chunked by target function (cf.\ Kojevnikov--Kulikov--Yaroslavtsev exact synthesis) -- OPEN task.
+
+\section{General rungs (proved)}
+\begin{lemma}[PROVED/EXACT: connectivity, $s(f)\ge n-1$]
+If $f$ depends on all $n$ inputs, any fan-in-2 circuit for $f$ has $\ge n-1$ gates, hence $\ge 2n-2$ wires.
+\end{lemma}
+\begin{proof} The output's cone must contain all $n$ inputs; a fan-in-2 DAG with a single sink reaching $n$ sources has $\ge n-1$ internal nodes (a binary tree has $n-1$). Tight for $\mathrm{AND}_n$. \end{proof}
+
+\begin{theorem}[PROVED/EXACT: query/adversary bound for solving CIRCUIT-SAT]
+Any algorithm in the model where the circuit is accessed by gate-record queries and that is correct on all inputs must read $\Omega(m)$ records on worst-case $m$-gate inputs: restricted to circuits of the form ``$\mathrm{AND}$-chain of all $n$ literals with $n$ chosen, then
+$g_1\wedge g_2\wedge\dots$'', hiding a single contradictory gate in an unread record flips SAT$\leftrightarrow$UNSAT.
+\end{theorem}
+\emph{Scope.} This is the trivial linear read bound; it is model-restricted (source-query), and says nothing about $2^{\Omega(n)}$ time.
+
+\begin{theorem}[KNOWN THEOREM: gate-elimination ladder]
+Explicit functions have circuit size $\ge 2n-o(n)$ (Schnorr; parity $3(n-1)$ over $U_2$), $3n-o(n)$ (Blum), and $(3.1-o(1))n$ over $B_2$ (Find--Golovnev--Hirsch--Kulikov 2016; Li--Yang 2022 improved to $3.1n$ constants). All are linear; no superlinear bound over $B_2$ is known for any explicit function in NP.
+\end{theorem}
+\emph{Literature check pending verification in the next run (primary sources not re-fetched this run; treat constants as CANDIDATE until checked).}
+
+\section{Barriers and transfers}
+\begin{itemize}
+\item Gate elimination alone: stuck at linear; natural-proofs, relativization and algebrization barriers apply to extensions. (KNOWN)
+\item Repo corpus (LSPV/MAIN reports, e.g.\ \texttt{research/main/2026-10-23\_1648\_MAIN\_EXCEPTION\_KERNEL94.tex}): proves \emph{parameterized upper bounds} (kernel $T=O(|V|+a+p+3^cp)$) and restricted input-query lower bounds; root \texttt{main.tex} lists P vs NP \textbf{OPEN}. Useful transfer: a parameter ``exception count $p$'' gives a tractable-to-hard ladder, but yields a parameter boundary, not a lower bound (structural analogy, needs a new bridge).
+\item Ladder-step analogy to the repo: raising $n$ with fixed local gadget is the same shape as raising $p$; the missing theorem is mandatory $3^{p}$ work for every algorithm. OPEN.
+\end{itemize}
+
+\section{Ledger}
+\begin{tabular}{lll}\toprule
+Item & Status & Note\\\midrule
+$n\le 3$ exact min sizes & COMPUTATIONAL & script + JSON\\
+$s(f)\ge n-1$ for full-dependence $f$ & PROVED/EXACT & tight for AND\\
+Linear read bound (source query) & PROVED/EXACT & model-restricted\\
+$n=4$ exact sizes & OPEN & timed out\\
+Wire-count growth law for hard SAT & OPEN & no data beyond $n=3$\\
+Superpolynomial lower bound & OPEN & P vs NP open\\\bottomrule
+\end{tabular}
+
+\section{Next steps}
+(1) Exact synthesis for $n=4,5$ via SAT solver, chunked per function. (2) Fetch and verify gate-elimination constants. (3) Test whether wire-count of minimal circuits for the hardest $n$-input functions grows as $\Theta(2^n/n)$ (Shannon/Lupanov, KNOWN) and what that implies only for non-uniform worst case. (4) Re-read root \texttt{main.tex} for new verified lemmas.
+
+% END_OF_VERIFIED_REPORT::CLAUDE-CIRCUITSAT::RUN-2026-10-23T17
+\end{document}
