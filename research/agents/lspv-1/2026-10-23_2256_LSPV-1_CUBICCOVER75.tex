@@ -1,0 +1,117 @@
+% LSPV-1 REPORT::CUBICCOVER75::2026-10-23T22:56:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,url}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{countertheorem}{Countertheorem}
+\title{CUBICCOVER75: A Matching-Cover SAT Upper Bound for Signed Exact-$(2,2)$ 3-CNF}
+\author{LSPV-1: Universal Cost Bridge}
+\date{October 23, 2026}
+\begin{document}\maketitle
+\begin{center}
+\textbf{PROVED/EXACT under the declared grammar; primary matching theorems KNOWN; independent review pending. Neither $P=NP$ nor $P\ne NP$ is proved.}
+\end{center}
+
+\section{Question, hypotheses and three falsifiable mechanisms}
+Our target is the possibility that every uniform deterministic exact SAT decider must pay for a rich representation or incur commensurate symbolic continuation cost. We do not assume this hypothesis. This run tests (M1) whether the unmatched ternary-clause defect $\delta$ admits a polynomially found hitting set of size strictly below $\delta$; (M2) whether the size is always $\delta/2$; (M3) whether any such cover cost is mandatory for arbitrary one-bit SAT algorithms. M1 is true with bound $\lfloor5\delta/8\rfloor$; M2 is false on a source-valid 48-variable example; M3 remains OPEN and cannot be inferred from a chosen normalization.
+
+Fix the NP-complete language of properly encoded, unique, proper signed 3-CNF with exactly three distinct variables per clause and every source variable twice positive and twice negative. Invalid encodings are NO. Let $n$ be source variables, $m$ clauses, $N=(4m+2)w$ bits, $w=\lceil\log_2(64(n+m+1))\rceil$ RAM-word bits. Necessarily $4n=3m$. We charge all addressed reads, sorting and validation, failed matching searches, constructions, branches, SCC calls, witness reconstruction, output and replay; peak simultaneously live words are accounted separately. A shared-NOT/OR2/AND2 assignment evaluator has $n+3m-1=5n-1$ gates and $n+6m-2=9n-2$ gate-input wires. Neither number lower-bounds SAT decision. Backward output-TRUE reasoning selects one true occurrence per clause without complementary selected occurrences; its signed-opposition blocks are $K_{2,2}$, not a compulsory stored data structure.
+
+\section{Cubic graph extracted from exact occurrence accounting}
+Contract any complementary clause pair
+\[
+(a\vee b\vee x)\wedge(a\vee b\vee\neg x)\equiv(a\vee b).
+\]
+Under source uniqueness and signed $(2,2)$ regularity every clause has at most one such partner (prior PAIRRIGID72). Let $p$ pairs contract to binary formula $B$, and let $T$ contain the $\delta=m-2p$ remaining ternary clauses. This preserves all source assignments: $F\equiv B\wedge T$. For each variable $x$, where $t_x$ counts its pivot pairs, $b_x^\pm$ its binary signed occurrences and $u_x^\pm$ its unmatched signed occurrences, conservation gives
+\[
+t_x+2b_x^++u_x^+=2,\qquad t_x+2b_x^-+u_x^-=2.
+\]
+\begin{lemma}[Two-or-four occurrence dichotomy]
+Any variable in $T$ appears in exactly two or four \emph{distinct} clauses of $T$.
+\end{lemma}
+\begin{proof}
+If $t_x=2$, there are no unmatched occurrences. If $t_x=1$, one occurrence per sign remains. If $t_x=0$, each signed unmatched count is zero or two, so the positive total is two or four whenever nonzero. A proper clause cannot contain the same variable twice.
+\end{proof}
+Construct a loopless cubic multigraph $H_F$: its vertices are the clauses of $T$. A degree-two variable joins its two clause occurrences with one edge labelled by that source variable. Pair the four distinct occurrences of a degree-four variable deterministically, and add two edges with the same variable label. Parallel edges are allowed. Every clause has precisely three incident sockets, so
+\[
+|V(H_F)|=\delta,\qquad |E(H_F)|=3\delta/2,\qquad \deg(v)=3.
+\]
+The graph is computable from the source alone and makes no reference to a particular solver's cost.
+
+\section{Main theorem: polynomially computable cover and exact continuation}
+\begin{theorem}[CUBICCOVER75]
+For every valid signed exact-$(2,2)$ source there is a deterministically computable set $X$ of original variables meeting all unmatched ternary clauses with
+\[
+|X|\le \left\lfloor\frac{5\delta}{8}\right\rfloor.
+\]
+A total uniform deterministic exact decider therefore runs in
+\[
+O\!\left(m\log(m+2)+\delta^4+
+ 2^{\lfloor5\delta/8\rfloor}(n+m+1)\right)
+\]
+word operations, using $O(n+m)$ peak reusable words.
+\end{theorem}
+\begin{proof}
+Shannon's multigraph line-coloring bound partitions a maximum-degree-three multigraph's edges into at most four matchings. Because $H_F$ has $3\delta/2$ edges, one matching has at least $\lceil3\delta/8\rceil$ edges. A maximum-cardinality matching $M$ of size $\nu\ge\lceil3\delta/8\rceil$ is computable in polynomial time by Edmonds' algorithm. Select the original source-variable label of each matched edge, covering $2\nu$ distinct clauses; choose any source variable in every remaining $\delta-2\nu$ ternary. The resulting distinct-variable set has
+\[
+h=|X|\le \nu+\delta-2\nu
+=\delta-\nu\le\lfloor5\delta/8\rfloor.
+\]
+Enumerate all assignments to $X$, retaining the original binary contractions $B$. Every ternary has at least one assigned variable, hence simplifies to a clause of width at most two; solve each branch by SCC. If any branch is SAT, combine it with the chosen $X$ values and replay the source to verify an original assignment; otherwise return UNSAT. This is exact in both directions because pair contraction is assignment-wise equivalent and all assignments to $X$ have been covered. Parsing, pair search, labelled multigraph construction, maximum matching, failed branches, SCC, witnesses, and readback are included in the polynomial bound. A conservative $O(\delta^4)$ bound accommodates polynomial matching; branch construction plus SCC is $O(n+m+1)$ per branch. The buffers are reused, giving linear peak RAM words.
+\end{proof}
+
+\begin{theorem}[Special-case stronger exponent]
+If $H_F$ is bridgeless, Petersen's perfect-matching theorem for cubic graphs gives $\nu=\delta/2$, hence an exact $2^{\delta/2}\operatorname{poly}(N)$-time algorithm. The same bound applies to bipartite cubic multigraphs by Hall's theorem.
+\end{theorem}
+
+\section{Countertheorem: $\delta/2$ is not a universal hitting-set bound}
+\begin{countertheorem}[Source-valid odd-bridge example]
+A proper unique signed exact-$(2,2)$ formula exists with $n=48$, $m=64$, $p=24$, $\delta=16$ and minimum original-variable hitting set of its ternary residual equal to $9$, not $8=\delta/2$.
+\end{countertheorem}
+\begin{proof}
+Construct a simple cubic graph $G$ by joining one central vertex $o$ to the subdivision vertex of a selected edge in each of three disjoint copies of $K_4$. It has 16 vertices, 24 edges and three bridges, and $G-o$ has three five-vertex (odd) components. A perfect matching would require all three bridges, since an odd component must have a matching edge exiting it, but $o$ can meet only one matching edge. Thus no perfect matching exists. An explicit matching of size seven takes one bridge and two internal edges in each of the three lobes. By Gallai's edge-cover identity, the minimum edge cover is $16-7=9$.
+
+For each graph edge $e$ introduce variable $x_e$. At its lower-indexed endpoint put literal $x_e$, and at its higher-indexed endpoint put $\neg x_e$, giving one proper ternary per graph vertex. Introduce 24 new variables $y_e$, cyclically indexed by the 24 edges. Add, for every edge $e$, the two clauses
+\[
+(y_e\vee\neg y_{e+1}\vee x_e),\qquad
+(y_e\vee\neg y_{e+1}\vee\neg x_e).
+\]
+These 48 clauses are 24 complementary pairs and contract to the binary implication cycle $(y_e\vee\neg y_{e+1})_e$. Every $x_e$ occurs twice per polarity globally, as do all $y_e$; all 64 clauses are proper and distinct. No source pair involves an original unmatched graph clause, so the latter 16 clauses have clause-dual graph exactly $G$. Variables hitting those ternaries are exactly edges covering all vertices, and require nine source variables. The formula is SAT: orient edges so every vertex receives an incident directed edge (orient a cycle cyclically and edges outward from it) and assign each $x_e$ to satisfy the literal at its receiving endpoint; set every $y_e=0$ to satisfy the binary cycle.
+\end{proof}
+
+\section{Independent obstruction, charged calculus and uncovered deciders}
+Define
+\[
+\tau(T)=\min\{|X|:\operatorname{vars}(C)\cap X\ne\emptyset
+\text{ for all } C\in T\}.
+\]
+This is an independent semantic/syntactic hitting-number parameter, not measured running time. In the explicit matching-cover normalization calculus, after $j$ selected source variables define $\rho_j$ as the number of remaining uncovered ternary clauses. Selecting one variable reduces $\rho$ by exactly its number of previously uncovered incident clauses, an integer in $[0,4]$, and costs at least one validated record/selection operation. A complete binary assignment tree on $h$ selected variables has $2^h$ leaves \emph{only if full enumeration is the stipulated output}. The decider above has that upper bound, not a mandatory lower bound. A direct one-bit SAT decider is not required to construct an edge cover, enumerate assignments, emit a DNNF, resolution proof, all witnesses, a compatibility table, or a backward circuit trace. SCC, affine Gaussian elimination, Horn propagation, treewidth algorithms, cached learning, alternate compact structures, source replay and deciding first remain legal. This breaks any asserted universal representation-cost bridge based only on $\tau$.
+
+\section{Corpus review, independent checks, and literature}
+CORPUS REVIEWED: current root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, repository research skill and task index; ROOT-LABEL-QUOTIENT85, SMALL-INTERFACE-EXACT-JOIN64, CUBIC-AFFINE-FIREWALL98, KROM-PROJECTION-CEILING99; PAIRRIGID72, PAIRPATH73, XORWITNESS74; Role-2 BOUNDARY-EXCEPTIONS59 and DOCKER-QUOTIENT59; Role-3 SOUND-EXTENSION67 and SOURCEPROBE19; Role-4 AFFINE-MATCHING59. Earlier pair rigidity and contraction are ADOPTED, not newly claimed. The cubic matching cover and the source-valid odd-bridge counterexample are new \emph{to reviewed project records}; a repository search for a prior $5\delta/8$ defect bound found none. This is not an external priority claim.
+
+Zhang, Peitl and Szeider (SAT 2024, Table 1, Theorem 15) establish a \emph{KNOWN THEOREM}: a proper unsatisfiable three-CNF with at most two occurrences of each signed literal requires at least 20 clauses. Consequently every UNSAT valid exact-$(2,2)$ source obeys $m\ge20$ and $n\ge15$. Their 20-clause bound is not a new proof here, and the 20-clause example is not asserted to satisfy exact equality of all occurrence counts.
+
+COMPUTATIONAL: the independent seeded program (202610231356), stored with raw JSON, tested 248 proper signed exact-$(2,2)$ formulas, including 235 generated instances, 11 connected $H_g$ templates, one defect-two instance and the 48-variable three-bridge instance. Every counted occurrence, pairing, cubic-degree identity, matching bound, ternary cover and exact SCC continuation check passed. For source instances of at most 15 variables, an independent exhaustive SAT routine agreed with the matching-branch algorithm. All tested valid sources were SAT, which is \emph{not} evidence that the NP-complete language is easy in full. Out-of-promise SAT/UNSAT SCC controls and an eight-clause UNSAT cube were checked. The signed regular 198-variable, 264-clause UNSAT input previously source-verified by Role 2 was not reconstructed in this run.
+
+Resource accounting: $N=(4m+2)w$ source bits, $O(m\log m)$ validation and normalization, $O(\delta^4)$ matching including unsuccessful search, at most $2^{\lfloor5\delta/8\rfloor}$ charged SCC continuations, original-source witness verification when SAT, single-bit decision output, and $O(n+m)$ peak machine words. Gates/wires above are source assignment-evaluation resources only. Hash/wrapper, proof-system, or cryptographic assumptions do not enter the result.
+
+\section{OPEN universal implication and next experiment}
+The target, for one fixed NP-complete encoding, is
+\[
+\forall A\ \forall c>0\ \forall N_0\ \exists F_A:\ 
+|F_A|\ge N_0\quad\land\quad T_A(F_A)>|F_A|^c,
+\]
+where $A$ is total, uniform, deterministic and exact. Every quantifier and the claimed superpolynomial acquisition/compression/continuation implication remain OPEN. This run reduces a certified algorithm's exponent and falsifies an unjustified half-defect optimization, but does not close the all-algorithm bridge. The next discriminating experiment is to run matching-cover, SCC, affine and Horn preprocessing on Role 2's reconstructed 198/264 genuine UNSAT source and its signed-preserving SAT mutation, charging all source and certificate operations. Neither $P=NP$ nor $P\ne NP$ is established.
+
+\begin{thebibliography}{9}
+\bibitem{Shannon} C. E. Shannon, A Theorem on Coloring the Lines of a Network, Journal of Mathematics and Physics 28 (1949), 148--152, DOI 10.1002/sapm1949281148.
+\bibitem{Edmonds} J. Edmonds, Paths, Trees, and Flowers, Canadian Journal of Mathematics 17 (1965), 449--467, DOI 10.4153/CJM-1965-045-4.
+\bibitem{Petersen} J. Petersen, Die Theorie der regul\"aren Graphs, Acta Mathematica 15 (1891), 193--220.
+\bibitem{ZPS} T. Zhang, T. Peitl and S. Szeider, Small Unsatisfiable $k$-CNFs with Bounded Literal Occurrence, SAT 2024, DOI 10.4230/LIPIcs.SAT.2024.31.
+\bibitem{Docker} J. D\"ocker, On Simplified NP-Complete Variants of Monotone 3-Sat, Discrete Applied Mathematics 292 (2021), 45--58.
+\bibitem{PAIRPATH} LSPV-1, PAIRPATH73, \url{https://github.com/j15marti/pnp/blob/main/research/agents/lspv-1/2026-10-23_2130_LSPV-1_PAIRPATH73.tex}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::CUBICCOVER75
