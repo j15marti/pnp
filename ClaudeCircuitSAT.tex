@@ -1,0 +1,71 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append-only run log at end; sections 1-6 edited in place
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,geometry}
+\geometry{margin=1in}
+\newcommand{\st}[1]{\textsc{#1}}
+\begin{document}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder toward circuit-SAT lower bounds}
+\author{Hourly Claude routine}
+\date{Last updated: 2026-10-23 (run 1)}
+\maketitle
+\noindent\fbox{\parbox{0.95\linewidth}{\textbf{Status: P versus NP remains OPEN.} Nothing here proves a superpolynomial lower bound. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.}}
+
+\section{Goal and method}
+Goal: lower bounds for circuit-SAT. Method: start from the smallest instances, build circuits gate by gate, record every wire, and track the exact minimum number of gates (wires $=2\times$ gates in the fan-in-2 basis $B_2$, where negation is free) for each target function as the number of inputs $n$ grows. Two different quantities are tracked and must not be conflated:
+\begin{enumerate}
+\item $s(f)$: minimum $B_2$-circuit size of a fixed function $f$ (e.g.\ a CNF verifier $V_\varphi(x)=\varphi(x)$);
+\item $T_{\mathrm{SAT}}(N)$: cost of deciding satisfiability of an $N$-bit encoded circuit. A superpolynomial bound on the circuit size of $\mathrm{SAT}_N$ would give $\mathrm{NP}\not\subseteq \mathrm{P/poly}$; it is not implied by lower bounds on $s(V_\varphi)$, which are always $\le$ the size of $\varphi$.
+\end{enumerate}
+
+\section{Rung 0: connectivity (PROVED/EXACT)}
+\textbf{Lemma 1.} A fan-in-2 circuit whose output depends on all $n$ inputs has at least $n-1$ gates, hence at least $2(n-1)$ wires.
+\emph{Proof.} The underlying graph restricted to the cone of the output is connected with $n$ source inputs; a gate merges at most two components, so $n-1$ merges are needed. \qed
+
+Tight for $\mathrm{AND}_n$, $\mathrm{XOR}_n$ (trees). Data below: AND$_4$, XOR$_4$ cost 3 gates (6 wires).
+
+\section{Rung 1: exact tables, small $n$ (COMPUTATIONAL)}
+Script: \texttt{research/claude-circuitsat/exact\_size.py} (unpruned BFS over sets of computed truth tables; exact, complete for $n\le3$).
+\begin{center}\begin{tabular}{lrrrrr}\toprule
+$n$ & \#fn with $s=0$ & $s=1$ & $s=2$ & $s=3$ & $s=4$\\\midrule
+2 & 4 & 10 & 2 & 0 & 0\\
+3 & 5 & 30 & 117 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+Hence $\max_f s(f)=2$ for $n=2$ and $4$ for $n=3$ (wires $\le 4$, $\le 8$). Selected $n=3$ values: AND$_3$=2, XOR$_3$=2, single clause $x_1\vee x_2\vee\neg x_3$=2, MAJ$_3$=4, EXACT-1$_3$=4.
+
+Targets at $n=4$ (script \texttt{targets\_n4.py}, iterative-deepening DFS with a symmetry-pruning order that I have \emph{not} independently proved sound, so the lower-bound entries are weaker evidence than the $n\le3$ table):
+\begin{center}\begin{tabular}{lll}\toprule
+function & gates & status\\\midrule
+AND$_4$, XOR$_4$ & 3 (6 wires) & upper bound exhibited; matches Lemma 1\\
+EXACT-2$_4$ & $\ge5$ & search exhausted $\le4$ gates; $\ge5$ unresolved by timeout\\
+MAJ$_4$ ($\ge2$ ones) & $\ge5$ & same\\
+3-CNF $(x_1\vee x_2\vee x_3)(\neg x_1\vee x_2\vee x_4)(x_1\vee\neg x_3\vee\neg x_4)$ & $\ge5$ & exhausted $\le4$ gates\\\bottomrule\end{tabular}\end{center}
+Chunking: each invocation capped at 25\,s; deeper levels to be split by first-gate choice in later runs.
+
+\section{Rung 2: query model for circuit-SAT (PROVED/EXACT, restricted model)}
+\textbf{Proposition 2.} Let the instance be an $m$-gate circuit presented by a wire oracle (``what feeds input $b$ of gate $i$?''). Any deterministic algorithm deciding satisfiability makes $\ge m$ wire queries in the worst case.
+\emph{Proof.} Let $h_i=\mathrm{AND}(x_i,\neg x_i)$ for $i\le m$ (wires fixed by the oracle's default) and output $=\bigvee_i h_i$: unsatisfiable. Instance $I_j$ rewires the second input of $h_j$ to $x'_j$ (a fresh variable): satisfiable. An algorithm that answers UNSAT on the default instance without reading $h_j$'s second wire cannot distinguish it from $I_j$. \qed
+
+This is a probe/acquisition bound, not a time bound for an unrestricted RAM; it matches the repository's fixed-width acquisition rung (root \texttt{main.tex}, Proof spine: $\Omega(N/\log N)$ word probes).
+
+\section{Barriers and what each rung does \emph{not} give}
+\begin{itemize}
+\item KNOWN THEOREM (cited from memory, not re-verified this run): best explicit $B_2$ lower bounds are linear, $\approx 3.1n$ (gate elimination; Find--Golovnev--Hirsch--Kulikov 2016, Li--Yang 2022). Wire counting alone stalls at linear size.
+\item Natural proofs, relativization, algebrization apply to any argument via a large, constructive property of truth tables; the exact tables above are not such an argument.
+\item Rung 1 values are for fixed functions of tiny $n$; no extrapolation to $n\to\infty$ is claimed.
+\end{itemize}
+
+\section{Repository cross-check}
+Read this run: root \texttt{main.tex} executive status and proof spine (everything remains OPEN; fixed-width acquisition rung $\Omega(N/\log N)$; dense-coupling and aggregation ceilings show density/treewidth alone do not force cost). Not yet read in depth: LSPV-1..4 reports, \texttt{tasks/}, \texttt{research/explorations/}. Planned next.
+
+\section{Next rungs (OPEN)}
+\begin{enumerate}
+\item Finish $n=4$ exact tables (split DFS by first gate; verify pruning soundness against $n=3$ BFS).
+\item $n=5$ for CNF verifier families; fit $s(V_\varphi)$ against clause count $m$ and variable-occurrence structure (fan-out of inputs).
+\item Gate-elimination style potential argument on the \emph{wire} count with explicit restriction accounting, tested exhaustively on the tables.
+\item Import repository LSPV results that give provable lower bounds on a restricted model and check which survive in the circuit-wire model.
+\end{enumerate}
+
+\section*{Run log}
+\begin{tabular}{ll}
+2026-10-23 run 1 & created document; Lemma 1, Prop.\ 2, $n\le3$ exact tables, $n=4$ partial.\\
+\end{tabular}
+\end{document}
