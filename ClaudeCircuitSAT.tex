@@ -1,0 +1,47 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-23 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\newcommand{\st}[1]{\textbf{[#1]}}
+\title{Wire-by-Wire Lower Bounds for Circuit-SAT (Living Document)}
+\author{Claude scheduled run}\date{Last updated 2026-10-23}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is a superpolynomial bound. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CANDIDATE, OPEN.
+Repository context (root \texttt{main.tex}): all routes from an arbitrary decider to a superpolynomial lower bound are OPEN; no reusable wire-count theorem was found there (search for ``gate elimination''/``fan-out'' hits only one old MAIN snapshot).
+
+\section{Model}
+A circuit $C$ over $n$ inputs is a DAG of $g$ fan-in-2 gates from the full basis $B_2$ (negation free); \emph{wires} $w(C)=2g$ (in-wires; fan-out unrestricted). $s(f)$ = min gates, $w(f)=2s(f)$. Circuit-SAT$_{n,g}$: given $C$ with $\le n$ inputs, $\le g$ gates, decide $\exists x\,C(x)=1$. Parameters: $(n,g)$, possibly also fan-out/depth.
+
+\section{Step 0: tiny cases}
+\begin{theorem}[PROVED/EXACT, connectivity]
+If $f$ depends on $n$ inputs then $s(f)\ge n-1$, so $w(f)\ge 2n-2$.
+\end{theorem}
+\begin{proof} The graph (inputs plus gates, one edge per in-wire) must connect all $n$ relevant inputs to the output, so it has $\ge n+g'-1$ edges on the $n+g'$ nodes of the cone, while edges $\le 2g'$; hence $g'\ge n-1$.\end{proof}
+Tight: $\mathrm{AND}_n$ chain/tree uses exactly $n-1$ gates.
+
+\begin{theorem}[PROVED/EXACT, probe lower bound]
+Any deterministic algorithm deciding Circuit-SAT on instances given as gate lists must read $\ge n-1$ gate records, on the family $\mathrm{AND}_n$ chain.
+\end{theorem}
+\begin{proof} The chain is satisfiable (only $1^n$). Replacing any single gate by constant $0$ gives an unsatisfiable instance; an algorithm skipping gate $i$ answers identically on both. \end{proof}
+This is only $\Omega(m)$ (reading the input); it is the trivial baseline against which anything real must be measured.
+
+\section{Step 1: exact minimum sizes (COMPUTATIONAL)}
+Script \texttt{results/circuitsat/mincirc.py} (BFS over sets of computed truth tables, shared gates allowed, $B_2$; $n=3$ ran in $<30$ s).
+\begin{center}\begin{tabular}{@{}cccccccc@{}}\toprule
+$n$ & \#functions & $s=0$ & 1 & 2 & 3 & 4 & $\max s$ \\\midrule
+2 & 16 & 6 & 10 & -- & -- & -- & 1\\
+3 & 256 & 8 & 30 & 114 & 80 & 24 & 4\\\bottomrule\end{tabular}\end{center}
+So $\max_f w(f)=2,\,8$ for $n=2,3$ (max wires $=2\max s$). The 24 functions needing 4 gates for $n=3$ (e.g.\ parity-like/majority-type) are the first witnesses of ``fresh wires beyond connectivity'': connectivity gives only $s\ge2$.
+
+\section{Known bounds to build on}
+\st{KNOWN THEOREM} Counting: almost all $f$ need $\Omega(2^n/n)$ gates (Shannon). \st{KNOWN THEOREM, recalled, not re-verified this run} gate elimination gives $\approx3n$ for explicit functions in $B_2$ (Li--Yang, STOC 2022: $3.1n-o(n)$). \st{KNOWN, conditional} SETH implies no $O(2^{(1-\epsilon)n}\mathrm{poly}(g))$ algorithm for CNF-SAT; this is the natural parametrized target ($2^n\cdot g$ vs.\ $n,g$).
+
+\section{Open arrows and next steps}
+\begin{enumerate}
+\item n=4: exact $s(f)$ for 65536 functions (needs NPN-class reduction and chunking; known max is 7 gates in $B_2$? \st{CANDIDATE, verify}).
+\item Define ``restricted solver'' models where a lower bound on wire accesses $\ge c\cdot g\cdot 2^{\epsilon n}$ is provable (e.g.\ oblivious branching / DPLL with gate-local probing). \st{OPEN}
+\item Wire accounting under fan-out $\le k$: does fan-out limit force extra wires for copying? \st{CANDIDATE}
+\item Check repo CRS-PPC/HEC branch for a transferable resource count. \st{OPEN}
+\end{enumerate}
+\end{document}
