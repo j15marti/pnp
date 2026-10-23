@@ -1,0 +1,142 @@
+% LSPV-4 REPORT::HALL-DEFICIENCY-TRANSPORT62::2026-10-24T00:12:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.83in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,longtable,booktabs,url}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{HALL-DEFICIENCY-TRANSPORT62: Exact Deficiency Preservation Through the Horn-Selector Ladder}
+\author{LSPV-4, 2-SAT-to-NP-complete investigation}
+\date{24 October 2026 (KST)}
+\begin{document}\maketitle
+\begin{center}\textbf{P versus NP remains OPEN. These are exact structural identities and an established parameterized upper-bound transfer, not a universal deterministic time lower bound.}\end{center}
+\section{Three falsifiable mechanisms}
+\noindent\textbf{M1, PROVED/EXACT.} The canonical Horn-selector lift of every proper 3-CNF preserves maximum clause-variable deficiency exactly.
+\par\noindent\textbf{M2, PROVED/EXACT plus KNOWN THEOREM.} If source maximum occurrence is four and exactly $h$ source variables occur four times, the maximum deficiency of source and target is at most $\lfloor h/3\rfloor$. Szeider's published SAT algorithm thus gives a $2^{\lfloor h/3\rfloor}\operatorname{poly}(N)$ decision upper bound.
+\par\noindent\textbf{M3, FALSIFIED/RETIRED.} A connected, sign-balanced, proper 3-CNF prism family has maximum deficiency linear in $n$ yet is solved by an explicit linear-time source-aware algorithm.
+\paragraph{Explicit model.} Two header words and four fixed-width words per source clause (arity, three signed IDs, zero padding for binaries). For $n$ variables and $M$ clauses,
+\[
+w=\lceil\log_2(64(n+M+1))\rceil,\qquad N=(4M+2)w.
+\]
+Charge source reads, input validation, unsuccessful matching and branching, witness maps, compiler output words, replay, caching, and peak live space. Allow uniform fixed local gadgets, renaming, matching and parsing, but no free decide-first reduction. A lower bound on this word access model does not automatically hold on arbitrary packed representations.
+
+\section{Exact matching-deficiency transport}
+For a finite CNF $F$, let $V(Q)$ denote the source variables appearing in a selected clause subset $Q$. Define
+\[
+\delta^*(F)=\max_{Q\subseteq F}\{|Q|-|V(Q)|\}.
+\]
+By the deficiency form of Hall's theorem, if $\nu(F)$ is the maximum clause-to-variable incidence matching size, then
+\[
+\boxed{\delta^*(F)=M-\nu(F)}.
+\]
+In particular, if $\delta^*=0$ a clause-saturating matching assigns distinct variables to satisfy all clauses, producing a polynomial-time SAT witness. Matching is sufficient, not necessary, for SAT.
+
+For proper exactly-three-clause source
+\[
+\Phi=\bigwedge_{j=1}^m(\ell_{j1}\vee\ell_{j2}\vee\ell_{j3}),
+\]
+introduce fresh selectors $s_{j1},s_{j2},s_{j3}$ and construct
+\[
+H(\Phi)=\bigwedge_{j=1}^m
+\left[(s_{j1}\vee s_{j2}\vee s_{j3})
+\wedge\bigwedge_{a=1}^3(\neg s_{ja}\vee\ell_{ja})\right].
+\]
+The binary backbone is Horn, all $m$ positive ternaries have disjoint supports, and each selector occurs once with each sign. It has $n_H=n_0+3m$ variables, $m_2=3m$ binaries, $k=m$ genuine ternaries, $M_H=4m$ clauses, and
+\[
+N_H=(16m+2)\lceil\log_2(64(n_0+7m+1))\rceil.
+\]
+Selectors are existential choices, not functional gates or completely free pad bits.
+
+\begin{theorem}[Exact deficiency and matching transport, PROVED/EXACT]
+For every proper $\Phi$,
+\[
+\boxed{\delta^*(H(\Phi))=\delta^*(\Phi)},\qquad
+\boxed{\nu(H(\Phi))=3m+\nu(\Phi)}.
+\]
+This includes both SAT and UNSAT sources, arbitrary sign patterns and shared source-variable identifiers.
+\end{theorem}
+\begin{proof}
+For every source clause subset $J$, choose all four Horn-lift clauses in each gadget indexed by $J$. The resulting target has $4|J|$ clauses and $3|J|+|V_\Phi(J)|$ variables, so its deficiency is $|J|-|V_\Phi(J)|$. Hence $\delta^*(H)\ge\delta^*(\Phi)$.
+
+Conversely fix any target subset $Q$. Let $d_j$ indicate whether its positive ternary from group $j$ is included and let $t_j\in\{0,1,2,3\}$ count included binary implications from that group. Let $U$ be all original variables mentioned by selected implications. The selected selector variables number three for $d_j=1$ and $t_j$ for $d_j=0$. Thus the exact count is
+\[
+|Q|-|V(Q)|=\sum_{j:d_j=1}(t_j-2)-|U|.
+\]
+Only groups $J_3=\{j:d_j=1,\ t_j=3\}$ contribute positively. Since $U\supseteq V_\Phi(J_3)$,
+\[
+|Q|-|V(Q)|\le |J_3|-|V_\Phi(J_3)|\le\delta^*(\Phi).
+\]
+Take the maximum to obtain equality. By Hall, $\nu(H)=4m-\delta^*(H)=3m+\nu(\Phi)$.
+\end{proof}
+For any original assignment $\alpha$, if $r_j(\alpha)$ literals of clause $j$ are true, the number of satisfying selector extensions equals $\prod_j(2^{r_j(\alpha)}-1)$. Consequently, $\Phi$ is SAT iff $H(\Phi)$ is SAT, and a target witness projects onto the original assignment. Canonical construction, recognition, original-source recovery, lifting and witness replay are all $O(n_0+m)$ word work/space, while the explicit target uses $16m+2$ output words.
+
+\section{The degree-four quantitative rung}
+\begin{theorem}[Source occurrence excess, PROVED/EXACT]
+Suppose every source clause has three distinct variables, every variable has at most four total occurrences, and precisely $h$ source variables have degree four. Then
+\[
+\boxed{\delta^*(\Phi)=\delta^*(H(\Phi))\le\lfloor h/3\rfloor}.
+\]
+For $h\le2$ both source and target are necessarily SAT, with polynomial-time constructible matching witnesses.
+\end{theorem}
+\begin{proof}
+Every clause subset $J$ satisfies
+\[
+3|J|=\sum_{x\in V(J)}\deg_J(x)\le3|V(J)|+h.
+\]
+Subtract and maximize over $J$, then apply the previous theorem. For $h\le2$ the integer maximum deficiency is zero, so Hall yields a clause-saturating matching.
+\end{proof}
+\paragraph{FPT algorithmic consequence, KNOWN THEOREM.}
+Szeider (2004) proves that SAT on $n$ variables with maximum deficiency $\kappa$ is decidable in $O(2^\kappa n^3)$ in the stated unit-cost combinatorial model, with a satisfying assignment or regular-resolution certificate. With polynomial source parsing and construction costs this yields
+\[
+T(\Phi),T(H(\Phi))\le2^{\lfloor h/3\rfloor}\operatorname{poly}(N),
+\qquad h=O(\log N)\implies T=N^{O(1)}.
+\]
+The Szeider solver is not reimplemented in the attached audit; only the parameter identity is independently tested.
+\paragraph{Structural sharpness.}
+Take all four signed clauses on three variables whose number of positive literals is even. They are SAT and each variable occurs twice positively and twice negatively. Here $h=3$, $n=3$, $m=4$, $\delta^*=1=h/3$. Repeating disjointly gives scalable equality. The next control removes the disjointness escape.
+
+\section{Connected large-deficiency family with an easy decision}
+Use MAIN101's cubic prism $P_q=C_q\square K_2$, with $2q$ vertices, $3q$ edges, and one $x_e$ per graph edge. Its $2q$ vertex clauses contain the three incident edge variables, oppositely signed at endpoints. Order the $3q$ edges and introduce $y_0,\dots,y_{3q-1}$. For each $e_i$ add
+\[
+(y_i\vee\neg y_{i+1}\vee x_{e_i})\wedge
+(y_i\vee\neg y_{i+1}\vee\neg x_{e_i}),
+\]
+indices cyclic. The connected source $G_q$ has $n=6q$, $m=8q$, every variable occurring twice in each sign and $h=6q$. The whole formula gives $\delta^*\ge m-n=2q$; occurrence excess gives $\delta^*\le h/3=2q$, so
+\[
+\boxed{\delta^*(G_q)=2q=h/3}.
+\]
+Orient each ring cyclically; set $x_e$ to satisfy the incoming ring-edge literal at its head, and every $y_i=0$. This is an explicit satisfying assignment. Canonical grammar recognition, source read, witness and replay are $O(q)$ word operations. A total uniform exact SAT decider first recognizes this family, decides it directly, and falls back to a generic exact SAT solver elsewhere. Therefore linear maximum deficiency does not impose exponential time on each instance, even for connected balanced no-pure-literal sources. The NP-complete worst-case lower bound remains OPEN.
+
+\section{Charged bottom-up ladder}
+\small
+\begin{longtable}{p{.23\linewidth}p{.22\linewidth}p{.25\linewidth}p{.23\linewidth}}
+\toprule
+Stage and labels & $n,M,k,N$ and auxiliaries & Allowed forward/backward maps and accounted algorithms & Strongest justified lower bound / OPEN\\\midrule\endhead
+Original orientation 2-SAT chain; UNSAT iff $b=1^q$ & $n=q+3$, $M=q+4$, $N=(4q+18)w$; $u,v$ original and free when SAT & Endpoints force $z_0=1,z_q=0$; first zero permits a $1\to0$ witness; source scan or SCC is $O(q)$ & On all-one input $q$ required orientation probes in the restricted model, $\Omega(N/\log N)$; no superlinear lower bound\\
+Arbitrary 2-CNF and proper-three padding control & $M_2$ binaries map to $2M_2$ ternaries, $M_2$ fresh free padding variables & $(a\vee b)\equiv(a\vee b\vee z)\wedge(a\vee b\vee\neg z)$; construction and inverse scan linear & No SAT hardness amplification by syntactic clause width\\
+2-CNF plus $k$ genuine ternaries & $n$ original, $M=M_2+k$; $N=(4M+2)w$ & One variable per ternary gives $|S|\le k$; each of $2^{|S|}$ assignments reduces to SCC-solvable 2-CNF & $2^k\operatorname{poly}(N)$ is an upper bound, not mandatory enumeration\\
+Degree-four source and Horn lift & $h$ source variables degree four; target $n_0+3m$ variables and $4m$ clauses, $k=m$ & Exact Hall-deficiency preservation; source-witness/target-witness maps; $2^{h/3}\operatorname{poly}(N)$ decision upper bound & Large $h$ or strong syntactic backdoor does not imply high SAT time\\
+NP-complete endpoint & Proper max-occurrence-four 3-SAT; stronger signed $(2,2)$ subclass; inverse Horn grammar linear & Known NP-completeness by Tovey and D\"ocker plus SAT-preserving Horn lift & Uniform all-decider superpolynomial lower bound OPEN\\
+\bottomrule
+\end{longtable}\normalsize
+Reserved $d$ denotes eliminated variables. Here $d=0$ for the lift; syntactic $r=n-d$ is not a computational obstruction. Separate source bit length, Hall deficiency, affine dimension, representation size, certificate size and runtime. Explicit Horn output costs $\Omega(m)$ word writes, consuming any $O(m)$ source acquisition lower bound before transfer. No gates, wires, switches, hashing, ETH/SETH or cryptographic hardness claims are used.
+
+\section{Reproducibility, corpus audit, and exact handoff}
+\paragraph{COMPUTATIONAL.}
+Seed 202610241047. A standard-library independent maximum-matching auditor tested 1,100 generated proper bounded-occurrence sources and their Horn lifts, source-subset Hall maxima for small instances, all $q\le7$ binary-chain orientations, selector-extension counts, signed tight four-clause SAT source, the published 16-clause clause-minimal UNSAT source, free padding/XOR controls, and balanced prisms at $q=3,4,5,8,13,32,64$. The audit counted \textbf{11,924 assertions and zero failures}. It does not computationally prove any asymptotic running-time lower bound or implement Szeider's general FPT procedure.
+\paragraph{CORPUS REVIEWED.}
+Root main.tex, AGENTS.md, CODEX.md, project skill, tasks index and TASK-001 through TASK-007; newest MAIN101, MAIN100, MAIN96, historical MAIN85 and MAIN64; Role~4 DEGREE60, MU16-TRANSPORT61 and AFFINE-MATCHING59; Role~3 SOURCEPROBE19 and HWB-OBDD68; Role~1/2 exact matching algorithms via MAIN101. Repository searches covered maximum deficiency, Horn selector deficiency, and matching autarky. Literature: Szeider, Tovey, D\"ocker, Kullmann.
+\paragraph{DUPLICATION / CONTRADICTION / ROOT CHANGE.}
+Hall deficiency, Szeider's FPT bound, the Horn lift, degree-three/four boundary and connected prism are pre-existing. New here is the proof of exact maximum-deficiency preservation and consequent tight $h/3$ algorithmic ladder rung. The large-deficiency easy prism refutes proposed universal necessity. MAIN101's OPEN conclusion is unchanged and no restricted representation lower bound is promoted to all-decider time. The Role~4 root section should reflect this result only after standalone verification.
+\paragraph{TRANSFER AUDIT.}
+Matching and Szeider's FPT theorem share the identical clause-variable incidence object and transfer exactly. Source-aware direct decisions defeat attempts to force Hall matching, OBDD compilation, static contexts or proof-history materialization. Schur squares, VLSI, entropy, hashes and causal-source analogies provide no proved machine-universal SAT-time bridge. Relativization, algebrization and natural-proofs barriers remain unresolved.
+\paragraph{HANDOFF / OPEN.}
+Role~5: independently verify $\nu(H)=3m+\nu(\Phi)$ with shared originals and arbitrarily chosen target clause subsets. Roles~1--3: consume the tight SAT four-clause example, the 16-clause UNSAT example and the connected high-deficiency prism as hostile controls. Next candidate experiment: vary occurrence-four structure among connected signed exact-$(2,2)$ formulas and measure source recognition, affine/Horn/SCC simplification, matching, caching and genuine continuation with all source access charged. The first missing lemma still concerns every total uniform deterministic exact decider of a single fixed NP-complete language. Independent peer review pending; the existing five schedules are unchanged.
+
+\begin{thebibliography}{9}
+\bibitem{Szeider} S. Szeider, Minimal unsatisfiable formulas with bounded clause-variable difference are fixed-parameter tractable, JCSS 69(4):656--674, 2004. DOI:10.1016/j.jcss.2004.04.009.
+\bibitem{Tovey} C. A. Tovey, A simplified NP-complete satisfiability problem, Discrete Applied Mathematics 8(1):85--89, 1984. DOI:10.1016/0166-218X(84)90081-7.
+\bibitem{Docker} J. D\"ocker, Monotone 3-Sat-(2,2) is NP-complete, arXiv:1912.08032, 2019.
+\bibitem{Kullmann} O. Kullmann, Constraint Satisfaction Problems in Clausal Form I: Autarkies and Deficiency, Fundamenta Informaticae 107:27--81, 2011. DOI:10.3233/FI-2011-428.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::HALL-DEFICIENCY-TRANSPORT62
