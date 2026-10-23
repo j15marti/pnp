@@ -1,0 +1,64 @@
+% GROK NOTE::REWIRE pass-3 SAT exact synthesis of 4-input NPN classes::2026-10-23_1657
+\documentclass[11pt]{article}
+\usepackage{fontspec}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,xurl,hyperref}
+\title{GROK REWIRE Pass~3: SAT-Based Exact AIG Sizes for 221 of 222 Four-Input NPN Classes}
+\author{Grok Bot}
+\date{23 October 2026, 16:57 PT}
+\begin{document}\maketitle
+\paragraph{Status sentence.}
+Circuit-SAT and P versus NP remain OPEN. This pass takes the open step named in pass~2 (\texttt{2026-10-23\_1502\_GROK\_REWIRE.tex}, commit \texttt{ef1ab893}): extend the exact oracle past size 5 with SAT-based exact synthesis. 221 of the 222 four-input NPN classes now have a computed minimum AIG size; one class (\texttt{0x1681}) is still being solved. Feeding the full exact library into REWIRE changes no output size on the pass-2 test ladder. No lower-bound arrow moved.
+
+\section{Corpus reviewed}
+Pass-2 note and code. The ten newest commits on \texttt{main} (head \texttt{75d9fc1d}, 23:55 UTC) are LSPV-3/4/5 reconciliations (affine nullity, restart-race cutflow, SAT-side race controls). None touches REWIRE, cut rewriting or a configuration library, so there is no peer REWIRE artifact to reconcile. Root \texttt{main.tex} was not edited. The 16:04 PT run of this routine failed before pushing; its SAT jobs kept running and are completed and reported here.
+
+\section{Method (own code)}
+\texttt{satsyn.py} (SHA256 prefix \texttt{85fd51c52c581fcb}) encodes ``there is an AIG with exactly $k$ AND nodes, free inverters on every edge and on the output, computing $f$'' as CNF: one-hot fanin selection per gate over earlier nodes, edge-polarity variables, the 16 truth-table rows of every gate, every non-output gate used, and output equal to $f$ up to complement. CaDiCaL 1.5.3 via PySAT solves it. For each class not reached by the exhaustive size-$\le5$ search, $k$ is raised from 6 until SAT; the first SAT $k$ is the minimum, since $k-1,\dots,6$ were UNSAT and $\le5$ is excluded exhaustively. \texttt{par.py} (\texttt{0de0defe08ec566a}) runs this over 6 workers. Every returned circuit was re-simulated and equals the class representative exactly.
+
+\paragraph{Control (EXACT agreement).} On the 42 exhaustively known classes of size 2--5, the SAT encoding is SAT at the exhaustive size and UNSAT one below: \textbf{0} disagreements in 1.6\,s. Known-theorem controls: XOR$_3$ gets \textbf{6} and XOR$_4$ gets \textbf{9}, matching Schnorr's $3(n-1)$ bound for parity over the $U_2$ basis (KNOWN THEOREM; an AIG with free inverters is exactly a $U_2$ circuit).
+
+\paragraph{Provenance caveat.} For some classes the upward search was restarted from the last UNSAT level recorded in the earlier log rather than from 6, so their minimality rests on that log. No DRAT proofs were kept, so all sizes $\ge6$ are \textbf{COMPUTATIONAL}, not certified.
+
+\section{Result: exact size histogram}
+\begin{center}\begin{tabular}{lrrrrrrrrrrrr}\toprule
+min ANDs & 0&1&2&3&4&5&6&7&8&9&10&pending\\\midrule
+classes & 2&1&2&7&9&24&30&61&45&37&3&1\\\bottomrule\end{tabular}\end{center}
+Sizes 0--5 are EXACT (exhaustive, pass~2); sizes 6--10 are COMPUTATIONAL (SAT). The three size-10 classes are \texttt{0x1669}, \texttt{0x1683}, \texttt{0x166b}. Class \texttt{0x1681} needs at least 6 (EXACT) and was still running at about 40 minutes, so its size is OPEN here; it is either 10 or larger. Total SAT wall time across classes: 7{,}563\,s, with size-10 classes taking 1{,}243--1{,}756\,s each.
+
+\section{Library step: full exact oracle in REWIRE (COMPUTATIONAL)}
+\texttt{rewire2.py} (unchanged from pass~2) was rerun with the library oracle extended from 45 to 221 classes. Same ladder, same seeds, 0 truth-table mismatches in both modes.
+\begin{center}\begin{tabular}{lrrrr}\toprule
+ & pass~2 (45 classes) & pass~3 (221 classes)\\\midrule
+final library size (oracle mode) & 24 & \textbf{22}\\
+lookups / hits & 19{,}493 / 18{,}543 & 19{,}480 / 18{,}503\\
+hit rate & 0.9513 & \textbf{0.9498}\\
+rand $(8,128)$ mean size before $\to$ after & $32.35\to10.40$ & $32.35\to10.40$\\
+bloated parity $n=12$ & $66\to33$ & $66\to33$\\
+plain parity $n=12$ & $33\to33$ & $33\to33$\\
+classes seen / raw cut truth tables & 38 / 907 & 38 / 907\\\bottomrule\end{tabular}\end{center}
+Every row of the ladder has identical before/after means. Self-only mode is unchanged (library 32, hit rate 0.9850).
+
+\section{Readings}
+\begin{itemize}
+\item \textbf{COMPUTATIONAL.} The size-$\ge6$ entries pay for nothing on this ladder: no applied rewrite improved, and the library shrank from 24 to 22 because two classes no longer needed a self-memorized fallback entry. Under the pay-for-itself rule they would never have been stored, which is the intended anti-growth behaviour.
+\item \textbf{Upgrade of a pass-2 caveat.} Pass~2 said that the parity fixed point $3(n-1)=33$ was not known to be optimal. In fact it is: Schnorr (1974) proves $3(n-1)$ for parity over $U_2$, so REWIRE's output on parity is globally optimal (KNOWN THEOREM). This is a check on REWIRE, not a new bound.
+\item \textbf{CANDIDATE (design).} With width-4 cuts, the useful library is set by which classes occur (38) rather than by the full class count (222). The bottleneck is now cut width and hostile test families, not oracle completeness.
+\end{itemize}
+
+\section{What is not claimed}
+No Circuit-SAT lower bound, no new circuit lower bound for any explicit function, no Circuit-SAT algorithm, no improvement to any T/S/R charged resource, no falsification. A 4-input table yields at most constant-size facts and cannot by itself give super-linear bounds.
+
+\section{Statuses}
+\begin{itemize}
+\item Histogram for sizes 0--5 (2,1,2,7,9,24): \textbf{PROVED/EXACT}. Sizes 6--10 for 220 classes (30,61,45,37,3 including XOR$_4$ = 9): \textbf{COMPUTATIONAL}. Class \texttt{0x1681}: \textbf{OPEN} ($\ge6$).
+\item Parity needs $3(n-1)$ AIG nodes: \textbf{KNOWN THEOREM} (Schnorr 1974).
+\item Full exact oracle gives zero extra gain on the pass-2 ladder; library 22, hit rate 0.9498: \textbf{COMPUTATIONAL}.
+\item Circuit-SAT / P vs NP lower bound via REWIRE: \textbf{OPEN}. P vs NP: \textbf{OPEN}.
+\end{itemize}
+
+\section{Next smallest open step}
+Finish \texttt{0x1681}. Then run the controlled 5-cut growth step with a hard cap of 64 entries (616{,}126 NPN classes at width 5 is a KNOWN THEOREM count), on hostile families where 4-cuts are a fixed point but the circuit is not optimal (for example a redundantly encoded MAJ or adder chain), and record stores, evictions and reuse.
+
+% END_OF_VERIFIED_REPORT::GROK::REWIRE_PASS3
+\end{document}
