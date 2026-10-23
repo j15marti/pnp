@@ -1,0 +1,154 @@
+% LSPV-3 REPORT::SWAPQUARTET71::2026-10-24T02:24:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.83in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,url}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\title{SWAPQUARTET71: Exact Local Sign-Swap Certificates and Charged Four-Context Extraction}
+\author{LSPV-3, Arbitrary-Algorithm Coverage and Independent Audit}
+\date{24 October 2026}
+\begin{document}\maketitle
+\begin{center}\textbf{P versus NP remains OPEN.} All new lower bounds in this report concern input access, not arbitrary post-acquisition computation.\end{center}
+
+\section{Claim card, falsifiable mechanisms, and exact model}
+We investigate three mechanisms. M1 is a source-sign swap sensitivity graph producing an exact vertex-cover lower bound for \emph{every} total exact deterministic decider on one fixed source. M2 is a source-preserving four-context algorithm that externally evaluates the SAT labels of both endpoints of a legal swap using a general proper-3SAT decider. M3 tests whether either mechanism amplifies the Roles 4--5 ladder beyond source acquisition. M1 and M2 are \textbf{PROVED/EXACT} in the models below. M3 is \textbf{FALSIFIED/RETIRED} as an unconditional amplification step by an explicit uniform source recognizer.
+
+The principal fixed language for M1 is ordinary proper 3CNF with signed, ordered literal words, one sign bit per occurrence, and clause metadata held fixed when a sign is swapped. A narrower variant has exactly two positive and two negative occurrences for each source variable, with unique clauses. All swaps used as adversaries must preserve \emph{every} relevant grammar promise. In the narrow variant the original clause identities and unsigned supports remain fixed; swapping a positive and negative occurrence of one variable preserves its polarity quota but might create a duplicate clause, in which case that neighbor is excluded. No assignment count, syntactic residual, affine dimension, contextual relation, or proof-system output is inferred from the one-bit root label.
+
+Let $N$ be actual serialized input length in bits, $n$ the source-variable count, $m$ clause count, $k$ the number of \emph{added} ternary clauses, and $d$ the number of eliminated source variables. Only when a syntactic elimination occurs write $r=n-d$, and only for $r>0$ write $v=n/r$. In the fixed-record project encoding $w=\lceil\log_2(64(n+m+1))\rceil$ and $N=(4m+2)w$. Sign bits occupy distinct addressed signed-literal words; one word probe costs one in the stated word model. Translating to a bit-level machine charges word-width and address conversion. No zero-cost metadata, source read, hash, or witness service is supplied.
+
+\section{The exact sign-swap sensitivity-cover theorem}
+Fix a legal source $F$ and an exact Boolean decision predicate $L$ on the chosen source grammar. For each source variable $x$, let $P_x$ and $M_x$ denote its positive and negative occurrence \emph{positions}. A legal swap $(p,q)\in P_x\times M_x$ changes precisely those two sign fields, creating $F^{p,q}$. Exclude swaps whose results violate the chosen grammar. Define the opposite-label swap graph
+\[
+ E_x(F)=\{(p,q):F^{p,q}\text{ is legal and }L(F^{p,q})\ne L(F)\},
+ \quad G_x(F)=(P_x,M_x,E_x(F)).
+\]
+Let $\nu_x(F)$ be the maximum bipartite matching size of $G_x(F)$ and $\tau_x(F)$ its minimum vertex-cover size.
+
+\begin{theorem}[SWAP-COVER71, PROVED/EXACT]
+For every total deterministic exact decider $A$ for $L$, on this particular valid input $F$, the set of actual source sign positions queried by $A$ contains a vertex cover of every $G_x(F)$. Hence
+\[
+  Q_{\mathrm{sign}}(A,F)\ \ge\ \sum_x\tau_x(F)
+  \ =\ \sum_x\nu_x(F).
+\tag{1}
+\]
+The same lower bound holds on distinct addressed literal-word reads. It is independent of clause learning, algebraic invariants, branching order, caching, DAG merging, recomputation and direct decision.
+\end{theorem}
+\begin{proof}
+If a label-changing legal neighbor $F^{p,q}$ has neither of its two changed positions read during the run on $F$, every returned source observation is identical on the two inputs. Determinism then forces the same complete machine trajectory and the same output, contradicting exactness. Thus the queried positions meet every edge of $G_x(F)$. Occurrence-position sets of different variables are disjoint, so their cover cardinalities add. K\H{o}nig's bipartite matching/vertex-cover theorem yields $\tau_x=\nu_x$. A word read sees at most one of the distinct literal-word sign positions and the same argument applies.
+\end{proof}
+\begin{corollary}[Strict exact-$(2,2)$ ceiling, PROVED/EXACT]
+For the strict signed exact-$(2,2)$ grammar, $|P_x|=|M_x|=2$, so each $G_x$ has matching size at most two. Consequently
+\[
+     0\le \sum_x\nu_x(F)\le 2n.
+\tag{2}
+\]
+The upper bound is on \emph{this local-sensitivity lower-bound mechanism}, not an upper bound on all machine reads or SAT runtime. Computing the complete sensitivity graph from SAT labels may itself require expensive work and is not an assumed free operation.
+\end{corollary}
+For the star-shaped promise consisting only of $F$ and its opposite-label legal swap neighbors, the minimum certificate size at the root $F$ is exactly the cover number in (1): a cover distinguishes $F$ from every offered neighbor, and any smaller observation fails on some neighbor. This tightness holds only for the explicitly restricted star promise; it is not an all-input SAT algorithm.
+
+\section{Four-context exact SAT extraction without static compilation}
+Fix two proper clauses in one formula containing opposite occurrences of $x$:
+\[
+ F=R\land(x\lor A)\land(\neg x\lor B),\qquad
+ F^\leftrightarrow=R\land(\neg x\lor A)\land(x\lor B),
+\]
+where $A,B$ are disjunctions of the other two literals in the respective clauses. The original $R$ contains all unchanged original clauses. Define four \emph{contextual root bits}
+\[
+ q_{b,D}=\SAT\bigl(R\land(x=b)\land D\bigr),
+ \quad b\in\{0,1\},\quad D\in\{A,B\}.
+\]
+Here SAT on the right is the Boolean predicate, and the comparison is source-coherent: the two clauses share one and the same unchanged $R$.
+
+\begin{theorem}[SWAP-QUARTET71, PROVED/EXACT]
+The two SAT labels have the exact factorization
+\[
+ \SAT(F)=q_{1,B}\lor q_{0,A},\qquad
+ \SAT(F^\leftrightarrow)=q_{1,A}\lor q_{0,B}.
+\tag{3}
+\]
+For any total deterministic exact \emph{general proper-3SAT} decider $A_{\rm 3SAT}$, one can externally recover all four bits using four proper-3CNF queries of at most $n+3$ variables and exactly $m+4$ clauses each, without deleting or modifying a clause in $R$.
+\end{theorem}
+\begin{proof}
+Conditioning on $x=1$ makes $(x\lor A)$ tautological and $(\neg x\lor B)$ equivalent to $B$. Conditioning on $x=0$ instead leaves only $A$. The swapped formula exchanges $A$ and $B$ in these two cases, proving (3). To realize each query in proper 3CNF, retain the $m-2$ clauses in $R$; force $x=b$ with the four-clause gadget
+\[
+ H(\ell;u,v)=\bigwedge_{\epsilon,\delta\in\{-1,1\}}
+       (\ell\lor\epsilon u\lor\delta v)
+\]
+with fresh $u,v$; and represent binary $D=(a\lor b)$ by
+$(a\lor b\lor z)\land(a\lor b\lor\neg z)$ with fresh $z$.
+The gadget forces $\ell$ and the pair is equivalent to $D$ after existentially forgetting $z$. Hence each child has $m-2+4+2=m+4$ ternary clauses, $n+3$ variables, and exactly the required SAT label.
+\end{proof}
+The source-local construction reads and validates $F$, materializes four children, invokes the general exact decider four times, and returns four bits. Let
+\[
+ w'=\lceil\log_2(64(n+m+8))\rceil,\quad N'=(4m+18)w'.
+\]
+An implementation with sequential child reuse has conservative charged bit-time
+$O((N+4N')\log(N'+2))+\sum_{i=1}^4T_{A_{\rm 3SAT}}(F_i)$
+and peak bit-storage
+$O(N+N'+\log n)+\max_iS_{A_{\rm 3SAT}}(F_i)$.
+A word-RAM implementation has $O(n+m)$ word construction/output work per child with $w'$-bit words. The original $F$ is retained or reread at paid cost. There are $k=6$ newly added ternaries per child, $d=0$ eliminated original variables, three fresh auxiliary variables, no uncharged failed calls, and one-bit output from each exact solver call. Certificates or witness reconstructions, when requested, require separate charged operations.
+
+\textbf{Critical class mismatch.} These four children generally violate the strict exact-$(2,2)$ occurrence grammar. Thus the theorem does \emph{not} give four legal queries to a decider defined \emph{only} on that narrower NP-complete language. Any proposed repair must supply and charge a separate general-3SAT-to-exact-$(2,2)$ reduction. Nor does the theorem imply that the original one-bit SAT execution internally materializes these four bits.
+
+\section{Cross-role same-support pair and lower-bound ceiling}
+LSPV-4 TWO-SIGN-SWAP64 supplies an original strictly monotone UNSAT source $U$ of 198 variables and 264 proper distinct ternary clauses and a SAT source $V$ with exactly the same unsigned ordered supports and exactly two changed signs: the occurrences of variable 3 in clause/slot $(3,1)$ and $(13,0)$, indexed from zero. Both have two positive and two negative occurrences of every variable; the repaired $V$ is \emph{not} strictly monotone. Its 198-bit satisfying assignment and the original imported UNSAT certificate are separately recorded in LSPV-2/4. This run does not claim to recheck the full original UNSAT certificate. The one opposite-label legal edge gives $\nu_3(U)\ge1$ and $\nu_3(V)\ge1$; no unseen neighbor labels are asserted.
+
+For $p$ disjoint canonical blocks, choose $V$ or $U$ in every block and use the all-$V$ SAT input. Swapping any one block to $U$ reverses the root label, with changes confined to two signed-literal words in that block. Equation (1) therefore forces at least $p=\Theta(N/\log N)$ source-word reads by every deterministic exact decider for the broad signed exact-$(2,2)$ language on that input. Yet a total uniform decider can scan for the canonical $U/V$ block templates in $O(p)$ word operations, return SAT iff all blocks equal $V$, and fall back to any correct general solver otherwise. This proves no superlinear continuation bound. At no point may this pair be called an opposite-label pair \emph{within} strict monotone exact-$(2,2)$, because $V$ is mixed-sign.
+
+For a source 2SAT ladder with $q$ orientation fields, the established lower bound is $q$ field probes and the Horn or signed-ternary conversion writes $\Omega(q)$ target words. Thus the paid reduction inequality
+\[
+ L_{\rm old}\le R_{\rm read+construct}+H_{\rm preprocess}
+ +Q\,\tau_{\rm model}\,T_{\rm target}^{\le}(g(N))
+\tag{4}
+\]
+leaves no positive superlinear remainder. Equation (1) is an identity/source-access bound and avoids paid reduction only on the already fixed target language. It does not make a post-acquisition cost appear.
+
+\section{First-deliverable coverage ledger}
+\small
+\begin{longtable}{@{}p{.18\linewidth}p{.27\linewidth}p{.23\linewidth}p{.25\linewidth}@{}}
+\toprule Candidate / exact covered algorithm class & Actual object, extraction/source and storage charge & Invoked bound and model & Bypass / missing universal extension\\\midrule\endhead
+SWAP-COVER71; all exact deterministic addressed-input deciders & Actual sign-read positions; external sensitivity graphs need up to $\sum_x|P_x||M_x|$ exact neighbor classifications, each input reads/writes charged. Graph/output $O(n)$ in strict $(2,2)$; actual transcript may be $O(T\log N)$. & $\sum_x\nu_x$ necessary addressed-sign reads; in strict $(2,2)$ at most $2n$. & Source-aware canonical recognition; no superlinear continuation theorem.\\
+SWAP-QUARTET71; general proper-3SAT deciders with external transformer & Four optional solver queries, $4N'$ child output bits, $O(N+N')$ peak buffers plus solver space. Full original source access charged. & Exact two-root-label factoring; four calls, no runtime lower bound. & Children not in strict exact-$(2,2)$ grammar; no compulsory internal quartet.\\
+Role 4 TWO-SIGN-SWAP64; exact signed-$(2,2)$ deciders & Two changed sign words per block; fixed-template recognizer $O(p)$; source witness replay charged. & $p=\Theta(N/\log N)$ words on all-$V$ SAT instance. & Matching $O(p)$ scan; $V$ not strictly monotone.\\
+Role 5 FROZEN-SIGN-FLOW103; fixed-witness sign constructors & Bipartite feasible flow and min-cost circulation; polynomial source/flow construction and explicit sign writes. & Exact fixed-assignment feasibility and minimum repair, not SAT lower bound. & Unknown assignment remains SAT; every decider need not construct flow.\\
+Role 2 DUALPAIR61; certified paired-support normalizers & Sorted support records, defect list and optional graph-factor branches; $O(m\log m)$ discovery, polynomial peak memory. & Restricted optimal pairing and exponential \emph{upper} continuation bound. & Complementary-pivot or direct decision bypass.\\
+Role 1 EXCLUSIVEQUOTIENT78; certified quotient producers & Restricted quotient/source clauses and polynomial extraction; complete source and verification charged. & Restricted semantic/representation output bound. & Root decider need not compile quotient.\\
+CERTTRACE59; every exact deterministic indexed-bit decider & Input-read address/value transcript, output $O(q\log N)$ bits, $O(T\log N)$ instrumented time, logarithmic recorder bits. & Root monochromatic certificate, at most $N$ distinct bit positions. & No necessary expensive work after source reads.\\
+TIMEOUT66; arbitrary deterministic exact single-tape machines & Bounded-run general NAND2 circuit, $O(t(N+t))$ gates and $O(g\log g)$ written bits. & Resource-preserving simulation \emph{upper} bound. & No general uniform SAT-circuit lower bound.\\
+Resolution, DNNF, OBDD; restricted producers & Full proof/representation, output and memory fully charged. & Some exponential bounds for those restricted representations. & Direct decision, Gaussian elimination, caching, recomputation; no universal extractor.\\
+Arbitrary uniform exact deterministic SAT decider & Root bit, optional read transcript/tableau; actual machine time and space. & No known unconditional superpolynomial bound. & Independent obstruction $\to$ necessary work arrow OPEN.\\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{Independent finite discriminating audit}
+A standalone standard-library implementation enumerates all complete Boolean assignments, all legal opposite-sign occurrence swaps, and all four contexts per swap. The seven controls are an eight-clause proper-3CNF UNSAT cube, a padded 2SAT unit pair, Horn clauses, even and odd XOR3, two disconnected XOR components, and a source-readable-witness formula. There were 114 actual swaps, 228 checked label identities, and 24 independent min-cover/matching equality checks, with zero discrepancies. On the eight-clause cube (three variables, four occurrences of each sign per variable), precisely 36 of the 48 swaps change UNSAT to SAT; each $K_{4,4}$ swap graph has 12 sensitive edges, matching and cover size four, so the root read lower bound is 12 sign positions. \textbf{Important:} These 36 cube neighbors contain duplicate clauses and therefore do \emph{not} lie in the narrower duplicate-free exact-$(2,2)$ source language; the cube tests only \emph{general} proper-3CNF. The real duplicate-free in-language control is the imported $U,V$ pair with its original certificate dependency.
+All tests were run twice with byte-identical deterministic raw JSON, SHA-256 \texttt{cd25aad7b838444a0d1ea5fead57cc5fd45affe29b7118ac85873ee9a134fdaa}. This is \textbf{COMPUTATIONAL}, not asymptotic hardness.
+
+\section{Corpus reconciliation, barriers and first missing arrow}
+\textbf{CORPUS REVIEWED:} root main.tex, AGENTS.md, CODEX.md and repository research skill; task directory and exploration inventory; MAIN64, MAIN85, MAIN102 and MAIN103; LSPV-1 restricted quotients, LSPV-2 DUALPAIR61/DOECKER61, LSPV-3 POINTWISE-DIFFERENTIAL64/CERTTRACE59/LAZY-CONTEXT62/CAPACITY70, and LSPV-4 TWO-SIGN-SWAP64 with its source and raw ledger. Original Döcker exact-$(2,2)$ NP-completeness and K\H{o}nig bipartite matching/vertex-cover are used only in their stated models.
+
+\textbf{DUPLICATION / CONTRADICTION AUDIT:} Legal-signing graph $J(4,2)^n$, its diameter, and the two-sign pair are already Role 4 results, not new here. Fixed-witness frozen-sign flow and monotone $m$-edit distance are already MAIN103, not redone. POINTWISE-DIFFERENTIAL64 used set cover on single-bit perturbations; new here is the exact bipartite matching characterization for legal \emph{two}-sign swaps and the four-context proper-3SAT extraction with its narrow-language mismatch. No new unrestricted time bound is claimed. \textbf{STALE OR OVERSTATED CLAIM:} any assertion that the repaired $V$ is strictly monotone, or that all eight-clause cube neighbors satisfy unique-clause grammar, is false.
+
+\textbf{ADOPTED:} source-preserving gadgets, exact label controls, charged reduction inequality. \textbf{REJECTED:} mandatory quartet/DNNF/regular-resolution/witness extraction, arbitrary-label hardness from nearest opposite signings, and free source-aware normalization. PQ collision, Schur-square, source hash and VLSI analogies have no model-preserving implication here; treating them as an unconditional time bound is a \textbf{FAILED TRANSFER}. SAT-oracle access or arbitrary algebraic preprocessing can bypass any representation-specific lower bound. No claimed avoidance of relativization, algebrization or Natural Proofs is warranted.
+
+\textbf{WHAT CHANGED RELATIVE TO ROOT MAIN:} the exact legal-swap sensitivity cover gives a universal deterministic \emph{input-read} bound and a matching-based way to audit all locally opposite labels; a source-coherent quartet permits four \emph{optional external} general SAT queries with explicit child sizes. This neither strengthens nor repairs the first missing arrow:
+\[
+ \underbrace{\text{independent semantic obstruction}}_{\text{specific}}
+ \quad\not\Longrightarrow\quad
+ \underbrace{\text{mandatory superpolynomial acquisition/compression/continuation}}_{\text{OPEN for every total uniform exact decider}}
+ \quad\Longrightarrow\quad P\ne NP.
+\]
+The strongest corrected statement would be a \emph{new} all-machine, source-aware lower bound on post-acquisition computation for one fixed NP-complete language, robust to SCC, Horn, XOR, template recognition, clause learning, DAG reuse, recomputation, all failed attempts, external self-reduction, and direct decision. No such bound follows from (1)--(4).
+
+\textbf{NEXT DISCRIMINATING EXPERIMENT:} Import and independently verify all certificate data for the actual 198-variable $U,V$ pair. Compute only source-label-changing legal neighbors with sound SAT/UNSAT certificates, not optimistic solver timeouts; determine $\nu_x$ and whether local ambiguity persists after all fast source normalizers. For signed exact-$(2,2)$ inputs with any unknown neighboring labels, report rigorous \emph{lower} certificates for $\sum\nu_x$, never infer unseen edges.
+\begin{thebibliography}{9}
+\bibitem{docker} J. D\"ocker, \emph{Monotone 3-Sat-(2,2) is NP-Complete}, arXiv:1912.08032 (2019).
+\bibitem{turner} J. Turner, \emph{Mapping Matchings to Minimum Vertex Covers: K\H{o}nig's Theorem Revisited}, arXiv:2004.08636 (2020).
+\bibitem{buhdewolf} H. Buhrman and R. de Wolf, \emph{Complexity Measures and Decision Tree Complexity: A Survey}, Theor. Comput. Sci. 288 (2002), 21--43.
+\bibitem{gjs} M. Garey, D. Johnson and L. Stockmeyer, \emph{Some Simplified NP-Complete Graph Problems}, Theor. Comput. Sci. 1 (1976), 237--267.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-3::SWAPQUARTET71
