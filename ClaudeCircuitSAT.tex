@@ -1,0 +1,82 @@
+% !TEX program = xelatex
+% ClaudeCircuitSAT living document. Append-and-reconcile each hourly run; keep run log at end.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,geometry}
+\geometry{margin=1in}
+\newcommand{\OPEN}{\textsc{open}}
+\newcommand{\PROVED}{\textsc{proved/exact}}
+\newcommand{\KNOWN}{\textsc{known theorem}}
+\newcommand{\COMP}{\textsc{computational}}
+\newcommand{\CAND}{\textsc{candidate}}
+\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT}
+\author{Living document (Claude scheduled runs)}
+\date{Last updated: 2026-10-23 (run 1)}
+\begin{document}
+\maketitle
+\paragraph{Honest status.} No super-polynomial (or even super-linear) lower bound for Circuit-SAT is proved here. Statements are labelled \PROVED, \KNOWN, \COMP, \CAND, \OPEN. $\mathsf{P}\neq\mathsf{NP}$ remains \OPEN; this document does not change the status in the repository's root \texttt{main.tex}.
+
+\section{Goal and model}
+\textbf{Circuit-SAT}: given a fan-in-2 circuit $C$ over basis $B_2$ (all 16 binary gates; negation free) with inputs $x_1..x_n$, decide $\exists x\,C(x)=1$. Two lower-bound questions are tracked separately:
+\begin{enumerate}
+\item[(A)] \emph{Construction cost}: the minimum number of gates $g(f)$ and wires $w(f)=2g(f)$ of a circuit computing a function $f$ on $n$ inputs (the ``wire-by-wire'' ledger).
+\item[(B)] \emph{Decision cost}: the time an algorithm needs to decide SAT on a circuit of $s$ gates.
+\end{enumerate}
+Plan: fix the simplest functions, increase $n$ one step at a time, record the exact minimum wires, and look for the pattern a general argument must explain.
+
+\section{Step ledger: exact small cases}
+\begin{lemma}[Connectivity, \PROVED]\label{lem:conn}
+A fan-in-2 circuit with one output that depends on all $n$ inputs has $g\ge n-1$ gates and $w=2g\ge 2(n-1)$ wires. Tight for $\mathrm{AND}_n,\mathrm{OR}_n,\mathrm{XOR}_n$.
+\end{lemma}
+\begin{proof}
+The underlying graph restricted to the cone of the output is connected and contains the $n$ inputs. Each gate has in-degree 2, so merging components: a graph on $n+g$ nodes with $2g$ edges, connected, needs $2g\ge n+g-1$, i.e.\ $g\ge n-1$. Tightness: balanced trees.
+\end{proof}
+
+\paragraph{Exhaustive search (\COMP).} Script \texttt{results/circuitsat/minsize\_b2.py} enumerates, level by level, all sets of $k$ distinct gate outputs over $B_2$ (dedup of states) and records the first level at which every $n$-variable function appears (output negation free). Distribution of $g(f)$ over all $2^{2^n}$ functions:
+\begin{center}\begin{tabular}{c|ccccc|c}
+\toprule
+$n$ & $g=0$ & 1 & 2 & 3 & 4 & max wires $2g$\\\midrule
+1 & 4 & -- & -- & -- & -- & 0\\
+2 & 6 & 10 & -- & -- & -- & 2\\
+3 & 8 & 30 & 114 & 80 & 24 & 8\\
+\bottomrule\end{tabular}\end{center}
+($g=0$ includes constants and projections.) Observations: all $2$-variable functions need $\le1$ gate (matches Lemma~\ref{lem:conn}); at $n=3$ the hardest functions need $4$ gates (e.g.\ majority-type), exceeding the connectivity bound $n-1=2$ by $2$. XOR$_3$ achieves $2$.
+Chunking: each run finished in $<30$\,s; $n=4$ (65\,536 functions) exceeds this and needs a SAT/meet-in-the-middle staged search (see next steps).
+
+\begin{center}\begin{tabular}{c|c|c|c}
+\toprule
+$n$ & connectivity LB (gates) & exhaustive max $g$ & status\\\midrule
+2 & 1 & 1 & \COMP\\ 3 & 2 & 4 & \COMP\\ 4 & 3 & (known literature 7; unverified here) & \OPEN\ in this doc\\
+\bottomrule\end{tabular}\end{center}
+
+\section{Decision-cost lower bound (B)}
+\begin{lemma}[Probe lower bound, \PROVED, weak]\label{lem:probe}
+Any deterministic algorithm that decides Circuit-SAT on size-$s$ instances, accessing the circuit only by gate/wire queries, makes $\Omega(s)$ queries in the worst case.
+\end{lemma}
+\begin{proof}
+Take $C_0=$ an AND tree of $s$ gate-slots over distinct inputs, satisfiable. For each slot $i$ let $C_i$ replace gate $i$ by the constant $0$ (unsatisfiable). An algorithm that never queries slot $i$ answers identically on $C_0$ and $C_i$, which have different answers. So it must query every slot.
+\end{proof}
+This is linear in the input description and says nothing about time beyond reading the input; it is recorded only as the exact base of the ledger.
+
+\section{Known gate-elimination bounds (\KNOWN; cited from memory, to be re-verified against sources next run)}
+For explicit functions (affine dispersers) on $B_2$ circuits: $2n-O(1)$ (Schnorr, XOR), $3n-o(n)$ (Blum 1984), $3.011n$ (Find--Golovnev--Hirsch--Kulikov 2016), $\approx 3.1n$ (Li--Yang 2022). Super-linear $B_2$ lower bounds for any explicit function are \OPEN, and Circuit-SAT $\notin$ P/poly would imply $\mathsf{NP}\not\subseteq\mathsf{P/poly}$, which is out of reach of known techniques (relativization, natural proofs, algebrization barriers).
+
+\section{Why the wire ledger cannot yet scale}
+Gate elimination: setting one variable removes $\ge c$ gates; the constant $c$ is limited by local structure (a variable with fan-out 1 or XOR-heavy neighbourhoods). The $n=3$ data show the first genuine gap above connectivity ($4$ vs.\ $2$). A \CAND{} research direction: tabulate, for each $n\le 5$, the extremal functions and the fan-out pattern of the minimum circuits, to see whether a wire-based potential (e.g.\ counting fan-out-$\ge2$ inputs) separates hard from easy functions.
+
+\section{Cross-reference with repository j15marti/pnp}
+Root \texttt{main.tex} states ``P versus NP remains OPEN''; its proof spine has load-bearing OPEN arrows. Nothing there yields a circuit lower bound usable here as of this run (not exhaustively audited; only grep of status lines and \texttt{research/explorations/monotone-slice} mentions of circuit lower bounds). Next run: read those monotone-slice notes.
+
+\section{Next steps}
+\begin{enumerate}
+\item Compute $n=4$ exact minima via staged search (SAT encoding or canonical-class enumeration up to NPN equivalence), record fan-out profiles.
+\item Verify the cited literature bounds from primary sources.
+\item Read monotone-slice / TWOSATDEC notes for transferable circuit-size lemmas.
+\item Try to formulate the wire potential and test on $n\le4$ data.
+\end{enumerate}
+
+\section*{Run log}
+\begin{itemize}
+\item 2026-10-23 run 1: created document; Lemmas 1--2; exhaustive $n\le3$ table.
+\end{itemize}
+\end{document}
