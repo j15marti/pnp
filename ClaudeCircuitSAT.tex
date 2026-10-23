@@ -9,7 +9,7 @@
 \newcommand{\COMP}{\textbf{COMPUTATIONAL}}
 \newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
 \title{ClaudeCircuitSAT: a wire-by-wire ladder toward Circuit-SAT lower bounds}
-\date{Last updated: 2026-10-23 (run 1)}
+\date{Last updated: 2026-10-23 (run 2)}
 \begin{document}\maketitle
 
 \begin{center}\fbox{\parbox{0.92\linewidth}{\textbf{Status.} No superpolynomial lower bound for Circuit-SAT is claimed; that would prove $\mathrm{P}\neq\mathrm{NP}$, which remains \OPEN. This document only records exact, small-case accounting and rigorous (but weak) general bounds, to find where the ladder stops being informative.}}\end{center}
@@ -25,7 +25,16 @@ $n$ & max gates & max wires & functions by gate count (mod output negation) & no
 2 & 1 & 2 & $\{0{:}3,\ 1{:}5\}$ & includes XOR in one gate\\
 3 & 4 & 8 & $\{0{:}4,\ 1{:}15,\ 2{:}57,\ 3{:}40,\ 4{:}12\}$ & 128 classes, all solved\\\bottomrule
 \end{tabular}\end{center}
-$n=4$ (known max 7 gates) needs a smarter search (SAT-based exact synthesis, chunked); scheduled for a later run.
+Beyond $n=3$ the enumeration blows up, so Rung L1b uses SAT-based exact synthesis.
+
+\subsection*{Rung L1b: SAT-based exact synthesis (run 2)}
+Script \texttt{sat\_exact\_synthesis.py} (Knuth/Kojevnikov encoding, Glucose4; each call is one $r$ with a 30\,s cap, so every experiment is chunked by $(\text{family},\text{param},r)$). Sanity checks: $\mathrm{parity}_3$ is UNSAT at $r=1$, SAT at $r=2$ (correct).
+\begin{center}\begin{tabular}{@{}lccl@{}}\toprule
+function & inputs & UNSAT for $r\le$ & status\\\midrule
+$\mathrm{MAJ}_5$ & 5 & 6 & $\ge 7$ gates; $r=7$ not resolved within the 20\,s cap\\
+$\mathrm{TRIANGLE}_4$ (K$_3$ in a 4-vertex graph) & 6 & 6 & $\ge 7$ gates; $r=7,8$ TIMEOUT\\\bottomrule
+\end{tabular}\end{center}
+\COMP{} lower bounds, conditional on the encoding being correct (validated on the $n\le3$ table and parity$_3$ only). Trivial upper bound for $\mathrm{TRIANGLE}_4$ is 11 gates (4 triangles $\times$ 2 ANDs + 3 ORs), so the exact value lies in $[7,11]$. \textbf{Evidence trend:} exact synthesis hits a wall (solver timeouts) at about 6--10 inputs and 7--8 gates, as expected; it gives no asymptotic information either way for P vs NP.
 
 \section{Rung L2: universal Circuit-SAT on the smallest encodings}
 \begin{proposition}[\PROVED]\label{prop:oneGate}
@@ -57,7 +66,7 @@ Root \texttt{main.tex} reports every unrestricted arrow \OPEN; restricted no-goe
 
 \section{Next steps}
 \begin{enumerate}
-\item L1 for $n=4$ via SAT-based exact synthesis, chunked in $\le 30$ s runs.
+\item Close the $\mathrm{TRIANGLE}_4$ gap $[7,11]$ with symmetry breaking (colex ordering of gates, edge-permutation canonicity) and cube-and-conquer, chunked $\le 30$ s.
 \item L2 for $\mathrm{SAT}_{2,2}$ and $\mathrm{SAT}_{3,1}$ with a fixed encoding (wire choices + gate types): exact size, and a conjectured size formula.
 \item Search for a wire-counting invariant (gate-elimination with fan-out accounting) that exceeds the encoding length on these universal families.
 \end{enumerate}
@@ -65,5 +74,6 @@ Root \texttt{main.tex} reports every unrestricted arrow \OPEN; restricted no-goe
 \section*{Run log}
 \begin{itemize}
 \item Run 1 (2026-10-23): created document; L1 for $n\le3$; Props.~1--3; repository cross-check.
+\item Run 2 (2026-10-23): added SAT-based exact synthesis; $\mathrm{MAJ}_5\ge7$, $\mathrm{TRIANGLE}_4\ge7$ (computational); solver wall reached at $r\ge7$. Fixed pysat interrupt (Cadical does not support it; use Glucose4). No evidence yet favoring P=NP or P$\ne$NP; none expected from finite tables.
 \end{itemize}
 \end{document}
