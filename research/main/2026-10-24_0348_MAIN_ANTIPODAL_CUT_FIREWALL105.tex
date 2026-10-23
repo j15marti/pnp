@@ -1,0 +1,95 @@
+% MAIN SNAPSHOT — LSPV/RMV::ANTIPODAL-CUT-FIREWALL105::2026-10-24T03:48:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,url}
+\newtheorem{theorem}{Theorem}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{ANTIPODAL-CUT-FIREWALL105: Linear Dual Certificates for Frozen Two-Witness Compatibility}
+\author{LSPV-5: Independent lower-bound transport and ladder synthesis}
+\date{24 October 2026}
+\begin{document}\maketitle
+\begin{center}\textbf{P versus NP remains OPEN. The new theorem is a polynomial compatibility algorithm and certificate ceiling, not an unrestricted SAT lower bound.}\end{center}
+
+\section{Target, exact model, and falsifiable mechanisms}
+Fix a proper 3-uniform support with named variables, clauses, and occurrence sockets.  Every variable has four sockets and a completed signing must give it exactly two positive and two negative occurrences.  A complete assignment $a$ is supplied; some occurrence signs are frozen; the remaining signs may be chosen.  The task is whether both $a$ and $\bar a$ satisfy every clause after completion.  The unchanged-input SAT label of the frozen source is a different problem.
+
+We tested three mechanisms.  M1, ``all local variable/clause quota tests imply compatibility,'' is \textbf{FALSIFIED/RETIRED} by the seven-pin instance below.  M2, ``a nonlocal failure requires exponential enumeration of subset obstructions,'' is \textbf{FALSIFIED/RETIRED}: a violated cut is extracted by one polynomial-time feasible-circulation computation.  M3, ``the global cut obstruction transfers to mandatory SAT work,'' is \OPEN{} and presently has no SAT-preserving, same-realization bridge.  The exact positive result is the two-sided certificate theorem below.
+
+\section{Independent proof of the cut criterion}
+For a free occurrence $e=(v,C)$ put $x_e=1$ when its completed literal is true under $a$.  Let $p_v$ and $f_v$ be the pinned-true and free counts at variable $v$, and let $t_C,f_C$ be the analogous clause counts.  Define
+\[
+R_v=2-p_v,\qquad L_C=\max(0,1-t_C),\qquad U_C=\min(f_C,2-t_C).
+\]
+Local feasibility requires $0\le R_v\le f_v$ and $L_C\le U_C$.  Globally one needs
+\[
+\sum_{e\ni v}x_e=R_v,qquad L_C\le\sum_{e\in C}x_e\le U_C. \tag{1}
+\]
+For $X\subseteq V,Y\subseteq\mathcal C$, write $R(X),L(Y),U(Y)$ for subset sums and $e_f(X,Y)$ for the number of free sockets between them.
+
+\begin{theorem}[Antipodal cut and certificate ceiling, PROVED/EXACT]
+After the local tests, (1) is integrally feasible if and only if, for every $X,Y$,
+\begin{align}
+R(X)&\le e_f(X,\mathcal C\setminus Y)+U(Y), \tag{2}\\
+L(Y)&\le R(V\setminus X)+e_f(X,Y). \tag{3}
+\end{align}
+Moreover every YES instance has a certificate of at most $3m$ bits, and every NO instance has either one failed local test or a pair of characteristic vectors $(X,Y)$ of $n+m$ bits.  Both certificate types are verified in $O(n+m)$ word operations.  A certificate is found in polynomial time without enumerating all $2^{n+m}$ pairs.
+\end{theorem}
+\begin{proof}
+Use arcs $s\to v$ with exact flow $R_v$, one capacity-one arc $v\to C$ for every free socket, arcs $C\to t$ with bounds $[L_C,U_C]$, and an exact return arc $t\to s$ of value $R(V)$.  Conservation is exactly (1); integer bounds and max-flow integrality give an integral completion whenever the circulation is feasible.
+
+Hoffman's circulation theorem says feasibility is equivalent to lower incoming capacity not exceeding upper outgoing capacity for every vertex set.  For a set containing $s$ but not $t$, with variable part $X$ and clause part $Y$, that inequality is
+\[
+R(V)\le R(V\setminus X)+e_f(X,\mathcal C\setminus Y)+U(Y),
+\]
+which is (2).  A set containing $t$ but not $s$ gives (3) after complementing its clause part.  The cases containing both or neither terminal repeat the same two inequalities.  Thus (2),(3) are complete.
+
+A YES certificate is the free-socket vector $x$, checked against all variable and clause sums.  A failed local interval identifies one variable or clause.  Otherwise Hoffman's alternative supplies a violated cut, encoded by the two bit vectors $X,Y$ and checked by one scan of vertices, clauses, and free sockets.  The standard lower-bound-circulation reduction and max-flow/min-cut algorithm returns either a circulation or such a cut in polynomial time.
+\end{proof}
+This is an exact theorem transfer from feasible-circulation duality.  It does not transfer a network cut into an unrestricted Turing/RAM lower bound.
+
+\section{Seven-pin replay and computational audit}
+On supports
+\[
+012,034,135,245,345,125,024,013,
+\]
+fix $a=1^6$ and pin $(2,C_0)$ true; $(0,C_1)$ true; $(0,C_6),(0,C_7)$ false; $(1,C_2)$ true; and $(1,C_5),(1,C_7)$ false.  Every local interval passes.  Variables 0 and 1 must each place their remaining true socket in $C_0$, whose third socket is already true; hence $C_0$ is false under $\bar a$.  Equivalently $X=\{0,1\},Y=\{C_0\}$ gives $R(X)=2$, $e_f(X,\mathcal C\setminus Y)=0$, $U(Y)=1$, violating (2).
+
+The independent stdlib audit enumerated all $6^6=46{,}656$ balanced signings, found 5,904 satisfying both antipodal assignments, replayed the seven-pin obstruction, and compared brute feasibility with all $2^{6+8}=16{,}384$ cut pairs on 32 seeded pinned instances.  There were zero failures.  This is \textbf{COMPUTATIONAL} corroboration only.
+
+\section{Ladder and transport ledger}
+The fixed-width implication chain still yields exactly $q$ orientation-field probes on its all-one UNSAT input, with a matching linear scan.  For 2-CNF plus $k$ ternaries, choosing one variable from each ternary gives a $2^k\operatorname{poly}(N)$ upper bound; $k=O(\log N)$ is polynomial, while unrestricted $k$ contains 3-SAT.  D\"ocker's proper signed exact-$(2,2)$ language remains the fixed NP-complete endpoint.
+
+The frozen antipodal construction is not a SAT-preserving reduction: it receives a supplied assignment, changes occurrence signs, and asks for a completion satisfying two prescribed witnesses.  Its backward projection does not preserve the original SAT label.  Consequently there is no compatible inequality with positive remainder transporting the chain bound.  Direct inclusion is unavailable, and a one-bit SAT decider need not construct the circulation, completion, or cut.
+
+Resource accounting is polynomial: source and pin reads $O(N/w)$ words; network construction $O(n+m)$ words; conservative max-flow time $O((n+m)^3)$; completion or cut output $O(n+m)$ bits/words; verification $O(n+m)$ words; peak live space $O(n+m)$ words.  No residual enumeration, SAT calls, proof expansion, or hidden compatibility table is used.  The network vertices are algorithmic records, not SAT auxiliary variables; $d=0$ and no syntactic residual $r=n-d$ is claimed as necessary work.
+
+\section{Corpus reconciliation and status}
+\textbf{CORPUS REVIEWED:} root \texttt{main.tex}; \texttt{AGENTS.md}; \texttt{CODEX.md}; repository skill and synthesis protocol; MAIN64, MAIN85, MAIN103, MAIN104; Role~1 GLOBALQUOTA80; Role~2 POLARITY-REPAIR63; Role~3 STATEWIDTH72; Role~4 FROZEN-ANTIPODAL-CUT66 and its code/raw ledger; the earlier chain, UWI, source-channel, compatibility, backdoor and wrapper records; Hoffman/Hassin circulation sources, Ford--Fulkerson, and D\"ocker.
+
+\textbf{DUPLICATION / CONTRADICTION AUDIT:} Role~4 already stated the cut families.  This run independently derives all four terminal-membership cases and adds the explicit linear two-sided certificate ceiling.  MAIN103's one-witness flow and EULER65's unpinned two-witness construction remain compatible.  GLOBALQUOTA80 and SWAP-STAR104 already cap local/global sign-query approaches at input order; the present theorem strengthens the polynomial global-compatibility firewall.  STATEWIDTH72's $t2^s$ compilation is an exact restricted simulation, but its live-space factor prevents a generic time-only lower bound.  No verified result is strengthened into arbitrary-decider time.
+
+\textbf{ADOPTED:} original socket coherence, paid reads/writes, integral flow, compact dual certificates.  \textbf{RETIRED:} local quotas as sufficient, subset enumeration as unavoidable, or a supplied-witness completion obstruction as a SAT lower bound.  \textbf{OPEN:} every arrow from unchanged signed SAT to an all-decider superpolynomial continuation theorem.
+
+The exact proof chain remains
+\[
+\text{defined source obstruction}
+\longrightarrow
+\boxed{\text{polynomial flow/cut ceiling}}
+\not\Longrightarrow
+\text{all-decider post-acquisition work}
+\longrightarrow
+\text{superpolynomial contradiction}.
+\]
+The boxed step is proved; the last two implications are \OPEN{}.
+
+\paragraph{Highest-value next lemma.}
+Use the seven-pin instance as a hostile control.  Any proposed obstruction must be defined on the unchanged NP-complete input and must prove either charged acquisition beyond input order or post-acquisition continuation for every exact deterministic decider, while surviving complete scans, polynomial primal/dual certificates, source recognition, SCC/Horn/XOR, compact representations, caching, learning, rereading, and decide-first normalization.
+
+\begin{thebibliography}{4}
+\bibitem{hoffman} A. J. Hoffman, ``Some Recent Applications of the Theory of Linear Inequalities to Extremal Combinatorial Analysis,'' Proceedings of Symposia in Applied Mathematics (1960).
+\bibitem{hassin} R. Hassin, ``Generalizations of Hoffman's Existence Theorem for Circulations,'' Networks 11 (1981).
+\bibitem{ford} L. R. Ford, Jr. and D. R. Fulkerson, ``Maximal Flow Through a Network,'' Canadian Journal of Mathematics 8 (1956), 399--404.
+\bibitem{docker} J. D\"ocker, ``Monotone 3-Sat-(2,2) Is NP-Complete,'' arXiv:1912.08032 (2019).
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_MAIN::ANTIPODAL-CUT-FIREWALL105
