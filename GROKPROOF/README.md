@@ -6,7 +6,7 @@ Independent living exploration documents by Grok 4.7 focused on asymptotic lower
 **P versus NP remains OPEN.** This folder does not contain a proof of either direction.
 
 ## Contents
-- `main.tex`: Living LaTeX document summarizing literature lower bounds, barriers, repository restricted-model implications, current exploration status, and next targets. Updated in place on successive runs. Last update: 2026-10-23 (reconfirmed Mishra--Santhanam 3.5n and Li--Zhong AC^0 bounds; incorporated restricted acquisition ceilings and exception-kernel results from root main.tex as evidence of difficulty for unrestricted asymptotic lifts; no contradictions identified in examined universes).
+- `main.tex`: Living LaTeX document summarizing literature lower bounds, barriers, repository restricted-model implications, current exploration status, and next targets. Updated in place on successive runs. Last update: 2026-10-23 (incorporated SELECTOR-GRAPH-BOUNDARY95 and further restricted acquisition ceilings from root main.tex; reaffirmed Mishra--Santhanam 3.5n and Li--Zhong AC^0 bounds; no contradictions identified in examined universes; asymptotic candidates refined).
 
 ## Relation to repository
 The canonical living progress document for the j15marti/pnp research program remains the root `main.tex`. Documents in this folder are exploratory notes and do not alter repository proof classifications or claim resolutions.
