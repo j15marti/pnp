@@ -1,0 +1,280 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,url,hyperref}
+\setlength{\emergencystretch}{2em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newcommand{\SAT}{\mathrm{SAT}}
+\title{AGGREGATION-CEILING91:\\Exact Direct-Sum Acquisition Through Proper 3CNF}
+\author{LSPV-5 independent lower-bound transport synthesis}
+\date{23 October 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Global status.}
+P versus NP remains \textbf{OPEN}.  This report proves an exact deterministic
+field-query lower bound and a linear-size SAT encoding.  It simultaneously
+proves that the lower bound saturates explicit source acquisition and does not
+yield an unrestricted superlinear time lower bound.
+
+\section{Claim card and mechanisms}
+\textbf{Target.} Test whether composition of the fixed-width 2-SAT chain can
+amplify its lower bound faster than encoding and acquisition cost.
+
+\textbf{Quantifiers.} For every $p,q\ge1$ and every full binary read-once
+monotone AND/OR tree $A$ using all $p$ leaves, construct one width-at-most-three
+CNF family indexed by $pq$ orientation fields, prove its exact SAT semantics,
+and determine its deterministic exact field-query complexity.
+
+\textbf{Model.} Each orientation is one fixed-width field.  A field query
+reveals its orientation bit.  Formula records, identifiers, tags, writes,
+parsing, recognition, auxiliary variables, and peak live storage are charged
+separately.  The source fields and encoded CNF are the same realization.
+
+Before source review we proposed three falsifiable mechanisms:
+\begin{enumerate}
+\item disjoint conjunction might give a direct-sum lower bound;
+\item guarded selectors might preserve that multiplication through ternary
+clauses and the NP-complete 3CNF language;
+\item iterating AND/OR aggregation might grow work faster than source length.
+\end{enumerate}
+The first two succeed exactly in the field-query model.  The third is
+falsified: every multiplication is matched by the same multiplication in
+independent source fields.  The resulting cost is acquisition order.
+
+\section{The chain baseline}
+For block $j$, use variables $z_{j,0},\ldots,z_{j,q}$, force
+$z_{j,0}=1,z_{j,q}=0$, and set
+\[
+C_{j,i}=\begin{cases}
+(\neg z_{j,i-1}\lor z_{j,i}),&b_{j,i}=1,\\
+(\neg z_{j,i-1}\lor\neg z_{j,i}),&b_{j,i}=0.
+\end{cases}
+\]
+The block is UNSAT iff all $q$ orientations equal one, hence its SAT label is
+\[
+s_j(b)=1-\prod_{i=1}^{q}b_{j,i}
+=\bigvee_{i=1}^{q}\neg b_{j,i}.
+\]
+All encodings indexed by $b\in\{0,1\}^{pq}$ have equal record counts,
+identifier widths, and metadata.  A fixed-width unit can be represented by a
+repeated-literal binary clause without changing the claim.
+
+\section{Guarded aggregation CNF}
+Let $A$ be a full binary tree whose $p$ leaves are the labels $s_1,\ldots,s_p$
+and whose internal nodes are AND or OR.  Introduce an activation variable
+$a_u$ for every node $u$.  Add the root unit $a_{\rm root}$.  For an AND node
+$u$ with children $v,w$, add
+\[
+(\neg a_u\lor a_v)\quad\text{and}\quad(\neg a_u\lor a_w).
+\]
+For an OR node add
+\[
+(\neg a_u\lor a_v\lor a_w).
+\]
+For leaf $j$, guard its two endpoint constraints and every chain clause by
+$\neg a_j$.  Thus its binary chain clauses become ternary and its endpoint
+units become binary.  Call the resulting formula $G_{A,p,q}(b)$.
+
+\begin{theorem}[Exact guarded semantics]
+For every orientation source $b$,
+\[
+G_{A,p,q}(b)\in\SAT
+\iff A(s_1(b),\ldots,s_p(b))=1.
+\]
+If $I_\wedge$ and $I_\vee$ are the numbers of AND and OR nodes, then the
+encoding has exactly
+\[
+n=pq+3p-1
+\]
+variables and
+\[
+m=1+2I_\wedge+I_\vee+p(q+2)
+\]
+clauses of width at most three.
+\end{theorem}
+\begin{proof}
+Root activation is forced.  An active AND node activates both children; an
+active OR node activates at least one child.  An active leaf enforces exactly
+its original chain.  Hence any satisfying assignment identifies active
+satisfiable leaves forming a witness for the recursive value $A=1$.
+Conversely, when $A=1$, activate both true children of AND nodes, choose a true
+child at each active OR node, and extend every active satisfiable chain.  Set
+remaining activations false.  This satisfies all guards.  The full tree has
+$2p-1$ activations, giving $p(q+1)+(2p-1)=pq+3p-1$ variables.  The clause count
+is immediate from the construction.
+\end{proof}
+
+Every binary clause $(x\lor y)$ can be replaced by
+$(x\lor y\lor c)\wedge(x\lor y\lor\neg c)$ with a fresh $c$, and a unit $x$
+by its four clauses over two fresh variables.  Therefore the family maps with
+constant overhead into ordinary proper 3CNF.  This reaches an NP-complete
+language, but only as a specially tagged, easily recognizable subfamily.
+
+\section{Exact query multiplication and its ceiling}
+\begin{theorem}[Aggregation ceiling]
+For every $A,p,q$ above, the deterministic exact orientation-field decision
+tree complexity of
+\[
+P_{A,p,q}(b)=A(s_1(b),\ldots,s_p(b))
+\]
+is exactly
+\[
+D(P_{A,p,q})=pq.
+\]
+\end{theorem}
+\begin{proof}
+The unique multilinear polynomial for $s_j$ has full degree $q$ with nonzero
+leading coefficient.  Induct on the aggregation tree.  For disjoint variable
+sets, an AND multiplies its child polynomials, so their top degrees add.  An OR
+is $f+g-fg$; its unique top-degree term comes from $-fg$, so the top degrees
+again add.  Thus $P_{A,p,q}$ has polynomial degree $pq$.
+
+An exact decision tree of depth $d$ computes a multilinear polynomial of degree
+at most $d$: at its root querying $x_i$, write the output as
+$(1-x_i)f_0+x_if_1$ and induct on the two depth-$(d-1)$ subtrees.  Hence
+$D(P_{A,p,q})\ge pq$.  Reading all $pq$ fields gives the reverse inequality.
+\end{proof}
+
+The theorem covers disjoint conjunction, guarded OR selection, and arbitrary
+alternation in one statement.  It is compatible with the general deterministic
+decision-tree direct-sum theorem of Jain, Klauck and Santha, but is proved here
+for a one-bit aggregate rather than a $p$-output relation.
+
+\begin{corollary}[No superlinear transport]
+Under a fixed-width record encoding with word width
+$w=\Theta(\log(n+m+1))$, the CNF length is
+$N=\Theta((pq+p)w)$ and therefore
+\[
+D(P_{A,p,q})=pq=\Theta(N/w).
+\]
+Canonical recognition and direct source evaluation take $O(pq+p)$ word
+operations and $O(p+q)$ working words.  Thus the exact lower and upper bounds
+have input-acquisition order.
+\end{corollary}
+
+For a flat arbitrary-order representation, building full indices may instead
+use $O(N/w)$ working words; that representation cost does not strengthen the
+lower bound.  In the standard SCC implementation, disjoint 2-CNF conjunctions
+also take linear total time.  Aspvall--Plass--Tarjan supplies the classical
+linear-time 2-SAT baseline.
+
+\section{Charged transport and time--space ledger}
+Suppose the source lower bound is $L_{\rm old}=pq$ fields.  Any paid map to the
+proper-3CNF target writes $\Theta(pq+p)$ records, so
+$R=\Theta(pq+p)$.  The only valid inequality is
+\[
+L_{\rm old}
+\le R+H+Q\tau T_{\rm new}^{\le}(g),
+\qquad
+T_{\rm new}^{\le}(g)
+\ge\frac{L_{\rm old}-R-H}{Q\tau}
+\]
+when the numerator is positive.  Here no positive asymptotic remainder is
+proved.  Direct inclusion avoids materialization, but preserves only the
+$\Theta(N/w)$ field bound.
+
+\begin{center}\small
+\begin{tabular}{p{.25\linewidth}p{.24\linewidth}p{.36\linewidth}}
+\toprule
+Stage & Time & Peak auxiliary space\\\midrule
+One chain & $\Theta(q)$ fields; linear SCC upper bound & $O(q)$ graph words, or streaming counters on canonical source\\
+$p$ disjoint chains & exact $pq$ worst-case fields & $O(pq)$ flat graph words; $O(q+\log p)$ with canonical block streaming\\
+Guarded aggregation & $O(pq+p)$ canonical recognition/evaluation & $O(p+q)$ conservative working words\\
+Proper-3CNF conversion & $\Theta(pq+p)$ records written & one output buffer plus counters\\
+Generic branching & exponential upper bound possible & depth-first space may remain polynomial; not mandatory work\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+No gate, wire, or switch lower bound is claimed.  Formula-evaluation circuitry
+would concern the visible source predicate, not unrestricted SAT-solving
+circuit complexity.
+
+\section{Hostile controls and barriers}
+The construction includes the following controls.
+\begin{itemize}
+\item $p=1$ is the original implication chain.
+\item All-AND aggregation is component decomposition; all-OR aggregation is a
+guarded selector; alternating trees test nested composition.
+\item Renaming, complementation, and canonical padding change neither the
+linear recognizer nor the charged source length.
+\item Affine/Tseitin families can similarly aggregate many visible fields but
+remain source-decidable by Gaussian elimination or a parity checksum.
+\item A maximal semantic oracle returns the aggregate label immediately.
+Therefore this restricted query proof relativizes and supplies no
+nonrelativizing bridge.  Algebraic access can evaluate the displayed
+multilinear/read-once source representation; polynomial degree is used only
+inside the declared point-query model.
+\item A decide-first normalizer under hypothetical P$=$NP still emits a fixed
+TRUE/FALSE instance.  Nothing here blocks it.
+\end{itemize}
+
+\section{Reconciliation and status ledger}
+The role-4 WHEEL-CRITICAL-LADDER52 baseline was independently retained: equal
+metadata, essential ternary blocks, and high coupling do not force hard work.
+DENSE-COUPLING-FIREWALL90 further shows unbounded treewidth with easy canonical
+labels.  Role-2 CERTIFIED-REACHABILITY-KERNEL89 supplies the improved exact
+projection compiler $O(k(n+m)+k^2)$ and a $k+18k^2$-clause kernel.  Role-1's
+PROJECTIONSTORM64 JSON records 12,184 finite assertions and no failures, but no
+matching theorem report or executable was indexed during this run, so it is
+used only as computational context and not as a dependency.
+
+\begin{center}\small
+\begin{tabular}{p{.27\linewidth}p{.24\linewidth}p{.35\linewidth}}
+\toprule
+Claim & Status & Exact scope\\\midrule
+Guarded CNF semantics and counts & PROVED/EXACT & All $p,q,A,b$ in the declared construction\\
+Exact $pq$ field-query depth & PROVED/EXACT & Deterministic orientation-field decision trees\\
+Linear canonical evaluator & PROVED/EXACT & Tagged read-once source family\\
+Proper-3CNF endpoint & PROVED/EXACT reduction; KNOWN THEOREM endpoint & Constant-overhead equisatisfiable map; 3SAT remains NP-complete\\
+Query direct-sum literature & KNOWN THEOREM & Independent-output decision trees; not unrestricted SAT time\\
+Finite executable audit & COMPUTATIONAL & 151,848 assertions, zero failures\\
+Composition as superlinear amplifier & FALSIFIED/RETIRED & Independent source fields grow at the same rate as query depth\\
+ETH/SETH lower bounds & CONDITIONAL & Not used for an unconditional claim\\
+All-decider post-acquisition bridge & OPEN & No theorem forces an arbitrary SAT decider to expose this tree or its leaves\\
+P versus NP & OPEN & No unrestricted superpolynomial lower bound\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Computational audit}
+The accompanying deterministic Python program exhaustively compared the
+guarded CNF with the source semantics for $37{,}926$ instances, including
+$33{,}123$ SAT and $4{,}803$ UNSAT controls.  It checked exact variable, clause,
+and width counts; computed 31 nonzero full-degree coefficients; and independently
+computed 31 exact decision-tree depths.  In total, 151,848 assertions passed
+with zero failures.  Finite execution verifies the implementation only; the
+two theorems above carry the asymptotic claims.
+
+\section{Single next missing lemma}
+Independent direct products are now exhausted: they can reach the full
+explicit-input query ceiling but not exceed it.  The first plausible
+amplification must be a \emph{post-acquisition shared-compatibility lemma}.
+For one fixed NP-complete encoding, define a semantic interface independently
+of runtime and prove that every uniform exact decider, after reading the source,
+must either construct/verify a compressed compatibility summary at
+superpolynomial charged cost or perform superpolynomial continuation.  It must
+survive the exact projection kernel, component and selector aggregation,
+SCC/Horn/affine/treewidth algorithms, caching, source recognition, alternate
+encodings, maximal semantic oracles, and decide-first normalization.  The
+definition, work inequality, and universal coverage are all OPEN.
+
+\begin{thebibliography}{4}
+\bibitem{JKS}
+R. Jain, H. Klauck, and M. Santha,
+``Optimal direct sum results for deterministic and randomized decision tree
+complexity,'' \emph{Information Processing Letters} 110(20):893--897, 2010.
+DOI:10.1016/j.ipl.2010.07.020.
+\bibitem{APT}
+B. Aspvall, M. F. Plass, and R. E. Tarjan,
+``A linear-time algorithm for testing the truth of certain quantified Boolean
+formulas,'' \emph{Information Processing Letters} 8(3):121--123, 1979.
+DOI:10.1016/0020-0190(79)90002-4.
+\bibitem{Schaefer}
+T. J. Schaefer, ``The complexity of satisfiability problems,''
+STOC 1978, 216--226. DOI:10.1145/800133.804350.
+\end{thebibliography}
+
+\end{document}
