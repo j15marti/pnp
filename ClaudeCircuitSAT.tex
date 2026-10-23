@@ -1,4 +1,4 @@
-% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-23 (run 2)
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-23 (run 3)
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
 \newtheorem{prop}{Proposition}
@@ -67,7 +67,7 @@ Chunking note: the $n=3$, $s\le4$ run took $\approx 60$\,s, exceeding the 30\,s 
 \item Repository (\texttt{j15marti/pnp}): root \texttt{main.tex} reports P vs NP OPEN with restricted-model results (SWAP-STAR, EXCLUSIVEQUOTIENT78); the all-decider bridge is OPEN. No repo result so far gives a circuit-wire lower bound for SAT; it was not adopted here.
 \end{itemize}
 
-\section{Dynamic and reverse dynamic programming (run 2)}
+\section{Dynamic and reverse dynamic programming (run 3)}
 \label{sec:dp}
 \textbf{Question.} Can forward or reverse dynamic programming (DP) model a lower bound
 for an NP-complete problem? Can comparing the 3-SAT and circuit-SAT versions of one
@@ -171,11 +171,90 @@ resolution lower bounds.
 (3) Meet-in-the-middle never lowered the max width below the one-directional optimum on
 these instances, and it adds a disjointness join cost.
 
+\subsection{State-parameterized (adaptive) forward/reverse DP (run 3)}
+\label{sec:adaptive}
+\textbf{Question.} Suppose each step's parameters depend on the current state: which
+variable to branch on next, which branch to try first, whether to step forward (branch) or
+backward (eliminate), and possibly how the state is represented. Does this change the conclusion above?
+
+Write the DP as a \emph{policy} $\sigma$ mapping each state $s$ to a parameter $\sigma(s)$.
+Cost is the number of states visited. Two quantities must be kept apart:
+\[
+\mathrm{OPT}(F)=\min_{\sigma}\mathrm{cost}_\sigma(F)\quad\text{(best policy, chosen with hindsight)},\qquad
+\mathrm{ALG}_\sigma(F)\ \text{for a fixed policy }\sigma\text{ computable in poly time}.
+\]
+
+\begin{prop}[Optimal adaptivity on SAT instances is a certificate; PROVED/EXACT]
+If $F$ is satisfiable, $\mathrm{OPT}(F)\le n+1$. The policy that always branches toward a fixed
+satisfying assignment visits one path. Hence an adaptive DP lower bound \emph{must} charge for
+computing $\sigma$. Choosing the parameters optimally is as hard as SAT itself: an optimal parameter sequence \emph{is} an NP witness.
+\end{prop}
+
+\begin{prop}[Syntactic adaptive DP stays inside resolution; KNOWN THEOREMS]
+On UNSAT $F$, with states being residual formulas:
+(i) per-state branching variable plus merging of equal states is a read-once branching
+program, i.e.\ regular resolution;
+(ii) mixing branching with backward elimination steps, and storing derived (learned) clauses,
+is CDCL-style search. Its runs are simulated by general resolution, and CDCL with restarts
+p-simulates resolution (Pipatsrisawat--Darwiche 2011; Atserias--Fichte--Thurley 2011).
+Haken, Urquhart and Chvátal--Szemerédi are lower bounds for \emph{general} resolution.
+So $\mathrm{OPT}(F)\ge 2^{\Omega(n)}$ still holds for explicit 3-CNFs, and adaptivity does not
+remove the exponential bound for this class.
+\end{prop}
+
+\begin{prop}[Optimal vs.\ achievable adaptivity; KNOWN THEOREM]
+Even inside resolution, finding a near-optimal policy is hard: resolution is not
+automatable unless P $=$ NP (Atserias--Müller 2019). So $\mathrm{ALG}_\sigma$ can be far above
+$\mathrm{OPT}$. That gap shows how hard \emph{choosing} the parameters is. It is not a lower bound on SAT.
+\end{prop}
+
+\paragraph{Where the conclusion changes: adaptive state representation.}
+If the parameter may also switch the state \emph{type}, the DP climbs the proof-system hierarchy:
+\begin{center}\begin{tabular}{@{}lll@{}}\toprule
+state type chosen per step & proof system & superpoly.\ lower bound\\\midrule
+residual clauses & resolution / CDCL & KNOWN (Haken 1985)\\
+parities / affine spaces & Res($\oplus$) & regular/tree-like versions (CANDIDATE citations, verify); general: OPEN\\
+linear inequalities & cutting planes & KNOWN (Pudl\'ak 1997, via interpolation)\\
+polynomials & polynomial calculus & KNOWN (Razborov 1998, PHP)\\
+bounded-depth formulas & $AC^0$-Frege & KNOWN (Ajtai; Beame--Impagliazzo--Pitassi; PHP)\\
+arbitrary formulas / circuits & Frege / extended Frege & OPEN\\
+arbitrary poly-time state map & every algorithm & OPEN $=$ P vs NP\\\bottomrule
+\end{tabular}\end{center}
+Every deterministic algorithm is an adaptive DP whose state is its full machine configuration.
+So the fully parameterized model is universal: a lower bound for it is exactly P $\ne$ NP.
+Lower bounds for the nondeterministic optimum $\mathrm{OPT}$ over all state types would be
+NP $\ne$ coNP (Cook--Reckhow). \textbf{Answer:} parameterization leaves the conclusion unchanged
+while states are syntactic restrictions, possibly with learned clauses. It turns into the full open problem once the
+parameter may choose the state representation freely. The open frontier is the
+Frege row.
+
+\paragraph{Computational check.}
+Script \texttt{results/claude\_circuitsat/adaptive\_dp.py}; data \texttt{adaptive.jsonl}. Exact
+optimal adaptive tree-like DP: best variable and best first branch per state, early exit on SAT,
+no merging. Compared with the optimal ordered DP with merging from \S\ref{sec:dp}:
+\begin{center}\begin{tabular}{@{}lcccc@{}}\toprule
+instance & SAT? & ordered+merge total & adaptive tree OPT & residuals explored\\\midrule
+$\mathrm{PHP}^3_2$ & no & 12 & 21 & 214\\
+$\mathrm{PHP}^4_3$ & no & 48 & 85 & 60838\\
+rand $n=6$ s1 / s3 & no / yes & 13 / 19 & 21 / 7 & 298 / 316\\
+rand $n=8$ s1 / s2 & no / yes & 23 / 24 & 25 / 8 & 2207 / 2193\\
+rand $n=10$ s3 / s1 & no / yes & 24 / 41 & 27 / 10 & 15032 / 15657\\
+rand $n=12$ s1 / s2 & no / yes & 41 / 60 & 33 / 12 & 102823 / 114035\\\bottomrule
+\end{tabular}\end{center}
+COMPUTATIONAL findings:
+(1) On SAT instances adaptive OPT is $\approx n$, a single guided path, as the proposition predicts.
+(2) On UNSAT instances, adaptivity without merging is comparable to ordered DP with merging.
+Neither collapses.
+(3) Computing OPT required exploring $10^5$ residual states at $n=12$. The exploration cost
+grows far faster than OPT, which illustrates the policy-selection gap.
+Runtime note: the two $n=12$ runs took $\approx31$\,s, at the 30\,s limit; larger $n$ must be chunked by first branching variable.
+
 \section{Next steps (OPEN arrows)}
 \begin{enumerate}
 \item Extend exact enumeration to $n=4$, chunked by first gate and checkpointed; tabulate wire-cut/fan-out profiles for unique-SAT circuits.
 \item Run the syntactic DP on Tseitin encodings with gate variables placed by the solver, and measure against the circuit wire-frontier width.
 \item DP with parity states (Res($\oplus$)-style) on Tseitin formulas: test whether the exponential DP width collapses, as it must since Gaussian elimination is polynomial.
+\item Adaptive DP with merging \emph{and} per-state variable choice (regular resolution optimum) for $n\le12$; measure the gap to ordered and tree-like DP.
 \item Verify the regular-Res($\oplus$) lower-bound citations, and state precisely which DP-state class each covers.
 \item Test whether a fan-out/wire-congestion measure (VLSI area-time analogy; CANDIDATE) gives a monotone lower bound along the ladder.
 \end{enumerate}
@@ -183,5 +262,6 @@ these instances, and it adds a disjointness join cost.
 \section*{Run log}
 Run 1 (2026-10-23): created document; black-box ladder proved; $n\le3$ exhaustive table computed; no new lower bound for general white-box SAT.
 Run 2 (2026-10-23): forward/reverse DP analysis (\S\ref{sec:dp}); 3-SAT vs circuit-SAT DP comparison; exact optimal-order DP widths for $n\le14$; DP lower bounds identified as resolution lower bounds (EXACT TRANSFER for DP class only; FAILED TRANSFER to all algorithms).
-% END_OF_CLAUDECIRCUITSAT_RUN::2
+Run 3 (2026-10-23): state-parameterized DP (\S\ref{sec:adaptive}); conclusion unchanged for syntactic states (resolution/CDCL lower bounds); becomes full P vs NP once state representation is free; optimal adaptive search computed for $n\le12$.
+% END_OF_CLAUDECIRCUITSAT_RUN::3
 \end{document}
