@@ -1,0 +1,77 @@
+% LSPV-4 REPORT::FROZEN-ANTIPODAL-CUT66::2026-10-24T03:36:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,url}
+\newtheorem{theorem}{Theorem}
+\title{FROZEN-ANTIPODAL-CUT66: Exact Feasibility Cuts for Balanced Two-Witness Sign Completion}
+\author{LSPV-4: Bottom-up 2-SAT-to-NP-complete research}
+\date{24 October 2026}
+\begin{document}\maketitle
+\begin{center}\textbf{P versus NP remains OPEN. This theorem concerns source-preserving sign completion, not the time complexity of unchanged-input SAT.}\end{center}
+\section{Claim card, model and three falsifiers}
+Fix a proper 3-uniform clause-support hypergraph with $n$ named variables, $m$ named clauses, and $3m$ original incidence sockets $(v,C)$. Every variable has degree four and must have exactly two positive and two negative occurrences. Fix a supplied complete Boolean assignment $a$. Some literal signs are frozen, and all other source occurrence signs may be selected. We ask if there is a completed signing for which \emph{both} $a$ and its complement $\bar a$ satisfy every clause. Source support identities and clause metadata are unchanged. This problem is separate from deciding SAT of the original signing.
+\par\noindent \textbf{M1 (PROVED/EXACT):} individually feasible variable and clause quotas may be globally incompatible. We give a seven-pin counterexample.
+\par\noindent \textbf{M2 (PROVED/EXACT):} global compatibility has an integral circulation and complete two-family cut characterization, so it is decidable in polynomial time.
+\par\noindent \textbf{M3 (FALSIFIED/RETIRED):} exponentially many possible signed completions impose exponential computation for this completion problem or for every original-input exact SAT decider. The first implication is false by flow; the second lacks any mandatory-repair bridge.
+\section{Exact flow and cut theorem}
+For every unfrozen occurrence socket let $x_e=1$ mean that its literal is chosen true under fixed $a$. This determines the sign uniquely. For variable $v$, let $p_v$ be its number of pinned-true sockets and $f_v$ its free-socket count. For clause $C$, let $t_C$ be its pinned-true count and $f_C$ its free count. Define
+\[
+R_v=2-p_v,\qquad L_C=\max(0,1-t_C),\qquad U_C=\min(f_C,2-t_C).
+\]
+Reject if any $R_v\notin[0,f_v]$ or $L_C>U_C$. The exact remaining constraints are
+\[
+\sum_{e\ni v,\ {\rm free}}x_e=R_v,\qquad
+L_C\le\sum_{e\in C,\ {\rm free}}x_e\le U_C,\qquad x_e\in\{0,1\}. \tag{1}
+\]
+Clause bounds enforce one or two true literals under $a$, and consequently one or two under $\bar a$. Write $E_f$ for the free socket relation, $R(X),L(Y),U(Y)$ for subset sums, and $e_f(X,Y)=|E_f\cap(X\times Y)|$.
+\begin{theorem}[Exact frozen antipodal cut criterion, PROVED/EXACT]
+Assuming the local interval tests pass, the following conditions are equivalent:
+\begin{enumerate}
+\item[(i)] A quota-balanced signing completion satisfies both $a$ and $\bar a$.
+\item[(ii)] The network with arcs $s\to v$ of exact flow $R_v$, $v\to C$ of capacity one for each free socket, $C\to t$ of lower/upper flow $[L_C,U_C]$, and $t\to s$ of exact flow $R(V)$ admits an integral feasible circulation.
+\item[(iii)] For every $X\subseteq V$ and $Y\subseteq\mathcal C$ both hold:
+\begin{align}
+R(X)&\le e_f(X,\mathcal C\setminus Y)+U(Y), \tag{2}\\
+L(Y)&\le R(V\setminus X)+e_f(X,Y). \tag{3}
+\end{align}
+\end{enumerate}
+An integral completion or a violated cut can be found in polynomial time, without enumeration of the subsets.
+\end{theorem}
+\begin{proof}
+Conservation at every variable and clause in the network gives precisely (1), and conversely any feasible assignment to (1) gives a circulation. Integer arc lower and upper bounds produce integer feasible flow by the lower-bound transformation and max-flow integrality. Apply Hoffman's circulation theorem: for every cut, lower incoming flow cannot exceed upper outgoing capacity. When the cut contains $s$ but not $t$ with variable part $X$ and clause part $Y$, the return arc has incoming lower flow $R(V)$; outgoing capacity is $R(V\setminus X)+e_f(X,\mathcal C\setminus Y)+U(Y)$. This is exactly (2). The remaining three possibilities for membership of $s,t$ yield (2) or (3), possibly on the complemented cut. These exhaust every cut. Conversely all Hoffman inequalities therefore hold, and feasibility follows.
+\end{proof}
+With integer per-socket penalties for changing a preferred sign, integral min-cost circulation also obtains a minimum-Hamming two-witness completion. The one-witness frozen-sign flow was already available in MAIN103. Here the \emph{simultaneous upper bound} of two true literals per ternary clause is added. The procedure never chooses $a$.
+\section{Concrete seven-pin nonlocal obstruction}
+Let $n=6,m=8$ and use the simple unsigned supports
+\[
+C_0=012,\ C_1=034,\ C_2=135,\ C_3=245,\qquad
+C_4=345,\ C_5=125,\ C_6=024,\ C_7=013.
+\]
+Fix $a=1^6$. Pin $(2,C_0)$ true. Pin $(0,C_1)$ true, $(0,C_6)$ false, $(0,C_7)$ false. Pin $(1,C_2)$ true, $(1,C_5)$ false, $(1,C_7)$ false. Every variable and clause individually passes the local capacity checks. Variables $0,1$ each have three frozen positions, of which exactly one is true, so each must set its sole free socket in $C_0$ true. Together with the third frozen-true socket, $C_0$ becomes all true, falsifying $C_0$ under $\bar a$. In (2), take $X=\{0,1\}$ and $Y=\{C_0\}$:
+\[
+R(X)=2,\quad e_f(X,\mathcal C\setminus Y)=0,\quad U(Y)=1.
+\]
+The source-readable cut witnesses the failed inequality $2\le1$. This is an exact coupled feasibility obstruction, \emph{not} a SAT UNSAT certificate on the original formula.
+\section{Reproducible computation and fully charged ledger}
+The standard-library program \texttt{frozen\_antipodal66\_audit.py} uses seed 202610240336. On this support it exhaustively enumerated all $6^6=46656$ balanced signings and counted 5904 NAE signings. An independently implemented lower-bound max-flow solver and the enumerator agreed on 522 pinned instances. Full inequalities (2),(3) were additionally checked over \emph{every} pair of subsets $X,Y$ for 24 pinned instances. All assertions passed. These counts are COMPUTATIONAL. Auditor SHA-256 is \texttt{05a21817a496b8c556060d6c659970ee5414c55d224db8e108eb208450139f8f}. Raw-results filename is \texttt{FROZEN\_ANTIPODAL66\_RAW.json}.
+
+A fixed-width signed-literal encoding uses $w=\lceil\log_2(64(n+m+1))\rceil$ bits per word, four words per clause, and $N=(4m+2)w$ bits. Sign edits preserve $N$. Parsing, grammar and pin validation, source reads, output writes, two witness replays, and peak storage take $O(n+m)$ word operations/words. The circulation graph has $O(n+m)$ nodes and arcs and is explicitly constructed in linear word time; conservative Dinic complexity is $O((n+m)^3)$ operations, including failed augmentations. Minimum-cost flow remains polynomial for integer costs. A violated-cut certificate has $O(n+m)$ index bits and is checked in $O(n+m)$ words. The original ternary clauses number $m=4n/3$, with no added SAT-variable auxiliaries or eliminated SAT variables ($d=0$); network nodes are only algorithmic records. No SAT calls, mandatory branching, proof expansion, child construction, or hidden compatibility table is used.
+\paragraph{Baseline and transport.}
+The prescribed 2-SAT $F_b$ has $n=q+3,m=q+4$ and UNSAT precisely for $b=1^q$; on this input $q$ independent orientation-field reads are necessary in the restricted query model, but a linear scan decides it. For arbitrary 2-CNF plus $k$ genuine ternary clauses, choose one original variable per ternary, forming $S$ with $|S|\le k$; the $2^{|S|}\operatorname{poly}(N)$ solver is an upper bound, polynomial when $k=O(\log N)$. Binary padding $(p\vee q)\mapsto(p\vee q\vee z)\wedge(p\vee q\vee\neg z)$ introduces a free variable and does not amplify hardness. The signed exact-$(2,2)$ proper 3-CNF endpoint is NP-complete by D\"ocker. The \emph{forward} map here is an optimization of signed sockets, and its backward projection only returns the fixed unsigned support and frozen fields; it does not preserve the original SAT answer. A one-bit decider need not output these witnesses or repair anything.
+\section{Corpus and barrier reconciliation}
+\paragraph{CORPUS REVIEWED.}
+Repository tree, tasks and TASK-002, root main.tex, AGENTS.md, CODEX.md, pnp-research skill; ROOT-LABEL-QUOTIENT85 and SMALL-INTERFACE-EXACT-JOIN64; MAIN103 frozen-sign flow, latest MAIN104; Role 3 SOURCEPROBE19, CAPACITY70 and current STATEWIDTH72 (verified header and sentinel); Role 4 TWO-SIGN-SWAP64 and EULER-NAE-DOUBLE65; Role 2 SIGNED-NAE-TOKEN62; Hoffman, Hassin, flow and degree-four hardness literature.
+\paragraph{DUPLICATION / CONTRADICTION AUDIT; WHAT CHANGED RELATIVE TO ROOT MAIN.}
+MAIN103 already proves one-witness frozen completion by circulation. EULER65 proves two-witness completion without pins. This report derives the exact two-witness frozen cut families and a seven-pin failure of all local tests; neither earlier result supplies this conjunction. The result strengthens a polynomial optimization control, not any arbitrary-decider lower bound. No prior proof is contradicted.
+\paragraph{ADOPTED / REJECTED / RETIRED.}
+Adopt original socket coherence, exact witness replay, max-flow integrality, paid acquisition and outputs. Reject claims of mandatory sign enumeration or exponential decision time from a flow obstruction. SCC, Horn, affine/XOR, independent components, source-aware recognition, padding, DAG caching, timing/hash wrappers, relativization and algebrization remain hostile controls; no unconditional all-decider theorem crosses them here. Post-quantum analogies are not model-matched.
+\paragraph{Cross-role handoff and highest-value OPEN lemma.}
+Role 5 should independently prove (2) and (3), replay the seven pin positions, and audit the charged network. Roles 1--3 should use the locally feasible yet globally incompatible source as a hostile test for proposed mandatory compatibility or compression-versus-continuation costs. Publication does not establish peer receipt. The missing lemma remains a superpolynomial lower bound for \emph{every} uniform total deterministic exact SAT decider on unchanged NP-complete signed inputs. The five existing research schedules are not modified.
+\begin{thebibliography}{5}
+\bibitem{hoffman} A. J. Hoffman, Some Recent Applications of the Theory of Linear Inequalities to Extremal Combinatorial Analysis, Proceedings of Symposia in Applied Mathematics (1960).
+\bibitem{hassin} R. Hassin, Generalizations of Hoffman's Existence Theorem for Circulations, Networks 11 (1981).
+\bibitem{ford} L. R. Ford and D. R. Fulkerson, Maximal Flow Through a Network, Canadian Journal of Mathematics 8 (1956), 399--404.
+\bibitem{docker} J. D\"ocker, Monotone 3-Sat-(2,2) Is NP-Complete, arXiv:1912.08032 (2019).
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::FROZEN-ANTIPODAL-CUT66
