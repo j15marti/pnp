@@ -1,0 +1,73 @@
+% LSPV-2 REPORT::WITNESS-DEFECT58::2026-10-23T20:12:00+09:00
+\documentclass[10pt]{article}
+\usepackage[margin=0.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,url}
+\newtheorem{theorem}{Theorem}
+\title{WITNESS-DEFECT58: Charged Reverse-SAT Witness Branching and Graph-Factor Continuation}
+\author{LSPV-2}
+\date{23 October 2026, 20:12 Asia/Seoul}
+\begin{document}
+\maketitle
+\noindent\textbf{Global status: $P$ versus $NP$ OPEN. Independent review pending.} This report proves a restricted exact algorithm. It does not imply a polynomial SAT algorithm or a lower bound for unrestricted SAT. The companion complete mathematical report and stdlib experiment are supplied separately as conversation artifacts.
+
+\section{Backward construction and exact source identities}
+For $F=\bigwedge_{j=1}^m(\ell_{j1}\vee\ell_{j2}\vee\ell_{j3})$, a fan-in-two evaluation circuit has $2m$ OR2 gates, $m-1$ AND2 gates, $3m-1$ total gates and $6m-2$ gate-input wires. Its functional Tseitin encoding uses $3m-1$ gate variables and $9m-2$ clauses including the output-TRUE unit; each satisfying original assignment has exactly one complete valid trace. Output TRUE requires every clause TRUE. Selecting one \emph{witness occurrence} per clause, consistently across named source variables, exists iff $F$ is SAT. This does not require that only one original literal in each clause be true.
+
+In exact signed $(2^+,2^-)$ proper 3-CNF, $4n=3m$ occurrences form $n$ vertex-disjoint $K_{2,2}$ complement-conflict graphs with $4n$ edges. Adding $m$ clause triangles gives exactly $8n$ edges and degree four. An independent transversal, one occurrence per clause, exists iff SAT. The restricted graph degree supplies no unrestricted decision lower bound.
+
+\section{Certified paired supports and defect parameter}
+Define a paired positive/negative support
+\[
+P(a,b,c)=(a\vee b\vee c)\land(\neg a\vee\neg b\vee\neg c).
+\]
+Let $F$ consist of $g$ paired supports and $t$ unmatched proper ternary clauses. Every original source variable is required to occur in at most two paired supports; it may also occur in defect clauses. Canonical maximal pairing of identical positive and negative signed supports is found by reading and sorting the original source clause records. This promise can be independently checked and does not hold with small $t$ on arbitrary 3-SAT.
+
+Build a multigraph with a vertex for each paired support, an edge for every source variable occurring in two supports, and a private dangling edge for a variable occurring in one support. Edge membership denotes a single globally shared TRUE source bit. Each real support vertex requires selected degree in $[1,2]$; each dummy vertex permits $[0,1]$.
+
+\begin{theorem}[Project-specific $3^t$ algorithm]
+For this certified family there is a uniform deterministic exact SAT algorithm in
+\[
+O\bigl(N/w+m\log(m+2)+3^t(t+N/w+P_{gf}(n+m))\bigr)
+\]
+word operations, with $w=\lceil\log_2(16(n+m+1))\rceil$ and $P_{gf}$ the polynomial running time of a \emph{fixed deterministic} interval $(g,f)$-factor algorithm on multigraphs. Thus logarithmically many defects give a polynomial algorithm for this family. A successful run returns and replays one original-source assignment. Polynomial live space suffices with streamed branches.
+\end{theorem}
+\begin{proof}
+For each unmatched ternary clause select one of its three occurrences and demand that occurrence TRUE. At most $3^t$ sequences are possible; prune any conflicting source-bit demands. For each consistent choice, let $p_v$ be forced TRUE edges at real vertex $v$ and $f_v$ the remaining free edges. Remaining selected degree must lie in
+\[
+[\max(0,1-p_v),\min(f_v,2-p_v)].
+\]
+An empty interval rejects the branch. Otherwise solve the undirected graph's interval-factor problem by the existing polynomial-time matching reduction. A satisfying source assignment chooses a true occurrence from every defect, so one branch is compatible and its selected source edges give a valid factor. Conversely a factor and its forced literals satisfy all original paired and defect clauses. Discovery, failed branches, factor construction, source reconstruction and replay are included in the bound.
+\end{proof}
+The deterministic polynomial interval-factor theorem is established matching theory, not original to this report. The companion standard-library code implements the bipartite case by lower-bound integral circulation, with $O(3^t(n+m)^3)$ conservative word-time. It explicitly returns \texttt{UNSUPPORTED} on nonbipartite paired-support graphs; a blossom-based factor implementation is not claimed to have been executed.
+
+\section{Equal-size SAT/UNSAT experiment}
+For even $q\ge4$, the cubic prism on $2q$ support vertices and $3q$ source edges gives $4q$ proper monotone paired-support clauses. The \emph{core alone} is exact signed $(2,2)$. Add six mixed-sign defects, one excluding each nonconstant source assignment at one triple: paired core plus all six is UNSAT. Replace one defect by a different proper clause satisfied by setting all rung sources TRUE and cycle-edge sources FALSE: now SAT. Both labels have $n=3q$, $m=4q+6$, and identical fixed-record input length $N=(4m+2)w$. These \emph{augmented} inputs are not monotone exact-$(2,2)$ because their defects add appearances. The published 198-variable exact-regular UNSAT original has not been imported or tested in this run.
+
+The independent audit examined $q=4,6,8,12,20,40,80$ for both labels. For $q=4,6$, complete source enumeration gave model counts $75/0$ and $1571/0$. Each prism SAT computation examined 53 literal witnesses and three factor subproblems; each UNSAT computation examined 204 witnesses and sixteen factor subproblems. The $3^6=729$ maximum replaces the previous $2^{18}=262144$ full-boundary bound, without asserting that either many choices are necessary. Ten additional both-label experiments used connected, nonlocal bipartite three-matching support graphs for $q=6,8,16,32,64$.
+
+One prism $q=4$ hostile control fixes $x_1=x_2=0$, $x_5=x_6=1$. Each paired support is locally completable, yet the shared source rung is forced both TRUE and FALSE. The integral circulation rejects the joint assignment and verifies an independently constructed maxflow/mincut infeasibility witness. Replacing $x_6=1$ by $x_6=0$ yields SAT. The nonbipartite $K_4$ control is explicitly rejected as unsupported by the implemented solver. Role 4's current SHARED-SWITCH-MINIMAL-UNSAT57 was independently regenerated for $q=3,5,16,64$: a canonical paid source scan and XOR of the sign bits decide both labels in linear time. Small exhaustive controls had 16 and 0 satisfying models.
+
+\section{Exact accounting and relation to research spines}
+Under the declared fixed-record input, $N=(4m+2)w$. Discovery costs $O(N/w+m\log m)$ for full source reads and signed-support pairing. Normalization costs the construction and rejection of at most $3^t$ witness prefixes and factor instances. Continuation costs at most $3^t P_{gf}(n+m)$. Verification constructs a source witness and rereads all original clauses; negative cases can be independently redecided branch by branch with the known polynomial factor procedure. DAG/gate traces, original source sharing, output and live storage are counted separately. The cost identity is \emph{not} a lower-bound theorem.
+
+\noindent\textbf{PROVED/EXACT restricted:} source-coherent $3^t$ algorithm, matched-core interval reduction, bipartite exact circulation, analytic SAT/UNSAT controls.
+
+\noindent\textbf{KNOWN THEOREM:} deterministic polynomial interval-factor algorithms, 2-SAT SCC, and NP-completeness of monotone exact-(2,2) 3-SAT.
+
+\noindent\textbf{COMPUTATIONAL:} 162 assertions with zero failures; 14 prism labels, 10 nonlocal labels, 8 Role-4 labels, complete small-source exhaustion and a genuine failed-flow cut check.
+
+\noindent\textbf{FALSIFIED/RETIRED:} requiring all three source bits of every defect to be enumerated before factor continuation. For this family, a one-true-literal witness per defect suffices.
+
+\noindent\textbf{OPEN:} independent nonbipartite factor-code audit; recovery of the published 198-variable exact-(2,2) UNSAT input; a uniform all-input polynomial SAT algorithm; or an all-decider rich-representation/alternative-method lower bound. Neither $P=NP$ nor $P\ne NP$ was established.
+
+\noindent\textbf{Corpus and duplicate audit.} REVERSE-SELECTOR57 already had a $2^{3t}$ bipartite method and a maximal-matching/Hall solver for fully paired inputs; those are acknowledged. MAIN64 requires real shared-source joins, and MAIN85 proves the one-bit SAT quotient has two classes. LSPV-4's new clause-critical linear-time counterexample is used as a hostile control, not relabelled as this run's theorem. An exact general-factor routine is known in the literature, but not present in the stdlib audit.
+
+\noindent\textbf{Next concrete test:} implement deterministic nonbipartite interval factors, import and independently check D\"ocker's published exact-regular UNSAT construction, and measure canonical unmatched clause count, source access, failed choices and alternatives. There is still no bridge to arbitrary deterministic SAT-decision lower bounds.
+
+\begin{thebibliography}{9}
+\bibitem{docker} J. D\"ocker, \emph{On simplified NP-complete variants of Monotone 3-Sat}, Discrete Applied Mathematics, 2021. doi:10.1016/j.dam.2020.12.010.
+\bibitem{sz} S. Shao and S. \v{Z}ivn\'y, \emph{A Strongly Polynomial-Time Algorithm for Weighted General Factors with Three Feasible Degrees}, ISAAC 2023. doi:10.4230/LIPIcs.ISAAC.2023.57.
+\bibitem{marx} D. Marx, G. S. Sankar and P. Schepper, \emph{Degrees and Gaps}, arXiv:2105.08980, 2021.
+\bibitem{apt} B. Aspvall, M. F. Plass and R. E. Tarjan, \emph{A Linear-Time Algorithm for Testing the Truth of Certain Quantified Boolean Formulas}, Information Processing Letters 8 (1979), 121--123.
+\end{thebibliography}
+\end{document}
