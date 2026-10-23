@@ -1,0 +1,80 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-23 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\newcommand{\SAT}{\textsc{Circuit-SAT}}
+\begin{document}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT\\(living document)}
+\date{Last updated 2026-10-23}
+\maketitle
+
+\section*{0. Status (strict labels)}
+\textbf{P versus NP remains OPEN.} Nothing here proves a superpolynomial lower bound
+for \SAT{} on a general Turing/RAM model. Labels: PROVED/EXACT, KNOWN THEOREM,
+COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Build up from the simplest circuits, tracking for each step $(n,g)$ ($n$ inputs, $g$ fan-in-2
+gates, $w=2g$ gate-input wires): (i) the minimal wire/gate count needed to realize the
+function class, and (ii) a lower bound on the work needed to decide satisfiability.
+Two cost models must be kept separate:
+\begin{itemize}
+\item \textbf{Black-box} (oracle access to $C$): adversary lower bound.
+\item \textbf{White-box} (algorithm reads the netlist): only trivial bounds are known unconditionally.
+\end{itemize}
+
+\section{Ladder of exact results}
+\begin{prop}[Read bound; PROVED/EXACT, trivial] If $C$ depends on $n$ inputs and is a
+connected fan-in-2 circuit with a single output then $g\ge n-1$, $w\ge 2n-2$. Any
+white-box SAT algorithm that is correct on all circuits must inspect, for the worst-case
+instance, every gate lying on a path to the output that cannot be pruned, hence
+$\Omega(g)$ time. This is linear and carries no hardness content.
+\end{prop}
+\begin{prop}[Black-box bound; PROVED/EXACT] Deterministic query complexity of \SAT{} with
+evaluation-oracle access is exactly $2^n$ in the worst case: for the family
+$\{C_a=[x=a]\}_{a\in\{0,1\}^n}$ each query $x$ eliminates at most one $a$, so an adversary
+answers 0 until one candidate remains. Each $C_a$ has $g=n-1$ (an AND of literals; negations are free
+on wires in the $B_2$ basis), so black-box hardness is already present at $g=n-1$.
+\end{prop}
+\begin{prop}[Relativization caveat; KNOWN THEOREM context] The black-box bound is
+an oracle bound and is not a lower bound for white-box algorithms (cf.\ Baker--Gill--Solovay).
+White-box algorithms exploit structure: the $C_a$ above are solved in $O(n)$ by reading
+the netlist. Hence the real question is whether any \emph{small-size family} can force
+$\omega(\mathrm{poly}(g))$ white-box work; this is exactly P vs NP and is OPEN.
+\end{prop}
+
+\subsection{Computational table (exact, $B_2$ basis, gates counted, negation free)}
+Script: \texttt{results/claude\_circuitsat/min\_circuit\_enum.py}; output
+\texttt{results/claude\_circuitsat/n3\_s4.json}. Exhaustive over all circuits (COMPUTATIONAL).
+\begin{center}\begin{tabular}{@{}cccl@{}}\toprule
+$n$ & functions reached & min gates (max over $f$) & unique-SAT functions\\\midrule
+1 & 3 (const.\ and $x$ via wires) & 0 & min size 0\\
+2 & 16/16 & 1 & all 4 minterms: 1 gate\\
+3 & 256/256 & 4 & all 8 minterms: 2 gates $=n-1$\\\bottomrule
+\end{tabular}\end{center}
+Counts by minimal gate number for $n=3$: $0{:}5,\ 1{:}33,\ 2{:}114,\ 3{:}80,\ 4{:}24$ (sum 256, with
+const.\ and input functions counted at size 0).
+Observation: unique-SAT functions are never the hardest functions to build, so the
+hard-to-build functions ($g=4$ at $n=3$, parity-like/threshold-like) are not hard SAT instances in the black-box
+sense; build cost and search cost are decoupled. (COMPUTATIONAL, finite.)
+Chunking note: the $n=3$, $s\le4$ run took $\approx 60$\,s, exceeding the 30\,s rule; next steps must split by first-gate choice.
+
+\section{Barrier audit and transfer ledger}
+\begin{itemize}
+\item Gate-elimination yields only $\approx 3.1n$ for explicit functions (KNOWN THEOREM, Find--Golovnev--Hirsch--Kulikov); a SAT-specific lower bound via gate elimination is not known to extend.
+\item Natural proofs / relativization / algebrization bar generic counting or diagonal routes (KNOWN THEOREMS). Counting shows most $n$-input functions need $\Omega(2^n/n)$ gates, but not for explicit/NP functions: ANALOGY only.
+\item Conditional: under ETH, \SAT{} on $n$ inputs needs $2^{\Omega(n)}$ (CONDITIONAL, not proved).
+\item Repository (\texttt{j15marti/pnp}): root \texttt{main.tex} reports P vs NP OPEN with restricted-model results (SWAP-STAR, EXCLUSIVEQUOTIENT78); the all-decider bridge is OPEN. No repo result so far gives a circuit-wire lower bound for SAT; it was not adopted here.
+\end{itemize}
+
+\section{Next steps (OPEN arrows)}
+\begin{enumerate}
+\item Extend exact enumeration to $n=4$, chunked by first gate and checkpointed; tabulate wire-cut/fan-out profiles for unique-SAT circuits.
+\item Define a white-box restricted model (e.g.\ read-once netlist traversal, DPLL-style) and prove tight bounds as the ladder grows; check which are structural vs. model artifacts.
+\item Test whether a fan-out/wire-congestion measure (VLSI area-time analogy; CANDIDATE) gives a monotone lower bound along the ladder.
+\end{enumerate}
+
+\section*{Run log}
+Run 1 (2026-10-23): created document; black-box ladder proved; $n\le3$ exhaustive table computed; no new lower bound for general white-box SAT.
+% END_OF_CLAUDECIRCUITSAT_RUN::1
+\end{document}
