@@ -1,0 +1,94 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last update 2026-10-23 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem}
+\usepackage[margin=1in]{geometry}
+\newcommand{\OPEN}{\textsc{OPEN}}
+\newcommand{\PROVED}{\textsc{PROVED}}
+\newcommand{\KNOWN}{\textsc{KNOWN THEOREM}}
+\newcommand{\COMP}{\textsc{COMPUTATIONAL}}
+\newcommand{\CAND}{\textsc{CANDIDATE}}
+\newcommand{\RET}{\textsc{FALSIFIED/RETIRED}}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\title{Claude Circuit-SAT Lower-Bound Ladder\\\large Living document}
+\author{Scheduled hourly run}
+\date{Last updated 2026-10-23}
+\begin{document}
+\maketitle
+
+\section*{Status}
+\textbf{P versus NP remains \OPEN.} Nothing here proves a super-linear lower bound
+for Circuit-SAT. This document tracks a \emph{ladder}: start from the smallest
+circuit-SAT instances, count gates and wires exactly, grow the number of inputs,
+and record at each rung what is proved, what is only known from the literature,
+and what is open. Statuses: \PROVED, \KNOWN, \COMP, \CAND, \OPEN, \RET.
+
+\section{Model}
+A circuit over basis $B_2$ (all 2-input gates, negation free) has gates of fan-in
+2, so $\mathrm{wires}=2\cdot\mathrm{gates}$ (counting each gate input, with fan-out
+counted at the source). $C_{B_2}(f)$ is the minimum number of gates.
+\textsc{Circuit-SAT}$_{n}$: given a circuit $C$ on $n$ inputs, decide $\exists x\,C(x)=1$.
+Two distinct objects are tracked, and must not be confused:
+\begin{enumerate}[nosep]
+\item[(A)] the \emph{solver}: a circuit family computing the decision function of Circuit-SAT on encoded instances (the object whose lower bound would separate P from NP/poly);
+\item[(B)] the \emph{instance}: the circuit $C$ itself, whose wires we count in the ladder.
+\end{enumerate}
+
+\section{Rung table (exact data)}
+Exhaustive search (\texttt{results/claude\_circuitsat/exact\_b2.py}, BFS over sets of
+negation-normalised gate outputs; chunked by $n$, each run $<30$\,s):
+\begin{center}
+\begin{tabular}{@{}cccc@{}}\toprule
+$n$ & functions (up to negation) & $\max_f C_{B_2}(f)$ & wires for worst $f$\\\midrule
+1 & 2   & 0 & 0\\
+2 & 8   & 1 & 2\\
+3 & 128 & 4 & 8\\\bottomrule
+\end{tabular}
+\end{center}
+For $n=3$ the number of negation-classes needing exactly $0,1,2,3,4$ gates is
+$4,15,57,40,12$ (sum $128$). Status: \COMP. For $n=4$ the literature value is
+$7$ gates (Knuth's exhaustive computation; recalled, not re-verified here): \KNOWN\ pending check.
+
+\section{Proved structural lower bounds}
+\begin{lemma}[connectivity]\PROVED. If $f:\{0,1\}^n\to\{0,1\}$ depends on all $n$ inputs, any fan-in-2 circuit has $\ge n-1$ gates and $\ge 2(n-1)$ wires.
+\end{lemma}
+\emph{Proof.} Every input must have a directed path to the output, so the underlying graph restricted to the cone is connected on $\ge n+g$ vertices with $\le 2g$ edges, and a connected graph on $n+g$ vertices needs $\ge n+g-1$ edges, so $2g\ge n+g-1$, i.e. $g\ge n-1$. \qed
+
+\begin{proposition}[tightness for symmetric prefixes]\PROVED.
+$C_{B_2}(\mathrm{AND}_n)=C_{B_2}(\mathrm{OR}_n)=C_{B_2}(\mathrm{XOR}_n)=n-1$.
+\end{proposition}
+(Upper bound by a tree; lower bound by the Lemma.) Hence the first rung family
+(``is a single satisfying assignment fixed'', i.e.\ SAT of a read-once AND/OR formula) has
+linear exact complexity; no information is lost between $n=1,2,3$ and general $n$.
+
+\begin{lemma}[reading the instance]\PROVED\ (conditional on encoding).
+Let $E$ be an encoding of $N$ bits of instance description in which every bit can flip
+the SAT answer for some setting of the others. Then any solver circuit has $\ge N-1$ gates.
+\end{lemma}
+This is the only lower bound on side (A) that is proved here; it is linear and generic.
+
+\section{Known frontier (side A)}
+\begin{itemize}[nosep]
+\item Counting (Shannon): almost every $f$ on $n$ inputs needs $\Omega(2^n/n)$ gates. \KNOWN. Non-explicit.
+\item Gate elimination gives explicit $3n-o(n)$ (Blum 1984) and about $3.1n-o(n)$ for $B_2$ (Find--Golovnev--Hirsch--Kulikov 2016; Li--Yang 2022 improved constants); $5n-o(n)$ over $U_2$ (Iwama--Lachish--Morizumi--Raz). \KNOWN\ (recalled; citations to be verified against primary sources next run).
+\item No super-linear lower bound for any explicit function in NP over general circuits. \KNOWN\ open. Barriers: relativization, natural proofs, algebrization.
+\end{itemize}
+
+\section{Wire-tracking plan for next rungs}
+\begin{enumerate}[nosep]
+\item Verify $n=4$ exactly (65536 functions; needs a C implementation or SAT-based exact synthesis; chunk by gate count). \OPEN\ task.
+\item Define the specific ladder function $\mathrm{SAT}_{n,s}$ (fixed circuit shape of size $s$, variable gate types) and compute exact $C_{B_2}$ for $(n,s)\le(3,2)$ to see whether the growth is linear in $s$. \OPEN\ task.
+\item Test whether gate-elimination arguments (fan-out, wire-count potential) extend from $3n$ to a potential function that is super-linear on SAT$_{n,s}$; document precisely where the argument stops (cascading fan-out). \CAND.
+\end{enumerate}
+
+\section{Corpus link (repository $\texttt{j15marti/pnp}$)}
+Root \texttt{main.tex} states P versus NP is \OPEN\ with load-bearing arrows open (reviewed this run: header and status only; deeper reconciliation with LSPV reports and
+\texttt{research/explorations} is a next-run task). Nothing in it was imported as proved here.
+
+\section{Run log}
+\begin{tabular}{@{}ll@{}}
+2026-10-23 & Created document; exhaustive $B_2$ complexity for $n\le 3$; connectivity lemma. No new barrier-breaking claim.\\
+\end{tabular}
+
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT_RUN::2026-10-23-1
