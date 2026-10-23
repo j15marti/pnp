@@ -1,0 +1,116 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-23 (run 1)
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
+\newcommand{\SAT}{\textsf{CircuitSAT}}
+\title{ClaudeCircuitSAT: a wire-by-wire lower-bound ladder for Circuit-SAT}
+\author{Living document (hourly runs)}
+\date{Last updated: 23 October 2026 --- run 1}
+\begin{document}\maketitle
+
+\fbox{\parbox{0.95\linewidth}{\textbf{Status: P versus NP remains OPEN.}
+Nothing here is a superpolynomial lower bound. Proved so far: exact \emph{linear}
+wire/gate counts for the smallest ``irredundant'' unsatisfiable circuits, and the
+resulting linear probe lower bound. Labels: PROVED, COMPUTATIONAL, CONDITIONAL,
+CANDIDATE, OPEN, RETIRED.}}
+
+\section{Goal and method}
+Build circuits step by step, starting from the simplest unsatisfiable instance,
+tracking at each step the minimum number of gates and wires, while raising the
+number $n$ of inputs. Record a lower bound on the work to decide satisfiability as a
+function of parameters $(n,s,w,\dots)$ (variables, gates, wires, fan-out, depth,
+treewidth), since the final bound may be parametrized.
+
+\section{Model}
+A circuit has $n$ variables with leaves $x_i,\neg x_i$ ($2n$ literal sources), fan-in-2
+AND/OR gates, one output, gates numbered topologically; $g$ gates give $w=2g$ wires.
+The \emph{wire-probe model}: an algorithm sees the circuit only by querying where a
+given wire comes from.
+
+\begin{definition}[1-minimal UNSAT]
+$C$ is \emph{1-minimal unsatisfiable} if $C$ is unsatisfiable and, for every wire $e$,
+the circuit $C[e{:=}1]$ (wire $e$ replaced by constant 1, a weakening) is satisfiable.
+\end{definition}
+This is the circuit analogue of a minimally unsatisfiable CNF, but at wire level.
+
+\section{Rung 1: exact minimum size (PROVED)}
+\begin{theorem}\label{thm:min}
+For $n\ge1$ the minimum number of gates of a 1-minimal UNSAT circuit using $n$ variables
+is exactly $g_{\min}(n)=2n-1$, i.e.\ $w_{\min}(n)=4n-2$ wires.
+\end{theorem}
+\begin{proof}
+\emph{Lower bound.} If variable $i$ occurs in only one polarity, fix $x_i$ to make all its
+leaves true; this equals setting those leaf wires to $1$ and keeps $C$ unsatisfiable,
+contradicting 1-minimality. So both $x_i,\neg x_i$ feed some gate: at least $2n$
+literal wires. A gate other than the output with no outgoing wire would have its in-wires
+irrelevant (setting one to 1 leaves $C$ unchanged and unsatisfiable); hence every
+non-output gate has an outgoing wire: at least $g-1$ gate-to-gate wires. Then
+$2g\ge 2n+(g-1)$, so $g\ge 2n-1$.
+\emph{Upper bound.} $C_n=\bigvee_{i=1}^n (x_i\wedge\neg x_i)$ uses $n$ AND and $n-1$ OR gates
+$=2n-1$. It is unsatisfiable; setting any literal wire to 1 turns one AND into a literal,
+and setting any other wire to 1 makes an OR (or the output) equal 1, so each case is
+satisfiable.
+\end{proof}
+Equality forces every gate fan-out to be exactly 1 (a tree) and each variable to have
+exactly two leaf wires.  The implication chain $x_1\wedge\bigwedge_i(\neg x_{i}\vee x_{i+1})\wedge\neg x_n$
+is a second extremal family (also $2n-1$ gates), showing extremal circuits are not unique
+and have very different depth ($O(\log n)$ vs.\ linear).
+
+\begin{corollary}[linear probe bound]
+Any deterministic wire-probe algorithm that correctly decides \SAT{} must probe all
+$4n-2$ wires on $C_n$: an unprobed wire $e$ could be replaced by $1$, giving a satisfiable
+circuit with the same answers to all other probes. Hence $\Omega(n)$, and in general
+$\Omega(s)$ in the circuit size $s$.  (PROVED; it is an acquisition bound, not a time bound
+beyond reading the input.)
+\end{corollary}
+
+\section{Computational check (COMPUTATIONAL)}
+Exhaustive enumeration of all labelled fan-in-2 AND/OR DAGs
+(\texttt{research/claude\_circuitsat/oneminimal\_unsat\_enum.c}, each run $<3$ s):
+\begin{center}\begin{tabular}{@{}ccrr@{}}\toprule
+$n$ & $g$ & UNSAT circuits & 1-minimal UNSAT\\\midrule
+1&1&1&1\\ 1&2&4&0\\ 2&1&2&0\\ 2&2&40&0\\ 2&3&1220&\textbf{22}\\ 2&4&52224&108\\
+3&4&574032&0\\ 3&5&53259840&\textbf{4548}\\\bottomrule\end{tabular}\end{center}
+First nonzero entries sit exactly at $g=2n-1$, matching Theorem~\ref{thm:min}.
+($n=4$, $g=7$ is beyond the 30-second single-run budget; would need chunking by the first
+gates --- scheduled.)
+
+\section{Ladder of rungs}
+\begin{center}\begin{tabular}{@{}lll@{}}\toprule
+Rung & Object & Status\\\midrule
+1 & min 1-minimal UNSAT: $2n-1$ gates, $4n-2$ wires & PROVED\\
+2 & min \emph{wires with fan-out sharing}, and XOR/full binary basis $B_2$ & OPEN (next)\\
+3 & irredundant UNSAT where each variable must occur $\ge k$ times (forces depth/size growth) & OPEN\\
+4 & parametrized: size of minimal UNSAT vs.\ treewidth/cutwidth $t$: probe $\Omega(s)$, time $2^{O(t)}s$ upper bound known; seek matching conditional lower bound & CANDIDATE\\
+5 & time lower bound in a restricted model (e.g.\ DPLL/resolution on these instances) & OPEN\\
+6 & unrestricted superpolynomial bound & OPEN (equivalent to the open problem)\\\bottomrule\end{tabular}\end{center}
+
+\section{Why Rung 1 is weak, and what could be stronger}
+The extremal circuits are easy: $C_n$ is solved in linear time by a local scan.  A genuine
+hardness source must be an instance family where \emph{every} wire is irredundant
+\emph{and} no local certificate exists.  Candidate directions: (i) force sharing (fan-out
+$\ge2$) so wires cannot be probed locally; (ii) require 1-minimality under a stronger
+weakening set (set \emph{pairs} of wires to 1, ``$k$-minimal'') and track $g_{\min}(n,k)$ --
+conjecture growth in $k$; (iii) parametrize by $k$ and ask whether a probe/time bound of
+the form $\Omega(n^{k})$ or $2^{\Omega(k)}$ appears.  Known upper-bound frame: brute force
+$2^n s$, treewidth DP $2^{O(t)}s$.  Conditional (not proved here): SETH-type lower bounds for
+$n$-variable \SAT.
+
+\section{Repository cross-check (j15marti/pnp, root main.tex)}
+Root \texttt{main.tex} (LSPV program) likewise states P versus NP is OPEN, and its
+fixed-width chain gives an $\Omega(N/\log N)$ word-probe acquisition bound of exactly the
+type of Corollary~1; its DENSE-COUPLING-FIREWALL90 shows density and treewidth alone
+do not force hardness, which supports directions (i)--(ii) above.  Its SCC-quotient
+upper bound for 2-CNF-coupled instances is a warning that bounded-structure
+families are easy. No theorem found there gives a superlinear \SAT{} bound.
+Primary literature was \emph{not} searched this run; to do next run.
+
+\section{Run log}
+\begin{itemize}
+\item Run 1: created document; Theorem~1, Corollary~1, enumeration $n\le3$.
+\end{itemize}
+\end{document}
+% END_OF_CLAUDECIRCUITSAT_RUN1
