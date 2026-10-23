@@ -1,0 +1,87 @@
+% LSPV-2 REPORT::DOMAIN-COLLAPSE55::2026-10-23T17:38:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,url}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{DOMAIN-COLLAPSE55: Certified Failed-Literal Normalization and a High-Width Two-Color Counterexample}
+\author{LSPV-2, Constructive Charged Normalization}
+\date{23 October 2026}
+\begin{document}
+\maketitle
+\begin{center}\textbf{P versus NP OPEN. No general SAT time lower bound is claimed.}\end{center}
+
+\section{Scope and falsifiable mechanisms}
+The goal remains: for every total uniform exact deterministic decider $A$ of a fixed NP-complete language, every $c>0$ and every $N_0$, obtain an input $F$ of length $N\ge N_0$ with $T_A(F)>N^c$. No such claim follows here. Three mechanisms were tested: (A) source-labelled implication paths that remove genuine ternaries, (B) a same-metadata, high-treewidth SAT/UNSAT pair, and (C) two-valued-domain normalization that bypasses a large number of nonfunctional relation records. The underlying 2-SAT result is classical, while the specified family and resource ledger form a restricted project-specific contribution.
+
+Use $N$ for input bits, $n$ for original source variables, $a$ for auxiliary variables, $u=n+a$ for all variables, $m$ for clauses and $k$ for genuinely ternary clauses. Reserve $d$ for eliminated source variables and $r=n-d$ for an independently defined syntactic residual. Word width is $\lceil\log_2(16(u+m+1))\rceil$, with four fixed-size words per clause. Source reads, failed searches, verification, reconstruction, proof streams and peak storage are charged.
+
+\section{Certified collapse for arbitrary 2-CNF plus $k$ ternaries}
+Let $F=B\wedge\bigwedge_{i=1}^k(\ell_{i1}\vee\ell_{i2}\vee\ell_{i3})$, where $B$ is 2-CNF and each ternary contains three distinct variable identifiers. After full source parsing, check $B$ by implication-graph SCC. If $B$ is UNSAT, return opposing labelled implication paths. If $B$ is SAT, search the implication graph of $B$ for a path $\ell\leadsto\neg\ell$ for each candidate ternary literal.
+
+\begin{theorem}[PROVED/EXACT, specified algorithm]
+Whenever a path $\ell\leadsto\neg\ell$ exists, replacing that ternary by the binary clause on its other two literals preserves its truth value under every complete assignment satisfying $B$. Independently checking the cited signed source edges gives a polynomial certificate. If $k'$ genuine ternaries survive, selecting one variable per surviving clause yields a set $S$ with $h=|S|\le k'$. Branching on $S$ and solving each binary child by SCC decides SAT exactly with word-time upper bound
+\[
+O\bigl(k(u+m+k)+2^h(u+m+k)\bigr).
+\]
+The retained shortening paths and one live child occupy $O(u+m+ku)$ words. Emitting every unsuccessful branch's opposing SCC paths requires up to $O(2^h u+ku)$ streamed proof words, whose write cost is charged.
+\end{theorem}
+\begin{proof}
+Each source 2-clause $(x\vee y)$ creates precisely the implications $\neg x\to y$ and $\neg y\to x$. A verified path $\ell\to\neg\ell$ proves $B\models\neg\ell$, hence dropping $\ell$ from the corresponding ternary is an equivalence relative to $B$, not merely an equisatisfiable change. There are at most $3k$ breadth-first searches, each on $O(u+m)$ graph size. Every residual clause meets $S$, so conditioning on one assignment to $S$ leaves width at most two. An original satisfying assignment induces a branch satisfying its child, and any child model satisfies the original. SCC, proof checking and source replay are linear in each child. All failing branches are charged.
+\end{proof}
+
+The instrumented accounting is
+\[
+\begin{array}{ll}
+C_{\rm discovery}=O(k(u+m+k)),&C_{\rm normalization}=O(k+2^h(u+m+k)),\\
+C_{\rm verification}=O(ku+2^h(u+m+k)),&
+C_{\rm continuation}=O(2^h(u+m+k)).
+\end{array}
+\]
+Their sum is a cost accounting identity, not a lower bound against other algorithms. The fallback $2^k\operatorname{poly}(N)$ remains available without this shortening.
+
+\section{A second exact upper bound: binary CSP with two-valued domains}
+\begin{theorem}[PROVED/EXACT, certified quotient]
+For $J$ finite-domain variables with explicit domains $D_v\subseteq\{0,1,2\}$, arbitrary explicit binary constraints $E$, and exactly $h$ domains of size three, there is an exact $O(|I|+3^h(J+E))$-word algorithm with $O(J+E+h)$ live words apart from streamed proof output, PROVIDED the domains and source-exact quotient have already been correctly certified and charged.
+\end{theorem}
+\begin{proof}
+Enumerate the $3^h$ values for the three-valued domains. Remaining vertices have at most two values each and therefore Boolean selectors. A forbidden pair of selector values gives one binary clause, at most four clauses per edge; edges to fixed vertices reduce to unary restrictions. SCC solves each branch, and the verified quotient certificate lifts its model to one coherent source assignment. No generic cheap domain-certificate acquisition is presumed.
+\end{proof}
+
+This parameter $h$ is different from the number $p$ of nonfunctional binary relations in the project MAIN94 exception kernel. Even $p=\Theta(J^2)$ may coexist with $h=0$ and easy exact continuation.
+
+\section{Equal-metadata high-treewidth hostile family}
+For $t\ge2$ create $2t$ original one-hot triples $(x_{v0},x_{v1},x_{v2})$. Each contributes $(x_{v0}\vee x_{v1}\vee x_{v2})$ and three pairwise negative binary clauses. Introduce a FREE auxiliary $p_v$ and the two binary guards $(\neg x_{v2}\vee p_v)$ and $(\neg x_{v2}\vee\neg p_v)$. There are no initial unit clauses. A two-edge implication path forces $x_{v2}=0$ even though $p_v$ is not a functional extension.
+
+On each of the $t^2$ edges of $K_{t,t}$, the inequality relation has clauses $(\neg x_{u0}\vee\neg x_{v0})$ and $(\neg x_{u1}\vee\neg x_{v1})$. An equality edge instead uses $(\neg x_{u0}\vee\neg x_{v1})$ and $(\neg x_{u1}\vee\neg x_{v0})$. Let $F_t^+$ have every edge unequal and $F_{t,e}^-$ change only edge $e$ to equality.
+
+\begin{theorem}[PROVED/EXACT, fixed-order canonical source grammar]
+Both formulas have $n=6t$ source variables, $a=2t$ free auxiliaries, $k=2t$ genuine ternaries and $m=12t+2t^2$ source clauses with identical metadata. The SAT instance has two source models, or $2^{2t+1}$ complete models including the free guards. Every one-defect instance is UNSAT. The exact relation graph contains $K_{t,t}$ with treewidth $t$. A uniform source-complete canonical-grammar recognizer reads every signed clause, derives the forced two-color domains, extracts every edge relation from its actual signed source record, and decides either label via parity union-find or 2-SAT in $O(N)$ time.
+\end{theorem}
+\begin{proof}
+The guards force color 2 false, so every one-hot group is an actual Boolean choice $z_v$. Different-color edges give $z_u\oplus z_v=1$ and an equality defect gives $z_u\oplus z_v=0$. The connected bipartite graph has exactly two colorings. Every edge belongs to a four-cycle for $t\ge2$, so changing one edge makes its parity sum inconsistent. Every free guard has two extensions. The full fixed-order source check and subsequent union-find are linear in the number of source words.
+\end{proof}
+
+\begin{lemma}[PROVED/EXACT, restricted acquisition]
+Any exact deterministic word-query decider on the fixed-order source-record promise class $\{F_t^+\}\cup\{F_{t,e}^-:e\in E(K_{t,t})\}$ must read a changing source word from EACH of the $t^2$ edge records on $F_t^+$. Thus its restricted acquisition cost is $\Omega(t^2)=\Omega(N/\log N)$ aligned-word probes. A direct $O(t^2)$ scan matches this bound.
+\end{lemma}
+\begin{proof}
+If the algorithm omits every changing field of one edge, switching that edge from inequality to equality preserves its transcript yet changes SAT to UNSAT. The fields for different edges occupy disjoint source records.
+\end{proof}
+This is input-order acquisition, NOT a superlinear or unrestricted lower bound.
+
+\section{Computational and cross-role ledger}
+The standard-library audit used seed 202610231738. It checked both SAT/UNSAT variants for $t=2,3,4,5,8,16,32,64$, a signed-clause source extractor rather than uncharged generator metadata, independent parity union-find and SCC, verified forced-implication paths, independent source replay, each one-edge flip for $t\le4$, and every complete assignment (including free auxiliaries) for $t=2$. It also exhaustively checked 320 random 2-CNF-plus-ternary formulas on at most six variables and 12 hostile controls (2-SAT, affine XOR, Horn, disconnected, padded, source-readable). No assertions failed. At $t=64$, $N=645192$ bits, $k=128$, $m=8960$, $t^2=4096$ relation edges, and the certificate has 128 forced-literal paths of two arcs each. Results, source-code and examples are in the companion local reproducibility package; finite tests are COMPUTATIONAL only.
+
+Three original project research sources directly inspected: MAIN SMALL-INTERFACE-EXACT-JOIN64, the Role 4 PERMUTATION-CYCLE54 handoff, and Role 5 EXCEPTION-KERNEL94. Root main.tex and governance/skill instructions were read. The source-coherence rule from MAIN64, Role 4's easy permutation cycles and Role 5's charged exception counts are adopted. Compared with Role 1 PAIRHELLY67 and STAR-CHOICE53, the present family combines a high-width nonfunctional relation graph, certified hidden domain collapse and a matched all-edge critical acquisition witness. The known result that Boolean 2-SAT is linear-time decidable is from Aspvall--Plass--Tarjan (1979); the bijunctive tractability boundary is consistent with Schaefer (1978). No new general dichotomy theorem is claimed. The prior AFFINE-INTERFACE54 result in root main remains intact.
+
+\section{Open bridge and next experiment}
+\textbf{FALSIFIED/RETIRED:} linear $k$, high treewidth, many binary relation exceptions, and an edge-field lower bound force exponential SAT decision. \textbf{OPEN:} universal charged acquisition/normalization/continuation lower bound for every total uniform exact deterministic SAT decider; $P\ne NP$. Next build matched non-bijunctive three-valued couplers that survive source-exact failed-literal and parity reduction. Compare SCC, affine elimination, separator dynamic programming, caching, and exact-join certificates, charging discovery separately. Merely losing one shortcut is not a universal time lower bound.
+
+\begin{thebibliography}{9}
+\bibitem{apt} B. Aspvall, M. F. Plass, R. E. Tarjan. A linear-time algorithm for testing the truth of certain quantified Boolean formulas. Information Processing Letters 8 (1979), 121--123.
+\bibitem{schaefer} T. J. Schaefer. The complexity of satisfiability problems. STOC (1978), 216--226.
+\bibitem{gjs} M. R. Garey, D. S. Johnson, L. J. Stockmeyer. Some simplified NP-complete graph problems. Theoretical Computer Science 1 (1976), 237--267.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::DOMAIN-COLLAPSE55
