@@ -17,7 +17,7 @@ Deterministic clause replay checks all 264 V clauses true. On original U the wit
 WARNING: V has two mixed-sign ternary clauses and is not in the strictly monotone sublanguage. Both U and V are in the larger signed exact-(2,2) proper unique NP-complete language.
 
 ## Theorem: exact legal-signing graph
-For any fixed 4-regular 3-uniform unsigned occurrence support with n variables, the graph of legal two-positive/two-negative signings under an allowed swap of one + and one - occurrence of one variable is the Cartesian product J(4,2)^n. Distance = sign Hamming distance/2, diameter 2n. Any support admitting opposite labels therefore has some adjacent opposite-label pair. This does NOT say every UNSAT signing has a SAT neighbor.
+For any fixed simple 4-regular 3-uniform unsigned occurrence support (no duplicate clause supports) with n variables, the graph of legal two-positive/two-negative signings under an allowed swap of one + and one - occurrence of one variable is the Cartesian product J(4,2)^n. Distance = sign Hamming distance/2, diameter 2n. Any support admitting opposite labels therefore has some adjacent opposite-label pair. This does NOT say every UNSAT signing has a SAT neighbor.
 
 ## Growing both-label input family
 B_{p,b} := disjoint block-major copies U or V, one bit b_i per block, V iff b_i=1.
