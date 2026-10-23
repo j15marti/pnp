@@ -1,0 +1,131 @@
+% CLAUDECIRCUITSAT LIVING DOCUMENT -- last run 2026-10-23 (run R001)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\PROVED}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{ClaudeCircuitSAT: A Wire-by-Wire Ladder of Lower Bounds for Circuit-SAT}
+\author{Living document (Claude scheduled routine)}
+\date{Last updated: 2026-10-23 (R001)}
+\begin{document}\maketitle
+
+\section*{Status}
+\textbf{Executive status: P versus NP remains \OPEN{}.} No lower bound
+for general Circuit-SAT in the unrestricted Boolean circuit model is claimed.
+This document records, rung by rung, what \emph{is} provable about the
+wire/gate cost of Circuit-SAT in explicitly stated models, and marks exactly
+where each rung stops. Status labels: PROVED/EXACT, KNOWN THEOREM,
+COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup and models}
+A circuit $C$ over inputs $x_1..x_n$ is a DAG of fan-in-$\le 2$ gates (basis
+$B_2$: all binary functions); a \emph{wire} is an edge. $\mathrm{SAT}(C)$:
+does $\exists x\; C(x)=1$? Three cost models are separated throughout, because
+lower bounds differ sharply between them:
+\begin{enumerate}
+\item[\textbf{M1}] \emph{Evaluation black box}: algorithm may only evaluate $C$.
+\item[\textbf{M2}] \emph{Description probing}: algorithm reads wires of $C$'s
+ description (each probe returns one gate's type and two predecessors).
+\item[\textbf{M3}] \emph{Unrestricted}: arbitrary algorithm (the real P vs NP
+ question). Nothing is proved here.
+\end{enumerate}
+
+\section{The ladder}
+\subsection*{Rung $n=1$}
+Functions of one variable: $0,1,x,\bar x$. Gates needed: $0$ (negation is free in $B_2$).
+Minimum wires $0$. SAT is trivially decided by reading one output wire. \PROVED{}
+
+\subsection*{Rung $n=2$}
+Of $16$ functions: $4$ need no gate (constants, $x_1,x_2$), $12$ need exactly
+one gate (2 wires). So the unique nontrivial wire budget is $2$ and
+every function depending on both inputs costs $\ge 2$ wires. \COMP{} (exhaustive)
+
+\subsection*{Rung $n=3$}
+Exhaustive synthesis over $B_2$ (script
+\texttt{research/claude\_circuitsat/exact\_synthesis\_b2.py}, runtime $<2$s):
+\begin{center}\begin{tabular}{lccccc}\toprule
+gates $g$ & 0 & 1 & 2 & 3 & 4\\
+\#functions of 3 vars & 5 & 33 & 114 & 80 & 24\\
+wires $2g$ & 0 & 2 & 4 & 6 & 8\\\bottomrule\end{tabular}\end{center}
+(sum $=256$; the 5 at $g=0$ are $0,1,x_1,x_2,x_3$ up to the free negation
+convention of the script, which tabulates non-negated inputs only.)
+The $24$ hardest functions need $4$ gates, i.e.\ 8 wires; compare the
+connectivity bound $2(n-1)=4$. \COMP{}
+
+\subsection*{Rung general $n$: elementary bounds}
+\begin{lemma}[connectivity] If $f$ depends on all $n$ inputs then any $B_2$ circuit
+for $f$ has $\ge n-1$ gates and $\ge 2(n-1)$ wires. \PROVED{}
+\end{lemma}
+\begin{proof} Every input must have a directed path to the output; the
+union of these paths is a connected subgraph with $n$ source nodes, in which
+each gate merges at most two components. \end{proof}
+
+\begin{lemma}[counting] A circuit with $s$ gates has at most
+$(16\,(s+n)^2)^s$ descriptions, so some $n$-variable function needs
+$\Omega(2^n/n)$ gates. \KNOWN{} (Shannon). It is non-explicit and says nothing about SAT.
+\end{lemma}
+
+\section{Lower bounds for the SAT problem itself}
+\begin{theorem}[M1, evaluation black box] Any deterministic algorithm that decides SAT$(C)$
+for $n$-input $C$ using only evaluations needs $2^n$ queries in the worst case. \PROVED{}
+\end{theorem}
+\begin{proof} Adversary answers $0$ to every query; after $<2^n$ queries some
+unqueried $a$ remains, and the circuit $[x=a]$ (of $O(n)$ wires) is consistent
+with all answers yet satisfiable, whereas the zero circuit is not. \end{proof}
+Randomized: $\Omega(2^n)$; quantum: $\Omega(2^{n/2})$ (BBBV). \KNOWN{} \;
+\textbf{Barrier:} this is a relativizing argument and cannot separate P from NP
+(Baker--Gill--Solovay); it does not use the wire structure.
+
+\begin{theorem}[M2, description probing] Let $\mathcal F_m$ be circuits
+$C=\bigvee_{j=1}^m g_j$ where each $g_j\in\{x_{a}\wedge \bar x_{a},\; x_a\wedge x_b\}$
+($a\ne b$ arbitrary). Any algorithm deciding SAT on $\mathcal F_m$ by probing
+descriptions must probe $\ge m$ gates, i.e.\ $\ge m$ wire-reads (the
+optimum $2m$ wire-reads if both input wires of each gate must be seen). \PROVED{}
+\end{theorem}
+\begin{proof} Adversary answers ``$x_a\wedge\bar x_a$'' to every gate probed
+except that it keeps the last unprobed gate undecided: if some $g_j$ is never
+probed, the adversary can complete the instance both as unsatisfiable (all
+$g_j$ contradictory) and satisfiable ($g_j=x_1\wedge x_2$). \end{proof}
+This gives a \emph{linear-in-size} wire bound for a restricted family
+(SAT here is in P; the bound is the cost of reading). It is the base case of
+the intended induction: each rung adds one more constraint that cannot be
+certified without reading its wires. \OPEN{}: lift beyond probing to
+computation (M3).
+
+\section{Known context (not re-derived)}
+Best explicit $B_2$ gate lower bounds are gate-elimination bounds of the
+form $\approx 3n$ (Blum 1984: $3n-o(n)$; improved to $\approx3.1n$ by Find--Golovnev--Hirsch--Kulikov 2016).
+\KNOWN{} (cited from memory; verify before any citation use). Superlinear bounds for
+explicit functions in $B_2$ circuits are \OPEN{}. Williams-style
+algorithmic-method results give only $\mathrm{NEXP}\not\subseteq\mathrm{ACC}^0$-type separations.
+
+\section{Repository cross-check (R001)}
+Root \texttt{main.tex} (P versus NP Research Status) lists P vs NP as
+\OPEN{}; its LSPV material concerns structural/Hall-profile and proof-spine
+routes for arbitrary-algorithm bridges. Nothing in it presently supplies a
+M3 wire lower bound; the closest usable item is the probe-style adversary
+framework (M2), which matches our Theorem 3. No claim here depends on
+or strengthens root \texttt{main.tex}.
+
+\section{Barrier ledger}
+\begin{tabular}{p{3.2cm}p{9cm}}\toprule
+Relativization & Thm 2 (M1) is relativizing: useless for M3.\\
+Natural proofs & Any counting/large-property argument for explicit functions risks Razborov--Rudich.\\
+Algebrization & Not yet audited for rungs $\ge 4$.\\
+Model gap & Thm 3 is M2 only; M2$\to$M3 is the load-bearing \OPEN{} arrow.\\\bottomrule
+\end{tabular}
+
+\section{Next steps (queue)}
+\begin{enumerate}
+\item Extend exhaustive synthesis to $n=4$ (65536 functions, $\le 7$ gates) in checkpointed chunks (30s rule) and tabulate wires.
+\item Rung ladder for \emph{SAT-instance families}: minimal wires of circuits whose SAT answer needs $k$ independent constraints; look for a rung-by-rung recurrence.
+\item Test gate-elimination-style potential on $\mathcal F_m$ to move from M2 to a restricted M3 (e.g.\ read-once / bounded-depth).
+\item Transfer review: VLSI area--time cuts, communication-cut bounds (wire congestion) as M3 candidates.
+\end{enumerate}
+
+\section*{Run log}
+R001 (2026-10-23): created document; exhaustive $n\le3$ synthesis; Thm 2, 3 and lemmas stated.
+\end{document}
+% END_OF_CLAUDECIRCUITSAT::R001
