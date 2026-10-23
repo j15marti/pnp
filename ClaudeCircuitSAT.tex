@@ -1,4 +1,4 @@
-% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-23 (run 1)
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-23 (run 2)
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
 \newtheorem{prop}{Proposition}
@@ -67,14 +67,121 @@ Chunking note: the $n=3$, $s\le4$ run took $\approx 60$\,s, exceeding the 30\,s 
 \item Repository (\texttt{j15marti/pnp}): root \texttt{main.tex} reports P vs NP OPEN with restricted-model results (SWAP-STAR, EXCLUSIVEQUOTIENT78); the all-decider bridge is OPEN. No repo result so far gives a circuit-wire lower bound for SAT; it was not adopted here.
 \end{itemize}
 
+\section{Dynamic and reverse dynamic programming (run 2)}
+\label{sec:dp}
+\textbf{Question.} Can forward or reverse dynamic programming (DP) model a lower bound
+for an NP-complete problem? Can comparing the 3-SAT and circuit-SAT versions of one
+problem pick out the ideal algorithm?
+
+\subsection{The two DPs on one instance}
+Fix a 3-CNF $F$ (or a circuit $C$) on variables $x_1,\dots,x_n$ and an order $\pi$.
+\begin{itemize}
+\item \textbf{Forward DP:} after assigning prefix $S=\{\pi_1,\dots,\pi_i\}$ by $a$,
+the state is the residual subproblem $F|_a$ (for a circuit: the netlist after constant
+propagation, i.e.\ the values on the live wire frontier). Merge equal states and drop dead ones
+(a falsified clause, or output forced to $0$). Width $W_\pi(i)=\#$distinct live states.
+\item \textbf{Reverse DP:} start from ``output $=1$'' and eliminate variables from the back.
+For CNF this is Davis--Putnam variable elimination (1960). It equals the forward DP on the reversed order.
+\item \textbf{Meet in the middle:} $F$ is SAT iff a forward state at cut $S$ and a reverse
+state at $\bar S$ are compatible. With the syntactic states below this check is set
+disjointness on the clauses crossing the cut.
+\end{itemize}
+
+\subsection{Exact statements}
+\begin{prop}[Semantic DP is representation-independent; PROVED/EXACT]
+If states are residual \emph{functions} $f|_a$, then the width at cut $S$ is the number of
+distinct nonzero rows of the $2^{|S|}\times2^{n-|S|}$ truth-table matrix $M_S$, which is
+$2^{D^{\to}(M_S)}$ (one-way communication complexity). Reverse DP uses columns. This depends
+only on $f$, so the 3-SAT and circuit-SAT versions of the same function give identical widths.
+Over all orders, forward and reverse optima coincide (reverse the order).
+\end{prop}
+\begin{prop}[Semantic DP is clairvoyant; PROVED/EXACT] For UNSAT $f$ every residual is
+$0$, so semantic width is $\le1$. Semantic DP therefore assumes the answer and gives no lower
+bound. A lower-bound model must use \emph{syntactic} states, as real DP algorithms do.
+\end{prop}
+\begin{prop}[3-SAT vs.\ circuit-SAT under syntactic DP; PROVED/EXACT, easy]
+\leavevmode
+(i) For CNF, the state at cut $S$ is determined by the set of crossing clauses that $a$
+leaves unsatisfied, so $W(S)\le 2^{\#\text{crossing clauses}}$. The circuit
+$\bigwedge_j\bigvee_{\ell\in c_j}\ell$ with constant propagation has exactly the same
+residuals.
+(ii) For the Tseitin 3-CNF $T(C)$ of a general circuit, assigning inputs and gate variables in a
+topological layout gives $W\le 2^{\mathrm{vs}}$, where $\mathrm{vs}$ is the number of
+assigned wires with an unassigned consumer (the wire frontier). So DP on the 3-SAT
+encoding \emph{simulates} the wire-by-wire circuit DP of \S2. Non-topological orders amount
+to guessing gate values, which only adds freedom.
+(iii) DP over the \emph{inputs only} (no gate variables) may need width up to
+$2^{w_f2^{w_r}}$ for forward/reverse cutwidths $w_f,w_r$ (McMillan's OBDD bound; KNOWN THEOREM).
+Encoding with auxiliary wire variables avoids this doubly exponential term.
+\end{prop}
+\textbf{Answer on the ``ideal algorithm'' (within DP).} The 3-SAT (Tseitin) form is the better
+substrate: it contains the circuit DP and can beat input-only DP. The ideal DP is
+tree/path-decomposition DP on the netlist, time $2^{O(\mathrm{tw}(C))}\mathrm{poly}$
+(KNOWN THEOREM; cf.\ Alekhnovich--Razborov, branch-width SAT algorithms, FOCS 2002).
+
+\begin{prop}[DP lower bounds exist but only for the DP class; KNOWN THEOREMS $\Rightarrow$ EXACT TRANSFER]
+On an UNSAT $F$ the forward syntactic DP has no early exit. Its merged state graph is an
+ordered read-once branching program for the search problem ``find a falsified clause''.
+Such programs correspond to ordered/regular resolution refutations of polynomially related
+size (Krajíček; Lovász--Naor--Newman--Wigderson). The reverse DP \emph{is} ordered
+resolution (Davis--Putnam). Hence explicit 3-CNFs force total DP work $2^{\Omega(n)}$:
+pigeonhole (Haken 1985, after 3-CNF encoding), Tseitin formulas on expanders (Urquhart 1987),
+and random 3-CNF at constant ratio (Chvátal--Szemerédi 1988).
+\end{prop}
+
+\subsection{Why this does not reach P vs NP (barrier audit)}
+\begin{itemize}
+\item \textbf{FAILED TRANSFER to all algorithms.} A lower bound for a DP class is a lower
+bound for a proof system (resolution-type). Superpolynomial lower bounds for \emph{every}
+proof system is equivalent to NP $\ne$ coNP (Cook--Reckhow 1979), which is stronger than P $\ne$ NP.
+\item \textbf{No single ideal algorithm.} Tseitin formulas are exponential for every DP above,
+yet Gaussian elimination solves them in polynomial time. Pigeonhole is exponential for DP
+but polynomial for cutting planes. Comparing the 3-SAT and circuit versions therefore picks the best \emph{DP}, not the best algorithm.
+\item \textbf{Communication-style caps.} Any lower bound obtained by cutting the
+\emph{instance description} (streaming, one-way protocol) is at most the input length.
+Exponential DP widths come from cutting the \emph{assignment space}, which arbitrary
+algorithms need not enumerate.
+\item \textbf{Richer states = stronger proof systems.} DP with affine/parity states
+corresponds to Res($\oplus$)-type systems, and DP with linear-inequality states to cutting
+planes. Each strengthening is a known open or partially solved lower-bound frontier.
+Recent exponential bounds for regular Res($\oplus$) exist (to be verified next run, so
+treated as CANDIDATE citations).
+\end{itemize}
+
+\subsection{Computational data (exact optimal orders)}
+Script \texttt{results/claude\_circuitsat/dp\_width.py}; data \texttt{dp\_scaling.jsonl}.
+The optimal order is found exactly by a bottleneck DP over the $2^n$ subset lattice (each run
+$\le6$\,s, within the 30\,s rule). Width = max live syntactic states over the order. Random
+3-CNF has $m=5n$ (seeds 1--3).
+\begin{center}\begin{tabular}{@{}lccc@{}}\toprule
+instance & opt.\ max width & opt.\ total states & identity-order max width\\\midrule
+$\mathrm{PHP}^3_2$ ($n=6$) & 4 & 12 & 4\\
+$\mathrm{PHP}^4_3$ ($n=12$, native 3-CNF) & 11 & 48 & 11\\
+rand $n=6$ & 4,5,5 & 13,15,19 & 9,8,10\\
+rand $n=8$ & 5,5,6 & 23,24,29 & 10,24,20\\
+rand $n=10$ & 6,9,6 & 41,53,24 & 24,21,28\\
+rand $n=12$ & 9,9,12 & 41,60,79 & 21,61,44\\
+rand $n=14$ & 13,12,11 & 99,64,56 & 55,136,71\\\bottomrule
+\end{tabular}\end{center}
+Findings (COMPUTATIONAL, finite):
+(1) Order matters a lot: the optimal order cuts the max width 2--11$\times$ versus the identity order.
+(2) Optimal width grows from $\approx4$ to $\approx12$ over $n=6..14$, about $2^{0.2n}$. This
+is consistent with, but far too small to confirm, the asymptotic $2^{\Omega(n)}$ of the
+resolution lower bounds.
+(3) Meet-in-the-middle never lowered the max width below the one-directional optimum on
+these instances, and it adds a disjointness join cost.
+
 \section{Next steps (OPEN arrows)}
 \begin{enumerate}
 \item Extend exact enumeration to $n=4$, chunked by first gate and checkpointed; tabulate wire-cut/fan-out profiles for unique-SAT circuits.
-\item Define a white-box restricted model (e.g.\ read-once netlist traversal, DPLL-style) and prove tight bounds as the ladder grows; check which are structural vs. model artifacts.
+\item Run the syntactic DP on Tseitin encodings with gate variables placed by the solver, and measure against the circuit wire-frontier width.
+\item DP with parity states (Res($\oplus$)-style) on Tseitin formulas: test whether the exponential DP width collapses, as it must since Gaussian elimination is polynomial.
+\item Verify the regular-Res($\oplus$) lower-bound citations, and state precisely which DP-state class each covers.
 \item Test whether a fan-out/wire-congestion measure (VLSI area-time analogy; CANDIDATE) gives a monotone lower bound along the ladder.
 \end{enumerate}
 
 \section*{Run log}
 Run 1 (2026-10-23): created document; black-box ladder proved; $n\le3$ exhaustive table computed; no new lower bound for general white-box SAT.
-% END_OF_CLAUDECIRCUITSAT_RUN::1
+Run 2 (2026-10-23): forward/reverse DP analysis (\S\ref{sec:dp}); 3-SAT vs circuit-SAT DP comparison; exact optimal-order DP widths for $n\le14$; DP lower bounds identified as resolution lower bounds (EXACT TRANSFER for DP class only; FAILED TRANSFER to all algorithms).
+% END_OF_CLAUDECIRCUITSAT_RUN::2
 \end{document}
