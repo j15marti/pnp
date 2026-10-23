@@ -1,0 +1,71 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- maintained hourly by a scheduled Claude run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{claim}{Claim}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder toward a Circuit-SAT lower bound}
+\author{Living document (scheduled Claude runs)}
+\date{Last updated: 2026-10-23, run 01}
+\begin{document}
+\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here proves a superpolynomial lower bound.
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Start from the simplest Circuit-SAT instances, grow the circuit gate by gate and wire by wire, and for each stage record
+(i) the minimum number of gates/wires forced by the function computed, and
+(ii) the best provable lower bound on the work needed to decide satisfiability.
+Model: fan-in-2 circuits over the full binary basis $B_2$, constants free, wires $=$ gate-input edges (so $w=2g$ for gates of fan-in 2).
+Let $\mathrm{SAT}(C)=1$ iff $\exists x\in\{0,1\}^n: C(x)=1$.
+
+\section{Ladder}
+\begin{lemma}[PROVED/EXACT: connectivity floor]\label{lem:conn}
+If $f:\{0,1\}^n\to\{0,1\}$ depends on all $n$ inputs, every fan-in-2 circuit for $f$ has $\ge n-1$ gates and $\ge 2(n-1)$ wires; $\mathrm{AND}_n$ attains both, so $g_{\min}(\mathrm{AND}_n)=n-1$.
+\end{lemma}
+\begin{proof}
+The underlying graph restricted to the cone of the output is connected and contains the $n$ input nodes, each of fan-out $\ge1$ (a dependent input must reach the output). The output cone is a connected graph with $n+g$ vertices, hence $\ge n+g-1$ edges, while it has exactly $2g$ edges; so $2g\ge n+g-1$, i.e.\ $g\ge n-1$. A balanced tree of ANDs meets this.
+\end{proof}
+
+\begin{claim}[PROVED/EXACT: trivial instances]
+For every circuit $C$ that is a read-once formula (tree), $\mathrm{SAT}(C)$ is decidable in $O(|C|)$ time by bottom-up evaluation of the pair (can-be-0, can-be-1). So the first stage at which hardness can appear requires \emph{fan-out $\ge 2$} (reconvergence). Wire-ledger consequence: a hard instance needs $w>2(n-1)$, i.e.\ at least one input or internal node with fan-out $\ge 2$.
+\end{claim}
+
+\begin{table}[h]\centering
+\begin{tabular}{@{}lll@{}}\toprule
+Stage & Exact minimum / bound & Label\\\midrule
+$n=1$ & 0 gates (identity/negation free in $B_2$) & PROVED/EXACT\\
+$n=2$ & max over all 16 functions: 1 gate & COMPUTATIONAL (exhaustive)\\
+$n=3$ & all 256 functions: cost histogram below; max 4 gates & COMPUTATIONAL (exhaustive)\\
+general $n$, dep.\ on all inputs & $\ge n-1$ gates, $\ge 2n-2$ wires & PROVED/EXACT (Lemma~\ref{lem:conn})\\
+explicit $f$, large $n$ & gate elimination gives $\approx 3.1n$ (best known linear bound) & KNOWN THEOREM (cited from memory; to re-verify against primary source)\\
+$\mathrm{SAT}$ time, black-box evaluation only & $2^n$ evaluations in worst case & PROVED/EXACT (adversary), but relativizing\\
+$\mathrm{SAT}$ time, white-box & superpolynomial & OPEN\\\bottomrule
+\end{tabular}\end{table}
+
+\paragraph{Exhaustive $n=3$ data.} Script \path{experiments/circuitsat_exact_min.py}, output \path{results/circuitsat_exact_min.json}, runtime $\approx 9$ s per invocation (single stage; BFS over circuit states, last layer not stored). Number of 3-variable functions by exact $B_2$-circuit size $0,1,2,3,4$: $5,33,114,80,24$ (total $256$). Size $0$ counts constants and the three projections.
+
+\begin{claim}[PROVED/EXACT: black-box floor]
+Any deterministic algorithm that only evaluates $C$ on chosen points and must decide $\mathrm{SAT}(C)$ for all $C$ with $n$ inputs needs $2^n$ evaluations: an adversary answers $0$ to every query; after $<2^n$ queries some point is unqueried and the circuit that is $1$ only there is consistent with all answers yet has opposite SAT value. This is a statement about oracles and does not bound white-box algorithms.
+\end{claim}
+
+\section{Barrier ledger}
+\begin{itemize}
+\item Relativization: the black-box floor relativizes, hence cannot by itself separate P from NP (Baker--Gill--Solovay). KNOWN THEOREM.
+\item Natural proofs / algebrization: any argument that is constructive, large and useful against $P/\mathrm{poly}$ must be audited. OPEN for every route below.
+\item Gate-elimination ceiling: current technique yields only linear bounds; reaching superlinear needs a new idea. OPEN.
+\end{itemize}
+
+\section{Post-quantum/code-theory transfer notes (CANDIDATE only)}
+Schur-square / quadratic-relation spectra of the wire-incidence code of $C$ are candidate invariants for ``how many reconvergent wires'' a circuit needs; no transfer theorem exists. ANALOGY/CANDIDATE.
+
+\section{Repository cross-reference}
+Root \path{main.tex} (executive status: P versus NP remains OPEN) and its INPUT-QUERY-CEILING86 / ROOT-LABEL-QUOTIENT85 sections record the same query-versus-white-box gap; no result from the corpus was imported unverified. Not yet reviewed in depth this run: \path{research/explorations/} HEC/CRS-PPC branch.
+
+\section{Next steps (OPEN targets)}
+\begin{enumerate}
+\item Extend exact enumeration to $n=4$ (65536 functions; known max size 7) in checkpointed stages, tracking the minimum wires and minimum fan-out-$\ge2$ nodes per function.
+\item Define $R(n)$ = min number of reconvergent (fan-out $\ge2$) wires over circuits computing a function whose SAT-instance family is not solved by bottom-up propagation; prove $R(n)\ge1$ and look for growth.
+\item Re-verify the $3.1n$ citation and survey 2025--26 gate-elimination literature.
+\end{enumerate}
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT_RUN::01
