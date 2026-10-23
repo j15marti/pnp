@@ -1,0 +1,58 @@
+% ClaudeCircuitSAT living document -- build-up of wire/gate lower bounds for Circuit-SAT
+% Last updated: 2026-10-23 (run 1)
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,url}
+\newtheorem{proposition}{Proposition}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\SAT}{\mathrm{SAT}}
+\title{ClaudeCircuitSAT: Step-by-Step Wire Lower Bounds for Circuit-SAT}
+\author{Living document, maintained by scheduled Claude runs}
+\date{Last updated 23 October 2026}
+\begin{document}
+\maketitle
+\fbox{\parbox{0.95\linewidth}{\textbf{Status: P versus NP remains OPEN.} Nothing here is a superlinear lower bound. Only trivial (linear) bounds and finite exact values are recorded. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.}}
+
+\section{Program and measure}
+\textbf{Goal.} Lower-bound the size of Boolean circuits deciding an NP-complete problem, built up from the smallest instances.
+
+\textbf{Model.} Fan-in-2 circuits over the full basis $B_2$ (negation free). $s(f)$ = minimum gates, $w(f)=2s(f)$ = wires into gates (output wire not counted). Fan-out is tracked separately: a gate-elimination step may delete $1+$(fan-out of the eliminated input) gates, which is why fan-out matters.
+
+\textbf{Family (uniform in the instance, not a single fixed circuit).} $\SAT_{n,k}$: input is a CNF with $k$ clauses over $n$ variables, each clause given by $2n$ membership bits $(p_{c,v},q_{c,v})$ (positive/negative literal present). Output $1$ iff satisfiable. Fixing one circuit instance makes the problem constant, so the lower bound must be on the \emph{decider} for the encoded family. This is the standard non-uniform formulation; $\SAT_{n,k}$ is NP-complete as $n,k$ grow polynomially.
+
+\section{Ladder of steps}
+\begin{proposition}[PROVED/EXACT, trivial] If $f$ depends on all $N$ inputs then $s(f)\ge N-1$ (connectivity: a fan-in-2 circuit with a single output reaching $N$ inputs has $\ge N-1$ gates), so $w(f)\ge 2N-2$. $\SAT_{n,k}$ depends on all $2nk$ inputs (checked for $(2,2)$ by COMPUTATIONAL flip test; in general each bit can be made pivotal).\end{proposition}
+
+\begin{proposition}[PROVED/EXACT, construction] $s(\SAT_{n,k})\le 2^n nk-1$ (OR over assignments of AND over clauses of OR of satisfied literals).\end{proposition}
+
+\begin{center}\begin{tabular}{@{}cccccccl@{}}\toprule
+$n$ & $k$ & inputs $N$ & $s$ lower & $s$ upper & exact $s$ & wires $2s$ & status\\\midrule
+1&1&2&1&1&1&2&COMPUTATIONAL (exhaustive)\\
+1&2&4&3&3&3&6&COMPUTATIONAL (exhaustive)\\
+2&1&4&3&7&3&6&COMPUTATIONAL (exhaustive); brute-force ub not tight\\
+1&3&6&5&5&5&10&PROVED (lb=ub)\\
+2&2&8&7&15&?&$\ge14$&OPEN (exact synthesis infeasible by naive search)\\\bottomrule
+\end{tabular}\end{center}
+
+\textbf{Observation.} In all solved steps $s=N-1$: the decider is a read-once-like tree, so no wire beyond connectivity is forced. The first step where the trivial bound might fail to be tight is $(n,k)=(2,2)$; if its exact value exceeds $7$, that is the first genuine ``extra wire'' datum. Next run: SAT/CNF-based exact synthesis (not naive DFS) for $N=8$.
+
+\section{Literature context (KNOWN THEOREM)}
+Best known lower bound for an explicit function in $B_2$ is $3.1n-o(n)$ gates (Li--Yang, STOC 2022, ECCC TR21-023; improving Blum's $3n-o(n)$ and Find--Golovnev--Hirsch--Kulikov $(3+1/86)n$), by gate elimination for affine dispersers. Any superlinear bound for an NP function would be a major breakthrough; none is claimed. Gate elimination is the technique to extend: $\SAT_{n,k}$ has too much slack to be an affine disperser directly, so a bridge is needed (OPEN).
+
+\section{Barriers to respect}
+Natural proofs (conditional on one-way functions), relativization and algebrization do not rule out gate elimination for linear bounds but constrain any approach to superpolynomial size. Any proposed technique must state which barrier it evades.
+
+\section{Transfer from the repository (j15marti/pnp)}
+Repository root \texttt{main.tex} states P versus NP is OPEN with many open load-bearing arrows; its LSPV material concerns a different (resource/charged-acquisition) route, and no repository result was found that supplies a circuit-size lower bound for $\SAT_{n,k}$. Transfer status: none adopted. Electronics analogy (fan-out limits, routing congestion/VLSI area--time) suggests tracking fan-out and wire cuts; this is an ANALOGY only, needing a theorem converting cut width into gate count.
+
+\section{Next steps}
+\begin{enumerate}
+\item Exact synthesis for $(n,k)=(2,2)$ and $(3,1)$ (SAT-encoded, chunked $\le30$ s runs).
+\item Record fan-out profiles of optimal circuits; test whether any optimum needs fan-out $>1$ beyond inputs.
+\item Attempt a gate-elimination argument for a restricted $\SAT$ subfamily and audit what blocks superlinearity.
+\end{enumerate}
+
+\section*{Run log}
+Run 1 (2026-10-23): created document; code and data in \texttt{experiments/circuitsat/} (\texttt{exact\_synth.c}, \texttt{run.py}, \texttt{results.json}); each run $<1$ s.
+% END_OF_CIRCUITSAT_DOC
+\end{document}
