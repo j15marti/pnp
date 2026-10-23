@@ -1,0 +1,102 @@
+% LSPV-1 REPORT::PAIRKERNEL73::2026-10-23T21:05:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,url}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{PAIRKERNEL73: Exact Linear-Size Existential Kernel for Signed Exact-$(2,2)$ 3-SAT}
+\author{LSPV-1, Universal Cost Bridge}
+\date{23 October 2026, 21:05 Asia/Seoul}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT within the declared calculus, COMPUTATIONAL finite audit; independent external review pending. P versus NP remains OPEN. Neither $P=NP$ nor $P\ne NP$ is proved.}
+
+\section{Falsifiable mechanisms and model}
+We tested whether complementary-pair contraction leaves an $O(\delta)$ exact kernel, whether low defect guarantees SAT, and whether a required explicit projection cost transfers to arbitrary SAT decision. The first two succeed in the declared normalization model; the last does not transfer.
+The source is a proper, pairwise-distinct signed 3-CNF over $n$ densely named original variables, each occurring twice positively and twice negatively. Hence $4n=3m$, so $m\equiv0\pmod4$. Invalid sources are rejected. The encoding has two header and four words per clause, $N=(2+4m)w$ bits, $w=\lceil\log_2(64(n+m+1))\rceil$. Uniform RAM operations, source validation, indexed reads, sorting, failed work, reconstruction, replay, peak words, and the one-bit output are charged. This fixed language is NP-complete because its strict sign-monochromatic sublanguage is NP-complete (D\"ocker 2019).
+For the backward fan-in-two evaluator, output TRUE requires every clause OR TRUE, thus one can choose one literal occurrence per clause without choosing complementary occurrences iff SAT. Global source variable identity is preserved. Opposite-occurrence conflict components are $K_{2,2}$ on each source variable. Clause triples partition $4n=3m$ occurrence vertices. With shared NOT per variable, two OR2 per clause and $m-1$ AND2 gates, $G=n+3m-1=5n-1$, $W=n+6m-2=9n-2$ gate-input references. These are evaluator costs, not SAT-solving lower bounds.
+
+\section{Pairing and exact occurrence ledger}
+A complementary pair $(a\vee b\vee u),(a\vee b\vee\neg u)$ with identical signed $a,b$ contracts assignment-wise to $(a\vee b)$. Under the exact signed occurrence promise and unique clauses, every clause has at most one partner: two different flipped-variable partners would cause a third identical signed literal occurrence. This matching rigidity and a $2^{h\le\delta}$ 2-SAT backdoor algorithm are prior PAIRRIGID72 results, not new.
+Let $p$ be the number of pairs, $B$ their $p$ contracted binary clauses, $T$ the $\delta=m-2p$ unmatched ternaries, and $U=\cup_{C\in T}\operatorname{Var}(C)$, with $|U|\le3\delta$. Let $p_x$ count pivot pairs of $x$, $q_x^\pm$ count pairs where signed $\pm x$ is one of the two shared literals, and $u_x^\pm$ count unmatched occurrences. The independent source identities are
+\[
+2=p_x+2q_x^++u_x^+,\qquad 2=p_x+2q_x^-+u_x^-.
+\tag{1}
+\]
+\begin{lemma}[Signed boundary incidence, PROVED/EXACT]
+For $x\notin U$, the contracted binary $B$ contains either no occurrence of $x$ or exactly one positive and one negative. For $x\in U$, it contains at most one occurrence of $x$ in total. Each signed literal in $B$ occurs at most once.
+\end{lemma}
+\begin{proof}
+For $x\notin U$, (1) implies $p_x=2,q_x^+=q_x^-=0$ or $p_x=0,q_x^+=q_x^-=1$. For $x\in U$, if $p_x=1$ then $q_x^+=q_x^-=0$; if $p_x=0$ then at least one of $q_x^+,q_x^-$ vanishes, the other is at most one; $p_x=2$ is impossible. Each pair shared literal produces exactly one signed binary occurrence.
+\end{proof}
+
+\section{Exact linear-size kernel and witness reconstruction}
+\begin{theorem}[PAIRKERNEL73, PROVED/EXACT]
+There is a uniform deterministic charged $O(m\log(m+2))$-word preprocessing, $O(n+m)$ peak words, constructing
+\[
+K_F(U)\equiv \exists(V\setminus U)\,F(V)
+\tag{2}
+\]
+for every boundary assignment. It consists of the $\delta$ original unmatched ternaries plus at most $\lfloor |U|/2\rfloor$ binary clauses on pairwise disjoint sets of boundary variables. Hence it has at most $3\delta$ variables and $\delta+\lfloor3\delta/2\rfloor$ clauses. Every kernel model extends to an original source model with $O(n+m)$-word reverse reconstruction and full source replay.
+\end{theorem}
+\begin{proof}
+Contract all forced complementary pairs exactly. Since $T$ contains only variables of $U$, eliminate each $x\notin U$ only in the binary $B$. If the parents are $(x\vee a),(\neg x\vee b)$, then
+\[
+\exists x\,[(x\vee a)\wedge(\neg x\vee b)]\equiv(a\vee b).
+\tag{3}
+\]
+A variable appears at most once per sign, so resolution has no cross-product; the resolvent is binary or tautological. Two identical signed residual literals are impossible by the preceding lemma. A pure variable's sole clause is simply dropped under existential projection. The at-most-one-per-sign invariant persists and can be maintained with constant-time incidence-list updates per elimination after sorting and validation. Remaining binary clauses mention only $U$, and every $U$ variable appeared in the original $B$ at most once. It can appear no more frequently after elimination. Thus those final binary clauses are variable-disjoint and there are at most $\lfloor |U|/2\rfloor$. Exact equality (2) follows by commuting each existential elimination with $T$.
+For reverse reconstruction, if $a$ is false choose $x=1$, if $b$ is false choose $x=0$, otherwise choose either value; their resolvent prevents simultaneous failure. Undo pure drops by satisfying the sole parent literal, and assign pair pivot variables freely. Replay-verify the original formula.
+\end{proof}
+\noindent This gives an explicit $2^{|U|}\le2^{3\delta}$ boundary-enumeration algorithm after polynomial preprocessing. PAIRRIGID72's $2^{h\le\delta}$ source-coherent 2-SAT branching has a better exponent: the contribution here is an exact assignment-relation kernel, not a faster exponent.
+
+\section{Constructive low-defect theorem}
+Independently draw a uniformly random satisfying valuation of each projected binary edge (three choices per disjoint two-variable edge) and a uniform independent Boolean value for each free boundary variable.
+\begin{lemma}[Forbidden ternary mass, PROVED/EXACT]
+Every proper ternary $C$ on boundary variables is false with probability at most $8/27$.
+\end{lemma}
+\begin{proof}
+The probability that one specified literal on a satisfied binary edge is false is at most $2/3$; for a free variable it is $1/2$. If the three variables lie in different independent components, their failure probability is at most $(2/3)^3$. If two lie on one binary edge, their prescribed joint values occur in at most one of the three uniformly chosen satisfying edge assignments, with probability at most $1/3$; the third literal fails independently with probability at most $2/3$. This gives at most $2/9$. All cases are covered because an edge has two variables.
+\end{proof}
+\begin{theorem}[Small defect implies SAT, PROVED/EXACT]
+Every valid proper signed exact-$(2,2)$ unique-clause source with $\delta\le3$ is SAT. As $\delta$ is even, this includes $\delta=0$ and $\delta=2$. A witness is constructible deterministically after validation in polynomial time.
+\end{theorem}
+\begin{proof}
+The union bound shows that the probability any of the $\delta$ ternaries fails, conditioned on satisfying all matching binary clauses, is at most $8\delta/27\le24/27<1$. Therefore a kernel model exists. Enumerate the at most $2^{3\delta}\le512$ boundary valuations to find one, and reverse the exact projection to return a source witness. This is an existence proof and a uniform construction, not an all-input polynomial SAT algorithm.
+\end{proof}
+
+\section{Falsifiable charged amortization and the all-decider firewall}
+Fix the explicit Davis--Putnam binary projection calculus whose permitted events eliminate one nonboundary signed variable using at most two incident binary records and emit at most one resolvent, or pure-delete its sole record. It must output a complete auxiliary-free kernel on $U$. Let $\Phi_t$ be its number of active binary records. Each charged elimination event decreases $\Phi$ by one or two. Initially $\Phi_0=p$ and finally $\Phi_*=b_*\le\lfloor3\delta/2\rfloor$. Hence
+\[
+W_{\rm DP}\ge\left\lceil\frac{p-b_*}{2}\right\rceil.
+\tag{4}
+\]
+This is a PROVED/EXACT restricted-work inequality with an independently defined representation count. It is not mandatory SAT-decision work: a solver may check $\delta\le3$ and announce SAT, or instead use source retention, SCC, Horn logic, affine elimination, caching, learning, decomposition or direct decision without emitting any binary projection. No extraction of a rich service from every exact decider has been established.
+
+\section{Concrete controls and reproducibility}
+An explicit valid six-variable, eight-clause $\delta=2$ instance, with juxtaposition denoting AND, is
+\[
+\begin{split}
+&(d\vee e\vee a)(d\vee e\vee\neg a)
+(\neg d\vee f\vee b)(\neg d\vee f\vee\neg b)\\
+&(\neg e\vee\neg f\vee c)(\neg e\vee\neg f\vee\neg c)
+(a\vee b\vee c)(\neg a\vee\neg b\vee\neg c).
+\end{split}
+\]
+Its three pairs contract to $(d\vee e)(\neg d\vee f)(\neg e\vee\neg f)$; setting $(a,b,c,d,e,f)=(1,0,0,1,0,1)$ satisfies all eight clauses. The length-four implication ladder has UNSAT orientation string 1111, while 1101 has SAT witness $(1,1,1,0,0)$; it needs four source orientation observations in its declared probe model but only linear 2-SAT decision. An eight-clause three-variable UNSAT cube is an outside-promise control, not a claimed exact-$(2,2)$ UNSAT instance.
+The independent Python stdlib audit \texttt{kernel73\_audit.py} (seed 202610232105) checked 350 randomly generated valid balanced sources with $n=3,6,9,12$ by exhaustive original-assignment projection against the proposed kernel; it also checked $H_g$ paired cases, monotone paired-support examples, this explicit $\delta=2$ case, the $8/27$ constant, and both-label outside-promise controls. It recorded 8,137 assertions, zero failures. All randomly generated valid sources happened to be SAT; no genuine UNSAT balanced-regular specimen was independently reconstructed in this run. Theorem and source correctness are not inferred from finite experiments.
+
+\section{Corpus reconciliation, literature, and first OPEN implication}
+CORPUS REVIEWED: root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, repo research skill and task index; latest MAIN CUBIC-AFFINE-FIREWALL98; ROOT-LABEL-QUOTIENT85; SMALL-INTERFACE-EXACT-JOIN64; Role-1 PAIRRIGID72/CONNECTRANK71; Role-2 WITNESS-DEFECT58; Role-3 SELECTOR-PROJECTION-FIREWALL65; Role-4 AFFINE-MATCHING59; relevant charged source and HEC records. DUPLICATION AUDIT: complementary rigidity and the $2^\delta$ backdoor are prior; existential DP is classical; the new project-specific result is the special matched-boundary kernel and its small-defect SAT criterion. WHAT CHANGED RELATIVE TO ROOT MAIN: an assignment-wise $O(\delta)$ existential projection, not a universal solver lower bound. ADOPTED: backward identities and source coherence. REJECTED: inferring an arbitrary decider's cost from the size or output operations of an optional rich representation.
+The fixed NP-complete language target remains
+\[
+\forall A\ \forall c>0\ \forall N_0\ \exists F\in L_{2,2}:\ |F|\ge N_0\ \wedge\ T_A(F)>|F|^c.
+\]
+For every total uniform deterministic exact decider, inputs may depend on the decider. This claim is OPEN. The first missing implication is a cost-preserving extraction or alternative direct-continuation bound applying to all deciders without compelling optional relation materialization. The next discriminating test is a primary-source verified UNSAT signed exact-$(2,2)$ gadget, kernelized and attacked by all permitted symbolic shortcuts. Both $P=NP$ and $P\ne NP$ remain OPEN.
+\begin{thebibliography}{9}
+\bibitem{Docker} J. D\"ocker, \emph{Monotone 3-Sat-(2,2) is NP-complete}, arXiv:1912.08032 (2019).
+\bibitem{DP} M. Davis and H. Putnam, \emph{A Computing Procedure for Quantification Theory}, JACM 7(3):201--215 (1960), DOI:10.1145/321033.321034.
+\bibitem{ZPS} T. Zhang, T. Peitl and S. Szeider, \emph{Small Unsatisfiable k-CNFs with Bounded Literal Occurrence}, SAT 2024, DOI:10.4230/LIPIcs.SAT.2024.31.
+\bibitem{APT} B. Aspvall, M. Plass and R. Tarjan, \emph{A Linear-Time Algorithm for Testing the Truth of Certain Quantified Boolean Formulas}, IPL 8 (1979), 121--123.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::PAIRKERNEL73
