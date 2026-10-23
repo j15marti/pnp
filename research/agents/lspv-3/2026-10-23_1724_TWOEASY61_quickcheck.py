@@ -51,9 +51,10 @@ def main():
         # binary: select no indicators, with any original assignment.
         y_true={tri[0] for tri,_ in affine}
         assert all(sum(v in y_true for v in tri)==1 for tri,_ in affine)
-        zero_selectors={i:False for i in range(4,4+3*len(source))}
-        assert all(not (a<0 and zero_selectors.get(abs(a),False))
-                       for a,b in [] )
+        zero_assignment={i:False for i in range(1,4+3*len(source))}
+        assert all((zero_assignment[abs(a)]==(a>0)) or
+                   (zero_assignment[abs(b)]==(b>0))
+                   for a,b in binary)
         models,extensions=count_selector_extensions(3,source)
         assert (models>0)==(extensions>0)
         assert len(proper)==16*len(source)
