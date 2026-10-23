@@ -1,0 +1,57 @@
+% ClaudeCircuitSAT.tex -- living document (hourly scheduled task). Append to the LOG; reconcile sections in place.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\newcommand{\CSAT}{\textsc{CircuitSAT}}
+\begin{document}
+\title{Wire-by-wire lower bounds for \CSAT{}: a living document}
+\author{Claude (scheduled hourly task)}
+\date{Last update: 2026-10-23}
+\maketitle
+
+\section*{Status (honest)}
+\textbf{P versus NP remains open.} Nothing here proves a superpolynomial \CSAT{} lower bound.
+Labels: PROVED, COMPUTATIONAL, KNOWN, CANDIDATE, OPEN. Model: circuits over the full binary basis $B_2$, fan-in 2, unbounded fan-out; size = number of gates; wires = $2\cdot$gates.
+
+\section{Plan}
+Climb from the smallest instances: for each $n$ inputs track (a) exact minimum gate/wire count $C_{B_2}(f)$ for all $f$, (b) the wires forced by structure, (c) the cost of the \CSAT{} evaluator $\mathrm{Eval}_{n,s}(\langle C\rangle, x)$ and satisfiability predicate $\mathrm{SAT}_{n,s}(\langle C\rangle)$, whose growth in $s$ is the actual target.
+
+\section{Proved basics (step $n=1,2$)}
+\begin{lemma}[Connectivity, PROVED]\label{lem:conn}
+If $f$ depends on $N$ variables, any fan-in-2 circuit for $f$ has $\ge N-1$ gates, hence $\ge 2(N-1)$ wires.
+\end{lemma}
+\begin{proof}
+Restrict to the subcircuit feeding the output; as an undirected graph it is connected and contains the $N$ relevant inputs. A tree-like connected graph on $N$ input vertices plus $g$ gate vertices has $\ge N+g-1$ edges, while edges $=2g$ (fan-in 2). So $2g\ge N+g-1$, i.e.\ $g\ge N-1$.
+\end{proof}
+\textbf{$n=1$:} nonconstant functions $x,\neg x$ cost $0$ gates. \textbf{$n=2$:} all 16 functions: $0$ gates for constants/projections, $1$ gate for the other 10; XOR/AND tight against Lemma~\ref{lem:conn} (1 gate, 2 wires). PROVED/exhaustive.
+
+\section{Exhaustive minimum circuits ($n=3,4$)}
+Code: \texttt{scripts/claude\_circuitsat\_mincirc.cpp}; DFS over circuits of normal gates $\{\wedge,a\bar b,\bar ab,\vee,\oplus\}$ on normalized functions ($f(0)=0$; negation is free in $B_2$), duplicates pruned. Run $n=3$, $K=6$ (about 40\,s, one-off; not to be repeated, larger $K$ must be chunked) and $n=4$, $K=5$ (6\,s). Counts are over the normalized half of all functions. COMPUTATIONAL.
+\begin{center}\begin{tabular}{@{}lrrrrrrr@{}}\toprule
+$C_{B_2}(f)$ & 0&1&2&3&4&5&$\ge6$\\\midrule
+$n=3$ (128 normal fns) &4&15&57&40&12&0&0\\
+$n=4$ (32768 normal fns)&5&30&228&1237&5312&12092&13864\\\bottomrule
+\end{tabular}\end{center}
+The $n=3$ maximum $C=4$ matches the known value; the $n=4$ row is exact up to 5 gates, with the ``$\ge6$'' bin a lower bound only (known maximum is 7). Wire counts are $2C$.
+
+\section{Where lower bounds for \CSAT{} stand}
+\begin{itemize}
+\item KNOWN: best explicit $B_2$ circuit lower bound for an NP/explicit function is $\approx 3.1n$ gates (gate elimination, Li--Yang 2022); no superlinear bound is known for any NP function. Counting gives $2^n/n$ for \emph{some} function, non-explicit.
+\item KNOWN: \CSAT{} on instances of size $N$ is solvable in $2^{n}\mathrm{poly}$ time; any super-polynomial lower bound for general circuits would imply $\mathrm{P}\ne\mathrm{NP}$ only in the uniform/non-uniform sense matching the model: $\mathrm{NP}\not\subseteq \mathrm{P/poly}$ is the circuit-size version (OPEN).
+\item CANDIDATE (to be tested next): the wire-count measure $w(\mathrm{SAT}_{n,s})$ of the satisfiability predicate over the instance bits for $s=1,2,3$ gates; compute exactly via the same DFS on the encoded predicate and compare with Lemma~\ref{lem:conn} (which gives only linear in the number of relevant bits).
+\end{itemize}
+
+\section{Corpus link}
+The repository's \texttt{main.tex} treats all routes from an arbitrary polynomial-time decider to a superpolynomial lower bound as \textsc{open}; no result there yields a gate/wire lower bound that applies here. Gate-elimination literature is not otherwise developed in the repo.
+
+\section{Open arrows}
+\begin{enumerate}
+\item Exact $C_{B_2}$ for $\mathrm{SAT}_{n,s}$, small $(n,s)$ (next run).
+\item Any bound beyond linear for a function in NP: OPEN, load-bearing, unresolved.
+\end{enumerate}
+
+\section*{Log}
+\begin{description}
+\item[2026-10-23 run 1] Created document; proved connectivity lemma; exhaustive $n\le4$ minimum-circuit table (computational). No new lower bound beyond linear. No literature search was run this hour beyond recalled results (gate elimination), so those KNOWN entries should be re-verified against sources next run.
+\end{description}
+\end{document}
