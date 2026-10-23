@@ -1,0 +1,96 @@
+% Living document: ClaudeCircuitSAT -- lower bounds for circuit-SAT, built wire by wire
+% Last updated: 2026-10-23 (hourly run 1)
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\PROVED}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COND}{\textbf{CONDITIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder of lower bounds for circuit-SAT}
+\author{Living document (hourly routine)}
+\date{23 October 2026}
+\begin{document}\maketitle
+
+\begin{center}\fbox{\parbox{0.92\linewidth}{\textbf{Status.} No superpolynomial lower bound for circuit-SAT in any unrestricted model is claimed.
+Everything below is a statement about a \emph{restricted} model or a finite computation, labelled accordingly.
+\textbf{P versus NP remains \OPEN{}.}}}\end{center}
+
+\section{Goal and method}
+Start from the simplest circuit-SAT instances, add one wire/gate/input at a time, and track
+(i) the minimal number of gates and wires needed to \emph{build} the circuit, and
+(ii) what any SAT procedure must \emph{read or do}. The lower bound is expected to be parametrized
+(by $n$ inputs, wires $m$, a width/treewidth/reconvergence parameter $k$).
+
+\paragraph{Model $\mathcal M_0$.} Circuits over $\{\wedge,\vee\}$ (fan-in 2) and $\neg$ (fan-in 1), DAG, unbounded fan-out.
+Cost: $g(C)$ = number of gates, $w(C)$ = number of wires into gates ($2$ per binary gate, $1$ per $\neg$). Inputs and constants are free.
+For a function $f$, $g_n(f)$ and $w_n(f)$ are the minima over circuits computing $f$.
+
+\section{Proved structural rungs (build cost)}
+\begin{lemma}[Dependence/connectivity]\label{lem:dep}
+If the output of an $\mathcal M_0$ circuit depends on $n$ inputs, it has at least $n-1$ binary gates, hence $w\ge 2(n-1)$.
+\end{lemma}
+\begin{proof} Process gates in topological order, maintaining the partition of the inputs into classes (inputs reaching a common node). A binary gate merges at most two classes, $\neg$ merges none. The output reaches all $n$ essential inputs, so the final class structure around the output is a single class: at least $n-1$ merges, i.e.\ binary gates. \end{proof}
+Tight: $\mathrm{AND}_n$ has $g=n-1$, $w=2(n-1)$. Status: \PROVED.
+
+\begin{lemma}[Negation-free monotone floor]
+Any circuit with fewer than $n-1$ binary gates computes a function depending on fewer than $n$ inputs. (Restatement of Lemma~\ref{lem:dep}.) \PROVED.
+\end{lemma}
+
+\section{Proved description-reading rung (SAT side, restricted)}
+Fix $m$ literal slots and $N\ge m$ variable names. Let $\mathcal F_{m}$ be circuits $\ell_1\wedge\dots\wedge\ell_m$ (a balanced AND tree of literals); the circuit is UNSAT iff two slots hold complementary literals of one variable.
+\begin{theorem}[Probe lower bound]\label{thm:probe}
+Any deterministic algorithm that reads the slots by probes and decides satisfiability on $\mathcal F_m$ must make $m$ probes in the worst case.
+\end{theorem}
+\begin{proof} Adversary answers every probe with a fresh positive literal. After $m-1$ probes the last slot is undetermined: set it to $\neg x$ for a probed $x$ (UNSAT) or a fresh variable (SAT). Both are consistent with all answers. \end{proof}
+Status: \PROVED, but it only certifies that the \emph{description} must be read ($\Omega(m)=\Omega(w)$); it is not a time lower bound beyond linear and is the base rung of the ladder.
+Compare the corpus: the fixed-width implication chain in root \texttt{main.tex} gives the same flavour, $\Omega(N/\log N)$ word probes.
+
+\section{Computational ladder (exhaustive search in $\mathcal M_0$)}
+Script: \texttt{research/experiments/claude\_circuitsat\_ladder.py} (BFS over \emph{sets} of computed functions, gate count layers; each invocation $\le 30$ s; run as
+\texttt{python3 claude\_circuitsat\_ladder.py n maxgates seconds}). Entries are $(g,w)$ with $w$ the minimal wire count among circuits of minimal $g$.
+
+\paragraph{$n=2$ (all 16 functions, search to 6 gates, exhaustive).}
+Constants/projections/negated projections: $(0,0)$ or $(1,1)$. $\wedge,\vee$: $(1,2)$. NAND/NOR/implications: $(2,3)$. $\mathrm{XOR},\mathrm{XNOR}$: $(4,7)$.
+Hence $g_2(\mathrm{XOR})=4$, \COMP.
+
+\paragraph{$n=3$ (256 functions, search to 7 gates, ~1.3M states at depth 7, 25 s).}
+Number of functions with minimal gate count $g$: $g=0{:}5,\ 1{:}9,\ 2{:}26,\ 3{:}44,\ 4{:}37,\ 5{:}82,\ 6{:}35,\ 7{:}10$; the remaining $8$ functions need $\ge 8$ gates.
+They are the truth tables (bit $x$ = value on input $x$) 00101001, 01001001, 01100001, 01101001, 01101011, 01101101, 01111001, 10010110;
+$10010110$ is $\mathrm{XOR}_3$ with $8$ gates achievable by chaining two 4-gate XORs, so $g_3(\mathrm{XOR}_3)=8$ exactly. \COMP.
+Also $g_3(\mathrm{MAJ}_3)=4$, $w=8$; $g_3(\mathrm{AND}_3)=2$, $w=4$ (matches Lemma~\ref{lem:dep}).
+
+\paragraph{Reading.} Hard-to-build functions are parity-like ($g$: $1\to4\to8$ for $n=1..3$, i.e.\ $4(n-1)$ in this basis, matching the known $\Theta(n)$ circuit / quadratic formula behaviour of parity over $\{\wedge,\vee,\neg\}$, \KNOWN for formulas).
+Build cost does \emph{not} lower-bound SAT time: XOR$_n$-SAT is trivial. The ladder must therefore track an instance family where cheap build coexists with costly solve; see \S\ref{sec:param}.
+
+\section{Parametrized picture and open arrows}\label{sec:param}
+Let $n$ inputs, $m$ wires, $k$ a structural parameter.
+\begin{itemize}
+\item Upper bounds: brute force $O(2^n m)$; read-once/tree circuits linear; treewidth-$t$ circuits $2^{O(t)}\,\mathrm{poly}(m)$ by dynamic programming. \KNOWN
+\item Conditional lower bound: no $2^{o(n)}\mathrm{poly}$ algorithm for circuit-SAT under ETH (circuit-SAT contains 3-SAT). \COND, not usable in an unconditional proof.
+\item Corpus caution (root \texttt{main.tex}: DENSE-COUPLING-FIREWALL90, AGGREGATION-CEILING91): high treewidth, density, essential constraints and padding \emph{alone} do not force expensive continuation; a lower bound parameter must be something a solver cannot bypass by a source scan.
+\item Candidate parameter (\CAND): reconvergent fan-out $r$ = minimum number of wires whose removal makes the circuit a forest. Conjectural shape: any ``local'' (wire-by-wire, state-bounded) procedure needs $2^{\Omega(r)}$ work, while $r\le \mathrm{tw}\cdot O(1)$ gives a matching upper bound for such procedures. This is \OPEN{}: no proof, and no model in which it holds is established.
+\end{itemize}
+
+\section{Ledger}
+\begin{tabular}{lll}
+Claim & Status & Note\\\hline
+$g\ge n-1$ for $n$ essential inputs & \PROVED & Lemma 1\\
+$m$-probe bound for $\mathcal F_m$ & \PROVED & description reading only\\
+$g_2(\mathrm{XOR})=4,\ g_3(\mathrm{XOR}_3)=8$ & \COMP & exhaustive BFS\\
+$g_3$ distribution (above) & \COMP & 7-gate layer; 8 functions $\ge 8$\\
+$2^{\Omega(r)}$ for local procedures & \OPEN{} & candidate\\
+Unrestricted circuit-SAT superpolynomial & \OPEN{} & = P vs NP
+\end{tabular}
+
+\section{Next steps}
+(1) Extend ladder to $n=4$ with canonicalisation under input permutation/negation (NPN) to shrink state space; chunk by gate layer, persist frontiers.
+(2) Define a restricted solver model (bounded-state wire-by-wire sweep) and try to prove the $2^{\Omega(r)}$ candidate there; audit against the repo's firewall results.
+(3) Pair build cost with SAT cost: search for circuit families with $g=O(n)$ but provably large sweep-state.
+(4) Check relativization/algebrization before any claim beyond the restricted model.
+\end{document}
+% END_OF_LIVING_DOC::ClaudeCircuitSAT
