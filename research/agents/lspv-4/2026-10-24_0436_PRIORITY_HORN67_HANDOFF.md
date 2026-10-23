@@ -9,6 +9,9 @@ For every source proper ternary (l1 OR l2 OR l3), add fresh s1,s2,s3 and the sev
 All six binary clauses are Horn, and positive selector triples are pairwise disjoint.
 Each satisfied source clause selects exactly the first true literal. The total number of models is preserved exactly, with n'=n+3m, m2=6m and k=m ternaries. Each original variable occurrence at positions 1,2,3 becomes 3,2,1 target occurrences, respectively, so source degree must not be confused with physical target degree.
 
+## New no-go theorem: source-once selector-only constraints
+For any h>=2, suppose the only source-dependent clauses are implications (NOT s_i OR l_i), while all other selector and auxiliary constraints R(s,y) are independent of original literal truth values. If the singleton true-literal set {i} has a valid unique selector assignment, its selector support must be exactly {i}; that same assignment remains valid on every superset, including {i,j}. The distinct singleton {j} extension also remains valid there. Hence at least two extensions exist for {i,j}. No such single-source-occurrence gadget is parsimonious, even with arbitrary selector-only auxiliary variables or non-Horn R. This is restricted to this explicit calculus, not a universal impossibility result.
+
 ## Guard theorem
 Within comparison guards (NOT s_i OR NOT l_j), i != j, exactly three guards are required, choosing one direction for each of the three pairs; the complete triple must be transitive. Exactly six minimal guard sets work. This is restricted local minimality, not global optimality.
 
