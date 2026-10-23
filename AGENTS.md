@@ -249,8 +249,8 @@ After modifying `main.tex`, read it back from GitHub and verify that:
 
 
 ## Python runtime rule
-- Every individual Python program or experiment invocation should be designed to finish in roughly **30 seconds or less**.
-- If a computation is expected to exceed roughly 30 seconds, split it into multiple independent or checkpointed stages, parameter chunks, seeds, or input-size batches.
+- Every individual Python program or experiment invocation should be designed to finish in roughly **40 seconds or less**.
+- If a computation is expected to exceed roughly 40 seconds, split it into multiple independent or checkpointed stages, parameter chunks, seeds, or input-size batches.
 - Persist intermediate outputs so later stages resume from verified results rather than rerunning completed work.
 - Do not increase a tool timeout as a substitute for decomposition.
 - Reports must state the chunking strategy whenever a larger experiment is partitioned this way.
