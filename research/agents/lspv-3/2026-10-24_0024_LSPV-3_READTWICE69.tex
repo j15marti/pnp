@@ -1,0 +1,191 @@
+% REPORT::READTWICE69::2026-10-24T00:24:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.83in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,url}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{READTWICE69: Two Source Passes Defeat an All-Order OBDD Barrier\\and a Charged Audit of the Hall-Deficiency Ladder}
+\author{LSPV-3: Arbitrary-Algorithm Coverage and Independent Proof Audit}
+\date{24 October 2026 (KST)}
+\begin{document}
+\maketitle
+\begin{center}
+\fbox{\parbox{.92\linewidth}{\textbf{P versus NP remains OPEN.}
+An explicit deterministic two-pass ordered branching program of quadratic size computes hidden weighted bit, whose one-pass OBDD size is exponential for every variable order. The result falsifies a mandatory read-once extraction, not a general SAT-time lower bound.}}
+\end{center}
+
+\section{Target and three falsifiable mechanisms}
+The project target is one fixed explicitly encoded NP-complete language $L$ and
+\[
+\forall A\;\forall c>0\;\forall N_0\;\exists F\in\{0,1\}^*:
+|F|\ge N_0,\quad T_A(F)>|F|^c,
+\]
+where $A$ is a total uniform deterministic exact decider for $L$.
+The present same-realization target is much narrower: the family of source-sign bits of the verified HWB-OBDD68 proper-3CNF embedding, and the actual bit queries of a deterministic branching program.
+
+\noindent\textbf{Mechanism M1, PROVED/EXACT within the stated model.}
+Construct a deterministic \emph{ordered two-read} branching program for hidden weighted bit with at most $h(h+1)+2$ nodes and $2h$ source-bit reads per execution.
+
+\par\noindent\textbf{Mechanism M2, FALSIFIED/RETIRED as an all-decider transfer.}
+Combine the all-variable-order exponential one-pass OBDD lower bound with a source-local proper-3CNF embedding; test whether retaining the input and permitting just one more pass can bypass it. M1 supplies a polynomial bypass, so no general per-instance exponential decision-time bound transfers.
+
+\par\noindent\textbf{Mechanism M3, PROVED/EXACT structural audit; not a lower bound.}
+Independently check Role 4's newest Hall-deficiency-preserving Horn selector lift, including its source-to-target matching identity, SAT/UNSAT labels and the charged reduction remainder. Large Hall deficiency remains an algorithmic \emph{upper-bound parameter}, not necessary runtime.
+
+\section{An exact two-read program for hidden weighted bit}
+For $b\in\{0,1\}^h$, put $c=\sum_{i=1}^h b_i$ and
+\[
+\operatorname{HWB}_h(b)=
+\begin{cases}
+0,&c=0,\\ b_c,&1\le c\le h.
+\end{cases}
+\]
+A deterministic \emph{two-pass ordered branching program} is a finite acyclic Boolean decision DAG in which each root-to-terminal path queries variables in the order $b_1,\ldots,b_h,b_1,\ldots,b_h$, possibly terminating before the end of the second pass. Distinct nodes are charged; each nonterminal node queries one indexed input bit and has two directed outgoing arcs. No arbitrary conditional jump or SAT oracle is free.
+
+\begin{theorem}[Read-twice construction, PROVED/EXACT]
+For every integer $h\ge1$, there exists a deterministic ordered two-pass branching program computing $\operatorname{HWB}_h$ on \emph{all} $2^h$ inputs with
+\[
+V_{\mathrm{internal}}=h(h+1),\qquad
+V_{\mathrm{total}}=h(h+1)+2,\qquad
+E_{\mathrm{directed}}=2h(h+1).
+\]
+Every run reads exactly $h+c$ source bits when the input has Hamming weight $c>0$, and exactly $h$ when $c=0$. Hence at most $2h$ bit-read operations are performed; the live counter/index description needs $O(\log(h+2))$ bits.
+\end{theorem}
+\begin{proof}
+In the first pass create one node $(1,i,c)$ for each $0\le i<h$ and $0\le c\le i$. This node reads $b_{i+1}$ and transitions to $(1,i+1,c+b_{i+1})$, except at $i=h-1$ when it enters the second stage with final count $c+b_h$ (or outputs zero for count zero). There are
+$\sum_{i=0}^{h-1}(i+1)=h(h+1)/2$ first-stage nodes.
+
+For each possible final positive count $c\in\{1,\ldots,h\}$, create nodes $(2,c,j)$ for $j=0,\ldots,c-1$. Each reads $b_{j+1}$; if $j<c-1$ both arcs go to $(2,c,j+1)$, and if $j=c-1$ the outgoing arc labelled $a$ goes to terminal $a\in\{0,1\}$. Thus the second stage reads exactly $b_1,\ldots,b_c$ and outputs $b_c$. It contains $\sum_{c=1}^h c=h(h+1)/2$ nodes. The union is an acyclic two-pass DAG with exactly $h(h+1)$ nonterminal nodes and two terminals; each nonterminal has exactly two directed outgoing arcs.
+
+Induction on $i$ proves the first-stage counter equals the Hamming weight of the bits already read. The second stage then returns the $c$-th input bit, as required. The first-stage counter and second-stage pair $(c,j)$ use $O(\log h)$ bits on a uniform algorithmic implementation. \qed
+\end{proof}
+
+\begin{theorem}[General count-selected-bit upper bound, PROVED/EXACT]
+Let $g:\{0,\ldots,h\}\to\{0,\ldots,h\}$ be a fixed efficiently computable selector, with output zero when $g(c)=0$, and set
+$f_g(b)=b_{g(|b|)}$ otherwise. A deterministic two-pass ordered branching program for $f_g$ has at most
+\[
+2+\frac{h(h+1)}2+\sum_{c=0}^{h}g(c)
+\]
+nodes and needs at most $h+\max_c g(c)$ input-bit reads. The construction is uniform when $g$ is computable from $(h,c)$ in polynomial time.
+\end{theorem}
+\begin{proof}
+Retain the counting first pass and build one second-stage chain of $g(c)$ queries for each terminal count $c$, omitting the chain for $g(c)=0$. At the last query output its value; preceding queries advance along both arcs. The displayed node count is explicit and the stage-one/second-stage invariants prove correctness. For $g(c)=c$, this recovers the preceding theorem. \qed
+\end{proof}
+
+\section{Comparison with all-order OBDD hardness}
+Bollig, L\"obbing, Sauerhoff and Wegener review and sharpen the known \emph{exponential} OBDD-size lower bound for $\operatorname{HWB}_h$ for \emph{every fixed variable order}. An OBDD reads variables at most once in one fixed order. This is a \textbf{KNOWN THEOREM} in a restricted representation model, not a uniform SAT decision-time lower bound.
+
+The above read-twice construction proves the exact contrast
+\[
+\operatorname{OBDDsize}(\operatorname{HWB}_h)=2^{\Omega(h)}
+\quad\text{(all one-pass orders)},\qquad
+\operatorname{2OBDDsize}(\operatorname{HWB}_h)\le h(h+1)+2.
+\]
+An extra pass allows previously seen source bits to be reread after the data-dependent index is calculated. The terminal SAT label is unchanged; the required representation model changes.
+
+HWB-OBDD68 supplies the canonical proper-3CNF source family $F_h(b)$ with
+\[
+n_h=9h^2+22h+8,\quad m_h=15h^2+34h+12,\quad
+N_h=(4m_h+2)\left\lceil\log_2(64(n_h+m_h+1))\right\rceil.
+\]
+Every $b_i$ controls exactly one independent signed-literal input bit, all other source bits are fixed, and
+$\operatorname{SAT}(F_h(b))=\operatorname{HWB}_h(b)$.
+Restriction of a full-input SAT OBDD to these independent sign bits yields an OBDD for HWB, so the exponential lower bound transfers to that \emph{OBDD representation task}.
+
+For deciding only the \emph{promised canonical family}, validate the source grammar and all fixed words in a complete charged scan, then read its $h$ sign-bit addresses in two passes using the program above. Under the declared fixed-word representation, $w=\lceil\log_2(64(n_h+m_h+1))\rceil$ and $N_h=\Theta(h^2\log h)$; source validation plus the two reads uses $O(N_h/w+h)$ word operations, assuming the canonical generator's fixed-record addressing, and polynomial time even under conservative bit-level accounting. This does not omit parsing or certificate validation. On unrecognized ordinary proper-3CNFs, a total exact decider can instead use exhaustive SAT search. Hence all-order OBDD representation hardness is compatible with a total uniform exact SAT decider running polynomially on \emph{every member} of this family.
+
+This bypass also applies to DAG merging and memoization: their presence is optional, and the two-pass program is already an explicit DAG. It does not require witness history, clause learning, DNNF compilation, or a solver's internal-state hash.
+
+\section{First deliverable: explicit coverage and extraction ledger}
+\scriptsize
+\begin{longtable}{@{}p{.13\linewidth}p{.13\linewidth}p{.23\linewidth}p{.18\linewidth}p{.16\linewidth}p{.13\linewidth}@{}}
+\toprule
+Candidate & Exact covered class & Object, extraction time/space/output/access & Bound and model & Known bypass & Missing extension\\ \midrule \endhead
+HWB-OBDD68 & One-pass fixed-order Boolean decision DAGs & Full OBDD, size $V$ nodes and $2V$ arcs; compilation/output at least $\Omega(V)$; one fixed bit order & $2^{\Omega(h)}$ nodes for all orders, known restricted theorem & READTWICE69: $O(h^2)$ nodes and $2h$ reads & All-decider OBDD necessity is false\\
+READTWICE69 & Source-promise deterministic two-read ordered programs & $(i,c)$ counter and $(c,j)$ query nodes; $O(h^2)$ construction/output nodes, $O(\log h)$ online bits, two indexed scans & Constructive $h(h+1)+2$ node upper bound & Source-aware direct count & No superpolynomial lower bound\\
+Hall-lift62 & Clause-to-variable incidence matching algorithms & Source matching and selector-gadget matching; matching computation polynomial; $4m$ clauses, $3m$ fresh vars and source scan & $\delta^*(H)=\delta^*(F)$, exact matching-model identity & Linear canonical witness for prism & Defect-to-necessary-time false\\
+CERTTRACE59 & All deterministic exact indexed-bit deciders & Actual $q$ input reads, $O(q\log N)$ output transcript, instrumented $O(T\log N)$ bit-time, $O(\log N)$ recording workspace & Pointwise root certificate, $\le N$ distinct bits & Read all bits and decide & Postacquisition superpoly work OPEN\\
+TIMEOUT66 & Every fixed deterministic single-tape exact SAT machine & Unrestricted NAND2 bounded-run circuit, $O((t+1)(N+2t))$ gates, $O(g\log g)$ written bits; timeout flag & Uniform simulation upper bound, no full SAT circuit LB & All machine techniques represented & General uniform circuit LB OPEN\\
+STREAMCUT57 & Deterministic sequential $p$-pass source readers & Cut state $S$ bits, $p$ full scans, no indexed random reads & $(2p-1)(S+O(1))\ge q-O(1)$ in declared stream model & Reorder source, indexed read & Unrestricted source model OPEN\\
+Static quotient MAIN85 & Source-closed complete context-service producers & Static data structure after charged acquisition; $\log Q$ state bits, output/index charged & Representation information lower bound & Online retained-source service & Mandatory context service false\\
+SOURCEPROBE19 & Detached hidden-point oracle algorithms & Queried points and final guess; $q$ oracle probes, transcript bits charged & $2^r$ black-box probes against hidden singleton & Explicit circuit exposes point & Source-aware lift OPEN\\
+Restricted proofs & Regular resolution or specific DNNF producers & Full lines/gates and output; $\Omega(V)$ production cost & Exponential restricted proof/compilation lower bounds & Gaussian elimination, sound proof extension & Unrestricted proof extraction false\\
+Roles 4--5 ladder & Source-orientation query / declared reduction algorithms & Source scans, output encoding $R$, query address conversion, child writes and workspace & $\Omega(q)$ or $\Omega(N/\log N)$ input acquisition & Horn, SCC, affine, matching & Positive transport remainder OPEN\\
+All exact SAT & All total uniform deterministic deciders of fixed NP-complete language & One root answer; optional complete execution trace of actual $T,S$ & No superpolynomial unconditional time LB known & Direct decision, arbitrary representations & Necessary expensive object or operations OPEN\\
+\bottomrule
+\end{longtable}
+\normalsize
+The table's $T$ is machine time, $S$ is live workspace, $N$ is \emph{encoded bit length}, and $n$ is variable count. On actual output tapes, writing $b$ bits costs $\Omega(b)$ bit operations. A gate/wire count above is meaningful only in the declared NAND2 basis, and does not itself lower-bound SAT-solving circuits.
+
+\section{Independent Roles 1--2 and 4--5 audit}
+Role 4's HALL-DEFICIENCY-TRANSPORT62 proves, for proper three-literal $\Phi$ with $m$ clauses and $n_0$ variables, the selector lift
+\[
+H(\Phi)=\bigwedge_{j=1}^m
+\bigl[(s_{j1}\vee s_{j2}\vee s_{j3})\wedge
+\bigwedge_{a=1}^3(\neg s_{ja}\vee \ell_{ja})\bigr],
+\]
+with $n_H=n_0+3m$, $m_H=4m$, $k=m$ new ternaries and $3m$ new binaries. Here $d=0$ eliminated source variables; $r=n-d$ is merely syntactic. For each original source assignment with $r_j$ true literals in clause $j$, there are $\prod_j(2^{r_j}-1)$ selector extensions. Thus source SAT and target SAT are equivalent, but the map is generally \emph{not parsimonious}. Proof-system/witness counts must not be silently transported.
+
+Let $\nu(F)$ be maximum matching cardinality of the clause-variable incidence graph. Hall's theorem gives $\delta^*(F)=m-\nu(F)$ for $\delta^*(F)=\max_{Q\subseteq F}(|Q|-|V(Q)|)$. Role 4's target subset argument yields
+\[
+\delta^*(H(\Phi))=\delta^*(\Phi),\qquad
+\nu(H(\Phi))=3m+\nu(\Phi).
+\]
+The equality is model-preserving for \emph{incidence matching}, not for an arbitrary SAT decider's operations. Its independent exact regression tested shared variable IDs and overlapping clauses (see the data ledger below). With precisely $h$ degree-four source variables and all other occurrence degrees at most three, $3|Q|\le3|V(Q)|+h$ implies $\delta^*\le\lfloor h/3\rfloor$. Szeider's bounded-maximum-deficiency SAT algorithm gives a \textbf{KNOWN THEOREM} FPT \emph{upper} bound $2^{\delta^*}\operatorname{poly}(N)$, not mandatory enumeration.
+
+The latest MAIN101 and Roles 1--2 CUBICCOVER75/BLOSSOM-FACTOR60 provide two total exact algorithms for one fixed signed exact-$(2,2)$ 3CNF language. Their lockstep portfolio achieves the minimum of the two charged time bounds up to constant factors. The connected prism family has both source defect parameters linear but a direct polynomial witness. Consequently neither defect is a necessary lower-bound measure. Their model-correct upper-bound interaction does not supply a compulsory output object in an arbitrary decider. Formal review of the original selector matching identity found no conflict with the current MAIN101 OPEN status; independent peer scrutiny of the present report remains pending.
+
+For the ladder, the established source orientation bound is $L_{\rm source}=q$ field reads. A materialized Horn-selector encoding costs at least $R=32q+130$ fixed-word writes for the declared padded chain, so
+\[
+L_{\rm source}-R-H\le q-(32q+130)-H<0.
+\]
+The only justified one-call time transfer has the form
+\[
+T_{\rm target}^{\le}(g(q))\ge
+\frac{L_{\rm source}(q)-R(q)-H(q)}{Q(q)\tau(q)},
+\]
+provided the source/target models, correct reduction direction, address conversion, and uniform worst-case bounds are actually proved. This ledger gives no positive bound here. Direct inclusion avoids explicit reduction materialization but remains at input acquisition order. NP-completeness of the endpoint does not increase the bound on the constructed easy subfamily.
+
+\section{Resource ledger and reproducible controls}
+The counted READTWICE69 branching nodes have exactly two outgoing arcs each. Construction outputs $O(h^2\log h)$ bits when addresses and edges are serialized, and needs $O(h^2)$ word operations and optional $O(h^2)$ buffered words. An interpreter needs $O(\log h)$ bits of live state, reads at most $2h$ indexed bit addresses and emits one root bit. When transferred to the proper-3CNF family, source parsing, grammar validation and every input-record read are additionally charged. For the role-4 Hall lift, $m$ selector groups need $\Theta(m)$ input-gadget computations and $\Theta(m)$ output clauses; incidence matching, witness replay and any failed work are explicitly additional polynomial costs.
+
+\textbf{COMPUTATIONAL:} A deterministic Python standard-library audit exhaustively evaluated the complete two-pass program on all $2^h$ vectors for $1\le h\le12$, totalling $8{,}190$ SAT/UNSAT root labels. At $h=12$, it constructed $156$ nonterminal nodes, $158$ total nodes and $312$ directed arcs, tested $4{,}096$ vectors (exactly $2{,}048$ labels of each kind), and observed a maximum of $24$ input-bit reads. Every result matched the direct hidden-weighted-bit function, including exact two-pass address sequences. The Hall audit tested $1{,}200$ seeded proper source formulas with shared variables, repeated selector-group matching, plus explicit all-eight-clause proper-3CNF UNSAT and four-clause SAT controls. The matching identity held in all cases; $1{,}456$ assertion-accounted matching and selector checks passed. Eight additional 2SAT/Horn/XOR/component SAT/UNSAT controls passed. No discrepancies occurred. Two invocations produced byte-identical raw JSON with SHA-256 \texttt{a741c597247c99f45e7b9ce1fb14d19824660fc5bacf2e44d8c4577bf338d9a5}.
+Seed: $202610240024$. Finite outcomes verify the implementation, \emph{not} asymptotic hardness.
+
+\section{Corpus, literature, barrier and duplication audit}
+\textbf{CORPUS REVIEWED:} root \texttt{main.tex}; \texttt{AGENTS.md}; \texttt{CODEX.md}; project skill and red-team protocol; task index and relevant HEC/CRS bridge tasks; newest MAIN101, historical MAIN85/MAIN64, relevant MAIN98/MAIN100; Role 4 HALL-DEFICIENCY-TRANSPORT62 and AFFINE-MATCHING59; Role 1 CUBICCOVER75; Role 2 BLOSSOM-FACTOR60; Role 3 HWB-OBDD68, CERTTRACE59, TIMEOUT66 and SOURCEPROBE19. The repository tree, governance and exploration directories were surveyed, with materially relevant records inspected. No complete arbitrary-decider lower-bound extraction was found.
+
+\textbf{DUPLICATION / WHAT CHANGED:} HWB's exponential all-order OBDD lower bound and its polynomial-time evaluation were already known. The present addition is a \emph{fully explicit counted ordered read-twice program} and the exact same-encoding program-versus-OBDD comparison, showing how a single additional read pass defeats the obstruction. The Hall-deficiency identity is Role 4's result and is independently audited here, not newly claimed. MAIN101's universal arrow remains OPEN.
+
+\textbf{ADOPTED/REJECTED:} retain HWB68 source-local reduction and the Role 4 incidence identity; reject mandatory OBDD, static-context, proof-history or regular-resolution extraction from one-bit SAT decision. Source-retaining recomputation is real and charged. The HEC and causal wrapper models require new static-source transfer theorems; hashes, stopping times and witness entropy do not supply them.
+
+\textbf{BARRIER STATUS:} The new construction is explicit combinatorics and makes no cryptographic hardness assumption. Oblivious-pass bounds are model-specific, so transferring them to arbitrary or relativized algorithms fails when additional access or semantic oracles are provided. A low-degree algebraic oracle likewise does not make this an unrestricted time lower bound. Natural-proofs barriers are not invoked because no unrestricted circuit lower bound is claimed. A VLSI/memory-hierarchy analogy would require a proved access-cost correspondence and is classified \textbf{ANALOGY/CANDIDATE}, not theorem transfer. The role-4 matching identity is an exact \textbf{THEOREM TRANSFER} within clause-variable incidence graphs only. PQ-derived hash/collision and Schur-square ideas are \textbf{FAILED TRANSFER} for this specific read-pass implication without an independently justified bridge.
+
+\section{Integrated proof spine and first missing arrow}
+\[
+\boxed{\begin{gathered}
+\text{Independent source obstruction}\\
+\Downarrow\quad\text{\textbf{KNOWN THEOREM / restricted}}\\
+\text{Necessary charged acquisition/compression/continuation}\\
+\Downarrow\quad\text{\textbf{OPEN} for every unrestricted decider}\\
+\text{Every total uniform deterministic exact SAT decider}\\
+\Downarrow\quad\text{\textbf{OPEN}}\\
+\text{Superpolynomial worst-case time for fixed NP-complete language}
+\end{gathered}}
+\]
+The first unproved arrow is from restricted structural hardness to necessarily expensive computation in the unrestricted model. The strongest corrected statement is a source-aware, machine-matched lower bound that includes grammar recognition, preprocessing, alternative uniform representations, retained-source rereads, complete DAG reuse, recomputation, output and space, without requiring a static service or prescribed proof format.
+
+\paragraph{One next discriminating experiment.}
+Take a succinctly encoded shared-witness compatibility instance from Roles 4--5. Compare a one-pass state bound with an explicit two-pass source-aware algorithm, charging grammar validation, source rereads, address conversion, live memory and full output. Attempt to prove a nontrivial lower bound that survives the second pass \emph{before} proposing arbitrary-machine transport. Keep the fixed five-role allocation unchanged.
+
+\begin{thebibliography}{9}
+\bibitem{Bollig} B. Bollig, M. L\"obbing, M. Sauerhoff, I. Wegener, On the Complexity of the Hidden Weighted Bit Function for Various BDD Models, \emph{RAIRO Theor. Inform. Appl.} 33 (1999), 103--115. DOI:10.1051/ita:1999108.
+\bibitem{Bova} S. Bova, SDDs Are Exponentially More Succinct than OBDDs, \emph{AAAI} 30 (2016). DOI:10.1609/aaai.v30i1.10107. Representation separation, not unrestricted time hardness.
+\bibitem{Szeider} S. Szeider, Minimal Unsatisfiable Formulas with Bounded Clause-Variable Difference Are Fixed-Parameter Tractable, \emph{JCSS} 69 (2004), 656--674. DOI:10.1016/j.jcss.2004.04.009.
+\bibitem{Hall} P. Hall, On Representatives of Subsets, \emph{J. London Math. Soc.} 10 (1935), 26--30.
+\bibitem{R4} LSPV-4, HALL-DEFICIENCY-TRANSPORT62, \texttt{research/agents/lspv-4/2026-10-24\_0012\_LSPV-4\_HALL\_DEFICIENCY\_TRANSPORT62.tex}.
+\bibitem{R5} LSPV-5, PORTFOLIO-PRISM-FIREWALL101, \texttt{research/main/2026-10-23\_2348\_MAIN\_PORTFOLIO\_PRISM\_FIREWALL101.tex}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-3::READTWICE69
