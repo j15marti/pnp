@@ -1,0 +1,204 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\setlength{\emergencystretch}{2em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newcommand{\SAT}{\mathrm{SAT}}
+\title{DENSE-COUPLING-FIREWALL90:\\Matched High-Treewidth Labels and the Transport Ceiling}
+\author{LSPV-5 independent synthesis}
+\date{2026-10-23}
+\begin{document}
+\maketitle
+
+\paragraph{Status.}
+P versus NP remains \textbf{OPEN}.  This note proves exact structural and
+query-model statements, and gives a finite implementation audit.  It proves no
+unrestricted deterministic time lower bound for SAT or 3-COLORING.
+
+\section{Mechanisms tested before source review}
+We tested three falsifiable candidates: (i) high treewidth after an exact
+projection might force expensive residual compatibility; (ii) subdivision or
+padding might amplify the fixed-width implication-chain query bound; and
+(iii) that query bound might transport through a graph-coloring endpoint with
+a positive remainder.  The first is falsified by an explicit matched-label
+family, and the latter two fail because linear source construction/recognition
+can consume the bound.  The useful survivor is only a hostile control for any
+future semantic obstruction.
+
+\section{Declared models and encodings}
+Graphs use a canonical adjacency-list encoding with vertex labels
+$0,\ldots,k-1$ and sorted edge records.  One machine word has
+$w=\lceil\log_2(64(n+m+1))\rceil$ bits; a record read costs one word probe.
+For a graph $G=(V,E)$, $\Gamma(G)$ is the standard one-hot 3-COLORING CNF:
+one positive ternary clause and three at-most-one binary clauses per vertex,
+and three binary clauses per edge.  Thus
+\[
+ k=|V|,\quad n=3k,\quad m_2=3k+3|E|,
+ \quad m=k+m_2,\quad \ell=9k+6|E|.
+\]
+The fixed-width CNF encoding has $N=(2+4m)w$ bits.  Source scanning,
+recognition, auxiliary storage, and output construction are all charged.
+
+\section{Independent check of the role-4 baseline}
+For endpoints $z_0=1,z_q=0$ and
+\[
+ C_i=\begin{cases}(\neg z_{i-1}\lor z_i),&b_i=1,\\
+ (\neg z_{i-1}\lor\neg z_i),&b_i=0,
+ \end{cases}
+\]
+the chain is UNSAT iff $b=1^q$.  On the all-one input, any exact deterministic
+field-query algorithm must read all $q$ orientation fields: if field $j$ is
+unread, flipping only $b_j$ preserves length, variable IDs, clause count,
+record width, and every read field, but flips the answer.  This is an exact
+$q$-field lower bound.  With $O(1)$ words per fixed-width field it is
+$\Omega(q)$ word probes and $\Omega(qw)$ inspected bits only when a field read
+reveals its full $w$ bits.  Since $N=\Theta(qw)$, the unconditional statement
+is $\Omega(N/w)$ word probes, not an unrestricted RAM/Turing-machine time
+lower bound beyond input acquisition.
+
+\section{A matched dense firewall}
+For $t\ge4$, let $A=\{a_0,\dots,a_{t-1}\}$ and
+$B=\{b_0,\dots,b_{t-1}\}$, and start with $K_{t,t}$ between $A$ and $B$.
+Define $S_t$ by adding the three edges
+$a_0a_1,a_0a_2,a_0a_3$; define $U_t$ by adding
+$a_0a_1,a_1a_2,a_2a_0$.
+
+\begin{theorem}[Matched labels with linear treewidth]
+$S_t$ is 3-colorable, $U_t$ is not, and both graphs have
+$2t$ vertices, $t^2+3$ edges, and treewidth exactly $t$.
+Their one-hot CNFs have identical metadata
+\[
+ k=2t,quad n=6t,quad m_2=3t^2+6t+9,quad
+ m=3t^2+8t+9,quad \ell=6t^2+18t+18.
+\]
+Moreover the primal treewidth of either CNF lies in $[t,3t+2]$.
+Nevertheless, membership in this canonical two-label family and its SAT label
+are decidable in $O(t^2)=O(N/w)$ word time and $O(\log N)$ auxiliary bits.
+\end{theorem}
+\begin{proof}
+Color $a_0$ with 0, the other vertices of $A$ with 1, and all of $B$ with 2
+to color $S_t$.  In $U_t$, the triangle in $A$ uses all three colors, leaving
+no color for any vertex of $B$, which is adjacent to all of $A$.
+Both contain $K_{t,t}$.  Its vertex connectivity is $t$, so its treewidth is at
+least $t$; the path decomposition with one bag $A\cup\{b\}$ for each $b\in B$
+has width $t$ and also covers all three added $A$-edges.  This proves equality.
+Contracting each color triangle of $\Gamma(G)$ gives $G$ as a minor, proving
+the primal lower bound.  Replacing every graph vertex in the preceding
+decomposition by its three color variables gives bags of size at most
+$3(t+1)$, hence width at most $3t+2$.  The count formulas follow directly from
+the declared encoding.  A sorted scan verifies the bipartite core and compares
+the three exceptional edges with the two templates; this also determines the
+label within the promised family.
+\end{proof}
+
+This theorem retires the claim that dense coupling, large syntactic residual,
+or unbounded source/primal treewidth alone forces expensive SAT continuation.
+It is a restricted family theorem, not a language lower bound.
+
+\section{Two further controls}
+\begin{lemma}[Leaf padding does not amplify]
+Attaching any forest to an existing graph vertex preserves 3-colorability.
+The added vertices are colored greedily after the core.  Canonical padding is
+recognized and stripped in linear source time.  Thus padding can increase
+$N,k$, and syntactic residual without increasing semantic difficulty.
+\end{lemma}
+
+\begin{proposition}[Supplied-decomposition upper bound]
+Given a verified width-$\tau$ tree decomposition with $B$ bags, 3-COLORING is
+decidable by standard bag-table dynamic programming in
+$O(B3^{\tau+1}\operatorname{poly}(\tau))$ time and
+$O(B3^{\tau+1})$ bits of conservative live storage.  Constructing or verifying
+the decomposition must be charged separately.
+\end{proposition}
+This is consistent with the classic bounded-treewidth algorithms of Arnborg
+and Proskurowski.  It is an upper bound, not evidence that the exponential
+dependence on $\tau$ is mandatory for unrestricted algorithms.
+
+\section{Transport ledger}
+If a source lower bound $L_{\rm old}(q)$ is simulated using recognition or
+reduction cost $R$, other overhead $H$, at most $Q$ target calls of size at
+most $g(q)$, and simulation factor $\tau$, then only
+\[
+ T_{\rm new}^{\le}(g(q))\ \ge\
+ \frac{L_{\rm old}(q)-R(q)-H(q)}{Q(q)\tau(q)}
+\]
+is justified, and only when the numerator is positive.  Materializing a
+length-$\Theta(q)$ target or canonically recognizing the embedded chain costs
+$\Theta(q)$ words, consuming the chain's $\Omega(q)$ source bound.  Direct
+inclusion preserves an $\Omega(q)$ query bound on the same visible fields but
+does not increase its order.  The dense and wheel families add no amplification:
+their labels are linearly recognizable.  Hence the proposed chain-to-coloring
+transport produces no superlinear remainder.
+
+\section{Reconciliation with the projection kernel}
+For $F=T(X)\wedge B(X,Y)$, where $B$ is 2-CNF and $T$ has at most $k$ ternary
+clauses, the boundary $X$ has size $s\le3k$.  The exact 2-CNF projection of
+$B$ onto $X$ has at most $2s^2$ unit/binary clauses.  The current certified
+construction uses one SCC computation plus reachability traversals from the
+$2s$ signed boundary literals, taking
+$O((1+s)(n+m)+s^2)=O(k(n+m)+k^2)$ word time, not the earlier
+$O(k^2(n+m))$ bound.  The resulting exact kernel has at most
+$k+18k^2$ clauses.  This is a fixed-parameter upper bound and an exact
+representation theorem; it is not a lower bound.
+
+\section{Claim and coverage ledger}
+\begin{center}\small
+\begin{tabular}{p{.21\linewidth}p{.18\linewidth}p{.49\linewidth}}
+\toprule
+Claim & Status & Scope / missing implication\\\midrule
+Chain orientation & PROVED/EXACT & $q$ deterministic field queries on the all-one record input; only $\Omega(N/w)$ word acquisition.\\
+Role-4 odd wheels & PROVED/EXACT & Independently checked SAT/UNSAT matched controls and deletion witnesses; still canonically easy.\\
+Dense matched pair & PROVED/EXACT & Equal metadata, treewidth $t$, opposite labels, linear recognition.\\
+Leaf padding & PROVED/EXACT & Preserves label and permits linear stripping; no amplification.\\
+Projection kernel & PROVED/EXACT & Exact restricted upper bound with charged compiler.\\
+Treewidth DP & KNOWN THEOREM & Upper bound given a decomposition; acquisition is separate.\\
+Positive transport remainder & FALSIFIED here & Linear construction/recognition consumes the linear source bound.\\
+All-decider work inequality & OPEN & No representation-independent semantic obstruction covers every uniform exact decider.\\
+Superpolynomial contradiction & OPEN & Requires the preceding universal theorem and unbounded $r_A/\log N$.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Reproducible audit and resource ledger}
+The accompanying deterministic Python audit checked $t=4,\ldots,16$, odd
+wheels $h=5,\ldots,31$, three padding levels, explicit decompositions, exact
+counts, both labels, and every wheel positive-clause deletion witness.  It ran
+545 assertions, 398 exact 3-color searches, and found zero failures.  This is a
+finite implementation audit only.  The symbolic proofs above establish the
+asymptotic restricted statements.
+
+Source reads included the role-4 WHEEL-CRITICAL-LADDER52 and LADDER51 reports,
+role-1 HUBMUS63, role-2 CERTIFIED-REACHABILITY-KERNEL89, the current root
+ledger, and the original bounded-treewidth literature.  Charged resources are:
+all source records read by recognizers, output records written by reductions,
+SCC/traversal work, table or certificate size, failed branches, reconstruction,
+DAG reuse, total encoding length, and peak live storage.
+
+\section{Barrier audit and next lemma}
+The construction relativizes and is compatible with a semantic oracle that
+simply returns the label; it therefore supplies no nonrelativizing or
+algebrizing leverage.  It also defeats wrapper claims based only on large
+width, density, clause count, or residual dimension because a charged source
+recognizer bypasses continuation.
+
+The highest-value missing lemma is a \emph{charged semantic
+compression-or-continuation theorem}: for one fixed NP-complete encoding and
+every total uniform deterministic exact decider $A$, define an obstruction
+$r_A(F)$ independently of runtime, then prove either costly acquisition or
+compatibility construction, or
+$T_A(F)\ge2^{a r_A(F)}/N^b$, on inputs with
+$r_A(F)/\log N$ unbounded.  It must survive source recognition, SCC/affine and
+treewidth dynamic programming, padding, caching, learned constraints,
+decide-first normalization, and semantic-oracle leakage.  Every arrow in that
+universal statement remains OPEN.
+
+\paragraph{Primary references.}
+S. Arnborg and A. Proskurowski, ``Linear time algorithms for NP-hard problems
+restricted to partial $k$-trees,'' \emph{Discrete Applied Mathematics} 23
+(1989), 11--24.  M. R. Garey, D. S. Johnson, and L. Stockmeyer,
+``Some simplified NP-complete graph problems,'' \emph{Theoretical Computer
+Science} 1 (1976), 237--267.
+
+\end{document}
