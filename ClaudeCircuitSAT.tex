@@ -1,0 +1,69 @@
+% Living document: ClaudeCircuitSAT -- step-by-step wire/gate accounting for Circuit-SAT lower bounds
+% Maintained by the hourly Claude CircuitSAT routine. Edited in place; each run appends to the run log.
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{proposition}{Proposition}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\PROVED}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder toward Circuit-SAT lower bounds}
+\date{Last updated: 2026-10-23 (run 1)}
+\begin{document}\maketitle
+
+\begin{center}\fbox{\parbox{0.92\linewidth}{\textbf{Status.} No superpolynomial lower bound for Circuit-SAT is claimed; that would prove $\mathrm{P}\neq\mathrm{NP}$, which remains \OPEN. This document only records exact, small-case accounting and rigorous (but weak) general bounds, to find where the ladder stops being informative.}}\end{center}
+
+\section{Plan}
+Model: circuits over fan-in-2 gates (basis $B_2$, free output negation); cost = gates $g$, wires $=2g$ (fan-out counted per edge).
+Ladder: (L1) exact minimum $g$ for \emph{every} $n$-input function, $n=1,2,3,\dots$; (L2) exact $g$ for the \emph{universal} Circuit-SAT decision function on tiny instance encodings $\mathrm{SAT}_{k,m}$ (inputs = description of an $m$-gate, $k$-input circuit; output = satisfiable?); (L3) access-model lower bounds for deciding $\mathrm{SAT}$ of a given circuit; (L4) track how the best certified bound grows with description length, and compare with the known $3.1n-o(n)$ barrier.
+
+\section{Rung L1: exact minimum circuit size, all $n$-variable functions}
+\COMP{} (script \texttt{research/claude\_circuitsat/exact\_small\_circuits.py}, level-wise exhaustive search, deduplicated by the set of computed truth tables; reproduces the known values).
+\begin{center}\begin{tabular}{@{}rcccl@{}}\toprule
+$n$ & max gates & max wires & functions by gate count (mod output negation) & note\\\midrule
+2 & 1 & 2 & $\{0{:}3,\ 1{:}5\}$ & includes XOR in one gate\\
+3 & 4 & 8 & $\{0{:}4,\ 1{:}15,\ 2{:}57,\ 3{:}40,\ 4{:}12\}$ & 128 classes, all solved\\\bottomrule
+\end{tabular}\end{center}
+$n=4$ (known max 7 gates) needs a smarter search (SAT-based exact synthesis, chunked); scheduled for a later run.
+
+\section{Rung L2: universal Circuit-SAT on the smallest encodings}
+\begin{proposition}[\PROVED]\label{prop:oneGate}
+Let $\mathrm{SAT}_{2,1}(t_{00},t_{01},t_{10},t_{11})$ decide whether the one-gate circuit on inputs $x_1,x_2$ with truth table $t$ (output = gate) is satisfiable. Then $\mathrm{SAT}_{2,1}=t_{00}\lor t_{01}\lor t_{10}\lor t_{11}$, and its exact $B_2$ size is $3$ gates ($6$ wires).
+\end{proposition}
+\emph{Proof.} Satisfiable iff some $t_{ab}=1$. Upper bound: a tree of three OR gates. Lower bound: the function depends on 4 variables, so its (connected) circuit has $\ge 4-1=3$ fan-in-2 gates. \qed
+
+\begin{proposition}[\PROVED, generalization]
+Any function depending essentially on $N$ inputs needs $\ge N-1$ gates ($2N-2$ wires) in $B_2$. Hence with a description of $N$ relevant bits, universal $\mathrm{SAT}$ costs $\ge N-1$ gates. This is linear in the encoding length and nothing more.
+\end{proposition}
+
+\section{Rung L3: access-model bound (reading the wires)}
+\begin{proposition}[\PROVED]\label{prop:read}
+In the model where the algorithm reads a circuit's gate descriptions by queries, deciding satisfiability of an $m$-gate circuit needs $m$ queries deterministically, and $\Omega(m)$ with bounded error.
+\end{proposition}
+\emph{Proof.} Take $C_0=\bigwedge_{i=1}^m x_i$ (satisfiable). Replace the $i$-th leaf by $x_i\wedge\neg x_i$ to get $C_i$ (unsatisfiable). Distinguishing $C_0$ from the $m$ variants $C_i$ is hidden-item search among $m$ positions: an adversary answers ``unchanged'' to every query, forcing $m$ deterministic queries, and bounded-error needs $\Omega(m)$. \qed
+
+\emph{Wire accounting:} the instance has $2m$ wires, and each gate's wiring is sensitive, so no wire can be skipped. This is a bound on \emph{reading}, not on computation; it says nothing about superlinear time.
+
+\section{Barriers and what the ladder cannot yet show}
+\begin{itemize}
+\item \KNOWN{} Best explicit general-circuit lower bound over $B_2$ is $3.1n-o(n)$ (Li--Yang, STOC 2022); gate-elimination-style wire counting is not known to give more. Our linear Rungs L2--L3 are far weaker/equal and expected.
+\item Natural-proofs, relativization and algebrization all limit counting-style arguments; any extension of this ladder to superlinear bounds must be audited against them (\OPEN).
+\item Exhaustive exact values (L1) cannot extrapolate: no finite table proves an asymptotic bound.
+\end{itemize}
+
+\section{Repository cross-check (j15marti/pnp)}
+Root \texttt{main.tex} reports every unrestricted arrow \OPEN; restricted no-goes (ordered-residual width, residual-function diversity as a standalone mechanism) are retired. Nothing there supplies a verified unrestricted bound usable here. This document is independent of those LSPV routes and does not edit \texttt{main.tex}.
+
+\section{Next steps}
+\begin{enumerate}
+\item L1 for $n=4$ via SAT-based exact synthesis, chunked in $\le 30$ s runs.
+\item L2 for $\mathrm{SAT}_{2,2}$ and $\mathrm{SAT}_{3,1}$ with a fixed encoding (wire choices + gate types): exact size, and a conjectured size formula.
+\item Search for a wire-counting invariant (gate-elimination with fan-out accounting) that exceeds the encoding length on these universal families.
+\end{enumerate}
+
+\section*{Run log}
+\begin{itemize}
+\item Run 1 (2026-10-23): created document; L1 for $n\le3$; Props.~1--3; repository cross-check.
+\end{itemize}
+\end{document}
