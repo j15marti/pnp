@@ -91,7 +91,9 @@ def check(q):
     a,unmatched=matching_assignment(E,2*q)
     assert all(eval_clause(c,a) for c in F)
     picks=reverse_selector(F,a)
-    assert reconstruct(F,picks,n)==reconstruct(F,picks,n)
+    rebuilt=reconstruct(F,picks,n)
+    assert all(eval_clause(c,rebuilt) for c in F)
+    assert all(eval_clause(c,a) for c in F)
     return dict(q=q,n=n,m=m,unmatched_greedy=unmatched,
                 conflict_edges=conflicts,degree_four_edges=8*n)
 
