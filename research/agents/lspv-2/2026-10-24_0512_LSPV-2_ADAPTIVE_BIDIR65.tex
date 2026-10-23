@@ -1,0 +1,96 @@
+% LSPV-2 REPORT::ADAPTIVE_BIDIR65::2026-10-24T05:12:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,url}
+\newtheorem{theorem}{Theorem}
+\title{ADAPTIVE-BIDIR65: Parameterized Forward/Reverse SAT States and a Linear Graph-Parity Continuation}
+\author{LSPV-2, constructive SAT algorithms}
+\date{24 October 2026, Asia/Seoul}
+\begin{document}\maketitle
+\begin{center}\textbf{P versus NP remains OPEN. Independent review pending.}\end{center}
+\section{Question and falsifiable mechanisms}
+We test whether a state-adaptive SAT solver may repeatedly change representations while retaining exact shared source variables, and whether the work of one reverse-DP representation must transfer to all deterministic SAT deciders. It need not. Three explicit mechanisms: M1, binary source implications release an affine residual (PROVED/EXACT restricted and tested); M2, an affine subsystem in which each variable occurs in exactly two parity equations admits linear graph continuation (KNOWN THEOREM, implemented with complete source compatibility); M3, a fixed-policy DPLL or complete residual-service cost forces every decider to pay the same (FALSIFIED/RETIRED as an inference, not as a formal complexity hypothesis).
+
+Fix a uniform computable policy over state
+\[
+S_i=(F_i,\alpha_i,L_i,\mathcal C_i,\mathcal M_i,B_i,\mathcal R_i).
+\]
+These denote the source-preserved residual CNF, original-source partial assignment, learned information, component structure, cache, remaining budget, and current representation. A structural parameter trajectory
+\[
+p_i=(n_i,m_i,k_i,b_i,h_i,a_i,c_i,\rho_i)
+\]
+counts residual variables, clauses, genuine ternaries, binary clauses, recognized Horn and affine flags, components, and acquired parity rank. No parameter is defined by runtime. A flag/rank is available to the policy only after its recognition/computation has been charged. SAT and UNSAT may terminate at different stages; the label is not a policy input.
+
+Backward circuit output TRUE implies all clause ORs TRUE. It suffices to select one true literal occurrence per clause, consistent on each original source variable; the original clause is not an exactly-one relation. Source assignments and final witness occurrences are reconstructed only when useful. The total forward/reverse ledger is the sum of charged source access, recognition, failed tests, policy evaluation/switching, representation construction, continuation, memory and verification. This accounting identity does not itself imply any lower bound.
+
+\section{Exact parity graph theorem and proof}
+\begin{theorem}[PROVED/EXACT for the declared equation representation]
+Consider equations $\bigoplus_{e\in\partial v}x_e=b_v$ over $\mathbb F_2$, where every original source variable $x_e$ appears in exactly two \emph{distinct} equations. Regard equations as graph vertices and variables as graph edges. The system is satisfiable if and only if
+\[
+\boxed{\bigoplus_{v\in C}b_v=0\quad\text{for every connected component }C.}
+\]
+A source-coherent solution, when it exists, is constructible in $O(|V|+|E|)$ word operations after equation acquisition.
+\end{theorem}
+\begin{proof}
+XOR all equations in one connected component: every original variable occurs twice and cancels, so the component charge XOR must be zero. Conversely choose a spanning forest, set all non-tree variables zero, process nonroot vertices from leaves to roots, and set the parent-edge variable to satisfy each processed row, updating the parent charge. The remaining root charge is the XOR of the initial component charges and hence vanishes. No variable can be assigned inconsistently because every edge is assigned once. Adjacency construction and forest processing are linear.
+\end{proof}
+In proper 3-CNF, a \emph{complete} parity quartet comprises exactly four distinct signed clauses on the same three original variables; their four forbidden assignments share one parity, and the opposite parity is enforced. The recognizer must check all four source clause records before replacing them by an equation. Failed quartets remain source CNF and cause the general exact fallback, not an unsound shortcut. If graph-incidence recognition fails, verified affine equations can instead be solved by Gaussian elimination.
+
+\section{Scalable adversarial SAT/UNSAT family}
+For $q\ge4$ define a 3-regular bipartite graph with vertices $L_i,R_i$, $i$ modulo $q$, and edges $(L_i,R_i)$, $(L_i,R_{i+1})$, $(L_i,R_{i+\lfloor q/2\rfloor})$. There are $2q$ equation vertices and $3q$ edge variables. Encode each 3-edge parity equation with its four proper ternary clauses. For $F_q^+$ set every charge zero. For $F_q^-$ flip exactly the charge at $L_0$. Their source identifiers, unsigned supports, clause counts and bit lengths match. Include two binary clauses $(g\vee x_1),(g\vee\neg x_1)$, which force the original source variable $g=1$ with no root unit clause. Also include an independent Horn component
+\[
+(\neg h_1\vee\neg h_2\vee h_3)
+\wedge(\neg h_3\vee\neg h_1)\wedge(\neg h_3\vee\neg h_2)
+\]
+and 2-SAT component $(u\vee v)\wedge(\neg u\vee\neg v)$. All displayed variables are original sources, with no SAT auxiliary variables. With $w=\lceil\log_2(64(n+m+1))\rceil$ and fixed four-word clause records,
+\[
+\boxed{n=3q+6,\quad m=8q+7,\quad k=8q+1,\quad m_2=6,\quad N=(32q+30)w.}
+\]
+An assigned-source evaluator needs $16q+8$ OR2 gates, $8q+6$ AND2 gates, and $48q+28$ directed gate-input wires. These are evaluation-circuit counts, not SAT-solving circuit lower bounds.
+
+\begin{theorem}[PROVED/EXACT restricted family, peer review pending]
+For all $q\ge4$, $F_q^+$ is SAT and $F_q^-$ is UNSAT. A uniform adaptive source-aware solver performs binary implication closure, exact component separation, parity-quartet recognition, and graph-incidence forest solving, then where necessary Horn least-model and SCC-based 2-SAT. On these inputs it makes zero search branches and uses $O(N)$ word time and $O(N)$ live logical words, including source checks and final SAT witness replay.
+\end{theorem}
+\begin{proof}
+The guard pair implies $g=1$, discharging both binary clauses. The remaining residual has exactly the graph parity, Horn and Krom components. The parity system is inconsistent precisely when the XOR of its vertex charges is odd. Therefore $F_q^-$ is UNSAT. In $F_q^+$ all edge variables may be zero, with $g=1$, all Horn variables zero, and $u=1,v=0$. Exact group recognition, graph traversal, Horn propagation, SCC and source replay are linear in this explicit canonical family; no branching is called. The policy does not know the label before performing its recognitions.
+\end{proof}
+Each parity edge source occurs four times positively and four times negatively across its two quartets. Thus these formulas are \emph{not} strict signed exact-$(2,2)$ 3-CNF. In that distinct NP-complete language, each source occurs twice per sign; its occurrence conflict graph has $4n=3m$ vertices and $4n$ edges forming $n$ disjoint $K_{2,2}$ cycles. No hardness transfer between these classes is asserted.
+
+\section{Adaptive ledger, comparator, and finite evidence}
+At $q=4$ the initial structural vector contains $(n,m,k,m_2)=(18,39,33,6)$ and no acquired affine/graph certificate. A paid binary reachability computation forces $g=1$, leaving 37 clauses. A charged component test detects 32 parity clauses on twelve edge sources, three Horn clauses, and two Krom clauses. A quartet check yields eight equations, each source in two rows, and the spanning-tree graph solver returns SAT or an odd-syndrome UNSAT. The SAT path then visits Horn and SCC, and verifies all 39 original source clauses. The UNSAT path terminates on parity before those other components. The source-consistency and reconstruction costs are not omitted.
+
+The executable standard-library experiment tests $q=4,5,6,8,10,12,16,24,32$, two labels and five policies per size: adaptive with incidence, adaptive with only Gaussian, unadorned DPLL, root-only affine plus DPLL, and root-only SCC plus DPLL. It makes 90 family-policy runs. Additionally 180 seeded random proper width-at-most-three formulas (91 SAT, 89 UNSAT) were brute-force labelled and tested against all five policies, plus 27 simple 2-SAT/Horn/mixed controls. Both UNSAT parity members at $q=4,5$ underwent independent complete source-edge enumeration, with SAT members checked by source replay. All program assertions passed. Full audit SHA-256: \texttt{3dbc80668ebcdcb751a80762703e4bc48e9c1f67275772a8923ea51daa664f63}; seed 202610240512.
+
+\begin{center}\small\begin{tabular}{rrrrrrr}\toprule
+$q$&$n$&$N$ bits&adaptive UNSAT literal reads&fixed DPLL branches&fixed DPLL label&adaptive branches\\\midrule
+4&18&1896&316&31&UNSAT&0\\
+6&24&2886&460&191&UNSAT&0\\
+8&30&3718&604&511&UNSAT&0\\
+10&36&4550&748&600&UNKNOWN&0\\
+16&54&7588&1180&250&UNKNOWN&0\\
+32&102&15810&2332&250&UNKNOWN&0\\\bottomrule
+\end{tabular}\end{center}
+UNKNOWN means the fixed-policy node cap expired; it does not mean UNSAT or prove asymptotic DPLL cost. At $q=32$, the adaptive SAT path makes 2,343 restriction literal reads, 3,118 recognizer-clause reads, 16 policy checks, five switches, 64 incidence-row reads, 96 edge constructions, and 456 source witness-replay literal reads. The UNSAT path has 2,332, 3,105, 11, three, 64 and 96, respectively; no SAT witness replay. The analysis-space bound is $O(N)$ for this family. Python heap use was not measured, and the recorded peak-word statistic is only an accounting proxy.
+
+A separate cheap direct graph-charge recognizer exists on this family, highlighting that even this adaptive representation is not mandatory. On unrestricted formulas the audited solver invokes an exact DPLL fallback; discovery overhead and failed recognitions are charged and may make this policy slower than another solver. No all-input polynomial bound, optimal-policy theorem or mandatory-enumeration statement follows.
+
+\section{Corpus and barrier reconciliation}
+\textbf{CORPUS REVIEWED.} Repository tree and task specifications, root main.tex, AGENTS.md, CODEX.md, repository research skill, MAIN SMALL-INTERFACE-EXACT-JOIN64, ROOT-LABEL-QUOTIENT85, latest C5-SOS-FIREWALL106, Role 1 CUBICCOVER75, Role 2 FACTOR-JOIN56 / REVERSE-SELECTOR57 / BLOSSOM-FACTOR60 / REPAIR-GAP64, Role 3 STATE-WIDTH-NAE72 and DISTANCE-FIREWALL73, and Role 4 PRIORITY-HORN67 and DEGREE4-C5. The full remote preflight could not execute because the repository was not mounted locally. Primary literature consulted includes \cite{marques,bacchus,colnet,kautz}.
+
+\textbf{DUPLICATION/CONTRADICTION.} Spanning-tree parity solving and source-preserving XOR reductions are known, not novel general SAT algorithms. The contribution is the certified rule-switch trajectory, exact paired controls and charged finite-comparator audit. MAIN106's fixed-degree SOS obstruction does not transport to arbitrary deciders; Role 3's machine compilation depends on space. Neither is imported as a runtime lower bound.
+
+\textbf{CHANGE RELATIVE TO ROOT MAIN.} A new source-checked, multi-representation, fully parameterized exact hybrid policy achieves linear cost on a mixed Horn/Krom/graph-parity family with linearly many ternaries. It does not decide the NP-complete signed exact-$(2,2)$ family in polynomial time.
+
+\textbf{ADOPTED/RETIRED.} Adopt paid source rereads, exact joins, guarded recognitions, dynamic state-dependent switching, SAT reconstruction and direct-decision shortcuts. Retire any inference from one OBDD, DP, SOS, resolution, LP or backdoor representation size to all-decider SAT time. Finite CDCL/restart/learning menus are experimental restrictions. Cryptographic/hash and online-oracle analogies do not bridge models here.
+
+\textbf{FIRST MISSING LEMMA (OPEN).} For every uniform total deterministic exact SAT decider, extract an invariant decision-only forward/reverse resource actually paid by that \emph{same execution}, permitting all source rereads, semantic compression, direct decision and arbitrary representation switching. No present restricted-model theorem establishes that extraction. Next test the certified 198-variable, 264-clause opposite-label genuine exact-$(2,2)$ pair with a charged adaptive state trace, preserving explicit UNSUPPORTED recognizer outcomes and recording both independent SAT and UNSAT procedures. P versus NP remains OPEN.
+
+\begin{thebibliography}{5}
+\bibitem{marques} J. P. Marques-Silva and K. A. Sakallah, GRASP, IEEE Trans. Comput. 48(5), 506--521 (1999), doi:10.1109/12.769433.
+\bibitem{bacchus} F. Bacchus, S. Dalmao, T. Pitassi, Solving \#SAT and Bayesian Inference with Backtracking Search, JAIR 34, 391--442 (2009).
+\bibitem{colnet} A. de Colnet and S. Mengel, Characterizing Tseitin-formulas with Short Regular Resolution Refutations, arXiv:2103.09609 (2021), restricted proof-system results.
+\bibitem{kautz} H. Kautz et al., Dynamic Restart Policies, AAAI (2002).
+\bibitem{repo} j15marti/pnp, main.tex and verified peer reports, October 2026.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::ADAPTIVE_BIDIR65
