@@ -1,0 +1,367 @@
+% PNP RESEARCH REPORT::INPUT-QUERY-CEILING86::2026-10-23 10:48 KST
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RET}{\textbf{FALSIFIED/RETIRED}}
+
+\title{LSPV-5 Synthesis --- Input-Query Ceiling and Charged Transport}
+\author{P vs NP Research Project}
+\date{23 October 2026, 10:48 KST}
+
+\begin{document}
+\maketitle
+
+\section*{Status}
+\textbf{P versus NP remains OPEN.}  This report proves an exact fixed-width
+2-CNF input-access lower bound and an exact charged transport inequality.  It
+also proves that explicit-input query lower bounds cannot amplify beyond the
+number of queried fields.  No superlinear, superpolynomial, or model-free SAT
+time lower bound is claimed.
+
+\section*{Target and claim card}
+\begin{description}
+\item[Target.] Audit the first rung of a 2-SAT-to-3-SAT ladder and determine
+whether its lower bound survives paid reductions.
+\item[Quantifiers.] For every total deterministic exact decider in the declared
+input-access model and every $q\geq1$, the all-one chain input forces all $q$
+orientation fields to be read.  Separately, every source-to-target simulation
+with the stated costs obeys Theorem~\ref{thm:transport}.
+\item[Input family.] Explicit fixed-width records encoding a 2-CNF implication
+chain; the source and all one-field-flipped controls have identical length,
+record count, variable count, and metadata.
+\item[Resources.] Orientation-field probes, record probes, bit probes, aligned
+word probes, or sequential input-head time, only after the corresponding
+layout is fixed.  Reduction construction, retained source access, target calls,
+simulation, output, and peak live space are charged separately.
+\item[SAME\_REALIZATION.] The lower bound, reduction, and target simulation must
+use the same encoded source instance and the same declared input layout.
+\item[Falsifier.] A correct decider that omits one orientation field on the
+all-one input, or a positive target remainder after fully charging a linear
+explicit reduction.
+\end{description}
+
+\section*{Mechanisms proposed before literature review}
+\begin{enumerate}
+\item Prove exact sensitivity of every orientation field in the fixed-width
+implication chain, including equal-length SAT and UNSAT controls.
+\item Transport the source bound through a reduction only after subtracting
+construction and other overhead, and reject every non-positive remainder.
+\item Add ternary clauses one at a time and test whether direct products,
+padding, affine projection, or decomposition create work growing faster than
+input acquisition.
+\end{enumerate}
+Mechanism 1 succeeds exactly in the declared input model.  Mechanism 2 yields
+an exact accounting lemma.  Mechanism 3 fails to amplify the query order; the
+general ceiling theorem below explains why.
+
+\section*{Primary literature}
+Aspvall, Plass, and Tarjan give a deterministic linear-time implication-graph
+algorithm for 2-CNF (and a more general quantified fragment) on a random-access
+machine \cite{APT79}.  It supplies the matching upper-bound control, not a lower
+bound.  Schaefer's Boolean constraint dichotomy places the relevant tractable
+constraint languages in P and the remaining fixed-language cases in
+NP-complete territory \cite{Schaefer78}.  In particular, it supports the
+tractable 2-CNF versus NP-complete 3-CNF endpoint distinction.  Neither paper
+proves a superpolynomial lower bound for SAT.
+
+\section*{Exact fixed-width baseline}
+For $b=(b_1,\ldots,b_q)\in\{0,1\}^q$, define
+\[
+ F_b=(z_0)\wedge(\neg z_q)\wedge\bigwedge_{i=1}^q C_i(b_i),
+\]
+where
+\[
+ C_i(1)=(\neg z_{i-1}\vee z_i),\qquad
+ C_i(0)=(\neg z_{i-1}\vee\neg z_i).
+\]
+Fix a record encoding containing the two endpoint identifiers, one orientation
+bit, and fixed padding.  For fixed $q$, every record has the same width
+$B_q$, every formula has the same header and record count, and only the
+orientation bits vary.  With explicit binary variable identifiers,
+$B_q=\Theta(\log q)$ and encoded length $N=\Theta(q\log q)$.  An implicit-chain
+encoding instead has $N=\Theta(q)$; the two encodings are not conflated.
+
+\begin{lemma}[Both-label chain semantics]\label{lem:semantics}
+$F_b$ is unsatisfiable if and only if $b=1^q$.
+\end{lemma}
+\begin{proof}
+If every $b_i=1$, the unit $z_0=1$ and the implications force
+$z_1=\cdots=z_q=1$, contradicting $z_q=0$.  If $b_j=0$, assign
+$z_i=1$ for $i<j$ and $z_i=0$ for $i\geq j$.  The $j$th clause is satisfied
+by $\neg z_j$; every later clause is satisfied by $\neg z_{i-1}$; and the
+earlier implication clauses propagate the initial ones.  Thus the assignment
+satisfies $F_b$.
+\end{proof}
+
+Consequently $U_q:=F_{1^q}$ is an UNSAT input.  For every $j$, changing only
+the $j$th orientation bit to zero produces a SAT input $S_{q,j}$ of exactly the
+same length and metadata, with the explicit witness in the proof.
+
+\begin{theorem}[Exact deterministic orientation-query bound]\label{thm:chain}
+In the orientation-field query model, every total deterministic exact decider
+queries all $q$ orientation fields on $U_q$.  Hence the deterministic query
+complexity on that input is exactly $q$.
+\end{theorem}
+\begin{proof}
+Suppose a correct decider omits field $j$ on $U_q$.  Its complete transcript is
+unchanged on $S_{q,j}$, because the two encodings differ only in that unread
+field.  Lemma~\ref{lem:semantics} gives opposite labels, a contradiction.  The
+upper bound reads all $q$ fields and tests whether they are all one.
+\end{proof}
+
+This is an all-algorithm lower bound within the declared access model, not a
+bound on a selected solver.  Conversion to other units requires a layout:
+\begin{itemize}
+\item if each orientation is a separately addressed bit, $q$ bit probes are
+necessary and sufficient;
+\item if a record probe returns one record, $q$ record probes are necessary;
+\item if a $W$-bit word contains at most $p$ orientation fields, at least
+$\lceil q/p\rceil$ word probes are necessary; record-aligned layouts with one
+orientation per word give $q=\Theta(N/W)$ probes, while separately packed
+orientations may give only $\lceil q/W\rceil$;
+\item on a sequential read-only bit tape with a sensitive orientation field in
+the last record, reaching that field costs $\Omega(N)$ head steps.
+\end{itemize}
+No field-query statement is promoted to a RAM or Turing-machine statement
+without one of these explicit simulations.
+
+\section*{Charged transport}
+Let $L_{\rm old}(n)$ be a lower bound in a fixed source model.  Let a source
+decider use reduction/recognition cost $R(n)$, other charged cost $H(n)$, at
+most $Q(n)$ target calls, target instances of length at most $g(n)$, and a
+model-conversion factor $\tau(n)$ per unit of target time.  Define
+\[
+ T_{\rm new}^{\le}(m)=\max_{|y|\le m}T_{\rm new}(y).
+\]
+
+\begin{theorem}[Positive-remainder transport]\label{thm:transport}
+Every such correct simulation obeys
+\[
+ L_{\rm old}(n)\le R(n)+H(n)+Q(n)\tau(n)
+ T_{\rm new}^{\le}(g(n)).
+\]
+If $Q(n)\tau(n)>0$, then a target lower bound follows only where the numerator
+is positive:
+\[
+ T_{\rm new}^{\le}(g(n))\ge
+ \frac{L_{\rm old}(n)-R(n)-H(n)}{Q(n)\tau(n)}.
+\]
+\end{theorem}
+\begin{proof}
+Inline the reduction, every shared computation, every target call, and the
+target-machine simulation.  Their charged costs upper-bound the runtime of the
+resulting source decider.  The definition of $L_{\rm old}$ lower-bounds that
+same execution, giving the first inequality.  Subtraction and division are
+valid only for positive $Q\tau$; a non-positive remainder supplies no target
+lower bound.
+\end{proof}
+
+For the chain, $L_{\rm old}=q$ field probes.  An explicit reduction that reads
+or emits $\Theta(q)$ source/target records may consume the entire bound in
+$R+H$.  A lazy reduction does not make this work free: retained source access,
+indexing, replay, and target-query simulation move to $H$ or $\tau$.  Direct
+inclusion of the same encoded family in a larger language avoids target
+construction and preserves the $q$-probe bound, but it preserves only its
+linear order; it does not amplify it.
+
+\begin{theorem}[Explicit-input query ceiling]\label{thm:ceiling}
+For any decision problem whose input contains $m$ explicit fields, deterministic
+field-query complexity is at most $m$.  Therefore no sequence of reductions or
+direct products can prove a superlinear-in-$m$, hence no superpolynomial-in-
+explicit-input-length, lower bound in the pure field-query model.
+\end{theorem}
+\begin{proof}
+Read all $m$ fields and compute the decision with free local computation, as
+per the query-model convention.  Thus every deterministic decision tree has a
+trivial depth-$m$ implementation.  Any succinct or implicit replacement is a
+different model and must charge its decoder/evaluator and representation.
+\end{proof}
+
+Theorem~\ref{thm:ceiling} is the precise falsifier for naive query
+amplification.  Replicating sensitive gadgets may make the query lower bound
+additive, but it also replicates their explicit fields.  Padding only weakens
+the lower bound as a function of $N$.
+
+\section*{The $2$-CNF plus $k$ ternary-clause ladder}
+Let $\mathcal L_k$ contain CNFs whose clauses have width at most two except for
+at most $k$ clauses of width three.
+
+\begin{lemma}[Certified upper bound]\label{lem:upper}
+$\mathcal L_k$ is decidable in time $O(2^k\operatorname{poly}(N))$ and depth-
+first space $O(N+k)$.
+\end{lemma}
+\begin{proof}
+If no ternary clause remains, invoke the linear-time 2-SAT algorithm.  Otherwise
+choose a variable from a ternary clause and branch on its two values.  In one
+branch that clause is satisfied and deleted; in the other it shrinks to width
+two.  In either branch the number of ternary clauses drops by at least one.
+Thus the search tree has at most $2^k$ leaves.  Reusing one formula workspace
+and a depth-$k$ assignment stack gives the stated space.
+\end{proof}
+
+Hence $k=O(\log N)$ is polynomial-time.  When $k$ is unrestricted, ordinary
+3-CNF is included and the endpoint is NP-complete.  These are an upper bound
+and a classification; they do not imply that $2^k$ work is necessary.
+
+\begin{center}
+\begin{tabular}{p{.22\linewidth}p{.31\linewidth}p{.34\linewidth}}
+\toprule
+Ladder stage & Surviving statement & What is not obtained \\
+\midrule
+Fixed-width chain, $k=0$ & Exact $q$ orientation-field queries; matching
+linear SCC/source scan & Superlinear or model-free time lower bound \\
+Padding, renaming, components & Direct inclusion preserves at most the same
+input sensitivity & Any order amplification; padding dilutes the ratio \\
+Affine/Tseitin projection & Some fixed elimination orders have exponential
+representations (Role 2) & Arbitrary-decider lower bound; source-first
+elimination and gate inspection are polynomial \\
+$\mathcal L_k$ & $O(2^k\operatorname{poly}(N))$ upper bound; chain lower bound
+still embeds & An unconditional $2^{\Omega(k)}$ lower bound \\
+$k=O(\log N)$ & Polynomial time & Hardness threshold \\
+Unrestricted $k$ & NP-complete 3-CNF endpoint & P$\ne$NP or a superpolynomial
+time lower bound \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The strongest unconditional ladder lower bound established here is therefore
+the exact linear-order source-access bound in Theorem~\ref{thm:chain}, with the
+encoding-dependent bit/record/word/Turing conversions stated above.  It holds
+for every deterministic exact decider in those declared models, but it does
+not grow with $k$ and cannot exceed the input-query ceiling.
+
+\section*{Hostile controls and transport to Roles 1--3}
+\begin{itemize}
+\item \textbf{SCC 2-SAT:} solves the baseline in linear time and matches the
+lower-bound order.
+\item \textbf{Affine elimination:} Role 2's ORDER-PROJECTION47 exhibits an
+exponential source-only CNF under a bad trace-first Davis--Putnam order, but a
+source-first order uses only linear attempted pairs.  This is a representation
+and order lower bound, not an unrestricted SAT lower bound.
+\item \textbf{Source inspection and learning:} after the mandatory input scan,
+the chain is decided by one AND.  No residual enumeration is forced.
+\item \textbf{Padding and alternate layouts:} padding cannot amplify order;
+packing changes field-to-word conversion and must be declared.
+\item \textbf{Decide-first normalization:} a direct decision followed by fixed
+TRUE/FALSE output defeats every uncharged post-normalization residual measure.
+\item \textbf{Oracle/algebraic-oracle replacement:} a SAT oracle answers the
+root label in one query.  Therefore the source-access proof does not relativize
+to a model that gives semantic answers for free; this is a model boundary, not
+a nonrelativizing P-vs-NP proof.
+\end{itemize}
+
+The first plausible amplification obligation for Roles 1--3 is no longer a
+larger query gadget.  It is an \emph{internal-work-after-acquisition theorem}:
+for every uniform deterministic exact decider of one fixed NP-complete
+language, construct growing explicit inputs on which either charged acquisition
+and validation of a compatible summary, or charged continuation after the full
+source is available, is superpolynomial.  The obstruction must survive SCC,
+Gaussian elimination, small interfaces, components/caching, source-aware gate
+recognition, alternate representations, and decide-first normalization.  No
+such theorem is presently proved.
+
+\section*{Corpus reconciliation}
+\paragraph{CORPUS REVIEWED.}
+Root \texttt{main.tex}; \texttt{AGENTS.md}; \texttt{CODEX.md}; the complete
+\texttt{pnp-research} skill, synthesis-mode and research-protocol references;
+the current task directory and hostile-controls task; the repository tree;
+ROOT-LABEL-QUOTIENT85; SMALL-INTERFACE-EXACT-JOIN64; SOURCEPROBE19; and the
+current Role 2 ORDER-PROJECTION47 handoff.  Repository history was searched for
+a current Role 4 orientation-chain report; none was accessible at the reviewed
+head, so the exact user-supplied baseline was audited independently.  A local
+repository checkout was unavailable, so the skill preflight and LaTeX checker
+were not claimed as executed; connector readback is required below.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+SOURCEPROBE19 already warns that detached query bounds do not transfer when an
+explicit source reveals the hidden object.  ROOT-LABEL-QUOTIENT85 already
+separates root decision, stored identity, and detached point-query discovery.
+The new contribution is the fixed-width chain proof plus the general explicit-
+input query ceiling and positive-remainder reduction ledger.  These agree with,
+rather than supersede, those barriers.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+The root currently records the quotient and decide-first barriers but not the
+new 2-SAT ladder.  This report adds an exact linear-order rung and retires pure
+query amplification as a path to superpolynomial time.
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopted: charged transport, source-channel accounting, SCC and source-aware
+controls.  Retained as restricted: Role 2's fixed-order projection blowup.
+Rejected: uncharged explicit reductions and field-to-word promotion without a
+layout.  Retired: direct-product/padding amplification of explicit input-query
+lower bounds beyond input order.
+
+\paragraph{STALE OR OVERSTATED CLAIMS FOUND.}
+Any claim that the $O(2^k\operatorname{poly}(N))$ algorithm makes $2^k$ work
+necessary is an upper/lower-bound reversal.  Any claim that NP-completeness at
+unrestricted $k$ transports the baseline linear lower bound into a
+superpolynomial theorem omits the required amplification theorem.
+
+\section*{Status ledger}
+\begin{center}
+\begin{tabular}{p{.38\linewidth}p{.23\linewidth}p{.29\linewidth}}
+\toprule
+Claim & Status & Reason \\
+\midrule
+Chain semantics and both-label controls & \EXACT & Lemma~\ref{lem:semantics} \\
+Exact $q$ orientation queries on $U_q$ & \EXACT & Adversary transcript proof \\
+Field/bit/record/word/time conversion & \EXACT{} when layout declared & No
+layout-free conversion \\
+2-SAT linear algorithm; 3-CNF endpoint & \KNOWN & APT; Schaefer \\
+Positive-remainder transport & \EXACT & Inlined charged simulation \\
+Explicit-input query ceiling & \EXACT & Read-all decision tree \\
+$O(2^k\operatorname{poly}(N))$ ladder algorithm & \EXACT & Binary branching \\
+Unconditional $2^{\Omega(k)}$ necessity & \OPEN & No all-algorithm theorem \\
+Superpolynomial lower bound for fixed NP-complete SAT & \OPEN & Internal-work
+and coverage arrows missing \\
+Pure query/direct-product amplification & \textbf{FALSIFIED/}\newline\textbf{RETIRED} & Ceiling is linear in fields \\
+P versus NP & \OPEN & Load-bearing arrows remain open \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Resource ledger}
+Source reads, parsing, reduction discovery, target construction, failed
+attempts, shared preprocessing, retained-source access, target simulation,
+proof/representation size, compatibility, reconstruction, replay, output
+length, and peak live space are all charged.  No gate/wire/switch lower bound is
+claimed.  The report proves symbolic statements and uses no finite experiment
+as asymptotic evidence.
+
+\section*{Single next target}
+Prove or refute a \textbf{post-acquisition ternary-interface direct-product
+lemma}: for an explicit, source-coherent family in $\mathcal L_k$ with
+$N=\operatorname{poly}(k)$, every total uniform deterministic exact decider,
+after all source reads are charged, either constructs and validates a
+$2^{\Omega(k)}$ compatible summary or spends $2^{\Omega(k)}$ continuation
+steps.  The statement must quantify over all deciders, forbid no decide-first
+operation by definition, and survive the easy controls above.  Without this
+new theorem, the ladder reaches NP-completeness but does not transport a
+superpolynomial lower bound.
+
+\begin{thebibliography}{9}
+\bibitem{APT79}
+B. Aspvall, M. F. Plass, and R. E. Tarjan,
+``A linear-time algorithm for testing the truth of certain quantified Boolean
+formulas,'' \emph{Information Processing Letters} 8(3):121--123, 1979.
+\href{https://doi.org/10.1016/0020-0190(79)90002-4}{doi:10.1016/0020-0190(79)90002-4}.
+
+\bibitem{Schaefer78}
+T. J. Schaefer, ``The complexity of satisfiability problems,''
+\emph{Proceedings of STOC 1978}, pp. 216--226.
+\href{https://doi.org/10.1145/800133.804350}{doi:10.1145/800133.804350}.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LSPV-5::INPUT-QUERY-CEILING86
+\end{document}
