@@ -1,0 +1,65 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append/revise in place; log at end
+\documentclass[11pt]{article}
+\usepackage{url}\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\title{ClaudeCircuitSAT: Wire-Counting Lower Bounds for Circuit-SAT}
+\author{Living document (hourly Claude runs)}
+\date{Last updated: 2026-10-23, run 1}
+\begin{document}\maketitle
+
+\section{Status (strict labels)}
+\textbf{No superpolynomial lower bound for CIRCUIT-SAT is proved here. P versus NP remains OPEN}
+(consistent with root \path{main.tex}, whose load-bearing arrows are OPEN).
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model}
+A circuit $C$ is a DAG of fan-in-2 gates over basis $B_2$ (all 16 binary gates) on inputs $x_1..x_n$;
+size $s(C)$ = #gates; wires $w(C)=2s(C)$ (+1 output tap). $\mathrm{CSAT}$: given $C$, decide $\exists x\,C(x)=1$.
+Two quantities are tracked per stage $n$:
+\begin{enumerate}
+\item $S(n)=\max_f \min\{s(C):C\text{ computes }f\}$ (hardest $n$-input function), and $S_{ess}(n)$ restricted to functions depending on all inputs;
+\item $W_{crit}(C)$ = number of wires whose rewiring (to a constant) changes satisfiability (``critical wires'').
+\end{enumerate}
+
+\section{Stage-by-stage exact values}
+\begin{proposition}[COMPUTATIONAL, exhaustive; \path{scripts/circuit_min_size.py}]
+Over $B_2$: $S(1)=0$, $S(2)=1$ (all 16 functions), $S(3)=4$ with size histogram
+$(0{:}5,1{:}33,2{:}114,3{:}80,4{:}24)$ over all 256 functions. Functions on all $3$ inputs essential have size between $2$ and $4$.
+\end{proposition}
+Derivation: DFS over all circuits with $\le L$ gates, recording the first (smallest) gate count at which each truth table appears; with $L=4$ all 256 tables are reached, so each value is exact.
+Chunking note: $n=3,L=4$ took $\approx74$\,s in one process, exceeding the 30\,s repo guideline; next runs must split by first-gate choice (see TODO).
+
+\begin{center}\begin{tabular}{lcccc}\toprule
+$n$ & functions & $S(n)$ & min wires hardest & status\\\midrule
+1&4&0&0&COMPUTATIONAL\\ 2&16&1&2&COMPUTATIONAL\\ 3&256&4&8&COMPUTATIONAL\\ 4&65536&7 (known, Knuth-style tables)&14&KNOWN, not rerun\\\bottomrule\end{tabular}\end{center}
+(The $n{=}4$ value $7$ is quoted from memory of the literature for $B_2$ and is NOT verified here; treat as CANDIDATE until recomputed.)
+
+\section{A proved (trivial) wire lower bound}
+\begin{lemma}[PROVED/EXACT, adversary]
+Let $C$ be given as a wire list and let every wire of $C$ be critical in the above sense for some pair $(C,C')$ differing in one wire. Any deterministic algorithm deciding CSAT correctly on both $C$ and all single-wire modifications must read every critical wire; hence it uses $\ge W_{crit}(C)$ reads.
+\end{lemma}
+\emph{Proof.} If wire $e$ is unread on input $C$, the algorithm behaves identically on $C$ and its modification $C_e$, which differ in satisfiability. $\square$
+
+\textbf{Limitation (honest).} $W_{crit}\le 2s+1$, so this gives only $\Omega(|C|)$: the trivial input-reading bound. It is a bound on \emph{queries to the description}, not on running time in terms of $n$. It cannot separate P from NP; this is the model-matched statement of why wire counting alone is insufficient: the hard part is the number of \emph{evaluations/assignments}, not wires.
+
+\section{Why a naive wire$\to$time bound fails (FAILED TRANSFER notes)}
+\begin{itemize}
+\item Counting gates for a \emph{fixed function} (Shannon/Lupanov $\Theta(2^n/n)$ for the worst function) is a non-uniform bound on the function, not on the CSAT decision procedure for a given $C$.
+\item Best known explicit $B_2$ circuit lower bounds are $\approx 3.1n$ (Li--Yang, STOC 2022), far from superpolynomial; this is the known barrier for any ``minimal wires for an explicit function'' route. (KNOWN THEOREM; citation from memory, re-verify.)
+\item CSAT restricted to $O(1)$ gates is in P trivially; restricted to formulas of size $s$ it is solvable in $2^{n}\,\mathrm{poly}(s)$ and, under SETH, no $2^{(1-\epsilon)n}$ (CONDITIONAL, not usable unconditionally).
+\end{itemize}
+
+\section{Corpus link (\texttt{j15marti/pnp})}
+Root \path{main.tex} (2026-10-23) keeps P vs NP OPEN; its latest items (INPUT-QUERY-CEILING86, ROOT-LABEL-QUOTIENT85, TSEITIN-EXPANDER-PAIR83) work with 2-CNF + $k$ ternary clauses: $O(2^k\mathrm{poly}(N))$ upper bound, necessity of $2^{\Omega(k)}$ OPEN. Useful bridge for this document: the \emph{query ceiling} says explicit-input query amplification cannot exceed input order, matching our Lemma (reads $\le|C|$). Hence any wire-based bound must be about \emph{derived state}, not raw reads. Not adopted as a theorem here.
+
+\section{Next steps (OPEN agenda)}
+\begin{enumerate}
+\item Recompute $S(4)$ chunked by first gate ($<30$\,s per chunk), checkpoint JSON in \path{results/}.
+\item Track $\min W_{crit}$ vs. $\max W_{crit}$ per stage and the minimal circuit encoding of $\mathrm{AND}_n$ with a single satisfying assignment (unique-SAT witness families).
+\item Define the target: a model (e.g.\ DPLL-style / resolution-restricted solvers on circuit wires) in which \#wires-touched forces $2^{\Omega(n)}$; test on the 3-input table whether any 3-input circuit forces $>$ its wire count in evaluations for such a solver.
+\end{enumerate}
+
+\section*{Run log}
+\textbf{Run 1 (2026-10-23):} created document; exhaustive $n\le3$ table; trivial adversary lemma; recorded honest limitation. Literature search not performed (no web call this run); literature citations above flagged for verification.
+\end{document}
+% END_OF_CLAUDECIRCUITSAT_RUN1
