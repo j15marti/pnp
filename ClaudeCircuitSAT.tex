@@ -1,12 +1,13 @@
-% CLAUDECIRCUITSAT LIVING DOCUMENT::RUN_2026-10-23_CCS2
+% CLAUDECIRCUITSAT LIVING DOCUMENT::RUN_2026-10-23_CCS3
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,amsthm,booktabs}
 \usepackage[margin=1in]{geometry}
 \newtheorem{lemma}{Lemma}
+\newtheorem{proposition}[lemma]{Proposition}
 \newcommand{\st}[1]{\textsf{[#1]}}
 \title{ClaudeCircuitSAT: a wire-by-wire ladder toward lower bounds for Circuit-SAT}
 \author{Claude (scheduled hourly run)}
-\date{Last updated 23 October 2026 (run CCS2)}
+\date{Last updated 23 October 2026 (run CCS3)}
 \begin{document}\maketitle
 \fbox{\parbox{0.95\linewidth}{\textbf{Status: P versus NP remains OPEN.} Nothing here proves a superpolynomial Circuit-SAT lower bound. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.}}
 
@@ -63,13 +64,47 @@ Superlinear / superpolynomial size for an NP function & OPEN & no known techniqu
 \section{Repository cross-check (j15marti/pnp, root \texttt{main.tex}, MAIN96)}
 Reviewed: root \texttt{main.tex}, AGENTS.md, task list, newest MAIN. Useful transfers: (1) fixed-width $\Omega(N/\log N)$ acquisition rung $\leftrightarrow$ Lemma~\ref{lem:read} (analogy, same linear flavour); (2) 2-CNF projection kernel with $O(k(n+m)+k^2)$ upper bound shows structured wire sets are cheaply reducible---a warning that low-treewidth/few-clause sub-structure is not a hardness source. No repository result gives a superlinear Circuit-SAT bound; none was claimed. This document does not edit root \texttt{main.tex} or any LSPV region.
 
+\section{Theoretical search bounds: a model hierarchy (CCS3, no computation)}
+Setting: a Circuit-SAT instance is a circuit $C$ with $n$ inputs and $m$ gates. A \emph{search algorithm} explores partial assignments. Lower bounds are only available when the model restricts \emph{what the algorithm may infer}; we ladder the models, each defeating the previous hard family, and mark where the ladder stops.
+
+\subsection*{S0. Information cannot give superlinear bounds (PROVED/EXACT)}
+\begin{proposition}[Descriptive cap]\label{prop:cap}
+In the model where the algorithm may read the $O(m\log m)$-bit description of $C$ and is charged only for reads, Circuit-SAT has read complexity $\Theta(m)$ (up to the encoding width): the $\ge m$ cells bound is Lemma~\ref{lem:read}, and reading everything is an upper bound. Hence any superlinear lower bound for Circuit-SAT must be a \emph{computational} (not an information) bound.
+\end{proposition}
+This is why the acquisition bounds in the repository are linear-type ceilings, and why ``count the wires that must be read'' cannot by itself reach NP-hardness.
+
+\subsection*{S1. Black-box search (KNOWN THEOREM, irrelevant to white-box)}
+Treating $C$ as an oracle, unique-SAT needs $\Theta(2^n)$ deterministic queries, $\Omega(2^{n})$ randomized (constant success), and $\Theta(2^{n/2})$ quantum (Bennett--Bernstein--Brassard--Vazirani; Grover). Classification: FAILED TRANSFER for lower bounds on real SAT solvers, because a solver sees the wires (relativization: the same bound holds relative to oracles where P$=$NP is false \emph{and} true on other oracles---Baker--Gill--Solovay).
+
+\subsection*{S2. Ternary-evaluation branching (PROVED/EXACT, restricted model)}
+Model $\mathcal T$: the algorithm branches on inputs, evaluates $C$ on the partial assignment in Kleene three-valued logic, prunes a branch only when the output is $0$, and accepts when it is $1$.
+\begin{proposition}\label{prop:xor}
+Let $C_n=\mathrm{XOR}(x_1..x_n)\wedge\neg\mathrm{XOR}(x_1..x_n)$ (two separate trees, size $O(n)$, unsatisfiable). Any $\mathcal T$-algorithm explores all $2^n$ full assignments.
+\end{proposition}
+\begin{proof} A Kleene-XOR gate outputs $\ast$ if any input is $\ast$; by induction every gate on a path from a free input to the output is $\ast$. So the output is $\ast$ on every proper partial assignment and equals $0$ only at full assignments; no branch is pruned before depth $n$. \end{proof}
+This family is easy for stronger models (S3): the model is too weak, not the instance hard.
+
+\subsection*{S3. Propagation, learning, resolution (KNOWN THEOREMS; the exact transfer)}
+Tseitin-encode $C$ to a CNF $F_C$ of size $O(m)$. DPLL with unit propagation on an unsatisfiable $F_C$ yields a tree-like resolution refutation of $F_C$ of size at most the run-time; CDCL with unrestricted restarts and suitable learning polynomially simulates general resolution (Pipatsrisawat--Darwiche; Atserias--Fichte--Thurley). Hence, for these algorithm classes, \emph{search time $\ge$ (tree-like, resp.\ general) resolution refutation size}: EXACT OBJECT/THEOREM TRANSFER (statement direction: algorithm $\Rightarrow$ proof). Known hard families: pigeonhole (Haken, $2^{\Omega(n)}$ resolution size); Tseitin formulas on expanders (Urquhart; Ben-Sasson--Wigderson width--size, tree-like $2^{\Omega(n)}$). Prop.~\ref{prop:xor}'s family has linear-size resolution refutations (bounded width), confirming the hierarchy.
+\emph{Circuit-specific caveat:} these hard formulas must be realized as Tseitin encodings of small circuits with $\Theta(n)$-size description and a single output; pigeonhole counting circuits and graph-parity circuits qualify, but the bound is then a bound for \emph{resolution-based solvers}, not for all algorithms (CANDIDATE for any broader claim).
+
+\subsection*{S4. Beyond resolution: where the ladder is OPEN}
+Stronger systems (cutting planes, bounded-depth Frege, Frege, extended Frege) each define a search-model class when the algorithm must certify UNSAT inside the system. Lower bounds: cutting planes (Pudl\'ak; monotone interpolation, KNOWN), constant-depth Frege on pigeonhole (Ajtai; KNOWN). General Frege/extended Frege: OPEN, and a superpolynomial extended-Frege bound would separate NP from co-NP. Honest conclusion: the model ladder reproduces proof complexity; no step is new here.
+
+\subsection*{S5. Wire-by-wire potential for a model (CANDIDATE)}
+To keep the user's wire-ladder idea inside a valid model, define for a search tree the \emph{frontier} $W(\rho)$ = set of wires whose value is determined under partial assignment $\rho$. Stage-$k$ conjecture: in model $\mathcal M$ every branch must raise $|W|$ by at most $\delta_{\mathcal M}$ per assigned input, so reaching a decision ($W\ni$ output) needs depth $\ge m/\delta_{\mathcal M}$---a \emph{linear depth} bound at best, giving size $2^{\Omega(\cdot)}$ only if branching is forced at each level. Proposition~\ref{prop:xor} is the case $\delta=0$ until the last input. Open arrow: an instance family with $\delta_{\mathcal M}$ small \emph{and} no stronger-model shortcut; for $\mathcal M=$ resolution this is exactly pigeonhole/Tseitin width, so the potential is a re-derivation of width lower bounds (analogy, no new theorem).
+
+\subsection*{S6. Barrier audit}
+Natural proofs: S2--S3 bounds are not ``large and constructive over all functions'' (they target one proof system), so no barrier applies to them. Any attempt to lift S3 to \emph{all} algorithms hits: relativization (resolution lower bounds do not relativize but are model-specific), algebrization and natural proofs for circuit-class lower bounds, and the fact that the lift is equivalent to NP$\ne$co-NP-type statements. No such lift is claimed.
+
 \section{Next steps (OPEN agenda)}
 \begin{enumerate}
 \item NPN-canonical exact circuit sizes for $n=4$ at $g=5,6,7$ (checkpointed stages); measure the formula/circuit sharing gap.
+\item Theory track (CCS3): find a family where $\delta_{\mathcal M}$ of S5 is provably small for a model strictly stronger than tree-like resolution but weaker than Frege, with a self-contained proof (currently none).
 \item Track fan-out: minimal wires including output edges for formulas vs circuits.
 \item Search for a ``compounding read'' invariant: a potential $\Phi$(partial wire knowledge) that must rise by $\ge 1$ per wire for \emph{all} deterministic solvers on a hard distribution, checking each step against relativization.
 \item Test gate-elimination steps on SAT-instance families (planted-unsat circuits) under restricted solvers (DPLL/resolution) where lower bounds are known.
 \item Repository carry-over: CCS2 saw root \texttt{main.tex} through MAIN of 2026-10-22 (SOURCE\_JOIN\_COHERENCE56); still no repository result gives a superlinear Circuit-SAT bound.
 \end{enumerate}
 \end{document}
-% END_OF_CLAUDECIRCUITSAT::RUN_2026-10-23_CCS2
+% END_OF_CLAUDECIRCUITSAT::RUN_2026-10-23_CCS3
