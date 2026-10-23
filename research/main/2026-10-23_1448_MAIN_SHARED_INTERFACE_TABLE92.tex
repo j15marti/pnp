@@ -1,0 +1,304 @@
+% LSPV-5 2026-10-23 14:48 KST -- SHARED-INTERFACE-TABLE92
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{url}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{SHARED-INTERFACE-TABLE92:\\Exact Compatibility Acquisition Still Stops at Input Order}
+\author{LSPV-5 lower-bound transport and ladder synthesis}
+\date{23 October 2026}
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.91\linewidth}{
+\textbf{Global status: P versus NP remains OPEN.}
+This report proves an exact deterministic query bound and an exact
+fixed-metadata proper-3CNF representation theorem.  They are restricted
+input-acquisition results, not an unrestricted superpolynomial time lower
+bound.}}
+\end{center}
+
+\section{Target, proposals, and claim card}
+
+This run tested the first shared-interface rung after independent
+AGGREGATION-CEILING91.  Before source review, three falsifiable mechanisms
+were fixed:
+\begin{enumerate}
+\item explicit compatibility tables might force $J2^h$ work for $J$ blocks
+sharing an $h$-bit interface;
+\item exact symbolic projection might compress those tables below $2^h$;
+\item repeated interface use might force a persistent table even when the
+root SAT answer is one bit.
+\end{enumerate}
+The first is proved exactly but remains input-order.  The second is false on
+easy recognizable controls and open for a deliberately chosen succinct hard
+family.  The third is not an obligation of a one-shot SAT decider and is
+therefore retired unless an all-algorithm context-extraction theorem is
+supplied.
+
+\paragraph{Claim card.}
+\textbf{ID:} SHARED-INTERFACE-TABLE92.
+\textbf{Quantifiers:} for every $J,h\ge1$, every deterministic exact
+decision tree for the declared table source has worst-case depth $J2^h$;
+for the P-versus-NP target, the still-open prefix is for every total uniform
+deterministic exact decider $A$, for every $c>0,N_0$, there exists an input
+of length $N\ge N_0$ requiring more than $N^c$ time.
+\textbf{Model:} addressed fixed-width records, one independently readable
+orientation field per table cell; packed-word conversion is stated
+separately.  The target is an ordinary explicit proper-3CNF.
+\textbf{Resource:} source/target word probes, reduction writes, total word
+time, output size, and peak live space.
+\textbf{SAME\_REALIZATION:} one table $R$, its fixed-metadata CNF
+$\Gamma(R)$, and the same $J2^h$ orientation fields.
+\textbf{Falsifier:} any algorithm deciding the table-intersection label
+with fewer than $J2^h$ worst-case field queries, or any claimed transport
+whose charged numerator remains positive after construction.
+
+\section{Exact shared-interface function}
+
+Let $K=2^h$, and let
+\[
+R=(r_{j,a})\in\{0,1\}^{J\times K}.
+\]
+Think of row $j$ as the feasible assignments to the common interface
+$S\in\{0,1\}^h$ for block $j$.  Define
+\[
+f_{J,h}(R)=\bigvee_{a=0}^{K-1}\bigwedge_{j=1}^{J}r_{j,a}.
+\]
+Thus $f_{J,h}=1$ precisely when all blocks have a common feasible interface
+assignment.  The source has $M=JK=J2^h$ orientation fields.
+
+\begin{theorem}[Exact explicit-table depth]
+The deterministic field-query complexity of $f_{J,h}$ is exactly
+\[
+D(f_{J,h})=M=J2^h.
+\]
+\end{theorem}
+\begin{proof}
+Reading every field is an upper bound.  For the lower bound, the unique
+multilinear real polynomial is
+\[
+f_{J,h}(R)=1-\prod_{a=0}^{K-1}
+\left(1-\prod_{j=1}^{J}r_{j,a}\right).
+\]
+Its full monomial $\prod_{a,j}r_{j,a}$ has nonzero coefficient, so the exact
+degree is $M$.  A deterministic decision tree of depth $d$ has a multilinear
+polynomial of degree at most $d$ (induct on its root query), hence $d\ge M$.
+Equivalently, an adversary can answer one unseen position in each column
+with zero only after all earlier positions in that column were answered one,
+forcing a complete NO certificate.  Both labels occur at identical metadata
+and length: the all-zero table is NO, while any table containing one all-one
+column is YES.
+\end{proof}
+
+One aligned field per fixed-width record gives $M$ field queries, $M$ record
+queries, and $M$ word probes.  If $w$ orientation bits are packed per machine
+word, the consequence weakens to $\Omega(M/w)$ word probes.  With $c$ fixed
+words per record and a fixed header, $N_{\rm src}=\Theta(Mw)$ encoded bits,
+so the aligned bound is only $\Theta(N_{\rm src}/w)$ input acquisition.
+
+\section{Fixed-metadata proper-3CNF representation}
+
+Use selector variables $s_0,\ldots,s_{h-1}$.  For every cell introduce
+$c_{j,a}$ and include a unit forcing $c_{j,a}=r_{j,a}$.  Also include
+\[
+\left(\bigvee_{t:a_t=0}s_t\right)\vee
+\left(\bigvee_{t:a_t=1}\neg s_t\right)\vee c_{j,a}.
+\tag{1}
+\]
+Only the sign of the forcing unit depends on $R$; all variable identifiers,
+clause locations, widths, and record counts are fixed.
+
+\begin{theorem}[Exact ordinary-CNF endpoint]
+The resulting CNF $\Gamma(R)$ is satisfiable iff $f_{J,h}(R)=1$.  Converting
+every unit, binary, and long clause by the standard fresh-variable chain
+gives an equisatisfiable proper-3CNF with $M=J2^h$ and
+\[
+ n_3=h+M(3+a_h),\qquad m_3=M(4+c_h),
+\]
+where
+\[
+a_h=\begin{cases}1&h=1\\0&h=2\\h-2&h\ge3,
+\end{cases}
+\qquad
+c_h=\begin{cases}2&h=1\\1&h=2\\h-1&h\ge3.
+\end{cases}
+\]
+Thus construction, output, and retained representation are
+$\Theta(Mh)$ words, and the proper-3CNF encoded length is
+$N_3=\Theta(Mh\log(Mh+2))$ bits under fixed clause records.
+\end{theorem}
+\begin{proof}
+When the selector equals $a$, every mismatch literal in (1) is false, so
+all $J$ clauses for that column require $c_{j,a}=1$.  Clauses for other
+columns already contain a true mismatch literal.  The forcing units identify
+the cells with $R$, proving the semantic equivalence.  A unit becomes four
+ternary clauses with two fresh variables, a binary becomes two with one
+fresh variable, and a length-$\ell\ge4$ clause becomes $\ell-2$ ternaries
+with $\ell-3$ fresh variables.  Summing these fixed contributions gives the
+displayed counts.
+\end{proof}
+
+This is a direct inclusion family inside ordinary proper-3CNF.  In the
+declared record layout, restriction of any exact target decision tree to the
+orientation words still needs $M$ worst-case reads.  But
+\[
+M=\Theta\!\left(\frac{N_3}{h\log N_3}\right),
+\]
+so the result remains at or below input order.  It is not a lower bound on
+SAT-solving circuits, proof systems, or unrestricted superlinear time.
+
+\section{Charged transport counterexample}
+
+Suppose instead that the table is the source and a source decider constructs
+$\Gamma(R)$ before one target call.  In the required inequality
+\[
+L_{\rm old}(M)\le R(M)+H(M)+Q(M)\tau(M)T_{\rm new}^{\le}(g(M)),
+\]
+we have $L_{\rm old}=M$, $Q=1$, $g=\Theta(Mh\log(Mh))$, and already
+$R=\Theta(Mh)$ from reading the cells and writing the fixed gadgets.  Hence
+\[
+L_{\rm old}-R-H\le0
+\]
+for the explicit construction.  The reduction therefore transports no
+positive lower bound.  Direct inclusion avoids the paid construction, but
+preserves only the same $M$-field acquisition order and does not amplify it.
+
+This falsifies the proposed ``explicit compatibility table'' amplifier.
+The source itself has paid for every interface context.  If $h=O(\log N)$,
+enumerating all $2^h$ assignments is polynomial.  If $h=\omega(\log N)$ but
+the full table is explicit, its $2^h$ entries are already counted in $N$.
+
+\section{Hostile controls and new role reconciliation}
+
+The smallest omitted-source control is
+\[
+R_1=(1,0),\qquad R_2=(0,1).
+\]
+Each block is individually feasible, but their intersection is empty.
+Independent local acceptance is therefore unsound; the common selector
+restores exactness.
+
+CRITICAL65 proves that large clause-minimal UNSAT cores, large residuals,
+and a linear strong 2-CNF backdoor can coexist with a linear odd-wheel
+recognizer.  PERMUTATION-HOLONOMY50 proves that $k=\Theta(n)$ genuine
+ternaries and dense shared-looking permutation couplings can collapse to
+three root colors per component and be decided in polynomial time.  These
+new reports reinforce the present ceiling: syntax, explicit tables, and
+large fallback enumeration do not force an arbitrary decider to use the
+fallback representation.
+
+The table theorem is the exact static version of SMALL-INTERFACE-EXACT-JOIN64:
+once all block relations on the shared separator are materialized, the join
+is exact, but materialization costs the complete table.  ROOT-LABEL-QUOTIENT85
+then blocks the attempted repeated-use repair: a one-shot SAT decider owes
+only the root existence bit, not a service for all $2^h$ interface queries.
+
+\section{Ladder and status ledger}
+
+\begin{center}
+\begin{tabular}{p{0.22\linewidth}p{0.25\linewidth}p{0.42\linewidth}}
+\toprule
+Rung & Status & Exact surviving statement \\
+\midrule
+Fixed-width 2-CNF chain & \textbf{PROVED/EXACT} & $q$ orientation-field
+queries on the all-one input; SCC gives linear-time 2-SAT.\\
+2-CNF plus $k$ ternaries & \textbf{PROVED upper bound} &
+$2^k\operatorname{poly}(N)$ by branching; $k=O(\log N)$ is polynomial;
+necessity of $2^{\Omega(k)}$ is \textbf{OPEN}.\\
+Critical wheels / permutation holonomy & \textbf{PROVED/EXACT restricted} &
+large cores/backdoors/coupling, yet charged linear or polynomial
+recognizers.\\
+Independent aggregation & \textbf{PROVED/EXACT restricted} & exact $pq$
+field depth but only input acquisition.\\
+Explicit shared compatibility & \textbf{PROVED/EXACT restricted} & exact
+$J2^h$ field depth and fixed-metadata proper-3CNF; still input order.\\
+Succinct shared compatibility & \textbf{OPEN} & no all-decider
+compression-versus-continuation theorem.\\
+Unrestricted proper-3CNF SAT & \textbf{KNOWN NP-complete} & no unconditional
+superpolynomial deterministic machine lower bound.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The exact chain requested by the project is therefore:
+\begin{enumerate}
+\item explicit common-column obstruction $\Longrightarrow M$ charged field
+reads: \textbf{PROVED restricted};
+\item $M$ charged reads $\not\Longrightarrow$ all-decider superlinear work:
+\textbf{OPEN};
+\item a superpolynomial contradiction still needs a quantitative growth
+premise: \textbf{OPEN}.
+\end{enumerate}
+
+\paragraph{Classification.}
+Enumeration over $2^h$ contexts is an \textbf{upper bound}.  The $M$-field
+result is a \textbf{restricted input-query lower bound}.  The positive-
+remainder formula is a \textbf{conditional transport inequality}.  No
+genuinely unrestricted lower-bound theorem is obtained.
+
+\section{Model and resource ledger}
+
+Source reads, record addressing, metadata checks, all failed columns,
+selector enumeration, reduction output, auxiliary variables, verification,
+replay, and peak live space are charged.  A streaming table decider uses
+$O(M)$ word time and $O(1)$ working words beyond the read-only source;
+row-major and column-major layouts differ only by address arithmetic in the
+declared random-access model.  Building the proper-3CNF uses
+$\Theta(Mh)$ writes and $O(h)$ streaming workspace, or $\Theta(Mh)$ peak
+space if the complete output must remain live.  DAG reuse is absent; every
+table cell has one fixed gadget.  Formula evaluation circuitry is not a
+SAT-solving circuit lower bound.
+
+The argument relativizes and is defeated by a semantic SAT oracle or a
+decide-first normalizer; it supplies no nonrelativizing bridge.  Algebraic
+oracle access is unnecessary because the explicit table already exposes the
+whole function.  No Natural-Proofs conclusion is claimed.
+
+\section{Sources and reproducible audit}
+
+\begin{sloppypar}
+Repository sources reviewed: root \path{main.tex}, \path{AGENTS.md},
+\path{CODEX.md}, the pnp-research skill and synthesis/experiment protocols,
+SMALL-INTERFACE-EXACT-JOIN64, ROOT-LABEL-QUOTIENT85,
+AGGREGATION-CEILING91, CRITICAL65, and PERMUTATION-HOLONOMY50.
+\end{sloppypar}
+
+Primary literature checked: Aspvall--Plass--Tarjan, ``A linear-time
+algorithm for testing the truth of certain quantified Boolean formulas,''
+\emph{Information Processing Letters} 8 (1979), DOI
+\url{10.1016/0020-0190(79)90002-4}; Schaefer, ``The complexity of
+satisfiability problems,'' STOC 1978, DOI \url{10.1145/800133.804350}; and
+Cook, ``The complexity of theorem-proving procedures,'' STOC 1971, DOI
+\url{10.1145/800157.805047}.  These establish polynomial 2-SAT structure
+and the NP-complete endpoint; none supplies the missing unrestricted time
+lower bound.
+
+The stdlib-only audit used seed 20261023.  It exhausted 356 tables, tested
+400 further seeded hostile/control tables, performed 756 proper-3CNF SAT
+checks, verified exact decision-tree depth and the nonzero full-degree
+coefficient on five parameter pairs, and checked 20 exact count formulas.
+Total: 1,605 assertions, zero failures, 1.67 seconds.  Finite checks validate
+the implementation only.
+
+\section{Highest-value next missing lemma}
+
+\textbf{OPEN succinct-compatibility dichotomy.}  Exhibit a fixed, succinctly
+encoded proper-3CNF family with an independently defined $h=\omega(\log N)$
+shared-interface obstruction and prove, for every total uniform deterministic
+exact SAT decider $A$, that either (i) charged acquisition/validation produces
+a source-closed summary rich enough to answer a specified context family and
+costs $2^{\Omega(h)}$, or (ii) the direct root decision/continuation itself
+costs $2^{\Omega(h)}$.  The theorem must charge discovery, source reads,
+symbolic projection, compatibility, caching, replay, output and peak space,
+and must survive SCC 2-SAT, Horn, affine/XOR, bounded-treewidth DP,
+permutation holonomy, critical-wheel recognition, alternate representations,
+and decide-first normalization.
+
+Until that all-algorithm bridge is proved, explicit compatibility supplies
+no amplification and P versus NP remains OPEN.
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::SHARED_INTERFACE_TABLE92
