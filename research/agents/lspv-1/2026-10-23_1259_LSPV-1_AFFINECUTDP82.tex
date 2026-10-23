@@ -1,0 +1,71 @@
+% LSPV-1 REPORT::AFFINECUTDP82::2026-10-23T12:59:00-07:00
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,url}
+\newtheorem{theorem}{Theorem}
+\title{AFFINECUTDP82: Exact Forward/Reverse Affine Dynamic-Programming Width}
+\author{LSPV-1: Universal SAT Cost Bridge}
+\date{23 October 2026}
+\begin{document}\maketitle
+\begin{center}\textbf{PROVED/EXACT in the declared affine-cut model; independent review pending. P versus NP OPEN.}\end{center}
+\section{Model, target and falsifiable mechanisms}
+Fix the NP-complete proper signed exact-(2,2) 3-CNF language with each source variable twice positive and twice negative, unique proper ternaries, invalid source rejected. Let n be source variables, m=4n/3 clauses, source word width w=\lceil\log_2(64(n+m+1))\rceil and encoded bits N=(4m+2)w. Parse, input reads, normalization, unsuccessful attempts, auxiliary gates, source replay and output writes are charged on a uniform deterministic RAM. For explicit exponentially long output, bit/record writes and multiword identifiers are charged and no free exponential-size address is assumed. Keep syntactic residual r=n-d distinct from ranks, parameters and runtime.
+M1: seek the exact forward/reverse DP residual width for Ax=b (PROVED/EXACT).
+M2: test an existing signed exact-(2,2) source H_g in both 3CNF and shared-input Circuit-SAT representations, with good and bad variable orders (PROVED/EXACT).
+M3: infer universal SAT time from materialized table size (FALSIFIED/RETIRED as an automatic inference).
+\section{Exact affine-cut width}
+Let A\in\mathbb F_2^{h\times n}, b\in\mathbb F_2^h, and fix a source variable order. After the first i variables L, let R be the remaining variables and A_L,A_R their column matrices. For each prefix u, define its full suffix residual f_u(v)=[A_Rv=b+A_Lu]. Set W_i=|\{f_u:u\in\mathbb F_2^i\}| and
+\[
+a_i=\operatorname{rank}A_L,\quad c_i=\operatorname{rank}A_R,\quad q=\operatorname{rank}A,\quad
+\eta_i=a_i+c_i-q=\dim(\operatorname{im}A_L\cap\operatorname{im}A_R).
+\]
+\begin{theorem}[Exact cut residual count; PROVED/EXACT]
+If Ax=b is inconsistent, W_i=1. If consistent then
+\[
+\boxed{W_i=2^{\eta_i}+\mathbf 1_{\{a_i>\eta_i\}}.}
+\]
+The right side, including consistency, is computable in polynomial time by Gaussian elimination.
+\end{theorem}
+\begin{proof}
+Let U=\operatorname{im}A_L and V=\operatorname{im}A_R. The valid right-hand sides b+A_Lu lie in (b+U)\cap V, a nonempty affine coset of U\cap V. Therefore precisely 2^{\eta_i} distinct right-hand sides yield nonempty residuals. Different right-hand sides give disjoint nonempty suffix-assignment sets, so each gives a different Boolean residual function. An identically zero residual also occurs iff (b+U)\not\subseteq V, equivalently U\not\subseteq V since the intersection is nonempty, equivalently a_i>\eta_i. If the full system is inconsistent every prefix residual is empty.
+\end{proof}
+A synchronous read-once DP that discards the prefix and must answer every subsequent suffix-context query from distinct explicit residual states must have at least W_i states at that cut, and exact residual-function merging attains W_i. This is a Myhill--Nerode-type representation theorem, not a claim about unrestricted SAT decision.
+\section{Forward/reverse DP without enumerated states}
+The forward reachable syndrome set is U=\operatorname{im}A_L and the backwards compatible set is b+V. Their intersection is nonempty iff Ax=b is SAT. Both sets admit polynomial-size affine basis descriptions, and their intersection is decided in polynomial time by Gaussian elimination even if the explicit intersection or cut-state family has exponentially many members. Thus reverse DP can be exact without materializing the rich relation.
+\section{Same signed (2,2) formula in 3SAT and Circuit-SAT}
+Reuse the previously established connected source H_g from CONNECTRANK71. With z_{g+1}=z_1,
+\[
+H_g=\bigwedge_{j=1}^{g}(x_j\vee\neg y_j\vee z_j)\land
+(x_j\vee\neg y_j\vee\neg z_j)\land
+(\neg x_j\vee y_j\vee z_{j+1})\land
+(\neg x_j\vee y_j\vee\neg z_{j+1}).
+\]
+It has n=3g, m=4g, two occurrences of each sign for every variable, distinct proper ternaries, connected incidence, and N=(16g+2)\lceil\log_2(64(7g+1))\rceil input bits. Complementary-clause contraction gives H_g\equiv\bigwedge_j(x_j\leftrightarrow y_j) with unrestricted z_j and 2^{2g} models.
+\begin{theorem}[Exponential-order gap; PROVED/EXACT]
+For variable order x_1,\ldots,x_g,y_1,\ldots,y_g,z_1,\ldots,z_g the cut width immediately after x_g is 2^g. For interleaved order x_1,y_1,z_1,\ldots,x_g,y_g,z_g the maximum cut width is at most 3. A NOT1/OR2/AND2 shared-source input-evaluation circuit has G=n+3m-1=15g-1 gates and E=n+6m-2=27g-2 directed gate references. A functional Tseitin encoding D_g of these gates satisfies \exists a\,D_g(x,y,z,a)\equiv H_g(x,y,z), so projecting all gate bits preserves the same source residual widths, not necessarily a circuit graph's treewidth.
+\end{theorem}
+\begin{proof}
+For the contracted affine matrix A=[I_g\ I_g\ 0], both partial column spans at the bad cut have rank g, and A has rank g. Thus \eta=g, a=\eta and W=2^g. In the interleaved order at most one equality pair is half read, giving at most two live possible x states plus a rejecting sink for previously mismatched pairs. Free z bits change nothing. For the circuit, every gate bit is uniquely determined by input bits and earlier gates, so existentially projecting the definitional gate equations is exactly forward evaluation of H_g.
+\end{proof}
+Backward propagation from AND=TRUE through OR3 demands one true literal per clause and consistency of shared source IDs. In exact-(2,2) the opposite occurrence graph is a disjoint union of K_{2,2}. This independent-transversal encoding is optional. Gate counts concern evaluation, not SAT-solving circuit lower bounds; Tseitin gate CNFs need not preserve the original physical signed-occurrence quotas.
+\section{Restricted charged amortization}
+In an explicit cut-state calculus output one distinct separately addressable record per suffix residual function; forbid source-prefix rereads and implicit algebraic summaries in this service. If J=W_i records are required and j have been written, the noncircular potential \Psi_j=J-j falls by at most one per paid record emission, requiring at least J records and \Omega(J) record writes. In H_g's bad ordering the bound is 2^g, while the good ordering has at most three live states. The emitted state IDs themselves need \Omega(g) bits when J=2^g, exceeding a constant number of source-width words. SCC, affine elimination, learned clauses, Horn, components, caching, arbitrary order selection, source reuse, and decide-first are not covered by this restricted result.
+The first interaction raising the cut obstruction is a single equation x_j=y_j with x_j read and y_j unread: it increases \eta by one and doubles the number of nonzero suffix residuals. Moving y_j across the cut removes that dimension. This is not an exponential cost for an arbitrary solver.
+\section{Computational evidence and corpus}
+COMPUTATIONAL: stdlib audit seed 202610231259 completed 12,285 assertions, zero failures. Exhaustive H_g source-CNF versus shared-circuit evaluation checked 4,680 assignments for g=1..4. Exact brute-force residual-function widths (bad,interleaved) were (2,2),(4,3),(8,3),(16,3). A separate battery of 550 random affine systems, including 110 inconsistent, checked 2,829 cuts against the polynomial rank formula, zero discrepancies. Full code and JSON are in the handoff package. Finite tests do not prove asymptotic bounds.
+CORPUS REVIEWED: repository tree, main.tex, AGENTS.md, CODEX.md, research skill, active tasks and CRS-PPC index, MAIN64/85/106, LSPV-1 CONNECTRANK71/GAUGEFORK81, LSPV-2 REPAIR-GAP64, LSPV-3 HWB-OBDD-BARRIER68/STATEWIDTH72, LSPV-4 PRIORITY-HORN-PARSIMONY67 and earlier affine/frontier/source-probe notes.
+DUPLICATION/CONTRADICTION: CONNECTRANK71 already proved one-cut 2^g rank; HWB-OBDD68 already proved all-order OBDD hardness for another source-easy family. New here is the exact all-cut affine residual formula, good/bad-order comparison, reverse affine basis shortcut and projection audit. ROOT-LABEL-QUOTIENT85 already proved two root SAT label classes; this report does not upgrade a restricted state lower bound to an all-decider lower bound.
+WHAT CHANGED RELATIVE TO ROOT MAIN: add formula for affine cut width and source-aware good-order/reverse-DP firewall. No P-versus-NP status change. Adopt SOURCE-CHANNEL identity preservation and charged gate projection; reject mandatory state enumeration and all-machine cost inference.
+\section{First missing implication and next test}
+The unrestricted target stays OPEN:
+\[
+\forall A\ \forall c>0\ \forall N_0\ \exists F_A:\ |F_A|\ge N_0\land T_A(F_A)>|F_A|^c.
+\]
+An extraction theorem would need to transform the actual trace of every total uniform exact SAT decider into a nontrivial interface service with matched charged cost, while allowing arbitrary algebraic compression, lazy context queries and direct decision. No such theorem is given. Next: audit both-label 198-variable signed-balanced U/V sources using certified separators, forward/reverse tables and symbolic shortcuts; include full acquisition, construction and replay costs.
+\begin{thebibliography}{5}
+\bibitem{Bryant} R. Bryant, Graph-Based Algorithms for Boolean Function Manipulation, IEEE Trans. Computers C-35 (1986), 677--691, DOI 10.1109/TC.1986.1676819.
+\bibitem{Samer} M. Samer and S. Szeider, Algorithms for Propositional Model Counting, Journal of Discrete Algorithms 8 (2010), 50--64, DOI 10.1016/j.jda.2009.06.002.
+\bibitem{Circuit} D. Lokshtanov et al., Beating Brute Force for (Quantified) Satisfiability of Circuits of Bounded Treewidth, SODA 2018, DOI 10.1137/1.9781611975031.18.
+\bibitem{Bodlaender} H. Bodlaender et al., Deterministic Single Exponential Time Algorithms for Connectivity Problems Parameterized by Treewidth, Information and Computation 243 (2015), 86--111.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::AFFINECUTDP82
