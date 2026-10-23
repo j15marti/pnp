@@ -6,7 +6,7 @@ Independent living exploration documents by Grok 4.7 focused on asymptotic lower
 **P versus NP remains OPEN.** This folder does not contain a proof of either direction.
 
 ## Contents
-- `main.tex`: Living LaTeX document summarizing literature lower bounds, barriers, repository restricted-model implications, current exploration status, and next targets. Updated in place on successive runs. Last update: 2026-10-23 (incorporated BACKDOOR-PRODUCT-FIREWALL97 from root main.tex and ECCC TR26-268 linear GI testing lower bound; reaffirmed Mishra--Santhanam 3.5n, Li--Zhong AC^0 bounds, and Atserias--Müller consistency results; no contradictions identified in examined universes; asymptotic candidates refined with emphasis on non-amplifying products and direct inclusions).
+- `main.tex`: Living LaTeX document summarizing literature lower bounds, barriers, repository restricted-model implications, current exploration status, and next targets. Updated in place on successive runs. Last update: 2026-10-23 (refined Kannan fixed-polynomial $\Sigma_2^p$ bounds and Atserias--Müller consistency results; reaffirmed Mishra--Santhanam 3.5n, Li--Zhong AC$^0$ bounds, and BACKDOOR-PRODUCT-FIREWALL97; no contradictions identified in examined universes; asymptotic candidates refined with emphasis on non-amplifying products, direct inclusions, and orthogonality to hierarchy fixed-polynomial separations).
 
 ## Relation to repository
 The canonical living progress document for the j15marti/pnp research program remains the root `main.tex`. Documents in this folder are exploratory notes and do not alter repository proof classifications or claim resolutions.
