@@ -1,0 +1,110 @@
+% LSPV-2 REPORT::WIDTH_CERT52::2026-10-23T16:12:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,url}
+\newtheorem{theorem}{Theorem}
+\title{WIDTH-CERT52: Charged Width versus Cycle-Cutset Normalization}
+\author{LSPV-2: Constructive Charged Normalization}
+\date{23 October 2026, 16:12 Asia/Seoul}
+\begin{document}
+\maketitle
+\textbf{STATUS: P versus NP remains OPEN.} Independent red-team review is pending.
+
+\section{Three falsifiable mechanisms}
+\noindent\textbf{A:} Construct two-row coloring ladders with linear minimum feedback vertex sets but constant exact elimination width. Falsify by showing sublinear feedback vertex sets or superconstant induced width in the certified order.\par
+\noindent\textbf{B:} Find equal-size SAT and UNSAT ladders with linear syntactic strong 2-CNF backdoors and polynomial normalization. Falsify by an UNSAT witness or absence of the SAT witness.\par
+\noindent\textbf{C:} Remove the obvious local four-clique obstruction with equal-size odd-wheel SAT/UNSAT pairs. Falsify by a four-clique in either control or an incorrect label.\par
+
+\section{General certified pipeline}
+Take an explicit CNF with \(n\) source Boolean variables, \(m\) clauses and four \(w\)-bit fields per clause, with \(w=\lceil\log_2(16(n+m+1))\rceil\) and \(N=4w(m+1)\) input bits. All source reads, shortcut attempts, certificates and source replays are charged.
+\begin{theorem}[Arbitrary 2-CNF with at most \(k\) ternary clauses]
+There exists an exact deterministic certified SAT/UNSAT algorithm in time \(O(2^h\operatorname{poly}(N))\) for some \(h\le k\), with polynomial streaming workspace.
+\end{theorem}
+\begin{proof}
+Scan the ternary clauses, adding one variable from any uncovered ternary to a set \(S\). Then \(|S|=h\le k\) and every restriction to \(S\) leaves 2-CNF. Enumerate all \(2^h\) assignments and decide each child by SCC. For SAT replay the full source assignment. For UNSAT retain or stream empty-clause certificates or a pair of source-labelled paths \(x\leadsto\neg x\) and \(\neg x\leadsto x\) for each rejected child; the verifier checks those edges against the restricted clauses. Child construction, unsuccessful branches and verification are counted. Retaining all certificates may use exponential output memory. This is an upper bound, not a search lower bound.
+\end{proof}
+Alternative polynomial shortcuts include charged affine/XOR recognition plus Gaussian elimination, and exact source-separated component joining. Neither shortcut may omit cross-block shared source variables.
+
+\section{Source-CNF quotient and exact table certificates}
+For graph \(G=(V,E)\) use three original Boolean variables \(x_{v,0},x_{v,1},x_{v,2}\) per vertex and the formula
+\[
+F_G=\bigwedge_{v\in V}\left[(x_{v,0}\vee x_{v,1}\vee x_{v,2})
+\wedge\bigwedge_{a<b}(\neg x_{v,a}\vee\neg x_{v,b})\right]
+\wedge\bigwedge_{\{u,v\}\in E}\bigwedge_{a=0}^{2}
+(\neg x_{u,a}\vee\neg x_{v,a}).
+\]
+Its satisfying assignments are in bijection with graph three-colorings. The normalizer independently checks the complete signed-clause multiset. Here \(q=|V|,\ e=|E|,\ n=3q,\ k=q,\ m=4q+3e\). There are no auxiliary variables in the original encoding.
+
+Choose an explicit elimination order \(\pi\), verifying its induced width \(h\) by fill-in. Eliminate each three-valued vertex \(z\) by exact existential factor projection
+\[
+R_z(\alpha_U)=\bigvee_{c=0}^{2}\bigwedge_{H\ni z}H(\alpha_U,c).
+\]
+Store every projected truth table and one witness selector per accepting row; independently replay each row for verification. A false final empty-scope factor proves UNSAT; otherwise reverse selectors construct a coloring and replay all original clauses. The selectors preserve existential extension, not every original assignment.
+
+\begin{theorem}[Restricted certified complexity]
+With the explicitly scanned factor-header implementation, normalization and independent verification take
+\[
+O\bigl(m\log(m+2)+(h+1)q(q+e)+(q+e)(h+1)3^{h+1}\bigr)
+\]
+word operations and \(O(m+(q+e)(h+1)3^h)\) retained proof/storage words. Verifying an order and reading the source are charged.
+\end{theorem}
+\begin{proof}
+Each step computes the exact existential projection of all factors mentioning the eliminated variable. Each such factor is absorbed once; at most \(h\) future neighbors yield \(3^h\) table rows with three possible eliminated colors. The stated bound includes factor-header rescans, scope processing, source multiset matching, proof rows and witness reconstruction. Checking every projected table independently verifies both labels. This is a particular charged implementation of established bounded-width CSP methods.
+\end{proof}
+
+\section{Matched ladder construction}
+For \(t\ge3\), form two row vertices per column \(i=0,\ldots,t-1\), all vertical rungs, and consecutive horizontal row edges. Add the diagonal \((0,0)(1,1)\) in both cases. The UNSAT case adds \((0,1)(1,0)\), creating \(K_4\) in the first square. The SAT case instead adds \((1,1)(2,0)\). Both labels have
+\[
+q=2t,\quad e=3t,\quad n=6t,\quad k=2t,\quad m=17t,\quad
+N=4w(17t+1).
+\]
+The minimum direct-restriction strong syntactic 2-CNF backdoor has size \(2t\), because every disjoint positive ternary requires a chosen source variable. There are \(\lfloor t/2\rfloor\) vertex-disjoint square cycles, so every feedback vertex set has that many vertices. Cycle rank equals \(e-q+1=t+1\).
+
+\begin{theorem}[Project-specific hostile pair]
+The canonical source vertex order has induced elimination width at most three on both inputs. The UNSAT graph has zero colorings; the SAT graph has exactly \(6\cdot3^{t-3}\) colorings.
+\end{theorem}
+\begin{proof}
+Eliminating a vertex in a column leaves at most the other vertex in that column and the two vertices of the next column, including fill edges. Hence at most three later neighbors. The UNSAT graph contains \(K_4\). The first three columns of the SAT graph have six proper colorings, and each subsequent ordinary two-row column has three extensions for each properly colored preceding column. Induct on column count.
+\end{proof}
+Thus a strategy branching on a minimum feedback vertex set has a growing exponential parameter on this family, while certified bounded-width dynamic programming is polynomial. The UNSAT case also has a simple local four-clique shortcut, and no unrestricted hardness is inferred.
+
+\section{No-local-\(K_4\) wheel pair}
+For odd \(g\ge7\), form a rim cycle of \(g\) vertices and a hub. The UNSAT case joins every rim vertex to the hub. Once a hub color is chosen the odd rim would need two colors, impossible. The SAT case replaces the hub-to-\(v_0\) spoke by the rim chord \(v_1v_4\). Give the hub and \(v_0\) a third color and alternate the remaining rim colors. Both graphs are \(K_4\)-free with equal \(q=g+1,\ e=2g,\ n=3(g+1),\ k=g+1,\ m=10g+4\). The natural rim-then-hub order has induced width at most four. This matched control avoids attributing the earlier normalization solely to local \(K_4\) recognition.
+
+\section{Audit and charged resources}
+Deterministic standard-library tests with seed 202610231612 evaluated 34 canonical graph cases and 260 small general 2-CNF-plus-ternary cases checked against exhaustive Boolean enumeration. There were 141 SAT and 119 UNSAT general controls, 361 unsuccessful SCC child branches with independently checked contradiction certificates, and a proper-3CNF three-auxiliary forced-zero gadget checked on eight source assignments. \textbf{666 top-level checks, zero failures.}
+\begin{center}\small
+\begin{tabular}{lrrrrrr}
+\toprule
+instance&\(n\)&\(k\)&\(m\)&\(N\) bits&width&table trials\\
+\midrule
+ladder SAT \(t=24\)&144&48&408&22904&3&699\\
+ladder UNSAT \(t=24\)&144&48&408&22904&3&1280\\
+ladder SAT \(t=160\)&960&320&2720&174144&3&4507\\
+ladder UNSAT \(t=160\)&960&320&2720&174144&3&8624\\
+wheel SAT \(g=63\)&192&64&634&35560&4&3169\\
+wheel UNSAT \(g=63\)&192&64&634&35560&3&3572\\
+\bottomrule
+\end{tabular}\end{center}
+At \(t=160\), each label's recognizer read 8,160 source literal fields. The SAT constructor scanned 76,645 factor headers and made 9,346 factor-table reads; the independent verifier performed 16,362 table lookups on 2,884 output rows. The UNSAT constructor made 16,310 factor-table reads. Peak retained factor/witness rows: 2,904. These are logical row counters, not Python process memory measurements.
+
+The ledger \(T=C_{\mathrm{discovery}}+C_{\mathrm{normalization}}+C_{\mathrm{verification}}+C_{\mathrm{continuation}}\) is an identity, not a lower bound. Recognition failure invokes the charged general \(2^k\operatorname{poly}(N)\) fallback. Source names are exact, every attempted child is counted, and gate/transistor SAT-solving lower bounds are not claimed.
+
+\section{Source and status ledger}
+Three original project sources directly inspected: MAIN\_SMALL\_INTERFACE\_EXACT\_JOIN64, COLOR\_JOIN51 and Role 4 PERMUTATION\_CYCLE54. Root main.tex and protocol files plus current MAIN93 summaries were also checked. MAIN93 already states a supplied-feedback-set \(3^c\) bound; this is not claimed new. Role 4's cyclic permutation constraints have a linear holonomy shortcut. Role 1 ONEPASS66's restricted streaming bound has no unrestricted SAT-time consequence. Predecessor LSPV-1 PAIRHELLY67 GitHub report header and final sentinel were verified, but its scientific body was not newly read. Most Google Drive Living Logs and other original sources remain unseen.
+
+\noindent\textbf{PROVED/EXACT restricted:} source-compatible graph translation, certified elimination, matched ladder parameter separation, matched \(K_4\)-free wheel control, and general charged branching upper bound.\par
+\noindent\textbf{KNOWN THEOREM:} SCC 2-SAT, bounded-width CSP algorithms, graph 3-coloring NP-completeness.\par
+\noindent\textbf{COMPUTATIONAL:} 666 finite checks, zero failures.\par
+\noindent\textbf{FALSIFIED/RETIRED:} linear strong backdoor, cycle rank or minimum feedback set alone forces exponential deterministic decision.\par
+\noindent\textbf{OPEN:} universal cheap width acquisition, any superpolynomial lower bound covering every uniform exact deterministic SAT decider, P versus NP.\par
+
+Next test: add nonlocal compatibility edges to the ladder while independently testing bipartite, affine, separator, symmetry and direct contradiction shortcuts. The first missing theorem must rule out \emph{all} polynomial-time deciders, not only this table-elimination algorithm.
+
+\begin{thebibliography}{9}
+\bibitem{apt} B. Aspvall, M. F. Plass, R. E. Tarjan, \emph{Information Processing Letters} 8 (1979), 121--123, doi:10.1016/0020-0190(79)90002-4.
+\bibitem{freuder} E. Freuder, \emph{AAAI} (1990), 4--9.
+\bibitem{gjs} M. Garey, D. Johnson, L. Stockmeyer, \emph{Theoretical Computer Science} 1 (1976), 237--267.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::WIDTH_CERT52
