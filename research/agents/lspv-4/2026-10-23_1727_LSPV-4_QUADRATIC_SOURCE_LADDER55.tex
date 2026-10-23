@@ -1,0 +1,89 @@
+% LSPV-4::QUADRATIC_SOURCE_LADDER55::2026-10-23::START
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{QUADRATIC-SOURCE-LADDER55: Charged Ternary Ladder and Source-Query Ceiling}
+\author{LSPV-4 independent red team}
+\date{23 October 2026}
+\begin{document}
+\maketitle
+\noindent\textbf{Status: P versus NP is OPEN.} Every lower bound below concerns explicitly addressed input words, NOT superlinear exact-SAT time in the total encoded input size. Three preregistered hypotheses: (H1) two source-coherent OR trees with linearly many ternary clauses support quadratically many independently answer-critical binary orientations, PROVED/EXACT; (H2) every ternary can be necessary to an UNSAT source, PROVED/EXACT; (H3) a superlinear lower bound follows from this query quadratic, FALSIFIED/RETIRED by a matching linear-in-input scan.
+
+\section{Explicit source and encoding}
+Fix $d\ge2$, two leaf sets $A=\{a_1,\ldots,a_d\}$ and $B=\{b_1,\ldots,b_d\}$, and a matrix $\tau\in\{0,1\}^{d\times d}$. For each set build a binary OR tree, with each internal gate $t=p\lor q$ encoded by its exact functional CNF
+\[
+(\neg p\lor t)\land(\neg q\lor t)\land(p\lor q\lor\neg t).
+\]
+If $r_A,r_B$ are the roots, force them with paired proper binary clauses $(r_A\lor u)\land(r_A\lor\neg u)$ and $(r_B\lor v)\land(r_B\lor\neg v)$, where $u,v$ are free. Add all pairwise negative binary clauses within each leaf set (at most one true leaf). For each $(i,j)$ add
+\[
+C_{ij}=\begin{cases}(\neg a_i\lor\neg b_j),&\tau_{ij}=1,\\
+(\neg a_i\lor b_j),&\tau_{ij}=0.\end{cases}
+\]
+The total formula $\Phi_{d,\tau}$ contains exactly
+\[
+n=4d,\qquad m_2=2d^2+3d,\qquad k=m_3=2d-2,\qquad m=2d^2+5d-2.
+\]
+There are $2d$ original choices, $2d-2$ functional OR-gate variables, and two free auxiliaries. No initial unit or pure literal occurs. Every clause is proper. Source encoding uses two header words followed by four fixed words (width and three signed-literal slots) per clause, each word having
+\[
+w=\lceil\log_2(64(n+m+1))\rceil,\quad N=(2+4m)w=(8d^2+20d-6)w.
+\]
+A sign change affects one bit of one signed-literal word and no length or other metadata. All parsing, source reads, template verification, failed attempts, witnessing, replay, construction, output length and peak space are charged.
+
+\section{Exact semantic and source-query theorems}
+\begin{theorem}[Both-label criterion and counting]
+If $h_i=|\{j:\tau_{ij}=0\}|$, then
+\[
+\Phi_{d,\tau}\in SAT\iff \exists i:h_i=1,\qquad
+\#SAT(\Phi_{d,\tau})=4|\{i:h_i=1\}|.
+\]
+\end{theorem}
+\begin{proof}
+The root forcing plus functional gates and intra-group exclusions enforce exactly one true $a_i$ and one true $b_j$. If $a_i=b_j=1$, the $i$th row's $j$th clause requires $\tau_{ij}=0$ while every other entry in that row requires $\tau_{i\ell}=1$. Conversely any row with exactly one zero at $j$ gives the valid choice $(a_i,b_j)$, unique functional gate values, and four free $(u,v)$ settings. Clauses in other rows are automatically satisfied.
+\end{proof}
+\begin{theorem}[Input-word necessity]
+On the all-one (UNSAT) source, every deterministic exact SAT decider working on the declared fixed-record addressed-word input model must read each of the $d^2$ sign-containing source words:
+\[
+D_{\mathrm{word}}(\Phi_{d,\mathbf 1})\ge d^2=(k+2)^2/4=\Omega(N/\log N).
+\]
+\end{theorem}
+\begin{proof}
+Flipping any unread sign creates precisely one zero in its row, producing SAT with exactly four complete assignments. The original and flipped source differ in no other addressed word; an exact deterministic algorithm with identical observations cannot give opposite answers. The lower bound is tight up to constants because a single $O(d^2)$ source scan determines all row zero counts. It is neither an encoding-independent $\Omega(N)$ theorem nor a superlinear computation-time lower bound.
+\end{proof}
+\begin{theorem}[Every ternary essential on the designated UNSAT source]
+For every internal gate ternary $D=(p\lor q\lor\neg t)$, the formula $\Phi_{d,\mathbf1}\setminus\{D\}$ is satisfiable, although $\Phi_{d,\mathbf1}$ is not.
+\end{theorem}
+\begin{proof}
+In the group containing the deleted ternary, set all leaves false, set $t$ true despite its false children, and propagate true values along the OR tree path to the root. Every other gate remains functional. In the opposite group set exactly one leaf true, compute all gate outputs normally, and satisfy its root. The within-group exclusions and all cross negative clauses hold because the first group's leaves are false. The deleted $D$ is the only violated original clause.
+\end{proof}
+
+\section{Charged transport and finite audit}
+Construction writes $\Theta(d^2)$ binary records and $O(d)$ functional-gate records. Canonical recognition plus scanning all $d^2$ orientation signs takes $O(n+m+d^2)=O(d^2)$ word operations and $O(n+m)$ conservative live words in the audited implementation, including its independently rebuilt source template. A witness is reconstructed in $O(d)$ and checked on the unchanged CNF in $O(m)$. A total exact SAT algorithm can first check this canonical template and run the row scan, otherwise fall back to exhaustive SAT; it remains correct on ALL inputs but is polynomial on this hostile family. Consequently no all-algorithm superlinear time lower bound follows.
+Under a formula-evaluation circuit basis with one shared NOT per source variable, two-input OR gates to evaluate every clause, and a two-input AND tree over clause results,
+\[
+G=n+2m_2+3m_3-1=4d^2+16d-7,\quad
+W=n+4m_2+6m_3-2=8d^2+28d-14.
+\]
+These are not SAT-solving lower bounds; no switch count is inferred.
+A standalone Python auditor with seed 20261023 completed 196,607 assertion-accounted checks with zero failures. It tested 528 full orientation matrices ($d=2,3$) against an independent exact DPLL solver, all original assignments for $d=2$, SAT and UNSAT two-orientation controls, functional OR-gate tables, a satisfying assignment for every single ternary deletion through $d=64$, 510 implication-chain 2-SAT labels, 30 padded binary-to-genuine-3CNF controls, Horn, affine/XOR, and independent products. At $d=64$, $n=256$, $k=126$, $m=8510$, $N=680840$ bits, and 4096 orientation-field probes are necessary on the all-one input. Larger single-sign flips were sampled, not exhausted; their universal property is mathematically proved.
+
+\section{Stage-by-stage ladder and exact open implication}
+The original $q$-orientation 2-SAT chain has $n=q+3$, $m=q+4$, and its all-one input requires $q$ addressed orientation reads, while SCC solves the full 2-CNF in linear input time [1]. Padding a binary clause $(a\lor b)$ with fresh $z$ gives $(a\lor b\lor z)\land(a\lor b\lor\neg z)$, preserving the same easy source semantics. For arbitrary 2-CNF plus at most $k$ genuine ternaries, choosing one original variable from each ternary yields $|S|\le k$ and the exact upper bound $2^{|S|}\operatorname{poly}(N)$ after branching to 2-CNF. Fixed and logarithmic $k$ are polynomial; this is NOT a lower bound. The present family has a quadratic number of explicitly written compatibility fields but an $O(N/\log N)$ word decision scan. For graph $G=(V,E)$, standard one-hot 3-coloring gives $n=3V,k=V,m_2=3V+3E$ and NP-completeness [2]; no lower-bound transfer from the easy family is justified. The earlier conflict-graph/2-CNF boundary projection is also polynomially acquired [3].
+The required separation quantifier is
+\[
+\forall A\ \forall c>0\ \forall N_0\ \exists F:
+|F|\ge N_0\ \land\ T_A(F)>|F|^c,
+\]
+for every total uniform exact deterministic decider $A$ of one fixed NP-complete language. This all-decider post-acquisition/compression/continuation implication is OPEN. Our family contains no cryptographic, ETH, or SETH assumption.
+
+\section{Peer handoff and corpus reconciliation}
+Role 5 should independently validate the all-one sign-bit adversary, all ternary deletions, and fixed-width signs. Roles 1--3 should test all-one UNSAT, one-flipped SAT, and two-same-row-flipped UNSAT as exact source-aware transport hostile controls. Proposed first amplification: couple three or more three-choice OR selector groups using arbitrary binary forbidden-pair relations, reaching the graph 3-coloring endpoint; measure interaction width and acquisition, avoid transferring the quadratic query count as a machine time bound.
+Before formalizing, checked repository root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, the research skill, \texttt{research/main/2026-10-23_1148_MAIN_TERNARY_PROJECTION_KERNEL88.tex}, \texttt{research/main/2026-10-23_1248_MAIN_DENSE_COUPLING_FIREWALL90.tex}, and \texttt{research/agents/lspv-3/2026-10-16_1535_SOURCEPROBE19_HANDOFF.md}. Existing exact 2-CNF boundary projections and input-access transport ceilings are acknowledged, not claimed new. Only this specialist's root section may be reconciled. Main proof status OPEN.
+\begin{thebibliography}{9}
+\bibitem{APT}[1] Aspvall, Plass, Tarjan, \emph{A Linear-Time Algorithm for Testing the Truth of Certain Quantified Boolean Formulas}, IPL 8 (1979), 121--123, doi:10.1016/0020-0190(79)90002-4.
+\bibitem{GJS}[2] Garey, Johnson, Stockmeyer, \emph{Some Simplified NP-Complete Graph Problems}, TCS 1 (1976), 237--267, doi:10.1016/0304-3975(76)90059-1.
+\bibitem{DP}[3] Davis and Putnam, \emph{A Computing Procedure for Quantification Theory}, JACM 7 (1960), 201--215, doi:10.1145/321033.321034.
+\end{thebibliography}
+\end{document}
+% LSPV-4::QUADRATIC_SOURCE_LADDER55::2026-10-23::VERIFIED-END
