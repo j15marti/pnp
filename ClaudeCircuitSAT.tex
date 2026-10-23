@@ -1,0 +1,53 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{proposition}{Proposition}
+\title{ClaudeCircuitSAT: A Wire-by-Wire Ladder Toward Circuit-SAT Lower Bounds}
+\author{Living document (hourly scheduled run); last updated 2026-10-23}
+\date{}
+\begin{document}\maketitle
+\paragraph{Status discipline.} PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED. \textbf{P versus NP remains OPEN.} Nothing here proves a superpolynomial lower bound.
+
+\section{Goal and method}
+Ladder: start from the simplest circuit-SAT-type problems, track the exact wire count (gate inputs; fan-in~2, unbounded fan-out, basis $B_2$) of the minimum circuit at each rung, then increase the number of inputs $n$ and the structural complexity, recording where proven bounds stop. Wires $=2\cdot$gates for $B_2$ circuits with all gates fan-in 2.
+
+\section{Rung 0: exact computation, $n\le 3$ (COMPUTATIONAL, exhaustive)}
+Script: \path{results/claude_circuitsat/min_circuit_exact.py} (BFS over sets of computed truth tables; run time $<$16\,s; no chunking needed). Output negation is free.
+\begin{center}\begin{tabular}{@{}lcccccc@{}}\toprule
+$n$ & \multicolumn{5}{c}{\#functions with min gates $=g$} & max gates\\
+ & 0 & 1 & 2 & 3 & 4 & \\\midrule
+2 & 6 & 10 & -- & -- & -- & 1\\
+3 & 8 & 30 & 114 & 80 & 24 & 4\\\bottomrule\end{tabular}\end{center}
+So the worst 3-input function needs $4$ gates $=8$ wires. This matches the known value $C_{B_2}(\text{worst},3)=4$. Data: \path{results/claude_circuitsat/exact_n2.json}, \path{exact_n3.json}.
+
+\section{Rung 1: connectivity lower bound (PROVED/EXACT)}
+\begin{proposition}
+If $f:\{0,1\}^n\to\{0,1\}$ depends on all $n$ inputs, any fan-in-2 circuit computing $f$ has $\ge n-1$ gates and $\ge 2(n-1)$ wires.
+\end{proposition}
+\emph{Proof.} Every essential input has a directed path to the output; the underlying graph restricted to inputs and gates must be connected, so with $g$ gates of fan-in 2 and $n$ inputs we need $2g\ge g+n-1$ edges to span $g+n$ nodes, i.e.\ $g\ge n-1$. \qed
+
+Tight for: a single clause $\bigvee_i \ell_i$ ($n-1$ gates; its SAT instance is trivial), parity ($n-1$). Hence the first genuine content of the ladder is the gap between $n-1$ and anything larger.
+
+\section{Rung ladder (plan)}
+\begin{center}\begin{tabular}{@{}lll@{}}\toprule
+Rung & Object & Known gate bound\\\midrule
+1 & single-clause SAT / OR$_n$ & $n-1$, exact (above)\\
+2 & $n$-input symmetric functions (threshold, MOD) & $\ge 2.5n-O(1)$ (Stockmeyer; KNOWN THEOREM, to be re-verified against source)\\
+3 & explicit functions, full $B_2$ & $\ge 3n-o(n)$ (Blum 1984), improved to $\approx 3.1n$ (Find--Golovnev--Hirsch--Kulikov) --- KNOWN, citation to be re-verified\\
+4 & Circuit-SAT as a language, general circuits & no superlinear gate lower bound known; OPEN\\\bottomrule\end{tabular}\end{center}
+Remark: literature figures above were recalled from memory this run and are \emph{not yet checked} against primary sources; treat as CANDIDATE citations until verified (next-run task).
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend exact search to $n=4$ (65536 functions; needs chunked/Knuth-style enumeration, each stage $<30$\,s, checkpointed).
+\item Verify literature figures on the rung table from primary sources.
+\item Define a sequence of NP-complete-flavoured families with growing $n$ (clause-width, number of clauses) and record exact minimum \emph{verifier} circuit size $V_{n,m}$ for small $(n,m)$ --- gap between $V$ and the connectivity bound is the object of study.
+\item Cross-check with the repository corpus (root \path{main.tex}, currently: executive status \emph{P versus NP remains OPEN}; relevant themes: OBDD/query barriers, 2-CNF+$k$ ternary clauses upper bound $O(2^k\mathrm{poly}(N))$ with necessity OPEN). No repository result was found to transfer a circuit lower bound here; relativization/natural-proofs/algebrization audits would be mandatory for any claim beyond Rung~3.
+\end{enumerate}
+
+\section{Run log}
+\begin{itemize}
+\item 2026-10-23: file created; Rung 0 computed ($n\le3$); Rung 1 proved; literature table unverified.
+\end{itemize}
+% END_OF_CLAUDECIRCUITSAT
+\end{document}
