@@ -1,0 +1,75 @@
+% CLAUDECIRCUITSAT LIVING DOCUMENT::RUN_2026-10-23_CCS2
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=1in]{geometry}
+\newtheorem{lemma}{Lemma}
+\newcommand{\st}[1]{\textsf{[#1]}}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder toward lower bounds for Circuit-SAT}
+\author{Claude (scheduled hourly run)}
+\date{Last updated 23 October 2026 (run CCS2)}
+\begin{document}\maketitle
+\fbox{\parbox{0.95\linewidth}{\textbf{Status: P versus NP remains OPEN.} Nothing here proves a superpolynomial Circuit-SAT lower bound. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.}}
+
+\section{Goal and method}
+Goal: a lower bound for Circuit-SAT (NP-complete). Method: start with the smallest circuits, add inputs one at a time, and ledger (i) the minimum number of gates $g(n)$ and wires $w(n)$ needed to \emph{build} a circuit with $n$ inputs having a given property, and (ii) what any SAT-decider must \emph{read}. Convention: fan-in-2 gates over the full binary basis $B_2$; $w=2g$ counting gate input wires (output wires = fan-out are tracked separately).
+
+\section{Ladder}
+\paragraph{Rung 0 ($n=1$).} Circuits are $x$, $\neg x$, $0$, $1$ (up to free negation, $g=0$, $w=0$). SAT decided by reading one description. PROVED/EXACT.
+
+\begin{lemma}[Connectivity rung, PROVED/EXACT]\label{lem:conn}
+A fan-in-2 circuit with a single output that depends on all $n$ inputs has $g\ge n-1$ and $w\ge 2(n-1)$; equality holds for AND$_n$, OR$_n$, XOR$_n$ (a tree).
+\end{lemma}
+\begin{proof} Each input has a path to the output, so the underlying undirected graph on $n$ inputs plus $g$ gates is connected, hence has $\ge n+g-1$ edges; wires $=2g$ (each gate has two in-wires) gives $2g\ge n+g-1$, i.e.\ $g\ge n-1$. \end{proof}
+
+\begin{lemma}[Read-all rung, PROVED/EXACT, deterministic, descriptive model]\label{lem:read}
+Let instances be $C=\mathrm{AND}(h_1,\dots,h_m)$ in which each $h_i$ is a literal or constant $0$, encoded as a list of $m$ cells. A deterministic algorithm deciding SAT must read all $m$ cells.
+\end{lemma}
+\begin{proof} On the all-literal (consistent) instance, if a cell is unread, set it to $0$: the answer flips from SAT to UNSAT, indistinguishable. \end{proof}
+This matches the repository's fixed-width $\Omega(N/\log N)$ acquisition bound (root \texttt{main.tex}): a linear-in-wires rung, \emph{not} a time lower bound against arbitrary algorithms.
+
+\paragraph{Rungs 2--4 (exact minimum sizes, COMPUTATIONAL; CCS2 correction of CCS1).}
+Convention (now enforced in code): gates are all of $B_2$, literals $x_i,\neg x_i$ and constants are free, output negation is free, so functions are counted up to complement (normalized $f(\mathbf 0)=0$; $2^{2^n-1}$ classes). Script \texttt{experiments/claudecircuitsat\_ladder.py} (each call $\le 25$\,s; modes \texttt{formula} and \texttt{<G>}). \emph{Correction:} the CCS1 script charged one gate for $\neg x$ although the text claimed free negation, so its size-0 count (5) was inconsistent; the corrected size-0 count for $n=3$ is $8$ functions ($4$ normalized). Max sizes and the $n=3$ tail are unchanged.
+\begin{center}\begin{tabular}{lccccccccc}\toprule
+$n$ & norm.\ fns & $g{=}0$ & 1 & 2 & 3 & 4 & 5 & 6 & 7\\\midrule
+2 & 8 & 3 & 5 & & & & & &\\
+3 (circuit = formula) & 128 & 4 & 15 & 57 & 40 & 12 & & &\\
+4 (circuit $\le4$ gates, BFS) & 32768 & 5 & 30 & 228 & 1237 & 5312 & ? & ? & ?\\
+4 (formula, exact DP, gates$=$leaves$-1$) & 32768 & 5 & 30 & 228 & 1237 & 5312 & 12092 & 12320 & 1544\\\bottomrule
+\end{tabular}\end{center}
+For $n=4$ the circuit BFS matches the formula DP through $4$ gates (as it must: sharing needs $\ge5$ gates), and BFS beyond $g=4$ exceeds the 30\,s rule ($474$k states at $g{=}4$). The formula column is an \emph{upper bound} on circuit size; hardest 4-input formulas need $7$ gates ($8$ leaves, $14$ in-wires). The literature value for the maximum $B_2$ circuit size at $n=4$ is $7$ (Knuth, TAOCP 7.1.2; KNOWN, to verify). Next: symmetry (NPN) canonicalization of states and a SAT-based exact check for the sharing gap at $g\ge5$.
+\paragraph{Growth.} Max $g$: $1,4,7$ for $n=2,3,4$ (max in-wires $2,8,14$): consistent with the $\Theta(2^n/n)$ Shannon regime but far too small to extrapolate (COMPUTATIONAL, small-$n$ data only).
+
+\begin{lemma}[Counting rung, KNOWN THEOREM (Shannon)]
+Almost all $n$-input Boolean functions need $\Omega(2^n/n)$ gates. Non-constructive; gives no lower bound for a specific NP function.
+\end{lemma}
+
+\section{Ledger of lower bounds for explicit functions}
+\begin{tabular}{lll}\toprule
+Bound & Status & Note\\\midrule
+$g\ge n-1$ (depends on all inputs) & PROVED/EXACT & Lemma~\ref{lem:conn}\\
+$\Omega(m)$ cell reads for AND-of-literals SAT & PROVED/EXACT & Lemma~\ref{lem:read}, descriptive model\\
+$\approx 3.1n-o(n)$ gates, explicit function, $B_2$ & KNOWN THEOREM & gate elimination (Blum; Find--Golovnev--Hirsch--Kulikov; Li--Yang 2022); cite to verify\\
+$2^n$ oracle queries to a black-box circuit & PROVED/EXACT & irrelevant: SAT solvers see the wires\\
+Superlinear / superpolynomial size for an NP function & OPEN & no known technique\\\bottomrule
+\end{tabular}
+
+\section{Why the ladder does not simply continue}
+\begin{itemize}
+\item \textbf{Wire count is a construction cost, not a solver cost.} Lemma~\ref{lem:conn} lower-bounds the circuit \emph{being built}; a SAT solver's cost is a different quantity. Linking them needs a theorem that every solver must ``use'' each wire in a way that compounds; none known (CANDIDATE only).
+\item \textbf{Barriers.} Relativization (Baker--Gill--Solovay), natural proofs (Razborov--Rudich), algebrization (Aaronson--Wigderson) rule out the generic ways to extend counting arguments; any new rung must be checked against all three.
+\item \textbf{Gate elimination plateau.} Removing $O(1)$ gates per restricted variable yields only linear bounds; the repo's AGGREGATION-CEILING91 and DENSE-COUPLING-FIREWALL90 results are the same phenomenon for the acquisition model (linear-type ceilings).
+\end{itemize}
+
+\section{Repository cross-check (j15marti/pnp, root \texttt{main.tex}, MAIN96)}
+Reviewed: root \texttt{main.tex}, AGENTS.md, task list, newest MAIN. Useful transfers: (1) fixed-width $\Omega(N/\log N)$ acquisition rung $\leftrightarrow$ Lemma~\ref{lem:read} (analogy, same linear flavour); (2) 2-CNF projection kernel with $O(k(n+m)+k^2)$ upper bound shows structured wire sets are cheaply reducible---a warning that low-treewidth/few-clause sub-structure is not a hardness source. No repository result gives a superlinear Circuit-SAT bound; none was claimed. This document does not edit root \texttt{main.tex} or any LSPV region.
+
+\section{Next steps (OPEN agenda)}
+\begin{enumerate}
+\item NPN-canonical exact circuit sizes for $n=4$ at $g=5,6,7$ (checkpointed stages); measure the formula/circuit sharing gap.
+\item Track fan-out: minimal wires including output edges for formulas vs circuits.
+\item Search for a ``compounding read'' invariant: a potential $\Phi$(partial wire knowledge) that must rise by $\ge 1$ per wire for \emph{all} deterministic solvers on a hard distribution, checking each step against relativization.
+\item Test gate-elimination steps on SAT-instance families (planted-unsat circuits) under restricted solvers (DPLL/resolution) where lower bounds are known.
+\item Repository carry-over: CCS2 saw root \texttt{main.tex} through MAIN of 2026-10-22 (SOURCE\_JOIN\_COHERENCE56); still no repository result gives a superlinear Circuit-SAT bound.
+\end{enumerate}
+\end{document}
+% END_OF_CLAUDECIRCUITSAT::RUN_2026-10-23_CCS2
