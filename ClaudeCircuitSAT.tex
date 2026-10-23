@@ -1,0 +1,131 @@
+% Living document: ClaudeCircuitSAT.tex  (owner: scheduled Claude hourly routine)
+% Last updated: 2026-10-23 (run 1, initial creation)
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\PROVED}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\title{Claude Circuit-SAT Lower-Bound Ladder (Living Document)}
+\author{Scheduled hourly routine}
+\date{Initial run: 23 October 2026}
+\begin{document}
+\maketitle
+
+\begin{center}\fbox{\parbox{0.92\linewidth}{
+\textbf{Status: P versus NP remains \OPEN.} Nothing here is a superpolynomial
+lower bound for Circuit-SAT. The ladder below proves only \emph{linear}
+statements (size/wire counts, input-reading), which are far below what
+P$\neq$NP needs. Every load-bearing step toward a general lower bound is \OPEN.}}
+\end{center}
+
+\section{Goal and method}
+Goal: lower bounds for Circuit-SAT. Method: start from the simplest circuits,
+add inputs one at a time, and track (i) the minimum number of gates $g(n)$ and
+wires $w(n)$ (fan-in-2 basis $B_2$, so $w=2g$ plus output) needed for each
+step, and (ii) what any \emph{solver} must do, in explicit models.
+Statuses use only: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CANDIDATE, OPEN,
+FALSIFIED/RETIRED.
+
+\section{Rung A: wires needed to build a unique-witness circuit}
+\begin{lemma}[\PROVED]\label{lem:unique}
+Let $C$ be a $B_2$ circuit on $n\ge1$ inputs with exactly one satisfying
+assignment. Then $C$ has at least $n-1$ gates (so $\ge 2(n-1)$ wires).
+\end{lemma}
+\begin{proof}
+If $C$ ignored input $x_i$, satisfying assignments would come in pairs
+(flip $x_i$), contradicting uniqueness. So every input is connected to the
+output. A connected DAG containing $n$ input nodes and one output node where all
+gates have fan-in $\le2$ needs at least $n-1$ gates (each gate merges at most
+two components of the undirected underlying graph restricted to the cone;
+starting from $n$ components one needs $n-1$ merges).
+\end{proof}
+The AND of $n$ literals attains $g(n)=n-1$, $w(n)=2(n-1)$.
+
+\textbf{Exhaustive check} (\COMP; \texttt{results/claude\_circuitsat/min\_gates\_unique\_sat.py},
+each run $<30$\,s, chunked by $n$): minimum gates over all of $B_2$ for
+unique-satisfying-assignment functions: $n=2$: 1; $n=3$: 2; $n=4$: none within
+2 gates (so $\ge3$). Matches $n-1$.
+
+\begin{center}\begin{tabular}{c|c|c|c}
+$n$ & $g_{\min}$ (unique-SAT) & wires $2g$ & status\\\hline
+1 & 0 & 0 & trivial\\
+2 & 1 & 2 & COMPUTATIONAL + Lemma\\
+3 & 2 & 4 & COMPUTATIONAL + Lemma\\
+4 & 3 & 6 & Lemma; $\ge3$ COMPUTATIONAL\\
+$n$ & $n-1$ & $2(n-1)$ & PROVED/EXACT\\
+\end{tabular}\end{center}
+
+\section{Rung B: what a solver must read}
+\begin{theorem}[\PROVED, input-reading bound]\label{thm:read}
+Any deterministic algorithm that decides Circuit-SAT from the wire list of a
+circuit with $m$ wires must read $\Omega(m)$ wires in the worst case, in the
+model where wires are read individually.
+\end{theorem}
+\begin{proof}
+Base instance: $C_0=\bigvee_{i=1}^n g_i$, $g_i=x_i\wedge\neg x_i$ (the $\neg$ gate
+is fed by a wire $e_i$ from $x_i$). $C_0$ is UNSAT. Let $C_i$ reroute $e_i$ to
+$x_{i+1}$ (cyclically): $g_i=x_i\wedge\neg x_{i+1}$ is satisfiable, so $C_i$ is
+SAT, and differs from $C_0$ in one wire. An algorithm that does not read all
+$e_i$ on $C_0$ answers identically on some $C_i$. Hence $\ge n=\Theta(m)$ reads.
+\end{proof}
+This matches the repository's own ``acquisition'' rung (root \texttt{main.tex}:
+$\Omega(N/\log N)$ word probes for fixed-width encodings). It is a reading
+bound, not a time bound against algorithms that read everything.
+
+\section{Rung C: black-box search (model-mismatched, recorded to avoid misuse)}
+If the circuit is only an \emph{oracle} for $f:\{0,1\}^n\to\{0,1\}$, unique-witness
+search needs $2^n$ queries deterministically (\KNOWN; adversary argument), and
+$\Theta(2^{n/2})$ quantumly (Grover/BBBV). \textbf{Failed transfer:} Circuit-SAT
+gives the full wire list, so algorithms may inspect structure; the black-box
+bound does not apply (cf.\ CNF-SAT algorithms beating $2^n$). Any bridge from
+structure-reading algorithms to this bound is \OPEN.
+
+\section{Rung D: general circuit lower bounds (literature context)}
+\begin{itemize}
+\item Explicit-function gate lower bounds for $B_2$ are linear: $2n-O(1)$
+(Schnorr), $3n-o(n)$ (Blum), $\approx3.1n$ (Li--Yang); the root GROKPROOF file
+records a $3.5n$ claim by Mishra--Santhanam (not independently verified here).
+\KNOWN / to-be-verified; all are linear.
+\item Superpolynomial bounds exist only for restricted classes (monotone,
+constant-depth AC$^0$/ACC$^0$ variants). \KNOWN.
+\item Barriers: relativization, natural proofs, algebrization. Any
+$n\mapsto$ ladder step that generalizes must be audited against these. \OPEN.
+\end{itemize}
+
+\section{Open arrows (load-bearing)}
+\begin{enumerate}
+\item \OPEN: a lower bound for Circuit-SAT \emph{time} better than linear in
+the unrestricted model. Wire counting alone cannot give it: the ladder
+$g(n)=n-1$ is a size bound on one witness circuit, not on a decider.
+\item \OPEN: a stepwise invariant $\Phi(n)$ (wires needed to certify
+unsatisfiability of hard instances on $n$ inputs) that grows superlinearly.
+Candidate: track the minimal \emph{refutation} wire cost of hard UNSAT circuits
+(e.g.\ pigeonhole circuits) in extended-Frege-like systems; links to
+proof-complexity lower bounds. \CAND.
+\item \OPEN: bridge between wire/fan-out cost and algorithm time (VLSI
+area--time analogies are only analogies).
+\end{enumerate}
+
+\section{Cross-reference to repository work}
+Relevant repository items surveyed this run: root \texttt{main.tex} (proof
+spine, fixed-width acquisition bound, DENSE-COUPLING-FIREWALL90 matched-label
+control showing dense coupling/treewidth alone do not force expensive
+continuation), \texttt{AGENTS.md} status discipline, \texttt{GROKPROOF/}.
+Takeaway used here: raw size/treewidth growth is not a hardness source;
+the ladder must track \emph{decision cost}, not construction cost.
+
+\section{Next steps (queue for later runs)}
+\begin{enumerate}
+\item Extend the exhaustive search to minimal \emph{fan-out}-aware wire counts
+and to monotone basis (compare with known monotone lower bounds).
+\item Compute minimal refutation sizes (resolution/Frege-style) of small
+unsatisfiable circuits as $n$ grows, tabulating wires per step.
+\item Literature check on gate-elimination limits and the $3.5n$ claim.
+\end{enumerate}
+\end{document}
+% END_OF_ClaudeCircuitSAT_RUN1
