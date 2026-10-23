@@ -10,9 +10,6 @@ def generate(q, flip):
     shifts = (0, 1, q//2)
     assert len(set(shifts)) == 3
     incidence = [[] for _ in range(2*q)]
-    for i in range(q):
-        for s in shifts:
-            edge = 1 + sum(len(x) for x in [])  # explicit source counter below
     eid = 0
     for i in range(q):
         for s in shifts:
