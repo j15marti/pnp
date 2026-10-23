@@ -1,0 +1,82 @@
+% LSPV-2 REPORT::SELECTOR-LOCALITY59::2026-10-23T21:42:00+09:00
+\documentclass[10pt]{article}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,url}
+\newtheorem{theorem}{Theorem}
+\title{SELECTOR-LOCALITY59: Automatic Local Consistency, a 24-versus-28 Edge Barrier, and Certified Selector Elimination}
+\author{LSPV-2: Backward SAT algorithms}
+\date{23 October 2026, Seoul}
+\begin{document}
+\maketitle
+\noindent\textbf{Status: P versus NP OPEN; both directions. Independent mathematical review pending.} This is a standalone verified GitHub synopsis of a longer five-page local mathematical report with a standard-library executable audit and raw results. It reports restricted exact combinatorial theorems and algorithmic upper bounds, not a universal SAT lower bound.
+
+\section{Falsifiable mechanisms}
+The three tests were whether arc/path consistency gains information on a proper reverse-selector 3CNF CSP, whether an UNSAT signed exact-$(2,2)$ six-variable source can exist, and whether linear unmatched-pair defect forces large continuation work. The first answer is no by a general theorem; the second is impossible by a $24<28$ counting proof; the third is no on a canonical regular prism with both a bounded-width table method and a direct linear-time witness.
+
+\section{Exact backward representation}
+For a proper 3CNF $F=\bigwedge_{j=1}^m(\ell_{j1}\vee\ell_{j2}\vee\ell_{j3})$ with named original sources, introduce a three-valued selector $s_j$. Define $R_F(x,s)=\bigwedge_j[\ell_{j,s_j}(x)=1]$. Then $F(x)=1$ iff $\exists s\,R_F(x,s)=1$, and $F$ is SAT iff there is a set of one selected occurrence per clause with no complementary original-source pair. A clause may contain multiple true literals; exactly one \emph{selected} literal is only a witness. Reconstruct original values from consistent selected signs and replay all clauses.
+
+The fan-in-two $\mathrm{OR2}/\mathrm{AND2}$ evaluation circuit has $2m$ OR gates, $m-1$ AND gates, $3m-1$ gates total and $6m-2$ directed gate-input wires. Functional Tseitin constraints plus output TRUE use $9m-2$ clauses. With $n$ shared NOT gates on source wires, the counts become $n+3m-1$ gates, $n+6m-2$ wires, and $9m-2+2n$ CNF clauses. Trace auxiliaries are uniquely determined by source bits. The circuit evaluates assignments; it does not decide SAT on formula encodings.
+
+For strict signed exact-$(2^+,2^-)$, every original source variable occurs twice per sign, hence $4n=3m$. Its complement-occurrence graph has $4n$ vertices and $4n$ edges, being $n$ disjoint $K_{2,2}$. Clause triangles add $3m=4n$ edges, making an exact four-regular graph with $8n$ edges. An independent set of cardinality $m$ means exactly one selected occurrence per clause and is equivalent to SAT.
+
+\section{Theorem 59A: Local consistency is initially vacuous}
+\begin{theorem}
+For every proper width-$h$ CNF, $h\ge2$, the associated one-occurrence-per-clause binary selector CSP is strongly $h$-consistent before conditioning. In particular, every proper 3CNF, SAT or UNSAT, is initially arc- and path-consistent, so ordinary arc/path consistency cannot delete any original domain choice or allowed binary pair.
+\end{theorem}
+\begin{proof}
+Fix at most $h-1$ mutually compatible previously selected occurrences in different clauses. Since a target clause contains $h$ different original variable IDs, each existing choice can contradict at most one of its $h$ candidate occurrences. At most $h-1$ candidates are forbidden, leaving a compatible selection. For $h=3$, the $t=1$ and $t=2$ cases establish arc consistency and pair support in every third domain, respectively.
+\end{proof}
+The threshold is sharp: three compatible negative witnesses $\neg x,\neg y,\neg z$ from distinct clauses jointly block every witness of $(x\vee y\vee z)$. A fully exact-$(2,2)$ shifted-prism source below has this obstruction even though the formula itself is SAT. For $h=2$, the four-clause UNSAT 2CNF over two variables remains selector-arc-consistent, while ordinary implication/SCC decides it in linear time. This is a restricted local-consistency failure, not a time lower bound for SAT.
+
+\section{Theorem 59B: No six-variable signed exact-(2,2) UNSAT source}
+\begin{theorem}
+Every proper signed exact-$(2^+,2^-)$ 3CNF on $n=6$ original variables is satisfiable. A strict UNSAT instance therefore needs $n\ge9$.
+\end{theorem}
+\begin{proof}
+The occurrence identity forces $m=4n/3=8$. Each proper clause is false on exactly $2^{6-3}=8$ of the 64 complete source assignments. If all eight clauses were UNSAT jointly, their falsifying sets would cover all 64 assignments; because their sizes sum to 64, the sets would have to be pairwise disjoint. Any two clause-falsifier sets are disjoint only if their source clauses contain complementary occurrences of some common variable. Thus all $\binom82=28$ distinct clause pairs must receive a complement occurrence edge. But every original variable contributes exactly $2\cdot2=4$ opposite-sign occurrence edges, total $4n=24$. Each edge belongs to one clause pair. Since $24<28$, the requisite disjointness is impossible. At least one satisfying original assignment exists.
+\end{proof}
+For $n=3$, $m=4$, the elementary clause union bound already gives SAT. This finite-size theorem does not bound general signed exact-$(2,2)$ worst-case decision time.
+
+\section{Theorem 59C: Charged bucket elimination}
+\begin{theorem}
+Given a certified selector-variable elimination order of induced width $\omega$, exact backward-SAT decision and original-source witness reconstruction take $O(m^2 3^{\omega+1}+N/w)$ charged word operations with a straightforward table implementation. Computing a deterministic min-fill order by a direct polynomial method adds at most $O(m^4)$ word operations. Retained tables and backpointers use $O(m3^{\omega+1}+m^2)$ words. Neither bound is a lower bound.
+\end{theorem}
+\begin{proof}
+Compile a binary forbidden-value factor for each complementary pair of clause occurrences, respecting shared original variable identifiers. Process each selector in the supplied order. For each assignment to its at most $\omega$ current neighbors, enumerate its three possible choices and retain the neighbor assignment iff some choice satisfies every incident factor, recording the choice. Each step is existential projection of its bucket. An empty factor proves UNSAT; otherwise reverse stored choices, reconstruct one shared original-source assignment, and replay $F$. The conservative factor-table counting proves the upper bounds. A verifier recomputes the table projections and full source replay.
+\end{proof}
+This is an exact instantiation of standard bounded-width CSP elimination, not a newly discovered general CSP theorem.
+
+\section{Fully unpaired monotone exact-(2,2) application}
+For $q\ge4$, let $a_j,b_j,c_j$ be source variables with indices modulo $q$. For every column $j$ include
+\[
+(a_{j-1}\vee a_j\vee c_j),\quad(b_{j-1}\vee b_j\vee c_j),
+\]
+\[
+(\neg a_{j-1}\vee\neg a_j\vee\neg c_{j+1}),\quad
+(\neg b_{j-1}\vee\neg b_j\vee\neg c_{j+1}).
+\]
+All $n=3q$ original variables appear twice positively and twice negatively; all $m=4q$ clauses are proper and distinct. No positive/negative support pair matches, and no complementary single-pivot pair exists; the Role-1 PAIRKERNEL73 unmatched defect is $\delta=4q$. Let $C_j$ contain the four selector blocks of column $j$. Every complement-conflict factor is within one or two adjacent columns. The path bags $C_0\cup C_j\cup C_{j+1}$, $1\le j\le q-2$, have size at most 12 and give induced width at most 11. Recognition of the canonical grammar and complete source correspondence is polynomial, and this certificate yields a $O(q3^{12})$ restricted table algorithm.
+
+An even simpler direct source-aware shortcut must be stated: set all $a_j=b_j=0$ and all $c_j=1$. It satisfies the whole source in $O(q)$ reconstruction plus replay. Thus neither $\delta=\Theta(q)$ nor a high theoretical enumeration count compels real cost here.
+
+\section{Hostile controls and resource evidence}
+The equal-size affine both-label cycle consists, for even $q$, of $x_j\oplus x_{j+1}\oplus z=b_j$ for all $j$, each encoded as four proper 3CNF clauses. Summing over $j$ gives $0=\bigoplus b_j$: parity-even is SAT and parity-odd UNSAT. Direct Gaussian elimination and source replay are polynomial, even when the generic selector tables become too large for the guarded implementation.
+
+With $w=\lceil\log_2(64(n+m+1))\rceil$ and exact fixed-record bit length $N=(4m+2)w$, source-signed-occurrence sorting costs $O(m\log m)$, and regular conflict construction outputs exactly $4n$ records. Failed candidate table rows, certificate verification, original/auxiliary reconstruction, source reads, backpointers and peak storage are charged. The full standard-library audit (seed 2026102359) recorded 1,554 assertions and zero failures in approximately three seconds. It checked 500 random strict $n=6$ signed-exact formulas by all 64 original assignments (all SAT; 9--24 models), q=4,6,8,12,20 fully exact signed regular shifted prisms with observed min-fill widths 7,9,9,9,9, paired SAT/UNSAT affine cycles q=4,6,8, 2CNF SCC cases, and the eight-clause proper-3CNF contradiction. The published exact signed balanced UNSAT gadget was not imported or independently audited.
+
+\section{Corpus, model boundaries and next proof obligation}
+Read original current PAIRKERNEL73 (Role 1), AFFINE-MATCHING59 (Role 4), FULL-DIFFERENCE-CERTIFICATE65 (Role 3), historical MAIN64/85, previous WITNESS-DEFECT58, root main.tex, AGENTS.md, CODEX.md, and repo skill. The independence-transversal reduction, matched-pair normalization, SCC, GF(2), and bounded-width table algorithm are prior work. The incremental proof in this report is the exact locality firewall and the $24<28$ small-source barrier, plus a certified shifted-prism application. No older result is silently upgraded. Root-SAT has only two semantic labels (MAIN85), and exact joins must retain all shared original sources (MAIN64). Rich context storage, selector table size, an input evaluator circuit, or failure of arc/path consistency does not impose superpolynomial work on an arbitrary direct SAT decider.
+
+\noindent\textbf{OPEN next arrow.} Reconstruct a genuine published UNSAT strict signed exact-$(2,2)$ original, verify every source occurrence, and compare complement-pair defect, selector induced width, affine/Horn/SCC/factor shortcuts, cached projection and direct decision. Any claim that every uniform exact SAT decider must construct a rich representation or pay equally much otherwise requires an independent fully charged all-decider extraction theorem. Both $P=NP$ and $P\ne NP$ remain OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{docker} J. D\"ocker, Monotone 3-Sat-(2,2) Is NP-Complete, arXiv:1912.08032 (2019).
+\bibitem{mack} A. Mackworth, Consistency in Networks of Relations, Artificial Intelligence 8 (1977) 99--118, doi:10.1016/0004-3702(77)90007-8.
+\bibitem{freud} E. Freuder, A Sufficient Condition for Backtrack-Free Search, JACM 29(1) (1982) 24--32, doi:10.1145/322290.322292.
+\bibitem{dech} J. Larrosa and R. Dechter, Boosting Search with Variable Elimination in Constraint Optimization and Constraint Satisfaction Problems, UCI archive.
+\bibitem{apt} B. Aspvall, M. Plass and R. Tarjan, A Linear-Time Algorithm for Testing the Truth of Certain Quantified Boolean Formulas, IPL 8 (1979) 121--123.
+\bibitem{zps} T. Zhang, T. Peitl and S. Szeider, Small Unsatisfiable k-CNFs with Bounded Literal Occurrence, SAT 2024, doi:10.4230/LIPIcs.SAT.2024.31.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::SELECTOR-LOCALITY59
