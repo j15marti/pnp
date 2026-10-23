@@ -1,0 +1,85 @@
+% GROK NOTE::REWIRE pass-2 4-input NPN cuts::2026-10-23_1502
+\documentclass[11pt]{article}
+\usepackage{fontspec}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,xurl,hyperref}
+\title{GROK REWIRE Pass~2: 4-Input NPN-Keyed Cut Library with Pay-for-Itself Storage}
+\author{Grok Bot}
+\date{23 October 2026, 15:02 PT}
+\begin{document}\maketitle
+\paragraph{Status sentence.}
+Circuit-SAT and P versus NP remain OPEN. This pass takes the open step of pass~1 (\texttt{2026-10-23\_1406\_GROK\_REWIRE.tex}, commit \texttt{967e64b4}): REWIRE now rewrites 4-feasible cuts keyed by 4-input NPN class. The library stays small (24 classes), but it only gives circuit-size \emph{upper} bounds. Every lower-bound arrow is still OPEN or CANDIDATE.
+
+\section{Corpus reviewed}
+Pass-1 note and code (\texttt{rewire.py}). The twelve newest commits on \texttt{main} (head \texttt{a65ee0f0}, 21:55 UTC) are SCC-affine, LSPV-4 and weighted-transcript-cover reconciliations; none of them touches REWIRE or a configuration library, so there is no peer REWIRE artifact to reconcile. Root \texttt{main.tex} was not edited.
+
+\section{Design change from pass 1 (cost model)}
+Pass~1 counted AND, OR and NOT gates separately and keyed only cuts with at most 3 inputs. Pass~2 works on And-Inverter Graphs (AIGs), where complemented edges are free and size is the number of AND nodes, the standard model of DAG-aware rewriting (Mishchenko, Chatterjee, Brayton, DAC 2006). With free inverters, minimum AIG size is invariant under NPN transforms. So one library entry per NPN class serves every input permutation, input negation and output negation. That invariance is \textbf{PROVED/EXACT} (inverters are free, and relabelling the inputs does not change the size) and was checked: 0 violations over 10{,}054 truth tables. AIG size and De~Morgan size (counting NOT gates) agree up to a constant factor, so asymptotic questions transfer between the two models.
+
+\section{Exact oracle (EXACT, exhaustive)}
+\texttt{exact4.py} (SHA256 prefix \texttt{45439ea0c4601d0c}) enumerates every AIG with at most $D$ AND nodes over 4 inputs. Its symmetry pruning was checked against unpruned enumeration at $D=3$: 1{,}254 functions on both sides, 0 mismatches.
+\begin{itemize}
+\item NPN classes of 4-input functions: \textbf{222} (computed; this matches the KNOWN THEOREM count).
+\item Functions with minimum AIG size $\le5$: \textbf{10{,}054} of 65{,}536, covering \textbf{45} of 222 classes. Class histogram by exact size 0,1,2,3,4,5: \textbf{2, 1, 2, 7, 9, 24}.
+\item So 177 classes have minimum AIG size $\ge 6$ (EXACT from the exhaustive search). Examples: XOR$_3$ and XOR$_4$ are not reached by 5 ANDs. Sanity checks: XOR$_2$ = 3, MUX = 3, MAJ$_3$ = 4.
+\item Enumeration time at $D=5$: 48.9\,s in Python. $D=6$ was not attempted, because the run time grows by about 35 times per level.
+\end{itemize}
+
+\section{REWIRE pass-2 engine (own code)}
+\texttt{rewire2.py} (SHA256 prefix \texttt{5c000e5cfb3003b1}). Each node gets up to 10 cuts with at most 4 leaves. The gain of a cut is the size of the node's maximum fanout-free cone (MFFC) inside the cut minus the number of new nodes the candidate structure would add under structural hashing (computed in a dry run). The best positive-gain cut is applied, then dead nodes are cleaned up, for up to 6 rounds until the size stops falling. Every output was checked against the original by its full truth table.
+
+Growth control:
+\begin{enumerate}
+\item Key = NPN class, so the store is bounded by 222 classes. Raw truth-table keys would allow up to 65{,}536.
+\item \emph{Pay-for-itself}: an entry is stored only when it gives a strictly positive gain at the cut where it is first met. A lookup that finds nothing does not store anything.
+\item Memorized local configurations: when a cut's own cone is smaller than every known structure for its class, that cone becomes the class entry. In \texttt{self\_only} mode this is the only source of entries.
+\item Cap of 64 entries, evicting the least-used entry from the older (LRU) half. The cap was never reached.
+\end{enumerate}
+
+\section{Tests (COMPUTATIONAL)}
+Families: random AIGs (20 seeds per row) and structured XOR chains (3 per row). The \texttt{bxor} family is a parity chain made deliberately redundant: each XOR$_2$ stage is re-encoded with 7 ANDs instead of 3. The \texttt{xor} family is the plain 3-AND-per-stage chain. Mismatches: \textbf{0} in both modes.
+
+\begin{center}\small
+\begin{tabular}{llrrrrrr}
+\toprule
+mode & family $(n,g)$ & before & after & lib & hit rate & raw TTs & classes \\
+\midrule
+oracle & rand(4,8) & 4.95 & 0.85 & 6 & 0.8047 & 103 & 12\\
+oracle & rand(6,32) & 13.85 & 1.90 & 14 & 0.9524 & 468 & 24\\
+oracle & rand(8,64) & 17.90 & 5.65 & 17 & 0.9703 & 631 & 25\\
+oracle & rand(8,128) & 32.35 & 10.40 & 18 & 0.9836 & 815 & 28\\
+oracle & bxor(12) & 66 & 33 & 24 & 0.9560 & 904 & 38\\
+oracle & xor(12) & 33 & 33 & 24 & 0.9513 & 907 & 38\\
+\midrule
+self & rand(8,128) & 32.35 & 21.05 & 22 & 0.9950 & 828 & 27\\
+self & bxor(12) & 66 & 48 & 32 & 0.9851 & 914 & 38\\
+self & xor(12) & 33 & 33 & 32 & 0.9850 & 917 & 38\\
+\bottomrule
+\end{tabular}
+\end{center}
+The \texttt{lib}, hit-rate and class columns are cumulative over each run, with the library shared across the whole ladder. Final figures in oracle mode: library size \textbf{24}, 19{,}493 lookups, 18{,}543 hits, hit rate \textbf{0.9513}, 0 evictions. Final figures in self-only mode: library size \textbf{32}, hit rate \textbf{0.9850}. Raw cut truth tables seen: 907, against 38 NPN classes, a \textbf{23.9}$\times$ compression; the stored library is 24, or \textbf{37.8}$\times$ below the raw count. Bloated parity $7(n-1)\to3(n-1)$ in oracle mode ($66\to33$ at $n=12$), only $66\to48$ with self-memorized configs. Plain parity $3(n-1)=33$ is a fixed point of 4-cut rewriting.
+
+\section{Readings}
+\begin{itemize}
+\item \textbf{COMPUTATIONAL.} Library growth is sub-linear in the number of cuts and plateaus near 24--32 entries. NPN keying plus pay-for-itself storage removes the raw-key growth that pass~1 warned about (34 distinct raw keys on 50 small circuits).
+\item \textbf{COMPUTATIONAL.} The exact oracle beats self-memorization by about 2$\times$ on large random circuits (10.40 vs 21.05). A purely self-taught library under-simplifies. Seeding from the smallest exhaustive instances (sizes 0--5) earns its keep.
+\item \textbf{Caveat.} Many random AIGs collapse to near-trivial functions (mean 0.85 after rewriting at $(4,8)$). Random AIGs are therefore a weak hostility test. Parity is the meaningful control.
+\item \textbf{CANDIDATE (not a lower bound).} Plain parity being a fixed point only says that 4-cut rewriting cannot certify anything below $3(n-1)$. It is \emph{not} a proof that parity needs $3(n-1)$ AIG nodes: a local fixed point does not certify a global minimum.
+\end{itemize}
+
+\section{What is not claimed}
+No Circuit-SAT lower bound. No sub-exponential Circuit-SAT algorithm. No improvement to any T/S/R charged resource. Library-size results hold only for cut width 4. At width 5 there are 616{,}126 NPN classes (KNOWN THEOREM count, not recomputed here), so lazy pay-for-itself storage becomes \emph{mandatory} rather than optional.
+
+\section{Statuses}
+\begin{itemize}
+\item NPN invariance of AIG size; the 222 classes; the histogram 2,1,2,7,9,24 for sizes $\le5$: \textbf{PROVED/EXACT} (exhaustive).
+\item Bounded REWIRE library on 4-cuts (24 entries, hit rate 0.95): \textbf{COMPUTATIONAL}.
+\item Pay-for-itself'' keeps the library polynomial in the cut count: \textbf{CANDIDATE} invariant.
+\item Circuit-SAT / P vs NP lower bound via REWIRE: \textbf{OPEN}. P vs NP: \textbf{OPEN}.
+\end{itemize}
+
+\section{Next smallest open step}
+Extend the exact oracle to minimum size 6 for the 177 remaining classes, using SAT-based exact synthesis rather than brute force, and measure how much rewriting gain size-6 entries add. Then run a controlled 5-cut growth step with a hard cap of 64 entries, where the library cannot be exhaustive, and record evictions and reuse.
+
+% END_OF_VERIFIED_REPORT::GROK::REWIRE_PASS2
+\end{document}
