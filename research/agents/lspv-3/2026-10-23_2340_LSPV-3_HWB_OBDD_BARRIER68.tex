@@ -1,0 +1,138 @@
+% LSPV-3 REPORT::HWB-OBDD-BARRIER68::2026-10-23T23:40:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.78in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,longtable,booktabs,url}
+\setlength{\emergencystretch}{4em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{HWB-OBDD-BARRIER68: All-Ordering Read-Once Hardness Coexists with Fast Exact SAT Decisions}
+\author{LSPV-3: Arbitrary-Algorithm Coverage and Independent Audit}
+\date{23 October 2026}
+\begin{document}\maketitle
+\begin{center}\textbf{P versus NP remains OPEN. The result concerns a restricted representation, not general deterministic SAT time.}\end{center}
+
+\section{Three falsifiable mechanisms and status}
+\noindent\textbf{M1, exact local SAT encoding (PROVED/EXACT).}
+Build a polynomial-size ordinary proper-3CNF $F_h(b)$ with $h$ independently mutable input-sign bits, such that $\operatorname{SAT}(F_h(b))=\mathrm{HWB}_h(b)$.
+\par\noindent\textbf{M2, all-order OBDD transfer (KNOWN THEOREM plus PROVED/EXACT).}
+Every OBDD for SAT on the $F_h$ source image requires $2^{\Omega(h)}$ nodes in every variable order.
+\par\noindent\textbf{M3, all-decider extraction (FALSIFIED/RETIRED).}
+A uniform total exact SAT decider recognizes every $F_h(b)$, computes the hidden-weighted-bit predicate in polynomial time, and falls back to exact exhaustive SAT on sources outside the family. It does not construct an OBDD.
+The shared target $\forall A\,\forall c>0\,\forall N_0\,\exists F:|F|\ge N_0 \land T_A(F)>|F|^c$ remains OPEN.
+
+\section{First deliverable: model-specific coverage}
+\scriptsize
+\begin{longtable}{p{.14\linewidth}p{.16\linewidth}p{.24\linewidth}p{.14\linewidth}p{.15\linewidth}p{.12\linewidth}}
+\toprule
+Algorithm class & Object extracted & Time/space/output/source access & Lower bound/model & Bypass & Missing extension\\\midrule\endhead
+All input-order deterministic OBDDs & Ordered read-once Boolean DAG for SAT on fixed-length proper-3CNF sources & Writing all nodes and two outgoing wires each; $\Omega(2^{ch})$ output words, source representation of length $N_h$ & Exponential for HWB in \emph{all} orders, OBDD model [1] & Source-aware decision and compact general gate circuit & OBDD is not mandatory\\
+Arbitrary total exact SAT deciders on the family & Root label; optional input-read transcript & Full canonical source recognition and template check in $\operatorname{poly}(N_h)$ time/space, one output bit & No superpolynomial lower bound & Polynomial count-and-select, fallback outside family & Universal post-acquisition work\\
+TIMEOUT66 & Two-output NAND2 circuit of a bounded run of any fixed one-tape decider & $O_A(t(N+t))$ gates, two directed references per NAND2, $\operatorname{poly}(t,N)$ compilation and writing & No applicable general SAT circuit lower bound & Gate sharing, recomputation, arbitrary branching & General uniform circuit lower bound\\
+SOUND-EXTENSION67 & A refutation in a specified globally sound complete polynomial-time proof system & Source grammar and proof validation charged; a one-tag Tseitin branch & Exponential restricted regular resolution only & Source-checkable affine parity & Transport between proof systems false\\
+MAIN99 Krom projection & Auxiliary-free projected 2-CNF & $\Theta(p^2)$ clauses, at least output-size work & CNF representation lower bound & Linear DNF, retained mediator & Mandatory CNF output false\\
+Role 4/5 chain and Horn lift & Source read transcript and explicit target & $q$ necessary field probes; at least $32q+130$ target-word writes & Input acquisition only & Linear SCC/template recognizer & Positive transfer remainder\\
+Role 1 CUBICCOVER75 / Role 2 BOUNDARY-EXCEPTIONS59 & Matching cover and exact pair kernel & Polynomial extraction, bounded-defect branching and witness replay, all charged & Restricted constructive upper bounds & Algebraic and source-aware alternatives & All-decider necessity\\
+ARC/HEC/static quotient/SOURCEPROBE19 & Static contexts or online cut state & Rereads, child output, suspended state and query descriptors charged & Restricted online or query lower bounds & Full source visibility, direct root label & Model-preserving compiler\\
+\bottomrule
+\end{longtable}\normalsize
+
+\section{Exact construction and encoding}
+Let $b=(b_1,\ldots,b_h)$ and define
+\[
+ \mathrm{HWB}_h(b)=\begin{cases}0,&t=\sum_i b_i=0,\\b_t,&t>0.\end{cases}
+\]
+A polynomial circuit computes this using a unary count-state dynamic program
+\[
+p_{0,0}=1,\qquad p_{0,j>0}=0,\qquad
+p_{i,j}=(p_{i-1,j}\land\neg u_i)\lor(p_{i-1,j-1}\land u_i),
+\]
+where negative-index terms are zero, and output
+$y=\bigvee_{j=1}^h(p_{h,j}\land u_j)$.
+Each binary gate $v=a\land c$ is encoded by
+$(\neg v\lor a)\land(\neg v\lor c)\land(v\lor\neg a\lor\neg c)$;
+OR uses its dual, NOT uses two binary clauses.
+For every binary $(a\lor c)$ append a fresh variable $z$ and use
+$(a\lor c\lor z)\land(a\lor c\lor\neg z)$.
+To force any literal $\ell$, use the four proper clauses
+\[
+G(\ell;s,t)=\bigwedge_{\epsilon,\eta=\pm1}
+(\ell\lor\epsilon s\lor\eta t)
+\]
+with fresh distinct variables $s,t$.
+Introduce globally forced zero $z_0$, forced one $z_1$,
+fresh forced zeros $f_i$ and the independent pivot
+\[
+ (\ell_i(b_i)\lor z_0\lor f_i),\qquad
+ \ell_i(1)=u_i,\quad\ell_i(0)=\neg u_i.
+\]
+Force final $y=1$ with $G$. All emitted clauses have exactly three distinct variables.
+The code uses $h$ NOT gates, $3h(h+1)$ unary-count AND/OR gates and $2h$ selection gates; the full count including forcing and private binary pads is
+\[
+ n_h=9h^2+22h+8,\qquad m_h=15h^2+34h+12.
+\]
+A source has two header words and four words per clause (arity and three signed literal IDs). An ID $v$ is encoded by $2|v|+[v<0]$,
+\[
+w_h=\lceil\log_2(64(n_h+m_h+1))\rceil,\qquad
+N_h=(4m_h+2)w_h=\Theta(h^2\log h).
+\]
+The only variable output-sign words are the $h$ pivot signs.
+Here $k=m_h$ for the construction relative to the empty source;
+there is no elimination $d=0$ and no inferred semantic residual $r$.
+An explicit output writes $N_h$ bits; machine word width is $\Theta(\log N_h)$; constructor reads all $h$ source bits and uses polynomial time and peak words.
+
+\begin{lemma}[Local sign lift; PROVED/EXACT]
+For every $b\in\{0,1\}^h$, the constructed source $F_h(b)$ is valid proper-3CNF of encoded length $N_h$, and
+$\operatorname{SAT}(F_h(b))=\mathrm{HWB}_h(b)$.
+Changing a single $b_i$ changes exactly one fixed literal-sign bit, at a position disjoint from every $b_j$ with $j\ne i$.
+\end{lemma}
+\begin{proof}
+Existentially eliminating each fresh binary pad recovers the binary gate equivalence. Eliminating the private four-clause forcing gadgets recovers their forced literals. The pivot forces $u_i=b_i$ because $z_0=f_i=0$. Induction over the gate DAG forces every gate's output to the circuit evaluation, and the last forcing gadget requires $y=1$. Input-sign changes affect only their pivot word's low bit; grammar, lengths, identifiers, and all other records are unchanged. The all-zero input is UNSAT while $b_1=1$ and every other bit zero is SAT.
+\end{proof}
+
+\begin{theorem}[All-order restriction transport; KNOWN THEOREM + PROVED/EXACT]
+For some absolute $c>0$ and all sufficiently large $h$, any ordered deterministic binary decision diagram, regardless of variable order, that computes SAT on all encoded proper-3CNF inputs of length $N_h$ (or only on all $F_h(b)$) has at least $2^{ch}$ nonterminal nodes.
+\end{theorem}
+\begin{proof}
+Fix all $N_h-h$ non-pivot bits to the template constants and retain the $h$ independent pivot bits. Restriction cannot increase OBDD size and leaves an OBDD computing $\mathrm{HWB}_h$, in the inherited order. The all-order exponential OBDD lower bound for HWB is proved in Bollig--L\"obbing--Sauerhoff--Wegener [1]. Thus the original OBDD has at least $2^{ch}$ nodes. Explicitly writing node labels and two outgoing references costs at least that many output words and directed wires. This restricted lower bound is superpolynomial in $N_h$.
+\end{proof}
+
+\begin{theorem}[Fast total decider on the hard-representation image; PROVED/EXACT]
+There is a single uniform, total, deterministic exact proper-3SAT decider $A_\star$ whose running time is polynomial in $N_h$ on \emph{every} $F_h(b)$.
+\end{theorem}
+\begin{proof}
+Parse and validate the source. Try all candidate $h$ compatible with its header, regenerate canonical $F_h(0^h)$, compare all records other than the $h$ designated pivot sign positions, and recover $b$ from those positions. If the full template check succeeds, count $t=\sum_i b_i$ and answer $[t>0]\land b_t$. Otherwise run an ordinary exhaustive exact SAT algorithm. Every step of recognition, reconstruction, reads, and temporary storage is polynomial in the input length; the fallback is total and exact on every other source. No OBDD is constructed. Therefore an exponential OBDD lower bound cannot force large single-input running time for this decider on the displayed family.
+\end{proof}
+
+\section{Computational and hostile-control audit}
+A deterministic standard-library audit serialized and checked every $F_h(b)$ for $1\le h\le7$: 254 sources, both SAT and UNSAT on every size, 254 satisfying-witness or no-witness candidate replays, and 28 exact one-bit mutation checks. Six sources with $h\le2$ were additionally decided by independent generic DPLL; larger UNSAT classifications follow the symbolic gate proof, \emph{not} an independent DPLL run. Exhaustive variable-order OBDD checks covered $1!+\cdots+7!=5913$ orders, for both HWB and parity. Minimum HWB nodes for $h=1,\ldots,7$ were $1,1,3,7,14,21,31$ versus parity $1,3,5,7,9,11,13$. Additional independent 2SAT/Horn/XOR/component SAT and UNSAT controls passed. \textbf{COMPUTATIONAL, not an asymptotic proof.} Raw JSON SHA-256:
+\texttt{7608519337680f1b777d91ee52ea2edc31a8342baa2960cc44c8ab14e7711081}.
+
+\section{Roles 1--5, corpus and model transport audit}
+Surveyed the repository research tree; inspected root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, the repository skill, tasks 004/005/007, current MAIN100, prior MAIN99, MAIN85/MAIN64, Role 1 CUBICCOVER75, Role 2 BOUNDARY-EXCEPTIONS59, Role 4 AFFINE-MATCHING59, Role 3 SOUND-EXTENSION67, the CRS-PPC theorem index and older proof-map OBDD counterexample. That earlier equality OBDD lower bound depends on a \emph{bad order} and disappears after interleaving. The present construction uses an all-order lower bound and independently mutable proper-3CNF sign bits. No historical claim is silently promoted.
+
+The Roles 4--5 transport inequality is
+\[
+L_{\rm source}\le R+H+Q\tau T_{\rm target}^{\le}(g).
+\]
+On MAIN100's lifted chain, $L_{\rm source}=q$ word probes but explicit target materialization writes at least $R=32q+130$ words, so $L-R-H<0$. A direct query adversary still yields only $q$ target observations, matched by linear recognition/SCC. Occurrence rungs and NP-completeness do not amplify this. Role 1/2 complementary-pair reductions and matching kernels supply constructive upper bounds only. The HWB sign lift itself has input dependency width one, so input-query transport holds, while an exponential all-order OBDD bound still does \emph{not} imply general SAT runtime.
+
+\noindent\textbf{Adopted:} fixed encoding and strict charging, SOUND-EXTENSION67's proof-system warning, MAIN100's negative paid-transport numerator. \textbf{Rejected:} compulsory OBDD extraction from arbitrary deciders. \textbf{No stale root claim strengthened.}
+Cross-domain OBDD/verification results transfer exactly to restricted ordered DAGs, not unrestricted NAND2 circuits. Fan-out, recomputation and source-aware arithmetic are concrete bypasses. Schur squares, cryptographic hashes and collision entropy supply no model-matched unconditional SAT decision lower bound. The argument does not overcome relativization or algebrization barriers, and no natural general circuit property is constructed.
+
+\section{First missing arrow and next experiment}
+\[
+\text{independently defined obstruction}
+\longrightarrow\text{restricted representation LB (KNOWN)}
+\not\!\!\Longrightarrow\text{mandatory all-decider work}
+\longrightarrow P\ne NP.
+\]
+The first unproved load-bearing arrow is an unrestricted, source-aware charged acquisition/compression/continuation theorem. TIMEOUT66 reduces a hypothetical polynomial-time SAT decider to uniform polynomial-size \emph{general} NAND2 decision circuits; a lower bound on \emph{those}, not chosen OBDDs, remains OPEN. The next test should lift this local sign encoding into Role 4's matching-positive-ternary and Role 5's Horn selector endpoints, verify exact target-bit locality, full target-size costs, and source-aware bypasses. Independent mathematical red-team review remains pending.
+
+\begin{thebibliography}{9}
+\bibitem{hwb} B. Bollig, M. L\"obbing, M. Sauerhoff, I. Wegener, On the complexity of the hidden weighted bit function for various BDD models, RAIRO TIA 33(2) (1999), 103--115. DOI:10.1051/ita:1999108.
+\bibitem{bryant} R. Bryant, Graph-based algorithms for Boolean function manipulation, IEEE Trans.\ Comput.\ C-35 (1986), 677--691.
+\bibitem{main} LSPV-5, HORN-TRANSPORT-CEILING100, \url{https://github.com/j15marti/pnp/blob/main/research/main/2026-10-23_2248_MAIN_HORN_TRANSPORT_CEILING100.tex}.
+\bibitem{role4} LSPV-4, AFFINE-MATCHING59, \url{https://github.com/j15marti/pnp/blob/main/research/agents/lspv-4/2026-10-23_2045_LSPV-4_AFFINE_MATCHING59.tex}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-3::HWB-OBDD-BARRIER68
