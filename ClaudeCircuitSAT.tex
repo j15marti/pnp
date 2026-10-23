@@ -1,0 +1,82 @@
+% ClaudeCircuitSAT living document -- separate from root main.tex (LSPV program).
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{thm}{Theorem}\newtheorem{prop}{Proposition}
+\newcommand{\st}[1]{\textsc{#1}}
+\title{Circuit-SAT Lower Bounds: a Wire-by-Wire Ladder (Living Document)}
+\author{Claude hourly routine}
+\date{Last updated: 23 October 2026 (run 1)}
+\begin{document}\maketitle
+
+\noindent\fbox{\parbox{0.95\linewidth}{\textbf{Status: no superpolynomial lower bound for Circuit-SAT is proved here. P versus NP remains OPEN.}
+Labels used: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, RETIRED.}}
+
+\section{Goal and method}
+Start from the smallest Circuit-SAT instances, grow the number of inputs $n$ one at a
+time, and record for each rung (i) the minimum number of gates $g$ and wires $w=2g$
+(fan-in-2 gates, all 16 binary gate types, free constants and negation),
+(ii) the \emph{structure} of the wiring, summarised by a parameter, and
+(iii) the best known upper and lower bound on the cost of \emph{deciding} satisfiability.
+The target is a parametrised bound $T(n,e,s)$, where $s$ is circuit size and
+$e$ is the \emph{reconvergence number} defined below.
+
+\section{Definitions}
+A circuit $C$ has $n$ inputs, $g$ fan-in-2 gates, one output. Wires $=$ gate-input edges, $w=2g$.
+Let $G(C)$ be the underlying undirected graph on inputs and gates (inputs that reach
+the output only). Its cyclomatic number is
+\[ e(C)=w-(n+g)+1 = g-n+1 \quad(\text{if connected}).\]
+For a function $f$ depending on all $n$ inputs, $C(f)$ is its minimum gate count and
+$r(f)=C(f)-(n-1)$ its \emph{minimum reconvergence number}.
+
+\section{Proved structural facts}
+\begin{thm}[PROVED, connectivity bound]\label{thm:conn}
+If $C$ computes $f$ depending on all $n$ inputs then $g\ge n-1$, $w\ge 2(n-1)$, and equality holds iff $G(C)$ is a tree, i.e.\ $C$ is a read-once formula (every input has fan-out one and no gate has fan-out $>1$).
+\end{thm}
+\begin{proof}
+Each essential input has a directed path to the output, so $G(C)$ is connected on $n+g$ vertices with $2g$ edges; connectivity gives $2g\ge n+g-1$. Equality iff acyclic. A tree with fan-in 2 and a single sink has all fan-outs 1.
+\end{proof}
+\begin{prop}[KNOWN, acyclic CSP]\label{prop:tree}
+Circuit-SAT is decidable in $O(s)$ time when $e(C)=0$, and in $O(2^{e}\,s)$ time in general.
+\end{prop}
+\begin{proof}[Sketch]
+Circuit-SAT is a CSP with one constraint per gate on $(\text{out},\text{in}_1,\text{in}_2)$. If $G(C)$ is a tree the constraint hypergraph is acyclic and Yannakakis' semijoin reduction decides it in linear time. For general $C$ choose a spanning tree, cut each of the $e$ non-tree wires by a fresh leaf, guess its value ($2^e$ choices), add the equality constraint at its source, and solve each acyclic instance.
+\end{proof}
+Also $T\le O(2^{n}s)$ by enumeration, so $T(n,e,s)\le O(2^{\min(n,e)}s)$ (KNOWN).
+
+\section{Computational ladder (COMPUTATIONAL)}
+Script \texttt{results/circuitsat/ladder\_enum.py} enumerates all circuits (basis: all binary gates) and all read-once/formula decompositions; each invocation $<30$ s.
+\begin{center}\begin{tabular}{@{}cccccl@{}}\toprule
+$n$ & \#functions depending on all $n$ & $\max C(f)$ & $\max w$ & $r(f)$ histogram & status\\\midrule
+1 & 2 & 0 & 0 & $\{0{:}2\}$ & exhaustive\\
+2 & 10 & 1 & 2 & $\{0{:}10\}$ & exhaustive\\
+3 & 218 & 4 & 8 & $\{0{:}114,\,1{:}80,\,2{:}24\}$ & exhaustive (limit 4 gates)\\
+4 & 64594 & $7$ (KNOWN, Knuth 4A) & 14 & not computed & OPEN (next run)\\\bottomrule
+\end{tabular}\end{center}
+Observations. (a) For $n\le 3$, minimum circuit size equals minimum formula size minus one for every function (formula leaf-count histogram $\{3{:}114,4{:}80,5{:}24\}$ matches gates $+1$): fan-out saves no gates yet. Wires are forced by Theorem~\ref{thm:conn} to be $\ge 2(n-1)$ and $r$ counts the surplus, e.g.\ $\mathrm{MAJ}_3$ has $g=4$, $r=2$. (b) Saving through reconvergence (circuit strictly smaller than formula) is therefore expected first at $n=4$; testing this is the next rung.
+
+\section{Decision-cost ladder}
+\begin{center}\begin{tabular}{@{}lll@{}}\toprule
+regime & upper bound & lower bound\\\midrule
+$e=0$ (read-once) & $O(s)$ (KNOWN) & $\Omega(s)$ reading (PROVED trivially: unread gate can flip the answer)\\
+$e$ fixed & $O(2^e s)$ (KNOWN) & $\Omega(s)$ only; $2^{\Omega(e)}$ OPEN\\
+$e\approx n$ general & $O(2^n s)$ & $2^{(1-\epsilon)n}$ excluded under SETH (CONDITIONAL, since CNF-SAT embeds with $s=O(m)$)\\
+black-box access only & $2^n$ queries & $2^n$ queries (PROVED by adversary: unique satisfying point $=$ AND of literals, which has $r=0$, so white-box access is what makes it easy)\\\bottomrule
+\end{tabular}\end{center}
+The last row isolates the point of the programme: hardness must come from \emph{white-box wiring} information, and the parameter $e$ measures exactly how much wiring the algorithm can exploit.
+
+\section{Open arrows (nothing here is a lower bound for P vs NP)}
+\begin{enumerate}
+\item \textbf{OPEN} Unconditional $2^{\Omega(e)}$ lower bound (any model with unrestricted RAM would imply $\mathrm{P}\neq\mathrm{NP}$ for $e=\omega(\log s)$); identify a restricted but natural model (DPLL/resolution-style, monotone, bounded depth) where it is provable.
+\item \textbf{OPEN} Compute $r(f)$ and formula-vs-circuit gap for $n=4,5$ with smarter enumeration (canonical forms under input permutation, SAT-based exact synthesis).
+\item \textbf{CANDIDATE} Relate $e$ to treewidth and to proof-size lower bounds for resolution on CNF encodings of circuits with $r(C)=e$: small $e$ gives resolution proofs of size $2^{O(e)}\mathrm{poly}(s)$; a matching bound for explicit families is a model-matched target.
+\item \textbf{CANDIDATE} Gate-elimination view: Theorem~\ref{thm:conn} is the base case of the $n-1$ gate bound; the $3n-o(n)$ and $3.1n-o(n)$ bounds (Li--Yang) refine it for explicit functions, tracking how many wires each eliminated input removes.
+\end{enumerate}
+
+\section{Repository cross-check}
+Run 1: root \texttt{main.tex} (LSPV programme) states P vs NP is OPEN; its fixed-width acquisition bound $\Omega(N/\log N)$ and the 2-CNF projection upper bound are analogous to the $e=0$ and bounded-$e$ rows (restricted-structure easy cases, transport barriers) but no result there transfers directly; no prior circuit-size ladder exists in the repository. A literature search for primary sources was not performed this run (no web query was made); the KNOWN labels above rely on standard results (Yannakakis acyclic CSP; SETH; Knuth 4A; Li--Yang) and should be re-verified.
+
+\section{Log}
+\begin{itemize}
+\item Run 1 (2026-10-23): created document; proved Thm.~\ref{thm:conn}; exhaustive ladder $n\le3$; $n=4$ circuit enumeration exceeded the 30 s budget in naive DFS and is deferred.
+\end{itemize}
+\end{document}
