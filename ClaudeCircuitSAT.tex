@@ -1,0 +1,76 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-23 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{claim}{Claim}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT}
+\author{Living document (hourly scheduled runs)}
+\date{Last updated 2026-10-23}
+\begin{document}
+\maketitle
+
+\section*{Executive status}
+\textbf{Status: no superpolynomial lower bound for Circuit-SAT is proved; P versus NP remains OPEN.}
+Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Build circuits from the simplest case upward, add inputs one at a time, and at each step record
+(i) the exact minimum number of gates $g(f)$ and wires $w(f)$ needed for the function $f$, and
+(ii) what that implies for the cost of deciding satisfiability of a circuit of that size.
+
+\paragraph{Model.} Circuits are DAGs over inputs $x_1..x_n$ with fan-in-2 gates from the full basis $B_2$ (all 16 binary gates; negation is free). Size is gate count $g$; wires $w$ count gate input edges, so $w=2g$ exactly in this model. Fan-out is unrestricted unless stated.
+
+\section{Step ladder}
+\begin{lemma}[connectivity, PROVED/EXACT]\label{l:conn}
+If $f$ depends on all $n\ge1$ inputs then any $B_2$ circuit for $f$ has $g\ge n-1$ gates and $w\ge 2(n-1)$ wires.
+\end{lemma}
+\emph{Proof.} The subgraph of gates and inputs reaching the output is a connected DAG with $n$ input nodes and a single sink; each gate has indegree 2, so merging $n$ sources into one needs at least $n-1$ gates. \qed
+
+\begin{lemma}[tight for AND/OR/XOR, PROVED/EXACT]
+$g(\mathrm{AND}_n)=g(\mathrm{OR}_n)=g(\mathrm{XOR}_n)=n-1$, so $w=2(n-1)$ for every $n\ge1$.
+\end{lemma}
+\emph{Proof.} Upper bound: balanced tree. Lower bound: Lemma~\ref{l:conn}. \qed
+
+\subsection*{Computed ladder (COMPUTATIONAL)}
+Script: \path{results/claude_circuitsat/mincircuit.py}; exhaustive level-by-level search over all sets of computed truth tables (sharing allowed), $n=2$ in $<1$s, $n=3$ in about 7s (single run, within the 30s rule; no chunking needed). Output: number of $n$-variable functions whose exact minimum gate count is $g$.
+\begin{center}
+\begin{tabular}{@{}cccccccc@{}}\toprule
+$n$ & $g=0$ & $g=1$ & $g=2$ & $g=3$ & $g=4$ & total & max $w=2g$\\\midrule
+2 & 6 & 10 & -- & -- & -- & 16 & 2\\
+3 & 8 & 30 & 114 & 80 & 24 & 256 & 8\\\bottomrule
+\end{tabular}
+\end{center}
+Here $g=0$ counts constants and literals. Hence every 3-input function needs at most 4 gates (8 wires) and 24 functions attain it; these are the first nontrivial wire-hard functions. (Counting check: $n=2$: $2+4$ constants/literals $=6$; $n=3$: $2+6=8$. Both match.)
+Next step: $n=4$ is infeasible by this naive exhaustive method (set-of-tables state space blows up); a SAT-solver or symmetry-reduced (NPN-class) search is required. OPEN as engineering.
+
+\section{From function wires to Circuit-SAT cost}
+Let $\mathrm{CSAT}$ be: given a circuit $C$ with $n$ inputs and $m$ wires, is $C$ satisfiable?
+\begin{itemize}
+\item Upper bound: $O(2^n m)$ by enumeration (KNOWN).
+\item Lower bounds on $w(f)$ for \emph{explicit} $f$ are \emph{circuit} lower bounds; they do not by themselves lower-bound the \emph{time} of an algorithm deciding CSAT. The gap between ``every circuit computing $f$ is large'' and ``every algorithm deciding satisfiability of circuits is slow'' is the core obstacle. CANDIDATE bridge: none yet.
+\item KNOWN THEOREMS (cited from memory; to be verified against primary sources in a later run): gate-elimination gives $3.1n-o(n)$ for explicit functions over $B_2$ (Find--Golovnev--Hirsch--Kulikov, FOCS 2016) and $5n-o(n)$ over $U_2$ (Li--Yang, STOC 2022). Nothing superlinear is known for $B_2$. Natural-proofs, relativization and algebrization barriers apply to any approach via general circuit lower bounds.
+\item CONDITIONAL: under SETH-type assumptions CSAT on $m$-wire circuits has no $2^{(1-\epsilon)n}\mathrm{poly}(m)$ algorithm; not a proof of anything unconditional.
+\end{itemize}
+
+\section{Current obstacles}
+\begin{enumerate}
+\item \textbf{Function-to-algorithm gap.} Wire counts of functions are circuit lower bounds; CSAT needs algorithm lower bounds on arbitrary solvers. Missing theorem: a reduction making a fast CSAT solver yield a small circuit for a hard function (as in Williams' algorithmic method, which gives ACC$^0$-type bounds only).
+\item \textbf{Linear barrier.} Wire-counting/gate-elimination currently saturates at linear size.
+\end{enumerate}
+
+\section{Corpus link (repository \texttt{j15marti/PNP})}
+Root \path{main.tex} (2026-10-23) records P vs NP as OPEN and tracks the Tseitin/expander and 2-CNF + $k$ ternary clause routes (INPUT-QUERY-CEILING86): a certified $O(2^k\mathrm{poly}(N))$ upper bound with $2^{\Omega(k)}$ necessity OPEN. The latter is the closest match to the present ``add one input/clause at a time'' ladder: the parameter $k$ plays the role of the number of added non-2-CNF wires. Not yet imported; the exact object correspondence (ternary clause $\leftrightarrow$ added gate/wires) is the next thing to check. A full corpus review per \path{AGENTS.md} has \emph{not} been done in this run.
+
+\section{Next steps}
+\begin{enumerate}
+\item NPN-reduced or SAT-based exact synthesis for $n=4$; record $g,w$ histogram.
+\item Track fan-out explicitly: minimum wires under fan-out $\le 2$ vs unrestricted for $n\le3$.
+\item Read INPUT-QUERY-CEILING86 and state precisely which 2-CNF$+k$ statements transfer to the wire ladder.
+\end{enumerate}
+
+\section*{Run log}
+\begin{tabular}{@{}ll@{}}
+2026-10-23 run 1 & Document created; Lemma 1, AND/OR/XOR tightness; $n\le3$ exact histogram computed.\\
+\end{tabular}
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT
