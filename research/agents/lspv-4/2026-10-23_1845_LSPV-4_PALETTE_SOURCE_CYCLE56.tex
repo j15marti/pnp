@@ -30,17 +30,35 @@ The graph has exactly 12 proper three-colorings when $\bigoplus_i\sigma_i=0$, an
 The palette uses all three colors. Each pair $x_i,\bar x_i$ must take the two colors different from $B$, in opposite order. Write its first color as bit $X_i$. The connector edge enforces $X_{i+1}=X_i\oplus\sigma_i$, so the cycle closes iff $\bigoplus_i\sigma_i=0$. In that case six palette permutations and two initial choices give 12 colorings.
 \end{proof}
 
-One-hot encode every graph vertex using a positive ternary requiring one of three colors plus three negative binaries prohibiting multiple colors; each graph edge adds three negative binary clauses forbidding matching colors. The one-hot CNF models are in bijection with graph three-colorings, with no free or independently sampled auxiliary variable. Its exact counts are
+One-hot encode every graph vertex using a positive ternary requiring one of three colors plus three negative binaries prohibiting multiple colors; each graph edge adds three negative binary clauses forbidding matching colors. The mixed-width one-hot CNF models are in bijection with graph three-colorings, with no free or independently sampled auxiliary variable. Its exact counts are
 \[
 n=6q+9,\quad k=2q+3,\quad m_2=18q+18,\quad
 m=20q+21,\quad \ell=42q+45,\quad N=(80q+86)w.
 \]
-No initial units or pure literals exist. Flipping $\sigma_i$ changes \emph{exactly three literal words}, one in each binary clause of the $i$th connector gadget; different $i$ affect disjoint address sets. Header, length, clause arities, and all other records are unchanged.
+The preceding one-hot encoding contains binary clauses and is therefore a
+\emph{mixed-width 3-CNF}, not proper exactly-three-clause CNF. It has no
+units or pure literals. Flipping $\sigma_i$ changes three literal words.
+To construct a genuine proper exactly-three-clause formula, replace each
+binary clause $(a\vee b)$ by $(a\vee b\vee y_C)\wedge
+(a\vee b\vee\neg y_C)$ with a \emph{fresh, position-indexed}
+free padding variable $y_C$. Denote the result
+$\widetilde{\Gamma}(G_{q,\sigma})$. Its exact counts are
+\[
+n'=24q+27,\quad k'=m'=38q+39,\quad m_2'=0,\quad
+\ell'=114q+117,\quad N'=(152q+158)w'.
+\]
+Every clause has exactly three distinct literals. A satisfying
+graph coloring has $2^{18q+18}$ padded source extensions; hence
+the model count is $12\cdot 2^{18q+18}$ on even parity and zero
+on odd parity. Every orientation flip changes exactly \emph{six}
+literal words, two copies of each of the three affected binary
+clauses, with disjoint address sets across $i$. Both labels
+retain identical headers, field positions and total encoded length.
 \begin{theorem}[PROVED/EXACT: all-algorithm input access]
-On every YES or NO member of this proper-3CNF family, every deterministic exact decider $A$ of \emph{unrestricted} proper-3CNF SAT must read at least one of the three orientation-dependent words at each $i$, hence at least $q=\Omega(N/\log N)$ input words. A uniformly recognized source-aware algorithm matches $O(q)$ word operations for the family.
+On every YES or NO member of the padded proper exactly-three-clause family, every deterministic exact decider $A$ of \emph{unrestricted} proper exactly-three-clause SAT must read at least one of the six orientation-dependent words at each $i$, hence at least $q=\Omega(N'/\log N')$ input words. A uniformly recognized source-aware algorithm matches $O(q)$ word operations for this family. For mixed-width 3-CNF the analogous count is three changed words per position.
 \end{theorem}
 \begin{proof}
-If $A$ reads none of the three $i$th words, flip $\sigma_i$. Its entire observed transcript is unchanged by determinism, yet the correct SAT answer reverses, contradiction. Source-address groups are disjoint across $i$. A charged $O(q)$ template scan and XOR propagation decides and reconstructs satisfying assignments on the recognized family; a total exact decider can fall back to exhaustive search on other inputs.
+If $A$ reads none of the six $i$th proper-CNF words, flip $\sigma_i$. Its entire observed transcript is unchanged by determinism, yet the correct SAT answer reverses, contradiction. Source-address groups are disjoint across $i$. A charged $O(q)$ template scan, paired-padding recognition and XOR propagation decide and reconstruct satisfying assignments on the recognized family; a total exact decider can fall back to exhaustive search on other inputs.
 \end{proof}
 This is an \emph{input acquisition} bound on an NP-complete language, not a lower bound exceeding the cost of reading the input. It does not imply $P\ne NP$.
 
@@ -52,7 +70,7 @@ Every graph $H$ reduces to a connected graph with palette by adjoining the trian
 A precise local reduction barrier holds: the original baseline UNSAT indicator is $\prod_i b_i$ (AND), while the palette-cycle UNSAT indicator is $\bigoplus_i \sigma_i$ (XOR). For $\sigma_i=g_i(b_i)$ independently, XOR of unary Boolean maps is affine over $\mathbb F_2$, while AND on $q\ge2$ inputs is not affine. Thus no such fieldwise label-preserving map exists. A global construction can read all $q$ bits, compute AND, and write one output orientation, but the paid $O(q)$ acquisition consumes the old $q$ lower bound.
 
 \section*{Reproducibility, existing corpus and current open arrow}
-Files: \texttt{palette\_cycle56\_audit.py}, \texttt{palette\_boundary56\_audit.py}, raw JSON with the matching prefixes, and a complete longer local report. Combined audit: 31,169 counted checks, zero failures; all 510 baseline orientations through $q=8$; all 504 palette vectors through $q=8$ (252 YES, 252 NO); 3,576 single-field toggles; 744 coupled-chord trials; 5,456 excluded coordinatewise transport maps; Horn, XOR, independent products, $K_3$ YES and $K_4$ NO controls. Tests are COMPUTATIONAL, not asymptotic proofs.
+Files: \texttt{palette\_cycle56\_audit.py}, \texttt{palette\_boundary56\_audit.py}, \texttt{proper\_padding56\_audit.py}, and raw JSON with matching prefixes, with full downloadable reproducible archive. Combined audit: 35,753 counted checks, zero failures; all 510 baseline orientations through $q=8$; all 504 palette vectors through $q=8$ (252 YES, 252 NO); 3,576 mixed-width one-bit flips and 3,576 additional proper-3CNF six-word flips; 504 padded witness replays; 744 coupled-chord trials; 5,456 excluded coordinatewise transport maps; Horn, XOR, independent products, $K_3$ YES and $K_4$ NO controls. Tests are COMPUTATIONAL, not asymptotic proofs.
 
 Original repository sources reviewed: root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, pnp-research skill; MAIN64, MAIN85, MAIN87, MAIN93--95; Role-4 QUADRATIC-SOURCE-LADDER55, WHEEL-CRITICAL52 and SOURCEPROBE19. The existing quadratic-source bound and selector graph boundary are adopted, not re-claimed as new. No ETH, SETH, cryptographic or random-oracle assumption. The missing lemma is a machine-independent proof of superpolynomial acquisition/compression/continuation on some growing instances for every uniform total exact decider of one fixed NP-complete language. It remains OPEN.
 
