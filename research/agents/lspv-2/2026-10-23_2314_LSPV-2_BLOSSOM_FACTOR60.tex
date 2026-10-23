@@ -1,0 +1,93 @@
+% LSPV-2 REPORT::BLOSSOM_FACTOR60::2026-10-23T23:14:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,url}
+\newtheorem{theorem}{Theorem}
+\title{BLOSSOM-FACTOR60: An Executable Nonbipartite Reverse-SAT Factor Normalizer}
+\author{LSPV-2, Backward SAT Algorithms}
+\date{23 October 2026}
+\begin{document}\maketitle
+\begin{center}\textbf{P versus NP remains OPEN. Independent peer review pending.}\end{center}
+
+\section{Falsifiable mechanisms and actual corpus}
+We tested whether a required-vertex weighted matching gadget completes WITNESS-DEFECT58's previously unsupported nonbipartite factor solver, whether locally feasible pins can produce a globally incompatible assignment, and whether greedily extracting paired positive/negative source clauses totalizes the solver on arbitrary proper width-at-most-three CNF. All three tests produced definite restricted outcomes; none supplies a universal SAT-decision lower bound.
+
+Original sources read: root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, the repository \texttt{pnp-research} skill, MAIN64 exact join, MAIN85 root-label quotient, MAIN86 input-query ceiling, LSPV-1 PAIRPATH73, LSPV-2 REVERSE-SELECTOR57, WITNESS-DEFECT58, BOUNDARY-EXCEPTIONS59, LSPV-3 SOURCEPROBE19, and LSPV-4 HORN-SELECTOR-DEGREE60. The prior $3^t$ algorithm and the polynomial graph-factor existence theorem were already known. This run supplies an explicit nonbipartite gadget, executable matching-based continuation, and uniform total greedy pairing. The newest LSPV-1 PAIRPATH73 was readable and substantive; its fetched file lacked the required final verification sentinel.
+
+\section{Reverse-Circuit-SAT and source conditions}
+For a proper 3CNF $F=\bigwedge_{j=1}^m(\ell_{j1}\vee\ell_{j2}\vee\ell_{j3})$, output TRUE in the fan-in-two AND of 3-literal OR gates means at least one TRUE literal occurrence can be selected per clause. A globally consistent selection exists iff $F$ is SAT, provided opposite requirements on one named original source variable are forbidden. This does \emph{not} assert that clauses have exactly one TRUE original literal. An OR2/AND2 evaluation circuit has $3m-1$ gates and $6m-2$ directed gate-input connections if complement source literals are provided. Sharing one NOT1 per source increases counts by $n$ gates and $n$ input connections; the functional Tseitin encoding then has $2n+9m-2$ clauses including the final output unit. These are assignment-evaluation counts, never lower bounds on SAT-solving circuits.
+
+Exact signed $(2^+,2^-)$ proper 3CNF has $4n=3m$ occurrence vertices. Complement edges form $n$ disjoint $K_{2,2}$ graphs, with $4n$ edges; added clause triangles give an augmented degree-four graph with $8n$ edges. Selecting an independent occurrence transversal is equivalent to SAT, but the chosen representation is not computationally mandatory.
+
+\section{Paired supports and matching construction}
+Define a paired support as
+\[
+P(a,b,c)=(a\vee b\vee c)\land(\neg a\vee\neg b\vee\neg c).
+\]
+It demands $1\le a+b+c\le2$. Restrict selected paired supports so that every original source variable occurs in at most two support records. Build a multigraph with one vertex per paired support and one edge per source variable. A source variable in only one support is connected to a private dummy vertex with selected degree in $[0,1]$. Source variables outside all supports are free except for their defect-clause requirements. A TRUE source variable corresponds to a selected graph edge.
+
+For a consistent selection of one TRUE witness occurrence in every one of $t$ residual source clauses, let $p_v$ count forced-TRUE incident graph edges and $f_v$ free incident edges at a support $v$. The residual selected-free-edge interval is
+\[
+L_v=\max(0,1-p_v),\qquad U_v=\min(f_v,2-p_v).
+\]
+Dummy vertices use original interval $[0,1]$. If $L_v>U_v$, reject that branch.
+
+\begin{theorem}[Required-vertex weighted matching gadget, PROVED/EXACT restricted]
+For a loopless multigraph $H=(V,E)$ with integer degree intervals $0\le L_v\le U_v\le\deg_H(v)$, construct an auxiliary \emph{simple} graph $G_H$. For every $e=uv$ make two required endpoint stubs $e_u,e_v$ and connect them. For each vertex $v$ make $U_v$ distinct slots; declare the first $L_v$ required and join each incident endpoint stub to every slot of $v$. Let $R$ be the set of all required auxiliary vertices. Give an auxiliary edge $xy$ integer weight $[x\in R]+[y\in R]$. Then an edge set $D\subseteq E$ satisfies all degree intervals iff the maximum-weight matching in $G_H$ has weight $|R|$.
+\end{theorem}
+\begin{proof}
+Every matching covers at most $|R|$ required vertices, and its weight counts exactly those covered. For a valid $D$, pair the stubs of every edge outside $D$. For every selected edge, match its two endpoint stubs to two distinct local slots, using mandatory slots first. The interval inequalities guarantee enough selected edges for all $L_v$ mandatory slots and no more than $U_v$ slots, so weight $|R|$ is reached.
+
+Conversely, a matching attaining $|R|$ covers every required stub. The two stubs of any original edge either match each other (its source bit is FALSE) or both match endpoint slots (its source bit is TRUE). A one-sided source assignment cannot occur. Each support's matched-slot count lies between its $L_v$ required and $U_v$ available slots, yielding the desired degree factor. The construction treats original parallel edges through separate named stubs, and works on odd cycles.
+\end{proof}
+
+The auxiliary graph has exactly $2|E|+\sum_vU_v$ vertices and $|E|+\sum_v\deg_H(v)U_v$ edges. In the paired-triple application both are $O(n+m)$, since $U_v\le2$ on support vertices and $U_v\le1$ on private dummy vertices. Integer-weight general-graph blossom matching is polynomial; the implemented NetworkX routine has an $O(|V(G_H)|^3)$ documented bound. Matching is an imported \textbf{KNOWN THEOREM}, not an original blossom implementation.
+
+\section{Uniform all-input source-exact algorithm}
+\begin{theorem}[Greedy core-defect algorithm, PROVED/EXACT restricted bound]
+For every proper CNF of clause width at most three, canonically group the all-positive and all-negative triple clauses by their unsigned variable supports. Greedily select opposite-polarity support pairs, never selecting a source variable in more than two support records. Keep every unselected original clause as a defect. If $t$ is the \emph{independently computed} number of defects, choose one TRUE witness literal occurrence in each defect and reject contradictory source-bit demands. For each remaining branch, solve the residual paired core through the weighted-matching gadget; accept exactly when a reconstructed original source assignment satisfies every original clause. The complete uniform algorithm runs in
+\[
+O\bigl(N/w+m\log(m+2)+3^t(n+m)^3\bigr)
+\]
+word operations and conservatively $O((n+m)^2+t)$ live words on the declared indexed-word model, with $w=\lceil\log_2(64(n+m+1))\rceil$ and $N=(4m+2)w$.
+\end{theorem}
+\begin{proof}
+Every original clause is either retained in a paired support or left as a source-labelled defect, with multiplicity. If the original formula is SAT, selecting any TRUE occurrence from each defect creates a consistent enumerated branch; its paired supports admit a factor because the original assignment chooses coherent edges. The matching theorem accepts this branch. Conversely, an accepting matching provides a single truth value for every original source variable, satisfies each paired positive/negative clause, and the selected witnesses satisfy the defects. Complete original-source replay certifies the answer. Source-only defect variables are fixed by their selected witnesses or default FALSE when never selected. Each branch has polynomial matching cost; there are at most $3^t$ branches. A zero-length clause immediately rejects.
+\end{proof}
+The $3^t$ term is only an algorithmic \emph{upper} bound. A polynomial small-defect normalizer is not known for general 3SAT. The previously established SCC algorithm for 2CNF can be dispatched instead in the all-binary case.
+
+\section{Reproducible hostile controls and measured evidence}
+The paired core on nonbipartite $K_4$ has 6 source edges and 8 signed exact-$(2,2)$ clauses. Choose the three source edges incident to one vertex. Six proper mixed-sign ternaries exclude the six source patterns with one or two TRUE values at that support, giving UNSAT. Replace one excluded-pattern clause with a new, nonduplicate, positive three-source clause compatible with the freed pattern, giving SAT. The two full instances are equal size, but only the paired \emph{core}, not the six-defect augmentation, satisfies the strict signed exact-$(2,2)$ appearance promise.
+
+A stronger local/global incompatibility pair pins $(x_1,x_2,x_3,x_4,x_5)=(0,0,1,0,1)$ in $K_4$. Every local residual degree interval is nonempty, yet the matching optimum is 2 against $|R|=3$; brute-force original-source enumeration confirms UNSAT. Flipping $x_2$ to TRUE yields optimum $2=|R|$ and SAT. This falsifies any use of isolated local feasibility as a sufficient compatibility test.
+
+The deterministic audit used seed 202610230714. It passed 2,238 assertion-accounted checks with zero failures: 1,908 factor-versus-brute-or-pinned comparisons, 150 randomly signed defect instances, 140 random arbitrary proper 1--3 CNFs independently compared with brute force, six small both-label controls, and twelve scalable both-label tests, plus matching-shortfall controls. Some labels overlap the accounting of assertions. The six scalable parameters were
+\[
+\begin{array}{c|rrrrrr}
+q&5&6&13&24&49&80\\\hline
+n&15&18&39&72&147&240\\
+m&26&30&58&102&202&326\\
+\text{SAT gadget vertices}&42&52&122&232&482&792
+\end{array}
+\]
+Odd $q$ gives nonbipartite prisms; even $q$ gives bipartite ones. For each listed UNSAT case, 16 consistent witness branches were rejected by local degree intervals; the separate $K_4$ pinned control genuinely exercises the blossom optimum shortfall. The largest SAT case used 1,184 auxiliary edges, one matching call, and replayed all 326 original clauses. Finite tests are \textbf{COMPUTATIONAL}, not a theorem about general SAT complexity. Process peak memory was not instrumented; stated live-space bounds refer to the mathematical algorithm.
+
+\section{Charged ledger, overlaps and open next lemma}
+The cost identity is
+\[
+T=C_{\rm discovery}+C_{\rm normalization}+C_{\rm verification}+C_{\rm continuation}.
+\]
+Discovery pays original signed-record reads, canonical sorting, and failed pairing attempts. Normalization pays inconsistent witness prefixes, residual degree preparation, and every generated matching node and edge. Continuation pays every blossom optimization, including rejected branches; verification pays source-assignment reconstruction and replay, and independent UNSAT rechecking may repeat the same matching calls. No source reads, auxiliary gate traces, certificates, or alternative algorithms are treated as cost-free.
+
+\textbf{PROVED/EXACT restricted:} weighted matching gadget, all-input greedy decomposition and stated parameterized upper bound; independent review pending. \textbf{KNOWN THEOREM:} blossom matching, SCC-2SAT and NP-completeness of monotone exact-$(2,2)$ 3SAT. \textbf{COMPUTATIONAL:} 2,238 assertion checks, both labels, and nonbipartite tests. \textbf{FALSIFIED/RETIRED:} the executable nonbipartite continuation limitation of WITNESS-DEFECT58 and any inference that building a rich incompatibility graph is mandatory for this family. \textbf{OPEN:} the exact 198-variable / 264-clause strict-monotone UNSAT source has not been reconstructed, an all-input polynomially small $t$ compiler is absent, and no all-decider rich-representation-versus-alternative-cost lower bound is known.
+
+Root MAIN's BOUNDARY-EXCEPTIONS59 measures a different signed pivot-defect $\delta$ and proves SAT for $\delta\le8$; our greedy paired-support defect $t$ must not be substituted for $\delta$. MAIN85's SAT-only root quotient has only two classes, so this richer matching object remains an optional algorithm-specific representation. Role 4's HORN-SELECTOR-DEGREE60 gives the exact occurrence-4 NP-complete endpoint, not a shortcut to polynomial SAT when our $t$ grows linearly. The next experiment must reconstruct the primary published 198/264 UNSAT source and measure both $\delta$ and $t$; the first missing load-bearing lemma is a model-matched universal all-decider work obstruction or, in the other direction, an unconditional polynomial compiler for general instances. Both $P=NP$ and $P\ne NP$ remain OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{docker} J. D\"ocker, On simplified NP-complete variants of Monotone 3-Sat, Discrete Applied Mathematics (2021), doi:10.1016/j.dam.2020.12.010.
+\bibitem{edmonds} J. Edmonds, Paths, Trees, and Flowers, Canadian Journal of Mathematics 17 (1965), 449--467.
+\bibitem{galil} Z. Galil, Efficient Algorithms for Finding Maximum Matching in Graphs, ACM Computing Surveys 18 (1986), 23--38, doi:10.1145/6462.6502.
+\bibitem{apt} B. Aspvall, M. Plass and R. Tarjan, A Linear-Time Algorithm for Testing the Truth of Certain Quantified Boolean Formulas, Information Processing Letters 8 (1979), 121--123.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::BLOSSOM_FACTOR60
