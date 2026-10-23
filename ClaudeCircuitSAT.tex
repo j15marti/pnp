@@ -1,0 +1,109 @@
+% ClaudeCircuitSAT living document -- owned by the hourly Claude CircuitSAT routine.
+% Append/reconcile in place; log of runs is in Section "Run log".
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newtheorem{lemma}{Lemma}
+\newcommand{\CSAT}{\mathrm{CSAT}}
+\begin{document}
+\title{ClaudeCircuitSAT: a wire-by-wire lower-bound ladder for Circuit-SAT}
+\author{Living document (hourly routine)}
+\date{Last updated 2026-10-23}
+\maketitle
+
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing in this document proves a superlinear
+lower bound for Circuit-SAT. Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL,
+CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and method}
+Goal: lower bounds for the NP-complete problem Circuit-SAT. Method: start from the
+smallest instances, grow the number of inputs $n$ and gates $s$ step by step, and at each
+step record the minimum number of wires (connections) any circuit \emph{deciding} the
+instance must contain, then look for a pattern that survives to a general bound.
+
+\subsection*{The ladder problem $\CSAT_{n,s}$}
+An instance encodes a circuit with $n$ inputs and $s$ AND-gates with optional negation on
+each input wire: gate $j\in\{0,\dots,s-1\}$ picks two earlier nodes (indices in $[0,n+j)$,
+$\lceil\log_2(n+j)\rceil$ bits each) and a negation bit per wire; the output is the last gate.
+Out-of-range codes are rejected. $\CSAT_{n,s}(\text{code})=1$ iff some $x\in\{0,1\}^n$ makes
+the encoded circuit output $1$. The code length is
+\[
+N(n,s)=2\sum_{j=0}^{s-1}\bigl(\lceil\log_2(n+j)\rceil+1\bigr).
+\]
+This is a faithful finite slice of Circuit-SAT (AND with negations is a complete basis).
+
+\section{Exact lemmas}
+\begin{lemma}[Connectivity / wire bound; PROVED/EXACT]\label{lem:wire}
+If $f$ depends essentially on $N$ variables, every fan-in-2 circuit computing $f$ has at
+least $N-1$ gates and at least $2N-2$ wires among gates and inputs, and each essential
+input has fan-out $\ge 1$.
+\end{lemma}
+\emph{Proof.} The output gate must reach each essential input; the sub-DAG reaching them is
+connected with $N$ leaves and fan-in $\le 2$, so it has $\ge N-1$ internal gates, each
+receiving exactly $2$ wires (or fewer only if a gate is degenerate, which removes essentiality).
+Counting in-edges gives $\ge 2(N-1)$ wires. \qed
+
+\section{Computational ladder (COMPUTATIONAL)}
+Script: \path{results/claude-circuitsat/ess_bits.py}, output
+\path{results/claude-circuitsat/ess_bits_results.json}. Each call is exhaustive over all $2^N$
+codes and all $2^n$ inputs, runs in $<30$\,s (chunking: one $(n,s)$ per invocation; $N\le12$ here).
+\begin{center}
+\begin{tabular}{rrrrrr}
+$n$ & $s$ & $N$ & essential bits & $\#$sat codes & wire lower bound $2N-2$ \\\hline
+1&1&2&2&2&2\\
+2&1&4&4&12&6\\
+3&1&6&6&30&10\\
+4&1&6&6&56&10\\
+2&2&10&10&396&18\\
+3&2&12&12&1818&22
+\end{tabular}
+\end{center}
+In every computed case \emph{all} code bits are essential, so Lemma~\ref{lem:wire} gives
+the stated wire bounds for any circuit deciding $\CSAT_{n,s}$ (COMPUTATIONAL for these
+six cases).
+
+\begin{lemma}[CANDIDATE]
+For all $n,s$ every bit of the encoding is essential, hence any circuit for $\CSAT_{n,s}$ has
+$\ge N(n,s)-1=\Theta(s\log(n+s))$ gates. \emph{Status: CANDIDATE; verified only in the table.}
+\end{lemma}
+
+\section{Honest assessment}
+\begin{itemize}
+\item The ladder bound is \emph{linear in the input length} $N$. This is the trivial
+``must read the input'' bound; it is exactly the order the repository already records as
+the query ceiling (INPUT-QUERY-CEILING86 in root \path{main.tex}: pure query amplification
+beyond input order is retired). Classification: EXACT OBJECT, no new strength.
+\item Known frontier (KNOWN THEOREM, quoted from memory, not re-verified this run): the best
+explicit general-circuit lower bounds over the full binary basis are $\approx 3.1N-o(N)$
+(Li--Yang, STOC 2022), still linear. Superlinear circuit lower bounds for any explicit
+function are open; Circuit-SAT $\notin$ P/poly-size would imply P$\ne$NP-type separations
+only after superpolynomial bounds, far beyond this ladder.
+\item Barriers any real step must clear: relativization, natural proofs, algebrization.
+This ladder is a counting argument on essential variables, so it is natural-proof-neutral
+but cannot exceed linear.
+\end{itemize}
+
+\section{Next arrows (OPEN)}
+\begin{enumerate}
+\item Prove the CANDIDATE lemma (all bits essential) for all $(n,s)$.
+\item Replace ``essential bits'' by a gate-elimination measure on the \emph{solver} circuit
+that exploits the $\exists x$ quantifier: record minimum \emph{fan-out profile} of encoding
+bits (each code bit interacts with up to $n$ variables' worth of behaviour) for $n$ growing
+with $s$ fixed. Compute exact minimum circuit size for the smallest cases ($N\le 6$) by
+exhaustive synthesis (needs a SAT/enumeration tool not installed in this environment).
+\item Mine repository components (HEC / CRS-PPC / CCSPC; \path{tasks/TASK-004..007}) for a
+non-input-order measure; none found this run.
+\end{enumerate}
+
+\section{Repository cross-check (this run)}
+Surveyed tree, root \path{main.tex} (P vs NP \OPEN\ stated; all arbitrary-algorithm bridges
+open), \path{AGENTS.md}, \path{tasks/}. No prior \path{ClaudeCircuitSAT.tex}; no repository
+result gives an unconditional superlinear Circuit-SAT bound. Full literature search and
+historical-report audit \emph{not} performed this run (first run, bootstrap).
+
+\section{Run log}
+\begin{itemize}
+\item 2026-10-23 run 1: created document, ladder script, six-case table, Lemma~\ref{lem:wire}.
+\end{itemize}
+\end{document}
