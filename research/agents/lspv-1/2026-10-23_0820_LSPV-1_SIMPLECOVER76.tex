@@ -1,0 +1,112 @@
+% LSPV-1 REPORT::SIMPLECOVER76::2026-10-23T08:20:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=0.83in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{countertheorem}{Countertheorem}
+\title{SIMPLECOVER76: A Sharper Matching-Cover SAT Upper Bound, a Multigraph Counterexample, and a Separated-Core Direct Solver}
+\author{LSPV-1: Universal SAT-Decider Cost Bridge}
+\date{October 23, 2026}
+\begin{document}\maketitle
+\begin{center}\textbf{PROVED/EXACT in the specified models; external matching results are KNOWN THEOREMS. Independent review pending. P versus NP remains OPEN.}\end{center}
+
+\section{Target, representation, hypotheses}
+We investigate, but do not assume, that every total uniform deterministic exact SAT decider is forced to produce a rich solution representation or pay comparable work avoiding it. Three falsifiable mechanisms were tested: (M1) sharpen the certified complementary-pair branching exponent using the simple-graph matching theorem; (M2) test the transfer on a cubic multigraph; (M3) construct a source-aware polynomial direct solver avoiding the explicit branch representation. M1 is PROVED/EXACT under simplicity, M2 is FALSIFIED/RETIRED by a valid 30-variable source, and M3 is PROVED/EXACT on a recognizable subclass.
+
+Fix the NP-complete language of properly encoded, duplicate-free, proper signed exact-$(2,2)$ 3-CNF: every clause contains three distinct variables, each original variable occurs exactly twice positively and twice negatively. Thus $4n=3m$. Invalid encodings are NO. Use a deterministic uniform random-access word RAM of word width $w=\lceil\log_2(64(n+m+1))\rceil$ and full input length $N=(4m+2)w$ bits. Each source read, parsing check, comparison, sort, failed branch, auxiliary record, replay and output costs at least one operation when performed. Peak simultaneously live words are reported. An output-TRUE backward AND of OR3 clauses requires a consistent selection of one true original literal occurrence per clause; in exact-$(2,2)$, opposite-sign occurrence conflicts are $n$ disjoint $K_{2,2}$ blocks. This is an exact encoding, not a SAT-solving lower bound.
+
+\section{Canonical pair contraction and graph}
+Contract every unique pair of proper ternary clauses
+\[
+(a\vee b\vee x)\wedge(a\vee b\vee\neg x)\ \equiv\ (a\vee b).
+\]
+In valid unique signed exact-$(2,2)$ sources a clause has at most one such partner (PAIRRIGID72), so the $p$ contractions are disjoint. We obtain assignment-wise equivalence $F\equiv B\wedge T$, where $B$ is 2-CNF and $T$ consists of $\delta=m-2p$ ternaries. In $T$, each source variable occurs in two or four distinct clauses (CUBICCOVER75). Pair the two or four variable-occurrence sockets canonically, producing one or two clause-dual edges bearing the same original source-variable label. The loopless cubic multigraph $H_F$ has $\delta$ clause vertices and $3\delta/2$ edges. Its construction is source-based and independent of any solver's runtime. Let $\nu(H_F)$ be the matching number, $c(H_F)$ the component count, and $h_F=\delta-\nu(H_F)$.
+
+\begin{theorem}[Simple dual improvement; PROVED/EXACT]
+If $H_F$ is \emph{simple}, then
+\[
+\nu(H_F)\ge\frac{4\delta-c(H_F)}9,\qquad
+h_F\le\left\lfloor\frac{5\delta+c(H_F)}9\right\rfloor.
+\]
+A uniform total deterministic exact SAT decider therefore has, on sources whose $H_F$ is simple, charged upper bound
+\[
+T(F)=O\!\left(m\log(m+2)+\delta^4+
+2^{\lfloor(5\delta+c(H_F))/9\rfloor}(n+m+1)\right)
+\]
+and $O(n+m)$ reusable peak RAM words. For nonsimple duals only the previous $2^{\lfloor5\delta/8\rfloor}\operatorname{poly}(N)$ matching ceiling is asserted.
+\end{theorem}
+\begin{proof}
+Haxell and Scott's theorem [1] states, for every simple subcubic graph, $\nu(G)\ge(4n_3+3n_2+2n_1-c(G))/9$. Apply it to each simple cubic component and sum. A polynomial Edmonds matching gives $\nu$ vertex-disjoint edges. Select their source-variable labels, which cover $2\nu$ distinct unmatched clauses, then one variable from each uncovered clause; the number of selected distinct variables is at most $\nu+\delta-2\nu=\delta-\nu$. After assigning these variables every ternary has width at most two. Enumerate all assignments to the selected variables, solve every remaining 2-CNF by SCC, and replay a successful witness on the exact original source. Every possible original assignment is represented, and pair contraction preserves the complete truth relation. Failed branches, input validation, matching, reconstruction and output are charged. Conservative matching cost $O(\delta^4)$ and $O(n+m)$ per branch establish the expression.
+\end{proof}
+
+\section{Source-valid failure of unrestricted simple-graph transport}
+\begin{countertheorem}[Ten-vertex parallel-edge clause dual; PROVED/EXACT]
+There is a valid connected signed exact-$(2,2)$ source with $n=30,m=40,p=15,\delta=10$ whose clause dual has matching number $4$ and exact minimum variable cover $6$. Applying the simple-graph bound would falsely claim a cover of at most $\lfloor51/9\rfloor=5$.
+\end{countertheorem}
+\begin{proof}
+Take a central vertex $o$ and three separate branches $\{a_i,b_i,c_i\}$, $i=1,2,3$, with \emph{two} parallel edges $a_ib_i$ and single edges $a_ic_i,b_ic_i,oc_i$. Every vertex has degree three, with ten vertices and fifteen edges. Removing $o$ leaves three odd three-vertex components, forcing matching deficiency at least two. A matching of size four uses one central bridge and one internal edge in each branch, so $\nu=4$. The minimum edge cover is $|V|-\nu=6$.
+
+For each graph edge $e_j$ use variable $x_j$ positively at one endpoint and negatively at the other. Each vertex emits the OR3 of its three incident edge literals. For each $j$ cyclically introduce variable $y_j$ and two clauses
+\[
+(y_j\vee\neg y_{j+1}\vee x_j),\quad
+(y_j\vee\neg y_{j+1}\vee\neg x_j).
+\]
+These fifteen disjoint pairs contract to an implication cycle over the $y$ variables; ten unmatched vertex clauses form the original loopless cubic \emph{multigraph}. All thirty variables occur twice per sign, all forty clauses are unique and proper. Each $x_j$ meets exactly two unmatched clauses, so source-variable covers are precisely graph edge covers and require six variables. Orient any cycle consistently, and direct other tree edges outwards. Every vertex receives an oriented edge, giving a satisfying assignment to all ten vertex clauses; set every $y_j=0$ to satisfy the cycle pairs. Thus this valid formula is easy, despite the strictly larger matching cover.
+\end{proof}
+
+\section{Separated-core direct decision}
+\begin{theorem}[Separated-Core SAT Theorem; PROVED/EXACT]
+After canonical pair contraction of a valid proper signed exact-$(2,2)$ source, suppose
+\[
+\operatorname{var}(B)\cap\operatorname{var}(T)=\varnothing,\quad
+\operatorname{occ}_{T}(x)=\operatorname{occ}_{T}(\neg x)=1
+\quad\text{for every }x\in\operatorname{var}(T).
+\]
+Then $F$ is SAT. The property and a complete satisfying original-source assignment can be found in $O(m\log(m+2))$ word time and $O(n+m)$ live words, under arbitrary clause permutations, source-variable renamings and consistent source-variable complementation. In particular $\delta$ and $h_F$ can both grow linearly on source-recognizable SAT instances.
+\end{theorem}
+\begin{proof}
+For any source variable appearing in $B$, one positive contracted occurrence has consumed its two original positive appearances, and one negative contracted occurrence has consumed its two negative appearances. Because its name does not appear in $T$ (and a pivot contribution would prohibit a contracted occurrence), each $B$ variable occurs \emph{once positively and once negatively}. Form the binary-clause dual graph: its clause vertices have degree two, and each source variable connects its positive to its negative clause. Each component is a cycle. Orient the cycle edges and choose variable truth values to make the head literal true. Thus $B$ is SAT.
+
+Likewise every variable in $T$ occurs once in each polarity in two distinct clauses. Its two occurrences define a dual edge; all ternary-clause vertices have degree three. Every component of this loopless cubic multigraph has a cycle. Orient one cycle cyclically and every tree edge away from it, making every clause vertex the head of at least one edge. Interpret edge orientation as the value making the receiving literal true, giving a model of $T$. Since $B,T$ have disjoint variable sets their models combine. Other original pivot-only variables are arbitrary because their paired clauses are already satisfied by the common binary clause. Replay the input for certification. Canonical hashing/sorting of signed supports, variable-count checks, cycle/forest recovery and replay give the asserted complexity.
+\end{proof}
+
+\begin{lemma}[Noncircular restricted amortization; PROVED/EXACT]
+For these separated-core sources, the minimum original-variable hitting set for $T$ equals
+\[
+\tau(T)=\delta-\nu(H_F).
+\]
+Any calculus explicitly required to output this minimum set writes at least $\tau$ source-variable records. With $\rho_j$ the independently defined number of unhit ternary clauses after $j$ selected variables, $\rho_j-\rho_{j+1}\le2$. Neither bound applies to a one-bit decider that avoids emitting that set.
+\end{lemma}
+\begin{proof}
+Every $T$ variable meets exactly two distinct clause vertices, so variable covers of the ternary clauses correspond to edge covers of $H_F$. The matching/edge-cover identity gives $\tau=|V|-\nu$. An output of $\tau$ variable identifiers requires $\tau$ charged writes. One selected variable hits at most two new clauses. These are output-model costs, not automatic SAT-decision costs.
+\end{proof}
+
+\section{Orientation theorem and hostile controls}
+For any graph with one source variable per edge, appearing positively at one endpoint and negatively at the other, an OR clause at every demanded vertex is satisfiable iff the bipartite vertex-edge incidence graph has a matching covering all demanded vertices (Hall's theorem [3]). When \emph{all} vertices are demanded, this is equivalent to each connected component of the graph having a cycle. The implication from satisfiability to incidence matching chooses a true incident edge per vertex; no edge can witness both endpoints. The reverse implication orients each matched edge toward its covered vertex. For full demand, a tree component is UNSAT by $|E|=|V|-1$ and a cyclic component is SAT by cycle-plus-outward-forest orientation. Explicit control $x\wedge\neg x$ is UNSAT, whereas a triangle orientation source is SAT; these are \emph{outside} the fixed exact-$(2,2)$ grammar and are not misrepresented as in-language UNSAT examples. The published 198-variable/264-clause strict-monotone UNSAT example remains a primary-literature dependency, not locally reconstructed data in this run.
+
+SCC, affine/XOR elimination, Horn reasoning, component decomposition, source rereads, learned clauses, caching, lazy context queries and decide-first normalization remain legal. This source-aware direct solver shows why no algorithm is forced to enumerate $2^{h_F}$ assignments, build the full independent-transversal relation, DNNF, resolution proof or all backward Circuit-SAT paths. Assignment-evaluation gates under shared NOT1/OR2/AND2 are $n+3m-1$ with $n+6m-2$ gate-input wires. They provide no lower bound for SAT-solving circuits.
+
+\section{Reproducible evidence, provenance and corpus reconciliation}
+\textbf{COMPUTATIONAL:} Seed 2026102308; 4,449 assertions, zero failures, nineteen valid cubic graph lifts (simple connected $K_4,K_{3,3}$, prisms, Petersen, random simple cubic graphs to order thirty, and the ten-vertex parallel-edge construction), fifty-seven randomized source-isomorphism controls, original-source witness replay, source uniqueness and $(2,2)$ regularity, exact matching numbers, and an independent brute-force minimum-cover check on the ten-vertex source. Eighty small orientation controls independently compared exhaustive assignment search against incidence matching: 25 SAT, 55 UNSAT. The four-vertex cubic lift was exhaustively assignment-checked. These are finite implementation tests, not asymptotic hardness evidence. Source: \texttt{simplecover76\_audit.py}; raw evidence: \texttt{SIMPLECOVER76\_results.json}.
+
+\textbf{CORPUS REVIEWED:} root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, repository research skill, task index/TASK-007, newest MAIN101, ROOT-LABEL-QUOTIENT85, SMALL-INTERFACE-EXACT-JOIN64, CUBICCOVER75, PAIRRIGID72, PAIRPATH73, XORWITNESS74, LSPV-2 BLOSSOM-FACTOR60, LSPV-3 HWB-OBDD-BARRIER68 and Role-4 matching-positive-ternary work. Repository search located prior prism witnesses and the $5\delta/8$ bound, but not this simple-graph matching transfer or the exact separated-core criterion. No claim of external mathematical priority is made. ADOPTED: pairing and original-source identities, Shannon's general multigraph bound, root-label two-class quotient. REJECTED: extending a simple-graph theorem across parallel edges or charging an arbitrary decider for optional output. No existing root theorem is silently strengthened.
+
+\section{Status and first missing implication}
+The universal objective is
+\[
+\forall A\ \forall c>0\ \forall N_0\ \exists F_A:\ 
+|F_A|\ge N_0 \land T_A(F_A)>|F_A|^c,
+\]
+where $A$ is each total uniform deterministic exact decider for the same fixed NP-complete language. \textbf{OPEN.} The new $\tau$ is source-defined and its explicit output is charged, but a direct recognizer avoids the output and decides recognizable families in polynomial time. The first missing theorem is a model-preserving, non-tautological acquisition/compression/direct-decision lower bound that applies to every such decider on some arbitrarily large input family chosen \emph{after} that decider. These exact upper bounds do not bypass relativization, algebrization, Natural Proofs or general-circuit barriers. The next experiment is to reconstruct and source-validate a genuine exact-$(2,2)$ UNSAT source and a matched SAT mutation, then compare pairing, separated-core, affine, SCC, Horn, and blossom-factor branches without treating a cited 198/264 theorem as a tested input.
+
+\begin{thebibliography}{9}
+\bibitem{hs} P. E. Haxell and A. D. Scott, On Lower Bounds for the Matching Number of Subcubic Graphs, \emph{Journal of Graph Theory} 85 (2017), 336--348, doi:10.1002/jgt.22063.
+\bibitem{ed} J. Edmonds, Paths, Trees, and Flowers, \emph{Canadian Journal of Mathematics} 17 (1965), 449--467.
+\bibitem{hall} P. Hall, On Representatives of Subsets, \emph{J. London Math. Soc.} 10 (1935), 26--30.
+\bibitem{docker} J. D\"ocker, On Simplified NP-Complete Variants of Monotone 3-Sat, \emph{Discrete Applied Mathematics} 292 (2021), 45--58.
+\bibitem{prior} LSPV-1, CUBICCOVER75, \url{https://github.com/j15marti/pnp/blob/main/research/agents/lspv-1/2026-10-23_2256_LSPV-1_CUBICCOVER75.tex}.
+\bibitem{main} LSPV-5, PORTFOLIO-PRISM-FIREWALL101, \url{https://github.com/j15marti/pnp/blob/main/research/main/2026-10-23_2348_MAIN_PORTFOLIO_PRISM_FIREWALL101.tex}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::SIMPLECOVER76
