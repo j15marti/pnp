@@ -1,0 +1,65 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newcommand{\PROVED}{\textbf{PROVED}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newtheorem{lemma}{Lemma}
+\title{Wire-by-wire lower bounds for Circuit-SAT\\\large Living document (ClaudeCircuitSAT)}
+\date{Last updated: 2026-10-24 (run 1)}
+\begin{document}
+\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here proves a superpolynomial
+lower bound. Status labels: PROVED, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Program}
+Start from the smallest Circuit-SAT instances, grow the number of inputs $n$ one at a time, and at each step
+record (a) the exact minimum number of gates $g^*(n)$ and wires $w^*(n)=2g^*(n)$ (fan-in 2, one output wire) needed for the
+hardest / for specific instances, and (b) a lower bound on the work of deciding satisfiability, possibly
+parametrized by $n$, size $s$, treewidth/pathwidth $t$, or fan-out $d$.
+Two notions must be kept apart: \emph{representation cost} (wires needed to \emph{write down} the instance, a
+circuit-complexity quantity) versus \emph{solving cost} (time/queries to decide satisfiability). Only the second is a
+P vs NP lower bound; the first feeds it only through a transfer theorem that is \OPEN{}.
+
+\section{Step ladder: exact minimum circuit size (\COMP)}
+Model: fan-in-2 gates, constants free, inputs free. Basis B2 = all 16 binary gates; basis DM = AND/OR with free negation on edges (no XOR gate).
+Exhaustive BFS over sets of computed truth tables (\texttt{results/circuitsat/mincirc.py}; each run $<$12\,s; JSON in same directory).
+\begin{center}\begin{tabular}{@{}llll@{}}\toprule
+$n$ & basis & distribution of min gates over all $2^{2^n}$ functions (cost:count, constants/inputs = cost 0) & max wires\\\midrule
+2 & B2 & 0:4, 1:12 & 2\\
+2 & DM & 0:4, 1:10, 3:2 (the two XOR/XNOR) & 6\\
+3 & B2 & 0:5, 1:33, 2:114, 3:80, 4:24 & 8\\\bottomrule\end{tabular}\end{center}
+Observations (\COMP, verified by exhaustion for these $n$ only): $g^*_{B2}$ max $=1,4$ for $n=2,3$; XOR$_2$ costs 3 in DM vs 1 in B2;
+$\mathrm{XOR}_3$ costs 2 in B2. $n=4$ (65536 functions) and DM at $n=3$ exceed the 30\,s budget with naive BFS; planned: canonicalize by NPN class and chunk by gate level.
+
+\section{Wire-level lower bounds that are actually proved}
+\begin{lemma}[connectivity, \PROVED{}] Let $f$ depend essentially on $n$ variables. Any fan-in-2 circuit computing $f$ has at least $n-1$ gates and at least $2(n-1)$ wires.\end{lemma}
+\emph{Proof.} Every essential input has a directed path to the output, so the circuit's underlying graph restricted to those inputs and their ancestors-of-output is connected on $n+g$ nodes, so has $\ge n+g-1$ edges; fan-in 2 gives wires $=2g$ (counting gate-input wires), and $2g\ge n+g-1$ gives $g\ge n-1$. \qed
+This is tight for AND$_n$, and in B2 for parity; in DM parity needs $3(n-1)$ gates (\KNOWN, Schnorr 1974; matches $n=2$ above, $n=3$ value 6 not re-verified here).
+
+\begin{lemma}[reading the instance, \PROVED{}] Any algorithm that decides Circuit-SAT on instances of $s$ wires must read $\Omega(s)$ of the encoding in the worst case.\end{lemma}
+\emph{Proof sketch.} Take an AND-chain of $s$ wires with the final literal ($x_1$ or $\neg x_1$ against a forced $x_1$-conjunct) hidden at a position the algorithm never reads: the two instances differing there differ in satisfiability but agree on all read bits. \qed\ (A trivial bound; it shows the relevant bounds are in the \emph{not}-all-read regime only for promise/structured inputs.)
+
+\section{Parametrized picture (what is known vs. open)}
+\begin{itemize}
+\item Upper bounds: Circuit-SAT is solvable in $2^{n}\cdot\mathrm{poly}(s)$ and in $2^{O(t)}\mathrm{poly}(s)$ for treewidth $t$ (\KNOWN). So any lower bound has the shape $2^{\Omega(\min(n,t))}$ at best.
+\item Matching lower bounds exist only \CONDITIONAL{} on ETH/SETH (no $2^{o(n)}$ resp.\ $2^{(1-\epsilon)n}$ for CNF-SAT; analogous pathwidth lower bounds). Unconditionally the best \emph{circuit-size} lower bounds for explicit functions in B2 are linear, roughly $3.1n$ via gate elimination (\KNOWN, recalled from memory; not re-verified this run), far from superpolynomial.
+\item \OPEN: an unconditional bound of the form $\mathrm{time}\ge f(n,t)$ with $f$ superpolynomial for general algorithms.
+\end{itemize}
+
+\section{Incremental ("add one input") scheme}
+Define $W(n)=\min$ wires of a hardest $n$-input instance. Gate elimination gives $W(n+1)\ge W(n)+c$ if setting $x_{n+1}$ to a constant removes $\ge c/2$ gates, which yields only linear $W$. Superlinear growth would need a measure that is not destroyed by restriction, i.e.\ an argument that avoids restrictions; this is the classical natural-proofs / relativization / algebrization obstacle region. \CAND: track instead the fan-out profile $(d_1,\dots,d_n)$ of inputs; wires $=\sum_i d_i + \sum_{\text{gates}}(\text{outdeg})$ and low fan-out forces tree-like (small-treewidth, easy) structure. Whether a fan-out/treewidth tradeoff forces $2^{\Omega(t)}$ solving cost is \OPEN.
+
+\section{Barrier checklist (to be applied to any proposed bound)}
+Relativization (black-box search needs $2^n$ queries but the white-box circuit is given); natural proofs; algebrization; and the \emph{representation vs solving} gap above. Any claimed bound must say which of these it avoids.
+
+\section{Repository cross-check (run 1)}
+Root \texttt{main.tex} states P versus NP remains OPEN and tracks a different program (HEC/CRS-PPC/threshold-descent). The corpus contains grok \texttt{REWIRE} reports mentioning circuit-SAT; they were located but \emph{not} read in depth this run. No result in the corpus was found that supplies the missing representation-to-solving transfer. Nothing was imported.
+
+\section{Next steps}
+(1) Read grok REWIRE reports and tasks for reusable fan-out/rewiring lemmas. (2) NPN-canonical exhaustive $n=4$ (B2 max known 7) in chunks. (3) DM $n=3$ by level chunks. (4) Search literature for treewidth/pathwidth--fan-out lower bounds for SAT.
+
+\end{document}
+% END_OF_CLAUDECIRCUITSAT_RUN1
