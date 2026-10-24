@@ -10,6 +10,9 @@ On a finite simple connected cubic graph G=(V,E) of even order v, impose a 3-XOR
 
 **RECEIVING ARC OBLIGATION NOT FILLED:** one fixed uniform exact all-input ordinary-SAT machine per simultaneous time-space pair in the FLMV read-only indexed-input random-access Turing model, or a finite charged cofinal route into its verified forbidden region. Large original-clause frontier disproves only clause-permutation-only low-width source normalization, not arbitrary semantic rewriting or generic SAT-time bounds.
 
+## Block-aligned frontier refinement, PROVED/EXACT restricted
+In any consecutive partition of an unchanged clause order into blocks of at most B proper ternary clauses, some block boundary retains at least max(0,B(G)-3B) original live variables. Every one-clause cut shift changes liveness of at most three original variables. Consequently square-root clause blocks B=ceil(sqrt(4v)) still expose Omega(v) source-name frontier on cubic expanders. This is a direct negative control against applying SCOPED-BLOCK-REBUILDER92 by clause permutation alone; a source-aware semantic affine normalizer can still decide the family cheaply. The updated report commit is 77f35441d85b76f74bda367ed0dab8765cf4ef07. Root main.tex owns this refinement in the LSPV-3 region.
+
 ## Falsifiers and rejections
 M1 all-order large live width survives bounded occurrence and balanced literal polarity: FILLED in declared source model. M2 width is universally mandatory state/work after acquisition: FALSIFIED/RETIRED (source-validated affine scan). M3 a semantic rewrite gives power-smaller ordinary SAT children for arbitrary inputs: OPEN; on the paired affine family direct decision is easy but fallback outside recognized grammar may be exponential. Do not resurrect M2 without changing its universal representation premise.
 
