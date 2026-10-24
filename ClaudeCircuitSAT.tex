@@ -1,0 +1,79 @@
+% ClaudeCircuitSAT LIVING DOCUMENT -- owner: Claude hourly routine (separate from root main.tex; not an LSPV ownership region)
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{observation}{Observation}
+\newcommand{\CSAT}{\mathsf{CircuitSAT}}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT\\\large Living document}
+\author{Claude hourly routine}
+\date{Last updated: 2026-10-24 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is a proof of a superpolynomial lower bound for $\CSAT$. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Build circuits from the simplest case upward, tracking at each step (i) the number of inputs $n$, (ii) the minimum number of gates $s$ and wires $w$ ($w=2s$ for fan-in-2 gates, plus the output wire), and (iii) what is required to \emph{decide} satisfiability. Lower bounds are parametrized by $(n,s)$ (or $(n,w)$).
+
+\paragraph{Why parametrization is forced.} Brute force decides $\CSAT$ in time $O(2^n s)$. If $s\ge 2^n/n$ this is $\mathrm{poly}(s)$. So a meaningful superpolynomial bound must live in the regime $s=\mathrm{poly}(n)$, i.e.\ it is a bound of the form $T(n,s)\ge f(n)$ with $s\le n^{O(1)}$, not a bound in $s$ alone. (PROVED/EXACT, trivial.)
+
+\section{Model hierarchy}
+\begin{tabular}{@{}lll@{}}\toprule Model & Bound & Status\\\midrule
+Black-box (evaluate $C$ at points) & $\Omega(2^n)$ queries & PROVED/EXACT (Thm.~\ref{t:bb})\\
+Probe model (read gate descriptors) & $\ge s$ probes & PROVED/EXACT (Thm.~\ref{t:probe})\\
+Full white-box, time & super-poly in $n$ for $s=\mathrm{poly}(n)$ & OPEN (= P vs NP)\\
+Same, under ETH & $2^{\Omega(n)}$ for $s=O(n)$ & CONDITIONAL\\\bottomrule\end{tabular}
+
+The gap between the first and third rows is exactly the white-box gap: the circuit's \emph{wiring} must be exploited. Every step below tracks which wire-structure an algorithm could exploit.
+
+\begin{theorem}[Black-box, PROVED/EXACT]\label{t:bb} Any deterministic algorithm that accesses $C:\{0,1\}^n\to\{0,1\}$ only by evaluation needs $2^n$ queries to decide satisfiability in the worst case.\end{theorem}
+\emph{Proof.} Adversary answers 0 until one point remains; the unqueried point may be the unique satisfying assignment. \qed
+
+\begin{theorem}[Probe lower bound, PROVED/EXACT]\label{t:probe} Let instances be fan-in-2 circuits given as gate lists with gate types from $B_2$. Any deterministic algorithm needs at least $s$ gate-descriptor probes on some $s$-gate instance.\end{theorem}
+\emph{Proof.} Let $C_0$: $g_1=x_1\wedge x_2$, $g_i=g_{i-1}\wedge x_{i+1}$ ($s=n-1$), output $g_s$; satisfiable by all-ones. Let $C_j$ replace the type of $g_j$ by the constant~$0$; then $C_j$ is unsatisfiable. Answer every probe as in $C_0$; an algorithm halting with $g_j$ unprobed gives the same answer on $C_0$ and $C_j$. \qed
+
+This is the trivial linear read bound; it is the $s$-axis baseline, not progress toward P vs NP.
+
+\section{Step-by-step exact tracking (COMPUTATIONAL)}
+Script: \texttt{results/claude\_circuitsat/exact\_b2\_sizes.py}; JSON in the same directory. Method: BFS over normal Boolean chains over $B_2$ (sets of computed truth tables; free output negation), exact minimum gate count; wires $=2\times$gates. Runs: $(n,K)=(2,3),(3,5),(4,4)$, each $<30$\,s (no chunking needed; $n=4$, $K=4$ took $\approx5$\,s, $4.9\times10^5$ states).
+
+\begin{center}\begin{tabular}{@{}lccccccc@{}}\toprule
+$n$ & cost 0 & 1 & 2 & 3 & 4 & $>4$ & max cost\\\midrule
+2 (16 fns) & 6 & 10 & & & & 0 & 1\\
+3 (256 fns) & 8 & 30 & 114 & 80 & 24 & 0 & 4\\
+4 (65536 fns) & 10 & 60 & 456 & 2474 & 10624 & 51912 & ${\ge}5$ (search stopped at 4)\\\bottomrule\end{tabular}\end{center}
+(Costs in gates; the $n=3$ histogram is exhaustive. For $n=4$ the ``$>4$'' column only means the search was cut off at 4 gates.)
+
+\begin{center}\begin{tabular}{@{}lcccc@{}}\toprule
+function & $n=2$ & $n=3$ & $n=4$ & wires at $n=3$\\\midrule
+AND, OR, XOR & 1 & 2 & 3 & 4\\
+$\mathrm{MOD}_3{=}0$ & 1 & 3 & $>4$ & 6\\
+MAJ / $\mathrm{THR}_{\ge2}$ / EXACT-1 & 1 & 4 & $>4$ & 8\\
+MUX & -- & 3 & 3 (on 3 inputs) & 6\\\bottomrule\end{tabular}\end{center}
+
+\begin{observation}[PROVED/EXACT] A function depending on all $n$ variables needs $\ge n-1$ gates ($\ge 2(n-1)$ wires): the underlying graph must connect $n$ inputs to one output through fan-in-2 gates. AND/OR/XOR meet it with equality for $n=2,3,4$ (data above).\end{observation}
+
+\begin{observation}[COMPUTATIONAL, small $n$ only] The first $n$ where a symmetric function exceeds $n-1$ gates is $n=3$ (MAJ$_3$: 4 vs.\ 2). EXACT-1, MAJ, THR$_2$ and $\mathrm{MOD}_3$ all exceed 4 gates at $n=4$. No extrapolation to asymptotics is claimed.\end{observation}
+
+\section{Known theorems (KNOWN THEOREM; recalled, primary sources NOT re-verified this run)}
+Gate elimination gives explicit-function circuit lower bounds over $B_2$ of the form $c\,n-o(n)$ with $c=3$ (Blum 1984), improved to about $3.011n$ (Find--Golovnev--Hirsch--Kulikov, FOCS 2016) and $3.1n$ (Li--Yang, STOC 2022). \textbf{TODO next run:} verify these citations against primary sources before relying on them.
+
+\textbf{Transfer classification.} These bound the size of a circuit \emph{computing} a function, not the time to decide satisfiability of a given circuit. Relation: FAILED TRANSFER as stated; CANDIDATE only if a gate-elimination argument can be run against an algorithm's partial-assignment/simplification process (a DPLL-style model), where each branch eliminates gates -- this yields lower bounds only for restricted (e.g.\ DPLL/resolution-like) algorithm classes, a known barrier to generalization.
+
+\section{Parametrized lower-bound ledger}
+\begin{tabular}{@{}lll@{}}\toprule Claim & Regime & Status\\\midrule
+$T\ge \Omega(s)$ (read) & all $(n,s)$ & PROVED/EXACT\\
+black-box $2^n$ & oracle only & PROVED/EXACT\\
+$T\ge s^{1+\epsilon}$ white-box & $s=\mathrm{poly}(n)$ & OPEN\\
+$T\ge 2^{\delta n}$ & $s=O(n)$ & CONDITIONAL (ETH)\\\bottomrule\end{tabular}
+
+\section{Repository cross-check (j15marti/pnp)}
+Root \texttt{main.tex} (header 2026-10-25, M22-ENFORCER-PORT-FIREWALL139) states P vs NP \textbf{OPEN}; its recent synthesis (BOUNDARY-ORACLE-FACTOR128) shows pinned-boundary queries add no independent-work amplification -- an exact analogue of the black-box vs.\ white-box separation above (ANALOGY, no transfer theorem). Only the root header was read this run; no circuit-size lower-bound theorem in the corpus was found to import. \textbf{TODO:} survey \texttt{research/agents/lspv-3} circuit-portfolio reports and \texttt{experiments/review/*circuit*}.
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend exact search to $n=4$ with $K=5,6$ (needs chunking/symmetry reduction; $K=5$ projected $\sim10^7$ states) or SAT-based exact synthesis.
+\item Track min-size of the \emph{Tseitin/satisfiability-check} gadget for $k$-clause CNF with $n$ variables stepwise, and the minimal wire count of circuits whose satisfying set is a single point (``needle'' circuits) -- these realize the black-box hard instances with $s=O(n)$ wires and test what the wiring leaks.
+\item Verify gate-elimination citations; try a DPLL-model gate-elimination lower bound for $\CSAT$ with parameters $(n,s)$ and audit it against known restricted-model barriers.
+\end{enumerate}
+\end{document}
+% END_OF_LIVING_DOC::ClaudeCircuitSAT::run1
