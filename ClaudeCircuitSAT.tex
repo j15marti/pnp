@@ -1,0 +1,83 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT::2026-10-24
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,url}
+\newtheorem{thm}{Theorem}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder toward parametrized lower bounds for Circuit-SAT}
+\author{Living document (hourly scheduled runs)}
+\date{Last updated: 24 October 2026 (run 1)}
+\begin{document}
+\maketitle
+\noindent\textbf{Status: P versus NP remains \OPEN.} Nothing here is an unconditional superpolynomial lower bound. Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and method}
+Find lower bounds, possibly parametrized, for \CSAT. Method: start from the simplest instances, add inputs one at a time, and record for each step (i) the minimum number of gates and wires of any circuit whose satisfiability question is non-degenerate, and (ii) what is forced on a solver. The ladder is a bookkeeping device; each rung states exactly what is proved.
+
+\section{Model (fixed)}
+A circuit is a DAG on $n$ inputs $x_1..x_n$, with gates of fan-in 2 computing any of the 16 binary operations ($B_2$), unbounded fan-out, one output. Size $s$ = number of gates; \emph{wires} $=2s$ (one per gate input). Instance length $N=\Theta((s+n)\log(s+n))$ in a standard encoding. Problem: given $C$, is there $x$ with $C(x)=1$? Parameters considered: $n$, $s$, and structural parameters $\theta$ (treewidth/pathwidth of $C$, cut-frontier, see \S5).
+
+\section{Ladder: exact small cases}
+\textbf{COMPUTATIONAL} (exhaustive search, \texttt{results/claude\_circuitsat/min\_circuit.py}, output \texttt{min\_circuit\_results.json}; runtime $\approx7$\,s, single stage). $C_{B_2}(f)$ = minimum gates for $f:\{0,1\}^n\to\{0,1\}$, inputs and negations free.
+\begin{center}
+\begin{tabular}{@{}lcccc@{}}\toprule
+$n$ & functions & $\max_f C(f)$ & $C(\text{point fn.})$ & min wires of point fn.\\\midrule
+1 & 4 & 0 & 0 & 0\\
+2 & 16 & 1 & 1 & 2\\
+3 & 256 & 4 & 2 & 4\\\bottomrule
+\end{tabular}
+\end{center}
+Distribution for $n=3$ (gates: count): 0:8, 1:30, 2:114, 3:80, 4:24 (sums to 256). A point function has exactly one satisfying assignment (the unique-SAT instance). Its cost is $n-1$ for $n=1,2,3$, matching Theorem~1. $\max_f C(f)$: $0,1,4$ for $n=1,2,3$; the value $7$ for $n=4$ is recalled from Knuth (TAOCP 7.1.2) and is \textbf{not} reproduced here (KNOWN, to be verified; next-run item).
+
+\section{Proved elementary rungs}
+\begin{thm}[Support bound; PROVED/EXACT]
+If the output of a fan-in-2 circuit depends on all $n$ inputs, it has $s\ge n-1$ gates and $\ge 2(n-1)$ wires, and this is tight (AND of literals).
+\end{thm}
+\begin{proof}
+Every input must reach the output, so the underlying undirected graph on $n+s$ vertices is connected after deleting any vertex not reaching the output; this graph needs $\ge n+s-1$ edges. It has exactly $2s$ edges, so $2s\ge n+s-1$. The AND tree meets it. \qedhere
+\end{proof}
+\begin{thm}[Reading bound; PROVED/EXACT]
+Any correct \CSAT\ decider that is given the circuit as a read-only string must read $\Omega(n)$ wires on some input of $n$ variables.
+\end{thm}
+\begin{proof}
+Take the AND tree $C$ of $x_1..x_n$ (satisfiable). Replacing any single leaf wire by constant 0 gives an unsatisfiable circuit. An algorithm that skips a leaf wire cannot distinguish the two. \qedhere
+\end{proof}
+\begin{thm}[Black-box evaluation bound; PROVED/EXACT, model-restricted]
+A decider with only evaluation access to $C$ needs $2^n$ queries in the worst case (adversary answers 0 until one point remains).
+\end{thm}
+This is not a lower bound for the white-box problem, since a solver sees the wires. It is the rung that white-box structure must beat or match, so every candidate white-box bound should be stated as how much structure the solver can exploit.
+
+\section{Known upper bounds that any lower bound must respect}
+\begin{itemize}
+\item \textbf{KNOWN THEOREM:} brute force $O(2^n s)$.
+\item \textbf{KNOWN THEOREM (folklore dynamic programming):} $2^{O(\mathrm{tw}(C))}\cdot s$ for treewidth tw of the circuit's primal graph, so a parametrized lower bound with parameter tw can be at most exponential in tw.
+\item \textbf{KNOWN, to be verified:} non-trivial $2^{n-\Omega(\cdot)}$ algorithms exist for circuits with $s\le cn$ (small-size circuit SAT line of work). Literature check is a next-run item; no claim is made here.
+\item \textbf{CONDITIONAL:} ETH implies no $2^{o(n)}\mathrm{poly}(s)$ algorithm (3-SAT embeds with $s=O(n)$). SETH implies no $(2-\varepsilon)^n\mathrm{poly}(s)$ (CNF is a circuit). Under ETH a bound of the form $T\ge 2^{a\min(n,\mathrm{tw})}/\mathrm{poly}$ is the natural parametrized target (CANDIDATE form, not verified from primary sources here).
+\end{itemize}
+
+\section{Parametrized candidate and wire-by-wire frontier}
+\textbf{Frontier.} For a topological order $\pi$ of the gates, let $F_\pi(t)$ be the number of already-computed signals still feeding later gates. $\mathrm{fr}(C)=\min_\pi\max_t F_\pi(t)$ is a pathwidth-type parameter and DP over $\pi$ gives $T\le 2^{\mathrm{fr}(C)}\mathrm{poly}(s)$ (CANDIDATE bookkeeping; the exact relation to pathwidth is not proved here).
+
+\textbf{Candidate shape} (in the repository's directive of 23 Oct 2026, \texttt{research/governance/2026-10-23\_2127Z\_PARAMETERIZED\_LOWER\_BOUNDS.tex}): for each uniform decider $A$ there are hard instances with $T_A\ge 2^{a_A\rho}/N^{b_A}$ and $\rho/\log N\to\infty$. Three obligations are separate: the work inequality, the growth of $\rho$, and coverage of all adaptive policies. Status of all three for $\rho=\mathrm{fr}$ or $\mathrm{tw}$: \OPEN.
+
+\textbf{Ladder obligation.} Rung $n\to n{+}1$: (a) minimum wire increase of a non-degenerate instance is $\ge 2$ (Theorem~1); (b) the max over functions grows ($0,1,4,\dots$) but this is a statement about \emph{computing} $f$, not about \emph{deciding} its satisfiability. The gap between (b) and a solver-cost lower bound is exactly the open problem; no rung so far touches it.
+
+\section{Repository cross-check (run 1)}
+Surveyed: root \texttt{main.tex} executive status, \texttt{AGENTS.md}, the 23 Oct 2026 parameterized lower-bound directive, and the repository tree listing. The repository's own status: P versus NP \OPEN; all arbitrary-decider bridges \OPEN. Not yet surveyed in depth: the HEC/CRS-PPC/CCSPC explorations, LSPV reports, and task specs. No result there is imported here.
+
+\section{Open arrows and next steps}
+\begin{enumerate}
+\item Verify literature: circuit-SAT small-size algorithms, SETH/treewidth lower bounds, circuit lower bounds ($3n$, $5n$-type) from primary sources.
+\item Extend the exact table to $n=4$ (needs a chunked search; split by seed circuit, persist checkpoints).
+\item Compute $\mathrm{fr}$ for the minimum circuits found, and tabulate unique-SAT versus UNSAT families by (n, s, fr).
+\item Search the repository's explorations for a usable parametrized invariant; test it against a switching solver (DP, unit propagation, Gaussian elimination).
+\item State and attack the first missing implication: from a structural parameter of the instance to a lower bound on \emph{every} adaptive decider.
+\end{enumerate}
+
+\section*{Run log}
+\begin{tabular}{@{}ll@{}}
+2026-10-24 run 1 & Document created; $n\le3$ exact table; Theorems 1--3; parametrized frame; repository status recorded.
+\end{tabular}
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT::2026-10-24
