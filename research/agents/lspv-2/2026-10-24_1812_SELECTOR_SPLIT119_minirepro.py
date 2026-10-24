@@ -69,6 +69,15 @@ def run():
   F=[tuple(v if R.randrange(2) else -v for v in R.sample(range(1,n+1),3)) for _ in range(m)]
   cases.append((F,n))
  labels=[test(F,n) for F,n in cases]
+ # Verify conversion from XOR3 and 2CNF into ordinary proper 3CNF.
+ even=[x for x in itertools.product([0,1],repeat=3) if sum(x)%2==0]
+ assert len(even)==4
+ for triple in itertools.product([0,1],repeat=3):
+  clauses=[tuple((j+1) if forbidden[j]==0 else -(j+1) for j in range(3)) for forbidden in even]
+  outcome=all(any(triple[abs(z)-1]==(z>0) for z in c) for c in clauses)
+  ck(outcome==(sum(triple)%2==1))
+ for a,b in itertools.product([0,1],repeat=2):
+  ck(bool(a or b)==any((a or b or z) and (a or b or not z) for z in [0,1]))
  n,m=198,264
  w=math.ceil(math.log2(64*(n+m+1)))
  source=(4*m+2)*w
@@ -76,9 +85,14 @@ def run():
  W2=math.ceil(math.log2(64*(3*m+n+6*m+1)))
  child_a=(4*m+2)*W1
  child_b=(3*6*m+2)*W2
+ proper_m=16*m
+ proper_n=9*m+n
+ proper_w=math.ceil(math.log2(64*(proper_n+proper_m+1)))
+ proper_bits=(4*proper_m+2)*proper_w
+ assert proper_bits==321062
  assert (source,child_a,child_b)==(15870,17986,85572)
  print(json.dumps({'run':'SELECTOR-SPLIT119-compact','controls':len(cases),'sat':sum(labels),
                    'unsat':len(labels)-sum(labels),'assertions':checks,
-                   'source_bits':source,'affine_bits':child_a,'binary_bits':child_b,
+                   'source_bits':source,'affine_bits':child_a,'binary_bits':child_b,'proper3_bits':proper_bits,
                    'warning':'Not an unrestricted SAT lower bound; U198 UNSAT not checked in compact audit.'},indent=2))
 if __name__=='__main__':run()
