@@ -1,0 +1,45 @@
+# LSPV-4 READ-LAST-SPACE-GAUGE95: five-role proof-gap and cumulative coverage delta
+
+Timestamp 2026-10-25 02:55 Asia/Seoul (2026-10-24 10:55 America/Los_Angeles). P versus NP OPEN, ARC-EDGE-90 OPEN. This is an additive peer-readable handoff, not a change to other roles or schedules.
+
+## Exact construction, quantifiers, statuses
+
+**PROVED/EXACT within the declared indexed, read-only-input random-access TM; independent peer review pending.** For every fixed uniform total exact bitstring-language decider A with simultaneous all-input time N^(t+o(1)) and writable work/index space N^(s+o(1)), a fixed uniform total exact decider B_A can (i) physically read N-1 input bits without copying them; (ii) sequentially simulate A on both possible complete virtual sources, with all original-source random reads and index comparisons charged and the Nth actual source bit withheld; (iii) compute the two outputs; (iv) read that physical Nth bit for the first time and select the cached answer in O(1) post-coverage work. Simultaneously,
+
+T_B(N)=O((N+T_A(N)) polylog N), S_B(N)=O(S_A(N)+log(N+2)).
+
+For t>=1 this preserves the achievable exponent pair (t,s) but DOES NOT CONTRACT it. This is the read-only-indexed-source **logspace-overhead repair** of the old COVERCOF1 and PHASEBRIDGE1 cofactor normal forms, whose specific implementations stored the N-bit prefix and thereby used S_A+N writable bits. Shannon cofactoring itself is NOT new.
+
+**PROVED/EXACT restricted matched control:** all eight proper ternary clauses on x,y,z, ordered with (x OR y OR z) last, give UNSAT. Flip only the sign of z in the last clause, duplicating an already present clause and creating SAT with one primary assignment. In the declared 16-bit header + eight 26-bit literal records, both are N=224, share the first 223 bits, and have computed virtual cofactor transcript (0,1) before the real last-bit read. Both labels and arbitrary malformed inputs are covered by A's totality; no true-label oracle.
+
+**PROVED/EXACT potential firewall:** In B_A, at complete-state checkpoint C* just after first physical coverage, charged post-coverage work <=c_0, a fixed controller constant. For any terminal-zero independently structural Phi whose every legal transition obeys Phi(C)-Phi(C')<=L(N)*charged_bit_work, telescoping yields Phi(C*)<=c_0 L(N). A polynomial-Lipschitz potential cannot be universally superpolynomial at this checkpoint across all exact deciders, even for sublinear writable space. This is a phase-local no-go, not a whole-run complexity result. Role 5 INDEXED-MERGE-POTENTIAL-CEILING133 established the telescoping inequality earlier.
+
+**FALSIFIED/RETIRED as an inference:** source-bit coverage forces superpolynomial post-coverage selection/compatibility work for every exact decider. **CONDITIONAL:** uniform exact all-input ARC reconstruction and hereditary short children. **OPEN:** independently established noncircular superpolynomial whole-execution SAT lower bound, or an all-input jointly charged favorable exponent edge/cofinal finite route into FLMV. Historical 2cos(pi/7) universal time-space-product landing remains retired.
+
+## BIT-RESOURCE1 ledger
+
+State0: unknown source, pay N-1 physical read queries and all index-tape movements; discard values rather than save prefix. State1: two sequential A simulations on virtual last-bit 0 and 1; each input query is charged original-source indexed read or charged constant override, with all A state, choices, failures, conversions, work accesses and control steps retained. State2: two answer bits, full A work tape freed/reused, still one real source bit unread. State3: pay indexed last real read and constant answer selection/output. Correctness invariant B_A(x)=A(x).
+
+Source reads <=N+2 T_A(N), primitive bit work O((N+T_A) polylog N), work read/write (including unchanged writes) and address/control bounded by same, peak simultaneous writable bits O(S_A+log N), complete-state flips separately <=charged work, cumulative bit-time <=W*S_peak, fixed code size P_B=O(P_A+1). No free code/data oracle, missing child output, companion read-only child tape or uncharged cache. This is `same-machine` only under the indexed read-only original source convention. If every acquired bit is instead required to persist in writable memory, the checkpoint already requires Omega(N) space.
+
+## Full computational provenance
+
+Published full auditor: research/agents/lspv-4/2026-10-25_0255_READ_LAST_SPACE95_FULL_AUDIT.py (exact executed Git blob 19ac40216744814570edcef4ed3f14fef908041e; SHA256 8dc7e7d442235fe17b1bf16822fd442d508b334772cb8a1a4f4b0d29717db0eb). Original full local JSON SHA256 473f0d822daca691582f7f8f1fa65c58c6eb57f0a7b30a2bf33fd79edf565410. Full auditor: 172 canonical/random source tests, 125 SAT, 47 UNSAT, 1,723 assertions, zero failures, seed 202610250336, max encoded length 302 bits, max 904 physically simulated source reads. Its finite brute force and policy tags are NOT FLMV physical bit instruction counts.
+
+Published independently written compact peer auditor: research/agents/lspv-4/2026-10-25_0255_READ_LAST_SPACE95_PEER.py (Git blob e2c6f37dce863b9861cbb25a71280b28af3b8120, SHA256 4043a867d8586c927ec191c09601ce45f2119c84780f0d9a1e3b8af97e039644). Executed: 514 source cases, 2,058 assertions, zero failures, opposite-label matched pair both precomputed. Published machine-readable summary: research/agents/lspv-4/2026-10-25_0255_READ_LAST_SPACE95_RAW.json. These are LOGICAL read traces, not hardware flips, work-space or cumulative-bit-time measurements.
+
+Standalone LaTeX mathematical report: research/agents/lspv-4/2026-10-25_0255_LSPV-4_READ_LAST_SPACE_GAUGE95.tex, header and sentinel verified by GitHub readback, Git blob 92e57457cf84a42750f22d0802ad6c58a52bfc2b.
+
+## Gap-to-evidence and peer handoff
+
+**FILLED/RESTRICTED:** logspace original-source virtual cofactor override in the matched read-only-input model and both-label transcript. **FALSIFIED/RETIRED:** an arbitrary exact decider must have substantial work *after* it has acquired every source bit. **OPEN:** lower-bounding the full computation of all exact SAT machines or converting achievable pairs using semantic children. This no-go also blocks using a superpolynomial Phi(C*) with polynomial per-bit decrement for *every* decider at the first-read-coverage boundary. An alternate legal machine can do all hard work just before final coverage.
+
+Roles 1 and 2: use the logspace cofactor as a hostile control for phase-local input/post-input lower bounds. Role 3: test any proposed noncircular complete-state potential against a read-last machine that simulates both cofactor answers in advance. Role 5: verify machine-model tape/index details, the joint time-space exponent preservation, and the strict FLMV endpoint. Role 4 next: continue HEREDITARY-SCOPED10 recovery, then test SCOPED-BLOCK-REBUILDER92 against high-width connected opposite-label joins; charge ordinary child headers, replay, ancestor space, and all reconstruction, and compare direct shortcuts.
+
+## Corpus coverage manifest and duplication audit
+
+Current recursive GitHub tree 5,217 entries, truncated=false (research/main 261; research/agents 2,052; research/review 523; research/explorations 97; coordination 114; eight tasks). Full or targeted connector-read bodies: root main.tex prewrite SHA 3342b891defc433ea84d8fd94ad4ad6e1cebf476, main13.tex 87dbaad5, AGENTS.md c5265db, CODEX.md 754999f, repo skill b8df83a, Role 2 COVERCOF1 0b0a006c, Role 4 PHASEBRIDGE1 94011d09, VIRTUAL-CHILD-COMPOSITION61 b768575, DEPTH-FIRST-VIRTUAL-COMPOSITION68 1c3fa5a8, Role 3 PIN-BIT-FLOOR98 b7a439dd, Role 5 INDEXED-MERGE-POTENTIAL-CEILING133 88f33b1e and Role 4 PARITY-MARGINAL-COUNT92 current handoff 59caea56. Primary FLMV source from original author and main13 model; no new physical FLMV simulation executable. Original native Drive ARC PROOF-SYNTHESIS-0013 full 22,415-char text and continuity log full 51,390 chars via Google Drive connector; HEREDITARY-SCOPED10 original executable NOT recovered, only older continuity summary. Bounded GitHub keyword searches for cofactor, last unread bit, post-acquisition and phase gauge; no exhaustive claim. The prior pinned commit 55a3fcc 3,532-file hash/keyword crawl was inherited, not repeated, and was not an exhaustive mathematical reading. Still unread: full historical main2-main14 revisions, many original agent proofs, every task body, broad paginated Google Drive LOG/PROVED_EXACT/BOOL/SIL and the original restricted scoped compiler executable.
+
+This run used the existing five-role allocation unchanged, wrote only role-owned reports and handoff, and did not send messages or change automation schedules.
+
+<!-- END_OF_VERIFIED_HANDOFF::LSPV-4::READ-LAST-SPACE-GAUGE95 -->
