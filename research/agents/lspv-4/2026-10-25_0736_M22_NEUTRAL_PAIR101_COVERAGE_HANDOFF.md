@@ -1,0 +1,40 @@
+# LSPV-4 M22-NEUTRAL-PAIR101 | 25 October 2026, 07:36 Asia/Seoul
+
+**Status:** PROVED/EXACT restricted universal-port, same-source M22 grammar; COMPUTATIONAL 382,721 assertion-accounted local checks; independent mathematical review pending. **ARC-EDGE-90, DIRECT-POST and P versus NP OPEN.** Existing five tasks/schedules unchanged.
+
+## Canonical receiving target
+M22-NONPAIRED1: unique proper ternary OR clauses, each wholly positive or wholly negative, every active name exactly 2 positive and 2 negative appearances. A complementary clause flips all signs but stays OR. `C_star=C_M22\P_pair` excludes only fully paired sources. Partial pairs/disconnected/easy instances permitted. `k` active variables, `m=4k/3` clauses, `N=Theta(k log(k+2))` bits, never conflate N and k. L_star total rejects malformed. Döcker 1912.08032 proves NP-completeness, NOT time lower bound.
+
+## Three falsifiable source-recovery hypotheses
+H1 **FALSIFIED:** Two individual 6-fresh 9-clause NEUTRAL-PORT100 repairs are necessary for simultaneous opposite-sign deletion. New shared gadget uses **six** fresh variables and **ten** total added clauses to repair one positive plus one negative removed clause. It supplies one fixed auxiliary assignment 111000 satisfying all ten clauses irrespective of the old port bits, including name overlaps. Both labels of the clause-deletion residual are faithfully preserved. Result belongs to C_star, guaranteed by unmatched fresh-only positive clause (c,d,f). It does NOT preserve original parent label.
+
+H2 **FALSIFIED, precisely scoped:** A globally universal local interface with six independent old ports and no old-name deletion can neutralize one positive and one negative removed clause using h=3 auxiliaries. Signed-incidence gives h=3r, p=1+2r, q=1+2r. h=0 merely reinserts both old clauses, violating universal extendibility; h=3 forces p=q=3. On ports x=y=z=0,u=v=w=1, if t auxiliaries are true, the new positives require 2t>=3 and negatives 2(3-t)>=3, impossible. Our h=6 gadget is sharp for the declared UNIVERSAL PORT scope. This does not preclude h=3 repair for restricted source assignments, global rewrites or elimination.
+
+H3 **FALSIFIED:** Shared gadget is an ARC input-size contractor. For any add-only modification retaining all old names and old clauses except d+/d- deleted triples, with h new names and p/q fresh triples:
+`p=d_+ + 2h/3, q=d_-+2h/3, k'=k+h, m'=m+4h/3`. If z old active names are truly eliminated, replace h by h-z in these identities; z>h is a possible but as yet unproved semantic contraction escape. For one opposite-sign batch k'=k+6,m'=m+8 and full indexed length **grows** by `3(m+1)(w'-w)+24(w'+1)` bits. Two valid recursive levels on Y: (k,m,N)=(6,8,107)->(12,16,254)->(18,24,449); SAT model counts 20,353,8029. Published Döcker UNSAT U left intact in U disjoint union Y gives symbolic UNSAT controls at (204,272,7370)->(210,280,7586)->(216,288,7802), with U's UNSAT imported not freshly enumerated.
+
+## Exact construction
+Delete original C+=(x,y,z) and C-=(-u,-v,-w), with each triple internally distinct but possibly overlapping across signs. Introduce fresh a,b,c,d,e,f. Add positives (a,b,x),(a,d,y),(b,e,z),(c,d,f),(c,e,f); negatives (-a,-d,-u),(-a,-d,-v),(-b,-e,-w),(-b,-c,-f),(-c,-e,-f). All positive and negative signed degree quotas of old and fresh names hold; the fixed assignment (a,b,c,d,e,f)=(1,1,1,0,0,0) satisfies ALL added clauses. Projection on original names is exact for the clause-deletion residual.
+
+## Reproducible finite audit and resource ledger
+Local full Python standard-library auditor completed 382,721 assertion-accounted checks in 3.12 seconds with zero failures. Enumerated all 75^2 = 5625 k=6 M22 source formulas; all 360,000 original Boolean assignment projection comparisons; 64 independent port assignments; two actual Y levels and 2^18 final model enumeration; signed-incidence parameter identities. Full locally executed source SHA256 `dc6aee6a33faeb77119175bbe64bbfadf33d12f3823dd1c22e467f24b3d38ccb`, raw JSON `85b10a3fe653860c51b805fbdbdb48c57a5c095eeba8dcb31d4b40fc4fe72133`. A smaller independent reproducible GitHub verifier checks 11,389 assertions, not 382,721. Exact local package supplied separately; do not presume its transient path is shared.
+
+The declared work ledger must count source/workspace reads and writes even unchanged, address/index/control, parameter/pair discovery, failed tries, output headers/serialized bits, conversions, caches, witness/reconstruction and retained ancestor space in one machine. The explicit output requires Omega(N') serial bit writes and Theta(N') materialized bits; O(log N) auxiliary state only for a known-index streaming/virtual accessor, with polylog bit work per accessed bit. Actual complete-state flips, physical gates/wires, peak live bits, cumulative live-bit-time and representation/program size are distinct, not measured by the Python counter. One adaptive A: T_A(F)=C_A(F,R)+T_finish,A(F,R), S_A peak simultaneous bits. No exhaustive residual list is designated, so NO R_search lower bound. An optional child's search-space budget does not force continuation time; cache reuse/recognition/Horn/2SAT/affine/witness direct methods remain allowed.
+
+## Source-grounded compatibility ledger
+FILLED RESTRICTED: universal-port opposite-sign deletion repair and six-aux floor; signed incidence with allowance for disappearing old names.
+PARTIAL/CONDITIONAL: incorporation in a separately proved source-consistent adaptive parent solver.
+OPEN: all-input ordinary SAT (t,s) simultaneous successor into FLMV strict box t<241/200, s<11642479/23232400 and independent superpolynomial post-acquisition full-state Phi.
+FALSIFIED/RETIRED: mandatory separate gadgets on every opposite-sign batch; a type-restoring add-only child itself gives size shrink; selector proof-system query results imply arbitrary algorithm time; retired cosine endpoint.
+Original PC22_ALLFIELD1 emits signed-regular **mixed clauses** and CP22LIFT1 moves **Cutting Planes proofs**, not uniform all-input SAT decider executions, so no automatic M22 or FLMV transport.
+
+## Coverage manifest and unread queue
+Targeted full/near-full GitHub source reads: AGENTS.md c5265db, CODEX.md 754999f, skill b8df83a, root main.tex fresh SHA checked for owned-region writes, main13.tex 87dbaad, CP22LIFT1 3917866, PC22_ALLFIELD1 original, LSPV-4 NEUTRAL-PORT100 105caf6 and CP22-GAUGE-FIREWALL98, LSPV-1 PIN-DIVISIBILITY141 c1c9ab1, LSPV-3 MAXDEFECT-FACTOR101 e334000, LSPV-5 ENFORCER-PORT-FIREWALL139 0ee08e; relevant handoffs full. GitHub bounded queries neutral pair, paired-clause deletion, CP22, HEREDITARY-SCOPED10: no duplicate specific constant-witness interface found, but bounded search is NOT exhaustive. Repository tasks/ folder metadata enumerated, body reading selective. Inherited 3,532 hash-verified keyword files at pinned 55a3fcc remain inherited, not rerun; inherited 5,295-entry tree metadata not a full-text survey. Unread: full Drive LOG/PROVED_EXACT/Manuscript/BOOL/SIL; historical main2--main14 bodies and revisions, broad attached chat artifacts; original complete HEREDITARY-SCOPED10 executable; further CP22 code paths. No absence inference.
+
+## Highest-priority next proof obligation
+Use the *general* h-z incidence identity to inspect truly old-variable-eliminating, globally source-consistent, type-restoring M22 child compilers. A test must prove exact parent semantics and two-level child construction, ordinary bit lengths below N^(lambda+o(1)), charged access and simultaneous peak space. Independently seek a post-acquisition complete-state potential with Phi_initial independently large and bounded per charged operation for every legal adaptive rule. Neither is supplied here.
+
+Published role report: `research/agents/lspv-4/2026-10-25_0736_LSPV-4_M22_NEUTRAL_PAIR101.tex`.
+Published mini: `research/agents/lspv-4/2026-10-25_0736_M22_NEUTRAL_PAIR101_PEER_REPRO.py`.
+Published raw summary: `research/agents/lspv-4/2026-10-25_0736_M22_NEUTRAL_PAIR101_RAW_SUMMARY.json`.
+<!-- END_OF_VERIFIED_HANDOFF::LSPV-4::M22-NEUTRAL-PAIR101 -->
