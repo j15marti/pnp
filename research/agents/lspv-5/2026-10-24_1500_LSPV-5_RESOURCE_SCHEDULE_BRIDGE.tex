@@ -1,0 +1,116 @@
+% LSPV-5 REPORT::RESOURCE-SCHEDULE-BRIDGE::2026-10-24T06:00:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\title{Resource-Schedule Bridge: Circuit Regions, Live Memory and ARC}
+\author{LSPV-5 independent audit and synthesis}
+\date{24 October 2026}
+\begin{document}\maketitle
+\noindent\textbf{P versus NP remains OPEN.} This is a charged upper-simulation contract, a resulting forbidden schedule region, and a restricted-family counterexample. No all-input SAT contraction is constructed. Complete elementary proofs are given; independent peer review of this synthesis is pending.
+
+\section{Proposals and sources}
+Before primary-source review the three tests were: M1, convert a uniformly generated circuit schedule into simultaneous time and space; M2, test whether large syntactic sharing forces large live storage; M3, test whether the six restricted resource exclusions cover every polynomial SAT implementation. M1 succeeds under its explicit hypotheses. M2 is false. M3 remains unsupported.
+
+The receiving object is a machine deciding SAT on an ordinary formula encoding of length $N$, not the small circuit evaluating one formula on a candidate assignment. The six atlas coordinates are gate count $G$, depth $D$, fan-in $a$, fan-out $b$, sharing $\chi$, and wiring/layout. They are not automatically machine time and space.
+
+Original project sources consulted: main13.tex (endpoint, eager/lazy costs, restricted joins); the opening and metadata of current main.tex (blob 58639956331c9badb6a9aa2964e9cc2c1bb38b3d); AGENTS.md; CODEX.md; the repository skill startup/guards; tasks/TASK-006\_RCCN-routed-store-reacquire.md; experiments/wrapped\_dag/forced\_dag\_bypass.py; and the user's full local circuit-atlas/audit bundle. Searches for ``pebbling'' and ``liveness'' returned six and five reviewed snippets respectively. This was a bounded archive tranche, not an exhaustive review. CAUSALCANCEL1 and TRACECONJ1 were surfaced but their full bodies remain queued.
+
+\section{Matched endpoint}
+FLMV Section 2.1 counts work and index tapes and allows random access to input and work. Its one-way output tape is not reusable free storage. Theorem 3.1 transfers a SAT algorithm with only polylogarithmic overhead; Corollary 5.8 gives
+\[
+\beta(c)=\frac12\left(\frac{c+2}{c^2}-c\right),\quad c>1.
+\]
+There cannot be one uniform all-input exact SAT machine with time exponent $t<c$ and work-space exponent $s<\beta(c)$. Direct source/PDF checks included the machine model, transfer theorem and corollary \cite{flmv}. At $c=241/200$,
+\[
+\beta(c)=\frac{11642479}{23232400}=\frac12+\frac{26279}{23232400}>\frac12.
+\]
+Strict exponent margins absorb polylogarithmic simulation factors. This is a known endpoint, not a new separation.
+
+\section{Charged evaluation theorem}
+Fix a single deterministic uniform online controller and a finite bounded-fan-in Boolean gate basis. Identifiers and input addresses have $O(\log N)$ bits; circuits and schedules are polynomially bounded in the exponent application. A command loads an input bit, computes a gate on retained values, discards a value, queries a retained value for control, or returns an observed output. Recomputing discarded data creates new charged commands. Adaptive scheduling is permitted; the correct output label is not an oracle supplied to the controller.
+
+Let $L(N)$ bound all evaluation commands and operand/source accesses. Let $P(N)$ bound simultaneous retained Boolean values. Let $A_T(N)$ and $A_S(N)$ be the controller's complete online generation time and peak state in the matched model. Charge recognition, failed trials, descriptor construction, policy selection, switching, dependency metadata, control stacks, caches, verification when used, and retained generated circuit data. There is no free tape of precomputed circuit or schedule advice. Unbounded fan-in requires separately charging its input accesses, rather than counting a giant gate as one elementary operation.
+
+\begin{theorem}[PROVED/EXACT under the stated contract]
+If the generated execution correctly decides a language on every input, it has one uniform exact implementation satisfying
+\[
+T=\widetilde O(A_T+L+1),\qquad S=\widetilde O(A_S+P+1).
+\tag{1}
+\]
+The live-value table uses $O((P+1)\log N)$ bits, apart from generator state and polylogarithmic simulation bookkeeping. The tilde hides only polylogarithmic factors.
+\end{theorem}
+\begin{proof}
+Keep current values in a deterministic balanced search structure with $O(\log N)$-bit keys. Lookup, insertion, deletion and comparison cost polylogarithmic bit time. Store its nodes in a reusable compact pool, so the highest physical address depends on maximum live occupancy, not the total historical number of IDs. Each record contains a constant number of pointers, its key and value. Thus live storage is $O((P+1)\log N)$ bits. Input reads pay for their address preparation. Each fixed-basis gate uses a constant number of such operations. Discarded values must be explicitly reread or recomputed. Sum all generation and evaluation work; add their simultaneous state. An induction maintains the meaning of every retained value and establishes the final output. The fixed controller gives uniformity. Neither its schedule nor a SAT answer is supplied as advice.
+\end{proof}
+The simulation is standard in spirit; register allocation and pebbling are its precedents, not new general theorems claimed here \cite{sethi,hong}.
+
+\begin{corollary}[PROVED/EXACT pullback of FLMV]
+For an all-input SAT implementation, write
+\[
+A_T\le N^{\gamma+o(1)},\quad A_S\le N^{\sigma+o(1)},\quad
+L\le N^{\ell+o(1)},\quad P\le N^{p+o(1)}.
+\]
+The following schedule region is forbidden:
+\[
+\exists c>\max\{1,\gamma,\ell\}:\quad\max\{\sigma,p\}<\beta(c).
+\tag{2}
+\]
+In particular, $\gamma\le1.1$, $\ell\le1.2$, and $\sigma,p\le.5$ are incompatible with an all-input exact SAT implementation.
+\end{corollary}
+\begin{proof}
+Equation (1) supplies one machine at exponents at most $(\max\{\gamma,\ell\},\max\{\sigma,p\})$. Apply the matched endpoint with strict slack, using $c=241/200$ for the displayed box.
+\end{proof}
+This fills the evaluation-accounting implication only. It does not prove that a hypothetical polynomial SAT seed admits such a controller or schedule. An existential proof of uniform machines is allowed; a universal source-code compiler is not logically required.
+
+\section{Adaptive counterexample to a sharing-memory inference}
+Use a cycle of $q\ge3$ constraints $z_i\oplus z_{i+1}=b_i$. Its SAT label is $[\oplus_i b_i=0]$. Encode each equation by two binary clauses and each binary $C$ by $(C\lor u)\land(C\lor\neg u)$ with a private fresh $u$. Then $n=3q$, $m=4q$, $N=\Theta(q\log q)$ and YES instances have $2^{2q+1}$ full models. Opposite labels have identical metadata and unsigned supports.
+
+An XOR is implemented by four NAND gates:
+\[
+t=\neg(a\land b),\quad u=\neg(a\land t),\quad v=\neg(b\land t),\quad o=\neg(u\land v).
+\]
+Compute $t$, compute $u$ and discard $a$, compute $v$ and discard $b,t$, then compute $o$ and discard $u,v$. With new values inserted before old values are deleted, this takes at most four live values.
+
+For $q=2^h$, a balanced tree followed by NOT has
+\[
+G=4q-3,\quad E=8q-7,\quad D=3h+1,\quad a=b=2.
+\]
+Depth-first evaluation retains exactly $h+3$ Boolean values and has $h+1$ generator frames. The full bit-space cost is $O(\log^2q)$, including addresses and control. A serial chain has the same $G,E,a,b$, depth $3(q-1)+1$, four live values, and $O(\log q)$ control bits. Both compute each gate once. Greater depth can therefore reduce live memory without increasing the gate-evaluation count.
+
+At $q=1024$:
+\begin{center}\begin{tabular}{lrrrrr}\toprule
+Strategy&Gates&Wires&Depth&Live values&Frames\\\midrule
+Balanced&4093&8185&31&13&11\\
+Serial&4093&8185&3070&4&1\\\bottomrule
+\end{tabular}\end{center}
+Each performs $10q-7=10233$ load/gate/drop commands. Fully unfolding the balanced NAND DAG has $6^h=60466176$ operation occurrences including the final NOT. This large expression is not materialized and does not force large live storage. It is not a counterexample to a correct formula-size theorem.
+
+The label-blind tested policy validates all canonical source records, paying $12q$ literal reads, then rereads $q$ sign fields during evaluation. Observed size and an available-value budget choose balanced or serial scheduling. A failed canonical recognizer invokes exact exhaustive fallback, with failed work and subsequent reads charged. Ordinary CNF grammar checking can be prepended and is included in generation. Tests supply well-formed CNFs. The policy is total exact on CNF but no polynomial all-input guarantee is asserted. SAT and UNSAT are both handled by observed output; no witness enumeration is required on this recognized family.
+
+\section{Gap and rejection ledger}
+\begin{description}
+\item[] FILLED under explicit contract: converting uniformly generated schedules to one simultaneous machine, and pulling back the verified endpoint.
+\item[] FALSIFIED: large unfolding or sharing alone forces high simultaneous storage. Bounded fan-out is not no sharing; known fan-out simulations reinforce this distinction \cite{fanout}.
+\item[] PARTIAL/RESTRICTED: constant-depth, formula, physical cut and prescribed-DAG lower bounds retain their separate models. They cannot be pooled as if every SAT decider had all restrictions.
+\item[] OPEN: producing a favorable uniform all-input schedule from a hypothetical polynomial SAT seed, or an equivalent cofinal finite route. Cheap recognition on a family plus a full-length fallback does not supply it.
+\end{description}
+A decide-first generator can emit a one-gate constant answer only after paying its full SAT decision cost. A large nonuniform circuit supplied on a free tape violates the controller contract. A fixed DAG's mandatory evaluation need not apply to an equivalent implementation, as the recovered forced-DAG bypass already records.
+
+\section{Reproducibility and provenance}
+The new standard-library auditor records 7128 assertion-accounted checks, zero failures: 504 exhaustive orientation sources under two budgets; 24 full assignment-level model-count tests; 24 larger both-label paths through $q=4096$; nine fallback/Horn/XOR/component controls; and six rational endpoint checks. The separate supplied atlas auditor was rerun and independently reproduced 163394 checks, zero failures. These suites validate code and finite counts, not asymptotic lower bounds. Live-value counters exclude controller frames and addresses, which the theorem counts separately. No Python RSS or wall-clock is used as a complexity bound.
+
+The companion auditor, results summary and role-owned handoff give reproducibility and coverage. The extended six-page local report and full raw JSON are supplied to the user in the downloadable bundle; they are not presumed accessible to another runtime. Root MAIN reconciliation is pending: full raw-file materialization was unavailable, so no partial reconstruction of main.tex is attempted. A safe additive insertion is included in the handoff. No schedules or other agents' files are changed.
+
+The highest-value next lemma is an all-input, source-grounded construction or explicit existence theorem that jointly bounds generation, evaluation moves and retained values at every route step. It must allow observed-state representation changes, source reads, learning, caching, recomputation, SAT/UNSAT asymmetry and direct decision. P versus NP remains OPEN.
+
+\begin{thebibliography}{4}
+\bibitem{flmv} Fortnow, Lipton, van Melkebeek and Viglas. Time-space lower bounds for satisfiability. JACM 52 (2005), 835--865. Author manuscript: \url{https://lance.fortnow.com/papers/files/tst.pdf}, Sections 2.1, 3 and Corollary 5.8.
+\bibitem{hong} Hong and Kung. I/O complexity: the red-blue pebble game. STOC 1981. doi:10.1145/800076.802486.
+\bibitem{sethi} Sethi and Ullman. The generation of optimal code for arithmetic expressions. JACM 17 (1970), 715--728. doi:10.1145/321607.321620.
+\bibitem{fanout} Hoover, Klawe and Pippenger. Bounding fan-out in logical networks. JACM 31 (1984), 13--18. doi:10.1145/2422.322412.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::RESOURCE-SCHEDULE-BRIDGE
