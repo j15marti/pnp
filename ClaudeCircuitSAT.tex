@@ -1,0 +1,75 @@
+% ClaudeCircuitSAT living document -- Claude hourly routine
+% Last updated: 2026-10-24 (run 1)
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\SAT}{\mathrm{CircuitSAT}}
+\title{Wire-by-Wire Lower Bounds for Circuit-SAT\\ \large Living document}
+\author{Claude routine (hourly)}
+\date{Last updated 24 Oct 2026, run 1}
+\begin{document}\maketitle
+
+\begin{center}\fbox{\parbox{0.92\linewidth}{\textbf{Status.} No superpolynomial lower bound for $\SAT$ is claimed. P versus NP remains \OPEN. This document builds a \emph{ladder} of exact, small, verified lower bounds and tracks which parameter each one depends on.}}\end{center}
+
+\section{Model and parameters}
+A circuit $C$ has $n$ inputs, $g$ fan-in-2 gates (basis $B_2$: all 16 binary functions, negation free) and $w=2g$ gate-input wires (``connections''). $\SAT$: is there $x$ with $C(x)=1$? Parameters tracked: $n$, $g$, $w$, fan-out $\phi$, and later treewidth $t$. Two cost models:
+\begin{itemize}
+\item \textbf{Construction cost} $W(n)$: minimal number of wires in a circuit that depends essentially on all $n$ inputs (resp.\ computes a given function).
+\item \textbf{Probe cost} $Q(\mathcal F)$: number of wire-queries (``what feeds slot $j$ of gate $i$?'') a decider needs on a family $\mathcal F$ of circuits.
+\end{itemize}
+
+\section{The ladder}
+\subsection*{Rung 0 ($n=1$)}
+Output $=x_1$ or $\neg x_1$ or a constant: $g=0$, $w=0$. Nothing to probe beyond the output pointer. Computed: of the 4 one-variable functions, 2 are constants and 2 need $0$ gates (negation free).
+
+\subsection*{Rung 1 ($n=2$)}
+Every function essentially depending on both inputs needs exactly one gate: $g=1$, $w=2$ (computed: 10 of 16 functions).
+
+\subsection*{General connectivity bound (PROVED/EXACT)}
+\begin{lemma}\label{lem:conn}
+If a fan-in-2 circuit's output depends essentially on $n$ inputs, then $g\ge n-1$ and $w\ge 2(n-1)$; equality holds iff the function is read-once.
+\end{lemma}
+\begin{proof}
+Every essential input has a path to the output, so the underlying undirected graph on the $n+g$ relevant nodes is connected, hence has $\ge n+g-1$ edges. It has exactly $2g$ wires, so $2g\ge n+g-1$. Equality means the graph is a tree, i.e.\ every input has fan-out 1 (read-once). The $n=3$ table below shows the gap is real: 80+24 of the 218 three-essential functions are not read-once.
+\end{proof}
+
+\subsection*{Rung 2 ($n=3$, exact computation) --- COMPUTATIONAL}
+Exhaustive BFS over signal sets (script \texttt{results/claude\_circuitsat/minsize.py}, run time 18\,s) gives the exact $B_2$ circuit size of all 256 functions on 3 variables, grouped by the number of essential variables $d$:
+\begin{center}\begin{tabular}{lrrrr}\toprule
+essential $d$ & size 0 & size 1 & size 2 & size 3 / 4\\\midrule
+0 & 2 & -- & -- & --\\ 1 & 3 & 3 & -- & --\\ 2 & -- & 30 & -- & --\\ 3 & -- & -- & 114 & 80 / 24\\\bottomrule\end{tabular}\end{center}
+So $W(3)=4$ wires for read-once functions (114), $6$ for 80 functions, and $8$ for 24 functions (4 gates, e.g.\ majority-type), forcing fan-out $\phi\ge2$.
+
+\subsection*{Rung $n$ (probe bound) --- PROVED/EXACT}
+Family $\mathcal A_n$: the AND-chain $((x_1\wedge x_2)\wedge x_3)\ldots\wedge x_n$ with $w=2(n-1)$ slots, plus the $w$ variants obtained by rewiring one slot to the constant 0.
+\begin{theorem}\label{thm:probe}
+In the wire-query model, any deterministic decider for $\SAT$ on $\mathcal A_n$ needs $\ge w=2(n-1)$ queries; any randomized decider with error $\le1/3$ needs $\ge w/3$ queries.
+\end{theorem}
+\begin{proof}
+The base chain is satisfiable (all ones); each variant is unsatisfiable (a constant-0 slot forces the AND to 0). Adversary answers every query as in the base chain. If some slot is unqueried, rewiring it is consistent with all answers yet flips the answer. Randomized: take the base chain with prob.\ $1/2$, else a uniform variant. A decider making $q$ queries sees a rewired slot with prob.\ $\le q/w$, so success prob.\ $\le \tfrac12+\tfrac{q}{2w}$; $\ge 2/3$ requires $q\ge w/3$.
+\end{proof}
+Hence in the word-RAM, with slot contents of $\lceil\log_2 (n+g)\rceil$ bits, reading the circuit is unavoidable: $\Omega(w)$ probes, $\Omega(w\log w)$ bits. This matches the shape of the repository's ``fixed-width implication chain'' acquisition rung (root \texttt{main.tex}: $\Omega(N/\log N)$ word probes), and, like it, is an \emph{input-reading} bound, not a time bound against an algorithm that has already read the circuit.
+
+\section{Parametrized view}
+\begin{center}\begin{tabular}{lll}\toprule parameter regime & bound established & status\\\midrule
+read-once / tree, any $n$ & $W=2(n-1)$ tight; probes $\ge 2(n-1)$ & PROVED/EXACT\\
+$n\le3$, arbitrary & exact $W(n)$ table above & COMPUTATIONAL\\
+fan-out $\phi\le1$ & $\SAT$ in $O(w)$ by dynamic programming (upper bound) & KNOWN\\
+treewidth $t$ & $2^{O(t)}\mathrm{poly}$ upper bound; lower bound under SETH only & KNOWN/CONDITIONAL\\
+general $n$, superlinear & no unconditional bound & \OPEN\\\bottomrule\end{tabular}\end{center}
+Known context (recalled, not re-verified this run; verify before citing): the best explicit gate-elimination lower bounds for $B_2$ circuits are about $3.1n$; no superlinear unconditional lower bound is known for $\SAT$-type problems, so a linear-in-$w$ rung is the genuine ceiling of what this ladder can currently deliver unconditionally.
+
+\section{Link to the repository}
+Surveyed only at the top level this run (root \texttt{main.tex} proof spine, task list, directory tree); the repository's own base rung (fixed-width probe acquisition $\Omega(N/\log N)$) is the same type as Theorem~\ref{thm:probe}. Its many OPEN arrows (arbitrary-algorithm bridge) are not used here. Deeper reconciliation with \texttt{research/} is a TODO.
+
+\section{Next steps (open ladder)}
+\begin{enumerate}
+\item $n=4$: exact $B_2$ sizes of all 65536 functions via chunked search (needs smarter enumeration than rung 2; split by gate count and checkpoint).
+\item Fan-out as parameter: minimal $w$ vs $\phi$ for $n=4,5$; conjecture $W(n)\ge 2(n-1)+c\cdot(\text{non-read-once excess})$.
+\item Probe bound for families where \emph{satisfiability} (not just the function) is sensitive to every wire while topology is non-tree (e.g.\ MAJ gadgets).
+\item Test whether a gate-elimination step on $\SAT$ instances (set an input, delete $\ge2$ wires) yields a parametrized bound $\Omega(w)$ against algorithms that must \emph{certify} UNSAT, in a restricted (e.g.\ DPLL/proof) model.
+\end{enumerate}
+\end{document}
