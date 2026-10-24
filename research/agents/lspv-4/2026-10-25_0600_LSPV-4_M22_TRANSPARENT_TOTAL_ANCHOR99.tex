@@ -1,0 +1,103 @@
+% LSPV-4 REPORT::M22-TRANSPARENT-TOTAL-ANCHOR99::2026-10-25T06:00:00+09:00
+% Research status: PROVED/EXACT in specified binary indexed-encoding reduction and emulation; peer review pending.
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.83in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\hypersetup{hidelinks}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\CM}{\mathcal C_{\mathrm{M22}}}
+\newcommand{\CS}{\mathcal C_\star}
+\newcommand{\LM}{L_{\mathrm{M22}}}
+\newcommand{\LS}{L_\star}
+\newcommand{\SAT}{\mathsf{SAT}}
+\title{M22-TRANSPARENT-TOTAL-ANCHOR99:\\Validation-Free Total Bit-Local Reduction from Monotone (2,2) SAT to Its Nonpaired Subclass}
+\author{LSPV-4: Transport, Lower-Bound Endpoints and Resource Accounting}
+\date{25 October 2026, Asia/Seoul}
+\begin{document}\maketitle
+\noindent\textbf{Status.} \textbf{PROVED/EXACT} for the declared explicit indexed source encoding, its total language reduction, and a model-matched virtual input simulation; independent mathematical red-team review pending. \textbf{COMPUTATIONAL}: exhaustive small source grammar and invalid-input tests. The ordinary-SAT-to-\(\CS\) fine-grained bridge, the all-input ARC-EDGE-90 resource successor, direct post-acquisition superpolynomial lower bounds, and \(P\ne NP\) all remain \textbf{OPEN}.
+
+\section{Receiving problem, source model, and three falsifiable proposals}
+A source \(F\in\CM\) consists of unique proper OR clauses of three \emph{distinct} source variables, each clause either all positive or all negative, with each active variable occurring exactly twice in each sign. A literalwise-complement partner reverses all three signs but leaves OR. \(\CS=\CM\setminus\mathcal P_{\mathrm{pair}}\) excludes only \emph{fully} paired formulas; individual complementary pairs, disconnected formulas, trivial SAT instances and nonminimal UNSAT instances remain allowed. \(\LM\) and \(\LS\) are total languages over \(\{0,1\}^*\): every malformed encoding is NO. Set \(k=n(F)\), \(m=m(F)=4k/3\), and \(N=|\operatorname{enc}(F)|=\Theta(k\log(k+2))\) for valid nonempty sources. \(k\ne N\).
+
+\noindent\textbf{H1:} The earlier ANCHOR96 \(O(N^2\operatorname{polylog}N)\) whole-input validator is mandatory for a \emph{total} source-to-target reduction. \textbf{FALSIFIED for the encoding below}. \textbf{H2:} An append-only target \(F\dot\cup Y\), with explicit handling of illegal source IDs, is a grammar-transparent \emph{total} bit-local reduction, not merely a valid-source promise map. \textbf{FILLED in the declared encoding}. \textbf{H3:} This near-identity adapter alone transfers the published FLMV forbidden box from ordinary SAT to \(\LS\). \textbf{OPEN and unsupported}; the source is \(\LM\), not arbitrary ordinary SAT.
+
+\section{Exact binary representation and compiler}
+For any candidate encoded bitstring \(x\) of length \(N\), parse the self-delimiting width prefix \(1^w0\), then a \(w\)-bit nonnegative variable header \(k\), a \((w+1)\)-bit clause count \(m\), then \(3m\) signed literal fields each consisting of one sign bit and a \(w\)-bit variable ID. In a syntactically valid field sequence, literal IDs inside each three-literal clause are increasing and nonzero; this last condition is \emph{grammar}, not header parse. The width is canonically \(w=\lceil\log_2(k+1)\rceil\), including \(w=0\) when \(k=0\). A parsable header satisfies
+\[
+N=3w+2+3m(w+1),\qquad k\le N.
+\]
+Parsing the width, headers, source length and arithmetic overflow requires only \(O(\operatorname{polylog}N)\) addressed bit work and \(O(\log N)\) writable bits; it does \emph{not} validate clauses, occurrences, duplicates, or polarity.
+
+Let \(Y\in\CS\) have positive unsigned supports \(123,145,246,356\) and negative supports \(124,136,235,456\); it has exactly twenty models and witness \(111000\). For a parsable header, set \(k'=k+6\), \(m'=m+8\), \(w'=\lceil\log_2(k'+1)\rceil\). If \(m'\) is not expressible by \(w'+1\) bits, output the fixed malformed word \(\texttt{0}\). Otherwise emit the new proper header, copy each old \emph{literal sign} unchanged, and reencode its ID in width \(w'\). An old ID \(v\le k\) (including the invalid sentinel \(v=0\)) is retained. An old ID \(v>k\), which is invalid in the old encoding but could become newly legal when \(k'\) grows, is instead reencoded as the \emph{reserved invalid ID zero}. Finally append the eight sorted records of \(Y\), with each of its six IDs shifted by \(k\). For malformed header, nonbinary source, or inconsistent total length, output \(\texttt{0}\) directly. Call this map \(f\).
+
+\begin{theorem}[Total monotone-type transparency; PROVED/EXACT in declared binary grammar]
+For every binary string \(x\), with \(f(x)\) as just defined,
+\[
+\boxed{\quad x\text{ encodes some }F\in\CM\ \Longleftrightarrow\ f(x)\text{ encodes some }G\in\CS.\quad}
+\]
+For valid source \(F\), \(G=F\dot\cup Y\) after fresh-ID relabeling and
+\[
+\boxed{\SAT(G)\Longleftrightarrow\SAT(F),\qquad \#\SAT(G)=20\,\#\SAT(F).}
+\]
+Therefore \(x\in\LM\iff f(x)\in\LS\), including every invalid input.
+\end{theorem}
+\begin{proof}
+A parsable valid \(F\in\CM\) has all original IDs in \([k]\), and copying its clauses preserves uniqueness, properness, polarity and both occurrence quotas. All shifted \(Y\) IDs are new, so there are no cross-component source-variable occurrences or duplicate clauses. \(Y\) remains unpaired, hence the output is in \(\CS\). Model assignments decompose independently, proving the product formula and witness extension/projection.
+
+For the converse, if \(f(x)\) is a valid \(\CS\) formula, it cannot be the one-bit malformed sentinel. The source header must therefore have been parsable. Every old literal sign and every legal old source ID was copied verbatim; any illegal old ID was replaced by zero, which is still illegal in the output. None of the appended clauses uses old IDs, and each new ID occurs exactly twice with both signs exclusively inside \(Y\). Therefore output distinctness, properness, clause monotonicity, old-variable signed occurrence counts and positive source-ID validity each imply the corresponding old-input condition. The old header and exact field length were parsed without repair. Thus the source is valid \(\CM\). If the old input was invalid, the new output consequently remains invalid, whether or not the header passed. Validity of the output moreover forces the unpaired property through \(Y\), so the equivalence is as stated.
+\end{proof}
+
+\section{Near-identity length, random access and SAME\_REALIZATION transport}
+For a valid source \(N=3w+2+3m(w+1)\), and \(N'=3w'+2+3(m+8)(w'+1)\). On valid \(\CM\) inputs \(w'-w\in\{0,1\}\), whence
+\[
+\boxed{N'-N=3(m+1)(w'-w)+24(w'+1)=O(N/\log(N+2)+\log(N+2)),\quad N'=N^{1+o(1)}.}
+\]
+For each desired bit address \(j<N'\), a fixed uniform \emph{virtual child input} decoder parses only the source header, locates the corresponding original literal field or \(Y\) constant, uses \(O(\log N)\) source bit queries to read/recode an old ID if needed, and emits the exact \(j\)-th target bit. Each random-access query costs \(\operatorname{polylog}N\) elementary bit work and \(O(\log N)\) live writable/index bits. Parsing repeated per query is explicitly charged. No \(N'\)-bit writable output tape is created. For total source strings with parsable header but invalid clauses, the output length is computed identically and invalidity is preserved by the theorem; a prior whole-source validator is unnecessary.
+
+\begin{theorem}[Joint total \(\LM\)-to-\(\LS\) resource transport; PROVED/EXACT in stated model]
+Suppose one fixed deterministic uniform \emph{total exact} \(\LS\) decider \(A\), correct on every binary input, runs simultaneously in time \(n^{t+o(1)}\) and writable/index space \(n^{s+o(1)}\) on one indexed read-only-input random-access Turing machine. Then a single fixed uniform total exact \(\LM\) decider \(B\), in the same machine class and read-only-source convention, has joint bounds
+\[
+\boxed{T_B(N)\le N^{t+o(1)},\qquad S_B(N)\le N^{s+o(1)}+O(\log N).}
+\]
+The exponent statement includes \(t=0\) or \(s=0\) using \(N^{o(1)}\) for polylog factors.
+\end{theorem}
+\begin{proof}
+Machine \(B\) parses the source header and if necessary rejects through the malformed target output. Otherwise \(B\) simulates \(A\) on \(f(x)\), keeping \(A\)'s ordinary work tape, index registers and control state, but replacing each indexed read-only-input bit access by the decoder above. The simulator uses its \emph{one} original read-only input and \(O(\log N)\) auxiliary counters; it does not assert a second free read-only tape. Every step of \(A\) costs at most \(\operatorname{polylog}N\) source-machine bit operations, with no full target materialization. All output semantics, including invalid inputs, follow from the total reduction. Composing the polylog overhead and \(N'=N^{1+o(1)}\) with the original joint bounds yields the claimed simultaneous pair for \(B\), without borrowing time and space from different implementations.
+\end{proof}
+
+\noindent\textbf{Limit of transport.} This theorem improves the earlier ANCHOR96 conservative total-language estimate \(T_{\CM}\le N^{\max\{2,t\}+o(1)}\) based on a nested-scan grammar validator; it does \emph{not} invalidate that earlier correct algorithm. The improvement is to avoid validation entirely while preserving malformed-source rejection in the target syntax. However \(\LM\) is NP-complete but is \emph{not} ordinary SAT with the FLMV fine-grained input semantics. Without an ordinary-SAT-to-\(\LM\) reduction with audited near-linear length, bit-access, work and writable/index peak-space, FLMV's forbidden region cannot be transported to \(\LM\) or \(\LS\). D\"ocker's polynomial NP reduction alone supplies no such exponent preservation.
+
+\section{Both-label computation, adaptive ledger, failure models}
+\noindent\textbf{COMPUTATIONAL controls.} A deterministic Python 3 standard-library audit with fixed seed 20261024 exhaustively enumerated all 75 degree-two four-triple positive hypergraphs on six variables and all 75 negative counterparts, checking all \(75^2=5625\) valid \(\CM\) source combinations and their anchored output membership. There were 75 fully paired sources and 5550 nonpaired sources. It independently enumerated 64 assignments for \(Y\) (20 models) and \(H\) (18), and checked 12-variable disjoint products (400 and 360 models respectively). Thirteen named invalid encodings and 200 randomized invalid candidates tested unchanged malformed status. Explicit child serialization was compared bit for bit with the independent virtual accessor. The test registered 26,481 assertion-accounted checks, zero failures. No physical FLMV machine measurements are inferred. The known in-target UNSAT \(U\) from D\"ocker (198 names, 264 clauses) was freshly parsed for signed quotas, uniqueness and monotonicity from the GitHub original: \(N=7154\) and \(N'=7370\) under this encoding. Its UNSAT status is imported from the published theorem/archived certificate, \emph{not} freshly established by exhaustive enumeration. Opposite SAT control \(Y\) has \(107\) input bits and \(254\) anchored bits.
+
+For one fixed adaptive exact decider at a declared checkpoint, \(T_A(F)=C_A(F,R)+T_{{\rm finish},A}(F,R)\). The virtual adapter charges header parsing, overflow tests, every source/target address, old-ID reads and reformatting, illegal-ID checking, unchanged-value writes performed by the implementation, strategy selection, repeated source reads and bookkeeping. A solver's own cache, reconstructed witness, intermediate buffers and simultaneous ancestor space remain \emph{its} costs; this adapter does not mandate them. Report primitive bit work, source/workspace reads/writes, changed-value complete-state flips, peak live writable/index bits, cumulative bit-time, program size, and gates/wires/switches as \emph{different} coordinates. The Python tests report no physical values for those coordinates. No independent exhaustive residual list is generated; \(R_{\rm search}\) is not assigned. When such a list genuinely exists, \(\Psi=\sum_j2^{r_j}\) and \(R_{\rm search}=k-\log_2\Psi\) account for an \emph{available} enumeration budget, not unavoidable runtime.
+
+The source-recognized fast templates \(Y,H\), matching-certified high-frontier SAT from Role 3, and signed affine/Horn/SCC/2-SAT controls remain legal alternative adaptive branches. The fixed \(\CM\)-to-\(\CS\) adapter is a tool, not a mandatory step of any decider, and it yields no post-acquisition complexity potential. A hardware one-active-gate energy claim is not a temporal bit-flip or general decision-time theorem. A noncircular terminal-zero potential \(\Phi\) with independently large initial height and bounded decrease on \emph{every} charged state transition remains \textbf{OPEN}.
+
+\section{Archive, chronology, gap-to-evidence and next implication}
+\noindent\textbf{CORPUS REVIEWED.} Full or targeted original read: \path{AGENTS.md}, \path{CODEX.md}, \path{.codex/skills/pnp-research/SKILL.md}, fresh root \path{main.tex} owner/executive and endpoint sections, \path{main13.tex}, \path{research/agents/lead/2026-10-08_0032_LEAD_FINAL-LINK-ARC.tex}, Role 4 ANCHOR96, COMPONENT-CLOSURE97, CP22-GAUGE-FIREWALL98 originals and coverage, Role 2 ONE-SIDED-FACTOR133 original, Role 3 MATCH-EXPANDER100 original and coverage, MAIN WEIGHTED-TRANSCRIPT108, and the original U bit-record source. GitHub \path{tasks/}, \path{research/main/}, \path{research/agents/lspv-3/} and \path{research/agents/lspv-4/} were path-inventoried but not exhaustively mathematically read. Primary-source literature was checked: D\"ocker and FLMV; FLMV's Cook-reduction discussion supplies a model-specific precedent for bitwise online input simulation, not a theorem that arbitrary source reductions preserve this fine-grained endpoint.
+
+\noindent\textbf{DUPLICATION / CONTRADICTION AUDIT.} ANCHOR96 had already established the mathematical \(F\dot\cup Y\) source-witness map and its valid-source virtual accessor; this run does \emph{not} reclaim those results. Its conservative malformed-source validator imposed a quadratic acquisition exponent in the derived total-language transport. The \emph{new} lemma is the no-repair criterion, including the \(v>k\mapsto0\) invalid-ID rule and transparent total header handling. Without this rule, originally illegal \(v=k+1\) can become newly legal after adding six variables, falsifying naive grammar preservation. ROLE4 CP22-GAUGE-FIREWALL98 remains distinct: PC22's signed regular compiler does not create monotone clauses, and no gauge rescue is assumed. ROLE3 MATCH-EXPANDER100 gives large-frontier easy target inputs, so neither syntactic width nor recoding size is an unconditional decision-time lower bound.
+
+\noindent\textbf{COVERAGE LIMITS.} The inherited pinned-commit 3532-file hash-verified keyword inventory was not rerun; earlier mathematical review was selective. Targeted default-branch GitHub searches including \texttt{invalid-preserving unpaired anchor virtual accessor}, \texttt{validation-free invalid target} and \texttt{unpaired anchor FLMV output-bit} returned no direct exact duplicate but are \emph{bounded}, not exhaustive. Unread queue: root \path{main2.tex}--\path{main12.tex}, \path{main14.tex} full historical mathematics, broad LOG/PROVED\_EXACT/Manuscript/BOOL/SIL Drive pagination, earlier chat and commit revisions, most task original bodies, and complete original HEREDITARY-SCOPED10 executable. Failure of a search does not prove absence.
+
+\noindent\textbf{GAP ACCEPTANCE.} FILLED for total \(\LM\to\LS\) grammar/semantic reduction and polylog source-access same-machine simulation, with model/encoding hypotheses stated. PARTIAL/RESTRICTED: NP-completeness and near-linear source-to-target bit-local transport; no ordinary-SAT reduction. FALSIFIED/RETIRED: claim that a full \(N^2\) validator is forced for this specific adapter; old universal product endpoint \(t+s<2\cos(\pi/7)\). OPEN: ordinary-SAT-to-\(\LM\) fine-grained charged size/access/same-machine joint transport, the universal ARC successor, and an every-decider post-acquisition lower bound.
+
+\paragraph{ARC and DIRECT-POST unchanged.} Let \(E\) consist only of simultaneous \((t,s)\) achieved by a \emph{single} uniform exact all-input ordinary-SAT machine in the FLMV model. The OPEN sufficient target is a cofinal finite charged route to
+\[
+\boxed{t<241/200,\qquad s<11642479/23232400,\qquad \beta(c)=\tfrac12((c+2)/c^2-c).}
+\]
+The heuristic map \((t,s)\mapsto(\max\{1.1,0.6+t/2\},\max\{0.5,s/2\})\) is not a proved closure of \(E\). The first next source is the original all-input ordinary-SAT-to-M22 reduction, if any, with a verified \emph{bit-local} machine contract and exact exponent losses; otherwise return to a genuinely source-consistent, M22-type-restoring HEREDITARY-SCOPED10 alternative. Simultaneously test all adaptive post-acquisition \(\Phi\) proposals against matching/affine/Horn/SCC and decide-first controls. Neither ARC-EDGE-90 nor P versus NP is established.
+
+\begin{thebibliography}{9}
+\bibitem{Docker} J. D\"ocker, \emph{Monotone 3-Sat-(2,2) Is NP-Complete}, arXiv:1912.08032v1 (2019), Theorem 1 and Section 3, \url{https://arxiv.org/pdf/1912.08032}.
+\bibitem{FLMV} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas, \emph{Time-Space Lower Bounds for Satisfiability}, JACM 52(6):835--865 (2005), DOI:10.1145/1101821.1101822, \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{Anchor} LSPV-4, M22-UNPAIRED-ANCHOR96, \path{research/agents/lspv-4/2026-10-25_0345_LSPV-4_M22_UNPAIRED_ANCHOR96.tex}.
+\bibitem{Factor} LSPV-2, M22-ONE-SIDED-FACTOR133, \path{research/agents/lspv-2/2026-10-24_1231_LSPV-2_M22_ONE_SIDED_FACTOR133.tex}.
+\bibitem{Match} LSPV-3, M22-MATCH-EXPANDER100, \path{research/agents/lspv-3/2026-10-25_0540_LSPV-3_M22_MATCH_EXPANDER100.tex}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::M22-TRANSPARENT-TOTAL-ANCHOR99
