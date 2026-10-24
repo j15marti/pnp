@@ -1,0 +1,105 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::CCS-RUN001::2026-10-24
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newcommand{\PROVED}{\textsf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textsf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textsf{COMPUTATIONAL}}
+\newcommand{\COND}{\textsf{CONDITIONAL}}
+\newcommand{\CAND}{\textsf{CANDIDATE}}
+\newcommand{\OPEN}{\textsf{OPEN}}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\title{Claude Circuit-SAT Lower-Bound Ladder\\\large Living document}
+\author{Hourly scheduled research routine}
+\date{Last updated: 2026-10-24 (run CCS-RUN001)}
+\begin{document}
+\maketitle
+
+\paragraph{Honest status.} \textbf{This document does not prove P $\neq$ NP, nor any superlinear
+lower bound.} Every unconditional bound below is linear in the number of relevant inputs.
+Passing from linear to superlinear for an explicit NP function over the full binary basis is
+\OPEN{} and is the load-bearing arrow.  Status labels: \PROVED, \KNOWN, \COMP, \COND, \CAND, \OPEN.
+
+\section{Model and the ladder idea}
+Circuits are DAGs of fan-in-2 gates over the full binary basis $B_2$ (all 16 functions); size
+$s$ = number of gates; wire count $=2s$ (each gate has two incoming wires; fan-out is free).
+For a family $F_k$ of SAT-type functions we track, for growing parameters (variables $n$, clause
+width $w$, clause count), (i) the number of input bits $N$, (ii) the best upper bound, (iii) the best
+proved lower bound, (iv) exact value when known.
+
+\paragraph{Instance families.} $\mathrm{U}_n$: input bit per \emph{unit} clause over $n$ variables
+($N=2n$); output = ``the selected clause set is satisfiable''.
+$\mathrm{W2}_n$: input bit per nonempty clause of width $\le 2$ on distinct variables
+($N=2n+4\binom n2=2n^2$).  Full circuit-SAT $\mathrm{CSAT}_{n,s}$ takes an encoded circuit.
+
+\section{Proved lower-bound tools}
+\begin{lemma}[relevant-input bound, \PROVED]\label{lem:rel}
+If $f$ depends on $N$ input bits then every $B_2$ circuit for $f$ has $\ge N-1$ gates
+(hence $\ge 2N-2$ wires).
+\end{lemma}
+\emph{Proof.} The ancestors of the output form a weakly connected DAG containing all $N$ relevant inputs and some $s'\le s$ gates. Connectivity gives $\#\text{edges}\ge\#\text{nodes}-1$, i.e.\ $2s'\ge N+s'-1$, so $s\ge s'\ge N-1$. \qed
+
+\begin{proposition}[ladder rung $\mathrm U_n$, \PROVED]
+The $B_2$ size of $\mathrm U_n$ is exactly $2n-1$ (wires $4n-2$).
+\end{proposition}
+\emph{Proof.} Upper: $\bigwedge_v \mathrm{NAND}(p_v,q_v)$ uses $n+(n-1)$ gates.  Lower:
+each of the $2n$ bits is relevant (set $p_v=q_v=1$ and everything else $0$: unsatisfiable;
+clearing any one bit restores satisfiability), so Lemma~\ref{lem:rel} gives $2n-1$. \qed
+
+\section{Computational ladder (\COMP)}
+Script: \texttt{research/claude-circuitsat/exact\_synth.py} (SAT-based exact synthesis; satisfying
+models are re-simulated on all rows; UNSAT at size $r$ implies none smaller since a dummy
+output gate pads any circuit).  Raw lines: \texttt{results.jsonl} in the same directory.
+\begin{center}\begin{tabular}{lrrll}\toprule
+family & $N$ & size & wires & evidence\\\midrule
+$\mathrm U_1$ & 2 & 1 & 2 & SAT at $r=1$\\
+$\mathrm U_2$ & 4 & 3 & 6 & SAT $r=3$; UNSAT $r=2$ (0.0\,s)\\
+$\mathrm U_3$ & 6 & 5 & 10 & SAT $r=5$; UNSAT $r=4$ (0.27\,s)\\
+$\mathrm U_4$ & 8 & 7 & 14 & SAT $r=7$ (6.3\,s); UNSAT $r=6$ timed out at 30\,s\\
+$\mathrm W2_1$ & 2 & 1 & 2 & SAT $r=1$\\
+$\mathrm W2_2$ & 8 & $[7,11]$ & $[14,22]$ & \OPEN; exact search $r=6..13$ timed out at 30\,s\\\bottomrule
+\end{tabular}\end{center}
+The $\mathrm U_n$ rows merely confirm the proved value; $\mathrm U_4$'s UNSAT and all of
+$\mathrm{W2}_2$ exceed the 30\,s budget with the present naive encoding (no symmetry breaking,
+no incremental cube splitting).  $\mathrm W2_2$ upper bound $11$: for each of the 4 assignments, AND of
+negated selector bits of the 3 clauses it falsifies (2 gates), then OR of 4 terms (3 gates);
+lower bound $7$ from Lemma~\ref{lem:rel}.  No sharing was attempted, so $11$ is likely loose.
+
+\section{Parametrized view}
+For fixed $n$ every size is a constant, so the meaningful statement is a growth law in a
+parameter.  Current ledger:
+\begin{itemize}
+\item \PROVED{} $\mathrm{U}_n$: $\Theta(n)$, exact $2n-1$.
+\item $\mathrm W2_n$ ($N=2n^2$ inputs): lower $2n^2-1$ (\PROVED, Lemma~\ref{lem:rel});
+upper $O(2^n n^2)$ by assignment enumeration (\PROVED{} construction, $2$-SAT's polynomial
+algorithms give a poly upper bound in $N$ that has not been circuit-compiled here).
+Closing the gap to the true $\mathrm{poly}(n)$ is a \emph{finite, tractable} next rung; no claim yet.
+\item General $k$-CNF / circuit-SAT with parameter $n$ (variables): trivial lower bound linear in
+$N$; upper bound $2^n\mathrm{poly}$.  Any \emph{unconditional} bound $\omega(N)$ is \OPEN.
+Bounds of the form $2^{\Omega(n)}$ under SETH are \COND{} and not usable here.
+\end{itemize}
+
+\section{Known landscape (\KNOWN, recalled from memory, \emph{not} re-verified this run)}
+Gate elimination gives $3n-o(n)$ for explicit functions over $B_2$ (Find--Golovnev--Hirsch--Kulikov
+$3.011n$; Li--Yang $3.1n-o(n)$); no explicit function is known with $\omega(n)$ size over
+$B_2$.  Natural proofs, relativization and algebrization bar the standard routes to
+superpolynomial bounds.  A literature search is a TODO for the next run.
+
+\section{Link to the PNP repository}
+Root \texttt{main.tex} of \texttt{j15marti/pnp} states that P versus NP remains \OPEN{} and that all
+routes from an arbitrary poly-time decider to a superpolynomial bound are \OPEN{}.  Nothing there
+is imported as a theorem here.  Its relevant ideas for later rungs (not yet examined in depth):
+fan-out/locality accounting in \texttt{research/explorations}, and the LSPV barrier ledgers.
+
+\section{Next steps}
+\begin{enumerate}
+\item Strengthen the encoder (symmetry breaking, fixed first-gate cubes, per-cube 30\,s chunks) to settle $\mathrm U_4$ and $\mathrm W2_2$ exactly.
+\item Search for a $\mathrm W2_2$ circuit below $11$ gates (SAT side) to tighten the upper bound.
+\item Add a rung with 3-literal clauses on $n=3$ (restricted clause sets), and a rung where the instance is an encoded circuit (true $\mathrm{CSAT}$), tracking wires per added gate.
+\item Study gate-elimination-style arguments on $\mathrm W2_n$ to try for $>2n^2$ (a super-trivial bound).
+\item Literature preflight and barrier audit (natural proofs, relativization) for any proposed superlinear step.
+\end{enumerate}
+
+\paragraph{Run log.} CCS-RUN001: created document, Lemma~\ref{lem:rel}, exact $\mathrm U_n$ rung, first exact-synthesis data.
+% END_OF_CCS_DOCUMENT::CCS-RUN001
+\end{document}
