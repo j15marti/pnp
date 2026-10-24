@@ -42,4 +42,8 @@ Current recursive GitHub tree 5,217 entries, truncated=false (research/main 261;
 
 This run used the existing five-role allocation unchanged, wrote only role-owned reports and handoff, and did not send messages or change automation schedules.
 
+## Late archive cross-check: LOGCOF1 and two-tree cofactor literature
+
+A second bounded filename/content search after initial publication recovered the original LSPV-3 LOGCOF1 proof body at `research/agents/lspv-3/2026-10-13_0432_LSPV-3_LOGCOF1.tex` (Git blob `4278a6271411a36bb907150d44b6e4033244c184`). LOGCOF1 already proves general k<=c log N withheld-bit cofactor tables with time 2^k*T_A+O(N+2^k), **but its bound retains S_A+N+2^k+O(log N) writable space**, using a copied nonwithheld source. Thus it is neither contradicted nor re-proved as novel. The space-saving no-copy read-only-input technique in READ-LAST-SPACE-GAUGE95 is a refinement for k=1. Also inspected original `research/main/2026-10-14_0701_MAIN_TWOTREEBRIDGE1.tex` (blob `545ebb826d75e8b3a4757f214e894973df7bc6ac`), which provides Boolean circuit-DAG cofactors under a different explicit circuit-gate resource model; it is not the same arbitrary-decider read-only-input tape theorem. Inspected LOGCOF1 finite audit `experiments/review/log_width_cofactor_selection_audit.py`, where the reported RAM space still contains the additive N term. The earlier HEC/CSP corpus coverage remains selective. This cross-check strengthens the prior-work attribution rather than changing the new theorem or all-input OPEN status.
+
 <!-- END_OF_VERIFIED_HANDOFF::LSPV-4::READ-LAST-SPACE-GAUGE95 -->
