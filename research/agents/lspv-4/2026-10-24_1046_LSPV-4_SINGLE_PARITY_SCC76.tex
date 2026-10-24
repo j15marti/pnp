@@ -1,0 +1,143 @@
+% LSPV-4 REPORT::SINGLE-PARITY-SCC76::2026-10-24T10:46:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.87in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,url}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{SINGLE-PARITY-SCC76:\\ One Global Affine Equation Plus 2-CNF Is Polynomial\\ \large SCC-Block Reconfiguration, Affine Hull, and High-Nullity Hostile Controls}
+\author{LSPV-4: Bottom-up 2-SAT to NP-Complete Ladder}
+\date{24 October 2026, Asia/Seoul}
+\begin{document}\maketitle
+\begin{center}\fbox{\parbox{.90\linewidth}{\textbf{P versus NP remains OPEN.} The mathematical claims below are proved only within their declared model, and independent LSPV-5 review remains pending. They are upper bounds or explicit-encoding acquisition bounds, not unrestricted SAT-solving lower bounds.}}\end{center}
+
+\section{Targets, prior literature, and three falsifiable mechanisms}
+Fix a unit/binary CNF $B(x_1,\ldots,x_n)$ with $m$ clauses, and one global affine constraint $L_{S,b}(x):\bigoplus_{i\in S}x_i=b$. Repetitions and negated terms are eliminated by explicitly paid GF(2) cancellation and RHS adjustment. The same solver must work without receiving the true label. It may discover and switch representations, but its parsing, source reads, SCCs, candidate flips, witness replays, policy selection, failed attempts and peak live space are charged.
+
+\noindent\textbf{M1: PROVED/EXACT.} $B\wedge L_{S,b}$ admits a deterministic exact polynomial-time decision and witness algorithm, even when $L_{S,b}$ itself is not bijunctive.
+\par\noindent\textbf{M2: PROVED/EXACT.} A linear-size CNF encoding of one global parity through many XOR3 quartets has a growing syntactic ternary backdoor, a single connected high-nullity affine component, and a linear excess parameter $K$, yet a charged adaptive SCC-parity algorithm decides matched SAT and UNSAT families in linear source-word time.
+\par\noindent\textbf{M3: FALSIFIED/RETIRED as a lower-bound inference.} No $2^{\Omega(K)}$ all-decider lower bound follows from the correctness of the known $2^K$ enumeration upper bound, from one large affine component, or from high nullity.
+
+\paragraph{CORPUS REVIEWED.}
+Surveyed GitHub repository root, research/main and LSPV-1..5 trees, tasks and governance; inspected root \path{main.tex}, \path{AGENTS.md}, \path{CODEX.md}, repo research skill and TASK-002/007; MAIN ROOT-LABEL-QUOTIENT85 and SMALL-INTERFACE-EXACT-JOIN64; Role 3 SOURCEPROBE19, PARITY-SHORTCUT-FIREWALL78 and TREE-INTERFACE-SWITCH79; Role 4 SCC-AFFINE-LOCK70, AFFINE-NULLITY-BOUNDARY73, LOCAL-AFFINE-JOIN74 and AFFINE-BIJUNCTIVE-GATE75; Role 5 AFFINE-EXCESS-NULLITY111; current Role 1 CUBICCOVER75 and Role 2 LAZY-BOUNDARY71. Predecessor Role 3 report has a substantial verified report marker and sentinel. The GitHub source was inspected remotely; a complete checkout needed for execution of the repository preflight script was not available.
+\paragraph{DUPLICATION/CONTRADICTION AUDIT.}
+Aspvall--Plass--Tarjan supplies the SCC 2-SAT theorem. Reconfiguration of bijunctive solutions is classical (Gopalan et al.). The project already uses XOR/Gaussian, SCC, high-nullity construction, affine/bijunctive tests, and clustered $2^K$ upper bounds. The exact general single-global-parity criterion below and its single-connected-component high-nullity control were not found in materially relevant repository records. We claim the explicit elementary derivation, not global bibliographic novelty. No preexisting unrestricted lower bound is strengthened.
+
+\section{Exact theorem for a single linear check}
+Assume $B$ is satisfiable. In its implication graph, each SCC $C$ is paired with the component $\overline C$ of complemented literals. No SCC equals its complement. For each pair $g=\{C,\overline C\}$ let $V_g$ consist of the underlying variables whose two signed literals lie in this pair. The variables within $V_g$ are equal or complemented in every model; their assignments depend on one representative Boolean orientation. A pair is \emph{free} if both orientations occur in satisfying models, and \emph{forced} otherwise. Either condition is recognizable with a charged unit-augmented SCC solve. Set $\omega_g(S)=|S\cap V_g|\bmod2$. These are measured structural quantities, not instructions given to the solver for free.
+
+\begin{lemma}[Connectedness under signed-SCC block flips, PROVED/EXACT]\label{lem:path}
+For any satisfying assignments $\alpha,\beta$ of a 2-CNF $B$, one may transform $\alpha$ into $\beta$ through at most $n$ satisfying assignments, changing precisely one signed-SCC pair $V_g$ at each step. The sequence can be found in polynomial time from the parsed formula and the computed SCC classes.
+\end{lemma}
+\begin{proof}
+Let $D$ be the blocks on which the endpoints differ. Orient a coordinate $t_g$ for each $g\in D$ so $\alpha(t_g)=0$, $\beta(t_g)=1$. Any clause involving an unchanged block and a changing block must be satisfied by the unchanged literal: otherwise the changing literal would have to be true at both endpoints, impossible. A clause involving two distinct changing blocks must be satisfied at both all-zero and all-one endpoints. It therefore reduces to $(\neg t_g\vee t_h)$ or its reversal, a directed implication between blocks. A clause internal to one block is either tautological after quotienting or would fail at one endpoint. The induced block implications have no directed cycle, since a cycle would join the blocks into one original SCC pair. In reverse topological order, toggle the changing $t_g$ values from zero to one; every implication and all previously discharged clauses remain true. Each block is toggled once.
+\end{proof}
+\begin{theorem}[One parity + arbitrary 2-CNF; PROVED/EXACT]\label{th:one}
+Let $B$ be any unit/binary CNF and $S\subseteq[n]$. A uniform exact deterministic algorithm decides $B\wedge(\bigoplus_{i\in S}x_i=b)$ and returns a SAT witness when one exists in conservative $O(n^2(n+m))$ logical word time and $O(n+m)$ peak words, including parameter discovery, failed tests and witness replay. If $B$ is SAT with model $\alpha$, then
+\[
+\left\{\bigoplus_{i\in S}x_i:B(x)=1\right\}=
+\begin{cases}
+\{\bigoplus_{i\in S}\alpha_i\}, & \omega_g(S)=0\text{ for every free }g,\\
+\{0,1\}, & \exists\text{ free }g:\omega_g(S)=1.
+\end{cases}
+\tag{1}
+\]
+For UNSAT $B$ the parity image is empty.
+\end{theorem}
+\begin{proof}
+Solve $B$ by SCC and first check the parity of its reconstructed witness $\alpha$. If it equals $b$, verify and accept. Otherwise inspect the signed-SCC blocks, computing each $\omega_g$. For each odd-weight block, ask by a further SCC run whether the representative can take the opposite value to its value in $\alpha$. If none can, all odd-weight blocks are forced, so parity is constant and the requested value is impossible. If such a block exists, obtain a second model $\beta$ disagreeing on that block. Lemma~\ref{lem:path} supplies a valid block-flip path; a flip of the selected odd block changes parity, hence both parity values occur somewhere along the path. Scan this polynomial-length path and return the first model with requested parity, replaying the source. At most $n$ new 2-SAT calls cost $O(n(n+m))$; a conservative implementation tests at most $n$ prospective block flips at each of at most $n$ states, each with a complete source scan. Total $O(n^2(n+m))$ time and linear peak workspace follow. Empty clauses and isolated variables are handled directly. A solver is never told which label to expect.
+\end{proof}
+
+\begin{theorem}[Affine hull of a bijunctive solution relation, PROVED/EXACT]
+For a nonempty 2-CNF relation $R$, its affine hull over $\mathbb F_2$ is exactly the affine set described by all forced coordinates and within-SCC-block pairwise signed equalities and disequalities.
+\end{theorem}
+\begin{proof}
+Every satisfying assignment obeys those unary and binary equations. Conversely, for each free block there are two models with opposite block orientations. The path of Lemma~\ref{lem:path} contains an edge toggling only that block. Therefore the indicator vector of every free block lies in the linear span of differences of models. These disjoint-support vectors generate all freedom allowed by the stated unary and binary equations. Hence no additional higher-arity affine identity holds throughout $R$.
+\end{proof}
+
+\paragraph{Essential quantifier boundary.} This does not show an arbitrary list of parity equations may be checked separately. With $B=(x\vee y)$, the equations $x=0$ and $y=0$ are individually feasible, but their conjunction is impossible. This also does not turn one non-bijunctive long XOR relation itself into an equivalent 2-CNF. AFFINE-BIJUNCTIVE-GATE75's exact representation test remains valid.
+
+\section{Scalable proper-CNF two-label control and resource ledger}
+Let $q=2t\ge4$, $c\in\{0,1\}^t$ and $b\in\{0,1\}$. Introduce original variables $x_1,\ldots,x_q$ and functional prefix variables $p_1,\ldots,p_{q-2}$. For each $0\le j<t$ write two proper binary clauses equivalent to
+\[
+x_{2j+1}\oplus x_{2j+2}=c_j.
+\tag{2}
+\]
+Also write four proper ternary clauses for each row
+\[
+x_1\oplus x_2\oplus p_1=0,\quad
+p_{j-1}\oplus x_{j+1}\oplus p_j=0\ (2\le j\le q-2),
+\tag{3}
+\]
+and two proper binary clauses for $p_{q-2}\oplus x_q=b$. An XOR3 quartet is exactly the four ternary clauses falsified by its wrong-parity truth rows. This is an explicitly materialized source, not a hidden parity oracle.
+
+\begin{theorem}[Exact family, PROVED/EXACT]
+The resulting $P_{q,c,b}$ satisfies
+\[
+\operatorname{SAT}(P_{q,c,b})\iff b=\bigoplus_{j<t}c_j,\qquad
+\#\operatorname{SAT}(P_{q,c,b})=
+\begin{cases}2^t,&b=\bigoplus_jc_j,\\0,&\text{otherwise.}\end{cases}
+\tag{4}
+\]
+The exact dimensions and source roles are
+\[
+n=2q-2,\quad m_2=q+2,\quad k=4q-8,\quad M=5q-6;
+\tag{5}
+\]
+$q$ original variables, $q-2$ functional auxiliary variables, zero new free variables. The minimum raw strong syntactic 2-CNF backdoor is $h=(q-2)/2$. The affine incidence graph for the $q-1$ prefix/final parity equations is connected and has nullity $d_A=q-1$ and Role 5 excess $K=d_A-1=q-2$. Nevertheless both labels admit a source-recognizing, paid $O(q)$-word exact decision, with $O(q)$ peak live words and witness reconstruction on SAT.
+\end{theorem}
+\begin{proof}
+Eliminating the prefix equations sequentially, with all substitution work charged, gives the single global condition $\bigoplus_i x_i=b$. Summing the $t$ pair equations instead gives $\bigoplus_i x_i=\bigoplus_jc_j$. Thus (4), with exactly one prefix assignment for each satisfying source assignment. Each pair independently chooses one free representative, giving $2^t$ SAT witnesses. The $q-1$ prefix/final affine equations have independent pivot structure on $2q-2$ variables, proving nullity $q-1$. The $q-2$ ternary supports form a path of triples, and each variable appears in at most two supports. Hence any raw width-two backdoor has size at least $(q-2)/2$, achieved by selecting $p_1,p_3,\ldots,p_{q-3}$. The canonical solver reads the quartet/pair grammar, reconstructs the one long parity, SCC-contracts each pair into an unforced two-variable signed block of even parity weight, and checks $b=\oplus c$. Reconstruct and replay all source clauses on SAT; sum the parity rows to justify UNSAT. Each step costs $O(q)$ source words and space.
+\end{proof}
+
+\paragraph{Declared word encoding and unconditional query bound.}
+With two header words and four $w$-bit addressed words per clause, take
+\[
+w=\lceil\log_2(64(n+M+1))\rceil
+=\lceil\log_2(64(7q-7))\rceil,\qquad
+N=(20q-22)w=\Theta(q\log q).
+\tag{6}
+\]
+Toggling $c_j$ changes exactly two private signed-literal words and leaves the identifiers, header, lengths and metadata unchanged. On the UNSAT member $c=0^t,b=1$, each one-bit $c_j$ flip gives SAT. An exact deterministic addressed-word decider for the full language must therefore read at least one word from each of the $t=q/2$ disjoint sign-word groups, or it would have the same transcript on opposite-label inputs. Hence the restricted unconditional acquisition lower bound is $q/2=\Omega(N/\log N)$ word probes, matched by a paid $O(q)$ scanner. Widened RAM words and packed-sign access require new grouping charges; this is neither an encoding-independent bit-time bound nor superlinear post-acquisition work.
+
+\paragraph{Uniform reduction and reconstruction calculus.}
+The only transformations used are source-local clause writing, fixed XOR2/XOR3 expansions, explicit prefix elimination, implication-SCC partitioning, signed equality substitution and parity cancellation. Given $(q,c,b)$, the compiler writes $4M+2=20q-22$ addressed words, charges all $O(q)$ source reads, and uses $O(q)$ peak words. No source SAT oracle or decide-first compression is permitted. The $q-2$ prefix auxiliaries can be eliminated with $d=q-2$, giving syntactic residual $r=n-d=q$ and $v=n/r=2-2/q$. Those counts are neither semantic obstruction nor time lower bounds. On arbitrary permuted inputs, grammar recognition may use a polynomial clause-sorting pass and a total exact fallback for unrecognized formulas. The audit directly tests the known canonical source layout, not an arbitrary shuffled parser.
+
+\section{State-adaptive ledger, hostile controls, and NP-complete endpoint}
+\begin{center}\small
+\begin{tabular}{p{.23\linewidth}p{.32\linewidth}p{.34\linewidth}}
+\toprule
+State and available structure & Charged operation and alternative & New invariant / exit\\\midrule
+Initial canonical $k=4q-8$, $h=(q-2)/2$, nullity $q-1$ & Parse literal records, verify exact XOR quartets and binary pairs; alternatively generic exact fallback & Source-coherent equations and original witness map, $O(q)$ words\\
+After explicit prefix elimination & Retain full source, compute one XOR over original $x$; alternatively enumerate affine basis & Single parity constraint, $O(q)$ words\\
+After binary SCC quotient & Discover $t$ paired signed blocks, each parity weight two; policy evaluates cancel versus branch & Total parity constant $\oplus c$, $O(q)$ words\\
+SAT continuation & Check observed $b=\oplus c$, set one representative per pair, reconstruct $p$, verify all source clauses & One exact verified witness, $O(q)$ words\\
+UNSAT continuation & Check observed $b\ne\oplus c$, sum parity/pair rows & Explicit $0=1$ algebraic contradiction, $O(q)$ words\\
+General $B$ with one parity & SCC, test flexible odd blocks, traverse only feasible SCC-block flips if needed & Polynomial exact decision/witness, $O(n^2(n+m))$ words\\
+\bottomrule
+\end{tabular}\end{center}
+As a separate flexible control, an implication path $x_1\to x_2\to\cdots\to x_q$ with the one global parity check admits both parity labels, and the generic policy can use SCC-block flips to find the requested one. For the canonical pair family, no such flip changes parity. The policy does not receive SAT/UNSAT labels in advance. A deliberately \emph{nonpruning} fixed affine-basis enumerator processes $2^{q-2}$ leaves, versus $O(q)$ work here, but this comparator is a restricted algorithm, not a DPLL/CDCL lower bound. Horn, XOR, plain 2-SAT, independent components, padding, cached witnesses, source rereads, restarts, alternate representations and direct one-bit decision remain applicable hostile controls.
+
+The mandated baseline is the chain $F_b$ with $n=q+3$, $m=q+4$, $N_F=(4q+18)\lceil\log_2(64(2q+8))\rceil$, UNSAT iff $b=1^q$, and exact $q$ orientation-field reads on the all-one input in the declared field-query model. For arbitrary 2-CNF plus $k$ genuine ternaries, selecting one variable from each ternary gives $|S|\le k$ and $2^{|S|}\operatorname{poly}(N)$ as an \emph{upper} bound; fixed/logarithmic $k$ remains polynomial. Unrestricted $k$ contains ordinary 3-SAT and is NP-complete by identity. The Role 4-73 sharper endpoint uses $n=3v$, $m_2=3v+3e$, $k=4v$, $M=7v+3e$ and a parsimonious graph-three-colorability reduction. No polynomially charged transport from the chain's input-query lower bound produces a positive post-acquisition amplification: constructing a new formula already consumes linear source work. The missing universal lower bound is OPEN.
+
+\section{Computational checks and peer handoff}
+A deterministic standard-library runner with seed 202610240136 and source SHA-256
+\texttt{a37da9e30eddc509}\allowbreak\texttt{d8ac475b05b9d9f7}\allowbreak\texttt{51ff06e45458feee}\allowbreak\texttt{55797a27a5cde4db}
+ran six short suites, \textbf{283,242 assertion-accounted checks, zero failures}. They include all 166 bijunctive relations on three variables and all 4170 on four (including empty), all chosen parity masks and both targets; 5010 randomized small-2CNF mask tests with 2062 genuine witness-switch exits and 858 invariant-parity UNSAT exits; growing two-label canonical controls through $q=4096$ ($N=1,719,858$ encoded bits); and nonpruning comparisons through 16,384 leaves. Small exact source/target models and opposite-sign controls were checked. These are COMPUTATIONAL checks only. The standalone full runner and six raw JSON suites are preserved in the accompanying user-delivered audit package; a compact self-contained reproducer and machine-readable summary are deposited in the canonical role directory. No hidden experimental result is promoted into a proof.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+The existing role-5 clustered $2^{K_j}$ upper bound and role-3 forest joining upper bound remain valid. Here one affine component has $K=q-2$ and high local nullity, but its functional prefix quotient is one global parity, which the new generic theorem combines with arbitrary 2-CNF in polynomial time. This narrows, rather than closes, the all-machine lower-bound search. The old 2CNF-expressibility characterization $s=d$ is not contradicted.
+\paragraph{BARRIERS AND PRIOR COMPONENTS.}
+Adopt charged SCC, affine elimination and state switching. Retire large $K$ or witness-count as a standalone lower-bound measure. Two separate parity checks cannot be handled merely by checking their feasibility individually. No ETH/SETH, cryptography, random-oracle, restricted proof system, circuit-basis counting or mandatory enumeration is used. A same-machine nonrelativizing/algebrizing bridge and all-decider coverage remain OPEN.
+\paragraph{PEER HANDOFF.}
+Role 5 should check Lemma~\ref{lem:path} on signed SCC blocks, affine-hull equality, polynomial witness construction, exact $n,m,k,N,K$ and sign query bounds. Roles 1--3 should consume the canonical family as a hostile control and explicitly allow future solvers to discover, switch, cache, recompute or directly decide at every state, with the corresponding costs. Handoff publication does not prove receipt. Five existing tasks and schedules were unchanged.
+\paragraph{FIRST MISSING LEMMA.}
+For one fixed NP-complete language, prove an obstruction to \emph{every} polynomially charged uniform adaptive deterministic exact policy, independently of a chosen representation. Next experiment: extend the SCC parity-image test to two or more global equations and audit joint compatibility holes, without assuming that affine hull membership suffices. P versus NP remains OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{apt} B. Aspvall, M. F. Plass, R. E. Tarjan, A linear-time algorithm for testing the truth of certain quantified Boolean formulas, \emph{Inf. Process. Lett.} 8(3) (1979), 121--123, DOI:10.1016/0020-0190(79)90002-4.
+\bibitem{schaefer} T. J. Schaefer, The complexity of satisfiability problems, \emph{STOC} (1978), 216--226, DOI:10.1145/800133.804350.
+\bibitem{reconfig} P. Gopalan, P. G. Kolaitis, E. Maneva, C. H. Papadimitriou, The connectivity of Boolean satisfiability: computational and structural dichotomies, \emph{SIAM J. Comput.} 38(6) (2009), 2330--2355, DOI:10.1137/07070440X.
+\bibitem{peer} LSPV-5, AFFINE-EXCESS-NULLITY111, \path{research/agents/lspv-5/2026-10-24_1048_LSPV-5_AFFINE_EXCESS_NULLITY111.tex}; LSPV-3 TREE-INTERFACE-SWITCH79; LSPV-4 AFFINE-BIJUNCTIVE-GATE75.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::SINGLE-PARITY-SCC76
