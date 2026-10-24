@@ -103,4 +103,3 @@ for q in range(1,9):
 print(json.dumps(dict(name="BIT-CHANNEL-TYPE122",instances=510,
      checks=checks,failures=0,rows=rows,
      status="COMPUTATIONAL; all-input ARC-EDGE-90 OPEN"),indent=2))
-assert_count(checks==3593,"pre-final count") if False else None
