@@ -1,0 +1,79 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+% Owner: hourly "Claude Circuit-SAT lower-bound ladder" routine. Edited in place; append to the Run Log.
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newcommand{\SAT}{\mathrm{CircSAT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{Circuit-SAT Lower-Bound Ladder (Living Document)}
+\author{Claude routine; repository \texttt{j15marti/pnp}}
+\date{Last updated: 2026-10-24 (run 1)}
+\begin{document}
+\maketitle
+\begin{center}\fbox{\parbox{0.92\linewidth}{\textbf{Status.} No superpolynomial lower bound for Circuit-SAT is claimed; P versus NP remains \OPEN. This document records only what is proved, computed, or explicitly conditional. Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.}}\end{center}
+
+\section{Model and the ladder}
+A circuit has $n$ inputs, fan-in-2 gates from the full basis $B_2$, negation free on edges, one output. Let $g$ be the gate count and $w=2g$ the number of wires (gate in-edges). $\SAT$: given $C$, decide $\exists x\,C(x)=1$. We climb $n=1,2,3,\dots$, tracking (i) the minimum wires of a circuit whose function depends on all inputs, (ii) the cost any \emph{decider} must pay, in three access models: black-box (evaluate $C$), white-box reading (probe the wire list), and structured (parameter $k$ = width/treewidth).
+
+\section{Proved rungs}
+\begin{lemma}[Wire floor, PROVED]\label{l:wire}
+If $C$ depends on all $n$ inputs then $g\ge n-1$ and $w\ge 2(n-1)$; equality holds for $\mathrm{AND}_n$ trees.
+\end{lemma}
+\begin{proof}
+Every input reaches the output, so the underlying graph on $n+g$ nodes is connected: at least $n+g-1$ edges. Edges number $2g$ (inputs have none incoming), so $2g\ge n+g-1$.
+\end{proof}
+
+\begin{proposition}[Black-box rung, PROVED]\label{p:bb}
+Any deterministic algorithm that only evaluates $C$ needs $2^n-1$ evaluations in the worst case, even if $C$ has $w=2(n-1)$ wires and a unique satisfying input; any randomized one needs $\ge(2^n+1)/2$ expected evaluations on the uniformly random unique-solution family $\{\mathrm{AND}_n(x\oplus a)\}$.
+\end{proposition}
+\begin{proof}
+Adversary: answer $0$ to each query until only one point remains. For randomness use Yao on a uniform hidden $a$.
+\end{proof}
+
+\begin{proposition}[White-box reading rung, PROVED]\label{p:wb}
+Let $I$ be $\mathrm{AND}_n$ as a tree and $I_j$ the same with gate $j$ replaced by constant $0$. A decider that does not read gate $j$'s record cannot separate $I$ from $I_j$, so it reads $\Omega(g)=\Omega(w)$ records. Hence $\Omega(n)$ is exactly tight for this family; the bound is linear because the access model leaks structure.
+\end{proposition}
+
+\section{Computed small rungs}
+Script \texttt{scripts/circuitsat\_min\_gates\_bfs.py} (BFS over sets of computed truth tables, each run under 30 s).
+\begin{center}\begin{tabular}{c|c|c|c}
+$n$ & functions covered & max min-gates over all $f$ & unique-SAT $f$: min gates / wires\\\hline
+1 & $\{0,1,x\}$ (negation free) & 0 & 0 / 0\\
+2 & all 16 & 1 & 1 / 2\\
+3 & not completed (state blow-up) & --- & $\le 2$ gates for $\mathrm{AND}_3$ by Lemma~\ref{l:wire}, tight / 4 wires
+\end{tabular}\end{center}
+COMPUTATIONAL for $n\le2$ (note the $n=2$ row counts XOR as one gate, since $B_2$ is full). The naive BFS does not scale to $n=3$; next step is SAT-based exact synthesis (CANDIDATE tooling) and cross-check with Knuth's known table that every 4-variable function needs at most 7 gates in $B_2$ (KNOWN, cite to be verified).
+
+\section{Parametrized view}
+\begin{itemize}
+\item \textbf{Upper bound (KNOWN).} Dynamic programming over a width-$k$ decomposition decides $\SAT$ in $2^{k}\mathrm{poly}(w)$; $k=n$ recovers $2^n$.
+\item \textbf{Matching form (CONDITIONAL).} Under SETH, no $(2-\varepsilon)^{k}\mathrm{poly}$ algorithm for pathwidth/treewidth-$k$ SAT is expected (Lampis-type results; citation to verify).
+\item \textbf{Unconditional parametrized statement (PROVED, black-box only).} Proposition~\ref{p:bb} with $k$ relevant inputs and the relevant set known gives $2^k-1$ evaluations, independent of $n$ and of $w$ beyond $2(k-1)$.
+\item \textbf{Known size lower bounds (KNOWN, to verify).} Best explicit $B_2$ circuit-size bounds are about $3.1n$ (Li--Yang 2022). These bound circuit \emph{size}, not \emph{decision time}.
+\end{itemize}
+
+\section{The gap, stated exactly}
+Rungs above separate access models: white-box time is $\Theta(w)$ for AND trees, black-box time is $\Theta(2^n)$. The wanted theorem is a white-box lower bound
+\[
+T_{\SAT}(n,w,k)\ \ge\ f(n,w,k)\quad\text{for every algorithm reading the full wire list,}
+\]
+with $f$ superlinear in $w$. \OPEN. Any proof must survive relativization, natural proofs and algebrization audits; none of the rungs here does anything about those barriers. A cautionary note: hidden structure that makes a bound provable (e.g.\ AND trees) is also exploitable by algorithms (AND trees are solved in $O(w)$).
+
+\section{Link to the repository's P versus NP work}
+Root \texttt{main.tex} reports the boundary-oracle line: a pinned/unpinned source bit $\mathrm{SAT}(F)$ read at most once, with the length exponent $\lambda=1$ and the all-input same-realization service \OPEN. That is consistent with this ladder: it, too, proves linear read-cost but no amplification. No result there is imported here without a transfer theorem.
+
+\section{Next steps}
+\begin{enumerate}
+\item Exact synthesis for $n=3,4$: minimum wires for unique-SAT and for ``hard-to-simplify'' functions; tabulate wire count versus $n$.
+\item Define a white-box adversary that forces probing wires \emph{adaptively under restrictions} (gate-elimination style: fixing an input removes $\ge c$ gates) and ask whether it yields a decision-time bound beyond $\Theta(w)$.
+\item Verify and pin the citations marked ``to verify''.
+\end{enumerate}
+
+\section*{Run log}
+\begin{itemize}
+\item Run 1 (2026-10-24): created document, proved Lemma~\ref{l:wire}, Props.~\ref{p:bb}, \ref{p:wb}; computed $n\le2$ exactly; $n=3$ BFS infeasible in 30 s budget. Repo corpus skimmed (root \texttt{main.tex}, tasks); no directly reusable theorem found.
+\end{itemize}
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT
