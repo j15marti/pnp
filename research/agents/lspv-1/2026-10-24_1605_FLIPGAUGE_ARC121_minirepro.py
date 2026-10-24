@@ -21,7 +21,7 @@ def audit(seq):
         binary+=df
         gray+=bits((prev^(prev>>1))^(pos^(pos>>1)))
         flips+=df+v
-        work+=4+2*df+1
+        work+=4+2*df
         after=(pos,acc,0)
         assert after!=before and after not in seen
         seen.add(after)
