@@ -1,0 +1,250 @@
+% LSPV-5 REPORT::M22-RENAMING-REPAIR-COLLAPSE138::2026-10-25T04:50:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,longtable,hyperref}
+\newcommand{\CM}{\mathcal C_{\mathrm{M22}}}
+\newcommand{\Cs}{\mathcal C_\star}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\Rsearch}{R_{\mathrm{search}}}
+\title{LSPV-5 Independent Red Team: M22 Renaming-Repair Collapse 138}
+\author{Role 5 / independent endpoint audit}
+\date{25 October 2026 (Asia/Seoul)}
+\begin{document}
+\sloppy
+\maketitle
+
+\paragraph{Status.}
+\textbf{PROVED/EXACT, restricted:} the canonical one-fresh-variable,
+support-faithful repair of a pinned M22 variable is exactly alpha-renaming of
+the unpinned parent.  Thus it restores the grammar but erases the branch.
+\textbf{COMPUTATIONAL:} exhaustive finite controls cover all 5,625
+$k=6$ M22 formulas, all 12 one-level and 120 ordered two-level branch controls
+of the anchor $Y$, and 396 one-pin syntax checks on the 198-variable D\"ocker
+fixture.  \textbf{OPEN:} general multi-variable semantic adapters,
+ARC-EDGE-90, a post-acquisition structural lower bound, and $P$ versus $NP$.
+
+\section{Canonical target and independent anchor recheck}
+An instance of $\CM$ is an OR-CNF with unique clauses, three distinct
+variables in each clause, every clause entirely positive or entirely
+negative, and exactly two positive and two negative occurrences of every
+active variable.  If $\overline C$ flips all literal signs in $C$ while
+retaining disjunction, then $\Cs$ excludes only formulas in which every
+clause has its partner $\overline C$.  Partial complementary pairs remain
+allowed.  Invalid encodings are rejected.
+
+The fixed anchor $Y$ has positive supports
+\[
+123,145,246,356
+\]
+and negative supports
+\[
+124,136,235,456.
+\]
+An independent 64-assignment enumeration confirms: $Y\in\Cs$, it has 20
+models, and $111000$ is a witness.  The map that leaves valid nonpaired
+inputs unchanged and sends a fully paired valid input to $Y$ is polynomial,
+lands in $\Cs$, and preserves satisfiability because fully paired M22
+formulas are satisfiable by D\"ocker's theorem.  This verifies the exclusion
+reduction, not a time lower bound.  The syntax identities
+$3m=4k$ and $m_+=m_-=2k/3$ follow by counting occurrences.
+
+\section{Three falsifiable candidate fills}
+\begin{enumerate}
+\item \emph{One-alias slot repair:} fill the two binary residual records and
+restore the two satisfied records using one fresh variable.  This does restore
+$\CM$, but the claim that it preserves the chosen branch is
+\textbf{FALSIFIED/RETIRED} by the exact identity below.
+\item \emph{Two real recursive levels:} repeat that repair after a second
+pin and hope for net residual shrink.  This is
+\textbf{FALSIFIED/RETIRED} for this repair: all $2^d$ depth-$d$ children are
+alpha-isomorphic full-size copies of the parent and independent completion
+gives $\Rsearch=-d$.
+\item \emph{All target-valid repair gadgets collapse similarly.}  This is
+\textbf{OPEN and not claimed}.  Additional variables and clauses can change
+the argument.  Historical bounded-occurrence clause gadgets are a warning
+against promoting this restricted identity into a generic gadget
+impossibility.
+\end{enumerate}
+
+\section{Exact renaming-repair theorem}
+Let $F\in\CM$, let $x$ be active, let $b\in\{0,1\}$, and let $z$ be fresh.
+Simplify $F$ under $x=b$.  Exactly two incident clauses are satisfied and
+deleted, and exactly two opposite-sign incident clauses become binary.
+Define $Q_{x,b,z}$ by the following support-faithful slot operations:
+\begin{itemize}
+\item append the literal on $z$ having the same sign as the removed false
+literal on $x$ to each binary record; and
+\item reinsert each satisfied record, replacing its true literal on $x$ by
+the same-sign literal on $z$ and preserving its other two variables.
+\end{itemize}
+
+\paragraph{Theorem (one-alias repair collapse).}
+For every $F,x,b,z$ as above,
+\[
+ Q_{x,b,z}(F\mid x=b)=\rho_{x\mapsto z}(F),
+\]
+where $\rho$ is the sign-preserving variable renaming.  In particular the
+result is independent of $b$, remains in $\CM$, preserves fully-paired versus
+nonpaired status and model count, and has the parent's $k$ active variables
+and $m$ clauses.
+
+\paragraph{Proof.}
+Partition clauses into those not containing $x$, those containing the literal
+made false by $b$, and those containing the literal made true by $b$.
+The first group is unchanged.  A clause in the second group loses its
+$x$-literal and the repair inserts the same-sign $z$-literal.  A clause in the
+third group is deleted and then reinserted with exactly the same substitution.
+Thus every record is precisely its image under $\rho$, with no other record
+added or removed.  Sign-preserving alpha-renaming preserves all stated
+properties. \qed
+
+The repaired relation on the retained variables is therefore
+$\exists x\,F$, not the fixed branch $F\mid x=b$.  Fixing $z=b$ recovers the
+branch but immediately recreates the non-M22 residual.  A target-only solver
+called on the repaired formula answers $\SAT(F)$ and does not provide the two
+branch labels.
+
+After $d$ distinct pins followed by this repair, every nominal child still
+has $k$ active variables.  If the $2^d$ children are completed independently,
+\[
+ \Psi=2^d2^k=2^{k+d},\qquad \Rsearch=k-\log_2\Psi=-d.
+\]
+If a cache merges alpha-isomorphic children, only one parent-equivalent
+instance remains, but its one answer still does not recover the fixed branch
+answers.  Caching prevents an artificial blow-up; it does not create a
+contraction.
+
+\section{Reproducible controls}
+The companion script canonicalizes literal order before comparing records.
+Its SHA-256 is
+\nolinkurl{1b3642b99ccccf2d3bd6d6d4a7ac491ef8b7150f3b5b2f4484f7a8bd64c63f92};
+the raw JSON SHA-256 is
+\nolinkurl{f8f4904fac9ee51b5954eff63a31ac7063a96f4e6b0973616e35070b4dee04b5}.
+\begin{center}
+\begin{tabular}{p{.39\linewidth}p{.09\linewidth}p{.40\linewidth}}
+\toprule
+Control & cases & failures / strict losses\\
+\midrule
+All $75^2=5{,}625$ $k=6$ formulas, variable, bit & 67,500 & 0 identity, grammar, model, or pair-status failures\\
+$Y$, one fixed pin versus erased-branch projection & 12 & 12 strict losses; 6--9 extra projected assignments\\
+$Y$, two ordered pins versus erased-branch projection & 120 & 120 strict losses; 4--14 extra projected assignments\\
+D\"ocker 198-variable fixture, variable, bit & 396 & 0 identity or grammar failures\\
+\bottomrule
+\end{tabular}
+\end{center}
+The D\"ocker fixture's UNSAT label is imported from the source and was not
+recomputed.  These finite checks corroborate the symbolic identity and expose
+branch loss; they are not asymptotic lower bounds.
+
+\section{Two-level BIT-RESOURCE1 ledger}
+The table separates logical work from traffic and storage.  One record carries
+$\Theta(\log k)$ identifier/sign bits in a dense indexed encoding and the full
+input has $N=\Theta(k\log(k+2))$ bits.  Bounds below are for one fixed uniform
+implementation choice; they are not mixed across machines.
+
+\begin{longtable}{p{.20\linewidth}p{.24\linewidth}p{.23\linewidth}p{.23\linewidth}}
+\toprule
+Item & primitive bit work / traffic & peak live writable bits & audit consequence\\
+\midrule
+Parse and validate & read all $N$ source bits; counters, comparisons, duplicate and quota checks are charged & streaming may use polynomial index/counter space; a materialized incidence table uses $\Theta(N)$ & required for a total $L_\star$ decider; no free promise recognition\\
+Locate four records & scan costs $\Theta(N)$ reads; a maintained index charges its construction, queries and addresses & $O(\log N)$ extra for a scan, or the paid index size & source rereads are traffic, not free access\\
+Pin and simplify & four record reads, sign tests, control and address arithmetic; two delete/two shorten actions & $O(\log N)$ control plus any live parent/index & this state is generally outside $\Cs$\\
+Materialized repair & copy/write every ordinary child bit, including unchanged values: $\Theta(N)$ reads and writes & $\Theta(N)$ child bits, plus live parent/index/buffer & child has the original $k,m,N$ scale\\
+Virtual repair & store alias and branch-control metadata; every later access charges selection, address rewrite and source read & $O(\log N)$ per alias plus downstream state & avoids payload storage, not semantic parent equivalence\\
+Second real level & repeat discovery, pin, access and repair on the first representation; failed trials and switching remain charged & live ancestors, two aliases, buffers and cache entries counted simultaneously & four nominal children are full-size alpha-renamings\\
+Cache/canonicalize & hash/equality reads and cache operations are charged; complete recognition may inspect $\Theta(N)$ bits & cache key/table and collision-verification buffers & merges duplicates but returns only the parent decision\\
+Finish/reconstruct & branch-specific labels or witnesses require separate valid work; the repaired decision alone is insufficient & all live solver, cache and reconstruction state & no hidden branch oracle\\
+\bottomrule
+\end{longtable}
+
+Unchanged-value writes count as writes.  Actual complete-state flips are at
+most the writes but depend on the prior bit values and are recorded separately;
+physical transistor switches, active gates and wires are not identified with
+logical bit work.  Cumulative bit-time is the sum of actual live writable bits
+over actual charged steps and cannot be inferred from the static child count.
+Code, representation and any hardware table size are separate resources.
+
+Consequently, neither materialization nor virtualization yields a successor
+simultaneous pair better than the parent in the required all-input FLMV model.
+There is no ARC edge here.  The same analysis also blocks interpreting
+$c+U(C')<U(C)$ for some chosen enumeration budget as a universal saving.
+
+\section{Direct post-acquisition spine}
+A potential that counts these nominal repaired branches, distinct repaired
+formulas, or their static table sizes is not an unavoidable-work measure:
+alpha-canonicalization and caching reduce all of them to one parent-equivalent
+object.  Conversely, charging the missing fixed-branch answers as if they were
+already present assumes the desired computation.  This is a concrete rejection
+of this candidate family only.  It does not refute a structural potential
+$\Phi$ on complete legal machine states.
+
+The remaining direct obligation is unchanged: define $\Phi$ independently of
+optimal running time, prove a large initial value after acquisition and
+$\Phi_{\rm terminal}=0$, and prove for every legal adaptive transition
+\[
+ \Phi(C)-\Phi(C')\leq \Gamma(N)\,w(C,C')
+\]
+with charged elementary bit work $w$.  Input hitting number $\tau\leq N$ is
+not counted again.  No such post-acquisition $\Phi$ is proved here.
+
+\section{Peer claims and archive comparison}
+\begin{itemize}
+\item \textbf{FILLED, exact restricted compatibility:} the LSPV-4 component
+closure theorem implies a clause-deletion residual remains in $\CM$ exactly
+when deleted clauses form a union of incidence components.  It explains why
+connected sources resist strict target-valid deletion, but it does not rule
+out semantic gadgets.
+\item \textbf{PARTIAL/RESTRICTED:} LSPV-1's exact $k=6,k=9$ model-count
+theorem supplies finite easy layers.  It does not imply large-instance
+satisfiability or a time lower bound.
+\item \textbf{PARTIAL/RESTRICTED constructive upper bound:} LSPV-2's
+$O(3^q\operatorname{poly}(N))$ one-sided factor algorithm is a valid declared
+residual/factor route.  Its pinned residuals leave $\Cs$ and the exponent is
+not an ARC contraction.
+\item \textbf{DUPLICATION/RETIREMENT WARNING:} older
+BALANCED-CLAUSE-SIMULATION-OBSTRUCTION work was already retired after a
+D\"ocker clause enforcer.  The new theorem is deliberately narrower and does
+not resurrect a generic impossibility.
+\item \textbf{FAILED TRANSFER:} Tovey-style bounded-occurrence transformations
+and historic signed exact-$(2,2)$ gadgets do not automatically satisfy
+clausewise monotonicity and exact two-per-sign quotas.  Conversely, their
+existence prevents inferring broad gadget impossibility from the one-alias
+collapse.
+\end{itemize}
+
+\section{Coverage and next missing artifact}
+This run fully read the current AGENTS.md, CODEX.md, PNP skill, mode and task
+specifications; the latest LSPV-1, LSPV-2 and LSPV-4 substantive reports; the
+current root manuscript; D\"ocker's fixture source; and the directly relevant
+status/obstruction entries.  The inherited commit-55a3fcc census remains a
+keyword census with selective mathematical review; no new full-corpus census
+is claimed.  The local preflight script was executed, but this transient
+workspace is not a full checkout, so repository-state verification was done
+against GitHub objects and readback.
+
+The first missing lemma is a target-valid, paid semantic adapter that maps an
+ordinary pinned residual back into $\Cs$ while preserving each fixed branch,
+uses ordinary accessible encoding, and gives a strict simultaneous resource
+improvement through two recursive levels.  The next artifact to inspect is the
+original D\"ocker clause-enforcer construction record-by-record under this
+exact receiving obligation, followed by a two-level bit ledger.  A second
+route is a post-acquisition state potential surviving alpha-renaming, cache
+merging, affine/Horn/SCC shortcuts, direct answers and representation changes.
+
+\paragraph{Endpoint.}
+The exclusion reduction and restricted renaming-collapse theorem are exact.
+They do not prove an all-input contraction, a forbidden FLMV point, a direct
+superpolynomial lower bound, or $P\ne NP$.  $P$ versus $NP$ and ARC-EDGE-90
+remain \textbf{OPEN}.
+
+\begin{thebibliography}{9}
+\bibitem{Doecker2019}
+J. D\"ocker, \emph{Monotone 3-SAT-(2,2) is NP-complete},
+arXiv:1912.08032, Theorem 1 and Section 3, printed pp.~7--8.
+\url{https://arxiv.org/abs/1912.08032}.
+\bibitem{Tovey1984}
+C. A. Tovey, \emph{A simplified NP-complete satisfiability problem},
+Discrete Applied Mathematics 8 (1984), 85--89.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::M22-RENAMING-REPAIR-COLLAPSE138
