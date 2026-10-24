@@ -31,7 +31,7 @@ def exact_sat(clauses,pins=None):
         while True:
             progress=False
             for cl in clauses:
-                if any(v in a and a[abs(v)]==(v>0) for v in cl):
+                if any(abs(v) in a and a[abs(v)]==(v>0) for v in cl):
                     continue
                 unseen=[v for v in cl if abs(v) not in a]
                 if not unseen:
@@ -44,7 +44,7 @@ def exact_sat(clauses,pins=None):
             if not progress:
                 break
         for cl in clauses:
-            if any(v in a and a[abs(v)]==(v>0) for v in cl):
+            if any(abs(v) in a and a[abs(v)]==(v>0) for v in cl):
                 continue
             v=next(v for v in cl if abs(v) not in a)
             for val in (False,True):
