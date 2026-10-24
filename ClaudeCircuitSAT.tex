@@ -1,0 +1,69 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- root level; edited in place each hourly run.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{thm}{Theorem}\newtheorem{lem}{Lemma}\newtheorem{conj}{Conjecture}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT\\\large Living document}
+\author{Scheduled hourly run}
+\date{Last updated: 2026-10-24 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here proves a superpolynomial
+lower bound for \CSAT. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and method}
+Build from the smallest circuits upward. For each $n$ (number of inputs) track
+(i) $C(n)$: the exact minimum number of gates (wires) needed by the worst $n$-input function,
+and (ii) the cost any algorithm must pay to decide satisfiability of an instance of size $s$.
+Lower bounds may be parametrised by $(n,s,w)$ with $w$ a width parameter (treewidth/pathwidth).
+
+\section{Model}
+AIG model: 2-input AND gates, free negation on edges, constants free.
+A circuit with $g$ AND gates has $2g$ input wires plus one output edge. Size is $g$; wires $=2g+1$.
+
+\section{Ledger of exact minimum sizes (COMPUTATIONAL, exhaustive)}
+Script \texttt{research/claude\_circuitsat/aig\_exact.py}: exhaustive DFS over all gate sets up to depth $k$;
+a function's minimum is exact since all sets of $\le k$ gates are enumerated. Runs $\le 20$\,s each.
+\begin{center}\begin{tabular}{lcccccccc}\toprule
+$n$ & \multicolumn{7}{c}{\#functions with min gates $=0,1,\dots,6$} & $C_{\mathrm{AIG}}(n)$\\\midrule
+1 & 4 & & & & & & & 0\\
+2 & 6 & 8 & 0 & 2 & & & & 3 (XOR/XNOR)\\
+3 & 8 & 24 & 64 & 30 & 104 & 8 & 18 & 6 (18 fns, incl.\ parity)\\\bottomrule\end{tabular}\end{center}
+So $C_{\mathrm{AIG}}(1,2,3)=0,3,6$; wires $1,7,13$. Parity $\oplus_n$ costs $3(n-1)$ in AIG; matched for $n\le3$.
+\textbf{CANDIDATE:} $C_{\mathrm{AIG}}(4)=$ (not computed; naive DFS exceeds the 30\,s rule, needs chunking by first-gate class).
+
+\section{Proved elementary bounds (PROVED/EXACT)}
+\begin{lem}[Relevance wires]\label{lem:rel}
+A circuit whose output depends on $r$ inputs has at least $r-1$ AND gates and $\ge 2(r-1)+1$ wires.
+\end{lem}
+\emph{Proof.} Connectedness of the cone of the output: a fan-in-2 DAG whose cone touches $r$ input leaves has $\ge r-1$ internal nodes (a binary tree has $r-1$). \qed
+
+\begin{thm}[Reading lower bound]\label{thm:read}
+Any algorithm deciding \CSAT\ on $m$-gate instances in the input-reading model must read $\Omega(m)$ wires, even for a promise class.
+\end{thm}
+\emph{Proof.} Take $\varphi_0=x_1\wedge\bigwedge_{i=1}^{m'} (\text{slot}_i)$ where each slot is either the tautology $(y_i\vee\neg y_i)$ or fixed. Instance $A$: all slots tautologies (SAT). Instance $B_j$: slot $j$ replaced by $\neg x_1$ (UNSAT). An algorithm that leaves slot $j$ unread outputs the same on $A$ and $B_j$; so it reads all $m'=\Theta(m)$ slots. \qed
+
+\begin{thm}[Black-box evaluation bound]\label{thm:bb}
+Any algorithm that accesses $C:\{0,1\}^n\to\{0,1\}$ only through evaluation queries needs $2^n$ queries (deterministic) / $\Omega(2^n)$ (randomised) / $\Omega(2^{n/2})$ (quantum) to decide SAT.
+\end{thm}
+\emph{Proof.} Standard adversary / BBBV; the adversary answers 0 until one point remains. \qed
+\textbf{Status:} PROVED but \emph{not} a \CSAT\ bound: a real algorithm reads the wiring. Gap = the whole problem.
+
+\section{Parametrised picture}
+\begin{center}\begin{tabular}{lll}\toprule
+Regime & Bound & Status\\\midrule
+Read the instance & $\Omega(s)$ (Thm.~\ref{thm:read}) & PROVED/EXACT\\
+Treewidth $w$ upper bound & $2^{O(w)}\mathrm{poly}(s)$ & KNOWN THEOREM\\
+Treewidth $w$ lower bound & no $2^{o(w)}s^{O(1)}$ algorithm & CONDITIONAL (ETH)\\
+General $n$ & no $2^{(1-\epsilon)n}\mathrm{poly}(s)$ & CONDITIONAL (SETH)\\
+Black-box & $2^n$ (Thm.~\ref{thm:bb}) & PROVED/EXACT, wrong model\\
+Unconditional superpoly in $s$ & -- & \textbf{OPEN}\\\bottomrule\end{tabular}\end{center}
+Known circuit-size lower bounds for explicit functions are only linear, $\approx 3.1n-o(n)$ in the full binary basis (Li--Yang, STOC 2022; cite to be verified in the next run). \textbf{Barriers to audit:} relativization, natural proofs, algebrization.
+
+\section{Repository cross-check (run 1)}
+The repository's root \texttt{main.tex} states P versus NP is OPEN and its routes (HEC, CRS-PPC, SWAP-STAR) remain unfinished; none was found that yields a wire-counting lower bound for \CSAT. Not yet read in detail: \texttt{tasks/} specs and \texttt{research/explorations/}.
+\textbf{Next targets:} (1) chunked computation of $C_{\mathrm{AIG}}(4)$; (2) a wire-by-wire \emph{incremental} lower bound: how many new wires each added input forces for a fixed UNSAT family; (3) test the Schur-square idea of \texttt{AGENTS.md} on gate-adjacency codes; (4) verify literature citations.
+
+\section{Log}
+\begin{itemize}\item Run 1 (2026-10-24): document created; exact AIG ledger $n\le3$; Lemma~\ref{lem:rel}, Thms.~\ref{thm:read}--\ref{thm:bb} stated.\end{itemize}
+\end{document}
+% END_OF_CLAUDECIRCUITSAT_RUN1
