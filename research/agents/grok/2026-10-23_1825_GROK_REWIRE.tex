@@ -1,0 +1,72 @@
+% GROK NOTE::REWIRE pass-4 full 4-input oracle and capped 5-cut growth step::2026-10-23_1825
+\documentclass[11pt]{article}
+\usepackage{fontspec}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,xurl,hyperref}
+\title{GROK REWIRE Pass~4: Complete 4-Input NPN Size Table and a Capped 5-Cut Growth Step}
+\author{GROK (automation, j15marti/pnp)}
+\date{2026-10-23 18:25 PT}
+\begin{document}
+\sloppy
+\maketitle
+\section*{Summary}
+Circuit-SAT and P versus NP remain OPEN. Two steps, both named as next in pass~3 (\texttt{2026-10-23\_1657\_GROK\_REWIRE.tex}, commit \texttt{2a4065b8}). (1) Class \texttt{0x1681} finished: its minimum AIG size is \textbf{10}, so all 222 four-input NPN classes now have a computed minimum. (2) A controlled 5-cut growth step, with configurations produced by time-capped SAT exact synthesis and a library hard-capped at 64 entries, closes large gaps that the 4-cut fixed point leaves (for example 43 to 4 and 105 to 12), but the library \emph{churns}: 1{,}609 stores, 1{,}515 evictions and a hit rate of \textbf{0.1831}, against 0.987 for the 4-cut library. Keying width-5 configurations by raw truth table does not pay for itself. This is a design-change signal, not a lower-bound result.
+
+\section{Corpus reviewed}
+Pass-3 note and code. The ten newest commits on \texttt{main} (head \texttt{55f0a6dd}) are RANDOMSENS87 and LSPV-1/LSPV-4 reconciliations (randomized source sensitivity, affine-bijunctive gate~75). None touches REWIRE, cut rewriting or a configuration library, so there is no peer REWIRE artifact to reconcile. Root \texttt{main.tex} was not edited.
+
+Literature context (KNOWN THEOREM / known practice): DAG-aware AIG rewriting with precomputed structures for the 222 four-input NPN classes (Mishchenko, Chatterjee, Brayton, DAC~2006) is the industrial version of the 4-cut step; SAT-based exact synthesis and SAT-based local circuit improvement (Kulikov and coauthors) are the standard way to go past width~4. The number of five-input NPN classes is 616{,}126, which is why the width-5 library must be capped and keyed with care.
+
+\section{Complete 4-input table (COMPUTATIONAL above size 5)}
+All 177 SAT circuits from pass~3 plus \texttt{0x1681} were re-simulated: \textbf{0} mismatches, and every gate count equals its claimed $k$. Histogram of minimum AND count over the 222 classes:
+\begin{center}\begin{tabular}{lrrrrrrrrrrrr}\toprule
+size & 0&1&2&3&4&5&6&7&8&9&10 & total\\\midrule
+classes & 2&1&2&7&9&24&30&61&45&37&\textbf{4} & 222\\\bottomrule
+\end{tabular}\end{center}
+Sizes 0--5 are EXACT (exhaustive). Sizes 6--10 are COMPUTATIONAL (first SAT $k$ after UNSAT at every smaller $k\ge6$, CaDiCaL~1.5.3). The four size-10 classes are \texttt{0x1669}, \texttt{0x1683}, \texttt{0x166b} and \texttt{0x1681} (solved in 2{,}247\,s). The merged oracle is \texttt{exact\_all.pkl} (SHA256 prefix \texttt{42881099092ae6dd}).
+
+\section{5-cut growth step (COMPUTATIONAL)}
+\paragraph{Method (own code).} \texttt{rewire5.py} (\texttt{02f8972bc4fc69e0}) first runs the pass-2 4-cut REWIRE with the full 222-class oracle to a fixed point, then alternates a 5-cut pass and the 4-cut pass until size stops dropping (at most 4 rounds). In the 5-cut pass, each node keeps up to 12 cuts, preferring 5-leaf ones. A 5-leaf cut is tried only if its function has full 5-variable support and its maximum fanout-free cone (MFFC) has at least 2 nodes. The library is keyed by the raw 32-bit truth table on sorted leaves (no NPN canonicalization at width~5). On a miss, SAT exact synthesis (Glucose~4, 5\,s per $k$) tries $k=1,2,\dots,\min(\mathrm{MFFC}-1,8)$ in order, so a found circuit is minimum. A circuit is stored only when applying it gains. A proven floor (``no circuit up to the cap'') is stored as a negative entry so it is not recomputed. The cap is 64, and eviction removes the least-used entry from the older half. Control: the $n$-input encoder reproduces 7 sampled four-input sizes (SAT at $k$, UNSAT at $k-1$) with 0 disagreements. All 42 runs preserve the truth table (\textbf{0} mismatches).
+
+\paragraph{Hostile family.} Carry chains $c_{j+1}=g(c_j,x_{4j+1},\dots,x_{4j+4})$ with $m$ blocks. Each block is a \emph{fresh} redundant sum-of-minterms encoding of a fixed 5-input $g$. The three $g$ are random full-support functions whose minimum AIG size is exactly \textbf{4} (EXACT: SAT at 4, UNSAT at 1--3): \texttt{0x100000} (one minterm), \texttt{0xcccc8ccc} and \texttt{0xf050d05}. So $4m$ is an upper bound for every chain.
+\begin{center}\begin{tabular}{llrrrr}\toprule
+block & $m$ & before & 4-cut fixed point & after 4+5-cut & $4m$\\\midrule
+\texttt{0x100000} & 1,2,3 & 4, 8, 12 & 4, 8, 12 & 4, 8, 12 & 4, 8, 12\\
+\texttt{0xcccc8ccc} & 1 & 43 & 24 / 34 & \textbf{4} / \textbf{4} & 4\\
+ & 2 & 86 & 69 / 75 & 8 / 8 & 8\\
+ & 3 & 129 & 104 / 109 & \textbf{37 / 43} & 12\\
+\texttt{0xf050d05} & 1 & 35 & 24 / 25 & 4 / 4 & 4\\
+ & 2 & 70 & 61 / 59 & 8 / 8 & 8\\
+ & 3 & 105 & 86 / 88 & 12 / 12 & 12\\\bottomrule
+\end{tabular}\end{center}
+(Pairs are seeds 0 / 1.) For $m=1$ the result 4 is optimal (EXACT, by the block bound). For $m=2,3$, reaching $4m$ is an upper bound only; whether the composed chain needs $4m$ is OPEN. On block \texttt{0xcccc8ccc} with $m=3$, the method stalls at 37 and 43, three times the known bound 12. A 4+5-cut fixed point can therefore be far from optimal on a structured family.
+
+\paragraph{Library measurement.}
+\begin{center}\begin{tabular}{lr}\toprule
+final 5-cut library size (cap) & 64 (33 positive, 31 negative)\\
+lookups / hits & 2{,}097 / 384\\
+hit rate & \textbf{0.1831}\\
+stores / evictions & 1{,}609 / 1{,}515\\
+distinct truth tables sent to SAT & 1{,}713\\
+SAT timeouts (5\,s) / total SAT time & 83 / 709.8\,s\\
+4-cut library (same runs) & 18 entries, hit rate 0.987\\\bottomrule
+\end{tabular}\end{center}
+The number of distinct width-5 keys grew from 21 (first six chains) to 1{,}713 over 18 chains of size at most 129. The cap held, but at the cost of recomputing almost everything. Most keys are intermediate states of the bloated encoding, which are seen once and never reused.
+
+\paragraph{Random 5-input controls.} There were 24 random AIGs on 5 inputs with 10, 14 or 18 generator steps. In 23 of 24, the final size is proven optimal (EXACT: UNSAT for every smaller $k$). In one case (18 steps, seed 3), the 4-cut fixed point is 8 and the 5-cut step reaches \textbf{6}, which is optimal, so the 5-cut step closes a gap of 2. In the remaining case (10 steps, seed 6), the final size is 4 but the optimum is 3. The output's function has support 3 (\texttt{0xaa00ff55}), and the 3-leaf root cut has class \texttt{0x3cf} of size 3 with an MFFC of 4. The pass-2 4-cut pass should have taken this gain of 1 and did not. This is a suspected defect in \texttt{rewire2.py} (leaf-slot or transform handling for cuts with fewer than 4 leaves). It is OPEN and will be debugged next.
+
+\section{Status ledger}
+\begin{itemize}
+\item Minimum AIG sizes of all 222 four-input NPN classes, histogram (2,1,2,7,9,24,30,61,45,37,4): sizes 0--5 \textbf{PROVED/EXACT}, sizes 6--10 \textbf{COMPUTATIONAL}.
+\item The three block functions have minimum size exactly 4; single-block chains are optimal after 4+5-cut: \textbf{COMPUTATIONAL} (exact SAT).
+\item 4-cut fixed points can sit far above optimum on carry chains (24 to 34 against 4 for $m=1$), and 4+5-cut can stall at about $3\times$ a known bound ($m=3$: 37 and 43 against 12): \textbf{COMPUTATIONAL}.
+\item Raw-truth-table keying at width 5 under a 64-entry cap gives hit rate 0.1831 with 1{,}515 evictions: \textbf{COMPUTATIONAL}. Proposed fix (NPN-canonical width-5 keys, no negative entries for transient states, admit only configurations reused at least twice): \textbf{CANDIDATE}.
+\item Missed 3-leaf-cut gain in the 4-cut pass: \textbf{OPEN} (suspected bug).
+\item Circuit-SAT lower bound via REWIRE: \textbf{OPEN}. P vs NP: \textbf{OPEN}.
+\end{itemize}
+
+\section{Next smallest open step}
+Fix and regression-test the missed 3-leaf gain. Then replace raw-truth-table keys at width~5 with NPN-canonical keys (using 3{,}840 transforms, or a cheaper semi-canonical form), drop negative entries for keys seen only once, and rerun the same 18 chains. The goal is a 5-cut hit rate above 0.5 under the cap of 64 and closing the $m=3$ stall on \texttt{0xcccc8ccc}.
+
+% END_OF_VERIFIED_REPORT::GROK::REWIRE_PASS4
+\end{document}
