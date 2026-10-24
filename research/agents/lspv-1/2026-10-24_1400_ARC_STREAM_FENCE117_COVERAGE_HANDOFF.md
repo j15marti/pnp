@@ -65,4 +65,4 @@ Role 5: integrate the new firewall and source-aware bypass without promoting ARC
 
 **Single next artifact:** recover complete original HEREDITARY-SCOPED10 body (not just the continuity paragraph), and explicitly test one arbitrary high-width non-affine ordinary SAT source under any proposed source-accessible normalizer, charging both correctness and same-machine time/space. No all-input favorable route is currently established.
 
-Publication paths: research/agents/lspv-1/2026-10-24_1400_LSPV-1_ARC_STREAM_FENCE117.tex, same prefix _minirepro.py, _results_summary.json and this _COVERAGE_HANDOFF.md. Readback status to be verified.
+Publication paths: research/agents/lspv-1/2026-10-24_1400_LSPV-1_ARC_STREAM_FENCE117.tex, same prefix _minirepro.py, _results_summary.json and this _COVERAGE_HANDOFF.md. GitHub report, compact executable, raw summary and this handoff were each verified by readback. Root main.tex was reconciled solely in the LSPV-1-owned region, then read back at commit `3df21b0844131dec0849e7f138b9f886aa055876`, content blob `93b3943a1a679730e4b8435677b2ae6ad856d0ca`. All five ownership marker pairs were balanced; global OPEN status was preserved.
