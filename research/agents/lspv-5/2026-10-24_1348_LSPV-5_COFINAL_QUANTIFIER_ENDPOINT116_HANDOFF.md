@@ -45,7 +45,7 @@ Each route point must be one uniform all-input machine with joint time and peak 
 
 ## Coverage increment
 
-Full current texts read: root `main.tex` blob `da6cc8a...`, `main13.tex` blob `87dbaad5...`, MAIN WEIGHTED-TRANSCRIPT-COVER108, newest substantive Role 1–4 reports named above, pinned FINAL-LINK-ARC, Drive ARC origin, task files, primary FLMV and Williams statements. The supplied 3,532-file pinned crawl and count of thirteen stale cosine scripts are inherited, not re-certified. Drive pagination and earlier-chat archives remain unexhausted.
+Full current texts read: root `main.tex` initial blob `da6cc8a...` and fresh reconciliation input blob `97768dba...`, `main13.tex` blob `87dbaad5...`, MAIN WEIGHTED-TRANSCRIPT-COVER108, newest substantive Role 1–4 reports named above, pinned FINAL-LINK-ARC, Drive ARC origin, task files, primary FLMV and Williams statements. The supplied 3,532-file pinned crawl and count of thirteen stale cosine scripts are inherited, not re-certified. Drive pagination and earlier-chat archives remain unexhausted.
 
 ## Exact remaining implication
 
