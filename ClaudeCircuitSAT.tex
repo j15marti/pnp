@@ -1,0 +1,75 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-10-24 (hourly scheduled run 1)
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\CSAT}{\mathsf{CircuitSAT}}
+\title{Wire-by-Wire Lower Bounds for Circuit-SAT: Living Document}
+\author{Claude (scheduled hourly runs)}
+\date{Last updated: 2026-10-24, run 1}
+\begin{document}
+\maketitle
+\begin{center}\fbox{\parbox{0.92\linewidth}{\textbf{Status: P versus NP remains OPEN.} Nothing here is a proof of a superpolynomial lower bound for $\CSAT$. Every theorem below is for a restricted measure and is labelled. Labels: PROVED, COMPUTATIONAL, KNOWN (from memory, unverified this run), CANDIDATE, OPEN.}}\end{center}
+
+\section{Goal and plan}
+Build lower bounds for $\CSAT$ from the bottom up: start with the smallest circuits, track exactly how many wires (connections) each rung needs, raise the number of inputs $n$ one step at a time, and record the bound as a function of parameters $(n,s,w,\dots)$ (inputs, size, width/treewidth, fan-out). A parametrized bound is acceptable; a bound only in $n$ is not expected to separate P from NP.
+
+\paragraph{Model.} Circuits are DAGs over fan-in-2 gates from $B_2$ (all 16 binary Boolean functions), single output, free output negation. A \emph{wire} is a directed edge (gate input). A circuit with $g$ gates has exactly $2g$ wires. Outputs of inputs/gates may fan out freely unless a fan-out parameter is stated.
+
+\section{Rung-by-rung ladder}
+\subsection*{Rung $n=1$}
+Functions: $0,1,x,\neg x$. All need $0$ gates, $0$ wires. Satisfiability is read off the truth table. COMPUTATIONAL (trivial).
+
+\subsection*{Rung $n=2$}
+Of 16 functions, 6 need 0 gates (constants and the literals, up to output negation) and the 10 functions depending on both variables need exactly $1$ gate, $2$ wires.
+
+\subsection*{Rung $n=3$}
+Exhaustive search (all circuits with $\le 5$ gates over normal gates $\{\wedge,\,x\wedge\neg y,\,\neg x\wedge y,\,\vee,\oplus\}$, output complement free, program \texttt{results/claude\_circuitsat\_mincircuit.c}, runtime $<1$s, no chunking needed) gives:
+\begin{center}\begin{tabular}{lrrr}\toprule
+min gates & \# functions of 3 vars & fully dependent & wires ($=2g$)\\\midrule
+0&8&0&0\\1&30&0&2\\2&114&114&4\\3&80&80&6\\4&24&24&8\\\bottomrule\end{tabular}\end{center}
+The totals sum to $256$. So $c_{B_2}(3)=4$ gates, 8 wires, worst case over all functions. Every single-minterm (unique-SAT) function on $\le 3$ variables costs $\le 2$ gates, i.e.\ exactly the $n-1$ of the AND chain. COMPUTATIONAL.
+
+\subsection*{Max-complexity sequence so far}
+$c(1),c(2),c(3)=0,1,4$ gates. Recalled from the literature, not re-verified this run: $c(4)=7$. Next run: reproduce $n=4$ by a level-set search with symmetry reduction (naive DFS is $\approx 10^{13}$ leaves, so it must be split into chunks of $\le30$ s).
+
+\section{Proved lower bounds so far}
+\begin{lemma}[connectivity floor]\label{lem:conn}
+If $f$ depends essentially on all $n$ inputs, any $B_2$ circuit for $f$ has at least $n-1$ gates and at least $2n-2$ wires; if every input has fan-out $1$ the circuit is a tree and equality is attained exactly by trees.
+\end{lemma}
+\begin{proof}
+The output node reaches every essential input (else $f$ would not depend on it). A DAG with one sink reaching $n$ sources through fan-in-2 gates: induct on gates; the sub-DAG on the reachable set has $n+g$ nodes and is connected, so it has $\ge n+g-1$ edges, while it has exactly $2g$ edges. Hence $2g\ge n+g-1$, so $g\ge n-1$. \end{proof}
+\textbf{Label:} PROVED (folklore). The $n=2,3$ tables meet it with equality for 10 of 10 and 114 of 114 minimum-size functions.
+
+\begin{theorem}[probe lower bound for the wire-reading model]\label{thm:probe}
+Let an algorithm read a circuit only through wire-probes ``what feeds gate $v$'s $i$-th input?''. Any deterministic correct $\CSAT$ algorithm needs $\ge n$ probes on some $n$-input, $(n-1)$-gate instance.
+\end{theorem}
+\begin{proof}
+Base instance $C_0$: a balanced tree computing $x_1\wedge\dots\wedge x_n$ (satisfiable). Run the algorithm on $C_0$; if it probes fewer than $n$ leaf wires, some leaf $j$ is unread. Let $C_1$ rewire leaf $j$ to $\neg x_i$ for some $i\ne j$ (a literal of another leaf; use an extra negation gate absorbed by $B_2$). $C_1$ contains $x_i\wedge\neg x_i$ and is unsatisfiable, yet the transcript is identical. Contradiction. \end{proof}
+\textbf{Label:} PROVED, but only an $\Omega(\text{input size})$ statement; it forbids no polynomial algorithm. It is the correct ``rung 0'' of a wire-sensitivity argument: define the \emph{critical wire set} of an instance as the wires whose single rewiring flips satisfiability; probes $\ge$ block sensitivity.
+
+\section{Parametrized targets (CANDIDATE / OPEN)}
+\begin{itemize}
+\item \textbf{Size/width.} Dynamic programming over a tree decomposition gives $\CSAT$ in $2^{O(w)}\mathrm{poly}(s)$, $w$ the circuit treewidth (KNOWN). A matching lower bound $2^{\Omega(w)}\mathrm{poly}(s)$ is known only under SETH; unconditional version OPEN. Ladder goal: for each rung, tabulate the minimum width $w_{\min}(n)$ of the circuits that compute each hard function, to see whether width must grow linearly with $n$ on a family of satisfiability-hard instances.
+\item \textbf{Fan-out.} Track $\mathrm{fo}(f)$ = min over optimal circuits of the max fan-out. If SAT-hard instances forced high fan-out, wire count grows beyond $2n$. Not yet measured: next run, extend the $n=3$ search to record fan-out and depth of each optimal circuit.
+\item \textbf{Explicit circuit size bounds.} The best known unconditional lower bound for an explicit function in $B_2$ is of the form $3.1n-o(n)$ (Li--Yang, recalled from memory; verify). Shannon counting gives $\Omega(2^n/n)$ for most functions. Neither bears on $\CSAT$ for \emph{polynomial-size} circuits, which is the actual P versus NP question: a linear-in-$s$ bound on time is trivial, a superpolynomial bound is OPEN.
+\end{itemize}
+
+\section{Repository cross-check (j15marti/pnp)}
+Surveyed root \texttt{main.tex} header and wire/gate ledger. Root \texttt{main.tex} states P versus NP remains OPEN with all arbitrary-algorithm bridges OPEN. Its gate/wire counts use the same identity as Lemma~\ref{lem:conn}'s setting ($2g$ wire incidences plus output). Its boundary-oracle-factor results (SAT of a pinned child equals $C(b)\wedge\mathrm{SAT}(F)$) say pinning wires does not by itself add independent work, a caution for any argument here that counts wire changes as work. No repository result yet transfers a lower bound to the present measure. Not reviewed in depth this run: LSPV-1..4 reports, \texttt{tasks/}, explorations.
+
+\section{Barrier ledger}
+\begin{tabular}{p{3.4cm}p{10cm}}\toprule
+Relativization&Probe/sensitivity arguments relativize; they cannot alone separate P and NP.\\
+Natural proofs&Counting/min-size tables are large-and-constructive properties; a linear-ish argument avoids this only by being weak.\\
+Query barrier&Any argument reading only the encoding gives $\Omega(N)$, never superpolynomial.\\\bottomrule\end{tabular}
+
+\section{Log and next steps}
+\begin{enumerate}
+\item Run 1 (2026-10-24): created document; proved Lemma 1, Thm 2 (trivial regime); computed exact $n\le3$ table.
+\item Run 2: verify $c(4)$; add fan-out and depth columns; literature check of $3.1n$ and treewidth lower bounds with sources.
+\item Run 3: investigate whether any wire-counting invariant grows superlinearly on a SAT-hard family; read repository LSPV reports for reusable theorems.
+\end{enumerate}
+\end{document}
