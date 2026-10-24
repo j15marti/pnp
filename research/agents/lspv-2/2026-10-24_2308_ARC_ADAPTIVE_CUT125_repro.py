@@ -43,7 +43,7 @@ def family(pairs,motifs,unsat):
     return tuple(events)
 
 def fixed_cuts(L,b):
-    return list(range(0,L,b))+([L] if L%b else [])
+    return list(range(0,L,b))+[L]
 
 def adaptive_cuts(cuts,b):
     L=len(cuts)-1; out=[0]; pos=0; visits=0
