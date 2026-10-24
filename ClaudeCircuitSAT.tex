@@ -1,0 +1,73 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}
+\newtheorem{prop}{Proposition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: Stepwise Wire-Tracked Lower Bounds for Circuit-SAT}
+\author{Living document (hourly scheduled runs)}
+\date{Last updated: 2026-10-24, run 1}
+\begin{document}
+\maketitle
+
+\section*{Status (strict labels)}
+\textbf{No superpolynomial unconditional lower bound for \CSAT{} is proved here. P versus NP remains OPEN.}
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and method}
+\CSAT: given a fan-in-2 circuit $C$ with $n$ inputs and $s$ gates (edge-list encoding), decide $\exists x\,C(x)=1$.
+Method: climb from the smallest instances, recording at each step (i) inputs $n$, (ii) minimal gates $g$,
+(iii) wires $w$ (each fan-in-2 gate contributes exactly 2 wires, so $w=2g$, plus output tap), and
+(iv) the best lower bound we can \emph{prove} on solving the problem at that scale, possibly parametrised by $n$, $s$, treewidth $k$.
+
+\section{Ladder of minimal circuits (COMPUTATIONAL, exact)}
+Basis $B_2$ (all 10 non-degenerate binary gates; output negation free). Exhaustive BFS over sets of computed truth tables
+(\texttt{results/claude\_circuitsat/min\_circuit\_b2.py}, each run $<30$\,s; outputs \texttt{out\_n2.txt}, \texttt{out\_n3.txt}).
+\begin{center}
+\begin{tabular}{@{}rrrrl@{}}\toprule
+$n$ & functions & max min-gates $g_{\max}(n)$ & wires $2g_{\max}$ & distribution of $C(f)$ (gates:count)\\\midrule
+1 & 4 & 0 & 0 & 0:4\\
+2 & 16 & 1 & 2 & 0:6, 1:10\\
+3 & 256 & 4 & 8 & 0:8, 1:30, 2:114, 3:80, 4:24\\
+4 & 65536 & 7 (literature value, not recomputed here) & 14 & --\\\bottomrule
+\end{tabular}
+\end{center}
+The 24 hardest 3-variable functions (4 gates) include $\oplus_3$ and majority-type functions; every function essentially depending on all 3 inputs and not a read-once tree needs $\ge 3$ gates.
+The $n=4$ row is the recalled value $7$ (Knuth, TAOCP 7.1.2); it should be recomputed with a SAT-based exact-synthesis step (next run).
+
+\section{Proved structural steps}
+\begin{lemma}[Connectivity / wire floor, PROVED/EXACT]\label{lem:conn}
+A fan-in-2 circuit whose output depends on all of $x_1..x_n$ has $g\ge n-1$ gates and $w=2g\ge 2(n-1)$ wires; equality iff the circuit is a read-once tree (e.g.\ $\mathrm{AND}_n$).
+\end{lemma}
+\emph{Proof.} Every input must have a directed path to the output; the union of $n$ such paths is a connected sub-DAG on $n+g'$ nodes with at most $2g'$ edges, and connectivity of $n+g'$ nodes needs $\ge n+g'-1$ edges, so $2g'\ge n+g'-1$, i.e.\ $g'\ge n-1$. Equality forces every gate to have both wires used exactly once. \qed
+
+\begin{prop}[Reading lower bound, PROVED/EXACT]\label{prop:read}
+Any deterministic algorithm for \CSAT{} in the edge-list model must inspect all $s$ gate records on some instance; hence time $\Omega(s)$.
+\end{prop}
+\emph{Proof.} Let $I_0$ be the chain $g_i=g_{i-1}\wedge x_i$ (satisfiable). Let $I_j$ replace $g_j$ by $g_{j-1}\wedge\neg g_{j-1}$ (unsatisfiable). If the algorithm on $I_0$ does not read record $j$, its transcript on $I_j$ is identical, but the answers differ. \qed
+
+\begin{prop}[Black-box evaluation bound, PROVED/EXACT but non-transferable]
+Evaluation-oracle algorithms need $2^n$ queries (adversary hides the single satisfying point). This does \emph{not} bound algorithms reading $C$; it relativises and is the standard failed transfer for P vs NP.
+\end{prop}
+
+\section{Parametrised view}
+\begin{itemize}
+\item Upper bounds (KNOWN THEOREM): $O(2^n s)$ by enumeration; $2^{O(k)}\mathrm{poly}(s)$ for treewidth $k$ by DP.
+\item Conditional lower bounds (CONDITIONAL; recalled from the literature, citations to be verified): under SETH, no $(2-\epsilon)^n\mathrm{poly}(s)$ algorithm; under SETH, no $(2-\epsilon)^{k}\mathrm{poly}$ for treewidth/pathwidth parameter $k$ (Lokshtanov--Marx--Saurabh type). These are conditional, not proofs.
+\item Unconditional parametrised target (OPEN): show time $\ge f(k)\cdot s^{c}$ for an explicit unbounded $f$ without hypotheses. Even $k=O(1)$ is trivially linear time (Prop.~\ref{prop:read} is tight there), so the interesting regime is $k=\omega(1)$.
+\item Repository corpus (\texttt{main.tex}, MAIN INPUT-QUERY-CEILING86 etc.): a certified $O(2^k\mathrm{poly}(N))$ upper bound for 2-CNF plus $\le k$ ternary clauses, with $2^{\Omega(k)}$ necessity OPEN. This is the same parametrised shape; the repo's internal lower-bound arrows are all OPEN, so nothing is imported as proved.
+\end{itemize}
+
+\section{Known barriers and what is actually available}
+Best unconditional general-circuit lower bound for explicit functions is $\approx 3.1n-o(n)$ gates (gate elimination; recalled: Li--Yang 2022), linear only. Relativization, natural proofs, algebrization block simple routes. Gate elimination reasons about \emph{circuit size of a function}, whereas \CSAT{} lower bounds are about \emph{algorithm time}; the bridge (size lower bound $\Rightarrow$ time bound for SAT) needs a new theorem, and none is known. Classification: gate elimination $=$ ANALOGY/CANDIDATE needing a bridge.
+
+\section{Ledger and next steps}
+\begin{enumerate}
+\item Recompute $n=4$ exact ladder (SAT-based synthesis, chunked $\le 30$\,s) and extend wire-minimal vs gate-minimal comparison (fan-out cost).
+\item Define the ``hidden-solution'' family: planted instance with $n$ inputs where size is $O(n)$ but the satisfying set is a single point; study whether the minimal circuit for the indicator of one point ($n-1$ gates, Lemma~\ref{lem:conn}) forces any algorithm to read structure---connects to the repo's SAT-root/ARC arrows.
+\item Audit repo HEC/ARC/CCSPC arrows for a statement usable as a parametrised unconditional bound.
+\end{enumerate}
+\textbf{Run log:} run 1 created the document, the ladder for $n\le3$, Lemma 1, Prop.\ 1. No new lower bound beyond $\Omega(s)$.
+\end{document}
+% END_OF_CLAUDECIRCUITSAT_RUN1
