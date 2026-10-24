@@ -1,0 +1,75 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::run-2026-10-24-01
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: Step-by-Step Wire-Counting Lower Bounds for Circuit-SAT}
+\author{Living document (hourly runs)}
+\date{Last updated: 2026-10-24, run 01}
+\begin{document}\maketitle
+
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} No unconditional super-polynomial (or even super-linear, in the
+general model) lower bound for \CSAT{} is claimed. Status labels: PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Goal and method}
+Goal: a lower bound for \CSAT{} (given a fan-in-2 Boolean circuit $C$ with $n$ inputs and $s$ gates, is there $x$ with $C(x)=1$?),
+possibly parametrized in $(n,s)$, e.g.\ $T(n,s)\ge f(n,s)$.
+Method: start from the smallest instances, build circuits gate by gate, record for each input count $n$
+the exact minimal gate count $s^*(n,F)$ (wires $=2s$ in fan-in-2, plus fan-out of inputs), and read off which growth law the data supports.
+Each step records: inputs $n$, gates, wires, fan-out profile, which lemma certifies minimality.
+
+\section{Proved baseline (all elementary)}
+\begin{lemma}[Connectivity, PROVED]\label{l:conn}
+A fan-in-2 circuit computing $F$ that depends on $k$ variables has at least $k-1$ gates and at least $k$ wires reaching the output cone from inputs.
+\end{lemma}
+\emph{Proof.} The output cone is a connected DAG on $\ge k$ input leaves; a connected DAG with $k$ sources and in-degree $\le2$ internal nodes has $\ge k-1$ internal nodes. \qed
+
+\begin{lemma}[Black-box query bound, PROVED, relativized]
+Any algorithm that only evaluates $C$ as an oracle needs $2^n$ queries in the worst case (adversary answers 0 until the last point).
+\end{lemma}
+This does not bound white-box algorithms that read the wiring; closing that gap is the whole difficulty.
+
+\begin{proposition}[Input-size bound, PROVED]
+Any \CSAT{} algorithm must read $\Omega(s)$ of the description (adversary hides a gate whose output flips satisfiability), so $T(n,s)=\Omega(s)$; this is the only unconditional parametrized bound recorded so far.
+\end{proposition}
+
+\section{Step ladder: exact minimal circuits (COMPUTATIONAL)}
+Exhaustive search over fan-in-2 circuits with gates from the normal ops $\{\wedge,\ a\wedge\bar b,\ \bar a\wedge b,\ \vee,\ \oplus\}$ (output complement free, so functions with $F(0)=0$ suffice).
+Enumeration depth-first with duplicate-node pruning; each run $<1$ s (no chunking needed). Script lived in the session scratchpad; to be committed next run as \texttt{research/claude-circuitsat/syn.py}.
+
+\begin{center}\begin{tabular}{lccc}\toprule
+$n$ & normal functions & max min-gates & wires ($2s$) \\\midrule
+1 & 1 & 0 & 0\\
+2 & 8 (incl.\ const) & 1 (non-degenerate), 2 for const.\ 0 & 2\\
+3 & 128 (all, exhaustive to 4 gates) & 4 & 8\\\bottomrule\end{tabular}\end{center}
+
+Distribution for $n=3$ (normal functions by minimal gate count): 0 gates: 3, 1: 15, 2: 58, 3: 40, 4: 12 (total 128, so every 3-variable function needs $\le4$ gates, matching the known value).
+
+Specific $n=3$ functions (min gates): AND$_3$=2, OR$_3$=2, XOR$_3$=2, clause $(x\vee\bar y\vee z)$=2, MUX=3, MAJ$_3$=4.
+$n=4$ (partial search to 4 gates): AND$_4$=3, XOR$_4$=3, both meeting Lemma~\ref{l:conn} with equality. The $n=4$ run was not closed under variable permutation, so no full distribution is claimed.
+
+\paragraph{Observation (COMPUTATIONAL, $n\le3$).} Gate-minimal circuits for tree-like functions (AND, OR, XOR) have every input of fan-out 1; MAJ$_3$ requires fan-out $>1$ on every input and $2\times$ the connectivity minimum. Fan-out is where lower bounds must come from (formula vs.\ circuit gap).
+
+\section{Known literature (recalled; to be re-verified with a primary-source search next run)}
+\begin{itemize}
+\item KNOWN: gate elimination gives $\approx 3n-o(n)$ gates for explicit $n$-input functions over the full binary basis (Blum 1984), improved to $\approx 3.1n-o(n)$ (Find--Golovnev--Hirsch--Kulikov 2016; Li--Yang 2022). No super-linear explicit bound is known.
+\item KNOWN: ETH/SETH give conditional $2^{\Omega(n)}$ (resp.\ $2^{n-o(n)}$) for $n$-variable (C)SAT; these are hardness assumptions, not admissible for an unconditional proof.
+\item KNOWN: Williams' algorithmic method: faster-than-brute-force \CSAT{} yields circuit lower bounds (NEXP$\not\subseteq$ ACC$^0$), the reverse direction of what we want.
+\end{itemize}
+
+\section{Open arrows and next steps}
+\begin{enumerate}
+\item OPEN: any unconditional white-box lower bound $T(n,s)=\omega(s)$ for \CSAT.
+\item CANDIDATE: parametrize by fan-out/treewidth $w$: for width-$w$ instances \CSAT{} is solvable in $2^{O(w)}\cdot\mathrm{poly}(s)$; the matching lower bound is a conditional (SETH) statement; look for an unconditional restricted-model analogue (e.g.\ read-once branching programs, DPLL/resolution) for the ladder.
+\item Extend the exact table to $n=4$ with full symmetry closure (chunk by first gate); then $n=5$ via SAT-based synthesis in checkpointed batches.
+\item Track wires per step: relate minimal wire count to a gate-elimination potential and test whether fan-out-profile data predicts $>3n$.
+\item Review repository \texttt{j15marti/pnp} \texttt{main.tex} (HEC/PPC/CCSPC branch): all arbitrary-decider bridges are marked OPEN there; nothing imported as a lower bound here.
+\end{enumerate}
+
+\section*{Run log}
+\begin{tabular}{ll}
+2026-10-24 run 01 & Created document; exact $n\le3$ ladder computed; no new lower bound.
+\end{tabular}
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT::run-2026-10-24-01
