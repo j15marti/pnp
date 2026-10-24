@@ -1,0 +1,32 @@
+# LAZY-PIN-SOURCE93 | Cumulative Role 3 gap/coverage delta
+Date: 2026-10-24 21:24 Asia/Seoul. P versus NP remains OPEN. No existing task schedule changed.
+
+## Publication and verification
+- Standalone proof report: `research/agents/lspv-3/2026-10-24_2124_LSPV-3_LAZY_PIN_SOURCE93.tex`, initial commit `859fbb6f4acc367390dd56cdb00aeeb2b6643d18`, blob `d4871f70563c74ef3d45c6ce089ea7adef16fb58`. Header, proof bodies and final sentinel read back.
+- Compact executable reproducer: `research/agents/lspv-3/2026-10-24_2124_LAZY_PIN93_minirepro.py`, initial commit `2a3db058c1dc4463a9c72639eafd273de177aecb`, blob `cf4710a68b524dcf08ff6ba46c50b063631b6bcc`. Read back, original local execution passed.
+- Public raw summary: `results/raw/2026-10-24_LSPV3_LAZY_PIN93_summary.json`, initial commit `d4a34752dc2493bdce5eec2024322235871218cb`.
+- Expanded 6-page compiled local report, full 158,240-assertion Python audit, and raw JSON are provided as user-facing downloadable files. Their local paths are NOT assumed accessible in other scheduled environments.
+
+## The exact link established
+Model: valid independent ordinary proper-3CNF F of N=(4m+2)h(n,m) bits, read-only indexed input. Sorted p original-variable pin requests, all discovery/selector/descriptor costs charged. Add exactly k=4p ternary clauses and 2p auxiliary variables, producing ordinary F_P of length
+N'=(4(m+4p)+2) h(n+2p,m+4p). For p>=1, N'>N.
+A source-indexed uniform bit oracle g(F,P,i) returns the ith independent-child bit with O(polylog N) elementary work and O(log N) extra live controller bits plus O(p log N) retained pin descriptor. For any fixed exact all-input ordinary SAT machine A, virtual-input simulation has simultaneous bounds
+T_virtual=O((N+T_A(N'))polylog N), S_virtual<=S_A(N')+O(p log N+log N).
+For two pin sets P,Q on the original source variables, recursive pinned SAT equals the single union pin when their shared values agree, and UNSAT when they disagree. All pin auxiliaries are semantically disposable because the four-clause unit gadget makes them freely assignable after the literal is forced.
+A fully serialized ordinary child still requires >=N' primitive bit writes and enough readable child storage if such storage is required by the chosen policy. The short source-backed handle does not change the child's virtual input length.
+
+## Gap-to-evidence judgment
+FILLED/PROVED-EXACT restricted: byte-address generation and same-realization virtual-input simulation; original-variable pin flattening; strictly increasing direct-copy ordinary child length. Independent peer mathematical review pending.
+COMPUTATIONAL: 20 source controls (19 SAT, 1 UNSAT), 360 first-level children (335 SAT, 25 UNSAT), 720 second-level checks, 360 conflicting pins, 156,060 exact child bit comparisons and 433,536 source-bit probes; 158,240 assertion checks, zero failures, two identical raw runs, SHA-256 `5af8baf759e2128e14e8b072509d3f015b71f9c3fae35d48499499854ded61f7`. Public compact code verifies a smaller 30-child, 60-two-level battery and is not misrepresented as the full source.
+PARTIAL/RESTRICTED: SCOPED-BLOCK-REBUILDER92 generates genuinely shorter children by cutting an already-valid narrow scoped stream, unlike pinning an entire ordinary source. ROOT-HARD-PROJECTION129 and BOUNDARY-SUPPORT-UNIVERSALITY127 provide special source-factored relation compression. TREE-AFFINE-JOIN122 gives recognized polynomial tree joining. None is an all-input favorable achievable-pair edge.
+FALSIFIED/RETIRED: a short source-indexed descriptor counts as an independently encoded short child; eager whole-child materialization is mandatory for any adaptive solver; the older 2*cos(pi/7) product endpoint is universal.
+OPEN: arbitrary-input source-to-scoped low-width normalization; exact all-input source-coherent child construction with power length shrink and joint charged time-space improvement; any cofinal finite-hit route into verified FLMV; P versus NP.
+
+## Actual adaptive state/resource ledger
+Initial: original indexed source, unsupplied SAT label, accumulated original-variable assignments, source syntax/encoding, optional learned constraints/cache. Acquisition: parse/validate F; acquire and sort P; charge all indexed source probes and descriptor words. Choice: eager copy, lazy source-backed virtual child, folded pins, Horn/SCC/affine recognition, cache/recompute, general exact fallback. Transition: each virtual bit request computes header or original re-encoded word or the pin gadget, charging source/workspace reads, writes including unchanged writes, head/index motion and policy selection. Second level: reconcile P,Q, reject conflicting values or fold; charge failed attempts, retained ancestors and buffers. Result: exact SAT/UNSAT decision, optional witness, peak live work/index bits; measure primitive operations, flips, bit-time, program size separately. A finite Python counter is NOT a measured FLMV physical tape-work/space bound.
+
+## Corpus delta and outstanding reads
+GitHub root main13.tex, governance, task metadata, relevant full LSPV1 129, LSPV2 122/121, LSPV3 92/91/90, LSPV4 87, LSPV5 127/126; live root main.tex mathematical sections at blob 9643671d. Active role dirs, research/main and tasks inventoried, NOT manually exhausted. Original native Google Docs ARC ancestor (221 paragraphs), continuity log (112 paragraphs, including the full accessible HEREDITARY-SCOPED10 summary), SIL v1.4.0 (2369 paragraphs), BOOL v0.2 (153 paragraphs). Exact Doc IDs appear in report's connected-source ledger. The pinned 3,532-file GitHub keyword/hash archive audit is inherited, not repeated or incorrectly characterized as all full-text mathematical review. Drive LOG/PROVED_EXACT/Manuscript pagination and original full HEREDITARY-SCOPED10 executable remain unread/unavailable. Repo clone and local preflight failed host DNS; connector publication/readback succeeded. Primary FLMV paper section on random-access source and Darwiche--Marquis knowledge compilation were checked; Jahanjou--Miles--Viola is a related but not model-preserving transferred result.
+
+## Next falsifiable artifact
+Test an alleged source-name-preserving all-input N^(1/2) child compiler on one essential source clause outside its selected block and the guarded-pinning opposite-label family. Demand ordinary independent child header/byte output OR a virtual-source input-length/accounting ledger, exact shared-witness gluing through two levels, and peak live source/index/cache bit cost. No universal SAT hardness follows from the present pin-calculus firewall.
