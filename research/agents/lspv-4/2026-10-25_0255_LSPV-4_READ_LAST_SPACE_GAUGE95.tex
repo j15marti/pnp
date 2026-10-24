@@ -1,0 +1,113 @@
+% LSPV-4 REPORT::READ-LAST-SPACE-GAUGE95::2026-10-25T02:55:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\hypersetup{hidelinks}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\title{READ-LAST-SPACE-GAUGE95: Space-Preserving Source Cofactors in the FLMV Input Model}
+\author{LSPV-4: Transport, Resource Accounting and Direct Lower-Bound Red Team}
+\date{25 October 2026, 02:55 Asia/Seoul}
+\begin{document}
+\maketitle
+
+\noindent\textbf{Status: PROVED/EXACT under the declared indexed read-only-input machine. Independent peer review pending. ARC-EDGE-90 and P versus NP remain OPEN.}
+
+\section{Purpose and historical attribution}
+The project seeks a uniform, all-input, exact SAT machine whose simultaneous time and writable-space exponents enter the Fortnow--Lipton--van Melkebeek--Viglas forbidden box
+\[
+t<241/200,\qquad s<\beta(241/200)=11642479/23232400,\qquad
+\beta(c)=\frac12\left(\frac{c+2}{c^2}-c\right).
+\]
+The old universal product test using $2\cos(\pi/7)$ is retired. The missing favorable all-input ARC edge remains OPEN.
+
+This report repairs the writable-memory overhead of a previously proved result, not its mathematical identity. LSPV-2 COVERCOF1 and LSPV-4 PHASEBRIDGE1 had already proved a two-cofactor compiler that computes before the last real source read; their implementation stored $N-1$ copied source bits, giving additional $\Theta(N)$ writable memory. Here a random-access \emph{read-only source} supplies every virtual bit except the withheld position, at logarithmic address cost and with \emph{no copied prefix}. This places the phase-gauge escape into the same simultaneous time-space exponent model used by ARC/FLMV. Role 5's INDEXED-MERGE-POTENTIAL-CEILING133 telescoping lemma is adopted, not reattributed.
+
+Three falsifiers were fixed: M1, remove the linear copied-prefix memory by charged original-source access; M2, preserve exact SAT/UNSAT correctness and constant post-coverage work even when one source bit flips the label; M3, test whether the compiler improves any achievable SAT exponent pair. M1 and M2 are proved; M3 fails as a contraction claim.
+
+\section{Exact single-machine theorem}
+\begin{theorem}[Space-preserving read-last normal form]
+Let $A$ be any fixed uniform total deterministic exact decider for a decidable bitstring language $L$. Its machine has random-access to a \emph{read-only} indexed input, with writable work and address/index tapes counted, and a one-bit output. Assume for finite fixed $t,s\ge0$ that on every $N$-bit input simultaneously
+\[
+T_A(N)\le N^{t+o(1)},\qquad S_A(N)\le N^{s+o(1)}.
+\]
+There is one fixed uniform total exact machine $B_A$ in the \emph{same} input/work machine model, such that for every input $x$ with $N\ge1$:
+\[
+B_A(x)=A(x),\qquad
+T_{B_A}(N)=O((N+T_A(N))\log^c(N+2)),\quad
+S_{B_A}(N)=O(S_A(N)+\log(N+2))
+\]
+for some constant $c$ depending only on the fixed machine implementation. The first time $B_A$ has read \emph{every} real source bit occurs at its last previously unread source query. After that query it performs at most a constant number of bit-control/output operations before halting. In particular, when $t\ge1$ the new machine realizes the same joint exponents $(t,s)$, not an improved pair.
+\end{theorem}
+\begin{proof}
+Use zero-based positions and withhold $j=N-1$. Read the other $N-1$ physical positions once, charging the entire scan and retaining no prefix copy. For $b=0,1$, sequentially simulate the complete fixed machine $A$ on the virtual ordinary input $x^{(b)}$ obtained by replacing only position $j$ by $b$. When $A$ requests virtual position $i$, pay for comparison to $j$ on counted index tapes. If $i=j$, supply controller constant $b$, otherwise read the real source at $i$, again paying addressing and the source read. The real bit $x_j$ remains unread in both simulations. The two outputs $a_0,a_1$ are kept in finite controller state; the simulated work area is reused, never held in duplicate. This works even if a virtual completion is a malformed formula, since $A$ is total on bitstrings.
+
+Before the last query, set the real input index to $j$ using paid address work. Read the physical $x_j$ exactly once and immediately select $a_{x_j}$. Since $x^{(x_j)}=x$, the result equals $A(x)$. Selection and output are constant control steps. The initial scan uses $N-1$ queries, the simulations at most $2T_A(N)$ real source queries, and the last action one query. Index comparisons, source seeking, reset, and step simulation cost a polylogarithmic bit-operation overhead per simulated step. The two runs reuse all writable tapes, and extra counters/virtual address state occupy $O(\log N)$ bits, without any $N$-bit prefix array. Since $A$ is fixed, the source code of $B_A$ is fixed; no nonuniform advice or discovery of $t,s$ occurs.
+\end{proof}
+
+\paragraph{Model qualification.}
+Acquisition here means first-read \emph{coverage}. If acquisition instead demands all $N$ values simultaneously stored in \emph{writable} cells, it already costs $\Omega(N)$ space, incompatible with an $N^{1/2+o(1)}$ ARC space budget. The theorem never silently treats a work tape or serialized child as an extra free read-only input.
+
+\section{Matched opposite-label ordinary proper-3CNF}
+Take all eight sign patterns $C_{\sigma}=(\sigma_1x\vee\sigma_2y\vee\sigma_3z)$ on the same three variables, with $(x\vee y\vee z)$ last. The conjunction $U$ is UNSAT, since each assignment falsifies one clause. Flip only the sign of the \emph{last literal} of the last clause, duplicating $(x\vee y\vee\neg z)$; the resulting $V$ is SAT with exactly one assignment. Both are proper ternary CNFs with $n=3$, $m=8$ and identical fields other than that sign. In the finite test grammar, a 16-bit header and 26-bit fixed records give
+\[
+|U|=|V|=16+8(26)=224.
+\]
+The last encoded bit is exactly this sign. The 223-bit common prefix admits cofactor answers $(a_0,a_1)=(0,1)$; the real final source bit selects the opposite labels in one controller step. \emph{Both cofactor decisions were actually computed and fully charged.}
+
+\section{BIT-RESOURCE1 ledger and the two required spines}
+Let $R_A\le T_A$ count simulated input reads. Every elementary source/work bit read, unchanged-value write, control/address step and policy decision counts as work. Literal value-changing flips are an independent activity metric. Define cumulative bit-time as the sum of actually simultaneously live writable bits at all charged steps. Conservative resource bounds for the \emph{one constructed machine} are
+\[
+\begin{array}{ll}
+R_{\mathrm{physical\ source}}\le N+2R_A(N),&
+W_{\mathrm{primitive}}\le O((N+T_A(N))\log^c(N+2)),\\
+R_{\mathrm{work}}+W_{\mathrm{work}}+
+W_{\mathrm{address/control}}\le O((N+T_A(N))\log^c(N+2)),&
+S_{\mathrm{peak}}\le O(S_A(N)+\log(N+2)),\\
+0\le F_{\mathrm{complete\ state}}\le O(W_{\mathrm{primitive}}),&
+BT\le W_{\mathrm{primitive}}S_{\mathrm{peak}},\quad
+P_B=O(P_A+1).
+\end{array}
+\]
+No entire child formula is generated, no first-read source bit is stored in a prefix array, and no sibling/ancestor body, cache, hash, or free semantic oracle is retained. The two complete virtual runs, physical source rereads, all address comparisons, index-tape updates, simulator setup, cleanup, and final output are included. The $O(\cdot)$ inequalities are machine proofs, \emph{not} measurements of hardware transistors or data-register flips.
+
+\paragraph{Adaptive-state trajectory.}
+At $C_0$ the source and true label are unknown. A charged scan visits each real position except $j$ and discards its value. In $C_1$ the source is incomplete but queryable; the policy runs $A$ under virtual bit zero and one, with its original adaptive branching, SCC, Horn, affine, cache, direct-decision or other strategy entirely allowed and completely simulated. In $C_2$ both completed answer bits reside in finite control, while $j$ remains unread. A charged final indexed read reaches $C_*$ with full first-read coverage, then one cached selection halts. Correctness is exact on SAT and UNSAT, with no true-label oracle.
+
+\paragraph{Contraction spine.}
+The simultaneous successor pair of this wrapper is bounded by $(\max\{1,t\},s)$, which for $t\ge1$ is just $(t,s)$. The wrapper is therefore \textbf{FALSIFIED as a favorable ARC contraction}. A fully charged all-input semantic child/reconstruction operation or another existential successor theorem is still OPEN. Ordinary output length, source access, and peak work space have not been hidden.
+
+\paragraph{Direct lower-bound spine.}
+Suppose a complete-state potential independent of unknown optimal time has terminal value zero and satisfies for \emph{every} legal bit transition
+\[
+\Phi_N(C)-\Phi_N(C')\le L(N)\,w(C,C').
+\]
+Our $B_A$ has $W_{\mathrm{post}}\le c_0$ for a fixed finite controller constant once every real bit has first been read. Telescoping, as in INDEXED-MERGE-POTENTIAL-CEILING133, gives
+\[
+\boxed{\Phi_N(C_*)\le c_0L(N)}.
+\]
+Thus \emph{for every exact decider} a universal claim of a superpolynomial potential at its all-bits-first-read checkpoint is false when $L$ is polynomial. This does not prohibit a pre-acquisition or whole-execution noncircular potential, nor does it lower-bound general SAT time. The previously proved input-query hitting potential $\tau\le N$ is not summed or counted twice.
+
+\section{Reproducible discriminating controls}
+The full local standard-library source-probe auditor tested 172 canonical or randomized inputs, 125 SAT and 47 UNSAT, with 1,723 assertion-accounted checks and zero failures. Inputs included proper-3CNF opposite-label one-bit twins, 2-CNF, Horn, affine/XOR, connected and disconnected easy families, padding, and uniformly seeded signed formulas. Max encoded length was 302 bits; maximum actual physical reads was 904. It records two virtual answers before the last physical read and stores no copied prefix. A separate portable peer reproducer tested 514 additional tiny-source trials with 2,058 checks, zero failures; its matched twin length was 224 bits. Python assertions are \textbf{COMPUTATIONAL}, not physical FLMV instruction or cumulative bit-time measurements. The complete proof above is symbolic.
+
+\section{Coverage, source compatibility and gaps}
+\textbf{Full or targeted original GitHub bodies reviewed}: root main.tex, main13.tex, AGENTS.md, CODEX.md, the pnp-research skill; LSPV-2 COVERCOF1 (blob 0b0a006c); LSPV-4 PHASEBRIDGE1 (94011d09); original VIRTUAL-CHILD-COMPOSITION61 (b768575); DEPTH-FIRST-VIRTUAL-COMPOSITION68 (1c3fa5a8); latest Role 3 PIN-BIT-FLOOR98 (b7a439dd); Role 5 INDEXED-MERGE-POTENTIAL-CEILING133 (88f33b1e); and Role 4 PARITY-MARGINAL-COUNT92 handoff (59caea56). Current tree API inventory returned 5,217 entries, truncated=false, including research/main 261, research/agents 2,052, research/review 523 and eight task files. The original native Google Doc PROOF-SYNTHESIS-0013 (22,415 characters) and continuity log (51,390 characters) were read through the Drive connector. Current and historical GitHub search was \emph{bounded}, including cofactor compiler, phase gauge and last unread bit. The previously reported 3,532-file pinned keyword/hash census is inherited, not repeated or called a full mathematical audit. Root main2--main14, full task texts, broad Drive folders, and missing original HEREDITARY-SCOPED10 executable remain a selective/unread queue.
+
+\textbf{Duplication and correction}: the cofactor theorem itself belongs to COVERCOF1/PHASEBRIDGE1. The new item is removal of their $N$-bit writable prefix copy while preserving the \emph{same FLMV random-access space exponent}, plus BIT-RESOURCE1 and two-spine consequences. Stronger proof-system or CP22LIFT1 claims are not inferred, and static DNNF/rectangle bounds are not converted into unrestricted SAT work. The correction concerns the old \emph{implementation}, not the mathematical legitimacy of its cofactor identity.
+
+\textbf{Barrier audit}: this simulation is relativizing, so no separation follows; the cofactor pair is computed rather than supplied as a semantic oracle. The potential analogy does not supply a new whole-execution initial invariant. Circuit evaluation, wire activity, actual flips, and TM work remain distinct; no Natural Proofs circuit property is asserted.
+
+\textbf{Gap acceptance}: FILLED/PROVED EXACT in the declared model, logspace-overhead read-last normal form and constant post-coverage suffix; COMPUTATIONAL, finite both-label controls; FALSIFIED/RETIRED, compulsory superpolynomial work \emph{after} every input bit has first been read by every exact decider; CONDITIONAL, any ARC recurrence using a still-hypothetical all-input semantic contractor; OPEN, a noncircular \emph{whole-execution} lower bound or a cofinal jointly charged ARC route into FLMV. P versus NP remains OPEN. Independent peer checking of this refinement is pending.
+
+Next inspect the original HEREDITARY-SCOPED10 executable if recovered. Otherwise retest SCOPED-BLOCK-REBUILDER92 on connected opposite-label named joins with two-level exact reconstruction, including physical child headers, source-to-child address translation, replay, caches and peak ancestor bits. Retaining this cofactor shortcut as a universal hostile control is mandatory.
+
+\begin{thebibliography}{9}
+\bibitem{flmv} Fortnow, Lipton, van Melkebeek, Viglas, \emph{Time-Space Lower Bounds for Satisfiability}, JACM 52(6), 835--865 (2005), \url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{cover} LSPV-2, \emph{COVERCOF1} (2026-10-13), \path{research/agents/lspv-2/2026-10-13_0423_LSPV-2_COVERCOF1.tex}.
+\bibitem{phase} LSPV-4, \emph{PHASEBRIDGE1} (2026-10-13), \path{research/agents/lspv-4/2026-10-13_0456_LSPV-4_PHASEBRIDGE1.tex}.
+\bibitem{virt} Project, \emph{VIRTUAL-CHILD-COMPOSITION61} (2026-10-22), \path{research/main/2026-10-22_0948_MAIN_VIRTUAL_CHILD_COMPOSITION61.md}.
+\bibitem{tel} LSPV-5, \emph{INDEXED-MERGE-POTENTIAL-CEILING133} (2026-10-25), \path{research/agents/lspv-5/2026-10-25_0246_LSPV-5_INDEXED_MERGE_POTENTIAL_CEILING133.tex}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::READ-LAST-SPACE-GAUGE95
