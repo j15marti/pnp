@@ -1,0 +1,52 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT
+% Last updated: 2026-10-24 (run 1)
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\SAT}{\mathrm{CSAT}}
+\title{Claude Circuit-SAT Lower-Bound Ladder}
+\date{Living document}
+\begin{document}\maketitle
+\noindent\fbox{\parbox{0.95\linewidth}{\textbf{Status:} no superpolynomial lower bound for general Circuit-SAT is known or claimed. P versus NP remains \OPEN. Everything below is a bounded-model or small-instance ladder; statuses use PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.}}
+
+\section{Plan}
+Build Circuit-SAT bottom-up: fix $n$ inputs and gate budget $s$, track (i) the minimum gates $g_n(f)$ and wires ($=2g$ for fan-in 2, plus output) needed to realise each function, and (ii) the cost of deciding satisfiability of circuits of that size. The lower bound is tracked as a function $T(n,s,k)$ with $k$ a parameter (treewidth, depth, fan-out, \dots).
+
+\section{Rung 0: wire and gate counts (PROVED/EXACT)}
+\begin{lemma}[connectivity] A fan-in-2 circuit whose output depends on $n$ inputs has $\ge n-1$ gates and $\ge 2(n-1)$ wires.\end{lemma}
+\emph{Proof.} Each gate merges at most two dependency components; $n$ inputs must be merged into one. \qed
+
+\begin{theorem}[description-reading bound, PROVED/EXACT in the gate-table model]
+Let $C_n$ be the AND-chain on $x_1..x_n$ ($n-1$ gates, unique satisfying input $1^n$). Replacing any single gate's truth table by constant $0$ gives an UNSAT circuit. Hence any deterministic (even adaptive) algorithm that accesses the circuit through gate-table queries must make $\ge n-1$ queries to distinguish $C_n$ from all its one-gate modifications: $T=\Omega(s)$.\end{theorem}
+\emph{Proof.} An algorithm that skips gate $i$ answers identically on $C_n$ (SAT) and on $C_n^{(i)}$ (UNSAT). \qed\\
+This is only a linear input-size bound; it is not a bound against algorithms that read the whole circuit.
+
+\section{Rung 1: exact minimum circuits, small $n$ (COMPUTATIONAL)}
+Basis: all 2-input gates, negation free. Exhaustive BFS over gate lists (\texttt{results/claude\_circuitsat\_mincircuit\_enum.py}, each call $<$30s). Number of functions with minimum size $g$:
+\[
+\begin{array}{c|ccccc} n\backslash g&0&1&2&3&4\\\hline
+2&6&10&&&\\ 3&8&30&114&80&24\end{array}
+\]
+All $256$ functions on $n=3$ have $g\le 4$ (matches the known table). For $n=4$ the search was run to depth 3: all 16 minterm functions (unique-SAT instances) have $g_4=3=n-1$, i.e.\ unique-SAT instances are not harder in size than the connectivity bound, while the \emph{decision} cost is what matters.
+
+\section{Rung 2: parameterized frame}
+\begin{itemize}
+\item KNOWN THEOREM: Circuit-SAT is solvable in $2^{O(w)}\mathrm{poly}$ for treewidth $w$ of the circuit graph.
+\item CONDITIONAL (SETH-type): no $2^{(1-\epsilon)n}\mathrm{poly}(s)$ algorithm for CNF-SAT; the $2^{o(w)}$ treewidth lower bound is likewise conditional. Not usable for an unconditional proof.
+\item CANDIDATE target: an unconditional bound $T(n,s,k)\ge 2^{\Omega(k)}$ in a restricted model (e.g.\ monotone/read-once/oblivious branching programs) with $k$ = width; then lift the restriction. OPEN.
+\end{itemize}
+
+\section{Repository cross-check}
+Root \texttt{main.tex} (24 Oct 2026) lists all arbitrary-algorithm-to-lower-bound routes as OPEN; its boundary-oracle factorisation results ($\mathrm{SAT}(H(F,C)[b])=C(b)\wedge\mathrm{SAT}(F)$) say pinned-query counts give no independent-work amplification, consistent with Rung 0 being only linear. No repository result presently supplies a wire-by-wire lower bound.
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend exact minimum-size table to $n=4$ (depth $\le 7$) in checkpointed chunks.
+\item Track decision-tree/BP width needed for SAT on circuits of size $s$ for $n\le 5$ by exhaustive search; look for a parameter $k$ whose growth is exponential.
+\item Test a restricted model (oblivious read-once BP) for an unconditional $2^{\Omega(k)}$ bound.
+\end{enumerate}
+\end{document}
+% END_OF_CLAUDECIRCUITSAT_RUN1
