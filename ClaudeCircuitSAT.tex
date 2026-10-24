@@ -1,0 +1,134 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT::CCS-2026-10-24-R1::2026-10-24
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{prop}{Proposition}
+\theoremstyle{remark}\newtheorem{remark}{Remark}
+\newcommand{\SAT}{\textsc{Circuit-SAT}}
+\newcommand{\W}{\mathrm{W}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder toward parametrized lower bounds for Circuit-SAT}
+\author{Living document (hourly routine); append-only changelog at end}
+\date{Last updated 2026-10-24 (run R1)}
+\begin{document}\maketitle
+
+\section*{0. Executive status}
+\textbf{No superpolynomial (or even superlinear) unconditional lower bound for \SAT{} is proved here.
+P versus NP remains \OPEN.} What is established: (i) an exact small-$n$ ladder of minimum
+wire counts (COMPUTATIONAL), (ii) a clean linear probe lower bound
+$\Omega(\W)$ in a white-box description-probe model (PROVED/EXACT, but elementary),
+(iii) a map of which parametrizations are known/conditional. Status labels used:
+PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup and wire accounting}
+A circuit $C$ on inputs $x_1..x_n$ is a DAG of fan-in-2 gates over the full binary basis $B_2$
+(negation and constants free). $g(C)$ = number of gates; $\W(C)=2g(C)$ = number of gate-input
+\emph{wires} (pins). $\SAT$: given $C$, decide $\exists x\; C(x)=1$. Parameters tracked:
+$n$ (inputs), $g$ (gates), $\W$, and later pathwidth/treewidth $\mathrm{tw}(C)$, fan-out $\phi$,
+depth $d$. Let $c(f)$ be the minimum gate count of $f$ and $c_k(n)=\max\{c(f): |f^{-1}(1)|=k\}$.
+
+\section{Ladder: step by step as $n$ grows}
+\paragraph{Step $n=1$.} Functions: $0,1,x,\bar x$. $c=0$ for all (negation free). The
+instance ``output $=x_1$'' uses one wire from input to output (counting the output marker),
+zero gate pins. SAT is decided by reading that one wire.
+
+\paragraph{Step $n=2$.} All 16 functions have $c\le1$ (XOR/AND/OR etc.\ are single $B_2$
+gates). Hence $\W\le2$ and SAT is trivially decided by $4$ evaluations or $2$ pin reads.
+
+\paragraph{Step $n=3$.} Exhaustive enumeration of all DAGs (script
+\texttt{research/circuitsat/min\_wires\_ladder.py}, results in
+\texttt{min\_wires\_ladder\_results.json}; runs in a few seconds, no chunking needed) covers
+all $256$ functions with $\max c=4$ (so $\W\le 8$). Table by number $k$ of satisfying
+assignments (COMPUTATIONAL):
+\begin{center}\begin{tabular}{@{}rcccc@{}}\toprule
+$k=|f^{-1}(1)|$ & $c=0$ & $c=1$ & $c=2$ & $c=3$ / $c=4$ \\\midrule
+0 or 8 & 1 & 0 & 0 & 0 / 0\\
+1 or 7 & 0 & 0 & 8 & 0 / 0\\
+2 or 6 & 0 & 12 & 12 & 4 / 0\\
+3 or 5 & 0 & 0 & 24 & 24 / 8\\
+4 & 3 & 9 & 26 & 24 / 8\\\bottomrule
+\end{tabular}\end{center}
+Observations (COMPUTATIONAL, $n\le3$): unique-solution functions ($k=1$) have $c=n-1$ ($n=2,3$:
+$1,2$), matching the lower bound of Lemma~\ref{lem:dep}; the most expensive functions ($c=4$, eight each for $k=3,4,5$) have mid-range solution counts, while few-solution functions ($k\le1$) are cheap, so $c$ is not monotone in $k$ and solution count alone does not predict wire cost.
+The $n=4$ analogue (max $c=7$ in $B_2$, a known value from Knuth's tables, recalled not re-derived)
+needs a chunked search and is the next ladder step (see \S\ref{sec:next}).
+
+\begin{lemma}[Dependence lower bound; PROVED/EXACT]\label{lem:dep}
+If $f$ depends on all $n$ variables then $c(f)\ge n-1$, hence $\W\ge 2(n-1)$.
+\end{lemma}
+\emph{Proof.} Each input must reach the output; a DAG with one sink in which $n$ sources reach the
+sink and all gates have fan-in 2 has at least $n-1$ gates (induct on the number of gates: removing
+the sink merges at most two components, each reaching $\le$ their own inputs). \qed
+
+\section{A wire-probe lower bound (the elementary base case)}
+\textbf{Model.} The topology is a fixed balanced AND tree over $n$ leaf pins; the unknown input
+is the labelling $\lambda:[n]\to\{x_j,\bar x_j:j\in[n]\}\cup\{0\}$; one probe reveals one $\lambda(i)$.
+$\SAT$ holds iff no pin is $0$ and no variable occurs with both signs.
+
+\begin{prop}[PROVED/EXACT, white-box probe model]\label{prop:probe}
+Every deterministic SAT-decider needs $n=\Omega(\W)$ probes in the worst case, and every
+randomized decider with error $\le1/3$ needs $\ge n/3$ probes in expectation over the hard
+distribution below.
+\end{prop}
+\emph{Proof.} Hard distribution: with probability $1/2$ the identity labelling $\lambda(i)=x_i$
+(satisfiable); with probability $1/2$ a uniformly random pin is set to $0$. An algorithm making
+$q$ probes sees an all-clean transcript on a fraction $\ge1-q/n$ of the unsatisfiable half, which is
+identical to its view on the satisfiable instance, where the posterior of SAT is $\ge1/2$; so it
+answers SAT there and errs with probability $\ge\tfrac12(1-q/n)$. Error $\le1/3$ forces
+$q\ge n/3$. Deterministic: an adversary answers ``clean'' until the last unread pin. \qed
+
+\begin{remark}[Transfer status]
+This is a \emph{read-the-input} bound; it says nothing about time for circuits whose description
+is fully given. With conflict detection (a variable appearing with both signs) the problem becomes
+element-distinctness-like: classical $\Theta(n)$, quantum $\Theta(n^{2/3})$ probes (KNOWN THEOREM,
+Ambainis; Aaronson--Shi; recalled, not re-checked this run). Only linear.
+\end{remark}
+
+\section{Parametrized frontier (what a lower bound could look like)}
+\begin{center}\begin{tabular}{@{}p{3.3cm}p{4.6cm}p{4.6cm}@{}}\toprule
+Parameter & Upper bound & Lower bound status\\\midrule
+$n$ (inputs) & $2^n\cdot\W$ brute force & $2^{\Omega(n)}$ only CONDITIONAL (SETH/ETH); unconditional OPEN\\
+$\W$ (size) & $\Omega(\W)$ to read & PROVED/EXACT (Prop.~\ref{prop:probe})\\
+treewidth/pathwidth $t$ & $2^{O(t)}\W$ by DP (KNOWN THEOREM) & $(2-\epsilon)^{t}$ excluded under SETH for CNF-SAT (KNOWN THEOREM, Lokshtanov--Marx--Saurabh; recalled) -- CONDITIONAL\\
+fan-out $\phi$, depth $d$ & --- & CANDIDATE: tradeoff $n$ vs.\ $\phi$ via congestion (see below)\\\bottomrule
+\end{tabular}\end{center}
+Unconditional circuit lower bounds for explicit functions stand at $\approx 3.1n$ gates for $B_2$ and
+$5n-o(n)$ for $U_2$ (Li--Yang 2022 gives $3.1n-o(n)$ for $B_2$; recalled, verify), so any
+unconditional ``wire count'' bound for \emph{satisfiability of a single function} is currently capped near
+linear; a superlinear parametrized statement must therefore be about the \emph{algorithm}, not the circuit.
+
+\section{Cross-pollination from the PNP repository}
+Survey this run (root \texttt{main.tex}, newest MAIN \texttt{2026-10-24\_0648\_MAIN\_WEIGHTED\_TRANSCRIPT\_COVER108.tex}):
+the repository's executive status is that P vs NP is \OPEN{}; its load-bearing missing arrow is a
+post-acquisition/continuation theorem for \emph{every} polynomial-time decider, with only restricted
+access models proved (e.g.\ SWAP-STAR-CEILING104: local-star depth $\le 2n$, an input-order query ceiling).
+Searching the tree found no earlier document devoted to wire-by-wire minimum-connection ladders, so this
+document is new relative to the corpus. Potentially reusable pieces (CANDIDATE; not yet transferred):
+(a) the repo's restricted-access exact lemmas as the analogue of our probe model (Prop.~\ref{prop:probe} is
+the same ``acquire before decide'' shape); (b) its hostile-control discipline for any proposed invariant.
+No repository result is assumed here, and nothing here strengthens any repository claim.
+
+\section{Open arrows and barriers}
+\begin{itemize}
+\item \OPEN: any bound beyond $\Omega(\W)$ for white-box $\SAT$ time (relativization, natural proofs,
+algebrization barriers all apply to generic wire-counting; unaudited for specific routes).
+\item \OPEN: a monotone ladder $n\mapsto$ min wires of a \emph{hard-to-decide family}; computed values
+only to $n=3$ and they are tiny.
+\item CANDIDATE: congestion/cut argument: if every balanced cut of a family has $\ge\omega(\log n)$ wires,
+treewidth DP is superpolynomial; lower bound on the algorithm needs a SETH-type input.
+\item Failed transfer to avoid: VLSI area--time bounds apply to a fixed layout of a \emph{computation},
+not to the cost of \emph{finding} a satisfying input.
+\end{itemize}
+
+\section{Next steps\label{sec:next}}
+(1) Chunked $n=4$ enumeration (65536 functions, seeded by cost $\le4$, then $5$--$7$) with
+per-chunk checkpoint JSON. (2) Tabulate $c_k(n)$ vs.\ ``hardness for a SAT solver'' (e.g.\ DPLL node
+count on minimum circuits). (3) Define a fan-out-limited ladder $\W_\phi(n)$ and tabulate. (4) Read
+the three newest LSPV reports and MAIN~108 in full for a transferable invariant.
+
+\section*{Changelog}
+\textbf{R1 (2026-10-24):} created document; $n\le3$ exact ladder; Lemma~\ref{lem:dep}; Prop.~\ref{prop:probe};
+parametrization map; repository survey (shallow: tree listing, root \texttt{main.tex} status lines, task list).
+Literature citations marked ``recalled'' were not re-fetched this run.
+\end{document}
+% END_OF_LIVING_DOC::CCS-2026-10-24-R1
