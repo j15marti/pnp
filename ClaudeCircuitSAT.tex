@@ -1,0 +1,45 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- last update 2026-10-24 run 1
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,geometry}
+\geometry{margin=1in}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: a wire-by-wire lower-bound ladder for Circuit-SAT}
+\date{Living document; run 1 of the hourly schedule, 2026-10-24}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{OPEN.} No super-linear unconditional lower bound for Circuit-SAT (general circuits, general algorithms) is claimed. Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, RETIRED. Everything below ``Ladder'' is PROVED only for the stated restricted object.
+
+\section{Setup}
+A circuit $C$ has $n$ inputs, $s$ fan-in-2 gates over $B_2$ (negation free), hence $w=2s$ wires (fan-out edges counted at their sink). $\mathrm{SAT}(C)$: $\exists x\in\{0,1\}^n\,C(x)=1$. Parameters: $(n,s)$ jointly; the natural bound shape is $T(n,s)\ge f(n,s)$. Known upper bound $O(2^n s)$; \textbf{CONDITIONAL} (SETH) $2^{n-o(n)}\,\mathrm{poly}(s)$ is necessary for $s=\mathrm{poly}(n)$. Unconditional general-model lower bounds beyond reading the input are OPEN.
+
+\section{Ladder (wire-by-wire accounting)}
+\begin{prop}[Connectivity, PROVED] If $C$ depends essentially on $n$ inputs then $s\ge n-1$, i.e.\ $w\ge 2(n-1)$ wires; equality is attained by a tree of $n-1$ gates (e.g.\ an AND of literals, which has exactly one satisfying assignment).
+\end{prop}
+\emph{Proof.} The output cone is connected and every input is a leaf; a connected DAG with $n$ sources and in-degree $\le2$ has $\ge n-1$ internal nodes (each gate merges at most two components). \qed
+
+\begin{prop}[Probe lower bound, PROVED, model: wire-probe] Let the algorithm access $C$ only by probes ``who feeds gate $g$?''. Deciding SAT needs $\ge s_0$ probes on the family with $s_0$ gates below.\end{prop}
+\emph{Proof.} Let $C_0=\bigwedge_{i=1}^{m}x_i$ implemented as gates $g_i=\mathrm{AND}(x_i,x_i)$ feeding an AND-tree ($s_0\approx 2m$ gates). $C_0$ is satisfiable; for each $j$, $C_j$ replaces $g_j$ by $\mathrm{AND}(x_j,\neg x_j)$, making it UNSAT. An algorithm that skips probing $g_j$ answers identically on $C_0$ and $C_j$. So all $m$ leaf gates must be probed: $\Omega(s)$. \qed
+
+\emph{Caveat:} this is a reading bound, not a computational hardness bound. It is the base rung of the ladder; the open question is whether rungs can be raised above $\Theta(s)$ for $T(n,s)$ in general models.
+
+\section{Exact small cases (COMPUTATIONAL)}
+Script \texttt{results/claude\_circuitsat/exact\_size.py} computes the exact minimum $B_2$ circuit size of every $n$-variable function (identified up to negation; BFS over sets of computed truth tables). Counts of function classes by minimum gates:
+\begin{center}\begin{tabular}{@{}rrrrrr@{}}\toprule
+$n$ & size 0 & 1 & 2 & 3 & 4\\ \midrule
+2 & 3 & 5 & -- & -- & -- \\
+3 & 4 & 15 & 57 & 40 & 12 \\ \bottomrule\end{tabular}\end{center}
+(size 0 includes the constant and the $n$ projections). Max size is 1 for $n=2$ and 4 for $n=3$; Knuth's published exhaustive value is 7 for $n=4$ (KNOWN, not recomputed here). Results: \texttt{n2.json}, \texttt{n3.json}. Runtime $<1$s each. The $n=4$ run needs chunking (level-4 state count for $n=3$ is already 30k; expect $\sim10^{8}$ for $n=4$) and is queued.
+
+\section{Parametrized targets}
+\begin{enumerate}
+\item Width/treewidth $k$: $2^{O(k)}s$ upper bound (KNOWN dynamic programming); candidate lower bound $2^{\Omega(k)}$ under SETH (CONDITIONAL, KNOWN-style).
+\item Fixed fan-out $d$: study how the minimal circuit for hard instances must duplicate wires; the repository's fan-out/locality material is a source of CANDIDATE bridges.
+\item Gate-elimination: best known explicit-function bound is $\approx 3.1n$ gates for $B_2$ (KNOWN; Li--Yang 2022); these bound circuit size of functions, not SAT-solver time, so transfer is a FAILED TRANSFER unless a solver-to-circuit reduction is supplied.
+\end{enumerate}
+
+\section{Repository cross-check (j15marti/pnp)}
+Root \texttt{main.tex} reports P versus NP open with load-bearing arrows still OPEN; no result there supplies a Circuit-SAT lower bound. Nothing from it is imported here. Possibly useful later: its hostile-control / wrapper-test discipline.
+
+\section{Next steps}
+(1) chunked exact sizes for $n=4$; (2) track minimal wires for \emph{unique-SAT} and parity-constrained instances; (3) formalize a restricted-model (monotone / bounded-depth / read-once-wire) lower bound with $n$ and $s$ both as parameters; (4) audit each rung against relativization/natural-proofs barriers.
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT_RUN1
