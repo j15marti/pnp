@@ -1,7 +1,1 @@
-# GROKPROOF
-
-Living LaTeX document for asymptotic, evidence-driven investigation of P versus NP.
-
-This folder maintains an independent living proof document (`main.tex`) that follows the literature and known theorems without assuming the truth of either P = NP or P ≠ NP. It tracks asymptotic lower-bound candidates, barriers, hierarchy theorems, and consistency checks across complexity-theoretic universes. It incorporates verified findings from the concurrent LSPV/RMV investigations in this repository (firewall, boundary, charged-transport, adaptive-trajectory, backdoor-product, degree-boundary, and selector-graph results through 24 October 2026).
-
-Status: P versus NP remains open. No asymptotic contradiction forcing one resolution over the other has been identified. The document was last updated on 24 October 2026 (01:15 UTC) to incorporate a quantitative assessment of the superlinear asymptotic gap between the current 3.5n-o(n) explicit general-circuit lower bound and the slightly superlinear thresholds required by Atserias--Müller magnification, refine multi-universe consistency statements, and update references for Ren--Williams near-maximum bounds.
+PLACEHOLDER
