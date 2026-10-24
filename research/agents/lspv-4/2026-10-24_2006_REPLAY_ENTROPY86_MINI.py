@@ -90,7 +90,6 @@ def main():
             for R in (1,2,7):
                 reads=q+(R-1)*max(0,q-C)
                 check(reads<=q*R,'cache read count')
-                check(R*max(0,q-1-C)<=reads,'label entropy floor')
                 for sigma in (0,1):
                     check(R*max(0,q-1-C)<=reads,'label floor per side')
     c=Fraction(241,200)
