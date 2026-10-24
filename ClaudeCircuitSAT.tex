@@ -1,0 +1,80 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- repository root; edited in place hourly
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,geometry}
+\geometry{margin=1in}
+\newcommand{\OPEN}{\textsc{open}}
+\newcommand{\PROVED}{\textsc{proved/exact}}
+\newcommand{\KNOWN}{\textsc{known theorem}}
+\newcommand{\COMP}{\textsc{computational}}
+\newcommand{\COND}{\textsc{conditional}}
+\newcommand{\CAND}{\textsc{candidate}}
+\title{Claude Circuit-SAT Lower-Bound Ladder\\\large Living document}
+\author{Hourly scheduled run}
+\date{Last updated: 2026-10-24 (run 1)}
+\begin{document}
+\maketitle
+
+\section*{Status (read first)}
+\textbf{P versus NP remains open. No superpolynomial lower bound for Circuit-SAT is claimed here.}
+Status labels: \PROVED, \KNOWN, \COMP, \COND, \CAND, \OPEN, \textsc{falsified/retired}.
+Every load-bearing arrow toward a general lower bound is \OPEN.
+
+\section{Goal and method}
+Circuit-SAT: given a Boolean circuit $C$ over basis $B_2$ (fan-in 2) with $n$ inputs and
+$m$ gates ($w=2m$ wires), decide $\exists x\,C(x)=1$. We seek lower bounds on the cost of deciding this,
+possibly parametrized by $(n,m)$ or by structural parameters (treewidth $t$, fan-out $f$, depth $d$).
+Method: a \emph{ladder}. Rung $n$ tracks, wire by wire, the minimum number of wires
+$W_n$ of circuits needed for the hardest $n$-input functions, and the cheapest circuits for SAT-flavoured
+predicates; then ask which rung-to-rung increments could survive as an algorithmic (not merely circuit-size) bound.
+
+\section{Rung ledger: exact minimum circuit size ($B_2$, all 16 gates)}
+Computed by exhaustive iterative-deepening search over gate lists
+(\texttt{experiments/claude\_circuitsat/exact\_min\_gates.py}, each invocation $<30$\,s; chunked by $n$).
+Wires counted as $2\times$gates (fan-in 2). Search depth $\ge$ the maximum found, so all values are exact.
+\begin{center}\begin{tabular}{lcccl}\toprule
+$n$ & functions & max gates & max wires & histogram (gates:count)\\\midrule
+1 & 4 & 0 & 0 & trivial\\
+2 & 16 & 1 & 2 & 0:6, 1:10\\
+3 & 256 & 4 & 8 & 0:8, 1:30, 2:114, 3:80, 4:24\\\bottomrule\end{tabular}\end{center}
+Named $n=3$ functions: AND, OR, XOR: 2 gates; MUX: 3; MAJ, EXACT-1, EXACT-2: 4 gates (8 wires). \COMP.
+Increments: $\max$ gates $0\to1\to4$; the first non-linear jump ($n=3$) is the first function needing
+\emph{shared} (fan-out $>1$) intermediate wires: MAJ$_3$ uses fan-out.
+Connectivity floor (\PROVED, standard): a function depending on all $n$ inputs needs $\ge n-1$ gates, i.e.\ $\ge 2(n-1)$ wires.
+Shannon counting (\KNOWN): almost all $n$-input functions need $\Omega(2^n/n)$ gates.
+
+\section{What can be said about Circuit-SAT itself}
+\begin{enumerate}
+\item \textbf{Read lower bound} (\PROVED, trivial). Any algorithm deciding Circuit-SAT must read $\Omega(m)$ gates:
+take $\bigvee_{i\le m}(x_i\wedge c_i)$ with all constant wires $c_i=0$ (unsatisfiable); flipping any single unread $c_i$ to $1$ makes it satisfiable.
+Parametrized form: $\Omega(m)$ reads for every $n\ge1$.
+\item \textbf{Circuit-size lower bounds} (\KNOWN, quoted from memory, to be re-verified against sources next run):
+gate elimination gives $5n-o(n)$ for explicit functions over $B_2$ and $\approx 3.1n-o(n)$ over $U_2$. These bound
+\emph{circuit size of a fixed function}, not SAT-solver time; they do not transfer to Circuit-SAT (\textsc{failed transfer} until a bridge exists).
+\item \textbf{Conditional} (\COND): under ETH/SETH, no $2^{o(n)}$ / $(2-\varepsilon)^n\mathrm{poly}(m)$ algorithm;
+parametrized by treewidth $t$ of the circuit graph, $2^{O(t)}\mathrm{poly}(m)$ algorithms exist (\KNOWN), so any
+unconditional bound must be $2^{\Omega(t)}$-shaped only conditionally.
+\item \textbf{General superlinear / superpolynomial bound}: \OPEN.
+\end{enumerate}
+
+\section{Plan for next rungs}
+\begin{itemize}
+\item $n=4$: exact $C_{B_2}$ for all 65536 functions (known max 7, Knuth) via Knuth-style layered search, chunked by function-class; record fan-out profile of optimal circuits.
+\item Track \emph{minimum wires with fan-out cap} $f\in\{1,2,3\}$ (formulas vs.\ circuits): the formula/circuit gap per rung is the quantity gate-elimination must control.
+\item SAT-specific rung: minimum size of circuits \emph{with a satisfying-assignment witness structure} (e.g.\ for $\mathrm{EXACT}_k$), and the cheapest \emph{unsatisfiable} certificates (pigeonhole-style) per $n$.
+\item Parametrization candidates: $(n,m)$, treewidth $t$, fan-out $f$, number of XOR gates (GE-style measure).
+\item Corpus transfer from the PNP repo (\texttt{main.tex}, LSPV reports, \texttt{tasks/}): see below.
+\end{itemize}
+
+\section{Repository corpus check (run 1)}
+Surveyed: tree, \texttt{main.tex} (4337 lines), \texttt{AGENTS.md}, \texttt{tasks/}. Root \texttt{main.tex} states
+generic SAT-circuit lower bounds remain \OPEN{} (cf.\ lines around 2869, 3105) and that gate-input incidence counts there
+``are not SAT-solving circuit lower bounds'' (line 1004). Consequence: the repository offers no usable unconditional
+lower bound; its structural tools (Schur squares, collision entropy, boundary-rank algorithms) are untested here.
+Not yet read in depth: LSPV reports, explorations. To do next run.
+
+\section{Log}
+\begin{tabular}{ll}\toprule Run & Result\\\midrule
+1 (2026-10-24) & Created document; exact ladder $n\le 3$ (\COMP); read-bound (\PROVED); corpus preflight only.\\\bottomrule\end{tabular}
+
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT
