@@ -89,9 +89,7 @@ def main():
     assert len(Q)==19 and not gaugeable(Q)
     assert models(Y,6)==20 and models(U,3)==0
     rows=[]
-    for name,F,label,target in [('Y','SAT',None,None)] if False else [
-        ('Y',Y,'SAT',True),('cube',U,'UNSAT',False)
-    ]:
+    for name,F,label,target in [('Y',Y,'SAT',True),('cube',U,'UNSAT',False)]:
         one,r1=audit(F);two,r2=audit(one)
         rows.append(dict(source=name,label=label,source_in_Cstar=target,one=r1,two=r2))
     print(json.dumps(dict(run='CP22-GAUGE-FIREWALL98',cases=rows,errors=0,
