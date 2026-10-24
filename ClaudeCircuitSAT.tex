@@ -1,0 +1,71 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append-by-section; status labels per AGENTS.md
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT}
+\author{Living document (hourly Claude runs)}
+\date{Last updated: 2026-10-24 (run 1)}
+\begin{document}\maketitle
+\noindent\textbf{Status: $\mathrm{P}\neq\mathrm{NP}$ is NOT proved here.} Only the lower bounds
+labelled PROVED/EXACT or KNOWN THEOREM hold, each in the stated model.
+
+\section{Goal and method}
+Build Circuit-SAT instances from the simplest case upward; for each step record
+(i) the minimum number of gates and wire incidences needed to \emph{construct} the instance
+and (ii) the best lower bound on the cost of \emph{solving} it, as a function of the
+parameters $n$ (inputs) and $s$ (gates). Lower bounds may be parametrized, $T(n,s)$.
+Basis: $B_2$ (all fan-in-2 gates, free negation); size = number of gates; wire count = $2\cdot$gates.
+
+\section{Step ladder (computed)}
+\begin{center}\begin{tabular}{lcccc}\toprule
+$n$ & funcs & max $C_{B_2}$ & $C(\text{point fn }[x=a])$ & $n-1$\\\midrule
+2 & 16 & 1 & 1 & 1\\ 3 & 256 & 4 & 2 & 2\\\bottomrule\end{tabular}\end{center}
+COMPUTATIONAL: exact BFS over sets of computed functions
+(\texttt{results/claude\_circuitsat/exact\_c\_b2.py}, each run $<$30 s, no chunking needed for $n\le3$).
+Size histogram $n=3$: $\{0{:}8,1{:}30,2{:}114,3{:}80,4{:}24\}$ (constants and literals cost 0).
+$n=4$ (65536 functions, max cost 7) needs staged/checkpointed search: \OPEN{} task for next runs.
+
+\section{Proved lower bounds}
+\begin{theorem}[PROVED/EXACT: connectivity wire bound]
+A $B_2$ circuit (DAG, fan-in 2) whose output depends on all $n$ inputs has $g\ge n-1$ gates and
+at least $2n-2$ gate-input wires; equality holds for the AND-tree computing $[x=a]$.
+\end{theorem}
+\begin{proof} Every input reaches the output, so the underlying undirected graph on $n+g$
+vertices is connected: $2g\ge (n+g)-1$, i.e.\ $g\ge n-1$. \end{proof}
+Hence a unique-satisfying-assignment instance costs $n-1$ gates; computed values 1, 2 match.
+
+\begin{theorem}[PROVED/EXACT, oracle model only: black-box Circuit-SAT]
+Any deterministic algorithm that accesses $C:\{0,1\}^n\to\{0,1\}$ only through evaluation queries
+and correctly decides satisfiability makes $\ge 2^n-1$ queries.\end{theorem}
+\begin{proof} Adversary answers 0 to the first $2^n-1$ distinct queries; the unqueried point may or may not
+satisfy. \end{proof}
+Classification: model-restricted, relativizes; says nothing about algorithms that read the wiring.
+Randomized $\Omega(2^n)$ and quantum $\Theta(2^{n/2})$ (Grover/BBBV) are the known analogues (KNOWN THEOREM).
+
+\section{Parametrized picture}
+Trivial upper bound $O(2^n s)$. Oracle lower bound $2^n-1$ queries, so the open gap is the factor $s$
+and, more importantly, whether wiring information can beat $2^{n}$. KNOWN THEOREM (restricted):
+DPLL/resolution on Tseitin formulas over expanders needs $2^{\Omega(n)}$ (Urquhart; Ben-Sasson--Wigderson),
+parametrized by treewidth/width. KNOWN: gate elimination gives $\approx3.1n$ circuit-size bounds for
+explicit functions (Find et al.; Li--Yang) --- these bound circuit size, not SAT time.
+Unconditional super-polynomial RAM time for Circuit-SAT: \OPEN{} (equivalent to $\mathrm{P}\ne\mathrm{NP}$ territory);
+conditional: SETH $\Rightarrow$ no $2^{(1-\epsilon)n}\mathrm{poly}(s)$.
+
+\section{Repository cross-check (j15marti/PNP)}
+Root \texttt{main.tex} contains LSPV-3 backward AND/OR Circuit-SAT counts ($29k-1$ gates, $53k-2$
+incidences for the bounded-head family) explicitly labelled \emph{not} SAT-solving lower bounds, and
+model-specific head-bound theorems that do not extend to arbitrary RAM solvers. No repository
+result gives an unconditional RAM lower bound usable here. Useful reusable idea: charged-access
+models with explicit source cursors, as a bridge between oracle and RAM models.
+
+\section{Next steps (OPEN)}
+\begin{enumerate}
+\item Compute exact $C_{B_2}$ for $n=4$ by checkpointed search; tabulate wires.
+\item Extend the oracle bound to a \emph{wire-reading} model: algorithm may probe gate-input wires; charge probes; seek $\Omega(2^{n/2})$-type bound with parameter $s$.
+\item Study structured families (planar/bounded-treewidth circuits) where the lower bound parameter is treewidth $w$: target $2^{\Omega(w)}$ for restricted solvers vs.\ $2^{O(w)}s$ upper bound (KNOWN upper).
+\end{enumerate}
+
+\section{Run log}
+Run 1 (2026-10-24): created document; exact $n\le3$ table; Theorems 1--2; repository cross-check.
+\end{document}
