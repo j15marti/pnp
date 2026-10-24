@@ -1,0 +1,75 @@
+% ClaudeCircuitSAT living document. Append run entries; never delete retired claims, mark them.
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{thm}{Theorem}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder toward parametrized Circuit-SAT lower bounds}
+\author{Living document (hourly runs)}
+\date{Last run: 2026-10-24}
+\begin{document}\maketitle
+
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here proves a superpolynomial lower bound for Circuit-SAT.
+Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model and goal}
+A circuit is a DAG over $x_1,\dots,x_n$ with fan-in-2 gates from $B_2$ (all 16 binary ops), output negation free.
+Cost $g(C)$ = gates, $w(C)=2g(C)$ = wires into gates. $\mathrm{CSAT}(n,s)$: given $C$ with $n$ inputs and $\le s$ gates, decide $\exists x\,C(x)=1$.
+Two distinct quantities are tracked and must not be conflated:
+(a) $L_{\text{circ}}(f)$, minimum circuit size of a function $f$ (the ``wires needed to build'' side);
+(b) $T_{\text{solve}}(n,s)$, cost of any algorithm for $\mathrm{CSAT}(n,s)$ (the lower bound we ultimately want, possibly parametrized by $n$, $s$, treewidth, etc.).
+
+\section{Step 1: the building ladder (exact, small $n$)}
+\begin{prop}[PROVED/EXACT: connectivity bound]
+If $f$ depends on all $n$ inputs then every circuit for $f$ has $g\ge n-1$ gates and $\ge 2(n-1)$ wires; tight for $\mathrm{AND}_n$ and every point function $[x=a]$.
+\end{prop}
+\emph{Proof.} Every input must have a directed path to the output, so the underlying undirected graph on $n+g$ nodes is connected: edges $2g\ge n+g-1$, i.e.\ $g\ge n-1$. A balanced tree of ANDs/literals attains it. \qed
+
+\begin{prop}[PROVED/EXACT: relevant-variable parametrization]
+A circuit with $g$ gates depends on at most $g+1$ inputs (same argument), so $\mathrm{CSAT}(n,s)$ is solvable in time $2^{\min(n,s+1)}\mathrm{poly}(s)$. Hence the hard regime is $s\ge n-1$; for $s<n-1$ unused inputs are free.
+\end{prop}
+
+\textbf{COMPUTATIONAL ladder} (script \texttt{results/circuitsat/min\_circuit\_small.py}; exhaustive BFS over circuit states, functions normalized by free output negation; each run $<2$s):
+\begin{center}\begin{tabular}{@{}cccl@{}}\toprule
+$n$ & functions (norm.) & max exact size found & point function $[x=a]$ \\\midrule
+2 & 8 & 1 & 1 \\
+3 & 128 & 4 (counts by size 0..4: 4,15,57,40,12) & 2 \\
+4 & 32768 & $\ge4$ (search capped at depth 4: 6812 of 32768 reached) & 3 \\\bottomrule
+\end{tabular}\end{center}
+So point functions (unique-satisfier circuits, the natural hard-instance shape) cost exactly $n-1$ for $n\le4$, matching the Proposition. $n=4$ is only a partial table; the known maximum for $n=4$ is 7 (recalled, not re-derived here).
+
+\section{Step 2: lower bound on solving, by model}
+\begin{prop}[PROVED/EXACT, black-box model only]
+Any deterministic algorithm that accesses $C$ only by evaluating $C(x)$ needs $2^n$ evaluations on the family $\{[x=a]\}_{a}$ plus the all-zero circuit (adversary answers 0 until one point is left).
+\end{prop}
+This is a query bound, \emph{not} a Circuit-SAT lower bound: the solver may read the wiring. Status as a route to P$\neq$NP: FALSIFIED/RETIRED as sufficient (it does not survive white-box access; the point-function circuit exposes $a$ in $n-1$ gates).
+
+\textbf{Wire-reading information accounting (CANDIDATE).} Define the leakage $\lambda(C)$ = bits of $\arg\mathrm{SAT}$ determined by inspecting $k$ wires. Point functions leak $a$ at $n-1$ wires. A hard family must have min-size circuits where any $k$ wires reveal $o(k)$ solution bits, forcing size $\gg n$ while keeping a unique satisfier. Open arrow A1: quantify $\lambda$ and prove size growth.
+
+\textbf{Parametrized targets.}
+\begin{center}\begin{tabular}{@{}lll@{}}\toprule
+Parameter & Upper bound (known) & Lower bound status\\\midrule
+$n$ (inputs) & $2^n\mathrm{poly}$ & CONDITIONAL on SETH: no $2^{(1-\varepsilon)n}\mathrm{poly}(s)$\\
+$s$ (gates), $s<n$ & $2^{s+1}\mathrm{poly}$ (proved above) & matches brute force on relevant vars; OPEN whether $2^{o(s)}$\\
+treewidth $t$ of $C$ & $2^{O(t)}\mathrm{poly}$ (KNOWN) & CONDITIONAL on SETH (tight); unconditional OPEN\\\bottomrule
+\end{tabular}\end{center}
+SETH-conditional rows are folklore-level KNOWN THEOREMS (CNF encoding preserves $n$); they were not re-verified against primary sources this run (no literature search executed).
+
+\section{Step 3: what is known unconditionally for circuit size}
+Best explicit general-circuit lower bound recalled: $\approx 3.1n$ gates (Li--Yang, STOC 2022) over $B_2$ \emph{[KNOWN THEOREM, from memory, verify]}. The ladder of Step 1 ($n-1$) is the trivial base; the gap between $n-1$ and superlinear is exactly the open problem. Gate elimination, restrictions, and the Williams ACC route are the live tools; natural-proofs, relativization and algebrization barriers apply to any technique that is not explicitly audited against them.
+
+\section{Open arrows and next steps}
+\begin{enumerate}
+\item[A1] Quantify wire leakage $\lambda$ and prove unique-satisfier hard families need super-linear size (OPEN).
+\item[A2] Complete $n=4$ exact table (needs SAT/ILP-based synthesis or depth-7 search with symmetry reduction, split into seed/chunk stages per runtime rule) and push to $n=5$ (known max 12, recalled).
+\item[A3] Track the \emph{incremental} cost: for each $n$, minimum extra wires to extend an optimal $n$-input circuit for $f$ to $n+1$ inputs (monotone chain data, to detect amortized structure).
+\item[A4] Literature preflight on gate-elimination barriers and on parametrized (treewidth/cutwidth) Circuit-SAT lower bounds.
+\end{enumerate}
+
+\section{Repository reconciliation}
+Repository \texttt{j15marti/pnp} (inspected: tree, \texttt{AGENTS.md}, \texttt{CODEX.md}, root \texttt{main.tex} header, task list). Its active program (HEC / CRS-PPC / M22 routes) concerns an algorithmic-bridge proof spine and reports P vs NP as OPEN with several load-bearing arrows OPEN. No theorem there was found that directly supplies a size lower bound for Circuit-SAT; not imported. This document is separate from, and does not edit, root \texttt{main.tex}.
+
+\section*{Run log}
+\textbf{2026-10-24 run 1:} created document; proved connectivity and relevant-variable propositions; computed ladder $n\le3$ fully, $n=4$ partially.
+\end{document}
