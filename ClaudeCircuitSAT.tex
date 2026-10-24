@@ -1,0 +1,78 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+% Last updated: 2026-10-24 (run 1)
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\CSAT}{\mathrm{CSAT}}
+\title{Wire-by-Wire Lower Bounds for Circuit-SAT: Living Document}
+\author{Hourly scheduled run (Claude)}
+\date{Last updated 24 October 2026}
+\begin{document}
+\maketitle
+\fbox{\parbox{0.95\linewidth}{\textbf{Status: no superlinear unconditional lower bound for white-box circuit-SAT is claimed. P versus NP remains OPEN.} Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.}}
+
+\section{Goal and model}
+Build circuit-SAT instances from the simplest case upward, count wires at each step, and track the best lower bound for \emph{solving} the instance, as a function of parameters $(n,s)$: $n$ inputs, $s$ gates.
+Basis $B_2$ (all 16 binary gates, so negation is free), fan-in 2, fan-out unbounded. A circuit with $s$ gates has exactly $w=2s$ gate-input wires; the fan-out sum equals $w$.
+$\CSAT(n,s)$: given such a circuit $C$, decide $\exists x\in\{0,1\}^n: C(x)=1$.
+
+\section{Rung ledger}
+\paragraph{Rung 0 (dependence).} 
+\begin{lemma}[PROVED/EXACT]\label{lem:conn}
+If $f$ computed by a $B_2$ circuit depends on all $n$ inputs then $s\ge n-1$ and $w\ge 2(n-1)$. Both are tight for $\mathrm{AND}_n,\mathrm{XOR}_n$ (balanced tree).
+\end{lemma}
+\begin{proof} Each essential input has a path to the output, so the undirected circuit graph (vertices: $n$ inputs $+\,s$ gates) is connected on the vertices used; it has $w=2s$ edges, hence $2s\ge n+s-1$. \end{proof}
+
+\paragraph{Rung 1--2 (exact small tables).}
+\begin{lemma}[COMPUTATIONAL]\label{lem:table}
+Exact minimum $B_2$ circuit size, with sharing, over all functions modulo output complement (script \texttt{results/claude\_circuitsat/exact\_b2\_size.py}, BFS over sets of computed truth tables, each run $<2$\,s):
+\begin{center}\begin{tabular}{lccccccc}\toprule
+$n$ & functions & 0 gates & 1 & 2 & 3 & 4 & max wires $2s$\\\midrule
+2 & 8 & 3 & 5 & --- & --- & --- & 2\\
+3 & 128 & 4 & 15 & 57 & 40 & 12 & 8\\\bottomrule
+\end{tabular}\end{center}
+For $n=3$: $\mathrm{AND}_3,\mathrm{XOR}_3$ need 2 gates (4 wires); $\mathrm{MUX}$ 3 (6 wires); $\mathrm{MAJ}_3$, exactly-1, exactly-2 need 4 gates (8 wires). The max over $n=3$ matches the value 4 I recall from Knuth (TAOCP 7.1.2); not re-verified against the book.
+\end{lemma}
+\emph{Self-check:} an earlier version of the script omitted the $\neg a\wedge\neg b$ gate type and gave a false asymmetry (exactly-2 cost 5 vs exactly-1 cost 4); input negation is free so these must be equal. Fixed, and symmetry now holds.
+$n=4$ (65536 functions) exceeds the naive BFS budget at depth 4; planned as checkpointed stages (see \S\ref{sec:next}).
+
+\section{Lower bounds on solving $\CSAT(n,s)$}
+\begin{lemma}[PROVED/EXACT: black-box model]
+Any algorithm with only oracle access to $x\mapsto C(x)$ needs $2^n$ queries (deterministic worst case) to decide $\CSAT$. 
+\end{lemma}
+\begin{proof} Adversary answers 0 until one point is unqueried; that point may be the unique satisfier. \end{proof}
+Quantum analogue $\Omega(2^{n/2})$ is the BBBV theorem (KNOWN THEOREM, recalled). This model is \emph{irrelevant} to P vs NP: a white-box algorithm sees the wires.
+
+\begin{lemma}[PROVED/EXACT: wire-probe model]\label{lem:probe}
+Let an algorithm access $C$ only by probing the label of a given leaf wire. On AND-trees with $n$ leaves, every deterministic correct algorithm probes all $n$ leaves in the worst case.
+\end{lemma}
+\begin{proof} $I_0$: leaf $i$ is literal $x_i$ (SAT). $I_{1,p,q}$: leaf $p$ replaced by $\neg x_q$, $q\ne p$ (UNSAT, since $x_q\wedge\neg x_q$). An algorithm that skips leaf $p$ cannot separate $I_0$ from $I_{1,p,q}$. \end{proof}
+This gives $\Omega(w)$ (linear-in-wires) and nothing more; it is consistent with the fixed-width acquisition bound in root \texttt{main.tex}.
+
+\paragraph{Parametrized shape.} The unconditional picture so far: $T(n,s)\ge \Omega(s)$ (white-box), $T\ge 2^n$ (black-box). Upper bound $O(2^n s)$ by brute force. The gap between $\Omega(s)$ and $2^{\Omega(n)}$ is the whole problem. CONDITIONAL: under SETH, no $2^{(1-\varepsilon)n}\mathrm{poly}(s)$ algorithm for $\CSAT$ (standard formulation; CNF-SAT$\le$CSAT trivially). Any parametrized statement ``$T(n,s)\ge f(n)\cdot s$'' is OPEN.
+
+\section{Circuit-size lower bounds as a side ladder}
+KNOWN THEOREMS (recalled, to be re-checked against primary sources next run): (i) the classical gate-elimination bound for $B_2$ is $2n-O(1)$ (Schnorr; Paul) for explicit functions (not $\mathrm{XOR}_n$, which costs $n-1$), improved to about $3.1n$ (Find--Golovnev--Hirsch--Kulikov; Li--Yang). Circuit-\emph{size} lower bounds for explicit functions are not circuit-SAT \emph{time} lower bounds; the link is only via the encoding of a hard function into the instance, which yields no time bound against white-box solvers. Classification: ANALOGY; missing bridge: an unconditional white-box theorem.
+
+\section{Open arrows and failed routes}
+\begin{enumerate}
+\item \OPEN: white-box $T(n,s)=\omega(s)$ for any fixed explicit family.
+\item \OPEN: exact tables for $n\ge 4$ and a pattern for min-wires of symmetric functions $\mathrm{MAJ}_n$ (need $n=4,5$).
+\item FALSIFIED/RETIRED: reading a wire count $w=2s$ alone as a time lower bound; Lemma~\ref{lem:probe} is only a linear acquisition bound.
+\end{enumerate}
+
+\section{Corpus link (j15marti/PNP)}
+Root \texttt{main.tex} (LSPV-5) reports P vs NP OPEN and the fixed-width $\Omega(N/\log N)$ acquisition bound, matching Lemma~\ref{lem:probe}. Many \texttt{research/agents/grok/*REWIRE*} reports mention circuit-SAT; not yet read in detail (next run).
+
+\section{Next steps}\label{sec:next}
+Run 2: implement $n=4$ exact synthesis (canonical-form BFS with symmetry reduction by input permutation, checkpointed per depth, each stage $\le 30$\,s); tabulate min wires for $\mathrm{MAJ}_4$, threshold-2-of-4. Read REWIRE reports for reusable lemmas. Verify literature claims in \S4 with primary sources.
+
+\section*{Run log}
+\begin{itemize}
+\item Run 1 (2026-10-24): created document, Lemmas 1--4, exact tables $n\le3$, fixed enumerator bug.
+\end{itemize}
+\end{document}
