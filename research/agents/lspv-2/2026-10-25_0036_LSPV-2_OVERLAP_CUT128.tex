@@ -1,0 +1,97 @@
+% LSPV-2 REPORT::OVERLAP-CUT128::2026-10-25T00:36:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,url,xurl}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{OVERLAP-CUT128: Source-Identity-Aware Pinned-Boundary Enumeration and Exact Schedule Optimization}
+\author{LSPV-2: Contraction and Constructive Closure}
+\date{25 October 2026}
+\begin{document}\maketitle
+\begin{center}
+\textbf{P versus NP OPEN; ARC-EDGE-90 OPEN.}\\
+\textbf{PROVED/EXACT within certified named scoped streams; independent review pending.}\\
+\textbf{COMPUTATIONAL finite tests; no unrestricted lower bound or all-input contractor.}
+\end{center}
+
+\section{Receiving obligation, hypotheses, and proof status}
+The principal requirement is a fully charged cofinal route in the simultaneous achievable exponent region E for one uniform all-input exact SAT decider per point, terminating inside the genuine Fortnow--Lipton--van Melkebeek--Viglas (FLMV) forbidden box
+\[
+ t<241/200,\qquad s<\beta(241/200)=11642479/23232400,\qquad
+ \beta(c)=\tfrac12((c+2)/c^2-c).
+\]
+The old generic product bound involving \(2\cos(\pi/7)\) is retired. Three falsifiable proposals were investigated. H1: the old objective \(2^{w_i+w_j}\) counts the number of \emph{source-consistent} entry/exit pairs; \textbf{FALSIFIED}, and replaced by an exact count. H2: width-bucket global scheduling from OPTIMAL-WINDOW-CUT126 remains optimal for the source-consistent count; \textbf{FALSIFIED} as an unqualified transfer because cost depends on source-name overlap, and an exact general DP is supplied. H3: reducing this count yields a favorable all-input ARC exponent successor; \textbf{NOT ESTABLISHED}; the validated low-width stream promise and nonmandatory nature of enumeration remain.
+
+\section{Exact source identity, compatible pairs, and optimized enumeration}
+Fix one \emph{valid closed source-named scoped stream} consisting of OPEN(v), CLAUSE(three signed distinct currently live sources), CLOSE(v). Every source name opens once, closes once, and all its clause occurrences fall between. Let \(L\) be the event count, \(S_i\) the live named set after event \(i\), \(w_i=|S_i|\), \(w_0=w_L=0\), and \(W=\max_i w_i\). The true SAT label is not provided to the solver. Assume a legal partition edge \((i,j)\) of event length at most \(b\), with minimum nonfinal length \(d=\max\{1,\lfloor b/2\rfloor\}\).
+
+\begin{theorem}[Exact compatible entry/exit assignment count; PROVED/EXACT]
+The number of pairs \((\alpha:S_i\to\{0,1\},\gamma:S_j\to\{0,1\})\) that agree on every original source variable in \(S_i\cap S_j\) is precisely
+\[
+ \boxed{Q(i,j)=2^{|S_i\cup S_j|}
+ =2^{w_i+w_j-|S_i\cap S_j|}.}
+\]
+Consequently, an \emph{eager policy that tests every source-consistent pair} has the exact candidate-count objective
+\[
+ \boxed{\widehat C(P)=\sum_{(i,j)\in P}Q(i,j).}
+\]
+This is not a lower bound for an arbitrary SAT decider, nor even for a reachability-filtered or memoized named-pinning solver.
+\end{theorem}
+\begin{proof}
+An assignment on \(S_i\cup S_j\) restricts to a unique compatible pair. Conversely, two assignments agreeing on the intersection glue to a unique assignment on the union. The two maps are inverse. A candidate using opposite values for the same persistent source can be rejected without constructing a child. A global satisfying assignment still requires the source-named compatibility across \emph{all} successive cuts, as independently established by SCOPED-BLOCK-REBUILDER92.
+\end{proof}
+The older quantity \(C_{\times}(P)=\sum2^{w_i+w_j}\) is a valid \emph{upper proxy}, but may overcount by \(2^{|S_i\cap S_j|}\) on an individual edge. This corrects the metric used in OPTIMAL-WINDOW-CUT126 and LINEAR-SPACE-CUT-REPLAY127 when the intent is to count actual consistent pin candidates. It does not invalidate those papers' exact optimization theorems for their expressly declared \(C_{\times}\) proxy.
+
+\begin{theorem}[Identity-aware optimal schedule; PROVED/EXACT, restricted]
+For a fully validated named source, the minimum \(\widehat C\) over legal partitions is obtained exactly by
+\[
+ D_0=0,\qquad
+ D_j=\min_{\substack{\max(0,j-b)\le i<j\\ j=L\ {\rm or}\ j-i\ge d}}
+ \left[D_i+2^{|S_i\cup S_j|}\right].
+ \tag{1}
+\]
+Storing the actual cut sets and a predecessor table gives an \(O(LbW)\)-word-operation upper bound and \(O(L(W+1))\) live word entries, after source validation, with comparison/arithmetic costs on integers of \(O(W+\log L)\) bits. A conservative bit work bound is \(O(N\operatorname{polylog}N+Lb(W\log N+\log L))\), with \(O(L(W+1)\log N)\) writable bits, including all stored named sets and predecessor/cost arrays. Costs of generating/querying children are separate.
+\end{theorem}
+\begin{proof}
+An optimal path to \(j\) ends in one eligible predecessor \(i\), and its earlier path must itself minimize the additive objective. This establishes (1) by induction. Full source validation pays header/field decoding and global name freshness. Store \(S_i\) as sorted source-ID lists, each of length at most \(W\). A sorted merge computes \(|S_i\cup S_j|\) in \(O(W)\) word comparisons. There are \(O(Lb)\) candidate edges; the integer maximum is at most \(L2^{2W}\). Source-name comparisons use \(O(\log N)\)-bit identifiers and costs use \(O(W+\log L)\) bits. The listed conservative time and live-memory accounting follows. Outputting an actual schedule requires paid predecessor storage. This algorithm is not claimed to have the earlier \(O(b+W)\) writable-space guarantee.
+\end{proof}
+\paragraph{Why the width-only fast algorithm cannot simply be inherited.}
+Two predecessors with equal cardinality can have different intersection with a fixed successor. The exact edge cost depends on \emph{which} original names survive. A queue retaining only the cheapest predecessor for each width can discard a more expensive predecessor with a much cheaper compatibility-aware edge. The original certified stream enforces interval persistence, so a supposed proof must respect monotone survivor sets; merely using two arbitrary set snapshots is not enough. Equation (1) avoids this issue. The possibility of a faster source-aware specialized minimizer is OPEN.
+
+\section{Explicit both-label exponential overcount construction}
+For every integer \(h\ge3\), create \(h\) OPEN events for persistent sources \(x_1,\ldots,x_h\), then \(10h\) proper ternary CLAUSE events, and finally \(h\) CLOSE events. The first eight clauses are the eight signings of \(x_1\vee x_2\vee x_3\). This is UNSAT. The matched SAT version replaces the all-negative clause with a duplicate all-positive clause; setting every original source TRUE satisfies its clauses. Insert one positive clause \((x_1\vee x_2\vee x_v)\) for each \(v\ge4\), and fill the remaining slots with \((x_1\vee x_2\vee x_3)\). Both labels use the same source names, unsigned ordered clause supports and event widths. Ordinary proper CNF permits duplicate clauses.
+
+Take \(L=12h\), block limit \(b=4h\), minimum nonfinal block length \(d=2h\). A partition needs at least three edges. Exactly three edges forces cuts \((0,4h,8h,12h)\). Both internal cut sets equal all \(h\) persistent sources. A partition with four or more edges has its first two cuts inside the all-live middle, and necessarily adds another positive-cost edge, so cannot improve either three-edge objective. Hence
+\[
+ \boxed{\min C_{\times}=2^{2h}+2^{h+1},\qquad
+ \min\widehat C=3\cdot 2^h.}
+\]
+The ratio is \((2^h+2)/3\), exponentially large in \(h\). Because \(N=\Theta(h\log h)\), this family has \(W=\Theta(N/\log N)\); it is \emph{outside} the sublogarithmic-width promise used for ARC restricted contraction. On a promised \(W=o(\log N)\) family, overlap improvements are at most \(2^W=N^{o(1)}\) per edge and cannot alone improve an exponent. The result improves a truthful enumeration ledger, not an all-input achievable pair.
+
+\section{Computational audit and adaptive-state ledger}
+A standard-library Python reference implementation used seed 202610250036. It explicitly checked compatible-pair counting against brute pairs, fully source-validating trace generation, independent exact shortest-path optimization, and for small \(h\) whole-source brute-force SAT labels and independently enumerated named-block relations. The matched persistent-core SAT/UNSAT controls were checked at \(h=3,4,6,8,10,12,16\); direct named-gluing controls used \(h=3,4,6\). It audited 450 deterministic random proper-CNF scoped SAT streams with varying lifetimes, 35 independent small shortest-path recalculations, and found 116 cases where the two optimum cut paths differ. The largest observed cost of the old-optimal path under the true \(\widehat C\), divided by the new optimum, was \(128/40=3.2\). A further exact signed same-support both-label pair at seed 84 had 45 events: \(C_\times\)-optimal path \((0,12,29,45)\) costs 2056 under \(\widehat C\), whereas \(\widehat C\)-optimal path \((0,8,21,38,45)\) costs 776. There were 1525 assertion-accounted checks and zero discrepancies. These are finite \textbf{COMPUTATIONAL} results, not physical FLMV machine transitions, flips or live bit-time measures.
+
+\paragraph{State transition audited.}
+Before a cut, state holds an indexed original source, the currently acquired source-name sets, prefix optimum/caches and a resource budget, with no true label. Validating the grammar and identifying \(S_i\) requires charged source reads, freshness recognition and writable dictionaries. Candidate rules include direct SCC/Horn/affine decisions, direct width-DP, eager or reachability-filtered named pins, and exact unrestricted fallback. The tested strategy chooses source-consistent enumeration scheduling and updates its DP state using \(Q(i,j)\); correctness of the objective comes from the theorem, while SAT correctness separately requires exact named child satisfiability and joining. Charge all source/work reads, all writes including unchanged-value writes, selection and failed recognizers, source-name comparisons, every generated child bit/header, cache/replay, reconstruction and peak live writable bits. Actual temporal state flips and cumulative bit-time are separate metrics and were not measured by the Python counters. No fixed strategy menu is taken as coverage of every algorithm. SAT can stop with one witness or an exact positive decision; UNSAT needs no specified refutation.
+
+\section{Gap-to-evidence and archive coverage}
+\textbf{FILLED restricted:} exact union-count lemma, recurrence, fully specified conservative word/bit bounds, both-label overcount construction. \textbf{COMPUTATIONAL:} named-gluing and schedule comparisons. \textbf{PARTIAL/RESTRICTED:} optimized scheduling for a promised valid closed stream, with memory linear in stored cut names; previously verified Role-3 child semantics inherited. \textbf{FALSIFIED/RETIRED as transfer:} equating independent boundary assignments to actual consistent candidates; claiming width-only bucket optimality for identity-aware costs; claiming a favorable all-input exponent because an eager enumeration proxy shrinks. \textbf{OPEN:} an all-input source-normalization/child-compatibility route, a single jointly achievable favorable SAT time-space pair successor, any cofinal finite route into FLMV, and P versus NP.
+
+\paragraph{CORPUS REVIEWED and duplication audit.}
+Read current repository root \texttt{main.tex} LSPV-2 region (blob 2a6adb6d), \texttt{main13.tex} (87dbaad5), \texttt{AGENTS.md} (c5265db), \texttt{CODEX.md} (754999f), research skill (b8df83a), original MULTICHANNEL1 (3d92615), PCLOSE1-R1 (22b8aa6), Role-2 CUT126 report and handoff (f47aa19 handoff), Role-2 REPLAY127 report (a184dc0), Role-3 SCOPED-BLOCK-REBUILDER92 original report and executable (efa04f0 and 353a085), Role-4 SCOPE-FRESHNESS91 handoff (a1d7220), Role-1 DEGREE-MATCH-LADDER132 report and handoff (e25c7a and 3a4d80), Role-5 BOUNDARY-SUPPORT-UNIVERSALITY127 original (f01e5c), and relevant TASK-004/TASK-005 original bodies. Retrieved original 27 September ARC Drive document ID 1QirzuNPCG-CrE3EX6WweqsPdDbtoblCDEE4YI0HGyC0, 221 paragraphs, revision reported by connector. Repository searches included \texttt{HEREDITARY-SCOPED10}, \texttt{MULTICHANNEL1}, \texttt{PCLOSE1-R1}, \texttt{consistent boundary pairs}, and \texttt{overlap-aware cut}. The predecessor's report sentinel was available and nonblank. This is a \emph{targeted live tranche}, not a new exhaustive repository crawl; the inherited pinned 3532-file hash/keyword census was not repeated or promoted to complete mathematical reading. Unread queue: original HEREDITARY-SCOPED10 executable, broad Drive LOG/BOOL/SIL pagination, many old root main2--main12 mathematical bodies, and most historical repository sources. A negative keyword search does not establish absence.
+
+\paragraph{What changed relative to ROOT MAIN.}
+CUT126/REPLAY127 remain correct for their stated product proxy, but that proxy is not the exact source-compatible candidate count. This report fills that narrow accounting gap, supplies a stronger restricted optimizer (without the prior space improvement), and explicitly declines promotion to an ARC edge. No conflict with SCOPED-BLOCK-REBUILDER92's existing rejection of inconsistent pins occurs; this report changes the objective, not the semantics.
+
+\paragraph{Transfer taxonomy and next test.}
+Freuder's bounded-width CSP work directly supports the tractable restricted context, not a universal normalizer. Control-theory potential and min-plus shortest-path analogies are useful, but cannot by themselves prove universal SAT time. Cryptographic hash/Schur-square analogies supply no source-to-machine theorem here. The most discriminating next artifact is the full original HEREDITARY-SCOPED10 compiler if recovered; otherwise modify the available SCOPED-BLOCK-REBUILDER92 to schedule cuts by actual \(\widehat C\) and compare paid ordinary child bit volume, cache use and peak work bits on both-label high-width GRID-CLONE-BRAMBLE89 and nonlinear ROOT-HARD-PROJECTION129. Demand genuine recursive eligibility, exact named compatibility and a simultaneously achieved all-input machine before marking ARC-EDGE-90 FILLED.
+
+\begin{thebibliography}{9}
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas, \emph{Time-Space Lower Bounds for Satisfiability}, J. ACM 52(6), 835--865 (2005). DOI: 10.1145/1101821.1101822.
+\bibitem{freuder} E. Freuder, \emph{Complexity of K-Tree Structured Constraint Satisfaction Problems}, AAAI (1990), 4--9.
+\bibitem{role3} LSPV-3, \emph{SCOPED-BLOCK-REBUILDER92}, \texttt{research/agents/lspv-3/2026-10-24\_2108\_LSPV-3\_SCOPED\_BLOCK\_REBUILDER92.tex}.
+\bibitem{role2} LSPV-2, \emph{OPTIMAL-WINDOW-CUT126} and \emph{LINEAR-SPACE-CUT-REPLAY127}, project repository (2026).
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::OVERLAP-CUT128
