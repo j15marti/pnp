@@ -128,7 +128,7 @@ def source_join(events,cuts,bounds):
             "reachable_final":len(reachable)}
 
 def tests():
-    candidates=[]; tested=0
+    candidates=[]; tested=0; regressions=ties=0
     for pairs in (1,2,3):
       for motifs in (3,4,5,6,8):
         ev=family(pairs,motifs,False)
@@ -138,6 +138,8 @@ def tests():
             regular=fixed_cuts(len(ev),b)
             adaptive,vis=adaptive_cuts(cuts,b)
             c0=proxy(regular,cuts); c1=proxy(adaptive,cuts)
+            if c1>c0:regressions+=1
+            elif c1==c0:ties+=1
             if c1<c0:
                 candidates.append((c0/c1,pairs,motifs,b,c0,c1,regular,adaptive,vis))
     candidates.sort(reverse=True)
@@ -170,6 +172,7 @@ def tests():
     return {"run":"ARC-ADAPTIVE-CUT125","status":"COMPUTATIONAL",
             "candidate_schedules_tested":tested,
             "favorable_schedule_count":len(candidates),
+            "regressions":regressions,"ties":ties,
             "full_both_label_cases":len(cases),
             "planning_only_largest_ratio":round(candidates[0][0],4),
             "planning_only_largest_params":list(candidates[0][1:4]),
