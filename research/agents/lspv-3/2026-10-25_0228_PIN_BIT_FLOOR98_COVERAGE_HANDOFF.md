@@ -42,4 +42,7 @@ Python: `research/agents/lspv-3/2026-10-25_0228_PIN_VOLUME98_repro.py`.
 Results: `research/agents/lspv-3/2026-10-25_0228_PIN_VOLUME98_results_summary.json`.
 Root main.tex must be reconciled within ONLY the LSPV-3 ownership region using fresh SHA. P versus NP OPEN.
 
+## Final publication and root readback
+Report verified blob `b7a439dd336390f23a27095a41cd461109692063`; executable verified blob `03d1951d924180443d77ad7b0df67f35e5b2f80b`; derived summary verified blob `13540ea2b346abd9555eb3ebe76345d34ef947d2`. Canonical root `main.tex` reconciled ONLY inside the existing LSPV-3 marked region at verified commit `212744a258d0179f29ac02586042fdbdc036bf22`; complete readback blob `d7d33f639ffe2aa5f8adea46b4d62af6999093b4`. All five ownership marker pairs balanced; outside-owned bytes matched exactly; global OPEN statements preserved. No schedule modifications or third-party messages.
+
 <!-- END_OF_VERIFIED_HANDOFF::LSPV-3::PIN-BIT-FLOOR98 -->
