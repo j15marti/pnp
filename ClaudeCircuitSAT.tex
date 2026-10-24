@@ -1,0 +1,113 @@
+% ClaudeCircuitSAT LIVING DOCUMENT::CSAT-LADDER-0001::2026-10-24
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,url}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\PROVED}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\title{Claude Circuit-SAT Lower-Bound Ladder\\\large (living document; hourly updates)}
+\author{Claude scheduled routine}
+\date{Last updated: 24 October 2026, run CSAT-LADDER-0001}
+\begin{document}\maketitle
+\begin{center}\fbox{\parbox{0.92\linewidth}{\textbf{Status: P versus NP remains OPEN.}
+Nothing here is a superpolynomial lower bound for Circuit-SAT. Rungs below are exact small cases and
+restricted-model bounds; the load-bearing arrow (general-circuit time lower bound) is \OPEN.}}\end{center}
+
+\section{Goal and conventions}
+Goal: a (possibly parametrized) lower bound for an NP-complete Circuit-SAT problem, built by a ladder:
+start from the simplest circuit, add inputs one at a time, and track the minimum number of wires needed.
+
+\paragraph{Wire model.} A circuit is a DAG over inputs $x_1..x_n$ with fan-in-2 gates from a basis
+$\Omega$ ($B_2$ unless stated; negation free). $g(C)$ = gates, $W(C)=2g(C)$ = wires between nodes
+(output edge not counted), fan-out $\phi(v)$ = out-degree. For $f$: $g(f)=\min_C g(C)$, $W(f)=2g(f)$.
+Two measures are tracked separately, never conflated:
+\begin{enumerate}
+\item \textbf{Construction cost} $W(f_n)$: wires needed to build the circuit for the $n$-input function.
+\item \textbf{Solving cost}: resources (probes or time) needed to decide SAT of a circuit \emph{given as input}
+(wire list). Parameters: $n$ (inputs), $w$ (wires), $\phi$ (max fan-out), tw (treewidth of circuit graph).
+\end{enumerate}
+
+\section{Rung 0--3: exact construction cost (\PROVED/\COMP)}
+\begin{lemma}[connectivity floor, \PROVED]\label{lem:conn}
+If $f$ depends on all $n\ge1$ inputs, any fan-in-2 circuit has $g\ge n-1$, hence $W\ge 2(n-1)$; tight for
+$\mathrm{AND}_n,\mathrm{OR}_n,\mathrm{XOR}_n$.
+\end{lemma}
+\begin{proof} Restrict to the cone of the output: $g$ gates, $2g$ edges. Each of the $n$ inputs has out-degree $\ge1$
+and each gate except the output has out-degree $\ge1$, so $2g\ge n+(g-1)$, i.e.\ $g\ge n-1$.
+A balanced or chain tree of one gate type attains it. \end{proof}
+
+\paragraph{Exhaustive computation} (\texttt{experiments/circuitsat/exact\_small.py}, output
+\texttt{results/circuitsat\_exact\_small.json}, runtime $\approx$9\,s, one stage). Exact minimum gate count over all
+$2^{2^n}$ functions, $B_2$ basis, BFS over sets of computed functions; exact formula leaf count by DP closure.
+\begin{center}\begin{tabular}{rrrrl}\toprule
+$n$ & \#functions & $\max g(f)$ & $\max W(f)$ & distribution of $g$ (count by $g=0,1,2,\dots$)\\\midrule
+1 & 4 & 0 & 0 & 4\\
+2 & 16 & 1 & 2 & 6, 10\\
+3 & 256 & 4 & 8 & 8, 30, 114, 80, 24\\\bottomrule\end{tabular}\end{center}
+Formula leaf counts for $n=3$: $L=g+1$ for every function with $g\ge1$ (max $5$); no function of three variables
+separates circuits from formulas. Separation first appears at $n\ge4$ (not yet computed). Status: \COMP.
+The 24 hardest 3-input functions (4 gates, 8 wires) are the XOR/majority-like class; compare $\mathrm{AND}_3$ with $g=2$.
+
+\section{Rung $\infty$: solving cost in a restricted model}
+\paragraph{Probe model.} The instance is a wire list; an algorithm reads one entry (a leaf's label) per probe.
+\begin{proposition}[leaf-collision SAT, \PROVED in the probe model]\label{prop:probe}
+Let $I_{n,m}$ be AND-chains with $n$ leaves, leaf $i$ labelled by a literal $x_{v_i}^{s_i}$, $v_i\in[m]$, $m\ge 2n$,
+$s_i\in\{\pm\}$. The instance is UNSAT iff some variable appears with both signs. Every deterministic
+probe algorithm needs exactly $n$ probes (for $n\ge2$).
+\end{proposition}
+\begin{proof} Upper: read all $n$. Lower: answer all probes with distinct variables (SAT). If leaf $j$ is unread
+and another leaf $i$ was read, change leaf $j$ to $x_{v_i}^{-s_i}$: UNSAT, consistent with all answers.
+So all leaves must be read. \end{proof}
+Parametrized form: with $w=2(n-1)$ wires, probes $=w/2+1$. This is the \emph{acquisition} bound already
+catalogued in root \texttt{main.tex} (AGGREGATION-CEILING91, SHARED-INTERFACE-TABLE92): it is linear in
+instance size and does not amplify under independent composition. It is the correct floor for reading the
+input, not a time lower bound for general algorithms.
+
+\section{Known upper-level facts (\KNOWN)}
+\begin{itemize}
+\item Best explicit $B_2$ circuit lower bound is $(3.1-o(1))n$ gates for affine dispersers (Li--Yang, STOC 2022,
+ECCC TR21-023), by gate elimination, improving Find--Golovnev--Hirsch--Kulikov $(3+1/86)n$.
+De Morgan basis: $5n-o(n)$ (Iwama--Morizumi). These bound \emph{construction} cost of explicit functions
+and say nothing about SAT \emph{solving} time.
+\item Gate elimination natively gives parametrized statements ``$\ge cn$ wires/gates for fan-out/degree class''; this is the
+natural parameter space for our ladder: bound as a function of $(n,\phi,\text{basis})$.
+\end{itemize}
+
+\section{Ladder table (living)}
+\begin{center}\begin{tabular}{llll}\toprule
+Rung & Object & Bound & Status\\\midrule
+0 & $n=1$ wire & $W=0$ & \PROVED\\
+1 & $\mathrm{AND}_n$ & $W=2(n-1)$, solving probes $=n$ (Prop.~\ref{prop:probe} family) & \PROVED\\
+2 & all $f$, $n\le3$ & $\max W=8$ & \COMP\\
+3 & all $f$, $n=4$ & known max $g=7$ in literature; our run not yet done & \OPEN (to compute)\\
+4 & explicit family, $n\to\infty$ & $(3.1-o(1))n$ gates & \KNOWN\\
+5 & Circuit-SAT time, general algorithms & none beyond input length & \OPEN\\\bottomrule\end{tabular}\end{center}
+
+\section{Barrier audit}
+Natural proofs, relativization, algebrization apply to any attempt to jump from rung 4 to rung 5.
+Gate elimination is not known to avoid the 5n-type linear ceiling; an exact ladder for increasing $n$ is a data source,
+not a proof. A rising $W(f_n)$ for a fixed explicit family would give circuit lower bounds, not SAT time bounds,
+unless a bridge theorem (e.g.\ a uniform-algorithm-to-small-circuit compression with advice) is supplied: \CAND\ /\OPEN.
+
+\section{Cross-reference to repository work}
+Root \texttt{main.tex}: ``Proof spine'' (fixed-width implication chain, $\Omega(N/\log N)$ word-probe acquisition),
+DENSE-COUPLING-FIREWALL90, AGGREGATION-CEILING91, SHARED-INTERFACE-TABLE92. Takeaway used here: every
+composition/density mechanism tested so far leaves cost at input-order; Prop.~\ref{prop:probe} is an instance.
+Nothing in the corpus closes the arbitrary-decider bridge.
+
+\section{Next steps (queue)}
+\begin{enumerate}
+\item Rung 3: exact $g(f)$ for all 4-input functions (222 NPN classes) via classwise DP; split into $\le30$\,s chunks by class.
+\item First circuit-vs-formula separation: smallest $f$ with $g(f)<L(f)-1$.
+\item Parametrized probe bounds with fan-out cap $\phi$ and tw: encoded instance families with reuse of subcircuits (probe model where shared gates are referenced by pointer).
+\item Search for a monotone/size measure on SAT instances that grows superlinearly in wires under a \emph{provable} model (e.g.\ read-once branching programs, DPLL tree size on the ladder instances).
+\end{enumerate}
+
+\section*{Run log}
+\begin{tabular}{ll}CSAT-LADDER-0001 & created document; rungs 0--3, Lemma 1, Prop.~1, enumeration $n\le3$.\end{tabular}
+\end{document}
+% END_OF_LIVING_DOC::CSAT-LADDER-0001
