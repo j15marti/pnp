@@ -1,0 +1,67 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT\\\large Living document}
+\author{Hourly automated run}
+\date{Last updated: 2026-10-24 (run 1)}
+\begin{document}
+\maketitle
+\noindent\textbf{Status discipline:} PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED. \textbf{P versus NP remains open; nothing here proves a super-polynomial lower bound.}
+
+\section{Goal and model}
+Circuit-SAT: given a Boolean circuit $C$ over $n$ inputs with $m$ fan-in-2 gates (basis $B_2$, all 16 binary gates), decide $\exists x\ C(x)=1$. Two measures are tracked, grown step by step in $n$:
+\begin{itemize}
+\item $s(f)$: minimum gates (so $2s$ gate-input wires) of a circuit computing $f$ --- the \emph{construction cost} of an instance.
+\item $q(n,m)$: worst-case number of gate descriptions an algorithm must read (probe model) --- the \emph{solving cost} lower bound, possibly parametrized by $n$, $m$.
+\end{itemize}
+
+\section{Proved results (small, exact)}
+\begin{lemma}[Connectivity, PROVED/EXACT]\label{l:conn}
+If $f$ depends on all $n$ inputs, any $B_2$ circuit for $f$ has $\ge n-1$ gates and $\ge 2(n-1)$ gate-input wires.
+\end{lemma}
+\begin{proof} Each essential input has a path to the output; the union of these paths is a fan-in-2 DAG with one sink and $n$ sources, which needs $\ge n-1$ internal nodes (each gate merges at most two components). \end{proof}
+A function with a unique satisfying assignment and all $n$ variables essential (e.g.\ $\bigwedge_i \ell_i$) meets this, so $s=n-1$.
+
+\begin{lemma}[Probe lower bound, PROVED/EXACT]\label{l:probe}
+Any algorithm deciding Circuit-SAT for $m$-gate circuits by reading gate descriptions must read $\ge m$ gates in the worst case (for $m\ge n-1$).
+\end{lemma}
+\begin{proof} Let $C_0$ be the AND-chain on $n$ inputs padded to $m$ gates (padding gates are AND of the previous gate with itself, so every gate lies on the path to the output); $C_0$ is satisfiable. Replacing any single gate by the constant-0 gate gives an unsatisfiable $C_i$. An algorithm that skips gate $i$ cannot distinguish $C_0$ from $C_i$. \end{proof}
+This is a \emph{trivial} $\Omega(m)$ bound: it counts reading the input, not search.
+
+\section{Computational ledger (exact BFS, $B_2$, constants free)}
+Script: \texttt{experiments/circuitsat/min\_circuit\_size.py N} (state = set of computed truth tables; each run $<$30\,s; no chunking needed for $n\le3$). Results: \texttt{experiments/circuitsat/result\_n*.json}.
+\begin{center}
+\begin{tabular}{@{}lcccccc@{}}\toprule
+$n$ & $\#$funcs & $s=0$ & $s=1$ & $s=2$ & $s=3$ & $s=4$\\\midrule
+1 & 4 & 3 & 1 & & &\\
+2 & 16 & 4 & 12 & & &\\
+3 & 256 & 5 & 33 & 114 & 80 & 24\\\bottomrule
+\end{tabular}
+\end{center}
+Unique-satisfying-assignment functions: $n=2$: $s=1$ (4 functions); $n=3$: $s=2$ (8 functions); i.e.\ $s=n-1$ (COMPUTATIONAL, consistent with Lemma~\ref{l:conn}). Max $s$ for $n=3$ is 4. The $n=4$ run does not fit the 30\,s rule as one stage and needs checkpointed layering.
+
+\section{Parametrized picture}
+Brute force: $O(2^n m)$.
+\begin{center}
+\begin{tabular}{@{}lll@{}}\toprule
+Bound & Status & Source\\\midrule
+$q\ge m$ (read the instance) & PROVED/EXACT & Lemma~\ref{l:probe}\\
+$s\ge n-1$ for unique-SAT instances & PROVED/EXACT & Lemma~\ref{l:conn}\\
+no $2^{(1-\epsilon)n}\mathrm{poly}(m)$ algorithm & CONDITIONAL (SETH) & CNF-SAT reduces to Circuit-SAT\\
+unconditional $\omega(m)$ solving cost in a general model & OPEN & ---\\
+explicit-function gate lower bound $\approx3.1n$ & KNOWN THEOREM (Li--Yang 2022; to be re-verified) & not a SAT-time bound\\\bottomrule
+\end{tabular}
+\end{center}
+Parameter candidates: $k$ = treewidth/pathwidth of $C$ (DP gives $2^{O(k)}\mathrm{poly}(m)$, so a lower bound should be stated in $k$), $d$ = depth.
+
+\section{Corpus link (light review this run)}
+Repository files \texttt{research/agents/grok/*REWIRE*} and others mention circuit-SAT; not audited in depth this run. TODO: read root \texttt{main.tex} proof spine and check whether any restricted-model bound (e.g.\ STREAM86 bit-time/space product) applies.
+
+\section{Next steps}
+\begin{enumerate}
+\item Checkpointed $n=4$ exact $s(f)$ table (layer-by-layer, resume files).
+\item Define a restricted solver model (e.g.\ read-once branching over wires) and prove a bound in $n$ exceeding the trivial $m$; test exhaustively for small $n$.
+\item Track minimal simultaneously-live wires (pathwidth) as the step parameter.
+\item Audit relativization/natural-proofs/algebrization barriers for any claimed bound.
+\end{enumerate}
+\end{document}
