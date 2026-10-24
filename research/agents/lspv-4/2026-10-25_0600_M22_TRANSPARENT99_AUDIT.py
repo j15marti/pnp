@@ -26,9 +26,11 @@ def encode(k,clauses):
 
 def parse_candidate(src):
     N=len(src)
-    if any(ch not in '01' for ch in src):return None
-    i=src.find('0')
-    if i<0 or i > (N+1).bit_length()+1:return None
+    # Input domain is binary strings; scan at most O(log N) header bits.
+    # An unterminated long unary header can be rejected without reading it all.
+    maxw=(N+1).bit_length()+1
+    i=src.find('0',0,min(N,maxw+1))
+    if i<0 or i>maxw:return None
     w=i
     if w+1+w+w+1>N:return None
     a=w+1
