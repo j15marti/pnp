@@ -68,17 +68,27 @@ def decide(n,clauses,mask,rhs):
             v=reps[c]
             return sol[v//2] if v%2==0 else 1-sol[v//2]
         D={c for c in reps if not value(c,a) and value(c,b)}
+        edges={c:set() for c in D};indeg={c:0 for c in D}
+        for u,ws in enumerate(G):
+            cu=co[u]
+            if cu not in D:continue
+            for v in ws:
+                cv=co[v]
+                if cv in D and cv!=cu and cv not in edges[cu]:
+                    edges[cu].add(cv);indeg[cv]+=1
+        ready=[c for c in D if indeg[c]==0];topo=[]
+        while ready:
+            c=ready.pop();topo.append(c)
+            for v in edges[c]:
+                indeg[v]-=1
+                if not indeg[v]:ready.append(v)
+        assert len(topo)==len(D),'Condensation is acyclic'
         t=a[:]
-        while D:
-            # Sink in the SCC-DAG induced by the still-needed positive flips.
-            sinks=[c for c in D if not any(co[v]==c and co[z] in D and co[z]!=c
-                                            for v in range(2*n) for z in G[v])]
-            assert sinks
-            c=min(sinks);ids=groups[key(reps[c]//2)]
+        for c in reversed(topo):
+            ids=groups[key(reps[c]//2)]
             for k in ids:t[k]^=1
             charges['group_flips']+=1
             assert check(t,clauses)
-            D.remove(c)
             if parity(t,mask)==rhs:return True,t,'ODD-SCC-ORBIT',dict(charges)
         raise AssertionError('Odd-weight flexible SCC flip must change parity')
     return False,None,'PARITY-FIXED',dict(charges)
