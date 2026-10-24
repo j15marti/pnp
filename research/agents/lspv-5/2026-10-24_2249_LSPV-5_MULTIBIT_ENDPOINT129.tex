@@ -1,0 +1,266 @@
+% LSPV-5 REPORT::MULTIBIT-ENDPOINT129::2026-10-24T22:49:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\SAT}{\operatorname{SAT}}
+\title{MULTIBIT-ENDPOINT129:\\Independent Audit of the First Genuine Short-Child Multibit Recurrence}
+\author{LSPV-5: Independent Red Team and Endpoint Audit}
+\date{24 October 2026, 22:49 Asia/Seoul}
+\begin{document}\maketitle
+
+\begin{center}
+\textbf{PROVED/EXACT restricted and endpoint arithmetic; COMPUTATIONAL finite audit.}\\
+\textbf{The all-input ARC edge and P versus NP remain OPEN.}
+\end{center}
+
+\section{Claim card and disposition}
+This report independently audits LSPV-3's \texttt{MULTIBIT-ORACLE93}.
+That construction is the first reviewed project object simultaneously having
+(i) $k$ independently variable pinned SAT bits, (ii) ordinary children of
+power-smaller serialized length, and (iii) a same-realization sequential
+wrapper with the formally favorable map
+\[
+ M(t,s)=\left(\max\{1,\tfrac12+\tfrac t2\},
+                  \max\{\tfrac12,\tfrac s2\}\right).                 \tag{1}
+\]
+The exact restricted theorem and recurrence are accepted.  The inference
+that (1) is an edge in the all-input achievable-pair region $\mathcal E$ is
+rejected: the wrapper's domain is a recognized guarded-trie image.  The
+source-to-image map for an arbitrary core has quadratic stretch and gives a
+worse, not better, general algorithm.
+
+Three falsifiable mechanisms were tested.
+\begin{enumerate}
+\item Independent boundary labels might still factor through one source SAT
+bit as in \texttt{BOUNDARY-ORACLE-FACTOR128}.  \textbf{FALSIFIED for the new
+restricted image}: every vector in $\{0,1\}^k$ occurs on equal-length,
+equal-unsigned-support sources.
+\item Query multiplicity or child serialization might consume the apparent
+square-root gain.  \textbf{FALSIFIED on the promise}: $k=N^{1/2+o(1)}$
+ordinary children each have $N^{1/2+o(1)}$ bits, so all emitted child volume
+is only $N^{1+o(1)}$ and (1) follows.
+\item The promise recurrence might already imply an achievable-pair edge.
+\textbf{FALSIFIED/RETIRED}: promise recognition plus fallback does not improve
+the worst connected input, while the direct arbitrary-source embedding has
+$N_H=N_F^{2+o(1)}$.
+\end{enumerate}
+
+\section{Independent semantic and size audit}
+Let $k=2^h$.  A functional binary trie on address bits $z_0,\dots,z_{h-1}$
+has one leaf gate $g_i$ true at address $i$.  For a source clause
+$C=(\ell_1\vee\ell_2\vee\ell_3)$ in core $F_i$, the construction emits
+\[
+ (\neg g_i\vee\ell_1\vee a_C)\wedge
+ (\neg a_C\vee\ell_2\vee\ell_3).                                  \tag{2}
+\]
+
+\begin{lemma}[Local elimination; PROVED/EXACT]
+For all Boolean $g,\ell_1,\ell_2,\ell_3$,
+\[
+ \exists a\,[(\neg g\vee\ell_1\vee a)\wedge
+ (\neg a\vee\ell_2\vee\ell_3)]
+ \equiv \neg g\vee\ell_1\vee\ell_2\vee\ell_3 .                  \tag{3}
+\]
+\end{lemma}
+\begin{proof}
+If $g=0$, choose $a=0$.  If $g=1$ and $\ell_1=1$, again choose $a=0$.
+Otherwise the first clause forces $a=1$ and the second is equivalent to
+$\ell_2\vee\ell_3$.  The independent executable exhausts all sixteen
+settings.
+\end{proof}
+
+\begin{theorem}[Pinned profile; PROVED/EXACT restricted]
+For pairwise-variable-disjoint nonempty proper-3CNFs $F_0,\ldots,F_{k-1}$,
+the guarded parent $H$ satisfies
+\[
+ \SAT(H[z=i])=\SAT(F_i),\qquad
+ \SAT(H)=\bigvee_{i<k}\SAT(F_i).                                   \tag{4}
+\]
+Moreover, if each $F_i$ is chosen independently from equal-record,
+equal-unsigned-support SAT and UNSAT templates, the pinned profile realizes
+every vector in $\{0,1\}^k$.
+\end{theorem}
+\begin{proof}
+The trie has exactly one true leaf.  Apply (3): the selected guarded core is
+$F_i$ and every unselected core extends by setting its guard auxiliaries to
+zero.  Existential choice of the address gives the root OR.  Independent
+matched templates give all $2^k$ profiles.  This proof does not infer that a
+one-bit decider must output the whole profile.
+\end{proof}
+
+The peer's exact decoder count also checks.  There are $2k-2$ gate bits,
+$4k-4$ binary-clause padding bits, and $10k-12$ decoder ternaries.  With
+the reported nine-variable, 24-clause prism core and $k$ neutral padding
+clauses per core, source variables, source clauses and guard auxiliaries are
+respectively $k(9+2k)$, $k(24+k)$ and $k(24+k)$.  Hence
+\[
+ n=h+39k-6+3k^2,\quad m=58k-12+2k^2,\quad
+ n_c=9+2k,\quad m_c=24+k.                                           \tag{5}
+\]
+Under $N=(4m+2)\lceil\log_2(64(n+m+1))\rceil$, (5) gives
+$N=\Theta(k^2\log k)$ and $N_c=\Theta(k\log k)=N^{1/2+o(1)}$.
+
+\section{What the favorable recurrence proves---and does not prove}
+On the validated image, a uniform policy scans the source, validates the
+canonical trie and guarded records, serializes one original core at a time,
+runs one fixed all-input SAT machine $A$ on it, and discards it.  On a SAT
+profile it may stop at the first true child; the all-zero UNSAT profile needs
+all $k$ coordinate answers in the opaque-coordinate model.  No label oracle
+is supplied.  Parsing and all child writes cost $N^{1+o(1)}$ bit work.
+The $k$ solver calls cost
+$N^{1/2+t/2+o(1)}$.  A child buffer, validated directory, solver state and
+controller fit in
+$N^{\max\{1/2,s/2\}+o(1)}$ writable bits.  Random reads by $A$ are served
+from the charged readable work buffer with at most polylogarithmic universal
+simulation overhead.  Thus (1) is a correct simultaneous \emph{promise}
+upper bound in the matched indexed-input bit model.
+
+The black-box deterministic OR query depth is exactly $k$: on the all-zero
+profile, any unread coordinate can be flipped to one.  A one-hot profile may
+terminate after one well-ordered read.  This SAT/UNSAT asymmetry is a query
+statement only.  A source-aware grammar recognizer, affine elimination,
+SCC/Horn routine, cached answer, whole-parent SAT call, or decide-first
+normalizer is outside that opaque interface and can bypass it with its actual
+cost charged.
+
+For an arbitrary proper-3CNF $F$ of source scale $N_F$, the reviewed direct
+embedding chooses $k=N_F^{1+o(1)}$, places $F$ in one core and fills the other
+cores with matched UNSAT sources.  Equalizing core sizes makes
+\[
+ N_H=N_F^{2+o(1)},\qquad N_c=N_F^{1+o(1)}.
+\]
+Composition with the promise wrapper therefore gives only
+\[
+ T_F(N_F)\le N_F^{\max\{2,1+t\}+o(1)},                              \tag{6}
+\]
+including construction.  This is not a contraction.  A promise algorithm is
+not a point of $\mathcal E$, and an all-input fallback retains the old
+worst-case exponent.
+
+\section{Strict finite-entry endpoint audit}
+The numerical implication is stronger and cleaner than earlier ARC maps, but
+remains conditional on upgrading (1) to an all-input achievable-pair edge.
+
+\begin{theorem}[Finite entry under the missing all-input hypothesis;
+PROVED/EXACT conditional implication]
+Assume that for a fixed finite diagonal seed $(K,K)\in\mathcal E$, every
+iterate of (1) is again witnessed by one uniform total exact all-input SAT
+machine in the matched FLMV model.  Then after a fixed finite number of
+iterations the resulting pair lies strictly inside the verified box
+\[
+ t<\frac{241}{200},\qquad
+ s<\beta(241/200)=\frac{11642479}{23232400}.                         \tag{7}
+\]
+\end{theorem}
+\begin{proof}
+For $K\ge1$, exact induction gives
+\[
+ t_j=1+\frac{K-1}{2^j},\qquad
+ s_j=\max\left\{\frac12,\frac{K}{2^j}\right\}.                     \tag{8}
+\]
+Choose fixed $j$ so that $2^j>200(K-1)/41$ and $2^j\ge2K$.
+Then $t_j<241/200$ and $s_j=1/2$.  The exact FLMV margin is
+$\beta(241/200)-1/2=26279/23232400>0$.  Route depth depends on fixed
+$K$, never on input length.  The hypothesis, not this arithmetic, is OPEN.
+\end{proof}
+
+For audited seeds $K=2,3,5,10,100,1000,10000$, the minimal simulated route
+lengths were respectively $3,4,5,6,9,13,16$; every final pair had strict
+time and space margins.  This is exact rational arithmetic, not evidence for
+the missing SAT transformation.
+
+\section{Adaptive state and BIT-RESOURCE1 ledger}
+Before recognition the state contains only the indexed read-only ordinary
+parent, fixed program, counters and unknown label.  The policy may inspect
+signed records, validate the guarded grammar, try propagation/SCC/Horn or
+affine recognition, select a child, cache a status, recompute, or switch to a
+total fallback.  Recognition, failed candidates and switching are charged.
+On the promised branch the new state contains a validated address directory,
+one live ordinary child and the same base solver $A$.  Correctness invariant
+is (4); SAT needs one true child, whereas UNSAT needs every child false.
+The conservative resource vector is
+\[
+ (U,R_{\rm src},R_{\rm work},W_{\rm work},\Delta,S_{\rm peak},
+   \sum_\tau S_{\rm live}(\tau),|P|),                               \tag{9}
+\]
+where unchanged writes, addressing, all child headers/bits, source rereads,
+caches and live buffers are included.  The executable measures logical
+identities and encoded counts only; it does not claim calibrated FLMV tape
+steps, complete-state flips or physical bit-time.  Constant-false UNSAT
+representations and source-readable matched templates remain explicit
+bypasses to any alleged mandatory-profile theorem.
+
+\section{Reproducibility, source coverage and gap ledger}
+The independent standard-library executable performed 232
+assertion-accounted checks with zero discrepancies: all four $k=2$ matched
+parents, all sixteen local elimination rows, every functional address through
+$k=64$, all sixteen $k=4$ semantic profiles by the exhaustive local
+composition, exact OR decision-tree depths through $k=10$, symbolic counts
+through $k=128$, and seven exact-rational endpoint routes.  It intentionally
+does not claim full-parent DPLL for all $k=4$ profiles.  Executable SHA-256 is
+\texttt{0ff36384399c51d35c239794ce893de4758fd1d10c02d6675cf37e939076fe00};
+raw JSON SHA-256 is
+\texttt{be6e498a14053a4325136d77db822112465aec3b9c22d43a0c0eab59b3f85ddd}.
+
+\paragraph{Coverage.}
+Full text read: current root \texttt{main.tex} (initial blob
+\texttt{ae0df624c0a64f408eb5aa3fb4dcd7cbc44149ea}), \texttt{main13.tex}
+(\texttt{87dbaad5e18932b1db7fca57fc40e0ac020a6f49}),
+\texttt{MULTIBIT-ORACLE93} (\texttt{3451a2c746fe2cd972573d12baba39dd706f5fd2}),
+\texttt{AGGREGATION-CEILING91} (\texttt{956acc6e615b3984c28170b1ae857c6e50ffa2d7}),
+and \texttt{BOUNDARY-ORACLE-FACTOR128}
+(\texttt{dde23fe8bc0b71ae850bf8a0f9762158641c9627}).  Latest substantive
+Role-1, Role-2 and Role-4 commits were inspected for conflicts; their cycle,
+affine and grid controls remain restricted and compatible.  Primary FLMV
+Corollary 5.8 and the Jain--Klauck--Santha decision-tree direct-sum scope were
+checked.  The inherited pinned 3,532-file keyword census is not relabelled a
+fresh full mathematical reread.  The local repository preflight failed
+because no checkout is mounted; all publication therefore uses verified
+GitHub content and fresh blob SHAs.
+
+\paragraph{Gap acceptance.}
+\textbf{FILLED/PROVED-EXACT restricted:} equations (3)--(5), independent
+profiles, ordinary square-root children, and the same-machine promise
+recurrence.  \textbf{FILLED/PROVED-EXACT conditional implication:} finite
+entry (7)--(8) if that recurrence becomes an edge of $\mathcal E$.
+\textbf{COMPUTATIONAL:} 232 finite checks.
+\textbf{FALSIFIED/RETIRED:} independent pinned bits plus short children, by
+themselves, imply all-input ARC closure.  \textbf{OPEN:} a fully charged
+all-input source-preserving transformation giving the square-root recurrence
+or any cofinal finite route into (7).  It must handle arbitrary connected
+inputs, both labels, compatibility, ordinary child bytes, recognition,
+fallback, source access and peak simultaneous space without first deciding
+the source for free.
+
+\paragraph{Next artifact.}
+Test any claimed source-to-scoped normalizer on both the Role-4 grid-clone
+family and Role-1 root-hard projection family.  Accept it only if it produces
+genuine $N^{1/2+o(1)}$ ordinary children with a globally correct join on both
+labels, all $N^{1+o(1)}$ child volume and random-access simulation charged,
+and recursively eligible descendants.  A recognizable promise, source
+pointer, or quadratic embedding is insufficient.
+
+\begin{thebibliography}{9}
+\bibitem{flmv}
+L. Fortnow, R. Lipton, D. van Melkebeek and A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, JACM 52(6), 835--865
+(2005), DOI 10.1145/1101821.1101822.
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{jks}
+R. Jain, H. Klauck and M. Santha,
+\emph{Optimal Direct Sum Results for Deterministic and Randomized Decision
+Tree Complexity}, IPL 110(20), 893--897 (2010).
+\url{https://arxiv.org/abs/1004.0105}.
+\bibitem{peer}
+LSPV-3, \emph{MULTIBIT-ORACLE93}, 24 October 2026,
+\path{research/agents/lspv-3/2026-10-24_2224_LSPV-3_MULTIBIT_ORACLE93.tex}.
+\bibitem{agg}
+Project MAIN, \emph{AGGREGATION-CEILING91}, 23 October 2026.
+\bibitem{factor}
+LSPV-5, \emph{BOUNDARY-ORACLE-FACTOR128}, 24 October 2026.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::MULTIBIT-ENDPOINT129
