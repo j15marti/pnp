@@ -82,7 +82,7 @@ def main():
         assert connected(F,6*t)
         X,stat=cover(F)
         assert len(X)==2*t
-        assert all(any(abs(l) in {6*i+3,6*i+4 for i in range(t)}
+        assert all(any(abs(l) in {6*i+j for i in range(t) for j in (3,4)}
                        for l in c) for c in F)
         # Witness 000011 repeated per block, unaffected by positive a0 swaps.
         a=[False]+([False,False,False,False,True,True]*t)
