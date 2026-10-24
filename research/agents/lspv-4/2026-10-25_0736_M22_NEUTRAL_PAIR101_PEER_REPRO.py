@@ -35,10 +35,8 @@ checks=0
 y=Y()
 assert star(y) and count(y,6)==20;checks+=2
 # Every independent old-port Boolean word extends by exactly the SAME new bits.
-source=norm([(1,2,3),(-4,-5,-6)])
-g=pair(source,source[1],source[0]) if False else None
-# The signed-regular source requirement is intentionally NOT bypassed.
-# Instead obtain the gadget by taking a real valid M22 source:
+# The signed-regular source requirement is not bypassed.
+# Evaluate the gadget on a genuinely valid M22 source:
 y1=pair(y,(1,2,3),(-4,-5,-6))
 assert star(y1);checks+=1
 for bits in product((0,1),repeat=6):
