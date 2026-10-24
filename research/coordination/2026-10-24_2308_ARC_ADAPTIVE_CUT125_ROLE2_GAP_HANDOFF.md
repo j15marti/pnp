@@ -12,11 +12,11 @@ A valid ARC edge requires an all-input uniform deterministic exact SAT machine a
 **M3, REJECTED as universal ARC transfer:** The cut rule, and even an extremely favorable C(P), say nothing about input conversion from **every ordinary SAT formula** into cheaply discoverable valid small-width scoped input, nor about worst-case joint time/space. Role4 GRID-CLONE-BRAMBLE89 constructs connected bounded-degree both-label families whose width survives a large explicit equality-clone calculus. Even if a new compiler breaks that calculus via semantic rewriting, its construction and exact witness compatibility remain to be proved and fully charged. Role3 PROJECTION-LIFT-JOIN94 shows under SAT in P that exact projection circuits exist with N^{O(K)} cost, not K-independent exponent improvement.
 
 ## Computational both-label controls
-253 source-defined schedule configurations scanned for planning proxy; six full proper-CNF source examples actually decided through independent whole-CNF DPLL, fixed-block pinned-child DPLL and new lookahead pinned-child DPLL. All six labels matched: three SAT and three UNSAT, with identical unsigned supports and actual source names. The six are purposefully selected favorable stress cases, not representative population data. Results:
+299 source-defined schedule configurations scanned for planning proxy, of which 253 were favorable; six full proper-CNF source examples actually decided through independent whole-CNF DPLL, fixed-block pinned-child DPLL and new lookahead pinned-child DPLL. All six labels matched: three SAT and three UNSAT, with identical unsigned supports and actual source names. The six are purposefully selected favorable stress cases, not representative population data. Results:
 - p=2, motifs=5, b=12, L=64: C fixed 1228 vs adaptive 24; SAT calls 574 vs 13 and serialized ordinary bits 1125084 vs 5830; UNSAT calls 573 vs 12 and bits 1124490 vs 5668.
 - p=2, motifs=3, b=13, L=44: C fixed 528 vs adaptive 12; calls 251 vs 8 SAT, 250 vs 8 UNSAT.
 - p=2, motifs=4, b=17, L=54: C fixed 680 vs adaptive 16; calls 297 vs 10 SAT, 296 vs 10 UNSAT.
-- The largest 1091x ratio among all 253 **planning-only** configurations (p=3,motifs=6,b=17) had no full child-join run.
+- The largest 1091x ratio among 253 favorable **planning-only** configurations (p=3,motifs=6,b=17) had no full child-join run.
 This measures actual executed Python DPLL calls and serialized bit counts, but *not* physical FLMV machine transitions, peak live bit space, flips or cumulative bit-time.
 
 ## Adaptive-state/resource ledger
@@ -34,7 +34,7 @@ SCOPED92 already proved global source-name correctness; new part is cheap observ
 Report: research/agents/lspv-2/2026-10-24_2308_LSPV-2_ARC_ADAPTIVE_CUT125.tex
 Runnable reproducer: research/agents/lspv-2/2026-10-24_2308_ARC_ADAPTIVE_CUT125_repro.py
 Machine-readable six-case summary: research/agents/lspv-2/2026-10-24_2308_ARC_ADAPTIVE_CUT125_results.json
-Complete 6467-byte original local auditor and 5114-byte extended raw JSON are in separately downloadable conversation artifacts; their transient container paths are NOT assumed accessible to peers.
+Complete 6571-byte original local auditor and 5149-byte extended raw JSON are in separately downloadable conversation artifacts; their transient container paths are NOT assumed accessible to peers.
 
 ## Exact next needed arrow
 **OPEN ARC-EDGE-90**: an all-input uniform exact constructor, with total paid validation, source-preserving compatibility, ordinary children of genuinely contracted bit length, cache and ancestor peak live writable-bit accounting, producing a new jointly achievable (t',s') or explicit finite cofinal route into FLMV. Next artifact: test a claimed source-to-valid-scoped normalizer on GRID-CLONE-BRAMBLE89 and NONAFFINE-WINDOW131, with two real child levels. If no such normalizer exists in original HEREDITARY-SCOPED10, mark it unavailable and do not substitute a schematic source algorithm.
