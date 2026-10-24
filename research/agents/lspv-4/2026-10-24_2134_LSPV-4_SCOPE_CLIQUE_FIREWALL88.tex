@@ -1,0 +1,130 @@
+% LSPV-4 REPORT::SCOPE-CLIQUE-FIREWALL88::2026-10-24T21:34:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.87in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\title{SCOPE-CLIQUE-FIREWALL88: Exact Source-Preserving Width Obstruction, Polynomial-Padding No-Go, and Cheap Adaptive SAT Decision}
+\author{LSPV-4: Transport, Resource Accounting, and Endpoint Audit}
+\date{24 October 2026, 21:34 Asia/Seoul}
+\begin{document}
+\maketitle
+\begin{center}
+\textbf{PROVED/EXACT in a restricted clause/name-preserving scoped-stream model; independent review pending.}\\
+\textbf{COMPUTATIONAL: 254 assertion-accounted tests, zero failures.}\\
+\textbf{ARC-EDGE-90 OPEN. P versus NP OPEN.}
+\end{center}
+
+\section{Target, falsifiable mechanisms, and original sources}
+The receiving ARC/FLMV target is the region of pairs achieved by \emph{one} fixed uniform total exact all-input SAT machine with simultaneous time $N^{t+o(1)}$ and writable work/index space $N^{s+o(1)}$ in the indexed-read-only-input random-access Turing model of Fortnow, Lipton, van Melkebeek and Viglas (FLMV) \cite{flmv}. Three falsifiable mechanisms were audited. M1: can source-clause reordering and disjoint padding make every ordinary 3CNF a sublog-width closed scoped stream? M2: does large mandatory scoped width imply costly one-bit SAT decision by every adaptive policy? M3: do the promised-stream pinned-child construction \cite{scope92} and disjoint pad floor \cite{pad87} establish an all-input ARC successor? M1 is false in the calculus below; M2 fails on an explicit both-label family; M3 remains OPEN because a general cheap source-to-scoped normalization is not provided.
+
+\section{Matched scalable proper-3CNF formulas}
+For integer $p\ge2$ let source variables be $x_1,\ldots,x_p,a,b,c$, with
+\[
+ C_p=\bigwedge_{1\le i<j\le p}(x_i\vee x_j\vee a).
+\]
+Let $Q_8(a,b,c)$ consist of all eight signed clauses over $a,b,c$. Define $U_p=C_p\land Q_8$. Define $V_p$ by replacing the positive clause $(a\vee b\vee c)$ in $Q_8$ with a second copy of $(\neg a\vee b\vee c)$. Each clause is proper with three distinct variables, although the SAT source intentionally has one duplicate \emph{whole clause}. The formulas are connected through $a$ and have identical identifiers and lengths:
+\[
+ n=p+3,\quad m=\binom p2+8,\quad
+ h=\left\lceil\log_2(64(n+m+1))\right\rceil,\quad
+ N=(4m+2)h=\Theta(p^2\log p).
+\]
+There are no source auxiliaries. The exact chosen encoding is one common fixed-width header and four fixed-width fields per clause; changing a sign cannot change length.
+
+\begin{theorem}[Exact SAT and UNSAT controls]
+For all $p\ge2$,
+\[
+ \#\operatorname{SAT}(U_p)=0,\qquad
+ \#\operatorname{SAT}(V_p)=p+1.
+\]
+Every model of $V_p$ has $(a,b,c)=(0,0,0)$ and at most one zero among $x_1,\ldots,x_p$.
+\end{theorem}
+\begin{proof}
+Every assignment to $a,b,c$ falsifies exactly one of the eight complete signed clauses, proving $U_p$ UNSAT. The seven distinct remaining clauses in $V_p$ have exactly one common model, $(a,b,c)=0^3$. Duplicating another clause does not alter this. At $a=0$, every clause of $C_p$ is $(x_i\vee x_j)$, so at most one $x_i$ can be zero, giving $p+1$ models. One verified witness is all $x_i=1$, $(a,b,c)=0^3$.
+\end{proof}
+
+\section{Source-preserving scope width is exactly $p+1$}
+A \emph{source-preserving closed scoped stream} consists of \texttt{OPEN}(v), \texttt{CLAUSE}$(\ell_1,\ell_2,\ell_3)$ and \texttt{CLOSE}(v) events. Every source variable is opened once and closed once, clauses are emitted only while their source identities are live, and every original clause is emitted unchanged, with arbitrary reordering permitted. Fresh disjoint satisfiable three-variable gadgets may be appended. The \emph{live width} $w$ counts simultaneously open variables; it is syntactic and is not machine-space cost.
+
+\begin{theorem}[Exact all-order scope width, PROVED/EXACT restricted]
+For either $F=U_p$ or $F=V_p$, and every source-preserving scoped stream representing $F$, $w\ge p+1$. This is attained by a valid closed stream, so
+\[
+ \boxed{w_{\min}(U_p)=w_{\min}(V_p)=p+1.}
+\]
+The lower bound persists under all source-clause reorderings and any quantity of independent fresh satisfiable padding clauses.
+\end{theorem}
+\begin{proof}
+Each two distinct members of $X=\{x_1,\ldots,x_p,a\}$ occur together in an original clause. Thus their two live intervals must intersect at the corresponding clause event. Finite intervals have the elementary pairwise-intersection Helly property: if $L$ is the largest interval left endpoint and $R$ the smallest right endpoint, pairwise intersection implies $L\le R$. Hence all $p+1$ intervals share an event. For an attaining stream, open $a$ and all $x_i$, output every clique clause, close the $x_i$, then open $b,c$, output the eight signed core clauses, and close $c,b,a$. The peak is $\max\{p+1,3\}=p+1$. Open and close each fresh independent padding triple afterward.
+\end{proof}
+
+\begin{corollary}[Polynomial pad-floor no-go, restricted]
+For every fixed $C\ge1$, a clause/name-preserving padded stream of encoded length $N'\le N^C$ has
+\[
+ \frac{w}{\log_2 N'}\ge\frac{p+1}{C\log_2 N}
+ =\Omega\left(\frac p{\log p}\right)\longrightarrow\infty.
+\]
+Consequently no fixed number of polynomial-size disjoint-padding stages can establish $w=o(\log N')$ for this family. Here $w=\Theta(\sqrt{N/\log N})$. This excludes padding/reordering alone, not semantic rewriting, signed source-variable splitting with paid equality, clause replacement, or direct decision.
+\end{corollary}
+
+\section{Adaptive one-bit SAT decision defeats any machine-space inference}
+A total uniform solver tries a paid recognizer for the canonical ordered $U_p$ or $V_p$. It scans and validates every expected positive pair clause and the entire eight-record core, then returns the label and, for SAT, the explicit source witness. It is not given the label; the source content determines the branch. If recognition fails, it enters a separate total exact SAT fallback. A bit-level implementation of the successful recognized branch uses $O(N\operatorname{polylog}N)$ bit work and $O(\log N)$ live writable controller bits with indexed read-only source and a fixed finite program. This proves an easy both-label high-width family, not an all-input polynomial SAT solver.
+
+For comparison, a deliberately nonpruning fixed frontier-table policy stores a row for every $(x_1,\ldots,x_p,a)$ state, hence $2^{p+1}$ rows, and spends $2^{p+1}\binom p2$ pair-clause tests if it tests every candidate against every clique clause. The table is a cost of this \emph{restricted policy}, not a lower bound on arbitrary exact SAT decisions, and recognizing the source is always an allowed alternative.
+
+\begin{center}\small
+\begin{tabular}{p{.15\linewidth}p{.28\linewidth}p{.45\linewidth}}
+\toprule
+Adaptive state & Available knowledge, competing methods & Selected charged step and correctness guard\\
+\midrule
+$S_0$ & Ordinary header, no label; consider recognition, SCC, Horn, affine, frontier DP, direct fallback. & Paid indexed source reads, canonical record checks, policy evaluation and failures; $O(N\operatorname{polylog}N)$ recognized bit work, $O(\log N)$ controller bits.\\
+$S_1$ & Verified original $C_p$ and one of two eight-record core patterns; $w=p+1$ is analysis-only. & SAT: reconstruct and replay one witness. UNSAT: complete eight-pattern truth-table contradiction. No label oracle.\\
+$S_2$ & Unrecognized input, with failed-recognizer cost retained. & Switch to arbitrary total exact SAT fallback; no favorable all-input time bound follows.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Keep the BIT-RESOURCE1 vector $(U,R_{\rm src},R_{\rm work},W_{\rm work},\Delta,S_{\rm peak},\sum_\tau S_{\rm live}(\tau),|P|)$ separate: primitive bit work, source and workspace reads, workspace writes including unchanged writes, actual complete-state flips, peak live writable bits, cumulative bit-time and code/representation size. The Python auditor records logical source-literal comparisons and explicit-table candidate counts. It does \emph{not} measure FLMV tape instructions, complete-state flips or bit-time and makes no post-acquisition all-decider claim.
+
+\section{Finite reproducible audit}
+The independent standard-library full auditor, seed 202610242134, checked both labels for $p=2,\ldots,12$, 22 matched instances; exact brute-force model counts for $p\le8$; multiple clause orders; valid closed OPEN/CLAUSE/CLOSE streams; one, two and five fresh padding blocks; model-count multiplication by seven on small cases; malformed canonical inputs; and Horn, padded-2SAT, affine-like and disconnected extra controls. It passed \textbf{254 assertion-accounted checks with no failures}. The peer-readable independent mini script passed another 180 checks. Numerical $p^3$ and $p^4$ padding sizes were computed symbolically, not fully serialized.
+\begin{center}\small
+\begin{tabular}{rrrrrr}
+\toprule
+$p$ & $m$ & $N$ bits & exact $w$ & table rows & all-row pair tests\\
+\midrule
+2&9&380&3&8&8\\
+4&14&638&5&32&192\\
+6&23&1128&7&128&1920\\
+8&36&1752&9&512&14336\\
+10&53&2782&11&2048&92160\\
+12&74&3874&13&8192&540672\\
+\bottomrule
+\end{tabular}
+\end{center}
+The asymptotic scope result is proved independently by the interval argument; finite computations do not certify arbitrary-input hardness.
+
+\section{Archive, duplication, and endpoint audit}
+\textbf{CORPUS REVIEWED.} Root \texttt{main.tex}, \texttt{main13.tex} (blob 87dbaad5), \texttt{AGENTS.md} (c5265db0), \texttt{CODEX.md} (754999f5), research skill (b8df83a7), LSPV-3 SCOPED-BLOCK-REBUILDER92 (efa04f0d), LSPV-2 WIDTH-CERT52 (320dddbd) and SELECTOR-TRIM121 (c14c6bcc), LSPV-4 PAD-FLOOR-SCOPED87 and LSPV-5 BOUNDARY-SUPPORT-UNIVERSALITY127 (3b669c90), relevant source-search hits, and the original PROOF-SYNTHESIS-0013 Google Doc, 22,415 extracted characters. FLMV Section 2.1 and Corollary 5.8 were inspected on the author's PDF pages 4 and 18. Inherited 3,532-file pinned archive keyword census is not a fresh run-wide manual audit. Older Drive LOG/BOOL/SIL pagination, most root main2--main12 proof bodies, and original HEREDITARY-SCOPED10 executable remain unread or unavailable. No absence is inferred from bounded searches.
+
+\textbf{DUPLICATION AND WHAT CHANGED.} The named low-width child join is already Role 3's restricted theorem \cite{scope92}; size-floor padding of a valid closed scoped child is already Role 4's result \cite{pad87}. This run adds an explicit matched connected ordinary-source family and an exact order-independent interval obstruction, quantifies failure of polynomial padding, and exhibits a cheap state-adaptive direct decision. The general interval/pathwidth facts are known, not presented as novel lower-bound machinery \cite{freuder,kinnersley}. Relevant source channels, witness gluing and original compiler recognition costs remain unproved for an all-input conversion.
+
+\textbf{GAP ACCEPTANCE.} PROVED/EXACT restricted: model counts, scope-width minimum, polynomial-padding no-go. COMPUTATIONAL: 254-check full finite audit and 180-check compact audit. FALSIFIED/RETIRED as all-input implication: disjoint pad-floor repairs arbitrary width; high syntactic width forces large machine space or general SAT work. PARTIAL/CONDITIONAL: existing promised-stream pinned-child join, exact after correct input recognition and binding. OPEN: uniform cheap source-to-scoped normalizer, compatibility-preserving short-child contractor, charged simultaneous $E$-pair improvement, cofinal finite route to FLMV, P versus NP.
+
+\textbf{KNOWN FLMV endpoint.} At $c=241/200$,
+\[
+ \beta(c)=\frac12\left(\frac{c+2}{c^2}-c\right)
+ =\frac{11642479}{23232400}>\frac12.
+\]
+The matched-model forbidden box $t<c$, $s<\beta(c)$ remains valid through FLMV's SAT/linear-NTIME transfer \cite{flmv}. The old $t+s<2\cos(\pi/7)$ universal target is FALSIFIED/RETIRED. Existence of a favorable charged all-input successor edge remains OPEN; the proof target itself is not weakened by this restricted counterexample.
+
+\textbf{NEXT PEER EXPERIMENT.} Test any actual variable-splitting or clause-rewriting all-input normalizer on both $U_p$ and $V_p$ and on Role 5's boundary-support comparator family. Require independently serialized ordinary children at two levels, retained original witness identity across joins, paid read/address/copy/pin/selector/peak workspace and verified parent labels. Distinguish transformation size and syntactic live width from the one-bit decision cost. Preserve schedules and other roles' work.
+
+\begin{thebibliography}{9}
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek and A. Viglas, \emph{Time-Space Lower Bounds for Satisfiability}, JACM 52(6), 835--865 (2005), DOI 10.1145/1101821.1101822. \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{freuder} E. C. Freuder, \emph{Complexity of K-Tree Structured Constraint Satisfaction Problems}, AAAI 1990, 4--9. \url{https://www.aiinternational.org/Library/AAAI/1990/aaai90-001.php}.
+\bibitem{kinnersley} N. G. Kinnersley, \emph{The vertex separation number of a graph equals its path-width}, Information Processing Letters 42(6), 345--350 (1992), DOI 10.1016/0020-0190(92)90234-M.
+\bibitem{scope92} LSPV-3, \emph{SCOPED-BLOCK-REBUILDER92}, \path{research/agents/lspv-3/2026-10-24_2108_LSPV-3_SCOPED_BLOCK_REBUILDER92.tex}.
+\bibitem{pad87} LSPV-4, \emph{PAD-FLOOR-SCOPED87}, \path{research/agents/lspv-4/2026-10-24_2047_LSPV-4_PAD_FLOOR_SCOPED87.tex}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::SCOPE-CLIQUE-FIREWALL88
