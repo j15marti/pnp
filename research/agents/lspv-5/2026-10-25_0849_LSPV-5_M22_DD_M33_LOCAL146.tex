@@ -1,0 +1,290 @@
+% LSPV-5 REPORT::M22-DD-M33-LOCAL146::2026-10-25T08:49:00+09:00
+\documentclass[11pt]{article}
+\usepackage[margin=.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RETIRED}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{M22-DD-M33-LOCAL146:\\The Darmann--D\"ocker Signed-$(2,2)$ Leg Is Fixed-Block Local}
+\author{LSPV-5: Independent Red Team and Endpoint Audit}
+\date{25 October 2026, 08:49 KST}
+\begin{document}
+\maketitle
+
+\paragraph{Status.}
+The Darmann--D\"ocker reduction from proper unique signed
+3-Sat-$(2,2)$ to proper unique tagged Monotone 3-Sat-$(3,3)$ has an
+\EXACT fixed-block, occurrence-local implementation once the source already
+contains dense variable identifiers and polarity-local occurrence ranks.
+For \(n\) source variables its output has
+\[
+(n_1,m_1)=\left(\frac{25n}{3},\frac{50n}{3}\right).
+\]
+Composed with M22-LOCAL-CHAIN140, it maps valid sources to
+\(\mathcal C_\star\) with
+\[
+(n_\star,m_\star)=\left(16625n+6,\frac{66500n}{3}+8\right).
+\]
+This is not an ordinary-SAT total local Cook reduction and has length
+exponent \(\lambda=1\), not a contraction.  ARC-EDGE-90, DIRECT-POST, and
+P versus NP remain \OPEN.
+
+\section{Claim card and falsifiable proposals}
+There exists one fixed uniform addressed-bit transducer \(R\) such that for
+every valid tagged proper unique signed 3-Sat-$(2,2)$ source \(F\), the output
+is a proper unique tagged Monotone 3-Sat-$(3,3)$ formula equisatisfiable with
+\(F\), and every addressed output bit and occurrence-parent port is computed
+with a constant number of source-field reads, polylogarithmic charged bit
+work, and \(O(\log N)\) live writable/index bits.  The claim is valid-promise
+only; no arbitrary SAT decider is required to use \(R\).
+
+\begin{center}\small
+\begin{tabular}{@{}p{.43\linewidth}p{.18\linewidth}p{.32\linewidth}@{}}
+\toprule
+Proposal & Verdict & Reason\\ \midrule
+The printed Darmann--D\"ocker construction becomes port-local when
+occurrence ranks are explicit & \EXACT, restricted & Every output record,
+tag, and parent is fixed-template arithmetic.\\
+Berman--Karpinski--Scott's qualitative exact-$(2,2)$ hardness theorem already
+supplies the preceding FLMV-local compiler & \RETIRED as an inference &
+NP-hardness omits addressed-bit, inverse-port, malformed-input and joint-space
+guarantees.\\
+The composition is already an ARC contraction & \RETIRED &
+Both encodings have length \(\Theta(n\log n)\); the variable count expands by
+a constant factor and no power-short child is produced.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Exact templates}
+For each source variable \(x_i\), create \(x_{i,1},x_{i,2}\).  Replace its
+two negative occurrences by positive \(x_{i,1}\), its two positive
+occurrences by positive \(x_{i,2}\), and erase signs.  Add
+\((x_{i,1}\vee x_{i,2})\) and the following ten-clause gadget on private
+\(a,b,c,d\):
+\[
+\begin{array}{lll}
+(\bar a\vee\bar b\vee\bar x_{i,1})&
+(\bar a\vee\bar c\vee\bar x_{i,1})&
+(\bar a\vee\bar d\vee\bar x_{i,1})\\
+(\bar b\vee\bar c\vee\bar x_{i,2})&
+(\bar b\vee\bar d\vee\bar x_{i,2})&
+(\bar c\vee\bar d\vee\bar x_{i,2}).
+\end{array}
+\]
+The remaining four clauses are all positive triples on \(\{a,b,c,d\}\).
+This block extends iff at least one copy is false.  Together with the positive
+pair it forces exactly one copy true.
+
+Because \(4n=3m\), \(n\) is divisible by three.  Batch the \(n\) positive
+pairs in source-variable order.  For each batch create \(y,a,b,c,d,e,f\),
+pad the three pairs by \(y\), and add the literalwise complement of
+Darmann--D\"ocker's thirteen-clause \(\mathcal S\).  Its seven negative
+clauses are
+\[
+\begin{gathered}
+(\bar y\vee\bar a\vee\bar b),(\bar y\vee\bar c\vee\bar d),
+(\bar y\vee\bar e\vee\bar f),\\
+(\bar a\vee\bar c\vee\bar f),(\bar a\vee\bar d\vee\bar e),
+(\bar b\vee\bar c\vee\bar e),(\bar b\vee\bar d\vee\bar f),
+\end{gathered}
+\]
+and its six positive clauses are
+\[
+(a\vee c\vee f),(a\vee d\vee e),(a\vee e\vee f),
+(b\vee c\vee d),(b\vee c\vee e),(b\vee d\vee f).
+\]
+It extends iff \(y=0\), so padding preserves the pairs.
+
+\begin{lemma}[Size, degrees, syntax]
+The output has \(25n/3\) variables and \(50n/3\) clauses.  Every variable
+has three occurrences of each sign.  Properness and clause uniqueness are
+preserved.
+\end{lemma}
+\begin{proof}
+The variables are \(2n\) copies, \(4n\) first-gadget auxiliaries, and
+\(7n/3\) batch variables.  Clause counts are
+\[
+\frac{4n}{3}+10n+n+\frac{13n}{3}=\frac{50n}{3}.
+\]
+A copy has its two transformed source positions plus its padded pair
+positively, and its three gadget ports negatively.  Each auxiliary has three
+occurrences of each sign.  A batch \(y\) has three padded positive
+occurrences and three negative ports.  The literal-to-copy map is injective;
+private namespaces separate all gadget blocks.  A transformed clause uses
+three distinct base variables, whereas a padded pair uses both copies of one
+base variable, so the record types cannot collide.
+\end{proof}
+
+\begin{lemma}[Equisatisfiability]
+\(F\) is satisfiable if and only if \(R(F)\) is satisfiable.
+\end{lemma}
+\begin{proof}
+Given a source assignment set \(x_{i,2}=x_i\),
+\(x_{i,1}=\neg x_i\), extend every first gadget, set each \(y=0\), and
+extend each complemented \(\mathcal S\) block.  Conversely, the positive
+pair plus its first gadget forces \(x_{i,1}=\neg x_{i,2}\).  Projecting
+\(x_i=x_{i,2}\) then satisfies exactly the original clauses.
+\end{proof}
+
+\section{Fixed-block locality and composition}
+Order output records as transformed source clauses, \(n\) ten-clause blocks,
+\(n\) padded pairs, and \(n/3\) thirteen-clause blocks.  Use consecutive
+identifier intervals for copies, four private auxiliaries per source name,
+and seven names per batch.  Division and remainder identify the block and
+constant template.  A transformed record reads only the three source
+identifier/sign fields.  For either copy, the two transformed occurrences
+retain ranks \(1,2\), the padded pair is positive rank \(3\), and its three
+first-gadget ports are negative ranks \(1,2,3\).  Auxiliary and \(y\) tags
+are template positions.  Thus forward records and inverse
+\emph{occurrence/incidence} parents are local.  This does not assert constant
+inverse dependence for every global header or malformed-input validity bit.
+
+M22-LOCAL-CHAIN140 maps a tagged Monotone 3-Sat-$(3,3)$ source with \(q\)
+variables to \(\mathcal C_\star\) with
+\((1995q+6,2660q+8)\).  Substitution of \(q=25n/3\) gives the displayed
+\((n_\star,m_\star)\).  Four fixed local representation layers preserve
+polylogarithmic addressed work and logarithmic accessor space.  The exact
+remaining theorem is
+\[
+\texttt{LOCAL-COOK-TAGGED-SIGNED22-1}:
+\quad\text{ordinary indexed SAT}\longrightarrow
+\text{valid tagged signed 3-Sat-}(2,2).
+\]
+It must pay occurrence-rank discovery, malformed rejection, output access,
+inverse ports if used, length, and simultaneous workspace.
+
+\section{BIT-RESOURCE1 and endpoint ledger}
+\begin{longtable}{p{.20\linewidth}p{.52\linewidth}p{.20\linewidth}}
+\toprule
+Layer & Charged elementary-bit operations & Peak/live objects\\ \midrule
+Header/address & Read widths and record index; compare ranges; perform
+division, remainder, and finite integer arithmetic & Fixed
+\(O(\log N)\)-bit counters\\
+Transformed record & Read sign and three source IDs; select copy namespace;
+emit identifier/sign/tag bits, including unchanged writes & \(O(1)\) source
+words and one output word\\
+Gadget records & Select one of the fixed ten- or thirteen-record templates;
+compute private IDs; emit all record and header bits & Constant program
+template and \(O(\log N)\) indices\\
+Downstream access & Pay all three nested M22-LOCAL-CHAIN140 decoders, source
+and workspace reads, selection, addressing, and final output write &
+Fixed-depth stack, \(O(\log N)\) bits per level\\
+Eager alternative & Parse/validate; discover ranks if absent; write every
+ordinary child bit; pay conversions, replay, failed trials, caches, ancestors
+and buffers & \(\Theta(N')\) retained child if random access is required\\
+\bottomrule
+\end{longtable}
+
+Primitive work, source/work traffic, changed and unchanged writes,
+full-state flips, cumulative bit-time, and physical gates/wires/switches are
+distinct.  Program/template size is constant.  A lazy accessor avoids an
+ordinary output buffer but charges every guest request and source reread.
+Since \(N'=N^{1+o(1)}\), this is not an ARC edge.  The retired cosine
+endpoint is not used; the genuine strict box remains
+\[
+t<241/200,\qquad s<11642479/23232400.
+\]
+
+\section{Direct post-acquisition red team}
+The proposed potential \emph{number of unresolved copy pairs} is \RETIRED as
+a universal lower-bound potential.  It starts at only \(n\), and a solver may
+decide directly on the signed source, recognize affine/Horn/2SAT factors,
+cache a source decision, reorder clauses, or never instantiate any copy.
+If the potential is forced to zero only on the output write, that transition
+drops all remaining \(n\), so \(\Gamma(N)\ge n\) and telescoping gives only a
+constant bound.  If it is not forced to zero, the terminal condition fails.
+This does not count ADAPTIVE-COVER75 acquisition again and does not rule out a
+different independently initialized structural potential.
+
+\section{Finite audit}
+The standard-library script
+\path{research/agents/lspv-5/2026-10-25_0849_M22_DD_M33_LOCAL146_audit.py}
+ran in under one second.  It checked the complete extension tables
+\[
+\mathcal A:\ 00,01,10\mapsto1,\ 11\mapsto0,\qquad
+\bar{\mathcal S}(y,y,y):\ 0\mapsto1,\ 1\mapsto0,
+\]
+all 192 unique proper three-variable signed-$(2,2)$ sources, exact output
+syntax/tags, composition arithmetic, and both labels.  The SAT control was
+exhaustively decided.  The UNSAT control was D\"ocker's original
+198-variable, 264-clause source: this run rechecked its grammar and the
+1650-variable, 3300-clause target syntax, while its UNSAT label remains a
+\KNOWN/certificate dependency.  There were 790 assertion-accounted checks
+and zero failures.  Script SHA-256 is
+\nolinkurl{d292d020d4da174749a42574b9702b349805ec2acb3233a06e45d9e253dc379d};
+raw SHA-256 is
+\nolinkurl{a61f3b66a05c71638ed3ba3d6cccf6c6171d678e5c44135a5fdeb2dc9173cfce}.
+Finite checks are \COMP, not asymptotic evidence.
+
+\section{Coverage, contradiction, and next artifact}
+\paragraph{CORPUS REVIEWED.}
+GitHub originals read or substantively inspected: AGENTS.md
+(blob \texttt{c5265db}), CODEX.md (\texttt{754999f}), the pnp-research skill
+and red-team protocol, root main.tex (pre-write blob \texttt{270baa3}),
+M22-LOCAL-CHAIN140, M22-SIGN-COMPLEMENT-GATE145, Role~1
+M22-TWO-SHEET-LIFT144, and the latest Role~2/3/4 commit bodies, including
+predecessor M22-QUAD-NEUTRAL102 with verified sentinel.  The inherited
+3,532-file census was not repeated; bounded searches are not exhaustive.
+The scratch preflight could not survey a full local checkout because its
+root lacked AGENTS.md/CODEX.md/the skill; canonical GitHub reads and writes
+were available.
+
+Primary sources read: Darmann--D\"ocker arXiv:1908.04198v2, printed
+pp.~12--15, and D\"ocker arXiv:1912.08032.  The Berman--Karpinski--Scott
+exact-$(2,2)$ hardness source was located, but no source-local inverse-port
+implementation was recovered.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+The polynomial semantic reduction is prior work.  M22-LOCAL-CHAIN140 already
+proved the downstream local chain.  New here are the fixed-block
+accessor/tag proof for its missing restricted leg, exact constants, and
+four-leg composition.  This narrows rather than closes LOCAL-COOK.  It is
+consistent with SIGN-COMPLEMENT-GATE145 because it uses semantic copy
+gadgets, not arbitrary sign switches.  Role~1's two-sheet lift remains an
+always-SAT nonadapter; Role~4's neutral repair remains deletion-residual
+semantics.
+
+\paragraph{ADOPTED / REJECTED / RETIRED.}
+Adopted: M22-NONPAIRED1, same-machine simultaneous pairs, corrected FLMV box,
+tags, and the downstream chain.  Rejected as fills: qualitative
+NP-completeness, hidden rank discovery, eager materialization, or target-only
+validity.  Retired in scope: treating this expansion as an ARC contraction
+and the unresolved-pair count as a universal potential.  No verified prior
+result was strengthened.
+
+\paragraph{STALE OR OVERSTATED CLAIMS FOUND.}
+The root statement that the first missing leg is specifically
+\texttt{LOCAL-COOK-TAGGED-M33-1} is now too coarse.  The
+signed-$(2,2)$-to-tagged-M33 subleg is filled under a valid tagged promise.
+The root must instead name \texttt{LOCAL-COOK-TAGGED-SIGNED22-1}; no
+all-input favorable route is supplied.
+
+\paragraph{UNREAD / NEXT.}
+Drive LOG/PROVED\_EXACT/Manuscript/BOOL/SIL pagination, much older history,
+and the full Berman--Karpinski--Scott reduction body remain unread.  Next
+inspect that original body and the parent-port Cook construction.  Accept a
+fill only with proved forward addressed bits, occurrence ranks, inverse
+parent incidence, malformed path, output length, and peak workspace in one
+uniform model.
+
+\begin{thebibliography}{9}
+\bibitem{dd} A.~Darmann and J.~D\"ocker,
+\emph{On simplified NP-complete variants of Not-All-Equal 3-Sat and 3-Sat},
+arXiv:1908.04198v2 (2019), Theorem~3.
+\url{https://arxiv.org/pdf/1908.04198}.
+\bibitem{docker} J.~D\"ocker,
+\emph{Monotone 3-Sat-$(2,2)$ is NP-complete},
+arXiv:1912.08032 (2019). \url{https://arxiv.org/abs/1912.08032}.
+\bibitem{bks} P.~Berman, M.~Karpinski, A.~D.~Scott,
+\emph{Approximation Hardness of Short Symmetric Instances of MAX-3SAT},
+ECCC TR03-049 (2003).
+\bibitem{flmv} L.~Fortnow, R.~Lipton, D.~van Melkebeek, A.~Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, JACM 52(6), 2005.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::M22-DD-M33-LOCAL146
