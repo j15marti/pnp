@@ -106,7 +106,7 @@ def audit():
          'n_range':[1,7],'controls':controls,'checks':counters,
          'total_assertions':sum(counters.values()),'failures':0,
          'claim':'One-pass transcript complete verification only. Not SAT decision or arbitrary selector.'}
-    path=pathlib.Path('/mnt/data/STREAM_WITNESS86_raw.json')
+    path=pathlib.Path(__file__).with_name('STREAM_WITNESS86_raw.json')
     path.write_text(json.dumps(out,indent=2,sort_keys=True)+'\n')
     print(json.dumps({'total_assertions':out['total_assertions'], 'counts':counters,
                       'raw_sha256':hashlib.sha256(path.read_bytes()).hexdigest()},indent=2))
