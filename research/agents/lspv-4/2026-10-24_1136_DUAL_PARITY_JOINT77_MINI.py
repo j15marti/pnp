@@ -47,7 +47,7 @@ def check(q,e):
     assert len(supports)==4*q-2
     deg=Counter(v for s in supports for v in s)
     assert max(deg.values())<=2
-    hitting=set(z for z in range(3,2*q+3))
+    hitting=set(z for z in range(3,2*q+2))
     assert len(hitting)==2*q-1
     assert all(hitting.intersection(s) for s in supports)
     models=0
