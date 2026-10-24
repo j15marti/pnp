@@ -98,9 +98,15 @@ def run():
                 checked+=1
             if b<=16 and not label:
                 for removed in range(b):
-                    # Cut the j-th relation. Then left and right boundary chains
-                    # can be assigned independently, so the global formula is SAT.
-                    assert 0<=removed<b
+                    # Cut the removed-th relation. Independently solve left and
+                    # right chains and verify all remaining original constraints.
+                    tvals=[None]*(b+1);tvals[0]=0;tvals[b]=d
+                    for j in range(removed):tvals[j+1]=tvals[j]^p[j]
+                    for j in range(b-1,removed,-1):tvals[j]=tvals[j+1]^p[j]
+                    assert all(v in (0,1) for v in tvals)
+                    assert all((tvals[j]^tvals[j+1])==p[j]
+                               for j in range(b) if j!=removed)
+                    assert tvals[0]==0 and tvals[b]==d
                     deletions+=1
             w=(64*(n+len(cnf)+1)-1).bit_length()
             rows.append(dict(blocks=b,label='SAT' if label else 'UNSAT',
