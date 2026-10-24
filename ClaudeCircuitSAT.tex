@@ -1,0 +1,72 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append/revise in place each hourly run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\newcommand{\CSAT}{\mathrm{CSAT}}
+\title{Wire-by-Wire Lower Bounds for Circuit-SAT: A Living Document}
+\author{Claude (scheduled hourly runs)}
+\date{Last updated: 2026-10-24 (run 1)}
+\begin{document}\maketitle
+
+\section*{Status (strict labels)}
+\textbf{P versus NP remains OPEN.} Nothing here proves a super-linear lower bound for any NP problem.
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Fix a basis of fan-in-2 gates (all of $B_2$, negations free). Let $\CSAT_{m,n}$ be the Boolean function whose input
+is the \emph{description} of a circuit with $m$ gates over $n$ variables, and whose output is $1$ iff the described circuit
+is satisfiable. Let $C(\cdot)$ be the minimum number of gates (equivalently, wires $=2C$) of a circuit computing it.
+Plan: compute/bound $C(\CSAT_{m,n})$ for $m=0,1,2,\dots$, tracking wires, then examine growth in the parameters $(m,n)$.
+This is a \emph{non-uniform} measure; a bound $C(\CSAT_{m,n})\ge s(m,n)$ with $s$ super-polynomial in the description length $N=\Theta(m\log(m+n))$ would be needed to separate NP from P/poly.
+
+\section{Step 0: $m=0$ gates}
+The circuit is a single literal; always satisfiable. $\CSAT_{0,n}\equiv 1$. $C=0$, wires $0$. \hfill PROVED/EXACT
+
+\section{Step 1: $m=1$ gate (AND of two literals), $n=2^k$}
+Description: $(i_1,s_1,i_2,s_2)$, $i_j\in\{0,1\}^k$ index bits, $s_j$ sign bits; $N=2k+2$ input bits.
+Satisfiable iff the literals are not complementary:
+\[
+\CSAT_{1,n}(i_1,s_1,i_2,s_2)=\neg\bigl[(i_1=i_2)\wedge(s_1\neq s_2)\bigr].
+\]
+\begin{theorem}[PROVED/EXACT] For $n=2^k$, $C(\CSAT_{1,n})=2k+1=2\log_2 n+1$ gates ($4k+2$ wires).\end{theorem}
+\begin{proof}
+Upper bound: $k$ XOR gates $d_t=i_{1,t}\oplus i_{2,t}$; $k-1$ OR gates combining them into $[i_1\ne i_2]$; one XOR $s_1\oplus s_2$;
+one final OR of $[i_1\neq i_2]$ with $\neg(s_1\oplus s_2)$: total $k+(k-1)+1+1=2k+1$.
+Lower bound: at the point $i_1=i_2$, $s_1\ne s_2$ the output is $0$, and flipping any single input bit gives output $1$, so the function depends on all $N=2k+2$ inputs. A circuit of fan-in 2 with one output
+in which all $N$ inputs are connected has at least $N-1$ gates (a connected DAG on $N$ sources and $G$ gates with
+fan-in 2 needs $2G\ge N+G-1$ edges). So $C\ge 2k+1$. 
+\end{proof}
+COMPUTATIONAL check: \texttt{results/claude\_circuitsat/step1\_check.py} verifies the construction against brute-force
+semantic satisfiability for $k=1,2,3$ (gate counts $3,5,7$ match $2k+1$; JSON alongside).
+
+\textbf{Lesson (KNOWN, trivial barrier).} At this step the bound is exactly the ``read every input'' bound $N-1$. Tracking wires gives
+linear-in-$N$ bounds as long as the function is simple; super-linear bounds need a function with no small circuit,
+which is exactly the open problem.
+
+\section{Step 2: $m=2$ gates (OPEN, next run)}
+Second gate may read $\{$literal, gate 1$\}$ in any of $4$ polarity/op patterns; description has $\approx 2(2k+2)+\log$ more bits.
+Satisfiability now needs: $\mathrm{AND}(\ell_1,\ell_2)$ then op with $\ell_3$ or another AND; the clash conditions are
+pairwise index equalities $\Rightarrow$ $\binom{3}{2}$ equality-comparators of $k$ bits. \textbf{CANDIDATE} conjecture:
+$C(\CSAT_{m,n})=\Theta(m^2\log n)$ for a fixed small-width fragment (all-AND circuits = conjunction of $m{+}1$ literals,
+requiring all-pairs complementary-literal detection: upper bound $O(m^2 k)$ by direct comparison; a matching
+lower bound beyond $N$ is OPEN, and sorting/bucket circuits give $O(m k\log m)$-type upper bounds, so the conjecture is likely FALSE for the
+all-AND fragment).
+
+\section{Parametrized view}
+The natural parameters: $m$ (gates), $n$ (variables), $w$ (width/treewidth of the described circuit).
+Known upper-bound regime (KNOWN): satisfiability of circuits of treewidth $w$ is solvable in time $2^{O(w)}\mathrm{poly}$, so
+any lower bound must be in terms of $w$ at best $2^{\Omega(w)}$ (ETH-type, CONDITIONAL, not unconditional).
+Unconditional, general-circuit lower bounds for explicit functions are currently linear with small constant (order $3n$--$5n$ in the literature;
+exact constants to be re-verified against primary sources in a later run).
+
+\section{Repository link}
+Searched root \texttt{main.tex}: it is the repo's large multi-agent LSPV/ARC program; its executive status is P vs NP OPEN and it
+contains no wire-count circuit-SAT ladder, so no result there is imported here. No overlap with this document found.
+
+\section{Next steps}
+(1) Step 2 exact values for $k=1$ by SAT-based exact synthesis. (2) Check literature on circuit complexity of the
+\emph{evaluation/satisfiability} functions and gate-elimination barriers (why gate elimination stalls near $5n$).
+(3) Test whether any restricted model (monotone, bounded-depth) gives super-linear wire bounds for $\CSAT_{m,n}$.
+
+\end{document}
+% END_OF_CLAUDECIRCUITSAT_RUN1
