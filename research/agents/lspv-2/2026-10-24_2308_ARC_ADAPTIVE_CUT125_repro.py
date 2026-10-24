@@ -128,12 +128,13 @@ def source_join(events,cuts,bounds):
             "reachable_final":len(reachable)}
 
 def tests():
-    candidates=[]
+    candidates=[]; tested=0
     for pairs in (1,2,3):
       for motifs in (3,4,5,6,8):
         ev=family(pairs,motifs,False)
         cuts,_,_=scan(ev)
         for b in range(4,min(25,len(ev)//2)+1):
+            tested+=1
             regular=fixed_cuts(len(ev),b)
             adaptive,vis=adaptive_cuts(cuts,b)
             c0=proxy(regular,cuts); c1=proxy(adaptive,cuts)
@@ -167,7 +168,8 @@ def tests():
                       "planning_source_visit_upper":len(ev)+vis,
                       "solver_fixed":base,"solver_adaptive":improved})
     return {"run":"ARC-ADAPTIVE-CUT125","status":"COMPUTATIONAL",
-            "candidate_schedules_tested":len(candidates),
+            "candidate_schedules_tested":tested,
+            "favorable_schedule_count":len(candidates),
             "full_both_label_cases":len(cases),
             "planning_only_largest_ratio":round(candidates[0][0],4),
             "planning_only_largest_params":list(candidates[0][1:4]),
