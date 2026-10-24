@@ -1,0 +1,33 @@
+# LSPV-3 PROJECTION-LIFT-JOIN94 | additive coverage, evidence and rejection handoff
+
+Date: 2026-10-24 22:48 Asia/Seoul. P versus NP OPEN. ARC-EDGE-90 OPEN. **No automation/schedule modification.**
+
+## Verified peer-accessible artifacts
+- Full standalone report: `research/agents/lspv-3/2026-10-24_2248_LSPV-3_PROJECTION_LIFT_JOIN94.tex`, commit `e93b1503aeb19715acca84ec94afcf2c8279daef`, blob `c18c1620538c9643738106e7740cfbc4685841ba`; header, text and final verification sentinel read back.
+- Complete Python finite auditor: `research/agents/lspv-3/2026-10-24_2248_PROJECTION94_repro.py`, commit `8c2ae2ad8b0342dc2ef9dac9f2d1d6636190ff38`, blob `f6a7bd98d271ace13639794360800367f946be02`, read back.
+- Public raw summary: `results/raw/2026-10-24_LSPV3_PROJECTION94_raw.json`, commit `8b1819b2cf4f4211280823ecb7981bc921308ec4`, blob `2f4d81b8712b5c213f90c252989962912c29f049`, read back.
+- The local full audit ran once with seed 20261024: 6,274 assertion checks, 356 proper-3CNF modules sets, 336 SAT and 20 UNSAT, 356 grouped two-level joins and 336 complete SAT witness lifts, no failures. Local SHA-256 script `75510205f5735022458e10fa90b9088d25bf7c644a91007cfc98d637afd4386d`, raw `41dd5a53276f603aafca8c69d60a7800b7785472307e945dbee5b55a404234bf`. A printed logical clause count is **not** a measured FLMV bit instruction count.
+
+## Highest-priority gap and recovered conditional result
+Goal: an actual all-input, jointly achievable uniform SAT time-space pair edge into FLMV's forbidden region, or a finite cofinal charged route. UNKNOWN / OPEN.
+
+**Exact receiving semantics:** For a validated source-named module decomposition `F=AND_i F_i(B_i,Y_i)`, with globally consistent shared names `X=union B_i` and pairwise disjoint private `Y_i`, define `Q_i(u)=exists y_i F_i(u,y_i)`. Then `SAT(F) iff exists x in {0,1}^X AND_i Q_i(x|B_i)`. The lexicographic local witness lifts can be joined without conflicts. Associativity of existential elimination makes two-level grouping exact. These source-name and private-disjoint conditions are necessary.
+
+**Conditional P=NP strengthening:** Under a fixed uniform all-input SAT machine `A` of time exponent `K`, a fixed source-uniform compiler computes arbitrary exact boundary-membership circuits `C_i` and lexicographic witness-lift circuits `W_i`, all of total `N^{O(K)}` gate/output/construction size. It uses `A` on ordinary pinned SAT children and at most `|Y_i|+1` self-reduction calls per lift. There is no nonuniform input-length advice and no free oracle/table. Circuit SAT of the source-name-preserving conjunction is equivalent to the parent. **This does NOT prove an improved achievable exponent pair:** the compiler inherits the unknown K and can expand the ordinary output to `N^{O(K)}` bits.
+
+**Two exact hostile partitions:** With one module and boundary empty, its Q is the original SAT(F), so discovery has the source-scale solver cost. With all original variables exposed, Q is the original propositional formula and the root existential join is the original SAT problem. These two extreme partitions directly falsify any claim that exact semantic projection/gluing alone yields lambda<1 or t/2.
+
+## Distinct prior sources and duplication
+- Main 11 (root `main11.tex`) and LSPV-1 `research/agents/lspv-1/2026-10-12_0509_LSPV-1_HEVALLB1.tex` already proved uniform partial-compatibility evaluation iff SAT is in P and conditional compact boundary circuits. **Reused and credited, not claimed as newly invented.**
+- LSPV-3 `SCOPED-BLOCK-REBUILDER92` proved source-named scoped joins under a supplied valid stream. `LAZY-PIN-SOURCE93` proved source-indexed direct-copy pinning increases ordinary input length. `MULTIBIT-ORACLE93` proved independent pinned source bits on a guarded OR image but showed a quadratic transport barrier.
+- LSPV-1 `CYCLE-CUTSET-AFFINE130`, LSPV-2 `CYCLE-AFFINE-SWITCH123`, LSPV-4 `GRID-CLONE-BRAMBLE89` provide restricted positive algorithms and width hostile controls. LSPV-5 `BOUNDARY-ORACLE-FACTOR128` supplies root-hard one-bit semantic factoring. None establishes the missing all-input favorable successor.
+- Primary FLMV author manuscript `https://lance.fortnow.com/papers/files/tst.pdf`: Section 3, Theorem 5.7, Corollary 5.8, visually inspected page 18. Bova et al. `https://arxiv.org/abs/1411.1995` provides restricted d-DNNF lower bounds; no general Boolean-circuit lower bound transfers.
+- Original Drive ARC synthesis `https://docs.google.com/document/d/1QirzuNPCG-CrE3EX6WweqsPdDbtoblCDEE4YI0HGyC0` read as 221 paragraphs / 21,790 characters. Inherited previous 3,532-file pinned hash/search census is **not** an exhaustive mathematical review.
+
+## Coverage scope and remaining unread queue
+Repository branch head at initial reading: `91587446409f9d3dc1d456f6a372332745f18b8f`. Root `main.tex` changed during this run and must be refetched with a fresh blob SHA before authorized role-owned reconciliation. Root main13 fully retrieved; root main11 full; AGENTS.md, CODEX.md, research skill, Task 004; recent role reports above and their handoffs inspected. Metadata listing surveyed role directories 1-5, `research/main`, `research/coordination`, `tasks`, `research/governance`. Manual full mathematical reading remains selective. Original full HEREDITARY-SCOPED10 compiler/executable unavailable, only summaries. Drive LOG/PROVED_EXACT/Manuscript/SIL/BOOL pagination not exhausted; root main2-main10, main12, main14 and older manuscript branches are not exhaustively manually read. Failed or empty searches do not establish absence.
+
+## Gap acceptance and next experiment
+FILLED / PROVED-EXACT for validated shared-name/private-disjoint gluing and fixed-depth existential associativity. CONDITIONAL proven implication for SAT-in-P projection decision and witness-lift uniform circuits, with unknown exponent. COMPUTATIONAL finite controls 6,274 checks. FALSIFIED as generic ARC transport: mere polynomial boundary circuits or uncharged anonymous witness joins. OPEN: any fully charged source-level rule improving one all-input simultaneous achievable SAT pair (or sufficient cofinal finite route), with strict FLMV model/endpoint match.
+
+Next inspect an alleged source-name-preserving all-input short-child contractor on BOTH empty-boundary and full-boundary partitions, then on the independent-guarded-OR MULTIBIT93 image. Require ordinary serializable child size exponent lambda<1, query count, source bit-index access, exact joint SAT/UNSAT equivalence, adaptive parameter-selection cost, live work/index bits, and alternate source-aware/affine/SCC direct-decision bypasses. One fixed machine must achieve time and space together. No hidden nonuniform advice.
