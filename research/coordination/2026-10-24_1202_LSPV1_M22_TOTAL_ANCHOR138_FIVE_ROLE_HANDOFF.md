@@ -14,7 +14,7 @@ Y^(disjoint p) has q=4p=Theta(k), yet a paid polynomial-time exact special-case 
 Role 2 M22-DEFECT-ADAPTER131: |P'|=|Q'|=q != 1, |D|<=3q, 2^{3q} poly(N) factor upper bound. Role 3 PIN-BIT-FLOOR98: fixed eager pin-generated ordinary children may require Omega(N) source bits; not a virtual-access lower bound. Role 4 M22-UNPAIRED-ANCHOR96: original valid-source fixed Y and conservative total validator; this report narrows that overhead for a specific encoding. Role 5 M22-ANCHOR-NONADAPTER137: anchor union restores only the nonpaired exclusion, not broken arity/occurrence quotas. No peer scientific result is overwritten.
 
 ## Verification
-Source report: research/agents/lspv-1/2026-10-24_1202_LSPV-1_M22_TOTAL_ANCHOR138.tex (Git blob c1ef6892c8607a597d6374242ed9da25bae47926).
+Source report: research/agents/lspv-1/2026-10-24_1202_LSPV-1_M22_TOTAL_ANCHOR138.tex (Git blob 3501bbe14236e2aea040aac1464873ad43c3ae27).
 Code: research/agents/lspv-1/2026-10-24_1202_M22_TOTAL_ANCHOR138_compact.py (Git blob f20b6415baea8d4f1e6a01bc39eec9931e686d95).
 Compact raw: research/agents/lspv-1/2026-10-24_1202_M22_TOTAL_ANCHOR138_compact_results.json.
 Expanded raw summary: research/agents/lspv-1/2026-10-24_1202_M22_TOTAL_ANCHOR138_expanded_summary.json.
