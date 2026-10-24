@@ -1,0 +1,315 @@
+% LSPV-5 REPORT::AFFINE-EXCESS-NULLITY111::2026-10-24T10:48:00+09:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,url}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newcommand{\poly}{\operatorname{poly}}
+\newcommand{\PROVED}{\textbf{PROVED/EXACT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{AFFINE-EXCESS-NULLITY111: A Clustered $2^K$ Upper Bound,\\
+an Adaptive Factorization Collapse, and the Nullity-Two Endpoint}
+\author{LSPV-5: Independent Lower-Bound Transport and Ladder Synthesis}
+\date{24 October 2026, Asia/Seoul}
+
+\begin{document}\maketitle
+\begin{center}
+\fbox{\parbox{.92\linewidth}{\textbf{P versus NP remains OPEN.}
+This report proves a parameterized \emph{upper} bound for an explicit
+affine-plus-binary language and audits an NP-complete endpoint.  It proves
+no unconditional superpolynomial lower bound for unrestricted deterministic
+SAT decision.}}
+\end{center}
+
+\section{Target, claim card, and mechanisms}
+The ultimate target remains
+\[
+\forall A\ {\rm(total,uniform,deterministic,exact)}\ \forall c>0\ \forall N_0\
+\exists F\quad |F|\ge N_0\ \land\ T_A(F)>|F|^c                       \tag{1}
+\]
+for one fixed NP-complete encoding.  The present SAME\_REALIZATION object is
+the explicitly encoded mixed language $E\wedge B$, where $E$ is a system of
+$\mathbb F_2$ equations and $B$ is unit/binary CNF.  Runtime includes parsing,
+Gaussian elimination, parameter discovery, interaction-graph construction,
+policy selection, every child, SCC, switching, reconstruction, source replay,
+and peak live space.  Structural nullities are defined from $E$, independently
+of measured runtime.
+
+Three falsifiable mechanisms were tested.
+\begin{itemize}
+\item \PROVED{}: if affine component $i$ has nullity $d_i$, fixing
+$d_i-1$ basis bits leaves at most one bit, so SCC gives an exact
+$2^{\sum_i\max(d_i-1,0)}\poly(N)$ algorithm.
+\item \PROVED{} stronger adaptive form: components coupled by $B$ factor into
+interaction clusters.  The cost is governed by the \emph{profile}
+$(K_1,\ldots,K_s)$ and is $\poly(N)+\sum_j2^{K_j}\poly(N_j)$, not by
+$2^{\sum_jK_j}$.
+\item \textbf{FALSIFIED/RETIRED as a universal lower-bound rule}: large total
+excess nullity $K$ does not force large work.  SAT and UNSAT families with
+$K=q$ but $q$ independent clusters are decided in $O(q)$ local work.
+\end{itemize}
+
+\paragraph{Corpus and duplication audit.}
+Reviewed root \path{main.tex}, \path{AGENTS.md}, \path{CODEX.md}, the complete
+repository research protocol and synthesis/experiment playbooks, TASK-002,
+ROOT-LABEL-QUOTIENT85, SMALL-INTERFACE-EXACT-JOIN64, SOURCEPROBE19,
+Role~5 RESTART-RACE-CUTFLOW110, Role~4 AFFINE-NULLITY-BOUNDARY73 and
+LOCAL-AFFINE-JOIN74, Role~2 HALL-SWITCH70, and Role~3
+PARITY-SHORTCUT-FIREWALL78.  The nullity-one quotient, nullity-two
+3-colouring endpoint, and fixed-width field-query baseline were already
+present.  The new result is the exact excess-nullity interpolation and its
+cluster-profile improvement.  The elementary algorithm is a branching/SCC
+upper bound, not a claim of a new general parameterized-complexity paradigm.
+
+\paragraph{Primary literature.}
+Aspvall--Plass--Tarjan supplies the implication-SCC 2-SAT theorem in the
+ordinary explicit graph model.  Garey--Johnson--Stockmeyer supplies the
+NP-completeness source for graph 3-colourability, and Schaefer places mixed
+Boolean constraint languages in their classical dichotomy context.
+None supplies an unconditional runtime lower bound for all algorithms on
+the present encoding.
+
+\section{Exact clustered excess-nullity theorem}
+Build affine incidence components $U_1,\ldots,U_t$ by joining variables that
+occur in one equation.  A variable absent from $E$ is a singleton component.
+If $E|_{U_i}$ is consistent, set
+\[
+d_i=|U_i|-\operatorname{rank}(E|_{U_i}),\qquad
+e_i=\max(d_i-1,0).                                                   \tag{2}
+\]
+Gaussian elimination writes every source variable $x\in U_i$ as
+\[
+x=a_x\oplus\bigoplus_{r=1}^{d_i}b_{xr}y_{ir}.                       \tag{3}
+\]
+Make the interaction graph $H$: its vertices are the affine components and
+an edge joins $U_i,U_{i'}$ when a clause of $B$ contains variables from both.
+Let $C_1,\ldots,C_s$ be its connected components and define
+\[
+K_j=\sum_{U_i\in C_j}e_i,qquad K=\sum_jK_j.                         \tag{4}
+\]
+The vector $(K_1,ldots,K_s)$ is analysis-visible only after paid parsing and
+elimination; the solver is not given it as advice.
+
+\begin{theorem}[Clustered affine-excess algorithm; \PROVED]\label{th:main}
+There is a total uniform deterministic exact algorithm for mixed affine plus
+unit/binary CNF instances with running time
+\[
+P_{\rm parse+GE}(N)+
+\sum_{j=1}^{s}2^{K_j}P_{\rm sub+SCC}(N_j)+P_{\rm replay}(N),          \tag{5}
+\]
+where the $P$ are fixed polynomials and $N_j$ is the encoded size of cluster
+$C_j$.  A depth-first implementation uses polynomial peak space.  In
+particular, $K=O(\log N)$ is polynomial, and more generally
+$\max_jK_j=O(\log N)$ is polynomial even when $K=\Theta(N)$.
+\end{theorem}
+\begin{proof}
+An inconsistent affine component immediately makes the conjunction UNSAT.
+Otherwise compute (3).  In each cluster, enumerate the first $d_i-1$ basis
+bits for every component with $d_i\ge2$.  Exactly $K_j$ bits are fixed.
+For a fixed enumeration, every source variable is a constant, the one
+unfixed bit $y_{i,d_i}$, or its negation.  Substitution therefore turns every
+clause of $B$ into a satisfied clause, a contradiction, a unit, or a binary
+clause on the surviving component bits.  SCC decides this child exactly.
+
+The affine equations share no variables between components, and a binary
+clause crosses components only along an edge of $H$.  Thus different
+connected components $C_j$ share neither variables nor clauses.  The whole
+conjunction is SAT iff every cluster is SAT; costs add instead of multiply.
+For SAT, retain one successful child and back-substitute (3), then replay all
+source equations and clauses.  For UNSAT, all children of at least one
+cluster fail; no particular proof object is required.  Processing children
+and clusters serially retains one child state plus the source/elimination
+data, hence polynomial peak live space.  Every operation in (5) is charged.
+\end{proof}
+
+The scalar $K$ gives the weaker immediate bound $2^K\poly(N)$.  The profile
+form is essential: replacing it by a scalar before factorization silently
+models a fixed policy and can be exponentially pessimistic.
+
+\section{Ladder reconciliation and NP-complete endpoint}
+The exact ladder is now:
+\begin{center}\small
+\begin{tabular}{p{.24\linewidth}p{.25\linewidth}p{.39\linewidth}}
+\toprule
+Class/parameter & Status & Exact conclusion and limit\\\midrule
+2-CNF ($E$ empty) & KNOWN THEOREM & SCC, linear in explicit implication graph; no nonlinear lower bound.\\
+$d_i\le1$ for all $i$ & \PROVED{} (Role 4, rechecked) & Equation (3) has at most one bit per component, so one SCC solve.\\
+Arbitrary $d_i$, cluster profile $K_j$ & \PROVED{} here & Equation (5), a constructive upper bound; parameter discovery is paid.\\
+$\max_jK_j=O(\log N)$ & \PROVED{} corollary & Polynomial even if total $K$ and total affine dimension are linear.\\
+One odd XOR3 per graph vertex plus NAND binaries & KNOWN NP-hard source; \PROVED{} reduction & Nullity two, $K_j=|V|$ for a connected graph; exactly proper 3-colourings. NP-completeness is not a time lower bound.\\
+Every adaptive exact decider & \OPEN{} & No theorem forces enumeration of excess bits or SCC children.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For the endpoint, vertex $v$ has
+$x_{v,1}\oplus x_{v,2}\oplus x_{v,3}=1$, three local NANDs, and every graph
+edge has three colour-conflict NANDs.  Odd parity permits
+$001,010,100,111$; local NANDs delete $111$, leaving exactly one-hot colours.
+Every affine component has $d_i=2$, so $e_i=1$.  This independently checks
+Role~4's parsimonious graph-colouring reduction.  In the declared four-clause
+CNF encoding of each XOR, for $v=|V|,e=|E|$,
+\[
+n=3v,\quad m_2=3v+3e,\quad k=4v,\quad M=7v+3e.                      \tag{6}
+\]
+Theorem~\ref{th:main} gives $2^v\poly(N)$ on a connected endpoint, only an
+upper bound.
+
+\paragraph{Independent Role 4 audit.}
+AFFINE-NULLITY-BOUNDARY73's nullity-one quotient proof and nullity-two
+endpoint are correct under their stated mixed-language encoding.
+LOCAL-AFFINE-JOIN74's local identity
+\[
+\exists x,y\;[(x\vee y)\wedge(\neg x\vee p')\wedge
+(x\oplus y\oplus p=b)]\equiv p'\vee(p\oplus b)                     \tag{7}
+\]
+is verified by the two cases $p'=0,1$.  Its $q=2,b=(1,0)$ cross-link is a
+valid counterexample to independent local projection, while SCC discovery
+of the shared $x$ bit restores a two-child exact algorithm.  These are
+upper algorithms/compatibility warnings, not lower bounds.
+
+\section{Adaptive-state ledger and hybrid test}
+\begin{center}\small
+\begin{tabular}{p{.18\linewidth}p{.22\linewidth}p{.23\linewidth}p{.26\linewidth}}
+\toprule
+State/available data & Acquisition & Selected rule/new state & Correctness, charged time and space\\\midrule
+Raw mixed source & Only bytes, identifiers, equation/clause records & Parse, validate, build affine incidence components & Full source read and representation; malformed/unrecognized input goes to exact fallback\\
+Affine state & Ranks, bases, $d_i$, expressions (3) & Build binary interaction graph and clusters & Gaussian work, failed pattern checks, stored basis maps charged\\
+Cluster profile & Observed $(K_1,\ldots,K_s)$, unknown label & If clusters separate, solve serially; inside cluster enumerate excess bits and SCC & SAT may stop on one child and reconstruct; UNSAT checks all children of a failing cluster; no label advice\\
+Independent nullity-two control & $s=q$, every $K_j=1$ & Switch to four-state local enumeration per cluster & At most $4q$ state tests and $O(q)$ live words, versus the invalid fixed-policy estimate $2^q$\\
+Connected colouring endpoint & One large cluster, $K_1=v$ & Excess enumeration/SCC or any sound alternative/fallback & At most $2^v\poly(N)$ for this policy; not compulsory for other solvers\\
+Arbitrary CNF & Recognizer failed, retained source & Complete DPLL fallback & Total exactness; all failed work and fallback resources charged\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The policy is label-blind.  SAT success requires only one child plus a valid
+source witness.  UNSAT requires exhaustive failure for the selected
+decomposition but need not enumerate source assignments or emit Resolution.
+The representation, rule, parameter vector and remaining budget may change
+after every cluster or child.  This restricted policy does not cover all
+uniform algorithms.
+
+\paragraph{Reproducible test (\COMP).}
+The standard-library script \path{affine_excess111_audit.py}, seed
+202610241048, completed in 0.557328 seconds.  It made 593
+assertion-accounted checks with zero failures: 500 random affine-expression
+plus binary-clause instances (193 SAT, 307 UNSAT) were compared with complete
+basis enumeration; all 75 labelled graphs on one through four vertices were
+checked both by direct 3-colour enumeration and the affine/NAND solver
+(74 SAT, one UNSAT, namely $K_4$); and matched easy SAT/UNSAT controls at
+$q=8,64,512$ had $K=q$ but an edgeless interaction graph and used at most
+$4q$ local state tests.  Code SHA256 is
+\texttt{a0f3dc425061308a04a54c2d02159005900e843201a60aaafa2364fb495b5105};
+raw JSON SHA256 is
+\texttt{1d60f7309b15c2e0dd934791c4184e1a4c5713a8c28c4074ba83c8bb21687ef5}.
+Finite checks corroborate implementation and ledger only; the theorem rests
+on the symbolic proof.
+
+\section{Baseline, transport, and coverage ledger}
+For the fixed-width implication chain with forced $z_0=1,z_q=0$ and
+$C_i=(\neg z_{i-1}\vee z_i)$ when $b_i=1$, otherwise
+$C_i=(\neg z_{i-1}\vee\neg z_i)$, induction gives UNSAT iff $b=1^q$.
+On the all-one input, skipping orientation $i$ leaves the same transcript
+after its fixed-length sign flip, which makes the formula SAT.  Hence all
+$q$ fields are queried.  This is exactly $q$ field probes, at least $q$
+orientation-bit probes, between $q$ and the record width times $q$ bit reads
+depending on access granularity, and $\lceil q/w\rceil$ to $q$ machine-word
+reads under a stated packing convention.  It is not an unrestricted time
+lower bound.  Both labels have identical identifiers, headers, record counts
+and length.
+
+For any attempted reduction, the only valid transport remainder is
+\[
+L_{\rm old}(n)\le R(n)+H(n)+Q(n)\tau(n)T_{\rm new}^{\le}(g(n)),
+\quad
+T_{\rm new}^{\le}(g(n))\ge
+\frac{L_{\rm old}(n)-R(n)-H(n)}{Q(n)\tau(n)}                         \tag{8}
+\]
+when the numerator is positive and models match.  Here the source bound is
+linear in fields and explicit target construction is linear, so no positive
+superlinear remainder follows.  Direct inclusion preserves only the same
+input-acquisition order.
+
+The broader class ``2-CNF plus at most $k$ ternaries'' still has the certified
+$2^k\poly(N)$ upper bound, is polynomial for $k=O(\log N)$, and contains
+3-SAT when $k$ is unrestricted.  The excess-nullity profile is a different,
+representation-specific upper parameter; neither is a lower bound.
+
+\begin{longtable}{p{.19\linewidth}p{.18\linewidth}p{.52\linewidth}}
+\toprule
+Claim & Status & Exact scope\\\midrule\endhead
+Chain field acquisition & \PROVED{} restricted & $q$ deterministic field queries on one promised family; fixed encoding/access model.\\
+Clustered excess algorithm & \PROVED{} & Mixed affine plus binary constraints, charged recognition; equation (5).\\
+Nullity-two endpoint & KNOWN NP-completeness plus \PROVED{} reduction & One odd XOR3 block per vertex and NAND binaries; no time lower bound.\\
+$2^{\Omega(K)}$ necessity & FALSIFIED/RETIRED from $K$ alone & Independent SAT/UNSAT controls have $K=q$ and linear local decisions.\\
+$2^{\Omega(\max K_j)}$ for all deciders & \OPEN{} & No compulsory-enumeration or representation-neutral work theorem.\\
+Conditional ETH/SETH lower bounds & CONDITIONAL only & Not used to claim an unconditional theorem.\\
+Unrestricted deterministic superpolynomial SAT bound & \OPEN{} & All-algorithm coverage and post-acquisition work arrow missing.\\
+\bottomrule
+\end{longtable}
+
+\section{Barrier audit and first missing lemma}
+The result relativizes as an upper algorithm; a SAT oracle only makes it
+easier.  Algebraic access can solve the affine core and does not create a
+lower bound.  DEAD/COPY/DELAY padding can inflate $N$, nullity or source size
+without comparable decision work.  Independent products change the profile
+from one large $K$ to many small $K_j$ and therefore refute multiplication of
+independent costs.  Tseitin parity sources and Role~3's Resolution/DNNF
+firewall show that hard explicit proof/representation output is not mandatory
+for one-bit decision.  No Natural-Proofs claim is made.
+
+The exact surviving chain is
+\[
+\begin{gathered}
+\boxed{\text{defined obstruction}}\\[-2pt]
+\Big\downarrow\ {\OPEN}\\[-2pt]
+\boxed{\text{charged acquisition/compression/continuation dichotomy}}\\[-2pt]
+\Big\downarrow\ {\OPEN}\\[-2pt]
+\boxed{\text{every adaptive exact decider}}\\[-2pt]
+\Big\downarrow\ {\OPEN}\\[-2pt]
+\boxed{\text{superpolynomial contradiction}}
+\end{gathered}                                                       \tag{9}
+\]
+The highest-value missing lemma is a representation-neutral theorem for one
+explicit connected NP-complete family: after charging all source recognition,
+Gaussian/SCC/Horn shortcuts, decomposition, branching, learning, caching,
+restarts, recomputation and direct decision, every total uniform exact policy
+must incur superpolynomial acquisition, compatibility, or continuation work.
+It must survive the cluster-profile collapse above.  No such lemma is proved.
+
+\paragraph{Peer handoff.}
+Roles~1--3 should use the $q$ independent nullity-two SAT/UNSAT controls as a
+mandatory hostile test: a scalar total residual/nullity silently imposes a
+fixed strategy.  Role~4's one-versus-two boundary is retained, but the new
+interpolation shows that connectivity/profile, not total excess alone,
+controls this algorithm.  The next Role~4/5 construction should keep the
+interaction graph connected while defeating local factorization, paid affine
+quotients and source-readable graph recognition on both labels.
+
+\begin{thebibliography}{8}
+\bibitem{APT} B. Aspvall, M.~F. Plass and R.~E. Tarjan,
+A linear-time algorithm for testing the truth of certain quantified Boolean
+formulas, \emph{Information Processing Letters} 8(3) (1979), 121--123,
+doi:10.1016/0020-0190(79)90002-4.
+\bibitem{GJS} M.~R. Garey, D.~S. Johnson and L. Stockmeyer,
+Some simplified NP-complete graph problems,
+\emph{Theoretical Computer Science} 1(3) (1976), 237--267,
+doi:10.1016/0304-3975(76)90059-1.
+\bibitem{Schaefer} T.~J. Schaefer, The complexity of satisfiability problems,
+STOC 1978, 216--226, doi:10.1145/800133.804350.
+\bibitem{Role4a} LSPV-4, AFFINE-NULLITY-BOUNDARY73,
+\path{research/agents/lspv-4/2026-10-24_0852_LSPV-4_AFFINE_NULLITY_BOUNDARY73.tex}.
+\bibitem{Role4b} LSPV-4, LOCAL-AFFINE-JOIN74,
+\path{research/agents/lspv-4/2026-10-24_0908_LSPV-4_LOCAL_AFFINE_JOIN74.tex}.
+\bibitem{Role3} LSPV-3, PARITY-SHORTCUT-FIREWALL78,
+\path{research/agents/lspv-3/2026-10-24_0926_LSPV-3_PARITY_SHORTCUT_FIREWALL78.tex}.
+\bibitem{Role5} LSPV-5, RESTART-RACE-CUTFLOW110,
+\path{research/agents/lspv-5/2026-10-24_0948_LSPV-5_RESTART_RACE_CUTFLOW110.tex}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::AFFINE-EXCESS-NULLITY111
