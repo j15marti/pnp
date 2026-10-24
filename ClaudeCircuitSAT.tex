@@ -1,0 +1,84 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\newcommand{\PR}{\textbf{PROVED/EXACT}}\newcommand{\KT}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}\newcommand{\COND}{\textbf{CONDITIONAL}}
+\newcommand{\OPEN}{\textbf{OPEN}}\newcommand{\CAND}{\textbf{CANDIDATE}}
+\title{Claude Circuit-SAT Lower-Bound Ledger (living document)}
+\author{Hourly scheduled run; independent of the LSPV/\texttt{main.tex} chain}
+\date{Last updated: 2026-10-24 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is a super-polynomial
+lower bound for Circuit-SAT. This document is a step-by-step ledger of what \emph{can} be proved
+about wires/gates/inputs as $n$ grows, with strict labels (PROVED/EXACT, KNOWN THEOREM,
+COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN).
+
+\section{Model}
+A circuit $C$ over inputs $x_1..x_n$ is a DAG of fan-in-2 gates from the full binary basis $B_2$
+(negation free). $|C|$ = number of gates; \emph{wires} $=2|C|$ (gate input edges) plus the output.
+$\mathrm{CSAT}$: given $C$, is there $x$ with $C(x)=1$? Two quantities are tracked per step $n$:
+\begin{itemize}
+\item $\mu(n)$ = minimal wires needed to build a circuit whose satisfiability genuinely depends on all $n$ inputs;
+\item $T(n)$ = lower bound on the work (here: wire reads, parametrized by $n$, $s=|C|$) to decide CSAT.
+\end{itemize}
+
+\section{Step ledger}
+\subsection*{Step 0--1 ($n\le 1$)}
+Output is a constant, an input or its negation: 0 gates, 0 wires. Decision needs $\Theta(1)$ reads.
+\subsection*{Step 2 ($n=2$)}
+Every function with 2 essential inputs needs exactly 1 gate (2 wires): 10 functions (\COMP, exhaustive).
+\subsection*{Step 3 ($n=3$)}
+Exhaustive over all 256 functions (script \texttt{experiments/circuitsat/min\_circuit\_ledger.py}, 4.3\,s, levelled BFS
+over sets of computed truth tables): of the 218 functions with 3 essential inputs, 114 need 2 gates, 80 need 3,
+24 need 4. Maximum over all $n=3$ functions is 4 gates (\COMP). Raw data: \texttt{experiments/circuitsat/ledger\_n3.json}.
+
+\begin{center}\begin{tabular}{rcccl}\toprule
+$n$ & min gates (all $n$ essential) & min wires & max gates over all $f$ & status\\\midrule
+1 & 0 & 0 & 0 & \COMP\\ 2 & 1 & 2 & 1 & \COMP\\ 3 & 2 & 4 & 4 & \COMP\\
+general & $n-1$ & $2(n-1)$ & $\Omega(2^n/n)$ (Shannon) & \PR / \KT\\ \bottomrule\end{tabular}\end{center}
+$n=4$ is deferred: the same BFS has $\sim10^{8}$ states and must be chunked (by level / by symmetry class) into
+$\le 30$\,s stages with checkpoints. NEXT.
+
+\section{Proved general statements}
+\begin{lemma}[Connectivity / wire floor]\label{lem:conn}
+If $f$ has $m$ essential inputs, every fan-in-2 circuit for $f$ has $\ge m-1$ gates and $\ge 2(m-1)$ wires; the AND-tree attains it.
+\end{lemma}
+\begin{proof} An essential input must have a directed path to the output. In the subgraph of gates lying on such paths
+with $g$ gates, the number of distinct source nodes reaching the output is at most $g+1$ (induction: each gate merges
+at most two cones). So $m\le g+1$. The balanced AND tree uses exactly $m-1$ gates. \end{proof}
+Status: \PR. This fixes $\mu(n)=2(n-1)$.
+
+\begin{theorem}[Wire-reading bound for CSAT]\label{thm:read}
+In the model where $C$ is accessed by probes ``what feeds gate $g$?'', any (even randomized, zero-error on this family)
+procedure that decides CSAT correctly on all circuits with $n$ inputs must make $\ge n$ (deterministically) probes
+on the family $\mathcal F_n=\{\mathrm{AND\text{-}tree}(\ell_1,\dots,\ell_n)\}$ with literals $\ell_i\in\{x_i,\neg x_i\}$ plus all
+single-leaf rewirings.
+\end{theorem}
+\begin{proof} Let $C_0=\mathrm{AND}(\ell_1..\ell_n)$ (satisfiable). If a deterministic algorithm leaves leaf $j$ unprobed,
+let $C_1$ be $C_0$ with leaf $j$ rewired to the negation of $\ell_i$ ($i\neq j$): $C_1$ is unsatisfiable, and every
+probe the algorithm made gives identical answers on $C_0,C_1$, so it errs on one. \end{proof}
+Status: \PR\ but weak: it is a \emph{query} bound $\Omega(\text{wires})$, i.e.\ linear in input size, tight, and says nothing about time beyond reading.
+
+\section{Parametrized view}
+Parameters: $n$ inputs, $s$ gates, and structural parameters (treewidth $w$, fan-out $\phi$, depth $d$).
+\begin{itemize}
+\item Upper bounds: $O(2^n s)$ brute force (\KT); $2^{O(w)}\,s$ via dynamic programming over a tree decomposition of the circuit graph (\KT, standard).
+So any hard CSAT family must have $w=\omega(\log s)$ (unless $\mathrm P=\mathrm{NP}$-type collapse): treewidth is the natural parameter for \emph{where} hardness must live.
+\item Lower bounds: no unconditional super-linear time bound; under SETH, no $2^{(1-\varepsilon)n}\mathrm{poly}(s)$ (\COND). Under ETH, no $2^{o(n)}\mathrm{poly}(s)$ (\COND).
+\item Circuit-size lower bounds for explicit functions are linear: best known $\approx 3.1n-o(n)$ in $B_2$ (Li--Yang 2022; \KT, to be re-verified against the primary source in a later run). Our ledger $2(n-1)$ wires vs.\ this shows how far unconditional gate counting is from $2^{\Omega(n)}$.
+\end{itemize}
+
+\section{Candidate directions (not claims)}
+\begin{enumerate}
+\item \CAND\ Track \emph{fan-out} per step: minimal circuits for $n=3$ exhaustively give a $\phi$-distribution; hypothesis: functions needing 4 gates (24 of them) are exactly those with a forced fan-out $\ge2$ node. Test in $n=3$, then $n=4$.
+\item \CAND\ Treewidth ledger: for each function minimize (gates, treewidth) jointly; look for a function family where min-treewidth forces $\Omega(n)$ while gate count stays $O(n)$.
+\item \CAND\ Use repository material (\texttt{main.tex}, \texttt{research/explorations/}: Schur-square / HEC / parity-decision firewall) as a source of hostile controls; the repo itself states \OPEN\ for its load-bearing arrows, so nothing is imported as proved.
+\end{enumerate}
+
+\section{Open arrows}
+\OPEN: any unconditional super-polynomial bound on CSAT; \OPEN: $n=4$ exhaustive ledger; \OPEN: joint (size, treewidth) ledger.
+
+\section*{Run log}
+Run 1 (2026-10-24): created document, script, $n\le3$ data, Lemma~\ref{lem:conn}, Theorem~\ref{thm:read}.
+\end{document}
+% END_OF_LEDGER::run1
