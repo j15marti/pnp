@@ -52,14 +52,18 @@ function* halfMachine(F, kind, cap) {
     yield {op:"remote",position:cap+17};
     while(true) yield {op:"spin"};
   }
+  let found=false;
   for(let mask=0;mask<(1<<F.n);mask++) {
     yield {op:"scan",mask};
-    if(kind==="SAT"&&satAt(F,mask)) {
-      yield {op:"answer",value:"SAT"};
-      return;
+    if(satAt(F,mask)) {
+      found=true;
+      if(kind==="SAT") {
+        yield {op:"answer",value:"SAT"};
+        return;
+      }
     }
   }
-  if(kind==="UNSAT") {
+  if(kind==="UNSAT"&&!found) {
     yield {op:"answer",value:"UNSAT"};
     return;
   }
@@ -98,6 +102,23 @@ function race(F, capped=true) {
   }
   throw Error("Neither one-sided guest returned in fully enumerated toy cap");
 }
+function timeoutOneSide(F, kind) {
+  // A single sound one-sided algorithm plus clock AND space cap decides both labels.
+  const cap=64, limit=(1<<F.n)+8, it=halfMachine(F,kind,cap);
+  let remoteAborted=0,steps=0;
+  for(let i=0;i<limit;i++) {
+    const q=it.next();
+    if(q.done) break;
+    steps++;
+    if(q.value.op==="remote" && q.value.position>cap) {
+      remoteAborted++;break;
+    }
+    if(q.value.op==="answer") {
+      return {answer:q.value.value,steps,remoteAborted};
+    }
+  }
+  return {answer:kind==="SAT"?"UNSAT":"SAT",steps,remoteAborted};
+}
 function run() {
   const roots=[
     {tag:"positive-SAT",n:4,cs:[[1,2],[2,3],[3,4]]},
@@ -117,7 +138,7 @@ function run() {
     interpretation:"source-level symbolic, not FLMV bit-machine measurements",
     roots:roots.length,rootSAT:0,rootUNSAT:0,firstChildren:0,grandchildren:0,
     firstSAT:0,firstUNSAT:0,grandSAT:0,grandUNSAT:0,
-    rootGuestCalls:0,leafGuestCalls:0,checks:0,attemptedRemote:0,
+    rootGuestCalls:0,leafGuestCalls:0,oneSideGuestCalls:0,oneSideCappedRemote:0,checks:0,attemptedRemote:0,
     blockedRemote:0,uncappedHighIndex:0,
     sourceBitReads:0,serializedBitWrites:0,workBitWrites:0,
     primitiveEvents:0,maxCappedTouched:0,peakUncappedTouched:0,
@@ -128,6 +149,12 @@ function run() {
     check(serialize(decoded)===src,"round-trip");
     const cap=race(decoded,true), bad=race(decoded,false);
     check(cap.answer===(gold?"SAT":"UNSAT"),"capped answer");
+    for(const side of ["SAT","UNSAT"]) {
+      const one=timeoutOneSide(decoded,side);
+      out.oneSideGuestCalls++;
+      out.oneSideCappedRemote+=one.remoteAborted;
+      check(one.answer===(gold?"SAT":"UNSAT"),"one-sided timeout "+side);
+    }
     check(bad.answer===cap.answer,"uncapped answer");
     check(cap.peakTouched<=64,"bounded peak");
     if(bad.peakTouched>64) out.uncappedHighIndex++;
@@ -169,6 +196,7 @@ function run() {
   }
   check(out.rootSAT===6&&out.rootUNSAT===6,"both-label roots");
   check(out.rootGuestCalls===12&&out.leafGuestCalls===48,"paid guest calls");
+  check(out.oneSideGuestCalls===120,"one-sided timeout guests");
   check(out.blockedRemote>0&&out.uncappedHighIndex>0,"active red-team trap");
   check(out.grandSAT>0&&out.grandUNSAT>0,"both-label descendants");
   return out;
