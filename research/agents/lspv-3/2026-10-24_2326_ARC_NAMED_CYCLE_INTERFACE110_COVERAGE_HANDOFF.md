@@ -1,0 +1,25 @@
+# LSPV-3 ARC-NAMED-CYCLE-INTERFACE110 | cumulative role-owned ARC handoff
+Date: 2026-10-24 23:26 America/Los_Angeles. Latest user allocation: all five existing agents work only on ARC/FLMV, with original task identities/minutes/status preserved. No automations or notifications altered.
+
+## Exact source/receiving theorem
+All ordinary proper-3CNF, **outside C_star**: for each r>=3 take r signed equality/disequality modules on a named cycle, each lifted to four proper 3CNF clauses using two private auxiliary names. YES all equality; NO flips final relation to disequality, changing four sign fields but keeping unsigned incidence, size and every strict module-union SAT bit identical. Symbolic XOR-cycle proof: YES exactly 2^(2r+1) complete models, NO 0. Every strict set of source modules is a forest and SAT for both labels. Named two-variable local profiles (1001 equality, 0110 disequality) restore the exact join in polynomial bit work; a status-only adaptive combiner observing only SAT bits on proper module unions, without raw source sign inspection, is unable to distinguish. This is **PROVED/EXACT in that restricted interface**, not arbitrary A lower bound.
+
+## Two-level actually encoded ordinary children
+Self-delimiting record formula: h=ceil(log2(max(n,m)+1)); N=3h+1+3m(h+1). Every generated first-level half child is serialized, parsed, mapped back to original names; its actual clause stream is split, serialized and parsed as quarter grandchildren. Both levels' proper descendants SAT in BOTH root labels. For r=4: root304, halves133 each, quarters58 each. For r=8: 691,304,133. For r=32: 3481,1558,691. For r=128: 16927,7708,3481. Fixed depth growing children remain Theta(N), not N^lambda for lambda<1. Eager retained child and grandchild already cost Omega(N) simultaneous writable bits on this family; a virtual interface may reduce buffering but does not reduce A's logical child length, and every probe/replay is charged.
+
+## Actual computational audit
+Published independently executable Node.js standard-library source and raw JSON. This run: 51,119 assertion-accounted checks, including proper original grammar, exact source-name serializer/parser recovery, exact local boundary profiles, all strict subfamilies at r=3..8, sampled prefixes at r=12,32,128, two actual levels for multiples of four, and exhaustive complete SAT/UNSAT assignment counts for r=3..5. FINITE status COMPUTATIONAL, no exceptions. Not a physical FLMV machine measurement.
+
+## ARC edge, resource controls and status
+E contains pairs achieved jointly by ONE uniform total exact deterministic ordinary SAT A on EVERY ordinary input, matched to FLMV read-only indexed random-access model. Conditional cofinal finite-hit route remains OPEN; strict box t<241/200, s<11642479/23232400, beta(c)=((c+2)/c^2-c)/2. Old t+s<2cos(pi/7) RETIRED. Solver-assisted lookahead on any parent-scale child must charge full A execution, source/index/work traffic, changed and unchanged writes, representation metadata, ancestor buffers and dynamic strategy selection. Role 1 ARC-POLICY-SLOPE156 already proves padded-A obstruction for compulsory full-parent queries. No lower bound on arbitrary A, even on these easy parity cycles, is claimed.
+
+## Duplication, contradiction and archive state
+STRICT-SUBJOIN-STATUS131 / EXACTONE-JOIN-CYCLE95 already falsified related strict SAT-bit gluing; INTERFACE-PROJECTION8 and SCOPED-BLOCK-REBUILDER92 already proved bounded-width source-name joins. This record adds an unbounded cycle with all proper unions SAT, two serialized child levels, exact sizes and named-replay controls, not a novel generic hardness result. Read direct Github originals: main13.tex blob 87dbaad; FINAL-LINK-ARC blob 582b5429; governance, CODEX, skill; role1 ARC-POLICY156; role2 ARC-ADAPTIVE-CUT125, STREAM150, LOWSPACE152; role3 EXACTONE95; role5 STRICT-SUBJOIN131 and FRONTIER132; role4 GRID108. Drive continuation original HEREDITARY-SCOPED10 entry from document 1TselU5xLzVf7nbD2R0r-XZz_8t-S_WNrkiOZxNpbR5E revision captured in the standalone report; original executable still not recovered. Primary FLMV original PDF Cor5.8 visually read. Github bounded search HEREDITARY/INTERFACE/PCLOSE/MULTICHANNEL/KDAG. No fresh 3532-file census. Historical main2-main12/main14, much Drive LOG/BOOL/SIL and exact original full HEREDITARY code remain unread.
+
+## Published artifacts and next arrow
+Report: research/agents/lspv-3/2026-10-24_2326_LSPV-3_ARC_NAMED_CYCLE_INTERFACE110.tex
+Code: research/agents/lspv-3/2026-10-24_2326_ARC_NAMED_CYCLE_INTERFACE110_repro.js
+Raw: results/raw/2026-10-24_2326_LSPV3_ARC_NAMED_CYCLE_INTERFACE110_raw.json
+Shared: research/coordination/2026-10-24_2326_ARC_NAMED_CYCLE_INTERFACE110_FIVE_ROLE_HANDOFF.md
+Remaining implication: an all-input exact A-dependent source-coherent short-child transformation with FULL cost and BOTH-label two-level hereditary eligibility; no parent-scale fallback, positive margin into strict box. P versus NP OPEN, ARC-EDGE-90 OPEN.
+<!-- END_OF_VERIFIED_HANDOFF::LSPV-3::ARC-NAMED-CYCLE-INTERFACE110 -->
