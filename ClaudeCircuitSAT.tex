@@ -1,0 +1,62 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append/reconcile each hourly run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}\newtheorem{definition}{Definition}
+\title{Wire-by-wire lower bounds for Circuit-SAT: a parameterized ladder\\ \large Living document (ClaudeCircuitSAT)}
+\author{Scheduled hourly Claude run}
+\date{Last updated: 2026-10-25 (run 1)}
+\begin{document}\maketitle
+
+\section*{Status (strict labels)}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial lower bound for Circuit-SAT. Labels: PROVED/EXACT, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model}
+A circuit $C$ over $n$ inputs is a DAG of fan-in-2 AND gates with free negation on wires (an AIG). $g$ = gates, $w=2g+1$ = wires counting the output edge. Circuit-SAT: decide $\exists x\in\{0,1\}^n: C(x)=1$. Parameters tracked: $n,g,w$, fan-out $\phi$, treewidth $\mathrm{tw}$, number of satisfying points $|C^{-1}(1)|$.
+
+\section{Ladder, step 0--2: smallest instances (PROVED/EXACT)}
+\textbf{n=1.} Non-constant functions $x,\bar x$ need $0$ gates; SAT is decided by reading one polarity bit.\\
+\textbf{n=2 (COMPUTATIONAL, exhaustive BFS, \texttt{experiments/claude\_circuitsat/2026-10-25\_ccsat\_min\_circuits.py}).} Up to negation the 7 non-constant functions need: 2 with 0 gates ($x_1,x_2$), 4 with 1 gate (the AND/OR family), 1 with 3 gates (XOR/XNOR). The 4 unique-satisfying-point functions each need exactly 1 gate.
+
+\begin{lemma}[dependence]\label{lem:dep}
+If $|C^{-1}(1)|=1$ then $C$ depends on every input.
+\end{lemma}
+\begin{proof} If $C$ ignores $x_i$, flipping $x_i$ maps the unique satisfying point to a different satisfying point. \end{proof}
+
+\begin{theorem}[wire lower bound for unique-SAT circuits]\label{thm:wire}
+A fan-in-2 circuit with exactly one satisfying assignment on $n\ge1$ inputs has $g\ge n-1$ gates and $w\ge 2n-1$ wires; both are attained by a chain/tree AND of $n$ literals.
+\end{theorem}
+\begin{proof} By Lemma~\ref{lem:dep} every input has a directed path to the output. A fan-in-2 DAG whose output reaches $n$ distinct sources has $\ge n-1$ gates (induction: a gate merges at most two source-sets). Wires $=2g+1$. Tightness: the AND tree on literals $\ell_i=x_i\oplus s_i$ with sign vector $s$. \end{proof}
+
+\section{Step 3: what the wires cost a solver}
+\begin{theorem}[black-box evaluation, KNOWN folklore, PROVED by adversary]
+Any algorithm accessing $C$ only through evaluation queries needs $2^n$ queries in the worst case to separate the family $\{\mathrm{AND}_s\}$ from the constant-0 circuit. (Adversary answers 0; each query kills one point.) Quantumly $\Theta(2^{n/2})$ (Grover/BBBV).
+\end{theorem}
+\begin{theorem}[white-box wire reading, PROVED/EXACT]
+For the same family, with polarity bits on wires, deciding SAT requires reading $\ge n$ wire polarities (adversary hides one) and $n$ suffice. So the unique-SAT family has white-box complexity $\Theta(n)$ although black-box complexity is $2^n$.
+\end{theorem}
+\textbf{Lesson.} A parameterized lower bound must charge for \emph{structure that is not readable off wires cheaply}; sparse-satisfying-set size alone (Theorem~\ref{thm:wire}) gives only linear wire bounds. Hardness must come from circuits where the minimal wire count is large \emph{and} the local wire neighbourhood does not reveal the satisfying point (XOR-type mixing: XOR costs 3 gates at $n=2$ versus 1 for AND).
+
+\section{Parameterized upper bounds (the target to beat), KNOWN}
+Brute force $O(g2^n)$; treewidth DP $O(g\,2^{\mathrm{tw}})$ (Circuit-SAT is FPT in $\mathrm{tw}$); so any parameterized lower bound $T(n,g,\mathrm{tw})$ must respect $T\le O(g\,2^{\min(n,\mathrm{tw})})$. Conditional (SETH) lower bounds $2^{(1-\epsilon)n}$ are CONDITIONAL, not unconditional.
+
+\section{Candidate parameter ladder (CANDIDATE / OPEN)}
+\begin{center}\begin{tabular}{llll}\toprule
+Step & Family & Known white-box cost & Status\\\midrule
+1 & $n=1$ literal & $1$ read & EXACT\\
+2 & $n=2$, all 7 functions & $\le 3$ gates & COMPUTATIONAL\\
+3 & AND-of-literals, any $n$ & $\Theta(n)$ reads, $g=n-1$ & EXACT\\
+4 & parity-mixed ($\oplus$ blocks of size $b$ ANDed) & upper $O(n+2^b)$ & CANDIDATE\\
+5 & bounded-$\mathrm{tw}=k$ & upper $O(g2^k)$; lower bound? & OPEN\\
+6 & general $g=\mathrm{poly}(n)$ & upper $2^n$; lower bound? & OPEN\\\bottomrule\end{tabular}\end{center}
+Open question to pursue next: find a family with $w$ wires (small) where \emph{every} adaptive algorithm that reads $<\Omega(w)$ wires fails, i.e.\ a wire-read lower bound exceeding $n$; an unconditional $\omega(w)$ bound would be a new circuit-SAT result.
+
+\section{Repository cross-check}
+Surveyed \texttt{AGENTS.md}, the 2026-10-25 SIL/M22 handoff and \texttt{research/language/*M22\_PARAMETERIZED\_RESOURCE\_LADDER.md}: the project's ladder parameterizes by $q,d$ (Option A/B resources, ARC/FLMV); its exact $q,d$ bound $O^*(2^d)$ is an upper-bound analogue of our $2^{\mathrm{tw}}$ statement. No repository claim gives an unconditional Circuit-SAT lower bound; no duplication of Theorem~\ref{thm:wire}/lemma found (not exhaustively grepped). Literature search was \emph{not} performed this run (to do).
+
+\section{Log / next steps}
+\begin{itemize}
+\item Run 1: created document; $n\le2$ exhaustive; $n=3$ naive BFS exceeded 30\,s (state-set explosion) -- needs chunking by gate count / canonical forms, results not recorded.
+\item Next: $n=3$ via NPN-class enumeration; wire-read adversary for family 4; literature search (Li--Yang style circuit bounds, treewidth/SETH).
+\end{itemize}
+% END_OF_CLAUDE_CIRCUITSAT_RUN::2026-10-25_run1
+\end{document}
