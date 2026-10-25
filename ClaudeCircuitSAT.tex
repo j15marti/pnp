@@ -1,0 +1,91 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-10-25
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: a wire-by-wire, parameterized lower-bound ladder for Circuit-SAT}
+\author{Living document (scheduled hourly Claude runs)}
+\date{Last updated: 2026-10-25, run 1}
+\begin{document}\maketitle
+
+\section*{0. Status banner (read first)}
+\textbf{P versus NP remains OPEN.} No unconditional superlinear lower bound for \CSAT{} is proved here.
+Labels used: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and model}
+Build \CSAT{} instances from the simplest case upward, tracking the wires (connections) needed per step and the cost of deciding satisfiability, with the aim of a (possibly parameterized) lower bound.
+\begin{definition}[Instance]
+A circuit $C$: $n$ input nodes, $g$ gates of fan-in 2 over the full binary basis $B_2$ (negation is free on wires), one output, every node reaches the output, underlying undirected graph connected. Size $m=n+g$; wires $w=2g$.
+\end{definition}
+\begin{definition}[Excess]
+$\mu(C)=w-(n+g)+1=g-(n-1)$, the cyclomatic number of the underlying graph.
+\end{definition}
+
+\section{Wire-level lemmas (PROVED/EXACT)}
+\begin{lemma}[Connection floor]\label{l:floor}
+$g\ge n-1$, so $w\ge 2(n-1)$, i.e.\ $\mu\ge0$, with $\mu=0$ iff the underlying graph is a tree (a read-once formula).
+\end{lemma}
+\begin{proof} A connected graph on $n+g$ nodes has $\ge n+g-1$ edges; $w=2g$. \end{proof}
+
+\begin{lemma}[Reading lower bound]\label{l:read}
+Let $\Phi_n$ be the family of $n$-literal conjunctions $\ell_1\wedge\dots\wedge\ell_n$ (each $\ell_i\in\{x_j,\neg x_j\}$ over $n$ variables), presented as an AND-chain whose $i$-th wire label is $\ell_i$. Any deterministic algorithm with random access to the encoding that decides satisfiability must read all $n$ labels (worst case).
+\end{lemma}
+\begin{proof} Suppose label $i$ is unread on some run. The adversary answers the other labels so that they are pairwise consistent and, for $n\ge2$, one other label is $x_j$. Choosing $\ell_i=x_j$ gives SAT, choosing $\ell_i=\neg x_j$ gives UNSAT, with identical transcripts. \end{proof}
+Hence time $\Omega(m)$ for \CSAT{} in general, and $\Theta(m)$ on trees ($\mu=0$; upper bound by the tree DP below).
+
+\begin{proposition}[Excess-parameterized upper bound]\label{p:ub}
+\CSAT{} is decidable in time $2^{\mu}\cdot O(m)$ (deterministic).
+\end{proposition}
+\begin{proof}
+Take a spanning tree $T$ of the underlying graph; the $\mu$ non-tree edges each get one endpoint put in a set $F$, $|F|\le\mu$. Enumerate the $2^{|F|}$ value assignments to nodes of $F$. $G-F\subseteq T$ is a forest; each gate constraint $(h;a,b)$ lives in the star of $h$, so the standard rooted-tree DP with tables of size $\le4$ (value of node, value of parent) checks consistency and the output requirement in $O(m)$.
+\end{proof}
+Consequence: \CSAT{} with $\mu=O(\log m)$ is in P; any super-polynomial hardness must live at $\mu=\omega(\log m)$, i.e.\ $g\ge n+\omega(\log n)$.
+
+\section{CNF embedding and the conditional matching bound}
+A 3CNF with $n$ variables, $m_c$ clauses becomes a circuit with $g=3m_c-1$, $w=6m_c-2$, hence $\mu=3m_c-n$.
+\begin{proposition}[CONDITIONAL]
+Assume ETH. Then \CSAT{} has no $2^{o(\mu)}\mathrm{poly}(m)$-time algorithm.
+\end{proposition}
+\begin{proof} By sparsification, ETH gives instances with $m_c=O(n)$, so $\mu=O(n)$; a $2^{o(\mu)}$ algorithm would give $2^{o(n)}$ 3SAT. \end{proof}
+Together with Proposition~\ref{p:ub}: under ETH, the right parameter is the excess and $T(\mu)=2^{\Theta(\mu)}\mathrm{poly}$. The unconditional gap is: proved $\Omega(m)$, upper $2^{\mu}m$. \textbf{OPEN:} any unconditional bound $\omega(m)$ on a deterministic RAM/TM for this family.
+
+\section{The ladder (step by step)}
+\begin{center}\begin{tabular}{lllll}\toprule
+Level & Class & Wires beyond tree & Upper & Lower\\\midrule
+L0 & read-once formula ($\mu=0$) & 0 & $O(m)$ & $\Omega(m)$ PROVED\\
+L1 & $\mu=k$ constant & $k$ & $2^k m$ & $\Omega(m)$ PROVED\\
+L2 & $\mu=O(\log m)$ & $O(\log m)$ & poly & $\Omega(m)$; superlinear OPEN\\
+L3 & $\mu=\Theta(n)$ ($g=\Theta(n)$) & $\Theta(n)$ & $2^{\Theta(n)}$ & $2^{\Omega(\mu)}$ CONDITIONAL (ETH)\\
+\bottomrule\end{tabular}\end{center}
+
+\section{Exact small-case data (COMPUTATIONAL)}
+Script \texttt{experiments/claude\_circuitsat/ladder.py}, output \texttt{results/raw/claude\_circuitsat/ladder\_results.json}; exhaustive BFS over circuits, runtime $\approx15$\,s, single stage (no chunking needed).
+Minimum $B_2$-gate counts $C(f)$ over all functions of $n$ variables:
+\begin{center}\begin{tabular}{ccccc}\toprule
+$n$ & distribution of $C(f)$ (gates:count) & $\max C$ & min wires $2\max C$ & $\mu$ at max\\\midrule
+1 & 0:4 & 0 & 0 & --\\
+2 & 0:6, 1:10 & 1 & 2 & 0\\
+3 & 0:8, 1:30, 2:114, 3:80, 4:24 & 4 & 8 & 2\\\bottomrule\end{tabular}\end{center}
+(The $n=3$ extremal 24 functions need excess $\mu=g-n+1=2$ in every optimal circuit.) Note this is \emph{function} complexity, not \CSAT{} decision hardness.
+
+Exact decision-tree depth of satisfiability of $\Phi_n$ (brute-force minimax): $D=2,3,4$ for $n=2,3,4$, matching Lemma~\ref{l:read} ($D=n$).
+
+\section{Link to the repository's P vs NP work}
+Surveyed (not exhaustively re-derived): \texttt{AGENTS.md} directives, \texttt{research/coordination/2026-10-25\_0005\_SIL\_M22\_RESOURCE\_LADDER\_FIVE\_ROLE\_HANDOFF.md}. The repo's ARC/FLMV spine targets the unconditional time--space forbidden region ($t<241/200$ region) and is OPEN; its M22 $(q,d)$ parameterization (running time $O^*(2^d)$ on the restricted class) is the same flavour as the excess parameter here: both are ``hardness lives in a structural parameter'' statements. No transfer theorem is claimed. FLMV-type time--space bounds apply to \CSAT{} via the CNF embedding but give only polynomial time lower bounds at small space (KNOWN, cited from memory, not re-verified this run).
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend exact data to $n=4$ (needs chunked search, cf.\ 30\,s rule) and tabulate formula size vs.\ circuit size per function.
+\item Seek an unconditional $\omega(m)$ bound in a restricted model: algorithms that branch only on stem values (conditioning model) -- is $2^{\Omega(\mu)}$ provable there?
+\item Examine whether the repo's $(q,d)$ ladder embeds as a sub-ladder with $\mu$ as a function of $d$.
+\item Verify the cited literature (ETH sparsification, treewidth DP, FLMV) against primary sources.
+\end{enumerate}
+
+\section*{Run log}
+\begin{itemize}
+\item Run 1 (2026-10-25): created document; Lemmas 1--2, Prop.\ 1, ETH corollary, exact tables for $n\le3$.
+\end{itemize}
+\end{document}
