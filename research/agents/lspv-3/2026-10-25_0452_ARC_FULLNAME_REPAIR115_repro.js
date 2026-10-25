@@ -1,6 +1,6 @@
 "use strict";
 function run(){
- let S={run_id:"ARC-FULLNAME-REPAIR115",seed:null,checks:0,sat_calls:0,dpll_nodes:0,roundtrips:0,visible_contexts:0,full_pin_queries:0,stage_cases:[],large_lengths:[],errors:0,FLMV_steps_measured:false};
+ let S={run_id:"ARC-FULLNAME-REPAIR115",seed:null,checks:0,sat_calls:0,dpll_nodes:0,roundtrips:0,visible_contexts:0,full_pin_queries:0,stage_cases:[],label_preserving_twolevel:[],large_lengths:[],errors:0,FLMV_steps_measured:false};
  function ck(x,m){S.checks++;if(!x){S.errors++;throw Error(m)}}
  function alloc(n){return {n}};
  function fresh(a){return ++a.n}
@@ -87,6 +87,20 @@ function run(){
    ck(sat(one.C),"first child SAT");ck(sat(two.C)===(label==="SAT"),"second child exact");
    ck(two.bits.length>one.bits.length,"child size grows");
    S.stage_cases.push({b,label,root_N:root.bits.length,first_N:one.bits.length,second_N:two.bits.length,n0:M.n,n1:H.n1,n2:H.n2,m0:M.F.length,m1:one.C.length,m2:two.C.length});
+   // Real, independently label-preserving two-level fallback.
+   // FIRST: Q plus a complete fresh even-parity chain, hence parent-equivalent.
+   // SECOND: append proper CNF equality linking original x1 to a new copy y.
+   // Every new private auxiliary is disjoint from all source and previous IDs.
+   let a=alloc(H.n2),yc=fresh(a),pa=fresh(a),qa=fresh(a);
+   let eq=[[-1,yc,pa],[-1,yc,-pa],[1,-yc,qa],[1,-yc,-qa]];
+   let valid2=rd([...two.C,...eq],a.n);
+   ck(sat(valid2.C)===(label==="SAT"),"hereditary second label");
+   ck(two.bits.length===root.bits.length,"first legitimate child equals root length");
+   ck(valid2.bits.length>two.bits.length,"second legitimate child grows");
+   S.label_preserving_twolevel.push({b,label,N_root:root.bits.length,
+     N_child1:two.bits.length,N_child2:valid2.bits.length,
+     n_child1:H.n2,n_child2:a.n,m_child1:two.C.length,m_child2:valid2.C.length,
+     original_source_names_preserved:true});
    if(b<=4)for(let k=0;k<(1<<b);k++){let w=Array.from({length:b},(_,i)=>k>>i&1),a=alloc(M.n),P=[];
       for(let i=0;i<b;i++)P.push(...pin(w[i]?i+1:-(i+1),a));
       ck(sat(rd([...M.Q,...P],a.n).C)===(w.reduce((x,y)=>x^y,0)===1||w.every((x,i)=>x===u[i])),"complete pin");
