@@ -63,10 +63,10 @@ class AuditStats:
     calls_by_depth: Dict[int, int] = field(default_factory=dict)
 
 
-def certified_upper_bound(m: int) -> int:
-    """A public computable upper bound, deliberately not an exact header."""
-    assert m >= 1
-    return 1 << math.ceil(math.log2(m + 1))
+def certified_upper_bound(input_bits: int) -> int:
+    """Public U(N), computed from input length only, never from output count."""
+    assert input_bits >= 1
+    return 1 << math.ceil(math.log2(input_bits + 1))
 
 
 def headerless_blocks(records: Sequence[object], upper: int, stats: AuditStats):
@@ -109,7 +109,11 @@ def cooperative_decide(formula, depth: int, stats: AuditStats, active: int = 0) 
     stats.calls_by_depth[depth] = stats.calls_by_depth.get(depth, 0) + 1
     stats.max_active_producers = max(stats.max_active_producers, active + 1)
     records = fusion.scoped_records(formula)
-    upper = certified_upper_bound(len(records))
+    # For the fixed explicit codec every emitted clause record corresponds to
+    # at least one source bit, so M <= N <= U(N).  The producer's output count
+    # is deliberately not passed to certified_upper_bound.
+    upper = certified_upper_bound(len(fusion.encode_cnf(formula)))
+    assert len(records) <= upper
     reachable: Set[Tuple[bool, ...]] = {tuple()}
     expected_left: Tuple[int, ...] = tuple()
     for producer, block in headerless_blocks(records, upper, stats):
@@ -164,7 +168,8 @@ def main() -> None:
     for depth in (1, 2):
         for name, formula, expected in cases:
             records = fusion.scoped_records(formula)
-            upper = certified_upper_bound(len(records))
+            input_bits = len(fusion.encode_cnf(formula))
+            upper = certified_upper_bound(input_bits)
             cap = math.ceil(math.sqrt(upper))
             replay, prefixes = restart_prefix_visits(len(records), cap)
             stats = AuditStats()
@@ -181,6 +186,7 @@ def main() -> None:
                 "depth": depth,
                 "expected": expected,
                 "root_records": len(records),
+                "root_input_bits": input_bits,
                 "certified_upper_bound": upper,
                 "block_capacity": cap,
                 "root_restart_prefixes": prefixes,
