@@ -1,0 +1,60 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}\newtheorem{theorem}{Theorem}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT\\\large Living document}
+\author{Hourly Claude routine}
+\date{Last updated: 2026-10-25 (run 1)}
+\begin{document}\maketitle
+
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here proves a super-linear unconditional lower bound for Circuit-SAT.
+Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model and plan}
+A circuit $C$ has $n$ inputs and $m$ fan-in-2 gates over the basis $B_2$ (all binary gates, free negation); \emph{wires} $w=2m$ (+1 output tap).
+Circuit-SAT: given an encoding of $C$, decide $\exists x\ C(x)=1$.
+Ladder: start from the smallest circuits, record the exact minimum wire count at each step, then raise $n$ and track the lower bound as a function of the parameters $(n,m)$.
+The bound sought is \emph{parameterized}: $T(n,m)$, e.g.\ $\Omega(m)$ (proved below), versus $2^{\delta n}\mathrm{poly}(m)$ (only conditional).
+
+\section{Exact results}
+\begin{lemma}[Connectivity, PROVED/EXACT]
+A fan-in-2 circuit whose output depends on $n$ inputs has $\ge n-1$ gates, hence $\ge 2(n-1)$ wires; $\mathrm{AND}_n$ meets this with equality.
+\end{lemma}
+\emph{Proof.} The sub-DAG reaching the output covers all $n$ inputs; a fan-in-2 DAG with a single sink and $n$ sources, in which every non-source node has two in-edges, has at least $n-1$ internal nodes (induct: merging two nodes costs one gate; the underlying graph must be connected, so $2m\ge m+n-1$ edges are not needed but $m+n-1\le$ node count of a connected graph with $2m$ edges gives $m\ge n-1$). Equality: a balanced AND tree. \hfill$\square$
+
+\begin{theorem}[Probe lower bound, PROVED/EXACT in the encoding-probe model]
+Any deterministic algorithm for Circuit-SAT on $m$-gate circuits must probe $\Omega(m)$ symbols of the circuit encoding (indeed at least $m-1$ gate-type fields).
+\end{theorem}
+\emph{Proof.} Let $g_0=x_1\wedge\neg x_1$ and $g_i=g_{i-1}\wedge x_1$ for $i=1..m$; the circuit is unsatisfiable. Replacing the type of any single $g_i$ ($i\ge1$) by $\vee$ gives $g_i=x_1$ and all later gates $x_1\wedge\cdots$, so output $=x_1$: satisfiable. An algorithm that skips the type of gate $i$ answers identically on both instances, so it errs on one. \hfill$\square$
+
+This is the wire-tracking floor: every gate (wire pair) matters. It is linear in the \emph{instance size}, so it is trivial as a complexity bound; it is recorded as the base rung of the parametrized ladder.
+
+\section{Computational ladder (COMPUTATIONAL)}
+Script: \texttt{experiments/claude\_circuitsat/ladder.py}; data: \texttt{ladder\_results.json}. Exact minimum gate counts by BFS over computed-function sets (basis $B_2$).
+\begin{center}\begin{tabular}{lcccccc}\toprule
+$n$ & funcs & size 0 & 1 & 2 & 3 & 4\\\midrule
+2 & 16 & \multicolumn{5}{c}{all reached $\le 1$ gate}\\
+3 & 256 & 8 & 30 & 114 & 80 & 24\\
+4 ($\le3$ gates only) & 65536 & 10 & 60 & 456 & 2474 & unexplored\\\bottomrule\end{tabular}\end{center}
+So every 3-input function needs $\le4$ gates ($\le 8$ wires); 24 need exactly 4. For $n=4$ only 3000 of 65536 functions have size $\le3$; known literature (Knuth) gives max size 7 for $n=4$ (KNOWN, not re-derived here).
+Runtime 7 s total, single stage.
+
+\section{Literature anchors (KNOWN THEOREM / CONDITIONAL; not re-verified this run)}
+\begin{itemize}
+\item Best explicit general-circuit lower bound over $B_2$ is $\approx 3.1n-o(n)$ by gate elimination (Li--Yang, STOC 2022); $5n-o(n)$ for the $U_2$ basis. Linear in $n$; no super-linear bound is known for any NP function.
+\item Circuit-SAT in $2^{n}\mathrm{poly}(m)$ by brute force; $2^{\delta n}$ lower bounds are CONDITIONAL on ETH/SETH.
+\item Magnification: tiny improvements to certain MCSP/SAT-type lower bounds imply $\mathrm{NP}\not\subseteq \mathrm{P/poly}$ (Oliveira--Santhanam, Chen et al.); local-circuit barriers (CHOPRRS) limit these methods.
+\end{itemize}
+Repository check: \texttt{GROKPROOF/} (as of 2026-10-25 22:17 UTC note) reports no general-circuit advance past $3.5n-O(\log n)$ type bounds and no forcing contradiction; the LSPV/ARC work is ongoing and OPEN. No result there currently closes a Circuit-SAT lower bound used here.
+
+\section{Open arrows / next rungs}
+\begin{enumerate}
+\item OPEN: exact minimum wires for $n=4$ (complete to size 7) and $n=5$ with SAT-solver certificates.
+\item OPEN: parameterized bound beyond $\Omega(m)$, e.g.\ $T(n,m)\ge \omega(n+m)$ for any uniform algorithm; conditionally $2^{\Omega(n)}$.
+\item CANDIDATE: wire-congestion (cut-width) parameter $k$: study whether time $2^{\Omega(k)}$ is forced for width-$k$ circuits (upper bound $2^{O(k)}\mathrm{poly}$ by DP is known).
+\end{enumerate}
+
+\section*{Run log}
+Run 1 (2026-10-25): created document, proved connectivity lemma and $\Omega(m)$ probe bound, computed $n\le3$ exact ladder.
+\end{document}
