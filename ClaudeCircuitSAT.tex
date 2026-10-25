@@ -1,0 +1,57 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,geometry}
+\geometry{margin=1in}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: a parameterized lower-bound ladder for Circuit-SAT}
+\author{Hourly Claude routine (living document)}
+\date{Last updated 2026-10-25}
+\begin{document}\maketitle
+\section*{Status (strict labels)}
+\textbf{Unconditional superlinear lower bound for Circuit-SAT: OPEN. P vs NP: OPEN.}
+Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, RETIRED.
+Nothing below is claimed to separate P from NP.
+
+\section{Ladder method}
+Level $n$: Boolean functions on $n$ inputs computed by DAG circuits of fan-in-2 gates (all 16 binary gates).
+For each level we track $g_{\min}(f)$ (gates) and wires $w=2g$ (gate-input edges), and the cost of \emph{deciding} satisfiability
+of an instance of that size. Parameters: $n$ (inputs), $g$ (gates), $w$, depth, and $k$ (weight, for weighted variants).
+
+\section{Proved lower bounds on structure}
+\begin{theorem}[PROVED: connectivity bound] If the output of a fan-in-2 circuit depends on all $n$ inputs, then $g\ge n-1$ and $w=2g\ge 2(n-1)$.\end{theorem}
+\begin{proof} Each input has a path to the output, so the underlying undirected graph on $n+g$ nodes is connected and has $2g$ edges (counting multiplicity);
+$2g\ge (n+g)-1$ gives $g\ge n-1$. Equality holds for $\mathrm{AND}_n$ (a tree). \end{proof}
+
+\begin{theorem}[PROVED: linear read bound for white-box deciders] Any correct deterministic Circuit-SAT decider on encodings of $g$-gate circuits must read $\Omega(g)$ encoding symbols.\end{theorem}
+\begin{proof} Take $C_{b}=\bigwedge_{j=1}^{m}(x_j\wedge y_j)$ with $y_j=x_j$ or $\neg x_j$ ($b_j\in\{0,1\}$): satisfiable iff every $y_j=x_j$.
+Adversary answers ``$y_j=x_j$'' to every read; if some descriptor $j$ is unread, flipping it flips the answer, so the decider is wrong on one of two instances agreeing on all reads. Hence all $m=\Theta(g)$ descriptors are read. \end{proof}
+(Both are trivial; they fix the baseline $\Omega(w)$ that any real bound must exceed.)
+
+\section{Computational ladder (COMPUTATIONAL)}
+Exact minimum gate counts over the full binary basis, by exhaustive layered closure over sets of computed truth tables
+(\texttt{experiments/claude\_circuitsat/ladder.py}; raw: \texttt{results/raw/claude\_circuitsat\_ladder.json}).
+\begin{center}\begin{tabular}{@{}rrrrrrr@{}}\toprule
+$n$ & \#functions & $g=0$ & $g=1$ & $g=2$ & $g=3$ & $g=4$\\\midrule
+1 & 4 & 3 & 1 & & & \\ 2 & 16 & 4 & 12 & & & \\ 3 & 256 & 5 & 33 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+So $\max_f g_{\min}$ is $1,1,4$ for $n=1,2,3$ (the 24 hardest 3-variable functions need 4 gates, i.e.\ 8 wires).
+$\mathrm{AND}_n$ attains the tree bound: $g=n-1$, $w=2(n-1)$ for $n\le 8$ tabulated.
+Next rung: $n=4$ (known max 7 gates in this basis) --- requires symmetry-reduced search; not yet run.
+
+\section{Decision-side bounds and parameters}
+\begin{itemize}
+\item KNOWN (black box): with only evaluation access to $C:\{0,1\}^n\to\{0,1\}$, deterministic search needs $2^n$ queries in the worst case (adversary answers 0); weight-$k$ version needs $\binom{n}{k}$. The white-box setting is exactly where this fails to transfer: the circuit text is available.
+\item KNOWN: best explicit lower bound for a function in NP over $B_2$ is about $3.1n$ gates (Li--Yang 2022; cite to be rechecked). No superlinear bound known.
+\item CONDITIONAL: SETH/ETH give $2^{(1-o(1))n}$-type bounds for CNF-SAT; these are assumptions, not proofs.
+\item Parameterized candidate: bound of form $T(n,g)\ge f(n)\cdot g^{c}$; Weighted-Circuit-SAT is W[P]-complete, so a bound $n^{\Omega(k)}$ would be conditional on FPT$\ne$W[P]. All OPEN.
+\end{itemize}
+
+\section{Repository review (j15marti/PNP)}
+Surveyed AGENTS.md and the latest allocation: the repo pursues ARC/FLMV time--space contraction; it records P vs NP and ARC-EDGE-90 as OPEN and
+supplies no unconditional Circuit-SAT lower bound; hence no result imported. Linked supporting artifact: the SIL/M22 resource ladder
+(\texttt{research/language/2026-10-25\_0005\_SIL\_M22\_PARAMETERIZED\_RESOURCE\_LADDER.md}) is a resource-ledger analogue of this ladder; its authors state no lower bound follows.
+
+\section{Next steps}
+(1) $n=4$ exact sizes. (2) Count \emph{satisfiable-instance} structure per rung: number of distinct circuits (wiring patterns) of $g$ gates that compute each function; track minimal wire-sets certifying satisfiability (certificate size $\le n$) vs unsatisfiability (proof/refutation size).
+(3) Test whether UNSAT certificate size grows superlinearly in $g$ on restricted classes (monotone, bounded-depth).
+\end{document}
+% END_OF_LIVING_DOC::ClaudeCircuitSAT
