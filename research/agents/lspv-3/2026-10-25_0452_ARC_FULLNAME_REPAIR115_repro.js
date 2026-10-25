@@ -1,6 +1,6 @@
 "use strict";
 function run(){
- let S={run_id:"ARC-FULLNAME-REPAIR115",seed:null,checks:0,sat_calls:0,dpll_nodes:0,roundtrips:0,visible_contexts:0,full_pin_queries:0,stage_cases:[],label_preserving_twolevel:[],large_lengths:[],errors:0,FLMV_steps_measured:false};
+ let S={run_id:"ARC-FULLNAME-REPAIR115",seed:null,checks:0,sat_calls:0,dpll_nodes:0,roundtrips:0,visible_contexts:0,full_pin_queries:0,stage_cases:[],label_preserving_twolevel:[],private_twolevel:[],large_lengths:[],errors:0,FLMV_steps_measured:false};
  function ck(x,m){S.checks++;if(!x){S.errors++;throw Error(m)}}
  function alloc(n){return {n}};
  function fresh(a){return ++a.n}
@@ -16,7 +16,7 @@ function run(){
    for(let i=0;i<b;i++)Q.push(...xor(w[i],i+1,w[i+1]));
    let q=fresh(a);Q.push(...or2(q,w[b],a));
    for(let i=0;i<b;i++)Q.push(...or2(-q,u[i]?i+1:-(i+1),a));
-   return {R,Q,F:[...R,...Q],n:a.n};
+   return {R,Q,F:[...R,...Q],n:a.n,q,wEnd:w[b]};
  }
  function pack(C,n){let m=C.length,h=Math.floor(Math.log2(2*Math.max(n,m)+1))+1;
    const field=x=>x.toString(2).padStart(h,"0");
@@ -101,6 +101,27 @@ function run(){
      N_child1:two.bits.length,N_child2:valid2.bits.length,
      n_child1:H.n2,n_child2:a.n,m_child1:two.C.length,m_child2:valid2.C.length,
      original_source_names_preserved:true});
+   // Source-name boundary countercontrol: an H that is disjoint from original
+   // x_i but can access Q's PRIVATE selector q and parity end wire w_b.
+   // q=1, w_b=0 forces x=u and even parity, reconstructing the exact root bit.
+   // Both descendants remain ordinary proper 3CNF and both labels inherited.
+   let leakA=alloc(M.n),privatePins=[...pin(M.q,leakA),...pin(-M.wEnd,leakA)];
+   ck(M.q>b&&M.wEnd>b,"private signals must not be original names");
+   ck(sat(privatePins),"private context independently SAT");
+   let leak1=rd([...M.Q,...privatePins],leakA.n);
+   let la=alloc(leakA.n),ly=fresh(la),lp=fresh(la),lq=fresh(la);
+   let link=[[-1,ly,lp],[-1,ly,-lp],[1,-ly,lq],[1,-ly,-lq]];
+   let leak2=rd([...leak1.C,...link],la.n);
+   ck(sat(leak1.C)===(label==="SAT"),"private join first label");
+   ck(sat(leak2.C)===(label==="SAT"),"private join second label");
+   ck(leak1.bits.length<root.bits.length&&leak2.bits.length<root.bits.length,
+     "private descendants strictly fewer bits, but not smaller power");
+   ck(leak2.bits.length>leak1.bits.length,"real second ordinary child");
+   S.private_twolevel.push({b,label,q:M.q,wEnd:M.wEnd,N_root:root.bits.length,
+     N_child1:leak1.bits.length,N_child2:leak2.bits.length,
+     n0:M.n,n1:leakA.n,n2:la.n,m0:M.F.length,m1:leak1.C.length,m2:leak2.C.length,
+     original_x_in_private_context:0,context_aux_disjoint_from_Q_aux:false,
+     both_labels_hereditary:true,exponent_length_lambda:1});
    if(b<=4)for(let k=0;k<(1<<b);k++){let w=Array.from({length:b},(_,i)=>k>>i&1),a=alloc(M.n),P=[];
       for(let i=0;i<b;i++)P.push(...pin(w[i]?i+1:-(i+1),a));
       ck(sat(rd([...M.Q,...P],a.n).C)===(w.reduce((x,y)=>x^y,0)===1||w.every((x,i)=>x===u[i])),"complete pin");
