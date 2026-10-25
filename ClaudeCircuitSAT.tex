@@ -1,0 +1,41 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{lemma}{Lemma}\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: a wire-by-wire lower-bound ladder for Circuit-SAT}
+\date{Living document; last update 2026-10-25}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. Nothing below is an unconditional super-linear lower bound for Circuit-SAT. Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, OPEN.
+
+\section{Model and parameters}
+Instance: circuit $C$ over fan-in-2 gates (full binary basis, free negation), $n$ inputs, $s$ gates, $w=2s$ gate in-wires. Question: $\exists x\,C(x)=1$. Algorithm model: deterministic random-access machine reading $C$ from an indexed read-only input. Parameterized bound target: $T(n,s)$.
+
+\section{Ladder rung 1: connectivity (PROVED)}
+\begin{lemma}\label{l:conn} If $C$'s output depends on all $n$ inputs, then $s\ge n-1$ and $w\ge 2(n-1)$.\end{lemma}
+\begin{proof} Restrict to the DAG of gates reaching the output; every input must reach the output, so the underlying undirected graph on $n$ inputs plus $s$ gates is connected, so it has $\ge n+s-1$ edges; each gate has exactly two in-wires, so the edge count is $\le 2s$ when counting in-wires from gates/inputs, hence $2s\ge n+s-1$, i.e.\ $s\ge n-1$.\end{proof}
+Tight: AND of $n$ literals. So \emph{wire cost of making $n$ inputs relevant} is exactly $n-1$ gates, giving the base of the ladder $L(n)=n-1$.
+
+\section{Ladder rung 2: reading bound (PROVED for a family)}
+\begin{prop}\label{p:read} Any deterministic algorithm deciding Circuit-SAT on the family of chain circuits $g_1=\ell_1\wedge\ell_2,\ g_{i}=g_{i-1}\wedge\ell_{i+1}$ (output $g_{n-1}$), each $\ell_j\in\{x_j,\neg x_j\}$ or, in a perturbed copy, with one gate $g_i$ replaced by the constant-$0$ gate, must read $\Omega(s)$ cells of the input.\end{prop}
+\begin{proof} Unperturbed instances are satisfiable; a perturbed one is not. An algorithm that on the unperturbed instance leaves gate $g_i$'s description unread answers identically on its perturbation, so it errs. Hence all $s$ gate descriptions are read: $T=\Omega(s)$.\end{proof}
+This is the trivial linear rung; it is not a hardness statement in $n$.
+
+\section{Ladder rung 3: exact small-case gate costs (COMPUTATIONAL)}
+Script \texttt{experiments/claude\_circuitsat/2026-10-25\_ladder\_min\_gates.py}, raw data \texttt{results/raw/claude\_circuitsat/}. Exact minimum gate counts by iterative deepening, functions counted up to the representation caveat that the two constants are produced only artificially (they cost $2,2,4$ gates for $n=2,3$ under non-degenerate gates only and are irrelevant to SAT).
+\begin{center}\begin{tabular}{c|ccccc}
+$n$ & cost 0 & 1 & 2 & 3 & 4\\\hline
+2 & 4 & 10 & 2 & &\\
+3 & 6 & 30 & 116 & 80 & 24
+\end{tabular}\end{center}
+For $n=4$, AND$_4$, OR$_4$, XOR$_4$ and $(x_1x_2)\oplus(x_3x_4)$ each have cost exactly $3=n-1$ (search bound 4). So the lower bound $n-1$ of Lemma~\ref{l:conn} is met by many functions; the gap between $n-1$ and the hardest functions ($4$ at $n=3$) is where circuit-size lower bounds live. Known: explicit functions have only linear-size lower bounds ($\approx 3.1n$, Li--Yang STOC 2022 for full binary basis; recalled from memory, citation to be verified).
+
+\section{Parameterized lower-bound landscape}
+\begin{tabular}{ll}
+Upper: brute force & $O(2^n s)$ (KNOWN)\\
+Unconditional & $\Omega(s)$ (rung 2); nothing stronger known (OPEN)\\
+SETH-conditional & no $2^{(1-\varepsilon)n}\mathrm{poly}(s)$ algorithm (CONDITIONAL; should be re-verified)\\
+Target & show $T(n,s)\ge f(n)\cdot s$ with $f$ super-constant, unconditional (OPEN)
+\end{tabular}
+
+\section{Next steps (OPEN)}
+(1) Extend exact costs to $n=4$ for all functions using canonical-form/DP search. (2) Track, per step, the minimal wires needed for \emph{unique-solution} circuits whose every gate is critical (rung 2 generalization) and the adaptive-algorithm query tradeoff. (3) Read the repository ARC/FLMV and SIL ladder work for a resource-ledger formalism to adopt as the parameterized form. Repository corpus review so far: only a survey (no prior circuit-SAT wire ladder found under this name).
+\end{document}
