@@ -1,0 +1,29 @@
+# ARC-FACE-KERNEL112 | Role 3 cumulative coverage/evidence/rejection/unread handoff
+Date: 2026-10-25 01:24 America/Los_Angeles. ALL FIVE existing agents remain exclusively on simultaneous ARC/FLMV. ARC-EDGE-90 OPEN; P versus NP OPEN. No schedule, enabled-state, task-count, peer-file or third-party message changes.
+
+## New exact restricted theorem
+For Boolean boundary feasibility f,g on b shared source names, equality of ALL codimension-one exact count profiles iff f-g=c(-1)^parity. For f,g in {0,1}, either identical or exactly even/odd parity cosets. Exactly 2^(2^b)-1 distinct count profiles among 2^(2^b) Boolean relations. Symbolic proof in role-owned LaTeX report. This is NOT a theorem about weighted private satisfying-extension counts, only Boolean feasibility. For weighted extension counts, the alternating one-dimensional kernel persists but unequal non-parity supports occur, e.g. 1 +/- parity + point mass at 0^b. Proper-coordinate feasibility/status projections are strictly weaker and admit nonaffine collisions.
+
+## Falsifier dispositions
+H1 full proper-coordinate exact counts uniquely identify Boolean feasible relation: FALSIFIED/RETIRED (parity). H2 there are many different Boolean relations with same full profile: FALSIFIED/RETIRED (only parity). H3 an extra fully pinned answer and the whole profile form free all-input ARC compiler: FALSIFIED/RETIRED as a free-step inference; charged source-aware implementation OPEN. H4 exact source-named ordinary three-CNF two-level pin compiler preserving both labels without true power shortening: PROVED/EXACT restricted mathematical source semantics; COMPUTATIONAL ten-source test.
+
+## Reproducible computational record
+Exhaustive Boolean relation enumeration b=1..4: 4/16/256/65536 relations, profile counts 3/15/255/65535, one parity collision each. Independent Python checker: 9841 assertion-counter checks, no failures; Python raw JSON records 10 actual encoded ordinary SAT/UNSAT source fixtures and their 2 child levels. Independent published Node.js peer: 5410 checks, zero failures; source-name mapping, parser/serializer and DPLL SAT/UNSAT verified. Parent -> child1 -> child2 bits: parity b3 1176/1368/1560, b4 1560/1752/1944, b5 1944/2136/2522, b6 2522/2730/2938; nonaffine OR3 594/770/1032. All children are proper ordinary 3CNF and share source names by explicit inverse maps, but grow and cannot witness lambda<1. Finite counts not FLMV bit-work traces.
+
+## Exact ARC receiving gap and charge contract
+E contains pairs simultaneously bounded by ONE fixed uniform deterministic exact total ordinary-SAT machine on EVERY ordinary input in FLMV indexed read-only source, writable/index counted space. Strict published forbidden box t<241/200, s<11642479/23232400; prior universal cosine bound retired. Eager conditional exponents t'<=max(r,a+lambda+g,a+lambda*t), s'<=max(lambda,lambda*s,eta,kappa). Virtual/replayed probe t'<=max(r,a+lambda*t+g), s'<=max(lambda*s,eta,kappa). Charge source/workspace reads, all writes, address/control, policy selection, retries, source rereads, materialization, gluing, witness reconstruction, caches, buffers, live ancestors. A full-pin call to parent-scale A can cost N^t time, N^s space. No all-input shorter children, no favorable successor, no finite cofinal route were built. Distinguish temporal flips, bit traffic, bit-time, switches/gates/wires, program size separately. Parent-scale fallback invalidates exponent contraction.
+
+## Exact provenance
+GitHub direct reads: AGENTS.md blob b02b757; CODEX.md 754999f; .codex/skills/pnp-research/SKILL.md b8df83a; ALL-ARC-REFOCUS3 9c347b7; root main.tex initial f8b4c435 (refetch needed at root reconciliation); main13.tex 87dbaad; lead FINAL-LINK-ARC; ARC-INTERFACE-PROJECTION8 cf4141a; Role3 ARC-PARITY-INTERFACE111 1500d56 and SCOPED-BLOCK-REBUILDER92 efa04f0; Role4 PARITY-MARGINAL-COUNT92 b01ca77; major Role1 M22-PARITY-LOCAL142, Role2 ARC-ORAND-FUSION154 and Role4 ARC-FANOUT-ADVICE-SURCHARGE110; Role5 NAMED-FRONTIER-COMPOSITION132 excerpts. GitHub search terms: HEREDITARY-SCOPED10, INTERFACE-PROJECTION8, PCLOSE1-R1, MULTICHANNEL1, KDAG2, face-sum kernel, unique proper marginal parity; current directory list tasks/ (8 entries), research/main (260 entries), Role4 and Role5. Drive: HEREDITARY-SCOPED10 search matched continuity doc ID 1TselU5xLzVf7nbD2R0r-XZz_8t-S_WNrkiOZxNpbR5E, 112 paragraphs read (logged pending source, not original executable), ARC-FRONTIER21 doc ID 1VwhU6bMDlsy9rTI4EOTN4gNipVL8e-jJPO9Wg3oWByU read. Original HEREDITARY-SCOPED10 executable and KDAG2 full body and Drive LOG/PROVED_EXACT/SIL/BOOL broad search/revisions remain unread. Inherited 3532-file old census NOT rerun. Original FLMV author paper Section 2.1/Theorem 3.1/Corollary 5.8 and O'Donnell Analysis of Boolean Functions reviewed.
+
+## Duplication and contradiction
+Already known: Role4 count-oracle parity blindness, Role3 two-module source-named proper ternary parity YES/NO. New: classification of sole Boolean face-count collision plus explicit weighted-count firewall and independent two-level source label check. Status-only data, entropy, Fourier support or rank are insufficient to bound arbitrary SAT decision work. Scoped-stream positive results remain promise results. No claim of current archive exhaustiveness.
+
+## Artifacts
+research/agents/lspv-3/2026-10-25_0124_LSPV-3_ARC_FACE_KERNEL112.tex
+research/agents/lspv-3/2026-10-25_0124_ARC_FACE_KERNEL112_peer.js
+results/raw/2026-10-25_LSPV3_ARC_FACE_KERNEL112_peer_results.json
+research/agents/lspv-3/2026-10-25_0124_ARC_FACE_KERNEL112_COVERAGE_HANDOFF.md
+research/coordination/2026-10-25_0124_ARC_FACE_KERNEL112_FIVE_ROLE_HANDOFF.md
+
+Next role-owned decisive test: source-aware cheap exact nonaffine compatibility representation for every ordinary input together with genuine power-short ordinary descendants, paid two-level inheritance and same-machine space. Until then ARC-EDGE-90 and P versus NP remain OPEN.
