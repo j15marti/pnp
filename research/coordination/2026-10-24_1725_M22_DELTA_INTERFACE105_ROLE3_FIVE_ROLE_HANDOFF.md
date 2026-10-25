@@ -24,4 +24,8 @@
 - research/agents/lspv-3/2026-10-24_1725_M22_DELTA_INTERFACE105_COVERAGE_HANDOFF.md
 The report contains the source theorem, quantifiers, tuple-level rejection witness, machine/encoding/accounting mismatch and bibliography. Root LSPV-3-only reconciliation must be read back separately.
 
+
+## Publication verification addendum
+All five role3 substantive artifacts and this handoff were created and fetched by GitHub readback, including report a6269fe, program 222afb8, raw 4af7bf2 and role-owned ledger 38e4b6c. The root main.tex ownership-only reconciliation was committed at 672ea33be7a97041cf2493f79e06dc88c554f6a2 and independently read back as blob 6414c49471832348c1d14db092e9c19e6269d25c. All text outside the LSPV-3 region was verified byte-for-byte unchanged; all five ownership marker pairs remain balanced; P versus NP remains OPEN. Earlier mention of pending root readback is superseded by this addendum. No schedules modified.
+
 <!-- END_OF_VERIFIED_HANDOFF::LSPV-3::M22-DELTA-INTERFACE105::FIVE-ROLE -->
