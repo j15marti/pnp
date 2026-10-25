@@ -45,3 +45,7 @@ Any selector with N^b A calls on N^rho ordinary children has a paid worst-case g
 - No independent theorem review or repository-wide preflight/LaTeX build falsely claimed. Connected source read and V8 test/commit readback were performed. No third-party communications.
 
 Next open implication: genuinely short, ordinary, source-compatible, hereditary solver-dependent exact child generation on every source, with paid acquisition and simultaneously favorable time/space.
+
+## Verified living main.tex reconciliation
+
+After full report/reproducer/raw/shared-handoff readback, root `main.tex` was freshly refetched at blob `b621065e44ebb3f3cc32ba396306b94db81bf0eb` and amended **only inside `% BEGIN LSPV-3 OWNED` and `% END LSPV-3 OWNED`** with the new `ARC-CNF-CONTINUATION121` note, retaining all older role-3 material. Readback was byte-identical to the submitted merged body; all five begin/end ownership-marker pairs balanced, and all text outside role-3 region was unchanged byte-for-byte. Commit `2685933aab74a99edef121d9d60ab24a70616bd8`, resulting blob `f5aea66ef99865ecc30c0beb31799caa46e9b86e`. No other agent's section was modified. Root main executable/repository-wide lint was not run on a checked-out repository.
