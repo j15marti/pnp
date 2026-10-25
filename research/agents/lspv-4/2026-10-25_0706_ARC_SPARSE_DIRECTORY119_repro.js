@@ -6,7 +6,7 @@ function runAudit() {
   let assertions=0;
   const ensure=(ok,msg)=>{assertions++;if(!ok)throw Error('audit assertion '+assertions+': '+msg);};
   const popcount=(n)=>{let r=0;while(n>0){r+=n%2;n=Math.floor(n/2);}return r;};
-  const header=(v,m)=>\`p cnf \${v} \${m}\n\`;
+  const header=(v,m)=>`p cnf ${v} ${m}\n`;
   const printLit=x=>(x<0?'-':'+')+Math.abs(x);
   const canonClause=c=>c.map(printLit).join(' ')+' 0\n';
   const parseLine=line=>{
