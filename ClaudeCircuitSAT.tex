@@ -1,0 +1,126 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append-by-reconciliation; hourly scheduled task
+% Last updated: 2026-10-25 (run 1)
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\SAT}{\mathsf{CSAT}}
+\title{Wire-by-Wire Lower Bounds for Circuit-SAT\\\large A Living Document}
+\author{Claude (scheduled hourly task)}
+\date{Last updated 25 October 2026}
+\begin{document}
+\maketitle
+
+\begin{center}\fbox{\parbox{0.92\linewidth}{
+\textbf{Status.} No superpolynomial (or even super-linear) unconditional lower bound
+for Circuit-SAT is claimed. Everything labelled PROVED below is elementary and holds only
+in an explicitly stated restricted model. A bound for arbitrary algorithms would
+separate $\mathrm{P}$ from $\mathrm{NP}$ and is \OPEN.
+}}\end{center}
+
+\section{Goal and method}
+Start from the smallest circuit-SAT instances, grow the circuit one gate (two wires) at a time,
+and track (i) the minimum number of wires a circuit needs to realise a given satisfiability
+property and (ii) how many wires any algorithm must inspect to decide it. Parameters
+tracked: $n$ (inputs), $g$ (gates), $w=2g$ (wires). Lower bounds may be parametrised, e.g.\ in
+$n$, $g$, depth, fan-out, or treewidth.
+
+\paragraph{Model.}
+An AIG instance $\langle n,g,\pi\rangle$: inputs $x_0..x_{n-1}$; gate $i$ ($0\le i<g$) is
+$g_i=\ell\wedge\ell'$ where each $\ell,\ell'$ is a literal over an earlier node ($n+i$ nodes, 2
+polarities). Output $=g_{g-1}$. The encoding is the string $\pi$ of $2g$ wire-slots, slot
+$(i,w)$ having $2(n+i)$ values. $\SAT_{n,g}(\pi)=1$ iff some input makes the output $1$.
+AND with negation is a complete basis, so this loses no generality up to constants.
+
+\section{Proved (elementary) results}
+Statuses: PROVED/EXACT, COMPUTATIONAL, OPEN.
+
+\begin{theorem}[Wire floor for a unique solution; PROVED/EXACT]\label{thm:floor}
+If an instance has exactly one satisfying assignment then $g\ge n-1$, so it has $\ge 2n-2$ wires;
+this is tight (balanced AND-tree of literals).
+\end{theorem}
+\emph{Proof.} Exactly one solution forces the output to depend on every input (otherwise flipping an
+unused input gives a second solution). So the cone of the output contains all $n$ inputs and some
+$k\le g$ gates; its underlying undirected graph is connected on $n+k$ vertices with at most $2k$
+edges, so $2k\ge n+k-1$, i.e.\ $k\ge n-1$. $\square$
+
+\begin{theorem}[Full wire sensitivity; PROVED/EXACT]\label{thm:sens}
+For $n\ge2$, $g\ge1$ there is an UNSAT instance in which, for each of the $2g$ wire slots, some
+rewiring of that single slot makes the instance SAT. Hence the sensitivity of $\SAT_{n,g}$ is exactly $2g$.
+\end{theorem}
+\emph{Proof.} Take $g_0=x_0\wedge x_0$, $g_i=x_0\wedge g_{i-1}$ ($0<i<g-1$), $g_{g-1}=x_0\wedge\neg g_{g-2}$
+(for $g=1$: $g_0=x_0\wedge\neg x_0$). All $g_i\equiv x_0$ for $i<g-1$, so the output is $x_0\wedge\neg x_0\equiv0$.
+Rewire any single slot in the chain to the fresh input $x_1$: the affected gate becomes $x_0\wedge x_1$ (or
+$x_1\wedge x_0$), later chain gates equal it, and the output $x_0\wedge\neg(x_0\wedge x_1)$ is satisfied by
+$x_0=1,x_1=0$. For the last gate, removing the negation gives $x_0\wedge x_0$, and rewiring a fan-in to
+$x_1$ gives $x_0\wedge\neg x_1$ or similar, both satisfiable. Upper bound $2g$ is the encoding length. $\square$
+
+\begin{lemma}[Input-reading bound; PROVED/EXACT, restricted model]
+Any deterministic algorithm that decides $\SAT_{n,g}$ and is correct on all encodings must read all $2g$ wire
+slots on the instance of Theorem~\ref{thm:sens}. In particular reading cost is $\Omega(g)$.
+\end{lemma}
+Proof: if slot $s$ is unread, the algorithm answers identically on the instance and on its one-slot rewiring,
+whose answer differs. This is a linear \emph{input-access} bound, far below any time bound, and is the baseline
+every genuine lower bound must exceed.
+
+\begin{theorem}[Black-box evaluation bound; PROVED/EXACT, restricted model]
+Any deterministic algorithm that accesses the circuit only by evaluating it on assignments needs $2^n-1$
+evaluations in the worst case (the adversary answers $0$ until one point remains; the AND-of-literals circuit
+with that point as the unique solution is consistent). With randomisation, $\Omega(2^n)$ expected evaluations
+for the uniformly random needle.
+\end{theorem}
+White-box access (reading wires) is exactly what this model forbids; the whole difficulty of P vs NP lies
+between the linear reading bound and this exponential black-box bound.
+
+\section{Computational ledger (exhaustive, exact)}
+Script \texttt{experiments/claude\_circuitsat/wire\_sensitivity.py}; raw output
+\texttt{results/claude\_circuitsat\_sensitivity.jsonl}; each invocation is far under 30\,s (no chunking needed).
+Max sensitivity is taken over all encodings.
+\begin{center}\begin{tabular}{rrrrrr}\toprule
+$n$&$g$&wires&instances&satisfiable&max sens.\ (UNSAT / SAT)\\\midrule
+2&1&2&16&12&2 / 2\\ 2&2&4&576&396&4 / 4\\ 2&3&6&36{,}864&24{,}024&6 / 6\\
+3&1&2&36&30&2 / 2\\ 3&2&4&2{,}304&1{,}818&4 / 4\\ 3&3&6&230{,}400&174{,}828&6 / 6\\
+4&3&6&921{,}600&755{,}952&6 / 6\\\bottomrule\end{tabular}\end{center}
+Every case has full sensitivity $2g$, consistent with Theorem~\ref{thm:sens}
+(\texttt{witness.py} prints the chain witness found by exhaustive search).
+
+\section{Parametrised view}
+\begin{itemize}
+\item \textbf{Wires vs.\ inputs:} unique-solution instances need $\ge 2n-2$ wires (Thm.~\ref{thm:floor}).
+\item \textbf{Reading:} $\Omega(w)$ in the white-box model; $\Omega(2^n)$ black-box.
+\item \textbf{Conditional (KNOWN, not proved here):} under ETH, $\SAT$ with $n$ inputs and $O(n)$ gates has no
+$2^{o(n)}$ algorithm; SETH rules out $(2-\varepsilon)^n$ for CNF-SAT. These are assumptions, not results.
+\item \textbf{Candidate parameters for a real bound:} circuit treewidth $t$ (known upper bound $2^{O(t)}\cdot\mathrm{poly}$);
+a matching unconditional lower bound would again separate complexity classes. Restricted-model targets that are
+genuinely provable: monotone circuits, read-once/regular resolution (DPLL) proofs, bounded-depth with
+parity-free restrictions.
+\end{itemize}
+
+\section{Open arrows and next steps}
+\begin{enumerate}
+\item \OPEN{} Bridge from linear reading bound / exponential black-box bound to a time bound for arbitrary algorithms.
+\item Next run: compute exact minimum DPLL/tree-resolution refutation size for the UNSAT instances enumerated for small
+$(n,g)$ and tabulate it against $w$ -- a genuine restricted-model lower-bound ledger.
+\item Next run: exact minimum gate count of every $n\le3$ function (to relate wires to function complexity), and
+examine how many wires of the sensitive chain are removable by simplification (the chain is redundant; require
+\emph{irredundant} UNSAT witnesses to avoid a vacuous bound).
+\item Study treewidth-parametrised families.
+\end{enumerate}
+\textbf{Caveat for Theorem~\ref{thm:sens}:} the witness is highly redundant, so sensitivity shows only that
+\emph{encodings} must be read; it says nothing about the difficulty of reasoning about them.
+
+\section{Repository check (j15marti/pnp)}
+Root \texttt{main.tex} (LSPV program) states P vs NP remains OPEN; its strongest recorded rung is an exact
+fixed-width $\Omega(N/\log N)$ word-probe acquisition bound, the same kind of model-restricted input-access
+bound as above, not a time bound. This run read only the head of \texttt{main.tex} and the task list, not the full
+corpus; a full survey of the HEC/CRS-PPC branch for transferable irredundancy or gluing arguments is pending.
+
+\section*{Run log}
+\begin{itemize}
+\item 2026-10-25 run 1: created document; Theorems 1--2, Lemma, black-box bound; exhaustive table for
+$(n,g)\in\{2\}\times\{1,2,3\}$, $\{3\}\times\{1,2,3\}$, $(4,3)$.
+\end{itemize}
+\end{document}
