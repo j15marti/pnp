@@ -210,7 +210,7 @@ function runAudit() {
           sourceBitReadsTotal:c.sourceBitReads,indexTapeWrites:c.indexWrites,
           indexUnchangedWrites:c.unchangedWrites,indexRealFlips:c.realFlips,
           instrumentedArithmeticOps:c.arithmeticOps,recordsDecoded:c.parsedRecords,
-          headerOutputBits:c.headerBitOutputs,bodyOutputBits:c.bodyOutputBits,
+          headerOutputBits:c.headerBitOutputs,bodyOutputBits:c.bodyBitOutputs,
           guestByteProbes:requests,streamEagerLeavesPossible:true});
       }
     }
