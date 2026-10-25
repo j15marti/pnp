@@ -28,7 +28,7 @@ At `mu=1`, depth `d=2`, and base `(t,s)=(6/5,1/2)`, strict FLMV entry still requ
 
 ## Finite audit
 
-The new audit uses no exact-count header, retains the parent producer program counter across every recursive child, serializes/reparses every ordinary proper-3CNF child, and checks SAT/UNSAT equality paths plus a disconnected control at one and two genuine levels. Result: 18 cases, 118 assertion groups, zero failures. Five exact square cases verify restart ratios growing as `sqrt(M)/2+1/2`. Python counters are not FLMV traces, and producer records are prebuilt.
+The new audit uses no exact-count header: its certified power-of-two bound is computed from the ordinary encoded input length alone. It retains the parent producer program counter across every recursive child, serializes/reparses every ordinary proper-3CNF child, and checks SAT/UNSAT equality paths plus a disconnected control at one and two genuine levels. Result: 18 cases, 118 assertion groups, zero failures. Five exact square cases verify restart ratios growing as `sqrt(M)/2+1/2`. Python counters are not FLMV traces, and producer records are prebuilt.
 
 ## Role routing
 
