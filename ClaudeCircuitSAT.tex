@@ -1,0 +1,113 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append-by-section; newest entries in the Run log.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newcommand{\PROVED}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\COND}{\textbf{CONDITIONAL}}
+\newcommand{\CAND}{\textbf{CANDIDATE}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newtheorem{thm}{Theorem}\newtheorem{lem}[thm]{Lemma}
+\title{Claude Circuit-SAT: a stepwise wire-count and parameterized lower-bound ladder}
+\author{Living document (hourly scheduled runs)}
+\date{Last updated: 2026-10-25, run 1}
+\begin{document}\maketitle
+
+\noindent\textbf{Status: P versus NP remains OPEN.} Nothing here is an unconditional
+superpolynomial lower bound for Circuit-SAT. Labels: \PROVED, \KNOWN, \COMP, \COND, \CAND, \OPEN.
+
+\section{Goal and method}
+Circuit-SAT: given a circuit $C$ over $n$ inputs with $s$ fan-in-2 gates (basis $B_2$) and
+$w=2s$ gate-input wires, decide $\exists x\,C(x)=1$. Method: start at $n=1$, add one input
+at a time, track (i) the minimum wires needed to build the instance, (ii) the cheapest
+solving cost in each access model, and (iii) where the gap to the brute-force upper bound
+$O(2^n s)$ opens. Lower bounds are stated with parameters $(n,s,\mathrm{tw})$, $\mathrm{tw}$
+the treewidth of the circuit graph, because the true answer is plausibly
+$2^{\Theta(\min(n,\mathrm{tw}))}\mathrm{poly}(s)$.
+
+\section{Ladder of exact results}
+\begin{thm}[Connectivity / wire floor, \PROVED]\label{thm:wire}
+If $f$ depends on all $n$ inputs, any $B_2$ circuit for $f$ has $\ge n-1$ gates and $\ge 2(n-1)$
+gate-input wires; $[x=a]$ (a unique satisfier) attains this with an AND-tree.
+\end{thm}
+\emph{Proof.} Ignoring gate outputs, each gate merges at most two connected components of the
+underlying graph; $n$ input-components must merge into the one containing the output, so
+$\ge n-1$ gates, each with two input wires. The AND-tree of literals attains equality. \qed
+
+\begin{thm}[Black-box wall, \PROVED in the evaluation-query model]\label{thm:bb}
+Any deterministic algorithm that only evaluates $C$ needs exactly $2^n$ queries to decide
+satisfiability, even promised $\le 1$ satisfier. Quantum: $\Theta(2^{n/2})$ (Grover/BBBV).
+\end{thm}
+\emph{Proof.} Adversary answers 0 on $2^n-1$ queries; the unqueried point may or may not be
+the satisfier. \qed\ \emph{Caveat:} this relativizes, so it cannot separate P from NP;
+white-box access to wires is exactly what an algorithm exploits beyond it.
+
+\begin{thm}[White-box read floor, \PROVED]\label{thm:read}
+Any (even randomized, constant-error) algorithm reading the wire list must read $\Omega(s)$ wires.
+\end{thm}
+\emph{Proof.} $C_0$: $u_0=x_1\wedge\neg x_1$, $u_k=u_{k-1}\wedge x_1$ for $k\le s$, output $u_s$;
+unsatisfiable. $C_k$ rewires the wire $u_{k-1}\!\to u_k$ to $x_2$; then $u_k=x_2\wedge x_1$ and
+$C_k$ is satisfiable. An algorithm not reading that wire cannot separate $C_0$ from $C_k$;
+for random $k$ it reads it with probability $\le (\#\text{reads})/s$. \qed
+
+\section{Step ladder ($n=1,2,3,\dots$)}
+\begin{center}\begin{tabular}{@{}lllll@{}}\toprule
+$n$ & min wires, unique satisfier & black-box queries & brute force & status\\\midrule
+1 & 0 (literal) & 2 & $2s$ & exact\\
+2 & 2 (one gate) & 4 & $4s$ & exact\\
+3 & 4 & 8 & $8s$ & exact\\
+$n$ & $2(n-1)$ & $2^n$ & $2^n s$ & Thm.~\ref{thm:wire},\ref{thm:bb}\\\bottomrule\end{tabular}\end{center}
+The white-box lower bound known unconditionally is only $\Omega(s+n)$ while the upper
+bound is $2^n s$: the whole gap is the \OPEN{} arrow.
+
+\subsection{Computed table: minimum circuit size of all $n$-variable functions (\COMP)}
+Script \texttt{experiments/claude\_circuitsat/min\_gates.py} (BFS over sets of computed
+signals, $B_2$; wires $=2\times$gates; each run $<1$s). Output, as (gates, \#functions):
+\begin{itemize}
+\item $n=2$: $\{(0,6),(1,10)\}$ (all 16 functions $\le1$ gate; XOR is free in $B_2$).
+\item $n=3$ (search to 3 gates): $\{(0,8),(1,30),(2,114),(3,80)\}$; the remaining 24 functions
+need $\ge4$ gates ($\ge 8$ wires). Exact value 4 is the literature value, not re-verified here.
+\end{itemize}
+Counting (\KNOWN, Shannon): almost all $n$-variable functions need $\Omega(2^n/n)$ gates, so
+hard-looking instances built from generic functions have $s=2^{\Omega(n)}$ and are trivially
+$\Omega(s)$ to read; the real question is $s=\mathrm{poly}(n)$.
+
+\section{Parameterized picture}
+\begin{center}\begin{tabular}{@{}lll@{}}\toprule
+Statement & Status & Note\\\midrule
+Circuit-SAT $\in 2^{\mathrm{tw}}\mathrm{poly}(s)$ & \KNOWN & DP over tree decomposition\\
+Circuit-SAT $\in 2^n\mathrm{poly}(s)$ & \KNOWN & brute force\\
+no $(2-\varepsilon)^n\mathrm{poly}(s)$ algorithm & \COND{} (SETH) & CNF-SAT is a special case\\
+no $(2-\varepsilon)^{\mathrm{tw}}\mathrm{poly}(s)$ algorithm & \COND{} (SETH) & literature, cite to verify\\
+$T(n,s,\mathrm{tw})=2^{\Omega(\min(n,\mathrm{tw}))}$ unconditionally & \OPEN & implies $\mathrm{P}\ne\mathrm{NP}$ when $\mathrm{tw}=\Theta(n)$, $s=\mathrm{poly}(n)$\\\bottomrule\end{tabular}\end{center}
+
+\section{Candidate directions (not claims)}
+\begin{enumerate}
+\item \CAND{} \emph{Wire-reuse (fan-out) cost.} Track the cut profile of a topological gate
+order: the number of live wires crossing each prefix cut (pathwidth/cutwidth). Conjecture a
+tradeoff: a solver that never stores more than $b$ live signals per cut needs
+$2^{\Omega(\text{cutwidth}-b)}$ time. Needs a precise memory-bounded model; branching-program
+lower bounds (e.g.\ for read-once/oblivious programs) are the nearest proved analogue.
+\item \CAND{} \emph{Gate elimination on the SAT side.} Gate elimination proves $\approx 3.1n$ for
+explicit functions; ask whether a restriction-based argument bounds the \emph{search tree}
+size of DPLL-type algorithms on circuits with fan-out one (formulas) first, then raise fan-out.
+\item \CAND{} \emph{Ladder with fixed fan-out $d$.} For each $d$, compute exactly the minimum
+treewidth/wire budget at which unique-satisfier families stay hard; the $d=1$ (tree) case is
+polynomial, so a hardness threshold in $d$ is expected.
+\end{enumerate}
+
+\section{Relation to the repository}
+Repo status (root \texttt{main.tex}): P versus NP \OPEN. Relevant existing item:
+\texttt{research/accounting/2026-10-19\_WIRE\_SWITCH\_ACCOUNTING1.md} gives declared-library
+gate/net/transistor counts (e.g.\ repeated clause $F_m$: $G=8m-2$ raw, $G=6$ after dedup),
+a reminder that raw wire count is not minimum circuit size. Many LSPV reports use a different
+(proof-complexity/coding) framing; no result there was found that closes the gap above.
+Only a targeted survey was done in run 1; a full-corpus pass is a to-do.
+
+\section{Run log}
+\textbf{Run 1 (2026-10-25).} Created document; Thms.~\ref{thm:wire}--\ref{thm:read};
+computed $n\le3$ table. \textbf{Next:} (a) exact minimum sizes for $n=3,4$ with chunked
+search; (b) formalize the cut-profile model of item 1; (c) literature check of the
+treewidth-SETH citation; (d) survey LSPV reports for fan-out/locality results.
+\end{document}
+% END_OF_CLAUDECIRCUITSAT_RUN1
