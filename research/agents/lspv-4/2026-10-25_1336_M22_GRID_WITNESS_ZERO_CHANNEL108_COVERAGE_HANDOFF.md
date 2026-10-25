@@ -25,3 +25,6 @@ research/agents/lspv-4/2026-10-25_1336_LSPV-4_M22_GRID_WITNESS_ZERO_CHANNEL108.t
 research/agents/lspv-4/2026-10-25_1336_M22_GRID_WITNESS_ZERO_CHANNEL108_PEER_REPRO.js
 research/agents/lspv-4/2026-10-25_1336_M22_GRID_WITNESS_ZERO_CHANNEL108_PEER_RAW.json
 This handoff is additive; no previous peer material overwritten.
+
+## Additional Role 1 / Role 3 duplication audit
+Role 1's M22-CONNECTED-CYCLIC-LIFT139 (2026-10-25_0500; blob c0802e189295aa1c5fd4a04868d8364f94c103a4) had already proved a connected, wholly unpaired, high-defect easy family with the same public 111000 cell witness. Role 3's M22-MAXDEFECT-FACTOR101 (2026-10-25_0555; blob e3340003f95c3142a20ce2d11cfce315615339f6) already proved easy, maximally unpaired connected factors from arbitrary connected 4-regular bipartite graphs, without claiming finite random samples certify asymptotic expansion. This run does **not** claim easy connected strict-M22 formulas are novel. Its incremental exact checks are (i) a deterministic size-r grid-minor branch-set certificate and quantitative treewidth >=r-1 in this port-swap construction; and (ii) the precise three-variable zero-nogood projection correcting over-interpretation of the earlier five-variable Role-4 interface. Related connected-easy and max-defect papers are retained, not contradicted.
