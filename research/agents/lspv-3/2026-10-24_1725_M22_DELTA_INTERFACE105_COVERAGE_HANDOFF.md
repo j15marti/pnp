@@ -51,4 +51,8 @@ PENDING at writing handoff: this additive handoff, shared five-agent note and fr
 
 Exact next artifact: original HEREDITARY-SCOPED10 source/compiler if accessible, or valid uniform source-indexed short-child route; discriminating in-target test k6 join, k9 shared-variable join, k198 U/V with two genuine ordinary child levels, joint bit-resource recording and paid recursion typed adapter. Parallel DIRECT-POST must overcome explicit polynomial NAE membership, adaptive source recognition, SCC/Horn/affine simplification, cached representations, and exact branching without label oracle.
 
+
+## Final publication/readback addendum
+The earlier pending-publication fields in this same report were resolved. Source report blob a6269fe6c90505d79e95923cb8c21e1927465532 (sentinel verified), peer Python blob 222afb8da58086913a3a5945b025aad84b0c7157 (substantive source readback), raw JSON blob 4af7bf2847ca6f88ad01298bd76d309bd167bde0; shared five-role coordination handoff blob f050c3ec46edfe284146dc82c23c48fd2604cac8, all successfully fetched from GitHub. Root main.tex was fresh-SHA reconciled in the LSPV-3 ownership region alone at commit 672ea33be7a97041cf2493f79e06dc88c554f6a2; readback blob 6414c49471832348c1d14db092e9c19e6269d25c, exact prefix/suffix outside insertion preserved, five ownership-marker pairs each balanced, P versus NP remains explicitly OPEN. No schedule/task changes.
+
 <!-- END_OF_VERIFIED_HANDOFF::LSPV-3::M22-DELTA-INTERFACE105 -->
