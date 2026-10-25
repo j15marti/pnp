@@ -58,22 +58,25 @@ def clause_check(P,Q,assn):
 def core_extend(a):
     D = set(range(6))
     Z = set(range(6,15))
-    edges = []
+    hs = sorted(H)
+    entries = []
     for z in sorted(Z):
-        uses = [i for i,s in enumerate(H) if z in s]
+        uses = [i for i,s in enumerate(hs) if z in s]
         assert len(uses)==2
-        edges.append(tuple(uses))
+        entries.append((uses[0],uses[1],z))
+    entries.sort()
+    edges = [(u,v) for u,v,z in entries]
     forbidden = {}
-    for i,s in enumerate(H):
+    for i,s in enumerate(hs):
         exposed = [v for v in s if v in D]
         assert len(exposed)<=1
         if exposed:
             forbidden[i] = a[exposed[0]]
-    bits, flips = repair(len(H),edges,forbidden)
+    bits, flips = repair(len(hs),edges,forbidden)
     assn = dict(a)
-    for z,bit in zip(sorted(Z),bits):
+    for (u,v,z),bit in zip(entries,bits):
         assn[z] = bit
-    assert all(0 < sum(assn[v] for v in s) < 3 for s in H)
+    assert all(0 < sum(assn[v] for v in s) < 3 for s in hs)
     return assn, flips
 
 def source_validation():
