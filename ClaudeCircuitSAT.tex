@@ -1,0 +1,61 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-25 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\SAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: a staircase of wire-count lower bounds for Circuit-SAT}
+\author{Living document (append/revise each run)}
+\date{Last updated: 2026-10-25}
+\begin{document}\maketitle
+
+\paragraph{Status.} \textbf{P versus NP remains \OPEN.} Nothing below is an unconditional super-linear lower bound for \SAT. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and method}
+Build up from the smallest circuits: for $n=1,2,3,\dots$ inputs track (i) the minimal number of gates $C(f)$ and wires $E(f)=2C(f)$ (fan-in~2, full binary basis $B_2$, negation free) needed to realize $f$, and (ii) the cost of deciding satisfiability of a circuit of $s$ gates on $n$ inputs. The lower bound is \emph{parameterized} by $(n,s)$.
+
+\section{Level ladder}
+\subsection{Exact minimal sizes (COMPUTATIONAL, exhaustive)}
+Script \path{experiments/claude_circuitsat/min_gates.py}, raw data \path{min_gates_n*.json}; exhaustive search over straight-line programs (runtime $\le 8$\,s per call, within the 30\,s rule; $n=3$ at depth $4$ is exhaustive because all 254 non-constant functions are found).
+\begin{center}\begin{tabular}{rrrrrrr}\toprule
+$n$ & \#nonconst.\ $f$ & $C=0$ & $C=1$ & $C=2$ & $C=3$ & $C=4$\\\midrule
+2 & 14 & 4 & 10 & -- & -- & -- \\
+3 & 254 & 6 & 30 & 114 & 80 & 24 \\\bottomrule\end{tabular}\end{center}
+Hence $\max_f C(f)=1$ for $n=2$ and $=4$ for $n=3$; $\mathrm{AND}_n$ and $\mathrm{XOR}_n$ cost $n-1$ gates ($2(n-1)$ wires) for $n\le3$. Next rung (OPEN computationally): $n=4$ ($65534$ functions) needs a chunked/checkpointed search or SAT-based exact synthesis.
+
+\subsection{Wire lower bound for any $n$-dependent function}
+\begin{lemma}[PROVED/EXACT]\label{lem:conn}
+If a fan-in-2 circuit's output depends on all $n$ inputs then it has $\ge n-1$ gates and $\ge 2(n-1)$ in-wires.
+\end{lemma}
+\begin{proof} The cone of the output must contain all $n$ inputs. Contracting, each gate merges at most two connected components of the cone's underlying forest-of-sources; starting from $n$ components one needs $\ge n-1$ merges. Each gate has $2$ in-wires. \end{proof}
+Tight for $\mathrm{AND}_n,\mathrm{XOR}_n$ (rungs above). Incremental view: adding input $x_{n+1}$ that $f$ truly depends on costs $\ge 2$ wires, with equality for AND/XOR.
+
+\subsection{Reading lower bound for \SAT (adaptive gate-description oracle)}
+Model: the decider is given $n,s$ and may query the type/in-wires of any gate; count queries.
+\begin{proposition}[PROVED/EXACT]\label{prop:read}
+Any (even randomized-with-error-$<1/2$ on worst-case) decider for \SAT\ on instances with $s$ gates needs $\ge s$ queries (deterministic), for every $n\ge2$, $s\ge n-1$.
+\end{proposition}
+\begin{proof} Let $C_0$ be an AND-tree of $n$ inputs padded with $s-n+1$ gates computing $g\wedge 1$ along a chain, so every gate lies on the unique path to the output and $C_0$ is satisfiable by $1^n$ . For gate $g$ let $C_g$ replace $g$ by constant $0$: unsatisfiable. If a deterministic decider never queries $g$ on $C_0$ it answers identically on $C_g$, so it errs. Hence every gate is queried. (Randomized: pick $g$ uniformly; a decider with $<s/2$ expected queries misses $g$ w.p.\ $>1/2$.) \end{proof}
+Consequence: $\Omega(s)$ in the query model, i.e.\ \emph{linear in the wire count}; this is the only unconditional rung so far. It does \emph{not} touch time beyond linear. KNOWN contrast: brute force costs $O(2^n s)$; Williams-type time--space results give $n^{2\cos(\pi/7)-o(1)}$ for SAT in the sequential time-space model (KNOWN THEOREM, not re-derived here).
+
+\section{Parameterized picture}
+\begin{center}\begin{tabular}{lll}\toprule
+Regime & Bound & Status\\\midrule
+exact gates/wires, $n\le3$ & table above & COMPUTATIONAL\\
+connectivity $2(n-1)$ wires & Lemma~\ref{lem:conn} & PROVED/EXACT\\
+queries $\ge s$ & Prop.~\ref{prop:read} & PROVED/EXACT (oracle model)\\
+counting: most $f$ need $\Omega(2^n/n)$ gates & Shannon/Lupanov & KNOWN THEOREM\\
+time $2^{o(n)}\mathrm{poly}(s)$ impossible & ETH & CONDITIONAL\\
+time $\omega(s)$ unconditionally & -- & \OPEN\\\bottomrule\end{tabular}\end{center}
+Parameter ideas to test next: (a) fan-out $\le k$ circuits (bounded-fan-out wires/gate sweeps, VLSI area-time); (b) $s=n+k$ with $k$ fixed (FPT in excess $k$: is \SAT\ then poly$(n)\cdot 2^{O(k)}$? CANDIDATE); (c) treewidth $w$ of the circuit: $2^{O(w)}s$ upper bound is KNOWN; lower bound $2^{o(w)}$ is ETH-conditional.
+
+\section{Repository cross-check}
+Root \path{main.tex} and \texttt{AGENTS.md} track the ARC/FLMV time--space contraction spine (conditional on assuming $P=NP$; ARC-EDGE-90 \OPEN). It is relevant here only as the known route to \emph{time--space} (not wire-count) lower bounds for SAT; no rung above uses or strengthens it. No claim here transfers to it.
+
+\section{Next steps}
+\begin{enumerate}
+\item Exact $C(f)$ for $n=4$ via chunked search; record the maximum and distribution; look for wire-increment patterns $E_{n+1}-E_n$ over all $f$.
+\item Formalize a restricted model (monotone / bounded fan-out) where a super-linear wire lower bound on \SAT-decision cost can be proved, then test generalization.
+\item Study excess-parameter FPT bound (b) above.
+\end{enumerate}
+\end{document}
