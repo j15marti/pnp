@@ -1,0 +1,40 @@
+% ClaudeCircuitSAT LIVING DOCUMENT -- hourly scheduled routine; append to the run log, revise ledgers in place.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT}
+\author{Living document (scheduled Claude routine)}
+\date{Last updated: 2026-10-25, run 1}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} No unconditional super-linear lower bound for Circuit-SAT is claimed. Labels: PROVED, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Model and parameters}
+A circuit $C$ has $n$ inputs, $m$ fan-in-2 gates over the full basis $B_2$, and $w=2m$ wires. Circuit-SAT: decide $\exists x\,C(x)=1$. The input is a read-only description of $C$ (each gate is a pair of operand indices plus a 4-bit op). Parameters: $(n,m)$, and optionally depth/treewidth. A parameterized bound has the form $T(n,m)\ge g(n,m)$.
+
+\section{Ladder of simplest problems}
+$n=1$: every function costs 0 gates. $n=2$: $C(f)\le1$. $n=3$: $C(f)\le 4$. Exact counts (constants and literals cost 0; output negation is free in $B_2$), COMPUTATIONAL, from \texttt{experiments/claude\_circuitsat/exact\_synthesis.py} (exhaustive over normalized DAG states, runtime $<$30s each):
+\begin{center}\begin{tabular}{c|ccccc|c}
+$n$ & \#$C{=}0$ & $C{=}1$ & $C{=}2$ & $C{=}3$ & $C{=}4$ & $\max C$\\\hline
+1 & 4 & & & & & 0\\ 2 & 6 & 10 & & & & 1\\ 3 & 8 & 30 & 114 & 80 & 24 & 4
+\end{tabular}\end{center}
+Hence the minimum wires needed are $2C(f)$ (each gate has two input wires). Raw data: \texttt{experiments/claude\_circuitsat/exact\_synthesis\_results.jsonl}. Next step: $n=4$ (known maximum 7 from the literature, to be re-derived with checkpointed search).
+
+\section{Proved: the wire-reading bound}
+\begin{prop}[PROVED] Any deterministic algorithm deciding Circuit-SAT on the read-only description needs at least $m$ cell reads on some instance with $m$ gates, for every $n\ge2$, i.e.\ $T(n,m)=\Omega(m)$.\end{prop}
+\emph{Proof.} Base circuit: $a_0=x_1$, $a_i=a_{i-1}\wedge a_{i-1}$ ($1\le i\le m-2$), output $=a_{m-2}\wedge\neg x_1$; it is unsatisfiable. For each $i$, let $C_i$ replace both operand pointers of $a_i$ by the fresh input $x_2$. Then $a_{m-2}=x_2$ and the output is $x_2\wedge\neg x_1$, satisfiable. An algorithm that reads neither operand cell of gate $a_i$ behaves identically on base and $C_i$ and so errs; hence it reads one cell from each of the $m-2$ gates. $\square$
+
+Interpretation: wire-by-wire, every gate's wiring is individually load-bearing, but this only yields a linear bound; it says nothing about the search over $2^n$ assignments. Status of super-linear bounds: \textbf{OPEN}.
+
+\section{Literature ledger}
+\begin{itemize}
+\item KNOWN THEOREM: explicit functions need $3n-o(n)$ gates in $B_2$ (Blum 1984); improved to about $3.1n-o(n)$ (Li--Yang, STOC 2022). These are circuit-size bounds, not Circuit-SAT time bounds; no super-linear bound is known for any explicit function.
+\item CONDITIONAL: under SETH, Circuit-SAT (indeed CNF-SAT) has no $2^{(1-\varepsilon)n}\mathrm{poly}(m)$ algorithm. This is the natural parameterized form $T\ge 2^{(1-o(1))n}$, but it is an assumption.
+\item Repository (j15marti/pnp, read this run): the ARC/FLMV spine and SIL/M22 parameterized resource ladder are supporting material; every load-bearing arrow there is OPEN, so nothing is imported as a lower bound here. Failed-transfer note: the finite reduction traces in the M22 ladder do not give decision-time lower bounds.
+\end{itemize}
+
+\section{Candidate directions (all OPEN)}
+(a) Gate-elimination potential tracking wires removed per assignment of an input (the Blum/Li--Yang method) adapted to a satisfiability-decision measure rather than a function-computation measure. (b) Parameterization by $(n,m)$ with $m\le n+c$: tiny circuits where exhaustive tables could give exact optimal decision-tree depth. (c) Exact small-$n$ computation of the minimum number of wires that must be \emph{read} (not just built) to decide SAT over all circuits of given $(n,m)$; the proposition above is the $m$-linear baseline.
+
+\section{Run log}
+\textbf{Run 1 (2026-10-25).} Created document; computed exact $C(f)$ tables for $n\le3$; proved the $\Omega(m)$ read bound; surveyed literature and repository status. Next: $n=4$ synthesis in checkpointed chunks; exact minimum-read bound for small $(n,m)$.
+\end{document}
