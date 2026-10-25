@@ -1,0 +1,266 @@
+% LSPV-5 REPORT::M22-CLONE-EQUALITY-FLOOR147::2026-10-25T09:46:00+09:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\RET}{\textbf{FALSIFIED/RETIRED}}
+\title{M22-CLONE-EQUALITY-FLOOR147:\\A Two-to-One Clause Floor for Proper Clone-Only Equality Normalizers}
+\author{LSPV-5: independent red team and endpoint audit}
+\date{25 October 2026, Asia/Seoul}
+\begin{document}
+\maketitle
+
+\section*{Status and one result}
+
+P versus NP, ARC-EDGE-90 and the direct post-acquisition lower-bound spine
+remain \OPEN.  This run proves one restricted no-go theorem.  If a source
+variable with $r$ literal occurrences is replaced by $r$ clones, with every
+clone used once in the transformed source clauses, then a clone-only proper
+ternary CNF enforcing equality of all clones needs at least $2r$ clauses.
+Exact $(2^+,2^-)$ target quotas leave only $3r$ clone slots, hence only $r$
+proper ternary clauses.  Therefore the quota-tight, auxiliary-free,
+one-clause-per-occurrence normalization is impossible.  Repeated literals,
+fresh existential auxiliaries, larger port budgets and different reductions
+are not excluded.
+
+\section{Claim card}
+
+\begin{center}
+\begin{tabular}{>{\raggedright\arraybackslash}p{.25\linewidth}p{.68\linewidth}}
+\toprule
+Claim ID & M22-CLONE-EQUALITY-FLOOR147\\
+Status before run & Natural occurrence-cycle normalization was an unproved candidate.\\
+Exact prefix & For every integer $r\ge3$ and every proper ternary CNF $G$ on exactly $z_1,\ldots,z_r$, if $G$ has both constant words and no nonconstant word as models, then $|G|\ge2r$.\\
+Input/model & Explicit Boolean CNF; clauses have three distinct variables.  This is a syntactic reduction theorem, not a machine lower bound.\\
+Resource measured & Number of emitted proper ternary clauses and literal slots.  The later ARC ledger separately charges actual bit work and live writable bits.\\
+SAME\_REALIZATION & The source occurrence, its clone, and every equality-gadget occurrence refer to one emitted target formula.\\
+Falsifier & A proper clone-only equality CNF with fewer than $2r$ clauses, or a quota-tight exact-$(2,2)$ instance using only the clones.\\
+Weakest repair & Permit auxiliary variables or repeated literals, then prove exact quotas, properness, locality and all costs.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Exact boundary-separation theorem}
+
+For $i\in[r]$, let $e_i$ be the word with only coordinate $i$ equal to
+one, and let $\bar e_i$ have only coordinate $i$ equal to zero.
+
+\begin{theorem}[Proper equality clause floor]
+Let $G$ be a CNF over $z_1,\ldots,z_r$ in which every clause contains
+exactly three distinct variables.  Suppose
+\[
+   \operatorname{Mod}(G)=\{0^r,1^r\}.
+\]
+Then $G$ contains at least $2r$ clauses and at least $6r$ literal
+occurrences.  Uniqueness of clauses is not needed for the lower bound.
+\end{theorem}
+
+\begin{proof}
+Every clause is satisfied by both $0^r$ and $1^r$, so it contains at least
+one positive and at least one negative literal.  A proper ternary clause has
+therefore either one negative and two positive literals, or two negative and
+one positive literal.
+
+Consider $e_i$.  A clause can be false on $e_i$ only if its sole negative
+literal is $\neg z_i$ and its two positive variables are different from
+$z_i$.  Thus such a clause falsifies exactly one of $e_1,\ldots,e_r$.
+Symmetrically, a clause can be false on $\bar e_i$ only if its sole positive
+literal is $z_i$; it then falsifies exactly one of
+$\bar e_1,\ldots,\bar e_r$.  No proper ternary clause belongs to both sign
+types.  Since $G$ must reject all $2r$ boundary words, at least $2r$ clauses
+are required.  Three literals per clause give at least $6r$ occurrences.
+\end{proof}
+
+\begin{corollary}[Quota-tight clone-only normalizer does not exist]
+Split a source variable with $r$ occurrences into clones $z_1,\ldots,z_r$,
+and use each clone in exactly one transformed source literal.  There is no
+auxiliary-free proper ternary equality gadget on only those clones that both
+enforces $z_1=\cdots=z_r$ and leaves every clone with exactly two positive
+and two negative target occurrences.
+\end{corollary}
+
+\begin{proof}
+Each clone already occupies one source-clause slot and therefore has exactly
+three remaining occurrence slots under the exact-$(2,2)$ quota.  The gadget
+has $3r$ literal slots.  Because it is proper ternary, it has exactly $r$
+clauses, contradicting the theorem's $2r$ lower bound.
+\end{proof}
+
+The result applies regardless of the signs of the $r$ original occurrences:
+the source sign changes which polarity is missing but not the three-slot
+budget per clone.  It is stronger than merely rejecting a directed cycle of
+implications, but deliberately weaker than rejecting all bounded-occurrence
+normalizers.
+
+\section{Primary-literature and archive reconciliation}
+
+Jahanjou--Miles--Viola reduce nondeterministic time $T$ to a quasilinear-size
+3SAT instance with a local clause accessor.  Their theorem supplies the
+correct source-local starting point, but not proper unique exact signed
+$(2,2)$ quotas.  Berman--Karpinski--Scott establish bounded-occurrence
+hardness, including exact four occurrences in the relevant later
+formulations, but a qualitative NP-hardness theorem does not itself state the
+indexed output length, addressed target-bit cost, inverse occurrence ports,
+malformed-input path or same-machine workspace needed by FLMV.
+
+The explicit $(2/2/3)$ construction of Dehghan et al. is a useful near miss:
+its occurrence-splitting clauses contain a repeated padding literal
+$(x_i\vee y_i\vee y_i)$ or its signed variants, and its problem definition
+requires only two distinct variables per clause.  The paper explicitly leaves
+the three-distinct-variable version as an open question.  It therefore does
+not instantiate the present proper source interface.  Darmann--D\"ocker and
+D\"ocker supply the semantic bounded-occurrence targets already used in
+M22-DD-M33-LOCAL146; they do not remove this first-leg port obligation.
+
+This conclusion duplicates and sharpens MODELBRIDGE-0012/0013 and
+SYNTHESIS-0010: those reports already warned that qualitative bounded-
+occurrence reductions and raw occurrence scans do not meet the local-access
+ledger.  The new contribution is the all-$r$ clause-floor proof explaining
+why the most economical clone-only properizer cannot be the missing repair.
+Role~2 M22-PIN-ERASURE147 independently retires ordinary pin-and-simplify as
+a recursively eligible target adapter; Role~4 M22-QUAD-NEUTRAL102 repairs
+signed degree after deleting constraints but intentionally does not restore
+the deleted semantics.  Neither conflicts with the theorem here.
+
+\section{Contraction and bit-resource ledger}
+
+For any proposed replacement, the same uniform indexed machine must charge:
+source parsing and validity; occurrence-number or native-tag acquisition;
+block and template selection; address arithmetic; every source/work read;
+every changed or unchanged write; emitted clause headers and literal IDs;
+duplicate/properness checks when required; failed template trials; witness
+transport if used; representation switches; cache traffic; live ancestors;
+and peak target-bit/accessor buffers.  Literal flips, logical bit work,
+physical switching, hardware size and cumulative bit-time remain distinct.
+
+The theorem shows that the clone-only quota ledger is infeasible before time
+or space is optimized.  It does not show that auxiliaries are expensive.
+Indeed, a binary implication cycle enforces clone equality with $r$ easy
+constraints, and SCC or parity union--find decides it in $O(r)$ work.  Turning
+those binary clauses into the required proper exact-$(2,2)$ target is the
+unfilled step.  A polynomial emitter is insufficient for the FLMV endpoint:
+the required first leg still needs $N^{1+o(1)}$ output length,
+$N^{o(1)}$ addressed-bit overhead and compatible low workspace, or another
+fully charged route with strict endpoint slack.
+
+Two actual recursive levels cannot be tested for the rejected compiler
+because the first level has no legal output.  This is a construction
+infeasibility, not a favorable zero-cost ledger.  Dehghan's repeated-literal
+construction and Berman--Karpinski--Scott's qualitative reduction remain
+candidate sources only after a separate proper localizer and two-level cost
+audit.
+
+\section{Direct-spine and hostile controls}
+
+The $2r$ separating clauses are not a post-acquisition lower bound for an
+arbitrary decider.  The source predicate ``all clones agree'' is recognized
+directly in linear work and logarithmic address space; the SAT control has
+models $0^r,1^r$, while opposite pinned endpoints give an immediate UNSAT
+control.  A 2-SAT implication cycle is solved by SCC, and the equivalent
+affine equations $z_i\oplus z_{i+1}=0$ are solved by parity union--find or
+Gaussian elimination.  Caching the recognized relation also bypasses clause
+materialization.  Horn, padded 2-SAT, affine and bounded-treewidth
+representations therefore refute any promotion from the syntactic clause
+floor to mandatory decision work.
+
+The result relativizes and algebrizes: a semantic or algebraic oracle can
+answer the equality relation directly.  No Natural-Proofs claim is involved.
+No candidate complete-state potential is proposed.  ADAPTIVE-COVER75's
+input-read hitting number is not reused after acquisition.
+
+\section{Reproducible finite audit}
+
+The standard-library program
+\path{research/agents/lspv-5/2026-10-25_0946_M22_CLONE_EQUALITY_FLOOR147_audit.py}
+exhausts every proper ternary clause satisfied by both constants for
+$3\le r\le12$.  It checks that each clause kills exactly one of the $2r$
+boundary words, that every boundary word has the predicted
+$\binom{r-1}{2}$ killing clauses, and that the exact boundary-cover number is
+$2r$.  It also runs consistent-pin SAT and opposite-pin UNSAT equality-cycle
+controls.  There were 12,940 assertion-accounted checks and zero failures.
+This is \COMP evidence for finite instances; the theorem above is the
+all-$r$ proof.
+
+Code SHA-256 is
+\texttt{09bad830c100036d89474a4cf01fc7d7147c2f1fa3eb1ab202eb73b3fc0dc410};
+raw JSON SHA-256 is
+\texttt{1735a4deb5b9803372bb0bbe831d7f821fe216e3979ddb8e41d37b3462d3e62a}.
+There is no random seed.  Runtime is recorded in the raw JSON.
+
+\section{Status table and exact remaining arrow}
+
+\begin{center}
+\begin{tabular}{p{.39\linewidth}p{.19\linewidth}p{.34\linewidth}}
+\toprule
+Claim & Status & Disposition\\
+\midrule
+Proper clone-only equality needs at least $2r$ clauses & \EXACT & Boundary separation proof above.\\
+Quota-tight auxiliary-free exact-$(2,2)$ normalizer & \RET & Has only $r$ available clauses.\\
+Repeated-literal $(2/2/3)$ construction fills the proper source leg & \RET & Primary construction repeats padding literals.\\
+BKS qualitative hardness supplies FLMV-local ports & \RET & Required quantitative interface is unstated.\\
+Auxiliary-bearing locally addressable normalizer & \OPEN & Not excluded by this theorem.\\
+ARC-EDGE-90 / DIRECT-POST / P versus NP & \OPEN & No all-input edge or universal potential.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The exact receiving obligation remains
+\[
+ \texttt{LOCAL-COOK-TAGGED-SIGNED22-1}:
+ \quad \text{ordinary FLMV SAT}\longrightarrow
+ \text{valid tagged proper unique signed 3SAT-}(2,2).
+\]
+The next artifact should isolate one explicit auxiliary-bearing normalizer
+from the Berman--Karpinski--Scott or JMV line, state its complete block
+ordering and port maps, and audit two serialized levels.  If no full
+construction is accessible, the missing definition must remain recorded
+rather than replaced by a schematic gadget.
+
+\section{Coverage record}
+
+Full/targeted reads: root \path{main.tex} blob
+\texttt{6414c49471832348c1d14db092e9c19e6269d25c}; repository
+\path{AGENTS.md}, \path{CODEX.md}, and the pnp-research skill/protocol;
+\path{main13.tex}; Lead FINAL-LINK-ARC; Role~1 CONNECTED-CYCLIC-LIFT139;
+Role~2 PIN-ERASURE147; Role~3 MAXDEFECT-FACTOR101; Role~4
+QUAD-NEUTRAL102 and the pending two-level DP code; Role~5
+DD-M33-LOCAL146; MODELBRIDGE-0012/0013; SYNTHESIS-0010; and cited code/raw
+artifacts.  Primary sources inspected: Jahanjou--Miles--Viola, Berman--
+Karpinski--Scott metadata/theorem claims, Darmann--D\"ocker, D\"ocker, and
+the explicit $(2/2/3)$ construction.  Bounded repository searches covered
+\texttt{BKS03}, \texttt{3-SAT-(2,2)}, JMV, occurrence splitting and
+bounded-occurrence hardness.  The inherited 3,532-file pinned census was
+not repeated.  Extended Drive pagination, inaccessible earlier chats,
+TR03-022's poorly extractable full proof body, older revisions, and much of
+the historical corpus remain unread; no absence claim is inferred.
+
+The scratch checkout contained no repository files, so the prescribed local
+preflight command could not run.  Authoritative GitHub files were instead
+read through the connected repository interface; publication/readback is
+reported separately.
+
+\begin{thebibliography}{9}
+\bibitem{JMV} H.~Jahanjou, E.~Miles, and E.~Viola,
+``Local reductions,'' \emph{Information and Computation} 261 (2018),
+281--295; arXiv:1311.3171.
+\bibitem{BKS} P.~Berman, M.~Karpinski, and A.~D.~Scott,
+``Approximation Hardness and Satisfiability of Bounded Occurrence Instances
+of SAT,'' ECCC TR03-022 (2003).
+\bibitem{DD} A.~Darmann and J.~D\"ocker,
+``On simplified NP-complete variants of Not-All-Equal 3-Sat and 3-Sat,''
+arXiv:1908.04198.
+\bibitem{Dehghan} A.~Dehghan, M.-R.~Sadeghi, and A.~Ahadi,
+``$(2/2/3)$-SAT problem and its applications in dominating set problems,''
+arXiv:1605.01319.
+\bibitem{Docker} J.~D\"ocker, ``Monotone 3-Sat-$(2,2)$ is NP-complete,''
+arXiv:1912.08032.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LSPV-5::M22-CLONE-EQUALITY-FLOOR147
+\end{document}
