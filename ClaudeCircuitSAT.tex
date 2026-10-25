@@ -1,0 +1,53 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- update in place each hourly run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\newcommand{\SAT}{\mathrm{CSAT}}
+\begin{document}
+\title{ClaudeCircuitSAT: wire-by-wire lower bounds for Circuit-SAT}
+\author{Living document (hourly runs)}
+\date{Last updated: 2026-10-25 (run 1)}
+\maketitle
+
+\section*{Status}
+\textbf{No superpolynomial lower bound for Circuit-SAT is proved here; P versus NP remains OPEN.}
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Start from the smallest circuits, track the number of wires $w$ (fan-in-2 gates: $w=2g$) needed to realise each function as $n$ grows, and extract lower bounds on deciding $\SAT$ as a function of parameters $(n,s,k)$: inputs, size, and structural width (e.g.\ treewidth $k$).
+
+\section{Ledger of results}
+\subsection{Step 0: trivial exact facts (PROVED/EXACT)}
+\begin{prop}[Wire-reading bound]
+Let $C$ be a fan-in-2 circuit in which every gate is non-redundant (removing any wire changes the computed function on some input). Any algorithm that decides $\SAT(C)$ correctly on all such circuits with the same input/gate skeleton must, in the deterministic description-query model, read every wire: $\Omega(w)$ queries.
+\end{prop}
+\emph{Sketch.} If a wire $e$ is unread, by non-redundancy there are two circuits agreeing elsewhere that differ on $e$ and differ in satisfiability only if the redundancy witness can be chosen to flip satisfiability; this holds for the skeleton ``$x_1\wedge\cdots$'' families but \emph{not} in general. Status: PROVED only for skeleton families where flipping $e$ flips satisfiability (e.g.\ AND-chains); in general CANDIDATE. This is a linear (input-size) bound only.
+
+\subsection{Step 1: black-box bound (KNOWN THEOREM, relativizing)}
+With only evaluation access to $C:\{0,1\}^n\to\{0,1\}$, deterministic decision needs $2^n$ queries (adversary answers 0 until the last point). Randomized: $\Omega(2^n)$; quantum: $\Theta(2^{n/2})$ (BBBV). \emph{This is a lower bound for a model that discards the wires; it does not apply to algorithms that read the circuit.} Parametrisation: $T\ge 2^{n}$ in the black-box model; the structured upper bound is $2^{O(k)}\mathrm{poly}(s)$ for treewidth $k$ (KNOWN THEOREM), so any lower bound for white-box algorithms must depend on a width-like parameter exceeding $\log s$.
+
+\subsection{Step 2: exact minimum wire counts, $n\le 3$ (COMPUTATIONAL)}
+Basis $B_2$ (all 16 binary gates), exhaustive search over gate sequences
+(\texttt{experiments/circuitsat/min\_circuit\_b2.py}, each run $<$30\,s).
+\begin{center}
+\begin{tabular}{@{}cccc@{}}\toprule
+$n$ & max gates $g_{\max}$ & max wires $2g_{\max}$ & #functions by gates\\\midrule
+2 & 1 & 2 & $0{:}6,\ 1{:}10$\\
+3 & 4 & 8 & $0{:}8,\ 1{:}30,\ 2{:}114,\ 3{:}80,\ 4{:}24$\\\bottomrule
+\end{tabular}
+\end{center}
+Consistent with the known $C_{B_2}(n{=}3)=4$ maximum (literals/constants are free). Next: $n=4$ (known max 7) needs a chunked/checkpointed search or SAT-based synthesis.
+
+\section{Barriers (must be respected)}
+Relativization (Baker--Gill--Solovay), natural proofs, algebrization. The black-box bound of Step~1 relativizes and is therefore not a P$\ne$NP route. Known circuit lower bounds for explicit functions in $B_2$ are only $\approx 3.1n$ gates (Li--Yang 2022), so a wire-by-wire accumulation argument on a fixed function cannot currently exceed linear.
+
+\section{Repository cross-reference}
+Root \texttt{main.tex} (j15marti/pnp) states every route from an arbitrary poly-time decider to a superpolynomial lower bound is OPEN; the ClaudeCircuitSAT program makes no claim beyond it and adopts its status discipline. No component of it is imported as proved here.
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item OPEN: define a parametrised cost $\mu(C)$ (e.g.\ cutwidth$\times$wire-count of an \emph{irredundant} reduced form) with $T(\SAT)\ge f(\mu)$ for a restricted but non-trivial algorithm class (e.g.\ DPLL/resolution: width-based $2^{\Omega(k)}$ bounds are KNOWN for tree-like resolution on specific families).
+\item OPEN: extend the exact table to $n=4$ and record the growth of $g_{\max}(n)$ vs.\ Shannon $2^n/n$.
+\item OPEN: tighten Step~0 to a general statement or exhibit a counterexample (a circuit family where an unread wire is irrelevant to satisfiability).
+\end{enumerate}
+\end{document}
