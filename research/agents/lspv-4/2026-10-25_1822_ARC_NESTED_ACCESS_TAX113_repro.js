@@ -59,7 +59,7 @@ function decodeInfo(x){
 }
 function sourceParityStream(x){
  const d=decodeInfo(x);assert(d.n>=3&&d.m===2*d.n,"cycle promise");
- let v=0,reads=0;
+ let v=0,reads=d.h;
  for(let j=0;j<x.length;j++){reads++; /* counted input source-bit read */ if(x[j]!=="0"&&x[j]!=="1")throw Error("bad bit")}
  for(let i=0;i<d.n;i++){
   const sign=x[d.h+(2*i)*d.B+2];v^=(sign==="0"?1:0);reads++;
@@ -129,10 +129,10 @@ function run(){
   }
   // Exact design identity for one full scan: each G2 bit invokes G1 L1 times;
   // each G1 reads N+q source/index bits in this literal implementation.
-  const expectedReadsPerFullGuestScan=L2*L1*(N+q);
+  const expectedReadsPerFullGuestScan=L2*L1*(N+q+decodeInfo(src.x).h);
   tests.push({q,requestedOdd:src.odd===1,N,L1,L2,m1,m2,firstLevelShort:L1<N,secondLevelShort:L2<L1,
     actualScannedGuestBits:scans,sourceReadsForOneFullNaiveGuestScan:expectedReadsPerFullGuestScan,
-    cachedFusedSourceScanReads:N+q, guestSat:src.odd===0});
+    cachedFusedSourceScanReads:N+q+decodeInfo(src.x).h, guestSat:src.odd===0});
  }
  assert(tests.length===20,"case count");
  const full=tests.filter(x=>x.actualScannedGuestBits>0),both=tests.filter(x=>x.firstLevelShort&&x.secondLevelShort);
