@@ -1,0 +1,74 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-10-25 (America/Los_Angeles)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder toward a (parameterized) lower bound for Circuit-SAT}
+\author{Living document (hourly scheduled run)}
+\date{Last updated: 2026-10-25, run 1}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No unconditional super-polynomial (or even
+super-linear) lower bound for Circuit-SAT in the Turing/RAM model is claimed.
+Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup}
+A circuit $C$ has $n$ inputs, $g$ binary gates (AND with free edge negation, AIG style),
+one output. A \emph{wire} is an edge of the DAG; $w(C)$ counts edges. Circuit-SAT: given $C$, is there $x\in\{0,1\}^n$ with $C(x)=1$?
+Parameters tracked: $n$, $g$, $w$, and the structural parameter $k$ (cutwidth/pathwidth of the wiring).
+Upper bounds: brute force $O(2^n(g+n))$ (KNOWN); $2^{O(k)}\mathrm{poly}$ by dynamic programming over a width-$k$ layout (KNOWN).
+
+\section{The ladder, exact results}
+\begin{lemma}[Connectivity ladder; PROVED/EXACT]\label{lem:conn}
+If $C$ depends essentially on all $n$ inputs, then $g\ge n-1$ and $w\ge n+g-1\ge 2n-2$; equality iff the cone is a tree of $n-1$ gates.
+\end{lemma}
+\begin{proof}
+Every input must have a directed path to the output, so the underlying undirected graph on $n+g$ nodes is connected, hence has $\ge n+g-1$ edges.
+Fan-in $2$ gives $w\le 2g$, so $2g\ge n+g-1$, i.e.\ $g\ge n-1$. Trees attain it.
+\end{proof}
+\begin{lemma}[Needle ladder; PROVED/EXACT for the bound, COMPUTATIONAL for tightness]
+The indicator of a single point of $\{0,1\}^n$ needs $\ge n-1$ gates by Lemma~\ref{lem:conn}; an AND-tree attains $n-1$. Exact search gives $1,2$ for $n=2,3$.
+\end{lemma}
+\begin{theorem}[Exhaustive minimum-size table; COMPUTATIONAL]
+Let $s_n(f)$ be the minimum AIG gate count of $f:\{0,1\}^n\to\{0,1\}$. Exhaustive iterative-deepening search over all gate sequences
+(\texttt{experiments/claude\_circuitsat/aig\_ladder.py}, data \texttt{results/raw/claude\_circuitsat/aig\_ladder.json}) gives the histogram:
+\begin{center}\begin{tabular}{@{}lccccccc@{}}\toprule
+$n$ & $s=0$&1&2&3&4&5&6\\\midrule
+1 & 4&&&&&&\\ 2 & 6&8&&2&&&\\ 3 & 8&24&64&30&104&8&18\\\bottomrule\end{tabular}\end{center}
+So $\max_f s_1,s_2,s_3 = 0,3,6$ (XOR$_2$ costs 3, XOR$_3$/parity-type costs 6); the corresponding minimal wire counts are $2s+1$ output-inclusive.
+The sequence of maxima $0,3,6$ is consistent with $3(n-1)$ for parity but $n=4$ is not yet computed.
+\end{theorem}
+
+\section{Black-box (evaluation-oracle) bound}
+\begin{theorem}[PROVED/EXACT, restricted model]\label{thm:bb}
+Any deterministic algorithm that decides Circuit-SAT for $n$-input circuits given only evaluation access $x\mapsto C(x)$ needs $2^n$ evaluations in the worst case.
+\end{theorem}
+\begin{proof}
+Adversary answers $0$ to every query; after $2^n-1$ queries the unqueried point can still be the unique satisfying point or not.
+\end{proof}
+\textbf{Transfer status: FAILED TRANSFER as a Turing-model bound.} The algorithm in the real problem receives the wiring, which Theorem~\ref{thm:bb} hides;
+tree-like wiring is solvable in time $O(g)$ (CANDIDATE-level observation, standard DP), so any parameterized bound must be stated in terms of a wiring parameter $k$.
+It also relativizes, and the repository's barrier ledger requires a non-relativizing step.
+
+\section{Parameterized targets}
+\begin{conjecture}[OPEN; CONDITIONAL support]
+No algorithm decides Circuit-SAT in time $2^{(1-\varepsilon)k}\mathrm{poly}(g)$ for every $\varepsilon>0$, where $k$ is the pathwidth of the circuit's wiring.
+\end{conjecture}
+Support: SETH-based lower bounds for SAT parameterized by pathwidth (Iwata--Yoshida, ESA 2015; cited from memory, to be re-verified). 
+Unconditionally, the best known general lower bounds are time--space tradeoffs for SAT (Williams: $n^{2\cos(\pi/7)-o(1)}\approx n^{1.80}$ with $n^{o(1)}$ space; KNOWN THEOREM, cited from memory)
+and explicit circuit-size bounds of order $3.5n-o(n)$ (as recorded in \texttt{GROKPROOF/}); neither bounds the \emph{decision time} of Circuit-SAT as a function of $n,g,k$.
+
+\section{Repository cross-check (run 1)}
+Surveyed: root \texttt{main.tex} status (P vs NP OPEN), \texttt{AGENTS.md} (ARC/FLMV is the project spine; ARC-EDGE-90 OPEN),
+\texttt{GROKPROOF/README.md} (no general-circuit advance past ECCC TR26-276). No repository artifact supplies a wire-ledger lower bound for Circuit-SAT; nothing here strengthens any ARC claim.
+The ARC/FLMV time--space box is compatible with, but not implied by, anything above.
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item Compute $s_4$ over NPN classes (222 classes) to extend the table; test the $3(n-1)$ parity conjecture at $n=4$.
+\item Add a fan-out ledger: minimal $w-g$ (shared wires) per function; relate to pathwidth $k$.
+\item Find a restricted \emph{uniform-algorithm} model (e.g.\ read-once branching on the wiring) where a wire-count lower bound on decision time is provable and non-relativizing.
+\item Re-verify the two literature citations above against primary sources.
+\end{enumerate}
+\medskip\noindent\textit{Change log.} Run 1: created document; Lemma~\ref{lem:conn}, Theorem~\ref{thm:bb}, exhaustive $n\le3$ table.
+\end{document}
