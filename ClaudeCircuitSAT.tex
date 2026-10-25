@@ -1,0 +1,136 @@
+% ClaudeCircuitSAT.tex -- living document (hourly scheduled routine). Edit in place; append to the run log.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\SAT}{\textsc{Circuit-SAT}}
+\title{Parameterized Lower Bounds for \SAT: a Wire-by-Wire Ladder\\\large Living document}
+\author{Claude (scheduled routine)}
+\date{Last updated: 2026-10-25, run 1}
+\begin{document}
+\maketitle
+
+\paragraph{Status.} \textbf{P versus NP remains \OPEN{}.} Nothing below is an
+unconditional super-linear lower bound for white-box \SAT. Status labels:
+PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Build circuits from the simplest case upward, tracking (i) the minimum number of gates $g$ and
+wires $w$ needed at each stage and (ii) the lower bound on the work needed to decide satisfiability
+as a function of the parameters $n$ (inputs) and $s$ (gates). Model: fan-in-2 gates over the full
+basis $B_2$, unbounded fan-out; the wire count is $w=2g$. The input is the explicit
+gate/wire table, accessed by cell probes. The lower bound is allowed to be a function $T(n,s)$.
+
+\section{Ladder, stage by stage}
+\subsection*{Stage 0: one input}
+$n=1$: the functions are $0,1,x,\neg x$. $\neg x$ needs $g=1$, $w=2$ (or $1$ with a unary NOT
+gate). \SAT{} is trivial.
+
+\subsection*{Stage 1: $n=2$ (COMPUTATIONAL, exhaustive)}
+All 16 functions: 4 need $0$ gates (constants and the two inputs), the other 12 need exactly 1.
+Max $g=1$, $w=2$. Data: \texttt{results/raw/claude\_circuitsat/min\_circuit\_n2.json}.
+
+\subsection*{Stage 2: $n=3$ (COMPUTATIONAL, exhaustive)}
+Exhaustive BFS over sets of computed truth tables
+(\texttt{experiments/claude\_circuitsat/min\_circuit\_ladder.py}).
+\begin{center}\begin{tabular}{lccccc}\toprule
+min gates $g$ & 0 & 1 & 2 & 3 & 4\\
+number of functions (of 256) & 5 & 33 & 114 & 80 & 24\\
+min wires $w=2g$ & 0 & 2 & 4 & 6 & 8\\\bottomrule\end{tabular}\end{center}
+Named functions: $\mathrm{AND}_3,\mathrm{OR}_3,\mathrm{XOR}_3$: $g=2$; $\mathrm{MUX}$: $g=3$;
+$\mathrm{MAJ}_3$: $g=4$. Maximum over all 3-input functions is $g=4$ ($w=8$).
+(The ``0 gates'' class is the 3 inputs plus 2 constants.)
+
+\subsection*{Stage 3 (planned): $n=4$}
+Full enumeration over $2^{16}$ functions needs a smarter search (canonical forms under NPN
+symmetry, or SAT-based exact synthesis). The expected maximum is 7 gates; this is recalled from
+the literature and not yet reproduced. Task for a later run.
+
+\section{Proved structural lemmas}
+\begin{lemma}[Connectivity bound; PROVED]\label{lem:conn}
+A fan-in-2 circuit whose output depends on all $n$ inputs has $g\ge n-1$ gates and
+$w\ge 2(n-1)$ wires. The bound is tight (balanced tree for $\mathrm{AND}_n$, $\mathrm{OR}_n$,
+$\mathrm{XOR}_n$).
+\end{lemma}
+\begin{proof}
+Restrict to the cone of the output. Every essential input has a path to the output, so the cone is
+connected. It has $n+g$ nodes and $2g$ edges (every gate has two in-wires). A connected graph has
+at least (nodes $-1$) edges, so $2g\ge n+g-1$, giving $g\ge n-1$.
+\end{proof}
+This matches Stage 2: $\mathrm{AND}_3$ has $g=2=n-1$.
+
+\begin{proposition}[Linear probe lower bound in the gate count $s$; PROVED]\label{prop:probe}
+Any deterministic algorithm that decides \SAT{} for circuits with $s$ gates, reading the gate-type
+table by cell probes, needs at least $s$ probes in the worst case, already for $n=1$.
+\end{proposition}
+\begin{proof}
+Let $U_s$ have input $x$, $n_x=\neg x$, $g_0=n_x\wedge x$, and $g_i=g_{i-1}\wedge x$ for
+$1\le i\le s$, with output $g_s$. Then every $g_i\equiv 0$, so $U_s$ is unsatisfiable.
+Let $U_s^{(i)}$ change only the type of $g_i$ from AND to OR. Then $g_i=0\vee x=x$, each later
+gate is $x\wedge x=x$, and the output is $x$, so $U_s^{(i)}$ is satisfiable. Run the algorithm on
+$U_s$. If it never probes the type cell of $g_i$, it behaves identically on $U_s^{(i)}$ and errs
+on one of the two. Hence all $s$ type cells are probed.
+\end{proof}
+Verified by brute force for $s\le 40$: \texttt{experiments/claude\_circuitsat/adversary\_check.py}.
+
+\begin{proposition}[Black-box bound in $n$; KNOWN/elementary]\label{prop:bb}
+An algorithm that accesses $C$ only through evaluation queries needs $2^n-1$ queries to decide
+satisfiability in the worst case.
+\end{proposition}
+\begin{proof}
+Adversary: answer 0 to every query. Any unqueried point could be the unique satisfying
+assignment, so one of the $2^n$ points is left unqueried unless all but one are queried. The
+algorithm must query at least $2^n-1$ points to rule out satisfiability on the all-zero run.
+\end{proof}
+
+\section{Parameterized bound ledger}
+\begin{center}\begin{tabular}{lll}\toprule
+Statement & Model & Status\\\midrule
+$T(n,s)\ge s$ & cell-probe on the circuit table & PROVED (Prop.~\ref{prop:probe})\\
+$g\ge n-1$ to depend on $n$ inputs & fan-in 2 & PROVED (Lem.~\ref{lem:conn})\\
+$T\ge 2^n-1$ & black-box evaluation only & KNOWN (Prop.~\ref{prop:bb})\\
+$T(n,s)\ge s\cdot 2^{\epsilon n}$ for white-box deterministic & RAM / Turing & OPEN; would imply P$\ne$NP\\
+SETH-style $T\ge 2^{(1-o(1))n}$ & white-box & CONDITIONAL (hypothesis, not a theorem)\\
+Explicit circuit-size lower bound of about $3.1n$ over $B_2$ & general & KNOWN literature
+(recalled from memory, not re-verified this run)\\\bottomrule\end{tabular}\end{center}
+
+The gap is the whole difficulty. Proposition~\ref{prop:probe} gives linear dependence on $s$ and
+Proposition~\ref{prop:bb} gives exponential dependence on $n$ but only for black boxes. A white-box
+lower bound must show that no algorithm can exploit the wiring to beat enumeration. The ladder
+supplies exact minimum wire counts for small $n$ (the data above), but small-$n$ exact sizes do
+not extrapolate to an asymptotic bound.
+
+\section{Link to the repository \texttt{j15marti/pnp}}
+Surveyed this run (local checkout; the GitHub MCP connector failed with a 503, so reads and writes
+were made through the local git checkout).
+\begin{itemize}
+\item Root \texttt{main.tex}: P versus NP is \OPEN; the single spine is ARC/FLMV (a finite fully charged
+ time--space contraction route); ARC-EDGE-90 is \OPEN.
+\item \texttt{research/language/2026-10-25\_0005\_SIL\_M22\_PARAMETERIZED\_RESOURCE\_LADDER.md}: a
+ parameterized resource ladder for exact-(2,2) monotone 3-CNF. It records that the finite reduction trace
+ gives no unconditional decision-time lower bound. Its $q,d$ split (paired supports $H$, unpaired
+ core $d\le 3q$) is a natural second parameter for a Circuit-SAT ladder: the M22 defect-adapter
+ enumerates $2^d$ boundary assignments, i.e.\ a one-sided upper bound $2^{d}\cdot\mathrm{poly}$.
+ This is a candidate parameter (pathwidth-like) not yet connected to circuits.
+\item The repository's governance notes retire cross-machine resource borrowing and free semantic
+ SAT answers; any bound here must respect those.
+\end{itemize}
+
+\section{Candidate directions}
+\begin{enumerate}
+\item \textbf{Fan-out parameter.} Compare formula (fan-out 1) and circuit size at each stage; the
+ wire count $w$ versus gate count $g$ separates when fan-out exceeds 1.
+\item \textbf{Treewidth / cutwidth parameter $k$.} Upper bound $2^k\mathrm{poly}$ is known for
+ \SAT; the lower-bound question is whether $2^{ck}$ is forced (CONDITIONAL on SETH). Track exact
+ minimum cutwidth of the min-wire circuits from the ladder.
+\item \textbf{Stage 3.} Exact synthesis for $n=4$ and the count of functions at each $g$.
+\end{enumerate}
+
+\section{Run log}
+\begin{itemize}
+\item \textbf{Run 1 (2026-10-25).} Created the document. Exhaustive minima for $n\le 3$; Lemma~\ref{lem:conn};
+ Propositions~\ref{prop:probe},\ref{prop:bb}; the adversary family checked for $s\le40$. No new
+ white-box lower bound. GitHub MCP unavailable (503); used the local checkout.
+\end{itemize}
+\end{document}
