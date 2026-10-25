@@ -103,7 +103,7 @@ def main():
     H=[tuple(c) for c in P]+[tuple(-z for z in c) for c in P]
     result={'claim':'M22-DP-TWOLEVEL103','checks':'projection equivalence exhaustive on Y/H; imported UNSAT label for U198',
             'controls':[data(Y,'SAT',True),data(H,'SAT',True)]}
-    ufile=Path(__file__).resolve().parents[2]/'lspv-2'/'2026-10-24_0011_DOECKER61_original_source.txt'
+    ufile=Path(__file__).resolve().parents[1]/'lspv-2'/'2026-10-24_0011_DOECKER61_original_source.txt'
     if not ufile.exists():
         ufile=Path(__file__).resolve().parent/'DOECKER61_original_source.txt'
     if ufile.exists():
