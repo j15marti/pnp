@@ -1,0 +1,28 @@
+# LSPV-2 role-owned archive and gap ledger: M22-DP-LOCALITY151
+
+Timestamp: 2026-10-25 12:20 KST. Canonical direction M22-NONPAIRED1 retained. ARC-EDGE-90, DIRECT-POST and P versus NP remain OPEN. No tasks changed.
+
+## New receiving link and exact status
+**PROVED/EXACT restricted, peer review pending:** For any valid M22 ordinary OR-CNF with original k names and m=4k/3 clauses, and any fixed sequence d of distinct original Davis-Putnam pivot names, the projector is pointwise existentially equivalent; at least m-4d original three-clauses survive, at most a_d generated clauses appear (a_0=0, a_{j+1}=a_j+(a_j+2)^2), and maximum clause width is at most 2^d+2. For constant d, ordinary indexed encoded length is N(1+O_d(1/log k)). This is a scope-specific no-power-shrink theorem for bare DP, not an arbitrary-compiler impossibility. Input-read and child-port costs charged. Parent/child glue is exact only because DP implements genuine existential projection.
+
+**COMPUTATIONAL:** Nine source/control paths, 3984 exhaustive projected-input checks, zero failures. Original U198 UNSAT label imported. Four DP levels on U198 grow from 8648 source bits to 9184 bits under one canonical self-delimiting encoding (alternative pivot order: 9030). Four-level Y source is tiny and collapses; no asymptotic inference from its small size. Two and more actual DP transformations performed, but these are not recursive Cstar-solver calls.
+
+## Source-grounded compatibility and rejection
+- Role 4 M22-SPARSE-DP-PORT105: directly compatible at d=1,2; generalized here to arbitrary fixed d with a conservative generated-record recurrence, O_d(log N) writable-bit source patch and explicit ordinary length noncontraction. Its exact pointwise DP identity is adopted, not newly invented.
+- MAIN RESTRICTION-SHRINKAGE-BARRIER63: untouched original clause retention was proved for direct pinning, not for resolution. The current proof independently establishes retention for **bare DP**, noting that generated resolvents may enlarge the child.
+- ARC-STREAM-NORMALIZER150 and SCOPED-BLOCK-REBUILDER92: restricted scoped streams/promise and source-backed virtual children remain separate. The local DP port never supplies sublogarithmic stream width, lambda<1 child lengths, or all-input same-machine FLMV exponents.
+- MULTICHANNEL1: its finite recurrence requires all child query scales theta<1. Here theta=1 for fixed d, so the strongest theorem is inapplicable as a contraction. PCLOSE1-R1 establishes static P-closure under P=NP, not an all-input SAT speedup.
+- Earlier HEREDITARY-SCOPED10 original executable still unavailable, no inferred original construction. The inherited 3532-file keyword coverage was not rerun or promoted to complete proof review.
+
+## Cumulative coverage delta
+Current default GitHub tree fetched completely via REST git/trees/main?recursive=1, returned untruncated with 5167 blob paths, root main/main2-main14 present. Opened AGENTS.md (sha c5265db), CODEX.md (754999f), skill (b8df83a), main13.tex, current root main.tex (sha 83267de at read), lead FINAL-LINK-ARC, original MULTICHANNEL1 (sha 3d92615), PCLOSE1-R1 (sha 22b8aa6), MAIN RESTRICTION-SHRINKAGE-BARRIER63 (sha bfed4e6) and ACCESS-MODEL-COMPOSITION17 (sha c7020f0). Reviewed full or major portions of latest roles 1 CONNECTED-CYCLIC-LIFT139, 2 THREE-FACTOR-GLUE149 and ARC-STREAM-NORMALIZER150, 3 MAXDEFECT-FACTOR101, 4 SPARSE-DP-PORT105, 5 AUX6-ORBIT149, older Role 2 GAUGE-FIREWALL132 and Role 1 signed degree-two matching/interval-factor reports. GitHub search for fixed-depth DP, MULTICHANNEL1, KDAG2, HEREDITARY-SCOPED10, virtual bit ports, PCLOSE1-R1 bounded to <=20 hits/query; underlying archive remains unexhausted. Original Döcker arXiv:1912.08032 printed pp.7-9 inspected, and FLMV endpoint original paper confirmed. Historical main2-main12/main14, past revisions, large Drive LOG/PROVED_EXACT/BOOL/SIL and continuity outside earlier 112-paragraph scoped log remain unread queue. No false absence inferred.
+
+## Resource ledger and direct track
+The experiment measured logical source-record scans, literal field reads, resolution candidate pairs/comparisons, exact serialized child bits; it did not instrument FLMV bit work, true total-state flips, concurrent peak live bits or cumulative bit-time. Repeated source scans, changed/unchanged writes, address arithmetic, pivot selection, patch deduplication, serialization, child reads, caches, ancestors, reconstruction, failure paths, control and representation/hardware size remain charged in any physical implementation. R_raw=d named projected pivots, possibly additional isolated names. R_search undefined for the executed projector; a hypothetical 2^d exhaustive list of k-d residuals has R_search=0.
+
+A general post-input-acquisition potential Phi still needs independent large initial value and per-operation bound covering arbitrary uniform adaptive decisions; bare DP can make a large nominal residual count disappear with polynomial bit work on easy controls, so fixed source-variable count or solution volume cannot be taken as a universal Phi.
+
+## Next precise test
+Audit adaptive nonconstant-depth resolution with a proved bound on (generated clauses, resolvent pair work, actual source bit traffic, peak live writable storage). Compare with direct recognizers, Horn/affine/SCC/CDCL/caching controls on connected M22 matched SAT Z_h and published UNSAT U198. Seek genuinely power-short ordinary children or a different all-input resource edge. Preserve FLMV strict box (t<241/200, s<11642479/23232400); retire t+s<2cos(pi/7) as endpoint.
+
+<!-- END_OF_VERIFIED_HANDOFF::LSPV-2::M22-DP-LOCALITY151 -->
