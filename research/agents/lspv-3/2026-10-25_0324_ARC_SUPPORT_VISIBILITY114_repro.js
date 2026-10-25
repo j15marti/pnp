@@ -82,6 +82,7 @@ const arc114=function arc114(){
     add("all_but_one_pin",a=>{let C=[];for(let i=1;i<b;i++)C.push(...pin(-i,a));return C});
     return list;
   }
+  let lastMatchedBits="";
   for(const b of st.b_values){
     const roots={YES:mod(b,Array(b).fill(0)),NO:mod(b,[...Array(b-1).fill(0),1])};
     for(const label of ["YES","NO"]){
@@ -126,7 +127,7 @@ const arc114=function arc114(){
         }
       }
     }
-    const yes=roots.YES,no=roots.NO;
+    const yes=roots.YES,no=roots.NO;lastMatchedBits=no.bits;
     ck(yes.bits.length===no.bits.length,"matched header length");
     ck([...yes.bits].filter((x,i)=>x!==no.bits[i]).length===2,"matched pair 2 flips");
     ck(JSON.stringify(yes.F.map(c=>c.map(Math.abs)))===JSON.stringify(no.F.map(c=>c.map(Math.abs))),"source support identity");
@@ -136,7 +137,10 @@ const arc114=function arc114(){
       support_field_lower_bound_bits:b*b.toString(2).length,
       literal_sign_flips:2,YES_target:"0".repeat(b),NO_target:"0".repeat(b-1)+"1"});
   }
-  try{parse(roots.NO.bits.slice(0,-1));throw Error("TRUNCATION UNDETECTED")}catch(e){ck(String(e)!=="Error: TRUNCATION UNDETECTED","truncated parser must reject")}
+  let malformed_rejected=false;
+  try{parse(lastMatchedBits.slice(0,-1));}catch(e){malformed_rejected=String(e).includes("bad body length")}
+  ck(malformed_rejected,"truncated parser must reject");
+  st.rejected_truncated_encoding=malformed_rejected;
   st.status="COMPUTATIONAL finite zero-failure controls; separate PROVED/EXACT restricted lemmas await peer review";
   return st;
 };
