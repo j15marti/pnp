@@ -1,0 +1,27 @@
+# LSPV-3 ARC-SCOPED-DEPTH-BUDGET112: additive gap and archive record
+Timestamp 2026-10-25 01:48 America/Los_Angeles. ARC-EDGE-90 and P versus NP **OPEN**. All five roles continue exclusively the ARC/FLMV spine; no tasks, schedules or enabled states changed.
+
+## Verified results and nonduplication
+- The exact shared-variable join, four-clause pins, independently ordinary proper-3CNF children, and **width +2 per level** were ALREADY proved in LSPV-3 SCOPED-BLOCK-REBUILDER92 (full report reviewed, blob efa04f0d7f3a00c9e5a26287976bcedea07afe71), and earlier INTERFACE-PROJECTION8. They are NOT reattributed as new.
+- OVERLAP-CUT128 already sharpened compatible query count to 2^{|L union R|}, and is credited.
+- New conditional quantitative fixed-depth lemma (proved in report, independent mathematical review pending): on a validated canonical scoped source with m clauses, N=Theta(m log m), width w<=delta log2 N and balanced sqrt(m_i) blocks, depth d fixed gives width at most w+2d, leaf length N^{2^{-d}+o(1)}, leaf count <= N^{1-2^{-d}+2d delta+o(1)}, cumulative charged serial output/generation N^{1+2d delta+o(1)}, and **one implementation** with time exponent max(1+2d delta,1-2^{-d}+2d delta+t/2^d), peak work/index space max(1/2,s/2^d). For d=2 the pair is (max(1+4delta,3/4+4delta+t/4),max(1/2,s/4)). This is a PROMISED STREAM bound and NOT an element of the ordinary all-input achievable set E.
+- New quantifier caveat: a fixed positive delta is multiplied by 2^i as a fraction of log(child length) after i levels. If delta<1/80, d=2 descendants eventually stay inside the 1/20 relative width budget, but no indefinite hereditary relative-width claim follows from bounded absolute width alone.
+- Source event grammar with canonical monotone OPEN IDs must be supplied or its discovery/validation must be separately charged. The full ordinary-input low-width normalizer remains OPEN. No parent-scale fallback is hidden.
+
+## Source coverage
+Full/targeted reads: root main.tex (LSPV-3 owned and executive ARC slices) blob bfa8f089b4ab1f27ec6af73ae0b3d0569df949bf prewrite; main13.tex 87dbaad5e18932b1db7fca57fc40e0ac020a6f49; AGENTS.md b02b757b97a8c5674dbdb13f33e75c7486a857ad; CODEX.md 754999f50de93cdb693ed37bc8110d31e9e698ef; research skill b8df83a7b0b1428f349b0e02ce1387d979e8db7f; LSPV-3 SCOPED92 and ARC-PARITY-INTERFACE111; LSPV-2 ARC-STREAM-NORMALIZER150, LSPV-4 ARC-EXT-SELECTOR-NOGO109 and FANOUT110, LSPV-1 ARC-M22-PIN-FANOUT158, LSPV-5 ARC-BRANCH-SELECTOR-TRILEMMA159. Directory listings for five roles, research/main, coordination, tasks, and focused GitHub code searches were inspected. Original FINAL-LINK-ARC was fetched; primary FLMV author manuscript and Freuder CSP source were consulted. The 3,532-file inherited archive inventory was not repeated. The original HEREDITARY-SCOPED10 executable and broad Drive archive tranche remain UNREAD; continuity summary is not proof. Full corpus mathematical review is not claimed.
+
+## Executed tests and provenance
+The complete local standard-library test builds every encountered child and grandchild as ordinary proper 3CNF with injective dense local naming, using a two-level DPLL leaf solver. 19 controls (12 SAT, 7 UNSAT), including equality-path, Horn, XOR, random local proper3CNF, disconnected examples. 152 independent original-block-unit vs pinned-child equivalence checks. 176,153 constructed child instances and 174,449 actual grandchild SAT leaf calls; maximum cumulative width gain 4; zero discrepancies. Seven short per-chunk computations were persisted after a whole-batch timeout. Full raw results SHA-256 a1384486031b63c8204bfdc9918b393fa32177e65cf0f39e4998739aa6760841.
+Six larger sizing-only SAT/UNSAT controls: m=100,1000,10000, root/first/grandchild fixed-width bits respectively (5226,990,1176), (64032,2088,814), (800040,5850,990). The first small grandchild EXPANDS owing to pin overhead. These larger controls are not full DPLL solves and do not meet the tiny-delta asymptotic promise.
+The repository peer reproducer is compact and does not replace the complete local audit. No physical FLMV work/index-tape trace, temporal switches or cumulative bit-time was measured.
+
+## Accepted and rejected gap links
+FILLED restricted: correct source-named gluing and two complete recursive levels on validated scoped sources, finite-depth bit-budget accounting.
+FALSIFIED as all-input inference: treating low-width scoped inputs as an automatically cheap preprocessing of arbitrary ordinary SAT; assuming absolute width implies a constant relative width at every recursion level; finite small pin descendants always shorter.
+KNOWN: FLMV strict indexed-machine exclusion t<241/200, s<11642479/23232400. Retired cosine-product region is not reused.
+OPEN: all-input A-assisted ordinary SAT descendant builder with complete source access, globally compatible joins, simultaneous same-machine time-space improvements on every input, or a cofinal finite charged route to the verified FLMV box.
+
+## One next experiment
+Run any proposed ordinary-CNF-to-scoped-stream algorithm on sign-ordered high-frontier M22 and the connected nonlinear opposite-label controls, validate all source identities and generated bits, and audit its actual indexed-work/space costs. Unsuccessful lowwidth recognition may fall back to an ordinary SAT decider, but that fallback's exponent must be included. No third-party communications.
+<!-- END_OF_VERIFIED_HANDOFF::LSPV-3::ARC-SCOPED-DEPTH-BUDGET112 -->
