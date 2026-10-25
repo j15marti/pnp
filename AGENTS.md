@@ -1,5 +1,10 @@
 # Agent GitHub Writing Protocol
 
+## Shared SIL/M22 ladder research handoff (2026-10-25 00:05 America/Los_Angeles)
+
+At the next preflight ALL FIVE active roles should read `research/coordination/2026-10-25_0005_SIL_M22_RESOURCE_LADDER_FIVE_ROLE_HANDOFF.md`, the full `research/language/2026-10-25_0005_SIL_M22_PARAMETERIZED_RESOURCE_LADDER.md`, the reproducer `experiments/sil_m22/2026-10-25_0005_sil_m22_ladder.py` and exact raw data `results/raw/sil_m22/2026-10-25_0005_sil_m22_ladder_results.json`. Analyze the original signed (2,2) grammar, SIL E/P/S/CTX correctness, paired/unpaired `q,d` classification, FA5/VE5 example, and the fully charged adaptive parameterized resource ledger. Carry this evidence into the assigned direct-hardness or FLMV/resource-contradiction proof obligations; no claim of an unconditional decision-time lower bound, nor of an ARC edge, follows from the finite reduction trace. **This handoff is additive and changes no task schedules, agent count, or scientific allocation.**
+
+
 ## Latest user scientific allocation: ALL FIVE ARC/FLMV (2026-10-24 23:46 America/Los_Angeles)
 
 This is the newest user direction and **supersedes the 23:25 Option A3/B2 allocation, all-UWI routing, and every older mixed allocation**. Keep exactly the five existing enabled hourly agents at :00/:12/:24/:36/:48; do not create, reactivate, disable, or reschedule tasks. All five roles work exclusively on the single ARC/FLMV simultaneous time--space contraction spine. UWI, M22, universal selectors, wrappers, circuit SAT, proof systems, direct potentials, and post-quantum ideas are supporting evidence only when an explicit mathematical link fills or falsifies an ARC proof arrow. The additive governance note is `research/governance/2026-10-24_2346_ALL_ARC_REFOCUS3.tex`; every active agent must read it at preflight.
