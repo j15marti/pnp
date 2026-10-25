@@ -1,0 +1,63 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-10-25
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}\newtheorem{theorem}{Theorem}
+\title{ClaudeCircuitSAT: a stepwise, wire-counted, parameterized lower-bound ladder for Circuit-SAT}
+\author{Living document (hourly scheduled runs)}
+\date{Last updated: 2026-10-25, run 1}
+\begin{document}\maketitle
+
+\section*{Status (strict labels)}
+\textbf{P versus NP remains OPEN.} Nothing here proves a superpolynomial lower bound for Circuit-SAT.
+Labels: PROVED, KNOWN THEOREM (cited from memory, to be re-verified against sources), COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Model}
+A circuit $C$ on inputs $x_1..x_n$ is a DAG of $s$ gates over the basis $B_2$ (all binary gates; negation counted as a gate unless stated), fan-in $\le 2$.
+A \emph{wire} is an edge (input or gate $\to$ gate). \textsc{CSAT}$(n,s)$: given $C$, decide $\exists x\,C(x)=1$.
+Two different lower-bound questions must not be mixed:
+(a) \emph{circuit size/wires needed to build a function} (ladder below), (b) \emph{resources needed to decide CSAT}.
+Parameters: $n$ (inputs), $s$ (gates), $w=2s$ (wires), later $\mathrm{tw}$, depth.
+
+\section{Ladder, step 1: exact minimum gates/wires for all functions, $n\le 3$ (COMPUTATIONAL)}
+Script \texttt{experiments/claude\_circuitsat/2026-10-25\_ladder\_mincircuit.py} (6\,s), raw data
+\texttt{results/raw/claude\_circuitsat/2026-10-25\_ladder\_mincircuit.json}. Exhaustive BFS over circuits as sets of computed truth tables.
+\begin{center}\begin{tabular}{lcccccc}\toprule
+gates $g$ & 0 & 1 & 2 & 3 & 4 \\ \midrule
+$\#$ 3-var functions of min size $g$ & 5 & 33 & 114 & 80 & 24\\ \bottomrule\end{tabular}\end{center}
+(The 5 at $g=0$: $x_1,x_2,x_3$ and constants; negations cost 1 gate.) All 256 functions on 3 inputs need $\le 4$ gates ($\le 8$ wires).
+Named: $\mathrm{AND}_3=\mathrm{OR}_3=\mathrm{XOR}_3=2$, MUX $=3$, $\mathrm{MAJ}_3=4$. For $n=2$: all 16 functions $\le 1$ gate (incl.\ negation).
+Finite evidence only; no asymptotic content.
+
+\section{Ladder, step 2: wire lower bound by connectivity (PROVED)}
+\begin{lemma}If $f:\{0,1\}^n\to\{0,1\}$ depends on all $n$ inputs, every fan-in-$\le2$ circuit for $f$ has $g\ge n-1$ gates and at least $n+g-1\ge 2n-2$ wires.\end{lemma}
+\begin{proof}Every input has a path to the output, so the undirected graph on the $n$ inputs and the $g$ gates that lie on such paths is connected: $\ge n+g-1$ edges. Each gate has $\le2$ in-wires, so edges $\le 2g$, giving $g\ge n-1$ and hence edges $\ge 2n-2$.\end{proof}
+Tight for $\mathrm{AND}_n,\mathrm{OR}_n,\mathrm{XOR}_n$ over $B_2$ ($n-1$ gates, $2n-2$ wires); consistent with the table ($n=3$: 2 gates).
+
+\section{Ladder, step 3: beyond linear---known gate-elimination results (KNOWN THEOREM, re-verify)}
+Over $B_2$, explicit functions need $3n-o(n)$ gates (Blum 1984); the best known is about $3.1n-o(n)$ (Li--Yang, STOC 2022; earlier Find--Golovnev--Hirsch--Kulikov $\approx 3.011n$). Over $U_2$ (no XOR) the bound is $5n-o(n)$ (Iwama--Morizumi) and parity needs $3(n-1)$ (Schnorr). Counting gives functions needing $\Omega(2^n/n)$ gates, but no explicit function beyond $\approx 3.1n$ is known. These bound \emph{building} a function; they do not bound \emph{deciding} CSAT.
+\textbf{Barrier:} a superlinear bound for an explicit NP function over general $B_2$ circuits is open; gate elimination is not known to exceed linear.
+
+\section{Deciding CSAT: first proved bound (PROVED)}
+Model: decider has random access to the encoding (gate $i$ = (op, pointer$_1$, pointer$_2$)); cost = number of fields read.
+\begin{theorem}Any deterministic decider for \textsc{CSAT}$(n,s)$ with $n=s$ reads $\ge s$ pointer fields in the worst case.\end{theorem}
+\begin{proof}Let $B$ be the AND-chain $g_i=g_{i-1}\wedge x_i$ (SAT, unique model $1^n$), with a constant-0 node available. Let $B_j$ replace the pointer $x_j$ of $g_j$ by the constant-0 node: $B_j$ is UNSAT. $B$ and $B_j$ differ in one field. If the decider on $B$ leaves field $j$ unread it answers identically on $B_j$, wrongly. So it reads all $s$ fields.\end{proof}
+This is only the trivial ``read the input'' bound $\Omega(s)$, parameterized by $s$; it holds even with $n$ small relative to $s$ by padding with chain gates. It says nothing about $2^{\Omega(n)}$.
+
+\section{Upper-bound landscape (context, not lower bounds)}
+Brute force $O(2^n s)$; branching/CDCL-type exact algorithms $2^{(1-\epsilon_s)n}$ for restricted size ($s\le cn$) classes; dynamic programming over a tree decomposition $2^{O(\mathrm{tw})}\,s$. A parameterized conjecture that fits the project: SETH $\Rightarrow$ no $2^{(1-\epsilon)n}\mathrm{poly}(s)$ algorithm (CONDITIONAL, not a proof of anything unconditional). Candidate parameter pairs for the target bound: $T(n,s)$, $T(n,\mathrm{tw})$, space--time pairs $(T,S)$ as in the repository's FLMV time--space spine.
+
+\section{Repository cross-check (j15marti/pnp, read this run)}
+Active spine: ARC/FLMV simultaneous time--space contraction; ARC-EDGE-90 and P vs NP OPEN. Closest reusable item: SIL/M22 ladder (\texttt{research/language/2026-10-25\_0005\_SIL\_M22\_PARAMETERIZED\_RESOURCE\_LADDER.md}), whose $q,d$ parameterization ($O^*(3^q)$ continuation, $d\le3q$) is an \emph{upper} bound for a restricted monotone exact-(2,2) 3-SAT; a Tseitin/gate encoding of CSAT instances into that language and the resulting $q,d$ of encoded circuits is a candidate bridge (CANDIDATE, unexamined). No lower-bound result in the repository transfers to CSAT as stated; its handoff itself disclaims any unconditional decision-time lower bound.
+
+\section{Open ladder (next steps)}
+\begin{enumerate}
+\item Extend exact table to $n=4$ ($2^{16}$ functions; need canonical-form dedupe by NPN class, split into chunks of $\le30$s) and record min gates/wires per NPN class.
+\item Add fan-out accounting: count wires incl.\ fan-out $>1$ separately (formula vs circuit gap), compare tree-like vs DAG size.
+\item Per level $n$, define the hardest CSAT instance family on $n$ inputs and the \emph{decision} resource (probes of an adaptive tester), separating probe complexity from time.
+\item Test the Tseitin bridge to SIL/M22: compute $q,d$ for encodings of the ladder circuits.
+\item Search for parameterized bounds of form $T\ge f(\mathrm{tw})\cdot \mathrm{poly}(s)$ for restricted models (monotone, bounded-depth, read-once) where lower bounds are provable.
+\end{enumerate}
+
+\section*{Run log}
+\begin{itemize}\item 2026-10-25 run 1: created document; $n\le3$ exact table; connectivity lemma; read-all-fields theorem; repository survey (partial: governance/handoff files and tree, not the whole corpus).\end{itemize}
+\end{document}
