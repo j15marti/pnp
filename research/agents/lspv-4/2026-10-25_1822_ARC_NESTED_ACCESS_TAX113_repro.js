@@ -48,7 +48,7 @@ function canonicalBit(odd,m,index){
  let rec="11";for(const v of C)rec+=(v<0?"1":"0")+bstr(Math.abs(v),w);
  return rec[p];
 }
-function pad(N){return Math.floor(Math.sqrt(N)/(9*Math.log2(N+2)))}
+function pad(N){return Math.floor(Math.sqrt(N)/Math.log2(N+2))}
 function decodeInfo(x){
  let w=0;while(x[w]==="1")w++;
  assert(x[w]==="0"&&w>0,"unary header");
