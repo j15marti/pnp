@@ -1,0 +1,100 @@
+% LSPV-5 REPORT::M22-AUX6-ORBIT149::2026-10-25T11:48:00+09:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.85in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,xurl,hyperref}
+\title{M22-AUX6-ORBIT149: Symmetry-Complete Exclusion of the First Open Uniform-Sign Auxiliary Equality Block}
+\author{LSPV-5: Independent Red Team and Endpoint Audit}
+\date{25 October 2026, Asia/Seoul}
+\newcommand{\CM}{\mathcal C_{\mathrm{M22}}}
+\newcommand{\CS}{\mathcal C_\star}
+\begin{document}\maketitle
+
+\begin{center}
+\textbf{COMPUTATIONAL finite exact 0/1 feasibility audit; not a formal infeasibility certificate.}\\
+\textbf{ARC-EDGE-90, DIRECT-POST, LOCAL-COOK-TAGGED-SIGNED22-1, and P versus NP remain OPEN.}
+\end{center}
+
+\section{Scope and falsifiable links}
+A formula in $\CM$ has unique proper three-variable clauses, every clause all positive or all negative, and every active variable occurring exactly twice per sign.  The canonical target $\CS$ excludes only formulas in which every clause has its sign-complement partner.  Partial partners, easy instances, and disconnected inputs remain.  D\"ocker's theorem establishes NP-completeness of $\CM$-SAT and satisfiability of the fully paired subfamily; it does not establish a decision-time lower bound \cite{docker}.
+
+The preceding AUX-PORT-CONGRUENCE148 theorem considered a standalone pure-sign completion block with $r$ source ports, $p$ pre-used positive source occurrences and $a$ private auxiliaries.  Exact final signed degree $(2,2)$ forces
+\[
+ a\equiv0\pmod3,\qquad p\equiv2r\pmod3.
+\]
+The minimum $a=3$ cases were exhaustively negative.  This run tests the first open congruence-allowed point, $r=3,a=6,p=3$, with one pre-used positive occurrence on each port.
+
+Three falsifiable proposals were separated.  (H1) A standalone uniform-sign six-auxiliary equality block exists.  This is \textbf{FALSIFIED/RETIRED computationally at the declared finite parameter}.  (H2) simultaneous auxiliary renaming reduces the two-witness search to finitely many complete cases.  This is \textbf{PROVED/EXACT}: there are 84 witness-pair orbits.  (H3) failure of the gadget implies compulsory SAT work.  This inference is \textbf{FALSIFIED}: the design search is a fixed offline computation and supplies no all-decider lower bound.
+
+\section{Exact finite feasibility model}
+Let the ports be $x_0,x_1,x_2$ and the auxiliaries $u_0,\ldots,u_5$.  For every three-element support $e\subseteq[9]$, binary variables $P_e,N_e$ choose the positive or negative clause on $e$.  There are $\binom93=84$ candidate supports per sign.  Signed-degree equations are
+\[
+ \sum_{e\ni x_i}P_e=1,\quad \sum_{e\ni x_i}N_e=2,
+ \qquad
+ \sum_{e\ni u_j}P_e=\sum_{e\ni u_j}N_e=2.
+\]
+Thus exactly five positive and six negative clauses are selected.
+
+For every nonconstant $z\in\{0,1\}^3$ and every auxiliary word $y\in\{0,1\}^6$, at least one selected clause must be false:
+\[
+ \sum_{e:\,(z,y)|_e=000}P_e+
+ \sum_{e:\,(z,y)|_e=111}N_e\ge1.
+\]
+There are $6\cdot64=384$ such constraints.  Two six-bit witness vectors encode extensions of $000$ and $111$ using ordinary conditional linear inequalities.  All variables are binary; no semantic oracle or fractional relaxation is accepted.
+
+The controls are essential.  The 18 degree equations alone are feasible.  The degree equations plus extension of both constant port words are also feasible; a returned formula has 22 witnesses for $000$, 9 for $111$, and extends all eight port words.  Only after the 384 nonconstant-rejection constraints are added does the 180-variable, 610-constraint model become infeasible.
+
+\section{Independent symmetry-complete formulation}
+To remove any dependence on the aggregate witness linearization, fix a witness pair $(y^0,y^1)\in(\{0,1\}^6)^2$.  Simultaneous renaming of the six auxiliaries preserves every support, degree, satisfaction and projection requirement.  Hence its orbit is determined exactly by
+\[
+ (n_{00},n_{01},n_{10},n_{11}),\qquad
+ n_{00}+n_{01}+n_{10}+n_{11}=6.
+\]
+The number of orbits is the number of weak compositions,
+\[
+ \binom{6+4-1}{4-1}=\binom93=84.
+\]
+For each canonical representative, constant-witness satisfaction is imposed by forbidding every clause false under that fixed full assignment; no witness variables remain.  All 84 independent 168-binary-variable models returned infeasible, with zero feasible, timeout, or unknown cases.
+
+This exhausts all witness pairs modulo a proved symmetry.  Nevertheless, the final exclusion is labeled \textbf{COMPUTATIONAL}, because the HiGHS infeasibility decisions are not accompanied here by independently checkable integer or Farkas certificates.  It excludes exactly the declared $a=6$ standalone proper pure-sign model.  It does not exclude $a\ge9$, shared auxiliaries or clauses across source variables, contextual ports, mixed-sign clauses, repeated literals, larger occurrence budgets, or a different semantic reduction.
+
+\section{Bit-resource and contraction ledger}
+Suppose counterfactually that this fixed block existed for $g$ source groups.  It would add six names and eleven clauses per group.  If $\ell=\lceil\log_2(9g+2)\rceil$, the 33 variable-index fields alone require $33g\ell$ output bits, before signs, tags and headers.  The disjoint charged operations are:
+\begin{longtable}{p{.32\linewidth}p{.60\linewidth}}
+\toprule
+stage & charged work and simultaneous storage\\\midrule
+recognition/ranking & source field reads, properness and degree validation, occurrence ranks, group and sign discovery; eager directories cost $\Theta(g\ell)$ live bits, replay trades this for repeated reads\\
+template selection & constant-size control once the sign pattern is known; failed sign/template cases and address arithmetic remain charged\\
+child emission & 33 index-field writes plus clause/sign/header writes per group, including unchanged values; $\Theta(g\ell)$ traffic\\
+access/reconstruction & source-to-child index arithmetic and every consumer read; a handle is not a free second input\\
+buffers/caches & $O(\log N)$ local bits in a one-way streaming implementation beyond its source accessor, or $\Theta(g\ell)$ if output is materialized\\
+bit-time/flips & cumulative live writable bits at actual steps and actual complete-state flips are separate from logical writes; neither was physically measured by the Python audit\\
+\bottomrule
+\end{longtable}
+The output is linear, not a power shrink.  A locally addressable fixed template could be useful normalization infrastructure, but it would not by itself improve a simultaneous exponent pair.  Here the block is infeasible before one semantic adapter level, so a second recursive solver level is not defined.  Claiming two ARC levels would therefore be a type error, not missing experimental polish.
+
+\section{Direct-potential and peer red-team audit}
+The number of unresolved witness or template orbits is at most 84 in this fixed design problem.  It is representation-dependent, can be precomputed into the program, is not an independently large input-indexed quantity, and is not terminal-zero under arbitrary correct direct decision.  It therefore cannot serve as DIRECT-POST.
+
+Role~1's M22-NAE-PAIR149 proves a full-pairing-compatible clause-local marginal distribution and an unavoidable unbiased correlation of magnitude at least $1/3$ on a complemented triple.  The published M22 UNSAT source nevertheless has those local marginals, so local feasibility is not global SAT and gives no decision-work potential.
+
+Role~2's ARC-STREAM-NORMALIZER150 correctly separates an eager $O(N\operatorname{polylog}N)$-work, large-directory implementation from an $O(N^2\operatorname{polylog}N)$-work, logarithmic-space replay implementation.  Its conditional composition with frontier DP reproduces the FLMV forbidden-box firewall.  That is an exact no-go for an overly favorable all-input normalizer, not the favorable successor ARC requires.  Its two restrictions are not two recursive ARC solver levels.  The arithmetic check
+\[
+ \beta(241/200)=\frac12\left(\frac{241/200+2}{(241/200)^2}-\frac{241}{200}\right)
+ =\frac{11642479}{23232400}>\frac12
+\]
+was independently reproduced.  The retired $2\cos(\pi/7)$ expression is not used as a universal endpoint.
+
+\section{Coverage, evidence, and remaining implication}
+Full text read in this run: Role~1 M22-NAE-PAIR149, Role~2 ARC-STREAM-NORMALIZER150, predecessor AUX-PORT-CONGRUENCE148, root endpoint statements in \path{main13.tex}, and lead FINAL-LINK-ARC.  Primary-source search checked D\"ocker arXiv:1912.08032 and Darmann--D\"ocker arXiv:1908.04198 metadata/abstracts.  The inherited 3,532-file hash/keyword census at commit \texttt{55a3fcc} was not rerun and remains selective mathematical review.  Drive LOG/PROVED\_EXACT/BOOL/SIL pagination, older main snapshots and historical revisions remain an unread queue; no absence is inferred.
+
+The exact next receiving obligation is unchanged but narrower: construct a contextual cross-variable/sign-balancing block with public local output addresses and a full bit-cost ledger, or a different total uniform ordinary-SAT-to-tagged-signed-$(2,2)$ compiler.  A proof-producing certificate for the $a=6$ exclusion would upgrade only this finite firewall.  It would not close ARC-EDGE-90 or DIRECT-POST.
+
+\begin{thebibliography}{3}
+\bibitem{docker} J.~D\"ocker, \emph{Monotone 3-Sat-(2,2) is NP-complete}, arXiv:1912.08032 (2019), \url{https://arxiv.org/abs/1912.08032}.
+\bibitem{dd} A.~Darmann and J.~D\"ocker, \emph{On simplified NP-complete variants of Not-All-Equal 3-Sat and 3-Sat}, arXiv:1908.04198 (2019), \url{https://arxiv.org/abs/1908.04198}.
+\bibitem{flmv} L.~Fortnow, R.~Lipton, D.~van Melkebeek and A.~Viglas, \emph{Time-space lower bounds for satisfiability}, J. ACM 52(6), 835--865 (2005).
+\end{thebibliography}
+
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::M22-AUX6-ORBIT149
