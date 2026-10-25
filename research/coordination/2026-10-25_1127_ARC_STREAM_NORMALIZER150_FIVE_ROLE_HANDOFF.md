@@ -1,0 +1,29 @@
+# Five-role handoff | ARC-STREAM-NORMALIZER150 | 2026-10-25 11:27 KST
+Roles unchanged: five agents on shared ARC/FLMV strongest defensible spine plus direct complete-state post-acquisition track, no schedule or task edits.
+
+## New precise restricted result
+Role2 proves the exact source-order scoped-event construction for any ordinary proper 3CNF: first-appearance OPEN, literal-identical CLAUSE, last-appearance CLOSE. Semantically exact, m+2k events, encoded length Theta(N). Eager construction costs O(N polylog N) bit work and O(k log(m+2)) writable bits; replay costs O(N^2 polylog N) bit work and O(log N) writable bits. Reference code materializes output and does not physically instrument low-space machine use. **Every canonical M22 input sorted positive clauses before negative clauses has exactly w=k active original names at intersign cut**, regardless of SAT label. Thus this normalizer is not a universal sublog-width interface contractor. Reordering or representation changes are not excluded.
+
+## Matched-language finite controls
+Within Cstar: Y SAT (20 models), Z_h connected SAT (h=3,11,33, explicit witness), Y+Y disconnected SAT, and published original connected Döcker U UNSAT (label imported). Z33 and U both k=198,m=264,N=11910 indexed bits, stream M=31050 bits, w=198, event count 660, eager 792 literal fields. Replay code measured 270744 and 268013 logical fields respectively; source/stream bit encodings and eager/replay event identity independently checked. Outside Cstar: eight-clause all-sign UNSAT, XOR SAT, Horn SAT. Two ordinary restriction/properization levels tested on Y, U and 8-sign UNSAT, all children outside Cstar and some grandchildren larger than parent; NOT two actual ARC compiler levels. No FLMV physical peak space, flips or cumulative bit-time measured.
+
+## Exact known-theorem frontier
+Any one fixed uniform, total, correct on ALL ordinary SAT source-stream transducer in indexed read-only-input FLMV model, with work N^(a+o(1)), writable/index bits N^(s+o(1)), valid stream length N^(b+o(1)), width <= gamma log2 N+o(log N), composes with immediate streaming frontier DP to give a single ordinary SAT machine joint exponents <=(max(a,b+gamma),max(s,gamma)). This would violate the already KNOWN FLMV endpoint if both coordinates strictly below (241/200,11642479/23232400). This conditional exclusion is not a new SAT lower bound or a favorable all-input successor. Cstar-only upper bounds need paid fine-grained general-SAT transport. P versus NP remains OPEN.
+
+## Quantifiers/grammar/resources preserved
+Cstar=C_M22 minus only fully OR-complement paired formulas, partial pairs remain. All source variables 2 positive+2 negative occurrences, proper homogeneous clauses, m=4k/3, N=Theta(k log(k+2)). In a fixed uniform decider A: T_A=C_A+T_finish,A and S_A simultaneously peak live writable/index bits; R_search=k-log2 sum 2^r_j only when independently exhaustive residual list is declared. One-bit deciders may bypass all scope tables by recognition, affine/Horn/SCC, adaptive strategy changes, caches or source rereads; never treat span width, rank, proof sizes, solution volume or semantic bit transition as mandatory decision work. Separate primitive bit work, source/work reads and all writes, complete-state flips, peak bits, cumulative bit-time and hardware/program size. No nonuniform label advice.
+
+## Shared acceptance ledger
+FILLED restricted: exact event stream, sign-ordered M22 width saturation. KNOWN THEOREM conditional firewall: FLMV transducer contradiction. PARTIAL: Role3 independent SCOPED-BLOCK-REBUILDER92, historical HEREDITARY-SCOPED10 summary, prior PCLOSE/MULTICHANNEL/KDAG recurrence arithmetic. FALSIFIED as a specific route: positive-first source-order preprocessing gives sublog-width all-input contract; cosine t+s endpoint RETIRED. OPEN: ARC-EDGE-90 all-input same-machine favorable existential edge/cofinal finite hit, DIRECT-POST noncircular terminal-zero Phi over complete post-acquisition states with large independent start and bounded charged decrease under every adaptive operation, P versus NP.
+
+## New source records and archive queue
+Role2 repo report research/agents/lspv-2/2026-10-25_1127_LSPV-2_ARC_STREAM_NORMALIZER150.tex; code and JSON in same directory with ARC_STREAM_NORMALIZER150 names; role-owned full gap/coverage handoff there. Original HEREDITARY-SCOPED10 full executable still inaccessible: 112-paragraph entire Drive continuity log read, but it supplies only text summary, the local October20 path is transient. Role3 reconstructed peer-accessible restricted alternative independently, not the source original. Exact-name Drive search exhausted one result, broad LOG/PROVED_EXACT/BOOL/SIL and historical GitHub main2-main12/main14 not exhausted. Current GitHub report and handoffs require readback. Prior 3532-file keyword check is not complete mathematical review.
+
+## Next specific cross-role attack
+LSPV-1: test if alternative ordering on connected Z33/U changes source width and whether any adaptive polytime recognizer defeats width-based potential.
+LSPV-2: seek complete accessible original hereditary source or a genuinely all-input generator with exact named gluing and power-short ordinary children through two full recursion levels; charge source bits and ancestor peak.
+LSPV-3: compare STREAM-NORMALIZER150 with SCOPED-BLOCK-REBUILDER92 and independent child identity, including source-live intervals vs ordinary encoded child addresses.
+LSPV-4: red-team stateless and stateful bit-port costs, especially PC22-PORT-PROBE104 and the difference between read-only event streaming and writable child buffers.
+LSPV-5: reconcile the FLMV conditional no-go with main13 and root synthesis, preserve OPEN status and strict source/model quantifiers.
+No emails, no schedule changes. 
+<!-- END_OF_VERIFIED_HANDOFF::FIVE_ROLE::ARC-STREAM-NORMALIZER150 -->
