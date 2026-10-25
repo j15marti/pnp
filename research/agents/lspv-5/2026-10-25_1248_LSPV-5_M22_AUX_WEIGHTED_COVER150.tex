@@ -1,0 +1,106 @@
+% LSPV-5 REPORT::M22-AUX-WEIGHTED-COVER150::2026-10-25T12:48:00+09:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newcommand{\CM}{\mathcal C_{\mathrm{M22}}}
+\newcommand{\CS}{\mathcal C_\star}
+\title{M22-AUX-WEIGHTED-COVER150: Exact Weighted-Cover Obstructions for the Three- and Six-Auxiliary Port Blocks}
+\author{LSPV-5: Independent Red Team and Endpoint Audit}
+\date{25 October 2026, Asia/Seoul}
+\begin{document}\maketitle
+
+\begin{center}
+\textbf{PROVED/EXACT in the declared standalone uniform-sign completion model; independent review pending.}\\
+\textbf{ARC-EDGE-90, DIRECT-POST, LOCAL-COOK-TAGGED-SIGNED22-1, and P versus NP remain OPEN.}
+\end{center}
+
+\section{Scope and recovered hypotheses}
+The canonical class $\CM$ consists of unique proper three-distinct-variable CNFs, every clause entirely positive or entirely negative, with every active variable occurring exactly twice in each sign.  The target $\CS$ removes only the fully complementary-paired formulas.  D\"ocker proves NP-completeness of the source class and satisfiability of its fully paired special case \cite{docker}; this is class complexity, not a time lower bound.
+
+AUX-PORT-CONGRUENCE148 proved that a standalone pure-sign completion block with three source ports and private auxiliaries can meet signed $(2,2)$ quotas only when the number $a$ of auxiliaries is divisible by three and all three pre-used source occurrences have the same sign.  Its $a=3$ search and the subsequent AUX6-ORBIT149 $a=6$ MILP found no equality projection.  The latter model's continuous relaxation was already infeasible.  This run asks whether that numerical obstruction has a short exact proof.
+
+Three falsifiable proposals were tested.  (H1) the MILP failure is merely integral or numerical: \textbf{false}.  A rational weighted-cover inequality proves impossibility.  (H2) the constant port words are the difficult part: \textbf{false}.  The proof never assumes either constant extends.  (H3) the obstruction yields compulsory SAT work: \textbf{false}.  It is a static finite gadget-design theorem, not a complete-state lower bound.
+
+\section{Notation}
+Assume each port has one pre-used positive occurrence; global sign complementation handles the negative orientation.  A completing gadget must give every port gadget-degree $(1^+,2^-)$ and every auxiliary degree $(2^+,2^-)$.  Let $P_t$ and $N_t$ be the numbers of selected positive and negative clauses containing exactly $t\in\{0,1,2,3\}$ ports.  Properness means the other $3-t$ names are distinct auxiliaries.  The signed incidence identities are
+\begin{align}
+ \sum_t tP_t&=3,& \sum_t(3-t)P_t&=2a,\\
+ \sum_t tN_t&=6,& \sum_t(3-t)N_t&=2a.\label{eq:degrees}
+\end{align}
+No uniqueness assumption is needed below.
+
+For a full assignment with port Hamming weight one and auxiliary Hamming weight $h$, a fixed positive $t$-port clause is false on
+\[
+ c^+_{a,h}(t)=\binom{3-t}{1}\binom{a-3+t}{h}
+\]
+assignments of that orbit.  A fixed negative clause is false on
+\[
+ c^-_{a,h}(t)=\binom{3-t}{1-t}\binom{a-3+t}{h-(3-t)},
+\]
+where out-of-range binomial coefficients are zero.
+
+\begin{theorem}[Exact weighted-cover obstruction]
+For $a\in\{3,6\}$, every proper pure-sign ternary formula satisfying the degrees in \eqref{eq:degrees} has a satisfying full assignment whose three-port word is nonconstant.  Consequently its existential port projection is not exactly $\{000,111\}$.
+\end{theorem}
+\begin{proof}
+Suppose every full assignment with a nonconstant port word falsifies at least one selected clause.
+
+For $a=3$, assign weight one to every assignment with port weight one and auxiliary weight one, and weight two when the auxiliary weight is two.  The total assignment weight requiring coverage is
+\[
+ 3\binom31+2\cdot3\binom32=27.
+\]
+The weighted falsification capacities of a positive clause for $t=0,1,2,3$ are $(0,2,4,0)$; for a negative clause they are $(0,2,0,0)$.  Coordinatewise these are bounded by $(0,2,4,6)=2t$ and $(3,2,1,0)=3-t$.  Therefore all clauses together have weighted capacity at most
+\[
+ 2\sum_t tP_t+\sum_t(3-t)N_t=2\cdot3+6=12,
+\]
+contradicting the required coverage 27.
+
+For $a=6$, assign weights one and three at auxiliary weights three and four.  Required coverage is
+\[
+ 3\binom63+3\cdot3\binom64=60+135=195.
+\]
+The positive clause capacities are $(3,14,25,0)$ and the negative capacities are $(30,22,0,0)$.  They are bounded coordinatewise by
+\[
+ (3,14,25,36)=12t+(3-t),\qquad
+ (33,22,11,0)=11(3-t).
+\]
+Using \eqref{eq:degrees}, total clause capacity is at most
+\[
+ 12\sum_t tP_t+sum_t(3-t)P_t+11\sum_t(3-t)N_t
+ =12\cdot3+12+11\cdot12=180,
+\]
+contradicting 195.  Hence some weighted assignment is uncovered by every falsifying set, meaning it satisfies every clause and has a nonconstant port word.
+\end{proof}
+
+The proof is an explicit symmetry-averaged Farkas certificate.  The strict deficit is 15 in both cases.  It strengthens the preceding computations: uniqueness, integrality search, and witnesses for $000$ or $111$ are unnecessary.  It does not address $a\ge9$, cross-variable clauses, shared auxiliaries, contextual ports, repeated literals, mixed-sign clauses, or another semantic reduction.
+
+\section{Contraction and bit-resource ledger}
+The rejected mechanism is a fixed adapter template, not a SAT decider.  Had it existed for $g$ source groups, it would still emit a constant number of fresh names and ordinary clauses per group.  With dense index width $\ell=\Theta(\log(g+2))$, parsing/ranking reads, group and sign selection, address arithmetic, literal/header writes including unchanged values, and consumer reads total $\Theta(g\ell)$ bit traffic.  A streaming implementation can keep only logarithmic local control beyond the source accessor; materialization retains $\Theta(g\ell)$ writable bits.  Actual temporal flips, cumulative bit-time, program size and physical gates remain separate metrics.
+
+Thus even a successful fixed block would be linear normalization, not an input-power contraction.  The present blocks fail before a first typed adapter level, so two recursive ARC levels cannot be formed.  LOCAL-COOK-TAGGED-SIGNED22-1 still requires an all-input semantic compiler with paid source tags, occurrence ranks, inverse incidence, malformed-input rejection, output traffic, peak state and same-machine access.
+
+\section{Direct-potential and peer red-team audit}
+The weighted deficit is a constant-template nonexistence certificate.  An adaptive solver may decide the source without constructing this gadget.  The deficit is not an input-growing independently initialized quantity on complete post-acquisition machine states, and it is not terminal-zero under arbitrary legal direct decision.  It therefore supplies no DIRECT-POST potential.
+
+Role~1's M22-NAE-PSD-CLIQUE150 proves the fixed six-row local law fails PSD on a five-clique, including canonical easy SAT $Y$; this precisely blocks a restricted relaxation, not unrestricted decision algorithms.  Role~2's M22-DP-LOCALITY151 proves constant-depth Davis--Putnam elimination preserves exact existential semantics but leaves ordinary child length $N^{1+o(1)}$.  Role~3's M22-SINGLE-EXPOSURE-ERASURE108 exactly deletes a guarded paired core, but pair-free eligible instances make the operation identity and ordinary descendants leave $\CS$.  Role~4's new DP-COVER106 raw audit records restricted coverage thresholds but no FLMV physical bit-work or peak-space measurement.  None fills an all-input favorable simultaneous edge.
+
+The ARC endpoint remains same-machine and strict:
+\[
+ t<241/200,\qquad s<11642479/23232400.
+\]
+The old cosine expression remains retired.  No time coordinate from one algorithm is combined with a space coordinate from another.
+
+\section{Coverage and next exact implication}
+Full latest reports read: Role~1 M22-NAE-PSD-CLIQUE150, Role~2 M22-DP-LOCALITY151, Role~3 M22-SINGLE-EXPOSURE-ERASURE108, plus the predecessor Role~5 report.  Role~4's DP-COVER106 code/raw publication was read; its report path was not yet present.  Primary sources rechecked through arXiv metadata and paper text: D\"ocker \cite{docker} and Darmann--D\"ocker \cite{dd}.  The inherited 3,532-file census was not rerun.  Drive LOG/PROVED\_EXACT/BOOL/SIL pagination and older revisions remain unexhausted, so no absence claim is made.
+
+The next exact artifact should not be blind $a=9$ enumeration.  Either solve the symmetric assignment-orbit dual for another structural certificate, or construct a contextual two-variable sign-balancing block with public forward/inverse addresses and a disjoint elementary-bit ledger.  ARC-EDGE-90, DIRECT-POST, LOCAL-COOK-TAGGED-SIGNED22-1, and P versus NP remain \textbf{OPEN}.
+
+\begin{thebibliography}{3}
+\bibitem{docker} J.~D\"ocker, \emph{Monotone 3-Sat-(2,2) is NP-complete}, arXiv:1912.08032 (2019), \url{https://arxiv.org/abs/1912.08032}.
+\bibitem{dd} A.~Darmann and J.~D\"ocker, \emph{On simplified NP-complete variants of Not-All-Equal 3-Sat and 3-Sat}, arXiv:1908.04198 (2019), \url{https://arxiv.org/abs/1908.04198}.
+\bibitem{flmv} L.~Fortnow, R.~Lipton, D.~van Melkebeek and A.~Viglas, \emph{Time-space lower bounds for satisfiability}, J. ACM 52(6), 835--865 (2005).
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::M22-AUX-WEIGHTED-COVER150
