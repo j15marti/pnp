@@ -1,0 +1,67 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-25 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: A Stepwise, Possibly Parameterized, Lower-Bound Ledger for Circuit-SAT}
+\date{Living document; see Run Log}
+\begin{document}\maketitle
+\section*{Status (strict labels)}
+\textbf{P versus NP remains OPEN.} Nothing here is a superpolynomial lower bound for Circuit-SAT in a general model.
+Labels: PROVED, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Program}
+Start from the simplest circuit-SAT instances, grow the circuit gate by gate and wire by wire, record the minimum
+number of wires/gates each step forces, then grow the number of inputs $n$ and record how the bound scales.
+Bounds may be parameterized by $(n,m,k)$: inputs, gates (wires $=2m$ in fan-in-2), and a structural parameter $k$ (e.g.\ treewidth, depth).
+
+\section{Model}
+Circuit $C$: DAG over $n$ inputs, $m$ binary gates from $B_2$ (all 16 two-input functions), output negation free.
+Wires $w(C)=2m$ (fan-in edges). $\mathrm{CSAT}$: given a description of $C$, decide $\exists x\,C(x)=1$.
+Two distinct quantities are tracked and must never be conflated:
+(a) $s(f)$, the minimum circuit \emph{size} of a function $f$ (a lower bound on \emph{building} circuits);
+(b) the \emph{decision cost} of CSAT on a size-$m$ description (a lower bound on \emph{solving}).
+
+\section{Step ledger: minimum size to build}
+\textbf{COMPUTATIONAL} (exhaustive BFS, \texttt{experiments/claude\_circuitsat/min\_circuit.py}, raw data
+\texttt{results/raw/claude\_circuitsat/min\_circuit\_n123.json}). Free negation of outputs; $n=1$ trivial (no gates).
+\begin{center}\begin{tabular}{lcccccl}\toprule
+$n$ & $\#$ functions & $\max s$ & $s(\mathrm{AND}_n)$ & $s(\oplus_n)$ & $s(\mathrm{MAJ}_n)$ & min wires for hardest $f$\\\midrule
+2 & 16  & 1 & 1 & 1 & 1 & 2\\
+3 & 256 & 4 & 2 & 2 & 4 & 8\\\bottomrule\end{tabular}\end{center}
+Size histogram $n=3$ (gates: number of functions): 0:5, 1:33, 2:114, 3:80, 4:24.
+Observation: $s(\mathrm{AND}_n)=s(\oplus_n)=n-1$ (KNOWN; every input must be read, a connectivity bound), while MAJ$_3$ already needs 4.
+The step from $n=2$ to $n=3$ raises worst-case size 1$\to$4: worst-case growth is the quantity to extend (n=4 is known to give 7; not yet re-verified here).
+
+\section{Step ledger: lower bounds for solving CSAT}
+\begin{prop}[Description-read bound; PROVED, model-restricted]
+In the model where $C$ is given by a read-only table of $m$ gate records and the solver pays one unit per record read,
+any deterministic (or randomized with one-sided error $<1/2$) CSAT solver reads $\Omega(m)$ records.
+\end{prop}
+\emph{Proof sketch.} Let $C_0$ be an unsatisfiable circuit whose output gate is $g\wedge h$ with $h$ computing $\neg g$ through a chain touching all $m$ gate records. If the solver skips record $j$ on the all-run, replace gate $j$ so that the chain is broken and the circuit becomes satisfiable; the solver's transcript is identical. Hence every record is read. $\square$
+
+This is only the \emph{trivial linear} bound: it says nothing about time beyond input size, and it is fully compatible with $\mathrm{P}=\mathrm{NP}$.
+
+\subsection{Known general-circuit frontier (KNOWN THEOREMS, from the literature as recorded in the repo's GROKPROOF notes; not re-verified this run)}
+Explicit-function circuit lower bounds over $B_2$ are only linear, $\approx 3.1n$ by gate elimination; no superlinear general bound is known.
+Hence a general parameter-free lower bound for CSAT by wire counting is beyond the frontier; the realistic targets are parameterized or restricted models.
+
+\section{Parameterized targets (CANDIDATE / CONDITIONAL)}
+\begin{enumerate}
+\item \textbf{Treewidth $k$:} CSAT is solvable in $2^{O(k)}\,\mathrm{poly}(m)$; a matching $2^{o(k)}$ lower bound holds \emph{conditionally} on SETH/ETH (CONDITIONAL). An unconditional version is OPEN.
+\item \textbf{Monotone / bounded-depth restrictions:} lower bounds on size (e.g.\ AC$^0$ parity) are KNOWN, but are bounds on \emph{building}, not on CSAT decision.
+\item \textbf{Restricted algorithm class (CANDIDATE):} prove $\Omega(2^{n/c})$ for DPLL/resolution-style CSAT solvers via wire-by-wire proof-size bounds; transfers a proof-complexity lower bound, not a Turing-machine one.
+\end{enumerate}
+
+\section{Plan for next runs}
+\begin{enumerate}
+\item Extend the exhaustive table to $n=4$ (checkpointed by function class; each chunk $<30$ s) and compute min \emph{wires} with fan-out cost.
+\item Compute exact minimum \emph{resolution/DPLL refutation size} of the Tseitin CNF of the optimal circuits for $n\le4$ and tabulate vs.\ $m$.
+\item Review the repo's ARC/FLMV spine for any hook giving a parameterized (non-uniform in $k$) lower bound; flag, do not import, per AGENTS.md.
+\end{enumerate}
+
+\section*{Repo review (run 1)}
+Surveyed \texttt{AGENTS.md} and repository tree; the main project spine (ARC/FLMV) is OPEN and offers no proved lower bound usable here. No claim of the above is taken from it.
+
+\section*{Run log}
+Run 1 (2026-10-25): created document, exhaustive $n\le3$ table, description-read bound.
+\end{document}
