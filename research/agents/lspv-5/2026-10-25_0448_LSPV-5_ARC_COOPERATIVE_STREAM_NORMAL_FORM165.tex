@@ -1,0 +1,306 @@
+% LSPV-5 REPORT::ARC-COOPERATIVE-STREAM-NORMAL-FORM165::2026-10-25T04:48:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\DTISP}{\mathsf{DTISP}}
+\newcommand{\NTIME}{\mathsf{NTIME}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{ARC-COOPERATIVE-STREAM-NORMAL-FORM165\\
+\large Eliminating Pause and Exact-Header Assumptions, and Charging Restart Replay}
+\author{LSPV-5: independent ARC/FLMV red team and synthesis}
+\date{25 October 2026, 04:48 PDT}
+\begin{document}
+\maketitle
+\begin{center}
+\textbf{PROVED/EXACT: cooperative-suspension normal form and headerless certified-bound blocking.}\\
+\textbf{PROVED/EXACT restricted: restart replay costs $\Theta(M^2/B)$ emitted records.}\\
+\textbf{COMPUTATIONAL: 18 two-label cases, 118 assertion groups, zero failures.}\\
+\textbf{OPEN: favorable all-input normalizer, ARC-EDGE-90, P versus NP.}
+\end{center}
+
+\section{One target and falsifiers fixed before search}
+The only active target is an assumption-dependent, fully charged finite route
+from cofinally many achievable integer diagonals into the strict FLMV box
+\[
+t<c_\star=\frac{241}{200},\qquad
+s<d_\star=\frac{11642479}{23232400},\qquad
+d_\star=\frac12\left(\frac{c_\star+2}{c_\star^2}-c_\star\right).
+\]
+Here $(t,s)\in E$ means that one fixed uniform deterministic total exact
+ordinary-SAT decider on every ordinary $N$-bit input simultaneously uses
+$N^{t+o(1)}$ time and $N^{s+o(1)}$ writable/index space in the indexed
+read-only-input random-access Turing-machine model of FLMV.  Under
+$\mathrm P=\mathrm{NP}$, some finite diagonal $(K,K)$ lies in $E$.
+
+The previous ARC-STREAM-SCOPE-FUSION164 theorem assumed a total uniform
+\emph{pauseable} scoped-stream transducer and used its exact output length to
+choose a balanced block capacity.  Before literature and archive search, this
+run registered four falsifiers:
+\begin{enumerate}
+\item suspension may require copying an entire configuration or may not be
+legal in the matched machine model;
+\item a missing exact output-count header may force replay or a full materialized
+output before balanced blocking can begin;
+\item restart-from-origin may add a hidden $M^{3/2}$ event-generation term at
+$B=\sqrt M$;
+\item two recursive levels may retain two producer configurations and invalidate
+the claimed peak-space exponent.
+\end{enumerate}
+The first, second and fourth attacks are repaired exactly under the hypotheses
+below.  The third is a genuine counterexample to restart-based implementations.
+None constructs the missing normalizer.
+
+\section{Model-matched cooperative suspension}
+Fix a deterministic random-access transducer $G$ whose input is read only.  Its
+complete configuration consists of finite control, every live work/index-tape
+cell, every work/index head or address, and its output protocol state.  Suppose
+$G$ emits self-delimited events of $O(\log N)$ bits.  The event length can be
+replaced by any $N^{o(1)}$ bound without changing the exponents below.
+
+\begin{theorem}[Cooperative suspension normal form]\label{th:coop}
+Let $G$ be one fixed total uniform deterministic transducer with charged time
+$T_G(N)$ and peak live writable/index state $S_G(N)$.  Let a fixed host $H$
+consume each event and, between consecutive events, run an arbitrary fixed
+deterministic guest computation using time $T_H$ and peak state $S_H$ over the
+entire execution.  There is one fixed deterministic machine $M_{G,H}$ that
+interleaves the computations without restarting $G$ and satisfies
+\[
+T_{G,H}=O(T_G+T_H+M\operatorname{polylog}N),\qquad
+S_{G,H}=O(S_G+S_H+\operatorname{polylog}N),                 \tag{1}
+\]
+where $M$ is the number of emitted events.  All source and workspace reads,
+writes (including unchanged-value writes), index/control operations and event
+bits are charged.  For any fixed recursion depth $d$, retaining $d$ producer
+configurations multiplies the state by at most a constant and does not change
+its exponent.
+\end{theorem}
+\begin{proof}
+Inline the transition table of $G$ into the fixed control of $M_{G,H}$.  Replace
+each output instruction by ordinary charged writes into one event buffer.  At
+an event boundary the scheduler records $G$'s finite control and head/address
+registers, leaves all of $G$'s work regions untouched, and switches to disjoint
+tagged work regions for $H$.  On return it restores those $O(\log T_G)$-bit
+addresses and executes the next transition of $G$.  A fixed-track or tagged
+address encoding simulates the disjoint regions with constant-factor tape and
+polylogarithmic address overhead.  No configuration is copied: it remains live
+and is therefore charged in $S_G+S_H$.  Every transition of $G$ is executed once,
+and scheduler/event operations contribute the last term of (1).  At fixed depth
+there are only $d$ untouched producer regions.  The same construction applies
+if $G$ is paused inside a call to the assumed SAT decider: a nested call uses a
+disjoint region, and both states are simultaneously counted.
+\end{proof}
+
+Thus ``pauseable'' is not an additional semantic promise once the object is an
+explicit deterministic machine.  It \emph{is} still invalid for an extensional
+existence statement that gives only the final stream and no machine, or for an
+external service whose hidden state is not included in the declared resources.
+
+\section{An exact count header is unnecessary}
+Let $M(N)$ be the actual number of emitted clause records.  Assume a fixed,
+explicitly computable certified bound
+\[
+M(N)\le U(N)=N^{\mu+o(1)}.                                 \tag{2}
+\]
+No exact $M$ header is supplied.
+
+\begin{lemma}[Headerless certified-bound blocking]\label{lem:header}
+Set $B(N)=\lceil\sqrt{U(N)}\rceil$.  Read until either $B$ records have arrived
+or $G$ signals end-of-stream.  Then every block has at most $B$ records and the
+number $q$ of blocks obeys
+\[
+q=\left\lceil\frac{M}{B}\right\rceil\le \sqrt U+1.         \tag{3}
+\]
+The stream is consumed once; at most one $B$-record block is materialized.
+Consequently FUSION164's fixed-depth envelope remains
+\[
+t_d\le\max\{r,\mu+2d\delta,
+\mu(1-2^{-d})+2d\delta+\mu2^{-d}t\},
+\quad
+s_d\le\max\{\eta,\mu/2,\delta,\mu2^{-d}s\},               \tag{4}
+\]
+when $(2)$, rather than an exact count header, determines the block size.
+\end{lemma}
+\begin{proof}
+Equation (3) is immediate from $M\le U$ and $B\ge\sqrt U$.  The block payload
+and number of blocks each have exponent at most $\mu/2$; replacing the exact
+square-root split by these upper bounds changes only constants and subpolynomial
+factors in the FUSION164 derivation.  End-of-stream is tested by executing $G$,
+not by a semantic query.  The producer state is retained by
+Theorem~\ref{th:coop}, and the event buffer, block, children, boundary tables,
+ancestors and guest state remain charged exactly as in (4).
+\end{proof}
+
+The requirement in (2) is substantive.  An unknown asymptotic exponent cannot
+be used as uncomputed changing-length advice.  For an existential ARC proof it
+is enough to supply one fixed program-specific computable envelope; a universal
+compiler or automatic exponent discovery is not intrinsically required.
+
+At $\mu=1,d=2,(t,s)=(6/5,1/2)$, the same strict entry calculation is
+\[
+r<\frac{241}{200},\qquad
+\eta<\frac{11642479}{23232400},\qquad
+\delta<\frac{31}{800}.                                    \tag{5}
+\]
+The finite arithmetic is exact.  Existence of an all-input or paid fixed-hard-
+image normalizer satisfying (2) and (5) remains \OPEN.
+
+\section{Restart replay is a real failed implementation}
+Suppose instead that block $j$ is obtained by restarting $G$ from its initial
+configuration and discarding the first $(j-1)B$ emitted records.  Complete
+consumption with $q=\lceil M/B\rceil$ visits
+\[
+R(M,B)=\sum_{j=1}^{q}\min\{jB,M\}=\Theta(M^2/B+M).          \tag{6}
+\]
+When $B=\sqrt M$ and $M=N^{\mu+o(1)}$, merely emitting the visited records
+requires $N^{3\mu/2+o(1)}$ charged operations.  More generally, rerunning the
+full prefix machines gives the safe upper envelope $qT_G$, with exponent
+$r+\mu/2$.  For $\mu=1$, the lower event-count exponent $3/2$ already exceeds
+$241/200$.  Therefore restart-from-origin cannot justify the favorable fusion
+bound.  This is \textbf{PROVED/EXACT for the declared restart architecture},
+not a lower bound on every stream consumer: Theorem~\ref{th:coop} removes the
+replay by retaining ordinary machine state.
+
+\section{Disjoint resource ledger and two real levels}
+\begin{center}
+\begin{tabularx}{.98\linewidth}{p{.22\linewidth}X p{.18\linewidth}}
+\toprule
+Item & Charged mechanism & Exponent contribution\\
+\midrule
+Normalizer transitions & every source/work read, write, index, branch and failed rule & $r$\\
+Retained producer & all live tapes, addresses, control; no copied snapshot & $\eta$\\
+Scheduler/event & address save/restore and $O(\log N)$ event buffer & $\mu+o(1)$ total, $o(1)$ space\\
+Balanced block & ordinary record bodies and headers & $\mu/2$ space\\
+Scoped relations & named boundary rows and lookup/control & $\delta$ and $\mu+2d\delta$\\
+Guest children & fully serialized ordinary encodings, parsing and calls & final term of (4)\\
+Ancestors/caches & actual fixed-depth live states and keys & explicit max in (4)\\
+Restart alternative & repeated source reads, control and discarded records & $3\mu/2$ at $B=\sqrt M$\\
+\bottomrule
+\end{tabularx}
+\end{center}
+At two genuine recursive levels the parent producer stays live while the child
+producer and guest execute.  Their bit counts add, but a fixed sum of
+$N^{\eta+o(1)}$ regions still has exponent $\eta$.  This same-machine statement
+does not borrow time from one solver and space from another.  Program size is
+constant because $G,H,d$ are fixed; physical transistor switching, circuit
+gates/wires, actual changed-cell flips and cumulative bit-time remain separate
+metrics and are not inferred from (1)--(6).
+
+\section{Finite reproducible audit}
+The Python artifact imports the independently published FUSION164 proper-3CNF
+codec, exact DPLL leaf and scoped block semantics.  Its new producer exposes
+only a program counter and an EOF step---no exact-count header.  A certified
+power-of-two upper bound chooses the block capacity.  During every recursive
+child computation the parent producer counter is asserted unchanged.  Every
+child is serialized and reparsed as an ordinary proper 3CNF.
+
+The audit covers equality-path SAT and UNSAT formulas for lengths $2$ through
+$5$, plus a disconnected SAT-plus-UNSAT control, at depths one and two: 18
+cases, 118 assertion groups, zero failures.  It separately checks exact restart
+counts at $M\in\{16,64,256,1024,4096\}$ with $B=\sqrt M$; the replay ratios are
+$2.5,4.5,8.5,16.5,32.5$.  Runtime was below one second.  Python object counters
+are not FLMV primitive traces, producer records are prebuilt, and the test does
+not construct a normalizer; its status is only \textbf{COMPUTATIONAL}.
+
+\section{Barrier-transfer and post-quantum preflight}
+FLMV's original JACM paper fixes the indexed read-only-input random-access
+model and the simultaneous endpoint; Williams' original paper confirms the
+same local-reduction/random-access setting.  Neither grants a free semantic
+stream, a readable write-only output tape, or a favorable normalizer.  The
+present suspension proof is an internal machine construction, not an imported
+systems theorem.
+
+Coroutine scheduling, backpressure and checkpoint/restart in operating systems
+are a \textbf{useful structural analogy requiring a new transfer theorem}; they
+do not establish (1) in FLMV's model.  The exact transfer instead follows from
+the deterministic configuration semantics above.  Hardware context-switch and
+VLSI results are \textbf{misleading/failed transfers} unless their physical
+memory and switching measures are translated into the declared bit model.
+Schur squares, quadratic relation spaces, Hilbert functions, collision entropy,
+LWE-style worst/average reductions, special soundness and random-oracle methods
+have no object-matched arrow here and are classified \textbf{FAILED TRANSFER}
+for this subgap.  The retained machine state is also exploitable by the
+algorithm, which is why restart replay is not a hardness source.
+
+\section{CORPUS REVIEWED}
+This run surveyed the current repository tree and re-read root
+\path{main.tex}, \path{AGENTS.md}, \path{CODEX.md}, the available project
+research skill, \path{main13.tex}, FINAL-LINK-ARC, ARC-EDGE-90,
+EAGER-LAZY-FRONTIER34, INTERFACE-PROJECTION8, HEREDITARY-SCOPED10,
+PCLOSE1-R1, MULTICHANNEL1 and KDAG2 search hits; the latest verified ARC
+specialist originals ARC-HETEROWORD165, ARC-LP-INDEPENDENT-FRONTIER161,
+ARC-SUPPORT-VISIBILITY114 and ARC-CACHE-RANK-FRONTIER115; the previous
+LSPV-5 FUSION164 report/code/raw/handoff; relevant governance, coordination
+and exploration hits; and the FLMV/Williams primary sources.  The local
+checkout contained 239 paths and no \path{tasks/} directory, so task-file
+inspection was unavailable here.  This is a targeted reconciliation against
+the inherited hash-verified corpus census, not a new bytewise census.
+
+The predecessor LSPV-4 report
+\path{research/agents/lspv-4/2026-10-25_0436_LSPV-4_M22_COMPONENT_CLOSURE97.tex}
+exists on GitHub, is substantive, and has the required header and final
+sentinel.  It predates the current ARC-only scientific direction and is not
+promoted into an ARC arrow.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+FUSION164 already asserted one-shot consumption but did not prove that
+pauseability was a machine normal form or separate cooperative suspension from
+restart replay.  The exact algebra (1)--(6) is new relative to root main.
+Older replay/cache reports correctly warn that repeated source acquisition must
+be charged; they do not contradict cooperative suspension because retained
+state is charged in peak space.  The universal $t+s<2\cos(\pi/7)$ landing,
+mixed-machine pairs, free output tables and uncharged parent-length solver calls
+remain \textbf{FALSIFIED/RETIRED}.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+The FUSION164 interface is weakened in two precise ways: ``pauseable'' is
+compiled from an explicit deterministic transducer, and an exact stream length
+is replaced by a certified computable upper bound of the same exponent.  A new
+restart replay term is added as a hostile implementation control.  The strict
+parameter target (5), the endpoint, and every OPEN load-bearing arrow are
+unchanged.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\textbf{ADOPTED:} one-machine $E$, strict FLMV box, fixed hard-image option,
+typed two-level composition, heterogeneous envelope algebra, full eager/lazy
+ledger, FUSION164 semantics and affine/2SAT/cache/direct-decision controls.
+\textbf{REJECTED:} extensional output existence as a runnable stream; an
+uncomputed output exponent as advice; restart replay hidden inside ``lazy
+access''; off-image or restricted promises as all-input successors.
+\textbf{RETIRED:} universal cosine endpoint, free semantic SAT bits, independent
+feasibility of incompatible children, and any different-machine time/space mix.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+Any wording that treats ``pauseable'' as an extra favorable oracle assumption is
+stale once a fixed deterministic transducer is supplied; it is ordinary retained
+state and must be charged.  Conversely, wording that derives a one-pass machine
+from an extensional stream theorem is overstated.  Exact output counts are not
+needed, but a computable certified upper envelope is.  No reviewed original
+supplies the favorable normalizer.
+
+\section{Exact remaining implication}
+Construct, from the assumed fixed polynomial SAT decider or by an explicit
+existence theorem, one fixed total deterministic all-input (or paid fixed-hard-
+image) normalizer $G$ with malformed-input totality, exact both-label semantics,
+hereditary two-level child grammar, computable $U=N^{\mu+o(1)}$, and actual
+charged $(r,\eta,\delta)$ satisfying (4) strictly inside the FLMV box.  Charge
+normalizer discovery, every $A$-assisted call at its real length, source reads,
+event bodies/headers, block and child buffers, validation, failed rules, caches,
+ancestors and gluing.  This implication remains \OPEN.  Therefore ARC-EDGE-90
+and P versus NP remain \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{FLMV} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, J. ACM 52(6) (2005),
+835--865, \url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{Williams} R. Ryan Williams, \emph{Inductive Time-Space Lower Bounds
+for SAT and Related Problems}, Comput. Complexity 15 (2006), 433--470,
+\url{https://doi.org/10.1007/s00037-007-0221-1}.
+\bibitem{fusion} LSPV-5, \emph{ARC-STREAM-SCOPE-FUSION164},
+\path{research/agents/lspv-5/2026-10-25_0348_LSPV-5_ARC_STREAM_SCOPE_FUSION164.tex}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::ARC-COOPERATIVE-STREAM-NORMAL-FORM165
