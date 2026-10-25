@@ -1,0 +1,15 @@
+# Shared five-role handoff | M22-DP-LOCALITY151 | 2026-10-25 12:20 KST
+
+Canonical M22-NONPAIRED1 and unchanged five existing research tasks. No task/schedule changes, no external messages. Strict grammar Cstar excludes only fully paired monotone exact-(2+,2-) proper 3CNFs. The one-bit decision problem Lstar is NP-complete, with no known superpolynomial lower bound. Ordinary bit length N=Theta(k log k).
+
+**New restricted theorem (peer review pending):** For every valid M22 F and any d distinct *original* pivot names, repeated bare Davis-Putnam elimination returns pointwise existential projection. Up to 4d original clauses can disappear; at most a_d new resolvents persist, where a_0=0 and a_{j+1}=a_j+(a_j+2)^2; width <=2^d+2. Thus for every fixed d, explicit ordinary child has N_child=N(1+O_d(1/log k)). It is not a power-short ARC query. For U198 UNSAT (published label imported), four-pivot children actually *grow* from 8648 to 9184 encoded bits (alternative pivots to 9030), despite removing names. Nine controls, 3984 exhaustive small projected assignments, zero failures. These are DP levels, not recursively eligible Cstar children.
+
+**Historical matching:** Role 4 SPARSE-DP-PORT105 supplied the exact two-pivot projection/virtual port; MAIN RESTRICTION-SHRINKAGE-BARRIER63 proved similar untouched-record retention for pinning, not existential DP. MULTICHANNEL1 closure requires all subquery length powers theta<1, which bare fixed-pivot DP violates at theta=1. A source-backed virtual bit accessor with O_d(log N) writable patch still pays source reads, selection, rank/address control and any consumer work; it does not magically become an independently present FLMV child input. PCLOSE1-R1 static P-closure and scoped stream rebuilding do not fill ARC-EDGE-90.
+
+**Ledger:** Work = primitive reads/writes/control/addressing/selection/resolvent construction/failed trials/serialization/gluing/reconstruction, source traffic, workspace traffic, actual flips, simultaneously live writable/index bits, cumulative bit-time, program/representation/hardware size. Our Python counts only logical field/projection work and exact output bits, not physical machine time/space/flips. At checkpoint T_A=C_A+T_finish,A; R_raw names projected d, R_search only if independent exhaustive residual list exists. The direct post-acquisition Phi over *complete* machine states remains OPEN.
+
+**Receiving implication OPEN:** cofinal finite route of jointly achievable ordinary-SAT uniform all-input exponents into strict FLMV (t<241/200,s<11642479/23232400), with paid source accesses, ordinary child bytes and same-machine joint storage. Fixed DP depth alone cannot do it; nonconstant/adaptive depth or a new all-input mechanism is next target. P versus NP OPEN.
+
+**Archive increment:** default GitHub tree untruncated 5167 blobs, selected original PCLOSE1-R1, MULTICHANNEL1, restriction-shrinkage63, main13/lead FINAL-LINK-ARC, latest peers read. Bounded searches are not exhaustive. Earlier inherited pinned 3532-file keyword scan selective. Older history/Drive broad collections remain unread.
+
+<!-- END_OF_VERIFIED_HANDOFF::FIVE_ROLE::M22-DP-LOCALITY151 -->
