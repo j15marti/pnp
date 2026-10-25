@@ -1,0 +1,27 @@
+# Five-role shared handoff | LSPV-1 M22-NAE-PSD-CLIQUE150
+2026-10-24 20:04 America/Los_Angeles. Additive research note. Existing five-agent schedules, task counts and publication ownership remain unchanged. P versus NP, ARC-EDGE-90 and DIRECT-POST remain **OPEN**.
+
+**New restricted theorem (independent review pending):** Under NAE-PAIR149's fixed uniform six-row NAE law on every clause support, each co-occurring source-variable pair has spin correlation -1/3. If the unsigned co-occurrence graph contains a 5-clique, its 5x5 moment matrix (4/3)I-(1/3)J has a negative eigenvalue -1/3. More generally a clique of size r>=5 yields E(sum Z_i)^2=r(4-r)/3<0. Thus mutually compatible clause-local marginals may **not** extend to one global probability distribution or PSD degree-two moment matrix. This corrects no prior false statement: NAE-PAIR149 expressly avoided a PSD claim.
+
+**Important SAT controls:** canonical C_star six-variable SAT fixture Y (positive 123,145,246,356; negative 124,136,235,456; twenty models) has a co-occurrence 5-clique {1,2,3,5,6}. Pairfree SAT Z (positive 123,124,356,456; negative 125,126,345,346; witness 001100; 22 models) has co-occurrence K6. Hence a PSD failure in this fixed local law is **not** an UNSAT certificate or a forced resource for any decider. A separate elementary theorem proves every valid six-name M22 is SAT because eight three-OR clauses have mean one failure under uniform assignments, yet zero assignment fails all four positive clauses.
+
+**COMPUTATIONAL finite audit:** full 75x75 six-variable census, 5625 valid M22 and 5550 C_star, all SAT; q=0:75, q=2:1260, q=3:1680, q=4:2610; clique omega=3:915, omega=5:3420, omega=6:1290; 4710 target SAT inputs trigger fixed-law PSD obstruction. Zero failures. Finite tests are not FLMV-machine bit-work/space measurements. Report and reproducible Python/JSON in research/agents/lspv-1/2026-10-24_2004_*. Original local full verifier SHA256 3b0682f1af0b0ac0a0c1c1f7a08cefcf73b5547338a7b7b8c02ee709f5a4b898. GitHub peer code separately read back; do not claim the locally tested bytes are peer-shared.
+
+**Canonical M22-NONPAIRED1:** each clause pure sign and three distinct names, each active variable exactly twice each polarity, unique clauses; C_star excludes *only fully complement-paired* formulas. Partial pairs permitted, malformed rejected. k original variable count, m=4k/3, N=full indexed bits Theta(k log(k+2)). NP-completeness is a class result, not a per-instance lower bound. No sign-flip outside grammar.
+
+**ARC gap:** E is joint (t,s) for ONE fixed uniform correct all-ordinary-SAT decider on matched read-only-input indexed RTM. The illustrative affine contraction and its fixed point are OPEN. Sufficient weakest known target remains fully charged finite route from cofinally many achievable integer diagonals into strict FLMV t<241/200 and s<11642479/23232400. Historical universal t+s<2cos(pi/7) landing retired. No recovered mechanism supplies the all-input edge. A C_star-only solver cannot enter this endpoint without charged ordinary-SAT reduction.
+
+**DIRECT-POST gap:** independently defined potential on complete states *after acquisition*, terminal zero, bounded drop <=Gamma(N)*actual charged bit work on every adaptive transition, and independently large worst-case initialization. Input-read tau<=N not reused after acquisition. The fixed NAE PSD deficit is an UNSOUND hardness potential because it fails even on recognized SAT Y/Z. Keep explicit primitive bit work, source/workspace reads/writes, changed/unchanged writes, complete-state flips, peak simultaneous work/index bits, cumulative bit-time, program/representation size, and circuit hardware distinct. R_search=k-log2 sum_j 2^r_j applies only to a declared exhaustive completion list.
+
+**Five peer-compatible arrows:** Role 1 NAE-PAIR149 local law exact; Role 2 ARC-STREAM-NORMALIZER150 exact source-order scoped streams but width k on positives-first M22; Role 3 NAE-PROJECTION99 source-name gluing exact and nonlinear; Role 4 DP-TWOLEVEL103 correct ordinary-CNF two-step elimination but no encoded power shrink; Role 5 AUX6-ORBIT149 finite computational exclusion of a single local gadget, not global compiler impossibility. Preserve all.
+
+**Coverage/rejections/unread:** Full reads AGENTS/CODEX/repo skill, Role1 old original, Role5 latest report, recent peer handoffs; main13 and FINAL-LINK-ARC endpoint sections; root current region and executive (not entire proof), older NAELIFTKW1/2 selective, bounded GitHub searches. Inherited pinned 3,532-file hash/keyword audit not rerun. Broader root revisions, main2-main12/main14, Drive LOG/PROVED_EXACT/BOOL/SIL pagination, original HEREDITARY-SCOPED10 executable and LOCAL-COOK-TAGGED-SIGNED22-1 full code remain unread; no claim of absence.
+
+**Next receiving artifact:** a fully source-coherent bit-addressable ordinary-SAT compiler tested through two exact SAT and UNSAT recursive stages with paid work/peak space; independently pursue a noncircular complete-state DIRECT-POST potential. Local covariance cannot be promoted to these endpoints.
+
+Report: research/agents/lspv-1/2026-10-24_2004_LSPV-1_M22_NAE_PSD_CLIQUE150.tex
+Reproducer: research/agents/lspv-1/2026-10-24_2004_M22_NAE_PSD_CLIQUE150_repro.py
+Raw result: research/agents/lspv-1/2026-10-24_2004_M22_NAE_PSD_CLIQUE150_results.json
+Role coverage: research/agents/lspv-1/2026-10-24_2004_M22_NAE_PSD_CLIQUE150_COVERAGE_HANDOFF.md
+
+<!-- END_OF_VERIFIED_SHARED_HANDOFF::LSPV-1::M22-NAE-PSD-CLIQUE150 -->
