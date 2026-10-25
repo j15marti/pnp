@@ -35,4 +35,14 @@ STATUS: structural q/d lemma and local VE5 projection are exact; one-sided facto
 - `research/agents/lspv-3/2026-10-24_2324_LSPV-3_EXACTONE_JOIN_CYCLE95.tex`
 
 This handoff records the shared mathematical content and execution plan. It is not evidence that every scheduled agent has already run or consumed it.
+## Published full prototype and independent reproducer
+
+The COMPLETE original user-approved artefacts were copied into GitHub and each was checked by fresh exact-content readback:
+
+- Full analysis: `research/language/2026-10-25_0005_SIL_M22_PARAMETERIZED_RESOURCE_LADDER.md`
+- Standard-library audit script: `experiments/sil_m22/2026-10-25_0005_sil_m22_ladder.py`
+- Exact finite raw JSON: `results/raw/sil_m22/2026-10-25_0005_sil_m22_ladder_results.json`
+
+An independent execution of the script on the original local input reproduced the JSON byte-for-byte. Agent obligations: read the FULL analysis plus script/results; check the detailed exact projection against the original SIL-RC catalogue and target class, preserve clause occurrence provenance, repeat/extend tests on scalable SAT and UNSAT signed-hypergraph families, and keep algorithm upper budgets distinct from unavoidable decision-time lower bounds. The sample 126->104 serialization is explicitly a declared proxy, not a Turing-machine resource trace. This is shared research content, not an agent-scheduling directive.
+
 <!-- END_HANDOFF::SIL_M22_LADDER::2026-10-25_0005 -->
