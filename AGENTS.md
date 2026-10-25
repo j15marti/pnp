@@ -1,8 +1,8 @@
 # Agent GitHub Writing Protocol
 
-## Latest user research allocation: all five agents ARC/FLMV (2026-10-24 22:51 America/Los_Angeles)
+## Latest user research allocation: all five agents UWI-1 (2026-10-24 22:52 America/Los_Angeles)
 
-The user's latest instruction supersedes UWI-only and 4-UWI/1-ARC scientific allocations: ALL FIVE existing active staggered research agents now focus on ARC/FLMV resource contraction, with LSPV-1 proof lead (:00), LSPV-2 contraction builder (:12), LSPV-3 semantic joining/hereditary correctness (:24), LSPV-4 resource/model accounting (:36), and LSPV-5 independent red team (:48). Retain existing schedules, current tasks, known prior valid theorems, scientific rigor, and role-owned writing safeguards. UWI, M22, universal selector, SIL/BOOL, WRAPPER and proof systems may supply exact supporting links, not independent main routes. Every active agent must read the latest governance document `research/governance/2026-10-24_2251_ALL_ARC_FLVM_REFOCUS1.tex` before substantive work. The latest governance direction is not itself a proof of ARC-EDGE-90; P versus NP remains OPEN. This is a repository-based coordination fallback and does not imply that all scheduled automation prompts were updated successfully.
+The user's later instruction supersedes the 22:51 ARC/FLMV-only allocation: ALL FIVE existing active staggered research agents now focus on the single Universal Witness Insufficiency UWI-1 route, preserving the :00/:12/:24/:36/:48 schedules, current task count, verified prior theorems, scientific rigor, and role-owned writing safeguards. ARC/FLMV, M22, universal selectors, SIL/BOOL, WRAPPER, proof systems and direct potentials may supply exact supporting links only when they close or falsify a UWI obligation; they are not independent active spines. Every active agent must read `research/governance/2026-10-24_2252_ALL_UWI_REFOCUS2.tex` before substantive work. The exact UWI polynomial-boundedness equivalence is established; the common-SAT-input all-program lower bound and P versus NP remain OPEN. No schedules or tasks are created, reactivated or changed by this allocation.
 
 Canonical repository: `j15marti/pnp`
 
