@@ -133,7 +133,7 @@ function audit(){
     summary.source_cases++;
     if(sourceSat)summary.sat_roots++;else summary.unsat_roots++;
   }
-  let refused=false;try{parse("101010") }catch(e){refused=true}ck(refused,"malformed not rejected");
+  const prevExpectedFailure=summary.failures;let refused=false;try{parse("101010") }catch(e){refused=true}summary.failures=prevExpectedFailure;ck(refused,"malformed not rejected");
   ck(summary.source_cases===15&&summary.second_level_children===3**3*0+8**3*5+9**3*5+10**3*5,"counts");
   ck(summary.events.serializer_write_events===summary.events.serializer_zero_unchanged_on_fresh_zero_cell+summary.events.serializer_one_changed_on_fresh_zero_cell,"bit writes sum");
   ck(summary.sat_roots>0&&summary.unsat_roots>0,"both root labels");
