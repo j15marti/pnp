@@ -1,0 +1,50 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: Stepwise Lower Bounds for Circuit-SAT}
+\date{Last updated 2026-10-25 (run 1)}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is a super-polynomial lower bound.
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup (the ladder)}
+Fix a basis $\{\wedge,\neg\}$ (negation on wires free). $\mathrm{CSAT}_{n,s}:\{0,1\}^{N(n,s)}\to\{0,1\}$ takes the
+encoding of a circuit with $n$ inputs and $s$ gates (gate $g$ reads two earlier nodes among $n+g$, plus two negation
+bits; output is the last gate) and outputs $1$ iff the circuit is satisfiable. Here
+$N(n,s)=\sum_{g<s}\bigl(2\lceil\log_2(n+g)\rceil+2\bigr)$, with index fields read modulo $n+g$.
+Ladder: increase $s$ (gates/wires of the instance), then $n$; track the minimum wires $W(n,s)$ and gates
+$L(n,s)$ of a fan-in-2 circuit computing $\mathrm{CSAT}_{n,s}$. Parameters: $k=s$ (instance size), $n$.
+
+\section{Results so far}
+\begin{prop}[PROVED/EXACT, trivial] If $\mathrm{CSAT}_{n,s}$ depends on $e$ of its input bits, any fan-in-2 circuit
+for it has $\ge e-1$ gates and $\ge e$ input wires.\end{prop}
+\begin{proof} Each essential input must have a path to the output; a fan-in-2 DAG with one sink and $e$ reachable sources
+needs $\ge e-1$ gates. \end{proof}
+
+\paragraph{COMPUTATIONAL (exhaustive, \texttt{research/circuitsat/csat\_ladder.py}).} Every code bit is essential:
+Verified outputs (file \texttt{ladder\_results.jsonl}): $(n,s,N,\text{essential})=(1,1,4,2)$, $(2,1,4,4)$, $(3,1,6,6)$,
+$(4,1,6,6)$, $(2,2,10,10)$, $(3,2,12,12)$. So for $s\ge1$, $n\ge2$: $L(n,s)\ge N(n,s)-1$ in the tested range
+(max sensitivity $=N$, i.e.\ sensitivity equals input length). Lower bound $\Theta(s\log(n+s))$ is linear in input
+length: \emph{no} information about super-linear behaviour.
+
+\section{Barriers and what the ladder cannot yet do}
+\begin{itemize}
+\item Gate-elimination gives $\approx 3.1N$ (KNOWN THEOREM for explicit functions, Li--Yang STOC'22), and nothing
+beyond linear is known for explicit functions in $\mathrm{NP}$ over $B_2$; natural proofs/relativization/algebrization apply.
+OPEN: any ladder argument must evade these.
+\item Exact minimal circuit size for tiny $\mathrm{CSAT}_{n,s}$ (beyond the essential-variable bound) is not yet computed;
+needs SAT-based exact synthesis (CANDIDATE next step, chunked per $(n,s)$ to $<30$ s).
+\item Parametrized angle (CANDIDATE): is $L(n,s)\ge c\,s\cdot 2^{\Omega(n/s)}$-type growth visible? Needs data at $n>s$ regimes
+with a non-redundant encoding (the mod-wrap aliasing makes many codes equivalent).
+\end{itemize}
+
+\section{Next steps}
+1. Exact synthesis of minimum gates for $\mathrm{CSAT}_{2,1},\mathrm{CSAT}_{3,1},\mathrm{CSAT}_{2,2}$ (compare with $N-1$).
+2. Replace the encoding by canonical (non-aliased) codes; compute the quotient function and its essential-bit count.
+3. Check repository (\texttt{main.tex}, LSPV reports) for local-support / join machinery applicable to wire-count bounds; none adopted yet.
+
+\section{Log}
+Run 1 (2026-10-25): created document, script and exhaustive results for six $(n,s)$ pairs. No repo result imported.
+\end{document}
