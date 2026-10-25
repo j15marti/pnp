@@ -1,0 +1,29 @@
+# LSPV-1 cumulative gap and archive handoff | M22-PORT-CROSSING154
+Timestamp: 2026-10-24 21:55 America/Los_Angeles. Canonical target M22-NONPAIRED1 remains unchanged. No task or schedule edits. ARC-EDGE-90, DIRECT-POST and P versus NP OPEN.
+
+## Exact target and notation
+C_M22 consists of unique proper three-literal ordinary OR clauses, each clause either all positive or all negative, with each active source name twice positive and twice negative. C_star excludes formulas **fully** paired under literalwise sign-flipped OR complements; partial pairs, disconnected/easy/nonminimal formulas remain included. Invalid encodings reject. k active names, 3m=4k, m+=m-=2k/3, dense indexed N=Theta(k log(k+2)); L_star NP-complete by Doecker + six-name Y adapter (20 models), no superpolynomial time consequence. For one uniform exact algorithm, T_A=C_A+T_finish; S_A is peak simultaneously live writable/index bits. R_search=k-log2(sum_j 2^{r_j}) only for a declared independently exhaustive list, absent this run.
+
+## New exact link (independent review pending)
+For every **standalone pure-sign** Boolean ternary port gadget G(p,y), any two endpoint witnesses for projection exactly {0^r,1^r}, r>=2, force for **each** port i a positive and a negative clause each containing **only that port among ports**. Let D={u:y0[u]=1,y1[u]=0}. Both clauses hit D, so r<=d_+|D| and r<=d_-|D| where d_+,d_- are aux sign-degree caps. This is a **static extension-witness crossing**, not a temporal machine bit flip and not an all-decider lower bound.
+
+For the three-port M22 template with port residual quotas (1+,2-) and a auxiliaries (2+,2-), forced P=(2a/3-2,3,0,0), while N is either (2a/3-4,6,0,0) or (2a/3-3,4,1,0). At a=9 witnesses obey n10>=2, n10+n11>=4, n00+n10>=4, leaving exactly 81 of 220 orbit signatures. Independent four-chunk continuous LP checks report 26 infeasible and 55 feasible among the 81, agreeing numerically with Role5's 165 infeasible/55 feasible LP split. LP statuses are COMPUTATIONAL, **not rational proofs**; Role5's 55 integer infeasibilities remain computational without proof logs. Earlier Role1 AUX9-ORBIT151 quota-only first-moment nonexclusion and Role5 integral exclusions are compatible.
+
+## Five-role reconciliation and peer evidence
+Role1: new endpoint-crossing proof, preserves AUX9-ORBIT151 and NAE/PSD restricted controls. Role2: M22-LOWSPACE-DP-BATCH152 two-round logspace original-variable DP projection preserves exact SAT/UNSAT but children O(N) indexed bits and out of C_star. Role3: EDGE-DEFECT-PUSH109 paired-core exact erasure under at-most-one exposure; pair-free inputs make it identity. Role4: GRID-WITNESS-ZERO-CHANNEL108 offers high-treewidth recognized SAT family with zero-information cut, rebuts structural mandatory work. Role5: newest M22-AUX9-INTEGRAL153 complete finite 220 witness orbit MILP sweep, 55 integer-infeasible outcomes COMPUTATIONAL without independent formal certificates. Same-machine resource bounds / direct Phi remain OPEN.
+
+## Two-spine ledger
+ARC-EDGE-90 needs a finite fully charged cofinal route in the jointly achievable E of **one uniform exact ordinary-SAT all-input RTM machine** into strict FLMV t<241/200 and s<11642479/23232400; original FINAL-LINK-ARC cofinal-hit logic retained, universal cosine endpoint RETIRED. No effective power-short ordinary SAT compiler/two actual recursion levels recovered. Separate DIRECT-POST needs a noncircular complete post-acquisition state potential Phi, terminal zero, independently large worst-case initial Phi and universal bounded charged-transition drop; static witness D and ADAPTIVE-COVER75's read-only tau<=N are not such a potential. Charge source+work reads, changed and unchanged writes, addressing/control, strategy and failed trials, validation, child headers+payload, cache, reread/replay, gluing/reconstruction, live ancestors, peak simultaneous writable bits, cumulative bit-time; keep physical switching/gates and code size distinct.
+
+## Corpus and provenance
+GitHub repository tree 5517 **metadata paths**, untruncated at SHA 4bf59525bc8fffa4302391da6858f3417412657b, not a full mathematical reading. Direct full or relevant originals read: governance AGENTS/CODEX/skill; current root main.tex role1 and opening; main13 opening; FINAL-LINK-ARC full; Role1 AUX9-ORBIT151, Role2 ONE-SIDED-FACTOR133/Q2-FOURCOLOR140/TWO-PIN-LIFT148/LOWSPACE-DP-BATCH152; Role3 Q3-INTERSECTION-HIT106/EDGE-DEFECT-PUSH109; Role4 DP-COVER106/SEMANTIC-INTERFACE107/GRID-WITNESS-ZERO-CHANNEL108; Role5 AUX-WEIGHTED-COVER150/AUX9-INTEGRAL153 source+code+raw JSON; tasks 002,004,007. Bounded GitHub keyword searches, not exhausted. Inherited 3532-file prior pinned keyword census NOT rerun. Drive LOG/PROVED_EXACT/Manuscript/BOOL/SIL/continuity pagination, full bodies main2-12 and main14, HEREDITARY-SCOPED10 original executable and broad revisions unread. A prior guess of task paths TASK-002.md/TASK-004.md/TASK-007.md returned 404; exact filenames subsequently resolved and read. No empty docs used as evidence.
+
+## Exact receiving gap
+Test independently checkable rational/integer infeasibility certificate for one of Role5's 55 LP-feasible but MILP-infeasible witness signatures, exploiting per-port singleton clauses. Keep larger all-input ARC semantic compiler and direct Phi tasks primary; no switch from static gadget design to unrestricted time hardness without an explicit transfer theorem.
+
+## Files
+Role1 report: research/agents/lspv-1/2026-10-24_2155_LSPV-1_M22_PORT_CROSSING154.tex
+Code: research/agents/lspv-1/2026-10-24_2155_M22_PORT_CROSSING154_repro.py
+Raw: research/agents/lspv-1/2026-10-24_2155_M22_PORT_CROSSING154_results.json
+Status: independently proved restricted lemma, numerical corroboration only, peer review pending.
+<!-- END_OF_VERIFIED_HANDOFF::LSPV-1::M22-PORT-CROSSING154 -->
