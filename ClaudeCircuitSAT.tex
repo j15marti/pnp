@@ -1,0 +1,60 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append/revise in place each hourly run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}\newtheorem{definition}{Definition}
+\title{ClaudeCircuitSAT: A Wire-by-Wire Ladder of Circuit-SAT Lower Bounds}
+\author{Living document (Claude scheduled routine)}
+\date{Last updated: 2026-10-25 (run 1)}
+\begin{document}\maketitle
+
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-linear lower bound for Circuit-SAT. Labels: PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Goal and model}
+Find lower bounds, possibly parameterized, for Circuit-SAT by building circuits step by step (more inputs, more gates) and tracking the minimal number of wires needed at each step.
+\begin{definition}[Circuit, wire cost]
+A circuit over basis $B_2$ (all 2-input gates, negation absorbed) with $n$ inputs and $m$ gates has $2m$ wires (fan-in 2). For $f:\{0,1\}^n\to\{0,1\}$ let $G(f)$ be the minimum gate count and $W(f)=2G(f)$ the minimum wire count.
+\end{definition}
+\emph{Algorithmic model:} the instance $C$ is a read-only array of gate records (type, two predecessor indices); the algorithm has random access and a probe counts one record read.
+
+\section{Rung 0: constants and literals ($G=0$)}
+Functions of a single literal or constant need no wires. Deciding SAT for such a circuit requires inspecting the output designator: 1 probe.
+
+\section{Rung 1: the exact small-$n$ ladder}
+\textbf{COMPUTATIONAL.} Exhaustive breadth-first search over sets of computed truth tables (script \texttt{experiments/claude\_circuitsat/min\_circuit\_b2.py}, raw output \texttt{min\_circuit\_b2\_results.json}, runtime $\approx$12\,s) gives the number of $n$-input functions with each minimum gate count:
+\begin{center}\begin{tabular}{@{}cccccccc@{}}\toprule
+$n$ & $G=0$ & 1 & 2 & 3 & 4 & total & $\max W$\\\midrule
+1 & 4 & -- & -- & -- & -- & 4 & 0\\
+2 & 6 & 10 & -- & -- & -- & 16 & 2\\
+3 & 8 & 30 & 114 & 80 & 24 & 256 & 8\\\bottomrule
+\end{tabular}\end{center}
+Row sums equal $2^{2^n}$ (consistency check). Hardest 3-input functions need 4 gates (8 wires); e.g.\ $n=2$ needs one gate for each of the 10 non-degenerate functions. Next rung ($n=4$, $2^{16}$ functions) must be chunked: BFS state space is too large for one 30\,s run; plan is a SAT-based or canonical-form (NPN) enumeration split by function class.
+
+\section{Rung 2: a probe lower bound for SAT decision}
+\begin{theorem}[PROVED, trivial reading bound]\label{thm:read}
+For every $m\ge1$ any deterministic algorithm that correctly decides satisfiability of $m$-gate circuits must probe at least $m$ gate records on some instance.
+\end{theorem}
+\begin{proof}
+Let $C$ be the chain $g_1=x_1\wedge x_2$, $g_i=g_{i-1}\wedge x_{i+1}$ for $i=2..m$, output $g_m$; it is satisfied by the all-ones input. Let $C^{(j)}$ change only the type of $g_j$ to the constant $0$; then $C^{(j)}$ is unsatisfiable. If on input $C$ the algorithm never probes record $j$, its run on $C^{(j)}$ is identical, so it answers wrongly on one of them. Hence it probes all $m$ records on $C$.
+\end{proof}
+This is linear in the \emph{instance size}; it says nothing about time as a function of $n$. It is the base of the ladder: every rung's bound is at least the wire count of the cone of the output.
+
+\section{Rung 3: counting and parameterized landscape}
+\begin{itemize}
+\item \textbf{KNOWN} (Shannon counting): there are at most $\big(16(n+m)^2\big)^m$ circuits, so some $f$ needs $G(f)=\Omega(2^n/n)$; this bounds instance size, not SAT time.
+\item \textbf{KNOWN} Circuit-SAT of treewidth/pathwidth $k$ is solvable in $2^{O(k)}m$ time by dynamic programming over a path decomposition.
+\item \textbf{CANDIDATE} (literature transfer, citation to be verified next run): under SETH, SAT parameterized by pathwidth $k$ admits no $(2-\varepsilon)^k\,\mathrm{poly}(m)$ algorithm (Iwata--Yoshida; Lokshtanov--Marx--Saurabh line). This would give a tight conditional parameterized bound $2^{k}$ with parameter = circuit width, the natural ``wire cut'' measure. The wire-by-wire ladder is intended to supply the exact width of the gadgets at each rung.
+\item \textbf{OPEN} unconditional lower bound beyond $\Omega(m)$ time for Circuit-SAT on general circuits.
+\end{itemize}
+
+\section{Repository cross-check (j15marti/pnp)}
+Survey of \texttt{AGENTS.md}, \texttt{research/}, \texttt{tasks/}: the active project spine is ARC/FLMV simultaneous time--space contraction (governance 2026-10-24 23:46); it is \textbf{OPEN}. The repo contains an SIL/M22 parameterized resource ladder (2026-10-25 00:05) explicitly stating that no unconditional decision-time lower bound follows from its finite trace. No repository result yet supplies a Circuit-SAT-specific bound, so nothing was imported; the SIL ladder's $(q,d)$ parameters are a candidate source for a parameterization to examine.
+
+\section{Next steps}
+\begin{enumerate}
+\item Verify the pathwidth-SETH citation; record exact statement and model.
+\item Extend exact ladder to $n=4$ via NPN classes (chunked runs).
+\item Define a cut-width ledger: for each minimal circuit record the minimum pathwidth, tying wires to the $2^k$ parameter.
+\item Test whether a time-space tradeoff (width $k$ vs.\ time) can be lower bounded in a restricted (e.g.\ oblivious branching) model.
+\end{enumerate}
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT::run1
