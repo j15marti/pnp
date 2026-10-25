@@ -1,0 +1,67 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT::first-run::2026-10-25
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\title{ClaudeCircuitSAT: a stepwise, wire-counted, parameterized lower-bound ladder for Circuit-SAT}
+\author{Hourly Claude routine (living document)}
+\date{Last updated: 2026-10-25 (run 1)}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No unconditional superpolynomial lower bound for Circuit-SAT is claimed. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model and accounting}
+A circuit is a DAG over $n$ inputs with fan-in-2 gates from the 10 non-degenerate binary operations (negation free). \emph{Wires} = fan-in edges $=2g$ for $g$ gates, plus one output tap. Define $C(f)$ = minimum gates, $W(f)=2C(f)$ minimum wires. $\mathrm{CSAT}_n$: given such a circuit on $n$ inputs, is it satisfiable? Three separate resources are tracked, never mixed:
+(i) \emph{size} $W$ of circuits needed to \emph{express} instances; (ii) \emph{black-box queries} to evaluate; (iii) \emph{description reads} of the instance encoding.
+
+\section{Ladder of exact results}
+\begin{theorem}[connectivity, PROVED/EXACT]\label{thm:conn}
+If $f$ depends on all $n$ inputs then $C(f)\ge n-1$ and $W(f)\ge 2(n-1)$; $\mathrm{AND}_n$ attains $n-1$.
+\end{theorem}
+\begin{proof}
+Every input must have a directed path to the output, so the underlying undirected graph is connected on $n+g$ nodes, requiring $\ge n+g-1$ edges. Each gate contributes exactly 2 in-edges, so $2g\ge n+g-1$, i.e.\ $g\ge n-1$. A balanced tree of ANDs attains it.
+\end{proof}
+\begin{theorem}[exhaustive census, COMPUTATIONAL]
+Over all Boolean functions (negation free), exact $C(f)$: $n=2$: 6 functions with 0 gates, 10 with 1. $n=3$: gate histogram $\{0{:}8,\,1{:}30,\,2{:}114,\,3{:}80,\,4{:}24\}$ (256 functions); parity$_3$ needs 2, majority$_3$ needs 4; $\mathrm{AND}_n$ needs $0,1,2,3$ for $n=1..4$ (matches Thm~\ref{thm:conn}). Source: \texttt{experiments/claude\_circuitsat/2026-10-25\_ccs\_min\_gates.py}, raw \texttt{results/raw/claude\_circuitsat/2026-10-25\_ccs\_min\_gates.json} (runs $\approx7$\,s; $n=4$ census deferred, to be chunked).
+\end{theorem}
+\begin{table}[h]\centering\begin{tabular}{rcccl}\toprule
+$n$ inputs & functions & $\max C$ & $\max W=2\max C$ & status\\\midrule
+1 & 4 & 0 & 0 & exact\\
+2 & 16 & 1 & 2 & exact\\
+3 & 256 & 4 & 8 & exact (census)\\
+4 & 65536 & ? & ? & OPEN/deferred (known $\le 7$ in B2 literature, unverified here)\\\bottomrule\end{tabular}\end{table}
+
+\section{Decision-side lower bounds, parameterized by $(n,s)$}
+\begin{theorem}[needle / black-box bound, PROVED/EXACT in the oracle model]\label{thm:needle}
+Any deterministic algorithm that only evaluates the circuit $C:\{0,1\}^n\to\{0,1\}$ as a black box needs $2^n$ evaluations in the worst case to decide $\mathrm{CSAT}$ (even promised at most one satisfying assignment).
+\end{theorem}
+\begin{proof}
+Adversary answers $0$ to every query; after $2^n-1$ queries the unqueried point $a$ is consistent both with $C\equiv0$ and with $C=\mathbf 1_{\{a\}}$ (computable with $n-1$ gates, Thm~\ref{thm:conn}).
+\end{proof}
+\textbf{Caveat (failed transfer as a P vs NP route):} the algorithm sees the description, not just an oracle; Thm~\ref{thm:needle} does not bound white-box algorithms.
+\begin{theorem}[description-reading bound, PROVED/EXACT]\label{thm:read}
+Any deterministic algorithm (any model with random-access read of the gate list) deciding $\mathrm{CSAT}$ on circuits with $s$ gates must read at least $s$ distinct gate records in the worst case.
+\end{theorem}
+\begin{proof}
+Take the AND-tree $T$ (satisfiable). For each gate $i$, the circuit $T_i$ obtained by replacing gate $i$ with the constant-0 gate is unsatisfiable (gate $i$ lies on the path to the output of a monotone tree). If some record $i$ were never read on input $T$, the run is identical on $T_i$, giving a wrong answer on one of them.
+\end{proof}
+\begin{definition}[parameterized ledger]
+For a solver $A$ with input $(C;n,s)$ write $T_A\ge \max\{\,s,\ \text{(structure-dependent search term)}\,\}$. Known: search term $\le 2^n\cdot\mathrm{poly}(s)$ (brute force); conditionally $2^{\delta n}$ for some $\delta>0$ under ETH (CONDITIONAL, known theorem: Impagliazzo--Paturi); strongly $2^{(1-o(1))n}$ under SETH for CNF-SAT, and Circuit-SAT inherits it with $s=\mathrm{poly}(n)$ (CONDITIONAL).
+\end{definition}
+
+\section{Step-by-step plan (next runs)}
+\begin{enumerate}
+\item \textbf{Done (run 1):} $n\le3$ exact $C(f)$ census; Thms \ref{thm:conn}--\ref{thm:read}.
+\item $n=4$ census, chunked (symmetry reduction under $S_4\times$negations, checkpointed); record hardest functions' wire structure.
+\item CNF-to-circuit wire ledger: $m$-clause 3CNF has $3m-1$ gates, $6m-2$ wires; add fan-out count (each variable with $\deg$ occurrences) and compare with minimum for the exact-$(2,2)$ family used in the repository (see \texttt{research/language/2026-10-25\_0005\_SIL\_M22\_PARAMETERIZED\_RESOURCE\_LADDER.md}).
+\item Parameterize hardness by $q,d$ from the repository's $\mathrm{M22}$ analysis: upper budgets $O^*(3^q)$, $O^*(2^d)$ are \emph{upper} bounds only; seek an algorithm-independent resource.
+\item Test whether a wire-count invariant (e.g.\ circuit \emph{cut-width}/treewidth of the instance) gives an unconditional lower bound for a restricted class (monotone circuits, bounded-width branching programs, resolution) --- where known superpolynomial bounds exist (CANDIDATE).
+\end{enumerate}
+
+\section{Repository cross-check}
+Repository \texttt{j15marti/pnp} (ARC/FLMV spine, SIL/M22 ladder handoff 2026-10-25 00:05) states that finite reduction traces give no unconditional decision-time lower bound and no ARC edge; this document agrees: all Section~3 bounds are oracle-, reading-, or ETH-conditional, none is a white-box time lower bound. Nothing here changes that status.
+
+\section{Run log}
+\begin{tabular}{ll}2026-10-25 run 1 & created document; $n\le3$ census; Thms 1--3; plan above.\end{tabular}
+\end{document}
+% END_OF_DOCUMENT::CLAUDE-CIRCUITSAT::first-run
