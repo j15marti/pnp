@@ -1,0 +1,48 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append/revise in place; hourly runs
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\title{Wire-by-Wire Lower Bounds for Circuit-SAT: A Parameterized Ladder}
+\author{Claude (scheduled hourly research log)}
+\date{Last updated 2026-10-25}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is a super-linear lower bound for Circuit-SAT. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and method}
+Build circuits from the smallest case upward, ledger every wire, and for each step $n$ (inputs) record the exact lower bound for deciding satisfiability in a stated model, as a function of parameters $(n,m,k)$: inputs, wires, and fan-in/depth/width restrictions.
+
+\section{Level 0: wire ledger (PROVED/EXACT)}
+Family $P_n$: $n$ variables, $2n$ literal wires (two per variable, polarity bits $s_{i,0},s_{i,1}$), one fan-in-2 AND tree on $2n$ leaves. Gates $2n-1$, gate-input wires $2(2n-1)$, total input-side wires $2n+2(2n-1)=6n-2$.
+Instance $=$ the $2n$ polarity bits. $P_n$ is satisfiable iff $s_{i,0}=s_{i,1}$ for all $i$.
+
+\begin{prop}[Probe bound, model: deterministic algorithm reading polarity bits by probes]
+Every correct deterministic decider for $P_n$ makes $\ge 2n$ probes in the worst case, and $2n$ suffice.
+\end{prop}
+\begin{proof}
+At the all-$+$ instance (satisfiable) flipping any single bit gives an unsatisfiable instance, so the sensitivity is $2n$. An algorithm that skips a bit $j$ on that input would give the same answer on the flipped instance. Reading all bits suffices.
+\end{proof}
+\textbf{COMPUTATIONAL cross-check} (\texttt{experiments/claude\_circuitsat/ladder.py}, raw data \texttt{results/raw/claude\_circuitsat/ladder\_results.json}): exact minimax decision-tree depth equals $2n$ for $n=1..4$; sensitivity $=2n$ for $n\le5$.
+
+\begin{center}\begin{tabular}{rrrrr}\toprule
+$n$ & literal wires & AND gates & gate-input wires & exact probes\\\midrule
+1&2&1&2&2\\2&4&3&6&4\\3&6&5&10&6\\4&8&7&14&8\\5&10&9&18&(sens.\ 10)\\\bottomrule\end{tabular}\end{center}
+
+\textbf{Limits.} This is a trivial \emph{read-the-input} bound, linear in the circuit size $m$: $\Omega(m)$. It lower-bounds a model that is charged only for reading, and says nothing about time beyond $\Theta(m)$. Parameterized form: $T(m,n)\ge m$ for ``every wire is sensitive'' families.
+
+\section{Planned ladder (OPEN / next runs)}
+\begin{enumerate}
+\item L1: add fan-out $>1$ (shared subcircuits). Track how the wire count of a satisfiability-equivalent formula grows when fan-out is forbidden (formula size vs circuit size); target a tight min-wire ledger for $n\le 4$ by exhaustive enumeration.
+\item L2: restricted models where super-linear bounds are KNOWN THEOREMS: gate elimination for circuit \emph{size} of explicit functions ($3n-o(n)$ for $B_2$; Li--Yang 2022, $3.1n-o(n)$), monotone circuits (Razborov), bounded-depth. State exactly which of these transfer to a \emph{SAT-solving} cost (none do automatically: they bound computing a function, not deciding satisfiability of an input circuit).
+\item L3: parameterized targets: $T(n,m,\text{treewidth }w)$; known upper bound $2^{O(w)}m$ and the SETH-conditional $ (2-\epsilon)^{w}$ barrier (CONDITIONAL, to be checked against primary literature).
+\item L4: link to repository work: the $j15marti/pnp$ ARC/FLMV spine and shared-input Circuit-SAT counts in \texttt{main.tex} (lines $\sim$2482, 4895) are explicitly \emph{not} SAT-solving lower bounds; reconcile before any reuse.
+\end{enumerate}
+
+\section{Corpus reviewed this run}
+Repo tree, \texttt{AGENTS.md} (ARC/FLMV allocation; P vs NP OPEN), grep of \texttt{main.tex} for circuit statements. No existing Circuit-SAT wire-ledger was found; no duplication. Full GROKPROOF and LSPV report review deferred to later runs.
+
+\section{Log}
+\begin{itemize}
+\item 2026-10-25 run 1: created document; Level 0 proved and verified computationally.
+\end{itemize}
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT_RUN_1
