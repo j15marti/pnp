@@ -1,0 +1,70 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=1in]{geometry}
+\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT\\\large Living document}
+\author{Hourly Claude routine}
+\date{Last updated: 2026-10-25 (run 1)}
+\begin{document}
+\maketitle
+\noindent\textbf{Status.} P versus NP remains OPEN. Nothing here is a proof of a superpolynomial bound. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Start from the smallest Circuit-SAT instances and grow them one gate and one input at a time. Record (i) the minimum number of gates $s$ and wires $w=2s$ (fan-in 2, basis $B_2$, negation free) needed to build an instance with a given property, and (ii) the cost any algorithm must pay to decide it. Parameters: $n$ (inputs), $s$ (gates), $w$ (wires), $d$ (depth), $t$ (treewidth). A bound may be a function of several of these.
+
+\section{Construction ledger (build side)}
+\begin{lemma}[PROVED/EXACT, folklore]\label{lem:conn}
+If a fan-in-2 circuit's output depends on all $n$ inputs, then $s\ge n-1$ and $w\ge 2(n-1)$.
+\end{lemma}
+\emph{Proof.} The underlying graph must connect $n$ input nodes to the output. Each gate adds one node and at most one merge of two components (two in-wires), so $n-1$ gates are needed to join $n$ components. \qed
+
+Matching upper bound: an AND-tree of $n$ literals has exactly $n-1$ gates, $2n-2$ wires, and a unique satisfying assignment.
+
+\begin{center}
+\begin{tabular}{@{}rcccl@{}}
+\toprule
+$n$ & min gates, unique-SAT instance & $n-1$ & wires $2(n-1)$ & source\\
+\midrule
+1 & 0 & 0 & 0 & trivial (a literal)\\
+2 & 1 & 1 & 2 & COMPUTATIONAL (exhaustive)\\
+3 & 2 & 2 & 4 & COMPUTATIONAL (exhaustive, all 256 functions)\\
+4 & 3 & 3 & 6 & PROVED via Lemma~\ref{lem:conn} + AND-tree\\
+\bottomrule
+\end{tabular}
+\end{center}
+Exhaustive data ($n=2,3$, script \texttt{experiments/claude\_circuitsat\_mincircuit.py}): every $B_2$ function of 3 variables is computed with $\le 4$ gates; gate-count histogram $\{0{:}5,\,1{:}33,\,2{:}114,\,3{:}80,\,4{:}24\}$. The $n=3$ run took about 14\,s; $n=4$ exceeds the 30\,s budget in this naive form and must be chunked (by gate count or by seeded sub-search) in a later run.
+
+\section{Solve side: what any algorithm must pay}
+\begin{lemma}[PROVED/EXACT, trivial input-reading bound]\label{lem:read}
+Any deterministic algorithm deciding Circuit-SAT for AND-trees of $n$ literals (leaf $k$ wired to variable $v_k$ with polarity $b_k$; SAT iff no variable occurs with both polarities) must read at least $n-1$ leaf wires.
+\end{lemma}
+\emph{Proof.} Adversary: answer every probe with a fresh variable (instance stays SAT). If two or more leaves are unprobed, leaf $k$ unprobed gives an instance consistent with all answers in which $k$ is rewired to the opposite literal of any other leaf, making it UNSAT; the algorithm cannot distinguish. With only one unprobed leaf $k$, rewire it against a probed leaf $j$; this is also consistent. So at least $n-1$ probes are needed to be correct on both. \qed
+
+Hence $\Omega(w)$ in the wire-probe model: a trivial bound that is linear in the instance size. It shows the correct form of the target: a bound in $(n,w)$ must at least reach $\Omega(w)$, and the interesting content is the dependence on $n$ at fixed $w$.
+
+\section{Parametrized landscape}
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Parameter & Known bound & Status\\
+\midrule
+$n$ (brute force) & $O(2^n\cdot w)$ & KNOWN THEOREM\\
+$n$ (no $(2-\varepsilon)^n\mathrm{poly}(w)$) & follows from SETH & CONDITIONAL\\
+$t$ (treewidth) & $2^{O(t)}\,w$ by dynamic programming & KNOWN THEOREM\\
+$t$ (matching lower bound) & $(2-\varepsilon)^{t}$ excluded under SETH, for CNF-SAT in primal pathwidth (Lokshtanov--Marx--Saurabh line); transfer to circuits not re-verified here & CONDITIONAL, citation to verify\\
+unconditional $w^{1+\epsilon}$ for general circuits & not known; best explicit circuit-size bound is linear, $3.5n-O(\log n)$ per repository GROKPROOF survey, citation not independently verified here & OPEN\\
+\bottomrule
+\end{tabular}
+\end{center}
+Note: Circuit-SAT is NP-complete, so any unconditional super-polynomial bound in $w$ would prove $\mathrm{P}\ne\mathrm{NP}$. Only restricted-model bounds (probe model, monotone, bounded depth/treewidth) are within reach.
+
+\section{Link to repository work}
+Repository survey (\texttt{GROKPROOF/main.tex}, progress notes through 2026-10-25): no unconditional superlinear general-circuit bound is recorded; no existing file addresses the wire-by-wire construction ledger or ``Circuit-SAT'' as a growth program (search found only incidental mentions in \texttt{research/agents/grok}). So the ledger above is new to the corpus but consists only of elementary results. CANDIDATE bridge: the wires-per-input ratio of minimal unique-SAT instances is exactly $2-2/n$; ask whether \emph{hard} (UNSAT-certificate-heavy) families force a strictly larger ratio.
+
+\section{Next steps}
+\begin{enumerate}
+\item Chunked exact computation of minimal wire counts for $n=4$ functions and for UNSAT instances requiring resolution/extended-resolution proofs (pigeonhole-style) at small $n$.
+\item Define $W^*(n)$ = min wires of a circuit whose SAT status is not decidable by a fixed-width local procedure; seek lower bounds in restricted models.
+\item Verify the treewidth/SETH citations from primary sources.
+\end{enumerate}
+\end{document}
