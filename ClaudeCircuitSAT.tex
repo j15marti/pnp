@@ -1,0 +1,69 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append-only run log at the end; sections edited in place
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,url}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}\newtheorem{definition}{Definition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder of lower bounds for Circuit-SAT}
+\author{Hourly scheduled Claude run (living document)}
+\date{Last updated 2026-10-25 (run 1)}
+\begin{document}\maketitle
+\noindent\textbf{Status: P versus NP remains OPEN.} Nothing here is an unrestricted lower bound for \CSAT. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and the ladder}
+Input: a circuit $C$ over basis $\{\wedge,\vee,\neg\}$, fan-in $\le2$, $n$ input wires, $s$ gates, $w$ wires (edges), one output. Question: $\exists x\ C(x)=1$. We build a ladder $L_0,L_1,\dots$ of families, each adding one wire-level feature, and record for each rung (i) the parameters $\theta=(n,s,w,\dots)$, (ii) the best \emph{proved} lower bound in a stated model, (iii) the best known upper bound.
+
+\begin{center}\small\begin{tabular}{llll}
+Rung & Family & Lower bound (model) & Upper bound\\\hline
+$L_0$ & $n=0$, constants & $\Omega(w)$ read (query model) & $O(w)$\\
+$L_1$ & one input, $\le1$ gate & $\Omega(w)$ read & $O(w)$\\
+$L_2$ & read-once (tree) circuits & $\Omega(w)$ read & $O(w)$ by bottom-up\\
+$L_3$ & bounded fan-out $\le f$, width $\le k$ & frontier DP needs $\ge$ rank states & $O(2^{k}w)$\\
+$L_4$ & general fan-out, cutwidth/treewidth $\tau$ & frontier-DP model: $2^{\Omega(\tau)}$ for some families & $2^{O(\tau)}w$\\
+$L_5$ & general circuits & OPEN & $2^n w$\\
+\end{tabular}\end{center}
+
+\section{Rung results}
+\begin{theorem}[Reading bound, PROVED/EXACT, query model]\label{thm:read}
+Let $A$ be a deterministic decider that accesses the circuit by probing individual bits of its encoding. For every $s$ there is a family of satisfiability-decisions on circuits with $s$ gates (e.g.\ a path of $s$ identity gates $g_i=g_{i-1}\wedge 1$ ending at output) such that $A$ must probe the gate-type field of every gate.
+\end{theorem}
+\begin{proof}
+Take $C_0$: chain of $s$ buffers on $x_1$, plus the output gate $\wedge$ with a constant $1$; $C_0$ is satisfiable. For gate $i$ replace the buffer by $g_i=g_{i-1}\wedge 0$: the circuit becomes unsatisfiable. If $A$ never probes gate $i$'s type field, its transcript on $C_0$ and on the modified circuit coincide, so $A$ errs on one. \end{proof}
+So any decider uses $\Omega(s)$ probes; this is the trivial $L_0$--$L_2$ rung. (It says nothing about super-linear time.)
+
+\begin{definition}[frontier width]
+For a variable order $\pi$ and $0\le k\le n$, $W_k(f,\pi)$ is the number of distinct residual functions of $f=C$ after fixing $x_{\pi(1)},\dots,x_{\pi(k)}$; $W(f,\pi)=\max_kW_k$, $W(f)=\min_\pi W(f,\pi)$ (OBDD width).
+\end{definition}
+\begin{lemma}[PROVED/EXACT, restricted model]
+Any algorithm that decides $\exists x\,f(x)$ by a left-to-right dynamic program over a fixed order $\pi$ whose state after $k$ steps identifies the residual function needs $\ge W_k(f,\pi)$ states at step $k$. Taking the best order, it needs $W(f)$.
+\end{lemma}
+This is a Myhill--Nerode count; it is \emph{switching-sensitive}: the bound depends on $\pi$, and is only $W(f)$ after minimizing over orders. It does not bound algorithms that use other representations. Retained as a rung-$L_3/L_4$ tool, not a general bound.
+
+\begin{theorem}[EQ ladder, PROVED/EXACT + COMPUTATIONAL check]
+For $f=\mathrm{EQ}_{2m}$ ($x_i=y_i$ for $i\le m$): with order $x_1..x_my_1..y_m$, $W=2^m$; with the interleaved order $x_1y_1x_2y_2\dots$, $W=3$. Hence $W(f)=3$ although the separated-order width is $2^m$.
+\end{theorem}
+\begin{proof}
+Separated: after $x_1..x_m$ the residuals are $\mathbf 1[y=x]$, pairwise distinct: $2^m$. Interleaved: after each pair the state is {\em ok/dead} plus a pending $x_i$ (at most 3 distinct residuals). Verified computationally for $2m\le10$ (\texttt{research/claude\_circuitsat/results.jsonl}: sep $=4,8,16,32$ for $2m=4,6,8,10$; interleaved $=3,3,3,3$). \end{proof}
+\textbf{Lesson:} a ``wire-count/width'' parameter must be \emph{minimized over representations}; any claimed lower bound $2^{\Omega(\text{width of one layout})}$ is false for the adaptive solver. This is exactly the switching-stability requirement of the repository directive \texttt{research/governance/2026-10-23\_2127Z\_PARAMETERIZED\_LOWER\_BOUNDS.tex}.
+
+\begin{theorem}[Treewidth tightness, KNOWN THEOREM / CONDITIONAL]
+\CSAT\ (equivalently CNF-SAT) with a width-$\tau$ tree/path decomposition is solvable in $2^{O(\tau)}\mathrm{poly}$; under SETH there is no $(2-\epsilon)^{\tau}\mathrm{poly}(s)$ algorithm for pathwidth parameterization (Lampis and co-authors, ``tight SETH bounds for SAT parameterized by treewidth'' -- cited from memory, \emph{not re-verified this run}).
+\end{theorem}
+This supplies the parameterized bound $T\ge 2^{\tau}/s^{O(1)}$ at rung $L_4$, conditional on SETH (not unconditional; SETH is not admissible in an unconditional separation).
+
+\section{Parameterized candidate and first missing implication}
+\textbf{CANDIDATE.} For every uniform total decider $A$ there are constants $a_A>0,b_A$ and instances $C_j$ ($s_j\to\infty$) with $T_A(C_j)\ge 2^{a_A\rho(C_j)}/s_j^{b_A}$, $\rho$ a parameter that is representation-invariant, e.g.\ $\rho(C)=\min_{C'\equiv_{\mathrm{sat}}C,\ |C'|\le s^{O(1)}}\mathrm{tw}(C')$ (min over polynomially-sized SAT-equivalent circuits). The EQ example shows $\rho$ must be a min over representations. The first missing implication: (i) a source of instances with $\rho=\omega(\log s)$ (no explicit such family is proved: $\rho$ itself is a minimization over a $\mathrm{NP}$-style search space), and (ii) a proof that no algorithm beats $2^{\Omega(\rho)}$---which is essentially the open lower bound. Status: OPEN.
+
+\section{Relation to the repository (j15marti/pnp)}
+The repository's canonical spine is UWI-1 (exact equivalence $P=NP\iff\exists C,d\,\forall F\in\mathrm{SAT}:H(F)\le C(N+2)^d$; the common-input all-program bound is OPEN). The width/rank-state accounting here is compatible with its ``charged acquisition'' view: a frontier DP is one adaptive rule and the EQ ladder is a concrete switching-stability control. No repository result was strengthened or relied on beyond that reading (corpus survey this run: root \texttt{main.tex}, governance directives of 2026-10-23/24 listed; individual LSPV reports not re-read in depth).
+
+\section{Next steps}
+\begin{enumerate}
+\item Compute exact minimal-gate circuits for all 3- and 4-input functions; tabulate wires vs.\ frontier width (true ``minimum connections per step'' table).
+\item Find a family with $W(f)=2^{\Omega(n)}$ yet small circuits that is \emph{not} easily switchable (monotone/expander-based) and check it against alternate solvers (Gaussian, SCC).
+\item Test candidate $\rho$ on random planted instances at scale $n\ge 12$ (the $n\le10$ near-threshold random 3-CNF runs this time were uninformative: nearly all had $\le7$ solutions, $W\le4$).
+\end{enumerate}
+
+\section*{Run log}
+\textbf{Run 1 (2026-10-25).} Created document; proved reading bound, frontier-width lemma, EQ ladder (computed to $2m=10$); recorded conditional treewidth bound; no new unrestricted bound. Script: \texttt{research/claude\_circuitsat/frontier\_width.py}, each invocation $<30$ s.
+\end{document}
