@@ -1,0 +1,61 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT::run-2026-10-25-001
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder of lower bounds for Circuit-SAT}
+\date{Living document; last updated 2026-10-25}
+\begin{document}\maketitle
+\section*{Status (strict labels)}
+\textbf{P versus NP remains OPEN.} Only the rungs marked PROVED/EXACT below are proved; all super-linear bounds are CONDITIONAL or OPEN.
+The goal is a (possibly parameterized) lower bound $T(n,w,\dots)$ for Circuit-SAT, built up from the simplest circuits, tracking the number of wires $w$ that must be inspected/constructed at each rung.
+
+\section{Model}
+A circuit has $n$ inputs, gates of fan-in $\le 2$, $w$ wires. Two cost measures: (Q) \emph{wire-query complexity}: number of wires/leaf labels an algorithm must read, adversary model, unconditional; (T) time on a RAM/TM, where only conditional or time--space bounds are known.
+
+\section{Rung 0: one wire}
+Circuit = a single literal. SAT always; $0$ queries. Wire count $w=1$ (input$\to$output).
+
+\section{Rung 1: AND of $k$ literals (wires $w=k$ leaf wires $+\,k-1$ gate wires)}
+SAT iff no variable appears with both signs.
+\begin{lemma}[PROVED/EXACT]\label{l1}
+For $k\ge2$, $n\ge1$, every deterministic algorithm that reads leaf labels needs exactly $k$ queries to decide SAT of $\bigwedge_{i\le k}\ell_i$.
+\end{lemma}
+\emph{Proof.} Upper bound: read all. Lower bound: adversary answers each queried leaf with a fresh variable if available, else a consistent literal (all queried leaves mutually consistent). If some leaf $j$ remains unqueried and at least one leaf was queried, leaf $j$ may be the complement of a queried literal (UNSAT) or consistent (SAT). So $k$ queries are forced; for $k=2,n=1$ the adversary uses $x$ then either $x$ or $\neg x$. \qed
+
+\emph{COMPUTATIONAL check:} exhaustive minimax in \texttt{experiments/claude\_circuitsat/and\_leaf\_query.py} gives exactly $0,2,3,4$ for $k=1,2,3,4$, all $n\le4$ (results JSON alongside).
+
+\textbf{Wire ledger.} Every one of the $k$ leaf wires is necessary: removing any single wire changes the answer on some input. Generalization: a wire $e$ is \emph{decision-critical} if some input flips SAT status when $e$'s label flips; any query algorithm must read every decision-critical wire in the worst case. Lower bound $\ge$ (number of decision-critical wires) is the only unconditional bound currently derived; for SAT on dense instances it is $\Omega(m)$, i.e. linear in input size.
+
+\section{Rung 2: 2-CNF circuits (depth-2, clause fan-in 2)}
+SAT $\in$ P via implication-graph SCC, time $O(n+m)$. So no super-linear lower bound can hold for this rung (KNOWN THEOREM, Aspvall--Plass--Tarjan). The wire ledger is $\Theta(m)$: tight.
+
+\section{Rung 3: 3-CNF circuits (NP-complete)}
+Wires $w=\Theta(m)$ with $m$ clauses. Known:
+\begin{itemize}
+\item Trivial: $\Omega(w)$ (read input). PROVED.
+\item Brute force $O(2^n w)$; best known $O^*(c^n)$, $c<2$ for $k$-SAT (KNOWN THEOREM, PPSZ).
+\item ETH/SETH: no $2^{o(n)}$ (resp.\ $(2-\epsilon)^n$ for CNF-SAT) algorithm (CONDITIONAL).
+\item Unconditional time--space: SAT needs time $n^{2\cos(\pi/7)-o(1)}\approx n^{1.80}$ on $n^{o(1)}$-space machines (Fortnow--Lipton--van Melkebeek--Viglas; Williams) (KNOWN THEOREM). Repository work on the FLMV box is tracked in \texttt{main.tex}; ARC/FLMV status there is OPEN.
+\end{itemize}
+
+\section{Parameterized lower-bound schedule (CANDIDATE framework)}
+Parameters: $n$ inputs, $w$ wires, depth $d$, treewidth/pathwidth $p$.
+\begin{center}\begin{tabular}{llll}\toprule
+Class & Upper bound & Lower bound & Status\\\midrule
+AND of literals & $O(w)$ & $\Omega(w)$ & PROVED\\
+2-CNF & $O(w)$ & $\Omega(w)$ & PROVED (tight)\\
+width-$p$ circuits & $2^{O(p)}w$ & $2^{(1-\epsilon)p}$ under SETH & CONDITIONAL\\
+general, $n$ inputs & $O^*(2^n)$ & $\Omega(w)$ uncond. & OPEN gap\\\bottomrule\end{tabular}\end{center}
+Plan: add rungs (XOR chains, fan-out-2 trees, bounded-depth AC$^0$ restrictions where switching-lemma lower bounds exist for the \emph{circuit} but not for deciding SAT), tracking minimal wire counts and fan-out constraints at each step.
+
+\section{Repository cross-check}
+\texttt{j15marti/pnp} (this repo) carries a large ARC/FLMV corpus (see root \texttt{main.tex}, AGENTS.md). Takeaways relevant here: (i) the FLMV time--space box is the only unconditional super-linear route and is OPEN in the repo for the improved box; (ii) retired routes (universal cosine endpoint, cross-machine borrowing, free semantic SAT answers) must not be reused; (iii) finite reduction traces (SIL/M22 ladder) imply no unconditional lower bound. Not yet read in depth: individual LSPV reports; deferred to later runs.
+
+\section{Next steps}
+\begin{enumerate}
+\item Define a decision-critical-wire count for XOR and mixed AND/OR trees and prove query bounds.
+\item Determine whether a query-model bound beyond $\Omega(w)$ exists for \emph{implicitly} given circuits (succinct circuits), where $2^n$ vs.\ $w$ separation is meaningful.
+\item Link to treewidth-parameterized SETH bounds and test with small exhaustive experiments.
+\end{enumerate}
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT::run-2026-10-25-001
