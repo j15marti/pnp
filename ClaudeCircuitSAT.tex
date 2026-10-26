@@ -1,0 +1,40 @@
+% ClaudeCircuitSAT LIVING DOCUMENT -- append/revise in place each run
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: Wire-Tracked Lower Bounds for Circuit-SAT}
+\date{Last updated 2026-10-26 (run 1)}
+\begin{document}\maketitle
+\section*{Status}
+Unconditional super-polynomial lower bounds for Circuit-SAT are \textbf{OPEN} (equivalent in difficulty to P vs NP territory; repository corpus agrees: P vs NP OPEN). Below: only what is proved or computed.
+
+\section{Model}
+Circuit $C$: $n$ inputs, $m$ fan-in-2 gates (any of the 16 binary functions), one output; wires $w=2m$ (gate input pins). Problem $\mathrm{CSAT}(n,m)$: is there $x\in\{0,1\}^n$ with $C(x)=1$? Parameters $(n,m)$; a bound may be $f(n,m)$.
+
+\section{Level ladder (wires built up step by step)}
+\textbf{PROVED (L0, connectivity).} If $f$ depends on all $n$ inputs, any circuit for $f$ has $\ge n-1$ gates, hence $\ge 2(n-1)$ wires (each input must reach the output; a fan-in-2 DAG with a single sink connecting $n$ sources needs $n-1$ merges).
+
+\textbf{COMPUTATIONAL (L1--L3).} Exact minimum gate counts by BFS over circuits (\texttt{experiments/claude\_circuitsat/exact\_min\_gates.py}, raw: \texttt{results/raw/claude\_circuitsat/exact\_min\_gates.json}). For $f$ depending on exactly $d$ of $n$ inputs:
+\begin{center}\begin{tabular}{c|cccc}
+$n$ & $d=0$ & $d=1$ & $d=2$ & $d=3$\\\hline
+1 & 0 (2 fns) & 0--1 (2) & & \\
+2 & 0 & 0--1 (4) & 1 (10) & \\
+3 & 0 & 0--1 (6) & 1 (30) & 2--4 (218)\\
+\end{tabular}\end{center}
+(entries: min gates over functions; count of functions). Matches L0: $d$-dependent needs $\ge d-1$, tight at $d\le3$ for parity-type; worst case at $n=3$ is 4 gates (8 wires). Note: this is \emph{circuit size of a function}, not yet SAT hardness.
+
+\section{Decision-time bound (PROVED, trivial but unconditional)}
+\begin{prop}[Input-reading] In the random-access model where $C$ is given as a list of $m$ gate descriptions, any deterministic algorithm deciding CSAT must read $\Omega(m)$ gate descriptions in the worst case.\end{prop}
+\emph{Proof sketch.} Take $C$ = AND of all inputs chained through $m$ gates; changing one unread gate to the constant 0 flips satisfiability, so an algorithm that skips a gate errs on one of the two instances. $\square$
+This is a bound in $m$ only; it yields no dependence on $n$ beyond $m\ge n-1$.
+
+\section{Parametrized view}
+Upper bound $O(2^n m)$ (brute force). Conditional: under SETH, no $O(2^{(1-\varepsilon)n}\mathrm{poly}(m))$ algorithm (\textbf{CONDITIONAL}, known). Unconditional $2^{\Omega(n)}$ time is \textbf{OPEN}. Candidate parametrization to study: bound in terms of $(n,\ \text{treewidth } k)$ -- CSAT is solvable in $2^{O(k)}m$; a lower bound $2^{\Omega(k)}$ would be conditional (ETH).
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item Extend exact table to $n=4$ (needs chunked search, $>30$s) and track minimum \emph{wires} separately from gates (fan-out counted).
+\item Find a monotone/restricted-circuit class where wire-count lower bound for SAT-hardness is provable (e.g.\ read-once, monotone).
+\item Read repository work (\texttt{research/}, \texttt{main.tex}) for transferable resource-ledger ideas; none yet imported -- the repo's reductions are explicitly non-unconditional.
+\end{enumerate}
+\end{document}
