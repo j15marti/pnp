@@ -1,0 +1,49 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{prop}{Proposition}
+\newtheorem{conj}{Conjecture}
+\title{ClaudeCircuitSAT: Parameterized Lower Bounds for Circuit-SAT, Built Up Rung by Rung}
+\author{Living document (hourly runs)}
+\date{Last updated: 2026-10-26 (run 1)}
+\begin{document}
+\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. Nothing here is a superpolynomial lower bound. Labels: PROVED, COMPUTATIONAL, KNOWN THEOREM, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Find lower bounds for circuit-SAT, building from the simplest instances: track, gate by gate and wire by wire, the connections needed to build a circuit, increase the number of inputs $n$ step by step, and record the best provable bound as a function of the parameters $(n,k)$ ($k$ = number of gates; later also wire count $w=2k$, depth, fan-out).
+
+\paragraph{Two different questions.} (Q1) The \emph{size of a circuit deciding} $\mathrm{CSAT}_{n,k}$, i.e.\ the function whose input is an encoded circuit. (Q2) The \emph{time of an algorithm} for it. Only Q1 is attackable by finite counting; Q2 is the P vs NP question. A bound for Q1 of form $f(n,k)$ transfers to P vs NP only if it is superpolynomial in the input length $\Theta(k\log(n+k))$.
+
+\section{Encoding}
+$\mathrm{CSAT}_{n,k}$: gate $j\in[k]$ has a truth table $\tau_j\in\{0,1\}^4$ and addresses $a_j,b_j\in\{0,\dots,n+j-2\}$ (any earlier wire; wires $0..n-1$ are inputs). Output is gate $k$. Value is 1 iff some $x\in\{0,1\}^n$ makes the output 1. Number of encoding bits: $N(n,k)=\sum_{j=1}^k\bigl(4+2\lceil\log_2(n+j-1)\rceil\bigr)$.
+
+\section{Rung 1: trivial sensitivity bound (PROVED)}
+\begin{prop}\label{p1} Every fan-in-2 Boolean circuit (any gates) computing $\mathrm{CSAT}_{n,k}$ has at least $k-1$ gates.\end{prop}
+\begin{proof}
+Take the chain instance $g_1=x_0\wedge x_1$, $g_j=g_{j-1}\wedge x_{j}$ (needs $n\ge k+1$; use only these as the base point), $\tau_j=\mathrm{AND}=(0,0,0,1)$. It is satisfiable by $x=1^n$. Flipping bit $\tau_j(1,1)$ to $0$ makes $g_j\equiv 0$, hence every downstream AND and the output $\equiv0$: unsatisfiable. So the function is sensitive at this point to $k$ distinct input bits, hence depends on $\ge k$ variables, and a fan-in-2 circuit depending on $m$ variables has $\ge m-1$ gates.
+\end{proof}
+This is the base rung: linear in $k$, and compared with the input length $N=\Theta(k\log(n+k))$ it is weaker by a $\log$ factor. It is far below the known $3.5n-O(\log n)$ gate-elimination bound (Mishra--Santhanam, TR26-260, as recorded in \texttt{GROKPROOF/main.tex}), which applies to an explicit function in P and uses dispersers; whether CSAT admits the same technique with the address bits is untested.
+
+\section{Computational ladder (COMPUTATIONAL)}
+Script \texttt{experiments/claude\_circuitsat/ladder.py}, data \texttt{results/raw/claude\_circuitsat/2026-10-26\_ladder1.json}. Each invocation runs in $\approx5$ s.
+\begin{center}
+\begin{tabular}{ccc}
+$(n,k)$ & sensitive $\tau(1,1)$ bits at chain & Prop.~\ref{p1} bound\\\hline
+(2,1)&1&0\\ (3,2)&2&1\\ (4,3)&3&2\\ (5,4)&4&3
+\end{tabular}
+\end{center}
+Exact synthesis, $\mathrm{CSAT}_{2,1}$ (6 encoding bits: $\tau_0..\tau_3,a,b$): exhaustive search over all circuits of $\le3$ gates on the full $B_2$ basis finds none computing it. The function depends on all 6 bits (checked), so the trivial bound is $\ge5$ gates; the search is consistent with this (it shows $>3$) and the true minimum is not yet determined (needs $\ge5$-gate search; the space is too large for naive Python, a SAT-based exact-synthesis encoding is the next step).
+
+\section{Wire accounting (framework)}
+A circuit with $k$ binary gates has $2k$ gate-input wires; a circuit using all $n$ inputs and connected to the output needs $\ge n-1$ gates, and fan-out-free satisfiability is easy (formula $\Rightarrow$ tree; SAT of read-once formulas over $B_2$ is linear time). Hardness must therefore come from \emph{reconvergent fan-out}. Parameter to track: $r$ = number of reconvergent wires (wires beyond a spanning tree), $r\ge 2k-(n+k-1)=k-n+1$ when $k\ge n$.
+\begin{conj}[CANDIDATE, untested] A parameterized bound of the shape $T(n,k)\ge \Omega(k)\cdot g(r)$ with $g$ growing is the form one hopes for; read-once ($r=0$) gives $g=O(1)$ and the linear rung above is tight there (upper bound: evaluation by dynamic programming). Nothing is proved about $g$.\end{conj}
+
+\section{Repository cross-check}
+Surveyed: \texttt{AGENTS.md}, \texttt{GROKPROOF/main.tex} (best explicit general-circuit bound $3.5n-O(\log n)$; magnification thresholds; ratio to $P\ne NP$ thresholds vanishes), root \texttt{main.tex} status (ARC/FLMV spine OPEN). No existing file addresses wire-by-wire CSAT ladders. The repository's own ARC/FLMV and SIL/M22 material is a different (time--space contraction) route; no link to this ladder is claimed.
+
+\section{Next rungs}
+(1) SAT-based exact synthesis for $\mathrm{CSAT}_{2,1},\mathrm{CSAT}_{3,2}$. (2) Include address bits in the sensitivity argument (target $\Omega(k\log(n+k))=\Omega(N)$ unconditional). (3) Try gate elimination on CSAT with reconvergence parameter $r$. (4) Check the Williams/Atserias--M\"uller magnification thresholds for whether a sparse CSAT promise variant is in range.
+
+\end{document}
