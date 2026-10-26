@@ -1,0 +1,85 @@
+% ClaudeCircuitSAT living document -- hourly routine. Append a run-log entry each run; revise ledgers in place.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\newcommand{\status}[1]{\textbf{[#1]}}
+\title{Lower Bounds for Circuit-SAT: a Step-by-Step Wire Ledger\\\large Living document (Claude routine)}
+\date{Last updated: 2026-10-26 (run 2)}
+\begin{document}
+\maketitle
+\section*{Executive status}
+\textbf{P versus NP remains OPEN.} No unconditional super-polynomial lower bound for Circuit-SAT is claimed.
+Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+The document tracks, for $n=1,2,3,\dots$ inputs, (i) the minimum number of gates/wires needed to \emph{express} the relevant instances, and (ii) the best known lower bound on \emph{solving} them, as a function of parameters $(n,s,w)$ (inputs, gates, treewidth).
+
+\section{Model}
+A circuit $C$ is a DAG; sources are inputs $x_1..x_n$ (and constants), every gate has fan-in $2$ over the full binary basis $B_2$; one gate is the output. Size $s$ = number of gates; wires $=2s$ (in-wires; fan-out is paid at the sink). Circuit-SAT: given $C$, is there $x$ with $C(x)=1$? Parameters: $n$, $s$, primal treewidth $w$.
+
+\section{Proved lemmas}
+\begin{lemma}[Connectivity / wire floor]\status{PROVED/EXACT}
+If the output of a fan-in-2 circuit with $g$ gates depends on $k$ distinct inputs, then $g\ge k-1$ (so $\ge 2(k-1)$ wires).
+\end{lemma}
+\begin{proof} The cone of the output is a connected graph on $g+k$ nodes (gates + reached inputs) with $2g$ edges (as a multigraph); connectivity needs $2g\ge g+k-1$, i.e.\ $k\le g+1$. \end{proof}
+Tightness: $x_1\wedge\dots\wedge x_n$ (and any literal-AND with unique satisfier $a$) uses exactly $n-1$ gates. Hence unique-satisfier instances $C_a$ have a hidden object $a\in\{0,1\}^n$ of $n$ bits encoded in $\Theta(n)$ wires.
+
+\begin{lemma}[Black-box bound, parametrized]\status{PROVED/EXACT}
+Let $\mathcal F_{n}=\{C_a:a\in\{0,1\}^n\}\cup\{\bot\}$ where $C_a=[x=a]$ ($n-1$ gates plus literal polarities) and $\bot\equiv0$. Any deterministic algorithm that decides SAT using only evaluation queries $C(x)$ needs $2^n-1$ queries in the worst case. Consequently, for circuits with at most $s$ gates the black-box complexity is $\ge 2^{\min(n,\,s+1)}-1$.
+\end{lemma}
+\begin{proof} Adversary answers $0$ to every query; after $q<2^n-1$ queries at least two points are unqueried so both $\bot$ and some $C_a$ remain consistent. The second statement uses Lemma 1: embed $\min(n,s+1)$ relevant variables. \end{proof}
+\noindent\emph{Caveat.} This is an oracle-access bound; a white-box algorithm reads the wires and (here) decides the family in $O(n)$. It shows the \emph{obstacle shape}: the wire floor is linear while the black-box cost is exponential, so any lower bound must prove that wires cannot be exploited uniformly. \status{This does not bound white-box time.}
+
+\begin{lemma}[Trivial reading bound]\status{PROVED/EXACT}
+Any correct Circuit-SAT algorithm must read $\Omega(s)$ wires in the worst case (adversary flips one unread gate type in a family where the answer depends on it). This is the only unconditional white-box bound in this document.
+\end{lemma}
+
+\begin{lemma}[Fan-out branching upper bound]\status{PROVED/EXACT}
+Let $f$ be the number of non-output nodes (inputs or gates) of fan-out $\ge2$ in the cone of the output. Circuit-SAT is decidable in time $O(2^{f}\,s)$. Hence $T(n,s)\le O(s\cdot 2^{\min(n,f)})$; formulas ($f=0$) are solved in $O(s)$.
+\end{lemma}
+\begin{proof} Guess a value for each of the $f$ stems and cut them into leaves with prescribed value. What remains is a family of trees (root = output or a stem) whose private inputs have fan-out~1, so the trees are variable-disjoint. For each tree compute bottom-up the set of values in $\{0,1\}$ attainable at each node (disjoint subtrees combine independently); accept iff each stem root can attain its guessed value and the output root can attain $1$. \end{proof}
+\status{COMPUTATIONAL check} \texttt{experiments/claude\_circuitsat/fanout\_branch.py}: 600 random $B_2$ circuits ($n\le6$, $s\le9$, max $f=4$), 0 mismatches against brute force (\texttt{results/raw/claude\_circuitsat\_fanout\_branch.json}).
+So fan-out is exactly the quantity to charge: any lower bound $T\ge 2^{\epsilon n}\mathrm{poly}(s)$ must use circuits with $f\ge\epsilon n$ shared wires, i.e.\ \emph{routing cost} $f$ is a necessary parameter.
+
+\begin{lemma}[Read-all-wires bound, pointer-table model]\status{PROVED/EXACT}
+In the read-only random-access model, any correct deterministic Circuit-SAT algorithm on circuits with $m$ wires makes $\Omega(m)$ reads. \emph{Proof.} Let $k=\lfloor m/4\rfloor$, $I_0=\bigvee_{j\le k}(x_j\wedge y_j)$ with every $y_j$ wired to constant $0$ (unsatisfiable), and $I_j$ rewires only $y_j$ to constant $1$ (satisfiable). An unread $y_j$-wire cannot be distinguished, so all $k$ must be read. \qed
+\end{lemma}
+(Merged from an earlier draft on a sibling branch; it supersedes the weaker unnamed ``Trivial reading bound'' argument below, which is kept for history.)
+
+\section{Ladder of small cases (exact computation)}
+\status{COMPUTATIONAL} Exhaustive BFS over circuit states, all $B_2$ gates; script \texttt{experiments/claude\_circuitsat/min\_circuit\_sizes.py}, data \texttt{results/raw/claude\_circuitsat\_min\_sizes.json}. Matches Knuth's tabulation for $n=3$ (max 4 gates).
+\begin{center}\begin{tabular}{rrrrrr}\toprule
+$n$ & $\#$ functions & max gates & unique-sat min/max gates & parity & majority\\\midrule
+1 & 4 & 1 & 0/1 & 0 & 0\\
+2 & 16 & 1 & 1/1 & 1 & 1\\
+3 & 256 & 4 & 2/2 & 2 & 4\\\bottomrule\end{tabular}\end{center}
+Size histogram $n=3$ (gates: count): 0:5, 1:33, 2:114, 3:80, 4:24. Unique-satisfier functions all cost exactly $n-1$ gates ($n=2,3$), consistent with Lemma 1 being tight. Wire ledger: $W(n)=2(n-1)$ for unique-satisfier instances; $W=2\cdot4=8$ for majority-3.
+Next rungs ($n=4$, max $7$ gates, Knuth) \status{KNOWN THEOREM}; the hardest-instance gate count grows as $\Theta(2^n/n)$ (Shannon/Lupanov) \status{KNOWN THEOREM}, so random functions need exponentially many wires, but Circuit-SAT instances arrive \emph{with} a circuit and the hard regime is $s=\mathrm{poly}(n)$.
+
+\paragraph{AIG basis (AND + free negation), \status{COMPUTATIONAL}.} Script \texttt{aig\_min.py}, data \texttt{aig\_min\_results.json}: at $n=2$ minimum AIG sizes are 0 gates (6 functions), 1 (8), 3 (2: XOR/XNOR); at $n=3$: 0 (8), 1 (24), 2 (64), 3 (30), 4 (104), and 26 functions need $\ge5$ (search not pushed deeper). Wires $=2\cdot$gates. XOR costing 3 AIG gates versus 1 in $B_2$ shows the wire ledger is basis-dependent; only basis-robust statements (up to constant factors) are claimed.
+
+\section{Parametrized ledger}
+\begin{tabular}{lll}\toprule
+Bound & Status & Source\\\midrule
+$T=O(2^n s)$ brute force & KNOWN THEOREM & trivial\\
+$T=2^{O(w)}s$ treewidth DP & KNOWN THEOREM & standard DP\\
+$T=O(2^{f}s)$, $f$=#fan-out stems & PROVED/EXACT & Lemma 2 (new)\\
+$T=\Omega(s)$ reads & PROVED/EXACT & Read-all-wires lemma\\
+$T\ge 2^{\min(n,s+1)}-1$ (black-box queries) & PROVED/EXACT & Lemma 2\\
+no $(2-\epsilon)^{n}\mathrm{poly}(s)$ & CONDITIONAL on SETH & CNF-SAT $\subset$ Circuit-SAT\\
+no $(2-\epsilon)^{w}\mathrm{poly}$ (CNF, pathwidth $w$) & CONDITIONAL on SETH & Lokshtanov--Marx--Saurabh (cite to re-verify)\\
+unconditional white-box $\omega(s)$ bound & OPEN & --\\\bottomrule\end{tabular}
+
+\section{Repository check (j15marti/pnp)}
+Root \texttt{main.tex} and recent LSPV reports pursue the ARC/FLMV time--space contraction route; all load-bearing arrows are \status{OPEN} and P vs NP is OPEN there too. Directly useful for this document: the repo's PROVED/EXACT \emph{circuit firewall} (restricted promise map on $p$ bits has a balanced NAND circuit with $4(p-1)$ gates, depth $\le3\lceil\log_2p\rceil$) warns that transcript multiplicity or counting arguments alone do not give circuit lower bounds. No repo result yields a wire-by-wire Circuit-SAT bound; none is imported.
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item (Run 3) Prove a gate-elimination-style bound $T\ge 2^{c f}$ for a restricted solver class (DPLL on stems) and relate $f$ to treewidth $w$ ($w\le f+1$? check).
+\item Extend ledger to $n=4,5$ (exact $B_2$ sizes via SAT-based exact synthesis, chunked $<30$s runs) and track min wires for classes: unique-sat, parity, threshold.
+\item Define the right white-box adversary: a restriction/gate-elimination argument giving $T\ge f(n,s,w)$ for a restricted algorithm class (e.g.\ DPLL/resolution-style, bounded-depth backtracking) --- target CANDIDATE results in restricted models.
+\item Study parametrization by $w$ and by number of fan-out-$>1$ wires (the ``routing cost'' beyond tree circuits); tree circuits (formulas) are solvable in linear time, so fan-out is the quantity to charge.
+\end{enumerate}
+
+\section{Run log}
+\textbf{Run 1 (2026-10-26).} Created document; proved Lemmas 1--3; computed exact $n\le3$ ladder; surveyed repo (no direct transfer). No lower bound beyond black-box/trivial/SETH-conditional. P vs NP OPEN.
+\textbf{Run 2 (2026-10-26).} Found earlier drafts of this document stranded on sibling branches (none merged to main); consolidated them here. Added fan-out branching upper bound $O(2^f s)$ (proved, computationally cross-checked), read-all-wires lemma, AIG ladder. Repo re-check: no new relevant result; ARC/FLMV and SIL/M22 remain OPEN. No unconditional super-linear white-box lower bound. P vs NP OPEN.
+\end{document}
