@@ -75,7 +75,7 @@ const run = function audit() {
     run_id:"ARC-CIRCUIT-VOLUME-AUDIT124",date_utc:"2026-10-26",kind:"finite symbolic/numerical audit, not physical FLMV TM trace",
     seed:null,assertions,failures:0,
     exact_thresholds:{time:"241/200",space:"11642479/23232400",
-      beta_at_time:frac(bnum,bden),time_slack_above_1_2:frac(1n,200n),
+      beta_at_time:frac(bnum,bden),time_slack_above_6_5:frac(1n,200n),
       space_slack_above_half:frac(26279n,23232400n),
       conditional_d:"901/500",conditional_c:frac(cn,cd),
       conditional_d_minus_c:frac(32201n,180650500n)},
