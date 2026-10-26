@@ -1,0 +1,67 @@
+% ClaudeCircuitSAT living document -- last updated 2026-10-26 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\title{ClaudeCircuitSAT: A Parameterized Wire-by-Wire Lower-Bound Ladder for Circuit-SAT}
+\author{Living document (automated hourly runs)}
+\date{Last updated 2026-10-26}
+\begin{document}\maketitle
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here proves a super-polynomial lower bound for CIRCUIT-SAT.
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and method}
+Let $\mathrm{CSAT}(n,s)$ be circuit satisfiability for fan-in-2 circuits over $B_2$ with $n$ inputs and $s$ gates.
+The lower bound sought is a function $T(n,s)$ (parameterized in both $n$ and $s$).
+Method: ladder $L_0,L_1,\dots$ of problem classes of increasing $(n,s)$; at each rung record
+(i) the minimum number of gates/wires needed to build the relevant functions and (ii) the best rigorous lower bound on solving CSAT.
+Wires counted: $W=$ number of gate-input connections ($=2s$ for fan-in 2), plus output wire.
+
+\section{Rung ledger}
+\subsection{Rung 0: $n=1$}
+Functions: $0,1,x$ (0 gates), $\neg x$ (1 gate). CSAT is decided by evaluating at 2 points. (COMPUTATIONAL, exact.)
+\subsection{Rung 1: $n=2$}
+All 16 functions: 4 need 0 gates, 12 need exactly 1 gate (XOR and XNOR are single $B_2$ gates). Max $=1$.
+\subsection{Rung 2: $n=3$}
+Exact minima over $B_2$ (exhaustive, \texttt{experiments/claude\_circuitsat/min\_circuit\_b2.py},
+data \texttt{results/raw/claude\_circuitsat/min\_circuit\_b2.json}):
+\begin{center}\begin{tabular}{lcccccc}\toprule
+gates & 0&1&2&3&4 & total\\ \midrule
+\# functions on 3 vars & 5 & 33 & 114 & 80 & 24 & 256\\ \bottomrule\end{tabular}\end{center}
+So $C_{B_2}(f)\le 4$ for all $f$ on 3 variables (COMPUTATIONAL). The size-4 class includes the hardest functions (e.g.\ majority-type).
+
+\section{Proved elementary lemmas}
+\begin{lemma}[connectivity, PROVED/EXACT]\label{l:conn}
+If $f$ depends on all $n$ inputs, any fan-in-2 circuit computing $f$ has $\ge n-1$ gates and $\ge 2(n-1)$ gate-input wires.
+\end{lemma}
+\begin{proof} Every relevant input has a path to the output; the circuit's DAG restricted to the cone is connected with $n$ sources and a single sink, and each gate has $\le2$ in-edges, so by induction on gates a cone with $g$ gates reaches $\le g+1$ distinct inputs. Hence $g\ge n-1$. Tight for $\mathrm{AND}_n$ and parity over $B_2$.\end{proof}
+
+\begin{lemma}[read lower bound for CSAT, PROVED/EXACT]\label{l:read}
+In the model where a circuit with $s$ gates is given as read-only wire list, every deterministic algorithm deciding CSAT must read $\Omega(s)$ positions (precisely, at least one description cell per gate in a chain instance).
+\end{lemma}
+\begin{proof} Take $C=\mathrm{AND}$-chain $g_i=g_{i-1}\wedge x_{i}$, satisfiable. Replace gate $i$'s second operand by constant $0$: unsatisfiable. The two instances differ only in cell(s) of gate $i$; an algorithm not reading them cannot distinguish. So all $s$ gates' cells are read. \end{proof}
+Remark: this is an input-reading bound only; it gives $T(n,s)=\Omega(s)$, trivially. (Brute force gives $O(2^n s)$.)
+
+\section{Parameterized bound ledger}
+\begin{center}\begin{tabular}{p{4.4cm}p{3.2cm}p{5.2cm}}\toprule
+Statement & Status & Note\\ \midrule
+$T(n,s)=\Omega(s)$ & PROVED (Lem.~\ref{l:read}) & trivial\\
+$T(n,s)=O(2^n s)$ & KNOWN THEOREM & brute force\\
+Size lower bounds $\approx 3n-o(n)$, improved to $\approx 3.1n$ (Li--Yang 2022) for explicit $B_2$ functions via gate elimination & KNOWN THEOREM (cite to be re-verified) & lower bounds on circuit \emph{size}, not on CSAT time\\
+No $2^{(1-\epsilon)n}\mathrm{poly}(s)$ algorithm & CONDITIONAL on SETH & not unconditional\\
+Superlinear unconditional $T(n,s)$ for CSAT in a general model & OPEN & the target\\ \bottomrule\end{tabular}\end{center}
+
+\section{Bridge: size lower bound vs.\ CSAT time}
+A size lower bound for an explicit $f$ is not a time lower bound for CSAT. Candidate bridge (CANDIDATE, unproved): restrict algorithms to ``wire-local'' ones that decide CSAT by successive gate eliminations/substitutions; then each rung's minimal-wire count bounds the number of elimination steps. Needs a theorem relating arbitrary algorithms to this model; unlikely without new ideas (relativization/natural-proofs barriers apply).
+
+\section{Repository cross-reference}
+Checked repo \texttt{j15marti/pnp} (AGENTS.md, \texttt{main.tex}, research/): active spine is ARC/FLMV time--space contraction; P vs NP OPEN there too. No existing circuit-SAT ladder file. Reusable: SIL/M22 parameterized resource ladder (\texttt{research/language/2026-10-25\_0005\_SIL\_M22\_PARAMETERIZED\_RESOURCE\_LADDER.md}) as a model for parameterized ledgers; no direct transfer yet (CANDIDATE).
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend exact minimum-wire table to $n=4$ (65536 functions; use NPN-class reduction, chunked runs $<30$s).
+\item Track minimal wire counts of CSAT \emph{instances} (not just functions): fan-out constraints, depth-bounded variants.
+\item Study gate-elimination as a restricted-algorithm lower bound for CSAT (bridge above).
+\item Verify literature citations via search.
+\end{enumerate}
+\end{document}
