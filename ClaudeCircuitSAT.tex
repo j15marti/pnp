@@ -1,0 +1,54 @@
+% ClaudeCircuitSAT living document
+% Updated: 2026-10-26 (run 1)
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{A Parametrized Lower-Bound Ladder for \CSAT}
+\author{ClaudeCircuitSAT (living document)}
+\date{Last updated 2026-10-26}
+\begin{document}\maketitle
+\fbox{\parbox{0.95\linewidth}{\textbf{Status: P versus NP remains OPEN.} Nothing here is a superlinear unconditional lower bound for \CSAT; the ladder records exact small cases, provable linear/parametrized bounds, and the precise point where the method stops. Labels: PROVED, COMPUTATIONAL, KNOWN, CONDITIONAL, OPEN.}}
+
+\section{Model and parameters}
+An instance is a fan-in-2 circuit $C$ over $B_2$ with $n$ inputs, $g$ gates, $w=2g$ wires (plus output marker); size $m=\Theta(g\log(g+n))$ bits. Decision: $\exists x\,C(x)=1$. Parameters: $(n,g)$ and, in the ladder, the \emph{wire ledger} $W(C)$ = number of gate-input connections that are not redundant. Solver model: deterministic RAM/TM with random-access read-only input.
+
+\section{Ladder}
+\paragraph{Level 0 ($g=0$).} $C$ is a literal or constant. \CSAT\ is decided with $O(1)$ reads. Wires $0$.
+
+\paragraph{Level 1 ($g=1$).} Output $=h(\ell_1,\ell_2)$, $h\in B_2$. Exactly $6$ of $16$ two-variable functions need $0$ gates and $10$ need $1$ gate (COMPUTATIONAL, matches theory); 2 wires needed for any function depending on both inputs. Satisfiability is a table lookup.
+
+\paragraph{Level $k$: connectivity bound.}
+\begin{lemma}[PROVED] If the output of a fan-in-2 circuit depends on all $n$ inputs, then $g\ge n-1$ and $w=2g\ge 2(n-1)$.\end{lemma}
+\begin{proof} Each input lies on a directed path to the output, so the underlying graph on $n+g$ nodes is connected: $2g\ge n+g-1$ edges, so $g\ge n-1$ (tight for AND/OR/XOR trees).\end{proof}
+\textbf{Exact data} (COMPUTATIONAL, \texttt{experiments/claude\_circuitsat/ladder.py}, exhaustive iterative-deepening over all circuits with free negation, gates $\{\wedge,\vee,\oplus\}$): minimum gate counts over all functions of $n\le3$ inputs:
+\begin{center}\begin{tabular}{c|ccccc|l}
+$n$ & 0 & 1 & 2 & 3 & 4 & AND/XOR/MAJ\\\hline
+1 & 4 &&&&& 0/0/--\\
+2 & 6 & 10 &&&& 1/1/--\\
+3 & 8 & 30 & 114 & 80 & 24 & 2/2/4
+\end{tabular}\end{center}
+(counts of functions per size; totals $4,16,256$.) The bound of the Lemma was checked with $0$ violations. The maximum for $n=3$ is $4$ (MAJ$_3$ is a maximizer), so $g_{\max}(1),g_{\max}(2),g_{\max}(3)=0,1,4$. Runtime note: the $n=3$ stage takes $\approx100$ s; it is a single self-contained stage and $n=4$ is deliberately not attempted without a different (SAT-based) algorithm and checkpointing.
+
+\section{Lower bounds for the decision problem}
+\begin{theorem}[PROVED, linear in $g$] Any deterministic algorithm (indeed any randomized with error $<1/2$ up to constant) deciding \CSAT\ on circuits with $n$ inputs and $g$ gates must read $\Omega(g)$ bits of the description in the worst case, for every $g\ge n$.\end{theorem}
+\begin{proof}[Sketch] Take the AND tree on $x_1..x_n$ padded with $g-n+1$ chain gates $y_{i+1}=y_i\wedge (x_{j_i}\vee \neg x_{j_i})$ (always true). Replace one chosen connection by constant $0$: the circuit becomes unsatisfiable. The $\Omega(g)$ positions are distinguishable only by reading them (adversary).\end{proof}
+This is the \emph{query} bound; it uses only that the input must be read and says nothing about the $2^{\Omega(n)}$ regime.
+
+\paragraph{Parametrized form.} With $n$ the parameter: trivial algorithm $O(2^n g)$; Schöning-type/structure-exploiting algorithms for circuits of bounded treewidth $t$ run in $O(2^{t}\,g)$ (KNOWN; dynamic programming over a tree decomposition), so any lower bound must exploit \emph{wire congestion} (treewidth/cutwidth of the wire graph) rather than $n$ alone. Ledger conjecture to test: hardness of \CSAT\ is governed by the pair $(\text{cutwidth},g)$. Status: CONDITIONAL (SETH: no $2^{(1-\varepsilon)n}\mathrm{poly}(g)$ algorithm, KNOWN as implication of SETH, not a theorem).
+
+\section{Where the ladder stops}
+Gate elimination on explicit functions gives $3.5n-o(n)$ (Mishra--Santhanam, per \texttt{GROKPROOF/main.tex}); this bounds the \emph{circuit complexity of a function}, not the time of a \CSAT\ algorithm. The step from linear $g$ to $2^{\Omega(n)}$ is OPEN and equivalent in strength to $\mathrm P\neq\mathrm{NP}$ for $n=\Theta(\log g)$-style regimes; the repository's route (ARC/FLMV, charged transport, \texttt{research/}) is an OPEN program with no verified contradiction.
+
+\section{Next steps (OPEN)}
+\begin{enumerate}
+\item Extend exact table to $n=4$ via SAT-based exact synthesis (chunked by size) and tabulate the wire ledger (fan-out distribution) of minimum circuits.
+\item Study cutwidth-parametrized adversaries for \CSAT\ with $\mathrm{cw}=k$: is $\Omega(2^{k}g)$ provable in a restricted (e.g.\ DPLL/resolution) model? Link to repository proof-complexity notes.
+\item Check repository ARC/FLMV charged-ledger for reusable accounting lemmas.
+\end{enumerate}
+\section*{Log}
+\begin{itemize}\item 2026-10-26 run 1: created document; exact $n\le3$ table; connectivity lemma; linear read bound; no new superlinear bound.\end{itemize}
+\end{document}
