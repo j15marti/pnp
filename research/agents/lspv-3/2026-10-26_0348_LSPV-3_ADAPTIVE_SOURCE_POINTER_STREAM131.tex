@@ -1,0 +1,117 @@
+% LSPV-3 REPORT::ADAPTIVE-SOURCE-POINTER-STREAM131::2026-10-26T03:48:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=.87in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\UNSAT}{\mathsf{UNSAT}}
+\title{ADAPTIVE-SOURCE-POINTER-STREAM131:\\Source-Audited UNSAT Trees with Partial 2CNF Leaves\\\large Exact both-label semantics, a low-space streamed verifier, and signed exact-$(2,2)$ products}
+\author{LSPV-3: Adaptive Certificate Coverage and Semantic Correctness}
+\date{26 October 2026, Los Angeles}
+\begin{document}\maketitle
+\begin{center}
+\textbf{PROVED/EXACT restricted certificate theorem and verifier upper bounds; independent review pending.}\\
+\textbf{COMPUTATIONAL: 198 explicit assertion groups, zero discrepancies, seed 13120261026.}\\
+\textbf{OPEN: all-UNSAT affordable coverage, near-boundary seed, ARC-EDGE-90, P versus NP.}
+\end{center}
+
+\section{Target, quantifiers, and four falsifiers}
+Target an all-input sound adaptive refutation grammar for canonical ordinary proper signed three-CNF, including strict signed exact-$(2,2)$ sources. Preserve original source names, actual clause offsets, both branch values, complete validation, and a separately charged bit-index/writable-space ledger. Never turn an adaptive certificate into an arbitrary-algorithm decision lower bound. The four hypotheses registered before checking primary sources were:
+\begin{description}
+\item[] H1: Original source byte offsets and authenticated implication paths permit verifying UNSAT leaves without buffering the whole residual or graph. \textbf{PROVED/EXACT restricted}.
+\item[] H2: A contradictory source-authenticated residual 2CNF \emph{subcollection} can certify a terminal even if unrelated residual original clauses still have width three. \textbf{PROVED/EXACT}.
+\item[] H3: An $\Omega(n)$ \emph{global} strong-2CNF hitting backdoor forces all adaptive refuters to explore exponentially many leaves or call a parent-size SAT oracle. \textbf{FALSIFIED as an inference}, by the disjoint signed exact-$(2,2)$ $W_1$ product.
+\item[] H4: All UNSAT instances thereby acquire near-boundary small certificates. \textbf{OPEN}; the proved completeness construction is exponential.
+\end{description}
+No theorem here presupposes a deterministic SAT decider of exponent $1.802$. Under $P=NP$ only some finite unknown polynomial exponent follows.
+
+\section{Source authentication and typed grammar}
+Let $F=C_1\wedge\cdots\wedge C_m$ be an ordinary signed proper 3CNF of input bit length $N$, canonically encoded as one proper three-distinct-variable clause per ASCII line, signed decimal IDs, terminating zero and newline, and one consistent complete \texttt{p cnf n m} header. This encoding restriction is explicit; a model-preserving normalizer for every alternative ordinary encoding is not supplied. The source index of a clause is the physical first-byte offset $p$ in the immutable read-only input. An initial streaming pass validates all clause lines and counts in $O(N\operatorname{polylog}N)$ time and $O(\log N)$ working/index bits. Each later certificate offset is authenticated against the actual clause-line start, predecessor newline, source header boundary, three signed literals and zero terminator. Thus a purported ordinal or edge table never substitutes for authenticated source bytes.
+
+A full binary certificate tree uses:
+\begin{description}
+\item[] $\mathsf{BRANCH}(x,P_0,P_1)$ for an original name $x$ not assigned earlier on this path, with both recursively verified restrictions $x=0$ and $x=1$. The only shared names are their literal original source names.
+\item[] $\mathsf{EMPTY}(p)$ when all literals of the authentic source clause at $p$ are false under the cumulative original-variable assignment $\sigma$.
+\item[] $\mathsf{PATH}(x,\gamma_+,\gamma_-)$ where $x\notin\operatorname{dom}\sigma$ and authenticated implication paths go $x\leadsto\neg x$ and $\neg x\leadsto x$. Every edge record $(p,u,v)$ is valid only if the \emph{actual} residual of source clause $C_p$ under $\sigma$ is a unit $(a)$ authorizing $\neg a\to a$ or a pair $(a\vee b)$ authorizing $\neg a\to b$ or $\neg b\to a$. A satisfied, empty, or still-ternary clause authorizes no edge. Require each path to contain at most $2n-1$ edges, paying their source-index reads and every endpoint/control operation.
+\end{description}
+Not every residual clause must be binary. The terminal uses a certified \emph{subset} of clauses, not an arbitrary unverifiable source-to-child lifting promise. There are no free SAT/UNSAT statuses or calls to $A$.
+
+\begin{theorem}[Soundness and complete but unbounded coverage]\label{th:coverage}
+For every valid canonical proper signed 3CNF source $F$ and every finite proof string $\pi$,
+\[
+F\in\SAT\ \Longrightarrow\ \forall\pi\quad V(F,\pi)=0.
+\]
+For every such source $F\in\UNSAT$ there is a finite accepted $\pi$:
+\[
+F\in\UNSAT\ \Longrightarrow\ \exists\pi\quad V(F,\pi)=1.
+\]
+No polynomial upper bound on $\lvert\pi\rvert$ is proved.
+\end{theorem}
+\begin{proof}
+If an $\mathsf{EMPTY}$ leaf passes, $F\land\sigma$ has an empty clause. If a $\mathsf{PATH}$ leaf passes, the source-identified residual width-at-most-two clauses have authenticated directed paths from $x$ to $\neg x$ and back. The standard implication-graph criterion implies that this subset is UNSAT; adding untouched ternary clauses cannot restore SAT. A $\mathsf{BRANCH}$ node is UNSAT when \emph{both} of the disjoint exhaustive restrictions $x=0$ and $x=1$ are UNSAT. Induct on the checked tree. If $F$ were SAT, follow an actual satisfying source assignment through each claimed branch; its terminal cannot be authenticated, proving the universal SAT-side quantifier.
+
+Conversely, for any UNSAT $F$, branch on every original variable in order. Every complete Boolean assignment falsifies at least one authentic original clause; use its byte offset as an $\mathsf{EMPTY}$ leaf. A full $n$-level tree has $2^n$ leaves. This proves existential coverage with no claim of an affordable all-UNSAT proof family.
+\end{proof}
+
+\begin{theorem}[Fully charged streamed verifier]\label{th:resources}
+Suppose a candidate proof has $B$ internal binary nodes, $L=B+1$ terminals, $E$ total implication-edge records, maximum branch depth $h$, and proof bit length $P$. In an indexed read-only-input bit model, a sequential proof-stream implementation has
+\[
+T_V=O\left(N\operatorname{polylog}N+(B+L+E)(h+1)\operatorname{polylog}(N+P)\right),
+\]
+\[
+S_{V,\mathrm{peak}}=O\left((h+1)\log(N+P)\right)
+\]
+writable/index bits, including live ancestors, each source offset, all branch-control data, and each checked path vertex. This is not a physical FLMV claim about the independent Python audit. Checking the separate signed exact-$(2,2)$ membership promise is unnecessary because the verifier is sound for \emph{all} proper 3CNF; a separate low-space occurrence audit could require quadratic rescanning time.
+\end{theorem}
+\begin{proof}
+A streaming syntactic pass checks header, exact source line grammar and clause count using only counters and three $O(\log N)$-bit literals. The verifier traverses a bracketed prefix proof stream depth first. Each live branch retains one original variable, assigned bit and parser state, so at most $h$ stack frames are live. A leaf reads at most one source line per authenticated edge through its physical pointer, evaluates its at most three literals by scanning at most $h$ ancestor assignments, validates the implication endpoints, and increments a signed-path length counter. Every changed/unchanged write, random source read, source-index control, proof token and restart is charged by the conservative per-record factor. No residual, implication graph, full proof or source-to-offset directory is retained in writable workspace. On malformed input or timeout, return invalid. Bracket and child-count checks prevent omitted branch subtrees.
+\end{proof}
+
+\begin{corollary}[Conditional coNTIME transfer only]\label{co:clock}
+If every UNSAT $N$-bit source had some accepted proof with $(B+L+E)\le N^{a+o(1)}$ and $h\le N^{\delta+o(1)}$, with globally clocked encoding, then this grammar gives a co-nondeterministic SAT refuter of time
+\[
+N^{\max(1,a+\delta)+o(1)}
+\]
+in the same matched random-access model (subject to implementation transport). A branch guesses proof symbols as a stream and \emph{rejects SAT} only if the whole UNSAT proof is verified; malformed or timed-out guesses \emph{accept}. On SAT, all branches accept; on UNSAT, one branch rejects. The bound on accepted proofs for \emph{all} UNSAT sources is currently \textbf{OPEN}. For a separate deterministic seed with $d=901/500$, the source-verified two-algorithm theorem requires strict $c<651000/361301=1.8018217497\ldots$; neither this $d$ nor the necessary $a,\delta$ follows from $P=NP$.
+\end{corollary}
+
+\section{Strict signed exact-$(2,2)$ products and a genuinely earlier terminal}
+Let $W_1$ be the fifteen-variable, twenty-clause minimally UNSAT proper signed exact-$(2,2)$ source identified in PCRETRACT1 and tested in BACKDOOR-SCC-CERT130. Its five-variable set $B_1=\{2,4,7,14,15\}$ hits all twenty source clauses. For each of the $32$ assignments to $B_1$, the residual of that first component is an UNSAT 2CNF, so two source-authenticated implication paths exist by the classical 2SAT criterion. For each integer $q\ge1$, the variable-disjoint product $W_1^{\dot\cup q}$ is still strict exact-$(2,2)$ and has minimum whole-source hitting backdoor $5q$. Nonetheless the adaptive partial-subformula certificate branches only on the \emph{first} five original names, ignores untouched ternaries of the other $q-1$ copies, and has at most 32 terminals and depth five, with no guest $A$ calls. The completed full-input grammar check still scans all $N$ original bits. Therefore this explicit easy family admits $N^{1+o(1)}$ streamed verification time and $N^{o(1)}$ writable/index space; no analogous universal bound is implied.
+
+The deterministic reproducer actually stopped early and found 28 leaves, 55 total nodes, 536 authenticated edge records, and depth five for $W_1$, $W_1^{\dot\cup2}$ and $W_1^{\dot\cup4}$. Source sizes were 226, 476 and 976 DIMACS bytes; the added copies retained respectively zero, 20 and 60 untouched original ternaries. These figures are \textbf{COMPUTATIONAL}, not a claimed minimal tree. A disjoint signed exact-$(2,2)$ SAT gadget $G$ left four source ternaries untouched with the same UNSAT proof; a pair of opposite PIN gadgets plus disjoint $G$ admitted a valid two-leaf depth-one tree while every $G$ clause remained ternary. The old \emph{global} strong-backdoor rule would have to account for those clauses: the new partial-subformula leaf does not.
+
+For audit of two genuine descendant levels, the canonical $W_1$ source of 226 bytes reduces under $(x_2,x_4)=(0,0)$ to an ordinary 173-byte CNF with 16 clauses, then under $(x_7,x_{14},x_{15})=(0,0,0)$ to a 93-byte CNF with ten clauses, all with regenerated proper headers and preserved original names in remaining literals. These ordinary descendants are independent controls; the streamed proof format need not materialize them and does not thereby prove any favorable guest-$A$ child-size bound.
+
+\section{Executable hostile controls and status}
+The standalone no-dependency Python audit ran twice with identical raw JSON payloads, deterministic seed \texttt{13120261026}, and 198 counted assertion groups without discrepancies. It checks the original strict signed $W_1$, 24 sign-swapped source-degree controls, a SAT signed $(2,2)$ 3-variable gadget, twelve random signed regular six-variable sources, odd/even $K_4$ and cubic Petersen Tseitin sources, Horn-like opposite PINs, genuine identity versus false fresh-source-name alias, missing child branches, truncated proof streams, bad line-offset pointers and forged implication edges. The prover constructs paths independently by graph search; the checker reads source clauses afresh, without trusting the prover's edges. Finite tests do not establish asymptotic physical bit-time or peak memory.
+
+For optional exact $A$-guest leaves of encoded lengths $m_i$ the previously proved weighted inequality remains
+\[
+\sum_i m_i^d\le M^{d-1}V,\quad M=\max_i m_i,\quad V=\sum_i m_i,
+\]
+subject to materialization and per-probe overhead. Here the certificate uses \emph{zero} $A$ guests and claims no universal $(M,V,r,u)$ bound. Its representation is syntactic and relativizing. Circuit hardware, temporal flips, PC degree, indexed memory and cumulative bit-time cannot be substituted for one another.
+
+\paragraph{CORPUS REVIEWED.}
+Root \texttt{main.tex}, \texttt{main13.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, pnp-research skill; Role-3 SOURCE-SUPPORT126, SOURCE-CUT-ENTROPY127, QBF-BARRIER128, AFFINE-HELLY129 and BACKDOOR-SCC-CERT130; Role-5 SKOLEM-VALIDATION159/CERTIFICATE-COVERAGE155; Role-1 CERTIFICATE-TWOALGO-GATE179/ARC184; relevant Roles 2/4 circuit/access controls; PCRETRACT1 and source-named historical searches. Drive's \emph{Adaptive Certificate Ladder Stress Test} was located by ID, not freshly content-extracted in this run. Historical search was relevance-scoped, not a claim of exhaustive byte-by-byte archive inspection. Repository-wide preflight was not run without a checkout.
+
+\paragraph{DUPLICATION/CONTRADICTION AUDIT.}
+BACKDOOR-SCC-CERT130 already supplied a complete strong-backdoor SCC grammar with an eager $N^{1+o(1)}$ workspace upper bound. The classical implication-path/SCC theorem belongs to Aspvall--Plass--Tarjan. The new verified link permits authenticated \emph{partial-subformula} SCC terminals with arbitrary surviving ternaries and derives the streamed-workspace bound. The disconnected $W_1$ product is now refuted without guest calls. No conflict with the $\Pi_2^P$ generic source-to-child lifting hardness of QBF-BARRIER128: only literal original source clauses are authenticated, never an arbitrary semantic lift.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+Replace any suggestion that all residual clauses must be 2CNF for a source-derived SCC terminal by the sound authenticated-subset rule. Add the streaming verifier time/peak-space lemma and the $A$-free fixed-component product example. Keep bounded all-UNSAT coverage, near-boundary seed, ARC-EDGE-90 and P versus NP \textbf{OPEN}.
+
+\paragraph{ADOPTED / REJECTED / RETIRED.}
+Adopt original identities, immutable clause-offset authentication, both-branch coverage and actual bit costs. Reject free solver answers, unverified source-to-child maps, compulsory global backdoor exploration, hidden graph buffers and the inference from certificate existence to polynomial verification on all UNSAT inputs. No existing valid lower bound is retired.
+
+\begin{thebibliography}{9}
+\bibitem{APT} B. Aspvall, M. Plass, R. Tarjan, \emph{A linear-time algorithm for testing the truth of certain quantified Boolean formulas}, IPL \textbf{8} (1979), 121--123, \url{https://doi.org/10.1016/0020-0190(79)90002-4}.
+\bibitem{NRS} N. Nishimura, P. Ragde, S. Szeider, \emph{Detecting Backdoor Sets with Respect to Horn and Binary Clauses}, SAT 2004, \url{https://www.satisfiability.org/SAT04/programme/51.pdf}.
+\bibitem{SS} M. Samer, S. Szeider, \emph{Backdoor Trees}, AAAI 2008, \url{https://ocs.aaai.org/Library/AAAI/2008/aaai08-057.php}.
+\bibitem{FLMV} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas, \emph{Time-Space Lower Bounds for Satisfiability}, JACM \textbf{52} (2005), \url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{VM} D. van Melkebeek, \emph{Survey of Lower Bounds for Satisfiability and Related Problems}, \url{https://eccc.weizmann.ac.il/report/2007/099/download}.
+\bibitem{Project} Project originals: PCRETRACT1, CUBICCOVER75, BACKDOOR-PRODUCT-FIREWALL97, BACKDOOR-SCC-CERT130, QBF-BARRIER128 and AFFINE-HELLY129.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-3::ADAPTIVE-SOURCE-POINTER-STREAM131
