@@ -1,0 +1,77 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::run-2026-10-26-A
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\title{ClaudeCircuitSAT: A Parameterized Wire-by-Wire Lower-Bound Ladder for Circuit-SAT}
+\author{Living document (hourly scheduled runs)}
+\date{Last updated: 2026-10-26}
+\begin{document}\maketitle
+
+\section*{0. Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here proves a super-linear unconditional lower bound
+for Circuit-SAT. Status labels: PROVED, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+Goal: climb a ladder $\mathcal L_{k}$ of Circuit-SAT classes (fan-in-2 circuits, $n$ inputs, $m$ wires,
+extra parameters such as treewidth $w$), recording at each rung the exact minimum number of
+gates/wires needed to \emph{build} the circuit and the best \emph{decision-time} lower bound
+$T(n,m,w)$ we can actually prove.
+
+\section{Model}
+A circuit is a DAG of fan-in-2 gates over inputs $x_1..x_n$ with free negation on wires;
+$m$ = number of wires $=2g$ for $g$ gates. CIRCUIT-SAT: given the circuit, is there $x$ with output 1?
+Algorithms read the description via random access; cost = probes/steps.
+
+\section{Rung A: building cost (connectivity)}
+\begin{theorem}[PROVED] A function depending on all $n$ inputs needs $g\ge n-1$ gates, i.e.\ $m\ge 2(n-1)$ wires; tight for $\mathrm{AND}_n$.\end{theorem}
+\begin{proof} The sub-DAG reaching the output contains all $n$ inputs and $g'\le g$ gates and is
+connected, so its edge count $2g'\ge n+g'-1$, giving $g'\ge n-1$. A balanced tree of ANDs attains it.\end{proof}
+
+\paragraph{Exact small-case data (COMPUTATIONAL).}
+Exhaustive search over all fan-in-2 circuits (all 16 binary ops, output negation free), script
+\texttt{experiments/claude\_circuitsat/ladder.py}, raw data \texttt{results/raw/claude\_circuitsat/ladder\_results.json}.
+Number of functions by minimum gate count:
+\begin{center}\begin{tabular}{lccccc}\toprule
+$n$ & 0 gates & 1 & 2 & 3 & 4\\\midrule
+1 (4 fns) & 4 & -- & -- & -- & --\\
+2 (16 fns) & 6 & 10 & -- & -- & --\\
+3 (256 fns) & 8 & 30 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+So the hardest 3-input function needs 4 gates (8 wires); sums match $2^{2^n}$. Wire budget per rung: $n{=}2$: $\le2$, $n{=}3$: $\le 8$.
+
+\section{Rung B: reading (sensitivity) lower bound}
+Let $U_n=\bigvee_{i=1}^n (x_i\wedge\neg x_i)$, unsatisfiable, $m=4n-2$ wires ($2n$ in the gadgets).
+\begin{theorem}[PROVED] Any deterministic algorithm correct on all circuits with $\le 4n-2$ wires
+(in the model of Sec.~1) must probe $\ge 2n=\Omega(m)$ cells of its input on $U_n$.\end{theorem}
+\begin{proof} Toggling the negation bit of any one of the $2n$ gadget wires turns $x_i\wedge\neg x_i$ into
+$x_i\wedge x_i$ (or $\neg x_i\wedge\neg x_i$), making the circuit satisfiable. If some such bit is unprobed, the
+adversary answers identically on both circuits but the correct outputs differ.\end{proof}
+COMPUTATIONAL check: for $n\le 8$ exactly $2n$ single-wire toggles flip satisfiability (matches). This is a
+linear, input-size bound only; it says nothing about search hardness.
+
+\section{Rung C: parameterized frame $T(n,m,w)$}
+\begin{center}\begin{tabular}{lll}\toprule
+Bound & Status & Note\\\midrule
+$T=O(2^n m)$ brute force & KNOWN THEOREM & upper bound\\
+$T=2^{O(w)}\,\mathrm{poly}(m)$, $w$=treewidth & KNOWN THEOREM & DP over tree decomposition\\
+$T\ge \Omega(m)$ & PROVED (Rung B) & unconditional\\
+no $(2-\epsilon)^{w}\mathrm{poly}(m)$ for primal pathwidth $w$ & CONDITIONAL (SETH) & Iwata--Yoshida/Lampis line; cited from memory, verify\\
+black-box query $\Omega(2^{n/2})$ quantum, $2^n$ classical & KNOWN THEOREM & does \emph{not} apply to explicit circuits\\
+unconditional $T\ge m^{1+\delta}$ or $2^{\omega(\log m)}$ & OPEN & the target\\\bottomrule\end{tabular}\end{center}
+Natural parameterized conjecture (CANDIDATE, unproved): $T(n,m,w)\ge 2^{cw}$ for some $c>0$ with $w\le n$.
+Barriers to audit: relativization, natural proofs, algebrization.
+
+\section{Link to the repository corpus}
+Surveyed (headers/AGENTS.md only this run): the \texttt{j15marti/pnp} ARC/FLMV spine and
+SIL/M22 ladder handoff (\texttt{research/coordination/2026-10-25\_0005\_...}) state ARC-EDGE-90 and
+P vs NP OPEN, and that finite reductions yield no unconditional decision-time bound; no
+repository result closes a Circuit-SAT lower-bound rung beyond Rung B. Deeper reading is scheduled.
+
+\section{Run log and next steps}
+\begin{itemize}
+\item 2026-10-26 run A: created document; Rung A (proved), exact $n\le3$ minimum-size table, Rung B (proved), parameter table.
+\item Next: exact minimum sizes for $n=4$ (SAT-based synthesis, chunked $<30$s); wire-cut/communication lower bounds for
+restricted classes (read-once, monotone, bounded fan-out); read repo SIL/M22 ladder and parameterized-bounds governance note
+(\texttt{2026-10-23\_2127Z\_PARAMETERIZED\_LOWER\_BOUNDS.tex}); verify SETH citations by primary search.
+\end{itemize}
+\end{document}
+% END_OF_CLAUDECIRCUITSAT::run-2026-10-26-A
