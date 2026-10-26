@@ -1,0 +1,58 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT::2026-10-26
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{thm}{Theorem}\newtheorem{lem}{Lemma}\newtheorem{prop}{Proposition}
+\title{Claude Circuit-SAT Lower-Bound Ladder (living document)}
+\author{Hourly scheduled routine; repository \texttt{j15marti/pnp}}
+\date{Last updated 2026-10-26 (run 1)}
+\begin{document}\maketitle
+\section*{Status (strict labels)}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial lower bound for Circuit-SAT. This document builds a ladder: smallest circuit families, wire-by-wire accounting, then parameterized bounds. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model}
+A circuit is an And-Inverter Graph (AIG): inputs $x_1..x_n$; gate $g_k=\ell_a\wedge\ell_b$ with literals $\ell=$ node or its negation (negation is a free edge label). One output (last gate). Size $s$ = gates, wires $w=2s$ (gate-input edges). The instance is the wire list; the decider reads it (indexed read-only random access).
+\emph{Locally nondegenerate} (LND): each gate's two literals lie on distinct nodes, and no two gates are identical (structural hashing). This excludes $x\wedge\neg x$ being a one-gate witness; it is the minimal hygiene a ``non-trivially unsatisfiable'' instance must satisfy. \emph{Reduced}: every node lies in the output cone.
+
+\section{Rung 1: minimal connections for an UNSAT instance}
+Let $u(n)$ be the least number of gates of a reduced LND UNSAT AIG with $n$ inputs.
+\begin{thm}[PROVED/EXACT] For $n\ge 2$, $u(n)=n$ (so $2n$ wires); $u(1)$ is undefined (no reduced LND AIG on one input exists).\end{thm}
+\begin{proof}
+\emph{Upper:} $g_1=x_1\wedge x_2$, $g_k=g_{k-1}\wedge x_{k+1}$ ($k\le n-1$), $g_n=g_{n-1}\wedge\neg x_1$. LND, reduced, equals $0$.
+\emph{Lower:} reducedness and connectivity force $\ge n-1$ gates. With exactly $n-1$ gates there are $n+(n-2)$ non-output nodes, each with out-degree $\ge1$ (reduced), but only $2(n-1)$ edges, so every out-degree is exactly $1$: the circuit is a read-once tree on distinct variables. By induction (children have disjoint variable sets, each non-constant, so any AND of literals of them is satisfiable) it is satisfiable. Hence an UNSAT reduced LND AIG needs a node of fan-out $\ge 2$, giving $\ge n$ gates. $n=1$: a single input cannot feed a gate with two distinct nodes.
+\end{proof}
+\begin{prop}[COMPUTATIONAL, \texttt{experiments/claude\_circuitsat/min\_unsat\_aig.py}, raw: \texttt{results/raw/claude\_circuitsat/min\_unsat\_aig.json}]
+Exhaustive search gives min gates $=2$ for $n=2$ (8 circuits) and $3$ for $n=3$ (240 circuits), $n=1$ none, matching the theorem. ($n=4$ not run: enumeration exceeds the 30\,s rule; would need chunking by first gate.)\end{prop}
+\textbf{Structural lesson.} Hardness needs \emph{reconvergent fan-out}. Define the cyclomatic number $r=w-(\text{nodes}-1)$ of the cone's underlying undirected graph. Read-once means $r=0$; the minimal UNSAT witness has $r=1$ ($w=2n$ edges on $2n$ nodes, so $r=2n-(2n-1)=1$).
+
+\section{Rung 2: reading lower bound for deciding (trivial but exact)}
+\begin{prop}[PROVED/EXACT, adversary] Any deterministic algorithm deciding LND-circuit satisfiability on the chain family $F_n$ (chain of $n$ distinct literals $\ell_1..\ell_n$ conjoined; SAT iff no variable appears with both polarities) must read $\Omega(n)$ wire entries: if some entry $j$ is unread, the adversary answers consistently with a SAT instance, and changing the unread literal to the negation of another literal's variable (when $n\ge2$) yields an UNSAT instance with identical read values.\end{prop}
+Caveat: this only gives $\Omega(\text{input size})$, i.e.\ no more than reading the input. It is the base rung; it does not separate P from NP.
+
+\section{Rung 3: parameterized upper and lower shape}
+Let $r$ be the cyclomatic number of the circuit.
+\begin{prop}[PROVED/EXACT upper bound] Circuit-SAT is decidable in time $2^{O(r)}\cdot\mathrm{poly}(s)$: delete $\le r$ edges to leave a forest (spanning forest of the underlying graph), guess the Boolean value on each deleted edge's source, then propagate/solve the resulting tree-structured constraint system in linear time and check consistency of the guesses.\end{prop}
+(Same style gives $2^{O(\mathrm{tw})}$ via dynamic programming over a tree decomposition.) 
+\begin{prop}[CONDITIONAL / KNOWN-TYPE; to verify against primary literature] Under SETH, no $(2-\varepsilon)^{\mathrm{pw}}\mathrm{poly}$ algorithm for CNF-SAT of primal pathwidth \emph{pw} exists (Iwata--Yoshida line of work, recalled from memory; citation to be checked next run). Hence the parameterized shape $2^{\Theta(\mathrm{width})}$ is the conjectured tight lower bound; \textbf{unconditional lower bounds in the width parameter are OPEN.}\end{prop}
+
+\section{Ladder table (current)}
+\begin{tabular}{@{}llll@{}}\toprule
+Rung & Object & Bound & Status\\\midrule
+1 & min UNSAT reduced LND AIG, $n$ inputs & $n$ gates, $2n$ wires, $r=1$ & PROVED/EXACT\\
+2 & read lower bound on chain family & $\Omega(n)$ reads & PROVED/EXACT (trivial)\\
+3 & time in cyclomatic number $r$ & $2^{O(r)}$poly upper & PROVED/EXACT\\
+3 & matching lower bound in width & $2^{\Omega(\mathrm{width})}$ & CONDITIONAL (SETH)\\
+4 & unconditional super-linear decision bound & -- & OPEN\\\bottomrule\end{tabular}
+
+\section{Next rungs (plan)}
+\begin{enumerate}
+\item Compute minimal wires for UNSAT instances with required $r\ge k$ (``hardness certificates need $k$ independent reconvergences''): conjecture size $\ge n+\Omega(k)$; test by chunked enumeration for $n\le4$.
+\item Define a wire-by-wire potential: number of distinct subfunctions of the output with respect to a variable order (OBDD width) per wire cut; lower-bound cut width of UNSAT-hard families (Tseitin on expanders have linear width: known resolution/OBDD results, to cite).
+\item Read repository ARC/FLMV and SIL/M22 resource-ladder work (\texttt{research/language/2026-10-25\_0005\_SIL\_M22\_PARAMETERIZED\_RESOURCE\_LADDER.md}) and test whether its parameterized ledger matches the $(r,\mathrm{tw})$ ladder; no link established this run.
+\end{enumerate}
+\section{Repository cross-check (this run)}
+Root \texttt{main.tex} and governance state ARC/FLMV as the single spine with P vs NP OPEN; nothing in it was imported or relied upon here. Mentions of circuit-SAT in \texttt{research/agents/grok/} not yet reviewed.
+
+\section*{Log}
+Run 1 (2026-10-26): created document; proved $u(n)=n$; computational check $n\le3$; parameterized scaffold.
+% END_OF_CLAUDE_CIRCUITSAT
+\end{document}
