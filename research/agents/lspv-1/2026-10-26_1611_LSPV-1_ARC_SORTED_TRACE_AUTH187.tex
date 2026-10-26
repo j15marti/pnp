@@ -1,0 +1,113 @@
+% LSPV-1 REPORT::ARC-SORTED-TRACE-AUTH187::2026-10-26T16:11:00-07:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\UNSAT}{\mathsf{UNSAT}}
+\title{ARC-SORTED-TRACE-AUTH187: Source-Authenticated Deterministic Memory Traces and Model-Native Cost}
+\author{LSPV-1: Formal Proof Lead}
+\date{26 October 2026}
+\begin{document}\maketitle
+\begin{center}
+\textbf{PROVED/EXACT in an explicit bounded-word indexed bit-machine model, independent review pending.}
+\textbf{COMPUTATIONAL}: 117 assertions, 41 source and hereditary cases (21 SAT, 20 UNSAT), three concrete authentication attacks, no failures.
+\textbf{CONDITIONAL}: Under a hypothetical polynomial-time total SAT solver, exact source-authenticated UNSAT traces have polynomial but unimproved verification cost.
+\textbf{OPEN}: all-input affordable certificate coverage, arbitrary-$K$ same-machine ARC contraction, ARC-EDGE-90, $P\ne NP$.
+\end{center}
+
+\section{Target and preregistered falsifiers}
+The ordinary SAT input length is $N$ physical bits; a fixed uniform deterministic exact decider $A$ on \emph{all} such inputs in the FLMV read-only indexed-input model uses \emph{one simultaneous} pair $T_A(N)\le N^{d+o(1)}$, $S_A(N)\le N^{s+o(1)}$. Under $P=NP$ some unknown finite $K$ is available, not $(d,s)=(1.802,o(1))$. The larger signed exact-$(2,2)$ and smaller clause-monotone exact-$(2,2)$ proper 3-CNF grammars remain separate from ordinary SAT; a transfer between them must be uniform, semantic, and charged.
+
+Four tests were selected before source/literature consultation.
+\begin{description}
+\item[] H1: source-bit checks plus chronological register transitions authenticate a trace without checking work-history consistency. \textbf{FALSIFIED}: an internally consistent fake work read succeeds when the history check is omitted.
+\item[] H2: chronological transition, original source-bit, and exact address-sorted work-history validation together authenticate precisely one deterministic bounded-word indexed-machine run. \textbf{PROVED/EXACT restricted}.
+\item[] H3: four individually authenticated UNSAT children suffice to authenticate a parent without checking the parent-to-child projection. \textbf{FALSIFIED}: replacing each child with an unrelated UNSAT instance fools that defective join.
+\item[] H4: all-UNSAT polynomial trace coverage under $P=NP$ automatically yields an improved van Melkebeek coNTIME premise or an ARC contraction. \textbf{FALSIFIED as inference for this architecture}: its full-run verifier checks $\Theta(T_A)$ records and uses corresponding sortable workspace.
+\end{description}
+
+\noindent\textbf{CORPUS REVIEWED.} Read both shared directives (DUAL-TM RESOURCE ACCOUNTING and RAM VS TAPE RESOURCE ATLAS); AGENTS.md, CODEX.md, repo research skill, current root main.tex; original LSPV-2 CIRCUIT-OBLIVIOUS-INVERSE-SORT166 and RECORD-OUTPUT-SELECT169; LSPV-3 ADAPTIVE-SOURCE-POINTER-STREAM131 and PC-BRANCH-COLOUR134; LSPV-4 ARC-PINNED-CIRCUIT-OUTPUT-FLOOR131 and later DEGREE-AUTH-FIREWALL136; LSPV-5 BACKDOOR-CAP161 and TRANSCRIPT-COMPATIBILITY157; own ARC-CANONICAL-SELECTOR-AUTH184 and ARC-SOURCE-RESOLUTION-BARRIER186. This is a bounded material-source audit, not an exhaustive historical census. Previous explicit source-clause certificates and parity input-sensitivity proofs were adopted, not renamed as new results. Primary texts: FLMV Sec.~2.1 and van Melkebeek survey Sec.~2 and Theorem~1.3, directly checked on PDF pages; Hennie--Stearns 1966 original published abstract.
+
+\section{Authenticated sorted-access trace}
+Fix a deterministic bit-addressed, bounded-word indexed machine $A$, with finite control, constantly many $O(\log(N+T))$-bit registers, read-only original $x\in\{0,1\}^N$, and an initially zero bit-valued addressed work array. Normalize its steps so each does exactly one indexed source read $\mathsf I$, work read $\mathsf R$, or work write $\mathsf W$; opcode, address, new registers and write value are computed by the fixed deterministic transition from old registers and a purported pre-access bit in paid polylogarithmic bit time. This is \emph{not} a free translation of an arbitrary long-address FLMV machine.
+
+A trace record is
+\[
+R_t=(t,\rho_t,\tau_t,a_t,b_t,c_t,\rho_{t+1}),\quad t=0,\ldots,L-1,
+\]
+where $\rho_t$ is the finite register/control state, $a_t$ an address and $b_t,c_t$ alleged pre/post bits. The verifier performs three tests.
+\begin{description}
+\item[] \emph{Chronology}: starts at the prescribed initial state, checks each unique time index, consecutive states, actual deterministic opcode/address/transition, correct prescribed write bit, and \emph{first} halt precisely at UNSAT.
+\item[] \emph{Source}: for every $\mathsf I$, physically reads the genuine source bit $x[a_t]$ by a charged address and tests $b_t=c_t=x[a_t]$.
+\item[] \emph{Work}: extracts \emph{all} $\mathsf R/\mathsf W$ records from this same chronological list, sorts by $(a_t,t)$, starts each address at zero, and checks each next pre-bit equals its previous post-bit. Reads must have unchanged post-bit. The multiset equality between chronological and sorted records is guaranteed because the verifier sorts the former itself, rather than trusting a separate list or a hash.
+\end{description}
+
+\begin{theorem}[Exact local source/memory replay, PROVED/EXACT restricted]\label{th:trace}
+For every fixed $A$ of this declared architecture, every source $x$, and every purported finite trace $\pi$:
+\[
+V_A(x,\pi)=1\iff \pi\text{ is the complete real execution of }A(x)\text{ ending UNSAT}.
+\]
+If $A$ is a fixed total correct ordinary-SAT decider, then
+\[
+x\in\UNSAT\iff\exists\pi\,V_A(x,\pi)=1,\qquad
+x\in\SAT\implies\forall\pi\,V_A(x,\pi)=0.
+\]
+An honest $T$-event log has $O(T\log(N+T))$ bits. On a compact bounded-word indexed realization the explicit verifier uses at most $O(T\log^4(N+T))$ bit steps and $O(T\log(N+T))$ contiguous writable/index space.
+\end{theorem}
+\begin{proof}
+Source checks ensure every returned input bit equals the actual source. For each addressed work cell, its sorted event chain begins at zero, and each event's post-bit becomes the next event's pre-bit, so induction along that chain authenticates every work read/write. Another induction along chronological records then identifies each transition with the unique true deterministic step on $x$. The prescribed initial state, consecutive indices and halt test exclude omissions, rearrangements, fictitious inputs and surplus steps. The genuine run satisfies all conditions. There are $O(T)$ records of $O(\log(N+T))$ bits. Stable deterministic sorting of $O(T)$ fixed-width records, bit comparisons, explicit input index generation and source requests cost $O(T\log^4(N+T))$ bit operations conservatively. The sorted buffer uses contiguous $O(T\log(N+T))$ bits; no gigantic claimed guest address is used as a verifier's own array subscript.
+\end{proof}
+
+\begin{theorem}[Polynomial but noncontracting trace coverage, CONDITIONAL]\label{th:cap}
+Assuming $P=NP$, choose a fixed total polynomial ordinary-SAT decider and fully charge a standard bit simulation to a bounded-word indexed program $A'$. Call its resulting \emph{unknown} polynomial time exponent $K'$, not necessarily the original solver's exponent. Guessing an honest authenticated UNSAT run of $A'$ and deterministically verifying it gives a source-authenticated all-UNSAT certificate system and co-nondeterministic SAT algorithm with a \emph{uniform} clock $N^{K'+o(1)}$, but provides neither a smaller coNTIME exponent nor a small-space deterministic solver or the ARC successor.
+\end{theorem}
+\begin{proof}
+Hardwire $A'$ and a time-constructible integer exponent cap above its time bound. Guess a length-tagged trace of $O(N^{K'}\operatorname{polylog}N)$ bits; reject malformed, over-cap and timed-out certificates. By Theorem~\ref{th:trace}, an accepting verification branch exists precisely for UNSAT. Flip branchwise outcomes to obtain co-nondeterministic SAT polarity. Actual proof discovery runs $A'$ first and has to pay its full parent source computation; merely guessing avoids discovery only in the \emph{coNTIME}, not deterministic ARC, premise. The explicit verifier checks all $T$ records and its guaranteed exponent is $K'$, without an improved bound. For any integer $K'\ge2$, setting $c=d=K'$ makes \emph{both} strict disjuncts of van Melkebeek Theorem 1.3 false:
+\[
+(c-1)d=K'(K'-1)\ge2>1,\quad
+cd(d-1)-2d+1=(K')^2(K'-1)-2K'+1\ge1>0.
+\]
+Even a separate small-space premise would not rescue this \emph{particular numerical route}. This says nothing about alternative, shorter source-derived proof systems.
+\end{proof}
+
+\section{Two genuine descendant levels and cost envelope}
+A two-variable branch tree checks all four genuine restrictions $F|_{x=b,y=c}$ using original names. Every alleged child must additionally be authenticated against the actual parent-source restriction. Otherwise a prover can submit a valid unrelated UNSAT formula to each leaf. Genuine restricted residuals can have widths $0$ through $3$ and are \emph{not} silently relabeled exact-$(2,2)$ members. The tests used a proper three-variable eight-clause UNSAT source, a SAT seven-clause variant, the six-variable clause-monotone exact-$(2,2)$ SAT $Y$, and an empty-clause UNSAT extension.
+
+\begin{lemma}[Conditional two-level replay exponent, exact arithmetic]\label{lem:weight}
+Suppose a fully paid and source-consistent decomposition really exists such that for \emph{each} physical-length $m$ node, the immediate-child physical lengths sum to $m^{b+o(1)}$ and their maximum is $m^{\lambda+o(1)}$, with $b\ge1$, $0<\lambda<1$. If all final leaves use $A'$ at $m^{K'+o(1)}$ time, then the \emph{sum only of leaf replay costs} after two levels has exponent at most
+\[
+\beta_2=b+\lambda(b-1)+\lambda^2(K'-1).
+\]
+For $b=1,\lambda=1/2$ this is $1+(K'-1)/4$. No child construction, proof discovery, source-address translation, failed choice, semantic join, inherited space, or FLMV transport is included in this envelope.
+\end{lemma}
+\begin{proof}
+At any node, $\sum_jm_j^{K'}\le(\max m_j)^{K'-1}\sum_jm_j\le m^{\alpha+o(1)}$, where $\alpha=b+\lambda(K'-1)\ge1$. For first-level children $\sum_i m_i^\alpha\le (\max m_i)^{\alpha-1}\sum_i m_i \le N^{b+\lambda(\alpha-1)+o(1)}$. The resulting exponent is the claimed $\beta_2$. Bounded-word trace replay adds only polylogarithmic factors. Existence and paid semantics of the required descendants remain OPEN.
+\end{proof}
+
+\section{Three model-native resource ledgers}
+\begin{description}
+\item[] $M_1$: deterministic single shared read/write tape, one head, initially contains the input. Charge $T_1$, input-inclusive footprint $P_1\ge N$, actual crossings and head motion. The conservative fixed-$k$ simulator obeys $T_1=O(T_k(N+S_k+\log(T_k+2)))$, $P_1=O(N+S_k+\log(T_k+2))$.
+\item[] $M_k$: one \emph{sequential} read-only input head, fixed finite $k$ sequential work heads. Charge $T_k$, visited work cells $S_k$ (input excluded), source-head travel, bit traffic, proof parsing and temporary buffers. The resulting conservative exponent translation is $t_1\le t_k+\max(1,s_k)$, $p_1\le\max(1,s_k)$, not an optimal necessary lower bound.
+\item[] $R_{\rm idx}$: FLMV native read-only indexed input/work machine. Count \emph{maximum indexed work position} and index/work tape bits, not simply distinct probed cells, and account for each index and source read. A compact sorted verifier can occupy contiguous $O(T\log(N+T))$ cells. An arbitrary guest's long-address instruction tape needs a paid normalizer, not an unspoken word-size restriction.
+\end{description}
+For a direct native-space hostile control, a fixed program can write the index $2^N$ in $O(N)$ steps, then read one distant blank work cell and halt. It visits $O(1)$ indexed work cells and uses $O(N)$ index-tape bits, but its \emph{own} FLMV maximum-position space is at least $2^N$. Sparse-storage simulation is an explicitly different program whose \emph{joint} time/space must be measured. This model difference is stated in FLMV Sec.~2.1 and van Melkebeek Sec.~2.1; it is not a new lower bound.
+The exact22 easy promise's one-tape $t_1\ge2$ coupled with the conservative simulation only gives $t_k+\max(1,s_k)\ge2$, which is automatic when $t_k\ge1$; it cannot yield a new RAM forbidden region. Hennie--Stearns's $O(T\log T)$ result is for \emph{two-tape}, not single-tape simulation.
+
+\section{Finite controls, duplication and remaining arrow}
+Python 3 standard-library script (seed 18720261026) implemented actual indexed source/work accesses of a bit-serial CNF enumerator, sorted work replay and physical source authentication. It passed 117 checks on 41 recorded genuine SAT/UNSAT and hereditary cases (21 SAT, 20 UNSAT), including a correctly typed monotone exact-$(2,2)$ SAT anchor. A forged source read is accepted without source checking, a forged work read without address-history checking, and four unrelated authentic UNSAT children without parent projection authentication. Each is rejected by the complete verifier. All are computational controls, not asymptotic hardware lower bounds.
+
+The new theorem is an exact \emph{trace-integrity} grammar, not an improved all-input polynomial proof cap. The earlier signed proof-system lower bounds, canonical first-conflict $J_F$ coNP-complete authentication, and circuit-verifier/decision distinction remain unchanged. The source-only construction authenticates a \emph{full parent execution} of $A$; it is therefore not an ARC edge. Stronger semantic DAG certificates, paid local source-to-child projection, arbitrary-$K$ self-contraction, and strict matched FLMV contradiction remain \textbf{OPEN}; $P$ versus $NP$ remains \textbf{OPEN}.
+
+\paragraph{Role-safe handoff.} LSPV-2: complete source-to-child inverse access, not merely circuit-gate incidence. LSPV-3: seek stronger local refutation/derivation with a uniform all-UNSAT cap and real source-authenticated two-level tests. LSPV-4: audit native maximum-index space, physical source/proof bit traffic and the same-machine $M_1/M_k/R_{\rm idx}$ arrows. LSPV-5: independently red-team sorted-memory induction, forged child projection, and unknown-$K$ no-go. No schedule, task identity, enabled state or peer-owned root region is modified.
+
+\begin{thebibliography}{4}
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas, \emph{Time-Space Lower Bounds for Satisfiability}, JACM 52(6):835--865 (2005), Sec.~2.1. \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{vm} D. van Melkebeek, \emph{A Survey of Lower Bounds for Satisfiability and Related Problems}, ECCC TR07-099 (2007), Theorem~1.3. \url{https://eccc.weizmann.ac.il/report/2007/099/download}.
+\bibitem{hs} F. Hennie, R. Stearns, \emph{Two-Tape Simulation of Multitape Turing Machines}, JACM 13(4):533--546 (1966).
+\bibitem{project} PNP shared DUAL-TM and RAM-VS-TAPE directives and original 26 October LSPV research corpus, repository \url{https://github.com/j15marti/pnp}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::ARC-SORTED-TRACE-AUTH187
