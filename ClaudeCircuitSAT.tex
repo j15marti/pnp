@@ -1,0 +1,77 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-26 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\title{ClaudeCircuitSAT: a stepwise wire-count ladder for Circuit-SAT lower bounds}
+\author{Living document (Claude scheduled routine)}
+\date{Run 1: 2026-10-26}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is a superpolynomial
+lower bound. Labels: PROVED/EXACT, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Find lower bounds, possibly parameterized, for Circuit-SAT: input a fan-in-2 circuit $C$ with
+$n$ inputs and $m$ gates (so $2m$ internal wires), decide whether $\exists x\,C(x)=1$.
+Ladder: for $n=1,2,3,\dots$ record (i) the minimum number of gates/wires of a circuit with a
+required property, (ii) the resulting bound on solving the instance family, with parameters $(n,m)$.
+
+\section{Ladder, with statuses}
+\begin{table}[h]\centering
+\begin{tabular}{llll}\toprule
+Step & Statement & Wires / bound & Status\\\midrule
+L0 & $n=1$: unique-satisfier function $x$ & 0 gates & PROVED/EXACT\\
+L1 & $n=2$: unique-satisfier ($x\wedge y$ etc., 4 funcs) & 1 gate, 2 wires & COMPUTATIONAL\\
+L2 & $n=3$: unique-satisfier (8 funcs) & exactly 2 gates, 4 wires & COMPUTATIONAL\\
+L3 & general $n$: connected circuit with all $n$ inputs essential & $\ge n-1$ gates, $\ge 2n-2$ wires & PROVED/EXACT\\
+L4 & query model: Circuit-SAT needs $\Omega(m)$ gate-list queries & see Thm.~\ref{thm:q} & PROVED/EXACT (trivial)\\
+L5 & unconditional time $\omega(\mathrm{poly}(n+m))$ & -- & OPEN\\\bottomrule
+\end{tabular}\end{table}
+
+\paragraph{Computational data (L0--L2).} \texttt{experiments/claude\_circuitsat/min\_circuit\_b2.py}
+(raw: \texttt{results/raw/claude\_circuitsat/min\_circuit\_b2.json}) enumerates all fan-in-2 $B_2$ circuits
+by exhaustive DFS up to 4 gates. For $n=3$ all 256 functions are reached; exact size histogram
+(sizes 0..4): $3,35,114,80,24$, so the $B_2$ maximum for $n=3$ is 4. All 8 unique-satisfier
+functions have size exactly 2 (an AND-tree: $n-1$). Note $n=1$ gives only the identity (constants
+need two distinct signals in this enumerator), a harmless artefact.
+
+\section{Proved statements}
+\begin{theorem}[L3, connectivity]\label{thm:conn}
+If a fan-in-2 circuit computes $f$ depending on all $n$ inputs with a single output, then it
+has $\ge n-1$ gates.
+\end{theorem}
+\begin{proof} Each essential input has a path to the output; the underlying graph restricted to the
+cone is connected with $n$ source nodes, and a fan-in-2 gate merges at most two components in a tree
+sense, so $n-1$ gates are needed.\end{proof}
+
+\begin{theorem}[L4, query lower bound]\label{thm:q}
+Let the instance be a list of $m$ gates (type and two predecessor pointers) read by queries.
+Any deterministic algorithm deciding Circuit-SAT makes $\ge m$ queries (parameterized by $m$,
+independent of $n\ge 2$).
+\end{theorem}
+\begin{proof} Take chain $c_1=x_1$, $c_{j+1}=c_j\wedge x_{(j \bmod n)+1}$, output $c_m$; satisfiable
+(all ones). Let $D_i$ be the same circuit with gate $i$ replaced by the constant-0 gate
+($x_1\wedge\neg x_1$ realised by a type change); $D_i$ is unsatisfiable. An adversary answers every
+query as in the chain. If some gate $i$ is unqueried after $<m$ queries, both the chain and $D_i$
+are consistent with all answers but have different SAT value.\end{proof}
+This is exactly the trivial ``must read the input'' bound; it is a model-limited statement
+(black-box queries), not a Turing-machine time bound.
+
+\section{Parameterized view}
+The meaningful parameters are $(n,m)$ and possibly treewidth/depth $w$. Candidate shape of a
+true bound: $T(n,m)\ge m\cdot g(n)$ with $g$ superpolynomial (ETH-type: $2^{\Omega(n)}$ conditionally,
+CONDITIONAL, not proved). Known unconditional circuit-size bounds for explicit functions are
+only linear in $n$ (gate elimination, about $3n$--$3.5n$ as tracked in \texttt{GROKPROOF/}); they
+bound circuit \emph{size of a function}, not Circuit-SAT \emph{time}, so they do not transfer.
+
+\section{Repository check}
+\texttt{GROKPROOF/} (independent living document) reports that no general-circuit improvement
+beyond linear has appeared and P vs NP is open; the Option-A/B research in \texttt{research/}
+(LSPV, ARC/FLMV) contains no completed Circuit-SAT time lower bound. Nothing there closes L5.
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend L2 to $n=4$ (exact $B_2$ sizes; needs a SAT/SMT-assisted or chunked search, $\le 30$ s per stage).
+\item Track minimum \emph{wires including fan-out} for unique-satisfier functions with cost model $\mathrm{wires}=\sum$ fan-out.
+\item Formulate a restricted model (monotone / bounded-depth) where a superlinear step of the ladder is provable, and record the parameterization.
+\item Audit relativization/natural-proofs barriers before any claim at L5.
+\end{enumerate}
+\end{document}
