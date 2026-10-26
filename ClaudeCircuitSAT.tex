@@ -1,0 +1,64 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-26 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{thm}{Theorem}\newtheorem{lem}{Lemma}
+\title{ClaudeCircuitSAT: a step-by-step lower-bound ladder for circuit-SAT}
+\date{Living document; P versus NP remains \textbf{OPEN}}
+\begin{document}\maketitle
+\section*{Status discipline}
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+No unconditional super-polynomial lower bound for circuit-SAT is claimed anywhere below.
+
+\section{Plan}
+Ladder: for each step $s=1,2,\dots$ fix a class $\mathcal C_s$ of circuits (inputs $n_s$, gates $m_s$, fan-in 2),
+and record (a) the minimal number of gates/wires $G_s,W_s=2G_s$ needed to \emph{build} the relevant functions, and
+(b) the best proved lower bound $L_s(n,m,\theta)$ for \emph{deciding} satisfiability, where $\theta$ is a
+parameter (treewidth, depth, number of non-linear gates, \dots). The target is a bound of the form $L(n,m,\theta)$,
+possibly parameterized; the full unparameterized bound is the open P vs NP question.
+
+\section{Rung 0: building blocks (PROVED/EXACT)}
+\begin{lem}[connectivity]\label{lem:conn}
+A fan-in-2 circuit depending on all of $x_1..x_n$ has $\ge n-1$ gates, hence $\ge 2(n-1)$ wires; tight for $\mathrm{AND}_n$.
+\end{lem}
+\begin{proof} Each input has a path to the output, so the underlying undirected graph on inputs$\,\cup\,$gates is connected;
+a connected graph on $n+g$ vertices has $\ge n+g-1$ edges, and edges $=$ wires $\le 2g$, so $2g\ge n+g-1$, i.e. $g\ge n-1$.
+A balanced tree of ANDs attains it.\end{proof}
+
+\begin{thm}[probe lower bound for the decider]\label{thm:probe}
+Any deterministic algorithm that decides satisfiability of a circuit given as a read-only list of $m$ gate descriptors
+(random access) must read $\ge m$ descriptors in the worst case.
+\end{thm}
+\begin{proof} Take $n=m$ inputs and the instance $C_0$: gate $g_i=x_i\wedge x_i$ ($i\le m-1$) feeding a fixed final AND tree:
+output $=\bigwedge_i g_i$ with each $g_i$ a buffer of $x_i$; $C_0$ is satisfiable. If the algorithm never reads $g_j$'s descriptor,
+replace $g_j$ by the constant $0$ gate; the run is identical but the instance is unsatisfiable. Hence every descriptor is read. (Tree gates
+are fixed and cost $O(1)$ extra; the bound is $m-O(1)$.)\end{proof}
+Status: PROVED/EXACT, but only a linear \emph{input-reading} bound; it says nothing about search over $2^n$ assignments.
+
+\section{Rung 1: exact minimal circuits for all $n$-input functions (COMPUTATIONAL)}
+Script \texttt{experiments/claude\_circuitsat/min\_circuit.py} (iterative-deepening search over fan-in-2 gate sequences, all 16 binary gates).
+\begin{center}\begin{tabular}{c|c|l}
+$n$ & max gates over all $f$ & histogram (gates:\#functions, constants/inputs counted at 0)\\\hline
+2 & 1 & 0:4, 1:12\\
+3 & 4 & 0:5, 1:33, 2:114, 3:80, 4:24
+\end{tabular}\end{center}
+So $\max_f G(f)=1,4$ for $n=2,3$ (wires $2,8$). Runtime for $n=3$ is $\approx 33$\,s (marginally above the 30\,s rule; for $n=4$ the search
+must be chunked by first-gate choice and checkpointed---TODO next run). The known value for $n=4$ from the literature is $7$ (to be re-verified).
+
+\section{Rung 2: from building to deciding (what is and is not known)}
+\begin{itemize}
+\item KNOWN THEOREM: explicit functions need $\ge 3.1n-o(n)$ gates over $B_2$ (Li--Yang, STOC 2022; to be re-checked against current literature).
+This bounds \emph{computing} a function, not \emph{deciding SAT} of a circuit input.
+\item CONDITIONAL (parameterized): circuit-SAT with treewidth $\theta$ is solvable in $2^{O(\theta)}\mathrm{poly}(m)$; a SETH-type assumption gives
+$2^{(1-\varepsilon)\theta}$ hardness. Not unconditional.
+\item Brute-force baseline: $2^n\cdot O(m)$. Any proved lower bound of the shape $L(n,m,\theta)=2^{\Omega(\theta)}$ unconditionally would imply separation of
+the relevant restricted classes; this is OPEN.
+\end{itemize}
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item OPEN: chunked exact computation for $n=4$ (expected max $7$ gates) and tabulating $W_s$ per rung.
+\item OPEN: define a restricted decider model (e.g.\ read-once branching on inputs) where a parameterized bound $2^{\Omega(\theta)}$ is provable, and prove it.
+\item OPEN: audit repository results (GROKPROOF, \texttt{research/}) for transferable lemmas; initial survey: GROKPROOF tracks only $3.5n-O(\log n)$-type
+explicit-function bounds and reports no new general-circuit advance (run of 2026-10-26 02:14 UTC); none applied here.
+\end{enumerate}
+\end{document}
