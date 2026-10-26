@@ -1,0 +1,59 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-10-26, hourly routine
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\title{ClaudeCircuitSAT: A Parameterized Lower-Bound Ladder for Circuit-SAT}
+\author{Living document (hourly Claude routine)}
+\date{Last updated: 2026-10-26 (run 1)}
+\begin{document}\maketitle
+
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here is a superlinear lower bound for Circuit-SAT in any unrestricted model. Labels: PROVED, COMPUTATIONAL, KNOWN, CANDIDATE, OPEN.
+The aim is a ladder: start with the simplest circuits, track the wires needed, raise the number of inputs $n$, and record the best honest lower bound at each rung, as a function of parameters $(n,m,w,k)$ = inputs, gates, wires, width (pathwidth/treewidth).
+
+\section{Model}
+A circuit $C$ has $n$ inputs and $m$ fan-in-2 gates over $B_2$ (all 16 binary operations; negation free). Wires $w=2m$ (gate-input wires), plus fan-out wires counted by out-degree. Circuit-SAT: is there $x$ with $C(x)=1$?
+
+\section{Rung 0: connection counting (wire ledger)}
+\begin{lemma}[PROVED] If a fan-in-2 circuit's output depends on all $n$ inputs then $m\ge n-1$ and $w\ge 2(n-1)$; equality iff the circuit is a tree (formula) with each input used once.\end{lemma}
+\begin{proof} The underlying graph must connect the output to all $n$ inputs; a connected graph on $n+m$ vertices has $\ge n+m-1$ edges, while it has exactly $2m$ edges into gates, so $2m\ge n+m-1$.\end{proof}
+So every $n$-input SAT instance whose answer depends on all variables has a $\Theta(n)$ wire floor; this is the trivial ``must read all inputs'' bound.
+
+\section{Rung 1: probe lower bound (adversary)}
+Model: the algorithm sees $n,m$ and learns gate $g_i$'s type and two input pointers only by probing $i$.
+\begin{theorem}[PROVED] Every deterministic algorithm deciding Circuit-SAT in this model needs $\ge m$ probes, for every $m$ (with $n=m+1$).\end{theorem}
+\begin{proof} Base circuit $C$: $g_1=x_1\wedge x_2$, $g_i=g_{i-1}\wedge x_{i+1}$, output $g_m$; satisfiable (all ones). The adversary answers every probe according to $C$. If some $g_i$ is unprobed at halt, let $C'$ replace $g_i$ by the constant-0 gate. $C'$ agrees with $C$ on all probed answers (probing $g_{i+1}$ reveals only its pointer to $g_i$) but is unsatisfiable, so the output is wrong on one of them.\end{proof}
+This rung is linear in the circuit size and uses only the encoding; it is a representation bound, not computational hardness.
+
+\section{Rung 2: exact minimal circuits for small $n$ (COMPUTATIONAL)}
+Script: \texttt{experiments/claude\_circuitsat/min\_circuit\_n3.py}; raw data \texttt{min\_circuit\_n3\_results.json}. BFS over deduplicated sets of computed functions, level $k$ = $k$ gates; negation free; complete for all 256 three-variable functions (runtime $<1$ s, no chunking needed).
+\begin{center}\begin{tabular}{lrrrrr}\toprule
+$n=3$, min gates $C(f)$ & 0&1&2&3&4\\\midrule
+number of functions (of 256) & 8&30&114&80&24\\\bottomrule\end{tabular}\end{center}
+Spot values: $C(\mathrm{AND}_3)=C(\mathrm{XOR}_3)=2=n-1$ (tight for Rung 0), $C(\mathrm{MAJ}_3)=4$. Hence every 3-input circuit-SAT instance is equivalent to one with $\le4$ gates; the gate count of the minimal circuit, not of the given circuit, is what an optimal solver could exploit. (Extrapolation to $n=4$ requires a smarter search --- NEXT.)
+
+\section{Parameterized ledger and where lower bounds stand}
+\begin{center}\begin{tabular}{p{4.2cm}p{5cm}p{3.6cm}}\toprule
+Parameter regime & Bound & Status\\\midrule
+size $m$, probe model & $\Omega(m)$ (Thm 1) & PROVED\\
+width $k$ (treewidth) upper & $2^{O(k)}m$ DP & KNOWN\\
+width $k$ lower & $(2-\varepsilon)^{k}\mathrm{poly}$ excluded under SETH (CNF primal pathwidth; literature to re-verify) & CONDITIONAL\\
+time--space, $n^{o(1)}$ space & $n^{2\cos(\pi/7)-o(1)}\approx n^{1.80}$ for SAT (Williams line) & KNOWN\\
+unrestricted deterministic time & superlinear & OPEN\\
+general-circuit formula size, gate elimination & $\sim(3+\tfrac1{86})n$ for explicit functions; not SAT-decision time & KNOWN (different quantity)\\\bottomrule\end{tabular}\end{center}
+Caution: explicit-function circuit lower bounds (gate elimination) bound the size needed to \emph{compute} a function, not the time to decide satisfiability of a given circuit; the ladder must keep these separate.
+
+\section{Repository cross-check}
+Repository \texttt{j15marti/pnp} (AGENTS.md, 2026-10-24/25): the active spine is ARC/FLMV simultaneous time--space contraction, with ARC-EDGE-90 and P vs NP OPEN; SIL/M22 resource ladder is a finite reduction trace with no unconditional decision-time bound. Relevant for this document: the parameterized resource ledger idea (step-parameterized adaptive solver) matches the parameterization sought here. No file there yet contains a circuit-SAT wire ledger. Not yet read in depth: \texttt{research/language/2026-10-25\_0005\_SIL\_M22\_PARAMETERIZED\_RESOURCE\_LADDER.tex}.
+
+\section{Next rungs (plan)}
+\begin{enumerate}
+\item $n=4$ exact $C(f)$ via SAT-based or class-canonical search; tabulate $\max C$ and the symmetric functions.
+\item Define a \emph{fragility} parameter $\phi(C)$ = minimum number of gates whose alteration flips satisfiability; Thm 1 uses $\phi=1$. Seek bound $\Omega(m/\phi)$ probes for random-probe algorithms.
+\item Wire-by-wire construction of hard families: bounded-fan-out, depth-$d$ layers, track $T(n,m,k)$.
+\item Read the repository ARC/FLMV and SIL/M22 ladder and test whether the resource ledger gives a width-parameterized time--space bound.
+\end{enumerate}
+\section*{Run log}
+Run 1 (2026-10-26): created document; Rung 0 and Rung 1 proved; $n=3$ table computed.
+\end{document}
