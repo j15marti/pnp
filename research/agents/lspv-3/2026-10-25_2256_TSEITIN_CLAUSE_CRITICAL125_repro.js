@@ -111,8 +111,44 @@ function runCase(name,n,edges,mask){
          essential:essential.size,component_counts:r,truth_assignments:2**edges.length,
          dimacs_root_bytes:rootBytes,dimacs_child_bytes:childBytes,dimacs_grandchild_bytes:grandchildBytes};
 }
+function strictW1Control(){
+ // Actual source clause IDs: PCRETRACT1 Appendix A, original W_1.
+ const words=[
+ "-1 3 -14","2 -8 9","10 -13 14","3 7 -13","-4 -9 -11",
+ "5 8 -14","4 -8 -11","1 7 13","1 -7 10","-5 -6 -15",
+ "-2 -6 12","-4 9 -10","-2 5 -12","-3 6 -15","6 -7 11",
+ "2 -9 11","4 8 -10","-3 12 15","-5 -12 15","-1 13 14"];
+ const C=words.map(w=>w.split(' ').map(Number));
+ if(C.length!==20||new Set(words).size!==20)throw Error('W1 source');
+ for(let v=1;v<=15;v++){
+   let pos=C.flat().filter(l=>l===v).length,neg=C.flat().filter(l=>l===-v).length;
+   if(pos!==2||neg!==2)throw Error('W1 is not strict signed 2P2N');
+ }
+ let sat=0,unique=new Set(),qmodels=0;
+ validateChild(15,C);
+ for(let k=0;k<C.length;k++)validateChild(15,C.filter((_,i)=>i!==k));
+ for(let a=0;a<2**15;a++){
+   const violated=C.map((cl,i)=>cl.some(l=>(((a>>(Math.abs(l)-1))&1)===Number(l>0)))?-1:i).filter(i=>i>=0);
+   if(!violated.length)sat++;
+   if(violated.length===1)unique.add(violated[0]);
+   if(violated.every(i=>i===7))qmodels++;
+ }
+ if(sat!==0||unique.size!==20||qmodels!==244)throw Error('W1/Q15 opposite-label control');
+ const easy=[{label:'Horn-UNSAT',C:[[1],[-1]],want:false},
+             {label:'2SAT-SAT',C:[[1,2],[-1,2]],want:true}];
+ for(let e of easy){
+   let satEasy=false;
+   for(let a=0;a<4;a++)if(e.C.every(cl=>cl.some(l=>(((a>>(Math.abs(l)-1))&1)===Number(l>0)))))satEasy=true;
+   if(satEasy!==e.want)throw Error('easy control failed');
+ }
+ return {original:'PCRETRACT1 Appendix A W_1',nvars:15,clauses:20,
+         strict_signed_2P2N:true,original_SAT:false,individually_essential:unique.size,
+         Q15_removed_original_clause_id:8,Q15_SAT:true,Q15_model_count:qmodels,
+         direct_assignments:2**15,serialized_checks:21,easy_controls:2};
+}
 function run(){
  let rows=[];
+ const strict_control=strictW1Control();
  for(let [name,n,edges] of graphs())
    for(let mask of new Set([1,1<<(n/2),(2**n)-2,0,3]))
       rows.push(runCase(name,n,edges,mask));
@@ -121,7 +157,8 @@ function run(){
    throw Error('hostile essential count');
  return {id:'TSEITIN-CLAUSE-CRITICAL125',method:'independent exhaustive direct proper CNF and graph component predictions',
          cases:rows.length,truth_assignments:rows.reduce((s,x)=>s+x.truth_assignments,0),
-         discrepancies:0,serialized_checks:rows.reduce((s,x)=>s+3+x.clauses,0),rows,
+         discrepancies:0,serialized_checks:rows.reduce((s,x)=>s+3+x.clauses,0)+strict_control.serialized_checks,
+         strict_control,rows,
          scope:'ordinary proper signed 3CNF; edge variables have four positive and four negative occurrences, not strict (2,2)'};
 }
 if(typeof module!=='undefined'&&require.main===module)console.log(JSON.stringify(run(),null,2));
