@@ -1,0 +1,248 @@
+% LSPV-5 REPORT::TRANSCRIPT-COMPATIBILITY157::2026-10-26T00:51:22-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx,url}
+\newcommand{\status}[1]{\textbf{#1}}
+\title{LSPV-5 Independent Red Team: Transcript Sensitivity and Compatibility Deficit}
+\author{Role 5 formal-proof referee}
+\date{26 October 2026}
+
+\begin{document}
+\maketitle
+
+\section*{Executive finding}
+This run corrects a material error in the preceding LSPV-5/root synthesis.  A
+Boolean decision has only two final labels, but it can have exponentially many
+query transcripts.  The LSPV-1 parity promise gives an exact proper-3-CNF
+example: every deterministic exact decider starting before acquisition must
+read at least one bit in each of $p$ disjoint sensitive groups, while the final
+answer is one bit.  Thus the old inference ``two labels, hence at most two
+transcripts'' is \status{FALSIFIED}.  It is replaced below by the standard
+sensitivity lower bound on queries.
+
+The same example also blocks the opposite overreach: many transcripts do not
+imply large writable space or large circuits.  Parity streams through one
+accumulator bit plus an index and has a linear-size logarithmic-depth NAND
+circuit.  Hence this is a restricted input-read lower bound, not a simultaneous
+FLMV time--space lower bound.
+
+This run additionally proves a compatibility-deficit theorem.  Even if every
+one- and two-channel projection is full and uniform, the joint realizable
+image can have only $k+1$ states rather than $2^k$.  Summing local channel
+supports therefore needs an independently proved global compatibility or
+direct-sum theorem and a proof that the target computation must materialize
+that joint object.  No such unrestricted theorem is currently present.
+Accordingly P versus NP, the all-UNSAT certificate arrow, the circuit lower
+bound arrow, and ARC--FLMV remain \status{OPEN}.
+
+\section*{Falsifiers fixed before search}
+The run began with four hostile tests.
+\begin{enumerate}
+  \item A purported many-output compiler may merely duplicate one decision
+        bit, so output count need not give independent information.
+  \item Separately feasible local outputs may be globally incompatible; pair
+        signatures might not determine the joint image.
+  \item Communication, information-transfer, or cell-probe lower bounds may
+        charge an online query sequence that an ordinary SAT decider is never
+        required to answer.
+  \item A circuit argument may silently combine the time of one evaluator with
+        the space of another or confuse transcript diversity with circuit size.
+\end{enumerate}
+
+\section*{Sources and duplication control}
+The following current project reports were read in full from the repository:
+\begin{itemize}
+  \item LSPV-1, \texttt{2026-10-26\_0005\_LSPV-1\_ARC\_PARITY\_TRANSCRIPT\_FIREWALL181.tex};
+  \item LSPV-2, \texttt{2026-10-26\_0637\_LSPV-2\_CIRCUIT\_R15\_VIRTUAL\_ACCESS163.tex};
+  \item LSPV-3, \texttt{2026-10-26\_0024\_LSPV-3\_SOURCE\_CUT\_ENTROPY127.tex};
+  \item LSPV-4, \texttt{2026-10-25\_2336\_LSPV-4\_ARC\_SELECTOR\_ORACLE\_AUDIT125.tex};
+  \item current root \texttt{main.tex} at SHA
+        \texttt{4858fcf614e09373dfa8fc88e87bff1d40019b79}.
+\end{itemize}
+The Drive source \emph{PROOF-SYNTHESIS-0020 --- Communication Revisit and
+Single-Run Certificate Ceiling} (file id
+\texttt{1E7HRbjzs43GWyXtDhvUT9V6m5S3Oq2kRi6s-D8q6kfQ}) already recorded that a
+single trajectory carries at most input entropy, independent-copy direct sums
+do not automatically amplify a common-input computation, and communication
+lower bounds need a forced interface.  The present contribution does not
+rename those observations: it supplies the exact pairwise-full/global-small
+counterexample below and uses the new LSPV-1 construction to repair the prior
+transcript statement.
+
+Primary-literature checks covered deterministic decision-tree sensitivity,
+information complexity/direct sums, multitask decision trees, pairwise
+independent linear forms, and join/projection bounds.  These sources support
+the restricted models only; none supplies the missing all-input SAT transfer.
+
+\section*{Lemma 1: sensitivity forces reads, not large final state}
+Let $f:\{0,1\}^p\to\{0,1\}$ and let a deterministic bit-query algorithm be
+correct on every input.  Write
+\[
+  S_x=\{i:f(x)\ne f(x\oplus e_i)\},\qquad s(f,x)=|S_x|.
+\]
+Then the algorithm queries every coordinate in $S_x$ on input $x$, and hence
+its query count $q(x)$ satisfies
+\[
+  q(x)\ge s(f,x).
+\]
+Indeed, if it does not query $i\in S_x$, the executions on $x$ and
+$x\oplus e_i$ have the same answers to every query, so determinism gives the
+same final output, contradicting sensitivity.  This proof charges the actual
+read and makes no claim about writable state after the read.
+
+For parity, $s(f,x)=p$ for every $x$.  Thus every initial-checkpoint exact
+decision tree reads all $p$ bits and the family contains $2^p$ distinct complete
+answer transcripts.  Yet a streaming implementation stores only parity plus an
+$O(\log p)$ address, and the restricted parity function has a linear-size,
+$O(\log p)$-depth NAND circuit.  Consequently:
+\begin{center}
+\begin{tabularx}{0.95\linewidth}{@{}lXl@{}}
+\toprule
+claim & exact scope & status\\
+\midrule
+two labels cap transcripts & arbitrary deterministic exact decision & \status{FALSIFIED}\\
+$q(x)\ge s(f,x)$ & deterministic bit-query model & \status{PROVED}\\
+parity promise needs $p$ initial reads & LSPV-1 fixed-template promise & \status{PROVED/RESTRICTED}\\
+many transcripts force large peak space or circuit size & unrestricted algorithms & \status{FALSIFIED}\\
+parity promise yields FLMV-forbidden SAT pair & ordinary all-input SAT & \status{OPEN}\\
+\bottomrule
+\end{tabularx}
+\end{center}
+At a later checkpoint after the input has been scanned, a single cached parity
+bit can suffice.  The scan cannot be charged again, but it also cannot be
+erased from the total execution ledger.
+
+\section*{Theorem 2: pairwise-full projections can have a tiny joint image}
+For a map $L=(L_1,\ldots,L_k):X\to\prod_iY_i$, define the compatibility deficit
+\[
+  \Delta(L)=\sum_{i=1}^k\log_2|\operatorname{im}L_i|
+     -\log_2|\operatorname{im}L|\ge0.
+\]
+If a computation is required to materialize the full joint vector $L(x)$, the
+information supplied by its possible values is exactly
+\[
+  \log_2|\operatorname{im}L|
+  =\sum_i\log_2|\operatorname{im}L_i|-\Delta(L),
+\]
+not the uncorrected sum of local support logarithms.  A computation required
+only to output one bit $g(L(x))$ need not materialize even this joint vector.
+
+The deficit can be almost $k$ even when every pair projection is full and
+uniform.  Fix $r\ge2$, let $k=2^r-1$, index coordinates by nonzero vectors
+$v\in\mathbb F_2^r$, and for each seed $z\in\mathbb F_2^r$ define
+\[
+  L(z)_v=\langle v,z\rangle\pmod2.
+\]
+Every coordinate takes both values.  Any two distinct nonzero vectors in
+$\mathbb F_2^r$ are linearly independent, so the corresponding map
+$z\mapsto(\langle v,z\rangle,\langle w,z\rangle)$ is onto
+$\mathbb F_2^2$, with every pair value attained $2^{r-2}$ times.  Nevertheless
+$L$ is injective because the nonzero coordinate vectors include a basis.
+Therefore
+\[
+ |\operatorname{im}L|=2^r=k+1,
+ \qquad \Delta(L)=k-r.
+\]
+Thus full singleton and pair signatures coexist with an exponential gap
+between the local product $2^k$ and the joint image $k+1$.  This is the binary
+simplex/Hadamard evaluation code, and its linear-algebraic recognizer makes it
+an easy family rather than a hardness witness.
+
+\section*{Exact finite audit}
+The companion program exhaustively generated the images for $2\le r\le8$ and
+checked every singleton and every pair.  It also exhaustively checked parity
+sensitivity for $2\le p\le12$.  There were 176,521 assertions and no failures.
+The measured deficits for $k=3,7,15,31,63,127,255$ were respectively
+$1,4,11,26,57,120,247$ bits.  These calculations verify the finite instances;
+the proof above establishes all $r\ge2$.
+
+\section*{Consequences for the five-role proof DAG}
+\begin{enumerate}
+  \item \textbf{LSPV-1 parity firewall.}  The fixed-template proper-3-CNF
+        sensitivity construction is accepted as \status{PROVED/RESTRICTED}.
+        Its read lower bound is near-linear in full encoded length, and its
+        cheap parity representation blocks a circuit or FLMV transfer.
+  \item \textbf{LSPV-2 virtual accessor.}  Two-level polylogarithmic access is
+        accepted only under the explicit fixed-incidence/rank-select source
+        interface.  The adversary lower bound for unsorted raw records shows
+        why this hypothesis cannot be omitted.  Status:
+        \status{PROVED/RESTRICTED}; all-SAT successor \status{OPEN}.
+  \item \textbf{LSPV-3 source cut.}  The source-cut Kraft/entropy inequalities
+        are accepted in the stated restricted model.  Their source entropy is
+        only $O(\log N)$ in the current regime.  Moreover, local or pairwise
+        feasibility must be reduced by the compatibility deficit before it is
+        treated as a joint state count.  Status: \status{PROVED/RESTRICTED};
+        unrestricted all-UNSAT coverage \status{OPEN}.
+  \item \textbf{LSPV-4 selector.}  The uncached parity-selector read lower bound
+        and the cached replay escape are accepted as
+        \status{PROVED/RESTRICTED}.  Repeated outputs do not form an independent
+        direct sum without a common-input theorem that survives caching.
+  \item \textbf{LSPV-5 previous checkpoint bound.}  The generic deterministic
+        bound $R\le2^{S+qw}$ remains a valid upper bound under its stated
+        checkpoint and word-width conventions.  Its former specialization
+        $R\le2$ from Boolean output alone is \status{FALSIFIED} and withdrawn.
+\end{enumerate}
+
+\section*{Circuit, coNTIME, and ARC--FLMV scope}
+Nothing here proves that P=NP yields a particular $d=1.802$
+subpolynomial-space SAT algorithm.  P=NP supplies some finite polynomial
+exponent; the stronger near-boundary pair is independent.  Refuting that
+stronger pair would not separate P from NP.
+
+The van Melkebeek circuit lower-bound endpoint applies to full decision
+circuits under its exact coNTIME hypotheses.  Per-instance relations,
+certificate fragments, or a collection of separately feasible terminal
+outputs do not automatically give such a circuit.  Invalid certificates and
+timeouts must be included on the correct complement side.  The
+Bathie--Williams depth statement remains restricted to its strong-uniformity
+and circuit model.  The signed exact-$(2,2)$ compiler currently supplies only
+the explicitly verified local-access statements; ordinary-SAT transport,
+two recursive levels, retained space, and exact SAT/UNSAT equivalence remain
+\status{CONDITIONAL/OPEN}.  No time exponent from one algorithm is paired here
+with a space exponent from another.
+
+The weighted leaf-volume inequality
+\[
+  \sum_i m_i^d\le M^{d-1}\sum_i m_i\qquad(0\le m_i\le M, d\ge1)
+\]
+is arithmetically \status{PROVED}, but it becomes useful only after all leaf
+lengths, certificate and verification work, source-index/gate access, failed
+strategies, reconstruction, and both SAT and UNSAT soundness have been charged.
+It does not provide all-UNSAT certificate coverage by itself.
+
+\section*{Clean proof DAG and decisive missing lemma}
+\begin{center}
+\begin{tabularx}{0.96\linewidth}{@{}lXl@{}}
+\toprule
+node & receiving statement & status\\
+\midrule
+A & P=NP gives some uniform all-input SAT decider with finite joint exponent & \status{PROVED}\\
+B & local signed exact-$(2,2)$ source/child accessor is bit-local under fixed incidence metadata & \status{PROVED/RESTRICTED}\\
+C & adaptive certificate covers every UNSAT source with exact complement soundness & \status{OPEN}\\
+D & local channel supports combine into a large forced joint image after compatibility & \status{OPEN}\\
+E & the joint image forces simultaneous time and writable/index space for one machine & \status{OPEN}\\
+F & source/leaf/circuit construction is a full decision circuit with all costs charged & \status{OPEN}\\
+G & a single all-input machine pair enters the strict FLMV forbidden region & \status{OPEN}\\
+H & P\,$\ne$\,NP & \status{OPEN}\\
+\bottomrule
+\end{tabularx}
+\end{center}
+The decisive next lemma is not another count of local outputs.  It must prove,
+for every legal adaptive all-UNSAT computation, either (i) a large joint image
+after an explicit upper bound on $\Delta(L)$ together with a forced-use theorem,
+or (ii) a direct simultaneous time--space lower bound that survives streaming,
+caching, affine/Horn/2SAT/graph-factor recognition, source rereads, and cheaper
+representations.  Sensitivity supplies reads, but a superlinear or genuine
+time--space consequence still needs a new argument.
+
+\section*{Artifacts and reproducibility}
+\begin{itemize}
+  \item \texttt{2026-10-26\_0051\_TRANSCRIPT\_COMPATIBILITY157\_audit.py}
+  \item \texttt{2026-10-26\_0051\_TRANSCRIPT\_COMPATIBILITY157\_results.json}
+\end{itemize}
+The audit is deterministic, has no external dependencies, and completes in
+well under 30 seconds on the project runner.  The report distinguishes proved
+finite checks from the all-$r$ proof and from the open SAT transfer.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::TRANSCRIPT-COMPATIBILITY157
+\end{document}
