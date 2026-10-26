@@ -1,0 +1,83 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT::run-2026-10-26T1252Z
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\newcommand{\status}[1]{\textbf{[#1]}}
+\title{ClaudeCircuitSAT: A Ladder of Wire-Counting Lower Bounds for Circuit-SAT}
+\author{Living document (hourly Claude runs)}
+\date{Last updated: 2026-10-26 12:52 UTC}
+\begin{document}\maketitle
+\section*{Executive status}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional lower bound on the
+time to decide Circuit-SAT. This document builds, rung by rung, exact wire/gate
+counts for small circuits and \emph{restricted-model} lower bounds, with an explicit
+parameter vector $(n,s,w)$ = (inputs, gates, treewidth). Status labels follow
+\texttt{AGENTS.md}: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model}
+A circuit $C$ has $n$ inputs, $s$ fan-in-2 gates over $B_2$ (all 16 binary gates), one output;
+wires = gate in-edges ($2s$ total). Circuit-SAT: given $C$, is there $x$ with $C(x)=1$?
+Input size is $\Theta(s\log s)$ bits. Parameter vector $(n,s,w)$ with $w$ the treewidth of the underlying graph.
+
+\section{Rung 1: wire counting (PROVED/EXACT)}
+\begin{lemma}[connectivity]\label{lem:conn}
+If $C$ depends on all $n$ inputs, then $s\ge n-1$ and $C$ has $\ge 2(n-1)$ wires; equality is attained by $\mathrm{AND}_n$.
+\end{lemma}
+\begin{proof}
+Every input lies in the cone of the output, which is a connected graph on $n+g$ nodes ($g\le s$ gates)
+with $2g$ edges; connected $\Rightarrow 2g\ge n+g-1$, i.e.\ $g\ge n-1$. A balanced tree of $n-1$ AND gates attains it.
+\end{proof}
+Consequence: any algorithm for a circuit family depending on all inputs must read $\Omega(n)$ wires; reading is not the bottleneck.
+
+\section{Rung 2: exact small cases (COMPUTATIONAL)}
+Script \texttt{experiments/claude\_circuitsat/gate\_ladder.py}, data
+\texttt{results/raw/claude\_circuitsat/gate\_ladder\_n12.json}. Exhaustive search over gate sequences gives:
+\begin{center}\begin{tabular}{lcccc}\toprule
+$n$ & gates=0 & gates=1 & gates=2 & min gates, all-var-dependent\\\midrule
+1 & 1 (the input; $\neg x$ not searched) & -- & -- & 0\\
+2 & 2 ($x,y$) & 12 ($\neg x,\neg y$, 10 genuine binary) & 2 (constants) & 1 $=n-1$\\\bottomrule
+\end{tabular}\end{center}
+Matches Lemma~\ref{lem:conn}. The $n=3$ search (naive DFS in Python) did not finish within the 30\,s rule;
+\status{OPEN} to refit with bit-parallel tables and symmetry reduction (next run).
+
+\section{Rung 3: black-box evaluation bound (PROVED/EXACT in model, not P vs NP)}
+\begin{theorem}\label{thm:bb}
+Let $\mathcal F_n=\{C_w:w\in\{0,1\}^n\}$, $C_w(x)=[x=w]$ (each realised by $n-1$ gates, Lemma~\ref{lem:conn}) together with the all-zero circuit.
+Any deterministic algorithm that accesses $C$ only by evaluating it on chosen points needs $2^n-1$ evaluations to decide
+satisfiability in the worst case; with a promise that $w$ lies in a set $S$, it needs $|S|-1$.
+\end{theorem}
+\begin{proof}
+Adversary answers $0$ to every query; after $q<|S|-1$ queries two untested candidates remain, one consistent with $C_w$, one with the zero circuit.
+\end{proof}
+If each evaluation is charged $\ge n-1$ gate-evaluations (Lemma~\ref{lem:conn}) the black-box cost is $\ge(2^n-1)(n-1)$.
+\textbf{Status of transfer:} FAILED TRANSFER to the white-box problem: the algorithm may read $C$'s wires (here, $C_w$ reveals $w$ in $O(n)$ time). This is the relativization barrier; the bound only motivates which structure must be hidden.
+
+\section{Rung 4: parametrised picture}
+\begin{center}\begin{tabular}{p{4.3cm}p{4cm}p{4.6cm}}\toprule
+Parameter & Upper bound & Lower bound\\\midrule
+$n$ (inputs) & $2^n\cdot s$ brute force & KNOWN/CONDITIONAL: no $2^{o(n)}$ poly-size under ETH\\
+$w$ (treewidth) & $2^{O(w)}\,s$ by DP on tree decomposition (KNOWN THEOREM) & CONDITIONAL: no $(2-\varepsilon)^{w}\mathrm{poly}$ for CNF-SAT under SETH (Lokshtanov--Marx--Saurabh)\\
+fan-out 1 (formulas) & $O(s)$ (SAT of formulas is not a hard case of this form) & KNOWN: parity needs $n^2$ leaves (Khrapchenko)\\
+$s$ gates (circuit size of explicit functions) & -- & KNOWN: $3.1n-o(n)$ (Li--Yang, gate elimination); no superlinear bound known\\\bottomrule
+\end{tabular}\end{center}
+(Citations from memory; a later run must re-verify them against primary sources before they are relied on.)
+The natural parametrised target is a bound of shape $T(n,s,w)\ge 2^{c\,w}\,\mathrm{poly}(s)$; only the SETH-conditional version is currently available.
+
+\section{Relation to the repository (j15marti/pnp)}
+Root \texttt{main.tex} states ARC-EDGE-90 and $P\ne NP$ \textbf{OPEN}; its circuit firewall note shows a $4(p-1)$-NAND balanced circuit for a promise decision map, i.e.\ transcript multiplicity gives no exponential SAT circuit bound.
+This agrees with Lemma~\ref{lem:conn}: wire counts of hidden-witness circuits are linear. This run did not audit the full repository corpus; only the root \texttt{main.tex} status lines were read.
+
+\section{Ledger}
+\begin{tabular}{p{4.5cm}p{3cm}p{5cm}}\toprule
+Item & Status & Note\\\midrule
+Lemma 1 wire bound & PROVED/EXACT & linear, tight\\
+$n\le2$ exact gate table & COMPUTATIONAL & script + JSON\\
+Theorem 2 black-box $2^n$ & PROVED/EXACT (model) & relativizing\\
+Any white-box lower bound & OPEN & P vs NP\\
+$n=3$ table & OPEN & needs faster search\\\bottomrule
+\end{tabular}
+
+\section{Next steps}
+(1) Bit-parallel exact $n=3,4$ gate/wire tables. (2) Verify citations. (3) Study ``hiding'' constructions: which circuit families with $w\to\infty$ force $2^{\Omega(w)}$ for restricted solvers (DPLL/tree resolution). (4) Read the repository's ARC/FLMV and circuit-firewall reports.
+\end{document}
+% END_OF_LIVING_DOC::run-2026-10-26T1252Z
