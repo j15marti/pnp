@@ -3,6 +3,7 @@
 Finite branch/provenance/DIMACS tests; not an FLMV runtime measurement.
 """
 import json,math,random
+from pathlib import Path
 from collections import Counter
 SEED=12720261026
 W='''-1 3 -14;2 -8 9;10 -13 14;3 7 -13;-4 -9 -11;
@@ -57,7 +58,8 @@ def branch(F,n,witnesses,adaptive=False):
    j=falses[0];leaves.append((prefix,depth,j))
    for k,w in ws:
     if all(((w>>(abs(x)-1))&1)==b for x,b in prefix):
-     check(k==j and k not in private_leaf,'private source clause witness collision')
+     check(k==j,'wrong source clause ID')
+     check(k not in private_leaf,'duplicate witness terminal')
      private_leaf[k]=(depth,j)
    counts['leaves']+=1
    return
@@ -75,7 +77,9 @@ def branch(F,n,witnesses,adaptive=False):
  check(len(private_leaf)==len(witnesses))
  check(counts['nodes']==2*counts['leaves']-1)
  for k,w in ws:
-  d,j=private_leaf[k];check(j==k and not val_clause(F[j],w))
+  d,j=private_leaf[k]
+  check(j==k)
+  check(not val_clause(F[j],w))
  e=len(witnesses)
  mean=sum(d for d,j in private_leaf.values())/e
  kraft=sum(2.0**(-d) for d,j in private_leaf.values())
@@ -100,14 +104,16 @@ def mismatch_join():
  anti,n2=lifted2(((-1,-3),(1,3)),n1)
  good=eq+anti
  bad=eq+tuple(tuple(2 if x==3 else -2 if x==-3 else x for x in cl) for cl in anti)
- check(sat_witness(eq,n2)!=None and sat_witness(anti,n2)!=None)
+ check(sat_witness(eq,n2)!=None)
+ check(sat_witness(anti,n2)!=None)
  for x in (0,1):
   pp=pin(1 if x else -1,n2+1)
   check(sat_witness(eq+pp,n2+2)!=None)
   check(sat_witness(anti+pp,n2+2)!=None)
   check(sat_witness(good+pp,n2+2)!=None)
   check(sat_witness(bad+pp,n2+2)==None)
- check(sat_witness(good,n2)!=None and sat_witness(bad,n2)==None)
+ check(sat_witness(good,n2)!=None)
+ check(sat_witness(bad,n2)==None)
  return dict(boundary_projection_both=[0,1],separate_names_SAT=True,
   collided_private_names_UNSAT=True,source_identity_required=True,
   good_bytes=serialize(good,n2),bad_bytes=serialize(bad,n2))
@@ -120,8 +126,10 @@ def derived_cut():
  delete=W1[1:]+pin(16,17)
  full2=full+pin(19,20)
  delete2=delete+pin(19,20)
- check(sat_witness(full,18)==None and sat_witness(delete,18)!=None)
- check(sat_witness(full2,21)==None and sat_witness(delete2,21)!=None)
+ check(sat_witness(full,18)==None)
+ check(sat_witness(delete,18)!=None)
+ check(sat_witness(full2,21)==None)
+ check(sat_witness(delete2,21)!=None)
  return dict(valid_source_SAT=True,valid_fresh_child_SAT=True,
   wrong_alias_child_UNSAT=True,sourced_W1_full_UNSAT=True,
   sourced_W1_deleted_child_SAT=True,
@@ -166,7 +174,7 @@ def main():
   results[key]=dict(n=n,m=len(F),essential=len(p),
    signed22=signed22(F,n),root_DIMACS_bytes=serialize(F,n),
    branch_strategies=tests,root_one_terminal_K=len(F),
-   root_one_terminal_depth=0)
+   root_one_terminal_depth=0,root_one_terminal_entropy_check=True)
  check(signed22(W1,15))
  sample=[];cur=W1
  for k in range(24):
@@ -177,7 +185,8 @@ def main():
   sample.append(dict(case=k,sat=witness!=None,witness=witness,
    bytes=serialize(cur,15)))
  count=Counter('SAT' if x['sat'] else 'UNSAT' for x in sample)
- check(count['SAT']>=1 and count['UNSAT']>=1)
+ check(count['SAT']>=1)
+ check(count['UNSAT']>=1)
  check(sat_witness(((1,),(-1,2),(-2,)),2)==None)
  check(sat_witness(((1,2),(-1,2),(-2,)),2)==None)
  check(sat_witness(((1,2,3),(1,-2,-3),(-1,2,-3),(-1,-2,3)),3)!=None)
@@ -189,7 +198,7 @@ def main():
   scope='finite exhaustively checked semantics, not an FLMV runtime lower bound')
 if __name__=='__main__':
  out=main();out['checks']=checks
- with open('2026-10-26_0024_SOURCE_CUT_ENTROPY127_raw.json','w') as f:
+ with open(Path(__file__).with_name('2026-10-26_0024_SOURCE_CUT_ENTROPY127_raw.json'),'w') as f:
   json.dump(out,f,sort_keys=True,indent=2)
  print(json.dumps({'run':out['run'],'checks':out['checks'],
    'cases':out['cases'],'signed_mutation_counts':out['signed_mutation_counts'],
