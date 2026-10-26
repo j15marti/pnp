@@ -1,0 +1,196 @@
+% LSPV-5 REPORT::PROOF-SYSTEM-FALLBACK163::2026-10-26T06:51:12-07:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\UNSAT}{\mathsf{UNSAT}}
+\newcommand{\status}[1]{\textbf{#1}}
+\title{PROOF-SYSTEM-FALLBACK163:\\Polynomial UNSAT Coverage, Empty Proofs, and the Unknown-$K$ Firewall}
+\author{LSPV-5 --- Independent Red Team / Formal Proof Referee}
+\date{26 October 2026, America/Los\_Angeles}
+\begin{document}\maketitle
+
+\begin{center}
+\fbox{\parbox{.93\linewidth}{
+\status{PROVED/EXACT:} polynomially bounded, polynomial-time verifiable
+all-UNSAT certificates for ordinary CNF exist iff $NP=coNP$; under $P=NP$
+an empty-proof verifier exists by calling the assumed deterministic decider.
+\status{FALSIFIED:} short certificates, even zero-bit certificates, determine
+a favorable coNTIME exponent.  A fallback to an $N^{K+o(1)}$ parent decider
+has worst-branch exponent $K$, so it cannot repair the global-backdoor route
+at the strict $1.801821\ldots$ frontier for arbitrary unknown $K$.
+\status{OPEN:} an independently proved favorable quantitative verifier,
+matched deterministic small space, ARC-EDGE-90 and $P\ne NP$.}}
+\end{center}
+
+\section{Preregistered falsifiers and sources}
+Four attacks were fixed before the targeted literature search.
+\begin{description}
+\item[H1.] Polynomial all-UNSAT certificate coverage is itself a minor
+structural lemma.  \status{FALSIFIED}: for an unrestricted ordinary-CNF
+proof system it is exactly the Cook--Reckhow $NP=coNP$ boundary.
+\item[H2.] Assuming $P=NP$ supplies coverage but also the favorable exponent
+needed by van Melkebeek.  \status{FALSIFIED}: the assumed decider has an
+unknown finite exponent $K$.
+\item[H3.] A fast restricted grammar plus parent-decider fallback retains the
+fast branch's exponent.  \status{FALSIFIED}: coNTIME charges the slowest
+branch, giving $\max\{c,K\}$.
+\item[H4.] A compact selector or witness circuit bypasses certificate
+verification.  \status{FALSIFIED as an inference}: wiring size is distinct
+from global correctness/totality authentication and from a full decision
+circuit.
+\end{description}
+
+The source audit used Cook--Reckhow's original proof-system paper
+\cite{cr}, van Melkebeek's Theorem~1.3 model and hypotheses \cite{vm}, and
+FLMV's indexed random-access model \cite{flmv}.  Current peer material and
+root \path{main.tex} were reread after GLOBAL-BACKDOOR-PRODUCT162.  No new
+peer report appeared between that reconciliation and this pass.
+
+\section{The exact qualitative boundary}
+Call $V(F,\pi)$ an ordinary-CNF UNSAT proof verifier if it is one fixed
+deterministic polynomial-time program satisfying
+\[
+ F\in\UNSAT\iff\exists\pi\;V(F,\pi)=1.                         \tag{1}
+\]
+It is polynomially bounded when one polynomial $p$ satisfies
+\[
+ \forall F\in\UNSAT:\quad\exists\pi,quad |\pi|\le p(|F|),
+ \quad V(F,\pi)=1.                                             \tag{2}
+\]
+Malformed records reject and the runtime is polynomial in the complete
+input pair.  This is the verifier form of a Cook--Reckhow proof system,
+after the standard polynomial translation between UNSAT CNFs and tautologies.
+
+\begin{theorem}[Cook--Reckhow boundary, specialized to UNSAT]
+There exists a verifier satisfying (1)--(2) on all ordinary CNFs if and only
+if $NP=coNP$.
+\end{theorem}
+\begin{proof}
+If it exists, $\UNSAT\in NP$.  Since UNSAT is coNP-complete, this gives
+$coNP\subseteq NP$; complementing gives the reverse inclusion.  Conversely,
+if $NP=coNP$, then $\UNSAT\in NP$, whose definition supplies a polynomial
+witness relation and one polynomial length bound.  This is precisely
+(1)--(2).
+\end{proof}
+
+The theorem is qualitative.  It neither chooses a small degree nor bounds
+simultaneous writable/index space.  A grammar restricted to M22, affine
+Tseitin, SCC leaves, resolution, polynomial calculus, or a recognized
+product family does not meet the theorem's all-ordinary-input premise unless
+a paid sound and complete reduction is separately supplied.
+
+\section{Empty-proof absorption under $P=NP$}
+Assume only that $P=NP$.  Then a fixed uniform deterministic total exact SAT
+decider $A$ exists with, for some finite but unspecified $K$,
+\[
+ T_A(N)le N^{K+o(1)},\qquad S_A(N)\le N^{K+o(1)}.               \tag{3}
+\]
+Define the zero-bit UNSAT verifier
+\[
+             V_A(F,\epsilon)=1-A(F).                            \tag{4}
+\]
+It is sound and complete, has proof cap zero, and its branchwise complement
+is exactly $A$.  Thus $P=NP$ does imply polynomial all-UNSAT coverage, even
+without any structural certificate.  But its coNTIME exponent is $K$, not a
+universal constant extracted from proof length.
+
+\begin{theorem}[Fallback exponent firewall]\label{th:fallback}
+Let a fast restricted verifier have all-branch time
+$N^{c+o(1)}$.  Extend it to all UNSAT inputs by including one proof mode that
+runs (4).  The resulting nondeterministic UNSAT verifier, and hence its
+branchwise complemented co-nondeterministic SAT machine, has worst-branch
+time
+\[
+                         N^{\max\{c,K\}+o(1)}.                  \tag{5}
+\]
+No proof-length reduction changes (5).  If $K\ge2$, this fallback cannot
+enter the project threshold
+\[
+ c_*={651000\over361301}=1.8018217497\ldots.                   \tag{6}
+\]
+\end{theorem}
+\begin{proof}
+The machine has both the restricted-verifier branches and the fallback
+branch.  The complexity class charges maximum branch time, so the upper
+envelope is (5); the fallback branch also gives the matching obstruction to
+claiming the smaller proved bound for this construction.  Since every
+integer $K\ge2$ exceeds the strict threshold (6), that branch lies outside
+the desired premise.  Zero proof bits eliminate guess cost, not computation
+or work/index storage.
+\end{proof}
+
+Padding $A$ with inert steps yields empty-proof verifiers of arbitrarily
+large polynomial degree for the same language.  Conversely, a long proof
+may have a nearly linear streamed verifier.  Proof length, verifier time,
+peak space, circuit size and proof-search time are therefore distinct
+resources.  This formalizes why the now-falsified global logarithmic header
+cannot be repaired by saying ``use $A$ on uncovered inputs.''
+
+\section{Adaptive certificate and circuit consequences}
+LSPV-3's partial-2CNF SCC and paired-affine terminals, and LSPV-4's balanced
+stream dictionary, remain sound restricted verifiers.  If every UNSAT input
+had a canonical proof of bit length $P\le N^{a+o(1)}$ and the Role-4 verifier
+bound applied on every record, its conditional coNTIME exponent would be
+$\max\{1,a\}$.  Cook--Reckhow explains why polynomial coverage alone is a
+major qualitative statement; Theorem~\ref{th:fallback} explains why the
+assumption $P=NP$ does not supply the required quantitative exponent via a
+fallback.
+
+The same firewall applies to current circuit and selector objects.
+LSPV-1's $J_F$ has compact, locally reconstructible wiring, but the statement
+that it is total/correct for all assignments is the missing universal
+authentication.  Running the parent decider verifies that statement only at
+exponent $K$.  LSPV-2's $O(N\log^3N)$ circuit is a witness verifier, not a
+full SAT decision circuit; a short description does not certify its
+existential closure.  LSPV-4's exact pinned-output floor remains a theorem
+about one explicit compiler, not a lower bound for all decision circuits.
+None of these objects supplies the full circuits required by van Melkebeek
+Theorem~6.3 or the deterministic small-space machine paired with
+Theorem~1.3.
+
+\section{Executable audit and proof DAG}
+The zero-dependency program
+\path{research/agents/lspv-5/2026-10-26_0651_PROOF_SYSTEM_FALLBACK163_audit.py}
+performed \textbf{16,606 deterministic assertion groups with zero failures}.
+For truth tables through twelve entries it checked the exact empty-proof
+UNSAT relation and its branchwise complement.  It checked all tested fast
+exponents against fallback integers $K=2,\ldots,10$, exact rational threshold
+(6), and zero-proof padded work through $N=256$, $K=8$.  These finite tests
+audit quantifier and arithmetic implementations, not complexity-class
+separations.  Raw output is in the matching results JSON.
+
+\begin{center}\begin{tabular}{p{.43\linewidth}p{.2\linewidth}p{.29\linewidth}}
+\toprule Arrow & Status & Exact reason\\\midrule
+Polynomially bounded all-UNSAT proof system $\Leftrightarrow NP=coNP$ & PROVED/EXACT & Cook--Reckhow boundary\\
+$P=NP\Rightarrow$ zero-bit all-UNSAT verifier & PROVED/EXACT & Eq.~(4)\\
+Zero proof size $\Rightarrow$ favorable coNTIME exponent & FALSIFIED & verifier still runs $A$\\
+Fast grammar plus parent fallback preserves $c$ & FALSIFIED & worst branch $\max\{c,K\}$\\
+Adaptive SCC/affine streamed verification & PROVED/RESTRICTED & supplied canonical proofs only\\
+All-UNSAT adaptive cap below $c_*$ & OPEN & no quantitative coverage theorem\\
+Witness/selector circuit $\Rightarrow$ full decision circuit & FALSIFIED as inference & type/authentication gap\\
+Matched FLMV premise, ARC-EDGE-90, $P\ne NP$ & OPEN & same-machine arrows missing\\
+\bottomrule\end{tabular}\end{center}
+
+\paragraph{Next decisive lemma.}
+The target is no longer qualitative polynomial proof coverage.  It is one
+fixed all-ordinary-input adaptive proof verifier with a uniform cap and
+worst-branch time exponent strictly below (6), together with the separate
+matched deterministic small-space SAT seed.  The proof must exclude
+parent-decider fallback, charge malformed and timeout paths, and authenticate
+every selector/circuit/affine/SCC terminal from source bits.
+
+\begin{thebibliography}{9}
+\bibitem{cr} S.~Cook and R.~Reckhow, \emph{The Relative Efficiency of
+Propositional Proof Systems}, Journal of Symbolic Logic 44(1):36--50, 1979,
+\url{https://www.cs.toronto.edu/~sacook/homepage/cook_reckhow.pdf}.
+\bibitem{vm} D.~van Melkebeek, \emph{A Survey of Lower Bounds for
+Satisfiability and Related Problems}, Foundations and Trends in TCS, 2007.
+\bibitem{flmv} L.~Fortnow, R.~Lipton, D.~van Melkebeek and A.~Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, JACM 52(6):835--865, 2005.
+\end{thebibliography}
+% END_OF_VERIFIED_REPORT::LSPV-5::PROOF-SYSTEM-FALLBACK163
+\end{document}
