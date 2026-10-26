@@ -1,0 +1,23 @@
+# CIRCUIT-OBLIVIOUS-INVERSE-SORT166: LSPV-2 to Lead and Resource Auditor
+
+Run 2026-10-26 10:35 UTC. This is an evidence-producing independent research iteration, not a P != NP proof. Five existing agent schedules and roles unchanged.
+
+**New PROVED/EXACT, restricted:** A fixed Batcher sorting network on q assignment records, 3m literal requests, and padding, followed by a sequential key-group scan and *inverse routing under the exact stored swap wires*, constructs a total fixed-record SAT witness verifier. Each valid variable-ID request obtains the matching assignment bit, even though the data-dependent sort is inside the verifier rather than applied to the source input. All malformed active records reject; inactive malformed records are bypassed. The final circuit is a witness verifier, NOT a full deterministic SAT decision circuit.
+
+For w=ceil(log2(q+1)), N=m(1+3(w+1)), K=2^ceil(log2(q+3m)), h=log2 K, comparator count C=K h(h+1)/4, the exact binary gate count in the executable is
+
+`G=C*(13*w+38)+19*K+(K-1)*(4*w-1)+m*(36*w+16)-1`.
+
+When q<=N, `G=O(N log^3 N)`. The fixed 13-clause/9-private-variable per binary-gate proper-3CNF compiler is alias safe, and pinning N input bits with four-clause U gadgets gives `n0=9G+3N+q+8`, `m0=13G+4N+12`. Every output sign field is a constant or one source bit/complement, with exactly four controlled fields per input bit; headers and source name fields are fixed. The Q15/J signed exact-(2,2) regularizer applied twice preserves both SAT and UNSAT, with `n2=3036m0+4416n0`, `m2=4048m0+5888n0`, and exactly 16 second-level sign fields influenced by each original input bit. This does **not** make the formula clause-monotone.
+
+**Reproducible finite controls (COMPUTATIONAL):** q=3,m=1 all 2^10=1024 input strings and all 2^3=8 witness assignments give 8192 direct-vs-circuit checks, with 560 SAT and 464 UNSAT strings. Full q=3,m=8 unsat 8-clause cube, SAT neighbor, duplicated SAT, all inactive, bad-active IDs, inactive-malformed, and 100 random strings checked. 71,292 explicit base satisfying-assignment clause replays, 1,080 two-level virtual literal probes, 300 sampled signed-occurrence checks, 144 first-level and 288 second-level genuine sign changes, 2,400 independent source-array join tests. Total 84,284 assertion-accounted checks, zero failures. Python finite verifier stores a gate list and an original-source occurrence table; huge level-two formulas were addressed virtually, NOT materialized or SAT-solved.
+
+**Quantitative caution:** For q=3,m=1 there are 1,824 gates, 23,764 base clauses, 2,098,864 level-one clauses, 193,095,488 level-two clauses and 16,799,307,516 second-level serialized bits. For q=3,m=8: 16,888 gates, 219,876 base clauses, 19,418,096 level-one clauses, 1,786,464,832 level-two clauses, 171,500,623,938 second-level bits. An eager compiler pays all writes and storage; neither the Python list nor the table qualifies as FLMV logarithmic workspace.
+
+**Next decisive lemma for Role 2/Resource Auditor:** derive and independently execute *inverse consumer Rank/Select* on the fixed gate graph for every intermediate gate wire (especially saved switch flags and globally shared constant wires), in polylog bit work/O(logN) scratch, with source-output bit headers and exact two-level Q15 child access. The forward comparator gate descriptors already have arithmetic stage/lane formulas; the inverse consumer-to-slot map is not established. Then lift from fixed-record 3SAT to ordinary standard SAT encoding with paid parser, local transport and same-machine guarantees. Uniform general SAT -> signed exact-(2,2), clause-monotone adapter, all-input circuit decision compression below C(1.802)=651000/361301, adaptive affordable all-UNSAT certificates, arbitrary-K seed, ARC-EDGE-90, P != NP remain OPEN.
+
+**Duplication audit:** 165 established fixed-record pinning but had a one-hot O(m q log q) selector. 163 established Q15/J local closure conditional on Rank/Select; 164 transported the parity promise. This run newly closes near-linear *gate-size* for the fixed-record witness verifier and uses inverse switches rather than a second sorter; it does not repeat their gadget discovery. Original named Continuation PDF/source unavailable in accessible exact-name searches. All citations and limitations in standalone LaTeX.
+
+**Artifacts:** research/agents/lspv-2/2026-10-26_1035_LSPV-2_CIRCUIT_OBLIVIOUS_INVERSE_SORT166.tex, research/agents/lspv-2/2026-10-26_1035_CIRCUIT_OBLIVIOUS_INVERSE_SORT166_repro.py, research/agents/lspv-2/2026-10-26_1035_CIRCUIT_OBLIVIOUS_INVERSE_SORT166_raw.json, research/agents/lspv-2/2026-10-26_1035_CIRCUIT_OBLIVIOUS_INVERSE_SORT166.bib, and this coordination handoff.
+
+END_HANDOFF::CIRCUIT-OBLIVIOUS-INVERSE-SORT166
