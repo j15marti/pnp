@@ -1,0 +1,93 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\newtheorem{conjecture}{Conjecture}\theoremstyle{remark}\newtheorem{remark}{Remark}
+\newcommand{\SAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: Parametrized Wire-Count Lower Bounds for Circuit-SAT\\\large Living document}
+\author{Scheduled hourly Claude runs}
+\date{Last updated: 2026-10-26 (run 1)}
+\begin{document}\maketitle
+
+\section*{Status (strict labels)}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional superlinear lower bound for
+\SAT. Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+Repository cross-check (run 1): the main corpus (\texttt{main.tex}, \texttt{GROKPROOF/}) records no
+unconditional general-circuit bound beyond $\approx 3.5n$ and keeps P vs NP open; none of it was used as a premise below.
+
+\section{Model and the wire-by-wire ledger}
+A circuit $C$ is a DAG with $n$ input nodes and $g$ gates over $\{\wedge,\vee,\neg\}$ (fan-in $\le 2$),
+one output (sink). Only nodes in the cone of the output are counted. Let $V=n+g$, $E$ = number of wires
+(edges, counting $\wedge/\vee$ as 2, $\neg$ as 1). Define the \emph{fan-out excess}
+\[\beta(C)=E-V+1=\sum_{v\ne\text{out}}(\mathrm{outdeg}(v)-1)\ \ge\ |S(C)|,\]
+where $S$ is the set of \emph{stems} (nodes of out-degree $\ge2$). The first equality is the cyclomatic
+number of the underlying undirected graph; the second is double counting of edges (every non-output node of the cone has out-degree $\ge1$).
+$\beta=0$ iff $C$ is a tree (read-once formula). So ``connections needed beyond a tree'' $=\beta$ exactly.
+
+\section{Proved statements}
+\begin{lemma}[tree/read-once case, PROVED]\label{l:tree}
+If $\beta(C)=0$, \SAT\ is decidable in time $O(E)$, and $C$'s function is unate (read-once with negations).
+\end{lemma}
+\emph{Proof.} Each node's subtree has disjoint inputs, so the set $A(v)\subseteq\{0,1\}$ of achievable values
+is computed bottom-up from $A(\text{input})=\{0,1\}$, with $A(\neg u)=\{1-x\}$, $A(u\circ w)=\{x\circ y: x\in A(u),y\in A(w)\}$. $C$ is satisfiable iff $1\in A(\text{out})$.
+Unateness: induct; each input occurs on one path, a composition of monotone/antitone maps. $\square$
+
+\begin{lemma}[stem conditioning, PROVED upper bound]\label{l:stem}
+\SAT\ on $C$ is decidable in time $O(2^{|S|}\cdot E)\subseteq O(2^{\beta}E)$.
+\end{lemma}
+\emph{Proof.} Guess $b_s\in\{0,1\}$ for each stem $s$; replace every out-edge of $s$ by the constant $b_s$.
+What remains is a forest in which each stem's own subtree must be able to produce $b_s$ and the output tree must reach $1$; apply Lemma~\ref{l:tree}'s set-propagation, with constants as $\{b_s\}$.
+$C$ is satisfiable iff some guess passes. $\square$
+(Machine-checked against brute force on 3000 random circuits, 0 mismatches: \texttt{experiments/claude\_circuitsat/stem\_sat.py}, \texttt{results/raw/claude\_circuitsat/stem\_sat\_results.json}. COMPUTATIONAL sanity check only.)
+
+\begin{lemma}[non-unate functions need $\beta\ge1$, PROVED]
+If $f$ is computed by $C$ with $\beta(C)=0$ then $f$ is unate. Hence XOR and MUX need $\beta\ge1$.
+\end{lemma}
+Immediate from Lemma~\ref{l:tree}.
+
+\begin{proposition}[description-reading lower bound, PROVED, trivial]\label{p:read}
+In the model where the circuit is given as a read-only array of gate records (type, two input pointers),
+every deterministic \SAT\ algorithm makes $\Omega(g)$ probes, on a family with $n=k$ inputs.
+\end{proposition}
+\emph{Proof.} Let $h_i=x_i\wedge y_i$ with $y_i\in\{x_i,\neg x_i\}$ for $i\le k$ and output $\bigwedge_i h_i$ (a chain; $n=k$, $\beta=\Theta(k)$ because each $x_i$ fans out to $h_i$ and $\neg$). The all-$y_i{=}x_i$ circuit is satisfiable. If the algorithm answers SAT without probing both records of $h_j$, flip $y_j$ to $\neg x_j$: the new circuit is unsatisfiable and consistent with all answers. So $\ge k=\Theta(g)$ probes. $\square$
+This is only linear and shows the trivial barrier; it says nothing about time beyond reading the input.
+
+\section{Step-by-step small cases (COMPUTATIONAL, exact within the search bound)}
+Exhaustive enumeration of all $\{\wedge,\vee,\neg\}$ circuits with $\le G$ gates (all gates in the output cone); for each truth table: minimal gate count and minimal $\beta$ among circuits with $\le G$ gates.
+Data: \texttt{results/raw/claude\_circuitsat/enum\_beta\_results.json}; code \texttt{experiments/claude\_circuitsat/enum\_beta.py} (chunked by first gate; each run $<5$ s).
+\begin{center}\begin{tabular}{lcccc}\toprule
+function & $n$ & min gates & min $\beta$ & note\\\midrule
+$x\wedge y$, $x\vee y$ & 2 & 1 & 0 & read-once\\
+$x\oplus y$ (and XNOR) & 2 & 4 & 2 & both inputs are stems\\
+const 0/1 ($x\wedge\neg x$) & 1--2 & 2 & 1 & trivial unsat needs reconvergence\\
+$x_1\wedge x_2\wedge x_3$ & 3 & 2 & 0 & \\
+MUX $(x_1?x_2:x_3)$ & 3 & 4 & 1 & only select line fans out\\
+MAJ$_3$ & 3 & 4 & 2 & \\
+$x_1\oplus x_2\oplus x_3$ & 3 & $>5$ & --- & not reached at $G=5$\\\bottomrule
+\end{tabular}\end{center}
+At $n=3$, $G\le5$: 203 of 256 functions reached; min-$\beta$ histogram: $\beta{=}0$: 94, $\beta{=}1$: 26, $\beta{=}2$: 83. At $n=2$, $G\le6$ all 16 functions reached: $\beta=0$:12, $1$:2, $2$:2.
+\textbf{Observation:} no function with $\beta=0$ was found to be non-unate, consistent with Lemma 3 (the converse, that every unate function has $\beta=0$ within the gate bound, was not checked).
+
+\section{Parametrized lower-bound picture}
+\begin{itemize}
+\item[(A)] Upper bound $2^{\min(\beta,|S|)}\mathrm{poly}$ (Lemma~\ref{l:stem}) is PROVED. Treewidth-based algorithms give $2^{O(\mathrm{tw})}\mathrm{poly}$ with $\mathrm{tw}\le\beta+1$ (KNOWN; not re-proved here).
+\item[(B)] \textbf{CONDITIONAL.} Under ETH, no $2^{o(\beta)}\mathrm{poly}(m)$ algorithm exists for \SAT. Sketch: sparsification gives 3-CNF with $m_{cl}=O(n)$; the standard circuit of the formula (one $\vee$-tree per clause, one $\wedge$-tree, fan-out of variable occurrences) has $\beta\le 3m_{cl}+O(1)=O(n)$, so $2^{o(\beta)}$ would give $2^{o(n)}$ 3-SAT. So the exponent $\Theta(\beta)$ is tight \emph{in the worst case over $\beta$}, assuming ETH. This is not an unconditional bound and does not separate P from NP: for fixed $\beta=O(\log m)$ the problem is in P (Lemma~\ref{l:stem}).
+\item[(C)] \textbf{OPEN (key gap).} Unconditionally, nothing better than $\Omega(m)$ (Prop.~\ref{p:read}) is shown. A P$\ne$NP proof via this parameter would need ``every algorithm requires $m^{\omega(1)}$ on some family with $\beta=\omega(\log m)$''. No such argument is available here.
+\end{itemize}
+\begin{conjecture}[CANDIDATE, not supported by evidence beyond (B)]
+For $\beta\le m^{1-\epsilon}$, \SAT\ requires time $2^{\Omega(\beta)}$ (ETH-equivalent form).
+\end{conjecture}
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend enumeration: min $\beta$ and min gates for $n=4$ ($G\le 6$) in C/chunked form; tabulate min $\beta$ vs. number of non-unate variables.
+\item Find a refined parameter (e.g.\ feedback-vertex-set of the undirected graph, pathwidth) with sharper stem count $\ll\beta$, and test whether Lemma~\ref{l:stem} can be strengthened to $2^{\mathrm{fvs}}$.
+\item Search repo (\texttt{research/language}, \texttt{experiments/sil\_m22}) for resource-ladder results that give a lower bound in a restricted model (e.g.\ read-once branching programs, DPLL on bounded-$\beta$) and import it as a restricted-model bound.
+\item Unconditional restricted-model target: lower bound for DPLL/tree-resolution on circuits as a function of $\beta$.
+\end{enumerate}
+
+\section*{Log}
+\begin{tabular}{ll}
+Run 1 (2026-10-26) & Created document; Lemmas 1--3, Prop.~1 proved; enumeration $n\le3$; conditional ETH tightness; nothing unconditional beyond $\Omega(m)$.\\
+\end{tabular}
+\end{document}
