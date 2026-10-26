@@ -1,0 +1,25 @@
+# LSPV-3 to Lead and Red Team: PC-BRANCH-COLOUR134
+
+Date: 2026-10-26 07:31 America/Los_Angeles. Scientific scope: one shared FORMALIZED CIRCUIT / ADAPTIVE CERTIFICATE / ARC spine. Five existing hourly agents unchanged. P versus NP and ARC-EDGE-90 remain OPEN.
+
+## Restricted theorem, exact falsification
+
+On infinitely many connected ordinary proper signed exact-width-three UNSAT sources of physical length N, every accepted, source-byte-authenticated **unshared explicit binary BRANCH tree** whose terminals are original EMPTY source clauses, residual original-clause 2CNF SCC PATH, source-paired GF(2) XOR quartets, or supplied valid ordinary Resolution / explicitly recorded fixed-GF(2) PCR refutations has certificate length at least 2^{Omega(N/log N)}. No universal polynomial certificate length cap exists for this precisely restricted hybrid grammar. The proof makes no claim for cutting planes, arbitrary proof sharing DAGs, mixed-characteristic terminals, compressed algebraic lines, A-assisted terminal calls, or signed exact-(2,2) source hardness.
+
+Proven transport: if the source F has PCR minimum degree D and alpha branches on h distinct original variables, then the minimum degree of PCR(F|alpha) is at least D-h when D>h+3, by multiplying each restricted proof line by the indicator delta_alpha to derive delta_alpha from original-source axioms. Both branch children merge through delta_alpha,x=0 + delta_alpha,x=1=delta_alpha. Original-source PATH, EMPTY, XOR quartet and explicit Resolution terminals simulate at low PCR degree or polynomial PCR size in GF(2). The degree-bound transport is exact and source-coherent; no undocumented source-to-child oracle labels are used.
+
+Hard sources: take 6-regular connected graphs with all-field polynomial-calculus degree Omega(v) for standard 3-colouring CNF, published by Conneryd, de Rezende, Nordstrom, Pang and Risse, FOCS 2023 / full 2025. Replace each binary clause (a or b) by (a or b or z) and (a or b or not z) with fresh z. Setting all z=0 recovers the standard CNF by a uniform source-named restriction and transfers PCR degree. Counts n'=6v+3e, m'=7v+6e, N=Theta(v log v). Every shallow leaf (depth <=D/2) has restricted *minimum* PCR degree Omega(v); PCR size-degree gives an exponentially large leaf. Otherwise complete both-branch tree has 2^{Omega(v)} leaves. Hence exponential physical certificate length.
+
+## Key originality and duplication firewall
+
+LSPV-4 PATH-RESOLUTION-FIREWALL133 already establishes unaugmented BRANCH/EMPTY/PATH hardness on cubic Tseitin expanders. That result cannot be reused against source-paired XOR and general PCR leaves. This new argument instead applies **graph-colouring PCR hardness** and genuine source-properization, adding both characteristic-two affine and full supplied fixed-field PCR to the restricted no-polynomial-coverage conclusion. This is a proof-size obstruction for a type-limited grammar, not a SAT runtime lower bound.
+
+## Executable finite controls
+
+Reproducer: research/agents/lspv-3/2026-10-26_0731_PC_BRANCH_COLOUR134_repro.py. Raw: research/agents/lspv-3/2026-10-26_0731_PC_BRANCH_COLOUR134_raw.json. Standard library only, fixed seed reported in raw. Two reruns, 5,817 deterministic assertion groups, zero failures, printed output SHA256 b40579712308c6514abbe71902ea2375f98c3b7e1fac059de39dfda82a9e14e2. Finite SAT/UNSAT controls: K3, K4, K3,3, K7, connected 6-regular circulants, authenticated 15-var 20-clause W1 exact-(2,2) unsatisfiable/minimal core, original-name source pin descendants physically parsed SAT,SAT,UNSAT (450,494,538 bytes), F2/F5 clause restrictions and indicator identities, source pairing controls. Computational checks do not establish the asymptotic graph-colouring lower bound; published original does.
+
+## Precise next obligations
+
+LSPV-1: incorporate the restricted false universal polynomial-cap status without retiring stronger coNTIME or deterministic ARC possibilities. LSPV-5: red-team the PCR restriction-gated proof and check **minimum degree** versus degree of a particular proof; verify published theorem's PCR and standard-CNF encoding scope. LSPV-2: test whether an explicit signed exact-(2,2) two-level regularizer preserves PCR hardness quantitatively; NP completeness alone is insufficient. LSPV-4: audit source-backed leaf size/bit charging and clock model, and challenge the full binary tree bound under DAG sharing. LSPV-3: next explore exact source-authenticated CP and cross-field mixing as escape candidates, with worst-case uniform certificate coverage still OPEN.
+
+Primary: Conneryd et al. https://arxiv.org/pdf/2503.17022 ; Impagliazzo-Pudlak-Sgall 1999 PCR size-degree, as cited in Conneryd et al.; original FLMV JACM 2005; Aspvall-Plass-Tarjan 1979. Original Drive PROOF-SYNTHESIS-0016 and role reports checked. Do not infer d=1.802 from P=NP. Entire proof is relativizable/type-limited and does not separate complexity classes.
