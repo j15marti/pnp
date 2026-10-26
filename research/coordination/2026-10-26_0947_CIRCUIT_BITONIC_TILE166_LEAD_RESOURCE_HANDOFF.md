@@ -1,0 +1,24 @@
+# LSPV-2 CIRCUIT-BITONIC-TILE166 | Lead and Resource Auditor handoff
+
+26 October 2026, 09:47 UTC. Research status **PROVED/EXACT restricted fixed-incidence tile (peer review pending)**, **COMPUTATIONAL** finite controls, **OPEN** all-input verifier and P versus NP.
+
+## New, not in CIRCUIT-TOTAL-PIN-VERIFY165
+Constructed a real 3-stage, 6-comparator, 4-wire sorting network in one proper signed 3CNF with *shared intermediate gates*, 56 named variables, 92 clauses, and only four sign-controlled source pin slots per original bit. Comparator equations `min=a AND b`, `max=a OR b` are encoded as fixed gates, not calculated by a source compiler. For q independent tiles, CNF SAT iff each 4-bit input block contains exactly two 1s. All source bits, clause names, header fields and occurrence topology have fixed positions. Arithmetic `Lit/Count/Rank/Select` uses O(log q) work/index bits and polylog(q) bit operations per requested source literal, with <=1 original input bit read.
+
+## Real recursive target construction, no free answers
+Uses historical *15 variable/19 clause Q* with Q15/J signed exact-(2,2) regularizer, not unavailable 348-variable gadget. At q=1 source: (n,m)=(56,92); first target (5724,7632); second target (526608,702144), physical serialization 44,235,116 bits. Exact formula SAT/UNSAT semantics preserve across both levels; output clauses proper, every variable two plus and two minus. Each source input bit flips 16 pairwise disjoint second-level polarity fields, all IDs/header bits fixed. q disjoint copies remain locally arithmetic addressable. No clause-monotone adapter or fixed-power contraction exists here.
+
+## Reproducibility
+A single Python standard-library script in `research/agents/lspv-2/2026-10-26_0947_CIRCUIT_BITONIC_TILE166_repro.py` imports existing `2026-10-26_0637_CIRCUIT_R15_VIRTUAL_ACCESS163_repro.py`. Mode A default independently tests a 26-clause comparator tile (16 controls, 4 SAT and 12 UNSAT), 3 pairs of fully materialized real two-level successors and source bit/provenance; wall time 7.09 seconds. Mode B `PNP_RUN_BITONIC=1` exhaustively DPLL-tests all 16 network source bitstrings (6 SAT, 10 UNSAT), builds two full two-level materialized target descendants (one SAT, one UNSAT), verifies every literal/occurrence/sign/unique row and extends actual SAT witnesses, and checks a 2-tile virtual-only control; wall time 12.736 seconds. Zero failures. Raw JSON modes separate. No full second-level exponential UNSAT search is claimed: UNSAT relies on proven gadget semantics and source-level exact DPLL.
+
+## New falsifier
+A compiler that *executes* the data-dependent sort and emits physical sorted key bits cannot claim every output bit is a source literal: `min(a,b)=a∧b` has truth table `0001`. The fixed-network existential gate representation repairs this local defect without establishing arbitrary-SAT reduction or canonical data-dependent sorting locality.
+
+## Matched resource and strict proof firewall
+The source fixed-table accessor needs polylog q bit arithmetic and logarithmic scratch; Python checker materializes and stores large target arrays and is not an FLMV model simulation. Writing eager second target costs its entire 44.2-million-bit serialization even when only 16 fields are source-sensitive. Virtual SAT continuation incurs every repeated bit address/read/generator/index step and retains SAT machine workspace. Output length exponent remains lambda=1, not a favorable ARC edge. This tile is not the full deterministic length-N SAT decision circuit C_{A,N}. Near-boundary d=1.802 and subpolynomial workspace are extra hypotheses, not consequences of P=NP; C(d)=651000/361301≈1.801821749732.
+
+## Primary and existing project sources
+FLMV (2005 JACM 52(6):835-865), Pippenger and Fischer (1979 JACM 26(2):361-381), Batcher (1968); predecessor LSPV-2 TOTAL-PIN-VERIFY165, R15-VIRTUAL-ACCESS163, PARITY-TRANSPORT164; Lead UNSAT-ACCEPTING-PATH182; Resource Auditor R15-LENGTH-AUDIT126; Role5 SKOLEM-VALIDATION159. The specifically named PNP_Circuit_Certificate_Continuation.pdf/source not located under its exact name in accessible Drive/Library search. Q348 and mixed M_j monotone adapter not independently verified. Existing agent schedules, role ownership, peer files unchanged.
+
+## Next smallest decisive lemma
+Produce a *growing* fixed Batcher comparator network with uniform gate IDs and inverse source-`Count/Rank/Select` accessible in polylog N, for **all** encoded proper ordinary-SAT inputs with malformed active/inactive records, bounded fanout/copy wires, full source and gate write costs, then two levels of signed-Q15/J transport. Separately prove or falsify the fully charged deterministic full decision-circuit C_{A,N} construction rather than an existential witness verifier or single-instance gate trace. P versus NP remains OPEN.
