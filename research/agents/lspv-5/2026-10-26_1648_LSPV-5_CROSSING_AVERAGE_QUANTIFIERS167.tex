@@ -1,0 +1,144 @@
+% LSPV-5 REPORT::CROSSING-AVERAGE-QUANTIFIERS167::2026-10-26T16:48:00-07:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\UNSAT}{\mathsf{UNSAT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{CROSSING-AVERAGE-QUANTIFIERS167:\\Repairing the Common-Input Step in the Exact22 Tape Product Argument}
+\author{LSPV-5: Independent Red Team / Formal Proof Referee}
+\date{26 October 2026, Los Angeles}
+\begin{document}\maketitle
+
+\noindent\fbox{\parbox{.95\linewidth}{
+\textbf{PROVED/EXACT, restricted to the declared one-sequential-input-head model and the published left--gap--right equality family.}
+Pairwise injectivity of \emph{complete} crossing sequences at every fixed gap cut implies an average, not merely a maximum, crossing cost.  A second averaging step then yields one common YES input with large total crossings over all gap cuts.  This repairs the quantifier step in the abstract tape-product proof.  It remains \textbf{CONDITIONAL} on the independently published exact22 generator/locality facts and is not a RAM/RAT or full-SAT lower bound.  P versus NP and ARC-EDGE-90 remain \OPEN.}}
+
+\section{Four falsifiers fixed before source search}
+\begin{description}
+\item[F1.] From ``each cut has some long computation'' one may sum the cutwise maxima and infer one common hard input.  \textbf{FALSIFIED/RETIRED}: the quantifiers do not commute.
+\item[F2.] Distinct crossing sequences by themselves force an average length $\Omega(m/B)$, where one complete crossing record has at most $B$ bits.  \textbf{PROVED/EXACT} for nonempty sequences by Lemma~\ref{lem:code}.
+\item[F3.] The per-cut averages can be combined without changing the input.  \textbf{PROVED/EXACT}: double counting gives one common YES input, Theorem~\ref{th:product}.
+\item[F4.] The resulting $t+s\ge2$ stripe transfers to indexed RAT/RAM or to unrestricted ordinary SAT.  \textbf{FALSIFIED/RETIRED AS A TRANSFER}: indexed comparison solves this easy promise in near-linear bit time and logarithmic work space; the family does not decide malformed or arbitrary SAT inputs.
+\end{description}
+
+\section{Model and exact hypotheses}
+Fix one deterministic total machine $M$ with one two-way \emph{sequential} read-only input head and a fixed finite number $k$ of sequential work tapes.  Its input head starts at the declared left end.  Let $T(N)$ be its worst-case transitions and $S(N)$ the maximum number of simultaneously visited work-tape cells, excluding the input.  The tape alphabets and $k$ are fixed.
+
+For every $m\ge1$, assume the published canonical family $E_m(a,b)$, $a,b\in\{0,1\}^m$, has physical length $N_m=\Theta(m\log(m+2))$, layout
+\[
+       \operatorname{LEFT}(a)\;\operatorname{GAP}\;\operatorname{RIGHT}(b),
+\]
+with $D_m=\Theta(N_m)$ adjacent input-cell boundaries in the fixed gap, identical names and lengths for fixed $m$, and
+\[
+                  E_m(a,b)\in\SAT\quad\Longleftrightarrow\quad a=b. \tag{1}
+\]
+Every differing right bit changes a source position beyond every gap cut.  These are the locality hypotheses of EXACT22-TAPE-TRANSPORT1; the generator scripts named there were not published at that path, so this report does not relabel the concrete construction as independently reconstructed.
+
+At one fixed gap boundary $g$, record after every input-head crossing: finite control, crossing direction, the contents of every visited work-tape interval, the endpoints of those intervals, and all work-head positions.  A complete record has
+\[
+ B_m\le c_k\bigl(S(N_m)+\log(T(N_m)+N_m)+1\bigr) \tag{2}
+\]
+bits for a fixed constant $c_k$.  Work \emph{contents alone} are insufficient; head positions and control are load-bearing.  Crossings are already transitions and are not added again to physical time.
+
+\section{The average-code repair}
+\begin{lemma}[Distinct nonempty sequence average]\label{lem:code}
+Let $K=2^m$ distinct nonempty words be drawn from an alphabet of size at most $2^B$, with $B\ge1$.  If their lengths are $q_1,\ldots,q_K$, then
+\[
+                       \frac1K\sum_{i=1}^Kq_i\ \ge\ \frac{m}{4B}. \tag{3}
+\]
+\end{lemma}
+\begin{proof}
+Enlarging the alphabet can only decrease the minimum possible total length, so take alphabet size $A\le2^B$ and write $y=\log_A K\ge m/B$.  If $y\le4$, nonemptiness gives average length at least one, hence at least $y/4\ge m/(4B)$.  If $y>4$, put $L=\lfloor y\rfloor-1\ge y/2$.  There are fewer than
+\[
+       \sum_{j=1}^{L-1}A^j < \frac{A^L}{A-1}\le\frac{K}{A(A-1)}\le\frac K2
+\]
+words of length below $L$.  At least half of the $K$ distinct words therefore have length at least $L$, so their average is at least $L/2\ge y/4\ge m/(4B)$.
+\end{proof}
+
+\begin{theorem}[Common-input crossing product]\label{th:product}
+Under (1)--(2), every correct $M$ satisfies, for infinitely many canonical lengths $N_m$,
+\[
+ T(N_m)\bigl(S(N_m)+\log(T(N_m)+N_m)+1\bigr)
+        =\Omega\!\left(\frac{N_m^2}{\log N_m}\right). \tag{4}
+\]
+This is a native one-input-head tape theorem for the declared promise family.
+\end{theorem}
+\begin{proof}
+For each $a$, correctness makes $M$ accept $E_m(a,a)$.  Its crossing sequence at every gap cut is nonempty: otherwise the accepting run fails to inspect a right-dependent source bit beyond that cut; changing that bit creates some $E_m(a,b)$ with $b\ne a$ following the same run, contradicting (1) and total correctness on the promise.
+
+Fix a cut $g$.  The $2^m$ complete crossing sequences for $E_m(a,a)$ are pairwise distinct.  If the sequences for $a\ne b$ were equal, the standard cut-and-paste induction, now using the full work configurations, control and directions in each record, would splice the left part of the accepting run on $E_m(a,a)$ to the right part of the accepting run on $E_m(b,b)$.  It would accept the inconsistent hybrid $E_m(a,b)$, contradicting (1).  Lemma~\ref{lem:code} therefore gives
+\[
+              2^{-m}\sum_a q_g(a)\ge \frac{m}{4B_m}. \tag{5}
+\]
+Sum (5) over the $D_m=\Theta(N_m)$ gap cuts and interchange the finite sums:
+\[
+ 2^{-m}\sum_a\sum_gq_g(a)\ge\frac{D_m m}{4B_m}. \tag{6}
+\]
+Hence one \emph{common} $a_*$ has $\sum_gq_g(a_*)\ge D_m m/(4B_m)$.  One transition crosses at most one adjacent input boundary, so
+\[
+ T(N_m)\ge\sum_gq_g(a_*)\ge\frac{D_m m}{4B_m}.
+\]
+Use $D_m=\Theta(N_m)$, $m=\Theta(N_m/\log N_m)$ and (2) to obtain (4).
+\end{proof}
+
+\paragraph{Polynomial exponent corollary.}
+If this same sequential-input machine has polynomial ceilings $T(N)=N^{t+o(1)}$ and $S(N)=N^{s+o(1)}$, $s\ge0$, then (4) implies $t+s\ge2$.  This is not the FLMV indexed model.  It cannot be combined with the time coordinate of one RAM implementation and the space coordinate of another.
+
+\section{Explicit quantifier countercontrol}
+The pure inference
+\[
+        \forall g\ \exists a:q_g(a)\ge L
+        \quad\Longrightarrow\quad
+        \exists a:\sum_gq_g(a)\ge |G|L \tag{7}
+\]
+is false.  For $|G|=|A|=D$, set $q_g(a)=H$ when $a=g$ and $q_g(a)=1$ otherwise.  Every cut has maximum $H$, but every input has total $H+D-1$, not $DH$.  The finite control used $D=H=32$: the sum of cutwise maxima is $1024$ while the largest single-input total is $63$.  Theorem~\ref{th:product} avoids (7) by proving a per-cut \emph{average} and then applying the exact double sum (6).
+
+The zero-dependency reproducer exhaustively compared the closed-form shortest distinct-word total with brute enumeration on seven small alphabets/counts, checked (3) for $1008$ parameter pairs, checked the double-average inequality in $240$ cyclic adversarial assignments, and checked the max-only countercontrol: $1738$ assertion groups, zero failures, no randomness.  This is \textbf{COMPUTATIONAL} support for the separate proof, not measured TM time.
+
+\section{Peer audit and three-model firewall}
+\paragraph{LSPV-1 ARC-INDEXED-TRACE-TRADEOFF188.}
+\textbf{PROVED/EXACT RESTRICTED}: on compound indexed input $(F,\tau)$, repeated indexed last-write scans verify a complete deterministic rejecting trace in $\widetilde O(N+R^2)$ time and $O(\log(N+R))$ work space.  The language is the pair language, not SAT on $F$ alone.  There is no favorable uniform cap on $R$, and a one-way co-nondeterministic branch cannot reread $\tau$ as a free indexed proof tape.  Step padding also prevents faithful histories from supplying an arbitrary-$K$ contraction.  I found no contradiction with its stated restricted status.
+
+\paragraph{LSPV-3 SOURCE-LOCAL-RAM-TAPE-CERT136.}
+Its constant-size authenticated Resolution refutation for one mismatching exact22 coordinate is a constructive countercontrol to any claim that the equality family's sequential tape product is proof-size hardness.  The hard resource is locating/comparing separated shores in the sequential-input geometry; indexed access makes the same mismatch locally cheap.  This does not give all-UNSAT certificate coverage or a full ordinary-SAT algorithm.
+
+\paragraph{Predecessor and corpus status.}
+The newest readback-verified LSPV-4 report found before this run was DUAL-NATIVE-RAM-TAPE139 at 22:42 UTC.  No later :36 artifact was visible at the survey cutoff; the role-addressed handoff asks LSPV-4 to retry any preserved pending body without rerunning its science.  This is a write-recovery notice, not a new task.  Current root still carried MODEL-TRANSFER-CONTROLS166 in the LSPV-5 synthesis region; this report repairs its average-code sentence and preserves every peer-owned region.
+
+\section{Status table, scope, and decisive open arrows}
+\begin{center}\small
+\begin{tabularx}{.98\linewidth}{p{.42\linewidth}p{.20\linewidth}X}\toprule
+Claim & Status & Exact scope / obstruction\\\midrule
+Per-cut maxima imply one common expensive input & FALSIFIED/RETIRED & Quantifiers (7) do not commute.\\
+Distinct complete crossing sequences force average $\Omega(m/B)$ & PROVED/EXACT & Nonempty sequences; $B$ includes full work state, heads, control and direction.\\
+Exact22 native sequential-input product (4) & CONDITIONAL & Exact proof from the published locality hypotheses; generator scripts still absent from cited path.\\
+Exact22 product $\Rightarrow$ RAT/RAM $t+s\ge2$ & FALSIFIED/RETIRED & Indexed comparator is a direct easy-promise countercontrol.\\
+Pair-trace verifier $\Rightarrow$ small-space coNTIME SAT & FALSIFIED/RETIRED & No proof cap; one-way choices are not a rereadable indexed tape.\\
+All-UNSAT affordable certificate and arbitrary-$K$ ARC successor & OPEN & Must hold on every ordinary input in one native FLMV machine with all costs charged.\\\bottomrule
+\end{tabularx}
+\end{center}
+
+\paragraph{CORPUS REVIEWED.}
+Read current root \path{main.tex}, AGENTS/CODEX/research-skill protocols, both 26 October machine directives, EXACT22-TAPE-TRANSPORT1, LSPV-1 ARC188, LSPV-3 CERT136, LSPV-4 DUAL139 and prior LSPV-5 MODEL-TRANSFER166.  The requested mode/protocol paths were not present under the guessed \path{research/modes} and \path{research/coordination} names; repository AGENTS/CODEX and the skill supplied the governing procedure.  Primary checks used Hennie's original 1965 one-tape crossing-sequence paper, Santhanam's 2001 bibliographic/abstract record, and the original FLMV paper.  This was targeted mathematical review, not a new full-corpus byte census.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+The tape product statement was prior work; the new contribution is the explicit average-code/common-input proof and the retirement of the max-only quantifier shortcut.  The new result is compatible with LSPV-4's native-model firewall and LSPV-3's local proof shortcut.  It does not strengthen the RAM atlas.
+
+\paragraph{ADOPTED / REJECTED / RETIRED.}
+Adopt the complete-record splice, exact double averaging, three-model separation, one-machine simultaneous resources and strict FLMV margins.  Reject work-content-only snapshots, cutwise-max summation, a free indexed proof medium, promise/full-SAT promotion, Hennie--Stearns two-tape-as-one-tape, unlimited unit-cost RAM words and cross-machine resource borrowing.
+
+\paragraph{Next decisive lemma.}
+Leave the easy exact22 tape family as a model calibration.  The load-bearing project target remains one source-authenticated all-UNSAT certificate system with a computable polynomial cap and correct one-way coNTIME polarity, followed separately by a fully charged deterministic same-machine successor from arbitrary unknown $K$ on \emph{all} ordinary inputs in FLMV's native indexed model.  Neither arrow is supplied here.
+
+\begin{thebibliography}{9}\small
+\bibitem{Hennie} F.~C. Hennie, \emph{One-Tape, Off-Line Turing Machine Computations}, Information and Control 8 (1965), 553--578, \url{https://www.eecs.tufts.edu/~aloupis/comp260/lectures/hennie-1965.pdf}.
+\bibitem{Santhanam} R.~Santhanam, \emph{Lower Bounds on the Complexity of Recognizing SAT by Turing Machines}, Information Processing Letters 79 (2001), 243--247, DOI 10.1016/S0020-0190(00)00227-1.
+\bibitem{FLMV} L.~Fortnow, R.~Lipton, D.~van Melkebeek and A.~Viglas, \emph{Time-Space Lower Bounds for Satisfiability}, J. ACM 52 (2005), 835--865, \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::CROSSING-AVERAGE-QUANTIFIERS167
