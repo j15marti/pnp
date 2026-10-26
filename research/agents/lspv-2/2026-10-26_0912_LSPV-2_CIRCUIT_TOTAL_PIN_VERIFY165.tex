@@ -1,0 +1,149 @@
+% LSPV-2 REPORT::CIRCUIT-TOTAL-PIN-VERIFY165::2026-10-26T09:12Z
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\UNSAT}{\mathsf{UNSAT}}
+\title{CIRCUIT-TOTAL-PIN-VERIFY165:\\A Total Fixed-Record SAT Verifier,\\Local Input-Polarity Pins, and the Exact Two-Level Signed-$(2,2)$ Transport Cost}
+\author{LSPV-2: Circuit/Reduction Builder}
+\date{26 October 2026, 09:12 UTC}
+\begin{document}\maketitle
+\begin{center}
+\textbf{PROVED/EXACT (restricted): all-bitstrings fixed-record verifier-to-proper-3CNF pinning and its signed-$(2,2)$ semantic transport; independent red-team review pending.}\\
+\textbf{COMPUTATIONAL: actual circuit, source 3-CNF and two virtual R15 levels, both labels and malformed active records, with zero failed checks.}\\
+\textbf{OPEN: arbitrary standard length-$N$ SAT encoding in $N\operatorname{polylog}N$ locally indexed bits; full SAT decision-circuit compression; near-boundary seed; ARC-EDGE-90; $P\neq NP$.}
+\end{center}
+
+\section{Pre-literature falsifiers, exact goal, and research state}
+Before searching repository or papers, the following four independently falsifiable candidates were fixed in the timestamped \texttt{presearch.json} artifact:
+\begin{description}
+\item[] \textbf{A.} A length-regular fixed-topology Boolean verifier can isolate every input-dependent bit in one sign-controlled proper 3-CNF unit template. Attack with bad variable IDs, duplicate literals, inactive malformed records, SAT and UNSAT.
+\item[] \textbf{B.} A cheap source-forward literal reader alone suffices for cheap Q15 ring successor access. Previous LSPV-2 \texttt{CIRCUIT-R15-VIRTUAL-ACCESS163} \emph{already falsified} that implication: source Rank/Select is extra data. Do not duplicate the old result.
+\item[] \textbf{C.} Canonical data-dependent variable-count headers preserve single-input-literal bit locality. Falsify with a two-bit variable-count parity example.
+\item[] \textbf{D.} A fixed verifier's nondeterministic witness relation, or a single accepting gate trace, is a smaller full \emph{deterministic} SAT decision circuit. Falsify by quantifier order and explicit witness dependence.
+\end{description}
+The selected constructive test is A, now composed with the established $Q_{15}/J$ signed regularizer through two actual levels. This report makes no assertion that its particular quadratic-style assignment selector is the desired sorting-network verifier of near-linear size.
+
+\section{Fully total fixed-record proper signed 3-CNF source language}
+Fix integers $q\ge3$ and $m\ge1$; let $w=\lceil\log_2(q+1)\rceil$ and $N=m(1+3(w+1))$. Parse \emph{every} string $x\in\{0,1\}^N$ into exactly $m$ records. Record $c$ contains a one-bit active flag $a_c$, and, for each $j=1,2,3$, a $w$-bit unsigned variable name $v_{cj}$ and a positive-polarity flag $s_{cj}$. Unused records ($a_c=0$) impose no constraint, regardless of the contents of their fields. An active record is \emph{valid} if all three names lie in $\{1,\ldots,q\}$ and are distinct. Define
+\[
+ L_{q,m}(x)=1\quad\Longleftrightarrow\quad
+ \exists z\in\{0,1\}^{q}\ \forall c\in\{1,\ldots,m\}:\quad
+ \neg a_c\ \vee\ \left[\operatorname{Valid}(v_{c1},v_{c2},v_{c3})\wedge
+ \bigvee_{j=1}^3(z_{v_{cj}}\leftrightarrow s_{cj})\right]. \tag{1}
+\]
+For an active invalid record the bracket is defined to be false; an inactive invalid record remains harmless. Thus (1) is a total language on the declared $N$-bit strings. The active valid instances are precisely proper signed ternary clauses with distinct variables, possibly including duplicate rows; this is not yet a signed exact-$(2,2)$ formula or the stricter clause-monotone exact-$(2,2)$ language.
+
+\section{Explicit fixed verifier and source-only sign pins}
+For each row and slot and each $v\in\{1,\ldots,q\}$, compute
+\[
+ E_{cjv}=[v_{cj}=v],\quad
+ \operatorname{InRange}_{cj}=\bigvee_{v=1}^qE_{cjv},\quad
+ Z_{cj}=\bigvee_{v=1}^q(E_{cjv}\wedge z_v).
+\]
+Also compute pairwise name inequalities $v_{c1}\ne v_{c2}$, $v_{c1}\ne v_{c3}$, $v_{c2}\ne v_{c3}$ by bitwise XOR/OR, and literal truth
+\[
+ V_{cj}=\neg(s_{cj}\oplus Z_{cj}).
+\]
+The local checker output is $\neg a_c\vee[\bigwedge_j\operatorname{InRange}_{cj}\wedge\bigwedge_{i<j}(v_{ci}\ne v_{cj})\wedge\bigvee_j V_{cj}]$. A final balanced AND evaluates all rows. Encode each equality with AND of $w$ signed input literals; use two-input AND/OR gates, and implement XOR as $(a\vee b)\wedge\neg(a\wedge b)$. Thus the fixed gate sequence is independent of $x$, with
+\[
+ \Gamma=O(mqw+mw+m)\tag{2}
+\]
+AND/OR gates, bounded fan-in, and no decision call. The Python reproducer \emph{actually constructs} the gate sequence for $q=3,m=8$.
+
+Convert each two-input AND $y=a\wedge b$ into
+\[
+ (\neg a\vee\neg b\vee y)\wedge(a\vee\neg y)\wedge(b\vee\neg y)
+\]
+and each OR $y=a\vee b$ into
+\[
+ (a\vee b\vee\neg y)\wedge(\neg a\vee y)\wedge(\neg b\vee y).
+\]
+Widen every binary clause $(u\vee v)$ with its own fresh name $r$ into
+$(u\vee v\vee r)\wedge(u\vee v\vee\neg r)$. This uses exactly five \emph{proper} ternary clauses, one new gate-output name and two padding names per gate. Inputs of the explicit verifier are distinct at each nontrivial binary gate; accidental equal operands can be simplified before emission. There is no source-dependent naming decision.
+
+For every physical input-bit variable $X_i$, add the four-clause gadget
+\[
+ U(\ell_i;A_i,B_i)=\bigwedge_{\sigma,\tau\in\{+1,-1\}}
+ (\ell_i\vee \sigma A_i\vee\tau B_i),\qquad
+ \ell_i=\begin{cases}X_i,&x_i=1,\\\neg X_i,&x_i=0.
+ \end{cases}\tag{3}
+\]
+and require the verifier output $Y=1$ with a final fixed $U(Y;A,B)$. Exactly four source sign slots per $i$ read the original bit $x_i$, and all other source signed name records are fixed constants. Let $H_{q,m,x}$ denote this resulting \emph{proper ordinary signed} 3-CNF. Put
+\[
+ n_0=3\Gamma+3N+q+2,\qquad m_0=5\Gamma+4N+4.\tag{4}
+\]
+All count headers and variable IDs are independent of $x$.
+
+\begin{theorem}[Total pinning and SAT/UNSAT semantics; \textbf{PROVED/EXACT under the declared encoding}]
+For every fixed pair $(q,m)$ and every $x\in\{0,1\}^{N}$,
+\[
+ \SAT(H_{q,m,x})\quad\Longleftrightarrow\quad L_{q,m}(x)=1.\tag{5}
+\]
+Every source output bit in the fixed-width full CNF serialization of $H_{q,m,x}$ belongs to $\{0,1,x_i,\neg x_i\}$, with all source-dependent bits in exactly $4N$ predetermined polarity slots and exactly four slots influenced by each distinct input coordinate. The location map is fixed by the declared circuit construction, not by the values of $x$.
+\end{theorem}
+\begin{proof}
+For a Boolean literal $\ell$, all four possible sign patterns of $(A,B)$ in $U(\ell;A,B)$ can be jointly satisfied precisely when $\ell$ is true. Hence (3) fixes each $X_i=x_i$. The gate clauses implement biconditional gate semantics: the original ternary AND/OR clause and the two widened binary clauses are jointly equivalent to the indicated gate equation; the fresh widening variable is existentially harmless. Induct over the fixed gate list. Every source satisfying assignment therefore has a witness $z$ for which the verifier outputs true. By the explicit one-hot selector and range/inequality tests its verifier output is exactly the bracketed conjunction in (1), including active malformed cases. Conversely, for any $z$ satisfying (1), assign every gate output its evaluated Boolean value and every padding and $U$ auxiliary arbitrarily; all gate clauses and input/output pins hold. Source-controlled sign fields occur only as the four distinguished literal positions of each $U$ input gadget; $q,m,\Gamma$ and the source name allocation do not depend on $x$. This proves (5) and the stated literal-projection property.
+\end{proof}
+
+\section{Two real exact-$(2,2)$ levels and fixed-bit influence}
+Apply the existing $Q_{15}/J$ exact signed regularizer $R_{15}$, with a 15-variable, 19-clause three-port forcing gadget, never the unrelated unavailable $348$-variable, $463$-clause claim. The gadget and its 244 satisfying assignments were independently exhaustively audited in previous LSPV-2 reports \texttt{CIRCUIT-QPORT-SWAP162} and \texttt{CIRCUIT-R15-VIRTUAL-ACCESS163}. That compiler preserves satisfiability for \emph{every proper signed ternary source} and yields the exact counts
+\[
+ n_1=33m_0+48n_0,\quad m_1=44m_0+64n_0,\qquad
+ n_2=3036m_0+4416n_0,\quad m_2=4048m_0+5888n_0.\tag{6}
+\]
+\begin{theorem}[Total fixed-record signed-$(2,2)$ two-level transport; \textbf{PROVED/EXACT, relying on Q15/J}]
+For all $(q,m)$ and all $x\in\{0,1\}^N$,
+\[
+ \SAT\bigl(R_{15}^2(H_{q,m,x})\bigr)\iff L_{q,m}(x)=1.\tag{7}
+\]
+Every output clause has three distinct names, and every output name has exactly two positive and two negative occurrences. All target headers, variable name fields and clause placement are independent of $x$. Flipping any one bit $x_i$ flips \emph{exactly 16} pairwise distinct output polarity-bit fields at level two, and no other fields.
+\end{theorem}
+\begin{proof}
+Apply the signed regularizer equivalence first to $H_{q,m,x}$, then to its proper ternary output. Its incidence and names depend only on source clause names and positions, not their polarities. For each source literal slot, the exact compiler copies its sign once into the source-clone clause and once with opposite polarity into the private $J$-port clause; these two output slots are distinct and cannot collide with descendants of another source slot. Inducting twice maps each of the four original input-controlled slots in (3) to four distinct second-level slots, totaling $4\cdot2^2=16$. The inherited sign is either copied or complemented, and no destination name or count depends on $x$. All clauses remain proper and exact-$(2,2)$ by the forcing-port and occurrence-ring proof of the regularizer.
+\end{proof}
+
+\section{Actual executable test and fixed-size cost ledger}
+The standalone Python reproducer creates the complete fixed verifier circuit and source CNF, constructs two genuine virtual $R_{15}$ descendants, and independently compares its Boolean semantics against direct active-clause evaluation for \emph{every witness assignment} $z\in\{0,1\}^3$ on each control input. Positive circuit evaluations are explicitly extended to satisfying assignments of the entire source gate CNF and checked clause-by-clause. Negative cases use the universal quantifier over the eight possible witnesses and the exact structural correctness proof; they do not use a free SAT oracle or perform an impossibly large exhaustive search over R15 descendants.
+
+The deterministic controls include the complete eight-clause three-variable UNSAT core, a one-clause-deleted SAT neighbor, permuted UNSAT core, all-inactive SAT, repeated clauses SAT, a malformed active zero ID, a malformed active repeated-variable row, an inactive malformed record, and twelve seeded random source strings. With seed $165$ and $q=3,m=8$:
+\[
+ N=80,\quad\Gamma=559,\quad (n_0,m_0)=(1922,3119),\]
+\[
+ (n_1,m_1)=(195183,260244),\quad
+ (n_2,m_2)=(17956836,23942448).\tag{8}
+\]
+The full fixed-width second-level serialization would contain $1,867,510,998$ bits (roughly 1.87 billion bits) under the declared prefix/count/sign/name format. It was \emph{not materialized}; two-level virtual addresses were sampled and four representative input-bit influence sets were checked at both levels. The raw JSON enumerates $168$ witness/semantic comparisons, $73$ positive full-CNF extensions, $112$ controlled polarity checks, $1600$ virtual literal reads, $537$ sampled proper-clause checks, $300$ occurrence-list checks and $300$ exact signed-$(2,2)$ profile checks. All passed with zero failures. This is finite evidence for an independently proved structural theorem, not evidence for a worst-case algorithmic lower bound.
+
+\paragraph{Fully charged accounting.} Constructing the explicit verifier requires $O(mqw+N)$ Boolean gate-work operations and its serialized source requires $\Theta((\Gamma+N+q)\log(\Gamma+N+q))$ bits and writes. The experimental base builds and retains an occurrence table with $3m_0$ entries; its address and storage cost is $\Theta(m_0\log(m_0+n_0))$ bits in a bit-level representation, not free $O(\log N)$ workspace. Each virtual descendant read must pay source \texttt{Lit/Rank/Select} work, index arithmetic, predecessor/successor mapping, control-bit reads, and repeated calls. The actual implementation uses explicit source occurrence arrays; this is \emph{not} the missing polylogarithmic source Rank/Select construction for arbitrary standard encoded SAT strings. Eagerly writing either descendant costs at least its full serialized length and retaining it costs at least that many writable bits. There is no fixed-power length contraction in (6). Python wall time and allocated heap have no FLMV model interpretation.
+
+\section{New header counterexample and what the sorting network still must do}
+\begin{proposition}[Variable-count header parity; \textbf{PROVED/EXACT}]
+Suppose a proposed canonical serializer sets its declared variable count to $n(x_0,x_1)=2+x_0+x_1$ and writes the ordinary binary representation of this count. The least significant header bit is $x_0\oplus x_1$ and hence is \emph{not} a constant, one input bit, or its negation. Therefore a claim that every target physical bit lies in $\{0,1,x_j,\neg x_j\}$ is false for this particular data-dependent header rule.
+\end{proposition}
+\begin{proof}
+For input pairs $(0,0),(0,1),(1,0),(1,1)$ the least significant count bit is respectively $0,1,1,0$. No unary literal or constant has this truth table. Fixing output counts at each source length eliminates this particular defect, but not the independent instance-indexing obligations.
+\end{proof}
+
+The current naive selector (2) is $O(mq\log q)$ gates rather than $O(N\operatorname{polylog}N)$ gates uniformly when $q$ can grow as large as $N$. Batcher's \emph{fixed} sorting networks and an associative broadcast/reordering circuit offer a plausible next approach \cite{batcher}, but this run supplies neither its verified gate construction nor a direct inverse-occurrence rank/select theorem. A data-dependent external sorting step is \emph{not} a bit-local reduction: its output wiring can depend nonlocally on input ID fields. To preserve literal projection, comparisons and permutations must be encoded as fixed-gate existential constraints and their full wiring, headers, IDs, bit arithmetic and uniform gate-access costs proved. A source literal accessor alone does not imply inverse occurrence access, as demonstrated in prior LSPV-2 \texttt{R15-VIRTUAL-ACCESS163}.
+
+\section{Circuit decision firewall and matched-resource proof status}
+The small verifier $V_{q,m}(x,z)$ checks a \emph{pair} $(x,z)$. The SAT decision function is $x\mapsto\exists z\,V_{q,m}(x,z)$, not the verifier circuit itself, nor an individual input's fixed gate trace. Existentially quantifying $q$ witness bits is a semantic operation with no free deterministic gate cost. This report therefore does not construct a small full decision circuit $C_{A,N}$ for \emph{all} ordinary SAT encodings of length $N$; the observed $q=1.29$ block/instance descriptions from previous project branches are not full SAT decision-circuit compression. Under an independently hypothesized fixed deterministic $A$ with $T_A(N)=N^{1.802+o(1)}$ and $S_A(N)=N^{o(1)}$, the proposed threshold $C(d)\simeq1.801821749732$ still demands a strictly cheaper \emph{fully charged} all-input decision compiler. The near-boundary seed is not entailed by $P=NP$. Pippenger--Fischer compilation concerns a particular machine model and cannot be transferred to a random-access indexed-input algorithm without paying model simulation \cite{pf1979,flmv2005}.
+
+\section{CORPUS REVIEWED; duplication, contradictions, adoption and next lemma}
+The current GitHub tree, root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, \texttt{.codex/skills/pnp-research/SKILL.md}, task index, research/main index, LSPV-1 \texttt{ARC-PARITY-TRANSCRIPT-FIREWALL181}, LSPV-2 \texttt{CIRCUIT-QPORT-SWAP162}, \texttt{CIRCUIT-R15-VIRTUAL-ACCESS163}, \texttt{CIRCUIT-PARITY-TRANSPORT164}, and LSPV-4 \texttt{ARC-INDEX-CIRCUIT-GAP128} were surveyed; relevant originals were retrieved. Lead and LSPV-5 recent negative-oracle/certificate audits were consulted for quantifier compatibility. The named \texttt{PNP\_Circuit\_Certificate\_Continuation.pdf} and source bundle were sought in available Drive and Library searches but were not accessible under that name, so no claim relies on their unseen source program. Primary literature includes \cite{batcher,pf1979,flmv2005,vm2007,doecker2019}.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.} The $Q_{15}/J$ regularizer, polylogarithmic Rank/Select \emph{conditional} closure, and two-level parity bit multiplicity were already in prior reports and are not presented as new. This run contributes a \emph{different} total $(q,m)$ variable-ID verifier with actual bad-ID/repeated-ID rejection, a full gate-to-proper-CNF input-pinning proof, new finite two-level transported controls, an explicit construction/output-volume ledger, and an exact count-header nonlinear counterexample. The root MAIN's OPEN separation status is retained. Any assertion that the observed verifier is already an all-ordinary-SAT near-linear locally readable reduction would be stale/overstated.
+
+\paragraph{ADOPTED / REJECTED / RETIRED.} Adopt only the prior independently tested $Q_{15}/J$ gadget equations and fixed-incidence R15 transport, not unavailable $Q_{348}$ source code or the unverified mixed-clause monotone adapter. Reject output-size exponent contraction, free source occurrence indexes, free witness elimination and single-input-trace full-circuit compression. Retire only the specific data-dependent-header single-literal projection claim, not the possibility of a different length-regular fixed topology compiler. This is a theorem about a constructed restricted source encoding, not the full missing arbitrary SAT language transfer.
+
+\paragraph{NEXT SMALLEST DECISIVE LEMMA.} Replace the $O(mq\log q)$ equality-selector with an \emph{explicit indexed} oblivious record-join network of size $O(N\log^{O(1)}N)$ in which the bit-level gate ID-to-consumer incidence \texttt{Count/Rank/Select} is directly uniform $\log^{O(1)}N$ and $O(\log N)$ workspace. Encode malformed ordinary SAT headers as fixed circuit checks and prove every output bit still a constant or one source literal. Only then compose the already tested R15 two-level access without an $\Theta(N)$ index table. Separately seek a genuinely smaller \emph{full} $C_{A,N}$ constructor, with all search/write/access costs below the named simultaneous bound. All peer schedules, counts and regions remain unchanged. P versus NP and ARC-EDGE-90 remain \textbf{OPEN}.
+
+\bibliographystyle{plain}
+\bibliography{2026-10-26_0912_CIRCUIT_TOTAL_PIN_VERIFY165_references}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::CIRCUIT-TOTAL-PIN-VERIFY165
