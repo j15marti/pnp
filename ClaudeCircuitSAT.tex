@@ -1,0 +1,51 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append-only run log at the end; sections updated in place.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{ClaudeCircuitSAT: Parametrized Lower Bounds for Circuit-SAT, Built Up Wire by Wire}
+\date{Last updated: 2026-10-26 (run 1)}
+\begin{document}\maketitle
+
+\paragraph{Status.} No super-linear unconditional lower bound for Circuit-SAT is claimed. $P$ versus $NP$ remains \OPEN. Labels: PROVED, COMPUTATIONAL, KNOWN, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Lower-bound the cost of deciding Circuit-SAT as a function of the parameters $(n,s)$: $n$ inputs, $s$ two-input gates, so $m=2s$ wires (inputs and constants are free; fan-out is free). The ladder: start from the smallest instances, record the minimum wire count needed to realize each function (a \emph{construction} cost), then lift to the cost of \emph{deciding} satisfiability, tracking how the bound depends on $n$ and $s$ separately.
+
+\section{Model}
+A circuit is a DAG of gates, each gate an arbitrary $B_2$ operation on two earlier nodes. Encoding: cell $2i$ and $2i{+}1$ store the two predecessors of gate $i$. A \emph{decider} is a deterministic algorithm with random access to cells; $Q(n,s)$ is the worst-case number of cell reads.
+
+\section{Level ladder (COMPUTATIONAL)}
+Script \texttt{experiments/circuitsat/ladder.py}, data \texttt{ladder\_results.json}: exhaustive BFS over sets of computed functions gives the exact minimum $B_2$ gate count $C(f)$ for every $n$-variable function.
+\begin{center}\begin{tabular}{lcccccc}\toprule
+$n$ & \#functions & $C{=}0$ & $C{=}1$ & $C{=}2$ & $C{=}3$ & $C{=}4$\\\midrule
+1 & 4 & 3 & 1 & & & \\
+2 & 16 & 4 & 12 & & & \\
+3 & 256 & 5 & 33 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+Max cost is $1,1,4$ gates, i.e.\ $2,2,8$ wires, for $n=1,2,3$ (e.g.\ 3-input majority has $C=4$). $C{=}0$ counts constants and the $n$ inputs. Wire count is $2C(f)$. $n=4$ (65536 functions, known max 7) is the next rung and must be chunked (checkpointed BFS) to respect the 30\,s rule.
+
+\section{Proved lower bounds}
+\begin{lemma}[connectivity, PROVED]
+If $f$ depends on $k$ inputs, any $B_2$ circuit for $f$ has $\ge k-1$ gates and $\ge 2(k-1)$ wires.
+\end{lemma}
+\begin{proof} The circuit restricted to the cone of the output is a connected DAG with $k$ source nodes; a DAG of fan-in 2 with $g$ gates reaches at most $g+1$ sources from one sink. \end{proof}
+
+\begin{theorem}[probe lower bound, PROVED]\label{thm:probe}
+In the read model above, $Q(n,s)\ge s-2$ for $n\ge s-1$; so any decider must read $\Omega(s)$ wires, i.e.\ essentially the whole circuit.
+\end{theorem}
+\begin{proof} Take $k=s-2$. Inputs $x,y_1,\dots,y_k$; $h=\mathrm{NOT}(x)$; $g_0=x\wedge h$; $g_i=g_{i-1}\wedge y_i$ ($1\le i\le k$); output $g_k$. This $C$ is unsatisfiable since $g_0\equiv0$. Let $C_i$ rewire the left predecessor of $g_i$ from $g_{i-1}$ to $y_i$. Then $g_i=y_i$ and $g_k=y_i\wedge\dots\wedge y_k$, satisfiable. A decider that never reads that cell on $C$ behaves identically on $C_i$, so errs on one of them. Hence it reads all $k$ such cells. \end{proof}
+This is the trivial input-reading bound; it is tight up to constants for the reading cost but says nothing about time beyond $\Omega(s)$.
+
+\section{Upper-bound baseline and parametrization (KNOWN)}
+Brute force: $O(2^n s)$ time. Hence any bound is naturally a function $T(n,s)$ with $s\le T\le 2^n s$. Relevant known results: Williams' time--space bound $n^{2\cos(\pi/7)-o(1)}$ for SAT (CNF-size parameter, not exact circuit size); SETH-type conditional bounds $2^{(1-\epsilon)n}$; best explicit unconditional circuit-size lower bounds are $\approx3.1n$ (Li--Yang), so no unconditional gate-count barrier near $2^n$ exists to import. Repository ARC/FLMV work (\texttt{main.tex}, \texttt{research/}) targets the simultaneous time--space frontier; it is \OPEN\ and is not used here as a proved input.
+
+\section{Open arrows}
+\begin{enumerate}
+\item Replace read-cost by a \emph{computation} model: a bound $T(n,s)$ superlinear in $s$ for a restricted but natural class (e.g.\ oblivious/read-once deciders). \OPEN.
+\item Parametrized by $n$: is there a decider time $s\cdot 2^{o(n)}$ unconditionally? Ruling it out is \OPEN\ (would imply $P\ne NP$-strength consequences for $s=\mathrm{poly}(n)$ only under extra hypotheses).
+\item Extend the ladder to $n=4,5$ with wire-minimum circuits that are \emph{unsatisfiable-critical} (every wire flip changes SAT status), and tabulate the critical-wire count $\kappa(n,s)$; Theorem~\ref{thm:probe} gives $\kappa\ge s-2$ for a family. CANDIDATE next step.
+\end{enumerate}
+
+\section{Run log}
+\textbf{Run 1 (2026-10-26).} Repo surveyed (AGENTS.md, main.tex status: ARC/FLMV spine, P vs NP \OPEN; no prior Circuit-SAT lower-bound document). Created this file; exact ladder $n\le3$; Lemma 1, Theorem 1. No literature search was run this session (connector use limited); literature claims in \S5 are from memory and should be re-verified.
+\end{document}
