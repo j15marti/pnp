@@ -1,0 +1,87 @@
+% LSPV-5 REPORT::SAT-INFORMATION-TRANSFER-CEILING173::2026-10-25T23:48:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newcommand{\SAT}{\mathsf{SAT}}
+\title{SAT Information Transfer Ceiling, Short UNSAT Certificates, and Resource Model Audit}
+\author{LSPV-5 independent red team}
+\date{25 October 2026}
+\begin{document}\maketitle
+\begin{center}\textbf{PROVED/EXACT within declared communication and indexed-source models.}\\
+\textbf{COMPUTATIONAL:} 10,378 finite assertion groups, zero failures.\\
+\textbf{OPEN:} universal all-UNSAT certificates, ARC-EDGE-90 and P versus NP.
+\end{center}
+\section{Target and four falsification hypotheses}
+Our receiving proof needs one fixed, deterministic, total, uniform ordinary-SAT machine with jointly bounded time and writable/index space in the model of Fortnow, Lipton, van Melkebeek and Viglas (FLMV). Their strict forbidden box uses
+\[t<241/200,\quad s<11642479/23232400,\quad\beta(c)=((c+2)/c^2-c)/2.\]
+The hypotheses challenged are: (F1) deterministic communication across one source cut forces superlinear SAT work; (F2) ordered one-pass space requirements extend to random-address RAM; (F3) large communication complexity implies long UNSAT certificates; (F4) a bounded-occurrence SAT exponential upper bound implies a fine-grained FLMV contradiction. All four unrestricted transfers fail. Earlier PASSMEM84 and CUTFLOW85 already constructed the same equality CNF; MODELBRIDGE-0006 already established a raw-cut communication ceiling. We explicitly do not claim their rediscovery.
+\section{Information ceilings and a restricted cut simulation}
+\begin{theorem}[One raw-input partition]
+For total $f:\{0,1\}^p\times\{0,1\}^q\rightarrow\{0,1\}$ with both parties requiring the output,
+\[D(f)\le\min(p,q)+1.\]
+For any, possibly long, transcript $\Pi$ and arbitrary input distribution,
+\[I(X;\Pi\mid Y)+I(Y;\Pi\mid X)\le H(X\mid Y)+H(Y\mid X)\le p+q.\]
+\end{theorem}
+\begin{proof}
+The smaller owner sends its entire block, the other computes the Boolean function with unlimited private computation and sends one answer bit. Apply $I(U;V\mid W)\le H(U\mid W)$ to each summand for the entropy inequality. Neither statement bounds private computation.
+\end{proof}
+\begin{theorem}[State-transfer simulation, restricted]
+Let a fixed indexed-input deterministic machine use at most $B(N)$ counted movable configuration bits. For a particular execution, suppose ownership of successive original input-bit probes switches at most $r$ times between the parties. The induced deterministic communication protocol needs at most
+\[(r+1)(B(N)+O(\log(N+T_A(N))))+O(1)\]
+bits; if $B$ already counts the input address, control and heads, absorb the logarithm.
+\end{theorem}
+\begin{proof}
+Simulate each stretch of private-source probes locally, transmitting the entire current configuration and next address whenever ownership changes. The final answer is forwarded to the other party. Repeated reads and addressing are counted. No output value or source bit is supplied as a free oracle.
+\end{proof}
+The ceiling of $O(N)$ for one source partition is not a general upper bound on multi-cut, online-data-structure or indirect-diagonalization lower bounds.
+\section{Proper three-CNF equality countercontrol}
+For a signed literal $\ell$ and fresh $a,b$ define
+\[Q(\ell;a,b)=\bigwedge_{\epsilon,\delta\in\{\pm1\}}(\ell\vee a^\epsilon\vee b^\delta).\]
+This is logically equivalent to $\ell$; resolution derives $\ell$ in exactly three inferences using all four clauses. For $u,v\in\{0,1\}^k$, define
+\[E_k(u,v)=\bigwedge_{i=1}^k Q(\ell_{u_i}(z_i);a_i,b_i)\land\bigwedge_{i=1}^kQ(\ell_{v_i}(z_i);c_i,d_i),\]
+where $\ell_1(z)=z$, $\ell_0(z)=\neg z$, each five-tuple is disjoint, and all first-block quartets are serialized before all second-block quartets. Each formula has $5k$ named variables and $8k$ unique proper ternary OR-clauses, fixed encoding
+\[w=\lceil\log_2(64(13k+1))\rceil,\quad N=(32k+2)w.\]
+It is NOT signed exact-(2,2) or clausewise-monotone M22.
+\begin{theorem}[Source information versus short refutation]
+For every $k\ge1$:
+\begin{enumerate}
+\item $\SAT(E_k(u,v))\Leftrightarrow u=v$, and the induced equality communication function has deterministic complexity $k+1$ when both parties learn the bit.
+\item A single pass over the $u$-before-$v$ source order requires at least $k$ bits of retained state on exact canonical recognition; this does not extend to unrestricted random access.
+\item Indexed reads implement canonical recognition and equality in $O(N\operatorname{polylog}N)$ time and $O(\log N)$ counted work/index space.
+\item Every UNSAT member has a seven-inference resolution refutation using eight original input clauses indexed by any $i$ with $u_i\neq v_i$. The witness index requires $O(\log k)$ bits; validating the eight signed clauses and seven inferences costs polylogarithmic indexed-source work on the canonical grammar.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+Every quartet forces its designated signed $z_i$ literal. Opposite designated signs at an index give inconsistency; otherwise assigning each $z_i$ the common bit satisfies all clauses. The $2^k$ accepted diagonal pairs form an equality fooling set, and the standard deterministic equality bound gives $k+1$ for both output. A one-pass algorithm must retain $2^k$ distinguishable post-prefix configurations, or else two distinct $u$ strings have identical states and are wrongly treated the same on a common $v$. Indexed RAM addresses the two signs separately, storing only a counter and current bit. For the certificate, resolve the first two quartet clauses on $b_i$, the last two on $b_i$, their resolvents on $a_i$, and repeat using $d_i,c_i$ in the opposite quartet. The two derived unit clauses are opposite, so one final inference yields the empty clause. This certificate proves actual input clauses and is sound even if unrelated clauses are appended.
+\end{proof}
+A high communication bound is therefore compatible with a near-linear random-access SAT decider AND logarithmic-description, quickly verifiable UNSAT certificates. This does not supply the missing proof that all UNSAT formulas have inexpensive sound complete adaptive certificates.
+\section{Two genuinely encoded child levels}
+For two Shannon variables in sequence, simplify pinned clauses and properly pad each remaining binary clause $(x\vee y)$ as $(x\vee y\vee q)\land(x\vee y\vee\neg q)$ with fresh $q$. Replace units by $Q$ and contradictions by the complete set of eight ternary signs on fresh names. These transformations preserve both labels and unique proper ternary grammar at two real levels. Untouched quartets survive, however, so fixing $O(1)$ source names does not guarantee $N^\lambda$ length for any constant $\lambda<1$. This is not an ARC successor.
+\section{Other primary lower/upper bounds and model gates}
+\begin{itemize}
+\item FLMV Corollary 5.8: $\NTIME[N]\not\subseteq\DTISP[N^c,o(N^{\beta(c)})]$ (indexed read-only input) with charged SAT transport. Corollary 5.9 provides a distinct true-product exponent around $1.573$, not the retired universal $1.802$ product claim.
+\item Williams: $\SAT\notin\DTISP[N^c,N^{o(1)}]$ for fixed $c<2\cos(\pi/7)$, only for subpolynomial space.
+\item Jain, Neoh and Stephan (2024): bounded-occurrence CNF SAT upper bound $O^*(1.1199^{(d-2)n})$. For $d=4$, $O^*(1.25417601^n)$ applies to signed exact-(2,2) SAT. It does not rule out a better algorithm.
+\item Jiang and Cai (2026): randomized general 3SAT upper bound $O^*(1.307031578^n)$, a different randomized model.
+\item Ben-Sasson--Wigderson: resolution $L\ge\exp(\Omega((W-w_0)^2/n))$ for the appropriate initial width/width requirements, a proof-system result only.
+\item Hong--Kung: classical matrix-multiplication DAG I/O lower bound $Q=\Omega(n^3/\sqrt M)$, not an all-algorithm SAT statement.
+\item Dinur and Raz--Zhan: $T(S+\log n)\ge\Omega(n\,\mathrm{sens}(f))$ in the independent random-query, zero-error branching-program model; it does not hold for free indexed reads.
+\end{itemize}
+Sparsification uses $2^{\varepsilon n}$ instances and does not automatically supply polynomial-time, polylog-space transport to four-occurrence SAT. Model-counting upper bounds must not be confused with deterministic decision lower bounds.
+\section{Reproducibility, archive precedence and final proof DAG}
+The independent standard-library audit used seed 20261025: 1,604 source formulas (182 SAT, 1,422 UNSAT), 1,422 seven-step certificates, 336 two-level properization cases, 10,378 assertion-accounted checks, and zero failures. This tests finite semantics and serialization, not FLMV step-level time, complete-state flips, peak bits, or cumulative bit-time. Exact full script SHA256 \texttt{950372c940b6898b6bebac26be4cf4851fc27b99519c9da851ed45591e645662}; raw JSON SHA256 \texttt{d053a34b5084de70e76aa8d2760bbf902fb7032a9e61fb036ae298606f8945c0}.
+Predecessors: \texttt{CUTFLOW85/PASSMEM84}, \texttt{MODELBRIDGE-0006}, \texttt{INFOFLOWCHAIN1}; none supplies a universal SAT lower-bound transfer. Full original bodies read this run: current \texttt{main.tex} executive, \texttt{main13.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, research skill, three named predecessors and their proof bodies. Targeted default-branch GitHub queries are bounded, not exhaustive; Drive continuity and original \texttt{HEREDITARY-SCOPED10} source remain unread.
+\par\noindent \textbf{OPEN load-bearing arrows:} a noncircular same-machine all-SAT work/space lower bound, or an all-input charged ARC favorable route to FLMV, or sound complete uniformly affordable coverage of all UNSAT cases. Neither the source information ceiling nor this easy equality family resolves P versus NP. 
+\begin{thebibliography}{10}
+\bibitem{flmv} Fortnow, Lipton, van Melkebeek and Viglas, \emph{Time-Space Lower Bounds for Satisfiability}, JACM (2005).
+\bibitem{williams} Williams, \emph{Inductive Time-Space Lower Bounds for SAT and Related Problems}, Computational Complexity (2006).
+\bibitem{jain} Jain, Neoh and Stephan, \emph{An Improved Algorithm for Sparse Instances of SAT}, arXiv:2411.07389 (2024).
+\bibitem{jiang} Jiang and Cai, 3SAT randomized PPSZ bound, July 2026.
+\bibitem{bensasson} Ben-Sasson and Wigderson, \emph{Short Proofs Are Narrow}, JACM (2001).
+\bibitem{hong} Hong and Kung, \emph{The Red-Blue Pebble Game}, STOC (1981).
+\bibitem{dinur} Dinur, \emph{Time-Space Lower Bounds for Bounded-Error Computation in the Random-Query Model}, SODA (2024).
+\bibitem{prior} LSPV-1 \texttt{CUTFLOW85} (Oct 23, 2026); LSPV-2 \texttt{INFOFLOWCHAIN1}; \texttt{MODELBRIDGE-0006}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::SAT-INFORMATION-TRANSFER-CEILING173
