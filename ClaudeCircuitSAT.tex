@@ -1,0 +1,72 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-26 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\title{ClaudeCircuitSAT: a wire-by-wire, parameterized lower-bound ladder for Circuit-SAT}
+\author{Living document (hourly scheduled runs)}
+\date{Last updated 2026-10-26}
+\begin{document}\maketitle
+
+\section*{0. Status (strict labels)}
+\textbf{P versus NP remains OPEN.} Nothing here proves a super-linear lower bound for Circuit-SAT in any
+unrestricted model. Labels: PROVED/EXACT, COMPUTATIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Ladder: start with the simplest Circuit-SAT instances, grow the circuit one gate/wire at a time, and at each rung
+record (i) the minimum number of wires needed to build the instance, (ii) the cost of deciding it.
+Parameters: $n$ inputs, $m$ gates (fan-in 2, full basis $B_2$), $w=$ wires $=2m$ (+ output), fan-out profile $\phi$,
+depth $d$. A lower bound is a function $L(n,m,\phi,d)$; $L$ may be parameterized.
+
+\section{Rung table of exact objects}
+\begin{definition}
+$C(f)$ = minimum number of $B_2$ gates computing $f$ (negation free). Wires of an optimal circuit: $2C(f)$.
+\end{definition}
+\begin{theorem}[PROVED/EXACT, elementary: connectivity]\label{thm:conn}
+If $f$ depends on all $n$ inputs then $C(f)\ge n-1$, hence at least $2(n-1)$ wires; equality for read-once formulas
+(AND/XOR trees).
+\end{theorem}
+\emph{Proof.} The DAG restricted to ancestors of the output must connect $n$ input nodes to one sink; with fan-in 2,
+a DAG with $m$ gates reaching $n$ sources has $n\le m+1$. \qed
+
+\begin{theorem}[COMPUTATIONAL, exhaustive]\label{thm:tab}
+Exhaustive search (\texttt{experiments/claude\_circuitsat/min\_circuit\_ladder.py}, raw data
+\texttt{results/raw/claude\_circuitsat/min\_circuit\_ladder.json}) gives the number of functions of each $B_2$-complexity:
+\begin{center}\begin{tabular}{lrrrrrr}\toprule
+$n$ & $\#f$ & $C=0$ & $C=1$ & $C=2$ & $C=3$ & $C=4$\\\midrule
+1 & 4 & 4 &&&&\\ 2 & 16 & 6 & 10 &&&\\ 3 & 256 & 8 & 30 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+So $\max_f C(f)=0,1,4$ for $n=1,2,3$. (Runtime $\approx35$\,s single process; $n=4$ requires chunking by first-gate
+choice, not yet done.)
+\end{theorem}
+
+\section{Decision cost: the trivial rung}
+\begin{theorem}[PROVED/EXACT, explicit-gate-list query model]\label{thm:read}
+Let a deterministic algorithm access a circuit of $m$ gates only by reading gate descriptions (type and two
+predecessors). Deciding satisfiability needs $\ge m$ reads in the worst case, for every $m\ge1$.
+\end{theorem}
+\emph{Proof.} Take $C$ = a read-once AND tree on $m+1$ literals, satisfiable. If gate $g$ is unread, the adversary
+replaces its type by the constant-0 operation; all other reads are identical, but the circuit becomes unsatisfiable. \qed
+
+\paragraph{Parameterization.} Thm.~\ref{thm:read} is linear in $m$ and independent of $n$; it is the base of the ladder
+$L(n,m)=\Omega(m)$. It holds for \emph{reading}, not time against an algorithm that has the full input free.
+\textbf{OPEN:} any bound beyond $\Omega(m)$ in the Turing-machine/RAM model, e.g.\ $L(n,m)=\Omega(2^{\epsilon n})$ for $m=\mathrm{poly}(n)$.
+
+\section{Next rungs (CANDIDATE plan)}
+\begin{enumerate}
+\item $n=4$: compute $C(f)$ for all $65536$ functions, chunked; test whether $\max C$ follows the Shannon/Lupanov count
+ and record fan-out profile of optimal circuits (is fan-out $\ge2$ ever necessary for minimality? known for formulas vs circuits).
+\item Restricted-model ladder where bounds are real: monotone circuits (Razborov $n^{\Omega(\log n)}$ for CLIQUE), fixed-depth AC$^0$ (parity), bounded
+ fan-out formulas; record exactly which hypothesis each rung uses, to see what a parameterized $L(n,m,\phi,d)$ looks like.
+\item Parameterized view: Circuit-SAT with $n$ inputs is solvable in $O^*(2^n)$; SETH-style statement is the conditional benchmark ($2^{n(1-o(1))}$ for $m=\mathrm{poly}(n)$,
+ CONDITIONAL, not a theorem); treewidth-$k$ circuits give $O^*(2^{k})$ (known), so any hard family has treewidth $\Omega(n)$-ish: a structural constraint on hard instances.
+\item Pull relevant repo results (ARC/FLMV spine, SIL/M22 ladder in \texttt{research/language/2026-10-25\_0005\_...}) only when they give an exact link.
+\end{enumerate}
+
+\section{Repository cross-check (2026-10-26)}
+The main PNP repo (\texttt{main.tex}, AGENTS.md) states P vs NP OPEN with the ARC/FLMV time--space contraction spine as the
+live target; the SIL/M22 parameterized ladder is explicitly finite and gives no unconditional bound. No repository result
+yet supplies a super-linear Circuit-SAT bound; none is imported here.
+
+\section{Log}
+\begin{itemize}\item Run 1 (2026-10-26): created document; Thm.~\ref{thm:conn}, \ref{thm:read} (trivial rungs); exhaustive $n\le3$ table.\end{itemize}
+\end{document}
