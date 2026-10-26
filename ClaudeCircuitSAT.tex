@@ -1,0 +1,56 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- statuses: PROVED, COMPUTATIONAL, KNOWN, CONDITIONAL, OPEN, RETIRED
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: A Parameterized Lower-Bound Ladder for Circuit-SAT}
+\date{Living document; last updated 2026-10-26 (run 1)}
+\begin{document}\maketitle
+\section*{Status (honest)}
+\textbf{No superpolynomial lower bound for Circuit-SAT is proved here; P versus NP remains OPEN.}
+The only unconditional bounds so far are the linear ``read the wires'' bound (Rung~A) and the exact small-case data below.
+
+\section{Model}
+A circuit $C$ on $n$ inputs has $g$ fan-in-2 AND/OR gates, free negation on wires, output the last gate; it has $m=2g$ gate-input wires.
+Parameters: $(n,g)$; the target is a lower bound $T(n,g)$ on the cost of an exact Circuit-SAT decider, in two models:
+(Q) the wire-list query model (cost = wire probes) and (T) Turing/RAM time.
+
+\section{Rung A: wire sensitivity (PROVED, query model)}
+For a circuit $C$ let $s(C)$ be the number of wires $w$ such that re-sourcing $w$ to some other signal flips satisfiability.
+\begin{prop}[Sensitivity bound]\label{p:sens} Any deterministic exact decider in model (Q) probes at least $s(C)$ wires on input $C$.\end{prop}
+\emph{Proof.} If a sensitive wire is unprobed, the adversary answers consistently with $C$ yet the rewired $C'$ has the opposite answer and the same transcript. \qed
+\begin{prop}\label{p:chain} For $g\ge1$, $n\ge g+1$, the chain $G_j=G_{j-1}\wedge x_{j+1}$ ($G_0=x_1$) has $s=2g=m$.\end{prop}
+\emph{Proof.} $C$ is satisfiable. Re-source any wire to $\neg x_k$ where $x_k$ is a literal feeding the other side of the same conjunction chain; this forces $x_k\wedge\neg x_k$ on every path, so $C'$ is unsatisfiable. (For the wire carrying $x_{j+1}$, use $\neg x_1$.) \qed
+
+Hence $T_Q(n,g)=\Theta(g)$ on the worst case for $n>g$: the linear bound is tight for the query model of \emph{this} family and is the trivial floor for all $(n,g)$. It says nothing about the $2^{n}$-type search cost; query models that expose the wire list cannot see hardness, since reading is the only cost.
+
+\section{Rung A$'$: exhaustive ladder (COMPUTATIONAL)}
+Script: \texttt{experiments/claude\_circuitsat/sensitivity\_ladder.py}; data: \texttt{results/raw/claude\_circuitsat/sensitivity\_ladder.json}. Exhaustive over all ordered circuits (a $\le$-sorted gate pair, AND/OR, all sources), runtime $\approx5$s.
+\begin{center}\begin{tabular}{@{}rrrrr@{}}\toprule
+$n$ & $g$ & circuits & $\max s$ & fully sensitive ($s=2g$)\\\midrule
+1&1&6&2&3\\1&2&120&4&14\\1&3&5040&6&108\\
+2&1&20&2&10\\2&2&840&4&68\\2&3&60480&6&800\\
+3&1&42&2&21\\3&2&3024&4&210\\\bottomrule\end{tabular}\end{center}
+Observation: $\max s=2g$ in every computed cell, even when $n\le g$ (consistent with Prop.~\ref{p:chain} and showing it is not needed in the full range). Extending to $(n,g)=(3,3),(4,\cdot)$ requires chunking by first gate (each chunk $<30$s).
+
+\section{Rung B: the real target (OPEN)}
+Wire-reading is a floor; hardness must come from \emph{search}. Candidate parameterized shapes, with status:
+\begin{itemize}
+\item $T(n,g)\ge 2^{\Omega(n)}\cdot\mathrm{poly}(g)$ for all exact deciders: OPEN (would imply P$\neq$NP).
+\item CONDITIONAL (SETH): no $2^{(1-\varepsilon)n}\mathrm{poly}(g)$ algorithm for CNF/circuit-SAT -- a hypothesis, not a theorem. KNOWN: the best unconditional bounds for restricted classes are the sensitivity/gate-elimination bounds ($\sim 3n$ for explicit functions, Li--Yang STOC'22 $3.1n-o(n)$); these bound circuit \emph{size of functions}, not SAT-decider time.
+\item Parameterized view: for fixed $g=n+k$ (``excess'' $k$), the SAT instance is the question whether the $k$ extra wires (cycle space of the wire graph, dimension $m-n_{\text{gates}}+1$) can be consistently satisfied; track treewidth/cutwidth $w$ of the wire graph: known upper bound $2^{O(w)}\mathrm{poly}(g)$ (KNOWN, dynamic programming), so any hard instance family needs $w=\Omega(n)$-type expansion. A lower bound of the form $T\ge2^{\Omega(w)}$ is OPEN; a candidate sub-ladder is: $w=1$ (trees, linear), $w=2$ (series--parallel), \dots, tracking minimum wires per step.
+\end{itemize}
+
+\section{Wire-by-wire construction plan (next runs)}
+\begin{enumerate}
+\item Tabulate, for each $(n,g)$, the minimum $g$ such that a SAT-instance family has treewidth $\ge w$ (computational, small cases).
+\item Compute exact decision-tree complexity (not just sensitivity) for the query model with \emph{hidden} wires (partially specified circuits) to separate reading cost from search cost.
+\item Test whether DP-width $2^{w}$ is optimal for exhaustive small circuits under a fixed resolution/DPLL proof-size measure (CONDITIONAL on measure choice).
+\end{enumerate}
+
+\section{Repository cross-check}
+The repository (\texttt{AGENTS.md}, root \texttt{main.tex}) runs an ARC/FLMV time--space contraction program and records P versus NP as OPEN; at this run no repo artifact was found that closes or feeds Rung~B, and none is claimed. Mirroring its discipline: no ARC edge or unconditional decision-time bound follows from the finite data above.
+
+\section*{Run log}
+\begin{itemize}\item Run 1 (2026-10-26): created document, Props.~\ref{p:sens}--\ref{p:chain}, exhaustive table for 8 cells.\end{itemize}
+% END_OF_CLAUDE_CIRCUITSAT_RUN1
+\end{document}
