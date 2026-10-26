@@ -1,0 +1,57 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: a wire-by-wire lower-bound ladder for Circuit-SAT}
+\date{Living document; last update 2026-10-26}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is a super-polynomial lower bound for Circuit-SAT.
+Statuses: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup}
+Circuit: DAG over $n$ inputs, fan-in-2 gates (any of the 16 binary functions, negation free), one output.
+\emph{Connections} $w$ = number of gate-input wires $=2g$ for $g$ gates. Circuit-SAT$(C)$: $\exists x\; C(x)=1$.
+Parameters: $n$ (inputs), $g$ (gates), $k$ (treewidth). A lower bound is a function $L(n,g,k)$.
+
+\section{The ladder (step by step)}
+\begin{tabular}{r|l|l}
+$n$ & minimum gates (full basis) & status\\\hline
+1 & 0 gates; $C=x_1$ or $\neg x_1$; SAT trivial & COMPUTATIONAL\\
+2 & max over all 16 functions: 1 gate (2 wires) & COMPUTATIONAL\\
+3 & max over all 256 functions: 4 gates (8 wires) & COMPUTATIONAL\\
+$n$ & unique-SAT instance (one satisfying input): $\ge n-1$ gates, $=n-1$ attained by AND of literals & PROVED/EXACT\\
+\end{tabular}
+
+Data: \texttt{experiments/claude\_circuitsat/min\_circuit\_ladder.py}, results in
+\texttt{min\_circuit\_ladder\_results.json}; exhaustive iterative-deepening over gate sequences, runtime $<2$s
+(chunking not needed). Unique-SAT minimum gates: $0,1,2$ for $n=1,2,3$, matching $n-1$.
+
+\begin{prop}[Dependence bound]\label{p1}
+If a fan-in-2 circuit's output depends on all $n$ inputs then $g\ge n-1$ and $w\ge 2(n-1)$.
+\end{prop}
+\begin{proof} Every input has a directed path to the output, so the underlying graph restricted to inputs and
+gates is connected with $n+g$ vertices; each gate has two in-edges, so $2g\ge$ edges $\ge n+g-1$, giving $g\ge n-1$. \qed
+\end{proof}
+
+\section{Parameterized view}
+\begin{itemize}
+\item Upper bound: $O(2^n\,g)$ time, KNOWN. Treewidth-$k$: $2^{O(k)}\mathrm{poly}(g)$ by DP, KNOWN.
+\item \textbf{Black-box (query) lower bound.} PROVED/EXACT, trivial: an algorithm that only evaluates $C$ on points needs $2^n$ evaluations in the worst case (adversary answers 0 until one point remains; hiding the unique satisfying input).
+This model excludes reading the wiring, so it does not bound general algorithms; the gap between it and the wire-reading model is the whole difficulty.
+\item Reading bound: $\Omega(g)$ time just to read the instance, PROVED/EXACT.
+\item CONDITIONAL: SETH implies no $2^{(1-\epsilon)n}\mathrm{poly}(g)$ algorithm; ETH implies no $2^{o(k)}$ in treewidth. Not unconditional.
+\item Unconditional general-circuit lower bounds on explicit functions remain linear ($\approx 3.1n$ gates, from memory, not re-verified this run), KNOWN; far from needing super-polynomial.
+\end{itemize}
+
+\section{Repository cross-check (j15marti/pnp)}
+Surveyed GROKPROOF progress notes through 2026-10-26 18:24 UTC and AGENTS.md: the ARC/FLMV spine is the active route; its conditional contraction numerics are CONDITIONAL, with ARC-EDGE-90 and P vs NP OPEN. No artifact there gives an unconditional bound for general circuit families. No repository result was used in the proofs above.
+
+\section{Next steps (OPEN)}
+\begin{enumerate}
+\item Extend exact minimum-size table to $n=4$ (65536 functions; chunk by function class) and tabulate wires.
+\item Define a wire-by-wire potential $\Phi$ (e.g.\ number of distinguishable partial-assignment classes at each wire) and test whether the unique-SAT ladder forces $\Phi$ growth in $n$ beyond linear for restricted (monotone, bounded-depth) classes, where lower bounds are KNOWN to exist (monotone Circuit-SAT is trivial, so use e.g.\ restricted-depth).
+\item Search repository ARC/FLMV material for a link supplying a size--space tradeoff to use as $L(n,g,k)$.
+\end{enumerate}
+% END_OF_CLAUDECIRCUITSAT_RUN_2026-10-26
+\end{document}
