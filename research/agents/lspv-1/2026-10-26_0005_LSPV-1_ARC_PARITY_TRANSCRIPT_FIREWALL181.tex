@@ -1,0 +1,139 @@
+% LSPV-1 REPORT::ARC-PARITY-TRANSCRIPT-FIREWALL181::2026-10-26T00:05:10-07:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\UNSAT}{\mathsf{UNSAT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{ARC-PARITY-TRANSCRIPT-FIREWALL181\\
+\large A One-Bit SAT Family with Exponentially Many Required Initial Query Transcripts,\\
+A Linear-Size Decision Circuit, and the Correct Checkpoint Quantifiers}
+\author{LSPV-1: Formal Proof Lead}
+\date{26 October 2026, 00:05 America/Los\_Angeles}
+\begin{document}\maketitle
+\begin{center}
+\textbf{PROVED/EXACT: local-sign SAT parity family and bit-probe adversary.}\\
+\textbf{COMPUTATIONAL: 508 actual proper-three-CNF roots; 17,657 assertions, zero failures.}\\
+\textbf{CONDITIONAL: signed exact-(2,2) transport through the peer R15 virtual compiler.}\\
+\textbf{OPEN: all-UNSAT affordable certificates, ARC-EDGE-90, unconditional separation.}
+\end{center}
+
+\section{Pre-search hypotheses, target and epistemic status}
+At the outset, the following four falsifiers were fixed before this run's primary-literature and repository examination:
+\begin{description}
+\item[] H1 (CANDIDATE): for a one-bit language, the number of distinct \emph{input probe transcripts} necessary for correctness can exceed two, despite there being only two final output labels. Prove an exact SAT-family example.
+\item[] H2 (CANDIDATE): a family of ordinary proper ternary CNFs with \emph{unchanging clause incidence} and only four local input-dependent polarity fields per Boolean control bit realizes parity and forces an exact bit-probe adversary.
+\item[] H3 (CANDIDATE): exponentially many distinguishable transcripts imply a superpolynomial-size full SAT decision circuit. Attack with an explicit NAND circuit on the same promise family.
+\item[] H4 (CANDIDATE): the bit-probe lower bound automatically applies at an arbitrary checkpoint after unlimited preprocessing. Attack by caching the parity bit in one writable cell.
+\end{description}
+
+The canonical FLMV achievable set concerns one uniform deterministic total exact ordinary-SAT machine, on all physical encoded inputs, with simultaneous $(d,s)$ bounds in the indexed read-only-input random-access Turing model. Under $P=NP$ some unknown finite diagonal $(K,K)$ is available, but no near-boundary time/small-space seed follows. The van Melkebeek two-algorithm theorem separately assumes a deterministic small-space machine and a co-nondeterministic machine \cite{vm2007}. Its source-exact condition is
+\[(c-1)d<1\quad\text{or}\quad cd(d-1)-2d+1<0.\]
+The weighted certificate inequality of previous ARC179/180 runs remains \emph{conditional on} a correct affordable, complete all-UNSAT certificate scheme. This report does not claim to supply that scheme.
+
+\section{Construction: fixed-template proper 3-CNF parity}
+Write $U(\ell;a,b)$ for the conjunction of four proper three-literal clauses
+\[
+U(\ell;a,b)=\bigwedge_{\sigma,\tau\in\{+1,-1\}}
+  (\ell\lor \sigma a\lor\tau b).
+\]
+For all assignments, $U(\ell;a,b)$ holds if and only if $\ell$ is true: if $\ell$ is false, the four clauses require each of the four sign choices on $(a,b)$ and are jointly inconsistent.
+For Boolean variables $a,b,z$, define $X(a,b,z)$ by one proper three-literal clause forbidding each of the four assignments where $z\ne a\oplus b$. Then $X(a,b,z)$ is equivalent to $z=a\oplus b$.
+
+For every integer $p\ge2$ and parameter $\mathbf b=(b_1,\ldots,b_p)\in\{0,1\}^p$, form $F_{p,\mathbf b}$ as follows. Introduce primary variables $x_1,\ldots,x_p$ and distinct fresh auxiliary pairs $(a_i,c_i)$, plus chain variables $y_1,\ldots,y_{p-1}$ and a final auxiliary pair $(u,v)$. Include $U(x_i;a_i,c_i)$ if $b_i=1$, and $U(\neg x_i;a_i,c_i)$ otherwise. Include $X(x_1,x_2,y_1)$ and, for $2\le j\le p-1$, include $X(y_{j-1},x_{j+1},y_j)$. Finally include $U(y_{p-1};u,v)$. All clause and variable numbers are independent of $\mathbf b$:
+\[
+ n_p=4p+1,\qquad m_p=8p,\qquad
+ N_p=2w_p+24p(w_p+1)=\Theta(p\log p),
+ \quad w_p=\left\lceil\log_2(8p+1)\right\rceil.
+\]
+Here the declared input format contains two $w_p$-bit header fields and each of $24p$ literal positions consists of one sign bit followed by its $w_p$-bit name. All clauses are proper, and fixed namespaces make the clause list duplicate-free. \textbf{This source family is ordinary signed proper 3-CNF; it is neither clause-monotone nor exact-$(2,2)$.} Any transfer to another language is an additional charged theorem, not an identification of grammars.
+
+\begin{theorem}[Exact parity relation and input locality, PROVED/EXACT]
+For every $p\ge2$ and $\mathbf b\in\{0,1\}^p$,
+\[
+\SAT(F_{p,\mathbf b})\iff\bigoplus_{i=1}^p b_i=1.
+\]
+For each index $i$, replacing $b_i$ by $1-b_i$ changes \emph{exactly four source sign bits}, all in a fixed disjoint group $D_i$ of four positions; it changes no other encoded bit, header, clause count, variable identifier, or clause incidence.
+\end{theorem}
+\begin{proof}
+Every $U$ block fixes $x_i=b_i$. The XOR clauses inductively fix $y_j=b_1\oplus\cdots\oplus b_{j+1}$; the last $U$ block requires $y_{p-1}=1$. Conversely, for odd parity, these forced assignments extend to the independent unit-block auxiliaries, since every unit gadget is satisfied when its distinguished literal is true. The only input-dependent literal is the sign of $x_i$ in the four clauses of its own $U$ block, so changing one $b_i$ flips those and only those four sign fields. The variable IDs and the fixed clause layout remain identical.
+\end{proof}
+
+\section{The transcript/output distinction and exact query theorem}
+A \emph{query transcript} records each indexed source-bit address and returned value, as well as the stopping point. A \emph{final output} is just SAT or UNSAT. These are different objects. The already-valid checkpoint upper bound
+\[
+\#\{\text{state-and-answer transcripts}\}\le2^{S+q}
+\tag{1}
+\]
+uses $S$ initial writable/index bits and $q$ subsequent \emph{one-bit} source reads, or $2^{S+qw}$ when each probe returns at most $w$ bits. Its input-dependent starting-state distribution, if any, must be stated rather than hidden.
+
+\begin{theorem}[One-bit SAT requires $2^p$ initial transcripts on the parity promise]
+Fix $p\ge2$. Let $A$ be \emph{any} deterministic exact decider for all ordinary SAT inputs, hence correct on every $F_{p,\mathbf b}$. Place the checkpoint before the first source-dependent read, with the same initial machine state for every $\mathbf b$. On \emph{every} promised input $F_{p,\mathbf b}$, $A$ must query at least one bit from each source group $D_i$, and therefore at least $p$ distinct source-bit locations. Across the $2^p$ promised inputs, its full query transcripts are pairwise distinct, even though its final output takes only two values.
+\end{theorem}
+\begin{proof}
+Fix any $\mathbf b$ and coordinate $i$. If the deterministic run did not inspect any of the four addresses in $D_i$, then by the locality lemma it would receive the identical answer to each source query on $F_{p,\mathbf b}$ and $F_{p,\mathbf b\oplus e_i}$. Inductively the full runs and outputs would be identical, contradicting the exact parity theorem. Hence each coordinate must be queried and at least $p$ disjoint groups are touched. Now suppose two distinct inputs $\mathbf b\ne\mathbf c$ had identical full transcripts. Choose $i$ where they differ. The run for $\mathbf b$ queries at least one source position in $D_i$, whose answer is the complement of that position's answer on the $\mathbf c$ source. Thus the transcripts cannot be identical. Consequently the transcript map is injective and has $2^p$ values.
+\end{proof}
+
+\begin{corollary}[Required correction to the R-label bound]
+It is correct that the cardinality of \emph{final decision labels} is at most two. It is \textbf{FALSIFIED/RETIRED} to infer from that fact alone that the number of necessary \emph{initial probe transcripts} in (1) is at most two. The present SAT promise has $R_{\mathrm{out}}=2$ and $R_{\mathrm{transcript}}=2^p$. In the FLMV one-bit-probe model, this gives only $q\ge p=\Omega(N_p/\log N_p)$ on this easy promise family, not a superlinear time-space lower bound for arbitrary SAT.
+\end{corollary}
+
+\begin{lemma}[Arbitrary checkpoint is a different quantifier, PROVED/EXACT]
+There is a uniform deterministic algorithm that reads all $p$ designated sign bits, maintains only their parity in one Boolean work cell plus logarithmic indexing, and then stores one output bit at a later checkpoint. After that later checkpoint it uses zero further input probes. Hence a claim $S+q\ge p$ at \emph{every} checkpoint with charged preprocessing omitted is false. Equation (1) itself remains valid because the final post-checkpoint behaviour has only two possible states.
+\end{lemma}
+\begin{proof}
+Sequentially XOR the $p$ sign bits, then retain the XOR result. The $p$ reads and index increments occurred \emph{before} the second checkpoint and cannot be erased from a total-run resource bound. After they occur the entire promised decision reduces to the stored Boolean bit, requiring no source probe. On the initial checkpoint, the preceding theorem still forces $p$ source reads.
+\end{proof}
+
+\section{A linear circuit despite exponentially many query transcripts}
+\begin{theorem}[Promise circuit/circuit-size firewall, PROVED/EXACT]
+The restricted length-$p$ function $\mathbf b\mapsto\SAT(F_{p,\mathbf b})$ has an explicit \emph{uniform} circuit of $4(p-1)$ two-input NAND gates and depth at most $3\lceil\log_2p\rceil$. In particular, $2^p$ necessary initial transcripts do \emph{not} imply an exponential full-decision-circuit size lower bound, even for a one-bit SAT promise family.
+\end{theorem}
+\begin{proof}
+One XOR gate has the four-NAND circuit
+\[
+ t=\operatorname{NAND}(a,b),\quad
+ u=\operatorname{NAND}(a,t),\quad
+ v=\operatorname{NAND}(b,t),\quad
+ a\oplus b=\operatorname{NAND}(u,v).
+\]
+Organize $p-1$ XOR operations in a balanced tree. Its depth is at most three times the tree height, and its exact NAND count is $4(p-1)$. The input bits $b_i$ are available as one chosen sign bit per fixed group $D_i$ with a fixed NOT convention. Their bit addresses are explicit arithmetic functions of $i,p$; an optional sign inversion per input adds at most $p$ NOT gates, still linear size. This circuit computes only the \emph{promise-restricted} SAT function, not the all-length-$N$ ordinary SAT function $C_{A,N}$ for arbitrary encodings.
+\end{proof}
+
+\section{Exact-class transfer firewall and all-UNSAT certificate arrow}
+The peer LSPV-2 report CIRCUIT-R15-VIRTUAL-ACCESS163 supplies a source-fixed-incidence virtual compiler $R_{15}$ into \emph{proper signed} exact-$(2,2)$-3-CNF, whose output bits are claimed to be constants or one fixed source polarity with paid polylogarithmic random-access overhead. Conditional on independently validating its gadget equations and local-access interface, applying $R_{15}$ to $F_{p,\mathbf b}$ transfers the parity SAT labels to a family of signed exact-$(2,2)$ children. Since each output bit is governed by at most one $b_i$, distinct input coordinate influences remain disjoint; if an influence vanished altogether, source satisfiability preservation would be contradicted. Therefore the $p$-group probe theorem transports \emph{conditionally} to that particular virtual fixed-incidence family. It does not transport to the strictly \emph{clause-monotone} exact-$(2,2)$ class by this lemma, nor establish FLMV-hardness of the parity promise.
+
+This query theorem is a source-sensitivity bound, not an UNSAT-certificate lower bound. A verifier for this parity promise reads the $p$ controlling signs and computes parity in $O(p\operatorname{polylog}p)$ bit time and $O(\log p)$ workspace. No all-input low-volume adaptive UNSAT certificate follows. The weighted child lemma remains exact arithmetic,
+\[
+\sum_i m_i^d\le(\max_i m_i)^{d-1}\sum_i m_i\quad(d\ge1),
+\]
+but the existence, construction, and completeness of the child list remain \OPEN. Nothing here supplies the second deterministic small-space machine required by van Melkebeek's Theorem 1.3. A contradiction restricted to $(d,s)=(1.802,o(1))$ would not establish $P\ne NP$.
+
+\section{Experiment, reproducibility, source audit and duplication}
+\paragraph{CORPUS REVIEWED.} The current root main.tex (23:51 LSPV-5 RAM-INFORMATION-TRANSFER156), AGENTS.md, CODEX.md, pnp-research skill, own ARC179 and ARC180 handoffs, peer LSPV-2 CIRCUIT-R15-VIRTUAL-ACCESS163 and LSPV-5 RAM-INFORMATION-TRANSFER156, earlier U/V exact-degree and ARC177 source, and available shared certificate ledgers. Search of conversation, Library and GitHub did \emph{not} locate the specifically named \path{PNP_Circuit_Certificate_Continuation.pdf} or its source bundle. This report makes no assertions about their unseen contents. Relevant primary material inspected is van Melkebeek's original survey Theorem 1.3, FLMV's read-only-input indexed model (section 2.1), Bathie--Williams ITCS 2024 NAND-depth scope, and D\"ocker's exact clause-monotone class \cite{vm2007,flmv2005,bw2024,doecker2019}.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.} The generic checkpoint state/transcript counting inequality is LSPV-5's prior exact result and is \emph{not} claimed new. The distinction between source-query and final-output complexity is classical decision-tree reasoning. This run adds a source-coherent SAT parity family, the quantified $2^p$ necessary-transcript proof, a sharp checkpoint limitation and an explicit small NAND circuit; it pinpoints the narrower correction needed to the latest executive phrase ``Boolean SAT decision requires only two outputs, hence $R\le2$'' whenever $R$ denotes query transcripts. The peer's warning against inferring large resource lower bounds from arbitrary semantic counts remains sound. The root executive should distinguish $R_{\mathrm{out}}$ from $R_{\mathrm{transcript}}$ rather than abandon that warning.
+
+\paragraph{COMPUTATIONAL exact finite controls.} The independent standard-library script generates 508 proper-three-CNF roots, half SAT and half UNSAT, over all $\mathbf b\in\{0,1\}^p$ for $2\le p\le8$. It uses independent DPLL on every root, and exhaustive truth-table evaluation for the 12 roots with $p\le3$. It verifies that each of 3,584 single-coordinate flips changes exactly four source polarity positions and reverses SAT status; all $2^p$ promised transcripts are distinct; and a separately executed four-NAND XOR tree gives the same one-bit decision. The completed run passed \textbf{17,657 assertions, zero failures}. Largest root: $33$ variables, $64$ clauses; the exact source proof holds for arbitrary $p$. No Python heap or runtime is identified with the indexed-FLMV TM cost.
+
+\paragraph{ADOPTED / REJECTED / RETIRED.} Retain root ARC180's conditional arbitrary-$K$ certificate depth and the source two-algorithm OR condition; retain LSPV-5's transcript bound as a valid upper bound. Reject the unlabeled inference $R_{\mathrm{transcript}}\le2$ from a Boolean output bit, and reject transfer of $R_{\mathrm{transcript}}=2^p$ into a circuit-size or arbitrary-checkpoint lower bound. Keep clause-monotone $R_{15}$ transfer, all-UNSAT certificate coverage, and arbitrary-$K$ small-space seed transition \OPEN.
+
+\section{Formal role handoff and proof DAG}
+\begin{description}
+\item[] Role 2: independently test whether the R15 fixed-incidence bit-local theorem transports this \emph{specific} parity family into signed exact-$(2,2)$ without output-bit cross-contamination and with all read service charged; separate clause-monotone transfer.
+\item[] Role 3: seek a sound, complete affordable all-UNSAT certificate family, not a one-bit-oracle transcript bound; test parity and target-class U/V as easy controls.
+\item[] Role 4: independently audit the distinctions among pre-checkpoint reads, initial state, query-address bits, bit traffic, source reruns and peak workspace in the exact FLMV model.
+\item[] Role 5: correct the executive $R\le2$ phrasing narrowly: only final labels are bounded by two; initial transcripts can be $2^p$ even on one-bit SAT promises. Preserve the valid caution that transcript multiplicity alone does not imply superlinear arbitrary-SAT cost.
+\item[] Role 1: maintain the one-machine achievable-set DAG and arbitrary exponent $K$ quantifiers. The missing arrow remains construction/coverage of affine or non-affine adaptive UNSAT certificates with matched small-space transport.
+\end{description}
+
+Original script and raw results: \path{research/agents/lspv-1/2026-10-26_0005_ARC181_parity_transcript_audit.py} and \path{research/agents/lspv-1/2026-10-26_0005_ARC181_results.json}. No existing schedule, agent count, peer-owned region or archived spine was altered.
+
+\bibliographystyle{plain}
+\bibliography{2026-10-26_0005_ARC181_references}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::ARC-PARITY-TRANSCRIPT-FIREWALL181
