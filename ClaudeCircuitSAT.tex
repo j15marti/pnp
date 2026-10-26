@@ -1,0 +1,40 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- started 2026-10-26
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: Parametrized Lower Bounds for Circuit-SAT\\ \large Living document (hourly routine)}
+\date{Last updated 2026-10-26 13:48 UTC}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. Nothing below is an unconditional super-polynomial lower bound for Circuit-SAT in the Turing model. Labels: PROVED/EXACT, COMPUTATIONAL, OPEN.
+
+\section{Program}
+Build circuits from the simplest case upward, tracking (i) wires/gates needed, (ii) number of inputs $n$, (iii) what a solver must inspect. Target: a bound in parameters $(n,m)$, $m$=number of wires.
+
+\section{Results so far}
+\subsection{Exact minimum AND-gate counts, small $n$ (COMPUTATIONAL)}
+Basis: fan-in-2 AND with free negation on wires (AIG). Each gate has 2 incoming wires, so wires $=2\cdot$gates. Script: \texttt{experiments/claude\_circuitsat/aig\_min.py}, data \texttt{aig\_min\_results.json} (exhaustive BFS over signal sets).
+\begin{center}\begin{tabular}{c|ccccc}
+$n$ & 0 gates & 1 & 2 & 3 & $\ge$4\\\hline
+2 & 6 & 8 & 0 & 2 (XOR/XNOR) & 0\\
+3 & 8 & 24 & 64 & 30 & 104 at 4; 26 need $\ge5$ (not searched deeper)
+\end{tabular}\end{center}
+Counts are functions (of 16, resp. 256) with that minimum. So at $n=2$ the max is 3 gates/6 wires, attained by XOR.
+
+\subsection{Read-all-wires lower bound (PROVED/EXACT, query model)}
+\begin{prop} In the model where the circuit is given by a wire-pointer table (read-only random access), any deterministic Circuit-SAT algorithm on circuits with $m$ wires, $n\ge m/4$ inputs, makes $\Omega(m)$ queries.\end{prop}
+\emph{Proof.} Take $k=\lfloor m/4\rfloor$. Instance $I_0$: output $=\bigvee_{j\le k} (x_j\wedge y_j)$ where each $y_j$ is wired to constant $0$. $I_0$ is unsatisfiable. Instance $I_j$ rewires only $y_j$ to constant $1$; $I_j$ is satisfiable ($x_j=1$). An algorithm that never reads the wire of $y_j$ behaves identically on $I_0$ and $I_j$, so a correct algorithm must read all $k$ such wires. $\square$
+
+This is only linear in input size: it says the \emph{parameter} $m$ is necessary, nothing about $2^n$. It also shows the right parametrization is $T(n,m)\ge\Omega(m)$ trivially, with the hard question being $T(n,m)\ge m\cdot 2^{\epsilon n}$ (OPEN; implies P$\ne$NP-type consequences, ETH-flavored).
+
+\section{Repository check}
+Corpus (\texttt{main.tex}, AGENTS.md) reports ARC/FLMV and SIL/M22 ladder routes, all marked OPEN; no result there supplies a circuit-SAT lower bound. SIL M22 ``parameterized resource ladder'' (2026-10-25) is the closest in spirit (parameterized $q,d$), but its own text states no unconditional lower bound follows. Not yet read in full; next run.
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item Extend AIG table to $n=4$ via SAT-based exact synthesis; tabulate min wires and fan-out.
+\item Study restricted classes where bounds are provable: monotone, read-once, bounded fan-out; give $T(n,m)$ for each.
+\item Read SIL/M22 ladder files and check for transferable parametrization.
+\item Relate to known conditional bounds (ETH/SETH $\Rightarrow$ $2^{n(1-o(1))}$-type for CNF-SAT; Williams-type circuit lower bounds from faster SAT).
+\end{enumerate}
+\end{document}
+% END_OF_CLAUDECIRCUITSAT
