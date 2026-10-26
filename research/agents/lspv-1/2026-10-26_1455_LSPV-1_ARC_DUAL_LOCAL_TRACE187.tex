@@ -1,0 +1,309 @@
+% LSPV-1 REPORT::ARC-DUAL-LOCAL-TRACE187::2026-10-26T14:55-07:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\UNSAT}{\mathsf{UNSAT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{ARC-DUAL-LOCAL-TRACE187:\\Source-Authenticated Transition Certificates, Two Machine Ledgers, and the Unknown-$K$ Barrier}
+\author{LSPV-1, Formal Proof Lead}
+\date{26 October 2026}
+\begin{document}\maketitle
+\noindent\textbf{PROVED/EXACT in declared models, independent review pending:}
+a rejecting deterministic computation can be certified by source- and
+work-memory-authenticated local events of length near-linear in the run time.
+A charged fixed-$k$ sequential-tape verifier and conservative single-tape
+simulation are constructed; two original-variable levels have both-label
+soundness and completeness. \textbf{FALSIFIED AS INFERENCE:}
+this construction yields a strict improvement over an arbitrary unknown
+hypothetical polynomial-time SAT exponent $K$.
+\textbf{COMPUTATIONAL:} 1,124 assertions, zero failed, using 32 actual
+SAT/UNSAT source words, 128 two-level leaves and 320 corrupted traces.
+\textbf{OPEN:} an affordable all-input $K$-improving certificate family, the
+FLMV-native simultaneous time-space transport, ARC-EDGE-90, and $P\ne NP$.
+
+\section{Preregistered falsifiers, original sources, and dependency scope}
+H1: local deterministic computation events can be source-authenticated without
+calling SAT on the full parent. \textbf{PROVED}, Theorem~\ref{th:trace}.
+H2: such an event-faithful certificate automatically improves the exponent
+of every supplied $P=NP$ solver. \textbf{FALSIFIED AS INFERENCE},
+Corollary~\ref{cor:k}.
+H3: one-tape head-crossing or footprint bounds transfer numerically to
+fixed-$k$ multitape or FLMV random-access machines.
+\textbf{FALSIFIED AS A MODEL TRANSFER}, Theorem~\ref{th:sim}.
+
+The exact new handoff
+\path{research/governance/2026-10-26_DUAL_TM_RESOURCE_ACCOUNTING_DIRECTIVE.md},
+root \path{main.tex}, \path{AGENTS.md}, \path{CODEX.md} and the
+\path{.codex/skills/pnp-research/SKILL.md} were read. Original materially
+relevant peers: Role 2 CIRCUIT-OBLIVIOUS-INVERSE-SORT166 and the later
+RECORD-OUTPUT-SELECT169; Role 3 ADAPTIVE-SOURCE-POINTER-STREAM131
+and A-LEAF-SPECTRUM135; Role 4 ARC-PINNED-CIRCUIT-OUTPUT-FLOOR131
+and DEGREE-AUTH-FIREWALL136; Role 5 BACKDOOR-CAP161 and
+INTERFACE-SIGN-COLLISION165; Role 1 ARC184 and ARC186.
+Primary sources read separately: FLMV Corollary 5.8, van Melkebeek
+Theorem 1.3, and the original Hennie--Stearns paper
+\cite{flmv,vm,hs}. No local repo checkout-wide preflight could be run.
+Historical corpus search was scoped to these substantive claims.
+
+\section{Exact grammar and local source authentication}
+Fix a deterministic, total, correct ordinary-SAT decider $A$, with finite
+control and fixed $k$ work tapes, sequential two-way read-only input,
+finite work alphabets and a one-bit output. This is the standard
+sequential-tape model Mk, \emph{not} the FLMV indexed read-only
+random-access machine. For input $F$ of $N$ bits, $T_A(F)$ is actual
+transition count and $S_A(F)$ the union of distinct visited work cells;
+$S_A(F)\le kT_A(F)+O(1)$.
+
+A complete trace $\tau$ supplies every transition's state, input and
+work-head addresses, symbols read and written, successor state and
+head movements, and final output. Addresses have
+$O(\log(N+T_A(F)+2))$ bits. The verifier authenticates each claimed source
+symbol against the actual immutable input at the recorded address,
+and verifies read-after-write consistency by sorting the work events
+under $(\mathrm{tape},\mathrm{address},\mathrm{time})$, beginning every
+work cell blank. It checks each finite transition, adjacent head
+addresses, initial configuration, trace completeness, and rejecting
+terminal output. No untrusted clause table, pointer, or semantic
+oracle result is accepted.
+
+\begin{theorem}[Machine-trace certificate, PROVED/EXACT]\label{th:trace}
+For every fixed deterministic total exact SAT decider $A$ of the
+declared Mk type there exists one fixed total local verifier $V_A$
+such that
+\[
+\forall F:\quad F\in\UNSAT\iff\exists\tau\ V_A(F,\tau)=1,
+\qquad
+F\in\SAT\implies\forall\tau\ V_A(F,\tau)=0.
+\]
+An accepting proof has precisely one event per actual rejecting
+transition, with $R=T_A(F)$ records and
+$P=O(T_A(F)\log(N+T_A(F)+2))$ physical bits.
+$V_A$ never executes $A$ on the full parent and never verifies the
+global totality of the canonical conflict selector $J_F$.
+\end{theorem}
+\begin{proof}
+The actual rejecting run provides a valid trace, proving completeness
+for an UNSAT input. Conversely, suppose a trace passes. Induct over
+time: source-byte lookup returns the actual input symbols, sorted
+per-cell work events establish the previous write as the value of
+every later read, and the finite transition relation fixes the next
+state, writes, and heads. Thus the entire accepted trace equals the
+unique actual deterministic computation of $A$ on $F$, which may
+reject exactly when $F$ is UNSAT. Each of the $O(k)$ source/work
+addresses at time at most $T$ uses $O(\log(N+T))$ bits because $k$
+is fixed. No existential choice can change the program transition
+relation.
+\end{proof}
+
+\begin{lemma}[Bit-work, work cells, and witness-verifier gates]\label{lem:multi}
+Write $T=R(\tau)$ and $M=N+T+2$. One fixed-number-of-work-tapes
+deterministic sequential-input verifier can check a compound input
+$F\#\tau$ in
+\[
+ T_{k,V}=O(M\log^3 M),\qquad
+ S_{k,V}=O(M\log M),\qquad
+ P=O(T\log M).
+\tag{1}
+\]
+One can uniformly construct a bounded-fan-in Boolean circuit verifying
+the \emph{pair} $(F,\tau)$ with
+$G=O(M\log^4 M)$ gates. The circuit is a \emph{witness verifier},
+not a full deterministic formula-to-SAT decision circuit $C_{A,N}$.
+\end{lemma}
+\begin{proof}
+An initial source pass writes one immutable address-value record for
+each source bit. An initial proof pass checks state, head, clock,
+transition and record syntax, writing source-request records and
+$(\mathrm{tape},\mathrm{address},\mathrm{time},\mathrm{before},
+\mathrm{after})$ work records. Two stable sorts group the source
+records by address and the work records by address then time.
+Checking equality to authentic source values and each cell's
+chronological last write certifies the nonlocal memory facts.
+There are $O(N+T)$ records of $O(\log M)$ bits. A constant-number-of-tapes
+merge sorter uses $O(\log M)$ passes, each with $O(M)$ record
+comparisons and $O(M\log M)$ bit traffic, plus finite-control
+bookkeeping, giving the displayed conservative upper bounds.
+A fixed Batcher sorting network instead gives $O(M\log^2 M)$
+comparators of $O(\log M)$ gate cost, with enough overhead for the
+larger displayed uniform gate ceiling. Materialization, sorting,
+unchanged writes, rejected records, address movement, live buffers,
+output and copy costs are counted. If a proof is guessed rather than
+present in the compound input, all guessed bits and written buffers
+are additionally charged. Neither construction hides $\exists\tau$.
+\end{proof}
+
+\section{Distinct M1 and Mk ledgers}
+For M1, one single read/write tape initially holds the entire
+$X$-bit input, including a supplied proof if the input is
+$F\#\tau$; $P_1\ge X$ counts that input. Measure actual one-tape
+steps $T_1$, visited footprint $P_1$, head travel, boundary crossings,
+source reads and one-bit output. For Mk, the $X$-bit input is a
+separate \emph{read-only} sequential tape, not counted in writable
+$S_k$; measure $T_k$, distinct visited work cells $S_k$, cell probes,
+crossings, actual writes including unchanged ones, output and caches.
+For a fixed $k$, $S_k\le kT_k+O(1)$ and probes/crossings are
+$O(kT_k)$. Do not add those subcounters again as extra time.
+
+\begin{theorem}[Conservative constructed M1 simulation]\label{th:sim}
+Any fixed standard Mk deterministic computation on a compound
+input of length $X$ with simultaneous actual step and space bounds
+$(T_k,S_k)$ has a one-tape simulation using
+\[
+ T_1=O(T_k(X+S_k+\log(T_k+2))),\qquad
+ P_1=O(X+S_k+\log(T_k+2)).
+\tag{2}
+\]
+Hence polynomial ceilings on \emph{one same Mk machine} satisfy
+\[
+ t_1\le t_k+\max(1,s_k),\qquad
+ p_1\le \max(1,s_k).
+\tag{3}
+\]
+A genuine one-tape lower bound $\ell$ for the same language and
+encoding imposes only $t_k+\max(1,s_k)\ge\ell$ on this simulator.
+It cannot be asserted as a native Mk or FLMV lower bound.
+\end{theorem}
+\begin{proof}
+Encode the initial source and fixed many active sequential work-tape
+intervals on marked tracks of one tape. The aggregate active
+work-span has $O(S_k)$ cells. Store the read-only input head's
+out-of-range coordinate in $O(\log(T_k+2))$ additional marked cells.
+Each simulated step scans this representation, reads marked head
+locations, applies one original fixed finite transition and restores
+the marked virtual heads. Incremental tape extension costs another
+full sweep absorbed by a constant factor. The active sweep length is
+$O(X+S_k+\log(T_k+2))$, yielding the claimed time and input-inclusive
+footprint upper bounds. This is a \emph{one}-tape simulation and is
+not the fast Hennie--Stearns \emph{two}-tape $O(T\log T)$ construction
+\cite{hs}. No reverse implication is licensed.
+\end{proof}
+
+For a trace with $T=N^{K+o(1)}$ and $K\ge1$, the demonstrated verifier
+has the Mk upper pair $(K,K)$, whereas this particular simulated M1
+verifier has the conservative upper pair $(2K,K)$, with M1 footprint
+counting the supplied proof and initial source. This is \emph{not}
+a cross-model contradiction. Neither is asserted to be a
+FLMV-native indexed-input pair without another charged compilation.
+
+\section{Two genuine hereditary levels, both SAT and UNSAT}
+\begin{corollary}[Source-bound two-level trace join]\label{cor:two}
+For two distinct original formula variables $x,y$, generate and
+authenticate four actual source restrictions $F\mid x=b,y=c$,
+$(b,c)\in\{0,1\}^2$. A composed source-verified certificate accepts
+iff each child's trace is a valid rejecting run of $A$ on that
+actual child. Then
+\[
+ F\in\UNSAT\iff\exists\Pi\;V_A^{(2)}(F,\Pi)=1,\qquad
+ F\in\SAT\implies\forall\Pi\;V_A^{(2)}(F,\Pi)=0.
+\]
+\end{corollary}
+\begin{proof}
+The four named restrictions partition the entire assignment space
+of $F$. For UNSAT every child is UNSAT and its true rejecting
+trace exists. For SAT at least one compatible child is SAT and has
+no rejecting deterministic $A$-trace. The certificate checks exact
+child construction from the original source, not independent guessed
+child text; all generator work and the four guest runs are charged.
+These residual children may cease to be proper signed exact-$(2,2)$
+or clause-monotone exact-$(2,2)$ even when their root belongs to one
+of those separate NP-complete classes. Here the guest is ordinary
+SAT; a typed guest requires a separately paid, proven properizer.
+\end{proof}
+
+\begin{corollary}[Unknown-$K$ barrier for faithful transitions]\label{cor:k}
+If $P=NP$, a \emph{standard sequential Mk} polynomial-time SAT
+machine exists with some unknown finite time exponent $K$.
+For its faithful trace grammar, proof length and Mk verification
+time have only the demonstrated \emph{upper ceilings}
+$N^{K+o(1)}$. This does not satisfy van Melkebeek's two-machine
+requirement by itself. For every $K\ge2$, the applicable strict
+numerical time frontier is $c<1+1/K\le1.5$, well below the
+provided verifier ceiling $c=K$; no small-space deterministic
+premise or FLMV-native transport was produced.
+For each fixed integer $r\ge1$, a padded correct decider may
+execute $N^{r+o(1)}$ extra deterministic counter transitions.
+Every certificate with \emph{one record per actual transition} of
+that machine then has $\Omega(N^r)$ records on every UNSAT source.
+This is a falsifier only for the step-faithful mechanism and
+does not rule out compressed loop summaries or a different solver.
+\end{corollary}
+\begin{proof}
+Each machine transition requires one explicit record by syntax;
+a uniform binary dummy-step counter of $O(\log N)$ extra work
+cells forces $\Omega(N^r)$ transitions for any fixed $r$.
+All local trace tests still verify each record. The stronger
+alternative numeric branch in Theorem 1.3 must be used when $K<2$;
+the theorem itself requires \emph{both} a correct co-nondeterministic
+$N^c$ SAT machine and an independently correct deterministic
+$N^K$-time, $N^e$-space machine in one native \emph{random-access}
+model. $P=NP$ alone provides neither near-boundary $K=1.802$
+small-space seed nor an implicit exponent contraction.
+\end{proof}
+
+\section{Executed controls, limitations, and proof DAG}
+The full dependency-free reproducer in the conversation artifact
+\texttt{arc187\_trace\_audit.py}, together with its raw JSON, checked
+all 32 five-bit total CNF flag records for the source
+$(\varnothing),(x),(\neg x),(y),(\neg y)$.
+Their independent truth tables gave 9 SAT and 23 UNSAT.
+A fixed sequential-input and work-tape toy machine copies the five
+source bits onto separate work cells and then reads them backwards
+before its terminal SAT/UNSAT state. Every true run has $T_k=11$,
+$S_k=6$ distinct visited work cells (input excluded), 22 physical
+read probes, 15 head-boundary moves, 11 writes including six
+unchanged writes, and one output bit. The source/work trace
+checker validated each run and rejected 320 source, head, write,
+time, truncation and output forgeries. It also checked
+128 authentic second-level residuals and 32 compatible two-level
+joins. Total 1,124 assertion groups, zero failures. A conservative
+one-tape sweep \emph{budget} of 528 source/work-cell visits and
+24 cells of footprint was computed for this tiny control; it is
+\emph{not} a claimed measured physical M1 trace.
+
+\noindent\textbf{CORPUS RECONCILIATION.} ARC184's first-falsified-clause
+circuit had parent-UNSAT totality authentication and was not a
+Cook--Reckhow refutation. ARC186 had already demonstrated
+exponential lower bounds for the restricted
+BRANCH/EMPTY/PATH resolution-simulable grammar; this work
+does not repeat those claims. Role 2's source-oblivious sort
+was a SAT witness verifier, not a decision circuit. Role 5's
+signed-boundary collision blocks any proposed sign-blind
+DAG cache identification. The present new link certifies a
+\emph{fixed machine computation} with explicit memory/source
+coherence and two model-native ledgers, plus its quantitative
+unknown-$K$ failure. The all-input favorable ARC-EDGE-90 successor
+and $P\ne NP$ stay \OPEN{}.
+
+\noindent\textbf{Next independent referee obligations.}
+Role 2: test low-workspace event verification or its obstruction
+without mistaking gate count for work bits.
+Role 3: search for succinct source-authenticated non-step-faithful
+derivation rules that retain SAT-side soundness on connected
+hostile controls and have a uniform all-UNSAT cap.
+Role 4: check compound-input simulator (2), proof materialization,
+index-tape conventions, and FLMV-native boundary independently.
+Role 5: red-team the quantified DELAY attack and any unnoticed
+reuse/caching premise. No tasks, enabled states, stagger or
+peer-owned root sections were changed.
+
+\begin{thebibliography}{9}
+\bibitem{vm} D. van Melkebeek,
+\emph{A Survey of Lower Bounds for Satisfiability and Related Problems},
+Foundations and Trends in TCS 2(3):197--303 (2007), Theorem 1.3.
+\url{https://pages.cs.wisc.edu/~dieter/Papers/sat-lb-survey-fttcs.pdf}.
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek and A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability},
+JACM 52(6):835--865 (2005), Corollary 5.8.
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{hs} F. C. Hennie and R. E. Stearns,
+\emph{Two-Tape Simulation of Multitape Turing Machines},
+JACM 13(4):533--546 (1966).
+\url{https://www.cs.toronto.edu/tss/files/papers/HennieStearns66.pdf}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::ARC-DUAL-LOCAL-TRACE187
