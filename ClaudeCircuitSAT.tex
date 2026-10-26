@@ -1,0 +1,95 @@
+% ClaudeCircuitSAT living document. Newest entry at the end of the Run Log.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: A Wire-by-Wire Lower-Bound Ladder for Circuit-SAT}
+\author{Living document (scheduled hourly runs)}
+\date{Last updated: 2026-10-26}
+\begin{document}\maketitle
+
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial
+lower bound for Circuit-SAT. Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL,
+CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model and parameters}
+A circuit $C$ has $n$ inputs, fan-in-2 gates over the full binary basis $B_2$ (negation free),
+$g$ gates, and $w=2g$ gate-input wires (plus one output wire). \textsc{CircuitSAT}$(n,g)$:
+is there $x\in\{0,1\}^n$ with $C(x)=1$? Parameters tracked: $n$, $g$, $w$, depth, treewidth $k$
+of the underlying graph, fan-out. Complexity is a function $T(n,g,k,\dots)$, so a lower
+bound may be stated in any parameter (e.g.\ $2^{\Omega(k)}$ at treewidth $k$).
+
+\section{The ladder: build the circuit wire by wire}
+\paragraph{Step 0 ($n=1$).} Functions $0,1,x$ need $0$ gates; $\neg x$ is free in $B_2$ wiring
+but costs one gate if inputs must be gate-fed (here counted as 1). 
+\paragraph{Step 1 ($n=2$).} All 16 functions: $0$ gates for $0,1,x,y$ ($4$), $1$ gate for the other $12$.
+\paragraph{Step 2 ($n=3$).} Exact minimum $B_2$ gate counts over all 256 functions
+(COMPUTATIONAL; \texttt{experiments/claude\_circuitsat/ladder.py}, raw data \texttt{ladder\_results.json}):
+\begin{center}\begin{tabular}{lccccc}\toprule
+gates & 0 & 1 & 2 & 3 & 4\\ wires ($2g$) & 0 & 2 & 4 & 6 & 8\\ \#functions & 5 & 33 & 114 & 80 & 24\\ \bottomrule\end{tabular}\end{center}
+Maximum is $4$ gates, matching the known value for $n=3$.
+
+\begin{lemma}[connectivity floor, PROVED/EXACT]\label{lem:conn}
+If $f$ depends on all $n$ inputs, any $B_2$ circuit for $f$ has $\ge n-1$ gates and
+$\ge 2(n-1)$ wires, and every input has fan-out $\ge1$. Tight for $f=\bigwedge_i \ell_i$ (literals):
+exactly $n-1$ gates.
+\end{lemma}
+\begin{proof} The circuit graph restricted to the cone of the output must connect $n$ input
+nodes to one output through fan-in-2 nodes; a tree with $n$ leaves has $n-1$ binary internal nodes,
+and any connected DAG has at least that many. \end{proof}
+
+Consequence: the instances \emph{encoding} a unique-solution problem already have size $\Theta(n)$;
+all difficulty must come from interaction (fan-out $>1$, reconvergence), which is exactly what the ladder
+beyond $n=3$ must quantify. Open ladder task: minimal wires for \emph{functions with a hidden unique
+satisfying point under a bounded-fan-out budget} as $n$ grows (Section~\ref{sec:next}).
+
+\section{Unconditional bounds that do hold}
+\begin{prop}[input-reading bound, PROVED/EXACT]\label{prop:read}
+Any deterministic decider for \textsc{CircuitSAT} in a random-access model must read
+$\ge n$ positions of the encoding on some instance with $n$ inputs.
+\end{prop}
+\begin{proof} Base instance $\bigwedge_{i}x_i$ is satisfiable. For each $j$ let $I_j$ replace leaf $j$
+by $\neg x_{j'}$, $j'\ne j$; $I_j$ is unsatisfiable (both $x_{j'}$ and $\neg x_{j'}$ forced). A decider that never reads
+leaf $j$'s label answers identically on base and $I_j$. Hence it reads every leaf label. \end{proof}
+
+\begin{prop}[black-box evaluation bound, PROVED/EXACT, relativizing]
+If $C$ is accessible only by evaluation, deciding satisfiability needs $2^n$ evaluations in the worst case
+(adversary answers $0$ until one point remains). This is the usual relativization barrier: it
+says nothing about algorithms that inspect the wires.
+\end{prop}
+
+\section{Parameterized picture}
+\begin{center}\begin{tabular}{lll}\toprule
+Statement & Status & Note\\\midrule
+$O(2^n g)$ brute force & KNOWN THEOREM & upper bound\\
+$O(2^{k}\,g)$ via tree decomposition width $k$ & KNOWN THEOREM & DP over bags\\
+no $(2-\varepsilon)^{k}\mathrm{poly}$ at primal treewidth $k$ & CONDITIONAL (SETH) & Lokshtanov--Marx--Saurabh type\\
+no $2^{(1-\varepsilon)n}\mathrm{poly}$ for CNF-SAT & CONDITIONAL (SETH) & \\
+any super-linear unconditional bound in $g$ for general circuits, uniform RAM & OPEN & \\ \bottomrule\end{tabular}\end{center}
+Candidate target form (CANDIDATE, unproved): $T(n,g,k)\ge 2^{\Omega(k)}\cdot g^{\Omega(1)}$ for
+circuits of treewidth $k$ in a fully charged uniform model. Proposition~\ref{prop:read} is the only
+unconditional piece currently attached ($T\ge n$).
+
+\section{Repository review (j15marti/pnp)}
+Surveyed headline status only this run (AGENTS.md, recent log, file tree): the ARC/FLMV
+simultaneous time--space contraction spine and the SIL/M22 parameterized resource ladder are explicitly
+OPEN; ARC-EDGE-90 is OPEN and no decision-time lower bound follows from the finite reductions.
+Nothing in the repository supplies an unconditional bound usable here. The SIL/M22
+\emph{parameterized resource ledger} idea (charge every adaptive step) is the closest methodological match
+to the parameterized form above. Not yet read in full: the SIL ladder research note and its raw JSON.
+
+\section{Next steps}\label{sec:next}
+\begin{enumerate}
+\item Extend exact enumeration to $n=4$ (circuit size via SAT-based minimum-circuit search; split in chunks) and record
+ minimal gates \emph{and} fan-out profile for unique-solution functions.
+\item Prove or refute: minimal circuits with $n$ inputs and a single satisfying point under fan-out $\le 1$ (formulas) vs.\ fan-out $\le2$.
+\item Formalize the treewidth-parameterized cost model and look for an unconditional restricted-model bound
+ (monotone / bounded-depth / read-once) that rises with $k$.
+\item Read the SIL/M22 ladder files fully and attempt to map the charged-resource ledger onto $(n,g,k)$.
+\end{enumerate}
+
+\section*{Run Log}
+\begin{itemize}
+\item 2026-10-26: created document; exact $n\le3$ gate table; Lemma~\ref{lem:conn}; Propositions on input-reading and black-box bounds; parameter ledger.
+\end{itemize}
+\end{document}
