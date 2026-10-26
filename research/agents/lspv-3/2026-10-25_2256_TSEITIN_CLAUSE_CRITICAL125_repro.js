@@ -31,6 +31,28 @@ function components(n,edges,removed){
  }
  return out;
 }
+function encodeDIMACS(nvars,clauses){
+ return 'p cnf '+nvars+' '+clauses.length+'\n'+clauses.map(c=>c.join(' ')+' 0').join('\n')+'\n';
+}
+function parseDIMACS(source){
+ const lines=source.trim().split('\n');
+ const header=lines.shift().trim().split(/\s+/);
+ if(header.length!==4||header[0]!=='p'||header[1]!=='cnf')throw Error('missing DIMACS header');
+ const n=Number(header[2]),m=Number(header[3]);
+ const clauses=lines.map(l=>{
+   const z=l.trim().split(/\s+/).map(Number);
+   if(z.pop()!==0||z.some(x=>!Number.isInteger(x)||x===0||Math.abs(x)>n))throw Error('malformed clause');
+   return z;
+ });
+ if(clauses.length!==m)throw Error('wrong DIMACS clause count');
+ return {n,clauses};
+}
+function validateChild(nvars,clauses){
+ const check=parseDIMACS(encodeDIMACS(nvars,clauses));
+ if(check.n!==nvars||JSON.stringify(check.clauses)!==JSON.stringify(clauses))
+    throw Error('invalid source-preserving physical child');
+ return encodeDIMACS(nvars,clauses).length;
+}
 function runCase(name,n,edges,mask){
  const charge=Array.from({length:n},(_,v)=>(mask>>v)&1), odd=charge.reduce((x,y)=>x^y,0);
  const inc=Array.from({length:n},()=>[]);
@@ -45,6 +67,12 @@ function runCase(name,n,edges,mask){
    }
  }
  if(cls.length!==4*n||new Set(cls.map(C=>C.join(','))).size!==cls.length)throw Error('clause grammar');
+ // Source-identified ordinary DIMACS descendants: all headers/bodies regenerated.
+ const rootBytes=validateChild(edges.length,cls);
+ const one=cls.filter((_,j)=>j!==0), two=one.filter((_,j)=>j!==0);
+ const childBytes=validateChild(edges.length,one),grandchildBytes=validateChild(edges.length,two);
+ if(!(rootBytes>childBytes&&childBytes>grandchildBytes))throw Error('child size');
+ for(let j=0;j<cls.length;j++)validateChild(edges.length,cls.filter((_,k)=>k!==j));
  let p=Array(edges.length).fill(0),q=Array(edges.length).fill(0);
  for(let C of cls){if(C.length!==3||new Set(C.map(Math.abs)).size!==3)throw Error('improper clause');
    for(let lit of C)(lit>0?p:q)[Math.abs(lit)-1]++;
@@ -80,7 +108,8 @@ function runCase(name,n,edges,mask){
  if(odd)for(let v=0;v<n;v++)
    if([...essential].filter(j=>meta[j].v===v).length!==2**(3-r[v]))throw Error('count formula');
  return {graph:name,vertices:n,edges:edges.length,clauses:cls.length,charge_mask:mask,odd:!!odd,
-         essential:essential.size,component_counts:r,truth_assignments:2**edges.length};
+         essential:essential.size,component_counts:r,truth_assignments:2**edges.length,
+         dimacs_root_bytes:rootBytes,dimacs_child_bytes:childBytes,dimacs_grandchild_bytes:grandchildBytes};
 }
 function run(){
  let rows=[];
@@ -92,7 +121,7 @@ function run(){
    throw Error('hostile essential count');
  return {id:'TSEITIN-CLAUSE-CRITICAL125',method:'independent exhaustive direct proper CNF and graph component predictions',
          cases:rows.length,truth_assignments:rows.reduce((s,x)=>s+x.truth_assignments,0),
-         discrepancies:0,rows,
+         discrepancies:0,serialized_checks:rows.reduce((s,x)=>s+3+x.clauses,0),rows,
          scope:'ordinary proper signed 3CNF; edge variables have four positive and four negative occurrences, not strict (2,2)'};
 }
 if(typeof module!=='undefined'&&require.main===module)console.log(JSON.stringify(run(),null,2));
