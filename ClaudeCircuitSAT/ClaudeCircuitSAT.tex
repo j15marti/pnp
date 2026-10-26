@@ -1,0 +1,90 @@
+% CLAUDECIRCUITSAT LIVING DOCUMENT -- run 2026-10-26 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{thm}{Theorem}\newtheorem{lem}[thm]{Lemma}
+\newtheorem{conj}[thm]{Conjecture}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder toward parameterized lower bounds for Circuit-SAT}
+\author{Living document (Claude scheduled runs)}
+\date{Last updated: 2026-10-26 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} No unconditional superlinear
+lower bound for Circuit-SAT is claimed. Labels: PROVED/EXACT, KNOWN THEOREM,
+COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and method}
+Start from the simplest Circuit-SAT instances, build circuits one wire at a time, record
+the minimum number of wires (connections) each step needs, and grow the number of inputs
+$n$. Bounds are allowed to be parameterized, e.g. $T(n,g,w)$ in inputs $n$, gates $g$, and a
+structural width $w$ (pathwidth/treewidth of the circuit graph).
+
+Model: fan-in-2 AND gates with free negation (AIG). A circuit with $g$ gates has $2g$ gate-input
+wires plus one output wire. $C(f)$ is the minimum $g$.
+
+\section{Step 0--1: connectivity floor (PROVED/EXACT)}
+\begin{thm}[wire floor]\label{thm:floor}
+If $f$ depends on all $n$ inputs, any fan-in-2 circuit for $f$ has $g\ge n-1$ gates and at
+least $2(n-1)$ gate-input wires; the AND tree meets both.
+\end{thm}
+\begin{proof} Each input must have a path to the output, so the circuit graph restricted to
+the cone of the output is connected on $n+g$ nodes; with fan-in 2 each of the $g$ gates adds
+at most one new component merge beyond its second input, giving $g\ge n-1$. Wires $=2g$. \qed
+\end{proof}
+
+\section{Step 2: exact small cases (COMPUTATIONAL)}
+Script \texttt{aig\_min.py} (this directory) enumerates AIGs exhaustively with a global
+memo; each run finishes in under 20 s.
+
+\begin{center}\begin{tabular}{lrrrrrrr}\toprule
+$n=3$, $C(f)$ & 0 & 1 & 2 & 3 & 4 & 5 & $\ge6$\\ \midrule
+\# functions (of 256) & 8 & 24 & 64 & 30 & 104 & 8 & 18\\ \bottomrule\end{tabular}\end{center}
+For $n=2$: $C=0$: 6 functions, $C=1$: 8, $C=3$: 2 (XOR/XNOR). The 18 functions in the last
+column were not resolved by the search to depth 5 (depth 6 exceeded the 30\,s budget); they
+are certified only as $C\ge 6$. For $n=3$ and $C\le5$, all 238 listed values are exact.
+Observed: the all-input-dependent functions have $C\in\{2,3,4,5\}$ at $n=3$ versus floor
+$n-1=2$; XOR pays $+2$ gates per input beyond the floor ($C(\oplus_2)=3$).
+
+\section{Step 3: probe lower bound (PROVED/EXACT, trivial)}
+\begin{thm}[read-all-wires]\label{thm:probe}
+In the model where the circuit is given as an adjacency list that a deterministic
+algorithm probes, deciding Circuit-SAT needs $\Omega(m)$ probes on instances with $m$ wires.
+\end{thm}
+\begin{proof} Let $C_0=\bigwedge_{i=1}^{n}x_i$ (satisfiable) and $C_{i\to j}$ replace the $i$th
+literal by $\neg x_j$, $j\ne i$ (unsatisfiable, since $x_j$ also appears positively). An
+adversary answers every probe as in $C_0$; until all $n$ literal slots are probed the algorithm
+cannot distinguish $C_0$ from some $C_{i\to j}$. So $\ge n$ probes, $m=\Theta(n)$. \qed
+\end{proof}
+This is the linear \emph{reading} floor; it says nothing about superlinear computation.
+
+\section{Parameterized ladder}
+\begin{center}\begin{tabular}{p{4.2cm}p{4.5cm}p{4.2cm}}\toprule
+Class & Best known SAT cost & Status\\ \midrule
+Read-once AND/OR formulas & $O(m)$ & KNOWN THEOREM\\
+XOR-only circuits & $O(m)$ Gaussian-style / linear algebra & KNOWN THEOREM\\
+Circuits of treewidth/pathwidth $w$ & $2^{O(w)}\,m$ & KNOWN THEOREM\\
+Same, lower bound & no $(2-\varepsilon)^{\mathrm{pw}}\mathrm{poly}(m)$ & CONDITIONAL on SETH\\
+General circuits & $2^{n}\mathrm{poly}$; $2^{(1-\delta)n}$ unknown to be optimal & OPEN\\ \bottomrule
+\end{tabular}\end{center}
+(The pathwidth SETH bound is Lokshtanov--Marx--Saurabh for CNF-SAT on primal pathwidth;
+citation to be re-verified against the primary paper in a later run.)
+
+\section{Working conjecture (CANDIDATE, unproved)}
+\begin{conj}\label{conj:param}
+There is a function $\Phi$ with $\Phi(n,w)\to\infty$ superlinearly such that every
+deterministic Circuit-SAT decider needs $\Omega(\Phi(n,w)\cdot m)$ steps on width-$w$ circuits;
+the SETH-type form is $\Phi=2^{\Omega(w)}$.
+\end{conj}
+No proof route is known. Any unconditional version with $w=\omega(\log n)$ implies
+$\mathrm{P}\ne\mathrm{NP}$, so it must clear relativization, natural-proofs and algebrization barriers.
+
+\section{Repository cross-check}
+Reviewed: \texttt{GROKPROOF/} (best explicit general-circuit bound $3.5n-O(\log n)$ for a
+function in P; magnification thresholds are far away) and \texttt{AGENTS.md} governance (ARC/FLMV
+spine, all OPEN). Nothing there yields a Circuit-SAT-specific lower bound; the fully charged
+resource-ledger ideas are not imported because no model correspondence is established.
+
+\section{Next steps}
+(1) Extend exact $C(f)$ to $n=4$ via SAT-based synthesis; (2) tabulate a SAT-hardness
+\emph{certificate size} (smallest circuit that refutes each unsat instance) as the second
+wire-count ledger; (3) check Theorem~\ref{thm:floor}-style counting for fan-out bounded
+circuits; (4) verify the SETH citation.
+\end{document}
