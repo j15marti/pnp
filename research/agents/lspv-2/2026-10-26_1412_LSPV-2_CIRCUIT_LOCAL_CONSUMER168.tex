@@ -1,0 +1,124 @@
+% LSPV-2 REPORT::CIRCUIT-LOCAL-CONSUMER168::2026-10-26T14:12:00Z
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\UNSAT}{\mathsf{UNSAT}}
+\title{CIRCUIT--LOCAL--CONSUMER168:\\Uniform Local Inverse Access for Internal Bitonic Gates, and a GateAt-Only Inverse Barrier}
+\author{LSPV-2, Circuit/Reduction Builder}
+\date{26 October 2026, 14:12 UTC}
+\begin{document}
+\maketitle
+\begin{center}
+\textbf{PROVED/EXACT, restricted and independent-review pending:} exact consumer and proper-CNF occurrence Rank/Select for all non-interface internal gate outputs of the fixed comparison module, without occurrence tables.\\
+\textbf{PROVED/EXACT, abstract oracle model:} local forward GateAt alone does not entail polylogarithmic inverse consumer Select for arbitrary circuit lists.\\
+\textbf{COMPUTATIONAL:} 63,646 assertion-accounted tests, including 1,182 actual gates, 10,986 literal positions, both-label virtual proper signed two-level transport, and connected/disconnected W1 controls, zero failures.\\
+\textbf{OPEN:} full global compiler Rank/Select, arbitrary ordinary-SAT parsing, all-input certificate affordability, full SAT decision-circuit compression, ARC-EDGE-90, and $P\ne NP$.
+\end{center}
+
+\section{Four preregistered falsifiable constructions and target}
+Before source/paper searches this run selected:
+\begin{description}
+\item[] \textbf{H1.} Invert every comparator-internal AND/OR output other than the final saved switch and field-output OR, including negatively referenced equality gates. \textbf{PROVED/EXACT restricted}. A single unenumerated external use would falsify it.
+\item[] \textbf{H2.} Transport the exact internal uses to Rank/Select of the actual 13-clause alias-safe proper-3CNF gate compiler with signs and original literal slots. \textbf{PROVED/EXACT restricted}. A wrong clone sign, own gate row, or occurrence order would falsify it.
+\item[] \textbf{H3.} Infer an inverse consumer of every arbitrary circuit just from polylogarithmic random-access forward GateAt. \textbf{FALSIFIED as a black-box inference} by a linear-query adversary; the fixed oblivious verifier is not claimed to satisfy this adversary family.
+\item[] \textbf{H4.} Assert two signed exact-$(2,2)$ regularization levels could shorten ordinary SAT children. \textbf{FALSIFIED for the explicit architecture} by the independently derived $33856B$ clause floor in LSPV-4 report 131; virtual descendants remain expansive.
+\end{description}
+
+The exact ARC object $E$ requires a \emph{single} fixed total uniform ordinary-SAT decider correct on every physical input of length $N$, with joint time $N^{t+o(1)}$ and writable/index workspace $N^{s+o(1)}$ in FLMV's indexed read-only-input random-access Turing model. Under $P=NP$ only some finite unknown diagonal $(K,K)$ follows; no $(1.802,o(1))$ seed follows. The present theorem concerns a fixed \emph{witness verifier/compiler}, not a decision algorithm or an ARC successor.
+
+\section{Exact gate template and non-interface population}
+The source is the original Python \texttt{CIRCUIT-OBLIVIOUS-INVERSE-SORT166\_repro.py}, independently regenerated in this run. Let $w\ge2$, $D=w+3$, $H=7(w+2)$, and $A=H+6D=13w+32$. Every forward bitonic comparator has $H$ less/equality gates followed by $2D$ fixed three-gate MUX modules. Its $A$ gate indices are offset by $cA$ for comparator rank $c$; source proper-CNF variable of gate $g$ is $v_g=\mathrm{gatebase}+9g+2$.
+
+For $0\le k<w+2$, let $g_{k,j}=cA+7k+j$ ($0\le j\le6$). With $\ell_{k-1}$ the preceding comparison bit and $e_{k-1}$ its prefix equality, the exact seven-gate block is
+\[
+\begin{array}{rclcrcl}
+g_{k,0}&=&(-x_k)\land y_k,&&g_{k,1}&=&e_{k-1}\land g_{k,0},\\
+g_{k,2}&=&\ell_{k-1}\lor g_{k,1},&&g_{k,3}&=&x_k\land(-y_k),\\
+g_{k,4}&=&(-x_k)\land y_k,&&g_{k,5}&=&g_{k,3}\lor g_{k,4},\\
+g_{k,6}&=&e_{k-1}\land(-g_{k,5}).&&&&
+\end{array}\tag{1}
+\]
+Minus denotes Boolean negation, not arithmetic negation. The final $g_{w+1,2}$ is the saved switch $\sigma$ treated exactly in LSPV-2 report 167. The final $g_{w+1,6}$ is computed and dead. Each forward MUX $u\in[0,2D)$ has AND gates $m_{u,0}=cA+H+3u$, $m_{u,1}=cA+H+3u+1$ and record-output OR $m_{u,2}=cA+H+3u+2$.
+
+Define the \emph{internal population} $I_c$ by including every one of the $H$ comparison gates except $\sigma$, and the two AND gates of every MUX, while excluding its record-output OR. Then
+\[
+\boxed{|I_c|=H-1+4D=11w+25.}\tag{2}
+\]
+Every gate in $I_c$ has all consumers in its own comparator, with zero, one, or two direct signed operand uses. The exact ascending consumer list is the following array; $k<w+1$ guards the next-block entries:
+\[
+\begin{array}{c|l}
+\text{producer} & \text{consumer(s): (gate, operand slot, sign)}\\\hline
+g_{k,0}&(g_{k,1},1,+)\\
+g_{k,1}&(g_{k,2},1,+)\\
+g_{k,2},\ k<w+1&(g_{k+1,2},0,+)\\
+g_{k,3}&(g_{k,5},0,+)\\
+g_{k,4}&(g_{k,5},1,+)\\
+g_{k,5}&(g_{k,6},1,-)\\
+g_{k,6},\ k<w+1&(g_{k+1,1},0,+),(g_{k+1,6},0,+)\\
+g_{w+1,6}&\varnothing\\
+m_{u,0}&(m_{u,2},0,+)\\
+m_{u,1}&(m_{u,2},1,+).
+\end{array}\tag{3}
+\]
+There are no other uses of these fresh gates: the comparator returns only $\sigma$ and its $2D$ record-output OR wires, not intermediate scratch gates. The source creates both superficially duplicate $(-x_k)\land y_k$ gates independently, without hash-consing.
+
+\begin{theorem}[Complete internal comparator Rank/Select; PROVED/EXACT restricted]
+For every valid $w,K=2^h$, bitonic layer $\ell$, pair rank $r$, internal gate $g\in I_c$, and legal occurrence ordinal, the direct signed consumer and its inverse rank are given by (3) and the arithmetic $g=cA+\delta$. Both are computed uniformly in $O(\log^3G)$ conservative bit operations and $O(\log G)$ combined writable/index workspace, where $G$ is the \emph{entire} source verifier gate count. No full circuit, permutation table, source occurrence map, or precomputed advice is used by this accessor. The same formulas hold across all comparators independently of source data and saved switch values.
+\end{theorem}
+\begin{proof}
+The actual Python emitter constructs seven fresh gates in exactly the order (1), then $2D$ unshared three-gate MUXs. Inspecting each operand of (1) yields precisely (3), including the negative $g_{k,5}$ use. The only inter-bit references are $g_{k,2}$ and $g_{k,6}$, as shown; the last equality output is unused. Internal MUX ANDs feed only their same-module OR. No internal output is returned to the next comparator. Inversion reduces to a bounded number of row/case tests and quotient-remainder arithmetic on $O(\log G)$-bit indices. Comparator layer/pair addressing uses the closed positional formulas already proved in report 167. Schoolbook multiplication/division and index-tape rewrites fit the conservative $O(\log^3 G)$ bound; storing the temporary register tuple uses $O(\log G)$ bits.\end{proof}
+
+\section{Exact proper-CNF output incidence, not generic CNF}
+The source gate compiler replaces each two-input gate by two private operand clones and exactly 13 proper ternary clauses. Its own output variable $v_g$ occurs in five rows. If the gate is AND, its own signs are $(+,-,-,-,-)$; if OR, $(-,+,+,+,+)$, at physical clause/slot locations $(13g+8,2)$ and $(13g+9\ldots12,1)$. Each later signed operand use $(g',s,\varepsilon)$ puts $v_g$ in the four source-CNF rows $13g'+4s+i$ ($0\le i<4$), literal slot 1, with polarity $\varepsilon$ for $i=0,1$ and $-\varepsilon$ for $i=2,3$. These own and use rows are strictly ordered by clause number.
+
+\begin{theorem}[Full base-CNF internal gate OccRank/Select; PROVED/EXACT restricted]
+For every gate in (2), let $f$ be the zero-to-two-element list length in (3). Then its exact number of physical literal occurrences is
+\[
+\boxed{\deg(v_g)=5+4f\in\{5,9,13\}}.\tag{4}
+\]
+For AND, $(\deg_+,\deg_-)=(1+2f,4+2f)$; for OR, $(\deg_+,\deg_-)=(4+2f,1+2f)$. The first five occurrences are its own rows, and the remaining groups of four are the ordered consumer-clone rows just stated. This enumeration has a table-free uniform inverse and the same conservative $O(\log^3G)$ bit-time, $O(\log G)$ writable/index space. It is valid for the source compiler's \emph{actual} variable names, clone slots and signs, even if its external comparator field wires happen to alias.
+\end{theorem}
+\begin{proof}
+Inspect the exact 13-row emitter: each output $v_g$ appears five times in its own gate block. Every direct downstream use occupies a distinct operand-clone block with four source occurrences, balanced two-by-two in sign even for a negative operand. Equation (3) lists every use. All consumer indices exceed the producer, and (3) is ascending, so concatenation gives physical rank order. To invert an occurrence, divide its clause number by 13, detect the own five rows or check the bounded list (3) for a matching consumer and clone row. No scan over $G$ gates or source-dependent cache is needed.\end{proof}
+
+The restricted theorem does \emph{not} cover the saved switch (covered by report 167), MUX record-output wires, inverse-routing record outputs, full scan/carry logic, high-fanout constants, input/witness aliases, final row checkers, output pins, malformed arbitrary SAT encodings, or incidence of every base-CNF variable. In particular it does not complete full-source \texttt{GateAt/Rank/Select}; therefore it does not establish polylogarithmic virtual access to every bit of the two signed regularizer levels.
+
+\section{A GateAt-only inverse lower bound, rigorously model-scoped}
+\begin{theorem}[Black-box inverse consumer query bound; PROVED/EXACT]
+Let an arbitrary $M$-gate descriptor array be given by \texttt{GateAt}(i), which uses one unknown Boolean parameter $b_i$ per gate and answers a local forward descriptor query in constant word time. There is a family of valid fan-in-two AND circuits with one distinguished gate output $z$ and \emph{at most one} direct consumer of $z$ such that any deterministic exact algorithm returning the first consumer index, or a none sentinel, makes at least $M$ queries in the all-zero case. The same bound applies to finding occurrence rank 5 (zero-based) of $z$ in the actual 13-clause source compiler, since its first five occurrences are its own output clauses.
+\end{theorem}
+\begin{proof}
+Take constants/input wires $z,u,v$. Define gate $h_i=\operatorname{AND}(z,u)$ when $b_i=1$, and $h_i=\operatorname{AND}(v,u)$ otherwise. Promise the string $b$ has Hamming weight at most one. Each \texttt{GateAt}(i) reveals only $b_i$, and every descriptor is a syntactically valid fan-in-two gate. With $b=0^M$ there is no consumer of $z$; replacing any one unqueried $b_j$ by 1 creates first consumer $h_j$, while retaining the promise. Thus the all-zero path must inspect every coordinate. In the proper compiler, four more source occurrences of $v_z$ appear precisely when a consumer exists; requesting zero-based occurrence 5 distinguishes the cases. This is a lower bound in the \emph{black-box arbitrary-descriptor} input model, \emph{not} a lower bound for the rigid, algebraically indexed bitonic compiler or SAT decision.\end{proof}
+
+\section{Real two-level SAT/UNSAT transport, controls and charges}
+An independent comparator emitter constructed actual proper 13-clause gate CNFs with all primary inputs pinned and the final saved switch pinned to its computed value (SAT) or its opposite (UNSAT). Every source variable/clause is explicitly created. For the SAT case, the circuit evaluation extends to a satisfying assignment of every source clause. For the opposite-pin case, the input pins plus gate-equivalence subclauses force a unique switch value, which contradicts the opposite pin; this is a \emph{symbolic UNSAT proof}, not claimed brute-force verification over hundreds of variables.
+
+For each SAT and UNSAT base the reproducer constructs \emph{two actual nested virtual} $R_{15}$ signed exact-$(2,2)$-CNF views using the original independently published $Q_{15}/J$ gadget implementation. It verifies exact $n_1,m_1,n_2,m_2$ recurrence arithmetic, random real clause access, three distinct names per clause, and two positive plus two negative occurrences of sampled second-level variables. Each level retains both SAT and UNSAT labels by the already proved $Q_{15}/J$ projection theorem. The virtual objects are not claimed to be explicitly materialized (for $w=2$ the second level has $6{,}559{,}968$ clauses; for $w=4$, $9{,}441{,}408$ clauses), nor is the recursive accessor logarithmic-space, because this audit intentionally holds a source occurrence table. These are signed, \emph{not} clause-monotone, outputs.
+
+The deterministic standard-library experiment tested $w=2,3,4,5,6,8,12,16,31$: 1,182 internal gate consumer inversions and 10,986 exact source-CNF literal occurrences, with 18,447 source template rows accounted. It also exhaustively rechecked the fixed 15-variable W1 UNSAT core over $2^{15}$ assignments, verified its 19-clause SAT deletion, and built renamed disjoint and connected SAT/UNSAT families for $k=1,2,3,5$. The connected family uses fresh-variable bridge clauses; it remains ordinary proper 3CNF but is \emph{not} exact-$(2,2)$ for $k>1$. The disconnected whole-source clause-hitting number grows at least $k$, while one authenticated fixed UNSAT core has a small local certificate. Total assertion-accounted checks: 63,646, with zero failures, random seed 1681026. The dependency script and raw output are stored beside this report.
+
+In the FLMV bit model, a \emph{single} valid internal incidence query executes fixed-width quotient/remainder, signed slot reconstruction, and encoded output-field writing with $O(\log^3G)$ charged bit operations and $O(\log G)$ peak work/index bits; reads/writes of unchanged values, address arithmetic, and register writes are counted. If a caller emits all its $5+4f$ clauses, the output write bits and time are paid. No claim is made about the time/space of evaluating the entire compiler DAG, reading every virtual child bit, reentering a SAT guest, storing ancestors or constructing a full $C_{A,N}$. Gate count $G=O(B\log^3 B)$ of the \emph{witness verifier} is not the gate count of a full $N$-bit SAT decision circuit.
+
+\section{CORPUS REVIEWED, duplication/contradiction, and proof DAG}
+Directly read original reports 166 and 167 (including code), the exact Q15/J reproducer 164, role-1 canonical selector AUTH184, role-3 adaptive source pointer STREAM131, role-4 pinned output floor131, role-5 BACKDOOR CAP161, root \path{main.tex}, \path{AGENTS.md}, \path{CODEX.md} and repository \path{.codex/skills/pnp-research/SKILL.md}; relevant project search included older bitonic inverse and GateAt attempts. Public original models: FLMV 2005, Pippenger--Fischer 1979, van Melkebeek 2007, Batcher sorting network description. The named \path{PNP_Circuit_Certificate_Continuation.pdf} was not directly recovered in this run; no unseen claim is attributed to it. Local full-checkout skill preflight was unavailable; direct source and isolated rerun were performed instead.
+
+\textbf{DUPLICATION:} Arithmetic pair indexing and the saved switch output were already established by LSPV-2 report 167; this run proves the separate $11w+25$ internal gate population and their actual source-CNF incidence. Generic inverse-oracle lower bounds have well-known adversary antecedents; only the specific proper-CNF occurrence consequence is tracked as the project-facing increment. It is not a claim of a new unrestricted complexity lower bound. LSPV-4 already proved the $m_2\ge33856B$ explicit floor, which is adopted without renaming it.
+
+\textbf{WHAT CHANGED RELATIVE TO ROOT MAIN:} the internal comparator source interface formerly OPEN now has an exact restricted answer; the full compiler inverse, all-input verifier transport, all-UNSAT certificate coverage and ARC favorable contraction remain OPEN. \textbf{REJECTED/RETIRED:} automatically upgrading GateAt to inverse Rank/Select; treating a fixed witness verifier or $q=1.29$ block system as the full SAT decision circuit; treating two giant signed regularizer levels as compressed ordinary SAT children; turning W1 backdoor size into an unconditional SAT runtime lower bound.
+
+\section{Next smallest decisive lemma, sent to Lead and Resource Auditor}
+Derive explicit ranked consumer lists and proper-CNF literal slot maps for \emph{record-output OR wires} at every forward comparator level (and inverse-route MUX outputs), including the final-layer uses in the scan, saved switches and source aliases. The arithmetic selector must include all source headers, high-fanout constants and column checks before being promoted to a full uniform $\operatorname{Rank/Select}$ interface. Independently prove each virtual source-bit locator on every ordinary SAT input, and then seek a genuine, fully charged, fixed-power-smaller ordinary SAT child system. No solver answer is free; ARC-EDGE-90 and $P\ne NP$ remain OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas, \emph{Time-Space Lower Bounds for Satisfiability}, J. ACM 52 (2005), 835--865, \url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{pf} N. Pippenger, M. J. Fischer, \emph{Relations Among Complexity Measures}, J. ACM 26 (1979), 361--381, \url{https://doi.org/10.1145/322123.322138}.
+\bibitem{vm} D. van Melkebeek, \emph{A Survey of Lower Bounds for Satisfiability and Related Problems}, ECCC TR07-099, 2007, \url{https://eccc.weizmann.ac.il/eccc-reports/2007/TR07-099/index.html}.
+\bibitem{batcher} K. Batcher, \emph{Sorting Networks and Their Applications}, AFIPS 1968; NIST DADS bitonic-sort entry, \url{https://xlinux.nist.gov/dads/HTML/bitonicSort.html}.
+\bibitem{project} Project primary implementation sources: LSPV-2 \texttt{CIRCUIT-OBLIVIOUS-INVERSE-SORT166\_repro.py}; \texttt{CIRCUIT-SWITCH-INVERSE167\_repro.py}; \texttt{CIRCUIT-PARITY-TRANSPORT164\_repro.py}; LSPV-4 \texttt{ARC-PINNED-CIRCUIT-OUTPUT-FLOOR131}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::CIRCUIT-LOCAL-CONSUMER168
