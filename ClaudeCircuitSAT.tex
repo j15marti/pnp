@@ -1,0 +1,72 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-26 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\title{ClaudeCircuitSAT: a step-by-step wire ledger and parameterized lower bounds for Circuit-SAT}
+\author{Hourly Claude routine (living document)}
+\date{Last updated 2026-10-26}
+\begin{document}\maketitle
+
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial lower bound. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+This document separates (i) \emph{circuit-construction} lower bounds (how many gates/wires an instance needs; easy, exact) from (ii) \emph{decision-time} lower bounds for Circuit-SAT (the hard target; OPEN).
+
+\section{Model}
+An instance is an AIG: inputs $x_1..x_n$, gates $g_j=\ell\wedge\ell'$ where each of the two input wires carries a free negation, one output literal. $g$ = number of gates, wires $w=2g$ (+1 output). Constants are free. $\mathrm{SAT}(C)$ asks whether some $a\in\{0,1\}^n$ gives $C(a)=1$. Parameters: $n$ (inputs), $g$ (size), $s=|C^{-1}(1)|$ (solution count), later treewidth/pathwidth.
+
+\section{The ladder: minimal wires per step}
+Let $G_n(s)$ = least number of AIG gates of a circuit on $n$ inputs with exactly $s$ satisfying assignments.
+
+\begin{theorem}[Needle construction bound, PROVED/EXACT]\label{thm:needle}
+$G_n(1)=n-1$ for $n\ge1$; hence a unique-solution instance needs exactly $2(n-1)$ gate-input wires.
+\end{theorem}
+\begin{proof}
+Upper: AND-chain of the literals of the solution $a$, $n-1$ gates. Lower: a function with exactly one solution depends on every variable (flipping an unread variable keeps a solution, giving $s\ge2$). A fan-in-2 circuit whose output depends on $n$ inputs is connected through its cone, a tree-spanning argument: the cone containing $n$ input nodes and $g$ binary gates has at most $g+1$ distinct leaf-sources in the connected underlying graph rooted at the output, so $g\ge n-1$.
+\end{proof}
+
+\begin{proposition}[Exhaustive ladder, COMPUTATIONAL]
+Script \texttt{experiments/claude\_circuitsat/aig\_min.py}, raw data \texttt{results/raw/claude\_circuitsat/}. Iterative-deepening DFS over all AIG DAGs.
+\begin{center}\begin{tabular}{lccccc}\toprule
+$n$ & $G_n(0)$ & $G_n(1)$ & $G_n(2^{n-1})$ & max over searched & coverage\\\midrule
+1 & 0 & 0 & 0 & 0 & 2/2 functions\\
+2 & 0 & 1 & 0 & 2 (not used by $s$-ladder; XOR=3 gates) & 16/16 (cap 4)\\
+3 & 0 & 2 & 0 & $\ge6$ for 18 functions (incl.\ XOR$_3$) & 238/256 (cap 5)\\
+4 & 0 & 3 & 0 & $\ge5$ for most & 3590/65536 (cap 4)\\\bottomrule
+\end{tabular}\end{center}
+Per solution-count minima: $n=3$: $G(1)=G(7)=2$, $G(2)=G(6)=1$, $G(3)=G(5)=2$. $n=4$ (cap 4): $G(1)=G(15)=3$, $G(2)=G(14)=2$, $G(4)=G(12)=1$, $G(3),G(5),G(7),G(9),G(11),G(13)\le3$, $G(6)=G(10)=2$. All values match Theorem~\ref{thm:needle} where applicable. For $n=3$ the 18 functions not found at cap 5 are certified to need $\ge6$ gates (exhaustive); runtime 16s (cap 5, $n=3$) and 5s (cap 4, $n=4$), within the 30s rule; $n=4$ beyond cap 4 requires chunking (first-gate partition) and is deferred.
+\end{proposition}
+Observation: $G_n(s)$ is symmetric under $s\mapsto 2^n-s$ (output negation), and cheap at $s=2^{n-1}$ (one literal). Cost is governed by the \emph{structure} of the solution set (subcube-like sets are cheap), not by $s$ alone: this is the first hint of a parameter.
+
+\section{Decision lower bounds: what is provable now}
+\begin{proposition}[Needle-in-description adversary, PROVED/EXACT]\label{prop:adv}
+Any deterministic algorithm deciding SAT on AND-chains of $n$ literals over $n$ positions, reading the description through probes, must probe all $n$ literal fields; so $\Omega(n)=\Omega(g)$ probes.
+\end{proposition}
+\begin{proof}
+Let $A$ be the chain with distinct variables $x_1,\dots,x_n$ (SAT). If position $j$ is unprobed, let $B_j$ replace the literal at $j$ by $\neg$(literal at position $k\ne j$): UNSAT. $A$ and $B_j$ agree on all probed fields, so the algorithm errs on one.
+\end{proof}
+This is just input-reading and is \emph{not} evidence of hardness; it is the base rung. The real question, a $2^{\Omega(\cdot)}$ bound in a parameter, is:
+
+\begin{definition}[Parameterized targets]
+$T(n,g)$: decision time for circuits with $n$ inputs and $g$ gates. Known upper bounds: $O(2^n g)$ brute force; $O(2^{\mathrm{tw}}g)$ via DP over tree decompositions of the circuit graph (KNOWN THEOREM, standard).
+\end{definition}
+\begin{itemize}
+\item \textbf{CONDITIONAL (to be verified against the literature in a later run):} SETH-style statements that no $(2-\varepsilon)^{n}\mathrm{poly}(g)$ algorithm exists; and that the $2^{\mathrm{tw}}$ DP is optimal up to $(2-\varepsilon)$ (Lokshtanov--Marx--Saurabh-type pathwidth bounds). These are conditional, not unconditional lower bounds.
+\item \textbf{OPEN:} any unconditional bound $T(n,g)>\mathrm{poly}$ for general circuits, and in restricted models (monotone, bounded-depth, read-once) which circumvent the needle obstruction.
+\end{itemize}
+
+\section{Repository cross-check (j15marti/pnp)}
+The repo's ARC/FLMV spine (AGENTS.md, 2026-10-24 23:46) targets simultaneous time--space contraction for ordinary SAT; ARC-EDGE-90 and P vs NP are OPEN. Related corpus: \texttt{research/agents/grok/*REWIRE*} and \texttt{research/agents/cross-track/*SEEDLIFT*} mention circuit SAT. No imported result is used here; a future run should map the ladder's $G_n(s)$ onto the ARC resource ledgers and the SIL/M22 parameterized resource ladder (\texttt{research/language/2026-10-25\_0005\_SIL\_M22\_PARAMETERIZED\_RESOURCE\_LADDER.md}). Link status: ANALOGY/CANDIDATE, no transfer theorem.
+
+\section{Next steps}
+\begin{enumerate}
+\item Chunk $n=4$ exhaustive search (partition by first gate) to obtain full $G_4(s)$, and compute the full 2-parameter table $(n,s)\mapsto G_n(s)$.
+\item Study $G_n(\mathcal S)$ for solution sets $\mathcal S$ and relate to decision hardness of random circuits of fixed size.
+\item Circuit-SAT with restricted fan-out: track wires \emph{per signal} (fan-out cost) vs.\ gates.
+\item Literature preflight: SETH/treewidth tightness, circuit lower bounds ($3n-o(n)$ for explicit functions, Li--Yang 2022 $3.1n-o(n)$) as the only unconditional gate bounds known.
+\end{enumerate}
+
+\section*{Run log}
+\begin{tabular}{ll}2026-10-26 & Created document; Theorem 1, Prop.\ 2--3 (n$\le$4 partial ladder).\end{tabular}
+\end{document}
+% END_OF_LIVING_DOCUMENT
