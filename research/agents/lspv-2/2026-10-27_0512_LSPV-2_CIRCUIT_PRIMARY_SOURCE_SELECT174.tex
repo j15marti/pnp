@@ -1,0 +1,726 @@
+% LSPV-2 REPORT::CIRCUIT-PRIMARY-SOURCE-SELECT174::2026-10-27T05:12:00Z
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,xurl,hyperref}
+\hypersetup{hidelinks}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{counterexample}[theorem]{Counterexample}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\Select}{\mathsf{Select}}
+\newcommand{\Rank}{\mathsf{Rank}}
+\title{CIRCUIT--SCAN--REVERSE--SELECT173\\
+\large Exact, Uniform Inverse Consumers at the Last Forward Comparator,\\
+Scan Exit and Reverse-Payload Output of an Oblivious SAT Witness Verifier}
+\author{LSPV-2: Circuit / Reduction Builder}
+\date{27 October 2026, 04:12 UTC}
+\begin{document}\maketitle\n\begin{center}\textbf{Run 174 extended report: source aliases, compiler clones, padding and pin source inverses.}\end{center}\n
+\begin{center}
+\fbox{\parbox{.94\linewidth}{\textbf{PROVED/EXACT, architecture-restricted; independent referee pending.}
+The last forward layer's record-output gates, the scan-result gates, and
+all reverse-payload MUX output gates have explicit table-free, signed
+direct-consumer and proper-source occurrence Rank/Select with
+$O(\log^3 G)$ bit time and $O(\log G)$ combined writable/index bits.
+\textbf{COMPUTATIONAL:} 6 complete circuit instances, 1,272 target gates,
+3,058 direct uses, 18,592 signed source occurrences, all 8,192
+length-10 verifier input/witness pairs, and an eight-clause UNSAT
+control, with zero assertion failures.
+\textbf{OPEN:} arbitrary source alias/constant/other gate classes,
+complete regularizer inverse, all ordinary SAT encodings, ARC-EDGE-90,
+and $P\ne NP$.}}\end{center}
+
+\section{Registered falsifiers, model and evidence order}
+Before consulting the primary papers and latest project programs, the
+following four mechanisms were specified for falsification:
+\begin{description}
+\item[] \textbf{H1.} Last-forward record outputs enter only a known
+scan block and its immediate successor's key-equality check. All
+signed consumers should be an arithmetic function of their gate ID.
+\emph{Established here for the declared network.}
+\item[] \textbf{H2.} Every scan output and every reverse-payload MUX
+output should have a constant-fanout inverse consumer map, including
+its final row-checker use and unconsumed positions.
+\emph{Established with the terminal zero-fanout correction.}
+\item[] \textbf{H3.} A reverse-stage upper output necessarily enters
+the next reverse stage through its upper input, and every final
+reverse output has two consumers. \emph{Both assertions are false.}
+\item[] \textbf{H4.} Table-free access to these verifier source gates
+produces a fixed-power smaller ordinary-SAT child. \emph{Unsupported
+and false for the earlier explicitly pinned two-level architecture
+with its known linear output-size floor.}
+\end{description}
+The audit then read the original 166 gate emitter, the 168/169 inverse
+gate cases, the 171/172 model and source selectors, roles 1/3/4/5,
+the three model governance directives and original FLMV,
+Pippenger--Fischer, Hennie--Stearns and Williams sources. This report
+isolates \emph{new sectors} rather than relabeling the previous
+nonfinal-layer and comparator-internal theorems.
+
+\paragraph{Endpoint discipline.}
+A claimed achievable $(t,s)$ in the FLMV model means \emph{one fixed}
+uniform deterministic total ordinary-SAT decider for every $N$-bit
+input, using $N^{t+o(1)}$ time and $N^{s+o(1)}$ writable/index
+space. The fixed verifier here has a second witness input, so its
+size/access results are not a SAT decision-circuit compression.
+$P=NP$ supplies only an unknown polynomial exponent $K$, not the
+separate hypothetical seed $d=901/500$ and subpolynomial work space.
+
+\section{Exact circuit, encoding and gate-index arithmetic}
+Fix $q\ge3$, $m\ge1$, let $w=\lceil\log_2(q+1)\rceil$ and
+$N=m[1+3(w+1)]$. A record contains one active flag and three pairs
+of a $w$-bit name and polarity. Inactive clauses are true; an
+active clause is false if any name is outside $[1,q]$ or names
+repeat; otherwise it is a proper signed ternary clause. The total
+witness verifier is
+\[
+V_{q,m}(x,z)=\bigwedge_{c<m}\left[\neg a_c\vee
+  \left(\operatorname{Valid}(c)\wedge
+    \bigvee_{j=0}^2[z_{v_{cj}}=s_{cj}]\right)\right].\tag{1}
+\]
+There is no malformed-input promise for \emph{this} fixed-record
+language. An arbitrary variable-width DIMACS or binary ordinary-SAT
+parser is a separate, unresolved conversion.
+
+Set $K=2^{\lceil\log_2(q+3m)\rceil}$, $h=\log_2K$,
+$J=h(h+1)/2$, $D=w+3$, $H=7(w+2)$, $F=H+6D=13w+32$.
+Forward bitonic sorting uses $J$ layers, each with $K/2$
+comparators of $F$ Boolean AND/OR gates. Every comparison saves its
+switch gate and then creates two $D$-wire three-gate MUX outputs.
+The successive global gate counts and boundaries are
+\begin{align}
+G_f&=J\frac K2 F,\\
+G_s&=19+(K-1)(4w+18),\\
+G_r&=3KJ,\\
+G_c&=m(36w+15)+(m-1),\\
+G&=G_f+G_s+G_r+G_c,\qquad
+B_c=G_f+G_s+G_r.                              \tag{2}
+\end{align}
+All gate IDs in what follows are \emph{zero-based} indices in one
+fixed, fully specified circuit, not machine time or wire count.
+
+The scan works from sorted record position $p=0$ to $K-1$.
+Its global starting gate is
+\[
+b_p=\begin{cases}G_f,&p=0,\\
+G_f+19+(p-1)(4w+18),&p>0.
+\end{cases}                                                   \tag{3}
+\]
+It computes 
+$\operatorname{isassign}=\operatorname{EqBits}(\mathrm{kind},0)$,
+$\operatorname{isquery}=\operatorname{EqBits}(\mathrm{kind},1)$,
+$\operatorname{same}=\operatorname{EqBits}(\mathrm{id}_p,
+\mathrm{id}_{p-1})$ for $p>0$,
+$\mathrm{keep}=\neg\operatorname{isassign}\wedge
+  (\operatorname{same}\wedge\mathrm{carry}_{p-1})$,
+$\mathrm{carry}_p=(\operatorname{isassign}\wedge\mathrm{payload}_p)
+\vee\mathrm{keep}$, and
+$\mathrm{scanout}_p=\operatorname{isquery}\wedge\mathrm{carry}_p$.
+The source has exactly 19 gates at $p=0$ and $4w+18$ at every
+later $p$. In particular the scan output is an \emph{AND} gate
+at
+\[
+                 s_p=G_f+18+p(4w+18).                       \tag{4}
+\]
+
+\section{New exact signed inverse for last-forward outputs}
+Let $g_{p,c}$ denote the last sorting layer's OR output at
+record position $p$ and field $c\in[0,D)$. For every
+$0\le p<K$, it exists and can be located by taking the last
+layer's stride $s=1$, low position $i=p\,\&\,\neg1$,
+pair rank $r=i/2$, output side $\delta=p\bmod2$, and
+\[
+  g_{p,c}=\left(J-1\right)\frac K2F+rF+H+3(\delta D+c)+2.
+                                                               \tag{5}
+\]
+A signed use is a triple $(\text{consumer gate},
+\text{operand slot},\text{input polarity})$, with operand slots
+$0,1$ and polarities $+1,-1$.
+\begin{theorem}[Last-forward scan inverse, \textbf{PROVED/EXACT restricted}]
+For every such $p,c$, the \emph{complete} direct-consumer
+list is the sorted union of the following entries:
+\begin{description}
+\item[] \emph{Identifier bit} $0\le c<w$:
+if $p>0$, use
+$(b_p+14+3c,0,+)$ and $(b_p+15+3c,0,-)$; if
+$p<K-1$, also use
+$(b_{p+1}+14+3c,1,-)$ and
+$(b_{p+1}+15+3c,1,+)$.
+\item[] \emph{Kind bit} $c=w+t$, $t\in\{0,1\}$:
+use $(b_p+3t,0,+)$, $(b_p+3t+1,0,-)$,
+$(b_p+7+3t,0,+)$ and $(b_p+8+3t,0,-)$.
+\item[] \emph{Payload bit} $c=w+2$:
+use $(b_p+d_p,1,+)$, where
+$d_0=16$ and $d_p=4w+15$ for $p>0$.
+\end{description}
+The direct fanout equals $2$ for endpoint identifier fields,
+$4$ for interior identifiers and all kind fields, and $1$
+for payload fields. These signed lists are uniformly computable
+in $O(\log^3G)$ elementary bit operations and $O(\log G)$
+total index/writable bits without storing the circuit.
+\end{theorem}
+\begin{proof}
+The verifier's \texttt{EqBits} routine implements each literal
+comparison $\neg\operatorname{XOR}(u,v)$ by
+$\operatorname{AND}(u,\neg v)$,
+$\operatorname{AND}(\neg u,v)$ and their OR.
+A sorted identifier is read once by the current position's
+same-key computation (as the left argument), except at $p=0$,
+and once by the next position (as the right argument), except
+at $p=K-1$. Each comparison yields exactly the two indicated
+signed uses. Each kind bit participates in the assignment and
+query equality tests, giving four signed uses. Every payload
+enters exactly one AND with the assignment flag. None of these
+record fields is used in reverse routing, which routes only the
+new scan-result bit. Equation (3) locates every use.
+\end{proof}
+
+\section{New scan-output and reverse-MUX inversion}
+For sorting layer $\ell\in[0,J)$, let its size/stride be
+$z_\ell=2^{a_\ell}$, $s_\ell=2^{b_\ell}$, enumerated by
+$a=1,\ldots,h$ and $b=a-1,\ldots,0$. At position $p$,
+set
+\[
+ i_\ell=p\,\&\,\neg s_\ell,\quad
+ r_\ell=s_\ell\left\lfloor\frac{i_\ell}{2s_\ell}\right\rfloor
+       +(i_\ell\bmod s_\ell),\quad
+ \epsilon_\ell=[p\,\&\,s_\ell\ne0].                      \tag{6}
+\]
+The \emph{reverse} stage corresponding to forward layer
+$\ell$ begins its pair $r$ at
+\[
+ R_{\ell,r}=G_f+G_s+6(K/2)(J-1-\ell)+6r.                \tag{7}
+\]
+Write $\mathcal U_\ell(p)$ for the two signed gate-input
+uses
+\[
+ \mathcal U_\ell(p)=
+ \begin{cases}
+ \{(R_{\ell,r_\ell},1,+),(R_{\ell,r_\ell}+4,1,+)\},
+               &\epsilon_\ell=0,\\
+ \{(R_{\ell,r_\ell}+1,1,+),(R_{\ell,r_\ell}+3,1,+)\},
+               &\epsilon_\ell=1.
+ \end{cases}                                                 \tag{8}
+\]
+The reverse layer's OR result at position $p$ is
+$g^{\rm rev}_{\ell,p}=R_{\ell,r_\ell}+3\epsilon_\ell+2$.
+\begin{theorem}[Scan/reverse exit Select, \textbf{PROVED/EXACT restricted}]
+The complete direct-consumer list of the scan result
+$s_p$ is $\mathcal U_{J-1}(p)$. For a reverse result
+$g^{\rm rev}_{\ell,p}$, if $\ell>0$ it is
+$\mathcal U_{\ell-1}(p)$. If $\ell=0$ and
+$p\notin[q,q+3m)$, the list is empty. Finally, if
+$\ell=0$ and $p=q+3c+j$, $0\le c<m$, $j\in\{0,1,2\}$,
+then its entire signed consumer list is
+\[
+\{(B_c+c(36w+15)+j(8w+3)+8w,1,-),
+\ (B_c+c(36w+15)+j(8w+3)+8w+1,1,+)\}.               \tag{9}
+\]
+The scan results and nonterminal reverse outputs have
+fanout two. The terminal reverse outputs have fanout two
+\emph{only} in the original query range, otherwise zero.
+All of these selectors are uniformly computable with the same
+$O(\log^3G)$ bit time and $O(\log G)$ live bits.
+\end{theorem}
+\begin{proof}
+Every reversed comparison uses precisely two three-gate
+MUXs with the \emph{previously saved} switch wire. Its lower
+input participates in the first MUX's left AND and second
+MUX's right AND, at local gates 0 and 4; its upper input
+uses gates 1 and 3. Reverse comparator inputs at a stage
+are the output payload positions of the immediately later
+reverse stage. Their receiving side must be recomputed from
+the \emph{receiving} stride by (6), proving (8), with no
+uncharged swap table. After layer zero there is no further
+MUX: only the original $3m$ literal-request positions are
+read as the second operand of the row-checker's
+$\operatorname{Eq}(\text{sign},\text{lookup})$ operation,
+whose first two ANDs use the lookup with negative and
+positive polarity. The $8w$ offset follows from $w-1$
+nonzero gates, $7w$ range-comparison gates and one valid
+AND gate within each request block. Assignment and padding
+positions are never referenced by the row checker.
+\end{proof}
+
+\begin{counterexample}[\textbf{FALSIFIED: side and fanout conservation}]
+For $q=3,m=1$, $K=8,J=6$. After reverse layer 5, position
+$p=1$ is the \emph{upper} output of a stride-1 pair,
+yet enters reverse layer 4 through a \emph{lower} stride-2
+input: its actual signed uses are $(1623,1,+)$ and
+$(1627,1,+)$, not the same-side pair's gates.
+At reverse layer 0, position $p=0$ is an assignment slot.
+Its output gate $1715$ has \emph{zero} downstream gate
+consumers, and exactly five own-block source-CNF occurrences;
+query position $p=3$ has output gate $1724$, two signed gate
+uses and thirteen source-CNF occurrences. Thus neither
+``old side equals next side'' nor ``all terminal reverse outputs
+have degree two'' is correct.
+\end{counterexample}
+
+\section{Uniform gate ID and source occurrence inverse}
+The input to the accessor is a \emph{global gate ID}, not a
+sorted-array location supplied by an oracle. A parameter-only
+program reconstructs $G_f,G_s,G_r,G_c$, checks whether the ID
+is a last-layer output gate (local offset $H+3u+2$), a scan
+output gate (formula (4)), or a reverse output (offset 2 or 5
+within its six-gate pair). Layer parameters are recovered by
+streaming the $J=O(\log^2K)$ bitonic layer counters, without
+allocating an array of layers, gates or occurrences. Gate/output
+inverse arithmetic then recovers $p,c,\ell,r$ and the preceding
+theorems supply at most four signed direct uses.
+
+Every Boolean gate $g$ is compiled to thirteen proper ternary
+clauses with two fresh argument clones. Its physical output
+variable is
+\[
+                 v_g=(N+q+3)+9g+2.                         \tag{10}
+\]
+For an OR gate $g$, its own occurrences are
+$(13g+8,2,-)$ and $(13g+r,1,+)$ for $r=9,10,11,12$;
+for an AND gate the displayed signs are reversed.
+For each signed direct consumer $(a,k,\tau)$ append precisely
+\[
+  (13a+4k+j,1,\tau)\quad(j=0,1),\qquad
+  (13a+4k+j,1,-\tau)\quad(j=2,3).                           \tag{11}
+\]
+Sort this constant-size list by physical clause/slot.
+The selector's rank is its position in that list. Thus its
+signed degree is precisely $5+4f$, where $f$ is gate fanout.
+The possible degrees in the newly covered sectors are
+$5,9,13,21$. A uniform source-variable-to-gate inverse is
+available by division by nine after subtracting the offset
+in (10); foreign source-variable classes are not claimed.
+
+\begin{theorem}[Source-CNF Rank/Select, \textbf{PROVED/EXACT restricted}]
+For every supported gate output $v_g$, the sequence (10)--(11)
+is exactly its physical signed occurrence list in the proper
+13-clause-per-gate source compiler, including zero-fanout
+terminal outputs. The procedures
+$\Select(v_g,r)$ and $\Rank(v_g,c,k)$ take
+$O(\log^3G)$ elementary bit operations and
+$O(\log G)$ combined live work/index bits. No stored
+occurrence table, full gate transcript, or free source reader
+is required to \emph{locate} these occurrences.
+\end{theorem}
+\begin{proof}
+The cloned input equivalences contain each signed wire
+reference exactly twice positively and twice negatively,
+with original-use polarity distinguished in the four physical
+rows (11). The gate relation contains its output exactly five
+times as shown; fresh clone and padding IDs prevent other
+collisions. The direct-consumer theorems are complete for the
+declared sectors. A constant-length list and gate-class decoder
+therefore suffice. Each of $O(\log^2K)$ streamed iterations
+uses schoolbook $O(\log^2G)$ or cheaper arithmetic on
+$O(\log G)$-bit addresses, so $O(\log^3G)$ bit time is a
+conservative uniform bound. Only constantly many addresses,
+indices, and signs are live at once. Computing or emitting a
+full $\Theta(G)$-gate circuit is not part of this accessor.
+\end{proof}
+
+For audit of \emph{physical bit positions}, one canonical fixed-width
+compiler serialization has
+$n_0=9G+3N+q+8$ variables,
+$m_0=13G+4N+12$ clauses and
+$W=\lceil\log_2(\max(n_0,m_0)+1)\rceil$ literal-index bits.
+Its self-delimiting header has an eight-bit magic tag, unary
+length of the width field, its binary width, and two $W$-bit
+counts. If its length is $H_0$, occurrence $(c,k)$ starts at
+\[
+                 H_0+(3c+k)(W+1),                           \tag{12}
+\]
+with sign first and $W$-bit literal ID next. This arithmetic
+produces the exact stored bit offsets, but a \emph{general}
+source clause literal reader still requires its own gate
+locator and the unresolved pin/alias/constant interfaces.
+The source-input pin group depends on $x$, and it is not
+silently treated as a constant or absent.
+
+\section{Finite evidence and falsifying controls}
+The standalone Python program independently emits the \emph{whole}
+fixed witness-verifier DAG, constructs a table of genuine direct
+uses and physical 13-row source occurrences for audit \emph{only},
+then compares every selected gate to a separate parameter-only
+\texttt{Shape(q,m)} interface with no stored netlist, layer table
+or occurrence table. All signed global gate, operand, clause,
+literal-position and physical header/field predictions match.
+The attempted table-free predictor does not inspect the audit
+maps. $q=3,m=1$ is also checked against every one of its $2^{10}$
+source strings and every one of eight witnesses, including
+inactive clauses, invalid IDs, duplicate IDs, SAT and UNSAT
+malformed records. The proper eight-clause ternary blocking CNF
+on three variables is independently verified UNSAT against all
+eight witnesses, and the compiled circuit rejects them.
+
+\begin{center}\small
+\begin{tabular}{rrrrrrrr}
+\toprule
+$q$ & $m$ & $K$ & total $G$ & forward & scan & reverse & signed occurrences\\\midrule
+3&1&8&1824&40&8&48&1400\\
+4&1&8&2200&48&8&48&1552\\
+3&2&16&5704&80&16&160&3664\\
+5&2&16&6876&96&16&160&3984\\
+7&2&16&6876&96&16&160&3984\\
+6&3&16&7000&96&16&160&4008\\\midrule
+\multicolumn{4}{r}{\textbf{TOTAL}}&456&80&736&\textbf{18,592}\\\bottomrule
+\end{tabular}
+\end{center}
+The total is 1,272 newly covered Boolean output gates with
+3,058 true signed direct gate-input uses. There were 18,592
+correct signed source occurrence selectors and inverse-rank
+roundtrips, with matching sign and every index bit of each
+corresponding fixed-width stored literal. No failed assertions.
+The empirical counts are finite testing, not asymptotic SAT
+lower bounds or measured Turing-machine transitions.
+
+\section{Three models, same-machine accounting, and ARC firewalls}
+\paragraph{RAT or bounded-word RAM.}
+For a specified gate-output variable, computing its gate ID,
+locating its up-to-21 occurrences and any corresponding
+fixed-width output-bit address costs $O(\log^3G)$ bit operations
+and $O(\log G)$ index/work bits on a standard bit-cost
+implementation of integer division/multiplication. A physical
+input read in a random-access TM also pays to write its binary
+address, typically $O(\log T)$ bits when polynomially bounded.
+A $\Theta(\log N)$-word RAM comparison must additionally charge
+word-address arithmetic and the restrictions on word operations.
+No free whole-word semantic SAT primitive is granted.
+
+\paragraph{Fixed-$k$ sequential-input TM $M_k$.}
+Let $T_k,S_k,Q_k,C_k$ record physical machine transitions,
+visited writable work cells, actual source/work probes and
+head-boundary crossing events. If a virtual circuit or child
+is evaluated, all source reads, virtual output-bit construction,
+failed adaptive choices, retained ancestors, and work-tape head
+movements count in this \emph{same} machine. Probes/crossings
+are subcounters within $T_k$, not extra additive runtime.
+The parameter-only locator does not establish an
+$O(\log G)$-space \emph{evaluation} of an arbitrary $G$-gate
+DAG, nor a cheap sequential tape path to every indexed input.
+
+\paragraph{One shared read/write tape $M_1$.}
+Here the $N$ input cells are part of the footprint $P_1\ge N$;
+$S_k$ excludes its read-only source. For fixed $k$, a genuine
+single-head sweep simulation conservatively gives
+\[
+ T_1=O\!\left(T_k(N+S_k+\log(T_k+2))\right),\quad
+ P_1=O\!\left(N+S_k+\log(T_k+2)\right).                 \tag{13}
+\]
+The old independent explicit tape-to-tape audit 171 checked
+9,320 matched source/target transition states on a fixed
+Boolean comparison verifier; this run does not relabel them as
+new measurements. The Hennie--Stearns $O(T_k\log T_k)$ theorem
+constructs a \emph{two}-tape simulator, not the M1 result.
+
+\paragraph{Sequential head movement and bounded jumps.}
+On the separately specified canonical exact22 easy equality
+promise, HEADMOVE-1 establishes the one-sequential-input-head
+necessary inequalities
+$(R+1)(S+1)=\Omega(N/\log N)$ and
+$H(S+1)=\Omega(N^2/\log N)$ with a complete-work-state
+crossing/splicing argument, still subject to its declared
+source locality and independent review. With a separately
+charged input jump radius $J=N^{j+o(1)}$, a sequential
+simulation yields the model-specific necessary
+$t+s+j\ge2$. Two independently movable input heads or indexed
+input can defeat the crossing obstruction on that
+\emph{easy} promise. No tape stripe is promoted to FLMV/RAM.
+
+\paragraph{Explicit construction/write floor.}
+A Boolean circuit with $G$ distinct two-input gate IDs
+requires $\Omega(G\log G)$ physical output bits for the
+stated fixed-width gate serialization when written in full.
+The proper compiler yields $m_0=13G+4N+12$ clauses and
+$n_0=9G+3N+q+8$ names; the previously verified two-level
+signed exact-$(2,2)$ regularizer counts
+\[
+     m_2=4048m_0+5888n_0.                               \tag{14}
+\]
+Under the pinned architecture, $m_2\ge33856N$ is an
+\emph{expansion floor}, not a child of length $N^\lambda$
+for $\lambda<1$. This run checks algebraic counts, but does not
+materialize or rerun the entire R15\textsuperscript{2} transport.
+Its outputs are signed exact-$(2,2)$, not automatically the
+stricter clause-monotone class.
+
+\paragraph{Decision versus verifier.}
+This construction gives $V_{q,m}(x,z)$, not
+$D_N(x)=\bigvee_zV_{q,m}(x,z)$ as a small explicit
+all-$N$-bit SAT \emph{decision} circuit. The $q=1.29$ type
+of instance-specific boundary relation is likewise not a
+full SAT decision family. No all-input source-authenticated
+UNSAT certificate cap, unknown-$K$ contraction, uniform ordinary
+SAT shortening, ARC-EDGE-90, or $P\ne NP$ follows.
+
+\section{Cross-track handoff and next smallest obligations}
+The direct scan/reverse interface fills the final-forward,
+scan-output and reverse-output sectors previously marked open
+by CIRCUIT-RECORD-OUTPUT-SELECT169. Still missing are the direct
+consumers of \emph{all} remaining scan-internal and row-checker
+Boolean gates, high-fanout source alias/constant terminals,
+complete source input-pin incidence, and inverse Rank/Select
+through both proper signed exact-$(2,2)$ regularizer levels.
+Even a complete verifier accessor would be only a source
+transformation without a charged strictly shorter ordinary-SAT
+child and the required deterministic strategy choice from an
+\emph{unknown} polynomial-time SAT solver $A$.
+
+The smallest next theorem is arithmetic inverse access for
+\emph{primary aliases and source constants}, including the
+assignment/$q$-dependent fanout across the full bitonic
+network and the final range-checker. A separate falsifier
+should test an ordinary variable-width SAT parser with sparse
+IDs under one indexed readonly input, explicitly charging
+rank/select and malformed encodings.
+
+
+\clearpage
+\section{Run 174 addendum: all primary aliases and all local compiler variable classes}
+\noindent\textbf{New finding, fixed architecture and independent referee pending.}
+The material before this section is the exact unchanged Run 173 mathematical
+predecessor, retained as part of the self-contained source audit. Run 174 now
+closes \emph{all nonconstant primary source and witness aliases}, all gate
+argument clones, all local gate padding names, and every source/final pin
+auxiliary. It additionally reconstructs \emph{every} gate's AND/OR opcode from
+its global ID. This does \emph{not} close high-fanout constants or the inverse
+consumer map for internal scan and row-checker gate outputs.
+
+\paragraph{Falsifiers proposed before source review.}
+The four candidate mechanisms were (H1) scalar scan-internal inverse,
+still OPEN; (H2) bounded direct fanout for all primary source aliases,
+established here; (H3) arithmetic clone/pad/pin inversion and all-gate opcode
+classification, established here; (H4) general arbitrary-source inverse
+blocked by the already established adversarial permuted-block example of
+SOURCE--SELECT--BARRIER172, not new to this run.
+
+\paragraph{Primary source identification.}
+Fix $q\ge3$, $m\ge1$, $w=\lceil\log_2(q+1)\rceil$ and
+$N=m[1+3(w+1)]$. Let the global row-checker gate start be
+$b_c=G_f+G_s+G_r+c(36w+15)$, as in (2).
+For original physical input name $v\in[1,N]$, set
+$L=1+3(w+1)$, $c=\lfloor(v-1)/L\rfloor$, $d=(v-1)\bmod L$.
+If $d=0$ it is the active bit with \emph{one} direct use,
+$(b_c+36w+14,0,-1)$.
+Otherwise define $j=\lfloor(d-1)/(w+1)\rfloor$ and
+$i=(d-1)\bmod(w+1)$, and put $p=q+3c+j$.
+If $i<w$ this is the $i$-th identifier bit of request $j$,
+and if $i=w$ this is the request's polarity/payload bit.
+Witness source name $v=N+u$, $1\le u\le q$, is payload field $w+2$
+of initial assignment record position $p=u-1$.
+
+\paragraph{Exact initial sorter uses.}
+At first layer pair rank $r=\lfloor p/2\rfloor$, gate base
+$b=rF$, receiving side $\epsilon=p\bmod2$, ascending test
+$\mathrm{up}=[(2r)\mathbin{\&}2=0]$, and $D=w+3$, $H=7(w+2)$.
+Every identifier bit $0\le i<w$, with $t=w-1-i$, has the three
+comparison uses
+\[
+\begin{cases}
+(b+7t,0,-),(b+7t+3,0,+),(b+7t+4,0,-),&\epsilon=\mathrm{up},\\
+(b+7t,1,+),(b+7t+3,1,-),(b+7t+4,1,+),&\epsilon\ne\mathrm{up},
+\end{cases}
+\]
+plus the two MUX uses
+\[
+\begin{cases}
+(b+H+3i,1,+),(b+H+3(D+i)+1,1,+),&\epsilon=0,\\
+(b+H+3i+1,1,+),(b+H+3(D+i),1,+),&\epsilon=1.
+\end{cases}
+\]
+Payload field $i=w+2$ uses only the MUX pair. These
+formulae apply to initial \emph{source} names rather than
+previous layer gate outputs: the first layer is their only
+direct appearance in the bitonic sorter.
+
+\paragraph{Exact row-checker uses.}
+For an original identifier bit at request $(c,j,i)$ the checker
+request module begins at $R=b_c+j(8w+3)$.
+Its source bit appears once in the initial $w$-input OR
+reduction, whose first consumer can be found with a scalar
+stream of pair-reduction rounds:
+at a round with $n$ live entries and leaf position $i$,
+if $i<2\lfloor n/2\rfloor$, use current gate
+$\lfloor i/2\rfloor$, slot $i\bmod2$, plus all preceding
+round gate counts; if it is the odd unmatched final leaf,
+carry it to the next round. This ends in $O(\log w)$ rounds
+and stores only three logarithmic-size counters.
+
+Next, the bit enters the $7w$-gate
+$\operatorname{lt}(q,\mathrm{id})$ block as its second argument,
+at $R+(w-1)+7(w-1-i)+\{0,3,4\}$, operand slot $1$ and
+signs $(+,-,+)$. Finally, the two pairwise ID equalities
+out of $(0,1),(0,2),(1,2)$ containing source request $j$
+each read the bit twice. If $a$ is that pair's index, their
+gates are
+\[
+ b_c+3(8w+3)+a(4w-1)+3i+\{0,1\}.
+\]
+The first request in the pair occupies operand slot $0$
+with signs $(+,-)$; the second occupies slot $1$ with
+signs $(-,+)$. This is exactly $1+3+4=8$ checker uses
+plus five sorter uses, so each original identifier bit
+has \emph{thirteen} direct references.
+An original source polarity bit has the two sorter MUX uses
+and two checker EQ(sign,lookup) uses at
+$R+(w-1)+7w+1$ and $R+(w-1)+7w+2$, operand slot $0$
+with signs $(+,-)$, making four. The original active bit
+has one, a witness bit two.
+
+\begin{theorem}[Primary variable inverse, new Run 174]
+For every $q\ge3,m\ge1$ and every physical primary source
+name $v\in[1,N+q]$, a uniform parameter-only procedure
+computes exact sorted signed gate-consumer Select and Rank
+in $O(\log^3G)$ elementary bit operations and
+$O(\log G)$ combined writable/index bits, without incidence
+tables. The four direct fanouts by type are $(1,13,4,2)$
+for active, identifier, polarity, witness. The proper compiler
+source variable has exactly $4f+4$ signed literal occurrences
+for an original $x$ bit and $4f$ for an original witness $z$ bit.
+The $+4$ is the four explicit original-source pin rows:
+$13G+4(v-1)+r$ at literal slot zero, whose sign is determined
+by the \emph{actual} source input bit $x_v$.
+\end{theorem}
+\begin{proof}
+The emitter introduces the original source wires only in the
+first-layer record and in the row checker's original source
+clause fields. Later sorting, scanning, and inverse routing
+carry distinct Boolean-gate output variables. The comparator
+seven-gate compare and three-gate MUX patterns exhaust its
+first-layer reads. In the checker each source identifier
+appears once in nonzero OR, three times in less, and twice in
+each of two pairwise equality checks, with gate ordering as
+displayed. The source sign appears twice in equality;
+the active bit in only the final row OR. Every signed gate
+operand produces four proper-CNF clone-equality rows at
+$13g+4k+\{0,1,2,3\}$, literal slot one, with signs
+$(\tau,\tau,-\tau,-\tau)$. Source $x$ bits alone have
+four further explicit pin rows. No remaining emitter module
+reads a primary source name. At most thirteen signed uses
+and three streaming $O(\log G)$-bit counters are live.
+Standard schoolbook arithmetic gives the bit-time bound.
+\end{proof}
+
+\paragraph{Every gate operation and source-local name.}
+Let $s=N+q+3$. Gate $g$ occupies source-variable names
+$s+9g+d$ for $d=0,\ldots,8$: argument clones $d=0,1$,
+output $d=2$, and padding $d=3,\ldots,8$.
+The operation of \emph{every} Boolean gate is arithmetic:
+forward comparison pattern AND,AND,OR,AND,AND,OR,AND;
+forward and reverse MUX pattern AND,AND,OR;
+scan first two kind EQ tests in seven-gate groups,
+then for $p>0$ its $3w$ XOR gates and $w-1$ AND tree,
+then AND,AND,AND,OR,AND; checker each of three request
+blocks is $w-1$ ORs, $7w$ comparator pattern, one
+validity AND, AND,AND,OR truth check. Three pairwise
+EQ blocks are each $3w$ XOR gates followed by $w-1$ ANDs.
+The row ends with five ANDs, two ORs, AND, OR;
+the final output tree is all AND. All block boundaries
+are the exact arithmetic lengths in (2).
+
+Let $\sigma=-1$ for AND and $\sigma=+1$ for OR.
+The own source-CNF occurrences of argument clone $d=0$
+at gate $g$ have relative $(\mathrm{row},\mathrm{slot},\mathrm{sign})$
+\[
+(0,0,-),(1,0,-),(2,0,+),(3,0,+),
+(8,0,\sigma),(9,0,-\sigma),(10,0,-\sigma),
+\]
+and those of clone $d=1$ have
+\[
+(4,0,-),(5,0,-),(6,0,+),(7,0,+),
+(8,1,\sigma),(11,0,-\sigma),(12,0,-\sigma).
+\]
+Each padding variable $d=3,\ldots,8$ has just one
+positive and one negative literal, both in slot $2$,
+in relative row pairs $(0,1),(2,3),(4,5),(6,7),
+(9,10),(11,12)$ respectively.
+Absolute clause indices add $13g$.
+After gate variables, $p_0=s+9G$ begins $2N$
+source-bit pin auxiliaries followed by six final pin
+auxiliaries. Each pin pair has exactly four physical
+clauses: the first aux occurs in slot one with signs
+$(+,+,-,-)$, the second in slot two with signs
+$(+,-,+,-)$. Source pin clause group $i$ begins at
+$13G+4i$; final pin group $r\in\{0,1,2\}$ begins at
+$13G+4N+4r$.
+
+\begin{theorem}[Compiler-local source inverse, new Run 174]
+For all $q\ge3,m\ge1$, every gate's two argument clone
+variables and six padding variables, plus every
+source-bit and final-output pin auxiliary, has exact
+table-free proper-source signed OccSelect and OccRank,
+with $O(\log^3G)$ bit time and $O(\log G)$ writable/index
+bits. The gate's output variable $d=2$ and original
+global constant names are \emph{not} covered by this theorem.
+\end{theorem}
+\begin{proof}
+The source compiler's thirteen rows explicitly list each
+private name only in the indicated fixed rows. Gate opcodes
+are determined by the mutually disjoint arithmetic sectors
+in (2), their per-module offset and the fixed emitter grammar.
+The final pin auxiliary ranges are disjoint from all gate-local
+and primary ranges. A constant number of logarithmic-size
+integers suffices for all rows and signed fields; none of the
+$O(G)$ gate descriptors or occurrences is materialized.
+\end{proof}
+
+\begin{counterexample}[Wire-to-clause conflation]
+For $q=3,m=1$, source active bit $v=1$ has exactly one
+direct Boolean use $(1823,0,-)$ but eight physical
+proper-CNF occurrences. Original identifier bit $v=2$
+has thirteen Boolean gate uses but 56 literal occurrences.
+Deleting the source-pin rows incorrectly subtracts
+four occurrences per original input bit.
+\end{counterexample}
+
+\paragraph{Finite and resource audit.}
+Seven exact complete circuits $(q,m)=(3,1),(4,1),(3,2),
+(5,2),(7,2),(6,3),(9,2)$ checked 38,528 Boolean gate
+opcodes, 1,725 signed primary references, 7,564
+physical signed source-input occurrences, and 1,003,224
+clone/pad/pin source occurrences against independent
+materialized actual compiler rows, all with zero failures.
+The earlier 8,192 exhaustive input/witness semantics and
+eight-clause UNSAT controls reran identically
+(raw SHA256 5eff02d7d9abc9eb2d1b0efb54a15770d5f71cfeca6f2f8a7dd2290fb7c4ccc4).
+The prior one-tape simulation reran 340 pairs and 9,320
+matched source/simulator states (raw SHA256
+3543f3695f2990c4586168ba4cf8cf1e2adecd5d40244f1700bc00419349b80b).
+
+The three native model ledgers remain separated. Fixed-$k$
+sequential-input multitape to single read/write tape:
+$T_1=O(T_k(N+S_k+\log(T_k+2)))$,
+$P_1=O(N+S_k+\log(T_k+2))$, an upper
+simulation only; initial input is charged to $P_1$.
+Hennie--Stearns is a \emph{two}-tape fast simulation.
+The sequential-head exact22 reversal and bounded-jump
+bounds do not apply to indexed RAM. The actual source
+compiler still expands:
+$n_0=9G+3N+q+8$, $m_0=13G+4N+12$,
+$m_2=4048m_0+5888n_0$. This is no $N^\lambda$
+($\lambda<1$) ordinary-SAT child. Full ordinary-SAT
+decision circuitry and unknown-$K$ all-input ARC
+resource contraction remain OPEN. P versus NP remains OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability},
+JACM 52(6), 835--865 (2005),
+\url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{pf} N. Pippenger, M. Fischer,
+\emph{Relations Among Complexity Measures}, JACM 26, 361--381
+(1979), \url{https://research.ibm.com/publications/relations-among-complexity-measures}.
+\bibitem{williams} R. R. Williams,
+\emph{Simulating Time with Square-Root Space}, STOC 2025,
+\url{https://doi.org/10.1145/3717823.3718225}.
+\bibitem{hs} F. Hennie, R. Stearns,
+\emph{Two-Tape Simulation of Multitape Turing Machines},
+JACM 13 (1966), \url{https://doi.org/10.1145/321356.321362}.
+\bibitem{prior} Project originals: CIRCUIT-OBLIVIOUS-INVERSE-SORT166,
+CIRCUIT-LOCAL-CONSUMER168, CIRCUIT-RECORD-OUTPUT-SELECT169;
+roles 1,3,4,5 current reports; DUAL-TM, RAM-VS-TAPE and
+HEADMOVE-1 governance directives (2026-10-26).
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::CIRCUIT-PRIMARY-SOURCE-SELECT174
