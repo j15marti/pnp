@@ -1,0 +1,55 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-10-27
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{prop}{Proposition}
+\newtheorem{lem}[prop]{Lemma}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT}
+\author{Living document (hourly scheduled runs)}
+\date{Last updated 2026-10-27 (run 1)}
+\begin{document}
+\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. Nothing here is a super-polynomial lower bound. Labels: PROVED, KNOWN, CONDITIONAL, OPEN.
+
+\section{Goal and method}
+Build circuit-SAT instances from the simplest case upward, count the wires (gate-input connections) each stage forces, and track lower bounds on deciding satisfiability as a function of $n$ (inputs), $m$ (wires), and possibly a parameter $k$.
+
+\section{Model}
+Circuit: DAG, $n$ input nodes, fan-in-$\le2$ gates $\{\wedge,\vee\}$ and fan-in-1 $\neg$, one output. Size $m$ = number of wires. The encoding is a list of wire sources, read by a deterministic decider through probes (``wire-probe model''). Lower bounds in this model are PROVED only for that model.
+
+\section{Step 0: trivial circuits ($n=1$)}
+Circuits $x$, $\neg x$, $x\wedge\neg x$. Minimum wires to depend on the input: 1 (output wire from $x$). Unsatisfiable instance needs 3 wires ($x\to\neg$, $x\to\wedge$, $\neg\to\wedge$) plus output.
+
+\section{Step 1: wires needed to depend on $n$ inputs}
+\begin{prop}[PROVED] A fan-in-2 circuit whose function depends on all $n$ inputs has at least $n-1$ binary gates, hence at least $2(n-1)$ gate-input wires (plus the output wire).
+\end{prop}
+\begin{proof} Let $g$ be the number of binary gates among ancestors of the output. Build the graph on these gates and the $n$ inputs with an edge for each wire; negations are contractible. It is connected (everything reaches the output), has $n+g$ nodes, and every node except the output has out-degree $\ge1$. Counting in-degrees: inputs have in-degree 0 and gates at most 2, so edges $\le 2g$; connectivity gives edges $\ge n+g-1$. Hence $2g\ge n+g-1$, i.e.\ $g\ge n-1$, and the wires number $2g\ge2(n-1)$. \end{proof}
+
+\section{Step 2: probe lower bound $\Omega(m)$}
+Family $\mathcal C_n$: $C_\sigma = \bigvee_{i=1}^n (x_i\wedge\neg x_{\sigma(i)})$, with $\sigma:[n]\to[n]$.
+$C_\sigma$ is unsatisfiable iff $\sigma=\mathrm{id}$ (if $\sigma(i)\ne i$, take $x_i=1,x_{\sigma(i)}=0$). Size $m=\Theta(n)$ (about $4n$ wires).
+\begin{prop}[PROVED, wire-probe model] Any deterministic decider for circuit-SAT must probe at least $n$ wires on the unsatisfiable instance $C_{\mathrm{id}}$.
+\end{prop}
+\begin{proof} If it skips the wire $\neg x_{\sigma(i)}$-source for some $i$, the instance $C'$ differing only there ($\sigma(i)=j\ne i$) is satisfiable and yields the same transcript. Contradiction. \end{proof}
+So $\Omega(m)$ time is necessary: linear, matching the trivial upper bound for reading. This is the base of the ladder; it says nothing superlinear.
+
+\section{Step 3: parameterized view in $n$}
+\begin{itemize}
+\item KNOWN upper bound: $O(2^n\cdot m)$ brute force.
+\item Black-box (evaluation-oracle-only) model, PROVED: a unique satisfying assignment among $2^n$ needs $2^n$ queries worst case (adversary). This is \emph{not} a white-box bound, since a decider sees the wiring.
+\item CONDITIONAL: under SETH, no $2^{(1-\varepsilon)n}\mathrm{poly}(m)$ algorithm for CNF-SAT, hence for circuit-SAT.
+\item Treewidth $w$: circuit-SAT is solvable in $2^{O(w)}\cdot m$; under SETH $2^{(1-\varepsilon)w}$ cannot be improved (KNOWN/CONDITIONAL, Lampis et al.; to be verified against primary sources next run).
+\end{itemize}
+Candidate parameter for this document: pair $(n,w)$ or the number of wires crossing a cut.
+
+\section{Open ladder (next steps)}
+\begin{enumerate}
+\item Step 4: add fan-out; count wires per reused signal; formalize cut-width $c$ of the wiring and test whether a probe/branching lower bound of form $2^{\Omega(c)}$ is provable in a restricted (e.g.\ read-once branching / DPLL) model.
+\item Step 5: exhaustive small-$n$ computation of minimum-wire circuits for hard-to-satisfy functions.
+\item Review repo \texttt{j15marti/pnp} (ARC/FLMV spine, which itself states P vs NP OPEN) for usable links; none adopted yet.
+\end{enumerate}
+
+\section{Run log}
+\begin{itemize}
+\item Run 1 (2026-10-27): created document; Steps 0--3 as above. Repo survey: large ARC/FLMV corpus, no circuit-SAT wire ladder present; no result imported.
+\end{itemize}
+\end{document}
