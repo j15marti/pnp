@@ -1,0 +1,50 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- root of j15marti/pnp
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newtheorem{thm}{Theorem}\newtheorem{lem}{Lemma}
+\title{Claude Circuit-SAT Lower-Bound Ladder (living document)}
+\date{Last updated: 2026-10-27 (run 1)}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{Goal:} lower bounds for Circuit-SAT, built up from the smallest instances, tracking wires and inputs, possibly parametrized. 
+\textbf{Unconditional super-linear time lower bounds for Circuit-SAT, and P versus NP, remain \OPEN.} Everything below is a small exact ladder plus a linear query bound in a restricted model; it makes no claim about general Turing/RAM time.
+
+\section{Model}
+A circuit has $n$ inputs and gates from $\{\text{NOT}\}\cup B$, where $B$ is the set of 10 binary gates depending on both arguments (no gate reads the same wire twice). Cost = number of wires (edges); NOT costs 1, a binary gate 2. A circuit is a \emph{reduced UNSAT} instance if its output is identically $0$ and every input lies in the output cone (so no input can simply be discarded).
+
+\section{Ladder A: minimal wires of a reduced UNSAT circuit}
+Let $W(n)$ be the minimum wire count.
+\begin{center}\begin{tabular}{c|cccc}
+$n$ & 1 & 2 & 3 & $\ge 4$\\\hline
+$W(n)$ & 3 & 4 & 6 & $2n$ (proved below)\\
+status & COMPUTATIONAL & COMPUTATIONAL & COMPUTATIONAL & PROVED/EXACT
+\end{tabular}\end{center}
+$n\le3$: exhaustive Dijkstra over sets of (truth table, cone) states, \texttt{experiments/claude\_circuitsat/min\_unsat\_ladder.py}, raw data \texttt{results/raw/claude\_circuitsat/ladder\_n1\_3.json}. The same search for $n=4,5$ hit the 25\,s budget (about $8\times10^5$ states) and is not computed; it needs chunking or pruning.
+
+\begin{thm}[$W(n)=2n$ for $n\ge2$]
+\emph{Lower bound.} A NOT gate can be absorbed: complement the table of each consumer (still nondegenerate); if the NOT is the output, complement its source gate instead (the source is a gate, not an input, since an input is not constant). This never increases wires, so assume only binary gates. With $g$ binary gates and $n$ inputs all in the cone, connectivity forces $g\ge n-1$. If $g=n-1$ the $2g=2n-2$ edges on $2n-1$ nodes form a tree, so the circuit is read-once; a read-once circuit of nondegenerate gates depends on every input, hence is not constant. So $g\ge n$ and wires $\ge 2n$.
+\emph{Upper bound.} $g_1=x_1\wedge x_2$, $g_2=g_1\wedge\neg x_1\ (\equiv0)$, then $g_k=g_{k-1}\wedge x_k$ for $k=3..n$: $n$ gates, $2n$ wires. \hfill PROVED/EXACT (for $n=1$ the unary NOT forces $3$).
+\end{thm}
+\emph{Meaning:} reconvergence (one reused wire) is the minimum structural price of unsatisfiability. This is a size bound for hard-to-see UNSAT instances, \textbf{not} a runtime bound for deciding them.
+
+\section{Ladder B: wire-probe lower bound (parametrized in $w$)}
+Probe model: the decider reads the instance only by querying single wires/polarity bits. Family $\mathcal F_m$: $m$ variables, a conjunction of $2m$ literals, literal $(i,j)$ is $x_i$ or $\neg x_i$ with polarity bit $p_{i,j}$, $i\le m$, $j\in\{1,2\}$. The instance is satisfiable iff $p_{i,1}=p_{i,2}$ for all $i$.
+\begin{thm}Every deterministic probe algorithm deciding $\mathcal F_m$ makes at least $w=2m$ probes (tight).\end{thm}
+\begin{proof}Adversary answers consistently with $p\equiv0$ (SAT). If some bit is unprobed at the end, flipping it gives an UNSAT instance with the same transcript, so the output is wrong on one of the two.\end{proof}
+Parametrization: with $n=m$ inputs and $w=2m$ wires, deciding costs $\Theta(w)$ probes here, versus the brute-force $2^n\cdot\mathrm{poly}(w)$. Status: PROVED/EXACT in the probe model only; the gap between $\Omega(w)$ and $2^{n}$ in the general model is \OPEN. (Randomized version: not yet written; CANDIDATE $\Omega(m)$ via the standard OR-of-equalities argument.)
+
+\section{Plan for the next rungs}
+\begin{enumerate}
+\item Compute $W(4),W(5)$ with symmetry pruning and chunked runs (each $\le30$\,s); conjecture $W(n)=2n$ is already proved, so instead extend to a \emph{harder} invariant: the minimum wires of a reduced UNSAT circuit that is also \emph{locally irredundant} and has no unit-propagation refutation (UP-hard).
+\item Find a family where any \emph{probe} algorithm needs $\omega(w)$ probes (e.g.\ adaptive pointer-chasing gate wiring): this is where non-trivial parametrized bounds in $(n,w)$ would appear.
+\item Fixed-parameter view: width/treewidth $k$ gives $2^{O(k)}w$ upper bounds; seek matching probe lower bounds in $k$.
+\end{enumerate}
+
+\section{Repository cross-check}
+Read the latest GROKPROOF note (2026-10-27 2115) and root \texttt{main.tex}. Their ARC/FLMV spine concerns simultaneous time--space bounds for SAT; the all-input contraction lemma is \OPEN, and no result there yields a Circuit-SAT size/wire lower bound. Nothing in this document depends on or strengthens that work.
+
+\section{Barriers}
+Relativization/natural proofs/algebrization are untouched: ladders A and B are counting/adversary arguments in restricted access models and say nothing about unrestricted algorithms.
+\end{document}
+% END_OF_LIVING_DOCUMENT
