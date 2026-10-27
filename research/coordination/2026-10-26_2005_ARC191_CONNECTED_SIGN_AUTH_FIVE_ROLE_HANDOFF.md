@@ -2,7 +2,7 @@
 Date: 2026-10-26 20:05 America/Los_Angeles. Status: PROVED/EXACT restricted, independent review pending; P versus NP, all-UNSAT coverage, ARC-EDGE-90 OPEN.
 
 ## New source-authentication lemmas and exact limits
-For each prism graph G_h=C_h square K2 (h>=3), construct odd-charge cubic Tseitin ordinary proper signed 3CNF F_h with 2h vertices, 3h Boolean edge variables, 8h clauses and 24h original sign-bit positions in a canonical N_h=88+24h(w_h+1)-bit binary encoding, w_h=ceil(log2(3h+1)). This source is connected signed exact-(4,4), NOT signed exact-(2,2) and NOT the clause-monotone class.
+For each prism graph G_h=C_h square K2 (h>=3), construct odd-charge cubic Tseitin ordinary proper signed 3CNF F_h with 2h vertices, 3h Boolean edge variables, 8h clauses and 24h original sign-bit positions in a uniform scalable binary encoding N_h=H_h+24h(w_h+1)=Theta(h log h), with self-delimiting header H_h=O(log h), w_h=ceil(log2(3h+1)). Finite executable uses an 88-bit fixed header only for tested h=3,4,5,6,8. This source is connected signed exact-(4,4), NOT signed exact-(2,2) and NOT the clause-monotone class.
 
 On F_h, EVERY ONE of the 24h literal sign bits is label-sensitive: flipping exactly that sign yields a valid ordinary proper 3CNF that is SAT. For any fixed sound nondeterministic UNSAT verifier, EVERY accepting path on F_h must have queried all 24h signs, by the transcript replay argument on the corresponding SAT mutant. Same holds for any rejecting coNTIME SAT branch and any deterministic all-input SAT decider. Necessity Q>=24h=Omega(N_h/log N_h) on ONE source and ONE path. This is not a superlinear SAT time lower bound or a uniform certificate-size bound.
 
