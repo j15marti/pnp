@@ -1,0 +1,63 @@
+% CLAUDE CIRCUIT-SAT LIVING DOCUMENT -- append-only run log + current state
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\title{Circuit-SAT Lower Bounds: A Wire-by-Wire Parameterized Ladder}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated 2026-10-27}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is an unconditional superpolynomial lower bound for Circuit-SAT. Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Model}
+A circuit has $n$ inputs and $s$ binary AND gates; negation is free on edges (an AIG). Wires $=$ edges $=2s$ plus one output pin. Parameters: $n$ (inputs), $s$ (gates), $w$ (treewidth), $d$ (refutation depth, below).
+
+\section{Ladder of exact small results}
+\begin{theorem}[Connectivity floor, PROVED]
+If the output depends on all $n$ inputs, then $s\ge n-1$ and wires $\ge 2(n-1)$. Tight (AND tree).
+\end{theorem}
+\emph{Proof.} The underlying graph on $n+s$ nodes is connected to the output through every input, so it has $\ge n+s-1$ edges; it has $2s$ edges, so $s\ge n-1$.\hfill$\square$
+
+\begin{lemma}[Needle floor, PROVED]
+A circuit with exactly one satisfying assignment depends on all $n$ inputs, so needs $\ge n-1$ gates; the AND of $n$ literals attains it.
+\end{lemma}
+
+\begin{theorem}[Netlist-probe lower bound, PROVED, trivial but wire-exact]
+Let an algorithm read the netlist through probes ``which literal is pin $i$''. On $m$-literal AND-chains over $n\ge m$ variables, any deterministic algorithm deciding satisfiability needs $\ge m$ probes.
+\end{theorem}
+\emph{Proof.} Adversary answers every probe with a fresh positive variable (consistent, SAT). If some pin $j$ is unprobed, the instance with pin $j$ replaced by the negation of an already-probed variable is UNSAT and agrees with every answer.\hfill$\square$
+So every one of the $\Theta(s)$ wires is essential; this is an input-size bound, not a computation-time bound.
+
+\section{Exhaustive computation (COMPUTATIONAL)}
+Script \texttt{experiments/claude\_circuitsat/ladder.py}, data \texttt{results/raw/claude\_circuitsat/2026-10-27\_ladder\_results.json}. Every AIG with $k$ gates, $n$ inputs, distinct fan-ins per gate (a node feeding both pins of one gate is excluded), all gates used, output $=$ last gate. Each call runs in $<30$\,s (chunked by $(n,k)$).
+\emph{Refutation depth} $d$: least depth of a decision tree on inputs whose leaves are refuted by ternary (0/1/X) propagation.
+
+\begin{center}\begin{tabular}{rrrrrl}\toprule
+$n$&$k$&circuits&needle&UNSAT&UNSAT by depth $d$\\\midrule
+2&2&32&16&8&$d{=}1$:8\\
+2&3&448&172&148&1:108, 2:40\\
+2&4&9728&3288&3608&1:2560, 2:1048\\
+2&5&302080&92600&120572&1:82860, 2:37712\\
+3&3&1536&432&240&1:192, 2:48\\
+3&4&56064&11904&13008&1:8928, 2:3456, 3:624\\\bottomrule\end{tabular}\end{center}
+Observation (finite data only): the least $k$ with an UNSAT circuit of depth $d=n$ is $n+1$ for $n=2,3$. Conjecture (CANDIDATE, unproved, $n\ge4$ untested): $k_{\min}(d{=}n)=n+1$, i.e.\ constant-propagation-hard UNSAT circuits need only linearly many wires. If so, depth $d$ is a parameter on which the cost $\approx 2^{d}\cdot s$ of propagate-and-branch is tight for that proof system only.
+
+\section{Parameterized landscape}
+\begin{tabular}{lll}\toprule
+Bound & Status & Note\\\midrule
+$O(2^n s)$ brute force; $2^{O(w)}s$ treewidth DP & KNOWN & upper bounds\\
+no $(2-\varepsilon)^n\mathrm{poly}(s)$ algorithm & CONDITIONAL (SETH) & via CNF-SAT$\le$Circuit-SAT; literature not re-verified this run\\
+$\Omega(s)$ netlist reading & PROVED & above\\
+Propagate-and-branch needs $2^{\Omega(d)}$ leaves & COMPUTATIONAL/CANDIDATE & restricted algorithm class only\\
+Unconditional superlinear time, general model & OPEN & no route found\\\bottomrule\end{tabular}
+
+\section{Repository cross-check (2026-10-27)}
+No prior \texttt{ClaudeCircuitSAT.tex}. Repository's active spine is ARC/FLMV simultaneous time--space contraction (\texttt{main.tex}, \texttt{GROKPROOF/}); latest note keeps the all-input resource contraction lemma OPEN. Link to this ladder: FLMV-type bounds concern space-bounded time, whereas the ladder tracks netlist size; a bridge would need circuits of size $s$ to encode time-$T$, space-$S$ machines at cost $\tilde O(T)$, which is the Pippenger--Fischer overhead GROKPROOF flags. Not attempted yet.
+
+\section{Next steps}
+(1) Extend enumeration to $n=4$ with canonical-form pruning; (2) test whether fan-in-sharing (same node on both pins) changes $k_{\min}$; (3) prove or refute $k_{\min}(d{=}n)=n+1$; (4) add a treewidth column; (5) examine a width-restricted (bounded-depth branching) lower bound for a concrete family.
+
+\section*{Run log}
+\begin{itemize}
+\item 2026-10-27: initial document, Theorems 1--2, enumeration to $(n,k)\in\{(2,\le5),(3,\le4)\}$.
+\end{itemize}
+\end{document}
