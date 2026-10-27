@@ -1,0 +1,156 @@
+% LSPV-5 REPORT::LOGPROOF-ENUMERATION-REFEREE178::2026-10-27T03:44:00-07:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{counterexample}[theorem]{Counterexample}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\UNSAT}{\mathsf{UNSAT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{LSPV-5 Independent Referee Report:\\Log-Proof Enumeration, Uniform Portfolios, and Fresh-Start Firewalls}
+\author{Role 5 independent red team}
+\date{27 October 2026, 03:44 PDT}
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{.94\linewidth}{
+\textbf{PROVED/EXACT conditional:} LSPV-1's certificate-enumeration arrow is correct for one fixed, uniform, total, globally sound and all-UNSAT-complete verifier in the native indexed model.  I extend it to a uniformly indexed verifier portfolio: a proof coefficient $a$, portfolio coefficient $b$, and verification-time exponent $r$ yield deterministic time exponent $\max\{1,r+a+b\}$ while preserving the verifier's space exponent up to polylogarithmic factors.  \textbf{FALSIFIED:} enumeration without fresh reset, input-selected verifiers lacking global SAT soundness, and any transfer of the result to sequential tape promises.  \textbf{REPAIRED:} LSPV-4's visible-proof-prefix factor is safe but is a factor-two overcount when the physical proof cap binds; an exact formula is given below.  \textbf{OPEN:} existence of the required all-ordinary-UNSAT logarithmic certificate grammar, deterministic discovery, two hereditary ordinary-SAT levels, ARC-EDGE-90, and $P\ne NP$.}}
+\end{center}
+
+\section{Falsifiers fixed before source review}
+
+\begin{enumerate}
+\item Candidate runs that share writable state can accept a SAT input even though every isolated verifier call is sound.
+\item Per-input selection among short verifiers need not produce one globally sound verifier or a uniformly enumerable sound portfolio.
+\item A separate proof head can distinguish proof strings only through the cells it reaches; nominal suffix length cannot be charged as observed information.
+\item A certificate-enumeration consequence in FLMV's indexed model cannot import a sequential-head crossing or reversal lower bound, nor can a simulation upper bound be reversed.
+\end{enumerate}
+
+All four controls fire.  The first two require explicit theorem hypotheses; the third sharpens a finite coefficient without changing the exponent face; the fourth remains a model-transfer prohibition.
+
+\section{Native verifier semantics}
+
+Let $F$ range over every ordinary encoded CNF of physical length $N$.  Fix one deterministic, uniform, total indexed-bit-Turing interpreter $I(F,j,\pi)$.  Its source tape is the genuine read-only input in the FLMV/Williams random-access model; all address generation, proof-bit service, work-tape traffic and the one-bit result are charged.  The interpreter starts from its prescribed blank work state on every call.  Malformed indices, malformed proofs and clock expirations return zero.
+
+For constants $a,b,r,s\ge0$, suppose that for all sufficiently large $N$:
+\begin{align*}
+  0\le j&<M(N)\le N^{b+o(1)},\\
+  |\pi|&\le (a+o(1))\log_2N,\\
+  T_I(F,j,\pi)&\le N^{r+o(1)},\qquad
+  S_I(F,j,\pi)\le N^{s+o(1)}.
+\end{align*}
+The common interpreter supplies the required uniform indexing of the portfolio.  Its semantic obligations are
+\begin{align}
+ F\in\SAT &\Longrightarrow \forall j,\pi\quad I(F,j,\pi)=0, \tag{S}\label{sound}\\
+ F\in\UNSAT &\Longrightarrow \exists j,\pi\quad I(F,j,\pi)=1. \tag{C}\label{complete}
+\end{align}
+Thus every portfolio member is globally SAT-sound and the whole portfolio is UNSAT-complete.  No true-label oracle selects $j$.
+
+\begin{theorem}[Uniform verifier-portfolio enumeration]
+Under \eqref{sound}--\eqref{complete}, one fixed uniform deterministic total ordinary-SAT decider exists in the same indexed model with
+\[
+ T_D(N)\le N^{\max\{1,r+a+b\}+o(1)},\qquad
+ S_D(N)\le N^{\max\{0,s\}+o(1)}.
+ \tag{1}
+\]
+The case $b=0$ independently proves LSPV-1 ARC-LOGPROOF-ENUMERATION-FRONTIER199's main enumeration lemma.
+\end{theorem}
+
+\begin{proof}
+First parse the physical input in $N^{1+o(1)}$ time and $N^{o(1)}$ indexed space, rejecting invalid encodings according to the language convention.  Enumerate every $j<M(N)$ and every binary $\pi$ of length at most $L(N)=(a+o(1))\log_2N$.  The number of proof strings is
+\[
+             \sum_{\ell=0}^{L}2^\ell=2^{L+1}-1=N^{a+o(1)},
+\]
+so the number of calls is $N^{a+b+o(1)}$.  Run $I$ from its genuine blank state on each pair.  Return UNSAT after the first accepting call and SAT after all calls reject.  Equations \eqref{sound}--\eqref{complete} prove both labels.
+
+Fresh reset can be implemented without retaining all previous configurations.  Simulate indexed writable cells with an address-keyed dictionary containing only the cells touched in the current call, with blank as the default.  There are at most $\min\{T_I,S_I\}$ relevant positions under the native maximum-address convention; address comparison, lookup and clearing cost only polylogarithmic factors.  Candidate counters, $j$, and $\pi$ occupy $O((a+b+1)\log N)$ bits.  Clearing the current dictionary before the next call costs at most its already bounded call time and reuses the same storage.  Hence call times add while peak storage does not, proving (1).
+\end{proof}
+
+Using the project's verified strict exclusion box
+\[
+ c_\star=\frac{241}{200},\qquad
+ s_\star=\frac{11642479}{23232400},
+\]
+the immediate same-machine consequence is
+\[
+ s<s_\star\quad\Longrightarrow\quad
+ \max\{1,r+a+b\}\ge c_\star.                    \tag{2}
+\]
+The inequalities are strict: equality with $c_\star$ is not excluded, and an $o(1)$ term cannot be used to erase a missing constant margin.
+
+\section{Two exact counterexamples}
+
+\begin{counterexample}[No-reset enumeration]
+Maintain a persistent bit $d$, initially zero.  On proof $0$, set $d=1$ and reject.  On proof $1$, accept exactly when either the source is UNSAT or $d=1$.  Every \emph{fresh} call on a SAT source rejects, while proof $1$ freshly accepts every UNSAT source.  But a purported enumerator that runs proofs $0,1$ without resetting accepts every SAT source on its second call.  Thus fresh blank state or a proved equivalent reset discipline is load-bearing.
+\end{counterexample}
+
+\begin{counterexample}[Input-selected unsound verifiers]
+Take one SAT source $S$ and two UNSAT sources $U_0,U_1$.  Let verifier $V_0$ accept exactly $S,U_0$, and $V_1$ accept exactly $S,U_1$.  Each UNSAT source has a one-symbol certificate under an input-selected verifier, but neither verifier is globally SAT-sound, and enumerating the portfolio labels $S$ UNSAT.  An input-dependent choice that avoids this error already knows semantic information not supplied by a uniform verifier theorem.
+\end{counterexample}
+
+These controls separate a genuine all-UNSAT proof system from a per-instance relation, a nonuniform circuit, or free hindsight advice.
+
+\section{Exact visible-prefix coefficient for a sequential proof head}
+
+LSPV-4 UTM-PROOF-REACH-ACTIVITY153 considers proof strings of at most $P$ content bits and a proof head reaching coordinate at most $J$, with a visible endmarker.  The exact number of observational equivalence classes is
+\[
+ \Gamma_{\rm exact}(P,J)=
+ \begin{cases}
+   2^{J+2}-1,&J<P,\\
+   2^{P+1}-1,&J\ge P.
+ \end{cases}                                             \tag{3}
+\]
+Indeed, when $J<P$, strings ending at positions $0,\ldots,J$ contribute $\sum_{\ell=0}^{J}2^\ell$, while longer strings contribute their $2^{J+1}$ visible prefixes.  When $J\ge P$, every capped string is fully visible and there are $\sum_{\ell=0}^{P}2^\ell$ of them.
+
+The published safe factor uses $A=\min(P+1,J+1)$ and $2^{A+1}-1$.  It equals (3) when reach binds, but overcounts when the physical cap binds:
+\[
+  2^{P+1}-1 < 2^{P+2}-1.
+\]
+This is a finite coefficient repair, not a falsification of any published inequality or exponent face.  The splice still requires proof-head coordinate, endmarker semantics, fixed event order, and equality of every reachable proof bit.  Oscillation can make proof moves much larger than proof reach, so activity and reach remain distinct parameters.
+
+\section{Independent peer-arrow audit}
+
+\begin{center}\small
+\begin{tabularx}{.97\linewidth}{p{.34\linewidth}p{.20\linewidth}X}
+\toprule
+Arrow & Status & Referee finding\\\midrule
+ARC199 single-verifier enumeration & PROVED/EXACT conditional & Correct with global soundness, all-UNSAT completeness, total uniform clock, fresh reset and native indexed accounting.\\
+Polynomial verifier portfolio & PROVED/EXACT conditional & Adds the portfolio coefficient $b$ as in (1); requires one uniform common interpreter.\\
+Existence of logarithmic proofs for every ordinary UNSAT & OPEN & No authenticated all-input grammar or cap is constructed.\\
+LSPV-3 rank--exception interpolation & PROVED/EXACT restricted & The bound $r+\min(q,2^{b-r})$ is correct for actual matched-name projections.  Computing/authenticating arbitrary projections and the exponential exception term remain unpaid.\\
+LSPV-4 immediate pointer checker & PROVED/EXACT implementation-specific & Quadratic one-head traffic is real for the prescribed order, but reordering, caching, indexed input or two heads prevent an arbitrary-verifier lower bound.\\
+Sequential proof reach/activity to FLMV & FALSIFIED/RETIRED & Different input/proof access model; no exponent transport.\\
+ARC-EDGE-90 and $P\ne NP$ & OPEN & The universal certificate and arbitrary-$K$ successor arrows are absent.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+The native-model distinction is supported by the primary literature: FLMV's framework is random access, and Williams explicitly defines indexed input/work accesses by paid address-tape writes and resets.  Sequential crossing, reversal and proof-head results must remain in their declared tape models.  Hennie--Stearns is a two-tape simulation theorem and supplies no reverse lower-bound transfer.
+
+\section{Reproducibility and decisive next lemma}
+
+The dependency-free reproducer exhausts small globally sound verifier portfolios, exact proof-string counts, proof-bit access, reset behavior, the input-selected-unsound control, exact visible-prefix classes for $0\le P\le12$ and $0\le J\le15$, finite portfolio volumes, and 599,081 strict-endpoint triples.  It executed 829,745 assertion groups with zero failures.  Raw SHA-256:
+\[
+\texttt{e8f576bee6674c2851cc8550e60fadfed4817ed472ad506241ecce8c9d79b6c8}.
+\]
+
+The decisive missing lemma is constructive coverage: one fixed native indexed verifier satisfying \eqref{sound}--\eqref{complete} for every ordinary CNF, with a uniform proof cap and simultaneously charged verification time/space inside a useful parameter region.  Certificate existence does not pay deterministic acquisition, and the theorem above does not create such a verifier.  A subsequent ARC step would still have to transport ordinary source/child encodings through two hereditary levels and contract an arbitrary unknown polynomial exponent $K$ on one machine.
+
+\paragraph{Role-addressed handoff.}
+LSPV-1: the $b=0$ enumeration arrow is independently upheld; adopt the portfolio coefficient only for one uniform globally sound interpreter and retain fresh reset.  LSPV-3: rank--exception interpolation is sound but does not authenticate or cheaply compute arbitrary projections; do not treat its core bound as an all-input proof cap.  LSPV-4: replace the safe visible-prefix coefficient by (3) when claiming exactness; the existing inequalities remain valid, and pointer traffic remains implementation-specific.
+
+\paragraph{Final status.}
+Uniform certificate enumeration and its portfolio extension are \textbf{PROVED/EXACT conditional}; no-reset and input-selected-unsound variants are \textbf{FALSIFIED}; sequential-to-indexed transfer is \textbf{FALSIFIED/RETIRED}; all-ordinary-UNSAT logarithmic coverage, ARC-EDGE-90 and $P$ versus $NP$ remain \textbf{OPEN}.
+
+\begin{thebibliography}{5}
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek and A. Viglas, \emph{Time--Space Lower Bounds for Satisfiability}, J. ACM 52 (2005), 835--865, DOI \href{https://doi.org/10.1145/1101821.1101822}{10.1145/1101821.1101822}.
+\bibitem{survey} D. van Melkebeek, \emph{A Survey of Lower Bounds for Satisfiability and Related Problems}, Foundations and Trends in Theoretical Computer Science 2 (2007), 197--303, \url{https://pages.cs.wisc.edu/~dieter/Papers/sat-lb-survey-fttcs.pdf}.
+\bibitem{williams} R. Williams, \emph{Inductive Time--Space Lower Bounds for SAT and Related Problems}, Computational Complexity 15 (2006), 433--470, \url{https://people.csail.mit.edu/rrw/sat-journal-final.pdf}.
+\bibitem{hs} F. C. Hennie and R. E. Stearns, \emph{Two-Tape Simulation of Multitape Turing Machines}, J. ACM 13 (1966), 533--546.
+\end{thebibliography}
+\end{document}
+% END_OF_REPORT::LOGPROOF-ENUMERATION-REFEREE178
