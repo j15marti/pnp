@@ -21,11 +21,22 @@ const audit=function audit(){
     return v;
   }));}
   function sat(clause,mask){return clause.some(v=>Number(!!(mask&(1<<(Math.abs(v)-1))))===Number(v>0));}
-  let modeCounts={};
+  function supportConnected(cf){
+    const adj=Array.from({length:16},()=>new Set());
+    for(const c of cf)for(let j=0;j<3;j++)for(let k=j+1;k<3;k++){
+      const a=Math.abs(c[j]),b=Math.abs(c[k]);adj[a].add(b);adj[b].add(a);
+    }
+    const seen=new Set([1]), stack=[1];
+    while(stack.length){let v=stack.pop();for(const n of adj[v])if(!seen.has(n)){seen.add(n);stack.push(n);}}
+    return seen.size===15;
+  }
+  let modeCounts={},modeSupportConnected={};
   for(let a=0;a<2;a++)for(let b=0;b<2;b++){
     let cf=H(a,b), models=0;
     for(let mask=0;mask<(1<<15);mask++)if(cf.every(c=>sat(c,mask)))models++;
     modeCounts[""+a+b]=models;
+    modeSupportConnected[""+a+b]=supportConnected(cf);
+    ok(modeSupportConnected[""+a+b],"connected 15-variable 20-clause support");
     const plus=Array(16).fill(0),minus=Array(16).fill(0),seen=new Set();
     for(let c of cf){ok(c.length===3&&new Set(c.map(v=>Math.abs(v))).size===3,"proper");
       seen.add(c.join(","));for(let v of c)(v>0?plus:minus)[Math.abs(v)]++;}
@@ -208,7 +219,7 @@ const audit=function audit(){
       "H3 permanent origin markers allow counter reads without additional symbol changes",
       "H4 cheap Alice-only witness stream is a sound SAT acceptor"
     ],
-    source:{W1_variables:15,W1_clauses:20,modes:modeCounts,alice_witness_616:true,alice_witness_4742:true},
+    source:{W1_variables:15,W1_clauses:20,modes:modeCounts,connected_SAT_UNSAT_modes:modeSupportConnected,alice_witness_616:true,alice_witness_4742:true},
     tests:{assertion_groups:assertions,complete_physical_cases:tests,SAT:positive,UNSAT:negative,
            signed_literal_bits_checked:bit_checks,full_indexed_input_probes:probesFull,
            malformed_one_bit_mutations:flipped,paired_flips_are_canonical:r2.valid,
