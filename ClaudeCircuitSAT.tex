@@ -1,0 +1,49 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{thm}{Theorem}\newtheorem{lem}{Lemma}
+\title{Claude Circuit-SAT Lower-Bound Ladder (living document)}
+\author{Hourly scheduled run log}
+\date{Last updated: 2026-10-27 (run 1)}
+\begin{document}\maketitle
+\section*{Status (strict labels)}
+\textbf{Unconditional super-polynomial lower bound for Circuit-SAT: OPEN.} $\mathrm{P}$ vs.\ $\mathrm{NP}$ remains open.
+Nothing below is claimed to approach it; the ladder tracks exact small-case and parameterized facts and the precise gap.
+
+\section{Model}
+Circuit $C$: DAG, $n$ inputs, $g$ gates of fan-in 2 (any of the 16 binary functions), unbounded fan-out, one output. A \emph{wire} is a gate-input connection, so $w=2g$. Circuit-SAT: $\exists x\in\{0,1\}^n: C(x)=1$. Parameters: $n$, $g$ (size $s=\Theta(g\log(n+g))$ bits).
+
+\section{Rung 1: connectivity (PROVED/EXACT)}
+\begin{lem}\label{lem:conn} If $C$ depends on all $n$ inputs, then $g\ge n-1$ and $w\ge 2(n-1)$; trees attain it.\end{lem}
+\begin{proof} Restrict to nodes with a path to the output; this undirected graph is connected, has $n+g'$ nodes ($g'\le g$) and $2g'$ edges, so $2g'\ge n+g'-1$. Every input is relevant, so $g\ge g'\ge n-1$. A balanced tree of $n-1$ gates attains equality.\end{proof}
+
+\section{Rung 2: unique-solution instances (PROVED/EXACT)}
+The point function $[x=a]$ is computed with $n-1$ gates (AND-tree of literals; negation absorbed into the 16 gate types) and by Lemma~\ref{lem:conn} not fewer. So the minimal ``$n$-input, exactly one solution'' circuit has $n-1$ gates, $2(n-1)$ wires.
+
+\begin{thm}[black-box, KNOWN/folklore] Any deterministic algorithm with only evaluation access to $C$ needs $2^n$ queries on the family $\{[x=a]\}_a$ (adversary answers 0 until one point remains).\end{thm}
+This is a parameterized bound ($2^n$ in $n$) at size $O(n)$, but is \textbf{not} a Circuit-SAT lower bound: the real problem is white-box, and a white-box algorithm reads $C$.
+
+\section{Rung 3: input-reading bound (PROVED/EXACT, trivial)}
+\begin{thm} Deterministic white-box decision of Circuit-SAT must read $\Omega(g)$ gate descriptions.\end{thm}
+\begin{proof} Take the AND-chain $x_1\wedge\dots\wedge x_n$ ($g=n-1$, satisfiable). If an algorithm leaves gate $k$ unread, replace it by constant~0: unsatisfiable, same transcript.\end{proof}
+
+\section{Rung 4: exact small cases (COMPUTATIONAL)}
+Script \texttt{experiments/claude\_circuitsat/min\_wires.py}, data \texttt{results/raw/claude\_circuitsat/}. Exhaustive search over fan-in-2 circuits; counts are \#functions (incl.\ constants, literals) whose minimum gate count is exactly $g$.
+\begin{center}\begin{tabular}{@{}cccccccl@{}}\toprule
+$n$ & $g{=}0$&1&2&3&4 & total & min gates, point fn\\\midrule
+2 & 6 & 10 & -- & -- & -- & 16/16 & 1 ($=n-1$)\\
+3 & 8 & 30 & 114 & 80 & 24 & 256/256 & 2 ($=n-1$)\\
+4 & 10 & 60 & 456 & 2474 & (not run) & 3000/65536 & 3 ($=n-1$)\\\bottomrule\end{tabular}\end{center}
+So $\max_f C(f)$ over $n{=}3$ is $4$ gates ($8$ wires). Point functions meet Lemma~\ref{lem:conn} for $n\le4$. The $n=4$ row is truncated at $g\le3$ (sound for the point-function claim, not a full census).
+
+\section{Parameterized view and the gap}
+\begin{itemize}
+\item \textbf{KNOWN}: Shannon counting gives functions needing $\Omega(2^n/n)$ gates, but such $C$ are \emph{large inputs}; running time is measured in $|C|$, so this gives no SAT lower bound.
+\item \textbf{CONDITIONAL}: SETH $\Rightarrow$ no $2^{(1-\epsilon)n}\mathrm{poly}(g)$ algorithm. Conditional only.
+\item \textbf{OPEN}: any bound of the form $\omega(\mathrm{poly}(g))$ unconditional; the ladder so far yields only $\Omega(g)$ (read) and black-box $2^n$ (wrong model).
+\end{itemize}
+Next rungs: (i) census for $n=4$ at $g=4..7$ in chunked runs; (ii) fan-out/depth-restricted ladders (monotone, formula, bounded-depth) where lower bounds are known and parameterized, e.g.\ monotone circuit-size; (iii) tie to repository ARC/FLMV resource-ledger work only where an explicit link exists.
+
+\section{Repository cross-check}
+Run 1 read \texttt{AGENTS.md}: repository states P vs.\ NP OPEN, ARC/FLMV time--space contraction spine, SIL/M22 resource ladder as supporting evidence; no usable circuit-SAT lower bound was imported. A fuller corpus review is deferred to later runs.
+\end{document}
