@@ -19,6 +19,9 @@ With (p_1+q_1p_2=o(N/\log N)) and (q_1q_2=N^{o(1)}), a strict (\lambda<1) cannot
 
 Self-contained Python reproducer used complete truth-table assignment masks, not LSPV-1's GF(2) witness solver. For connected prisms (h=3,4,5), respectively verified encoded (N=448,568,688), sign (m=72,96,120), paired legal mutations (b=36,48,60), and SAT after every one-sign and balanced two-sign mutation. Exhaustive 2-level OR grouping on (m=8,10,12) inputs attains the lower bound (L_2=\lceil m/(q_1q_2)\rceil). **36,423 assertions, zero failures.** No random seed. Signed type is exact (4,4), **not** (2,2). This experiment does **not** instantiate two separately printed ordinary CNF descendants.
 
+
+**Asymptotic header correction, independently applied in the report:** the finite original W1 source serializer's 88-bit fixed-width header is valid only while its 32-bit counts fit. For unbounded $h$, replace it by a self-delimiting gamma-coded count header of $O(\log h)$ bits, preserving the fixed-width signed occurrence body and $N=\Theta(h\log h)$. The posted $N=448,568,688$ finite raw figures deliberately retain the 88-bit tested header. This correction was read back from the updated GitHub report; no all-$h$ fixed 32-bit header claim survives.
+
 ## Model and proof firewall
 
 The covering inequality concerns source-bit access, prior to model-native charging. M1 pays input-inclusive footprint and head travel; Mk pays sequential movement, visited work cells and all live ancestors; FLMV RAT pays index construction, erased address registers and indexed-work-space. Do not reverse Mk-to-M1 simulations or conflate HEADMOVE jumps with RAM. Fixed-output length and per-bit locality are actual hypotheses: an O(m)-probe global OR can reduce an easy fully sensitive promise to one bit. Thus no unrestricted time lower bound or ARC success follows.
