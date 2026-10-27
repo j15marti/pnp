@@ -1,0 +1,163 @@
+% LSPV-2 REPORT::SCAN-INTERNAL-INVERSE177::2026-10-27T11:12:00Z
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{counterexample}[theorem]{Counterexample}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\UNSAT}{\mathsf{UNSAT}}
+\newcommand{\Select}{\mathsf{Select}}
+\newcommand{\Rank}{\mathsf{Rank}}
+\title{SCAN--INTERNAL--INVERSE177\\\large Uniform Signed Gate and Physical Source-CNF Rank/Select\\for Every Internal Scan Gate of the Fixed Oblivious SAT Witness Verifier}
+\author{LSPV-2, Circuit and Reduction Builder}
+\date{27 October 2026, 11:12 UTC}
+\begin{document}\maketitle
+\begin{center}\fbox{\parbox{.94\linewidth}{\textbf{PROVED/EXACT restricted, independent referee pending:}
+for the fixed verifier emitter of CIRCUIT-OBLIVIOUS-INVERSE-SORT166, every Boolean output gate in its complete sorted-record scan, including internal key equality/reduction, carry propagation and terminal scan-output gates, has a table-free uniform signed direct-consumer and proper 13-row source-CNF occurrence $\Rank/\Select$ with $O(\log^4G)$ elementary bit-time and $O(\log G)$ total live writable/index bits per request. Fanout is \emph{exactly one or two}; source output-name occurrence count is \emph{exactly 9 or 13}.\\
+\textbf{COMPUTATIONAL:} eight full independent verifier circuits, 3,244 scan gates, 3,572 signed direct uses, 30,508 exact signed physical CNF occurrences and 30,508 physical output-bit address checks, all passed with zero failures. \textbf{OPEN:} remaining checker-internal inverse, some constant/padding identities and entire R15 incidence interface, full ordinary-SAT decision circuit and ARC contraction, ARC-EDGE-90 and $P\ne NP$.}}\end{center}
+
+\section{Falsifiers preregistered before this run's literature and repository checks}
+\begin{description}
+\item[]\textbf{H1:} the scan's variable-width reduction gates might require a stored $O(w)$-entry index or $O(w\log G)$ bits. \textbf{FALSIFIED within the fixed emitter:} a closed level-rank calculation needs constant-many $O(\log G)$-bit registers.
+\item[]\textbf{H2:} scan gates might fan out to arbitrarily many downstream gates, invalidating constant-size occurrence selectors. \textbf{FALSIFIED:} all have direct fanout one or two, including the two inverse-MUX consumers of scan outputs.
+\item[]\textbf{H3:} reconstructing a next-layer scan consumer might require scanning the whole $G$-gate DAG. \textbf{FALSIFIED:} the exact consumer is confined to the current and immediate next scan block, or the two algebraic inverse-layer inputs already treated in report 173.
+\item[]\textbf{H4:} the existing $W_1$ four-mode SAT/disjointness promise and head-counter controls could transfer a one-head time-space lower bound into indexed RAM, or furnish a compressed ordinary-SAT child. \textbf{FALSIFIED AS A TRANSFER}: both model and witness-versus-decision premise differ, and the specified explicit output still expands.
+\end{description}
+The written preregistration file is \path{PREREGISTERED_FALSIFIERS.txt}. Its four initial hypotheses also include the separate UTM write-free-counter and four-mode W1 controls; the latest reports 175--176 already settled those directions, so they are \emph{not} presented here as discoveries. The new work is restricted to the outstanding scan-internal indexed-inverse sector.
+
+\section{Source emitter, typed gate indexes and exact scan grammar}
+Fix $q\ge3$ assignment names and $m\ge1$ proper source-record slots. Let
+\[
+w=\lceil\log_2(q+1)\rceil,\quad N=m[1+3(w+1)],\quad
+K=2^{\lceil\log_2(q+3m)\rceil},\quad h=\log_2K,\quad J=h(h+1)/2.
+\]
+Each sorted record has $D=w+3$ wires, and the fixed bitonic prefix has
+$F=13w+32$ Boolean gates per comparator and
+$G_f=KJ F/2$ gates total. All gate IDs are \emph{Boolean gate indexes}; wire IDs equal $b+g$, where $b=N+q+3$ denotes the global first-gate wire base. Distinct source-CNF compiler variable IDs are a different namespace.
+
+The final forward records $\mathrm{rec}[p,c]$ are the indexed wires supplied by the restricted exact theorem of report 173. The scan begins at $G_f$ and has
+\[
+ L_0=19,\quad L_p=4w+18\ (p\ge1),\qquad
+ B_0=G_f,\quad B_p=G_f+19+(p-1)(4w+18)\ (p\ge1).\tag{1}
+\]
+At every position $p$, two two-bit equality calls produce $\mathrm{isassign}_p$ and $\mathrm{isquery}_p$ in seven gates apiece. For $p>0$, $\mathrm{same}_p$ is a width-$w$ equality to the previous record ID, produced in $4w-1$ gates; for $p=0$ it is the constant false wire. The remaining \emph{five} gates, in their exact emitted order, are
+\begin{align*}
+ k_{p,0}&=\mathrm{AND}(\mathrm{same}_p,\mathrm{carry}_{p-1}),
+&k_{p,1}&=\mathrm{AND}(\neg\mathrm{isassign}_p,k_{p,0}),\\
+ k_{p,2}&=\mathrm{AND}(\mathrm{isassign}_p,\mathrm{payload}_p),
+&k_{p,3}&=\mathrm{OR}(k_{p,2},k_{p,1}),\\
+ k_{p,4}&=\mathrm{AND}(\mathrm{isquery}_p,k_{p,3}).&& \tag{2}
+\end{align*}
+Take $\mathrm{carry}_{-1}=0$; the previous carry is $k_{p-1,3}$. The scan-output $k_{p,4}$ enters exactly two inverse-layer MUX argument ports, as established and audited independently in report 173.
+
+\section{Indexing the reduction tree without an occurrence table}
+For $n$-bit equality, the emitter first produces $n$ independent \emph{three-gate XOR triples}: $(x\land\neg y)$, $(\neg x\land y)$ and their OR. The negated last wire of each triple is an equality leaf. A balanced \texttt{andmany} reduction creates exactly $n-1$ AND gates. Set
+\[
+ n_0=n,\qquad n_{j+1}=\lceil n_j/2\rceil,
+\qquad d_j=\lfloor n_j/2\rfloor.
+\]
+At reduction level $j$, the $r$th newly allocated AND gate has global Boolean gate ID
+\[
+ g(j,r)=B+3n+\sum_{u<j}d_u+r,
+ \qquad 0\le r<d_j.\tag{3}
+\]
+The operand \emph{wire} of the $r$th surviving item after $j$ reduction rounds can be calculated by following the unique pass-through chain:
+\[
+\mathrm{Ref}(0,r)=-(b+B+3r+2),\quad
+\mathrm{Ref}(j+1,r)=
+\begin{cases}
+ b+g(j,r),&r<d_j,\\
+ \mathrm{Ref}(j,2r),&r=d_j\text{ and }n_j\text{ odd}.
+\end{cases}\tag{4}
+\]
+This is an \emph{iterative} tail recursion with at most $O(\log n)$ iterations and no stored array of levels. Each step recomputes the level prefix in (3) using one $O(\log G)$-bit counter. In particular \(\mathrm{GateAt}(g)\) of any scan gate, including all internal XOR and reduction nodes, follows from (1)--(4) plus the five tail gates (2) and arithmetic access to the two nearby sorted records. The construction never examines the materialized Boolean gate list.
+
+\begin{lemma}[Uniform scan GateAt; \textbf{PROVED/EXACT restricted}]
+For every admissible $q,m$ and every $G_f\le g<G_{\rm scan-end}$, a single fixed deterministic bit-address program computes \(\mathrm{GateAt}(q,m,g)\), namely its exact operator and two signed predecessor wire IDs, with $O(\log^3G)$ bit operations and $O(\log G)$ combined writable/index bits. The bound charges arithmetic, full-width address construction, signed rails, field headers, and every emitted answer bit.
+\end{lemma}
+\begin{proof}
+Decode the unique $p$ in (1) from $g-G_f$ by one comparison and quotient. The two kind-equality blocks are constant width. The optional ID-equality block has $n=w=O(\log G)$ leaves, so equations (3)--(4) compute any reduction gate's two predecessors by streaming over at most $O(\log w)$ levels and their prefixes. Only constant many $O(\log G)$-bit integers are live; conservative schoolbook arithmetic and all loop counts fit the stated polylog bound. The remaining five explicit gate formulas require constant many computed wire IDs. Every output is a signed wire ID in the exact original emitter's order, not an alternate circuit that happens to compute the same Boolean function.
+\end{proof}
+
+\section{Inverse signed consumers and actual proper source-CNF occurrences}
+For a scan gate $g$ in block $p$, every use inside the scan appears in block $p$ or $p+1$. This follows because all key-field predecessor reads use \emph{fixed last-forward-record wires}, while the only value forwarded to the next scan record is the current carry $k_{p,3}$. In the current block every nonterminal equality or carry gate feeds at most one downstream gate, except $\mathrm{isassign}$, which feeds two. The scan output $k_{p,4}$ has no next-scan uses but has exactly two inverse-layer MUX uses. Hence all scan gates have
+\[
+\boxed{1\le f_g\le2.}\tag{5}
+\]
+To compute \(\Select_{\rm gate}(g,r)\), stream the at most $L_p+L_{p+1}=O(w)$ gate indexes in those two scan blocks, compute their signed operands by the Lemma, and retain those matching the target signed \emph{wire} $b+g$. For the terminal scan output insert instead its two already-derived inverse-layer MUX uses. The result is sorted by physical gate and argument position. \(\Rank\) is the inverse test of at most two such triples; absent positions are rejected. There is no consumer table, and the two-output temporary list is constant sized.
+
+Each Boolean AND/OR gate is compiled to the project's 13-row proper three-CNF gate module, with fresh operand-clone and padding names. For its output source variable
+\[
+ v_g=b+9g+2,\tag{6}
+\]
+five occurrences lie in its own module: the AND output is positive once and negative four times; the OR output is negative once and positive four times. Every signed downstream gate-input use creates four properly padded clone rows, exactly twice with that rail sign and twice with the opposite sign. Therefore
+\[
+\#\mathrm{Occ}(v_g)=5+4f_g\in\{9,13\}.\tag{7}
+\]
+The ordered signed \(\mathrm{OccSelect}(v_g,r)\) returns the own-module five plus four rows for each at-most-two signed consumer triples, sorted by physical clause and literal slot. \(\mathrm{OccRank}\) scans the same constant list. Given the declared fixed-width source header and field width, the corresponding output-bit address is
+\[
+ \mathrm{pos}(c,s)=|\mathrm{header}|+(3c+s)(\mathrm{fieldwidth}+1).\tag{8}
+\]
+The sign bit and every source variable-ID bit are charged; a wire identifier is never substituted for a CNF variable identifier.
+
+\begin{theorem}[All scan-internal signed inverse and occurrence access; \textbf{PROVED/EXACT restricted}, independent review pending]
+In the fixed architecture and notation above, for every scan Boolean gate $g$ and every candidate rank or physical clause/literal coordinate, exact signed gate-consumer $\Select/\Rank$ and proper source-CNF occurrence $\Select/\Rank$ are computed by a uniform table-free algorithm in
+\[
+\boxed{T=O(\log^4G)\text{ elementary bit operations},\qquad
+S=O(\log G)\text{ writable/index bits}}.\tag{9}
+\]
+The bounds hold for all admissible $q,m$ and both source truth labels because these are structural accessors, independent of the witness values. They do \emph{not} bound evaluation of all $G$ gates or deciding SAT after eliminating the witness.
+\end{theorem}
+\begin{proof}
+Equations (1)--(4) give exact $\mathrm{GateAt}$ for any requested scan gate. Only the current and adjacent scan block contain a possible scan consumer; the two inverse-layer uses for a terminal scan output are the already proved final-layer MUX formulas of report 173. The direct fanout bound (5) makes the retained triples constant-sized. Each candidate gate needs at most $O(\log^3G)$ bit operations and there are $O(w)=O(\log G)$ candidates, giving the deliberately conservative upper (9) with a fixed number of $O(\log G)$-bit live registers. Equations (6)--(8), the independently specified 13-row emitter and freshness of operand clones yield exact occurrence signs and locations. Any candidate physical address is checked against this ordered bounded list. This includes negative arguments and duplicate source-value references in distinct operand slots. Neither complete gate construction nor complete source enumeration is used by the proposed accessor.
+\end{proof}
+
+\section{Executable hostile audit, gate/wire/output ledger}
+The published Python reproducer contains the exact original 173 complete verifier emitter as an \emph{audit oracle} and an independent parameter-only implementation of (1)--(4) with no materialized gate map. It compares every predicted scan \(\mathrm{GateAt}\) record, direct signed use and ordered source occurrence against an independently built full gate graph and physical 13-row CNF. It also reads the real source output's sign bit at (8), including the charged self-delimiting header length. No input-dependent lookup table is supplied to the predictor. Eight deterministic configurations $q,m\in\{(3,1),(3,2),(4,1),(4,2),(5,2),(6,1),(7,1),(8,2)\}$ were checked.
+\begin{center}\small\begin{tabular}{lrr}\toprule
+Measurement & Exact total & Status\\\midrule
+Full verifier circuits & 8 & COMPUTATIONAL\\
+Scan Boolean gates and independent GateAt records & 3,244 & all matched\\
+Signed direct use triples & 3,572 & all matched\\
+Source-CNF output-name occurrence triples & 30,508 & all matched\\
+Physical output sign-bit address checks & 30,508 & all matched\\
+AND / OR scan outputs & 2,379 / 865 & typed\\
+Direct fanout minimum / maximum & 1 / 2 & checked\\
+Assertion failures & 0 & none\\\bottomrule\end{tabular}\end{center}
+The prior fully independent complete one-sequential-input-head plus one-work-tape to single read/write-tape simulator was rerun separately for 340 both-label word controls, matching 9,320 source/target states. This is a \emph{regression}, not a newly improved simulation. The source model counts sequential head crossings and visited work cells $S_k$; the single-tape model includes the entire original input in footprint $P_1\ge N$. Their conservative transfer remains
+\[
+T_1=O(T_k(N+S_k+\log(T_k+2))),\quad P_1=O(N+S_k+\log(T_k+2)),\tag{10}
+\]
+which is a simulation \emph{upper bound}. Hennie--Stearns' fast simulation is on \emph{two} tapes. The logword indexed-RAM comparison is a third distinct model: every requested address and data-bit read is paid, but not charged physical distance. Input-head jumping, crossing-sequence entropy, output bits, Boolean gates and wire references remain distinct counters, not additive separate lower bounds on one transition count.
+
+The previously reconstructed four $W_1$ sign modes have $(772,272,272,0)$ satisfying assignments, and mask $616$ witnesses modes 00/01 while $4742$ witnesses mode 10. The $A\mid G\mid B$ fixed-width source of reports 175--176 is a promise-language gadget and does not supply an unrestricted SAT decider. Under initially blank unmarked tapes, $D=0$ actual work-symbol changes with $O(1)$ observable work state cannot implement an unbounded separated DISJ algorithm; a planted origin symbol changes the machine model and costs an actual write. All those results are \emph{adopted from previous verified runs}, not duplicated as novel findings here.
+
+\section{Corpus, duplicate, transfer and proof-status audit}
+\paragraph{CORPUS REVIEWED.} Current root \path{main.tex}, \path{AGENTS.md}, \path{CODEX.md} and \path{.codex/skills/pnp-research/SKILL.md}; mandatory DUAL-TM, RAM-vs-TAPE, HEADMOVE-1 and UTM-CROSS-WRITE governance; own reports CIRCUIT-OBLIVIOUS-INVERSE-SORT166, CIRCUIT-SCAN-REVERSE-SELECT173, CIRCUIT-PRIMARY-SOURCE-SELECT174, UTM-CROSS-WRITE-COUNTER175 and CNF-COUNTER-IMAGE176, plus Role-1 ARC-CANONICAL-SELECTOR-AUTH184 and ARC-PROOF-BIT-OBSERVABILITY200, Role-3 ADAPTIVE-SOURCE-POINTER-STREAM131 and AFFINE-EXCEPTION-RANK143, Role-4 ARC-PINNED-CIRCUIT-OUTPUT-FLOOR131 and UTM-NDET-LOOP-ERASURE154, Role-5 BACKDOOR-CAP161 and LOGPROOF-ENUMERATION-REFEREE178; old relevant experiment scripts and verified MAIN notes. Broader repository tree coverage was bounded by connector search and previously verified task index; no unsupported exhaustive reread is asserted. References were checked against original Hennie, Hennie--Stearns, FLMV, Pippenger--Fischer, and current Williams records. The user-provided UTM program encoding and all-input soundness conditions were kept intact.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.} Report 173 already proved scan \emph{exit} and final reverse output inverses. This run adds \emph{every scan-internal gate}, including the previously uncovered variable-width AND reduction. Report 174 already treated primary aliases and cloned source bits; report 176 treated canonical physical CNF parsing. Neither is renamed as a new result here. The UTM write-free origin threshold was resolved in report 175; H2 from the preregistration was already known and remains an adopted control. No conflict with the Role-4 pinned physical output floor or with the stronger native model crossing bounds was found.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.} Add exactly one architecture-restricted table-free scan-internal inverse access theorem, with its $O(\log^4G)$ time and $O(\log G)$ work bound, fanout $1$--$2$, signed source occurrence counts $9$--$13$, 8-configuration executable evidence and complete answer-type guards. Preserve all other role ownership and executive synthesis. \paragraph{ADOPTED / REJECTED / RETIRED.} Adopt the exact fixed verifier/netlist/compiler and verified previous UTM, HEADMOVE and parser facts. Reject free incidence tables, free canonicality checking, assumption that a witness verifier equals an all-input decision circuit, and export of tape lower bounds to RAM. Retire only an incorrect universal consumer-table shortcut, not the old structural lemmas.
+
+\paragraph{Barriers and outside-domain analogies.} A fixed VLSI-style comparator routing topology genuinely supports the arithmetic \emph{GateAt} theorem because every wire/fanout edge is generated in a declared sequential order; the analogy does \emph{not} imply low-space circuit \emph{evaluation} or an all-algorithm wire lower bound. A general fixed-input gate-circuit enumeration can be as large as its written output. Explicit signed proper-CNF incidence is an exact algebraic translation but its size expansion forbids a length contraction. A black-box extraction from an arbitrary SAT decider to this particular witness/verifier topology is absent; oracle, wrapper, relativization and Natural-Proofs barriers remain unaddressed by this restricted source-index theorem.
+
+\paragraph{OPEN next lemma.} Finish checker-internal indexed inverse and remaining source constants/padding identities, then integrate every sector into one root-owned bit-level indexed interface for the complete witness verifier and virtual R15 compiler. Independently seek a genuinely smaller ordinary-SAT child from \emph{all} $N$-bit ordinary source encodings, charging all parser, guest reads, preprocessing and failed branches. With $P=NP$, the unknown polynomial SAT exponent $K$ is not the separate $d=1.802$, subpolynomial-space seed. The $m_2\ge33856B$ floor for the already published two-level pinned architecture persists. Therefore ARC-EDGE-90 and $P\ne NP$ remain \OPEN.
+
+\paragraph{Reproducibility paths.}
+\path{research/agents/lspv-2/2026-10-27_1112_LSPV-2_SCAN_INTERNAL_INVERSE177.tex};
+\path{research/agents/lspv-2/2026-10-27_1112_SCAN_INTERNAL_INVERSE177_repro.py};
+\path{research/agents/lspv-2/2026-10-27_1112_SCAN_INTERNAL_INVERSE177_raw.json};
+\path{research/coordination/2026-10-27_1112_SCAN_INTERNAL_INVERSE177_LEAD_RESOURCE_HANDOFF.md}.
+\begin{thebibliography}{9}
+\bibitem{hennie} F. C. Hennie, ``One-Tape, Off-Line Turing Machine Computations,'' \emph{Information and Control} 8(6):553--578 (1965), DOI 10.1016/S0019-9958(65)90399-2.
+\bibitem{hs} F. C. Hennie and R. E. Stearns, ``Two-Tape Simulation of Multitape Turing Machines,'' \emph{J. ACM} 13(4):533--546 (1966), DOI 10.1145/321356.321362.
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas, ``Time-Space Lower Bounds for Satisfiability,'' \emph{J. ACM} 52(6):835--865 (2005), DOI 10.1145/1101821.1101822.
+\bibitem{pf} N. Pippenger and M. J. Fischer, ``Relations Among Complexity Measures,'' \emph{J. ACM} 26:361--381 (1979), DOI 10.1145/322123.322138.
+\bibitem{williams} R. R. Williams, ``Simulating Time with Square-Root Space,'' STOC 2025, DOI 10.1145/3717823.3718225.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::SCAN-INTERNAL-INVERSE177
