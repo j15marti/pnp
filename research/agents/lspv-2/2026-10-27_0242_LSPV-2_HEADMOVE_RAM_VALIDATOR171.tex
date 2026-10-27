@@ -1,0 +1,97 @@
+% LSPV-2 REPORT::HEADMOVE-RAM-VALIDATOR171::2026-10-27T02:42:00Z
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{HEADMOVE--RAM--VALIDATOR171: Exact22 Canonical Parser Floor and Model-Specific Head-Jump Accounting}
+\author{LSPV-2 Circuit and Reduction Builder}
+\date{27 October 2026 UTC}
+\begin{document}\maketitle
+\noindent\textbf{Status.} \textbf{PROVED/EXACT, restricted}: a distance-two exact signed-(2,2) canonical-image code and its $N$-bit-probe membership floor. \textbf{CONDITIONAL}: the same-machine one-head movement/reversal theorem follows on adopting the project's HEADMOVE-1 gap-splicing hypotheses. \textbf{COMPUTATIONAL}: full local reproducer checked 131072 gadget assignments, 340 composite formulas, 4492 single-bit flips, 85 itineraries and 9320 source/simulator transition states, zero failed checks. \textbf{OPEN}: arbitrary SAT parsing, general circuit Rank/Select, all-input resource contraction, ARC-EDGE-90 and $P\ne NP$. Independent referee review pending.
+
+\section{Falsifiers proposed before literature and source recovery}
+\begin{description}
+\item[] H1: promise SAT comparison and canonical-image validation have identical input-access cost. \textbf{FALSIFIED/RETIRED}.
+\item[] H2: all physical output-bit locators for the fixed W1 disjointness template can be computed without an occurrence table. \textbf{PROVED/EXACT} for this image.
+\item[] H3: a free bounded input-head jump preserves the one-head $h+s\ge2$ boundary. \textbf{FALSIFIED}; charged simulation yields $t+s+j\ge2$ in the separate radius-$J$ model.
+\item[] H4: a physical one-tape simulator can track the same Boolean witness comparator as a one-input-head plus work-tape machine, including markers, crossings, output and tape footprint. \textbf{COMPUTATIONAL verified} on 340 exhaustive small pairs.
+\end{description}
+
+\section{Canonical exact22 code}
+Take the original 15-variable, 20-clause W1 exact signed-(2,2) UNSAT source. For control $a$, complement both literal signs at zero-based positions $(6,0),(11,0)$ iff $a=0$; for control $b$, complement both at $(17,2),(9,2)$ iff $b=0$. Exact exhaustive counts of solutions for $(a,b)=00,01,10,11$ are respectively $772,272,272,0$. For $m$ disjoint copies, order all $2m$ $a$-dependent clauses, all $16m$ fixed clauses and all $2m$ $b$-dependent clauses. Therefore
+\[
+V=15m,\quad C=20m,\quad {\rm SAT}(F_m(a,b))\iff \bigwedge_{i=1}^m \neg(a_i\wedge b_i).
+\]
+All clauses have three distinct names, all physical clauses are distinct and each variable has exactly two occurrences of either polarity. The construction is \emph{signed}, not clause-monotone. Encode a fixed 16-bit magic header plus variable and clause counts each of width $w=\lfloor\log_2(20m)\rfloor+1$, followed by three polarity/identifier fields of width $w+1$ per clause, yielding
+\[
+N_m=16+2w+60m(w+1).
+\]
+The first controlled sign locations are
+\[
+p_A(i)=16+2w+6i(w+1),\quad
+p_B(i)=16+2w+(18m+2i)3(w+1)+2(w+1).
+\]
+The second sign in each pair is its complement; all other fields and headers are constants computable in $O(\log^2N)$ bit time and $O(\log N)$ index bits.
+
+\begin{theorem}[Minimum-distance canonical parser floor, restricted]
+Let $\mathcal C_m=\{{\rm enc}(F_m(a,b)):a,b\in\{0,1\}^m\}$. For all $a,b,a',b'$,
+\[
+d_H({\rm enc}F_m(a,b),{\rm enc}F_m(a',b'))=
+2d_H(a,a')+2d_H(b,b').
+\]
+Hence the minimum distance is two; every one-bit mutation of a canonical word is outside $\mathcal C_m$. Every deterministic total \emph{bit-probe} recognizer of $\mathcal C_m$ must inspect all $N_m$ bit positions on every accepted canonical input.
+\end{theorem}
+\begin{proof}
+Each source control affects precisely two disjoint physical sign positions and no identifier or header; thus the distance formula follows. If an accepting recognizer leaves position $p$ unqueried, its deterministic transcript is identical when just $p$ is flipped. It wrongly accepts a noncanonical word. This proves the bit-query lower bound and does not lower-bound SAT decision on arbitrary encoded formulas or $O(\log N)$-bit word accesses.
+\end{proof}
+The direct promise SAT comparator reads $2m$ input sign anchors in $O(m\log N_m)$ binary-index bit writes and $O(\log N_m)$ index/work space. Strict canonical membership additionally checks all $N_m$ bits. With a word-RAM of $\Theta(\log N)$-bit prepacked input words, the appropriate operation counts instead divide bit scans by the word width; any initial packing must be charged.
+
+\section{HEADMOVE-1 same-machine audit and jump simulation}
+For one sequential two-way read-only input head and fixed $k$ sequential work tapes, let $H$ count input-head unit moves, $R$ changes of direction on nonzero input-head moves, and $S$ all visited work cells. Under the previously published HEADMOVE-1 construction, each fixed gap cut has $2^m$ different complete crossing transcripts on the SAT pairs $(a,\bar a)$. A record includes state, crossing direction, all visited work contents and all work-head positions, hence $O_k(S+1)$ bits. Counting transcript lengths and averaging first over each fixed cut, then over the same SAT inputs, chooses one accepted run with
+\[
+H(S+1)=\Omega(N_m^2/\log N_m).
+\]
+On this same run some cut has $\Omega(m/(S+1))$ crossings, whose directions alternate; therefore
+\[
+(R+1)(S+1)=\Omega(N_m/\log N_m).
+\]
+These are native to ONE sequential input head and do not transfer to a two-head input tape or indexed RAM.
+
+\begin{theorem}[Charged bounded-jump transfer]
+For a separate machine $M_J$ whose source head can jump by a charged signed binary displacement no greater than $J(N)$ while reading only the target bit, ordinary sequential-input simulation satisfies
+\[
+T_{\rm seq}=O(T_J(J+\log N)),\qquad S_{\rm seq}=O(S_J+\log N).
+\]
+Combining with the preceding native result gives the necessary exponent condition $t+s+j\ge2$ when $T_J=N^{t+o(1)},S_J=N^{s+o(1)},J=N^{j+o(1)}$.
+\end{theorem}
+\begin{proof}
+Simulate each jump using at most $J$ unit head moves and an $O(\log N)$-bit countdown, leaving the sequential work tapes unchanged; feed the final target symbol into the simulated source transition. This charges construction, bit writing and movement on one machine. At $j=1$, the resulting diagonal is vacuous for $t\ge1$, consistent with the indexed-RAM shortcut.
+\end{proof}
+A $B$-bit batching algorithm needs $\lceil m/B\rceil$ left/right visits, $O((m/B)N)$ one-head unit movements, $O(m/B)$ reversals and $O(B+\log N)$ work. Replacing movements by radius-$J$ target-reading jumps gives $O((m/B)N/J+m)$ commands plus index/offset bit time. The claimed tightness is only for the logically easy promise.
+
+\section{Four-sweep tape simulation and explicit ledger}
+Represent the read-only input and fixed $k$ sequential work tapes on product-alphabet tracks of one writable tape, each virtual head encoded by a marker. With $L=O(N+S_k+\log(T_k+2))$ visited cells, one simulated transition uses four full sweeps: read all marked symbols; apply the finite transition, update the old work cell and left-moving markers; move right markers; return the single head to origin. For a Boolean decision output,
+\[
+T_1=O(T_kL),\quad P_1=O(L).
+\]
+Input bits count toward $P_1$ and are excluded from $S_k$. Probe and crossing counters are included in time, not added again. Hennie--Stearns' $O(T\log T)$ construction is for TWO tapes, not this ONE tape.
+
+A separate compact equal-witness function $W_m(a,b)=\bigwedge_i\neg(a_i\oplus b_i)$ has $2m$ primary input wires, $m$ XOR and $m-1$ AND gates, but these gates are NOT charged twice as source TM transitions. A one-input-head/one-work-head streaming verifier copying $a$ and comparing $b$ was tracked step by step against a product-alphabet one-tape simulator. On $m=1,2,3,4$, the exhaustive source/one-tape steps had worst $(T_k,T_1,P_1)$ values $(14,617,11),(19,1141,15),(24,1825,19),(29,2669,23)$; $9320$ state transitions were verified. On a tape span of $n$ cells the displayed four-sweep implementation has exact $T_1=4nT_k+1$ and $H_1=4(n-1)T_k$; the final unit writes one decision bit over an input cell. The compact verifier is not a full ordinary-SAT parser.
+
+\section{Evidence and proof-spine firewalls}
+Full local executable, JSON and PDF are delivered separately. The complete source SHA-256 is
+\path{b9b67230ee6c2d2c1c542a4ae2ca496a632cad759f4a81dc90757cf1ecd4b665}; full raw SHA-256 is
+\path{3543f3695f2990c4586168ba4cf8cf1e2adecd5d40244f1700bc00419349b80b}.
+Finite controls checked all $4\cdot2^{15}=131072$ source assignments, all 340 complete composite instances with $m\le4$, and all $386+868+1288+1950=4492$ one-bit corruptions of four valid strings. Forty small and 45 large bounded-jump itineraries include $m=128,N=99880$; for $B=1$, $J=1$ requires $22910044$ unit movements and $254$ reversals, while $J=N$ requires only 256 jump commands but the same geometric path.
+
+\noindent \textbf{Adopted, not rediscovered}: BINARY-WORK-SAT4 gadget and HEADMOVE-1 native crossing result. \textbf{New}: the precise code-distance parser theorem and independent three-model computer-aided audit. \textbf{Not proved}: full SAT decision-circuit compression from the bitonic witness verifier, a table-free all-gate reverse Rank/Select including final scan/aliases, a shorter all-input ordinary-SAT child, the additional $(1.802,o(1))$ seed, or a simultaneous all-input ARC edge. The pinned source-expansion floor from Role-4 remains valid in its stated architecture. The unknown $K$ under $P=NP$ remains unrestricted.
+
+\begin{thebibliography}{9}
+\bibitem{flmv} Fortnow, Lipton, van Melkebeek, Viglas, \emph{Time-Space Lower Bounds for Satisfiability}, JACM 52(6), 2005. \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{hs} Hennie and Stearns, \emph{Two-Tape Simulation of Multitape Turing Machines}, JACM 13(4), 1966. \url{https://doi.org/10.1145/321356.321362}.
+\bibitem{williams} Williams, \emph{Inductive Time-Space Lower Bounds for SAT}, Computational Complexity 15, 2006. \url{https://doi.org/10.1007/s00037-007-0221-1}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::HEADMOVE-RAM-VALIDATOR171
