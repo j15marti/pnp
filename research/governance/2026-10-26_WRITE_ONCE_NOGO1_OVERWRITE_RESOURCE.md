@@ -1,0 +1,16 @@
+# WRITE-ONCE-NOGO1: Overwrite-count limitation, 2026-10-26
+Status: PROVED model-scoped write-once simulation; finite audit 2046 cases. P versus NP OPEN.
+
+Under a fixed finite-alphabet deterministic multi-tape TM with a read-only input, *repeat overwrite* means a physical write to a previously initialized work cell. A self-symbol rewrite with no physical change is not counted; first writes to blank fresh cells remain charged in total write count and visited work-space.
+
+Theorem: every T(N)>=N time deterministic fixed-multitape decider has a write-once simulator with **zero repeat overwrites**, O(T(N)(N+T(N))) distinct fresh work cells and O(T(N)^2(N+T(N))) actual transitions. Proof: alternate two immutable-history tapes, read the most recent full serialized configuration (finite control, marked head positions, work symbols), determine next transition by finite scans, append the entire successor record in cells never previously visited/written on the alternate tape. k fixed; each snapshot length O(N+T), at most T steps, each copying operation O(T(N+T)) time. Old records never modified. Do not hide indexing/counters as rewritable registers.
+
+Corollary: P=NP implies a polynomial-time polynomial-space SAT decider with zero repeated overwrite events, even if the original polynomial-time solver writes repeatedly. Thus an unconditional claim that EVERY polynomial-time SAT algorithm must overwrite at least N^epsilon already-used cells, WITHOUT restricting polynomial workspace exponent, cannot be used to prove P!=NP.
+
+For ANY particular execution let W be actual writing events, F be first writes to fresh cells, and O_repeat subsequent writes. W=F+O_repeat, F<=S_visited, hence O_repeat>=max(0,W-S_visited). A bound T>=L does not imply W>=L. A read-sensitive OR_m stream requires inspecting m bits but can use NO work writes at all (one finite-control flag), so a read lower bound is not a write lower bound. Restricting both workspace and overwrites might yield a new model-specific tradeoff, but no unrestricted SAT forced-W lower bound is known from this analysis.
+
+Finite audit comparing mutable finite-state data update with immutable snapshot replay: 2046 binary sequences of lengths 1..10, all final states identical; zero repeated writes by the snapshot simulator. Repro file WRITE_ONCE_NO_GO.md and write_once_audit.py.
+
+Primary paper Irani/Naor/Rubinfeld, *On the Time and Space Complexity of Computation Using Write-Once Memory*, 1992 (https://www2.eecs.berkeley.edu/Pubs/TechRpts/1988/6043.html), WO-PSPACE=P in its particular RAM model. Bennett, *Time/Space Trade-Offs for Reversible Computation*, 1989 (https://doi.org/10.1137/0218053) is related but reversible != write-once.
+
+Additive handoff for currently enabled five LSPV agents. Audit one-cell overwrites versus first writes, space S vs visited cells, model-native time including input scans, proof-system output versus machine writes, and no inference of repeated overwrites from RAM input dependency or tape head reversals. Preserve current schedules. P vs NP OPEN.
