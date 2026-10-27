@@ -1,0 +1,70 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- canonical file, edited in place each run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\newtheorem{conj}{Conjecture}
+\title{ClaudeCircuitSAT: A Wire-by-Wire Ladder Toward Lower Bounds for Circuit-SAT}
+\date{Last updated: 2026-10-27 (run 1)}
+\begin{document}\maketitle
+
+\section*{Status (strict labels)}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-linear lower bound.
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model}
+An instance is a circuit $C$ with $n$ inputs, $g$ fan-in-2 gates (AND/OR, optional negation on each wire),
+$w=2g$ gate-input wires, one output. $\mathrm{CSAT}$: is there $x$ with $C(x)=1$?
+Cost measures tracked on the ladder: (i) wires $w$ that any correct decider must read (description-probe model);
+(ii) a parameter $k$ (treewidth/pathwidth of the wire graph) for parametrized bounds.
+
+\section{Ladder (step by step)}
+\begin{tabular}{@{}llll@{}}\toprule
+Step & Circuit class & Wires & Status\\\midrule
+0 & $n$ inputs, output = literal & 0 gate wires & trivial\\
+1 & one gate, $n\le 3$ & 2 & COMPUTATIONAL: all-critical circuits exist\\
+2 & two gates & 4 & COMPUTATIONAL: all-critical exist\\
+3 & three gates & 6 & COMPUTATIONAL: all-critical exist\\
+$g$ & AND-tree of $n=g+1$ literals & $2g=2(n-1)$ & PROVED/EXACT (below)\\\bottomrule
+\end{tabular}
+
+\noindent Call a wire \emph{critical} for $C$ if rerouting it to constant $0$ or $1$ changes satisfiability.
+Exhaustive enumeration ($n\le3$, $g\le3$, no dead gates; 82\,k circuits) found, for every $(n,g)$, a circuit whose
+$2g$ wires are all critical. Reproducer: \texttt{experiments/claude\_circuitsat/wire\_ladder.py};
+data: \texttt{results/raw/claude\_circuitsat/wire\_ladder.json}.
+
+\begin{prop}[Description-reading bound; PROVED/EXACT]
+For $n\ge2$, any deterministic algorithm that decides $\mathrm{CSAT}$ for all circuits with $g=n-1$ gates, in the model
+where the gate wiring is accessed by probes, makes at least $2(n-1)$ wire probes.
+\end{prop}
+\begin{proof}
+Take $C=\bigwedge_i x_i$ (AND-tree, satisfiable). If the algorithm leaves one wire $e$ unprobed, the adversary
+answers consistently with $C$ yet the instance $C'$ with $e$ rerouted to constant $0$ is unsatisfiable and agrees on all
+probed wires. Hence the algorithm errs on one of $C,C'$. \qed
+\end{proof}
+This is only linear in the description size; it separates \emph{reading} from \emph{solving} and gives the base rung.
+
+\section{Where the ladder must go next}
+\begin{itemize}
+\item \textbf{Parametrized upper envelope (KNOWN THEOREM):} $\mathrm{CSAT}$ on width-$k$ circuits is solvable in $2^{O(k)}\mathrm{poly}$ time
+(dynamic programming over a tree decomposition). Any true lower bound parametrized by $k$ is therefore at most $2^{O(k)}$; the interesting candidate is
+\begin{conj}[CONDITIONAL on SETH; CANDIDATE as a stand-alone bound]
+No algorithm decides CSAT on pathwidth-$k$ circuits in $(2-\varepsilon)^k\mathrm{poly}$.
+\end{conj}
+\item \textbf{Next rung (OPEN):} exact minimal \emph{probe} complexity of CSAT on width-2 circuit families for growing $n$; extend the enumeration to
+$g=4,5$ using canonical-form pruning, and track the minimum number of wires in a circuit whose satisfiability \emph{cannot} be decided
+without reading a non-local fraction of the wires (probe-adaptive hard instances).
+\item \textbf{Ideas to test:} counting argument (number of distinct functions on $g$ gates vs.\ $2^n$ inputs) as a parametrized lower bound for
+\emph{size of a witness-free certificate}; relation to fan-out accounting (wire reuse) as the quantity that separates formulas ($\mathrm{fanout}=1$) from circuits.
+\end{itemize}
+
+\section{Repository cross-check}
+The repository \texttt{j15marti/pnp} is large (ARC/FLMV spine, UWI, M22 ladders; see root \texttt{main.tex}, which keeps P vs NP OPEN).
+Run 1 did not find an existing Circuit-SAT wire ladder; the SIL/M22 parameterized resource ladder
+(\texttt{research/language/2026-10-25\_0005\_SIL\_M22\_PARAMETERIZED\_RESOURCE\_LADDER.md}) is the closest structural analogue (parameter $q,d$ resource ledger) and is the
+natural place to import a parameter. Not yet read in full: flagged for run 2.
+
+\section{Log}
+\begin{itemize}
+\item Run 1 (2026-10-27): created document, base-rung proposition, exhaustive small ladder ($n,g\le3$).
+\end{itemize}
+\end{document}
