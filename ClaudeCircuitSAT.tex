@@ -1,0 +1,78 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append/revise in place each hourly run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,geometry}
+\geometry{margin=1in}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}\newtheorem{conj}{Conjecture}
+\title{ClaudeCircuitSAT: a bottom-up wire ledger for Circuit-SAT lower bounds}
+\author{Living document (Claude, hourly routine)}
+\date{Last updated 27 October 2026}
+\begin{document}\maketitle
+
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional time lower bound for Circuit-SAT.
+Everything proved below is a \emph{wire-query} (description-reading) bound, which is linear in circuit size and is
+a necessary-cost statement only; it does not constrain an algorithm that is free to compute on the circuit.
+Labels: PROVED/EXACT, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model and ledger}
+A circuit in $\mathcal F(n,g)$ has $n$ inputs, $g$ fan-in-2 AND gates in topological order, and $2g$ \emph{wires} (input
+slots). Each slot names a source: a literal $x_i,\neg x_i$ ($2n$ options) or an earlier gate. The output is the last gate.
+A \emph{wire query} reveals the source of one slot. $D(n,g)$ is the minimal worst-case number of wire queries of a
+deterministic adaptive algorithm deciding satisfiability. Trivially $D(n,g)\le 2g$. The ledger tracks $(n,g,2g,D)$;
+the lower bound is allowed to be parameterized by $g$ (equivalently the wire count $w=2g$), independent of $n$.
+
+\section{Proved base case: the wide-AND rung}
+\begin{theorem}[PROVED/EXACT]\label{thm:wide}
+Let $k\ge2$, $n\ge1$. For circuits consisting of one AND of $k$ literal slots (equivalently an AND tree of $k-1$
+fan-in-2 gates, $k$ leaf wires), deciding satisfiability needs exactly $k$ leaf-wire queries.
+\end{theorem}
+\begin{proof}
+Upper bound: read all $k$. Lower bound: the adversary answers $x_1$ to every query. The instance is SAT iff no
+complementary pair. If some slot $j$ is unread when the algorithm halts, at least one other slot was read (as $k\ge2$)
+and is $x_1$; replacing slot $j$ by $\neg x_1$ gives an UNSAT instance consistent with all answers, while
+$x_1$ in slot $j$ gives a SAT instance. So the algorithm errs on one. Hence all $k$ are read. \qed
+\end{proof}
+This is the elementary ``every wire is critical'' principle: in a SAT instance with a single satisfying cone, one
+unread wire can be flipped to destroy satisfiability.
+
+\section{Computational ladder (COMPUTATIONAL)}
+Exhaustive minimax over all partial wire assignments
+(\texttt{experiments/claude\_circuitsat/wire\_query\_ladder.py}, raw data
+\texttt{wire\_query\_ladder\_results.json}; each run $<30$ s):
+\begin{center}\begin{tabular}{ccccc}
+$n$&$g$&wires $2g$&$|\mathcal F|$&$D(n,g)$\\\hline
+1&1&2&4&2\\ 2&1&2&16&2\\ 3&1&2&36&2\\
+1&2&4&36&4\\ 2&2&4&400&4\\ 3&2&4&1764&4\\ 1&3&6&576&6
+\end{tabular}\end{center}
+In every computed cell $D(n,g)=2g$: no adaptive strategy skips a wire. (Cell $(2,3)$ exceeded the 30 s budget and must be
+chunked/memoised more cleverly before being run.) The ``tree'' mode in the script, where gates may not feed gates, is
+degenerate (only the last gate matters) and its $D=2$ values are \emph{not} part of the ladder.
+
+\begin{conj}[CANDIDATE]
+$D(n,g)=2g$ for all $n\ge1,g\ge1$ in the DAG family. Natural proof route: generalise the adversary of
+Theorem~\ref{thm:wide} to a path-structured instance where each gate's other input is a fixed satisfiable literal.
+Not yet proved.
+\end{conj}
+
+\section{Barrier audit}
+\begin{itemize}
+\item \textbf{Failed transfer:} $D=2g$ is a bound in the query-to-description model; a Turing-machine/RAM
+solver reading the same description also pays $\Omega(g)$ time, but this is just input length. It says nothing
+about super-polynomial time. Relativization-style barriers are not engaged because no oracle is involved, and no
+claim beyond linear is made.
+\item \textbf{Next rung needed:} a measure that charges \emph{computation} rather than reading, e.g.\ a monotone/
+parameterized resource such as treewidth $\mathrm{tw}$ of the wire graph with a conjectured $2^{\Omega(\mathrm{tw})}$
+bound (CANDIDATE; ETH-conditional upper-bound matching known for SAT parameterized by treewidth, so any
+unconditional version is as hard as the main problem).
+\end{itemize}
+
+\section{Repository cross-reference}
+The main repository (\texttt{j15marti/pnp}, root \texttt{main.tex}) pursues the ARC/FLMV time--space contraction
+spine and keeps ARC-EDGE-90 and P versus NP OPEN. No ARC result is used here; no link to ARC has been established.
+
+\section{Next steps}
+(1) Prove the path-instance adversary for the DAG conjecture. (2) Extend the ladder to $(2,3),(3,3)$ with
+chunking. (3) Add a computation-charged rung: minimal number of gate evaluations/ clause resolutions for tiny
+families (exact resolution-width for the associated CNFs).
+
+\end{document}
