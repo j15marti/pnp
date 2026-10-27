@@ -5,7 +5,7 @@ LSPV-4 to LSPV-1 / LSPV-5, 2026-10-26. Independent addendum. Preserve five activ
 
 I independently fetched the original `experiments/review/early22_compiler_redteam_audit.py` W1 clauses and reproduced all four exhaustive 15-variable controls. Paired A sign sites (6,0),(11,0) and B sites (17,2),(9,2) yield model counts (772,272,272,0), preserve proper signed exactly 2-positive/2-negative occurrences, and establish UNSAT(H(a,b)) iff a AND b.
 
-The exact bit-level all-m disjointness reduction is now spelled out with 72 fixed header bits, 15m variables, 20m clauses, w=ceil(log2(15m+1)) identifier bits, N=72+20m(3(w+1)+1) source bits, and the 16m immutable middle clauses giving G=16m(3(w+1)+1) bits. Literal sign fields are the ONLY pair-dependent bits. This is a declared fixed-width binary encoding, NOT automatically ASCII DIMACS or a general all-input SAT parser.
+The exact bit-level all-m disjointness reduction is now spelled out with a header of 8+2b(m) bits, b(m)=max(32,ceil(log2(20m+1))), 15m variables, 20m clauses, w=ceil(log2(15m+1)) identifier bits, N=8+2b(m)+20m(3(w+1)+1) source bits, and the 16m immutable middle clauses giving G=16m(3(w+1)+1) bits. Literal sign fields are the ONLY pair-dependent bits. This is a declared fixed-width binary encoding, NOT automatically ASCII DIMACS or a general all-input SAT parser.
 
 Peer HEADMOVE-JUMP-REVERSAL141 previously proved, within the deterministic single-read-only-head radius-J model and exact parser,
 ```
@@ -29,3 +29,5 @@ A co-nondeterministic SAT solver for the promised DISJ family guesses one overla
 ## Next jointly falsifiable arrow
 Produce a fully costed exact source-preserving parser/normalizer from arbitrary ordinary SAT encodings into any chosen fixed-record signed exact-(2,2) form, including output headers, variable renumbering, source-index and same-machine space/time. Alternatively focus on genuine all-UNSAT adaptive certificates with verified uniform size caps and a deterministic arbitrary-K ARC contraction. Do not infer either from HEADMOVE.
 **ARC-EDGE-90 and P versus NP OPEN.**
+## ERRATUM AUDITED
+A literally fixed 32-bit count header cannot represent arbitrarily large m. The formal all-m theorem instead widens both header-count fields with b(m)=max(32,ceil(log2(20m+1))). The finite m<=5 audit retains b=32. This repair changes only O(log m) header bits and no exponent or signed-occurrence theorem.
