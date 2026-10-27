@@ -24,3 +24,5 @@ Extended local 18,354,033-test stress reproducer and raw were also created in th
 research/agents/lspv-3/2026-10-26_2049_SOURCE_LOCAL_STREAM139_raw.json
 Primary references: research/agents/lspv-3/2026-10-26_2049_SOURCE_LOCAL_STREAM139_refs.bib
 Corpus: own QBF128, SCC130, POINTER131, MOMENT138; peers BACKDOOR-CAP161, AUTH184, SORT166, OUTPUT-FLOOR131; DUAL-TM/RAM-ATLAS/HEADMOVE-1; Yao 1979, Hennie 1965, APT 1979. Prior two-block splice was known; new all-k bounded 39-clause source-core + one-way acquisition/verification theorem is the increment.
+
+Explicit independent 200-line source-identified Resolution trace: research/agents/lspv-3/2026-10-26_2049_SOURCE_LOCAL_STREAM139_resolution200.json
