@@ -1,0 +1,159 @@
+% LSPV-5 REPORT::HEADMOVE-REVERSAL-JUMP169::2026-10-26T18:48:00-07:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{HEADMOVE-REVERSAL-JUMP169:\\A Same-Run Proof, Saturation Audit, and Two-Input-Head Countercontrol}
+\author{LSPV-5: Independent Red Team / Formal Proof Referee}
+\date{26 October 2026, Los Angeles}
+\begin{document}\maketitle
+
+\noindent\fbox{\parbox{.95\linewidth}{
+\textbf{PROVED/EXACT RESTRICTED.}
+For the ordered exact-(2,2) DISJ promise and one deterministic two-way sequential read-only input head with fixed sequential work tapes,
+\[
+H(N)(S(N)+1)=\Omega(N^2/\log N),\qquad
+(R(N)+1)(S(N)+1)=\Omega(N/\log N).
+\]
+Both inequalities are obtained from one common SAT run, not by mixing witnesses. The buffering construction saturates their exponent faces. For the separately declared radius-\(J=N^{j+o(1)}\) jump-head model, simulation yields \(t+s+j\ge2\), and the promise optimum is \(t=\max\{1,2-s-j\}\). A two-input-head algorithm solves the same promise in linear movement, logarithmic work and zero reversals, explicitly falsifying any transfer beyond one input head. None of these results is an unrestricted RAM/SAT lower bound or a consequence \(P\ne NP\). P versus NP and ARC-EDGE-90 remain \OPEN.}}
+
+\section{Four preregistered attacks and outcomes}
+\begin{description}
+\item[F1: mixed witnesses.] The head-move and reversal products use different hard inputs. \textbf{FALSIFIED}: double averaging first selects one SAT input with large total central-gap crossings; one cut on that same run then supplies the reversal bound.
+\item[F2: incomplete labels.] A crossing label has only work contents. \textbf{FALSIFIED/REPAIRED}: include finite control, crossing direction, every visited work cell, all work-head positions and interval delimiters. For fixed tapes and alphabets this is still \(O(S+1)\) bits.
+\item[F3: uncharged saturation.] Buffering obtains a factor \(J\) without physical addressing or retained bits. \textbf{FALSIFIED AS A FREE CLAIM; PROVED AFTER CHARGING}: each radius-\(J\) jump is a command whose offset costs polylogarithmic bit work, the \(B\)-bit buffer and \(O(\log N)\) counters remain live, and an ordinary simulation pays every skipped cell.
+\item[F4: RAM/two-head transfer.] The resulting products hold for multiple input heads or RAM. \textbf{FALSIFIED/RETIRED}: the explicit two-head control below violates both products; indexed RAM is more capable still.
+\end{description}
+
+\section{Exact family and declared resources}
+The reconstructed module \(H(a,b)\) is the 15-variable, 20-clause signed exact-(2,2) \(W_1\) gadget with the two A sign slots and two B sign slots used in BINARY-WORK-SAT4. Exhaustive model counts are
+\[
+(\#H_{00},\#H_{01},\#H_{10},\#H_{11})=(772,272,272,0).
+\]
+Take \(m\) disjoint renamed modules and physically order all \(2m\) A-controlled clauses, then the \(16m\) fixed clauses, then all \(2m\) B-controlled clauses. With fixed-width literal records,
+\[
+N=\Theta(m\log(m+2)),\qquad G=\Theta(N),
+\]
+where every cut in the fixed middle block separates all A fields from all B fields. The promise satisfies
+\[
+F_m(a,b)\in\SAT\quad\Longleftrightarrow\quad a\wedge b=0^m. \tag{1}
+\]
+
+The machine has one two-way sequential read-only input head and fixed \(k\) sequential work tapes. \(S\) counts every visited work cell, blank or not, and excludes input. \(H\) is the number of unit input-head moves; \(R\) counts sign changes among nonzero input-head moves; \(T\) counts all transitions. These are simultaneous worst-case ceilings of one total deterministic promise decider.
+
+\section{Same-run crossing theorem}
+\begin{lemma}[Average transcript length]
+For \(2^m\) distinct finite words over an alphabet of size at most \(2^B\), allowing one empty word, their mean length is \(\Omega(m/(B+1))\).
+\end{lemma}
+\begin{proof}
+At most \(1+A+\cdots+A^L\) words over alphabet \(A\le2^B\) have length at most \(L\). Choose \(L=\lfloor m/(2(B+1))\rfloor\). For all sufficiently large \(m\), fewer than half of the \(2^m\) words have length at most \(L\), so the mean is at least \(L/2\). Small \(m\) are absorbed in the constant.
+\end{proof}
+
+\begin{theorem}[Head movement and reversal products]\label{th:head}
+Every declared decider satisfies, on infinitely many canonical lengths,
+\[
+H(S+1)=\Omega(N^2/\log N),\qquad (R+1)(S+1)=\Omega(N/\log N). \tag{2}
+\]
+\end{theorem}
+\begin{proof}
+For each \(a\), use the SAT input \(F_m(a,\neg a)\). Fix a cut \(c\) in the central fixed block and record the complete work configuration whenever the input head crosses \(c\). A label needs \(O_k(S+1)\) bits: fixed control/direction, \(S\) fixed-alphabet work symbols, and \(O(k\log(S+1))\) bits for fixed-many work-head positions and interval endpoints.
+
+The \(2^m\) crossing transcripts at \(c\) are pairwise distinct. If \(a\ne b\) shared a transcript, standard deterministic splicing would accept the relevant mixed input \(F_m(a,\neg b)\) or \(F_m(b,\neg a)\). At least one is UNSAT because \(a\ne b\), contradicting correctness. The lemma gives
+\[
+2^{-m}\sum_a q_c(a)=\Omega(m/(S+1))
+\]
+for every central cut. Sum over the \(G=\Theta(N)\) cuts, interchange the finite sums, and choose one common \(a_*\):
+\[
+\sum_c q_c(a_*)=\Omega(Gm/(S+1)).
+\]
+Every unit input-head move crosses at most one adjacent cut, so \(H(S+1)=\Omega(Gm)\), proving the first inequality using \(m=\Theta(N/\log N)\).
+
+On that same run, some central cut has \(q_c(a_*)=\Omega(m/(S+1))\). Consecutive crossings of one cut alternate direction, so between them the input head reverses at least once. Hence \(R+1\ge q_c(a_*)\) up to an absolute endpoint constant, proving the second inequality. No per-cut maximum and no second input witness is used.
+\end{proof}
+
+For polynomial ceilings \(H=N^{h+o(1)}\), \(R+1=N^{r+o(1)}\), \(S=N^{s+o(1)}\), and \(T=N^{t+o(1)}\), (2) gives
+\[
+h+s\ge2,\qquad r+s\ge1,\qquad t+s\ge2,
+\]
+all for the same machine.
+
+\section{Charged saturation and bounded jumps}
+With a live \(B\)-bit buffer, process \(B\) coordinates per pass. A pass reads the relevant A fields, traverses the fixed block, reads corresponding B fields, and returns or alternates direction. With ordinary movement,
+\[
+H=O\left(N\left\lceil\frac mB\right\rceil\operatorname{polylog}N\right),\quad
+R=O(\lceil m/B\rceil),\quad S=O(B+\log N).
+\]
+Thus \(B=m^{s+o(1)}\) realizes \(h=2-s\), \(r=1-s\) and \(t=2-s\), saturating (2) up to subpolynomial factors on this easy promise.
+
+Now declare a different model \(M_J\): the sole input head may execute a charged binary-offset command of reach at most \(J\), reading only its target symbol; work tapes remain sequential. An ordinary head simulates one jump with \(O(J+\operatorname{polylog}N)\) transitions and \(O(\log N)\) extra live bits. Therefore
+\[
+T_0=O(T_J(J+\operatorname{polylog}N)),\qquad S_0=O(S_J+\log N).
+\]
+Applying (2) to this actual ordinary simulation gives, for \(J=N^{j+o(1)}\),
+\[
+t+s+j\ge2. \tag{3}
+\]
+This implication direction is essential: (3) is a necessary condition in the declared augmented model because of an explicit simulation, not a native RAM lower bound.
+
+The charged buffered itinerary uses
+\[
+T_J=O\left(\frac mB\left(\frac NJ+B\right)\operatorname{polylog}N\right),
+\]
+so its exponent is \(\max\{1,2-s-j\}\). The independent \(t\ge1\) floor follows from the base input \(a=0^m,b=1^m\): each A sign is pivotal, and a deterministic one-symbol-per-step algorithm must inspect all \(m=\Theta(N/\log N)\) groups. This proves the claimed promise optimum, including \(J=1\) and \(J=N\).
+
+\section{Explicit two-input-head falsifier}
+Give the machine two independent sequential read-only heads on the same encoded input. Park head 1 at the A block while moving head 2 once to the B block. Both controlled blocks use the same coordinate order, so advance the heads together, compare the two selected signs, and stop on an overlap. This decides (1) using
+\[
+H_{\rm total}=O(N),\qquad R_{\rm total}=0,\qquad S=O(\log N).
+\]
+Consequently both normalized one-head products tend to zero:
+\[
+\frac{H_{\rm total}(S+1)}{Nm}=O(\log N/m)=o(1),\qquad
+\frac{(R_{\rm total}+1)(S+1)}m=o(1).
+\]
+This is not a contradiction to Theorem~\ref{th:head}; it is a smallest model-transfer countercontrol. A fixed-\(k\) work-tape machine still has only one input head, so the theorem allows independent work heads but not a second input head.
+
+\section{Finite audit and peer reconciliation}
+The dependency-free reproducer rebuilt the physical clause-list layout and checked 21,844 formulas for \(m\le7\), exact-(2,2) syntax, DISJ semantics, the 16-of-20 fixed-clause gap, 8,190 pivotal-query subsets, and 54 buffer/jump itineraries over \(m=4,\ldots,128\). It verified \(H\le JT_J\) for every itinerary and both product faces. At \(m=128,N=92{,}183\), the two-input-head control had 101,302 total input moves, zero reversals and 59 charged work bits; its normalized products were 0.507 and 0.461 and continue downward. Total: 125,923 assertion groups, zero failures, no randomness. This is \textbf{COMPUTATIONAL} support for the symbolic proofs, not measured hardware time.
+
+\paragraph{LSPV-3 RAM-INDEXED-LOCAL-ACQUISITION137.}
+Its new \(2m\) indexed bit-probe floor on every equality input and \(m-1\) unique-mismatch locator bound are \textbf{PROVED/EXACT RESTRICTED} and align with the independent pivotal-input floor above. Its matching \(N^{1+o(1)}\) indexed upper control confirms that these probe bounds do not recover sequential head travel or a RAM \(t+s\ge2\) stripe.
+
+\paragraph{Certificate/ARC scope.}
+HEADMOVE-1 constrains machines that already satisfy input-head reversal or space ceilings. \(P=NP\) supplies no such reversal ceiling for its unknown polynomial decider. A local guessed mismatch certificate does not imply deterministic acquisition, all-ordinary-UNSAT coverage, two power-short hereditary levels, or a same-machine ARC successor.
+
+\begin{center}\small
+\begin{tabularx}{.99\linewidth}{p{.44\linewidth}p{.20\linewidth}X}\toprule
+Claim & Status & Exact scope\\\midrule
+One-head products (2) & PROVED/EXACT RESTRICTED & ordered exact22 promise; one sequential input head; fixed work tapes\\
+Buffering saturates \(h+s=2,r+s=1\) & PROVED/EXACT RESTRICTED & promise algorithm with all scans, counters and live buffer charged\\
+Bounded-jump interpolation (3) & PROVED/EXACT RESTRICTED & declared \(M_J\), binary offsets, ordinary simulation paid\\
+One-head products for two input heads & FALSIFIED/RETIRED & explicit linear-movement, zero-reversal control\\
+One-head products for RAT/RAM & FALSIFIED/RETIRED & indexed input/work and word costs are a different model\\
+HEADMOVE-1 plus \(P=NP\) implies contradiction & FALSIFIED/RETIRED & no reversal or workspace exponent follows from \(P=NP\)\\
+All-UNSAT cap and arbitrary-\(K\) same-machine ARC successor & OPEN & all ordinary inputs and all charged construction/discovery costs\\\bottomrule
+\end{tabularx}
+\end{center}
+
+\paragraph{CORPUS REVIEWED.}
+Read the pinned DUAL-TM directive, RAM-vs-tape atlas, HEADMOVE-1 at commit \texttt{c9c2086}, current root, AGENTS/CODEX/research skill and protocols, BACKDOOR-CAP161, LSPV-1 AUTH184, LSPV-2 INVERSE-SORT166, LSPV-3 STREAM131/SCC130 and RAM-INDEXED137, LSPV-4 OUTPUT-FLOOR131/TAPE-POLARITY140, CROSSING-AVERAGE167, COMMUNICATION-POLARITY168 and the W1 source. Primary context included Hennie's crossing-sequence work, Greibach's visits/crosses/reversals model, Santhanam's tape SAT result and FLMV's native random-access model. This was targeted review, not a new corpus census.
+
+\paragraph{DUPLICATION / CONTRADICTION / ROOT CHANGE.}
+The common-input averaging mechanism was already proved in CROSSING-AVERAGE167. New here are the independent HEADMOVE reconstruction, the same-run reversal derivation, fully charged \(B,J\) saturation, and the explicit two-input-head falsifier. No conflict with LSPV-3 indexed probes exists: probe acquisition and physical head transport are different resources. Root currently lacks HEADMOVE-1 and RAM-INDEXED137 and should add them without promoting either to unrestricted SAT.
+
+\paragraph{ADOPTED / REJECTED / NEXT.}
+Adopt full crossing labels, one-run double averaging, simultaneous ceilings and charged jump simulation. Reject per-cut witness mixing, free jumps, multiple-input-head transfer, RAM transport, unbounded words and the claim that \(P=NP\) bounds reversals. The next decisive target remains a native FLMV same-machine successor from arbitrary unknown \(K\); HEADMOVE-1 is a calibrated restricted surface, not that successor.
+
+\begin{thebibliography}{9}\small
+\bibitem{Hennie} F. C. Hennie, \emph{One-Tape, Off-Line Turing Machine Computations}, Information and Control 8 (1965), 553--578.
+\bibitem{Greibach} S. A. Greibach, \emph{Visits, Crosses, and Reversals for Nondeterministic Off-Line Machines}, Information and Control 36 (1978), 174--216.
+\bibitem{Santhanam} R. Santhanam, \emph{Lower Bounds on the Complexity of Recognizing SAT by Turing Machines}, IPL 79 (2001), 243--247.
+\bibitem{FLMV} L. Fortnow, R. Lipton, D. van Melkebeek and A. Viglas, \emph{Time-Space Lower Bounds for Satisfiability}, J. ACM 52 (2005), 835--865, \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::HEADMOVE-REVERSAL-JUMP169
