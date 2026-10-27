@@ -1,0 +1,72 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-27 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{ClaudeCircuitSAT: a wire-by-wire, parameterized lower-bound ladder for Circuit-SAT}
+\author{Living document (hourly routine)}
+\date{Last updated 2026-10-27}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains open.} No superlinear unconditional lower bound for Circuit-SAT in a general
+model is claimed. Status labels: PROVED/EXACT, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model and parameters}
+A circuit $C$ has $n$ inputs and $m$ binary gates (AND/OR, negation free on wires). Each gate has two
+in-wires, so $w(C)=2m$ gate-input wires (+1 output wire). Circuit-SAT: given $C$, decide $\exists x\,C(x)=1$.
+Parameters: $(n,m)$, and later depth, fan-out, treewidth/pathwidth. A \emph{parameterized} bound is a
+function $T(n,m)$; the instance length is $N=\Theta(m\log(n+m))$ bits.
+
+\section{Ladder, proved statements}
+\begin{lemma}[Connectivity floor; PROVED/EXACT]\label{l:conn}
+If $C$ depends on all $n$ inputs then $m\ge n-1$ and $w\ge 2(n-1)$.
+\end{lemma}
+\begin{proof} Consider the undirected graph on inputs and gates with an edge per wire. A gate that
+depends on $k$ inputs lies in a connected component with those inputs; the output component contains
+all $n$ inputs and $n+m'$ vertices ($m'\le m$ gates in it), hence $\ge n+m'-1$ wires. Every wire enters
+a gate, so wires $=2m'$, giving $2m'\ge n+m'-1$, i.e.\ $m\ge m'\ge n-1$.\end{proof}
+
+\begin{proposition}[Read-all-wires bound; PROVED/EXACT]\label{p:read}
+For every $k$ there are instances with $n=k$ inputs and $m=2k-1$ gates such that any deterministic
+decider (or any decider that is correct on all instances of the family) must read at least $k$ wire
+descriptions; hence time $\Omega(m)$ in any model charging per wire read.
+\end{proposition}
+\begin{proof} Let $A_i=\mathrm{AND}(x_i,\neg x_i)$ and $C_0=\mathrm{OR}_{i\le k}A_i$ (unsatisfiable;
+$k$ ANDs, $k-1$ ORs). Redirecting the second in-wire of $A_i$ from $\neg x_i$ to $x_i$ gives a
+satisfiable $C_i$ differing from $C_0$ in one wire. If the algorithm does not read that wire on input
+$C_0$, it behaves identically on $C_i$ and errs. So all $k$ critical wires are read.\end{proof}
+
+\section{Computational ladder: minimum wires for all functions on $n\le3$ inputs}
+Exact minimum number of AND/OR gates (negation free, sharing allowed) over all Boolean functions, by
+level-BFS over deduplicated node sets (\texttt{experiments/circuit\_sat/2026-10-27\_min\_gates\_n\_le\_3.py},
+data \texttt{results/raw/circuit\_sat\_min\_gates\_n\_le\_3.json}; $n=3$ runs in $\approx14$\,s).
+Functions are counted up to complement.
+\begin{center}\begin{tabular}{@{}cccl@{}}\toprule
+$n$ & classes & max gates $m^*(n)$ & max wires $2m^*$ \\\midrule
+1 & 2 & 0 & 0\\ 2 & 8 & 3 (XOR) & 6\\ 3 & 128 & 6 & 12\\\bottomrule\end{tabular}\end{center}
+Histogram for $n=3$ (gates:classes): 0:4, 1:12, 2:32, 3:15, 4:52, 5:4, 6:9. COMPUTATIONAL.
+Reading: the hardest $n$-variable function costs $m^*(n)$ gates; Shannon counting gives
+$m^*(n)=\Theta(2^n/n)$ asymptotically (KNOWN THEOREM), so the wire count needed \emph{to even write down}
+a worst-case function grows exponentially in $n$; this is a statement about circuit size, not solving time.
+
+\section{Parameterized lower-bound picture}
+\begin{tabular}{@{}lll@{}}\toprule
+Bound & Status & Note\\\midrule
+$T=\Omega(m)$ (Prop.~\ref{p:read}) & PROVED/EXACT & trivial; read model\\
+$T\ge 2^{n}\cdot\mathrm{poly}$ for $m=\mathrm{poly}(n)$ & CONDITIONAL (SETH) & not unconditional\\
+$T=\omega(m)$ general RAM/TM & OPEN & best known time--space bounds are $N^{c}$, $c<2$ for SAT with small space (see repo ARC/FLMV)\\
+$T=m^{\Omega(1)}\cdot 2^{\Omega(n)}$ unconditional & OPEN & would imply P$\ne$NP\\\bottomrule\end{tabular}
+
+\section{Repository cross-check (j15marti/pnp)}
+Root \texttt{main.tex} and AGENTS.md state P versus NP is open; the active spine is ARC/FLMV time--space
+contraction. Nothing there yet gives a circuit-wire-parameterized unconditional bound beyond the trivial
+ones above. Candidate transfer: restricted-model results (low-crossing-cut, single-head sequential access)
+are tied to specific machine models, not to circuit wire counts; transfer theorem needed.
+
+\section{Next steps (OPEN)}
+(1) Extend exact minima to $n=4$ via SAT-based circuit synthesis and record $m^*(4)$.
+(2) Define a wire-cut parameter (min vertex separator, pathwidth $p$): conjecture/test that
+sequential-access solvers need $2^{\Omega(p)}$ on restricted families; check against known pathwidth DP
+upper bound $2^{O(p)}m$.
+(3) Track, per added input, the minimum wires making an instance \emph{unsolvable by unit propagation}.
+\end{document}
