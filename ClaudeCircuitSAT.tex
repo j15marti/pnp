@@ -1,0 +1,63 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-27 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{lemma}{Lemma}\newtheorem{prop}{Proposition}
+\title{Claude Circuit-SAT Lower-Bound Ladder (living document)}
+\date{Last updated 2026-10-27}
+\begin{document}\maketitle
+\paragraph{Status.} P vs NP remains OPEN. Nothing here is a superpolynomial bound.
+Labels: PROVED, KNOWN, CONDITIONAL, OPEN. Repository cross-reference: the main
+project (\texttt{main.tex}, ARC/FLMV spine) is also OPEN; no result there was imported as a lower bound.
+
+\section{Problem and parameters}
+$\mathrm{CSAT}(n,s)$: given a fan-in-2 circuit over $B_2$ with $n$ inputs, $s$ gates, one output,
+decide whether some $x\in\{0,1\}^n$ gives output 1. Parameters: $n$ (inputs), $s$ (gates),
+$w$ (wires $=2s$ internal gate-input edges plus output), $\mathrm{tw}$ (treewidth), fan-out $f$.
+Upper bounds: $O(2^n s)$ brute force; $2^{O(\mathrm{tw})}\,s$ by dynamic programming (KNOWN).
+
+\section{Wire ledger (the ``minimal connections'' ladder)}
+\begin{lemma}[PROVED] If the output depends on all $n$ inputs, the circuit has $\ge n-1$ gates
+and $\ge 2(n-1)$ gate-input wires.\end{lemma}
+\emph{Proof.} The underlying undirected graph must connect all $n$ inputs to the output; a fan-in-2
+DAG with $g$ gates has at most $g+1$ source-connected components merged per gate (each gate reduces the
+number of components by at most 1), so $g\ge n-1$; each gate has 2 input wires. \qed
+
+\begin{center}\begin{tabular}{c|c|c|c}
+$n$ & min gates (all inputs relevant) & min gate-input wires & tight example\\\hline
+1 & 0 & 0 & wire $x_1$ (or NOT: 1 gate)\\
+2 & 1 & 2 & $x_1\wedge x_2$\\
+3 & 2 & 4 & $(x_1\wedge x_2)\wedge x_3$\\
+$n$ & $n-1$ & $2n-2$ & AND tree (fan-out 1)
+\end{tabular}\end{center}
+Each added input costs exactly one gate and two wires at the connectivity level (PROVED, tight).
+Fan-out $>1$ is needed only for functions beyond read-once ones (e.g.\ XOR$_n$ over $\{\wedge,\vee,\neg\}$).
+
+\section{Decision-time ladder}
+\begin{prop}[PROVED, query model] Any deterministic algorithm that decides CSAT on read-once AND-trees
+with $n-1$ gates, each possibly replaced by constant 0, must read $\Omega(n)$ gate descriptions.\end{prop}
+\emph{Proof.} Adversary answers ``ordinary AND gate'' for every queried gate; if some gate is unqueried, the
+instance with it set to 0 and the one without differ in satisfiability yet agree on all answers. \qed
+
+So the trivial bound is $\Omega(s)$ queries for any circuit family in which every gate matters. This is
+the only unconditional rung so far; it is linear in input size, not in $2^n$.
+
+\section{Parameterized rungs}
+\begin{itemize}
+\item (CONDITIONAL, KNOWN) Under SETH, no $(2-\varepsilon)^n\,\mathrm{poly}(s)$ algorithm solves CSAT
+(from CNF-SAT, a CNF being a depth-2 circuit). Under SETH, treewidth/pathwidth version: no
+$(2-\varepsilon)^{\mathrm{pw}}\mathrm{poly}$ (Lokshtanov--Marx--Saurabh; cited from memory, recheck).
+\item (KNOWN) Gate elimination gives $\approx 3.1n$ circuit-size lower bounds for explicit functions over $B_2$
+(Find--Golovnev--Hirsch--Kulikov); these bound circuit size, not SAT decision time.
+\item (OPEN) Any unconditional $\omega(s)$ decision-time bound for CSAT with $n=\omega(\log s)$.
+\end{itemize}
+
+\section{Next steps}
+\begin{enumerate}
+\item Exactly enumerate minimum circuit sizes for all functions on $n\le 4$ inputs and tabulate wires and
+fan-out used; look for a parameter (fan-out/depth) that grows with $n$ in the hardest functions.
+\item Study a restricted-model bound: monotone or bounded-depth decision procedures with step-wise input reveal,
+tracking how many wires must be examined per added input.
+\item Review repo ARC/FLMV and gate-elimination reports for a transferable parameterization.
+\end{enumerate}
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT_RUN1
