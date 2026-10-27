@@ -11,44 +11,39 @@ function unary(a,b){
  let ip=1,wp=0,maxwp=0,moves=0,reversals=0,lastDir=0,accept=true,queries=0;
  const move=(dir)=>{ip+=dir; moves++; if(lastDir && lastDir!==dir)reversals++;lastDir=dir;must(ip>=0 && ip<src.length,'input head off tape');};
  const seekBob=()=>{let delim=0;while(delim<2){if(src[ip]==='#')delim++;move(1);} };
- const backAlice=()=>{while(src[ip-1]!=='^') move(-1);};
- const readIndexed=()=>{
-   const start=ip;
+ const backAlice=()=>{while(true){move(-1);if(src[ip]==='^'){move(1);break;}}};
+ const readIndexed=(marker)=>{ // phase stores one of two fixed origin markers in finite control
    while(wp>0 && (src[ip]==='0'||src[ip]==='1')) {wp--;move(1);}
-   if(!(src[ip]==='0'||src[ip]==='1')) {
-      while(ip>start){move(-1);wp++;}
-      return {overflow:true};
-   }
-   const bit=Number(src[ip]);queries++;
-   while(ip>start){move(-1);wp++;}
-   return {overflow:false,bit};
+   const overflow=!(src[ip]==='0'||src[ip]==='1');
+   const bit=overflow?null:Number(src[ip]);if(!overflow)queries++;
+   // Return by actual one-cell left moves; never read the unscanned predecessor.
+   while(true){move(-1);if(src[ip]===marker){move(1);break;}wp++;}
+   return {overflow,bit};
  };
- let safe=0;
- while(++safe<=m+1){
-   const A=readIndexed();
+ while(true){
+   const A=readIndexed('^');
    if(A.overflow) break;
    seekBob();
-   const B=readIndexed();
+   const B=readIndexed('#');
    if(!B.overflow && A.bit && B.bit) {accept=false;break;}
    backAlice();
    wp++; if(wp>maxwp)maxwp=wp;
  }
- must(safe<=m+1,'unary terminated');
  return {accept,D:0,S:maxwp+1,T:moves+queries,move:moves,R:reversals,queries,length:src.length};
 }
 function buffered(a,b){
- const src=encode(a,b);const m=a.length;let mem=Array(m).fill('_');
+ const src=encode(a,b);let mem=[];
  let ip=1,wp=0,T=0,D=0,maxwp=0;
- for(let i=0;i<m;i++){
+ while(src[ip]!=='#'){
    const bit=src[ip];must(bit==='0'||bit==='1','buffer source bits');
-   if(mem[wp]!==bit){mem[wp]=bit;D++;} T++;
-   if(i<m-1){wp++;maxwp=Math.max(maxwp,wp);}ip++;T++;
+   if((mem[wp]??'_')!==bit){mem[wp]=bit;D++;}T++;
+   wp++;maxwp=Math.max(maxwp,wp);ip++;T+=2;
  }
  while(wp>0){wp--;T++;}
- while(src[ip]!=='#'){ip++;T++;}ip++;T++;
- while(src[ip]!=='#'){ip++;T++;}ip++;T++;
+ ip++;T++; // pass the first #
+ while(src[ip]!=='#'){ip++;T++;}ip++;T++; // pass gap and second #
  let accept=true;
- for(let i=0;i<m;i++){
+ while(src[ip]!=='$'){
    must(src[ip]==='0'||src[ip]==='1','Bob source bits');
    if(mem[wp]==='1' && src[ip]==='1'){accept=false;break;}
    ip++;wp++;maxwp=Math.max(maxwp,wp);T+=2;
