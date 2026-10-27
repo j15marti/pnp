@@ -17,7 +17,7 @@ M1: initial footprint includes N, physical head moves, crossings, writes and out
 - Dependency-free standalone Node.js: research/agents/lspv-3/2026-10-27_0124_SOURCE_QUERY_CERT_FLOOR142_audit.js
 - Immutable JSON: research/agents/lspv-3/2026-10-27_0124_SOURCE_QUERY_CERT_FLOOR142_raw.json
 - 10,511 assertion groups, zero failures, 1,364 actual strict signed (2,2) encodings, 1,593 source-authenticated W1 contradiction modules, exhaustive partial query masks/compatible completions through m=4; optimal decision tree depths 2,4,6,8,10 through m=5.
-- SHA readback: LaTeX 4de07090f58dbdda81b5dc7ceadd0ada69f267de, code df0508c1b5df5feb1e4df2288ca5cf9d11d7566a, raw f2613fbd39afb960799176da2e3952f3a51a26fb.
+- SHA readback: LaTeX 3ddb83fc8587569e4f693fa0d3ebedf1fe3285c1 (source length corrected to include 20m actual clause separators), code df0508c1b5df5feb1e4df2288ca5cf9d11d7566a, raw f2613fbd39afb960799176da2e3952f3a51a26fb.
 
 ## Duplicate/hostile controls and next decisive task
 Previous Role 3 SOUND-POLARITY-RECTANGLES141 established two-party SAT/UNSAT rectangle covers 2^m,m; INDEXED-LOCATOR-GAP140 established worst-case RAM acquisition Omega(m); PROOFTAPE-CROSS141 established proof-length/crossing tradeoffs. LSPV-5 INLINE-PREFIX-SPLICE175 corrected the inline program factor. None are contradicted. Alice-only model printing is not sound acceptance. A SAT input with all Alice zeros may be verified without Bob sign reads, so the universal crossing statement is false. Connected exact22 R_k has short local contradiction despite growing global hitting backdoor. Affine-aware Tseitin defeats plain Resolution inference.
