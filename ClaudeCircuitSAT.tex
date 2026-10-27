@@ -1,0 +1,91 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,geometry}
+\geometry{margin=1in}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{Wire-by-wire lower bounds for \CSAT\\ \large Living document (ClaudeCircuitSAT)}
+\author{Hourly Claude routine}
+\date{Last updated: 2026-10-27 (run 1)}
+\begin{document}\maketitle
+
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No unconditional super-polynomial lower bound for
+\CSAT\ is claimed. Status labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Goal and method}
+Ladder: start with the smallest circuits, add inputs one at a time, record (i) the minimum
+number of gates/wires needed to \emph{build} the circuit and (ii) the information a solver
+must \emph{read}. The bound is parametrized by $n$ (inputs), $m$ (wires), $d$ (depth), $w$ (treewidth).
+Model: fan-in-2 gates over the full basis $B_2$ (16 binary gates, free negation); $W$ = number of
+wires (edges) $=2g$ for $g$ binary gates.
+
+\section{Level results}
+\begin{lemma}[Connectivity, PROVED]\label{lem:conn}
+A circuit with $g$ binary gates computing a function that depends on all $n$ inputs has
+$g\ge n-1$ and $W=2g\ge 2(n-1)$.
+\end{lemma}
+\begin{proof}
+Every input and gate lies on a path to the output after removing useless gates, so the underlying
+undirected graph on $n+g$ nodes is connected: $W\ge n+g-1$. Since $W=2g$, $g\ge n-1$.
+\end{proof}
+\begin{theorem}[Tightness, PROVED]
+$\mathrm{AND}_n$ (unique satisfying assignment) is built with exactly $n-1$ gates, $2(n-1)$ wires,
+so Lemma~\ref{lem:conn} is tight for unique-SAT instances.
+\end{theorem}
+
+\begin{theorem}[Read lower bound, PROVED in the wire-query model]\label{thm:read}
+Let a deterministic algorithm access the $n$ literal slots of a conjunction by probing one slot per query.
+Any correct \CSAT\ decider on such instances ($n\ge2$) makes $\ge n$ queries.
+\end{theorem}
+\begin{proof}
+Base instance $I_0=x_1\wedge\dots\wedge x_n$ is satisfiable. If slot $i$ is never probed on $I_0$,
+pick $j\ne i$ and let $I'$ replace slot $i$ by $\neg x_j$; slot $j$ still holds $x_j$, so $I'$ is unsatisfiable
+yet agrees with $I_0$ on every probed slot, so the algorithm errs on one of them.
+\end{proof}
+\emph{Honest scope:} this is only linear in instance size $m$; it shows reading is necessary, not that
+search is hard.
+
+\subsection{Computational ladder (exact, \texttt{experiments/circuitsat/min\_gates.py})}
+Exhaustive BFS over sets of computed truth tables, full $B_2$ basis.
+\begin{center}\begin{tabular}{@{}lcccl@{}}\toprule
+$n$ & functions reached $\le g$ gates & single-minterm (unique-SAT) min gates & wires & note\\\midrule
+2 & all 16 at $g\le1$ & 1 & 2 & \\
+3 & 38 / 152 / 232 of 256 at $g\le1,2,3$ & 2 & 4 & 24 functions need $\ge4$ gates\\
+4 & (not searched) & $\ge3$ by Lemma~\ref{lem:conn}, $=3$ by AND tree & 6 & \\\bottomrule
+\end{tabular}\end{center}
+Raw data: \texttt{results/raw/circuitsat\_min\_gates\_n2.json}, \texttt{..._n3.json} (COMPUTATIONAL).
+Observation: the \emph{build} cost of a unique-SAT instance is $2(n-1)$ wires, linear; the difficulty,
+if any, lies in the \emph{solve} side, not construction.
+
+\section{Parametrized landscape (from memory; literature not re-verified this run)}
+\begin{itemize}
+\item KNOWN: brute force $O(2^n m)$; treewidth DP $2^{O(w)}m$ ($w$ = treewidth of the circuit graph).
+\item CONDITIONAL: SETH $\Rightarrow$ no $O(2^{(1-\epsilon)n}\mathrm{poly}(m))$ for CNF-SAT (hence \CSAT);
+ETH $\Rightarrow$ no $2^{o(n)}$. A lower bound of shape $T(n,m)\ge 2^{\Omega(n)}$ is therefore the
+natural target parametrization, but only conditional.
+\item PROVED (black-box model): if the solver may only \emph{evaluate} $C$, a planted unique solution needs
+$\Omega(2^n)$ evaluations (unstructured search). This does \emph{not} transfer to white-box solvers
+(FAILED TRANSFER: the wire list is readable).
+\end{itemize}
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item OPEN: replace "read all wires" (Thm.~\ref{thm:read}) with a bound that charges \emph{information about
+satisfiability} rather than description size; candidate: adversary argument on wire-by-wire reveal order
+for circuits with a hidden unique solution, parametrized by $d$ and $w$.
+\item Extend exhaustive search to $n=4$ (use symmetry reduction, chunked runs $<30$ s) and tabulate
+minimum wires of functions with exactly $k$ satisfying assignments.
+\item Study fixed-structure fragments (read-once, bounded-depth, bounded-treewidth) where a
+\emph{wire-complexity} lower bound for solving can be provable; record the first level where
+$\mathrm{poly}$ vs exponential in $w$ separates.
+\item Mine the repository (\texttt{main.tex}, ARC/FLMV and SIL/M22 ladder, \texttt{research/language/2026-10-25\_0005\_...LADDER.md})
+for a resource-ledger formalism to reuse; no claim imported so far.
+\end{enumerate}
+
+\section{Run log}
+\begin{tabular}{@{}ll@{}}\toprule
+2026-10-27 run 1 & Created document; Lemma 1, Thm tightness, Thm 2; exhaustive $n\le3$ gate tables; repo \texttt{main.tex} skimmed (P vs NP OPEN there too).\\\bottomrule
+\end{tabular}
+\end{document}
+% END_OF_CLAUDECIRCUITSAT_RUN1
