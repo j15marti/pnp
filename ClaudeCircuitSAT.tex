@@ -1,0 +1,55 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append/revise in place; log at end
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\newtheorem{conj}{Conjecture}
+\title{Circuit-SAT Lower Bounds, Built Wire by Wire\\ \large (living document; parameterized bounds)}
+\author{Claude scheduled routine}
+\date{Last updated: 2026-10-27 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status discipline.} KNOWN / PROVED (here) / COMPUTATIONAL / CONDITIONAL / CANDIDATE / OPEN. \textbf{P versus NP is OPEN; nothing here proves a superpolynomial unconditional bound.}
+
+\section{Setup}
+A circuit $C$ over $n$ inputs has $g$ fan-in-2 gates (any of the 16 binary functions) and $w=2g$ gate-input wires, plus output. Circuit-SAT: given $C$, is $\exists x\,C(x)=1$? Two size measures: instance size $m=(g,w)$ and input count $n$. Candidate parameters: $n$, $w$, treewidth $\mathrm{tw}(C)$, max fan-out $\phi$, depth.
+
+\section{Step-by-step wire accounting (building up)}
+\begin{prop}[PROVED, counting] If $f$ depends on all $n$ inputs and $C$ computes $f$, then $g\ge n-1$, i.e.\ $w\ge 2(n-1)$; equality is attained by a read-once tree (e.g.\ AND of literals).\end{prop}
+\emph{Proof.} Every input must have a path to the output, so the underlying undirected graph on $n+g$ nodes is connected: edges $2g\ge n+g-1$. A fan-in-2 tree attains it. \qed
+
+\begin{prop}[PROVED, counting] A \emph{non-read-once} dependence (fan-out $\ge2$ on some node) adds one wire per extra use; a circuit with $r$ ``reconvergent'' wires has $w=2(n-1)+r$ when $g=n-1+r/2$.\end{prop}
+(Bookkeeping identity $w=2g$; $g=n-1+\text{(extra gates beyond the spanning tree)}$.) Each added fan-out is exactly where hardness can enter: tree-like ($\mathrm{tw}=1$, $r=0$) circuits are SAT-decidable in $O(w)$ time by bottom-up dynamic programming.
+
+\subsection{Exact minima, $n\le3$ (COMPUTATIONAL)}
+Script \texttt{experiments/claude\_circuitsat/mincirc.py}, raw \texttt{results/raw\_claude\_circuitsat\_mincirc.json}; exhaustive search over all circuit sequences with all 16 binary gates (no free negation, so $\neg x$ costs a gate).
+\begin{center}\begin{tabular}{@{}rrrl@{}}\toprule
+$n$ & \#functions & max gates & gate histogram (all functions)\\\midrule
+2 & 16 & 1 & 0:4, 1:12\\
+3 & 256 & 4 & 0:5, 1:33, 2:114, 3:80, 4:24\\\bottomrule\end{tabular}\end{center}
+For $n=3$ all 218 functions depending on all inputs need $\ge2=n-1$ gates (matches Prop.~1; 114 attain it); the 24 hardest need 4 gates $=8$ wires. Minimal wires by step: $n=1$: 0; $n=2$: 2; $n=3$: 4 (tree) up to 8 (hardest). Extending to $n=4$ (65536 functions, max known 7 gates) needs chunked/symmetry-reduced search (TODO).
+
+\section{Lower bounds for \emph{solving}}
+\begin{prop}[PROVED, query/adversary] In the evaluation-oracle (black-box) model, deciding SAT for the family $\{C_a=\bigwedge_i \ell_i^{a_i}\}_{a\in\{0,1\}^n}\cup\{0\}$ requires $2^n$ evaluations in the worst case (adversary answers 0 until one candidate is left), although each $C_a$ has only $n-1$ gates, $2(n-1)$ wires.\end{prop}
+Interpretation: small circuits ($w=O(n)$) are already black-box hard, so any algorithm beating $2^n$ \emph{must} read the wiring. This is the natural interface for the wire-by-wire program: a lower bound must show that reading wires cannot help \emph{enough} for dense, reconvergent wirings.
+\begin{prop}[PROVED, trivial] Any algorithm needs $\Omega(w)$ time/reads (relevant wires must be read when the circuit is the input) in the standard encoding.\end{prop}
+
+\section{Parameterized landscape}
+\begin{center}\begin{tabular}{@{}lll@{}}\toprule
+parameter & upper bound (KNOWN) & lower bound\\\midrule
+$n$ & $2^n\mathrm{poly}(w)$ & CONDITIONAL: SETH $\Rightarrow$ no $(2-\varepsilon)^n\mathrm{poly}$ for CNF-SAT; circuit version inherits\\
+$\mathrm{tw}$ & $2^{O(\mathrm{tw})}w$ & CONDITIONAL: SETH $\Rightarrow$ no $(2-\varepsilon)^{\mathrm{tw}}\mathrm{poly}$ (Lampis et al., primal-tw SAT)\\
+$\mathrm{tw}=1$ (trees) & $O(w)$ & matches Prop.~4 (tight)\\
+unconditional, any & --- & only $\Omega(w)$; best general circuit-size bounds $\approx 3.1n$--$5n$ gates for explicit functions (Li--Yang 2022: $3.1n-o(n)$) \\\bottomrule\end{tabular}\end{center}
+(Table entries from memory of the literature; to be re-verified with sources in a later run before being relied on.)
+
+\section{Candidate program (CANDIDATE / OPEN)}
+Define $\lambda(n,r)$ = least time of a correct SAT algorithm on all $n$-input circuits with $r$ reconvergent wires. Known: $\lambda(n,0)=\Theta(n)$ (trees); $\lambda(n,r)\le 2^{\min(n,O(r))}\mathrm{poly}$ (branch on $r$ fan-out stems: cutting $r$ reconvergence points leaves a tree). \textbf{Conjecture (CANDIDATE):} $\lambda(n,r)\ge 2^{\Omega(r)}$ for $r\le n$ in a restricted model (e.g.\ DPLL/resolution-style or monotone branching), then lift. Prop.~3 is the $r=n$ black-box end. The upper bound $2^{O(r)}$ (stem-cutting) is a PROVED easy fact: fixing the $r$ stems makes the rest fan-out-free.
+Open arrows: (i) a general-model lower bound in $r$ (essentially OPEN, implies superpolynomial bounds when $r=\omega(\log w)$); (ii) relation to treewidth: $\mathrm{tw}\le r+1$.
+
+\section{Repository cross-check (j15marti/pnp)}
+Repo spine is the ARC/FLMV time--space contraction program (see \texttt{AGENTS.md}, root \texttt{main.tex}); its status is OPEN, with the finite-reduction traces explicitly \emph{not} giving a decision-time lower bound. No directly reusable theorem for the wire-counting program found this run; possibly relevant: the SIL/M22 parameterized resource ledger (\texttt{research/language/2026-10-25\_0005\_*}) as a source of charged-resource accounting. Not read in depth yet.
+
+\section{Run log}
+\begin{itemize}
+\item Run 1 (2026-10-27): created document; Props 1--4, exact min-circuit table $n\le3$; stem-cutting upper bound; conjecture stated. Next: $n=4$ table, verify literature table, study DPLL-style lower bound in $r$, read M22 ledger.
+\end{itemize}
+\end{document}
