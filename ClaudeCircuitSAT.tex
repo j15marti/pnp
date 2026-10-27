@@ -1,0 +1,53 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append-only run log + edited-in-place ledger
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,geometry}
+\geometry{margin=1in}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\title{ClaudeCircuitSAT: a stepwise wire-ledger lower-bound programme for Circuit-SAT}
+\author{Scheduled research routine (Claude)}
+\date{Last updated: 2026-10-27 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing below is an unconditional super-linear lower bound for Circuit-SAT. Status labels: PROVED, COMPUTATIONAL, KNOWN, CANDIDATE, OPEN.
+
+\section{Programme}
+Build Circuit-SAT bottom-up. Fix basis $B_2$ (all 2-input gates, free negation). A circuit has $n$ inputs, $g$ gates, $w=2g$ gate-input wires (plus output marker). The parameters are $(n,g,w)$ and later depth/fan-out. For each stage record (i) the minimum number of gates/wires needed to \emph{build} the circuits whose satisfiability is asked, and (ii) a lower bound on the work to \emph{decide} satisfiability, as a function of the parameters.
+
+\section{Stage A: building ledger (COMPUTATIONAL)}
+Script \texttt{experiments/claude\_circuitsat/min\_circuit\_size.py} computes by exhaustive closure the exact minimum $B_2$ size $C(f)$ of every $f:\{0,1\}^n\to\{0,1\}$, $n\le 3$ (raw: \texttt{results/raw/claude\_circuitsat/}). Run time a few seconds.
+\begin{center}\begin{tabular}{lcccccc}\toprule
+$n$ & \#functions & $C=0$ & $C=1$ & $C=2$ & $C=3$ & $C=4$\\\midrule
+2 & 16 & 6 & 10 & -- & -- & --\\
+3 & 256 & 8 & 30 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+Named $n=3$ values: $C(\mathrm{AND}_3)=C(\mathrm{OR}_3)=C(\mathrm{XOR}_3)=2$, $C(\mathrm{MUX})=3$, $C(\mathrm{MAJ}_3)=C(\mathrm{EXACT}_1)=4$ (the maximum). These match the known $B_2$ values, a sanity check on the code. Tracked minimal wire counts: $w_{\min}=2C$ for formulas; the fan-out-aware count is $\ge n+C-1$ distinct signals feeding the output cone (Lemma 1).
+
+\begin{lemma}[Connectivity, PROVED]
+If $f$ depends on all $n$ inputs, any fan-in-2 circuit for $f$ has $\ge n-1$ gates and $\ge 2(n-1)$ gate-input wires.
+\end{lemma}
+\emph{Proof.} The output cone is a connected DAG reaching $n$ input leaves; a fan-in-2 DAG with a single sink and $n$ sources has at least $n-1$ internal nodes (each gate merges at most two components in the undirected spanning argument). Each gate has two input wires. \qed
+
+\section{Stage B: decision lower bound in the read model (PROVED, linear)}
+Instance encoding: gate list, each gate $(\text{op},\text{src}_1,\text{src}_2)$; algorithm has random-access read-only input; cost = cells read.
+
+\begin{proposition}[Read lower bound]
+Any deterministic algorithm deciding Circuit-SAT on instances with $g$ gates reads at least $g$ gate descriptors on some instance; with parameter $n$ the bound is $\Omega(n+g)$.
+\end{proposition}
+\emph{Proof.} Take $I_0$: chain $h_i=h_{i-1}\wedge x_{i+1}$, $i=1..g$ ($n=g+1$), satisfiable. If the algorithm leaves descriptor $i$ unread on $I_0$, replace gate $i$ by $h_i=h_{i-1}\wedge\bot$ (constant-0 source). The view is identical but the instance is unsatisfiable, contradiction. So all $g$ descriptors, hence $\ge g=n-1$ cells, are read. \qed
+
+This is the trivial end of the ledger: it shows the \emph{parametrised linear floor} $T(n,g)\ge g$. Gate elimination is the known route beyond (KNOWN: $3n-o(n)$ for explicit functions in $B_2$, Li--Yang STOC'22 improved to $3.1n-o(n)$); those bound circuit size of a fixed function, not the time to decide SAT.
+
+\section{Next steps (CANDIDATE / OPEN)}
+\begin{enumerate}
+\item Extend Stage A to $n=4$ ($C_{\max}=7$ known) with a pruned search; add wire-count (fan-out) minima, not just gates.
+\item Stage B': restrict instances to a hard family (e.g.\ XOR-chains with a hidden constraint) and compute exact decision-tree complexity for small $(n,g)$ by exhaustive minimax; look for a gap above the $g$ floor that depends on $n$ and $g$ separately.
+\item Parametrised target: time $\ge f(n)\cdot g^{c}$ in a restricted model (read-once branching programs / bounded-depth); OPEN.
+\item Mine the repository (below) for a link that turns a finite trace into a bound.
+\end{enumerate}
+
+\section{Repository check (j15marti/pnp)}
+Surveyed \texttt{AGENTS.md}, \texttt{research/coordination/} handoffs, and \texttt{GROKPROOF/}. The active spine is ARC/FLMV simultaneous time--space contraction; its notes state ARC-EDGE-90 and P vs NP are OPEN, and Circuit-SAT appears only as supporting material (circuit-scan/select handoffs, 2026-10-27). No result found there that yields an unconditional Circuit-SAT lower bound beyond linear; I did not read the full corpus this run. Nothing in this document modifies or relies on those files.
+
+\section{Run log}
+\begin{itemize}
+\item Run 1 (2026-10-27): created document; Stage A exact tables $n\le3$; Lemma 1; read-bound proposition.
+\end{itemize}
+\end{document}
