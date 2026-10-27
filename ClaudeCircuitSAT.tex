@@ -1,0 +1,76 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-10-27T13:45Z
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\newcommand{\SAT}{\mathrm{CircuitSAT}}
+\begin{document}
+\title{ClaudeCircuitSAT: a wire-by-wire, parameterized lower-bound ladder for Circuit-SAT}
+\author{Living document (scheduled hourly runs)}
+\date{Last updated 2026-10-27 13:45 UTC}
+\maketitle
+
+\paragraph{Status discipline.} PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+\textbf{No unconditional super-polynomial lower bound for Circuit-SAT is claimed; P versus NP remains OPEN.}
+
+\section{Goal and method}
+Build circuits step by step (gate by gate, wire by wire), track the minimal number of
+gates/wires needed at each step, grow the number $n$ of inputs, and track what any
+decider for $\SAT$ must pay as a function of the parameters $(n,s,w)$:
+inputs, gates, wires. Models: fan-in-2 gates over the full basis $B_2$ unless stated.
+
+\section{Level 0--1: structural (wire) lower bounds}
+\begin{prop}[PROVED/EXACT] A fan-in-2 circuit whose output depends on all $n$ inputs has $s\ge n-1$ gates, hence at least $2(n-1)$ gate-input wires.
+\end{prop}
+\emph{Proof.} Every input needs a directed path to the output; contract the DAG of relevant gates: each fan-in-2 gate merges at most two components, so connecting $n$ inputs needs $\ge n-1$ gates. \qed
+
+\begin{prop}[PROVED/EXACT, read-all bound] Any deterministic decider for $\SAT$ given the circuit as a read-only list must probe $\ge n-1$ gate descriptions on the instance family $C_n=\bigwedge_{i}x_i$ (balanced AND tree).
+\end{prop}
+\emph{Proof.} $C_n$ is satisfiable. If gate $g$'s type is never probed, replace it by the constant-FALSE gate: the probe transcript is identical but the new circuit is unsatisfiable. \qed
+
+So the input-size bound is $\Omega(s)$ with the wire count $w=2s$ as parameter; this is the trivial floor of the ladder.
+
+\section{Level 2: black-box (evaluation-only) bound}
+\begin{prop}[PROVED/EXACT] Any deterministic algorithm that only evaluates an unknown $f:\{0,1\}^n\to\{0,1\}$ needs $2^n$ evaluations to decide satisfiability in the worst case (adversary answers 0 until one point remains).
+\end{prop}
+This does not transfer to the circuit-given model: reading wires gives structure. Gap between $\Omega(s)$ (circuit given) and $2^n$ (black box) is exactly where the open problem sits.
+Best known upper bound for general circuits remains $2^n\cdot\mathrm{poly}(s)$; improvements $(2-\varepsilon)^n$ are ruled out only \emph{conditionally} (SETH-type hypotheses, CONDITIONAL, not used as proof).
+
+\section{Exact minimal circuits for small $n$ (COMPUTATIONAL)}
+Exhaustive BFS over sets of available truth tables (code: \texttt{experiments/circuitsat/min\_gates\_B2.py};
+raw data: \texttt{results/raw/circuitsat\_min\_gates\_B2.json}; runtime $<10$ s). Number of functions by minimum fan-in-2 $B_2$ gate count
+(constants and literals cost 0; negation free):
+\begin{center}\begin{tabular}{lccccc}\toprule
+$n$ & 0 gates & 1 & 2 & 3 & 4\\\midrule
+1 & 4 & 0&0&0&0\\
+2 & 6 & 10 & 0&0&0\\
+3 & 8 & 30 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+Totals $4,16,256$ check. For $n=3$ the maximum cost is 4 gates (8 wires) and all 256 functions are covered. $n=4$ requires a smarter search (naive BFS exceeds the 30\,s rule; see plan).
+
+Base case: for $s\le1$ gate, $\SAT$ is decided in $O(1)$ time by checking the gate type (only the constant-FALSE gate is unsatisfiable).
+
+\section{Parameterized ladder (current state)}
+\begin{center}\begin{tabular}{p{2.2cm}p{5cm}p{3.5cm}l}\toprule
+Level & Class / parameters & Lower bound known & Status\\\midrule
+L0 & any circuit, $s$ gates & $\Omega(s)$ reading & PROVED\\
+L1 & trees/formulas, $n$ inputs & $\Omega(n)$; SAT in $O(s)$ for read-once formulas & KNOWN\\
+L2 & black box on $n$ bits & $2^n$ evaluations & PROVED\\
+L3 & general circuit, $(n,s)$ & none beyond $\Omega(s)$ & OPEN\\
+L4 & $s=O(n)$, fixed depth & SETH-conditional only & CONDITIONAL\\\bottomrule\end{tabular}\end{center}
+
+\section{Cross-check with repository j15marti/pnp}
+Surveyed root \texttt{main.tex} (2026-10 snapshot): executive status is ``P versus NP remains OPEN''; spine is ARC/FLMV simultaneous time--space contraction, with ARC-EDGE-90 OPEN; SIL/M22 resource ladder is a finite reduction trace with no unconditional lower bound.
+Link to this document: the repo's ``fully charged'' resource ledger is the same bookkeeping idea as wires/gates here; no theorem there currently supplies a Circuit-SAT lower bound, so nothing is imported. Transfer status: ANALOGY needing a new bridge.
+
+\section{Plan for next runs}
+\begin{enumerate}
+\item Extend exact minimal-size tables to $n=4$ via canonical-form DP (chunked, $\le30$ s per stage).
+\item Define the ``wire ledger'' of an incremental build: for a build sequence $C_1\subset C_2\subset\cdots$ record (gates, wires, fan-out, depth) per step; look for monotone invariants forcing $\ge$ exponentially many consistent partial assignments.
+\item Study restricted classes with real unconditional bounds (monotone circuits, bounded-width read-once branching programs) to see which parameter (width, fan-out) controls the SAT cost; target parameterized bound of form $f(k)\cdot s^{\Omega(k)}$ for a structural parameter $k$.
+\item Audit any candidate against relativization/natural-proofs/algebrization barriers.
+\end{enumerate}
+
+\section*{Run log}
+\begin{itemize}
+\item 2026-10-27 13:45 UTC: document created; L0--L2 propositions; exact min-gate tables $n\le3$. Fixed two script bugs en route (non-dependent-gate filter; complement costing). No open arrow closed.
+\end{itemize}
+\end{document}
