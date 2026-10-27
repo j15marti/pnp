@@ -1,0 +1,70 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{prop}{Proposition}
+\theoremstyle{definition}\newtheorem{defn}{Definition}
+\newcommand{\SAT}{\mathrm{CircuitSAT}}
+\title{ClaudeCircuitSAT: a wire-by-wire, parameterized ladder toward lower bounds for Circuit-SAT}
+\author{Living document (hourly scheduled runs)}
+\date{Last updated: 2026-10-27, run 1}
+\begin{document}\maketitle
+
+\section*{0. Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial lower bound for Circuit-SAT. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup and parameters}
+An instance is a circuit $C$: $n$ inputs, $g$ fan-in-2 gates (AND with free negation on wires, i.e.\ an AIG), one output. Wires $w$ = gate-input edges $=2g$. Instance size $m=g+n$. Question: $\exists x\; C(x)=1$?
+Parameters: $n$ (inputs), $g$ or $w$ (wires), and optionally treewidth $k$, depth $d$. A parameterized bound has the form $T(n,w,k)\ge f(n,w,k)$.
+
+\section{Ladder, step 1: connectivity cost of ``using'' $n$ inputs}
+\begin{lemma}[PROVED/EXACT]\label{lem:conn}
+If the output of a fan-in-2 circuit depends on (is connected to) all $n$ inputs, then $g\ge n-1$ and $w\ge 2n-2$. Both are tight for $\mathrm{AND}_n$.
+\end{lemma}
+\begin{proof} The underlying undirected graph on the $n+g$ nodes that reach the output is connected, so has $\ge n+g-1$ edges; it has $\le 2g$ edges. Hence $g\ge n-1$ and $w=2g\ge 2n-2$. A balanced AND tree attains equality.\end{proof}
+
+\section{Ladder, step 2: exact gate/wire minima for all functions, $n\le3$}
+Exhaustive iterative-deepening search over AIGs (script \texttt{experiments/claude\_circuitsat/aig\_ladder.py}, output \texttt{results/raw/claude\_circuitsat\_aig\_ladder.json}). Histogram of the minimum gate count over all $2^{2^n}$ functions (COMPUTATIONAL):
+\begin{center}\begin{tabular}{@{}cccc@{}}\toprule
+$n$ & functions & hardest $g_{\min}$ (wires $2g$) & histogram $g\mapsto\#$\\\midrule
+1 & 4 & 0 (0) & 0:4\\
+2 & 16 & 3 (6) & 0:6, 1:8, 3:2 (XOR/XNOR)\\
+3 & 256 & 6 (12) & 0:8, 1:24, 2:64, 3:30, 4:104, 5:8, 6:18\\\bottomrule
+\end{tabular}\end{center}
+The 18 functions at $g=6$ include $\mathrm{XOR}_3$. Gate counts are minima over circuits that may share subcircuits (DAGs), no restriction on depth. Run-time note: the $n=3$ stage took about 54\,s, exceeding the 30\,s repository guideline; $n=4$ is not feasible this way and must be chunked by NPN class or done with a SAT-based exact synthesis in later runs.
+
+\section{Ladder, step 3: a query lower bound linear in wires}
+Model: the algorithm accesses $C$ by queries to individual gate records (each record = the two source pointers and two negation bits).
+\begin{prop}[PROVED/EXACT, query model only]\label{prop:query}
+Every deterministic algorithm deciding $\SAT$ on circuits with $g$ gates makes at least $g$ queries (hence $\Omega(w)$).
+\end{prop}
+\begin{proof} Let $C$ be the chain $g_1=x_1\wedge x_2$, $g_i=g_{i-1}\wedge x_{i+1}$; it is satisfiable. Let $C^{(j)}$ change only gate $j$ to $g_j=g_{j-1}\wedge\neg g_{j-1}$ (for $j=1$ use $x_1\wedge\neg x_1$); $C^{(j)}$ is unsatisfiable. If on input $C$ the algorithm never queries record $j$, its transcript on $C^{(j)}$ is identical, so it answers wrongly on one of them. Hence all $g$ records are queried on $C$.\end{proof}
+\emph{Limits.} This is an input-reading bound, not a computational one; it says nothing about $2^{\Omega(n)}$ behaviour and does not transfer to Turing-machine time beyond linear. The repository's indexed-RAM/INDEX--DISJ materials (commit ``SAT INDEX/DISJ communication embeddings'') deal with the model-matching issue and I have not yet audited them.
+
+\section{Parameterized upper bounds and conditional lower bounds (context)}
+\begin{itemize}
+\item KNOWN: brute force $O(2^n\, w)$; dynamic programming over a width-$k$ tree decomposition gives $2^{O(k)}\,\mathrm{poly}(w)$.
+\item CONDITIONAL (SETH): no $O((2-\varepsilon)^n\,\mathrm{poly}(w))$ algorithm, since CNF-SAT is a special case of $\SAT$. Not unconditional.
+\item KNOWN (cited from memory, not re-verified this run): explicit-function \emph{circuit-size} lower bounds via gate elimination are linear, currently about $3.1n$ over the full binary basis (Li--Yang, STOC 2022). These bound circuit size of a function, not the time to solve $\SAT$.
+\end{itemize}
+
+\section{Candidate parameterized target}
+\begin{itemize}
+\item[CANDIDATE] For a hard family with $w=\mathrm{poly}(n)$, show $T(n,w)\ge 2^{\Omega(n)}$; no route is known (this is essentially P vs NP).
+\item[CANDIDATE] For restricted algorithm classes (e.g.\ DPLL-style / bounded-width procedures), prove $T\ge 2^{\Omega(k)}$ in treewidth $k$ by a wire-cut adversary: each cut of $c$ wires leaves $2^c$ boundary states that must be distinguished. Needs an exact definition of the algorithm class; not done.
+\end{itemize}
+
+\section{Repository check ($j15marti/pnp$)}
+Read this run: \texttt{AGENTS.md} and file listings only (a deep read of the corpus was not done). The repository states P vs NP is OPEN, and that conclusions like an unconditional decision-time lower bound do not follow from its finite reductions. There are many \texttt{CIRCUIT\_*} handoffs (e.g.\ 2026-10-26 ``CIRCUIT\_BITONIC\_TILE166'', ``CIRCUIT\_RECORD\_OUTPUT\_SELECT169'') and the SIL/M22 resource ladder; none were audited for reuse yet.
+
+\section{Next steps}
+\begin{enumerate}
+\item Audit the \texttt{CIRCUIT\_*} handoffs and the SIL/M22 ladder for any wire-count lemma that can be imported with exact model matching.
+\item Extend the exact table to $n=4$ via NPN classes or SAT-based synthesis (chunked).
+\item Formalize the wire-cut adversary for a precise restricted algorithm class and prove or falsify the treewidth bound.
+\item Check the primary literature (gate elimination, Circuit-SAT exact algorithms) and replace the memory-cited item above with a verified citation.
+\end{enumerate}
+
+\section*{Log}
+\textbf{Run 1 (2026-10-27):} document created; Lemma~\ref{lem:conn}, Prop.~\ref{prop:query}, $n\le3$ table. No web search, no deep corpus read.
+\end{document}
