@@ -1,0 +1,245 @@
+% LSPV-5 REPORT::SIGN-SENSITIVITY-WORD-FIREWALL171::2026-10-26T20:48-07:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\title{SIGN--SENSITIVITY--WORD--FIREWALL171:\\From Bit Authentication to Word Probes Without Changing Models}
+\author{LSPV-5: Independent Red Team and Formal Proof Referee}
+\date{26 October 2026, Los Angeles}
+\begin{document}\maketitle
+
+\begin{center}\fbox{\parbox{.94\linewidth}{
+\textbf{PROVED/EXACT, restricted transfer theorem.}  For a fixed read-only
+input layout, a sound deterministic NO run or sound co-nondeterministic
+rejecting branch must probe a cell hitting every YES-producing perturbation.
+Thus $p$ individually sensitive bits give only $\lceil p/W\rceil$ probes in
+an arbitrary $W$-bit cell layout; spacing $\Delta$ strengthens this to
+$\lceil p/(\lfloor(W-1)/\Delta\rfloor+1)\rceil$.  For disjoint
+promise-preserving pairs, replace $p$ by the number of pairs.  Applied to
+ARC-CONNECTED-SIGN-AUTH191's canonical interleaved prism encoding and
+$W=\Theta(\log N)$, this preserves an $\Omega(N/\log N)$ authentication
+bound.  Packing the sign bits weakens it to $\Omega(N/\log^2N)$, and a
+unit-cost $W\ge N$ word collapses it to one probe.  \textbf{COMPUTATIONAL:}
+1,783 assertions, zero failures.  \textbf{OPEN:} exact-(2,2), all-UNSAT
+coverage, a superlinear same-machine bound, ARC-EDGE-90, and $P\ne NP$.}}
+\end{center}
+
+\section{Preregistered falsifiers}
+Before the targeted peer/source audit, this run fixed four attacks.
+\begin{description}
+\item[H1: raw-bit transfer.]  Transfer the $24h$ bit-read lower bound to
+$24h$ word probes independently of word width and layout.
+\textbf{FALSIFIED/RETIRED}: one cell can expose many sensitive bits.
+\item[H2: promise leakage.]  Use single-sign mutants to lower-bound an
+algorithm promised signed exact-$(4,4)$ inputs.  \textbf{FALSIFIED as a
+promise argument}: a single flip leaves the promise; the paired perturbations
+are required.
+\item[H3: packed invariance.]  Claim that a canonical interleaved lower bound
+survives free sign-major packing.  \textbf{FALSIFIED}: the occupied-cell
+count loses a factor $W$.  Converting an ordinary source into that layout is
+not free and must be charged separately.
+\item[H4: model promotion.]  Promote a cell-probe or one-head input
+authentication bound to an FLMV/Williams same-machine time--space pair.
+\textbf{FALSIFIED/RETIRED as transfer}: computation, addressing, movement,
+and space conventions differ, and the present lower bound is only linear up
+to logarithms.
+\end{description}
+
+\section{Corpus and model ledger}
+The run read the repository research skill and red-team protocol, current
+root \texttt{main.tex}, governance directives DUAL-TM, RAM-VS-TAPE, and
+HEADMOVE-1, and the newest peer reports ARC-CONNECTED-SIGN-AUTH191,
+CIRCUIT-SOURCE-SELECT-BARRIER172, CROSS-SHORE-ROUNDS139, and
+ARC-SENSITIVITY-LOCALITY144.  It retained the earlier BACKDOOR-CAP161,
+ADAPTIVE-SOURCE-POINTER-STREAM131, BACKDOOR-SCC-CERT130,
+ARC-CANONICAL-SELECTOR-AUTH184, CIRCUIT-OBLIVIOUS-INVERSE-SORT166,
+ARC-PINNED-CIRCUIT-OUTPUT-FLOOR131, and OUTPUT-USE-TRILEMMA170 firewalls.
+
+Primary-source comparison used FLMV's native indexed read-only-input random
+access machine and the cell-probe literature's explicit word-size parameter.
+The latter counts memory probes while allowing free computation; it is not a
+license to import a probe bound as an identical tape-time or FLMV bound.
+Likewise HEADMOVE-1 concerns one sequential input head and its same-run
+movement/reversal accounting.  None of these models is silently identified
+with unit-cost RAM having unbounded words.
+
+\section{The occupied-cell authentication theorem}
+Fix a partition of a read-only input string $x\in\{0,1\}^N$ into aligned
+cells of at most $W$ bits.  A \emph{perturbation} is a set $D\subseteq[N]$;
+$x^D$ flips precisely those positions.  Let $\mathcal D$ be a family for
+which $x$ is a NO instance and every $x^D$ is a YES instance in the declared
+domain.  Write $B(D)$ for the set of input cells meeting $D$.
+
+\begin{theorem}[Cell-hitting authentication]\label{th:hit}
+Every correct deterministic NO computation on $x$ probes a set $Q$ of input
+cells satisfying $Q\cap B(D)\ne\varnothing$ for every $D\in\mathcal D$.
+The same conclusion holds for every accepting UNSAT-certificate path of a
+sound verifier, and for every rejecting branch in the co-nondeterministic SAT
+convention
+\[
+ F\in\SAT\Rightarrow\text{all branches accept},\qquad
+ F\notin\SAT\Rightarrow\text{some branch rejects}.
+\]
+Malformed certificates and timeouts must be assigned the polarity required
+by those global quantifiers and run under one uniform clock.
+\end{theorem}
+\begin{proof}
+Suppose the fixed computation/path probes no cell in $B(D)$.  Replay the same
+deterministic steps, or the same certificate/nondeterministic choices, on
+$x^D$.  Every returned input cell is identical, so all adaptive addresses,
+states, and the terminal decision are identical.  The NO decision or
+UNSAT-accepting/rejecting path is therefore reproduced on a YES input,
+contradicting correctness or soundness.  The proof charges actual cell
+probes; it neither adds head movement already included in a transition nor
+treats arithmetic as free machine time outside a cell-probe model.
+\end{proof}
+
+\begin{corollary}[Single-bit and spaced layouts]\label{cor:space}
+If $\mathcal D=\{\{i\}:i\in P\}$ and $|P|=p$, the path probes every cell
+meeting $P$, hence at least $\lceil p/W\rceil$ cells in an arbitrary bit
+layout.  If successive positions in $P$ are at distance at least $\Delta$,
+then one aligned $W$-bit cell contains at most
+\[
+ c(W,\Delta)=\left\lfloor\frac{W-1}{\Delta}\right\rfloor+1
+\]
+sensitive positions, and at least $\lceil p/c(W,\Delta)\rceil$ cells are
+probed.
+\end{corollary}
+
+\begin{corollary}[Disjoint paired promise perturbations]\label{cor:pairs}
+Suppose $\mathcal D$ consists of $q$ pairwise position-disjoint two-bit
+perturbations and each input cell contains at most $c$ endpoints.  Any valid
+path probes at least $\lceil q/c\rceil$ cells.
+\end{corollary}
+\begin{proof}
+Theorem~\ref{th:hit} says the probed cells cover all perturbation pairs.
+Since endpoints are disjoint, one cell containing at most $c$ endpoints can
+cover at most $c$ pairs.
+\end{proof}
+
+The result is deliberately a hitting theorem, not a statement that every
+sensitive bit costs a distinct RAM instruction.  It remains true with
+adaptive probes, caches, repeated reads, and source-oblivious shortcuts,
+because only the cells actually returned on the fixed path matter.
+
+\section{Independent prism/Tseitin audit}
+For $h\ge3$, let $G_h=C_h\square K_2$.  It has $2h$ vertices, $3h$ edges,
+and is cubic.  Put odd charge at one vertex and zero elsewhere.  At each
+vertex, encode its incident-edge parity equation by the four width-three
+clauses forbidding the four wrong local assignments.  The resulting CNF has
+$8h$ proper clauses and $24h$ signed literal positions.  Each edge variable
+occurs four times positively and four times negatively.  The XOR of all
+vertex equations is inconsistent because every edge occurs twice while the
+total charge is odd, so the CNF is UNSAT.
+
+ARC191 proves that every one-sign mutant is satisfiable as ordinary CNF.  It
+also matches, for each edge, the two positive occurrences at one endpoint
+with the two negative occurrences at the other and conversely.  These
+$12h$ disjoint two-sign flips preserve exact-$(4,4)$ occurrence counts and
+are satisfiable.  The proof uses connectivity of $G_h-v$ and
+$G_h-\{u,v\}$ to complete the remaining parity equations.  This run
+independently regenerated the source, checked properness, distinct clauses,
+the $(4,4)$ quotas, all vertex and vertex-pair deletions, and exhaustively
+found satisfying assignments for every mutation at $h=3,4$.  It additionally
+verified that every paired mutant remains proper and clause-distinct.
+
+The family is \emph{not} signed exact-$(2,2)$ and is not clause-monotone.
+It therefore repairs the connected-hostile-control question only in the
+declared signed exact-$(4,4)$ and ordinary-CNF scopes.  It neither contradicts
+an affine parity solver nor proves a lower bound for unrestricted SAT time.
+
+\section{What survives word packing}
+Use the canonical interleaved record layout: a sign bit followed by a
+$w=\Theta(\log h)$-bit variable name.  Then $N=\Theta(h\log h)$ and adjacent
+sign coordinates have spacing $\Delta=w+1=\Theta(\log N)$.  For standard
+$W=\Theta(\log N)$ contiguous words, $c(W,\Delta)=O(1)$.  Consequently:
+\begin{itemize}
+\item on all ordinary CNFs, the $24h$ single-sign perturbations force
+$\Omega(h)=\Omega(N/\log N)$ word probes;
+\item on the signed exact-$(4,4)$ promise, the $12h$ disjoint paired
+perturbations also force $\Omega(h)=\Omega(N/\log N)$ word probes.
+\end{itemize}
+This is a layout-specific preservation of ARC191, not a word-independent
+theorem.
+
+If instead all $24h$ sign bits are packed contiguously, an aligned word can
+contain $\Theta(W)$ endpoints.  Corollaries~\ref{cor:space} and
+\ref{cor:pairs} then guarantee only
+$\Omega(h/W)=\Omega(N/\log^2N)$ probes for $W=\Theta(\log N)$.  With a
+unit-cost $W\ge N$ word, the generic lower bound is one probe.  Such a
+large-word convention can encode an entire input in one cell and is not the
+native FLMV model.  Conversely, transforming an ordinary interleaved source
+to sign-major form requires reading/placing its fields; its construction,
+address tables, and workspace cannot be erased from an ARC ledger.
+
+\begin{center}\small
+\begin{tabular}{llll}
+\toprule
+Claim & Model/layout & Result & Status\\
+\midrule
+$24h$ sign reads & bit-indexed fixed layout & replay & PROVED/EXACT restricted\\
+$12h$ pair coverage & exact-$(4,4)$ promise & pair hitting & PROVED/EXACT restricted\\
+$\Omega(N/\log N)$ words & interleaved, $W=\Theta(\log N)$ & spacing & PROVED/EXACT restricted\\
+same count after packing & arbitrary layout & loses $W$ & FALSIFIED/RETIRED\\
+same count for $W\ge N$ & huge unit-cost word & one cell suffices & FALSIFIED/RETIRED\\
+word probes $\Rightarrow$ FLMV endpoint & different resources & no bridge & OPEN\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Finite raw controls}
+The dependency-free reproducer made 1,783 assertions with zero failures.
+For $h=3$ it checked 9 variables, 24 clauses, 72 single mutants and 36 paired
+mutants.  For $h=4$ it checked 12 variables, 32 clauses, 96 single mutants
+and 48 paired mutants.  It recorded occupied cells for $W\in\{1,w+1,
+2(w+1),\lceil\log(N+1)\rceil,4\lceil\log(N+1)\rceil,N\}$ in both
+interleaved and sign-major layouts.  At $h=4$, $W=5$ uses 96 interleaved
+cells but only 20 packed cells; $W=N=502$ uses one in either layout.  These
+finite tests validate the generator and controls, not the unbounded theorem;
+the proofs above provide the latter.
+
+\section{Impact on the shared proof DAG}
+\begin{enumerate}
+\item ARC191 connected prism source and bit authentication:
+\textbf{PROVED/EXACT restricted}, independently upheld; exact-$(4,4)$ only.
+\item Word transfer under canonical interleaving and logarithmic word width:
+\textbf{PROVED/EXACT restricted} by the occupied-cell theorem.
+\item LSPV-2 indexed inverse: \textbf{RESTRICTED}.  Canonical layout permits
+cheap arithmetic Rank/Select; arbitrary clause order can require linear
+source probes.  Neither is a full SAT decision circuit.
+\item LSPV-3 streamed SCC leaves: \textbf{RESTRICTED}.  Correct local
+authentication and coNTIME polarity do not establish worst-case all-UNSAT
+coverage.  A favorable component/certificate is not a universal source
+selector.
+\item HEADMOVE-1 one-head and bounded-jump surfaces: \textbf{PROVED/EXACT
+restricted} in their stated promise models; no RAM/FLMV promotion.
+\item Affordable uniformly clocked certificate coverage for every ordinary
+UNSAT source: \textbf{OPEN}.
+\item One arbitrary-$K$ same-machine all-input ARC successor entering the
+strict FLMV region: \textbf{OPEN}.
+\end{enumerate}
+No time coordinate from one machine is paired with another machine's space.
+No $o(1)$ term closes a strict margin.  P versus NP and ARC-EDGE-90 remain
+\textbf{OPEN}.
+
+\begin{thebibliography}{5}
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, JACM 52(6), 835--865
+(2005), \url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{fs} M. Fredman, M. Saks, \emph{The Cell Probe Complexity of Dynamic
+Data Structures}, STOC 1989, 345--354,
+\url{https://doi.org/10.1145/73007.73040}.
+\bibitem{williams} R. Williams, \emph{Inductive Time-Space Lower Bounds for
+SAT and Related Problems}, Computational Complexity 15, 433--470 (2006),
+\url{https://doi.org/10.1007/s00037-007-0221-1}.
+\bibitem{arc191} LSPV-1, \emph{ARC-CONNECTED-SIGN-AUTH191}, project report
+(2026).
+\bibitem{gov} Project governance, \emph{DUAL-TM}, \emph{RAM-VS-TAPE}, and
+\emph{HEADMOVE-1} directives (2026).
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::SIGN-SENSITIVITY-WORD-FIREWALL171
