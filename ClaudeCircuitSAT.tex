@@ -1,0 +1,53 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-27 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder toward parameterized lower bounds for Circuit-SAT}
+\date{Living document; run 1 on 2026-10-27}
+\begin{document}\maketitle
+
+\section*{Status (strict labels)}
+\textbf{P versus NP remains OPEN.} No unconditional super-polynomial white-box lower bound for Circuit-SAT is claimed here.
+Everything below is labelled PROVED/EXACT, COMPUTATIONAL, KNOWN (recalled, not re-verified this run), CANDIDATE, or OPEN.
+
+\section{Model}
+A circuit $C$ has $n$ inputs and $g$ binary gates over the full basis $B_2$ (negation free), hence $w=2g$ in-wires; size is $s=g$.
+$\mathrm{SAT}(C)$: does some $x\in\{0,1\}^n$ give $C(x)=1$?
+Ladder: for $n=1,2,3,\dots$ record (i) the minimum construction cost (gates/wires) of the instances, (ii) the lower bound on deciding them, in a stated algorithm model.
+
+\section{Construction ladder (wires)}
+\begin{theorem}[PROVED/EXACT] A connected fan-in-2 circuit depending on all $n$ inputs has $g\ge n-1$ gates and $w\ge 2(n-1)$ wires; equality holds for a tree.\end{theorem}
+\begin{proof} The underlying graph has $n+g$ nodes, $2g$ edges, and is connected, so $2g\ge n+g-1$. A balanced tree attains it.\end{proof}
+
+\begin{table}[h]\centering\begin{tabular}{rrrl}\toprule
+$n$ & functions (mod negation) & max min-gates & distribution (gates:count)\\\midrule
+1 & 2 & 0 & 0:2\\
+2 & 8 & 1 & 0:3, 1:5\\
+3 & 128 & 4 & 0:4, 1:15, 2:57, 3:40, 4:12\\\bottomrule\end{tabular}
+\caption{COMPUTATIONAL: exact minimum $B_2$ circuit size by exhaustive BFS over straight-line programs
+(\texttt{experiments/claude\_circuitsat/mincirc.py}, raw \texttt{mincirc\_n*.json}). Max wires $=2\cdot$max gates: 0, 2, 8.
+$n=4$ (65536 functions, known max 7 gates) is not attempted yet: needs canonicalization/chunking.}\end{table}
+
+\section{Decision lower bounds in stated models}
+\begin{theorem}[PROVED/EXACT, black-box] Any deterministic algorithm that accesses $C$ only by evaluating $C(x)$ needs $2^n-1$ evaluations in the worst case to decide SAT.\end{theorem}
+\begin{proof} Adversary answers 0 until only one unqueried point remains; the circuit family ``accept exactly $a$'' for each $a$ is consistent with all answers so far.\end{proof}
+This is not a white-box bound; it shows only that any improvement must read the circuit structure.
+
+\begin{theorem}[PROVED/EXACT, reading bound] Any correct deterministic random-access SAT decider reads $\Omega(s)$ gates in the worst case.\end{theorem}
+\begin{proof} Let $C_0=\bigwedge_{i=1}^k(x_i\vee\neg x_i)$ (satisfiable), and $C_j$ be $C_0$ with gadget $j$ replaced by $x_j\wedge\neg x_j$ (unsatisfiable). The algorithm must output differently on $C_0$ and each $C_j$, so on $C_0$ it reads every gadget; $s=\Theta(k)$.\end{proof}
+
+\section{Parameterized view}
+Natural parameters: $n$; width $k$ (pathwidth/treewidth of the circuit graph); number of fan-out-$>1$ wires $f$ (a circuit with $f=0$ is a formula tree on distinct variables, hence read-once-like and trivial to decide in linear time for tree-shaped read-once instances).
+\begin{itemize}
+\item KNOWN: SAT in $2^{O(k)}\mathrm{poly}(s)$ by dynamic programming on a tree decomposition.
+\item KNOWN (recalled; verify citation next run): under SETH, no $(2-\epsilon)^{k}\mathrm{poly}$ algorithm for CNF-SAT in primal pathwidth. Conditional, not a proof of any lower bound.
+\item CANDIDATE: track the fan-out count $f$ as the ``wire cost of sharing''. Conjecture: SAT cost grows as $2^{\Theta(\text{cut of the shared-wire hypergraph})}$ for natural (non-clever) algorithms. Unproved; no model yet in which it is a theorem.
+\item OPEN: any unconditional white-box lower bound of form $2^{\Omega(k)}$ or $2^{\Omega(f)}$ for a general algorithm.
+\end{itemize}
+
+\section{Relation to the repository}
+Repo \texttt{j15marti/pnp} (this clone, \texttt{AGENTS.md} and recent log headers inspected only; no deep corpus review this run) records its ARC/FLMV time--space contraction program as OPEN, with no proved separation. No repository result is used here.
+
+\section{Next steps}
+(1) $n=4$ exact ladder in chunks $\le30$ s. (2) Exact minimum \emph{fan-out/sharing wires} needed for each function at $n\le3$ (the wire-sharing ledger). (3) Define a restricted but non-trivial algorithm model (e.g.\ DPLL/tree-like resolution on the circuit) and attempt a genuine parameterized lower bound in the sharing parameter. (4) Verify the SETH citation.
+\end{document}
