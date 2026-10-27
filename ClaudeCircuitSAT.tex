@@ -1,0 +1,62 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-27 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{ClaudeCircuitSAT: a stepwise, parameterized lower-bound ladder for Circuit-SAT}
+\date{Living document; append-only run log at the end}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains \OPEN.} Nothing below is an unconditional super-polynomial lower bound for general algorithms. Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Goal and method}
+Start from the smallest Circuit-SAT instances, add inputs $n$ and wires/gates $m$ one step at a time, record (i) the minimum number of gates/wires needed to build each circuit and (ii) the cost any solver must pay, as a function $T(n,m)$ (a parameterized bound). Each rung must state its computation model.
+
+\section{Rung 0--3: exact minimum circuit size (COMPUTATIONAL)}
+Basis: all 16 binary gates (negation costs one gate, as $g(x,x)$); fan-in 2; size = number of gates; wires $\le 2\cdot$size. Exhaustive level-by-level search over sets of computed truth tables
+(\texttt{experiments/claude\_circuitsat/2026-10-27\_min\_circuit\_ladder.py}, raw data \texttt{results/raw/claude\_circuitsat\_min\_size.json}, 15\,s).
+\begin{center}\begin{tabular}{@{}rrrrrrr@{}}\toprule
+$n$ & #functions & size 0 & 1 & 2 & 3 & 4\\\midrule
+1 & 4 & 3 & 1 & & & \\
+2 & 16 & 4 & 12 & & & \\
+3 & 256 & 5 & 33 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+So $\max_f C(f)=1,1,4$ for $n=1,2,3$. This is a finite fact; it does not extrapolate to a bound (Shannon counting gives $\max_f C(f)=\Theta(2^n/n)$ \textbf{KNOWN}, but not for explicit/SAT-relevant $f$).
+
+\section{Rung A: unique-satisfier circuits need $n-1$ gates (PROVED)}
+\begin{lemma} Any fan-in-2 circuit with one output whose function depends on all $n$ inputs has at least $n-1$ gates (hence $\ge n-1$ non-input wires into gates, and $\ge 2(n-1)$ wires if all gates have fan-in 2 and no input is unused).\end{lemma}
+\emph{Proof.} Every input must reach the output by a directed path, so the underlying graph restricted to the cone is connected on $n$ inputs plus $g$ gates; a fan-in-2 DAG with $g$ gates has at most $2g$ edges, and a connected graph on $n+g$ vertices needs $\ge n+g-1$ edges, so $2g\ge n+g-1$, i.e.\ $g\ge n-1$. \qed
+
+Exact for AND$_n$ (one satisfying assignment, up to negations): $n-1$ gates, matching the lemma ($n=3$: 2, consistent with the table).
+
+\section{Rung B: description-reading lower bound (PROVED, query model)}
+\textbf{Model.} The circuit is given as an array of gates; gate $i$ has a type and two pointer cells. A deterministic algorithm decides satisfiability, paying one unit per cell read.
+\begin{theorem} Deciding satisfiability needs $\ge k$ cell reads on instances with $m=\Theta(k)$ gates and $n=k$ inputs.\end{theorem}
+\emph{Proof.} Fixed public gates: $\neg x_i$ for each $i$, and an AND-tree over $h_1,\dots,h_k$. Gate $h_i=\mathrm{AND}(x_i,y_i)$ where the secret pointer cell $y_i$ points to $x_i$ (satisfiable) or to $\neg x_i$ ($h_i\equiv0$). On the all-good instance the output is satisfiable; flipping any single $y_j$ makes it unsatisfiable. If the algorithm reads fewer than $k$ pointer cells, some $y_j$ is unread, and it answers identically on the two instances, an error. \qed
+
+This is the trivial ``must read the input'' rung; it is the baseline of the parameterized bound $T(n,m)\ge m$.
+
+\section{Rung C: parameterized shape and what is missing}
+\begin{align*}
+\text{PROVED:}&\quad T_{\mathrm{query}}(n,m)\ge \Omega(m),\\
+\text{KNOWN upper bound:}&\quad T(n,m)\le O(2^n m),\\
+\text{CONDITIONAL (SETH/ETH-type):}&\quad T(n,m)\ge 2^{(1-o(1))n}\ \text{for}\ m=\mathrm{poly}(n),\\
+\text{OPEN, the target:}&\quad T(n,m)\ge \omega(\mathrm{poly}(n,m))\ \text{unconditionally.}
+\end{align*}
+The gap between $\Omega(m)$ and $2^{\Omega(n)}$ is exactly the open problem. The ladder's job is to find, rung by rung, an invariant (wire congestion, fan-out, cut width, number of distinct sub-functions at a frontier) that grows with $n$ and is forced on every solver, not only on circuit \emph{builders}. Caution: Rungs 0--3 and A bound the \emph{size of circuits computing $f$}, not the time of solvers for SAT on a circuit; conflating the two is the main failure mode (a lower bound on formulas is not a lower bound on algorithms deciding formula satisfiability).
+
+\section{Cross-reference to repository work (j15marti/pnp)}
+The repository's active spine is the ARC/FLMV time--space contraction program (root \texttt{main.tex}; all five scheduled roles; P versus NP \OPEN). The SIL/M22 parameterized resource ladder (\texttt{research/language/2026-10-25\_0005\_SIL\_M22\_PARAMETERIZED\_RESOURCE\_LADDER.md}) is the closest analogue of a step-by-step ledger; per AGENTS.md its finite trace gives no unconditional decision-time bound. No repository result is imported here as a theorem; adoption would require an explicit model correspondence.
+
+\section{Next rungs (planned)}
+\begin{enumerate}
+\item $n=4$ exact minimum sizes (65536 functions; needs chunked search, $\le 7$ gates).
+\item Minimum wires with fan-out cost (each wire counted per use), tracking wire-congestion across a cut for AND-chains vs.\ trees.
+\item Frontier-width invariant: for variable order $\pi$, count distinct subfunctions across each cut (OBDD width); examine whether any SAT-relevant lower bound survives optimization over $\pi$.
+\item Parameterize by treewidth/cutwidth $w$: known $2^{O(w)}m$ upper bound (KNOWN); try to show matching lower bound in a restricted model, then test which restriction can be lifted.
+\end{enumerate}
+
+\section*{Run log}
+\begin{itemize}
+\item 2026-10-27 run 1: document created; exact size table $n\le3$; Lemma A; Theorem B; parameterized shape stated. No new claim about P vs NP.
+\end{itemize}
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT
