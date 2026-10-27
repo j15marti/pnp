@@ -1,0 +1,46 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: Building Lower Bounds for Circuit-SAT Step by Step\\ \large Living document}
+\author{Scheduled hourly Claude run (repository \texttt{j15marti/pnp})}
+\date{Last updated: 2026-10-27 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-linear lower bound for Circuit-SAT. Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Program}
+Start from the smallest circuits, grow input count $n$ and size $m$ (gates; wires $w$), and track (i) the minimum size needed to build each function, (ii) what any solver must examine/spend to decide satisfiability, as a function of parameters $(n,m,w,\text{width/treewidth }k,\dots)$. Target shape: $T(n,m,k)\ge f(n,m,k)$, possibly parameterized.
+
+\section{Step 1: minimal circuits (COMPUTATIONAL)}
+Model: AIG, fan-in-2 AND gates, free edge negation. $g(f)$ = minimum gates, so wires $=2g(f)$ (plus one output edge).
+Script: \texttt{experiments/claude\_circuitsat/min\_aig.py}; raw: \texttt{results/raw\_claude\_circuitsat\_min\_aig\_*.json}. Iterative-deepening DFS, canonical gate order; the search is exhaustive up to the stated gate bound, so counts are exact.
+\begin{center}\begin{tabular}{lrrrrrrr}\toprule
+$n=2$ (8 classes mod negation) & $g{=}0$:3 & 1:4 & 3:1 &&&\\
+$n=3$ (128 classes) & 0:4 & 1:12 & 2:32 & 3:15 & 4:52 & 5:4 & $\ge6$: 9\\\bottomrule\end{tabular}\end{center}
+Observations: $n=2$ XOR needs 3 gates (the only class at 3). For $n=3$, 9 classes need $\ge6$ gates (includes XOR$_3$, known to need 6 in AIG); the 6-gate level exceeds the 30\,s budget and is queued as a chunked job (OPEN/todo). Exact minima are a \emph{building cost}, not a solver lower bound; they calibrate how fast ``hard-looking'' gadgets grow.
+
+\section{Step 2: what a Circuit-SAT solver must pay}
+\begin{prop}[Reading bound, PROVED] Any algorithm (random-access, read-only input) correctly deciding satisfiability of circuits of $w$ wires reads $\Omega(w)$ input cells in the worst case.\end{prop}
+\emph{Proof.} Take $C=\bigwedge_{i\le n}\ell_i$ (balanced AND tree) with distinct non-complementary literals: SAT. If the algorithm leaves wire cell of $\ell_i$ unread (and $n\ge2$), the adversary replaces $\ell_i$ by $\neg\ell_j$ ($j\ne i$) consistent with all reads: now UNSAT, same transcript. So $\ge n-1=\Omega(w)$ reads. \qed
+
+\begin{prop}[Black-box bound, PROVED] If $C$ is accessible only through evaluation queries, deciding SAT on $n$ inputs needs $2^n$ queries worst case (deterministic) --- adversary answers 0 until one point is left.\end{prop}
+This is the $2^n$ shape; a white-box solver is not so limited, so it does not bound the real problem. Gap between $\Theta(w)$ (reading) and $2^n$ (black box) is exactly the content of the open problem.
+
+\section{Step 3: parameterized landscape}
+\begin{itemize}
+\item KNOWN: dynamic programming over a width-$k$ (treewidth/pathwidth) decomposition decides SAT in $2^{O(k)}\,\mathrm{poly}(m)$; at $k=O(\log m)$ it is polynomial. So any hardness must live in width $k=\omega(\log m)$.
+\item CONDITIONAL: under SETH, no $2^{(1-\varepsilon)n}\mathrm{poly}(m)$ algorithm for Circuit-SAT (and for CNF-SAT of pathwidth $k$, no $(2-\varepsilon)^k$), \emph{literature recollection, to be checked against primary sources next run}.
+\item KNOWN: Williams-type time--space tradeoffs give $n^{2\cos(\pi/7)-o(1)}\approx n^{1.80}$ for SAT on RAMs with $n^{o(1)}$ space; this is the strongest unconditional non-linear statement of this type. The repository's ARC/FLMV spine targets exactly this regime; see \texttt{main.tex}, status OPEN.
+\item CANDIDATE parameterized target: $T\ge \Omega(m)+2^{\Omega(k)}$ for width-$k$ instances in a restricted model (e.g.\ monotone/read-once-per-width-layer algorithms); not claimed.
+\end{itemize}
+
+\section{Step 4: next steps (queue)}
+\begin{enumerate}
+\item Chunked computation of $n=3$, $g=6$; then $n=4$ small classes (NPN-reduced).
+\item Define wire-count lower bounds for \emph{gadget families} (e.g.\ XOR chains of length $k$): prove exact $3k$ gates in AIG? (CANDIDATE; known for linear functions only via Boolean-circuit folklore).
+\item Prove a restricted-model bound for width-$k$ layered circuits: any solver that processes layers sequentially with $s$ bits of memory needs $2^{\Omega(k)}$ when $s<k$ (CANDIDATE; check against branching-program lower bounds).
+\item Mine repository (\texttt{research/agents/grok}, FLMV notes) for resource-ledger lemmas usable as Step-2 refinements.
+\end{enumerate}
+
+\section*{Log}
+Run 1 (2026-10-27): file created; Steps 1--2 done; repo checked: P vs NP OPEN, ARC/FLMV unconditional transformation OPEN (latest commits).
+\end{document}
