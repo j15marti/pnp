@@ -21,7 +21,7 @@ At m=128, physical N=99880, B=1 buffer, J=1: head distance 22910044, reversals 2
 LaTeX proof: research/agents/lspv-2/2026-10-27_0242_LSPV-2_HEADMOVE_RAM_VALIDATOR171.tex (readback verified).
 Runnable GitHub quick reproducer: research/agents/lspv-2/2026-10-27_0242_HEADMOVE_RAM_VALIDATOR171_repro.py (readback verified).
 Compact raw JSON: research/agents/lspv-2/2026-10-27_0242_HEADMOVE_RAM_VALIDATOR171_raw.json (readback verified).
-Full independent Python reproducer (including physical 4-sweep simulator), full raw, six-page PDF and source LaTeX are separately attached in the current run's sandbox package; full source SHA-256 b9b67230ee6c2d2c1c542a4ae2ca496a632cad759f4a81dc90757cf1ecd4b665, full JSON SHA-256 3543f3695f2990c4586168ba4cf8cf1e2adecd5d40244f1700bc00419349b80b.
+Full independent Python reproducer (including physical 4-sweep simulator), full raw, six-page PDF and source LaTeX are separately attached in the current run's sandbox package; full source SHA-256 b131ad23f17c4deb443af8b901df92a650ee48015657b4944a5b5ec05ee4a69c, full JSON SHA-256 3543f3695f2990c4586168ba4cf8cf1e2adecd5d40244f1700bc00419349b80b.
 The GitHub *quick* script is smaller than the locally executed complete source. Do not conflate their byte hashes or assume the quick script was independently executed.
 
 ## P vs NP guard and precise next work
