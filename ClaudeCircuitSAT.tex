@@ -1,0 +1,54 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT::v1::2026-10-27
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\st}[1]{\textbf{[#1]}}
+\newcommand{\CSAT}{\mathsf{CircuitSAT}}
+\title{ClaudeCircuitSAT: A Wire-by-Wire Lower-Bound Ladder for Circuit-SAT}
+\author{Living document (hourly scheduled run)}
+\date{Last updated 2026-10-27, run 1}
+\begin{document}\maketitle
+\noindent\st{STATUS} No super-linear unconditional lower bound for $\CSAT$ is claimed. $\mathrm{P}$ vs.\ $\mathrm{NP}$ remains \textbf{OPEN} (see the repository's root \texttt{main.tex}, which also lists it as open). Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Model and parameters}
+A circuit is a DAG of $g$ fan-in-2 gates over the full binary basis $B_2$ on $n$ inputs, one output; \emph{wires} $W=2g$ (plus input fan-out edges counted separately). An instance has encoding size $m=\Theta(W\log W)$. $\CSAT$: is there $x\in\{0,1\}^n$ with $C(x)=1$? Parameters: $n$ (inputs), $m$ (wires), $w$ (treewidth), $d$ (depth). The target is a bound $T(m,n)$, possibly parameterized, e.g.\ $T\ge 2^{cn}\cdot m^{c'}$.
+
+\section{Ladder of exact small cases \st{COMPUTATIONAL}}
+Script \texttt{experiments/claude\_circuitsat/min\_circuits.py}, raw data \texttt{results/raw/claude\_circuitsat\_n\{2,3\}.json}. Exhaustive search gives the number of $n$-input functions by minimum $B_2$ gate count (negation of inputs free, since $B_2$ absorbs it):
+\begin{center}\begin{tabular}{lcccccc}\toprule
+$n$ & 0 gates & 1 & 2 & 3 & 4 & max wires\\\midrule
+2 (16 fns) & 6 & 10 & & & & 2\\
+3 (256 fns) & 8 & 30 & 114 & 80 & 24 & 8\\\bottomrule\end{tabular}\end{center}
+So the hardest 3-input functions (e.g.\ majority-type) need 4 gates / 8 wires; the minimum wires needed to \emph{build} the hardest $n$-input function is $L(2)=2$, $L(3)=8$. Next rung: $n=4$ (known max 7 gates, to be verified by a chunked run).
+
+\section{Proved basic lemmas}
+\begin{lemma}[Connectivity floor, \st{PROVED}]
+A circuit whose output depends on all $n$ inputs has $g\ge n-1$ gates, hence $W\ge 2(n-1)$ wires.
+\end{lemma}
+\emph{Proof.} The underlying undirected graph on $n+g$ nodes is connected (every input reaches the output), so it has $\ge n+g-1$ edges; fan-in 2 gives $\le 2g$ edges; hence $2g\ge n+g-1$. \qed
+
+\begin{theorem}[Probe lower bound, \st{PROVED}; model: algorithm accesses the circuit by wire/gate probes]\label{thm:probe}
+Every deterministic $\CSAT$ algorithm correct on all instances with $g$ gates makes $\ge g$ probes, even for $n=1$.
+\end{theorem}
+\emph{Proof.} Family: $g_1=x$, $g_i=\mathrm{AND}(g_{i-1},w_i)$ where $w_i\in\{x,\bar0\!=\!1,0\}$; output $g_g$. The all-$x$ instance is satisfiable. Adversary answers every probe of gate $i$ as ``$w_i=x$''. If gate $i$ is unprobed, replacing $w_i$ by $0$ gives an unsatisfiable instance consistent with all answers. So all gates must be probed. \qed
+
+This is the $\Omega(m)$ ``read the instance'' floor; it is parameter-free in $n$. It is tight up to the encoding model and shows that any lower bound beyond linear must be a \emph{computation}, not an information, bound.
+
+\section{Upper bounds that a lower bound must be compared with \st{KNOWN}}
+$T=O(2^n m)$ by enumeration; $T=2^{O(w)}m$ via treewidth DP; $T=O(m)$ if $n=O(1)$. Hence the natural parameterized target is the \emph{dependence on $n$ (or $w$)}: is $T(m,n)\ge 2^{\epsilon n}$? Under SETH no $(2-\epsilon)^n\mathrm{poly}(m)$ algorithm exists for CNF-SAT, hence for $\CSAT$ \st{CONDITIONAL}. Unconditionally, the best known are time--space tradeoffs for SAT (Fortnow--van Melkebeek, Williams; the repository tracks the $n^{2\cos(\pi/7)}$-type exponents and its FLMV box in \texttt{main.tex}); these are not circuit-wire bounds.
+
+\section{Gate-elimination context \st{KNOWN}}
+Lower bounds on circuit \emph{size of an explicit function} ($3n-o(n)$ Blum; $\approx 3.01n$ Find--Golovnev--Hirsch--Kulikov) are by gate elimination: fix a variable, delete the gates it kills. They bound wires needed to \emph{compute} $f$, not time to \emph{decide satisfiability}. \st{CANDIDATE bridge}: a $\CSAT$ algorithm that is $o(2^n)$-like on all circuits would yield a circuit family via Karp--Lipton/advice only conditionally; no unconditional bridge is known, and none is claimed here.
+
+\section{Plan (next rungs)}
+\begin{enumerate}
+\item Compute $L(4)$ (chunked) and count wires with fan-out; tabulate the minimal circuit for each NPN class.
+\item Define the \emph{restriction ladder}: for $C$ on $n$ inputs, $\mathrm{WE}(C)=\min_{x_i,b}$ wires deleted by fixing $x_i=b$; study $\min$ over circuits of $\max$ elimination to state a parameterized recursion $T(C)\le T(C|_{0})+T(C|_{1})$ and where a counting adversary could force $2^{\Omega(n)}$ (CANDIDATE).
+\item Mine repository results for time--space/write-tradeoff lemmas that apply to read-only-input models of $\CSAT$.
+\end{enumerate}
+
+\section*{Log}
+Run 1 (2026-10-27): created document; computed $n\le3$ ladder; proved connectivity and probe lemmas; no new lower bound beyond $\Omega(m)$. $\mathrm{P}\ne\mathrm{NP}$: \textbf{OPEN}.
+% END_OF_CLAUDE_CIRCUITSAT::v1
+\end{document}
