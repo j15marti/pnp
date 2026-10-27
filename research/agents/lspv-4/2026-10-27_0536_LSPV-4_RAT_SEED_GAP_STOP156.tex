@@ -1,0 +1,110 @@
+% LSPV-4 REPORT::RAT-SEED-GAP-STOP156::2026-10-27T05:36:00-07:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.87in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{counterexample}[theorem]{Counterexample}
+\title{RAT-SEED-GAP-STOP156: Exact Black-Box Seed-Gap Stopping and a Smaller Physical Proof-Bit Union}
+\author{LSPV-4, Independent Time-Space/Circuit Resource Auditor}
+\date{27 October 2026, 05:36 PDT}
+\begin{document}\maketitle
+\noindent\textbf{PROVED/EXACT restricted, independent referee pending.} For an $R$-bit accepting-seed vector promised to have weight at most $A$ or at least $B>A$, deterministic adaptive black-box gap decision has exact worst-case depth
+\[
+\boxed{K=R-(B-A)+1}.
+\]
+A stopped seed aggregator using this many calls preserves SAT-side global soundness and UNSAT-side existential completeness. This strictly weakens ARC201's sufficient \emph{all-seed} observed-proof-bit cap to an \emph{actual stopped-run physical union} cap. \textbf{COMPUTATIONAL:} 151,554 assertions, zero failures (standalone Python); \textbf{OPEN:} genuine all-ordinary-UNSAT certificate coverage, ARC-EDGE-90, P versus NP.
+
+\section{Four falsifiers proposed before targeted gap-query literature check}
+\begin{description}
+\item[] H1: All $R$ seed calls are always necessary. \textbf{FALSIFIED}: $K<R$ whenever $B-A>1$.
+\item[] H2: Adaptive black-box ordering beats $K$. \textbf{FALSIFIED}: indistinguishable promised completions force $K$.
+\item[] H3: One proof bit per seed implies a logarithmic global cap. \textbf{FALSIFIED}: physically disjoint cells have union $R$.
+\item[] H4: The all-seed observed union is necessary for all sound deterministic compilations. \textbf{FALSIFIED}: an early stop can use one physical proof cell while all seeds use $\Theta(R)$ cells.
+\end{description}
+
+\section{Exact model and quantifiers}
+One fixed total uniform indexed-bit random-access verifier $V(F,\pi,z)$ reads every ordinary encoded source formula $F$ of length $N$ on a read-only indexed input. Its publicly fixed, immutable binary proof store has length $L(N)\le N^p$, each proof address and bit is charged, and $z$ ranges through $R=2^{h(N)}\le N^{\rho+o(1)}$ public seeds. Guest work and index space $S_V=N^{s+o(1)}$ and seed time $T_V=N^{v+o(1)}$ are simultaneous ceilings for all $F,\pi,z$ including failed calls. Physical proof keys distinguish stores and bit offsets; virtual child locators, source authentication, ordinary-CNF parsing, index generation, source probes, seed enumeration, guest resets and ancestor state are charged. No word of unrestricted size or semantic oracle is free.
+
+For constants $0\le\sigma<c\le1$, define
+\[
+A=\lfloor\sigma R\rfloor,\quad B=\lceil cR\rceil,\quad 0\le A<B\le R.
+\]
+Require on all ordinary sources
+\[
+\begin{split}
+F\in\mathsf{SAT}&\Rightarrow \forall\pi:\ \sum_zV(F,\pi,z)\le A,\\
+F\in\mathsf{UNSAT}&\Rightarrow \exists\pi:\ \sum_zV(F,\pi,z)\ge B.
+\end{split}\tag{1}
+\]
+This is an all-seed completeness/soundness gap, not single-seed exact soundness.
+
+\begin{theorem}[Optimal deterministic black-box seed-gap depth]
+For a promise input $y\in\{0,1\}^R$ with $|y|\le A$ or $|y|\ge B$, the exact minimum deterministic worst-case number of indexed seed-bit queries is $K=R-(B-A)+1$.
+\end{theorem}
+\begin{proof}
+Ask successive seeds in any order. Output HIGH immediately after $A+1$ ones or LOW after $R-B+1$ zeros. If neither criterion fires, at most $A$ ones and $R-B$ zeros have been observed, so the next query (at latest $A+R-B+1$) must stop, and neither promised class can trigger the wrong criterion.
+
+For the matching lower bound, answer any deterministic adaptive strategy with $A$ ones, followed by $R-B$ zeros at queried positions. After these $K-1$ replies, $B-A$ coordinates remain unseen. Filling every unseen coordinate with zero yields a legal LOW vector of weight $A$; filling them all with one yields a legal HIGH vector of weight $B$. The entire observed adaptive transcript is identical. One more query is necessary. This lower bound is for an unrestricted outcome-vector \emph{black box}, not for an arbitrary SAT verifier allowed to exploit additional seed structure.
+\end{proof}
+
+\begin{theorem}[Sound, complete early-stopped verifier]
+Run $V(F,\pi,z)$ on seeds in fixed public order, with fresh guest work and the same immutable proof. Define $W_*$ to accept at $A+1$ accepting seeds and reject at $R-B+1$ rejecting seeds. Then
+\[
+F\in\mathsf{SAT}\Rightarrow\forall\pi\,W_*(F,\pi)=0,\qquad
+F\in\mathsf{UNSAT}\Rightarrow\exists\pi\,W_*(F,\pi)=1.
+\tag{2}
+\]
+It performs at most $K$ calls; time $O(N\operatorname{polylog}N+KT_V\operatorname{polylog}N)$, and peak indexed work $O(S_V\operatorname{polylog}N+\log R)$, including charged resetting.
+\end{theorem}
+\begin{proof}
+For SAT every proof has at most $A$ accepting seeds, so the accepting threshold is impossible. For UNSAT take the fixed proof with at least $B$ accepting seeds; it has at most $R-B$ rejecting seeds, making the rejecting threshold impossible. A deficient UNSAT proof with a seed weight strictly between $A$ and $B$ may be accepted or rejected depending on seed order; this is permitted by the existential UNSAT quantifier. All calls run under a uniform clock and are restored to genuinely blank guest work by epoch tags or a charged sparse reset.
+\end{proof}
+
+Let $Q_z(F,\pi)$ be the physical proof cells read by the actual seed-$z$ execution, and define
+\[
+Q_*(F,\pi)=\bigcup_{z\ \mathrm{executed\ by}\ W_*} Q_z(F,\pi)
+\ \subseteq\ \bigcup_{z<R}Q_z(F,\pi). \tag{3}
+\]
+The \emph{stopped} union is the relevant information budget. Local child labels, per-seed maxima and unverified logical aliases are not valid substitutes.
+
+\begin{theorem}[Stopped-bit first-read compilation; conditional]
+Assume additionally that for every ordinary UNSAT formula there exists a successful $W_*$ proof with at most $q(N)\le(a+o(1))\log_2N$ \emph{distinct physical cells} in $Q_*$, with public efficiently computed cap. Put $K=N^{\kappa+o(1)}$. Then one fixed deterministic ordinary-SAT solver in the \emph{same indexed} model has
+\[
+T_D=N^{\max(1,\kappa+v+a)+o(1)},\qquad
+S_D=N^{\max(0,s)+o(1)}.\tag{4}
+\]
+If $S_V=N^{o(1)}$, the published Williams SAT lower bound implies the necessary inequality
+\[
+\boxed{\kappa+v+a\ge 2\cos(\pi/7)=1.8019377358\ldots .}\tag{5}
+\]
+\end{theorem}
+\begin{proof}
+For each of the $2^q$ binary strings, simulate $W_*$ with a fresh proof-bit map. On the first query to any physical proof store/bit-address key, consume the next candidate bit, retaining it under that key; repeat visits return the saved bit. Reject an over-budget $(q+1)$st first read. Every accepting map extends to a genuine immutable proof, so SAT soundness of (2) excludes false acceptance. Each UNSAT good proof has its first-read sequence enumerated. Epoch-tag guest work by $(\mathrm{candidate},\mathrm{seed})$, costing $O(\log(2^q K+1))$ bits per previously reached indexed guest cell; the current candidate's $q$ map entries cost $O(q\log L)$ bits. Input parsing costs $N\operatorname{polylog}N$ once. Every source query, guest reset, proof map operation and seed transition is executed and paid. The Williams theorem excludes a strictly smaller deterministic SAT time exponent only when the \emph{same resulting machine} has subpolynomial indexed space. Equality is not excluded.
+\end{proof}
+
+For fixed $c-\sigma<1$, $K=(1-c+\sigma)R+O(1)=\Theta(R)$; a constant-factor improvement does not remove exponent $\rho$. At the exceptional perfect-gap endpoint $(\sigma,c)=(0,1)$, $K=1$, so this black-box compilation legitimately removes the seed enumeration exponent. This does not provide a universal perfect-gap verifier.
+
+\begin{counterexample}[Full union larger than stopped union]
+Take $R=8,A=2,B=6$. On an easy authenticated UNSAT promise, let seeds $0,1,2$ all query physical bit $p_0$, and seeds $3,\ldots,7$ query distinct bits $p_1,\ldots,p_5$. An all-ones proof produces eight accepting seeds, but $W_*$ accepts after the first three calls with physical proof union size one; full eight-seed evaluation reads six different cells. On the separate SAT promised source return acceptance on exactly the first two seeds independent of proof; all proofs are rejected by $W_*$. This is an \emph{abstract restricted verifier}, not an all-input SAT method. It proves that ARC201's all-seed log-union sufficient premise can be strictly stronger than the stopped-run premise.
+\end{counterexample}
+\begin{counterexample}[Probabilistic seed shortcut lacks exact soundness]
+With $R=8,A=2,B=6$, a legal SAT seed vector can have two accepted coordinates. A single existential accepting seed is unsound. Sampling two distinct uniform seeds and requiring both to accept has false-positive probability $\binom22/\binom82=1/28>0$. Statistical sampling alone cannot replace a zero-error proof checker.
+\end{counterexample}
+
+\section{Tests, three-model ledger and reconciliation}
+Standalone Python exhaustive source for this theorem is \path{research/agents/lspv-4/2026-10-27_0536_SEED_GAP_STOP156_repro.py}. It checked all 220 parameter pairs for $1\le R\le10$, 94,206 outcome-vector cases, 3,432 exact minimax recurrence states, 256 full proof words, and hostile alias and sampler cases; 151,554 assertions, zero failures, no random seed. A concise independent JavaScript version accompanies this report. Finite tests are COMPUTATIONAL, not the proof of an asymptotic SAT lower bound.
+
+M1: one shared read/write input/work tape, initial footprint $P_1\ge N$, physical travel and crossing charged. Mk: one sequential input head plus fixed $k$ sequential work heads, visited work cells and write changes charged. The conservative simulation $T_1=O(T_k(N+S_k+\log(T_k+2)))$, $P_1=O(N+S_k+\log(T_k+2))$ is an upper bound, not a reverse lower implication. RAT: read-only indexed input plus charged proof, guest-work and index storage. Neither Hennie--Stearns' two-tape simulation, head-move DISJ bounds, nor a pinned explicit circuit-output floor can be imported into the indexed SAT bound. Williams' subpolynomial-space cosine endpoint is separate from the positive-space FLMV/Buss--Williams strict rows. No arbitrary-$K$ polynomial seed is assumed to satisfy a favorable resource point. All switching, discovery, failed runs, child lengths $\sum_i m_i^d$, headers, proof locators, aliases and peak retained states require same-machine accounting.
+
+This adopts ARC200 first-read proof mapping, ARC201 gap aggregation, LSPV-5 physical aliases, and LSPV-4 COSINE155 as previously known. The new increment is exact black-box $K$ and its stopped-union information interface. The next falsifiable open arrow is a uniform all-ordinary-UNSAT proof grammar whose genuinely accepted \emph{stopped} execution across two hereditary SAT/UNSAT levels has $|Q_*|=O(\log N)$, with actual charged source/proof access and one fixed machine. ARC-EDGE-90, P versus NP remain \textbf{OPEN}. Independent mathematical referee pending. No agent activation or schedule changed.
+
+\begin{thebibliography}{9}
+\bibitem{bdw} H. Buhrman and R. de Wolf, Complexity measures and decision tree complexity: A survey, Theor. Comput. Sci. 288 (2002), 21--43, \url{https://doi.org/10.1016/S0304-3975(01)00144-X}.
+\bibitem{wil} R. Williams, Alternation-Trading Proofs, Linear Programming, and Lower Bounds, ACM TOCT 5 (2013), Article 6, \url{https://people.csail.mit.edu/rrw/automated-lbs.pdf}.
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek and A. Viglas, Time-Space Lower Bounds for Satisfiability, JACM 52 (2005), 835--865, \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{peer1} LSPV-1, ARC-PROOF-BIT-OBSERVABILITY200; ARC-PCP-SEED-UNION-FIREWALL201 (2026).
+\bibitem{peer5} LSPV-5, PHYSICAL-ALIAS-AGGREGATION179 (2026).
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::RAT-SEED-GAP-STOP156
