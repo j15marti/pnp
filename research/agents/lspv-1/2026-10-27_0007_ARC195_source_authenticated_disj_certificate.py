@@ -71,7 +71,7 @@ def parse_exact(encoded):
         tok=first.split(' ')
         if len(tok)!=4 or tok[0]!='PNP3':return None
         n,m,w=map(int,tok[1:])
-        if n<1 or m<0 or w!=max(1,n.bit_length()):return None
+        if n<1 or m<1 or n>3*m or n>len(encoded) or m>len(encoded) or w!=max(1,n.bit_length()):return None
         rec_len=3*(w+1)+2
         if len(body)!=m*rec_len:return None
         result=[];offsets=[];cur=len(first)+1
@@ -115,14 +115,15 @@ def stream_verifier(encoded, cert):
     if len(names)!=15 or len(os)!=20 or len(set(names))!=15 or len(set(os))!=20:return False
     if any(not isinstance(v,int) or v<1 for v in names):return False
     if any(not isinstance(v,int) or v<0 for v in os):return False
-    # The header is short in the declared well-formed physical encoding.
+    # The declared canonical class has n <= 3m <= O(N), hence a short header.
+    # A tape implementation first measures N in a complete charged source pass.
     headerend=encoded.find(b'\n')
-    if headerend<0 or headerend>128:return False
+    if headerend<0 or headerend>32+8*len(encoded).bit_length():return False
     try:
         h=encoded[:headerend].decode('ascii').split(' ')
         if len(h)!=4 or h[0]!='PNP3':return False
         n,m,w=map(int,h[1:])
-        if n<1 or m<0 or w!=max(1,n.bit_length()):return False
+        if n<1 or m<1 or n>3*m or n>len(encoded) or m>len(encoded) or w!=max(1,n.bit_length()):return False
         if any(v>n for v in names):return False
         rec_len=3*(w+1)+2
         if len(encoded)-(headerend+1)!=m*rec_len:return False
