@@ -1,0 +1,56 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT::run-2026-10-27
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{thm}{Theorem}\newtheorem{lem}[thm]{Lemma}\newtheorem{prop}[thm]{Proposition}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder toward lower bounds for Circuit-SAT}
+\author{Living document (hourly routine)}
+\date{Last updated: 2026-10-27}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial lower bound for Circuit-SAT. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup}
+A circuit $C$ over $n$ inputs has $s$ fan-in-2 gates and $w=2s$ internal wires (plus output). Circuit-SAT: given $C$ (as a read-only string), decide $\exists x\; C(x)=1$. A parameterized bound has the form $T(n,s,\dots)$; the interesting regimes are $s=\mathrm{poly}(n)$ vs.\ $T=2^{\Omega(n)}$ (ETH/SETH-type, CONDITIONAL) and unconditional bounds in restricted models.
+
+\section{Ladder of rungs}
+Rung $n$: the hardest instances are \emph{point circuits} (unique satisfying assignment $a\in\{0,1\}^n$), and the question is the minimal wiring needed to build them and what any solver must do with it.
+
+\begin{lem}[Connectivity, PROVED/EXACT]\label{lem:conn}
+If $f$ depends on all $n$ inputs, every fan-in-2 circuit for $f$ has at least $n-1$ gates and at least $2(n-1)$ gate-input wires. 
+\end{lem}
+\emph{Proof.} The DAG restricted to ancestors of the output reaches all $n$ inputs; a fan-in-2 tree/DAG with $n$ distinct leaves-reachable has $\ge n-1$ internal nodes (merging $n$ components into one needs $\ge n-1$ binary joins). \qed
+
+\begin{prop}[Point-function upper bound, PROVED/EXACT]
+Every point function $[x=a]$ has a circuit with $n-1$ gates (AND tree over literals; negations free in the full binary basis). So Lemma~\ref{lem:conn} is tight for the full binary basis, and each rung's wire count is exactly $2(n-1)$.
+\end{prop}
+
+\begin{thm}[Black-box rung bound, PROVED/EXACT]\label{thm:bb}
+Any deterministic algorithm that only evaluates $C$ on chosen inputs needs $2^n$ evaluations in the worst case on point circuits (adversary answers 0 until one candidate remains).
+\end{thm}
+This is not a lower bound for Circuit-SAT proper: a white-box solver reads the wiring. Bridging black-box to white-box is the OPEN core (relativization barrier: Theorem~\ref{thm:bb} relativizes).
+
+\begin{prop}[Read bound, PROVED/EXACT]
+Any correct solver must read $\Omega(s)$ bits of the description in the worst case when $s$ gates may affect satisfiability (adversary flips an unread gate). Hence $T=\Omega(s)$; this is the only unconditional parameterized bound in this note.
+\end{prop}
+
+\section{Computational data (COMPUTATIONAL)}
+Exact minimum circuit sizes over the full fan-in-2 basis (script \texttt{experiments/claude\_circuitsat/min\_size\_ladder.py}, raw \texttt{results/raw/claude\_circuitsat/min\_size\_ladder.json}); complete for all functions of $n\le3$ variables:
+\begin{center}\begin{tabular}{cccc}\toprule
+$n$ & functions & max min-size & point-function min size\\\midrule
+1 & 4 & 1 & 0/1\\ 2 & 16 & 1 & 1\\ 3 & 256 & 4 & 2\\\bottomrule\end{tabular}\end{center}
+Size distribution $n=3$ (gates: count): 0:5, 1:33, 2:114, 3:80, 4:24. Point functions match $n-1$. For $n=3$ the hardest functions need 4 gates; this is data only, no extrapolation claimed.
+
+\section{Parameterized targets (CANDIDATE / OPEN)}
+\begin{itemize}
+\item Fan-out/width-parameterized: SAT of circuits of treewidth $k$ is solvable in $2^{O(k)}\mathrm{poly}$; lower bound $2^{\Omega(k)}$ under SETH (KNOWN THEOREM direction for CNF-treewidth; transfer to circuit-SAT is CONDITIONAL).
+\item Rung-wise wire budget: define $W(n)$ = min wires to encode a hard family; need a theorem that a solver must ``touch'' superlinear many wire-pairs. OPEN.
+\item Restricted models (monotone, bounded-depth, read-once): candidate for unconditional rungs; to be examined next.
+\end{itemize}
+
+\section{Repository cross-check}
+Existing repo work (ARC/FLMV spine, SIL/M22 ladder, UWI) is conditional/OPEN and gives no Circuit-SAT bound usable here; the SIL/M22 handoff explicitly states no unconditional decision-time lower bound follows. Reviewed only by repository search this run; deeper reading is TODO.
+
+\section{Next steps}
+(1) Extend exact data to $n=4$ via SAT-based synthesis (chunked). (2) Prove a wire-pair touching bound in restricted read-once model. (3) Audit relativization/natural-proofs for each rung.
+% END_OF_CLAUDE_CIRCUITSAT::run-2026-10-27
+\end{document}
