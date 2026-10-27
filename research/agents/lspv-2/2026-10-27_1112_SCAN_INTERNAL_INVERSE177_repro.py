@@ -884,7 +884,7 @@ def si_run_audit():
         tot['instances']+=1;tot['scan_gates']+=n;tot['gateat_matches']+=n
         tot['direct_uses']+=refsum;tot['source_occurrences']+=occsum
         tot['zero_consumer_gates']+=zeros
-    return {'status':'COMPUTATIONAL with symbolic local GateAt proof pending independent review',
+    return {'status':'COMPUTATIONAL', 'mathematical_status':'PROVED/EXACT restricted; independent referee pending',
             'configurations':rows,'totals':tot,'small_counterexamples':witness,
             'all_failures':0,'random_seed':None,
             'scope':'exact fixed-record witness verifier scan only; no full SAT decision circuit'}
