@@ -21,7 +21,7 @@ A B-bit buffer, p=ceil(m/B) sequential input passes, O(log N) address/counter bi
 Clearly label a DIFFERENT augmented machine M_J: one read-only input head, with a charged binary-offset command that may jump at most J(N) cells per access. It reads only the target symbol. Work tapes remain sequential. Simulating each jump on an ordinary one-input-head machine costs O(J+polylogN) time and O(logN) extra work cells. If J=N^{j+o(1)}, the necessary hybrid exponent inequality is
   t+s+j>=2.
 On the easy exact22 promise, skip irrelevant input cells and use a B=m^s buffer, giving an explicit matching upper time exponent
-  t=minimum possible for this promise = max(1, 2-s-j), 0<=s,j<=1.
+  t=minimum possible for this promise = max(1, 2-s-j), 0<=s,j<=1. The t>=1 term follows independently from input-bit sensitivity: on Alice a=0^m, Bob b=1^m, flipping any single Alice bit changes SAT to UNSAT, so a deterministic one-probe-per-step solver must inspect Omega(m) separate Alice-controlled sign locations even with unlimited head reach.
 The 'minimum' is only relative to defined model and family, not general SAT. For J=N, t=1,s=0 is achievable on this promise by direct indexed reads; unrestricted RAM also allows indexed WORK accesses, which this hybrid does not. Do not impose tape-head transport restrictions on standard random-access RAM computations.
 
 ## Verification
