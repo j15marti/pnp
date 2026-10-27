@@ -1,0 +1,95 @@
+% ClaudeCircuitSAT.tex -- living document (hourly routine). Do not create a second copy.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\title{Claude's Circuit-SAT Lower-Bound Ladder (living document)}
+\author{Hourly routine; repository \texttt{j15marti/pnp}}
+\date{Last updated: 2026-10-27 (run 1)}
+\begin{document}\maketitle
+
+\section*{Executive status}
+\textbf{No unconditional super-polynomial lower bound for Circuit-SAT is claimed. P versus NP remains \OPEN.}
+This document builds a ladder: start with the simplest circuits, increase the number of inputs $n$, and track
+the minimum number of gates $g$ and wires $w$ (fan-in 2, so $w=2g$ for gate inputs). Statuses:
+PROVED/EXACT, COMPUTATIONAL, KNOWN THEOREM, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model}
+A circuit is a DAG over basis $B_2$ (all 16 binary gates, negations free), $n$ inputs, one output.
+$C_{B_2}(f)$ = minimum gates; wires $=2\cdot$gates. Circuit-SAT$(C)$: is there $x$ with $C(x)=1$?
+Parameters tracked: $n$ (inputs), $s$ (gates), $w$ (wires), and the \emph{essential} input count.
+
+\section{Rung table (wire-by-wire accounting)}
+\begin{lemma}[Connectivity, PROVED/EXACT]\label{lem:conn}
+If $f$ depends on all $n$ inputs then $C_{B_2}(f)\ge n-1$ gates, i.e.\ $\ge 2(n-1)$ wires.
+\end{lemma}
+\begin{proof}
+Every input must reach the output, so the underlying undirected graph on $n$ inputs $+\,g$ gates is connected:
+edges $2g\ge n+g-1$ (at least $n+g-1$ edges), hence $g\ge n-1$. (Fan-out only lowers edge count per node used,
+not the bound.)
+\end{proof}
+\begin{proposition}[Point function, PROVED/EXACT]
+The unique-satisfying-assignment function $\mathrm{AND}_n$ (up to negations) has $C_{B_2}=n-1$ gates, $2(n-1)$ wires.
+\end{proposition}
+Upper bound: a balanced tree; lower bound: Lemma~\ref{lem:conn}. So the \emph{structural} minimum is linear and
+tight; hardness of Circuit-SAT cannot come from this count.
+
+\begin{center}\begin{tabular}{rcccc}\toprule
+$n$ & $\max_f C_{B_2}(f)$ & $C(\mathrm{AND}_n)$ & $C(\mathrm{XOR}_n)$ & status\\\midrule
+1 & 0 & 0 & 0 & COMPUTATIONAL\\
+2 & 1 & 1 & 1 & COMPUTATIONAL\\
+3 & 4 & 2 & 2 & COMPUTATIONAL (exhaustive over all 256 functions)\\
+4 & 7 & 3 & 3 & literature value, not re-verified here\\
+5 & 12 & 4 & 4 & literature value, not re-verified here\\\bottomrule
+\end{tabular}\end{center}
+Reproducer: \texttt{experiments/claude\_circuitsat/exact\_min\_circuits.py}; raw data
+\texttt{results/raw/claude\_circuitsat/exact\_min\_circuits.json} (layered BFS over gate sets, runs in seconds).
+Observation: the worst-case function size grows much faster than the best-case $n-1$ (counting argument gives
+$\max_f C(f)=\Omega(2^n/n)$), but that concerns \emph{function} complexity, not SAT decision time.
+
+\section{From size to SAT time: a parametrized view}
+\begin{proposition}[FPT in size, PROVED/EXACT]
+Circuit-SAT of a circuit with $s$ gates is solvable in time $O(4^{s}\,s)$: at most $2s$ input wires exist, so at
+most $2s$ distinct inputs matter; enumerate them. Treewidth $k$ of the circuit graph gives $2^{O(k)}\mathrm{poly}(s)$.
+\end{proposition}
+\begin{proposition}[Conditional parametrized lower bound, CONDITIONAL]
+Assuming ETH, no algorithm decides Circuit-SAT in time $2^{o(s)}\mathrm{poly}$ (parameter $s$ = gates):
+by Sparsification Lemma, 3-SAT with $m=O(n)$ clauses maps to a circuit with $s=O(m)$ gates.
+Under SETH, no $(2-\varepsilon)^{n}\mathrm{poly}(s)$ in the number of inputs $n$.
+\end{proposition}
+Both are standard consequences of cited hypotheses, \emph{not} unconditional results.
+
+\section{Known unconditional circuit-size lower bounds (KNOWN THEOREM; cited from memory, to be re-verified)}
+Gate elimination: $2n-O(1)$ (Schnorr), $3n-o(n)$ (Blum), $\approx 3.1n-o(n)$ in $B_2$ (Li--Yang 2022),
+$5n-o(n)$ in the basis $U_2$ (Iwama--Lachish--Morizumi--Raz). These bound the size of \emph{explicit functions},
+not the running time of a SAT algorithm; nothing here exceeds linear.
+
+\section{Ladder program (what to track next)}
+\begin{enumerate}
+\item Rung $n\to n+1$: extend exhaustive minimal circuits to $n=4$ (needs symmetry-reduced search; chunk $\le 30$\,s runs).
+\item For each rung record: minimum wires; minimum \emph{fan-out} profile; min circuit for the formula-restricted
+ (fan-out 1) variant, tracking the gap formula vs.\ circuit size.
+\item Parametrize by (gates $s$, treewidth $k$, essential inputs $n$) and seek a rung-wise recurrence
+ $T(n+1)\ge T(n)+\delta$ for a \emph{decision procedure} cost model (e.g.\ read-once branching programs,
+ DPLL trees), where unconditional bounds do exist (restricted models); then identify which model-restrictions must be removed.
+\item Importing the repository's ARC/FLMV time--space contraction spine: no useful link yet identified
+ for the pure circuit-size ladder (see Section~\ref{sec:repo}).
+\end{enumerate}
+
+\section{Repository check (j15marti/pnp)}\label{sec:repo}
+Root \texttt{main.tex} states ``P versus NP remains OPEN''; its load-bearing target is the ARC/FLMV simultaneous
+time--space contraction (ARC-EDGE-90, OPEN). Many LSPV-2 \texttt{CIRCUIT\_*} experiments exist under
+\texttt{research/agents/lspv-2/}; they concern the ARC resource ledger, not a gate-count lower bound for Circuit-SAT.
+Assessment: supporting evidence only; no result there transfers to the ladder above without a new bridge theorem.
+
+\section{Barrier ledger}
+Natural proofs, relativization and algebrization all apply to unrestricted circuit lower bounds; the ladder yields
+only linear bounds so far, consistent with them. Super-polynomial claims require new techniques: \OPEN.
+
+\section*{Run log}
+\begin{itemize}
+\item Run 1 (2026-10-27): created document; verified exhaustive $B_2$ sizes for $n\le3$; proved connectivity lemma,
+ FPT-in-size bound; recorded ETH/SETH conditional bounds. Next: $n=4$ exhaustive search.
+\end{itemize}
+\end{document}
