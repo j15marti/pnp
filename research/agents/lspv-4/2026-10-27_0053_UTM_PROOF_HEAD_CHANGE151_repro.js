@@ -40,7 +40,7 @@ function audit(){
  }
  // Constant-control proof-head clock: input A|B, proof 1^L then endmarker.
  // Each tick moves source head across the ONE cut and proof head right once.
- // No work cell is visited or changed. Crossing labels include proof position.
+ // Only the initially scanned blank work-head cell is visited; no symbols change. Crossing labels include proof position.
  let clocks=0,clockCrossings=0,omittedFactorFailures=0;
  for(let L=0;L<=512;L++){
   let src=0,proof=0,state=0;const labels=new Set();
@@ -52,14 +52,14 @@ function audit(){
   }
   check(proof===L,"proof endmarker reached");
   check(labels.size===L,"exact L crossings");
-  const q=2,k=1,S=0,h=2*S+3;
+  const q=2,k=1,S=1,h=2*S+3;
   const withoutProofHead=2*q*Math.pow(h,k);
   const withProofHead=withoutProofHead*(L+3);
   check(L<=withProofHead,"valid epoch cap with proof position");
   if(L>withoutProofHead)omittedFactorFailures++;
   clocks++;
  }
- check(omittedFactorFailures===500,"omitted proof-position factor falsified L=13..512");
+ check(omittedFactorFailures===492,"omitted proof-position factor falsified L=21..512");
  // Exhaustively compare count of complete transcripts with A^(K+1).
  for(let alphabet=2;alphabet<=12;alphabet++){
   for(let K=0;K<=10;K++){
@@ -108,7 +108,7 @@ function audit(){
    assertions:checks,errors:0,variants,w1AssignmentsEvaluated:evaluated,diagonals,foolingPairs,
    proofClock:{Lmin:0,Lmax:512,trials:clocks,totalCrossings:clockCrossings,
      casesInvalidatingEpochCapWithoutProofHead:omittedFactorFailures,exampleL:64,
-     exampleCrossings:64,exampleChanges:0,exampleVisitedWorkCells:0},
+     exampleCrossings:64,exampleChanges:0,exampleVisitedWorkCells:1},
    finiteState:{trials:randomTrials,halted,looped},
    simulationGrid,
    strictFaceExample:{...ex,...face,positiveWriteGap:1-face.workChange},
