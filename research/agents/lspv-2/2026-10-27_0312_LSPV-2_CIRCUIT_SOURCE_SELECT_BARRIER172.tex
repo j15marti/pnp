@@ -1,0 +1,207 @@
+% LSPV-2 REPORT::CIRCUIT-SOURCE-SELECT-BARRIER172::2026-10-27T03:12:00Z
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\hypersetup{hidelinks}\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\UNSAT}{\mathsf{UNSAT}}
+\newcommand{\Sel}{\mathsf{OccSelect}}
+\newcommand{\Rank}{\mathsf{OccRank}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{CIRCUIT--SOURCE--SELECT--BARRIER172:\\An Exact Signed-(2,2) Incidence Inversion Falsifier,\\A Canonical Indexed Exception, and Three-Machine Accounting}
+\author{LSPV-2: Circuit and Reduction Builder}
+\date{27 October 2026, 03:12 UTC}
+\begin{document}\maketitle
+\begin{center}
+\fbox{\parbox{.94\linewidth}{\textbf{PROVED/EXACT, restricted, independent review pending:} unordered proper signed exact-$(2,2)$ three-CNF requires $k-1$ adversarial \emph{distinct component} probes to retrieve one original-variable occurrence without an incidence index.  The same fixed family has an $O(\log N)$-space, $O(\log^3 N)$-bit-operation indexed inverse under a \emph{canonical layout} promise.\\
+\textbf{COMPUTATIONAL:} 306 actual permuted SAT/UNSAT source formulas, 340 canonical both-label source controls, 18,780 indexed source-variable occurrence requests, 90 bounded-jump itineraries, 131,072 explicit 15-bit gadget assignments, no assertion failures.  The previous exact tape simulator was independently rerun byte-for-byte.\\
+\textbf{OPEN:} complete oblivious verifier compiler Rank/Select, arbitrary ordinary-SAT parsing and shrinking children, ARC-EDGE-90, and $P\ne NP$.}}
+\end{center}
+
+\section{Target, falsifiable approaches fixed before source search}
+Our target is the \emph{inverse incidence} arrow in a uniform indexed reduction and the native resource cost of its source queries. Four candidate routes were frozen before fetching updated project and primary sources in this run:
+\begin{description}
+\item[] \textbf{H1.} If exact signed $(2,2)$ incidence alone permitted polylogarithmic input-query $\Sel(v,r)$, one could invert arbitrary clause order without scanning it.  Falsify by adversarial permutations of proper exact22 components. \textbf{FALSIFIED as a universal claim}, via Theorem~\ref{th:oracle}.
+\item[] \textbf{H2.} The canonical fixed-incidence disjointness source should evade H1 with an arithmetic locator that uses no stored occurrence array and only two signed input reads. \textbf{PROVED/EXACT, image-scoped}, Lemma~\ref{lem:fixed}.
+\item[] \textbf{H3.} The HEADMOVE-1 reversal/crossing inequality might survive a target-only radius-$J$ input jump unchanged.  A radius-$N$ jump bypasses every interior gap cell, falsifying direct transfer; only the charged sequential simulation yields the conditional exponent $t+s+j\ge2$. \textbf{FALSIFIED direct transfer, PROVED conditional simulation}, Lemma~\ref{lem:jump}.
+\item[] \textbf{H4.} The same one-sequential-input-head witness verifier should be reconstructible on one read/write tape with every head marker, output and sweep charged.  \textbf{COMPUTATIONAL regression}: the complete earlier four-sweep program was independently re-executed with byte-identical raw results.
+\end{description}
+All four are about explicitly declared models or promise families, never about every ordinary-SAT algorithm.
+
+\section{The original gadget and the two distinct physical representations}
+Use the authentic 15-variable, 20-clause proper signed exact-$(2,2)$ UNSAT source $W_1$ in \path{experiments/review/early22_compiler_redteam_audit.py}.  The two \emph{separate} opposite-sign swaps in the project's \texttt{BINARY-WORK-SAT4} source are $A=\{(6,0),(11,0)\}$ on source name 4, and $B=\{(17,2),(9,2)\}$ on source name 15, with zero-based clause/literal coordinates.  Let $H(a,b)$ flip both $A$ occurrences iff $a=0$ and both $B$ occurrences iff $b=0$.  Direct exhaustive enumeration gives
+\[
+\#\mathrm{models}(H(0,0))=772,\quad
+\#\mathrm{models}(H(0,1))=272,\quad
+\#\mathrm{models}(H(1,0))=272,\quad
+\#\mathrm{models}(H(1,1))=0.
+\tag{1}
+\]
+Each $H(a,b)$ has 15 names and 20 distinct, three-name clauses, with exactly two positive and two negative occurrences of every name.  It is generally \emph{not} clause-monotone.  The separately published $Q=W_1\setminus\{(x_1\vee x_7\vee x_{13})\}$ has 19 clauses and three forced-false ports; it is \emph{not} used as the complete 20-clause component here.
+
+Fix the bit representation: $w=(20k).\mathrm{bit\_length}$, sixteen constant magic bits, a $w$-bit variable count $15k$, a $w$-bit clause count $20k$, followed by three literals per clause, each using one sign bit and $w$ identifier bits.  Both physical families below have exactly
+\[
+N_k=16+2w+60k(w+1)=\Theta(k\log k)
+\tag{2}
+\]
+bits, including the complete header. A malformed bit string is not silently equated to an UNSAT formula. Literal identifiers are distinct inside each clause and dense over all $15k$ names.
+
+\paragraph{Unknown block-order input.}
+For a permutation $\pi$ of $\{0,\ldots,k-1\}$ and one chosen $H\in\{H(0,0),H(1,1)\}$, define
+\[
+F_{k,\pi,H}=\bigwedge_{p=0}^{k-1}
+   H[x_j\mapsto x_{15\pi(p)+j}],
+\tag{3}
+\]
+with the 20 clauses of block $p$ serialized consecutively.  The header does not contain $\pi$. Every $F_{k,\pi,H(0,0)}$ is SAT; every $F_{k,\pi,H(1,1)}$ is UNSAT.  Signed exact quotas, properness and distinctness are invariant under the permutation.  No SAT-hardness inference follows from these deliberately easy products.
+
+\paragraph{Fixed three-zone input.}
+For $a,b\in\{0,1\}^k$, define $D_k(a,b)$ as the same 20 clauses per component but ordered in three physical zones: first all two $A$-controlled clauses from each component, then all sixteen fixed clauses from each, finally all two $B$-controlled clauses from each.  Exactly as in HEADMOVE-1,
+\[
+\SAT(D_k(a,b))\iff\bigwedge_{i=0}^{k-1}\neg(a_i\land b_i).
+\tag{4}
+\]
+The middle fixed zone contains $16k$ of $20k$ clauses.  This ordering is special and is part of the promise; it cannot be assumed for an arbitrary exact22 string.
+
+\section{No-preprocessing inverse lower bound}
+Write $\Sel_F(v,r)$ for the $r$th physical occurrence $(c,\mathrm{slot},\mathrm{sign})$ of name $v$ in clause-list order, $0\le r<4$.  Grant an algorithm a generous \emph{block identity oracle}: one query to any physical block $p$ reveals all 20 clauses in that block and hence its labeled component identity $\pi(p)$.  This oracle is at least as informative per touched block as arbitrary indexed \emph{bit} probes to the original encoding.
+
+\begin{theorem}[Unordered exact22 occurrence inversion; \textbf{PROVED/EXACT, restricted}]\label{th:oracle}
+For each $k\ge2$ and each fixed $H\in\{H(0,0),H(1,1)\}$, every deterministic total algorithm that, on all inputs $F_{k,\pi,H}$, outputs $\Sel_{F_{k,\pi,H}}(x_1,0)$ must on some input inspect at least $k-1$ distinct physical component blocks, even when a whole-block identity is returned in one unit-cost oracle call.  Thus an indexed bit-query algorithm without preprocessing or supplied permutation/incidence metadata needs $\Omega(k)=\Omega(N_k/\log N_k)$ physical source-bit probes in the worst case for this single inverse-location request. This holds separately with every formula SAT and with every formula UNSAT.
+\end{theorem}
+\begin{proof}
+The target name $x_1$ occurs exactly four times, all in the unique physical component whose label is $0$.  Its first occurrence's physical clause address varies with that component's position.  Give the algorithm the maximum-information block oracle described above.  An adversary answers the first $k-2$ distinct queried blocks with distinct labels from $\{1,\ldots,k-1\}$.  If the algorithm now stops, at least two unqueried block positions remain.  Complete the unobserved permutation in two ways by exchanging the positions carrying label $0$ and one other remaining label. Both valid inputs have identical headers and agree \emph{bit for bit} in every inspected block, yet the required physical $\Sel(x_1,0)$ differs.  Therefore the algorithm cannot halt correctly.  In the worst case it must inspect $k-1$ blocks; the final unqueried label may then be inferred.  The proof applies separately to either fixed local gadget $H$, so it does not mix SAT and UNSAT complexity.
+
+Every physical bit probe lies either in the fixed header or in one block. Simulate an arbitrary bit-query algorithm with the stronger block oracle, querying a block the first time any bit of it is requested and answering all subsequent probes from that block's content. If fewer than $k-1$ distinct blocks had been touched, this would contradict the block-oracle bound.  Since $N_k=\Theta(k\log k)$, the stated bit-query lower bound follows. No assumption on writable workspace or an output circuit family was used.
+\end{proof}
+
+The matching sequential full-block search has worst-case $k-1$ queries.  Under a uniformly random permutation its mean number is exactly $(k-1)(k+2)/(2k)$ for $k\ge2$, because it stops upon finding label zero or infers the last label. These are \emph{inverse-access} costs. They do not lower-bound SAT decision time: the all-SAT and all-UNSAT family restrictions above are trivially classified once the family choice is known.
+
+\section{An exact uniform exception with a canonical source}
+For a local name $j\in\{1,\ldots,15\}$ let the fixed 20-row ROM list
+\[
+L(j)=\{(h,q): 0\le h<20,0\le q<3,
+       |W_1[h,q]|=j\},\qquad |L(j)|=4.
+\tag{5}
+\]
+Write $v=15i+j$. In the fixed three-zone representation, the zero-based physical clause index of original local row $h$ is
+\[
+ c(i,h)=\begin{cases}
+ 2i+\operatorname{rank}_{(6,11)}(h),&h\in A,\\
+ 2k+16i+\operatorname{rank}_{\mathrm{FIXED}}(h),&h\notin A\cup B,\\
+ 18k+2i+\operatorname{rank}_{(17,9)}(h),&h\in B.
+ \end{cases}
+\tag{6}
+\]
+The sign comes from the authentic pair-flip $H(a_i,b_i)[h,q]$. Its physical sign-bit address is
+\[
+ p(i,h,q)=16+2w+3(w+1)c(i,h)+(w+1)q.
+\tag{7}
+\]
+
+\begin{lemma}[Four-occurrence arithmetic Rank/Select; \textbf{PROVED/EXACT under the image promise}]\label{lem:fixed}
+For every $k\ge1$, every canonical signed source $D_k(a,b)$, every name $v\in[15k]$ and every $r\in\{0,1,2,3\}$, the ordered signed $\Sel(v,r)$, its inverse $\Rank(v,c,q)$, and its physical polarity-bit location can be produced from (5)--(7) with \emph{at most two} indexed input-bit probes, $O(\log^3 N_k)$ bit operations, and $O(\log N_k)$ live work/index bits.  The fixed ROM has only 20 rows and 60 literal fields.  No incidence array, W1 assignment search, generated child string, or source-solving call is allowed or required.
+\end{lemma}
+\begin{proof}
+Use logarithmically sized arithmetic registers to find $i=\lfloor(v-1)/15\rfloor$ and $j=1+(v-1\bmod15)$.  Scan the fixed 60 literal fields to enumerate $L(j)$ and map each row to its physical position via (6), then sort the four triples by the physical clause/slot pair.  Read precisely the $A_i$ and $B_i$ anchor polarity bits.  They determine both corresponding paired sign flips, while all other signs are fixed by the W1 ROM.  Emit the chosen quadruple and address (7), writing each output bit, and return the position of a queried pair or $\bot$ for Rank.  The ROM occupies fixed program control; a constant number of $O(\log N_k)$-bit registers are live.  Schoolbook arithmetic and index writing cost at most $O(\log^3N_k)$ bit operations.  At most two physical input source bits are read, and each read writes its $O(\log N_k)$-bit index.  The proof depends on the source being in the declared fixed layout, unlike Theorem~\ref{th:oracle}.
+\end{proof}
+
+The promise cannot be extended by simply declaring noncanonical physical strings UNSAT.  Checking exact canonical membership may require examining every position: the previously established image-code distance is $d_H(D_k(a,b),D_k(a',b'))=2d_H(a,a')+2d_H(b,b')$, so any single bit flip of a valid encoding is noncanonical.  A total deterministic bit-query image recognizer therefore must inspect every physical bit of an \emph{accepted} canonical input. An explicit streaming full-template validator takes $O(N_k\operatorname{polylog}N_k)$ bit time and $O(\log N_k)$ writable/index bits.  Neither result handles an arbitrary well-formed ordinary-SAT source outside this image.
+
+\section{A small full-length promise circuit is not a SAT decision circuit}
+On the \emph{canonical-image promise only}, equation (4) has a direct typed netlist: $k$ AND gates on the $2k$ anchor inputs, then $k-1$ OR gates joining those AND outputs, and one final NOT gate.  The exact count is
+\[
+ G_k=2k,\qquad W^{\mathrm{primary}}_k=2k,\qquad
+ W^{\mathrm{signal}}_k=4k,\qquad E^{\mathrm{operand}}_k=4k-1,
+ \qquad L_{\mathrm{output}}=1.
+\tag{8}
+\]
+Here $W^{\mathrm{signal}}$ denotes distinct primary and gate-output \emph{nodes}, and $E^{\mathrm{operand}}$ is the number of gate-input references.  Neither count is identified with the number of physical tape cells.  A gate descriptor is computed arithmetically from its index in $O(\log^3 N_k)$ bit operations and logarithmic index space. If the fixed-width operand-reference description is \emph{explicitly emitted}, it already writes at least
+\[
+(4k-1)\left\lceil\log_2(4k+1)\right\rceil
+=\Theta(k\log k)=\Theta(N_k)
+\tag{9}
+\]
+bits, and retaining those descriptors consumes that many cells. A virtual indexed accessor saves \emph{storage} but every call/bit read is charged; evaluating the boolean disjointness directly by a streaming accumulator instead uses $O(\log N_k)$ index bits and $2k$ actual source-anchor probes.  These are different implementations and must never share the favorable time bound of one with the space bound of another.
+
+The netlist (8) agrees with SAT only \emph{on the stated canonical promise}. It is not $C_{A,N}$, the deterministic full ordinary-SAT decision circuit for all $N$-bit encoded inputs. The fixed $(2,2)$ padding/regularizer under current study enlarges the output and retains the specific Role-4 pinned floor $m_2\ge33856B$; nothing here is an ARC contraction or a $q=1.29$ full-decision compressor.
+
+\section{HEADMOVE-1 jump firewall and dual TM resource ledgers}
+A target-only radius-$J$ input jump can pass over the entire fixed middle gap without ever landing in an interior gap cell. Its no-visit crossing trace cannot be spliced as an ordinary one-cell crossing sequence.  This does \emph{not} invalidate the original sequential-input crossing theorem; it invalidates its direct transfer to a different augmented instruction set.
+
+\begin{lemma}[Charged interpolation; \textbf{CONDITIONAL on the HEADMOVE-1 sequential theorem}]\label{lem:jump}
+Let $M_J$ have one read-only input head capable of a charged jump of radius at most $J(N)$, reading only its landing-cell symbol, and fixed $k$ sequential work tapes. A uniform compiler simulates any such run of $T_J$ steps and visited-work-cell space $S_J$ on an ordinary one-sequential-input-head machine in
+\[
+ T_{\rm seq}=O\!\left(T_J(J+\operatorname{polylog}(N+T_J))\right),\qquad
+ S_{\rm seq}=O(S_J+\log(N+T_J)),
+\tag{10}
+\]
+including the offset bits and step-by-step head movement.  Provided the native sequential theorem $T_{\rm seq}(S_{\rm seq}+1)=\Omega(N^2/\log N)$ applies to the same fixed easy exact22 SAT-promise family, polynomial exponents $T_J=N^{t+o(1)}$, $S_J=N^{s+o(1)}$, $J=N^{j+o(1)}$ necessarily satisfy $t+s+j\ge2$.
+\end{lemma}
+\begin{proof}
+Store the signed offset and remaining-distance counter in $O(\log(N+T_J))$ work bits and replace a jump by at most $J$ ordinary source-head moves plus polynomial-logarithmic bookkeeping.  Read only the intended target bit; work tape operations and all simulated decisions remain unchanged. Charging all transitions yields (10). Apply the model-specific native lower bound to this \emph{one simulated run}, and substitute the resource ceilings.  The logarithmic factor is $N^{o(1)}$.  Nothing in (10) conserves a native $M_J$ gap-crossing sequence or an $M_J$ reversal count, and no indexed-work RAM theorem follows.
+\end{proof}
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{p{.12\linewidth}p{.26\linewidth}X}
+\toprule
+Model&Native time and access&Peak space and transfer guard\\\midrule
+$M_1$&One read/write tape, head crossings, source reads, output symbols all in $T_1$&$P_1\ge N$, includes initial input and all visited cells.\\
+$M_k$&Fixed $k$ read/write work tapes, one \emph{sequential} read-only input head; probe/crossing events already included in $T_k$&$S_k$ visited writable cells, excluding source. Conservative independent single-tape rescan $T_1=O(T_k(N+S_k+\log(T_k+2)))$, $P_1=O(N+S_k+\log(T_k+2))$.\\
+$M_J$&Radius-$J$ target-only source jump, pays each command and its binary offset&Simulate jumps at $O(J+\operatorname{polylog}N)$ bit-time each; reversal/crossing formulas cannot be reused directly.\\
+Indexed RAT&Input-bit requests write their $\Theta(\log N)$-bit addresses; restricted logword RAM may charge $O(1)$ operations per lookup&Explicit workspace includes indices, source parsing, caches, failed selections, child access; FLMV exclusions apply only in their native indexed model.\\\bottomrule
+\end{tabularx}
+\end{center}
+Hennie--Stearns' $O(T\log T)$ construction is for a \emph{two-tape} simulation, not the one-tape arrow. The exact previous fixed one-input-head/work-tape equality checker and four-sweep $M_1$ replay were independently rerun this session from the complete predecessor source, with 340 SAT/UNSAT controls and 9,320 matching source/simulator states; source file and resulting raw JSON both matched their prior SHA-256 fingerprints. This is retained as \textbf{COMPUTATIONAL regression}, not a novel universal simulation proof. The new source-inversion runner does not fabricate physical Turing-machine timing from CPython dictionary operations.
+
+\section{Finite evidence, audits and limitations}
+The standalone standard-library Python runner carries source-local and permuted-incidence implementations, signed quota checks, virtual physical bit positions, full canonical bit comparison, algebraic $\Sel/\Rank$, typed two-input/one-output promise circuit construction, and radius-$J$ input itineraries. The exact raw JSON reports:
+\begin{center}\small
+\begin{tabular}{lr}
+\toprule
+Measurement & Verified count\\\midrule
+Source W1 four-control assignments enumerated & $4\cdot 2^{15}=131{,}072$\\
+Permuted physical source formulas, SAT and UNSAT & 306\\
+All-control canonical source pairs, $k\le4$ & 340\\
+Canonical variable-inverse requests & 18,780\\
+Canonical promise-circuit evaluations & 340\\
+Bounded-jump physical sign-read itineraries & 90\\
+Additional indistinguishable-unread-prefix constructions & 21\\
+Asserted checks in new program & 134,924 or more\\
+Failed assertions & 0\\\bottomrule
+\end{tabular}
+\end{center}
+For $k=1,2,3,4,5$ the exhaustive strong block-oracle worst probe counts are $0,1,2,3,4$ and uniform-permutation means $0,1,5/3,9/4,14/5$, exactly as the proof predicts. Both all-SAT and all-UNSAT permuted controls preserve every variable's $(2,2)$ signs and proper ternary clauses. A one-bit source-control flip fails the signed-incidence quota and canonical parser. 340 typed netlist controls agree with all promised SAT labels. Finite results do not prove any general time-space separation; the symbolic adversary supplies the restricted asymptotic theorem.
+
+\paragraph{CORPUS REVIEWED.}
+The preregistered approach card predates this session's source refresh. Read the current verified three-model governance and HEADMOVE-1, Role-2 CIRCUIT-OBLIVIOUS-INVERSE-SORT166 / CIRCUIT-RECORD-OUTPUT-SELECT169 / HEADMOVE-RAM-VALIDATOR171, Role-4 PINNED131, Role-1 CANONICAL-SELECTOR184, Role-3 ADAPTIVE-SOURCE-POINTER131, Role-5 BACKDOOR-CAP161, the original early22 audit and all-field gadget sources, the root MAIN ownership ledger, AGENTS.md, CODEX.md and pnp-research skill. Searched original FLMV, Hennie--Stearns, and Jahanjou--Miles--Viola local-reductions literature. The independent full W1/Q source distinction was retained. The named independent continuation PDF remained unverified; no theorem is ascribed to it.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+Role-2 report 168 already had a generic \emph{gate-descriptor} forward-to-inverse oracle adversary. This report is the distinct specialized signed exact-$(2,2)$ \emph{encoded source-incidence} lower bound, with both SAT/UNSAT witnesses and a contrasting positive canonical source selector. It does not contradict the established restricted 166--169 algebraic inverses or the 171 exact22 parser. The Hennie--Stearns and HEADMOVE results are predecessor results, not relabeled discoveries. The earlier one-tape code is rerun, not replaced.
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopt verified W1 20-clause controls, fixed three-zone input layout, real source-bit address arithmetic and predecessor tape simulator. Reject the implication ``four known occurrences $\Rightarrow$ cheap inverse lookup on an arbitrarily ordered source''. Reject crossing-sequence transfer to target-only teleportation. Reject the claim that constant-size bitonic subcomponents or an instance-specific boundary representation automatically compress a full SAT decision circuit.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+Add the exact $k-1$ distinct-component source inverse-access obstruction under arbitrary input clause order, the positive $O(\log N)$-space fixed-layout exception, and the typed $2k$-gate promise netlist with its non-shrinking explicit descriptor cost. Preserve the earlier fully charged tape/RAM/gadget results under their precise scopes. The all-input ARC contraction, fully general source incidence parsing, final scan and reverse-route gate selectors remain \OPEN.
+
+\paragraph{Barrier and wrapper check.}
+Renaming and permutation \emph{strengthen} the inverse source-access obstruction while preserving SAT/UNSAT status; they can be cheaply undone only if the permutation/index is already available, which costs representation or discovery. An oracle returning sorted occurrence tables removes the lower bound by adding a new resource and is not the same native model. Conversely, a hardwired fixed source layout defeats the lower bound, so it cannot establish an unconditional SAT runtime lower bound, a Natural-Proofs circuit property, or a relativization/algebrization escape. The two-port source is semantically easy, and a direct SAT solver may never request its inverse occurrence list at all.
+
+\paragraph{Next precise proof obligation.}
+Complete Role-2's final comparator-layer outputs into the scan, reverse MUX results, high-fanout source aliases/constants and all physical header source bits, deriving a \emph{single uniform} full gate/source signed Rank/Select interface without counting the sorting network's dynamically evaluated values as a free occurrence table. Independently seek an all-input ordinary-SAT resource contraction from arbitrary unknown polynomial exponent $K$, under the matched indexed FLMV model. Neither follows from the present inverse oracle theorem.
+
+\begin{thebibliography}{9}
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek and A. Viglas, \emph{Time-Space Lower Bounds for Satisfiability}, J. ACM \textbf{52}(6), 835--865 (2005), \url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{hennie} F. C. Hennie and R. E. Stearns, \emph{Two-Tape Simulation of Multitape Turing Machines}, J. ACM \textbf{13}(4), 533--546 (1966), \url{https://doi.org/10.1145/321356.321362}.
+\bibitem{local} H. Jahanjou, E. Miles and E. Viola, \emph{Local Reductions}, Information and Computation \textbf{261} (2018), \url{https://arxiv.org/abs/1311.3171}. The published local clause generators are not a free inverse incidence oracle for arbitrary source order.
+\bibitem{will} R. R. Williams, \emph{Inductive Time-Space Lower Bounds for SAT and Related Problems} (2006), \url{https://people.csail.mit.edu/rrw/ccc05.pdf}.
+\bibitem{prev} LSPV-2, \emph{HEADMOVE-RAM-VALIDATOR171}, project report 27 October 2026, \url{https://github.com/j15marti/pnp/blob/main/research/agents/lspv-2/2026-10-27_0242_LSPV-2_HEADMOVE_RAM_VALIDATOR171.tex}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::CIRCUIT-SOURCE-SELECT-BARRIER172
