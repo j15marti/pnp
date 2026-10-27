@@ -1,0 +1,152 @@
+% LSPV-5 REPORT::EDIT-CHRONICLE-REFEREE177::2026-10-27T02:44:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newcommand{\st}{\mathrel{:}}
+\title{LSPV-5 Independent Referee Report:\\Exact Edit--Crossing Chronicles and Their Model Firewalls}
+\author{Role 5 independent red team}
+\date{27 October 2026}
+\begin{document}
+\maketitle
+
+\paragraph{Outcome.}
+The edit-chronicle counting argument of LSPV-4 survives an independent reconstruction in its stated restricted model, after making the ordering, initial-map, proof-tape, and common-input quantifiers explicit.  I prove an exact history count that is sharper than the published coarse bound, prove an all-cut tail lemma, and exhibit a finite countercontrol showing that blank start (or an equivalent initialization charge) is load-bearing.  These results concern a fixed deterministic machine with one sequential read-only source head, fixed $k$, fixed finite alphabets, and a fixed initial work map.  They do not imply an ordinary-SAT, random-access, RAM, FLMV, ARC-EDGE-90, or $P\ne NP$ result.
+
+\section{Falsifiers posed before the audit}
+
+\begin{enumerate}
+\item If edit labels and source-crossing labels are stored in separate unordered lists, two runs can have identical lists but different interleavings and hence different work contents at a crossing.
+\item If the program prefix may preload $I_0$ work bits without charging them, $2^{I_0}$ initial maps have the same empty edit chronology.
+\item If a proof string occupies a separate tape, splicing must match its contents and head position; charging only work-tape edits is insufficient.
+\item A favorable cut chosen separately for each input does not yield a common-input all-cut statement.  A union bound over the fixed set of cuts is required.
+\end{enumerate}
+
+The first objection is repaired by a single chronological event word.  The second is a genuine counterexample unless the initial map is fixed or paid for.  The third yields an explicit proof-content factor.  The fourth is repaired by the all-cut lemma below.
+
+\section{Model and exact chronicle count}
+
+Fix one deterministic machine $U$ with one two-way sequential read-only source head, $k=O(1)$ ordinary work tapes initially blank, fixed state set of size $q$, and fixed work alphabet of size $g$.  Let $S$ bound the total number of work cells ever visited in the run and put $h=2S+3$, which safely encodes every work-head coordinate relative to its origin.  An \emph{actual edit} is a transition on which the symbol stored in the scanned cell of a work tape changes.  A formal write of the same symbol is not an edit.  If several work tapes change on one transition, their edit events are placed in increasing tape-index order; a source-boundary crossing event is placed after those edit events.  This convention is fixed once for $U$.
+
+For one fixed source boundary, let
+\[
+  W:=khg,\qquad V:=2qh^k.
+\]
+Here $W$ is a safe alphabet for edit triples (tape, coordinate, new symbol), and $V$ is a safe alphabet for directed crossing records (direction, control state, all $k$ work-head coordinates).  The complete work contents at every crossing are reconstructed by replaying all preceding edits from the fixed blank map; they need not be repeated in each crossing label.
+
+\begin{theorem}[Exact bounded-chronicle count]
+The number of possible chronological event words with at most $D$ edit events and at most $L$ crossing events is
+\[
+ H(W,V;D,L)=\sum_{e=0}^{D}\sum_{\ell=0}^{L}
+ {e+\ell\choose e}W^eV^\ell.
+\]
+In particular, with $C=1+W+V$,
+\[
+ H(W,V;D,L)\le C^{D+L+1}.
+\]
+\end{theorem}
+
+\begin{proof}
+For fixed $e,\ell$, choose the $e$ edit positions among $e+\ell$ positions and then label them independently from alphabets of sizes $W$ and $V$.  Summing gives the equality.  Encode any such word as a word of length at most $D+L$ over the disjoint alphabet of $W+V$ events.  Padding with a stop symbol gives an injection into length-$(D+L+1)$ words over an alphabet of size $1+W+V$, proving the inequality.  The binomial coefficient is essential: keeping only a pair of separately ordered edit and crossing lists loses their interleaving.
+\end{proof}
+
+\begin{lemma}[Replay and splice soundness]
+For a fixed initial work map, equality of the complete chronological event word at a source boundary implies equality of the complete work-tape contents, work-head coordinates, control state, and crossing direction at every recorded crossing.  Hence the usual deterministic crossing-sequence splice is sound for the two source halves, subject to the native promise and delimiter conditions.
+\end{lemma}
+
+\begin{proof}
+Induct through the event word.  An edit record changes exactly the named coordinate to the named symbol; the fixed ordering handles simultaneous changes.  A crossing record reports the state, direction, and head coordinates.  Starting from the common fixed map, replay therefore determines the full configuration at each crossing.  Determinism then makes the two halves compatible at every crossing.  This is a same-machine, same-run statement; it does not convert a sequential machine into a random-access one.
+\end{proof}
+
+\section{Common-input all-cut tail}
+
+Let $G$ be the number of fixed source cuts.  For each cut $c$, call an input short at $c$ when its chronological word at $c$ has at most $D$ edits and at most $h_0$ crossings.  Suppose source identification supplies a two-party family of $2^m$ left strings against one fixed compatible right string for which the standard splice injectivity argument applies at every selected cut.
+
+\begin{theorem}[All-cut union tail]
+At most $G H(W,V;D,h_0)$ of the $2^m$ left inputs are short at at least one selected cut.  Therefore at least
+\[
+  2^m-GH(W,V;D,h_0)
+\]
+inputs are long at every selected cut.  If $GH(W,V;D,h_0)\le 2^{m-2}$, at least three quarters are long at every cut.
+\end{theorem}
+
+\begin{proof}
+At a fixed cut, splice injectivity maps each short left input to a distinct bounded chronicle, so there are at most $H$ of them.  Take a union bound over the same fixed $G$ cuts.  No input-dependent cut selection or advice is used.
+\end{proof}
+
+This repairs the common-input quantifier but remains conditional on exact source identification and splice compatibility.  It is not a worst-case theorem for ordinary SAT.
+
+\section{Initialization and proof-placement firewalls}
+
+\begin{lemma}[Blank-start firewall]
+If $I_0$ bits of the initial work map may depend on the program or input and are not otherwise charged, the blank-start decoder is unsound: $2^{I_0}$ distinct initial maps share the same empty edit word and identical work-head coordinates.  A sound count must either fix the initial map, multiply the history count by at least the number of admissible initial maps, or log the initialization as edits.
+\end{lemma}
+
+\begin{proof}
+Take $D=L=0$.  Every preload produces the empty event word.  Replaying from blank produces only the blank map, so at least $2^{I_0}-1$ maps are decoded incorrectly.  Grouping by the initial map or recording its changes restores injectivity.
+\end{proof}
+
+For a separate read-only proof tape holding at most $P$ bits, full proof contents contribute
+\[
+  1+2+\cdots+2^P=2^{P+1}-1
+\]
+possibilities, and its head coordinate contributes a factor at most $P+2$ to the crossing alphabet.  Thus a conservative count is
+\[
+ (2^{P+1}-1)H(W,V(P+2);D,L).
+\]
+If the proof is instead a fixed inline prefix on the left source shore, it is already part of that shore's source string and the extra proof-content factor is one.  These are different models and may not be interchanged.
+
+\section{Exponent faces and model transfer}
+
+For fixed $k,q,g$, $W,V= S^{k+O(1)}$ and the coarse chronicle count yields the restricted information face
+\[
+ d+ks\ge 1
+\]
+under $D=N^{d+o(1)}$, $S=N^{s+o(1)}$ in the corresponding exact22 promise family.  Independent epoch and time packings give the restricted faces $\max\{r,d\}\ge1$ and $\max\{t-1,d\}\ge1$ when their hypotheses hold.  All are native same-run sequential-head statements.
+
+They do not establish any of the following: a lower bound for fixed-$k$ multitape random-access SAT, a RAM inequality $t+s\ge2$, a low-space simulation preserving the source machine's time exponent, or an FLMV forbidden pair.  The standard simulation
+\[
+T_1=O\bigl(T_k(N+S_k+\log(T_k+2))\bigr),\qquad
+P_1=O\bigl(N+S_k+\log(T_k+2)\bigr)
+\]
+is an upper construction for a one-tape simulator.  It cannot be reversed into a lower bound on the original $k$-tape machine.  Likewise, head motion already included in a transition count must not be charged a second time.
+
+\section{Peer-arrow audit}
+
+\begin{center}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.31\linewidth}p{0.18\linewidth}>{\raggedright\arraybackslash}p{0.43\linewidth}}
+\toprule
+Arrow & Status & Referee finding\\
+\midrule
+LSPV-4 edit chronicle in the fixed sequential model & PROVED/EXACT restricted & Exact $H(W,V;D,L)$ and replay proof validate the coarse count.  Blank start and chronological ordering are explicit hypotheses.\\
+Program-dependent uncharged preload & FALSIFIED & Empty chronicles collide on $2^{I_0}$ initial maps.\\
+LSPV-2 canonical W1 image parser & PROVED/EXACT restricted & $O(N\log^3N)$ gates and $O(\log N)$ indexed workspace concern canonical-image membership, not a full SAT decision circuit.\\
+Authenticated partial-2CNF SCC leaves & CONDITIONAL & Local SCC verification is useful, but no proof yet covers every UNSAT parent under one uniform cap with all discovery, indexing, and source rereads charged.\\
+Canonical selector $J_F$ & CONDITIONAL & Local total wiring does not authenticate the global first-falsified-clause property without its full verification cost.  A parent-length guest SAT call is not a contraction.\\
+Sequential exact22 to RAM/FLMV & FALSIFIED/RETIRED & The access model and promise differ; no valid exponent transport is supplied.\\
+ARC-EDGE-90 and $P\ne NP$ & OPEN & No unrestricted all-input contraction or matched forbidden endpoint is proved.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Reproducible controls and provenance}
+
+The companion deterministic script checked the exact formula against brute-force typed-word enumeration for $W,V\in\{1,2,3\}$ and $D,L\le3$; checked the coarse bound and strict interleaving gap; checked 52,800 all-cut tail parameter rows; checked 2,448 proof-placement rows; checked preloads $I_0=1,\dots,16$; and replayed 111,151 simultaneous two-work-tape transition sequences through length four.  Total: 413,031 assertions, zero failures.  Raw SHA-256 is
+\texttt{83dcdf40301413aab085c5f6a558f78d8f85800e67b3481b93915e0e9fb1ffb9}.
+
+Reviewed artifacts included LSPV-4 \texttt{UTM-EDIT-CHRONICLE152}, LSPV-2 \texttt{CNF-COUNTER-IMAGE176}, the dual-TM accounting directive, the RAM/tape atlas, HEADMOVE-1, UTM-CROSS-WRITE1, the latest root synthesis, and the prior role reports named in the user directive.  A governance recovery request was separately published because the LSPV-4 report body was intact but its first-line ownership sentinel did not match the required report-header grammar.
+
+\section{Decisive remaining lemma}
+
+The next load-bearing task is not a stronger counting constant.  It is an all-UNSAT, ordinary-input certificate theorem on one precisely named native machine model, with uniform caps and correct coNTIME polarity, whose verifier charges source identification, proof acquisition, adaptive selection, malformed certificates, timeouts, and every simulated solver call.  Until that theorem and its two-level hereditary transport are proved, the circuit/certificate/ARC spine remains conditional.
+
+\paragraph{Handoff.}
+LSPV-1: keep selector totality distinct from authenticated global correctness and reject parent-length guest calls as contractions.  LSPV-3: use the exact $H$ count and all-cut tail, but state blank-start/proof-placement hypotheses and preserve universal SAT-branch versus existential UNSAT-reject polarity.  LSPV-4: the edit-chronicle theorem is independently upheld in its restricted model; repair only the first-line ownership sentinel, and do not export the exponent faces to RAM or FLMV.
+
+\paragraph{Final status.}
+The exact edit-chronicle and all-cut tail lemmas are \textbf{PROVED/EXACT restricted}; uncharged variable preload and sequential-to-RAM/FLMV transfer are \textbf{FALSIFIED/RETIRED}; all-UNSAT coverage is \textbf{OPEN}; ARC-EDGE-90 and $P$ versus $NP$ remain \textbf{OPEN}.
+
+\end{document}
+% END_OF_REPORT::EDIT-CHRONICLE-REFEREE177
