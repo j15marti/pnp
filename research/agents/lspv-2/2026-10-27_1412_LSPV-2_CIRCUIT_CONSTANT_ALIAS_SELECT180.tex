@@ -1,0 +1,242 @@
+% LSPV-2 REPORT::CIRCUIT-CONSTANT-ALIAS-SELECT180::2026-10-27T14:12:00Z
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{counterexample}[theorem]{Counterexample}
+\title{CIRCUIT--CONSTANT--ALIAS--SELECT180: Uniform Global Constant Source Inverse Rank/Select}
+\author{LSPV-2 Circuit and Reduction Builder}
+\date{2026-10-27, 14:12 UTC}
+\begin{document}\maketitle
+\noindent\textbf{PROVED/EXACT, fixed architecture only, independent review pending:}
+both global constant-wire source aliases in the explicit oblivious-sort
+SAT witness verifier have physical signed occurrence Rank/Select in
+\(O(\log^6 G)\) bit time and \(O(\log G)\) writable/index bits
+without storing a gate/occurrence table.
+\textbf{COMPUTATIONAL:} 10 independent finite chunks; 180856
+gate-prefix assertions, 8969 direct ranks, 35876 physical source ranks,
+5315 sampled Selects, 80 pins and 70 absent controls; zero failures.
+\textbf{OPEN:} all-class \(R_{15}\) source Rank/Select, ordinary all-input
+SAT, shorter SAT child, ARC-EDGE-90, and P versus NP.
+
+\section{Pre-search falsifiable routes}
+\begin{description}
+\item[] H1: high-fanout constants can be inverted using arithmetically
+countable prefixes. \textbf{PROVED/EXACT restricted.}
+\item[] H2: constants obey the five-own-gate-output-row rule \(5+4f\).
+\textbf{FALSIFIED/RETIRED}: constants are external alias wires, not
+gate outputs, and have no own five-row defining block.
+\item[] H3: every comparator has only three constant uses.
+\textbf{FALSIFIED/RETIRED} in the initial forward layer, which reads
+constant bits embedded in source records.
+\item[] H4: the indexed getter is a full small-space circuit evaluator
+or a power-short ordinary-SAT child. \textbf{FALSIFIED as an inference.}
+\end{description}
+
+\section{Circuit grammar, addresses, and exact prefixes}
+Use the literal fixed verifier \(V_{q,m}(x,z)\) in
+CIRCUIT--OBLIVIOUS--INVERSE--SORT166 for \(q\ge3,m\ge1\).
+Define \(w=\lceil\log_2(q+1)\rceil\), \(N=m(1+3(w+1))\),
+\(K=2^{\lceil\log_2(q+3m)\rceil}\), \(h=\log_2K\),
+\(J=h(h+1)/2\), \(C=K/2\), \(F=13w+32\).
+The Boolean gate count by sector is
+\[
+G_f=CJF,\quad G_s=19+(K-1)(4w+18),\quad
+G_r=3KJ,\quad G_c=m(36w+15)+m-1,\quad
+G=G_f+G_s+G_r+G_c.
+\]
+Source aliases are \(c_0=N+q+1,c_1=N+q+2\);
+Boolean gate IDs start strictly after both constants.
+The exact 13-row proper-CNF compiler has
+\(M_0=13G+4N+12\) clauses. Each signed direct constant
+operand at Boolean gate \(g\), slot \(k\in\{0,1\}\)
+contributes four physical source occurrences
+\((13g+4k+j,1,\tau)\) for \(j<2\) and
+\((13g+4k+j,1,-\tau)\) for \(2\le j<4\).
+Four independent pins at \(13G+4N,\ldots,+3\)
+set \(c_0=0\); the next four set \(c_1=1\).
+No constant has the five defining occurrences belonging
+to an AND/OR output gate.
+
+Write \(P(a)=\sum_{v=1}^a\operatorname{popcount}(v)\).
+For a single accumulator,
+\[
+P(a)=\sum_{b=0}^{\lfloor\log_2(a+1)\rfloor}
+\left[2^b\lfloor(a+1)/2^{b+1}\rfloor+
+\max\{0,(a+1)\bmod2^{b+1}-2^b\}\right].
+\]
+For the first \(r\) first-layer comparator pairs define
+\(A=\min(2r,q)\), \(Q=\min(3m,\max(0,2r-q))\),
+and \(Z=2r-A-Q\).
+The exact signed source constant operand counts are
+\begin{align*}
+U^{(0)}_0(r)&=r+5((w+2)A-P(A))+5Q+7Z,\\
+U^{(0)}_1(r)&=2r+5P(A)+5Q+5(w+1)Z .
+\end{align*}
+Proof: the first \(2r\) lanes contain \(A\) assignment
+records with \(w\) constant ID bits and two zero kind
+bits, \(Q\) request records with one zero and one one
+kind bit, and \(Z\) padding records with \(w\) one ID
+bits, one zero kind bit, one one kind bit, and one zero
+payload. A constant key field is referenced three times
+by its comparator and twice by its two output MUXs;
+a constant payload appears twice. Additionally every
+comparator initializes one LESS operand \(c_0\) and
+two EQUAL operands \(c_1\).
+All later forward comparator records consist of
+new gate outputs and thus use only the one/two
+setup constants. After \(r\) full forward pairs,
+\[
+U^{\mathrm{sort}}_c(r)=
+U^{(0)}_c(\min(r,C))+(r-C)_+d_c,\quad
+d_0=1,\ d_1=2.
+\]
+Scan-block zero (19 gates) has 8 uses of \(c_0\)
+and 2 of \(c_1\), including two \(c_0\) inputs to
+the same initial carry AND. Each later \(4w+18\)
+scan block has 6 \(c_0\) and 2 \(c_1\) uses.
+The reverse-MUX block has zero direct uses.
+Each fixed checker has
+\[
+\gamma_0=9(w-\operatorname{popcount}(q))+3,\quad
+\gamma_1=9\operatorname{popcount}(q)+6
+\]
+from its three seven-gate-per-bit range tests.
+With \(Z_*=K-q-3m\), the whole-circuit counts are
+\begin{align*}
+U_0&=C+5((w+2)q-P(q))+15m+7Z_*+(J-1)C
+      +6K+2+m\gamma_0,\\
+U_1&=2C+5P(q)+15m+5(w+1)Z_*+2(J-1)C
+      +2K+m\gamma_1.
+\end{align*}
+
+\section{Complete signed constant source Rank/Select}
+\begin{theorem}[PROVED/EXACT for the stated fixed emitter]
+For \(c\in\{c_0,c_1\}\), the exact number of physical
+source occurrences is \(4U_c+4\). A fixed uniform
+program returns the ordered signed source occurrence
+Select and its inverse Rank with \(O(\log^6G)\) bit
+operations and \(O(\log G)\) simultaneously live
+writable/index bits per query, with no incidence array.
+\end{theorem}
+\begin{proof}
+For any Boolean gate index, use the formulas above
+to count all uses at earlier complete comparator,
+scan and checker blocks. The current comparator's
+key and MUX source fields, the current scan block's
+two kind-equality XORs and carry setup, or the current
+checker's three range-test bodies supply a streaming
+list of at most \(O(w)\) local constant uses.
+Record pair position and first-layer sort direction
+determine the signed input operands. Each sector
+is a formula in \(q,m,g\), not input values.
+Binary-search over the nondecreasing use-count prefix
+to locate the gate of any direct-use rank \(u\);
+examine at most two input slots to obtain its
+signed slot \(k,\tau\). The inverse counts preceding
+uses and slots. For physical rank \(r<4U_c\), write
+\(u=\lfloor r/4\rfloor\), \(j=r\bmod4\) and select
+row \(13g+4k+j\), middle field 1, and sign
+\(\tau\) for \(j<2\) or \(-\tau\) otherwise.
+For the final four ranks use the independent
+constant pins. The inverse checks the precise
+gate-clone or pin row/slot class and returns
+\(4u+j\), rejecting absent positions.
+Only a constant number of logarithmic-size counters,
+addresses, indices and temporary signs are live;
+schoolbook bit arithmetic, logarithmic bit-count
+loops and binary search yield the stated
+conservative upper bound.
+\end{proof}
+
+\begin{counterexample}[Source alias versus gate output]
+At \(q=3,m=1\), \(N=10,G=1824\), the independent
+netlist has \(U_0=146,U_1=153\) direct uses, but
+constant source occurrence counts \(588,616\),
+respectively. The standard gate-output rule \(5+4f\)
+is inapplicable; constants have four terminal pins
+and no own five-row Boolean module.
+The equal numeral 616 and the unrelated W1 witness
+mask 616 are coincidental.
+\end{counterexample}
+
+\section{Reproduction, independent corpus, and hard boundaries}
+Ten deterministic parameter chunks were separately
+executed: \((3,1),(3,2),(3,3),(4,1),(4,3),
+(5,2),(7,3),(8,1),(8,3),(15,2)\).
+Every full gate prefix was compared with an independently
+materialized real signed Boolean netlist from the previously
+readback-verified CHECKER--INTERNAL--SELECT179 emitter;
+each constant occurrence Rank was checked against its
+physical 13-row clause template, and selected Selects
+were reverse checked. The selector used no netlist.
+Across chunks: 180856 prefix, 8969 direct Rank,
+35876 source Rank, 1063 direct Select and
+4252 source Select tests, 80 pin controls and
+70 absent ranks; zero failures. Each program
+invocation completed in its own bounded chunk.
+This is \textbf{COMPUTATIONAL} evidence for an
+independently proved restricted theorem, not
+asymptotic evidence by extrapolation.
+
+Corpus: four 2026-10-26 model governance directives,
+root main.tex, AGENTS/CODEX/pnp-research skill,
+Role-2 CIRCUIT166, R15--VIRTUAL163,
+SCAN/PRIMARY174, SCAN-INTERNAL177, CHECKER179,
+Role-1 ARC184, Role-3 SOURCE-POINTER131,
+Role-4 PINNED-OUTPUT-FLOOR131 and Role-5
+BACKDOOR-CAP161/PHYSICAL-ALIAS179. Prior
+global-constant source Rank/Select was OPEN;
+all verified earlier results are retained.
+Original theorem-model controls: Pippenger--Fischer
+1979, FLMV 2005, Hennie--Stearns 1966.
+
+This per-query indexed accessor is not low-space
+evaluation of the full witness verifier, nor a
+full SAT decision circuit, nor a source-length
+contraction. Materializing the \(G\) Boolean
+gates or \(M_0\) proper source clauses costs
+their actual bit output length. Query multiplicity
+and all virtual child reads are charged.
+The standard one-read/write-tape footprint includes
+the \(N\)-bit input; the fixed-\(k\) sequential-input
+model counts work tape cells separately. Its
+conservative one-tape rescan uses
+\(T_1=O(T_k(N+S_k+\log(T_k+2)))\) and
+\(P_1=O(N+S_k+\log(T_k+2))\), construction
+upper bounds, not native FLMV RAM bounds.
+Hennie--Stearns is a fast TWO-tape simulation.
+HEADMOVE reversals and jumps, UTM symbol changes
+and indexed input addresses remain separate.
+Signed exact-(2,2) R15 expands physical length.
+An arbitrary unknown polynomial \(K\)
+under hypothetical \(P=NP\) is not contracted
+below any exclusion by the current construction.
+All-input ordinary SAT, complete R15 occurrence
+inversion, all-UNSAT uniform short certificate,
+ARC-EDGE-90, P versus NP remain \textbf{OPEN}.
+
+\paragraph{Next smallest lemma.}
+Join every existing fixed-emitter source class
+into one identity-preserving physical Rank/Select,
+then prove signed R15 inverse access through
+both true levels while charging source parsing,
+all guest reads and peak storage. Request
+independent red-team review of the current sector.
+\begin{thebibliography}{9}
+\bibitem{pf} N. Pippenger and M. Fischer,
+Relations Among Complexity Measures,
+J. ACM 26:361--381 (1979),
+\url{https://doi.org/10.1145/322123.322138}.
+\bibitem{flmv} L. Fortnow et al.,
+Time-Space Lower Bounds for Satisfiability,
+J. ACM 52(6):835--865 (2005),
+\url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{hs} F. Hennie and R. Stearns,
+Two-Tape Simulation of Multitape Turing Machines,
+J. ACM 13(4) (1966),
+\url{https://doi.org/10.1145/321356.321362}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::CIRCUIT-CONSTANT-ALIAS-SELECT180
