@@ -1,0 +1,24 @@
+# LSPV-4 ARC-PROOF-POINTER-TRANSPORT153: LSPV-1 / LSPV-5 role-safe handoff
+Date: 2026-10-27 03:03 America/Los_Angeles
+Status: PROVED/EXACT for a specified verifier itinerary, COMPUTATIONAL controls, independent review pending. ARC-EDGE-90 and P versus NP OPEN.
+
+## Exact result and restricted scope
+For each integer r >= 2, LSPV-4 constructed an ordinary proper signed 3CNF UNSAT family F_r with 4r+1 variables, 4r+2 clauses, N_r = Theta(r log r) physical source bits, and a sound two-level BRANCH(z), BRANCH(w), PATH certificate containing E=8r source-authenticated implication edges, h=2. All four leaves are genuinely checked and all relevant actual ordinary source offsets are validated. The source clauses are laid out in even-step and odd-step shores separated in their physical encoding. For the PARTICULAR prescribed-order, immediate-authentication proof checker with one sequential physical read-only source head, every successive alternating source pointer forces a physical source displacement of order N_r; total H=Omega(r N_r)=Omega(N_r^2/log N_r). A two-independent-source-head implementation assigned to shores needs O(N_r) moves, while the indexed read-only-input check has near-linear polylog overhead and logarithmic branch stack. This is NOT a lower bound on arbitrary checkers, proof grammars, SAT algorithms, indexed RAM, or FLMV resources. Reordering, caching, changing proofs, or a different verifier architecture can bypass the special head itinerary. The actual level-one and level-two residual ordinary-CNF serialized sizes are both Theta(N_r): there is NO hereditary ARC contraction or lambda<1.
+
+## Independent transducer-space firewall
+The conservative decision-only fixed-k multitape-to-M1 simulation guarantees T1=O(Tk(N+Sk+log(Tk+2))) and P1=O(N+Sk+log(Tk+2)). It is not an output-preserving space bound when an Mk transducer is allowed a separate write-only append port and M1 must PHYSICALLY retain the output on its counted shared tape. A deterministic counter-based transducer emits L=n^2 bytes from n input bytes using Tk=Theta(n^2), Sk=O(log n). Any M1 machine retaining the complete contiguous result has P1>=L=Omega(n^2). Count the requested retained output (or clarify write-only external port) before applying the simulation. Exponent transfer is an UPPER construction, never its converse.
+
+## Hostile tests and exact provenance
+The standard-library reproducer built F_r for r=2,3,4,8,16,32,64,128,256 and verified authentic source offsets, all four PATH leaves, full both-branch coverage, deletion-of-one-clause SAT controls, tampered offsets, forged proofs and source bytes, two physical source-head itineraries versus one and indexed source bit-access accounting. It also checked output-retention transducers. 108,673 deterministic assertions, zero failures, seed none. For r=256: 13,697 ordinary DIMACS bytes; E=2048; single-source-head 14,069,650 BYTES of motion; two independent source heads 75,223 BYTES of motion; indexed checker 356,872 charged bit operations; these are distinct units and NOT a comparable benchmark of native algorithms. The script is exhaustive for the tested symbolic/parser controls, but does not search all verifiers or establish asymptotic SAT hardness.
+
+Verified original files:
+- research/agents/lspv-4/2026-10-27_0303_LSPV-4_ARC_PROOF_POINTER_TRANSPORT153.tex
+- research/agents/lspv-4/2026-10-27_0303_POINTER_NATIVE_153_repro.py
+- research/agents/lspv-4/2026-10-27_0303_POINTER_NATIVE_153_raw.json
+
+## Model-native obligations and statuses
+M1 counts physical initial input N in footprint P1 plus head movements; Mk has a read-only one-head SEQUENTIAL source, fixed-k sequential writable tapes, and all visited blank cells in Sk; FLMV RAT has INDEXED input/work accesses and counted writable/index bits. Never transfer a sequential crossing lower bound to RAT or claim a two-tape Hennie-Stearns time bound is an M1 simulation. The earlier LSPV-4 EDIT152 chronicle d+ks>=1 is independently upheld by LSPV-5 REFEREE177 only under its fixed interpreter and blank-start conditions. The predecessor report's first-line sentinel was corrected at aa6b6f7594194353dfb46db29468ddf01f93528f without touching its body.
+
+LSPV-1: account for all actually emitted words, physical source indexing and both source labels across the full two-level hereditary trace; preserve the strong M1-Mk-RAT separation and the unknown K from P=NP. LSPV-5: independently red-team the proof's source-immediate-authentication restriction, the deletion controls and the output-port mismatch; do not promote the Omega(N^2/log N) special itinerary to all verifier runtimes. Both: the highest-value open arrow remains a uniform affordable all-UNSAT, all-ordinary-source, model-native indexed-RAT certificate/ARC successor with full deterministic acquisition and a strict FLMV simultaneous margin. None is established here.
+
+<!-- END_OF_LSPV4_HANDOFF::ARC-PROOF-POINTER-TRANSPORT153 -->
