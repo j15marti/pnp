@@ -1,0 +1,154 @@
+% LSPV-5 REPORT::UTM-NATIVE-CHANGE-FIREWALL174::2026-10-26T23:55:00-07:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{counterexample}[theorem]{Counterexample}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\UNSAT}{\mathsf{UNSAT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{UTM--NATIVE--CHANGE--FIREWALL174\\\large Fixed-universal symbol changes do not lower-bound a native implementation}
+\author{LSPV-5 Independent Red Team / Formal Proof Referee}
+\date{26 October 2026, 23:55 PDT}
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{.94\linewidth}{
+\textbf{INDEPENDENTLY UPHELD, model-restricted:} UTM-CROSS-WRITE1's common-input inequality for one fixed universal one-tape machine, and its $D$-sensitive configuration count for one fixed-$k$, fixed-alphabet, blank-work, one-sequential-input-head machine.  \textbf{PROVED/EXACT FIREWALL:} actual symbol-change complexity is not invariant under simulation: one native parity decider has $D=0$, while a valid fixed interpreter for the same program and inputs has $D=\#1(x)$.  Formal writes and actual changes are likewise inequivalent.  \textbf{FALSIFIED/RETIRED:} transferring a lower bound on $D_U$ to every native implementation, splicing across different program prefixes, omitting free initial nonblank advice, or silently allowing growing state/alphabet/head counts in the fixed-parameter exponent faces.  \textbf{OPEN:} an explicit compiler from the exact22 promise to unrestricted ordinary SAT with a same-machine strict ARC improvement; ARC-EDGE-90 and $P\ne NP$.}}
+\end{center}
+
+\section{Claim card and preregistered falsifiers}
+The exact target was the new governance theorem UTM-CROSS-WRITE1, not a generic crossing-sequence slogan.  Programs have length at most $b$, are run by one fixed universal machine $U$, and must each be globally sound; the $2^m$ DISJ-fooling YES inputs must be covered within a common time cap.  The symbolic-write theorem has one sequential read-only input head, fixed $k,q,g$, blank work tapes, $S$ visited work cells, and $D$ actual work-symbol changes.
+
+Before source search, the following attacks were fixed.
+\begin{description}
+\item[H1.] A native decider can retain a bit in finite control while an interpreter materializes it on tape.  \textbf{PROVED/EXACT}; Theorem~\ref{th:noninv}.
+\item[H2.] A formal write can write the same symbol, so write commands need not be actual changes.  \textbf{PROVED/EXACT}; Lemma~\ref{lem:writes}.
+\item[H3.] Cross-program transcript equality does not license splicing, and a short accept-all program destroys the count unless global soundness is imposed.  \textbf{PROVED as a load-bearing guard}; Section~\ref{sec:common}.
+\item[H4.] Free initial markers, growing $q$ or $g$, or another input head evade the fixed-parameter count.  \textbf{PROVED as model countercontrols}; Theorem~\ref{th:params}.
+\end{description}
+
+\section{Originals and machine-model provenance}
+The following repository originals were read in full or by complete claim-matched sections: UTM-CROSS-WRITE1 (commit \texttt{318ff980324302233069862adcd780efd5af105e}); DUAL-TM, RAM-VS-TAPE and HEADMOVE-1; root \texttt{main.tex}; AGENTS/CODEX and the research skill; LSPV-1 ARC-CANONICAL-SELECTOR-AUTH184 and ARC-ENTROPY-SOURCE-BRANCH194; LSPV-2 CIRCUIT-OBLIVIOUS-INVERSE-SORT166 and UTM-CROSS-WRITE-COUNTER175; LSPV-3 BACKDOOR-SCC-CERT130, ADAPTIVE-SOURCE-POINTER-STREAM131 and current exact22 source-local work; LSPV-4 ARC-PINNED-CIRCUIT-OUTPUT-FLOOR131 and ARC-CHECKPOINT-RESIDUAL148; LSPV-5 BACKDOOR-CAP161 and PREPROCESSING-CACHE-FIREWALL173.  The canonical repository was not present as a local checkout, so local repository preflight scripts could not be run; publication uses GitHub fresh-SHA/readback.
+
+The model separation is consistent with the primary literature.  Hennie--Stearns is explicitly a \emph{two-tape simulation of multitape} machines, not an identification of native one-tape crossing costs with multitape work space \cite{hs}.  Rabin--Scott's two-way finite automata result concerns one finite-control input head and regular languages \cite{rs}; adding a second independently positioned input head is a different model.  FLMV fixes its random-access machine and charges time and space simultaneously on that one machine \cite{flmv}.  None of these sources makes actual symbol-change count invariant under simulation.
+
+\section{Simulation noninvariance and formal writes}
+\begin{theorem}[Actual-change noninvariance]\label{th:noninv}
+There exist a language $L$, a fixed native deterministic machine $M$, and a fixed deterministic interpreter $U$ simulating a fixed code $p_M$, such that on the same binary inputs $x$ of length $n$,
+\[
+T_M(x)=\Theta(n),\quad D_M(x)=0,
+\qquad
+T_U(p_M,x)=\Theta(n),\quad D_U(p_M,x)=|x|_1.
+\]
+Both machines use fixed finite alphabets and a fixed number of tapes and return identical answers.
+\end{theorem}
+\begin{proof}
+Let $L$ be odd parity.  Machine $M$ scans once and retains the parity bit in one of two finite-control states; it never writes a work symbol.  Define a conventional fixed interpreter $U$ whose representation of the simulated control state is a designated binary work cell.  For the fixed parity program, $U$ reads each input bit and rewrites that state cell with the XOR.  A zero input bit causes a formal self-write and a one bit toggles the cell.  Therefore the output agrees with $M$, the interpreter remains linear-time, and the actual-change counts are as displayed.
+\end{proof}
+
+The theorem does not say every universal machine behaves this way: a specially optimizing $U$ could recognize this program.  That is exactly the point.  $D$ is a property of a complete implementation, not of the computed language or even of a program's extensional behavior.  Consequently a lower bound on $D_U$ for one pinned $U$ cannot be read as a lower bound on $D_M$ for every native machine.  A transfer needs an explicit simulation theorem in the direction and metric actually used.
+
+\begin{lemma}[Formal writes versus actual changes]\label{lem:writes}
+Let $W$ count formal work-tape write commands and $D$ count commands that change the scanned symbol.  In any run $0\le D\le W\le kT$ under the usual at-most-one write per work tape per transition convention.  Neither converse asymptotic bound holds: a machine may issue $T$ self-writes and have $D=0$, or toggle a cell every step and have $D=W=T$.
+\end{lemma}
+Thus a proof based on actual changes must not charge unchanged writes again, while a hardware/write-traffic theorem must not silently replace $W$ by $D$.  Reads, moves, and writes already included in $T$ are not separate additive time lower bounds.
+
+\section{Common input, program advice, and splicing}\label{sec:common}
+For a length cap $b$, the exact number of binary programs is
+\[
+P_b=\sum_{\ell=0}^b2^\ell=2^{b+1}-1<2^{b+1}.
+\]
+Fix a program $p$.  The governance proof's accepting-transcript injection is within that one deterministic machine/input-prefix pair: two distinct fooling YES inputs with the same full transcript yield a crossed NO input accepted by the standard deterministic rectangle splice.  Summing the per-$p$ counts over at most $P_b$ programs produces a common YES input outside every fast portfolio member if the displayed capacity is $<2^m$.
+
+Three guards are essential.
+\begin{enumerate}
+\item \emph{Global soundness:} an accept-all one-bit program covers all YES inputs in constant time but also accepts every NO input.  Excluding it requires correctness on the full declared promise, not success only on the fooling set.
+\item \emph{Same program:} crossing records from $p$ and $p'$ do not share the same left program-prefix data.  Equality across different programs does not authorize a hybrid run.  The governance union bound is sound because it does not make that splice.
+\item \emph{Charged advice:} any initial program, read-only advice, or nonblank work marker must be counted once in $b$ or in a separate declared parameter.  It cannot be hidden in the universal machine while varying with $N$ or the input.
+\end{enumerate}
+
+Accordingly, Theorem A of UTM-CROSS-WRITE1 is independently upheld only as a fixed-$U$ universal-time common-input theorem.  It is not a UWI theorem (eligible programs there may be selected with input hindsight under different requirements), a native-time theorem, or an unrestricted ordinary-SAT lower bound.
+
+\section{Parameter-growth and multihead countercontrols}
+Put $h=2S+3$.  With fixed $k$ work tapes, work alphabet size $g$, state count $q$, and $I_0$ initially nonblank visited work cells, a safe generalization of the current-configuration count is
+\begin{equation}\label{eq:ai0}
+A_{I_0}(S,D)\le 2q h^k
+\sum_{j=0}^{\min\{D+I_0,kh\}}{kh\choose j}(g-1)^j.
+\end{equation}
+For $I_0=0$ this is the governance formula.  Each cell nonblank at the checkpoint is either initially nonblank or acquired its nonblank value through at least one actual change, proving the support bound.  This independently confirms LSPV-2 report 175's marker correction.
+
+\begin{theorem}[Fixed-parameter firewall]\label{th:params}
+The simplified exponent faces of UTM-CROSS-WRITE1 require $q,g,k,I_0=O(1)$ and one sequential input head.  If any is silently relaxed, the stated faces need not follow.
+\end{theorem}
+\begin{proof}
+Taking logarithms of~\eqref{eq:ai0} retains explicit terms
+\[
+\log q+k\log(S+2)+O\!\left((D+I_0+1)
+  [\log(k(S+2))+\log(g-1)]\right).
+\]
+They are constants/polylogarithmic only under the declared bounds.  A nonuniform family with $q_N=2^m$ states can remember an $m$-bit Alice block in finite control with $S=D=0$.  If the physical input alphabet and work alphabet grow to $g_N=2^m$, one packed symbol names an $m$-bit block; that changes the input length and bit-cost model.  With two independently moving read-only input heads, one head can be positioned at Alice's block and one at Bob's block, after which a finite-control machine scans the pairs synchronously and decides separated DISJ with work $S=D=0$.  Each construction lies outside the theorem but falsifies the corresponding silent generalization.
+\end{proof}
+
+The blank-work $D=0,S=O(1)$ one-head machine remains a two-way finite automaton and hence cannot decide unbounded separated DISJ.  LSPV-2's one-change marker construction, $D=1$ and $S=\Theta(m)$, is compatible with the theorem and demonstrates why large work-head displacement must remain in the count.
+
+\section{Resource transport and current ARC proof DAG}
+The conservative simulation
+\[
+T_1=O\bigl(T_k(N+S_k+\log(T_k+2))\bigr),\qquad
+P_1=O\bigl(N+S_k+\log(T_k+2)\bigr)
+\]
+is an upper construction for simulating one fixed-$k$ machine by one shared writable tape.  It is not a lower bound on $T_k$ or $S_k$, and it gives no control of actual changes in either direction.  Hennie--Stearns' efficient \emph{two-tape} simulation is not a one-tape crossing theorem.  Conversely, a one-head reversal/crossing lower bound does not transfer to two heads, fixed-$k$ work tapes, RAM, or FLMV indexed access without a charged simulation.
+
+The exact22 family remains a promise/input image.  A lower bound for a one-sequential-head recognizer of that layout does not apply to full ordinary SAT unless a bit-local, size-controlled reduction and same-machine simulator preserve both labels, all invalid encodings, time, space, and the input access convention.  The two-head control above also shows why the work snapshot used in a one-cut splice must contain every independently positioned head.
+
+For coNTIME SAT, the polarity remains: SAT inputs require every nondeterministic branch to accept; an UNSAT input needs at least one rejecting branch.  Malformed certificates and timeouts must accept under one uniform cap.  A local rejecting branch for one unsatisfiable component can be sound without a global clause-hitting backdoor.  Compact $J_F$ wiring, witness-verifier gates, source-index inverses, or output floors do not authenticate all UNSAT inputs and do not provide a full decision circuit or a parent-smaller guest call.
+
+\begin{center}\small
+\begin{tabularx}{.98\linewidth}{>{\bfseries}p{.25\linewidth}p{.18\linewidth}X}
+\toprule
+Arrow & Status & Exact conclusion\\\midrule
+Fixed-$U$ common-input count & PROVED/EXACT restricted & Sound programs, same-$p$ splicing, program union bound; universal time only.\\
+Fixed-$k,q,g$, blank one-head $A(S,D)$ & PROVED/EXACT restricted & Configuration upper count and governance exponent faces.\\
+Fixed-$U$ $D$ $\Rightarrow$ native $D$ & FALSIFIED/RETIRED & Parity has native $D=0$ and interpreter $D=|x|_1$.\\
+Formal writes $W$ $\Leftrightarrow$ changes $D$ & FALSIFIED/RETIRED & Only $D\le W\le kT$ is unconditional.\\
+Free initial marker omitted & FALSIFIED/REPAIRED & Replace $D$ by $D+I_0$ in support counting.\\
+Growing $q,g,k$ or extra input head & OUTSIDE/FALSIFIER & Explicit nonuniform/packed/two-head controls evade fixed faces.\\
+Exact22 promise $\Rightarrow$ ordinary SAT & OPEN & Full label-, bit-, size-, model-preserving transport absent.\\
+All-UNSAT affordable certificate coverage & OPEN & Local authenticated leaves do not cover all ordinary UNSAT instances.\\
+ARC-EDGE-90 / $P\ne NP$ & OPEN & No same-machine strict contraction into the FLMV box.\\\bottomrule
+\end{tabularx}
+\end{center}
+
+\section{Finite controls, peer reconciliation, and handoff}
+The dependency-free reproducer \texttt{2026-10-26\_2355\_UTM\_NATIVE\_CHANGE\_FIREWALL174\_repro.py} executes \textbf{1,388,120 exact assertions}, no failures.  It exhausts the DISJ fooling family through $m=10$, all binary strings through length 15 for native/interpreted parity and self-write/toggle counts, all separated DISJ inputs through $m=9$ for the two-head algorithm, and fixed-parameter configuration counts over $k\le3$, $g\le5$, $S,D,I_0\le8$.  Raw canonical-payload SHA-256 is \texttt{70a220fa11c656936467b589e47fc3438be989e36e07787bc6c8d4fe27b72f88}.  These controls corroborate but do not replace the symbolic proofs.
+
+\paragraph{Peer synthesis.}
+LSPV-2 report 175 independently found the $D=1,S=\Theta(m)$ marker construction and the $D+I_0$ repair; both are adopted.  LSPV-4 report 148 correctly makes residual communication checkpoint-relative, agreeing with PREPROCESSING-CACHE-FIREWALL173: an initial/source cost is not recharged after informative cache state is retained.  LSPV-1 report 194's entropy/source branching remains a source-family upper/lower interface, not native-symbol-change invariance.  LSPV-3's streamed authenticated leaves remain verifier upper bounds; all-UNSAT capped coverage is still open.
+
+\paragraph{To LSPV-1.}
+Keep each program/selector branch globally sound and splice only within a fixed program and complete machine model.  State explicitly whether the claimed metric is fixed-universal time/change or native time/space.  A parent-size guest validation cannot be called contraction.
+
+\paragraph{To LSPV-3.}
+Add $I_0$ and every work/input head to streamed proof configurations.  Distinguish formal writes from actual changes; malformed/timeout branches accept.  A locally authenticated UNSAT component is valid but is not worst-case all-UNSAT coverage.
+
+\paragraph{To LSPV-4.}
+Retain checkpoint-relative residual entropy and same-machine coordinates.  The pinned-output floor does not transfer a fixed-$U$ change bound to a cheaper native representation.  Any proposed ARC edge must give its own $D$- or space-preserving compiler, not cite universality alone.
+
+\paragraph{Root reconciliation.}
+Add the simulation-noninvariance firewall and the $D+I_0$ count to the executive proof DAG.  Preserve UTM-CROSS-WRITE1 Theorems A/B in their exact scope and preserve every prior peer theorem.  Do not promote the promise, one-head, fixed-universal, or fixed-parameter faces into FLMV or ordinary-SAT claims.
+
+\paragraph{Next decisive target.}
+Either prove an explicit, bit-local ordinary-SAT transport and an implementation-preserving same-machine successor that survives two hereditary levels, or produce the next legal native/cache/multihead countercontrol.  Until then ARC-EDGE-90 and $P\ne NP$ remain \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{hs} F. C. Hennie and R. E. Stearns, \emph{Two-Tape Simulation of Multitape Turing Machines}, J. ACM 13(4), 1966, 533--546, \url{https://doi.org/10.1145/321356.321362}.
+\bibitem{rs} M. O. Rabin and D. Scott, \emph{Finite Automata and Their Decision Problems}, IBM J. Research and Development 3(2), 1959, 114--125, \url{https://doi.org/10.1147/rd.32.0114}.
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas, \emph{Time-Space Lower Bounds for Satisfiability}, J. ACM 52(6), 2005, 835--865, \url{https://doi.org/10.1145/1101821.1101822}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::UTM-NATIVE-CHANGE-FIREWALL174
