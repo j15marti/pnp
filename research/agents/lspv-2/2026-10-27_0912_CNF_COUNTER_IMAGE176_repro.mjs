@@ -37,9 +37,9 @@ const audit=function audit(){
   ok(H(1,0).every(c=>sat(c,4742)),"Alice1 witness4742");
   function clause(m,a,b,row){
     let orig,idx,flA=1,flB=1;
-    if(row<2*m){idx=Math.floor(row/2);orig=Alice[row%2];flA=a[idx];}
+    if(row<2*m){idx=Math.floor(row/2);orig=Alice[row%2];flA=(typeof a==="function"?a(idx):a[idx]);}
     else if(row<18*m){idx=Math.floor((row-2*m)/16);orig=fixed[(row-2*m)%16];}
-    else {idx=Math.floor((row-18*m)/2);orig=Bob[(row-18*m)%2];flB=b[idx];}
+    else {idx=Math.floor((row-18*m)/2);orig=Bob[(row-18*m)%2];flB=(typeof b==="function"?b(idx):b[idx]);}
     return W1[orig].map((v,j)=>{
       if((orig===6||orig===11)&&j===0&&!flA)v=-v;
       if((orig===17||orig===9)&&j===2&&!flB)v=-v;
@@ -72,9 +72,12 @@ const audit=function audit(){
     const read=p=>{probes++;ok(p>=0&&p<data.length,"input bounds");return data[p];};
     let m=findM(data.length);arithmetic+=Math.ceil(Math.log2(data.length+1))*12;
     if(m===null)return {valid:false,accept:false,probes,arithmetic};
-    let x=lay(m), a=[],b=[];
-    for(let i=0;i<m;i++){a.push(Number(read(signLocation(m,"A",i))));b.push(Number(read(signLocation(m,"B",i)))); arithmetic+=20;}
-    const disjoint=a.every((v,i)=>!(v&&b[i]));
+    let x=lay(m);
+    // Do NOT store m control bits: on-demand source reads with O(log N) indices.
+    const a=i=>Number(read(signLocation(m,"A",i)));
+    const b=i=>Number(read(signLocation(m,"B",i)));
+    let disjoint=true;
+    for(let i=0;i<m;i++){if(a(i)&&b(i))disjoint=false;arithmetic+=20;}
     if(!strict)return {valid:null,accept:disjoint,probes,arithmetic,m};
     const header=magic+bin(x.V,x.w)+bin(x.C,x.w)+bin(m,x.w);
     // Stream the expected literal bit from a fixed 20-row ROM, not a stored CNF.
@@ -111,7 +114,7 @@ const audit=function audit(){
         seen.add(c.join(","));
         for(let v of c)(v>0?cp:cn)[Math.abs(v)]++;
         if(expect){
-          let idx=Math.floor(Math.abs(c[0])-1)/15; // not used for witness, checked below
+          // no precomputed per-instance source index or occurrence table
           const model=(i)=>a[i]===0?616:4742;
           ok(c.some(v=>((model(Math.floor((Math.abs(v)-1)/15)) >> ((Math.abs(v)-1)%15))&1)===(v>0?1:0)),"SAT source witness");
         }
