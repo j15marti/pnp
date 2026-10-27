@@ -1,0 +1,326 @@
+% LSPV-5 REPORT::SHORE-ADVICE-FACTOR176::2026-10-27T01:52:00-07:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{counterexample}[theorem]{Counterexample}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\UNSAT}{\mathsf{UNSAT}}
+\title{SHORE-ADVICE-FACTOR176\\
+\large Exact Advice-Channel Multiplicity for Crossing Splices,\\
+Independent Referee Audit of ARC197 and UTM-JUMP-CHANGE150}
+\author{LSPV-5: Independent Red Team / Formal Proof Referee}
+\date{27 October 2026, 01:52 PDT}
+\begin{document}\maketitle
+
+\begin{center}\fbox{\parbox{.94\linewidth}{
+\textbf{PROVED/EXACT, restricted:} a shore-factor theorem for deterministic
+crossing-sequence splices.  Advice wholly inside either spliced source shore
+costs no portfolio factor.  If only selected complete programs are known
+sound and their bits are split between the two shores, a safe factor is the
+smaller number of distinct left- and right-shore fragments.  A separate
+unsplit proof/advice tape still requires full-content matching.
+\textbf{FALSIFIED/RETIRED:} multiplying by the number of inline prefixes
+when every prefix lies left of the formula cut; removing the factor for
+arbitrarily split advice without recombination-closed soundness.
+\textbf{COMPUTATIONAL:} 4,859,653 deterministic exact assertions, zero
+failures.  \textbf{OPEN:} exact22-to-full-SAT transport, affordable
+all-ordinary-UNSAT coverage, an arbitrary-$K$ same-machine ARC successor,
+ARC-EDGE-90, and $P\ne NP$.}}
+\end{center}
+
+\section{Claim card and four falsifiers proposed before search}
+\textbf{Claim ID:} SHORE-ADVICE-FACTOR176.  \textbf{Mode:} red-team.
+The target is the multiplicity term in a crossing-splice portfolio bound.
+The exact quantifiers are: fix one deterministic machine $U$, one source
+cut $c$, a sound selected program family $\mathcal P$, and common ceilings
+on the complete crossing labels; then bound the number of accepted diagonal
+fooling inputs, allowing the selected $p\in\mathcal P$ to depend on the
+input with free hindsight.  Time, visited work cells, actual changes,
+reversals, jumps, labels and soundness refer to that one run of $U$.
+
+Before retrieving the sources, four falsifiers were fixed.
+\begin{enumerate}
+\item A different inline prefix may invalidate cross-program splicing.
+\emph{Falsified} when the entire prefix is on one source shore: the prefix
+rides with that shore and the crossed run is still an execution of one of
+the two original sound programs.
+\item Arbitrarily split program bits also cost no factor.
+\emph{Falsified} by Counterexample~\ref{c:split} unless soundness is closed
+under shore recombination.
+\item A separate proof tape behaves like inline source advice.
+\emph{Falsified}: it is global and unsplit; future-readable contents must
+match or be placed in the interface record.
+\item ARC197's ``long at every cut'' conclusion may interchange a union and
+an intersection.  \emph{Not falsified}: the union bound is in the correct
+direction once cross-program injectivity is established at each fixed cut.
+\end{enumerate}
+
+\section{Corpus reviewed and literature/model provenance}
+\textbf{CORPUS REVIEWED:} root \path{main.tex}, \path{AGENTS.md},
+\path{CODEX.md}, the complete repository pnp-research skill and its red-team
+and research-protocol references; the pinned DUAL-TM, RAM-vs-tape,
+HEADMOVE1 and UTM-CROSS-WRITE1 governance notes; LSPV-5 reports 166--175;
+LSPV-1 ARC197 and ARC-ZERO-ADVICE-SOURCE-CORE196; LSPV-2
+ZERO-WRITE-PORTFOLIO176 handoff; LSPV-3 UWI-PROOF-TAPE-CROSS141 and
+SOURCE-QUERY-CERT-FLOOR142; and LSPV-4 UTM-EPOCH-MULTIHEAD149 and
+UTM-JUMP-CHANGE150.  The newest LSPV-4 report is substantive and has the
+required report header and sentinel, so predecessor write recovery was not
+needed.
+
+Hennie's crossing-sequence work concerns one-tape off-line computations;
+Rabin--Scott/Shepherdson establishes that two-way finite automata recognize
+only regular languages.  Hennie--Stearns is a \emph{two}-tape simulation
+of multitape machines, not a license to move one-tape crossing lower bounds
+to fixed-$k$ tapes.  FLMV's SAT bounds use their indexed random-access
+model and simultaneous resources of one machine.  These are model
+provenance checks only; the theorem below is proved directly.
+
+\textbf{DUPLICATION / CONTRADICTION AUDIT:} LSPV-5 report 175 already
+removed the inline-prefix factor for an adjacent sequential head.  ARC197
+correctly extended that result to an all-cut distributional tail.
+UTM-JUMP-CHANGE150, published later, reverted to the weaker
+$2^{b+1}$ factor and proved injectivity only ``for each fixed program.''
+That factor is valid but redundant under its own hypothesis that the program
+prefix is entirely left of every formula cut.  Its separate $+D$ repair for
+symbol-changing crossing transitions is independently upheld.
+
+\section{The exact shore-factor theorem}
+Let a source at cut $c$ decompose as $X=L\mid R$.  A selected program has
+representation $p=(p_L,p_R)$, where $p_L$ is physically confined to the
+left shore and $p_R$ to the right shore.  Let $\mathcal P$ be a set of
+complete programs, each globally sound: no $p\in\mathcal P$ accepts any
+NO source.  For an accepting run, let $\tau$ be a \emph{complete} crossing
+record: control state, direction, and every future-readable work-tape
+content/head position needed by the standard splice induction.  In a
+bounded-jump machine it additionally contains the source and landing
+offsets, symbols, and complete pre/post work configurations of each jump.
+Let $B$ bound the number of possible short records at the fixed cut.
+Write
+\[
+ P_L=|\{p_L:p\in\mathcal P\}|,\qquad
+ P_R=|\{p_R:p\in\mathcal P\}|.
+\]
+
+\begin{theorem}[Selected-sound shore factor]\label{t:shore}
+For a fooling diagonal family in which every two distinct accepted
+diagonals have at least one crossed NO source, the number of diagonals
+accepted with one of at most $B$ records satisfies
+\[
+ |\mathcal A|\le \min\{P_L,P_R\}\,B.                 \tag{1}
+\]
+If every program prefix is wholly left of the cut, $P_R=1$ and hence
+$|\mathcal A|\le B$, independent of portfolio cardinality.  The symmetric
+statement holds for a wholly right-shore encoding.  If every shorewise
+recombination $(p_L,p_R')$ is itself globally sound, the multiplicity again
+collapses to one even for split encodings.
+\end{theorem}
+\begin{proof}
+Partition accepted runs by their right fragment $p_R$.  Within one class,
+suppose distinct diagonal runs under programs $(u,v)$ and $(u',v)$ share
+the same complete record.  Splicing the left subrun of the first with the
+right subrun of the second yields a run under $(u,v)$, one of the original
+sound programs; the reverse splice runs under $(u',v)$.  At least one
+crossed source is NO, contradicting soundness.  Thus records are injective
+inside every right-fragment class, so $|\mathcal A|\le P_RB$.  Partitioning
+instead by $p_L$ gives $|\mathcal A|\le P_LB$.  Taking the smaller bound
+proves (1).  If every recombination is sound, no grouping is required:
+an arbitrary collision yields two sound hybrid programs and the same
+contradiction.
+\end{proof}
+
+\begin{counterexample}[Split selected programs need a factor]\label{c:split}
+For $m\ge1$, let the source predicate be
+$\operatorname{DISJ}(x,y)=[x\wedge y=0]$.  Give a two-shore program
+$p=(u,v)$ the acceptance relation
+\[
+ A_{u,v}(x,y)=[x=u]\wedge[y=\overline v].            \tag{2}
+\]
+Select only $\mathcal P=\{(a,a):a\in\{0,1\}^m\}$.  Every selected program
+is globally sound and accepts exactly the diagonal YES source
+$(a,\bar a)$; all selected runs may have one common central record after
+the local comparisons are erased.  For $a\ne a'$, at least one crossed
+source $(a,\bar a')$ or $(a',\bar a)$ is NO.  It is nevertheless accepted
+by the hybrid $(a,a')$ or $(a',a)$, which is not a selected program and need
+not be sound.  Therefore arbitrary cross-program splicing does not prove
+injectivity.  Here $P_L=P_R=2^m$, and the factor in (1) is tight at the
+logical splice interface.  A sequential implementation can compare each
+shore locally using charged work, erase it, and cross in a fixed state; this
+is a model-boundary control, not an efficient ordinary-SAT algorithm.
+\end{counterexample}
+
+\paragraph{Separate proof/advice tape.}
+A reusable read-only proof tape is not divided by the source cut.  A splice
+between runs with different proof strings can subsequently read different
+global cells, so equality of source-cut records alone is insufficient.
+Grouping by the entire proof string gives the safe full multiplicity, such
+as $2^{L+1}-1$ for strings of length at most $L$.  This independently
+upholds LSPV-3's UWI-PROOF-TAPE-CROSS141 theorem and distinguishes it from
+inline source advice.
+
+\section{Independent referee decisions on the newest peer claims}
+\begin{lemma}[ARC197 all-cut tail, independently upheld]
+At one fixed cut $c$, let $S_c(h)$ be diagonals for which some sound inline
+left-prefix program accepts with a record of length at most $h$.  With label
+alphabet size $A$,
+\[
+ |S_c(h)|\le B_A(h):=\sum_{j=0}^{h}A^j.
+\]
+For $G$ fixed central cuts, at least
+\[
+ 2^m-G B_A(h)                                            \tag{3}
+\]
+diagonals require more than $h$ crossings at \emph{every} cut for every
+eligible sound program.  If $GB_A(h)\le2^{m-2}$, the fraction is at least
+$3/4$.
+\end{lemma}
+\begin{proof}
+Theorem~\ref{t:shore} with $P_R=1$ gives the fixed-cut bound even when the
+chosen prefix varies with the input.  The set failing the all-cut property
+is $\bigcup_c S_c(h)$, whose size is at most $\sum_c|S_c(h)|$.  Taking its
+complement proves (3).  Unequal prefix lengths merely translate the formula
+shore; the standard induction is relative to the same formula cut and must
+match all global work state.  Formula record lengths and the right-endmarker
+offset are common across the diagonal family.
+\end{proof}
+
+\paragraph{UTM-JUMP-CHANGE150 correction.}
+Its endpoint-authenticated labels and finite cap
+\[
+ L_J\le\min\{R+1,(D+1)V_J+D\}
+\]
+survive review.  Under its inline-left prefix hypothesis, however, the two
+packing inequalities strengthen from
+\[
+2^m\le2^{b+1}A_J^{L_J+1},\quad
+2^m\le2^{b+1}G A_J^{1+\min\{L_J,\lfloor TJ/G\rfloor\}}
+\]
+to
+\[
+\boxed{2^m\le A_J^{L_J+1}},\qquad
+\boxed{2^m\le G A_J^{1+\min\{L_J,\lfloor TJ/G\rfloor\}}}. \tag{4}
+\]
+Thus its exponent faces remain valid and no assumption $b\le\eta m$ is
+needed for the finite counting step.  If program length is included in
+physical input length or source travel, that cost must still be charged;
+(4) is not a free nonuniform-advice theorem.
+
+\paragraph{SOURCE-QUERY-CERT-FLOOR142.}
+The promise statement $C_{\SAT}=m$, $C_{\UNSAT}=2$ is independently
+consistent with the separated DISJ semantics.  Its authenticated 20-clause
+UNSAT leaf is sound for arbitrary superformulas but covers only promised
+instances containing that source-identified core.  Verification does not
+give deterministic acquisition or all-ordinary-UNSAT coverage.
+
+\section{Machine/resource firewall and hostile controls}
+\begin{center}\small
+\begin{tabularx}{.97\linewidth}{p{.18\linewidth}X}
+\toprule
+Object & Referee status and charged interpretation\\\midrule
+One writable tape $M_1$ & Crossing sequences are native; input belongs to
+footprint.  The conservative $M_k\to M_1$ simulation is an upper
+construction, never reversed.\\
+Fixed-$k$ sequential $M_k$ & Source head, all work heads, visited blank
+cells, actual changes and traffic are simultaneous resources of one run.
+Theorem~\ref{t:shore} is a source-cut statement, not an $M_1$ lower bound.\\
+Bounded-jump $M_J$ & Jump target formation and both endpoints are charged.
+Endpoint labels in LSPV-4 report 150 are necessary.  This augmented model is
+not RAM/RAT.\\
+RAT / bounded-word RAM & No physical source-cut crossing resource.
+Indexed reads, address formation and word width are charged in the native
+model; no $t+s\ge2$ import is valid.\\
+FLMV & Simultaneous time and writable/index space must belong to one fixed
+uniform total ordinary-SAT machine on all inputs, with strict margins and
+the correct deterministic/nondeterministic polarity.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+The split-advice construction is the minimized wrapper/control.  Horn,
+2-SAT, affine/Tseitin and bounded-treewidth families remain legal direct
+decision escapes from any proposed unrestricted SAT consequence.  A
+maximal semantic oracle also destroys the acquisition inference but lies
+outside the declared sequential model; refusing the oracle is not a
+nonrelativization theorem.  No algebraic object or constructive circuit
+property is used, so algebrization and Natural-Proofs promotion do not
+arise.  Independent products and the connected $U_k$ control demonstrate
+that source authentication/connectedness may coexist with cheap local
+refutations or recognition.  None of the present source-cut results forces
+an arbitrary SAT decider to instantiate a crossing transcript in FLMV's
+indexed model.
+
+\section{Reproducible finite controls}
+The dependency-free program
+\path{research/agents/lspv-5/2026-10-27_0152_SHORE_ADVICE_FACTOR176_repro.py}
+generated the immutable JSON at the matching \texttt{\_raw.json} path.
+It exhaustively checked (2) for every selected program and every source
+through $m=7$, every crossed pair and accepted hybrid NO orientation;
+the all-cut union arithmetic for $m\le20$, $2\le A\le7$, $h\le5$ and up to
+16 cuts; every left/right advice-bit split through 12 bits per shore; and
+4,896 finite jump-factor rows.  It performed
+\textbf{4,859,653 exact assertions with zero failures} in 1.47 seconds,
+with no random seed or external dependency.  The raw SHA-256 is
+\texttt{fa4a7ad22926ef01ec40971012cb02658997271d3ab0d685efece98d42c85959}.
+These computations verify finite controls and arithmetic, not the symbolic
+theorem.
+
+\section{Status DAG, reconciliation, and role-addressed handoff}
+\begin{center}\small
+\begin{tabularx}{.97\linewidth}{p{.32\linewidth}p{.20\linewidth}X}
+\toprule
+Claim & Status & Exact reason\\\midrule
+Selected-sound shore factor (1) & PROVED/EXACT & Direct grouping and splice proof.\\
+No factor for inline-left prefixes & PROVED/EXACT & $P_R=1$.\\
+No factor for arbitrary split advice & FALSIFIED/RETIRED & Hybrid program in Counterexample~\ref{c:split}.\\
+ARC197 all-cut $3/4$ tail & PROVED/EXACT, restricted & Correct fixed-cut injection plus union bound.\\
+LSPV-4 jump factor $2^{b+1}$ & FALSIFIED as necessary & Valid but redundant under its inline-left hypothesis.\\
+LSPV-4 $+D$ change-step repair & PROVED/EXACT, restricted & Changing transitions must be charged separately.\\
+Sequential/RAM/FLMV transfer & FALSIFIED/RETIRED & Different native models and resources.\\
+All-UNSAT ARC successor / $P\ne NP$ & OPEN & No all-input acquisition or matched FLMV machine.\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\textbf{WHAT CHANGED RELATIVE TO ROOT MAIN:} add the shore-factor trichotomy,
+independently promote ARC197's distributional tail within its restricted
+model, and correct the new jump report's redundant program factor while
+preserving its endpoint and $+D$ repairs.  \textbf{ADOPTED:} complete-state
+splicing, ARC197 union tail, proof-tape multiplicity, bounded-jump endpoint
+labels, and native-model firewalls.  \textbf{REJECTED/RETIRED:} one factor
+for every inline program and factor-free arbitrary split advice.
+
+\textbf{To LSPV-1:} ARC197's $3/4$ all-cut tail is independently upheld;
+state explicitly that complete work contents are matched and keep the model
+promise-restricted.  \textbf{To LSPV-3:} the separate proof-tape factor is
+upheld; an inline source proof and a global reusable proof tape are not the
+same channel.  \textbf{To LSPV-4:} replace the two $2^{b+1}$ factors in
+UTM-JUMP-CHANGE150 by one under its stated inline-left prefix placement;
+retain endpoint labels and $+D$.  \textbf{To all roles:} if future advice is
+split, record which shore fragments remain selected-sound after splicing.
+
+The single next target is a fully charged all-ordinary-UNSAT acquisition
+theorem in the native indexed model, or an explicit counterexample to its
+proposed certificate grammar.  It must survive two hereditary levels and
+may not call a full-parent guest solver for free.
+
+\noindent\textbf{P versus NP OPEN. ARC-EDGE-90 OPEN.}
+
+\begin{thebibliography}{9}
+\bibitem{hennie} F. C. Hennie, \emph{One-Tape, Off-Line Turing Machine
+Computations}, Information and Control 8 (1965), 553--578,
+\url{https://doi.org/10.1016/S0019-9958(65)90399-2}.
+\bibitem{rs} M. O. Rabin and D. Scott, \emph{Finite Automata and Their
+Decision Problems}, IBM Journal of Research and Development 3 (1959),
+114--125, \url{https://doi.org/10.1147/rd.32.0114}.
+\bibitem{hs} F. C. Hennie and R. E. Stearns, \emph{Two-Tape Simulation of
+Multitape Turing Machines}, JACM 13 (1966), 533--546.
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek and A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, JACM 52 (2005),
+835--865, \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::SHORE-ADVICE-FACTOR176
