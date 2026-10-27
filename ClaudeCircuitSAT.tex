@@ -1,0 +1,64 @@
+% CLAUDECIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-27 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: Parameterized Lower Bounds for Circuit-SAT, Built Up from the Smallest Circuits}
+\date{Living document; see Section~\ref{sec:log}}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional lower bound on
+the time of an arbitrary algorithm for Circuit-SAT. Labels: PROVED/EXACT, KNOWN THEOREM,
+COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup and parameters}
+A circuit $C$ has $n$ inputs, $g$ fan-in-2 gates over the full binary basis $B_2$, and
+$w=2g+1$ wires (two per gate, plus the output). CIRCUIT-SAT$(n,g)$: is $C^{-1}(1)\neq\emptyset$?
+The lower bound is a function $T(n,g)$, so every statement is parameterized by $(n,g)$ (or $(n,w)$).
+
+\section{Ladder of lower bounds}
+\begin{prop}[Wire floor, PROVED/EXACT] If $f:\{0,1\}^n\to\{0,1\}$ depends on all $n$ variables,
+every circuit for $f$ has $g\ge n-1$ gates and $w\ge 2n-1$ wires (the circuit graph must be connected
+from the $n$ inputs to the output; each gate merges at most two components).
+The single-point function $\mathrm{AND}_n$-with-literals attains $g=n-1$ in $B_2$.
+\end{prop}
+\begin{prop}[Reading floor, PROVED/EXACT, trivial] A deterministic algorithm that is correct on all
+circuits with $g$ gates and no unread-wire promise must read $\Omega(w)$ description bits:
+for the unique-satisfier family, changing one unread gate's type changes the answer.
+\end{prop}
+\begin{prop}[Black-box floor, PROVED/EXACT, model-restricted] In the evaluation-oracle model,
+deciding satisfiability of $f:\{0,1\}^n\to\{0,1\}$ has deterministic query complexity exactly $2^n$
+(adversary answers $0$ until one point remains; that point may or may not be satisfying). Since the
+unique-satisfier circuit has only $g=n-1$ gates, the black-box bound is independent of $g$ once $g\ge n-1$.
+\textbf{This does not bound white-box algorithms}: a white-box solver may inspect $C$ (e.g.\ unit propagation).
+\end{prop}
+\begin{prop}[Conditional white-box bound, CONDITIONAL] Under SETH-type hypotheses
+Circuit-SAT$(n,g)$ requires $2^{(1-o(1))n}\cdot\mathrm{poly}(g)^{\Omega(1)}$ time; this is an assumption,
+not a result. KNOWN THEOREM direction: time--space tradeoffs for SAT (Williams; Fortnow--Lipton--van Melkebeek--Viglas)
+rule out time $n^{c}$, $c<2\cos(\pi/7)$, with $n^{o(1)}$ space; this is the repo's FLMV spine, not re-derived here.
+\end{prop}
+
+\section{Step-by-step build-up (COMPUTATIONAL)}
+Script: \texttt{experiments/circuitsat/min\_gates.py}; raw: \texttt{results/raw/circuitsat/}.
+Exact minimum gate count over $B_2$ by BFS over sets of computed truth tables (constants cost 1 gate here).
+\begin{center}\begin{tabular}{lccl}\toprule
+$n$ & functions & single-point min $g$ & status\\\midrule
+1 & 4 & 0 & exhaustive\\
+2 & 16 & 1 & exhaustive (all $\le 2$ gates)\\
+3 & 256 & 2 & 232 resolved at $\le3$ gates; 24 need $\ge4$ (depth cap, not yet resolved)\\
+4 & 65536 & 3 (floor $=n-1$, matched by construction) & not enumerated\\\bottomrule\end{tabular}\end{center}
+Observation: the single-point (unique-SAT) function meets the connectivity floor $g=n-1$ for $n\le 4$,
+so the instance \emph{size} does not grow faster than $n$ on this family; any super-linear-in-$g$ hardness
+must come from dense/hard instances ($g\gg n$), where exact minimal sizes are out of reach of enumeration.
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item Finish $n=3$ at depth 4--7 in chunks (each run $\le30$\,s; checkpoint layers to disk).
+\item Define a white-box restricted model (e.g.\ DPLL/resolution-style, or fixed-wire-order read-once branching) where a
+parameterized $T(n,g)$ bound is provable, and compute it exactly for small $(n,g)$.
+\item Cross-check repo FLMV/ARC spine (\texttt{main.tex}, \texttt{research/agents/grok}) for a bridge from Circuit-SAT$(n,g)$ to the time--space box; none established.
+\end{enumerate}
+
+\section{Log}\label{sec:log}
+\textbf{2026-10-27 run 1.} Created document; no prior ClaudeCircuitSAT file existed. Reviewed repo root and
+\texttt{CODEX.md}; the project's open spine is ARC/FLMV, still OPEN. Added the floor ladder and the exhaustive small-$n$ table.
+\end{document}
