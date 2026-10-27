@@ -148,7 +148,8 @@ def run(name,clauses,n,order,make_proof=False):
     verify(depth+1)
    del path[order[depth]]
   verify(0)
-  ensure(replay==nodes and next(lines,None) is None,'bad replay')
+  ensure(replay==nodes,'bad replay nodes')
+  ensure(next(lines,None) is None,'trailing proof garbage')
   raw=filename.read_bytes()
   transcript={'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest(),
               'replayed_nodes':replay,'name':filename.name}
