@@ -1,0 +1,157 @@
+% LSPV-3 REPORT::UWI-PROOFTAPE-CROSS141::2026-10-27T00:24 America/Los_Angeles
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.86in]{geometry}
+\usepackage{lmodern,amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\UNSAT}{\mathsf{UNSAT}}
+\title{LSPV-3: UWI-PROOFTAPE-CROSS141\\\large Sound Certificate Acceptance with a Reusable Read-Only Proof Tape: A Length--Crossing Tradeoff on Signed Exact-$(2,2)$ 3CNF}
+\author{LSPV-3: Adaptive Certificate Coverage and Semantic Correctness}
+\date{27 October 2026, Los Angeles}
+\begin{document}\maketitle
+\begin{center}
+\fbox{\parbox{.95\linewidth}{\textbf{PROVED/EXACT restricted, independent mathematical review pending:}
+For the separated DISJ-derived signed exact-$(2,2)$ source family, a sound and complete SAT certificate reader with a freely reusable but length-charged proof tape obeys a finite $L$--$R$--$S$ crossing bound. A single source input also forces $\Omega(m)$ Bob-sign probes on every sound accepting indexed-RAM path. \textbf{FALSIFIED as an inference:} Alice-only model printing is not sound SAT acceptance; logarithmic local UNSAT proof length does not force the SAT-side certificate barrier. \textbf{OPEN:} all ordinary UNSAT certificate coverage, ARC-EDGE-90 and $P\ne NP$.}}\end{center}
+
+\section{Pre-search falsifiers and scope}
+The following four falsifiers were fixed before consulting the UTM-CROSS-WRITE1 handoff, prior project originals and communication-complexity literature.
+\begin{description}
+\item[] H1: An Alice-only SAT-model printer can be promoted to a \emph{sound accepting verifier} while inspecting no Bob-controlled source bits on every SAT source. \textbf{FALSIFIED}: a fully sensitive SAT source forces all $m$ distinct Bob coordinates to be read on each sound accepting path.
+\item[] H2: A length-$L$ external read-only proof tape, even if freely rewound, removes the one-sequential-input-head crossing bottleneck at no resource cost. \textbf{FALSIFIED}: its bits add $L$ to the covering information, yielding Theorem~\ref{th:cap}; when $L=m$ there is a linear-time countercontrol with a single forward input pass.
+\item[] H3: Every logarithmic UNSAT source-authenticated certificate must pay this \emph{SAT-acceptance} lower bound. \textbf{FALSIFIED}: an overlapping coordinate supplies an $O(\log m)$-bit authenticated twenty-clause UNSAT leaf on every NO source of the declared promise.
+\item[] H4: The finite input-head crossing surface transfers unchanged to indexed RAM or implies a near-boundary uniform all-ordinary-SAT/coNTIME seed. \textbf{FALSIFIED as a proposed deduction}: RAM retains only a near-linear source-sensitivity bound here; an all-input certificate-coverage theorem is absent.
+\end{description}
+
+\section{Canonical exact signed source and three computational models}
+Let $H(u,v)$ be the authenticated $15$-variable $20$-clause $W_1$ proper signed exact-$(2,2)$ gadget from BINARY-WORK-SAT4 and Role-3 INDEXED-LOCATOR-GAP140. Source clause rows, in original order, are:
+\begin{verbatim}
+-1 3 -14; 2 -8 9; 10 -13 14; 3 7 -13; -4 -9 -11;
+5 8 -14; 4 -8 -11; 1 7 13; 1 -7 10; -5 -6 -15;
+-2 -6 12; -4 9 -10; -2 5 -12; -3 6 -15; 6 -7 11;
+2 -9 11; 4 8 -10; -3 12 15; -5 -12 15; -1 13 14
+\end{verbatim}
+Use zero-based row/literal coordinates: the $u$-selector flips both signs at $(6,0),(11,0)$ when $u=0$; the $v$-selector flips both signs at $(17,2),(9,2)$ when $v=0$. Both flips preserve every two-positive/two-negative occurrence count. Exhaustive $2^{15}$ assignment counts, inherited and independently retested, are $772,272,272,0$ for $H(0,0),H(0,1),H(1,0),H(1,1)$ respectively. Thus $H(u,v)$ is UNSAT iff $u=v=1$.
+
+For $a,b\in\{0,1\}^m$, let
+\[
+F_m(a,b)=\bigwedge_{i=1}^{m}H_i(a_i,b_i),\qquad
+\SAT(F_m(a,b))\iff\forall i\;\neg(a_i\land b_i).\tag{1}
+\]
+The $m$ component name sets are disjoint. Canonically serialize all $2m$ Alice-sensitive rows first, the $16m$ completely fixed rows second, and the $2m$ Bob-sensitive rows last, preserving original clause identifiers in a deterministic row-location table. Every literal is a sign bit followed by a fixed-width binary original-name identifier of $w=\lceil\log_2(15m+1)\rceil$ bits. A complete length-stable header identifies $m,w,15m,20m$. Thus $N=60m(w+1)+O(\log m)=\Theta(m\log m)$; the fixed middle region has $G=48m(w+1)=\Theta(N)$ distinct input cuts. Every paired source has precisely the same length, variable/clause counts and name supports.
+
+\emph{Model M1} is an ordinary finite-control deterministic \emph{one shared read/write tape} with initial source occupying $N$ cells, total footprint at least $N$, one head, and all original input changes and output writes charged. The augmented proof-tape theorem below is \emph{not} silently identified with M1.
+
+\emph{Model $M_{k,\pi}$} has ONE two-way sequential read-only source-input head, fixed $k$ sequential work tapes over a fixed $g$-symbol alphabet, and an additional separately tracked, two-way read-only untrusted proof tape of length at most $L$. The latter's storage is \emph{not} counted in the work-cell total $S$ but its $L$ source-independent or source-dependent bits are counted as a distinct proof-length resource; proof-head position and all proof-head moves are charged to the verifier. $R$ counts reversals of the single \emph{source} input head, $H$ its actual single-cell moves, $T$ \emph{all} machine transitions, and $S$ every visited work cell including blanks and clock/policy counters. An auxiliary output tape is write-only, not a hidden readable workspace. This model is deliberately stronger than an ordinary work-tape-only $M_k$ in granting a reusable proof tape.
+
+\emph{Model RAT} has indexed read-only input and bit-addressed work storage. There is no physical input-cut or reversal resource. A source-bit probe and its index-generation cost are both charged; a word returning many signs counts as a word probe with its actual word width.
+
+\section{Source-only candidate output is not checked acceptance}
+There exist local satisfying assignments encoded by $w_0=616$ for both $H(0,0)$ and $H(0,1)$, and by $w_1=4742$ for $H(1,0)$ (least significant bit denotes original variable 1). Hence for any SAT $F_m(a,b)$ the source-only concatenation $w_{a_1}\cdots w_{a_m}$ is a valid model, regardless of the unknown $b$ when generated. On UNSAT $F_m(a,b)$ the same printer can output an invalid model, because some $H(1,1)$ has no model. A candidate printer has no reason to decide or soundly accept either polarity. The UTM-CROSS-WRITE1 sound-acceptance theorem cannot be applied to that printer before a fully charged verifier is incorporated.
+
+\begin{lemma}[Bob-side source sensitivity despite any untrusted proof]\label{lem:bob}
+Fix the SAT source $F_m(1^m,0^m)$. On \emph{every} accepting run of any deterministic or proof-branch nondeterministic verifier that is sound on all $F_m(a,b)$ (for all proof strings), the run must inspect a Bob-dependent source-sign position from each of the $m$ modules. In a bit-probe indexed model this forces $m$ distinct source-bit probes; with $O(\log N)$-bit packed words containing at most a constant number of module selectors, it forces $\Omega(m)$ word probes, and with general $O(\log N)$-bit contiguous words the safe bound is $\Omega(m/\log N)$ word probes.
+\end{lemma}
+\begin{proof}
+Hold the \emph{entire} proof string and deterministic verification branch fixed. If the accepting run fails to probe every Bob-controlled literal-sign cell associated with some module $i$, change only $b_i$ from $0$ to $1$, preserving all headers, literal identifiers, exact occurrence counts, canonical structure, other modules and proof bits. The run's observed source symbols and internal transitions do not change, hence it accepts $F_m(1^m,e_i)$. But that formula contains the full $H(1,1)$ contradiction and is UNSAT, violating soundness. The $m$ Bob-dependent regions are disjoint. A read of one sign in a module suffices for the lower-bound accounting, and a general word can intersect at most its word width in distinct regions. \end{proof}
+
+The lemma is input sensitivity, not a superlinear ordinary SAT lower bound. It is also not universal on each SAT source: when $a=0^m$, the printed model $w_0^m$ is valid for all $b$, so Bob inspection need not be forced on an accepting proof for that particular $a$.
+
+\section{Reusable-certificate length, reversal and space theorem}
+Fix a single deterministic clocked verifier $V$ on $M_{k,\pi}$ with $q$ finite-control states, work alphabet of size $g\ge2$, and no oracle. \emph{Soundness} means $\forall a,b,\pi$, if $F_m(a,b)$ is UNSAT then $V(F_m(a,b),\pi)$ rejects. \emph{Completeness with jointly capped resources} means
+\[
+\forall a\in\{0,1\}^m\ \exists\pi_a,\quad
+|\pi_a|\le L,\; V(F_m(a,\neg a),\pi_a)=\text{accept},\;
+S\le S_0,\;R\le R_0.\tag{2}
+\]
+The \emph{same accepting run} must meet both $S_0$ and $R_0$. Every malformed proof, timeout or out-of-range parameter is rejected, and there is no per-input hardcoded strategy beyond the physically present proof bits. Set
+\[
+Q=2q(2S_0+3)^{2k}(g+1)^{S_0}(L+3)\ge2.\tag{3}
+\]
+The generous factor accounts for control/direction, finite-alphabet work contents, allocation endpoints, all work-head positions, and the current proof-tape head position. The proof \emph{contents} are held fixed separately for each chosen $\pi_a$.
+
+\begin{theorem}[Fooling-set length--crossing tradeoff]\label{th:cap}
+Under (1)--(3),
+\[
+\boxed{2^m\le(2^{L+1}-1)\sum_{j=0}^{R_0+1}Q^j
+\le 2^{L+1}(R_0+2)Q^{R_0+1}.}\tag{4}
+\]
+In particular
+\[
+m\le L+1+\log_2(R_0+2)+(R_0+1)\log_2Q.\tag{5}
+\]
+If $J=\lfloor(m-L-3)/\log_2Q\rfloor\ge1$, and in addition (2) gives an accepting proof for each diagonal source with a simultaneous source-head movement ceiling $H_0$, then
+\[
+\boxed{H_0\ge\tfrac34 GJ,\qquad
+(R_0+1)\log_2Q\ge m-L-1-\log_2(R_0+2).}\tag{6}
+\]
+Thus if $L\le(1-\varepsilon)m$ for constant $\varepsilon>0$ and $S_0=O(\log N)$, the necessary worst-case accepting path has $R_0=\Omega(m/\log N)$ and $H_0=\Omega(Nm/\log N)=\Omega(N^2/\log^2N)$, with one common accepted source and proof for the $H_0$ lower bound. These are a stronger \emph{length-aware model statement}, not a new unrestricted SAT complexity lower bound.
+\end{theorem}
+\begin{proof}
+For each $a$ select one proof satisfying (2). For each cut $c$ in the fixed gap, record the ordered sequence of \emph{complete} configurations immediately as the source head crosses $c$. The source head is fixed at one of the two adjacent positions, while the work tapes, their heads and the proof head have at most $Q$ event labels. If two distinct fooling inputs $F_m(a,\neg a)$ and $F_m(a',\neg a')$ yield both the same selected proof $\pi$ and the same complete crossing sequence at $c$, the standard deterministic input-cut splice works with \emph{identical proof-tape contents} on both halves: it accepts both crossed inputs $F_m(a,\neg a')$ and $F_m(a',\neg a)$. For $a\ne a'$, at least one crossing source contains a component $H(1,1)$ and is UNSAT, contradicting soundness. Therefore $a\mapsto(\pi_a,\mathrm{trace}_c(a))$ is injective at \emph{every} gap cut. Because consecutive crossings of a fixed cut alternate direction, their number is at most $R_0+1$. There are at most $2^{L+1}-1$ binary proofs and at most $\sum_{j=0}^{R_0+1}Q^j$ traces, proving (4) and (5).
+
+For the head-move bound set $J=\lfloor(m-L-3)/\log_2Q\rfloor\ge1$. At a fixed gap cut, fewer than $J$ crossings can occur on at most
+\[
+(2^{L+1}-1)\sum_{j=0}^{J-1}Q^j
+< 2^{L+1}Q^J\le 2^{m-2}
+\]
+of the $2^m$ accepted diagonal sources. Hence at least $3/4$ of the chosen accepting pairs have at least $J$ crossings of \emph{each fixed cut in expectation over a uniformly chosen $a$}. Summing across the same $G$ cuts gives average gap-head traffic at least $(3/4)GJ$; one \emph{single chosen accepted proof on one source} attains the bound. Any presumed simultaneous $H_0$ ceiling must exceed it. Taking logarithms in (4) proves the second inequality in (6). The asymptotic claims follow from $m=\Theta(N/\log N)$ and $\log_2Q=O(S_0+\log(S_0+2)+\log(L+3))=O(\log N)$ for the stated caps. No M1-to-$M_{k,\pi}$ or $M_{k,\pi}$-to-RAT conversion is performed.\end{proof}
+
+\paragraph{Sharp hostile countercontrol: a linear reusable proof tape.}
+Let $\pi=a$ be exactly $m$ untrusted bits. In a single forward source-input pass, verify the canonical rows, compare the Alice selectors with $\pi$ in order, rewind only the independently counted \emph{proof} head, then scan the fixed middle block and check $\pi_i\land b_i=0$ while reading the Bob selectors. This reader accepts iff (1) is SAT on the declared promise, for one correct proof on each SAT input, rejects \emph{every} proof on UNSAT, uses $L=m$ proof bits and $S=O(\log N)$ work cells, $R=0$ source-input reversals, $H=O(N)$ source-input moves, $O(m)$ additional proof-head moves, and $T=O(N\,\mathrm{polylog}\,N)$ fully charged time. It can check malformed fixed-record rows as it streams. This proves that deleting $L$ from (4) is erroneous; an externally reusable certificate is an independent information channel. If the proof is instead copied to writable work cells, those $m$ cells must be included in $S$.
+
+\section{Opposite polarity: constant-source-subformula UNSAT leaves}
+On the declared source family,
+\[
+F_m(a,b)\in\UNSAT\iff\exists i\in[m]\;[a_i=b_i=1].\tag{7}
+\]
+An index of $\lceil\log_2m\rceil$ bits identifies exactly twenty original source clause IDs forming $H_i(1,1)$. Authenticate the twenty signed ternary clauses, their original names and source record positions. The verifier can either check the inherited complete $32$-leaf source-ID/SCC template or exhaust all $2^{15}$ assignments to this \emph{constant-size actual source subformula}, a finite bound independent of $m$. No invented UNSAT label is trusted. On the canonical fixed-width promise, an indexed bit-access checker pays $O(\log N)$ source-bit positions plus polylogarithmic address generation and $O(\log N)$ index space; on a sequential input head it may need a full $O(N)$ scan; a total arbitrary-encoding parser adds its actual $O(N\,\mathrm{polylog}\,N)$ validation. A blanket polylog-time ordinary-SAT verifier is not claimed.
+
+Clocking all invalid indices, malformed proof strings, overlong witnesses and timeout paths to REJECT gives the exact promise quantifiers
+\[
+\forall F\in\mathcal F_m:\quad
+F\in\UNSAT\iff\exists i\in[m]\ V_{\UNSAT}(F,i)=1,
+\quad
+F\in\SAT\iff\forall i\in[m]\ [1-V_{\UNSAT}(F,i)]=1.\tag{8}
+\]
+This is a sound bounded nondeterministic-UNSAT (and SAT co-nondeterministic) companion \emph{only on $\mathcal F_m$}. Under standard arbitrary ordinary input encodings, malformed-input and family-membership conventions must be separately specified and charged. The universal all-ordinary-UNSAT certificate-size and verifier-time bounds remain OPEN. Deterministic certificate \emph{acquisition} must locate a collision; on the SAT anchor $F_m(1^m,0^m)$ and an adversarial last-collision UNSAT source it needs $\Omega(m)$ distinct Bob-selector bit probes even on indexed RAM, whereas guessing the index does not. This is the correct SAT/UNSAT asymmetry.
+
+\section{Resource accounting, circuit/ARC barriers and finite controls}
+\begin{center}
+\begin{tabular}{p{.15\linewidth}p{.35\linewidth}p{.40\linewidth}}
+\toprule
+Model & Paid resources & Conclusion within this run\\
+\midrule
+M1 single-tape & Total footprint $P_1\ge N$, initial source, shared read/write head movements, each source/output symbol write, physical crossings, time & Source-only printer and external proof-tape reader are not M1 machines. No free M1 simulation or constant-state shortcut.\\
+$M_{k,\pi}$ fixed $k$ & Read-only one input head, work cells $S$, work changes $D$, $R,H$, full time $T$; independently reachable proof tape has charged length $L$, head positions and moves & Exact finite (4), source-sensitive (6); $L=m$ countercontrol. No multi-input-head extension.\\
+Indexed RAT & Charged bit indexes, reads, writes, guest probes, peak workspace; no tape-head crossings & Lemma~\ref{lem:bob} gives only $\Omega(m)$ bit-probe floor on a fully sensitive SAT input.\\
+\bottomrule
+\end{tabular}
+\end{center}
+Source clause IDs, rewritten children, ancestor assignments, branch trees, policies, retries, failed attempts, readable buffers, and shared workspace are \emph{not} uncharged. This run introduces no guest $A$ calls. If later certificates call a fixed deterministic exact ordinary-SAT $A$ on children of encoded lengths $m_i$, the arithmetically exact $d\ge1$ spectrum constraint remains
+\[
+\sum_i m_i^d\le M^{d-1}V,\qquad M=\max_i m_i,\quad V=\sum_i m_i.
+\]
+Any claimed bound $c\le\max\{r,u+b+\lambda(d-1)\}$ still needs all-ordinary-UNSAT bounded coverage, paid parsing/materialization/probes and \emph{one actual} guest $A$ of exponent $d$; $P=NP$ supplies unknown $K$, not $d=1.802$. Two genuine ordinary source-named PIN descendants can be serialized and reparsed, but here have $\Theta(N)$ length and do not prove a shrinking hereditary ARC edge. The previous $\Pi_2^P$ general semantic-lift checking barrier remains unchanged.
+
+\paragraph{Executable controls.}
+The dependency-free Python file \path{research/agents/lspv-3/2026-10-27_0024_UWI_PROOF_TAPE_CROSS141_repro.py} verifies local model counts $772,272,272,0$, source-only satisfying models $616,4742$, signed-(2,2) quotas, $5,460$ canonical encoded sources for $m\le6$, sound SAT proof-reader and indexed UNSAT authenticating rules, $86,870$ ordered distinct fooling pairs for $m\le8$, $66$ single-coordinate adversarial flips, actual reserialized and reparsed ordinary proper-3CNF PIN children, rejected malformed proof headers and tampered source rows, and elementary finite counting algebra. It completed \textbf{146,953 deterministic assertion groups with zero failures}. This is \textbf{COMPUTATIONAL}, not empirical measurement of actual TM crossings, physical RAM word traffic or peak machine space. Raw is at the same timestamped role path with suffix \path{_raw.json}; independent review pending.
+
+\paragraph{Corpus, novelty, falsification, transfer.}
+Read role-3 SOURCE-CUT-QBF-BARRIER128, BACKDOOR-SCC-CERT130, INDEXED-LOCATOR-GAP140 and source-pointer stream code; role-5 BACKDOOR-CAP161; role-1 ARC184 handoff; role-2 CIRCUIT-OBLIVIOUS-INVERSE-SORT166; role-4 ARC-PINNED-CIRCUIT-OUTPUT-FLOOR131; root main.tex/AGENTS.md/CODEX.md/pnp skill; and four original shared governance directives: dual TM, RAM-vs-tape, HEADMOVE-1 and UTM-CROSS-WRITE1. The precise new quantitative statement here \emph{adds the external reusable certificate-length axis $L$} to the established fixed-input-head fooling/crossing framework. Its splicing and fooling-set ingredients are classical and not represented as a novel general proof-complexity theorem. Hennie's 1965 crossing-sequence original and nondeterministic rectangle-cover literature supply context. An unrestricted RAM or two-input-head operator can bypass physical traffic, while the Bob-side source sensitivity remains. The new work does not eliminate parity, Horn, 2SAT, affine, connected modules, proof-system shortcuts, rewriting, or adaptive policy selection for ordinary SAT. No relativization, natural-proofs or cryptographic hardness claim is asserted.
+
+\paragraph{Next decisive problem for the lead and red team.}
+Classify the minimum \emph{fully source-authenticated all-ordinary-UNSAT} proof length in a grammar whose terminals include affine/XOR, SCC, Horn, supplied PC/CP/Resolution and verified smaller ordinary SAT guests. Prove a strict uniformly clocked cap, or exhibit a family defeating a proposed cap; separately prove deterministic acquisition if used for ARC. Challenge the finite $Q$ count against external witness advice, persistent proof pointers, clocks and reversible proof access, and verify that all changed source bits sit on the intended side of every crossing cut. Neither the SAT-proof-reader tradeoff nor the promise-local UNSAT rule provides a near-boundary all-input seed.
+
+\begin{thebibliography}{9}
+\bibitem{Hennie1965} F. C. Hennie, ``Crossing Sequences and Off-Line Turing Machine Computations,'' IEEE Switching Circuit Theory and Logical Design (1965), 168--172, DOI \href{https://doi.org/10.1109/FOCS.1965.5}{10.1109/FOCS.1965.5}.
+\bibitem{KlauckDeWolf2013} H. Klauck and R. de Wolf, ``Fooling One-Sided Quantum Protocols,'' STACS (2013), arXiv \url{https://arxiv.org/abs/1204.4619}; discusses classical fooling-set method and equality/disjointness.
+\bibitem{KushilevitzNisan1997} E. Kushilevitz and N. Nisan, \emph{Communication Complexity}, Cambridge University Press (1997), chapters on rectangle covers and fooling sets.
+\bibitem{FLMV2005} L. Fortnow, R. J. Lipton, D. van Melkebeek and A. Viglas, ``Time-Space Lower Bounds for Satisfiability,'' \emph{J. ACM} 52 (2005), 835--865, DOI \href{https://doi.org/10.1145/1101821.1101822}{10.1145/1101821.1101822}.
+\bibitem{Project2026} Research governance \path{research/governance/2026-10-26_UTM_CROSS_WRITE1_COMMON_INPUT_SYMBOL_CHANGES.md}, and prior Role-3 BACKDOOR-SCC-CERT130 and INDEXED-LOCATOR-GAP140.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-3::UWI-PROOFTAPE-CROSS141
