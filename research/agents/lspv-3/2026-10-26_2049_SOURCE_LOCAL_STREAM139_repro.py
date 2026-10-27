@@ -157,9 +157,9 @@ def main():
         check(all(any(abs(z) in back for z in c) for c in rows),"tight 5k hitting")
         for i in range(k):
             src=core(k,i)
-            ids=[20*i+u for u in range(1,20)]+
-                [20*((i+1)%k)+u for u in range(1,20)]+
-                [20*((i+1)%k)]
+            ids=([20*i+u for u in range(1,20)]
+                 +[20*((i+1)%k)+u for u in range(1,20)]
+                 +[20*((i+1)%k)])
             check(tuple(rows[z] for z in ids)==src,"authenticated core")
             tr=lambda z: (15*i+z) if z<=15 else (15*((i+1)%k)+z-15)
             verify_resolution(proof,end,src,tr)
@@ -176,8 +176,8 @@ def main():
             lines=raw.splitlines(keepends=True)
             check(len(set(map(len,lines[1:])))==1,"equal-byte DIMACS rows")
             hits=[(i,t) for i in range(m) for t in (0,1) if authenticated(rows,m,i,t)]
-            expected=[(i,0) for i in range(m) if a[i]==1 and b[i]==0]+
-                     [(i,1) for i in range(m) if a[i]==0 and b[i]==1]
+            expected=([(i,0) for i in range(m) if a[i]==1 and b[i]==0]
+                      +[(i,1) for i in range(m) if a[i]==0 and b[i]==1])
             check(sorted(hits)==sorted(expected),"both-label exact certificate coverage")
             cases+=1
             if a==b:sat+=1
