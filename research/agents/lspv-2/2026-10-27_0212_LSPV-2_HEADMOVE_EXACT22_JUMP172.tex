@@ -1,0 +1,503 @@
+% LSPV-2 REPORT::HEADMOVE-EXACT22-JUMP172::2026-10-27T02:12:00Z
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,tabularx,xurl,hyperref}
+\hypersetup{hidelinks}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\SAT}{\mathsf{SAT}}
+\newcommand{\UNSAT}{\mathsf{UNSAT}}
+\newcommand{\Rank}{\mathsf{Rank}}
+\newcommand{\Select}{\mathsf{Select}}
+\title{HEADMOVE--EXACT22--JUMP172:\\An Exact Signed-Occurrence Accessor,\newline Charged Tape Simulator, and Bounded-Jump Reversal Transfer}
+\author{LSPV-2: Circuit / Reduction Builder}
+\date{27 October 2026 UTC}
+\begin{document}\maketitle
+\begin{center}\fbox{\parbox{.94\linewidth}{
+\textbf{PROVED/EXACT (restricted mathematical constructions):}
+canonical local occurrence Rank/Select for the 15-variable exact-(2,2)
+DISJ gadget product, and reversal-preserving jump-to-sequential input-head
+simulation under an explicitly charged offset model.\\
+\textbf{CONDITIONAL:} the two quantified asymptotic jump forbidden surfaces
+inherit HEADMOVE-1's one-sequential-input-head crossing theorem; that
+primary project theorem remains subject to independent review.\\
+\textbf{COMPUTATIONAL:} 131,072 finite gadget assignments, 1,364
+exact-(2,2) products, 75,120 occurrence-rank roundtrips, 900 actual
+indexed OccSelect requests, 9,320 step-by-step circuit-machine/tape
+simulations, 42 bounded-jump itineraries; all asserted checks passed.\\
+\textbf{OPEN:} general ordinary-SAT inverse access, full bitonic verifier
+compiler inverse, all-input shorter SAT children, ARC-EDGE-90, and
+$P\ne NP$.}}
+\end{center}
+
+\section{Quantifiers, four pre-search falsifiers and primary model}
+Fix one deterministic algorithm and one encoding, and require correctness on
+all canonical images of the declared family; do not take the time from one
+algorithm and space or head reversals from another.  The following
+hypotheses were written before consulting the new primary literature and
+project HEADMOVE-1 handoff:
+\begin{description}
+\item[] H1: the 20-row W1 fixed-support exact22 DISJ gadget has complete,
+physically ordered, locally indexed $\Rank/\Select$ without a stored
+occurrence map. Test malformed polarity pairs and sparse-ID positions.
+\item[] H2: a separate-input-head, one-work-tape equality \emph{circuit}
+can be simulated transition for transition on a shared read/write tape
+with input-inclusive physical footprint; reject any uncharged end-to-start
+head teleportation.
+\item[] H3: expand every bounded input jump without introducing an input-head
+\emph{reversal}; transfer both the transport and reversal forbidden faces
+using the complete-work crossing theorem, paying offset counters.
+\item[] H4: reject the inference ``locally indexable signed exact22 source
+$\Rightarrow$ a power-smaller ordinary SAT child or a full SAT decision
+circuit''.  Count all physical gate and output widths.
+\end{description}
+The experiment adopts the project's \emph{signed} proper exact-$(2,2)$
+family. Every variable occurs in exactly two positive and two negative
+literals, and each clause has three distinct names. Clause-monotone
+exact-$(2,2)$ is an additional restrictive family and is \emph{not}
+asserted here.
+
+\section{Reconstructed source with explicit bit-length and locality}
+Take the exact 15-variable, 20-clause UNSAT source $W_1$ verbatim from
+\path{experiments/review/early22_compiler_redteam_audit.py}.  Using
+zero-based clause/literal positions, the two independent polarity controls
+flip precisely
+\[
+ A=((6,0),(11,0))\quad\text{and}\quad
+ B=((17,2),(9,2)).                                             \tag{1}
+\]
+Both pairs refer to one variable each, respectively variables 4 and 15,
+with one initially positive and one negative occurrence. Put the unflipped
+pair at control value $1$; flip the two signs for value $0$. Call the
+20-clause output $H(a,b)$. Direct exhaustive enumeration of its
+$2^{15}$ assignments gives
+\[
+\begin{array}{c|rrrr}
+(a,b)&(0,0)&(0,1)&(1,0)&(1,1)\\\hline
+\#\mathrm{models}&772&272&272&0.
+\end{array}                                                       \tag{2}
+\]
+Flipping a sign pair leaves every variable quota and every three-name
+support unchanged; (2) therefore gives the exact constant-sized semantic
+identity
+\[
+                 \SAT(H(a,b))\iff \neg(a\land b).            \tag{3}
+\]
+For $m\ge1$, use $m$ disjoint variable-renamed copies with clause order
+consisting first of all $2m$ A clauses, next all $16m$ unmodified
+clauses, last all $2m$ B clauses.  Denote the result by
+$F_m(a,b)$. It has
+\[
+ V=15m,\quad C=20m,\quad
+ \SAT(F_m(a,b))\iff \bigwedge_{i=1}^{m}\neg(a_i\land b_i).
+                                                                        \tag{4}
+\]
+The proof of (4) is disjoint-conjunction semantics using (3), not a
+hypothesis about general SAT algorithms. The middle $16m$ clauses
+are independent of $a,b$.
+
+For this report define a \emph{canonical physical binary clause-list
+encoding} with a 32-bit fixed magic word, three $w$-bit unsigned fields
+$(V,C,m)$, and $20m$ consecutive three-literal clauses. Each literal is
+one sign bit followed by a $w$-bit variable ID, with
+\[
+ w=\lceil\log_2(20m+1)\rceil,\qquad
+ N=32+3w+60m(w+1).                                               \tag{5}
+\]
+The sign at A's first clause and B's first clause is exactly the
+respective control bit. Its indexed physical positions are
+\begin{align*}
+ p_A(i)&=32+3w+2i\cdot 3(w+1),\\
+ p_B(i)&=32+3w+(18m+2i)\cdot 3(w+1)+2(w+1),
+ \qquad 0\le i<m.                                           \tag{6}
+\end{align*}
+All other positions are either constant or the complement of a designated
+control.  The two members of each sign-swap pair are checked together.
+The middle physical gap contains $16m\cdot3(w+1)$ bits, asymptotically
+$4N/5$ of the input. The number of source variables/clauses is thus
+$\Theta(N/\log N)$. These are newly specified canonical bytes for
+this \emph{promise image}, not a parser for every ordinary SAT encoding.
+
+\begin{theorem}[Canonical input bit and occurrence selectors; restricted]\label{th:index}
+There is one fixed deterministic bit-address program which, for every
+$m\ge1$, every $a,b\in\{0,1\}^m$, every physical index $p<N$, every
+source name $v\in[15m]$ and every $r\in\{0,1,2,3\}$,
+correctly computes the physical output bit of $F_m(a,b)$ and the $r$th
+\emph{physical clause-order} signed occurrence of $v$. It supports the
+inverse $\Rank(v,c,k)$ including literal slot $k$, polarity and physical
+bit address. Its source-dependent queries read at most the two control
+sign positions (6) belonging to one component. For each request,
+conservative bit-operation time is $O(\log^2 N)$ and total live
+writable-plus-index storage $O(\log N)$ bits. No input-wide header table,
+variable incidence list, or occurrence sorting table is stored.
+\end{theorem}
+\begin{proof}
+Write $i=\lfloor(v-1)/15\rfloor$ and
+$t=1+((v-1)\bmod15)$. The fixed 20-row W1 program is finite-control
+read-only data. Visit those 20 rows and three fields, retaining only
+those whose absolute variable equals $t$. Exactly four occur because W1
+is exact signed $(2,2)$. Their global physical clause numbers are
+$2i+\ell$ for the two A positions, $2m+16i+\ell$ for the sixteen
+unmodified positions, and $18m+2i+\ell$ for the two B positions,
+where the finite lookup $\ell$ is the position in its corresponding
+fixed list. Read $a_i,b_i$ from (6) if the signed results are requested;
+the source signs follow (1). Sort the four $O(\log N)$-bit pairs
+$(\mathrm{clause},\mathrm{slot})$ and return rank $r$.
+The inverse compares the four candidates with the supplied physical
+position. Formula (5) converts the winning field to a bit address.
+Only a constant number of $O(\log N)$-bit registers coexist.
+Schoolbook integer arithmetic conservatively costs
+$O(\log^2N)$ bit operations. This is not a theorem for arbitrary
+ordinary SAT incidence arrays or for the remaining bitonic scan and
+reverse MUX circuits.
+\end{proof}
+
+On this \emph{canonical promise}, a word-RAM algorithm of logarithmic
+word width reads at most $2m$ controls, with $O(m)$ arithmetic/word
+operations after header arithmetic, and $O(\log N)$ workspace.
+An indexed bit-TM pays $O(\log N)$ to write each binary address,
+so $O(m\operatorname{polylog}N)$ bit time suffices.
+Full \emph{template membership}, including magic, headers, signed pairs,
+all literal IDs, and malformed strings of the same length, is checked
+by testing all $N$ bits against the virtual template, with
+$O(N\operatorname{polylog}N)$ bit time and $O(\log N)$ live bits.
+It rejects noncanonical sources but is not a full SAT decider on
+noncanonical ordinary CNF strings.
+
+\section{Two native sequential tape ledgers and a complete tiny circuit}
+For $m$ Boolean equality-control pairs, a direct binary fanin-2 NAND
+circuit uses exactly $5m$ gates for per-pair XNOR and $2(m-1)$ gates
+for the AND chain:
+\[
+                         G_{\rm NAND}=7m-2.                 \tag{7}
+\]
+Its primary inputs are $2m$ wires, its gate outputs are $7m-2$
+additional wires, and its gate operand-reference count is
+$2(7m-2)$ with the repeated input to a NAND counted in both slots.
+This is an \emph{equality promise circuit}, \underline{not}
+$C_{A,N}$ deciding unrestricted length-$N$ SAT inputs.
+
+An independent physical machine $M_k$ receives the compact control
+string $a\#0^{2m+3}\#b\$ $ as a read-only sequential input and uses one
+sequential work tape. It copies $a$ into work cells, reverses its work
+head to the left marker, scans the middle gap, then compares the right
+bits against the stored left bits. It writes one result bit.
+On the valid compact inputs it computes the circuit (7). The compact
+representation is separate from the canonical full $20m$-clause
+encoding in (5); this small example validates a \emph{tape compiler},
+not a full binary-CNF parsing simulation.
+
+\begin{lemma}[Explicit conservative one-tape simulator]
+Let $M_k$ be the displayed compact equality machine using input
+$X=4m+6$ physical symbols, one read-only input head and one work head,
+work footprint $S_k\le m+O(1)$ and time $T_k$. A single read/write
+tape uses a fixed product alphabet to hold source symbols, work symbols,
+and both movable head markers. Each simulated transition is implemented
+by \emph{four charged full sweeps}: gather both marked symbols,
+update work and negative-moving markers, update positive-moving
+markers, and return the physical head to the first cell. If
+$L=X+1$ includes the right blank sentinel, exact abstract counters are
+\[
+ T_1=4LT_k+1,\quad H_1=C_1=4(L-1)T_k,\quad P_1=L,\quad
+ \mathrm{outputBits}=1.                                          \tag{8}
+\]
+This implements the same transition sequence and satisfies the general
+conservative upper bounds
+\[
+ T_1=O(T_k(X+S_k+\log(T_k+2))),\qquad
+ P_1=O(X+S_k+\log(T_k+2)).                                    \tag{9}
+\]
+\end{lemma}
+\begin{proof}
+At the first pass, finite control retains the source symbol under the
+marked input head and work symbol under the work marker. The machine's
+finite transition rule yields the new state, two head directions and new
+work symbol. The backward pass updates the marked work cell and shifts
+left-moving marker bits one cell; the next forward pass shifts the
+right-moving marker bits one cell. Thus precisely one cell is marked on
+each track and both virtual heads move as directed. The fourth pass
+\emph{must} return the physical head to the left end before the next
+first pass. Every pass touches $L$ cells, crosses $L-1$ boundaries,
+and has one finite-alphabet operation per cell. The additional terminal
+result write occurs at physical cell zero. Equations (8) follow.
+The source and work tracks stay within $L$ cells on the tested machine;
+no input-inclusive footprint is deducted. The more general simulator
+uses $O(X+S_k+\log T_k)$ visited tape cells, encoding the fixed work
+heads as markers and rescanning the entire active segment for each
+transition; (9) follows from the standard construction, not from a
+Hennie--Stearns two-tape shortcut. The finite reference replay checks
+both full track contents and both marker locations after every step.
+\end{proof}
+
+A tempting three-pass variant is \textbf{FALSIFIED/RETIRED}: it ends at
+the rightmost physical cell and silently begins its next pass at the
+leftmost cell. The fourth return sweep is essential and was added
+before publication. Machine-space, time, probes, cell writes and head
+crossings are separately measured; probes/crossings are
+\emph{subcounters of time}, not additional time charges.
+
+\section{A reversal-preserving bounded-jump model transfer}
+Consider a \emph{different} model $M_J$ with exactly one two-way
+read-only \emph{input} head and fixed $k$ sequential work tapes.
+An input-head command gives a signed binary displacement $d$ with
+$|d|\le J(N)$, reads only the target input symbol, and pays for
+writing and interpreting the offset. The work tapes have no indexed
+reads. Let $T_J,S_J,R_J$ be simultaneous worst-case bounds on one
+fixed total deterministic solver and define $R_J$ to count sign
+changes between consecutive \emph{nonzero} input displacements.
+
+\begin{lemma}[Jump unrolling preserves input reversals; exact]
+For every such $M_J$ and every fixed input, a one-sequential-input-head,
+fixed-work-tape simulator can produce exactly the same output while
+using
+\[
+ H_0=\sum_{\text{jump commands }u}|d_u|\le JT_J,
+ \quad R_0=R_J,\quad
+ S_0\le S_J+O(\log(N+T_J+J)),                               \tag{10}
+\]
+with conservative time
+$T_0=O(T_J(J+1)\operatorname{polylog}(N+T_J+J))$.
+These inequalities hold jointly on the \emph{same simulated input}.
+\end{lemma}
+\begin{proof}
+Store $|d|$ and its sign in an auxiliary sequential counter tape,
+using $O(\log(J+1))$ cells. Move the ordinary input head exactly
+$|d|$ unit steps in that sign direction, ignoring intermediate read
+symbols. Process the original transition's work-tape updates and
+read only the final target symbol in the source simulated control;
+offset setup and decrement operations are charged. Every nonzero
+command becomes a constant-sign block of unit moves, hence the
+nonzero direction sequence and its reversal count are identical.
+The work tapes are all sequential, and the auxiliary tape adds one
+fixed head, not a number of heads growing with input size. A
+straight binary decrement has $O(\log N)$ worst-case overhead per
+unit movement, yielding the displayed conservative time bound.
+The derived head-distance, reversal and space claims need no faster
+simulation assumption. There is no free RAM input probe in $M_0$.
+\end{proof}
+
+\begin{theorem}[New conditional jump and reversal surfaces]
+Assume the exact one-input-head HEADMOVE-1 crossing theorem for the
+canonical family (4), proved with complete visited-work-cell
+configurations and the same input selected by double averaging. If
+$M_J$ correctly decides all $F_m(a,b)$ for every $m$ and $a,b$,
+then, with $N$ from (5),
+\begin{align*}
+ T_J J\bigl(S_J+\log(N+T_J+J)+1\bigr)
+     &=\Omega(N^2/\log N),\\
+ (R_J+1)\bigl(S_J+\log(N+T_J+J)+1\bigr)
+     &=\Omega(N/\log N).                                  \tag{11}
+\end{align*}
+For polynomial worst-case ceilings
+$T_J=N^{t+o(1)}, S_J=N^{s+o(1)},J=N^{j+o(1)}$ and
+$R_J+1=N^{r+o(1)}$, this implies
+\[
+                 \boxed{t+s+j\ge2,\qquad r+s\ge1}.         \tag{12}
+\]
+Here $s,j,r\ge0$. This theorem is \textbf{CONDITIONAL}
+on the separately declared source crossing theorem; it has
+no implication for unrestricted indexed-input RAM or for P versus NP.
+\end{theorem}
+\begin{proof}
+HEADMOVE-1, for one sequential input head, supplies on one common
+SAT instance $F_m(a,\neg a)$ the two lower bounds
+\[
+ H_0(S_0+1)=\Omega(N^2/\log N),\qquad
+ (R_0+1)(S_0+1)=\Omega(N/\log N).
+\]
+For clarity, its common-input quantifier follows by fixing any of
+the $\Theta(N)$ middle-gap cuts, injecting the $2^m$ distinct YES
+instances into complete crossing transcripts, averaging the
+$\Omega(m/(S_0+1))$ crossings at each cut over all $a$, summing over
+cuts and selecting one $a_*$ of large aggregate movement. For that
+\emph{same} input some cut has at least the average number of
+crossings; alternating directions give the reversal inequality.
+Insert (10), enlarging the $S_0$ factor only by the charged
+$O(\log(N+T_J+J))$ counter space and bounding $H_0$ above by
+$JT_J$. This yields (11). Polylogarithmic factors vanish at the
+exponent level, yielding (12). No lower bound from a
+\emph{one shared writable tape} was transferred backward to a
+more powerful machine; the transferred source is the sequential
+read-only-input crossing theorem.
+\end{proof}
+
+The original unrestricted RAM/RAT model may have indexed work
+storage and arbitrary input probes, so $r+s\ge1$ and
+$t+s+j\ge2$ are not RAM lower bounds. At $j=1$, this jump
+model reaches the near-linear-time promise comparator with logarithmic
+workspace; the bound (12) is then compatible with $t=1,s=0$.
+For fixed $j<1$ a batching strategy on this \emph{easy promise}
+performs $O(m/B)$ left/right passes with $B$ buffered control
+bits, and limited-radius jumps give transport time exponent
+$\max(1,2-s-j)$ up to polylogarithmic overhead.
+The reversal exponent remains $\max(0,1-s)$, matching the second
+face. All source reads, index commands, buffer updates and jump
+offsets have been charged, but no universal SAT solver is produced.
+
+\section{Executable evidence and three separate ledgers}
+The standalone reproducer under
+\path{research/agents/lspv-2/2026-10-27_0212_HEADMOVE_EXACT22_JUMP172_audit.py}
+uses deterministic full assignment enumeration for each of the four
+15-variable W1 variants, exhaustively enumerates all $4^m$ source
+pairs for $m=1,\ldots,5$ ($1{,}364$ formulas), checks signed quotas,
+properness, distinctness and both SAT witness extensions and local UNSAT
+obstructions, and compares actual selected physical signed
+occurrences with table-free four-candidate inverse Rank/Select.
+The materialized incidence dictionary exists only in the
+\emph{independent finite reference checker}; the proposed selector
+never accesses it.
+
+\begin{center}\small
+\begin{tabular}{rrrrr}
+\toprule
+$m$ & $N$ bits & RAM probes & strict probes & one-head steps\\
+\midrule
+1&407&1&412&383\\
+2&890&2&900&2318\\
+3&1310&3&1325&5706\\
+4&1973&4&1993&12117\\
+5&2453&5&2478&19445\\
+\bottomrule
+\end{tabular}
+\end{center}
+A strict validator reads the full template and checks all companion
+signs and headers. It is more expensive than the promised $m$-probe
+comparator, but remains near-linear. The executable's operation counters
+measure logical model steps, binary address bit writes and word-RAM
+operation \emph{proxies}, not CPython elapsed time. Python itself
+holds full formula strings and reference audit collections, so Python's
+process memory is not claimed to be the theorem's live work space.
+
+The compact two-tape comparison underwent 9,320 independent
+transition/state-and-track equivalence checks over 340 distinct
+$a,b$ pairs. For $m=1,2,3,4$ the maximum
+$(T_k,T_1,P_1)$ values were respectively
+$(14,617,11)$, $(19,1141,15)$, $(24,1825,19)$ and
+$(29,2669,23)$. Each trial emitted exactly one bit.
+The extra return sweep was charged. Tests rejected five malformed
+compact records. The full binary exact22 source was not itself
+physically tape-simulated; source bit access and tape compilation
+are separate verified interfaces.
+
+Forty-two bounded-jump itineraries on $m=4,8,16,32$, several
+buffer capacities, and $J\in\{1,\lceil\sqrt{N}\rceil,N\}$
+checked charged target reads, summed unit distance, at-most-$J$
+jump counts, offset writes and direction preservation. These are
+\textbf{COMPUTATIONAL} controls only, not independent evidence of
+a new all-algorithm lower bound.
+
+\begin{center}\small
+\begin{tabularx}{\linewidth}{lXXX}
+\toprule
+Machine & Time and probes & Space/footprint & Head movement and output\\
+\midrule
+$M_1$, compact circuit test & $T_1=4LT_k+1$;
+$Q_1=4LT_k$; writes counted inside $T_1$ & $P_1=L$,
+includes input and sentinel & $H_1=C_1=4(L-1)T_k$;
+$R_1=4T_k-1$; 1 output bit\\
+$M_k$, same test & $T_k$ finite-state transitions;
+$Q_k=2T_k$ & $S_k$ visited work cells, source excluded &
+2 heads, crossing events $\le2T_k$; 1 output bit\\
+$M_J$ promise batches & $T_J$ includes offset-bit writes,
+source probes, buffer operations & $S_J=B+O(\log N)$, separate
+from read-only input & source distance $H\le JT_J$,
+reversals $R_J$ measured; 1 decision bit\\
+Indexed RAT promise & $O(m\operatorname{polylog}N)$ bit time,
+$O(m)$ log-word operations plus parsing if demanded &
+$O(\log N)$ writable/index bits & binary input addresses paid;
+no physical input-head crossings\\
+\bottomrule
+\end{tabularx}
+\end{center}
+A source probe, head crossing, operand wire, Boolean gate, and
+physical output-bit write are different types of counter. A probe
+or crossing already performed within a TM step is never added a
+second time to that same TM's time.
+
+\section{Corpus and proof spine reconciliation}
+\paragraph{CORPUS REVIEWED.} Governance source directives on
+sequential tape resource accounting, RAM comparison, HEADMOVE-1 and
+the earlier exact22 equality transport; root project synthesis,
+agent protocol, project research skill and original W1 source program.
+Prior LSPV-2 inverse-sort and record-output selectors and materially
+relevant peer reports by LSPV-1 through LSPV-5 were checked. Original FLMV 2005,
+Williams 2006 and Hennie--Stearns 1966 model statements were
+searched, with the distinctions recorded above. A complete
+remote repository checkout/preflight and independent formal referee
+were unavailable; neither is claimed.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.} The W1 four-case
+fingerprint and the sequential HEADMOVE-1 surface originate in the
+shared governance and are adopted, not newly discovered. The new
+contribution is the explicit physical all-variable Rank/Select
+interface, independent binary-input malformed control, executable
+four-sweep tape simulation, and the \emph{additional reversal}
+$\,r+s\ge1\,$ inequality for charged bounded jumps.
+The old EQUALITY $168m$-variable family and the new DISJOINTNESS
+$15m$-variable family are distinct reductions and are never
+conflated. The initial uncharged third-to-next-first sweep is
+\textbf{FALSIFIED/RETIRED} and repaired.
+
+\paragraph{ADOPTED / REJECTED / RETIRED COMPONENTS.}
+Adopt source-local Q/W1 occurrence templates and native machine
+separation. Reject the idea that Hennie--Stearns $O(T\log T)$
+\emph{two}-tape simulation is one-tape; reject deriving FLMV
+random-access exclusions from sequential head crossings; reject
+promoting a $7m-2$-gate DISJ/EQ promise circuit or an
+$O(N\log^3 N)$ witness verifier to the full SAT decision
+family $C_{A,N}$.  Pippenger--Fischer's general circuitization
+must be checked in its native one-dimensional tape model, and no
+compression beyond the circuit gate trace is proved.
+
+\paragraph{STALE OR OVERSTATED CLAIMS FOUND.} A 3-pass physical
+simulation silently teleports the single head unless the return
+motion is charged. A two-independent-input-head comparison on
+literal-only fixed-width CNF needs $O(\log N)$ locator counters
+or an explicitly supplied synchronized layout; mere two-head
+mobility does not make parsing and addressing free.
+Physical exact22 output sizes in the pinned two-level architecture
+remain bounded below by the reported $33{,}856B$ clauses for
+fixed-record bit count $B$; nothing here reverses that
+$\Omega(B)$ output floor.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.} Add an
+independently executable model-control and source-local inverse
+selector theorem, plus a conditional reversal-preserving bounded
+jump transfer. Preserve all earlier bitonic inverse sectors under
+their original scopes and retain the complete compiler interface
+and all-input ARC contraction as \textbf{OPEN}.
+
+\paragraph{NEXT LOAD-BEARING ARROW.} Finish actual uniform
+bitonic final-layer/scan, reverse payload routing, high-fanout
+aliases and all-source occurrence inversion, then seek
+\emph{all-input} ordinary SAT children of power-smaller physical
+bit length with complete discovery, construction, indexed input
+and recursion costs. Neither $P=NP$ nor a hypothetical
+$d=1.802$, $S=N^{o(1)}$ SAT machine supplies that shortening.
+
+\begin{thebibliography}{9}
+\bibitem{headmove} PNP project, HEADMOVE-1 reversal-space bound,
+2026 governance handoff,
+\url{https://github.com/j15marti/pnp/blob/main/research/governance/2026-10-26_HEADMOVE1_REVERSAL_SPACE_BOUND.md}.
+\bibitem{w1} PNP project, W1 independent exact signed 2P2N audit,
+\url{https://github.com/j15marti/pnp/blob/main/experiments/review/early22_compiler_redteam_audit.py}.
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek,
+A. Viglas, Time-Space Lower Bounds for Satisfiability,
+JACM 52(6):835--865 (2005),
+\url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{hs} F. C. Hennie and R. E. Stearns,
+Two-Tape Simulation of Multitape Turing Machines,
+JACM 13(4):533--546 (1966),
+\url{https://doi.org/10.1145/321356.321362}.
+\bibitem{williams} R. R. Williams, Inductive Time-Space Lower Bounds
+for SAT and Related Problems, Computational Complexity 15:433--470,
+\url{https://doi.org/10.1007/s00037-007-0221-1}.
+\bibitem{floor} PNP project, ARC-PINNED-CIRCUIT-OUTPUT-FLOOR131,
+\url{https://github.com/j15marti/pnp/blob/main/research/agents/lspv-4/2026-10-26_0441_LSPV-4_ARC_PINNED_CIRCUIT_OUTPUT_FLOOR131.tex}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::HEADMOVE-EXACT22-JUMP172
