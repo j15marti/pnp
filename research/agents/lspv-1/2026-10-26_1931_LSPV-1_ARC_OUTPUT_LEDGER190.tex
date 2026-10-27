@@ -1,0 +1,90 @@
+% LSPV-1 REPORT::ARC-OUTPUT-LEDGER190::2026-10-26T19:31-07:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{ARC-OUTPUT-LEDGER190: A Two-Level Source-Authenticated Exact-(2,2) Streaming Compiler and a Missing Physical Output Footprint}
+\author{LSPV-1: Formal Proof Lead}
+\date{26 October 2026}
+\begin{document}\maketitle
+\noindent\textbf{PROVED/EXACT in declared output conventions, independent review pending:} the output-footprint counterexample and repaired one-tape simulation. \textbf{COMPUTATIONAL:} 199 assertions, zero failures, two real typed levels and both SAT and UNSAT source controls. \textbf{OPEN:} universal affordable UNSAT certificates, arbitrary-$K$ ARC contraction, ARC-EDGE-90 and $P\ne NP$.
+
+\section{Four preregistered falsifiable claims and results}
+\begin{description}
+\item[] H1: The model-native multitape-to-one-shared-tape upper simulation preserves its simultaneous decision-time exponent $t_1\le t_k+\max(1,s_k)$ when the decision output is one bit. \textbf{PROVED}.
+\item[] H2: Its quoted footprint upper bound $P_1=O(N+S_k+\log T_k)$ extends to a multitape compiler using a space-exempt write-only port that emits long child strings, when the one tape must physically retain the output. \textbf{FALSIFIED}; output length $L$ is necessary.
+\item[] H3: Conservative tape simulations alone transport the native one-tape pure-time stripe or one-input-head time--space product into a nontrivial RAT forbidden region. \textbf{FALSIFIED AS A DEDUCTION}: the transported inequalities are tautological for $t\ge1,s\ge0$.
+\item[] H4: The one-head bounded-radius-$J$ reversal/product constraints are automatically RAM constraints with $j<1$. \textbf{FALSIFIED AS MODEL TRANSFER}; $J=N$ is needed for direct indexed input, and the one-head reversal measure is not a RAM resource.
+\end{description}
+
+\section{Exact models and output conventions}
+$M_k^{\mathrm{out}}$ has one two-way sequential read-only input head, fixed finitely many work tapes and heads, a finite alphabet, and a separate append-only never-reread write-only output port. Its $S_k$ counts every visited writable work cell, not input or output port; $T_k$ counts all parsing, rereads, arithmetic, writes, transitions and failed steps; $L$ is emitted output bits. $M_1^{\mathrm{phys}}$ has ONE shared read/write tape initially holding $N$ input bits and must retain its complete output at halt on that same counted tape. Thus $P_1\ge\max(N,L)$. Treating a separate exempt output port as a feature of the one-tape target is a different model. $M_{\mathrm{RAT}}$ has indexed input and indexed work as in FLMV, not a sequential input head. When only a SAT decision bit is produced, $L=O(1)$.
+
+\section{SAT-preserving typed two-level compiler}
+\begin{lemma}[Source-authenticated copy compiler]
+For each nonempty valid proper signed exact-$(2,2)$ 3CNF $F$ with $n$ variables and $m$ clauses, for any integer $r\ge1$ generated from the source length, construct
+\[
+ \Phi_r(F)=\bigwedge_{j=0}^{r-1} F(x_{jn+1},\ldots,x_{jn+n}).
+\]
+Every clause retains three distinct variable names; each name has exactly two positive and two negative occurrences, and no clause duplicates across different copies. Clause-monotonicity is preserved when present. Both labels are preserved:
+\[
+ \mathrm{SAT}(\Phi_r(F))\iff\mathrm{SAT}(F),\quad n'=rn,\quad m'=rm.
+\]
+One uniform $M_k^{\mathrm{out}}$ transducer parses the original immutable source, makes $r$ full sequential rereads, emits renumbered literal records, and uses $O(rN\,\mathrm{polylog}(rN))$ bit transitions and $O(\log(rN))$ visited work bits.
+\end{lemma}
+\begin{proof}
+Original clauses are copied with injective private renamings, so all quotas and distinctness are preserved. If the source has a model, its disjoint copies have independently renamed models. Conversely any model of the conjunction restricts to a source model. The uniform streamer maintains source and copy counters and a binary identifier-offset accumulator, authenticating each signed literal against the actual read-only source. Parsing, resetting the one input head, identifier addition, writing each output bit, and any control failure are charged. Its output is never read back by this machine, so the declared output-only exemption applies.
+\end{proof}
+\begin{theorem}[Output footprint counterexample]\label{out}
+On a growing proper signed exact-$(2,2)$ family with $n=\Theta(m)$ and standard dense binary clause-list encoding $N=\Theta(m\log(m+2))$, choose $r=N$. The resulting typed, both-label child satisfies
+\[
+ L=\Theta(rm\log(rn))=\Theta(N^2),\quad
+ T_k=N^{2+o(1)},\quad S_k=N^{o(1)}.
+\]
+Every output-materializing single shared tape must have $P_1\ge L=N^{2-o(1)}$, contradicting $P_1=O(N+S_k+\log T_k)=N^{1+o(1)}$ if the latter is misapplied to a transducer with an exempt output port. This does not refute that same bound for one-bit SAT deciders.
+\end{theorem}
+\begin{proof}
+The output has $rm$ clauses with signed indices of $\Theta(\log(rn))=\Theta(\log N)$ physical bits. Since $m\log n=\Theta(N)$, its length is $\Theta(N^2)$. A charged input reread and constant-per-output-bit streamer uses $N^{2+o(1)}$ time and logarithmic counters, on SAT and UNSAT sources alike. The output must occupy at least $L$ distinct tape cells if it is physically present at halt. An output-exempt Mk port and a counted-only M1 tape therefore have incompatible space conventions unless $L$ is transported.
+\end{proof}
+
+\begin{theorem}[Correct conservative one-tape simulation]\label{sim}
+For fixed $k$ and a transducer as above, a one-shared-tape deterministic simulator exists with
+\[
+ \boxed{T_1=O_k(T_k(N+S_k+\log(T_k+N+2))),\quad
+ P_1=O_k(N+S_k+L+\log(T_k+N+2)).}
+\]
+Hence for simultaneous polynomial ceilings $t_1\le t_k+\max(1,s_k)$ and $p_1\le\max(1,s_k,\ell)$, where $L=N^{\ell+o(1)}$. For SAT decisions $L=O(1)$ this reduces to the original declared arrow $t_1\le t_k+\max(1,s_k)$, $p_1\le\max(1,s_k)$. These are construction upper bounds, never optimal lower bounds.
+\end{theorem}
+\begin{proof}
+Represent the immutable source, each of the fixed $k$ visited finite-alphabet work intervals, simulated head marks and binary positions as a single active region of length $Q=O_k(N+S_k+\log(T_k+N+2))$. Store the complete emitted output as a left prefix immediately before that active region. Each simulated transition rescans and updates only the active region in $O(Q)$ time. When a bit is emitted, shift the active region one cell to the right at cost $O(Q)$, then place the bit in the vacated position. The emitted prefix remains contiguous in correct chronological order and is NEVER rescanned. Total simulated time is $O(T_kQ)$; footprint is $O(Q+L)$. Head travel, shifts and emitted unchanged bits have all been counted. The target has no free output port.
+\end{proof}
+
+\noindent\textbf{Two genuine hereditary levels.} The identity
+$\Phi_{r_2}(\Phi_{r_1}(F))\cong\Phi_{r_1r_2}(F)$ preserves both SAT and UNSAT and exact typed grammar at each level. With $r_1=N$ and $r_2=L_1=\Theta(N^2)$, one has $L_1=\Theta(N^2)$ and $L_2=\Theta(N^4)$. A direct nested source streamer can use logarithmic counters, but must emit $\Omega(L_2)$ bits; an intermediate that is to be reread cannot stay on a write-only exempt output port. Neither route constitutes contraction.
+
+\section{Model-native forbidden-surface audit}
+On the easy ordered proper exact-$(2,2)$ DISJ promise with physical $N=\Theta(m\log m)$ and one sequential input head, the reviewed HEADMOVE1/LSPV-4/LSPV-5 crossing proof gives on one and the same accepting run
+\[
+ H(S+1)=\Omega(N^2/\log N),\quad (R+1)(S+1)=\Omega(N/\log N).
+\]
+For the distinct radius-$J=N^{j+o(1)}$ augmented one-head model, $t+s+j\ge2$ and $r+s\ge1$; it is NOT an indexed RAT theorem. Its proof requires the complete work configuration, work-head positions, directions, and (for jumps) landing coordinates in every crossing record.
+
+For a fixed indexed input solver with polynomial address lengths and one simultaneous RAT pair $T=N^{t+o(1)}$, $S=N^{s+o(1)}$, a conservative sequential simulator scans the full source on each indexed query and a sparse sorted dictionary of visited work indices: $T_{\rm sequential}\le T(N+S)\mathrm{polylog}N$, $S_{\rm sequential}\le S\mathrm{polylog}N$. Hence the native one-tape stripe $t_1\ge2$ transports only to $t+\max(1,s)\ge2$, and native one-input-head $t_k+s_k\ge2$ transports only to $t+\max(1,s)+s\ge2$. Both are tautological for every $t\ge1,s\ge0$. For the DISJ input promise $t\ge1$ follows already from $\Omega(m)=\Omega(N/\log N)$ independent sensitive source-sign groups on the all-disjoint input. The bound $r+s\ge1$ also transports trivially through the source-repositioning emulator because its reversal count can reach the time bound. No same-machine indexed-input forbidden region is obtained by intersecting native tape surfaces.
+
+\section{Controls, audit and proof-DAG status}
+The reproducer uses the original W1 proper signed exact-$(2,2)$ 15-variable 20-clause UNSAT source and its verified opposite-sign A-swap SAT source (272 models), plus a six-variable clause-monotone SAT source Y (20 models). It independently enumerates source models, verifies signed quotas, constructs first and second exact typed levels, physically emits and hashes twelve output streams, calculates additional exact output lengths, and tests 30 RAT-to-tape rational exponent points. Total: \textbf{199 assertions, zero failures}. Full Python and raw JSON are locally bundled; a compact standalone GitHub reproducer and summary JSON accompany this note. The finite program does not measure a physical FLMV Turing machine and does not check arbitrary UNSAT certificate systems.
+
+\noindent\textbf{Corpus and novelty.} Reviewed AGENTS.md/CODEX.md/research skill, root main.tex, dual-TM directive, RAM-vs-tape atlas, HEADMOVE1, original W1 source, the cited LSPV-1 ARC184 and ARC187, LSPV-2 CIRCUIT-OBLIVIOUS-INVERSE-SORT166, LSPV-3 ADAPTIVE-SOURCE-POINTER-STREAM131, LSPV-4 PINNED-CIRCUIT-OUTPUT-FLOOR131 and HEADMOVE-PHYSICAL-SOURCE-REFEREE142, and LSPV-5 BACKDOOR-CAP161 and HEADMOVE-REVERSAL-JUMP169. The older restriction on explicit physical compiler output was adopted; newly identified is the omitted $L$ when changing from an output-exempt transducer to a single physical tape, and the exact repaired simulator. Retired any unqualified cross-model transfer. Prior exact results are unchanged.
+
+\noindent\textbf{Next roles.} LSPV-2 should verify the prefix-shift one-tape simulator and explicit bit writes; LSPV-3 should charge every certificate's generated output, rereads and two levels; LSPV-4 should referee the convention-sensitive bound and the native strict lower-bound model; LSPV-5 should independently falsify the repaired simulation and verify one-machine quantifiers. The main all-UNSAT certificate-coverage arrow and the arbitrary unknown-$K$ uniform ARC edge remain OPEN. No task identities, schedules or other ownership regions have been modified.
+
+\begin{thebibliography}{9}
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas, \emph{Time-Space Lower Bounds for Satisfiability}, JACM 52 (2005), 835--865, \url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{williams} R. Williams, \emph{Inductive Time-Space Lower Bounds for SAT and Related Problems}, Computational Complexity 15 (2006), 433--470, \url{https://doi.org/10.1007/s00037-007-0221-1}.
+\bibitem{hennie} F. Hennie, R. Stearns, \emph{Two-Tape Simulation of Multitape Turing Machines}, JACM 13 (1966), 533--546, \url{https://doi.org/10.1145/321356.321362}.
+\bibitem{sqrt} R. Williams, \emph{Simulating Time with Square-Root Space}, STOC 2025, 13--23, \url{https://doi.org/10.1145/3717823.3718225}.
+\end{thebibliography}
+% END_OF_VERIFIED_REPORT::LSPV-1::ARC-OUTPUT-LEDGER190
+\end{document}
