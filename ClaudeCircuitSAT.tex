@@ -1,0 +1,73 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-28 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newtheorem{prop}{Proposition}
+\title{Claude Circuit-SAT Lower-Bound Ladder (living document)}
+\date{Last updated 2026-10-28}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains \OPEN.} Nothing below is an unconditional super-polynomial
+lower bound for Circuit-SAT. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Ladder: for $n=1,2,3,\dots$ inputs, track the exact minimum number of gates/wires needed to
+build circuits (fan-in-2 basis $B_2$, free negation), and the resulting lower bound on
+deciding satisfiability of an instance of that size, as a parametrized bound in
+$(n,m)$ = (inputs, gates).
+
+\section{Rung data (COMPUTATIONAL)}
+Exact BFS over circuits as sets of computed truth tables, reproducer
+\texttt{experiments/claude\_circuitsat/minsize\_B2.py}, raw data
+\texttt{results/raw/claude\_circuitsat/minsize\_B2\_n123.json}. Counts are of functions up to
+output negation (complexity classes of $f\sim\neg f$).
+\begin{center}\begin{tabular}{rrrl}\toprule
+$n$ & classes & max gates & histogram (gates:\#classes)\\\midrule
+1 & 2 & 0 & 0:2\\
+2 & 8 & 1 & 0:3, 1:5\\
+3 & 128 & 4 & 0:4, 1:15, 2:57, 3:40, 4:12\\\bottomrule\end{tabular}\end{center}
+Wires: a $g$-gate fan-in-2 circuit has $2g$ gate-input wires plus the output wire.
+Hence worst-case wire counts: $n=2$: $\le 2$, $n=3$: $\le 8$ (plus output).
+$n=4$ (known value, not recomputed here): max 7 gates (KNOWN, literature value to be re-verified).
+
+\section{Proved rungs}
+\begin{prop}[Connectivity floor, PROVED/EXACT]
+A fan-in-2 circuit whose output depends on all $n$ inputs has $\ge n-1$ gates and
+$\ge 2(n-1)$ gate-input wires.
+\end{prop}
+\begin{proof} Each gate has two in-wires; the undirected graph on $n$ inputs and $g$ gates must connect
+every input to the output, giving $\ge n+g-1$ edges in a connected graph, while a tree cone
+with $n$ leaves of fan-in 2 has $n-1$ gates; each gate contributes 2 in-wires so wires $=2g\ge 2(n-1)$.
+(Fan-out $>1$ only adds wires.)\end{proof}
+
+\begin{prop}[Read-everything bound for Circuit-SAT, PROVED/EXACT, query model]
+Any deterministic algorithm that decides satisfiability of a circuit given as a gate list of $m$ gates
+must probe $\Omega(m)$ description cells in the worst case.\end{prop}
+\begin{proof} Take $C$ = AND-tree over $m+1$ distinct leaf variables (SAT). Altering any single leaf
+$x_i$ to a negated copy of a sibling leaf $x_j$ (or an AND with $\neg x_i$ on an unprobed gate) makes
+the output unsatisfiable; an algorithm skipping a cell cannot distinguish. Thus every cell on a leaf path must be read.\end{proof}
+So parametrized: $T_{\rm SAT}(n,m)=\Omega(m)$ unconditionally (trivial); $\Omega(m)$ is the only unconditional
+bound on the ladder so far. \textit{Caveat:} the sibling-negation argument is a sketch; a careful version should fix
+the encoding (to do next run).
+
+\section{Parametrized conditional ceiling (CONDITIONAL)}
+Under SETH, Circuit-SAT on $n$ inputs and $m$ gates requires $2^{(1-\varepsilon)n}\mathrm{poly}(m)$
+for every $\varepsilon>0$; ETH gives $2^{\delta n}$ for $m=O(n)$-size CNF instances. Upper bound: brute force $O(2^n m)$.
+These are CONDITIONAL, not part of an unconditional chain.
+
+\section{Repository cross-check}
+Repo \texttt{j15marti/pnp}: root \texttt{main.tex} and \texttt{GROKPROOF/} (latest 2026-10-28 notes) report the ARC/FLMV
+time--space contraction spine as \OPEN{}; no circuit-SAT lower bound there is unconditional. Relevant: the repo's
+own FALSIFIED/RETIRED entry that a near-linear witness verifier yields a full decision circuit (uniformity obstruction;
+nonuniformly NP$\subseteq$P/poly would follow). Known circuit-size barriers: best explicit lower bound for $B_2$ circuits
+is $\approx 3.1n$ (Li--Yang 2022, KNOWN, cite to be verified) and natural-proofs/relativization limit generic methods.
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item Extend exact table to $n=4$ (needs SAT-based synthesis; chunk runs $\le30$s).
+\item Track gates-vs-wires with bounded fan-out for the ladder (wire minimum differs from gate minimum).
+\item Tighten read-everything proof; find a parametrized (in treewidth/cutwidth $k$) bound: Circuit-SAT is FPT in $k$, $2^{O(k)}m$; target lower bound $2^{\Omega(k)}$ conditional on SETH (CANDIDATE).
+\item Mine repo ARC/FLMV time--space tradeoff for a parametrized (time, space) bound.
+\end{enumerate}
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT
