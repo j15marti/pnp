@@ -1,0 +1,80 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: stepwise lower-bound ledger for Circuit-SAT}
+\author{Living document (scheduled hourly runs)}
+\date{Last updated: 2026-10-28}
+\begin{document}\maketitle
+
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No unconditional super-linear lower bound for
+Circuit-SAT is claimed here. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL,
+CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model and parameters}
+Instance: a DAG circuit $C$ over fan-in-2 gates (basis $B_2$), $n$ inputs, $g$ gates,
+$w$ wires (edges), single output. Question: $\exists x\; C(x)=1$.
+Parameters: $n$ (inputs), $g$ (size), $w\le 2g$, depth $d$, fan-out $\phi$.
+A parameterized bound has the shape $T(n,g)\ge f(n)\cdot h(g)$.
+
+\section{Stepwise ledger (build-up)}
+\paragraph{Step 0 (PROVED/EXACT).} $n=1$: the minimum circuit depending on $x_1$ is the
+wire $x_1\to$ output: $g=0$, $w=1$.
+
+\paragraph{Step $n$ (PROVED/EXACT, connectivity).}
+\begin{theorem}
+A single-output fan-in-2 circuit in which all $n$ inputs are essential has $g\ge n-1$
+gates and $w\ge 2(n-1)$ wires, if inputs have fan-out~1; in general $w\ge n+g-1$ and $g\ge n-1$.
+\end{theorem}
+\begin{proof}
+Every input reaches the output, so the underlying undirected graph on $n+g$ vertices is
+connected: $w\ge n+g-1$. Fan-in $2$ gives $w\le 2g$. Hence $n+g-1\le 2g$, i.e.\ $g\ge n-1$,
+so $w\ge 2n-2$. Equality is attained by a balanced binary tree (AND/XOR tree).\qed
+\end{proof}
+
+\paragraph{Step $n$ (PROVED/EXACT, reading bound).}
+\begin{theorem}
+Any deterministic algorithm for Circuit-SAT in the random-access model must read
+$\Omega(g)$ gate descriptions.
+\end{theorem}
+\begin{proof}
+Family: output $=\bigwedge_{i\le g}$ gate$_i$, each gate a constant~1, except that the
+adversary may set one unread gate to constant~0. Satisfiable iff no gate is~0. An
+algorithm that leaves gate $j$ unread is wrong on one of two instances differing only at $j$.\qed
+\end{proof}
+This is trivial and independent of $n$; it is the only unconditional bound recorded so far.
+
+\section{Computed small cases (COMPUTATIONAL)}
+Exact minimum $B_2$ gate counts over all functions, by breadth-first search over
+gate-set states (\texttt{experiments/claude\_circuitsat/min\_gates.py}, runtime $<30$\,s).
+\begin{center}\begin{tabular}{lccccc}\toprule
+$n$ & 0 gates & 1 & 2 & 3 & 4\\\midrule
+2 & 6 & 10 & -- & -- & --\\
+3 & 8 & 30 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+All $16$ and $256$ functions covered; maximum is $1$ gate for $n=2$, $4$ for $n=3$.
+So the ``hardest'' function class grows $1,4,\dots$ (next: $n=4$, known max $7$; not yet recomputed).
+Wire minimum under fan-in 2 is $2g$ for the gate part, so minimal wire counts for $n=3$ range $0..8$.
+
+\section{Known context}
+\begin{itemize}
+\item KNOWN THEOREM (recalled, to be re-verified against primary source): gate elimination gives
+explicit $B_2$ circuit lower bounds of about $3.1n$ (Find--Golovnev--Hirsch--Kulikov). Such bounds
+are for computing a function, not for the decision time of Circuit-SAT.
+\item CONDITIONAL: SETH implies no $2^{(1-\epsilon)n}\mathrm{poly}(g)$ algorithm for Circuit-SAT
+(CNF-SAT embeds). This is the natural parameterized form $T\ge 2^{(1-\epsilon)n}$.
+\item Repository (\texttt{j15marti/pnp}) check, 2026-10-28: recent GROKPROOF notes state the ARC/FLMV
+resource-contraction route is still OPEN; nothing there yet gives a usable circuit-SAT bound.
+\end{itemize}
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item OPEN: any unconditional bound of the form $T(n,g)=\omega(g)$ for Circuit-SAT.
+\item Next: recompute $n=4$ minimum sizes (needs chunking); track the wire-by-wire count for
+the hardest functions and test whether gate-elimination-style restrictions give a SAT-time
+(not circuit-size) recurrence.
+\item Next: parameterize by fan-out/depth; ask whether bounded-depth, bounded-fan-out restricts
+help an adversary argument beyond $\Omega(g)$.
+\end{enumerate}
+\end{document}
+% END_OF_CLAUDECIRCUITSAT_RUN 2026-10-28
