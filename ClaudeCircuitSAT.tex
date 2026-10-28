@@ -1,0 +1,62 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-28
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}\newtheorem{conj}{Conjecture}
+\title{Wire-by-wire lower bounds for Circuit-SAT: a living document}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated 2026-10-28}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional Turing-machine lower bound.
+All results are in a restricted \emph{edge-probe} model or are computational tables.
+Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Plan}
+Build circuits from the simplest case upward, tracking (i) gates $g$, (ii) wires $2g$ (fan-in 2), (iii) number $k$ of essential inputs,
+and (iv) the number $C(g,k)$ of \emph{SAT-critical wires}: wires whose polarity flip changes satisfiability.
+Parameters: $n$ inputs, $g$ gates, $k$ essential inputs; a bound may be parametrized, e.g.\ $\Omega(C)$ or $2^{\Omega(k)}$ conditionally.
+
+\section{Model}
+Circuit = AND-gates of fan-in 2 with negatable edges (AIG), all gates reachable from the output. Edge-probe model: the solver learns
+one wire's endpoints/polarity per probe.
+
+\begin{lemma}[PROVED: critical-wire adversary]
+Any deterministic probe algorithm deciding SAT on a fixed circuit $\mathcal C$ must probe every critical wire of $\mathcal C$.
+\end{lemma}
+\emph{Proof.} If critical wire $e$ is unprobed, the algorithm's view is identical on $\mathcal C$ and $\mathcal C$ with $e$ flipped, whose answers differ. $\square$
+
+So probe complexity $\ge C(g,k)$ for the best instance; trivially $C\le 2g$.
+
+\begin{lemma}[PROVED: formulas of distinct variables are never critical]
+If $k=g+1$ then $C(g,k)=0$.
+\end{lemma}
+\emph{Proof.} There are $2g$ edges, $g-1$ of them gate-to-gate (each non-output gate has $\ge1$ out-edge), so at most $g+1$ edges
+come from inputs; $k=g+1$ essential inputs force equality: a read-once AND-tree on distinct variables, satisfiable under every polarity assignment. No flip changes the answer. $\square$
+
+\section{Computational table (exhaustive)}
+Script \texttt{experiments/claude\_circuitsat/critical\_edges.py}; data \texttt{results/raw/claude\_circuitsat/2026-10-28\_critical\_edges.json}.
+Max $C(g,k)$ over all AIGs (COMPUTATIONAL; $g=4$ run chunked into four first-gate ranges, each under 30\,s):
+\begin{center}\begin{tabular}{c|cccc}\toprule
+$g\backslash k$ & 2 & 3 & 4 & 5\\\midrule
+1 & 0 & -- & -- & --\\ 2 & 3 & 0 & -- & --\\ 3 & 6 & 4 & 0 & --\\ 4 & 8 & 7 & 5 & 0 (Lemma 2)\\\bottomrule\end{tabular}\end{center}
+Observations: $C(g,2)=2g$ for $g\le3$ but $8<2g$ at $g=4$ is not full (all wires critical fails already at $g=4$,$k=2$ ---
+note $k=2$ circuits are small functions, so redundancy is forced); $C(g,g)=g+1$ for $g=2,3,4$.
+\begin{conj}[CANDIDATE]$C(g,g)=g+1$ for all $g\ge2$; more generally $C(g,k)$ is a concave-in-$k$ profile peaking at small $k$.
+Open: asymptotics of $\max_k C(g,k)$ and whether $C=\Theta(g)$ is achievable with $k=\Omega(g)$.\end{conj}
+
+\section{Parametrized view}
+\begin{itemize}
+\item KNOWN: brute force gives $O(2^n\cdot m)$. CONDITIONAL: SETH implies no $(2-\varepsilon)^n\,\mathrm{poly}(m)$ algorithm for Circuit-SAT.
+\item PROVED (model-limited): probe complexity $\ge C(g,k)=\Theta(g)$ if $\Theta(g)$-critical instances exist with $k$ small; this is only linear, and says
+nothing about time.
+\item Gap: linking critical-wire structure to time needs a bridge beyond probes (OPEN).
+\end{itemize}
+
+\section{Repository check (j15marti/pnp)}
+Latest GROKPROOF notes (2026-10-28 11:15) confirm that the ARC/FLMV all-input resource contraction remains OPEN; no result there supplies an
+unconditional circuit-SAT bound usable here. No duplication of critical-wire analysis found.
+
+\section{Next steps}
+(1) Extend table to $g=5$ ($n\le5$) via symmetry-reduced chunked search. (2) Prove or refute $C(g,g)=g+1$. (3) Replace edge flips by stuck-at/
+gate-replacement perturbations (richer adversary). (4) Relate $C$ to fan-out/treewidth parameters.
+\end{document}
