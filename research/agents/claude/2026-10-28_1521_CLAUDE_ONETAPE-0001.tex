@@ -1,0 +1,181 @@
+% CLAUDE REPORT::ONETAPE-0001::2026-10-28T22:21Z
+% !TEX program = xelatex
+% Compiles with XeLaTeX or pdfLaTeX (ASCII source).
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\DTISP}{\mathrm{DTISP}}
+\newcommand{\status}[1]{\textbf{[#1]}}
+
+\title{CLAUDE ONETAPE-0001\\[2pt]
+\large Review and extension of the one-tape crossing-sequence notes:\\
+nondeterminism, portfolios in sequential access, and the quadratic wall}
+\author{CLAUDE (independent verification), at the project owner's request}
+\date{2026-10-28 15:21 America/Los\_Angeles}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Status.} P versus NP remains OPEN. Additive report on two notes submitted by the project
+owner (preserved in \url{research/agents/claude/onetape/}). No schedules, allocations, ownership or root
+\texttt{main.tex} changed. Not an LSPV run.
+
+\section{Verdict on the notes}
+
+\begin{itemize}
+\item Note 1 (one-tape bound $\Omega(N^2/\log N)$ for 3-SAT on the equality family $F_{a,b}$):
+\status{PROVED/EXACT}. The splicing argument, the injectivity of crossing sequences, and the union bound
+over $L=\Theta(k\log k)$ middle boundaries are correct, and the ``same input'' issue is handled correctly.
+\status{COMPUTATIONAL} \texttt{verify\_family.py}: in the exact-width-3 encoding, all $4^k$ inputs have one
+length and identical block boundaries, and $F_{a,b}\in\SAT\iff a=b$ for all 1,364 pairs with $k\le5$;
+$N_k/(k\log_2k)$ stays bounded (65.0, 44.7, 37.9, 36.6, 34.1 for $k=10,\dots,10^5$); the union bound holds
+from $k=28,41,62$ for $q=2^4,2^{10},2^{20}$ states.
+\item Note 2 (matching $O(kN)$ upper bound on the family; padding and repetition do not amplify; a single
+cut carries at most $O(N)$ bits): \status{PROVED/EXACT}, all statements correct.
+\item Literature. The result is a known type. Crossing sequences and the $\Omega(n^2)$ one-tape bound for
+palindromes are Hennie's; Cobham proved $T\cdot S=\Omega(n^2)$ for palindromes on off-line machines; and
+Santhanam (IPL 2001) reduced palindromes to SAT to get $T\cdot S=\Omega(n^2/\mathrm{polylog}\,n)$ for SAT on
+multitape Turing machines (as cited in Williams, CCC 2005). Note 1 says it claims no novelty; that is right.
+\end{itemize}
+
+\section{Extension 1: the argument is blind to nondeterminism}
+
+\begin{theorem}\label{thm:nd} \status{PROVED/EXACT}
+Every \emph{nondeterministic} one-tape machine deciding 3-SAT in this encoding runs for
+$\Omega(N^2/\log N)$ steps on some satisfiable input of length $N_k$, for every large $k$.
+\end{theorem}
+\begin{proof}
+Note 1's proof, with one accepting computation fixed for each $F_{a,a}$. If two fixed computations, for
+$a\ne b$, have equal crossing sequences at a middle boundary, splicing them gives an accepting computation
+on $F_{a,b}$, which is unsatisfiable. Injectivity, counting and the union bound are unchanged.
+\end{proof}
+
+\begin{proposition}\label{prop:ntime} \status{PROVED/EXACT (standard simulations)}
+A nondeterministic one-tape machine decides 3-SAT in time $O(N^2\log^2N)$.
+\end{proposition}
+\begin{proof}[Sketch]
+A nondeterministic multitape machine guesses an assignment, sorts the literal occurrences by variable id
+(merge sort, $O(N\log N)$), annotates each with its value in one sweep, sorts back by position, and checks
+every clause: time $O(N\log N)$. The Hartmanis--Stearns simulation of a $t$-step multitape machine by one
+tape costs $O(t^2)$ and applies verbatim to nondeterministic machines.
+\end{proof}
+
+\noindent\textbf{Consequence.} For one-tape nondeterministic machines, the complexity of SAT is
+$N^{2\pm o(1)}$, and crossing-sequence (fooling-set) arguments are tight there. Any argument of this kind
+proves the same bound for nondeterministic machines, so it cannot separate deterministic from
+nondeterministic one-tape time for SAT by more than polylogarithmic factors. It measures the cost of moving
+information along the tape, not the cost of search.
+
+\section{Extension 2: portfolios in sequential access}
+
+\noindent\textbf{Model.} An off-line machine: a two-way read-only input tape whose head moves one cell per
+step, a constant number of work tapes of total space $S\ge\log N$, and optionally a two-way read-only
+\emph{guess} tape holding $g$ bits ($\exists^{g}$, the portfolio form used in TPORT-0001). Deterministic, or
+nondeterministic with choices made on the fly.
+
+\begin{theorem}\label{thm:seq} \status{PROVED/EXACT}
+In this model, any machine deciding 3-SAT in this encoding with time $T$ and space $S$ satisfies
+\[
+T\cdot S=\Omega\!\left(\frac{N^2}{\log N}\right)
+\]
+on the inputs $F_{a,a}$, provided the guess has $g\le k/2=\Omega(N/\log N)$ bits (any $g$ for on-the-fly
+nondeterminism).
+\end{theorem}
+\begin{proof}
+Define the crossing sequence at an input-tape boundary $j$ as the sequence of full configurations other
+than the input-head position (state, work-tape contents and heads, guess-tape head) at the moments the
+input head crosses $j$. There are at most $C=2^{O(S+\log g)}=2^{O(S)}$ such configurations. Splicing two
+computations with equal crossing sequences at $j$ and the same guess string gives a valid computation on
+the spliced input, exactly as on one tape.
+For each $a$ fix an accepting computation on $F_{a,a}$ and its guess. Some guess string $y$ is used by a set
+$\mathcal A$ of at least $2^{k-g}\ge2^{k/2}$ values of $a$. Within $\mathcal A$, crossing sequences at every
+middle boundary are injective in $a$. With $h=\lfloor k/(4\log_2C)\rfloor$, at most $C^{h+1}\le C\,2^{k/4}$
+members of $\mathcal A$ have a sequence of length $\le h$ at a given boundary, so by the union bound over the
+$L$ middle boundaries some $a\in\mathcal A$ has all of them longer than $h$ once $L\,C\,2^{k/4}<2^{k/2}$,
+which holds for large $k$ when $S=o(k)$ (otherwise the claimed bound is trivial). Then
+$T\ge L\,h=\Omega(k\log k\cdot k/S)$, i.e.\ $T\cdot S=\Omega(k^2\log k)=\Omega(N^2/\log N)$.
+For on-the-fly nondeterminism there is no guess tape and the grouping step is not needed.
+\end{proof}
+
+\begin{corollary}[T-PORT holds in sequential access] \status{PROVED/EXACT}
+In the sequential-access model, every SAT portfolio of at most $2^{k/2}=2^{\Omega(N/\log N)}$ programs with
+space $N^{o(1)}$, in particular the UWI portfolio of about $N$ programs, needs time $N^{2-o(1)}$; with space
+$\mathrm{polylog}\,N$, time $N^2/\mathrm{polylog}\,N$.
+\end{corollary}
+
+\noindent\textbf{Contrast with TPORT-0001/0002.} With random access to the input, alternation trading with
+the portfolio rules provably cannot give the UWI portfolio any exponent above $1$ (ledger L34). With
+sequential access the same statement holds up to exponent $2$, by an argument that ignores the portfolio
+altogether. The difference is entirely the input-access model: crossing sequences have no counterpart when
+any input bit can be read in one step. This is also why the result does not transfer to the ARC/FLMV
+allocation, whose model has a random-access (indexed) input.
+
+\section{Extension 3: the quadratic wall, three ways}
+
+\begin{proposition}\label{prop:wall} \status{PROVED/EXACT}
+\begin{enumerate}
+\item \emph{Counting cap.} For one-tape machines over alphabet $\Sigma$ with $q$ states, the bound obtained by
+summing $\log_q(\text{number of inputs a cut must distinguish})$ over cuts is at most
+$\sum_j\min(j,N-j)\log_q|\Sigma|=O(N^2)$.
+\item \emph{Nondeterminism cap.} By Theorem~\ref{thm:nd} and Proposition~\ref{prop:ntime}, any argument that
+also applies to nondeterministic one-tape machines is capped at $O(N^2\log^2N)$ for SAT.
+\item \emph{Translation.} If SAT is decidable by a deterministic multitape machine in time $t(N)$, it is
+decidable by a one-tape machine in time $O(t(N)^2)$ (Hartmanis--Stearns). Hence a one-tape lower bound of
+$N^{2+\delta}$ for SAT would give a multitape lower bound of $N^{1+\delta/2-o(1)}$.
+\end{enumerate}
+\end{proposition}
+
+\noindent Superlinear deterministic time lower bounds for SAT on multitape machines are, as far as I know,
+open: the only general superlinear separation, $\mathrm{DTIME}(n)\ne\mathrm{NTIME}(n)$
+(Paul--Pippenger--Szemer\'edi--Trotter), gains less than the $\log N$ factor that the reduction of
+nondeterministic linear time to SAT loses. So exceeding quadratic one-tape time for SAT is a known hard problem
+in disguise, not a matter of a better family.
+
+\section{What this means for Note 2's research target}
+
+Note 2 asks for a family where ``correctness forces expensive computation after information has been
+gathered, surviving arbitrary summaries, rearrangement, and reuse.'' By Proposition~\ref{prop:wall}(3), on one
+tape that target is equivalent, up to squaring and polylogarithmic factors, to a superlinear lower bound for
+SAT on multitape machines. Two pointers:
+\begin{itemize}
+\item The one place expansion has given superlinear separations is in the \emph{computation} graph, not the
+instance: Hopcroft--Paul--Valiant (time versus space) and Paul--Pippenger--Szemer\'edi--Trotter show that
+deterministic computations have small separators and segregators, which nondeterminism can exploit; see also
+Santhanam, ``On separators, segregators and time versus space'' (CCC 2001). An expander \emph{formula} only
+forces information across cuts, which Proposition~\ref{prop:wall}(1) caps at $O(N^2)$.
+\item In the random-access model, where the repository's ARC/FLMV and UWI work lives, the available tools are
+alternation trading (TPORT-0001) and its barriers.
+\end{itemize}
+
+\section{Ledger rows}
+
+\begin{itemize}
+\item L38: Theorem~\ref{thm:nd} (deterministic and nondeterministic one-tape, $\Omega(N^2/\log N)$) --- Theorem.
+\item L39: Theorem~\ref{thm:seq} and its corollary (sequential-access portfolios) --- Theorem.
+\item L40: ``SAT needs one-tape deterministic time $N^{2+\delta}$ for some $\delta>0$'' --- Open. It follows
+from P $\ne$ NP, and it would imply a superlinear multitape lower bound
+(Proposition~\ref{prop:wall}(3)); ledger category half-win (true if P $\ne$ NP).
+\end{itemize}
+
+\section{Literature}
+
+Read in this session: Williams, ``Better time-space lower bounds for SAT and related problems'', CCC 2005,
+\url{https://people.csail.mit.edu/rrw/ccc05.pdf} (footnote describing Santhanam's reduction from
+PALINDROMES to SAT and the resulting $\Omega(n^2/\mathrm{poly}\log n)$ time--space product on multitape
+machines); Maass, ``Quadratic lower bounds for deterministic and nondeterministic one-tape Turing machines'',
+STOC 1984, abstract at \url{https://igi-web.tugraz.at/people/Abstracts/Maass:84a}; R.~Santhanam, ``Lower bounds
+on the complexity of recognizing SAT by Turing machines'', IPL 2001 (bibliographic record only,
+\url{https://portal.mardi4nfdi.de/wiki/Publication:1603493}).
+From memory, verify before load-bearing use: Hennie (1965, crossing sequences); Cobham (1966,
+time--space for palindromes); Hartmanis--Stearns (1965, multitape to one-tape in $O(t^2)$);
+Hopcroft--Paul--Valiant (1977); Paul--Pippenger--Szemer\'edi--Trotter (FOCS 1983); Santhanam (CCC 2001).
+
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::ONETAPE-0001

@@ -166,6 +166,18 @@ rows = [
      T, T, T, T, T, "Theorem", "n.a.", "n.a.", "n.a.",
      "CLAUDE TPORT-0002 (closed form; barrier; exact ε-polynomial certificate of a length-22 proof)",
      "So the provable gain over linear time is Θ(1 − d) and vanishes linearly at the UWI size. Exact cost match: one speedup round trip changes time by at least c(t−x) + dx − t. The limiting slope lies in [0.58, 1]; its value is open."),
+    ("L38", "Every one-tape Turing machine, deterministic or nondeterministic, deciding 3-SAT (clause-list encoding) needs Ω(N²/log N) time on infinitely many lengths",
+     T, T, T, T, T, "Theorem", "Unverified", "n.a.", "n.a.",
+     "Owner's note (equality family F_{a,b}); CLAUDE ONETAPE-0001 Thm 1; Hennie 1965; Santhanam IPL 2001",
+     "Crossing sequences. Tight for nondeterministic one-tape machines up to polylog (NTIME_1(SAT) = O(N² log² N)), so the method cannot separate determinism from nondeterminism."),
+    ("L39", "Sequential-access portfolios: SAT needs T·S = Ω(N²/log N) on off-line machines with sequential input, for deterministic portfolios of up to 2^{Ω(N/log N)} programs and for on-the-fly nondeterminism",
+     T, T, T, T, T, "Theorem", "Unverified", "n.a.", "n.a.",
+     "CLAUDE ONETAPE-0001 Thm 3 and Cor 4",
+     "So the UWI small-space portfolio statement (L33) holds with exponent up to 2 when input access is sequential; with random access, alternation trading cannot exceed 1 (L34). The difference is the input-access model."),
+    ("L40", "SAT needs one-tape deterministic time N^(2+δ) for some δ > 0",
+     O, T, T, T, T, "Open", "n.a.", "n.a.", "n.a.",
+     "CLAUDE ONETAPE-0001 Prop 5 (Hartmanis–Stearns translation)",
+     "Would imply a superlinear deterministic multitape lower bound for SAT, which is open. Crossing-sequence counting is capped at O(N²)."),
 ]
 
 headers = ["ID", "Statement", "Algorithmica (P = NP)", "Heuristica", "Pessiland",
