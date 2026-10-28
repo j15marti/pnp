@@ -1,0 +1,68 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-28 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder toward lower bounds for Circuit-SAT}
+\date{Living document; updated hourly}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{Unconditional superpolynomial lower bounds for Circuit-SAT, and $P\neq NP$, remain \OPEN.}
+Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, OPEN, RETIRED. Nothing below claims more than its label.
+
+\section{Method}
+Circuit-SAT$(C)$: given a fan-in-2 circuit $C$ over $n$ inputs with $w$ wires, decide $\exists x\,C(x)=1$.
+Ladder: for each $(n,g)$ ($g$ = gate count, $w=2g$ wires) record (i) the minimum number of gates/wires
+needed to build each target function, (ii) the cheapest known and provable cost of deciding satisfiability.
+Parameters: $n$ (inputs), $w$ (wires), $k$ (treewidth / cutwidth of $C$) --- a bound is \emph{parameterized}
+if it has the form $T(n,w,k)$.
+
+\section{Proved basics}
+\begin{prop}[connectivity, PROVED]
+A fan-in-2 circuit whose output depends on all $n$ inputs has $\ge n-1$ gates and $\ge 2(n-1)$ wires.
+\end{prop}
+\emph{Proof.} The sub-DAG reaching the output must connect $n$ input nodes; each gate merges at most two
+components, so $n-1$ merges are needed. \qed
+
+\begin{prop}[query bound, PROVED, trivial]
+Any algorithm that accesses $C$ only as a black-box evaluator needs $2^n$ queries on the unique-satisfying-input
+family $C_a(x)=[x=a]$ (worst case over $a$). This is a black-box bound only; it says nothing about algorithms that read $C$.
+\end{prop}
+The white-box version (reading the $w$ wires) is exactly where the open problem lives.
+
+\section{Computed ladder: minimum circuit size (COMPUTATIONAL, exhaustive)}
+Script \texttt{experiments/claude\_circuitsat/min\_circuit\_ladder.py}; data
+\texttt{results/raw/claude\_circuitsat\_min\_size.json}. All 16 binary gates allowed (so negation is free).
+Number of $n$-input functions by minimum gate count:
+\begin{center}\begin{tabular}{c|ccccc}\toprule
+$n$ & 0 gates & 1 & 2 & 3 & 4\\\midrule
+2 & 6 & 10 & -- & -- & --\\
+3 & 8 & 30 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+Totals are $16$ and $256$, so the search is exhaustive (for $n=3$ the maximum of 4 gates agrees with the known value).
+Wire counts are $2\times$ gates. The 24 four-gate functions at $n=3$ include parity/XOR-type functions,
+the first rung where size is superlinear in $n-1$ ($n-1=2$ vs.\ 4 gates).
+Chunking: each run $<$ 30\,s; $n=4$ is not attempted by this exhaustive method (state space too large; needs SAT-based synthesis, next rung).
+
+\section{Satisfiability cost ladder}
+\begin{tabular}{lll}\toprule
+Regime & Bound & Status\\\midrule
+$k$ = treewidth, $w$ wires & $O(2^{k}\,w)$ upper bound (DP) & KNOWN\\
+General, $n$ inputs & $O(2^n w)$ exhaustive & KNOWN\\
+Lower bound $2^{o(n)}\mathrm{poly}(w)$ & follows from ETH & CONDITIONAL\\
+$2^{(1-\epsilon)n}$ for all $\epsilon$ & follows from SETH-type assumption & CONDITIONAL\\
+Unconditional $\omega(\mathrm{poly}(n,w))$ & none known & \OPEN\\\bottomrule\end{tabular}
+
+\section{Repository cross-check (2026-10-28)}
+The \texttt{j15marti/pnp} repo's root \texttt{main.tex} also states P vs NP \OPEN. Its proved items are restricted:
+sequential-access two-way/low-crossing-cut theorems for easy-promise instances, explicitly not extending to indexed RAM
+or ordinary SAT; the ARC/FLMV time--space contraction route is OPEN. Usable here: the cut/crossing viewpoint is the
+same wire-congestion quantity tracked in this ladder (wires crossing a cut $\leftrightarrow$ the parameter $k$); transfer to
+a Circuit-SAT bound would require a theorem for unrestricted algorithms and is \OPEN.
+
+\section{Next rungs}
+\begin{enumerate}
+\item $n=4,5$: minimum size via SAT-based exact synthesis; tabulate wire counts.
+\item Prove $\Omega(\cdot)$ on wires crossing a balanced cut for the hardest $n$-input function in the table, as a function of $n$.
+\item Test whether a parameterized lower bound $2^{\Omega(k)}$ in the cutwidth $k$ can hold for a restricted algorithm class (e.g.\ DPLL / resolution) --- known: resolution gives $2^{\Omega(k)}$-type bounds for bounded-width formulas, KNOWN in that restricted model only.
+\end{enumerate}
+\end{document}
