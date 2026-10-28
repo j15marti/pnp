@@ -14,6 +14,7 @@ Canonical research log for the current LSPV / RMV program.
 - `research/agents/lspv-5/` — optional non-MAIN synthesis-agent reports
 - `research/agents/grok/` — BOOL / computational explorer reports
 - `research/agents/claude/` — independent verification
+- `research/agents/claude/world-ledger/` — P vs NP world ledger: statements classified across Impagliazzo's five worlds (reference resource; see its `README.md`)
 - `research/explorations/battery-mana/` — ratchet / battery / mana work
 - `research/explorations/sequential-tape/` — primitive-trace / tape transport work
 - `research/governance/` — agent-instruction changes / rollback records

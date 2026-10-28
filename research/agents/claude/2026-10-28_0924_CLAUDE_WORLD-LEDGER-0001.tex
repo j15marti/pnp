@@ -1,0 +1,258 @@
+% CLAUDE REPORT::WORLD-LEDGER-0001::2026-10-28T16:24Z
+% !TEX program = xelatex
+% Compiles with XeLaTeX or pdfLaTeX (ASCII source).
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{url}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}[proposition]{Corollary}
+\newtheorem*{fact}{Fact}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newcommand{\Kt}{\mathrm{Kt}}
+\newcommand{\Kpt}{K^{t}}
+\newcommand{\R}{\mathcal{R}}
+\newcommand{\cP}{\mathsf{P}}
+\newcommand{\NP}{\mathsf{NP}}
+\newcommand{\coNP}{\mathsf{coNP}}
+\newcommand{\PSPACE}{\mathsf{PSPACE}}
+\newcommand{\status}[1]{\textbf{[#1]}}
+
+\title{CLAUDE WORLD-LEDGER-0001\\[2pt]
+\large P vs NP world ledger; evaluation of the ``Pseudorandom Trap'' argument;\\
+nested and time-budgeted SAT}
+\author{CLAUDE (independent verification), from a chat session with the project owner}
+\date{2026-10-28 09:24 America/Los\_Angeles}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Status.} P versus NP remains OPEN. Nothing in this report proves or claims a separation.
+This is an additive reference resource requested by the project owner. It changes no task schedules,
+agent count, role ownership or scientific allocation, and it does not edit root \texttt{main.tex}.
+It was not produced as an LSPV run and did not perform the LSPV corpus-wide reconciliation.
+
+\noindent\textbf{Status labels} follow \texttt{AGENTS.md}: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL,
+CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{The artifact}
+
+\noindent Location: \texttt{research/agents/claude/world-ledger/}.
+
+\begin{itemize}
+  \item \texttt{build\_ledger.py} --- source of truth (the \texttt{rows} list); regenerates both outputs.
+  \item \texttt{P\_vs\_NP\_World\_Ledger.xlsx} --- spreadsheet with live Category and Consistency formulas.
+  \item \texttt{world\_ledger.csv} --- plain-text copy; Category and Consistency computed in Python by
+        the same rules.
+  \item \texttt{README.md} --- how to read it and how to add rows.
+\end{itemize}
+
+Each row is a statement $S$ marked True, False or Open in Impagliazzo's five worlds:
+Algorithmica ($\cP=\NP$); Heuristica ($\cP\neq\NP$, NP easy on average);
+Pessiland (NP hard on average, no one-way functions); Minicrypt (one-way functions, no public-key
+encryption); Cryptomania (public-key encryption). Each world cell is a CONDITIONAL claim ``if world $W$
+then $S$''. The five values determine the category:
+
+\begin{center}
+\begin{tabular}{lll}
+Algorithmica & four $\cP\neq\NP$ worlds & Category \\ \hline
+True & all True & Theorem (win-win) \\
+True & all False & Equivalent to $\cP=\NP$ \\
+True & no False, some Open & Half-win (true if $\cP=\NP$) \\
+True & some (not all) False & World separator (true if $\cP=\NP$) \\
+False & all False & Refuted in every world \\
+False & all True & Equivalent to $\cP\neq\NP$ \\
+False & both True and False & World separator (implies $\cP\neq\NP$) \\
+False & otherwise & Implies $\cP\neq\NP$ (open) \\
+Open & all False & Implies $\cP=\NP$ (open) \\
+Open & all True & Half-win (true if $\cP\neq\NP$) \\
+Open & both True and False & World separator (open if $\cP=\NP$) \\
+Open & otherwise & Undetermined by P vs NP \\
+\end{tabular}
+\end{center}
+
+A Consistency column flags CONFLICT whenever a world contradicts a row whose known status is Theorem
+(or Refuted). A genuine conflict would eliminate that world; in practice it signals an entry error.
+
+\status{COMPUTATIONAL} Verification of the artifact: LibreOffice recalculation of all 70 formulas with
+0 errors; the Python classifier and the recalculated spreadsheet agree on 28/28 rows; setting
+Algorithmica to False on a Theorem row fires the CONFLICT flag. Caveat: the five worlds are an
+exhaustive split only under fixed definitions; infinitely-often and non-uniform variants can fall
+between them.
+
+\section{Definitions used by the cited results}
+
+Fix a universal machine $U$ with polynomial simulation overhead and a constant $c\ge 0$.
+$K(x)=\min\{|p|:U(p)=x\}$; for a polynomial $t$, $\Kpt(x)=\min\{|p|:U(p)\text{ outputs }x\text{ within }t(|x|)\text{ steps}\}$;
+$\Kt(x)=\min\{|p|+\lceil\log_2 T\rceil: U(p)\text{ outputs }x\text{ within }T\text{ steps}\}$;
+conditional $\Kt(x\mid A)$ gives $U$ the input $A$.
+For $\mu\in\{K,\Kt,\Kpt\}$ let $\R(\mu)=\{x:\mu(x)\ge |x|-c\}$.
+A set is \emph{P-immune} if it is infinite and has no infinite subset in $\cP$; \emph{immune} if it has
+no infinite c.e.\ subset.
+
+\begin{fact}[counting] \status{PROVED/EXACT}
+For $n\ge c$, at least $2^n-2^{n-c}+1$ strings of length $n$ lie in $\R(K)$, since only $2^{n-c}-1$
+programs are shorter than $n-c$. As $K\le \Kt$ and $K\le\Kpt$, all three sets $\R(\mu)$ are infinite.
+\end{fact}
+
+\section{Evaluation of the ``Pseudorandom Trap'' argument (ledger rows L20--L24)}
+
+The argument (submitted by the owner, 2026-10-28) claims: (A) $\cP=\NP$ yields an infinite
+polynomial-time subset of the random strings; (B) the random strings are unconditionally P-immune;
+hence $\cP\neq\NP$. The inference is valid; the verdict concerns the lemmas.
+
+\begin{proposition}[row L22] \status{KNOWN THEOREM}
+$\R(K)$ is immune. Hence Lemma A for $K$ has an impossible conclusion and is equivalent to $\cP\neq\NP$.
+\end{proposition}
+\begin{proof}[Sketch]
+If $W\subseteq\R(K)$ is infinite and c.e., let $y_m$ be the first enumerated element of length $\ge m$.
+Then $m-c\le K(y_m)\le \log_2(m+1)+O(1)$, false for large $m$.
+\end{proof}
+
+\begin{proposition} \status{PROVED/EXACT}
+If $\cP=\NP$ then $\R(\Kt)$ is P-immune; in particular $\R(\Kt)\notin\cP$. Hence Lemma A for $\Kt$ is
+equivalent to $\cP\neq\NP$.
+\end{proposition}
+\begin{proof}
+Let $L\in\cP$ be infinite. Under $\cP=\NP$, prefix search (each test an NP query) finds the
+lexicographically first $x_n\in L$ of length $n$ in time $n^k$ whenever one exists. Then
+$\Kt(x_n)\le (k+1)\log_2 n+O(1)<n-c$ for infinitely many $n$, so $L\not\subseteq\R(\Kt)$.
+\end{proof}
+
+\begin{proposition}[rows L20, L21] \status{PROVED/EXACT}
+For every polynomial $t$: (i) $\R(\Kpt)\in\coNP$ and is infinite; (ii) if $\cP=\NP$ then
+$\R(\Kpt)\in\cP$, so Lemma A for $\Kpt$ holds trivially; (iii) if $\R(\Kpt)$ is P-immune then
+$\cP\neq\NP$.
+\end{proposition}
+\begin{proof}
+(i) A program $p$ with $|p|<|x|-c$ that prints $x$ within $t(|x|)$ steps is an NP witness for
+$x\notin\R(\Kpt)$. (ii) $\cP=\NP$ gives $\coNP=\cP$. (iii) P-immunity gives $\R(\Kpt)\notin\cP$,
+so $\coNP\neq\cP$.
+\end{proof}
+
+\noindent\textbf{Verdict.} \status{FALSIFIED/RETIRED as a proof.} In every reading, one lemma is
+equivalent to or implies $\cP\neq\NP$. Lemma B for polynomial $t$ (``$\R(\Kpt)$ is P-immune'') is
+\status{OPEN} and implies $\cP\neq\NP$; no unconditional theorem of this form is known, and any such
+theorem would itself prove the separation. Relativization check: for a PSPACE-complete oracle $A$,
+$\cP^A=\NP^A$ and $\R(\Kpt)$ relative to $A$ lies in $\coNP^A=\cP^A$, so relativized Lemma B is false
+while every other step relativizes.
+
+\begin{proposition}[row L20] \status{PROVED/EXACT}
+If $\R(\Kpt)\in\cP$ for every polynomial $t$, then no PRG $G:\{0,1\}^n\to\{0,1\}^{2n}$ computable in
+polynomial time is secure; with HILL (one-way functions give PRGs, \status{KNOWN THEOREM}) one-way
+functions do not exist.
+\end{proposition}
+\begin{proof}
+For $t$ large enough, every output satisfies $\Kpt(G(s))\le n+O(1)<2n-c$, so outputs never lie in
+$\R(\Kpt)$, while a uniform $2n$-bit string lies in it with probability at least $1-2^{-c}$.
+\end{proof}
+
+\begin{proposition}[Chaitin; row L24] \status{KNOWN THEOREM}
+For a consistent, computably axiomatized theory $T$ proving all true $\Sigma_1$ sentences, there is
+$L_T$ such that $T$ proves ``$K(x)>L_T$'' for no $x$. It limits proof, not existence (row L23 is
+refuted by the counting fact).
+\end{proposition}
+
+\section{Nested SAT (rows L09--L12, L27)}
+
+Setting: the satisfiability answer of an instance $A$ appears as a literal $a$ in clauses of $B$.
+
+\begin{enumerate}
+\item \status{PROVED/EXACT} If inner satisfying assignments feed outer clauses, the whole is one SAT
+instance: NP.
+\item \status{PROVED/EXACT} \emph{Positive occurrences only} (any polynomial DAG of nested instances): NP.
+Certificate: a claimed bit $b_i$ for every nested instance, a witness for each $b_i=1$ (with inner bits
+replaced by their claimed values), and a witness for the outermost formula. Soundness: in topological
+order $b_i\le a_i$, because each formula is monotone in its nested bits. Completeness: claim the true bits.
+For one level, $B[a]$ is satisfiable iff $B[0]$ is, or $A$ and $B[1]$ are.
+\item \status{KNOWN THEOREM / PROVED/EXACT (sketch)} \emph{Negated occurrences, fixed instances}: $d$
+levels lie in $\cP^{\NP[d]}$ ($d$ adaptive queries); polynomially many levels are $\cP^{\NP}$-complete
+(encode the polynomial-time query generator of a $\cP^{\NP}$ machine by Cook--Levin, with earlier answers
+as literals).
+\item \status{KNOWN THEOREM} \emph{Inner formulas depend on outer variables}: depth $k$ gives
+$\Sigma_k^{\mathrm p}$-completeness; polynomial depth gives TQBF, $\PSPACE$-complete.
+\item \status{OPEN} $\cP=\mathsf{PH}$ is equivalent to $\cP=\NP$ and collapses every fixed depth. It does
+not obviously collapse polynomial depth: substituting a size-$n^{c}$ encoding of an inner solver at each
+level gives size about $n^{c^d}$ after $d$ levels. $\cP=\NP\neq\PSPACE$ is not refuted by any known
+result. (Remark only; not a proof that $\cP=\NP$ fails to imply $\cP=\PSPACE$.)
+\end{enumerate}
+
+\section{Time-budgeted SAT and the Kt equivalence (row L28)}
+
+Proposal: $a$ = ``algorithm $M$ finds a satisfying assignment of $A$ within $|A|^2$ steps'', used as a
+literal in $B$.
+
+\begin{enumerate}
+\item \status{PROVED/EXACT} For a fixed deterministic $M$, $a$ is polynomial-time computable, so the
+nested problem is in NP (NP-complete, as $B$ alone is 3-SAT). $a=1$ is certified; $a=0$ only means
+``not found in time''.
+\item \status{PROVED/EXACT} A nondeterministic budget is vacuous: a guessed assignment is checked in
+linear time, so $a=\mathrm{SAT}(A)$ and Section 4 applies.
+\item \status{PROVED/EXACT} If $\cP\neq\NP$, every fixed polynomial-time $M$ errs on infinitely many
+satisfiable inputs (finitely many errors could be patched by table lookup). \status{KNOWN THEOREM}
+Gutfreund--Shaltiel--Ta-Shma (2007): under $\cP\neq\NP$, failing instances for any such deterministic
+$M$ can be generated efficiently.
+\item Literature status (van Melkebeek survey): no superlinear deterministic time lower bound for SAT
+on general random-access machines is known without a space restriction, so ``SAT is decidable in
+$n^2$ steps'' is not refuted. Ledger classification of that statement: Implies $\cP=\NP$ (open).
+\end{enumerate}
+
+\begin{proposition}[row L28] \status{PROVED/EXACT}
+$\cP=\NP$ if and only if there is a constant $c$ such that every satisfiable formula $A$ has a
+satisfying assignment $x$ with $\Kt(x\mid A)\le c\log_2|A|$.
+\end{proposition}
+\begin{proof}
+($\Rightarrow$) By self-reducibility, $\cP=\NP$ gives a search algorithm $S$ running in time
+$|A|^k$; its output $x$ has $\Kt(x\mid A)\le |S|+k\log_2|A|$.
+($\Leftarrow$) Universal search on input $A$: in phase $i$ run every program $p$ with $|p|\le i$ for
+$2^{\,i-|p|}$ steps and check each output. A solution with $\Kt(x\mid A)\le c\log_2 n$ is found by
+phase $c\log_2 n+O(1)$, at total cost $2^{O(c\log n)}\mathrm{poly}(n)$. Reject if nothing is found by
+then. This decides SAT in polynomial time.
+\end{proof}
+
+\section{Relevance to the current ARC/FLMV allocation (row L13)}
+
+\status{KNOWN THEOREM} Williams: SAT $\notin\mathrm{DTISP}(n^{c},n^{o(1)})$ for $c<2\cos(\pi/7)\approx 1.8019$;
+Buss--Williams (2015): alternation-trading proofs built from the known speedup/slowdown rules cannot
+reach $c\ge 2\cos(\pi/7)$, and they compute the achievable time-space tradeoffs for $n^{\varepsilon}$
+space, $0<\varepsilon<1$.
+\status{CANDIDATE} relevance note: agents pursuing the strict FLMV box should check whether their route
+is an alternation-trading proof in the Buss--Williams sense; if it is, the Buss--Williams limits for
+$0<\varepsilon<1$ apply to it, and escaping them needs a rule outside the two standard schemas.
+This report does not assess whether the current box lies inside or outside those limits.
+
+\section{Literature}
+
+Verified against primary pages in this session:
+\begin{itemize}
+\item L.~Chen, S.~Hirahara, H.~Ren, Symmetric exponential time requires near-maximum circuit size,
+      \url{https://arxiv.org/abs/2309.12912}.
+\item Z.~Li, Symmetric exponential time requires near-maximum circuit size: simplified, truly uniform,
+      \url{https://arxiv.org/abs/2310.17762}.
+\item S.~Buss, R.~Williams, Limits on alternation-trading proofs for time-space lower bounds,
+      Computational Complexity 24(3), 2015; \url{https://eccc.weizmann.ac.il/report/2011/031}.
+\item D.~Gutfreund, R.~Shaltiel, A.~Ta-Shma, If NP languages are hard on the worst-case, then it is easy
+      to find their hard instances, Computational Complexity, 2007;
+      \url{https://link.springer.com/article/10.1007/s00037-007-0235-8}.
+\item D.~van Melkebeek, A survey of lower bounds for satisfiability and related problems,
+      \url{https://pages.cs.wisc.edu/~dieter/Research/sat-lb-survey.html}.
+\end{itemize}
+Cited from memory (verify before load-bearing use): Impagliazzo 1995 (five worlds); Razborov--Rudich 1997;
+Baker--Gill--Solovay 1975; Chaitin 1974; Liu--Pass 2020; Levin 1973; Kannan 1982; Karp--Lipton 1980;
+Ladner 1975; Mahaney 1982; Kabanets--Cai 2000; H{\aa}stad--Impagliazzo--Levin--Luby 1999;
+Impagliazzo--Wigderson 1997; Sipser 1983 and Lautemann 1983; Fortnow--Lipton--van Melkebeek--Viglas 2005;
+Williams 2011 (NEXP $\not\subseteq$ ACC$^0$).
+
+\section{Open items handed forward}
+
+\begin{itemize}
+\item Technique tags marked Unverified in the ledger (L13, L14, L19, L26) need checking against the
+      primary papers.
+\item Lemma B for polynomial $t$ (row L21) is OPEN and implies $\cP\neq\NP$; it is not a usable premise.
+\item Half-wins L03--L06: the productive targets are those whose open side would need a
+      non-relativizing step.
+\end{itemize}
+
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WORLD-LEDGER-0001
