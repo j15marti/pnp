@@ -1,0 +1,88 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append-only log at bottom; sections 1-6 edited in place.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\newtheorem{lem}{Lemma}
+\title{ClaudeCircuitSAT: a stepwise, parametrized lower-bound ledger for circuit-SAT}
+\author{Claude (scheduled hourly run); living document}
+\date{Last updated 2026-10-28}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here proves a superlinear
+unconditional lower bound for circuit-SAT. Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, OPEN.
+
+\section{Setup and parameters}
+A \emph{CSAT instance} is a fan-in-2 circuit over the basis $B_2$ (all 16 binary gates, negation free)
+with $k$ inputs and $s$ gates; it has $m=2s$ gate-input wires (plus one output pointer). Parameters:
+$k$ (inputs), $s$ (gates), $m=2s$ (wires), and optionally depth/treewidth $w$.
+Goal: a lower bound $T(k,s)$ on the time of any algorithm deciding satisfiability.
+Two different ``lower bounds'' must not be conflated:
+(a) $C(f)$, the minimal wires to \emph{build} a function (circuit complexity), and
+(b) $T_{\rm CSAT}(k,s)$, the time to \emph{decide} satisfiability of a given circuit.
+The plan: tabulate (a) step by step (Section 3), and use it as the hardness source / ledger for (b).
+
+\section{Decision lower bounds: what is actually provable}
+\begin{prop}[Reading bound, PROVED]\label{prop:read}
+Any deterministic algorithm deciding CSAT in the explicit-description model with random access
+needs $\ge s$ probes on instances with $s$ gates (any $k\ge 2$); hence $T(k,s)=\Omega(s)$, tight up to the
+model's constant for reading.
+\end{prop}
+\begin{proof}
+Take the chain $g_j=g_{j-1}\wedge x_{1+(j \bmod k)}$ ($g_0=x_1$); it is satisfiable.
+Let $I_i$ replace gate $i$ by $g_{i-1}\wedge\neg g_{i-1}$ ($\equiv 0$): $I_i$ is unsatisfiable. If an algorithm
+leaves gate $i$'s description unprobed on the chain, it receives identical answers on $I_i$ and must err on one.
+So all $s$ descriptions are probed.
+\end{proof}
+This is the only unconditional decision bound proved here; it is linear and carries no hardness.
+\begin{prop}[Parametrized upper bounds, KNOWN/trivial]
+$T(k,s)=O(2^k s)$ (evaluate all assignments); the CNF case has $s=O(\text{clauses}\cdot\text{width})$.
+\end{prop}
+\begin{prop}[SETH-conditional, CONDITIONAL]
+If SETH holds then for every $\epsilon>0$ there is no $O(2^{(1-\epsilon)k}\,\mathrm{poly}(s))$ algorithm for CSAT
+(CNF-SAT embeds with $s=\mathrm{poly}(k)$). This is a restatement of SETH, not progress.
+\end{prop}
+Open parametrized target: any \emph{unconditional} bound of the form $T(k,s)\ge s\cdot\omega(1)$ in a general
+RAM/Turing model; the repository's time--space spine (ARC/FLMV, T-PORT rows L34--L37) gives only
+\emph{model-restricted} statements and conditional exponent barriers, not this.
+
+\section{Step-by-step wire ledger (circuit construction)}
+Exact minimum gate counts in $B_2$, computed by exhaustive BFS over gate sets
+(\texttt{research/agents/claude/circuitsat/exact\_sizes.py}, COMPUTATIONAL; chunking: single run $<30$ s).
+Functions counted as $f$ and $\neg f$ together.
+\begin{center}\begin{tabular}{lrrrrrr}\toprule
+inputs $n$ & 0 gates & 1 & 2 & 3 & 4 & total\\\midrule
+1 & 4 & -- & -- & -- & -- & 4\\
+2 & 6 & 10 & -- & -- & -- & 16\\
+3 & 8 & 30 & 114 & 80 & 24 & 256\\\bottomrule\end{tabular}\end{center}
+So the hardest 3-variable functions need 4 gates $=8$ wires (e.g.\ majority-type); $n=2$: 1 gate; $n=1$: 0.
+For $n\le 3$ the minimum formula leaf-count equals gates$+1$ (same distribution), i.e.\ no sharing gain yet;
+sharing first matters at $n=4$ (not computed here).
+\begin{prop}[Connectivity bound, PROVED]
+A fan-in-2 circuit depending essentially on all $n$ inputs has $\ge n-1$ gates ($\ge 2(n-1)$ wires):
+each gate merges at most two connected components of the input/gate graph. Tight for AND, OR, parity.
+\end{prop}
+\paragraph{Literature (KNOWN, quoted from memory, not re-verified this run).} Shannon/Lupanov: almost all
+$n$-variable functions need $\Theta(2^n/n)$ gates. Best explicit $B_2$ lower bounds by gate elimination are
+$\approx 3n$ (Blum $3n-o(n)$; later $\approx 3.1n$); the Schnorr bound $2n-3$ for parity is tight for $\oplus$.
+The step ledger must be extended past $n=3$ with a SAT-based exact synthesis to see where sharing appears.
+
+\section{Link to the repository's work}
+Read from \texttt{AGENTS.md} (summary only; underlying reports not re-read this run):
+(i) ledger row L13 (Buss--Williams) bounds alternation-trading time exponent for SAT; (ii) T-PORT (L34--L37): proofs of that style
+cannot beat linear time for a UWI-size portfolio, and $1+\Theta(1-d)$ for sublinear portfolios; (iii) one-tape crossing bound
+(L38--L40) also covers nondeterminism, so cannot separate P from NP. Implication for this document: any decision
+lower bound that goes through generic circuit-size ledgers (Section 3) must overcome the
+\emph{natural-proofs} barrier for $B_2$ circuits ($\ge$ superpolynomial), and relativization/algebrization for diagonal arguments (KNOWN).
+
+\section{Next steps (plan)}
+\begin{enumerate}
+\item Exact synthesis for $n=4$ (expected max $7$ gates, recalled, unverified) via a SAT solver; record sharing-vs-formula gap.
+\item Parametrized variant: restrict CSAT to treewidth-$w$ circuits, where $T=2^{O(w)}s$ is upper bound; look for a matching conditional/unconditional lower bound in a restricted model (monotone / read-once / bounded fan-out).
+\item Restricted-model unconditional bound: monotone CSAT or read-once circuits for which gate-elimination-like potential arguments give decision lower bounds (query model).
+\item Audit whether the T-PORT potential argument adapts to the circuit-description model with parameter $k$.
+\end{enumerate}
+
+\section{Log (append-only)}
+\begin{itemize}
+\item 2026-10-28 run 1: created document; proved Prop.~1 (reading bound) and connectivity bound; computed exact $B_2$ sizes for $n\le3$ (max 4 gates); no new lower bound beyond linear. P vs NP OPEN.
+\end{itemize}
+\end{document}
