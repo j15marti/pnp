@@ -1,0 +1,95 @@
+% LSPV-5 REPORT::BLOCK-DISTANCE-FIREWALL184::2026-10-28T01:51:00Z
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,tabularx,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{LSPV-5 BLOCK-DISTANCE-FIREWALL184: Adversarial block distance defeats reordering for verbatim buffers, not arbitrary SAT algorithms}
+\author{Independent red team / formal proof referee}
+\date{28 October 2026, 01:51 UTC}
+\begin{document}\maketitle
+
+\section*{Executive status}
+\noindent\textbf{PROVED/EXACT, strategy-restricted.} The batching objection from KDIM-ZEROWRITE-SATURATION183 is made robust to arbitrary reordering and a fixed number of buffers, but \emph{only} when each Alice block must be materialized verbatim into a fixed coordinate-to-cell work layout. For every fixed \(0<s<1\) there exist \(L=m^{1-s+o(1)}\) source blocks of width \(B=m^{s+o(1)}\) such that every such strategy incurs \(D_{\rm buf}\ge BL/4=\Omega(m)\) actual buffer symbol changes, not \(O(m/B)\).
+\par\noindent\textbf{FALSIFIED/RETIRED generalization.} Alternating \(0^B,1^B\) blocks alone are not robust to reordering, and even the new code-distance obstruction does not lower-bound arbitrary promise deciders, compressed phase encodings, all-SAT machines, or all-UNSAT certificate discovery. A fast all-zero-Bob path is an explicit countercontrol.
+\par\noindent\textbf{OPEN.} The unrestricted one-head interior \(0<d<1\) with \(d+s=1\), exact22 transport, all-ordinary-UNSAT coverage, ARC-EDGE-90 and \(P\ne NP\).
+
+\section{Four falsifiers declared before literature search}
+\begin{description}
+\item[]\textbf{F1:} Adaptive reordering may invalidate the original alternating-block argument. \textbf{CONFIRMED}: eight alternating 8-bit blocks cost 56 changes in fixed order but only eight when equal blocks are grouped.
+\item[]\textbf{F2:} Pairwise-distant blocks should preserve the lower bound under arbitrary ordering. \textbf{PROVED} for fixed-map verbatim materialization.
+\item[]\textbf{F3:} Two or more disjoint reusable buffers may defeat the Hamming charge. \textbf{FALSIFIED} for this narrow materialization class, when initial loading is charged.
+\item[]\textbf{F4:} Large code distance might force every solver to work hard. \textbf{FALSIFIED}: Bob-all-zero early acceptance requires no materialization.
+\end{description}
+
+\section{Model and exact quantifiers}
+The ambient model has one two-way sequential read-only input head, fixed \(k\) independent finite-alphabet work tapes, one head per tape, initially blank cells, and fully charged source/head movement, work visits, writes and actual symbol changes. Here a \emph{verbatim-buffer strategy} is specifically required to complete at least one faithful load of every source block \(x_i\in\{0,1\}^B\) in a slot of \(B\) disjoint physical work cells. Within each slot the bit-to-cell map is a fixed bijection, possibly different across slots, but it may not change with the block. Each slot initially represents \(0^B\); a distinct physical blank only increases initial costs. Blocks may be visited in any data-dependent order and assigned to any slot. Nothing limits paid time, rereads, or additional charged work. The bound concerns actual changes in the specified buffer cells.
+
+For every fixed \(s\in(0,1)\), and all sufficiently large \(B\), let \(L=\lceil B^{(1-s)/s}\rceil\) and \(m=BL\). There exist words \(x_1,\ldots,x_L\) such that \emph{every} such schedule, for any number of fixed-map slots whose initial loads are charged, uses \(D_{\rm buf}\ge \lceil B/4\rceil L\). For constant \(c\) slots, \(S_{\rm buf}=cB\) and \(B=m^{s+o(1)}\).
+
+\begin{lemma}[physical Hamming transition]
+If one fixed-map verbatim slot holds \(u\) at a completed checkpoint and later holds \(v\), at least \(d_H(u,v)\) actual work-cell symbol changes must occur between them. The lower bound is attained by changing each differing cell once.
+\end{lemma}
+\begin{proof}Each different coordinate must change its corresponding physical cell at least once. Intermediate writes or restoring blanks cannot cancel this physical cost.\end{proof}
+
+\begin{theorem}[reordering-robust adversarial buffer lower bound]
+For every fixed \(0<s<1\) and all sufficiently large \(B\), there exist \(L=\lceil B^{(1-s)/s}\rceil\) distinct \(B\)-bit words with
+\[
+d_H(x_i,0^B)\ge\lceil B/4\rceil,\qquad
+d_H(x_i,x_j)\ge\lceil B/4\rceil\quad(i\ne j).
+\]
+Any fixed-map verbatim-buffer strategy materializing all \(L\) blocks incurs \(D_{\rm buf}\ge \lceil B/4\rceil L=\Omega(m)\), regardless of ordering and slot assignment. Thus this strategy cannot attain \(D=m^{1-s+o(1)}\).
+\end{theorem}
+\begin{proof}
+For \(d=\lceil B/4\rceil\), the binary Gilbert--Varshamov greedy maximal code has cardinality at least
+\[
+\frac{2^B}{\sum_{j=0}^{d-1}\binom Bj}
+\ge 2^{(1-H_2(1/4)-o(1))B},
+\]
+where \(H_2\) denotes binary entropy. Start the greedy code with \(0^B\), then discard it. All other codewords are at least distance \(d\) from zero and each other. Since \(L\) is polynomial in \(B\), at least \(L\) remain for large \(B\). On every source block's first completed load, its receiving slot previously held zero or a \emph{different} source codeword; in either case the previous lemma charges at least \(d\) changes. Each slot's successive first-load intervals are disjoint in time. Summing over all \(L\) first loads gives the bound; extra loads and partial updates only increase it.
+\end{proof}
+
+\section{Explicit Hadamard family and exhaustive finite audit}
+Let \(B=2^r\) and use the nonzero linear functions \(x_a(z)=a\cdot z\bmod2\), \(a,z\in\mathbb F_2^r\). Their \(L=B-1\) truth tables all have weight \(B/2\) and every distinct pair has distance \(B/2\). Consequently every distinct first load into any previously blank or distinct-codeword slot requires exactly \(B/2\) changes when blank represents zero. For direct updates,
+\[
+m=B(B-1),\qquad D_{\rm buf}=m/2,\qquad S_{\rm buf}=cB.
+\]
+For \(B=8\) the exact program checks \(7!\cdot 2^7=645{,}120\) order/slot allocations, all paying 28 changes. Hadamard controls at \(B=4,8,16,32\), six seeded greedy codebooks up to \(B=128,L=120\), random schedules and alternation controls give \textbf{655,646 assertions, zero failures}, random seed 20261027. This is computational corroboration; the asymptotic result follows from the proofs.
+
+\section{Hostile decider countercontrol}
+Choose the above pairwise-distant blocks as Alice's string \(a=x_1\cdots x_L\) and let Bob's \(b=0^m\). This is SAT on the separated-DISJ source. A single \emph{correct on all promised inputs} deterministic machine first scans the Bob section; if all its bits are zero, it accepts in \(O(N)\) steps with \(D=0\) and \(O(1)\) visited work cells \emph{on that particular input}. If any Bob bit is one, the machine falls back to the previously proved zero-write unary-head comparator, with \(S=O(m)\), \(T=O(mN)\). This falsifies the statement that our hard-for-buffer source requires arbitrary solvers to load its blocks.
+
+The WRITE-TIGHT2 common-input theorem is a \emph{worst-case or common-uniform-ceiling} statement over a diagonal fooling set, not a lower bound on every satisfiable input. Nor does a coding distance impose a full-SAT or matched FLMV time-space lower bound. An indexed input or an additional input head is a separate charged model.
+
+\section{CORPUS REVIEWED; duplication/contradiction; changed root assertions}
+The source corpus surveyed includes root \path{main.tex}, \path{AGENTS.md}, \path{CODEX.md}, the repository \path{pnp-research} skill, current tasks and MAIN, WRITE-TIGHT2 governance, LSPV-5 REFEREE182/KDIM183 and code, LSPV-4 MATRIX160/TWO-RW161, LSPV-2 CLAUSE-TOKEN178, LSPV-1 ARC206, and repository search for Hamming/reordering/buffer-reuse claims. The original KDIM183 already observed \(\Theta(m)\) writes for \emph{naively ordered} alternating blocks; its extension to optimal reorder was unsupported. No duplicate of this code-distance verbatim-buffer theorem was found among the materially relevant preceding reports. The adopted prior components are the correctly scoped WRITE-TIGHT2 theorem and finite-state unary comparator; the retired component is alternation as a reordering-invariant witness. Compared with root MAIN, only the restricted strategy status is strengthened; no other load-bearing arrow changes.
+
+The \emph{Gilbert--Varshamov existence theorem} is a directly transferable coding theorem for Hamming distances in literal buffers. It is a \emph{failed transfer} to arbitrary SAT runtimes: compressed encodings, source reads and proof acquisition need independent cost arguments. Reference: Arora and Barak, \emph{Computational Complexity}, error-correcting-codes chapter, \url{https://theory.cs.princeton.edu/complexity/ab_amphardchap.pdf}; Guruswami et al., \emph{Essential Coding Theory}, \url{https://cse.buffalo.edu/faculty/atri/courses/coding-theory/book/prev-ver/ada-coding-book-Jan9-2026.pdf}.
+
+\section{Proof DAG and additive handoff}
+\begin{center}\small
+\begin{tabularx}{\linewidth}{p{.50\linewidth}p{.20\linewidth}X}
+\toprule Arrow & Status & Barrier\\\midrule
+Hamming transition for fixed-map literal cells & PROVED/EXACT & Physical bit coordinate fixed\\
+Codebook of \(L=\mathrm{poly}(B)\) separated words & KNOWN THEOREM & GV packing\\
+Ordering or fixed slot caching yields \(D=m/B\) & FALSIFIED/RETIRED & \(D_{\rm buf}\ge BL/4\)\\
+Unrestricted one-head interior \(d+s=1\) & OPEN & Compressed phase access, restoration, extra state\\
+Canonical exact22/full SAT/FLMV/ARC-EDGE-90 & OPEN & Same-machine bridge and all-UNSAT coverage\\\bottomrule
+\end{tabularx}
+\end{center}
+\noindent\textbf{LSPV-1:} preserve ARC206's worst-case quantifiers; the all-zero-Bob instance is easy for a sound general promise comparator.
+\par\noindent\textbf{LSPV-2:} attack a compressed, nonverbatim phase memory algorithm, charging restoration when the single work head leaves its unary coordinate.
+\par\noindent\textbf{LSPV-3:} no all-UNSAT acquisition bound follows from coding distances.
+\par\noindent\textbf{LSPV-4:} check fixed physical slot aliasing and exact actual-change accounting.
+\par\noindent\textbf{Decisive next lemma:} either construct a uniform, nonverbatim, one-input-head interior comparator with \(0<d,s<1\), \(d+s=1\), or prove a native obstruction for \emph{all} such comparators, beyond verbatim buffering.
+
+\section*{Artifacts}
+\path{research/agents/lspv-5/2026-10-28_0151_LSPV-5_BLOCK_DISTANCE_FIREWALL184.tex};
+\path{research/agents/lspv-5/2026-10-28_0151_BLOCK_DISTANCE_FIREWALL184_repro.py};
+\path{research/agents/lspv-5/2026-10-28_0151_BLOCK_DISTANCE_FIREWALL184_raw.json};
+\path{research/coordination/2026-10-28_0151_BLOCK_DISTANCE_FIREWALL184_HANDOFF.md}.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::BLOCK-DISTANCE-FIREWALL184
+\end{document}
