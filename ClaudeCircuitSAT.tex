@@ -1,0 +1,61 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append new "Run" sections; keep the status table current.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: a wire-by-wire, parameterized lower-bound ladder for Circuit-SAT}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-10-28 (Run 1)}
+\begin{document}
+\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is an unconditional superpolynomial lower bound. Status labels: PROVED, KNOWN THEOREM (quoted from memory, citation unverified this run), COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Circuit-SAT: input a fan-in-2 circuit $C$ over $B_2$ with $n$ inputs, $m$ gates, $w=2m$ gate-input wires; decide $\exists x\,C(x)=1$. Plan: start from the simplest circuits, track for each construction step (i) the minimum number of gates/wires needed to build the function and (ii) what any SAT-decider must learn about $C$; then raise $n$, and state bounds in parameters $(n,m,k)$ with $k$ a structural width (treewidth/pathwidth/depth).
+
+\section{Run 1: base ladder}
+\subsection{Exact minimum circuit sizes, $n\le 3$ (COMPUTATIONAL)}
+Script \texttt{experiments/claude\_circuitsat/minsize.py} (BFS over sets of computed truth tables, all 16 binary gates, sharing allowed; runtime $<$ 30 s) gives the number of $n$-input functions needing exactly $g$ gates:
+\begin{center}\begin{tabular}{lccccc}\toprule
+$n$ & $g=0$ & 1 & 2 & 3 & 4\\\midrule
+1 & 3 & 1 & & & \\
+2 & 4 & 12 & & & \\
+3 & 5 & 33 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+So $\max_f C_{B_2}(f)=0,1,4$ for $n=1,2,3$ (here $g=0$ includes constants and literals; totals $4,16,256$). Wires $=2g$. Raw data: \texttt{experiments/claude\_circuitsat/minsize\_results.json}.
+
+\subsection{Connectivity ladder for the simplest SAT family (PROVED)}
+\begin{lemma}[AND-chain] Any fan-in-2 circuit whose output depends on all $n$ inputs has at least $n-1$ gates and $2(n-1)$ gate-input wires. Hence $\mathrm{AND}_n$ has $C=n-1$, attained by a chain.\end{lemma}
+\emph{Proof.} The underlying graph restricted to the cone of the output is connected and contains the $n$ input nodes; with $g$ gates of in-degree 2 and one source per input, connectivity of $n+g$ nodes needs $\ge n+g-1$ edges only if tree-like, so counting: edges $=2g\ge n+g-1\Rightarrow g\ge n-1$. \qed
+
+Ladder: $n=1$: 0 gates; $n=2$: 1 gate/2 wires; $n=3$: 2 gates/4 wires (matches table: $\mathrm{AND}_3$ in the $g=2$ column); general $2(n-1)$.
+
+\subsection{Reading lower bound for the decider (PROVED)}
+\begin{theorem}[Every gate must be read] Fix $n\ge 1$ and the AND-chain $C_n$ with gates $g_1,\dots,g_{n-1}$. Any deterministic algorithm that decides Circuit-SAT on the family $\{C_n\}\cup\{C_n^{(i)}\}$, where $C_n^{(i)}$ replaces gate $g_i$ by constant $0$, must inspect the description of every gate; so time $\Omega(m)$ (and $\Omega(w\log m)$ bits for a standard encoding of wiring).\end{theorem}
+\emph{Proof.} $C_n$ is satisfiable, each $C_n^{(i)}$ unsatisfiable, and they differ only in $g_i$. An unread $g_i$ lets an adversary answer incorrectly. \qed
+
+This is the trivial $m$-term of any bound $T(n,m)$; the content must sit in the dependence on $n$.
+
+\section{Parameterized targets}
+\begin{center}\begin{tabular}{lll}\toprule
+Parameter & Known upper bound & Status of matching lower bound\\\midrule
+$n$ & $O(2^n m)$ brute force & SETH $\Rightarrow$ no $2^{(1-\epsilon)n}\mathrm{poly}(m)$ (CONDITIONAL); unconditional: OPEN\\
+treewidth/pathwidth $k$ & $2^{O(k)}m$ by DP & SETH $\Rightarrow$ no $(2-\epsilon)^k\mathrm{poly}$ for CNF-SAT (KNOWN THEOREM, cite Lampis / Iwata--Yoshida to verify)\\
+$m$ small ($m\le c\,n$) & --- & gate-elimination: explicit $f$ needs $\approx 3.1n$ gates (KNOWN THEOREM, Li--Yang; verify)\\
+time vs.\ space & --- & see repo ledger row L13 (Buss--Williams) and T-PORT (L33)\\\bottomrule\end{tabular}\end{center}
+Key remark: a circuit-size lower bound is a bound on \emph{the object}, not on an algorithm deciding satisfiability; the ladder's wire counts become decider lower bounds only through a bridge theorem (OPEN, see below).
+
+\section{Open arrows / next targets}
+\begin{enumerate}
+\item \textbf{(OPEN)} Bridge: show a decider for the family $\mathcal F_{n,k}$ (circuits of width $k$) must distinguish $2^{\Omega(k)}$ partial-assignment ``states'' in a restricted model (e.g.\ branching-program/DP style). Candidate: communication cut across a width-$k$ separator; unconditional only for restricted models (CANDIDATE).
+\item \textbf{(COMPUTATIONAL, next run)} Extend exact tables to $n=4$ (65536 functions; needs checkpointed BFS, gates up to 7) and tabulate min wires for \emph{satisfiability-preserving} gadgets (e.g.\ minimal circuits whose SAT set is a given set).
+\item \textbf{(CANDIDATE)} Track a ``wire-congestion'' invariant: minimal cut-width needed to build each function; relate to the pathwidth DP to see whether cut-width of minimal circuits forces $2^{\Omega(\cdot)}$ states.
+\end{enumerate}
+
+\section{Repository cross-reference}
+Checked repo at start of Run 1: \texttt{AGENTS.md} directs the main team to the ARC/FLMV time--space spine; \texttt{research/agents/claude/world-ledger/} and \texttt{2026-10-28\_0939\_CLAUDE\_DIRECTPRODUCT-0001.tex} are the nearest relevant items. Useful: a statement equivalent to $P=NP$ is a reformulation, not progress; the width-parameterized bound above is a restricted-parameter statement that does \emph{not} touch that equivalence. No repo result was found that supplies the bridge in item 1.
+
+\section*{Run log}
+\begin{itemize}
+\item Run 1 (2026-10-28): created document; exact $n\le3$ min-size table; AND-chain lemma; read-all-gates bound; parameter table and targets. No literature search performed this run (citations from memory, flagged).
+\end{itemize}
+\end{document}
