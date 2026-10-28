@@ -1,0 +1,300 @@
+% CLAUDE REPORT::DIRECTPRODUCT-0001::2026-10-28T16:39Z
+% !TEX program = xelatex
+% Compiles with XeLaTeX or pdfLaTeX (ASCII source).
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newcommand{\cP}{\mathsf{P}}
+\newcommand{\NP}{\mathsf{NP}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\PN}{\mathcal{P}_N}
+\newcommand{\status}[1]{\textbf{[#1]}}
+\newcommand{\DTISP}{\mathrm{DTISP}}
+
+\title{CLAUDE DIRECTPRODUCT-0001\\[2pt]
+\large Audit of ``Uniform Direct-Product Amplification and Unconditional\\
+Derandomization for Resource-Bounded SAT Portfolios''; repaired theorem;\\
+portfolio collapse; next target for the UWI common-input obligation}
+\author{CLAUDE (independent verification), at the project owner's request}
+\date{2026-10-28 09:39 America/Los\_Angeles}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Status.} P versus NP remains OPEN. This report proves no separation.
+It is an additive audit requested by the project owner; it changes no schedules, agent count,
+ownership or allocation and does not edit root \texttt{main.tex}. It was not an LSPV run and did not
+perform the LSPV corpus-wide reconciliation.
+Source (verbatim, with a status header):
+\url{research/agents/claude/direct-product/2026-10-28_SOURCE_direct_product_portfolio.tex}.
+Checks: \url{research/agents/claude/direct-product/verify_direct_product.py} and its JSON output.
+
+\section{Verdict}
+
+The note targets the open UWI obligation of
+\url{research/governance/2026-10-24_2252_ALL_UWI_REFOCUS2.tex}: a \emph{common} satisfiable input that
+defeats every program of length $\le b(N)$ at a fixed polynomial budget.
+
+\begin{itemize}
+\item \textbf{Lemma 1 (heavy projection):} \status{PROVED/EXACT}; proof correct; 0 violations in 3000
+random finite checks.
+\item \textbf{Lemma 2 (uniform hitting-set generator):} proof \status{FALSIFIED/RETIRED}; statement
+\status{OPEN} and at least as strong as an unconditional heuristic derandomization of RP over samplable
+distributions (Prop.~\ref{prop:embed}).
+\item \textbf{Theorem 3 as stated:} \status{CONDITIONAL} on Lemma 2 and on hypothesis (3); not
+unconditional, so the title's ``Unconditional'' is incorrect.
+\item \textbf{Theorem 3R (randomized hypothesis):} \status{PROVED/EXACT}; a direct-product theorem for
+verifiable search of known type (Impagliazzo--Jaiswal--Kabanets).
+\item \textbf{Corollary 4R:} \status{PROVED/EXACT} as a conditional statement.
+\item \textbf{Proposition~\ref{prop:collapse} (portfolio collapse):} \status{PROVED/EXACT}; derives the
+common-input conclusion from the \emph{deterministic worst-case} form of the hypothesis, with exponent
+loss $d+2$ instead of about $2ak+\alpha+\beta+3$.
+\item \textbf{This route as a way to close the UWI obligation:} \status{FALSIFIED/RETIRED}; dominated by
+Prop.~\ref{prop:collapse}, and its hypothesis for all budgets already implies $\cP\neq\NP$.
+\item \textbf{Portfolio small-space target T-PORT (Section~\ref{sec:next}):} \status{CANDIDATE},
+\status{OPEN}.
+\end{itemize}
+
+\section{Setting (as in the source)}
+
+Block length $m$; $r=\lceil C\ln m\rceil$ blocks; aggregate length $N\le (mr)^a$.
+$b(N)=b_0+d\lfloor\log_2(N+2)\rfloor$, $\PN=\{0,1\}^{\le b(N)}$, $|\PN|\le C_0(N+2)^d$, $C_0=2^{b_0+1}$.
+$\D_m$ is sampled by $\mathrm{Gen}_m:\{0,1\}^s\to\mathrm{SAT}_m$ in time $m^\alpha$, $s\le m^\alpha$.
+$S_p$ is the set of $r$-tuples on which $p$ outputs satisfying assignments for every block within $N^k$
+steps. UWI uses $d=1$.
+
+\section{Lemma 1}
+
+$\mu^r(W)\le\prod_i\mu(G_i(\tau))+r\tau$, and with $\tau=\varepsilon/2r$ some coordinate has
+$\mu(G_{i^*})\ge(\varepsilon/2)^{1/r}$. The proof (split $W$ by membership in $\prod_iG_i$; bound each
+non-heavy coordinate's contribution by $\tau$) is correct. \status{PROVED/EXACT}.
+\status{COMPUTATIONAL} 3000 random product spaces (support 2--4, $r=2$--4, four values of $\tau$ each):
+0 violations of either inequality; minimum slack $6.0\times10^{-5}$.
+
+\section{Lemma 2: defects}
+
+\begin{enumerate}
+\item \textbf{Statement/proof mismatch.} The statement takes $f$ as input and uses $L=\lceil 2/\tau\rceil$;
+the proof builds the list without $f$ and uses $L=\lceil(2/\tau)\ln m\rceil$. With $L=\lceil 2/\tau\rceil$
+independent seeds the miss probability is about $e^{-2}\approx0.135$, not $\le 1/m$
+(\status{COMPUTATIONAL}, JSON).
+\item \textbf{Step 3 is unsupported.} Nisan--Wigderson reconstruction turns a distinguisher into a
+\emph{small circuit with advice} for the hard function, so it needs hardness against circuits.
+A time-hierarchy diagonal function is only hard in the worst case for uniform machines. Uniform
+hardness--randomness tradeoffs exist but need special structure and give much less:
+Impagliazzo--Wigderson (FOCS 1998) obtain, from $\mathsf{BPP}\neq\mathsf{EXP}$, deterministic
+\emph{subexponential} simulations correct on almost every input of every samplable ensemble, for
+\emph{infinitely many} lengths. Lemma 2 claims deterministic polynomial time, all lengths, no assumption.
+\item \textbf{Step 4 is invalid as written.} Pseudorandomness of each seed separately does not give the
+product bound $(1-\tau+\tau/2)^L$ for $L$ seeds; that needs the $L$-tuple to fool the joint test.
+Also the tests $z\mapsto[z\in U_{p,i,f}]$ carry an $m$-bit parameter $f$ and are not programs of length
+$\le 2b(N)$. A deterministic list that is good for most $f$ exists by averaging, but finding it requires
+estimating averages over $\D_m$, which is the derandomization being assumed.
+\end{enumerate}
+
+\begin{proposition}[strength of Lemma 2]\label{prop:embed} \status{PROVED/EXACT}
+Suppose Lemma 2 holds in the form its proof constructs: one seed list $\mathrm{HSG}(1^m,1^r)$, not
+depending on $f$, valid for every samplable $\D_m$ and every $\tau\ge m^{-\beta}$ with
+$\beta\ge C\ln 2+1$. Let $A(x,y)$ be any one-sided-error algorithm running in polynomial time (never
+accepts a no-instance; accepts each yes-instance with probability $\ge 1/2$ over $y$), and let $X$ be any
+polynomial-time samplable distribution on yes-instances. Then a deterministic polynomial-time algorithm
+accepts all but a $1/m$ fraction of $X$ and never accepts a no-instance.
+\end{proposition}
+\begin{proof}[Construction]
+Let $r\ge 3$. Let $\mathrm{Gen}_m(u_1,u_2)$ output a trivially satisfiable formula $f$ (with a fixed
+satisfying assignment $w_0(f)$ computable in linear time) from which $x=X(u_1)$ and
+$u_2=(u_2^{(1)},\dots,u_2^{(r)})$ are decodable in linear time, each $u_2^{(j)}$ as long as $A$'s coin
+string. A constant-size program $p$ decodes $x_j$ from block $j$, takes as coins for block $j$ the XOR
+of the fields $u_2^{(j)}$ of all other blocks, runs $A(x_j,\cdot)$, and outputs $w_0$ for block $j$ iff
+$A$ accepts. With block $i$ fixed to $f$ and the others drawn from $\D_m$, each block's coins are uniform
+(at least one random field enters every XOR) and coins of different blocks use disjoint fields, so they
+are independent. Hence every $f$ lies in $G_i(\tau)$ for $\tau=2^{-r}$, and
+$U_{p,i,f}=\{z:A(x_f,\mathrm{coins}_i(z))\text{ accepts}\}$ depends only on $x_f$. On input $x$, run $A$
+with coins $\mathrm{coins}_i(z^{(\ell)})$ for every seed of the list and accept iff some run accepts.
+The miss bound of Lemma 2 becomes an error bound of $1/m$ over $X$; one-sidedness gives soundness.
+\end{proof}
+
+\noindent For the statement's version, where $\mathrm{HSG}$ also reads $f$, the same embedding gives the
+same conclusion for the padded samplable problem $(x,u_2)\mapsto[x\in L]$ under $X\times$ uniform.
+
+\noindent No such unconditional result is known; Lemma 2 is therefore \status{OPEN} and not a usable
+step. In the ledger it is a half-win: true if $\cP=\NP$ (each needed seed is an NP-search output),
+open otherwise.
+
+\section{Repaired theorem}
+
+Fix $\delta_0\in(0,1)$, $\gamma=-\ln(1-\delta_0/2)$, $\beta=\gamma C+1$ and $k'=2ak+\alpha+\beta+3$.
+(The source's $\beta=\gamma C$ is too small: $\tau>e^{-\gamma r}/r$ does not give $\tau\ge m^{-\gamma C}$;
+e.g.\ $m=10^3$, $C=2$, $\gamma=0.5$ gives $\tau$ bound $6.5\times10^{-5}<10^{-3}$. It does give
+$\tau\ge m^{-\gamma C-1}$ for large $m$; \status{COMPUTATIONAL}, JSON.)
+
+\noindent\textbf{Hypothesis (H$_R$).} Every \emph{randomized} program $p_0$ of length at most
+$b(N)+\lceil\log_2 r\rceil+c_0$ running in time $m^{k'}$ outputs a satisfying assignment of $F\sim\D_m$
+with probability at most $1-\delta_0$ over $F$ and its coins. ($c_0$ is a constant covering the driver
+below and $\mathrm{Gen}_m$.)
+
+\begin{theorem}[3R] \status{PROVED/EXACT}
+Under (H$_R$), for all sufficiently large $m$, every deterministic $p\in\PN$ satisfies
+$\Pr_{\D_m^r}[S_p]\le 2e^{-\gamma r}$.
+\end{theorem}
+\begin{proof}
+Suppose $\varepsilon=\Pr[S_p]>2e^{-\gamma r}$. Put $\tau=\varepsilon/2r$. Since
+$e^{-\gamma r}\ge e^{-\gamma}m^{-\gamma C}$ and $r\le C\ln m+1$, $\tau>m^{-\beta}$ for large $m$.
+Lemma 1 gives $i^*$ with $\D_m(G_{i^*}(\tau))\ge(\varepsilon/2)^{1/r}>e^{-\gamma}=1-\delta_0/2$.
+Let $p_0$ hardcode $p$ and $i^*$, set $L=\lceil 2m^{\beta}\ln m\rceil$ (independent of $\varepsilon$), and
+repeat $L$ times: draw $z\in\{0,1\}^{(r-1)s}$ uniformly, place $F$ at position $i^*$ and
+$\mathrm{Gen}_m^{r-1}(z)$ elsewhere, run $p$ for $N^k$ steps, and output $w_{i^*}$ if it satisfies $F$.
+For $F\in G_{i^*}(\tau)$ each trial succeeds with probability $\ge\tau>m^{-\beta}$, because
+$\mathrm{Gen}_m^{r-1}(z)$ for uniform $z$ is distributed as $\D_m^{r-1}$ and success on all blocks implies
+success on block $i^*$. Trials are independent, so all fail with probability
+$\le(1-m^{-\beta})^L\le m^{-2}$. Hence $p_0$ succeeds with probability
+$\ge(1-\delta_0/2)(1-m^{-2})>1-\delta_0$ for large $m$. Its length is
+$|p|+\lceil\log_2 r\rceil+c_0$. Its time is at most
+$L\,(r\,m^{\alpha}+N^k\sigma(N^k)+c_{\mathrm{ver}}m)\le m^{k'}$ for large $m$, using $r\le m$ and
+$N\le m^{2a}$. This contradicts (H$_R$).
+\end{proof}
+
+\begin{remark}[non-uniform variant] \status{PROVED/EXACT}
+The same conclusion holds under the deterministic hypothesis enlarged by $L(r-1)s=\mathrm{poly}(m)$ bits
+of advice: for the fixed $p,i^*$ a list of $L$ seeds missing at most an $m^{-2}$ fraction of
+$G_{i^*}(\tau)$ exists by averaging and can be hardcoded. The uniform deterministic version of the
+source needs exactly the derandomization of Lemma 2.
+\end{remark}
+
+\begin{corollary}[4R] \status{PROVED/EXACT}
+Under (H$_R$) with $C>ad/\gamma$, for large $m$,
+$\sum_{p\in\PN}\Pr_{\D_m^r}[S_p]\le 2C_0(N+2)^de^{-\gamma r}=O(m^{ad-\gamma C}(\ln m)^{ad})=o(1)$.
+So a $1-o(1)$ fraction of samples of $\D_m^r$ defeat every $p\in\PN$ within $N^k$ steps.
+\end{corollary}
+
+\noindent This matches known direct-product theorems for weakly verifiable puzzles (Canetti--Halevi--Steiner;
+Impagliazzo--Jaiswal--Kabanets, J.~Cryptology 2009), which use randomized reductions and a samplable
+puzzle distribution for uniform adversaries.
+
+\section{Portfolio collapse: the route is dominated}
+
+Let $\sigma(T)$ be the universal-simulation overhead of the machine model ($O(1)$ for RAMs, $O(\log T)$
+for multitape machines).
+
+\begin{proposition}[portfolio collapse]\label{prop:collapse} \status{PROVED/EXACT}
+For constants $b_0,d,k$ there is a constant-size deterministic algorithm $M_{\mathrm{port}}$ such that, for
+every $N$ and every satisfiable $F$ of length $N$, $M_{\mathrm{port}}(F)$ outputs a satisfying assignment
+within $T_{\mathrm{port}}(N)=C_0(N+2)^d\bigl(N^k\sigma(N^k)+O(N)\bigr)$ steps if and only if some
+$p\in\PN$ does so within $N^k$ steps. If every $p$ uses space $\le s(N)$, then $M_{\mathrm{port}}$ uses space
+$s(N)+O(\log N)$.
+\end{proposition}
+\begin{proof}
+Enumerate $p\in\PN$; run each for $N^k$ steps; verify its output in linear time; output the first verified
+assignment.
+\end{proof}
+
+\begin{corollary}\label{cor:dominated} \status{PROVED/EXACT}
+\begin{enumerate}
+\item If $M_{\mathrm{port}}$ fails on some satisfiable $F$ of length $N$, then $F$ is a common defeating
+instance for $\PN$ at budget $N^k$. Conversely, a common defeating instance at budget $N^k$ for all large
+$N$ makes every algorithm of time $\le N^k$ fail at every large length. So the UWI common-input
+statement at budget $N^k$ lies between worst-case SAT-search lower bounds at times $N^k$ and
+$T_{\mathrm{port}}(N)=N^{k+d+o(1)}$.
+\item The source's deterministic hypothesis (3), stated with $k'\ge k+d+2$, already gives a common
+defeating instance of length $m$ for $\mathcal{P}_m$ at budget $m^k$: apply it to $M_{\mathrm{port}}$,
+which has constant length. No product construction, Lemma 1, Lemma 2 or derandomization is needed.
+\item If hypothesis (3) holds for every $k'$, then $\cP\neq\NP$ directly: under $\cP=\NP$ a
+constant-size SAT-search algorithm succeeds on every satisfiable formula in some fixed polynomial time.
+\end{enumerate}
+\end{corollary}
+
+\noindent The only extra content of Theorem 3R/Corollary 4R is distributional: common defeating
+instances are \emph{samplable} (most samples of $\D_m^r$), under an average-case hypothesis against
+randomized programs. The load-bearing arrow in every version is the hypothesis itself, a
+fixed-polynomial lower bound for SAT search, which is open beyond linear time on random-access machines.
+For all polynomial budgets the hypothesis is ``SAT search is hard on average over a samplable
+distribution'', which implies $\cP\neq\NP$ and is not implied by it by any known argument
+(Bogdanov--Trevisan rule out non-adaptive black-box worst-to-average reductions unless the polynomial
+hierarchy collapses).
+
+\section{World-ledger classification (rows L29--L33)}
+
+\begin{center}
+\begin{tabular}{lp{0.55\textwidth}l}
+Row & Statement & Category \\ \hline
+L29 & Theorem 3R (direct product for verifiable SAT search, randomized reduction) & Theorem \\
+L30 & Lemma 2 as stated & Half-win (true if $\cP=\NP$) \\
+L31 & Some samplable distribution on satisfiable formulas has SAT search hard on average for every
+polynomial-time randomized algorithm & Implies $\cP\neq\NP$ (open) \\
+L32 & Portfolio collapse (Prop.~\ref{prop:collapse}) & Theorem \\
+L33 & SAT $\notin\exists^{\log N+b_0}\DTISP(N^c,N^{o(1)})$ for some $c>1$ (target T-PORT) &
+Half-win (true if $\cP\neq\NP$) \\
+\end{tabular}
+\end{center}
+
+\section{Next target T-PORT (UWI $\leftrightarrow$ ARC/FLMV link)}\label{sec:next}
+
+\noindent\textbf{Statement.} \status{OPEN} In the random-access model of the ARC/FLMV allocation, show for
+some $c>1$ that SAT search is not in $\exists^{\log N+b_0}\DTISP(N^c,N^{o(1)})$: no family of
+$C_0(N+2)$ deterministic small-space programs (index guessed, output verified) solves every satisfiable
+formula of length $N$ within $N^c$ steps. Equivalently: a common defeating instance for the UWI
+portfolio ($d=1$) at budget $N^c$ in subpolynomial space.
+
+\noindent\textbf{Why this target.} It is the fixed-budget UWI obligation restricted to the model where
+unconditional SAT lower bounds exist. Williams gives SAT $\notin\DTISP(n^{c},n^{o(1)})$ for
+$c<2\cos(\pi/7)\approx1.8019$ \status{KNOWN THEOREM}. Proposition~\ref{prop:collapse} transfers this to
+the portfolio only for $c+d<2\cos(\pi/7)$, i.e.\ $c<0.80$ when $d=1$, which is vacuous because writing and
+verifying a witness takes linear time. The whole gap is one factor of $N$.
+
+\noindent\textbf{Obstruction found.} \status{CANDIDATE analysis} In an alternation-trading proof, a leading
+logarithmic-width existential block is absorbed for free by a speedup step:
+\[
+\exists^{O(\log n)}\DTISP(t,s)\subseteq\exists^{O(\log n)}\exists^{bs}\forall^{\log b}\DTISP(t/b,s)
+=\exists^{bs+O(\log n)}\forall^{\log b}\DTISP(t/b,s),
+\]
+and because $\DTISP$ is closed under complement the
+speedup's polarity can be chosen to match. A slowdown step, however, uses the assumption to replace the
+innermost full-width block by a logarithmic-width block \emph{of the same type} instead of removing it;
+the residual is opposite in type to the preceding block, so it cannot merge backwards, and removing it by
+enumeration costs a factor $\ell^{d}$ where $\ell$ is the padded length at which the assumption was applied.
+The final hierarchy step faces the same residual.
+
+\noindent\textbf{Concrete next step.} Rerun a Buss--Williams-style proof-annotation search with (i) a
+slowdown rule that emits a residual $O(\log\ell)$-width block, (ii) a free-absorption rule when the next
+speedup has matching polarity, (iii) an $\ell^{d}$ time charge otherwise, and (iv) the corresponding
+alternating-time hierarchy step with a leading logarithmic block. Report the best achievable exponent
+$c(d)$ for $d=1$. If some annotation absorbs every residual, Williams' exponent transfers to the UWI
+portfolio unchanged; if not, the search yields a precise barrier for this route. Either outcome is a
+finite, checkable result for the active ARC/FLMV spine. Status until done: \status{OPEN}.
+
+\section{Literature}
+
+Read in this session:
+\begin{itemize}
+\item R.~Impagliazzo, R.~Jaiswal, V.~Kabanets, Chernoff-type direct product theorems, CRYPTO 2007;
+J.~Cryptology 22(1), 2009. \url{https://www.cs.sfu.ca/~kabanets/Research/chernoff.html};
+\url{https://www.iacr.org/archive/crypto2007/46220493/46220493.pdf} (weakly verifiable puzzles,
+Canetti--Halevi--Steiner; randomized solver construction; non-uniform version when the distribution is
+not samplable).
+\item R.~Impagliazzo, A.~Wigderson, Randomness vs.\ time: de-randomization under a uniform assumption,
+FOCS 1998. \url{https://cris.huji.ac.il/en/publications/randomness-vs-time-de-randomization-under-a-uniform-assumption/}.
+\item S.~Buss, R.~Williams, Limits on alternation-trading proofs for time-space lower bounds,
+Computational Complexity 24(3), 2015. \url{https://eccc.weizmann.ac.il/report/2011/031}.
+\end{itemize}
+From memory, verify before load-bearing use: Canetti--Halevi--Steiner (TCC 2005); Nisan--Wigderson (1994);
+Bogdanov--Trevisan (2006); Williams (2008/2010, $2\cos(\pi/7)$). Not yet read: Tourlakis, time--space
+tradeoffs for SAT on nonuniform machines (JCSS 2001), which concerns advice, not an existentially chosen
+index, and so does not settle T-PORT.
+
+\section{Open items handed forward}
+\begin{itemize}
+\item T-PORT annotation search (Section~\ref{sec:next}).
+\item Lemma 2 stays OPEN; do not cite it as a step.
+\item Any future direct-product claim for UWI must beat Proposition~\ref{prop:collapse}: state what it
+gives beyond worst-case hardness at time $N^{k+d+o(1)}$.
+\end{itemize}
+
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::DIRECTPRODUCT-0001

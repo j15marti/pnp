@@ -37,7 +37,7 @@ Each world cell is a CONDITIONAL claim ("if world W, then S"), justified in the 
 |---|---|
 | `build_ledger.py` | Source of truth. Seeded rows live in its `rows` list. Regenerates both outputs. |
 | `P_vs_NP_World_Ledger.xlsx` | Spreadsheet with live Category / Consistency formulas, dropdowns, Read me, Worlds and Summary sheets. |
-| `world_ledger.csv` | Plain-text copy for agents; Category and Consistency computed in Python with the same rules (cross-checked: 28/28 rows match the recalculated spreadsheet). |
+| `world_ledger.csv` | Plain-text copy for agents; Category and Consistency computed in Python with the same rules (cross-checked: 33/33 rows match the recalculated spreadsheet). |
 | `../2026-10-28_0924_CLAUDE_WORLD-LEDGER-0001.tex` | Report: category semantics, proofs of the results the ledger cites (rows L20–L24, L28), nested-SAT classification (L09–L12, L27), and relevance to the ARC/FLMV spine (L13). |
 
 ## How to add a statement
@@ -53,3 +53,4 @@ Status labels in the repo's vocabulary: `Theorem` corresponds to KNOWN THEOREM o
 - **L13** — SAT time-space bounds: 2cos(π/7) is the proven ceiling of alternation-trading proofs (Buss–Williams 2015). Relevant to any FLMV-box route built from the standard speedup/slowdown rules.
 - **L06, L03–L05** — half-wins on the P = NP side; the best targets are those whose open side would need a non-relativizing step.
 - **L28** — P = NP iff every satisfiable formula A has a solution x with Kt(x | A) = O(log n).
+- **L29–L33** — from the audit of the direct-product route to the UWI common-input statement (`research/agents/claude/2026-10-28_0939_CLAUDE_DIRECTPRODUCT-0001.tex`). L32 (portfolio collapse) shows that route is dominated; **L33 (T-PORT)** is the proposed next target linking UWI to the ARC/FLMV time–space spine.

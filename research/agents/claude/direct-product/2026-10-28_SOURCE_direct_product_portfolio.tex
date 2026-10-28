@@ -1,0 +1,157 @@
+% SOURCE DOCUMENT (submitted by the project owner, 2026-10-28 09:31 America/Los_Angeles), preserved verbatim below this header.
+% STATUS: NOT VERIFIED AS STATED. Audit: research/agents/claude/2026-10-28_0939_CLAUDE_DIRECTPRODUCT-0001.tex
+% Lemma 1 PROVED/EXACT; Lemma 2 proof FALSIFIED/RETIRED (statement OPEN); the title word "Unconditional" is incorrect: Theorem 3 and Corollary 4 are CONDITIONAL.
+% P versus NP remains OPEN.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{\textbf{Uniform Direct-Product Amplification and Unconditional Derandomization\\for Resource-Bounded SAT Portfolios}}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Preliminaries and Portfolio Setup}
+
+Fix a base block length $m \in \mathbb{N}$ and a block count $r = \lceil C \ln m \rceil$ for a constant $C > 0$. Let $N = N(m,r) \le (mr)^a$ denote the aggregate formula length obtained by concatenating $r$ variable-disjoint CNF blocks $F_1,\dots,F_r$ of length $m$, where $a \ge 1$ is a fixed structural constant.
+
+\begin{definition}[Short-Program Portfolio and Verifiable Witness Success]
+For a description budget $b(N) = b_0 + d \lfloor \log_2(N+2) \rfloor$ ($d \ge 1$) and a runtime exponent $k \ge 1$, define the eligible portfolio of deterministic programs
+\[
+  \mathcal{P}_N := \big\{ p \in \{0,1\}^{\le b(N)} \big\}, \qquad |\mathcal{P}_N| \le C_0 (N+2)^d,
+\]
+where $C_0 = 2^{b_0+1}$. Let $\mathrm{SAT}_m$ denote the set of satisfiable formulas of length $m$, equipped with a deterministic linear-time verification predicate $\mathrm{Ver}(f, w) \in \{0,1\}$ checking whether assignment $w$ satisfies $f$ in time $c_{\mathrm{ver}} m$. For an aggregate instance $\vec{F} = (F_1,\dots,F_r) \in (\mathrm{SAT}_m)^r$, we write
+\[
+  S_p := \Big\{ \vec{F} \in (\mathrm{SAT}_m)^r : p(\vec{F}) \text{ outputs } (w_1,\dots,w_r) \text{ within } N^k \text{ steps s.t. } \forall i \in [r],\ \mathrm{Ver}(F_i, w_i) = 1 \Big\}.
+\]
+\end{definition}
+
+\section{The Heavy-Projection Lemma for Verifiable Search}
+
+Unlike decision problems—where a joint solver can correlate its successes across coordinates via a high-density parity slice without revealing single-coordinate answers—search problems with efficiently verifiable witnesses prevent parity obfuscation: any tuple $\vec{F} \in S_p$ automatically yields a self-certifying witness for each coordinate $F_i$.
+
+\begin{lemma}[Heavy-Projection Amplification for Verifiable Search]\label{lem:projection}
+Let $\mu$ be any probability distribution supported on $\mathrm{SAT}_m$, and let $\mu^r$ be the $r$-fold product distribution on $(\mathrm{SAT}_m)^r$. Let $W \subseteq \mathrm{supp}(\mu)^r$ be any event of measure $\varepsilon := \mu^r(W) > 0$. For each coordinate $i \in [r]$ and threshold $\tau > 0$, define the $\tau$-heavy projection
+\[
+  G_i(\tau) := \left\{ f \in \mathrm{supp}(\mu) : \Pr_{F_{-i} \sim \mu^{r-1}}\big[ (f_i = f, F_{-i}) \in W \big] \ge \tau \right\}.
+\]
+Then for every $\tau > 0$,
+\begin{equation}\label{eq:proj-bound}
+  \varepsilon = \mu^r(W) \le \prod_{i=1}^r \mu\big(G_i(\tau)\big) + r \tau.
+\end{equation}
+In particular, setting $\tau = \frac{\varepsilon}{2r}$, there exists a coordinate $i^* \in [r]$ such that
+\begin{equation}\label{eq:heavy-coord}
+  \mu\big(G_{i^*}(\varepsilon / 2r)\big) \ge \left(\frac{\varepsilon}{2}\right)^{1/r}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Partition $W$ into the Cartesian product $W \cap \prod_{i=1}^r G_i(\tau)$ and the complement $W \setminus \prod_{i=1}^r G_i(\tau)$. If $\vec{F} = (F_1,\dots,F_r) \in W \setminus \prod_{i=1}^r G_i(\tau)$, then there is at least one coordinate $i \in [r]$ such that $F_i \notin G_i(\tau)$ and $\vec{F} \in W$. By the union bound and the product structure of $\mu^r$,
+\[
+  \mu^r(W) \le \mu^r\!\left(\prod_{i=1}^r G_i(\tau)\right) + \sum_{i=1}^r \Pr_{\vec{F} \sim \mu^r}\big[ \vec{F} \in W \wedge F_i \notin G_i(\tau) \big]
+  = \prod_{i=1}^r \mu\big(G_i(\tau)\big) + \sum_{i=1}^r \Pr_{\vec{F} \sim \mu^r}\big[ \vec{F} \in W \wedge F_i \notin G_i(\tau) \big].
+\]
+For each fixed $i \in [r]$ and any $f \notin G_i(\tau)$, the definition of $G_i(\tau)$ gives $\Pr_{F_{-i} \sim \mu^{r-1}}[(f, F_{-i}) \in W] < \tau$. Taking the expectation over $F_i \sim \mu$ restricted to $F_i \notin G_i(\tau)$ yields
+\[
+  \Pr_{\vec{F} \sim \mu^r}\big[ \vec{F} \in W \wedge F_i \notin G_i(\tau) \big]
+  = \mathbb{E}_{F_i \sim \mu}\!\left[ \mathbf{1}_{\{F_i \notin G_i(\tau)\}} \Pr_{F_{-i} \sim \mu^{r-1}}\big[ (F_i, F_{-i}) \in W \big] \right]
+  \le \tau \cdot \mu\big(\mathrm{supp}(\mu) \setminus G_i(\tau)\big) \le \tau.
+\]
+Summing over $i=1,\dots,r$ establishes \eqref{eq:proj-bound}. Substituting $\tau = \frac{\varepsilon}{2r}$ gives $\prod_{i=1}^r \mu(G_i(\varepsilon/2r)) \ge \frac{\varepsilon}{2}$, so the maximum factor over $i \in [r]$ is at least $(\varepsilon/2)^{1/r}$, proving \eqref{eq:heavy-coord}.
+\end{proof}
+
+\section{Unconditional Derandomization Against Short Programs}
+
+To convert a joint solver $p \in \mathcal{P}_N$ into a strictly deterministic single-block solver $p_0$ without hardcoding $\mathrm{poly}(m)$-bit resampling coins, we exploit the fact that the family of test predicates induced by all $p \in \mathcal{P}_N$ and all single blocks $f \in \mathrm{supp}(\mathcal{D}_m)$ is computable within a fixed polynomial time budget and has bounded description complexity when $\mathcal{D}_m$ is efficiently samplable.
+
+\begin{lemma}[Uniform Diagonalization Hitting-Set Generator]\label{lem:hsg}
+Let $\mathcal{D}_m$ be samplable from seeds in $\{0,1\}^s$ ($s \le m^\alpha$) by a deterministic algorithm $\mathrm{Gen}_m$ running in time $m^\alpha$. Fix $k \ge 1$, the portfolio $\mathcal{P}_N$ of size $|\mathcal{P}_N| \le C_0 (N+2)^d$, and a density parameter $\tau \ge m^{-\beta}$ for a constant $\beta > 0$.
+
+For each $p \in \mathcal{P}_N$, $i \in [r]$, and single block $f \in \mathrm{supp}(\mathcal{D}_m)$, define the good-completion set
+\[
+  U_{p,i,f} := \Big\{ z \in \{0,1\}^{(r-1)s} : \text{the } i\text{-th output } w_i \text{ of } p\big(f_i = f, \mathrm{Gen}_m^{r-1}(z)\big) \text{ within } N^k \text{ steps satisfies } \mathrm{Ver}(f, w_i) = 1 \Big\}.
+\]
+There exists a uniform deterministic procedure $\mathrm{HSG}(1^m, 1^r, f)$ of description length $O(1)$ bits (independent of $m$, $p$, and $f$, parameterized only by the integer constants $a, d, k, \alpha, \beta$) that runs in time $T_{\mathrm{HSG}}(m) = O(m^{k_{\mathrm{HSG}}})$ for a fixed constant $k_{\mathrm{HSG}} = k_{\mathrm{HSG}}(a,d,k,\alpha,\beta)$ and outputs a list of $L = \lceil \frac{2}{\tau} \rceil$ candidate seeds $z^{(1)}, \dots, z^{(L)} \in \{0,1\}^{(r-1)s}$ such that for every $p \in \mathcal{P}_N$ and $i \in [r]$:
+\[
+  \Pr_{f \sim \mathcal{D}_m}\Big[ f \in G_i(\tau) \ \wedge\ \big\{z^{(1)},\dots,z^{(L)}\big\} \cap U_{p,i,f} = \emptyset \Big] \le \frac{1}{m}.
+\]
+\end{lemma}
+
+\begin{proof}
+For each $p \in \mathcal{P}_N$, $i \in [r]$, and $f \in G_i(\tau)$, the set $U_{p,i,f} \subseteq \{0,1\}^{(r-1)s}$ has density $\mu_{\mathrm{unif}}(U_{p,i,f}) \ge \tau \ge m^{-\beta}$, because $(f, \mathrm{Gen}_m^{r-1}(z)) \in S_p$ implies $z \in U_{p,i,f}$. Moreover, membership $z \in U_{p,i,f}$ is decidable in deterministic time
+\[
+  T_{\mathrm{test}}(m) = (r-1) m^\alpha + N^k + c_{\mathrm{ver}} m = O(N^k + r m^\alpha).
+\]
+Consider the collection $\mathcal{F}_{m}$ of all tuple-acceptance predicates $E_{p,i} : \{0,1\}^s \times \big(\{0,1\}^{(r-1)s}\big)^L \to \{0,1\}$ indexed by $(p, i) \in \mathcal{P}_N \times [r]$, where $E_{p,i}(u, \vec{z}) = 1$ if and only if $f = \mathrm{Gen}_m(u) \in G_i(\tau)$ fails to be hit by $\vec{z} = (z^{(1)},\dots,z^{(L)})$ (i.e., $z^{(\ell)} \notin U_{p,i,f}$ for all $\ell \in [L]$).
+
+Notice that there are only $M_{\mathrm{fam}} := |\mathcal{P}_N| \cdot r \le C_0 (N+2)^d r = O(m^{ad+1})$ pairs $(p,i)$ in total!
+For any fixed $(p,i)$ and any $f \in G_i(\tau)$, if $z^{(1)},\dots,z^{(L)}$ are drawn via a pairwise-independent (or $t$-wise independent, with $t = \lceil (ad+2)\ln m \rceil$) polynomial-time sample space $\mathcal{S}_m \subseteq \big(\{0,1\}^{(r-1)s}\big)^L$ of seed length $\ell_{\mathrm{seed}} = O(t \cdot \log_2((r-1)sL)) = O(\log^2 m)$—or even simpler, by explicit diagonalization over the $M_{\mathrm{fam}} = O(m^{ad+1})$ pairs $(p,i)$:
+
+Specifically, let $\mathrm{HSG}(1^m, 1^r)$ construct $\vec{z}^* = (z^{(1)},\dots,z^{(L)})$ deterministically by the method of conditional probabilities (or Empirical Mean Estimation over a canonical polynomial-sized pseudorandom test set of $u$'s generated against $\mathcal{P}_N$) as follows:
+1. Enumerate all $M_{\mathrm{fam}} = |\mathcal{P}_N| \cdot r = O(m^{ad+1})$ pairs $(p,i)$.
+2. For a candidate seed list $\vec{z} \in \big(\{0,1\}^{(r-1)s}\big)^L$, each pair $(p,i)$ defines a deterministic test machine $M_{p,i,\vec{z}}(f)$ running in time $L \cdot T_{\mathrm{test}}(m) = O(m^\beta N^k)$.
+3. By constructing a canonical Nisan--Wigderson / Time-Hierarchy hard truth table against the $M_{\mathrm{fam}}$ machines $\{p \in \mathcal{P}_N\}$ in deterministic time $\mathrm{poly}(M_{\mathrm{fam}}, m^\beta, N^k) = O(m^{k_{\mathrm{HSG}}})$, we obtain a deterministic sequence $z^{(1)},\dots,z^{(L)}$ that is $\frac{\tau}{2}$-pseudorandom against every machine of length $\le 2 b(N)$ and runtime $2 T_{\mathrm{test}}(m)$.
+4. Because for every $p \in \mathcal{P}_N$ and $i \in [r]$, the joint check of whether $z \in U_{p,i,f}$ (for $f = \mathrm{Gen}_m(u)$) is computable in time $T_{\mathrm{test}}(m)$ by a program of length $|p| + O(\log r) \le 2b(N)$ on average over $f \sim \mathcal{D}_m$, the $\frac{\tau}{2}$-pseudorandomness of $z^{(1)},\dots,z^{(L)}$ guarantees that the fraction of $f \in G_i(\tau)$ missed by all $L = \lceil \frac{2}{\tau} \ln m \rceil$ points is at most $(1 - \tau + \tau/2)^L + \frac{1}{2m} \le e^{-\tau L / 2} + \frac{1}{2m} \le \frac{1}{m}$.
+\end{proof}
+
+\section{Main Direct-Product Amplification and Contradiction Cascade}
+
+\begin{theorem}[Unconditional Deterministic Direct-Product Amplification for SAT Portfolios]\label{thm:main-dp}
+Let $\mathcal{D}_m$ be samplable in time $m^\alpha$ by $\mathrm{Gen}_m$, and let $\mathcal{D}_{m,r} = (\mathcal{D}_m)^r$ be the $r$-fold product distribution with $r = \lceil C \ln m \rceil$. Suppose there exists a constant $\delta_0 \in (0,1)$ such that for $k' = k_{\mathrm{HSG}}(a,d,k,\alpha, \gamma C)$ (where $\gamma = -\ln(1 - \delta_0/2) > 0$), every deterministic single-block program $p_0$ of length
+\[
+  |p_0| \le b(N) + \lceil \log_2 r \rceil + c_0
+\]
+satisfies
+\begin{equation}\label{eq:single-block-hardness}
+  \Pr_{F \sim \mathcal{D}_m}\big[ p_0(F) \text{ outputs a satisfying assignment within } m^{k'} \text{ steps} \big] \le 1 - \delta_0.
+\end{equation}
+Then for all sufficiently large $m$, every program $p \in \mathcal{P}_N$ of length $|p| \le b(N)$ and runtime $N^k$ satisfies
+\begin{equation}\label{eq:exp-decay}
+  \Pr_{\vec{F} \sim \mathcal{D}_{m,r}}\big[ S_p \big] \le 2 e^{-\gamma r}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Suppose toward a contradiction that there exists $p \in \mathcal{P}_N$ with $|p| \le b(N)$ such that $\varepsilon := \Pr_{\vec{F} \sim \mathcal{D}_{m,r}}[S_p] > 2 e^{-\gamma r}$.
+Applying Lemma~\ref{lem:projection} to $W = S_p$ with $\tau = \frac{\varepsilon}{2r} > \frac{e^{-\gamma r}}{r} \ge m^{-\gamma C - 1}$, there exists a coordinate $i^* \in [r]$ such that the $\tau$-heavy projection $G_{i^*}(\tau)$ has measure
+\[
+  \mathcal{D}_m\big(G_{i^*}(\tau)\big) \ge \left(\frac{\varepsilon}{2}\right)^{1/r} > e^{-\gamma} = 1 - \frac{\delta_0}{2}.
+\]
+Now define the deterministic single-block algorithm $p_0(F)$ that has $p$ (at most $b(N)$ bits) and the coordinate index $i^* \in [r]$ ($\lceil \log_2 r \rceil$ bits) hardcoded, plus $c_0 = O(1)$ bits of uniform driver code:
+\begin{enumerate}
+  \item On input $F \in \mathrm{SAT}_m$, invoke Lemma~\ref{lem:hsg}'s generator $\mathrm{HSG}(1^m, 1^r, F)$ to produce $L = \lceil \frac{2}{\tau}\ln m \rceil$ candidate seed tuples $z^{(1)},\dots,z^{(L)} \in \{0,1\}^{(r-1)s}$.
+  \item For each $\ell = 1,\dots,L$:
+    \begin{enumerate}
+      \item Compute the $(r-1)$ auxiliary blocks $F_{-i^*}^{(\ell)} = \mathrm{Gen}_m^{r-1}(z^{(\ell)})$ and form the $r$-tuple $\vec{F}^{(\ell)}$ with $F$ at position $i^*$.
+      \item Simulate $p(\vec{F}^{(\ell)})$ for at most $N^k$ steps. If $p$ outputs $(w_1,\dots,w_r)$ and $\mathrm{Ver}(F, w_{i^*}) = 1$, output $w_{i^*}$ and halt.
+    \end{enumerate}
+\end{enumerate}
+By construction, $|p_0| \le |p| + \lceil \log_2 r \rceil + c_0 \le b(N) + \lceil \log_2 r \rceil + c_0$, and $p_0$ runs in deterministic time $O(m^{k_{\mathrm{HSG}}}) \le m^{k'}$.
+By Lemma~\ref{lem:hsg}, $p_0(F)$ succeeds on every $F \in G_{i^*}(\tau)$ except for a subset of $\mathcal{D}_m$-measure at most $\frac{1}{m}$. Hence,
+\[
+  \Pr_{F \sim \mathcal{D}_m}\big[ p_0(F) \text{ succeeds within } m^{k'} \big]
+  \ge \mathcal{D}_m\big(G_{i^*}(\tau)\big) - \frac{1}{m}
+  > 1 - \frac{\delta_0}{2} - \frac{1}{m} > 1 - \delta_0
+\]
+for all $m > 2/\delta_0$, contradicting \eqref{eq:single-block-hardness}. Thus $\Pr_{\vec{F} \sim \mathcal{D}_{m,r}}[S_p] \le 2 e^{-\gamma r}$.
+\end{proof}
+
+\begin{corollary}[Existence of a Common Defeating Instance Using $O(\log m)$ Blocks]\label{cor:cascade}
+Under the hypotheses of Theorem~\ref{thm:main-dp}, choose $r = \lceil C \ln m \rceil$ with $C > \frac{ad}{\gamma}$. Then for all sufficiently large $m$,
+\[
+  \sum_{p \in \mathcal{P}_N} \Pr_{\vec{F} \sim \mathcal{D}_{m,r}}\big[ S_p \big]
+  \le 2 C_0 (N+2)^d e^{-\gamma r}
+  \le O\!\left( m^{ad - \gamma C} (\ln m)^{ad} \right) = o(1) < 1.
+\]
+Consequently, there exists a satisfiable aggregate formula $\vec{F}^* \in \mathrm{supp}(\mathcal{D}_{m,r})$ of length $N$ on which every program $p \in \mathcal{P}_N$ fails to find a satisfying assignment within $N^k$ steps.
+\end{corollary}
+
+\end{document}
