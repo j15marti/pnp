@@ -1,0 +1,60 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\title{Claude Circuit-SAT Lower-Bound Ladder (living document)}
+\date{Last updated: 2026-10-28 (run 1)}
+\begin{document}\maketitle
+
+\section*{Status (strict labels)}
+\textbf{P versus NP remains OPEN.} Nothing here proves a super-polynomial lower bound for Circuit-SAT.
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Build circuits bottom-up: for each number of inputs $n$ record the minimum wires $w(n)$ (and gates $g(n)$) of circuits
+for all $n$-input functions, then ask how the cost of \emph{deciding satisfiability} of a circuit with parameters
+$(n,m)$ ($m$ = wires) must scale. Lower bound is allowed to be parameterized: $T(n,m)$.
+
+\section{Ladder of exact data (COMPUTATIONAL)}
+Model: fan-in-2 AND gates, free negation on wires (so wires $=2\cdot$gates), constants free, functions counted
+modulo complement. Exhaustive level-wise search
+(\texttt{experiments/claude\_circuitsat/aig\_min.py}, raw data \texttt{aig\_min\_results.json}).
+
+\begin{center}\begin{tabular}{@{}cccl@{}}\toprule
+$n$ & classes & max gates $g^*(n)$ & max wires $2g^*(n)$\\\midrule
+1 & 2 & 0 & 0\\ 2 & 8$^\dagger$ & 3 & 6\\ 3 & 128 & 6 & 12\\\bottomrule\end{tabular}\end{center}
+$^\dagger$ includes the constant class and the 7 non-constant classes found by the search.
+Gate-count histogram for $n=3$ (gates:classes): 0:4, 1:12, 2:32, 3:15, 4:52, 5:4, 6:9.
+Max complexity $3\to6$ already matches XOR/MUX-type hardness; $n=4$ is beyond a 30-second exhaustive run in this
+naive search (state count grows ~8$\times$ per level) and needs a smarter (canonical/NPN, SAT-based) method: TODO.
+
+\section{Proved elementary facts}
+\begin{prop}[PROVED/EXACT: connectivity] A function depending on all $n$ inputs needs $\ge n-1$ fan-in-2 gates, i.e.\ $\ge 2(n-1)$ wires; $\mathrm{AND}_n$ meets this.\end{prop}
+\begin{prop}[PROVED/EXACT: reading bound, parameterized]
+In the model where the circuit is a read-only list of $m$ gate descriptors, every deterministic Circuit-SAT decider
+inspects $\Omega(m)$ descriptors on worst-case inputs.\end{prop}
+\emph{Proof.} Take an AND-chain over inputs (satisfiable). Altering any single unread gate's second operand to constant~0
+makes it unsatisfiable, so an algorithm that skips a gate errs on one of the two instances. \qed
+
+This is only linear and is a description-size bound, not a computational lower bound; it is the base rung.
+
+\section{Known context}
+KNOWN THEOREM (cited from memory, to verify next run): best explicit general-circuit size lower bounds are $\approx 3.1n$
+(Li--Yang 2022) for B$_2$ and $\approx 5n$ for U$_2$ (Find et al.\ 2016); these are for explicit functions, not
+tied to SAT time. Conditional: SETH-type hypotheses give $2^{n(1-o(1))}\mathrm{poly}$ for Circuit-SAT (CONDITIONAL, not proof).
+Repository (\texttt{j15marti/pnp}) pursues ARC/FLMV time--space contraction; per AGENTS.md all load-bearing arrows remain OPEN.
+No link to that spine has been established here (OPEN; not yet audited in depth this run).
+
+\section{Parameterized targets (CANDIDATE / OPEN)}
+\begin{itemize}
+\item Fixed-$n$ ladder: $T(n,m)\ge \Omega(m)$ (proved) vs.\ brute force $O(2^n m)$. Gap is the whole question.
+\item Next rung: restricted classes (read-once, monotone, bounded fan-out/treewidth $k$): known $2^{O(k)}m$ algorithms
+  for bounded treewidth---a parameterized \emph{upper} bound; look for matching conditional lower bounds in $k$.
+\item Compute $g^*(4)$ and per-function wire minima via SAT-based exact synthesis; tabulate wire-vs-$n$ growth against
+  Lupanov $2^n/n$.
+\end{itemize}
+
+\section{Run log}
+2026-10-28 run 1: created document, exhaustive $n\le3$ table, two elementary propositions. No repo corpus audit beyond
+confirming the file did not exist.
+\end{document}
