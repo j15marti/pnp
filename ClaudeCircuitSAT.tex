@@ -1,0 +1,75 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-10-28
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{thm}{Theorem}\newtheorem{lem}[thm]{Lemma}
+\title{Circuit-SAT Lower Bounds, Built Up Wire by Wire}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated 2026-10-28}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here proves a superpolynomial
+Circuit-SAT lower bound. Labels: PROVED, COMPUTATIONAL, OPEN, KNOWN.
+Parameters: $n$ inputs, $g$ two-input gates, $w=2g$ gate in-wires (fan-out free).
+
+\section{Level 0--1: wire accounting for the smallest circuits}
+\begin{lem}[PROVED: connectivity bound]
+If a fan-in-2 circuit's output depends on all $n$ inputs, then $g\ge n-1$ and
+$w\ge 2(n-1)$. Proof: the underlying graph has $n+g$ nodes and $2g$ edges and
+must be connected, so $2g\ge n+g-1$. Equality holds for formulas (trees).
+\end{lem}
+\begin{lem}[PROVED: reading bound]
+Any deterministic Circuit-SAT algorithm needs $\Omega(g)$ time on size-$g$
+instances. Family: $C_j=x_1\wedge\dots\wedge x_{n-1}\wedge\ell_j$ where the last
+literal is $x_n$ or $\neg x_i$ for hidden $i$; changing an unread wire flips
+nothing the algorithm saw, yet satisfiability can flip ($\ell=\neg x_i$ makes
+it UNSAT). So every wire must be read. (Trivial; no superlinear content.)
+\end{lem}
+
+\section{Level 2: exact minimal sizes for small $n$ (COMPUTATIONAL)}
+Exhaustive search over all circuits in basis $B_2$ (all 16 binary gates,
+constants free, negation costs one gate), script
+\texttt{experiments/claude\_circuitsat/mincirc.py}, raw output
+\texttt{results/raw/claude\_circuitsat/mincirc\_n2\_n3.txt}.
+\begin{center}\begin{tabular}{c|ccccc}
+$n$ & cost 0 & 1 & 2 & 3 & 4\\\hline
+2 & 4 & 12 & -- & -- & --\\
+3 & 5 & 33 & 114 & 80 & 24
+\end{tabular}\end{center}
+So $\max C(f)=1$ for $n=2$ and $4$ for $n=3$ (wires $2$ and $8$). The maximum
+is a data point for the sequence $M(n)=\max_f C_{B_2}(f)$ (KNOWN: $\Theta(2^n/n)$
+by Shannon/Lupanov, so non-explicit). Search is not extended to $n=4$ yet.
+
+\section{Level 3: decision (SAT) versus computation}
+Circuit-SAT asks for $\exists x\,C(x)=1$, not $C$'s full truth table.
+\begin{itemize}
+\item KNOWN (black-box): without reading $C$, $2^n$ queries are needed
+(adversary hides one accepting point). This is the parameterized baseline
+$T\ge 2^n$ for oracle access and is not a white-box bound.
+\item KNOWN (conditional): SETH implies no $O(2^{(1-\epsilon)n}\mathrm{poly}(g))$
+algorithm; this is a hypothesis, not a proof.
+\item KNOWN: Circuit-SAT is solvable in $2^{n-\Omega(\cdot)}$ time for
+restricted classes (formulas, $AC^0$, small-depth); the general-circuit bound
+below $2^n\mathrm{poly}$ is open.
+\end{itemize}
+
+\section{Parameterized targets (OPEN)}
+Target statement: for $g\le s(n)$, any algorithm in model $\mathcal M$ needs
+$T(n,g)\ge f(n)\cdot g$ with $f$ superpolynomial. Candidate parameters:
+$n$, $g$, wire-count, treewidth/cutwidth of the circuit graph (SAT is
+$2^{O(\mathrm{tw})}\mathrm{poly}$ via DP, so any hard family needs large
+treewidth), fan-out. Wire-by-wire plan: track, per added gate, the number of
+new wires and the increase in cutwidth, then ask which cutwidth growth forces
+DP-state blow-up. A DP-state lower bound would only bound one algorithm family.
+
+\section{Repository cross-check}
+\texttt{main.tex} (repo root) contains backward shared-input Circuit-SAT
+formulations (around lines 3772, 4099) tied to the ARC/FLMV spine; those are
+conditional/open there and provide no unconditional bound used here.
+
+\section{Next steps}
+(1) extend exhaustive minimal circuits to $n=4$ in chunks; (2) tabulate cutwidth
+of minimal circuits vs.\ $n$; (3) search for a hard-for-DP family with
+cutwidth $\Omega(g)$; (4) read the ARC/FLMV Circuit-SAT sections for any
+exploitable accounting.
+% END_OF_DOCUMENT
+\end{document}
