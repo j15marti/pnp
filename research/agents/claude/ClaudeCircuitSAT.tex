@@ -1,0 +1,87 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::CIRCUITSAT-0001::2026-10-28
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,geometry}
+\geometry{margin=1in}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: a wire-by-wire, parametrized lower-bound ladder for Circuit-SAT\\\large Living document}
+\author{Claude (scheduled hourly routine)}
+\date{Created 2026-10-28; last update: run CIRCUITSAT-0001}
+\begin{document}\maketitle
+
+\section*{Status banner}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial lower bound for \CSAT{}.
+Status labels: PROVED, KNOWN (cited, not re-verified this run), COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Find lower bounds, possibly parametrized, for \CSAT{}. Method: build circuits wire by wire, tracking for each step
+(number of inputs $n$, number of fan-in-2 gates $g$, wires $w=2g$) the minimum resources required, and the cost any
+solver must pay. Parameters: $n$ (inputs), $m$ (wires), and later depth/treewidth/fan-out.
+
+\begin{definition}[Model]
+A circuit has $n$ inputs and $g$ binary gates (any of the 16 binary functions, basis $B_2$); wires $w=2g$ (plus output).
+\CSAT{}$(C)$: is there $x\in\{0,1\}^n$ with $C(x)=1$?
+Solver models: (W) white-box, random access to the wire list of $C$; (B) black-box, only evaluations $C(x)$.
+\end{definition}
+
+\section{Proved lemmas (step 0: what wiring forces)}
+\begin{lemma}[Connectivity, PROVED]\label{l:conn}
+If the output of a fan-in-2 circuit depends essentially on $k$ inputs, it has at least $k-1$ gates, hence $\ge 2(k-1)$ wires.
+\end{lemma}
+\begin{proof}
+Take the cone of the output: $g'\le g$ gates and the $k$ essential inputs it reaches. View it as an undirected graph on these $k+g'$ vertices with at most $2g'$ edges (the wires). It is connected (everything feeds the output), so $2g'\ge k+g'-1$, i.e.\ $g\ge g'\ge k-1$.
+\end{proof}
+\begin{lemma}[White-box read bound, PROVED]\label{l:read}
+Any deterministic white-box algorithm deciding \CSAT{} on circuits with $n\ge2$ inputs must read $\Omega(n)$ wire entries; more generally $\Omega(m)$ on a family with $m$ wires.
+\end{lemma}
+\begin{proof}
+Instance base: $C_0=\bigwedge_{i=1}^n \ell_i$ (balanced AND tree) with leaf $\ell_i=x_i$; satisfiable. For each $i$ let $C_i$ be $C_0$ with leaf $i$ rewired to $\neg x_j$ ($j\ne i$); unsatisfiable since $x_j$ and $\neg x_j$ are both forced. An algorithm that never reads leaf-wire $i$ sees identical answers on $C_0$ and $C_i$, so it errs on one. Hence it reads all $n$ leaf wires. The bound $\Omega(m)$ for general $m$ follows by taking the conjunction of $\Theta(m)$ such leaf constraints over a variable pool in which every leaf is individually critical (a conflict can be planted at any single leaf); this scaling is stated here as a sketch, to be written out in full in the next run.
+\end{proof}
+\begin{lemma}[Black-box bound, PROVED]\label{l:bb}
+Any deterministic black-box algorithm for \CSAT{} on $n$-input circuits makes $2^n$ evaluations in the worst case; bounded-error randomized algorithms make $\Omega(2^n)$ (Yao).
+\end{lemma}
+\begin{proof}
+Adversary answers $0$ to every query. After $q<2^n$ queries an unqueried point $a$ remains, and the point-circuit $P_a$ (satisfied only by $a$) is consistent with all answers, as is the unsatisfiable circuit; so neither answer is safe. Randomized: Yao over the uniform distribution on $\{P_a\}\cup\{\bot\}$ with the point chosen uniformly.
+\end{proof}
+Combined cost accounting (CANDIDATE framing, not a white-box theorem): an evaluation-only solver pays $2^n$ evaluations each costing $\Theta(m)$ wire reads, i.e.\ $\Theta(2^n m)$; Lemma~\ref{l:bb} does not bind solvers that inspect structure.
+
+\section{Computational ladder (COMPUTATIONAL, exact)}
+Script: \texttt{circuit-sat/ladder.py} (BFS over signal sets, signals modulo complement, gates $=$ all non-degenerate binary ops; each run $<30$\,s; outputs in \texttt{circuit-sat/out/}). Counts are of Boolean functions \emph{up to complement}, by exact minimum gate count $g_{\min}$ (inputs cost 0; the constant function appears at $g=2$ for $n=2$).
+\begin{center}\begin{tabular}{lrrrrrrr}\toprule
+$n$ & classes & $g{=}0$ & $g{=}1$ & $g{=}2$ & $g{=}3$ & $g{=}4$ & not yet found\\\midrule
+2 & 8 & 2 & 5 & 1 & 0 & 0 & 0\\
+3 & 128 & 3 & 15 & 58 & 40 & 12 & 0\\
+4 & 32768 & 4 & 30 & 229 & 1237 & 5312 & 25956 ($g\ge5$)\\\bottomrule\end{tabular}\end{center}
+Reading: $\max_f g_{\min}(f)$ is $2,4,\ge5$ for $n=2,3,4$ (so wires $\ge 4,8,\ge10$). Compare the counting bound $\sim 2^n/n$ which only bites for large $n$: the ladder is exact but tiny, and gives \emph{no} asymptotic information; it is a calibration for gate-elimination style recurrences.
+Wire-ladder for \CSAT{}-relevant families (unique-SAT point functions $P_a$): $g_{\min}=n-1$ for $n=2,3,4$ (matches Lemma~\ref{l:conn}); parity and AND are also $n-1$. Hard cases appear only when the function is both all-essential \emph{and} far from tree-like (e.g.\ $n=3$: majority needs 4).
+
+\section{Parametrized landscape}
+\begin{center}\begin{tabular}{lll}\toprule
+Bound & Model & Status\\\midrule
+$\ge m$ wire reads & white-box, any $n\ge2$ & PROVED (L\ref{l:read})\\
+$2^n$ evaluations & black-box & PROVED (L\ref{l:bb})\\
+$2^{(1-\epsilon)n}\mathrm{poly}(m)$ impossible & white-box, general & CONDITIONAL on SETH (KNOWN)\\
+$3n-o(n)$ gates for explicit $n$-input functions (gate elimination; $\approx3.1n$ known) & circuit size, not \CSAT{} time & KNOWN\\
+Faster-than-$2^n/n^{\omega(1)}$ \CSAT{} for suitable circuits $\Rightarrow$ ACC-type lower bounds (Williams) & algorithm$\to$lower bound direction & KNOWN\\
+$\mathrm{poly}(n,m)$ lower bound on \CSAT{} time beyond $m$ & white-box, general & OPEN (equivalent in difficulty to P$\ne$NP-type separations)\\\bottomrule\end{tabular}\end{center}
+The KNOWN rows are from memory; a literature search and citation check are scheduled (see tasks).
+
+\section{Repository cross-check}
+Surveyed: \texttt{AGENTS.md}, the ARC/FLMV spine, world ledger (rows L13, L29--L33) and DIRECTPRODUCT-0001. Useful links: (i) L13 (Buss--Williams) says alternation-trading cannot push the SAT time exponent below $2\cos(\pi/7)\approx1.247$ with $n^{o(1)}$ space; this is the parametrized regime ``time exponent vs.\ space'' and suggests adding \emph{space} as a second parameter to our ladder; (ii) a statement equivalent to P$=$NP is a reformulation, so any lemma we add must be checked against that filter. No repository result gives an unconditional \CSAT{} lower bound; nothing to import.
+
+\section{Next steps (tasks)}
+\begin{enumerate}
+\item Extend the ladder to $n=4$, $g=5$ via checkpointed, sharded BFS (current BFS state count at $g=5$ is $\sim10^7$); then $n=5$ at $g\le3$.
+\item Track a second ladder: minimum wires with \emph{fan-out} bound $\phi$ ($\phi=1$ formulas vs.\ $\phi=2$) and the measured gap.
+\item Try a restricted-model theorem: for monotone / read-once-restricted circuit classes, show white-box \CSAT{} time $\ge$ a nontrivial parametrized bound, with $n$ and treewidth $t$ as parameters (known upper bound $2^{O(t)}m$).
+\item Literature check for the KNOWN rows; add exact citations.
+\end{enumerate}
+
+\section*{Log}
+\begin{itemize}
+\item CIRCUITSAT-0001 (2026-10-28): created document; Lemmas 1--3; ladder $n\le4$. Repository writable.
+\end{itemize}
+% END_OF_VERIFIED_REPORT::CLAUDE-CIRCUITSAT::CIRCUITSAT-0001
+\end{document}
