@@ -1,0 +1,50 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append/revise in place each hourly run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\title{Wire-by-Wire Lower Bounds for Circuit-SAT\\ \large Living document (ClaudeCircuitSAT)}
+\author{Claude scheduled routine}
+\date{Last updated: 2026-10-28 (run 1)}
+\begin{document}\maketitle
+
+\section*{Status (strict labels)}
+\textbf{No unconditional super-polynomial lower bound for Circuit-SAT is proved here; P vs NP remains OPEN.}
+Everything below is a small-case ladder with PROVED/EXACT or COMPUTATIONAL labels, plus OPEN arrows.
+
+\section{Model and parameters}
+A circuit $C$ has $n$ inputs, fan-in-2 gates over $B_2$, $g$ gates, $w=2g$ in-wires.
+CircuitSAT: given $C$ (explicit, read-only), decide $\exists x\,C(x)=1$.
+Candidate parameters: $n$, $w$, and a \emph{reconvergence parameter} $k$ = number of nodes with fan-out $>1$ (so $k=0$ iff $C$ is a formula tree/read-once).
+
+\section{Step ladder}
+\paragraph{Step 0 ($n=1$).} Functions $x,\bar x,0,1$; $0$ gates, $0$ wires. Decision is $O(1)$.
+
+\paragraph{Step 1 ($n=2$).} COMPUTATIONAL/EXACT (exhaustive BFS, \texttt{experiments/claude\_circuitsat/min\_gates.py}): of 16 functions, 6 need 0 gates, 10 need 1 gate (2 wires). Max $C=1$.
+
+\paragraph{Step 2 ($n=3$).} Exhaustive search over all sets of computed truth tables, depth $\le4$, reached all 256 functions: 
+\begin{center}\begin{tabular}{lccccc}\toprule
+$C(f)$ gates & 0 & 1 & 2 & 3 & 4\\ \midrule
+\# functions & 8 & 30 & 114 & 80 & 24\\ \bottomrule\end{tabular}\end{center}
+Hence every 3-variable function has circuit with $\le 4$ gates ($\le 8$ wires) and the minimum wire count of a circuit computing $f$ is $2C(f)$. (Raw: \texttt{results/raw/claude\_circuitsat/min\_gates\_n3.json}; $n=2$ file likewise.) Next: $n=4$ needs a smarter (SAT-based or symmetry-reduced) search; chunk into $<30$s stages.
+
+\section{Proved lemmas (elementary)}
+\begin{lemma}[connectivity] A fan-in-2 circuit whose output depends on all $n$ inputs has $\ge n-1$ gates, i.e.\ $\ge 2(n-1)$ in-wires, with equality iff it is a tree (read-once formula). PROVED/EXACT: the output's cone is connected with $n$ leaves; a binary DAG with $n$ sources reaching one sink has $\ge n-1$ internal nodes.\end{lemma}
+\begin{lemma}[input-reading, $k=0$] Any correct deterministic CircuitSAT algorithm must read $\Omega(w)$ symbols of the description on the family $\mathrm{AND}$ of $n$ literals ($w=2(n-1)$). PROVED: if a literal's sign is unread, flip it; the instance changes between SAT and UNSAT only if the algorithm's answer was forced by that literal, i.e.\ take the instance with all literals consistent (SAT) vs.\ one with $x_i$ and $\bar x_i$ both present (UNSAT); an unread position cannot be distinguished.\end{lemma}
+\begin{lemma}[tree upper bound] If $k=0$, SAT is decidable in $O(w)$ time by bottom-up (sat-set/ constraint) evaluation \emph{for read-once formulas}; hence the Step-0 bound $\Theta(w)$ is tight at $k=0$. PROVED. (Each variable appears once, so subtree satisfiability of both polarities is independent.)\end{lemma}
+\begin{lemma}[branching on shared nodes] SAT is solvable in $2^{k}\cdot O(w)$ by fixing the $k$ fan-out nodes' values and propagating (checking consistency). PROVED upper bound (parametrized by $k$).\end{lemma}
+\begin{lemma}[black-box] In the oracle model (evaluate $C$ on chosen $x$, no structural access) deterministic decision of $\exists x\,C(x)=1$ needs $2^{n}-1$ queries. PROVED (adversary answers 0 until one point remains; unique-SAT). This is \emph{not} a lower bound for the explicit-circuit model.\end{lemma}
+
+\section{Parametrized picture}
+\[\Omega(w)\ \le\ T_{\text{explicit}}(n,w,k)\ \le\ 2^{k}\,O(w),\qquad T_{\text{oracle}}(n)=2^{n}-1.\]
+Gap to close (OPEN): is $T_{\text{explicit}}\ge 2^{\Omega(k)}$ for $k=\Theta(n)$ in any natural restricted model (e.g.\ proof-system or branching-program models)? Known literature (recalled, \emph{not re-verified this run}): SETH-conditional $2^{n}$ lower bounds for CNF/circuit SAT and treewidth-parametrized $2^{\mathrm{tw}}$ conditional tightness. These are CONDITIONAL, not usable for an unconditional claim.
+
+\section{Cross-check with repository j15marti/pnp}
+Surveyed AGENTS.md and recent commits: the active spine is ARC/FLMV time--space contraction; no artifact there yields a Circuit-SAT wire-count lower bound, and the repository itself keeps P vs NP OPEN. No transfer used this run.
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item Compute $C(f)$ and minimum \emph{wire/fan-out} profiles for $n=4$ (SAT-encoded exact synthesis, staged $<30$s).
+\item Track, per $n$, the minimum $k$ needed for circuits of functions with $2^{n}$-hard-looking structure (e.g.\ XOR-chains force $k>0$? examine parity: a tree suffices, so $k$ is not function-invariant; define min over circuits).
+\item Find a restricted model where $2^{\Omega(k)}$ is provable (e.g.\ monotone/ resolution-style).
+\end{enumerate}
+\end{document}
