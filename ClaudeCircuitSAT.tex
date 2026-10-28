@@ -1,0 +1,61 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::CSAT-0001::2026-10-28
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\title{ClaudeCircuitSAT: A Parameterized Lower-Bound Ladder for Circuit-SAT\\\large Living document}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated 2026-10-28 (run CSAT-0001)}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial lower bound for Circuit-SAT. Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and plan}
+Build lower bounds for Circuit-SAT from the simplest circuits upward, tracking at each step (i) the number of gates $g$, (ii) wires $w$ (edges of the DAG), (iii) inputs $n$, and the cost of deciding satisfiability. Bounds are stated as functions of the parameters $(n,g,w)$, since the true bound may be parameterized (e.g.\ $2^{\Omega(n)}$ only under hypotheses, $\Omega(w)$ unconditionally).
+
+\paragraph{Model.} Circuits over $B_2$ (all 16 binary gates, fan-in 2, unbounded fan-out), $n$ inputs, one output; $w=2g$ gate-input wires. Circuit-SAT: given a description, decide whether some $x\in\{0,1\}^n$ gives output 1.
+
+\section{Ladder level 0: structural wire counts}
+\begin{proposition}[PROVED/EXACT] If a circuit's output depends on all $n$ inputs, then $g\ge n-1$ and $w\ge 2(n-1)$; equality is attained by a tree (e.g.\ an AND of the inputs).\end{proposition}
+\begin{proof} The underlying graph of the sub-DAG reaching the output must connect the $n$ inputs to one output; fan-in-2 gates each merge at most two components, so at least $n-1$ gates are needed. A balanced AND tree attains $n-1$.\end{proof}
+
+\section{Ladder level 1: description-reading lower bound}
+\begin{theorem}[PROVED/EXACT, probe model] Every deterministic algorithm that decides Circuit-SAT on descriptions with $g$ gates by probing positions of the description must make $\Omega(g)$ probes in the worst case, even for $n=1$.\end{theorem}
+\begin{proof} Let $C_0=\bigvee_{i=1}^{k}(x_1\wedge\neg_i x_1)$ where each $\neg_i$ is a separate NOT gate and the OR is a balanced tree; $g=\Theta(k)$, $C_0$ is unsatisfiable. For each $i$ let $C_i$ replace the second input wire of the $i$-th AND by $x_1$ itself ($x_1\wedge x_1$), which makes $C_i$ satisfiable. $C_i$ differs from $C_0$ in one wire. An algorithm that, on $C_0$, fails to probe the position of that wire for some $i$ gives the same answer on $C_i$ with the same probe history, so is wrong on one of them. Hence $\ge k=\Omega(g)$ probes.\end{proof}
+This is trivial but it fixes the baseline: the linear term in $w$ is unconditional and is not the obstacle.
+
+\section{Ladder level 2: black-box (assignment-query) bound}
+\begin{theorem}[PROVED/EXACT, query model] An algorithm given only oracle access to $x\mapsto C(x)$ needs $2^n$ queries in the worst case to decide satisfiability.\end{theorem}
+\begin{proof} The answers to a query set $Q$ with $|Q|<2^n$ are consistent with the zero function and with the indicator of any unqueried point.\end{proof}
+Circuits witnessing it are AND-of-literals trees, of size exactly $n-1$ (Level 0). \emph{Gap:} real algorithms see the wiring; the black-box bound says nothing about white-box algorithms. Closing this gap is exactly the content of the problem (CANDIDATE routes: restricted algorithm classes, e.g.\ DPLL-type resolution lower bounds, are KNOWN for those models only).
+
+\section{Ladder level 3: exact minimum sizes of small functions}
+\textbf{COMPUTATIONAL.} Script \texttt{research/agents/claude/circuitsat/exact\_circuit\_size.py} computes by exhaustive search over sets of computed functions the exact minimum $B_2$ gate count of every $n$-input function.
+\begin{center}\begin{tabular}{lrrrrrr}\toprule
+$n$ & \#fns & 0 gates & 1 & 2 & 3 & 4\\\midrule
+1 & 4 & 3 & 1 & & & \\
+2 & 16 & 4 & 12 & & & \\
+3 & 256 & 5 & 33 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+So the maximum is $1,1,4$ gates for $n=1,2,3$ (agrees with the known value 4 for $n=3$). Wires $=2\cdot$gates. The next step ($n=4$, 65\,536 functions, known maximum 7) needs a chunked/SAT-based exact synthesis rather than set-BFS; TODO.
+
+\section{Known results used as external anchors}
+\begin{itemize}
+\item KNOWN THEOREM: explicit functions require $\approx 3.1n-o(n)$ gates in $B_2$ (Li--Yang, STOC 2022). This is the best general unconditional \emph{circuit-size} bound; it concerns computing a function, not deciding SAT.
+\item CONDITIONAL: under ETH, Circuit-SAT on $n$ inputs and size $s$ has no $2^{o(n)}\mathrm{poly}(s)$ algorithm; under SETH no $(2-\epsilon)^n\mathrm{poly}(s)$ algorithm. These give the parameterized shape $2^{\Theta(n)}\cdot \mathrm{poly}(w)$ but are not unconditional.
+\item KNOWN THEOREM: SAT time--space tradeoffs (Fortnow--van Melkebeek, Williams) give $n^{2\cos(\pi/7)-o(1)}$ for $n^{o(1)}$ space; Buss--Williams show alternation-trading cannot go beyond that exponent (ledger row L13 of the repository world ledger).
+\end{itemize}
+
+\section{Parameterized conjecture shape (CANDIDATE)}
+$T(n,w)\ge 2^{\Omega(n)}\cdot w^{\Omega(1)}$ for every deterministic Circuit-SAT algorithm. Proven pieces: $w$-factor (linear, probe model); $2^n$ (black-box). Missing: any unconditional white-box bound. Natural next sub-targets: (a) restricted fan-out/depth circuits (e.g.\ $AC^0$-SAT with unbounded fan-out, known $2^{\Omega(n)}$ lower bounds only for \emph{restricted algorithms}); (b) a wire-by-wire potential counting distinct partial sub-functions at a cut (cut-width $k$ gives $\le 2^{k}$ states, an upper bound by dynamic programming: Circuit-SAT is solvable in $2^{O(\mathrm{cw})}\mathrm{poly}$ time, so any lower bound must use circuits of large cut-width/treewidth).
+
+\begin{proposition}[KNOWN THEOREM direction, stated as a design constraint] Circuit-SAT is FPT in the treewidth $\mathrm{tw}$ of the circuit graph: time $2^{O(\mathrm{tw})}\mathrm{poly}(w)$. Hence a lower bound of the form $2^{\Omega(n)}$ must be witnessed by instances with $\mathrm{tw}=\Omega(n)$ (up to ETH-type hypotheses), so the wire-by-wire ladder must track treewidth/cut-width, not only wire count.\end{proposition}
+
+\section{Repository review (j15marti/pnp)}
+Surveyed: \texttt{AGENTS.md} (current allocation: ARC/FLMV time--space spine; open), world ledger README/CSV (row L13 relevant), GROKPROOF progress notes (all-input transformation OPEN), grep of \texttt{research/} for circuit-SAT (GROK REWIRE series, SIGMA GATECORE notes). No result there gives an unconditional Circuit-SAT bound; their circuit-SAT material is supporting evidence for the ARC spine. Useful link: the treewidth constraint above matches the repository's locality/cut arguments; a full cross-read is TODO for the next runs.
+
+\section{Next steps}
+\begin{enumerate}
+\item Exact $n=4$ table (SAT-based synthesis), then wires vs.\ treewidth of optimal circuits.
+\item Define the potential $\Phi_k$ = number of distinct sub-functions induced at a width-$k$ cut and prove lower bounds for read-once-type restricted algorithms.
+\item Cross-read GROK REWIRE and ARC/FLMV for reusable cut-based lemmas.
+\end{enumerate}
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT::CSAT-0001
