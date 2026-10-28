@@ -1,0 +1,47 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT (Living Document)}
+\date{Last updated: 2026-10-28 14:50 UTC}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. No unconditional super-polynomial lower bound for Circuit-SAT is claimed. Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Build Circuit-SAT bottom-up: fix a basis ($B_2$ = all binary gates, fan-in 2), grow the number of inputs $n$ and gates $m$, and for each stage record (i) the minimal wire/gate count needed to \emph{build} the instance, (ii) the minimal work needed to \emph{decide} it, as a parametrized bound in $(n,m,k)$ with $k$ a structural parameter (treewidth, depth, number of fan-out wires).
+
+\section{Stage ledger}
+\subsection*{Stage 0: reading bound (PROVED/EXACT)}
+\begin{lemma} Let $\mathrm{CSAT}_m$ be circuits with $m$ gates given as gate lists. Any deterministic decider in the random-access model must, on some instance, read $\Omega(m)$ input cells.\end{lemma}
+\emph{Sketch.} Take a chain $g_1=x_1\wedge x_2$, $g_{i+1}=g_i\wedge x_{i+2}$ (output $g_m$) -- satisfiable. An unread gate record can be replaced by $g_i:=\mathrm{const}\;0$, making the instance unsatisfiable, so a correct decider reads every record. Gives $\Omega(m)$ with the trivial bound only; it says nothing about super-linear time.
+
+\subsection*{Stage 1--3: exact minimal circuit size, $n\le 3$ (COMPUTATIONAL)}
+Script \texttt{experiments/claude\_circuitsat/min\_circuit\_size.py} (BFS over available-function sets, basis $B_2$, runs in seconds) gives the exact minimum gate count $C(f)$ over all $n$-input functions:
+\begin{center}\begin{tabular}{c|c|l}
+$n$ & $\max_f C(f)$ & histogram (size:count)\\\hline
+1 & 0 & 0:4\\
+2 & 1 & 0:6, 1:10\\
+3 & 4 & 0:8, 1:30, 2:114, 3:80, 4:24
+\end{tabular}\end{center}
+Wires $=2\cdot$gates (fan-in 2), so minimal wires $=2C(f)$. Raw data: \texttt{experiments/claude\_circuitsat/min\_circuit\_size\_results.json}. Next: $n=4$ (known max 7 for $B_2$ in the literature -- to be reproduced by a chunked search, not yet done).
+
+\section{Parametrized bounds (ledger)}
+\begin{itemize}
+\item KNOWN THEOREM (Shannon counting): some $n$-input function needs $\Omega(2^n/n)$ gates; says nothing about explicit functions or SAT.
+\item KNOWN THEOREM: best explicit $B_2$ circuit lower bound is $\approx 3.1n$ (Find--Golovnev--Hirsch--Kulikov 2016; Li--Yang STOC 2022: $(3.1-o(1))n$ ). Circuit-SAT hardness over $n$ inputs is thus unrelated to current unconditional size bounds.
+\item CONDITIONAL: SETH $\Rightarrow$ no $O(2^{(1-\epsilon)n}\mathrm{poly}(m))$ algorithm for CNF-SAT; ETH $\Rightarrow$ no $2^{o(n)}$ for 3-SAT. Parameter $n$ is the right one for these.
+\item KNOWN THEOREM: Circuit-SAT is FPT in treewidth $k$: time $2^{O(k)}\cdot m$; under SETH, $(2-\epsilon)^{k}$ is impossible for fixed formulations (Lokshtanov--Marx--Saurabh for SAT with primal treewidth). Candidate parametrization: $T(n,m,k)=2^{\Theta(k)}\,m$ for $k\le n$.
+\item OPEN: unconditional $\omega(m)$ time lower bound for Circuit-SAT in any universal model.
+\end{itemize}
+
+\section{Repository cross-check (j15marti/pnp)}
+Latest repo commits (GROKPROOF, 2026-10-28) restate that the All-Input Resource Contraction / FLMV transformation remains OPEN, with only numerical confirmations. Nothing there yet supplies a circuit-wire lower bound; the ARC/FLMV spine is not used here. No claim from the repository is imported.
+
+\section{Next steps}
+\begin{enumerate}
+\item Reproduce $n=4$ minimal sizes (chunk by function orbit under input permutation/negation).
+\item Define a wire-cut parameter (max cut-width $k$) and prove exact cut-width trade-offs for the chain/tree families (Stage 0 generalization).
+\item Study whether a gate-elimination argument gives a parametrized bound for restricted \emph{decision} models (e.g. DPLL-style branching: $\Omega(2^{k})$ on width-$k$ families, a known proof-complexity-type bound).
+\end{enumerate}
+\end{document}
+% END_OF_CLAUDECIRCUITSAT_REVISION::2026-10-28T1450Z
