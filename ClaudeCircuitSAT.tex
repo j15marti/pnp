@@ -1,0 +1,111 @@
+% CLAUDECIRCUITSAT LIVING DOCUMENT::RUN-2026-10-28-01
+% Last updated: 2026-10-28 by Claude (hourly routine)
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\status}[1]{\textbf{[#1]}}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT\\ (Parameterized Ladder)}
+\author{Living document, built incrementally by an hourly routine}
+\date{Last updated 28 October 2026}
+\begin{document}\maketitle
+
+\begin{center}\fbox{\parbox{.93\linewidth}{\textbf{STATUS: P versus NP remains OPEN.}
+No super-linear unconditional lower bound for \CSAT{} is claimed. What is
+proved below is a ladder of \emph{exact} small-parameter facts: which
+structural resource (wires, reconvergence) is needed for a circuit to be
+unsatisfiable, a linear reading lower bound, and a matching
+fixed-parameter upper bound in the reconvergence parameter.}}\end{center}
+
+\section{Method and status labels}
+Start from the simplest circuits and increase inputs $n$ one at a time,
+tracking the number of gates $g$ and wires $w$ (gate-input edges) needed.
+Model: fan-in-2 AND gates with free edge negation (AIG); every input and every
+non-output gate is used (no dead nodes). Labels: PROVED/EXACT, COMPUTATIONAL,
+KNOWN, CONDITIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Ladder of exact facts}
+\begin{lemma}[Connectivity, \status{PROVED/EXACT}]
+A circuit with $n$ inputs, no dead nodes and one output has $g\ge n-1$ gates
+and $w=2g\ge 2(n-1)$ wires. Equality iff every node has fan-out exactly $1$,
+i.e.\ the circuit is a read-once formula.
+\end{lemma}
+\begin{proof} The $n+g-1$ non-output nodes each need out-degree $\ge1$ and
+total out-degree is $2g$; so $2g\ge n+g-1$. Equality forces all out-degrees $=1$.\end{proof}
+
+\begin{theorem}[Unsatisfiability needs reconvergence, \status{PROVED/EXACT}]
+A read-once formula in $\{\wedge,\vee,\neg\}$ over distinct variables is never
+constant. Hence a no-dead-node AIG with $n$ inputs that is UNSAT (or valid)
+has $g\ge n$ gates, $w\ge 2n$ wires; the SAT/UNSAT threshold is exactly one
+extra wire: $w_{\rm sat}^{\min}=2(n-1)$, $w_{\rm unsat}^{\min}=2n$.
+\end{theorem}
+\begin{proof} Induction: each variable is essential in a read-once formula
+(set the other subformulas to non-controlling values). Combine with the
+Lemma: $g=n-1$ forces read-once. $g=n$ is attained by $(x_1\wedge\neg x_1)$
+followed by a chain of ANDs with $x_2,\dots,x_n$.\end{proof}
+
+\begin{table}[h]\centering\begin{tabular}{rrrrrr}\toprule
+$n$ & $g$ & wires & circuits (no dead nodes) & constant output & non-constant\\\midrule
+2&1&2&4&0&4\\ 2&2&4&32&8&24\\
+3&2&4&48&0&48\\ 3&3&6&1536&240&1296\\ 3&4&8&56064&13056&43008\\
+4&3&6&1152&0&1152\\ 4&4&8&92160&9984&82176\\\bottomrule\end{tabular}
+\caption{\status{COMPUTATIONAL} exhaustive enumeration
+(\texttt{experiments/claude\_circuitsat/aig\_enum.py}, data
+\texttt{results/raw/claude\_circuitsat/2026-10-28\_aig\_enum.jsonl}); each run
+$<100$s. Confirms Theorem 2 for $n\le4$: zero constant circuits at $g=n-1$,
+constant circuits appear at $g=n$.}\end{table}
+
+\section{Parameterized upper bound in the reconvergence parameter}
+For a formula $\varphi$ let $R=\sum_{x}(\mathrm{occ}(x)-1)$ be its repetition
+count and $r$ the number of variables occurring more than once ($r\le R$).
+\begin{theorem}[\status{PROVED/EXACT}]
+\textsc{Formula-SAT} is solvable in time $2^{r}\cdot O(|\varphi|)$.
+\end{theorem}
+\begin{proof} Branch on the $r$ repeated variables; the residual formula is
+read-once, and satisfiability of a read-once formula is decided in linear time
+by bottom-up evaluation of (can-be-0, can-be-1) pairs.\end{proof}
+So the parameter $r$ (equivalently the excess wires over $2(n-1)$) controls
+difficulty: $r=0$ is linear time, and by Theorem 2 $r\ge1$ is exactly where
+UNSAT becomes possible.
+
+\section{Lower bounds}
+\begin{theorem}[Reading bound, \status{PROVED/EXACT} in the probe model]
+Any deterministic algorithm that is given the gate list as a read-only array
+and decides $\CSAT$ must probe $\Omega(w)$ cells even on the chain family.
+\end{theorem}
+\begin{proof} Chain $g_i=g_{i-1}\wedge x_i$ is SAT. Replacing the single
+literal $x_i$ ($i\ge2$) by $\neg x_1$ gives an UNSAT instance. An algorithm
+that never probes the cell of gate $i$ cannot distinguish them, so it must
+probe all $n-1$ such cells: $\ge w/2-1$ probes.\end{proof}
+\begin{theorem}[Parameterized exponential bound, \status{CONDITIONAL}]
+Under ETH, no algorithm decides 3-CNF-SAT in $2^{o(r)}\mathrm{poly}$ time
+parameterized by $r$ (here $r\approx n$), so the $2^{r}$ of Theorem 3 is tight
+up to the constant in the exponent.
+\end{theorem}
+Black-box (oracle) access gives $2^n$ queries unconditionally but is the
+wrong model for circuits (\status{FAILED TRANSFER}).
+
+\section{Open arrows}
+\begin{enumerate}
+\item \status{OPEN} Extend Theorem 3 to circuits with gate fan-out (shared
+subcircuits): the right parameter is probably treewidth/feedback-vertex-set
+of the underlying DAG; the formula case does not unfold polynomially.
+\item \status{OPEN} Unconditional super-linear lower bound in $(n,w)$ for any
+fixed-wire-excess family; none is known (Williams-type results give only
+conditional/time--space tradeoffs).
+\item \status{OPEN} Compute exact minimum gates $g^*(n,k)$ for UNSAT circuits
+that additionally force every input to be \emph{semantically} dependent after
+removing the reconvergence (rank-style invariants), $n\ge5$.
+\item Cross-check with the main repository (ARC/FLMV time--space spine,
+WRITE-TIGHT2 and read-once input-head results): none yet reduces to this
+ladder; no transfer claimed.
+\end{enumerate}
+
+\section*{Run log}
+2026-10-28 run 1: created document; Theorems 1--3, Table 1 (n$\le$4);
+repo reviewed at root \texttt{main.tex} level only (executive status: P vs NP OPEN).
+\end{document}
