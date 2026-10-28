@@ -1,0 +1,75 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- first entry 2026-10-28
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT\\\large Living document}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-10-28 (Entry 1)}
+\begin{document}\maketitle
+
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial
+lower bound for \CSAT. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL,
+CANDIDATE, OPEN, FALSIFIED/RETIRED. Each entry appends; earlier entries are corrected, not erased.
+
+\section{Goal, model, and plan}
+\CSAT\ instance: a fan-in-2 circuit $C$ over basis $B_2$ with $n$ inputs, $g$ gates and
+$m=2g$ internal wires (plus output). Question: $\exists x\; C(x)=1$.
+Plan: (i) fix the simplest circuits; (ii) track the minimum number of gates/wires needed to
+build each function as $n$ grows; (iii) pair this with lower bounds for \emph{deciding} satisfiability,
+in explicit models, with parameters $(n,m)$; (iv) look for parameterized bounds such as
+$T(n,m)\ge f(n)\cdot m^{c}$.
+
+\section{Build-up table (COMPUTATIONAL)}
+$C_{B_2}(f)$ = minimum gates over $B_2$ (negation free), exhaustive search
+(\texttt{research/agents/claude/circuitsat/min\_circuit\_table.py}, results in the adjacent \texttt{.jsonl}).
+\begin{center}\begin{tabular}{@{}cccl@{}}\toprule
+$n$ & functions & $\max_f C(f)$ & histogram (size:count)\\\midrule
+1 & 4 & 0 & 0:4\\
+2 & 16 & 1 & 0:6, 1:10\\
+3 & 256 & 4 & 0:8, 1:30, 2:114, 3:80, 4:24\\\bottomrule\end{tabular}\end{center}
+So the hardest 3-variable functions need 4 gates (8 wires), 24 of them. Known comparison
+(KNOWN THEOREM): $n=4$ max is 7 gates; asymptotic best explicit lower bound over $B_2$ is $3.1n-o(n)$ (Li--Yang, STOC 2022), via gate elimination---a bound for explicit functions, not for \CSAT\ as a problem.
+
+\begin{lemma}[Connectivity, PROVED/EXACT]\label{lem:conn}
+A fan-in-2 circuit whose output depends on $k$ inputs has at least $k-1$ gates and hence $2(k-1)$ wires.
+\end{lemma}
+\begin{proof} The subcircuit of the output's dependence cone is a connected DAG with $k$ source inputs; each gate merges at most 2 components, so $k-1$ merges are required. \end{proof}
+The table meets this for all-input-dependent symmetric functions at $n\le3$ with slack (e.g.\ MAJ$_3$ needs 4 vs.\ bound 2): the gap $C(f)-(n-1)$ is the \emph{non-tree overhead}; tracking it per $n$ is the proposed measure of "wire cost beyond connectivity".
+
+\section{Decision lower bounds in explicit models}
+\begin{definition}[Wire-query model] The algorithm sees $n$, $m$ and may query, for any wire index, its source gate/type. It must decide satisfiability.\end{definition}
+
+\begin{theorem}[Linear wire bound, PROVED/EXACT]\label{thm:wire}
+For every $n\ge1$ and $m\ge 2$ even there is a satisfiable $m$-wire, $n$-input circuit $C_{n,m}$ such that every deterministic wire-query algorithm correct on all circuits of this size must query at least $m$ wires on $C_{n,m}$ (or on a one-wire modification of it). So $T\ge m$, independent of $n$.
+\end{theorem}
+\begin{proof} $C_{n,m}$: an AND chain $g_1=x_1\wedge x_2$, $g_k=g_{k-1}\wedge x_{1+(k\bmod n)}$, $k\le m/2$. Satisfiable by $1^n$. Replacing any single wire by constant $0$ gives an unsatisfiable circuit, because the output is the conjunction of everything on the chain. If the algorithm misses wire $w$ on $C_{n,m}$, its transcript is identical on $C_{n,m}$ and on the circuit with $w\mapsto 0$, which have different answers. \end{proof}
+\textit{Honest remark:} this is just input-reading; it shows the true difficulty lies in the $n$-dependence.
+
+\begin{proposition}[Evaluation-oracle model, PROVED/EXACT]
+If the algorithm may only \emph{evaluate} $C$ on chosen inputs (black box), $2^n$ evaluations are necessary and sufficient in the worst case (adversary answers 0 until the last untried input).\end{proposition}
+Thus the two models give $\Omega(m)$ and $2^n$ with matching trivial upper bound $O(m2^n)$ for the combination. The central OPEN question for this document is whether
+\[T(n,m)\;\ge\; m\cdot 2^{\epsilon n}\quad(\text{or } m\cdot n^{\omega(1)})\]
+holds for any natural model strictly between wire-reading and black-box evaluation, e.g.\ \emph{structure-reading with $s$ bits of working memory}. This is the parameterized form.
+
+\section{Corpus link (repo j15marti/pnp)}
+\begin{itemize}
+\item Ledger row L13 (Buss--Williams, KNOWN THEOREM): alternation trading cannot give SAT time $n^{2\cos(\pi/7)}$ at $n^{o(1)}$ space. Candidate transfer: a time--space version of Theorem~\ref{thm:wire} with $m,n$ parameters.
+\item T-PORT (rows L34--L35): sublinear portfolios of size $N^d$ get nontrivial bounds; relevant if a circuit family is searched by a small portfolio. Failed-transfer risk: those are for ordinary SAT; mapping to wires needs the encoding of $m$ wires as $\Theta(m\log m)$ bits.
+\item Nothing in the corpus currently proves a super-linear bound for \CSAT; no stale claim found.
+\end{itemize}
+
+\section{Next steps (queue)}
+\begin{enumerate}
+\item Extend the table to $n=4$ (max 7 gates, 65536 functions) with a smarter search (SAT/BFS on truth-table sets), chunked per the 30\,s rule.
+\item Define "wire cost beyond connectivity" $\Delta_n=\max_f C(f)-(n-1)$ and compare with Li--Yang style gate-elimination for the \emph{satisfiability-preserving} gate removal (assignments that fix one input).
+\item Prove or refute a time--space bound $T\cdot S\ge \Omega(m2^{\epsilon n})$ for structure-reading algorithms (CANDIDATE, no proof).
+\item Check whether fixing $n=O(\log m)$ (the regime where $2^n=\mathrm{poly}(m)$) shows any lower bound beyond $m$: expected NO, since $O(m2^n)=\mathrm{poly}$.
+\end{enumerate}
+
+\section*{Log}
+\textbf{Entry 1 (2026-10-28):} created document; exact tables $n\le3$; Theorem~\ref{thm:wire}; model gap identified. P vs NP OPEN.
+\end{document}
