@@ -1,0 +1,31 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm}
+\title{ClaudeCircuitSAT: a wire-by-wire, parameterized lower-bound ladder for Circuit-SAT}
+\author{Scheduled hourly routine (Claude)}
+\date{Last updated: 2026-10-28 10:45 UTC}
+\begin{document}
+\maketitle
+\textbf{Status: P versus NP remains OPEN. No superpolynomial lower bound for Circuit-SAT is claimed.}
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model and ladder}
+A circuit $C$ on inputs $x_1..x_n$ uses fan-in-2 gates from $B_2$; negation is free on wires. Size $g(C)$ = gates, wires $w(C)=2g(C)$ (input edges). Circuit-SAT: given $C$, is there $x$ with $C(x)=1$? Parameters: $n$ (inputs), $m$ (wires of the instance), $k$ (e.g.\ treewidth/depth). The ladder: fix $n$, determine $\mu(n)=$ the maximum over $n$-variable $f$ of the minimum wires needed to \emph{build} $f$; then ask what a SAT decider must \emph{inspect} of an $m$-wire instance.
+
+\section{Ladder results}
+\begin{enumerate}
+\item (PROVED/EXACT) \textbf{Connectivity floor.} If $f$ depends on all $n$ inputs, any circuit has $g\ge n-1$, so $w\ge 2(n-1)$. (Fan-in 2 and every input must reach the output; a connected DAG with $n$ sources and one sink has $\ge n-1$ internal nodes.) Tight for $\mathrm{AND}_n,\mathrm{XOR}_n$.
+\item (PROVED/EXACT) \textbf{Read-all-wires adversary (parameterized by $m$).} Any deterministic decider that accesses the instance through probes of gate descriptions needs $\Omega(m)$ probes (indeed $\ge m/2$ gate probes) even for $n$ fixed. Proof: take $C$ = AND-tree over $n$ inputs with $g$ extra gates computing a chain of ANDs of constant-1-equivalent gates; satisfiable. Any unprobed gate $v$ can be replaced by constant $0$ feeding the output AND, giving an unsatisfiable instance indistinguishable on the probed part. Hence $\ge g$ probes. This is only an encoding-reading bound: it says nothing about time beyond $\Theta(m)$.
+\item (COMPUTATIONAL) \textbf{Exact min circuit size for all functions} ($B_2$, exhaustive iterative deepening, \texttt{experiments/claude\_circuitsat/min\_circuit\_sizes.py}, results in \texttt{min\_circuit\_sizes\_results.json}): $n=2$: 4 functions need 0 gates, 12 need 1. $n=3$ (256 functions): sizes 0:5, 1:33, 2:114, 3:80, 4:24. So $\mu(3)=4$ gates $=8$ wires, matching the known maximum. (For $n=1$ the search excludes NOT of a single input because no pair of distinct nodes exists; negation is free in our wire convention.) This is the first rung of the ladder $\mu(1..3)$ = $0,1,4$ gates.
+\item (KNOWN THEOREM) Counting: almost all $n$-variable functions need $\Omega(2^n/n)$ gates (Shannon), and $\mu(n)=\Theta(2^n/n)$ (Lupanov). Best explicit lower bound for $B_2$ circuits is about $3.1n-o(n)$ (Li--Yang 2022, as I recall; verify). Wire counts translate by factor 2.
+\end{enumerate}
+
+\section{Why this ladder does not yet bound SAT time}
+Circuit size lower bounds for a \emph{function} are not decision-time bounds for the \emph{promise problem} Circuit-SAT whose input is itself a circuit. Bridge needed (OPEN): a theorem converting a lower bound on building ``hard-to-satisfy'' $n$-variable circuits with $w$ wires into a lower bound on any solver's time as function of $(n,w)$. Known conditional ones: ETH/SETH give $2^{(1-o(1))n}\mathrm{poly}(w)$ for CNF/circuit SAT (CONDITIONAL). Unconditional general-model bounds beyond $\Omega(w)$ are OPEN.
+
+\section{Repository cross-check (2026-10-28)}
+The repository's active spine is ARC/FLMV time--space contraction (\texttt{AGENTS.md}, \texttt{GROKPROOF/}); latest GROKPROOF notes (10:12 UTC) again state the all-input resource contraction is OPEN. No circuit-SAT wire-count result there is usable as a lower bound; no overlap or contradiction with items 1--4 found. Only the ARC resource ledger idea (time and space charged together) is a candidate for the parameterization: replace $\Omega(m)$ by a $(T,S)$ tradeoff, CANDIDATE.
+
+\section{Next steps}
+(a) Extend exact search to $n=4$ (65536 functions; chunk by size layer to stay under 30 s). (b) Track minimum \emph{wires including fan-out} for formula (tree) vs.\ circuit models; formula size of $\mathrm{XOR}_n$ is $\Theta(n^2)$ (Khrapchenko) giving a parameterized fan-out ladder. (c) Examine treewidth-$k$ circuits: SAT in $2^{O(k)}\mathrm{poly}$ (KNOWN), so a lower bound must be in $k$; check SETH-conditional $2^{k}$ tightness.
+\end{document}
