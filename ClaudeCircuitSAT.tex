@@ -1,0 +1,55 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-10-28
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower-Bound Ledger for Circuit-SAT}
+\author{Claude scheduled hourly run (living document)}
+\date{Last updated: 2026-10-28}
+\begin{document}
+\maketitle
+\section*{Status}
+\textbf{Circuit-SAT lower bounds beyond trivial/black-box/conditional ones are OPEN. P versus NP remains open.}
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Build circuits bottom-up: $C_{n,w}$ has $n$ inputs and $w$ wires (fan-in $\le 2$ gates, so $w\le 2g$).
+Track (i) $W(f)$, the minimum wire/gate count to \emph{build} $f$; (ii) the cost $T(n,w)$ of deciding SAT on a circuit of that shape.
+A lower bound may be parametrized: $T(n,w,k)$ for $k\in\{\text{treewidth},\text{depth},\text{fan-out}\}$.
+
+\section{Ledger of known/derived facts}
+\begin{tabular}{@{}lll@{}}\toprule
+Statement & Status & Note\\\midrule
+$T(n,w)=\Omega(w)$ (must read the circuit) & PROVED/EXACT (trivial) & input-size bound\\
+Brute force $T(n,w)=O(2^n w)$ & PROVED/EXACT & upper bound\\
+Black-box (oracle) SAT needs $\Omega(2^n)$ queries & KNOWN THEOREM (adversary, unstructured search) & does not apply to white-box\\
+Bounded treewidth $k$: $T=2^{O(k)}w$ & KNOWN THEOREM (DP over decomposition; to be re-verified from primary source) & upper bound\\
+$T(n,w)\ge(2-\epsilon)^n\mathrm{poly}(w)$ impossible & CONDITIONAL on SETH & not unconditional\\
+Super-polynomial white-box lower bound for $T$ & OPEN & equivalent in strength to P$\neq$NP\\\bottomrule
+\end{tabular}
+
+\section{Step 1: minimum circuits for small functions (COMPUTATIONAL)}
+Basis $B_2$ (all 2-input gates). Exhaustive search (\texttt{experiments/claude\_circuitsat/min\_circuit.py}),
+counting functions up to complement, constants included in the 0-gate class.
+\begin{center}\begin{tabular}{@{}cccccc@{}}\toprule
+$n$ & 0 gates & 1 & 2 & 3 & 4\\\midrule
+1 & 2 & -- & -- & -- & --\\
+2 & 3 & 5 & -- & -- & --\\
+3 & 4 & 15 & 57 & 40 & 12\\\bottomrule
+\end{tabular}\end{center}
+For $n=3$ the maximum is 4 gates (8 wires), consistent with the known value. Hence over $B_2$ every 3-input function has $\le 8$ wires; a size-$g$ circuit has $2g$ wires.
+
+\begin{prop}[PROVED/EXACT] $\mathrm{AND}_n$ in fan-in-2 gates needs exactly $n-1$ gates ($2n-2$ wires).
+\end{prop}
+\emph{Proof.} Upper bound by a tree. Lower: the output depends on all $n$ inputs; a fan-in-2 circuit whose output depends on $n$ inputs has at least $n-1$ gates, since the graph restricted to the output's cone is connected on $\ge n+g$ nodes with $\le 2g$ edges, and connectivity needs $\ge n+g-1$ edges, so $2g\ge n+g-1$. \qed
+
+\section{Step 2: planned recursion}
+Define $S(n,g)$: the SAT instance family ``circuits with $n$ inputs and $g$ gates''. Target: show no algorithm in a fixed restricted model (e.g. wire-local DP with small state) beats $2^{\Omega(k)}$ where $k$ is a width parameter, then lift. Next runs: (a) enumerate $n=4$ minima; (b) compute exact min-width/treewidth of optimal circuits for small $f$; (c) tabulate exact SAT-DP cost; (d) review \texttt{research/agents/claude/world-ledger} (rows L13, L29--L33) for transfer.
+
+\section{Repository review (this run)}
+Repo \texttt{j15marti/pnp}: spine is ARC/FLMV time--space contraction (all-five allocation 2026-10-24); the world ledger classifies equivalents of P$=$NP as reformulations. Relevant for us: any lemma equivalent to P$=$NP is not progress; ledger row L13 (Buss--Williams) limits alternation-trading arguments. No existing ClaudeCircuitSAT work found.
+
+\section{Run log}
+\begin{itemize}
+\item 2026-10-28: document created; $n\le3$ exact minima computed; AND$_n$ bound proved; ledger set up. No new lower bound.
+\end{itemize}
+\end{document}
