@@ -1,0 +1,75 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-28 (run 1)
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\CSAT}{\mathsf{CircuitSAT}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{ClaudeCircuitSAT: a Parameterized Lower-Bound Ladder for Circuit-SAT\\[2pt]\large Living document}
+\author{Scheduled hourly run (Claude)}
+\date{Last updated 2026-10-28}
+\begin{document}\maketitle
+\begin{center}\textbf{STATUS: no superlinear unconditional lower bound for $\CSAT$ is proved here. $P$ versus $NP$ remains \OPEN.}\end{center}
+Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model and the parameters we track}
+A circuit $C$ over the full binary basis $B_2$ (negation free) has $n$ inputs, $g$ fan-in-2 gates, hence $w=2g$ gate-input wires (plus one output wire). $\CSAT$: given $C$, decide $\exists x\,C(x)=1$. Tracked parameters: $n$ (inputs), $g$ (gates), $w$ (wires), $\mathrm{fo}$ (max fan-out), $\mathrm{tw}$ (treewidth of the underlying graph), $k$ (number of satisfying assignments).
+Two lower-bound questions are kept separate throughout:
+\begin{enumerate}
+\item[(B)] \emph{Building}: $\mathrm{cost}(f)=$ minimum $g$ (equivalently $w$) of a circuit computing $f$.
+\item[(S)] \emph{Solving}: time of an algorithm deciding $\CSAT$ on instances with parameters $(n,g,\dots)$. The target is a bound $T(n,g,\mathrm{tw},\dots)$.
+\end{enumerate}
+
+\section{Rung 0--1: trivial bounds (PROVED/EXACT)}
+\begin{proposition}[connectivity]\label{p:conn}
+If $C$ has $n$ inputs all relevant to the output then $g\ge n-1$ and $w\ge 2(n-1)$. The bound is tight for $\mathrm{AND}_n,\mathrm{OR}_n,\oplus_n$ (a binary tree).
+\end{proposition}
+\emph{Proof.} The graph of relevant nodes is weakly connected with $n+g$ vertices and every gate has two in-wires, so edges $=2g\ge n+g-1$, giving $g\ge n-1$. A balanced tree attains it. \qed
+
+\begin{proposition}[reading bound for (S)]\label{p:read}
+Any correct deterministic $\CSAT$ algorithm in a model where $C$ is given as an explicit string must, on worst-case instances, inspect every gate of a minimal-size instance family on which flipping one gate's opcode changes the answer; hence $T=\Omega(g)$. The family $C_i=\mathrm{AND}$ tree whose $i$-th gate opcode is $\wedge$ vs.\ a constant-0 opcode changes $\mathsf{SAT}$ status, so each gate must be read.
+\end{proposition}
+This is the trivial linear bound and sets the baseline $T\ge\Omega(g)$.
+
+\begin{proposition}[black-box bound]\label{p:bb}
+If $C$ is accessible only as an oracle $x\mapsto C(x)$ then every (even randomized, zero-error-on-UNSAT) algorithm needs $2^n$ queries in the worst case (one-sided: $\Omega(2^n)$ for success prob.\ $\ge 2/3$). \emph{Proof:} adversary hides a unique accepting $x^*$ chosen uniformly. \qed
+\end{proposition}
+This is why any decision-time lower bound better than $\Omega(g)$ \emph{must use the explicit structure} of $C$; relativization (Baker--Gill--Solovay) shows this cannot be done by query arguments alone.
+
+\section{Rung 2: exact minimum building cost for small $n$ (COMPUTATIONAL)}
+Exhaustive depth-first enumeration over all circuits (shared gates, unbounded fan-out, duplicate-function gates pruned WLOG, adjacent independent gates canonically ordered) yields $\mathrm{cost}(f)$ exactly. Code: \texttt{experiments/claude\_circuitsat/min\_circuit\_b2.c}; raw output: \texttt{results/raw/claude\_circuitsat/2026-10-28\_min\_b2\_ladder.txt}. Each invocation runs in $<1$ s.
+\begin{center}\begin{tabular}{lrrrrrr}\toprule
+$n$ & cost 0 & 1 & 2 & 3 & 4 & $\ge5$ \\\midrule
+2 & 6 & 10 & 0 & 0 & 0 & 0 \\
+3 & 8 & 30 & 114 & 80 & 24 & 0 \\
+4 & 10 & 60 & 456 & 2474 & 10624 & 51912 \\\bottomrule
+\end{tabular}\end{center}
+(For $n=4$ the search was run only to depth 4; the last column is a count of functions whose cost is \emph{at least} 5, not resolved further. Extending to depth 5--7 needs chunking by first-gate choice, planned.) Rows sum to $2^{2^n}$.
+Consequences (COMPUTATIONAL): for $n=3$ the maximum cost is $4$ ($w=8$), attained by 24 functions including majority; for $n=2$ the maximum is 1 (non-degenerate). Cost-vs-$n$ for \emph{worst} functions so far: $1,4,\ge5$, consistent with the known $\max\mathrm{cost}=7$ for $n=4$ (literature value, not re-derived here).
+
+\section{Rung 3: from building cost to a parameterized solving bound}
+\paragraph{Known unconditional circuit-size bounds (KNOWN THEOREM).} Explicit functions need $3.1n-o(n)$ gates over $B_2$ (Li--Yang, STOC 2022) and $5n-o(n)$ over $U_2$ (Iwama--Lachish--Morizumi--Raz). No explicit function in NP is known to need $\omega(n)$ gates; this is a barrier for (B) itself. \textbf{Citations to be re-verified against primary sources next run.}
+\paragraph{Parameterized solving bounds (CONDITIONAL).} CNF-SAT with $n$ variables solvable in $2^{n}\mathrm{poly}$ trivially; SETH asserts no $(2-\varepsilon)^n$ for all $\varepsilon>0$. For $\CSAT$ with treewidth $\mathrm{tw}$ the dynamic program gives $2^{O(\mathrm{tw})}g$, and SETH implies $(2-\varepsilon)^{\mathrm{tw}}\mathrm{poly}$ is impossible (Lokshtanov--Marx--Saurabh type result for Independent Set/SAT-like problems; the circuit version is CANDIDATE pending exact citation).
+\paragraph{Proposed ladder statement (CANDIDATE).} $T_{\CSAT}(n,g,\mathrm{tw})\ \ge\ \Omega(g)+2^{\Omega(\min(n,\mathrm{tw}))}$ \emph{conditionally on SETH}; the unconditional part is only $\Omega(g)$ (Prop.~\ref{p:read}). The goal of this document is to narrow the gap by identifying structural classes where the unconditional bound can be raised, e.g.\ restricted models (monotone, read-once, bounded-width branching programs, resolution/DPLL refutation size, where $2^{\Omega(n)}$ lower bounds are known).
+
+\section{Link to the repository's P vs NP program (GitHub \texttt{j15marti/pnp})}
+Reviewed (2026-10-28): \texttt{AGENTS.md}, root \texttt{main.tex}, \texttt{GROKPROOF/} notes, LSPV-2 \texttt{CIRCUIT-*} series. Findings:
+\begin{itemize}
+\item Repository status: $P\ne NP$ \OPEN; spine is ARC/FLMV simultaneous time--space contraction toward the strict box $t<241/200$, $s<11642479/23232400$. This is the Williams-type time--space SAT trade-off line (exponent $2\cos(\pi/7)\approx1.247$ is the known unconditional bound). It is a bound on \emph{sequential time with small space}, i.e.\ a parameterized bound $T^{a}S^{b}\ge n^{c}$, and is the natural unconditional parametrization to import: our $T_{\CSAT}$ should be stated as a time--space frontier, not a single exponent.
+\item The LSPV-2 \texttt{CIRCUIT-*} reports concern verifier-to-3CNF encodings and locally indexed access cost, not minimal wire counts; they do not yet supply a lower bound on wires for a fixed function. No result there is used as a premise here.
+\item Failed-transfer warning: repository results on sequential-access/input-head models do not transfer to RAM; do not import them.
+\end{itemize}
+
+\section{Next steps (ordered)}
+\begin{enumerate}
+\item Chunk the $n=4$ exhaustive search by first gate (parallel seeds) to resolve costs $5,6,7$; record wires and fan-out of optimal circuits.
+\item Compute, for the SAT-hard-looking subfamily (e.g.\ $\mathrm{cost}(f)$ vs.\ number of satisfying assignments $k$), the min-wire circuits and test whether the cheapest circuit of a function with a unique witness is larger than for dense ones.
+\item Prove a clean unconditional $\Omega(g\cdot\text{something})$ for a restricted solver class (e.g., DPLL/resolution on the circuit's Tseitin CNF with fixed branching order) as a parameterized lower bound in $(n,\mathrm{tw})$.
+\item Verify the cited literature against primary sources and cross-link repository work that bounds time--space tradeoffs.
+\end{enumerate}
+\section*{Run log}
+Run 1 (2026-10-28): created document; exact small-$n$ costs ($n\le3$ full, $n=4$ to depth 4); baseline propositions. No new lower bound beyond $\Omega(g)$ and $2^n$ black-box.
+\end{document}
