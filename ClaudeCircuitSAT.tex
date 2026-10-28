@@ -1,0 +1,78 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append-by-reconciliation each run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\title{Parameterized Lower Bounds for Circuit-SAT: a Living Ladder}
+\author{Claude (scheduled hourly run)}
+\date{Last updated: 2026-10-28 (run 1)}
+\begin{document}\maketitle
+\section*{Status (strict labels)}
+\textbf{P versus NP remains OPEN.} Nothing here proves a super-polynomial lower bound.
+Labels: PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Goal: lower bounds for Circuit-SAT, possibly parameterized by $(n,m,k)$ =
+(inputs, gates, a structural parameter such as width/treewidth/fan-out).
+Method (ladder): start from the simplest circuits, track the \emph{wire ledger}
+$W(f)=2\,s(f)$ (fan-in-2, so wires $=2\times$ gates) of the cheapest circuit per function, then
+raise $n$ and record how the ledger and the \emph{decision-time} bound move.
+Two distinct quantities must never be conflated:
+(i) \emph{construction cost} $s(f)$ of circuits (a circuit lower bound), and
+(ii) \emph{decision cost} of SAT on a given circuit (an algorithmic lower bound). Rung data below is (i); (ii) is the actual target.
+
+\section{Rung data: exact minimum circuit size (COMPUTATIONAL)}
+Basis: all 10 nondegenerate binary gates, constants/inputs free, negation absorbed.
+Exhaustive BFS over sets of computed truth tables, script
+\texttt{experiments/claude\_circuitsat/mincircuit.py}, raw data
+\texttt{results/raw/claude\_circuitsat/mincircuit\_n123.json} (10\,s total).
+\begin{center}\begin{tabular}{rrrrrrrr}\toprule
+$n$ & functions & $s=0$ & 1 & 2 & 3 & 4 & $\max s$\\\midrule
+1 & 4 & 3 & 1 & & & & 1\\
+2 & 16 & 4 & 12 & & & & 1\\
+3 & 256 & 5 & 33 & 114 & 80 & 24 & 4\\\bottomrule\end{tabular}\end{center}
+Hardest 3-input functions need 4 gates (8 wires), e.g.\ the 24 functions of XOR/MUX type.
+The sequence of $\max s$: $1,1,4$ (next rungs: $n=4$ needs a smarter search; see Plan).
+
+\section{Proved elementary rungs}
+\begin{lemma}[Connectivity, PROVED]\label{l:conn}
+A fan-in-2 circuit with a single output depending on all $n$ inputs has $\ge n-1$ gates and
+$\ge 2(n-1)$ wires. Proof: the dependence graph is a connected DAG with $n$ sources and one sink;
+a tree combining $n$ leaves by binary nodes needs $n-1$ internal nodes.\end{lemma}
+\begin{lemma}[Input-reading, PROVED]\label{l:read}
+Any deterministic algorithm deciding Circuit-SAT for circuits with $m$ gates must read
+$\Omega(m)$ symbols of the description in the worst case. Proof (adversary): take
+$C_0=\bigwedge_{i=1}^{m'}(x\wedge\neg x)$-style chains where each gate $g_i$ is an AND of $x$ with a
+copy of $\neg x$; $C_0$ is UNSAT. Redirecting any single unread wire of $g_i$ to a fresh
+constant $1$ yields a SAT circuit that agrees with $C_0$ on every read position; an algorithm
+that skips a wire answers wrongly on one of the two. So all $\Theta(m)$ wires are read.\end{lemma}
+These are trivial (linear) bounds: they set the baseline of the ladder, not progress toward P$\ne$NP.
+
+\section{Parameterized view}
+Known upper bounds frame what a lower bound must beat (KNOWN):
+exhaustive $O(2^n\,m)$; treewidth-$k$ circuits solvable in $2^{O(k)}\,m$; so any parameterized
+lower bound for fixed $k$ must be $\ge$ linear and a bound of the form
+$f(k)\,m^{c}$ with $c>1$ would already be a nontrivial theorem.
+Under ETH/SETH, CNF-SAT needs $2^{(1-\varepsilon)n}$ (CONDITIONAL; not unconditional).
+Candidate parameter ledger: $(n,m,\text{tw},\text{fan-out},\text{depth})$.
+Natural next unconditional target (OPEN): a gate-by-gate \emph{incremental} bound
+$T(C_{j+1})\ge T(C_j)+\delta_j$ where $C_{j+1}$ adds one gate; no such $\delta_j>0$ beyond $O(1)$ is known.
+
+\section{Repository cross-check}
+Searched \texttt{j15marti/pnp}. Relevant, reusable but \emph{not} imported as proof:
+SIL/M22 resource ladder (\texttt{research/language/2026-10-25\_0005\_SIL\_M22\_PARAMETERIZED\_RESOURCE\_LADDER.md}),
+ARC/FLMV spine (root \texttt{main.tex}), whose own status is OPEN; its handoff states the finite
+reduction trace gives no unconditional decision-time lower bound. No overlap with the exact
+small-$n$ circuit census above was found. Barriers (relativization, natural proofs, algebrization)
+apply to any proposed route from this ladder.
+
+\section{Plan / next rungs}
+\begin{enumerate}
+\item $n=4$ exact census via SAT-based synthesis (65536 functions, symmetry classes: 222 NPN).
+\item Wire ledger with fan-out restriction (formula vs circuit size gap, small $n$).
+\item Track $\min$ size of circuits for $\mathrm{SAT}$-\emph{witness} functions (e.g.\ clause-evaluation circuits for $k$-CNF on $n$ variables) and compare with $s$ of the full function.
+\item Try an amortized potential across gate additions; test against known counterexamples (e.g.\ tw-bounded easy cases).
+\end{enumerate}
+
+\section{Log}
+\textbf{Run 1 (2026-10-28):} document created; exact census $n\le3$ computed; Lemmas~\ref{l:conn}--\ref{l:read} stated; no new lower bound beyond linear.
+\end{document}
