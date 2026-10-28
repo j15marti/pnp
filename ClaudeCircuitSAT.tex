@@ -1,0 +1,50 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- edited in place; append-only log at the end.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: a wire-by-wire, parametrized lower-bound ledger for Circuit-SAT}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated 2026-10-28}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No super-linear unconditional lower bound for Circuit-SAT is claimed. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Setup and parameters}
+Circuit-SAT$(n,s)$: given a fan-in-2 circuit over $B_2$ with $n$ inputs and $s$ gates (hence $w=2s$ wires into gates, plus one output wire), decide whether some $x\in\{0,1\}^n$ gives output $1$. Parameters: $n$ (inputs), $s$ (gates), $w$ (wires), later depth $d$ and treewidth $k$. Bounds are sought as $T(n,s,\dots)$; FPT-type bounds (e.g.\ $2^{O(k)}\mathrm{poly}$) are upper bounds, so a lower bound must say which parameter is held fixed.
+
+\section{Step 0: exact minimal circuits for small $n$ (COMPUTATIONAL)}
+Method: level-wise search over sets of computed truth tables (\texttt{research/agents/claude/circuitsat/minsize.py}); all 16 binary gates, free output negation, constants free. Minimal gate count $C(f)$ (hence minimal wires $2C(f)$) over all functions up to output negation:
+\begin{center}\begin{tabular}{lccccc}\toprule
+$n$ & $C=0$ & $C=1$ & $C=2$ & $C=3$ & $C=4$\\\midrule
+2 & 3 & 5 & --- & --- & ---\\
+3 & 4 & 15 & 57 & 40 & 12\\\bottomrule\end{tabular}\end{center}
+So $\max C=1$ for $n=2$ and $\max C=4$ for $n=3$ (e.g.\ majority). Exhaustive for $n\le3$; $n=4$ was not attempted (state space exceeds the 30\,s budget; needs chunking, see Next steps).
+
+\section{Step 1: a probe lower bound that is exact but weak}
+Model: the algorithm sees the circuit only through wire queries ``what feeds gate $g$, input $a$ / $b$''.
+\begin{theorem}[PROVED/EXACT, trivial] Every deterministic wire-probe algorithm for Circuit-SAT$(n,s)$ with $s\ge n-1$ must make $\ge 2(n-1)$ probes; in general $\Omega(w_{\mathrm{irr}})$ where $w_{\mathrm{irr}}$ is the number of wires whose redirection to constant $0$ flips satisfiability.\end{theorem}
+\emph{Proof.} Take $C=x_1\wedge\dots\wedge x_n$ as a chain of $n-1$ AND gates; it is satisfiable. Redirecting any single gate-input wire to constant $0$ gives an unsatisfiable circuit. If the algorithm leaves a wire unprobed, the adversary answers consistently with the chain, then substitutes the constant at the unprobed wire; the two circuits agree on all probes but have different answers. Each gate has two wires, so $2(n-1)$ probes. $\square$
+
+\noindent Interpretation: this is input-reading, not computation; it gives $\Omega(n)$ and says nothing about $2^{\Omega(n)}$ or even $\omega(n)$. It is the correct base case of the ``track every wire'' idea: each irredundant wire is load-bearing.
+
+\section{Step 2: known context}
+\begin{itemize}
+\item KNOWN THEOREM (gate elimination): explicit functions need $\ge(3+\tfrac1{86})n-o(n)$ gates over $B_2$ (Find--Golovnev--Hirsch--Kulikov 2016). This lower-bounds circuit size, not SAT time.
+\item KNOWN THEOREM: SAT has no $n^{2\cos(\pi/7)-\varepsilon}$-time $n^{o(1)}$-space algorithm via alternation trading (Williams); Buss--Williams show the technique cannot go further (ledger row L13 in \texttt{research/agents/claude/world-ledger/}). The repo's T-PORT note (rows L34--L35) gives the analogous barrier for portfolio algorithms.
+\item Parametrized: under ETH, Circuit-SAT needs $2^{\Omega(n)}$; ETH is an assumption, not a theorem (CONDITIONAL).
+\end{itemize}
+Repo audit: the ARC/FLMV time--space spine and UWI notes are the active routes; none yet gives a wire-level argument. The world-ledger criterion applies: a candidate lemma equivalent to $\mathrm{P}=\mathrm{NP}$ is a reformulation, not progress.
+
+\section{Open arrows and plan}
+\begin{enumerate}
+\item OPEN: extend the exact table to $n=4$ (chunk by gate budget, checkpoint to disk) and record $C(f)$ and fan-out profile (wire multiplicities), not only $C$.
+\item CANDIDATE: define $L(n,k)=\min$ wires of any circuit solving the \emph{SAT-instance family} ``is $f$ satisfiable'' as a monotone sequence in $n$; test whether increments $L(n{+}1)-L(n)$ are forced to grow (gate-elimination style: setting a variable to a constant removes $\ge g$ wires).
+\item CANDIDATE: parametrize by fan-out $\phi$ (wires per node); relate wire count to the routing/VLSI area--time bounds.
+\item OPEN: connect to a time lower bound (the actual goal); currently no link exists.
+\end{enumerate}
+
+\section*{Log}
+\begin{itemize}
+\item 2026-10-28: created document; computed $n\le3$ table; probe lower bound $2(n-1)$. No open arrow closed.
+\end{itemize}
+\end{document}
