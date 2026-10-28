@@ -1,0 +1,377 @@
+% CLAUDE REPORT::TPORT-0001::2026-10-28T20:26Z
+% !TEX program = xelatex
+% Compiles with XeLaTeX or pdfLaTeX (ASCII source).
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newcommand{\cP}{\mathsf{P}}
+\newcommand{\NP}{\mathsf{NP}}
+\newcommand{\DTS}{\mathrm{DTS}}
+\newcommand{\DTISP}{\mathrm{DTISP}}
+\newcommand{\NTIME}{\mathrm{NTIME}}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\status}[1]{\textbf{[#1]}}
+
+\title{CLAUDE TPORT-0001\\[2pt]
+\large Time--space lower bounds for SAT portfolios: an exact threshold at\\
+portfolio size $N$, a barrier theorem for alternation trading, and\\
+new bounds for sublinear portfolios}
+\author{CLAUDE (independent verification), at the project owner's request}
+\date{2026-10-28 13:26 America/Los\_Angeles}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Status.} P versus NP remains OPEN. This report proves no separation.
+It is an additive report requested by the project owner (``try working on'' target T-PORT from
+CLAUDE DIRECTPRODUCT-0001). It changes no schedules, agent count, ownership or allocation and does not
+edit root \texttt{main.tex}. It was not an LSPV run and did not perform the LSPV corpus-wide
+reconciliation. Code, data and checks: \url{research/agents/claude/tport/}.
+
+\section{Summary}
+
+Target T-PORT asked whether SAT time--space lower bounds transfer to the UWI portfolio: programs of
+length $b(N)=b_0+\log_2 N$, i.e.\ about $N$ programs, each a deterministic $N^{o(1)}$-space machine.
+In decision form the question is whether
+$\SAT\notin\exists^{d\log N+b_0}\DTISP[N^c,N^{o(1)}]$ for some $c>1$, with $d=1$.
+
+\begin{itemize}
+\item \textbf{Barrier (Theorem~\ref{thm:barrier}).} \status{PROVED/EXACT} In the alternation-trading
+system made of Williams' speedup rules, the portfolio slowdown, free absorption and brute force, no
+proof refutes the portfolio assumption when $c\ge1$ and $c+d\ge2$. For $d=1$ this is every $c\ge1$, while
+$c<1$ is trivial. So alternation trading with these rules cannot give any nontrivial bound at the UWI
+portfolio size. At $d=0$ the same potential gives Williams' quadratic barrier.
+\item \textbf{Skolemization.} \status{COMPUTATIONAL} Adding a Skolemization rule never improved any
+exponent (exhaustive LP search; at $d=1$, none of the 47,938 proofs of length at most 18 exceeds $c=1$).
+A proof that the
+barrier survives Skolemization is \status{OPEN}; two natural potentials fail (Section~\ref{sec:skolem}).
+\item \textbf{Threshold (Theorem~\ref{thm:positive}).} \status{PROVED/EXACT} For every $d<1$:
+$\SAT\notin\exists^{d\log N+b_0}\DTISP[N^c,N^{o(1)}]$ whenever $c(c+d)<2$; for example $c<1.0341$ at
+$d=0.9$ and $c<1.1861$ at $d=1/2$. Longer computer-found proofs do better (e.g.\ $c=21/20$ at $d=9/10$,
+$c=57/50$ at $d=3/4$), verified in exact rational arithmetic. These beat the portfolio-collapse bound
+$2\cos(\pi/7)-d$ for $d\ge1/2$.
+\item \textbf{Consequence.} The UWI portfolio size $N^1$ sits exactly at the threshold. T-PORT via
+alternation trading is \status{FALSIFIED/RETIRED} for the rule system $\mathcal S$; T-PORT itself stays
+\status{OPEN}.
+\end{itemize}
+
+\section{Model and assumption}
+
+Machines are random-access machines with read-only random-access input, as in the alternation-trading
+literature. $\DTS[t]=\DTISP[t^{1+o(1)},t^{o(1)}]$. For a function $g$,
+$\exists^{g}\mathcal C$ is the class of languages $\{z:\exists y\in\{0,1\}^{g(|z|)}\ M(z,y)=1\}$ with
+$M\in\mathcal C$ having random access to $y$; $\forall^g$ is dual.
+
+\begin{definition}[Portfolio assumption $H(c,d)$]
+$\SAT\in\exists^{d\log_2 N+b_0}\DTS[N^c]$ for some constant $b_0$, where $N$ is the formula length.
+Equivalently: a fixed universal machine and a family of $2^{b_0+1}N^d$ programs, each running in time
+$N^{c+o(1)}$ and space $N^{o(1)}$, such that a formula is satisfiable iff some program accepts it.
+\end{definition}
+
+\noindent The UWI portfolio of \url{research/governance/2026-10-24_2252_ALL_UWI_REFOCUS2.tex} has
+$b(N)=b_0+\lfloor\log_2(N+2)\rfloor$, i.e.\ $d=1$.
+
+\noindent\textbf{Search versus decision.} An $N$-bit witness does not fit in $N^{o(1)}$ space, so the
+small-space form of the UWI statement is the decision portfolio. A search portfolio whose outputs are
+checked by a sound verifier gives a decision portfolio whenever the verification fits in the same
+budget; the lower bounds and barriers below concern the decision form. This corrects the wording of
+row L33 (``SAT search'').
+
+\section{Rules}
+
+Lines follow Williams (STACS 2010, Definition 3.1):
+$(Q_1n^{a_1})^{b_2}(Q_2n^{a_2})^{b_3}\cdots(Q_kn^{a_k})^{b_{k+1}}\DTS[n^{a_{k+1}}]$, where $b_i$ is the
+length exponent of the input to the computation that starts at block $i$ and $b_1=1$. We write $\sigma_i=b_i$
+for the stage input of block $i$, $\beta=b_{k+1}$ for the predicate input and $t=a_{k+1}$ for the
+predicate time. A block is \emph{big} (exponent $a_i$), \emph{log} (an $O(\log n)$-bit quantifier over
+$n^{w_i+o(1)}$ values, created by a speedup) or a \emph{residual} (an $O(\log n)$-bit quantifier left by
+the portfolio slowdown, width $w_i$). Rules act on the last block and the predicate.
+
+\begin{enumerate}
+\item[(S)] \textbf{Speedup Rule 1} (Williams, Lemma 2.3). For $0\le x\le t$:
+\[
+(Q_kn^{a_k})^{\beta}\DTS[n^t]\subseteq(Q_kn^{\max(a_k,x)})^{\max(x,\beta)}(\overline{Q_k}n^0[x])^{\beta}\DTS[n^{t-x}].
+\]
+If the last block is log or residual, its $O(\log n)$ bits merge into the new guess (free absorption).
+\item[(T)] \textbf{Speedup Rule 2} (Williams). Appends
+$(\overline{Q_k}n^x)^{\max(x,\beta)}(Q_kn^0[x])^{\beta}$ after block $k$, with block $k+1$ having stage
+input $\beta$; allowed after a residual.
+\item[(D)] \textbf{Portfolio slowdown} (Lemma~\ref{lem:slow}). With $M=\max(t,a_k,\sigma_k,\beta)$:
+$(Q_kn^{a_k})^{\beta}\DTS[n^t]$ on stage input $n^{\sigma_k}$ is contained in
+$(Q_k n^0[dM])^{\sigma_k}\DTS[n^{cM}]$.
+\item[(B)] \textbf{Brute force} of a last log or residual block of width $w$:
+$(Q n^0[w])^{\beta}\DTS[n^t]\subseteq\DTS[n^{t+w}]$ with predicate input $\sigma_k$.
+\end{enumerate}
+
+\noindent A proof starts at $\exists^{e\log n}\DTS[n^{a_0}]$ (a single residual-type block, absorbed by the
+first speedup) and ends at a single residual $(\exists n^0[w])^1\DTS[n^{t}]$. It is a contradiction iff
+$t<a_0$, by Lemma~\ref{lem:hier} with $e\ge w+2$. With $d=0$, rule (D) followed by (B) is exactly Williams'
+slowdown and the system contains Williams' normal-form proofs. Call this rule system $\mathcal S$.
+
+\begin{lemma}[portfolio slowdown]\label{lem:slow} \status{PROVED/EXACT, standard ingredients}
+Assume $H(c,d)$. A computation $Q y\in\{0,1\}^{n^{a}}:P(z,y)$ with $|z|\le n^{\sigma}$, $P\in\DTS[n^{t}]$
+reading an input of length $n^{\beta}$, lies in $Q^{dM\log n+o(\log n)}\DTS[n^{cM+o(1)}]$ (on input $z$),
+$M=\max(t,a,\sigma,\beta)$.
+\end{lemma}
+\begin{proof}[Proof sketch]
+The computation is $Q$-nondeterministic time $n^{M+o(1)}$ on an input of length $\le n^{M}$. By the
+quasi-linear Cook--Levin theorem for random-access machines (used in Fortnow--Lipton--van~Melkebeek--Viglas),
+it reduces to a SAT instance (for $Q=\exists$) or the complement of one ($Q=\forall$) of size
+$N=n^{M+o(1)}$, each bit computable in polylogarithmic time and space. Run the portfolio on the instance,
+computing bits on demand; its guess has $d\log N+b_0=dM\log n+o(\log n)$ bits, and for $Q=\forall$ the
+complement turns it into a universal guess.
+\end{proof}
+
+\begin{lemma}[limited-nondeterminism hierarchy]\label{lem:hier} \status{PROVED/EXACT (standard delayed diagonalization)}
+For constants $1\le a'<a$ and $e\ge1$:
+$\exists^{e\log n}\DTS[n^{a}]\not\subseteq\exists^{(e-1)\log n}\DTS[n^{a'}]$, and dually for $\forall$.
+\end{lemma}
+\begin{proof}[Proof sketch]
+Use \v{Z}\'ak's delayed diagonalization on unary inputs. Enumerate clocked machines $M_i$ (guess
+$\le(e-\tfrac12)\log n$ bits, time $n^{(a+a')/2}$, space $n^{1/j}$ for every $j$), each infinitely often,
+with intervals $[\ell_i,u_i]$, $u_i=\ell_i^{e+a}$. For $\ell_i\le m<u_i$ let $D(1^m)=M_i(1^{m+1})$, computed
+with $D$'s own $e\log m$ guess bits; let $D(1^{u_i})=\neg M_i(1^{\ell_i})$, computed deterministically by
+trying all $O(\ell_i^{e})$ guesses in time $\ell_i^{e+(a+a')/2+o(1)}\le u_i^{a}$. If $M_i$ decided $D$ on the
+interval, $D(1^{\ell_i})=D(1^{u_i})=\neg D(1^{\ell_i})$. $D$ uses space $n^{o(1)}$.
+\end{proof}
+
+\noindent\textbf{Soundness of the end step.} The final residual of a proof has width $w\le$ a constant
+determined by the proof parameters; choosing $e\ge w+2$ in the starting class, Lemma~\ref{lem:hier}
+contradicts $\exists^{e\log n}\DTS[n^{a_0}]\subseteq\exists^{w\log n+o(\log n)}\DTS[n^{t+o(1)}]$ when $t<a_0$.
+The $o(\cdot)$ terms of finitely many steps are absorbed by the strict inequality.
+
+\section{Theorem: nontrivial bounds below the threshold}
+
+\begin{theorem}\label{thm:positive} \status{PROVED/EXACT}
+Let $0\le d<1$ and $c\ge1$ with $c(c+d)<2$, i.e.\ $c<\tfrac12(\sqrt{d^2+8}-d)$. Then $H(c,d)$ fails:
+$\SAT\notin\exists^{d\log N+b_0}\DTISP[N^c,N^{o(1)}]$ for every constant $b_0$.
+\end{theorem}
+\begin{proof}
+Assume $H(c,d)$. Fix $a\ge2$ and, by Lemma~\ref{lem:hier}, a language
+$L\in\exists^{e\log n}\DTS[n^a]$ with $e$ chosen below.
+\begin{enumerate}
+\item Speedup with $x=a/2$, absorbing $L$'s guess:
+$L\in(\exists n^{a/2})^{a/2}(\forall\log n)^1\DTS[n^{a/2}]$.
+\item The $\forall$ stage is co-nondeterministic time $n^{a/2+o(1)}$ on an input of length $n^{a/2}$.
+Lemma~\ref{lem:slow} with $M=a/2$ gives $\forall^{d(a/2)\log n+o(\log n)}\DTS[n^{ca/2}]$; trying all
+universal choices gives $\DTS[n^{(c+d)a/2+o(1)}]$.
+\item Hence $L$ is in nondeterministic time $n^{(c+d)a/2+o(1)}$ on inputs of length $n$ (note $c+d\ge1$).
+Lemma~\ref{lem:slow} with $M=(c+d)a/2$ gives
+$L\in\exists^{d(c+d)(a/2)\log n+o(\log n)}\DTS[n^{c(c+d)a/2+o(1)}]$.
+\end{enumerate}
+Take $e=\lceil d(c+d)a/2\rceil+2$. Since $c(c+d)a/2<a$, this contradicts Lemma~\ref{lem:hier}.
+\end{proof}
+
+\noindent At $d=0$ this is Lipton--Viglas ($c<\sqrt2$). At $d=1$ it gives only $c<1$, which is trivial: a
+sound portfolio running in time $N^{c}$, $c<1$, reads fewer than $N$ positions on an accepting path, and
+changing two unread clauses into $(x)$ and $(\neg x)$ keeps that path accepting on an unsatisfiable formula.
+
+\section{Theorem: the barrier}\label{sec:barrier}
+
+\begin{definition}[potential]
+Let $s=c+d$. For a line with blocks $1,\dots,k$, predicate input $\beta$ and time $t$, put
+$\sigma_{k+1}=\beta$, $\varphi_{k+1}=t$ and, for $i=k,\dots,2$,
+\[
+\varphi_i=\begin{cases}
+s\cdot\max(\varphi_{i+1},a_i,\sigma_i,\sigma_{i+1}) & \text{block $i$ big},\\
+\min\bigl(\varphi_{i+1}+w_i,\ s\cdot\max(\varphi_{i+1},\sigma_i,\sigma_{i+1})\bigr) & \text{block $i$ log or residual}.
+\end{cases}
+\]
+For block 1: $\Phi=c\cdot\max(\varphi_2,a_1,\sigma_1,\sigma_2)$ if it is big, $\Phi=\varphi_2$ if it is a residual.
+For a line with no blocks, $\Phi=t$.
+\end{definition}
+
+\noindent $\Phi$ is the cost of the obvious deterministic simulation under $H(c,d)$: inner levels pay a
+slowdown and a brute force ($s$), the outer level pays only the slowdown (its residual is free at the end).
+Every $\varphi_i$ is non-decreasing in all arguments.
+
+\begin{theorem}[barrier]\label{thm:barrier} \status{PROVED/EXACT}
+If $c\ge1$ and $c+d\ge2$, then $\Phi(L')\ge\Phi(L)$ for every application $L\vdash L'$ of a rule of
+$\mathcal S$. Consequently every $\mathcal S$-derivation from $\exists^{e\log n}\DTS[n^{a_0}]$ to a line consisting
+of one residual block followed by $\DTS[n^t]$ has $t\ge a_0$, so no $\mathcal S$-proof refutes $H(c,d)$.
+\end{theorem}
+\begin{proof}
+Let the last block be $k$, with predicate $(\beta,t)$. All new exponents are at least the values in the
+rules, and $\Phi$ is monotone, so it suffices to use the rule values.
+
+\emph{(S), parameter $x\in[0,t]$.} The new log block $k+1$ has width $x$, stage input
+$\sigma'_{k+1}\ge\max(x,\beta)$ and predicate time $t-x$, so
+$\varphi'_{k+1}\ge\min\bigl(t,\ s\max(t-x,x)\bigr)\ge t$, because $s\ge2$ and $\max(t-x,x)\ge t/2$.
+Block $k$ becomes big with $a'_k\ge a_k$ and next-stage input $\sigma'_{k+1}\ge\beta$. If $k\ge2$, the old
+value satisfies $\varphi_k\le s\max(t,a_k,\sigma_k,\beta)$ for every kind, and the new one is
+$s\max(\varphi'_{k+1},a'_k,\sigma_k,\sigma'_{k+1})\ge s\max(t,a_k,\sigma_k,\beta)$. If $k=1$ and block 1 is
+the starting residual, $\Phi=t$ and $\Phi'\ge c\,\varphi'_2\ge t$ since $c\ge1$; if block 1 is big,
+monotonicity gives $\Phi'\ge\Phi$. Blocks above $k$ are unchanged, so monotonicity propagates.
+
+\emph{(T), parameter $x\in[0,t]$.} The new blocks are $X$ (big, $a_X\ge x$, stage input $\beta$) and
+$Y$ (log, width $x$, stage input $\ge\max(x,\beta)$), with predicate time $t-x$. As in (S),
+$\varphi'_Y\ge t$, so $\varphi'_X\ge s\,t\ge t=\varphi_{k+1}$. Block $k$ keeps its next-stage input
+($\beta$), so monotonicity gives $\Phi'\ge\Phi$, including when block 1 is a residual ($\Phi=\varphi_2$).
+
+\emph{(D).} Let $M=\max(t,a_k,\sigma_k,\beta)$. If $k\ge2$: block $k$ becomes a residual of width $dM$
+with predicate time $cM$ and predicate input $\sigma_k$, so
+$\varphi'_k=\min\bigl(cM+dM,\ s\max(cM,\sigma_k)\bigr)=sM$ (using $c\ge1$, $M\ge\sigma_k$), while
+$\varphi_k\le sM$. If $k=1$ and block 1 is big, $\Phi=cM=\Phi'$. If $k=1$ and block 1 is a residual,
+$\Phi=t\le c\max(t,\sigma_1,\beta)=\Phi'$.
+
+\emph{(B), $k\ge2$, block $k$ log or residual of width $w$.} The new predicate has time $t+w$ and input
+$\sigma_k$, which is also the old next-stage input of block $k-1$. Since
+$\varphi_k\le t+w=\varphi'_k$, monotonicity gives $\Phi'\ge\Phi$.
+
+\emph{Endpoints.} The starting line has $\Phi=a_0$ and a single residual line has $\Phi=t$; a line with no
+blocks has $\Phi=t$. Hence $t\ge a_0$ for every derivation, and the hierarchy step never applies.
+\end{proof}
+
+\begin{corollary}[UWI portfolio] \status{PROVED/EXACT}
+For $d=1$, no $\mathcal S$-proof shows $\SAT\notin\exists^{\log N+b_0}\DTS[N^c]$ for any $c\ge1$; for $c<1$ the
+statement is trivial. For $d\ge1$ the same holds. For $d\le1$, $\mathcal S$ cannot give exponents
+$c\ge2-d$.
+\end{corollary}
+
+\begin{remark}
+At $d=0$ the barrier reads $c\ge2$, which is Williams' Theorem 3.8 (no alternation-trading proof of
+$\NTIME[n]\not\subseteq\DTS[n^2]$). Buss--Williams sharpened that to $2\cos(\pi/7)$; the analogous sharp
+value $c^*(d)$ for $0<d<1$ is open, with
+$\max\bigl(\tfrac12(\sqrt{d^2+8}-d),\,2\cos(\pi/7)-d\bigr)\le c^*(d)\le 2-d$ and better lower values from
+Table~\ref{tab:curve}.
+\end{remark}
+
+\noindent\textbf{Scope.} The barrier is about $\mathcal S$ with single-block starting lines. It does not
+cover Skolemization (Section~\ref{sec:skolem}), starting lines with several leading log blocks or big
+blocks, or arguments outside alternation trading. It is not a claim that T-PORT is false.
+
+\section{Computational results}
+
+The engine \texttt{atp.py} builds, for each op string over $\{S,T,K,D,B\}$, the linear program of the
+proof at fixed $c$ (homogeneous form: original input exponent 0, $a_0=1$, which gives the supremum over
+$a_0\to\infty$) and bisects on $c$. \texttt{search.py} enumerates all valid strings up to a length and
+block-depth bound (depth $\le8$), in chunks of at most about 25 seconds, appending to JSON-lines files.
+
+\noindent\textbf{Validation (d = 0).} \status{COMPUTATIONAL}
+$[1,0,0]$ gives $1.41421$ ($\sqrt2$, Lipton--Viglas); $[1,1,0,0,1,0,0]$ gives $1.60048$ (Williams reports
+$1.6004$). Exhaustive best values (rules S, D, B) rise with length, $1.6333$ (14 ops), $1.6635$ (18),
+$1.6997$ (22), and stay below $2\cos(\pi/7)\approx1.8019$.
+
+\noindent\textbf{d = 1, exhaustive.} \status{COMPUTATIONAL}
+No string has a feasible LP at $c=1+10^{-6}$:
+rules $\{S,T,D,B\}$, all 8,812 strings of length $\le20$ (two chunks);
+rules $\{S,T,K,D,B\}$ with $K$ restricted to a big block after the residual, all 43,933 strings of
+length $\le18$ (four chunks); with general $K$, all 8,344 strings of length $\le16$ and all 47,938 of
+length $\le18$ (five chunks).
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{rrrrr}
+$d$ & best found & Thm.~\ref{thm:positive} & collapse & barrier \\
+    & (length 18, $\{S,T,D,B\}$) & $\tfrac12(\sqrt{d^2+8}-d)$ & $2\cos(\pi/7)-d$ & $\max(1,2-d)$ \\ \hline
+0    & 1.6635 & 1.4142 & 1.8019 & 2.00 \\
+0.5  & 1.3072 & 1.1861 & 1.3019 & 1.50 \\
+0.75 & 1.1465 & 1.0881 & 1.0519 & 1.25 \\
+0.9  & 1.0568 & 1.0341 & 0.9019 & 1.10 \\
+1    & 1.0000 & 1.0000 & 0.8019 & 1.00 \\
+\end{tabular}
+\caption{Best exponent found versus portfolio width coefficient $d$ (row $d=0$: length 18; the length-22
+value is 1.6997). The collapse column needs Williams' unboundedly long proofs; at $d=0.5$ the residual
+system already beats it at length 18. With $K$ added, length-14 values are identical for every $d$.}
+\label{tab:curve}
+\end{table}
+
+\noindent\textbf{Exact verification.} \status{PROVED/EXACT (computer-checked)}
+\texttt{verify\_exact.py} replays proofs in rational arithmetic with the real input exponent $b_1=1$,
+$a_0=1000$ and actual maxima, and requires a strictly smaller final time. Verified:
+$(d,c)=(0,141/100)$ via SDBD; $(0,8/5)$; $(0,169/100)$; $(1/2,13/10)$; $(1/2,261/200)$ (above the collapse
+bound $1.3019$); $(3/4,57/50)$; $(9/10,21/20)$; $(9/10,103/100)$ and $(99/100,1003/1000)$ via SDBD
+(Theorem~\ref{thm:positive}). Controls at $d=1$, $c=1001/1000$ are infeasible.
+
+\noindent\textbf{Potential checks.} \status{COMPUTATIONAL}
+\texttt{potential\_check.py} applies random valid rule sequences with random parameters. In the region
+$c\ge1$, $c+d\ge2$ (settings $(1,1)$, $(1,1.5)$, $(1.2,0.8)$, $(1.5,0.5)$, $(2,0)$), $\Phi$ never decreased
+under S, T, D or B in about 22,000 steps per setting. Outside the region ($(0.95,1)$, $(1.3,0.5)$) it
+decreases, as it must.
+
+\section{Skolemization}\label{sec:skolem}
+
+\noindent\textbf{Rule K.} For a residual $R$ (type $Q$, width $w$) between a block $A$ and a block $X$ of
+type $\overline Q$: $Qr\,\overline Q z\,\Psi\equiv\overline Q(z_r)_r\,Qr\,\Psi$ (and dually). The table of
+$n^{a_X+w}$ bits merges into $A$; $r$ merges into the next block of type $Q$ (its width grows by $w$ and
+its stage input includes the table), or stays as a residual before the predicate. This is an exact
+equivalence of classes. Right after a Rule-2 speedup, $K$ equals brute force followed by Speedup Rule 1
+with parameter $x+w$; after intermediate slowdowns it can be strictly better locally.
+
+\noindent\textbf{Findings.} \status{COMPUTATIONAL} $K$ never improved any best exponent (all $d$ in
+Table~\ref{tab:curve} at length 14; $d=1$ exhaustive to length 18). $\Phi$ \emph{does} decrease under $K$
+(294 of 11,970 random steps at $(1,1)$), because $K$ removes one factor $s$. Two repairs fail: the minimum
+of $\Phi$ over the $K$-closure decreases under D (5 of 21,963 steps), and an optimistic closure that
+ignores the table's input-length cost decreases under S and T. In every random run that reached a single
+residual, the final time was at least the starting time.
+
+\noindent\textbf{Status.} The barrier for $\mathcal S\cup\{K\}$ is \status{COMPUTATIONAL}; a proof is
+\status{OPEN}. The needed potential must credit Skolemization's saved factor while charging slowdowns
+taken before it.
+
+\section{Consequences for the UWI and ARC/FLMV work}
+
+\begin{itemize}
+\item T-PORT (row L33) through alternation trading: \status{FALSIFIED/RETIRED} for $\mathcal S$,
+\status{COMPUTATIONAL} for $\mathcal S\cup\{K\}$. The obstruction is exact: each slowdown leaves a
+residual of width $d\cdot M$, and at $d=1$ paying it costs as much as a speedup gains.
+\item The threshold is sharp in $d$: every sublinear portfolio ($d<1$) admits a nontrivial bound
+(Theorem~\ref{thm:positive}), the linear one does not within $\mathcal S$.
+\item Any route to the UWI common-input statement in small space must use something the residual
+rules do not: for example structure of the $N$ programs beyond ``some index works'', or a way to
+remove a residual for less than its width.
+\item The ARC/FLMV spine uses one fixed decider per pair, i.e.\ $d=0$; nothing here changes its status.
+\end{itemize}
+
+\section{Literature}
+
+Read in this session:
+\begin{itemize}
+\item R.~Williams, Alternation-trading proofs, linear programming, and lower bounds, STACS 2010,
+\url{https://arxiv.org/abs/1001.0746} (Definition 3.1, Speedup Rules 0--2, Slowdown Rule, LP, normal form,
+annotations $[1,0,0]\to\sqrt2$ and $[1,1,0,0,1,0,0]\to1.6004$, Rule 2 replaceable by Rule 1).
+\item S.~Buss, R.~Williams, Limits on alternation-trading proofs for time-space lower bounds,
+Computational Complexity 24(3), 2015, \url{https://eccc.weizmann.ac.il/report/2011/031}.
+\item D.~van Melkebeek, A survey of lower bounds for satisfiability and related problems,
+\url{https://eccc.weizmann.ac.il/report/2007/099/download} (definition of $\exists^g\mathcal C$; input size as
+the recurring bottleneck). The visible sections do not treat limited nondeterminism; novelty of
+Theorems~\ref{thm:positive} and~\ref{thm:barrier} relative to the literature is not established.
+\end{itemize}
+From memory, verify before load-bearing use: Lipton--Viglas (FOCS 1999, $\sqrt2$);
+Fortnow--Lipton--van~Melkebeek--Viglas (JACM 2005, quasi-linear reductions, golden ratio);
+Williams (CCC 2007 / Computational Complexity 2008, $2\cos(\pi/7)$); \v{Z}\'ak, A Turing machine time hierarchy
+(TCS 1983).
+
+\section{Files}
+
+\begin{itemize}
+\item \texttt{atp.py} --- rule engine and LP; \texttt{python atp.py} reruns the two Williams checkpoints.
+\item \texttt{search.py} --- exhaustive search; outputs \texttt{control\_d0.jsonl}, \texttt{d1.jsonl},
+\texttt{d1\_full.jsonl}, \texttt{d1\_fullK.jsonl}.
+\item \texttt{curve.py} --- best $c$ versus $d$; output \texttt{curve.jsonl}.
+\item \texttt{verify\_exact.py} --- exact replay; output \texttt{verify\_exact\_results.json}.
+\item \texttt{potential\_check.py} --- randomized potential tests; output
+\texttt{potential\_check\_results.json}.
+\end{itemize}
+Chunking: every invocation stays under about 25 seconds; the length-18 $d=1$ search with $K$ was split into
+five chunks by index modulo 5.
+
+\section{Open items handed forward}
+\begin{itemize}
+\item Prove the barrier for $\mathcal S\cup\{K\}$, or find a $K$-proof beating $c=1$ at $d=1$.
+\item Determine the sharp value $c^*(d)$ for $0<d<1$ (Buss--Williams-style analysis).
+\item Find a residual-removal mechanism not in $\mathcal S\cup\{K\}$, or a reason none exists.
+\end{itemize}
+
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::TPORT-0001
