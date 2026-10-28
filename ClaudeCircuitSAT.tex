@@ -1,0 +1,48 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}\newtheorem{lem}[prop]{Lemma}
+\title{Claude Circuit-SAT Lower-Bound Ledger (living document)}
+\date{Last updated: 2026-10-28 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} No superlinear unconditional lower bound for Circuit-SAT is claimed. Labels: PROVED, COMPUTATIONAL, KNOWN, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Build Circuit-SAT bottom-up: fix fan-in-2 circuits over the full basis $B_2$ with $n$ inputs and $m$ gates (wires $=2m$, plus output). Track, per level $n=1,2,3,\dots$, the minimal gates/wires needed, and the resulting solving lower bound, as a parametrized function of $(n,m)$.
+
+\section{Level ledger}
+\begin{tabular}{@{}lll@{}}\toprule
+Level & Minimal construction & Status\\\midrule
+$n=1$ & 0 gates, 0 internal wires; SAT trivial & PROVED\\
+$n=2$ & $\le1$ gate for every function (16 functions) & COMPUTATIONAL\\
+$n=3$ & $\le4$ gates for every function (256); unique-SAT functions need exactly $2=n-1$ & COMPUTATIONAL\\
+general $n$ & depends on all inputs $\Rightarrow m\ge n-1$ & PROVED (Prop.~1)\\\bottomrule
+\end{tabular}
+
+Max min-size by number of satisfying assignments ($n=3$): $|f^{-1}(1)|=0..8 \mapsto 0,2,3,4,4,4,3,2,0$. Script and raw data: \texttt{research/agents/claude/circuitsat/minsize.py}, \texttt{results.json} (BFS over computed-function sets; $n=3$ finishes in $<30$\,s).
+
+\section{Proved facts}
+\begin{prop}[connectivity] A fan-in-2 circuit whose output depends on $n$ inputs has $m\ge n-1$ gates.\end{prop}
+\emph{Proof.} The sub-DAG reaching the output must connect $n$ input nodes; a connected graph on $n+m'$ nodes needs $\ge n+m'-1$ edges, while fan-in 2 gives $\le 2m'$ edges, so $m'\ge n-1$. \qed
+
+\begin{prop}[read lower bound, parametrized] Any algorithm deciding SAT for circuits with $n$ inputs and $m$ gates (given as a gate list) must examine $\Omega(m)$ gate descriptions.\end{prop}
+\emph{Proof sketch.} Take $z_0=x_1\wedge\neg x_1$, $z_i=z_{i-1}\wedge x_2$, output $z_m$: unsatisfiable. Changing any single $z_i$ ($i\ge1$) to $z_{i-1}\vee x_2$ makes the output equal $x_2$ on suffix, hence satisfiable. An algorithm skipping gate $i$ errs on one of the two instances. \qed\ (PROVED; trivial, linear only.)
+
+\section{Parametrized lower-bound picture}
+\begin{itemize}
+\item Unconditional: $\Omega(n+m)$ (Props.~1--2). KNOWN: no superlinear bound for general Circuit-SAT; best time--space results are Williams-style, SAT in $n^{1.8}$ time with $n^{o(1)}$ space is excluded for deterministic RAMs, and Buss--Williams show alternation trading cannot exceed $2\cos(\pi/7)$.
+\item Conditional: ETH/SETH give $2^{\Omega(n)}$-type bounds in $n$ for $m=\mathrm{poly}(n)$; the parameter is $n$ (FPT view: $2^{n}m$ is the brute-force upper bound).
+\item CANDIDATE next step: count wire-sharing (fan-out) needed by a family with unique solution and track whether a ``sequential revelation'' argument forces $\omega(m)$ work as $n$ grows; $n=3$ data shows min size growing as $n-1$ for unique-SAT, i.e.\ no hardness yet at small scale.
+\end{itemize}
+
+\section{Repository cross-reference}
+Useful from \texttt{j15marti/pnp}: ledger row L13 (Buss--Williams) and T-PORT barrier (L34--L37) in \texttt{research/agents/claude/world-ledger/}, and the one-tape note (L38--L40): superlinear multitape bounds for SAT would be needed to beat $N^2$ on one tape. No result there yields a circuit-SAT lower bound beyond linear.
+
+\section{Open arrows and next runs}
+\begin{enumerate}
+\item Extend exact synthesis to $n=4$ (65536 functions) with chunked search; tabulate wires with fan-out.
+\item Formalize the sequential-revelation adversary for unique-SAT circuits.
+\item Identify a parameter ($n$, $m$, treewidth, fan-out) where a provable superlinear step appears.
+\end{enumerate}
+\end{document}
+% END_OF_LIVING_DOC::ClaudeCircuitSAT
