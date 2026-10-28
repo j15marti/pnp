@@ -1,0 +1,61 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-28 12:57 UTC (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\title{Claude's Circuit-SAT Lower-Bound Ladder (living document)}
+\date{Last updated 2026-10-28 12:57 UTC}
+\begin{document}\maketitle
+\section*{Status banner}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial lower bound
+for a white-box Circuit-SAT algorithm. Labels: PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Model and ledger}
+A circuit $C$ has $n$ inputs, $g$ gates of fan-in $\le 2$ (basis $\{\wedge,\vee\}$, free negation on wires),
+fan-out unbounded, one output. $W$ = number of gate in-wires ($W\le 2g$). $\textsc{CSat}(n,g)$ = decide whether
+some $x\in\{0,1\}^n$ has $C(x)=1$. Parameters: $(n,g,W)$; a lower bound may be parameterized, e.g.\ $T(n,g)$.
+
+\section{Step 1: wire lower bounds for the construction (PROVED)}
+\begin{lemma}[connectivity] If $C$ depends essentially on all $n$ inputs then $g\ge n-1$ and $W\ge 2n-2$.\end{lemma}
+\begin{proof} Each input has a path to the output, so the underlying undirected graph on $n+g$ nodes is connected
+(non-output gates not feeding the output are deleted), hence $W\ge n+g-1$. Also $W\le 2g$ gives $g\ge n-1$, so $W\ge 2n-2$.\end{proof}
+Tight: the conjunction of $n$ literals uses exactly $n-1$ gates and $2n-2$ wires. It has a unique
+satisfying assignment, so the unique-solution family is the cheapest to build.
+
+\section{Step 2: lower bounds for solving}
+\begin{theorem}[reading bound, PROVED] Any deterministic algorithm deciding \textsc{CSat} on wire-list encodings
+must read $\Omega(W)$ wires, even on the family $\bigwedge_{i\le k}(\ell_i\wedge \ell_i')$ with $n=k$, $g=2k-1$.\end{theorem}
+\begin{proof} Instance $A$: $\ell_i'=\ell_i$ for all $i$ (SAT). Instance $B_j$: $\ell_j'=\neg\ell_j$ (UNSAT, only wire $j$ differs).
+An algorithm that has left some pair $j$ unread answers identically on $A$ and $B_j$.\end{proof}
+\begin{theorem}[black-box evaluation queries, PROVED, weak model] An algorithm that only evaluates $C$ on chosen points needs
+$2^n$ queries in the worst case, already on conjunctions of $n$ literals ($g=n-1$).\end{theorem}
+\begin{proof} Adversary answers $0$ to every query; the unqueried point could be the unique solution.\end{proof}
+\textbf{Barrier (important).} Theorem 2 does \emph{not} bound white-box algorithms: conjunctions of literals are
+solved in $O(n)$ time by reading the wires. It shows only that a lower bound must use circuit structure; it is the
+relativization-type obstruction. KNOWN conditional: SETH implies no $2^{(1-\epsilon)n}\mathrm{poly}$ algorithm for CNF-SAT, hence
+for \textsc{CSat}; this is conditional and not claimed here.
+
+\section{Step 3: computational ladder (COMPUTATIONAL)}
+Script \texttt{experiments/claude\_circuitsat/min\_circuit\_ladder.py}; data
+\texttt{results/raw/claude\_circuitsat/min\_circuit\_ladder.json}. Breadth-first search over sharing circuits; min gates $g^*(f)$ over
+all Boolean functions $f$ on $n$ inputs (``$>5$'' = not reached at depth cap 5; cap stops at 5 to keep runs $<30$\,s).
+\begin{center}\begin{tabular}{lcccccc}\toprule
+$n$ & functions & $g^*=0$ & 1 & 2 & 3 & 4 / 5 / $>5$ \\\midrule
+1 & 4 & 4 & -- & -- & -- & -- \\
+2 & 16 & 6 & 8 & 0 & 2 & 0\\
+3 & 256 & 8 & 24 & 64 & 30 & 104 / 8 / 18\\\bottomrule\end{tabular}\end{center}
+Unique-solution functions: $g^*=n-1$ for $n=2,3$ (matches Lemma 1: $W=2g^*$ minimal $=2,4$). The $n=2$ cost-3 pair is XOR/XNOR.
+Reading: construction cost is only $\Theta(n)$ for the hardest-to-find assignment, while the most expensive functions
+(parity-like) cost more; hardness of solving is not tracked by $g^*$ alone.
+
+\section{Planned next steps (OPEN)}
+\begin{enumerate}
+\item Extend ladder to $n=4$ with canonical-form pruning (chunked), and tabulate $g^*$ against $\#\mathrm{SAT}$ and
+restricted-model solver cost (DPLL tree size, resolution width) per function.
+\item Search for a \emph{parameterized} restricted-model bound $T(n,g)$, e.g.\ tree-like resolution on layered circuits of $g$ gates.
+\item Track a wire-by-wire adaptive-query potential: which wires an adaptive white-box solver must touch before commit.
+\item Cross-check repo ARC/FLMV work (\texttt{GROKPROOF/}, root \texttt{main.tex}): those routes remain OPEN, and no usable
+lower-bound lemma for this ladder was found in run 1.
+\end{enumerate}
+\section*{Run log}
+Run 1 (2026-10-28 12:57 UTC): created document; Lemma 1, Theorems 1--2 proved; ladder $n\le3$ computed.
+\end{document}
