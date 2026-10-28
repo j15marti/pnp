@@ -1,0 +1,146 @@
+% CLAUDE REPORT::TPORT-0002::2026-10-28T21:52Z
+% !TEX program = xelatex
+% Compiles with XeLaTeX or pdfLaTeX (ASCII source).
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newcommand{\DTS}{\mathrm{DTS}}
+\newcommand{\DTISP}{\mathrm{DTISP}}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\status}[1]{\textbf{[#1]}}
+
+\title{CLAUDE TPORT-0002\\[2pt]
+\large Asymptotics of the portfolio threshold: the provable exponent is $1+\Theta(1-d)$}
+\author{CLAUDE (independent verification), at the project owner's request}
+\date{2026-10-28 14:52 America/Los\_Angeles}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Status.} P versus NP remains OPEN. Additive follow-up to CLAUDE TPORT-0001
+(\url{research/agents/claude/2026-10-28_1326_CLAUDE_TPORT-0001.tex}), whose definitions, rule system
+$\mathcal S$ and lemmas are used unchanged. No schedules, allocations, ownership or root \texttt{main.tex}
+changed. Not an LSPV run. Code: \url{research/agents/claude/tport/asymptotic_certify.py}.
+
+\section{Statement}
+
+Write $\varepsilon=1-d$ for the distance of the portfolio size $N^{d}$ below the UWI size $N$. Let
+$c^*(d)$ be the supremum of the exponents $c$ for which an $\mathcal S$-proof shows
+$\SAT\notin\exists^{d\log N+b_0}\DTISP[N^c,N^{o(1)}]$.
+
+\begin{theorem}[asymptotic threshold]\label{thm:asym}
+\begin{enumerate}
+\item \status{PROVED/EXACT} For every $d\in[0,1]$:
+$c^*(d)\ \ge\ \tfrac12\bigl(\sqrt{d^2+8}-d\bigr)\ \ge\ 1+\tfrac13(1-d)$.
+\item \status{PROVED/EXACT} For every $d\in[0,1]$: $c^*(d)\le 2-d=1+(1-d)$. For $d\ge1$: $c^*(d)\le1$.
+\item \status{PROVED/EXACT (computer-certified)} There is $\varepsilon_0>0$ such that
+$c^*(1-\varepsilon)\ge 1+\tfrac{29}{50}\varepsilon$ for all $0<\varepsilon<\varepsilon_0$.
+\end{enumerate}
+Hence $c^*(d)=1+\Theta(1-d)$ as $d\to1^-$, with
+$\tfrac{29}{50}\le\liminf_{d\to1^-}\frac{c^*(d)-1}{1-d}\le\limsup_{d\to1^-}\frac{c^*(d)-1}{1-d}\le1$.
+\end{theorem}
+
+\noindent In running-time terms: every sound small-space portfolio of $N^{1-\varepsilon}$ programs for SAT
+needs time $N^{1+\varepsilon/3-o(1)}$ for every $\varepsilon\in(0,1]$, and $N^{1+0.58\,\varepsilon-o(1)}$ for
+all small enough $\varepsilon$. Alternation trading with the rules $\mathcal S$ cannot show more than
+$N^{1+\varepsilon}$. Parts 1 and 3 are unconditional lower bounds; part 2 is a statement about proofs.
+
+\begin{proof}
+\emph{Part 1.} TPORT-0001, Theorem 4, gives a proof for every $c\ge1$ with $c(c+d)<2$; the positive root is
+$\tfrac12(\sqrt{d^2+8}-d)$, which is at least $1$ for $d\le1$. For the second inequality,
+$\sqrt{d^2+8}\ge\tfrac13(8+d)$ is equivalent (both sides positive) to
+$9d^2+72\ge64+16d+d^2$, i.e.\ to $8(d-1)^2\ge0$.
+
+\emph{Part 2.} TPORT-0001, Theorem 6: no $\mathcal S$-proof exists when $c\ge1$ and $c+d\ge2$. For
+$d\le1$ and $c\ge2-d$ both hold. For $d\ge1$ every $c\ge1$ satisfies both.
+
+\emph{Part 3.} Section~\ref{sec:cert}.
+\end{proof}
+
+\section{The cost match, made exact}
+
+\begin{lemma}[one round trip]\label{lem:round} \status{PROVED/EXACT}
+Start from $\DTS[n^t]$ with predicate input $n^\beta$. Apply a speedup with parameter $x$, slow down the new
+log block, and brute-force its residual. The resulting time exponent is
+$t'=(c+d)M$ with $M=\max(t-x,x,\beta)$, hence
+\[
+t'\ \ge\ c\,(t-x)+d\,x .
+\]
+In particular, for $c=1$: $t'-t\ge(d-1)\,x$.
+\end{lemma}
+\begin{proof}
+The log block's stage input contains the $n^{x}$ guessed configurations, so the padded instance has size
+exponent $M\ge x$; the remaining time is $t-x$, so $M\ge t-x$. The slowdown gives time $cM$ and a residual
+of width $dM$; trying all its values adds $dM$. Then $cM\ge c(t-x)$ and $dM\ge dx$.
+\end{proof}
+
+\noindent This is the precise form of the cost match. The speedup saves $x$; trying every program costs
+$d\cdot M\ge d\cdot x$, because the padded instance must contain the guessed configurations. At $c=1$ the
+balance is $(d-1)x$: a gain exactly when $d<1$, never when $d\ge1$. The best single round trip uses
+$x=t/2$ and gives $t'=\tfrac{c+d}{2}\,t$, which is the source of Part 1. The barrier potential of TPORT-0001
+extends the same accounting to every $\mathcal S$-proof.
+
+\noindent\textbf{What ``log N bits'' means here.} The residual of a slowdown on an instance of size $N$ has
+$d\log_2N$ bits. The barrier region at $c=1$ is exactly $d\ge1$, and Part 1 gives $c^*(d)>1$ for every
+$d<1$. So, at the resolution of exponents, $\log_2 N$ bits of program choice is the exact amount that
+alternation trading cannot pay for.
+
+\section{Certificate for the slope 29/50}\label{sec:cert}
+
+\noindent\textbf{Proof used.} The length-22 op string found by exhaustive search,
+\[
+A=\texttt{SSSSDBDBDBSDBDBSDBSDBD},
+\]
+i.e.\ Williams' annotation $[1,1,1,1,0,0,0,1,0,0,1,0,1,0,0]$ with a brute force after each inner slowdown.
+
+\noindent\textbf{Parameters.} With $a_0=64$ and $\varepsilon$ as above, the seven speedup parameters are
+$x_i(\varepsilon)=64\,(x_i^{0}+x_i^{1}\varepsilon)$ with
+$x^{0}=(\tfrac12,\tfrac14,\tfrac18,\tfrac1{16},\tfrac14,\tfrac12,\tfrac12)$: every speedup at the threshold
+splits its time exactly in half, as tightness of Lemma~\ref{lem:round} requires. The rational first-order
+coefficients $x^{1}$ are recorded in \url{research/agents/claude/tport/asymptotic_certify_results.json}.
+
+\noindent\textbf{Method.} With $c=1+\tfrac{29}{50}\varepsilon$ and $d=1-\varepsilon$, every exponent in the
+replay is a polynomial in $\varepsilon$ with rational coefficients; the real input exponent $b_1=1$ is kept.
+For all sufficiently small $\varepsilon>0$, polynomials compare like their coefficient vectors in
+lexicographic order (lowest degree first). This decides every maximum, every range condition
+$0\le x_i\le t$, and the final inequality exactly. The replay gives
+\[
+t_{\text{final}}-a_0=-\tfrac{178358018896}{178551236325}\,\varepsilon+O(\varepsilon^2),
+\]
+negative for small $\varepsilon>0$, so the proof is valid on some interval $(0,\varepsilon_0)$ and the
+hierarchy step of TPORT-0001 applies. The same parametrized proof also replays correctly, in exact
+rational arithmetic, at $\varepsilon=1/10$, $1/100$ and $1/1000$.
+
+\noindent\textbf{Controls.} The same method certifies slope $997/3000$ for the three-line proof
+(\texttt{SDBD}; its exact slope is $1/3$), $9/20$ for Williams' $[1,1,0,0,1,0,0]$, and $11/20$ for the
+length-16 proof. At slope $3/5$ the length-22 proof's LP is infeasible, so the method does not certify it.
+
+\noindent\textbf{Trend.} \status{COMPUTATIONAL} Best slopes found at $d=0.999$: $0.529$ (length 14),
+$0.555$ (16), $0.579$ (20), $0.590$ (22 and 24). The limit
+$\gamma^*=\lim_{d\to1^-}(c^*(d)-1)/(1-d)$, if it exists, lies in $[0.58,1]$; its value is \status{OPEN} and is
+a linearized analogue of the Buss--Williams $2\cos(\pi/7)$ problem.
+
+\section{Limits of the statement}
+
+\begin{itemize}
+\item \textbf{Exponent resolution.} The framework sees only exponents. A portfolio of $N^{1-o(1)}$ programs
+(for example $N/\log N$) behaves like $d=1$; whether polylogarithmic gains exist there is outside it.
+\item \textbf{Skolemization.} Part 2 is for $\mathcal S$; with Skolemization added it is
+\status{COMPUTATIONAL} (TPORT-0001, Section 7).
+\item \textbf{Model.} Random-access machines with $N^{o(1)}$ space, decision form; supporting lemmas as in
+TPORT-0001 (standard arguments written as sketches).
+\item \textbf{Novelty} relative to the literature is not established.
+\end{itemize}
+
+\noindent\textbf{Bearing on UWI.} Part 2 at $d=1$ is the barrier already recorded (ledger L34). The new
+content is quantitative: the provable gain above linear time shrinks linearly to zero as the portfolio
+approaches the UWI size, at a rate between $0.58$ and $1$ per unit of $1-d$.
+
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::TPORT-0002

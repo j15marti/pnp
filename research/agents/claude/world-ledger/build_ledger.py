@@ -162,6 +162,10 @@ rows = [
      O, O, O, O, O, "Open", "n.a.", "n.a.", "n.a.",
      "CLAUDE TPORT-0001 §7",
      "COMPUTATIONAL: 0 of 47,938 proofs of length ≤ 18 beat c = 1 at d = 1; Skolemization never improved any exponent. Two natural potentials fail; proof open."),
+    ("L37", "Asymptotic threshold: the best exponent c*(d) provable by the S rules satisfies 1 + (1−d)/3 ≤ c*(d) ≤ 1 + (1−d) on [0,1], and c*(1−ε) ≥ 1 + (29/50)ε for all small ε > 0",
+     T, T, T, T, T, "Theorem", "n.a.", "n.a.", "n.a.",
+     "CLAUDE TPORT-0002 (closed form; barrier; exact ε-polynomial certificate of a length-22 proof)",
+     "So the provable gain over linear time is Θ(1 − d) and vanishes linearly at the UWI size. Exact cost match: one speedup round trip changes time by at least c(t−x) + dx − t. The limiting slope lies in [0.58, 1]; its value is open."),
 ]
 
 headers = ["ID", "Statement", "Algorithmica (P = NP)", "Heuristica", "Pessiland",

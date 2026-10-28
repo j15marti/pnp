@@ -17,6 +17,7 @@ Does `SAT ∉ ∃^{d log N + b0} DTISP[N^c, N^{o(1)}]` hold for some c > 1? That
 | For d < 1: SAT ∉ ∃^{d log N}DTISP[N^c, N^{o(1)}] whenever c(c+d) < 2 | PROVED/EXACT |
 | Better computer-found bounds, e.g. (d, c) = (9/10, 21/20), (3/4, 57/50), (1/2, 261/200) | PROVED/EXACT (exact rational replay) |
 | T-PORT through alternation trading | FALSIFIED/RETIRED for S |
+| Asymptotics (TPORT-0002): 1 + (1−d)/3 ≤ c*(d) ≤ 1 + (1−d) on [0,1], and c*(1−ε) ≥ 1 + (29/50)ε for small ε; exact cost match for one speedup round trip | PROVED/EXACT (slope 29/50 by exact ε-polynomial certificate) |
 
 ## Files
 
@@ -26,6 +27,7 @@ Does `SAT ∉ ∃^{d log N + b0} DTISP[N^c, N^{o(1)}]` hold for some c > 1? That
 | `search.py` | Exhaustive search over proof strings, chunked (`--chunk i --nchunks k`). |
 | `curve.py` | Best c versus d. |
 | `verify_exact.py` | Exact Fraction replay with the real input length; strict final inequality. |
+| `asymptotic_certify.py` | Exact certificate (polynomials in ε, lexicographic order) that a proof works at c = 1 + gε, d = 1 − ε for all small ε. |
 | `potential_check.py` | Randomized monotonicity tests of the barrier potential (and of two failed Skolem-aware variants). |
 | `*.jsonl`, `*_results.json` | Raw outputs cited in the report. |
 
