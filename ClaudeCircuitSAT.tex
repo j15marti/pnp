@@ -1,0 +1,47 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append-by-section; status labels per AGENTS.md
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: a step-by-step, parameterized lower-bound ledger for Circuit-SAT}
+\author{Living document (hourly routine)}
+\date{Last updated 2026-10-28}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is an unconditional superpolynomial lower bound on decision time. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Build circuits $C$ over basis $B_2$ (all fan-in-2 gates, free negation) from the simplest case upward, tracking for each $(n,s)$: minimal gates, minimal wires (edges), and the strongest provable lower bound on solving $\mathrm{CSAT}(n,s)$ under a stated model. Parameters: $n$ inputs, $s$ gates, $w$ wires, $k$ = any structural parameter (depth, treewidth, fan-out). A parameterized bound has the form $T(n,s,k)$.
+
+\section{Level 0--1: basic wire counting}
+\begin{prop}[PROVED/EXACT] If $f$ depends essentially on $m$ inputs and is computed by a fan-in-2 circuit with $s$ gates, then $s\ge m-1$ and the number of wires is $w\ge 2s\ge 2(m-1)$ (each gate has two in-wires; the circuit graph restricted to the cone of the output is connected, a tree needs $m-1$ internal nodes).\end{prop}
+\begin{prop}[PROVED/EXACT, black-box model] An algorithm that only evaluates $C$ as an oracle needs $2^n$ evaluations in the worst case to decide $\mathrm{CSAT}$ for point functions $[x=a]$ (adversary answers 0 until one assignment remains). Cost $2^n$ evaluations; this is \emph{not} a lower bound for algorithms that read $C$.\end{prop}
+\begin{prop}[PROVED/EXACT, reading model] Any correct algorithm must read every wire of the output cone that is not redundant: for a unsatisfiable-vs-satisfiable pair differing in one gate, a single unread gate decides the answer. So time $\Omega(s)$ in the indexed-random-access model for the \emph{worst-case family}; this is the trivial linear bound.\end{prop}
+
+\section{Level 2: exact minimal sizes (COMPUTATIONAL)}
+Script \texttt{experiments/claude\_circuitsat/min\_gates.py}, raw data \texttt{results/raw/claude\_circuitsat/min\_gates.json} (exhaustive straight-line search over all 16 binary gates, $n\le3$).
+\begin{center}\begin{tabular}{rrrl}\toprule
+$n$ & functions & max gates & histogram (gates:count)\\\midrule
+1 & 4 & 1 & 0:3, 1:1\\
+2 & 16 & 1 & 0:4, 1:12\\
+3 & 256 & 4 & 0:5, 1:33, 2:114, 3:80, 4:24\\\bottomrule\end{tabular}\end{center}
+Point functions (unique satisfying assignment) need exactly $n-1$ gates for $n=2,3$ (1 and 2), matching Proposition 1 tightly. The hardest 3-input functions (24 of them, 4 gates) are the parity-type functions $x\oplus y\oplus z$ and variants; in $B_2$ XOR costs 1 gate so 4 gates arises for the majority/mux-like class---to be classified next run (OPEN labelling of the 24).
+
+\section{Ledger of bounds by step}
+\begin{center}\begin{tabular}{llll}\toprule
+Step & Quantity & Bound & Status\\\midrule
+$n$ small & min gates, all $f$ & table above & COMPUTATIONAL\\
+any $n$ & gates for essential-$m$ & $\ge m-1$ & PROVED\\
+any $n$ & wires & $\ge 2(m-1)$ & PROVED\\
+oracle model & queries & $2^n$ & PROVED\\
+read model & time & $\Omega(s)$ & PROVED\\
+read model & time vs $2^{o(n)}\mathrm{poly}$ & SETH-type & CONDITIONAL\\
+unrestricted & superpoly & -- & OPEN\\\bottomrule\end{tabular}\end{center}
+
+\section{Parameterized view}
+Known upper bounds (KNOWN THEOREM): $\mathrm{CSAT}$ in $O(2^n s)$ (brute force); in $2^{O(\mathrm{tw})}s$ for treewidth $\mathrm{tw}$ of the circuit graph; $O(s)$ for tree-like (fan-out 1) circuits via bottom-up satisfiability propagation \emph{only} when no input repeats. Hence the hardness must come from \emph{reconvergent fan-out}: define $r$ = number of reconvergent fan-out stems. CANDIDATE conjecture: with $r$ stems, the work of any natural algorithm is $2^{\Omega(r)}$; a lower bound for algorithms in a restricted model (e.g.\ DPLL-style / resolution) is the targeted next step, via known exponential resolution lower bounds (KNOWN THEOREM for tree-like resolution on specific families); transfer to arbitrary algorithms is OPEN.
+
+\section{Link to repository work}
+Repository state (main.tex, ARC/FLMV spine, SIL/M22 ladder, UWI, 2026-10-28 GROKPROOF note) lists the time--space contraction target as OPEN. Useful here: the SIL/M22 ladder (\texttt{research/language/2026-10-25\_0005\_SIL\_M22\_PARAMETERIZED\_RESOURCE\_LADDER.md}) is a parameterized resource accounting that could supply the $k$-parameter; not yet linked. No claim is imported.
+
+\section{Next steps}
+(1) Classify the 24 four-gate 3-variable functions; (2) extend exhaustive search to $n=4$ via NPN-class canonicalization with chunked runs ($\le30$s each); (3) compute min wires and min fan-out-bounded sizes, tabulate reconvergence $r$; (4) prove a restricted-model bound $2^{\Omega(r)}$ for tree-like resolution on the induced CNF.
+\end{document}
