@@ -1,0 +1,120 @@
+% LSPV-1 REPORT::ARC-SINGLE-CHILD-DESCENT-PIVOT207::2026-10-29T00:05:00Z
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.87in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}[theorem]{Remark}
+\title{ARC207: One-Child Bit Descent and an Exact Auxiliary-Free Projection Barrier}
+\author{LSPV-1 Formal Proof Lead}
+\date{29 October 2026 (UTC)}
+\begin{document}\maketitle
+\noindent\textbf{Status:} \textbf{PROVED/EXACT} elementary same-machine one-child descent theorem and representation-restricted quadratic CNF projection theorem, independent peer review pending. \textbf{COMPUTATIONAL} 69,904 original assignments, 559,232 disjoint-core checks and 354 separating-pair checks with zero failures. \textbf{OPEN} an unconditional, all-input SAT bit-decreasing successor. Neither $P=NP$ nor $P\ne NP$ has been proved.
+
+\section{Exact target and proposals made before literature search}
+Fix an NP-complete decision language $L$ on a uniform closed class $\mathcal E$ of encoded instances; handle malformed encodings by a total parser. Required quantifiers for the missing arrow are
+\[
+\exists C,c,N_0\ \forall x\in\mathcal E,\quad
+ |x|>N_0\Longrightarrow
+ [C(x)\in\mathcal E\ \land\ |C(x)|<|x|\
+ \land\ (x\in L\Longleftrightarrow C(x)\in L)].
+\]
+Here $C$ is ONE fixed deterministic total polynomial-time program, and its entire output, parsing, source reads, choices, retries and workspace are charged. The SAT/UNSAT restrictions are restrictions of this same $C$, not solvers supplied with the answer bit.
+
+\noindent\textbf{H1:} A decrement of only one \emph{encoded bit}, not the stronger power $|x|^\lambda$, suffices for $P=NP$. \textbf{PROVED/EXACT.}
+
+\noindent\textbf{H2:} One-pivot resolution on the specified disjoint-positive family requires $t^2$ clauses for any equivalent auxiliary-free CNF, regardless of negative literals or clause width. \textbf{PROVED/EXACT, restricted.}
+
+\noindent\textbf{H3:} Sharing permits an $O(t)$-gate circuit but does not give a power-short ordinary SAT child. \textbf{PROVED/EXACT, restricted.}
+
+\noindent\textbf{H4:} The OpenAI single-quantum-call recursion automatically shrinks the \emph{classical SAT input bitlength}. \textbf{FALSIFIED as a theorem transfer}, because its target-dependent oracle is not efficiently constructed and even its first reduced dimension can retain the full index width.
+
+\section{Same-machine bit-descent theorem}
+\begin{theorem}[Strict one-child descent]\label{th:descent}
+Let $C$ be a fixed uniform deterministic algorithm with $O(n^c)$ fully charged time per invocation, $c\ge1$, which on every valid $x$ of length $n>N_0$ outputs a physically materialized $y=C(x)$ satisfying the displayed closure, correct-answer and $|y|\le n-1$ properties. Suppose every base instance of length at most $N_0$ has a fixed correct decider. Then $L\in P$. If $L$ is NP-complete, $P=NP$. If the stronger $|y|\le n^\lambda$ holds for a fixed $0<\lambda<1$, total time is $O(n^c)$ when the invocation cost already includes making the emitted child usable as the next input.
+\end{theorem}
+\begin{proof}
+Repeatedly call $C$ and use the answer on the last base instance. Answer preservation establishes correctness for both SAT and UNSAT by induction, without a free membership bit. One-bit descent makes at most $n-N_0$ invocations, so total native cost is
+\[
+ T(n)\le\sum_{m=N_0+1}^{n}O(m^c)=O(n^{c+1}).
+\]
+For power descent, the lengths are bounded by $n,n^\lambda,n^{\lambda^2},\ldots$, with $O(\log\log n)$ nonbase calls, giving
+\[
+ T(n)\le O(n^c+n^{c\lambda}+n^{c\lambda^2}+\cdots)=O(n^c).
+\]
+If ancestor storage is not reclaimed, summing all polynomial intermediate spaces still gives a polynomial footprint. In-place reclamation is optional, not an uncharged assumption. An NP-complete $L$ gives SAT in $P$ after a polynomial many-one reduction.
+\end{proof}
+\begin{remark}[Equivalence firewall]
+The bare mathematical existence of an efficient bit-shrinking map on such a class is itself logically equivalent to $P=NP$. In the reverse direction, under $P=NP$, decide $x$ first and output one of two fixed, valid YES/NO instances. This direction \emph{uses a SAT decider}, and is not an admissible unconditional construction for the research target. Therefore the equivalence is a precise reformulation, not a P-versus-NP resolution. The central new work must supply a specific noncircular compiler. One fewer variable is irrelevant if the \emph{encoded bit length} increases.
+\end{remark}
+
+\section{Exact projection and optimal auxiliary-free CNF count}
+Let the $4t$ variables $a_i,b_i,c_j,d_j$ all be distinct and define
+\[
+ A_i=a_i\vee b_i,\quad B_j=c_j\vee d_j,\qquad
+ F_t(z,x)=\bigwedge_{i=1}^{t}(z\vee A_i)
+             \land\bigwedge_{j=1}^{t}(\neg z\vee B_j).
+\]
+By the two values of $z$ and distributivity,
+\begin{equation}\label{eq:project}
+ G_t(x)=\exists z F_t(z,x)
+ =\left(\bigwedge_i A_i\right)\vee\left(\bigwedge_j B_j\right)
+ =\bigwedge_{i,j}(A_i\vee B_j).
+\end{equation}
+With an arbitrary disjoint core $R(y)$ the projection is $R(y)\land G_t(x)$.
+
+\begin{theorem}[Irredundant prime-corner barrier]\label{th:clauses}
+Any CNF representing $G_t$ as the same Boolean function \emph{using only the original $4t$ variables and no auxiliaries} has at least $t^2$ clauses, even allowing negative literals, repeated literals and arbitrary width. The $t^2$ four-literal resolvents in \eqref{eq:project} attain the bound. A shared binary AND/OR circuit computes the same projected function using exactly $4t-1$ gates.
+\end{theorem}
+\begin{proof}
+For every $(i,j)$ let $x_{ij}$ set precisely $a_i,b_i,c_j,d_j$ to zero and all other original variables to one. Then $G_t(x_{ij})=0$. Flipping any of the four zero variables to one makes all $A_i$ or all $B_j$ true and hence makes $G_t$ true. In every equivalent CNF a clause $D_{ij}$ is falsified by $x_{ij}$. It must become true after each single flip. The only literal that can change false-to-true under flipping a particular zero coordinate is its \emph{positive} literal, so $D_{ij}$ contains the four positive literals $a_i,b_i,c_j,d_j$. At every other $x_{pq}$ at least one of these four literals is one, so $D_{ij}$ cannot be its falsified clause. There are therefore $t^2$ distinct clauses. The resolvents attain this, while a circuit uses $2t$ OR gates for the $A_i,B_j$, $2(t-1)$ AND gates for their conjunctions, and one final OR, totaling $4t-1$.
+\end{proof}
+\noindent With $w=\lceil\log_2(4t+2)\rceil$ bits per variable identifier, the parent has $6t$ literal tokens while the direct projected CNF has $4t^2$ tokens, requiring at least $6t(w+1)$ versus $4t^2(w+1)$ literal-field bits in this fixed natural encoding. The shared DAG needs $O(t\log t)$ serialized bits, not a fixed power-shrink from $\Theta(t\log t)$. Reintroducing $z$ yields the original $2t$ clauses. \textbf{Scope warning:} Standalone $F_t$ is always satisfiable; a decision-only compressor could simply output YES. This theorem constrains \emph{function-preserving auxiliary-free CNFs}, not arbitrary satisfiability-preserving preprocessing and not general SAT algorithms.
+
+\section{Reproduction and original-source audit}
+Independent Python and Node.js implementations enumerate all assignments to $4t$ variables for $t=1,2,3,4$, totaling
+\[
+16+256+4096+65536=69{,}904.
+\]
+The three encodings in \eqref{eq:project} agree on every one. The model count
+\[
+ 2(3^t)(4^t)-3^{2t}
+\]
+is respectively $(15,207,2727,34911)$. There are $t^2$ minimal false points and 354 checked $(i,j,p,q)$ clause-separation relations. The additional disjoint core
+$R=(y_0\vee y_1\vee y_2)\land(\neg y_0\vee\neg y_1\vee\neg y_2)$
+was exhaustively tested for all eight $y$ settings, yielding 559,232 further checks with zero mismatch. No randomness was used. Source and machine-readable results are committed as
+\url{research/agents/lspv-1/2026-10-29_0005_ARC207_pivot_repro.js} and
+\url{research/agents/lspv-1/2026-10-29_0005_ARC207_pivot_raw.json}.
+These finite tests validate the elementary identities, not an all-input contraction theorem.
+
+The actual OpenAI source inspected, at \texttt{openai/math} main commit \texttt{7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a}, is
+\url{preprints/Polynomial-Time-Unitary-Synthesis-from-a-Boolean-Oracle-October-5-2026/build/sections}.
+In \texttt{01-introduction.tex}, the essential quantifiers are $\exists A_n\ \forall U\ \exists f$, and efficient classical construction of $f$ is \emph{not} asserted. In \texttt{03-contraction.tex} the source defines $M=4096(n+1)^2$, $q$ the largest power of two at most $d$, $s=\max(1,\lfloor q/M\rfloor)$, and $k=d-s$. From $d=2^n$ one obtains $k>2^{n-1}$, hence $\lceil\log_2 k\rceil=n$: an immediate contraction of dimension does not reduce the index bitwidth. \texttt{06-recursion.tex} uses the smaller quantum circuit exactly once, whereas \texttt{07-compilation.tex} stores target-dependent programmable tables in the Boolean oracle. This is genuine architectural inspiration but \emph{neither} a classical SAT decider nor a smaller encoded SAT child. There is no Lean/kernel verification asserted here.
+
+Targeted GitHub searches for SAT shrinkers, one-child self-reduction, variable elimination, kernelization, and shared circuits inspected the actual code paths \texttt{arminbiere/cadical/src/elim.cpp} (avoids elimination when resolvents exceed its limit) and \texttt{dbueno/funsat/src/Funsat/Circuit.hs} (shared DAG and CNF conversion). Source inspection confirms that existing software uses both representations; it does not give a universal bit decrease. The primary literature of Fortnow--Santhanam (instance compression, STOC 2008), Dell--van Melkebeek (SAT sparsification, JACM 2014), and Fernau et al.\ (diminishing parameters, 2016) was checked. Their conditional noncollapse hypotheses and distinct parameter measures cannot be promoted into an unconditional obstruction in a $P=NP$ reductio.
+
+\section{Resource models, dependency DAG, and remaining arrow}
+\noindent\textbf{Indexed RAM/RAT:} Charge actual child production, random-access indexing, all failed choices, caches, parent materialization and simultaneous peak work. Only a resulting \emph{same-machine} decider in a strict FLMV/Williams forbidden region would be contradictory. Mere polynomial time with an unspecified exponent is consistent with published lower bounds.
+
+\noindent\textbf{One shared read/write tape:} The original input occupies $N$ counted cells. All output writes, head crossings, physical relocation, and restarts must be included in the native transducer cost. Do not import RAM indices as free tape jumps.
+
+\noindent\textbf{One-read-only-input multitape and two-writable-tape cases:} Count visited work cells, traffic, symbol changes on the writable tapes, output and the cost of turning a child into the next readable input. Use an explicit simulation before moving exponents between machine types.
+
+\noindent\textbf{Fixed universal interpreter:} The same sound program serves both answers. Neither the OpenAI oracle truth table nor a chosen pivot/branch may be supplied as free advice. The common-input crossing results remain model restricted.
+
+\noindent\textbf{Five-role dependency chain.} LSPV-1 owns closure/base/strict-bit descent and the formal proof DAG; LSPV-2 should build a physical CNF/DAG/Tseitin successor on hostile exact22 families and measure \emph{total bits}; LSPV-3 should audit uniformly chosen one-child reductions with both SAT and UNSAT side-specific costs; LSPV-4 should certify a same-solver cross-model simulation and native FLMV numerical margins; LSPV-5 should seek falsifiers using auxiliary variables, semantic-only equivalence, padding, and encoding substitutions. These are handoff requests, not task/schedule changes.
+
+\noindent\textbf{Proof DAG statuses.} One-bit descent implication: \textbf{PROVED/EXACT} pending independent review. Bare shrinker-existence equivalence to $P=NP$: \textbf{PROVED/EXACT} logical reformulation, not progress. $t^2$ auxiliary-free CNF bound and $4t-1$-gate circuit: \textbf{PROVED/EXACT, RESTRICTED}. Numerical tests: \textbf{COMPUTATIONAL}. OpenAI source as a classical bit-shrinker: \textbf{FALSIFIED/RETIRED transfer}. All-input noncircular compression, ARC/FLMV contraction, and $P$ versus $NP$: \textbf{OPEN}.
+
+\noindent\textbf{Corpus and ownership reconciliation.} Read root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, repo research skill, DUAL-TM/RAM/TWO-RW governance, LSPV-1 ARC206, recent LSPV-2 SELECT180, LSPV-3 OPTGAP146, LSPV-4 AUX-WRITE161, LSPV-5 BLOCK-DISTANCE184, and the 2026-10-08 SAT shrinker literature audit. No prior restricted theorem is promoted to unrestricted SAT. Root \texttt{main.tex} at blob \texttt{436748b6359f33d1361557e382a139d8ea512ed1} lacks the prescribed LSPV ownership markers, so the project writing protocol forbids LSPV-1 from editing it. This is \textbf{PENDING} structural reconciliation for LSPV-5, not an authorized replacement.
+
+\noindent\textbf{Exact remaining gap:} construct a polynomial deterministic single-child map for \emph{all} valid NP-complete SAT inputs with at least one bit of actual encoded length decrease, without calling a SAT solver of comparable input size. A successful construction would establish $P=NP$; a restricted local failure would not establish $P\ne NP$.
+
+\noindent\textbf{References.} OpenAI, \emph{Polynomial-Time Unitary Synthesis from a Boolean Oracle}, source 5 October 2026,
+\url{https://github.com/openai/math/tree/main/preprints/Polynomial-Time-Unitary-Synthesis-from-a-Boolean-Oracle-October-5-2026}.
+Fortnow and Santhanam, \emph{Infeasibility of Instance Compression and Succinct PCPs for NP}, STOC 2008, \url{https://eccc.weizmann.ac.il/eccc-reports/2007/TR07-096/}.
+Dell and van Melkebeek, \emph{Satisfiability Allows No Nontrivial Sparsification Unless the Polynomial-Time Hierarchy Collapses}, JACM 2014, \url{https://pages.cs.wisc.edu/~dieter/Research/sparsification.html}.
+Fernau et al., \emph{Diminishable Parameterized Problems and Strict Polynomial Kernelization}, \url{https://arxiv.org/abs/1611.03739}.
+% END_OF_VERIFIED_REPORT::LSPV-1::ARC-SINGLE-CHILD-DESCENT-PIVOT207
+\end{document}
