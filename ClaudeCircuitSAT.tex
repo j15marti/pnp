@@ -1,0 +1,65 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::CCS::2026-10-29
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}[lemma]{Proposition}
+\newcommand{\SAT}{\textsc{CircuitSAT}}
+\title{ClaudeCircuitSAT: a wire-by-wire, parameterized lower-bound ladder\\for Circuit-SAT}
+\author{Living document (Claude, hourly routine)}
+\date{Last updated 2026-10-29 (run 1)}
+\begin{document}\maketitle
+\section*{Status (strict labels; P vs NP remains OPEN)}
+No super-linear unconditional lower bound for \SAT{} is claimed. Everything below is
+PROVED/EXACT, COMPUTATIONAL, KNOWN THEOREM, or OPEN as marked.
+
+\section{Goal and parameterization}
+Instance: a fan-in-2 circuit $C$ with $n$ inputs, $g$ gates, $m=2g+1$ wires (edges).
+Decide $\exists x\,C(x)=1$. Parameters $(n,g)$; target is a bound $T(n,g)$ for a fixed
+model (random-access query/Turing). Known upper bound: $O(2^n g)$. KNOWN THEOREM/CONDITIONAL:
+SETH implies no $2^{(1-\varepsilon)n}\mathrm{poly}(g)$ algorithm. Plan: climb the ladder
+$n=1,2,3,\dots$ tracking (a) minimal wires needed to \emph{realize} each constraint,
+(b) what any solver must read/touch.
+
+\section{Rung A: wire-necessity (query) bound}
+\begin{lemma}[PROVED/EXACT] In the model where the solver reads the circuit by queries
+``who feeds gate $j$?'', every deterministic solver needs $\Omega(g)$ queries, hence time $\Omega(g)$ for every $n\ge1$.\end{lemma}
+\begin{proof} Let $C_0$ be the chain $h_1=x_1\wedge x_2$, $h_j=h_{j-1}\wedge x_{j+1}$ (indices mod $n$), $g$ gates; it is satisfiable (all ones).
+For any gate $j$ let $C_j$ replace its first input by constant $0$; $C_j$ is unsatisfiable.
+A solver that never queries gate $j$ answers identically on $C_0$ and $C_j$. So all $g$ gates are queried on $C_0$. \end{proof}
+Randomized: the same family with Yao's principle (uniform $j$) gives $\Omega(g)$ for error $<1/2-\delta$. Status: PROVED but trivial; it is the baseline all ladder rungs must exceed.
+
+\section{Rung B: minimal wires for a constraint}
+\begin{lemma}[PROVED/EXACT] A circuit whose output depends on $n$ inputs has $\ge n-1$ gates, so $\ge 2(n-1)$ gate-input wires.
+The AND of $n$ literals meets it (unique satisfying assignment, $2^n$-way search space, $n-1$ gates).\end{lemma}
+\begin{proof} The DAG restricted to ancestors of the output must connect $n$ sources; a fan-in-2 tree joining $n$ leaves has $n-1$ internal nodes.\end{proof}
+
+\section{Rung C: exact minimum circuit sizes for small $n$ (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/mincircuit.py} (BFS over sets of truth tables, full binary basis $B_2$, constants and inputs free, runtime $<30$ s, no chunking needed).
+Number of functions of $n$ variables by minimum gate count $C(f)$:
+\begin{center}\begin{tabular}{lcccccc}\toprule
+$n$ & $C=0$ & 1 & 2 & 3 & 4 & $\max C$\\\midrule
+1 & 3 & 1 & & & & 1\\
+2 & 4 & 12 & & & & 1\\
+3 & 5 & 33 & 114 & 80 & 24 & 4\\\bottomrule\end{tabular}\end{center}
+All $2^{2^n}$ functions covered for $n\le3$ (4, 16, 256). Raw data: \texttt{mincircuit\_results.json}.
+Reading: the SAT instance ``find $x$ with $f(x)=1$'' for the hardest 3-variable $f$ needs a $4$-gate (8-wire) description; so far $\max C(n)$ is $1,1,4$.
+Next: $n=4$ (65536 functions; known max 7 under $B_2$) with a chunked/pruned search.
+
+\section{Rung D: counting (KNOWN THEOREM, Shannon)}
+At most $(c\,(g+n)^2)^g$ circuits have $g$ gates, so some $n$-variable function needs $g=\Omega(2^n/n)$ gates. This lower-bounds \emph{instance size} for generic constraints, not solver time. Open bridge: an instance family of size $g$ forcing $\omega(g)$ solver time (needs a time lower bound, i.e.\ OPEN).
+
+\section{Barriers and corpus links}
+\begin{itemize}
+\item Repo ledger (\texttt{research/agents/claude/world-ledger/}): any statement equivalent to P=NP is only a reformulation; alternation-trading bounds (row L13, Buss--Williams) stall at SAT exponent $2\cos(\pi/7)\approx1.80$ in small space; the TPORT notes (rows L34--L37) show portfolio rules give no bound beyond linear at UWI size, so Rung A's $\Omega(g)$ is currently the only unconditional bound on this ladder matched by the corpus.
+\item Relativization, natural proofs, algebrization apply to any circuit-counting/diagonal ladder; a ladder rung must be non-relativizing to matter.
+\end{itemize}
+
+\section{Open targets for next runs}
+\begin{enumerate}
+\item Compute $C(f)$ for $n=4$; tabulate wires vs.\ number of satisfying assignments $|f^{-1}(1)|$ (parameterized by solution density).
+\item Find a restricted model (e.g.\ read-once branching, monotone, bounded depth) where a rung beats $\Omega(g)$ and prove the parameterized form $T(n,g)\ge g\cdot\phi(n)$.
+\item Check Buss--Williams / UWI transfer to the circuit-SAT $(n,g)$ plane.
+\end{enumerate}
+
+\section*{Run log}
+Run 1 (2026-10-29): repo has no prior \texttt{ClaudeCircuitSAT.tex}; created it. Rungs A,B proved, C computed for $n\le3$.
+\end{document}
