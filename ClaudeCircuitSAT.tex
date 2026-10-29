@@ -1,0 +1,49 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::CCSAT-0001::2026-10-29T14:50Z
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: wire-by-wire lower bounds for Circuit-SAT (living document)}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated 2026-10-29 14:50 UTC}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. Nothing below is a super-polynomial lower bound.
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Build from the smallest Circuit-SAT instances upward: for each input count $n$ and each target function $f$,
+record $C(f)$ (minimum gates over the basis $B_2$) and $W(f)=$ minimum number of wires (gate input connections),
+then track the growth in $n$ and look for a parameter $k$ (inputs, treewidth, fan-out, depth) in which a lower bound can be stated.
+Circuit-SAT$(C)$: given a circuit $C$ with $n$ inputs and $m$ gates, is there $x$ with $C(x)=1$?
+
+\section{Proved basics}
+\begin{lemma}[PROVED/EXACT, connectivity] If a $B_2$ circuit with one output depends on $n$ inputs then it has at least $n-1$ gates and at least $2(n-1)$ wires (counting wires into gates).\end{lemma}
+\emph{Proof.} Contract the DAG: each gate has two in-wires. A gate-connected graph on $n$ inputs plus $g$ gates reaching one output needs $g+n-1\le$ wires/2... concretely, the underlying undirected graph on $n+g$ nodes is connected, so it has $\ge n+g-1$ edges; every edge is a wire and wires $=2g$, so $2g\ge n+g-1$, i.e.\ $g\ge n-1$. \qed
+
+\begin{lemma}[PROVED/EXACT, trivial algorithmic bound] Any algorithm deciding Circuit-SAT must read every gate that can influence the output; in the worst case $\Omega(m)$ time. Brute force gives $O(2^n m)$.\end{lemma}
+
+\section{Computational ledger (COMPUTATIONAL)}
+Script: \texttt{research/agents/claude/circuitsat/mincirc.py}, data \texttt{mincirc\_results.json}. Exhaustive iterative-deepening
+over all $B_2$ gate sequences on truth tables (constants excluded from the fan-in rule, so they show as cost 2; degenerate).
+\begin{center}\begin{tabular}{ccccccc}\toprule
+$n$ & functions (up to complement) & $C=0$ & $C=1$ & $C=2$ & $C=3$ & $C=4$\\\midrule
+2 & 16 (all) & 4 & 10 & 2 (constants) & -- & --\\
+3 & 128 & 3 & 15 & 58 & 40 & 12\\\bottomrule\end{tabular}\end{center}
+Max cost for $n=3$ is 4, matching the known maximum. Wires $=2C$ in formulas/circuits without wasted fan-in; fan-out wires are not yet tracked separately.
+
+\section{Known landscape (KNOWN THEOREM, cited from memory, to be re-verified)}
+Best explicit gate-elimination bounds for $B_2$ circuits are linear ($\approx 3.1n$, Li--Yang 2022); for $U_2$ basis $\approx 5n$ (Iwama et al.). No super-linear explicit bound is known for general circuits. Shannon counting gives $2^n/n$ for most functions. Williams-type results give SAT time--space tradeoffs (see the repository's ARC/FLMV spine and world ledger row L13).
+
+\section{Parametrized targets (CANDIDATE)}
+\begin{enumerate}
+\item Parameter $k=n$: lower bound for circuits solving ``SAT of a width-$k$ CNF on $n$ variables'' is the open core.
+\item Parameter fan-out $f$: study $W$ as a function of fan-out cap; wire count versus gate count separates only when fan-out is bounded (to be computed for $n=4$).
+\item Parameter treewidth $t$: Circuit-SAT is $2^{O(t)}\mathrm{poly}$; a matching SETH-type lower bound $2^{(1-\epsilon)t}$ is CONDITIONAL, not unconditional.
+\end{enumerate}
+
+\section{Repository cross-check}
+Repository \texttt{j15marti/pnp}: ARC/FLMV spine and world ledger (\texttt{research/agents/claude/world-ledger/}) remain OPEN. Row L13 (Buss--Williams) and the TPORT barrier (L34) are the closest relevant items; neither gives a Circuit-SAT size bound. This document had no predecessor (file created this run).
+
+\section{Next steps}
+(1) Extend exact search to $n=4$ (65536 functions, chunked $<30$s per run). (2) Track fan-out wires. (3) Tabulate $C$ of the CNF-satisfiability indicator for tiny fixed-shape CNFs. (4) Re-verify cited literature bounds.
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT::CCSAT-0001
