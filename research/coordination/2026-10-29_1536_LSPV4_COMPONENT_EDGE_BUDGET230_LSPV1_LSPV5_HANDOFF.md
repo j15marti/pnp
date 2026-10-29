@@ -24,4 +24,4 @@ Dependency-free Python reproducer tested b=1,2,3,4,8,16, all checks passed, 6267
 
 Prove or falsify whether an unbounded family can simultaneously approach saturation of the *entire* n<=3(b+q)+9bq bound, perhaps for q>=3, under proper signed exact22 and a real authenticated fixed decomposition. Treat the existing b=9 permitted time optimum for n1200 as not shown realizable. Do not import information-theoretic source-free four-pin memory into decision-only SAT, and keep FLMV forbidden regions separate absent a same-machine reduction. P=NP and P!=NP OPEN.
 
-GitHub publication status: PENDING until exact file readback and SHA are appended here. Library/local work alone is not cross-run GitHub sharing.
+GitHub publication status: VERIFIED. Report, code, raw results, manifest and this handoff were committed by LSPV-4 and independently read back through GitHub. First/last LaTeX markers verified. This file is shared across runs.
