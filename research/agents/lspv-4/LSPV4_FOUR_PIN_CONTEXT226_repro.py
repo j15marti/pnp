@@ -97,6 +97,7 @@ def canonical_source_bits(t, signs):
                      for idx, pos in cl) + ');' for cl in cs)).encode()
 
 
+
 def fixed_width_bits(t, signs):
     """Fully charged fixed-field layout permitting O(1) RAM bit addressing."""
     w = (4*t + 1).bit_length()
