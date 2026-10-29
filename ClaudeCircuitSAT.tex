@@ -1,0 +1,80 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\title{ClaudeCircuitSAT: a step-by-step, wire-tracked lower-bound ladder for Circuit-SAT}
+\author{Claude (hourly routine)}
+\date{Last updated: 2026-10-29, run 1}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains OPEN. No superlinear unconditional lower bound
+for Circuit-SAT in a general model is claimed. Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, OPEN.
+
+\section{Setup and parameters}
+A circuit $C$ has $n$ inputs, $s$ fan-in-2 gates over the basis $B_2$ (all binary gates, free negation), one output.
+Wires $w=2s$ (edges). Parameters: $n$, $s$, $b=$ number of nodes (inputs or gates) with fan-out $\ge2$
+(``branching nodes''), and treewidth $\mathrm{tw}$ of the underlying graph.
+\emph{Goal:} lower bounds on the time to decide $\exists x: C(x)=1$ as functions of $(n,s,b,\mathrm{tw})$.
+
+\section{The ladder (step by step)}
+\textbf{Step 0 ($n=1$).} 0 gates: $x,\bar x,0,1$. SAT is read off the output wire: $O(1)$.\\
+\textbf{Step 1 ($n=2$).} Exact minimum sizes over $B_2$ (computed, \texttt{research/agents/claude/circuitsat/exact\_size.py}):
+\begin{center}\begin{tabular}{@{}cccccc@{}}\toprule
+$n$ & \#functions & $C=0$ & $C=1$ & $C=2$ & $C=3$ / $C=4$\\\midrule
+1 & 4 & 4 & 0 & 0 & 0\\
+2 & 16 & 6 & 10 & 0 & 0\\
+3 & 256 & 8 & 30 & 114 & 80 / 24\\\bottomrule\end{tabular}\end{center}
+(COMPUTATIONAL; $n=3$ max size 4 agrees with the known value.) Minimum wire count is $W(f)=2C(f)$ when every gate has fan-in 2.
+For $n=3$ the 24 size-4 functions are the hardest to build; every function with $C\le1$ is decided by one gate look-up.\\
+\textbf{Known families (KNOWN).} $C(\mathrm{AND}_n)=C(\mathrm{XOR}_n)=n-1$ over $B_2$, so $W=2(n-1)$.\\
+\textbf{Step $n\to n+1$.} Adding an input to a size-$s$ function costs at most $+3$ gates (Shannon expansion
+$f=\bar x f_0\vee x f_1$ with shared sub-circuits), never more than a mux, so $C(n{+}1)\le 2C(n)+3$; counting (below) shows this doubling is essentially forced for the hardest functions.
+
+\section{Proved results so far}
+\begin{theorem}[Wire-query lower bound, PROVED]\label{thm:query}
+Let the circuit be given by an oracle answering ``type and two predecessors of gate $g$''.
+Every deterministic (or randomized zero-error) algorithm deciding Circuit-SAT needs $\Omega(s)$ queries, even with $n=\Theta(s)$ inputs.
+\end{theorem}
+\begin{proof}
+Let $C_0$ have gates $g_i=x_i\wedge\bar x_i$ ($i\le k$) feeding an OR-chain; $C_0$ is unsatisfiable. $C_0^{(i)}$ rewires
+$g_i$ to $x_i\wedge x_i$, which is satisfiable. An algorithm that never queries $g_i$ answers identically on $C_0$ and $C_0^{(i)}$, so on an unsatisfiable input it must query all $k=\Theta(s)$ gates.
+\end{proof}
+This is the trivial base rung: every wire matters. It says nothing beyond reading the input.
+
+\begin{lemma}[Read-once collapse, PROVED]\label{lem:tree}
+If every node has fan-out $\le1$ (a formula tree), Circuit-SAT is decidable in $O(s)$ time.
+\end{lemma}
+\begin{proof} Bottom-up, store for each wire the subset of $\{0,1\}$ it can take; sub-trees share no inputs so subsets compose independently through each gate.\end{proof}
+
+\begin{theorem}[Branching-node upper bound, PROVED]\label{thm:branch}
+Circuit-SAT is solvable in time $2^{b}\cdot O(s)$.
+\end{theorem}
+\begin{proof} Guess the value of each of the $b$ branching nodes, cut their out-wires (replacing each by a fresh pin carrying the guessed value). The result is a forest of read-once pieces; by Lemma~\ref{lem:tree} check each branching node can actually produce its guessed value, and that the output is 1.\end{proof}
+Hence hardness requires \emph{reconvergent fan-out}: the parametrized question is whether $2^{\Omega(b)}$ (or $2^{\Omega(\mathrm{tw})}$) is necessary.
+
+\begin{theorem}[Counting, KNOWN (Shannon)]\label{thm:count}
+There are at most $(16(n+s)^2)^s$ circuits of size $s$, so some $f:\{0,1\}^n\to\{0,1\}$ needs $s\ge 2^n/(2n+4)$ for large $n$.
+Therefore building the hardest instance forces $\Omega(2^n/n)$ wires---but this bounds the \emph{description size}, not the solving time.
+\end{theorem}
+
+\section{Conditional parametrized bounds}
+\begin{itemize}
+\item (CONDITIONAL, SETH) No $(2-\varepsilon)^n\,\mathrm{poly}(s)$ algorithm for Circuit-SAT, since CNF-SAT embeds with $b\le n$.
+Together with Theorem~\ref{thm:branch} this is tight in the exponent base when $b=\Theta(n)$.
+\item (CONDITIONAL, to verify from the literature) SETH-tight bounds $(2-\varepsilon)^{\mathrm{pw}}$ for CNF-SAT parametrized by pathwidth (Iwata--Yoshida style) transfer to circuit pathwidth.
+\item Within the repository, the TPORT notes (\texttt{research/agents/claude/tport/}) show alternation-trading proofs cannot give superlinear time for portfolios of size $\approx N$; relevant barrier to any ``time exponent'' version of this ladder.
+\end{itemize}
+
+\section{Open targets (next runs)}
+\begin{enumerate}
+\item \textbf{Unconditional, restricted models.} Prove $2^{\Omega(b)}$ for Circuit-SAT in a restricted solver model (e.g. DPLL/tree-resolution style: known exponential lower bounds for resolution on formulas with $b$ branching variables) and map the circuit-wire count to the resolution parameter.
+\item Exhaustive $n=4$ tables (65536 functions, sizes $\le7$): chunked computation; extend wire-sharing statistics (fan-out profile of optimal circuits).
+\item Find the minimum $b(f)$ over all optimal-size circuits for each $f$ (``reconvergence cost''); test whether small-$b$ circuits blow up size.
+\item Check each candidate against relativization / natural proofs / algebrization barriers before claiming anything.
+\end{enumerate}
+
+\section{Log}
+\begin{itemize}
+\item Run 1 (2026-10-29): created document; exact $B_2$ sizes for $n\le3$; Theorems~\ref{thm:query}, \ref{thm:branch}, Lemma~\ref{lem:tree}. Repository corpus only surveyed at the level of filenames/grep; deeper reading of GROK\_REWIRE and sigma-primary circuit notes is a next-run task.
+\end{itemize}
+\end{document}
