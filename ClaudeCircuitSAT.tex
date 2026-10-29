@@ -1,0 +1,80 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::CCSAT-0001::2026-10-29
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+\newcommand{\CSAT}{\mathrm{CircuitSAT}}
+\title{ClaudeCircuitSAT: A Parameterized Lower-Bound Ladder for Circuit-SAT\\\large Living document (append/revise in place; log at end)}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated 2026-10-29 (run CCSAT-0001)}
+\begin{document}
+\maketitle
+
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here proves a superpolynomial lower bound for Circuit-SAT. This document builds a ladder of \emph{exactly stated} lower bounds in explicit models, tracking wires, and marks which rungs are trivial, which are conditional, and which are the real open gap. Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model and parameters}
+A circuit $C$ has $n$ inputs, $g$ gates of fan-in $\le 2$ over $\{\wedge,\vee\}$ with free negation on wires, one output, and $m$ wires (edges, counting input-to-gate wires). $\CSAT$: is there $x\in\{0,1\}^n$ with $C(x)=1$? Candidate parameters for a lower bound $T(\cdot)$: $n$, $m$, treewidth/pathwidth $k$, formula leaf-size $L$, fan-out $f$, depth $d$.
+Algorithms are deterministic RAM/probe algorithms that read the encoding of $C$ cell by cell (``white-box'').
+
+\section{Rung 0: wire floors (structure of the instance)}
+\begin{theorem}[PROVED/EXACT: wire floor]\label{thm:floor}
+If all $n$ inputs are relevant to a single-output circuit with fan-in-$\le2$ gates, then $g\ge n-1$ and the underlying graph is connected, so $m\ge n+g-1\ge 2n-2$; equality holds for a read-once formula (a tree).
+\end{theorem}
+\begin{proof}
+Each relevant input has a directed path to the output, so the graph is connected on $n+g$ nodes, giving $m\ge n+g-1$. A tree with $n$ leaves and fan-in $\le2$ has at least $n-1$ internal nodes (each gate merges at most two components), so $g\ge n-1$. \qedhere
+\end{proof}
+
+\section{Rung 1: reading lower bound $\Omega(m)$}
+\begin{theorem}[PROVED/EXACT: probe bound]\label{thm:probe}
+Every correct deterministic $\CSAT$ algorithm in the probe model must read $\Omega(m)$ cells of the encoding in the worst case.
+\end{theorem}
+\begin{proof}
+Let $y_1,\dots,y_k$ be variables and let $I_0$ be the conjunction of $2k$ literal wires, where wires $2j-1,2j$ both carry $y_j$ with positive polarity. $I_0$ is satisfiable ($y\equiv1$). Let $I_j$ equal $I_0$ with the polarity bit of wire $2j$ flipped; then $I_j$ contains $y_j\wedge\neg y_j$ and is unsatisfiable. On $I_0$ the algorithm answers SAT; if it never reads the polarity cell $c_j$ for some $j$, its run on $I_j$ is identical, so it errs. Hence it reads all $k$ cells; $m=\Theta(k)$. \qedhere
+\end{proof}
+This is the step-0 bound; it is linear in $m$ and says nothing about exponential dependence on $n$.
+
+\section{Rung 2: black-box bound $2^n$ (barrier, not progress)}
+\begin{theorem}[KNOWN THEOREM / trivial: oracle model]\label{thm:bb}
+If $C$ is accessible only by evaluation queries $x\mapsto C(x)$, any deterministic algorithm needs $2^n-1$ queries to decide satisfiability.
+\end{theorem}
+\begin{proof}
+Adversary answers $0$ to every query until $2^n-1$ distinct points are queried; the last unqueried point decides the answer. \qedhere
+\end{proof}
+\textbf{Barrier note.} Since a real circuit is white-box, Theorem~\ref{thm:bb} does not bound white-box algorithms; any technique that proves only this relativizes. A genuine lower bound must use the \emph{wires}, which is why the project tracks them.
+
+\section{Rung 3: exact formula-size ladder (COMPUTATIONAL)}
+Let $L_n(f)$ be the minimum number of leaves of a De Morgan formula (free negation) for $f:\{0,1\}^n\to\{0,1\}$; wires of a formula with $L$ leaves are $2L-2$ (tree edges, taking leaf wires with gate-input wires). Computed exactly by closure over leaf counts: script \texttt{research/agents/claude/circuitsat/formula\_size.py}, raw data \texttt{results/raw/claude\_circuitsat\_formula\_size.json}. Runs for $n\le3$ finished in seconds; $n=4$ exceeded a 60\,s cap and is \textbf{not yet computed} (to be chunked; see plan).
+\begin{center}\begin{tabular}{rrrrl}
+\toprule
+$n$ & nonconst.\ functions & $\max_f L_n(f)$ & $L_n(\mathrm{parity})$ & leaf-size histogram\\\midrule
+1 & 2 & 1 & 1 & $\{1{:}2\}$\\
+2 & 14 & 4 & 4 & $\{1{:}4,2{:}8,4{:}2\}$\\
+3 & 254 & 10 & 10 & $\{1{:}6,2{:}24,3{:}64,4{:}30,5{:}80,6{:}32,8{:}16,10{:}2\}$\\\bottomrule
+\end{tabular}\end{center}
+Observations (COMPUTATIONAL, $n\le3$): the hardest function for formula size is parity, $L=1,4,10$ (consistent with the known $\Theta(n^2)$ parity formula size; Khrapchenko gives the $n^2$ lower bound, so $n=3$ shows a $+1$ gap over $n^2=9$). A function with a single satisfying assignment (a minterm) has $L=n$, the minimum possible, so unique-SAT is wire-cheap: hardness of $\CSAT$ does not come from small solution sets in this ladder, nor from formula size of the instance, which is polynomial-bounded in the input anyway.
+
+\section{Rung 4: parameterized picture}
+\begin{itemize}
+\item \textbf{Upper bounds (KNOWN THEOREM):} $\CSAT$ is solvable in $2^{n}\cdot O(m)$ (brute force) and in $2^{O(k)}\cdot m$ for treewidth $k$ by dynamic programming over a tree decomposition.
+\item \textbf{Matching lower bounds (CONDITIONAL):} under ETH there is no $2^{o(n)}\mathrm{poly}(m)$ algorithm; under SETH there is no $(2-\varepsilon)^n\mathrm{poly}(m)$ algorithm (CNF-SAT embeds into $\CSAT$). Analogous SETH-tightness for (path)width is reported in the literature but the exact citation was not verified this run.
+\item \textbf{Unconditional status:} no superlinear-in-$m$ lower bound for white-box $\CSAT$ in general RAM time is known; the best unconditional results are time--space tradeoffs (Fortnow--van Melkebeek, Williams; Buss--Williams show alternation-trading proofs cannot go beyond exponent $2\cos(\pi/7)\approx1.80$ for SAT in $n^{o(1)}$ space). See repo ledger rows L13, L34--L37 under \texttt{research/agents/claude/world-ledger/}.
+\end{itemize}
+\textbf{CANDIDATE parameterized target.} Find $T(n,m,k)$ with $T$ unconditionally superlinear in $m$ for a restricted model (e.g.\ bounded-space RAM, or read-once branching programs) that grows like $2^{\Omega(k)}$ in $k$. The repo's T-PORT analysis (portfolio exponent $1+\Theta(1-d)$) is the closest existing parameterized unconditional result for small-space SAT and is the first thing to try to port to the circuit/wire setting.
+
+\section{Plan (next rungs)}
+\begin{enumerate}
+\item Compute $n=4$ formula-size table in chunks (by leaf level, checkpointed); compare parity to $n^2$.
+\item Replace formula size by general circuit size with fan-out: exact minimum wires for all $3$-variable functions (SAT-solver or BFS), and the formula/circuit separation in wires.
+\item Define a wire-by-wire \emph{cut width} potential: for a topological ordering of gates, the number of live wires crossed; relate to probe/space complexity of deterministic evaluation, and test whether a restricted-space lower bound of form $2^{\Omega(\text{cutwidth})}$ is provable (candidate; likely hits Buss--Williams-type barrier).
+\item Audit relativization/natural-proofs/algebrization for every new rung before labeling it as progress.
+\end{enumerate}
+
+\section*{Run log}
+\begin{description}
+\item[CCSAT-0001 (2026-10-29)] Created document. Proved Thm.~\ref{thm:floor}, \ref{thm:probe}; recorded Thm.~\ref{thm:bb} as barrier; computed formula-size ladder $n\le3$. Repo surveyed (AGENTS.md, claude/ ledger and T-PORT notes); web literature search not performed this run, so cited external results are from memory and flagged. $n=4$ computation pending. No progress on P vs NP.
+\end{description}
+% END_OF_DOCUMENT::CCSAT-0001
+\end{document}
