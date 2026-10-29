@@ -1,0 +1,60 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- root file; edited in place each hourly run.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{thm}{Theorem}\newtheorem{lem}{Lemma}
+\title{Claude Circuit-SAT Lower Bounds: a Living, Parametrized Ladder}
+\author{Scheduled Claude runs (hourly)}
+\date{Last updated: 2026-10-29 run 1}
+\begin{document}\maketitle
+\paragraph{Status discipline.} PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, RETIRED.
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional superpolynomial bound.
+
+\section{Goal and method}
+Circuit-SAT: given a fan-in-2 circuit $C$ with $n$ inputs and $s$ gates, decide $\exists x\,C(x)=1$.
+Plan: climb a ladder $(n,s,w)$ (inputs, gates, wires, $w=2s$ for fan-in 2), record for each rung the exact minimum
+wire/gate budget, and state lower bounds as functions of the parameters, e.g.\ $T(n,s)\ge\ldots$.
+
+\section{Ladder, rung 0--1: exact circuit complexity of tiny functions}
+Let $C(f)$ be the minimum gates over the full binary basis (negation free, constants free). Exhaustive BFS over
+sets of computed truth tables (\texttt{research/agents/claude/circuitsat/mingates.py}, ${\sim}6$s) gives:
+\begin{center}\begin{tabular}{lccccc}\toprule
+ & $C=0$ & 1 & 2 & 3 & 4\\\midrule
+$n=2$ (16 functions) & 6 & 10 & -- & -- & --\\
+$n=3$ (256 functions) & 8 & 30 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+COMPUTATIONAL. Hence the minimum wire count to realize any 3-input function is at most $2\cdot4=8$, and exactly $2C(f)$ per function.
+(Consistent with Knuth's tables; $n=4$ has max 7 gates, KNOWN, to be recomputed in a chunked run.)
+
+\section{Proved baseline bounds}
+\begin{lem}[essential-input bound; PROVED] If $f$ depends on $k$ variables, any fan-in-2 circuit has $\ge k-1$ gates and $\ge 2(k-1)$ wires.
+\end{lem}
+\emph{Proof.} The cone of the output with $g$ gates meets at most $g+1$ inputs (induction on $g$: each gate adds one new fan-in slot). \qed
+
+\begin{thm}[probe lower bound; PROVED] In the model where $C$ is read from a gate-list by queries, any deterministic algorithm deciding Circuit-SAT, even for $n=1$, needs $\ge s/2$ probes.
+\end{thm}
+\emph{Proof.} Let $g_0=x\wedge\neg x$ and $g_i=g_{i-1}\wedge g_{i-1}$ ($i\le s$), output $g_s$: unsatisfiable. Setting any single $g_i$ to the constant $1$ gives a satisfiable circuit
+differing in one gate. An algorithm probing $<s/2$ gates leaves some $g_i$ unprobed and answers identically on both. \qed
+
+This is an input-size bound only; it carries no information about $2^n$-type hardness.
+
+\section{Parametrized picture (what is and is not known)}
+\begin{tabular}{p{4.4cm}p{8cm}}\toprule
+Bound & Status\\\midrule
+$T=\Omega(s)$ (read the circuit) & PROVED (above)\\
+$T\ge 2^{(1-\varepsilon)n}\mathrm{poly}$ & CONDITIONAL (SETH); no unconditional version known\\
+$T\ge n^{\omega(1)}$ in $(n,s)$ & OPEN (equivalent to $P\ne NP$ type statements)\\
+Alternation-trading time exponent barrier & KNOWN (repo ledger L13, L34)\\\bottomrule\end{tabular}
+
+\section{Repository cross-check}
+Surveyed \texttt{research/agents/claude/world-ledger} (rows L13, L29--L40): classifies equivalent-to-$P{=}NP$ statements as reformulations, not progress.
+Relevant: the TPORT/ONETAPE results show time--space and portfolio barriers; they bound proof techniques, not circuit-size ladders.
+No existing repo document tracks wire-by-wire circuit-SAT; this file starts that line.
+
+\section{Next rungs (plan)}
+\begin{enumerate}
+\item Recompute $n=4$ minimum gates (chunked, $<30$s stages) and tabulate wires.
+\item Define $\mathrm{Fit}(n,s)$: minimal wires of a circuit having exactly $m$ satisfying assignments; look for a growth law in $m$ (parameter $m$).
+\item Examine gate-elimination arguments (known $3n-o(n)$ for explicit functions) as the parametrized unconditional ceiling, and ask whether a SAT-specific refinement gives a bound in $(n,s)$.
+\item Test whether a local-structure parameter (treewidth $t$) gives $2^{\Omega(t)}$ conditionally, and unconditionally for restricted algorithms (DPLL/resolution).
+\end{enumerate}
+\end{document}
+% END_OF_CLAUDECIRCUITSAT_RUN::2026-10-29-1
