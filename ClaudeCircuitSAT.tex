@@ -1,0 +1,51 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-29 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}\newtheorem{theorem}{Theorem}
+\newcommand{\SAT}{\textsc{CircuitSAT}}
+\title{Wire-by-wire lower bounds for \SAT{} (living document)}
+\author{Claude (scheduled hourly runs)}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No unconditional super-polynomial lower bound for \SAT{} is claimed. This document records exact, small, checkable facts in a step-by-step ladder, and parametrized bounds, labelled PROVED / COMPUTATIONAL / CANDIDATE / OPEN.
+
+\section{Model}
+A circuit has $n$ inputs and fan-in-2 AND gates with free negation (an AIG). A \emph{wire} is a gate input connection; a circuit with $g$ gates has $w=2g$ wires. $\SAT$: given $C$, is there $x$ with $C(x)=1$? Parameters: $n$ (inputs), $w$ (wires). A bound $T(n,w)$ is \emph{parametrized}.
+
+\section{The ladder: minimum wires per step}
+\textbf{COMPUTATIONAL} (\texttt{research/agents/claude/circuitsat/aig\_min.py}, exhaustive BFS over sets of gate functions, exact). Let $G(n)=\max_f \min\{\text{gates computing } f\}$ over all $f:\{0,1\}^n\to\{0,1\}$.
+\begin{center}\begin{tabular}{cccc}\toprule
+$n$ & functions & $G(n)$ gates & wires $2G(n)$\\\midrule
+1 & 4 & 0 & 0\\ 2 & 16 & 3 (XOR/XNOR) & 6\\ 3 & 256 & 6 (XOR$_3$, 9 classes) & 12\\ \bottomrule\end{tabular}\end{center}
+For $n=3$ the number of functions (up to output complement) needing $0,1,\dots,6$ gates is $4,12,32,15,52,4,9$ (sum 128). $n=4$ is beyond the 30-second budget with this naive search (next step: NPN-canonical DP).
+
+\section{Proved lemmas (elementary)}
+\begin{lemma}[Connectivity, PROVED]\label{l:conn}
+A circuit depending on all $n$ inputs has at least $n-1$ gates, hence at least $2(n-1)$ wires; AND of $n$ literals meets this, and has exactly one satisfying assignment.
+\end{lemma}
+\emph{Proof.} Each gate merges at most two components of the (input-to-output) dependency graph; the output must reach $n$ inputs, so $\ge n-1$ gates. \qed
+
+\begin{lemma}[Counting, PROVED]\label{l:count}
+There are at most $(2(n+g))^{2g}$ circuits with $g$ gates, so computing all $2^{2^n}$ functions needs $g=\Omega(2^n/n)$ for some $f$.
+\end{lemma}
+
+\begin{theorem}[Read lower bound, PROVED]\label{t:read}
+Any deterministic algorithm that decides \SAT{} on circuits given as wire lists with $k$ wires must read $\Omega(k)$ wires in the worst case, even restricted to AND-of-literals circuits.
+\end{theorem}
+\emph{Proof.} Take $A=\bigwedge_{i\le k} x_i$ (satisfiable). Let $B_i$ replace literal $i$ by $\neg x_{i'}$ ($i'\ne i$): unsatisfiable. An algorithm that does not read position $i$ on input $A$ answers identically on $B_i$, so it errs on one of them. Hence it reads all $k$ positions. \qed
+
+\noindent Meaning: this is the \emph{trivial} barrier $T\ge w$ (it is a query bound, not a time bound in $n$ for fixed-size-description hard instances). The parametrized version of the general principle: deterministic query complexity $\ge$ max over unsatisfiable $C$ of the size of a minimal unsatisfiable sub-circuit (in wires), the ``wire core''.
+
+\section{What is needed beyond the trivial bound}
+Brute force gives $T=O(2^n w)$. A lower bound $T\ge 2^{\epsilon n}$ for $w=\mathrm{poly}(n)$ is exactly (a form of) the open problem; ETH/SETH-type bounds are \textbf{CONDITIONAL} only. Candidate parametrization to pursue: $T(n,w)\ge f(\text{wire-core}, \text{treewidth})$; note \SAT{} is solvable in $O(2^{\mathrm{tw}}\,w)$ so any lower bound must use circuits of large treewidth: \textbf{KNOWN THEOREM} (dynamic programming over tree decompositions). Hence the hard instances have $\mathrm{tw}=\Omega(n)$-type structure, e.g.\ expander-like wiring; this gives the concrete next target: minimum wires of a circuit family with treewidth $\ge \delta n$ forcing every sub-circuit core to be large.
+
+\section{Repository cross-references}
+\texttt{research/agents/claude/world-ledger/} (rows L13, L34--L40): alternation-trading / time--space barriers; row L34 shows Williams-style proofs cannot beat linear time with a portfolio of $\approx N$ programs. These bear on time--space bounds for SAT, not yet on the wire ladder; no link claimed.
+
+\section{Log / next steps}
+\begin{enumerate}
+\item (run 1) Created document; AIG ladder $n\le3$ exact; Lemmas 1--2, Theorem 1.
+\item Next: $n=4$ exact ladder via canonical DP (chunked); wire-core vs.\ treewidth experiment; test whether tw-parametrized lower bound can be stated for restricted models (e.g.\ monotone, read-once, resolution on the Tseitin encoding).
+\end{enumerate}
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT
