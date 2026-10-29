@@ -1,0 +1,122 @@
+% LSPV-4 report 219. October 29, 2026. Source-native audit, no P vs NP solution.
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.81in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,xurl}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\title{LSPV-4: CONTEXT-PORT-ACQUISITION-FIREWALL219\\Constant-Size Exact Interfaces Can Be NP-Hard to Acquire on Always-SAT Connected Proper 3CNF}
+\author{LSPV-4: Independent Time-Space and Circuit Resource Auditor}
+\date{29 October 2026}
+\begin{document}\maketitle
+\noindent\textbf{Status.} \textbf{PROVED/RESTRICTED}: elementary many-one reduction and contextual projection identities, including full input/output encoding. \textbf{COMPUTATIONAL}: independent exhaustive and randomized SAT controls. \textbf{CONDITIONAL}: if all these one-bit exact interfaces have a polynomial-time computable, polynomial-time evaluable representation, then $P=NP$. \textbf{OPEN}: general SAT contraction, nontrivial unconditional SAT lower bounds, and both $P=NP$ and $P\ne NP$. No Coq kernel verification or machine-measured time bounds are claimed.
+
+\section{PROPOSE: four falsifiable mechanisms before source search}
+\begin{description}
+\item[]\textbf{M1 (tiny-output implies cheap acquisition).} A one-bit semantic port relation has at most four possible truth-table values, so perhaps its exact construction is uniformly cheap. \textbf{FALSIFIED as an unconditional inference}: the computation task below is NP-complete even when its output has exactly two bits; polynomial construction would imply $P=NP$.
+\item[]\textbf{M2 (easy source SAT implies easy full port).} An algorithm that knows the source is always SAT can compute its complete conditional relation on a retained port. \textbf{FALSIFIED as an inference}: source SAT is uniformly trivial in the reduction while the question ``is port value 1 feasible?'' is NP-complete.
+\item[]\textbf{M3 (SAT-equivalent child is contextually interchangeable).} Replacing a formula by a fixed YES base formula preserves its satisfiability after arbitrary future conjunctions involving a retained port. \textbf{FALSIFIED} by the fixed context forcing port value 1.
+\item[]\textbf{M4 (restricted algebraic repair).} When the hidden source belongs to an authenticated polynomial-time decidable class, the exact one-port truth table is polynomially constructible. \textbf{PROVED/RESTRICTED}: evaluate the two port values using the existing class decider; this does not extend to unrestricted 3SAT.
+\end{description}
+
+\section{SEARCH: originals, code, and hypotheses}
+The supplied Library \path{/P vs NP/Connected_Interface_Audit.zip}, id \path{libfile_a2862f0165b4819195a88d9e896a42a7}, was independently materialized. Its \texttt{REPORT.tex}, \texttt{audit.py}, \texttt{results.json}, and five-page PDF were examined. Reexecution reproduced its JSON byte-for-byte, SHA-256 \texttt{05675f876d6624073507df1e9cedd18a188143db687e454bc2942143d36cbaca}; 4,680 boundary, 7,191 discovery, and 139 SAT comparison checks. Its $n\le 3b+12bq$ theorem concerns a fixed syntactic interface, not a general runtime lower bound.
+
+Targeted source queries were ``projected d-DNNF retain port variables'', ``forgetting CNF variables context projection'', ``Gaussian XOR clauses'', and ``Coq multitape single-tape resource simulation''. Actual inspected files: \path{SoftVarE-Group/pd4/README.md}, Git blob \texttt{66d60725bcf8}, describes a projected d-DNNF compiler with an explicit ``show'' port set; no uniform polynomial-size or compilation-time guarantee is asserted~\cite{pd4}. \path{crillab/d4/preproc/Forgetting.cc}, blob \texttt{8f00f7397b70}, uses resolution and controls for variable forgetting~\cite{d4}. \path{msoos/cryptominisat/src/gaussian.cpp}, blob \texttt{7b9d200c1c1d}, implements matrix reasoning within SAT~\cite{cryptominisat}. \path{uds-psl/coq-library-complexity/theories/NP/TM/mTM_to_singleTapeTM.v}, blob \texttt{a12c882a5aed}, explicitly constructs encoded-tape polynomial simulation, but the script was not compiled in this run~\cite{coqcomplexity}. \path{openai/math/.../06-recursion.tex}, blob \texttt{65bf0450f460}, uses one smaller quantum synthesis circuit, not a free classical evaluator for target-dependent Boolean slot tables~\cite{openai2026}. The previous LSPV-4 \texttt{MIXED-AFFINE-PORT-FIREWALL218} already covers mixed XOR/OR projection and exponential explicit affine covers; this report addresses \emph{acquisition hardness with a constant port}, a different bottleneck. These code sources demonstrate supported interfaces, not proofs of SAT algorithms.
+
+\section{BUILD: always-satisfiable guarded source and its exact port}
+Let $F(x)=\bigwedge_{i=1}^{m}(\ell_{i1}\vee\ell_{i2}\vee\ell_{i3})$ be any proper 3CNF, meaning the three variables in each clause are distinct. Delete unused variable names and renumber the active variables $x_1,\ldots,x_n$. Introduce one fresh distinguished port $y$ and one fresh splitter $u_i$ for each clause. Form the proper 3CNF
+\begin{equation}\label{eq:gated}
+ \boxed{G_F(x,u,y)=\bigwedge_{i=1}^{m}
+  (\neg y\vee\ell_{i1}\vee u_i)\wedge
+  (\neg u_i\vee\ell_{i2}\vee\ell_{i3}).}
+\end{equation}
+No source clause is solved or simplified to construct this formula.
+
+\begin{lemma}[One guard, two exact projected values]\label{lem:guard}
+For every assignment to $x$, and for each $y\in\{0,1\}$,
+\[
+ \exists u\,G_F(x,u,0)=1,\qquad
+ \exists u\,G_F(x,u,1)\iff F(x)=1.
+\]
+Thus the full semantic relation on the single port is
+\begin{equation}\label{eq:relation}
+ R_F(y):=\exists x,u\,G_F(x,u,y),\qquad
+ \boxed{R_F(0)=1,\quad R_F(1)=\mathsf{SAT}(F).}
+\end{equation}
+In particular $G_F$ is \emph{always satisfiable}, independently of $F$.
+\end{lemma}
+\begin{proof}
+If $y=0$, set every $u_i=0$. Then $\neg y$ satisfies the first clause and $\neg u_i$ the second clause for every $i$, whatever $x$ is. If $y=1$, the two clauses for index $i$ reduce to $(\ell_{i1}\vee u_i)$ and $(\neg u_i\vee\ell_{i2}\vee\ell_{i3})$. Existentially eliminating $u_i$ gives precisely $(\ell_{i1}\vee\ell_{i2}\vee\ell_{i3})$, by elementary two-way resolution. Distinct $u_i$ are private, so eliminating all of them yields $F(x)$. Existentially eliminate $x$ to obtain~\eqref{eq:relation}.
+\end{proof}
+
+\begin{proposition}[Connectedness, width, and physical length]\label{prop:physical}
+Every clause of $G_F$ has three distinct variables. The variable--clause incidence graph is connected when $m\ge1$ and every listed source variable is active. It contains exactly $2m$ clauses and $n+m+1$ variables. The direct encoding transformation is uniform deterministic polynomial time. With ordinary unpadded binary names and source length $N$, its complete physical output (headers, signs, names, whitespace, splitters) is
+\[
+ \boxed{N_G=O(N\log(N+2))},
+\]
+and may be larger by a logarithmic factor when the source repeats short-name clauses. No better unqualified $N_G=\Theta(N)$ assertion is made.
+\end{proposition}
+\begin{proof}
+The variable $y$ appears in the first clause of every pair. Each $u_i$ joins the first and second clause of that pair. Every source variable occurs in at least one such pair. Hence all named variables and all clauses belong to the single incidence component. Each private $u_i$ is fresh, and original clause variables are pairwise distinct, proving properness. There are exactly two printed ternary clauses per source clause. Renumbered active names satisfy $n\le3m\le O(N)$, as does $m$, and each generated binary name has $O(\log(N+2))$ bits. Printing $6m$ signed literal tokens and the header gives the stated upper bound.
+\end{proof}
+
+\begin{theorem}[One-port exact acquisition is NP-complete]\label{thm:npcomplete}
+Define the promise-input task \textsc{AlwaysYes-PortOne}: given a connected proper 3CNF of the form $G_F$ with authenticated port $y$, decide whether the port can take value $1$ in a satisfying assignment. The task is NP-complete under uniform polynomial many-one reductions. Its source instances are \emph{all SAT}. The entire two-bit semantic truth table $(R_F(0),R_F(1))$ has constant size, yet constructing it uniformly in deterministic polynomial time would imply $P=NP$.
+\end{theorem}
+\begin{proof}
+Given $F$, construct $G_F$ and its port label in polynomial time by Proposition~\ref{prop:physical}. By Lemma~\ref{lem:guard}, the port-$1$ query answers YES precisely when $F$ is satisfiable. Hence proper 3SAT polynomially reduces to this task. Membership in NP is immediate: guess a complete assignment satisfying $G_F$ with $y=1$, then verify all proper ternary clauses. Consequently the task is NP-complete, while $G_F$ itself always has the $y=0,u=0$ witness. An algorithm returning the exact two-bit relation also returns $R_F(1)$, so would decide proper 3SAT in polynomial time.
+\end{proof}
+
+\section{Constant-size future contexts expose the missing information}
+For a fresh pair of auxiliary variables $a,b$, define the proper 3CNF unit-enforcement gadget
+\begin{equation}\label{eq:unit}
+ U_v(y,a,b)=
+ (v\vee a\vee b)\wedge(v\vee a\vee\neg b)\wedge
+ (v\vee\neg a\vee b)\wedge(v\vee\neg a\vee\neg b),
+\end{equation}
+where $v$ is either $y$ or $\neg y$. The existential projection of $U_v$ onto $y$ is exactly $v$, since all four sign patterns of $(a,b)$ are excluded when $v=0$.
+
+\begin{theorem}[Contextual equivalence firewall]\label{thm:context}
+Let $C_1=U_y$ and $C_0=U_{\neg y}$, using fresh context variables. Then
+\[
+ \mathsf{SAT}(G_F\wedge C_0)=\mathrm{YES},\qquad
+ \boxed{\mathsf{SAT}(G_F\wedge C_1)\iff\mathsf{SAT}(F).}
+\]
+Thus a uniform procedure that outputs \emph{a polynomial-time queryable exact port interface} valid under even these two constant-size contexts would decide proper 3SAT in polynomial time. Replacing $G_F$ with an unconditionally satisfying fixed base formula preserves its \emph{uncontextualized} SAT answer, but is not a correct replacement under all future contexts that test $y$.
+\end{theorem}
+\begin{proof}
+Existentially eliminate $a,b$ from $C_v$ and $x,u$ from $G_F$. Their remaining conjunction is $R_F(y)\wedge v(y)$, so the two conclusions follow from~\eqref{eq:relation}. If the output interface is queryable at $y=1$ in polynomial time, that query decides $F$. The extra hypothesis about queryability is essential: an arbitrary succinct symbolic child could defer NP-hard work to a later query rather than remove it.
+\end{proof}
+
+\paragraph{Critical distinction.} The theorem is not an unconditional lower bound for any Turing machine, does not show $P\ne NP$, and does not prohibit a polynomial \emph{decision-only} contraction for $G_F$, since its SAT decision is trivially YES. It also does not claim that a succinct arbitrary 3CNF or oracle expression with an \emph{unevaluated} port predicate provides a fast summary. Physical pointers to the original source, deferred oracle tables, and query-time SAT calls must be charged. The construction is proper and connected but \emph{not} strict signed exact-$(2,2)$: the guard $y$ occurs $m$ times. No exact22 or RAM time--space lower bound follows from it.
+
+\section{Separate model-native ledgers}
+Write $C=N_G$ for actual printed gated-source length and $N$ for the complete initial source encoding. In a word RAM with $\Theta(\log(N+C))$-bit words, construction is $O((N+C)\operatorname{polylog}(N+C))$ time and $O(C)$ output bits with $O(\log(N+C))$ counters outside the output buffer. A fixed-$k$ multitape TM with one sequential read-only input and a work/output tape produces the same physical string in $T_k=O((N+C)\operatorname{polylog}(N+C))$ steps, visiting $S_k=O(C+\log(N+C))$ writable cells if the output tape counts as work space. A two-tape model with one read-only input and one writable tape satisfies the same conservative upper bound; a two-fully-writable-tape machine can leave the original input intact and append the output on the second tape, with the original tape footprint charged. These are streaming \emph{construction} bounds, not the cost of computing $R_F(1)$.
+
+The project's conservative single read/write tape simulation yields
+\[
+ T_1=O\bigl(T_k(N+S_k+\log(T_k+2))\bigr)
+       =O(N^2\operatorname{polylog}N),\quad
+ P_1=O(N+S_k+\log(T_k+2))=O(N\operatorname{polylog}N).
+\]
+Here input, full output, movements, and cell probes are included; physical input is not omitted. A fixed universal TM incurs its own explicitly bounded polynomial interpretation overhead; its numerical exponent is not inferred. All lower-bound statements above concern the \emph{separate port acquisition problem}; no unconditional time exponent, FLMV/Williams RAM region, one-tape reversal inequality, or answer-side same-run time--space product is transferred to that task.
+
+For the single fixed code path computing the port answer, inputs $F\in\mathsf{SAT}$ and $F\notin\mathsf{SAT}$ lead to port-$1$ YES and NO respectively, but \emph{both corresponding gated sources} lie in the SAT side of ordinary 3CNF. Neither a SAT-versus-UNSAT runtime lower bound nor an independent pair of side-specific solvers has been established. For a transparent unconditional upper bound, enumerating all $2^n$ original assignments and checking $F$ uses $2^n\operatorname{poly}(N)$ time and polynomial physical space, then prints one of two constant-size port summaries; whether a polynomial bound exists for arbitrary $F$ is exactly the open $P$ versus $NP$ issue.
+
+\section{Independent finite controls, limitations, next role target}
+The source-preserving standalone Python reproducer tests every nonempty subset of the eight possible signed clauses over three variables (255 formulas), direct DPLL against independent exhaustive source truth tables, full $G_F$ extension enumeration on 162 short cases, 600 randomized larger proper 3CNF cases, and 250 controlled UNSAT sources. It also checks both constant-size context gadgets, connectedness, properness, and equal-physical-length YES/NO controls (both gated inputs remain SAT). The deterministic run completed \textbf{27,097 assertions, zero failures}. A matched 8-clause, three-variable pair has 86 source bytes and 174 gated bytes in each case, yet the port-$1$ answer differs. The original connected-interface audit independently reproduced 4,680 / 7,191 / 139 controls with byte-identical JSON. These finite checks do not replace the reduction proof or constitute Coq verification.
+
+\paragraph{Next LSPV-4 target.} Audit any proposed universal adaptive semantic-child interface for whether it preserves \emph{only the present SAT decision}, or whether it must support exact future joins on named ports. In the latter case, require a charged polynomial-time \emph{evaluator} for the child interface as well as a charged constructor. Study whether controlled restrictions on the original clause language (affine, 2SAT, fixed-width) make both tasks easy. For arbitrary SAT, the exact-join acquisition condition cannot be assumed as a free lemma. Parallel separation work must target all correct solvers rather than a particular projected representation. The current P versus NP problem remains \textbf{OPEN}.
+
+\bibliographystyle{plain}
+\begin{thebibliography}{9}
+\bibitem{pd4} SoftVarE-Group. \emph{pd4: An Extension of d4 for Projected d-DNNF Compilation}. \url{https://github.com/SoftVarE-Group/pd4}, inspected 29 October 2026.
+\bibitem{d4} J.-M. Lagniez et al. \emph{d4}, \texttt{preproc/Forgetting.cc}. \url{https://github.com/crillab/d4}, inspected 29 October 2026.
+\bibitem{cryptominisat} M. Soos et al. \emph{CryptoMiniSat}, \texttt{src/gaussian.cpp}. \url{https://github.com/msoos/cryptominisat}, inspected 29 October 2026.
+\bibitem{coqcomplexity} L. G\"aher and F. Kunze. \emph{Mechanising Complexity Theory: The Cook--Levin Theorem in Coq}. ITP 2021; source \url{https://github.com/uds-psl/coq-library-complexity}.
+\bibitem{openai2026} OpenAI. \emph{Polynomial-Time Unitary Synthesis from a Boolean Oracle}, 5 October 2026. \url{https://github.com/openai/math}.
+\end{thebibliography}
+\end{document}
