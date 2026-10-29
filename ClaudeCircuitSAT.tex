@@ -1,0 +1,66 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- updated 2026-10-29 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}\newtheorem{conjecture}{Conjecture}
+\title{Claude's Circuit-SAT Lower-Bound Ladder (living document)}
+\date{Last update: 2026-10-29}
+\begin{document}\maketitle
+\section*{0. Status}
+\textbf{P versus NP remains OPEN.} Nothing here is a super-linear unconditional lower bound for CircuitSAT.
+Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and method}
+Goal: lower bounds for CircuitSAT $=\{C : \exists x\, C(x)=1\}$, possibly parameterized by $(n,m,w)$ = (inputs, gates, wires).
+Method (user's idea): build circuits wire by wire from the simplest instance, record the minimum number of gates/wires
+$\mathrm{L}(f)$ needed for each function $f$ on $n$ inputs, increase $n$, and see which structural lower bound on the \emph{cost of deciding}
+satisfiability follows at each rung. Conventions: B$_2$ basis (all non-degenerate 2-input gates), free literal negation, fan-in 2,
+so wires $w=2m$ (plus one output wire).
+
+\section{Rung 0--1: trivial ladder (PROVED/EXACT)}
+\begin{lemma}[Connectivity] If $C$ has $n$ essential inputs and fan-in-2 gates, then $m\ge n-1$ and $w\ge 2(n-1)$; the unique-satisfier
+function $\mathrm{AND}(\ell_1,\dots,\ell_n)$ meets this with equality (a tree).\end{lemma}
+\begin{proof} The gate graph restricted to essential inputs is connected to the output; a fan-in-2 DAG connecting $n$ sources to one sink has $\ge n-1$ gates. \end{proof}
+
+\section{Rung 2--3: exact small cases (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/ladder.py}; exact BFS over sets of computed functions; runtime $<1$s; data \texttt{ladder\_n2.json}, \texttt{ladder\_n3.json}.
+\begin{center}\begin{tabular}{lrrrrr}\toprule
+$n$ & gates=0 & 1 & 2 & 3 & 4 \\\midrule
+2 & 6 & 10 & -- & -- & -- \\
+3 & 8 & 30 & 114 & 80 & 24 \\\bottomrule\end{tabular}\end{center}
+So $\max_f \mathrm{L}_{B_2}(f)=1$ for $n=2$ and $=4$ for $n=3$ (all $2^{2^3}=256$ functions found; 4-gate search is exhaustive via one-gate closure of all 3-gate states).
+Wires: $w=2\cdot$gates. Cross-check: these match the standard known values (max B$_2$ complexity 1, 4 for $n=2,3$) as I recall them; \emph{not} re-verified against the literature this run.
+Next: $n=4$ needs a smarter search (SAT-based exact synthesis); max known is 7 gates.
+
+\section{What the ladder gives for deciding SAT}
+\begin{theorem}[Read lower bound, PROVED/EXACT]\label{thm:read}
+Any correct deterministic algorithm for CircuitSAT in a model with indexed read-only access to the encoding must read $\Omega(m)$ cells on some size-$m$ instances.\end{theorem}
+\begin{proof} Let $T_i=(x_i\vee\neg x_i)$ (3 gates) and $C=\bigwedge_{i\le k}T_i$ ($m=\Theta(k)$), satisfiable. Replacing one $T_i$'s OR gate by AND gives an unsatisfiable circuit
+differing in one cell. An algorithm that leaves a gate-type cell of every $T_i$ unread cannot distinguish, so it reads one cell per $T_i$: $\ge k=\Omega(m)$. \end{proof}
+
+\begin{theorem}[Black-box evaluation bound, PROVED/EXACT, not a Turing bound]
+If $C$ is accessed only by evaluation queries $x\mapsto C(x)$, deciding satisfiability of unique-satisfier circuits $[x=a]$ needs $2^n$ queries (adversary answers 0 until one point remains).
+\end{theorem}
+Theorem 2 does not transfer to white-box algorithms (the circuit's wires are visible); this is the usual gap, so it is a \emph{model} lower bound only.
+
+\section{Parameterized shape (CANDIDATE)}
+Define $T(n,m)$ the optimal time. Known/trivial: $\Omega(m)$ (Thm.~\ref{thm:read}), $O(2^n m)$. Candidate ladder statement:
+\[T(n,m)\ \ge\ \Omega\big(m\big)\ \text{unconditionally;}\quad T(n,m)\ge 2^{\Omega(n)}\ \text{for}\ m=\mathrm{poly}(n)\ \text{is P}\neq\text{NP-strength.}\]
+Natural intermediate parameter: wires $w$ versus $n$; for $w<2(n-1)$ the circuit cannot depend on all inputs (Lemma 1), so SAT collapses to
+a smaller instance in $O(w)$. For $w\ge 2(n-1)$ there are $\ge$ one-satisfier circuits, i.e.\ the hard regime begins at tree-like density.
+Known size-lower-bound technology for the \emph{circuit-synthesis} side (gate elimination: $3n-o(n)$ Blum; roughly $3.1n$ Find--Golovnev--Hirsch--Kulikov)
+bounds $\mathrm{L}(f)$, not SAT time, and is recalled from memory (KNOWN THEOREM, citation not re-checked this run).
+
+\section{Repository cross-check}
+Read in \texttt{AGENTS.md} pointer list: world ledger (\texttt{research/agents/claude/world-ledger}), TPORT (alternation trading cannot beat linear time for a portfolio of $\approx N$ programs: ledger row L34),
+ONETAPE (crossing sequences; beating $N^2$ on one tape would imply superlinear multitape SAT bounds). Useful link: Buss--Williams (L13) says alternation trading cannot give SAT time exponent $\ge 2\cos(\pi/7)\approx1.247$ in small space,
+so any ladder-derived bound must exceed that by non-alternation-trading means or be restricted to a weaker model (e.g.\ read-once branching programs, one-tape).
+Prior repository work was not exhaustively reviewed this run (single-pass survey).
+
+\section{Open obstacles / next steps}
+\begin{enumerate}
+\item Extend exact ladder to $n=4$ (SAT-based exact synthesis) and tabulate \emph{wire} count with fan-out (shared wires) rather than fan-in-2 identity $w=2m$.
+\item Restricted-model target: prove a super-linear bound for CircuitSAT in a restricted model (e.g.\ oblivious/one-pass, read-once, bounded-space with parameter $w$) using the unique-satisfier family; compare with L38--L40.
+\item Define a potential $\Phi_k$= number of distinct sub-functions realizable at wire-cut $k$ and test whether cut-width of a circuit lower-bounds deterministic space (cutwidth/pathwidth DP gives $O(2^{\mathrm{cw}})$-type upper bounds, so a matching lower bound would be a parameterized result).
+\end{enumerate}
+\textbf{Log:} Run 1 (2026-10-29): created document, Lemma 1, Theorems 1--2, $n\le3$ table. No new barrier-breaking claim.
+\end{document}
