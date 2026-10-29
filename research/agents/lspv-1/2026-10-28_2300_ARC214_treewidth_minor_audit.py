@@ -211,6 +211,31 @@ def main():
         lifted_decomposition(n,c)
         assert any(source_eval(c,x) for x in itertools.product((0,1),repeat=n))
         stats['balanced_exact22_cases']+=1
+    # The additive +3 in the TW sandwich is sharp, even for TWO distinct
+    # proper signed clauses on the same three names.  Their two XOR triangles
+    # and three x_i-mediated matching paths form a subdivided triangular prism.
+    prism_clauses=[(1,2,3),(-1,2,3)]
+    assert treewidth_min_fill_in(source_primal(3,prism_clauses))[0]==2
+    assert treewidth_min_fill_in(mixed_primal(3,prism_clauses))[0]==3
+    prism=mixed_primal(3,prism_clauses)
+    for i in range(3):
+        prism=nx.contracted_nodes(prism,3+i,i,self_loops=False)
+    prism=nx.contracted_nodes(prism,3,6,self_loops=False)
+    prism=nx.contracted_nodes(prism,4,7,self_loops=False)
+    assert nx.is_isomorphic(prism,nx.complete_graph(4)), 'explicit K4 minor'
+    # If the XOR scope clique is wrongly omitted, the binary-only primal
+    # graph is a forest, giving fake width 1, below the source triangle width 2.
+    binary_only=nx.Graph();binary_only.add_nodes_from(range(9))
+    for c,C in enumerate(prism_clauses):
+        for j,l in enumerate(C):binary_only.add_edge(abs(l)-1,3+3*c+j)
+    assert nx.is_forest(binary_only)
+    assert treewidth_min_fill_in(binary_only)[0]==1
+    check_projection(3,prism_clauses)
+    contract_back(3,prism_clauses)
+    lifted_decomposition(3,prism_clauses)
+    assert bucket_sat(3,prism_clauses)
+    stats['sharp_width3_prism_K4_minor_controls']+=1
+    stats['wrong_XOR_scope_omission_controls']+=1
     # Single clause sign permutations, all 8.
     for signmask in range(8):
         C=tuple((i+1)*(1 if signmask&(1<<i) else -1) for i in range(3))
