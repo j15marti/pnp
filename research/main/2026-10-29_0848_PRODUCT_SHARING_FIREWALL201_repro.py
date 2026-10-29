@@ -155,7 +155,7 @@ def main() -> None:
 
     m, n = 8, 3
     links = 3 * m - n
-    exact22_counts = {
+    hypothetical_exact22_additive_ledger = {
         "multiport_base_variables": 15 * m,
         "multiport_base_clauses": 20 * m,
         "two_swap_equality_variables": 15 * links,
@@ -163,7 +163,7 @@ def main() -> None:
         "composed_variables": 15 * m + 15 * links,
         "composed_clauses": 20 * m + 20 * links,
     }
-    assert exact22_counts == {
+    assert hypothetical_exact22_additive_ledger == {
         "multiport_base_variables": 120,
         "multiport_base_clauses": 160,
         "two_swap_equality_variables": 315,
@@ -182,11 +182,12 @@ def main() -> None:
         "random_proper_instances_checked": len(random_results),
         "random_source_assignments_checked": sum(2 ** r["variables"] for r in random_results),
         "all_random_identities_passed": True,
-        "two_swap_exact22_control": exact22_counts,
+        "hypothetical_two_swap_additive_ledger": hypothetical_exact22_additive_ledger,
         "limitations": [
             "The 3m-n lower bound is for pairwise equality graphs on explicit occurrence copies.",
             "Higher-arity relations, shared-variable encodings, semantic preprocessing, or history-discarding summaries may escape it.",
-            "The two-swap counts describe one concrete exact22 realization, not an optimality theorem for all gadgets.",
+            "The two-swap counts are a hypothetical additive ledger, not an optimality theorem for all gadgets.",
+            "Report198 fans out an existing source variable; it does not directly join two independently saturated ports, so this additive ledger is not a verified composition.",
             "Finite truth-table checks do not prove a SAT runtime lower bound.",
         ],
     }
