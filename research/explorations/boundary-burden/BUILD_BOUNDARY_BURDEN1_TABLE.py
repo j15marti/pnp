@@ -65,7 +65,7 @@ def main():
         emit_fixture('periodic_'+str(n),bq.ORIGINAL.canonical_signed(n))
     target=HERE/'BOUNDARY_BURDEN1_table.csv'
     with target.open('w',newline='') as f:
-        writer=csv.DictWriter(f,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
+        writer=csv.DictWriter(f,fieldnames=list(rows[0]),lineterminator='\n');writer.writeheader();writer.writerows(rows)
     checks=[]
     for n in range(3,3001,3):
         bounds=bq.integer_bounds(n)
