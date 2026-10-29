@@ -1,0 +1,61 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append sections; keep status labels strict
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{conj}{Conjecture}
+\title{ClaudeCircuitSAT: Step-by-Step Wire Counts and Parameterized Lower Bounds for Circuit-SAT}
+\author{Living document (hourly routine)}
+\date{Last updated: 2026-10-29 12:50 UTC}
+\begin{document}
+\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. Nothing here is an unconditional superpolynomial lower bound for Circuit-SAT. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup}
+A circuit $C$ over inputs $x_1..x_n$ has $m$ binary gates (AND/OR, negation free on wires), so $2m$ gate-input wires. Parameters: $n$ (inputs), $m$ (gates), $w$ (circuit treewidth), $k$ (fan-out/depth as needed). Circuit-SAT: given $C$, is there $x$ with $C(x)=1$?
+Two separate quantities are tracked and \emph{must not be conflated}:
+\begin{itemize}
+\item $W(f)$ = minimum wires of a circuit computing $f$ (a \emph{construction} cost, step 1 below);
+\item $T(n,m,\dots)$ = time to \emph{decide} SAT on an input circuit (a \emph{solving} lower bound, step 2).
+\end{itemize}
+
+\section{Step ledger: construction cost}
+\begin{theorem}[PROVED/EXACT] If $f$ depends on all $n$ variables, any binary-gate circuit for $f$ has $\ge n-1$ gates, i.e.\ $\ge 2(n-1)$ gate-input wires. Equality holds for $f=\ell_1\wedge\dots\wedge\ell_n$ (a literal conjunction).\end{theorem}
+\emph{Proof.} The underlying graph restricted to the cone of the output must connect all $n$ inputs to the output; a fan-in-2 DAG with a single sink reaching $n$ sources has at least $n-1$ internal nodes. \qed
+
+\begin{table}[h]\centering
+\begin{tabular}{ccccl}\toprule
+$n$ & functions & max min-gates (AIG) & max wires & status\\\midrule
+1 & 4 & 0 & 0 & COMPUTATIONAL\\
+2 & 16 & 3 (XOR/XNOR) & 6 & COMPUTATIONAL\\
+3 & 256 & 6 & 12 & COMPUTATIONAL\\\bottomrule
+\end{tabular}
+\caption{Exact worst-case AIG size over \emph{all} $n$-variable functions, by exhaustive search (\texttt{research/agents/claude/circuitsat/min\_aig.py}; raw data \texttt{min\_aig\_n3.json}; gate-count distribution for $n=3$: 0:8, 1:24, 2:64, 3:30, 4:104, 5:8, 6:18).}
+\end{table}
+The worst case grows $0,3,6$; counting arguments give $\Theta(2^n/n)$ for the true maximum, so the table is only an initial calibration. $n=4$ is the next step and needs a chunked/symmetry-reduced search (not yet run). \textbf{Caution:} $W(f)$ for a fixed $f$ is not a lower bound on solving Circuit-SAT; SAT hardness concerns the family of inputs, not a single function.
+
+\section{Solving lower bounds}
+\subsection{Reading bound (PROVED/EXACT, trivial)}
+\begin{theorem} Any deterministic random-access algorithm correctly deciding Circuit-SAT for $n$-input circuits with $m$ gates must make $\Omega(m)$ probes of the description in the worst case, on a restricted family: conjunctions of $m{+}1$ literals over $n\ge m+1$ variables, given as an ordered list; the instance is unsatisfiable iff some variable occurs with both signs.\end{theorem}
+\emph{Sketch.} This is complementary-pair detection (element-distinctness type on signed literals). Adversary: answer every probe with a fresh variable of positive sign while at least two slots are unprobed; then an unprobed slot may complete a complementary pair with any probed literal, so both answers remain consistent until $m$ probes. \qed\ (Linear only; this is the \emph{input-size} barrier, far from the exponential gap in question.)
+
+\subsection{Parameterized bounds}
+\begin{itemize}
+\item \textbf{KNOWN THEOREM / CONDITIONAL.} Under ETH, Circuit-SAT (equivalently 3-SAT) has no $2^{o(n)}\mathrm{poly}(m)$ algorithm; under SETH, none in $(2-\varepsilon)^n\mathrm{poly}(m)$. Parameter: $n$.
+\item \textbf{CONDITIONAL.} Parameter treewidth/pathwidth $w$: under SETH, CNF-SAT has no $(2-\varepsilon)^{w}\mathrm{poly}$ algorithm (Lokshtanov--Marx--Saurabh); the $2^{w}\mathrm{poly}(m)$ upper bound is the standard DP, so $w$ is tight conditionally.
+\item \textbf{KNOWN THEOREM (unconditional, restricted).} Time--space: SAT needs $n^{2\cos(\pi/7)-o(1)}$ time on $n^{o(1)}$ space (Williams; Buss--Williams limit for alternation trading). See repo ledger row L13.
+\end{itemize}
+
+\section{Candidate parameterization to pursue}
+\begin{conj}[CANDIDATE, unproved] For circuits with $m$ gates, the ``wire-by-wire'' potential $\Phi(C)=$ number of wires whose value is not determined by the input-restriction history of the algorithm cannot drop below $\Omega(\text{wires}/\text{fan-out cap})$ per branching step in any DPLL-type (tree-resolution-like) solver; this would give a \emph{model-restricted} bound $2^{\Omega(w)}$ for DPLL-type solvers on explicit hard circuit families.\end{conj}
+This is a restricted-model target (known analogues: resolution/DPLL width bounds, Ben-Sasson--Wigderson), not a route to P$\neq$NP. Next concrete step: define $\Phi$ formally, verify on the $n\le 3$ ledger, and compare to tree-resolution width bounds.
+
+\section{Repository cross-check}
+Surveyed \texttt{AGENTS.md} and the world ledger. Useful: (i) a statement equivalent to P$=$NP is a reformulation, not progress; (ii) L34 barrier---alternation trading with portfolio rules cannot beat linear time for UWI-size portfolios; (iii) L38--L40: one-tape crossing bounds hold for nondeterminism too, so cannot separate P/NP. Not yet used: SIL/M22 ladder. No claimed result in the repository closes Circuit-SAT lower bounds; ARC-EDGE-90 stays OPEN.
+
+\section{Log}
+\begin{itemize}
+\item 2026-10-29 12:50 UTC: document created; Theorem 1 (n-1 gates), exhaustive AIG ledger $n\le3$, reading bound, parameterized landscape, DPLL-potential candidate.
+\item Next: $n=4$ search with symmetry reduction (chunks $<30$ s); formalize $\Phi$; test on small families.
+\end{itemize}
+\end{document}
