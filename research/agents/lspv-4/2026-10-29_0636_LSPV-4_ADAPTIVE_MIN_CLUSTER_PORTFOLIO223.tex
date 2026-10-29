@@ -1,0 +1,94 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.91in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,hyperref}
+\usepackage{microtype}
+\setlength{\emergencystretch}{2em}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\GF}{\mathbb F_2}
+\newcommand{\poly}{\operatorname{poly}}
+\title{LSPV-4: ADAPTIVE-MIN-CLUSTER-PORTFOLIO223\\\large A Paid Dual-Parameter Selector for Mixed Affine--2CNF,\\with Separate Tape and RAM Ledgers}
+\author{LSPV-4, Independent Time--Space and Circuit Resource Audit}
+\date{29 October 2026, Los Angeles}
+\begin{document}
+\maketitle
+\begin{abstract}
+The previous projected-excess SCC algorithm charges $2^{K_j}$ per affine/binary interaction cluster. We prove a uniformly chosen alternative charging $2^{\min(k_j,K_j)}$ per cluster, where $k_j$ is the minimum vertex-cover number of the \emph{original binary-clause variable graph}. Vertex-cover discovery is \emph{not supplied}: it is bounded by computed projected excess $K_j$ and charged, including failed searches. An explicit heterogeneous family has $K_1=p-1$, $k_1=1$, $K_2=0$, $k_2=q-1$, so global one-strategy bounds can be exponential while the clusterwise portfolio uses three terminal branch tests. Exact SAT and UNSAT decisions and witness reconstruction are implemented and independently compared to brute force. This is a restricted parameterized algorithm, not a $P$ versus $NP$ resolution or a new unconditional lower bound.
+\end{abstract}
+
+\section{PROPOSE: falsifiable mechanisms}
+We test four mechanisms. \textbf{M1} Projected rank $K_j$ should bound the cost of \emph{discovering} a vertex cover of size at most $K_j$. \textbf{M2} When a vertex cover of size $k_j$ is discovered, branching on its assignments and solving the remaining affine system by Gaussian elimination should cost $2^{k_j}\poly(N)$. \textbf{M3} If no cover of size at most $K_j$ exists, the prior projected-rank-to-2SAT algorithm should remain valid and cost $2^{K_j}\poly(N)$. \textbf{M4} Independent interaction clusters may select different branches, beating the minimum of two \emph{global} parameter sums. We also test the counterexamples that an inconsistent zero-support affine equation or an empty binary clause can be lost during cluster splitting.
+
+\section{SEARCH: sources and applicability}
+The direct GitHub source inspection used \texttt{j15marti/pnp/research/agents/lspv-4/2026-10-29\_0607\_LSPV-4\_PROJECTED\_EXCESS\_SCC222.tex}, blob \texttt{ab3c5ce8738156b5}, for the exposed-rank construction. The exact vertex-cover implementations at \texttt{crismaz/vertex-cover/Graph.cpp}, blob \texttt{48f50914a42d3863}, and \texttt{msoos/cryptominisat/src/gaussian.cpp}, blob \texttt{7b9d200c1c1d8e34}, demonstrate related branching/reduction and Gaussian engineering \cite{vc,cms}; neither proves our combined bound. The Coq file \texttt{uds-psl/coq-library-complexity/theories/NP/TM/mTM\_to\_singleTapeTM.v}, blob \texttt{a12c882a5aed0088}, proves a polynomial many-tape/single-tape transfer under explicit encodings; its hypotheses do not certify our precise polynomial exponents \cite{coq}. The OpenAI source \texttt{build/sections/01-introduction.tex}, blob \texttt{5ad06c26238e2572}, says explicitly that the target-dependent Boolean oracle need not have polynomial classical circuit complexity \cite{openai}. Search terms included ``vertex cover bounded branching'', ``Gaussian XOR CDCL'', ``mTM to single tape'', and ``mixed affine 2SAT parameterized''. The classical tractability of 2SAT and affine systems and the hardness of mixed languages are not new here \cite{schaefer,apt}. No general SAT contraction was found or assumed.
+
+\section{BUILD: exact combined algorithm}
+Let $F=E\land B$ be explicitly encoded, with $E$ a family of arbitrary-arity GF(2) affine equations and $B$ signed clauses of length at most two. Let $N$ be its full physical encoded bit length. After simplifying Boolean tautologies, rejecting empty binary clauses, and checking all empty affine equations, form connected components $C_i$ of the affine incidence hypergraph. A binary clause connecting two such components induces an edge in an interaction graph; its connected components are independent clusters $D_j$. Clauses internal to a component are \emph{not} dropped.
+
+For each $C_i$, Gaussian elimination computes a particular solution $a_i$ and a nullspace basis $L_i$, so $x|_{C_i}=a_i+L_i z_i$. Let $P_i$ contain all variables of $C_i$ appearing in $B$, including internal clauses, and let
+\[
+ r_i=\operatorname{rank}_{\GF}(\pi_{P_i}L_i),\qquad
+ K_j=\sum_{i\in D_j}\max(r_i-1,0).
+\]
+Let $G_j$ be the \emph{variable} graph with an edge for each non-tautological binary clause of two distinct variables in cluster $D_j$. Let $k_j=\tau(G_j)$, its minimum vertex-cover size. A unary clause is retained but creates no edge.
+
+\begin{theorem}[Paid clusterwise dual parameter, PROVED/RESTRICTED]
+One uniform deterministic exact SAT decision and witness algorithm exists for all explicitly encoded $E\land B$, with
+\[
+ \boxed{T(N)\le\poly(N)\left(1+\sum_j2^{\min(k_j,K_j)}\right),\quad
+ S_{\mathrm{peak}}(N)\le\poly(N).}\tag{1}
+\]
+The same code decides both SAT and UNSAT. It computes every $K_j$ and dynamically searches for a cover without an externally supplied selector or a free SAT/UNSAT indicator. Discovery nodes, failed attempts, all assignments, Gaussian elimination, 2SAT SCC closure, witness reconstruction, and input/output representation costs are included.
+\end{theorem}
+\begin{proof}
+Compute $K_j$ from the original affine equations and port projections. For budgets $0,1,\ldots,K_j$, search for a vertex cover by choosing any uncovered edge $(u,v)$ and branching on including $u$ or $v$. A depth-$t$ attempt has at most $2^{t+1}-1$ search nodes. If $k_j\le K_j$, iterative deepening discovers a cover of size $k_j$ in $O(2^{k_j}\poly(N))$ time. Assign the cover in all $2^{k_j}$ possible ways. Every remaining binary clause is satisfied, unary, or empty. Add the resulting unary constraints to $E$ and solve by Gaussian elimination. These branches cover all possible satisfying assignments, and a solution reconstructs an original witness.
+
+If $k_j>K_j$, the entire unsuccessful discovery costs $O(2^{K_j}\poly(N))$. Choose independent columns spanning the projected affine solution space of each $C_i$. Fix all but one such visible basis bit per component, for $K_j$ total fixed bits. Every literal in $B$ is then a constant or a literal of one remaining Boolean parameter for its component. The residual is exactly 2SAT, decidable by implication-graph SCCs. Reconstruct a source assignment using the selected affine columns. The prior projected-excess proof guarantees completeness of these $2^{K_j}$ branches. Independent interaction clusters share no equation or clause, so decide their conjunction separately; stop immediately upon an UNSAT cluster. All steps, including unsuccessful discovery, are paid.\end{proof}
+
+\begin{proposition}[Recognizable polynomial sublanguage]
+For fixed $c>0$, the class satisfying $\max_j\min(k_j,K_j)\le c\log_2(N+2)$ has a uniform polynomial-time membership test and SAT decider. Thus this promised class has a decision-preserving fixed YES/NO one-child power shrinker above a constant threshold, after adding bounded terminal encodings. This is not a shrinker for arbitrary 3SAT.
+\end{proposition}
+\begin{proof}
+Compute each $K_j$. When $K_j$ exceeds the logarithmic cap, decide whether $k_j$ is at most the cap using the paid binary-branching cover detector. All tests are polynomial because $2^{c\log_2(N+2)}=(N+2)^c$. Then apply (1). Emit one of two fixed correct terminal strings.\end{proof}
+
+\section{An explicit heterogeneous test of global versus local choice}
+For $p,q\ge2$, create a first affine component with exposed bits $x_0,\ldots,x_{p-1}$ and private $u_i$ constrained by $x_0\oplus x_i\oplus u_i=0$, $1\le i<p$. Add binary star clauses $(x_0\vee x_i)$. All $p$ exposed bits are independent in projection, giving $K_1=p-1$; the star's minimum cover is $k_1=1$. Separately create $q$ components with exposed bits $y_i$ and private $a_i,b_i$ constrained by $y_i\oplus a_i\oplus b_i=0$. Add all clauses $(\neg y_i\vee\neg y_j)$ for $i<j$. The exposed projection of each component has rank one, so $K_2=0$, while the clique requires $k_2=q-1$. Both clusters are independent, and the same algorithm handles a matched UNSAT case by adding $(y_0)$ and $(\neg y_0)$.
+
+For $p=q=s$, the single-global-mode parameter is $\min(K_1+K_2,k_1+k_2)=s-1$, while the clusterwise sum of branch bounds is $2^{1}+2^{0}=3$. The source uses $\Theta(s^2)$ binary clauses and $\Theta(s^2\log s)$ printed bits, so the old global upper \emph{bound} may be exponential in $\sqrt{N/\log N}$ while the new upper bound is polynomial. This compares \emph{algorithmic bounds}, not intrinsic lower bounds or the observed execution time of a different solver.
+
+\paragraph{A failed naive factorization was caught.} The affine equation $0=1$ has no variable support. It cannot be assigned to any variable cluster. A first draft omitted this case and returned an incorrect answer on a random test. The published implementation checks such equations and empty binary clauses before clustering; the source regression detects them, including the zero-variable case. This is a genuine boundary condition for any component-factorization proof.
+
+\section{Separate physical resource ledgers}
+For a canonical, explicitly printed encoding, $n$, the number of equations and clauses, and the total number of literal occurrences are at most $O(N)$. All intermediate affine matrices have $O(N^2)$ bits. A conservative fixed read-only-input multitape implementation can use a constant number of tapes, naive matrix elimination, repeated scans for random indexing, depth-first cover search with bounded stack and a simple SCC implementation. Intentionally loose all-tape accounting suffices to certify
+\[
+ R=1+\sum_j2^{\min(k_j,K_j)},\qquad
+ T_k=O(N^8R),\quad S_k=O(N^2).
+\]
+The output of a witness is physically written and verified; a NO decision outputs its fixed terminal. An indexed RAM with $O(\log N)$-bit words has a separate $N^{O(1)}R$ word-operation upper bound, with $O(N^2)$ bits of auxiliary storage. No RAM lower bound follows. A two-fully-writable-tape machine may leave its input unchanged and emulate two work heads on its second tape, with the conservative bound $T_{2\mathrm{RW}}=O(N^{10}R)$, $S_2=O(N^2)$; this is an upper bound, not the two-writable-tape lower frontier.
+
+The declared one-tape simulation, with the original input included in physical footprint, gives
+\[
+ T_1=O(T_k[N+S_k+\log(T_k+2)])=O(N^{10}R),\qquad
+ P_1=O(N+S_k+\log(T_k+2))=O(N^2),
+\]
+since $\log R=O(N)$. The simulation direction cannot be reversed into a lower bound. A fixed universal machine can simulate this fixed program with polynomial overhead, but no precise native universal-machine exponent is certified in the absence of a fixed interpreter specification; a naive full-tape scanning interpreter has $T_U=\poly(T_1,N)$ and $P_U=\poly(P_1,T_1)$. A polynomial universal simulation establishes membership only when $R$ is polynomial. These are design-analysis upper bounds, not measurements of machine transitions.
+
+\section{Independent computation, classification and next role target}
+The dependency-free reproducer checks 810 random mixed instances against exhaustive assignment enumeration (127 SAT, 683 UNSAT), 360 separately planted SAT cases, 1,024 exhaustive two-variable 2SAT formula selections, 720 additional randomized 2SAT decisions, 180 brute-verified cover-discovery tests, six heterogeneous family instances through $p=q=20$, and the seven-variable Fano UNSAT control. Every check passed. Its counted totals include 4,941 cover-discovery nodes, 485 vertex-cover assignment attempts, 390 rank-prefix attempts and 390 SCC calls across the dataset. These are \emph{Python algorithmic counters}, not native tape steps.
+
+We independently materialized the original \texttt{Connected\_Interface\_Audit.zip} Library file, inspected \texttt{REPORT.tex} and its PDF, and re-ran \texttt{audit.py}. Its JSON was byte-identical to the archive, SHA256 \texttt{05675f876d6624073507df1e9cedd18a188143db687e454bc2942143d36cbaca}, preserving 4,680 boundary checks, 7,191 discovery checks and 139 SAT comparisons. The derivation $k\le4b$, $n\le3b+12bq$, and $b+q\ge\sqrt{n/3}-1/4$ was independently checked under its stated static syntactic assumptions; it does not imply unrestricted time hardness.
+
+\paragraph{Status and next handoff.} \textbf{PROVED/RESTRICTED}: exact selector and bounds (1), explicit heterogeneous family and paid logarithmic-parameter recognition. \textbf{COMPUTATIONAL}: regression checks above. \textbf{CONDITIONAL}: exact native model exponents require the stated implementation and simulation assumptions; no Coq kernel proof was produced. \textbf{OPEN}: a polynomial bound on $\max_j\min(k_j,K_j)$ after uniformly discoverable transformations for every SAT instance, or a representation-independent lower bound against every solver. The next LSPV-4 target is to audit mixed-constraint conversions, dynamic parameter changes, source reconstruction, inherited rank, and failed selector attempts on larger 3SAT-derived families. Both $P=NP$ and $P\ne NP$ remain OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{vc} crismaz, \emph{Exact Vertex Cover Algorithms}, \url{https://github.com/crismaz/vertex-cover/blob/master/Graph.cpp}.
+\bibitem{cms} M. Soos et al., \emph{CryptoMiniSat Gaussian Elimination}, \url{https://github.com/msoos/cryptominisat/blob/ed61e2170ab8d86a69c7cd99ae09059414fa0e0a/src/gaussian.cpp}.
+\bibitem{coq} L. G\"aher and F. Kunze, \emph{Coq Library of Complexity Theory}, \url{https://github.com/uds-psl/coq-library-complexity}.
+\bibitem{openai} OpenAI, \emph{Polynomial-Time Unitary Synthesis from a Boolean Oracle}, October 2026, \url{https://github.com/openai/math}.
+\bibitem{schaefer} T. J. Schaefer, ``The Complexity of Satisfiability Problems,'' STOC 1978, pp. 216--226.
+\bibitem{apt} B. Aspvall, M. F. Plass, R. E. Tarjan, ``A Linear-Time Algorithm for Testing the Truth of Certain Quantified Boolean Formulas,'' \emph{IPL} 8(3), 1979.
+\end{thebibliography}
+\end{document}
