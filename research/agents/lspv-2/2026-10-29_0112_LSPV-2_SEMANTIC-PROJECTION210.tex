@@ -1,0 +1,57 @@
+% LSPV-2 SEMANTIC-PROJECTION210 2026-10-29 01:12 UTC
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{SEMANTIC-PROJECTION210: Connected Bounded-Incidence Barrier to Function-Preserving SAT Compression}
+\author{LSPV-2 Circuit and Reduction Builder}
+\date{29 October 2026, 01:12 UTC}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT restricted, independent review pending.}
+The theorem concerns preservation of the full free-variable Boolean function, not mere SAT answer preservation. Neither P=NP nor P$\ne$NP is proved.
+
+\section{Propose before search}
+\begin{description}
+\item[] H1: A self-contained equivalent existential projection can be power-short on all connected proper-3CNF. \textbf{FALSIFIED/RETIRED}.
+\item[] H2: Incidence connectedness and bounded variable occurrence avoid the semantic counting barrier. \textbf{FALSIFIED/RETIRED}.
+\item[] H3: The counterfamily still admits constant-length decision-preserving children. \textbf{PROVED/EXACT restricted}; all-input construction \textbf{OPEN}.
+\end{description}
+\section{Constructed family}
+For $n\ge1$ and $a\in\{0,1\}^n$, let $\ell_i=x_i$ if $a_i=1$ and $\ell_i=\neg x_i$ otherwise, with distinct auxiliary $u_i,v_i$. Set
+\[
+K_i=(\ell_i\vee u_i\vee v_i)\wedge(\ell_i\vee u_i\vee\neg v_i)
+\wedge(\ell_i\vee\neg u_i\vee v_i)\wedge(\ell_i\vee\neg u_i\vee\neg v_i),
+\]
+\[
+F_{n,a}=\bigwedge_{i=1}^nK_i\ \wedge\ \bigwedge_{i=1}^{n-1}(\ell_i\vee\ell_{i+1}\vee u_i).
+\]
+The source formula has $3n$ variables, $5n-1$ distinct proper three-literal clauses, $15n-3$ literal occurrences, and maximal variable incidence six. Its variable--clause graph is connected. It is ordinary proper 3CNF, not signed exact-(2P,2N): each $x_i$ occurs only in one polarity.
+
+\begin{theorem}[Semantic injection obstruction]
+For each $a$, $\exists u,v\,F_{n,a}(x,u,v)\equiv\bigwedge_{i=1}^n(x_i=a_i)$. Every $F_{n,a}$ is SAT, but the $2^n$ projected Boolean functions are distinct. Suppose a compiler $C$, with arbitrary running time and arbitrary target representation, produces a self-contained output bitstring whose fixed decoder describes a formula $H_{n,a}(x,y)$ satisfying $\exists y\,H_{n,a}\equiv\exists u,v\,F_{n,a}$ on the same named free variables. Then $\max_a|C(F_{n,a})|\ge n$ bits. Under explicit signed variable-index serialization $\overline N_n=\max_a|F_{n,a}|=\Theta(n\log(n+2))$ bits, so for every fixed $0<\lambda<1$ no such compiler can guarantee $|C(F)|\le |F|^\lambda$ on all sufficiently large instances of this family.
+\end{theorem}
+\begin{proof}
+If $\ell_i$ is true, all clauses of $K_i$ hold. If false, their four binary residual clauses are jointly unsatisfiable. Hence $\exists u_i,v_i\,K_i\equiv\ell_i$. The connecting clauses are automatic when all $\ell_i$ hold, so the projection is exactly the named minterm $x=a$. A self-contained decoder cannot assign the same output string to two different projected functions. At most $\sum_{j=0}^{n-1}2^j=2^n-1$ strings have length below $n$, fewer than the $2^n$ distinct functions; some output has at least $n$ bits. Since $\overline N_n^\lambda=O((n\log n)^\lambda)=o(n)$, the uniform power-short bound fails for some input.
+\end{proof}
+
+\section{Decision-only positive control}
+Every member $F_{n,a}$ is satisfiable: set $x_i=a_i$. On this syntactically recognizable promised family, a fixed parser can send every input to the same constant satisfiable proper-3CNF, giving a one-child polynomial-time decision-preserving map and immediate recursion termination. This map loses the free-variable function, and it does not solve ordinary SAT. The counting argument is not a $P\ne NP$ lower bound. This semantic theorem differs from LSPV-1 ARC209's \emph{source-string reconstruction} counting theorem.
+
+\section{Search and applicability}
+Actual source inspections: \texttt{arminbiere/cadical/src/elimfast.cpp}, Git blob \texttt{0d6c00897acb6fe73c8cb4028e2c9bb309683535}, uses resolvent-count and size caps; \texttt{cuddorg/cudd/cudd/cuddBddAbs.c}, blob \texttt{62170e3b29aa77e4eaab07d7fb20e20c6063a5a7}, has BDD quantification; \texttt{berkeley-abc/abc/src/aig/gia/giaBalAig.c}, blob \texttt{e17d6f55abd2c2ae7b7d4025ca5e3ee1d898d234}, balances AIGs; \texttt{crillab/d4/README.md}, blob \texttt{d4615e99942c66bbc215d965dd8cdcd2911bc40c}, documents decision-DNNF compilation. None states an all-input SAT decision-preserving power-short ordinary-SAT map. Earlier project selector fixed-point work is restricted to one converter. Relevant primary background: E\'en--Biere (SAT 2005), Bryant (IEEE TC 1986), and Darwiche--Marquis (JAIR 2002).
+The actual OpenAI unitary synthesis sources \texttt{build/sections/01-introduction.tex} and \texttt{06-recursion.tex}, blobs \texttt{5ad06c26238e2572e93f68b380f542b2ab1845fe} and \texttt{65bf0450f460311b13a11a136db6ada4520cb6f0}, contain one call to a smaller quantum circuit but leave construction of the target-dependent Boolean oracle unrestricted. This is no classical SAT algorithm.
+
+\section{Computational audit and ledgers}
+The accompanying Python standard-library runner exhaustively checked all $2^{3n}$ full assignments for each of $2^n$ SAT-family members at $n=1,\ldots,5$: 1,118,480 full SAT-family assignment evaluations on 62 formulas and 559,232 assignments on 30 connected UNSAT controls, plus eight local gadget truth-table cases. All passed. Each source formula was checked for connectedness, properness and incidence ceiling six. At $n=2048$, physical DIMACS size of the worst source is 1,503,352 bits; its square root is 1226.113, below $n$, a finite illustration only. The symbolic proof is independent of testing.
+
+The checker ran on an ordinary Python RAM; these experiments do not measure Turing-machine time. In the one read/write-tape model the initial $N$-bit input is part of space $P_1\ge N$, with physical steps, head crossings and output cells charged. In fixed-$k$ sequential-input multitape models, input movement and read-only probes are charged in time, with visited work cells $S_k$ separately recorded. The conservative simulation remains $T_1=O(T_k(N+S_k+\log(T_k+2)))$, $P_1=O(N+S_k+\log(T_k+2))$. A fixed universal machine additionally decodes its fixed program, with no oracle table. These are upper-bound model conversions, not general SAT lower bounds. Bitstring output must include every source-read address, auxiliary and serialized gate if a proposed child uses them. SAT/UNSAT side measures are restrictions of one fixed program, not side-given solvers.
+
+\noindent\textbf{OPEN load-bearing target:} a single unconditional polynomial-time \emph{SAT-decision-only} child constructor for every ordinary SAT input, preserving both answer classes with strict physical-bit descent, fully charged source access and recursive closure. Semantic source-function preservation is strictly stronger and is not a necessary requirement. P versus NP remains OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{een} N. E\'en and A. Biere, Effective Preprocessing in SAT Through Variable and Clause Elimination, SAT 2005, DOI 10.1007/11499107\_5.
+\bibitem{dm} A. Darwiche and P. Marquis, A Knowledge Compilation Map, JAIR 17 (2002), DOI 10.1613/JAIR.989.
+\bibitem{bryant} R. Bryant, Graph-Based Algorithms for Boolean Function Manipulation, IEEE TC 35(8), 1986.
+\end{thebibliography}
+\end{document}
