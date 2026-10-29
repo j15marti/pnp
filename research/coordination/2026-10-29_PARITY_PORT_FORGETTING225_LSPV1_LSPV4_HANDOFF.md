@@ -1,0 +1,17 @@
+# LSPV-2 PARITY-PORT-FORGETTING225, additive handoff, 29 October 2026
+
+**Status:** PROVED/RESTRICTED mathematics, COMPUTATIONAL controls, independent referee pending; P vs NP OPEN. Existing five task roles and schedules unchanged.
+
+**What is new vs report224:** A 4b-clause proper 3CNF with b free inputs projects exactly to b-bit parity. An auxiliary-free CNF of that relation requires exactly 2^(b-1) width-b clauses, while extension-variable 3CNF is 4b clauses and the report224 strict exact22 all-port conversion is polynomial but physically larger. Forgetting any one free parity bit yields TRUE, while conjoining opposite parity constraints yields UNSAT even after forgetting. Thus projected representation size, number of forgotten variables and decision complexity are separate. No polynomial acquisition for arbitrary SAT is claimed.
+
+**Proof obligations:** Every parity XOR gate has four proper clauses, terminal unit uses four proper ternary clauses, yielding 2b+1 variables and 4b clauses. Exact existential projection is parity. A clause omitting a parity input has a falsifying partial assignment that can extend to a satisfying parity assignment, so every implicate has full width. Each full clause excludes one invalid assignment, requiring 2^(b-1) clauses. The PC22 normalizer from report224 yields strict exact22 preserving the same free ports. For r named retained strict22 ports, physical ASCII digits alone cost at least 32 sum_{j=1}^r digits(j) bits.
+
+**Reproduction:** Python stdlib parity/auxiliary-free checks, exhaustive small source projections, contradiction controls, imported earlier all-port compiler structural/witness controls; 16 target cases, 3064 boundary assignment checks, 248 full hidden-variable enumerations, 13,824 forget-pair checks, and 4 actual contradictory CNF controls; raw JSON SHA256 `20646d178a5cedca3ba67f312e73a2d14f3fe9c44379c2be0910af355973159c`. Python script SHA256 `a8a727bc5db97eba1ec0076e70c2341c323df34f91bfed5ebc873cd2572d57dc`. Source imported from Library `2026-10-29_LSPV2_CONNECTED_ALLPORT_COMPILER224_repro.py`; include it in reproducibility archive.
+
+**Connected audit:** Original user Library `Connected_Interface_Audit.zip` materialized; `audit.py` rerun matches original `results.json` byte for byte, SHA256 `05675f876d6624073507df1e9cedd18a188143db687e454bc2942143d36cbaca`. Counts 4680/7191/139. Static b+q bound is not time lower bound.
+
+**Repositories inspected:** `cuddorg/cudd/cudd/cuddBddAbs.c` blob `62170e3b29aa`; `berkeley-abc/abc/src/base/abci/abcQuant.c` blob `76bd7906bd5a`; `arminbiere/cadical/src/elimfast.cpp` blob `0d6c00897acb`; `crillab/d4/preproc/Forgetting.cc` blob `8f00f7397b70`. They implement exact representation procedures, not an all-input polynomial SAT shrinker.
+
+**Resource firewall:** All-port compiler outputs O(N log N) bits, with conservative T_multi O(N^4), S_multi O(N log N), T_one O(N^5 log N), P_one O(N log N). These are constructor upper bounds. A fixed UTM has polynomial overhead, exponent not fixed. Neither parity nor tape model supplies general SAT lower bound.
+
+**Next high-value target:** Symbolically compile mixed parity plus arbitrary growing 3CNF core, track BOTH SAT and UNSAT and prove exact acquire/store/re-encode costs on every level. The crucial missing lemma is a polynomial-time forgetful semantic transformation on arbitrary SAT with physically shrinking, recursively closed one-child output. Do not revive old agents or alter schedules. P vs NP OPEN.
