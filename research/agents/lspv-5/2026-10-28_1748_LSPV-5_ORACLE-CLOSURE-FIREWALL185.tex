@@ -1,0 +1,399 @@
+% LSPV-5 REPORT::ORACLE-CLOSURE-FIREWALL185::2026-10-28_1748_America_Los_Angeles
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\PROVED}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\COND}{\textbf{CONDITIONAL}}
+\newcommand{\FALSIFIED}{\textbf{FALSIFIED/RETIRED}}
+
+\title{LSPV-5 Red Team: Oracle-Compiler and Representation-Closure Firewall}
+\author{LSPV-5 independent referee and synthesis coordinator}
+\date{28 October 2026, 17:48 America/Los\_Angeles}
+
+\begin{document}
+\sloppy
+\maketitle
+
+\section*{Status}
+\noindent\textbf{P versus NP remains OPEN.}
+This run proves a classical oracle-compiler firewall and a restricted
+representation-closure trichotomy.  It does not construct an all-input SAT
+shrinker and does not rule one out.  The OpenAI unitary-synthesis construction
+is a genuine one-recursive-call quantum architecture, but its theorem places
+target information in an unrestricted Boolean oracle and explicitly does not
+construct that oracle classically.  Thus its transfer to a classical SAT
+algorithm is \FALSIFIED, while the architecture remains useful inspiration.
+
+\section{PROPOSE: claim card and falsifiers stated before search}
+\paragraph{Claim ID.} ORACLE-CLOSURE-FIREWALL185.
+\paragraph{Status before run.} \OPEN.
+\paragraph{Desired conclusion.} Determine whether the cited one-call architecture
+supplies, or suggests a closed unconditional map
+\[
+ G:{\cal C}\longrightarrow {\cal C},\qquad
+ \operatorname{SAT}(G(F))=\operatorname{SAT}(F),\qquad
+ |G(F)|\le |F|^\lambda,quad 0<\lambda<1,
+\]
+whose generation and random access are deterministic polynomial time on every
+valid encoded input, with fixed solvable bases.
+\paragraph{Exact quantifier target.}
+\[
+ \exists G\ \exists c\ \exists\lambda\in(0,1)\ \exists N_0\
+ \forall F\in{\cal C},\ |F|\ge N_0:
+ \begin{cases}
+ G(F)\in{\cal C},\\
+ \operatorname{SAT}(G(F))=\operatorname{SAT}(F),\\
+ |G(F)|\le |F|^\lambda,\\
+ G(F)\text{ is physically generated in }O(|F|^c)\text{ time.}
+ \end{cases}
+\]
+The same fixed machine and encoding must witness all four lines; no answer bit,
+target-dependent advice, semantic oracle, or uncharged virtual child is allowed.
+\paragraph{Model and SAME\_REALIZATION.} Uniform deterministic classical
+random-access/multitape computation with the full physical bit length as input
+measure.  The generator, child encoder, child-bit accessor, recursive call, and
+base solver belong to one realization.  No single-tape crossing bound is used or
+transported.  The cited quantum oracle circuit is audited in its own model only.
+
+The four proposed falsifiers were:
+\begin{enumerate}
+\item the one child hides exponentially many target-dependent oracle bits;
+\item a compact circuit child is not closed under the next ordinary-CNF call;
+\item selecting the compact child already requires deciding the parent;
+\item $N^\lambda$ is measured on a succinct handle while child-bit evaluation
+      or re-encoding restores parent-scale cost.
+\end{enumerate}
+
+\section{SEARCH: actual sources and code inspected}
+\subsection{OpenAI preprint source, not a repository slogan}
+The source was read at commit
+\texttt{7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a} in
+\href{https://github.com/openai/math/tree/7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a/preprints/Polynomial-Time-Unitary-Synthesis-from-a-Boolean-Oracle-October-5-2026}{the October 5, 2026 preprint directory}.
+The relevant files and inspected blob IDs were:
+\begin{itemize}
+\item \texttt{build/main.tex}, blob
+  \texttt{acd40efe8acdd9a887615b6b18ba487c5e900b24};
+\item \texttt{build/sections/01-introduction.tex}, blob
+  \texttt{5ad06c26238e2572e93f68b380f542b2ab1845fe};
+\item \texttt{02-slots.tex}, blob
+  \texttt{b833a7c550aae90ccd06e68a077145440d0e178e};
+\item \texttt{03-contraction.tex}, blob
+  \texttt{3574a24583aa503c66fce43425a1ab134b778adc};
+\item \texttt{05-encoders.tex}, blob
+  \texttt{7f6545f5f304ea7fc220592c6511b7abce3b9d87};
+\item \texttt{06-recursion.tex}, blob
+  \texttt{65bf0450f460311b13a11a136db6ada4520cb6f0};
+\item \texttt{07-compilation.tex}, blob
+  \texttt{869be8c325d6d149bf8825c1191b33732d89c2d2}.
+\end{itemize}
+The theorem's quantifiers are
+\[
+ \exists\ \text{uniform polynomial-time skeleton generator }A_n\quad
+ \forall U\in U(2^n)\quad \exists f_U:
+ A_n^{f_U}\approx U.
+\]
+The source states that there is no restriction on the oracle truth-table size
+or classical circuit complexity and no efficient classical procedure for
+constructing it.  Slot tables may depend on the target and are not part of the
+uniformly generated skeleton.  At each level there is exactly one smaller
+quantum synthesis call, and only polynomially many levels, but the compilation
+generator ``never selects a word or computes a table entry.''  These are
+source statements, not inferences from the abstract.
+
+\subsection{GitHub implementation search for the exact bottleneck}
+The searches were for bounded variable elimination, existential abstraction,
+and circuit-to-CNF re-entry rather than for generic ``SAT compression.''
+\begin{itemize}
+\item CaDiCaL commit
+\texttt{c60730422e758ef1cebe7aeddf2dda31c996bf04},
+\texttt{src/elim.cpp} (blob
+\texttt{c401152c7a733803d0b407d98e8a295ab44f7e99}):
+\texttt{elim\_resolvents\_are\_bounded} rejects a pivot when the number of
+non-tautological resolvents exceeds the old-clause count plus a bound or a
+resolvent exceeds the configured size limit.  This is an implementation of
+conditional bounded elimination, not an all-input contraction theorem.
+\item CUDD commit
+\texttt{f54f533303640afd5dbe47a05ebeabb3066f2a25},
+\texttt{cudd/cuddAndAbs.c} (blob
+\texttt{49e06e0303efd33c9add099519efece48fcca61d}):
+\texttt{Cudd\_bddAndAbstractLimit} returns null when the new-node budget is
+exceeded.  It demonstrates useful representation-dependent closure, not a
+universal polynomial bound for CNF projection.
+\item ABC commit
+\texttt{b6e16bddb089b3dd386c7c28a4ac26b410076b6f},
+\texttt{src/sat/cnf/cnfCore.c} (blob
+\texttt{31efb3e5bf42d6f1937a8ec337d3149dd66cf16b}):
+\texttt{Cnf\_Derive} performs an actual AIG-to-CNF mapping and write phase.
+Thus circuit-to-CNF transport is a charged compilation, not a free change of
+notation.
+\end{itemize}
+The relevant knowledge-compilation literature likewise makes tractability
+representation- and width-dependent.  This search found no theorem that
+uniformly compiles arbitrary CNF projection into a power-smaller recursively
+closed ordinary-SAT instance.  Absence from the search is not evidence of
+impossibility.
+
+\section{BUILD I: the classical oracle-compiler firewall}
+\begin{theorem}[Target-dependent oracle quantifiers are vacuous for decision]
+Let $L\subseteq\{0,1\}^*$ be any language.  There is a fixed deterministic
+one-query skeleton $S$ such that
+\[
+ \forall x\ \exists f_x:\{0\}\to\{0,1\},\qquad S^{f_x}(x)=L(x).
+\]
+Consequently this quantifier pattern, without an effective restriction on
+$f_x$, implies no upper bound on $L$.
+\end{theorem}
+\begin{proof}
+The skeleton ignores $x$, queries address $0$, and returns the reply.  For a
+given $x$, choose the constant oracle $f_x(0)=1$ exactly when $x\in L$.
+This construction works for every language, including undecidable languages.
+\end{proof}
+
+The stronger pattern $\exists f_L\ \forall x\ S^{f_L}(x)=L(x)$ also gives only
+an oracle algorithm: choose $f_L(x)=L(x)$.  It establishes $L\in P^{f_L}$,
+not $L\in P$.
+
+\begin{theorem}[Effective-oracle composition]
+Let a deterministic classical skeleton $S$ run in time $p(|x|)$ and make at
+most $p(|x|)$ adaptive queries of length at most $p(|x|)$.  If one fixed
+deterministic algorithm $E$ computes every required bit
+\[
+ f_x(q)=E(x,q)
+\]
+in time polynomial in $|x|+|q|$, then the oracle can be inlined and the
+language decided in deterministic polynomial time.  The same holds when a
+uniform polynomial-time compiler physically produces a polynomial-size oracle
+circuit and its evaluation and storage are charged.
+\end{theorem}
+\begin{proof}
+Simulate $S$ and replace each oracle transition by a call to $E$.  The product
+of the polynomial query count and polynomial evaluation cost is polynomial;
+adaptivity does not change this bound.  Physical circuit generation and each
+evaluation are included in the same execution ledger.
+\end{proof}
+
+This theorem is classical.  Inlining a classically evaluable oracle into the
+OpenAI quantum skeleton would still produce a quantum computation, not an
+efficient classical simulation.  The missing SAT bridge is therefore stronger:
+one needs a deterministic classical, answer-preserving, recursively closed
+constructor, not merely existential oracle contents.
+
+\section{BUILD II: representation-closure trichotomy}
+For pairwise disjoint variables define
+\[
+ A_i=a_i\vee b_i,\qquad B_j=c_j\vee d_j,
+\]
+and
+\[
+ S_t(z)=\bigwedge_{i=1}^t(z\vee A_i)\wedge
+        \bigwedge_{j=1}^t(\neg z\vee B_j).
+\]
+Then
+\begin{equation}\label{eq:projection}
+ \exists z\,S_t(z)
+ =\left(\bigwedge_i A_i\right)\vee\left(\bigwedge_j B_j\right)
+ =\bigwedge_{i,j}(A_i\vee B_j).
+\end{equation}
+The first equality follows by evaluating $z=0$ and $z=1$; the second is
+distributivity.
+
+\begin{proposition}[Three honest re-entry choices]
+For the family in \eqref{eq:projection}:
+\begin{enumerate}
+\item an auxiliary-free CNF over the original variables needs $t^2$ clauses;
+\item a fan-in-two circuit has exactly $4t-1$ gates; its full Tseitin
+      equivalence encoding with a pinned root has $12t-2$ clauses,
+      $28t-6$ literal occurrences, and $4t-1$ fresh variables;
+\item retaining the circuit changes the recursive language to Circuit-SAT and
+      still has indexed physical length $\Theta(t\log t)$, the same exponent as
+      the $2t$-clause selector $S_t$.
+\end{enumerate}
+Thus this family exhibits a quadratic auxiliary-free expansion and a linear
+compact representation, but no power shrink from the already compact selector.
+\end{proposition}
+\begin{proof}
+The monotone function in \eqref{eq:projection} has the $t^2$ clauses
+$A_i\vee B_j$ as its prime implicates.  Each is prime: deleting an $A_i$
+literal is falsified by an assignment satisfying the full $A$ conjunction;
+deleting a $B_j$ literal is handled symmetrically.  Replacing each clause of
+any equivalent CNF by a contained prime implicate cannot increase its clause
+count, and omitting any pair $(i,j)$ accepts an assignment that falsifies that
+pair while satisfying every other pair.  Hence at least $t^2$ clauses are
+required.
+
+Build $2t$ OR gates for the $A_i,B_j$, two fan-in-two AND trees using
+$2(t-1)$ gates, and a final OR gate: $4t-1$ total.  Each two-input gate
+equivalence uses three clauses and seven literal occurrences; pinning the root
+adds one unit clause, giving the claimed counts.  Every indexed gate or literal
+reference needs $\Theta(\log t)$ bits, so both the selector and circuit/Tseitin
+representations have physical length $\Theta(t\log t)$.
+\end{proof}
+
+\paragraph{Pass-through context control.}
+If an untouched context $R_k$ is copied to both parent and child, then
+\[
+ \frac{|S_t\wedge R_k|}{|P_t\wedge R_k|}\longrightarrow 1
+ \quad(k\to\infty)
+\]
+for fixed $t$.  Therefore a local rewrite cannot establish a fixed global
+power shrink unless it also contracts arbitrary context.  This falsifies only
+pass-through transformations, not all possible SAT algorithms.
+
+\section{Finite reproducibility}
+The deterministic Python reproducer
+\texttt{research/agents/lspv-5/2026-10-28\_1748\_ORACLE-CLOSURE-FIREWALL185\_repro.py}
+has SHA-256
+\texttt{f924e4504f276ed22b3d062f2f985e0b10f2c581f65b1e2677801d0b1a07f6e7}.
+It ran in 2.2 seconds and recorded:
+\begin{itemize}
+\item 4,240 oracle-vacuity assertions over every language on 1-, 2-, and
+      3-bit domains;
+\item all 16 local truth-table checks for OR/AND Tseitin equivalences;
+\item all 69,904 input assignments for $t=1,2,3,4$, independently checking
+      existential elimination, pairwise CNF, circuit evaluation, and the
+      pinned Tseitin extension;
+\item physical byte counts for $t=1,2,4,\ldots,128$;
+\item context dilution ratios $0.47,0.58,0.8542,0.9829,0.9969$ for
+      $k=0,10,100,1000,5000$ at $t=4$.
+\end{itemize}
+There is no randomness.  The raw JSON is
+\texttt{research/agents/lspv-5/2026-10-28\_1748\_LSPV-5\_ORACLE-CLOSURE-FIREWALL185\_raw.json}.
+These checks are \COMP; the two theorems and proposition above have symbolic
+proofs and are \PROVED subject to independent peer review.
+
+\section{Hostile controls and barrier audit}
+\paragraph{Compact representation.} The example is deliberately easy: its
+linear circuit is a shortcut.  It refutes any claim that $t^2$ resolvents are
+inherent semantic information.  It does not refute a worst-case all-input
+shrinker.
+\paragraph{Auxiliary variables and re-entry.} Tseitin variables restore linear
+CNF size but not a power improvement over $S_t$.  A recursive proof must choose
+and close one representation rather than count the smallest description at
+each level for free.
+\paragraph{Padding/context.} Untouched context destroys fixed-power shrink for
+the local rewrite.  An all-input map may inspect or transform the context, so
+this is not a universal lower bound.
+\paragraph{Affine/Horn/2-SAT/direct recognition.} Nothing here forces an
+arbitrary solver to enumerate resolvents; direct recognition solves the test
+family.  Restricted proof-system or representation lower bounds do not
+transfer to all algorithms.
+\paragraph{Relativization.} A maximal semantic oracle makes the target-dependent
+oracle theorem trivial; this pinpoints the acquisition/evaluation line that a
+constructive classical proof must cross.  Conversely, the firewall does not
+separate P from NP.
+\paragraph{Algebrization.} Algebraic-oracle access can only strengthen the
+semantic-oracle control; no nonalgebrizing hinge is established.
+\paragraph{Natural Proofs.} No constructive circuit property is used to derive
+a general circuit lower bound, so that barrier is not invoked.
+\paragraph{Machine models.} All byte counts are physical encodings.  No
+one-tape, two-tape, RAM, FLMV, or Williams exponent is transported.  The earlier
+tape-crossing results remain restricted model statements and are orthogonal to
+this constructive test.
+
+\section{Status table and proof DAG}
+\begin{center}
+\begin{tabular}{p{0.43\linewidth}p{0.17\linewidth}p{0.31\linewidth}}
+\toprule
+Claim & Status & Reason \\
+\midrule
+Target-dependent oracle existence implies a classical upper bound
+  & \FALSIFIED & Constant-oracle control works for every language. \\
+Effective classical oracle-bit evaluation composes with a polynomial
+  deterministic skeleton & \PROVED & Direct simulation with all query costs. \\
+Equation \eqref{eq:projection} and $t^2$ auxiliary-free CNF clauses
+  & \PROVED & Distributivity and prime-implicate proof. \\
+Circuit/Tseitin gate and clause counts
+  & \PROVED & Explicit construction; exhaustive finite audit. \\
+OpenAI source gives one smaller quantum call per level
+  & \PROVED & Direct source inspection in its stated model. \\
+OpenAI source constructs/evaluates the target oracle classically
+  & \FALSIFIED & Source explicitly disclaims this. \\
+The selector family proves general projection expansion or contraction
+  & \FALSIFIED & It has both quadratic CNF and linear circuit descriptions. \\
+All-input closed $N^\lambda$ SAT shrinker
+  & \OPEN & No unconditional constructor, closure proof, or charged accessor. \\
+P versus NP
+  & \OPEN & Neither equality nor separation follows. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The valid sufficient constructive chain is
+\[
+ \boxed{\text{uniform closed physical child }|G(F)|\le |F|^\lambda}
+ \Longrightarrow
+ T(N)\le N^c+T(N^\lambda)
+ \Longrightarrow T(N)=O(N^c)
+ \Longrightarrow \mathrm{SAT}\in P.
+\]
+The sum is $N^c+N^{c\lambda}+N^{c\lambda^2}+\cdots=O(N^c)$ and the
+depth is $O(\log\log N)$.  This is a sufficient criterion, not a new SAT
+algorithm.  If SAT were already in P, a decider could output fixed encoded YES
+or NO bases, so unrestricted existence of such a map is itself equivalent in
+difficulty to the decision problem.
+
+\section{Corpus reconciliation}
+\paragraph{Corpus reviewed.} Root \texttt{main.tex}; \texttt{AGENTS.md};
+\texttt{CODEX.md}; the complete \texttt{pnp-research} skill, red-team/synthesis
+mode rules, and research protocol; LSPV-1 ARC207; LSPV-2
+SINGLE-CHILD-PROJECTION-CLOSURE; LSPV-4 SINGLE-CHILD-ORACLE-LEDGER208 and its
+handoff; the newest LSPV-5 reports; relevant governance/model-firewall notes;
+the OpenAI source files listed above; and the CaDiCaL, CUDD, and ABC source
+files listed above.  The repository was connector-mounted rather than locally
+cloned, so the skill's local preflight script could not be executed; its
+required source, marker, OPEN-status, predecessor-write, and readback checks
+were performed directly against GitHub.
+\paragraph{Duplication/contradiction audit.} ARC207 already states the strict
+descent recurrence and LSPV-2/LSPV-4 already identify representation and
+virtual-query firewalls.  This run does not relabel those as new.  The new
+contribution is the general constant-oracle vacuity theorem plus the formal
+effective-oracle composition repair, combined with a single physical
+representation re-entry audit.  Root \texttt{main.tex} currently contains no
+LSPV ownership markers and emphasizes the older ARC/FLMV route; it is stale
+with respect to the newest constructive single-child audit.
+\paragraph{Adopted.} The one-call quantum source description, ARC207 recurrence,
+and peer physical-child ledgers.  \paragraph{Rejected/retired.} Any inference
+from existential target-oracle contents to a classical SAT algorithm; any
+inherent-expansion inference from the $t^2$ resolvents; any uncharged switch
+among CNF, circuit, BDD, or virtual representations.  \paragraph{Preserved.}
+All earlier model-specific tape and RAM results retain their recorded scope;
+none is imported here.
+
+\section{Role-addressed handoff and single next target}
+\textbf{To LSPV-1:} state any candidate single-child theorem with an explicit
+oracle-bit evaluator or remove the oracle from the hypothesis; test invalid
+encodings and both answer classes.  
+\textbf{To LSPV-2:} seek a recursively closed grammar in which the second
+application is defined and still gives a fixed power shrink after arbitrary
+context, rather than cycling from expanded CNF to selector.  
+\textbf{To LSPV-3:} charge adaptive child-bit queries with memoization and
+failed representation choices; a semantic one-call count is not a probe
+bound.  
+\textbf{To LSPV-4:} keep the quantum skeleton, oracle compilation, classical
+evaluation, and physical child as separate ledger rows.
+
+The decisive next target is: either construct a uniform, answer-oblivious,
+recursively closed second-level child-bit algorithm for arbitrary ordinary SAT
+with true length $N^\lambda$, or give a minimal instance on which a named
+candidate violates correctness, closure, or charged access.  Both P=NP and
+P$\ne$NP remain live possibilities.
+
+\section*{Artifacts}
+\begin{itemize}
+\item \texttt{research/agents/lspv-5/2026-10-28\_1748\_LSPV-5\_ORACLE-CLOSURE-FIREWALL185.tex}
+\item \texttt{research/agents/lspv-5/2026-10-28\_1748\_ORACLE-CLOSURE-FIREWALL185\_repro.py}
+\item \texttt{research/agents/lspv-5/2026-10-28\_1748\_LSPV-5\_ORACLE-CLOSURE-FIREWALL185\_raw.json}
+\item \texttt{research/coordination/2026-10-28\_1748\_ORACLE-CLOSURE-FIREWALL185\_FIVE-ROLE-HANDOFF.md}
+\end{itemize}
+
+% END_OF_VERIFIED_REPORT::LSPV-5::ORACLE-CLOSURE-FIREWALL185
+\end{document}
