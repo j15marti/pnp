@@ -1,0 +1,80 @@
+% ClaudeCircuitSAT.tex -- living document (append runs; revise statuses in place)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\newcommand{\SAT}{\textsc{Circuit-SAT}}
+\title{Lower Bounds for Circuit-SAT: a Step-by-Step Wire Ledger\\ (living document)}
+\author{Claude (scheduled hourly runs)}
+\date{Last updated: 2026-10-29, run 1}
+\begin{document}
+\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-linear lower bound for \SAT{} in the uniform model. Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model and parameters}
+\begin{definition}
+A circuit $C$ has $n$ inputs, $g$ gates of fan-in $2$ over the basis $B_2$ (all binary gates; negations free), one output. \emph{Wires} $w=2g$ (gate in-edges). \SAT$(n,g)$: given such $C$, is there $x$ with $C(x)=1$?
+\end{definition}
+Parameters: $n$ (inputs), $g$ (gates/wires), and possibly treewidth/depth. A bound is \emph{parametrized} if stated as $T(n,g)$.
+Two distinct questions are tracked and must not be conflated:
+(A) \emph{construction cost}: the least $g$ needed to build a given function on $n$ inputs ($C_{B_2}(f)$); (B) \emph{solving cost}: time to decide \SAT$(n,g)$.
+
+\section{Step ledger: minimal construction cost, small $n$}
+\begin{lemma}[Connectivity, PROVED/EXACT]\label{lem:conn}
+If $f$ depends on all $n$ inputs then any $B_2$ circuit for $f$ has $g\ge n-1$ gates, hence $w\ge 2(n-1)$.
+\end{lemma}
+\begin{proof}
+The cone of the output is a connected (undirected) graph on $n+g'$ vertices ($g'\le g$ gates) with at most $2g'$ edges, so $2g'\ge n+g'-1$.
+\end{proof}
+Consequently $\mathrm{AND}_n$ and $\mathrm{PAR}_n$ have cost exactly $n-1$ (tree upper bound).
+
+\begin{proposition}[COMPUTATIONAL, exhaustive]\label{prop:small}
+Exact minimum gate counts over all $2^{2^n}$ functions (script \texttt{research/agents/claude/circuitsat/mincircuit.py}, output \texttt{mincircuit\_results.txt}):
+\begin{center}\begin{tabular}{@{}cccccccc@{}}\toprule
+$n$ & \#fns & cost 0 & 1 & 2 & 3 & 4 & max gates (max wires)\\\midrule
+1 & 4 & 4 & & & & & 0 (0)\\
+2 & 16 & 6 & 10 & & & & 1 (2)\\
+3 & 256 & 8 & 30 & 114 & 80 & 24 & 4 (8)\\\bottomrule
+\end{tabular}\end{center}
+$\mathrm{AND}_3,\mathrm{PAR}_3$ cost $2=n-1$, meeting Lemma~\ref{lem:conn}. The $n=3$ maximum $4$ agrees with the known value for 3-variable functions; for $n=4$ the literature value is $7$ (KNOWN, quoted not recomputed). Growth of the maximum: $0,1,4,7,\dots$; Shannon counting gives $\Theta(2^n/n)$ asymptotically (KNOWN).
+\end{proposition}
+\textbf{Reading.} Hard-to-build functions exist but are non-explicit; the ledger's next steps ($n=4$: $2^{16}$ functions, requires a canonical-form/chunked search under the 30-second rule) are CANDIDATE work.
+
+\section{Solving-cost lower bounds, parametrized}
+\begin{lemma}[Input must be read, PROVED/EXACT]\label{lem:read}
+Every correct deterministic \SAT{} algorithm reads $\Omega(g)$ bits of the circuit.
+\end{lemma}
+\begin{proof}
+Let $o=\bigvee_{i=1}^m h_i$ with each $h_i=x\wedge\neg x$ (one gate): unsatisfiable, $g=2m-1$. Changing the gate type of any single $h_j$ to $x\wedge x$ gives a satisfiable circuit. An algorithm that never reads $h_j$'s description answers identically on both.
+\end{proof}
+\begin{lemma}[Black-box, PROVED/EXACT but relativizing]\label{lem:bb}
+With only evaluation access $x\mapsto C(x)$, any deterministic algorithm needs $2^n$ queries (adversary answers $0$ until one point remains). \emph{Barrier:} relativizes, so says nothing about P vs NP; it shows the target must use the circuit's wire structure.
+\end{lemma}
+\begin{proposition}[CONDITIONAL / KNOWN reductions]
+CNF-SAT with $n$ variables and $m$ clauses reduces to \SAT$(n,O(m))$. Hence SETH implies no $2^{(1-\epsilon)n}\mathrm{poly}(g)$ algorithm for \SAT. Parametrized by (primal) treewidth $k$, \SAT{} is solvable in $2^{O(k)}g$ and a $(2-\epsilon)^k$-type bound is SETH-tight in the literature (citation to be verified next run).
+\end{proposition}
+So the working parametrized target is $T(n,g)\ge 2^{(1-\epsilon)n}$ for $g=\mathrm{poly}(n)$ (CONDITIONAL on SETH only; unconditional version OPEN).
+
+\section{Link to the wire ledger (the proof idea)}
+The step-by-step idea: lower-bound the \emph{circuit size} $C_{B_2}(\mathrm{SAT}_N)$ of the decision function on $N$-bit encodings by building up from small $N$ and tracking forced wires. A superpolynomial bound would give $\mathrm{NP}\not\subseteq \mathrm{P/poly}$, hence $\mathrm{P}\ne\mathrm{NP}$ (KNOWN implication). Current state of the art for explicit functions in $B_2$ is $3.1N-o(N)$ (gate elimination; citation to verify), so the gap to superpolynomial is the whole problem (OPEN). Lemma~\ref{lem:conn} is the base case of gate elimination: each input must contribute a wire.
+
+\section{Use of repository work (j15marti/pnp)}
+\begin{itemize}
+\item Ledger row L13 (Buss--Williams): alternation trading cannot reach the SAT time exponent $2\cos(\pi/7)$ at $n^{o(1)}$ space --- a \emph{time--space} (not wire) bound; shows the known ceiling for \SAT-type bounds in that technique. Relevant as the parametrized template $T(n,s)$.
+\item Rows L34--L37 (T-PORT): provable exponent $1+\Theta(1-d)$ for portfolios of size $N^d$ --- an example of a parametrized bound shape.
+\item Onetape note (L38--L40): crossing-sequence bounds hold for nondeterminism too and cannot separate P/NP: a warning that any wire-counting argument must use determinism or uniformity asymmetrically.
+\end{itemize}
+Retired/not used: no repository claim of an ARC edge is relied upon.
+
+\section{Open arrows and next steps}
+\begin{enumerate}
+\item (CANDIDATE) Compute exact $n=4$ costs and wire-optimal circuits with fan-out accounting (wires counted per edge vs.\ per net).
+\item (CANDIDATE) Formulate a restricted-model lower bound (formulas, monotone, bounded depth) for \SAT-like families and tabulate $T(n,g)$ per model; check which known results are exact transfers.
+\item (CANDIDATE) Gate-elimination ledger: record, per step, the number of wires removable per input assignment, for the explicit hard function SAT$_N$ restricted to small $N$.
+\item (OPEN) Any unconditional super-linear uniform lower bound for \SAT.
+\end{enumerate}
+
+\section*{Run log}
+\textbf{Run 1 (2026-10-29).} Created document; Lemmas 1--3 proved; exhaustive $n\le3$ ledger computed (runtime $<1$ s each). Literature citations marked ``to verify'' were not web-checked this run.
+\end{document}
