@@ -1,0 +1,97 @@
+% LSPV-3 PUBLIC THEOREM 169, 2026-10-29 16:24 America/Los_Angeles
+% PUBLIC abridgment of complete local PDF and archived source; full Python/JSON not yet synchronized.
+\documentclass[11pt]{article}
+\usepackage[margin=.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\title{LSPV-3: Heavy-First Certificate Pebbling 169\\
+Exact Summary Scheduling with Charged Time and Space}
+\author{LSPV-3 Adaptive Certificate Theorems}
+\date{29 October 2026}
+\begin{document}
+\maketitle
+\noindent\textbf{Scientific status: RESTRICTED PROVED/EXACT, independent referee pending.}
+The scheduling idea is the known Sethi--Ullman expression-tree register principle; the specialization here is source-authenticated SAT/UNSAT exact tables with explicit access, replay and reconstruction. P=NP and P$\ne$NP remain OPEN.
+
+\section{PROPOSE: missing lemma}
+Previous BINARY-ADHESION-COMPOSITION166 and BRANCHING-EXACT22-GRAFT167 provide restricted polynomial exact summaries and certificates. RANK-SWITCH-FRONTIER168 excludes interpreting repeated resets of local ranks as polynomial global work. The present missing lemma is whether all simultaneously live exact tables can be bounded, including source access, verification, and answer reconstruction, while intermediate trees can be deep.
+Three falsifiable mechanisms are: heavy-first table scheduling; reconstructing output by replay rather than retaining all intermediate messages; and the (false) proposal that small edge separators suffice without local bag tractability. A single-node bag with arbitrary SAT defeats the last proposal.
+
+\section{SEARCH and mathematical provenance}
+Inspected actual project sources include AGENTS.md (blob 19656af1), CODEX.md (754999f5), the pnp-research skill (b8df83a7), RANK-SWITCH-FRONTIER168 (fd092c43), BRANCHING-EXACT22-GRAFT167 (91b784b9), RANK-INTERFACE-GRID229 (44b23b77), and RESOURCE-SCHEDULE-BRIDGE (127499d4), which already discusses register allocation. Current root main.tex (blob f34568e3) lacks a balanced LSPV-3 ownership region, and therefore was not modified; synthesis repair belongs to LSPV-5.
+External implementation files inspected: vardigroup/DPMC, tensor/src/join_tree.py, blob 4ab8ffca4782 (ordinary postorder join stack), and arminbiere/cadical, src/reluctant.hpp, blob 0448672e4ad5 (restart-clock implementation, not certificate coverage). Existing project experiments/proof_spines/capped_wrapper_portfolio.py, blob db57e9f3, already tests capped restarts. Known primary sources: Sethi--Ullman (1970) on expression trees; Elberfeld--Jakoby--Tantau (FOCS 2010) on logspace fixed-treewidth algorithms; Arvind--Guruswami (IPEC 2021) on 2CNF plus affine codimension $e$, with $N^{O(e)}$ XP algorithm and W[1]-hardness of parameterization. Fixed $e$ is polynomial, but $e=O(\log N)$ does not imply P from this XP bound.
+
+\section{Exact model}
+A CNF source of encoded length $N$ is supplied with an explicitly encoded \emph{binary rooted tree} of $m\le \mathrm{poly}(N)$ bags $V_t$ of maximum size $w$. Each original clause has exactly one authentic owner whose bag contains all its variables. Every variable's bag occurrences form a connected subtree (running intersection). Each edge separator $S_t=V_t\cap V_{\operatorname{parent}(t)}$ is \emph{complete}, not just a newly introduced boundary. The input, clauses, IDs, bags and tree must be verified from their explicit encodings. This is not polynomial decomposition discovery on arbitrary SAT.
+
+For each node define the exact Boolean message
+\[
+ M_t(a)=1\quad\Longleftrightarrow\quad
+ \exists X_{\mathrm{subtree}(t)\setminus S_t}
+ \bigwedge_{\substack{\text{source clauses owned}\\\text{in subtree }t}} C(X)
+ \quad\text{with }X_{S_t}=a.
+\]
+At the root the separator is empty. A local table is computed by checking every bag assignment ($\le2^w$) against its owned clauses and lookup of the already computed complete child messages. It costs at most $2^w P(N)$ source and work operations for an explicit fixed polynomial $P$ including malformed rejects, failed bag assignments, joins and certificate labels. Messages occupy at most $B=2^w$ bits each.
+
+\begin{lemma}[Heavy-first retained table count]
+Let $R(\text{leaf})=1$ and, for two children with heavier subtree $h$ and lighter subtree $\ell$,
+\[
+ R(t)=\max\{R(h),1+R(\ell),2\}.
+\]
+For a unary node set $R(t)=R(c)$. Then
+\[
+ \boxed{R(t)\le1+\lfloor\log_2|T_t|\rfloor.}
+\]
+The schedule retains at most $R(t)$ completed table results, plus a constant number of transient combination slots.
+\end{lemma}
+\begin{proof}
+Induct on subtree size. For $R(t)$ to exceed $r$, either a child alone needs $>r$ registers or the smaller child needs $r$ while the larger child result is retained. By induction the second case requires at least $2^{r-1}$ nodes in each child subtree. Therefore any tree requiring $r+1$ table registers has at least $2^r$ nodes. The unary case inherits the bound. The precise recurrence follows from holding the first child's table while recursively evaluating the second.
+\end{proof}
+
+\begin{theorem}[Fully charged restricted same-machine T,S upper bound]
+For the verified tree class above, one fixed deterministic controller computes all exact messages, decides SAT and UNSAT, reconstructs and source-checks a satisfying assignment when appropriate, and constructs a source-authenticated exact UNSAT-table computation transcript otherwise. It uses \emph{one} program without an input answer-class bit. On a deterministic indexed read-only-input RAM with bit-costed indices and working storage, conservative decision resources are
+\[
+ \boxed{T(N)\le D(N)+O(m^3+m2^wP(N)),}
+\]
+\[
+ \boxed{S_{\mathrm{work}}(N)=
+ O\!\left(2^w\log(m+1)+(w+\log m)\log N+\log^2m\right)}
+\]
+bits, plus explicitly charged output and verification time. Witness reconstruction and a NO table transcript are obtainable through at most polynomially many source-authenticated recomputations, giving total time $N^{O(1)}2^{O(w)}$, and the displayed bounded working storage. A fixed bound $w\le c\log_2N$ therefore yields simultaneous polynomial T and S. These are \emph{upper bounds} for a restricted representation; they do not hold for arbitrary SAT instances.
+\end{theorem}
+\begin{proof}
+Validate all source and bag ownership relationships, including connected variable occurrence sets, within $D(N)$. To select the heavy child, compute subtree sizes by repeated parent-pointer source scans rather than allocating an $m$-sized cache. A deliberately loose total bound is $O(m^3)$ source-index operations. An iterative tree walk uses a current node, phase, and parent pointers; neither an $m$-frame recursion stack nor persistent cached per-node tables are allowed. Evaluate the heavier child first. Lemma 1 bounds completed live tables by $O(\log m)$, and each table contains at most $2^w$ Boolean entries. A candidate row checks each authentic local clause and completed child relation. The running-intersection property proves by induction that the resulting message is exactly the existential projection of the entire subtree onto $S_t$. The root table on empty separator decides satisfiability.
+To output a SAT model, revisit root-to-home paths for each source variable, recomputing canonical compatible local bag choices and printing each home variable once. To output a sound NO certificate, recompute each authenticated local message in child-before-parent order and write its table and clause IDs; a deterministic checker independently replays all exact-table computations against original source. Both reconstructions have at most polynomially many visits and each visit uses the same bounded-table method. The transcript is an exact \emph{semantic} certificate, not automatically LRAT or original-clause Resolution. Input-model changes from indexed RAM to two-tape, single-tape, and fixed universal TM require separate source scan and head-transport overhead; polynomial upper bounds remain under standard explicit simulations, not identical native exponents.
+\end{proof}
+
+\begin{proposition}[Explicit architectural crossing]
+For a right-heavy comb on $m=2h+1$ modules with left leaf children, naive left-first evaluation retains $R_{\rm left}=(m+1)/2$ tables while heavy-first retains $R_{\rm heavy}=2$ for $m\ge3$. First strict inequality occurs at $m=5$, when $3>2$. The discrete two-node extensions have $\Delta_2 R_{\rm left}=1$ and $\Delta_2 R_{\rm heavy}=0$, and
+\[
+ \lim_{m\to\infty}R_{\rm left}/m=1/2,\qquad
+ \lim_{m\to\infty}R_{\rm heavy}/m=0.
+\]
+On balanced $m=2^{h+1}-1$ trees, $R=h+1$, with $R/\log_2m\to1$. These token-count relationships are schedule-specific, not universal SAT lower bounds.
+\end{proposition}
+
+\section{Global polynomial-value rank and finite tests}
+The completely bounded controller can divide its decision and answer-reconstruction work into $M\le N^{O(1)}$ known source-validation, table, and output chunks, each with $C\le N^{O(1)}2^{O(w)}$ fully charged work steps including failed choices and source access. With $u$ reserved chunks not yet begun and $r$ fuel remaining in the active chunk, the single integer rank
+\[
+ \Phi=u(C+1)+r
+\]
+strictly decreases after each paid microstep and between chunks. The \emph{numerical} value is polynomial when $w=O(\log N)$. This certifies a proved restricted loop bound; it does not manufacture a polynomial rank for arbitrary adaptive SAT, and local ranks can reset exponentially as shown in RANK-SWITCH-FRONTIER168.
+
+The locally archived complete dependency-free reproducibility script (seed 1691029) compared 192 source-owned random small tree CNFs to brute force and independent full-memo evaluation (96 SAT, 96 UNSAT; 96 checked SAT witnesses), and 40 larger instances (15--255 nodes) to memo evaluation, all without mismatch. An independent checker accepted a 15-node UNSAT source/table transcript and a 30-bit SAT witness, and rejected four deliberately corrupted records. Two unmodified runs produced the same raw-result SHA-256
+\texttt{859ea81655c5d165645beed3e23470155a6d0ba44e5f302cc890869a45394c12}.
+The controls are ordinary 1/2/3CNF, \emph{not} strict signed exact-(2,2)-3CNF, and numerical finite successes are COMPUTATIONAL only. The full 6-page report, complete code/raw JSON and plot remain local (persistent GitHub/Library synchronization pending).
+
+\section{Precisely open extension}
+Construct and recognize in polynomial source cost an \emph{unbounded treewidth}, connected, strict signed exact-(2,2)-3CNF subclass with verified compact (possibly non-table) exact moving summaries, bounded \emph{aggregate} live information, SAT witness reconstruction and independently replayable all-UNSAT certificates, charging failed interface discovery and every representation switch. Alternatively falsify a proposed explicit semantic compiler on a connected hostile family. Neither P=NP nor P$\ne$NP is proved.
+
+\begin{thebibliography}{3}
+\bibitem{sethi} R. Sethi and J. Ullman. The generation of optimal code for arithmetic expressions. JACM 17(4), 715--728, 1970. DOI:10.1145/321607.321620.
+\bibitem{ejt} M. Elberfeld, A. Jakoby, T. Tantau. Logspace versions of the theorems of Bodlaender and Courcelle. FOCS 2010. DOI:10.1109/FOCS.2010.21.
+\bibitem{arvind} V. Arvind and P. Guruswami. CNF Satisfiability in a Subspace and Related Problems. IPEC 2021, article 5. DOI:10.4230/LIPIcs.IPEC.2021.5.
+\end{thebibliography}
+\end{document}
