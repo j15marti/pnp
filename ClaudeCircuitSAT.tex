@@ -1,0 +1,90 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append-only run log in Section "Run log"; sections 1-6 edited in place.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\title{Parametrized Lower Bounds for Circuit-SAT: A Wire-by-Wire Ladder}
+\author{Claude (living document, hourly runs)}
+\date{Last updated 2026-10-29}
+\begin{document}\maketitle
+
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} No unconditional super-linear
+lower bound for white-box Circuit-SAT is claimed. Status labels: PROVED, COMPUTATIONAL,
+KNOWN, CONDITIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Setting and parameters}
+A circuit $C$ has $n$ inputs, $g$ fan-in-2 gates (any of the 16 binary functions,
+negation free) and $m$ wires (edges between inputs/gates; the output wire is not counted).
+Circuit-SAT: given $C$, decide whether $\exists x\,C(x)=1$. Parameters of an instance:
+$n$ (inputs), $m$ (wires), $k=|C^{-1}(1)|$ (solutions). A \emph{parametrized lower bound}
+is a function $T(n,m,k)$ below the cost of every algorithm in a stated model. Two models:
+\emph{black-box} (algorithm may only evaluate $C$) and \emph{white-box} (algorithm reads
+the wiring, random access).
+
+\section{Ladder, exact values for $n\le 3$ (COMPUTATIONAL)}
+Minimum number of gates $c(f)$ over all $f:\{0,1\}^n\to\{0,1\}$, by number $k$ of
+satisfying assignments. Exhaustive search over all computed-function sets
+(\texttt{research/agents/claude/circuitsat/ladder.py}, raw data \texttt{ladder\_results.json}).
+\begin{center}\begin{tabular}{@{}cccc@{}}\toprule
+$n$ & $\max_f c(f)$ & $k=1$: $c$ & $k=2$: $c_{\min}$--$c_{\max}$\\\midrule
+1 & 1 & 0--1 & 0 \\
+2 & 1 & 1 & 0--1 \\
+3 & 4 & 2 & 1--3 \\\bottomrule\end{tabular}\end{center}
+Observations: the unique-solution functions (AND of literals) cost exactly $n-1$ gates
+for $n=2,3$, matching Lemma~\ref{lem:conn}; the hardest 3-variable functions (e.g.\ parity-type)
+cost 4 gates, i.e.\ 8 wires. The ladder to $n=4$ needs a smarter search (CANDIDATE next step).
+
+\section{Proved bounds}
+\begin{lemma}[Connectivity, PROVED]\label{lem:conn}
+If a fan-in-2 circuit computes $f$ that depends on all $n$ inputs, then $g\ge n-1$ and
+$m\ge n+g-1\ge 2n-2$.\end{lemma}
+\begin{proof} The cone of the output is a connected DAG on $n$ inputs plus $g'\le g$ gates,
+so it has at least $n+g'-1$ edges. Each gate has at most 2 in-edges: $n+g'-1\le 2g'$, so $g'\ge n-1$.
+\end{proof}
+
+\begin{lemma}[Black-box bound, PROVED]\label{lem:bb}
+Any deterministic algorithm that only evaluates $C$ and distinguishes UNSAT from
+instances with exactly $k$ solutions needs $\ge 2^n-k+1$ evaluations.\end{lemma}
+\begin{proof} Answer 0 to every query. If fewer than $2^n-k+1$ points were queried, at least $k$ unqueried
+points remain and could all be the solution set. \end{proof}
+So $T_{\rm bb}(n,k)=2^n-k+1$; for $k=1$ this is the full $2^n$, tight by exhaustive search.
+
+\begin{lemma}[Reading bound, PROVED]\label{lem:read}
+Any deterministic random-access algorithm deciding Circuit-SAT reads $\ge m$ wire cells
+on worst-case instances of $m$ wires, so time $\Omega(m)$.\end{lemma}
+\begin{proof} Let $B_\emptyset$ be the AND-chain of $m$ literal slots, all equal to $x_1$ (SAT), and
+$B_j$ the same with slot $j$ equal to $\neg x_1$ (UNSAT). An algorithm that leaves slot $j$ unread
+gives the same answer on $B_\emptyset$ and $B_j$. \end{proof}
+
+\begin{proposition}[Parametrized summary, PROVED/KNOWN]
+White-box time $\ge \Omega(m+n)$ unconditionally. Black-box time $\ge 2^n-k+1$.
+The gap between $\Omega(m)$ and $2^n$ is exactly the open white-box question.
+\end{proposition}
+
+\section{Conditional bounds (CONDITIONAL)}
+Since 3-SAT with $N$ variables and $O(N)$ clauses embeds as a Circuit-SAT instance with
+$n=N$, $m=O(N)$, ETH gives $2^{\delta n}\mathrm{poly}(m)$ for some $\delta>0$ in the white-box model;
+SETH gives $2^{(1-\varepsilon)n}$ impossible. These are hypotheses, not results here.
+
+\section{Repository links}
+\begin{itemize}
+\item \texttt{research/agents/claude/world-ledger/} row L13 (Buss--Williams): alternation trading cannot reach
+SAT time $n^{2\cos(\pi/7)}$ with $n^{o(1)}$ space --- the best known unconditional white-box time--space
+bound for SAT is only slightly super-linear, consistent with the gap above.
+\item \texttt{research/agents/claude/tport/} and the ONETAPE note (L38--L40): parametrized portfolio
+bounds with exponent $1+\Theta(1-d)$; these are the repository's parametrized-bound precedent (CANDIDATE
+to transfer to the $(n,m,k)$ parametrization).
+\end{itemize}
+
+\section{Next steps (OPEN)}
+(1) Extend the ladder to $n=4$ (SAT-solver or canonical-form search) and tabulate $c(f)$ vs.\ $k$.
+(2) Prove a monotone-in-$m$ black-box/white-box hybrid: algorithm that may read $r$ wires and evaluate
+$q$ times; find the trade-off $r,q$ for UNSAT certification at fixed $n$.
+(3) Determine whether $c_{\max}(n)$ growth ($1,1,4$) can be tied to wire-count lower bounds on SAT time via
+formula/circuit-size barrier arguments (natural proofs, relativization to be audited).
+
+\section*{Run log}
+\textbf{2026-10-29 run 1.} Created document; Lemmas 1--3, exact ladder $n\le3$; no repository
+result changes the open status.
+\end{document}
