@@ -1,0 +1,484 @@
+% LSPV-5 REPORT::TWO-SWAP-FANOUT-REFEREE198::2026-10-29 05:48 America/Los_Angeles
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{remark}{Remark}
+\newcommand{\PROVED}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\COND}{\textbf{CONDITIONAL}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\FALSE}{\textbf{FALSIFIED/RETIRED}}
+
+\title{LSPV-5 Independent Referee Report 198:\\
+Two-Swap Exact Transport Gives Fanout but No Contraction}
+\author{LSPV-5 Independent Red Team / Formal Proof Referee}
+\date{29 October 2026}
+
+\begin{document}
+\maketitle
+\begin{center}
+\fbox{\parbox{0.92\linewidth}{
+\textbf{Executive status.}
+The LSPV-2 two-swap construction is mathematically sound once four
+fixed-guard implications are supplied.  This report replaces the fixed
+truth-table premise by four explicit source-indexed Resolution refutations
+checked by an independent standard-library verifier.  It then proves by
+induction that repeated two-swap transport from the same original variable
+gives arbitrarily many exact equality ports inside connected proper strict
+signed exact-$(2,2)$ 3CNF.  This closes the previously stated
+\emph{fanout-is-open} subquestion for already exact22 sources under
+occurrence replacement.  It does not attach a free dangling port, regularize
+arbitrary 3CNF, construct a power-short child, or decide SAT.  Every use adds
+15 variables and 20 clauses.  P versus NP, ARC-EDGE-90, and both proposed
+global conclusions remain \OPEN.
+}}
+\end{center}
+
+\section{PROPOSE: falsifiers fixed before search}
+The current missing lemma is not ``some equality gadget exists.''  It is a
+uniform, context-correct, physically nonexpanding transport or compiler that
+applies on arbitrary SAT encodings and survives recursive re-entry.  Before
+searching, this run fixed four falsifiable attacks:
+\begin{enumerate}
+\item \textbf{Cofactor attack.}  The two swapped source clauses might leave an
+uncharged source cofactor, so the claimed equality could fail on a source
+assignment even if the guard's uncontextualized port table looks correct.
+\item \textbf{Coverage attack.}  The proof might work only for the finite
+sources tested by LSPV-2 rather than every connected strict exact22 source.
+\item \textbf{Composition attack.}  A valid single port might not support
+fanout, either because the transported occurrences become unusable or because
+signed counts/connectivity fail after a second use.
+\item \textbf{Contraction attack.}  Exact transport might remain physically
+saturated and expansive, so interpreting it as a single-child contraction
+would be false.
+\end{enumerate}
+
+\section{SEARCH: primary literature and actual GitHub source}
+\paragraph{Occurrence reductions.}
+Tovey's bounded-occurrence 3SAT reductions and D\"ocker's exact balanced
+monotone occurrence results establish decision reductions under their stated
+grammars.  They do not provide the pointwise, context-preserving identity
+\[
+  \exists Z\,C(F,x,p)(X,p,Z)=F(X)\wedge(p\leftrightarrow x)
+\]
+required here, and they do not give a recursively nonexpanding exact22
+compiler.  Treating a decision reduction as such a compiler is a failed
+theorem transfer.
+
+\paragraph{Proof tooling inspected at source level.}
+At \path{meelgroup/chain-normalize} commit
+\path{049a14d45d743b52306743c869609781d63f2ab1}, the actual file
+\path{src/lrup-to-res.py} (blob
+\path{42d0dcd061c826cfacdf6e67d3818aa7131e1ef4}) unfolds LRUP support
+chains into explicit Resolution steps and records pivots.  At
+\path{peitl/short-proof} commit
+\path{2c524cfceecf68b56f51d23f6b63255b502856d3}, the actual file
+\path{short.py} (blob
+\path{6508dae79e341d7015949d5919de29a132fbf267}) encodes bounded
+Resolution-proof search through PySAT and reconstructs proofs.  These are
+useful engineering precedents, not proof-assistant kernels and not proofs of
+the present guard lemma.  The run therefore generated and replayed its own
+source-indexed traces.
+
+\paragraph{Single-recursive-call source.}
+The source file
+\path{preprints/Polynomial-Time-Unitary-Synthesis-from-a-Boolean-Oracle-October-5-2026/build/sections/01-introduction.tex}
+at OpenAI \texttt{math} commit
+\path{7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a} explicitly permits
+target-dependent unrestricted oracle truth tables and disclaims an efficient
+classical constructor from the target.  Hence its uniform polynomial quantum
+skeleton remains an architectural analogy only.  It supplies neither the
+fixed guard facts below nor an unconditional classical SAT child.
+
+\section{BUILD I: source-indexed guard certificates}
+Let \(G\) be the fixed 15-variable, 20-clause guard from
+TWO-SWAP-EXACT-PORT-TRANSPORT223.  Its port is \(p=x_4\).  Write
+\[
+ g^+=(p\vee A),\qquad A=(x_8\vee\neg x_{10}),
+\]
+\[
+ g^-=(\neg p\vee B),\qquad B=(\neg x_9\vee\neg x_{11}),
+\]
+and let \(G^\circ=G\setminus\{g^+,g^-\}\).
+
+\begin{lemma}[Fixed guard implications]\label{lem:guard}
+\[
+ G^\circ\wedge p\ \models\ \neg A,\qquad
+ G^\circ\wedge\neg p\ \models\ \neg B.
+\]
+Moreover \(G\wedge p\) and \(G\wedge\neg p\) are satisfiable.
+\end{lemma}
+\begin{proof}
+The reproducer emits four source-indexed Resolution refutations:
+\[
+\begin{array}{c|r|r}
+\text{pinned branch}&\text{proof rows}&\text{derived rows}\\ \hline
+p=1,\ x_8=1&39&23\\
+p=1,\ x_{10}=0&55&36\\
+p=0,\ x_9=0&48&31\\
+p=0,\ x_{11}=0&90&71
+\end{array}
+\]
+Each non-source row is replayed as the unique nontautological resolvent of
+two earlier rows at the recorded pivot, and the last row is empty.  The first
+two branches prove \(p\Rightarrow\neg x_8\) and
+\(p\Rightarrow x_{10}\), hence \(p\Rightarrow\neg A\).  The last two
+prove \(\neg p\Rightarrow x_9\) and
+\(\neg p\Rightarrow x_{11}\), hence
+\(\neg p\Rightarrow\neg B\).
+For totality, explicit satisfying true-variable sets for the complete guard
+are
+\[
+ \{3,8,9,11,12,13,14\}\quad(p=0)
+\]
+and
+\[
+ \{3,4,10,12,13\}\quad(p=1).
+\]
+The checker directly evaluates every guard clause on both assignments.
+\end{proof}
+
+\noindent
+Status: the finite derivations and their replay are \COMP.  The implication
+from a correctly replayed Resolution refutation is \PROVED.  The checker is
+small project code, not Lean, Coq, Isabelle, CakeML, DRAT-trim, or another
+independently certified kernel.
+
+\section{BUILD II: corrected universal transport theorem}
+Let \(H(X)\) be any connected proper strict signed exact-$(2,2)$ 3CNF,
+and select a source variable \(x\).  Choose one positive occurrence in
+\(C^+=(x\vee D)\) and one negative occurrence in
+\(C^-=(\neg x\vee E)\).  Rename the guard privately except for its port
+\(p\).  Replace the four literals
+\[
+\begin{array}{c|c}
+\text{source}&\text{guard}\\ \hline
+x\text{ in }C^+ \mapsto p&
+p\text{ in }g^+ \mapsto x\\
+\neg x\text{ in }C^- \mapsto\neg p&
+\neg p\text{ in }g^- \mapsto\neg x .
+\end{array}
+\]
+Call the result \(\mathcal T(H,x,p)\).
+
+\begin{theorem}[Pointwise two-swap transport]\label{thm:transport}
+Under Lemma~\ref{lem:guard}, for every complete assignment \(\xi\) to
+the original variables and every \(e\in\{0,1\}\),
+\[
+ \exists Z\ \mathcal T(H,x,p)(\xi,e,Z)
+ \quad\Longleftrightarrow\quad
+ H(\xi)\wedge(e=\xi(x)).
+\]
+The output is connected, proper, strict signed exact-$(2,2)$ 3CNF and is
+uniformly constructible by a deterministic scan.
+\end{theorem}
+\begin{proof}
+The swap is a permutation of two positive and two negative literal
+occurrences.  It therefore preserves every variable's positive and negative
+counts, clause width, and properness.
+
+Fix \((x,p)\).  If \(x=p=0\), the modified guard requires \(A=1\), and the
+explicit \(p=0\) guard support supplies such an extension; the modified
+source clauses evaluate exactly as the original clauses.  If \(x=p=1\),
+the modified guard requires \(B=1\), and the explicit \(p=1\) support
+supplies an extension.  Thus every satisfying source assignment extends on
+the diagonal.
+
+If \(x=0,p=1\), the guard clause \(x\vee A\) requires \(A=1\), contradicting
+\(G^\circ\wedge p\models\neg A\).  If \(x=1,p=0\), the guard clause
+\(\neg x\vee B\) requires \(B=1\), contradicting
+\(G^\circ\wedge\neg p\models\neg B\).  Thus both off-diagonal fibers are
+empty, independently of \(D,E\); no source cofactor was discarded.
+
+For connectivity, the source and guard remain internally connected after
+their selected incidence edges are exchanged, and the two cross-incidences
+join them.  The fixed guard also contains alternate incidence paths, so a
+selected guard edge is not the unique bridge.  A linear scan can locate the
+first positive and negative \(x\)-occurrences, shift guard names, and emit the
+new DIMACS stream.
+\end{proof}
+
+\paragraph{Why the finite source tests are not the proof.}
+The proof above quantifies over arbitrary source clauses \(D,E\).  The finite
+tests below are hostile regression controls only.  They do not extrapolate a
+truth table over sources.
+
+\section{BUILD III: the exact fanout corollary}
+\begin{corollary}[Occurrence-replacement equality fanout]\label{cor:fanout}
+For every integer \(r\ge1\), there is a deterministic uniform construction
+\(\mathcal F_r(H,x;p_1,\ldots,p_r)\) in the same connected strict exact22
+class such that
+\[
+ \exists Z\ \mathcal F_r(H,x;p_1,\ldots,p_r)
+ \equiv H(X)\wedge\bigwedge_{j=1}^{r}(p_j\leftrightarrow x)
+\]
+pointwise over all original source variables and all new ports.  It has
+\[
+ n_r=n+15r,\qquad m_r=m+20r.
+\]
+\end{corollary}
+\begin{proof}
+Induct on \(r\).  Theorem~\ref{thm:transport} gives the base case.  After
+one use, the original name \(x\) occurs in the two exchanged guard clauses,
+once positively and once negatively.  The entire current formula is again a
+connected strict exact22 source.  Apply Theorem~\ref{thm:transport} to those
+occurrences and a fresh guard.  Existential quantification of the fresh
+private guard variables conjoins the new equality without changing the
+previous pointwise relation.  Repeat.
+\end{proof}
+
+\paragraph{What this corrects.}
+The statement in OPEN-PORT-DEFICIT-REFEREE196 that \emph{fanout remains open}
+is stale if fanout means occurrence-replacement copying inside an already
+exact22 source.  It remains correct for a \emph{free dangling port} that can
+be conjoined without source occurrence replacement, and it remains open for
+a charged arbitrary-3CNF-to-exact22 compiler with the required contextual
+semantics.
+
+\section{Finite hostile controls}
+The dependency-free reproducer:
+\begin{itemize}
+\item replays all four Resolution refutations above;
+\item checks all eight connected three-variable strict exact22 sources;
+\item checks the fixed guard and the affine \(R_5\) source;
+\item transports from the same original variable three times and evaluates
+all \(2^4=16\) joint assignments per source, for 160 joint controls total;
+\item verifies exact signed counts, properness, and connectivity at every
+level.
+\end{itemize}
+The physical bit ledgers are
+\[
+384\to2208\to4208\to6208
+\]
+for each three-variable source and
+\[
+1808\to3808\to5808\to7808
+\]
+for the guard and \(R_5\) controls.  Every tested level strictly grows.
+Program SHA-256:
+\[
+\texttt{fa780037600e72e0cb5ca91f12362a6c7eec73708b5ec862aa02b1fe853c0764}.
+\]
+Raw JSON SHA-256:
+\[
+\texttt{d722695b2dc1709e5c9dfd8ac699d402d8e4d2c7bb32463090d273d5ac72f09e}.
+\]
+
+\paragraph{Connected Interface Audit.}
+The supplied Library archive was independently materialized and its
+\texttt{audit.py} rerun.  The regenerated JSON is byte-identical to
+\texttt{results.json}, SHA-256
+\[
+\texttt{05675f876d6624073507df1e9cedd18a188143db687e454bc2942143d36cbaca}.
+\]
+It reproduces 4,680 boundary subsets, 7,191 local-discovery checks, and 139
+truth-table comparisons.  Its static bound is correct under the declared
+fixed partition/boundary hypotheses; it is an architectural coverage
+obstruction, not a runtime lower bound.  Its cyclic moving-frontier program is
+a genuine restricted decider with bookkeeping not measured as a linear TM
+runtime.  Neither result supplies arbitrary-SAT summary discovery.
+
+\paragraph{Classical elimination control.}
+The selector identity
+\[
+\exists z\left[\bigwedge_i(z\vee A_i)\wedge
+\bigwedge_j(\neg z\vee B_j)\right]
+=
+\left(\bigwedge_iA_i\right)\vee\left(\bigwedge_jB_j\right)
+=\bigwedge_{i,j}(A_i\vee B_j)
+\]
+was independently checked on exactly 69,904 projected assignments for
+\(t=1,2,3,4\).  Its \(t^2\)-clause auxiliary-free CNF and \(O(t)\)-gate
+shared circuit show representation sensitivity, not general contraction or
+inherent expansion.
+
+\section{Red-team verdicts}
+\begin{description}
+\item[\PROVED\ (restricted hypotheses).]
+Theorem~\ref{thm:transport} is pointwise, covers both answer classes with one
+fixed construction, and applies to every connected proper strict exact22
+source once Lemma~\ref{lem:guard} is accepted.  Corollary~\ref{cor:fanout}
+gives exact finite fanout by induction.
+\item[\COMP.]
+The guard Resolution traces, replay checker, exhaustive joint controls, and
+archive reproductions are executable evidence.  They are not kernel-verified
+formal proofs.
+\item[\FALSE.]
+\emph{Every exact22 equality port must be a dangling deficit gadget} is
+false: context-correct occurrence replacement supplies a port.
+\emph{Fanout remains open inside exact22} is false in the
+occurrence-replacement sense.  \emph{Two-swap is a contraction} is also false:
+it strictly grows every physical ledger and adds 15 variables and 20 clauses
+per use.
+\item[\OPEN.]
+No unconditional uniform compiler maps arbitrary ordinary SAT into a closed
+exact22 representation while preserving contextual semantics at nonexpanding
+physical size.  No all-input representation-closed single child of length
+\(N^\lambda\), no charged effective profile acquisition, and no ARC/FLMV
+same-machine contradiction is known.
+\end{description}
+
+\section{Peer additive audits}
+\paragraph{ARC221 source-quartet affine arm.}
+The new LSPV-1 arm recognizes complete four-clause XOR3 quartets and returns
+a checked affine solution or an UNSAT provenance combination.  Its rerun is
+semantically identical; only wall-clock fields vary.  This is a valid
+polynomial restricted selector arm, not arbitrary-instance coverage.  Mixed
+2CNF--XOR remains a hostile boundary.  The current peer report lacks the
+required opening marker and sentinel, so owner-preserved framing repair is
+pending.
+
+\paragraph{LSPV-4 mixed XOR--2SAT Fano barrier.}
+The seven-variable Fano control is a valid counterexample to independent
+affine/binary satisfiability: both subsystems can be satisfiable with no forced
+literal while their conjunction is UNSAT.  It falsifies a literal-exchange
+alternating solver, not all mixed solvers.  The bounded binary-primal
+vertex-cover algorithm is a genuine \(2^{O(k)}\operatorname{poly}(N)\)
+restricted positive result with charged discovery.  The current peer report
+also lacks mandatory framing; a recovery request was published before this
+run's substantive work.
+
+\section{Machine/resource ledgers kept separate}
+\paragraph{Host/RAM experiment.}
+The Python run charges generated clauses, proof rows, DPLL calls, and serialized
+DIMACS bits.  It is not a native RAM lower bound and not a machine-transition
+proof.
+\paragraph{Fixed-\(k\) multitape construction.}
+A fixed number of read-only-input/work tapes can locate the selected
+occurrences by scans and emit each fresh guard with polynomial time and
+workspace.  The output itself grows by \(\Theta(r\log(N+r))\) bits.  No
+claim is made that a low-space simulation retains the same time.
+\paragraph{Single tape.}
+For a source-inclusive simulation only the conservative upper construction
+\[
+T_1=O\!\left(T_k(N+S_k+\log(T_k+2))\right),\qquad
+P_1=O\!\left(N+S_k+\log(T_k+2)\right)
+\]
+is used.  These are not lower bounds.  No one-tape crossing-sequence result is
+transferred to two tapes, fixed-\(k\) tapes, RAM, or SAT generally.
+\paragraph{Two writable tapes and fixed UTM.}
+The present theorem counts literal replacements and serialized output, not
+actual-symbol changes, crossings, reversals, or universal-program-prefix
+advice.  Hence the TWOTAPE/UTM lower-bound notes neither prove nor refute this
+source transformation.  No probe or movement cost is double counted.
+
+\section{SAT/UNSAT polarity and one-program uniformity}
+The construction never receives a free answer-class bit.  One deterministic
+program performs the same two swaps on SAT and UNSAT sources.  The pointwise
+identity implies that an UNSAT source stays UNSAT and a SAT source has exactly
+the diagonal port extensions.  Side-specific execution restrictions therefore
+share the same acquisition and construction program; favorable SAT witnesses
+do not establish worst-case all-UNSAT coverage for any unrelated solver.
+
+\section{Relativization, algebraization, wrappers, and PQ transfer}
+The transport proof is elementary and syntactic.  An arbitrary oracle attached
+to a SAT instance does not make the missing arbitrary-instance compiler
+uniformly evaluable; a target-dependent oracle table is still hidden advice.
+The fixed guard is not an algebraic lower bound, and affine elimination solves
+the recognized quartet island.  Wrapping a general formula inside a guarded
+always-SAT instance can make exact port acquisition NP/coNP-hard without
+making decision-only compression hard.  Schur-square, quadratic-relation,
+collision-entropy, and cryptographic binding ideas are therefore
+\textbf{ANALOGY/CANDIDATE} only here; no exact PQ theorem transfer closes the
+missing compiler.
+
+\section{CORPUS REVIEWED}
+This run surveyed the repository tree and read the root
+\texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md},
+\texttt{.codex/skills/pnp-research/SKILL.md}, current task specifications,
+the latest governance directives, the newest verified MAIN and relevant
+historical MAIN state, the LSPV-1 ARC221 source-quartet report, LSPV-2
+reports221--223 and raw programs, LSPV-4 Fano-barrier221, LSPV-5
+reports195--197, the Connected Interface archive, and materially relevant
+ARC/local-interface reports.  Searches covered the repository history for
+port, swap, splice, fanout, cofactor, quartet, Resolution, mixed XOR--2SAT,
+and contraction claims.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+The two-swap single-port theorem belongs to LSPV-2 report223; this report does
+not claim its discovery.  The new contributions are (i) independent
+source-indexed Resolution traces for the fixed guard implications,
+(ii) the all-\(r\) fanout induction, (iii) explicit physical growth controls,
+and (iv) the correction of report196's overly broad open-fanout wording.
+The result is compatible with report195: arbitrary same-sign swaps are
+unsound, whereas this special four-location swap is authenticated by the
+complete punctured-guard implications.  It is compatible with report221:
+closed saturated equality gadgets do not expose free external capacity.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root MAIN previously accepted the one-port theorem only conditionally on a
+finite guard audit and still listed fanout as open.  This run adds explicit
+Resolution certificates for the guard implications and replaces that stale
+entry with the exact occurrence-replacement fanout corollary.  It simultaneously
+records that every iteration grows, so no contraction arrow is advanced.
+ARC221 and the LSPV-4 Fano barrier are incorporated only at their restricted
+scope, and marker defects remain explicit.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{itemize}
+\item \textbf{Adopted:} the LSPV-2 special guard and two-swap locations;
+the pointwise cofactor formulation; source-indexed Resolution checking; the
+Connected Interface static-bound and restricted moving-DP conclusions.
+\item \textbf{Rejected:} generic \emph{signed counts imply semantic
+preservation}; closed equality gadgets as free ports; independent
+affine/binary consistency; target-dependent oracle contents as a classical
+constructor; any tape-to-RAM lower-bound transfer.
+\item \textbf{Retired:} fanout as an open sublemma for already exact22 sources
+when source occurrences may be replaced.  Free-port and arbitrary-source
+compiler versions remain open.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+The root's report196 paragraph says ``Larger open gadgets, fan-out, arbitrary
+source cofactor preservation'' all remain open.  After report223 and this
+referee proof, only the free-deficit/arbitrary-source-compiler readings remain
+open; occurrence-replacement fanout and cofactor preservation on connected
+strict exact22 sources are proved.  Several newest peer reports are substantive
+but lack mandatory first-line/final sentinels; their mathematics must not be
+silently promoted to fully verified publication status until owner-preserved
+framing repair.
+
+\section{Exact remaining gap and next role-specific target}
+The next highest-value red-team target is:
+\[
+\boxed{\text{arbitrary proper 3CNF}\ \longrightarrow\
+\text{context-correct connected strict exact22}}
+\]
+with one fixed uniform construction, charged occurrence balancing, both
+answer classes, and total encoded output no larger than the source by a
+power-saving factor after recursive re-entry.  The two-swap fanout can copy a
+name only \emph{after} entry into exact22 and costs a fresh constant guard per
+copy.  A falsifier should either exhibit a source family for which every
+proposed local regularizer needs linear growth or produce a correct compiler
+and run the full physical recurrence.  Failure to find such a compiler is not
+evidence of impossibility.
+
+\section*{References}
+\begin{enumerate}
+\item C. A. Tovey, ``A simplified NP-complete satisfiability problem,''
+\emph{Discrete Applied Mathematics} 8 (1984), 85--89.
+\item J. D\"ocker, ``Monotone 3-SAT-4 is NP-complete,''
+\emph{Journal of Computer and System Sciences} 129 (2022), 28--44;
+arXiv:1912.08032.
+\item P. Beame, H. Kautz, and A. Sabharwal, ``Towards understanding and
+harnessing the potential of clause learning,'' \emph{JAIR} 22 (2004).
+\item LSPV-2, \texttt{2026-10-29\_1212\_LSPV-2\_TWO\_SWAP\_EXACT\_PORT\_TRANSPORT223.tex}.
+\item OpenAI, ``Polynomial-Time Unitary Synthesis from a Boolean Oracle,''
+source commit \texttt{7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a}.
+\end{enumerate}
+
+\bigskip
+\noindent\textbf{Final status.}
+Occurrence-replacement exact22 fanout is \PROVED\ under the fixed guard
+certificates; its finite proof generation and replay are \COMP; its use as a
+contraction is \FALSE; the arbitrary-instance compiler, recursive physical
+power shrink, ARC-EDGE-90, P versus NP, and all unrestricted separation
+claims remain \OPEN.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::TWO-SWAP-FANOUT-REFEREE198
+\end{document}
