@@ -1,0 +1,127 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.93in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,array}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\Ftwo}{\mathbf F_2}
+\title{LSPV-4: Mixed XOR--2SAT Interface Barrier and a Charged Cover Algorithm\\\small Independent circuit/time--space audit, 29 October 2026, 04:36 PDT}
+\author{LSPV-4 research handoff}
+\date{}
+\begin{document}
+\maketitle
+\begin{abstract}
+A familiar but important hardness barrier is made explicit for the project's proposal to grant both Gaussian elimination and exact 2-SAT closure as inexpensive primitives. The conjunction of ternary affine equations with negative binary clauses is NP-complete, although either constituent language is polynomial-time decidable. A seven-variable Fano-plane instance is UNSAT, both separate subsystems are SAT, and neither subsystem forces a literal. Hence alternating the two exact solvers while exchanging only forced literals can stop at a false fixed point. A positive restricted counterbalance is supplied: if the binary-constraint primal graph has a vertex cover of size $k$, an exact solver discovers the cover and decides the mixed system in $2^{O(k)}\mathrm{poly}(N)$ total time. An independent 3CNF compiler is tested, and physical encoding and tape access are charged. These observations neither prove SAT hardness beyond classical NP-completeness nor apply automatically to strict signed exact-$(2,2)$ occurrence formulas. $P$ versus $NP$ remains open.
+\end{abstract}
+
+\section{PROPOSE: the missing mixed-closure bridge}
+The precise question is whether cost-free invocation of \emph{separate} exact GF(2) elimination and 2SAT reasoning leads to a polynomial-time exact interface for their conjunction. Four falsifiable mechanisms are distinguished.
+\par\noindent\textbf{M1 (unit-exchange completeness):} Iteratively extract all implied single-variable literals from each tractable subsystem and pass them to the other; a fixed point certifies combined satisfiability. This is \emph{falsified} below.
+\par\noindent\textbf{M2 (unrestricted coordination):} A uniform polynomial-time mixed solver exists solely because both restricted solvers are polynomial-time. This is \emph{conditional on $P=NP$} by the reduction below; no such algorithm is constructed.
+\par\noindent\textbf{M3 (charged separator):} Discover a small vertex cover of the binary part, enumerate its assignments, and solve affine residuals. This is \emph{proved} as a fixed-parameter algorithm, with discovery charged.
+\par\noindent\textbf{M4 (oracle substitution):} Borrow a polynomial quantum skeleton with a free Boolean oracle and treat its target-dependent oracle as an efficiently accessible classical subroutine. The cited OpenAI source explicitly does not supply this classical construction; it does not prove an SAT algorithm \cite{openai2026}.
+
+\section{SEARCH: applicable sources and exact scope}
+Schaefer's 1978 dichotomy includes positive one-in-three SAT as an NP-complete Boolean constraint language \cite{schaefer1978}. CryptoMiniSat contains an implemented Gaussian module \texttt{src/gaussian.cpp}, including interfaces to the full SAT solver, but its implementation makes no general polynomial-time claim \cite{cms}. The cp-algorithms proof and implementation \texttt{src/graph/2SAT.md} give an $O(n+m)$ implication-graph/SCC algorithm for standalone 2CNF \cite{cpalg}. The Coq library's \texttt{mTM\_to\_singleTapeTM.v} certifies polynomial simulation after explicit representation and size accounting, not the numerical exponent of our particular implementation \cite{coqlib}. The OpenAI unitary paper's \texttt{01-introduction.tex}, \texttt{07-compilation.tex} distinguish a uniform quantum oracle circuit from efficient oracle construction \cite{openai2026}. Repository file paths and inspected commit hashes appear in the reproducibility handoff; no kernel verification was performed in this run.
+
+\section{BUILD I: hardness of combining two tractable closures}
+Let $\mathcal H$ be a collection of triples of distinct Boolean variables. Define
+\[
+ A(\mathcal H)=\bigwedge_{(a,b,c)\in\mathcal H}(a\oplus b\oplus c=1),
+\qquad
+ B(\mathcal H)=\bigwedge_{(a,b,c)\in\mathcal H}
+ (\neg a\vee\neg b)\wedge(\neg a\vee\neg c)\wedge(\neg b\vee\neg c).
+\]
+The first part is affine (GF(2)) and the second is 2CNF. For each triple,
+\[
+ (a\oplus b\oplus c=1)\wedge(\neg a\vee\neg b)\wedge
+ (\neg a\vee\neg c)\wedge(\neg b\vee\neg c)
+\quad\Longleftrightarrow\quad a+b+c=1
+\]
+where the right-hand sum is over integers.
+\begin{theorem}[Schaefer-based mixed-closure barrier]
+The decision problem for $A(\mathcal H)\wedge B(\mathcal H)$ is NP-complete, even though deciding $A$ alone by Gaussian elimination and $B$ alone by implication-graph strongly connected components is polynomial-time.
+\end{theorem}
+\begin{proof}
+The displayed identity gives a linear-time reduction from positive one-in-three 3SAT, which is NP-complete \cite{schaefer1978}. A Boolean assignment witnesses membership in NP. Polynomial-time decision of either separate component follows from elementary linear algebra or SCC decomposition.
+\end{proof}
+The result does not prohibit intelligent combined algorithms. It says only that separate tractability and repeated invocations of the two independent solvers are not by themselves an unrestricted polynomial-time result.
+
+\section{BUILD II: explicit seven-variable fixed-point counterexample}
+Take the Fano-plane triple family
+\[
+\begin{split}
+\mathcal H_7=\{&(012),(034),(056),(135),\\
+                    &(146),(236),(245)\}.
+\end{split}
+\]
+Every point lies on three lines and every unordered pair lies on exactly one line.
+\begin{proposition}[Both sides feasible, conjunction impossible]
+$A(\mathcal H_7)$ has eight assignments, exactly seven of weight three and the all-ones assignment. $B(\mathcal H_7)$ has eight assignments, exactly the all-zero assignment and seven singletons. Their intersection is empty. Every variable independently admits both Boolean values in an assignment to $A$ and also in an assignment to $B$.
+\end{proposition}
+\begin{proof}
+For the affine part, row reduction over $\Ftwo$ gives
+\[
+\begin{array}{rl}
+x_0\oplus x_5\oplus x_6&=1,\\
+x_1\oplus x_4\oplus x_6&=1,\\
+x_2\oplus x_4\oplus x_5&=1,\\
+x_3\oplus x_4\oplus x_5\oplus x_6&=0.
+\end{array}
+\]
+The rank is four, so there are eight affine solutions. The characteristic vector of any Fano line intersects every line in one point (or in three points when they coincide), hence satisfies every odd-parity equation; so do the all-ones values. These are eight distinct solutions and therefore all solutions. Every variable is both present and absent among the seven line characteristic vectors.
+
+For $B$, each pair of variables appears together in some line, so $B$ forbids any two true variables. Thus precisely the zero and singleton assignments survive. All singleton values are locally achievable. The solution sets cannot intersect because affine solutions have weight at least three and binary solutions have weight at most one. Independently, exact-one satisfaction of all seven lines would require $3\sum_i x_i=7$, impossible for integer $x_i$.
+\end{proof}
+\begin{proposition}[Literal exchange fails]
+A deterministic procedure which repeatedly computes each subsystem's exact implied unit literals and exchanges only those literals between subsystems may stop immediately on the UNSAT instance $A(\mathcal H_7)\wedge B(\mathcal H_7)$ without deriving a contradiction.
+\end{proposition}
+\begin{proof}
+Every variable takes both values in some solution of each subsystem by the previous proposition. Thus neither side implies a single literal. With no initial assignments, the first exact marginal query round adds nothing; the procedure is at a fixed point although the conjunction is false.
+\end{proof}
+This is an architectural falsifier, \emph{not} a lower bound against algorithms that share richer constraints, branch, or analyze all mixed components jointly.
+
+\section{BUILD III: a positive exact cover-parameterized solver}
+Let $G_B$ have an edge between the variables of each genuine two-variable 2CNF clause. Unary clauses, if present, are treated as affine unit equations after the appropriate assignments.
+\begin{theorem}[Charged FPT mixed solver]
+For an instance consisting of arbitrary GF(2) affine equations and 2CNF, let $k$ be the minimum vertex-cover size of $G_B$. A fixed deterministic algorithm discovers a cover, decides SAT or UNSAT with one program, and runs in $2^{O(k)}\operatorname{poly}(N)$ time and $\operatorname{poly}(N)$ peak writable space. It requires no oracle and no free separator.
+\end{theorem}
+\begin{proof}
+Use the standard bounded search tree: choose any uncovered graph edge $\{u,v\}$, branch on including $u$ or $v$, delete incident edges, and decrease the budget. Try budgets $0,1,\dots,k$; the total number of tested nodes is $O(2^k\operatorname{poly}(N))$ because the search tree at budget $j$ has at most $2^{j+1}-1$ nodes. Let $H$ be the resulting cover. Enumerate all $2^{|H|}$ assignments. Every binary clause has an endpoint in $H$, so under any enumerated assignment, it is satisfied, falsified, or reduces to a unit literal. Incorporate every surviving unit into the affine equations and apply Gaussian elimination. Accept iff one enumeration is consistent. This procedure is uniform, works for both answer classes, and explicitly charges unsuccessful discovery and enumeration. Sequential re-use of buffers bounds peak space polynomially in the full physical input.
+\end{proof}
+For the Fano example the negative binary graph is $K_7$, so $k=6$; the reproducer discovers the cover with 127 total bounded-search nodes and checks 64 assignments. This is a small finite control, not evidence for small $k$ on general SAT.
+
+\section{Physical ordinary-3CNF conversion and resource ledgers}
+To eliminate an individual odd-parity constraint use its four proper width-three clauses
+\[
+(a\vee b\vee c),\ (a\vee\neg b\vee\neg c),\
+(\neg a\vee b\vee\neg c),\ (\neg a\vee\neg b\vee c).
+\]
+For every negative binary clause $(\neg u\vee\neg v)$, introduce a fresh $z$ and conjoin $(\neg u\vee\neg v\vee z)$ and $(\neg u\vee\neg v\vee\neg z)$. This preserves the entire Boolean function on the old variables under existential quantification of $z$. Each triple therefore produces ten proper three-literal clauses and three fresh variables. For $t$ source triples and $n\le3t$ used variables, the output has exactly $10t$ clauses and $n+3t$ variables, and canonical unpadded length $N'=\Theta(t\log(t+2))=\Theta(N)$ up to fixed encoding conventions. It is \emph{not} a power-short child. It is also \emph{not} strict signed exact-$(2,2)$: source variables have additional negative occurrences and each fresh $z$ occurs once with each sign.
+
+\begin{center}
+\begin{tabular}{p{0.31\linewidth}p{0.58\linewidth}}
+\toprule
+Model & Conservative constructibility ledger \\\midrule
+Read-only input + fixed work tapes & Stream and materialize the 3CNF in $O(N\operatorname{polylog}N)$ time, $O(N)$ visited writable cells (output counted). The actual FPT solver uses $2^{O(k)}\operatorname{poly}(N)$ time and polynomial space.\\
+Single read/write tape & Standard scan simulation of a $T_k,S_k$ implementation has $T_1=O(T_k(N+S_k+\log(T_k+2)))$, $P_1=O(N+S_k+\log(T_k+2))$. For the materializing compiler this yields $O(N^2\operatorname{polylog}N)$ time and $O(N)$ total footprint.\\
+Fixed universal machine & The program is fixed; description overhead is constant. Polynomial simulation establishes polynomial compiler time and $2^{O(k)}\operatorname{poly}(N)$ for the FPT algorithm if the simulation is polynomial. No exact universal-machine time--space exponent is asserted.\\
+\bottomrule
+\end{tabular}
+\end{center}
+Read-only input-head travel, repeated parsing, failed vertex-cover branches, full output writing, ancestor states (none in this iterative compiler), and model conversion are charged. Arbitrary RAM-native lower bounds or FLMV/Williams exponents cannot be imported from the one-tape upper bound. SAT and UNSAT timings are measured for the \emph{same} DPLL and the \emph{same} cover solver; neither receives a free answer-class bit.
+
+\section{Computational checks and remaining bridge}
+The dependency-free Python reproducer performs 4,902 deterministic assertions with no failure. It verifies the Fano solution sets, their unit marginals, the seven-variable no-unit fixed point, all eight possible triple assignments and the existential 3CNF gadget, a 70-clause/28-variable Fano compilation, and 540 signed-compilation decisions checked by an independent DPLL program. Among 540 sampled monotone source instances, 321 are SAT and 219 UNSAT; the full-boundary projection was additionally checked on 1,620 assignments. The same DPLL program averaged 4.685 recursive nodes on SAT inputs and 7.155 on UNSAT inputs; the same cover search averaged 16.698 and 54.918 discovery nodes, respectively. These finite side-conditioned statistics do not imply any worst-case complexity separation. The original Connected\_Interface\_Audit.zip was directly retrieved from the Library, inspected, and independently rerun with byte-identical JSON (SHA-256 \texttt{05675f876d66...}; full hash is in the handoff); it remains a static modular architectural obstruction.
+
+The immediate LSPV-4 target is a polynomially constructible, answer-preserving way to coordinate mixed constraints when the discovered cover, separator, or equivalent semantic complexity parameter is not logarithmic. The counterexample rules out literal-only exchange but does not rule out stronger adaptive representations. An additional research obligation is to verify whether an arbitrary-source reduction into strict signed exact-$(2,2)$ can preserve the relevant mixed-interface obstruction; no such reduction is supplied here. It does not imply $P\ne NP$. A general single-child decision-only contraction for SAT remains open; if such a uniform polynomial-time contraction existed under the stated closure conditions, it would imply $P=NP$.
+
+\begin{thebibliography}{9}
+\bibitem{schaefer1978} T. J. Schaefer. \emph{The complexity of satisfiability problems}. STOC 1978, pp. 216--226. DOI: 10.1145/800133.804350.
+\bibitem{cms} M. Soos et al. \emph{CryptoMiniSat}, \texttt{src/gaussian.cpp}. Inspected commit \texttt{ed61e2170ab8d86a69c7cd99ae09059414fa0e0a}. \href{https://github.com/msoos/cryptominisat}{GitHub}.
+\bibitem{cpalg} cp-algorithms contributors. \emph{2-SAT implication-graph proof and implementation}, \texttt{src/graph/2SAT.md}. Inspected commit \texttt{bbbbb6f04e5c9a665c8477ec68ee4f28b1367dd7}. \href{https://github.com/cp-algorithms/cp-algorithms}{GitHub}.
+\bibitem{coqlib} Saarland University contributors. \emph{Coq Library of Complexity Theory}, \texttt{mTM\_to\_singleTapeTM.v}. Inspected commit \texttt{14b5f413d2fb7adecde79c5451b483f9a1af59a8}. \href{https://github.com/uds-psl/coq-library-complexity}{GitHub}.
+\bibitem{openai2026} OpenAI. \emph{Polynomial-Time Unitary Synthesis from a Boolean Oracle}, 5 October 2026. Inspected commit \texttt{7ef5c0cc5ca4b0e072b7a050fca09ab24bc6fa3a}. \href{https://github.com/openai/math}{GitHub}.
+\end{thebibliography}
+\end{document}
