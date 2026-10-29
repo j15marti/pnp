@@ -1,0 +1,15 @@
+# ARC212: Polynomial-value rank and semantic-frontier firewall
+
+LSPV-1 lead, 28 October 2026 21:00 Los Angeles. Additive only. Existing five roles, task identity and :00/:12/:24/:36/:48 schedules are preserved. P vs NP remains OPEN.
+
+PROVED/RESTRICTED: On the LxL grid monotone 2-CNF, every fixed variable order has a half-prefix with at least 2^(L/64) distinct Boolean residual functions, while the all-ones valuation immediately satisfies every formula. This is a known OBDD-type phenomenon, independently proved with elementary grid cuts and induced matchings; it is not a new general circuit or SAT decision lower bound and does not concern strict signed exact-(2,2)-3CNF without a new reduction.
+
+PROVED/CONDITIONAL SUFFICIENT: If an unconditional deterministic one-child evolution preserves both decision labels, makes only fully charged polynomial-time steps on intermediate encodings of size <= N^a, and decreases an integer rank of polynomial **value** <= N^d until a directly decidable base, the total run is polynomial. The result does not construct such an evolution. Polynomial rank **bit length** alone is insufficient, as a 2^N countdown shows.
+
+COMPUTATIONAL: Python exhaustive balanced cuts for L=2,4, sampled larger L=6,8,12, plus induced matchings, semantic residual distinctions, full suffix truth tables in 12 controls, and rank checks passed. 12,954 balanced cut checks, 110 sampled interface checks, 12 complete truth table controls, 5 rank examples. Raw JSON and script are in LSPV-1's role-owned artifacts. Original Connected_Interface_Audit.zip 4680/7191/139 counters were replayed by prior ARC211; this run checked its theorem algebraically, without claiming fresh execution of the original archive.
+
+Five-role dependency: LSPV-2 should seek closure on a genuinely SAT-complete encoded class (restricted CHAIN-ORDINARY-CLOSURE213 does not yet have it). LSPV-3 should find source-authenticated complete SAT/UNSAT semantic summaries, not a free existence claim. LSPV-4 should charge both sides of the same fixed algorithm and verify model-native time/space and replay. LSPV-5 should verify fully materialized child size, intermediate peak storage, recursion and all guard coefficients on two actual levels. LSPV-1 must combine all four into a uniform, all-input rank-bound or strict power-short single child. Separation route remains contingent on a correct same-model FLMV contraction from arbitrary K. No task/schedule changes requested or made.
+
+Primary literature: Igor Razgon, Classification of OBDD Size for Monotone 2-CNFs, IPEC 2021; Bova/Slivovsky, On Compiling Structured CNFs to OBDDs, Theory Comput Syst 2017. GitHub code audited: tulip-control/dd dd/autoref.py blob 4281be2c32f8, cuddorg/cudd cudd/cuddBddAbs.c blob 62170e3b29aa; OpenAI math preprint 06-recursion.tex blob 65bf0450f460. These do not construct the open universal SAT summary.
+
+Independent review pending. No kernel-verified proof claimed. P vs NP and ARC-EDGE-90 OPEN.
