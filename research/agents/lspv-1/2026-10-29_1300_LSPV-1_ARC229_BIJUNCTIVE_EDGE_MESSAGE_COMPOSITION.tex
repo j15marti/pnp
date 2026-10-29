@@ -1,0 +1,107 @@
+% LSPV-1 REPORT::ARC229-BIJUNCTIVE-EDGE-MESSAGES::2026-10-29T13:00:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,hyperref,xurl,seqsplit}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\F}{\mathbb F_2}
+\newcommand{\SAT}{\operatorname{SAT}}
+\title{ARC229: Edge-Bijunctive Messages Compose Fixed-Rank Affine SAT Modules\\\large Beyond the Full-Interface Enumeration Bound}
+\author{LSPV-1 Formal Proof Lead}
+\date{29 October 2026, America/Los\_Angeles}
+\begin{document}
+\maketitle
+\begin{center}
+\fbox{\parbox{.93\linewidth}{\textbf{Status: PROVED/EXACT under an explicitly verified restricted decomposition, independent referee pending.}  When every module has fixed affine codimension and every \emph{edge} has at most two shared variables, source-authenticated deterministic SAT/UNSAT decision and witness reconstruction are polynomial-time \emph{without} bounding the full union of a module's shared variables.  More generally, logarithmic edge width suffices whenever each exactly computed subtree message is recognized as 2CNF-definable.  These are restricted composition statements, not a universal SAT decomposition or a resolution of P versus NP.}}
+\end{center}
+
+\section{The exact missing lemma and falsifiable mechanisms}
+ARC228 proved exact source-authenticated composition for a tree of 2CNF-plus-affine modules, charging a full shared interface $B_t$ of size $b_t$ at every node.  LSPV-5's independently checked FULL-INTERFACE-GLUING-REFEREE204 exhibited an UNSAT star with $b_{\mathrm{center}}=2q$, every \emph{edge} width two and every local affine rank one, for which raw centre enumeration takes $4^q$ entries.  Gaussian elimination easily decides that particular star, so the example falsifies only replacing full-interface size by edge width in the \emph{raw-table} algorithm.  The missing question here is whether the exact child relations can be re-encoded as constraints in a tractable local language before combining them.
+
+\begin{description}
+\item[] \textbf{M1.} Every relation on at most two Boolean separator variables has an exact source-computable 2CNF encoding. \textbf{PROVED/EXACT.}
+\item[] \textbf{M2.} Replacing each child table by its verified 2CNF encoding allows the fixed-codimension local solver to absorb arbitrarily many child messages without increasing the local affine rank. \textbf{PROVED/EXACT} under running intersection and exact ownership.
+\item[] \textbf{M3.} Every width-three child relation is also 2CNF-definable. \textbf{FALSIFIED/RETIRED} by an exact ternary parity message.
+\item[] \textbf{M4.} Every arbitrary strict exact-(2,2) 3CNF has a polynomially discoverable tree of this kind. \textbf{OPEN}; not hypothesized as a fact.
+\end{description}
+
+\section{Source, literature and implementation audit}
+Read the real repository files \texttt{AGENTS.md} (Git blob \texttt{\seqsplit{19656af102604d5f0a721d548cf2e4e72a063561}}), \texttt{CODEX.md} (\texttt{\seqsplit{754999f50de93cdb693ed37bc8110d31e9e698ef}}) and \path{.codex/skills/pnp-research/SKILL.md} (\texttt{\seqsplit{b8df83a7b0b1428f349b0e02ce1387d979e8db7f}}).  The original ARC227 report has blob \texttt{\seqsplit{fc4a02dc004e363e28dc78ebc3b969e2c27ad1f7}}.  ARC228, blob \texttt{\seqsplit{932559c0b2991cc64d861dfcdb4fc24083b2adc5}}, already repaired ARC227's unary-variable omission and implemented a fixed-codimension solver.  LSPV-5's full-interface referee blob \texttt{\seqsplit{92eea3f2960b334006490806d587a2ed6247f3d4}} is the specific challenge extended here.  Other inspected specialist records: LSPV-2 AFFINE-LIFT-BVE229 blob \texttt{\seqsplit{23ebfe32a4dab31720b2494227de7e230fc65b41}} and LSPV-5 DECISION-CONTEXT-SEPARATION202 handoff blob \texttt{\seqsplit{6c31e5782e054febd190d90828ff5c038624ec07}}.
+
+Arvind and Guruswami's IPEC 2021 Theorems 2 and 17 give a \emph{deterministic} $O^*(\sum_{i\le e}\binom ni)$ algorithm for 2CNF restricted to an affine space of codimension $e$, with witness recovery by the corresponding branching recursion.  Their Theorem 19 proves W[1]-hardness parameterized by $e$, not an unconditional impossibility of FPT.  Thus \emph{fixed} local $e$ is known polynomial, but $e=O(\log N)$ does not follow.  Schaefer's bijunctive-closure characterization connects exact 2CNF relations with coordinatewise majority.  Freuder's bounded-treewidth CSP dynamic programming and junction-tree message passing motivate exact separator projection; neither supplies source-discovery or the present fixed-local-rank composition claim.
+
+Specific GitHub implementation inspected: \path{pgmpy/pgmpy/pgmpy/inference/ExactInference.py}, blob \texttt{\seqsplit{c4d213f9f4c8fc53c8c9037c7d4286257f84d28d}}, repository revision \texttt{\seqsplit{d6ca91c542afccb0c3a600cad50252af26729c88}}.  This realizes factor marginalization on a junction tree, not a polynomial theorem for arbitrary SAT.  The prior local-source AG-style solver \path{research/agents/lspv-1/2026-10-29_1200_ARC228_fixed_codimension_solver.py}, blob \texttt{\seqsplit{f788f52a4a857e5c537b8d101e2447bfd006caed}}, was independently reimplemented and tested; no novelty in the underlying fixed-$e$ solver is claimed.  Repository search terms included ``class BeliefPropagation'', ``junction tree'', ``ARC228 fixed codimension'', ``FULL-INTERFACE-GLUING-REFEREE204'', and ``2SAT solve scc''.  No failed GitHub query is treated as an impossibility theorem.
+
+\section{Definitions and exact ownership contracts}
+Let $I$ be a physically encoded instance of $N$ bits comprising a canonical original constraint multiset, distinct source IDs, and a claimed tree decomposition $T$ with $k\le\operatorname{poly}(N)$ modules.  A module $t$ has bag $V_t$ and an exact subset of source constraints $I_t$, each a unary/binary CNF clause or an affine equation over $\F$.  The verifier must ensure \emph{each original source constraint is owned exactly once}, every constraint scope is contained in its owner's bag, the edge graph is a tree, and for each variable $x$, the nodes $\{t:x\in V_t\}$ form a connected subtree (running intersection).  A source parser must verify full original IDs, signs, multiplicities, affine right-hand sides and scope; a claimed manifest is not an external oracle.  Let the local affine coefficient rank, i.e. affine codimension before adding any intermodule messages, be $e_t$.  Assume $e_t\le e_0$ for one fixed integer $e_0$; inconsistent local affine systems are recognized and yield empty tables.
+
+Root $T$ at $r$, and for each nonroot node $t$, define its \emph{parent-edge separator} $S_t=V_t\cap V_{p(t)}$ and $s_t=|S_t|$.  In contrast, the \emph{full accumulated interface} is $B_t=V_t\cap\bigcup_{u\ne t}V_u$, whose size need not be bounded by $s_t$.  Let $R_t\subseteq\{0,1\}^{S_t}$ be the set of assignments extendible to all constraints owned by nodes in the rooted subtree of $t$.  The only semantic object passed upward is $R_t$.
+
+\begin{lemma}[Exact decomposition gluing]\label{lem:gluing}
+For a child $u$ of $t$, the only variables shared between the subtree of $u$ and its complement lie in $S_u$.  For any assignment $a$ to $V_t$, extension into all child subtrees exists iff $a|_{S_u}\in R_u$ for every child $u$.
+\end{lemma}
+\begin{proof}
+The unique path in the tree from a module in the child subtree to any module outside it crosses edge $up(u)$.  The running-intersection property forces every variable occurring at both endpoints of this path into the two bags on that edge.  Conversely, each child subtree has disjoint private variables from every other child subtree after fixing the parent bag's coordinates.  Exact once-only source ownership leaves no unaccounted cross-subtree constraint.  Thus compatible extensions can be glued independently.
+\end{proof}
+
+\begin{lemma}[Every binary Boolean relation is 2CNF-definable]\label{lem:binary}
+For $s\le2$, each relation $R\subseteq\{0,1\}^s$, including the empty relation, has an exact 2CNF presentation of at most $2^s$ clauses.  Given its complete table, the presentation can be constructed and verified in constant time for fixed $s$.
+\end{lemma}
+\begin{proof}
+For every forbidden tuple $a\in\{0,1\}^s\setminus R$, add the width-$s$ clause $\bigvee_{i=1}^s(x_i\ne a_i)$.  That clause excludes precisely $a$ and accepts every other tuple.  For $s=0$, $R$ is either $\{()\}$ or empty, represented by true or the empty clause.  Conjunction over the forbidden tuples gives exactly $R$; all resulting clauses have width at most two.
+\end{proof}
+
+\begin{theorem}[Exact edge-message composition; restricted]\label{th:main}
+Suppose the verified input above satisfies $e_t\le e_0$ for all nodes, and every nonroot edge separator has $s_t\le2$.  Then a single deterministic program decides SAT and UNSAT, reconstructs an original SAT witness, and provides a reproducible finite trace of exhaustive local checks in polynomial time and peak space \emph{even if} $\max_t|B_t|=\Omega(N^\alpha)$ for a positive $\alpha$.  The more general algorithm is correct and has the native indexed-RAM bit-time upper bound
+\[
+ D(N)+N^{O(1)}\sum_{t\in T}2^{s_t} (|V_t|+1)^{O(e_t)},\tag{1}
+\]
+provided $s_t=O(\log N)$ and every \emph{actually computed} exact message $R_t$ is independently verified to be 2CNF-definable.  $D(N)$ counts discovery and complete certificate validation.  If an encountered message is not 2CNF-definable, the program returns \texttt{UNKNOWN}; it never silently strengthens that relation.  The exponent implicit in $O(e_t)$ comes from the \emph{known} Arvind--Guruswami fixed-codimension method, not a uniform polynomial in growing $e_t$.
+\end{theorem}
+\begin{proof}
+Process nodes bottom-up.  Assume inductively that the exact child relations have been compiled as CNF clauses of width at most two and checked against their original full separator tables.  At node $t$, form the conjunction of (i) $t$'s owned 2CNF, (ii) every \emph{compiled} child 2CNF message, interpreted on $V_t$, and (iii) $t$'s \emph{original} affine rows of rank $e_t$.  The whole non-affine part remains 2CNF no matter how many children are present.  For each of the $2^{s_t}$ assignments $\sigma$ to the parent edge $S_t$ (at the root, only the empty assignment), add $s_t$ unary 2CNF pins and invoke the deterministic 2-SUB-SAT solver.  The pins are \emph{not} appended as affine equations, so the affine rank remains at most $e_t$.  Record exactly those $\sigma$ for which a satisfying local model exists, together with a local model and child pointers.  By Lemma~\ref{lem:gluing} this is exactly $R_t$, not an approximation.  Check the complete truth table against the 2CNF comprised of all unary and binary clauses valid on $R_t$; accept the encoding only when the two finite relations coincide.  Lemma~\ref{lem:binary} guarantees this always succeeds for $s_t\le2$.  For $s_t=O(\log N)$, the table has polynomially many rows, so exact compilation and checking remain polynomial whenever a 2CNF representation exists.
+
+At the root a feasible empty assignment means SAT.  Follow stored local models down the tree, maintaining equality on shared coordinates, and check the resulting assignment against \emph{every original source constraint}.  An empty root table means UNSAT because every enumerated separator assignment and every local solver call was exhaustive and the separator induction is exact.  A checker may replay the complete deterministic trace including every failed subcall; there is no uncharged oracle answer, nonuniform advice, or free class bit.
+
+Charge the complete original input scan, decomposition recognition, source ownership and running-intersection verification to $D(N)$.  At node $t$ there are $2^{s_t}$ local calls.  Each handles at most a polynomial number of original and compiled child clauses, with coefficient rank $e_t$ and polynomially encoded assignments; known 2-SUB-SAT costs $N^{O(1)}(|V_t|+1)^{O(e_t)}$.  Table compilation enumerates $O(s_t^2)$ candidate unary/binary clauses and explicitly checks $2^{s_t}$ rows, within the stated polynomial factor.  Child-message access, failed plucking and SCC calls, stored source pointers, complete table encoding, witness backpointers, output, and the maximum simultaneous storage are covered by the same conservative polynomial envelope times $\sum_t2^{s_t} (|V_t|+1)^{O(e_t)}$.  With $e_t\le e_0$, $k\le\operatorname{poly}(N)$ and either $s_t\le2$ or $s_t\le c\log N$ with recognized bijunctivity, this bound is polynomial.  No claim is made that such a decomposition exists or is efficiently discoverable for arbitrary SAT.
+\end{proof}
+
+\section{Star countercontrol: avoiding the full-interface blowup}
+For every $q\ge1$, form a $(q+1)$-module star.  Centre bag $V_0$ contains all pairs $x_i,y_i$ and owns one affine equation
+\[
+ \bigoplus_{i=1}^{q}(x_i\oplus y_i)=b.
+\]
+Leaf $i$ owns exactly $x_i\oplus y_i=0$ on $V_i=\{x_i,y_i\}$.  Every module's affine rank is one; each edge separator has exactly two variables; but the centre's full shared interface is $B_0=\{x_i,y_i:1\le i\le q\}$, so $|B_0|=2q$.  The system is SAT precisely when $b=0$.  Every leaf exact message is the binary equality relation, expressed by $2$CNF $(\neg x_i\lor y_i)\land(x_i\lor\neg y_i)$.  The centre then solves a single long XOR together with $q$ equality conditions by the \emph{known} fixed-codimension-$1$ algorithm.  Only $4q+1$ local separator calls are required, not $4^q$.  Omitting any one leaf equation makes the $b=1$ control satisfiable, showing the all-leaf join is semantically essential even though its bit cost can be polynomially compiled.
+
+This proves a strict extension over ARC228's full-raw-interface \emph{sufficient} criterion: its cost bound remains valid for raw enumeration, but does not characterize optimal exact message representations.  The easy star does not imply arbitrary SAT is tractable.
+
+\section{Exact failure at three shared variables}
+A child with a single rank-one affine equation $x\oplus y\oplus z=1$ projects to
+\[
+ R=\{001,010,100,111\}.
+\]
+Its three satisfying tuples $001,010,100$ have coordinatewise majority $000\notin R$.  Every 2CNF solution relation is majority-closed; hence no 2CNF on $x,y,z$ represents this exact message.  A parent with three unary pins $\neg x,\neg y,\neg z$ makes the entire instance UNSAT.  The present bounded-language controller correctly reports \texttt{UNKNOWN\_NON\_BIJUNCTIVE} at the child, rather than losing that parity constraint.  A width-three child can nevertheless pass if its \emph{actual} table is 2CNF-definable, for example $x=0$ together with $x\oplus y\oplus z=1$, which reduces to a binary XOR relation.
+
+\section{Executable, finite hostile tests, resource ledgers}
+The stand-alone standard-library Python file \texttt{arc229\_bijunctive\_messages.py} implements exact GF(2) row reduction, ordinary implication-graph 2SAT, the independently reproduced fixed-$e$ plucking solver, source-ID/owner-scope/connected-occurrence checks, bottom-up message relation tables and full 2CNF equality checks, SAT witness reconstruction, and explicit \texttt{UNKNOWN} on non-bijunctive tables.  The raw file is \texttt{arc229\_results.json}.  Seed \texttt{2292026}.  It passed $864$ seeded fixed-codimension comparisons against brute force on at most six variables, $287$ random source-authenticated tree comparisons ($146$ SAT, $141$ UNSAT), $14$ star cases with $q=1,2,4,8,16,32,64$ and both parity charges, ten path cases with unbounded cumulative local affine rank, five deliberate invalid-source controls, and exhaustive enumeration of all $2,4,16,256$ relations of arity $0,1,2,3$ respectively.  Exactly $166$ of the $256$ arity-three relations were 2CNF-definable; all $16$ binary relations were.  The arity-three odd-parity failure returned a concrete majority counterexample, while a different arity-three relation was successfully compiled.  Every comparison was an assertion in executed source, not a proof-assistant kernel check.  Individual experiment calls completed below the prescribed short-chunk limit.
+
+The original four user-specified ZIP archives were materialized by their exact Library IDs and all passed ZIP CRC checks.  Rerunning the original \path{Connected_Interface_Audit.zip/audit.py} reproduced the original output \emph{byte for byte}, SHA-256 \texttt{\seqsplit{05675f876d6624073507df1e9cedd18a188143db687e454bc2942143d36cbaca}}, including 4,680 boundary, 7,191 local-discovery and 139 SAT comparison controls.  Polynomial-coverage and restart/portfolio archives were examined as restricted finite evidence: the 16-seed repair-only rule's disjoint-product failure and the recovered family's 44 strict22 roots do not prove coverage, polynomial runtime, or arbitrary exact22 contraction.
+
+\textbf{Native indexed RAM ledger.} Count parsing, discovery, source reads, every failed branch, GF(2) row reduction, SCC recomputation, child table access, 2CNF reconstruction and verification, all written tables, witness pointers, original source check and peak simultaneous storage in the theorem's polynomial envelope.  A literal source ID is not free indexed advice.  \textbf{Read-only-input fixed-$k$ multitape ledger.} Explicit polynomial simulations handle scanning, random-access emulation, storage and output without claiming preservation of RAM exponents.  \textbf{Single shared read/write tape ledger.} Input footprint and tape-head travel are included; ordinary polynomial-time simulation of the fixed algorithm gives a possibly higher polynomial bound, not a SAT lower bound.  \textbf{Two fully writable tapes.} Account for changes to both tapes, including marks on the input tape, separately.  \textbf{Fixed UTM ledger.} The interpreter is fixed and source parsing, program description, access and reconstruction are charged; this is an upper-bound simulation only.  SAT and UNSAT traces restrict one uniform deterministic program, not separate algorithms given a side-bit.  No ARC/FLMV numerical time--space exponent is carried between models.
+
+\section{Exact boundary and next lemma}
+The proved claim concerns a \emph{verified} structural promise, not uniform discovery of the promise on all SAT inputs and not the strict signed exact-(2,2) grammar.  The algorithm's \texttt{UNKNOWN} status is permitted only outside the edge-width-two guaranteed class or when a larger exact message fails 2CNF recognition.  For unknown inputs, no answer-preserving shrinking child is asserted.  All-algorithm time/space lower bounds remain \textbf{OPEN}; decision-only summaries need not preserve arbitrary future contexts.  Both $P=NP$ and $P\ne NP$ remain \textbf{OPEN}.
+
+\textbf{Next precise missing lemma:} Find a polynomial-time \emph{source-discoverable and verifiable} family of moving tree decompositions with unbounded full interfaces and logarithmic edge separators whose exact non-bijunctive child messages nevertheless admit a compact repeatably composable grammar (for example 2CNF plus $O(1)$ affine rows) with proof that the \emph{aggregate} affine rank at every parent stays bounded after all child joins; or exhibit a concrete small-width counterfamily that forces aggregate-rank growth in this richer grammar.  Do not confuse a compact local representation with a polynomial-time \emph{computed} representation.
+
+\begin{thebibliography}{9}
+\bibitem{ag} V. Arvind and V. Guruswami, \emph{CNF Satisfiability in a Subspace and Related Problems}, IPEC 2021, Article 5, Theorems 2, 17 and 19, \href{https://doi.org/10.4230/LIPIcs.IPEC.2021.5}{DOI:10.4230/LIPIcs.IPEC.2021.5}.
+\bibitem{schaefer} T. J. Schaefer, \emph{The Complexity of Satisfiability Problems}, STOC 1978, 216--226.
+\bibitem{freuder} E. C. Freuder, \emph{Complexity of K-tree Structured Constraint Satisfaction Problems}, AAAI 1990, 4--9.
+\bibitem{pgmpy} A. Ankan et al., \emph{pgmpy}, \url{https://github.com/pgmpy/pgmpy/blob/d6ca91c542afccb0c3a600cad50252af26729c88/pgmpy/inference/ExactInference.py} (implementation inspected, not a SAT lower-bound source).
+\bibitem{arc228} LSPV-1, \emph{ARC228 Full Interface Fixed-E Composition}, \path{research/agents/lspv-1/2026-10-29_1200_LSPV-1_ARC228_FULL_INTERFACE_FIXED_E_COMPOSITION.tex}.
+\bibitem{ref204} LSPV-5, \emph{FULL-INTERFACE-GLUING-REFEREE204}, \path{research/main/2026-10-29_1248_MAIN_FULL-INTERFACE-GLUING-REFEREE204.tex}.
+\end{thebibliography}
+\end{document}
