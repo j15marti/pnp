@@ -1,0 +1,284 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.92in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,hyperref}
+\usepackage[T1]{fontenc}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newcommand{\polylog}{\operatorname{polylog}}
+\title{UPDATE-LOG-REPLAY-FIREWALL215:\\Source Persistence, Replayed Updates, and Native Machine Accounting}
+\author{LSPV-4: Independent Time-Space/Circuit Resource Auditor}
+\date{29 October 2026, 00:03 PDT}
+\begin{document}\maketitle
+\begin{abstract}
+A restricted source-loss information bound and ordinary Turing-machine
+space bounds must not be conflated.  We prove three complementary
+resource statements for an authenticated proper-3CNF family with decision
+predicate $\bigwedge_i b_i$.  Distinct-coordinate updates require only a
+logarithmic counter and one indexed read of the unchanged physical source
+per update.  If a complete update log remains readable, a deterministic
+read-only-input multitape machine recomputes every prefix decision with
+$O(\log X)$ writable cells and polynomial time even for arbitrarily repeated
+updates.  Conversely, when update events are consumed and cannot be
+revisited, the dynamic state after $m$ freely chosen overwrites requires
+$m$ bits of distinguishing information if another $m$ overwrites may
+follow, despite a fixed immutable original source.  A writable source
+also permits logarithmic auxiliary space, but its entire physical footprint
+and all writes must be charged.  These are architectural statements,
+not unrestricted SAT lower bounds or a proof of either $P=NP$ or $P\ne NP$.
+\end{abstract}
+
+\section{PROPOSE: model bridges fixed before source search}
+The missing lemma is whether a bound on \emph{source-free, retained online
+state} legitimately constrains an ordinary read-only input Turing machine
+that may revisit a retained update log.
+\begin{description}
+\item[]\textbf{P1 (immutable source, distinct updates).}
+A log-space counter plus one direct source-bit probe per distinct-index
+update suffices.  This falsifies a blanket transfer of lost-source entropy
+to a re-readable source with per-update access.
+\item[]\textbf{P2 (retained history).}
+A fixed read-only-input machine can rescan the original and the complete
+prefix of a retained update log with $O(\log X)$ work, polynomial time,
+and a single output bit, even if indices repeat.
+\item[]\textbf{P3 (consumed stream).}
+On a one-pass, non-replayable update channel, arbitrary future overwrites
+force $m$ retained dynamic-state bits at a midpoint, even with the same
+immutable original source for all runs.
+\item[]\textbf{P4 (writable source).}
+A writable input tape makes repeated updates maintainable with only a
+counter, provided all physical source changes, tape transport and source
+footprint are paid.  This cannot be transferred back to a read-only tape.
+\end{description}
+
+\section{SEARCH: source and model hypotheses}
+The exact Coq source 
+\path{uds-psl/coq-library-complexity/theories/NP/TM/mTM_to_singleTapeTM.v},
+GitHub tree \texttt{14b5f413d2fb7adecde79c5451b483f9a1af59a8},
+was inspected in its actual proof statements and tape-encoding construction.
+It proves a polynomial simulation of its formalized machine types, but
+provides no automatic preservation of every numerical exponent asserted
+below.  The OpenAI source \texttt{openai/math/.../build/sections/06-recursion.tex},
+Git blob prefix \texttt{65bf0450f460},
+explicitly charges one recursive circuit call but leaves target-dependent
+slot/oracle tables outside its uniform skeleton construction.  Thus it is
+architectural inspiration, not a classical SAT contraction.
+The project's \path{2026-10-26_DUAL_TM_RESOURCE_ACCOUNTING_DIRECTIVE.md},
+Git blob prefix \texttt{c621f1b47d88},
+requires distinct one-tape and fixed-$k$ ledgers.  Multipass versus
+one-pass streaming has an established literature; the elementary results
+proved here do not claim priority over that literature.
+
+\section{The authenticated scalar SAT source}
+Let $b\in\{0,1\}^m$ and
+$f_m(b)=\bigwedge_{j=1}^m b_j$.  We use the earlier \texttt{SCALAR3F}
+proper-3CNF construction $\Phi_m(b)$ with $6m+5$ variables and $9m+8$
+clauses.  Each bit $b_j$ controls the signs of exactly four literal
+occurrences in a forcing gadget; parsing and checking the entire
+canonical representation is deterministic.  It satisfies
+\begin{equation}
+\mathrm{SAT}(\Phi_m(b))\iff f_m(b)=1,
+\qquad N_m=|\mathrm{enc}(\Phi_m(b))|=\Theta(m\log(m+2)).
+\label{eq:source}
+\end{equation}
+For completeness, the four ternary clauses with signs
+$(\ell,a,b)$, $(\ell,a,
+eg b)$, $(\ell,
+eg a,b)$ and
+$(\ell,
+eg a,
+eg b)$ are jointly equivalent to the unit literal
+$\ell$.  The five per-index chain clauses are equivalent to
+$y_{j+1}\leftrightarrow(y_j\wedge x_j)$.  Forcing $y_0=y_m=1$
+therefore forces every $x_j=1$.  Four sign-control clauses force
+$x_j=b_j$ in all satisfying assignments, establishing
+\eqref{eq:source} without an oracle.
+An update $(j,v)$ replaces the current $b_j$ by $v\in\{0,1\}$.
+There is one fixed decision program for both SAT and UNSAT, not two
+answer-class oracles.  Throughout, $H$ is the number of update records,
+$X=N_m+O(H\log(m+2))$ includes the encoded update log, and all register
+indices have $O(\log X)$ bits.  A bit-vector tape is an independent
+finite control; the CNF implementation pays canonical parsing and four
+physical sign occurrences per overwrite.
+
+\begin{theorem}[Distinct-coordinate readback]\label{thm:distinct}
+Suppose $\Phi_m(b)$ remains readable and is not physically altered.
+The update channel supplies pairwise distinct indices, with at most $m$
+updates.  There is a deterministic online algorithm retaining
+$\lceil\log_2(m+1)\rceil+O(1)$ bits of persistent data,
+using exactly one original-source-bit query per update (after initial
+$O(N_m)$ authentication), and answering every prefix SAT query correctly.
+\end{theorem}
+\begin{proof}
+Initially store $z=m-\sum_j b_j$, the number of zero bits.  Since index
+$j$ has not previously been updated, the value before its update is
+precisely the unchanged original bit $b_j$.  Read it once and set
+$z\leftarrow z+b_j-v$.  By induction $z$ always equals the number of
+current zeros.  Answer SAT iff $z=0$.  The counter ranges from $0$ to $m$
+and needs logarithmically many bits.  The update instruction itself and
+its address-generation overhead are not included in the retained counter;
+any physical implementation must charge them separately.
+\end{proof}
+
+\begin{theorem}[Replayable-log reconstruction]\label{thm:replay}
+Suppose the complete canonical original source and the first $t\le H$
+update records are available on one bidirectionally readable,
+read-only input tape.  One uniform deterministic fixed-$k$ machine, with
+$k\ge1$, computes the SAT answer after these $t$ updates using
+\begin{equation}
+S_k=O(\log X),\qquad T_k=O(mX\polylog X),
+\qquad H_{\mathrm{input}}=O(mX\polylog X),
+\label{eq:replay}
+\end{equation}
+with a single output bit.  Repeating for every $t=0,\dots,H$ has total
+$O(HmX\polylog X)$ transition upper bound and at most logarithmic
+writable workspace per fresh invocation.  Repeated update indices are allowed.
+\end{theorem}
+\begin{proof}
+First authenticate the complete source format in a sequential scan.
+For each $j=1,\dots,m$, extract its initial control value $b_j$ by a
+physical scan; then sequentially read all records $(i,v)$ in the prefix
+$t$, retaining only the latest $v$ with $i=j$.  Increment a logarithmic
+zero counter iff this reconstructed value is zero.  Compare to zero at
+the end.  Each $j$ costs at most $O(X)$ read-only-input head movement
+and $\polylog X$ overhead per visited symbol for binary counters.
+Only $j$, the source position, a record index, the current bit, the zero
+count and the prefix length are retained, each with at most $O(\log X)$
+bits.  No uncharged random-access jump, preserved ancestor, or materialized
+updated CNF is assumed.  An ordinary offline input can encode the full
+log plus $t$; an online interface with an append-only readable prefix has
+the same per-prefix cost.  If all prefix outputs must be physically
+retained in one run, their $\Theta(H)$ output cells are charged separately.
+\end{proof}
+
+\begin{theorem}[Consumed-history fooling set]\label{thm:stream}
+Fix the initial source to $b=0^m$.  A deterministic machine processes
+updates arriving on a one-pass channel, with no possibility of rereading
+the consumed update events or writing the original source.  After the first
+$m$ commands, any of the $2^m$ current bit vectors may have been set by
+writing coordinates $1,\dots,m$ in order.  If the machine must also
+answer correctly after every common continuation of at most $m$ more
+point overwrites, its complete retained midpoint configurations have
+at least $2^m$ distinguishable possibilities.
+Consequently their information content is at least $m$ bits.  For a
+fixed-$k$ finite-alphabet machine with polynomially bounded time and
+input-head position, this requires $\Omega(m)$ visited writable cells,
+up to $O(\log m)$ head-position/control adjustments.
+\end{theorem}
+\begin{proof}
+Choose any two distinct midpoint current vectors $a,a'$ and let
+$Z(a),Z(a')$ be their zero-position sets.  If
+$Z(a')\setminus Z(a)\ne\varnothing$, overwrite every coordinate in
+$Z(a)$ to $1$.  The continuation has at most $m$ commands; it makes
+$a$ SAT and leaves $a'$ UNSAT.  Otherwise use the common continuation
+that repairs $Z(a')$, which makes $a'$ SAT and leaves $a$ UNSAT since
+the zero sets are different.  Hence the two midpoint vectors cannot
+lead to the same retained configuration for a fixed deterministic
+updater with identical future commands.  There are $2^m$ vectors.
+Finite control supplies $O(1)$ bits and head positions supply only
+$O(\log\operatorname{poly}(m))$ bits under the specified polynomial-time
+and bounded-head conventions.  With fixed tape alphabet and tape count,
+$S$ visited writable cells supply $O(S+\log(S+1))$ bits, yielding
+$S=\Omega(m)$.  The proof is a one-pass memory statement and does
+\emph{not} apply when earlier update commands survive on a readable tape.
+\end{proof}
+
+\begin{proposition}[Mutable source with charged writes]\label{prop:rw}
+If the current CNF source is physically writable, a deterministic
+algorithm maintains $z=\#\{j:b_j=0\}$ in $O(\log m)$ auxiliary bits and
+handles arbitrary repeated overwrites by reading the current $b_j$,
+performing four sign-control source-symbol writes, and setting
+$z\leftarrow z+b_j-v$.  The source occupies $\Theta(N_m)$ physical bits
+throughout.  At most $4H$ source symbol \emph{changes} occur, while the
+input-head transportation cost is $O(HX\polylog X)$ on a sequential tape.
+\end{proposition}
+\begin{proof}
+The zero counter invariant holds after every update.  The four unit
+forcing clauses encode the same controlled sign, so changing all four
+source occurrences yields exactly the canonical CNF for the new vector.
+No cell-address access is free on a sequential tape.  The source and
+full update log occupy the input tape, including any signs retained from
+earlier steps; the work counter cannot replace those physical cells.
+\end{proof}
+
+\section{Machine-native ledger and one-child consequences}
+\begin{center}\small
+\begin{tabular}{p{0.22\linewidth}p{0.37\linewidth}p{0.31\linewidth}}
+\toprule
+Model / interface & Time, access and movement (constructive upper bounds) & Memory and output\\
+\midrule
+Indexed word RAM, writable current source & $O(N_m+H)$ word operations after canonical input scan; $O(1)$ direct indexed source probes and $O(1)$ words per update & Source/log $X$ physical bits plus $O(\log X)$-bit counter/address; one answer bit\\
+Read-only input + one work tape, replayable log & $T_k=O(mX\polylog X)$ per queried prefix; $O(HmX\polylog X)$ for all prefixes separately & $S_k=O(\log X)$ writable cells, physical input $X$, and a single answer bit\\
+Two fully writable tapes, current source repair & $O(N_m+HX\polylog X)$, input-head movement $O(HX)$, source changes $D_1\le4H$ & Source and log on tape 1, $O(\log X)$ work on tape 2\\
+Single read/write tape, conservative replay simulation & $T_1=O(T_k(X+S_k+\log(T_k+2)))=O(mX^2\polylog X)$ per queried prefix & $P_1=O(X+S_k+\log(T_k+2))=O(X)$, input included\\
+Fixed universal interpreter & Polynomial overhead after compiler, input and address accounting & No certified numerical exponent, model-dependent\\
+\bottomrule
+\end{tabular}
+\end{center}
+Time counts include head movement, cell probes, binary-counter manipulation,
+authentication and the single final answer bit; probes and crossings are
+subcounters of transitions, not additive independent resources.  The
+one-tape arrow is an \emph{upper} simulation bound, never a reverse lower
+implication.  Nor does a single-tape transport theorem imply an indexed
+RAM lower bound.  To claim a static one-child SAT shrinker, the output
+must be a truly smaller complete \emph{answer-preserving} encoded
+instance, uniformly constructible on all SAT and UNSAT sources.  These
+online dynamic controls do not supply such a map.  The prior
+no-source entropy theorem remains valid when the initial source is
+permanently lost: replaying a later update log cannot recover unknown
+\emph{initial} bits.  The present results isolate different models
+rather than contradict that theorem.
+
+\section{BUILD: reproducible hostile controls}
+The dependency-free reproducer exhaustively tested pairwise-distinct
+updates, arbitrary repeated writable-source updates, arbitrary repeated
+immutable-source replay, and midpoint fooling pairs.  It also simulated
+actual input-head travel on a fixed-width bit-vector control, rather
+than treating every indirect access as unit-cost RAM.  There were
+\textbf{1,976,138 deterministic assertions and zero failures}.
+Independent rerun of the user-supplied \texttt{Connected\_Interface\_Audit}
+source, preserved byte-for-byte in a prior archive, matched its reference
+JSON with SHA-256
+\texttt{05675f876d6624073507df1e9cedd18a}\\
+\texttt{188143db687e454bc2942143d36cbaca}.
+The source tested 4,680 boundary subsets, 7,191 local discoveries, and
+139 SAT truth tables.  These finite controls do not establish new
+asymptotic lower bounds or Coq kernel verification.
+
+\section{Status and next role-specific target}
+\noindent\textbf{PROVED/RESTRICTED:} Theorems~\ref{thm:distinct},
+\ref{thm:replay}, \ref{thm:stream} and Proposition~\ref{prop:rw}
+with exactly their readback and one-pass hypotheses.  
+\textbf{FALSIFIED AS A MODEL TRANSFER:} A no-source/no-history retained-state
+bound asserted against a replayable physical log or mutable source
+without charging that source.  
+\textbf{COMPUTATIONAL:} The finite controls stated above.  
+\textbf{CONDITIONAL:} Numerical one-tape exponents are consequences of
+the explicitly stated conservative simulator, not independent optimized
+Turing-machine implementations.  
+\textbf{OPEN:} Uniform polynomial construction of complete, exact,
+repeatably shrinking SAT instances or a lower bound against every
+possible SAT algorithm.
+
+The next LSPV-4 audit should quantify the number of retained ancestor
+snapshots and prefix replays in a proposed adaptive semantic contraction.
+For every interface, LSPV-1 and LSPV-5 should require explicit flags
+for \emph{original-source readability}, \emph{history replayability},
+\emph{source mutability}, \emph{output persistence}, \emph{peak physical
+footprint}, and the full length of the largest intermediate string.
+
+\begin{thebibliography}{9}
+\bibitem{coq} L. G\"aher and F. Kunze,
+\emph{Mechanising Complexity Theory: The Cook--Levin Theorem in Coq},
+ITP 2021; source \url{https://github.com/uds-psl/coq-library-complexity}.
+\bibitem{openai} OpenAI, \emph{Polynomial-Time Unitary Synthesis from a Boolean Oracle},
+5 October 2026; source \url{https://github.com/openai/math/tree/main/preprints/Polynomial-Time-Unitary-Synthesis-from-a-Boolean-Oracle-October-5-2026}.
+\bibitem{stream} N. Alon, Y. Matias, and M. Szegedy,
+\emph{The Space Complexity of Approximating the Frequency Moments},
+JCSS 58 (1999), 137--147.  Streaming restrictions in this report are
+model definitions, not consequences of that paper.
+\bibitem{internal} LSPV-4, \emph{HORIZON-RESET-DYNAMIC-CHILD214},
+28 October 2026; companion source and reproducer in
+\url{https://github.com/j15marti/pnp/tree/main/research/agents/lspv-4}.
+\end{thebibliography}
+\end{document}
