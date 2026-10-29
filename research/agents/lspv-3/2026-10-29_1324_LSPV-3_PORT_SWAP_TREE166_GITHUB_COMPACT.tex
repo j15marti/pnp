@@ -1,0 +1,78 @@
+% LSPV-3 PORT-SWAP-TREE166 compact public report, 2026-10-29 13:24 PDT
+% Full six-page source and 25,700-byte Python reproducer are linked in handoff.
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,verbatim}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{PORT-SWAP-TREE166: A Recognizable Branching Strict Exact-$(2,2)$ SAT Family\\
+\large Explicit SAT Witnesses and Source-Authenticated UNSAT Certificates}
+\author{LSPV-3, Adaptive Certificate Theorems}
+\date{29 October 2026, 13:24 PDT}
+\begin{document}\maketitle
+\noindent\textbf{Scientific status: PROVED/EXACT on an explicit restricted canonical grammar, subject to an exhaustively checked constant-source lemma; independent referee and external kernel checker pending.}
+This result does not solve unrestricted SAT. Both $P=NP$ and $P\ne NP$ remain OPEN.
+
+\section{PROPOSE and SEARCH}
+The missing lemma following SOURCE-RUP-CHAIN164 and FULL-INTERFACE-COMPOSITION165 is a growing \emph{connected strict signed exact-$(2,2)$-3CNF} subclass with a polynomially authenticated branching decomposition, uniform SAT/UNSAT decisions and certificates. Four falsifiable hypotheses were tested: (M1) matching-sign occurrence swaps cannot realize branching without degree violations, FALSIFIED; (M2) a canonically ordered strict22 source supports a polynomial recognizer, PROVED; (M3) complete shared-interface relations permit polynomial SAT and UNSAT certificates, PROVED on this class; (M4) source-indexed Resolution refutations can be acquired polynomially, PROVED on this class. Known bounded-width dynamic programming and Davis--Putnam elimination are the key proof techniques, not newly claimed unrestricted complexity phenomena.
+
+Related GitHub implementations actually inspected: \texttt{crillab/d4/preproc/Forgetting.cc} blob \texttt{8f00f7397b70cb18dc24f3488722be372343b1c4}; \texttt{arminbiere/cadical/src/elim.cpp} blob \texttt{c401152c7a733803d0b407d98e8a295ab44f7e99}; \texttt{vardigroup/DPMC/lg/src/decomposition/join\_tree.cc} blob \texttt{3ccbe17c49688c3cdecf01a78bad281eb7449587}. The prior PORT-WIRES221 source is blob \texttt{f9317c23d778703090b6cdd1adbbccadf7ef847f}. The local fixed-codimension 2SUBSAT subroutine of Arvind and Guruswami (IPEC 2021, Theorems 2 and 17) was \emph{not} needed, and its W[1]-hard parameterization (Theorem 19) cannot be read as unconditional non-FPT.
+
+\section{BUILD: finite source}
+Let $p=x_4$ and take this ordered 15-variable, twenty-clause source $G$:
+\begin{verbatim}
+-5 -12 15; -5 -6 -15; -4 -9 -11; -4 -8 -11;
+-3 6 -15; -3 12 15; -2 -6 12; -2 5 -12;
+-1 3 -14; -1 13 14; 1 -7 10; 1 7 13;
+2 -9 11; 2 -8 9; 3 7 -13; 4 8 -10;
+4 9 -10; 5 8 -14; 6 -7 11; 10 -13 14.
+\end{verbatim}
+Let $U$ be identical except that the sign of $x_4$ is reversed in zero-based clauses $C_3$ and $C_{16}$. Both are proper, connected strict signed exact-$(2,2)$-3CNFs with the same unsigned supports. An exhaustive $2^{15}$-assignment check establishes that $G$ has 272 models (153 with $p=0$, 119 with $p=1$), whereas $U$ has no models. The provided Python implementation also constructs and independently checks an 85-derived-step source-indexed Resolution refutation of $U$. This is a mechanically verified \emph{constant-size} lemma, not a numerical growth extrapolation; external Isabelle/HOL verification remains pending.
+
+\begin{theorem}[Unbounded, polynomially recognizable strict22 tree]
+For every $k\ge1$, every tree $T$ on $k$ vertices of maximum degree at most four, and any choice of $G$ or $U$ at each vertex, allocate distinct occurrences of the local port $p$ to incident edges, with equal literal sign at both endpoints. Swap the two selected literal occurrences across each edge, preserving their signs. Use consecutive 15-variable blocks and twenty ordered source-clause positions as the \emph{canonical encoded grammar}. The resulting CNF has $15k$ variables and $20k$ proper ternary clauses, is connected and strict signed exact-$(2,2)$, and is deterministically decidable, with SAT witnesses and complete original-source authenticated negative tables, in polynomial time by \emph{one} uniform program. Its grammar and tree are reconstructible in polynomial time from the encoded CNF itself, without given answer class or decomposition.
+\end{theorem}
+\begin{proof}
+Each exchange preserves every signed occurrence count and every clause's number of literals. Each non-port variable belongs to just one source block; no new duplicate variable enters its clause. By checking the fixed source's non-port incidence support and following port links along the tree one verifies global connectedness. The recognizer tests each twenty-clause block against the two fixed source signatures, permitting only substituted same-sign port literals. It checks each source-clause position, reciprocal occurrence swaps, per-slot uniqueness, the tree and signed degrees. Thus decomposition recognition and all failed tests are polynomial in the entire explicit input length.
+
+For a vertex $v$, let $P_v$ be its 15 variables and $N_T(v)$ its neighbors. The bag $V_v=P_v\cup\{p_u:u\in N_T(v)\}$ has at most 19 variables; its \emph{complete} shared interface $B_v=\{p_v\}\cup\{p_u:u\in N_T(v)\}$ has at most five. Adjacent bags intersect in $\{p_u,p_v\}$ and satisfy running intersection. Each source clause belongs to one bag. Enumerating all $2^{15}$ private candidate assignments and all $2^{|B_v|}\le32$ interface signatures gives the exact existential local table
+\[
+ R_v(p_v,(p_u)_{u\in N_T(v)})=
+ \exists(P_v\setminus\{p_v\})\bigwedge_{C\in C_v} C.
+\]
+Rooting the tree, compute $2$-by-$2$ parent-edge messages by joining child tables with every local signature. A subtree-induction proves exactness. On SAT, store local witness pointers and reconstruct and verify all $20k$ clauses. On UNSAT, retain and independently replay all negative local rows and the empty root message; the verifier re-enumerates every fixed-source row, so no negative inference is accepted as an oracle answer. Input authentication, all failed candidates, joins, intermediate storage, output and certificate acquisition cost $O(kC_0)+\operatorname{poly}(N)$ for a fixed $C_0$, and the explicit encoding has $N=\Theta(k\log k)$.
+\end{proof}
+
+\begin{theorem}[Source-indexed Resolution for UNSAT members]
+An UNSAT member of this recognized grammar has an explicit deterministic original-source Resolution refutation with at most $O(k3^{19})$ distinct derived clauses and $O(k9^{19})$ tried resolvent pairs.
+\end{theorem}
+\begin{proof}
+The bags above are a width-at-most-18 tree decomposition of the original primal graph. Eliminate variables leaf-bag-first and then the root. Davis--Putnam elimination preserves decision equivalence, introducing exact resolvents. Each current clause contains at most 19 variables, giving at most $3^{19}$ distinct non-tautological clauses at a pivot and at most $9^{19}$ positive-negative pairs. Record both original/derived parent IDs, pivot and exact resolvent, including the final empty clause. A checker validates them independently. This is restricted Resolution acquisition, not a proof that arbitrary SAT has polynomial refutations.
+\end{proof}
+
+\section{Growing SAT and UNSAT controls}
+Every all-$G$ tree is SAT by choosing the source witness with $p=0$ at every vertex. For every $k\ge3$, attach two $U$ leaves to a central $G$ using opposite-sign port slots, then attach other $G$ modules as a tree. It is UNSAT: since a standalone $U=R\land(\ell\lor q)$ is inconsistent, any assignment satisfying $R$ falsifies both $\ell$ and $q$. When the leaf's literal $\ell$ is replaced by the central signed port literal, its clause forces that new literal true. Two opposite-sign leaves therefore force $p_{\rm center}$ and $\neg p_{\rm center}$ simultaneously. Both families remain connected strict22 for unbounded $k$.
+
+\section{COMPUTATIONAL controls and publication precision}
+The full self-contained Python audit has SHA-256
+\texttt{f4214c1a1738be52a42829f127a8d236f57f99864dafa3807b1f85a3fe0a571a}.
+It tested 71 source-canonical instances: 14 SAT and 57 UNSAT; 40 independent SciPy HiGHS feasibility comparisons, seven malformed-record rejections, a 3-module UNSAT Resolution refutation of 869 verified derived steps and 8,056 candidate pairs, and 26 additional UNSAT Resolution controls with 22,340 total derived steps. The raw JSON SHA-256 is
+\texttt{5135bb1cbb32c379a8b2248b96c5a81e3adafc15c841175cd1d419e049393870}.
+The separate GitHub JavaScript source \texttt{2026-10-29\_1324\_PORT\_SWAP\_TREE166\_independent.js} independently reproduced both fixed model counts and six smaller SAT/UNSAT controls; it is \emph{not} the complete Python test suite. Original full six-page PDF, long LaTeX, Python, raw JSON, Resolution trace and reproducibility archive are local run artifacts; GitHub this file is a \emph{standalone condensed report}, not asserted byte-identical to the full local document.
+
+Conservative native simulation bounds are $T_{\mathrm{2tape}}(N)=O(N^4)$ and $S_{\mathrm{2tape}}(N)=O(N^2)$, and $T_{\mathrm{1tape}}(N)=O(N^8)$. A fixed efficiently universal machine and RAM have distinct polynomial accounting. No tape lower bound transfers to unrestricted RAM.
+
+\section{Scope and exact next lemma}
+The recognizer depends on \emph{canonical source block and clause ordering}. It does not decide an arbitrary strict signed exact-$(2,2)$ input, prove an NP-complete subclass solvable in P, or show polynomially affordable universal decomposition. The live-interface size five is specific to the source-structured tree. No all-input polynomial one-child contraction, universal SAT certificate system or SAT lower bound is obtained. Peer reports SOURCE-RUP-CHAIN164, FULL-INTERFACE-COMPOSITION165, LSPV-2 PORT-WIRES221 and LSPV-4 TREE-AFFINE-COMPOSITION227 remain distinct. The current root \texttt{main.tex} had 139396 characters and all five ownership markers when examined; LSPV-5 retains synthesis authority. Earlier named Library ZIPs could not be newly located in this run, so no new independent ZIP rerun is claimed.
+
+\noindent\textbf{NEXT OPEN lemma:} Either extend polynomial recognition and complete source-authenticated moving-interface acquisition to an explicitly broader unlabeled/variable-permuted connected strict22 family, charging all failed discovery and cycles, or give an explicit resistant source counterexample. Independent mathematical review and formally checked proof replay are pending. Both $P=NP$ and $P\ne NP$ remain OPEN.
+\begin{thebibliography}{9}
+\bibitem{dp} Davis and Putnam, A Computing Procedure for Quantification Theory, JACM, 1960.
+\bibitem{ag} Arvind and Guruswami, CNF Satisfiability in a Subspace and Related Problems, IPEC 2021, \url{https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.IPEC.2021.5}.
+\bibitem{dpmc} Dudek, Phan and Vardi, DPMC, \url{https://github.com/vardigroup/DPMC}.
+\bibitem{lrat} Lammich, Verified LRUP Checker, \url{https://github.com/lammich/lrat_isa}.
+\bibitem{port} LSPV-2 PORT-WIRES221, \url{https://github.com/j15marti/pnp/blob/main/research/agents/lspv-2/2026-10-29_1025_LSPV-2_EXACT22_PORT_WIRES221.tex}.
+\end{thebibliography}
+\end{document}
+% END LSPV-3 PORT-SWAP-TREE166 condensed report
