@@ -1,0 +1,66 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append-only log at end; sections edited in place
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\newcommand{\CSAT}{\textsc{CircuitSAT}}
+\title{ClaudeCircuitSAT: A Parametrized Wire-by-Wire Lower-Bound Programme\\for Circuit-SAT}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-10-29 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial lower bound. Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Goal: lower bounds for \CSAT: given a fan-in-2 circuit $C$ on $n$ inputs with $s$ gates ($w=2s$ wires), decide whether $\exists x\,C(x)=1$. Programme: start from the simplest circuits, build up gate by gate, record the \emph{minimum number of wires} any circuit needs to realise each target function, and increase $n$ step by step, tracking the resulting lower bound as a function of the parameters $(n,s,k)$ ($k$ = number of satisfying assignments, or treewidth, or depth). Bounds are expected to be parametrized, e.g.\ $T(n,s)\ge f(n)\,s$.
+
+Model: basis $B_2$ (all binary gates, negation free). Size $=$ number of gates; wires $=2\cdot$gates when every gate is non-degenerate.
+
+\section{Level ladder (min wires to build the target)}
+\begin{definition} $S(f)$ = minimum number of $B_2$ gates computing $f$; $W(f)=2S(f)$.\end{definition}
+
+\begin{lemma}[Connectivity, PROVED]\label{lem:conn} If $f$ depends on all $n$ inputs then $S(f)\ge n-1$, so $W(f)\ge 2(n-1)$.\end{lemma}
+\begin{proof} The cone of the output is a DAG with one sink; every input in it must reach the sink. Consider the underlying undirected graph on the $n$ input nodes plus $S$ gate nodes; it is connected, so has $\ge n+S-1$ edges. Each gate has exactly 2 in-edges, so edges $=2S$ (counting only wires into gates). Hence $2S\ge n+S-1$, i.e.\ $S\ge n-1$.\end{proof}
+
+\begin{proposition}[Tightness for unique-SAT, PROVED]
+The minterm $\mathrm{AND}_n$ (exactly one satisfying assignment) and $\mathrm{XOR}_n$ have $S=n-1$, $W=2n-2$. So for $k=1$ and for $k=2^{n-1}$ the build cost is linear; the ladder is flat at slope 2 wires per input.\end{proposition}
+
+\paragraph{Exact table (COMPUTATIONAL).} Script \texttt{research/agents/claude/circuitsat/mincircuit.py} (breadth-first over sets of computed truth tables, $<$10\,s) gives the number of functions needing exactly $g$ gates:
+\begin{center}\begin{tabular}{c|ccccc|c}\toprule
+$n$ & $g{=}0$ & 1 & 2 & 3 & 4 & max $W$\\\midrule
+2 & 4 & 12 & -- & -- & -- & 2\\
+3 & 5 & 33 & 114 & 80 & 24 & 8\\\bottomrule\end{tabular}\end{center}
+(The $n{=}2$, $g{=}0$ row counts constants and literals; the $n{=}3$ row sums to 256.) Maximum $S$ for $n=3$ is $4$, agreeing with the classical value. Hence a hard 3-input instance needs $8$ wires, versus the connectivity floor $4$: the gap $W_{\max}(n)-2(n-1)$ is $0,0,4$ for $n=1,2,3$. Raw output: \texttt{mincircuit\_results.json}. NEXT: $n=4$ (known max $S=7$, Knuth) needs a chunked search (rule: $<30$\,s per invocation).
+
+\section{Algorithmic lower bound: probe model}
+Encode $C$ as a list of $s$ gate records (type, two predecessor pointers).
+\begin{theorem}[Linear probe bound, PROVED, trivial]\label{thm:probe}
+Any deterministic algorithm deciding \CSAT\ on size-$s$ instances in the record-probe model makes $\ge s$ probes.\end{theorem}
+\begin{proof} Instance $C_0$: chain $g_i=g_{i-1}\wedge x_i$, output $g_s$; satisfiable. The adversary answers every probe truthfully for $C_0$. If gate record $i$ is never probed, $C_0'$ (gate $i$ replaced by constant $0$) answers identically yet is unsatisfiable.\end{proof}
+This is only an input-reading bound; it is the baseline $T(n,s)\ge s$. Everything beyond it is where hardness lives.
+
+\section{Parametrized landscape (what a parametrized bound can look like)}
+\begin{center}\begin{tabular}{lll}\toprule
+Statement & Status & Note\\\midrule
+$T\ge s$ (Thm.~\ref{thm:probe}) & PROVED & trivial\\
+$T\ge 2^{(1-o(1))n}\mathrm{poly}(s)$ ruled out only under SETH & CONDITIONAL & CNF-SAT embeds in \CSAT\\
+$T\ge 2^{\Omega(n)}$, general model & OPEN & implies P$\ne$NP\\
+Circuit size $\ge (3.1-o(1))n$ explicit $f$, $B_2$ (Li--Yang 2022) & KNOWN (recalled, to be re-verified) & gate elimination\\
+Williams time--space: SAT not in $n^{c}$ time, $n^{o(1)}$ space, $c<2\cos(\pi/7)$ & KNOWN & repo row L13 (Buss--Williams: method stalls there)\\
+Treewidth $\tau$: $2^{O(\tau)}s$ upper bound; matching lower bound under SETH & KNOWN/CONDITIONAL & parametrized by $\tau$\\\bottomrule\end{tabular}\end{center}
+
+\section{Repository cross-check (j15marti/pnp)}
+Read: \texttt{AGENTS.md}; ledger/TPORT/ONETAPE notes under \texttt{research/agents/claude/}. Useful pieces: (i) the world ledger's rule that a statement equivalent to P$=$NP is only a reformulation; (ii) L13/L34--L37: alternation-trading cannot give strong time--space bounds, so the circuit programme should \emph{not} rely on it; (iii) ONETAPE: crossing-sequence arguments extend to nondeterminism, so cannot separate. Nothing in the repo yet bounds wires of circuits for \CSAT\ itself; this document opens that line.
+
+\section{Next steps}
+\begin{enumerate}
+\item Exact $S(f)$ for $n=4$ in chunks; tabulate min wires by number of satisfying assignments $k$ (parameter $k$).
+\item Gate-elimination ledger: for each $n$, compute the best provable bound from degree-of-freedom ($\ge 2$ wires removed per substitution) and compare with the exact table.
+\item Fan-out as a parameter: min wires subject to fan-out $\le d$ (formula $d{=}1$ vs.\ circuit).
+\item State a candidate theorem: lower bound on probes for \CSAT\ parametrized by $(n,s,k)$ beyond $s$; audit against relativization/natural proofs.
+\end{enumerate}
+
+\section*{Run log}
+\begin{itemize}
+\item Run 1 (2026-10-29): file created; Lemma~\ref{lem:conn}, Thm.~\ref{thm:probe}; exact tables $n\le3$.
+\end{itemize}
+\end{document}
