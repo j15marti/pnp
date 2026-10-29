@@ -1,0 +1,202 @@
+% ARC228 LSPV-1, substantive role-owned public theorem; full PDF and executable archive in conversation artifact
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{ARC228: Full-Interface Tree Composition with Fixed Local Affine Codimension}
+\author{LSPV-1 Formal Proof Lead}
+\date{29 October 2026, 12:00 America/Los\_Angeles}
+\begin{document}
+\maketitle
+\noindent\textbf{PROVED/EXACT, RESTRICTED; independent referee pending.}
+\textbf{KNOWN THEOREM:} Arvind--Guruswami IPEC 2021, Theorems 2/17.
+\textbf{FALSIFIED/REPAIRED:} ARC227's literal binary-only observed-coordinate wording.
+\textbf{OPEN:} all-input decomposition, polynomial SAT contraction, $P=NP$, $P\ne NP$.
+
+\section{PROPOSE: precise missing lemma}
+We investigate a uniform polynomial-time discovered and verified tree of modules
+whose local constraints comprise 2CNF plus GF$(2)$ linear equations of
+\emph{fixed local codimension}, while their combined global rank is unbounded.
+Three falsifiable mechanisms: (M1) full-interface bottom-up tables should
+compose local decisions exactly; (M2) adding all pinned interface bits as
+new affine equations might preserve polynomial time; (M3) storing only new
+edge separators without running intersection might still ensure global gluing.
+M1 is proved under explicit hypotheses. M2 has a cost flaw: it produces
+local exponent $e+b$ and potentially $N^{O(\log N)}$ time. M3 is invalid
+without the occurrence-subtree property. Physical substitution, complete
+interfaces and an independently checked tree repair both.
+
+\section{SEARCH and priority}
+Arvind--Guruswami, \emph{CNF Satisfiability in a Subspace and Related
+Problems}, IPEC 2021, Theorems 2 and 17 prove deterministic
+$O^*(\sum_{i\le e}\binom{n}{i})$ for a 2CNF plus affine space of
+codimension $e$; Theorem 19 gives W[1]-hardness in parameter $e$.
+Thus $e=2$ and every fixed $e$ are already known polynomial cases.
+W[1]-hardness is not unconditional non-FPT impossibility; the XP bound
+is not polynomial at $e=\Theta(\log N)$.
+Original DOI: \url{https://doi.org/10.4230/LIPIcs.IPEC.2021.5}.
+Inspected GitHub source blobs: CryptoMiniSat
+\texttt{src/gaussian.cpp} at
+\texttt{7b9d200c1c1d8e344ce0c3109bfc92806a14359b},
+CaDiCaL \texttt{src/elim.cpp} at
+\texttt{c401152c7a733803d0b407d98e8a295ab44f7e99},
+NetworkX \texttt{approximation/treewidth.py} at
+\texttt{ef1b2f7351bdb1d7815b8218ac1f041acdd55512}.
+These are practical Gaussian, bounded-elimination and heuristic-decomposition
+implementations, not universal polynomial SAT algorithms.
+
+\section{Explicit tree and local parameters}
+Let $F=\bigwedge_{t\in V(T)}(C_t\land A_t)$ have physical
+input size $N$, where $T$ is a tree discovered and fully verified by
+a uniform algorithm of bit-time $D(N)$. A verifier checks each source
+clause/row occurrence is owned exactly once and all variables of each
+local constraint lie in its declared variable scope $W_t$.
+For every variable $x$, the collection of modules whose scopes contain
+$x$ must induce a connected subtree of $T$. Define
+\[
+ B_t=\{x\in W_t:\exists s\ne t,\ x\in W_s\},\quad
+ b_t=|B_t|,\qquad e_t=\operatorname{rank}(A_t).
+\]
+Here $B_t$ means \emph{all shared variables in the module}, never only
+the newly introduced separator $S_t=W_t\cap W_{\mathrm{parent}(t)}$.
+Every local $C_t$ is at most binary CNF, and $A_t$ is an explicit GF$(2)$
+system; source authentication checks the actual original mixed grammar.
+
+\begin{lemma}[No codimension increase under a pinned interface]
+When $A_t=[A_B\ A_{\overline B}]$ has rank $e_t$ and the $B_t$
+variables are concretely set to $\alpha$, the residual system
+$A_{\overline B}x=c-A_B\alpha$ is inconsistent or has coefficient
+rank at most $e_t$. Restriction also preserves binary CNF.
+\end{lemma}
+\begin{proof}
+Deleting matrix columns cannot increase rank.
+The substituted right hand side is checked, including contradictory
+zero rows. Restricting clauses can delete literals or clauses, but not
+increase their width. Pins must be \emph{substituted} before invoking
+the fixed-codimension solver; adjoining $b_t$ new rows first would
+not justify the required bound.
+\end{proof}
+
+\begin{theorem}[Full-interface composition]
+If the discovered certified tree has polynomially many modules,
+every $e_t\le e_0$ for one absolute constant, and
+$b_t\le c\log_2(N+2)$ for one constant $c$, then a single uniform
+deterministic algorithm decides $F$ on both answer classes in polynomial
+bit time and polynomial total peak space, constructs and source-verifies
+an original SAT assignment, and charges every failed local call.
+Writing $N_t$ for the full module encoded length, a conservative bound is
+\[
+T(N)\le D(N)+\sum_t 2^{b_t}\operatorname{poly}(N)(N_t+1)^{O(e_t)}.
+\]
+The global combined affine codimension need not be bounded.
+\end{theorem}
+\begin{proof}
+Root the verified tree. In postorder, for every full assignment
+$\alpha\in\{0,1\}^{B_t}$ consult every child table after restricting
+to the child-parent separator. Reject if any child rejects. Otherwise
+physically substitute \emph{all} $B_t$ bits into $(C_t,A_t)$,
+then invoke Arvind--Guruswami's deterministic fixed-codimension solver
+on the residual local formula. By the lemma its row rank remains
+at most $e_t$. Keep one source-verified local witness and the
+compatible child witness pointers on an accepting full row.
+Project the resulting exact full table onto the parent separator
+by explicit existential OR over all other boundary bits.
+By running intersection, all names shared between subtrees pass
+through their parent's module and are fixed in its full table.
+Induction on tree height proves each projected table expresses
+exactly the existence of a satisfying descendant extension.
+The root's empty-separator entry is accepting precisely for SAT.
+Follow stored pointers to reconstruct a global witness and check
+each source constraint; UNSAT is determined by exhaustion using
+the same program without a supplied answer-class bit.
+There are $2^{b_t}$ rows per module; all pin substitutions,
+child lookups, unsuccessful solver calls, table projections,
+witness pointers, reconstruction, source parsing and physical
+output are bounded by the displayed total. Sum of explicit
+tables plus the active local solver has polynomial peak space.
+No RAM numerical exponent is transferred without its
+model-specific polynomial simulation overhead.
+\end{proof}
+
+\section{Constructive globally unbounded rank control}
+For every $k$, module $i$ contains $x_{i-1},x_i,z_i$, an affine
+equation $x_{i-1}\oplus x_i\oplus z_i=c_i$ and binary-grammar
+unit $\neg z_i$. Pin $x_0=0$ in the first module, $x_k=t$ in the
+last, and join the modules along a path. Each local rank is one,
+the entire equation rank is $k$, and each full interface has at
+most two variables. Its exact answer is
+$t=\bigoplus_{i=1}^k c_i$, decided by the same table algorithm.
+Every ternary parity equation has a four-clause signed-3CNF
+representation that can be checked against all eight local assignments.
+This is a \emph{mixed} grammar, not automatically a strict signed
+exact-$(2,2)$-3CNF family.
+
+\section{Independent ARC227 audit and computational checks}
+The ARC227 TeX blob
+\texttt{fc4a02dc004e363e28dc78ebc3b969e2c27ad1f7}
+says to observe only binary-clause affine forms while permitting
+unary clauses. This literal wording is false: the formula
+$(x\oplus y\oplus z=0)\land x\land y\land z$ is UNSAT but
+has zero variables in original binary clauses. Correct it by
+observing \emph{all unary and binary} coordinates, or
+absorbing unit clauses into the affine equations and recomputing
+the rank. The original ARC227 Python already observes all
+coordinates of both unary and binary clauses and returns UNSAT,
+three nonzero observed forms, rank two and deficiency one.
+This is a \emph{text correction, not a source-code failure}.
+The one-parity majority/meet lemma and original 1,200 finite
+tests and 65,536 four-variable relation enumeration were rerun.
+Fixed $e=2$ is known from 2021 and is not a new result.
+
+A deterministic plucking reconstruction with implication-SCC
+compression passed 2,900 random 2SUBSAT/brute controls
+(1,162 SAT, 1,738 UNSAT), and a separate 19,800-case seed
+had zero discrepancies. The charged module engine passed
+22 connected XOR-path controls, with global rank through 100
+and 11 SAT/11 UNSAT, and 250 independently brute-checked
+random module-tree cases (198 SAT, 52 UNSAT). It rejected
+invalid local support and non-running-intersection scopes.
+Directly appending interface pins as GF$(2)$ equations would
+make the local solver's codimension $e+b$ and loses the
+claimed polynomial cost. An empty-separator table key was
+also tested to prevent a truthiness bug. No kernel proof
+assistant was run. These counts are COMPUTATIONAL only.
+
+Three user Library ZIPs were freshly materialized and their
+original Python audits rerun. The 16-seed repair policy covered
+49/49 known SAT roots at $n$ flips but failed on SAT disjoint
+products of 4, 8, 16, 32 blocks; component decomposition
+succeeded. Four restart-gap instances were SAT and also
+amenable to direct branching in 22--46 nodes. Width-12
+retries covered 312 mixed/control cases, only 44 strict22
+roots. None provides universal polynomial SAT coverage.
+
+\section{Resource firewall and next lemma}
+The controller is one fixed deterministic program.
+Indexed RAM, single shared tape, read-only-input multitape,
+two-writable-tape and fixed UTM maintain separate traffic,
+head movement, workspace and encoded-output accounts.
+Their simulations may impose polynomial overhead but do not
+transport restricted runtime lower bounds into all-SAT hardness.
+No assumed polynomial source-specific advice, hidden SAT oracle,
+randomized success, uncharged decomposition discovery or
+exponential candidate list is used in the theorem.
+
+Root GitHub \texttt{main.tex} currently contains literal
+\texttt{PLACEHOLDER}, blob
+\texttt{311c8dd0658759f372c9be9a2065c327fdb1a203};
+all LSPV specialist markers are absent. This report leaves
+root untouched for authorized LSPV-5 recovery.
+The next lemma is polynomial discovery (or a counterfamily)
+of full-$O(\log N)$-interface, fixed-local-$e$ decompositions
+on a growing connected strict signed exact-(2,2)-3CNF subclass.
+General SAT contraction and both P versus NP outcomes remain OPEN.
+
+\begin{thebibliography}{2}
+\bibitem{AG} V. Arvind and V. Guruswami,
+\emph{CNF Satisfiability in a Subspace and Related Problems},
+IPEC 2021, LIPIcs 214:5, DOI 10.4230/LIPIcs.IPEC.2021.5.
+\bibitem{S} T. Schaefer,
+\emph{The Complexity of Satisfiability Problems}, STOC 1978.
+\end{thebibliography}
+\end{document}
