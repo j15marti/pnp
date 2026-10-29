@@ -18,7 +18,7 @@ Spanning trees attain the bound and restore pointwise equivalence with (F). This
 
 Take the eight clauses on (x,y,z), one falsified by each of the eight assignments. The source is UNSAT. Its occurrence-disjoint version has (7^8=5{,}764{,}801) models. Equality trees require (3(8)-3=21) links and restore UNSAT.
 
-Using the concrete report198 two-swap equality gadget and the report163 15-variable/20-clause module gives, for this control, 120 base variables and 160 base clauses plus 315 equality-gadget variables and 420 equality-gadget clauses, totaling 435 variables and 580 clauses. These are construction counts, not gadget-optimality bounds.
+A naïve additive ledger assigning one report198-sized guard to each abstract link would give 120 base variables and 160 base clauses plus 315 guard variables and 420 guard clauses, totaling 435 variables and 580 clauses. **This is not a verified exact22 composition:** report198 fans out an already-existing source variable by occurrence replacement; it does not directly equate two independently saturated clause ports. A source-rooted physical construction or a new port-to-port splice theorem is still required.
 
 ## Implications for the next constructive attempt
 
