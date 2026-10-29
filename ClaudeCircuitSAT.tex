@@ -1,0 +1,59 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append a new Run section each cycle; keep status table current
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{thm}{Theorem}\newtheorem{lem}{Lemma}\theoremstyle{definition}\newtheorem{defn}{Definition}
+\title{ClaudeCircuitSAT: a parametrized lower-bound ladder for Circuit-SAT}
+\author{Claude (scheduled hourly run) -- living document}
+\date{Last updated 2026-10-29 (Run 1)}
+\begin{document}\maketitle
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN. No unrestricted lower bound for Circuit-SAT is claimed.}
+Proved here: parametrized lower bounds in the \emph{black-box} (evaluation-query) model, and exact wire/gate facts for tiny circuits. The white-box gap is the whole difficulty.
+\begin{center}\begin{tabular}{lll}\toprule
+Item & Status & Where\\\midrule
+Connected cone needs $\ge k-1$ gates, $2(k-1)$ wires & PROVED/EXACT & Thm 1\\
+Black-box det.\ queries $\ge 2^{\min(n,g+1)}$ & PROVED/EXACT & Thm 2\\
+Black-box randomized queries $\ge 2^{\min(n,g+1)-1}$ & PROVED/EXACT & Thm 2\\
+Matching upper bound $2^k k^{O(\log k)}\log n$ & KNOWN (universal sets, NSS'95; cite unchecked) & Rem.\ 3\\
+Exact min-gate table $n\le 3$ & COMPUTATIONAL & Sec.\ 3\\
+White-box time lower bound in $(n,g)$ or width & OPEN (SETH-conditional $2^{(1-\epsilon)n}$ for poly size) & Sec.\ 4\\\bottomrule
+\end{tabular}\end{center}
+
+\section{Model}
+A circuit has $n$ inputs and $g$ binary gates (any of the 16 two-input functions; negation free), unbounded fan-out, one output. Wires $=$ gate input connections $=2g$. $\mathrm{CSAT}[n,g]$: given $C$, is there $x$ with $C(x)=1$? Parameters of interest: $n$, $g$, and later width/pathwidth.
+
+\section{Wire counting}
+\begin{thm}[cone bound] If the output of $C$ depends on $k$ inputs and the relevant cone has $g'$ gates, then $g'\ge k-1$ (so $\ge 2(k-1)$ wires), and $k\le g+1$.\end{thm}
+\begin{proof} Take the cone: $k+g'$ nodes, $2g'$ wires (edges). The cone is connected as an undirected graph (every node reaches the output), so $2g'\ge k+g'-1$, i.e.\ $g'\ge k-1$. A function depending on an input needs a path from it to the output, so each relevant input lies in the cone; hence $k\le g'+1\le g+1$. \end{proof}
+Equality: $\mathrm{AND}$ of $k$ literals uses $k-1$ gates, a tree.
+
+\section{Exact ladder, $n\le3$ (COMPUTATIONAL)}
+\texttt{research/agents/claude/circuitsat/ladder.py} enumerates all circuits (dedup by node set) and records the minimum gate count of every function. Counts of the $2^{2^n}$ functions by minimum gates ($=$ wires/2):
+\begin{center}\begin{tabular}{crrrrr}\toprule
+$n$ & 0 gates & 1 & 2 & 3 & 4\\\midrule
+1 & 4 & & & &\\ 2 & 6 & 10 & & &\\ 3 & 8 & 30 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+Totals $4,16,256$ as required. Single-satisfying-assignment (``needle'') functions need exactly $n-1$ gates for $n\le3$, matching Thm 1. The hardest 3-input functions need 4 gates (8 wires). Raw data: \texttt{ladder\_results.json}. Run time $<10$\,s; $n=4$ would need chunking (deferred).
+
+\section{Parametrized black-box bound}
+Black-box: the algorithm sees $C$ only through queries $x\mapsto C(x)$.
+\begin{thm}\label{t2} Let $k=\min(n,g+1)$. Every deterministic black-box algorithm deciding $\mathrm{CSAT}[n,g]$ needs $\ge 2^{k}$ queries in the worst case; every randomized one with error $\le1/3$ needs $\ge 2^{k-1}$.\end{thm}
+\begin{proof} Hard family: for $S\subseteq[n]$, $|S|=k$, $a\in\{0,1\}^S$: $f_{S,a}(x)=[x|_S=a]$, computed with $k-1\le g$ gates; compare with the constant-0 circuit. \emph{Deterministic:} the adversary answers 0. After $q<2^k$ queries, fix any $S$; each query kills exactly one $a$, so some $f_{S,a}$ is consistent with all answers, as is the constant 0; the algorithm cannot decide. \emph{Randomized:} take $S$ fixed, $a$ uniform. Any single query hits $a$ with probability $2^{-k}$ regardless of earlier answers, so $q$ queries hit w.p.\ $\le q2^{-k}$. Without a hit the transcript equals that of constant 0, so $\Pr[\text{accept}\mid\text{no hit}]\le1/3$ is forced; acceptance on the needle w.p.\ $\ge2/3$ needs $\Pr[\text{hit}]\ge1/2$, i.e.\ $q\ge2^{k-1}$ (Yao).\end{proof}
+\begin{thm}[ladder form] The black-box query complexity of $\mathrm{CSAT}[n,g]$ lies between $2^{k-1}$ (randomized) and $2^{n}$.\end{thm}
+\begin{proof} Lower bound: Thm~\ref{t2}. Upper: query all $2^n$ points (for $g+1<n$ the Remark improves it).\end{proof}
+\begin{lem}[Remark 3, KNOWN] A circuit with $g$ gates is a junta on $\le g+1$ coordinates (Thm 1), and a satisfiable junta is hit by any $(n,g+1)$-universal set, so $2^{g+1}(g+1)^{O(\log g)}\log n$ queries suffice deterministically (Naor--Schulman--Srinivasan 1995, universal sets; citation from memory, to verify). So for $g<n-1$ the black-box bound is tight up to $g^{O(\log g)}\log n$.\end{lem}
+\textbf{Reading.} The parameter that governs black-box cost is the \emph{number of wires} $2g$: cost $2^{g+1}$ up to the cap $2^n$. Each added wire pair (one gate) at most doubles the needle search space, and the needle shows this doubling is forced when the algorithm cannot read the circuit.
+
+\section{Why this is not a Circuit-SAT lower bound, and where to push}
+Circuit-SAT hands the algorithm the wiring. White-box upper bounds: $2^{k}\cdot g$ via junta reduction; $2^{O(\mathrm{pw})}g$ for pathwidth $\mathrm{pw}$. Lower bounds on these are only SETH-conditional (SAT in $2^{(1-\epsilon)n}$ poly$(g)$ would refute SETH; pathwidth-tight conditional bounds are in the literature, citations to verify). The repository ledger (\texttt{research/agents/claude/world-ledger}, rows L13, L34--L40) shows alternation-trading and one-tape routes cannot give more than limited exponents; the black-box ladder above is consistent with, and does not circumvent, those barriers (black-box bounds relativize).
+
+\subsection*{Next targets}
+\begin{enumerate}
+\item Extend exact ladder to $n=4$ in chunks (min gates $\le7$); record wire-minimal vs gate-minimal tradeoff and fan-out.
+\item Query model with partial structure access (read the wiring but not gate types; or probe wires of a hidden gate): find the weakest white-box access for which $2^{\Omega(g)}$ survives.
+\item Restricted white-box classes with unconditional bounds: read-once formulas, monotone circuits, bounded-width branching programs, with parameter $\mathrm{pw}$.
+\item Check which proved items of the repo (ARC/FLMV time--space spine) transfer to $\mathrm{CSAT}[n,g]$ in small space.
+\end{enumerate}
+
+\section*{Run log}
+\textbf{Run 1 (2026-10-29).} Created document; Thms 1--2, ladder $n\le3$. Corpus survey limited to root listing, AGENTS.md, and the claude/ report index (no deep reread of ARC/FLMV material). No literature search performed this run; citations flagged.
+\end{document}
