@@ -1,6 +1,6 @@
 # LSPV-3: PORT-QUANTIFIER-CLOSURE161 (29 October 2026)
 
-**Status:** RESTRICTED/EXACT under a finite 81-template exhaustive lemma, verified computationally, independent referee and kernel proof pending. **P versus NP OPEN.** Full LaTeX, source, raw and PDF exist in the conversation artifact bundle; GitHub full-source upload is pending due Library/container transfer failure. This entry is a partial publication, not a claim of full text synchronization.
+**Status:** RESTRICTED/EXACT under a finite 81-template exhaustive lemma, verified computationally, independent referee and kernel proof pending. **P versus NP OPEN.** Full LaTeX, reproducible Python, raw controls, the exhaustive 81 templates, BibTeX, independent MILP, hash manifest, and LSPV-1/LSPV-5 handoff are published in GitHub and verified by fresh Git-blob readback. The compiled PDF and complete source ZIP are uploaded to the research Library. Earlier publication failure was transient and has been resolved.
 
 ## Theorem (restricted source grammar)
 
