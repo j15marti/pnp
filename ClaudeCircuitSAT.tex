@@ -1,0 +1,65 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- updated 2026-10-29 (run CCSAT-0001)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: wire-by-wire lower bounds for Circuit-SAT (living document)}
+\date{Last updated 2026-10-29}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial
+lower bound. Labels: PROVED, COMPUTATIONAL, CONDITIONAL, OPEN.
+
+\section{Program}
+Ladder: (i) smallest circuits, track gates $g$ and wires $w=2g$ (fan-in 2);
+(ii) raise number of inputs $n$ one at a time, record the exact minimum wire count
+$W(n)=\max_f 2\,C_{B_2}(f)$; (iii) relate to Circuit-SAT$(n,m)$ with $n$ inputs and $m$ gates,
+seeking a \emph{parametrized} bound $T(n,m)$.
+
+\section{Step 1 -- exact minimum circuits (COMPUTATIONAL)}
+Basis $B_2$ (all 2-input gates), inputs and constants free. Exhaustive BFS over sets of
+computed truth tables (\texttt{research/agents/claude/circuitsat/mincircuit.py}):
+\begin{center}\begin{tabular}{lcccccc}\toprule
+$n$ & \#functions & 0 gates & 1 & 2 & 3 & 4\\\midrule
+1 & 4 & 3 & 1 & & & \\
+2 & 16 & 4 & 12 & & & \\
+3 & 256 & 5 & 33 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+So $\max_f C(f)=0,1,4$ for $n=1,2,3$ (wires $0,2,8$). Hardest 3-variable functions need 4 gates.
+Runtime $<10$s (depth-4 for $n=3$); $n=4$ is beyond this naive BFS and needs chunked/SAT-based search.
+
+\section{Step 2 -- probe lower bound for Circuit-SAT (PROVED, trivial model)}
+Model: the circuit is given as a wire list (gate $j$ has two pointers/literals); the algorithm
+probes entries; cost = probes.
+\begin{theorem}
+Every deterministic algorithm deciding Circuit-SAT for $m$-gate instances makes $\ge m$ probes.
+\end{theorem}
+\begin{proof}
+Let $I_0$ be the AND of literals $x_1,\dots,x_m$ (satisfiable). For $j$ let $I_j$ replace
+the $j$-th literal by $\neg x_{j'}$ ($j'\ne j$); $I_j$ contains $x_{j'}$ at slot $j'$ and so is
+unsatisfiable. An algorithm that never probes slot $j$ sees the same answers on $I_0$ and $I_j$.
+Hence all $m$ slots must be probed on $I_0$. \qedhere
+\end{proof}
+The same adversary gives $\Omega(m)$ randomized probes (Yao, uniform over $\{I_0,I_j\}$ gives
+success $\le 1/2+$ fraction unprobed). This is only an input-reading bound, linear in wires;
+it is the $n$-independent floor $T(n,m)\ge m$.
+
+\section{Step 3 -- parametrized targets}
+Brute force gives $T(n,m)=O(2^n m)$. \textbf{CONDITIONAL:} under ETH, no $2^{o(n)}\mathrm{poly}(m)$
+algorithm exists; under SETH, no $O(2^{(1-\varepsilon)n}\mathrm{poly}(m))$ for CNF-SAT, which
+transfers to Circuit-SAT. Unconditionally the best known is the probe floor $m$ above and
+known restricted-model bounds; the gap $m$ versus $2^n m$ is OPEN.
+
+\section{Repository cross-check}
+Relevant: ledger row L13 (Buss--Williams, alternation trading) and the TPORT/ONETAPE notes in
+\texttt{research/agents/claude/} give time--space style restricted bounds; none bound
+Circuit-SAT by wire counting. Circuit-size counting ($2^{\Omega(2^n/n)}$ functions vs.\ circuits)
+shows hard functions exist but is a non-constructive size bound for functions, not for SAT.
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend exact $C_{B_2}$ to $n=4$ (SAT-solver search, chunked).
+\item Define a SAT-hardness measure: minimum wires of a circuit family whose satisfiability
+ witness structure forces $\ge k$ distinct subcircuit evaluations; test whether it grows with $n$.
+\item Examine restricted classes (monotone, bounded fan-out, read-once) for parametrized unconditional bounds.
+\end{enumerate}
+% END_OF_CLAUDE_CIRCUITSAT::CCSAT-0001
+\end{document}
