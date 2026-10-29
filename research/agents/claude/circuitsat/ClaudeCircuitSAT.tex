@@ -1,0 +1,97 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT::2026-10-29
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\newtheorem{lem}[prop]{Lemma}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: a step-by-step, wire-counted, parametrized lower-bound ladder}
+\author{Hourly Claude routine (living document)}
+\date{Last updated 2026-10-29 (run 1)}
+\begin{document}\maketitle
+
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. Nothing below is superlinear;
+the ladder so far records exact small cases and the linear ``bookkeeping'' bounds,
+with their limits made explicit. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL,
+CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model and parameters}
+A circuit $C$ has $n$ inputs, $g$ binary gates (fan-in 2, any of the 16 binary
+functions, so negation is free), one output; \emph{wires} $m=2g$. \CSAT\ asks whether
+some $x\in\{0,1\}^n$ has $C(x)=1$. Lower bounds are tracked as functions of the
+parameters $(n,g,m)$ and, later, structural parameters (treewidth/pathwidth $w$,
+depth $d$, fan-out $\Delta$). Two distinct quantities are kept apart:
+\begin{itemize}
+\item $W(f)=2\cdot$(min gates computing $f$): wires needed to \emph{build} $f$ (circuit complexity);
+\item $T(m)$: time to \emph{decide} \CSAT\ on instances of $m$ wires (algorithmic complexity).
+\end{itemize}
+
+\section{Ladder, build side (COMPUTATIONAL, exact)}
+Script and data: \texttt{mincirc.py}, \texttt{mincirc\_results.json} (exhaustive BFS over
+sets of computed truth tables; runs in seconds). Number of $n$-input functions whose
+minimum circuit has exactly $k$ gates:
+\begin{center}\begin{tabular}{lrrrrr}\toprule
+$n$ & $k{=}0$ & 1 & 2 & 3 & 4\\\midrule
+1 & 4 & & & & \\ 2 & 6 & 10 & & & \\ 3 & 8 & 30 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+Hence max gates $=0,1,4$ for $n=1,2,3$. Functions with exactly one satisfying point
+(the hardest-to-satisfy-yet-satisfiable class) need $0,1,2=n-1$ gates; functions with
+exactly two satisfying points need up to $3$ gates at $n=3$.
+
+\begin{lem}[PROVED/EXACT, connectivity] A circuit with $g$ fan-in-2 gates depends on at most $g+1$
+inputs. So any $f$ depending on all $n$ inputs has $W(f)\ge 2(n-1)$; this is tight for
+$\mathrm{AND}$ of literals (unique-SAT), matching the computation at $n\le3$.
+\end{lem}
+\emph{Proof.} Induct: the reachable-input set of a circuit grows by at most one per gate
+(each gate merges two sub-DAGs; start from $g=0$ with $\le1$ input). \qed
+
+\section{Decide side, linear reading bound (PROVED/EXACT)}
+\begin{prop}[Reading bound, parametrized by $m$] In the random-access model with instances
+encoded wire-by-wire, every correct deterministic \CSAT\ algorithm makes $\Omega(m)$
+probes on some instance with $m$ wires, for all $m\ge 4$.
+\end{prop}
+\emph{Proof.} Take $n=\lfloor m/4\rfloor$-ish: $C_0=\bigwedge_{i\le n} g_i$, $g_i=x_i\wedge y_i$ with $y_i$
+wired to $x_i$ (polarity bit $+$). $C_0$ is satisfiable. $C^{(j)}$ flips the polarity bit of
+$y_j$ ($g_j=x_j\wedge\neg x_j\equiv0$), so is unsatisfiable. An algorithm that on $C_0$
+never probes the polarity bit of $y_j$ gives the same answer on $C^{(j)}$; so it must probe
+all $n=\Theta(m)$ polarity bits. \qed
+
+This is the only decide-side bound proved here; it is the trivial analogue of reading the input.
+
+\section{Parametrized view}
+\begin{itemize}
+\item KNOWN THEOREM: \CSAT\ with treewidth $w$ is solvable in $2^{O(w)}\,m$.
+\item CONDITIONAL (SETH; cited from memory, to be re-verified against primary sources): no $(2-\varepsilon)^{w}\mathrm{poly}(m)$
+algorithm for CNF-SAT of primal pathwidth $w$. This would be the matching parametrized
+lower bound, but it is conditional and does not touch P vs NP.
+\item KNOWN THEOREM (cited from memory): SAT needs time $n^{2\cos(\pi/7)-o(1)}\approx n^{1.80}$ on
+machines with $n^{o(1)}$ space (Williams; repo ledger row L13 says alternation-trading
+cannot reach exactly this exponent with such proofs). Relevant repository work:
+\texttt{research/agents/claude/world-ledger/}, \texttt{tport/} (barrier L34: Williams-style
+proofs for the UWI portfolio stall at linear time when the portfolio has $\approx N$ programs).
+\item Explicit-circuit side, KNOWN (from memory): best general-basis explicit lower bound is
+$\approx 3.1n-o(n)$ gates (Li--Yang 2022). Anything above linear for an NP function is OPEN.
+\end{itemize}
+
+\section{Barriers (what the ladder cannot do by itself)}
+Counting/connectivity arguments give only $\Theta(n)$ wires. Superlinear bounds for NP
+need techniques that evade natural proofs, relativization and algebrization; wire counting
+at fixed small $n$ is exact but does not extrapolate: from $n=3$ no growth law is implied.
+Classification: small-case tables are COMPUTATIONAL data, not evidence for an asymptotic law.
+
+\section{Next rungs (CANDIDATE plan)}
+\begin{enumerate}
+\item $n=4$: exact minimum gates for all $65536$ functions needs a smarter search (SAT-based
+exact synthesis); target the unique-SAT and parity-with-constraint classes first.
+\item Track $W_{\min}(n,s)$: fewest wires of a circuit with exactly $s$ satisfying points, $s=1,2,\dots,2^n$;
+conjecture shape to test from data: $\ge 2(n-1)$ for $s=1$, rising with $\log$ of the number of
+distinct $s$-subsets (counting) up to the generic $\Theta(2^n/n)$.
+\item Parametrize by fan-out $\Delta$ and depth $d$; look for a bound of form
+$T\ge f(w)\cdot m$ that is unconditional in a restricted model (e.g.\ read-once/oblivious branching).
+\item Cross-check each rung against repository ARC/FLMV time--space spine for any usable link.
+\end{enumerate}
+
+\section*{Run log}
+\textbf{2026-10-29 run 1.} Created document; exact table $n\le3$; connectivity lemma; reading bound.
+Repository (\texttt{j15marti/pnp}) read: AGENTS.md, Claude world-ledger/tport pointers. No new link found
+that closes a load-bearing arrow.
+% END_OF_DOCUMENT::CLAUDE-CIRCUITSAT
+\end{document}
