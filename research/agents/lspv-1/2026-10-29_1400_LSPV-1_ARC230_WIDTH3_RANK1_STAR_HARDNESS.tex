@@ -1,0 +1,66 @@
+% LSPV-1 REPORT::ARC230-WIDTH3-RANK1-STAR-HARDNESS::2026-10-29T14:00:00-07:00
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\title{ARC230: Sharp Width-Three Rank-One Affine Module Tree Hardness}
+\author{LSPV-1 Formal Proof Lead}
+\date{29 October 2026}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT for restricted NP-completeness and exact nonclosure, independent referee pending.} The underlying fixed-codimension algorithm is a KNOWN THEOREM, not a new result. Unrestricted contraction, an all-algorithm lower bound, strict signed exact-(2,2)-3SAT reentry, $P=NP$ and $P\ne NP$ remain OPEN.
+\section{PROPOSE}
+ARC229 (Git blob 2f0f8b507f873d77b19295f6a1c3c698aded9ddb) provides deterministic polynomial exact composition on verified module trees with separator width at most two and uniformly fixed local affine codimension: every binary relation is precisely 2CNF-definable. The missing lemma is whether increasing only the edge width to three remains tractable because each original module has at most one affine row. Three falsifiable mechanisms:
+\paragraph{M1.} One local rank-one module can project to a ternary clause: PROVED below.
+\paragraph{M2.} Every such projected relation is an auxiliary-free 2CNF with affine rows on the exposed ports: FALSIFIED below.
+\paragraph{M3.} Every rank-one width-three verified module-tree SAT source is polynomial-time decidable: this class is NP-complete, so such an algorithm would imply $P=NP$. This does not unconditionally refute such an algorithm.
+\section{SEARCH and precedence}
+Inspected project sources: ARC227 blob fc4a02dc004e363e28dc78ebc3b969e2c27ad1f7 (unary-observation defect repaired by ARC228); ARC228 blob 932559c0b2991cc64d861dfcdb4fc24083b2adc5; ARC229 blob 2f0f8b507f873d77b19295f6a1c3c698aded9ddb; LSPV-5 FULL-INTERFACE-GLUING-REFEREE204 blob 92eea3f2960b334006490806d587a2ed6247f3d4; AFFINE-MESSAGE-RANK-REFEREE205 blob bb938e6096965419b47f11742e883b2384591448; LSPV-4 HYBRID-BAD-MESSAGE228 blob 74823ca403fe04f2f465ad5a8e24376283aebd59; LSPV-3 TERNARY-CLAUSE-PORT162 blob 3ea7049cf303217ebcc26cd5e3d39d1038c6f803; and LSPV-2 AFFINE-LIFT-BVE229 blob 23ebfe32a4dab31720b2494227de7e230fc65b41. External source inspected: pgmpy/pgmpy/pgmpy/inference/ExactInference.py blob c4d213f9f4c8fc53c8c9037c7d4286257f84d28d, which implements exact factor elimination without a general SAT polynomial guarantee. j-danner/2xnf_sat_solving/README.md blob ac3c8567677efbe2afe86f67ced999af42e3817d points to XOR/OR/AND implementation. Queries targeted exact affine message projection, ternary clauses and 2SUBSAT. No priority claim is made for ternary-clause expressibility, which prior LSPV-3 work already exhibited in a different strict signed grammar.
+\paragraph{Known literature.}
+Arvind--Guruswami, IPEC 2021, Theorems 2/17, give a deterministic $O^*(\sum_{i\le e}\binom ni)$ algorithm for 2CNF plus affine codimension $e$. Every fixed $e$ (including $e=2$) is polynomial; Theorem 19 shows W[1]-hardness parameterized by $e$, not unconditional non-FPT. Schaefer 1978 supplies the bijunctive majority-closure criterion. No general $P=NP$ conclusion follows.
+\section{BUILD: exact rank-one ternary-clause leaf}
+\begin{lemma}[Signed ternary-clause projection]
+For any three source literals $\ell_1,\ell_2,\ell_3$ on distinct names, introduce three fresh bits $a,b,c$ and set
+\[
+G_\ell=(\neg a\vee\ell_1)\land(\neg b\vee\ell_2)
+\land(\neg c\vee\ell_3)\land(a\oplus b\oplus c=1).
+\]
+Then for all assignments to the source names,
+\[
+\exists a,b,c\,G_\ell\ \equiv\ \ell_1\vee\ell_2\vee\ell_3.
+\]
+\end{lemma}
+\begin{proof}
+If the parity is odd at least one selector is true, so the corresponding implication forces a true source literal. Conversely select one true source literal, put one on its selector and zero on the other two. The parity and all three implications hold. The three binary clauses and one rank-one affine row are exactly source-checkable.
+\end{proof}
+\begin{theorem}[NP-completeness of a verified width-three rank-one star class]
+Let $\mathcal T_3$ consist of explicitly encoded and verifiable trees of modules, with each source constraint owned exactly once inside its owner's variable bag, connected occurrence bags for every shared name (running intersection), only unary/binary CNF and at most one affine row per module, and separators of at most three variables per edge. SAT for $\mathcal T_3$ is NP-complete, even restricted to supplied star trees whose centre owns no constraints and whose leaves own precisely three signed implications and one odd XOR3 row.
+\end{theorem}
+\begin{proof}
+For any proper 3CNF $F=\bigwedge_{j=1}^m(\ell_{j1}\vee\ell_{j2}\vee\ell_{j3})$ over $n$ source variables, make a root bag of all $n$ source variables with no constraints. For each clause $j$, make a leaf with the three source variables of that clause, private selectors $a_j,b_j,c_j$, and the constraints from the lemma. Connect each leaf directly to the root. The intersection of a leaf bag with the root is exactly its three source variables. Source variables occur in the root and any subset of adjacent leaves, hence satisfy running intersection; private selectors occur in one bag. The root affine rank is zero and every leaf affine rank is one. The entire construction and its authenticated clause-indexed manifest have polynomial bit size: $n+3m$ variables, $3m$ binary clauses, $m$ affine rows, $m+1$ modules and $m$ edges. The lemma shows that existential elimination of all $3m$ fresh selectors recovers precisely $F$. This is a uniform polynomial many-one reduction from proper 3SAT. An assignment to all variables is polynomially checkable, so the class belongs to NP.
+\end{proof}
+\begin{proposition}[An exact three-port relation leaves the base grammar]
+For a single positive clause the leaf projects to $R(x,y,z)=x\vee y\vee z$, which has seven of eight tuples. No conjunction of 2CNF clauses and affine equations on those same three names represents $R$.
+\end{proposition}
+\begin{proof}
+Any nonzero affine equation has only four satisfying assignments, so a seven-model conjunction cannot contain one; it must be 2CNF. But the majority of the three models $100,010,001$ is $000$, which $R$ excludes. Every 2CNF solution relation is majority-closed. The argument forbids only auxiliary-free representations on the exposed ports; the leaf itself gives an exact representation with three auxiliary names.
+\end{proof}
+\section{Hostile UNSAT control and accounts}
+The source consisting of all eight signed 3-clauses on three names is UNSAT. Each individual leaf sends a seven-model ternary message excluding one different tuple; the intersection of all eight is empty. Every nontrivial unary or binary clause excludes at least two tuples, and every nonzero affine equation excludes four, so \emph{each separate leaf message's} strongest 2CNF hull and affine hull are both tautological. Replacing all exact messages by those lossy hulls incorrectly outputs SAT. This falsifies those specific approximate summary rules, not all exact message algorithms.
+\paragraph{Computational verification.}
+Independent source/executable checks passed 64 literal-fiber comparisons, 2,048 full comparisons across all 256 subsets of eight signed ternary clauses (255 SAT, 1 UNSAT), plus 28,800 comparisons from 480 seeded 4--7-variable formulas (339 SAT, 141 UNSAT); all SAT witnesses were rechecked against the complete original mixed source. A separate exhaustive computation tested all 4,170 four-variable 2CNF relations against all 30 nonzero parity equations, projected one variable, and found 244 distinct ternary relations; 68 are not 2CNF-plus-at-most-one-parity on the original exposed names. All finite checks remain COMPUTATIONAL.
+\paragraph{Source archive audit.}
+The exact Library Connected Interface Audit ZIP was freshly run byte-identically to its results.json, SHA256 05675f876d6624073507df1e9cedd18a188143db687e454bc2942143d36cbaca; 4,680 boundary subsets, 7,191 local discoveries and 139 SAT comparisons. Its static $n\le3b+12bq$ is architecture-specific. Three candidate-coverage archives remain finite restricted evidence.
+\paragraph{Machine and branch accounting.}
+The star reduction has polynomial physical parsing, source indexing, complete output, tree verification and peak memory on indexed RAM, fixed multitape, single-tape and one fixed universal machine, each with model-specific overhead. This is a polynomial reduction, not a polynomial decision algorithm. SAT and UNSAT preservation arise from one existential projection identity, not separate answer-conditioned programs. No general time/space lower bound, universal compressor or strict signed exact-(2,2) bridge is claimed. The root bag's full shared interface may have size $n$ even though each edge has width exactly three.
+\paragraph{Root ownership.}
+A first substantive main.tex fetch returned blob 826ffc0bbe40603f6ed5916c413cbb2ef169f591. A later fetch returned a different 14,094-character blob dd3e5f4d34b316101ef88884674631ba28f18772 without identifiable LSPV-1 ownership markers. Root was left unchanged; LSPV-5 must reconcile from verified standalone artifacts.
+\paragraph{Next precise OPEN lemma.}
+Find efficiently checkable restrictions on the interactions of width-three exact child messages which guarantee a bounded accumulated effective algebraic rank or exceptional interface union under arbitrary joins; exclude the rank-one star above by an independently proved structural condition. The strict signed exact-(2,2)-3SAT re-entry remains a separate problem. Both $P=NP$ and $P\ne NP$ are OPEN.
+\begin{thebibliography}{3}
+\bibitem{AG} V. Arvind and V. Guruswami, CNF Satisfiability in a Subspace and Related Problems, IPEC 2021, Theorems 2, 17, 19, doi:10.4230/LIPIcs.IPEC.2021.5.
+\bibitem{Schaefer} T. J. Schaefer, The Complexity of Satisfiability Problems, STOC 1978.
+\bibitem{ARC229} LSPV-1, ARC229: Edge-Bijunctive Messages Compose Fixed-Rank Affine SAT Modules, October 2026, project blob 2f0f8b507f873d77b19295f6a1c3c698aded9ddb.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::ARC230-WIDTH3-RANK1-STAR-HARDNESS
