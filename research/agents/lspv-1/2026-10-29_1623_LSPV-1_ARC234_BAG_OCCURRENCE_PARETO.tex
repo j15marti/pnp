@@ -1,0 +1,121 @@
+% LSPV-1 REPORT::ARC234-BLOCKCUT-BAG-AMORTIZATION::2026-10-29 16:23 America/Los_Angeles
+\documentclass[10pt]{article}
+\usepackage[margin=.79in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,graphicx,hyperref,xurl,seqsplit}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\F}{\mathbb F_2}
+\title{ARC234: Exact Block-Cut Bag Amortization\\\large A Simultaneous Time--Space Frontier and Independent Rank-One Solver Check}
+\author{LSPV-1 Formal Proof Lead}
+\date{29 October 2026, 16:23 America/Los\_Angeles}
+\begin{document}
+\maketitle
+\noindent\fbox{\parbox{.94\linewidth}{\textbf{Scope and priority.} \textbf{PROVED/EXACT} is the bag-occurrence identity and its restricted witness-footprint consequence. The block-cut tractability theorem itself was \textbf{already published} in ARC233 (blob \texttt{\seqsplit{36a123af7549209fec410e97eb917e4610ca158f}}) and earlier project work, so no independent priority is claimed for it. The Arvind--Guruswami fixed-codimension theorem and the ARC227 one-parity argument are preexisting. The executable below independently reimplements the rank-one case and validates source offsets and SAT witnesses. No unrestricted SAT lower bound, polynomial strict22 solver, or P-versus-NP conclusion is claimed. P=NP and P$\ne$NP are \textbf{OPEN}.}}
+
+\section{PROPOSE: one missing amortized resource lemma}
+The previous ARC233 report gave a polynomial upper bound on peak witness storage for a discovered primal block-cut decomposition, but not the exact \emph{total number of variable occurrences across all blocks}. The missing lemma is whether this aggregate remains linear even when each individual block has arbitrarily large treewidth and a variable belongs to many blocks. A positive answer gives a source-native simultaneous $(T,S)$ ledger for the same deterministic program on both SAT and UNSAT inputs.
+
+\noindent\textbf{Falsifiable mechanisms.} \textbf{M1:} Use the block-cut incidence-forest edge count to prove $\sum_B|V_B|=n+B-C$. \textbf{M2:} Distinguish cached local witnesses (at most two per block) from a streaming source check and charge all successful/failed local queries. \textbf{M3:} Look for a hostile connected path of growing positive-2CNF cliques and growing independent ternary parity rows where ordinary width-table costs increase exponentially but one-articulation composition remains polynomial. \textbf{M4:} Check that arbitrary SAT sources acquire such a decomposition for free. This is explicitly \textbf{OPEN} and never assumed.
+
+\section{SEARCH: exact sources, competing models, hypotheses}
+Read current GitHub \texttt{AGENTS.md} blob \texttt{\seqsplit{19656af102604d5f0a721d548cf2e4e72a063561}}, \texttt{CODEX.md} blob \texttt{\seqsplit{754999f50de93cdb693ed37bc8110d31e9e698ef}}, and the installed project skill blob \texttt{\seqsplit{b8df83a7b0b1428f349b0e02ce1387d979e8db7f}}. Independent substantive source inspections were the prior ARC232 (blob \texttt{\seqsplit{098903eca165b8bbde842e9ffc7b9c6190d55258}}), ARC227 (\texttt{\seqsplit{fc4a02dc004e363e28dc78ebc3b969e2c27ad1f7}}), ARC229 (\texttt{\seqsplit{2f0f8b507f873d77b19295f6a1c3c698aded9ddb}}), ARC233 (\texttt{\seqsplit{36a123af7549209fec410e97eb917e4610ca158f}}), LSPV-4 hybrid theorem (\texttt{\seqsplit{74823ca403fe04f2f465ad5a8e24376283aebd59}}), and LSPV-2 M22 block-cut factor theorem (\texttt{\seqsplit{557d9dfc59748d162105aa06168b0df47d0a0021}}). The substantive current root \texttt{main.tex} had blob \texttt{\seqsplit{f34568e380028a26eb309d269c40d37dc460b8db}}; ownership reconciliation is held for the LSPV-5 recovery protocol unless all current markers verify.
+
+The primary Arvind--Guruswami IPEC 2021 source, Theorems 2, 17 and 19, was checked against its actual pages 4 and 11 \cite{AG2021}. It proves deterministic $O^*(\sum_{j\le e}\binom nj)$ for 2CNF with affine codimension $e$, and W[1]-hardness parameterized by $e$. Its XP algorithm is polynomial for each fixed $e$, not for $e=\Theta(\log N)$. The NetworkX \texttt{networkx/algorithms/components/biconnected.py} implementation blob \texttt{\seqsplit{43b3f3a21d0e879fda1ed4c53ba3f9dffc9f368a}} uses the classical Hopcroft--Tarjan block algorithm \cite{HT1973}. CryptoMiniSat \texttt{src/gaussian.h} blob \texttt{\seqsplit{df31e3ee44219e66bafd2bf04e60a51696427938}} documents native XOR reasoning but neither constructs our decomposition nor proves our frontier.
+
+\section{Native resource definitions and exact block identity}
+For a physically encoded input of bit length $N$, use $n$ explicit variable names, $B$ primal biconnected blocks including one-vertex blocks for isolated variables, and $C$ primal connected components. A canonical typed encoding contains a roster for all $n$ variables, original source IDs, binary clauses, and affine rows. Therefore $n\le N$ and no hidden exponentially large declared variable domain is admitted. Let $V_j$ be the vertex set of block $j$.
+
+For a fixed computation model $\mathcal M$ on one input $F$, let $T_{\mathcal M}(F)$ count total charged time (source parsing, decomposition, failed local tests, witnesses, joins, verification, output), and let $S_{\mathcal M}(F)$ be its simultaneous peak writable footprint. On a single shared tape the input counts in total tape footprint; on a read-only-input multitape machine work cells are counted separately; an indexed RAM counts $O(\log N)$-bit words; a fixed UTM has its own interpreter and simulation charge. They are distinct ledgers. Normalize $t_{\mathcal M}=\log_N\max(2,T_{\mathcal M})$ and $s_{\mathcal M}=\log_N\max(2,S_{\mathcal M})$ for $N>1$, converting word space to bits before comparing exponent units.
+
+\begin{theorem}[Exact aggregate block-bag identity]\label{th:identity}
+For every finite undirected primal graph, with singleton blocks added for isolated vertices,
+\[
+\boxed{\sum_{j=1}^{B}|V_j|=n+B-C.}\tag{1}
+\]
+This is an exact combinatorial identity, not merely a big-$O$ bound.
+\end{theorem}
+\begin{proof}
+For one connected component with $A$ articulation vertices and $B_0$ blocks, every non-articulation vertex belongs to exactly one block. Every articulation $v$ belongs to $d(v)$ block nodes of the bipartite block-cut tree. The tree has exactly $B_0+A-1$ edges, so $\sum_v d(v)=B_0+A-1$. Consequently
+\[
+\sum_{j\text{ in component}}|V_j|=(n_0-A)+\sum_v d(v)=n_0+B_0-1.
+\]
+An isolated vertex is a singleton component and obeys the same identity. Sum over all $C$ components.\qedhere
+\end{proof}
+
+\begin{proposition}[Charged rank-one block-cut solver, independent implementation]\label{prop:solver}
+Given an explicit typed source of unary/binary clauses and affine XOR equations, deterministically build its primal graph, all block owners, and the block-cut forest. Reject the restricted guarantee with \texttt{UNKNOWN} when a block has affine coefficient rank $>1$. On every other input, one uniform deterministic program decides SAT and UNSAT exactly and reconstructs a full original-source SAT witness. A block of $v_j$ variables incurs at most $2(1+v_j(v_j+1))$ ordinary 2SAT queries for at most two parent-articulation values. Its total ordinary 2SAT query count is bounded by
+\[
+ Q\le 2\sum_{j=1}^{B}\bigl(1+v_j(v_j+1)\bigr),\qquad v_j=|V_j|.
+ \tag{2}
+\]
+A controller storing at most one satisfying local witness per parent value retains at most
+\[
+\boxed{W_{\rm cached}\le2\sum_jv_j=2(n+B-C)\text{ Boolean witness bits}.}\tag{3}
+\]
+All source buffers, graph edges, indices, solver workspace, failure work, component metadata and final output are extra and must be added before claiming peak space.
+\end{proposition}
+\begin{proof}
+A source scope of size two is an edge; a scope of size at least three forms a clique, which cannot cross biconnected blocks; the provided implementation handles at most ternary affine rows, though the theorem permits any explicitly encoded finite scope. Assign every source exactly once to its unique containing block, with unit sources assigned by a fixed rule. The bipartite block-cut incidence graph is a forest. Every child subtree meets the complement in precisely one articulation variable, so its exact compatibility message is a subset of $\{0,1\}$. This is representable by at most one unary 2CNF clause or by the explicit contradiction. Hence for each parent pin there is one local 2CNF-plus-one-XOR instance. The ARC227 minimal-generator construction solves one parity using one base 2SAT call, at most $v_j$ opposite-value probes, and at most $v_j^2$ further two-pin probes; GF(2) rank zero uses a single call, while contradictory dependent rows are rejected. The cached local witness for each feasible pin is a bit vector of length $v_j$. A bottom-up induction gives both directions of semantic gluing; the final witness is checked against every original source. Summing the bound over the forest proves (2), and Theorem~\ref{th:identity} proves (3). Memory needed for graph construction, repeated 2SAT implications, source offsets, and complete output is not conflated with the witness-bit count.
+\end{proof}
+
+\noindent\textbf{Explicit machine ledger.} For a bounded-arity typed input, an indexed word-RAM can build the primal graph and block forest in $O(N^2)$ conservative operations; source IDs and graph adjacency use $O(N)$ $O(\log N)$-bit words. Sequential local calls reuse a single 2SAT workspace of $O(\max_j(m_j+v_j+\deg(j)))$ words, with $m_j$ owned binary clauses. A conservative simultaneously valid RAM-space bound is $O(N)$ words (or $O(N\log N)$ bits) including all cached witnesses, owner pointers, and original source access. The total RAM operation bound is
+\[
+D(N)+O\!\left(\sum_j [1+v_j(v_j+1)]\,[m_j+v_j+\deg(j)]\right)+O(N^2),\tag{4}
+\]
+where $D(N)$ covers source parsing, certified decomposition, row-rank checks, reconstruction, and source recheck. This is a conservative realizable \emph{upper} bound; each successful and failed 2SAT call is counted. Explicit polynomial simulations provide corresponding \emph{different} single-tape, two-tape, multitape, and fixed-UTM bounds. No numerical exponent is moved across these models without such simulation. For an affine block of fixed rank $e>1$, one may substitute the \emph{known} Arvind--Guruswami $N^{O(e)}$ local subroutine, but this executable implements and validates only $e\le1$.
+
+\section{Growing-width, growing-global-rank attainable family}
+For integers $k\ge2,q\ge3$, choose articulations $a_0,\ldots,a_k$ and, for each $j<k$, $q$ private variables $p_{j,1},\ldots,p_{j,q}$. On the block $V_j=\{a_j,a_{j+1},p_{j,1},\ldots,p_{j,q}\}$, include every positive binary clause on distinct pairs, the unit $(p_{j,1})$, and the affine row
+\[
+ a_j\oplus a_{j+1}\oplus p_{j,1}=\rho_j.
+\]
+Finally add the units $(a_0)$ and $(a_k)$. In the SAT control all $\rho_j=1$, witnessed by the all-one assignment. In the UNSAT control the last $\rho_{k-1}=0$ and all previous charges equal one. The first $k-1$ rows force equality along the articulation path; the last row forces inequality, contradicting endpoint units. Each affine equation contains its unique private $p_{j,1}$, so the \emph{global} coefficient rank is exactly $k$. The primal graph is a path of $k$ clique blocks $K_{q+2}$, implying $\operatorname{tw}(F)\ge q+1$ and $B=k$, while the local block rank remains one and every cut separator is a single articulation. The variable count is $n=k(q+1)+1$, and by Theorem~\ref{th:identity},
+\[
+\sum_j |V_j|=k(q+2)=n+k-1.
+\]
+With $k=q\to\infty$, canonical physical size is $N=\Theta(q^3\log q)$. The explicit rank-one procedure using $O(q^2)$ 2SAT calls of $O(q^2)$ RAM operations per block has realizable family-specific $T=O(q^5\operatorname{polylog}q)$, $S=O(q^3\operatorname{polylog}q)$ bits, hence
+\[
+ \limsup_{q\to\infty}t_{\rm RAM}\le5/3,\qquad\limsup_{q\to\infty}s_{\rm RAM}\le1.
+\tag{5}
+\]
+These are loose \emph{same-program upper bounds}, not optimality claims. Explicit-width tables on the clique blocks store at least $2^{q+2}$ candidate rows, a superpolynomial architecture-specific cost along $k=q$. Nothing here lower-bounds any alternative SAT algorithm.
+
+\section{Static boundary proxy frontier and adaptive alternatives}
+For the specified static strict signed exact-$(2,2)$ modular hypotheses, the \emph{necessary structural inequality} $n\le3b+12bq$ yields a permitted relaxation $q_{\min}(b)=\max(0,\lceil n/(12b)-1/4\rceil)$. This is \emph{not} an unconditional SAT decision lower bound and need not be realizable. Illustrative enumeration and explicit boundary-table exponents are
+\[
+ E_T(b)=b+q_{\min}(b),\qquad E_S(b)=b.
+\]
+On the positive branch of the continuous relaxation,
+\[
+ E_T^{\rm cont}(b)=b+\frac{n}{12b}-\frac14,\quad (E_T^{\rm cont})'=1-\frac{n}{12b^2},\quad (E_T^{\rm cont})''=\frac{n}{6b^3}>0.
+\]
+The unique continuous minimum is at $b_*=\sqrt{n/12}$, with $E_T(b_*)=\sqrt{n/3}-1/4$. As $b\downarrow0$, the slope $dE_T/dE_S$ tends to $-\infty$; as $b\to\infty$, in the $q=0$ regime it tends to $1$. At $n=1200$, exact integer proxy minimizers are $b=9,10,11$ with $E_T=20$, but only $b=9$ is Pareto-optimal among those three in the $(E_T,E_S)$ plane. The full permitted nondominated integer set is $b=1,\ldots,9$. The first log-proxy equality $E_T=E_S$ is at $q=0$, $b=400$. This is not physical equality of time and peak writable space. A streaming backdoor enumerator may use polynomial writable space rather than the explicit $2^b$ table.
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=.86\linewidth]{ARC234_static_frontier.png}
+\caption{Integer relaxation for $n=1200$. Only permitted static structural proxies are plotted; no point is asserted realizable, and neither curve is an arbitrary-algorithm lower bound.}
+\end{figure}
+
+For $N=\Theta(n\log n)$, the optimized proxy has $t_{\rm proxy}\asymp\sqrt n/\log N\to\infty$, whereas bounded-width dynamic programming with a discoverable $w=O(\log N)$ has $T=\operatorname{poly}(N)2^{O(w)}$ and materialized $S=\operatorname{poly}(N)2^{O(w)}$, and fixed-codimension mixed 2CNF+affine modules have $T=N^{O(e)}$ with fixed $e$. The proved block-cut construction is a separate reachable upper-bound point, even with $w$ and global affine rank unbounded. \emph{Adaptive portfolio switching} takes the union of such reachable algorithmic points, charging every attempted strategy; a time-optimal candidate and a space-optimal candidate need not be the same input execution. A universal reduction from arbitrary strict22 or SAT to this restricted class, or an arbitrary-algorithm lower bound, remains \textbf{OPEN}.
+
+\section{BUILD: independent computational controls and provenance}
+The self-contained executable \texttt{ARC234\_blockcut\_rank1\_audit.py} constructs a canonical explicit-variable mixed source with original clause IDs and exact byte offsets. It independently implements an iterative 2SAT SCC solver and the ARC227 Horn-shifted minimal-generator one-parity solver. It uses \texttt{networkx} biconnected components, independently checks the forest and exact bag identity, assigns every original source once, returns \texttt{UNKNOWN} above local rank one, and checks every SAT witness against original source. It uses no SAT answer-class bit or randomized decision shortcut. Randomized testing is \emph{only} an audit of the deterministic procedure. Each test batch was run below 30 seconds.
+
+An independent exhaustive $n=2$ control performed 2,048 2CNF-plus-one-parity comparisons against all assignments. The fixed-seed run compared 270 recognized random small mixed instances against exhaustive Boolean assignments (149 SAT and 121 UNSAT), plus 130 over-cap UNKNOWN controls. It also checked 143 randomly selected source-deletion descendants of recognized sources, four explicit contradictory/disconnected controls, and ten connected path-clique cases comprising both SAT and UNSAT at $(k,q)=(2,3),(4,5),(8,7),(16,10),(24,14)$. All assertions passed. At $k=24,q=14$, the all-SAT and contradictory runs both have $n=361$, $B=24$, exact bag occurrences 384, and a global affine rank of 24; the SAT run cached exactly 384 Boolean witness bits and performed 415 2SAT calls, while UNSAT cached 368 bits and performed 639 calls. Their Python $\texttt{tracemalloc}$ memory peaks are measured Python process allocations, \emph{not} charged TM tape-cell footprints. The proxy enumeration reproduced the exact $n=1200$ discrete minima and Pareto set. Result JSON and executable are included in the reproducibility bundle; no Lean kernel verification was performed.
+
+\noindent\textbf{Publication controls.} GitHub priority and source SHA statements are read-only verified. Independently authored source and raw results are accompanied by SHA-256 manifest; a fresh GitHub write or Library upload is recorded separately in the run handoff. No non-owned root manuscript material is reconstructed or overwritten. A failed upload is PENDING, not published by implication.
+
+\section{Exact remaining gaps and next specific lemma}
+\noindent\textbf{PROVED/EXACT (restricted):} The exact block-bag identity (1), and bounded cached witness bits (3) for the specified two-valued articulation-message controller. \textbf{KNOWN THEOREM:} Hopcroft--Tarjan block decomposition, Arvind--Guruswami fixed-codimension mixed SAT, conventional width dynamic programming. \textbf{COMPUTATIONAL:} 2,048 exhaustive rank-one 2SAT/parity checks, 270 exact oracle comparisons, 143 deletion controls, 10 path-clique controls, source-ID checks, and integer proxy scan. \textbf{OPEN:} A polynomial-time source-native decomposition method that controls non-unary separator overlaps in globally biconnected mixed sources without requiring large rank or enumerating exponential tables; independent strict22 reentry, arbitrary-solver lower bounds, and P versus NP.
+
+\noindent\textbf{Next lemma:} Find a polynomial-time-recognizable, source-deletion-hereditary class with \emph{no articulation vertices}, unbounded primal treewidth and global affine rank, but an $O(\log N)$ union of \emph{non-bijunctive} message variables after a verifiable moving separator process. Prove paid discovery and exact SAT/UNSAT gluing, or construct an explicit counterexample to the proposed discovery mechanism.
+
+\begin{thebibliography}{9}
+\bibitem{AG2021} V. Arvind and V. Guruswami, \emph{CNF Satisfiability in a Subspace and Related Problems}, IPEC 2021, Article 5, DOI: 10.4230/LIPIcs.IPEC.2021.5.
+\bibitem{HT1973} J. Hopcroft and R. Tarjan, \emph{Efficient algorithms for graph manipulation}, Communications of the ACM 16(6), 372--378 (1973), DOI: 10.1145/362248.362272.
+\end{thebibliography}
+\end{document}
