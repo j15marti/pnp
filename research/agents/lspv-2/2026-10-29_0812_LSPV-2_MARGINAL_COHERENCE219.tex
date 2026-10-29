@@ -1,0 +1,41 @@
+% LSPV-2 MARGINAL-COHERENCE219, complete restricted theorem
+\documentclass[11pt]{article}
+\usepackage[margin=.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{MARGINAL-COHERENCE219: Exact two-port splice counterexample}
+\author{LSPV-2 Circuit/Reduction Builder}
+\date{29 October 2026}
+\begin{document}\maketitle
+\noindent\textbf{STATUS: PROVED/EXACT RESTRICTED, mathematical review pending; COMPUTATIONAL finite audit. P versus NP OPEN.} This corrects the proposal that individual one-bit marginals suffice for a cyclic signed-literal join; it does not establish any general SAT lower bound.
+\section{PROPOSE and corpus}
+M1: independent port marginals preserve the join's SAT label (FALSIFIED). M2: unchanged unsigned clause scopes and per-variable signed occurrence counts preserve SAT (FALSIFIED). M3: optimal side-specific indexed bit-probe costs differ on this promise (FALSIFIED: both $k$). M4: one recognized child with full physical encoding and repeated closure (PROVED for this easy grammar).
+Previously known: LSPV-3 GUARDED-BOUNDARY-ACQUISITION90 already proved one-bit NP-hard profile acquisition; BOUNDED-OCCURRENCE-AFFINE147 already reduced to five occurrences; LSPV-5 MARGINAL-PARITY-FIREWALL192 already shows high-order parity marginal failure. This report concerns the distinct \emph{two-state signed puncture splice} after LSPV-2 SIGNED-PUNCTURE-PROFILE218. The user Library Connected\_Interface\_Audit.zip was reexecuted with byte-identical counts: 4680 boundary subsets, 7191 hitting-set searches, 139 SAT controls. Its fixed modular bound $n\le3b+12bq$ is not a runtime lower bound. Exact implementation references: CaDiCaL src/elimfast.cpp blob 0d6c00897acb, ABC src/base/abci/abcQuant.c blob 76bd7906bd5a, CUDD cudd/cuddBddAbs.c blob 62170e3b29aa and d4 preproc/Forgetting.cc blob 8f00f7397b70. OpenAI math unitary synthesis 06-recursion.tex blob 65bf0450f460 uses a target-dependent quantum Boolean oracle, not a polynomial classical SAT oracle.
+\section{Complete source construction}
+For distinct $v,u,z$, define proper ternary clause gadgets
+\[
+ {\rm Pad}(l,r;w)=(l\vee r\vee w)\wedge(l\vee r\vee\neg w),\quad
+ {\rm Pin0}(v;u,z)=\bigwedge_{\epsilon,\delta\in\{-1,1\}}(\neg v\vee\epsilon u\vee\delta z).
+\]
+After existential quantification of fresh auxiliaries, Pad is $l\vee r$ and Pin0 is $\neg v$. A module has data $(a,b,c)$ and a designated positive clause $C=(a\vee b\vee c)$, with puncture $a$ and remainder $d=b\vee c$. Without $C$, module $E$ comprises Pad$(\neg a,b;w_1)$, Pad$(a,\neg b;w_2)$ and Pin0$(c;u,z)$. Module $X$ replaces the first two pads by Pad$(a,b;w_1)$ and Pad$(\neg a,\neg b;w_2)$. Thus their exact puncture relations are respectively
+\[
+ P_E=\{(0,0),(1,1)\},\qquad P_X=\{(0,1),(1,0)\}.
+\]
+Each has both separate coordinate supports $\{0,1\}$, the same per-variable signed incidence, and the same unsigned clause scopes. Terminal module $B$ pins all three data names $(a_0,b_0,c_0)$ to zero with three independent Pin0 gadgets, yielding $P_B=\{(0,0)\}$. Choose ordered disjoint modules $B,A_1,\ldots,A_k$, each $A_i$ of type $E$ or $X$, and cyclically exchange their designated positive literal occurrences. In the resulting source the designated clauses are $(a_0\vee b_1\vee c_1)$, $(a_{i-1}\vee b_i\vee c_i)$ for $2\le i\le k$, and $(a_k\vee b_0\vee c_0)$. Denote all-X by $U_k$ and one-E-at-$j$ by $S_{k,j}$.
+\begin{theorem}
+For every $k\ge1$ and $j\in[k]$, the pair $U_k,S_{k,j}$ consists of connected proper ordinary 3CNFs with exactly $n=7k+9$ variables, $m=9k+13$ clauses, maximum occurrence five, identical unsigned clause-scope multisets and identical positive/negative occurrence counts for every variable. The individual puncture-coordinate marginals agree for corresponding modules, yet $U_k$ is UNSAT and $S_{k,j}$ SAT. In a canonical signed fixed-record encoding the strings differ in exactly four physical sign bits.
+\end{theorem}
+\begin{proof}
+An $A$ module has three data names, two pad names, two pin names, four padded clauses and four pin clauses, plus one designated clause; hence seven variables and nine clauses. $B$ has nine variables and thirteen clauses. Every data name occurs four times in its own gadgets plus once in a designated clause, and auxiliaries at most four times. The cyclic clauses connect the modules, making the incidence graph connected. Changing $X$ to $E$ flips four occurrences of $a_j$ (two negative and two positive rearranged); every variable's total signed incidence and every unsigned clause scope stay unchanged.
+In $X$ modules $c_i=0$, $b_i=1-a_i$, while in $E$ modules $c_i=0$, $b_i=a_i$. Module $B$ has all three data bits zero. The first exchanged clause forces $b_1=1$ and the terminal clause forces $a_k=1$. With every module $X$, $a_1=0$, and the intermediate clauses inductively force all $a_i=0$, contradiction. If module $j$ is $E$, take $a_i=0$ before $j$ and $a_i=1$ from $j$ onwards; set $b_j=1$, $b_i=1-a_i$ otherwise and all $c_i=0$. Every exchanged clause is satisfied and gadgets extend existentially. The binary pads' $a_j$ signs flip in four ternaries, each recorded by exactly one sign bit. This proves every assertion.
+\end{proof}
+\section{Joint per-side bit-probe theorem and positive control}
+Let $\mathcal P_k=\{U_k,S_{k,1},\ldots,S_{k,k}\}$ with authenticated length and positions. On the NO input $U_k$, a deterministic exact indexed-bit-query tree must read one of the four differing positions in each disjoint block $j$, otherwise the transcript on $S_{k,j}$ would coincide. Hence at least $k$ queries are required. Choose the block last distinguished along this NO transcript: the corresponding YES input follows that transcript through the previous $k-1$ distinguishing blocks and costs at least $k$. Conversely, reading one known sign bit per block and stopping on the first $E$ costs at most $k$. Thus \emph{for one fixed uniform decision program}, the optimal side-specific worst-case costs satisfy
+\[
+ Q_-(k)=Q_+(k)=k.
+\]
+For canonical $w=\lceil\log_2(64(n+m+1))\rceil$ and $N=(4m+2)w$, this is $\Theta(N/\log N)$ on the authenticated promise. This is input acquisition only, not an unrestricted RAM or SAT lower bound.
+A separately fully source-authenticating compiler compares the input against the all-$X$ and each one-$E$ grammar member, paying for all failed comparisons and serialization. It produces one fixed 54-bit satisfiable or 340-bit unsatisfiable ordinary proper 3CNF. Both are direct bases; for $k\ge4$ the output is at most $N^{3/4}$. For $k<4$, the fixed bounded source is a directly solvable base. The restricted class is closed, but already easy and does not contain general SAT. An $O(\log N)$-workspace fixed-multitape streaming comparator has $T_{\mathrm{multi}}=O(N^2\mathrm{polylog}N)$ with read-only input, including rescan and selection costs. The conservative single-read/write-tape simulation has $T_{\mathrm{one}}=O(N^3\mathrm{polylog}N)$, total source-inclusive footprint $O(N)$, and charged input/work head transport. The fixed universal machine has a polynomial interpreter overhead; no exact exponent or native head-crossing counts are asserted. The Python test implementation stores arrays in $O(N)$ representation space; measured Python calls are not TM transitions.
+\section{Finite audit and remaining gap}
+A standalone standard-library Python implementation completed two full $2^{16}$ truth tables (131072 assignment evaluations, 0 vs 1024 witnesses), 47042 independent unit-propagating DPLL calls through $k=8$, nine structural and physical controls through $k=64$, exact local profile enumeration, full child encoding and recursion to direct bases, 44 single-bit malformed source rejections and two other malformed-string rejections. Two entire raw executions were byte-identical. This is computational support, not kernel formalization. The next open obligation is a polynomially acquired \emph{full correlation} for arbitrary growing strict signed exact-(2,2) cores with physical power-short ordinary children. All P-vs-NP and ARC arrows remain OPEN.
+\end{document}
