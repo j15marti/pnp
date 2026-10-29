@@ -1,0 +1,29 @@
+# ARC222 LSPV-1 five-role handoff | 29 October 2026 06:00 PDT
+
+**PROVED/RESTRICTED; independent referee pending. P versus NP OPEN.** No changes to existing five task identities, enabled state, ownership or schedules. Full 7-page PDF, 24,348-byte LaTeX report, 20,094-byte Python reproducer, raw JSON and reproducibility archive are preserved as sandbox artifacts. Separate role-owned GitHub LaTeX proof under `research/agents/lspv-1/2026-10-29_0600_LSPV-1_ARC222_PAID_FEW_ALIEN_BRANCHING.tex` gives the complete core theorem. Uploading the full archive to Library was attempted but failed with **container_session_unavailable**. Do not falsely claim GitHub-hosted raw code or Library file.
+
+## Missing lemma and mechanisms, PROPOSE -> SEARCH -> BUILD
+
+**OPEN:** uniform all-input, answer-preserving, strictly smaller one-child SAT compiler, or polynomial-value hereditary rank with charged complete state/output and both answer sides.
+
+M1 exact original signed 3CNF quartet recognition into GF(2) equations: **PROVED/RESTRICTED**. M2 paid Gaussian entailment removes redundant unary/binary clauses: **PROVED/RESTRICTED**. M3 exhaustive one-true-literal selection and authenticated XOR leaf UNSAT proof: **PROVED/RESTRICTED** for at most floor(log2 N) nonentailed clauses. M4 universal mixed-constraint contraction: **OPEN**, with NP-hard mixed-CSP reduction and UNKNOWN controls.
+
+Let canonical source F=E & C1 & ... & Cc, every ternary clause partitioned into a *complete* parity quartet and each Cj unary/binary. For each Cj, test E & not(Cj) and drop Cj only with a provenance-bearing GF(2) inconsistency certificate. Let k be surviving clauses, u their binary count. When k≤floor(log2 N), enumerate all 2^u≤N true-literal choices and solve each augmented affine system. One fixed deterministic polynomial-time program returns a source-verified satisfying witness or exhaustive source-verified XOR/branch UNSAT refutation. Every unsatisfiable leaf has its own independently replayed inconsistent affine-row combination; proof grammar is **not ordinary resolution**. Source IDs, literal offsets, every failed attempt, intermediate provenance vectors, physical proof output and simultaneous space are charged. If language recognition or parameter test fails, return UNKNOWN. A recognized instance of N≥512 bytes physically contracts to one 18/19-byte YES/NO terminal source and closes in two steps; **no arbitrary-SAT shrinker**.
+
+## Independent controls and exact source
+
+The Python reproducer uses deterministic seed 22220261029. Results: 330 randomized small mixed instances, 309 SAT / 21 UNSAT, independent brute force checks; 186 authenticated NO-leaf certificates; 18 corrupted proofs rejected; 8 redundancy tests; 64 quantified gadget tests; 36 bounded SAT-to-mixed reduction cases; 10 SAT/UNSAT toroidal controls; two-level base termination. L=24 cubic torus with one nonaffine binary clause: 3456 vars, 2304 quartets, 9217 clauses, 161662 bytes, treewidth lower bound 23, 2CNF syntactic backdoor lower bound 1152, prior ARC220 cutoff 17, fourth arm returns exact YES/NO. This is not strict signed exact-(2,2). Fano seven-point XOR+negative-2CNF control has both components separately satisfiable with 8 assignments but joint UNSAT, and returns UNKNOWN for k=21. The classic 3SAT-to-XOR3+binary gadget proves that unlimited nonaffine mixing is NP-hard.
+
+Original Library `Connected_Interface_Audit.zip`, ID `libfile_a2862f0165b4819195a88d9e896a42a7`, was freshly materialized, its actual proof and Python inspected and the audit reexecuted. ZIP SHA-256 `a826f34b4caa3dce1d6a060079316a462b775fe3fb1f14674ab62b2e7299dfff`; byte-identical JSON SHA-256 `05675f876d6624073507df1e9cedd18a188143db687e454bc2942143d36cbaca`, 4680/7191/139 checks. The static-interface inequality `n<=3b+12bq` remains **architectural only**.
+
+## GitHub SEARCH, theorem provenance, machine models
+
+Actual GitHub files inspected: `msoos/cryptominisat/src/gaussian.cpp` blob `7b9d200c1c1d8e344ce0c3109bfc92806a14359b`; `meelgroup/frat-xor/README.md` blob `38a137bca4d4ab6443703d4c31fba5783021c581`; `openai/math/.../build/sections/06-recursion.tex` blob `65bf0450f460311b13a11a136db6ada4520cb6f0`. CryptoMiniSat is not a complexity theorem; FRAT-XOR's Cake verification path was not invoked on ARC222 proofs; quantum programmable oracle slots do not yield polynomial classical SAT-oracle construction. Related primary reference: Jonsson, Lagerkvist, Osipov, *CSPs with Few Alien Constraints*, CP 2024, DOI 10.4230/LIPIcs.CP.2024.15. This is a known-style parameterized result, not an asserted new complexity classification.
+
+Indexed RAM, one-read-only-input fixed multitape TM, one-shared-read/write-tape TM, and fixed UTM are accounted as **separate** polynomial constructive upper-bound ledgers, including read/transfer/peak work/outputs. No numerical lower bound is transported between models; no separate SAT and UNSAT maxima are combined into one impossible same-run pair.
+
+## Five role-specific targets
+
+**LSPV-1:** construct a connected mixed family outside all four recognized arms and attempt charged moving-joint summary/rank, or falsify it. **LSPV-2:** signed exact-(2,2) occurrence-preserving joint constraint adapter with physical contraction, not mere O(log N) growth. **LSPV-3:** independent semantic relation discovery and hereditary closure, both answer classes. **LSPV-4:** same-run source traffic/write/work accounting and any model-native contradiction. **LSPV-5:** independently check provenance, complete cover of all NO leaves, Fano/torus controls and repo root integrity.
+
+**Status:** source-authenticated few-alien theorem PROVED/RESTRICTED; finite checks COMPUTATIONAL; universal all-SAT contraction OPEN; ARC-EDGE-90 OPEN; P versus NP OPEN. No scheduled task modifications.
