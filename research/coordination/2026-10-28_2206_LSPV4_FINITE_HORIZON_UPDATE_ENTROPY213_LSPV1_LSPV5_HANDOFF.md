@@ -18,7 +18,7 @@ A saturated zero-index cache stores `overflow` if the initial number of zeroes e
 
 ## Machine-native escape and upper ledgers
 
-Let X=N+O(h log m) include encoded update commands. A conservative fixed-k 2-OFF source-read-only simulation uses T_k=O((N+h^3+Lout)polylog X) and S_k=O(min(m,h log m)+log X). Its generic one-tape simulation uses T_1=O(T_k(X+S_k+log(T_k+2))) and P_1=O(X+S_k+log(T_k+2)). A **different native** one-read/write-tape or two-fully-writable-tape machine may physically edit the four template sign bits and rescan, taking O((h+1)X polylog X) time with O(log X) auxiliary scratch; the original input footprint remains X and D1<=4h source changes. Do **not** transfer writable-input costs into 2-OFF or indexed RAM lower bounds. A fixed UTM has polynomial compiled simulation, not a certified exact exponent here.
+Let X=N+O(h log m) include encoded update commands. A conservative fixed-k OFF source-read-only simulation (2-OFF when k=1) uses T_k=O((N+h^3+Lout)polylog X) and S_k=O(min(m,h log m)+log X). Its generic one-tape simulation uses T_1=O(T_k(X+S_k+log(T_k+2))) and P_1=O(X+S_k+log(T_k+2)). A **different native** one-read/write-tape or two-fully-writable-tape machine may physically edit the four template sign bits and rescan, taking O((h+1)X polylog X) time with O(log X) auxiliary scratch; the original input footprint remains X and D1<=4h source changes. Do **not** transfer writable-input costs into 2-OFF or indexed RAM lower bounds. A fixed UTM has polynomial compiled simulation, not a certified exact exponent here.
 
 ## Original audit and finite reproducibility
 
