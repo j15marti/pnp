@@ -1,0 +1,160 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,longtable,array}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=black}
+\title{LSPV-3: PORT-QUANTIFIER-CLOSURE161\\[3pt]
+\large Exact Two-CNF Compilation for Arbitrary Signed-Port Permutations of a Fixed Strict $(2,2)$ 3CNF Gadget}
+\author{Independent certificate and semantic-correctness research audit}
+\date{29 October 2026, Los Angeles; source audit 06:56 PDT}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{observation}{Observation}
+\begin{document}\maketitle
+\noindent\fbox{\parbox{0.96\linewidth}{\textbf{Status: RESTRICTED/EXACT theorem conditional on a finite source-profile lemma, exhaustively computationally checked; independently reviewed mathematical proof and kernel verification pending.} This is a uniform polynomial algorithm for a named, polynomially recognizable generated class of connected or disconnected strict signed exact-$(2,2)$ 3CNFs, including SAT and UNSAT members. It is \emph{not} a polynomial solver or lower bound for unrestricted SAT. P versus NP is OPEN.}}
+
+\section{PROPOSE: precise bottleneck and falsifiable mechanisms}
+The current missing implication is whether independently correct two-port wire relations remain valid when the same saturated source module participates in multiple simultaneous splices. The 15-variable source of LSPV-2 PORT-WIRES221 supports pairwise EQUALITY and balanced two-swap XOR~\cite{lspv2}. The four potentially falsifiable routes examined before the present build were:
+\begin{description}
+\item[]\textbf{M1, naive pair composition:} each connected graph of same-sign one-slot equality swaps must force all its designated ports equal. \textbf{FALSIFIED} by an explicit cubic eight-module network with a genuine nonconstant port witness.
+\item[]\textbf{M2, three-way source branching:} a degree-three branch necessarily defeats exact finite source projection. \textbf{FALSIFIED} by a four-module star whose projection is exactly $0000\lor1111$.
+\item[]\textbf{M3, stronger local closure:} all 81 formal signed-slot replacement templates of the fixed source project to a conjunction of clauses of width at most two. \textbf{PASSED} by exhaustive finite source enumeration and independently checkable truth tables, with at most three implied clauses per template.
+\item[]\textbf{M4, unrestricted generality:} this finite grammar regularizes arbitrary signed exact-$(2,2)$ 3CNFs with a polynomial, source-cofactor-preserving compiler. \textbf{OPEN}; no reduction from arbitrary formulas to this grammar has been supplied.
+\end{description}
+
+\section{SEARCH: primary sources and implementation hypotheses}
+The project repository \texttt{j15marti/pnp}, in the LSPV-2 PORT-WIRES221 Python reproducer (inspected blob \texttt{eeef0b4d}), supplies the original finite source, not the all-slot closure proved here. GitHub queries included ``bounded occurrence 3sat equality variable splitting gadget'', ``local consistency CSP'', ``bounded degree CSP treewidth'', and ``exact22 port wires''. Searches also examined non-company code. Several matches were irrelevant; no universal SAT algorithm was found.
+
+For existing quantification code, we inspected ABC's \path{src/base/abci/abcQuant.c} (blob \texttt{76bd7906}), the formally verified LRUP checker's README in \texttt{lammich/lrat\_isa} (blob \texttt{9a0da1d6}), and OpenAI's unitary-synthesis recursion source \path{build/sections/06-recursion.tex} (blob \texttt{65bf0450}). The latter's uniform polynomial quantum skeleton does not supply polynomial classical construction or evaluation of its target-dependent Boolean oracle. None establishes a general SAT contraction. Established knowledge compilation and tree-clustering results remain relevant~\cite{dechter1989,darwiche2002}.
+
+The Library archive \texttt{Connected\_Interface\_Audit.zip} was extracted and its \texttt{audit.py} rerun. The JSON results match: 4,680 boundary checks, 7,191 local discovery checks, and 139 brute-force comparisons. The static-hypothesis bound $n\le3b+12bq$ is not an algorithm-independent SAT runtime bound.
+
+\section{BUILD: a closed signed-token permutation class}
+Let $G$ be the fixed connected, proper, strict signed exact-$(2,2)$ source with variables $x_1,\ldots,x_{15}$, 20 distinct clauses, and 272 satisfying assignments. Its indexed clause list is given in Appendix~\ref{app:source}. Its designated port is $p=x_4$, occurring in precisely four indexed slots
+\[
+ S=\{2,3,15,16\},\qquad \sigma_2=\sigma_3=-1,\quad \sigma_{15}=\sigma_{16}=+1.
+\]
+Take $k$ disjoint indexed copies $G_i$ with distinguished variables $p_i=x_4^{(i)}$. There are $4k$ \emph{occurrence tokens} $(i,\sigma_s)$, with two positive and two negative tokens for every $i$. In any of the $4k$ indexed port-bearing clause slots, place exactly one of these signed tokens, using each token once. This is an arbitrary bijection of physical occurrences, including cross-sign swaps and repeated attachments to the same module. Call the resulting formula $F_{k,\pi}$.
+
+Every source clause still contains exactly two original private nonport literals and one signed token. Every source private variable retains its original two positive and two negative occurrences, and every $p_i$ receives its original two positive and two negative tokens across the network. Thus $F_{k,\pi}$ is proper, strict signed exact-$(2,2)$, with $15k$ variables and $20k$ clauses. Connectivity is not automatic, although both fully verified controls below are connected. The labelled block structure allows a deterministic parser to check membership, reconstruct $\pi$, and authenticate the source clauses in polynomial time. No partition discovery is free or assumed.
+
+\begin{lemma}[Exact local factorization]\label{lem:factor}
+Fix all port bits $p=(p_1,\ldots,p_k)$. For module $i$, let $S_i\subseteq S$ list the positions whose incoming token is not the source literal at that position. For $s\in S_i$, let $u_{i,s}$ be the disjunction of the two original nonport literals, let $q_{i,s}$ be the incoming port-bit variable, and let $\tau_{i,s}\in\{-1,+1\}$ be its incoming sign. Define $\mathcal P_{S_i}$ as the exact set of tuples $(p_i,(u_{i,s})_{s\in S_i})$ obtained by enumerating assignments to the 15 source variables satisfying every \emph{unmodified} source clause. Then
+\[
+ \exists\text{ all private variables}\;F_{k,\pi}\quad\equiv\quad
+ \bigwedge_{i=1}^k\Phi_{S_i,\tau_i}\left(p_i,(q_{i,s})_{s\in S_i}\right),
+\]
+where $\Phi_{S,\tau}(p,q)$ is true exactly if some $(p,u)\in\mathcal P_S$ satisfies
+$u_s\lor\ell_{\tau_s}(q_s)$ for every $s\in S$, with
+$\ell_+(q)=q$, $\ell_-(q)=\neg q$.
+\end{lemma}
+\begin{proof}
+Under a fixed port assignment, no hidden variable occurs outside its own module. All unmodified clauses belong to exactly one module, and every modified clause consists of that module's original two nonport literals plus the fixed incoming port token. Existential quantification therefore factors over modules. The profile defines the exact remaining feasibility condition. The equivalence holds even if several formal incoming $q_s$ denote the same global $p_j$, or $p_i$ itself.
+\end{proof}
+
+\begin{lemma}[Exhaustive finite 81-template width-two lemma]\label{lem:81}
+For every $S\subseteq\{2,3,15,16\}$ and every sign vector $\tau\in\{-1,+1\}^{S}$, the truth set of $\Phi_{S,\tau}$ is exactly the intersection of its valid clauses of width at most two over the $1+|S|$ \emph{formal} Boolean inputs. The number of such valid clauses, including any forced unit or empty clauses, is at most three. There are exactly
+\[
+ \sum_{j=0}^4\binom{4}{j}2^j=3^4=81
+\]
+finite signed-slot templates.
+\end{lemma}
+\begin{proof}
+This is a constant finite lemma, discharged by the accompanying complete executable enumeration rather than by an asymptotic statistical extrapolation. Appendix~\ref{app:verification} specifies its entire decision procedure. The algorithm visits each of the $2^{15}=32768$ local assignments for each source puncture subset, directly evaluates the 20 listed source clauses, records the exact surviving tuples, then enumerates every input tuple in $\{0,1\}^{1+|S|}$. It builds every empty, unary, and binary clause over these formal inputs, keeps precisely the clauses true on all extendible tuples, and exhaustively compares the resulting conjunction with the original relation on all formal input tuples. All 81 equalities and the at-most-three bound passed. This finite verification is reproducible and explicit, but not an Isabelle/CakeML kernel certificate. Independent mathematical referee review remains pending.
+\end{proof}
+
+\begin{theorem}[Uniform exact projection, SAT/UNSAT acquisition and authenticated checking]\label{thm:main}
+For the entire explicitly labelled generated class $\mathcal G=\{F_{k,\pi}\}$, without a bound on wiring-graph topology or the number of simultaneous port substitutions, there is a single uniform deterministic polynomial-time algorithm which constructs a 2CNF formula $D_{k,\pi}$ over the $k$ port variables with at most $3k$ clauses and
+\[
+ \forall p\in\{0,1\}^{k}:\qquad
+ D_{k,\pi}(p)=1\quad\Longleftrightarrow\quad
+ \exists z\;F_{k,\pi}(p,z)=1.
+\]
+The algorithm decides the generated CNF and reconstructs an authenticated source-level satisfying assignment if SAT, or obtains a tagged implication-graph SCC contradiction if UNSAT. Source parsing, all finite local profile acquisition, failed table candidates, 2CNF compilation, SCC discovery, witness construction, verification, storage, and output are charged.
+\end{theorem}
+\begin{proof}
+Parse $F_{k,\pi}$ in its canonical block coordinates and reject invalid templates or token multiplicities. For each module compute its $S_i$ and incoming signs and choose the corresponding formula from Lemma~\ref{lem:81}. Substitute each formal input $q_s$ with the actual global port variable carried by that signed occurrence, simplifying any tautological or duplicated clauses. Identification of variables preserves width at most two. At most three clauses arise per module, hence $|D_{k,\pi}|\le3k$, and Lemma~\ref{lem:factor} proves exact equivalence of the entire port relation.
+
+Apply the standard deterministic 2SAT implication-graph SCC algorithm. If SAT, use its port assignment to select one of the explicitly enumerated source-private assignments from each authenticated local table; combining their private bits gives a model of every original 3CNF clause. If UNSAT, two opposing implication paths within one SCC provide a checkable negative certificate, with every implication edge tagged by its source module and signed-slot template. A verifier independently checks the clause-origin tags and finite 81-template equivalences, then checks both SCC paths. The templates can be recomputed by the fixed enumerator rather than treated as oracle entries or nonuniform advice.
+\end{proof}
+
+\begin{corollary}[Conservative native resource ledgers]\label{cor:ledger}
+For canonical bit-encoded input length $N=\Theta(k\log(k+2))$, there are explicit deterministic implementations with
+\[
+ T_{\mathrm{2\,tape}}(N)=O(N^4),\qquad S_{\mathrm{2\,tape}}(N)=O(N^2)
+\]
+for a read-only input tape and a separate read/write work tape, with finite source-table computation included. A conservative one-tape simulation satisfies $T_{\mathrm{1\,tape}}(N)=O(N^8)$ and total initially occupied plus subsequently used tape footprint $O(N^4)$. A fixed universal machine using a fixed program encoding simulates with polynomial overhead. These deliberately loose upper bounds are not new time-space lower bounds.
+\end{corollary}
+\begin{proof}
+All 16 source puncture subsets and 81 sign templates require a finite number of 15-variable checks, independent of $k$. A canonical parser scans at most $O(N^2)$ bit positions, identifies each signed port token and its module, then constructs at most $3k$ length-$O(\log k)$ clauses. A simple explicit multitape program may maintain and rescan polynomial-size adjacency records, yielding the conservative $O(N^4)$ time and $O(N^2)$ peak-work upper bounds, including output. Standard step-by-step single-tape simulation can use quadratic time in the multitape time and at most linear physical tape occupancy in that time. No sequential-input-head crossing bound is silently applied to RAM or multitape execution; these are constructive upper bounds on the declared grammar.
+\end{proof}
+
+\section{Counterexample: pairwise equality is not simultaneously compositional}
+In the pairwise isolated case, a single same-sign port-token swap between two copies of $G$ produces exact equality of their port bits, independently for all same-sign source slots tested in the reproducer. Yet the following 12 same-sign swaps on eight copies give a connected cubic module network whose exact port projection has \emph{four}, not two, assignments. Each row $(u,s,v,t)$ exchanges port-occurrence tokens in source clause slot $s$ of module $u$ and slot $t$ of module $v$, with zero-based module indices:
+\[
+\begin{array}{rrrr|rrrr}
+u&s&v&t&u&s&v&t\\\hline
+0&3&7&3&0&16&3&16\\
+0&2&6&3&1&3&2&3\\
+1&2&5&3&1&16&4&16\\
+2&16&6&16&2&2&5&2\\
+3&3&4&3&3&2&7&2\\
+4&15&5&16&6&15&7&16
+\end{array}
+\]
+The exact projection over $(p_0,\ldots,p_7)$ is
+\[
+ \boxed{\{00000000,\;01111110,\;10000001,\;11111111\}.}
+\]
+For example, the nonconstant assignment $01111110$ has source-local witness masks
+\[
+ (1730,616,616,1864,616,616,1738,1730).
+\]
+Interpreting each integer as a 15-bit local assignment gives a satisfying assignment of \emph{all 160 original clauses} on 120 variables. Consequently, the naive inference ``every isolated edge enforces equality $\Rightarrow$ every edge still does so under simultaneous splicing'' is \textbf{FALSIFIED}. This does not contradict the correct network-level 2CNF compilation theorem. In this example its exact projection reduces to two equality classes, $p_0=p_7$ and $p_1=\cdots=p_6$.
+
+For both SAT and UNSAT unpinned controls, two 15-variable copies with distinct signed-token permutations yield connected exact-$(2,2)$ 3CNF instances of 30 variables and 40 clauses. The compiler returned a satisfying witness in the first case and opposing source-tagged SCC paths in the second. Independent SciPy/HiGHS full-CNF integer-programming checks agreed on both outcomes. Another 10 independent full-CNF checks on the cubic graph verified the four feasible and six infeasible sampled port assignments.
+
+\section{Status, limits, and next target}
+The 81 finite source clauses are computable without an oracle, and the exact global 2CNF projection is a uniform polynomial-size object for \emph{this generated grammar}. These claims are RESTRICTED/EXACT contingent on the enumerated finite lemma, with 700 deterministic signed-token permutation regression cases (171 SAT and 529 UNSAT) checked, two byte-identical standard-library runs, and independent MILP controls. The source-authenticated SCC verifier is not a formally verified LRAT/LRUP kernel, and a full original-source LRUP lifting has not been implemented. Both answer classes are handled by the same fixed algorithm, not by two separately advised solvers.
+
+This class does \emph{not} contain arbitrary signed exact-$(2,2)$ formulas or general 3SAT by any demonstrated uniform reduction. The 2CNF child uses $O(k\log k)$ bits, of the same asymptotic order as the source, and does not satisfy a universal one-child $N^\lambda$ contraction for $\lambda<1$. The constructive result also supplies no worst-case SAT lower bound. The highest-value next lemma is a source-authenticated regularizer that transports \emph{arbitrary} hard two-port relations into such a grammar while preserving every cofactor and charging the full transformation, or a provable invariant excluding such transport without assuming $P\ne NP$. Preserve the role ownership and existing five-agent schedules; no additional tasks have been created. \textbf{P versus NP remains OPEN.}
+
+\appendix
+\section{The exact fixed source, zero-based clause indices}\label{app:source}
+\small
+\begin{longtable}{r l}
+\toprule Index & Original source clause\\\midrule\endhead
+0 & $\neg x_5\vee\neg x_{12}\vee x_{15}$\\
+1 & $\neg x_5\vee\neg x_6\vee\neg x_{15}$\\
+2 & $\neg x_4\vee\neg x_9\vee\neg x_{11}$\\
+3 & $\neg x_4\vee\neg x_8\vee\neg x_{11}$\\
+4 & $\neg x_3\vee x_6\vee\neg x_{15}$\\
+5 & $\neg x_3\vee x_{12}\vee x_{15}$\\
+6 & $\neg x_2\vee\neg x_6\vee x_{12}$\\
+7 & $\neg x_2\vee x_5\vee\neg x_{12}$\\
+8 & $\neg x_1\vee x_3\vee\neg x_{14}$\\
+9 & $\neg x_1\vee x_{13}\vee x_{14}$\\
+10 & $x_1\vee\neg x_7\vee x_{10}$\\
+11 & $x_1\vee x_7\vee x_{13}$\\
+12 & $x_2\vee\neg x_9\vee x_{11}$\\
+13 & $x_2\vee\neg x_8\vee x_9$\\
+14 & $x_3\vee x_7\vee\neg x_{13}$\\
+15 & $x_4\vee x_8\vee\neg x_{10}$\\
+16 & $x_4\vee x_9\vee\neg x_{10}$\\
+17 & $x_5\vee x_8\vee\neg x_{14}$\\
+18 & $x_6\vee\neg x_7\vee x_{11}$\\
+19 & $x_{10}\vee\neg x_{13}\vee x_{14}$\\
+\bottomrule
+\end{longtable}
+\normalsize
+\section{Finite lemma verifier and independent checks}\label{app:verification}
+The standard-library file \texttt{2026-10-29\_0656\_LSPV-3\_PORT\_QUANTIFIER\_CLOSURE161\_repro.py} contains the full 20-clause source, exact enumeration of all 16 puncture-subset profiles, all $3^4=81$ signed slot templates, all truth-table points for each, every empty/unit/binary clause over formal inputs, and an explicit assertion of functional equivalence of each $\Phi_{S,\tau}$ with its width-two implicates. It also reconstructs a satisfying original-source witness for every SAT control, verifies signed degrees, tests the cubic counterexample, and verifies opposing SCC paths for each UNSAT control. The raw JSON SHA-256 is \texttt{511836ad46f19e32a76c01fdcc8d2f0a8a54c3aab8073f5ec2722e106773b124}; two runs are byte-identical. The independent \texttt{independent\_milp\_closure161.py} uses SciPy/HiGHS on the unprojected ordinary strict exact-$(2,2)$ clauses. The archive and independent audit are included for reproducibility. None of these code executions is a kernel-certified theorem.
+
+\begin{thebibliography}{9}
+\bibitem{lspv2} LSPV-2, ``EXACT22-PORT-WIRES221: Connected Degree-Saturated Equality and Inequality Relations in Strict Signed Exact-(2,2) 3CNF,'' project source, 2026. \url{https://github.com/j15marti/pnp/tree/main/research/agents/lspv-2}
+\bibitem{dechter1989} R. Dechter and J. Pearl, ``Tree clustering for constraint networks,'' \emph{Artificial Intelligence} 38(3), 353--366, 1989. doi:10.1016/0004-3702(89)90037-4.
+\bibitem{darwiche2002} A. Darwiche and P. Marquis, ``A knowledge compilation map,'' \emph{Journal of Artificial Intelligence Research} 17, 229--264, 2002. doi:10.1613/jair.989.
+\end{thebibliography}
+\end{document}
