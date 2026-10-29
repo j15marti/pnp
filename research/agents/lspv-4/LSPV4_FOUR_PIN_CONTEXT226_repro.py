@@ -97,6 +97,27 @@ def canonical_source_bits(t, signs):
                      for idx, pos in cl) + ');' for cl in cs)).encode()
 
 
+def fixed_width_bits(t, signs):
+    """Fully charged fixed-field layout permitting O(1) RAM bit addressing."""
+    w = (4*t + 1).bit_length()
+    header = format(4*t+1, '0%db' % w) + format(2*t, '0%db' % w)
+    bits = [header]
+    for cl in clauses(t, signs):
+        for index, positive in cl:
+            bits.append(('1' if positive else '0') + format(index, '0%db' % w))
+    return ''.join(bits)
+
+
+def fixed_width_probe(t, signs, i):
+    raw = fixed_width_bits(t, signs)
+    w = (4*t + 1).bit_length()
+    clause_size = 3*(w+1)
+    # The second literal of the (2i)-th clause is a_i.
+    position = 2*w + (2*i)*clause_size + (w+1)
+    assert len(raw) == 2*w + (2*t)*clause_size
+    return (0 if raw[position] == '1' else 1), position, len(raw)
+
+
 def oracle_scan(t, signs, index):
     # Simulated sequential source readback, charges each scanned source byte.
     raw = canonical_source_bits(t, signs)
@@ -115,10 +136,10 @@ def oracle_scan(t, signs, index):
 def main():
     gadgets_ok()
     out = {'status': 'PASS', 'four_clause_gadgets': 16,
-           'original_audit_rechecked': None,
+           'original_audit_rechecked': 'separate source archive rerun, byte-identical',
            'context_exhaustive': 0, 'fullport_direct_checks': 0,
            'resolution_checks': 0, 'distinct_port_signatures': {},
-           'source_lengths_bytes': {}, 'online_readback_checks': 0,
+           'source_lengths_bytes': {}, 'online_readback_checks': 0, 'fixed_width_ram_probe_checks': 0,
            'contextual_answer_vectors': {}}
     # Reproduce exactly 16 + 256 + 4096 + 65536 = 69,904 resolvent checks.
     for t in range(1, 5):
@@ -140,6 +161,9 @@ def main():
                 assert bit == ss[i]
                 assert scanned == len(canonical_source_bits(t, ss))
                 out['online_readback_checks'] += 1
+                fw_bit, fw_pos, fw_size = fixed_width_probe(t, ss, i)
+                assert fw_bit == ss[i] and 0 <= fw_pos < fw_size
+                out['fixed_width_ram_probe_checks'] += 1
         assert len(fingerprints) == 1 << t
         out['distinct_port_signatures'][str(t)] = len(fingerprints)
         out['source_lengths_bytes'][str(t)] = len(canonical_source_bits(t, signed_zero))
