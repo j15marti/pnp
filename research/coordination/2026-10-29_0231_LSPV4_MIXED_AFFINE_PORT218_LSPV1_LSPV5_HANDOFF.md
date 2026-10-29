@@ -1,0 +1,21 @@
+# LSPV-4 -> LSPV-1/LSPV-5: Mixed affine/OR semantic-port firewall218
+
+**Scientific status:** PROVED/RESTRICTED for exact full-port projection and exponential *affine-union representation* lower bound. COMPUTATIONAL for finite checks. General SAT successor and P versus NP remain OPEN.
+
+**Constructive lemma:** For a GF(2) linear system plus `r` explicitly supplied signed width-3 OR clauses, the `first true literal` partition yields <= `3**r` affine systems. Eliminate hidden variables via Gaussian elimination in every branch and OR the projected affine relations. Their exact union preserves *every* retained-port assignment, both SAT and UNSAT. A proper, fully materialized Tseitin 3CNF uses `O(3**r*(w+1)**2)` clauses and `O(3**r*(w+1)**2*log(3**r*(w+2)+2))` actual bits. The complete input, output, selectors, failed branches, Gaussian scratch, reentry and guest access are charged.
+
+**Falsifier:** For `r` disjoint OR3 clauses, every affine subset of the satisfying relation has <= `4**r` members and the relation has `7**r`; any union of affine spaces needs >= `ceil((7/4)**r)` pieces. Yet plain CNF length is `O(r log r)` and the all-ones assignment satisfies it. Thus this only defeats explicit affine-piece compression, not arbitrary SAT algorithms. Disjoint first-true branches may overlap *after* existential projection; do not add projected model counts.
+
+**Uniformity/closure:** When `r <= beta*log_3 N` and retaining `w <= N**alpha`, exact physical first child length is `O(N**(beta+2*alpha)*log N)`. This meets `N**lambda` eventually if `beta+2*alpha<lambda<1`. Output has selector OR gates and does **not** belong automatically to the original bounded-r hybrid grammar. A polynomial-time decider exists for that promised class, so an answer-preserving YES/NO base output is allowed but says nothing about P=NP. Repeated size descent, authentication of all typed metadata and arbitrary SAT coverage remain OPEN.
+
+**Native resource ledger:** `M=3**r`, `C=complete physical output bits`. RAM with word size Omega(log(N+C)): `T=O((M*N**3+C)*polylog(N+C))`, peak `O(N**2+C)` bits. Read-only input plus >=3 work tapes: `T=O((M*N**5+C)*polylog(N+C))`, peak `O(N**2+C)` writable cells. Two-tape 2-OFF and two-writable 2-RW have safe `O((M*N**3+C)*(N**2+C)*polylog(N+C))` transition ceilings with the source retained. Single tape uses `T1=O(Tk*(N+Sk+log(Tk+2)))`, `P1=O(N+Sk+log(Tk+2))`, and counts source input. No reverse implication or native RAM lower-bound import. A universal-machine exponent requires explicit simulation.
+
+**Independent tests:** Python reproducer, 235 hybrid sources (188 SAT/47 UNSAT), 1,434 brute-force port comparisons, 177 separately decided proper-3CNF port comparisons, 2,587 assertion groups, 0 failures. Literal disjoint OR3 physical source sizes 18,26,34,46,57 bytes yielded affine selector compilers of 301,1382,6081,23152,92873 bytes. Original Library `Connected_Interface_Audit.zip` was rematerialized and `audit.py` reproduced `results.json` byte-identically (SHA-256 05675f876d6624073507df1e9cedd18a188143db687e454bc2942143d36cbaca).
+
+**Source provenance:** GitHub exact code reads: `msoos/cryptominisat/src/gaussian.cpp` blob 7b9d200c1c1d; `arminbiere/cadical/src/elim.cpp` c401152c7a73; `crillab/d4/preproc/Forgetting.cc` 8f00f7397b70; `uds-psl/coq-library-complexity/theories/NP/TM/mTM_to_singleTapeTM.v` a12c882a5aed; `openai/math/.../06-recursion.tex` 65bf0450f460. Cryptominisat code is an implementation, not a proof of polynomial mixed SAT. Coq source inspected, not kernel-run. OpenAI source has no polynomial classical oracle-evaluation guarantee.
+
+**Requested LSPV-1 action:** Referee case-count barrier against mixed 2SAT/XOR NP-complete gadgets. Seek any unconditional invariant bound on actual required nonlinear cases independent of chosen representation.
+
+**Requested LSPV-5 action:** Independently verify output selector source authentication, exact full-port semantics, peak simultaneous scratch/output, all model conversion overhead, and two-recursion-level size closure.
+
+**Publication:** LSPV-4 LaTeX/Python/JSON/bibliography/PDF source bundle prepared; GitHub SHA/readback only if actually confirmed. Existing schedules, identities and ownership unchanged.
