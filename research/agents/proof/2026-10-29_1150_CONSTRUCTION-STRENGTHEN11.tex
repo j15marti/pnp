@@ -1,0 +1,369 @@
+% PNP RESEARCH REPORT::CONSTRUCTION-STRENGTHEN11::2026-10-29T11:50:00-07:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\F}{\mathbb F_2}
+\newcommand{\B}{B_e(n)}
+\title{CONSTRUCTION-STRENGTHEN11: Small-Pin Closure Terminals\\and the Cost of Fixed-Parity Acquisition}
+\author{Construction, with independent mathematical red-team review}
+\date{29 October 2026, 11:50 America/Los\_Angeles}
+\begin{document}\sloppy\maketitle
+
+\paragraph{Result and status.}
+We construct an exact, executable terminal for Horn or 2CNF with $e$ parity
+equations, using at most $B_e(n)=\sum_{j=0}^{\min(e,n)}\binom nj$ least-model
+trials. This gives a concrete implementation for the $e=2$ observed-affine
+interface requested by ARC227, and for every fixed $e$. Its small-pin
+completeness lemma is \textbf{PROVED/EXACT}, independently reviewed below.
+The fixed-$e$ tractability classification is \textbf{KNOWN THEOREM}, already
+recovered in FIXED-SYNDROME-FIREWALL113; it is not new here. The new contribution
+relative to those records is an explicit general closure implementation,
+its application to ARC227's observed-form dependencies, and a falsified cheap
+acquisition promotion. All-input joint WRAPPER construction, ARC-EDGE-90 and
+P versus NP remain \textbf{OPEN}. Conditional $K$ elimination is unchanged.
+
+\section{Target, exact objects and literature recovery}
+The selected target is a $K$-free terminal extending ARC227's rank-excess-one
+interface, followed by an attempt to fit its actual acquisition into the
+WRAPPER ledger. The quantifier is
+\[
+ \exists A\ \forall n,e,H,L:\quad
+ A(H,L)\text{ decides }\exists x\,[H(x)\land L(x)]
+\]
+for Horn $H$, or 2CNF $H$, and an explicit system of $e$ equations over $\F$.
+One uniform program accepts $e$ as data; its bound is polynomial only when
+$e$ is fixed. SAT and UNSAT use that same program, with no answer-side bit.
+The full encoded source length is $N$; $n$ is a validated dense variable
+range with $n\le N$, not a large unused count supplied by an unchecked header.
+
+Brakensiek--Gopi--Guruswami define weighted constraints over finite abelian
+groups in Definition 2.5. Their Section 5 handles 2SAT over such a group;
+Section 3.2 and Corollary 3.10 handle multiple modular Horn constraints.
+Putting $G=\F^e$, $g_i(0)=0$, $g_i(1)=L_{*i}$ gives precisely arbitrary
+XOR masks, not merely unweighted Hamming weight \cite{bgg}.
+Thus DUAL-PARITY-JOINT77's original bibliography caveat is incorrect as a
+scope statement. FIXED-SYNDROME-FIREWALL113 already corrected it on October 24.
+This run recovers that correction rather than claiming to discover it.
+The two-parity step in ARC227 is an implementation task, not an open
+tractability classification.
+
+The useful cross-domain correspondence is closure systems and the zeta
+matrix of a finite partially ordered set. The matrix used below is proved
+directly. It transfers an exact interpolation identity to this terminal;
+it does not transfer a runtime lower bound or an all-SAT compression theorem.
+
+\section{Small-pin interpolation: a complete construction}
+Identify Boolean vectors with their supports. Let $R\subseteq 2^{[n]}$ be
+a nonempty intersection-closed family. A pin set $S$ is feasible when some
+$x\in R$ contains $S$. Define
+\[
+ c(S)=\bigcap\{x\in R:S\subseteq x\}.
+\]
+For a feasible $S$, $c(S)\in R$ and is its unique least extension.
+Infeasible sets have no closure and are skipped.
+
+\begin{lemma}[Degree-$e$ hitting by small-pin closures]
+Let $P\in\F[x_1,\ldots,x_n]$ have Boolean multilinear degree at most $e$.
+If $P$ is nonzero on some member of $R$, then it is nonzero on $c(S)$ for
+some feasible $S$ with $|S|\le e$.
+\end{lemma}
+\begin{proof}
+On $R$, a monomial $x_S=\prod_{i\in S}x_i$ vanishes if $S$ is infeasible;
+otherwise
+\[
+ x_S(x)=1\quad\Longleftrightarrow\quad c(S)\subseteq x.
+\]
+Group coefficients of monomials having the same closure. Then the
+restriction of $P$ is a linear combination of the functions
+$z_C(x)=\mathbf1[C\subseteq x]$, for the distinct feasible closures
+$C=c(S)$ with $|S|\le e$. Order those closures by a linear extension of
+inclusion. The matrix with rows $D$, columns $C$ and entry
+$\mathbf1[C\subseteq D]$ is triangular with diagonal one. It is invertible
+over $\F$. If $P$ vanishes on every such $D$, all grouped coefficients
+vanish, so $P$ vanishes throughout $R$, a contradiction.
+\end{proof}
+
+\begin{theorem}[Fixed-parity Horn terminal]
+Let $H$ be Horn and let $L$ consist of $e$ equations
+$\ell_j(x)=b_j$. There is an exact deterministic algorithm that decides
+$H\land L$ by enumerating the $B_e(n)$ pin sets and testing their feasible
+least Horn extensions. On YES it returns an original witness; on NO it
+returns NO only after exhausting this complete family.
+\end{theorem}
+\begin{proof}
+Horn models are closed under intersection. If there are none, every pin
+trial fails. Otherwise apply the lemma to
+\[
+ P(x)=\prod_{j=1}^{e}(1+b_j+\ell_j(x)).
+\]
+This polynomial has degree at most $e$, and equals one precisely when all
+equations hold. It need not be expanded or stored. A least Horn extension
+is acquired by monotone forward propagation from the pins. A negative
+clause becoming false rejects that trial. At most $n$ new bits become true;
+one final unchanged scan verifies the fixed point. Thus at most $n+1$
+full scans suffice. The empty pin set is included, also when $e=0$.
+\end{proof}
+
+\begin{corollary}[2CNF terminal]
+Find a model $a$ of the 2CNF, or reject if none exists. Substituting
+$x=a\oplus y$ yields a 0-valid 2CNF. Every non-tautological clause then has
+a negative literal, and hence is Horn. Transform each parity right-hand
+side to $b_j+\ell_j(a)$ and apply the preceding algorithm. Undo the shift
+and verify the source witness. This is an exact construction for every
+fixed $e$, not a collection of independent marginal parity tests.
+\end{corollary}
+
+The implementation supplies the base model through a dense implication
+reachability matrix, not a SAT oracle. A separate low-space rescanning
+variant is described below. For two parities, the closure budget is
+$1+n+\binom n2$. Two pins can be necessary: with empty Horn formula and
+requirements $x_1=x_2=1$, the empty and singleton closures all fail.
+Separate marginal acceptance is unsound: $(\neg x_1\vee\neg x_2)$ allows
+each requirement separately and forbids their conjunction.
+
+\section{Application to the actual observed-affine interface}
+Start from the source-authenticated mixed instance of ARC227: an explicit
+affine system and a 2CNF over the same original variables. Paid elimination
+either rejects the affine system or yields
+\[
+ x_i=a_i+\langle v_i,t\rangle.
+\]
+Let $V$ be the distinct nonzero forms $v_i$ observed in the 2CNF, let
+$k=|V|$, and let $e=k-\operatorname{rank}(V)$. Substitute a variable
+$u_v=\langle v,t\rangle$ for each form; constants simplify clauses. The
+result is a 2CNF $C(u)$. An explicitly acquired basis of dependencies among
+the rows of $V$ yields $e$ homogeneous parity equations on $u$.
+
+\begin{proposition}[Bounded observed dependency terminal]
+For every fixed $e_0$, there is one exact partial algorithm on this declared
+mixed input language which decides every input with $e\le e_0$. It checks
+affine consistency, constructs $C$ and the complete dependency basis, uses
+the small-pin terminal, and reconstructs and checks an original witness.
+It returns UNKNOWN for $e>e_0$ unless affine inconsistency already proves NO.
+\end{proposition}
+\begin{proof}
+The image of $t\mapsto(\langle v,t\rangle)_{v\in V}$ is exactly the common
+kernel of its row-dependency equations. Hence the projected problem is
+equivalent to $C(u)$ conjoined with those equations. The corollary decides
+that problem. A satisfying $u$ lies in the image, so Gaussian solving
+recovers $t$ and thus $x$. None of these steps chooses a parameter using an
+unknown truth label. Failure of the cap proves nothing about satisfiability.
+\end{proof}
+
+The supplied prototype implements this projection and witness lift, including
+the $e=2$ case. It takes explicit rows and clauses. It does \emph{not}
+implement a new raw-CNF quartet parser, a source authentication service, or a
+strict exact-$(2,2)$ source compiler. To invoke it from ordinary CNF, the
+existing source-authenticated extraction must be verified and its time,
+space and replay added. This distinction prevents calling a supplied matrix
+a freely acquired native SAT input.
+
+\section{Same-machine resource ledger and falsification}
+For explicit read-only Horn clauses and parity rows, a scan implementation
+has simultaneous conservative bounds
+\[
+ T_H=O\bigl(B_e(n)(n+1)N\operatorname{polylog}(N+2)\bigr),\qquad
+ S_H=O\bigl(n+(e+1)\log(N+2)\bigr).
+\]
+It stores one $n$-bit assignment, pin indices, loop counters and one parity
+accumulator; it rereads source rows. Resets, failed trials, final scans and
+witness checking are included. No occurrence table, memoization or closure
+deduplication is assumed. Equal closures reached by different pin sets are
+computed again and charged again.
+
+A dense bit-matrix base-model procedure adds $O(N+n^3\operatorname{polylog}N)$
+time and $O(n^2+\log N)$ bits. It computes all implication reachability,
+rejects mutually reachable complements and greedily extends a consistent
+closed set of true literals. Its shift can be applied on each source scan
+without storing another formula. Alternatively, repeated reachability scans
+and $n$ self-reduction queries cost $O(n^3N\operatorname{polylog}N)$ time
+and $O(n+\log N)$ work bits. These are two alternative realizations; their
+best coordinates may not be combined as if one machine achieved both.
+
+The Python prototype retains clause tuples, shifted clauses and explicit
+projection data. Its physical memory is therefore not the low-space scan
+implementation just described. For the full mixed prototype, a deliberately
+loose same-machine bit upper envelope, with original variable bound $n\le N$,
+is $O((N+1)^{e_0+5})$ time and $O((N+1)^3)$ workspace for fixed $e_0$.
+These bounds cover Gaussian matrices, dependence provenance, dense
+reachability, witnesses and failed attempts; they are polynomial correctness
+bounds, not favorable ARC exponents. Python big-integer operations and
+instrumented counters are not unit-cost FLMV steps.
+
+There are no recursive ordinary-SAT calls in this terminal, so executed
+child count and volume are both zero. All the computation is terminal work.
+An optional constant YES/NO child after decision adds constant volume but
+does not reduce acquisition cost. A parent using this terminal must retain
+and charge its suspension and ancestors in addition to these bounds.
+
+\begin{proposition}[Exact replay-cost counterexample]
+For the specified unindexed Horn scan implementation, take
+$H_n=\bigwedge_{i=1}^n\neg x_i$ and the single parity
+$\bigoplus_i x_i=1$. In the natural clause order and empty-then-singleton
+pin order it performs exactly $n+1$ trials and $n(n+3)/2$ clause reads.
+\end{proposition}
+\begin{proof}
+The empty closure scans all $n$ clauses and fails the odd parity test.
+The singleton $\{i\}$ contradicts precisely at clause $i$, after $i$ reads.
+Their sum is $n+\sum_{i=1}^n i=n(n+3)/2$.
+\end{proof}
+With explicit binary identifiers the input has $N=\Theta(n\log(n+2))$
+bits. This execution is already $\Omega(N^2/\log^2N)$ in clause reads,
+so it is not an all-input $N^{6/5+o(1)}$ terminal. The control itself is
+easy by direct propagation. It refutes only this implementation's cheapness,
+not every implementation or SAT algorithm. Recognizing and bypassing it is
+legal but does not establish a global bound for all other inputs.
+
+The cap in the executable limits closure trials only. It does not claim
+to meter total bit time or memory, and it may not be treated as a native
+WRAPPER budget gate. A genuine joint-budget controller must also cap all
+parsing, matrices, acquisition, switching and live state, returning UNKNOWN
+before violating its budget. Such a cap preserves soundness but leaves
+all-input coverage OPEN.
+
+\section{Why fixed dependency coverage does not close the hard image}
+The recovered selector reduction is explicit. For each proper source
+3-clause $(l_1\vee l_2\vee l_3)$ introduce $s_1,s_2,s_3$, impose
+$s_1+s_2+s_3=1$, the three pairwise at-most-one binary clauses, and
+$s_i\Rightarrow l_i$. Existential selector extension is equivalent to the
+original clause. For $m$ source clauses the parity rows have disjoint
+supports and are independent. In the observed-form representation every
+selector is observed; each triple gives three distinct nonzero forms of
+rank two. Source-variable forms are independent of those private free
+coordinates. Thus the observed dependency excess is exactly $e=m$.
+The fixed-$e_0$ terminal cannot certify this entire reduction image.
+The proposition gives no hardness lower bound on its own: under $P=NP$
+this growing-parameter language would also be in P, with unknown exponent.
+
+This also generalizes PARITY-CHOICE-XP119's at-most-$e$ sparse support
+algorithm. Pure negative 2CNF is downward closed, so its feasible pin closure
+is the pin set itself. General Horn implications may force additional true
+variables; least closure, rather than raw support enumeration, is necessary.
+This is the precise new constructive extension relative to that predecessor.
+
+\section{Primary endpoint, independently checked}
+FLMV use indexed random-access Turing machines, read-only input and
+one-directional write-only output; input and output tapes do not count as
+work space, while work and index storage do. Corollary 5.8 states
+\[
+ \operatorname{NTIME}[N]\not\subseteq
+ \operatorname{DTISP}[N^c,o(N^{\beta(c)})],\quad
+ \beta(c)=\tfrac12((c+2)/c^2-c),\quad c>1.
+\]
+Theorem 3.1 supplies the locally computed SAT reduction, and Corollary 3.2
+uses strict exponent slack \cite{flmv}. At $c=241/200$,
+$\beta(c)=11642479/23232400>1/2$. Thus the project's proposed all-input
+$(6/5,1/2)$ algorithm would contradict this endpoint after the declared
+encoding transfer. The present terminal establishes no such simultaneous
+pair. The retired unrestricted cosine endpoint is not used.
+
+\section{Reproducible controls and independent review}
+Four independent invocations of the main runner, each under a 24-second
+alarm and outer 25-second limit, produced the following; seed 202610291150
+applies to the randomized suites.
+\begin{center}\begin{tabular}{lr}\toprule
+Control & Cases/checks\\\midrule
+All nonempty meet-closed relations on three variables & 121\\
+All ordered two-parity masks and targets on those relations & 30,976\\
+Random Horn/2SAT plus zero to three parity rows, $n\le8$ & 1,600\\
+Duplicate/order, complement and variable-permutation controls & 300\\
+Random affine projection/lift cases, $n\le8$ & 840\\
+All subsets of the eight proper ternaries on three variables & 256\\
+Exact repeated-scan cost controls, $n=8,16,\ldots,512$ & 7\\\bottomrule
+\end{tabular}\end{center}
+The 1,600 solver cases give 544 SAT and 1,056 UNSAT; all match brute force.
+The mixed tests give 310 SAT, 522 UNSAT and eight deliberate UNKNOWNs above
+the dependency cap. Projection witnesses verify against the original mixed
+source. The 256 selector formulas are checked pointwise on all eight source
+assignments using independent local selector extensions; they are not
+solved by running an unbounded-$e$ terminal. Marginal-feasibility and
+two-pins-needed controls pass. Each main invocation took under 0.4 seconds.
+
+An independent reviewer proved the interpolation lemma sound and exhaustively
+checked all 4,959 nonempty meet-closed relations on four variables and all
+1,269,504 ordered pairs of parity masks, comparing their entire attainable
+signature sets with small-pin closures. There were no mismatches; that
+invocation took 4.33 seconds. All raw JSON files and both programs accompany
+this report. Main code SHA-256:
+\texttt{d48d6377c1ba20b36aa2d0968aa00df71b5a9b56cb60ae5d27428c8275758309}.
+Independent code SHA-256:
+\texttt{9d015de962cd6395345064a849c55f76e864a96ef71fa3832b42685b99e02b55}.
+Finite tests are \textbf{COMPUTATIONAL}; the symbolic proofs above justify
+the universal restricted statements. No proof-assistant kernel was run.
+
+\section{Corpus reconciliation and publication safeguards}
+\paragraph{CORPUS REVIEWED.}
+Surveyed the complete GitHub tree at head
+\texttt{216829210c57d1b4ef23a3af1412d5d6ad798513}; read current main4/main5,
+AGENTS, CODEX, repository skill/modes/protocol, all seven task specifications,
+FORMAL-SPINE1, Construction10, Recovery10, RedTeam13 and its handoff, MAIN202,
+ARC227 and its handoff, LENGTH-DESCENT216, PARITY-PORT-FORGETTING225,
+SOURCE-RUP-CHAIN164, FIXED-SYNDROME113 and PARITY-CHOICE119. Repository content
+searches for Brakensiek, parity and closure recovered the earlier fixed-rank
+result. Original attached PROOF-NOTE and type1 contextual-pruning sources
+were inspected as scope controls; neither supplies this missing acquisition.
+The source-specific HEC/CRS-PPC tasks concern different extraction objects
+and are not imported as a semantic SAT service.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+Fixed-rank tractability and the growing-rank selector reduction are already
+in FIXED-SYNDROME113. Raw small supports for negative 2CNF are already in
+PARITY-CHOICE119. ARC227 supplies the one-dependency observed-form reduction.
+We extend the executable terminal through its full bounded-dependency
+interface using Horn closure; we do not claim a new complexity classification.
+The original DUAL-PARITY77 scope caveat is already superseded. Any renewed
+``$e=2$ might be an intractable threshold'' claim is stale.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+The current root main.tex is a 138-byte placeholder, with no ownership
+markers. The last substantive version inspected is at commit
+\texttt{4134a5f49b9aee081b031efe26476e429f0309ee}, 127,979 characters, blob
+\texttt{1fd32df376285390f94bd4c7df4b1924f79d0f53}. It already records ARC227
+and OPEN status. Root is left untouched under the explicit ownership rule;
+the handoff identifies this exact recovery source for its owner. The scoped
+main4/main5 additions record the terminal and its resource rejection.
+
+\paragraph{ADOPTED / REJECTED / RETIRED.}
+Adopt aggregate executed-volume accounting, conditional $K$ elimination,
+source authentication, and boundary-only closure. Reject the promotion of
+polynomial terminal cost to the jointly favorable WRAPPER ledger. Retire no
+general semantic compression route. No hashes, free indices, hidden child
+calls, shared-answer cancellation or same-scale contracting cycle is invoked.
+The terminal has zero children; the expensive local work cannot be disguised
+as a favorable aggregate child volume.
+
+\paragraph{Barrier audit.}
+The algebraic interpolation statement is an upper algorithm for an explicit
+closure family. It does not force arbitrary SAT solvers to expose that family,
+and supplies no nonrelativizing or nonalgebrizing hinge. A maximal semantic
+oracle bypasses the work; source acquisition cannot be treated as such an
+oracle. No constructive circuit property or Natural-Proofs claim is used.
+Schur-square, cryptographic binding and physical conservation analogies do
+not provide a model-matched improvement here. Submodular/closure-system
+ideas transfer only through the proved finite-poset identity.
+
+\paragraph{Next target.}
+Build a source-authenticated, budget-capped incremental closure service that
+shares implication discovery across pin trials, then test it on both-label
+growing observed-dependency interfaces. Charge its actual index, resets,
+failed trials and retained parent state. A useful next result must either
+prove the full joint terminal budget on a new non-padding family, or emit
+essential smaller ordinary-SAT children with certified successor coverage.
+It must not claim that fixed-$e$ tractability resolves the all-input bridge.
+
+\begin{thebibliography}{9}
+\bibitem{bgg} J. Brakensiek, S. Gopi and V. Guruswami.
+Constraint Satisfaction Problems with Global Modular Constraints: Algorithms
+and Hardness via Polynomial Representations. SIAM J. Comput. 51 (2022),
+577--626. \url{https://arxiv.org/abs/1902.04740}.
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek and A. Viglas.
+Time-Space Lower Bounds for Satisfiability. JACM 52(6) (2005), 835--865.
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\end{thebibliography}
+% END_OF_VERIFIED_REPORT::CONSTRUCTION-STRENGTHEN::CONSTRUCTION-STRENGTHEN11
+\end{document}
