@@ -1,0 +1,192 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\title{ARC222: Source-Authenticated Few-Alien Constraints over Ternary Affine Quartets}
+\author{LSPV-1 Formal Proof Lead}
+\date{29 October 2026, Los Angeles}
+\begin{document}\maketitle
+\begin{abstract}
+A paid selector decides source-authenticated mixtures of XOR3 quartets and
+a logarithmic number of non-entailed unary/binary clauses, returns independently
+checkable SAT witnesses or exhaustive affine refutations, and physically contracts
+each recognized source to one fixed terminal child.  The unrestricted all-SAT
+contraction theorem and P versus NP remain \textbf{OPEN}.
+This note reproduces the core proof and links a separately retained 7-page
+fuller report, reproducible Python code and raw data. It neither asserts
+polynomial mixed-CSP solving nor proof-assistant verification.
+\end{abstract}
+\section{PROPOSE}
+The missing arrow is an unconditional uniform all-input successor preserving
+both SAT and UNSAT and shrinking one complete encoded child by a fixed
+power, or decreasing a polynomial-\emph{value} rank with polynomially bounded
+intermediate encodings.  We test four falsifiable mechanisms.
+M1: recognize complete source-authenticated XOR3 quartets (restricted proved).
+M2: delete affine-entailed exceptional clauses with a paid certificate
+(restricted proved). M3: branch over a logarithmic number of surviving
+constraints, with every UNSAT leaf authenticated (restricted proved).
+M4: derive a general SAT compressor from this partial selector (OPEN).
+\section{SEARCH: specific sources and hypotheses}
+CryptoMiniSat's \texttt{msoos/cryptominisat/src/gaussian.cpp},
+blob \texttt{7b9d200c1c1d8e344ce0c3109bfc92806a14359b}, implements
+Gaussian reasoning within a general SAT solver, not polynomial general
+mixed SAT. FRAT-XOR \texttt{meelgroup/frat-xor/README.md}, blob
+\texttt{38a137bca4d4ab6443703d4c31fba5783021c581}, describes
+a separately formally verified proof-checking pipeline, \emph{not used}
+to verify our Python certificates.  OpenAI's
+\texttt{math/.../build/sections/06-recursion.tex}, blob
+\texttt{65bf0450f460311b13a11a136db6ada4520cb6f0}, gives
+single-use smaller controlled quantum circuits with programmable
+target-dependent slots. It supplies no polynomial classical construction
+of a SAT oracle or contractive SAT child.
+Jonsson, Lagerkvist and Osipov, \emph{CSPs with Few Alien Constraints},
+CP 2024, DOI 10.4230/LIPIcs.CP.2024.15, place the few-exceptional
+constraints idea within established parameterized-complexity research.
+The method here is a specific source-authenticated instantiation,
+not a claim of priority for parameterization itself.
+\section{Exact source grammar}
+Let $N$ be the physical byte length of canonical 3CNF source $F$.
+Every width-three clause is partitioned into four distinct signed
+clauses on one three-variable scope, precisely the four assignments
+falsifying one equation $x\oplus y\oplus z=b$. This is verified with
+complete clause IDs and byte offsets. All remaining clauses have arity
+one or two. Let $E$ be the recovered GF(2) system and
+$C_1,\ldots,C_c$ the remaining clauses.
+For each exceptional $C_j$, run Gaussian elimination on
+\[
+ E\wedge\bigwedge_{\ell\in C_j}\neg\ell.
+\]
+Delete $C_j$ only if this is inconsistent, accompanied by a verifiable
+sum of source-indexed original equations and the temporary unit rows
+equaling $0=1$. Let $k$ be the count of surviving exceptional clauses,
+and $u\le k$ their binary count.
+\begin{theorem}[Paid source-authenticated partial decider]
+There is a single fixed deterministic total polynomial-time
+algorithm returning one of
+$\{\mathrm{YES},\mathrm{NO},\mathrm{UNKNOWN},\mathrm{INVALID}\}$
+on all encoded sources such that, if every ternary clause belongs
+to a complete authenticated XOR3 quartet, all remaining clauses
+are unary/binary, and
+\[
+ k\le\lfloor\log_2 N\rfloor,
+\]
+the algorithm returns YES if and only if $F$ is satisfiable.
+A YES result includes a complete source-verified assignment.
+A NO result includes a complete source-verified proof in an
+explicit XOR-plus-disjunction-branch grammar. All discovery,
+failed branches, source access, proof verification and physical output
+are charged and bounded polynomially in $N$ for one and the same
+algorithm on both answer classes.
+\end{theorem}
+\begin{proof}
+The quartet truth tables show that recovery preserves the complete
+assignment relation. Removal of $C_j$ is logically equivalent to
+$E\models C_j$ and is certified by the inconsistent affine
+extension above. Every assignment satisfying all retained clauses
+selects at least one true literal from each. Conversely, any
+assignment satisfying the affine system and the chosen unit literals
+satisfies all retained clauses and, by affine entailment, all deleted
+ones. Enumerating the selected literal for each of the $u$ binary
+clauses, with unary literals forced, covers all satisfying assignments.
+This generates $2^u\le2^k\le N$ affine leaves.
+If one is consistent, recheck its witness on the complete original
+source and return YES. If every leaf is inconsistent, verify each
+$0=1$ XOR combination against its authenticated original equations
+and its chosen unit rows, and return NO with all leaf proofs.
+All operations have polynomial bit complexity on $O(N)$ rows and
+variables, including complete provenance vectors. There are at most
+$c+1+2^u\le 2N+1$ Gaussian calls; all failing calls and written
+certificates are counted. Otherwise return UNKNOWN without
+concluding satisfiability. No answer-class hint, SAT oracle or
+uncounted source access is used.
+\end{proof}
+\begin{corollary}[Restricted physical one-child contraction]
+Enlarge the recognized grammar by two fixed terminal encodings:
+\texttt{p cnf 3 1; 1 2 3 0} and
+\texttt{p cnf 1 2; 1 0; -1 0}, each with explicit newlines.
+On every recognized source of $N\ge512$ bytes the algorithm
+physically emits one decision-equivalent child of 18 or 19 bytes,
+hence
+\[
+ |F'|\le19\le N^{3/4}.
+\]
+A second call on that exact base terminates.
+For smaller recognized sources, the same paid decider terminates
+directly. General SAT contraction is \emph{not} implied.
+\end{corollary}
+\section{BUILD, independent controls and mathematical firewalls}
+The complete 20,094-byte Python reproducer
+\texttt{ARC222\_mixed\_affine\_alien\_selector.py}, deterministic seed
+22220261029, and JSON result file were run locally. The finite
+checks passed for 330 randomized mixed instances (309 YES,
+21 NO), 186 verified affine UNSAT leaf certificates,
+18 corrupted proof rejections, 8 redundant-clause tests,
+64 quantified gadget checks, 36 small reduction controls and
+ten charged toroidal cases, among other controls.
+For toroidal size $L=24$, 3,456 variables, 2,304 quartets and
+one alien binary clause use 161,662 source bytes.
+The original primal-width lower bound $23$ and syntactic backdoor
+lower bound $1,152$ exceed the ARC220 log cutoff $17$,
+while the complete-quartet-only ARC221 recognizer rejects
+the added binary constraint. The new arm constructs the
+18- or 19-byte terminal YES/NO child for either parity charge.
+This is not strict signed exact-(2,2), but a separate ordinary
+proper 3CNF control.
+
+The seven-point Fano exact-one family, expressed as XOR3 and
+negative binary constraints, is UNSAT despite each tractable
+component admitting eight assignments. The present selector
+returns UNKNOWN when its exceptional-clause cutoff fails.
+An arbitrary 3SAT clause also has the exact ARC213 mixed
+representation $(\ell_1\lor y_1)\wedge(\ell_2\lor y_2)
+\wedge(\ell_3\lor y_3)\wedge(y_1\oplus y_2\oplus y_3=0)$,
+so unlimited mixed instances remain NP-hard. Finite tests
+establish no universal runtime lower bound.
+
+The original Library object
+\texttt{Connected\_Interface\_Audit.zip}, ID
+\texttt{libfile\_a2862f0165b4819195a88d9e896a42a7},
+was freshly materialized, actual report and Python checked, and
+the script rerun: 4680 boundary subsets, 7191 local discovery
+checks, 139 brute-force comparisons, byte-identical archived JSON,
+SHA-256 \texttt{05675f876d6624073507df1e9cedd18a188143db687e454bc2942143d36cbaca}.
+Its fixed-interface inequality $n\le3b+12bq$ remains an
+architectural statement and not a SAT runtime lower bound.
+\section{Machine ledgers, corpus reconciliation and open DAG}
+For a native indexed bit RAM, all Gaussian reductions, provenance,
+failed tests, proof output and peak storage are polynomial.
+One read-only-input fixed multitape TM can simulate the explicitly
+stored polynomial-size structures with polynomial scan overhead.
+A single shared read/write tape includes the $N$ input
+symbols in footprint and adds a separately charged polynomial
+transport overhead. The fixed UTM pays interpreter and program
+simulation costs; it inherits only polynomial bounds, not borrowed
+RAM exponents. No tape-head crossing theorem is transferred to
+RAM, and no worst-case maxima from distinct SAT and UNSAT
+inputs are combined as a same-run lower bound.
+
+Project corpus consulted includes root \texttt{main.tex},
+\texttt{AGENTS.md}, \texttt{CODEX.md}, the repo
+\texttt{pnp-research} skill, ARC220/221, LSPV-4 MIXED-FANO221,
+LSPV-3 TSEITIN-GUARD-PORTFOLIO158, and LSPV-2
+TWO-SWAP-EXACT-PORT-TRANSPORT223. This method extends the
+earlier restricted portfolio by a fourth arm. It neither
+supersedes the negative Fano compatibility control nor
+provides an exact-(2,2) adapter, a universal semantic summary,
+an unrestricted time--space contradiction or a validated
+classical application of the OpenAI quantum recursion.
+\textbf{Statuses:} selector theorem PROVED/RESTRICTED;
+finite controls COMPUTATIONAL; general all-input contraction
+OPEN; ARC-EDGE-90 OPEN; P versus NP OPEN.
+External mathematical referee and theorem-prover verification pending.
+\section{Next LSPV-1 target}
+Construct and independently audit a connected mixed family
+evading all four restricted arms, including full source
+provenance and both answer sides, and test any proposed
+moving joint-compatibility summary for honest polynomial
+acquisition and a hereditary polynomial-value rank.
+LSPV-2 should test physical exact-(2,2) port contraction;
+LSPV-3 semantic assembly; LSPV-4 same-machine resources;
+LSPV-5 independent proof/certificate and root ownership audit.
+\end{document}
