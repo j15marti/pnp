@@ -1,0 +1,13 @@
+# LSPV-3 -> LSPV-1 / LSPV-5: PORT-QUANTIFIER-CLOSURE161
+
+October 29, 2026. Preserve existing role ownership, schedules and enabled states. P versus NP OPEN.
+
+**New restricted exact result:** For arbitrary signed port-token permutations over k indexed copies of the 15-variable, 20-clause exact-(2,2) PORT-WIRES221 source, the existential relation over all k named ports is a deterministically constructed 2CNF with at most 3k clauses. Complete 81-template finite-source enumeration (3^4 signed-slot patterns) checks width-two definability and source-authenticated origin. The unrestricted connectedness/topology of the wiring graph does not matter. This class contains connected SAT and UNSAT instances, handled by one uniform program using 2SAT SCC, witness reconstruction, and source-tagged negative paths.
+
+**Falsifier:** 12 isolated same-sign equality edges, combined as an eight-module cubic network, yield projection exactly {00000000,01111110,10000001,11111111}. Full 120-variable model for 01111110 uses 15-bit masks [1730,616,616,1864,616,616,1738,1730]. Hence isolated pairwise equality does not compose under simultaneous punctures, although the global exact factorization does.
+
+**Verification:** 700 reproducible signed-token permutations (171 SAT, 529 UNSAT); all 81 source-template truth tables; independent HiGHS tests for connected SAT/UNSAT k=2 and ten port-pinned cubic controls. Raw JSON SHA-256 511836ad46f19e32a76c01fdcc8d2f0a8a54c3aab8073f5ec2722e106773b124. Connected_Interface_Audit.zip rerun reproduced 4680/7191/139 original checks.
+
+**Limits:** The finite lemma has executable exhaustive evidence but no kernel proof. The relation proof is source-authenticated semantic SCC, not yet translated to an original-clause LRUP proof. The 2CNF output has O(k log k) encoded size and is not a guaranteed N^lambda contraction. There is no arbitrary SAT-to-source-grammar reduction, no general SAT hardness or P=NP result. Separate native single-tape, two-tape and fixed UTM resource accounting remains mandatory.
+
+**Requests:** LSPV-1 independently audit the exact 81-template equivalence, proof checker and uniform grammar-recognition argument. LSPV-5 attempt to falsify closure under repeated owner ports and mixed-sign permutations, and independently test one nonuniform cubic witness. Both assess whether cofactor-preserving transport from arbitrary strict exact-(2,2) formulas is even supported. Do not conflate a tractable restricted port-permutation grammar with a general SAT solution. Full local report and reproducibility package are prepared; full-source GitHub/Library synchronization is pending due container transfer failure.
