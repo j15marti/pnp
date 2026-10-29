@@ -1,0 +1,150 @@
+% LSPV-1 REPORT::ARC215_TWO_LANGUAGE_EXACT_INTERFACE_PROJECTION::2026-10-28_2337_PDT
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,xurl}
+\setlength{\emergencystretch}{2em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\SAT}{\mathsf{SAT}}
+\title{ARC215: Exact Polynomially Constructible 2CNF--Affine Interface,\\a Power-Short First Projection, and a Two-Level Fixed-Point Firewall}
+\author{LSPV-1 Formal Proof Lead}
+\date{28 October 2026, 23:37 PDT}
+\begin{document}\maketitle
+\begin{center}\fbox{\parbox{.93\linewidth}{\textbf{Status: PROVED/EXACT within a restricted mixed-constraint language, independent review pending; COMPUTATIONAL controls passed.} A 2CNF subsystem and an affine GF$(2)$ subsystem admit an exact, uniformly polynomial-time common-variable projection of $O(b^2\log(b+2))$ physical bits, where $b$ is the number of variables mentioned by both. This can give a power-short \emph{first} child, but the same compiler admits an explicit second-step fixed point. In particular it supplies no recursively closed universal SAT contraction. P versus NP and ARC-EDGE-90 remain OPEN.}}\end{center}
+
+\section{PROPOSE: one missing lemma and four falsifiable mechanisms}
+The missing constructive lemma is a \emph{uniform, total, all-input, answer-preserving, polynomially charged and repeatedly closed} single-child map whose physical encoded length shrinks by a fixed power (or whose polynomial-value rank decreases with polynomial complete states). The following mechanisms were fixed before the targeted source search.
+\begin{description}
+\item[]\textbf{M1, 2CNF private projection.} Existentially removing variables used only by the 2CNF subsystem can be compiled in polynomial time into 2CNF on a shared interface. \textbf{PROVED.}
+\item[]\textbf{M2, affine private projection.} Existentially removing variables used only by the XOR subsystem can be compiled in polynomial time into at most $b$ independent GF$(2)$ rows on that same interface. \textbf{PROVED.}
+\item[]\textbf{M3, first-step compression versus hereditary closure.} The joint interface has $O(b^2\log(b+2))$ physical bits, potentially power-short for $b\le N^{1/2-\epsilon}$, but a second application may leave it unchanged. \textbf{First part PROVED, universal second-level shrink FALSIFIED for this compiler.}
+\item[]\textbf{M4, logarithmic overlap tractability.} A projected mixed instance can be solved by enumerating $2^b$ assignments, with all evaluation costs charged. This is \textbf{PROVED/RESTRICTED}. No general $b=O(\log N)$ guarantee is given.
+\end{description}
+
+\section{SEARCH: original evidence, prior work, and source-level scope}
+The original user Library archive \path{Connected_Interface_Audit.zip} was independently materialized and authenticated by its byte-for-byte executable replay. The original \texttt{REPORT.tex}, \texttt{audit.py}, \texttt{results.json}, and accompanying PDF were present. Reexecuting unchanged \texttt{audit.py} reproduced the archived result byte for byte (exact SHA-256 in the accompanying manifest), with 4680 boundary subsets, 7191 local-search checks, and 139 SAT comparisons. Its theorem $k\le4b$, $n\le3b+12bq$ for a \emph{given fixed static syntactic module grammar} is correct under those hypotheses, but does not bound decision time.
+
+The preceding LSPV-1 ARC213 constructed an exact 3SAT-to-mixed-2SAT/XOR gadget with $3m$ shared auxiliary variables and proved mixed NP-completeness. The preceding LSPV-1 ARC214 studied mixed-gadget treewidth. The newest LSPV-2 \texttt{AFFINE-RESOLVENT-FIXEDPOINT216} established a \emph{different} fixed point under resolution and selector reentry on a recognized balanced 3CNF family. This report concerns a separate, restricted \emph{componentwise existential-projection compiler}. It does not claim novelty for Davis--Putnam elimination, affine elimination, Schaefer's closure classes, or parameterized backdoor enumeration.
+
+Targeted GitHub searches included \texttt{2sat xor gauss}, \texttt{pathwidth dynamic programming parity xor}, and \texttt{gauss\_jordan} in \path{msoos/cryptominisat}. Direct inspection of \path{msoos/cryptominisat/src/propengine.cpp} blob \texttt{5e685596b419} found \texttt{gauss\_jordan\_elim}, plain XOR watchers and joint conflict propagation. This is source evidence of a real combined solver, not proof of polynomial running time on unrestricted mixed instances. We also checked \path{potassco/xorro} (multiple XOR propagation approaches), the original Schaefer classification~\cite{schaefer}, and E\'en--Biere's bounded variable elimination~\cite{eenbiere}. A failed search for a single guaranteed power-shrinking successor is not a nonexistence result.
+
+The actual OpenAI source \path{openai/math/preprints/Polynomial-Time-Unitary-Synthesis-from-a-Boolean-Oracle-October-5-2026/build/sections/06-recursion.tex}, blob \texttt{65bf0450f460}, states a one-smaller-quantum-circuit-call lemma. The target-dependent Boolean oracle is not uniformly constructed or evaluated classically; no SAT consequence is imported. Project root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, and \texttt{.codex/skills/pnp-research/SKILL.md} were read for ownership and proof-status discipline. The repo's current root already contains separate owned specialist sections; this report changes none of the peer-owned mathematics.
+
+\section{BUILD I: exact interface projection}
+An instance is a pair $F=(C,A)$, where $C$ is a conjunction of clauses of length $0,1,2$ over Boolean variables, and $A$ is a conjunction of equations $\bigoplus_{v\in S_i}v=r_i$ over $\mathbb F_2$. Length-zero clauses/equations are allowed to represent falsity. Let $V_C,V_A$ be the mentioned variable sets and put
+\[
+ Z=V_C\cap V_A,\qquad X=V_C\setminus Z,\qquad Y=V_A\setminus Z,\qquad b=|Z|.
+\]
+The three sets are disjoint. Syntactic occurrence tables compute them without knowing whether $F$ is satisfiable. Let $N$ be the complete unpadded physical input length including signs, indices, separators and all right-hand sides.
+
+\begin{lemma}[Paid 2CNF projection, a known Davis--Putnam closure fact]
+There is a deterministic polynomial-time algorithm constructing $C_Z(Z)$ with at most $O(b^2)$ distinct clauses of width at most two, such that for every assignment $z$,
+\[
+ C_Z(z)\iff\exists x\in\{0,1\}^{X}\ C(x,z).
+\]
+Throughout elimination, no more than $O(|V_C|^2)$ distinct width-two-or-shorter clauses need be stored.
+\end{lemma}
+\begin{proof}
+For a private variable $x$, partition its clauses into those of form $(x\lor P_i)$, those $(\neg x\lor Q_j)$ and all remaining clauses $R$. Existential elimination yields
+\[
+ \exists x\, C\equiv R\wedge\bigwedge_{i,j}(P_i\lor Q_j).
+\]
+The residual $P_i,Q_j$ each has length at most one, so every resolvent has length at most two. Drop tautologies and deduplicate after each step; on $v$ remaining variables the number of distinct binary, unary and empty clauses is $O(v^2)$. Eliminate each $x\in X$ and retain only clauses involving $Z$. The identity holds \emph{pointwise on every assignment $z$}, including contradictory unit clauses and empty clauses. Computing all generated pairs and checking clause identities can be done in polynomial time without SAT calls.
+\end{proof}
+
+\begin{lemma}[Paid affine projection, a known Gaussian-elimination fact]
+There is a deterministic polynomial-time algorithm constructing $A_Z(Z)$ with either one inconsistent row or at most $b$ independent GF$(2)$ equations, such that for every $z$,
+\[
+ A_Z(z)\iff\exists y\in\{0,1\}^{Y}\ A(y,z).
+\]
+\end{lemma}
+\begin{proof}
+Choose a private variable $y$ that occurs in a row. XOR that pivot row into every other row containing $y$, and then delete the pivot row: for any assignment to the remaining variables, the pivot uniquely determines a suitable $y$. Repeat over $Y$. Gaussian elimination on the remaining $Z$ columns detects $0=1$ and retains at most $b$ independent rows. Each operation preserves the exact projection, and all row operations are explicitly charged.
+\end{proof}
+
+\begin{theorem}[Uniform source-authenticated two-language projection]
+For every valid encoded mixed instance $F=(C,A)$, the deterministic constructor
+\[
+ \mathcal P(F)=(C_Z,A_Z)
+\]
+produces \emph{exactly one} explicitly written mixed child on at most $b$ locally renumbered variables, satisfies
+\[
+ \forall z\quad \mathcal P(F)(z)\iff
+   \exists x,y\,[C(x,z)\wedge A(y,z)],
+\quad\text{and}\quad
+ \SAT(F)\iff\SAT(\mathcal P(F)),
+\]
+and has physical output length $M=O(1+b^2\log(b+2))$. Its total parsing, table construction, unsuccessful resolvent trials, XOR row operations, deduplication, reindexing and output are polynomial in $N$; simultaneous peak memory is polynomial in $N$.
+\end{theorem}
+\begin{proof}
+Because $X$ occurs only in $C$ and $Y$ only in $A$, existential quantifiers distribute at every fixed $z$:
+\[
+ \exists x,y\,[C(x,z)\wedge A(y,z)]
+ \iff (\exists x\,C(x,z))\wedge(\exists y\,A(y,z)).
+\]
+Apply the preceding two constructive lemmas. At most $O(b^2)$ clauses use at most two $O(\log(b+2))$-bit locally numbered variable indices, and at most $b$ independent affine equations each have at most $b$ such indices. The complete explicit binary encoding has the claimed bound. The constructor is one fixed deterministic program for SAT and UNSAT, never receives a free answer-class bit, and never solves the mixed parent. Malformed representations are rejected by a deterministic polynomial parser, outside the declared encoded language.
+\end{proof}
+
+\begin{proposition}[First-step power shrink under a genuine syntactic promise]
+Fix $\epsilon>0$. On any mixed subfamily with $b\le N^{1/2-\epsilon}$, for every fixed $\lambda$ with $1-2\epsilon<\lambda<1$ and all sufficiently large $N$, the explicitly constructed child satisfies $M\le N^\lambda$. If $b=O(\log N)$, the constructor can also decide the original mixed instance by checking at most $2^b$ boundary assignments against its $C_Z$ and $A_Z$ output, in total deterministic polynomial time.
+\end{proposition}
+\begin{proof}
+Insert $b\le N^{1/2-\epsilon}$ into the physical size bound. The logarithm is absorbed by the strict exponent slack. For each $z$, evaluate all $O(b^2)$ constraints directly. The $2^b$ enumeration, including failures and the final output of a fixed YES/NO base formula, is polynomial when $b=O(\log N)$. The decision side does not come for free: an accepting case may be the last candidate, and a rejecting case may require all candidates.
+\end{proof}
+
+\section{BUILD II: a hereditary fixed point and the exact missing arrow}
+\begin{theorem}[FALSIFIED: repeating this projection necessarily shrinks]
+For every $b\ge3$, there are mixed instances $F_{b,t}$ with $b$ shared variables and arbitrarily large additional private-variable padding, whose first projection $K_b=\mathcal P(F_{b,t})$ is strictly shorter, but
+\[
+ \mathcal P(K_b)=K_b,\qquad |K_b|\longrightarrow\infty\quad(b\to\infty).
+\]
+Thus no uniform strict-power contraction at \emph{every hereditary level} follows from this componentwise projection procedure, even when the first step power-shrinks its parent. This does not prohibit other algorithms from deciding or compressing $K_b$.
+\end{theorem}
+\begin{proof}
+On shared variables $z_1,\ldots,z_b$ set
+\[
+ C_b=\bigwedge_{i=1}^b(z_i\lor z_{i+1}),\quad z_{b+1}=z_1,
+ \qquad A_b=\bigwedge_{i=1}^b(z_i=1).
+\]
+Each variable occurs in \emph{both} components, and neither has a private variable. In the chosen deterministic canonical representation, $\mathcal P(K_b)=K_b$ for $K_b=(C_b,A_b)$: there is nothing to eliminate, and each XOR row and clause is already distinct. For each $z_i$ add private 2CNF variables $u$ with $(z_i\lor u)\wedge(\neg z_i\lor\neg u)$, which existentially projects to TRUE, and private affine variables $v$ with $z_i\oplus v=0$, which also existentially projects to TRUE. Repeating those attachments $t$ times yields $F_{b,t}$, whose full source becomes arbitrarily long as $t$ grows while $\mathcal P(F_{b,t})=K_b$. In fact choosing $t=b^K$ with a sufficiently large fixed integer $K$ makes the first child power-short for any prescribed $0<\lambda<1$ (since $|K_b|=O(b\log b)$ while $|F_{b,t}|=\Omega(bt)$). Under the same canonical serialization, after the first shortening, the next step is a length-preserving fixed point. The family is intentionally easy and SAT; it falsifies only the compiler's hereditary guarantee, not general SAT hardness. The same structural fixed point can be made UNSAT by replacing $A_b$ with the rows $z_i=0$, leaving $C_b$ unchanged.
+\end{proof}
+
+\paragraph{Connection to the preceding ARC213 gadget.} The ARC213 reduction has $3m$ fresh variables, each shared between its binary and XOR layers. If $m=\Theta(N/\log N)$ on a standard source encoding, the interface $b=3m$ is much too large for the present first-step power-shrink guarantee. In particular the new theorem does not collapse arbitrary 3SAT through ARC213. More generally an arbitrary ordinary-3SAT-to-mixed compiler which always produced $b=O(\log N)$, with polynomial output and total uniform costs, would imply P$=$NP by the restricted algorithm. That compiler remains OPEN; claiming its existence would insert the desired conclusion as a hypothesis.
+
+\section{Separate native resource ledgers and proof DAG}
+Let the complete source have $N$ physical bits, not just $n$ logical variables. There are at most $N$ syntactic variable names, and at most $O(N^2)$ distinct binary clauses at each elimination stage. A dense indexed-RAM implementation performs at most $O(N^5)$ resolvent-pair tests plus polynomial matrix operations, using $O(N^2\log(N+2))$ bits of simultaneous workspace; a generous native upper bound is $T_{\rm RAM}=N^{6+o(1)}$, $S_{\rm RAM}=N^{3+o(1)}$. A fixed-$k$ multitape read-only-input implementation with sequential scans of complete tables has conservative \emph{upper} bounds $T_{\rm off}=N^{9+o(1)}$, $S_{\rm off}=N^{3+o(1)}$, with distinct work cells, accesses and output all included. A two-fully-writable-tape machine can emulate that construction without altering its first tape. A single shared read/write tape can simulate it by a complete sweep of $N+S_{\rm off}$ cells per step, obtaining $T_1=N^{12+o(1)}$ and total visited footprint $P_1=N^{3+o(1)}$, including input and output. This verifies only the stated conservative simulation arrow
+\[
+ t_1\le t_{\rm off}+\max(1,s_{\rm off})=9+3=12,
+\]
+not any optimal lower bound, same-time square-root-space transport, or claim about indexed-RAM hardness. A fixed UTM pays a constant program prefix and its interpreter overhead polynomially. These deliberately loose upper bounds are for the \emph{projection compiler}, not a SAT solver. If the interface is enumerated, add $2^b\operatorname{poly}(N)$ time, and keep the SAT-side and UNSAT-side maxima as restrictions of the \emph{same fixed program}. All failed branches, parser work, row/selector access, physical output and simultaneous peak tables are charged; no NC or polynomial-depth oracle is presumed free.
+
+The proved, restricted dependency chain is
+\[
+\text{2CNF projection}\;\longrightarrow\;\text{affine projection}
+\;\longrightarrow\; O(b^2\log(b+2))\text{-bit joint summary}.
+\]
+Its conditional first-step power-shrink edge assumes $b\le N^{1/2-\epsilon}$.
+The proposed automatic second-level contraction is \textbf{FALSIFIED} for
+this compiler by an unbounded fixed-point family. The all-input,
+polynomially discovered interface and alternative repeated successor are
+\textbf{OPEN}, as is the polynomial-value descending-rank alternative.
+The independent ARC/FLMV separation route still lacks its all-input,
+source-authenticated, same-machine strict forbidden-region implication.
+No sequential-head numerical exponent is transferred to indexed RAM.
+
+\section{COMPUTATIONAL hostile controls, coordination, publication}
+The independent dependency-free Python script checked 1200 seeded random mixed instances of up to eight variables, 60 ARC213-like signed-clause gadget instances, both polarity variants of a three-ternary-XOR hostile compatibility example, and four deterministic first-shrink/second-fixed-point examples. For each small case, it compared the \emph{entire set of feasible boundary assignments} against exhaustive full-source assignments, and independently checked the two component projections at each boundary assignment. All 1266 case comparisons passed; 129 random cases were SAT and 1071 UNSAT. The four padding controls had $(b,N,M,M_2)=(3,1527,60,60),(5,2641,88,88),(9,4869,144,144),(17,9769,280,280)$ in the script's exact JSON serialization. These observations do not prove the asymptotic claims; the algebraic proof does.
+
+LSPV-2 is asked to search beyond componentwise private elimination for a uniformly charged second-level successor, reusing its affine-resolvent fixed-point controls. LSPV-3 should investigate source-authenticated syntactic recognition or recursive semantic interface acquisition on both answer classes, never a free boundary. LSPV-4 should independently transport \emph{the same} compiler through native tapes and RAM with peak workspace and real output. LSPV-5 should falsify two-level closure or source authentication in the strongest candidate, including any hidden proof-query or history bits. Existing identities, schedules and peer-owned regions are unchanged. Independent review remains pending. P versus NP remains OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{schaefer} T. J. Schaefer, The Complexity of Satisfiability Problems, STOC 1978, pp. 216--226, DOI \href{https://doi.org/10.1145/800133.804350}{10.1145/800133.804350}.
+\bibitem{eenbiere} N. E\'en and A. Biere, Effective Preprocessing in SAT Through Variable and Clause Elimination, SAT 2005, pp. 61--75, DOI \href{https://doi.org/10.1007/11499107_5}{10.1007/11499107\_5}.
+\bibitem{cms} M. Soos et al., CryptoMiniSat, source file \href{https://github.com/msoos/cryptominisat/blob/master/src/propengine.cpp}{src/propengine.cpp}, checked blob \texttt{5e685596b419}.
+\bibitem{oai} OpenAI, Polynomial-Time Unitary Synthesis from a Boolean Oracle, October 5, 2026, source \href{https://github.com/openai/math/tree/main/preprints/Polynomial-Time-Unitary-Synthesis-from-a-Boolean-Oracle-October-5-2026}{original preprint directory}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::ARC215_TWO_LANGUAGE_EXACT_INTERFACE_PROJECTION
