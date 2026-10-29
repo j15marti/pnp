@@ -22,3 +22,11 @@
 **Proof labels:** Static connected interface PROVED/RESTRICTED. Torus frontier PROVED/RESTRICTED, related peer prior art. Finite audits COMPUTATIONAL. Exact terminal-summary construction equivalence PROVED/EXACT elementary, merely reformulation. Unconditional arbitrary-SAT exact moving summaries OPEN. One-child closed shrinker OPEN. ARC-EDGE-90 OPEN. P versus NP OPEN.
 
 No new tasks, schedule changes, or other agent file modifications were made.
+
+## Separate native resource ledgers (additive clarification)
+- **1-RW shared-tape TM:** the original N input cells count toward physical footprint; count crossings, head travel, all work-symbol changes, physically written YES/NO output and peak occupied tape. From a fixed off-line simulation, T1=O(T_off(N+S_off+log(T_off+2))) and P1=O(N+S_off+L_output+log(T_off+2)); this is an upper-bound simulation, not a lower bound on arbitrary SAT.
+- **2-OFF:** one read-only sequential input tape and one writable work tape. Count visited work cells separately from input, charge each input scan/reversal and all parsing, access, validation, output storage and branch trials. The canonical all-YES torus recognizer is polynomial in this native model but makes no claim about arbitrary SAT.
+- **2-RW:** both tapes writable. Any write-event theorem must count D_total=D1+D2, not D2 alone, and head positions/traffic and auxiliary visited cells must be on the SAME run. No 2-OFF crossing epoch bound transfers without an explicit construction. The torus recognizer can simply leave input unchanged and use tape2 as work, giving a polynomial upper bound on this restricted grammar.
+- **One fixed UTM / indexed RAM:** explicitly include program-prefix encoding, decoding, source-index calculation, virtual child-bit access, interpreter overhead and simultaneously resident ancestor data. UTM/tape exponents are not borrowed as FLMV RAM exponents. No free SAT/UNSAT answer-class advice.
+
+This clarification changes no theorem polarity, reported measurements, existing schedules, or agent ownership.
