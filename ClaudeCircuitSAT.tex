@@ -1,0 +1,125 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+% Created 2026-10-29. Append new runs to the Run Log; revise ledgers in place.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=1in]{geometry}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{conjecture}{Conjecture}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: A Wire-by-Wire, Parametrized Lower-Bound Ladder for Circuit-SAT}
+\author{Living document (Claude scheduled runs)}
+\date{Last updated 2026-10-29 (run 1)}
+\begin{document}\maketitle
+
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} No superpolynomial lower bound for \CSAT{} is
+claimed. This document builds a ladder of \emph{exact} small-case facts and
+\emph{proved} elementary bounds, and tracks which parametrized bounds are
+unconditional, conditional, or open. Status labels: PROVED/EXACT, KNOWN THEOREM,
+COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup and parameters}
+\begin{definition}[Circuit, wires]
+A circuit $C$ on $n$ inputs is a DAG of $g$ fan-in-2 gates over the full binary basis
+$B_2$ (negation free), one designated output. Its \emph{wire count} is $w(C)=2g$
+(gate-input edges). $\CSAT$: given $C$, is there $x\in\{0,1\}^n$ with $C(x)=1$?
+\end{definition}
+Two quantities are tracked at each rung $(n,g)$:
+\begin{itemize}
+\item \textbf{construction cost} $w^*(f)=2\cdot\min\{g: \exists C,\ C\equiv f\}$, the minimal wires to
+ build a function $f$ (the \emph{wire-by-wire} ladder);
+\item \textbf{solving cost} $T(n,w)$: worst-case time to decide \CSAT{} on circuits with $n$ inputs and $w$ wires.
+\end{itemize}
+Natural parameters: $n$ (inputs), $w$ (wires), $k=w-n$ or $w/n$ (density),
+treewidth/pathwidth of $C$, number of unsatisfying-to-satisfying "switch" wires.
+A parametrized bound has the form $T(n,w)\ge F(n,w)$ on a hard family.
+
+\section{Rung ladder: exact minimal circuit sizes (COMPUTATIONAL, exact)}
+Script: \texttt{research/agents/claude/circuitsat/exact\_size.py}; data
+\texttt{results\_exact\_size\_n\{1,2,3\}.json}. Exhaustive level-by-level search over sets of
+computed truth tables (inputs, negations free); complete for $n\le3$.
+\begin{center}\begin{tabular}{@{}cccccccc@{}}\toprule
+$n$ & \#functions & $g=0$ & $g=1$ & $g=2$ & $g=3$ & $g=4$ & unique-SAT (single minterm) $g$\\\midrule
+1 & 4   & 4 & --  & --  & --  & --  & 0\\
+2 & 16  & 6 & 10  & --  & --  & --  & 1\\
+3 & 256 & 8 & 30  & 114 & 80  & 24  & 2\\\bottomrule\end{tabular}\end{center}
+Observations (COMPUTATIONAL): max complexity at $n=3$ is $4$ gates; every one of the $2^n$
+single-minterm (unique-satisfying-assignment) functions costs exactly $n-1$ gates for
+$n=2,3$.
+
+\section{Proved elementary bounds}
+\begin{lemma}[Construction floor; PROVED/EXACT]\label{lem:floor}
+If $C$ depends essentially on all $n$ inputs then $g\ge n-1$, so $w\ge 2(n-1)$.
+Hence any circuit with exactly one satisfying assignment has $w\ge 2(n-1)$, with equality
+attained by the AND tree of literals (matches the table for $n=2,3$).
+\end{lemma}
+\begin{proof}
+Every input must have a path to the output. A DAG with $n$ sources feeding one sink via
+fan-in-2 gates has at least $n-1$ gates (each gate merges at most two components of the
+"reachability forest"; inductively, $n$ components need $n-1$ merges). A function with a
+unique satisfying point $a$ depends on every variable (flip $a_i$). Equality: $\bigwedge_i \ell_i$. \qed
+\end{proof}
+
+\begin{proposition}[Description-reading bound; PROVED/EXACT, trivial]\label{prop:read}
+Any correct \CSAT{} algorithm that accesses the circuit through a probe model
+(reading gate descriptions) must probe $\Omega(w)$ descriptions in the worst case.
+\end{proposition}
+\begin{proof}
+Chain $g_0=x_1$, $g_i=g_{i-1}\wedge x_1$ ($1\le i\le m$), output $x_1\wedge\neg g_m$.
+Then $g_m\equiv x_1$ and the circuit is unsatisfiable. Rewire one input of a single gate $g_j$
+from $x_1$ to $x_2$ ($g_j=g_{j-1}\wedge x_2$): then $g_m\equiv x_1\wedge x_2$ and
+$x=(1,0)$ satisfies. The $m$ modified instances differ from the base instance only in one
+gate; an algorithm that never probes gate $j$ answers identically on both. \qed
+\end{proof}
+This is the unavoidable "read the whole circuit" floor; it is the first rung of the
+parametrized ladder $T(n,w)\ge w$.
+
+\section{Parametrized lower-bound ledger}
+\begin{center}\begin{tabular}{@{}p{5.2cm}p{3.4cm}p{5.6cm}@{}}\toprule
+Statement & Status & Note\\\midrule
+$T\ge \Omega(w)$ (probe model) & PROVED (Prop.~\ref{prop:read}) & trivial floor\\
+$w\ge 2(n-1)$ for unique-SAT circuits & PROVED (Lem.~\ref{lem:floor}) & construction cost, not solving cost\\
+Black-box oracle: $2^n$ queries to find a lone satisfying point & KNOWN THEOREM & adversary; says nothing about white-box\\
+No $(2-\varepsilon)^n\,\mathrm{poly}(w)$ algorithm & CONDITIONAL (SETH) & KNOWN as hypothesis, not theorem\\
+No $2^{o(n)}\mathrm{poly}(w)$ algorithm & CONDITIONAL (ETH) & hypothesis\\
+Superlinear unconditional $T(n,w)$ in general RAM/TM model & OPEN & Williams-type time--space bounds $n^{2\cos(\pi/7)}$ are for small-space SAT; see repo ledger row L13\\
+Superpolynomial $T$ & OPEN & equivalent to P$\ne$NP-type separation for \CSAT\\\bottomrule\end{tabular}\end{center}
+
+\section{Repository cross-reference (survey this run: limited)}
+Run~1 surveyed only the repo tree, the root \texttt{AGENTS.md}, and the \texttt{research/agents/claude}
+pointers; it did \emph{not} re-read the full corpus. Potentially useful:
+\begin{itemize}
+\item World ledger (\texttt{research/agents/claude/world-ledger/}), rows L13 (Buss--Williams
+ barrier for alternation trading on SAT time exponent), L34--L37 (portfolio/alternation-trading
+ barrier, exponent $1+\Theta(1-d)$): relevant if the solving-cost ladder is posed in small space.
+\item L38--L40 (one-tape crossing sequences): bound also holds for nondeterministic machines, so it
+ cannot separate P from NP; a warning for any ``wire-crossing'' argument here.
+\item ARC/FLMV spine (root \texttt{main.tex}) is time--space; connection to wire counts not yet established.
+\end{itemize}
+
+\section{Barriers to keep in view}
+Natural proofs (Razborov--Rudich), relativization, algebrization. Circuit-lower-bound
+\emph{construction} counts (Lemma~\ref{lem:floor}) concern $w^*(f)$ of explicit functions;
+a lower bound on \emph{solving} cost needs a different argument. Known explicit circuit lower
+bounds over $B_2$ are only $\approx 3.1n$ gates, so wire-counting alone cannot reach superpolynomial.
+
+\section{Next rungs (plan)}
+\begin{enumerate}
+\item Extend exact sizes to $n=4$ (65536 functions; needs SAT-based synthesis or C search); tabulate
+ min wires per \#satisfying assignments $|f^{-1}(1)|$ to see how wire cost scales with solution density.
+\item Define a restricted solver model (e.g.\ DPLL/resolution-style on the wire graph) and prove
+ exact lower bounds for $T(n,w)$ \emph{in that model} on small $n$ by exhaustive adversary search.
+\item Parametrize by treewidth $\mathrm{tw}(C)$: expected upper bound $2^{O(\mathrm{tw})}\mathrm{poly}(w)$; test whether a
+ matching lower bound is plausible in the restricted model (CONDITIONAL on SETH in general).
+\item Compare with the corpus ARC/FLMV edge condition once the model is fixed.
+\end{enumerate}
+
+\section{Run log}
+\begin{description}
+\item[Run 1, 2026-10-29] Created document; exact sizes $n\le 3$; Lemma~\ref{lem:floor},
+ Prop.~\ref{prop:read}; ledger. No new unconditional solving-cost lower bound beyond $\Omega(w)$.
+ \textbf{P vs NP remains OPEN.}
+\end{description}
+\end{document}
