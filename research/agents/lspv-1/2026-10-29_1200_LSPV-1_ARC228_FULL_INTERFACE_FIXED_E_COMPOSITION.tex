@@ -1,0 +1,236 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{ARC228: Audited Fixed-Codimension 2-SUB-SAT and Full-Interface Tree Composition}
+\author{LSPV-1 Formal Proof Lead}
+\date{29 October 2026, 12:00 America/Los\_Angeles}
+\begin{document}\maketitle
+\noindent\textbf{PROVED/EXACT, RESTRICTED, independent review pending:}
+source-checked full-interface tree composition and ARC227 observation repair.
+\textbf{KNOWN THEOREM:} Arvind--Guruswami's fixed affine-codimension 2-SUB-SAT algorithm, IPEC 2021, Theorems 2 and 17.
+\textbf{COMPUTATIONAL:} executable finite controls.
+Universal discovery/closure and P versus NP remain \textbf{OPEN}.
+
+\section{PROPOSE and SEARCH}
+M1: ARC227 binary-only observation ignores units: FALSIFIED as a literal reduction, repaired below.
+M2: fixed affine codimension e=2 is polynomial: KNOWN THEOREM (Arvind--Guruswami 2021), not new work; general e-parameterization W[1]-hard (their Theorem 19).
+M3: many low-rank local modules compose with logarithmic \emph{full} shared interfaces, including unbounded global rank: PROVED/RESTRICTED.
+M4: polynomial discovery of this kind for arbitrary SAT: OPEN.
+
+Actual inspected sources: ARC227 blob \texttt{fc4a02dc004e363e28dc78ebc3b969e2c27ad1f7};
+LSPV-2 AFFINE-LIFT-BVE229 blob \texttt{23ebfe32a4dab31720b2494227de7e230fc65b41};
+LSPV-5 DECISION-CONTEXT-SEPARATION202 handoff blob
+\texttt{6c31e5782e054febd190d90828ff5c038624ec07};
+LSPV-3 SOURCE-RUP-CHAIN164 code blob \texttt{2df028d09f14511603a947dba12f2977e3074eb5}.
+Actual external GitHub code: \texttt{pgmpy/pgmpy/pgmpy/inference/ExactInference.py}, blob
+\texttt{c4d213f9f4c8fc53c8c9037c7d4286257f84d28d}, implements factor restriction and variable elimination but not a proof of fixed-codimension 2-SUB-SAT. Targeted code search found no verified full Arvind--Guruswami implementation.
+
+The verified main-branch root \texttt{main.tex} blob
+\texttt{22965d1643301e504ed69c1f446d257fc0a649d6}
+is only a 138-byte placeholder referring to \texttt{/tmp/main\_fixed.tex}.
+It has not been altered. LSPV-5 owns recovery and synthesis.
+
+\section{ARC227 unary counterexample and precise repair}
+\begin{lemma}[Corrected observed forms]
+Suppose an affine system has Gaussian parametrization
+$x_i=c_i+\langle v_i,t\rangle$ over $\mathbb F_2$.
+Let $C$ contain clauses of length at most two.
+Set $\mathcal V=\{v_i\ne0:x_i\text{ occurs in \emph{any unary or binary} clause of }C\}$.
+Then the exact image of $A$ on the observed names $u_v=\langle v,t\rangle$
+is an affine space of codimension
+$e=|\mathcal V|-\operatorname{rank}(\mathcal V)$, and the
+substituted clauses form a genuine 2CNF.
+Alternatively, move all units into the affine system and recompute the Gaussian parametrization.
+\end{lemma}
+\begin{proof}
+Each observed literal becomes a constant or a literal on $u_v$,
+and linear elimination produces the exact image constraints.
+Every image point can be lifted by Gaussian solving and its reconstructed
+source assignment verified. Units must be included or explicitly absorbed.
+\end{proof}
+The unrepaired ARC227 binary-only observation misses the UNSAT formula
+$x_1\oplus x_2\oplus x_3=1$ together with $\neg x_1,\neg x_2,\neg x_3$
+and no binary clauses. The binary-only observed set is empty,
+but including all unary coordinates yields three distinct forms with rank two,
+so the corrected excess is one.
+
+\section{Known fixed-codimension result and independently implemented variant}
+\begin{theorem}[Arvind--Guruswami, IPEC 2021, Theorems 2 and 17]
+A 2CNF conjoined with an affine space of codimension $e$
+is decidable deterministically in $O^*(\binom n{\le e})$ time.
+Thus every \emph{fixed} $e$ (in particular $e=2$) is polynomial.
+Theorem 19 proves W[1]-hardness parameterized by $e$.
+No polynomial bound for $e=O(\log N)$ follows.
+\end{theorem}
+\begin{lemma}[Flipping path after implication-SCC quotient]
+Every pair of models of a satisfiable 2CNF with implication SCC equivalences
+already substituted is joined by single-variable flips through 2CNF models.
+\end{lemma}
+\begin{proof}
+If a current model $a$ differs from a target model $b$
+on a nonempty set $D$, write $\ell_i$ for the target-true literal
+at a differing coordinate $i$.
+If no differing coordinate could be flipped toward $b$,
+each $i\in D$ has a blocking clause
+$\neg\ell_i\lor\ell_j$ with $j\in D$, $j\ne i$.
+This gives $\ell_i\to\ell_j$ in the implication graph.
+Choosing one outgoing edge per element of finite $D$ creates
+a nontrivial directed cycle of literal classes, contradicting
+the prior SCC quotient.
+Thus one flip is legal; repeat by induction on $|D|$.
+\end{proof}
+\begin{lemma}[All-nonzero-column plucking completeness]
+Let $a$ be any 2CNF model and $b$ any model of 2CNF plus
+nonzero-rank affine equations, with $a$ outside the affine space.
+Along a flip path $a\to b$, the first edge entering the
+affine space flips some nonzero affine column $p$.
+Deleting both polarities of $p$ from every 2CNF clause,
+and existentially projecting the affine space along $p$,
+produces a satisfiable lower-codimension child.
+\end{lemma}
+\begin{proof}
+Membership in the affine space changes only when a column
+occurring in a row flips. Both endpoints of the entrance edge
+satisfy every 2CNF clause and agree off $p$.
+For any source clause, the clause with its $p$-literal(s)
+removed is therefore true on their common projection:
+if its other literals were false, the clause would fail at
+one of those opposite $p$ values.
+The endpoint inside the affine space projects to the
+new affine constraints, so the child is SAT.
+A nonzero column allows elimination of exactly one independent row.
+\end{proof}
+A deterministic DFS considering \emph{all} nonzero columns after
+SCC contraction, not merely columns immediately flippable in the
+first model, has at most $n$ branches and rank decreases one per level.
+It reconstructs witnesses using the eliminated pivot equation,
+and checks each recovered assignment against all source constraints.
+Its conservative bound is $n^{O(e)}\operatorname{poly}(N)$ time,
+polynomial DFS space and finite transcript replay.
+This implements an independently proved XP variant inspired by the
+\emph{known} result, not a claim of novelty or the exact published method.
+
+\section{Exact source-manifest-verified tree composition}
+\begin{theorem}[Restricted full-interface composition]
+Let an input of $N$ bits admit a tree $T$ of modules
+$(V_t,C_t,A_t)$, with discovery and checking cost $D(N)$.
+Assume the full original multiset of clauses and affine rows
+is assigned exactly once; every assigned constraint uses only $V_t$;
+every variable's set of module occurrences induces a connected subtree;
+each $C_t$ is 2CNF; and each affine $A_t$ has rank $e_t$.
+Define the \emph{full} shared interface
+\[
+B_t=V_t\cap\left(\bigcup_{u\ne t}V_u\right),\qquad b_t=|B_t|.
+\]
+Then SAT and UNSAT are decidable deterministically, with original SAT
+witness reconstruction and exact replayable local searches, in
+\[
+\boxed{D(N)+N^{O(1)}\sum_{t\in T}2^{b_t}(|V_t|+1)^{O(e_t)}}.
+\]
+If $D(N)$, the module count, $2^{b_t}$ and all local fixed-codimension
+costs are polynomial uniformly, the whole algorithm is polynomial.
+In particular $e_t\le e_0$ for constant $e_0$ and $b_t=O(\log N)$
+suffice even if global affine rank tends to infinity.
+\end{theorem}
+\begin{proof}
+First verify the original source multiset against the assigned
+module constraints, including multiplicities, and verify the tree,
+all claimed variable scopes and the running-intersection property.
+Root $T$. For node $t$ enumerate \emph{every}
+$\sigma\in\{0,1\}^{B_t}$, including variables shared outside the
+parent edge. Pre-index each child's feasible table by its
+separator $S_{tc}=V_t\cap V_c$.
+Reject $\sigma$ when a child lacks a compatible table entry.
+Otherwise pin every variable in $B_t$ to $\sigma$ with local
+unit clauses and invoke the fixed-codimension 2-SUB-SAT solver
+on $C_t\land A_t$. Pinning preserves 2CNF and does not
+increase the rank of the existing affine equations;
+substituting pinned coordinates into affine rows likewise
+cannot increase residual rank above $e_t$.
+Store an original local witness and one child pointer if successful.
+
+By running intersection, the only variables joining a child
+subtree to its complement occur on its parent edge; since
+all constraints are assigned to exactly one node, there
+are no missing cross-subtree constraints.
+Induction from leaves shows that each table records exactly
+the assignments extendible to the entire corresponding subtree.
+A nonempty root table reconstructs a globally consistent
+model, checked against every source constraint.
+An empty root table is UNSAT, and each rejection is
+independently replayable with the source manifest and
+deterministic local-search choices.
+Each table has at most $2^{b_t}$ entries.
+Each child index is constructed once; input scans, failed
+local calls, full table encoding, stored witnesses, joins,
+reconstruction, and peak storage are charged in the stated
+conservative polynomial overhead.
+No global SAT oracle or answer-class hint is used.
+\end{proof}
+\begin{corollary}[Infinite family with unbounded global rank]
+For an $L$-node path take local equations
+$s_i\oplus s_{i+1}\oplus p_i=c_i$,
+units $p_i=0$ and endpoint pins $s_0=0,s_L=1$.
+Here $\sum_t e_t=L$, global affine rank is $L$,
+every $e_t=1$ and $b_t\le2$.
+The source is SAT exactly when $\bigoplus_i c_i=1$.
+The local tree algorithm uses $O(L)$ table entries and local calls.
+These are mixed source formulas, \emph{not} strict signed exact-(2,2)-3CNF.
+\end{corollary}
+
+\section{BUILD audit, limitations, and next exact lemma}
+The complete local reproducibility bundle contains
+\texttt{arc228\_ag\_solver.py},
+\texttt{arc228\_tree\_composition.py},
+\texttt{arc228\_unit\_and\_generator\_audit.py},
+\texttt{arc228\_archive\_audit.py}, original test outputs,
+and the longer stand-alone LaTeX proof.
+The independent tests: 10,000 seeded brute-force comparisons
+for the mixed solver, zero mismatches; all 166 distinct 3-variable
+2CNF relations, 584 model/anchor checks and 9,344 parity queries;
+10 SAT/UNSAT path cases with $L=2,4,8,16,32$;
+28 small independent brute-force path comparisons;
+rejection of missing source clauses, no external source manifest,
+invalid running intersection and undeclared cross-module clause.
+No proof-assistant kernel run was performed.
+The three supplied archive ZIPs passed CRC inspection.
+Independent DIMACS replay counted 44 strict22 roots among 312
+portfolio cases and verified all 235 SAT source witnesses;
+there were 68 UNSAT and 9 original GAP cases.
+The 16 repair seeds' finite successes and disjoint-product failure
+do not establish general coverage.
+
+RAM indexing, multitape transport, two-writable-tape and one-tape
+head motion and fixed universal interpreter each have separate
+model-specific ledgers.
+Conservative one-tape simulation of a fixed-k tape solver uses
+$T_1=O(T_k(N+S_k+\log(T_k+2)))$ time and footprint
+$O(N+S_k+\log(T_k+2))$.
+These simulation \emph{upper} bounds do not imply lower bounds.
+The strict22 grammar is not implied by the mixed grammar.
+No universal decomposition finder, unrestricted shrinker,
+or same-machine ARC/FLMV contradiction follows.
+
+\noindent\textbf{Next OPEN lemma:}
+Find a source-authenticated polynomially \emph{discoverable}
+moving full-interface decomposition on a substantially larger
+infinite mixed family with provably logarithmic full interfaces
+and fixed local affine codimension after each genuine transition,
+or falsify a precise candidate under hostile controls.
+Do not assume this property for arbitrary SAT.
+$P=NP$ and $P\ne NP$ remain OPEN.
+
+\begin{thebibliography}{3}
+\bibitem{AG} V. Arvind and V. Guruswami,
+\emph{CNF Satisfiability in a Subspace and Related Problems},
+IPEC 2021, Theorems 2,17,19,
+\href{https://doi.org/10.4230/LIPIcs.IPEC.2021.5}{doi:10.4230/LIPIcs.IPEC.2021.5};
+full version arXiv:2108.05914.
+\bibitem{APT} B. Aspvall, M. Plass and R. Tarjan,
+\emph{A Linear-Time Algorithm for Testing the Truth of Certain
+Quantified Boolean Formulas}, IPL 8 (1979), 121--123.
+\bibitem{S} T. Schaefer, \emph{The Complexity of Satisfiability Problems},
+STOC 1978, 216--226.
+\end{thebibliography}
+\end{document}
