@@ -29,7 +29,7 @@ function run(){
    const v=expanded(mask,t);
    check(v===projected(mask,t),"factor t="+t+" mask="+mask);
    check(v===(selector(mask,t,0)||selector(mask,t,1)),"exists t="+t+" mask="+mask);
-   check(v===AB(mask,t).a.every(Boolean)||v===false||v===true,"Boolean sanity");
+   const neg=AB(mask,t); check((!v)===(neg.a.some(x=>!x)&&neg.b.some(y=>!y)),"De Morgan t="+t+" mask="+mask);
   }
   exhaust.push({t,assignments:count});
  }
