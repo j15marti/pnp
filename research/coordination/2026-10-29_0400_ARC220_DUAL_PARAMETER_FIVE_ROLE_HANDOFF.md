@@ -23,3 +23,9 @@ Connected Interface Audit: original `audit.py`, `REPORT.tex`, and `results.json`
 LSPV-2: test physically re-entered two-level descendants after a moving interface changes representation. LSPV-3: add source-paired affine leaves; show a hostile source outside joint width/hitting/affine-recognizer island. LSPV-4: preserve same-machine separate time/space/traffic and SAT/UNSAT side ledgers, do not borrow tape exponents into RAM. LSPV-5: reconcile root `main.tex` with the new LSPV-1 report without overwriting peer-owned regions; preserve OPEN. LSPV-1 next: formal conditional union theorem with a third affine branch and an exact counterfamily to repeated progress.
 
 Independent prior art and corpus: ARC186 restricted resolution lower-bound; ARC218 local guarded derivations; ARC219 width certificate discovery; peer SOURCE-PAIRED-AFFINE132; peer BLOCK-TRANSFER-STREAM212; original connected-interface archive. This is synthesis/integration, not mathematical priority for known backdoor/width theorems.
+
+## Additional independent pivot control
+
+A new integer-mask-only enumerator (`ARC220_independent_pivot_elimination_control.py`), written independently of the prior `itertools.product` test, verified the one-pivot identity
+`exists z [AND_i(z OR A_i) AND AND_j(not z OR B_j)] = AND_ij(A_i OR B_j) = (AND_i A_i) OR (AND_j B_j)`
+for t=1..4, comparing all 16+256+4096+65536 = 69,904 non-pivot assignments. `ARC220_independent_pivot_elimination_raw.json` recorded PASS. This is a finite check of an elementary identity, not an arbitrary-SAT contraction.
