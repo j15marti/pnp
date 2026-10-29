@@ -1,0 +1,64 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- updated 2026-10-29
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder toward parametrized lower bounds for \CSAT}
+\author{Claude (scheduled hourly routine)}
+\date{Living document; last updated 2026-10-29}
+\begin{document}\maketitle
+\begin{center}\fbox{\parbox{0.9\textwidth}{\textbf{Status.} No superpolynomial (or even superlinear, general model) lower bound for \CSAT\ is claimed. P versus NP remains \textbf{OPEN}. Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.}}\end{center}
+
+\section{Goal and method}
+Instance: a fan-in-2 circuit $C$ with $n$ inputs and $m$ gates (wires $w=2m+$outputs). Question: $\exists x\,C(x)=1$.
+Plan: climb a ladder of families $\mathcal F_{n,m}$, tracking (i) the minimum number of gates/wires any circuit in the family needs, (ii) the cost of \emph{deciding} satisfiability of the family, as functions of the parameters $(n,m)$. Two separate quantities must not be conflated: \emph{circuit size} lower bounds (gate elimination, about $c\cdot n$) and \emph{decision time} lower bounds for \CSAT\ (OPEN beyond reading the input, apart from restricted time--space models).
+
+\section{Rung 0: wire accounting (PROVED)}
+\begin{lemma}[connectivity] A fan-in-2 circuit depending on all $n$ inputs has $\ge n-1$ gates and $\ge 2(n-1)$ input wires into gates; $\mathrm{AND}_n$ and $\mathrm{XOR}_n$ attain $n-1$ (basis $B_2$). \end{lemma}
+\emph{Proof.} The circuit graph restricted to the output cone is connected with $n$ sources and one sink; a fan-in-2 DAG tree-like cover needs $n-1$ merges. Balanced trees attain it. \qed
+
+\begin{lemma}[read every wire] Any deterministic algorithm deciding \CSAT\ on $m$-gate circuits, given random access to the gate list, makes $\ge m$ probes on some input. \end{lemma}
+\emph{Proof.} Let $F$: $g_j=g_{j-1}\wedge y_j$ for $j=1..m$ ($g_0=y_0$), output $g_m$; satisfiable. Let $G_j$ replace gate $j$ by $g_j=g_{j-1}\wedge\neg g_{j-1}$; output constant $0$, unsatisfiable, and $G_j$ differs from $F$ only in gate $j$'s description. An algorithm on $F$ that skips gate $j$'s description answers identically on $G_j$, so it errs. Hence all $m$ gates are probed on $F$. \qed
+
+So the trivial parametrized bound is $\Omega(m)$, with $n$ irrelevant. This is the baseline of the ladder.
+
+\section{Rung 1: exact minimum circuits, small $n$ (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/mincircuit.py} runs BFS over sets of computed truth tables in $B_2$ (free negation) and reports the exact minimum gate count of every $n$-variable function. Outputs (\texttt{ladder\_n2.txt}, \texttt{ladder\_n3.txt}, each $<$30\,s, no chunking needed):
+\begin{center}\begin{tabular}{@{}lccccc@{}}\toprule
+$n$ & size 0 & 1 & 2 & 3 & 4\\\midrule
+2 & 6 & 10 & -- & -- & --\\
+3 & 8 & 30 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+All $2^{2^n}$ functions are covered ($16$, $256$). Hardest 3-variable functions need $4$ gates; hardest 2-variable need 1. The BFS state count grows $\approx 26\times$ per level ($30,843,21778,569780$ for $s=1..4$ at $n=3$), so $n=4$ needs a smarter method (SAT-based exact synthesis, canonical forms); that is the next rung (CANDIDATE).
+
+\section{Rung 2: counting and parametrized shape (KNOWN / PROVED)}
+The number of circuits with $s$ gates over $n$ inputs is $\le (16\,(s+n)^2)^s$, so almost every $f$ needs $s=\Omega(2^n/n)$ (Shannon). For \CSAT\ the relevant consequence: in the \emph{evaluation-only} (black-box) model, deciding $\exists x\,C(x)$ takes $2^n$ queries in the worst case (adversary answers $0$ until the last point). This is not a bound for algorithms that read $C$, and relativization-type barriers apply to promoting it.
+
+Known unconditional circuit-size milestones (KNOWN, cited from literature, not re-proved here): $3n-o(n)$ for explicit functions in $B_2$ (Blum 1984), improved to $3.1n-o(n)$ (Li--Yang, STOC 2022).
+Known time--space decision bounds (KNOWN): SAT needs time $n^{2\cos(\pi/7)-o(1)}\approx n^{1.80}$ on random-access machines with $n^{o(1)}$ space (Williams 2008; Buss--Williams: alternation trading cannot exceed that exponent).
+
+\section{Rung 3: parametrized lower-bound ledger}
+Write $T(n,m)$ for the decision time of \CSAT. 
+\begin{center}\begin{tabular}{@{}lll@{}}\toprule
+Bound & Status & Model\\\midrule
+$T=\Omega(m)$ & PROVED (Lemma 2) & RAM, probe model\\
+$T=\Omega(2^n)$ & PROVED & black-box evaluation only\\
+$T\ge m^{1.80}$ (when $n\approx m$) & KNOWN & space $m^{o(1)}$\\
+$T\ge 2^{(1-\varepsilon)n}\mathrm{poly}(m)$ for all $\varepsilon$ & CONDITIONAL & under SETH\\
+$T\ge 2^{o(n)}$ impossible & CONDITIONAL & under ETH\\
+$T\ge m^{1+\delta}$, general RAM & OPEN & --\\\bottomrule\end{tabular}\end{center}
+The parametrized target: find $g$ with $T(n,m)\ge g(n,m)$ where $g$ grows with $n$ at fixed excess $m-n$ (bounded ``co-size''). Fixed-parameter view: with $k=m-n$ fixed, \CSAT\ may be easier (e.g.\ $2^{O(k)}\mathrm{poly}$-type algorithms for restricted structure), so the interesting regime is $m=n\cdot\mathrm{poly}$.
+
+\section{Link to repository work (j15marti/pnp)}
+Relevant: \texttt{research/agents/claude/world-ledger/} row L13 (alternation-trading barrier) bounds the time--space route; TPORT (L34--L37) shows portfolio versions do not beat linear time by alternation trading at the UWI size $\approx N$; ONETAPE (L38--L40) shows crossing-sequence bounds hold for nondeterminism too and so cannot separate P from NP. Takeaway for this ladder: Rung 2's time--space bound is the only unconditional super-linear statement available, and it is capped at exponent $\approx1.80$ for known techniques.
+
+\section{Next steps (CANDIDATE)}
+\begin{enumerate}
+\item Rung 1 for $n=4$ via SAT exact-synthesis; tabulate size distribution and wire counts (fan-out) separately from gate counts.
+\item Define the family $\mathcal F_{n,m}$ with $m=n+k$ and test whether Lemma 2's adversary extends to a $2^{\Omega(k)}$ bound against restricted algorithms (e.g.\ DPLL-style).
+\item Try to lift Rung 3's time--space bound to parametrized form $T(n,m)\ge m\cdot n^{c}$ for $c>0$ small space.
+\end{enumerate}
+
+\section*{Log}
+\begin{itemize}\item 2026-10-29: document created; Lemmas 1--2 proved; $n=2,3$ exact ladder computed.\end{itemize}
+% END_OF_CLAUDECIRCUITSAT_v1
+\end{document}
