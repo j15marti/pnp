@@ -252,7 +252,5 @@ for(let b=1;b<=9;b++){
   // Matched interleaved order x1,y1,x2,y2,... needs only O(b) states (not constructing OBDD here).
 }
 let result={run:'LOCAL_INTERFACE_BACKDOOR_20261028',test_date:'2026-10-28',counts,assertions:Object.values(counts).reduce((a,b)=>a+b,0),source_count:sources,refutations,sat_sources:satSources,unsat_sources:unsatSources,hostile_mutations:hostile,exhaustive_brute_sources:brute,elimination_assignments:cross,example:rawExamples[0],statuses:{modular_coverage:'RESTRICTED_PROVED_PENDING_REVIEW',counterexample_global_backdoor:'RESTRICTED_PROVED_PENDING_REVIEW',fixed_order_OBDD:'KNOWN_RESTRICTED_PROVED',unrestricted_coverage:'OPEN',sublinear_all_sat_child:'OPEN',p_vs_np:'OPEN'}};
-fs.writeFileSync(new URL('./LOCAL_INTERFACE_BACKDOOR_raw.json',import.meta.url),JSON.stringify(result,null,2)+'
-');
+fs.writeFileSync(new URL('./LOCAL_INTERFACE_BACKDOOR_raw.json',import.meta.url),JSON.stringify(result,null,2)+'\n');
 console.log(JSON.stringify({...result,example:undefined},null,2));
-
