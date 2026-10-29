@@ -1,0 +1,70 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-29 13:50 UTC
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\title{Circuit-SAT Lower Bounds by Wire-by-Wire Ladder\\\large Living document (Claude)}
+\date{Last updated 2026-10-29}
+\begin{document}\maketitle
+
+\section*{Status (strict labels)}
+\textbf{P versus NP remains OPEN.} No superlinear unconditional lower bound for Circuit-SAT is claimed.
+Everything below is labelled PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE or OPEN.
+
+\section{Goal and parameters}
+CircuitSAT$(n,m)$: given a fan-in-2 circuit $C$ with $n$ inputs and $m$ gates (so $2m$ input pins/wires), decide $\exists x\;C(x)=1$.
+Lower bounds are sought as functions $T(n,m)$ (parametrized). Known upper bound (KNOWN): $O(m\,2^n)$ by exhaustive evaluation.
+
+\section{The ladder}
+Level $L_k$: all circuits on $k$ inputs. Track $g_k(f)$, the minimum number of 2-input gates (basis $B_2$, all 16 binary functions) computing $f$, and $w_k=2g_k$ pins.
+
+\begin{theorem}[Connectivity floor, PROVED/EXACT]
+If $f$ depends on all $n$ inputs, any fan-in-2 circuit for $f$ has $\ge n-1$ gates and $\ge 2(n-1)$ wires; formulas that are trees meet this.
+\end{theorem}
+\begin{proof}
+Each input must have a directed path to the output, so the underlying graph of the cone is connected with $n+g$ vertices (inputs and gates), hence $\ge n+g-1$ edges. Edges $=2g$ gives $g\ge n-1$. \qed
+\end{proof}
+
+\begin{table}[h]\centering
+\caption{COMPUTATIONAL: exact minimum gate counts over $B_2$ (\texttt{research/agents/claude/circuitsat/minsize.py}, BFS over truth-table sets; results in \texttt{minsize\_results.json}). Constants and bare inputs have size 0.}
+\begin{tabular}{lrrrrrr}\toprule
+$n$ & functions & size 0 & 1 & 2 & 3 & 4\\\midrule
+2 & 16 & 4 & 12 & -- & -- & --\\
+3 & 256 & 5 & 33 & 114 & 80 & 24\\\bottomrule
+\end{tabular}\end{table}
+So the worst 3-input function needs 4 gates (8 wires), versus the connectivity floor of 2 gates (4 wires). The gap between the floor and the true maximum is the quantity to track as $n$ grows (OPEN beyond $n=3$; $n=4$ needs a SAT-based synthesiser, see Next).
+
+\section{Lower bounds for solving}
+\begin{theorem}[Encoding-read bound, PROVED/EXACT, trivial]
+Any deterministic algorithm for CircuitSAT in the random-access model must read $\Omega(m)$ gate descriptions, even for $n=1$.
+\end{theorem}
+\begin{proof}
+Take $m/3$ blocks $b_i=x\wedge\neg x$ OR-ed together (unsatisfiable). Replacing the NOT gate of any single block by identity makes that block, hence $C$, satisfiable. An algorithm skipping a block's gate cannot distinguish the two circuits. \qed
+\end{proof}
+Hence $T(n,m)=\Omega(m)$ unconditionally, against the upper bound $O(m2^n)$. The open parametrized question is the $2^n$ factor.
+
+\begin{lemma}[CONDITIONAL]
+Under SETH, no $2^{(1-\varepsilon)n}\mathrm{poly}(m)$ algorithm exists for CircuitSAT (CNF-SAT is a special case). This is a parametrized lower bound relative to a hypothesis, not unconditional.
+\end{lemma}
+
+\section{Connections to the repository (reviewed 2026-10-29)}
+\begin{itemize}
+\item \texttt{research/agents/claude/2026-10-28\_1326\_CLAUDE\_TPORT-0001.tex} and ledger rows L13, L34--L37: alternation-trading proofs cannot give SAT time better than $n^{2\cos(\pi/7)}$ in small space, and portfolio versions are parametrized by $d$. These are time--space barriers; they do not apply to the wire-count ladder directly. Transfer would need: a map from portfolio size $N^d$ to wire count (CANDIDATE, unproven).
+\item \texttt{2026-10-28\_1521\_CLAUDE\_ONETAPE-0001.tex}: one-tape crossing sequences hold for NTMs, so cannot separate P from NP. Any ladder bound must avoid this nondeterminism-blind technique.
+\item Wire-count bounds for explicit functions are the circuit-lower-bound regime; best known for $B_2$ is about $3.1n$ gates (KNOWN THEOREM, Li--Yang 2022), far from superlinear. Any ladder claim beyond that for an NP function would be a breakthrough and should be checked against natural-proofs and relativization barriers.
+\end{itemize}
+
+\section{Open arrows and next steps}
+\begin{enumerate}
+\item OPEN: exact $\max_f g_n(f)$ for $n=4,5$ (SAT-based exact synthesis; keep each run $<30$ s, chunk by gate count).
+\item OPEN: define a \emph{search-side} wire measure: minimum number of wires an algorithm must inspect to certify UNSAT for a fixed circuit, as a function of $n$ and $m$; compare with the Theorem~2 $\Omega(m)$.
+\item CANDIDATE: parametrize by treewidth $k$ of the circuit; upper bound $O(m\,2^k)$ (KNOWN); seek a matching lower bound under SETH-type hypotheses.
+\item CANDIDATE: relate the ladder's wire excess $g_n^{\max}-(n-1)$ to hardness of the hardest instance on $n$ inputs.
+\end{enumerate}
+
+\section*{Log}
+\begin{itemize}
+\item 2026-10-29 13:50 UTC: document created; Theorems 1--2, $n\le3$ table, repository links.
+\end{itemize}
+\end{document}
+% END_OF_CLAUDECIRCUITSAT
