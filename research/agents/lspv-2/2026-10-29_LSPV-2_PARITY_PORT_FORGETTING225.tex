@@ -1,0 +1,123 @@
+% LSPV-2::PARITY-PORT-FORGETTING225::2026-10-29
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.83in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,xurl}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\title{PARITY-PORT-FORGETTING225:\\Quantified-Parity Projection, Auxiliary-Free CNF Explosion, and the Exact-(2,2) Named-Port Floor}
+\author{LSPV-2: Circuit and Reduction Builder}
+\date{29 October 2026}
+\begin{document}
+\maketitle
+\begin{center}
+\fbox{\parbox{.93\linewidth}{\textbf{Status: PROVED/RESTRICTED mathematical controls, independently reproducible COMPUTATIONAL checks, external referee pending; $P$ versus $NP$ OPEN.} An explicit $4b$-clause proper 3CNF projects to $b$-bit parity. Exact auxiliary-free CNF requires $2^{b-1}$ width-$b$ clauses, while ordinary extension-variable 3CNF is linear and a named-port strict signed exact-$(2,2)$ lift is polynomial but larger. Forgetting one more parity port makes the entire exact projection TRUE; two contradictory parity equations stay UNSAT. This is a representation and semantic-acquisition audit, not a SAT runtime lower bound or a one-child compression on arbitrary inputs.}}
+\end{center}
+
+\section{PROPOSE: explicit missing arrow and four falsifiable mechanisms}
+The present Builder target is an unconditional, uniform, polynomial-cost single-child ordinary-SAT projection of physical length at most $N^\lambda$ ($0<\lambda<1$), correct on both SAT and UNSAT, repeatedly closed. The immediately testable bottleneck is the difference between \emph{how many source ports are forgotten}, \emph{the size of a precise projected relation}, and \emph{the physically encoded ordinary-3CNF child}. The following falsifiable mechanisms were fixed before literature/code inspection:
+\begin{description}
+\item[] \textbf{M1: auxiliary-free direct projection remains compact for simple structured inputs.} \textbf{FALSIFIED} on parity: exactly $2^{b-1}$ width-$b$ clauses are necessary.
+\item[] \textbf{M2: adding a constant number of Tseitin extension variables repairs the blowup.} \textbf{FALSIFIED as worded}: a \emph{linear} number, $b+1$, suffices for an $O(b)$-clause proper 3CNF. Extension-variable count and names must be charged. (The linear upper bound is PROVED.)
+\item[] \textbf{M3: eliminating only one interface variable cannot destroy a global relation.} \textbf{FALSIFIED}: one existentially forgotten parity bit makes the entire projected relation TRUE. Conversely, a contradictory pair of parity constraints stays UNSAT after any such forgetting.
+\item[] \textbf{M4: strict exact22 normalization plus named-port retention yields a physically $N^\lambda$-short child.} \textbf{FALSIFIED for this all-port architecture}: a general $\Omega(r\log r)$ output-bit floor applies to $r$ retained distinct physical ports, and the previously verified exact22 compiler expands the controls. Arbitrary-input polynomial-cost semantic forgetting remains \textbf{OPEN}.
+\end{description}
+
+\section{SEARCH: exact code hypotheses and literature}
+Prior project work is carefully distinguished from this run. LSPV-2 report224, \path{CONNECTED_ALLPORT_COMPILER224}, already composes the PC22\_ALLFIELD1 normalizer with source connectedization and named-port identity. The source file \path{2026-10-29_LSPV2_CONNECTED_ALLPORT_COMPILER224_repro.py} was retrieved from the user's Library and imported here strictly as a previously established pointwise source compiler, not rediscovered as new. LSPV-2 report223 already gives the degree-saturated two-swap equality guard. Neither construction physically shortens arbitrary ordinary SAT; the present run does not claim otherwise.
+
+GitHub discovery queries focused on exact forgetting/quantification rather than general SAT: \texttt{Cudd\_bddExistAbstract} retrieved \texttt{cuddorg/cudd/cudd/cuddBddAbs.c}, blob \texttt{62170e3b29aa}, where the routine takes a BDD and a positive cube of quantified variables; \texttt{Abc\_NtkQuantify} retrieved \texttt{berkeley-abc/abc/src/base/abci/abcQuant.c}, blob \texttt{76bd7906bd5a}, with AIG cofactor-based quantification; \texttt{elimfast\_resolvents\_are\_bounded} retrieved \texttt{arminbiere/cadical/src/elimfast.cpp}, blob \texttt{0d6c00897acb}, implementing bounded resolution elimination with explicit generated-resolvent and size checks; and \texttt{Forgetting} retrieved \texttt{crillab/d4/preproc/Forgetting.cc}, blob \texttt{8f00f7397b70}, with clause generation and subsumption watches. These are actual implementation paths and code, not claims of a universal polynomial-size compiled result.
+
+Primary sources: E\'en and Biere's bounded variable elimination paper~\cite{eenbiere}; Darwiche and Marquis' knowledge compilation map~\cite{darwiche}; classical definitional CNF/Tseitin encoding as described in standard references~\cite{tseitin}. The OpenAI \texttt{math} unitary-synthesis paper's one-recursive-call architecture remains inapplicable as an unconditional classical SAT theorem because its Boolean-oracle contents are target-dependent; no efficient classical evaluation or simulation is supplied here.
+
+\section{BUILD I: exact parity projection in $4b$ proper ternary clauses}
+Fix $b\ge2$, $t\in\{0,1\}$, and free Boolean inputs $x_1,\ldots,x_b$. Introduce $y_2,\ldots,y_b$ and two additional variables $a,c$. For each $i=2,\ldots,b$, impose the parity equation $y_i=y_{i-1}\oplus x_i$, where $y_1=x_1$. Encode each $w=u\oplus v$ by precisely four proper ternary clauses
+\[
+ (u\vee v\vee\neg w)\land(u\vee\neg v\vee w)
+ \land(\neg u\vee v\vee w)\land(\neg u\vee\neg v\vee\neg w).
+\]
+Enforce $y_b=t$ by the four clauses $(\ell\vee\pm a\vee\pm c)$ for all independent polarity pairs, where $\ell=y_b$ if $t=1$ and $\ell=\neg y_b$ if $t=0$. Call the resulting proper 3CNF $P_{b,t}(X,Y,a,c)$.
+
+\begin{theorem}[Linear proper 3CNF representation and exact projection]\label{thm:parity}
+$P_{b,t}$ is connected, has precisely $2b+1$ variables and $4b$ distinct proper ternary clauses, and satisfies the pointwise identity
+\[
+\boxed{\forall X:\quad \exists Y,a,c\;P_{b,t}(X,Y,a,c)
+ \iff \bigoplus_{j=1}^{b}x_j=t.}
+\]
+For every $j\in\{1,\ldots,b\}$ and every assignment to $X\setminus\{x_j\}$,
+\[
+\boxed{\exists x_j,Y,a,c\;P_{b,t}(X,Y,a,c)\iff\top.}
+\]
+\end{theorem}
+\begin{proof}
+The four XOR clauses exclude exactly the assignments where the output is not the XOR of its two inputs. Hence the internal $y_i$ values are uniquely determined by $X$, and $y_b=\oplus_j x_j$. The four terminal clauses are jointly satisfiable over $a,c$ exactly when $\ell$ is true; otherwise they exclude all four $(a,c)$ assignments. The chain and terminal clauses are connected. There are $b-1$ XOR gates and one four-clause terminal, giving $4(b-1)+4=4b$ clauses; variables are $b+(b-1)+2=2b+1$. For each fixed assignment to $b-1$ inputs, exactly one choice of the last unassigned parity input makes the XOR equal $t$. That choice extends uniquely to the internal chain values. Thus forgetting even one free bit yields TRUE.\end{proof}
+
+\begin{theorem}[Optimal auxiliary-free CNF for parity]\label{thm:noaux}
+Every CNF formula over $X$ alone that represents the parity relation $\bigoplus_j x_j=t$ must contain at least $2^{b-1}$ distinct non-tautological clauses, each of width $b$. The bound is attained by taking for every forbidden parity assignment $\alpha$ the full-length clause whose unique falsifying assignment is $\alpha$. Consequently no auxiliary-free CNF of width at most three expresses parity on $b\ge4$ variables.
+\end{theorem}
+\begin{proof}
+Every non-tautological implicate of parity must include every input variable. Otherwise its falsifying partial assignment leaves one free bit whose value can always be chosen to satisfy parity; the clause would incorrectly exclude a satisfying assignment. A full-width non-tautological clause has exactly one falsifying full assignment. Since $2^{b-1}$ assignments fail parity, at least one distinct full-width clause is required per forbidden assignment. The canonical set of such clauses meets the bound.\end{proof}
+
+\paragraph{SAT-side and UNSAT-side control.} Define $U_b=P_{b,0}(X,Y_0)\land P_{b,1}(X,Y_1)$, using disjoint private variables but shared free boundary $X$. For every boundary assignment the two projected parity equations contradict; thus $U_b$ is UNSAT, and remains so under existentially forgetting any subset of boundary variables. A polynomially recognizable parity grammar lets one common program distinguish these two structured outcomes without a free side bit, via ordinary GF$(2)$ reasoning. This is an easy-family hostile control, not a SAT-hard lower bound.
+
+\section{BUILD II: connected strict signed exact22 embedding and retained-port floor}
+Apply the previously verified all-port pointwise normalizer $C$ from report224 to the canonical ordinary 3CNF $P_{b,t}$. That compiler retains every original input name as a physical unquantified port, balances signed occurrences using the previously published $J$ and $Q$ gadgets, and produces a connected proper strict signed exact-$(2,2)$ formula. By composition, the exact external boundary relation is still parity. This introduces only $O(b)$ variables and clauses, hence $O(b\log b)$ ordinary DIMACS bits, but with a large multiplicative constant. The tests below construct the actual strict clauses for $b\in\{3,4,6\}$ and verify signed occurrence quotas, incidence connectedness, and valid lifted positive witnesses. For negative boundary pins, the implication rests on the independently established source-compiler projection lemma rather than brute-force search over hundreds of auxiliary bits.
+
+\begin{proposition}[Quantitative physical retention obstruction]\label{prop:floor}
+Any strict signed exact-$(2,2)$ 3CNF encoding that retains at least $r$ distinct physical free variable names contains at least
+\[
+\boxed{32\sum_{j=1}^{r}\bigl(1+\lfloor\log_{10}j\rfloor\bigr)=\Omega(r\log(r+1))\text{ bits}}
+\]
+in ASCII decimal variable digits alone. On source families with $N=\Theta(b\log b)$, an output length $N_{\rm child}\le N^\lambda$ for fixed $0<\lambda<1$ implies
+\[
+ r=O\!\left(\frac{b^\lambda}{(\log b)^{1-\lambda}}\right)
+\quad (r\to\infty).
+\]
+This implication requires the child to retain all $r$ designated names as distinct physical free ports; it is \emph{not} a decision-only SAT lower bound and does not hold for a compiler that truly forgets those ports.
+\end{proposition}
+\begin{proof}
+Each retained physical name appears in two positive and two negative literal occurrences. Among $r$ distinct positive integer names, the total number of decimal digits is minimized by $1,\ldots,r$. Four copies of each digit string, eight bits per ASCII byte, give the displayed bound; signs, spaces and other literals only add bits. If $N=\Theta(b\log b)$, $r\log r=O((b\log b)^\lambda)$ and, for growing $r$, inversion of this monotone function gives the stated order.\end{proof}
+
+\paragraph{Essential firewall.} There is no contradiction between Proposition~\ref{prop:floor} and Theorem~\ref{thm:parity}. Retaining $b-1$ independent physical ports in a strict exact22 child has a linear-like representation floor even when the resulting semantic relation is TRUE. The correct \emph{decision-only} successor in this easy case may instead discard every port and output a fixed YES base. No theorem permits doing this for arbitrary SAT instances without discovering the correct answer.
+
+\section{Computational audit and separate resource ledgers}
+The stdlib reproducer \path{2026-10-29_LSPV-2_PARITY_PORT_FORGETTING225_repro.py} is deterministic. It tests both target parity values for $b=2,3,4,5,6,7,8,10$, enumerates 3064 complete boundary assignments, exhaustively quantifies hidden bits over 248 boundary pins for $b\le6$, tests 13,824 single-port-forgetting witness pairs, and independently evaluates the explicit auxiliary-free clauses on every input. For $b=2,3,4,5$, four shared-input contradictory parity pairs were constructed as actual proper-3CNFs with private internal wires and all boundary pins were brute-force refuted. For $b=3,4,6$ at target 0, the previous all-port compiler constructed actual strict22 outputs, audited exact degrees/connectedness and constructed all satisfying projected witnesses. The entire reproducer ran twice and generated byte-identical raw JSON (SHA-256 \path{20646d178a5cedca3ba67f312e73a2d14f3fe9c44379c2be0910af355973159c}). No randomized trials or external SAT oracle were used in the new parity logic.
+
+\begin{center}
+\begin{tabular}{rrrrr}
+\toprule
+$b$ & compact 3CNF (bits) & no-aux CNF (bits) & strict22 all-port (bits) & exact22 variables \\
+\midrule
+3 & 1016 & 384 & 56176 & 360 \\
+4 & 1320 & 848 & 62128 & 396 \\
+6 & 2128 & 4440 & 74032 & 468 \\
+8 & 2992 & 22624 & not built & -- \\
+10 & 3824 & 114792 & not built & -- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The original Library file \texttt{Connected\_Interface\_Audit.zip}, library id \path{libfile_a2862f0165b4819195a88d9e896a42a7}, was materialized, and its \texttt{REPORT.tex}, \texttt{audit.py}, and \texttt{results.json} were inspected. Reexecuting its Python source reproduced the archived JSON byte for byte, SHA-256 \path{05675f876d6624073507df1e9cedd18a188143db687e454bc2942143d36cbaca}, including 4680 boundary subsets, 7191 local discovery checks and 139 truth-table comparisons. Its static modular coverage $b+q\ge\sqrt{n/3}-1/4$ is valid on its stated syntactic partitions but is not a SAT time bound. The cyclic constant moving-frontier control is an easy restricted case.
+
+\paragraph{One-head, multitape, fixed UTM, and indexed RAM ledgers.} Write $N$ for input bits of a canonical 3CNF and $M$ for physically emitted strict22 bits. For the parity generator given $b$, $M_{\mathrm{ordinary}}=\Theta(b\log b)$ bits; index arithmetic, graph names and printed clauses are charged. A materializing indexed RAM builder uses $O(b\log b)$ output bits and at most $O(b^2\log b)$ elementary bit operations under conservative fixed-width arithmetic. The imported authenticated all-port regularizer from report224 has $M=O(N\log N)$ emitted bits, conservative indexed RAM time $O(N^3)$, peak work $O(N\log N)$ bits; the regularizer does \emph{not} evaluate the original SAT answer. With read-only sequential input and fixed work tapes, its conservative constructive ledger is $T_{\rm multi}=O(N^4)$, $S_{\rm multi}=O(N\log N)$ work cells, explicit output $O(N\log N)$ and input/head probes bounded by $T_{\rm multi}$. Scanned simulation on a single read/write tape containing the input gives $T_{\rm one}=O(N^5\log N)$ and total footprint $P_{\rm one}=O(N\log N)$. A fixed UTM interpreting the fixed program has polynomial overhead but no numerical exponent is claimed without a specified compiler. Python's finite running time is \emph{not} an empirical one-tape, multitape, or fixed-UTM step count. No resources are double-counted across machine models.
+
+\section{Status and next role-specific target}
+\begin{description}
+\item[] \textbf{PROVED/RESTRICTED}: Theorem~\ref{thm:parity}, Theorem~\ref{thm:noaux}, Proposition~\ref{prop:floor}, and the contradictory-parity control; no new complexity separation.
+\item[] \textbf{KNOWN THEOREM/prior project}: Tseitin-style linear extension-variable encodings, the PC22 exact22 all-port regularizer, and the two-swap port guard. No ownership or priority is reassigned.
+\item[] \textbf{COMPUTATIONAL}: bit-exact DIMACS measurements, exhaustive boundary projections, strict22 structural and positive-witness checks, a second identical JSON run, and independent Connected Interface Audit rerun.
+\item[] \textbf{FALSIFIED}: claims that auxiliary-free parity projection stays compact, that each local forgetting step must only make incremental semantic progress, or that the all-port exact22 regularizer is a shrinking SAT successor.
+\item[] \textbf{OPEN}: for arbitrary SAT and UNSAT, discover in uniform polynomial time a safe variable-to-forget set, preserve exact answers, compile the resulting relation to a physically $N^\lambda$-short ordinary SAT instance, and repeat on the same closed class; alternatively establish a native-model lower bound applying to all algorithms. $P=NP$, $P\ne NP$, ARC-EDGE-90 remain OPEN.
+\end{description}
+Next Builder action: test a \emph{mixed parity plus ordinary 3CNF core} under controlled forgetting. Measure its exact retained-port relation with a symbolic BDD or circuit, then charge its ordinary-3CNF extension-variable re-encoding. Keep the arbitrary core's SAT and UNSAT cases separate, and test whether variable discovery needs solving that core. Do not ascribe classical polynomial construction to the OpenAI target-dependent Boolean oracle.
+
+\begin{thebibliography}{9}
+\bibitem{eenbiere} N. E\'en and A. Biere, ``Effective Preprocessing in SAT Through Variable and Clause Elimination,'' SAT 2005, LNCS 3569, pp. 61--75, DOI: 10.1007/11499107\_5.
+\bibitem{darwiche} A. Darwiche and P. Marquis, ``A Knowledge Compilation Map,'' Journal of Artificial Intelligence Research 17 (2002), pp. 229--264, DOI: 10.1613/jair.989.
+\bibitem{tseitin} G. S. Tseitin, ``On the complexity of derivation in propositional calculus,'' in \emph{Studies in Constructive Mathematics and Mathematical Logic}, 1968.
+\end{thebibliography}
+\end{document}
+% LSPV-2 END::PARITY-PORT-FORGETTING225
