@@ -1,0 +1,72 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append new rounds to the Log; keep status labels strict.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\newtheorem{lem}{Lemma}
+\title{Circuit-SAT Lower Bounds by Wire-Counting Ladder\\\large Living document (Claude)}
+\date{Last updated: 2026-10-29 (round 1)}
+\begin{document}\maketitle
+
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No superlinear unconditional lower bound for Circuit-SAT is claimed.
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup and parameters}
+Circuit $C$: $n$ inputs, $m$ fan-in-2 gates over all 16 binary functions (basis $B_2$), $w=2m$ wires, one output.
+Circuit-SAT: given $C$, decide $\exists x\,C(x)=1$. Parameters: $(n,m)$, with size $s=n+m$.
+Two access models, which give different lower bounds:
+\begin{itemize}
+\item \emph{Black-box}: only evaluations $C(x)$.
+\item \emph{Wire-list}: the algorithm probes the connection list (``gate $g$, input $a$ is wired to $h$'').
+\end{itemize}
+
+\section{The ladder (step-by-step construction)}
+Step $k$: the minimum number of gates $c(f)$ (equivalently wires $2c(f)$) over all circuits computing $f$, for all $f:\{0,1\}^n\to\{0,1\}$.
+
+\begin{center}\begin{tabular}{lccc}\toprule
+$n$ & functions & distribution of $c(f)$ (gates:count) & $\max c$\\\midrule
+2 & 16 & 0:6, 1:10 & 1\\
+3 & 256 & 0:8, 1:30, 2:114, 3:80, 4:24 & 4\\\bottomrule\end{tabular}\end{center}
+COMPUTATIONAL (exact search over all $B_2$ circuits, negation free; \texttt{research/agents/claude/circuitsat/minsize.py}, data \texttt{results\_n2.json}, \texttt{results\_n3.json}).
+
+Minimum gates over functions with $j=|f^{-1}(1)|$ satisfying assignments, $n=3$: $j=0,4,8\to0$; $j=2,6\to1$; $j=1,3,5,7\to2$. The unique-solution function needs $n-1$ gates for $n=2,3$.
+
+\section{Proved lower bounds}
+\begin{lem}[Connectivity, PROVED/EXACT]\label{lem:conn}
+If $f$ depends on all $n$ inputs then $c(f)\ge n-1$ (so $\ge 2(n-1)$ wires).
+\end{lem}
+\begin{proof} Take the undirected graph on inputs and gates. Each gate has two incoming wires, so adding gates one by one in topological order merges at most two of the current connected components of the input-set into one. The output must be connected to every input it depends on, so $n$ components need $\ge n-1$ merges.\end{proof}
+Tight: an AND tree of literals has $n-1$ gates and a unique satisfying assignment. This matches the computed $n=2,3$ rows.
+
+\begin{prop}[Wire-list reading bound, PROVED/EXACT, trivial]\label{prop:read}
+Any deterministic Circuit-SAT algorithm in the wire-list model makes $\ge m$ probes (in the worst case), even for $n=1$.
+\end{prop}
+\begin{proof} Gates $z_0\equiv0$, $z_1\equiv1$; $g_i=\mathrm{OR}(g_{i-1},z_0)$ for $i=1..m-2$, output $g_{m-2}$ ($g_0=z_0$). This $C_0$ is unsatisfiable. If a correct algorithm leaves the wire ``gate $j$, second input'' unprobed, rewiring it to $z_1$ gives $C_j$ with output constantly 1, satisfiable, yet the algorithm's view is identical. So every such wire must be probed: $\Omega(m)$.\end{proof}
+
+\begin{prop}[Black-box bound, KNOWN, folklore]\label{prop:bb}
+Black-box Circuit-SAT needs $2^n$ queries worst case (planted unique solution: AND tree $\wedge$ literal pattern $a$; adversary answers 0 until one point is left). By Lemma~\ref{lem:conn} the planted family has size only $\Theta(n)$, so the $2^n$ bound is a statement about access, not about computing with the wiring.
+\end{prop}
+
+\section{Parametrized picture and the gap}
+\begin{center}\begin{tabular}{lll}\toprule
+Model & Lower bound & Status\\\midrule
+black-box, $n$ inputs & $2^n$ queries & KNOWN\\
+wire-list, $m$ gates & $\Omega(m)$ probes & PROVED (trivial)\\
+wire-list, general RAM/TM & $\omega(m)$ or $2^{\epsilon n}$ unconditional & OPEN\\
+conditional (ETH/SETH-type) & $2^{(1-o(1))n}$ & CONDITIONAL\\\bottomrule\end{tabular}\end{center}
+Key observation (round 1): the minimal-wire ladder alone cannot yield hardness, since the tight families (AND trees, unique solution) are solved in $O(m)$ by propagating from the output. Any hardness must come from wiring structure that defeats propagation (reconvergent fan-out, XOR-rich parts). The ladder should therefore track for each $(n,m)$ the \emph{hardest} circuits for a fixed propagation/DPLL-type measure, which is a natural parameter: e.g.\ cutwidth/treewidth $\tau$ of the circuit graph. KNOWN (not re-proved here): Circuit-SAT is solvable in $2^{O(\tau)}\,m$ time, so a parametrized lower bound must come with large $\tau$; $\tau\le n+O(1)$ is not forced.
+
+\section{Repository cross-check}
+Read in \texttt{j15marti/pnp}: \texttt{AGENTS.md}, world-ledger note (rows L13, L34--L40), TPORT-0001/0002, ONETAPE-0001. Relevant: (i) L13 Buss--Williams: alternation trading cannot reach SAT time exponent $2\cos(\pi/7)$ with $n^{o(1)}$ space, so any simple time--space proof here hits a known barrier; (ii) ONETAPE: one-tape/crossing-sequence bounds are nondeterministic-compatible so cannot separate; (iii) the repo's ARC/FLMV spine is for CNF-SAT in time--space, and Circuit-SAT is at least as hard, so such a bound would transfer. No new project result closes our gap. No \texttt{ClaudeCircuitSAT.tex} existed before this round.
+
+\section{Next targets}
+\begin{enumerate}
+\item Extend the exact table to $n=4$ ($B_2$ max size 7, needs a smarter search) and record hardest circuits under a DPLL-with-propagation node-count measure.
+\item Define $H(n,m)$ = max over circuits of the minimum DPLL/resolution-style proof size; test growth in $(n,m)$ at small values.
+\item Parametrized claim to attempt: for treewidth $\tau$, any algorithm in a restricted model (DPLL on wires) needs $2^{\Omega(\tau)}$; check against known tree-resolution/treewidth lower bounds before claiming anything.
+\end{enumerate}
+
+\section*{Log}
+\begin{tabular}{ll}\toprule Round & Content\\\midrule
+1 (2026-10-29) & Created document; exact $c(f)$ for $n\le3$; Lemma~\ref{lem:conn}, Props.~\ref{prop:read}, \ref{prop:bb}; gap analysis.\\\bottomrule\end{tabular}
+\end{document}
