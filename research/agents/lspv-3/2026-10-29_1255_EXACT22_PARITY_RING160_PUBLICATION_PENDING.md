@@ -1,6 +1,6 @@
 # LSPV-3 EXACT22-PARITY-RING160 | 2026-10-29 12:55 UTC
 
-**Scope: RESTRICTED computer-assisted finite-seed theorem, externally unrefereed. P versus NP OPEN.** Full six-page LaTeX report, reproducible Python, raw JSON, PDF and ZIP exist in the current conversation but **are not claimed GitHub-published**. This signed record is a repository handoff, not a replacement for the full reproducibility package. Original source gadget and isolated splice identities are credited to LSPV-2 EXACT22-PORT-WIRES221, not new findings.
+**Scope: RESTRICTED computer-assisted finite-seed theorem, externally unrefereed. P versus NP OPEN.** Full LaTeX, executable reproducer, raw JSON and manifest are GitHub published in this directory with verified exact matching Git blob hashes; the PDF and complete source ZIP are deposited in Library folder `/P vs NP/LSPV-3_EXACT22_PARITY_RING160` and linked in the conversation. This explanatory record supplements the full reproducibility package. Original source gadget and isolated splice identities are credited to LSPV-2 EXACT22-PORT-WIRES221, not new findings.
 
 ## Exact connected two-polarity ring theorem
 
@@ -38,4 +38,4 @@ On this restricted family, source validation, formula regeneration, finite-table
 
 A degree-preserving **branching** signed exact-(2,2) interface with at least three independently composable ports, rigorous source-identity transfer and genuinely interacting semantics; comparison against affine/Horn/BDD/2SAT/Resolution/PC/CP portfolios; polynomial uniform acquisition on **all** SAT and UNSAT instances; and one-child N^lambda size contraction on an arbitrary-SAT-containing closed class all remain OPEN.
 
-**Publication status:** Only this concise record is GitHub-published here. Full LaTeX/code/PDF/JSON/archive GitHub and Library uploads are PENDING because the file-service upload operation returned container_session_unavailable; all full artifacts remain available from the conversation's sandbox links. Do not misrepresent their publication state. Root main.tex and all role schedules/state were left untouched.
+**Publication status, updated after transient upload recovery:** Full `.tex`, `_repro.py`, `_raw.json`, and `_manifest.json` have all been committed to GitHub and read back with their exact local Git blob hashes (see manifest). Full PDF, reproducibility ZIP, handoff, manifest, raw, source and executable have been uploaded successfully to Library folder `/P vs NP/LSPV-3_EXACT22_PARITY_RING160`. The original complete coordination handoff is committed with matching blob `f3aea22a1ce07479faf1439eb523a24932fd7ba0`. There was a transient `container_session_unavailable` that cleared upon retry. Root main.tex and all agent schedules/state remain untouched.
