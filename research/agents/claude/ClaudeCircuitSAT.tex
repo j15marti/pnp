@@ -1,0 +1,106 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-29 (run 1)
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\status}[1]{\textbf{[#1]}}
+\title{ClaudeCircuitSAT: a step-by-step, wire-counting lower-bound ledger for circuit-SAT}
+\author{Claude (scheduled hourly run; living document)}
+\date{Last updated 2026-10-29}
+\begin{document}\maketitle
+
+\section*{0. Honest status}
+P versus NP remains \textbf{OPEN}. Nothing here is an unconditional super-polynomial
+lower bound for circuit-SAT. This document is a ledger: it fixes the model, records what
+\emph{is} provable at each size $n$ (inputs) and $m$ (wires), and states precisely which
+gap separates those bounds from $2^{\Omega(n)}$. Status labels follow the repository rule:
+PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model}
+A circuit $C$ is a DAG of fan-in-$\le 2$ gates over the 16 binary gates, $n$ input nodes,
+one output. $g(C)$ = gates, $m(C)=2g(C)$ = wires (inputs and constants free). $\mathrm{CSAT}$:
+given $C$, decide $\exists x\ C(x)=1$. Parameters: $n$, $m$, and structural parameters
+(treewidth $\mathrm{tw}$, depth, number of satisfying assignments). Two access models:
+\emph{black-box} (evaluation oracle) and \emph{white-box} (probe the encoding of $C$).
+Let $W(f)$ denote the minimum $m$ over circuits computing $f$.
+
+\section{Proved steps}
+\begin{theorem}[Connectivity floor, \status{PROVED/EXACT}]\label{thm:conn}
+If $f:\{0,1\}^n\to\{0,1\}$ depends on all $n$ inputs then $g(f)\ge n-1$, so $W(f)\ge 2(n-1)$.
+Equality holds for $f=\ell_1\wedge\dots\wedge\ell_n$ (literals on distinct variables).
+\end{theorem}
+\begin{proof} Discard gates not reaching the output. The underlying undirected graph on the
+$n$ inputs and $g$ gates is connected (every node has a path to the output), so it has
+$\ge n+g-1$ edges; it has $\le 2g$ edges (fan-in $\le2$). Hence $2g\ge n+g-1$, i.e.\ $g\ge n-1$.
+The AND tree attains it.\end{proof}
+
+\begin{theorem}[Black-box needle bound, \status{PROVED/EXACT}]\label{thm:bb}
+Let $f_a=[x=a]$, $a\in\{0,1\}^n$ (circuit of exactly $2(n-1)$ wires by Thm.~\ref{thm:conn}).
+Any deterministic evaluation-oracle algorithm deciding whether $f$ is satisfiable, correct on
+all $f_a$ and on $f\equiv0$, makes $\ge 2^n$ queries on the worst case; any randomized
+one with error $\le1/3$ makes $\Omega(2^n)$.
+\end{theorem}
+\begin{proof} Adversary answers 0 until only one point remains unqueried; that point decides
+between $f_a$ and $0$. Randomized: Yao with $a$ uniform. \end{proof}
+
+\begin{theorem}[White-box read bound, \status{PROVED/EXACT}]\label{thm:wb}
+In the probe model on the encoding of an AND-tree of $n$ literals, deciding satisfiability
+(i.e.\ absence of a complementary pair) needs $\ge n-1$ probes, hence $\Omega(m)$.
+\end{theorem}
+\begin{proof} Adversary answers every probed leaf $k$ with literal $x_k$. If $\ge2$ leaves
+$i\ne j$ are unprobed, the instance with leaves $i,j=x_i,\neg x_i$ is UNSAT yet agrees
+with the all-$x_k$ SAT instance on every probe. \end{proof}
+
+\paragraph{Reading.} Theorems~\ref{thm:bb} and \ref{thm:wb} are the two poles: a hidden
+needle costs $2^n$ when the circuit is opaque, but only $\Theta(m)$ when it is readable.
+Every genuine lower bound lies between them and must forbid \emph{white-box shortcuts}.
+The minimal-wire needle circuit has $m=2(n-1)$, where Thm.~\ref{thm:wb}-style reading
+already solves it; so hardness must be encoded in extra wires that disguise the needle.
+This turns the user's program into a quantity to track:
+\[
+  D(n,m)\;=\;\text{min over algorithms of worst-case cost on circuits with $n$ inputs and $\le m$ wires.}
+\]
+Known: $D(n,m)\ge\Omega(m)$ (Thm.~\ref{thm:wb}), $D(n,m)\le \min(2^n,\ 2^{O(\mathrm{tw})})\cdot\mathrm{poly}(m)$.
+The open question is the minimal $m=m^*(n)$ at which $D(n,m)$ jumps beyond $\mathrm{poly}(m)$.
+
+\section{Computational ledger (exact, all functions)}
+Script: \texttt{circuitsat/minwires.py}; data: \texttt{circuitsat/minwires\_results.json}
+(runtime $<$ 30 s). Exact minimum gate counts over the full binary basis, by BFS over circuit states.
+\begin{center}\begin{tabular}{@{}rrrrr@{}}\toprule
+$n$ & functions & max gates & max wires & needle ($|f^{-1}(1)|=1$) gates (=$n-1$) \\\midrule
+1 & 4   & 1 & 2 & 0--1 \\
+2 & 16  & 1 & 2 & 1 \\
+3 & 256 & 4 & 8 & 2 \\\bottomrule\end{tabular}\end{center}
+The $n=3$ distribution (gates: count) is $0{:}5,\ 1{:}33,\ 2{:}114,\ 3{:}80,\ 4{:}24$ (sums to 256).
+\status{COMPUTATIONAL}. It confirms Thm.~\ref{thm:conn} at $n\le 3$ (needles use exactly $n-1$ gates) and
+shows the cheapest-to-build functions are \emph{not} the hard ones for SAT. Extending to $n=4$ needs
+checkpointed search (65536 functions); planned.
+
+\section{Parametrized picture}
+\begin{itemize}
+\item \status{KNOWN THEOREM} CSAT is solvable in $2^{O(\mathrm{tw})}\cdot m$ (dynamic programming on a tree decomposition), so any hard family must have treewidth growing with $n$.
+\item \status{CONDITIONAL} Under SETH, the dependence $2^{\mathrm{tw}}$ is essentially tight for CNF-SAT parametrized by primal treewidth (recalled: Iwata--Yoshida 2015; citation to be verified).
+\item \status{KNOWN THEOREM} Time--space: Williams (2008) SAT needs time $n^{2\cos(\pi/7)-o(1)}\approx n^{1.80}$ with $n^{o(1)}$ space; Buss--Williams (2012) show alternation-trading cannot go beyond that exponent. Applies to circuit-SAT with $n\to m$. Repository ledger rows L13, L34--L37 and the ONETAPE note refine this (portfolio barrier; random-access vs.\ one-tape).
+\end{itemize}
+
+\section{Link to the repository}
+Surveyed this run: root \texttt{AGENTS.md} ledger paragraph and \texttt{research/agents/claude/*}. Useful items:
+(i) the repository's rule that a statement equivalent to P$=$NP is a reformulation, not progress, applies
+to any ``$D(n,m^*)$ is large'' claim; (ii) the TPORT/ONETAPE results show random-access $\ne$ one-tape
+barriers, so a wire-counting argument must state its access model (as Thms.~\ref{thm:bb},\ref{thm:wb} do).
+No repository result yet gives a wire-by-wire lower bound; none is claimed.
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend exact table to $n=4$ (checkpointed), and tabulate, per function, $W(f)$ vs.\ number of satisfying assignments.
+\item Define a \emph{disguised-needle} family: circuits with $n$ inputs, $m=\Theta(n)$ wires whose unique satisfier is not readable by $o(m)$ probes; prove or refute probe lower bounds above $\Theta(m)$ (e.g.\ via hash/permutation gadgets), tracking $m$ per added input.
+\item Prove $D(n,m)$ lower bounds in a restricted white-box model (read-once/ oblivious algorithms), parametrized by $\mathrm{tw}$.
+\item Audit each step against natural-proofs, relativization and algebrization barriers before any claim.
+\end{enumerate}
+
+\section*{Run log}
+\begin{tabular}{@{}ll@{}}
+2026-10-29 run 1 & Created document; Thms.\ 1--3; exact tables $n\le3$; no open arrow closed. \\
+\end{tabular}
+\end{document}
+% END_OF_LIVING_DOCUMENT::CLAUDE-CIRCUITSAT
