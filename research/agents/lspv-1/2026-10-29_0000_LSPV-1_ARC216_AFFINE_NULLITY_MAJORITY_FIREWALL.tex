@@ -1,0 +1,108 @@
+% LSPV-1 ARC216 2026-10-29 00:00 PDT, role-owned, independent review pending
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\setlength{\emergencystretch}{2em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\title{ARC216: Affine-Nullity Parameterization of Exact 2CNF--XOR Interfaces\\and a Majority-Closure Firewall Against Free 2SAT Re-entry}
+\author{LSPV-1 Formal Proof Lead}
+\date{29 October 2026, 00:00 PDT}
+\begin{document}\maketitle
+\begin{center}\fbox{\parbox{0.92\linewidth}{\textbf{Status: PROVED/RESTRICTED for exact mixed 2CNF--affine inputs; COMPUTATIONAL controls; independent review pending.} The affine nullity $r$ of an explicitly projected interface, rather than interface size $b$, upper-bounds deterministic candidate enumeration by $2^r$. Gaussian basis substitution does \emph{not} preserve the 2CNF language. The general successor theorem, ARC-EDGE-90 and P versus NP remain OPEN.}}\end{center}
+
+\section{PROPOSE: precise bottleneck and falsifiable mechanisms}
+Our current missing arrow is an unconditional, uniformly polynomial-time and hereditarily closed one-child SAT/UNSAT contraction, or a polynomial-value decreasing rank with all complete states polynomial. The prior ARC215 compiler exactly projects separate private variables from a mixed instance $(C,A)$, where $C$ is 2CNF and $A$ is affine GF$(2)$, leaving $b$ common variables, but it can reach an idempotent fixed point. Before targeted source search, four falsifiable ideas were fixed.
+
+\begin{description}
+\item[]\textbf{M1 (proved).} After projection, the nullity $r=b-\operatorname{rank}(A_Z)$, not $b$, is a valid sufficient parameter: exhaustive enumeration of $2^r$ affine solutions decides the joint instance.
+
+\item[]\textbf{M2 (proved restricted).} The parameter can be logarithmic while $b$ grows polynomially. The algorithm then runs in polynomial time even without a logarithmic interface.
+
+\item[]\textbf{M3 (falsified).} Substitute the Gaussian basis into every 2CNF clause and conclude the residual formula remains ordinary 2CNF. A three-variable majority counterexample disproves closure.
+
+\item[]\textbf{M4 (falsified as a universal small-nullity claim for the ARC213 compiler).} In the independently checked ternary-gadget translation of $m$ 3SAT clauses, the $3m$ shared auxiliary bits are constrained by $m$ independent XOR triples. Thus the affine nullity is exactly $2m$, including SAT and UNSAT inputs.
+
+\end{description}
+\section{SEARCH: prior source and provenance}
+Read repository $\texttt{j15marti/pnp}$ root $\texttt{AGENTS.md}$, $\texttt{CODEX.md}$ and the $\texttt{pnp-research}$ skill, root $\texttt{main.tex}$, ARC213--ARC215, peer LSPV-2 AFFINE-RESOLVENT-FIXEDPOINT216 and LSPV-3 LOCAL_INTERFACE_BACKDOOR_COVERAGE. Github code queries included \texttt{xor gaussian elimination 2sat} and \texttt{parity xor cnf encoding tseitin}. Inspected \texttt{msoos/cryptominisat/src/gaussian.cpp} blob \texttt{7b9d200c1c1d8e344ce0c3109bfc92806a14359b}: it integrates Gaussian reasoning into a complete SAT solver, not a theorem of polynomial joint running time. The prior original Schaefer classification~\cite{schaefer1978} is compatible with NP-complete mixed Boolean CSPs; the claims below do not assert priority for Gaussian elimination, bounded-interface enumeration, or 2CNF resolution.
+
+Read actual OpenAI preprint \texttt{openai/math/preprints/Polynomial-Time-Unitary-Synthesis-from-a-Boolean-Oracle-October-5-2026/build/sections/06-recursion.tex}, blob \texttt{65bf0450f460311b13a11a136db6ada4520cb6f0}. Its one-inner-circuit-call statement constructs a uniform programmable \emph{skeleton}; it does not construct its target-dependent classical oracle or slot values in polynomial time. No SAT implication is inferred.
+
+The user Library \texttt{Connected_Interface_Audit.zip} original $\texttt{REPORT.tex}$ and $\texttt{audit.py}$ were independently inspected. Replaying the original unchanged program reproduced the archived $\texttt{results.json}$ \emph{byte for byte}, SHA256 \texttt{05675f876d6624073507df1e9cedd18a188143db687e454bc2942143d36cbaca}: 4680 boundary subsets, 7191 local searches, 139 SAT comparisons. The $b+q=\Omega(\sqrt n)$ static syntactic architecture bound survives, but is not a time lower bound and does not obstruct moving semantic interfaces.
+
+\section{BUILD I: exact affine-nullity algorithm}
+Let $F=C(X,Z)\wedge A(Y,Z)$ be an explicitly encoded mixed 2CNF/affine instance, with pairwise disjoint sets $X,Y,Z$ and $|Z|=b$. No answer bit is supplied. Parse all occurrences and use the known exact polynomial-time componentwise projection:
+\[
+ C_Z(z)\equiv\exists x\,C(x,z),\qquad A_Z(z)\equiv\exists y\,A(y,z).
+\]
+Each private 2CNF variable is removed by width-at-most-two Davis--Putnam resolvents with deduplication; the affine subsystem uses ordinary row elimination over the private columns. At most $O(b^2)$ distinct binary clauses and at most $b$ independent affine rows remain. The explicitly serialized child has $O(1+b^2\log(b+2))$ physical bits, not necessarily smaller than its parent. The proof is pointwise, including contradictory empty clauses/rows.
+
+\begin{theorem}[Exact affine-nullity parameterization]
+There exists one fixed uniform deterministic mixed-SAT decider $D$ that, for every well-formed $F=(C,A)$ of physical bit length $N$, first constructs the exact projection on $Z$, rejects immediately if $A_Z$ is inconsistent, and otherwise computes $r=b-\mathrm{rank}(A_Z)$. It decides both satisfiable and unsatisfiable cases in time
+\[
+ T_{D,\mathcal M}(N)=N^{O(1)}+2^r N^{O(1)}
+\]
+and polynomial peak workspace, on each fixed standard deterministic machine model $\mathcal M$ after model-native implementation. It uses one program, one input, no advice, no separate SAT/UNSAT solver and no uncharged oracle. Consequently the promise class $r=O(\log N)$ is uniformly polynomial-time decidable, without requiring $b=O(\log N)$.
+\end{theorem}
+\begin{proof}
+For consistent $A_Z$, deterministic Gaussian row reduction returns a particular solution $z_0\in\mathbb F_2^b$ and independent kernel vectors $v_1,\ldots,v_r$. Its complete solution set is precisely
+\[
+ \bigl\{z_0+\textstyle\sum_{i=1}^{r}\alpha_i v_i:\alpha\in\mathbb F_2^r\bigr\}.
+\]
+Enumerate every $\alpha$, construct its explicit $b$-bit shared assignment, and evaluate every clause of $C_Z$. Accept when one passes and reject after exhausting all $2^r$ candidates otherwise. Exact projection and affine solving prove
+\[
+ D(F)=1\iff\exists z\,[C_Z(z)\wedge A_Z(z)]\iff\exists x,y,z\,[C(x,z)\wedge A(y,z)].
+\]
+Input parsing, private-variable discovery, pair-generation even for unsuccessful resolvents, row operations, candidate enumeration, indexed/pointer accesses, source rereads, memory traffic and final YES/NO output are implemented by ordinary deterministic operations. Deduplicated 2CNF has polynomially many clauses, affine rows have polynomially many bits, and the algorithm streams candidate assignments rather than storing $2^r$ copies. Thus each native model has a fixed polynomial preprocessing and per-candidate bound and a polynomial simultaneous footprint. No time exponent from one model is asserted for another.\end{proof}
+
+\begin{proposition}[Large shared interface with small nullity]
+For arbitrarily large $b$ and every $0\le r<b$, there is an explicit $F_{b,r}$ on $b+2r$ variables, with exactly $b$ variables shared between its languages, whose affine projection has nullity $r$. It is UNSAT and the enumerator tests exactly $2^r$ candidates. The construction is simple and not intended as a lower bound for other algorithms.
+\end{proposition}
+\begin{proof}
+For $i\le b-r$, include the 2CNF unit $\neg z_i$ and affine unit $z_i=0$, except force $z_1=1$ for an explicit contradiction. For each remaining $z_i$, include private 2CNF auxiliary $u_i$ with $(z_i\vee u_i)$ and private affine auxiliary $v_i$ with equation $z_i\oplus v_i=0$. Every $z_i$ appears in both input languages. Eliminating $u_i,v_i$ erases their respective constraints, leaving $r$ free $z$ bits, while the contradictory first coordinate makes every candidate fail. All construction and enumeration costs are explicit.
+\end{proof}
+
+\section{BUILD II: majority-closure falsifier}
+\begin{lemma}[2CNF relations are majority closed]
+If three Boolean assignments satisfy a 2CNF, their coordinatewise majority also satisfies it. Every relation obtained by existentially projecting private variables from a 2CNF is majority closed.
+\end{lemma}
+\begin{proof}
+If the majority falsified a clause of width two, each of its two literals would be false in at least two of the three assignments. Those two sets of cardinality at least two intersect, so one original assignment would falsify both literals, a contradiction. The unit and empty cases are simpler. For existential projections, lift each of three satisfying visible assignments to a full satisfying assignment and take their coordinatewise majority; the visible coordinates are the desired majority.\end{proof}
+
+\begin{proposition}[Gaussian substitution does not preserve 2CNF]
+The relation
+\[
+ f(u,v,w)=(u\oplus v)\lor w
+\]
+is not definable by any 2CNF on $(u,v,w)$, even with existentially quantified private 2CNF auxiliaries. It results from the 2CNF clause $(z\vee w)$ and the affine row $z\oplus u\oplus v=0$ after eliminating $z$.
+\end{proposition}
+\begin{proof}
+Assignments $(0,1,0),(1,0,0),(0,0,1)$ satisfy $f$. Their coordinatewise majority is $(0,0,0)$, which falsifies $f$. The preceding lemma excludes any 2CNF existential encoding. The original $(z\vee w)$ is 2CNF and $z\oplus u\oplus v=0$ is affine, so the exact substitution yields the asserted relation.\end{proof}
+
+The counterexample concerns language closure, not the possibility of keeping a separate affine gate or introducing a richer mixed representation. The latter is precisely what must be charged in a proposed adaptive compiler.
+
+\section{BUILD III: hostile all-input gadget and finite tests}
+ARC213's pointwise correct signed 3SAT gadget replaces clause $(\ell_1\vee\ell_2\vee\ell_3)$ by $(\ell_1\vee y_1)\wedge(\ell_2\vee y_2)\wedge(\ell_3\vee y_3)\wedge(y_1\oplus y_2\oplus y_3=0)$. Distinct clauses use disjoint $y$ triples. All $3m$ auxiliary $y$ variables are shared between the two languages; the affine matrix has exactly $m$ independent equations. Therefore \emph{independently of SAT polarity}, $b=3m$ and $r=2m$. On the eight-clause UNSAT core, the audited decider exhausts all $2^{16}=65536$ affine candidates. This does not imply a $2^{2m}$ lower bound for arbitrary solvers, and it says nothing about inherent hardness of a particular easy affine relation.
+
+The dependency-free reproducer has fixed seed $2026102900$ and passed 720 independently brute-forced random mixed instances (141 SAT, 579 UNSAT), 4554 pointwise exact-projection assignments, five signed-gadget controls including the 8-clause UNSAT case, five small-nullity examples, two high-nullity examples and one majority falsifier. It also replays the original Library audit byte-for-byte. The high-nullity UNSAT control forces $2^{b-1}$ checks for \emph{this enumerator} on the single odd parity equation and all negative 2CNF units, even though a different simple closure routine decides the case quickly. All finite observations are COMPUTATIONAL; the proofs above carry the all-input theorems.
+
+\section{Model-native resource ledger and dependency DAG}
+\noindent\textbf{Indexed RAM.} Gaussian and clause operations use charged random-access bit operations; preprocessing and per-candidate evaluation are bounded by fixed polynomials, with polynomial peak bits.\par
+\noindent\textbf{One read-only-input-head plus fixed work tapes.} The same finite algorithm is implemented with sequential scans, explicitly charged input accesses, changes, work-head travel, failed trials, caches and complete output; time remains $N^{O(1)}+2^rN^{O(1)}$, and visited work cells polynomial.\par
+\noindent\textbf{One shared read/write tape.} Copying/scan simulation counts the initially written $N$ input symbols in its footprint and preserves polynomial-overhead enumeration, but no multitape time or work-space exponent is silently reused.\par
+\noindent\textbf{Two fully writable tapes/fixed UTM.} Both tape writes are charged where applicable; the single fixed interpreter and program prefix are independent of $F$, with no uncharged oracle tables or free SAT-side selection. The shared-input crossing/write bounds for restricted exact22 promise machines are not imported as a general mixed-SAT lower bound.\par
+
+\noindent\textbf{PROVED/RESTRICTED:} exact mixed projection (ARC215), Gaussian-nullity enumeration (ARC216), majority-closure failure of pure 2CNF re-entry (ARC216), $b+q$ static-interface obstruction (ARCHIVE/ARC210).\par
+\noindent\textbf{FALSIFIED:} automatic hereditary shrink of componentwise private projection (ARC215), Gaussian substitution remaining pure 2CNF (ARC216), and independent 2SAT/XOR consistency as a joint SAT criterion (ARC213).\par
+\noindent\textbf{CONDITIONAL:} polynomially constructible $r=O(\log N)$ mixed image of all ordinary 3SAT inputs would yield a polynomial ordinary-SAT decider. No such compiler is supplied.\par
+\noindent\textbf{OPEN:} uniform all-input irreversible single-child power contraction or polynomial-value decreasing rank with polynomial complete states and all acquisition costs; fully charged same-machine ARC/FLMV contradiction; ARC-EDGE-90 and P versus NP.\par
+
+\section{Five-role next dependency}
+LSPV-1 should test whether any polynomially discoverable interface measure strictly decreases \emph{after} zero-private-variable cores. LSPV-2 should seek an actual circuit/encoding successor whose net physical size decreases on its affine-resolution fixed-point family. LSPV-3 should seek a uniformly computable, pointwise exact moving affine-bijunctive compatibility summary with quantified rank/value descent. LSPV-4 should audit a single complete run's RAM, one-tape and fixed-two-tape costs and any attempted lower-bound transport. LSPV-5 should attack majority closure, SAT/UNSAT symmetry, hidden helper variables and any unearned all-input rank guarantee. This handoff does not modify their tasks or schedules.
+
+\bibliographystyle{plain}\bibliography{2026-10-29_0000_ARC216_sources}
+\end{document}
