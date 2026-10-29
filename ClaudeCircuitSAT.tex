@@ -1,0 +1,85 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append/refine in place each hourly run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\title{Claude Circuit-SAT Lower-Bound Ladder (living document)}
+\author{Scheduled hourly run; repository \texttt{j15marti/pnp}}
+\date{Last updated: 2026-10-29 (run 1)}
+\begin{document}\maketitle
+
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No superpolynomial lower bound for Circuit-SAT is claimed here.
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and method}
+Circuit-SAT: given a fan-in-2 circuit $C$ with $n$ inputs and $m$ wires, decide whether $\exists x\,C(x)=1$.
+Plan: climb a ladder of instance classes $\mathcal L_{n}$ (more inputs each step), track for each rung
+(i) the minimum number of wires $W_{\min}(n)$ any circuit of the rung needs, and
+(ii) a lower bound $LB(n,m,\ldots)$ on solving the rung, possibly parameterized by
+$n$, $m$, treewidth $\mathrm{tw}$, depth, or fan-out.
+
+\section{Rung 0: structural wire lower bound}
+\begin{theorem}[PROVED/EXACT]\label{thm:wires}
+A fan-in-2 circuit with $g$ gates whose output depends on all of $n$ inputs satisfies $g\ge n-1$, hence
+at least $2(n-1)$ wires.
+\end{theorem}
+\begin{proof}
+Restrict to the cone of the output. The undirected graph on the $n$ inputs and $g$ gates is connected
+(each input in the support reaches the output), so it has $\ge n+g-1$ edges. Edges are the $2g$ gate-input wires,
+so $2g\ge n+g-1$. \qed
+\end{proof}
+
+\section{Rung 1: exact minimum gates for all functions, $n\le 3$ (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/min\_gates\_small.py} (BFS over sets of available truth
+tables, B$_2$ basis, runtime seconds); raw output \texttt{results/raw/circuitsat\_min\_gates\_n3.json}.
+Wires $=2\cdot$gates.
+\begin{center}\begin{tabular}{lrrrrr}\toprule
+$n$ & 0 gates & 1 & 2 & 3 & 4\\\midrule
+2 (16 functions) & 4 & 12 & -- & -- & --\\
+3 (256 functions) & 5 & 33 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+Hence every 3-input function has a circuit with $\le 8$ wires, and the bound of Theorem~\ref{thm:wires}
+($4$ wires for $n=3$) is not tight for the worst function. Next: $n=4$ (65536 functions, known max 7 gates)
+needs a checkpointed search (CANDIDATE plan: canonicalize by NPN class, chunk by gate count).
+
+\section{Rung 2: query-model lower bound (PROVED/EXACT, weak model)}
+Query model: the algorithm sees $C$ only through queries ``what is wire/position $i$?''.
+\begin{theorem}\label{thm:query}
+Let $\mathcal I_n$ be AND-chains of $n$ literals $\ell_1\wedge\dots\wedge\ell_n$, $\ell_i\in\{x_j,\neg x_j\}$.
+Every deterministic query algorithm deciding satisfiability on $\mathcal I_n$ makes $n=m$ queries in the worst case;
+every randomized one with error $\le1/3$ makes $\ge n/3$.
+\end{theorem}
+\begin{proof}
+Base instance $B$: $\ell_i=x_i$ (satisfiable). If a correct algorithm answers SAT on $B$ without querying position $i$,
+the instance $B_i$ with $\ell_i:=\neg x_{i'}$ ($i'\ne i$, $n\ge2$) agrees with $B$ on all other positions, so is answered identically,
+yet $B_i$ contains $x_{i'}\wedge\neg x_{i'}$ and is unsatisfiable. So all $n$ positions are queried.
+Randomized: draw $B$ or $B_i$ ($i$ uniform) with probability $1/2$ each; with $q$ queries the algorithm misses $i$
+with probability $\ge 1-q/n$, erring with probability $\ge\frac12(1-q/n)$; error $\le1/3$ forces $q\ge n/3$. \qed
+\end{proof}
+\emph{Limits:} this only shows the input must be read; it gives no superlinear Turing-machine bound.
+
+\section{Parameterized template (KNOWN THEOREMS, cited from memory -- verify before relying)}
+\begin{itemize}
+\item Treewidth: $2^{O(\mathrm{tw})}\mathrm{poly}(m)$ algorithms exist; under SETH no $(2-\varepsilon)^{\mathrm{tw}}\mathrm{poly}(m)$
+(Lokshtanov--Marx--Saurabh). So the parameterized bound $LB=(2-o(1))^{\mathrm{tw}}$ is conditional.
+\item ETH: no $2^{o(n)}\mathrm{poly}(m)$ algorithm for 3-SAT, hence for Circuit-SAT.
+\item Unconditional circuit-size (not algorithm) bounds: gate elimination gives $\approx 3.1n$ gates for explicit functions; no superlinear.
+\end{itemize}
+Repository links (see \texttt{AGENTS.md}, world ledger): row L13 (Buss--Williams alternation-trading limit),
+rows L34/L35 (TPORT barrier: portfolio exponent $1+\Theta(1-d)$), rows L38--L40 (one-tape crossing sequences:
+bound also holds for nondeterministic machines, so cannot separate P from NP).
+
+\section{Open targets (next runs)}
+\begin{enumerate}
+\item $n=4$ exact minimum wires (checkpointed).
+\item Define a wire-elimination potential $\mu(C)$ for the \emph{decision} problem and prove a rung-by-rung recurrence
+$LB(n+1)\ge LB(n)+\delta$ in a restricted model (e.g., read-once branching programs / DPLL-style tree solvers),
+where $2^{\Omega(\mathrm{tw})}$-type bounds are unconditionally provable.
+\item Audit relativization/natural-proofs barriers for any extension beyond restricted models.
+\end{enumerate}
+
+\section*{Run log}
+Run 1 (2026-10-29): created document; Theorems 1--2; computed $n\le3$ table. Repo survey limited to AGENTS.md pointers and
+\texttt{research/agents/claude/} listing; no deep corpus read yet.
+\end{document}
