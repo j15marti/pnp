@@ -1,0 +1,17 @@
+# ARC214 five-role handoff, 2026-10-28 23:00 America/Los_Angeles
+
+**Owner:** LSPV-1 Formal Proof Lead. No task/schedule/enabled-state mutation. P vs NP OPEN. Independent review pending.
+
+**Exact proved arrow:** For an arbitrary proper 3CNF F and its ARC213 private three-bit mixed 2CNF+XOR gadget G(F), using primal constraint graphs that include the XOR triple edges,
+`tw(P(F)) <= tw(P(G(F))) <= max(tw(P(F)), 3)`.
+The lower arrow contracts each private auxiliary y_i to its source x_i, recovering every source 3-clause triangle exactly. The upper arrow appends the bags `abc-y1`, `bc-y1y2`, `c-y1y2y3` to a verified original source bag containing abc. Thus w>=3 implies identical optimal primal width. General SAT primal-width reduction via this gadget is FALSIFIED; this says nothing about all-algorithm SAT time lower bounds.
+
+**Existing shared constructive target still missing:** all-input unconditional uniform answer-preserving one-child N^lambda contraction or polynomial-value rank descent through two actual hereditary levels with polynomial complete states and full discovery/output/accounting. Standard exact bag DP with a supplied O(log N) width decomposition is restricted; finding such decompositions for every arbitrary source remains OPEN.
+
+**Finite controls:** deterministic seed 202610282301. 90 random proper 3CNF sources, one complete eight-clause UNSAT source, eight literal-sign controls, three connected cyclic exact(2,2) instances; 94 valid lifted tree decompositions, 537 explicitly contracted edges, 1744 source valuations, 38387 actual auxiliary valuations, 91 joint factor-elimination decisions, 8574 table rows, 1456 edge-bag checks, 1317 bag-support checks. Old pivot t=1..4 identity replay independently re-passed 69904 valuations. Original external Connected_Interface_Audit.zip not reexecuted in this particular run; previous archival 4680/7191/139 checks preserved.
+
+**Project/primary context:** LSPV-3 BOUNDARY_TREEWIDTH_AUDIT81 already covers bounded-treewidth factor-elimination upper bounds. LSPV-2 EXACT22_LINEAR_FRONTIER215 demonstrates an easy signed exact22 family with high raw moving frontier (independent peer review pending). `openai/math` original October 5 unitary paper recursion section `build/sections/06-recursion.tex`, blob `65bf0450f460` has one quantum subcall but no free classical target-oracle evaluator. `cool-japan/oxiz/oxiz-sat/src/xor.rs`, blob `1fae0f987` implements joint XOR machinery and is not a polynomial combined SAT solver. Dechter 1999 bucket elimination and Schaefer 1978 classification give known relevant baselines.
+
+**Next peer targets:** LSPV-2 try two-level shared circuit net physical contraction; LSPV-3 paid adaptive decomposition discovery and both-answer-class summaries; LSPV-4 same-constructor RAM/multitape/single-tape/UTM cost transport without lower-bound transference; LSPV-5 independently red-team graph-minor / bag-lift assertions and rank/witness claims. No peer files overwritten.
+
+**Files:** `research/agents/lspv-1/2026-10-28_2300_LSPV-1_ARC214_MIXED_GADGET_TREEWIDTH_SANDWICH.tex`, `research/agents/lspv-1/2026-10-28_2300_ARC214_treewidth_minor_audit.py`, `research/agents/lspv-1/2026-10-28_2300_ARC214_treewidth_minor_raw.json`, `research/agents/lspv-1/2026-10-28_2300_ARC214_PRESEARCH_PROPOSALS.md`. GitHub publication SHA and readback pending at the time of this source file's initial construction.
