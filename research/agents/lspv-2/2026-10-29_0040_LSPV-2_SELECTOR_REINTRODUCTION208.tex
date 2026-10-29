@@ -1,0 +1,180 @@
+% LSPV-2 REPORT::SELECTOR-REINTRODUCTION208::2026-10-29T00:40:00Z
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\title{SELECTOR-REINTRODUCTION208: Tight Auxiliary Floor and Fixed-Point Obstruction to Single-Child SAT Projection}
+\author{LSPV-2, Circuit and Reduction Builder}
+\date{29 October 2026, 00:40 UTC}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT restricted, independent review pending.}
+No classical SAT separation or all-input construction is claimed. The attempted one-child
+project-and-reencode successor has an exact physical fixed point. Compact Boolean
+circuits do not automatically produce shorter ordinary SAT children. Global
+\(P=NP\), \(P\ne NP\), and ARC-EDGE-90 remain \textbf{OPEN}.
+
+\section{Four falsifiable mechanisms proposed before search}
+\begin{description}
+\item[] H1: the disjoint positive projected function is expressible in 3CNF without new
+variables. \textbf{FALSIFIED/RETIRED}.
+\item[] H2: one auxiliary selector suffices, and reintroduction can make the
+single-child successor identical to the original input. \textbf{PROVED/EXACT restricted}.
+\item[] H3: full bidirectional Tseitin conversion of a compact circuit yields
+\(N^\lambda\)-bit children for some fixed \(\lambda<1\). \textbf{FALSIFIED/RETIRED for this compiler}.
+\item[] H4: local reduction preserving an arbitrary unrelated \(R\) gives fixed-power
+shrink on all \(R\). \textbf{FALSIFIED/RETIRED for literal pass-through}.
+\end{description}
+
+\section{Exact construction}
+Let all \(4t\) variables \(a_i,b_i,c_j,d_j\) be distinct, \(t\ge1\).
+Put \(A_i=a_i\vee b_i\), \(B_j=c_j\vee d_j\), and
+\[
+P_t=\left(\bigwedge_i A_i\right)\vee\left(\bigwedge_j B_j\right),\qquad
+F_t(z)=\bigwedge_i(z\vee A_i)\wedge\bigwedge_j(\neg z\vee B_j).
+\]
+Then \(\exists z\,F_t(z)\equiv P_t\), whereas exact auxiliary-free
+projection is \(\bigwedge_{i,j}(A_i\vee B_j)\), with \(t^2\) width-four
+clauses. The \(t^2\) optimal auxiliary-free clause count was previously
+proved by LSPV-1 ARC207; it is not a new claim of this report.
+
+\begin{theorem}[No short implicate and tight auxiliary count]
+No non-tautological signed clause of width at most three is an implicate
+of \(P_t\). Every 3CNF whose existential projection onto the \(4t\)
+original names is \(P_t\) therefore needs at least one auxiliary
+variable; one auxiliary suffices.
+\end{theorem}
+\begin{proof}
+For any non-tautological clause \(D\) of width at most three, set to zero
+all variables appearing positively in \(D\) and set all other variables
+to one. The assignment falsifies \(D\) and has at most three zeros.
+Falsifying \(P_t\) requires a full \(A_i\) pair and a disjoint full
+\(B_j\) pair to be zero, requiring at least four zeros. Consequently
+\(P_t\) is true on the assignment falsifying \(D\), so \(D\) is no
+implicate. A no-auxiliary 3CNF representing \(P_t\) would have no
+non-tautological clause, hence be a tautology, contradiction.
+With a fresh \(w\), the proper 3CNF
+\[
+Q_t(w)=\bigwedge_i(w\vee A_i)\wedge\bigwedge_j(\neg w\vee B_j)
+\]
+satisfies \(\exists w\,Q_t(w)=P_t\), attaining one auxiliary.
+\end{proof}
+
+\begin{theorem}[Byte-identical one-child fixed point]
+Define \(C\) on the canonical \(F_t\) family by forgetting \(z\),
+taking the compact factorization \(P_t\), and rebuilding \(Q_t(w)\)
+with \(w\) assigned the old pivot's numeric identifier and the original
+clause order. Then \(C(F_t)=F_t\) as a physical encoded string and
+\(C^r(F_t)=F_t\) for every \(r\ge1\). The map is polynomial-time and
+answer-preserving but provides no strict encoded-length descent.
+\end{theorem}
+\begin{proof}
+Every output clause, polarity, variable identifier, header field and
+record order is identical after the designated selector renaming.
+Induction yields identity under arbitrary repetition.
+\end{proof}
+
+\section{Compact circuit versus physical ordinary SAT}
+A direct shared circuit for \(P_t\) uses \(2t\) initial OR gates,
+\(2t-2\) AND gates, and one final OR, totaling \(G=4t-1\) gates
+and \(2G=8t-2\) gate-input references. The fixed three-clause
+bi-implication Tseitin compiler with one pinned root has
+\[
+m_T=12t-2,\qquad L_T=28t-6,\qquad v_T=8t-1.
+\]
+The original formula has \(2t\) clauses, \(6t\) literal occurrences,
+and \(4t+1\) variables. Hence both original and Tseitin child have
+\(\Theta(t\log t)\) physical indexed length. The latter is not
+\(N^\lambda\) for any fixed \(\lambda<1\); in fact the given
+Tseitin construction has larger length at every tested \(t\).
+Using one private auxiliary to split each four-literal resolvent
+into two proper width-three clauses instead yields \(2t^2\) clauses
+and \(t^2\) new variables.
+
+\begin{center}\small
+\begin{tabular}{rrrrrr}
+\toprule
+\(t\)& Original bytes& Selector bytes& Tseitin bytes& Four-CNF bytes& Chain3 bytes\\
+\midrule
+1&27&27&84&20&27\\
+2&44&44&208&50&85\\
+4&94&94&455&200&344\\
+8&187&187&943&836&1413\\
+32&833&833&4565&14991&26562\\
+128&3618&3618&19086&281104&506918\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{proposition}[Dominant unrelated source]
+Let \(R\) be an arbitrary disjoint ordinary 3CNF and
+\(F_R=R\wedge F_1\). Since \(F_1\) is satisfiable,
+\(\mathrm{SAT}(F_R)=\mathrm{SAT}(R)\); the input family is NP-hard.
+Any local successor that literally retains all \(R\) records
+has \(N_{\rm child}\ge N_R\) while
+\(N_{\rm parent}=N_R+O(\log N_R)\). Such a successor
+cannot guarantee \(N_{\rm child}\le N_{\rm parent}^\lambda\)
+for any fixed \(0<\lambda<1\).
+\end{proposition}
+\begin{proof}
+The append gadget has two constant-count clauses and five fresh variable
+identifiers. The record-copy hypothesis lower-bounds child length.
+Then \(N_R>(N_R+O(\log N_R))^\lambda\) eventually. No claim is
+made against a global semantic solver that simplifies \(R\).
+\end{proof}
+
+\section{Search and model-specific accounting}
+Actual OpenAI mathematical source inspected:
+\path{openai/math/preprints/Polynomial-Time-Unitary-Synthesis-from-a-Boolean-Oracle-October-5-2026/build/sections/01-introduction.tex},
+\path{06-recursion.tex}, \path{07-compilation.tex}.
+Its quantum skeleton is uniformly generated from \(n\) but
+uses a target-dependent Boolean oracle with no polynomial classical
+construction/evaluation guarantee. This is not a SAT algorithm.
+Actual relevant code searched and checked:
+\path{arminbiere/cadical/src/elimfast.cpp} enforces a bounded
+resolution-count/size test, declining the \(t^2>2t\) clean
+pivot for \(t\ge3\) in this fast route;
+\path{ivmai/cudd/cudd/cuddBddAbs.c} implements existential BDD
+abstraction and has a limited variant that returns NULL on excess
+nodes; \path{berkeley-abc/abc/src/aig/gia/giaBalAig.c} balances AIGs;
+\path{crillab/d4} implements a d-DNNF compiler. None supplies a
+universal power-short SAT child theorem. Primary background:
+E\'en--Biere (SAT 2005), Bryant (1986), Darwiche--Marquis (2002).
+
+\noindent\textbf{Independent finite audit:} 69,904 source assignments
+for \(t=1,\ldots,4\), 62,720 constructive counterassignments to
+every signed width-1,2,3 clause for \(t=1,\ldots,7\),
+65,536 W1/Q source-gadget truth-table evaluations,
+nine physical-scale controls and ten joined SAT/UNSAT fixed-point
+controls, all passed, zero failures. A full standalone Python
+reproducer with full raw JSON and a six-page PDF report is
+available in the companion research package.
+Checks are computational, not machine-verified asymptotic proofs.
+
+\begin{description}
+\item[] One-tape TM: input-inclusive footprint \(P_1\ge N\),
+every head step and output write charged.
+\item[] Fixed-\(k\) sequential-input multitape TM: source
+reads, work cells and output writes separately charged;
+conservative simulation \(T_1=O(T_k(N+S_k+\log(T_k+2)))\),
+\(P_1=O(N+S_k+\log(T_k+2))\).
+\item[] Fixed UTM: no free oracle, interpreter, parsing,
+strategy selection, simulation or circuit evaluation.
+\item[] Indexed RAM/RAT: actual addresses, logword registers,
+all source probes and full physical child length must be counted.
+\end{description}
+
+\section{Status and next falsifier}
+The one-child sufficient theorem remains open because neither the
+necessary exact output-length decrease nor hereditary closure is
+established for arbitrary ordinary SAT. The construction here yields
+\(T(N)\le N^{O(1)}+T(N)\), not a proof of \(P=NP\).
+The reverse separation route is equally unproved. Next test a
+uniform globally source-aware child generator on a connected exact
+signed-(2,2) SAT/UNSAT family and arbitrary NP-hard disjoint \(R\),
+charging every attempted rewrite and temporary output byte.
+Root \path{main.tex} currently lacks LSPV-2 ownership markers;
+its update is deferred to avoid overwriting other agents' text.
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::SELECTOR-REINTRODUCTION208
