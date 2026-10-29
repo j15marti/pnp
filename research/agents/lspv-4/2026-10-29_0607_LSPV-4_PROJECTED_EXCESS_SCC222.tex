@@ -1,0 +1,123 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,hyperref}
+\usepackage{microtype}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue}
+\setlength{\emergencystretch}{2em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\FF}{\mathbb F_2}
+\newcommand{\poly}{\operatorname{poly}}
+\title{LSPV-4: PROJECTED-EXCESS-SCC222\\\large A Rank-Sensitive SCC Bridge for Mixed Affine--2CNF,\\and a Dense Exact Single-Child Control}
+\author{LSPV-4, Independent Time--Space/Circuit Resource Audit}
+\date{29 October 2026, Los Angeles}
+\begin{document}
+\maketitle
+\begin{abstract}
+We prove an exact algorithm for an explicitly encoded system of GF(2) affine equations conjoined with arbitrary signed 2CNF. Unlike the prior per-component \emph{full-nullity} branching parameter, the new cost is the excess \emph{exposed projection rank}: only affine directions visible in the binary clauses are charged. A dense family with affine nullity $q^2+1$ in each of $q$ components, complete binary interaction graph, and zero excess projected rank admits one exact SCC solve. The family has a physically shorter ordinary binary-CNF child with $N'=O(N^{2/3}\operatorname{polylog}N)$, preserving SAT and UNSAT and all exposed port assignments. We separately audit native machine resources, independently re-run the connected-interface archive and test an internal-clause firewall. All conclusions are restricted algorithms and upper bounds, not general $3$SAT lower bounds or a $P$ versus $NP$ resolution.
+\end{abstract}
+
+\section{PROPOSE: precise missing mechanism}
+The obstacle is combining unrestricted-size affine solution spaces with binary clauses without paying for affine directions invisible to the binary constraints. The falsifiable candidates are as follows. \textbf{M1:} Charge the full affine nullity $d_i-1$ per component as in earlier work; this may be unnecessarily expensive. \textbf{M2:} Project each affine component onto \emph{every} variable that occurs in any binary clause, then branch only on all but one of the independent visible directions, keeping an ordinary 2CNF child. \textbf{M3:} A large complete graph of binary interactions does not force exponential computation if every affine component exposes only one degree of freedom, despite high treewidth and high hidden nullity. \textbf{M4:} A claimed power-short output can fail if physical binary clauses dominate the input; an explicit size recurrence is necessary. We prove M2--M4 on specified classes and exhibit M1's excessive estimate. No hypothesis asserts a generic polynomial 3SAT decider.
+
+\section{SEARCH: source and duplication audit}
+The direct source inspection included the actual files \path{msoos/cryptominisat/src/gaussian.cpp} (blob \texttt{7b9d200c1c1d}), \path{uds-psl/coq-library-complexity/theories/NP/TM/mTM_to_singleTapeTM.v} (blob \texttt{a12c882a5aed}), and OpenAI \path{build/sections/01-introduction.tex} (blob \texttt{5ad06c26238e}). GitHub queries were ``gaussian'', ``SingleTape'', ``affine quotient rank'', ``projected rank SCC'', and ``excess nullity''; actual file paths were fetched after searching. CryptoMiniSat integrates Gaussian elimination with full CDCL, not a complexity result for the mixture \cite{cms}. The Coq source states polynomial many-tape to single-tape reducibility with explicit size/step expressions, but does not certify the particular exponents below \cite{coq}. The OpenAI paper explicitly leaves its target-dependent Boolean oracle unconstrained in classical circuit complexity \cite{openai}.
+
+The closest project antecedents are Role 4 \texttt{AFFINE-NULLITY-BOUNDARY73} (one full nullity bit per affine component yields SCC), Role 5 \texttt{AFFINE-EXCESS-NULLITY111} (branch $\sum_i(d_i-1)$, with cluster factorization), and Role 3 \texttt{BOUNDARY-RANK-SWITCH80}/\texttt{BOUNDARY-TREEWIDTH-AUDIT81} (projected rank $t_i$ with forest or weighted elimination-width dynamic programming). The present bridge uses Role 3's source-computed \emph{projected} rank inside Role 5's \emph{SCC quotient}, removing an unnecessary bounded-width condition for low projected rank. This is a combination of known methods, not a claim of a new complexity paradigm. Standalone SCC-based 2SAT is classical \cite{apt}; mixed affine--bijunctive systems can be NP-complete by Schaefer's classification \cite{schaefer}.
+
+\section{BUILD: exact exposed-rank algorithm}
+Let $F=E\land B$, where $E$ is a conjunction of binary GF(2) affine equations of arbitrary arity and $B$ is signed CNF of width at most two, encoded explicitly in $N$ bits. Form the connected components $C_i$ of the variable-incidence hypergraph of $E$. Variables absent from $E$ are singleton components. After rejecting inconsistent $E$ by Gaussian elimination, represent every component's complete affine solution space as
+\[
+  x|_{C_i}=a_i+L_i z_i,\qquad z_i\in\FF^{d_i}.
+\]
+Let $P_i$ contain \emph{every} variable of $C_i$ that occurs in $B$, including variables occurring only in clauses wholly inside $C_i$. Set
+\[
+ r_i=\operatorname{rank}_{\FF}(\pi_{P_i}L_i),\qquad
+ e_i=\max(r_i-1,0),\qquad
+ K=\sum_i e_i.
+\]
+Build the component-interaction graph $H$: connect $i,j$ whenever a binary clause includes a variable from each. Let its connected components be $D_1,\ldots,D_s$, with $K_j=\sum_{i\in D_j}e_i$.
+
+\begin{theorem}[Projected-excess SCC, PROVED/RESTRICTED]
+There is one uniform deterministic exact algorithm, using no answer-class advice, for all explicitly encoded $E\land B$ instances, with
+\[
+ T(F)\le \poly(N)\left(1+\sum_{j=1}^{s}2^{K_j}\right),
+ \qquad S_{\mathrm{peak}}(F)\le \poly(N).
+ \tag{1}
+\]
+The algorithm computes all parameters and factorization from the source; every unsuccessful branch, induced 2CNF, SCC decision, witness reconstruction, and source replay is charged. If $\max_jK_j=O(\log N)$, the entire algorithm is polynomial even when every $d_i$ is large and $H$ has unbounded treewidth. The complete solution is reconstructible for SAT and absence of a feasible branch is sound for UNSAT.
+\end{theorem}
+\begin{proof}
+Choose $r_i$ linearly independent columns of $\pi_{P_i}L_i$ spanning its image. Call their original free-coordinate indices $J_i$. Each actual port signature has a unique representation
+\[
+ \pi_{P_i}a_i+\sum_{j\in J_i}u_{ij}\pi_{P_i}L_i^{(j)},\quad
+ u_i\in\FF^{r_i},
+ \tag{2}
+\]
+and a valid full source lift $a_i+\sum_{j\in J_i}u_{ij}L_i^{(j)}$; set unused affine degrees of freedom to zero. Fix the first $r_i-1$ signature bits for every component with $r_i\ge2$. Every signed source literal in $B$ then becomes a constant or a signed literal of the sole remaining bit in its component, so the residual is authentic 2CNF. An SCC solver decides it exactly. Enumerate all $2^{K_j}$ prefix choices in each interaction cluster until a witness is found; if all fail, that cluster is UNSAT. Independent clusters share no variables/clauses, so their decisions conjoin and their costs add. Reverse the chosen signature columns to reconstruct a source witness and verify every input equation and binary clause. All operations are deterministic, effective, and polynomial outside the enumerated choices. Both answer classes are handled by the same program.\end{proof}
+
+\paragraph{Certificate firewall.} When $K_j=O(\log N)$, an UNSAT cluster can also present all failing prefixes with their 2SAT refutations and authenticated affine basis. The resulting proof can have polynomial physical length, but is \emph{not} assumed when $K_j$ grows; no general short UNSAT certificate follows.
+
+\paragraph{Within-component clauses cannot be omitted.} Take $E:(x\oplus y=0)$ and $B:(x\vee y)\land(\neg x\vee\neg y)$. Both constituents separately have solutions, but their conjunction is UNSAT. A projection definition that counts only cross-component binary clauses would disregard $B$ entirely and be unsound. Our $P_i$ includes both $x$ and $y$, and the SCC residual detects $z\land\neg z$.
+
+\section{Dense SAT/UNSAT family with exact physical shrinking}
+For integers $q\ge3$ and $h=q^2$, introduce exposed variables $p_i$ ($1\le i\le q$) and private $u_{ij},v_{ij}$ ($1\le j\le h$). Define
+\[
+ E_{q,h}=\bigwedge_{i=1}^{q}\bigwedge_{j=1}^{h}
+ (p_i\oplus u_{ij}\oplus v_{ij}=0),
+ \qquad
+ B_{q,b}=\bigwedge_{1\le i<k\le q}(\neg p_i\vee\neg p_k)
+ \land p_1\land (p_2\ \text{if }b=1\ \text{else }\neg p_2).
+\]
+The final notation denotes a positive or negative unit clause depending on $b\in\{0,1\}$; both labels have identical supports, variable counts, and encoded length. For every assignment of the $q$ ports, choose $u_{ij}=0$ and $v_{ij}=p_i$. This satisfies all of $E$. Hence exact existential elimination of the private names yields precisely $B_{q,b}$, a nontrivial ordinary 2CNF child preserving \emph{all} exposed port assignments. The $b=0$ input is SAT; $b=1$ forces $p_1=p_2=1$ and is UNSAT.
+
+Every affine component has nullity $d_i=h+1$, while its projected rank is $r_i=1$. Therefore $K_{\mathrm{old}}=q h=q^3$, but $K=0$; the binary interaction graph is the complete graph $K_q$, with treewidth $q-1$. Thus the earlier general excess-nullity enumeration and the general high-treewidth table bound are exponentially pessimistic on this explicit family, while the source-discovered projected SCC quotient is polynomial.
+
+\paragraph{Exact canonical bit ledger.} Set $n=q(2h+1)$, $e=qh$, $c=\binom q2$, and $M=e+c+2$. Encode every affine ternary as a type tag (two bits), parity bit, and three $w$-bit variable names, every binary clause with a two-bit tag, two signs and two $w$-bit names, and each unit with a two-bit tag, one sign and one $w$-bit name. Use the self-delimiting header $1^w0$ followed by $w$-bit integers $n,M$, where $w=\lceil\log_2(n+M+4)\rceil$ (equivalently the Python script's bit-length convention). Then the exact number of source bits is
+\[
+ N=3w+1+e(3w+3)+c(2w+4)+2(w+3). \tag{3}
+\]
+The child has $n'=q$, $M'=c+2$ and corresponding $w'$, with
+\[
+ N'=3w'+1+c(2w'+4)+2(w'+3). \tag{4}
+\]
+Thus $N=\Theta(q^3\log q)$ and $N'=\Theta(q^2\log q)$, so $N'\le N^{3/4}$ beyond a fixed threshold. The script verifies this actual inequality already for $q=3,\dots,7$, using an independent strict parser for both encodings. The produced child is re-decided with the same source-independent mixed solver on both labels. This is a strict single-child exact semantic contraction on an explicitly recognizable restricted family, not on general 3SAT or even all mixed systems. The grammar includes unit/binary clauses and is not strict signed exact-$(2,2)$ 3CNF.
+
+\begin{proposition}[Restricted closed two-stage shrinker]
+Let $\mathcal C$ be the union of the authenticated dense family above, all canonical ordinary 2CNF formulas and two fixed valid YES/NO unit-CNF base instances, with the encoding tags included in the grammar. There is a uniform polynomial-time single-child decision-preserving transformation closed on $\mathcal C$ satisfying $N'\le N^{3/4}$ above a constant threshold: for a dense input output the exact port 2CNF $B_{q,b}$, and for an ordinary 2CNF input run the classical SCC algorithm and output the appropriate fixed base. Directly decide the bounded-size bases. This construction handles both answer classes via one program and avoids an assumed general SAT oracle.
+\end{proposition}
+
+\section{Model-native time, space, and proof accounting}
+For $N$ source bits and $R=1+\sum_j2^{K_j}$ serial branch attempts, an intentionally conservative implementation stores at most $O(N^2)$ finite-alphabet work cells for coefficient matrices, component maps, all current clause identifiers, implication graph and one witness. A naive bit-level implementation uses at most $O(R N^4)$ elementary indexed-bit operations for paid parsing, elimination, projected-rank discovery, cluster grouping, substitutions, SCC, and reconstruction. Simulating each indexed-bit access by a sequential sweep through $O(N^2)$ cells yields a concrete fixed two-tape upper bound (one read-only input and one writable work tape):
+\[
+ \boxed{T_{2\mathrm{OFF}}=O(RN^6),\quad S_{2\mathrm{OFF}}=O(N^2).} \tag{5}
+\]
+Source scanning/head moves, sign/name decoding and all failed branches are included in the deliberately loose polynomial. On a two-fully-writable-tape machine the same algorithm may leave the original tape unmodified, so the same upper bounds apply. It does not imply a lower bound for two-writable-tape algorithms.
+
+For the conservative single-tape simulation, with the original input counted in physical footprint, apply
+\[
+ T_1=O\bigl(T_{2\mathrm{OFF}}(N+S_{2\mathrm{OFF}}+\log(T_{2\mathrm{OFF}}+2))\bigr),\quad
+ P_1=O\bigl(N+S_{2\mathrm{OFF}}+\log(T_{2\mathrm{OFF}}+2)\bigr).
+\]
+Because $K\le N$ on an unpadded explicit encoding, $\log R=O(N)$, yielding
+\[
+ \boxed{T_1=O(RN^8),\qquad P_1=O(N^2).} \tag{6}
+\]
+A fixed universal TM running a fixed compiled version has polynomial simulation overhead, with program length constant; exact exponents depend on the chosen universal machine and its input convention and are \textbf{not} claimed. Indexed-word RAM can achieve a polynomial bound with $\Theta(\log N)$-bit words, but unbounded-size GF(2) row XOR is never charged as a unit operation. No FLMV, Williams, Buss--Williams or Santhanam native forbidden region is transferred to this calculation. The exponents in (5)--(6) are conservative upper bounds, not measured runtimes, and no Coq kernel verification was performed.
+
+\section{Independent computation and source-replay controls}
+The dependency-free \texttt{LSPV4\_PROJECTED\_EXCESS\_SCC222\_repro.py} verified 660 independent random affine-plus-binary inputs against complete brute-force classification ($167$ SAT, $493$ UNSAT), checked SAT witnesses against the entire original source, and independently tested the Fano-plane UNSAT example. On that Fano instance the new method computes $r=3$, $K=2$, and rejects after exactly four 2SAT branches. On the dense families $q=3,4,5,6,7$, it verified both labels, all projected dimensions, physically encoded input/child lengths, matched label lengths, strict source/child parser roundtrips, exact child reentry on both labels, and all port assignments for the small cases. The within-component UNSAT counterexample was tested. The script passed \textbf{6,659} assertions, zero failures. These are source-level tests, not machine transitions or proof-kernel certificates.
+
+The original \texttt{Connected\_Interface\_Audit.zip} was retrieved directly from the Library; its \texttt{REPORT.tex}, five-page PDF, \texttt{audit.py}, and \texttt{results.json} were inspected. Re-executing \texttt{audit.py} produced the byte-identical SHA-256 \texttt{05675f876d662407...} (complete digest in raw audit results): 4,680 boundary tests, 7,191 discovery checks and 139 brute-force comparisons. Its $n\le3b+12bq$ theorem was rederived from degree-four incidence counting. That result remains a static syntactic architecture obstruction, not an all-algorithm SAT runtime lower bound.
+
+\paragraph{Exact gap and next role-specific target.} The new bridge removes hidden affine directions and can outperform both full-nullity branching and width-based tables on some high-width mixed constraints. However, in general projected ranks $r_i$ and their cluster sums $K_j$ may grow linearly, and obtaining the affine equations from arbitrary source 3CNF is not a free sound preprocessing step. The next task is to construct or falsify a \emph{source-authenticated} adaptive method for discovering low-exposure representations or certificate-preserving rank reductions on arbitrary 3CNF, charging recognition, successful/failed switches, intermediate bit lengths, all child calls, both answer sides, and native source access. Neither $P=NP$ nor $P\ne NP$ is established.
+\begin{thebibliography}{9}
+\bibitem{apt} B. Aspvall, M. F. Plass, R. E. Tarjan. A linear-time algorithm for testing the truth of certain quantified Boolean formulas. \emph{Information Processing Letters} 8(3), 121--123 (1979). DOI: 10.1016/0020-0190(79)90002-4.
+\bibitem{schaefer} T. J. Schaefer. The Complexity of Satisfiability Problems. \emph{STOC 1978}, 216--226. DOI: 10.1145/800133.804350.
+\bibitem{cms} M. Soos et al. CryptoMiniSat Gaussian elimination implementation, \url{https://github.com/msoos/cryptominisat/blob/ed61e2170ab8d86a69c7cd99ae09059414fa0e0a/src/gaussian.cpp}; inspected Git blob \texttt{7b9d200c1c1d}.
+\bibitem{coq} L. G\"aher, F. Kunze et al. Coq complexity library, multi-tape/single-tape reduction, \url{https://github.com/uds-psl/coq-library-complexity/blob/14b5f413d2fb7adecde79c5451b483f9a1af59a8/theories/NP/TM/mTM_to_singleTapeTM.v}. No kernel compilation in this run.
+\bibitem{openai} OpenAI. Polynomial-Time Unitary Synthesis from a Boolean Oracle (2026), \url{https://github.com/openai/math/tree/main/preprints/Polynomial-Time-Unitary-Synthesis-from-a-Boolean-Oracle-October-5-2026}.
+\end{thebibliography}
+\end{document}
