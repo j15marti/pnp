@@ -1,0 +1,23 @@
+# ARC228 LSPV-1 five-role handoff, 2026-10-29 12:00 PDT
+
+**Theorem PROVED/EXACT, RESTRICTED, independent referee pending.** For a uniformly polynomial-time discovered and verified tree of polynomially many modules, every source constraint assigned once, every variable occurring on a connected subtree, local 2CNF plus GF(2) equations of fixed row rank e_t <= e0, and every FULL shared boundary B_t of size b_t <= c log N: one uniform deterministic bottom-up exact decision program runs in
+
+D(N) + sum_t 2^{b_t} poly(N) (N_t+1)^{O(e_t)}.
+
+It enumerates ALL assignments on B_t, checks child projections, substitutes ALL pinned variables into the local formula before invoking a fixed-e solver, then stores exact projected tables and witness pointers. This can be polynomial even with unbounded global affine rank. It is NOT an unrestricted SAT or strict signed exact22 theorem.
+
+**Original literature KNOWN THEOREM:** Arvind and Guruswami, IPEC 2021, Theorems 2, 17 and 19 (DOI 10.4230/LIPIcs.IPEC.2021.5). Deterministic 2SUBSAT time O*(sum_{i<=e} binom(n,i)); e=2 and all fixed e are already polynomial. W[1]-hardness in e is not an unconditional non-FPT theorem. e=Theta(log N) is not polynomial from XP alone.
+
+**ARC227 text repair, FALSIFIED/REPAIRED:** ARC227 TeX blob fc4a02dc004e363e28dc78ebc3b969e2c27ad1f7 says forms observed only in binary clauses despite allowing unary clauses. The source (x xor y xor z=0) AND x AND y AND z is UNSAT but has no binary-observed forms. Correct to all unary-plus-binary observations or first absorb all unit clauses into affine equations and recompute. Crucially, ACTUAL ARC227 PYTHON already observes unary coordinates and correctly returns UNSAT, 3 distinct forms, rank 2, deficiency 1. One-parity proof and 65,536 majority-relation exhaustive replay passed.
+
+**Concrete failed arrows:** A noncritical-only pluck at an arbitrary 2SAT baseline fails on (x iff y) AND (x=1). Our corrected implementation compresses implication SCCs before branching over all row-supported pivots. Appending b interface pin equations to an XP algorithm raises local codimension from e to e+b, potentially N^{O(log N)}, so must substitute pins. The DP explicitly checks projected table membership, even for an empty tuple.
+
+**Reproduction:** 2,900 independently brute-checked local mixed instances (1,162 SAT and 1,738 UNSAT), plus separate 19,800 small controls, zero mismatches; 22 chain cases with k<=100 global affine rank (11 SAT, 11 UNSAT) and local full b<=2; 250 random trees (198 SAT, 52 UNSAT) all independently brute-checked, 1,275 local solver calls; 450 rank-after-substitution checks and 16 XOR3-quartet truth controls. No proof-assistant kernel run. GitHub report, two standalone Python reference implementations and raw JSON in research/agents/lspv-1/2026-10-29_1200_ARC228_*; full tested code and data in conversation ZIP ARC228_LOCAL_AFFINE_FULL_INTERFACE_REPRO_BUNDLE.zip. The compact GitHub scripts were read back but were not separately executed in the container.
+
+**User ZIP audits:** Freshly materialized Polynomial_Coverage_Proof_Study.zip (SHA d8b7356d8c4286ed902c7f8f1e5d6328c1ec63f1fbab5737a3df9b815e0fdbc5), Adaptive_SAT_Restart_Extension.zip (SHA f41be5bc4191c302587d2fc5ffa1e327164a40ed5a1bc4580b191f77ed71bde3), Adaptive_SAT_Portfolio.zip (SHA 8a7399a8acded9a17386d997a939ce9bb45fe1bb63f935bf44687254b9d05abb), and reran originals. Sixteen repair seeds covered 49/49 known SAT roots at n flips but missed SAT disjoint products of 4/8/16/32 15-variable blocks; component decomposition succeeded. Four former restart gaps SAT, direct branching 22-46 nodes. Width12 retries covered 312 mixed/control cases, of which ONLY 44 are strict22 roots. Polynomial all-input coverage remains OPEN.
+
+**Root ownership alert:** main.tex fetched as literal 11-byte PLACEHOLDER, blob 311c8dd0658759f372c9be9a2065c327fdb1a203, with no role-region markers. LSPV-1 left it intact; LSPV-5 owns recovery from verified history. Library folder /PNP Formal Proof Lead/ARC228 was created but uploading local files failed container_session_unavailable; do not misrepresent the ZIP as Library-shared. Existing five tasks/schedules untouched.
+
+**Peer handoffs:** LSPV-2 audit source-to-mixed conversion for strict22; LSPV-3 attack polynomial decomposition discovery and FULL B_t; LSPV-4 charge model-native tapes/RAM/UTM; LSPV-5 referee theorem and restore root, preserving OPEN. Next LSPV-1 lemma: prove polynomial discovery of full-log-interface fixed-local-e decomposition on a genuinely increasing connected strict22 subclass, or exhibit an infinite counterfamily.
+
+**Final status:** restricted full-interface exact composition PROVED/EXACT; unrestricted SAT and both P=NP / P!=NP OPEN.
