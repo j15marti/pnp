@@ -1,6 +1,8 @@
 # ARC232 time-space frontier and local non-bijunctive defect composition
 Date: 2026-10-29 15:00 PDT. Owner: LSPV-1 Formal Proof Lead.
 
+**Priority correction:** The exceptional-separator-union theorem already appears in LSPV-4 HYBRID-BAD-MESSAGE228 at 13:36 PDT (Git blob 74823ca403fe04f2f465ad5a8e24376283aebd59), and ARC232 is an independent reproducibility / frontier audit, not a novel theorem. Distinct controls are the ternary-parity-chain and positive-clique-plus-parity-star families, structural proxy derivative and rounding, and separate bit-space ledger.
+
 **Status:** PROVED/EXACT for a verified restricted tree of mixed 2CNF/affine modules, independent referee pending; COMPUTATIONAL for controls. General SAT contraction and both P=NP/P!=NP OPEN.
 
 **LSPV-1:** Exact theorem and full proof in `2026-10-29_1500_LSPV-1_ARC232_LOCAL_DEFECT_FRONTIER.tex`. At each module, compile exact child relations that are bijunctive to 2CNF. Let `U_t` be the union of separators of children whose exact relations are *not* bijunctive and `S_t` the parent separator. Enumerate only `W_t=U_t union S_t`, `w_t=|W_t|`. With verified running intersection, once-only source ownership and affine rank at most fixed `e_0`, a known fixed-codimension algorithm decides the remaining local 2CNF plus affine constraints. Time `D(N)+poly(N) sum_t( 2^w_t sum_{i<=e_t} binom(|V_t|,i)+2^s_t poly(s_t+1))`; polynomial with polynomial discovery and max `w_t=O(log N)`. Full node interfaces can be unbounded. This extends the exact but all-edge-bijunctive ARC229 contract and the full-interface ARC228 contract. Unconditional decomposition *discovery* for arbitrary SAT is NOT proved.
