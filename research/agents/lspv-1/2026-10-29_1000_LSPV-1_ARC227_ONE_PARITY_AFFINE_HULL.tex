@@ -1,0 +1,137 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{ARC227: One-Parity 2SAT and One-Dependency Affine Interface}
+\author{LSPV-1 Formal Proof Lead}
+\date{29 October 2026}
+\begin{document}\maketitle
+\noindent\textbf{PROVED/RESTRICTED; independent referee pending.}
+No P-versus-NP resolution or all-input contraction is claimed.
+\section{PROPOSE and SEARCH}
+M1: 2CNF plus one long parity has a deterministic polynomial algorithm:
+PROVED. M2: source-authenticated XOR3-plus-2CNF with affine observation
+rank deficiency one reduces to M1: PROVED/RESTRICTED.
+M3: an unrestricted number of dependencies is automatically handled: OPEN.
+M4: large treewidth/backdoor necessarily forces large time:
+FALSIFIED as an inference by explicit easy sources.
+Actual GitHub inspected: privet-kitty/cl-competitive/module/2sat.lisp
+(blob c4e8b9a7414ca76850073ede42cf46455ad336cc, its add-xor
+implements exactly-one, not GF(2)); j-danner/2xnf_sat_solving/README.md
+(blob ac3c8567677efbe2afe86f67ced999af42e3817d);
+GrigoryEvko/FX/lean-fx-3/FX1Poly/ComputerAlgebra/Decision/SchaeferDichotomy.lean
+(blob c3ce4b909ee2971eddd5a83a1fb75dd613c73881, no kernel replay).
+OpenAI math source in preprints/Polynomial-Time-Unitary-Synthesis-from-a-Boolean-Oracle-October-5-2026/build/sections/06-recursion.tex
+(blob 65bf0450f460311b13a11a136db6ada4520cb6f0)
+has one smaller quantum circuit call but no polynomial classical
+construction of its target-dependent slot tables.
+\section{BUILD: meet generators}
+Let $R\subseteq\{0,1\}^n$ be nonempty and majority-closed,
+choose $a\in R$ and $D=R\oplus a$. The identity
+$\mathrm{maj}(a,a\oplus u,a\oplus v)=a\oplus(u\wedge v)$
+shows $D$ is AND-closed. For each coordinate $i$ that is
+one in some $d\in D$, define
+$g_i=\bigwedge\{d\in D:d_i=1\}$, which belongs to $D$.
+\begin{lemma}
+The vectors $g_i$ span $\operatorname{span}_{\mathbb F_2}D$.
+\end{lemma}
+\begin{proof}
+Define $i\preceq j$ if $d_i=1$ implies $d_j=1$ for
+every $d\in D$. Mutual implication identifies columns that
+are identical in all members of $D$. Quotienting by mutual implication
+gives a partial order on $h$ active equivalence classes.
+Each $g_i$ is the incidence row of the principal upset of its class.
+Under a linear extension, the $h$ such rows form an upper-triangular
+$h$ by $h$ matrix with diagonal ones, and hence are linearly independent.
+All $d\in D$ are zero outside active coordinates and constant
+on each equivalence class, so the full span has dimension at most $h$.
+Therefore the $g_i$ span it.
+\end{proof}
+\begin{theorem}
+A deterministic algorithm decides an arbitrary 2CNF formula $C$
+conjoined with exactly one parity constraint
+$\bigoplus_{i\in S}x_i=b$
+using at most $n(n+1)+1$ ordinary 2SAT calls and polynomial bit time
+and space, producing an original assignment on YES or a
+fully replayable NO transcript.
+\end{theorem}
+\begin{proof}
+The model relation of every 2CNF is majority-closed.
+Find an original model $a$ by an SCC-based 2SAT solver, or
+return its UNSAT certificate. If $a$ meets the parity, accept.
+For each coordinate $i$, a 2SAT test with $x_i\ne a_i$
+determines whether it is active. For active $i$, the 2SAT
+test $C\land(x_i\ne a_i)\land(x_j=a_j)$ is UNSAT
+exactly when $g_i[j]=1$. Thus all $g_i$ can be reconstructed
+with $O(n^2)$ 2SAT calls and each $a\oplus g_i$ is a model.
+A linear parity functional changes on some member of $R$
+if and only if it changes on some generator by the lemma.
+Output the first generator giving the requested parity.
+If none exists, recheck the exhaustive pinned 2SAT queries
+and apply the span lemma to certify infeasibility. Both sides
+use one uniform program; all failed queries are charged.
+\end{proof}
+\begin{theorem}[Observed affine rank deficiency at most one]
+Parse source-authenticated complete four-clause XOR3 quartets,
+with all remaining clauses unary or binary. Let the affine
+row system have parametrization
+$x_i=c_i\oplus\langle v_i,t\rangle$, and let $\mathcal V$
+be the distinct nonzero $v_i$ observed in binary clauses.
+If $e=|\mathcal V|-\operatorname{rank}(\mathcal V)\le1$,
+there is a deterministic polynomial-time decision/witness/NO-certifier
+for this restricted input grammar.
+\end{theorem}
+\begin{proof}
+Substitute new names $u_v=\langle v,t\rangle$ into
+the unary/binary clauses, producing 2CNF $C'(u)$.
+If $e=0$, the image of the linear map $t\mapsto(u_v)$
+is all of $\mathbb F_2^{|\mathcal V|}$. If $e=1$,
+the image is exactly the hyperplane defined by the single
+linear dependency $\bigoplus_{v\in S}u_v=0$.
+The preceding theorem solves the exact existential
+projection in polynomial time. Reconstruct original assignments
+by Gaussian solving and check every signed source clause.
+For NO, check every quartet, row operation and pinned 2SAT
+probe transcript. On recognized physical input length
+$N\ge512$, output a fixed 18- or 19-byte YES/NO terminal
+formula, so $|K(F)|\le N^{3/4}$; next level checks the base.
+For other inputs return UNKNOWN. No all-SAT contraction follows.
+\end{proof}
+\section{Hostile controls and proof boundaries}
+A connected XOR3 chain encoding one parity on $d$ observed names,
+plus binary equalities and a positive binary clique, has
+$d-2$ authenticated parity quartets, treewidth at least $d-1$
+and ternary-clause-hitting lower bound $\lceil(d-2)/2\rceil$,
+but observed rank deficiency exactly one. For $d=45$,
+a canonical no-unit source has 87 variables, 1251 clauses,
+10416 bytes and either a YES or NO answer depending on the
+one parity bit; for $d=46$, 89 variables and 1302 clauses,
+the roles reverse. These are easy promise families.
+An unbounded number of observed dependencies, arbitrary SAT,
+strict signed exact-(2,2) source reentry and same-machine
+FLMV contradictions remain OPEN.
+\section{Reproducibility and native machine ledgers}
+Independent controls passed 1200 small 2CNF-parity brute-force
+comparisons (488 SAT and 712 UNSAT), 3730 2SAT calls,
+712 separately replayed NO transcripts, 64 parity chain
+tests and four dense sources. Exhaustively checking all 65536
+arity-four relations found 4170 majority-closed including empty
+and no generator-span violation among 4169 nonempty.
+No proof-assistant kernel was run. The original authenticated
+Connected Interface Audit ZIP was replayed from a prior
+nested artifact, not freshly materialized from its Library ID:
+4680 boundary, 7191 local-discovery and 139 brute-force checks,
+byte-identical results; $n\le3b+12bq$ remains static only.
+Indexed RAM charges all SCC calls, matrix work and actual output.
+Fixed-k sequential multitape, one shared tape, two fully writable
+tapes and one fixed UTM require distinct head, workspace, write
+and simulation ledgers. $T_1=O(T_k(N+S_k+\log(T_k+2)))$
+is a simulation upper bound, not a lower bound on SAT.
+SAT and UNSAT traces belong to the same program.
+The next LSPV-1 target is $e=2$; other roles retain their ownership.
+P versus NP OPEN.
+\begin{thebibliography}{2}
+\bibitem{S} T. J. Schaefer, The Complexity of Satisfiability Problems, STOC (1978).
+\bibitem{APT} B. Aspvall, M. Plass, R. Tarjan, A Linear-Time Algorithm for Testing the Truth of Certain Quantified Boolean Formulas, IPL 8(3) (1979).
+\end{thebibliography}
+\end{document}
