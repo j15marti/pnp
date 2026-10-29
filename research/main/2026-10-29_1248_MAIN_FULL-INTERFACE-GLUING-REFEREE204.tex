@@ -1,0 +1,367 @@
+% LSPV-5 REPORT::FULL-INTERFACE-GLUING-REFEREE204::2026-10-29T12:48:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,hyperref,microtype,xurl,seqsplit}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue,citecolor=blue}
+\setlength{\emergencystretch}{4em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\F}{\mathbb F_2}
+\title{LSPV-5: FULL-INTERFACE-GLUING-REFEREE204\\[2pt]
+\large Exact Tree Composition and an Essential Accumulated-Interface Falsifier}
+\author{LSPV-5, Independent Red Team and Synthesis}
+\date{29 October 2026, America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{.94\linewidth}{\textbf{Executive finding.}
+The proposed full-interface tree-composition theorem is \textbf{PROVED/EXACT}
+under its stated verified-decomposition hypotheses.  Running intersection is
+the exact gluing condition, and restriction does not raise local affine
+codimension.  A new star family proves that one may not replace a module's
+\emph{full accumulated interface} by the maximum single-edge separator:
+every module has affine codimension one and every edge has width two, yet the
+centre has $2q$ shared variables and all $q$ child messages are essential to
+UNSAT.  The family is easy by Gaussian elimination, so this is an accounting
+falsifier, not a lower bound.  Universal decomposition discovery, arbitrary
+SAT coverage, ARC/FLMV closure, $P=NP$, and $P\ne NP$ remain \textbf{OPEN}.}}
+\end{center}
+
+\section{Claim card and PROPOSE}
+\begin{description}
+\item[Claim ID.] FULL-INTERFACE-GLUING-REFEREE204.
+\item[Exact quantifiers.] For every explicitly encoded instance and every
+polynomial-time discovered certificate satisfying the tree, ownership,
+scope, running-intersection and local-grammar checks below, one fixed
+deterministic algorithm decides the instance and reconstructs a witness in
+the displayed charged bound.
+\item[Model.] Indexed deterministic RAM for the native statement, with
+explicit encodings and bit lengths.  Tape and fixed-UTM statements below are
+only separate simulation upper bounds.
+\item[Missing lemma.] Does bounded local affine codimension together with
+small \emph{edge} separators suffice for the proposed raw-table dynamic
+program, or is the union of all incident separators the necessary charged
+object?
+\item[Falsifiable mechanisms.] (M1) prove the full-interface induction;
+(M2) falsify it by a variable whose occurrences violate running intersection;
+(M3) replace full interface width by maximum edge width; (M4) compress
+accumulated affine messages algebraically without losing the fixed-local-rank
+premise.  M1 survives; M2 identifies a necessary hypothesis; M3 is
+\textbf{FALSIFIED/RETIRED}; M4 is a useful restricted escape, not a general
+tree-table bound.
+\end{description}
+
+\section{SEARCH: primary sources, code and exact applicability}
+Arvind and Guruswami's Theorems 2 and 17 give a deterministic
+$O^*(\binom{n}{\le e})=n^{O(e)}$ algorithm for 2CNF intersected with an
+affine subspace of codimension $e$; their Theorem 19 gives W[1]-hardness
+parameterized by $e$ \cite{AG}.  Hence every fixed $e$ is a known polynomial
+case, while $e=O(\log N)$ yields only $2^{O(\log^2N)}$ from that XP bound.
+No non-FPT conclusion is inferred from W[1]-hardness.
+
+Freuder's original $k$-tree CSP theorem gives $O(nd^{k+1})$ for domain size
+$d$ and width $k$ \cite{Freuder}; it confirms that the exponential factor is
+charged to an entire bag/interface, not independently to each incident edge.
+Lauritzen--Spiegelhalter give the junction-tree local-computation framework
+and running-intersection condition \cite{LS}.  These are exact structural
+transfers to finite relations after the present module tables are constructed;
+they do not discover the decomposition or prove small width for arbitrary SAT.
+
+Actual GitHub source was inspected at
+\path{pgmpy/pgmpy/pgmpy/inference/ExactInference.py}, commit
+\texttt{d6ca91c542afccb0c3a600cad50252af26729c88}.  Its belief propagation
+projects a clique belief onto the intersection separator, stores that message,
+and executes collect/distribute passes.  This is a relevant implementation of
+the same table-projection architecture, not a proof that SAT has small bags or
+fixed local affine codimension.  Search query:
+``\texttt{class BeliefPropagation junction tree}''.  A broader GitHub query
+``\texttt{running\_intersection junction tree}'' found validators and
+message-passing implementations but no theorem removing full-bag accounting.
+A failed search is not evidence of impossibility.
+
+\section{BUILD I: exact full-interface composition}
+Let $T$ be a rooted tree of modules.  Module $t$ has a variable bag $V_t$ and
+owns a set $C_t$ of source constraints.  The certificate must verify:
+\begin{enumerate}
+\item every source constraint occurs in exactly one $C_t$, and its complete
+scope is contained in $V_t$;
+\item for every variable $x$, the modules whose bags contain $x$ induce a
+connected subtree of $T$;
+\item the local conjunction in $C_t$ is a recognized 2CNF together with an
+affine system of coefficient rank (codimension) $e_t$;
+\item $B_t=V_t\cap\bigcup_{u\ne t}V_u$ is the \emph{full} shared interface,
+and $b_t=|B_t|$.
+\end{enumerate}
+Write $S_{tu}=V_t\cap V_u$ on edge $tu$.
+
+\begin{lemma}[Cut separator]
+If a variable occurs in a module inside the child subtree of $u$ and in a
+module outside it, then it belongs to $S_{tu}$.
+\end{lemma}
+\begin{proof}
+The unique path between those two modules crosses edge $tu$.  Running
+intersection requires every bag on that path, hence both endpoint bags, to
+contain the variable.
+\end{proof}
+
+\begin{theorem}[Verified full-interface tree composition]
+Let $D$ include the complete cost of discovering, parsing and verifying the
+certificate above.  There is one uniform deterministic algorithm that decides
+both SAT and UNSAT and reconstructs a satisfying assignment on YES in
+\[
+ D+\operatorname{poly}(N)\sum_{t\in T}
+     2^{b_t} (|V_t|+1)^{O(e_t)} .
+\]
+All failed local calls, child-table lookups, projections, stored backpointers,
+joins, source rechecks, output work and peak table space are included.
+Consequently polynomially many modules, polynomial $D$, uniformly fixed
+$e_t$, and $b_t=O(\log N)$ give a deterministic polynomial algorithm for this
+promised and supplied-decomposition class.
+\end{theorem}
+\begin{proof}
+Process the tree bottom-up.  For every $\alpha\in\{0,1\}^{B_t}$, first look up
+each child summary on $\alpha|_{S_{tu}}$.  If all lookups succeed, restrict the
+local 2CNF by $\alpha$ and pin the same coordinates in the affine system, then
+invoke the fixed-codimension solver.  Restriction preserves 2CNF.  Deleting
+fixed columns and row reducing cannot increase the coefficient rank on the
+remaining coordinates above $e_t$; inconsistency is detected as a zero row
+with right side one.  Mark $\alpha$ feasible precisely when all child messages
+and the local call succeed, and project feasible entries to the parent
+separator.  Store one local witness and compatible child backpointer per
+feasible projected entry.
+
+For soundness, compatible local witnesses agree on every edge separator;
+the cut-separator lemma implies that these agreements cover every variable
+shared across a cut.  Constraint ownership and scope containment ensure every
+source constraint is checked exactly where its full scope is present.  Thus
+the witnesses glue to one global witness.  For completeness, restrict any
+global witness to every $B_t$; induction shows that its entry survives every
+child lookup and local call.  Root-table nonemptiness is therefore equivalent
+to SAT.  Backtracking reconstructs and source-checks a witness.  The displayed
+sum enumerates every full interface entry and charges the local XP call;
+degree factors, projection and storage are absorbed in the explicit
+polynomial factor.
+\end{proof}
+
+Arbitrary cross-module clauses whose full scope is absent from the purported
+owner bag invalidate item 1.  Dropping running intersection invalidates the
+cut lemma.  Charging only a newly selected separator rather than all of $B_t$
+invalidates the enumeration bound.  The theorem is sufficient, not a
+universal decomposition or contraction theorem.
+
+\section{BUILD II: essential accumulated-interface star}
+For every $q\ge1$, create a star with centre $c$ and leaves $1,\ldots,q$.
+The centre bag contains $x_i,y_i$ for all $i$ and owns the one affine row
+\begin{equation}
+ \bigoplus_{i=1}^q (x_i\oplus y_i)=1. \tag{C}
+\end{equation}
+Leaf $i$ contains $x_i,y_i$ and owns
+\begin{equation}
+ x_i\oplus y_i=0. \tag{$L_i$}
+\end{equation}
+There are no 2CNF clauses.  Every edge separator is
+$\{x_i,y_i\}$, every local affine system has rank one, running intersection
+holds, and the full centre interface has size $2q$.
+
+\begin{proposition}[Full-interface accumulation is necessary for raw tables]
+The star is UNSAT.  Deleting any one leaf row makes it SAT.  Hence all $q$
+child messages are essential, although maximum edge width and maximum local
+codimension are constant.  The centre's full raw table has $2^{2q}=4^q$
+assignments.  A shortcut that keeps only the centre's parent separator (empty)
+and the fact that each child table is nonempty answers SAT incorrectly.
+\end{proposition}
+\begin{proof}
+XORing all leaf coefficient rows gives exactly the coefficient row of (C),
+but with right side zero instead of one.  Thus the coefficient matrix has rank
+$q$ and the augmented matrix rank $q+1$.  If $L_j$ is removed, choose
+$x_j\ne y_j$ and make every other pair equal, satisfying all remaining rows.
+Therefore every child relation participates essentially in the contradiction.
+\end{proof}
+
+This family does \emph{not} prove that $4^q$ work is necessary: Gaussian
+elimination solves it in polynomial time.  Absorbing all child messages into
+one centre affine system, however, raises accumulated rank from one to $q$.
+Thus it escapes raw-table enumeration only by changing the charged structural
+parameter.  It precisely falsifies the proposed substitution
+``maximum edge separator $O(1)$ plus local $e=O(1)$ implies polynomial raw
+tree tables.''
+
+The dependency-free reproducer symbolically checked ranks through $q=32$ and
+exhaustively enumerated every assignment for $q\le6$.  All nine tested cases
+had coefficient/augmented ranks $q,q+1$, zero global models, and a consistent
+system after every single-leaf deletion.  Runtime was 0.04 seconds.  Code
+SHA-256 is
+\texttt{\seqsplit{98672bcf21006bc19613698f1fb890500989f1ed32a7c44021201cbe4010ffa5}};
+raw JSON SHA-256 is
+\texttt{\seqsplit{fa2d7e317ffafc5dc9caada75c81670442e160e5d8ab2c353fc0fd4b8e555622}}.
+The symbolic proposition is \textbf{PROVED/EXACT}; the executions are
+\textbf{COMPUTATIONAL}.
+
+\section{Independent peer and evidence audit}
+The ARC228 Library reproduction bundle was read at source level.  Its 10,000
+seeded local-solver comparisons, 166 distinct three-variable 2CNF relations,
+584 anchored models, 9,344 parity tests, 16 pinned-XOR cases, and tree
+composition checks reran without a failure.  Its archive-wide audit did not:
+\path{arc228_archive_audit.py} hard-codes absent
+\path{/mnt/data/lspv1_arc228_inputs/...} files, so the bundle is not
+self-contained for those external archives.  This is a reproducibility defect,
+not a counterexample to the theorem.  The bundled TeX also lacks the required
+first report marker and final sentinel and uses the noncanonical combined
+label ``PROVED/EXACT, RESTRICTED.''
+
+ARC227's observed-affine theorem is \textbf{FALSIFIED/RETIRED as stated} when
+unary clauses are omitted from the observed linear forms.  The exact
+counterexample is
+\[
+ x_1\oplus x_2\oplus x_3=1,
+ \qquad \neg x_1\land\neg x_2\land\neg x_3,
+\]
+which is UNSAT although the binary-clause observation set is empty.  ARC228's
+repair is valid: include every unary form, or absorb the unit equations into
+the affine system and reparametrize before computing dependency codimension.
+
+LSPV-3 FULL-INTERFACE-COMPOSITION165 independently states the same induction
+and provides a unit-leaf star showing edge-width/full-interface separation.
+The present star strengthens that control by keeping every local codimension
+equal to one and making every child message deletion change UNSAT to SAT.
+The LSPV-3 report's mathematics is adopted, but its opening phrase
+``RESTRICTED PROVED/EXACT'' should be normalized to an allowed status plus a
+separate scope statement.  SOURCE-RUP-CHAIN164 remains an exact bounded-block
+elimination theorem, not arbitrary-width acquisition.  AFFINE-LIFT-BVE229
+remains a finite and restricted warning that explicit CNF re-entry may grow or
+stall.  FOUR-PIN-ONLINE-CONTEXT226 remains an online-context information
+floor, not a decision-only contraction floor.  DECISION-CONTEXT-SEPARATION202
+already supplies the matching decision countercontrol.
+
+Fresh reruns reproduced the coverage study's 49 SAT/one UNSAT base, 60 SAT
+mutations, and zero repair-only hits on 4/8/16/32-block products; the restart
+extension's four SAT gaps and 22--46-node sufficiently deep branching
+controls; and the portfolio audit's 312 cases with only 44 strict22 roots.
+These are \textbf{COMPUTATIONAL}.  They falsify concrete policies on those
+instances, not polynomial coverage in either direction.
+
+\section{SAT/UNSAT, policy and machine ledgers}
+The tree algorithm is one program: no answer-class bit is supplied.  Its SAT
+restriction pays discovery, every failed local assignment, witness joins and
+source reconstruction; its UNSAT restriction pays the same complete tables
+and all negative local calls.  A successful path alone is not the cost.  A
+polynomial action vocabulary still has exponentially many tool sequences, so
+any adaptive extension must bound all losing prefixes and peak stored state.
+
+\begin{center}
+\begin{tabular}{p{.20\linewidth}p{.72\linewidth}}
+\toprule
+Model & Charged interpretation \\
+\midrule
+Indexed RAM & Native theorem; explicit input, certificate, tables, indices,
+bit operations, failed calls, witnesses and output are charged. \\
+Read-only input, fixed multitape & Sequential certificate/table scans and
+independent head traffic add a polynomial simulation overhead; work-tape peak
+includes all live tables. \\
+Two fully writable tapes & Input mutation and symbol changes are separate
+native resources; no one-tape crossing claim is imported. \\
+Single read/write tape & Initial input is part of physical footprint and head
+transport is charged; the simulation upper bound is not a SAT lower bound. \\
+Fixed UTM & Program interpretation and encodings add polynomial overhead only
+after a fixed universal machine is specified; no native exponent is borrowed. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+No crossing-sequence, RAM, FLMV, ARC or proof-system lower bound is strengthened
+by this structural theorem.  Gaussian elimination is the hostile control that
+prevents misreading the new star as hardness.
+
+\section{CORPUS REVIEWED}
+We surveyed the current repository directories and task specifications; read
+\path{AGENTS.md}, \path{CODEX.md}, the complete
+\texttt{pnp-research} skill with red-team/synthesis protocols, and the current
+root placeholder; verified the prior full root at commit
+\texttt{16e19aee9a64543bf34792e9b0fb70bf71f63a3c}, blob
+\texttt{a3d785762972e663ee3e0b85260ee41b79186ede}; read ARC227,
+ARC228, SOURCE-RUP-CHAIN164, AFFINE-LIFT-BVE229,
+FOUR-PIN-ONLINE-CONTEXT226, DECISION-CONTEXT-SEPARATION202,
+FULL-INTERFACE-COMPOSITION165 and MIXED-PORT-CYCLE230 at actual source level;
+inspected the cited code/raw artifacts and reran the current evidence bundles;
+and searched the primary CSP, junction-tree and affine-subspace literature plus
+actual GitHub implementations.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+The main positive theorem duplicates ARC228 and FULL-INTERFACE-COMPOSITION165;
+this report is the requested independent referee, not a novelty claim.  The
+new contribution is the all-messages-essential rank-one star.  It contradicts
+only per-edge-width accounting, not full-interface composition.  ARC227's
+unary omission is a genuine theorem-statement defect repaired by ARC228.
+MIXED-PORT-CYCLE230's affine-hull warning is compatible: exact 2CNF relations
+must not be replaced by their affine hull.  Its linear Resolution proof is a
+further easy-control warning, not a universal proof-acquisition result.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+The live GitHub root is the 11-byte string \texttt{PLACEHOLDER}, so it was not
+used as synthesis.  The last verified full root already contains the fixed
+local-codimension path theorem.  The living synthesis should now replace
+``path'' by the exact verified-tree theorem with \emph{full} interfaces, add
+the accumulated-interface star firewall, retire ARC227's unary-omitting
+version, and retain every arbitrary-instance and ARC/FLMV arrow as OPEN.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\textbf{Adopted:} Arvind--Guruswami fixed-codimension 2-SUB-SAT; verified
+running-intersection composition; full-interface enumeration; source-once
+ownership; bounded-block RUP acquisition under its exact grammar.
+\textbf{Rejected:} free decomposition discovery; maximum-edge width as a
+substitute for $b_t$; uncharged cross-module constraints; a compact circuit
+as a free recursive child; online context floors as decision lower bounds.
+\textbf{FALSIFIED/RETIRED:} ARC227's unary-omitting observation theorem and
+the per-edge-only raw-table bound.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+The current root placeholder is invalid synthesis.  ARC228's archive audit is
+not reproducible from its own bundle due to hard-coded absent paths.  ARC228
+lacks required report markers; FULL-INTERFACE-COMPOSITION165 uses a noncanonical
+status phrase.  Any claim that fixed local $e_t$ and bounded edge separators
+alone make raw tree tables polynomial is false.  None of these defects changes
+the full-interface theorem under its exact hypotheses.
+
+\section{Ranked proof-obligation ledger and next lemma}
+\begin{enumerate}
+\item \textbf{OPEN:} polynomially discover and verify, on a materially larger
+hereditary connected strict22 class, a tree with $b_t=O(\log N)$ for every
+\emph{full} interface and uniformly fixed local $e_t$.
+\item \textbf{OPEN:} find a repeatable algebraic/relational message language
+whose accumulated size and update cost remain polynomial when full $b_t$ is
+large, while charging rank growth, compatibility joins and representation
+conversion.  The next specific lemma is this question for a star whose child
+messages are 2CNF plus affine constraints of bounded \emph{aggregate} rank.
+\item \textbf{OPEN:} prove hereditary closure, source authentication and two-
+answer correctness for one state-dependent controller, charging all failed
+decompositions and policies.
+\item \textbf{OPEN:} connect any resulting all-input algorithm or impossibility
+to ARC/FLMV only with same-machine simultaneous resources.  Restricted tree
+composition alone provides no such bridge.
+\end{enumerate}
+
+\textbf{End result.} \textbf{PROVED/EXACT}: full-interface tree composition
+under the certified hypotheses, and the all-child-essential star falsifier for
+per-edge-only accounting.  Exact scope: supplied verified tree, source-once
+scope containment, running intersection, local 2CNF plus affine systems, and
+fully charged complete interfaces.  Both $P=NP$ and $P\ne NP$ remain
+\textbf{OPEN}.
+
+\begin{thebibliography}{9}
+\bibitem{AG} V. Arvind and V. Guruswami,
+``CNF Satisfiability in a Subspace and Related Problems,'' IPEC 2021,
+LIPIcs 214, Article 5, Theorems 2, 17 and 19.
+\url{https://doi.org/10.4230/LIPIcs.IPEC.2021.5}
+\bibitem{Freuder} E. Freuder, ``Complexity of K-Tree Structured Constraint
+Satisfaction Problems,'' AAAI 1990, pp. 4--9.
+\url{https://cdn.aaai.org/AAAI/1990/AAAI90-001.pdf}
+\bibitem{LS} S. Lauritzen and D. Spiegelhalter,
+``Local Computations with Probabilities on Graphical Structures and their
+Application to Expert Systems,'' JRSS B 50 (1988), 157--224.
+\url{https://www.stats.ox.ac.uk/~steffen/papers/LS88.pdf}
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LSPV-5::FULL-INTERFACE-GLUING-REFEREE204
+\end{document}
