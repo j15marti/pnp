@@ -142,8 +142,11 @@ def gaussian(n,rows):
             'peak_basis':peak_basis,'max_indexed_row_bits':n+len(rows)+1}
 
 
-def verify_certificate(n,source,rows,result):
+def verify_certificate(n,source,rows,result,source_offsets=None):
     if not verify_rows(source,rows):return False
+    if source_offsets is not None and any(
+        tuple(r.get("source_byte_offsets",()))!=tuple(source_offsets[i] for i in r["sources"])
+        for r in rows):return False
     if result['status']=='YES':
         w=result['witness_mask']
         if w<0 or w>=1<<n:return False
@@ -169,8 +172,10 @@ def decide(data):
         return {'status':'INVALID','route':'parser'}
     rows=extract(source)
     if rows is None: return {'status':'UNKNOWN','route':'not-pure-quartets','child':data}
+    for row in rows:
+        row["source_byte_offsets"]=tuple(offs[i] for i in row["sources"])
     result=gaussian(n,rows)
-    assert verify_certificate(n,source,rows,result)
+    assert verify_certificate(n,source,rows,result,offs)
     result['route']='authenticated-affine'
     result['rows']=rows
     result['child']=YES_BASE if result['status']=='YES' else NO_BASE
@@ -419,6 +424,12 @@ def test():
     fake=dict(r);fake['equations']=[]
     assert not verify_certificate(n,source,r['rows'],fake)
     stats['forged_certificate_rejected']+=1
+    # Source-byte-offset metadata is explicitly checked against the parsed input.
+    tampered_rows=[dict(row) for row in r['rows']]
+    authentic_offsets=parse(data)[2]
+    tampered_rows[0]['source_byte_offsets']=(-1,)+tuple(tampered_rows[0]['source_byte_offsets'][1:])
+    assert not verify_certificate(n,source,tampered_rows,r,authentic_offsets)
+    stats['forged_source_byte_offset_rejected']+=1
     # ARC220 exact heuristic for L=24 SAT case; skip expensive failed backdoor branching.
     mod=load_arc220()
     if mod is not None:
