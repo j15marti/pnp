@@ -1,0 +1,60 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- root file ClaudeCircuitSAT.tex
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\title{Claude's Circuit-SAT Lower-Bound Ladder (living document)}
+\author{Scheduled hourly routine; edited in place}
+\date{Last updated: 2026-10-29 (run 1)}
+\begin{document}\maketitle
+
+\section*{0. Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here is a lower bound on the \emph{running time} of a Circuit-SAT algorithm.
+So far only (i) exact \emph{circuit-size} data for tiny $n$, and (ii) elementary structural facts, are established.
+Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup and parameters}
+A circuit $C$ has $n$ inputs, $s$ binary gates (basis $B_2$, all 16 two-input functions, so negation is free), hence $w=2s$ gate-input wires.
+CIRCUIT-SAT$[n,s]$: given $C$, decide $\exists x\in\{0,1\}^n: C(x)=1$. Encoded input length $N=\Theta(s\log(n+s))$.
+Candidate parametrized lower bound: $T(n,s)\ge F(n,s)$, to be studied in regimes $s=n^{O(1)}$ (e.g.\ $s=cn$) and $s$ near $n-1$.
+Let $\mathrm{C}(f)$ be the minimum $B_2$ gate count of $f$.
+
+\section{Ladder of exact data (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/mincircuit.py}, BFS over all node sets, complete for $n\le 3$;
+raw data \texttt{mincircuit\_n3.json}. Runs in seconds (well under the 30\,s rule).
+\begin{center}\begin{tabular}{@{}cccl@{}}\toprule
+$n$ & functions & max $\mathrm{C}$ & histogram of $\mathrm{C}$ (value:count)\\\midrule
+1 & 4 & 0 & 0:4\\
+2 & 16 & 1 & 0:6, 1:10\\
+3 & 256 & 4 & 0:8, 1:30, 2:114, 3:80, 4:24\\\bottomrule\end{tabular}\end{center}
+By number of satisfying assignments $k$ (n=3): $k=1$: $\mathrm C=2$ for all 8 (single minterm = AND of literals);
+$k=2$: $1..3$; $k=3$: $2..4$; $k=4$: $0..4$ (parity-like functions are hardest, $\mathrm C=4$).
+The hardest 3-input functions have 4 gates = 8 wires; all functions with unique satisfying point are cheap.
+
+\section{Elementary facts (PROVED/EXACT)}
+\begin{prop}[Connectivity] If $f$ depends on $d$ inputs then every $B_2$ circuit for $f$ has $\ge d-1$ gates ($\ge 2(d-1)$ wires).
+\end{prop}
+\emph{Proof.} Each essential input has a path to the output; the gates form a DAG in which the $d$ essential inputs must be joined into one component; each fan-in-2 gate reduces the component count by at most 1. \qed
+
+\begin{prop}[Minimal unique-SAT instances] The function with exactly one satisfying point on $n$ variables has $\mathrm C=n-1$ (matches data: $n=2,3$: 1, 2).
+\end{prop}
+\emph{Proof.} Upper: AND of $n$ literals. Lower: all $n$ variables essential, apply the Connectivity proposition. \qed
+
+\textbf{Consequence / limitation.} The \emph{cheapest} hard-looking instances (unique solution, $s=n-1$) are trivially solved in time $O(s)$ by reading the AND-tree. A real lower bound must hold for the family of circuits an adversary chooses, so the parameter that matters is the \emph{structure} (not only $s$): instance size $s$ is a lower bound for reading (any algorithm needs $\Omega(s)$ if it must examine every wire, KNOWN/trivial), and the open question is the exponent in $n$.
+
+\section{Black-box barrier (KNOWN THEOREM, FAILED TRANSFER)}
+In the oracle (evaluation-only) model, finding the unique satisfying point of an $n$-variable function needs $2^{n-1}$ expected queries (classically; $\Omega(2^{n/2})$ quantumly, BBBV). This does \emph{not} transfer to white-box Circuit-SAT because an algorithm sees the wires (the AND-tree above is solved in linear time). Any real argument must use circuit structure; relativization-type arguments are therefore insufficient.
+
+\section{Research plan (next runs)}
+\begin{enumerate}
+\item Extend exact $\mathrm C(f)$ to $n=4$ (65536 functions; needs a smarter canonical-form search, chunked runs) and tabulate $\min\mathrm{C}$ by $k$.
+\item Define a \emph{wire-tracking} model: for a circuit built gate-by-gate, record the number of wires that must be ``open'' (fan-out frontier) at each step; relate frontier width $p$ (pathwidth) to SAT time. KNOWN: SAT on circuits of treewidth $p$ is solvable in $2^{O(p)}\cdot s$; a parametrized lower bound candidate is $2^{\Omega(p)}$ under SETH (CONDITIONAL, to be verified from the literature).
+\item Check repo ledger (\texttt{research/agents/claude/world-ledger}, T-PORT, one-tape notes) for transferable barriers; row L13 (Buss--Williams) bounds alternation-trading proofs for SAT time, relevant to what unconditional methods can reach.
+\item Look for an unconditional restricted-model bound (e.g.\ read-once branching/OBDD-style algorithms, resolution/DPLL on structured families) parametrized by $(n,s,p)$.
+\end{enumerate}
+
+\section{Repository check (run 1)}
+Surveyed \texttt{AGENTS.md} and \texttt{research/agents/claude/}. The repo's main spine (ARC/FLMV time--space) is OPEN and does not yet supply a circuit-wire lower bound. No result in it was used here. Nothing here changes any repo claim.
+
+\section{Log}
+\textbf{Run 1 (2026-10-29):} created this document and the $n\le3$ exact table; proved connectivity bound; recorded black-box barrier. No algorithmic lower bound obtained.
+\end{document}
