@@ -1,0 +1,117 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,hyperref,microtype}
+\hypersetup{colorlinks=true,urlcolor=blue,citecolor=blue}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\Ftwo}{\mathbb F_2}
+\title{LSPV-4: Matching-Binary Affine-Arity Firewall\\\large A sharp tractable/hard interface threshold and model-native ledgers}
+\author{Independent resource audit, research note 222}
+\date{29 October 2026, Los Angeles}
+\begin{document}
+\maketitle
+\begin{abstract}
+A proposed adaptive SAT architecture gives inexpensive Gaussian elimination and exact 2SAT but must pay to coordinate their information. We identify a sharp arity threshold: conjunctions of arbitrary 2CNF with affine equations of width at most two are uniformly polynomial-time decidable; allowing odd ternary affine equations makes the joint problem NP-complete even if the non-affine 2CNF primal graph is a \emph{matching} and both separate subsystems are always satisfiable. The reduction is projection-faithful and has a fully physical proper-3CNF compiler. It refutes the proposal that low treewidth of the binary component alone bounds mixed semantic complexity; the relevant equality-quotient graph can have arbitrarily large width. We give a charged positive $2^{O(w)}\mathrm{poly}(N)$ solver parameterized by the quotient graph width using a known treewidth algorithm. All numerical simulations are distinguished from the mathematical proofs and from general SAT lower bounds. $P$ versus $NP$ remains open.
+\end{abstract}
+
+\section{PROPOSE: the present missing bridge}
+The missing lemma is a uniform, polynomial-cost procedure for coordinating affine and binary constraint languages after all reductions and failed adaptive choices are charged. Three falsifiable mechanisms guided this run.
+\begin{description}
+\item[M1, component treewidth.] If the non-affine 2CNF component has treewidth at most one, exact affine--2SAT closure is polynomial without inspecting shared affine equalities. The construction below \emph{falsifies} this unless $P=NP$.
+\item[M2, arity transition.] Width-two affine equations can be eliminated by a signed-equivalence quotient, leaving ordinary 2SAT, whereas width-three XORs can reinstate NP-completeness even if all non-affine edges form a matching. Both claims are proved below.
+\item[M3, corrected parameter.] Treewidth of the interaction graph \emph{after} affine equalities are contracted, rather than the raw binary graph, admits a charged fixed-parameter dynamic program on the construction class. This is established by combining a classical treewidth decomposition algorithm with exact bag states.
+\end{description}
+None of these mechanisms proves a universal SAT successor or a lower bound for all SAT algorithms.
+
+\section{SEARCH: source scope and provenance}
+The NP-completeness seed is Schaefer's positive one-in-three satisfiability relation \cite{schaefer1978}. We separately inspected \texttt{msoos/cryptominisat/src/gaussian.cpp} (blob \texttt{7b9d200c1c1d}), which implements Gaussian handling \emph{inside} a general SAT solver without claiming that mixed XOR+CNF is polynomial; \texttt{networkx/networkx/networkx/algorithms/approximation/treewidth.py} (blob \texttt{ef1b2f7351bd}) explicitly offers minimum-degree/minimum-fill \emph{heuristics}, not exact optimal-width guarantees; and \texttt{uds-psl/coq-library-complexity/theories/NP/SAT/FSAT/FSAT\_to\_SAT.v} (blob \texttt{0c07a44f7a1d}) has explicit reduction-size and reduction-time definitions and theorems. The library was read, not compiled, and does not certify the concrete Turing-machine exponents below \cite{gauss,coq}.
+
+We re-read the source of OpenAI's unitary-synthesis paper, \texttt{build/sections/01-introduction.tex}, at commit \texttt{7ef5c0cc}; its theorem explicitly leaves the target-dependent Boolean oracle unbounded in classical circuit complexity and does not construct it efficiently \cite{openai}. This is architectural inspiration only. The bounded-treewidth constructive side uses the primary $2^{O(w)}n$ constant-factor decomposition theorem of Bodlaender et al. \cite{bdetal}. The pre-existing connected-interface archive was materialized directly from the Library, its \texttt{REPORT.tex}/PDF inspected, and its exact audit reexecuted.
+
+\section{BUILD I: matching non-affine clauses remain NP-hard with XOR3}
+Let $\mathcal H$ be a positive one-in-three instance on $n$ used variables, containing $t$ triples $e_j=(a_j,b_j,c_j)$ of distinct indices. For each triple include the affine row
+\begin{equation}\label{eq:odd}
+ a_j\oplus b_j\oplus c_j=1.
+\end{equation}
+For each of the three unordered pairs $\{u,v\}\subset e_j$ introduce \emph{two private, fresh} variables $p_{j,uv}$ and $q_{j,uv}$, and add
+\begin{equation}\label{eq:copy}
+ p_{j,uv}\oplus u=0,\qquad q_{j,uv}\oplus v=0,\qquad
+ (\neg p_{j,uv}\vee\neg q_{j,uv}).
+\end{equation}
+Call the full mixed system $M(\mathcal H)=A(\mathcal H)\wedge B(\mathcal H)$, where all equations belong to $A$ and the negative 2CNF clauses belong to $B$.
+
+\begin{theorem}[Matching-binary NP-completeness]\label{thm:hard}
+Determining satisfiability of $A\wedge B$ is NP-complete even under all of the following simultaneous restrictions:
+\begin{enumerate}
+\item[] Every affine row has width two with right-hand side zero, or width three with right-hand side one.
+\item[] Every 2CNF clause is negative and uses two private variables; the 2CNF primal graph is a matching (treewidth one).
+\item[] $A$ alone is always satisfiable and $B$ alone is always satisfiable.
+\end{enumerate}
+For every assignment to the $n$ original variables, there is exactly one extension satisfying the affine copy equalities; it satisfies the complete mixed instance if and only if it assigns exactly one true variable to each source triple.
+\end{theorem}
+\begin{proof}
+Each copy equality forces $p_{j,uv}=u$ and $q_{j,uv}=v$. Hence the binary clauses forbid two true variables within each triple. Equation \eqref{eq:odd} requires an odd number of true variables, so the conjunction requires \emph{exactly one}. The copy values are uniquely determined, establishing projection faithfulness and preserving the source model count. The map uses $n+6t$ mixed variables, $7t$ affine rows and $3t$ negative binary clauses. Every binary variable appears in exactly one negative clause, and no core variable appears in $B$, so $G_B$ is a disjoint matching. Setting every variable to one satisfies $A$ (odd ternary parity and equality); setting every variable to zero satisfies $B$. Positive one-in-three SAT is NP-complete by Schaefer \cite{schaefer1978}; this polynomial reduction proves NP-hardness. A full Boolean assignment verifies membership in NP.
+\end{proof}
+
+\begin{corollary}[False parameter]\label{cor:wrongwidth}
+Unless $P=NP$, no unrestricted polynomial-time algorithm for mixed affine+2CNF follows solely from the bound $\operatorname{tw}(G_B)\le1$, even with free Gaussian elimination and free independent 2SAT closure. The vertex-cover parameter of $G_B$ is exactly $3t$, although its treewidth is one.
+\end{corollary}
+\begin{proof}
+The reduction above preserves all hard positive one-in-three instances. A matching with $3t$ edges has minimum vertex cover $3t$; the previous LSPV-4 $2^{O(k)}\mathrm{poly}(N)$ cover solver therefore need not run in polynomial time on these instances. This does not contradict its fixed-parameter guarantee.
+\end{proof}
+
+\section{BUILD II: width-two affine rows are tractable}
+\begin{theorem}[Sharp affine arity-two side]\label{thm:easy}
+An arbitrary conjunction of 2CNF clauses, arbitrary affine unary equations and equations $x_i\oplus x_j=c$ ($c\in\{0,1\}$), with no wider affine equations, is decidable deterministically in polynomial time. No restriction on the 2CNF graph is needed.
+\end{theorem}
+\begin{proof}
+Construct a parity union-find for the affine edges and anchor all unary equations to a special zero vertex. An inconsistent parity cycle yields UNSAT. Otherwise choose one Boolean representative $r_C$ per unanchored component; each old variable has a determined expression $x_i=r_{C(i)}\oplus d_i$, or is fixed if its component contains the zero anchor. Substitute these expressions into every 2CNF clause. Each becomes a tautology, an empty contradiction, a unit literal or a genuine binary clause on representatives. Solve the residual 2SAT instance using the implication graph's strongly connected components. The disjoint-set and SCC operations are polynomial and produce one deterministic program on both answer classes.
+\end{proof}
+\begin{corollary}[Arity-two/three frontier]
+Inside the mixed language, the exact increase from maximum affine arity two to three is sufficient to change the decision problem from polynomial-time solvable to NP-complete, even when the arity-three case has a matching non-affine graph. This is a classical complexity classification for a carefully constrained representation, not a lower bound for general SAT algorithms.
+\end{corollary}
+
+\section{BUILD III: equality quotient repairs the parameter}
+Contract each affine copy equality in \eqref{eq:copy}. The $3t$ matching edges of $G_B$ project onto all pairs within each source triple. Thus the quotient graph is precisely the primal graph $G_{\mathcal H}$, up to duplicate edges. For the Fano hypergraph, every unordered pair belongs to one triple: $G_B$ is a matching of treewidth one, while the quotient is $K_7$ of treewidth six.
+
+\begin{proposition}[Charged quotient-width algorithm]\label{prop:fpt}
+Let $w=\operatorname{tw}(G_{\mathcal H})$ for the mixed instances produced by Theorem \ref{thm:hard}. There is one deterministic algorithm deciding either SAT or UNSAT in $2^{O(w)}\operatorname{poly}(N)$ time and $2^{O(w)}\operatorname{poly}(N)$ peak space, including discovery of a suitable decomposition.
+\end{proposition}
+\begin{proof}
+Reconstruct $G_{\mathcal H}$ by the equality quotient, charging all parsing and union operations. The known decomposition algorithm of Bodlaender et al. \cite{bdetal}, given budget $j$, takes $2^{O(j)}|V|$ time and either proves treewidth $>j$ or outputs a tree decomposition of width at most $5j+4$. Test budgets $j=0,1,\ldots,w$; the geometric sum remains $2^{O(w)}\operatorname{poly}(N)$. Any triple forms a clique in the primal graph and is therefore contained in a decomposition bag. A standard bottom-up dynamic program retains at most $2^{5w+5}$ assignments per bag, rejecting assignments that fail the exact-one constraint associated with that bag and joining consistent overlaps. This decides both labels, charges all bags and joins, and never assumes the decomposition is provided freely. The construction proves tractability for $w=O(\log N)$, not a universal bound on $w$.
+\end{proof}
+
+\section{Physical ordinary-3CNF compilation}
+Compile each odd XOR3 row into the four proper ternary clauses excluding even parity. Compile each binary equation $p\oplus u=0$ into $(\neg p\vee u)\wedge(p\vee\neg u)$. For each width-two clause $(\ell_1\vee\ell_2)$ introduce one fresh padding variable $z$ and print $(\ell_1\vee\ell_2\vee z)\wedge(\ell_1\vee\ell_2\vee\neg z)$. Apply the same padding to all negative matching clauses. Each source triple therefore yields exactly
+\[
+ 4 + 6\cdot(2\cdot2)+3\cdot2=34
+ \quad\text{proper ternary clauses},\qquad
+ 6\cdot2+3=15\quad\text{padding variables}.
+\]
+The total physical target has $n+21t$ variables and $34t$ proper width-three clauses. Under a declared canonical fixed-width identifier format, both input and target have $\Theta(t\log(t+2))$ bit length. Under unpadded decimal printing, both have the corresponding $O(t\log(t+2))$ upper bound, but the constant-size/short-name exceptions must not be suppressed. This compiler is \emph{not} power-short and does not preserve strict signed exact-$(2,2)$ occurrence counts. No unrestricted SAT contraction follows.
+
+\section{Three native resource ledgers and evidence levels}
+Let $N$ denote complete source bits, and count output in visited writable space when materialized. Fixed-$k$ with read-only input and separate work/output tapes can first count and then emit every clause using $O(N\operatorname{polylog}N)$ transitions and $O(N\operatorname{polylog}N)$ visited cells; an explicit finite-tape implementation may use $O(N^2\operatorname{polylog}N)$ time as a conservative ceiling for repeated address scans. A two-tape read-only-input-plus-one-writable implementation has the same conservative $O(N^2\operatorname{polylog}N)$ ceiling; two fully writable tapes can leave input unchanged and emit on tape two, again with the conservative $O(N^2\operatorname{polylog}N)$ bound. Single-tape rescan simulation of a $T_k,S_k$ construction satisfies the project's conservative
+\[
+ T_1=O\!\left(T_k(N+S_k+\log(T_k+2))\right),\qquad
+ P_1=O\!\left(N+S_k+\log(T_k+2)\right).
+\]
+For this fully materializing compiler the bound is $T_1=O(N^2\operatorname{polylog}N)$, $P_1=O(N\operatorname{polylog}N)$ if the more efficient $k$-work-tape implementation is used. The single-tape physical footprint counts the original input. A fixed universal machine has constant program-description overhead and polynomial simulation, but \emph{no particular numerical time-space exponent} has been independently certified here. The parity-two algorithm and quotient-width algorithm additionally charge union-find, decomposition search, unsuccessful budgets, bag-state joins and output parsing. Do not import FLMV/Williams RAM or tape lower bounds across native models.
+
+The dependency-free reproducer exhaustively checked 1,042 small positive one-in-three source families and 190 independently seeded further source families, with 596 SAT and 636 UNSAT across those families. It checked 1,760 mixed affine-width-two plus general-2CNF cases on a separately written parity-DSU/SCC solver, of which 212 were SAT and 1,548 UNSAT. Sixty-six independently selected full 3CNF compilers were checked against all small core assignments. A fixed DPLL codepath decided both SAT and UNSAT 3CNF controls. The seven-triple Fano control produced 49 affine rows, 21 pairwise matching clauses, 49 mixed variables, and a proper 3CNF of 238 clauses on 154 variables; its quotient has width six. All \texttt{87,886} deterministic assertions passed. These are \textbf{COMPUTATIONAL} checks, not formal or kernel-verified proofs.
+
+The directly materialized Library archive \texttt{Connected\_Interface\_Audit.zip} has SHA-256 \texttt{a826f34b4caa3dce1d6a060079316a462b775fe3fb1f14674ab62b2e7299dfff}. Independent execution of its \texttt{audit.py} reproduced \texttt{results.json} byte-for-byte, SHA-256 \texttt{05675f876d6624073507df1e9cedd18a188143db687e454bc2942143d36cbaca}. Its static bound $n\le 3b+12bq$ remains valid only under its exact declared disjoint syntactic modular interface, not as a general SAT runtime lower bound.
+
+\section{Remaining bridge and role-safe handoff}
+The results falsify two proposed shortcuts: literal-only communication between exact affine and exact 2SAT solvers, and using treewidth of the non-affine clauses \emph{before} affine equalities are considered. The proved matching lift is NP-hard but is \emph{not} an exact-$(2,2)$ reduction, not a power-short decision successor, and not a separation of $P$ from $NP$. A constructive proof must find a uniformly computable decision-preserving SAT successor with polynomial complete-state accounting, or another equivalent uniform polynomial solver. A separation must rule out \emph{all} algorithms, including algorithms that choose different adaptive representations on SAT and UNSAT inputs. The next LSPV-4 audit should test how general XOR3 rows induce quotient-width growth under affine preprocessing and whether any state-dependent parameter yields a provably polynomial total descent on arbitrary signed 3SAT.
+
+\begin{thebibliography}{9}
+\bibitem{schaefer1978} T. J. Schaefer, ``The complexity of satisfiability problems,'' \emph{STOC}, pp. 216--226, 1978. DOI: 10.1145/800133.804350.
+\bibitem{bdetal} H. L. Bodlaender, P. G. Drange, M. S. Dregi, F. V. Fomin, D. Lokshtanov, and M. Pilipczuk, ``A $c^kn$ 5-approximation algorithm for treewidth,'' \emph{SIAM Journal on Computing}, 45(2), 317--378, 2016. DOI: 10.1137/130947374.
+\bibitem{gauss} CryptoMiniSat contributors, \texttt{msoos/cryptominisat/src/gaussian.cpp}, GitHub, blob \texttt{7b9d200c1c1d}.
+\bibitem{coq} L. G\"aher and F. Kunze, ``Mechanising complexity theory: the Cook--Levin theorem in Coq,'' \emph{ITP}, 2021. DOI: 10.4230/LIPIcs.ITP.2021.20.
+\bibitem{openai} OpenAI, ``Polynomial-time unitary synthesis from a Boolean oracle,'' GitHub preprint, October 5, 2026, inspected commit \texttt{7ef5c0cc}.
+\end{thebibliography}
+\end{document}
