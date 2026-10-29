@@ -1,0 +1,71 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-29 (run CIRCUITSAT-0001)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\newtheorem{conj}{Conjecture}
+\title{Claude Circuit-SAT Lower-Bound Notebook (living document)}
+\date{Last updated 2026-10-29}
+\begin{document}
+\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. No unconditional super-polynomial
+lower bound for Circuit-SAT is claimed. Status labels: PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Circuit-SAT$(n,s)$: given a Boolean circuit over basis $B_2$ with $n$ inputs and $s$ gates
+(wires $w=2s$ counting fan-in), decide whether some $x\in\{0,1\}^n$ makes it output 1.
+Plan: (i) for each $n$, tabulate the minimum wires $W_n(f)$ needed to build $f$ (the ``building ledger'');
+(ii) turn each ledger level into a lower bound on deciding SAT for circuits of that size;
+(iii) look for a bound that is a function of the pair $(n,s)$, i.e.\ parametrized.
+
+\section{Step ledger (building cost)}
+\begin{center}\begin{tabular}{lcccc}\toprule
+$n$ & functions & max gates $\max_f s(f)$ & max wires & status\\\midrule
+2 & 16 & 1 & 2 & COMPUTATIONAL\\
+3 & 256 & 4 & 8 & COMPUTATIONAL\\
+4 & 65536 & 7 & 14 & KNOWN (Knuth, TAOCP 7.1.2), not recomputed\\
+5 & $2^{32}$ & 12 & 24 & KNOWN (Knuth), not recomputed\\\bottomrule
+\end{tabular}\end{center}
+Cost histogram ($n=3$, gates: number of functions): 0:8, 1:30, 2:114, 3:80, 4:24.
+$\mathrm{AND}_3$ and $\mathrm{XOR}_3$ both cost 2 gates. Code/data:
+\texttt{research/agents/claude/circuitsat/mincircuit.py}, \texttt{result\_n2.json}, \texttt{result\_n3.json}
+(exhaustive iterative BFS over sets of computed truth tables, each run $<30$\,s).
+
+\section{Lower bounds that are actually proved}
+\begin{prop}[connectivity; PROVED, folklore]
+If $f$ depends on all $n$ inputs then every $B_2$ circuit for $f$ has $\ge n-1$ gates, hence $\ge 2(n-1)$ wires.
+Tight for $\mathrm{AND}_n,\mathrm{XOR}_n$ (matches the $n=3$ computation).
+\end{prop}
+\begin{prop}[reading bound; PROVED]
+Any deterministic decider for Circuit-SAT that accesses the circuit description by probes needs $\Omega(s)$ probes.
+\end{prop}
+\emph{Proof.} Take the chain $g_i=g_{i-1}\wedge x_i$, output $g_n$ (satisfiable). Replacing any one gate by
+$x_i\wedge\neg x_i$ makes it unsatisfiable, so an algorithm skipping a gate description errs on one of the two instances. \qed
+\begin{prop}[black-box bound; PROVED, model-limited]
+If the circuit is accessible only by evaluation queries, deciding SAT needs $2^n$ queries (adversary answers 0 until one point remains).
+\end{prop}
+These are trivial: $\Omega(s)$ and $2^n$ in incomparable models. Closing the gap, i.e.\ a bound like $2^{\epsilon n}$ for
+algorithms that may \emph{inspect} the circuit, is the open content of P vs NP.
+
+\section{Parametrized targets}
+\begin{conj}[SETH-type; CONDITIONAL, not proved]
+For every $\epsilon>0$ no algorithm solves Circuit-SAT$(n,s)$ in time $2^{(1-\epsilon)n}\mathrm{poly}(s)$.
+\end{conj}
+Unconditional parametrized statements to pursue (all OPEN): (a) time $\ge s^{1+\delta}$ for $n=\omega(\log s)$;
+(b) restricted wire models, e.g.\ fan-out~1 (formulas), bounded depth, bounded treewidth of the wire graph,
+where Circuit-SAT is FPT in treewidth ($2^{O(\mathrm{tw})}\mathrm{poly}(s)$), so any lower bound must be in
+terms of $\mathrm{tw}$ versus $n$; (c) a wire-by-wire potential: track the minimum cut of the wire graph per ledger level.
+\paragraph{Repository link.} The project's TPORT/ONETAPE notes
+(\texttt{research/agents/claude/2026-10-28\_1326\_CLAUDE\_TPORT-0001.tex}) show alternation-trading style proofs
+hit barriers near linear time with random access; the Buss--Williams result limits time--space routes. These bear on (a)
+and suggest the wire-cut potential (c) as the independent direction.
+
+\section{Next steps (log)}
+\begin{enumerate}
+\item Recompute $n=4$ exactly (needs a smarter method than set-BFS, e.g.\ SAT-based synthesis, chunked by cost level).
+\item Compute wire-graph minimum cuts of optimal circuits for $n\le 4$ and test whether they grow with $n$ for the hard functions.
+\item Check whether a treewidth-parametrized bound is derivable from the repository's known barrier results.
+\end{enumerate}
+
+\section*{Run log}
+2026-10-29 CIRCUITSAT-0001: document created; $n=2,3$ ledger computed; Props 1--3 recorded; no new open result.
+\end{document}
