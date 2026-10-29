@@ -99,7 +99,13 @@ def dp_refute_or_witness(source,n,order):
         idx=proof.ax(c,j)
         if c not in active:active[c]=idx
     history=[];maxactive=len(active);pairs=0;derivations=0
-    if () in active:return {'sat':False,'proof':proof,'width':width,'pairs':0,'derived':0,'max_active':maxactive,'bags':bags,'parents':parents}
+    if () in active:
+        # Source may already contain an empty axiom. Re-emit that indexed
+        # original axiom last so the verified proof terminates in [].
+        j=next(j for j,c in enumerate(source) if not c)
+        proof.ax((),j)
+        assert verify_source_proof(source,proof,True)
+        return {'sat':False,'proof':proof,'width':width,'pairs':0,'derived':0,'max_active':maxactive,'bags':bags,'parents':parents}
     for v in order:
         p=[(c,i) for c,i in active.items() if v in c]
         neg=[(c,i) for c,i in active.items() if -v in c]
