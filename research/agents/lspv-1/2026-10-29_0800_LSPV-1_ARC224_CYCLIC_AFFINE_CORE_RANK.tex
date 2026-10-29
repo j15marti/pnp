@@ -1,0 +1,88 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\title{ARC224: A Basis-Invariant Cyclic-Affine-Core Parameter for Source-Authenticated XOR3--2CNF}
+\author{LSPV-1 Formal Proof Lead}
+\date{29 October 2026}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/RESTRICTED (independent referee pending).}
+Finite tests are COMPUTATIONAL, not proof-assistant verification.
+Universal contraction, unrestricted separation and P versus NP are OPEN.
+
+\section{PROPOSE: precise missing arrow}
+ARC223 solves authenticated XOR3 plus 2CNF when distinct affine forms observed by binary clauses are independent. Here the question is whether the \emph{dimension of their dependent core}, rather than the number of dependent forms or the total affine nullity, controls a fully paid SAT/UNSAT solver. Four falsifiable mechanisms are posed: (M1) cyclic-core dimension may depend on an uncomputable basis choice; (M2) enumeration of only cyclic coordinates may reduce every residual leaf to 2SAT; (M3) many dependent forms and large treewidth may force exponential time even with logarithmic cyclic core; (M4) the method may cover arbitrary SAT with logarithmic cyclic core. M1 and M2 are resolved positively below; M3 is falsified as a general inference by a tractable high-width family; M4 remains false as a coverage assertion since a standard general-3SAT mixed reduction has cyclic core $2m$ for $m$ clauses. No general runtime lower bound follows.
+
+\section{SEARCH: independently inspected sources}
+Queries included \texttt{2SAT XOR gaussian elimination}, \texttt{parity constrained 2-SAT}, \texttt{2sat parity algorithm satisfying assignments even odd}.
+Inspected actual sources and Git object blobs:
+\texttt{msoos/cryptominisat/src/gaussian.cpp}, SHA \texttt{7b9d200c1c1d8e344ce0c3109bfc92806a14359b};
+\texttt{GrigoryEvko/FX/lean-fx-3/FX1Poly/ComputerAlgebra/Decision/SchaeferDichotomy.lean}, SHA \texttt{c3ce4b909ee2971eddd5a83a1fb75dd613c73881};
+\texttt{j15marti/pnp/research/agents/lspv-2/2026-10-24\_1912\_LSPV-2\_SCC\_ODD\_ORBIT120.tex}, SHA \texttt{fb8256f6045390a03d4071b1726427c9fe307ada};
+\texttt{j15marti/pnp/research/agents/lspv-4/2026-10-29\_0436\_LSPV-4\_MIXED\_XOR\_2SAT\_FANO\_BARRIER221.tex}, SHA \texttt{6dbc2ebc9178370687f2c4a55540efe1a648a313};
+\texttt{openai/math/preprints/Polynomial-Time-Unitary-Synthesis-from-a-Boolean-Oracle-October-5-2026/build/sections/06-recursion.tex}, SHA \texttt{65bf0450f460311b13a11a136db6ada4520cb6f0}.
+The Lean source was read but no proof-assistant kernel run occurred. The OpenAI construction uses a target-dependent Boolean oracle; a one-call quantum recursion does not establish a polynomial classical SAT compressor. CryptoMiniSat's integrated Gaussian reasoning is not a polynomial general-mixed-class guarantee.
+
+\section{Exact source grammar and invariant}
+Inputs are complete four-clause signed XOR3 quartets (each quartet encoding a ternary parity equation) together with arbitrary unary and binary clauses. Other source clauses make the deterministic recognizer return UNKNOWN. The quartet rows define $Ax=d$ over $\mathbb F_2$. An inconsistent affine system has a checkable source-indexed XOR row-combination certificate.
+
+On a consistent system, Gaussian elimination constructs
+\[
+x_i=c_i+\langle v_i,t\rangle,\quad t\in\mathbb F_2^r.
+\]
+Let $D$ be the \emph{set of distinct nonzero} coefficient vectors $v_i$ for variables mentioned by the unary/binary clauses. Let $\rho=\operatorname{rank}(D)$. A \emph{coloop} is an element $v\in D$ that is outside the span of $D\setminus\{v\}$; let $c$ be their number. Define the instance invariant
+\[
+\boxed{h=\rho-c.}
+\]
+Explicit Gaussian rank tests identify all coloops in deterministic polynomial bit time.
+
+\begin{lemma}[Basis-invariant coloop firewall]
+For every basis $B\subseteq D$, all $c$ coloops are members of $B$, and every nonbasis element of $D$ has coefficient zero on each coloop in its unique expansion in $B$. The number of basis coordinates appearing in some fundamental dependency circuit is therefore exactly $h=\rho-c$, irrespective of the basis.
+\end{lemma}
+\begin{proof}
+If $b$ is a coloop, no subset of $D\setminus\{b\}$ spans $b$, so every basis contains $b$. If an element $v\in D\setminus B$ had coefficient one on coloop $b$ in its expansion, exchanging $b$ for $v$ would give a basis without $b$, contradiction. Conversely, a non-coloop $b\in B$ has a basis-exchange witness $v\in D\setminus B$ whose expansion contains $b$. Exactly the non-coloop basis coordinates participate, giving $\rho-c$.
+\end{proof}
+
+\begin{theorem}[Paid SAT/UNSAT decision with cyclic core]
+For this precise encoded mixed class, one fixed, uniform deterministic program either identifies invalid grammar, or decides SAT versus UNSAT with complete source-indexed certificates within $2^h\operatorname{poly}(N)$ bit time, including parsing, affine row provenance, rank tests, all unsuccessful branches, 2SAT implication checks, witness reconstruction, certificate validation and full physical output. For $h\le\lfloor\log_2 N\rfloor$, this is polynomial time on both answer classes. The algorithm does not require an answer-class bit.
+\end{theorem}
+\begin{proof}
+Take any deterministic basis $B$ of observed forms. Separate its $h$ non-coloop coordinates $u$ and $c$ coloop coordinates $w$. By basis independence, each $(u,w)$ extends to an affine parameter vector $t$. Enumerate all $2^h$ assignments to $u$. Every observed form that is not a coloop then becomes a constant, by the lemma; each coloop form becomes one $w$ coordinate. Thus all original unary and binary constraints reduce to ordinary 2CNF constraints in $w$ (possibly constant clauses). Solve each leaf by implication SCC. If a leaf is SAT, obtain $w$, back-substitute for $t$, reconstruct $x$ and verify the original clauses. If no leaf is SAT, each leaf has a checkable contradictory pair of implication paths (or an empty reduced clause); every $u$ is covered, proving UNSAT. The verifier reconstructs each authenticated quartet, the deterministic basis and every leaf substitution, checks all implication edges against their source clauses, and checks enumeration completeness. Every step, including all failed leaves and proof bytes, costs at most $2^h\operatorname{poly}(N)$.
+\end{proof}
+
+\paragraph{Restricted one-child contraction.} The program outputs a fixed directly decided YES or NO base formula of respectively 14 or 19 physical bytes after a recognized decision, and returns UNKNOWN on unrecognized or $h>\lfloor\log_2 N\rfloor$ input. For $N\ge512$, each terminal child obeys $|K(F)|\le N^{3/4}$. The theorem is \emph{only} for the recognized closed class; it does not give an all-input SAT shrinker.
+
+\section{Hostile constructive family}
+Fix $h\ge3$ and $L\ge2$. Use free core variables $a_1,\dots,a_h$ and, for every nonempty subset $S$ of size at least two, affine XOR3 chains computing $y_S=\bigoplus_{i\in S}a_i$. Also use an $L\times L$ grid with independent observed variables $p_v$ and private $q_v,r_v$, constrained by complete XOR3 quartets $p_v\oplus q_v\oplus r_v=0$. Add grid-edge binary clauses $(p_v\vee p_w)$, binary clauses $(a_i\vee p_0)$ and $(y_S\vee p_0)$. An UNSAT control additionally includes units $\neg a_1,\neg a_2,y_{\{1,2\}}$. The other control is SAT with all $a_i=0$, all $p_v=1$ and consistent private auxiliaries.
+
+\begin{proposition}[High width and dependence, polynomial cyclic core]
+The family is connected, has primal treewidth at least $L$, and any syntactic strong 2CNF backdoor has cardinality at least $L^2$, since $L^2$ pairwise variable-disjoint XOR3 triples each require a hitting variable. The observed forms comprise all nonzero core vectors plus $L^2$ independent grid coloops, giving
+\[
+\rho=h+L^2,\qquad c=L^2,\qquad h(F)=h,\qquad
+|D|-\rho=2^h-h-1.
+\]
+With $L=2^h$, its unpadded canonical encoding has $N=\Theta(4^h h)$, so $h=\Theta(\log N)$ and the dependence excess is $\Theta(\sqrt{N/\log N})$. Both SAT/UNSAT controls are decided in polynomial time despite large structural width and many binary exceptions.
+\end{proposition}
+This is a restricted artificial family, not strict signed exact-$(2,2)$ occurrence SAT, and it establishes no arbitrary-algorithm runtime lower bound.
+
+\section{Independent archive audit and executable controls}
+The previously authenticated October 28 \texttt{Connected\_Interface\_Audit.zip} was recovered from the ARC215 bundle, not freshly materialized from its Library ID this run; original source \texttt{REPORT.tex}, \texttt{audit.py}, \texttt{results.json} were inspected. SHA256 of archive:
+\texttt{a826f34b4caa3dce1d6a060079316a462b775fe3fb1f14674ab62b2e7299dfff}.
+Re-running \texttt{audit.py} reproduced \emph{byte-identical} JSON: 4,680 boundary subsets, 7,191 local-discovery checks, and 139 SAT comparisons. The exact connected static-modular bound $n\le3b+12bq$ follows from $3m=4n$, $k\le4b$, and a clause-hitting set. This is architectural coverage, not a runtime bound.
+The self-contained Python audit (preserved in the accompanying reproducibility bundle) passed 240 randomized brute-force SAT/UNSAT comparisons (112 SAT, 128 UNSAT), 240 independent coloop checks, 16 local quartet truth values and 131 forged-proof rejections. In the dense-core $L=24,h=7$ UNSAT control, $N=69{,}450$ bytes, $2{,}056$ variables, 897 authenticated XOR3 equations, 1,234 binary/unit clauses, 120 dependent-form excess and 128 certified UNSAT leaves. These are computational, not kernel checks.
+
+\section{Model-native ledger, dependency chain and OPEN arrows}
+\textbf{Indexed RAM}: explicit GF(2) vectors, each lookup, branch, SCC, proof and failed trial are paid, total $2^h\operatorname{poly}(N)$ bit operations, polynomial working storage (potentially $2^h\operatorname{poly}(N)$ if all certificates are retained). \textbf{Read-only-input multitape}: repeated sequential input scans and tape transport introduce polynomial overhead, counted separately. \textbf{One writable single tape}: input occupies footprint, every head transition and write is charged; a conservative simulation has $t_1\le t_2+\max(1,s_2)$ up to logarithmic factors, but no lower bound is inferred. \textbf{Fixed universal interpreter}: one input-independent solver program, with charged decoding, interpretation and head movement. The SAT and UNSAT sides are restrictions of the same machine, not independent solvers handed their labels.
+
+\textbf{Constructive OPEN}: for arbitrary SAT, find an unconditional uniform, fully charged answer-preserving single child of $N^\lambda$ encoded bits, fixed $0<\lambda<1$, recursively closed, or polynomial-value rank descent. An arbitrary mixed 3SAT reduction has $h$ proportional to source clauses, so this theorem supplies no general polynomial bound.
+\textbf{Separation OPEN}: no same-machine, all-input contradiction from FLMV or any restricted tape crossing bound. LSPV-2 should test source-preserving compilation; LSPV-3 moving semantic-interface composition; LSPV-4 native model accounting; LSPV-5 independent proof/certificate referee; LSPV-1 retains the formal dependency graph. No role assignments or schedules changed.
+
+\begin{thebibliography}{4}
+\bibitem{brakensiek} J. Brakensiek, S. Gopi, V. Guruswami, \emph{Constraint Satisfaction Problems with Global Modular Constraints}, SIAM J. Comput. 51(3), 2022, doi:10.1137/19M1291054.
+\bibitem{gwynne} M. Gwynne, O. Kullmann, \emph{A Framework for Good SAT Translations, with Applications to CNF Representations of XOR Constraints}, arXiv:1406.7398.
+\bibitem{schaefer} T. Schaefer, \emph{The Complexity of Satisfiability Problems}, STOC 1978.
+\bibitem{stroeks} M. Stroeks, B. Terhal, \emph{Complexity of Fermionic 2-SAT}, arXiv:2412.06383.
+\end{thebibliography}
+\end{document}
