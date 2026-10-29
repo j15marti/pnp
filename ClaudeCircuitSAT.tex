@@ -1,0 +1,84 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append/revise in place; run log at the end.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}\newtheorem{claim}{Claim}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{Lower bounds for \CSAT{}: a wire-by-wire ladder}
+\author{Claude (scheduled hourly routine)}
+\date{Living document; created 2026-10-29}
+\begin{document}\maketitle
+
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial lower bound for \CSAT{}.
+Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and method}
+Goal: a lower bound for \CSAT{}, possibly parametrized. Method: climb a ladder of instance families
+$\mathcal F_{n,m}$ ($n$ inputs, $m$ gates, $w$ wires, fan-in $\le 2$ over the basis $B_2$), at each rung recording
+(i) the minimum number of gates/wires a circuit in the family must have, and (ii) the best provable bound on the
+cost of deciding satisfiability in a fixed model. Parameters tracked: $n$, $m$, $w$, fan-out $k$, depth $d$, treewidth $\mathrm{tw}$.
+
+\section{Rung 0: one gate, two inputs (COMPUTATIONAL)}
+Script: \verb|research/agents/claude/circuitsat/exact_min.py| (exhaustive search over gate sequences, all functions, $n\le3$).
+Number of $n$-input functions whose minimum $B_2$ circuit has exactly $g$ gates (inputs and negated inputs/constants cost 0):
+\begin{center}\begin{tabular}{lccccc}\toprule
+$n$ & $g=0$ & 1 & 2 & 3 & 4\\\midrule
+2 & 6 & 10 & -- & -- & -- \\
+3 & 8 & 30 & 114 & 80 & 24 \\\bottomrule\end{tabular}\end{center}
+Row sums are $16$ and $256$. So the hardest 3-input function needs 4 gates (8 wires at fan-in 2, counting every gate input).
+This is a sanity table, not a lower bound for SAT: with $n$ constant, \CSAT{} is trivial.
+
+\section{Rung 1: unique-solution circuits and the wire bound (PROVED/EXACT)}
+\begin{lemma}\label{lem:and}
+Let $C$ be a fan-in-2 circuit with $n$ inputs, all relevant to the output (the output is not constant in any input).
+Then $C$ has at least $n-1$ gates and at least $2(n-1)$ gate-input wires; equality holds for the AND of $n$ literals.
+\end{lemma}
+\begin{proof}
+Relevant inputs must be connected to the output; the underlying graph restricted to the output's cone is connected, with $n$ source
+nodes and $g$ gates of in-degree $\le2$, so edges $e\le 2g$, and connectivity of $n+g$ nodes needs $e\ge n+g-1$. Hence $2g\ge n+g-1$, i.e.\ $g\ge n-1$,
+and $e\ge n+g-1\ge 2n-2$. The balanced AND tree attains it.
+\end{proof}
+The AND of $n$ literals has exactly one satisfying assignment, so this is the smallest nontrivial unique-\CSAT{} rung: $m=n-1$, $w=2(n-1)$.
+
+\begin{theorem}[Wire-reading bound]\label{thm:read}
+In the adjacency-list model (the algorithm reads the circuit by probes of single wires/gate types), any deterministic algorithm deciding \CSAT{} on
+circuits with $w$ wires makes $\Omega(w)$ probes, even restricted to AND-trees of literals.
+\end{theorem}
+\begin{proof}
+Take $n/2$ variables, each appearing positively at exactly two leaves of an AND-tree; the instance is satisfiable. Flipping the polarity of any single
+leaf makes it unsatisfiable ($x\wedge\neg x$). There are $n$ such unsatisfiable neighbours. A deterministic algorithm that never probes leaf $j$'s polarity behaves
+identically on the base instance and on the instance with leaf $j$ flipped, so it errs on one of them. Hence it probes every leaf: $\ge n=\Theta(w)$ probes.
+\end{proof}
+\emph{Caveat.} This is an information bound (input must be read), not a computational lower bound; it is the $\Theta(w)$ floor of the ladder.
+
+\section{Rung 2: parametrized picture}
+\begin{center}\begin{tabular}{lll}\toprule
+Parameter & Upper bound & Lower bound\\\midrule
+$m$ (size) & $2^n\cdot m$ brute force & $\Omega(m)$ read (Thm.~\ref{thm:read}), PROVED\\
+treewidth $\mathrm{tw}$ & $2^{O(\mathrm{tw})}m$ by DP over a tree decomposition (KNOWN) & $(2-\epsilon)^{\mathrm{tw}}\mathrm{poly}$ excluded under SETH (CONDITIONAL; cited from memory for CNF-SAT, to re-verify)\\
+$n$ (inputs) & $2^n m$ & $2^{o(n)}$ excluded under ETH (CONDITIONAL)\\\bottomrule\end{tabular}\end{center}
+Unconditional circuit-size lower bounds for explicit functions are only linear: roughly $3.1n$ over $B_2$ (Li--Yang, 2022; KNOWN THEOREM, verify exact constant).
+So an unconditional parametrized lower bound of the form $2^{\Omega(\mathrm{tw})}$ or $\omega(m)$ time for \CSAT{} is OPEN.
+
+\section{Connections to the repository}
+\begin{itemize}
+\item Ledger \texttt{research/agents/claude/world-ledger/} (rows L13, L34--L40): Buss--Williams alternation-trading barrier (time exponent $2\cos(\pi/7)$ with $n^{o(1)}$ space)
+bounds what time--space methods can say about SAT; \CSAT{} is at least as hard as SAT, so these barriers apply to proofs of this document's type if they use alternation trading.
+\item \texttt{tport/}: portfolio barrier (random access vs.\ sequential access); relevant when asking whether a lower bound for one \CSAT{} family transfers to a portfolio of algorithms.
+\item Repository project is an ARC/FLMV time--space contraction effort (AGENTS.md, 2026-10-24 23:46 allocation); this routine is a separate, additive thread and changes no allocation.
+\end{itemize}
+
+\section{Next rungs (plan)}
+\begin{enumerate}
+\item Rung 3: all functions with $n=4$ (65536); compute exact minimum gates via SAT-based exact synthesis or canonical-class enumeration (222 NPN classes) and record gate/wire counts.
+\item Rung 4: define the \emph{certificate-wire} measure: minimum number of wires an algorithm must expand to refute satisfiability, for hard tiny families (pigeonhole circuits $\mathrm{PHP}^{n+1}_n$): connect to resolution/Frege lower bounds as a proof-system (not general algorithm) bound.
+\item Rung 5: restricted-model lower bounds that \emph{are} unconditional: read-once branching programs / OBDD-based \CSAT{} solvers for treewidth-$k$ circuits; compare with the $2^{\mathrm{tw}}$ DP.
+\item Audit relativization, natural proofs, and algebrization for each candidate bound before claiming it as more than a restricted-model result.
+\end{enumerate}
+
+\section{Run log}
+\begin{description}
+\item[2026-10-29 15:49 UTC] Document created. No prior ClaudeCircuitSAT.tex existed. Added Rung 0 computation ($n\le3$), Lemma~\ref{lem:and}, Thm.~\ref{thm:read}, parameter table, repo links. Repo scan limited to the \texttt{research/agents/claude} area and keyword search; full AGENTS.md corpus-reconciliation protocol (aimed at LSPV roles) not applied to this separate thread.
+\end{description}
+\end{document}
