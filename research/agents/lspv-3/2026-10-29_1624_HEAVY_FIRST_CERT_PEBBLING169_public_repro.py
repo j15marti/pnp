@@ -13,8 +13,9 @@ def shape(name, m):
         return (None, shape(name, m-2))
     if name == "balanced":
         if m == 1: return None
-        a = (m - 1) // 2
-        return (shape(name, a), shape(name, a))
+        a = 2 * (((m - 1) // 2) // 2) + 1
+        b = m - 1 - a
+        return (shape(name, a), shape(name, b))
     raise ValueError(name)
 
 def size(node):
@@ -39,7 +40,9 @@ def run():
             if name == "comb" and m >= 3:
                 assert l == (m + 1) // 2 and h == 2
             if name == "balanced":
-                assert h == m.bit_length()
+                assert h <= m.bit_length()
+                if (m & (m+1)) == 0:
+                    assert h == m.bit_length()
             rows.append(dict(shape=name, modules=m, left_tables=l, heavy_tables=h,
                              table_bits_heavy_w4=h * 16))
     assert registers(shape("comb", 5), False) == 3
