@@ -11,7 +11,7 @@ M1: core size basis-dependent, FALSIFIED via exact coloop lemma. M2: dependent f
 
 Connected family has all nonzero core forms on a_1,...,a_h and L^2 independent grid-coloop forms, rank rho=h+L², c=L², dependence excess 2^h-h-1, treewidth >=L, syntactic strong 2CNF-backdoor >=L². For L=2^h unpadded N=Theta(4^h h), h=Theta(log N), excess Theta(sqrt(N/log N)). Separate SAT control and UNSAT pinned control. Not strict exact-(2,2).
 
-Executable 240 randomized brute-force comparisons: 112 SAT, 128 UNSAT; 240 independent coloop comparisons; 16 complete quartet truth cases; 131 forged certificate rejections; grid and dense-core tests. L=24, h=7 UNSAT: 69,450 physical bytes, 2,056 variables, 897 XOR equations, 1,234 other clauses, 128 negative leaves, h=7, dependence excess 120.
+Executable 240 randomized brute-force comparisons: 112 SAT, 128 UNSAT; 240 independent coloop comparisons; 16 complete quartet truth cases; 132 forged certificate rejections; grid and dense-core tests. L=24, h=7 UNSAT: 69,450 physical bytes, 2,056 variables, 897 XOR equations, 1,234 other clauses, 128 negative leaves, h=7, dependence excess 120.
 
 ## Independent archival source verification
 Previously authenticated Connected_Interface_Audit.zip recovered from ARC215 archive (not freshly materialized from exact Library ID this run), SHA256 a826f34b4caa3dce1d6a060079316a462b775fe3fb1f14674ab62b2e7299dfff. Original REPORT.tex/audit.py/results.json inspected, and audit reexecuted with byte-identical output SHA256 05675f876d6624073507df1e9cedd18a188143db687e454bc2942143d36cbaca: 4,680 boundary, 7,191 discovery, 139 brute-force checks. Its static n<=3b+12bq bound is architectural, not a runtime lower bound.
