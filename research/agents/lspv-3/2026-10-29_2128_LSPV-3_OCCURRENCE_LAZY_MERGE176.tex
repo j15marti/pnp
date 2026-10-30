@@ -1,0 +1,71 @@
+% LSPV-3 REPORT::OCCURRENCE-LAZY-MERGE176::2026-10-29T21:28:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\title{OCCURRENCE-LAZY-MERGE176: Lazy Source-Authenticated First-Round Resolution and Distinct-Cube Overlap}
+\author{LSPV-3, Adaptive Certificate Theorems / Resource Accounting}
+\date{29 October 2026, 21:28 PDT}
+\begin{document}\maketitle
+\noindent \textbf{PROVED/EXACT in the stated restricted model; independent referee pending.} A uniform streaming algorithm exactly simulates the unit-propagation closure of all first-round non-tautological source resolvents without storing the resolvent table. A connected proper width-three family exhibits quadratically many \emph{distinct} overlapping merge resolvents whose naive additive forbidden weight is unbounded but whose exact union density is below one-half. These are restricted results. Both $P=NP$ and $P\ne NP$ are \textbf{OPEN}.
+\section{User-directed primitives and falsifiable target}
+Let $F=\bigwedge_{j=1}^m C_j$ be a proper width-at-most-$k$ CNF with $n$ variables and physical source length $N$. An occurrence $x_{i,j}$ is the indexed occurrence of $x_i$ in source $C_j$, not a fresh independent variable. Its sign $\sigma_{ij}=\pm1$, preferred satisfying value $b_{ij}=(1+\sigma_{ij})/2$, and partial truth status $\{\mathrm{T},\mathrm{F},\bot\}$ are tracked independently of clause index. For proper ternary source, $N_h(a)$ counts clauses with $h$ satisfied literal occurrences, $0\le h\le3$. Complete complementation gives $N_h(\bar a)=N_{3-h}(a)$, $E=N_0+N_3$ invariant and $D=N_3-N_0$ antisymmetric. These are diagnostics, not oracles. Exact source clause equity is $Q_j(F)=|\{a:a\models F\setminus\{C_j\},\,a\not\models C_j\}|$, computed by exhaustive truth tables only on tiny controls. The operational target is an exact source-authenticated UP closure for a specified \emph{partial assignment}, with discovery and storage charged.
+
+An opposite-sign source pair $C_j=(x\lor A)$, $C_h=(\neg x\lor B)$ has non-tautological resolvent $R=A\lor B$ unless $A\cup B$ contains opposite signed literals. Every completion falsifying $R$ violates one retained parent, so the entire corresponding partial cube is certified impossible. There are at most $P=\sum_xd_x^+d_x^-\le(mk)^2/4$ raw pairs and non-tautological resolvents have width at most $2k-2$. The theorem below handles these first-generation resolvents only, not exponential iterated resolution or SAT search.
+
+\section{Exact no-table UP theorem}
+\begin{theorem}[Streaming first-generation resolution closure]\label{th:stream}
+For every proper width-$k$ source $F$ and partial assignment $p$, let $\mathcal R_1$ be the full multiset of non-tautological one-step resolvents of pairs of retained source clauses. A deterministic indexed-RAM procedure using $O(\log N)$-bit words produces exactly the conflict/nonconflict result, and in a nonconflicting case the entire forced-literal set, of fully saturated UP on $(F\land\bigwedge_{R\in\mathcal R_1}R)|_p$. It outputs checkable source-parent/pivot provenance for its new inferences, materializes no persistent resolvent table, and has the conservative charged upper bound
+\[
+T=O(N+(n+1)^2mk+(n+1)Pk^2),\qquad
+S=O(N+(mk+nk)\log N)\ {\rm bits}.
+\]
+This is an upper bound on \emph{one UP closure}, not a polynomial general-SAT algorithm or a lower bound on all algorithms.
+\end{theorem}
+\begin{proof}
+Fully saturate UP on the source $F$ under the current partial assignment. If it conflicts, terminate. Otherwise consider the conflict-free fixed point $s$. A non-tautological source resolvent $R=A\lor B$ cannot be false at $s$, since its two parents would force opposite values of the pivot. Suppose $R$ is unit with only $\ell$ unset. If $\ell$ occurs only in $A$, then all of $B$ is false, forcing $\neg x$ (or a conflict) by the second parent; then the first parent forces $\ell$, contradicting source saturation. The symmetric case is identical. Thus any new unit $R$ must have $\ell$ in both parents with the same sign (a \emph{merge}). The pivot must remain unset at $s$. Scan indexed opposite parent pairs on demand, reject tautological pairs, and on finding such a unit merge $R$ record $(j,h,x,\ell)$ plus the false nonpivot literals, assign $\ell$, and resaturate source UP. If all original clauses are already satisfied, every logical consequence is satisfied, so terminate. Repeat until no such unit pair exists or conflict occurs.
+
+Each fired merge sets a previously unset variable, so at most $n$ firings occur. Every move is a valid UP step of the eager system. At nonconflicting termination no source clause or resolvent is unit or false; hence the state is a fixed point of eager UP. Monotonicity and least-fixed-point uniqueness give exactly the eager closure, and reachability of a contradiction agrees. Source indexing costs $O(mk)$ per scan; at most $n+1$ source saturations of $O((n+1)mk)$ scans and $n+1$ candidate scans of $O(Pk^2)$ each give the stated bound. Only source, occurrence lists, partial values and $O(n)$ parent-authenticated proof records persist.
+\end{proof}
+\paragraph{Machine ledger.}
+All indexing, failed comparisons, canonicalization, source clause scans, source satisfaction tests, forced writes, optional memo entries, and witness checks are charged. The Python implementation additionally records a labeled \emph{selected-work proxy}, measured elapsed time and simultaneous \texttt{tracemalloc} peak; the proxy does not count every interpreter/hash allocation and is not an exact Turing-machine runtime. On a sequential single tape, scanning the stored work region for each abstract RAM operation gives a conservative polynomial upper simulation for physical moves/head crossings; no tape-model lower bound transfers. Cumulative RAM bit changes are bounded by charged writes times word width; communication rounds are zero for this local procedure. For $F=A(X,Y)\land B(X,Z)$, the entire original indexed source is legally retained ($L=\Theta(N)$), $P_{\rm construction}$ includes occurrence-index construction, and $Q$ here is a single residual-UP query. Detached all-context summaries remain a separate open obligation.
+
+\section{Distinct-cube grid: proven unbounded score overlap}
+\begin{theorem}[Grid family]\label{th:grid}
+For integers $r,s\ge1$, define the connected proper width-three source
+\[
+G_{r,s}=\bigwedge_{i=1}^r(x\lor a\lor u_i)\ \land\
+\bigwedge_{j=1}^s(\neg x\lor a\lor v_j).
+\]
+It is not strict signed exact-$(2,2)$. Its exactly $rs$ opposing-source pairs produce exactly $rs$ \emph{distinct}, non-tautological merge resolvents $R_{ij}=a\lor u_i\lor v_j$. Naively adding their individual uniform forbidden cube weights gives $rs/8$, whereas the exact union density is
+\[
+\tfrac12(1-2^{-r})(1-2^{-s})<\tfrac12.
+\]
+Each positive original clause has exact clause equity $Q_i=2^s$, and each negative original clause $Q_j=2^r$. Under partial $u_i=v_j=0$, with $x,a$ unset, original saturated UP forces neither $a$ nor $x$, but one source-certified $R_{ij}$ forces $a=1$.
+\end{theorem}
+\begin{proof}
+Only pivot $x$ has both signs, and every $(i,j)$ gives the different clause shown. A resolvent is false exactly when $a=0$, $u_i=0$ and $v_j=0$. Their union requires $a=0$, some zero $u_i$, some zero $v_j$, proving the density formula. The summed weight $rs/8$ diverges along $r=s$ while the exact union stays below $1/2$, even after deduplicating resolvents. For positive clause $i$, the only assignment satisfying all other source clauses while violating it has $x=a=u_i=0$, $u_h=1$ for $h\ne i$ and all $v_j$ free, giving $Q_i=2^s$; the other side is symmetric. On the specified prefix the remaining source consists of copies of $(x\lor a)$ and $(\neg x\lor a)$ with no units. Each $R_{ij}$ becomes the unit $a$. Finally, a learned-clause forbidden full-assignment cube is contained in the \emph{original} source forbidden full-assignment union, so the latter's saturated coverage potential cannot pay any sound learning step.
+\end{proof}
+For a declared partial source-UP state $s$, the independently defined count $\Phi_{\rm unset}(s)$ of still-unset variables drops by one on this inference, so $(a=1)\mid_{v_\Phi=1}$. Its separate acquisition, verification and application cost $C_s$ may dominate this useful potential decrease; duplicate and expensive steps may have zero marginal or negative net value. An exact union of full forbidden assignments gives marginal zero relative to the original source. Contextual values and correlated scores are not additive.
+
+\section{Finite evidence and charged controls}
+The full dependency-free Python experiment (seed 202610292128, full downloaded artifact SHA-256 \texttt{ce299a88c7ee7f5509986a7dfc67dd39aa8b0f2038beec84f63e328c199eccbc}) compared eager all-first-round-resolvents UP and streaming merge-UP for 4063 full partial-state trials (all $3^n$ states when $n\le6$; 256 seeded samples for larger $n$), plus 720 full complement identities. All checks passed. Inputs include Horn, 2SAT, parity XOR quartets, complete-clause UNSAT and 12 seeded proper-width-three CNFs. Exact $Q_j$ and SAT counts were enumerated only on small controls. Eight grid scaling cases include exact cube enumeration through $r=s=6$ and symbolic (not exhaustive) formulas for larger $r,s$. Full uncompressed raw JSON SHA-256 \texttt{12553df005d4fa10a059dd18c646f2d813d50641dc748b349d5d4c3f772fc3f3}.
+\begin{center}\begin{tabular}{r r r r r r}\toprule
+$r=s$ & distinct $R$ & lazy work & eager work & lazy peak bytes & eager peak bytes\\\midrule
+8 &64&284&1889&5104&5496\\
+32&1024&1052&27521&15168&21656\\
+64&4096&2076&108289&34164&203808\\
+128&16384&4124&429569&56944&1195200\\\bottomrule
+\end{tabular}\end{center}
+The simultaneous measured peak and cost are for the special prefix setting all $u_i=v_j=0$. Eager materializes every $R_{ij}$; lazy authenticates the first useful pair and then charges a source-satisfaction exit. Across 18 small CNFs, complete source/lazy/eager memoized DPLL totaled 81/77/77 recursion nodes and 3044/18267/29838 selected operations. All satisfiable outputs underwent original-clause witness verification, and UNSAT outputs came from completed branch trees. These are \textbf{COMPUTATIONAL} measurements, not general SAT complexity claims.
+
+\section{Corpus reconciliation, literature, and handoffs}
+\paragraph{CORPUS REVIEWED.} GitHub issue \#2 including its 21:15 and 21:16 comments; \path{AGENTS.md} blob \texttt{19656af10260}; \path{CODEX.md} \texttt{754999f50d}; \path{.codex/skills/pnp-research/SKILL.md} \texttt{b8df83a7b0b1}; root \path{main.tex} pre-run \texttt{e05927ea7871}; LSPV-3 POLICY175 \texttt{5e6d95fe7072}; LSPV-2 MERGE-FILTER239 \texttt{643859ef2d27}; first coordination handoff \texttt{7d84e5312230}; LSPV-2 handoff \texttt{8b37b022c2b6}; LSPV-5 MAIN212 \texttt{1224f30e5c17}; task index, code and a 7,569-entry repository tree survey. The repository preflight Python file could not be executed without a checked-out source tree, but the actual research instructions were read.
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.} Resolution's whole-cube soundness and non-merge UP redundancy are \emph{KNOWN THEOREM}, not new. Babka et al. (2013), \href{https://doi.org/10.1016/j.artint.2013.07.006}{Artificial Intelligence 203}, Lemma 3.3, and LSPV-2 MERGE-FILTER239 precede this report; that earlier overlap counterexample repeats the \emph{same} resolvent. The present family has $rs$ genuinely distinct overlapping resolvents; the lazy charged resource bound formalizes a no-materialization alternative. Previous parity batch POLICY175 is not a SAT-runtime claim.
+\paragraph{PRIMARY LITERATURE.} Davis--Putnam (JACM 1960), \href{https://doi.org/10.1145/321033.321034}{DOI 10.1145/321033.321034}, standard resolution; Babka et al. (AI 2013), DOI above, non-merge-UP relation; Marques-Silva--Sakallah (IEEE TC 1999), \href{https://doi.org/10.1109/12.769433}{GRASP/CDCL}; Li et al. (AI 2020), \href{https://arxiv.org/abs/1807.11061}{unit-propagation vivification}; Samer--Szeider (J. Discrete Algorithms 2010), \href{https://doi.org/10.1016/j.jda.2009.06.002}{bounded-treewidth model counting}. The latter is a known tractable-class comparison, not a bridge to general SAT.
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.} The authorized LSPV-3 synthesis should add the source-authenticated streaming first-round closure theorem and exact distinct-cube overlap countercontrol, preserving OPEN status elsewhere.
+\paragraph{ADOPTED / REJECTED / RETIRED.} Adopt source-parent authentication and distinct/overlap auditing. Reject additive independent-cube scoring even after clause deduplication. Retire full-assignment forbidden-union gain as an amortized learned-clause potential. Do not retire useful contextual merge propagation or known Horn/2SAT/XOR shortcuts.
+\paragraph{STALE OR OVERSTATED CLAIMS.} The number $P$ of source pairs is an explicit algorithmic \emph{upper} accounting parameter, not an unavoidable lower bound: on $G_{r,s}$, setting $a=1$ instantly gives a SAT witness.
+\paragraph{NEXT OPEN LEMMA.} Find a syntactically recognized \emph{strict signed exact-$(2,2)$} SAT/UNSAT paired family with useful contextual merge-UP and a uniform policy that bounds the \emph{whole} discovery-plus-branch-DAG work and peak space, not just one residual closure. P versus NP remains OPEN.
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-3::OCCURRENCE-LAZY-MERGE176
