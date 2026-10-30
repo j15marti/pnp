@@ -1,0 +1,54 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append-by-section; newest run log at the end
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}\newtheorem{lem}{Lemma}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: a step-by-step, parametrized lower-bound ledger for Circuit-SAT}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-10-30 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} No unconditional super-linear lower bound for \CSAT\ is claimed here. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setting and parameters}
+A circuit $C$ has $n$ inputs, $g$ binary gates over $B_2$ (all 16 binary functions, free negation on edges), and $m=2g$ wires (gate in-edges). \CSAT: given $C$ with one output, is there $x$ with $C(x)=1$? Parameters tracked: $n$, $g$ (or $m$), later depth and fan-out. Trivial upper bound $O(2^n m)$.
+
+\section{Level 0: the instance must be read (PROVED/EXACT)}
+Query model: the algorithm asks ``what are the two in-edges of gate $j$?''.
+\begin{prop}\label{p:read} For every $k$ there is an $n=1$ family $U_k$ with $2k+1$ gates such that every deterministic (or zero-error) algorithm deciding \CSAT\ on it needs $\ge 2k+1=\Theta(m)$ queries. So the lower bound is $\Omega(m)$ independent of $n$.\end{prop}
+\emph{Proof.} $U_k$: input $x$; chains $a_j=\mathrm{OR}(a_{j-1},a_{j-1})$ with $a_0=x$ and $b_j=\mathrm{OR}(b_{j-1},b_{j-1})$ with $b_0=\neg x$; output $\mathrm{AND}(a_k,b_k)$. $U_k$ computes $x\wedge\neg x$, unsatisfiable. For each gate redirect one in-edge to the same-level node of the other chain (for the output gate: to $a_k$): an OR gate then receives $x$ and $\neg x$-derived values, so it is constant $1$, and the output becomes $x$ or $\neg x$, satisfiable. An algorithm that skips gate $j$ cannot distinguish $U_k$ from this modification. \qed\\
+Verified exhaustively for $k\le 8$ (all single-edge redirections): \texttt{research/agents/claude/circuitsat/critical\_wires.py}. COMPUTATIONAL check of a PROVED statement.
+
+\section{Level $n=1,2,3$: minimal connections, exact (COMPUTATIONAL)}
+Exhaustive search over sets of computed functions (\texttt{mincircuit.py}, <1s). $C(f)$ = minimum gates, $L(f)$ = minimum formula leaves; wires $=2C(f)$.
+\begin{center}\begin{tabular}{@{}rcccl@{}}\toprule
+$n$ & $\max_f C(f)$ & $\max_f L(f)$ & functions by $C=0,1,2,3,4$ & hardest\\\midrule
+1 & 0 & 1 & 4 & --\\
+2 & 1 & 2 & 6, 10 & --\\
+3 & 4 & 5 & 8, 30, 114, 80, 24 & $\mathrm{MAJ}_3$, $\mathrm{THR}_{\ge2}$, $\mathrm{EXACT}_1$\\\bottomrule\end{tabular}\end{center}
+For $n=3$: $\mathrm{AND},\mathrm{OR},\mathrm{XOR}$ need 2 gates (4 wires), $\mathrm{MAJ}_3$ needs 4 gates (8 wires), $L=5$ leaves; cumulative reachable functions with $\le 0,1,2,3,4$ gates: $8,38,152,232,256$. The hardest $n=3$ functions need 4 gates, so a wire-by-wire build-up already shows the ``cost of one more input'' is $+2$ gates here ($0\to1\to4$); data for $n=4$ is the next step.
+
+\section{Counting bound on connections (PROVED/EXACT, weak)}
+At most $(n+g)\prod_{i=1}^{g}16(n+i-1)^2$ functions are computable with $g$ gates, so some $f$ on $n$ variables needs more than the largest $g$ with this product $<2^{2^n}$. Computed (\texttt{counting.py}): $n=4,\dots,12$: $\ge 2,4,6,12,21,39,70,128,235$ gates ($2\times$ for wires). This is much weaker than truth at $n=3$ (bound 1, truth 4) and is $\Theta(2^n/n)$ asymptotically (KNOWN THEOREM: Shannon; Lupanov upper bound). \emph{Link to \CSAT: none unconditional}: hardness of building a function does not bound the time to decide satisfiability of a given circuit. Only the conditional route below applies.
+
+\section{Parametrized lower-bound landscape (recalled, not re-verified this run)}
+\begin{itemize}
+\item KNOWN THEOREM: time--space tradeoffs for SAT (Fortnow--van Melkebeek, Williams): no $n^{c}$ time with $n^{o(1)}$ space for $c<2\cos(\pi/7)\approx1.80$. Alternation trading cannot reach exponent $2\cos(\pi/7)$ (Buss--Williams); see repository ledger row L13 and the T-PORT notes for the portfolio variant.
+\item CONDITIONAL: SETH implies no $O(2^{(1-\varepsilon)n}\mathrm{poly}(m))$ algorithm for \CSAT; ETH gives $2^{o(n)}$ impossibility.
+\item KNOWN THEOREM: gate elimination gives $\ge (3+\tfrac1{86})n$ gates for explicit functions over $U_2$ and $2.5n-o(n)$-type bounds over $B_2$ (Schnorr $2n-3$; Stockmeyer, Blum, Demenkov--Kulikov, Find et al.); these bound \emph{circuit size}, not \CSAT\ time.
+\end{itemize}
+\textbf{Parametrized target (CANDIDATE, OPEN):} find a restricted but natural algorithm class $\mathcal A$ (e.g.\ branching on inputs + unit propagation) and a family with parameters $(n,g)$ where every $A\in\mathcal A$ needs $2^{\Omega(f(n,g))}$ steps; the parameter in play is the smaller of $n$ and the cut-width/treewidth $w$ of the circuit, since treewidth-$w$ \CSAT\ is solvable in $2^{O(w)}g$ (KNOWN THEOREM), so any $2^{\omega(w)}$ bound must use a non-treelike family.
+
+\section{Repository cross-check}
+Surveyed \texttt{AGENTS.md}, the world ledger (rows L13, L29--L40) and TPORT/ONETAPE notes. Useful: (i) ledger rule ``equivalent to $P=NP$ is a reformulation'': Level-0 reading bound is a genuine theorem but trivial; (ii) T-PORT barrier shows alternation-trading proofs stall near linear time for UWI-sized portfolios, so the time--space route cannot by itself give a super-linear \CSAT\ bound; (iii) one-tape bounds (L38--L40) hold for NTMs and so cannot separate P from NP. No existing file proves a \CSAT\ bound beyond these.
+
+\section{Roadmap}
+\begin{enumerate}
+\item Extend the exact table to $n=4$ (symmetric functions via iterative deepening; state space for all $2^{16}$ functions needs canonicalization under input permutation).
+\item Track fan-out: minimal \emph{formula} vs.\ \emph{circuit} gap as extra wires for reuse.
+\item Prove a gate-elimination style lower bound on the DPLL-with-unit-propagation tree size for a built-up family, and record its parameter dependence.
+\item Decide if any parametrized bound survives the natural-proofs/relativization checks used in the repository.
+\end{enumerate}
+
+\section*{Run log}
+\textbf{Run 1 (2026-10-30).} Created document; proved/verified Level-0 reading bound; exact $n\le3$ table; counting bound table. Files in \texttt{research/agents/claude/circuitsat/}. Open: everything beyond linear.
+\end{document}
