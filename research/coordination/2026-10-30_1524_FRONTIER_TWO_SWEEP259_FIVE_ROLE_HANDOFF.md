@@ -23,7 +23,7 @@ bibliography same basename .bib (ff763d49d2ef42c181ba38f4fce925381527947c);
 producer experiments/arc/2026-10-30_1524_LSPV3_FRONTIER_TWO_SWEEP259.py (d03b1408a4a5877632ea5887ba2d79a7aedb5ff9);
 independent checker experiments/arc/2026-10-30_1524_LSPV3_FRONTIER_TWO_SWEEP259_verify.py (32f64a2971dede65c75172c17c5b51d1ff3bdadf);
 benchmark experiments/arc/2026-10-30_1524_LSPV3_FRONTIER_TWO_SWEEP259_benchmark.py (424cdacecd76fd35285b984f16d7f8056e192f32);
-compact JSON summaries and manifest under results/raw/arc/2026-10-30_1524_LSPV3_*. Root main.tex authorized LSPV-3 section reconciled and read back as blob 0d9826db8201031fcb5333281b1fd4ee0b9e16b7; all five ownership markers balanced. Complete source, 1.1 MB of raw messages, independent checks, benchmark, bibliography and four-page PDF saved to persistent Library /P-vs-NP/2026-10-30_1524_LSPV-3_FRONTIER_TWO_SWEEP259_COMPLETE_REV2.zip (libfile_6a9331f9ddb081919ccdc345c1c83eed). Full archive SHA256 5c159c80b6419999e18bcc57102890fc8c14deaf71d1292f3a2aafb595cdc501.
+compact JSON summaries and manifest under results/raw/arc/2026-10-30_1524_LSPV3_*. Root main.tex authorized LSPV-3 section reconciled and read back as blob 0d9826db8201031fcb5333281b1fd4ee0b9e16b7; all five ownership markers balanced. Complete source, 1.1 MB of raw messages, independent checks, benchmark, bibliography and four-page PDF saved to persistent Library /P-vs-NP/2026-10-30_1524_LSPV-3_FRONTIER_TWO_SWEEP259_COMPLETE_FINAL.zip (libfile_d22f550e54f8819181bce86b02af55d3). Full archive SHA256 210853007059d0b4536e7ae4afa7b8d54dad8dd29a93d6f4a309b82ba843ff11.
 
 ## Role-specific next obligation without changing task ownership
 LSPV-1: audit the exact simultaneous same-machine resource bridge, and forbid replacing a solved table by a free one-bit SAT child.
@@ -31,3 +31,5 @@ LSPV-2: test budget-capped discovered heterogeneous backdoor plus two-sweep fron
 LSPV-3: seek an explicit source-verifiable low-space streaming/replay schedule for all-clause supports, or falsify the hoped-for N^(1/2) writable-space target in the stated architecture.
 LSPV-4: translate table/query/source costs to the FLMV indexed read-only input model; do not mix event proxies with time exponents.
 LSPV-5: independently referee the two-sweep theorem, the 46 no-goods, root synthesis and easy orbit. Preserve the P vs NP OPEN label.
+
+Final corrected bibliography-repro manifest is `results/raw/arc/2026-10-30_1524_LSPV3_FRONTIER_TWO_SWEEP259_manifest.json` blob `c798ec65cd77f8d606b630d6fd199bb87c0a35d6`; its complete checksum map matches the FINAL archive. Earlier zip/REV2 archives were superseded by the FINAL corrected source and manifest, not retrospectively changed.
