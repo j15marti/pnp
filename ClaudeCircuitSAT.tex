@@ -1,0 +1,60 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- do not rename or duplicate
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}\newtheorem{theorem}{Theorem}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{Lower bounds for \CSAT: a step-by-step wire ledger\\ \large Living document (Claude)}
+\date{Last updated: 2026-10-30 (run 1)}
+\begin{document}\maketitle
+
+\section{Status (read first)}
+\textbf{P versus NP remains OPEN.} No unconditional super-polynomial lower bound for \CSAT\ in the Turing/RAM model is claimed. Labels: PROVED, KNOWN, COMPUTATIONAL, CONJECTURE, OPEN.
+\begin{center}\begin{tabular}{@{}lll@{}}\toprule
+Item & Model & Status\\\midrule
+$2^n$ evaluations for \CSAT\ on $(2n{-}2)$-wire circuits & evaluation oracle & PROVED (Thm.~1)\\
+$\ge n-1$ gates / $\ge 2n-2$ wires if all inputs matter & circuits & PROVED (Lem.~2)\\
+Exact min-gate ladder for $n\le 3$ & fan-in-2, all 16 gates & COMPUTATIONAL (Tab.~1)\\
+Super-linear time bound, explicit-description model & RAM/TM & OPEN\\\bottomrule
+\end{tabular}\end{center}
+
+\section{Setup}
+A circuit $C$ has $n$ inputs, gates of fan-in $2$ (any of the 16 binary functions), and wire count $w(C)=2\cdot\#\text{gates}$ (+1 for output designation, ignored). \CSAT$(n,w)$: given $C$ with $n$ inputs and $\le w$ wires, is there $x$ with $C(x)=1$? Parameters: $n$ (inputs) and $w$ (wires); a parametrized bound is a function $T(n,w)$.
+
+\section{Ladder: build up inputs and wires}
+\begin{lemma}[connectivity]\label{lem:conn}
+If $C$'s output depends on all $n$ inputs, then $C$ has $\ge n-1$ gates, hence $\ge 2n-2$ wires.
+\end{lemma}
+\begin{proof} The underlying graph on inputs and gates must connect every input to the output; a fan-in-2 tree/DAG with $n$ sources reaching one sink needs $\ge n-1$ gates (each gate merges at most two components). \end{proof}
+
+\paragraph{Step family.} For $a\in\{0,1\}^n$ let $A_a=\bigwedge_i (x_i\oplus a_i\oplus 1)$ (negations absorbed into gates). It has exactly $n-1$ gates, meets Lemma~\ref{lem:conn} with equality, and is satisfied only by $a$. Going from $n$ to $n+1$ inputs adds exactly one gate and two wires to $A_a$ (Step rule: $\Delta\text{gates}=1$, $\Delta\text{wires}=2$, minimal by Lemma~\ref{lem:conn}).
+
+\begin{theorem}[evaluation-oracle bound]\label{thm:eval}
+Let $\mathcal F_n=\{A_a\}\cup\{\mathbf 0\}$ with the circuit available only as a black box that returns $C(x)$. Any deterministic algorithm deciding satisfiability on $\mathcal F_n$ makes $2^n$ queries in the worst case, though every member has $\le 2n-2$ wires. Moreover $Q(n+1)=2Q(n)$ for this family.
+\end{theorem}
+\begin{proof} Adversary answers $0$ to every query. After $q<2^n$ queries some $a$ is unqueried; both $\mathbf 0$ (unsat) and $A_a$ (sat) are consistent, so the algorithm cannot yet decide. Hence $2^n$ queries are needed (and suffice). For the recurrence: fixing $x_{n+1}\in\{0,1\}$ restricts to two disjoint copies of $\mathcal F_n$ whose query sets are disjoint; the adversary plays both. \end{proof}
+\emph{Caveat.} This is a black-box bound only; an algorithm that reads the wiring (e.g.\ finds the literals of $A_a$ in $O(n)$ time) escapes it. It shows that any lower bound must come from the cost of \emph{exploiting} structure, not from small size. Status: PROVED but model-restricted, hence not evidence about P vs NP.
+
+\section{Computed small-$n$ ladder}
+Script: \texttt{research/agents/claude/circuitsat/mincircuit.py} (BFS over sets of computed truth tables; each run $<$30\,s).
+\begin{table}[h]\centering\begin{tabular}{@{}cccl@{}}\toprule
+$n$ & max min-gates over all $f$ & max wires ($=2\cdot$gates) & distribution (gates:\#functions)\\\midrule
+1 & 1 & 2 & 0:3, 1:1\\
+2 & 1 & 2 & 0:4, 1:12\\
+3 & 4 & 8 & 0:5, 1:33, 2:114, 3:80, 4:24\\\bottomrule
+\end{tabular}\caption{Exact (COMPUTATIONAL). Constants and inputs are free (0 gates: $0$, $1$, $x_i$), negation costs a gate; for $n=3$ the 0-gate class has 5 functions.}\end{table}
+The $n=3$ maximum $4$ matches Knuth's tables. $n=4$ is too large for this naive BFS in 30\,s; next step is a SAT-based or chunked search.
+
+\section{Parametrized targets}
+\begin{enumerate}
+\item \textbf{Known upper bounds} (KNOWN, cited from memory, to verify): \CSAT\ with $cn$ gates has $2^{(1-\delta_c)n}$ algorithms (gate-elimination/branching, Williams-type); so $T(n,cn)\le 2^{(1-\delta_c)n}\mathrm{poly}$.
+\item \textbf{Conditional lower bound} (CONDITIONAL): SETH implies no $2^{(1-\varepsilon)n}\mathrm{poly}(w)$ algorithm for general $w$; says nothing for $w=O(n)$.
+\item \textbf{Unconditional, restricted} : Buss--Williams style alternation-trading limits time-space for SAT (ledger row L13 in the repo); the repo's TPORT barrier (rows L34/L35) is a candidate bridge to a portfolio of small-space solvers.
+\item \textbf{OPEN target}: find a natural restricted algorithm class (e.g.\ branching on inputs with gate-elimination simplification) and prove $T(n,w)\ge 2^{\Omega(n/\log w)}$ for it. Next run: define the class formally and test on the $A_a$ family and on hard $n\le 3$ circuits.
+\end{enumerate}
+
+\section{Repository check}
+Run 1 surveyed \texttt{AGENTS.md} and the file tree of \texttt{j15marti/pnp}. The project state is ARC/FLMV time--space spine, UWI portfolio and world ledger (P vs NP OPEN); relevant here: ledger rows L13, L33--L40 and \texttt{research/agents/claude/tport/}. I did not re-verify those proofs. No prior \texttt{ClaudeCircuitSAT.tex} existed.
+
+\section{Log}
+\begin{itemize}\item Run 1 (2026-10-30): created document, Lemma~\ref{lem:conn}, Thm.~\ref{thm:eval}, $n\le3$ ladder.\end{itemize}
+\end{document}
