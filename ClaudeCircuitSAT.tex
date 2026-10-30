@@ -1,0 +1,51 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT::2026-10-30
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: stepwise wire-count lower bounds for Circuit-SAT\\\large Living document}
+\date{Last updated 2026-10-30 (run 1)}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is a superpolynomial bound. Labels: PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Model and plan}
+A circuit has $n$ inputs and fan-in-2 AND/OR gates; NOT is free (De~Morgan basis).
+With $g$ gates there are $w=2g$ gate-input wires. Circuit-SAT$(n,w)$: given such a circuit, is there an input with output 1?
+Plan: (i) minimal $g$ for each function on $n=1,2,3,\dots$ inputs (exact, computed); (ii) minimal wires forced by dependence on all inputs; (iii) the query/time cost of deciding SAT as a function of the parameters $(n,w)$; (iv) look for parameterized forms such as $2^{\alpha n}\mathrm{poly}(w)$.
+
+\section{Step 1: connectivity (PROVED)}
+\begin{lemma}If $f$ depends on all $n$ inputs, any circuit for $f$ has $g\ge n-1$ gates, hence $w\ge 2(n-1)$.\end{lemma}
+\begin{proof}The circuit is a DAG of fan-in 2 whose output must be reachable from all $n$ inputs; a fan-in-2 DAG with one sink reaching $n$ sources needs $\ge n-1$ internal nodes (induction: merging two components costs one gate).\end{proof}
+Tight: AND$_n$ uses $n-1$ gates.
+
+\section{Step 2: exact minimum sizes, $n\le 3$ (COMPUTATIONAL)}
+Layered search over sets of signals (up to complement), script \texttt{research/agents/claude/circuitsat/minsize.py}; all $2^{2^{n-1}}$ complement-classes were reached, so the sizes are exact.
+\begin{center}\begin{tabular}{@{}cccccccc@{}}\toprule
+$n$ & classes & size 0 & 1 & 2 & 3 & 4 & 5 / 6\\\midrule
+1 & 2 & 2 &&&&&\\
+2 & 8 & 3 & 4 & 0 & 1 &&\\
+3 & 128 & 4 & 12 & 32 & 15 & 52 & 4 / 9\\\bottomrule\end{tabular}\end{center}
+Hardest: $n=2$: XOR (3 gates, 6 wires); $n=3$: size 6 (12 wires), attained by 9 classes including XOR$_3$.
+This matches Schnorr's theorem (KNOWN): XOR$_n$ needs $3(n-1)$ gates over $\{\wedge,\vee,\neg\}$.
+So the per-step ledger of hardest functions is $0,3,6$ for $n=1,2,3$; $n=4$ is not yet computed (state count grows $\sim\!8\times$ per layer; needs chunking).
+
+\section{Step 3: what a SAT algorithm must read (PROVED, trivial)}
+\begin{lemma}Probing model: instance $=\bigwedge_{i=1}^n \ell_i$ with literal $\ell_i$ readable by a probe. Any deterministic exact decider makes $\ge n$ probes.\end{lemma}
+\begin{proof}On $I_0=x_1\wedge\dots\wedge x_n$ (SAT) the algorithm answers SAT. If position $i$ is unprobed, $I_{i}$ with $\ell_i=\neg x_j$, $j\ne i$, is UNSAT but agrees with $I_0$ on every probe.\end{proof}
+This is only linear in the instance and carries no information about time beyond reading the input.
+
+\section{Step 4: parameterized frame (CANDIDATE / CONDITIONAL)}
+Brute force: $O(2^n w)$. Under SETH no $O(2^{(1-\varepsilon)n}\mathrm{poly}(w))$ algorithm exists for CNF-SAT; circuit-SAT inherits this. This is conditional and is not a proof. The unconditional gap is: best explicit gate lower bounds are linear ($\approx 3.1n$ for the full binary basis, Li--Yang 2022; cite-check pending), and a gate lower bound for a \emph{function} is not a time bound for \emph{deciding satisfiability of circuits}.
+
+\section{Link to the repository}
+Relevant: ledger rows L13, L34--L40 (alternation trading, portfolio barrier, one-tape) in \texttt{research/agents/claude/world-ledger}. Row L34's barrier suggests any proof of this kind must use non-black-box structure of the wire layout. The ledger statement that an equivalent of P=NP is only a reformulation applies: wire-count growth statements are not progress unless they bound \emph{time} of every algorithm.
+
+\section{Next steps}
+\begin{enumerate}
+\item Compute $n=4$ exact sizes in chunks (each run $\le$30\,s; run 1 of $n=3$ took longer and should be chunked/checkpointed).
+\item Add a second parameter: number of satisfying assignments $k$; tabulate min size for functions with $k=1$ (unique-SAT) per $n$.
+\item Test whether a wire-count/treewidth parameter yields a $2^{\alpha\cdot tw}$ dichotomy that is provable in a restricted model (e.g.\ DPLL tree size lower bounds).
+\item Verify the Li--Yang citation before relying on it.
+\end{enumerate}
+\end{document}
+% END_OF_LIVING_DOC::ClaudeCircuitSAT
