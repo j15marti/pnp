@@ -1,0 +1,266 @@
+% LSPV-5 REPORT::ARC-GUEST-REENTRY-FIREWALL225::2026-10-30T13:54:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{ARC Guest-Input Re-entry Firewall:\\Why a Far-Address Guard Is Necessary but Not Sufficient}
+\author{LSPV-5: Independent Red Team and Synthesis Referee}
+\date{30 October 2026, 13:54 Pacific Daylight Time}
+\begin{document}\maketitle
+
+\noindent\textbf{Status.}
+\textbf{PROVED/EXACT, restricted machine-simulation falsifier:} replacing an
+out-of-range indexed child-input jump by a sticky out-of-bounds state is not a
+correct arbitrary-guest simulation, even when the simulator later handles every
+valid indexed request exactly.  A fixed correct SAT-decider wrapper can move its
+input head back into the child by ordinary head moves and force the sticky
+simulator to reverse both SAT and UNSAT answers.  \textbf{KNOWN THEOREM:}
+FLMV's Cook transfer recomputes addressed formula bits with multiplicative
+polylogarithmic time and additive logarithmic workspace.  \textbf{CANDIDATE:}
+real-time counter simulation may support a complete repair, but arbitrary
+binary-address loading, erasure, child-boundary comparison and integration in
+the precise FLMV indexed model are not proved here.  \textbf{OPEN:} the full
+arbitrary-$A$ hereditary simulator and, more decisively, a both-label all-input
+power-short ordinary-SAT child constructor.  P versus NP remains OPEN.
+
+\section{Claim card, target and falsifiers}
+The active arrow is not a new SAT route.  It is the same-machine transport part
+of the integrated residual-controller contract:
+\[
+ \forall A\;\forall F\quad
+ \operatorname{SAT}(\Phi(A),F)=\operatorname{SAT}(F),
+\]
+where $A$ is one fixed total exact ordinary-SAT decider, $F$ is an arbitrary
+ordinary source, and every source access, policy attempt, child access, guest
+step and live tape cell is charged on the same indexed random-access Turing
+machine realization.  The weakest materially useful statement for this run is
+a counterexample to an incomplete guest-input simulation; it does not construct
+$\Phi$.
+
+Before testing, four falsifiers were fixed.
+\begin{enumerate}
+\item A bit accessor correct only on $0\le j<m$ suffices for an arbitrary
+guest on a logical child of length $m$.
+\item Comparing an indexed jump with $m$ and setting a sticky out-of-bounds
+flag suffices for all later guest input-head behavior.
+\item The prior lazy-access claims already prove the complete arbitrary-$A$
+machine simulation, including ordinary re-entry and guest index erasure.
+\item Any finite repair automatically preserves the conditional exponent
+recurrence under hereditary nesting.
+\end{enumerate}
+Items 1 and 2 are falsified.  Item 3 is contradicted by the explicit scope of
+LSPV-4 ARC-MATERIALIZE-GUARD253, which left ordinary moves and long live
+pointers open.  Item 4 remains open until a complete uniform simulator and a
+recursively closed child emitter are supplied.
+
+\section{Primary source and exact machine issue}
+Fortnow--Lipton--van Melkebeek--Viglas (FLMV) use random-access Turing
+machines with read-only input, write-only one-way output, and counted work and
+index tapes.  An indexed move erases the relevant index tape.  In their
+Theorem~3.4 proof, the simulated SAT input is never materialized; every
+addressed Cook-formula bit is recomputed from the original source in
+polylogarithmic time and logarithmic workspace.  This is a genuine primary
+source for virtual input, but its reduction supplies a complete formula
+encoding, not merely a partial valid-address function.
+
+LSPV-4 ARC-MATERIALIZE-GUARD253 already proves that blindly redirecting a
+guest's far read-only-input jump to a materialized work-tape child can consume
+the far indexed position as charged workspace.  It correctly requires
+comparing the guest address with the exact child length and returning blank for
+an out-of-range jump.  The report explicitly leaves subsequent ordinary
+input-head moves and a complete simulator open.  The theorem below attacks
+that precise remainder.
+
+Seiferas--Vit\'anyi prove that a fixed number of increment/decrement/sign
+counters can be simulated in real time on a one-tape Turing machine with
+logarithmic space.  This is relevant to tracking distance from the child
+boundary.  It is not imported as a completed theorem transfer: the present
+ARC use additionally needs loading an arbitrary binary address before the
+model erases the guest index tape, exact child-boundary tests, source-bit
+access, and an all-tape simultaneous ledger in the FLMV model.
+
+\section{A sticky-guard counterexample}
+Number the nonempty child input cells $0,\ldots,m-1$; every other cell is
+blank.  A \emph{sticky-OOB simulator} handles a guest indexed jump to
+$j\ge m$ by entering a special OOB state, returns blank there, and continues
+returning blank after ordinary left/right guest input-head moves until the next
+indexed guest jump.  On valid indexed jumps it returns the exact child bit.
+
+\begin{theorem}[Far-jump guarding alone does not simulate ordinary re-entry]
+Let $B$ be any total exact ordinary-SAT decider.  There is a fixed total exact
+ordinary-SAT decider $A_B$ with only $O(m)$ additional time and
+$O(\log m)$ additional writable space on an $m$-bit input such that every
+sticky-OOB simulation of $A_B$ is wrong on every valid nonempty SAT encoding
+whose last bit is $1$.  The error occurs on SAT and UNSAT inputs alike.
+\end{theorem}
+\begin{proof}
+On its ordinary physical input, $A_B$ first scans to determine $m$.  It then
+indexes its read-only input head to cell $m+1$, observes blank, moves the input
+head left twice, and records the symbol $r$ now read at cell $m-1$.  Next it
+performs a valid indexed jump to $m-1$ and records the symbol $s$.  Finally it
+runs $B$ and returns $B$'s answer if $r=s$, and the complementary bit otherwise.
+
+On every ordinary physical nonempty input, both reads are of the same cell
+$m-1$, so $r=s$ and $A_B$ returns exactly $B$'s answer.  The wrapper is
+therefore correct on both labels; it receives no answer bit.  Its scan, two
+indexed jumps, two ordinary moves and two stored symbols have the stated
+overhead.
+
+In the sticky-OOB simulation, the jump to $m+1$ enters OOB.  The two ordinary
+left moves are lost by definition, so the first recorded symbol is blank.
+The later valid indexed jump to $m-1$ exits OOB and returns the actual last
+bit, which is $1$.  Thus $r\ne s$ and the simulated wrapper complements the
+correct answer.  The argument is independent of whether the source is SAT or
+UNSAT.  \qedhere
+\end{proof}
+
+\begin{lemma}[Valid-domain-only access is also insufficient]
+For a logical child $y$ of length $m$, correctness of
+$g(F,j)=y_j$ only for $0\le j<m$ does not imply correct simulation of an
+arbitrary ordinary-input guest.
+\end{lemma}
+\begin{proof}
+Use the same wrapper idea but probe cell $m$ and complement $B$ if the returned
+symbol is nonblank.  A physical input returns blank.  Any extension of $g$
+outside its promise may return a source bit and reverse the answer.  Therefore
+either a total accessor with ordinary blank semantics or an independently
+proved complete head simulator is load-bearing.
+\end{proof}
+
+The theorem is deliberately narrow.  It is not a lower bound against every
+possible simulator.  A correct simulator may retain an exact or compressed
+logical head coordinate and update it under ordinary moves.  The result proves
+only that the previously suggested one-time guard is necessary but not
+sufficient.
+
+\section{Conditional exponent ledger after the correction}
+Suppose, beyond what is proved here, that a controller discovers at most
+$N^{\gamma+o(1)}$ serial ordinary children of length
+$m\le N^{\lambda+o(1)}$, spends $N^{\alpha+o(1)}$ non-guest time and
+$N^{\sigma+o(1)}$ retained workspace, and has a \emph{complete} total child
+access/head simulator costing $N^{\delta+o(1)}$ per guest step and
+$N^{\eta+o(1)}$ reusable scratch.  For one fixed guest with simultaneous
+exponents $(K,L)$, the valid conditional envelope is
+\[
+ K'\le\max\{\alpha,\gamma+\delta+\lambda K\},\qquad
+ L'\le\max\{\sigma,\eta,\lambda L\}.
+\]
+The input-length test, indexed-address capture, ordinary head updates,
+blank semantics, guest work/index tapes, failed policies, conversion,
+replay and ancestor state must all lie inside these displayed terms.  A
+valid-address emitter alone does not establish either inequality.
+
+For the current nominal $(\alpha,\gamma,\lambda,\sigma)=(11/10,3/5,1/2,1/2)$,
+LSPV-4's exact joint-slope referee gives
+\[
+ K_* = \max\{1.1+\pi,1.2+2\delta\},\qquad L_*=1/2+\eta
+\]
+under its declared tariff convention.  Strict entry at the $c=241/200$
+FLMV slice requires strict positive margins, including
+$\delta<1/400$ when $\pi=\eta=0$.  The present theorem neither attains nor
+rules out those margins; it prevents an incomplete sticky guard from being
+priced at zero.
+
+Finite iteration does not itself create nonuniform advice: for a fixed guest
+$A$ and fixed iteration count $r$, the compiled program may have constants
+depending on $A,r$ but not on the input.  However, the previous LSPV-5
+exponent-discovery firewall forbids granting the controller a computable
+oracle for the guest's tight exponent.  A hereditary recurrence must therefore
+be exponent-oblivious or use an explicit separately verified syntactic
+certificate; the guest-head repair cannot choose its implementation from a
+free unknown-$K$ bit.
+
+\section{Reproducible same-construction controls}
+The Python audit uses one fixed identity child emitter and one fixed wrapper on
+two proper 3-CNF sources over the same three variable names: the one-clause SAT
+source $(x_1\vee x_2\vee x_3)$ and the UNSAT source containing all eight sign
+patterns.  Exhaustive enumeration checks respectively 2 and 8 assignments.
+Their self-delimiting binary encodings have lengths 16 and 86 and end in $1$.
+For each source:
+\begin{itemize}
+\item every valid address is checked against both virtual accessors;
+\item the ordinary physical and exact re-entry wrappers return the exhaustive
+SAT label;
+\item a valid-domain-only wraparound accessor reverses the answer;
+\item the sticky-OOB re-entry simulator reverses the answer after two ordinary
+left moves and a later valid indexed jump.
+\end{itemize}
+The run passes all assertions.  An auxiliary finite shadow test checks 7,990
+low-bits/high-nonzero membership identities and 7,990 index-erasure resets for
+index widths at most eight.  That test supports only the indexed-jump guard;
+it does not certify the missing arbitrary-length ordinary-move simulator.
+
+\begin{center}\begin{tabular}{lrrrr}
+\toprule
+Source&label&physical/exact&sticky OOB&valid-domain-only\\\midrule
+one proper clause&SAT&SAT&UNSAT&UNSAT\\
+all eight sign patterns&UNSAT&UNSAT&SAT&SAT\\\bottomrule
+\end{tabular}\end{center}
+Code SHA-256 is
+\texttt{2753bde3e80be75990aef499e97ad4348ccf8c7c2fa74f534dc657f69cf556a0};
+raw JSON SHA-256 is
+\texttt{d87ccda2c538516032bfefe8d948da3737e6d5b0dca4ba84d28771bc5d88dbdb}.
+These are finite logical controls, not native FLMV step measurements.
+
+\section{Corpus reconciliation}
+\textbf{CORPUS REVIEWED.}  Root \texttt{main.tex}, \texttt{AGENTS.md},
+\texttt{CODEX.md}, the complete \texttt{pnp-research} skill and red-team/
+synthesis protocols; REDIRECT1 and CONTRACT1; AFFINE-SMALLBIAS-DESCENT-GATE2,
+CONSTRUCTION-STRENGTHEN17 and ARC-LINEAR22-SATURATION1; LSPV-1 lazy-access/
+image-reentry history and current ONEHOT-CHILD-SELECT253; LSPV-2
+VIRTUAL-SORT-ACCESS254; LSPV-3 ADDITIVE-MULTIPLICATIVE-GATE257; LSPV-4
+ARC-MATERIALIZE-GUARD253 and ARC-JOINT-SLOPE-FRONTIER255; the prior LSPV-5
+DELAY-QUERY and EXPONENT-DISCOVERY firewalls; original FLMV Sections 2.1 and
+3.1/Theorem 3.4; Seiferas--Vit\'anyi's counter theorem.  Repository search also
+surfaced the earlier conditional virtual-image re-entry reports.
+
+\textbf{DUPLICATION / CONTRADICTION AUDIT.}  FLMV's on-demand Cook encoding
+and the project's valid-bit lazy simulations are prior work, not new.  LSPV-4
+already supplied the far indexed-jump/work-tape counterexample and explicitly
+left ordinary re-entry open.  This report adds only the sticky-OOB re-entry
+falsifier and corrected hypothesis.  It does not contradict FLMV, whose
+reduction computes a complete encoding, and it does not claim that no complete
+simulator exists.
+
+\textbf{WHAT CHANGED RELATIVE TO ROOT MAIN.}  The arbitrary-guest transfer
+obligation is narrowed: exact child length and a guarded indexed jump are still
+necessary, but the simulator must additionally represent ordinary input-head
+evolution well enough to detect re-entry.  No FLMV point or child constructor
+was added.
+
+\textbf{ADOPTED.}  FLMV's matched model and strict simultaneous region;
+LSPV-4's exact tariff and far-jump firewall; LSPV-2's direct intermediate bit
+emitter as a useful but expanding control; original-clause $S/U$ work only as
+adversarial finite controls.  \textbf{REJECTED.}  valid-domain-only access,
+sticky OOB, free exponent discovery, free policy switching and physical-child
+size substitution by a succinct description.  \textbf{RETAINED AS
+RESTRICTED.}  AFFINE-SMALLBIAS-DESCENT-GATE2 is an input-independent affine
+MCSP semantic no-go and not arbitrary SAT runtime.
+
+\section{Exact remaining gap and next target}
+\textbf{One proved/falsified claim.}  A far-address comparison followed by a
+sticky blank state does not correctly simulate an arbitrary ordinary-SAT guest;
+two ordinary moves can re-enter the child and reverse both answer classes.
+
+\textbf{Next specific lemma.}  Either construct a complete, exponent-oblivious
+FLMV-model input-head transducer that (i) loads every guest indexed address,
+(ii) reproduces index erasure, (iii) supports ordinary left/right moves and
+exact blank/re-entry semantics, and (iv) adds only polylogarithmic time per
+guest step plus $O(\log N)$ or already-charged guest space; or give a fixed
+polynomial correct SAT wrapper falsifying such a resource bound.  Only after
+that machine lemma is verified should it be composed with a genuinely
+power-short, both-label, hereditary ordinary-SAT child emitter.  Both remain
+OPEN.  P versus NP remains OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{FLMV} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, J. ACM 52(6):835--865,
+2005. \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{SV} J. Seiferas and P. Vit\'anyi, \emph{Counting Is Easy},
+J. ACM 35(4):985--1000, 1988, DOI:10.1145/48014.63141.
+\bibitem{LSPV4} LSPV-4, \emph{ARC-MATERIALIZE-GUARD253},
+\path{research/agents/lspv-4/2026-10-30_1236_LSPV-4_ARC_MATERIALIZE_GUARD253_PUBLIC.tex}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::ARC-GUEST-REENTRY-FIREWALL225
