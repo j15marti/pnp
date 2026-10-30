@@ -1,0 +1,247 @@
+% LSPV-5 REPORT::BATCH-RANK-AMORTIZATION-REFEREE211::2026-10-29 19:48 America/Los_Angeles
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,geometry,hyperref,longtable}
+\geometry{margin=1in}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\F}{\mathbb F}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\status}[1]{\textsc{#1}}
+
+\title{LSPV-5 Independent Red Team and Synthesis\\
+Batch-Rank Amortization for Computational Information Value}
+\author{LSPV-5}
+\date{29 October 2026, 19:48 America/Los\_Angeles}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.92\linewidth}{\textbf{Executive status.}
+P versus NP remains \status{OPEN}.  This report proves a restricted construction--storage--continuation theorem in an explicitly indexed binary-cell model, and falsifies the multiplication of single-query probe lower bounds across a persistent batch.  It is not a SAT lower bound and supplies no arbitrary-algorithm bridge.}}
+\end{center}
+
+\section{PROPOSE: the missing lemma and falsifiers}
+
+The current missing lemma was a sound amortized invariant for a reusable summary of
+\[
+F=A(X,Y)\land B(X,Z),\qquad f_A(x)=\exists y\,A(x,y),
+\]
+when the retained source may be reread and observations may be cached across several future contexts.  The falsifiable proposal was:
+
+\begin{quote}
+For a fixed batch of future contexts, the unavoidable binary information is governed by the number of distinct \emph{batch answer vectors}; in the linear-parity control this number is $2^{\rank W}$.  It is not generally the number of contexts times a one-context cost.
+\end{quote}
+
+Four mechanisms were tested against it: (i) arbitrary nonlinear persisted summaries; (ii) adaptive source probes and persistent caching; (iii) complementary XOR facts and duplicate facts; and (iv) representation changes, including retaining the original source.  The resulting theorem survives all four, but only because its machine and transcript hypotheses are explicit.
+
+\section{SEARCH: prior work and exact applicability}
+
+The search was for existing offline/online, bit-probe, and value-of-information frameworks matching the proposed quantifiers.
+
+\begin{itemize}[leftmargin=*]
+\item Darwiche and Marquis, ``A Knowledge Compilation Map,'' \emph{JAIR} 17 (2002), distinguishes offline compilation from online queries and compares target languages by supported transformations and queries.  This is directly relevant framing, not a lower bound for the unrestricted retained-source model.
+\item G\'al and Miltersen, ``The cell probe complexity of succinct data structures,'' \emph{TCS} 379(3):405--417 (2007), studies static storage/query tradeoffs in a cell-probe model.  Its restrictions must not be silently transferred to a solver that retains and rereads the complete formula.
+\item Wei, ``Generalized Hamming weights for linear codes,'' \emph{IEEE Transactions on Information Theory} 37(5):1412--1418 (1991), supplies a natural language for dimensions of projected linear information.  The theorem below needs only elementary rank, but generalized support is a plausible next refinement.
+\item Golovin and Krause, ``Adaptive Submodularity,'' \emph{JAIR} 42 (2011), proves greedy guarantees under adaptive-submodularity hypotheses.  XOR complementarity violates the relevant diminishing-returns intuition; the theorem cannot be invoked merely because facts are acquired adaptively.
+\item Mande, Sanyal, and Sherif, ``One-way communication complexity and non-adaptive decision trees,'' \emph{STACS} 2022, clarifies links between a persisted message and later query access.  Again, its exact communication/query model is essential.
+\item Actual code was inspected in SageMath, \texttt{src/sage/coding/golay\_code.py} at repository ref \texttt{36e49d\ldots}, blob \texttt{88b80da5d52ce1aa8500d93e6bea1e47feea4ccc}.  Its binary length-$23$ Golay implementation returns covering radius $3$, supporting the peer control $V(23,3)=2048$; it does not certify a SAT theorem.
+\end{itemize}
+
+The project search also read the current root synthesis, all task specifications, the latest LSPV-1--4 reports, the prior LSPV-5 report, and the relevant governance and skill instructions.  The immediately preceding LSPV-4 report exists, is substantive, and contains its required header and verification sentinel.
+
+\section{BUILD: an explicit batch model}
+
+\subsection{Machine and resource ledger}
+
+Fix a finite source class $\mathcal A$ and a fixed ordered batch of future contexts $\mathcal B=(B_1,\ldots,B_M)$.  Each $A\in\mathcal A$ determines a binary answer vector
+\[
+r_A=(\operatorname{Ans}(A,B_1),\ldots,\operatorname{Ans}(A,B_M)).
+\]
+The native model is a deterministic indexed machine with binary source cells.  A preprocessing phase, before the batch continuation begins, probes at most $P_{\rm src}$ source cells and leaves a source-dependent persisted state of at most $L$ bits.  The continuation sees the fixed batch, may adaptively probe a total of at most $Q_{\rm src}$ source cells over the \emph{whole batch}, and may cache or recompute without restriction.  All source-dependent side channels---including a head location, a copied cell, a branch-dependent representation, or mutable storage---count toward the persisted state.
+
+For a full execution we record
+\[
+\mathfrak R=(P_{\rm total},P_{\rm src},L,Q_{\rm total},Q_{\rm src},W,R,H,D;\mathsf{access}),
+\]
+where $W$ is peak workspace, $R$ communication rounds, $H$ physical head crossings, $D$ cumulative symbol changes, and $\mathsf{access}$ names the source-access model.  The theorem controls only $P_{\rm src},L,Q_{\rm src}$ in the binary indexed model.  Query parsing, output, arithmetic, verification, failed policies, and reconstruction remain in $P_{\rm total},Q_{\rm total},W$ and are not erased by the theorem.
+
+\begin{theorem}[batch answer-vector transcript bound]\label{thm:batch}
+Let
+\[
+R_{\mathcal A,\mathcal B}=\bigl|\{r_A:A\in\mathcal A\}\bigr|.
+\]
+If the machine above outputs every $r_A$ exactly, then
+\[
+2^{\min(P_{\rm src},L)+Q_{\rm src}}\ge R_{\mathcal A,\mathcal B},
+\qquad
+\min(P_{\rm src},L)+Q_{\rm src}\ge
+\left\lceil\log_2R_{\mathcal A,\mathcal B}\right\rceil.
+\]
+More precisely, if $M_P$ persisted states are reachable after preprocessing, then
+\[
+M_P2^{Q_{\rm src}}\ge R_{\mathcal A,\mathcal B}.
+\]
+\end{theorem}
+
+\begin{proof}
+The deterministic preprocessing decision tree has depth at most $P_{\rm src}$, hence at most $2^{P_{\rm src}}$ leaves.  Its persisted state has at most $2^L$ possible values.  Therefore $M_P\le 2^{\min(P_{\rm src},L)}$.  Starting from any fixed persisted state, a deterministic adaptive continuation making at most $Q_{\rm src}$ binary source probes has at most $2^{Q_{\rm src}}$ answer transcripts.  The output vector is a deterministic function of the persisted state, fixed batch, and transcript.  Exactness requires different batch answer vectors to occupy different pairs, so $R_{\mathcal A,\mathcal B}\le M_P2^{Q_{\rm src}}$.  Taking logarithms proves the claim.
+\end{proof}
+
+This theorem permits arbitrary nonlinear encodings, representations, adaptivity, caching, and recomputation.  Its restrictions are still material.  A $w$-bit cell changes the transcript factor from $2^{Q_{\rm src}}$ to at most $2^{wQ_{\rm src}}$.  A joint solver that already sees $B$ during preprocessing has different quantifiers.  A sequential tape can encode information in head position unless that position is charged.  Sending or storing the original formula is legal and appears explicitly in $L$ and construction cost.
+
+\subsection{Exact linear-parity specialization}
+
+Let the source be $a\in\F_2^b$, and let the fixed batch ask for $Wa$, where $W\in\F_2^{M\times b}$ has rank $r$.
+
+\begin{corollary}[rank lower bound]\label{cor:rank}
+Every exact protocol in the preceding model satisfies
+\[
+\min(P_{\rm src},L)+Q_{\rm src}\ge r.
+\]
+For the coordinate batch $W=[I_r\;0]$, every integer point $0\le L\le r$ is attained with
+\[
+P_{\rm src}=L,qquad Q_{\rm src}=r-L.
+\]
+Thus the bound is exact there even against nonlinear summaries and adaptive continuation.
+\end{corollary}
+
+\begin{proof}
+The image of $W$ has $2^r$ vectors, so Theorem~\ref{thm:batch} gives the lower bound.  For the upper bound, preprocessing reads and stores any $L$ of the $r$ requested coordinates.  Continuation reads each remaining requested coordinate once and emits all $r$ answers.  The same single uniform program handles every source.
+\end{proof}
+
+For a full-rank batch, $r=b$.  For $r<b$, rank remains a lower bound, but the exact frontier may depend on the geometry/locality of the row space relative to raw coordinates.  That refinement is \status{OPEN}.
+
+\subsection{A concrete falsifier: cross-query caching}
+
+Suppose $M$ parity masks over the same retained $b$-bit source arrive as one batch.  Reading every raw source bit once and retaining it permits all $M$ parities to be evaluated.  Hence total raw source probes are at most $b$, regardless of $M$.  It is false to multiply a valid one-query probe bound by $M$ without proving that probes cannot be shared.
+
+This does not make the whole computation free.  Explicit masks require $Mb$ query-input bits, $M$ output bits, and arithmetic work.  It only retires the claimed product lower bound on \emph{raw source probes}.  In the finite control at $b=64,M=256$, independent fresh evaluation would inspect $6235$ selected source positions, while persistent caching inspects $64$ distinct source cells; the $16{,}384$ mask-input bits and $256$ output bits remain charged.
+
+\section{Contextual value repaired by affine rank}
+
+The notation $I\mid_{v}$ denotes a datum with contextual value subscript; the pipe is neither conditional probability nor divisibility.  Values are relative to a state $s$, known facts $K$, a target batch, and a declared cost model $C$.
+
+Let the current certified source set be the affine space $a_0+U\subseteq\F_2^b$.  For a fixed linear batch $W$, define the independently computable potential
+\[
+\Phi_W(a_0+U)=\dim W(U).
+\]
+For certified information $I$, define
+\[
+v_{\Phi_W}(I\mid s)=\Phi_W(s)-\Phi_W(s\text{ updated with }I),
+\]
+and separately charge acquisition, verification, and application cost $C_s(I)$.  The ratio $v/\max(1,C_s(I))$ is only a heuristic unless an amortized theorem proves otherwise.
+
+\begin{lemma}[one affine fact has value zero or one]\label{lem:value}
+If $I$ is a consistent certified linear fact $c\cdot a=\beta$, then
+\[
+v_{\Phi_W}(I\mid s)\in\{0,1\}.
+\]
+\end{lemma}
+
+\begin{proof}
+The updated direction space is $U'=U\cap\ker c$, whose codimension in $U$ is at most one.  The quotient map from $W(U)$ to $W(U)/W(U')$ is generated by the image of at most one lost direction.  Thus $\dim W(U)-\dim W(U')\in\{0,1\}$.
+\end{proof}
+
+This potential handles several red-team controls exactly.
+
+\begin{itemize}[leftmargin=*]
+\item \textbf{Redundancy.} Repeating an already implied fact has value $0$.
+\item \textbf{XOR complementarity.} If the target is $u\oplus v$, the separate observations of two shares can have singleton values $0,0$ from the initial context, while their joint value is $1$; after the first share is known, the contextual marginal of the second is $1$.  Therefore ordinal singleton labels are not additive.
+\item \textbf{Affine compression.} Row reduction computes $\Phi_W$ and removes duplicates without granting a witness or answer bit.
+\item \textbf{Costly high-value information.} A fact of value $1$ may have arbitrarily large acquisition or certification cost; useful progress and the expense of obtaining it are distinct coordinates.
+\item \textbf{Negative value.} Under this feasibility potential, consistent restriction cannot have negative value.  Under a cost-aware policy score, however, storing or verifying an irrelevant fact can have negative net score because resource cost rises while $\Phi_W$ does not fall.
+\end{itemize}
+
+Pointwise bounded progress does \emph{not} survive arbitrary nonlinear feasible sets.  The LSPV-4 Horn control has a rare branch in which one fact collapses a large support set, so any claim that every Boolean fact reduces log-support by at most one is \status{FALSIFIED/RETIRED}.  Expected information under a stated prior is a different quantity and cannot replace a worst-case endpoint argument.
+
+\section{Peer referee and machine-specific ledger}
+
+\begin{longtable}{p{0.14\linewidth}p{0.60\linewidth}p{0.18\linewidth}}
+\toprule
+Artifact & Referee finding & Status\\
+\midrule
+LSPV-1 ARC238 & The Fourier/decision-tree argument proving $2^LV(b,Q)\ge2^b$ for all parity queries is sound in its fixed-length indexed model.  The Golay point has $V(23,3)=2048$.  It is a one-query/all-query guarantee, not an $M$-fold batch lower bound. & \status{PROVED/EXACT} restricted\\
+LSPV-2 FRONTIER237 & The $Q=2$ family and arbitrary-nonlinear lower bound are compatible with the same volume theorem.  Variable-length non-prefix coding remains open. & \status{PROVED/EXACT} restricted\\
+LSPV-3 SYNDROME173 & For a fixed linear probe menu, adaptive depth equals minimum XOR representation; policy discovery can be NP-complete.  Applicability does not make discovery free. & \status{PROVED/EXACT} restricted\\
+LSPV-4 SWEEP237 & Its sequential-head preparation/continuation travel law is a distinct physical model.  It cannot be substituted for indexed source-probe rank without charging head position and crossings. & \status{PROVED/EXACT} restricted\\
+\bottomrule
+\end{longtable}
+
+The newest LSPV-1, LSPV-2, and LSPV-3 files lack the mandated first report marker and final verification sentinel.  This is a publication-protocol defect, not a mathematical refutation; their next writes should repair it without reconstructing or strengthening the underlying science.
+
+\section{CORPUS REVIEWED}
+
+Reviewed: root \texttt{main.tex}; \texttt{AGENTS.md}; \texttt{CODEX.md}; the complete research skill; every current task file; the newest LSPV-1--4 reports and the preceding LSPV-5 synthesis; current governance constraints; and repository searches for batch, value, transcript, probe, rank, affine, XOR, knowledge compilation, and communication.  The active root is substantive rather than the earlier placeholder.  No manuscript text was fabricated from \texttt{/tmp/main\_fixed.tex}.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+The answer-vector counting idea partially overlaps the previous LSPV-5 M\"obius-dividend accounting and standard one-way communication counting.  The new contribution within this project is the exact amortized source-probe statement with retained-source caching, its rank specialization, and the explicit falsification of query-wise multiplication.  It does not supersede the LSPV-1/2 single-query volume theorem or LSPV-4 sequential travel theorem; those solve different models.
+
+No contradiction was found between the peer theorems after their quantifiers were aligned.  The apparent contradiction---large one-query probe cost versus $b$ probes for many queries---is resolved by reuse: a cached source cell can serve many answers.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+The root synthesis should now distinguish three independent axes:
+\begin{enumerate}[leftmargin=*]
+\item single-query summary/probe volume, controlled for parity by $2^LV(b,Q)\ge2^b$;
+\item batch-amortized source access, controlled by the number of batch answer vectors and, for linear parity, by $\rank W$;
+\item physical sequential travel, controlled only under the explicit head/crossing model.
+\end{enumerate}
+It should also retire any multiplication of a single-query lower bound by the number of contexts unless a direct-sum theorem forbids sharing.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\textbf{Adopted:} the construction--storage--continuation separation; explicit original-source retention; contextual notation $I\mid_v$; affine/XOR easy controls; peer fixed-length volume bounds; and sequential-head travel as a separate ledger.
+
+\textbf{Rejected as unsupported:} treating entropy, empirical utility, certified potential decrease, and runtime savings as interchangeable; treating a successful short representation as evidence that it is cheaply discoverable; and transferring tape crossings into indexed RAM probes.
+
+\textbf{FALSIFIED/RETIRED:} multiplying per-query source-probe lower bounds across a persistent batch; additive singleton values under XOR synergy; and universal one-bit progress for nonlinear pointwise support potentials.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any claim that $M$ future contexts inherently require $M$ times a one-context source cost is stale without a direct-sum or no-reuse hypothesis.  Any claim that a small summary follows from answer-vector counting must also charge its construction and acknowledge that retaining the original $A$ is legal.  Conversely, the counting theorem alone cannot force a summary exponential in the source encoding length: there are at most $2^{N+1}$ binary descriptions of length at most $N$.
+
+\section{Reproducible computation}
+
+The accompanying standard-library Python reproducer ran in $13.981709$ seconds.  It checked:
+\begin{itemize}[leftmargin=*]
+\item $4{,}405{,}362$ affine rank-drop cases for $b\le5$, all drops in $\{0,1\}$;
+\item XOR synergy and redundancy controls;
+\item $2^{\rank W}$ answer-vector identities over $2{,}550$ source evaluations;
+\item $442$ coordinate-frontier points and $638{,}976$ exact source/protocol checks for $b\le12$;
+\item caching controls for $b\in\{8,16,32,64\}$ and $M\in\{b,2b,4b\}$;
+\item Horn rare-branch identities for $2\le t\le32$; and
+\item the peer volume identities through $m=7$, including $V(23,3)=2048$.
+\end{itemize}
+The code and raw JSON are stored beside this report.  Their SHA-256 hashes are respectively
+\texttt{04bfe464078ad1db}\allowbreak\texttt{694df79c72e68145}\allowbreak
+\texttt{5f37aec6168688d6}\allowbreak\texttt{79e4b8ba353b575e}
+and
+\texttt{1733ecabad6a6660}\allowbreak\texttt{508a64f69568a423}\allowbreak
+\texttt{0fcbb0a9a4205389}\allowbreak\texttt{6fc474d0ee4ac1f3}.
+
+\section{Ranked proof-obligation ledger}
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{OPEN, highest value:} determine the exact batch frontier for a rank-$r$ parity family with $r<b$ as a function of row-space locality/generalized support, allowing nonlinear fixed-length summaries and adaptive probes.
+\item \textbf{OPEN:} formulate a SAT-context batch whose answer-vector separation is authenticated without already solving SAT, then prove or falsify a nontrivial $R_{\mathcal A,\mathcal B}$ bound.
+\item \textbf{OPEN:} identify a nonlinear potential with certified bounded primitive progress that survives XOR synergy, affine compression, and original-formula retention; or prove a minimal counterexample.
+\item \textbf{OPEN:} transport any indexed-cell statement to a specified tape or fixed-UTM model with head position, crossings, cell width, and memory changes charged on the same execution.
+\end{enumerate}
+
+\section{Final claim and next lemma}
+
+\textbf{PROVED/EXACT, exact scope.}  In the deterministic indexed binary-source-cell model with at most $P_{\rm src}$ preprocessing probes, at most $L$ persisted source-dependent bits, and at most $Q_{\rm src}$ continuation probes across an entire fixed batch, exact computation of $R$ distinct batch answer vectors requires
+\[
+\min(P_{\rm src},L)+Q_{\rm src}\ge\lceil\log_2R\rceil.
+\]
+For a full-rank linear parity batch, the right side is $b$; for coordinate batches the whole line $P_{\rm src}=L$, $Q_{\rm src}=b-L$ is attainable.  Consequently, multiplying a single-query probe lower bound by batch size is \status{FALSIFIED/RETIRED} when persistent caching and retained-source access are permitted.
+
+\textbf{Next specific lemma.}  Prove or falsify an exact generalized-support/locality refinement for rank-$r<b$ parity batches under arbitrary nonlinear fixed-length summaries and adaptive raw-coordinate probes; only after that should an authenticated SAT-context transport be attempted.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::BATCH-RANK-AMORTIZATION-REFEREE211
+\end{document}
