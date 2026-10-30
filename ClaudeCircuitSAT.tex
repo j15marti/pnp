@@ -1,0 +1,67 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append-by-section, newest log entry last
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT}
+\author{Claude (hourly routine) --- living document}
+\date{Last updated: 2026-10-30}
+\begin{document}\maketitle
+
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional superpolynomial lower bound for Circuit-SAT. Status labels: PROVED, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Goal and plan}
+Find (possibly parameterized) lower bounds for Circuit-SAT by building circuits step by step, tracking the minimum number of gates/wires needed at each stage, and growing the number of inputs $n$.
+Parameters: $n$ inputs, $m$ gates, $w=2m$ wires (fan-in 2), plus structural parameters (treewidth/pathwidth $k$, depth).
+
+\section{Model}
+\begin{definition}[AIG]
+A circuit over $x_1,\dots,x_n$ is a sequence of gates $g_i=\ell\wedge\ell'$ where each literal is an input or earlier gate, possibly negated (negation is free, drawn as a wire bubble). $\mathrm{aig}(f)$ is the least number of gates computing $f$. Wires $=2\,\mathrm{aig}(f)$ (plus one output wire).
+\end{definition}
+
+\section{Step ledger: exact minima (COMPUTATIONAL)}
+Script: \texttt{research/agents/claude/circuitsat/aig\_exact.py}. Level-wise BFS over sets of computed functions, stored up to complement; exhaustive, so minima are exact. $n=3$ runs in about 10\,s.
+
+\begin{center}\begin{tabular}{@{}lccl@{}}\toprule
+$n$ & functions (mod complement) & $\max_f \mathrm{aig}(f)$ & number of classes with $0,1,2,\dots$ gates\\\midrule
+2 & 8 & 3 & 3, 4, 0, 1\\
+3 & 128 & 6 & 4, 12, 32, 15, 52, 4, 9\\\bottomrule\end{tabular}\end{center}
+Hardest cases are parity: $\mathrm{aig}(\oplus_2)=3$, $\mathrm{aig}(\oplus_3)=6$ (12 wires), matching $3(n-1)$.
+Hardest-function size grows $0,3,6$ for $n=1,2,3$. The next value ($n=4$) is not computed; plain BFS is too large, so a SAT-based or canonical-form exact synthesis is needed (see Next steps).
+
+\section{Proved: probe lower bound linear in wires}
+\begin{definition}[Probe model]
+The algorithm reads the circuit description through probes ``what are the two inputs of gate $i$ (with signs)?''.
+\end{definition}
+\begin{theorem}[PROVED]\label{thm:probe}
+Any deterministic probe algorithm deciding satisfiability of circuits with $m$ gates needs at least $m-1$ probes (hence $\Omega(w)$).
+\end{theorem}
+\begin{proof}
+Restrict to circuits $\bigwedge_{j=1}^{m'}\ell_j$ (a chain of $m'-1$ AND gates, $m'=m+1$) where $\ell_j$ are literals. It is satisfiable iff no variable appears with both signs. Adversary: answer every probe at position $j$ with a fresh variable, positive. After $q\le m'-2$ probes, two positions $a,b$ are unprobed; the instance is consistent with all answers if both are fresh distinct (satisfiable) and also if $\ell_b=\neg\ell_a$ (unsatisfiable). So $q\ge m'-1=m$ probes are needed. (Using $m'-2<q$ gives $q\ge m'-1$.) \qedhere
+\end{proof}
+\emph{Caveat.} This is just the cost of reading the input. It says nothing about the number of steps after reading, so it is not a P-vs-NP bound.
+
+\section{Parameterized picture}
+\begin{itemize}
+\item \textbf{KNOWN THEOREM (upper bound).} Circuit-SAT with a width-$k$ path/tree decomposition is solvable in $2^{O(k)}\,m$ time by dynamic programming over bags.
+\item \textbf{CONDITIONAL.} Under SETH, SAT on CNFs of pathwidth $k$ has no $(2-\epsilon)^k\mathrm{poly}(m)$ algorithm (Lampis and others, cited from memory; to verify). So the parameterized form $2^{\Theta(k)}\,m$ is tight under SETH.
+\item \textbf{KNOWN, different object.} Gate-elimination gives circuit-size lower bounds of about $3n$ to $3.1n$ gates for explicit functions in the full binary basis. These bound the \emph{size of a circuit}, not the \emph{time to decide satisfiability}, so they do not transfer directly. The step ledger above is the $n\le3$ finite shadow of that quantity.
+\end{itemize}
+
+\section{Link to the repository}
+Surveyed only at the level of file names and the \texttt{AGENTS.md} note this run. Items that look relevant, to be read next run: \texttt{research/agents/claude/world-ledger/} (classification of a candidate as reformulation vs.\ progress), the TPORT barrier (rows L34--L37: alternation trading cannot beat linear time for a UWI-size portfolio), and the ONETAPE note (sequential access, exponent~2). Candidate link: Theorem~\ref{thm:probe} is the linear ``reading'' term; the TPORT/ONETAPE results concern the post-reading time term.
+
+\section{Next steps (CANDIDATE)}
+\begin{enumerate}
+\item Compute $\max_f\mathrm{aig}(f)$ for $n=4$ by SAT-based exact synthesis, chunked under 30\,s runs.
+\item Track wires with fan-out, not only gates: record $\min$ wires over circuits with fan-out cap $\le 2$.
+\item Define a restricted proof model (e.g.\ tree-like resolution on the circuit encoding) where a parameterized bound in $n$ and $k$ is provable, and test it against the ledger.
+\item Read repo notes listed above and write a precise transfer statement or a failed-transfer note.
+\end{enumerate}
+
+\section{Log}
+\begin{itemize}
+\item 2026-10-30: document created; $n\le3$ exact AIG ledger; Theorem~\ref{thm:probe}.
+\end{itemize}
+\end{document}
