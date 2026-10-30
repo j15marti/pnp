@@ -1,0 +1,16 @@
+# LSPV-4 STRICT22-CUBE-SPECTRUM239, peer handoff to LSPV-1/2/3/5
+Date: 2026-10-29 21:36 PDT. Source: issue #2 https://github.com/j15marti/pnp/issues/2.
+
+**PROVED/EXACT, restricted, pending independent referee:** Reusing the preexisting connected proper strict signed exact-(2,2)-3CNF cyclic family F_r from ONE-MODULE-PARETO230, exact #SAT(F_r)=5^r+1, exact source clause equity Q_j=(5^(r-1)-1)/2 for *every* j. All 12r raw opposite-occurrence pairs produce 10r tautologies and 2r distinct width-four non-merge clauses. Exact union of their forbidden assignment cubes is U_r=1-[lambda_+^r+lambda_-^r+1]/4^r, lambda_+/-=(3+/-sqrt17)/2, even though naive sum is r/8. U_r approaches 1, but all nonmerge resolvents leave source saturated UP closure unchanged for every partial assignment. The family is trivially SAT by u_i=1,v_i=0. No SAT runtime lower bound.
+
+**PROVED/EXACT, any strict22 source:** raw source opposite pair count P=4n=3m, so one first-round non-tautological resolution expansion has at most 4n clauses of width <=4 and materialized bit length O(n log n); iterated resolution and full branch-DAG remain OPEN. For full assignment, N2-N1=-3D, |D|<=E, E+3|D|<=m, min(N0(a),N0(~a))=(E-|D|)/2. E is NAE defect, D orientation; neither finds an assignment.
+
+**COMPUTATIONAL:** Complete local Python code SHA256 d610bbe1005167d049febacd4eeed98756f4a9040e60f91fe6da34d93b64557e, full raw JSON SHA256 c9b461efa7b7034628517c5629cb76e6f4745948c5a30f36586b6327fcf0d24d. Two chunks r=3..5 and 6..8, under 30 seconds each. Exact full-assignment checks 37,376, r3 all 19,683 partial UP states, 800 seeded larger partials, UP/eager/failed/portfolio same-run selected work and tracemalloc. Independently runnable GitHub JS spotcheck and numerical JSON reproduce the r3..5 Q/count/union identities and all r3 UP states. Separate SAT/UNSAT, 2SAT, Horn and odd-Tseitin parity controls. The selected-work units are NOT exact TM steps. No formal kernel verification.
+
+**FALSIFIED:** Treating deduplicated or non-deduplicated static forbidden-cube coverage as a guaranteed useful UP or runtime equity. F_r has high true coverage but all 2r non-taut resolvents are non-merge and UP redundant. Source clauses already forbid the complete assignments, so marginal full-assignment union gain is zero.
+
+**Primary:** Davis-Putnam 1960 DOI 10.1145/321033.321034; Babka et al. AI 2013 DOI 10.1016/j.artint.2013.07.006; Li et al. AI 2020 DOI 10.1016/j.artint.2019.103197. GitHub CaDiCaL src/vivify.cpp blob fe37a00a and src/subsume.cpp blob 99399d1a examined. Peer handoffs and proofs separately inspected.
+
+**Next:** Find matched strict22 SAT/UNSAT with genuinely beneficial merge resolvents and jointly charged conditional prefix coverage, failed strategies, peak space, source witness/proof checks, not additive static cubes. Preserve five roles and schedules. P vs NP OPEN.
+
+**Transport:** GitHub report, executable JS spotcheck and summary are persistent on verified readback. Full Python and expanded four-page PDF are user-visible sandbox artifacts, NOT claimed GitHub/Library persisted. Library container_path upload returned container_session_unavailable; directory created only.
