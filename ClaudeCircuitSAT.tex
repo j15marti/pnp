@@ -1,0 +1,86 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::CCSAT-0001::2026-10-30
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\title{Claude's Circuit-SAT Lower-Bound Ladder (living document)}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-10-30 (run CCSAT-0001)}
+\begin{document}
+\maketitle
+
+\paragraph{Status.} Nothing here separates P from NP. \textbf{P versus NP remains OPEN.} Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED. This document is edited in place each run; Section~\ref{sec:log} is the append-only run log.
+
+\section{Goal and plan}
+Find (possibly parameterized) lower bounds for Circuit-SAT. Method: start from the simplest circuits, add inputs one at a time, record the minimum number of wires needed at each step, and record what any SAT algorithm must do on those instances. Parameters: $n$ = inputs, $g$ = gates, $m$ = wires. In the model used, gates are fan-in-2 AND with free negation on wires, so $m=2g$ (plus one output wire).
+
+\section{Model and instance family}
+A circuit is a DAG over inputs $x_1,\dots,x_n$ with fan-in-2 AND gates; each wire may carry an inversion. OR is AND with inverted wires (De~Morgan), so this basis is $\{\wedge,\vee,\neg\}$ with negation free. Circuit-SAT: given $C$, decide whether some $a\in\{0,1\}^n$ has $C(a)=1$. The encoding is the wire list: for every wire, its source node and inversion bit.
+
+\section{Computational ladder (COMPUTATIONAL)}
+\texttt{research/agents/claude/circuitsat/ladder.cpp} enumerates all circuits level by level (states deduplicated as sets of gate functions, functions normalized up to complement). Raw output: \texttt{ladder\_results.txt}. Counts below are numbers of functions, normalized up to complement, with exact minimum gate count $g$; row $g=0$ includes the constant and the $n$ inputs. Search for $n=4$ was cut at 6 gates (runtime about 15\,s, the 30\,s budget).
+
+\begin{center}
+\begin{tabular}{lrrrrrrr}
+\toprule
+$n$ & $g{=}0$ & 1 & 2 & 3 & 4 & 5 & 6\\
+\midrule
+1 & 2 & & & & & &\\
+2 & 3 & 4 & 0 & 1 & & &\\
+3 & 4 & 12 & 32 & 15 & 52 & 4 & 9\\
+4 & 5 & 24 & 128 & 470 & 1168 & 3232 & 5308\\
+\bottomrule
+\end{tabular}
+\end{center}
+For $n\le 3$ the enumeration is complete (2, 8, 128 classes). For $n=4$ it found 10335 of 32768 classes and is incomplete beyond 6 gates; the $g=6$ entry counts functions whose minimum is exactly 6 among those found, and the unfound classes need at least 7 gates.
+
+Exact minima read from the table: parity needs $3$ gates for $n=2$ and $6$ for $n=3$. A function with exactly one satisfying assignment needs $1,2,3$ gates for $n=2,3,4$, i.e.\ $n-1$.
+
+\section{Proved facts}
+\begin{lemma}[PROVED/EXACT: wire ladder for unique-SAT]
+A circuit that depends on $n$ inputs needs at least $n-1$ fan-in-2 gates, hence at least $2(n-1)$ wires; the minterm $x_1^{a_1}\wedge\dots\wedge x_n^{a_n}$ attains this. So the minimum wire count of a satisfiable instance with a unique solution is $2(n-1)$, matching the ladder $1,2,3$ above.
+\end{lemma}
+\begin{proof}
+Each gate merges at most two connected components of the graph on inputs; $n$ inputs reached from one output need $n-1$ merges. The chain of ANDs with inversion bits $a_i$ achieves it.
+\end{proof}
+
+\begin{lemma}[PROVED/EXACT: reading lower bound $\Omega(m)$]
+Any deterministic algorithm that decides Circuit-SAT by probing the wire list must probe $\Omega(m)$ wire entries on some instance.
+\end{lemma}
+\begin{proof}
+Take the chain $g_i=g_{i-1}\wedge \ell_i$ with $\ell_1=x_1$ and $\ell_i\in\{x_1,\neg x_1\}$ for $i\ge2$ ($m=\Theta(n)$ for any fixed padding with other inputs). The instance is satisfiable iff no $\ell_i=\neg x_1$. Answer every probe as ``$\ell_i=x_1$''. If some $\ell_j$ were never probed, flipping it to $\neg x_1$ gives an unsatisfiable instance with the same transcript, so a correct algorithm probes all $\ell_j$.
+\end{proof}
+
+\begin{lemma}[PROVED/EXACT: black-box $2^n$]
+If the circuit is only accessible by evaluation queries, finding or deciding a unique satisfying assignment needs $2^n$ queries in the worst case (adversary answers 0 until one point remains). With $m$ wires per evaluation this is $\Omega(m2^n)$ time in the query-charged model.
+\end{lemma}
+\emph{Caveat.} Lemma~3 is a black-box bound. It is \emph{not} a white-box bound: the minterm instances above are solved in time $O(m)$ by reading the wires. White-box $2^{(1-\epsilon)n}$ is the SETH-type CONDITIONAL statement, not proved here.
+
+\section{What the ladder shows}
+\begin{enumerate}
+\item Size-minimal unique-SAT circuits ($m=2(n-1)$) are easy: the solution is written in the inversion bits. Any hardness must come from instances whose wire count is large relative to the information needed to describe the solution.
+\item The only unconditional bound reached so far is linear, $\Omega(m)$ (Lemma~2), uniformly in $n$. The parameterized shape to aim for is $T(n,m)\ge m\cdot f(n)$ with $f$ superpolynomial; this is OPEN, and by Lemma~3 it can only come from white-box reasoning.
+\item The minimum-gate table is a tool for choosing test families, not itself a lower bound.
+\end{enumerate}
+
+\section{Link to the repository (read this run)}
+Read: \texttt{AGENTS.md}, the world ledger (\texttt{research/agents/claude/world-ledger/}), the TPORT and ONETAPE notes. Useful items:
+\begin{itemize}
+\item KNOWN THEOREM (Williams 2008, Buss--Williams 2015, ledger row L13): SAT cannot be solved in time $n^{c}$, $c<2\cos(\pi/7)\approx1.80$, with $n^{o(1)}$ space. A circuit with $m$ wires converts to a CNF of size $O(m)$ by Tseitin, so Circuit-SAT inherits $m^{1.80-o(1)}$ for time with $m^{o(1)}$ space (conversion adds variables, which is harmless for the size parameter $m$). This is the strongest unconditional superlinear bound available for the parameter $m$, in the time--space model only.
+\item Ledger row L34/L35 and the ONETAPE note: alternation-trading proofs cannot reach linear-time portfolio bounds at the UWI size; one-tape bounds do not separate P from NP. These bar certain proof styles for a ``portfolio'' form of the problem; they do not bear on the white-box lower bound above directly.
+\end{itemize}
+Status of transfer: the time--space bound is a direct consequence (Tseitin) and counts as KNOWN THEOREM; no new theorem is claimed.
+
+\section{Next targets}
+\begin{enumerate}
+\item Finish $n=4$ at 7--9 gates in chunked runs (each under 30\,s), and run $n=5$ with 1--5 gates; record the minimum wire count for every function class and its number of satisfying assignments.
+\item Define a hardness parameter $h(C)=m-2(n-1)$ (``excess wires'') and try to prove or refute that instances with excess $h$ require time growing in $h$ beyond reading.
+\item Study restricted white-box models (read-once, monotone, bounded depth) where lower bounds for fixed $n$ may be provable exactly, then raise $n$.
+\end{enumerate}
+
+\section{Run log}\label{sec:log}
+\begin{itemize}
+\item 2026-10-30, CCSAT-0001: created document; built and ran the ladder ($n\le4$); proved Lemmas 1--3; linked to Williams time--space bound. No lower bound beyond linear obtained.
+\end{itemize}
+% END_OF_CLAUDE_CIRCUITSAT::CCSAT-0001
+\end{document}
