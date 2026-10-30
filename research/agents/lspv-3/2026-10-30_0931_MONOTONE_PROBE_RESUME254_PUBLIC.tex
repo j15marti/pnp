@@ -1,0 +1,80 @@
+\documentclass[11pt]{article}
+\usepackage[margin=.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{LSPV-3: Monotone Probe Resumption 254}
+\date{30 October 2026, 09:31 America/Los\_Angeles}
+\begin{document}\maketitle
+\noindent\textbf{Status:} fixed-formula resumption and stated implementation accounting PROVED/EXACT, independent mathematical review pending. Incremental unit propagation and failed-literal probing are KNOWN methods; no novelty claimed. Stale nonconflict answers and universal cache speedup are FALSIFIED. All benchmark numbers are COMPUTATIONAL. P versus NP remains OPEN.
+
+\section{Target, search, and prior work}
+After BINARY-TRIGGER-PROBE253, test whether a nonconflicting probe can be retained, whether its whole propagation state can be resumed after new base facts, and whether reuse improves total work. Issue 3 was freshly read. The complete prior archive, actual engine and audit source were inspected. Project search used ``probe cache nonconflicting reuse invalidation''. Root main.tex was read at blob 25968b221476bcaee108eb0b73dde0ef8ca6def4. Actual Z3Prover/z3 source src/sat/sat\_probing.cpp, blob 1e4421a1446df06152ed1dd9e296a33563f5a5d2, has cache\_bins/reset\_cache/try\_lit; this supplies implementation precedent, not verification of the present code. Gwynne--Kullmann, JAR 52(1),31--65 (2014), DOI 10.1007/s10817-013-9275-8, and Biere--Jarvisalo--Kiesl, Handbook of Satisfiability chapter 9 (2021), are the primary logical background. AGENTS/CODEX and the project skill were available from actual preceding reads. No claim of an exhaustive whole-corpus review or kernel proof.
+
+\section{Stale answers fail even on strict22}
+For $H=(\neg p\vee u)\land(\neg u\vee v\vee r)\land(\neg u\vee\neg v\vee r)$, probing $p=1$ yields $u=1$ without conflict. Adding base fact $r=0$ is consistent with the cached values, but propagation then conflicts. Thus checking consistency of old cached assignments alone is not enough.
+
+On the authenticated connected strict22 SWAP6 source, the probe $x_5=0$ under base $x_2=x_8=0$ only propagates $x_{14}=0$. Adding $x_{10}=0$ makes original $C_3$ force $\neg x_{13}$, $C_{20}$ force $\neg x_1$, $C_8$ force $x_7$, and $C_9=(x_1\vee\neg x_7\vee x_{10})$ conflict. Full source clauses are in the independent checker. There are 54 models, all with $x_2=1$. This consequence is prior; the cache invalidation test is the current contribution.
+
+\section{Exact identity and acquisition bound}
+Let $U_F(\alpha)$ be the complete unit-propagation closure, including assumptions, or $\bot$. Union of contradictory assignments is $\bot$.
+\begin{theorem}
+For fixed CNF $F$, base assignments $\alpha\subseteq\beta$ and probe $p$, if $U_F(\alpha\cup\{p\})=\tau\ne\bot$, then
+\[
+U_F(\beta\cup\{p\})=U_F(\tau\cup\beta).
+\]
+\end{theorem}
+\begin{proof}
+Each source-unit derivation under the smaller assumptions persists under the larger assumptions unless a conflict occurs first. Its conclusion is still unit, already true, or opposed by a base fact, making its reason clause false. Hence every cached consequence is already in the new least fixed point. Conversely the cached assignment and new base contain all new assumptions. Monotonicity gives equality, including conflict outcomes.
+\end{proof}
+Enqueue newly assigned variables and inspect every original clause containing them; propagate newly unit source clauses. Only such clauses can change status from the former fixed point, so queue exhaustion gives the exact new fixed point. Do not reuse this state after backtracking, source rewriting or added clauses. The implementation discards all sessions before another DPLL node is processed. Conditional consequences are never committed unconditionally.
+
+\begin{theorem}
+On an indexed word RAM, let $N$ be source bits, $n$ occurring variables, $\ell$ literal occurrences and $w$ maximum width. One full failed-literal closure can be implemented with at most $2n$ monotone probe sessions in
+\[
+O(N+nw\ell+n^2\log(n+2))
+\]
+word operations and $O(N+(\ell+n^2)\log(N+2))$ stored bits, including unsuccessful probes, discovery, base updates and independently replayable source-unit certificates.
+\end{theorem}
+\begin{proof}
+Within each session a variable is assigned and enqueued at most once. Each clause is inspected at most its width times, costing at most its squared width; all clauses therefore cost at most $w\ell$ per session. Each session consumes at most $n$ new base-log records. There are at most $n$ committed failed literals and $n+1$ candidate scans; candidate sorting costs $O(n^2\log(n+2))$. On every conflict the implementation regenerates a fresh source-reason trace from current assumptions, charging $O(w\ell+n)$ each time. Base propagation and checking have the same bound. At most $2n$ assignments of size $n$, and $n$ proof traces of length at most $n$, use $O(n^2)$ records. Source and occurrence index are also charged.
+\end{proof}
+For strict22, $\ell=4n,w=3$, giving a conservative $O(N+n^2\log(n+2))$ per-closure upper bound. The complete DPLL tree can still be exponential. No RAM bound is silently transferred to tape-head or crossing counts. A native tape implementation needs separately charged access and simulation.
+
+\section{Connected repeated-probe family}
+In numerical variable order $p_1,\ldots,p_k,z,y_1,u_1,\ldots,y_k,u_k$, use
+\[
+F_k=\bigwedge_i(\neg p_i\vee z)\land\bigwedge_i[(\neg y_i\vee u_i)\land(\neg y_i\vee\neg u_i)\land(\neg y_i\vee z)].
+\]
+This connected 2CNF has $3k+1$ variables and $4k$ clauses. With the specified ascending probe policy, each $p_i$ is revisited before every next failed $y_j$. Fresh propagation rescans all previous base facts, giving $\Theta(k^3)$ selected events; resumption consumes each new fact once per session, giving $\Theta(k^2)$. A counting-scan candidate selector realizes the quadratic word-RAM bound; generic comparison sorting adds the stated logarithmic upper factor. The Python benchmark counts selected events, not all sort comparisons. Live assignment records grow from $\Theta(k)$ fresh to $\Theta(k^2)$ cached on this family.
+
+This is not a hard SAT family: all-zero is a witness and 2SAT is legal. It measures one closure procedure, not fastest SAT decision.
+\begin{center}\small
+\begin{tabular}{rrrrr}
+\toprule $k$&Fresh events&Resumed events&Fresh peak bytes&Resumed peak bytes\\\midrule
+8&12575&5214&21096&47208\\
+16&75319&18930&39648&94560\\
+32&511079&71898&74152&226488\\
+64&3741895&279978&147192&608584\\\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Strict22 and adversarial measurements}
+Same source, branch order, indexed UP engine and independently checked certificates are used. Fresh and resumed probing have identical proof objects and DPLL nodes. Caches save only recomputation, not new logical branches.
+\begin{center}\small
+\begin{tabular}{lrrr}
+\toprule Input&UP baseline&Fresh probes&Resumed probes\\\midrule
+W1 UNSAT&24656&9151&10294\\
+SWAP6 SAT&12442&7547&7700\\
+Renamed SWAP6 SAT&1804&7575&8136\\
+Tseitin UNSAT&2057&4153&4677\\
+Dense SAT&2119&5568&5264\\\bottomrule
+\end{tabular}
+\end{center}
+Complete clause-extreme diagnostics add 10616 events on each canonical 15-variable source: W1 audit+resumed is 20910; SWAP6 is 18316. The cache is worse on the tested strict22 inputs. An external PySAT installation failed; no industrial CDCL comparison is claimed. XOR/GF(2), Horn, binary and dense controls remain legal.
+
+Fresh primary audits preserve every original signed occurrence, $S/U$ targets and inversions, pair SS/SU/US/UU modes, partial statuses, coherent endpoints, complement identities and flip trails. Rechecked 15548 pair modes, 616 triple modes and 2636912 clause/complement identities. Two hundred random formulas gave exact fresh/cached closure proof matches and 400 truth-table decisions. Independent repeated-scan UP checked 3510 resumption steps on 1200 formulas. Eighty connected strict22 roots were checked under pins, yielding 77 SAT and three UNSAT cofactors; cofactors are not strict22 roots. Five corrupt proofs were rejected. Eleven benchmark inputs, three methods, five timing repetitions preserved logical outputs and counts.
+
+The separate compact public checker performs its own 600-formula, 1816-step resumption audit and exhausts SWAP6. Its output is not presented as a rerun of all performance experiments. Full producer, PDF and detailed data are in the conversation archive, not claimed fully GitHub/Library-synchronized. Root integration is PENDING; no root text or schedule was modified.
+
+\paragraph{Next lemma.} Find a checkable activation/eviction condition limiting cache allocation and replay across a complete changing search, without a free answer bit. Safe local reuse and procedural amortization do not imply a universally cheaper SAT controller or polynomial all-input coverage. P versus NP remains OPEN.
+\end{document}
