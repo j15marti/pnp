@@ -1,0 +1,98 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::CIRCUITSAT-0001::2026-10-30
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}\newtheorem{claim}{Claim}
+\title{Claude Circuit-SAT Lower Bounds: A Wire-by-Wire Ladder}
+\author{Claude (hourly routine); living document}
+\date{Last updated 2026-10-30 (run CIRCUITSAT-0001)}
+\begin{document}\maketitle
+
+\section*{0. Status (read first)}
+\textbf{P versus NP remains OPEN.} No super-linear unconditional lower bound for
+Circuit-SAT in a general model is known or claimed here. Status labels:
+PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+This document is edited in place; each run appends to the Run Log (\S7).
+
+\section{Model and parameters}
+A circuit is a DAG of $m$ fan-in-2 gates over the full binary basis $B_2$, with $n$ inputs
+and $w=2m$ wires (gate-input pointers). \emph{White-box} model: the algorithm reads the
+wire list. \emph{Black-box} model: it only evaluates $C$ on chosen assignments.
+Parameters: $n$ (inputs), $m$ (gates), and a structural width $\omega$
+(frontier width, \S5). A lower bound is allowed to be a function $T(n,m,\omega)$.
+
+\section{Step ladder: exact small-$n$ data (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/ladder.py}. $C^*(n)$: maximum over $n$-variable
+functions of minimum gate count (negation of a bare input costs a gate; gates absorb negations).
+$L^*(n)$: maximum minimum formula leaf count (free negation, fan-out 1).
+$U(n)$: minimum gates of a circuit with \emph{exactly one} satisfying assignment.
+\begin{center}\begin{tabular}{lcccc}\toprule
+$n$ & $C^*(n)$ & $L^*(n)$ & $U(n)$ gates & $U(n)$ wires\\\midrule
+1&1&1&0&0\\ 2&1&2&1&2\\ 3&4&5&2&4\\ \bottomrule\end{tabular}\end{center}
+$n=4$ is not yet computed (naive set-BFS and formula DP too slow; see \S7 plan).
+
+\section{Proved lower bounds}
+\begin{theorem}[Unique-SAT wire floor; PROVED/EXACT]\label{t:floor}
+A circuit with exactly one satisfying assignment on $n$ inputs has $\ge n-1$ gates and
+$\ge 2(n-1)$ wires; equality is attained (a conjunction tree of literals).
+\end{theorem}
+\begin{proof} If an input $x_i$ is outside the output's cone, flipping it keeps the satisfying
+assignment satisfying, giving two solutions. So all $n$ inputs lie in the cone of the output;
+a fan-in-2 DAG whose output reaches $n$ distinct leaves has $\ge n-1$ gates. Equality: AND tree
+with gates absorbing negations. Matches $U(2)=1,U(3)=2$ above. \end{proof}
+
+\begin{theorem}[White-box read bound; PROVED/EXACT, trivial]\label{t:read}
+Any deterministic algorithm deciding Circuit-SAT from the wire list must read
+$\ge m-1$ gate pointers on worst-case input, for $n\ge m$.
+\end{theorem}
+\begin{proof} $C_0$: $g_1=x_1\wedge\neg x_1$, $g_i=g_{i-1}\wedge x_i$ ($2\le i\le m$), output $g_m$:
+unsatisfiable. $C_i$ ($2\le i\le m$): rewire the first input of $g_i$ from $g_{i-1}$ to $x_i$;
+then $g_m=x_i\wedge\dots\wedge x_m$, satisfiable. $C_0,C_i$ differ only in the pointer of $g_i$,
+so an algorithm that never reads it answers identically on both. \end{proof}
+Verified exhaustively for $m\le 10$ (\texttt{chain\_check.py}). A randomized $\Omega(m)$
+version follows by Yao with $i$ uniform.
+
+\begin{theorem}[Black-box evaluation bound; KNOWN, trivial]
+Deterministic black-box Circuit-SAT needs $2^n-1$ evaluations (adversary answers 0 until one
+point is left); tight. Unique-SAT instances are the hard case.
+\end{theorem}
+
+\section{What the ladder says (and does not say)}
+The white-box bound is $T\ge\Omega(n+m)$: linear, just input size. The ladder of Theorem
+\ref{t:floor} gives the minimal wire budget needed to \emph{encode a unique witness}, but
+witness existence is cheap; hardness must come from \emph{search}, not encoding. Any step-up
+from $\Theta(m)$ to $2^{\Omega(n)}$ is equivalent to a superpolynomial separation, so by the
+repository ledger (\texttt{research/agents/claude/world-ledger/}) a statement of that strength
+is a reformulation of P$\ne$NP, not progress. Circuit-SAT is linear-time equivalent to
+CNF-SAT up to constants, so Buss--Williams (ledger L13: alternation trading cannot reach SAT
+time exponent $2\cos(\pi/7)\approx1.247$ with $n^{o(1)}$ space) is the strongest relevant
+\emph{known-technique} barrier; the best published SAT time--space bound is a small
+exponent above 1 (repo ARC/FLMV spine, OPEN).
+
+\section{Parameterized view}
+\begin{lemma}[Frontier DP; PROVED, standard]
+Order gates topologically; let $\omega$ be the maximum number of simultaneously live wires
+(wires whose value is still needed later, plus the output). Circuit-SAT is solvable in time
+$O(2^{\omega}\,m)$ by maintaining the set of consistent live-wire assignments.
+\end{lemma}
+So any hard family must have $\omega=\Omega(\log m)$ at least, and unbounded $\omega$ is where
+a lower bound can live: the natural parameterized conjecture is $T\ge 2^{(1-\epsilon)\omega}$
+for \emph{all} orderings, i.e.\ a pathwidth-type bound. CANDIDATE, citation needed:
+SETH-based $(2-\epsilon)^{\mathrm{pw}}$ lower bounds for CNF-SAT parametrized by pathwidth
+(Lampis et al.; not re-verified this run). Unconditionally nothing beyond \S3 is known.
+Next structural question: minimal $\omega$ and minimal wires for circuits that
+\emph{force} each of $n$ inputs to interact with all others (the ``all-pairs wire'' ladder).
+
+\section{Relevant repository links}
+\texttt{research/agents/claude/world-ledger/} (L13, L33--L40); TPORT notes
+(\texttt{2026-10-28\_1326/1452\_CLAUDE\_TPORT-000x.tex}) give barriers for alternation trading with
+program portfolios; ONETAPE note: one-tape crossing sequences also cover NP, so cannot separate.
+No repository artifact yet targets Circuit-SAT wire counts directly (searched).
+
+\section{Run log and plan}
+\textbf{CIRCUITSAT-0001 (2026-10-30).} Created document; ladder $n\le3$; Theorems 1--2; frontier lemma.
+\textbf{Plan:} (a) compute $n=4$ in chunks (circuit size via SAT/DP; stored per-chunk JSON);
+(b) define interaction-forcing circuit family and compute minimal wires/$\omega$ for $n\le 4$;
+(c) test whether $\omega$-lower-bounds follow from crossing-sequence arguments on the frontier
+DP model (restricted model; label CONDITIONAL on model); (d) verify the pathwidth-SETH citation.
+\end{document}
+% END_OF_DOCUMENT_RUN::CIRCUITSAT-0001
