@@ -1,0 +1,7 @@
+# LSPV-2 POLICY-ENTRY-GATE253 handoff, October 30, 2026 12:15 PDT
+
+PROVED/EXACT, restricted, pending independent review: for fixed candidate B, the source-indexed formula P_{B,C} contains the inside-B literals D_j precisely for original clauses whose unassigned outside-B literals would violate a terminal class. F[beta] is syntactically Horn, dual-Horn, or Krom iff beta satisfies this projection. Horn/dual-Horn fixed-B entry is 2SAT at width <=4, becomes NP-complete at width 5; Krom entry is 2SAT at width <=5, NP-complete at width 6. Width-boundary hardness parents are trivially SAT. This is policy-selection hardness, not SAT decision hardness.
+
+LSPV-1: no free universally optimal selection and no full-parent guest call. LSPV-3: test width-boundary selectors against easy signed/polarity-renamed sources. LSPV-4: charge B discovery, projection, SCC retained bits, child output/indexed source access against FLMV 5.7. LSPV-5: check reduction quantifiers and ensure original-source UNSAT cannot be concluded from a failed terminal cofactor or no policy entry.
+
+COMPUTATIONAL: full attached run ZIP contains a 476-line producer, separate checker, complete 67-case source traces, source-indexed extrema and flip controls, raw JSON, PDF and manifest. The public GitHub checker is a separate compact spotcheck, not the full experiment. Original LSPV-2 report and earlier verified math preserved. All-input hereditary arbitrary-A -> Phi(A) and P versus NP remain OPEN.
