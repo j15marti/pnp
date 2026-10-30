@@ -1,0 +1,40 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-30 (run 0001)
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{prop}{Proposition}
+\title{Claude Circuit-SAT Lower-Bound Ledger (living document)}
+\date{Updated 2026-10-30}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is a superlinear unconditional lower bound for Circuit-SAT. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Model and parameters}
+Circuit $C$: fan-in-2 gates over $B_2$ (negation absorbed on edges), $n$ inputs, $g$ gates, $w=2g$ gate-input wires. Circuit-SAT$(n,g)$: given the wire list, decide $\exists x\; C(x)=1$. Parameters of interest: $n$, $g$, $w$, depth, fan-out. Any bound is stated as a function of these.
+
+\section{Step ladder: minimal wires}
+\begin{prop}[PROVED/EXACT, wire floor] A circuit depending on $k$ inputs has $\ge k-1$ gates, hence $\ge 2(k-1)$ wires; AND/XOR trees attain it.\end{prop}
+\emph{Proof.} The gate graph restricted to ancestors of the output, with $k$ input leaves, must be connected as an undirected graph (every depended-on input reaches the output); $g$ gates with in-degree 2 give $g+k$ vertices and $2g$ edges, connectivity needs $2g\ge g+k-1$ only if edges are counted loosely; the sharper count: each gate merges at most two components of the $k$ initial singletons, so $g\ge k-1$. \hfill$\square$
+
+\begin{prop}[COMPUTATIONAL] Exhaustive search (\texttt{research/agents/claude/circuitsat/min\_circuit.py}, results in \texttt{min\_circuit\_results.json}) gives the exact minimum $B_2$ gate counts of all functions on $n\le3$ variables:\\
+\begin{tabular}{c|c|c|c}
+$k$ essential vars & functions ($n{=}3$) & min gates & max gates\\\hline
+0&2&0&0\\1&6&0&0\\2&30&1&1\\3&218&2&4
+\end{tabular}\\
+(for $n=2$: $k=2$ has 10 functions, all 1 gate). So the worst case grows $1,\,4$ gates for $n=2,3$ (wires $2,8$), matching the known $C_{B_2}(n{=}2,3,4)=1,4,7$ pattern started here; $n=4$ is the next step (chunk by function class).\end{prop}
+
+\section{Lower bound for the decision problem (what is actually proved)}
+\begin{prop}[PROVED/EXACT, read-everything bound] In the model where the circuit is given as a wire list with constant-wire symbols allowed, any algorithm (random-access, even randomized with zero error) deciding Circuit-SAT$(n,g)$ must probe $\Omega(w)$ cells.\end{prop}
+\emph{Proof.} Take the AND-tree of $x_1..x_n$ padded to $g$ gates with further AND gates of existing wires; it is satisfiable. Replacing any single wire by the constant $0$ yields an unsatisfiable circuit. An algorithm that skips wire $e$ answers identically on the pair, so is wrong on one. Hence all $w$ wires are probed. \hfill$\square$
+
+This is the trivial linear bound in the description size; it is parameterized by $w$ and is \emph{not} a separation of $P$ from $NP$. It is the base case of the ladder: more inputs force more wires (floor $2(n-1)$), and wires are all that the adversary argument charges.
+
+\section{Next steps (OPEN)}
+\begin{enumerate}
+\item Extend exhaustive minimal-wire table to $n=4$ and record satisfiable-instance extremes (wires vs.\ \#solutions).
+\item Parameterize by treewidth/pathwidth $\tau$: Circuit-SAT is solvable in $2^{O(\tau)}\mathrm{poly}$; seek a matching SETH-style conditional bound (CONDITIONAL, not unconditional).
+\item Import from the repository: the Williams alternation-trading time--space bound and the Buss--Williams barrier ($2\cos(\pi/7)$), the TPORT barrier (rows L34--L37 of the world ledger) in \texttt{research/agents/claude/}. These give unconditional time--space tradeoffs for SAT but no superlinear time bound; whether they transfer to circuit-wire-parameterized instances is OPEN.
+\end{enumerate}
+
+\section{Log}
+Run 0001: created document, wire-floor proposition, read-everything adversary bound, $n\le3$ exact table. Repository corpus (AGENTS.md ledger, world-ledger folder) surveyed only at the index level this run.
+\end{document}
