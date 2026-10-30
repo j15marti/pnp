@@ -1,0 +1,21 @@
+# EXTREME-LOCAL-SUPPORT249 | LSPV-1 five-role handoff | 2026-10-30 05:04 PDT
+
+**Research statuses:** PROVED/EXACT (restricted local original-source extreme cover criterion and enumeration upper bound), COMPUTATIONAL/EXACT finite (source-specific 14-free-variable essential-support certificate), FALSIFIED/RETIRED (seven/eight identical support rule directly on untouched strict22), OPEN P vs NP. Independent referee pending.
+
+**Mandatory primary experiment completed:** For each ORIGINAL clause and signed occurrence x_(i,j), constructed local S_j=all-literals-TRUE and U_j=all-literals-FALSE, both inversions; verified source-indexed SS/SU/US/UU compatibility and actual coherent 0^n/1^n/complement/flip trails, all 0/1/2/3 true-literal categories, and source-parent non-tautological resolvents with excluded original-variable cubes. Full raw audit and repeatable producer in reproducibility bundle, compact repo replay published.
+
+**New restricted exact theorem:** For original indexed residual R=F|rho and any free-variable subset V, R[V] consists of residual source clauses with var(C) subseteq V. The union of U_C falsity cylinders covers the entire {0,1}^V iff R[V] is UNSAT. Thus a source-indexed cover rejects whole original cube rho. At bounded original occurrence degree d and radius r, enumerate connected supports using primal degree <=2d; charged indexed-RAM upper bound O(N+n d r^2 2^r sum_{j=0}^{r-1}(2d)^{2j}), O(N+d r 2^r) peak words. For constant d,r=O(log N) polynomial, otherwise UNKNOWN, not a SAT lower bound.
+
+**Seven/eight same-triple bucket:** Seven distinct original U targets on one exact support force the missing triple pattern; eight yield UNSAT. On untouched strict (2+,2-)-3CNF each variable appears four times, so no such bucket can exist. Do not transfer gain measured on non-strict source.
+
+**Source-specific negative result:** SWAP6 strict22 SAT has 54 models, all x2=1; source-pin x2=0 leaves UNSAT residual with 14 variables. For EVERY one of those 14 variables, deleting residual clauses containing it yields a SAT subformula with explicit independent witness mask. Hence *no* source UNSAT core on fewer than 14 free variables proves the x2=0 cube. LSPV-5's previously authenticated 28-addition width-3 RUP proof is compatible; small-core support and short resolution are not equivalent. Binary inconsistent XOR cycle gives unbounded easy 2SAT hostile control.
+
+**Same-run total-work:** 60-variable connected 7/8 SAT baseline 57301 operations/121 DPLL nodes vs controller 1347/1; 8/8 UNSAT 57505/121 vs 952/0. W1 strict22 UNSAT 15295/151 vs 15535/151; SWAP6 strict22 SAT 7281/78 vs 7521/78. No improvement on strict22 and overhead on XOR; no general speedup. Selected logical event count, not physical machine time. Raw wall/peak memory traced in archive.
+
+**Action by role:** LSPV-2 (builder): seek short source-authenticated correlated inference of forced x2 beyond local 13-variable cores, count acquisition. LSPV-3 (adaptive): use explicit omission masks as hostile controls for fixed Hamming radius and local support rules, both labels. LSPV-4 (auditor): independently audit connected-support walk bound and actual charged cost including controller discovery, matched peak workspace and failed checks. LSPV-5 (red team): replay fourteen essentiality masks and compare to 28-addition RUP, preserve proof/status and root-owner boundaries.
+
+**Next specific lemma OPEN:** a polynomially discoverable correlated clause-incompatibility deduction that recognizes SWAP6 x2=0 and improves *total same-run* work on both SAT and UNSAT strict22, without full subset enumeration or indiscriminate width-three saturation.
+
+**Verified repo paths:** [formal report](../agents/lspv-1/2026-10-30_0504_LSPV-1_EXTREME_LOCAL_SUPPORT249_PUBLIC.tex), [standalone checker](../agents/lspv-1/2026-10-30_0504_LSPV-1_EXTREME_LOCAL_SUPPORT249_compact.py), [compact raw results](../agents/lspv-1/2026-10-30_0504_LSPV-1_EXTREME_LOCAL_SUPPORT249_RESULTS.json). Full original-source indexed dataset and PDF bundled in current turn's persistent artifact; repository compact data is not substituted for exhaustive raw data. Prior source SHA details in report.
+
+**Scientific scope:** Neither P=NP nor P!=NP proved. Exactly five existing agents, same schedules, no new task.
