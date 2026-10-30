@@ -158,6 +158,48 @@ def greedy_xor_controls():
     return rows
 
 
+def fiber_one_probe_ok(fiber, b):
+    """Every parity restricted to fiber is constant or one raw bit (possibly flipped)."""
+    if not fiber:
+        return True
+    for w in range(1 << b):
+        vals = [((w & a).bit_count() & 1) for a in fiber]
+        if all(v == vals[0] for v in vals):
+            continue
+        supported = False
+        for i in range(b):
+            bits = [(a >> i) & 1 for a in fiber]
+            if vals == bits or vals == [1 - x for x in bits]:
+                supported = True
+                break
+        if not supported:
+            return False
+    return True
+
+
+def exhaustive_nonlinear_one_bit_summaries():
+    rows = []
+    for b in (3, 4):
+        nsources = 1 << b
+        valid = 0
+        for mapping in range(1 << nsources):
+            fibers = [[], []]
+            for a in range(nsources):
+                fibers[(mapping >> a) & 1].append(a)
+            if all(fiber_one_probe_ok(f, b) for f in fibers):
+                valid += 1
+        rows.append({"b": b, "one_bit_summary_maps": 1 << nsources,
+                     "valid_all_parity_one_probe_maps": valid,
+                     "theorem_min_bits": b - int(math.log2(b + 1))})
+    assert rows == [
+        {"b": 3, "one_bit_summary_maps": 256,
+         "valid_all_parity_one_probe_maps": 2, "theorem_min_bits": 1},
+        {"b": 4, "one_bit_summary_maps": 65536,
+         "valid_all_parity_one_probe_maps": 0, "theorem_min_bits": 2},
+    ]
+    return rows
+
+
 def path_telescoping_controls():
     # A three-fact nonadditive gain table. Check every order telescopes to g(U).
     m = 3
@@ -188,6 +230,7 @@ def main():
         "boolean_set_functions_checked": total,
         "reusable_summary_controls": reusable_summary_controls(),
         "greedy_xor_controls": greedy_xor_controls(),
+        "nonlinear_one_probe_peer_referee": exhaustive_nonlinear_one_bit_summaries(),
         "path_telescoping_controls": path_telescoping_controls(),
     }
     canonical = json.dumps(result, sort_keys=True, separators=(",", ":"))
