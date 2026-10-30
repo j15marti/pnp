@@ -1,0 +1,115 @@
+% LSPV-4 PUBLIC PROOF:SPARSE-EXTREME-SLACK244:2026-10-30T01:40:00-07:00
+\documentclass[10pt]{article}
+\usepackage[margin=.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\title{LSPV-4: Sparse Original-Clause Extreme Compatibility, Exact Slack, and a Constant-Size Source-Resolution Cube}
+\author{PNP Circuit Resource Auditor}
+\date{30 October 2026, 01:40 PDT}
+\begin{document}\maketitle
+\noindent\textbf{Status.} PROVED/EXACT for the restricted identities, encodings and family construction (independent mathematical referee pending); KNOWN THEOREM for resolution, 2-SAT SCC, and backdoors; COMPUTATIONAL for finite tests; FALSIFIED/RETIRED as a universal resource inference from a dense S/U matrix or from occurrence slack; P vs NP remains OPEN. The expanded report, exact full Python, raw original-clause-indexed JSON, and four-page PDF are independently downloadable in the run's complete reproducibility bundle; this GitHub public document is a shorter substantive proof.
+
+\section*{Original occurrences and the four extreme modes}
+For each proper original clause $C_j$ and occurrence $x_{i,j}$ of one globally shared variable $x_i$, write $\nu_{ij}=1$ if it occurs negatively. The all-literals-TRUE local target $S_j$ requires $x_i=1\oplus\nu_{ij}$; its inversion, the all-literals-FALSE target $U_j$, requires $x_i=\nu_{ij}$. Inverting $U_j$ returns $S_j$. A normally SAT clause needs only one true literal, not all three. The complete raw experiment stores source indices, signed occurrences, both targets and inversions, all four $SS,SU,US,UU$ joint possibilities, $0^n,1^n$ and coherent flips with every $t_j\in\{0,1,2,3\}$. For full coherent assignments $a$,
+\[
+t_j(\bar a)=3-t_j(a),\quad N_s(\bar a)=N_{3-s}(a),\quad
+t_j(a\oplus M)-t_j(a)=|M\cap L^0_j(a)|-|M\cap L^1_j(a)|.
+\]
+For source clauses $j,k$, the $SS,UU$ modes exist iff there is no opposite-signed shared variable; $SU,US$ exist iff no same-signed shared variable. Both shared-sign types forbid all four local extreme pairs, but may allow ordinary simultaneous disjunctive SAT by middle states.
+
+\begin{theorem}[Exact sparse S/U compatibility representation]
+Let $F$ be a proper signed exact-$(2+,2-)$ 3CNF with $n$ original variables, $m=4n/3$ original clauses, and source bit length $N$. Of the $\binom m2$ source clause pairs, at most $6n$ have a nondefault four-mode compatibility entry. An exact sorted table of these pairs has $O(n\log m)$ bits and is constructible in $O(N+n\log n)$ indexed word-RAM operations, after authenticating the source. Every absent pair has all four modes feasible. An explicit dense four-bit-per-pair matrix takes $4\binom m2$ output bits if materialized, but the compatibility relation itself does not require quadratic retained memory.
+\end{theorem}
+\begin{proof}
+For each original $x_i$, the four source occurrences have two positive and two negative signs. Their six unordered occurrence-pair events comprise two equal-polarity and four opposite-polarity events. Each equal-sign event forbids $SU$ and $US$ for its clause pair; each opposite-sign event forbids $SS$ and $UU$. Properness ensures distinct parent clauses. Sort and merge the $6n$ source-indexed pairs, OR-ing two Boolean flags when a pair appears more than once. Unrepresented pairs share no variable and impose no extreme-mode conflict. Store two $O(\log m)$-bit indices and two flags per unique pair; source scanning, list building, sorting, and record access are charged.
+\end{proof}
+The conservative pair-record payload is at most $6n(2\lceil\log_2m\rceil+2)$ bits, \emph{excluding} original input, occurrences, sorting workspace, object allocation, and stored output. The first eligible $m$ divisible by four where this worst-case payload does not exceed the dense four-mode array is $m=28,n=21$. For the actual connected $H_{200}$, $n=1200,m=1600$, there are $7200$ occurrence-pair events and $5200$ distinct nondefault pairs, so the dense bitpacked four-mode payload is $5{,}116{,}800$ bits versus $124{,}800$ sparse pair-record bits. These are representation estimates, not native machine-peak measurements.
+
+\section*{Exact signed-occurrence balance and backdoor accounting}
+Fix a coherent UP-saturated partial original-variable assignment $\rho$, with $k$ fixed coordinates and no residual empty/unit original clause. Let $c_j$ be the number of already fixed-TRUE source literals and $u_j$ its free literal count. Put $Z=|\{j:c_j=0\}|$, $H_q=|\{j:c_j=q\}|$ for $q=2,3$, $w=|\{j:c_j=0,u_j=3\}|$, and $e=\sum_{c_j>0}u_j$. Define the signed-occurrence slack $d=m/2-H_2-H_3$.
+
+\begin{theorem}[Quantitative UP-saturated slack identity]
+Every such proper strict22 source obeys
+\[
+\boxed{2d=w+e,\qquad w\le 2d.}
+\]
+Choosing one current free variable from each of the $w$ remaining ternary clauses, omitting duplicates, constructs a source-indexed strong 2-SAT backdoor of size $h\le w$. All $2^h$ settings leave residual 2CNF, solved and witnessed by standard SCC. A deliberately conservative indexed-word-RAM implementation using repeated source UP scans and leaf-by-leaf proof checking takes $O(N+2^h nN)$ work and $O(N\log N)$ peak working bits including the parsed source if UNSAT certificates are streamed; explicit proof output may contain $O(2^hN\log N)$ bits and is charged separately.
+\end{theorem}
+\begin{proof}
+Each fixed original variable supplies exactly two TRUE occurrences, so $\sum_j c_j=2k$. Thus $H_2+H_3=\sum_j(c_j-1)_+=2k-m+Z$ and, using $m=4n/3$, $d=2(n-k)-Z$. Each free original variable occurs exactly four times, and at the nonconflicting UP fixed point each uncovered clause has two or three free literals. Thus $4(n-k)=2Z+w+e$. Subtraction gives $2d=w+e$. Picking one free coordinate per length-three residual clause hits all those clauses, so all its complete pin assignments create 2CNF. DFS across these settings, source reconstruction, SCC implication-path certificates, repeated source scans, and proof checking provide the advertised upper bound. The branch tree cannot infer an UNSAT answer bit without exhausting its selected settings.
+\end{proof}
+This uses the previously known 2-SAT backdoor principle [Williams--Gomes--Selman 2003; Nishimura--Ragde--Szeider 2004]. It is not a universal polynomial SAT theorem. The earlier LSPV-1 BALANCED-OCCURRENCE-FIREWALL243 proves the $d=0$ special case. The new exact identity explicitly exposes an \emph{easy} $w=0$ residual with large $d$.
+
+\section*{Connected constant-proof forbidden cube}
+Take the previously verified connected strict22 SAT family $H_r$ with cyclic block $j$ and eight original clauses
+\[
+\begin{array}{ll}
+A_j=(x_{j-1,1}\vee x_{j,3}\vee x_{j,5})&
+B_j=(x_{j,1}\vee\neg x_{j,3}\vee x_{j,6})\\
+C_j=(\neg x_{j,1}\vee x_{j,4}\vee x_{j,5})&
+D_j=(\neg x_{j,1}\vee\neg x_{j,4}\vee x_{j,6})\\
+E_j=(x_{j,2}\vee x_{j,3}\vee\neg x_{j,5})&
+G_j=(x_{j,2}\vee\neg x_{j,3}\vee\neg x_{j,6})\\
+I_j=(\neg x_{j,2}\vee x_{j,4}\vee\neg x_{j,5})&
+J_j=(\neg x_{j,2}\vee\neg x_{j,4}\vee\neg x_{j,6})
+\end{array}
+\]
+with all block indices modulo $r$. This source is connected, duplicate-free, proper strict22 with $n=6r,m=8r$ and SAT witness $(x_{j,1},\ldots,x_{j,6})=(1,0,1,0,1,0)$ for each block.
+
+\begin{theorem}[Large slack, no original source UP, and five-step proof]
+Pin $\rho_r:\ x_{j,5}=x_{j,6}=0$ for every block. The residual $H_r|\rho_r$ is UNSAT but has no empty or unit clause at the source UP fixed point. It consists of $4r$ binary clauses, with $w=0$, $e=8r$, $d=4r$. Nevertheless, original sources derive for any block $j$ the non-tautological forbidden-cube clause
+\[
+R_j=x_{j,5}\vee x_{j,6}\vee x_{j-1,5}\vee x_{j-1,6},
+\]
+collapsing duplicates if $r=1$, by at most five two-premise resolution steps. Its falsifying partial original-variable cube is impossible.
+\end{theorem}
+\begin{proof}
+Under $\rho_r$, $A_j,B_j,C_j,D_j$ become binary, while $E_j,G_j,I_j,J_j$ are already satisfied. None is a unit or empty clause, giving $Z=4r$, $H_2=H_3=0$, and the displayed $d,w,e$. Original-source resolution gives, in order,
+\[
+\begin{aligned}
+P_j&=\operatorname{Res}_{x_{j,4}}(C_j,D_j)
+      =\neg x_{j,1}\vee x_{j,5}\vee x_{j,6},\\
+Q_j&=\operatorname{Res}_{x_{j,1}}(B_j,P_j)
+      =\neg x_{j,3}\vee x_{j,5}\vee x_{j,6},\\
+V_j&=\operatorname{Res}_{x_{j,3}}(A_j,Q_j)
+      =x_{j-1,1}\vee x_{j,5}\vee x_{j,6},\\
+P_{j-1}&=\operatorname{Res}_{x_{j-1,4}}(C_{j-1},D_{j-1}),\\
+R_j&=\operatorname{Res}_{x_{j-1,1}}(V_j,P_{j-1}).
+\end{aligned}
+\]
+For $r=1$ reuse $P_j=P_{j-1}$. Each step is non-tautological with original parent provenance. The pinned cube falsifies $R_j$ and is UNSAT, even while the unrestricted $H_r$ is SAT. A large endpoint/occurrence slack is therefore not a lower bound on source-proof or decision work, even for connected strict22.
+\end{proof}
+
+\section*{Same-input finite results and resource firewalls}
+The expanded Python source (stdlib only, seed 202610300136), its raw JSON and independent JS verifier preserve all local $S/U$ targets and inversions, four-mode source-indexed pair constraints, coherent endpoints and flips, forbidden resolvent cubes, and SAT/UNSAT comparisons. Exhaustive or seeded complement controls: $H_1=64$, CUBE9 $=512$, W1 $=50$, XOR UNSAT $=8$; 10,024 source-consistent UP-saturated strict22 states verified against $2d=w+e$; 162 two-variable residual 2SAT formula checks; 124 non-tautological source-parent resolvents checked. On $H_{200}$, 39,976 sparse-pair mode checks passed. The separate dependency-free JS verifier independently passed 81,952 pair-mode checks, 4,160 complement assignments, and 12 source-resolution DAG checks across $H_1,\ldots,H_{12}$.
+\begin{center}\small
+\begin{tabular}{lrrrr}
+\toprule
+Same input (source and pins)&DPLL nodes&DPLL events&backdoor/controller events&2SAT leaves\\
+\midrule
+$H_1$ SAT root&7&310&377&0\\
+$H_2$ SAT root&9&1015&1146&0\\
+W1 strict22 UNSAT root&151&15217&15380&0\\
+CUBE9 pinned UNSAT&3&138&313&1\\
+W1 pinned nonbinary UNSAT&5&573&1047&4\\
+$H_8|\rho_8$ UNSAT&3&435&1637&1\\
+\bottomrule
+\end{tabular}
+\end{center}
+The charged Python counters include clause and literal reads, unit rounds and conflicts, branch and copy operations, backdoor discovery, failed settings, implication construction, SCC scans, source-indexed proof replay and full witness checking. These are selected logical actions, \emph{not} all native CPU/one-tape/UTM steps. Measured temporary Python allocations exclude the already-existing source. External exhaustive oracles are used for test verification, never as solver inputs. On displayed instances the adaptive backdoor reduces some recursion counts but does not save total selected work. Source relabeling, Gaussian elimination, Horn/2SAT, component splitting, streaming/recomputation, and nonlinear representations remain legal competing approaches.
+
+\section*{Provenance, integrity, and next specific target}
+Reviewed the active issue \url{https://github.com/j15marti/pnp/issues/3}, actual repository \texttt{AGENTS.md}, \texttt{CODEX.md}, project research skill, LSPV-1 BALANCED-OCCURRENCE-FIREWALL243, LSPV-3 PAIRED-MATCHING-CUT244, LSPV-4 ENDPOINT-PLATEAU243, LSPV-5 NAE-OCC2-REFEREE216, and the authentic signed W1 fixture. Kullmann's clause conflict graph and established 2-SAT/backdoor concepts are explicitly credited. The default-branch \texttt{main.tex} fetched for this run is a marker-free 43-character placeholder, so LSPV-4 did not alter it or invent missing synthesis. LSPV-5 owns verified recovery. No task count, identity, enabled state, or schedule was changed.
+
+\noindent\textbf{Next OPEN lemma:} Derive and test an answer-independent low-cost selector for source-authenticated width-at-most-four learned clauses that remains beneficial after charging discovery, failed attempts, source access, SCC, XOR, component decomposition, proof replay, and peak space on a matched infinite SAT/UNSAT strict22 family. Neither P=NP nor P$\ne$NP is proved.
+
+\begin{thebibliography}{9}\small
+\bibitem{K} O. Kullmann, The Combinatorics of Conflicts between Clauses, SAT 2003, DOI:10.1007/978-3-540-24605-3\_32.
+\bibitem{D} M. Davis, G. Logemann and D. Loveland, A Machine Program for Theorem-Proving, Commun. ACM 5 (1962), DOI:10.1145/368273.368557.
+\bibitem{A} B. Aspvall, M. Plass and R. Tarjan, A Linear-Time Algorithm for Testing the Truth of Certain Quantified Boolean Formulas, Information Processing Letters 8 (1979), DOI:10.1016/0020-0190(79)90002-4.
+\bibitem{W} R. Williams, C. Gomes and B. Selman, Backdoors to Typical Case Complexity, IJCAI 2003, \url{https://ijcai.org/proceedings/2003/167}.
+\bibitem{N} N. Nishimura, P. Ragde and S. Szeider, Detecting Backdoor Sets with Respect to Horn and Binary Clauses, SAT 2004, \url{https://ac.tuwien.ac.at/publication/detecting-backdoor-sets-with-respect-to-horn-and-binary-clauses/}.
+\bibitem{Do} J. D\"ocker, Monotone 3-Sat-(2,2) Is NP-complete, arXiv:1912.08032.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::SPARSE-EXTREME-SLACK244
