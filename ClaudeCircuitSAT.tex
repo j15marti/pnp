@@ -1,0 +1,78 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::CSAT-0001::2026-10-30
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newcommand{\status}[1]{\textbf{[#1]}}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT\\[2pt]
+\large Living document}
+\date{Last updated 2026-10-30 (run CSAT-0001)}
+\begin{document}
+\maketitle
+\noindent\textbf{Status.} P versus NP remains OPEN. No unrestricted lower bound for \CSAT{} is claimed. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Start with the simplest circuits, add inputs one at a time, and at each step record (i) the minimum number of wires needed to build the circuit, and (ii) the best provable lower bound on the work to decide satisfiability. Bounds may be parametrized by $n$ (inputs), $m$ (wires), and a structural width $w$ (treewidth or cutwidth).
+
+\paragraph{Model.} Circuit: DAG over $\{x_1..x_n\}$, fan-in-2 gates from $B_2$, one output. $\#\text{wires}=2\cdot\#\text{gates}$ (gate input edges) plus the output designation. $\CSAT$: given the DAG, does some input make the output 1.
+
+\section{Wire ledger (construction side)}
+\begin{proposition}[connectivity] \status{PROVED/EXACT}
+A fan-in-2 circuit whose output depends on all $n$ inputs has at least $n-1$ gates, hence at least $2(n-1)$ gate-input wires. The point function $\delta_a(x)=[x=a]$ meets this: an AND tree of $n$ literals, with negations absorbed into $B_2$ gates.
+\end{proposition}
+\begin{proof}
+Contract the sub-DAG feeding the output: it is connected and contains $n$ input leaves. Each gate adds at most one to the number of components merged (two inputs, one output), so merging $n$ leaves needs $\ge n-1$ gates.
+\end{proof}
+
+\paragraph{Exact minimum sizes, all functions, $n\le3$.} \status{COMPUTATIONAL} (\texttt{research/agents/claude/circuitsat/mincirc.py}, BFS over sets of computed truth tables, output negation free; run time 11\,s, no chunking needed).
+\begin{center}\begin{tabular}{@{}cccl@{}}\toprule
+$n$ & functions & hardest cost $S(n)$ & histogram (gates:count)\\\midrule
+1 & 4 & 0 & 0:4\\
+2 & 16 & 1 & 0:6, 1:10\\
+3 & 256 & 4 & 0:8, 1:30, 2:114, 3:80, 4:24\\\bottomrule\end{tabular}\end{center}
+Point function: $n=2$: 1 gate; $n=3$: 2 gates, matching $n-1$. The 24 four-gate functions for $n=3$ are the first place where the minimum is not just tree-connectivity; classifying them is Next Step~1. Known: $S(4)=7$ (Knuth), not yet reproduced here (state space too large for one 30\,s run; needs a staged search).
+
+\section{Lower bounds on solving (decision side)}
+\begin{proposition}[probe bound, explicit description] \status{PROVED/EXACT}
+Any deterministic algorithm that reads the circuit through gate-probes must probe $\Omega(m)$ gates in the worst case.
+\end{proposition}
+\begin{proof}
+Let $I_0$: $k$ gates $g_i=\mathrm{OR}(x_i,\neg x_i)$ ANDed together (satisfiable). $I_j$: same but $g_j=\mathrm{AND}(x_j,\neg x_j)$ (unsatisfiable). They differ only in the type of gate $j$, so an algorithm that misses gate $j$ cannot separate $I_0$ from $I_j$. Hence $k=\Theta(m)$ probes. \qed
+\end{proof}
+This is a reading bound only; it says nothing about search over assignments.
+
+\begin{proposition}[black-box bound] \status{KNOWN THEOREM}
+If the circuit is accessible only by evaluation, $2^n$ evaluations are necessary (deterministic) and $\Omega(2^{n/2})$ quantumly (BBBV). Not a lower bound for white-box $\CSAT$.
+\end{proposition}
+
+\begin{proposition}[parametrized upper/lower pair] \status{KNOWN THEOREM} / \status{CONDITIONAL}
+Upper bound $2^{O(w)}\cdot\mathrm{poly}(m)$ for treewidth $w$. Under ETH there is no $2^{o(w)}\mathrm{poly}(m)$ algorithm (via CNF-SAT with bounded primal treewidth; the exact base needs SETH and the citation is to be verified, CANDIDATE). The parameter that must grow is $w$: any unconditional $\CSAT$ lower bound of size $2^{\Omega(w)}$ would give $P\ne NP$ for circuits of $w=\omega(\log m)$.
+\end{proposition}
+
+\section{Link to repository work}
+Relevant repository results (read this run: \texttt{AGENTS.md}, \texttt{research/agents/claude/*ONETAPE*}, \texttt{*TPORT*}, world ledger README).
+\begin{itemize}
+\item ONETAPE-0001: one-tape crossing sequences give $\Omega(N^2/\log N)$ for 3-SAT, also nondeterministic; so a model restriction (tape heads) gives quadratic bounds. Analogue for circuits: restricted circuit models (monotone, bounded-width) as the place to look for super-linear wire bounds on a \emph{construction} side; this does not transfer to decision time without a new theorem. \status{CANDIDATE}
+\item World ledger rows L34/L35 (alternation trading barrier) concern time--space bounds for SAT; the circuit-width parameter $w$ here is analogous to the space parameter there. Analogy only.
+\item No existing repository file tracks wire-minimal construction; this document is new.
+\end{itemize}
+
+\section{OPEN / Next steps}
+\begin{enumerate}
+\item Classify the 24 four-gate 3-variable functions; find which satisfiability instances are hardest at $n=3$ in a wire-probing model.
+\item Staged search for $S(4)=7$ and the exact wire ledger for $n=4$ (checkpoint per gate-count layer).
+\item Define a width-parametrized decision model (e.g.\ branching programs over circuit cutwidth $w$) in which $2^{\Omega(w)}$ is provable, and test whether circuit structure of small hardest functions forces large $w$.
+\item Monotone \CSAT{} is trivial (test the all-ones input), so size--width tradeoffs need a non-monotone restriction.
+\end{enumerate}
+
+\section{Log}
+\begin{tabular}{@{}ll@{}}
+2026-10-30 CSAT-0001 & Created document; connectivity bound; exact $n\le3$ minima; probe bound; parametrized frame.
+\end{tabular}
+\end{document}
+% END_OF_VERIFIED_REPORT::CSAT::CSAT-0001
