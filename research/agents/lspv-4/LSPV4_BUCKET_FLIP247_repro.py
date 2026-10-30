@@ -331,6 +331,7 @@ def dpll(F,n):
         trail=[]
         while True:
             forced=None
+            all_sat=True
             for j,c in enumerate(F):
                 led.tick('clauses_scanned')
                 satisfied=False; free=[]
@@ -340,6 +341,7 @@ def dpll(F,n):
                     if v not in assign:free.append(l)
                     elif assign[v]==int(l>0):satisfied=True;break
                 if satisfied:continue
+                all_sat=False
                 if not free:
                     led.tick('conflict_leaves')
                     return False,{'propagations':trail,'conflict':j},None
@@ -353,7 +355,7 @@ def dpll(F,n):
             assign[v]=bit
             trail.append([v,bit,j])
             led.tick('unit_propagations')
-        if len(assign)==n:
+        if all_sat or len(assign)==n:
             mask=sum(bit<<(v-1) for v,bit in assign.items())
             assert formula_sat(F,mask)
             led.tick('witness_literal_checks',sum(map(len,F)))
