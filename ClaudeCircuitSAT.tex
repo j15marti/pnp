@@ -1,0 +1,50 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append-in-place; newest ledger entries at the end of Section 6
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\newtheorem{conj}{Conjecture}
+\title{Claude Circuit-SAT Lower-Bound Ledger}
+\author{Scheduled hourly routine (Claude)}
+\date{Last updated 2026-10-30 (run 0001)}
+\begin{document}\maketitle
+\noindent\textbf{Status: P versus NP remains OPEN. No unconditional super-polynomial Circuit-SAT lower bound is claimed anywhere below.}
+Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Start from the smallest circuit families, count exactly the wires (edges) any circuit computing a target function needs as the number of inputs $n$ grows, and ask which wire-count statements can be turned into a lower bound on solving Circuit-SAT, possibly parameterized (by $n$, wire count $m$, depth, treewidth, fan-out).
+
+\section{Model}
+A circuit is a DAG of fan-in-2 AND gates with free edge negation (AIG). $g(f)$ is the minimum gate count of $f$; the wire count is $w(f)=2g(f)$ plus output wire (internal wires only: $2g$). Circuit-SAT: given $C$ with $n$ inputs and $m$ wires, decide $\exists x\,C(x)=1$.
+
+\section{Two different quantities (important separation)}
+\begin{enumerate}
+\item \emph{Construction cost} $g(f)$: a circuit-size lower bound for a function. Unconditional only for restricted families; for explicit functions in general models only linear ($\approx 3.1n$ gates, Li--Yang 2022, KNOWN THEOREM).
+\item \emph{Solving cost} of Circuit-SAT on an instance: no unconditional super-linear bound in the general RAM/TM model is known (this is essentially P vs NP). Best-known conditional: SETH gives no $(2-\epsilon)^n\mathrm{poly}(m)$ algorithm (CONDITIONAL).
+\end{enumerate}
+A large $g(f)$ forces large \emph{instances}; it forces nothing on the time to \emph{decide} them. Any step of the ladder must therefore be tagged with which quantity it bounds.
+
+\section{Ladder, step by step}
+\paragraph{Step 0 (PROVED/EXACT).} If the output depends on all $n$ inputs, then $g\ge n-1$ and every input has a wire, so internal wires $\ge 2(n-1)$ for the AND chain; $g(\mathrm{AND}_n)=n-1$.
+
+\paragraph{Step 1 (COMPUTATIONAL, exact).} Exhaustive search (\texttt{research/agents/claude/circuitsat/aig\_min.py}, results in \texttt{aig\_min\_results.json}) gives minimum AIG size over \emph{all} functions:
+\begin{center}\begin{tabular}{@{}cccccc@{}}\toprule
+$n$ & #functions & $\max_f g(f)$ & $g(\mathrm{AND}_n)$ & $g(\mathrm{XOR}_n)$ & wires of XOR$_n$\\\midrule
+1&4&0&0&0&0\\ 2&16&3&1&3&6\\ 3&256&6&2&6&12\\\bottomrule\end{tabular}\end{center}
+Gate histogram for $n=3$ (gates:count): 0:8, 1:24, 2:64, 3:30, 4:104, 5:8, 6:18. Matches the known $g(\mathrm{XOR}_n)=3(n-1)$ in this basis for $n\le3$ (Schnorr-type bound is KNOWN THEOREM for general $n$).
+
+\paragraph{Step 2 (PROVED/EXACT, trivial parameterized bound).} Sensitivity argument: for the family of AND chains with one wire's negation flipped, satisfiability changes, so any correct algorithm must read every wire: time $\Omega(m)$. This bounds input-reading only; it is the base of the parameter ladder $T(n,m)\ge m$.
+
+\paragraph{Step 3 (KNOWN THEOREM, black-box).} With only oracle access to $C$, finding a unique satisfying input needs $\Omega(2^n)$ queries (Bennett--Bernstein--Brassard--Vazirani for quantum; $2^n$ classical). Not a white-box bound; relativization applies, so it cannot decide P vs NP.
+
+\section{Parameterized targets (CANDIDATE)}
+\begin{conj}[Wire-ladder, OPEN] For every fixed $d$, Circuit-SAT on circuits with $n$ inputs and $m\le n^{d}$ wires has no $O(m\cdot 2^{o(n)})$ algorithm. This is SETH-flavoured and CONDITIONAL-strength at best.\end{conj}
+Next ladder targets: $n=4,5$ exact minima (search space $2^{16}$, $2^{32}$ functions; use checkpointed orbit enumeration under negation/permutation, chunked to $\le 30$\,s); minimum wires for \emph{unique-solution} functions of high sensitivity; fan-out-bounded and depth-bounded variants where lower bounds exist (e.g.\ Håstad switching for constant depth).
+
+\section{Repository cross-links}
+Relevant corpus: \texttt{research/agents/claude/world-ledger} (rows L13, L34--L40) shows alternation-trading proofs and the one-tape crossing-sequence route cannot separate P from NP; \texttt{research/agents/claude/tport}. Retired route reminder: a polynomial portfolio collapses to one algorithm (L29--L33). Nothing in the ARC/FLMV spine currently supplies a circuit-wire lower bound.
+
+\section{Run log}
+\begin{itemize}
+\item 2026-10-30 run 0001: created document; Step 0--3; exact AIG minima for $n\le3$. No new theorem beyond known facts; open arrow: all of Section 5.
+\end{itemize}
+\end{document}
