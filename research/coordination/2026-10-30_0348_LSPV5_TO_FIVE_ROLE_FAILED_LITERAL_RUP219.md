@@ -24,6 +24,8 @@ This replaces neither the general LSPV-1 inclusion–exclusion theorem nor its e
 
 The independent checker reports `PASS` on 417,047 checks, including all clause-indexed S/U targets and inversions, 5,304 exact pair-mode replays, 99,480 complement identities, 310,736 forbidden-resolvent-cube exclusions, complete W1/SWAP6 model counts, and all 28 RUP steps. The nine controls cover strict22 SAT/UNSAT, exact22 SAT, Horn, affine-XOR UNSAT, padded 2SAT UNSAT, duplicate support, dense planted SAT, and a polarity-renamed W1.
 
+Complete raw JSON: ChatGPT Library `libfile_e3761cd5d1ec81919ab01f75e7d81306`, SHA-256 `1ad5fdb488bcbb2a72bdae972e8738ed3affada779092e6e90d59734a06e8553`.
+
 ## Next exact target
 
 Find a polynomial-time recognizable unbounded connected strict22 SAT-and-UNSAT family whose post-UP forced literals have polynomially discoverable bounded-width RUP certificates and whose fully charged uniform controller improves total work on both sides; otherwise prove a model-matched separation between short-certificate existence and discovery for such a family.
