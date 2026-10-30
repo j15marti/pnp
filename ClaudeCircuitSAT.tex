@@ -1,0 +1,62 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append-only log at bottom; sections revised in place
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}
+\title{Claude's Circuit-SAT Lower-Bound Ladder (living document)}
+\date{Last updated: 2026-10-30 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} No superlinear unconditional lower bound for general Circuit-SAT is claimed. P versus NP remains OPEN.
+Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Build Circuit-SAT bottom-up: for $n=1,2,3,\dots$ inputs, track the minimum number of wires (fan-in-2 gate inputs, so $\mathrm{wires}=2\cdot\mathrm{gates}$) needed to realize each function, then ask what each step costs a solver. The bound is allowed to be parameterized by $(n,m)$ with $n$ inputs and $m$ gates.
+
+\section{Model}
+Instance: a DAG of $m$ fan-in-2 gates over basis $B_2$ (all 16 binary gates), $n$ inputs, one output. Two access models: \emph{black-box} (evaluate $C(x)$) and \emph{white-box} (read gate list entries). $C(f)$ = minimal gate count of $f$; negation is free.
+
+\section{Results so far}
+\begin{lemma}[PROVED, white-box reading bound]\label{l:read}
+In the gate-list query model, any deterministic Circuit-SAT algorithm makes $\Omega(m)$ queries, hence reads $\Omega(m)$ wires.
+\end{lemma}
+\emph{Proof.} Take $g_j=g_{j-1}\wedge x_{j}$ (chain, satisfiable by all-ones). If the algorithm leaves gate $j$ unread, the adversary answers consistently with the chain; replacing $g_j$ by constant $0$ gives an unsatisfiable circuit agreeing on every answered query. Hence all $\Omega(m)$ gates (for $m\le n$ chain length) must be read. \qed
+
+\begin{lemma}[PROVED, black-box bound]
+Any black-box algorithm needs $2^n$ evaluations in the worst case (unstructured search). This does not bound white-box algorithms.
+\end{lemma}
+
+\begin{lemma}[PROVED, step recursion]
+$C_{n+1}\le 2C_n+3$ where $C_n=\max_f C(f)$ over $n$-input $f$ (Shannon expansion plus a 3-gate multiplexer).
+\end{lemma}
+
+\subsection{Minimal-wire ledger (COMPUTATIONAL)}
+Exhaustive BFS over sets of computed truth tables (\texttt{research/agents/claude/circuitsat/mincirc.py}, data \texttt{mincirc\_n2.json}, \texttt{mincirc\_n3.json}). Counts are of functions up to negation.
+\begin{center}\begin{tabular}{rrrrrrr}\toprule
+$n$ & functions & 0 gates & 1 & 2 & 3 & 4 gates\\\midrule
+2 & 8 & 3 & 5 & 0&0&0\\
+3 & 128 & 4 & 15 & 57 & 40 & 12\\\bottomrule\end{tabular}\end{center}
+So $C_2=1$ ($2$ wires), $C_3=4$ ($8$ wires), within the bound $2C_2+3=5$. KNOWN (Knuth): $C_4=7$ in $B_2$. Next run target: $n=4$ with canonical-form pruning, and a monotone/$\{\wedge,\vee\}$ ladder.
+
+\subsection{Parameterized picture}
+\begin{tabular}{lll}\toprule
+Quantity & Bound & Status\\\midrule
+Upper & $O(2^n m)$ brute force & KNOWN\\
+Lower, white-box reads & $\Omega(m)$ & PROVED\\
+Lower, black-box & $2^n$ & PROVED\\
+Lower, any $(2-\varepsilon)^n\mathrm{poly}(m)$ algorithm & excluded under SETH & CONDITIONAL\\
+Unconditional superlinear in $m$ or $n$ & --- & OPEN\\\bottomrule\end{tabular}
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item Connect the ledger to hardness: is there a function family whose minimal circuits force Circuit-SAT instances of size $m$ with $\ge 2^{\Omega(n)}$ \emph{distinct} wire-level obstacles? Gap: wire-count lower bounds for single functions (Shannon counting gives $2^n/n$ existentially) say nothing about solver time.
+\item Parameterize by treewidth/cutwidth of the circuit: SAT in $2^{O(\mathrm{tw})}m$; look for matching conditional bounds and any unconditional restricted-model (e.g.\ resolution, read-once) bounds.
+\item Extend ledger to $n=4$ and track per-step wire increments $\Delta_n$.
+\end{enumerate}
+
+\section{Repository cross-check}
+Repo \texttt{j15marti/pnp} (see \texttt{AGENTS.md}, ledger \texttt{research/agents/claude/world-ledger/}): the TPORT/ONETAPE notes (rows L34--L40) and Buss--Williams (L13) show alternation-trading proofs stall near linear time for SAT with small space; this matches our finding that only linear-type unconditional bounds are accessible by simple adversary arguments. Pointer-level review only; not audited in depth.
+
+\section*{Run log}
+\begin{itemize}
+\item 2026-10-30 run 1: created document, Lemmas 1--3, ledger for $n\le3$.
+\end{itemize}
+\end{document}
