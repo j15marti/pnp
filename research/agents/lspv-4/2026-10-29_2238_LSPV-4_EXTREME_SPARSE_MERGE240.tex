@@ -1,0 +1,52 @@
+% LSPV-4 REPORT::EXTREME-SPARSE-MERGE240::2026-10-29T22:38:01-07:00
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}
+\title{EXTREME-SPARSE-MERGE240: Source-Indexed Sharp Mixed-Pair Bound and a Counterfamily}
+\author{LSPV-4 Circuit Resource Auditor}
+\date{29 October 2026}
+\begin{document}\maketitle
+\noindent\textbf{PROVED/EXACT, restricted; COMPUTATIONAL finite checks; P versus NP OPEN.}
+\section{Source occurrence, inversion and actual global assignments}
+For each source occurrence $x_{i,j}$ of Boolean variable $x_i$ in original proper ternary clause $C_j$, the sign bit $\nu_{ij}$ is zero for a positive literal and one for a negative literal. It is not a separate Boolean variable. The local all-literals-true target $S_j$ requires $a_i=1\oplus\nu_{ij}$, and the all-literals-false target $U_j$ requires $a_i=\nu_{ij}$. Inversion interchanges $S$ and $U$ pointwise, but incompatible local occurrence targets cannot be combined as a legal full assignment.
+For clauses $C_j,C_k$, the pair modes $SS,UU$ are feasible iff no shared original variable has opposite signs, and $SU,US$ iff no shared variable has the same sign. Under legal full $a$, $t_j(\bar a)=3-t_j(a)$, $N_h(\bar a)=N_{3-h}(a)$, and for a flip set $V$, $t_j(a\oplus V)=t_j(a)+|V\cap L_j^0(a)|-|V\cap L_j^1(a)|$. A SAT clause requires one true literal, not three. All source IDs, local targets and inverse targets, pair modes, global endpoints and intermediate flips are recorded in the full attached raw JSON.
+\section{Falsifiable lemma and exact proof}
+\begin{theorem}
+For a proper signed exact-$(2,2)$-3CNF source with $n$ variables and $m=4n/3$ clauses, let $M$ count distinct original-clause pairs sharing at least one same-sign and at least one opposite-sign source variable. Then $M\le2n$. Equality is attained for every $n=3r$, $r\ge1$, by a SAT formula with $4^r$ models and no non-tautological first-round source resolvents.
+\end{theorem}
+\begin{proof}
+Every variable has two positive and two negative original occurrences. Thus it contributes exactly $\binom22+\binom22=2$ same-sign occurrence-pair witnesses. There are $2n$ in total, and every distinct mixed pair counted by $M$ consumes at least one such witness.
+For equality, use the four source clauses
+\[
+C_1=(x\vee y\vee z),\quad C_2=(x\vee\neg y\vee\neg z),\quad
+C_3=(\neg x\vee y\vee\neg z),\quad C_4=(\neg x\vee\neg y\vee z).
+\]
+Each of their six pairs shares exactly one same-sign and two opposite-sign variables, so $M=6=2n$. Every source resolution pivot leaves the other opposite-sign variable and hence gives a tautology. The conjunction is exactly the parity equation $x\oplus y\oplus z=1$, with four satisfying assignments. The disjoint product of $r$ copies has $n=3r$, $M=6r=2n$ and $4^r$ satisfying assignments, with no non-tautological source resolvents. The product is not claimed connected.
+\end{proof}
+For $C_1,\ldots,C_4$, local $S$ targets in variable order $(x,y,z)$ are $111,100,010,001$ and their inverted local $U$ targets are $000,011,101,110$; inverting those $U$ targets recovers the corresponding $S$. All six four-mode matrices contain four false entries. Nevertheless global $111$ has per-clause true counts $(3,1,1,1)$ and $N_{0123}=(0,3,0,1)$, so SAT; complement $000$ has $(0,2,2,2)$ and $N=(1,0,3,0)$, so not SAT. All-extreme incompatibility is not an UNSAT proof.
+\section{Sound source-parent cut and computational model}
+A distinct original pair $(x\vee y\vee z)$ and $(x\vee\neg y\vee w)$ has one same-sign and one opposite-sign shared variable. Source-parent resolution on $y$ gives $R=(x\vee z\vee w)$. Falsifying this resolvent sets $x=z=w=0$ and forces opposing source units $y$ and $\neg y$, excluding the entire subcube by a standard RUP proof. At $z=w=0$ alone, original saturated unit propagation is silent on $x$ while adding $R$ forces $x=1$. Resolution is a KNOWN THEOREM, not a novel rule. A mixed pair with two opposite shared variables gives only tautological pivot resolvents.
+On an indexed word-RAM with $\Theta(\log n)$-bit words, the complete occurrence lists can be built while scanning the encoded source $N$, and at most $6n$ same-variable occurrence pairs need be inspected. A constant-width clause comparison per candidate gives an $O(N+n)$ word-operation sparse four-mode representation with $O(N+n\log n)$ source-plus-index bits and at most $2n$ mixed entries. A dense materialized $m$-by-$m$ matrix instead uses $\Theta(m^2)$ bits. This is not an arbitrary SAT lower bound; single-tape head movement and other models are kept separate.
+\section{Finite same-source SAT/UNSAT resource audit}
+The full dependency-free Python reproducer enumerated 172152 complete assignments across fourteen finite cases, including source-indexed original-clause targets and inversions, exact S/U compatibility, global zero/one and intermediate flips, proof-parent/RUP checking, and exhaustive SAT models for $n\le15$.
+\[
+\begin{array}{l|rr|rr|rr}
+&\multicolumn{2}{c|}{\mathrm{UP/DPLL}}&\multicolumn{2}{c|}{\mathrm{dense\ pair\ scan}}&\multicolumn{2}{c}{\mathrm{sparse\ merge}}\\
+&\mathrm{nodes}&\mathrm{ops}&\mathrm{nodes}&\mathrm{ops}&\mathrm{nodes}&\mathrm{ops}\\\hline
+\mathrm{strict22\ W1\ UNSAT}&151&12205&151&13535&65&11605\\
+\mathrm{strict22\ S\ SAT}&9&978&9&2308&9&2154\\
+\mathrm{tight\ parity\ SAT}&3&91&3&133&3&169\\
+\mathrm{dense\ UNSAT\ 3CNF}&7&194&7&390&3&836
+\end{array}
+\]
+Ops are selected logical-operation counts including clause visits, literal reads, pair inspections, proof checking and writes, not native Turing-machine instructions. Same-run Python peak bytes for W1 baseline versus merge are 3960 versus 14474; for S, 3904 versus 8235. Merge preprocessing may lower W1 total work but increase peak storage, and it does not help S. Neither finite success nor static pair count proves polynomial general SAT complexity.
+\section{Corpus reconciliation, provenance and next lemma}
+CORPUS: active issue \#3 and its user-clarification comments; AGENTS.md blob 19656af1; CODEX.md blob 754999f5; pnp-research skill b8df83a7; LSPV-1 EXTREME-SIGNED-CYCLE240 blob 303d077b, LSPV-2 EXTREME-CYCLE-UP240 c33d493e, LSPV-3 OCCURRENCE-LAZY-MERGE176 0bb351c8, LSPV-4 STRICT22-CUBE-SPECTRUM239, LSPV-5 MAIN213 and SOURCE-RUP-CHAIN164. DUPLICATION: occurrence $P=4n$, four-mode matrix, merge UP and resolution were already known and are adopted. NEW SCOPED AUDIT: the sharp $M\le2n$ count, zero-resolvent equality counterfamily, and fully controlled same-source strategy comparison. FALSIFIED/RETIRED: all-modes-incompatible pairs necessarily yield usable pruning. The old equity direction remains paused; both P=NP and P-ne-NP remain OPEN.
+Local full reproducer SHA256 b26899533d11d86cd7544365f94b0a7142eea3d72b1ba092280a9eb0d1fcfee6, and local full raw JSON SHA256 37a8d6c75db59474100f094df0d58e885f8568faa2661a4a882e9ea7cc49228f. The compact GitHub reproducer and summary are not those full source files.
+NEXT LEMMA (OPEN): exhibit a connected strict22 matched SAT/UNSAT source family whose post-UP source merge deductions save both charged total work and simultaneous peak storage under one declared model.
+\begin{thebibliography}{2}
+\bibitem{kullmann} O. Kullmann, The Combinatorics of Conflicts between Clauses, SAT 2003.
+\bibitem{dp} M. Davis, H. Putnam, A computing procedure for quantification theory, JACM 1960.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::EXTREME-SPARSE-MERGE240
