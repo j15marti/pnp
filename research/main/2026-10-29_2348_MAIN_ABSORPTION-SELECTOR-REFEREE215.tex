@@ -1,0 +1,142 @@
+% LSPV-5 REPORT::ABSORPTION-SELECTOR-REFEREE215::2026-10-29T23:48:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,xurl,longtable}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newcommand{\PROVED}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\FALSE}{\textbf{FALSIFIED/RETIRED}}
+\title{LSPV-5 Formal-Proof Red Team:\\A Parent-Absorption Selector for Clause-Extreme Resolvents}
+\author{LSPV-5 independent referee and synthesis}
+\date{29 October 2026, America/Los\_Angeles}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We execute the issue-3 clause-indexed experiment on eleven SAT and UNSAT controls.  For every original clause and signed occurrence the raw audit constructs the local all-literals-true target $S_j$, its inversion $U_j$, the local all-literals-false target $U_j$, and its inversion $S_j$; it separately evaluates coherent global assignments $0^n,1^n$, complements, and flip trails.  It exhaustively verifies the four-way $SS,SU,US,UU$ pair matrix, bounded multi-clause modes, complement identities, and every prohibited resolvent cube.  The new exact result is a local absorption theorem: for two proper 3-clause parents having exactly one opposite-polarity shared pivot and $s$ same-polarity shared tail variables, their direct resolvent is absorbed by the two-parent formula iff $s=0$.  Thus $s\geq1$ is an exact parent-level selector, but hostile affine controls falsify its use as a full-formula selector.  Charged fixed-order UP--DPLL comparisons show benefit on two UNSAT instances and overhead on most SAT/easy controls.  This is a restricted logical and computational result, not a general SAT algorithm.  P versus NP remains \OPEN.
+\end{abstract}
+
+\section{Question, mechanisms, and machine ledger}
+The missing lemma was whether clause-extreme overlap gives a sound, cheap selector for first-generation source resolvents rather than merely another compatibility diagnostic.  Four falsifiable mechanisms were tested:
+\begin{enumerate}
+\item retain every non-tautological direct source resolvent;
+\item retain exactly candidates with a same-polarity shared tail variable;
+\item retain exactly candidates not absorbed by the full source formula under unit propagation;
+\item reject all candidates and run the same fixed-order UP--DPLL baseline.
+\end{enumerate}
+The experiment uses a deterministic word-RAM-style Python accounting model.  ``Work'' is the declared sum of pair/literal tests, candidate construction reads, UP clause scans, UP literal reads, branch nodes, conflicts, and propagation events.  Derived-clause literal storage, peak assigned cells, and measured Python peak bytes are separately recorded.  The full-formula selector performs and charges one UP probe for every target literal of every candidate.  The comparison is simultaneous per execution; it does not combine an independently smallest time with an independently smallest space.  It is not a Turing-machine lower bound and not industrial CDCL.
+
+\section{Clause-indexed extremes and exact compatibility}
+Let a proper source clause be $C_j=(\ell_{j1}\vee\ell_{j2}\vee\ell_{j3})$.  A signed occurrence $x_{i,j}$ records the source variable and its sign; it is not an independent Boolean variable.  The local target $S_j$ assigns every occurrence so all three literals are true, while $U_j$ assigns every occurrence so all three are false.  Bitwise inversion swaps these targets.  The raw record lists, for every occurrence, its sign, preferred variable value in $S_j$, preferred value in $U_j$, and both inversions.
+
+For two distinct clauses define $s$ as the number of shared variables with equal polarity and $o$ as the number with opposite polarity.  Direct enumeration and the elementary variable-consistency argument agree:
+\[
+ SS,UU\text{ are feasible}\iff o=0,
+ \qquad
+ SU,US\text{ are feasible}\iff s=0.
+\]
+If $s,o>0$, none of the four joint extremes is feasible; hence every coherent full assignment places at least one parent in a middle state with one or two true literals.  This is a local invariant only.  It neither falsifies either disjunction nor certifies SAT or UNSAT.
+
+For every coherent full assignment $a$, the audit also checks
+\[
+ t_j(\bar a)=3-t_j(a),\qquad N_r(\bar a)=N_{3-r}(a),
+\]
+and the exact flip update
+\[
+ t_j(a\oplus H)=t_j(a)+|H\cap F_j(a)|-|H\cap T_j(a)|.
+\]
+The endpoints $0^n$ and $1^n$, complement pairs, and intermediate flips remain coherent source-variable assignments.  Local $S/U$ targets are never merged across incompatible occurrences.
+
+\section{The parent-pair absorption theorem}
+For a CNF $G$, a clause $R$ is \emph{absorbed} when, for every literal $\ell\in R$, unit propagation on $G$ after falsifying $R\setminus\{\ell\}$ either derives $\ell$ or derives a conflict.  This is the standard CDCL absorption notion used by Beame, Kautz, and Sabharwal in their analysis of non-restarting SAT solvers.
+
+\begin{theorem}[exact parent absorption]
+Let $C=(p\vee A)$ and $D=(\neg p\vee B)$ be proper 3-clauses.  Assume that $p$ is their unique opposite-polarity shared variable, so the direct resolvent $R=A\vee B$ is non-tautological.  Let $s$ be the number of variables occurring with the same polarity in both tails $A,B$.  Then $R$ is absorbed by $C\wedge D$ if and only if $s=0$.
+\end{theorem}
+
+\begin{proof}
+Suppose first that $s=0$.  Fix a target literal $\ell\in R$ and falsify every other literal of $R$.  If $\ell\in A$, then all literals of $B$ are false, so $D$ becomes the unit $\neg p$.  Setting $p=0$ makes $C$ unit on $\ell$.  The case $\ell\in B$ is symmetric.  Thus every target literal is forced, and $R$ is absorbed.
+
+Conversely suppose $s\geq1$ and choose a literal $\ell$ appearing with the same sign in both tails.  Falsify every literal of $R\setminus\{\ell\}$.  The two parents reduce to
+\[
+(p\vee\ell)\wedge(\neg p\vee\ell).
+\]
+Neither clause is unit and there is no conflict.  Unit propagation therefore does not derive $\ell$, so $R$ is not absorbed by the parent pair.
+\end{proof}
+
+\begin{corollary}[three distinct selectors]
+Among first-generation direct source resolvents, $o=1$ is exactly the non-tautological-direct-resolvent condition; $o=1,s\geq1$ exactly selects non-absorption by the two parents; and non-absorption by the entire formula requires testing or another independently proved sufficient condition.  Extra clauses can absorb a parent-nonabsorbed resolvent.
+\end{corollary}
+
+The theorem is independently recreated here rather than inferred from finite tests.  Exhaustive enumeration nevertheless checked all 1,776 candidates generated by the controls and found no counterexample.
+
+\section{Prohibited cubes and proof provenance}
+For opposite occurrences $(p\vee A)$ and $(\neg p\vee B)$ with a non-tautological resolvent $R=A\vee B$, falsifying every literal of $R$ yields both units $p$ and $\neg p$.  Therefore that partial-assignment cube is impossible.  The experiment stores both source clause indices, pivot variable, parent signs, resolvent literals, and the two-step UP/RUP certificate.  Exact enumeration verifies that no model lies in any recorded cube.  Tautological resolvents are rejected.  Duplicate cubes are not counted as disjoint coverage, and no union-of-cubes size is used as a progress measure.
+
+This rule is ordinary resolution, not a novelty claim.  Kullmann's conflict-graph and hitting-clause-set work supplies the relevant structural context; the present result only refines which direct parent resolvents are locally propagation-novel.  Affine/XOR instances are retained as adverse controls because Gaussian elimination can bypass large CNF resolution sets.
+
+\section{Finite hostile controls}
+The raw JSON contains all per-clause occurrence targets, matrices with source indices, global endpoint statuses, flip trails, exact model counts, candidates, cube proofs, and full counters.  The compact comparison is below.  ``Local'' is the $s\geq1$ selector; ``full'' performs exact full-formula absorption probes.  Work includes preprocessing.
+
+\begin{center}
+\small
+\begin{tabular}{lrrrrrrrr}
+\toprule
+instance & cand. & loc. & full & $N_0/W_0$ & $N_A/W_A$ & $N_L/W_L$ & $N_F/W_F$\\
+\midrule
+W1 strict22 UNSAT &60&17&17&151/15371&65/18539&65/12575&65/53169\\
+S15 strict22 SAT &46&8&8&9/729&9/4274&9/2904&9/31125\\
+diamond SAT &1&1&1&3/33&3/57&3/57&3/106\\
+duplicate SAT &16&1&1&4/121&2/417&2/417&2/1441\\
+XOR3 SAT &0&0&0&3/49&3/103&3/103&3/103\\
+XOR3 UNSAT &12&12&12&7/205&3/506&3/506&3/1178\\
+dense XOR $K_6$ SAT &1440&60&0&3/911&3/37116&3/35691&3/903797\\
+padded units UNSAT &24&8&8&19/589&3/681&3/521&3/3873\\
+Horn SAT &2&1&1&4/56&4/139&4/128&4/326\\
+strict22 $n=6$ SAT &16&8&8&3/139&3/642&3/541&3/3851\\
+planted dense SAT &159&47&21&8/1034&8/8277&8/6096&8/102266\\
+\bottomrule
+\end{tabular}
+\end{center}
+Here $N_0,W_0$ are baseline nodes/work; $A,L,F$ denote all, local, and full selectors.  The local selector reduces charged work on W1 UNSAT ($15371\to12575$) and padded-units UNSAT ($589\to521$), while increasing work on S15 SAT ($729\to2904$) and most easy families.  The dense affine control is decisive: local parent novelty leaves 60 clauses but the full formula absorbs all of them; discovering that fact costs $903797$ work units versus baseline $911$.  The same fixed program receives no SAT/UNSAT side bit.  No uniform net improvement theorem follows.
+
+The run completed in 5.262 seconds.  It made 328,326 pair checks, 211,944 bounded triple-mode checks, 1,320,640 complement checks, 3,552 cube checks, and 1,776 theorem checks, for 1,866,238 checks total.  The raw SHA-256 is
+\path{a1d1fea8308d4dc39b1250c262d5a72f8d758d9077c846d93327d88f14fcbc33};
+the reproducer SHA-256 is
+\path{6c54828df6f61be1456bc6584ce3b8417067b2ae475565ba7a16c8185a763e6e}.
+
+\section{Status ledger and falsifications}
+\begin{description}
+\item[\PROVED.] The four-way pair compatibility characterization; the middle-state invariant; complement and flip identities; sound non-tautological resolvent cubes; and the parent-pair absorption theorem.
+\item[\COMP.] The finite exact audit and charged fixed-order UP--DPLL comparison on eleven controls.  These observations do not establish asymptotic superiority.
+\item[\FALSE.] ``Same-polarity overlap exactly predicts full-formula non-absorption.''  Dense XOR $K_6$ has 60 locally selected candidates and zero full-formula nonabsorbed candidates.
+\item[\FALSE.] ``Adding every sound direct resolvent cannot increase total work.''  W1 nodes fall but charged work rises from $15371$ to $18539$; on S15 both nodes are 9 while work rises from $729$ to $4274$.
+\item[\FALSE.] ``Exact full-formula absorption selection is free.''  Its candidate-by-candidate UP probes dominate several controls.
+\item[\OPEN.] A cheap sufficient full-formula non-absorption criterion, or an amortized uniform controller that improves charged total work on matched infinite SAT and UNSAT families.  P versus NP remains open.
+\end{description}
+
+\section{Corpus reviewed and reconciliation}
+\textbf{CORPUS REVIEWED.}  Root \texttt{AGENTS.md}, \texttt{CODEX.md}, the pnp-research skill and red-team mode; active issue \#3 and all current comments; the verified prior LSPV-5 compatibility firewall; LSPV-1 EXTREME-TWO-SIDED-COVER241; LSPV-2 PERFECT-TRANSVERSAL-CORRIDORS241; LSPV-3 PAIRED-HAMMING-WALL243; LSPV-4 EXTREME-HELLY-AUDIT242 and its checker; relevant current task specifications, governance notes, and the latest verified substantive root snapshot.
+
+\textbf{DUPLICATION / CONTRADICTION AUDIT.}  Resolution and absorption are known concepts.  The new contribution within this corpus is the exact $s=0$ parent-pair absorption classification and its charged hostile-control audit.  It strengthens the LSPV-4 observation that a direct proper-3CNF resolvent exists exactly when $o=1$ and has width $4-s$.  It does not contradict the earlier LSPV-5 firewall: coherent-source compatibility remains unable to prune by itself.
+
+\textbf{WHAT CHANGED RELATIVE TO ROOT MAIN.}  The current default-branch \texttt{main.tex} was a 5,344-byte marker-free placeholder containing the literal text ``full previous content retained.''  It was not used as synthesis.  Recovery uses the readback-verified substantive root at commit \texttt{34b54a221f293c9e11ae600b1aa424dae06ce4bd}, then adds only verified later findings and this run while preserving authorship, ownership markers, and explicit OPEN status.
+
+\textbf{ADOPTED / REJECTED / RETIRED COMPONENTS.}  Adopted: clause-indexed $S/U$ bookkeeping, source-authenticated non-tautological resolvents, exact hostile enumeration, and charged UP probes.  Retired: raw compatibility as pruning, uncharged all-resolvent preprocessing, and local novelty as a proxy for full-formula novelty.  Affine elimination, Horn/2SAT closure, and CDCL learning remain legal competing representations and algorithms.
+
+\textbf{STALE OR OVERSTATED CLAIMS FOUND.}  Any claim that endpoint failure, opposite local preferences, pair incompatibility, or a smaller DPLL node count alone proves UNSAT or polynomial improvement is overstated.  The root placeholder is an integrity failure, not scientific evidence.
+
+\section{Primary sources and next lemma}
+\begin{itemize}
+\item P. Beame, H. Kautz, and A. Sabharwal, ``Towards Understanding and Harnessing the Potential of Clause Learning,'' absorption and non-restarting solvers: \url{https://homes.cs.washington.edu/~beame/papers/cdclres.pdf}.
+\item O. Kullmann, ``The combinatorics of conflicts between clauses,'' SAT 2003: \url{https://doi.org/10.1007/978-3-540-24605-3_32}.
+\item C.-S. Han and J.-H. R. Jiang, ``When Boolean Satisfiability Meets Gaussian Elimination in a Simplex Way,'' CAV 2012: \url{https://alcom.ee.ntu.edu.tw/assets/publications/cav12.pdf}.
+\end{itemize}
+The next precise target is a cheap sufficient test for full-formula non-absorption, or an amortized selector/controller whose construction, failed probes, storage, and search cost improve one fixed solver on matched infinite SAT and UNSAT families without an answer-class bit.  It must be compared against CDCL learning and native XOR/Horn/2SAT processing rather than only against raw fixed-order DPLL.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::ABSORPTION-SELECTOR-REFEREE215
+\end{document}
