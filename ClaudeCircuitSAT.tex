@@ -1,0 +1,47 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append/revise in place; log at bottom.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}\newtheorem{theorem}{Theorem}
+\title{Claude's Living Document: Parametrized Lower Bounds for Circuit-SAT}
+\date{Last updated 2026-10-30}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. No unconditional super-polynomial lower bound for Circuit-SAT is claimed here. Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Program}
+Build circuits bottom-up: start from $n=1$ input, add inputs and gates one at a time, and record (i) the minimum number of gates $g(f)$ and wires $w(f)=2g(f)$ (fan-in 2, plus one output wire) needed for each function, and (ii) a parameter $\pi$ of the wire-by-wire connection pattern (fan-out, cutwidth, pathwidth) that controls the cost of deciding satisfiability. The target is a bound $T(m,\pi)$ on Circuit-SAT time for circuits with $m$ wires and parameter $\pi$.
+
+\section{Step 1: exact minimum sizes (COMPUTATIONAL)}
+Model: AND gates, free negation (AIG). Script \texttt{research/agents/claude/circuitsat/aig\_min.py}, data \texttt{aig\_min\_results.jsonl}; exhaustive search over gate sets, runtime $<1$s.
+\begin{center}\begin{tabular}{@{}lccc@{}}\toprule
+$n$ & functions up to negation & max AIG gates & max formula leaves\\\midrule
+2 & 8 & 3 (XOR) & 4\\
+3 & 128 & 6 (XOR$_3$) & 10\\\bottomrule\end{tabular}\end{center}
+AIG size histogram $n=3$ (gates:classes): 0:4, 1:12, 2:32, 3:15, 4:52, 5:4, 6:9. So the worst case needs $2\cdot 6=12$ wires; the formula (fan-out 1) cost exceeds circuit cost, e.g.\ XOR$_3$: 10 leaves vs.\ 6 gates. Fan-out reuse is what saves wires; it is also what makes SAT harder (see \S3).
+
+Consistency with KNOWN THEOREM (Schnorr 1974): XOR$_n$ needs $3(n-1)$ gates over $\{\wedge,\vee,\neg\}$; matches $n=2,3$.
+
+\section{Step 2: trivial lower bound (PROVED/EXACT)}
+\begin{lemma}[probe-all] In the wire-list input model, any correct Circuit-SAT algorithm (even randomized with one-sided error $<1/2$ adversary-free) must read $\Omega(m)$ wire entries on some instance.\end{lemma}
+\emph{Proof sketch.} Take the chain $C$: output $=x_1\wedge\dots\wedge x_n$ (satisfiable). Redirect any single unread wire to constant $0$: the instance becomes unsatisfiable yet agrees on all read entries; so a deterministic algorithm must read every wire. $\square$ This is only linear and says nothing about fan-out.
+
+\section{Step 3: parametrization by connection structure}
+\begin{theorem}[KNOWN, upper bound] Circuit-SAT on circuits of pathwidth (or treewidth) $\le k$ with $m$ gates is solvable in $2^{O(k)}\,m$ time (dynamic programming over a tree decomposition).\end{theorem}
+\begin{theorem}[CONDITIONAL, SETH; Lampis-type and Iwata--Yoshida-type results for CNF-SAT parametrized by treewidth] There is no $(2-\varepsilon)^{k}\mathrm{poly}(m)$ algorithm for Circuit-SAT of pathwidth $k$ unless SETH fails.\end{theorem}
+Thus the parametrized lower bound $2^{\Theta(\mathrm{pw})}$ is already tight under SETH; the open question is whether pathwidth of an NP-hard family can be forced to be $\Omega(n)$ unconditionally with an unconditional $2^{\Omega(\mathrm{pw})}$ time bound, which is equivalent in strength to separating P from NP and is \textbf{OPEN}. Wire-count version: the unrestricted circuit has $m$ wires and pathwidth $\le m$; step-by-step tracking asks how pathwidth $\pi_k$ of the optimal circuit grows with $n$ for the hard family.
+
+\section{Step 4: link to the repository}
+Surveyed \texttt{AGENTS.md} and \texttt{research/agents/claude/}. Relevant: world ledger row L13 (Buss--Williams alternation trading barrier) and the TPORT/ONETAPE notes show time--space tradeoff techniques stall near $n^{2\cos(\pi/7)}$ for SAT; these are time lower bounds in sublinear space, a different parameter ($s$ = space) from pathwidth, but pathwidth-$k$ DP uses space $2^{O(k)}$, so a time--space tradeoff theorem for small space would imply pathwidth-parametrized bounds only for \emph{space-bounded} algorithms (CANDIDATE bridge, unproved).
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend exhaustive AIG minimum to $n=4$ (65\,536 functions; needs chunked search, $\le30$s per run) and record wires, fan-out and pathwidth of every optimal circuit.
+\item Tabulate for XOR$_n$, MAJ$_n$, threshold: min wires and min pathwidth among near-optimal circuits (trade-off size vs.\ width).
+\item Try to prove a unconditional width lower bound in a restricted model (monotone / read-once-branching programs) for Circuit-SAT-like families.
+\end{enumerate}
+
+\section*{Log}
+\begin{itemize}
+\item 2026-10-30: created document; $n\le3$ exact AIG sizes; probe-all lemma; SETH-parametrized statement. No new unconditional bound.
+\end{itemize}
+\end{document}
+% END_OF_CLAUDECIRCUITSAT
