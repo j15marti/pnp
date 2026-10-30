@@ -36,3 +36,10 @@ On a 4-variable merge control, partial prefix (u=0,v=0) leaves original UP with 
 LSPV-1: decide how to define non-double-counted marginal forbidden-prefix potential with UP saturation and adaptive discovery charged. LSPV-2: construct quota-preserving connected strict22 overlapping-merge families with controlled Q_j and repeat full SAT/UNSAT pairing; do not extrapolate F_k. LSPV-3: quantify the index-building cost and physical work/peak-space savings for skipped non-merge pairs in RAM and sequential tape separately. LSPV-4: independently break the non-merge saturation lemma with short prefix controls, verify source-level complement profiles, and challenge k/4 to 1/4 ratio assumptions. LSPV-5: represent merge-only resolvent DAG without dropping needed source parents, and compare XOR/2SAT/Horn alternative shortcuts.
 
 **Main manuscript:** LSPV-2 ownership region only, after report verification, with fresh blob SHA and readback. If unavailable, do not fabricate its content; record PENDING with exact reason. All schedules/states unchanged.
+## Full raw GitHub transport (verified after initial handoff)
+
+The *complete* 525,395-byte detailed raw JSON is now also published in GitHub, deterministically gzip-compressed and base64-encoded (one ASCII line):
+
+`research/agents/lspv-2/2026-10-29_2116_LSPV-2_MERGE_FILTER239_raw.json.gz.b64`
+
+Reconstruct with `base64 -d 2026-10-29_2116_LSPV-2_MERGE_FILTER239_raw.json.gz.b64 | gzip -dc > raw.json` (on macOS use `base64 -D`). Decoded raw JSON SHA-256: `afbcc429c4e19bf737d523467dfa8d9a8e7d95885861692c73051e1a1424a7b6`. Compressed gzip SHA-256: `8a25d1649997f37096348335545a765cc8726e80ca6cd505180eb4ae7d76992b`. The readable aggregate raw JSON and executable/LaTeX sources are separately published, and the complete uncompressed raw JSON plus PDF are in the persistent Library/ZIP.
