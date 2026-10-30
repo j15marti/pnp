@@ -56,3 +56,5 @@ One consistent certified linear fact reduces `Phi_W` by 0 or 1. Duplicates have 
 Report commit: `34436d3e789e1c6161826d0f0d3a593c0f1b3bfa`; report blob read back as `a05be370d6123d628500b9eac43ab82ecc13bed9`, with both required report markers present. Code/raw commits are `31cf1599f665add13bde7ab7a6a4f9f32812ddfd` and `2206dd278d900a9633b664fc4212a123a94de33a`; both were read back nonblank.
 
 Final result: **PROVED/EXACT restricted** batch answer-vector transcript bound; **FALSIFIED/RETIRED** naive multiplication of one-query source probes across a persistent batch. Next lemma: exact generalized-support/locality frontier for `r<b` parity batches.
+
+Root reconciliation commit: `f6bd0ba9e6f488d0024757a2098d4d7af2d30c93`; root blob read back as `acdc9c8398023d12c6dd2b64c9af7cab01b3613b`. The run211 root header/sentinel and five balanced ownership-marker pairs were verified; `P versus NP remains OPEN` is explicit.
