@@ -1,0 +1,52 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- run 2026-10-30 first entry
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\title{Claude's Circuit-SAT Lower-Bound Ladder (living document)}
+\author{Scheduled hourly routine}
+\date{Last updated 2026-10-30}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No superlinear lower bound for Circuit-SAT in a general model is claimed. Labels: PROVED/EXACT, COMPUTATIONAL, CONDITIONAL, KNOWN, OPEN.
+
+\section{Model and goal}
+A circuit $C$ with $n$ inputs and $s$ fan-in-2 gates (basis $B_2$, all 16 binary gates) has exactly $2s$ gate-input wires. \textsc{CircuitSAT}$(n,s)$: given $C$, decide if some $x\in\{0,1\}^n$ gives output 1. Parameters: $n$ (inputs), $s$ (gates/wires), and optionally treewidth $w$. Goal: lower bounds as functions of $(n,s,w)$, built up from the smallest circuits. Wire cost of a function $f$ is $2\,\mathrm{size}_{B_2}(f)$.
+
+\section{Ladder of minimal wire counts}
+\begin{lemma}[connectivity, PROVED]\label{lem:conn}
+If $f$ depends on all $n$ inputs then $\mathrm{size}(f)\ge n-1$, so it needs $\ge 2(n-1)$ wires. (Each gate merges at most two connected components of the input-to-output graph; the output must see all inputs.) Tight for AND$_n$.
+\end{lemma}
+\paragraph{Exhaustive computation (COMPUTATIONAL).} Breadth-first search over sets of computed functions gives exact minimum gate counts in $B_2$ (constants excluded, they need 1 gate); script \texttt{research/agents/claude/circuitsat/ladder.py}, outputs \texttt{ladder\_n2.json}, \texttt{ladder\_n3.json}.
+\begin{center}\begin{tabular}{@{}lcccccc@{}}\toprule
+$n$ & 0 gates & 1 & 2 & 3 & 4 & max wires\\\midrule
+2 & 2 & 12 & -- & -- & -- & 2\\
+3 & 3 & 33 & 114 & 80 & 24 & 8\\\bottomrule\end{tabular}\end{center}
+(counts of functions, excluding the 2 constants; $n=3$: $3+33+114+80+24+2=256$.) Consistent with Lemma~\ref{lem:conn}. $n=4$ (65536 functions) exceeds the 30-second budget of plain BFS; next step is canonicalization under input permutation/negation (OPEN task T1).
+
+\section{First lower bound for the SAT-of-a-circuit problem}
+Input representation: for each gate, a type and two predecessor pointers; probe = read one pointer or type.
+\begin{theorem}[wire-probe bound, PROVED]\label{thm:probe}
+Any deterministic algorithm deciding \textsc{CircuitSAT}$(n,s)$ probes at least $s-1$ wires on some input; any randomized algorithm with error $\le 1/3$ probes at least $(s-1)/3$ in expectation-worst-case sense ($\ge (s-1)/3$ probes on some input).
+\end{theorem}
+\begin{proof}
+Let $C_0$: $g_1=x_1\wedge\neg x_1$ (a $B_2$ gate), $g_i=g_{i-1}\wedge x_{j(i)}$, output $g_s$. $C_0$ is unsatisfiable. For $2\le i\le s$ let $C_i$ replace the left pointer of $g_i$ by input $x_1$; then $g_i,\dots,g_s$ is an AND of inputs, so $C_i$ is satisfiable. $C_0$ and $C_i$ differ in one pointer. A deterministic algorithm not probing that pointer cannot distinguish them, so it must probe all $s-1$. For randomized: draw $C_0$ or $C_I$ with prob.\ $1/2$ each, $I$ uniform; a deterministic algorithm with $q$ probes hits pointer $I$ with prob.\ $\le q/(s-1)$ and otherwise errs on the SAT half, so error $\ge\frac12(1-q/(s-1))$; error $\le1/3$ forces $q\ge(s-1)/3$ (Yao).
+\end{proof}
+\textbf{Meaning.} This is only linear in the number of wires: it shows the whole circuit must be read, i.e.\ that wires are the right resource, but it is an information bound, not a time bound beyond $\Omega(s)$.
+
+\section{Parameterized picture}
+\begin{center}\begin{tabular}{@{}lll@{}}\toprule
+Bound & Status & Source\\\midrule
+$\Omega(s)$ probes for all $n$ & PROVED & Thm.~\ref{thm:probe}\\
+$s\ge n-1$ for functions depending on all inputs & PROVED & Lem.~\ref{lem:conn}\\
+Time $O(2^n s)$ upper bound (brute force) & PROVED & trivial\\
+Time $2^{\Omega(n)}$ (no $2^{o(n)}\mathrm{poly}$) & CONDITIONAL (ETH) & 3-SAT embeds with $s=O(n)$\\
+Time $2^{O(w)}s$ via DP over tree decomposition & KNOWN & standard\\
+Superlinear in $s$, general model, fixed $n=s^{\epsilon}$ & OPEN & --\\\bottomrule\end{tabular}\end{center}
+Parameterization hypothesis (CANDIDATE): the true complexity is $2^{\Theta(\min(n,w))}\cdot\mathrm{poly}(s)$; unconditional proofs of any $2^{\omega(\log s)}$ are not available.
+
+\section{Link to the repository}
+The repo's \texttt{research/agents/claude/} work is the relevant background: ledger row L13 (Buss--Williams: alternation trading cannot reach exponent $2\cos(\pi/7)$ in small space), rows L34/L35 and \texttt{TPORT-0001/0002} (alternation-trading proofs stall at linear time for portfolio size $\approx N$, exponent $1+\Theta(1-d)$ otherwise), and \texttt{ONETAPE-0001} (crossing sequences do not separate P from NP, since they hold for nondeterminism). Takeaway for this ladder: a time lower bound for Circuit-SAT beyond $\Omega(s)$ in a general model would have to evade these barriers; the wire-counting approach above is currently limited to linear/information bounds.
+
+\section{Next steps}
+T1: canonical-form search for $n=4$ minimal wires. T2: relate treewidth-$w$ bound to a matching query lower bound $2^{\Omega(w)}$ in a restricted (e.g.\ monotone or read-once) circuit model, where lower bounds are provable. T3: compute exactly the smallest unsatisfiable-vs-satisfiable ``sensitivity'' (min pointer edits) as a function of $(n,s)$.
+\end{document}
