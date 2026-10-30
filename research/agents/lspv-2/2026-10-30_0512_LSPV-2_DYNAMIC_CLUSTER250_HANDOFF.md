@@ -16,7 +16,7 @@ The independent r=2 checker passed 528 signed occurrence, 65,032 pair-support as
 
 ## Full-run resource comparisons and falsifier
 
-Same-input strict22 connected plateau family, 5 consecutive flips and 6 fresh full rebuilds: at n=384, r=2, dynamic total 0.783 sec and 1,451,026 traced peak bytes versus fresh 4.155 sec and 2,753,095 traced peak bytes. At n=48, r=3, dynamic .890 sec versus fresh 2.490 sec. These are CPython allocation/time observations, not fixed-TM work. Hybrid solver: W1 UNSAT baseline 151 DPLL states, hybrid still 151 with a failed radius-three prepass (approx .009 vs 1.44 seconds); S15 SAT baseline 12 states and hybrid zero fallback nodes but larger overall time (.0007 vs .329). No net SAT speedup is established. The scientific pair/triple audit and external exhaustive truth oracle are not consumed by either controller.
+Same-input strict22 connected plateau family, 5 consecutive flips and 6 fresh full rebuilds: at n=384, r=2, dynamic total 0.783 sec and 1,451,026 traced peak bytes versus fresh 4.155 sec and 2,753,095 traced peak bytes. At n=48, r=3, dynamic .890 sec versus fresh 2.490 sec. These are CPython allocation/time observations, not fixed-TM work. Hybrid solver: W1 UNSAT baseline 151 DPLL states, hybrid still 151 with a failed radius-three prepass (approx .0097 vs 1.332 seconds); S15 SAT baseline 12 states and hybrid zero fallback nodes but larger overall time (.00068 vs .379). No net SAT speedup is established. The scientific pair/triple audit and external exhaustive truth oracle are not consumed by either controller.
 
 ## Source verification and publication
 
