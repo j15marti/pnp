@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Matched Python-runtime baseline vs adaptive two-sweep DP, with certificate replay."""
 import json,time,tracemalloc,statistics,sys
-sys.path.insert(0,'/mnt/data/pnp_arc259')
+from pathlib import Path
+BASE=Path(__file__).resolve().parent
+sys.path.insert(0,str(BASE))
 from experiment import prep,greedy_order,messages,dpll
 from verify import independent_replay
 
@@ -38,11 +40,11 @@ def measure(F,fun,reps=5):
          'extra_Python_heap_bytes_peak_median':statistics.median(spaces),'response':out}
 
 def main():
- cases=json.load(open('/mnt/data/pnp_arc259/raw.json'))['cases'];results={}
+ cases=json.load(open(BASE/'raw.json'))['cases'];results={}
  for k in CASES:
   F=cases[k]['source'];a=measure(F,plain);b=measure(F,dp_controller)
   assert a['response'][0]==b['response'][0]==cases[k]['is_SAT']
   results[k]={'baseline':a,'adaptive':b}
  print(json.dumps({'scope':'Python 3.13, tracemalloc enabled for both, input clause scan charged, 5 repetitions, DP table verification included, no external CDCL','results':results},indent=2,sort_keys=True))
- with open('/mnt/data/pnp_arc259/benchmark.json','w') as f:json.dump({'results':results,'repetitions':5,'source':'benchmark.py'},f,indent=2,sort_keys=True)
+ with open(BASE/'benchmark.json','w') as f:json.dump({'results':results,'repetitions':5,'source':'benchmark.py'},f,indent=2,sort_keys=True)
 if __name__=='__main__':main()
