@@ -1,0 +1,55 @@
+% ARC238 LSPV-1, 2026-10-29 19:27 PDT
+\documentclass[10pt]{article}
+\usepackage[margin=.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newcommand{\F}{\mathbb F_2}
+\title{ARC238: An Adaptive Nonlinear Summary/Source-Probe Frontier}
+\author{LSPV-1 Formal Proof Lead}
+\date{29 October 2026, America/Los\_Angeles}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT in a restricted two-stage model; independent referee review pending.} The $Q=1$ endpoint was established in ARC237. Golay-code properties are known results. Neither $P=NP$ nor $P\ne NP$ is resolved.
+\section{PROPOSE, SEARCH, and precedence}
+The missing lemma was whether nonlinear source preparation plus adaptive probe choice can evade an all-query $L$--$Q$ storage bound. We tested: (M1) nonlinear/adaptive methods evade the Hamming-ball volume bound, falsified; (M2) a low-degree Fourier span constrains every adaptive tree, proved; (M3) a perfect code attains equality, known Golay code plus independently generated finite syndrome certificate; (M4) per-fact contextual progress is additive, falsified by XOR shares.
+Actual project sources inspected: ARC237 blob \texttt{673bd7b4e72892646a76f2d57760e602d7bcb384}; LSPV-2 HAMMING235 blob \texttt{b4a1a846dab97bd02691578d9abe5a081890d8b7}; LSPV-5 DIVIDEND-REFEREE210 blob \texttt{7a0cb42eec50d70dfdec1d87fb1162ced3917dd3}. Actual external code: \path{sagemath/sage/src/sage/coding/golay_code.py} blob \texttt{88b80da5d52ce1aa8500d93e6bea1e47feea4ccc}; \path{sagemath/sage/src/sage/coding/linear_code.py} blob \texttt{0cc870083077303ea087a94bdefb767e18e6ebd6}; \path{GabbyTab/boofun/src/boofun/analysis/complexity.py} blob \texttt{5673b28796fb97b8b2c228819a8178c47a13db72}; \path{QuMuLab/dsharp/README.md} blob \texttt{a9a4e2e537c6b98377e07337e410c23218d05846}. Primary background: Darwiche--Marquis (2002), Hamming (1950), Golay (1949), O'Donnell (2014). No external priority is claimed.
+\section{Two-stage SAT parity-context model}
+Fix $b\ge1$ and unknown source-sign vector $a\in\F^b$. The typed unary source is $A_a(X)=\bigwedge_i(x_i=a_i)$. Future parity context $B_{w,t}(X,Z)=[\langle w,X\rangle=t]$ has a canonical polynomial-size XOR3-to-CNF encoding. Exactly
+\[
+ \operatorname{SAT}(A_a\land B_{w,t})\iff\langle w,a\rangle=t.
+\]
+The source is not strict signed exact-$(2,2)$ 3CNF. Offline, before $w,t$ is revealed, arbitrary deterministic $E_b:\F^b\to\{0,1\}^L$ produces the entire $L$-bit source-dependent persistent state. A deterministic online decoder receives this state and $w,t$ and can adaptively read at most $Q$ named individual original sign bits $a_i$. All other source-dependent caches, advice, head locations and stored bits are included in $L$. It must be exact for every $a,w,t$. We separately account for offline $P$, persisted $L$, raw coordinate probes $Q$, online time $R$, space $S$, head crossings, communication rounds and cumulative writes. Unlimited local computational time is allowed for the lower bound.
+\begin{theorem}[Fourier-dimension all-adaptive lower envelope]
+For every such encoder and decoder, including all nonlinear preparations and adaptive, nonlinear query computations,
+\[
+ \boxed{2^L V(b,Q)\ge2^b},\qquad
+ V(b,Q)=\sum_{j=0}^{Q}\binom bj,\qquad
+ \boxed{L\ge b-\lfloor\log_2 V(b,Q)\rfloor}.
+\]
+This is a reusable-summary/source-probe result, not a joint-SAT or unrestricted-time lower bound.
+\end{theorem}
+\begin{proof}
+Fix a summary $\sigma$ and nonempty fiber $F_\sigma=E_b^{-1}(\sigma)$. For query mask $w$ with target $t=0$, the decoder computes the sign parity character $\chi_w(a)=(-1)^{\langle w,a\rangle}$ on $F_\sigma$. Every depth-$Q$ coordinate decision tree represents its output as the sum of its leaf indicators with coefficients $\pm1$. Each leaf indicator is a product of at most $Q$ terms $(1\pm\chi_{e_i})/2$, so its Fourier expansion contains only characters $\chi_u$ of Hamming weight at most $Q$. Hence $\chi_w|_{F_\sigma}$ belongs to
+\[
+ U_Q(F_\sigma)=\operatorname{span}_{\mathbb R}\{\chi_u|_{F_\sigma}:|u|\le Q\},\quad
+ \dim U_Q(F_\sigma)\le V(b,Q).
+\]
+Since this holds for every $w$, all restrictions of the $2^b$ Walsh characters lie in $U_Q(F_\sigma)$. The Walsh matrix on $\F^b$ is invertible; restricting its rows to $F_\sigma$ retains row rank $|F_\sigma|$. Thus the restricted characters span all of $\mathbb R^{F_\sigma}$, yielding $|F_\sigma|\le V(b,Q)$. There are at most $2^L$ fibers partitioning all $2^b$ sources. Therefore $2^b\le2^L V(b,Q)$, as claimed. Adaptation and cross-observation synergy are already included by the leaf expansion, so no per-fact additive-progress assumption is needed.
+\end{proof}
+For $Q=0$, $L\ge b$; for $Q=1$, $L\ge b-\lfloor\log_2(b+1)\rfloor$ (ARC237). Fixed $Q$ gives $L\ge b-Q\log_2b+\log_2(Q!)-O(1)$. For $Q=\alpha b$, $0<\alpha<1/2$, the entropy bound yields $L\ge b(1-H_2(\alpha))-O(\log b)$.
+\section{Nontrivial sharp point and charged composition}
+The binary $[23,12,7]$ Golay code generated by shifts of $g(z)=z^{11}+z^9+z^7+z^6+z^5+z+1$ has covering radius $3$. The Hamming-ball volume $V(23,3)=1+23+253+1771=2048=2^{11}$. Store the twelve dot products of source $a$ against generator codewords. For each later mask $w$, syndrome decoding gives a public $e$ of weight at most three with $c=w+e$ in the code. Compute $\langle c,a\rangle$ from the stored twelve bits and probe at most three original signs to obtain $\langle e,a\rangle$. Thus
+\[
+ \boxed{(b,L,Q)=(23,12,3)},\qquad 2^{12}V(23,3)=2^{23}.
+\]
+A uniform direct product over $r$ disjoint 23-bit blocks achieves $(L,Q)=(12r,3r)$, including offline parsing, source verification, query decoding and output in $O(N\operatorname{polylog}N)$ indexed bit-RAM time on explicit $N=\Theta(b\log b)$ encodings. The fixed public 2,048-entry syndrome table is not source-dependent advice. The direct product is a restricted upper point and need not be optimal against cross-block nonlinear encoders.
+\section{Contextual value and hard controls}
+For a current state $s$, certified facts $K$, and target $w$, let $F(s,K)$ be the still possible source vectors. Independently define $\Phi_w(s,K)=\log_2|\{\langle w,a\rangle:a\in F(s,K)\}|\in\{0,1\}$. For certified datum $I$ use notation $I\mid_{v_\Phi}$ with
+\[
+ v_\Phi(I\mid s,K)=\Phi_w(s,K)-\Phi_w(s,K\cup\{I\}).
+\]
+The pipe is not probabilistic conditioning. When the summary is linear, $\Phi_w=0$ exactly if $w$ lies in the span of stored summary rows and already observed unit coordinate vectors. This is independently testable by GF(2) elimination, but does not count actual construction or query time. Source acquisition, score discovery, authentication and application form a separate charged $C_s(I)$. Duplicates give zero marginal; two XOR shares can each have zero initial target benefit but joint benefit one. Marginals telescope along a certified path; initial singleton labels cannot be added. A storage-penalized potential can have negative values without negative Shannon information.
+In the general boundary problem $A(X,Y)\land B(X,Z)$, a detached source-free reusable summary must distinguish all equivalence classes under $A\sim_{\mathcal B}A'$ iff $\operatorname{SAT}(A\land B)=\operatorname{SAT}(A'\land B)$ for every permitted future $B$. But retained source access breaks this injection, and a joint solver that sees $A,B$ together has different quantifiers. Raw source retention at $L=0,Q=b$ is legal. At most $2^{N+1}-1$ descriptions have length at most $N$, so counting alone cannot force exponentially long summaries relative to $N$.
+\section{Verification and next lemma}
+The separate complete reproducibility bundle contains a standard-library Python runner and raw JSON: 3,289 exhaustive distinct linear codes for $b\le6$, all 16 and 256 one-bit nonlinear encoders for $b=2,3$ checked with exact adaptive decision trees, the exhaustive 2,048 Golay syndrome table, 5,000 seeded source/query checks, parity pinning controls $b=2,\ldots,8$, and contextual redundancy/synergy tests. All finite checks are COMPUTATIONAL. RAM source probes are not single-tape head moves or two-tape symbol changes. One sequential scan implementation may require $O(NQ)$ travel, but the present theorem gives no native general-SAT time lower bound.
+\noindent\textbf{Next missing lemma:} discover and authenticate in polynomial time a broader 2CNF-plus-affine module class admitting reusable summaries with simultaneous, charged bounds on preparation $P$, retained length $L$, and continuation source access $Q$. Both $P=NP$ and $P\ne NP$ remain OPEN.
+\end{document}
