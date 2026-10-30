@@ -1,0 +1,136 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append sections; update the status ledger in place
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\title{Claude Circuit-SAT Lower Bounds: A Living Document}
+\author{Scheduled hourly routine (Claude)}
+\date{Last updated: 2026-10-30, run CSAT-0001}
+\begin{document}
+\maketitle
+
+\section*{Executive status}
+\textbf{Goal.} Lower bounds, possibly parameterized, for CIRCUIT-SAT.
+\textbf{Status: P versus NP remains OPEN.} Nothing here is a superpolynomial bound.
+Proved so far (Section~\ref{sec:r1}): an exact linear query bound in the read model;
+exact minimum gate/wire tables for $n\le 3$ inputs; and a precise statement of why
+further progress needs a resource-bounded model rather than a query model.
+
+\paragraph{Status labels.} PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup and parameters}
+A circuit $C$ has $n$ inputs $x_1,\dots,x_n$ and $m$ fan-in-2 gates over the basis $B_2$
+(all 16 binary functions); the wire count is $w=2m$. Instance size is $\Theta(m\log(n+m))$ bits.
+Parameters: $n$ (inputs), $m$ (gates), $w=2m$ (wires), $\mathrm{tw}$ (treewidth of the
+underlying graph), $f$ (max fan-out), $d$ (depth).
+CIRCUIT-SAT: given $C$, decide $\exists x\;C(x)=1$.
+Known upper bounds (KNOWN THEOREM): $O(2^n m)$ by exhaustion; $2^{O(\mathrm{tw})}\mathrm{poly}(m)$ by dynamic programming.
+Known conditional lower bounds (CONDITIONAL, SETH): no $(2-\varepsilon)^{n}\mathrm{poly}(m)$; no $(2-\varepsilon)^{\mathrm{tw}}\mathrm{poly}(m)$ (Lampis-type treewidth results for SAT).
+No unconditional superlinear lower bound for CIRCUIT-SAT is known in any general model.
+
+\section{Step-by-step ladder}\label{sec:r1}
+
+\subsection*{Step 0: minimal connections to touch all inputs}
+\begin{lemma}[PROVED/EXACT]
+If a fan-in-2 circuit has one output depending on all $n$ inputs, then $m\ge n-1$ and $w\ge 2n-2$;
+equality holds for any binary tree of gates (e.g.\ AND$_n$, parity).
+\end{lemma}
+\begin{proof}
+Each input must reach the output through a path. Contract unused structure: the subgraph of gates and inputs
+that reach the output is a connected DAG with $n$ sources and one sink. Each gate has indegree $\le2$, so
+adding a gate reduces the number of weakly-connected components of ``source groups'' by at most one.
+Starting with $n$ groups and ending with one needs $\ge n-1$ gates. Equality: a balanced tree.
+\end{proof}
+
+\subsection*{Step 1--3: exact minimum circuit sizes, $n\le3$}
+COMPUTATIONAL (script \texttt{research/agents/claude/circuitsat/min\_wires.py}, data
+\texttt{min\_wires\_results.json}; level-wise search over deduplicated sets of computed truth tables,
+runtime about 6\,s, no chunking needed). Negation and constants are free, as in $B_2$.
+\begin{center}
+\begin{tabular}{c|ccccc|c}
+$n$ & 0 gates & 1 gate & 2 gates & 3 gates & 4 gates & max wires\\\hline
+2 & 6 & 10 & -- & -- & -- & 2\\
+3 & 8 & 30 & 114 & 80 & 24 & 8
+\end{tabular}
+\end{center}
+Entries count functions of $n$ variables by minimum number of gates (all 16 and 256 functions covered).
+For $n=3$ the 24 hardest functions need $4$ gates ($8$ wires), e.g.\ majority.
+So the minimum-wire profile is $\max_f w(f)=2,\,8$ for $n=2,3$; Shannon counting gives
+$\max_f m(f)=\Theta(2^n/n)$ in general (KNOWN THEOREM), but this is a bound on \emph{circuit size of functions},
+not on the \emph{time to solve} CIRCUIT-SAT; the two must not be conflated.
+
+\subsection*{Step 4: query lower bound for solving CIRCUIT-SAT}
+Model: the algorithm has random access to the description of $C$ (for each gate $i$: opcode and two
+source pointers) and is charged one unit per field read.
+\begin{theorem}[PROVED/EXACT: read-all bound]\label{thm:read}
+For every $m\ge1$ and every $n\ge 1$, any deterministic algorithm deciding CIRCUIT-SAT on circuits with
+$m$ gates reads the opcode of at least $m$ gates in the worst case; hence $\Omega(m)=\Omega(w)$ time,
+for all $n\ge1$ and with treewidth $1$, fan-out $\le 2$ (a chain).
+\end{theorem}
+\begin{proof}
+Let $C_0$ be the chain $g_1=x_1\wedge x_{\,2}$, $g_i=g_{i-1}\wedge x_{\,i+1}$ (indices of inputs mod $n$);
+$C_0$ is satisfiable (all ones). Let $C_i$ equal $C_0$ except that gate $i$ has opcode FALSE.
+Then $C_i$ is unsatisfiable. A deterministic algorithm that never reads the opcode of gate $i$ on input $C_0$
+behaves identically on $C_i$ and answers wrongly on one of them. Hence it reads all $m$ opcodes on $C_0$.
+\end{proof}
+\begin{remark}
+A randomized algorithm with error $\le\varepsilon<1/2$ must read $\ge(1-2\varepsilon)m$ opcodes in expectation
+on a uniformly random member of $\{C_0\}\cup\{C_i\}$ (Yao). Parameter dependence of this bound is trivial:
+it is linear in $m$ and independent of $n$ and $\mathrm{tw}$.
+\end{remark}
+
+\subsection*{Why the ladder stops being informative}
+Any query bound is at most the instance size, so Theorem~\ref{thm:read} is the best possible in this model for
+a fixed $m$. A superlinear (in $m$) or exponential-in-$n$ bound needs a model in which the algorithm
+cannot simply look at the whole instance and then compute freely, i.e.\ a time/space-restricted model.
+This links to the repository spine (see below). Status: the gap between $\Omega(m)$ (PROVED) and
+$2^{o(n)}$ possible upper bounds is OPEN.
+
+\section{Parameterized targets (CANDIDATE)}
+\begin{enumerate}
+\item \textbf{Treewidth/pathwidth ladder.} For circuits of pathwidth $p$, determine the minimum
+work of any algorithm in a restricted model (e.g.\ oblivious branching / DPLL-type tree-like resolution). Tree-like
+resolution size lower bounds $2^{\Omega(p)}$ for suitable families are KNOWN for CNF encodings; the open step is
+transfer to arbitrary algorithms. CANDIDATE.
+\item \textbf{Fan-out parameter.} Fan-out-1 circuits (formulas) with $n$ inputs: decide via dynamic programming in
+$O(m)$ for read-once formulas, so fan-out~1 and tree structure are easy; hardness must come from reconvergent fan-out.
+Track minimal number of reconvergent wires $r$ needed for hardness: CANDIDATE parameter $r$ with conjectured
+upper bound $2^{O(r)}\mathrm{poly}(m)$ (cut-set conditioning, KNOWN as an upper bound for $r$ = feedback-wire-type number).
+\item \textbf{Inputs ladder.} Compute, for each $n$, the smallest circuit family on which gate elimination yields
+bound $>3n$ for the output function; gate-elimination barrier is $\approx 3.1n$ for general $B_2$ (KNOWN) and
+applies to circuit size of a function, not to SAT time.
+\end{enumerate}
+
+\section{Cross-reference to the main repository}
+Reviewed this run: root \texttt{AGENTS.md} and the world-ledger pointer. Relevant items:
+\begin{itemize}
+\item Ledger row L13 (Buss--Williams): alternation-trading proofs cannot reach SAT time exponent $2\cos(\pi/7)\approx1.247$ with $n^{o(1)}$ space.
+Any time--space route for CIRCUIT-SAT inherits this barrier. (KNOWN THEOREM, as cited in the repo.)
+\item Rows L34/L35 and \texttt{research/agents/claude/2026-10-28\_1326\_CLAUDE\_TPORT-0001.tex}: alternation-trading
+bounds for portfolio statements. CIRCUIT-SAT is SAT-hard under linear-size reductions, so time--space lower bounds for SAT
+transfer to CIRCUIT-SAT with $m=\Theta(\text{formula size})$; the converse direction is trivial.
+\item The repo's ARC/FLMV time--space spine is the only active line aiming at a superlinear bound for SAT-type problems;
+it is OPEN and is not claimed here.
+\end{itemize}
+Transfer classification: SAT $\le_{\text{lin}}$ CIRCUIT-SAT is a directly transferable theorem (a CNF with $N$ literals is a circuit of $O(N)$ gates);
+hence Fortnow--van Melkebeek / Williams time--space bounds (KNOWN THEOREM) apply to CIRCUIT-SAT.
+
+\section{Run log and next targets}
+\begin{description}
+\item[CSAT-0001 (2026-10-30)] Created document; proved read-all bound (Thm.~\ref{thm:read}); exact gate tables $n\le3$.
+\item[Next] (a) $n=4$ exact minimum gates (known max 7; split by gate-count level; checkpoint states to disk since
+level-6 state sets are large). (b) Derive a parameterized time--space statement for CIRCUIT-SAT by composing the
+SAT$\to$CIRCUIT-SAT embedding with the repo's L13 barrier, with explicit dependence on $n$ and $m$.
+(c) Define the reconvergence parameter $r$ precisely and test whether the $r$-parameterized upper bound is tight in a restricted model.
+\end{description}
+
+\section*{Open items}
+\begin{itemize}
+\item Any superlinear unrestricted lower bound for CIRCUIT-SAT: OPEN.
+\item $\mathrm{P}\ne\mathrm{NP}$: OPEN.
+\end{itemize}
+\end{document}
+% END_OF_LIVING_DOC::ClaudeCircuitSAT::CSAT-0001
