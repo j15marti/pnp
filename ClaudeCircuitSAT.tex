@@ -1,0 +1,51 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append-only log at end; edit sections in place.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\title{Claude CircuitSAT: a stepwise, parametrized lower-bound ledger}
+\author{Scheduled hourly routine (Claude)}
+\date{Last updated 2026-10-30}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No super-polynomial lower bound for Circuit-SAT is claimed.
+Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Circuit-SAT$(n,m)$: input a fan-in-2 circuit over basis $B_2$ with $n$ inputs and $m$ gates (wires $=2m$ in-edges); decide whether some $x\in\{0,1\}^n$ gives output $1$.
+Plan: (i) for each $n$ track the minimum number of gates/wires $g(n)$ needed for the circuit to depend on all inputs and for each function of $n$ variables; (ii) track the cost of deciding satisfiability as a function of the pair $(n,m)$ (parametrized bound); (iii) look for a step-to-step recurrence that forces cost growth.
+
+\section{Wire accounting}
+\begin{proposition}[PROVED/EXACT] A fan-in-2 circuit whose output depends on $n$ inputs has $\ge n-1$ gates and $\ge 2(n-1)$ in-wires. (Connectivity of the DAG: $n$ sources reach one sink through fan-in-2 nodes.) Tight for the AND tree.
+\end{proposition}
+
+\begin{proposition}[COMPUTATIONAL] Minimum $B_2$ gate counts $g(f)$ by exhaustive BFS over sets of computed truth tables
+(\texttt{research/agents/claude/circuitsat/mincircuit.py}; output \texttt{mincircuit\_n3\_results.txt}).
+For $n=3$ (256 functions): number of functions with $g=0,1,2,3,4$ is $5,33,114,80,24$ (convention: only the 2 constants and the 3 projections cost 0; a bare negated input counts as one gate, since the output must be produced; $g\le 4$ for every function). Hence every 3-variable function needs at most 4 gates, i.e.\ $\le 8$ wires, and the hardest 24 need exactly 4.
+The $n=2$ file gives the analogous table. Chunking: each run takes $<10$\,s; $n=4$ is infeasible by this naive BFS beyond $g=3$ and would need canonical-form pruning.
+\end{proposition}
+
+\section{Cost of deciding satisfiability}
+\begin{lemma}[PROVED/EXACT, query model] Any deterministic algorithm that decides Circuit-SAT while reading only gate descriptions must read $\ge m$ of the $m$ gate descriptions (up to one), for every $m\ge n-1$.
+\end{lemma}
+\begin{proof} Take the chain $g_j=g_{j-1}\wedge x_1$ ($j=1,\dots,m$, $g_0=x_1$), satisfiable. Changing a single gate $g_j$ to $g_{j-1}\wedge\neg x_1$ makes it unsatisfiable. An algorithm skipping gate $j$'s description cannot distinguish the two; an adversary picks the unread one.
+\end{proof}
+This is the trivial $\Omega(m)$ ``read the wires'' bound; it carries no dependence on $n$.
+
+\begin{proposition}[KNOWN THEOREM / CONDITIONAL] Upper bound $O(2^n m)$ by enumeration. Under SETH, no $O(2^{(1-\varepsilon)n}\mathrm{poly}(m))$ algorithm exists (Circuit-SAT generalizes CNF-SAT). So the parametrized target is a bound of the form $T(n,m)\ge 2^{\Omega(n)}\cdot\mathrm{poly}(m)$; unconditionally we only have $\Omega(m)$ here. Known unconditional circuit-size lower bounds for explicit functions are $\approx 3.1n$ gates (Li--Yang, STOC 2022; recalled from memory, not re-verified this run), which constrains the \emph{circuit} side, not SAT time.
+\end{proposition}
+
+\section{Open arrows}
+\begin{enumerate}
+\item OPEN: a step recurrence $L(n+1)\ge L(n)+\delta(n)$ with $\delta$ growing; none found. Gate-count tables for fixed functions give size, not SAT-time, bounds, and size bounds for explicit functions are only linear.
+\item OPEN: a combined parametrized statement unconditional beyond $\Omega(m)$.
+\item Next steps: canonical-form pruning to reach $n=4$ exactly; measure branching-program/DPLL tree sizes of minimum circuits as a proxy for SAT cost; review the repository's ARC/FLMV time--space spine (AGENTS.md) for transferable time--space statements for SAT (Williams-style bounds: SAT not in time $n^{2\cos(\pi/7)-o(1)}$ with $n^{o(1)}$ space), which are the strongest unconditional SAT-time lower bounds known; they do not give super-linear in $m$ for general algorithms.
+\end{enumerate}
+
+\section{Repository check (2026-10-30)}
+Per \texttt{AGENTS.md}: P vs NP is OPEN; ledger rows L13, L34--L40 indicate alternation-trading and one-tape barriers; no result there yields a Circuit-SAT lower bound beyond the above.
+
+\section*{Log}
+\begin{itemize}
+\item 2026-10-30: created document; added wire lemma, $n\le 3$ exact gate table, $\Omega(m)$ query lemma, SETH-conditional target.
+\end{itemize}
+\end{document}
