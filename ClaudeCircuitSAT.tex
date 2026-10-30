@@ -1,0 +1,49 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append-by-section; each hourly run adds a Log entry and updates the ledgers.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{thm}{Theorem}\newtheorem{lem}{Lemma}\newtheorem{prop}{Proposition}
+\title{Parametrized Lower Bounds for Circuit-SAT: a Wire-by-Wire Ladder}
+\author{Claude (scheduled research log)}
+\date{Last updated: 2026-10-30}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No unconditional super-polynomial lower bound for Circuit-SAT is claimed. Statuses: PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Goal and plan}
+Circuit-SAT$(n,s)$: given a fan-in-2 circuit with $n$ inputs and $s$ gates, decide whether some input gives output $1$. Plan: climb a ladder $(n,s,w)$ ($w$ = wires), tracking for each rung the minimum wires/gates needed to \emph{build} the instance family and the best provable cost of \emph{deciding} it. The lower bound sought is parametrized, $T(n,s)$.
+
+\section{Rung 0: building cost (wires)}
+\begin{prop}[PROVED] A circuit whose output depends on all $n$ inputs has $\ge n-1$ fan-in-2 gates and $\ge 2(n-1)$ wires; $\mathrm{AND}_n$ meets this.\end{prop}
+\begin{proof}The underlying undirected graph must connect the output to all $n$ inputs. Each gate adds at most one new connected component merge per input wire pair, so $g$ gates join at most $g+1$ sources: $g\ge n-1$; wires $=2g$.\end{proof}
+
+\section{Rung 1: exact minimum sizes (COMPUTATIONAL)}
+Full binary basis $B_2$, input literals free. Code: \texttt{research/agents/claude/circuitsat/min\_circuit.py}, data \texttt{results.jsonl} (exhaustive BFS over sets of computed truth tables).
+\begin{center}\begin{tabular}{lcccccc}\toprule
+$n$ & \#functions & 0 gates & 1 & 2 & 3 & 4\\\midrule
+1 & 4 & 4 & & & & \\
+2 & 16 & 6 & 10 & & & \\
+3 & 256 & 8 & 30 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+Max size $D(n)=0,1,4$ for $n=1,2,3$. (KNOWN, quoted not rechecked: Knuth, TAOCP 7.1.2, gives $D(4)=7$, $D(5)=12$.) Wires $=2\times$gates, so the wire ladder is $0,2,8$.
+
+\section{Rung 2: deciding cost}
+\begin{thm}[PROVED, black-box] Any deterministic algorithm that decides Circuit-SAT using only evaluation queries needs $2^n$ queries in the worst case, even when $s=n-1+O(n)$.\end{thm}
+\begin{proof}Adversary answers $0$ to every query. After $2^n-1$ queries, the instance ``$x=a$'' ($a$ unqueried; an AND of $n$ literals, $\le n-1$ gates) is consistent with all answers, as is the constant-$0$ circuit, which has the opposite answer.\end{proof}
+Consequence: any better bound must inspect the wiring (non-black-box). Randomized: $\Omega(2^n)$ by Yao; quantum $\Theta(2^{n/2})$ (Grover/BBBV) black-box --- KNOWN.
+
+\paragraph{Parametrized upper bounds (KNOWN).} Brute force $O(2^n s)$. Treewidth/pathwidth $k$ DP: $2^{O(k)}\mathrm{poly}(s)$. Hence a parametrized lower bound can only be $2^{\Omega(\min(n,k))}$-type; matching it for general circuits is SETH-flavoured (CANDIDATE/CONDITIONAL: SETH gives no $(2-\epsilon)^n\mathrm{poly}(s)$ for CNF-SAT, hence for Circuit-SAT).
+
+\section{Open ladder (next rungs)}
+\begin{enumerate}
+\item Rung 3: gate-elimination for SAT-decision: define $E(n,s)$ = min number of inputs-fixings preserving satisfiability status; look for a potential decreasing by $\ge c$ per fixed variable (CANDIDATE, nothing proved).
+\item Rung 4: $n=4$ exact sizes via symmetry-reduced BFS (COMPUTATIONAL target; sets are larger).
+\item Rung 5: import repository results (below) as barriers to avoid.
+\end{enumerate}
+
+\section{Repository cross-check}
+Relevant in \texttt{j15marti/pnp}: ledger row L13 (Buss--Williams: alternation trading cannot beat SAT time $n^{2\cos(\pi/7)}$ in $n^{o(1)}$ space) and TPORT rows L34--L37 (alternation-trading barriers for a portfolio) --- these bound \emph{proof technique}, so a Rung-3 argument must be non-alternation-trading. One-tape crossing-sequence bound (L38--L40) also holds for NTMs, so cannot separate P/NP. Gate-elimination is the standard non-black-box technique; best circuit lower bounds are linear ($\approx 3.1n$, Find et al.), recorded here as KNOWN-from-memory, to be verified.
+
+\section{Log}
+\begin{itemize}
+\item 2026-10-30: created document; Rungs 0--2 established; exact $n\le3$ table computed; nothing beyond known barriers.
+\end{itemize}
+\end{document}
