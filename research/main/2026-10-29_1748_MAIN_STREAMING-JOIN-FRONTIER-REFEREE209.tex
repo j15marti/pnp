@@ -1,0 +1,407 @@
+% LSPV-5 REPORT::STREAMING-JOIN-FRONTIER-REFEREE209::2026-10-29 17:48 America/Los_Angeles
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,array,xurl}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newcommand{\Status}[1]{\textbf{Status: #1.}}
+\title{LSPV-5 Independent Red Team / Synthesis\\
+Streaming Joins versus All-Live Table Scheduling}
+\author{LSPV-5}
+\date{29 October 2026, 17:48 America/Los\_Angeles}
+
+\begin{document}
+\sloppy
+\maketitle
+
+\begin{center}
+\fbox{\parbox{.94\linewidth}{
+\textbf{Executive status.} P versus NP remains \textbf{OPEN}.  This report proves exact
+peak-space recurrences for two different exact-summary execution contracts.  LSPV-3's weighted
+ordering is correct when all child tables must remain live through an independently allocated join.
+For pointwise intersection of exact child relations on a common interface, however, one accumulator
+suffices and each child table may be discarded.  On a high-fanout star this changes the work-space
+exponent from $\mu+\beta$ to $\beta$ without changing time exponent $\mu+\beta$.  Thus an apparent
+weighted-table frontier is not representation- or join-contract invariant.
+}}
+\end{center}
+
+\section{PROPOSE: one falsifiable missing lemma}
+
+REFEREE208 proved that balanced replay removes a polynomial cache exponent on a deterministic path.
+The next missing lemma was whether a branching exact-summary tree has a comparable collapse.  Three
+mechanisms were fixed before the search:
+\begin{enumerate}
+\item extend the weighted Sethi--Ullman exchange argument from binary to arbitrary fanout;
+\item replace an all-live join by a pointwise streaming fold when child messages share an interface;
+\item use high-fanout stars as hostile controls against any representation-independent cache bound.
+\end{enumerate}
+The first mechanism is correct in its declared model.  The second strictly dominates the first on a
+foldable star.  The third falsifies any universal interpretation of the all-live recurrence.
+
+\section{CORPUS REVIEWED and publication preflight}
+
+The run surveyed the repository tree, current task specifications, governance files, root history,
+\texttt{AGENTS.md}, \texttt{CODEX.md}, the repository research skill, current MAIN snapshots, and
+materially relevant ARC, interface-rank, static-frontier, checkpointing and certificate reports.
+The following fresh peer sources were read at their actual GitHub paths:
+\begin{itemize}
+\item ARC235 TWO-ADHESION-FRONTIER, blob
+\texttt{8c2f657e2b36edeb9e2a0210dcf7449d8524b689};
+\item AFFINE-PROFILE-CROSSOVER234, blob
+\texttt{e2ef6d9af75c3ae509329d8f9c2bdcfcbd46e593};
+\item WEIGHTED-SUMMARY-SCHEDULER170, blob
+\texttt{fb9834ebbcc93c9012f8657ac7d6f75738b5abab};
+\item ZERO-ONE-Q-FRONTIER233, blob
+\texttt{285530022b2620e41feb5ee614948312e714df90}.
+\end{itemize}
+LSPV-4's predecessor report has both required report markers and is substantive.  LSPV-1/2/3 are
+scientifically substantive but do not use the current required opening/final marker pair; owner-safe
+publication repair remains pending.
+
+The current root blob \texttt{8ba2d1c620bb1d4f040cc09cdac0401db36aca00} has only 15,446
+characters, ends inside LSPV-1, and has no final sentinel.  Two commits after the verified REFEREE208
+root attempted to add/restore a GROKPROOF reference, but the resulting root remained truncated:
+\texttt{02e99ef8e6551c8d8974c9f41650c7e520b51de9} and
+\texttt{c0d0bf361982a9b5bcb1b65ba2800ef4dc67b16a}.  The recovery base is the full, compiled,
+marker-balanced REFEREE208 root at commit
+\texttt{f3c898ddf242f2fecf3e208e396f84a55ca7867c}, blob
+\texttt{6f11b18ded308af38397e8bb577fdd66bc5b7e7f}.  No manuscript text is reconstructed from a
+temporary path.
+
+\section{SEARCH: exact transferable hypotheses}
+
+Appel--Supowit generalizes Sethi--Ullman ordering for weighted computation trees; this is direct
+precedent for the whole-subtree exchange rule, not a SAT theorem \cite{AS}.  Betzler--Niedermeier--
+Uhlmann explicitly study memory saving in dynamic programming on tree decompositions and distinguish
+decision traversal from retaining information for reconstruction \cite{BNU}.  Junction-tree message
+passing uses local combination and the distributive law; lazy propagation preserves factor
+decomposition rather than forcing one monolithic potential \cite{JT,Lazy}.  These are directly useful
+algorithmic patterns, but none discovers a SAT decomposition or proves an arbitrary-algorithm lower
+bound.
+
+Actual GitHub source was inspected in
+\texttt{vardigroup/DPMC/tensor/src/join\_tree.py}, blob
+\texttt{4ab8ffca478243c7c2780728bdfb11eb1857e482}, at repository commit
+\texttt{5ca617e1a6fe434fac4def07b02017ff9757bdf5}.  Its postorder visitor retains child results in a
+\texttt{result\_stack}, passes the complete child-result list to the internal-node callback, and its
+cost routine combines children sequentially.  It is implementation precedent, not a proof of the
+space recurrence below and not a universal contraction theorem.
+
+\section{Two declared execution contracts}
+
+Let a node have children $1,\dots,h$.  Child $i$ has a completed output table of $s_i$ bits and
+minimum subtree peak $M_i\ge s_i$.  Source access, controller metadata and other work are added
+separately; the recurrences here count logical exact-table and join-buffer bits.
+
+\paragraph{All-live contract.} A completed child table remains allocated until the parent join, and
+the parent output plus order-independent scratch consume $j$ fresh bits.  For order $\pi$ the peak is
+\begin{equation}
+ P_{\rm live}(\pi)=\max\left\{
+ \max_{1\le r\le h}\left(\sum_{\ell<r}s_{\pi_\ell}+M_{\pi_r}\right),
+ \sum_{i=1}^h s_i+j\right\}.
+ \label{eq:live}
+\end{equation}
+
+\paragraph{Streaming common-interface fold.} Every child output is a $B$-bit Boolean relation on the
+same authenticated interface.  The parent relation is the pointwise intersection of the child
+relations and a local relation.  Reuse the first child output as a $B$-bit accumulator; compute later
+children one at a time, intersect in place, and discard them.  Let $K$ be local fold scratch.
+
+\section{BUILD I: exact arbitrary-fanout all-live order}
+
+\begin{theorem}[Weighted all-live ordering]
+\label{thm:live}
+Under the all-live contract, sorting children by nonincreasing
+\[
+ d_i=M_i-s_i
+\]
+minimizes (\ref{eq:live}) over all uninterrupted whole-subtree orders without recomputation.
+\end{theorem}
+
+\begin{proof}
+Consider adjacent children $a,b$ after a fixed retained prefix of $p$ bits.  The order-dependent
+terms for $a,b$ are
+\[
+\max\{p+M_a,p+s_a+M_b\}
+\quad\hbox{and}\quad
+\max\{p+M_b,p+s_b+M_a\}.
+\]
+If $d_a\ge d_b$, then $M_b=s_b+d_b$ and both terms in the first maximum are at most
+$p+s_a+s_b+d_a=p+s_b+M_a$, a term in the second maximum.  The final join term is order independent.
+Adjacent inversions can therefore be exchanged without increasing peak until the order is sorted.
+\end{proof}
+
+This extends the peer's binary theorem to arbitrary fanout, but only inside the same all-live,
+independent-parent-output contract.
+
+\section{BUILD II: exact streaming-fold frontier}
+
+\begin{theorem}[Common-interface streaming intersection]
+\label{thm:stream}
+Assume $h\ge1$ child relations have identical $B$-bit indexing, the first output may be reused as the
+accumulator, later relations may be consumed and discarded, and the local relation can be folded with
+$K$ extra bits.  If children are evaluated in order $\pi$, then
+\[
+P_{\rm fold}(\pi)=
+\max\left\{M_{\pi_1},\ B+\max_{2\le r\le h}M_{\pi_r},\ B+K\right\},
+\]
+where the middle maximum is absent for $h=1$.  An optimal order evaluates a child of maximum $M_i$
+first.  Total table-combination work is $\Theta(hB)$ and does not depend on the order.
+\end{theorem}
+
+\begin{proof}
+The first child is computed with no retained accumulator and its output storage becomes the
+accumulator.  During each later child computation, exactly that $B$-bit accumulator remains live in
+addition to the child's own peak.  Pointwise conjunction overwrites the accumulator, after which the
+child is released.  Thus the displayed peak is attainable.  The first position is the only one not
+paying the additive $B$; placing a maximum-peak child there minimizes the maximum over the remaining
+children.  Reading and conjoining every table bit gives $\Theta(hB)$ combination work.
+\end{proof}
+
+\begin{corollary}[High-fanout exponent separation]
+\label{cor:star}
+For a star with $h$ leaf children, each having $M_i=s_i=B$, and an independently allocated $B$-bit
+parent output, the all-live contract has exact peak $(h+1)B$.  Streaming intersection has peak $B$ for
+$h=1$ and $2B$ for $h\ge2$.  If
+$h=N^{\mu+o(1)}$ and $B=N^{\beta+o(1)}$, while generation and combination use
+$N^{\mu+\beta+o(1)}$ time, the simultaneous auxiliary-work exponent pairs are
+\[
+ (\tau,\sigma)_{\rm live}=(\mu+\beta,\mu+\beta),\qquad
+ (\tau,\sigma)_{\rm fold}=(\mu+\beta,\beta).
+\]
+Thus all-live weighted ordering is not the global Pareto frontier once an associative streaming join
+is available.
+\end{corollary}
+
+\paragraph{Balanced trees.}
+For a complete $r$-ary tree of depth $d$ with constant $B$ and the same contracts, the exact peaks are
+\[
+ M_{\rm live}=B[d(r-1)+2]\quad(d\ge1),qquad
+ M_{\rm fold}=B(d+1).
+\]
+The star is the sharp polynomial-exponent separation; fixed-arity balanced trees differ by a finite
+or logarithmic factor, depending on the growth regime.
+
+\paragraph{SAT/UNSAT reconstruction.}
+If the final accumulator contains an assignment $x$, rerun each child one at a time to recover and
+verify a compatible subtree witness, then check every original source constraint.  If the final
+accumulator is empty, a source-authenticated semantic transcript may stream child tables and their
+pointwise intersections and be independently replayed.  This can multiply work polynomially but does
+not restore the sibling-sum space exponent.  Such a transcript is not automatically Resolution or
+LRAT.
+
+\Status{PROVED/EXACT} Theorems~\ref{thm:live}--\ref{thm:stream} and
+Corollary~\ref{cor:star} under their explicit execution contracts.
+
+\section{BUILD III: pairwise crossings versus the true lower envelope}
+
+\begin{lemma}[Dominated crossing]
+Let three representation costs be $C_1(k),C_2(k),C_3(k)$.  A crossing
+$C_1(k_0)=C_2(k_0)$ is absent from the lower envelope whenever
+$C_3(k_0)<C_1(k_0)$.  It supplies neither a Pareto point nor a mandatory algorithmic transition.
+\end{lemma}
+The statement is immediate from taking $\min_i C_i(k_0)$, but it is a necessary firewall for plotted
+curves.
+
+For LSPV-2's parity-profile family, with
+\[
+ D(k)=2w+2^{3k},\quad A(k)=2w+k(3w+1),\quad
+ B(k)=2w+5k(w+2h),
+\]
+the dense/BDD crossing first occurs at $k=3$, where $(D,B,A)=(520,218,47)$ bits.  Yet
+\[
+B(k)-A(k)=k(2w+10h-1)>0,
+\]
+and $A(k)<D(k)$ for every $k\ge1$ (directly for $k=1$, and from
+$2^{3k}>k(3w+1)$ for $k\ge2$).  Hence the dense/BDD crossing is always dominated by the affine-row
+list on this authenticated family.  The crossing is a correct physical comparison between two
+encoders, not a point on the three-representation lower envelope and not a solver lower bound.
+
+\section{COMPUTATIONAL controls and independent reruns}
+
+The dependency-free REFEREE209 executable completed in 1.41 seconds.  It checked 840 arbitrary-fanout
+all-live instances against every child permutation and 840 equal-output streaming instances against
+every permutation, with no mismatch.  It checked 45 high-fanout star coordinates, 36 balanced-tree
+coordinates, and 144 common-interface SAT/UNSAT cases through interface width 12.  At $B=256$ bits:
+\begin{center}
+\begin{tabular}{rrrr}
+\toprule
+$h$ & all-live bits & streaming bits & ratio\\
+\midrule
+2&768&512&1.5\\
+8&2,304&512&4.5\\
+32&8,448&512&16.5\\
+256&65,792&512&128.5\\
+\bottomrule
+\end{tabular}
+\end{center}
+These are logical table bits, not Python heap or native TM cells.
+
+The LSPV-3 reproducer reran successfully and returned its stated SHA-256, 500 schedule-oracle trees,
+36 closed-form rows and 18 source-CNF cases.  LSPV-4's independent checker reran successfully on 64
+$q=0,1$ sources plus the $b=400,q=0$ and $b=134,q=1$ large controls.  LSPV-2's GitHub script initially
+failed because its imported \texttt{connector231.py} is absent from GitHub.  With the separately
+identified Library copy supplied on \texttt{PYTHONPATH}, it completed in 19.9 seconds.  Therefore its
+finite computation is reproducible with an external dependency, but its GitHub publication is not
+self-contained.
+
+\section{Specialist red-team reconciliation}
+
+\paragraph{LSPV-1 ARC235.}
+Every relation on at most two separator variables is 2CNF-definable, and the charged pair-separator
+compiler plus rank-one local solver gives a genuine restricted polynomial algorithm.  Adhesion three
+fails by odd parity.  The conservative RAM powers are loose upper bounds, not frontier optima, and no
+native tape exponent transfer follows.
+
+\paragraph{LSPV-2 AFFINE-PROFILE-CROSSOVER234.}
+The connected strict22 twins, rank-$k$ boundary projection and width-35 construction are internally
+consistent.  High affine rank forces neither large representation nor decision hardness here.  The
+first dense/BDD size crossing is dominated by the affine list, and the canonical recognizer returning
+UNKNOWN after harmless renaming demonstrates that source-independent acquisition remains open.
+
+\paragraph{LSPV-3 WEIGHTED-SUMMARY-SCHEDULER170.}
+The weighted whole-subtree theorem is correct under its stated all-live/independent-output contract.
+It must not be promoted to an exact-summary Pareto theorem: streaming folds, compression,
+recomputation and shared DAGs are explicitly outside its hypotheses.  The present star supplies a
+polynomial-exponent separation between two exact execution contracts.
+
+\paragraph{LSPV-4 ZERO-ONE-Q-FRONTIER233.}
+The derivative and endpoint arithmetic are correct, and the finite generator reran.  Within the
+parity-refined fixed grammar, the newer permitted proxy has continuous minimum
+\[
+b^*=\frac{\sqrt{n+3}-1}{3},\qquad
+t^*=\frac23\sqrt{n+3}-\frac13.
+\]
+For $n=1200$, permitted minimum 23 occurs at $(10,13),(11,12),(12,11)$; the $q=0$ endpoint
+$b=400$ is realized.  Every constructed boundary relation is TRUE and canonically recognizable, so
+this tighter structural envelope still supplies no decision lower bound or matched NO frontier.
+
+\section{Model-specific simultaneous ledger}
+
+\begin{longtable}{p{.20\linewidth}p{.34\linewidth}p{.35\linewidth}}
+\toprule
+Model/contract & Attained bound & Firewall\\
+\midrule
+Indexed read-only-input RAM, all-live & Eq.~\ref{eq:live} plus source and metadata & Requires all
+siblings live and independent parent output.\\
+Indexed read-only-input RAM, streaming fold & Theorem~\ref{thm:stream} plus source and metadata &
+Requires common indexing and an associative consumable join.\\
+Single writable tape & Input footprint is part of space; head travel is time & RAM exponents do not
+transfer unchanged.\\
+Fixed-$k$ multitape & Standard polynomial simulation preserves polynomiality & Precise powers require
+a native layout and traffic ledger.\\
+Fixed UTM & Program, interpreter and encodings are charged & No input-dependent advice or growing
+alphabet.\\
+Certificate output & Physical output length is charged in time & If retained, add its full length to
+peak space.\\
+\bottomrule
+\end{longtable}
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+\begin{itemize}
+\item The all-live ordering is a direct arbitrary-fanout extension of LSPV-3 and classical weighted
+register scheduling; no classical priority is claimed.
+\item The streaming theorem complements REFEREE208 path replay.  Replay removes retained ancestors;
+streaming fold removes retained siblings when the join algebra permits it.
+\item The star does not contradict LSPV-3, whose exclusions explicitly include compression and
+alternative join contracts.  It falsifies only an overbroad Pareto interpretation.
+\item LSPV-2's dense/BDD crossing is numerically correct but is not on the lower envelope once its own
+affine representation is included.
+\item LSPV-4's stronger parity-refined structural envelope supersedes the older relaxed proxy only
+inside its exact residual-hitting grammar.  Neither is an arbitrary-SAT runtime bound.
+\end{itemize}
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+REFEREE208 handled deterministic paths.  This run separates two branching-tree contracts and proves
+that a foldable common-interface star removes an entire sibling-count space exponent.  It also adds
+the dominated-crossing firewall and independently reruns the newest specialist computations.  The
+living manuscript is recovered from the last verified full root because two later attempted
+reference edits again truncated it.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\begin{itemize}
+\item \textbf{ADOPTED:} weighted all-live exchange; pair-separator rank-one solver; compact affine
+profile; parity-refined static endpoints; full source authentication.
+\item \textbf{REJECTED:} treating all child tables as necessarily simultaneous when a consumable
+associative fold exists; treating a pairwise crossing as the global envelope; uncharged dependency
+files or answer-class bits.
+\item \textbf{FALSIFIED/RETIRED:} all-live weighted scheduling as a representation-independent
+polynomial-exponent Pareto frontier; dense/BDD crossing as the best representation transition on the
+parity-profile family; any arbitrary-SAT lower bound from these controls.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+The current root is structurally invalid despite a commit labelled as a restoration.  Scientifically,
+the largest overstatement risk is confusing an optimum inside a fixed allocation contract with an
+optimum over representations and execution policies.  A second is interpreting exact profile output
+size as decision space.  A third is reporting a GitHub reproducer as self-contained when it imports a
+dependency available only from a separate Library artifact.
+
+\section{Ranked cross-agent proof-obligation ledger}
+
+\begin{enumerate}
+\item \textbf{OPEN---join algebra.} Characterize which exact SAT summary representations admit a
+bounded-size associative fold after projection, and give a hostile nonfoldable relation family.
+\item \textbf{OPEN---branching replay.} Bound total work and active-path information when streaming
+folds, replay and mixed affine/bijunctive/exceptional messages are combined on one tree.
+\item \textbf{OPEN---coverage.} Discover and authenticate the representation on an all-input
+hereditary connected strict22 class, charging every failed choice.
+\item \textbf{OPEN---proof output.} Give exact SAT reconstruction and independently checkable UNSAT
+certificate degrees, including physical output length.
+\item \textbf{OPEN---native bridge.} Implement one complete simultaneous machine ledger before any
+ARC/FLMV comparison.
+\item \textbf{PENDING---publication integrity.} Repair LSPV-1/2/3 report markers, make LSPV-2's
+dependency self-contained, and stop partial-root reference edits from replacing the verified root.
+\end{enumerate}
+
+\section{Reproducibility}
+
+The dependency-free code
+\path{research/main/2026-10-29_1748_STREAMING_JOIN_FRONTIER_REFEREE209_repro.py}
+was published at commit \texttt{6078eb7f3422cde61585582d5356b0c632aa3996}; raw results
+\path{research/main/2026-10-29_1748_STREAMING_JOIN_FRONTIER_REFEREE209_raw.json}
+at commit \texttt{4ad0cc74f63d47b82175ea249e12056ad6cdcdaa}.  The finite program checks
+recurrences and semantic truth tables; the symbolic theorems are proved above.  No Lean/Coq kernel
+verification was performed.
+
+\section{Final claim and next specific lemma}
+
+\paragraph{One proved/falsified claim, exact scope.}
+\Status{PROVED/EXACT} For $h=N^{\mu+o(1)}$ explicitly generated child relations of
+$B=N^{\beta+o(1)}$ bits on one authenticated common interface, a pointwise streaming-intersection
+join has simultaneous auxiliary exponents $(\mu+\beta,\beta)$, whereas the declared all-live,
+independent-output contract has $(\mu+\beta,\mu+\beta)$.  Therefore the latter is
+\textbf{FALSIFIED/RETIRED} as a representation-independent Pareto frontier.  This is an architecture
+upper-bound separation, not a SAT lower bound.
+
+\paragraph{Next specific lemma.}
+Prove or falsify a mixed-message fold theorem: on a verified branching module tree, determine whether
+bijunctive clauses, affine row spaces and a bounded exceptional table can be combined into an
+associative accumulator whose encoded size, projection cost, replay work and SAT/UNSAT proof output
+remain polynomial under every charged join.  P versus NP remains \textbf{OPEN}.
+
+\begin{thebibliography}{9}
+\bibitem{AS} A.~W.~Appel and K.~J.~Supowit, \emph{Generalizations of the Sethi--Ullman Algorithm for
+Register Allocation}, Software: Practice and Experience 17 (1987), 417--421,
+DOI: 10.1002/spe.4380170607.
+\bibitem{BNU} N.~Betzler, R.~Niedermeier and J.~Uhlmann, \emph{Tree Decompositions of Graphs: Saving
+Memory in Dynamic Programming}, Discrete Optimization 3 (2006), 220--229,
+DOI: 10.1016/j.disopt.2006.05.008.
+\bibitem{JT} F.~V.~Jensen, \emph{An Introduction to Bayesian Networks}, UCL Press, 1996, junction-tree
+message-passing chapters.
+\bibitem{Lazy} A.~L.~Madsen and F.~V.~Jensen, \emph{Lazy Propagation: A Junction Tree Inference
+Algorithm Based on Lazy Evaluation}, Artificial Intelligence 113 (1999), 203--245.
+\bibitem{AG} V.~Arvind and V.~Guruswami, \emph{CNF Satisfiability in a Subspace and Related Problems},
+IPEC 2021, DOI: 10.4230/LIPIcs.IPEC.2021.5.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LSPV-5::STREAMING-JOIN-FRONTIER-REFEREE209
+\end{document}
