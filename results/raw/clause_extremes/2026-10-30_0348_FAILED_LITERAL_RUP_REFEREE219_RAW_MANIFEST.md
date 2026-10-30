@@ -12,6 +12,8 @@ Status: independently replayed; P versus NP remains OPEN.
 - `2026-10-30_0348_FAILED_LITERAL_RUP_REFEREE219_check.json` — `5275972df4d821994769f94b9d7800250bd4f9ebb9569702a5a5c17533a10dbd`
 - `2026-10-30_0348_MAIN_FAILED-LITERAL-RUP-REFEREE219.tex` — `7d54d7ac11391e1e4f2d69ffe1f2686671861c4b47efb00a377cf9857c8a0ffe`
 
+The complete 2,328,987-byte raw JSON is durably available as ChatGPT Library file `libfile_e3761cd5d1ec81919ab01f75e7d81306`; its SHA-256 is the value above. GitHub carries the producer, independent checker, compact summary, replay output, and this manifest.
+
 ## Replay
 
 ```bash
