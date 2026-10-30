@@ -1,0 +1,65 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-30 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\theoremstyle{remark}\newtheorem{remark}{Remark}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{Wire-by-wire lower bounds for \CSAT: a living document}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated 2026-10-30}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is a super-linear unconditional lower bound for \CSAT. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and model}
+Instance: a Boolean circuit $C$ over $\{\wedge,\vee,\neg\}$, fan-in 2, $n$ inputs, $g$ gates, $m$ wires (edges). Question: $\exists x\,C(x)=1$? We seek lower bounds as functions of the parameters $(n,g,m)$ (possibly also width/treewidth $k$).
+Normal form: $\wedge$ gates with free negation on wires (De~Morgan basis); then $m=2g$ plus the output wire. Let $G(f)$ be the minimum gate count and $W(f)=2G(f)$ the minimum wire count for $f$.
+
+\section{Ladder of exact small cases (COMPUTATIONAL)}
+\texttt{research/agents/claude/circuitsat/mincircuit.py} runs a BFS over sets of computed truth tables ($\wedge$ gates, free negation, constant free) and gives \emph{exact} $G(f)$ for \emph{all} functions. Raw output: \texttt{mincircuit\_results.txt}. Counts below include negations (totals $4,16,256$ check).
+\begin{center}\begin{tabular}{@{}cccl@{}}\toprule
+$n$ & $\max_f G(f)$ & $G(\mathrm{AND}_n)$, $G(\mathrm{XOR}_n)$ & distribution of $G$ over all $2^{2^n}$ functions\\\midrule
+1 & 0 & 0, 0 & $\{0{:}4\}$\\
+2 & 3 & 1, 3 & $\{0{:}6,1{:}8,3{:}2\}$\\
+3 & 6 & 2, 6 & $\{0{:}8,1{:}24,2{:}64,3{:}30,4{:}104,5{:}8,6{:}18\}$\\\bottomrule\end{tabular}\end{center}
+Observations (exact only for $n\le3$): $G(\mathrm{XOR}_n)=3(n-1)$ fits the known De~Morgan bound (Schnorr 1974, KNOWN THEOREM, recalled not re-verified); $\max G$ is attained by parity-like functions; at $n=2$ no function needs exactly 2 gates.
+
+\section{Wire counting lower bounds}
+\begin{proposition}[PROVED/EXACT, connectivity]
+If $f$ depends on all $n$ inputs, any fan-in-2 circuit has $G\ge n-1$, hence $W\ge 2(n-1)$; every relevant input has out-degree $\ge1$.
+\end{proposition}
+\begin{proof} Each relevant input must reach the output, so the sub-DAG on the output's ancestors is connected with $n$ sources; a connected DAG with one sink and fan-in $\le2$ needs $\ge n-1$ gates (count edges: $\ge n+g-1$ edges $\le 2g$). \qed\end{proof}
+Tight for $\mathrm{AND}_n$ ($G=n-1$; verified $n=2,3$). For parity the ladder suggests $3(n-1)$: the extra wires come from fan-out $2$ at each XOR stage---the quantity to track as inputs grow.
+
+\section{Circuit-SAT as a parametrised problem}
+\begin{theorem}[PROVED/EXACT, probe model]\label{thm:probe}
+Fix $k$. Any deterministic algorithm that decides \CSAT\ on circuits with $m=\Theta(k)$ wires by probing the gate/wire list (one probe reveals one gate's inputs) needs $\ge k$ probes in the worst case; randomised with error $\le1/3$ needs $\Omega(k)$.
+\end{theorem}
+\begin{proof}
+Let $a_1,\dots,a_k$ be gates, $a_j=x\wedge\neg x$ for all $j$ except a hidden $j^*$ with $a_{j^*}=x\wedge y$; output $=\bigvee_j a_j$ (balanced tree, $O(k)$ wires). The base instance is UNSAT, the $j^*$-instance SAT, and they differ only in the description of $a_{j^*}$. An adversary answers every probe with the base value; before probing all $k$ gates some instance consistent with all answers is SAT. Randomised: Yao with $j^*$ uniform. \qed\end{proof}
+This is only the trivial ``must read the input'' bound $\Omega(m)$; it is a proof that the parametrised bound cannot be below linear, not evidence of hardness.
+
+\paragraph{Upper/conditional side.}
+\begin{itemize}
+\item KNOWN: brute force $O(2^n m)$; DP over a tree decomposition of the circuit gives $2^{O(k)}\,m$ with treewidth $k$.
+\item CONDITIONAL (SETH): since CNF-SAT with $n$ variables reduces to \CSAT\ with $m=O(\mathrm{poly}(n))$ gates, no $O(2^{(1-\varepsilon)n}\mathrm{poly}(m))$ algorithm exists under SETH. Not unconditional.
+\end{itemize}
+So the candidate parametrised statement is
+$T(n,m)\ge 2^{\delta n}$ for $m=\mathrm{poly}(n)$ (CONDITIONAL on SETH/ETH; OPEN unconditionally).
+
+\section{Gap between size lower bounds and solving \CSAT}
+Minimum wires $W(f)$ is a \emph{circuit-size} lower-bound quantity; best known for explicit functions over the full basis is about $3.1n-o(n)$ gates (Li--Yang, STOC 2022; recalled, not re-verified this run), all linear. A lower bound on $W$ does not bound the time to \emph{decide satisfiability} of a given circuit; the bridge would be an argument that any SAT solver must, for some instance, ``certify'' that no assignment exists using resources proportional to a size-type measure. No such bridge is known (CANDIDATE direction; relativization/natural-proofs barriers apply and are not yet audited here).
+
+\section{Connections to the repository (not re-read in depth this run)}
+Per \texttt{AGENTS.md}: the world ledger (\texttt{research/agents/claude/world-ledger/}), Buss--Williams (row L13, alternation trading cannot reach exponent $2\cos(\pi/7)$ with $n^{o(1)}$ space) and the T-PORT/one-tape reports are the closest relevant material: they give \emph{time--space} parametrised lower bounds for SAT in restricted models, which is the realistic form a parametrised \CSAT\ bound may take. Reformulations equivalent to $\mathrm P=\mathrm{NP}$ should be discarded as non-progress.
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend the exact ladder to $n=4$ via NPN classes (222 classes) with SAT-based exact synthesis; tabulate $\max G$ and fan-out profile. (Brute BFS is too large; chunk per class.)
+\item Track the fan-out/wire excess $W(f)-2(n-1)$ as a function of $n$ for $\mathrm{XOR}_n$, $\mathrm{MAJ}_n$, threshold.
+\item Prove a parametrised lower bound for \CSAT in a restricted model (monotone / read-once / bounded-width branching programs) as a model where the gap of Section~5 can be crossed.
+\item Audit transfer of alternation-trading bounds to circuit-encoded SAT (compare repo rows L13, L34, L35).
+\end{enumerate}
+
+\section*{Run log}
+\begin{tabular}{@{}ll@{}}2026-10-30 & Created document; exact ladder $n\le3$; Prop.~1; Thm.~\ref{thm:probe}; SETH remark.\end{tabular}
+\end{document}
