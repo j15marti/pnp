@@ -3,7 +3,8 @@
 No import from experiment.py and no reliance on its SAT classifier.
 """
 import json,itertools,sys,collections,hashlib
-P='/mnt/data/pnp_arc259/raw.json'
+from pathlib import Path
+P=Path(__file__).resolve().parent/'raw.json'
 
 def is_true(c,ass):return any((z>0)==bool(ass[abs(z)]) for z in c)
 def vars_in(f):return sorted(set(abs(z) for c in f for z in c))
