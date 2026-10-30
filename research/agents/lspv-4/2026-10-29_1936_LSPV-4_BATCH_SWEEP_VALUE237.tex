@@ -1,0 +1,77 @@
+% LSPV-4 REPORT::BATCH-SWEEP-VALUE237::2026-10-29T19:36:00-07:00
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.83in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,xurl,seqsplit}
+\hypersetup{colorlinks=true,urlcolor=blue}
+\setlength{\emergencystretch}{4em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\title{LSPV-4: BATCH-SWEEP-VALUE237\\A Reusable Information--Head-Sweep Tradeoff and a Pointwise Value Counterexample}
+\author{Independent Time-Space and Circuit Resource Auditor}
+\date{29 October 2026, Los Angeles}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT (restricted, independent referee pending); COMPUTATIONAL finite tests; P vs NP OPEN.}
+\begin{abstract}
+For a canonical family of SAT-context INDEX sources, we establish a sharp construction--storage--batch-continuation lower bound for an unchanged read-only sequential source with one physical head and a complete fixed-length retained state. For $t$ independent signs at spacing $g$, any deterministic all-sign batch continuation retaining $L$ bits after preprocessing has worst-case post-query head travel at least $g\max(0,t-L-1)$ when the prepared head position is source-independent. A prefix summary attains it, while total construction-plus-continuation head movement is necessarily at least $g(t-1)$ on \emph{every} execution and is attained simultaneously. A second result falsifies the assumption that one newly observed bit can decrease logarithmic support potential by at most one \emph{on every branch}; a Horn 2CNF gives one-bit certified progress approaching $t-1$ on a rare branch. The corresponding \emph{expected} progress, under the uniform model prior, is at most one. These are information-acquisition bounds for restricted contextual queries, not SAT decision-time lower bounds.
+\end{abstract}
+
+\section{PROPOSE: missing lemma, falsifiable alternatives}
+The target is an exact non-resetting resource theorem for an adaptive decoder that retains original source access after preprocessing. Four mechanisms are audited: (M1) batch all $t$ four-pin contexts into a single non-resetting continuation; (M2) charge the total pre-query plus post-query physical head trajectory; (M3) test whether the contextual support score $v_\Phi$ has a pointwise one-bit Lipschitz bound; (M4) test original-source retention, indexed RAM, writable re-encoding, affine compression, and source-dependent head position as escapes. M1/M2 yield restricted tight bounds; M3 is false even for Horn 2CNF; M4 delineates the model boundary.
+
+\section{SEARCH: original hypotheses and literature}
+Source-verified \texttt{j15marti/pnp} artifacts include \path{AGENTS.md} (blob \seqsplit{19656af102604d5f0a721d548cf2e4e72a063561}), \path{CODEX.md} (\seqsplit{754999f50de93cdb693ed37bc8110d31e9e698ef}), \path{.codex/skills/pnp-research/SKILL.md} (\seqsplit{b8df83a7b0b1428f349b0e02ce1387d979e8db7f}), HEAD-WINDOW-INFO-VALUE236 (\seqsplit{ace6000e9b8dbb52fe0a6487f4edf10a00648b89}), CONTEXTUAL-VALUE-HAMMING235 (\seqsplit{b4a1a846dab97bd02691578d9abe5a081890d8b7}) and DECISION-CONTEXT-SEPARATION202 (\seqsplit{04bd241a6e2d9607151d6906983850e0f21ada3c}). We also inspected the actual Coq \path{uds-psl/coq-library-complexity/theories/NP/TM/mTM_to_singleTapeTM.v} (blob \seqsplit{a12c882a5aed008870e913dd292b6f2530432ecc}), CaDiCaL \path{arminbiere/cadical/src/elim.cpp} (blob \seqsplit{c401152c7a733803d0b407d98e8a295ab44f7e99}), and PySAT \path{pysathq/pysat/pysat/solvers.py} (blob \seqsplit{5a8f4287925dd9eb9045dd324147da50720de9d4}). The Coq theorem is about polynomial simulation under its own encodings, not this native head-sweep exponent; CaDiCaL bounds eliminations heuristically and proves no universal SAT contraction; PySAT provides incremental solvers without a resource lower-bound theorem. Darwiche--Marquis \cite{dm} distinguish compilation size from supported online queries. The original cell-probe perspective \cite{fs} counts each memory access even if local processing is treated as free; neither work implies unrestricted SAT hardness. The established one-way INDEX row argument is used only after explicitly modeling the future context.
+
+\section{Exact model and SAT context}
+Let $s\in\{0,1\}^t$ be independent signs located in an unchanged read-only source at public positions $p_j=p_0+(j-1)g$ ($g\ge1$), with every other source bit fixed and public. The total canonical encoded length is $N=\Theta(t\log(t+2))$ when $g=\Theta(\log(t+2))$. As in FOUR-PIN226, choose connected proper 3CNF $A_s$ and four-pin contexts $B_j$ satisfying
+\[\operatorname{SAT}(A_s\wedge B_j)=s_j.\]
+The future task here is one \emph{batch} of all $t$ contexts and hence the exact $t$-bit response vector, which is revealed only after the preprocessor has finished. The preprocessor may be arbitrary and adaptive, but only a complete fixed-length $L$-bit state and a single read-only source head survive. The latter's final position $p$ is source-independent, though it may depend on public $t,L,g$. All other output, source copies, head locations and writable cells surviving the phase boundary count toward $L$. Temporary continuation workspace is unrestricted but charged as peak workspace, and every source-head move counts. The decoder may adaptively choose source reads and processing, and it may delay the ordered output until batch completion. No physical source rewriting, uncounted auxiliary input head, intermediate output-as-memory or free side bit is permitted.
+
+\begin{theorem}[Tight post-batch sweep frontier]\label{thm:sweep}
+For $0\le L\le t$, among all deterministic exact preprocessors and continuations in the model above, the minimum worst-input post-batch input-head travel is
+\[\boxed{H_{\rm post}^{\star}(t,L;g)=g\max\{0,t-L-1\}.}\]
+For the same model started at $p_1$, on \emph{every} correct execution, the full preprocessor-plus-continuation source-head travel obeys
+\[\boxed{H_{\rm prep}(s)+H_{\rm post}(s)\ge g(t-1).}\]
+Both minima are attained simultaneously by one uniform prefix-summary algorithm, for every $s$ and every $L$.
+\end{theorem}
+\begin{proof}
+Fix any retained $L$-bit state $m$. The deterministic post-batch decoder is a binary decision tree on previously unseen independent source signs; rereading a sign adds no branching. If every post-batch head path has travel at most $H$, its visited sign sites belong to an interval whose diameter is at most $H$, so each path visits at most $r=\lfloor H/g\rfloor+1$ distinct sign sites. The resulting adaptive binary tree has at most $2^r$ leaves. Summing over at most $2^L$ prepared states gives at most $2^{L+r}$ output vectors. Correct reconstruction of all $2^t$ sign vectors requires $L+r\ge t$, or $H\ge g\max(0,t-L-1)$. This counts all nonlinear summaries and all adaptive paths; the proof is a tree-leaf count, \emph{not} an incorrect bound on pointwise logarithmic-support progress.
+
+For the total-trajectory bound, fix an arbitrary actual source $s$. If the sole source head never reads some sign site $p_j$ in either phase, changing only $s_j$ leaves the entire deterministic execution, including the required $j$-th answer, unchanged, contradiction. Thus every execution visits both $p_1$ and $p_t$ and its total head travel is at least their distance $g(t-1)$. This argument is valid regardless of summaries, caching, or preprocessing expense.
+
+For equality, begin at $p_1$. During preprocessing read and retain $s_1,\ldots,s_L$, then move to $p_{L+1}$ if $L<t$; when $L=t$, stop at $p_t$. The preparation moves $gL$ for $L<t$ and $g(t-1)$ for $L=t$. During continuation, output retained prefix bits and sweep once rightward through the remaining signs, outputting them in canonical order. It moves $g\max(0,t-L-1)$, uses $t-L$ new sign probes, and writes all $t$ output bits. In both cases the combined source-head travel is $g(t-1)$. The implementation makes no failed strategy attempts and the output is never treated as a free summary.
+\end{proof}
+
+\noindent\textbf{Quantifier and latency firewall.} The lower bounds apply to an online adversary that eventually requests all $t$ coordinates, since that request sequence is among its legal choices. Exact attainability of the post-batch bound uses batched/delayed response and is not asserted under immediate-answer latency. For a \emph{single} independently initialized query, HEAD-WINDOW236 instead obtains $\lceil g\max(0,t-L-1)/2\rceil$: the difference arises because one query may approach either side of a fixed midpoint while a single non-resetting path must physically span all newly visited signs.
+
+\section{Value-score counterexample within Horn 2CNF}
+Let $t\ge2$ and $K_t$ be the model set of the Horn 2CNF
+\[C_t=\bigwedge_{j=2}^{t}(x_1\lor\neg x_j).\]
+There are $M=2^{t-1}+1$ satisfying assignments: precisely one with $x_1=0$, and $2^{t-1}$ with $x_1=1$. Use the declared target $W=(x_1,\ldots,x_t)$ and support potential $\Phi_W(K)=\log_2|\pi_W K|$. After the true observed fact $(x_1=0)\mid_v$,
+\[\boxed{v_\Phi((x_1=0)\mid s,K_t,W)=\log_2(2^{t-1}+1)>t-1.}\]
+This is \emph{one} bit observation with a nearly $t$-bit \emph{pointwise} reduction on the rare branch. Hence the proposed claim ``one input bit changes $\Phi_W$ by at most one on every successful execution'' is \textbf{FALSIFIED/RETIRED}. The other branch has value $\log_2 M-(t-1)\in(0,1)$. Under a uniform prior over models, the expected score is exactly the binary entropy $h_2(1/M)\le1$, because
+\[\log_2M-\sum_{a\in\{0,1\}}p_a\log_2|K_{t,a}|=h_2(p_0).\]
+This is an average-case entropy identity, not a worst-case transition lower bound. Moreover $C_t$ is already 2SAT-solvable, showing that the support score is not the cost of deciding its SAT answer. A certified fact strengthens knowledge and gives $v_\Phi\ge0$ for a fixed projection; net value after a separately charged acquisition/verification cost may be negative. In the XOR-sharing control, $(x\oplus r=1)\mid_0$ and $(r=1)\mid_0$ individually have zero projected support value for target $x$, but their joint information has value one. Duplicated information adds zero. These examples forbid naive summation of context-dependent scores.
+
+\section{Model-specific charged ledger and escapes}
+The prefix implementation uses exactly $L$ retained source bits, at most $L+O(\log N)$ prepared writable cells after including counters and a machine-dependent constant, and $O(\log N)$ additional continuation workspace for ordered output. The $t$ output-bit writes and the $t$ total source-sign probes each cost physical steps and can overlap with head movement in multitape transitions; they must \emph{not} be mechanically added to the head-travel lower bound. Thus $T_{\rm total}\ge\max\{g(t-1),t\}$ fixed-machine transitions, with a constant-factor matching sequential implementation in the simplified fixed-field source (parsing the full input and authentication may add $O(N)$). Physical input footprint is $\Omega(N)$ on the single-writable-tape model. A fixed multitape implementation with read-only source and separate output counts the observed $H$ head movements natively, and its total running time is at least $H$. A two-fully-writable-tape model cannot inherit the unchanged-source result if it rewrites tape 1. Fixed UTM emulation may be polynomial and does not certify the precise native exponent.
+
+On an indexed \emph{bit}-RAM, exact batch reconstruction still needs $t$ total source-bit probes along each execution when no outside input information is granted, but the physical $g$ multiplier disappears: after an $L$-bit prepared message, at least $t-L$ probes are required on some continuation, and they can occur in arbitrary order. A RAM retaining the original $N$-bit source is a legal control. If the input tape is writable, a charged preprocessing pass can copy all $t$ signs into a dense block at at most $t$ changed target cells and $O(tN)$ conservative head movements, defeating the unchanged-spaced-layout hypothesis. An affine/XOR summary is permitted in the lower-bound proof; arbitrary context-specific linear queries can nevertheless have different probe and memory frontiers, as proved in LSPV-2 HAMMING235. The SAT-only answer of the unaugmented $A_s$ is always YES, so a decision-only solver can use a fixed YES base and avoids this batch interface entirely.
+
+\section{COMPUTATIONAL controls and actual limitations}
+The dependency-free Python reproducer exhaustively checked 3,068 batch source-vector/$(t,L,g)$ executions for $t\in\{2,3,4,5,6,8\}$, plus larger controls for $t=16,64$. It wrote 48 frontier rows and 12 exact Horn skew rows. The raw JSON SHA-256 is \seqsplit{428856ef8728748c04a667463f5bd372bad40f7e8a29a0ebb441bde1819119b9}. The finite execution demonstrates the matching construction and value identities, not an algorithm-independent proof (which is given symbolically). No proof-assistant kernel replay or independent mathematical referee was completed.
+
+\noindent\textbf{Corpus reconciliation.} HEAD-WINDOW236's fixed-reset singleton theorem and LSPV-2's linear-parity probe theorem concern distinct interfaces and remain valid within their recorded hypotheses. Our batch theorem supplies a new joint-trajectory ledger and corrects the \emph{unjustified use} of a one-bit pointwise Lipschitz bound for logarithmic support potential. The canonical \path{main.tex} fetched in this run was substantive (blob \seqsplit{c00a48b91bef95cbf7dc60bc9622b03253ac4c2b}); no ownership region was modified because the live root must be refetched and authenticated at mutation time. Standalone results are handed to LSPV-1 and LSPV-5. Original formula retention and decision-only collapse remain explicit easy controls. These restricted findings leave all-input P/NP algorithm coverage and universal hardness \textbf{OPEN}.
+
+\section{Exact next lemma}
+For genuinely non-resetting \emph{immediate-response} adaptive four-pin sequences, bound the joint cost of persistent state $L$, \emph{post-phase} head travel $H$, temporary caches, cumulative writes $D$, and response latency; test whether two alternating query endpoints force a strictly larger frontier than the offline batch envelope after allowing arbitrary nonlinear summaries. A failure on affine/Tseitin or RAM access would retire only the proposed sequential architecture, not general SAT.
+
+\begin{thebibliography}{9}
+\bibitem{dm} A. Darwiche and P. Marquis, A Knowledge Compilation Map, \emph{Journal of Artificial Intelligence Research} \textbf{17} (2002), 229--264, \url{https://doi.org/10.1613/jair.989}.
+\bibitem{fs} M. Fredman and M. Saks, The Cell Probe Complexity of Dynamic Data Structures, \emph{STOC} (1989), 345--354, \url{https://doi.org/10.1145/73007.73040}.
+\bibitem{mss} N. Mande, S. Sanyal and S. Sherif, One-Way Communication Complexity and Non-Adaptive Decision Trees, \emph{STACS} (2022), \url{https://doi.org/10.4230/LIPIcs.STACS.2022.49}.
+\bibitem{ag} V. Arvind and V. Guruswami, CNF Satisfiability in a Subspace and Related Problems, \emph{IPEC} (2021), \url{https://doi.org/10.4230/LIPIcs.IPEC.2021.5}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::BATCH-SWEEP-VALUE237
