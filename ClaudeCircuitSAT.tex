@@ -1,0 +1,46 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- first written 2026-10-30
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\newtheorem{conj}{Target}
+\title{Claude Circuit-SAT Lower Bounds: A Living Document}
+\author{Scheduled hourly routine (Claude)}
+\date{Last updated: 2026-10-30 (run 1)}
+\begin{document}
+\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. Nothing here is a superlinear lower bound for Circuit-SAT.
+Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Program}
+Circuit-SAT: given a Boolean circuit $C$ with $n$ inputs and $m$ wires (fan-in 2 AND gates with free edge negation, an AIG), decide $\exists x\,C(x)=1$.
+Plan: (i) tabulate, for small $n$, the minimum wires $W_n(f)=2g(f)+1$ needed to build each function $f$ ($g$ = min AND gates); (ii) track how the SAT lower bound grows with $(n,m)$; (iii) look for a \emph{parametrized} bound $T(n,m)$.
+
+\section{Step data (COMPUTATIONAL)}
+Exhaustive search (\texttt{research/agents/claude/circuitsat/aig\_min.py}; each run $<30$s) over all AIGs, truth tables closed under negation.
+\begin{center}\begin{tabular}{@{}lcccccccc@{}}\toprule
+$n$ & \#functions & $g=0$ & 1 & 2 & 3 & 4 & 5 & $\ge 6$\\\midrule
+1 & 4 & 4 & & & & & & \\
+2 & 16 & 6 & 8 & & 2 & & & \\
+3 & 256 & 8 & 24 & 64 & 30 & 104 & 8 & 18\\\bottomrule\end{tabular}\end{center}
+For $n=3$ the search was cut at 5 gates (6 gates timed out), so 18 functions have $g\ge 6$ (exact values not computed; XOR$_3$ is known to be in that class). Max gates: 0, 3, $\ge6$ for $n=1,2,3$; wires $2g+1$. XOR$_2$ costs 3 gates: parity is already the expensive primitive.
+
+\section{Proved baseline: linear in the wire count}
+\begin{prop}[PROVED] For every $m$ there are circuits with one input, $\Theta(m)$ wires, such that every deterministic decider for Circuit-SAT reads $\Omega(m)$ wire descriptions, and every randomized decider with error $\le 1/3$ reads $\Omega(m)$ in expectation.\end{prop}
+\emph{Proof.} Let $U$ be the OR of $k$ blocks $x\wedge\neg x$, so $U$ is unsatisfiable with $m=\Theta(k)$ wires. Let $U_i$ change the single wire $\neg x$ to $x$ in block $i$; then $U_i$ is satisfiable. A deterministic algorithm answering ``unsat'' on $U$ that does not read block $i$'s critical wire behaves identically on $U_i$, so it must read all $k$ critical wires. Randomized: take $U$ or $U_i$ ($i$ uniform) with probability $1/2$ each; an algorithm reading $<k/3$ wires finds $i$ with probability $<1/3$ and errs with probability $>1/3$ on the $U_i$ half (Yao). $\square$
+
+Takeaway: the dependence on $m$ at fixed $n$ is tight up to the input-reading model ($O(m)$ upper bound at fixed $n$ by evaluating). The whole difficulty is the joint $(n,m)$ dependence: brute force is $O(2^n m)$.
+
+\section{Parametrized targets}
+\begin{conj}[OPEN] $T(n,m)\ge m\cdot h(n)$ with $h$ superpolynomially growing, for general-model Circuit-SAT.\end{conj}
+Known context (not new here): CNF-SAT $\le$ Circuit-SAT preserves $(n,m)$ up to constants, so SETH gives CONDITIONAL $2^{(1-\epsilon)n}\mathrm{poly}(m)$ failure; unconditionally only the time--space tradeoffs of the Fortnow--Williams line are known (SAT time $n^{2\cos(\pi/7)}\approx n^{1.80}$ at $n^{o(1)}$ space; Buss--Williams show alternation trading stops there).
+
+\section{Link to repository work (j15marti/pnp)}
+Reviewed this run: \texttt{AGENTS.md} ledger, \texttt{research/agents/claude/world-ledger}, TPORT-0001/0002 (barrier L34: Williams-style proofs with portfolio rules cannot beat linear time at portfolio size $\approx N$), ONETAPE-0001 (one-tape bounds hold for nondeterminism, so no P/NP separation). Useful transfer: a candidate lemma equivalent to P$=$NP is only a reformulation (ledger rule). The wire-adversary above is a nondeterministic-style certificate argument and therefore, by ONETAPE, cannot by itself exceed linear.
+
+\section{Next steps}
+\begin{enumerate}
+\item Finish exact $g$ for the 18 hard 3-input functions (chunked search with symmetry reduction); extend to $n=4$ via NPN classes (222 classes).
+\item Define \emph{critical-wire sensitivity} $\mathrm{cs}(C)$ and compute for minimal circuits; test whether $\mathrm{cs}$ can scale with $2^n$ for hard instances.
+\item Formulate a restricted model (read-once-branching / bounded-space) where $m\cdot h(n)$ is provable.
+\end{enumerate}
+\end{document}
