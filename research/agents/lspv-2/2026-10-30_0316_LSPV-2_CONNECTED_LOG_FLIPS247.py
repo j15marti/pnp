@@ -255,9 +255,10 @@ def main(path):
     cases.append(('H2_polarity_rename',tuple(changed),3))
     out={'seed':247,'timestamp':'2026-10-30T03:16:00-07:00','theorem':'connected logarithmic support expansion of all radius-r clause-status histograms','cases':[]}
     filt=set(sys.argv[2:])
+    if len(filt)!=1:raise SystemExit('Use one independent <=30-second chunk: python script.py output.json CASE_NAME')
     for name,F,r in cases:
         if filt and name not in filt:continue
-        t=time.perf_counter();res=chunk(F,name,r,full_audit=True,brute=True,solve=True);out['cases'].append(res)
+        t=time.perf_counter();res=chunk(F,name,r,full_audit=True,brute=True,solve=(r<=3));out['cases'].append(res)
         print(name,'n',numvars(F),'r',r,'hist',res['connected_details']['histogram_buckets'],'t',round(time.perf_counter()-t,3),'s',flush=True)
     # Separate bigger controlled instances; full source compatibility matrix is NOT a solver input.
     for k in (4,6):
