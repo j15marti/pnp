@@ -1,0 +1,62 @@
+% LSPV-1 REPORT::ARC-JUMP-RESET-BISIM256::2026-10-30T16:00:00-07:00
+\documentclass[10pt]{article}
+\usepackage[margin=.8in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{ARC-JUMP-RESET-BISIM256: Guest Input Jump-Reset Bisimulation and Sparse-Index Firewall}
+\author{LSPV-1 Formal Proof Lead}
+\date{30 October 2026, 16:00 PDT}
+\begin{document}\maketitle
+\noindent\textbf{Status.} \textbf{PROVED/EXACT restricted head subsystem}; \textbf{FALSIFIED} the stronger no-future-reentry proof sentence in the previous HEAD-HORIZON-REPLAY255 report; \textbf{PROVED/EXACT conditional} full-address-rescan penalty if an erased index tape retains its head coordinate; \textbf{COMPUTATIONAL} original-source SAT/UNSAT controls. A hereditary arbitrary-decider ARC compiler and P versus NP are \textbf{OPEN}.
+
+\section{Exact statement and repaired proof}
+Let $y\in\{0,1\}^m$ be a complete actual ordinary SAT input with blank reads at addresses $h\ge m$. A deterministic guest uses read, ordinary left/right moves and indexed jump$(j)$. Fix an honest upper bound $B\ge0$ on the TOTAL number of ordinary moves in the remaining run. Indexed jump addresses and guest tapes are charged separately. Define
+\[
+q_B(h)=\begin{cases}h,&h<m+B,\\\mathrm{FAR},&h\ge m+B.\end{cases}
+\]
+The abstract machine updates finite coordinates on ordinary moves; FAR remains FAR under ordinary moves; \emph{every indexed jump, including from FAR, resets the state to} $q_B(j)$.
+\begin{theorem}[Jump-reset bisimulation, restricted head model]
+Every deterministic guest read transcript is preserved by this quotient for every source and any interleaving of jumps, reads and at most $B$ ordinary moves. The quotient needs $m+B+1$ states, hence at most $\lceil\log_2(m+B+1)\rceil$ additional coordinate bits. If all other guest state is transported exactly, both guest SAT and UNSAT decisions are preserved.
+\end{theorem}
+\begin{proof}
+Induct over guest instructions, maintaining either an exact physical head or FAR with actual coordinate at least $m+B$. FAR reads are blank, since the physical head cannot move left across the $B$-cell margin with at most $B$ ordinary moves. Exact coordinates update exactly or saturate. On an indexed jump, both real and simulated heads RESET to $j$ and $q_B(j)$, even if the preceding head was FAR. Thus a jump may reenter the physical input, but both machines agree after it. Read agreement preserves deterministic subsequent control. There are $m+B$ exact coordinates and one sentinel. The statement is confined to a head subsystem and does not claim free index-tape access or any child-size compression.
+\end{proof}
+The prior HEAD-HORIZON255 proof asserted no valid read can ever follow a FAR entry. This is \textbf{false}: jump$(m+B+100)$, read blank, jump$(0)$, read $y[0]$ contains no ordinary move. Its previously specified \emph{jump-reset transition implementation}, however, is correct; this repairs the explanation, not its restricted result. An absorbing sticky FAR on jumps is incorrect.
+
+\section{Native index-tape source of an uncharged tariff}
+FLMV's machine model associates an index tape with the read-only input and erases its CONTENTS on a jump. Its published definition does not explicitly say that erasure resets the INDEX-TAPE HEAD. Therefore the following is a conditional machine-variant falsifier, not an asserted lower bound on all FLMV simulators.
+\begin{theorem}[Conditional full-rescan penalty]
+If erasure preserves index-tape head coordinate $H$, a correct SAT guest wrapper can make $q$ indexed jumps addressing $2^H$ in $H+2q+O(1)$ guest operations, while an implementation that fully scans address cells $0,\ldots,H$ anew per jump performs at least $q(H+1)$ address-cell inspections. With $q=H$, this is quadratic versus linear in $H$.
+\end{theorem}
+\begin{proof}
+Move the initially blank index-tape head $H$ cells right. Repeat: write one high-position 1; index-jump, which erases contents but by hypothesis retains the head coordinate. Then invoke any correct ordinary SAT decider $A$ and return its decision unchanged. The wrapper is correct on YES and NO. Each scan costs $H+1$, while each loop iteration costs only a write and a jump. Better incremental simulators are not excluded.
+\end{proof}
+Thus a hypothesis that explicit address bits arrive one per charged step cannot be silently transferred to the native erasing index-tape model. Every guest tape, erased-content behavior, source probe and virtual child-bit access must be accounted in the same realization. The whole construction remains within the integrated ARC/FLMV program, not a competing hardness route.
+
+\section{Falsifiers and reproducibility}
+\begin{enumerate}
+\item[] F1. No valid-input reentry after FAR even with indexed jumps: \textbf{FALSIFIED}.
+\item[] F2. Permanently absorbing FAR is correct on SAT and UNSAT: \textbf{FALSIFIED}.
+\item[] F3. FAR with jump-reset necessarily fails: \textbf{FALSIFIED} by the theorem.
+\item[] F4. Full address rescan per jump always costs $O(T_A)$: \textbf{FALSIFIED under persistent-index-head assumption}.
+\end{enumerate}
+The independent Python full reproducer evaluated 17,342 random guest head-instruction equivalences, 560 four-mode clause-pair checks, 2,754 multi-clause extreme configurations, 112 complete complement assignments and 5 source-resolution forbidden cubes. Every original occurrence carries its clause-indexed S/U local targets and both inversions. Coherent global $0^n/1^n$, Hamming flips, $0/1/2/3$ true-literal categories, correct full SAT witnesses and complete UP-DPLL UNSAT decisions are recorded. No independent occurrence is treated as a new variable.
+The named proper-3CNF 7-of-8 SAT source has one model and DPLL 3 nodes (94 selected events); its 8-of-8 UNSAT partner has none and DPLL 7 nodes (196 selected events). The exact signed-(2,2) paired K4 SAT source has 18 models and 6 nodes (224 events). Paid full-child materialization plus the head wrapper costs 1271, 1472 and 1500 selected events respectively. It is worse on all three controls. Conditional index-tape tests at $H=q=8,64,256,512$ give guest versus full-scan counts $(24,72),(192,4160),(768,65792),(1536,262656)$. These are Python logical-event proxies, not native FLMV instruction measurements. Full 110013-byte raw results and the complete standalone reproducer are in the downloadable archive; its raw JSON SHA-256 is \texttt{e26f4d0cee3df7ae8b89479d1e93c02cc801d19b1087ee869c804875e6617924}. A concise summary and compact checker are separately committed for GitHub readback.
+
+\section{Corpus, duplication and main reconciliation}
+\textbf{Reviewed}: user governance REDIRECT1; universal FLMV CONTRACT1; AFFINE-SMALLBIAS-DESCENT-GATE2 (restricted affine MCSP only); CONSTRUCTION-STRENGTHEN17; ARC-LINEAR22-SATURATION1; root main.tex, AGENTS, CODEX, research skill, issue \#3; newest LSPV-5 MAIN227; LSPV-1 HEAD-HORIZON255; LSPV-4 HEAD-SHADOW256 and SOURCE-PROBE257, and related LSPV-2/LSPV-3 reports. Latest root and task directories were surveyed. Original FLMV Section 2.1 and Dreier--Ordyniak--Szeider JCSS 2024 were read.
+\textbf{Duplication/contradiction}: the no-jump finite-horizon quotient already appears in LSPV-4 HEAD-SHADOW256. Our explicit jump-reset invariant repairs the erroneous unconditional predecessor proof sentence. LSPV-5 MAIN226's conditional total virtual input accessor remains adopted; do not claim first discovery. \textbf{Relative to root MAIN}: the specialist-owned note will clarify indexed jump reentry and distinguish charged digit streaming from the native erased-index-tape transport. No new achievable ARC time-space pair. \textbf{Adopted/rejected}: retain conditional total guest simulation and source S/U tests as controls, reject sticky FAR and naive free full-address scans, do not promote restricted input indexing to arbitrary SAT hardness.
+
+\section{Single OPEN arrow}
+There remains no uniform hereditary correct ordinary-SAT $A\mapsto\Phi(A)$ whose every child is physically of length $N^{\lambda+o(1)}$ and whose complete source reads, policy acquisition, failed trials, child query multiplicities, index/work tape simulation, output and peak retained ancestor workspace satisfy
+\[
+K'\le \max(\alpha,\gamma+\lambda K),\quad L'\le\max(\sigma,\lambda L).
+\]
+The conditional coefficients $(\alpha,\gamma,\lambda,\sigma)=(11/10,3/5,1/2,1/2)$ have fixed point $(6/5,1/2)$, algebraically inside the actual FLMV forbidden slice at $c=241/200$, $d=11642479/23232400$. The compiler does not exist yet as a proved construction. Both $P=NP$ and $P\ne NP$ remain OPEN.
+
+\begin{thebibliography}{2}
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas. \emph{Time-Space Lower Bounds for Satisfiability}. J. ACM 52(6) (2005). \url{https://doi.org/10.1145/1101821.1101822}.
+\bibitem{backdoors} J. Dreier, S. Ordyniak, S. Szeider. \emph{SAT Backdoors: Depth Beats Size}. J. Comput. Syst. Sci. 142 (2024), 103520. \url{https://doi.org/10.1016/j.jcss.2024.103520}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::ARC-JUMP-RESET-BISIM256::P_VS_NP_OPEN
