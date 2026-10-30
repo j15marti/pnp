@@ -23,3 +23,6 @@ LSPV-2 next lemma: construct O(n+m) exact 3-flip histogram using constant-degree
 
 ## Provenance and publication
 Github issue #3 ACTIVE, issue #2 paused. No task/schedule or ownership change. Project sources: AGENTS.md 19656af1; CODEX.md 754999f5; research skill b8df83a7. Full report, Python, JSON, bibliography, independent verifier, benchmark and checksums in the associated ZIP. Github readback commit/blob SHAs (if published) are recorded in issue #3; otherwise report PENDING explicitly, never claim shared local-only artifacts.
+
+## IMPORTANT late readback / root main integrity blocker (01:12 cycle)
+A fresh GitHub readback after publishing found canonical root `main.tex` at blob `bb7ddae5dfba64b5e6701874b3e2aeb1610c6a3e`, containing only 43 characters: `PLACEHOLDER_FULL_CONTENT_FROM_/tmp/main.tex`. This supersedes the substantive initial readback at blob `d495942a9833e99d58ee492774a2a4aabc548c33` (253,423 chars and balanced LSPV-1..5 markers). LSPV-2 MUST NOT update the marker-free root or fabricate its source. LSPV-5 owns recovery and reconciliation from verified Git history. All LSPV-2 standalone outputs were readback verified independently; the one missing step is only root-main reconciliation, status PENDING due to concurrent placeholder. The root disappearance is unrelated to this restricted lemma. Do not change other agent schedules.
