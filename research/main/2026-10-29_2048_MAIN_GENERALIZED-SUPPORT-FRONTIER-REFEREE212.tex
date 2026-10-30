@@ -1,0 +1,240 @@
+% LSPV-5 REPORT::GENERALIZED-SUPPORT-FRONTIER-REFEREE212::2026-10-29 20:48 America/Los_Angeles
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,geometry,hyperref,longtable,xurl}
+\geometry{margin=1in}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\F}{\mathbb F_2}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\status}[1]{\textsc{#1}}
+
+\title{LSPV-5 Independent Red Team and Synthesis\\
+Generalized-Support Construction--Storage--Continuation Frontier}
+\author{LSPV-5}
+\date{29 October 2026, 20:48 America/Los\_Angeles}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.92\linewidth}{\textbf{Executive status.}
+P versus NP remains \status{OPEN}.  This report proves an exact generalized-Hamming-weight frontier for \emph{linear} persisted summaries followed by adaptive raw-coordinate probes.  It also proves that finding the optimal frontier is not automatically cheap: the endpoint contains the NP-hard minimum-distance problem.  Arbitrary nonlinear summaries, arbitrary SAT, and model conversion remain open.}}
+\end{center}
+
+\section{PROPOSE: missing lemma and falsifiable mechanisms}
+
+The preceding batch-rank theorem gives only
+\(\min(P_{\rm src},L)+Q_{\rm src}\ge r\) for a rank-$r$ linear target batch.  It ignores locality: two rank-$r$ batches may require very different raw-coordinate access.  The missing lemma proposed for this run was
+\[
+Q^*_{\rm lin}(L)\stackrel{?}=d_{r-L}(C),
+\]
+where $C\le\F^b$ is the row code of the target matrix and $d_k(C)$ is the minimum union support of a $k$-dimensional subcode.
+
+Four mechanisms were tested.
+\begin{enumerate}[leftmargin=*]
+\item A stored linear summary might use forms outside $C$ and beat the weight hierarchy.
+\item Adaptive coordinate choices might beat the best fixed support.
+\item An arbitrary nonlinear summary might beat every linear summary of the same length.
+\item Even if the optimum representation is short, finding it might hide the full construction cost $P$.
+\end{enumerate}
+The first two mechanisms are ruled out exactly.  The third remains \status{OPEN}; exhaustive small controls found no counterexample.  The fourth is a genuine obstruction: general optimal discovery contains minimum-distance computation.
+
+\section{SEARCH: project sources, primary literature, and code}
+
+The current GitHub corpus, not peer summaries alone, was inspected.  In particular:
+\begin{itemize}[leftmargin=*]
+\item LSPV-1 \texttt{ARC239} (blob \texttt{eceb027d47adf7f7095f93e311f9c97a062841d0}) proves an adaptive acquisition bound $p+Q\ge b$ for all future parity masks and a stronger fixed-read volume bound.  Its quantifiers differ from the fixed-batch code theorem below.
+\item LSPV-2 \texttt{VARIABLE-LENGTH-SATURATION238} (blob \texttt{e31f65f4af42c5b5cb1d548ecbe4a0503fe85c92}) proves the exact non-prefix point $(b,Q,L)=(6,2,2)$ for all parity queries, using a Fourier saturation/orthogonal-array obstruction.
+\item LSPV-3 \texttt{BATCH-LAMINAR-POLICY175} (blob \texttt{5e6d95fe7072f5fa6404b2fb25ced22de99eb44a}) gives a polynomial optimal planner for an explicitly materialized laminar mask menu.  It is a structured discovery theorem, complementary to the unstructured hardness result below.
+\item No new verified LSPV-4 report for the immediately preceding scheduled cycle was present.  The latest verified predecessor remains \texttt{BATCH-SWEEP-VALUE237} (blob \texttt{2e49a6882854750818078807e473b468cbde39ac}); this report requests publication retry without reconstructing missing mathematics.
+\end{itemize}
+
+Wei introduced generalized Hamming weights as the minimum support sizes of higher-dimensional subcodes and proved their basic monotonicity and coding-theoretic properties~\cite{wei}.  Vardy proved that computing the minimum distance of a binary linear code is NP-hard and its decision version NP-complete~\cite{vardy}.  Since $d_1$ is minimum distance, this gives the discovery firewall used below.  Recent algorithms and the Sage package \texttt{GHWs} compute generalized weights by extending Brouwer--Zimmermann-style search; they do not provide a general polynomial algorithm~\cite{ghwalg}.  GitHub code search located the actual \texttt{RodrigoSanJose/GHWs} repository and current support-weight implementations, but no external implementation was treated as a theorem oracle.
+
+Systematic data-structure work keeps the original source readable while storing a sketch and charging source probes; this is the correct neighboring model, but its problem-specific lower bounds do not automatically transfer to our parity batch or to SAT~\cite{gal}.
+
+\section{BUILD: exact linear-summary frontier}
+
+\subsection{Model}
+
+Let $a\in\F^b$ be the immutable source.  A public matrix $W\in\F^{m\times b}$ specifies the fixed batch output $Wa$.  Let
+\[
+C=\operatorname{rowspan}(W)\le\F^b,\qquad r=\dim C.
+\]
+Preprocessing persists at most $L$ \emph{linear} source bits $Ua$, where $S=\operatorname{rowspan}(U)$ has dimension at most $L$.  The continuation may adaptively probe raw coordinates $a_j$, cache all replies, use unrestricted computation and polynomial workspace, and must output $Wa$ exactly for every source.  Its worst-case number of distinct raw-coordinate probes is $Q$.  The source remains readable; no nonlinear-summary restriction is silently imposed on a general SAT solver.
+
+For $1\le k\le r$, define
+\[
+d_k(C)=\min\{\lvert\supp D\rvert:D\le C,\ \dim D=k\},
+\]
+and put $d_0(C)=0$.
+
+\begin{theorem}[exact generalized-support frontier]\label{th:frontier}
+For every $0\le L\le r$, the minimum worst-case continuation probes in the stated model are
+\[
+\boxed{Q^*_{\rm lin}(L)=d_{r-L}(C).}
+\]
+This remains true when the stored linear forms are arbitrary elements of $\F^b$, not necessarily codewords of $C$, and when continuation probes are adaptive.
+\end{theorem}
+
+\begin{proof}
+Let $S$ be the row space of the persisted linear summary, with $\dim S\le L$.  Fix any reachable leaf of the continuation decision tree and let $J$ be the set of distinct source coordinates queried on its path.  All sources at this leaf have the same summary and the same values on $J$.  Exact output requires the affine leaf cell to be monochromatic under $W$, equivalently
+\[
+\ker U\cap\{x:x_J=0\}\subseteq\ker W.
+\]
+Taking orthogonal complements gives
+\[
+C\subseteq S+E_J,
+\qquad E_J=\operatorname{span}\{e_j:j\in J\}.
+\]
+Reduce this inclusion modulo $E_J$.  The image of $C$ is contained in the image of $S$, so
+\[
+\dim(C/(C\cap E_J))\le\dim S\le L.
+\]
+Therefore $D=C\cap E_J$ has dimension at least $r-L$ and is supported inside $J$.  By the definition and monotonicity of generalized weights,
+\[
+|J|\ge d_{r-L}(C).
+\]
+This holds at every reachable leaf, so adaptivity cannot lower the worst-case depth.
+
+Conversely, choose an $(r-L)$-dimensional subcode $D\le C$ attaining $d_{r-L}(C)$ and let $J=\supp D$.  Choose a linear complement $S\le C$ with $C=S\oplus D$ and $\dim S=L$.  Preprocessing stores a basis of the $S$-parities.  Continuation nonadaptively reads all coordinates in $J$, computes every parity in $D$, and reconstructs every row of $C$.  Hence $Q=d_{r-L}(C)$ is attainable.
+\end{proof}
+
+The proof is same-execution and permits arbitrary adaptive continuation logic.  It does not charge $Q$ twice for shared coordinates: all target rows reuse the same $J$ readings.
+
+\subsection{Construction versus representation}
+
+Given an attaining subcode $D$, a complement $S$ and the support $J$ can be verified and compiled by Gaussian elimination in polynomial time.  But obtaining an optimal $D$ is a separate construction problem.
+
+\begin{corollary}[discovery firewall]\label{cor:hard}
+For $L=r-1$,
+\[
+Q^*_{\rm lin}(r-1)=d_1(C),
+\]
+the minimum distance of $C$.  Thus computing the exact general linear-summary frontier, or always constructing an optimal endpoint, is NP-hard unless P$=$NP.
+\end{corollary}
+
+This corollary does not prove that executing a \emph{supplied} summary is hard.  It falsifies only the inference that a compact optimal representation entails polynomial discovery.  Structured families such as coordinate, repetition, Hamming, simplex, affine, or laminar codes may expose their attaining subcodes directly.
+
+The complete ledger must therefore distinguish
+\[
+\mathfrak R=(P_{\rm discover},P_{\rm verify},L,Q,W_{\rm peak},R,H,D;\mathsf{access}).
+\]
+Theorem~\ref{th:frontier} determines only the optimum $L$--$Q$ slice after a suitable linear summary is chosen.  $P_{\rm discover}$ can dominate it.
+
+\section{Contextual computational value}
+
+For a current linear summary space $S$, define the independently specified continuation potential
+\[
+\Psi_C(S)=\min\{|J|:C\subseteq S+E_J\}.
+\]
+For a certified additional linear fact $u\cdot a$, write
+\[
+(u\cdot a)\mid_{v_\Psi},\qquad
+v_\Psi(u\mid S)=\Psi_C(S)-\Psi_C(S+\langle u\rangle).
+\]
+The pipe denotes contextual value, not probability conditioning or divisibility.  This potential is monotone, so its raw value is nonnegative; a cost-aware net score may be negative after acquisition, verification, storage and application costs are charged.
+
+The smallest XOR-share control already defeats additive intrinsic labels.  Let the target be $a_0$, and let $u=a_1$, $v=a_0+a_1$.  Then
+\[
+\Psi(0)=\Psi(\langle u\rangle)=\Psi(\langle v\rangle)=1,
+\qquad
+\Psi(\langle u,v\rangle)=0.
+\]
+Thus the two initial singleton values are $0,0$, while their joint value is $1$; after one share is known, the other has contextual value $1$.  Duplicates have value zero.
+
+High value need not mean cheap acquisition.  For the length-$b$ repetition parity, $Psi(0)=b$ and storing the target parity gives value $b$, but direct construction from raw source bits itself reads all $b$ bits.  The full benefit is exactly offset by the naive acquisition work.  This is an easy affine control, not hardness.
+
+The optimal envelope has marginal continuation savings
+\[
+Q^*_{\rm lin}(L-1)-Q^*_{\rm lin}(L)
+=d_{r-L+1}(C)-d_{r-L}(C),
+\]
+which can exceed one.  These are contextual support savings, not entropy bits and not elapsed-time lower bounds.
+
+\section{Nonlinear-summary red team}
+
+The universal statement
+\[
+Q^*(L)=d_{r-L}(C)\quad\text{for arbitrary nonlinear summaries}
+\]
+is \status{OPEN}, not adopted.  A nonlinear summary fiber need not be an affine subspace, so the orthogonal-complement proof above does not apply.
+
+The reproducer exhaustively tested every binary linear code of length $b\le4$, every one-bit summary map up to complement symmetry, and the exact optimal adaptive decision-tree depth on each summary fiber.  Across $60$ rank-at-least-two code cases and $1{,}672{,}200$ summary maps, no nonlinear advantage over $d_{r-1}(C)$ occurred.  For the $[4,3]$ even-weight code with hierarchy $(2,3,4)$, all $32{,}768$ one-bit summaries give optimum continuation depth at least $3$, matching the linear frontier.  This is \status{COMPUTATIONAL} evidence only.
+
+An attempted maximal-domain enumeration at $b=5$ did not finish its first roughly $35$-second exploratory chunk and was terminated; it produced no evidence and is excluded from the claim.  Future work must use checkpointed SAT/set-cover search or a proof, rather than increasing a monolithic timeout.
+
+\section{Peer referee findings}
+
+\begin{longtable}{p{0.14\linewidth}p{0.61\linewidth}p{0.17\linewidth}}
+\toprule
+Artifact & Finding & Status\\
+\midrule
+ARC239 & The same-transcript flip proof for $p+Q\ge b$ is sound for all future parity masks.  Its fixed-read Fourier bound is compatible with this report but solves a different universal-query problem.  Its optimal-representation construction costs are explicitly polynomial only for the stated Hamming endpoints. & \status{PROVED/EXACT} restricted\\
+SATURATION238 & The saturation argument correctly uses global Boolean degree-$Q$ extensions, Parseval equality and Walsh orthogonality.  The exact $(6,2,2)$ non-prefix point survives review. & \status{PROVED/EXACT} restricted\\
+BATCH-LAMINAR175 & The finite-label tree-DP theorem provides a genuine structured polynomial discovery algorithm; it does not imply generalized-weight discovery for arbitrary codes or arbitrary SAT. & \status{PROVED/EXACT} restricted\\
+BATCH-SWEEP237 & Sequential physical-head travel is a distinct ledger and cannot be substituted for indexed coordinate probes.  No newer predecessor report was verified this cycle. & \status{PROVED/EXACT} restricted\\
+\bottomrule
+\end{longtable}
+
+ARC239 and the initial GitHub version of SATURATION238 lack the mandatory first report marker and final verification sentinel.  The later corrected Library copy is not treated as a GitHub readback.  The next GitHub publication should repair protocol markers without silently strengthening the mathematics.  BATCH-LAMINAR175 has both required markers.
+
+\section{CORPUS REVIEWED}
+
+Reviewed root \texttt{main.tex} (pre-run blob \texttt{775856b9c69defe2f36d3ea81a4e96521597a8b8}), \texttt{AGENTS.md}, \texttt{CODEX.md}, the full research skill, every current task specification, the newest verified MAIN content, the preceding LSPV-5 report and code/raw data, actual LSPV-1--4 sources materially bearing on parity summaries, the relevant governance constraints, primary coding/data-structure literature, and current GitHub implementations.  The root is substantive and has five balanced ownership regions; no placeholder text was used.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+
+The rank-only lower bound and affine contextual potential in run211 predate this run.  The new exact object is the locality-sensitive hierarchy $d_{r-L}(C)$ under linear persistence, plus the construction-hardness firewall.  Wei's generalized weights themselves are a known coding invariant; no novelty claim is made for that concept.
+
+There is no contradiction with ARC238/239 or SATURATION238: those require answering \emph{every} future parity mask, whereas Theorem~\ref{th:frontier} fixes one row code $C$.  There is no contradiction with LSPV-3's laminar planner: its menu structure is precisely extra information that can make discovery polynomial.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+
+The root should refine the batch-rank statement in the linear-summary regime from a rank floor to the exact support frontier $Q=d_{r-L}(C)$, and immediately state that finding the attaining subcode is not generally free.  Rank is the number of independent answer bits; generalized support is the physical raw-coordinate locality.  Neither is a universal SAT runtime measure.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+
+\textbf{Adopted:} retained-source access; exact batch reuse; affine/XOR controls; source-dependent state accounting; independent discovery and execution ledgers; structured laminar planning.
+
+\textbf{Rejected:} extrapolating the linear-subspace proof to arbitrary nonlinear summary fibers; using finite $b\le4$ evidence as an all-size theorem; treating an optimal description as cheaply findable.
+
+\textbf{FALSIFIED/RETIRED:} ``shortest continuation representation implies polynomial summary construction'' for general linear codes, unless P$=$NP.  At $L=r-1$, exact optimal construction contains the NP-hard minimum-distance problem.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+
+Any claim that rank alone determines coordinate-query cost is stale: equal-rank codes can have different weight hierarchies.  Any use of $d_{r-L}$ for nonlinear summaries is currently overstated.  Any algorithmic upper bound that omits generalized-weight discovery is conditional on a supplied or structured attaining subcode.
+
+\section{Reproducible computation}
+
+The dependency-free Python checker finished in $20.4481$ seconds.  It verified $85$ binary code cases through length four, $9{,}439$ linear feasibility conditions, $60$ nonlinear one-bit-summary cases, $1{,}672{,}200$ summary maps, and $3{,}344{,}400$ cached restricted decision subproblems.  It found zero nonlinear advantages in that finite range and independently checked redundancy, XOR synergy, coordinate/even-weight/repetition hierarchies, and costly-high-value controls.  Code and raw JSON accompany this report.
+
+\section{Ranked obligations and final claim}
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{OPEN, highest value:} prove the generalized-weight bound for arbitrary nonlinear fixed-length summaries, or produce a smallest explicit counterexample using checkpointed exact search.
+\item \textbf{OPEN:} identify structured code/module classes for which an attaining subcode is uniformly discoverable in polynomial time and compose their $P,L,Q,W$ ledgers.
+\item \textbf{OPEN:} authenticate a strict22 interface whose context batch realizes a nontrivial row code without granting an answer bit or affine solver for free.
+\item \textbf{OPEN:} derive native sequential-tape and fixed-UTM counterparts charging head position, crossings, source rereads and symbol changes.
+\end{enumerate}
+
+\textbf{PROVED/EXACT, exact scope.}  For a fixed linear parity batch with row code $C$ of dimension $r$, a persisted $L$-bit linear summary followed by arbitrary adaptive indexed raw-coordinate probes has exact worst-case continuation optimum
+\[
+Q^*_{\rm lin}(L)=d_{r-L}(C).
+\]
+At $L=r-1$, constructing the general exact optimum contains minimum-distance computation; therefore compact continuation and polynomial construction are distinct obligations.  This is not a general SAT lower bound.
+
+\textbf{Next specific lemma.}  Decide whether the same $d_{r-L}(C)$ lower bound survives arbitrary nonlinear fixed-length summaries.  Use a checkpointed exact cover/decision-domain formulation for the first unsettled length-five codes, or derive a fiber theorem strong enough to replace enumeration.
+
+\begin{thebibliography}{9}
+\bibitem{wei} V. K. Wei, ``Generalized Hamming Weights for Linear Codes,'' \emph{IEEE Transactions on Information Theory} 37(5):1412--1418, 1991. doi:10.1109/18.133259.
+\bibitem{vardy} A. Vardy, ``The Intractability of Computing the Minimum Distance of a Code,'' \emph{IEEE Transactions on Information Theory} 43(6):1757--1766, 1997. doi:10.1109/18.641542.
+\bibitem{ghwalg} R. San-Jos\'e et al., ``An Algorithm for Computing Generalized Hamming Weights and the Sage Package GHWs,'' \emph{ACM Transactions on Mathematical Software}, 2025/2026. doi:10.1145/3773284.
+\bibitem{gal} A. G\'al and P. B. Miltersen, ``The Cell Probe Complexity of Succinct Data Structures,'' \emph{Theoretical Computer Science} 379(3):405--417, 2007. doi:10.1016/j.tcs.2007.02.047.
+\end{thebibliography}
+
+% END_OF_VERIFIED_REPORT::LSPV-5::GENERALIZED-SUPPORT-FRONTIER-REFEREE212
+\end{document}
