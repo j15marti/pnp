@@ -1,0 +1,25 @@
+# LSPV-2 SECOND-ORDER-FLIP-SPECTRUM243, October 30, 2026 at 01:12 PDT
+
+**Status:** PROVED/EXACT restricted mathematical lemma, independent referee review PENDING. COMPUTATIONAL finite verification. Both P=NP and P!=NP OPEN.
+
+## New lemma and quantifiers
+For every proper signed exact-(2+,2-) original-source 3CNF with n source variables, m=4n/3 source clauses, and any coherent complete global assignment a, the entire 4-category clause histogram of all binom(n,2) coherent two-variable flips has a source-derived O(n+m) indexed-RAM computation and O(n+m) working-word representation. Formula: G_2=sum_{d<e} b_d*b_e*z^(N+d+e)+sum_d C(b_d,2)z^(N+2d)+sum_{coocc i,k}(z^(N+d_i+d_k+h_ik)-z^(N+d_i+d_k)). Singleton type count <= C(9,5)=126, because every x has four original source occurrences; mixed finite differences are zero on non-cooccurring pairs; there are <=3m interacting pairs. A witness in the two-Hamming-radius set of either 0^n or 1^n is reconstructed and source-verified in O(n+m) work. Count computation is **not a polynomial general SAT decider**. The full proof and scope are in the report.
+
+## Mandatory clause-extreme and proof provenance
+Full source-indexed raw JSON contains local S_j, inverted U_j, U_j, inverted S_j per original signed x_(i,j), exact SS/SU/US/UU for every original source clause pair with shared-variable conflict reasons, sampled exact multi-clause checks, globally coherent 0^n/1^n, complements, one/multiple-flip paths with all original per-clause truth-vectors/counts, non-taut original-parent resolvents as RUP-certified forbidden original-variable partial cubes, source witnesses, independently replayable UNSAT DPLL trees. No independent occurrence assignment or equity/valuation score.
+
+## Controls and accounts
+Twelve SAT/UNSAT and hostile sources, including genuine signed strict22 W1 UNSAT, S15 and MUT15 SAT, signed-paired K4 SAT, connected plateau H1/H2/H4 SAT, renamed/polarity-swapped W1 UNSAT, 2SAT/Horn, XOR SAT, XOR conflicting UNSAT. Independent verifier PASS on 922 radius<=2 assignments, 21012 complement clause tests, 45872 original source pair-mode assignment checks, 266 UNSAT DPLL leaf replays; additional full producer sampled triple checks: 91803. Same-input baseline UP-DPLL vs histogram+UP-DPLL fallback measured cumulative selected actions, nodes, wall time and tracemalloc peak, charging source scans, failed prepass, proof checks. On W1 both 151 nodes, work 19983 to 20631; on S15 12 to 0 nodes, work 1200 to 866; signed-paired K4 4 to 0 nodes but work 215 to 345. On H1/H2/H4 node counts unchanged and prepass raises work. A separate same-source histogram-vs-naive enumeration benchmark at n=6..96 displays an empirical crossing; compressed histogram uses more Python peak memory in these runs. Neither is native TM time/space.
+
+## Prior work / duplication control
+Root main.tex blob d495942a9833e99d58ee492774a2a4aabc548c33 was substantive with balanced LSPV-1..5 markers when initially fetched. Previous issue #3 clause-target/pair modes, Kullmann conflicts, RUP resolution, LSPV-4 endpoint plateau quadratic radius-two enumeration, LSPV-5 absorption selector, LSPV-2 signed NAE witness work are prior knowledge. The new claim is **only** fixed-degree 4-category histogram compression and exact same-source witness reconstruction. Dantsin/Hirsch/Wolpert Hamming-ball work supplies a known alternative for radius2 **existence**, so no novelty or general algorithm speedup is claimed.
+
+## Role-addressed handoff
+LSPV-1 formal proof: independently audit the 126-bucket derivation, witness recovery after interaction corrections, and exact complement transfer.
+LSPV-3 adaptive certificate: use histogram to identify contextual endpoint radius<=2 witnesses, then compare net charged cost including fallback; test longer Hamming radii.
+LSPV-4 resource auditor: audit indexed-RAM event choices, same-run traced peak memory, and whether compact buckets can lower peak memory by streaming.
+LSPV-5 referee: incorporate restricted lemma into verified main only within ownership markers; ensure no P/NP status promotion or universal SAT inference.
+LSPV-2 next lemma: construct O(n+m) exact 3-flip histogram using constant-degree connected interaction components, or give a counterexample to that proposed bound; test matched strict22 SAT/UNSAT families with actual certified DPLL nodes and full accounting.
+
+## Provenance and publication
+Github issue #3 ACTIVE, issue #2 paused. No task/schedule or ownership change. Project sources: AGENTS.md 19656af1; CODEX.md 754999f5; research skill b8df83a7. Full report, Python, JSON, bibliography, independent verifier, benchmark and checksums in the associated ZIP. Github readback commit/blob SHAs (if published) are recorded in issue #3; otherwise report PENDING explicitly, never claim shared local-only artifacts.
