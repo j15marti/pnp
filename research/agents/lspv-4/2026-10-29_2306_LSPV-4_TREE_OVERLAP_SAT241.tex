@@ -1,0 +1,68 @@
+% LSPV-4 REPORT::TREE-OVERLAP-SAT241::2026-10-29T23:06:00-07:00
+\documentclass{article}
+\usepackage{amsmath,amsthm}
+\newtheorem{theorem}{Theorem}
+\title{LSPV-4 TREE-OVERLAP-SAT241: Clause-indexed extreme assignments and certified SAT tree}
+\date{29 October 2026}
+\begin{document}\maketitle
+\noindent\textbf{PROVED/EXACT restricted; COMPUTATIONAL controls; P vs NP OPEN.}
+
+\section{Source extremal assignments}
+For source clause $C_j$ and signed occurrence $x_{i,j}$, with sign bit $\nu_{ij}=1$ for negative literal, the local all-literals-true $S_j$ demands $a_i=1\oplus\nu_{ij}$ and the local all-literals-false $U_j$ demands $a_i=\nu_{ij}$. Inversion swaps $S_j,U_j$. Each source variable has one global value regardless of occurrences. The $SS$ and $UU$ modes exist iff no opposite-sign shared variable; $SU$ and $US$ exist iff no same-sign shared variable. A middle clause state of one or two true literals is ordinary SAT. The full reproducibility record prints every original occurrence target, source clause ID, pair feasibility, $0^n$ and $1^n$ statuses, actual flips, complements and resolution-forbidden cubes. These four-mode tests were already established by peer work and are not claimed new.
+
+\section{New restricted SAT certificate}
+Let $E_j$ be the event that source clause $C_j$ is all false under a uniformly random completion of partial assignment $\alpha$. Let $p_j$ and $p_{jk}$ be the exactly computed conditional probabilities of $E_j$ and $E_j\cap E_k$. They are zero or dyadic numbers determined by consistent original-source U targets.
+\begin{theorem}
+For any spanning tree $T$ on the $m$ source clause IDs,
+\[
+B_T(\alpha)=1-\sum_j p_j(\alpha)+\sum_{\{j,k\}\in E(T)}p_{jk}(\alpha)
+\le\Pr(F\text{ SAT under a random completion}\mid\alpha).
+\]
+If $B_T(\alpha)>0$, a deterministic polynomial-time procedure builds and checks a full source-variable SAT witness by choosing a positive-bound branch for each unset variable while retaining the same tree. All scanning, conditional probes, maximum-spanning-tree selection, exact arithmetic and witness checks are charged.
+\end{theorem}
+\begin{proof}
+Order the rooted tree parent-before-child. At each addition, the new union mass grows by at most $p_h-p_{h,\mathrm{parent}(h)}$. Sum over vertices and subtract the union bound from one. For any unset source variable, the parent bound is the arithmetic mean of the two child bounds. Therefore a positive bound gives a positive child, until a complete verified satisfying assignment is reached. This combines Hunter's known spanning-tree inequality with conditional expectations.
+\end{proof}
+
+\begin{theorem}
+For duplicate-free proper $k$-CNF with $m$ source clauses,
+$B_T(\emptyset)\le 1-(m+1)/2^{k+1}$.
+Thus no unconditioned root certificate can be positive when $k=3,m\ge15$. This is tight on the SAT star $G_m=\bigwedge_j(x\vee y\vee z_j)$, where $B_T=(15-m)/16$ and $x=1$ satisfies all clauses.
+\end{theorem}
+\begin{proof}
+Each false-cube mass is $2^{-k}$. Two distinct noncontradictory $k$-clause false cubes fix at least $k+1$ source variables, so intersect with mass at most $2^{-k-1}$. A spanning tree has $m-1$ edges, and the star achieves equality.
+\end{proof}
+
+\begin{theorem}
+For a proper width-$k$ CNF, $m<2^k$ implies SAT. At $m=2^k$ it is UNSAT exactly when every source clause pair shares an opposite-polarity variable. Hence every proper signed exact-$(2,2)$ 3CNF with $n=6,m=8$ is SAT.
+\end{theorem}
+\begin{proof}
+Each U cube has mass $2^{-k}$; an exact cover by $2^k$ such cubes requires pairwise disjointness. Eight clauses require 28 conflicting pairs, but six variables with two positive and two negative occurrences each provide only $6(2)(2)=24$ opposite-sign occurrence-pair witnesses.
+\end{proof}
+
+\section{False heuristic and fully charged controls}
+Summing all $\binom m2$ pair overlaps instead of only spanning-tree edges is NOT a valid SAT lower bound. The UNSAT eight-pattern 3-clause source augmented by fourteen distinct star clauses yields a false apparent SAT value $5.6875>0$, whereas the valid tree lower bound is $-13/16$. This misuse is \textbf{FALSIFIED/RETIRED}.
+
+The full standalone Python implementation and raw JSON retain 19 SAT/UNSAT controls, 5,604 exact four-mode pair comparisons, 66,552 complement assignment checks, 46,656 balanced $n=6$ signings, all original occurrences and flip trails, and resolution records. Selected-work comparisons on identical inputs:
+\[
+\begin{array}{lrrrr}
+ &B_T&\text{baseline nodes}&\text{tree nodes}&\text{baseline/tree work}\\
+\text{strict22 cyclic SAT}&1/64&6&0&449/2393\\
+\text{strict22 W1 UNSAT}&-1&151&151&11218/16271\\
+\text{strict22 S SAT}&-55/64&9&9&975/6030\\
+\text{SAT star 14}&1/16&3&0&425/3145\\
+\text{SAT star 15}&0&3&3&455/2790
+\end{array}
+\]
+Peak Python-traced bytes on same W1 UNSAT instance: 3456 baseline, 14160 tree controller. Work counts include source scans, failed strategy, pair construction, proof verification, UP/DPLL and fallback, but are selected heterogeneous operations rather than exact bit-machine instructions. Materialized storage is $O(N+n^2+m^2\log N)$ bits; fallback remains exponential worst-case. Neither P=NP nor P\ne NP is resolved.
+
+Full local source SHA256 03cf03eefdf28293b212e6b15c193f20333b8efad1b4bedd7901f22823a404b0; 820480-byte full raw JSON SHA256 d415f27bfb5348bd54175e2e52b65bd4d8f451920eaa07866f475a85050a4685. This shorter repository report is not byte-identical to the expanded local LaTeX report in the downloadable PDF bundle.
+\par\noindent\textbf{Next OPEN lemma:} find a fully charged higher-order conditional overlap certificate with positive bounds on unbounded strict22 SAT families and matched UNSAT fallback, surviving easy XOR/Tseitin controls.
+
+\begin{thebibliography}{9}
+\bibitem{hunter} D. Hunter, An upper bound for the probability of a union, Journal of Applied Probability 13 (1976) 597--603, doi:10.2307/3212481.
+\bibitem{kullmann} O. Kullmann, The Combinatorics of Conflicts between Clauses, SAT 2003, doi:10.1007/978-3-540-24605-3\_32.
+\bibitem{cdcl} J. Marques-Silva, I. Lynce, S. Malik, Conflict-Driven Clause Learning SAT Solvers, Handbook of Satisfiability, 2021.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::TREE-OVERLAP-SAT241
