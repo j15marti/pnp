@@ -1,0 +1,29 @@
+# LSPV-3 04:51 PDT | SIGNED-NAE-EULER247, five-role handoff
+
+**Status:** PROVED/EXACT restricted constructive theorem (independent referee pending); COMPUTATIONAL checks; FALSIFIED/RETIRED free full-extremes diagnostic and fixed witness-pair extension beyond one added clause. Neither P=NP nor P!=NP is proved. Issue #3 is active. Issue #2 is paused; equity scoring is not active.
+
+**Source and model:** Original signed 3-clauses C_j, shared original variables x_i, occurrence polarity x_(i,j) with local S_j all three literal-TRUE values and U_j all three literal-FALSE values, both inversions, full SS/SU/US/UU indexed pair matrices, coherent 0^n and 1^n, complements, Gray/intermediate/multiflip trails, full t_j=0,1,2,3 and N0..N3, parent-indexed non-tautological resolvents, source-cube proof replay. Each full source clause is a disjunction (at least one true), not S_j. Source-indexed executable data are separate from solver instrumentation. Every original variable is globally coherent.
+
+**PROVED/EXACT theorem (restricted):** F=AND_j (D_j AND NOT-LITERALS(D_j)), each D_j proper signed 3-clause and each original variable in exactly TWO DISTINCT base clauses, is SAT. Construct a cubic multigraph with base clauses as vertices and variables as edges. Add one artificial edge from hub to each cubic vertex (number of base clauses even), Euler circuit, delete hub edges to form original-variable edge trails, assign first bit 0 on each trail and successive bits such that neighboring signed literal truths at their shared clause are opposite. At each original vertex one Euler pairing uses the hub edge, leaving an original-original paired edge with opposite literal truths; each D_j has one true and one false, and its complement is satisfied. Recognition, source indexing, Euler traversal and witness verification are O(M+n) indexed word-RAM time and words with stable bounded-key radix sort of normalized IDs; with comparison sort O(M log M). No supplied SAT answer. Can be signed frustrated, not merely monotone.
+
+**Corollary:** For any SAT complement-invariant H and any ONE nonempty clause C, either an H-witness or its complement also satisfies C. A fixed chosen witness/complement pair fails at TWO added clauses on a K4 paired source although the extension is SAT.
+
+**Independent finite audit:** 13 adversarial SAT/UNSAT inputs; 4096 signed K4 signings (3584 non-gauge-balanced); 504 original occurrences; 4976 indexed pair modes; 133712 coherent pair trials; 2045824 complete assignment complement clause counts; 189076 source-parent resolvent forbidden-cube checks; 103696 complete formula masks. Seed 202610300451. Raw SHA256 d33235c7a81202f1b062975115da73e0d2b937260dd896c3d72c286bc1d776a2. Complete Python reproducer SHA256 0427120316da65512b80b53e4f9d01d0874e3fc979c7948cf088f675c02db332; independent checker SHA256 d289357eda19f3777e8e78c48f15d9c74bcffbaf15174336d304b8b5ddf9ffc1. GitHub public independent raw checker and compact summary are separately written and verified. The complete raw+full producer+4-page PDF are supplied as conversation-downloadable ZIP; Library upload failed with container_session_unavailable. They are NOT claimed to be in GitHub.
+
+**Charged same-source benchmarks:** K4 mono SAT baseline UP-first DPLL 6 nodes /256 selected events vs lean Euler controller 141 vs full source-extreme audit 14792. K4 frustrated SAT 4/247 vs141 vs15046. prism12 SAT 14/1638 vs421 vs123612. H1 strict22 SAT 7/262 vs295 vs13324. SWAP6 strict22 SAT 78/6067 vs6148 vs99777. W1 strict22 UNSAT 151/11935 vs12016 vs105645. All branches, recognizer failures and fallback are charged; independent solver also tested GF(2), SCC 2SAT and Horn. Instrumented logical events, not native RAM/Turing steps; full explicit pair-table audit has Omega(m^2) output floor not part of lean linear algorithm; no generalized speedup.
+
+**LSPV-1 Formal Proof Lead:** independently referee signed hub/Euler trail proof including arbitrary disconnected cubic multigraph, edge-parallelism, both signs and source recognition; counterexample search for two clauses added to paired core. Mark independent review pending until replayed.
+
+**LSPV-2 Circuit & Reduction Builder:** preserve sign-specific original-variable incidence when compiling NAE class to graph; test post-UP ternary strict22 sources with missing complement partners. No free variable complementation or runtime lower bounds.
+
+**LSPV-4 Resource Auditor:** charge recognition, sort, Euler traversals, witness checking, explicit m^2 pair-table output separately; monitor peak RAM and failed recognizers. Compare to true 2SAT, XOR and Horn switches and CDCL where available.
+
+**LSPV-5 Red Team & synthesis:** do not mistake the easy subclass for all strict22, which includes W1 UNSAT; verify actual signed incidence and independent witnesses; reconcile root executive only under its ownership.
+
+**Exact next OPEN lemma:** For F=H AND G with signed paired-NAE core H and d unmatched original clauses, characterize polynomial recognizability and a *fully charged* polynomial post-UP/post-2SAT original-variable cube cut on genuinely ternary connected strict22 SAT and UNSAT sources. d=1 is solved by complement-witness, fixed-pair candidate fails at d=2; unrestricted d remains open.
+
+Primary context: Kullmann (SAT 2003, DOI 10.1007/978-3-540-24605-3_32); Döcker (arXiv:1912.08032); Darmann-Döcker (arXiv:1908.04198). Prior actual repository sources: MULTI-ANCHOR246, ROOT-PAIRING-GUARD245, MATCHING-HAMMING-FIREWALL244, LSPV-5 FAILED-LITERAL-RUP-REFEREE219, LSPV-1 EXTREME-BALANCE-UP-FIREWALL248, LSPV-2 BALANCED-TWO-COORD249, AGENTS.md, CODEX.md, research skill, root main.tex.
+
+Report: research/agents/lspv-3/2026-10-30_0451_LSPV-3_SIGNED_NAE_EULER247_PUBLIC.tex
+Checker: research/agents/lspv-3/2026-10-30_0451_LSPV-3_SIGNED_NAE_EULER247_independent_check.py
+Compact summary: research/agents/lspv-3/2026-10-30_0451_LSPV-3_SIGNED_NAE_EULER247_PUBLIC_summary.json
