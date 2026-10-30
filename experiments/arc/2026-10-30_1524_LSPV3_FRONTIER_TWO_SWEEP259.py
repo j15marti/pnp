@@ -3,8 +3,10 @@
 RUN ID LSPV3-FRONTIER-MARGINAL259. No SAT oracle or no-cost decomposition.
 """
 import itertools,json,random,time,tracemalloc,hashlib,sys
+from pathlib import Path
 from collections import defaultdict
 
+BASE=Path(__file__).resolve().parent
 SEED=202610301524
 W=[(-1,3,-14),(2,-8,9),(10,-13,14),(3,7,-13),(-4,-9,-11),(5,8,-14),(4,-8,-11),(1,7,13),(1,-7,10),(-5,-6,-15),(-2,-6,12),(-4,9,-10),(-2,5,-12),(-3,6,-15),(6,-7,11),(2,-9,11),(4,8,-10),(-3,12,15),(-5,-12,15),(-1,13,14)]
 SWAP=list(W);SWAP[9]=(-5,6,-15);SWAP[13]=(-3,-6,-15)
@@ -290,5 +292,5 @@ def main():
  # exactness of chain constraints and no-free width
  print(json.dumps({'seed':SEED,'cases':len(results),'assertion_groups':total_assertions,'orbit':orbit,
                    'summaries':{k:{'n':v['n'],'m':v['m'],'SAT':v['is_SAT'],'models':v['model_count'],'width_input':v['input_order_width'],'width_greedy':v['greedy_width'],'policy':v['policy'],'discovery':v['selection_events'],'DP_status':v['dp']['status'],'DP_rows':v['dp'].get('trials'),'DP_live':v['dp'].get('live_entries'),'DP_join':v['dp'].get('join_costs',{}).get('join_trials'),'DP_sec':round(v['dp_seconds'],4),'DPLL_nodes':v['baseline']['stats']['nodes'],'DPLL_events':v['baseline']['stats']['total_events']} for k,v in results.items()}},indent=2))
- with open('/mnt/data/pnp_arc259/raw.json','w') as g:json.dump({'run':'FRONTIER_TWO_SWEEP259','seed':SEED,'assertions':total_assertions,'cases':results,'orbit':orbit},g,sort_keys=True,indent=2)
+ with open(BASE/'raw.json','w') as g:json.dump({'run':'FRONTIER_TWO_SWEEP259','seed':SEED,'assertions':total_assertions,'cases':results,'orbit':orbit},g,sort_keys=True,indent=2)
 if __name__=='__main__':main()
