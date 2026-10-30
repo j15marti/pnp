@@ -42,9 +42,9 @@ for clauses in (A,B):
   U={abs(l):int(l<0) for l in c}
   assert all(S[v]==1-U[v] for v in S)
   for d in clauses[:i]:
-   D={abs(l):int(l>0) for l in d}
-   same=sum(D[v]==S[v] for v in S.keys()&D.keys())
-   opposite=sum(D[v]!=S[v] for v in S.keys()&D.keys())
+   parent_sign={abs(l):int(l>0) for l in d}
+   same=sum(parent_sign[v]==S[v] for v in S.keys()&parent_sign.keys())
+   opposite=sum(parent_sign[v]!=S[v] for v in S.keys()&parent_sign.keys())
    expected={'SS':not opposite,'SU':not same,'US':not same,'UU':not opposite}
    variables=sorted(set(map(abs,c+d)))
    seen=dict.fromkeys(expected,False)
