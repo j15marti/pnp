@@ -1,0 +1,286 @@
+% LSPV-5 REPORT::EXTREME-COMPATIBILITY-FIREWALL214::2026-10-29T22:48:00-07:00
+\documentclass[10pt]{article}
+\usepackage[margin=0.78in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,array,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\PROVED}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\FALSE}{\textbf{FALSIFIED/RETIRED}}
+\title{LSPV-5 Red Team: Clause-Extreme Compatibility Is a Representation Firewall,\\Not Source-Variable Search Pruning}
+\author{PNP Formal Proof Red Team}
+\date{29 October 2026, 22:48 America/Los\_Angeles}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We independently reproduce the clause-indexed all-literals-true/all-literals-false
+experiment required by coordination issue~\#3.  Each original signed occurrence is
+retained, local targets are inverted, all four pair modes are checked, and bounded
+multi-clause modes are compared with exact enumeration.  The main red-team theorem
+is a zero-pruning result: an $SS/SU/US/UU$ compatibility test cannot reject any
+globally coherent source-variable assignment, because every realized extreme mode
+already inherits one common assignment.  It can prune only a representation that
+independently guesses occurrence-level clause targets.  By contrast, a
+source-authenticated non-tautological resolvent certifies a genuine impossible
+partial-assignment cube.  Twelve SAT/UNSAT controls and 967,957 exact checks support
+the implementation claims.  This is neither a general SAT algorithm nor a lower
+bound.  P versus NP remains \OPEN.
+\end{abstract}
+
+\section{Status and precise target}
+
+\paragraph{Single target.}
+For every proper signed 3-CNF $F$ and every node of a DPLL search that assigns the
+\emph{original shared variables}, determine whether adding the local-extreme
+compatibility matrix can eliminate a node that the ordinary coherent search would
+otherwise visit.
+
+\paragraph{Quantifiers and model.}
+The symbolic theorem quantifies over every proper signed 3-CNF and every coherent
+partial source-variable assignment.  The computational comparison uses a declared
+fixed-order DPLL with saturated unit propagation, source scanning, and optional
+bounded resolution preprocessing.  It is a conventional baseline, not industrial
+CDCL and not a tape-machine measurement.
+
+\paragraph{Mechanisms proposed before testing.}
+\begin{enumerate}
+\item Add the four-way extreme compatibility matrix as a guard to source-variable DPLL.
+\item Search clause-extreme labels and reject inconsistent $S/U$ combinations before
+      reconstructing a source assignment.
+\item Derive source-parent, non-tautological bounded resolvents and prune the cube that
+      falsifies each resolvent.
+\item Switch to Gaussian elimination when the source is recognized as affine/XOR.
+\end{enumerate}
+Mechanism 1 is falsified as a pruning mechanism; mechanism 2 is representation-specific;
+mechanisms 3 and 4 remain sound with their acquisition and recognition costs charged.
+
+\section{Clause-indexed occurrence experiment}
+
+Let original clause $C_j=(\ell_{1j}\vee\ell_{2j}\vee\ell_{3j})$ and let
+$x_{i,j}$ denote the occurrence of source variable $x_i$ in $C_j$, not a fresh
+Boolean variable.  Write the sign bit $\nu_{ij}=0$ for $x_i$ and $1$ for
+$\neg x_i$.  The local targets are
+\[
+ S_j:\quad a_i=1\oplus\nu_{ij},
+ \qquad
+ U_j:\quad a_i=\nu_{ij}.
+\]
+Thus inversion swaps $S_j$ and $U_j$ occurrence by occurrence.  Ordinary clause
+satisfaction is only $t_j(a)\ge1$; $S_j$ is the stronger $t_j(a)=3$, while $U_j$
+is $t_j(a)=0$.
+
+For two distinct clauses $C_j,C_k$, the exact pair matrix is
+\begin{center}
+\begin{tabular}{ccl}
+\toprule
+Mode & Feasibility & Obstruction\\
+\midrule
+$SS$ & no opposite-polarity shared variable & opposite signs demand opposite values\\
+$UU$ & no opposite-polarity shared variable & opposite signs demand opposite values\\
+$SU$ & no same-polarity shared variable & same signs demand opposite values\\
+$US$ & no same-polarity shared variable & same signs demand opposite values\\
+\bottomrule
+\end{tabular}
+\end{center}
+The reproducer emits, for every source clause and occurrence, its explicit sign,
+$S$ target, inverted $S\to U$ target, $U$ target, and inverted $U\to S$ target.
+It emits every pair matrix with source IDs and the precise conflicting variables.
+For a bounded subset of at most eight clauses it enumerates all $2^h$ proposed
+$S/U$ mode vectors and compares demand consistency with exact source assignments.
+
+\paragraph{Global endpoint and inversion controls.}
+For each complete assignment $a$, the program records each three-bit literal truth
+vector, $t_j(a)$, and $(N_0,N_1,N_2,N_3)$.  It checks
+\[
+ t_j(\bar a)=3-t_j(a),\qquad N_r(\bar a)=N_{3-r}(a),
+\]
+and emits deterministic $0^n\to1^n$ and $1^n\to0^n$ single-flip trails.  The
+three-clause control
+\[
+ (x_1\vee x_2\vee x_3)\wedge
+ (x_1\vee x_2\vee\neg x_3)\wedge
+ (\neg x_1\vee\neg x_2\vee\neg x_3)
+\]
+falsifies both endpoints but has five satisfying assignments.  Endpoint failure is
+therefore not an UNSAT certificate.
+
+\section{The representation-firewall theorem}
+
+\begin{theorem}[coherent extreme compatibility firewall]\label{thm:firewall}
+Let $F$ be any CNF over shared source variables and let $\alpha$ be any coherent
+partial assignment.  Let $E_\alpha$ contain $(j,S)$ when every variable of $C_j$
+is assigned and all its literals are true, and $(j,U)$ when every variable is
+assigned and all its literals are false.  Then every pair in $E_\alpha$ passes the
+four-way compatibility matrix, and all of $E_\alpha$ is jointly feasible.
+
+Consequently, adding only this compatibility check to a DPLL search whose nodes are
+coherent source-variable assignments rejects no node and cannot reduce its search
+tree.  It can detect errors or prune only a different representation that guesses
+local occurrence targets independently.
+\end{theorem}
+
+\begin{proof}
+For every $(j,m)\in E_\alpha$, the local target demand on each variable occurring
+in $C_j$ is exactly its value under the one assignment $\alpha$.  Hence two realized
+targets cannot demand different values from any shared variable.  The restriction
+of $\alpha$ to all variables occurring in $E_\alpha$ is a joint witness.  Therefore
+the guard never rejects a coherent search node.  Since the guarded and unguarded
+source-variable DPLL perform the same branching and propagation, their recursion
+nodes are identical; the guard can only add checking work.  \qedhere
+\end{proof}
+
+This is not the signed-balance theorem rediscovered: the exact multi-clause
+$S/U$ feasibility characterization was already published by LSPV-1 as
+EXTREME-SIGNED-CYCLE240.  The present theorem identifies the algorithmic consequence
+for the \emph{source-variable} search space.
+
+\begin{corollary}[dense incompatibility need not mean difficulty]
+For every $r\ge1$, take $r$ copies each of
+\[
+ A=(x\vee y\vee z),\qquad B=(x\vee y\vee\neg z).
+\]
+All $r^2$ cross-copy pairs have no feasible $SS,SU,US,$ or $UU$ mode because the
+clauses share $x,y$ with the same sign and $z$ with opposite sign.  Nevertheless the
+formula is equivalent to $A\wedge B$ and has six of eight assignments as models.
+Thus arbitrarily many incompatibility edges can arise from duplication without
+increasing semantic or decision difficulty.
+\end{corollary}
+
+\section{What genuinely forbids a source-assignment cube}
+
+From source clauses $(x\vee A)$ and $(\neg x\vee B)$, resolution gives
+$R=A\vee B$.  When $R$ is non-tautological, the partial cube falsifying every literal
+of $R$ has no extension satisfying both parents: either value of $x$ falsifies one
+parent.  The reproducer retains both parent IDs, pivot, resolvent, and falsifying cube,
+then independently checks every extension against the source formula.
+
+For the duplicate-support control, resolving $A$ and $B$ on $z$ yields
+$(x\vee y)$ and certifies the entire cube $x=y=0$ impossible.  Unlike the matrix
+firewall, this is a real logical consequence over source variables.  Tautological
+resolvents are recorded but never treated as conflicts.  The solver comparison keeps
+only non-tautological resolvents of width at most three and charges all literal-pair
+tests and output construction.
+
+\section{Finite hostile controls and charged solver comparison}
+
+The deterministic run (seed 202610292248) used twelve families: endpoint-failing
+SAT, duplicate supports, contradictory padded units, satisfiable and contradictory
+XOR3, dense overlapping even-parity constraints with primal graph $K_6$, Horn,
+padded 2-SAT, connected strict exact-$(2,2)$, all eight sign patterns on three
+variables, planted dense SAT, and an adversarial polarity renaming.
+
+\begin{longtable}{p{3.25cm}rrrrrr}
+\toprule
+Control & models & clauses & all-4 bad pairs & base nodes & guard nodes & guard rejects\\
+\midrule
+endpoint-fail SAT & 5 & 3 & 2 & 4 & 4 & 0\\
+duplicate support SAT & 6 & 8 & 16 & 4 & 4 & 0\\
+padded units UNSAT & 0 & 8 & 12 & 19 & 19 & 0\\
+XOR3 even SAT & 4 & 4 & 6 & 3 & 3 & 0\\
+XOR3 contradictory & 0 & 8 & 24 & 7 & 7 & 0\\
+dense XOR $K_6$ SAT & 1 & 80 & 840 & 3 & 3 & 0\\
+Horn SAT & 39 & 4 & 1 & 4 & 4 & 0\\
+padded 2-SAT & 40 & 6 & 3 & 8 & 8 & 0\\
+strict22 SAT & 10 & 8 & 10 & 3 & 3 & 0\\
+all-signs UNSAT & 0 & 8 & 24 & 7 & 7 & 0\\
+planted dense SAT & 8 & 28 & 66 & 8 & 8 & 0\\
+polarity rename SAT & 5 & 3 & 2 & 3 & 3 & 0\\
+\bottomrule
+\end{longtable}
+
+The guard performed 192 realized-pair checks across the reported solver runs and
+rejected zero nodes.  In the dense XOR $K_6$ control, baseline instrumented work was
+911 units, while the guard used 1,101 with the same three nodes.  Across the exact
+oracle the program checked 777,337 pair-mode cases, 89,344 multi-clause mode cases,
+15,520 realized extreme pairs, 10,768 complements, 67,888 single-flip clause updates,
+and 7,100 extensions of prohibited cubes: 967,957 checks total.
+
+Bounded resolution sometimes helped node count but not uniformly total work.  On the
+contradictory padded-unit core, nodes fell $19\to3$ and charged work $589\to573$.
+On dense XOR $K_6$, nodes stayed $3\to3$ while charged work rose $911\to39{,}531$.
+On the endpoint-failing SAT control, nodes fell $4\to2$ while work rose $51\to94$.
+This is the required distinction between successful-path pruning and discovery cost.
+
+\paragraph{Affine control.}
+The dense XOR source is easy after recognizing its linear system: Gaussian elimination
+operates on the compact affine representation even though the CNF primal graph is
+$K_6$ and the extreme matrix has 840 all-four-incompatible pairs.  Existing SAT/XOR
+work explicitly integrates Gauss--Jordan reasoning because ordinary clausal reasoning
+can be a poor representation for parity.  No structural score may suppress that switch.
+
+\section{Literature and duplication audit}
+
+Kullmann's conflict matrix counts clashes between clauses and the hitting-clause-set
+literature studies clause-sets where clauses conflict pairwise.  Our four-mode matrix
+is related but not identical: it distinguishes equal versus opposite local extreme
+modes and retains parallel shared-variable demands.  We make no novelty claim for
+clause conflict graphs, hitting clause-sets, resolution, unit propagation, clause
+learning, or XOR reasoning.
+
+The primary sources checked were Kullmann's \emph{The Combinatorics of Conflicts
+between Clauses} (SAT 2003, DOI \url{https://doi.org/10.1007/978-3-540-24605-3_32})
+and \emph{Constraint Satisfaction Problems in Clausal Form II} (2011, DOI
+\url{https://doi.org/10.3233/FI-2011-429}).  For learned-resolution context we checked
+Beame, Kautz, and Sabharwal, \emph{Understanding the Power of Clause Learning}
+(IJCAI 2003) and the later resolution-simulation formulation at
+\url{https://homes.cs.washington.edu/~beame/papers/cdclres.pdf}.  For the parity
+representation control we checked Han and Jiang, \emph{When Boolean Satisfiability
+Meets Gaussian Elimination in a Simplex Way} (CAV 2012),
+\url{https://alcom.ee.ntu.edu.tw/assets/publications/cav12.pdf}.
+
+\paragraph{Corpus reviewed.}
+Issue~\#3 and both clarification comments; CLAUSE-EXTREME-DUALITY1; LSPV-1
+EXTREME-SIGNED-CYCLE240 and its compact reproducer; LSPV-2 EXTREME-CYCLE-UP240
+handoff; prior LSPV-5 FORBIDDEN-CUBE-COUNTING-REFEREE213; current root
+\texttt{main.tex}; \texttt{AGENTS.md}, \texttt{CODEX.md}, and the pnp-research
+skill.  No verified LSPV-4 issue~\#3 report was present at preflight; a nonblocking
+write-recovery request was recorded without reconstructing scientific content.
+
+\paragraph{Duplication / contradiction audit.}
+The pair matrix and global signed-balance characterization are adopted as prior work,
+not relabeled.  LSPV-2 already showed that an extreme-count rule adds no pruning after
+UP in its balanced exact22 regime.  The new result concerns a different leak: applying
+the raw compatibility predicate to coherent source-variable DPLL cannot prune in
+\emph{any} CNF.  The previous forbidden-cube result remains valid, but exact overlap
+counting remains optional and potentially hard.
+
+\paragraph{What changed relative to root main.}
+The synthesis should now explicitly separate three objects: (i) occurrence-target
+compatibility, a representation firewall; (ii) source-variable consequences such as
+resolvents, which can prune; and (iii) alternate compact representations such as
+affine row spaces.  No P-versus-NP proof arrow is strengthened.
+
+\section{Statuses, limitations, and next lemma}
+
+\begin{itemize}
+\item \PROVED: Theorem~\ref{thm:firewall} and the duplicate-support corollary.
+\item \COMP: the twelve finite controls, solver counters, and exact enumeration.
+\item \FALSE: ``The $SS/SU/US/UU$ matrix by itself prunes a coherent
+      source-variable DPLL tree.''
+\item \OPEN: whether a polynomial-time, proof-carrying closure combining UP,
+      bounded resolution, Horn/2-SAT recognition, and affine switching gives a net
+      worst-case reduction on a substantially broader class.
+\end{itemize}
+
+The work units are logical instrumentation, not physical head crossings or native
+RAM bytes.  Exact enumeration is an external small-instance oracle.  No finite
+benchmark, clause-conflict density, or restricted proof system gives an
+arbitrary-algorithm SAT lower bound.
+
+\paragraph{Next specific lemma.}
+Define a polynomially recognizable class of partial source assignments for which
+the signed-extreme graph plus a certified bound on middle-state clauses derives a
+new non-tautological source clause not already absorbed by UP; prove the derivation,
+charge recognition and proof checking, and compare its net DPLL/CDCL work on SAT and
+UNSAT controls.  Without such a source-level consequence, extreme compatibility is
+only a representation consistency check.
+
+\bigskip
+\noindent\textbf{Final status:} P versus NP remains \OPEN.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::EXTREME-COMPATIBILITY-FIREWALL214
+\end{document}
