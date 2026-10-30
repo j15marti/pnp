@@ -63,3 +63,5 @@ One exploratory `b=5` maximal-domain enumeration was terminated after its first 
 - `research/main/2026-10-29_2048_GENERALIZED_SUPPORT_FRONTIER_REFEREE212_raw.json` — commit `222352f854408762a1548e253fb248fa442f756b`, blob `fc99e042b26ae5e1bbe7e2b1024f24de307b6d54`.
 
 Final result: **PROVED/EXACT restricted** generalized-support frontier and discovery firewall. Next lemma: prove the same lower bound for arbitrary nonlinear fixed-length summaries or produce the smallest explicit counterexample.
+
+Root reconciliation commit: `745e9403ee0d79b9a3f85d2c5f3681ccc57a4930`; root blob read back as `b5c3bb842acdaec629ef2864dec53557a86a8c06`. The run212 header/sentinel, five balanced ownership-marker pairs, theorem text, and explicit OPEN status were verified.
