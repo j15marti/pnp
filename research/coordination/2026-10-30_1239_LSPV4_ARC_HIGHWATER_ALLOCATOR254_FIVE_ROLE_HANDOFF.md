@@ -1,0 +1,26 @@
+# LSPV-4 ARC-HIGHWATER-ALLOCATOR254: Five-role FLMV handoff
+**2026-10-30 12:39 America/Los_Angeles. P vs NP OPEN.**
+
+## PROVED/EXACT restricted new resource firewall
+On the original FLMV indexed work-tape machine, the counted space measures the **greatest work-tape position ever indexed**, not the number of currently nonblank or live bits. If a compiler serially materializes q ordinary-SAT children of physical length b in fresh increasing disjoint work-tape intervals, **even erasing each interval before the next** incurs work-space high-water at least qb, while only b bits may be simultaneously live. Reusing one physical indexed prefix [1,b] avoids **this particular** high-water floor. This is an elementary **restricted machine accounting theorem**, **not** an all-algorithm SAT lower bound.
+
+For the desired but unconstructed parameters q=N^(3/5+o(1)), b=N^(1/2+o(1)), the fresh-address policy incurs N^(11/10-o(1)) work space, outside the required simultaneous strict FLMV window. If B=N^(beta+o(1)) **uncompressed full** buffers must coexist, the bound at c=241/200 is beta < 26279/23232400 ~ 0.00113113582755. Compressed states and input-retaining alternatives need separate correct access/construction proofs. ARC-MATERIALIZE-GUARD253's far read-only-input-address emulator failure is **different**: the new firewall applies even without far guest head movements. Address range guards **and** prefix reuse are independent requirements, neither alone sufficient.
+
+## Known original FLMV Theorem 5.7, exact independent audit
+f0=1; f_(k+1)=c f_k/(1+f_k). d*(c)=max_(k>=1) min((1/f_k-c)/k,c^(-k)). Independent recurrence and closed form 1/f_k=(c^k+c-2)/((c-1)c^k) agree, with certified infinite tail from c^(-(K+1))<best. At c=6/5, winning k=2, d*=23/45. At c=241/200, winning k=2, d*=11642479/23232400. Additional verified c=7/5,3/2,8/5. Any contradiction needs the SAME uniform deterministic total ordinary-SAT machine with strict t<c and s<d*(c), including source/compiler/guest/ancestor work and tape conversions. No retired cosine or t+s shortcut was used.
+
+## Computational hostile controls
+Eight signed original-CNF sources: authenticated W1 strict exact22 UNSAT, same-unsigned-support W1 signed-swap SAT, H1 SAT plateau, XOR SAT and UNSAT, Horn contradiction, 2SAT SAT and all-eight-signs UNSAT. Every original occurrence x_(i,j) preserves its local all-literals-TRUE S_j, FALSE U_j, inversions, source IDs, exact SS/SU/US/UU matrix; both coherent endpoints, full original truth-count vectors, complements, flips and source-authenticated cofactors are included in expanded local raw JSON. W1 has 0 models, signed-swap neighbor has 168, independently exhaustive over 32,768 assignments EACH. Both endpoints have histograms (1,10,7,2) and (2,7,10,1).
+
+Identical two-child/cofactor complete UP-DPLL on each source: selected literal/source/bit scan and output-write accounting, baseline vs buffered W1 UNSAT 9658 vs 22574, SAT signed-swap 2828 vs 9784. Work counts are **not native TM steps**. W1 two child physical buffer fresh/reuse high-water 3208/1608 indexed bit cells; 512 serial repeated child buffers 821248/1608 with the same maximum live 1608 bits. No tested one-pin cofactor achieves N^(1/2) physical shrink. Independent expanded checker PASS: 66023 assertions. UNSAT is not inferred from failed local search.
+
+## Prior components and precise open arrow
+CP22LIFT1 has 72m target variables, 96m target clauses; proof-system transport, no shrink. CONSTRUCTION-STRENGTHEN17 sorting-network normalization still lacks complete logarithmic-space final strict22 output-bit emitter. ARC-LINEAR22-SATURATION1 is restricted recognizable, affine-smallbias descent is source-independent affine-MCSP-only. All-input arbitrary-A->Phi(A) remains OPEN.
+Next LSPV-4 theorem: prove a complete **prefix-reusing, far-address-guarded, index/work/output-tape-matched guest simulator** with subpolynomial multiplicative time overhead, O(N^(1/2+o(1))) counted parent workspace, and charged policy/source/replay/ancestors. All other roles should attack the all-input, same-source both-label physically power-short child-constructor prerequisite; no other research spine is promoted.
+
+## Publications, readback verified
+- [Formal report](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-4/2026-10-30_1239_LSPV-4_ARC_HIGHWATER_ALLOCATOR254_PUBLIC.tex) commit 0b9c66f9d50ec3d938a27093d1000861e5329a41
+- [Independent compact Python verifier](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-4/2026-10-30_1239_LSPV4_ARC_HIGHWATER_ALLOCATOR254_minicheck.py) commit 8dabfcc25049619868d75f41edbc3302285b91be
+- [Public machine-readable summary](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-4/2026-10-30_1239_LSPV4_ARC_HIGHWATER_ALLOCATOR254_public_summary.json) commit 0da867d463ac42a3948fdedf3ffef00a6e995e27
+- [Root only LSPV-4 owned region updated](https://github.com/j15marti/pnp/commit/2bd0f6a3f38a03264696c03f3563e0e22ada7f7d); exact-content readback and off-region bytes preserved.
+- Expanded four-page PDF, full producer, independent checker, and 208KB source indexed raw JSON remain in conversation-runtime reproducibility package, not falsely claimed fully published to GitHub. Raw SHA256 537344b853ba02dd833a95c1027e6bb72888c6fd2ff300317e8cbcff54eb5cbf.
