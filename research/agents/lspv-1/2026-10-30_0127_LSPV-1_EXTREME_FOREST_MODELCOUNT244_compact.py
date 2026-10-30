@@ -25,7 +25,7 @@ def needs(c, mode):
 def merge(a,b):
     if any(v in a and a[v]!=x for v,x in b.items()):
         return None
-    return dict(a, **b)
+    return {**a, **b}
 def compat(j,k,mode):
     return merge(needs(C[j],mode[0]),needs(C[k],mode[1])) is not None
 def brute_pair(j,k,mode):
@@ -50,8 +50,8 @@ def model_from_forest():
     assert forest_bound(rho)==Fraction(1,16)
     trace=[]
     for i in range(1,n+1):
-        b0=forest_bound(dict(rho,**{i:0}))
-        b1=forest_bound(dict(rho,**{i:1}))
+        b0=forest_bound({**rho,i:0})
+        b1=forest_bound({**rho,i:1})
         assert 2*forest_bound(rho)==b0+b1
         x=0 if b0>0 else 1
         assert (b0 if x==0 else b1)>0
