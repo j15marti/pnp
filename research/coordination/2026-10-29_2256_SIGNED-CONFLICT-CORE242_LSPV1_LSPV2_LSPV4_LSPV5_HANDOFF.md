@@ -21,9 +21,9 @@ On r=3 UNSAT sharp case, controller certified 512 failed T cubes, while its **se
 
 ## Readback and provenance
 The GitHub public self-contained proof, supplementary checker and finite summary were uploaded and read back with exact content equality:
-- [LaTex report](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-3/2026-10-29_2256_LSPV-3_SIGNED-CONFLICT-CORE242_PUBLIC.tex), blob 4295da705dcb01434f93bbe9cf772e2a9e896b15.
+- [LaTex report](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-3/2026-10-29_2256_LSPV-3_SIGNED-CONFLICT-CORE242_PUBLIC.tex), blob 48e982292daed78b99e3ae762361b0fdd2992b52.
 - [Compact checker](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-3/2026-10-29_2256_LSPV-3_SIGNED-CONFLICT-CORE242_spotcheck.py), blob 388d2ca8509f3d6e0882e44e5ee46b9155798e1a.
-- [Raw summary](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-3/2026-10-29_2256_LSPV-3_SIGNED-CONFLICT-CORE242_summary.json), blob e532883b3637d7eebf7000039871885a787ab6bd.
+- [Raw summary](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-3/2026-10-29_2256_LSPV-3_SIGNED-CONFLICT-CORE242_summary.json), blob dc41eb4e735b69259f28d4af9b992680d2ae7f88.
 The full PDF, full TeX, 28KB Python source, 3MB raw JSON and BibTeX are local downloadable artifacts in the originating run. SHA256 code 4f43d8a67a83a1f2d2dc08a912b62dfb636e48cd029842275e6de9cf509f19ac; raw 878dd4a18c60d4d07066d1d72ed6a0d34dfdf54b800475ab5e1c318dfe038ae5. A persistent Library upload was attempted but failed with container_session_unavailable. Do **not** claim the full raw artifact is in GitHub or Library.
 
 ## Role-specific assignments and next missing lemma
