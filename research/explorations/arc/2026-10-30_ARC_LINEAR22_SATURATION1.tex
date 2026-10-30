@@ -1,0 +1,333 @@
+% P versus NP Research Project | ARC-LINEAR22-SATURATION1
+% Exact restricted theorem, all-input ARC transfer OPEN.
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.86in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,tabularx,xurl,microtype}
+\usepackage[hidelinks]{hyperref}
+\setlength{\emergencystretch}{4em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\F}{\mathbb F_2}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT (declared model)}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{ARC-LINEAR22-SATURATION1: Exact Local Projection Growth\\[.2em]and a Global Isomorphism Escape\\[.35em]
+\large An Infinite Signed $(2,2)$ 3-CNF Construction and Fully Typed ARC Countercontrol}
+\author{P versus NP Research Project}
+\date{October 30, 2026}
+\begin{document}
+\maketitle
+\begin{center}
+\fbox{\parbox{.94\linewidth}{\textbf{Global status: P versus NP OPEN; ARC/FLMV all-input contraction OPEN.}
+This report proves an infinite family of local-elimination countercontrols and a polynomial-time
+signed-isomorphism recognizer. It gives conditional resource accounting and finite independent
+checks. It is \emph{not} a lower bound against arbitrary SAT algorithms. The underlying formulas
+are all explicitly satisfiable.}}
+\end{center}
+
+\begin{abstract}
+We attempt the current ARC/FLMV construction using exact Davis--Putnam variable elimination,
+proper-3CNF re-entry, shared AND/OR circuits, and bounded two-variable lookahead. An explicitly
+constructible connected, linear, signed exact-$(2,2)$ 3-CNF family defeats every one-variable
+pivot for both declared output languages: proper-3CNF re-entry adds three variables and four
+clauses, while a common-factored circuit adds one DAG node. This failure is representation-
+and algorithm-relative, not decision hardness. In fact, by reducing signed variable relabeling
+to bounded-degree colored graph isomorphism, the entire signed-isomorphism orbit of this
+family has polynomial-time witness recovery. Finite tests include all 1,089 two-pivot
+candidates at three sizes and signed scrambling controls. The full all-input, same-machine
+resource-contraction arrow remains open.
+\end{abstract}
+
+\section{Context, prior corpus, and exact target}
+The current root \texttt{main.tex} gives the ARC/FLMV simultaneous time--space
+separation target, with \texttt{main4.tex} and \texttt{main5.tex} retaining the ARC
+and WRAPPER drivers. The earlier project established: (i) the fully charged
+substituted-child recurrence; (ii) a local ten-variable example where every
+single CNF elimination grows but a two-pivot sequence shrinks; (iii) parity
+projection where auxiliary-free CNF is exponentially longer than a circuit;
+(iv) checkpoint/replay and streaming-join alternatives that defeat apparent
+memory lower bounds; and (v) the SHORT-QUERY-QUARANTINE3 conditional short-SAT-query
+composition. We adopt these rather than rebrand them as new. The underlying
+knowledge-compilation transformations are classical\cite{dechter,dm}; SAT
+lower bounds from a particular language must not be transferred to all algorithms.
+
+The target remains a uniform, answer-preserving replacement for \emph{every}
+ordinary SAT input, with all reducer work, child writes, source access,
+intermediate live state and repeated attempts charged in one time--space model.
+This experiment probes whether a modest enlargement of the source-normalizing
+portfolio, from CNF elimination to explicit shared-circuit projection, produces
+a universally favorable first step. The answer is \emph{no for the declared
+portfolio}, as demonstrated by an infinite family.
+
+\section{An infinite connected signed exact-$(2,2)$ family}
+Let $k\ge7$ be odd. Indices are elements of $\mathbb Z/k\mathbb Z$.
+Introduce $A_i,B_i,C_i$ for $i\in\mathbb Z/k\mathbb Z$ and define
+\[
+F_k=\bigwedge_{s=0}^3\ \bigwedge_{i=0}^{k-1}
+ \bigl(\ell_s(A_i)\lor\ell_s(B_{i+s})\lor\ell_s(C_{i+2s})\bigr),
+\quad
+\ell_s(v)=\begin{cases}v&s=0,1,\\ \neg v&s=2,3.\end{cases}
+\]
+
+\begin{theorem}[Syntax, incidence, and easy witness]
+Every $F_k$ is a connected proper signed exact-$(2,2)$ 3-CNF with $n=3k$
+variables and $m=4k$ distinct clauses. Every pair of variables occurs together
+in at most one clause. The assignment $A_i=1$, $B_i=C_i=0$ satisfies $F_k$.
+\end{theorem}
+\begin{proof}
+For each $s$, every variable in each of the three parts occurs in one
+clause, so each participates once for each $s=0,1,2,3$, twice with each
+polarity. All three names in a clause lie in different parts. For an
+$A$--$B$ pair, the shift is uniquely $s=j-i$; for an $A$--$C$ pair,
+$2s=j-i$ has at most one permitted $s$ since $k$ is odd and the four
+shifts are distinct; for a $B$--$C$ pair, $s=j-i$ is unique. Thus no
+variable pair recurs. The $s=0$ clauses connect $A_i$ to $B_i,C_i$;
+$s=1$ connects $A_i$ to $B_{i+1}$, so all indices are connected.
+For $s=0,1$ the literal $A_i$ is true, while for $s=2,3$ the negative
+$B$ and $C$ literals are true. Hence the displayed global witness works.
+\end{proof}
+
+\section{Exact ordinary CNF elimination and re-entry}
+Suppose $x$ occurs positively in $x\lor P_1,x\lor P_2$ and negatively
+in $\neg x\lor N_1,\neg x\lor N_2$; let $H$ contain all other clauses.
+Then
+\begin{equation}\label{eq:dp}
+\exists x\,F
+\equiv H\land\bigwedge_{i,j\in\{1,2\}}(P_i\lor N_j)
+\equiv H\land\left[(P_1\land P_2)\lor(N_1\land N_2)\right].
+\end{equation}
+The identity is pointwise on every surviving assignment, not just a SAT-bit
+equivalence. It follows from the two choices $x=0,1$ and distributivity.
+
+\begin{lemma}[One-pivot width-four firewall]
+For every variable $x$ of $F_k$, the four resolvents in \eqref{eq:dp}
+are distinct, non-tautological, width-four clauses. No unaffected source
+3-clause subsumes one of them. In the elementary proper-3CNF re-entry in
+which each width-four clause is replaced with its two-clause Tseitin
+expansion using one fresh auxiliary, the result has
+\[
+\boxed{n'=n+3,\qquad m'=m+4.}
+\]
+Under the declared fixed-width and Elias-gamma indexed clause-list
+encodings, the resulting child is longer. No claim is made for arbitrary
+semantic compression formats.
+\end{lemma}
+\begin{proof}
+The four clauses containing $x$ are pairwise disjoint outside $x$ by
+linearity of the clause hypergraph; hence the four two-literal remnants
+use eight distinct variable names. Each $P_i\lor N_j$ has four distinct
+literals, no complementary pair, and distinct variable support for distinct
+$(i,j)$. An unaffected clause shares at most one variable with each
+parent of such a resolvent; it cannot have three variables inside the
+four-variable union, so it cannot subsume the resolvent.
+For a width-four disjunction $a\lor b\lor c\lor d$, introduce fresh $z$:
+\[
+\exists z\,[(a\lor b\lor z)\land(\neg z\lor c\lor d)]
+\equiv a\lor b\lor c\lor d.
+\]
+There are four independent resolvents and hence four new auxiliaries,
+eight new clauses, and four deleted clauses, while $x$ disappears.
+Thus the variable count changes by $-1+4=+3$ and the clause count by
+$-4+8=+4$. More clauses and nondecreasing variable-ID width force a
+strict increase in the specified full-width clause-list encoding.
+\end{proof}
+
+\section{Shared-circuit representation and its exact cost}
+Use one canonical node for each distinct signed literal, one $m$-input
+AND node, and one 3-input OR node per clause. The native source DAG has
+$2n$ literal nodes, $m+1$ internal gates and $4m$ edges.
+The compiler factors $H$ before eliminating $x$, using the rightmost
+form of \eqref{eq:dp}. It hash-conses identical nodes and simplifies only
+Boolean constants, idempotence, literal complements, and associative
+flattening. It does not call a semantic minimizer.
+
+\begin{theorem}[Exact factored first-step DAG growth]
+On each $F_k$, for every pivot $x$, this compiler creates exactly
+three additional internal gates, removes two signed-literal nodes, and
+removes one edge. Equivalently,
+\[
+\boxed{V'=V+1,\qquad E'=E-1.}
+\]
+In the project's declared common-index-width test format with an eight-bit
+node tag, the source/child circuit payload difference is exactly eight bits.
+The result makes no assertion about a minimum equivalent circuit.
+\end{theorem}
+\begin{proof}
+The old four touched clauses give four 3-input OR gates. The new
+expression has four 2-input OR gates for the $P_i,N_j$, two 2-input AND
+gates for $P_1\land P_2$ and $N_1\land N_2$, and one 2-input OR gate
+joining them. There are no repeated literal pairs or local identities
+that trigger the stated simplifier. The untouched clauses are preserved.
+The old $x,\neg x$ literal nodes disappear, while every other signed
+literal still occurs among untouched clauses or local remnants because
+its variable had four source occurrences and shared no pair of $x$-clauses.
+Thus gates change by $+3$, literal nodes by $-2$, and total nodes by $+1$.
+Four old clause edges into the root are replaced by one, a change of $-3$;
+twelve old local clause input edges become $8+4+2=14$, a change of $+2$.
+Hence total edge count decreases by one. For a common reference width
+$w$, total encoded bits are
+\(H+(8+w)V+wE\), so $\Delta=8$; here $H$ is an equally sized,
+explicit parent-scale header. The actual test encoder chooses a local
+width and returns the same width for these odd-$k$ source/child pairs.
+\end{proof}
+
+\section{Exhaustive finite controls and accounted discovery}
+The independent scripts enumerate every pivot for six sizes; one script
+uses genuine Davis--Putnam re-entry, another uses the shared-DAG
+factorization. All local eliminated-variable assignments on the eight
+neighbors were tested, totaling 72,192 cases across the six sizes.
+\begin{center}\small
+\begin{tabular}{rrrrrr}
+\toprule
+$k$ & source $(n,m)$ & CNF bits & child CNF bits & old DAG bits & new DAG bits\\
+\midrule
+7 & $(21,28)$ & 760 & 864 & 1881 & 1889\\
+9 & $(27,36)$ & 968 & 1072 & 2405 & 2413\\
+11 & $(33,44)$ & 1308 & 1424 & 3216 & 3224\\
+15 & $(45,60)$ & 1772 & 1888 & 4368 & 4376\\
+21 & $(63,84)$ & 2468 & 2848 & 6643 & 6651\\
+31 & $(93,124)$ & 4000 & 4128 & 9783 & 9791\\
+\bottomrule
+\end{tabular}
+\end{center}
+Numbers are exact \emph{serialized counts for the declared finite formats},
+not a FLMV random-access machine's native time or peak space. The source
+CNF format includes explicit header and fixed-width signed variable fields.
+A separate gamma-header format gives the same strict physical-growth result.
+
+A stronger \emph{finite-only} test uses the four-cofactor circuit projector
+for all unordered variable pairs. No child was shorter than the starting
+circuit for all 210 pairs at $k=7$, 351 pairs at $k=9$, and 528 pairs at
+$k=11$, or 1,089 pairs total. The minimum circuit growth was 14, 14,
+and 16 bits, respectively. This is not an asymptotic all-$k$ pair theorem
+and not a minimum-circuit argument. Six signed-scrambled $k=7$ instances
+passed every first-pivot CNF/DAG count and all 32,256 local equivalence
+checks. Generator, failed pivot trials, graph construction, and semantic
+checks are explicitly separate in the evidence. Python instrumentation is
+not charged as native FLMV bit work.
+
+\section{Polynomial-time signed-isomorphism escape}
+Associate to each proper signed exact-$(2,2)$ formula a vertex-colored
+undirected graph with one center vertex for each variable, two undistinguished
+literal-port vertices for that variable, and one vertex for each clause.
+Join the center to its two ports, and join a clause vertex to the appropriate
+positive/negative port for each literal. Colors distinguish centers,
+ports and clauses, but do not distinguish the two ports of a variable.
+Every center has degree two, every port degree three, and every clause
+degree three. There are $n$ centers, $2n$ ports, and $m$ clause vertices.
+
+\begin{theorem}[Scrambled-template recognition; known theorem transfer]
+The class of all signed-variable permutations, independent polarity
+complementations, clause permutations, and literal reorderings of the
+family $\{F_k:k\ge7\text{ odd}\}$ has a deterministic polynomial-time
+recognition and satisfying-assignment algorithm.
+\end{theorem}
+\begin{proof}
+For an input with $n$ variables and $m$ clauses, first validate the
+proper signed exact-$(2,2)$ syntax and dimension conditions. Construct
+the colored degree-three incidence graph of the input and the corresponding
+template $F_{n/3}$. The two graphs are color-preserving isomorphic exactly
+when the formulas differ by those allowed transformations: variable centers
+and their two attached ports determine a variable renaming and possible
+polarity flip, while clause vertices determine clause permutation.
+Luks's polynomial-time bounded-valence graph-isomorphism theorem applies
+to these colored constant-degree graphs\cite{luks}. A concrete isomorphism
+can be recovered by the standard polynomial search-to-decision procedure.
+Transport the known template witness via that isomorphism, complementing
+each mapped variable when its ports are swapped, and check it against the
+input. The result is a correct polynomial-time witness algorithm on the
+promised signed-isomorphism class. Outside the class, the recognizer returns
+``not recognized,'' not an UNSAT assertion.
+\end{proof}
+
+\begin{corollary}[Canonical promise contraction; exact restricted]\label{cor:canonical}
+For the canonically indexed clause stream $F_k$ in $(s,i)$ order, a fixed
+deterministic one-pass recognizer checks the entire source with
+$O(N\operatorname{polylog}N)$ bit work and $O(\log N)$ writable bits.
+On $F_k$ for $k>7$, it may output the fixed satisfiable $F_7$ as one
+strict-$(2,2)$ recursively terminal child; $F_7$ is a directly checked
+base case. On other inputs it returns \emph{unresolved}, not a SAT answer.
+\end{corollary}
+\begin{proof}
+Read and validate the indexed header, then maintain $(s,i,k)$ and
+recompute the three expected literal IDs and signs for each next source
+clause. Each index occupies $O(\log N)$ bits; modulo-$k$ addition, comparison,
+and index update use polynomially many such bit operations per clause.
+No clause table or SAT oracle is required. A complete match certifies
+membership in this all-satisfiable family, so producing the already known
+$F_7$ preserves the decision bit. The accepted promise is recursively
+closed with one terminal step. The argument does not handle an arbitrary
+CNF and does not give a favorable point for an NP-complete class.
+\end{proof}
+
+Six finite scrambled inputs were independently checked with a colored
+GraphMatcher and witness transport. This \emph{finite} checker uses
+backtracking VF2; its run times do not establish Luks's complexity bound.
+The theorem's polynomial claim follows from the known theorem and the
+explicit graph reduction, not from the measurements.
+
+\section{Implication for the ARC/FLMV proof spine}
+The candidate policy ``choose the smallest output among every single
+DP/re-entry pivot and every factored-circuit pivot'' fails on the infinite
+family above: every candidate increases the physical representation cost.
+Finite two-pivot search fails for three sizes. Yet the family admits an
+unconditional global source-recognition terminal. Thus the relevant
+proof target cannot be an algorithm-independent cost derived solely from
+local failure, incidence expansion, or an exhaustive pivot menu.
+
+A concrete next construction would combine (i) certified recognizers and
+native Horn/2SAT/affine closures; (ii) source-authenticated exact projection
+on surviving interfaces; (iii) size-controlled circuit/CNF switching with
+both physical bytes and discovery charged; and (iv) a single unresolved
+ordinary-SAT child. The key unanswered assertion is that this portfolio
+provides a power-smaller or time--space-contracting successor \emph{on every
+input} before an expensive parent-scale SAT call. Under $P=NP$, the older
+SHORT-QUERY-QUARANTINE3 lemma permits a hypothetical polynomial SAT solver
+to resolve polylogarithmic-length helper questions at an $N^{o(1)}$ cost
+per call, but no current theorem obtains all-input recursive closure from
+those helpers.
+
+The present report neither implements that missing universal compiler nor
+identifies a nonrelativizing/nonalgebrizing hinge. A recursion with a
+same-size fallback, or an uncharged semantic selector, is not the
+sought simultaneous ARC point. The forbidden SAT time--space region
+remains a valid independent barrier\cite{flmv} and does not itself
+supply the needed transformation.
+
+\section{Status and next explicit test}
+\noindent\EXACT: the stated signed-$(2,2)$ syntax/linearity theorem, four
+width-four resolvents, native proper-3CNF re-entry $n+3,m+4$, and exact
+factored-DAG node/edge changes. \textbf{KNOWN THEOREM TRANSFER}:
+bounded-valence signed-template isomorphism recognition. \COMP:
+all single-pivot and 1,089 two-pivot evaluations, signed scrambling and
+semantic controls. \OPEN: every arbitrary-SAT low-cost, recursively closed
+successor; native FLMV time/space accounting; full algorithm-independent
+lower bound; P versus NP.
+
+\noindent\textbf{One next test:} Give a selector access to all the project's
+recognized Horn/dual-Horn/2SAT/affine, graph-isomorphic and bounded-width
+terminals, plus charged polylog-SAT helper calls. Construct one explicit
+remaining residual class on which a strictly smaller ordinary child is
+certified for both SAT and UNSAT. Measure the complete step costs. If it
+cannot be done, record the exact uncovered class rather than inferring
+unrestricted hardness from the failed portfolio.
+
+\begin{thebibliography}{9}
+\bibitem{dechter} R. Dechter, ``Bucket elimination: A unifying framework
+for reasoning,'' \emph{Artificial Intelligence} 113:41--85 (1999).
+\bibitem{dm} A. Darwiche and P. Marquis, ``A Knowledge Compilation Map,''
+\emph{JAIR} 17:229--264 (2002), DOI 10.1613/JAIR.989.
+\bibitem{luks} E. M. Luks, ``Isomorphism of graphs of bounded valence can be
+tested in polynomial time,'' \emph{JCSS} 25(1):42--65 (1982),
+DOI 10.1016/0022-0000(82)90009-5.
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas,
+``Time-Space Lower Bounds for Satisfiability,'' \emph{JACM} 52(6):835--865 (2005).
+\bibitem{prior} Project: main4/main5, MAIN-REFEREE207--209,
+SHORT-QUERY-QUARANTINE3, SPCA charged-access report, and the signed-(2,2)
+resource-ladder handoffs (October 2026).
+\end{thebibliography}
+\end{document}
