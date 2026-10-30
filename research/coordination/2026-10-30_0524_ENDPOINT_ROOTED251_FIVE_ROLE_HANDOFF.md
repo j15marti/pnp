@@ -1,0 +1,22 @@
+# LSPV-3 ENDPOINT-ROOTED251 | five-role issue #3 handoff
+**2026-10-30 05:24 PDT.** ACTIVE user direction: original indexed clause S_j/U_j (all three true versus all three false) and inversions, complete source-indexed SS/SU/US/UU matrix, globally coherent 0^n/1^n/complement/multiple-flip trails, and sound original-parent resolvent cubes. No equity scores. All existing agent schedules and ownership preserved. P versus NP OPEN.
+
+**PROVED/EXACT in stated restricted model, independent review pending.** For proper 3CNF, adding first-generation source resolution clauses of width <=3 with at least one endpoint-falsified original source parent preserves the SAT models. Any coherent original-variable partial cube falsifying such a resolvent is impossible. The exact controller first tests original global endpoints; checks recognizable whole-source affine XOR and paired-binary 2SAT structures; charges a bounded 11-node UP-DPLL probe; upon UNRESOLVED charges its failure and discovers/verifies endpoint-rooted source resolvents before a complete exact UP-DPLL restart. This is a correct general decider with potentially exponential time, not a P algorithm.
+
+**Source example, actual W1 UNSAT strict22.** Original zero-indexed clauses C4=(-4,-9,-11) and C6=(4,-8,-11) give R=(-8,-9,-11) by pivot x4. Thus x8=x9=x11=1 excludes an entire source-variable partial-assignment cube, proof parents and pivot included.
+
+**COMPUTATIONAL 13 finite SAT and UNSAT controls, seed 202610300524.** W1 strict signed exact-(2+,2-) 3CNF n=15, m=20: baseline UP-DPLL 145 nodes and 14,029 instrumented selected events. Adaptive 11 failed-probe + 79 final nodes = 90 nodes, 13,793 selected events. Source clause learning adds eight parent-checked non-tautological <=3 resolvents. Independent source-authenticated refutation-tree replay: 21,979 versus 20,281 selected events. Python tracemalloc peaks 77,448 and 62,993 bytes, not physical RAM.
+
+**FALSIFIED/RETIRED: cost-free full four-mode audit.** The complete demanded observational local-S/U and four-mode matrix costs an extra 2,966 selected operations for W1. If charged as solver preprocessing, the 13,793 adaptive events become 16,759, *worse* than 14,029 baseline. No hidden free oracle is allowed. The W1 occurrence-sign-swapped strict22 SAT twin has 168 original-source models and identical actual endpoint histograms N(0^15)=(1,10,7,2), N(1^15)=(2,7,10,1), yet baseline uses 1,150 and adaptive uses 1,350 events. Endpoint histograms do not distinguish SAT from UNSAT. Fully witnessed SAT and proof-replayed UNSAT are distinct evidence.
+
+**Publication provenance.** Verified compact LaTeX report:
+https://github.com/j15marti/pnp/blob/main/research/agents/lspv-3/2026-10-30_0524_LSPV-3_ENDPOINT_ROOTED251.tex
+Verified independent compact original-source checker:
+https://github.com/j15marti/pnp/blob/main/research/agents/lspv-3/2026-10-30_0524_LSPV-3_ENDPOINT_ROOTED251_compact_check.py
+Verified 13-case compact JSON:
+https://github.com/j15marti/pnp/blob/main/research/agents/lspv-3/2026-10-30_0524_LSPV-3_ENDPOINT_ROOTED251_summary.json
+Complete 4-page PDF/LaTeX, 30 KB full stdlib Python reproducer, 1.27 MB raw source-indexed JSON, BibTeX, SHA256 manifest and ZIP created and linked in the conversation. The full raw data and code were **not uploaded to GitHub**. Exact file SHA readback appears in issue #3. Code SHA256 3c88b683436f48af43afc3451962a108224dec012e622902b30aa3fb05fd3231; full raw SHA256 b234d598e7c5905640b4ce1f43cd036adbe24ce57cf99d7d8f5ea8b1d4643538.
+
+**Role-addressed handoff.** LSPV-1: referee the source cube and prove it cannot be mistaken for joint local-S extrema. LSPV-2: compare the eight W1 learned clauses to SOURCE-RUP-CHAIN and resolution/proof-DAG operations. LSPV-4: normalize the selected-event ledger, repeat matched original-source inputs with native machine/time/space accounting, and separately charge all complete diagnostic output. LSPV-5: fix/reconcile the root main.tex from independently verified snapshots; its latest source read returned exactly PLACEHOLDER_TO_BE_REPLACED (26 bytes) without ownership markers. Do not reconstruct it from memory. LSPV-3: next find an infinite matched connected strict22 SAT/UNSAT family with a uniformly justified beneficial switch rule charging failed discovery and proof verification.
+
+**Primary literature.** Kullmann SAT 2003 DOI 10.1007/978-3-540-24605-3_32; Davis-Logemann-Loveland CACM 1962 DOI 10.1145/368273.368557; Eén-Biere SAT 2005 DOI 10.1007/11499107_5; Heule et al. Cube-and-Conquer DOI 10.1007/978-3-642-34188-5_8.
