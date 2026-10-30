@@ -1,0 +1,23 @@
+# LSPV-1 EXTREME-SIGNED-CYCLE240, 2026-10-29 21:56 PDT
+
+**Coordination:** https://github.com/j15marti/pnp/issues/3. Issue #2 equity scoring remains paused. All five pre-existing enabled hourly tasks and repository ownership are unchanged. P versus NP is OPEN.
+
+**PROVED/EXACT (elementary, priority not claimed).** Original clause C_j has one shared variable x_i per signed occurrence x_{i,j}. Its local S_j target makes all three literals true, U_j makes all three false, and inversion interchanges them. For any shared variable the desired extreme labels e_j, e_k must satisfy e_j XOR e_k = neg(i,j) XOR neg(i,k). SS/UU require no opposite-sign sharing; SU/US require no same-sign sharing. These matrices describe *simultaneously realized local extremes*, never independently assignable occurrence bits. An assigned clause is SAT already if t_j>=1, not only in S_j.
+
+**Global exact extension.** The signed clause-overlap multigraph contains one parity-labeled edge for every shared original variable (retain parallel edges). A chosen clause subset has a legal all-extreme assignment iff its induced signed graph is balanced (all cycle XORs zero). Therefore min_a(N1+N2) equals the minimum clause-vertex deletion count to balance this graph. Kullmann's opposite-polarity clause conflict graph H separately satisfies max_a N3=max_a N0=alpha(H). Both structural equalities are noncircular and elementary, but give no unrestricted SAT decision lower/upper bound and do not imply easy computation of graph optima.
+
+**FALSIFIED candidate.** Pairwise compatible extreme pairs do not guarantee a jointly selected S/U extreme on all clauses: C0=(x1 OR not x3 OR x4), C1=(not x1 OR x2 OR x5), C2=(not x2 OR x3 OR x6) each pair permits SU/US but the three odd-parity edges are inconsistent. Both 0^6 and 1^6 SAT the formula, with N=[0,3,0,0] and [0,0,3,0]. Thus an odd signed cycle forces at least one middle clause but not UNSAT.
+
+**Sound forbidden cube.** Original C0=(x1 OR x2 OR x3) and C1=(x1 OR x2 OR not x3) have SS,SU,US,UU all impossible because they share same-sign x1,x2 and opposite-sign x3. They can still both be SAT. Resolving on source pivot x3 gives (x1 OR x2), forbidding the whole partial cube x1=x2=0, with explicit original-clause provenance.
+
+**COMPUTATIONAL.** Full audited local Python executed 12,640 exhaustive pair state comparisons, 700 small signed-graph assignments, 22,400 complement checks, 66,816 flip-clause changes and 240 alpha/balancing exact controls; seed 20261029, all passed. Complete per-clause/per-occurrence S/invert/U/invert, indexed 4-way pairs, global endpoint/multi-flip traces and resolution certificates are in the local ZIP. A compact GitHub Python checker and raw excerpt are readback verified at:
+
+- research/agents/lspv-1/2026-10-29_2156_LSPV-1_EXTREME-SIGNED-CYCLE240.tex
+- research/agents/lspv-1/2026-10-29_2156_LSPV-1_extreme_signed_cycle240_compact_repro.py
+- research/agents/lspv-1/2026-10-29_2156_LSPV-1_EXTREME-SIGNED-CYCLE240_raw_excerpt.json
+
+**Time-space firewall.** Against a fixed-order UP+DPLL baseline, complete source-authenticated width<=2 resolution closure sometimes reduces branch nodes but increases total charged work. UNSAT 8-clause gadget: recursive states 31->1, counted operations 1056->36670, seven-run median ~196us->6131us. Odd-cycle+UNSAT control: 159->1 states and ~1102us->795us. Scans, failed resolution attempts, learned clauses and proof replay charged; physical peak Python allocation and one-/two-tape crossings not measured; no industrial CDCL comparison. Full source code/1.1MB raw, PDF and reproducibility ZIP are current-run sandbox artifacts; persistent Library upload FAILED (container_session_unavailable), so these are NOT represented as cross-run published GitHub files.
+
+**Previous source audit:** GitHub `OKullmann/oklibrary/ComputerAlgebra/Satisfiability/Lisp/ConflictCombinatorics/Conflicts.mac`, commit `92cc7f546893de79295e554d9eecbfdbf660de0f`, blob `43f0c6ed`; Kullmann 2003/2011 conflict work, Harary 1953 signed balance, Davis-Putnam resolution. Original root main.tex blob 13729752 inspected; old source-RUP ideas adopted only as known inference machinery. No P=NP or P!=NP implication.
+
+**Role next steps:** LSPV-2 source-authenticated parity-cycle/UP/XOR proof DAG; LSPV-3 complement/flip layers and certified middle-count upper bounds; LSPV-4 fully charged SAT-vs-UNSAT DPLL/CDCL comparisons; LSPV-5 independent signed-balance referee, current root/peer reconciliation; LSPV-1 find a polynomial-time *provably applicable* partial-cube condition forcing at most r middle clauses while signed graph needs >r, then derive a concise logical cut with a net total-work benefit. No new task or schedule.
