@@ -1,0 +1,81 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}\newtheorem{remark}{Remark}
+\title{Claude Circuit-SAT Lower-Bound Ledger (living document)}
+\date{Last updated: 2026-10-30 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} Unconditional super-linear lower bounds for Circuit-SAT in the
+Turing/RAM model are \textbf{OPEN}; P versus NP remains \textbf{OPEN}. Everything below is
+either a proved bound in an explicitly restricted \emph{access model} or a labelled conjecture.
+Labels: PROVED, COMPUTATIONAL, CONDITIONAL, OPEN.
+
+\section{Setup and parameters}
+A circuit $C$ has $n$ inputs, $s$ gates of fan-in $\le 2$ over $\{\wedge,\vee,\neg\}$, and
+$w\le 2s$ wires (connections). Circuit-SAT: $\exists x\,C(x)=1$. Lower bounds are
+parametrized by $(n,s)$ (or $(n,w)$). Two access models:
+\begin{itemize}
+\item \textbf{WIRE}: algorithm sees $C$ only via queries ``what feeds gate $g$?''; cost = wire reads.
+\item \textbf{BLACK}: algorithm only evaluates $C(x)$; cost = evaluations.
+\end{itemize}
+
+\section{Step ledger (build-up)}
+Step $n$: smallest circuit with unique model on $n$ inputs is a conjunction of $n$ literals,
+$n-1$ gates, $2(n-1)$ wires; exact synthesis over $\{\wedge,\vee\}$ with free negation confirms
+this for $n=2,3$ (min gates $1,2$; min wires $2,4$) \textsc{(COMPUTATIONAL, script
+\texttt{research/agents/claude/circuitsat/wire\_adversary.py})}. For $n\ge 4$ the
+exhaustive check is not yet run; the formula $n-1$ is an upper bound (PROVED) and
+the matching lower bound ($n$ essential inputs need $\ge n-1$ binary gates to be connected) is PROVED
+by connectivity of the underlying DAG.
+
+\begin{center}\begin{tabular}{c|c|c}
+$n$ & min gates (unique model) & min wires\\\hline
+1 & 0 & 0\\ 2 & 1 & 2\\ 3 & 2 & 4\\ $n$ & $n-1$ & $2(n-1)$
+\end{tabular}\end{center}
+
+\section{Proved lower bounds in restricted models}
+\begin{theorem}[WIRE, PROVED]\label{thm:wire}
+Every deterministic algorithm deciding Circuit-SAT in the WIRE model reads $\Omega(w)$ wires
+on some instance, even with $n=1$.
+\end{theorem}
+\begin{proof}
+Family: $a_i=x_1\wedge y_i$ for $i\le m$, output $\bigwedge_i a_i$. Base instance $y_i=x_1$ for all
+$i$ is satisfiable ($x_1=1$). Instance $B_b$ sets $y_b=\neg x_1$ and is unsatisfiable. $B_b$ and base
+differ in exactly one wire. An algorithm that leaves wire $b$ unread cannot distinguish base from
+$B_b$; so it must read all $m$ wires $y_i$ (checked exhaustively for $m\le 8$).
+\end{proof}
+\begin{theorem}[BLACK, PROVED]\label{thm:black}
+Deterministic BLACK algorithms need $2^n$ evaluations in the worst case.
+\end{theorem}
+\begin{proof}
+Instances $C_a=[x=a]$ ($n-1$ gates) and the constant-0 circuit; the all-zero answers of an algorithm
+that skipped point $a$ are consistent with $C_a$.
+\end{proof}
+\begin{remark}[Parametrized form] In a hybrid model charging 1 per wire read and $1$ per
+evaluation, the two families give $\Omega(\max(w,2^n))$ only as a maximum of separate bounds; a combined
+bound of type $w\cdot 2^{n}$ is \textbf{OPEN} and is not implied by the above.
+\end{remark}
+
+\section{Why this does not reach P vs NP}
+Both bounds are artifacts of restricted access: WIRE forbids reading the circuit sequentially at
+cost $O(w)$ (linear is the trivial upper bound for reading), and BLACK forbids inspecting the circuit.
+A white-box algorithm pays $\Omega(w)$ simply to read the input, so Theorem~\ref{thm:wire} is
+only the trivial input-size bound. Relativization-type barriers apply to BLACK arguments.
+Any Turing-model statement of the form $\mathrm{time}\ge w^{1+\epsilon}$ would be new.
+
+\section{Repository cross-links (reviewed this run)}
+Ledger rows L13, L34--L37 and \texttt{research/agents/claude/tport/}: alternation-trading proofs cannot
+beat time exponent $\approx 2\cos(\pi/7)$ for SAT with small space; the TPORT barrier says a portfolio of
+about $N$ programs yields only linear time. These are the closest repo results for a
+\emph{parametrized} (time--space) lower bound; the relevant parameter for circuits would be $(w,n)$ with
+space $n^{o(1)}$. Status: CANDIDATE bridge, no theorem yet.
+
+\section{Next steps}
+\begin{enumerate}
+\item Run exact synthesis for $n=4$ and track min wires for \emph{hard-to-SAT} (many-model, XOR-rich) families, not only unique-model.
+\item Parametrize by treewidth $k$: SAT in $2^{O(k)}w$; seek lower bounds for fixed $k$ in restricted models (relation to SETH: CONDITIONAL).
+\item Try a cell-probe / branching-program model charging both wire reads and evaluations; look for a
+product bound.
+\end{enumerate}
+\end{document}
+% END_OF_CLAUDECIRCUITSAT_RUN1
