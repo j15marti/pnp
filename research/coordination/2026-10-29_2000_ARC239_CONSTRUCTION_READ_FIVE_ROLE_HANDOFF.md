@@ -1,0 +1,17 @@
+# ARC239, LSPV-1, 29 October 2026, 20:00 PDT
+
+**New PROVED/EXACT restricted claim:** Source a in F_2^b is encoded by authenticated unary sign fields. An arbitrary uniform deterministic offline preprocessor adaptively reads at most p original sign bits and persists L source-dependent bits before seeing a future parity continuation w. Every exact online decoder with at most Q further named original-sign probes obeys **p+Q >= b**. Strong same-realization form: for each actual offline source execution, the future mask supported on its untouched coordinates forces the online execution to read every such coordinate. Proof: the offline transcript fixes a free subcube; failing to read any untouched sign permits a one-bit-flip indistinguishability counterexample.
+
+**Sharper fixed-read claim:** If the offline read set R is public and independent of source contents, |R|=p and u=b-p, any nonlinear offline summary E(a_R) of L bits and any adaptive exact online decoder satisfy Q>=u and
+2^L * sum_{j=0}^{Q-u} binom(p,j) >= 2^p.
+The all-Q Fourier dimension bound itself is from ARC238; the source-acquisition/unread-coordinate composition is ARC239. For q=Q-u=0, (L,Q)=(p,u) is sharp; for q=1, L=p-floor(log2(p+1)), Q=u+1 is the *sharp nonlinear fixed-read endpoint*, achieved using the already-established ARC237 Hamming construction. Do not transfer this stronger bound to adaptively selected offline read coordinates without proof.
+
+**Concrete point:** (b,p,L,Q)=(15,11,8,5). Source-independent Hamming syndrome columns and eight stored parity bits permit exact all-future parity decisions using at most four untouched source reads plus one prepared-coordinate probe. The sphere expression is 2^8*12 >= 2^11; equality is of the integer storage minimum, not the unrounded volume expression.
+
+**COMPUTATIONAL independent controls:** 44 fully enumerated (b,p) builder cases, b=1..8, 757,304 exact (source,mask) pairs; separate b=15,p=11 control with 1,081,344 pairs; all 16 one-bit nonlinear preprocessors at b=3,p=2 and 256 at b=4,p=3 with exact adaptive query-depth search; an adaptive offline-address control; XOR synergy, duplicate zero value and a negative realized target-entropy value (-0.456435557 bits). No discrepancies. Complete local PDF/runner/raw bundle preserved with the run. No randomness.
+
+**Source provenance:** ARC237 Git blob 673bd7b4e72892646a76f2d57760e602d7bcb384; ARC238 529fbe875fdcf0ddd91d91968c8b37df8d046f7f; LSPV-2 HAMMING235 b4a1a846dab97bd02691578d9abe5a081890d8b7; Sage Hamming code 431e660fae77184147230223f66c76f2d5f04b38. Primary: Hamming (1950), Gál-Miltersen (2003), Fredman-Saks (1989), Darwiche-Marquis (2002).
+
+**Model firewall:** The theorems concern a two-phase exact parity-query contract with raw source-sign bit probes, not unrestricted ordinary SAT, moving arbitrary boundaries, native head crossings, or direct FLMV resources. Original-source retention and a joint A,B solver remain legal controls. P=NP and P!=NP **OPEN**. Independent referee pending.
+
+**Role targets:** LSPV-1 prove/falsify the fixed-read strengthening for adaptive offline read sets. LSPV-2 study exact update/write-frontier for sparse parity summary bases. LSPV-3 test genuine source-authenticated moving interfaces and uncharged source independence. LSPV-4 audit single-/two-tape, multitape, RAM and fixed-UTM transport. LSPV-5 independently referee quantifiers, and reconcile root integrity. No new tasks or schedule changes.
