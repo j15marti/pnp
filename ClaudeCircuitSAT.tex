@@ -1,0 +1,60 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append new rounds under "Round log"
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{proposition}[theorem]{Proposition}\newtheorem{conjecture}[theorem]{Conjecture}
+\title{Circuit-SAT Lower Bounds: A Wire-by-Wire Ladder\\\large Living document (Claude)}
+\date{Last updated: 2026-10-30 (round 1)}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No unconditional super-linear lower bound for Circuit-SAT is claimed here.
+Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Model and measures}
+A circuit $C$ has $n$ inputs, $g$ fan-in-2 AND gates, free inverters on wires (AIG), one output. Measures:
+size $g$; wires $m=2g+1$; \emph{cutwidth} $w(C)$ = min over linear orders of the gates of the max number of wires crossing a cut.
+Circuit-SAT: given $C$, is there $x$ with $C(x)=1$? A lower bound is sought as a function $T(n,m,w)$ (parametrized).
+
+\section{Ladder of exact small cases (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/aig\_minsize.py} computes minimal AIG size for every $n$-variable function (iterative-deepening search; the search prunes by visited gate-sets, so values are valid upper bounds that coincide with the known values XOR$_2{=}3$, XOR$_3{=}6$; treat optimality as COMPUTATIONAL).
+\begin{center}\begin{tabular}{@{}cccccc@{}}\toprule
+$n$ & functions & max min-gates & point fn ($|\mathrm{SAT}|{=}1$) & wires for point fn & max wires\\\midrule
+1 & 4 & 0 & 0 & 1 & 1\\ 2 & 16 & 3 & 1 & 3 & 7\\ 3 & 256 & 6 & 2 & 5 & 13\\\bottomrule\end{tabular}\end{center}
+Raw output: \texttt{result\_n1,2,3.json}. Uniquely satisfiable instances meet the bound $g\ge n-1$ of Theorem~\ref{t:dep} exactly for $n\le3$.
+
+\section{Proved lower bounds on the circuit side}
+\begin{theorem}[dependence/connectivity, PROVED]\label{t:dep}
+If $C$ depends on all $n$ inputs then $g\ge n-1$ and $m\ge 2n-1$.
+\end{theorem}
+\emph{Proof.} The ancestors of the output form a connected graph on $n+g$ nodes (every input is relevant, hence an ancestor), with $2g$ edges. Connectivity needs $\ge n+g-1$ edges, so $2g\ge n+g-1$. \qed
+
+\begin{proposition}[reading bound, PROVED]\label{p:read}
+Any algorithm (random-access model, circuit given as a list of gate descriptions) solving Circuit-SAT needs $\Omega(g)$ time.
+\end{proposition}
+\emph{Proof.} Let $C_0$ be the AND of $x_1,\dots,x_n$ and $g-n$ pad gates $x_1\wedge x_1$, all chained into the output by ANDs; it is satisfiable. For any pad gate, the instance $C_0'$ with that gate's input replaced by constant 0 is unsatisfiable. An algorithm that never reads that gate's description answers identically on $C_0,C_0'$, so it must read all $\Omega(g)$ pad gates. \qed
+
+\begin{proposition}[evaluation-only bound, PROVED]\label{p:oracle}
+An algorithm that accesses $C$ only through evaluation queries $x\mapsto C(x)$ needs $2^n-1$ queries in the worst case, even when $C$ is a point-function circuit with $m=2n-1$.
+\end{proposition}
+\emph{Proof.} Adversary answers 0 until one point remains. \qed
+
+\emph{Reading.} Prop.~\ref{p:oracle} is the trivial relativizing bound and uses no wire structure; any real lower bound must read the wires. That is the point of tracking the wire structure.
+
+\section{Parametrized view: the wire cut is the right parameter}
+\begin{proposition}[upper bound, KNOWN/standard]\label{p:dp}
+Circuit-SAT is solvable in time $O(2^{w}\cdot m)$ given an order witnessing cutwidth $w$: sweep gates in order, keep the set of consistent assignments to the wires crossing the cut.
+\end{proposition}
+Hence $T(n,m,w)\le \mathrm{poly}\cdot 2^{\min(n,w)}$. The AND-chain point-function family has $w=2$, so it is easy; a lower bound must come from families where the wire cut grows.
+\begin{conjecture}[CONDITIONAL on SETH]
+No algorithm solves Circuit-SAT in $(2-\varepsilon)^{w}\mathrm{poly}(m)$. (Analogue of the known SETH bound for CNF-SAT by pathwidth, Lokshtanov--Marx--Saurabh 2011; pathwidth $\le$ cutwidth. Transfer to circuits stated as CANDIDATE, not re-derived here.)
+\end{conjecture}
+
+\section{Next rungs}
+\begin{enumerate}
+\item Extend the exact table to $n=4$ (needs checkpointed search; 30-second rule) and compute the minimal \emph{cutwidth} per function, not only size.
+\item Find the least $w$ for which a family with $\Theta(n)$ inputs is not decidable by any known $o(2^w)$ method (OPEN).
+\item Compare with repository results: \texttt{research/agents/claude/tport/} (TPORT barrier L34, alternation trading) and the ONETAPE note: do their exponents specialise to bounded $w$? Not yet read in detail.
+\end{enumerate}
+
+\section*{Round log}
+\textbf{Round 1 (2026-10-30).} Created the document, exact tables for $n\le3$, Theorems/Props above. Repository corpus was only surveyed through \texttt{AGENTS.md}; no repository result was found that bears directly on Circuit-SAT cutwidth.
+\end{document}
