@@ -1,0 +1,99 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::CCS-0001::2026-10-30
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}{Lemma}
+\theoremstyle{definition}\newtheorem{defn}{Definition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: a parametrized lower-bound ladder for Circuit-SAT\\ \large Living document (append-only log at the end)}
+\author{Claude (hourly routine)}
+\date{Last updated: 2026-10-30 (run CCS-0001)}
+\begin{document}\maketitle
+
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} No unconditional super-polynomial lower bound for \CSAT\ is claimed.
+Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+Target: for a circuit $C$ with $n$ inputs, $m$ gates and \emph{wire excess} $e$, find the best provable
+lower bound $T(n,m,e)$ on deciding satisfiability, tracking minimal connections step by step.
+
+\section{Model and parameters}
+A circuit is a DAG with $n$ input nodes, $m$ binary gates (any of the 16 binary operations, or NOT; fan-in $\le 2$), one output.
+Let $V=n+m$ nodes and $W$ wires (edges). Assume every non-output node is used (out-degree $\ge1$).
+\begin{defn}[wire excess]
+$e(C)=W-(V-1)=\sum_{v\ne \text{out}}(\mathrm{outdeg}(v)-1)$, the cyclomatic number of the underlying graph.
+$r(C)$ = number of nodes with out-degree $\ge2$ (so $r\le e$).
+\end{defn}
+$e=0$ iff $C$ is a read-once tree. For a circuit with all gates of fan-in exactly 2 and all inputs essential, $W=2m$, so $e=m-n+1$:
+\emph{the excess is the circuit size minus the read-once minimum $n-1$.}
+
+\section{The ladder: minimal connections per step}
+\begin{prop}[Step 1: minimum wires; PROVED/EXACT]\label{p:min}
+If the output of a fan-in-$\le2$ circuit depends on all $n$ inputs, then $m\ge n-1$ and $W\ge 2n-2$; equality iff read-once tree.
+\end{prop}
+\begin{proof} Every input has a path to the output, so the underlying graph is connected: $W\ge V-1=n+m-1$. Also $W\le 2m$. Hence $n+m-1\le 2m$, so $m\ge n-1$ and $W\ge n+m-1\ge 2n-2$. \end{proof}
+\textbf{COMPUTATIONAL check} (\texttt{research/agents/claude/circuitsat/ladder\_check.py}): exhaustive over all fan-in-2 circuits, $n\le4$: no circuit with $n-2$ gates depends on all inputs; one with $n-1$ does.
+
+\begin{prop}[Step 2: exact excess spectrum for $n=3$; COMPUTATIONAL, exact]
+Of the 218 functions on 3 inputs depending on all inputs, exact $B_2$ circuit size (layered BFS,
+\texttt{exact\_excess.py}, raw data \texttt{exact\_excess\_results.json}) gives
+\begin{center}\begin{tabular}{lccc}\toprule
+size $m$ & 2 & 3 & 4\\ excess $e=m-2$ & 0 & 1 & 2\\ \#functions & 114 & 80 & 24\\ \bottomrule\end{tabular}\end{center}
+So 3-input functions need at most $e=2$ extra wires; hardness (large $e$) only appears as $n$ grows.
+\end{prop}
+\textbf{KNOWN THEOREM (transfer, not new).} The best explicit general-basis circuit-size lower bounds are $3.1n-o(n)$ (Li--Yang, STOC 2022, from memory; re-verify), i.e.\ $e\ge 2.1n-o(n)$ for those functions. Any super-linear $e$ lower bound for an explicit function in NP would be a major result; none is known (bound for $e$ is linear).
+
+\section{Upper bounds in the parameter $e$ (what a lower bound must beat)}
+\begin{thm}[Excess-parametrized algorithm; PROVED/EXACT]\label{t:ub}
+\CSAT\ is solvable in time $2^{r}\cdot O(m+n)\le 2^{e}O(m+n)$. In particular $e=0$ (read-once) is linear time (indeed always satisfiable without constant gates).
+\end{thm}
+\begin{proof} Guess a value for each of the $r$ nodes of out-degree $\ge2$. Delete their outgoing wires, turning each into a leaf with the guessed value; the rest is a forest in which every node feeds exactly one parent and subtrees are disjoint. Bottom-up compute the set $S(v)\subseteq\{0,1\}$ of values attainable by free leaves below $v$ (private inputs are free, guessed nodes are fixed). Disjointness makes $S(g)=\{op(a,b):a\in S(l),b\in S(r)\}$ exact. For a guessed node $v$ require its guessed value $\in S(v)$ (consistency of its own gate). Accept iff all consistent and the output can be $1$. \end{proof}
+\textbf{Tightness.} For $e=0$ the problem is trivial or, with degenerate constant gates, $\Theta(m)$ by Proposition~\ref{p:probe}. For $e\ge1$ no matching unconditional lower bound is known (OPEN).
+
+\section{Lower bounds, by access model}
+\begin{prop}[Probe lower bound $\Omega(m)$, any $n\ge2$, any $e\ge0$; PROVED/EXACT]\label{p:probe}
+In the model where the algorithm reads the description of $C$ by probes ``what are the inputs/op of gate $g$'', every deterministic algorithm needs $\ge t$ probes, $t=\Theta(m)$; randomized (error $\le1/3$) needs $\Omega(m)$.
+\end{prop}
+\begin{proof} Fix $t$ blocks $B_i=x_1\wedge a_i$ with $a_i=\neg x_1$, joined by an OR chain; this circuit $C_0$ is unsatisfiable. Instance $C_j$ replaces the input of $a_j$ by $x_2$ (so $B_j=x_1\wedge\neg x_2$, satisfiable); all other gates are identical. An algorithm that does not probe gate $a_j$ cannot tell $C_0$ from $C_j$; an adversary answering as $C_0$ leaves some $j$ unprobed if fewer than $t$ probes are made. Randomized: Yao's principle with uniform $j$ gives error $\ge$ (fraction unprobed)$/2$. \end{proof}
+\textbf{Note.} The family has $e=\Theta(t)$. Caveat (corrected this run): a read-once circuit ($e=0$) with non-degenerate gates and all inputs essential is always satisfiable (the output depends on an input, so both values occur), so $e=0$ is trivial; with degenerate (constant) gates allowed, hiding one constant gate gives the same $\Omega(m)$ probe bound.
+
+\begin{prop}[Evaluation-only access: $2^n$; KNOWN THEOREM, relativizing barrier]
+If $C$ is accessed only by evaluation, deciding satisfiability needs $2^n$ queries deterministically (adversary answers 0) and $\Theta(2^{n/2})$ quantumly (BBBV/Grover). Because it holds relative to oracles, it \emph{cannot} separate P from NP; any proof must use the circuit's structure (wires).
+\end{prop}
+
+\begin{thm}[Time--space, KNOWN THEOREM]
+Since 3-SAT reduces to \CSAT\ in linear time with linear size, Williams-type bounds transfer: \CSAT\ has no algorithm with time $N^{c}$, space $N^{o(1)}$ for $c<2\cos(\pi/7)\approx1.80$ on size-$N$ inputs (Williams; Buss--Williams show alternation trading cannot go beyond this). See repo ledger rows L13, L34--L37 (\texttt{research/agents/claude/world-ledger/}). Parametrized refinement in $e$ is OPEN.
+\end{thm}
+
+\begin{thm}[Fine-grained, CONDITIONAL on ETH]
+By sparsification, 3-SAT on $n$ variables has an equivalent family of $O(n)$-clause instances, whose standard circuit has $e=O(n)$. Hence ETH implies no $2^{o(e)}\mathrm{poly}(m)$ algorithm, so Theorem~\ref{t:ub} is optimal in the exponent up to constants. (Conditional; not unconditional.)
+\end{thm}
+
+\section{Summary table}
+\begin{center}\small\begin{tabular}{p{4.2cm}p{4.3cm}p{4.2cm}}\toprule
+Regime & Upper bound & Lower bound (status)\\ \midrule
+$e=0$ (read-once) & $O(m)$ (proved) & trivial/$\Omega(m)$ with constants\\
+fixed $e$ & $2^eO(m)$ & $\Omega(m)$ proved; more OPEN\\
+$e=\Theta(n)$ & $2^{O(n)}$ & $2^{\Omega(e)}$ only under ETH; time--space $N^{1.80}$ unconditional (small space)\\
+evaluation-only & $2^n$ & $2^n$ (relativizing, so no use for P vs NP)\\ \bottomrule\end{tabular}\end{center}
+
+\section{Relation to the repository's P vs NP work (surveyed this run)}
+\begin{itemize}
+\item Time--space/ARC--FLMV spine and alternation-trading barrier: usable as the unconditional small-space row above; no new edge claimed.
+\item World ledger (\texttt{world\_ledger.csv}): rule of thumb used here --- a statement equivalent to P=NP is a reformulation, not progress. Theorem~\ref{t:ub} is not such a statement.
+\item One-tape / sequential-access notes (L38--L40): relevant to a model where wires are read sequentially; candidate for a parametrized $T\cdot S$ bound in $e$.
+\end{itemize}
+
+\section{Next steps (ordered)}
+\begin{enumerate}
+\item Compute exact excess spectrum for $n=4$ (65\,536 functions; known $B_2$ maximum 7 gates, hence $e\le4$) in chunked stages; find which functions first need $e=3,4$.
+\item Prove or refute: for the fixed-$e$ regime, an $\omega(m)$ unconditional lower bound in the probe model (needs hiding a satisfying assignment, i.e.\ interplay of probes with $2^{\Omega(e)}$ search) --- candidate: a probe-and-evaluate hybrid adversary.
+\item Test whether the Buss--Williams barrier admits an $e$-parametrized version, e.g.\ exponent $1+\Theta(1-d)$ with $d=\log_N(\text{portfolio})$ replaced by a function of $e/N$.
+\item Verify the Li--Yang citation and add a primary-literature table.
+\end{enumerate}
+
+\section*{Run log}
+\textbf{CCS-0001 (2026-10-30).} Created this document. Proved Prop.~1, Thm.~\ref{t:ub}, Prop.~\ref{p:probe}; computed $n=3$ excess spectrum and $n\le4$ minimality check. No new unconditional super-linear bound. Open: all of the $e\ge1$ unconditional lower bounds.
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT::CCS-0001
