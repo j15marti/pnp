@@ -18,12 +18,12 @@ The physical source, pi and strategy discovery, all table writes, failed trials,
 
 ## Verified artifacts and custody
 GitHub exact full-file Git blob matches:
-report research/agents/lspv-3/2026-10-30_1524_LSPV-3_FRONTIER_TWO_SWEEP259.tex (6d389dfd1cea81fd588a4ad86f0be69dff8ace66);
+report research/agents/lspv-3/2026-10-30_1524_LSPV-3_FRONTIER_TWO_SWEEP259.tex (19e9f204530bc03a93f16bacfeed9320c734836d);
 bibliography same basename .bib (ff763d49d2ef42c181ba38f4fce925381527947c);
-producer experiments/arc/2026-10-30_1524_LSPV3_FRONTIER_TWO_SWEEP259.py (d5924cc0cffa2df39f7ff72f057a9dff819bf679);
-independent checker experiments/arc/2026-10-30_1524_LSPV3_FRONTIER_TWO_SWEEP259_verify.py (d303b33075563632e995d39a9dfd521c11de482f);
-benchmark experiments/arc/2026-10-30_1524_LSPV3_FRONTIER_TWO_SWEEP259_benchmark.py (1698ec9e6b89cd99cc13996ab591c2225bfe8360);
-compact JSON summaries and manifest under results/raw/arc/2026-10-30_1524_LSPV3_*. Root main.tex authorized LSPV-3 section reconciled and read back as blob 0d9826db8201031fcb5333281b1fd4ee0b9e16b7; all five ownership markers balanced. Complete source, 1.1 MB of raw messages, independent checks, benchmark, bibliography and four-page PDF saved to persistent Library /P-vs-NP/2026-10-30_1524_LSPV-3_FRONTIER_TWO_SWEEP259_COMPLETE.zip (libfile_9f2ed354ace08191871f540dcd0ccb2f). Full archive SHA256 600992504ce0273579beaaa157a41bcfcb73bf6a8c7838c23a560f03f6de3a0b.
+producer experiments/arc/2026-10-30_1524_LSPV3_FRONTIER_TWO_SWEEP259.py (d03b1408a4a5877632ea5887ba2d79a7aedb5ff9);
+independent checker experiments/arc/2026-10-30_1524_LSPV3_FRONTIER_TWO_SWEEP259_verify.py (32f64a2971dede65c75172c17c5b51d1ff3bdadf);
+benchmark experiments/arc/2026-10-30_1524_LSPV3_FRONTIER_TWO_SWEEP259_benchmark.py (424cdacecd76fd35285b984f16d7f8056e192f32);
+compact JSON summaries and manifest under results/raw/arc/2026-10-30_1524_LSPV3_*. Root main.tex authorized LSPV-3 section reconciled and read back as blob 0d9826db8201031fcb5333281b1fd4ee0b9e16b7; all five ownership markers balanced. Complete source, 1.1 MB of raw messages, independent checks, benchmark, bibliography and four-page PDF saved to persistent Library /P-vs-NP/2026-10-30_1524_LSPV-3_FRONTIER_TWO_SWEEP259_COMPLETE_REV2.zip (libfile_6a9331f9ddb081919ccdc345c1c83eed). Full archive SHA256 5c159c80b6419999e18bcc57102890fc8c14deaf71d1292f3a2aafb595cdc501.
 
 ## Role-specific next obligation without changing task ownership
 LSPV-1: audit the exact simultaneous same-machine resource bridge, and forbid replacing a solved table by a free one-bit SAT child.
