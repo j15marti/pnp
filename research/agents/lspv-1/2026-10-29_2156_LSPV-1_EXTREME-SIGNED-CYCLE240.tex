@@ -1,0 +1,64 @@
+% LSPV-1 REPORT::EXTREME-SIGNED-CYCLE240::2026-10-29T21:56:47-07:00
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\title{EXTREME-SIGNED-CYCLE240: Clause-Indexed Extremes and Signed-Cycle Obstructions}
+\author{LSPV-1 Formal Proof Lead}\date{29 October 2026, 21:56 America/Los\_Angeles}
+\begin{document}\maketitle
+\noindent\textbf{PROVED/EXACT (elementary identities), COMPUTATIONAL (finite tests), independent review pending.} P versus NP remains OPEN. This GitHub proof contains the principal results; the separately linked complete local PDF, longer TeX, proof-checking DPLL implementation and 1.1 MB raw JSON are additional local artifacts, not asserted to be GitHub-published.
+\section{PROPOSE, SEARCH, BUILD}
+The load-bearing question was whether a graph of opposite requirements among original signed clause occurrences characterizes the minimum number of clauses forced to have one or two true literals. The hypotheses were (1) mixed-sign pairs alone explain every extreme obstruction; (2) global extreme labels are exactly a signed graph parity system; (3) minimum middle clauses equal minimum signed-balance vertex deletion; (4) bounded-resolution preprocessing invariably lowers total search work.
+Hypothesis (1) is falsified by an odd cycle, (2) and (3) are exact, and (4) is falsified for the tested DPLL implementation with charged preprocessing.
+Before testing, read the actual active \url{https://github.com/j15marti/pnp/issues/3}, \path{AGENTS.md} blob \texttt{19656af1}, \path{CODEX.md} blob \texttt{754999f5}, \path{.codex/skills/pnp-research/SKILL.md} blob \texttt{b8df83a7}, substantive root \path{main.tex} blob \texttt{13729752}, and ARC239 predecessor blob \texttt{eceb027d}. External relevant source: Oliver Kullmann's \path{OKullmann/oklibrary/ComputerAlgebra/Satisfiability/Lisp/ConflictCombinatorics/Conflicts.mac}, commit \texttt{92cc7f546893de79295e554d9eecbfdbf660de0f}, blob \texttt{43f0c6ed}, explicitly computes conflict graph, matrix and independent sets. Hitting clause-sets are already studied there, and signed graph balance is classical (Harary 1953). Resolution is classical (Davis--Putnam 1960); no novelty claim.
+\section{Exact clause-indexed local extremes}
+For a proper original width-three clause \(C_j\), let \(\nu_{ij}=0\) if occurrence \(x_{i,j}\) is positive and \(1\) if negative. The literal truth is \(a_i\oplus\nu_{ij}\). Local \(S_j\) means \emph{all} three literals true, requiring \(a_i=1\oplus\nu_{ij}\) on every occurrence; local \(U_j\) means all three false, requiring \(a_i=\nu_{ij}\). Inverting \(S_j\) gives \(U_j\), and inverting \(U_j\) gives \(S_j\). The occurrence \(x_{i,j}\) is not an independently assignable variable.
+Write \(t_j(a)\in\{0,1,2,3\}\) and \(N_r(a)=|\{j:t_j(a)=r\}|\). Then
+\[
+t_j(\bar a)=3-t_j(a),\quad N_r(\bar a)=N_{3-r}(a),\quad
+F(a)=1\Longleftrightarrow N_0(a)=0 .
+\]
+For flip set \(S\), \(t_j(a\oplus S)=t_j(a)+|S\cap L_j^0(a)|-|S\cap L_j^1(a)|\), where \(L_j^0,L_j^1\) are the originally false and true literal-variable sets. Every original occurrence's \(S,\neg S,U,\neg U\) target and global 0/1/intermediate flip trail is in the full raw artifact.
+\begin{theorem}[Clause-indexed four-way extreme matrix]
+Let \(I_=\) and \(I_{\ne}\) be the variables shared by original clauses \(C_j,C_k\) with respectively same and opposite literal sign. For local extremes \(S=\) all literals TRUE and \(U=\) all FALSE, \(SS,UU\) are feasible iff \(I_{\ne}=\varnothing\); \(SU,US\) are feasible iff \(I_==\varnothing\).
+\end{theorem}
+\begin{proof} Let \(e_j=1\) for \(S\), \(0\) for \(U\). Every shared variable must satisfy \(a_i=e_j\oplus\nu_{ij}=e_k\oplus\nu_{ik}\). Hence \(e_j\oplus e_k=\nu_{ij}\oplus\nu_{ik}\). The stated cases follow immediately, with all nonshared variables freely extendable. \end{proof}
+If a pair shares both kinds of variables, \emph{all four} local extreme combinations are impossible, so for every complete assignment at least one of the two clauses has \(t=1\) or \(2\). Such a pair can still be simultaneously SAT.
+\section{Global signed-cycle theorem}
+Construct a clause-indexed \emph{multigraph} \(G_F\): for every shared variable \(x_i\) between \(C_j,C_k\), keep an edge with parity \(\delta_{jk}^{(i)}=\nu_{ij}\oplus\nu_{ik}\). Parallel edges are not discarded. A labeled graph is balanced if every cycle has edge-XOR zero (including contradictory two-edge cycles).
+\begin{theorem}[Exact multi-clause extrema and middle-state minimum]
+For every clause subset \(W\), a single legal complete variable assignment realizes every clause \(j\in W\) in either local \(S\) or \(U\) state iff \(G_F[W]\) is balanced. If \(\tau_{\rm bal}(G_F)\) is the minimum vertex-deletion count that balances this multigraph, then
+\[
+\boxed{\min_a\bigl(N_1(a)+N_2(a)\bigr)=\tau_{\rm bal}(G_F).}
+\]
+Let \(H_F\) be the ordinary opposite-polarity clause conflict graph of Kullmann. Then
+\[
+\boxed{\max_a N_3(a)=\max_a N_0(a)=\alpha(H_F).}
+\]
+All identities are for proper signed width-three CNF, whether SAT or UNSAT.
+\end{theorem}
+\begin{proof}
+For designated extremes, every shared occurrence yields \(e_j\oplus e_k=\delta_{jk}^{(i)}\). These equations have a solution iff all cycle parities vanish. Given a solution, set \(a_i=e_j\oplus\nu_{ij}\) from any incident chosen clause, consistently by the equations, and extend unused variables arbitrarily.
+For any \(a\), its set of extreme clauses induces a balanced graph, so its middle count is at least \(\tau_{\rm bal}\). Conversely, delete an attaining set of \(\tau_{\rm bal}\) vertices, reconstruct all remaining clause extremes by the preceding equivalence, and extend globally; at most those deleted clauses can be middle. The two inequalities give equality.
+The set of fully true clauses is conflict-independent. Conversely, all literals of any conflict-independent clause set can be made true together since there is no shared variable with opposing signs. Thus its maximum size is \(\alpha(H_F)\). Complementation interchanges \(N_3,N_0\).
+\end{proof}
+These identities DO NOT decide SAT, bound arbitrary algorithm time, or imply efficient computation of \(\tau_{\rm bal}\) or \(\alpha\). The signed graph result is closely related to known graph balancing and clause conflict work.
+\section{Explicit cases and resolution-proven cubes}
+Take indexed originals \(C_0=(x_1\vee x_2\vee x_3)\), \(C_1=(x_1\vee x_2\vee\neg x_3)\), \(C_2=(\neg x_1\vee\neg x_2\vee\neg x_3)\).
+For pair \((0,1)\), \(I_==\{1,2\}\), \(I_{\ne}=\{3\}\); its \(SS,SU,US,UU\) matrix is entirely infeasible. Nonetheless assignment \((1,0,0)\) satisfies all three, with true literal counts \((1,2,2)\). At \(0^3\) counts are \((0,1,3)\), at \(1^3\) counts are \((3,2,0)\); both endpoints fail. Resolving source \(C_0,C_1\) on \(x_3\) yields non-tautological \((x_1\vee x_2)\), whose false cube \(x_1=x_2=0\) cannot have a satisfying extension. The certificate retains source IDs and pivot, not just a guessed clause.
+An independent nonpairwise control is \(C_0=(x_1\vee\neg x_3\vee x_4)\), \(C_1=(\neg x_1\vee x_2\vee x_5)\), \(C_2=(\neg x_2\vee x_3\vee x_6)\). Every pair's \(SU,US\) is feasible; the three opposite-parity overlaps force \(e_0\oplus e_1=e_1\oplus e_2=e_2\oplus e_0=1\), impossible around the cycle. Yet \(0^6\) and \(1^6\) both satisfy the formula, with \(N=(0,3,0,0)\) and \(N=(0,0,3,0)\) respectively. This falsifies pairwise-only detection and any deduction of UNSAT from a signed odd cycle.
+\section{Finite falsification, solver charges, and next gap}
+The full deterministic Python script and complete 1.1MB source-indexed raw results are in the local reproducibility bundle linked from the run response; they are not represented as uploaded to persistent GitHub or Library. The compact GitHub Python control rechecks pair feasibility and the odd-cycle theorem. Full run seed 20261029: 12,640 exhaustive pair-state comparisons, 700 finite signed-graph checks, 22,400 complement checks, 66,816 exact flip-count checks, 240 graph-extremum checks. All passed. Complete raw input, clause target and inversion, proof DAG, and complete assignments are in the full artifact.
+A textbook \emph{fixed-variable-order DPLL plus unit propagation} solver was compared with itself after width-2 source-authenticated resolution saturation, including failed scans, new clauses and proof replay. The environment lacked installed PySAT/CaDiCaL; no industrial CDCL comparison is claimed. On an 8-clause SAT? No: UNSAT opposite-unit gadget, DPLL states \(31\to1\), but charged primitive operations \(1056\to36670\), median Python time \(196\mu s\to6131\mu s\). On an odd-cycle plus UNSAT core, states \(159\to1\), operations \(5994\to5206\), median \(1102\mu s\to795\mu s\). These measured finite differences falsify any guarantee that fewer search nodes mean less total work; peak physical RAM and tape head crossings were not measured.
+\textbf{CORPUS AUDIT:} earlier ARC/RUP results adopted as known proof machinery; old clause-equity metrics rejected as the active target; no existing research result is overridden. Root executive/other ownership text must remain unchanged.
+\textbf{NEXT OPEN LEMMA:} Find a polynomially recognizable class of partial assignments that imposes a certified upper bound \(r\) on allowed middle clauses, and extract a source-authenticated logical cut whenever the signed graph demands \( \tau_{\rm bal}>r\); demonstrate net charged improvement relative to DPLL/CDCL on both answer classes. No gratuitous global SAT/UNSAT bit and no universal P versus NP claim.
+\begin{thebibliography}{9}
+\bibitem{kullmann} O. Kullmann, The Combinatorics of Conflicts between Clauses, SAT 2003, DOI 10.1007/978-3-540-24605-3\_32.
+\bibitem{kullmann2} O. Kullmann, Constraint Satisfaction Problems in Clausal Form II, Fundamenta Informaticae 109 (2011), DOI 10.3233/FI-2011-429.
+\bibitem{harary} F. Harary, On the Notion of Balance of a Signed Graph, Michigan Mathematical Journal 2 (1953), DOI 10.1307/mmj/1028989917.
+\bibitem{dp} M. Davis and H. Putnam, A Computing Procedure for Quantification Theory, JACM 7 (1960).
+\bibitem{dpll} M. Davis, G. Logemann, D. Loveland, A Machine Program for Theorem Proving, CACM 5 (1962).
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::EXTREME-SIGNED-CYCLE240
