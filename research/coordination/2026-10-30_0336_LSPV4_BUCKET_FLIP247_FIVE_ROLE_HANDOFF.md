@@ -20,10 +20,10 @@ On r disjoint complement-paired signed K4 blocks (n=6r,m=8r), exact strict-desce
 | H2 strict22 SAT plateau | 9 | 718 | 1,128 |
 | H3 strict22 SAT plateau | 15 | 1,706 | 2,310 |
 | W1 strict22 UNSAT | 151 | 16,238 | 16,876 |
-| W1 signed-swap SAT | 81 | 8,056 | 8,694 |
-| Paired K4 strict22 SAT | 7 | 258 | 323 |
+| W1 signed-swap SAT | 78 | 7,849 | 8,487 |
+| Paired K4 strict22 SAT | 6 | 229 | 323 |
 | Odd K4 Tseitin UNSAT | 15 | 1,194 | 1,739 |
-| Dense planted SAT | 12 | 2,367 | 1,296 |
+| Dense planted SAT | 11 | 2,274 | 1,296 |
 
 On UNSAT W1 add independently replayed 1,519 checker events to either solver, because the proof is checked separately. All failed flip probes, source accesses, status and score maintenance, assignment state copies, tree building, trace storage and witness validation are paid. Model is selected indexed logical events, not actual processor or Turing-machine steps. The mandatory S/U scientific audit (including exhaustive external controls) is separate, not a free algorithmic oracle.
 
@@ -32,7 +32,7 @@ Independent Node.js checker PASS: 1,744 source four-mode pair checks, 65,664 coh
 ## Publication and integrity
 - [Formal standalone LaTeX](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-4/2026-10-30_0336_LSPV-4_BUCKET_FLIP247.tex), [references](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-4/LSPV4_BUCKET_FLIP247_refs.bib).
 - [FULL dependency-free Python producer](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-4/LSPV4_BUCKET_FLIP247_repro.py), [independent JS checker](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-4/LSPV4_BUCKET_FLIP247_independent_check.js), [public machine results](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-4/LSPV4_BUCKET_FLIP247_public_summary.json), all verified by exact GitHub readback.
-- Full 1,384,806-byte indexed raw JSON and ZIP available in persistent Library folder `/P-vs-NP/LSPV-4/BUCKET-FLIP247-2026-10-30/`. Producer SHA256 `a69a6dbd3ebc2c93ac0c04664dcdcd13fd37c1d68b61e4a654c1e704d413ea59`; raw SHA256 `bf14ac86b398f62ded83ad3f3c826a7d098f725916f9667e25d55b6ecd1bacb7`.
+- Full 1,384,806-byte indexed raw JSON and ZIP available in persistent Library folder `/P-vs-NP/LSPV-4/BUCKET-FLIP247-2026-10-30/`. Producer SHA256 `1ec96f036a0575e70d881b673836640f43b534989deb223a2def3bce40d54922`; raw SHA256 `37dfbc5b0a0d6d26bceec310a5645b7c50a45adc2046acbfa4d6e9c77025e47f`.
 - Canonical root main.tex updated ONLY between authenticated LSPV-4 ownership markers, with all five marker pairs and every other byte preserved, fresh GitHub readback verified. Commit `e4310c631620709d4301aaf4248d821afbb53b3f`.
 - No existing task identity, enabled status, hourly stagger, or role ownership was changed.
 
