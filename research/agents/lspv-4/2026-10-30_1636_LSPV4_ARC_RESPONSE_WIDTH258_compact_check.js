@@ -5,7 +5,7 @@ const W="-1 3 -14;2 -8 9;10 -13 14;3 7 -13;-4 -9 -11;5 8 -14;4 -8 -11;1 7 13;1 -
 const W1=W.split(";").map(s=>s.trim().split(/\s+/).map(Number));
 const W1prime=W1.map(c=>c.slice());assert.equal(W1prime[7][0],1);assert.equal(W1prime[19][0],-1);W1prime[7][0]=-1;W1prime[19][0]=1;
 const S=[[-1,-2,-3],[-1,-2,3],[-1,2,-3],[-1,2,3],[1,-2,-3],[1,-2,3],[1,2,-3]];
-const U=S.concat([[1,2,3]]);
+const U=S.concat([[1,2,3]]);S.push(S[0]); // SAT case keeps eight source clauses by repetition.
 const cases=[["W1",W1,15,0],["W1prime",W1prime,15,168],["S",S,3,1],["U",U,3,0]];
 const truth=(lit,a)=>Number((a>>>(Math.abs(lit)-1))&1)===Number(lit>0);
 function local(clause,type){const t={};for(const l of clause)t[Math.abs(l)]=type==="S"?Number(l>0):Number(l<0);return t;}
