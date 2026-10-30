@@ -32,37 +32,59 @@ def all_words(g=G):
 CODE=all_words()
 assert len({x for x,_ in CODE})==16
 
-def optimal_query(a,w,g=G,account=None):
-    """Return computed a.w, #raw source probes, explicit word enumeration budget."""
-    L=len(g); s=tuple(parity(a & row) for row in g)
-    best=None; ops=0
+def construct_summary(source_get,g=G):
+    """Pre-query stage: read original source coordinates exactly once.
+
+    source_get is the only way to access the original source. The seven
+    readings are charged even if several summary rows reuse a source bit.
+    """
+    bits=tuple(source_get(i) for i in range(7))
+    s=[];xor_count=0
+    for row in g:
+        part=[bits[i] for i in range(7) if (row>>i)&1]
+        parity_row=0
+        for bit in part:parity_row ^= bit
+        xor_count += max(0,len(part)-1)
+        s.append(parity_row)
+    return tuple(s),{'preprocess_source_probes':7,'preprocess_xor_upper':xor_count,
+                     'transient_local_bits':7}
+
+def optimal_query(summary,w,source_get,g=G):
+    """Online exact continuation. Only summary, w and charged source_get are visible."""
+    L=len(g);assert len(summary)==L
+    best=None;ops=0
     for cw,coeff in all_words(g):
-        ops += 7 + L # generated codeword + Hamming comparison proxy
+        ops += 7 + L # codeword and Hamming-distance comparison proxy
         d=(cw ^ w).bit_count()
         if best is None or d<best[0]:best=(d,cw,coeff)
     d,cw,coeff=best
-    residual=w^cw
-    ans=0
+    residual=w^cw;ans=0
     for i in range(L):
-        if (coeff>>i)&1:ans^=s[i]
+        if (coeff>>i)&1:ans ^= summary[i]
     probed=[]
     for i in range(7):
         if (residual>>i)&1:
-            ans ^= ((a>>i)&1)
+            ans ^= source_get(i)
             probed.append(i)
-    assert ans==parity(a&w)
     return {'answer':ans,'source_probes':len(probed),'positions':probed,
             'local_word_candidates':1<<L,'local_cost_units':ops+L+len(probed),
-            'raw_source_bit_reads_for_construction':7,'stored_bits':L}
+            'stored_bits':L}
 
 def theorem_checks():
     mind=min(x.bit_count() for x,c in CODE if x)
     dist={w:min((w^x).bit_count() for x,c in CODE) for w in range(128)}
     assert mind==3 and max(dist.values())==1
     qcounts=Counter();checks=0;tmp_max=0
+    prep_checks=0;prep_reads=0;prep_xors=0
     for a in range(128):
+        source_get=lambda i: (a>>i)&1
+        summary,prep=construct_summary(source_get)
+        prep_checks+=1;prep_reads+=prep['preprocess_source_probes']
+        prep_xors+=prep['preprocess_xor_upper']
         for w in range(128):
-            o=optimal_query(a,w)
+            # Online function is supplied the precomputed summary only.
+            o=optimal_query(summary,w,source_get)
+            assert o['answer']==parity(a&w)
             qcounts[o['source_probes']]+=1;checks+=1
             tmp_max=max(tmp_max,o['local_cost_units'])
     # All 16 rank-4 rowspace codes are at mutual distance >=3, radius-one balls tile 128 masks.
@@ -108,7 +130,9 @@ def theorem_checks():
     return {'Hamming_G_index_sets':[[i for i in range(7) if (row>>i)&1] for row in G],
             'minimum_nonzero_distance':mind,'covering_radius':max(dist.values()),
             'coset_leader_weight_histogram':dict(sorted(Counter(dist.values()).items())),
-            'all_a_all_w_exact_checks':checks,'probe_count_histogram':dict(sorted(qcounts.items())),
+            'all_a_all_w_exact_checks':checks,'preprocessing_invocations':prep_checks,
+            'preprocessing_source_reads':prep_reads,'preprocessing_xors':prep_xors,
+            'probe_count_histogram':dict(sorted(qcounts.items())),
             'distinct_4bit_summaries':len(buckets),'sources_per_summary':8,
             'max_local_comparison_units':tmp_max,'exact_b7_linear_frontier':frontier,'direct_sum':r_data}
 
