@@ -1,0 +1,167 @@
+% PNP RESEARCH REPORT::CONSTRUCTION-STRENGTHEN14::2026-10-30T00:28:00Z
+\documentclass[11pt]{article}
+\usepackage[margin=.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\title{CONSTRUCTION-STRENGTHEN14: Count, Reduce, and Recount}
+\author{Construction / experiment mode}
+\date{29 October 2026, 17:28 America/Los\_Angeles}
+\begin{document}\sloppy\maketitle
+\paragraph{Result and status.}
+The user's count-then-reduce suggestion is implemented as an exact local
+counting loop. Counts certify forced literals or redundant clauses;
+substitution or deletion changes the source, and counting restarts.
+The elementary correctness derivation is complete; independent referee
+and kernel verification are pending. Tests are COMPUTATIONAL.
+This is a sound partial simplifier, not a universal polynomial SAT solver.
+All-input ARC/WRAPPER coverage and P versus NP remain OPEN.
+
+\paragraph{CORPUS REVIEWED and DUPLICATION AUDIT.}
+CONSTRUCTION12 supplies original code and immutable test sources;
+CONSTRUCTION13's original accessible handoff was recovered before this run.
+The already-read research skill, FORMAL-SPINE1, ARC234 and RANK-SWITCH168
+resource guards are retained. Exact counts, forced literals and redundancy
+are standard concepts. E\'en--Biere's primary SAT preprocessing paper
+\cite{een} establishes the broader clause/variable-elimination setting;
+no novelty is claimed for those rules. The new artifact is an executable
+count/rewrite feedback loop with all losing attempts charged.
+Relative to main4/main5, no universal arrow closes; root main.tex ownership
+is preserved. Adopted: exact supports and full discovery accounting.
+Rejected: treating positive local counts as global satisfiability.
+Conditional $K$ elimination remains unchanged.
+
+\section{Exact counting certificates and uniform loop}
+Let $F$ be the current residual CNF and $H$ a selected conjunction of its
+clauses. Set $U=\operatorname{vars}(H)$ and count on the same universe:
+\[
+ Z(H)=\sum_{a\in\{0,1\}^U}\mathbf1[H(a)],\qquad
+ Z(H;v=b)=\sum_a\mathbf1[H(a)\land a_v=b].
+\]
+When omitting a clause from $H$, keep the original universe $U$.
+Otherwise equal-count comparisons need not be valid.
+
+One fixed deterministic program enumerates groups of at most four residual
+clauses and rejects scopes larger than six. It enumerates local assignments,
+obtaining both conditional counts and counts after deleting each local clause.
+It applies the first available rule and restarts after each rewrite:
+\begin{description}
+\item[] If $Z(H)=0$, return UNSAT.
+\item[] If $Z(H)>0$ and $Z(H;v=b)=0$, retain the forced bit $v=1-b$,
+substitute it globally, and simplify.
+\item[] If $C\in H$ and $Z(H\setminus\{C\})=Z(H)$, remove $C$ globally.
+\item[] If no certificate is found, return UNRESOLVED with the exact
+residual and retained assignment map. An empty residual returns SAT.
+\end{description}
+There is no input-dependent advice, answer-side bit, full-source count oracle,
+or free successful choice of a group.
+
+\begin{theorem}[Model-preserving feedback]
+Every accepted rewrite preserves the original model set when interpreted
+with the retained assignments. Zero local counts certify global UNSAT;
+positive local counts alone do not certify global SAT.
+\end{theorem}
+\begin{proof}
+Every residual solution satisfies $H$. Therefore a zero count excludes all
+residual solutions. A zero conditional count forces the opposite value in
+every residual solution, so substitution with that retained bit gives a
+bijection of solutions on the unfixed variables.
+For deletion,
+$\operatorname{Mod}_U(H)\subseteq\operatorname{Mod}_U(H\setminus\{C\})$.
+Equal finite cardinalities imply equal sets. Thus the remaining local
+clauses entail $C$, and deletion preserves the complete residual model set
+even in the presence of all outside clauses. Induction gives the invariant.
+If no clauses remain, every extension of the retained bits satisfies the
+source. Otherwise absence of a local certificate gives no answer.
+\end{proof}
+
+\section{Fully charged simultaneous resources}
+Use the project's fixed deterministic indexed read-only-input bit machine.
+$N$ is encoded source length with a dense variable domain $n\le N$.
+Every derived clause, counter, stored local assignment and retained forced
+bit counts as writable workspace. This is an ordinary-CNF residual language;
+reductions need not preserve exact22 degrees.
+
+\begin{theorem}[Bounded discovery]
+With $n$ original variables, $m$ clauses, fixed group cap $k$, and width cap
+$w$, there are at most $n+m$ accepted rewrites. Discovery and rewriting take
+\[
+ (n+m+1)\left(\sum_{j=1}^{k}\binom mj\right)2^w
+                   \operatorname{poly}(N,k)
+\]
+bit operations and $\operatorname{poly}(N,k,2^w)$ workspace on the same
+machine. These bounds are polynomial for fixed $k$ and $w=O(\log N)$.
+They do not bound solving the unresolved residual.
+\end{theorem}
+\begin{proof}
+A pin fixes a previously unfixed residual variable and a deletion removes
+a clause. Substitution introduces no new variables or clauses. Hence
+unfixed-variable count plus residual-clause count strictly decreases at
+each accepted rewrite. Every complete search round charges all groups,
+failed counts, scope checks, assignment trials and source scans.
+Each accepted rewrite also charges its full substitution and restart.
+At most $2^w$ local assignment rows coexist; discarded groups do not stay
+in memory. Counts, source clauses and assignment maps have polynomial
+descriptions. These observations give the stated bounds.
+\end{proof}
+Calling this loop inside WRAPPER adds all retained ancestor state.
+Any full solve or wider counting call is additional charged work.
+If an exact full-source count were already available, testing $\#F>0$
+would decide SAT directly; we do not assume that operation is cheap.
+No favorable FLMV exponent pair or new elimination of $K$ follows here.
+
+\section{Reproducible tests}
+The adjacent stdlib Python file imports CONSTRUCTION12 only after checking
+its SHA-256. Its full-source truth-table routine is used only in validation,
+not in the simplification loop. Nine separate checkpoints, controls plus
+batches 0--7, each run under an external 25-second cap and record the new
+code hash.
+
+The proper-3CNF cascade on five variables is
+\[
+\begin{split}
+ &(x\vee a\vee b)\land(x\vee a\vee\neg b)
+ \land(x\vee\neg a\vee b)\land(x\vee\neg a\vee\neg b)\\
+ &\qquad{}\land(\neg x\vee y\vee c)\land(\neg x\vee y\vee\neg c).
+\end{split}
+\]
+The first count forces $x=1$. Substitution enables a second count forcing
+$y=1$. The residual becomes empty; all eight original models are preserved.
+The execution uses 924 local assignment trials, 2352 clause evaluations and
+two restarts. This is a mechanism control, not an exact22 input.
+
+Opposite XOR3 blocks supply an ordinary-CNF UNSAT control, correctly rejected
+after three pins and 842 local assignment trials. A duplicate-clause control
+deletes one copy while preserving seven models.
+
+On the 48 original connected strict22 sources, all SAT, the loop executes
+422968 local assignment trials, deletes one duplicate clause, finds no
+forced variables, and returns UNRESOLVED on all 48 inputs.
+Every retained-assignment residual has the original exact count.
+No strict22 UNSAT coverage or total speedup is claimed. This negative outcome
+is specific to groups of at most four clauses, scope six, and these two rules.
+
+\paragraph{Barrier and hostile-control audit.}
+The ordinary positive cascade and negative XOR control test both answer sides;
+the exact22 samples test the targeted source grammar. A semantic oracle can
+bypass this entire representation, so no arbitrary-algorithm lower bound
+follows. No nonrelativizing, nonalgebrizing, Natural-Proofs, or cryptographic
+bridge is asserted. Counting, unsuccessful groups, repeated execution,
+reconstruction and source buffers are charged. The retired unrestricted
+cosine endpoint is not used. P versus NP remains OPEN.
+
+\paragraph{Next target.}
+Use conditional pair counts to produce exact pair relations or equivalent
+shorter clauses even when no variable is forced and no original clause is
+redundant. Verify equivalence, charge discovery and reconstruction, then
+rerun reduction. Judge discovery plus final solving cost, not count reduction
+alone.
+
+\begin{thebibliography}{9}
+\bibitem{een} N. E\'en and A. Biere.
+Effective Preprocessing in SAT Through Variable and Clause Elimination.
+SAT 2005, pp.\ 61--75.
+\url{https://fmv.jku.at/papers/EenBiere-SAT05.pdf}.
+\end{thebibliography}
+% END_OF_VERIFIED_REPORT::CONSTRUCTION-STRENGTHEN::CONSTRUCTION-STRENGTHEN14
+\end{document}
+
