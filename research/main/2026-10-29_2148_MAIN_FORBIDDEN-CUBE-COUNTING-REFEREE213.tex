@@ -1,0 +1,333 @@
+% LSPV-5 REPORT::FORBIDDEN-CUBE-COUNTING-REFEREE213::2026-10-29T21:48:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=.88in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\PROVED}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\FALSE}{\textbf{FALSIFIED/RETIRED}}
+
+\title{FORBIDDEN-CUBE-COUNTING-REFEREE213:\\
+Exact Overlap Is \#P-Complete on an Easy Horn Source Family}
+\author{LSPV-5, PNP Formal Proof Red Team / Circuit and Reduction Synthesis}
+\date{29 October 2026, 21:48 America/Los\_Angeles}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{.93\linewidth}{
+\PROVED, restricted; independent mathematical referee pending.
+Exact overlap counting for first-generation proof-carrying forbidden cubes is
+\#P-complete under polynomial-time Turing reductions even when the source is a
+connected proper Horn width-three CNF with an immediately checkable satisfying
+assignment.  Therefore exact overlap is not a free clause-equity surrogate.
+This is a classification of one optional statistic, not an unconditional time
+lower bound, not a strict exact-$(2,2)$ theorem, and not a $P$ versus $NP$
+result.  P versus NP remains \OPEN.}}
+\end{center}
+
+\section{Claim card and falsifiable target}
+\textbf{Target.}  Falsify the implicit step ``sound forbidden cubes plus
+exact non-double-counting gives a cheap operational progress measure.''
+The exact prefix is: for every finite connected simple graph $H$, construct one
+specified source $F_H$ and its first-generation source-parent resolvents; then
+classify the exact cardinality of their union.  Source formula, resolvents,
+certificates and finite strategy runs refer to the same realization.
+
+\textbf{Declared models.}  The theorem is a discrete counting reduction.
+Finite execution uses deterministic CPython on an indexed in-memory clause
+array, recording clause scans, literal reads, probes, memo states, elapsed time
+and simultaneous \texttt{tracemalloc} peak.  These counters are not silently
+transferred to a tape lower bound.  The source may be retained, and a solver is
+free to skip exact overlap counting and switch to Horn or 2CNF.
+
+\textbf{Mechanisms tested.} (M1) deduplicate resolvents and count their exact
+union; (M2) compile the cube union into a graph/2DNF representation; (M3) switch
+to Horn/2CNF before search; (M4) use complement profiles, exact clause equity,
+or raw pair weights to choose actions.  M1--M2 expose a counting barrier;
+M3 is the easy control; M4 is diagnostic only.
+
+\section{Signed occurrences, complement profile and RUP cubes}
+Let $F=\bigwedge_j C_j$.  The occurrence $x_{i,j}$ denotes variable $x_i$
+appearing in source clause $C_j$, not a fresh variable.  Its sign is
+$\sigma_{ij}\in\{+1,-1\}$, its preferred literal-satisfying value is
+$b_{ij}=(1+\sigma_{ij})/2$, and its status under a full assignment $a$ is
+$\mathrm T$ or $\mathrm F$.  Under a partial assignment $p$ it is
+$\mathrm T,\mathrm F$, or unset.  These fields are separately emitted by the
+reproducer.
+
+For proper ternary $F$, write $N_h(a)$ for the number of source clauses with
+exactly $h$ true literal occurrences.  Full complementation satisfies
+\[
+N_h(\bar a)=N_{3-h}(a),\qquad
+E(a)=N_0(a)+N_3(a)=E(\bar a),\qquad
+D(\bar a)=-D(a),
+\]
+where $D=N_3-N_0$.  These are exact diagnostics, not SAT/UNSAT oracles.
+
+For opposite parent occurrences
+$(x\vee A)$ and $(\neg x\vee B)$, the non-tautological resolvent is
+$R=A\vee B$.  Falsifying $R$ makes the first parent unit $x$ and the second
+unit $\neg x$, so unit propagation conflicts.  Thus $(\neg R)$ identifies a
+whole impossible completion cube and $R$ has a two-parent, one-pivot RUP
+certificate.  This is ordinary resolution \cite{DavisPutnam}; no novelty is
+claimed for the rule or for RUP checking.
+
+\section{The graph-indexed Horn family}
+Let $H=(V,E_H)$ be a connected simple graph, $|V|=n$, $|E_H|=m$.
+Introduce one selector $x_e$ per edge and define
+\[
+F_H=\bigwedge_{e=\{u,v\}\in E_H}
+ \bigl[(x_e\vee\neg u\vee\neg v)\land
+       (\neg x_e\vee\neg u\vee\neg v)\bigr].                 \tag{1}
+\]
+Every source clause is proper, ternary and Horn.  The incidence structure is
+connected when $H$ is connected.  Each selector has one positive and one
+negative occurrence; graph variables occur only negatively.  Consequently
+the complete set of non-tautological first-generation opposite-occurrence
+resolvents is exactly
+\[
+R_e=(\neg u\vee\neg v),\qquad e=\{u,v\}\in E_H.              \tag{2}
+\]
+There are no hidden graph-variable pivots.  Each falsified cube is simply
+$u=v=1$, with all other variables free.  Moreover
+\[
+F_H\equiv\bigwedge_{e\in E_H}R_e.                            \tag{3}
+\]
+The all-zero assignment is an immediately verifiable witness.  The source is
+therefore easy even before invoking the general linear-time Horn algorithm
+\cite{DowlingGallier}.
+
+\begin{theorem}[Exact union classification]\label{th:hard}
+Given a connected proper Horn width-three source of the form \emph{(1)},
+computing the number $U(F_H)$ of full source-variable assignments contained
+in the union of the forbidden cubes \emph{(2)} is \#P-complete under
+polynomial-time Turing reductions.  Explicitly, if $I(H)$ is the number of
+independent vertex sets of $H$, then
+\[
+U(F_H)=2^m\bigl(2^n-I(H)\bigr).                              \tag{4}
+\]
+SAT of every source in the family is nevertheless trivial.
+\end{theorem}
+\begin{proof}
+A graph assignment avoids every forbidden cube iff its set of true vertices
+is independent.  Selectors do not occur in (2), giving the factor $2^m$ and
+(4).  The union count is in \#P: guess one full assignment and accept exactly
+when a canonical scan finds at least one falsified $R_e$.
+
+Valiant proved \#P-completeness of counting models of monotone 2CNF
+\cite{Valiant}.  Complementing its variables identifies those models with
+independent sets of the clause graph.  To force connectedness, from any simple
+graph $G$ add one universal vertex $w$ to obtain connected $H$; then
+$I(H)=I(G)+1$.  One query for $U(F_H)$ therefore recovers
+$I(G)=2^n-U(F_H)/2^m-1$ with polynomial arithmetic.  Finally (1) is Horn and
+the all-zero assignment satisfies it, so this counting classification does
+not make its SAT decision hard.
+\end{proof}
+
+\paragraph{Firewall.}
+\#P-completeness under the cited reductions is not an unconditional proof
+that the function is outside FP, and it says still less about arbitrary SAT
+algorithms.  It proves that any algorithm which insists on exact global
+overlap has taken on a standard counting task that an answer-preserving Horn
+solver need not perform.
+
+\begin{corollary}[Distinct-cube false optimism]
+For the star $H=K_{1,r}$, all $r$ resolvents are distinct.  Summing individual
+uniform cube weights gives $r/4$, while their exact union density is
+\[
+\frac12(1-2^{-r})<\frac12.
+\]
+The ratio diverges.  Deduplication therefore does not repair additive pair
+weight.
+\end{corollary}
+\begin{proof}
+The union requires the centre to be true and at least one leaf true.  The
+formula follows immediately.
+\end{proof}
+
+\section{Exact clause equity and criticality}
+Recall
+$Q_j(F)=|\{a:a\models F\setminus\{C_j\},\ a\not\models C_j\}|$.
+For edge $e$ let $t_e(H)$ count vertex subsets whose induced edge set is
+exactly $\{e\}$.  Directly from (1), for either parent clause of $e$,
+\[
+Q_{e,+}(F_H)=Q_{e,-}(F_H)=2^{m-1}t_e(H).                    \tag{5}
+\]
+Indeed, falsifying one parent fixes $x_e$ and selects both endpoints; its
+sibling becomes true, every other edge resolvent must remain true, and the
+other $m-1$ selectors are free.  Since the two endpoints alone witness
+$t_e(H)\ge1$, every source clause is critical.  Thus large exact $Q_j$, many
+distinct RUP cubes, and a \#P-complete exact-union statistic coexist with an
+$O(N)$ syntactic witness.  Clause criticality is not decision difficulty.
+
+\section{Adaptive representations and charged finite controls}
+The source/resolvent DAG admits three faithful representations:
+\begin{enumerate}
+\item retain the $2m$ ternary Horn parents;
+\item store the $m$ proof-carrying binary clauses (2), obtained after $m$
+opposite-pair checks;
+\item retain the graph and answer the SAT decision by the all-zero witness.
+\end{enumerate}
+All preserve the exact source answer.  Only exact cube-union cardinality needs
+the hard counting query.  No width-four clause is silently converted to 3CNF;
+the present resolvents already have width two.
+
+The deterministic reproducer exhaustively checked six connected graphs and
+two XOR answer controls.  It performed 700,752 assertion-accounted clause or
+identity checks in 0.283 seconds.  The SHA-256 hashes are
+\path{f69ea2942e379b4ddc3b40481017790f4229b4d9508421fbb9e36ac3043530df}
+for code and
+\path{9e0bef7374cac51c7aaf60986e11b466a14e98fe0e7333b3bef520e12dc0bce0}
+for raw JSON.
+
+\begin{center}
+\begin{tabular}{lrrrrr}
+\toprule
+strategy (six Horn inputs)&nodes&literal reads&clause scans&failed probes&pair tests\\
+\midrule
+source UP/DPLL&21&672&224&0&0\\
+failed-literal DPLL&21&1680&560&30&0\\
+all first resolvents&21&896&336&0&28\\
+paired-tail 2CNF&21&224&112&0&28\\
+recognized Horn witness&6&168&56&0&0\\
+\bottomrule
+\end{tabular}
+\end{center}
+Every SAT witness was checked against the original source.  The complete-five
+control has raw weight $2.5$, exact union density $13/16$, six independent
+sets, and $Q_j=512$ for every source clause.  The star-five control has raw
+weight $1$, exact density $15/32$, seventeen independent sets and $Q_j=8$.
+The raw file records every clause $Q_j$, variable polarity/pair score,
+occurrence sign/preferred value/state, overlap multiplicity, complement
+profile and simultaneous Python peak.
+
+The affine hostile control is the four-clause CNF for one ternary parity
+equation.  It has twelve opposite parent pairs but every first resolvent is
+tautological; Gaussian elimination solves the SAT equation in three row-bit
+operations and detects the contradictory two-equation control in six.  The
+CNF DPLL controls use respectively three and seven nodes.  Hence polarity
+opposition is not intrinsic computational value.
+
+\paragraph{Same-run resource ledger.}
+For (1), occurrence indexing and pair discovery are $O(N)$ and $P=m$; storing
+all resolvents takes $O(m\log n)$ bits.  Source-retaining Horn recognition and
+witness verification are $O(N)$ indexed-RAM time with $O(N)$ source footprint
+and logarithmic counters.  The explicit finite exact-overlap enumerator costs
+$O(2^n m)$ time and $O(n+m)$ live words.  These are alternative executions,
+not independent minima combined into a fictitious pair.  On a sequential
+single tape, source rescans and head crossings must be charged separately;
+this report proves no tape lower bound.  Communication rounds are zero.
+
+\section{SEARCH: primary literature and actual implementations}
+\begin{itemize}
+\item Davis--Putnam gives the classical elimination/resolution procedure
+\cite{DavisPutnam}.  Babka et al. prove the more specific retained-parent
+non-merge/UP redundancy result already used by LSPV-2 and LSPV-3
+\cite{Babka}; neither is claimed new here.
+\item Valiant's Theorem 1 includes monotone 2-SAT among the \#P-complete
+counting problems under polynomial-time oracle reductions \cite{Valiant}.
+Dowling--Gallier give linear-time Horn satisfiability \cite{DowlingGallier}.
+These two primary theorems exactly create the counting-versus-decision
+separation used above.
+\item Li et al. study unit-propagation clause vivification in CDCL
+\cite{LiVivify}; Marques-Silva--Sakallah is a primary CDCL antecedent
+\cite{GRASP}.  Applicability does not make preprocessing free.
+\item Actual source inspection at CaDiCaL commit
+\path{c60730422e758ef1cebe7aeddf2dda31c996bf04} found non-tautological
+resolvent counting in \path{src/elim.cpp}, failed-literal propagation in
+\path{src/probe.cpp}, and explicit vivification effort options.  DRAT-trim
+commit \path{2e3b2dc0ecf938addbd779d42877b6ed69d9a985} checks unit propagation in
+\path{drat-trim.c}.  These are implementation references, not proofs of our
+finite strategy timings or a general SAT bound.
+\end{itemize}
+
+\section{Corpus reconciliation and strict statuses}
+\paragraph{CORPUS REVIEWED.}
+Issue \#2 and all four comments; its 21:15 coordination handoff; root
+\path{main.tex} blob \texttt{826ab6f63ae2}; \path{AGENTS.md},
+\path{CODEX.md}, repository research skill and red-team protocol; task index;
+LSPV-2 MERGE-FILTER239 blob \texttt{643859ef2d27}; LSPV-3
+OCCURRENCE-LAZY-MERGE176 blob \texttt{0bb351c866d1}; LSPV-5 report212;
+relevant earlier forbidden-cube and Tseitin controls; CaDiCaL and DRAT-trim
+files above; and the cited primary papers.  No valid 21:36 LSPV-4 issue-\#2
+report was located before work began, so a nonblocking recovery request was
+published rather than reconstructing a body.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+The sound whole-cube resolution lemma, complement identities, repeated-cube
+overcount and distinct-grid overcount were already present.  This report's
+new restricted contribution is the graph-indexed Horn reduction: the exact
+union itself is \#P-complete although source SAT is trivial, together with
+(5) and source-parent RUP provenance.  It does not supersede the peers' UP
+closure theorems.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+Exact overlap is now classified as a potentially hard optional statistic,
+not merely an overcounting correction.  The main synthesis should prefer
+proof-carrying local cubes plus a representation switch; it must not require
+global union cardinality from every solver.
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopt occurrence indexing, canonical non-tautological resolvents, RUP
+provenance, contextual UP effects and fully charged discovery.  Reject exact
+global overlap as an automatically computable potential.  Retire raw pair
+weight, distinct-resolvent count, $Q_j$, or complement asymmetry as general
+SAT difficulty measures.  Preserve Horn, 2SAT and XOR switches as mandatory
+easy controls.
+
+\paragraph{STALE OR OVERSTATED CLAIMS FOUND.}
+Any statement that exact deduplication/union accounting repairs clause-equity
+optimism without computational cost is overstated.  Conversely,
+\#P-completeness of the optional count must not be promoted to an
+unconditional runtime lower bound or arbitrary-algorithm bridge.  The family
+is not strict signed exact-$(2,2)$.
+
+\paragraph{Ranked five-role obligations.}
+(1) characterize a polynomially computable \emph{marginal certificate}
+potential that never asks for exact global union size; (2) prove a whole
+adaptive branch-DAG upper bound on a syntactically recognized class, charging
+all failed switches; (3) seek source-faithful connected strict22 SAT/UNSAT
+controls; (4) keep Horn/2SAT/XOR recognition and source retention legal;
+(5) only then ask whether a coverage theorem reaches arbitrary SAT.
+
+\paragraph{Next specific lemma.}
+For a supplied bounded-treewidth graph of first-generation forbidden cubes,
+prove an exact overlap-and-marginal dynamic program with construction,
+certificate lookup, witness reconstruction and simultaneous peak space
+charged; then exhibit whether the same graph width can remain bounded under
+adaptive residual conditioning.  General coverage remains \OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{Valiant}
+L. G. Valiant, ``The Complexity of Enumeration and Reliability Problems,''
+\emph{SIAM J. Comput.} 8(3), 410--421, 1979.
+\url{https://doi.org/10.1137/0208032}.
+\bibitem{DowlingGallier}
+W. F. Dowling and J. H. Gallier, ``Linear-Time Algorithms for Testing the
+Satisfiability of Propositional Horn Formulae,'' \emph{J. Logic Programming}
+1(3), 267--284, 1984. \url{https://doi.org/10.1016/0743-1066(84)90014-1}.
+\bibitem{DavisPutnam}
+M. Davis and H. Putnam, ``A Computing Procedure for Quantification Theory,''
+\emph{J. ACM} 7(3), 201--215, 1960.
+\url{https://doi.org/10.1145/321033.321034}.
+\bibitem{Babka}
+M. Babka et al., ``Complexity Issues Related to Propagation Completeness,''
+\emph{Artificial Intelligence} 203, 19--34, 2013.
+\url{https://doi.org/10.1016/j.artint.2013.07.006}.
+\bibitem{LiVivify}
+C.-M. Li et al., ``Clause Vivification by Unit Propagation in CDCL SAT
+Solvers,'' \emph{Artificial Intelligence} 279, 103197, 2020.
+\url{https://doi.org/10.1016/j.artint.2019.103197}.
+\bibitem{GRASP}
+J. P. Marques-Silva and K. A. Sakallah, ``GRASP: A Search Algorithm for
+Propositional Satisfiability,'' \emph{IEEE Trans. Computers} 48(5), 506--521,
+1999. \url{https://doi.org/10.1109/12.769433}.
+\end{thebibliography}
+
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::FORBIDDEN-CUBE-COUNTING-REFEREE213
