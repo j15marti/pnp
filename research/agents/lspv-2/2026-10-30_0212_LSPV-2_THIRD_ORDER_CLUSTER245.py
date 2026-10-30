@@ -408,10 +408,12 @@ def run_case(name,F,do_solving=True):
     n=max(allvars(F));assert allvars(F)==tuple(range(1,n+1))
     for c in F:assert len(c)==3 and len(set(map(abs,c)))==3
     x22=exact22(F);base={i:0 for i in range(1,n+1)}
-    spectral,prof=profile(lambda:three_flip_spectrum(F,base,verify_small=n<=15))
+    # Perform the mandatory ORIGINAL-SOURCE extreme experiment FIRST.
+    # Diagnostic full matrices are an external audit, not a hidden solver oracle.
     ext=extreme_records(F);matrix,pair_tests=pair_extremes(F) if n<=24 else ([],0)
     trails=endpoint_trail(F,[i for i in (1,2,3,1) if i<=n])
     triple_modes,triple_tests=source_three_clause_extreme_modes(F)
+    spectral,prof=profile(lambda:three_flip_spectrum(F,base,verify_small=n<=15))
     if n<=15:
         truth=independent_oracle(F)
         assert spectral['three_flip_SAT_models_at_base'] == sum(model(F,{i:(i in triple) for i in range(1,n+1)}) for triple in itertools.combinations(range(1,n+1),3))
