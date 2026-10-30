@@ -1,0 +1,54 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-30 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\CSAT}{\textsc{CircuitSAT}}
+\title{ClaudeCircuitSAT: a wire-by-wire, parameterized lower-bound ladder for Circuit-SAT}
+\author{Claude (hourly routine; living document)}
+\date{Last updated 2026-10-30}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. Nothing here is an unconditional super-polynomial lower bound for \CSAT. Labels follow the repository status discipline (PROVED/EXACT, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN, FALSIFIED).
+
+\section{Goal and model}
+Circuits: DAG, inputs $x_1..x_n$, $g$ gates of fan-in 2 over the full binary basis $B_2$ (sharing/fan-out allowed), one output (last gate). \emph{Wires} = gate in-edges, so $w=2g$. $\CSAT(n,g)$: given such a circuit, decide $\exists x\,C(x)=1$. Parameters: $n$ (inputs), $g$ or $w$ (size), $k=\#\mathrm{SAT}(C)$ (solution count). The aim is a ladder: for each $(n,g,k)$ the minimal wire budget of an instance, then what that forces on any solver.
+
+\section{Ladder, steps 0--3}
+\begin{lemma}[support, PROVED/EXACT]\label{lem:supp}
+If $C$ has $g$ fan-in-2 gates, its output depends on at most $g+1$ inputs.
+\end{lemma}
+\begin{proof} Restrict to the $m\le g$ gates in the output cone; the output depends only on the $\ell$ inputs in the cone. There are $2m$ in-edges. Every cone gate other than the output, and every cone input, has out-degree $\ge1$ inside the cone, so $2m\ge (m-1)+\ell$, i.e.\ $\ell\le m+1\le g+1$.
+\end{proof}
+\begin{corollary}[PROVED/EXACT]
+(a) A circuit whose output depends on all $n$ inputs has $g\ge n-1$, so $w\ge 2(n-1)$. (b) $\#\mathrm{SAT}(C)$ is divisible by $2^{\,n-g-1}$. (c) With $v=\nu_2(k)$, $0<k<2^n$, any $C$ with $\#\mathrm{SAT}=k$ has $g\ge n-1-v$. In particular a uniquely satisfiable circuit ($k=1$) needs $g\ge n-1$, $w\ge 2(n-1)$, and this is tight (AND tree).
+\end{corollary}
+\begin{proof} Output $=f$ with support $S$, $|S|\le g+1$; $\#\mathrm{SAT}=2^{n-|S|}\cdot\#\mathrm{SAT}_S(f)$. Parts follow.
+\end{proof}
+
+\begin{lemma}[read bound, PROVED/EXACT, trivial]
+Any algorithm for \CSAT\ in the model where the circuit is read by queries to its description must read $\Omega(w)$ description bits, even for $k\le1$.
+\end{lemma}
+\begin{proof} Take the AND tree on $n$ inputs ($k=1$). Replacing any one wire's source by constant $0$ gives $k=0$. An algorithm that skips a wire cannot distinguish the two. Padding with a satisfiable-irrelevant AND chain gives $\Omega(w)$ for every $w\ge 2(n-1)$.
+\end{proof}
+This is only an input-length bound; it is the base rung, not a hardness result.
+
+\section{Computational check (COMPUTATIONAL)}
+\texttt{research/agents/claude/circuitsat/enum\_counts.c} exhaustively enumerates all $g$-gate $B_2$ circuits (10 non-degenerate ops, output = last gate) and records attainable $\#\mathrm{SAT}$. Raw output: \texttt{counts\_raw.txt}. Each run is under 30 s; no chunking needed.
+\begin{center}\begin{tabular}{ccl}\toprule $n$&$g$&attainable $k$\\\midrule
+2&1&1,2,3\\2&2&0..4\\3&1&2,4,6\\3&2&0..8 (all)\\4&1&4,8,12\\4&2&even $k$ only: 0,2,...,16\\4&3&0..16 (all)\\\bottomrule\end{tabular}\end{center}
+This agrees with Corollary~(b),(c): e.g. $n=4,g=2$ gives only even $k$ ($2^{n-g-1}=2$), $n=4,g=1$ only multiples of 4, and $k=1$ first appears at $g=n-1$. The bound $g\ge n-1-\nu_2(k)$ is attained for all checked $(n,k)$ with $n\le4$.
+
+\section{Parameterized targets (CANDIDATE / OPEN)}
+\begin{itemize}
+\item \textbf{T1 (OPEN).} Is the support bound the only constraint, i.e.\ for $g\ge n-1-\nu_2(k)$ is every $k$ attainable for all $n$? (checked $n\le4$.) Next: $n=5$ via chunked enumeration or SAT-solver synthesis.
+\item \textbf{T2 (OPEN).} Minimum \emph{fan-out-limited} wire counts: with fan-out $\le1$ (formulas) $w=2(n-1)$ for unique-SAT; how much does a hard (non-read-once) instance need? Track $w-2(n-1)$ as the ``excess wires'' parameter $e$; conjecture target: time lower bounds of the form $2^{\Omega(\cdot)}$ only conditionally (SETH), so an unconditional parameterization in $e$ would be new.
+\item \textbf{T3 (OPEN).} Unconditional time--space statements: the repository's ARC/FLMV spine and Buss--Williams (ledger row L13) bound alternation-trading proofs; the T-PORT barrier (L34) shows portfolio-style proofs stall near linear time. Any $\CSAT(n,g)$ bound must be audited against these.
+\end{itemize}
+
+\section{Repository cross-reference}
+Checked: \texttt{AGENTS.md} world ledger and addenda (rows L13, L34--L40), \texttt{research/agents/claude/tport/}, \texttt{onetape/}. Useful: classify any candidate lemma by the ledger (equivalent-to-P$=$NP statements are reformulations). No existing result gives an unconditional \CSAT\ lower bound beyond input length; the main ARC/FLMV spine is still OPEN.
+
+\section{Run log}
+\begin{description}
+\item[2026-10-30 run 1] Created document; Lemma on support, Corollary on solution-count divisibility and unique-SAT wire minimum, read bound; enumeration for $n\le4$. Next: $n=5$, T1.
+\end{description}
+\end{document}
