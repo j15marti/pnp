@@ -1,0 +1,72 @@
+% LSPV-4 REPORT::BUCKET-FLIP247::2026-10-30T03:36:00-07:00
+\documentclass[10pt]{article}
+\usepackage[margin=.8in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\title{BUCKET-FLIP247: Linear-Time Strict SAT Descent on Signed-Occurrence-Four Inputs, and the Quadratic Full-Trace Firewall}
+\author{LSPV-4 Circuit Resource Auditor}
+\date{30 October 2026, 03:36 America/Los\_Angeles}
+\begin{document}\maketitle
+\noindent\textbf{Statuses.} PROVED/EXACT restricted word-RAM data-structure/resource bound (independent mathematical referee pending); KNOWN THEOREM (make-break local search, conflict graph and pure resolution); COMPUTATIONAL (13 source-indexed hostile controls, independent checker, seven-size scaling); FALSIFIED/RETIRED (a full per-clause trace and/or complete SAT decision follows at zero extra cost); $P=NP$ and $P\ne NP$ OPEN.
+
+\section*{Targets, possible mechanisms and primary source experiment}
+For every ORIGINAL clause $C_j$ and each signed occurrence $x_{i,j}$ of the SAME global variable $x_i$, set the local $S_j$ target to make every source literal TRUE and local $U_j$ target to make every source literal FALSE. Positive literal $x_i$ requires $S_{i,j}=1,U_{i,j}=0$; negative literal $\neg x_i$ requires $S_{i,j}=0,U_{i,j}=1$. Inverting either target swaps its states. None of these individual indexed occurrences is an independent variable. Ordinary disjunctive SAT means $t_j\ge1$ rather than local $S_j$ meaning $t_j=3$. For distinct original clauses $C_j,C_k$, the four local extreme modes $SS,SU,US,UU$ satisfy: $SS,UU$ feasible iff no shared variable has opposite polarity; $SU,US$ iff none has the same polarity. Both shared-sign types force at least one middle state (1 or 2 TRUE literals) on every coherent complete assignment, not UNSAT. The experiment stores each source index and occurrence, both inverted targets, the complete four-mode matrix, pair conflict reasons, a bounded triple-mode enumeration, coherent $0^n,1^n$, complements, intermediate one-/two-/three-/multi-variable flip trails, every source $t_j\in\{0,1,2,3\}$, and provenance-checked resolvent cubes.
+
+The falsifiable proposals were: (A) bounded source-occurrence degree permits worst-case constant work per *selected* exact gain-maximizing strict flip; (B) retaining all $m$ clause truth counts at every step is also constant-work; (C) strict endpoint descent then decides SAT; (D) fully charged preprocessing always saves total work versus UP-DPLL. Mechanism A is proved in the restricted model. Mechanism B is falsified by the output-size lower bound. Mechanism C is falsified by the connected $H_r$ plateau and by the W1 UNSAT control. D is falsified by same-input resource ledgers. Existing GSAT/WalkSAT and Kullmann conflict graphs are explicitly credited \cite{Selman1992,SelmanKautz1993,Kullmann2003}.
+
+For coherent complete $a$, $t_j(\bar a)=3-t_j(a)$ and $N_h(\bar a)=N_{3-h}(a)$. For any global flip set $Q$, $t_j(a\oplus Q)-t_j(a)=|Q\cap L_j^{\rm false}(a)|-|Q\cap L_j^{\rm true}(a)|$. In particular $F(a)$ is SAT iff $N_0(a)=0$, while $F(\bar a)$ is SAT iff $N_3(a)=0$. Failed endpoints are not UNSAT certificates. The full raw JSON was generated independently of the complete decision procedures and preserves original source indices throughout.
+
+\section*{Exact constant-time gain updates in proper strict22}
+For a proper source CNF $F$ and global full assignment $a$, define for every original variable $x_i$ the *repair count* $R_i(a)$ to be the number of currently FALSE source clauses containing $x_i$, and the *break count* $B_i(a)$ to be the number of clauses with exactly one TRUE literal, namely $x_i$'s occurrence. Define $g_i=R_i-B_i$.
+\begin{theorem}[Linear strict-descent preprocessing on exact $(2+,2-)$ 3CNF]
+Let $F$ be proper signed exact-$(2+,2-)$ 3CNF with $n$ original variables, $m=4n/3$ original ternary clauses, and indexed occurrence access. From an arbitrary coherent full assignment $a$, a deterministic controller can repeatedly select a variable with \emph{maximum strictly positive} $g_i$ and flip the global variable until it finds a SAT assignment or reaches a local optimum. Excluding its optional expanded flip-trace output, the entire procedure, including input parsing, all original-clause $t_j$ and $N_0,\dots,N_3$, all gain updates, selection and final source witness verification, takes $O(N+m)$ indexed word-RAM time and $O(N)$ indexed machine words for input size $N$. At most $m$ strict flips occur, with $O(1)$ worst-case indexed work per flip after initial scanning. A failed run outputs UNRESOLVED, never UNSAT.
+\end{theorem}
+\begin{proof}
+For any global variable flip, only source clauses containing that variable can change. A previously FALSE clause containing it becomes SAT; a previously SAT clause becomes FALSE iff the flipped literal was its only TRUE literal. Thus
+\[N_0(a\oplus e_i)-N_0(a)=B_i(a)-R_i(a)=-g_i(a).\]
+For strict22, every variable occurs in exactly four distinct proper original clauses, so $-4\le g_i\le4$. Maintain nine doubly linked buckets indexed by gain $-4,-3,\dots,4$; insert and remove any variable in constant time. Selecting a positive maximum requires checking at most four bucket heads. After flipping $x_i$, exactly its four incident clause truth counts and their $N_h$ class entries change. In each affected ternary clause, the clause contribution to every variable gain is $+1$ for a false clause, $-1$ for the unique TRUE occurrence in a singleton clause, and $0$ otherwise. Subtract its old contribution and add its new contribution, at most $2\cdot4\cdot3=24$ per-clause gain-counter updates, affecting at most $1+4(3-1)=9$ distinct variables. Thus a constant number of intrusive list updates repairs the gain buckets exactly. Input/occurrence construction, bucket initialization and first clause-status computation take $O(N+m)$; each positive flip decreases the integer $N_0$ by at least one, so at most $m$ flips occur. Reaching $N_0=0$ yields a verified SAT witness. With no positive bucket, no completeness claim is made.
+\end{proof}
+The theorem concerns a \emph{restricted search prepass}, not SAT decision. It does not make the search complete, improve DPLL fallback asymptotics, constrain arbitrary algorithms, prove a complexity lower bound, or improve on existing SAT local-search theory except for an explicit resource specialization for degree four.
+
+\section*{Output-size theorem: do not hide quadratic scientific work}
+\begin{theorem}[Full versus delta trace resource firewall]
+If an experiment explicitly outputs all $m$ original-clause truth counts after each of $q$ coherent flips, its uncompressed trace necessarily contains $m(q+1)$ clause-count fields and requires $\Omega(m(q+1))$ field-write work and storage if retained. In contrast, on a strict22 source a replayable trace of the initial $m$ truth counts and, after each flip, the variable ID and up to four changed original source clause indices and counts needs $O(m+q)$ indexed records, retaining enough information to reconstruct every full intermediate vector. Re-expanding all complete intermediate vectors restores the $\Omega(mq)$ output cost.
+\end{theorem}
+\begin{proof}
+The first claim follows because the requested explicitly expanded output has $m$ fields at each of $q+1$ time points. For the second, every global flip touches exactly four original indexed clauses. Record their old/new $t_j$, the variable flipped, and the initial full vector. The resulting chronological delta stream deterministically reconstructs all $t_j$ and $N_h$ and retains identical logical status information. These are information-preserving source-indexed logs but the compact output is not an already-materialized full table.
+\end{proof}
+This is not an information-theoretic lower bound on compressed trajectories; it is an output-length bound for the explicitly specified full-table representation. Source proof-DAG sharing similarly saves retained proof records only when repeated provenance subproofs are truly identical and amortized lookup costs are paid.
+
+\section*{Experimental control and fully charged comparison}
+The complete Python producer uses only the standard library (seed $202610300336$) and stores 13 cases: connected plateau $H_1,H_2,H_3$, W1 UNSAT and its signed-swap SAT twin, complement-paired $K_4$ signed NAE SAT, original-variable polarity rename, XOR SAT and inconsistent XOR, odd $K_4$ Tseitin, Horn SAT, binary 2SAT UNSAT, and seeded dense planted SAT. The checker independently enumerated $1744$ source pair-mode entries, $65664$ coherent assignment-complement comparisons, and $768$ signed gain changes, and reproduced W1's zero models and its twin's 54 models. On $H_1$, the coherent trail $0\to1\to9\to41$ has $N_0$ counts $1,1,1,0$; a source-parent resolution on $x_3$ from $(x_1\vee x_3\vee x_5)$ and $(x_1\vee\neg x_3\vee x_6)$ derives $(x_1\vee x_5\vee x_6)$ and soundly forbids the full original-variable cube $x_1=x_5=x_6=0$.
+\begin{center}\small\begin{tabular}{lrrrr}
+\toprule Source & Baseline DPLL nodes & Baseline work & Strict flip+fallback work & Gain flips\\\midrule
+$H_1$ strict22 SAT&7&275&491&0+0\\
+$H_2$ strict22 SAT&9&718&1128&0+0\\
+$H_3$ strict22 SAT&15&1706&2310&0+0\\
+$W_1$ strict22 UNSAT&151&16238&16876&0+1\\
+$W_1'$ strict22 SAT&81&8056&8694&0+1\\
+Paired $K_4$ strict22 SAT&7&258&323&2\\
+Odd $K_4$ Tseitin UNSAT&15&1194&1739&0+1\\
+Dense planted SAT&12&2367&1296&0+2\\\bottomrule
+\end{tabular}\end{center}
+All numbers are deterministic selected Python-accounted logical events with explicit source/literal reads, bucket updates, global flips, fallback searches, witness checks and full local flip-trace writes. They are \emph{not} native CPU/Turing instructions. The complete baseline/alternative node counts are equal whenever fallback is used; failed endpoint strategies are charged. The external exhaustive assignment oracle and original-clause S/U diagnostics are scientific verification overhead and are separately reported, not passed as algorithm advice. Complete UNSAT proof trees from source-UP-DPLL are independently replayed and charged; on W1 the common proof replay takes another 1519 selected checking events. Measured peak $\mathtt{tracemalloc}$ allocation in W1: baseline 59128 bytes versus hybrid 66456 bytes, excluding previously existing source and diagnostics.
+
+The strict22 complement-paired disjoint $K_4$ product yields the following exact scaling, with $r$ copied blocks, $n=6r,m=8r$, and $q=2r$ successful positive-gain flips:
+\begin{center}\small\begin{tabular}{rrrrrr}
+\toprule $r$&$n$&$q$&Untraced solver work&Delta-trace work&Expanded-trace work\\\midrule
+1&6&2&278&315&323\\
+8&48&16&2224&2471&3431\\
+32&192&64&8896&9863&25991\\
+64&384&128&17792&19719&84743\\\bottomrule
+\end{tabular}\end{center}
+The untraced work is exactly $278r$ in this implementation. Its fully expanded trace contains $(8r)(2r+1)$ clause fields, causing quadratic output growth. All complete source-indexed finite-case JSON tables, formulas, control traces, exact contradictory branch trees, independent checker and checksum metadata are retained in the complete reproducibility bundle. The local source SHA256 is \texttt{a69a6dbd3ebc2c93ac0c04664dcdcd13fd37c1d68b61e4a654c1e704d413ea59}; primary raw SHA256 \texttt{bf14ac86b398f62ded83ad3f3c826a7d098f725916f9667e25d55b6ecd1bacb7}. A complete quadratic pair-extreme matrix is \emph{not} part of the compared controllers' decision work; a controller that consults it must pay acquisition and storage, and a sparse exact mode table has already been established by LSPV-4 SPARSE-EXTREME-SLACK244.
+
+\section*{Corpus, literature, and remaining obligation}
+Reviewed active coordination issue \#3, source governance, the recovered current canonical MAIN, LSPV-4 SPARSE-EXTREME-SLACK244, CONFLICT-CONSENSUS-TWIN245 and NAE-ENERGY-TWIN246, LSPV-2 THIRD-ORDER-CLUSTER245, LSPV-3 PAIRED-MATCHING-CUT244, LSPV-1 EXTREME-CLIQUE-IE247, and LSPV-5 STRICT22-MINIMUM-REFEREE218. Literal gain scheduling, incremental updates and flat plateaus are established local-search ideas \cite{Selman1992,SelmanKautz1993}; the verified contribution is the explicit constant-degree indexed work ledger and full-versus-delta output separation, not novelty in local search. A coincidental bounded-degree word-RAM implementation has no right to impose a lower bound on unknown SAT algorithms. The linear-time strict-descent promise and failing-to-prove-UNSAT guard remain essential.
+
+\noindent\textbf{Next OPEN lemma:} find a source-indexed phase-asymmetric, proof-carrying three-parent cube rule that survives UP and residual 2SAT, and test it with the $O(1)$ gain-maintained strict descent while charging discovery, failed attempts, policy switching, source proof replay and peak space on the same matched strict22 SAT/UNSAT families. P versus NP remains OPEN.
+\bibliographystyle{plain}\bibliography{LSPV4_BUCKET_FLIP247_refs}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-4::BUCKET-FLIP247
