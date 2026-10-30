@@ -1,0 +1,57 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-30 (run 0001)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\newtheorem{conj}{Conjecture}
+\newcommand{\CSAT}{\textsc{CircuitSAT}}
+\title{ClaudeCircuitSAT: a stepwise, parameterized lower-bound ladder for Circuit-SAT}
+\author{Living document (Claude scheduled runs)}
+\date{Last updated 2026-10-30}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. Nothing here is a super-polynomial lower bound. Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Goal: lower bounds for $\CSAT$ (given a fan-in-2 circuit $C$ with $n$ inputs and $s$ gates, is $C$ satisfiable?), stated as functions of the parameters $(n,s)$. Method: climb a ladder $L_{n,s}$ of instances, from the simplest to larger ones, recording at each rung the exact minimum number of gates/wires needed to build the circuit and the best proved bound on solving it.
+
+\section{Rung data: exact minimum circuits (COMPUTATIONAL)}
+Basis $B_2$ (all 16 binary gates, constants free). Exhaustive BFS (\texttt{research/agents/claude/circuitsat/ladder.py}, output \texttt{ladder\_results.json}, 11\,s) gives $C(f)$ for \emph{every} $f:\{0,1\}^n\to\{0,1\}$:
+\begin{center}\begin{tabular}{@{}rrcccc@{}}\toprule
+$n$ & max $C(f)$ & $\#\{C=0\}$ & $\#\{C=1\}$ & $\#\{C=2\}$ & $\#\{C=3\}$, $\#\{C=4\}$\\\midrule
+1 & 1 & 3 & 1 & --- & --- \\
+2 & 1 & 4 & 12 & --- & --- \\
+3 & 4 & 5 & 33 & 114 & 80, 24 \\\bottomrule\end{tabular}\end{center}
+(For $n=1$, $C=1$ is $\neg x$; gates with free negation would make it 0.) $\mathrm{AND}_3$ and $\mathrm{XOR}_3$ both have $C=2$. Wires: each gate has two in-wires, so a circuit of $g$ gates has $2g$ wires; min wires $=2C(f)$ for these tables. The $n=3$ hardest functions need 4 gates $=8$ wires, one more than the $n-1=2$ gate floor.
+
+\section{Proved baseline bounds}
+\begin{prop}[PROVED/EXACT, gate floor]
+A $B_2$ circuit depending on $n$ inputs has at least $n-1$ gates and at least $2(n-1)$ wires.
+\end{prop}
+\emph{Proof.} The underlying graph must connect the $n$ inputs to the output; a connected DAG on $n$ sources and one sink with in-degree $\le2$ has $\ge n-1$ internal nodes (merge count: each gate reduces the number of connected components by at most 1). Tight for $\mathrm{AND}_n,\mathrm{XOR}_n$. \qed
+
+\begin{prop}[PROVED/EXACT, parameterized read bound]
+Encode $C$ as a read-only list of $s$ gate descriptors. Any deterministic algorithm deciding $\CSAT$ with random access to the list must query $\Omega(s)$ entries (worst case), even when $n$ is fixed and large.
+\end{prop}
+\emph{Proof sketch.} Family: $s$ literals $l_1,\dots,l_s$ over distinct variables, $C=\bigwedge l_i$ (satisfiable). If the algorithm leaves entry $i$ unread, replace $l_i$ by $\neg l_j$ for some $j\ne i$: the circuit becomes unsatisfiable while all answers to queries are unchanged. So all entries must be read. \qed
+
+\noindent This is trivial and does \emph{not} touch the $2^{\Omega(n)}$-type question. Status of the real target:
+\begin{itemize}
+\item \textbf{KNOWN THEOREM} (gate elimination): explicit functions need $3.1n-o(n)$ gates over $B_2$ (Find--Golovnev--Hirsch--Kulikov 2016); no super-linear circuit lower bound for an explicit function is known. Hence a lower bound on a \emph{minimal circuit for} an NP function cannot currently be pushed past linear via this ladder.
+\item \textbf{KNOWN THEOREM} (time--space): $\mathrm{SAT}$ cannot be solved in $n^{2\cos(\pi/7)-o(1)}\approx n^{1.80}$ time and $n^{o(1)}$ space (Williams); related repo analysis: ledger row L13, T-PORT (rows L34--L37).
+\item \textbf{CONDITIONAL}: ETH gives $2^{\Omega(n)}$ for 3-SAT; SETH gives $2^{n}/\mathrm{poly}$-type tightness for $\CSAT$ with $s=\mathrm{poly}(n)$. Not unconditional.
+\end{itemize}
+
+\section{Parameterized target (CANDIDATE)}
+Define $T(n,s)$ = optimal deterministic time for $\CSAT$ on $n$ inputs, $s$ gates. Known: $\Omega(s)\le T(n,s)\le O(s\,2^n)$. The ladder asks for $T(n,s)$ at small fixed $n$ exactly (e.g.\ $T(1,s),T(2,s),T(3,s)$), where the answer is $\Theta(s)$ since $2^n$ evaluations are a constant factor; the parameterization is thus \emph{fixed-parameter linear} and the whole difficulty lives in the growth in $n$.
+\begin{conj}[OPEN] For $s=\Theta(n^{c})$, $c$ large, any algorithm needs $s\cdot 2^{\delta n}$ for some $\delta>0$ (this is a form of SETH/ETH; implies P$\neq$NP).\end{conj}
+
+\section{Repository cross-check}
+Repo work reviewed this run: AGENTS.md pointer to the world ledger (\texttt{research/agents/claude/world-ledger}), TPORT/ONETAPE reports. Useful classification rule from the ledger: a statement equivalent to P=NP is a reformulation, not progress. Gate-count lower bounds for circuits do not transfer to algorithm time lower bounds (a circuit lower bound for a function is not a lower bound for deciding $\CSAT$); the bridge would be non-uniform lower bounds via Karp--Lipton-type collapses only.
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend the exact table to $n=4$ ($65536$ functions, known max $C=7$) with checkpointed search (30\,s chunks).
+\item Track minimum wires with fan-out restricted (formulas): compute $L(f)$ for $n\le4$ and compare to $C(f)$.
+\item Per-rung table of $T(n,s)$ for a concrete RAM-like solver and compare against the $\Omega(s)$ floor.
+\item Try gate-elimination-style potential on the \emph{instance} (the input circuit) to bound an adaptive solver's work; audit against relativization.
+\end{enumerate}
+\end{document}
