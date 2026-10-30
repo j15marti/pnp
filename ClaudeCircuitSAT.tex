@@ -1,0 +1,60 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-30 (run 0001)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{thm}{Theorem}\newtheorem{lem}[thm]{Lemma}\newtheorem{prop}[thm]{Proposition}
+\theoremstyle{definition}\newtheorem{defn}[thm]{Definition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{Lower Bounds for \CSAT: a Wire-by-Wire, Input-by-Input Ladder\\\large Living document (Claude)}
+\date{Last updated 2026-10-30}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here proves a superlinear unconditional lower bound for \CSAT\ on a general model. Labels: PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Setup and parameters}
+A circuit $C$ has $n$ inputs, $g$ fan-in-2 gates (AND with free inversion, an AIG), $m=2g+1$ wires (two per gate plus output). \CSAT: is there $x\in\{0,1\}^n$ with $C(x)=1$? Parameters $(n,g)$; a parametrized bound is a function $T(n,g)$.
+Upper bound: $O(2^n g)$ by enumeration. The goal is the shape of the true $T(n,g)$.
+
+\section{The ladder}
+\begin{lem}[Connectivity, PROVED]\label{lem:conn}
+If the output of a fan-in-2 circuit depends on all $n$ inputs then $g\ge n-1$ and $m\ge 2(n-1)+1$; equality for $\mathrm{AND}_n$.
+\end{lem}
+\begin{proof} Each gate merges at most two connected components of the underlying graph; the output component must contain $n$ inputs, which starts as $n$ singletons, so $\ge n-1$ merges.\end{proof}
+
+\begin{thm}[Reading bound, PROVED]\label{thm:read}
+For every $g\ge1$, $n\ge1$, any deterministic algorithm that decides \CSAT\ on $(n,g)$-circuits given as a wire list must inspect $\Omega(g)$ wire entries.
+\end{thm}
+\begin{proof} Take $k=\lfloor (g+1)/2\rfloor$ gadgets $G_i=\mathrm{AND}(x_1,w_i)$ with $w_i\in\{x_1,\neg x_1\}$ selectable; output is the OR of the gadgets, where the base instance has all $w_i=\neg x_1$ (so unsatisfiable, constant $0$). Flipping any single $w_i$ to $x_1$ makes the circuit satisfiable. An algorithm that leaves wire $w_i$ unread answers identically on both, hence errs. So all $k=\Theta(g)$ switch wires are read. (The OR of $k$ gadgets costs $k-1$ further AND gates with inversions, so $2k-1\le g$ gates in total.)\end{proof}
+This holds already for $n=1$, so the bound is in $g$ only; $n$ enters only through a different model.
+
+\begin{thm}[Evaluation-only bound, PROVED in this model]\label{thm:bb}
+An algorithm that interacts with $C$ only through evaluation queries $x\mapsto C(x)$ needs $2^n$ queries (deterministic) and $\Omega(2^{n/2})$ quantum (Grover/BBBV).
+\end{thm}
+\begin{proof} The adversary answers $0$ until one point remains; the family $C_a=[x=a]$ (size $g=n-1$ by Lemma~\ref{lem:conn}) realises every answer pattern. \end{proof}
+\textbf{Barrier (KNOWN).} Theorem~\ref{thm:bb} does not bound white-box algorithms; the gap is exactly where P vs NP lives. Parametrized shape suggested by the two models: $T(n,g)\ge \max(g,\,2^n)$ for \emph{structure-oblivious} algorithms.
+
+\subsection{Small-case computation (COMPUTATIONAL)}
+\texttt{research/agents/claude/circuitsat/aig\_ladder.py} computes exact minimal AIG gate counts of all functions by BFS over computed-function sets.
+\begin{center}\begin{tabular}{@{}cccl@{}}\toprule
+$n$ & functions & max min-gates & histogram (gates:count)\\\midrule
+2 & 16 & 3 & 0:6, 1:8, 3:2 (XOR/XNOR cost 3)\\
+3 & 256 & 6 & 0:8, 1:24, 2:64, 3:30, 4:104, 5:8, 6:18\\\bottomrule\end{tabular}\end{center}
+$\mathrm{AND}_n$ costs $n-1$ gates for $n=2,3$, matching Lemma~\ref{lem:conn}. Wire counts are $2g+1$ for the extremal circuits. Next step: $n=4$ (needs chunked search; $>30$s, plan: seeds by first-gate choice) and tracking how the number of \emph{satisfiability-critical} wires grows with $g$.
+
+\section{Barriers any parametrized bound must respect}
+\begin{itemize}
+\item Beyond linear time, a general bound for \CSAT\ implies $\mathrm{P}\neq\mathrm{NP}$ in the relevant regime; so the realistic target is a restricted-model or time--space bound.
+\item KNOWN: time--space tradeoffs for SAT (Fortnow--van Melkebeek, Williams: $n^{2\cos(\pi/7)}\approx n^{1.80}$ at $n^{o(1)}$ space); alternation-trading cannot reach exponent 2 (Buss--Williams) --- ledger row L13.
+\item Repository: portfolio barrier L34 ($\mathrm{TPORT}$): alternation-trading proofs cannot beat linear time for a portfolio of about $N$ programs; one-tape crossing-sequence note (ONETAPE) shows nondeterministic machines obey the same bound, so it cannot separate P/NP. Files: \texttt{research/agents/claude/world-ledger/}, \texttt{2026-10-28\_1326\_CLAUDE\_TPORT-0001.tex}, \texttt{2026-10-28\_1521\_CLAUDE\_ONETAPE-0001.tex}.
+\item Circuit lower bounds known: $3n-o(n)$ for explicit functions over the full binary basis; $\Omega(n^{3})$ formula size; none superlinear in general for NP.
+\end{itemize}
+
+\section{Open targets (parametrized)}
+\begin{enumerate}
+\item OPEN: a restricted model (e.g.\ algorithms that read the circuit in a fixed order, or DPLL/resolution-style) where $T(n,g)\ge g\cdot 2^{\epsilon n}$ for hard families. Resolution gives such bounds for CNF; the circuit analogue (Extended Frege) is open.
+\item OPEN: replace ``evaluation-only'' by ``evaluation plus bounded structure queries'' and see how Theorem~\ref{thm:bb} degrades with the number of structure queries.
+\item CANDIDATE: fixed-parameter view: with $n=O(\log g)$, \CSAT\ is in P; study the threshold $n=\omega(\log g)$ and a lower bound $g^{\Omega(\log\log g)}$ in a restricted model.
+\end{enumerate}
+
+\section{Log}
+\begin{tabular}{@{}ll@{}}\toprule Run & Content\\\midrule
+0001 (2026-10-30) & Document created; Lemma~\ref{lem:conn}, Thms~\ref{thm:read}, \ref{thm:bb}; AIG tables $n=2,3$.\\\bottomrule\end{tabular}
+\end{document}
