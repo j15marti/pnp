@@ -1,0 +1,73 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append-by-section; status labels per AGENTS.md
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymbol,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\newcommand{\CSAT}{\textsc{CircuitSAT}}
+\title{ClaudeCircuitSAT: a step-by-step, wire-counting lower-bound ledger for Circuit-SAT}
+\author{Hourly Claude routine (living document)}
+\date{Last updated: 2026-10-30 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is a super-polynomial lower bound for \CSAT. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and method}
+Build circuits step by step (n=1,2,3,\dots inputs), record for each stage the \emph{exact minimum number of gates/wires} needed, and ask what that says about the time $T(m,n)$ to decide \CSAT\ on an input circuit with $m$ gates and $n$ inputs. Lower bounds may be \emph{parametrized}: $T(m,n)\ge f(m,n)$, or in terms of a structural parameter (treewidth, depth, fan-out, number of unique-satisfying-assignment constraints).
+
+\textbf{Model.} Circuits: DAG, fan-in $\le 2$, all 2-input gates, negation free. Size $=$ gate count; wires $=$ gate input-edges ($=2\cdot$gates). Algorithm model: random-access, input is the circuit description; ``reads'' counted.
+
+\section{Ledger of stages}
+\subsection{Stage 1--2: one and two inputs}
+Functions mod complement on 2 inputs: 8 classes; 3 need 0 gates (constants/literals), 5 need exactly 1 gate. \hfill COMPUTATIONAL (\texttt{minsize.py 2}).
+
+\subsection{Stage 3: three inputs}
+Exact minimum gates over the 128 classes mod complement: 
+\begin{center}\begin{tabular}{lccccc}\toprule gates&0&1&2&3&4\\ \midrule \#functions (mod $\neg$)&4&15&57&40&12\\ \bottomrule\end{tabular}\end{center}
+So the hardest 3-input functions need 4 gates (8 wires); none needs 5. \hfill COMPUTATIONAL, exhaustive BFS over wire sets, \texttt{research/agents/claude/circuitsat/minsize.py}. Next: $n=4$ needs a smarter search (SAT-based exact synthesis) -- OPEN task, chunk into $<30$ s stages.
+
+\section{Proved structural bounds}
+\begin{proposition}[Connectivity, PROVED/EXACT]\label{p:conn}
+If a fan-in-2 circuit's output depends on all $n$ inputs then it has $\ge n-1$ gates and $\ge 2(n-1)$ wires; equality is attained by an AND-tree.
+\end{proposition}
+\begin{proof} The output cone is a connected DAG with $n$ sources. Add gates one at a time in topological order; each gate has two inputs so merges at most two components into one, reducing the component count by at most 1. Starting from $n$ components (the inputs) we need to reach 1, so $\ge n-1$ gates. The AND-tree meets it. \end{proof}
+
+\begin{proposition}[Unique-SAT family, PROVED/EXACT]\label{p:uniq}
+Let $U_n=\bigwedge_i \ell_i$ (literals $\ell_i\in\{x_i,\neg x_i\}$). Then $U_n$ has exactly one satisfying assignment, optimal size $n-1$, and: white-box \CSAT\ is solved by $O(n)$ reads; black-box (evaluation oracle only) \CSAT\ needs $2^n$ queries in the worst case.
+\end{proposition}
+\begin{proof} Size from Prop.~\ref{p:conn}. White box: read polarities. Black box: adversary answers $0$ to every query until only one assignment remains unqueried, then decides it is the satisfying one. \end{proof}
+\textbf{Lesson (EXACT):} wire counting alone yields only linear bounds; any super-linear bound must come from \emph{interaction} of the wires (reuse/fan-out), not from the count.
+
+\begin{proposition}[Read lower bound, PROVED/EXACT]\label{p:read}
+Any algorithm deciding \CSAT\ on circuits given as descriptions with $n$ leaves must read $\Omega(n)$ symbols, even promised the circuit is an AND of $n$ literals.
+\end{proposition}
+\begin{proof} Instances: an AND-chain of literals over $n/2$ variables each possibly repeated. Unsatisfiable iff some variable appears in both polarities. An algorithm that leaves a leaf unread can be given a hidden contradiction at that leaf (adversary). So all but $O(1)$ leaves are read. \end{proof}
+
+\section{Parametrized view}
+Write $T(m,n)$. Known/derived frame:
+\begin{itemize}
+\item $T(m,n)=\Omega(m)$ on the family of Prop.~\ref{p:read} (PROVED/EXACT, trivial).
+\item $T(m,n)\le 2^n\,\mathrm{poly}(m)$ by brute force; $T\le 2^{\mathrm{tw}}\mathrm{poly}(m)$ by dynamic programming over a tree decomposition of the circuit graph (KNOWN THEOREM, standard). So any hardness must come from large treewidth: a lower bound of form $T\ge 2^{c\cdot \mathrm{tw}}$ is the natural parametrized target. \textbf{CANDIDATE.}
+\item SETH $\Rightarrow$ no $2^{(1-\epsilon)n}\mathrm{poly}(m)$ algorithm; ETH $\Rightarrow$ no $2^{o(n)}\mathrm{poly}(m)$. CONDITIONAL (not usable for an unconditional proof).
+\item Explicit circuit-size lower bounds for functions are only linear ($\approx 3.1n$ in the full binary basis, Li--Yang 2022; cited from memory, verify). KNOWN THEOREM, barrier: this is the regime Prop.~\ref{p:conn} lives in.
+\end{itemize}
+
+\section{Links to the main repository (j15marti/pnp)}
+Surveyed this run only via the AGENTS.md pointer notes (not a full corpus review; \textbf{TODO} next runs).
+\begin{itemize}
+\item Ledger row L13 (Buss--Williams): alternation trading cannot reach SAT exponent $2\cos(\pi/7)$ with $n^{o(1)}$ space -- bounds time--space, not circuit wires.
+\item TPORT (L34--L37) and one-tape notes (L38--L40): one-tape/crossing-sequence bounds also hold for nondeterminism, so they cannot separate P from NP; same caution applies to any wire-counting argument that does not use determinism/exact SAT.
+\item Reformulation filter (from ledger): a statement equivalent to P=NP is a reformulation, not progress.
+\end{itemize}
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item Extend exact table to $n=4$ (SAT-based exact synthesis, chunked). COMPUTATIONAL target.
+\item Define a \emph{fan-out/reuse} measure $\rho(C)$ (wires minus tree-wires) and test whether $T(m,n)$ can be lower-bounded in terms of $\rho$ in a restricted model (e.g., DPLL-style / resolution-bounded algorithms). CANDIDATE.
+\item Check treewidth-parametrized lower bound against known barriers (relativization, natural proofs). OPEN.
+\item Do the full corpus review and the barrier-transfer literature search required by AGENTS.md.
+\end{enumerate}
+
+\section*{Run log}
+\begin{tabular}{ll}2026-10-30 run 1 & created document; $n\le3$ exact table; Props.~\ref{p:conn}--\ref{p:read}.\end{tabular}
+\end{document}
