@@ -1,0 +1,259 @@
+% LSPV-5 REPORT::NAE-PINNED-2SAT-FIREWALL217::2026-10-30T01:48:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newcommand{\PROVED}{\textbf{PROVED/EXACT}}
+\newcommand{\KNOWN}{\textbf{KNOWN THEOREM}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\newcommand{\FALSE}{\textbf{FALSIFIED/RETIRED}}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\title{LSPV-5 Red-Team Report: Pinned NAE Residuals Are 2CNF,\\
+Not Binary Disequality Edges}
+\author{LSPV-5 Independent Red Team / Synthesis}
+\date{30 October 2026, 01:48 America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.92\linewidth}{
+\textbf{Status.} Pinning one literal of a ternary NAE clause does not create a
+binary NAE/disequality edge.  It creates one ordinary binary clause.  More
+generally, any partial assignment hitting every designated NAE 3-clause
+leaves an exact 2CNF residual, decidable and certifiable by implication-graph
+SCC.  This is a standard strong-backdoor phenomenon, not a new general SAT
+algorithm.  Finding or enumerating assignments to a large hitting set may be
+exponential.  P versus NP remains \textbf{OPEN}.}}
+\end{center}
+
+\section{Missing lemma and falsifiable mechanisms}
+
+The preceding run left an imprecise target: pinning might ``shrink ternary NAE
+edges to binary NAE edges,'' after which odd binary cycles would certify
+inextendibility.  Four mechanisms were tested:
+\begin{enumerate}
+\item one pinned literal may instead yield only one ordinary binary clause;
+\item two equal pins may yield a unit, while two unequal pins satisfy the NAE
+constraint completely;
+\item if every designated clause is hit, the whole residual may be exactly
+2CNF and standard SCC, not an independent NAE odd-cycle calculus;
+\item treating every one-pin residual as disequality may reject genuine source
+models.
+\end{enumerate}
+All four hold.  Mechanism 4 produces 2,304 exact false rejections on the K4
+paired sign census.
+
+\section{Exact restriction calculus}
+
+Let $D=(\ell_1,\ell_2,\ell_3)$ be a signed NAE clause.  A source assignment
+satisfies the complement-paired ordinary clauses $D\wedge\overline D$ exactly
+when the three literal truth values are not all equal.
+
+\begin{lemma}[one-clause restriction]
+Let $\rho$ pin at least one variable of $D$.
+\begin{enumerate}
+\item If pinned literal truth values contain both 0 and 1, $D$ is already NAE
+satisfied.
+\item If all pinned literal truth values equal $c$ and two literals remain,
+the residual is the single binary clause requiring at least one remaining
+literal to have truth $1-c$.
+\item If all pinned literal truth values equal $c$ and one literal remains,
+that literal is forced to truth $1-c$.
+\item If all three are pinned, equal values give conflict and mixed values give
+satisfaction.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+NAE fails exactly when all three literal truth values equal the same bit.
+Each case is the direct exclusion of that one all-equal completion.
+\end{proof}
+
+For example, pinning $x=0$ in $\operatorname{NAE}(x,y,z)$ gives
+\[
+ y\vee z,
+\]
+not $y\ne z$.  The assignment $y=z=1$ satisfies the NAE clause but violates
+disequality.  Thus the proposed raw odd-cycle interpretation is false at the
+smallest possible source.
+
+\begin{theorem}[hitting partial assignment gives exact 2CNF]
+Let $\mathcal D$ be any signed NAE-3 formula and let $\rho$ be a coherent
+partial assignment whose domain intersects every source clause.  In time
+linear in the source encoding, construct a 2CNF $G_\rho$ such that
+\[
+ \rho\text{ extends to an NAE model of }\mathcal D
+ \quad\Longleftrightarrow\quad
+ G_\rho\text{ is satisfiable}.
+\]
+An UNSAT residual has the standard SCC certificate: some remaining variable
+and its negation lie in one implication component.
+\end{theorem}
+\begin{proof}
+Apply the lemma independently to every original clause, retaining its source
+index.  Satisfied clauses disappear; the other cases emit an empty, unit, or
+binary clause.  Since every clause is hit, no ternary residual remains.
+Conjunction preserves exact extension equivalence.  Linear-time 2SAT by SCC
+then decides the residual and supplies the usual contradictory-component
+certificate.
+\end{proof}
+
+\paragraph{Known overlap and scope.}
+This is precisely a supplied strong 2CNF-backdoor assignment.  Nishimura,
+Ragde and Szeider formalized strong backdoors to 2CNF and Horn and showed
+fixed-parameter tractable detection by backdoor size.  The present clause
+calculus is an exact NAE/complement-paired instantiation, not a novelty claim.
+If a hitting set has size $b$, trying all its assignments costs $2^b$ 2SAT
+calls; applicability alone does not imply polynomial total work.
+
+\section{Exhaustive K4 residual referee}
+
+For every one of the 64 sign classes of the complement-paired K4 source, the
+experiment enumerated all $3^6$ coherent partial assignments and retained
+those hitting all four designated NAE clauses.  Each exact extension answer
+was checked by full completion enumeration and independently by the generated
+2CNF SCC solver.
+
+\begin{center}
+\begin{tabular}{lr}
+\toprule
+quantity & exact count\\
+\midrule
+sign classes &64\\
+hitting partial assignments &40,704\\
+extendible / inextendible &26,592 / 14,112\\
+completion assignments checked &95,964\\
+2SAT implication edges / DFS visits &86,784 / 217,344\\
+naive-disequality false rejections &2,304\\
+naive-disequality false acceptances &0\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The first false rejection pins $x_3=x_5=0,x_6=1$ in balanced K4.  The exact
+residual is
+\[
+ (x_1\vee x_2)\wedge(x_1\vee x_4)\wedge
+ (\neg x_2\vee\neg x_4),
+\]
+with source witness $(x_1,x_2,x_3,x_4,x_5,x_6)=(1,0,0,0,0,1)$.
+The incorrect disequality replacement adds the complementary clause for each
+binary residual and declares this valid cube impossible.
+
+The first nonempty SCC contradiction pins
+$x_3=0,x_4=x_5=x_6=1$, yielding
+\[
+ (x_1\vee x_2)\wedge\neg x_1\wedge\neg x_2.
+\]
+The implication graph puts both polarities of $x_1$ and $x_2$ in one SCC;
+external enumeration independently checked all four completions.  This is a
+sound prohibited source cube with clause provenance, but it is ordinary UP/
+2SAT reasoning rather than a new extreme-graph rule.
+
+\section{Mandatory clause-indexed audit and charged comparison}
+
+Eleven hostile controls were run: a minimal paired clause, balanced and
+unbalanced paired K4, LSPV-4's endpoint plateau $H_1$, satisfiable and
+contradictory XOR, contradictory padded units, Horn SAT, strict22 SAT, planted
+dense SAT, and the all-signs three-variable UNSAT source.  For every original
+clause and signed occurrence, the raw output contains the local all-literals
+true $S_j$ target, its inverted $U_j$, the original all-literals false $U_j$
+target, and its inverted $S_j$.  It also contains all source-indexed
+$SS,SU,US,UU$ matrices, bounded multi-clause modes, coherent $0^n/1^n$ states,
+all four true-literal-count buckets, complement checks, flip trails,
+source-parent resolvents and prohibited cubes.  No occurrence target is
+treated as an independent Boolean variable.
+
+\begin{center}\small
+\begin{tabular}{lrrrr}
+\toprule
+control & base nodes & resolvent nodes & base work & charged resolvent work\\
+\midrule
+minimal paired SAT &3&3&30&51\\
+paired K4 balanced &6&6&196&544\\
+paired K4 unbalanced &4&4&158&506\\
+endpoint plateau $H_1$ &7&5&239&734\\
+XOR contradiction &7&3&205&652\\
+padded-unit contradiction &19&3&589&573\\
+Horn SAT &4&4&56&128\\
+strict22 SAT &3&3&139&573\\
+planted dense SAT &8&8&1034&6394\\
+all-signs UNSAT &7&3&205&661\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The full run made 164,402 pair-mode, 111,706 multi-mode, 3,622 coherent-mode,
+6,320 complement, 40,720 single-flip and 1,304 forbidden-cube-extension checks
+in 1.67 measured Python seconds.  Resolution reduced nodes on $H_1$ and the
+UNSAT controls but increased charged work except on padded units.  These are
+instrumented fixed-order UP--DPLL events, not industrial CDCL or a native
+machine lower bound.
+
+\section{Peer and literature reconciliation}
+
+LSPV-4 ENDPOINT-PLATEAU243 proves connected strict22 SAT plateaus where neither
+endpoint nor any single flip improves $N_0$; its finite source is included
+here.  LSPV-1 BALANCED-OCCURRENCE-FIREWALL243 independently shows its
+first-order strict22 count is UP-dominated and that equality leaves 2CNF.
+LSPV-2 SECOND-ORDER-FLIP-SPECTRUM243 compresses aggregate two-flip statistics
+but does not certify a general branch.  LSPV-3 MATCHING-HAMMING-FIREWALL244
+finds a minimum repair hitting set for initially false clauses, while proving
+ordinary partial-cube exclusion is UP-dominated.  LSPV-1
+EXTREME-FOREST-MODELCOUNT244 gives a Hunter-bound model-count certificate on a
+restricted $n=6$ regime but costs more than baseline on its controls.  These
+results agree on the current firewall: a source-authenticated consequence
+beyond saturated UP and residual 2SAT remains OPEN.
+
+Primary sources inspected were Porschen--Randerath--Speckenmeyer's linear
+NAE-SAT(2) algorithm; Nishimura--Ragde--Szeider's SAT 2004 strong-backdoor
+framework; and Kullmann's signed conflict and hitting clause-set work.  A
+GitHub search found a general NAE3SAT-to-set-splitting implementation but no
+implementation exposing this exact source-indexed pinned residual certificate.
+A failed implementation search is not an impossibility result.
+
+\section{Corpus and status audit}
+
+\paragraph{CORPUS REVIEWED.}
+Issue \#3 and all 24 comments; root \path{main.tex}; \path{AGENTS.md},
+\path{CODEX.md}, repository skill/task specifications; run216 and all newest
+LSPV-1--4 reports named above; run214 clause audit and run215 absorption audit;
+the cited primary literature and GitHub result.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+The 2CNF result is a strong-backdoor specialization and overlaps the peer UP
+firewalls.  The corrected contribution is to retire the false raw-disequality
+interpretation and quantify its false rejections.  The current root blob was a
+43-byte placeholder and could not be used as synthesis.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+The run216 verified root is recovered and augmented with the pinned-residual
+calculus and newest restricted peer results.  No missing placeholder text is
+invented; broader SAT claims remain OPEN.
+
+\paragraph{ADOPTED / REJECTED / RETIRED.}
+Adopted: source-indexed $S/U$ bookkeeping, standard 2SAT SCC, endpoint plateau
+and peer UP-dominance firewalls.  Rejected: interpreting one pinned ternary NAE
+clause as a disequality edge.  Retired: raw odd-cycle detection as the next
+certificate target without first constructing the exact implication graph.
+
+\section{Exact statuses and next lemma}
+\begin{itemize}
+\item \PROVED: a hitting partial assignment gives an exact source-indexed 2CNF
+residual with SCC certificates.
+\item \FALSE: one pin creates a binary NAE/disequality edge.
+\item \COMP: 40,704 K4 hitting partials and all hostile controls passed exact
+external checks; the naive rule falsely rejected 2,304 extendible cubes.
+\item \OPEN: a polynomially discoverable source consequence beyond saturated
+UP and residual 2SAT; arbitrary exact22 coverage; P=NP and P$\ne$NP.
+\end{itemize}
+
+The next specific lemma is a source-authenticated residual rule for an
+\emph{unhit} ternary NAE component that excludes a coherent partial cube not
+already rejected by UP or the 2SAT residual.  It must be tested on matched SAT
+and UNSAT strict22 families, charge discovery and failed switches, and compare
+total work against branch ordering, Horn, XOR and CDCL-style learning.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::NAE-PINNED-2SAT-FIREWALL217
+\end{document}
