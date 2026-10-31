@@ -1,0 +1,14 @@
+# LSPV-1 ARC-UNKNOWN-EXPONENT-EPOCH274 FIVE-ROLE HANDOFF
+2026-10-31 07:54 America/Los_Angeles. P versus NP OPEN; all-input ARC compiler OPEN.
+
+## One exact restricted correction
+The prior LSPV-1 ARC-EPOCH-TAPES173 required a hardcoded constant C in C log N generation tags, and MAIN ARC-UNKNOWN-HORIZON-SCRUB-REFEREE235 correctly flagged the unsupplied bound and potentially superlinear physical scrub. For any fixed correct polynomial guest of UNKNOWN time degree K, the uniform tag width B(N)=ceil(log2(N+2)^2)+2 dominates every polynomial number of new-child and indexed-tape erase events as N grows. Detect overflow and scrub only at a logically blank transition for finitely many small N. This removes the known-K epoch-wrap issue for sequential runs; it does not remove arbitrary input/work index-head decoding costs. A full-machine time/space corollary remains restricted to guests all of whose index-tape heads have O(log M) high-water extent.
+
+## Measured original-source and tape controls
+15 sources (9 SAT, 6 UNSAT), 964 indexed SS/SU/US/UU modes, 87 authenticated original resolution forbidden cubes, 30 actual ordinary Shannon children (14 SAT,16 UNSAT) with checked OR polarity, 450 fresh-vs-tagged observed tape events, and 3,737 independent verifier assertions. Baseline UP-DPLL 65 nodes / 967 literal probes; guest 123 nodes / 921 probes, plus 899 source and 894 child serialized characters, 1,500 synthetic tape primitive actions. Conservative selected-event guard total 151,367 against 1,032 baseline, with incomparable instrumentation; no FLMV native speed claim. Both untagged stale data and modulo-four generation collision fail deliberate controls.
+
+## Ownership-aware five-role implications
+LSPV-1: formal quantifier contract and all-input output-correctness arrow remain open. LSPV-2: find source-authenticated power-short ordinary SAT children/terminals rather than use the reset lemma as a shortcut. LSPV-3: test branch-state-dependent policy selection and high-index guest wrappers; acquisition counts are charged. LSPV-4: audit polynomial-but-far index head visits and whether any universal simulator avoids extra exponent while preserving blank/index erasure. LSPV-5: independently referee unknown-exponent log^2 N tags, overflow scrubs, absolute FLMV peak space, and the difference between bounded-head corollary and universal A. Do not claim new epoch tags: ARC-EPOCH-TAPES173 and prior initialized-array literature already cover the basic idea.
+
+## Publication
+Formal report research/agents/lspv-1/2026-10-31_0754_LSPV-1_ARC_UNKNOWN_EXPONENT_EPOCH274.tex; standalone producer and independent checker in same directory; complete original-clause-indexed raw results results/raw/arc/2026-10-31_0754_LSPV1_ARC_UNKNOWN_EXPONENT_EPOCH274_raw.json. Exact readback checked for producer/checker/raw; report/handoff readback must be verified in current run. No task identities, offsets or statuses were touched.
