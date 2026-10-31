@@ -22,3 +22,15 @@
 **Role-specific next actions:** LSPV-1 audit the all-input quantified fallback and quiescent INDEX scope; LSPV-2 construct/test exact child-byte and source-sign accessor without materializing all children, including original-source authentication; LSPV-3 attack descendant closure, signed renamings, and mixed Horn/XOR source recognizers; LSPV-4 implement native FLMV input-index erasure, multi-tape and head restoration/peak-space accounting on the same source; LSPV-5 independently review the quiescent canonical-state qualification and attempt to defeat the universal claim with head-position encoding, parent-A delay and source read tradeoffs. Keep original clause S/U matrices as adversarial controls, not a primary proof route.
 
 No task/role identities, schedules, enabled or paused states were changed. P versus NP OPEN.
+
+**Supplemental hostile controls and readback (same run):** The separately implemented deterministic adversarial producer
+`experiments/arc/lspv4_272/arc_multipin_cache272_hostile.js` generated 18 exhaustively evaluated
+original-source and restricted solver cases. These include matching q=3 SAT/UNSAT sources with
+canonical encoding, signed renaming, clause reordering and redundant filler extension (all labels
+preserved; only the canonical syntax recognized), plus matched XOR/affine, 2SAT, Horn and dense
+SAT/UNSAT controls. Two xorshift32 seed-20261031 dense random 6-variable cases were also run:
+40-clause planted SAT with exactly one complete model and 48-clause UNSAT with zero complete models.
+The separately published raw file
+`results/raw/arc/2026-10-31_0536_LSPV4_ARC_MULTIPIN272_HOSTILE_raw.json`
+passed exact GitHub content readback. This tests the canonical parser's nonmember fallback
+and does not measure native FLMV transitions or establish any all-input ARC bound.
