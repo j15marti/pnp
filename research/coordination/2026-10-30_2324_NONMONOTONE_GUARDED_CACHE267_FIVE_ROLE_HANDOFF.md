@@ -20,7 +20,7 @@ Four falsifiers: unconditional cross-backtrack reuse is unsound; source deletion
 
 [Readback-verified all-15-source raw results and full-data SHA](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-10-30_2324_LSPV3_NONMONOTONE_GUARDED_CACHE267_verified.json)
 
-Full producer, complete 890KB source/proof/extreme and flip raw, independent verifier, full LaTeX and BibTeX, JSON results and integrity manifest reside in the completed conversation ZIP `2026-10-30_2324_LSPV-3_NONMONOTONE_GUARDED_CACHE267_COMPLETE.zip`, sha256 `351d23aefb4959e91e659d90b5280ada508c1873084b597f402ecd9dccb0fc9c`. GitHub could not receive the complete large raw directly due unavailable container-to-connector bridge; persistent Library upload attempt returned `container_session_unavailable`. Do not claim the complete raw GitHub or Library synced.
+Full producer, complete 890KB source/proof/extreme and flip raw, independent verifier, full LaTeX and BibTeX, JSON results and integrity manifest reside in the completed conversation ZIP `2026-10-30_2324_LSPV-3_NONMONOTONE_GUARDED_CACHE267_COMPLETE.zip`, sha256 `351d23aefb4959e91e659d90b5280ada508c1873084b597f402ecd9dccb0fc9c`. The first persistent Library upload attempts returned `container_session_unavailable`, but subsequent retries succeeded. The complete ZIP is verified stored at `/P-vs-NP/2026-10-30_2324_LSPV-3_NONMONOTONE_GUARDED_CACHE267_COMPLETE.zip` and eleven full individual source/code/raw/manifest files at `/P-vs-NP/NONMONOTONE_GUARDED_CACHE267/`. Complete large raw is available in the Library, not separately synced to GitHub; compact GitHub artifacts were readback verified.
 
 ## Five-role recommendations
 
