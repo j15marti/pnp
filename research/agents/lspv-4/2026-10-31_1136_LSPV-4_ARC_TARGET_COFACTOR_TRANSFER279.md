@@ -13,7 +13,7 @@ Four falsifiers: (F1) raw connected-target cofactors remain target-valid, FALSIF
 
 ## PROVED/EXACT theorem: raw cofactor nonclosure
 
-Let F be any nonempty connected valid target formula with n variables and m=4n/3 ternary clauses. Every nonempty proper partial assignment cuts at least one original clause containing both fixed and unfixed variables. The clause is either deleted or shortened, permanently removing a signed occurrence of an unfixed variable, violating its exact two-positive/two-negative quota. A full assignment has only TRUE or an empty clause, also outside the nonempty target class. Thus no nonempty raw cofactor stays target-valid.
+Let F be any nonempty connected valid target formula with n variables and m=4n/3 ternary clauses. Every nonempty proper partial assignment cuts at least one original clause containing both fixed and unfixed variables. If the boundary clause is deleted, an unfixed variable loses a signed occurrence and violates its exact quota. If the clause is shortened, its remaining width is below three and violates the target's ternary-clause grammar. Either way the residual is outside the target. A full assignment has only TRUE or an empty clause, also outside the nonempty target class. Thus no nonempty raw cofactor stays target-valid.
 
 For any pivot x, exactly two source clauses contain x and two contain ¬x. Each assignment x=b deletes two clauses and shortens two, yielding exactly m-2 retained clauses, including m-4 ternaries and two binaries, and 3m-8 literal occurrences. Both-label soundness is exact: SAT(F) iff SAT(F|x=0) OR SAT(F|x=1); UNSAT(F) iff both cofactors UNSAT. These are standard identities, not a target-preserving compiler or a hardness proof.
 
