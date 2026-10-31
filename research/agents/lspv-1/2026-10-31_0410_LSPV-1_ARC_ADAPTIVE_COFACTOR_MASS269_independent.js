@@ -6,7 +6,7 @@ function bits(k,n){const z=[];for(let i=0;i<n;i++)z.push((k>>i)&1);return z;}
 function countTrue(C,z){let s=0;for(let i=0;i<C.length;i++){const t=C[i],v=z[Math.abs(t)-1];if(t>0?v===1:v===0)s++;}return s;}
 function matches(cube,z){return Object.entries(cube).every(([v,b])=>z[Number(v.slice(1))-1]===b);}
 function verify(d){
- let nSources=0,nLeaves=0,nPairs=0,nTriples=0,nProofs=0,nChecks=0,correctSat=0;
+ let nSources=0,nLeaves=0,nPairs=0,nTriples=0,nProofs=0,nChecks=0,correctSat=0,childSAT=0,childUNSAT=0,physicalChildren=0;
  for(const f of d.rows){
    nSources++;const n=f.n,C=f.original_clauses,ALL=1<<n;
    const truth=Array.from({length:ALL},(_,a)=>C.every(c=>countTrue(c,bits(a,n))!==0));
@@ -57,6 +57,40 @@ function verify(d){
      check(truth.every((isSAT,a)=>!isSAT||!matches(proof.prohibited_cube,bits(a,n))),f.id+": blocked SAT");
      nProofs++;
    }
+
+   // Byte-exact independent ordinary-child readback and same-source polarity.
+   for(const ctl of [f.charged_adaptive_controller,f.shallow_physical_guest_control]){
+     check(ctl.ledger.physical_children.length===ctl.ledger.guests,f.id+": child transcript count");
+     let paidChars=0;
+     for(const ch of ctl.ledger.physical_children){
+       physicalChildren++;paidChars+=ch.dimacs.length;
+       const originalResidual=[];
+       for(const clause of C){
+         let alreadyTrue=false,remaining=[];
+         for(const l of clause){
+           const pin=ch.source_cube[Math.abs(l)-1];
+           if(pin===null)remaining.push(l);
+           else if(l>0?pin===1:pin===0)alreadyTrue=true;
+         }
+         if(!alreadyTrue)originalResidual.push(remaining);
+       }
+       const expectedChild="p cnf "+n+" "+originalResidual.length+"\n"+
+           originalResidual.map(z=>z.join(" ")+" 0\n").join("");
+       check(ch.dimacs===expectedChild,f.id+": incorrect serialized child");
+       const lines=ch.dimacs.trim().split(/\r?\n/);
+       const hdr=lines[0].split(/\s+/);
+       check(hdr[0]==="p"&&hdr[1]==="cnf"&&Number(hdr[2])===n&&Number(hdr[3])===lines.length-1,f.id+": DIMACS header");
+       const parsed=lines.slice(1).map(s=>s.trim().split(/\s+/).map(Number));
+       check(parsed.every(x=>x.at(-1)===0),f.id+": DIMACS delimiter");
+       const child=parsed.map(x=>x.slice(0,-1));
+       const childHasModel=Array.from({length:ALL},(_,a)=>child.every(q=>countTrue(q,bits(a,n))>0)).some(Boolean);
+       const restrictedSourceHasModel=Array.from({length:ALL},(_,a)=>matches(Object.fromEntries(ch.source_cube.map((v,i)=>["x"+(i+1),v]).filter(x=>x[1]!==null)),bits(a,n))&&truth[a]).some(Boolean);
+       check(childHasModel===restrictedSourceHasModel,f.id+": guest polarity");
+       if(childHasModel)childSAT++;else childUNSAT++;
+       nChecks++;
+     }
+     check(paidChars===ctl.ledger.child_output_chars,f.id+": child written bytes");
+   }
    for(const tree of f.audit_trees){
      nLeaves+=tree.leaves.length;let numerator=0;
      const expectedFalse=Array.from({length:ALL},(_,a)=>C.reduce((k,c)=>k+(countTrue(c,bits(a,n))===0?1:0),0)).reduce((a,b)=>a+b,0);
@@ -102,7 +136,7 @@ function verify(d){
  check(d.summary.leaves_audited===nLeaves&&d.summary.pair_modes_checked===nPairs&&d.summary.triple_modes_checked===nTriples,"summary audits");
  return {status:"PASSED",sources:nSources,SAT:correctSat,UNSAT:nSources-correctSat,
   leaf_partition_checks:nChecks,leaves:nLeaves,extreme_pair_modes:nPairs,extreme_triples:nTriples,
-  source_resolvent_cubes:nProofs,DELAY_K:[4,8,16,32]};
+  source_resolvent_cubes:nProofs,physical_children:physicalChildren,physical_child_SAT:childSAT,physical_child_UNSAT:childUNSAT,DELAY_K:[4,8,16,32]};
 }
 if(typeof process!=="undefined"&&typeof require!=="undefined"&&require.main===module){
  const fs=require("fs");const data=JSON.parse(fs.readFileSync(process.argv[2],"utf8"));
