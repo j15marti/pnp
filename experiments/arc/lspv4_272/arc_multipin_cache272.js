@@ -102,13 +102,16 @@ function oracle(f,sourceSerial,j,address){
  if(k===12){const src=serialize(f);const sign=sourceSerial[src.head.length+(8+j)*src.stride];cl=[sign==="-"?-1:1,-3,2];}
  return (cl.map(l=>litFormat(l,desc.width)).join(" ")+" 0\n")[r];
 }
-const cases=[], assertions={labels:0,oracle:0,pairs:0,complements:0,proof:0};
+const cases=[], assertions={labels:0,oracle:0,pairs:0,complements:0,proof:0,witnesses:0};
 for(const q of Q)for(const mode of statuses){
  const b=Array.from({length:q},(_,i)=>mode==="lastone"?i===q-1:mode==="alternating"?i%2===0:false);
  const f=build(q,b),src=serialize(f),baseline=solver(f);
  if(!validate(f)||baseline.sat!==b.some(Boolean))throw Error("source label");
  const children=Array.from({length:q},(_,j)=>solver(build(q,b,j)));
  if(children.some((r,j)=>r.sat!==b[j])||children.some(r=>r.nodes<1)||baseline.sat!==children.some(r=>r.sat))throw Error("child label");assertions.labels+=q+1;
+ function checkedWitness(g,w){if(!w||!g.c.every(c=>c.some(l=>w[id(l)-1]===(l>0?1:0))))throw Error("invalid original or child witness");assertions.witnesses++;}
+ if(baseline.sat)checkedWitness(f,baseline.witness);
+ children.forEach((v,j)=>{if(v.sat)checkedWitness(build(q,b,j),v.witness);});
  const zero=counts(f,Array(q===3?12:2*q+6).fill(0)),one=counts(f,Array(f.n).fill(1));
  if(zero.vec.some((t,j)=>t+one.vec[j]!==3))throw Error("complements");assertions.complements+=f.c.length;
  const flips=[];let a=Array(f.n).fill(0);for(const variable of [1,2,10,11]){a[variable-1]^=1;let s=counts(f,a);flips.push({flipped:variable,N:s.N,sat:s.sat});}
