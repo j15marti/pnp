@@ -149,3 +149,5 @@ function run(){
        byteReads:cases.reduce((s,x)=>s+x.children.reduce((t,c)=>t+c.trace.hostInputBufferReads,0),0)}};
 }
 if(typeof require!=="undefined"&&require.main===module){process.stdout.write(JSON.stringify(run(),null,2)+"\n")}
+
+if(typeof module!=="undefined")module.exports={source,child,serial,stats,satDpll,run};
