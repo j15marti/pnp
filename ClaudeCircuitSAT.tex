@@ -1,0 +1,67 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-31 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}\newtheorem{claim}{Claim}
+\title{Claude Circuit-SAT Lower Bounds: a Wire-by-Wire, Parametrized Ladder\\\large Living document (append and revise each run)}
+\author{Claude scheduled routine}
+\date{Last updated 2026-10-31}
+\begin{document}\maketitle
+
+\section*{Status (strict labels)}
+\textbf{P versus NP remains OPEN.} No super-linear unconditional lower bound for CIRCUIT-SAT on general circuits in the RAM/Turing model is claimed. Everything below is labelled PROVED, COMPUTATIONAL, KNOWN, CANDIDATE or OPEN.
+
+\section{Goal and plan}
+CIRCUIT-SAT: given a DAG circuit $C$ over basis $B_2$ (all 2-input gates) with $n$ inputs and $m$ gates (so $2m$ wires into gates plus fan-out edges), decide $\exists x\;C(x)=1$. Parameters: $n$ (inputs), $m$ (gates), $w$ (wires), fan-out profile, depth, and treewidth $\mathrm{tw}$.
+Plan (the ``ladder''): for each level $(n,m)$ record (a) the minimal number of gates/wires to realise each function, (b) the information an algorithm must read, (c) the best provable bound on decision work. Look for a parametrized bound $T(n,m,\dots)$ whose shape is not killed by the known barriers.
+
+\section{Lower-bound ledger by model}
+\begin{tabular}{@{}lll@{}}\toprule
+Model & Bound & Status\\\midrule
+Black-box oracle $C(\cdot)$ & $\Omega(2^n)$ queries (adversary answers 0) & PROVED (L1)\\
+White-box, read the instance & $\Omega(m)$ probes, even for $n=1$ & PROVED (L2)\\
+White-box, general RAM & nothing beyond $\Omega(m)$ known & OPEN\\
+Time--space, SAT & $n^{2\cos(\pi/7)\approx1.80}$ (Williams; alt.-trading) & KNOWN THEOREM\\
+Conditional, SETH & $2^{(1-\epsilon)n}\mathrm{poly}$ impossible & CONDITIONAL\\\bottomrule\end{tabular}
+
+The whole difficulty is the gap between the first two rows and the third: an algorithm may exploit the \emph{wiring}. The ladder studies how much wiring structure an instance must carry.
+
+\begin{lemma}[L1, oracle bound, PROVED]
+Any deterministic algorithm that only evaluates $C$ on chosen inputs needs $2^n$ evaluations in the worst case.\end{lemma}
+\emph{Proof.} Answer 0 to every query; after $<2^n$ queries some $x$ is unqueried, and $C=\mathbb 1_{x}$ is consistent with all answers while $C\equiv0$ is too. \qed
+
+\begin{lemma}[L2, reading bound, PROVED]
+For every $m$ there are $n=1$ instances with $m$ gates such that any algorithm (deterministic or randomized with error $<1/2$ after normalisation) must inspect $\Omega(m)$ cells of the encoding.\end{lemma}
+\emph{Proof.} $g_0=x$, $g_i=g_{i-1}\wedge g_{i-1}$, output $g_m$: satisfiable. Replace one $g_j$ by $g_{j-1}\wedge\neg g_{j-1}$ (constant 0): unsatisfiable. The $m{+}1$ instances differ in one gate each, so an algorithm that misses gate $j$ cannot distinguish; a randomized one must read a constant fraction. \qed
+
+\section{Level ladder: exact minimal gate counts (COMPUTATIONAL)}
+Script: \texttt{research/agents/claude/circuitsat/mincirc.py}; data \texttt{mincirc\_n\{1,2,3\}.json}. BFS over sets of computed functions, basis $B_2$ (NOT counts as one gate; constants and inputs free). Exhaustive up to the depth shown, so every count is exact.
+
+\begin{center}\begin{tabular}{@{}cccccccc@{}}\toprule
+$n$ & functions & size 0 & 1 & 2 & 3 & 4 & max $C(f)$\\\midrule
+1 & 4 & 3 & 1 & 0&0&0& 1\\
+2 & 16 & 4 & 12 & 0&0&0& 1\\
+3 & 256 & 5 & 33 & 114 & 80 & 24 & 4\\\bottomrule\end{tabular}\end{center}
+Wires: each $B_2$ gate has 2 in-wires, so the wire count of a minimal circuit is $2C(f)$ plus output taps; fan-out is tracked separately (next step: record minimal wires under fan-out-1 = formulas, versus DAGs).
+
+\textbf{Observation (COMPUTATIONAL, $n\le3$).} $C_{\max}(n)$ is $1,1,4$; growth is tiny at this scale, and the Shannon counting bound $C_{\max}(n)\ge(1-o(1))2^n/n$ only bites for $n\ge$ roughly 5. So small levels say nothing about SAT; they are calibration for the wire ledger.
+
+\section{Parametrized targets (CANDIDATE)}
+\begin{enumerate}
+\item $T(n,m)$ for white-box CIRCUIT-SAT. Trivial: $\Omega(m)$ (L2). Upper: $2^n m$. Target shape $\Omega(m\cdot f(n))$ with unconditional $f$ superconstant under a restricted algorithm class.
+\item Restricted classes where an honest proof may exist: (i) \emph{gate-elimination} (DPLL-style) algorithms, where each branch fixes an input and simplifies; (ii) oblivious/read-once branching algorithms; (iii) sequential-access / one-tape models (see repository note \texttt{2026-10-28\_1521\_CLAUDE\_ONETAPE-0001.tex}).
+\item Fixed-parameter view: with treewidth $k$, CIRCUIT-SAT is $2^{O(k)}m$; a matching lower bound under SETH is known for CNF-SAT in treewidth, so a parametrized lower bound should be measured in $\mathrm{tw}$, not $n$.
+\end{enumerate}
+
+\section{Repository cross-check}
+Read this run: \texttt{AGENTS.md} ledger summary (rows L13, L33--L40). Relevant: L13 (Buss--Williams) shows alternation trading stalls at $2\cos(\pi/7)$; L34/L35 (portfolio barrier) and the one-tape note show random-access and sequential access behave differently, so any wiring-based bound must say which access model it uses. Nothing in the repository gives a super-linear unconditional bound for general circuits, consistent with the status above. Retired/failed-route statuses in the repository are respected.
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend the ladder to $n=4$ (65536 functions: use NPN classes, 222 classes) and record min gates \emph{and} min wires with and without fan-out.
+\item Define a ``wiring entropy'' $H(C)$: log of the number of distinct circuits of $m$ gates computing the same function, and test whether an algorithm decision-time bound can be phrased via $H$.
+\item Prove a gate-elimination style bound for DPLL algorithms on circuits: each branch eliminates at most $c$ gates $\Rightarrow$ $\Omega(\lambda^{n})$ for a hard family; identify what the known $3n-o(n)$ circuit bound does and does not give.
+\end{enumerate}
+
+\section*{Run log}
+Run 1 (2026-10-31): created document; L1, L2 proved; computed exact $C(f)$ for $n\le3$.
+\end{document}
