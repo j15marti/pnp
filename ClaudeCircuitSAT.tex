@@ -1,0 +1,53 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append-only log sections, in-place status tables
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\title{Claude CircuitSAT: a parametrized lower-bound ladder}
+\author{Living document (hourly scheduled runs)}
+\date{Last updated: 2026-10-31 (Run 1)}
+\begin{document}\maketitle
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional superlinear time lower bound for CircuitSAT. Labels: PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Setup and ladder}
+A circuit $C$ has $n$ inputs and $g$ fan-in-2 gates, hence $m=2g$ internal wires (plus output). CircuitSAT asks whether $\exists x\,C(x)=1$. The ladder: fix the parameters $(n,g)$, build circuits one gate (two wires) at a time, record (a) the minimum wires needed to realize each function (circuit complexity side) and (b) the cost of deciding satisfiability (algorithm side). A bound is stated as $T(n,g)$, a function of both parameters.
+
+\section{Rung A: minimal wires for all functions, $n\le 3$ (COMPUTATIONAL)}
+Exact search (script \texttt{research/agents/claude/circuitsat/mincircuit.py}, runs in seconds; exhaustive breadth-first search over sets of computed functions, so costs are exact minima). Basis: fan-in-2 AND-type gates with free negation on wires (``AND basis''), and the same basis plus XOR.
+\begin{center}\begin{tabular}{lll}\toprule
+$n$ & basis & number of functions needing $0,1,2,\dots$ gates\\\midrule
+2 & AND & 0:6, 1:8, 3:2 (the two XOR/XNOR need 3)\\
+2 & AND+XOR & 0:6, 1:10\\
+3 & AND & 0:8, 1:24, 2:64, 3:30, 4:104, 5:8, 6:18\\
+3 & AND+XOR & 0:8, 1:30, 2:114, 3:80, 4:24\\\bottomrule\end{tabular}\end{center}
+So the hardest $3$-input function needs $6$ AND-basis gates (12 wires) --- parity-type functions --- and $4$ gates with XOR. Wires $=2\times$gates. These are the only exhaustively certified minima so far; $n=4$ is too large for this naive search (needs symmetry reduction; next step).
+
+\section{Rung B: wire-reading lower bound for deciding SAT (PROVED, query model)}
+Model: the circuit is given as a read-only list of gates; each query reads one wire (the identity of one gate input).
+\begin{theorem}[Wire-reading bound]\label{thm:wire}
+Any randomized algorithm deciding CircuitSAT on circuits with $n$ inputs and $g$ gates with error $\le 1/3$ must read $\Omega(g)$ wires; any deterministic one must read $\Omega(g)$ wires on some instance (constants not optimized; $g\ge n$).
+\end{theorem}
+\begin{proof}[Proof sketch]
+Let $C_\sigma$ be the AND-chain of the literals $\ell_i=x_i^{\sigma_i}$, $i\le n$, which is satisfiable (unique model). Let $C_{\sigma,i}$ replace the wire carrying $\ell_i$ by $\neg\ell_i$ \emph{in a second occurrence}: add the gate AND$(\ell_i,\neg\ell_i)$ so the circuit is unsatisfiable; padding gates make all instances have the same size. An algorithm that skips the position that was changed sees identical answers on $C_\sigma$ and $C_{\sigma,i}$ but the satisfiability differs. By Yao's principle with the uniform distribution over $i$ (half the mass on $C_\sigma$), a $1/3$-error algorithm reads $\Omega(g)$ of the $\Theta(g)$ positions.
+\end{proof}
+\emph{Status/limits.} This is a linear bound in the query model only. It says every wire is information-bearing; it cannot give superlinear time because the whole list can be read in linear time. It is the baseline rung: $T(n,g)\ge \Omega(g)$.
+
+\section{Rung C: what is known above linear (KNOWN, from the literature; to be verified in later runs)}
+\begin{itemize}
+\item Gate elimination gives circuit-size lower bounds of roughly $3n-o(n)$ (Blum; improved to about $3.1n$ by Li--Yang, STOC 2022) for explicit functions in the full binary basis. This bounds \emph{building} circuits, not SAT time.
+\item Time--space tradeoffs: SAT cannot be solved in time $n^{2\cos(\pi/7)-\epsilon}\approx n^{1.80}$ with $n^{o(1)}$ space (Williams). For SAT on formulas/circuits this is the strongest unconditional time bound in this regime. The repository ledger (row L13, Buss--Williams) shows alternation trading stalls at $2\cos(\pi/7)$.
+\item Repository results bearing on this document (from \texttt{AGENTS.md}): the TPORT barrier (row L34) says alternation-trading proofs cannot give superlinear time for a portfolio of about $N$ programs; one-tape crossing-sequence bounds also hold nondeterministically (rows L38--L40), so they cannot separate P from NP.
+\end{itemize}
+
+\section{Parametrized target (CANDIDATE)}
+Find a function $T(n,g)$ with $T\to$ superlinear in $g$ for a restricted but nontrivial class, e.g.\ (i) bounded treewidth $k$: CircuitSAT is solvable in $2^{O(k)}g$, so any lower bound must be $2^{\Omega(k)}g$ and would be tight under SETH-type assumptions (CONDITIONAL, not for this document); (ii) bounded fan-out; (iii) depth $d$. A realistic unconditional goal is a bound in a \emph{restricted model} (e.g.\ read-once branching programs with the circuit as the instance) that grows with the parameter. The ladder tracks the exponent as a function of $(n,g)$ rung by rung.
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend Rung A to $n=4$ (symmetry/NPN reduction) and tabulate wires vs.\ $n$.
+\item Relate minimal-wire counts to the hardness of the SAT instance ``$C_f(x)\wedge C_g(x)$'' for pairs of functions (equivalence/AND-composition rung).
+\item Audit which repository ARC/FLMV objects give time--space bounds in the treewidth-parametrized regime.
+\end{enumerate}
+\section*{Run log}
+\textbf{Run 1 (2026-10-31).} Created document; exact minimum gate counts for $n\le3$; wire-reading baseline theorem. No new claim beyond linear.
+\end{document}
