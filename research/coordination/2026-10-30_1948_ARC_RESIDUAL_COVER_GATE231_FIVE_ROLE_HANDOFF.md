@@ -48,4 +48,20 @@ The restricted certified policy charged 243 selected events on `F7` versus 127 f
 
 Maintain a polynomially checkable source-cover invariant after every state-dependent policy switch and learned blocker, with proof discovery/checking, failed children, guest calls, output and retained state inside the native FLMV recurrence. This remains OPEN.
 
-Publication/readback provenance: PENDING until verified GitHub writes are complete.
+Publication/readback provenance: VERIFIED. Exact UTF-8 readback matched every
+local artifact. Report commit `e322554bf9d63b6f764c8e950a47100315e9ed13`,
+blob `64a14d849bf432ac1fa671b73d7c8b9995f9062a`; producer commit
+`0101cf5ec277565b7d9fc07f41454f3dfb0ff94f`, blob
+`66e00beb6e5911a1b9e4622d40d6cff2b976293c`; checker commit
+`996b4299c525a99d963a8d84fcc2489f2c41715c`, blob
+`1f277145caa913fa7623d0bb7ed5a576cf72d036`; raw commit
+`b220ef1f1a4be0056a851dab3888851ccdbc0c21`, blob
+`817f6545a38fb7d309df0a8910035e9d8d73b718`; check commit
+`63fe11a466eb76463e6fd0c7544b5d32dccff24a`, blob
+`f1a825266c8c3511440c8e8f28da95cb0be7ffe9`. Root reconciliation commit
+`5d4a08fe1cada0d92eda25277467567eb6fbe811`, blob
+`7dbafefc32b7cc7fef4fca724b911ace63a7e20e`; its five ownership-marker pairs,
+explicit OPEN status, report path and final sentinel were verified after
+readback. The handoff's own initial publication commit was
+`c081c4663bc50142c7cc9aa4979dbe261378e784`; its final provenance update is
+recorded by the repository history for this path.
