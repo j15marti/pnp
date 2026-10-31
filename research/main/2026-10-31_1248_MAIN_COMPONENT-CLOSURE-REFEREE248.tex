@@ -1,0 +1,283 @@
+% LSPV-5 REPORT::COMPONENT-CLOSURE-REFEREE248::2026-10-31 12:48 America/Los_Angeles
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,hyperref}
+\newcommand{\Status}[1]{\textsc{#1}}
+\title{LSPV-5 Independent Synthesis Referee 248:\\
+Component Closure Is Exact but Does Not Supply an All-Input ARC Contraction}
+\author{LSPV-5 synthesis referee}
+\date{31 October 2026, 12:48 America/Los\_Angeles}
+
+\begin{document}
+\maketitle
+
+\section*{Executive finding}
+The canonical language is the set of all well-formed, duplicate-free, proper
+Monotone $3$-SAT-$(2,2)$ instances: every clause has three distinct literals of
+one sign, every clause is unique, and every variable occurs exactly twice in
+each polarity.  Malformed strings are rejected.  The broader strict-$2$P$2$N
+grammar is comparison only.
+
+This run independently reconstructs and certifies the incidence-component
+closure theorem reported by LSPV-2.  If $F$ is a valid canonical instance and
+$J$ is a nonempty set of its unchanged original clauses, then $F[J]$ is again a
+valid canonical instance if and only if $J$ is a union of whole connected
+components of the clause--variable incidence graph.  Consequently, a connected
+valid input has no nonempty proper source-faithful deletion child.  This is an
+exact hereditary rule, not a universal contraction: the canonical connected
+UNSAT instance $U_{198}$ and its connected two-occurrence swap $V_{198}$ (SAT)
+both have child/parent ratio $1$ under this rule.
+
+The rule therefore fills only a restricted ARC arrow for disconnected inputs
+whose largest component is already power-short.  It does not establish the
+required all-input $N\mapsto N^\lambda$ contraction, a strict-FLMV bit-local
+compiler, a polynomial target-language decider, or a lower bound.  The affine
+small-bias theorem remains a restricted semantic MCSP no-go and is not promoted
+to SAT runtime.  \textbf{P versus NP remains open.}
+
+\section{Exact obstruction and falsifiers}
+The exact obstruction named before proof work was:
+\begin{quote}
+Can source-faithful incidence-component decomposition give an all-input,
+hereditary, same-model ARC contraction without a free component oracle,
+parent-scale routing tables, or a false power-short guarantee?
+\end{quote}
+The run tested four falsifiable claims.
+\begin{enumerate}
+  \item Every nonempty proper subset of original clauses remains in the target
+  language.  \Status{Falsified}: only unions of whole incidence components do.
+  \item Exact component closure implies a universal power-short child.
+  \Status{Falsified}: connected $U_{198}$, $V_{198}$, and $Y_6$ have no proper
+  source-faithful target child.
+  \item Deterministic logspace connectivity makes component routing free in the
+  FLMV model.  \Status{Falsified as stated}: Reingold gives logarithmic space
+  and polynomial time, not the simultaneous strict exponents or the complete
+  dense child-bit accessor required here.
+  \item Failure of both endpoint assignments, or opposite literal preferences,
+  certifies UNSAT.  \Status{Falsified} by the independently replayed SAT witness
+  for $V_{198}$; its endpoints fail while an intermediate assignment satisfies.
+\end{enumerate}
+
+\section{Independently reconstructed theorem}
+Let $B(F)$ be the bipartite graph with a clause vertex $c_j$, a variable vertex
+$x_i$, and edge $(c_j,x_i)$ for every occurrence of $x_i$ in $c_j$.
+
+\paragraph{Theorem (source-faithful component closure; \Status{Proved/Exact}).}
+For a valid canonical instance $F$ and nonempty $J\subseteq[m]$, retain exactly
+the original clauses indexed by $J$ and delete variables with no remaining
+occurrence.  The resulting formula is a valid canonical instance if and only if
+$J$ is a union of connected components of $B(F)$.
+
+\paragraph{Proof.}
+Suppose the retained formula is valid and $c_j\in J$.  For every variable $x$
+in $c_j$, validity requires both positive and both negative occurrences of $x$
+to remain.  Hence every clause adjacent to $x$ in $B(F)$ also lies in $J$.
+Repeating this closure step along alternating clause--variable paths shows that
+the entire connected component of $c_j$ lies in $J$.  Thus $J$ is a union of
+components.  Conversely, no variable has an occurrence crossing between two
+components.  Retaining a union of components therefore retains all four
+occurrences of each retained variable; clause arity, monotonicity, distinctness,
+and uniqueness are inherited unchanged.  Hence the child is valid. \hfill$\square$
+
+\paragraph{Corollaries.}
+If $F=\bigwedge_{r=1}^k F_r$ is the component decomposition, then
+\[
+   F\in\mathrm{SAT}\quad\Longleftrightarrow\quad
+   \bigwedge_{r=1}^k(F_r\in\mathrm{SAT}).
+\]
+A SAT witness is the disjoint union of component witnesses; an UNSAT certificate
+for one component lifts to $F$.  For this particular source-faithful rule, if
+$M(F)=\max_r |F_r|$ and parent size is measured in unchanged clause records,
+then a power-short guarantee exists exactly when $M(F)\le |F|^\lambda$.
+Connected instances have $M(F)=|F|$, so no fixed $\lambda<1$ works on all valid
+inputs.  This is a limitation of this rule, not a lower bound against arbitrary
+re-encodings or algorithms.
+
+\section{Finite exact controls and external baseline}
+The new producer and independent readback verifier are
+\texttt{experiments/arc/lspv5\_248/component\_closure\_referee248.py} and
+\texttt{verify\_component\_closure\_referee248.py}.  The exact raw record is
+\texttt{results/raw/arc/2026-10-31\_1248\_LSPV5\_COMPONENT\_CLOSURE\_REFEREE248\_raw.json}.
+Each Python invocation completed in under 30 seconds; no chunk exceeded the
+project limit.
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+fixture & clauses & components & exact status/models & deletion children\\
+\midrule
+$Y_6$ & 8 & 1 & 20 SAT models & 0/8\\
+$Y_6\sqcup Y_6$ & 16 & 2 & 400 SAT models & component unions only\\
+$U_{198}$ & 264 & 1 & UNSAT & 0/264\\
+$V_{198}$ & 264 & 1 & SAT & 0/264\\
+\bottomrule
+\end{tabular}
+\end{center}
+All $255$ nonempty subsets of connected $Y_6$ and all $65{,}535$ nonempty
+subsets of $Y_6\sqcup Y_6$ were independently checked.  Valid-target status
+matched ``nonempty union of components'' in every one of the $65{,}790$ cases;
+there were respectively $1$ and $3$ valid subsets.
+
+The same-source large pair uses the published 264-clause proper duplicate-free
+instance.  $U_{198}$ was re-certified UNSAT by the 64-row boundary/module
+decomposition: the intersection of the two boundary clauses with all six exact
+42-clause module tables is empty.  Swapping two signed occurrences gives
+$V_{198}$; the stored 198-bit witness was replayed against all 264 clauses.
+A fresh independent SciPy/HiGHS 1.8.0 0--1 MILP run classified $U_{198}$
+infeasible after 46,035 branch-and-bound nodes and $V_{198}$ feasible after one
+node.  This comparison charges the standard solver's actual search rather than
+counting only excluded complete assignments.
+
+The raw record also regenerates every per-occurrence local $S/U$ target and its
+inverse, every indexed $SS,SU,US,UU$ clause-pair compatibility row, global
+$0^n/1^n$ clause histograms, and prefix-flip trails for both $U_{198}$ and
+$V_{198}$.  Hashes and exact row counts detect omission or double counting.
+These are adversarial controls, not the primary contraction mechanism.
+
+\section{Fully charged model audit}
+\begin{center}
+\begin{tabular}{p{0.27\linewidth}p{0.63\linewidth}}
+\toprule
+resource & charged conclusion\\
+\midrule
+validation and malformed rejection & Arity, sign, and occurrence counting need
+an input scan.  Clause-duplicate rejection and canonical name checks also need
+charged comparison/sorting or recomputation; they are not free.\\
+component discovery & Explicit BFS/DFS or union--find is linear-time on the
+incidence representation but retains parent-scale visited/queue or parent/rank
+state (up to $\Theta(N\log N)$ bits in a direct implementation).\\
+small-space alternative & Reingold's theorem gives deterministic $O(\log N)$
+space and polynomial time for one undirected connectivity query.  It does not
+state a time exponent below $241/200$.\\
+child bit access & A dense child encoding requires component membership, the
+$q$th retained clause, dense variable ranks, signs, delimiters, and malformed
+handling.  Recomputing ranks by repeated connectivity queries is polynomial but
+has no proved strict-FLMV time bound; materializing the maps uses parent-scale
+writable space.\\
+policy discovery/switching & Choosing component factorization requires testing
+whether it is useful and finding the largest component.  A stateful universal
+controller must charge those trials, switching, retained state, and output
+access; a best-policy oracle is inadmissible.\\
+child size & Exact only for disconnected formulas.  Connected target inputs
+have no proper child under unchanged-clause deletion, so the all-input ARC
+premise fails before FLMV transport.\\
+SAT/UNSAT correctness & Conjunction across components is exact for both labels.
+Assignment repair is never accepted as an UNSAT proof.\\
+\bottomrule
+\end{tabular}
+\end{center}
+Thus there is a valid time--space tradeoff known at the component-discovery
+subroutine level: linear time with linear workspace, or logarithmic space with
+only a polynomial-time guarantee.  No theorem reviewed here places discovery,
+ranked random access, output, and retained controller state simultaneously in
+the strict FLMV box
+\[
+  t<\frac{241}{200},\qquad
+  s<\frac{11642479}{23232400}.
+\]
+
+\section{Literature and GitHub search record}
+Searches were conducted before proof work; a negative search is not a novelty
+claim.
+\begin{itemize}
+  \item Query ``Omer Reingold undirected connectivity in log-space original
+  paper PDF'' found Reingold, \emph{Undirected Connectivity in Log-Space}, ECCC
+  TR04-094 and the 2008 journal version:
+  \url{https://eccc.weizmann.ac.il/report/2004/094/} and
+  \url{https://omereingold.wordpress.com/wp-content/uploads/2014/10/sl.pdf}.
+  Direct transfer: USTCON is in deterministic logspace and polynomial time.
+  Missing transfer: the simultaneous numerical time bound and ranked target
+  child accessor.
+  \item Query ``Döcker Monotone 3-SAT-(2,2) NP-complete duplicate-free proper
+  primary paper'' found Döcker's primary preprint
+  \url{https://arxiv.org/abs/1912.08032} and the related published treatment
+  \url{https://doi.org/10.1016/j.dam.2020.12.010}.  Direct transfer: the
+  duplicate-free proper monotone $(2,2)$ language is NP-complete.  Failed
+  transfer: NP-completeness alone does not convey the tight FLMV numerical box.
+  \item Query ``logspace transducer connected components canonical labeling
+  undirected graph primary paper'' returned Reingold's connectivity result but
+  no primary theorem giving this project's complete ranked bit-access compiler
+  with both strict exponents.
+  \item GitHub code query
+  \url{https://api.github.com/search/code?q=M22-COMPONENT-CLOSURE+repo%3Aj15marti%2Fpnp}
+  found the older \texttt{M22\_COMPONENT\_CLOSURE97} audit and connected-lift
+  follow-ups.  Therefore component closure is adopted as a prior route and the
+  present proof is explicitly an independent reconstruction.
+  \item Project query for the exact new report token returned no pre-existing
+  result.  The separate OpenAI repository query
+  \url{https://api.github.com/search/code?q=Reingold+connected+components+repo%3Aopenai%2Fopenai-cookbook}
+  returned zero matches.  The broad issue query initially failed with GitHub
+  HTTP 422 because the API required an explicit issue/pull-request qualifier;
+  this access failure is recorded rather than silently treated as no result.
+\end{itemize}
+
+\section{Corpus reviewed; duplication and contradiction audit}
+\paragraph{Corpus reviewed.}
+The run surveyed the live repository tree; root \texttt{main.tex},
+\texttt{AGENTS.md}, \texttt{CODEX.md}, the complete current
+\texttt{pnp-research} skill and references, every task specification, the
+09:48 universal-parameterized redirect, the universal FLMV contract, the
+AFFINE-SMALLBIAS-DESCENT-GATE2, CONSTRUCTION-STRENGTHEN17, and
+ARC-LINEAR22-SATURATION1 artifacts, the newest LSPV-1--4 reports, materially
+relevant historical component-closure/connected-lift reports, and the previous
+REFEREE247 report and raw controls.
+
+\paragraph{Duplication / contradiction audit.}
+The theorem agrees with LSPV-2's COMPONENT-CLOSURE-HEREDITY279 and the older
+COMPONENT-CLOSURE97 route.  It does not contradict the exact hereditary result;
+it rejects only the stronger inference that closure entails an all-input
+power-short compiler.  LSPV-4's Shannon-rounding obstruction and LSPV-3's
+restricted matching selector remain compatible: each blocks a restricted
+architecture and neither is an arbitrary-algorithm lower bound.
+
+\paragraph{What changed relative to root MAIN.}
+The exact component theorem is now independently certified with exhaustive
+subset coverage and both-label large controls.  The executive spine should
+record it as an adopted restricted hereditary rule and record connectedness,
+ranked access, malformed recognition, and simultaneous resource bounds as open.
+
+\paragraph{Adopted / rejected / retired prior components.}
+Adopted: canonical target scope, exact component conjunction, Reingold as a
+small-space subroutine, same-source SAT/UNSAT controls, and signed $S/U$ tests as
+adversarial controls.  Rejected: free component/rank oracle, free best-policy
+selection, and NP-completeness-only numerical FLMV transfer.  Retired remains:
+universal cosine endpoint, cross-machine resource borrowing, free semantic SAT
+answers, source-only unconditional splitters, and promotion of restricted MCSP
+lower bounds to SAT.
+
+\paragraph{Stale or overstated claims found.}
+Any statement that component closure by itself yields universal ARC contraction
+is overstated.  The newest LSPV-4 report was substantive but lacked the required
+report header/final sentinel and documented pending code/raw publication; a
+nonblocking predecessor-recovery request was posted to coordination issue \#3.
+
+\section{Current proof status and next target}
+\begin{center}
+\begin{tabular}{p{0.34\linewidth}p{0.16\linewidth}p{0.40\linewidth}}
+\toprule
+claim & status & consequence\\
+\midrule
+target-language component closure & \Status{Proved/Exact} & hereditary only for
+component unions\\
+component SAT conjunction & \Status{Proved/Exact} & correct for SAT and UNSAT\\
+all-input power-short component child & \Status{Falsified/Retired} & connected
+controls have no proper child\\
+strict-FLMV ranked component accessor & \Status{Open} & logspace connectivity
+does not close simultaneous bounds\\
+arbitrary-$A\mapsto\Phi(A)$ all-input contraction & \Status{Open} & no same-model
+hereditary proof\\
+fully charged SAT-to-target numerical transport & \Status{Open} & NP-completeness
+alone is insufficient\\
+P versus NP & \Status{Open} & no separation or collapse proved\\
+\bottomrule
+\end{tabular}
+\end{center}
+The highest-value next target is a locally indexable transformation or direct
+target-language theorem that handles connected valid instances, preserves both
+labels, produces power-short target children (or re-encodes them soundly), and
+places validation, discovery, ranking, switching, child access, output, and peak
+writable state in the same strict FLMV model.  Until that is proved, ARC-EDGE-90
+and P versus NP remain open.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::COMPONENT-CLOSURE-REFEREE248
+\end{document}
