@@ -1,0 +1,304 @@
+% LSPV-5 REPORT::ARC-TRANSACTION-CAP-REFEREE242::2026-10-31T06:48:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=.84in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\title{ARC-TRANSACTION-CAP-REFEREE242:\\Serial Certified Policies Have a Maximum-Space Ledger, Not Free Cap Completeness}
+\author{LSPV-5, Independent Red-Team and Synthesis Referee}
+\date{31 October 2026, 06:48 PDT}
+\begin{document}\maketitle
+
+\noindent\textbf{Status.}
+\textbf{PROVED/EXACT} for the serial transaction ledger and the cap-completeness
+necessity below; \textbf{COMPUTATIONAL} for finite original-source controls;
+\textbf{KNOWN THEOREM} for the actual FLMV time--space exclusion;
+\textbf{CONDITIONAL} for the project ARC recurrence; and \textbf{OPEN} for a
+uniform, total, all-input, hereditary arbitrary-decider
+$A\mapsto\Phi(A)$ satisfying that recurrence.  Neither $P=NP$ nor $P\ne NP$
+is proved.
+
+\section{Claim card, quantifiers and four falsifiers}
+\paragraph{Single target.}
+Audit whether a universal adaptive residual-SAT controller can obtain both a
+time-competitive and a simultaneous-space-competitive exact policy schedule
+without receiving a best-policy oracle, an unknown exponent, or a
+cap-respecting complete SAT solver for free.
+
+\paragraph{Claim card.}
+For every ordinary CNF source $F$ and every finite public sequence of
+deterministic partial policies $P_1,\ldots,P_r$, one fixed deterministic host
+runs trials serially from the same indexed read-only source.  Each trial is
+given a declared time budget and writable-space cap, and may return only
+\texttt{UNRESOLVED} or a SAT/UNSAT certificate checked against the original
+source.  Source/index heads, query and child buffers, certificates, verifier
+space, policy history, retained state and reset/replay are charged on the same
+execution.  SAME\_REALIZATION is the one host trace on $F$; no counterfactual
+winner state is substituted for the actual peak.
+
+\begin{description}
+\item[F1: maximum versus sum.] Serial rollback must retain the sum of all
+trial workspaces.  \textbf{FALSIFIED} under the stated isolation contract:
+peak trial space is a maximum, although time is a sum.  A concurrent race is
+different and may retain a sum of live states.
+\item[F2: winner-space transfer.] A time-competitive restart schedule has the
+space of its eventual winner.  \textbf{FALSIFIED}, independently reproducing
+LSPV-3's exact counterexample: an earlier silent trial may fill
+$\Omega(N)$ cells before a later $O(N)$-time, $O(\log N)$-space certificate
+policy wins.
+\item[F3: cap implies totality.] Imposing an $N^\sigma$ cap on every
+speculative policy gives a total $N^\sigma$-space SAT decider.
+\textbf{FALSIFIED}: if no capped policy finishes on an input, totality requires
+a different capped complete policy or an uncapped fallback, and the latter
+restores its own peak-space exposure.
+\item[F4: rollback is free.] Trial termination removes all time costs of
+reset, replay or workspace isolation.  \textbf{FALSIFIED AS AN ACCOUNTING
+RULE}: the exact ledger has an explicit reset term.  Physical scrubbing can
+cost the number of written cells; lazy epochs, indexed jumps or fresh logical
+names are alternative implementations whose metadata, address and high-water
+space must instead be charged.  No universal reset lower bound is claimed.
+\end{description}
+
+\section{Exact serial transaction theorem}
+Let the immutable source and its read-only input tape be shared by all trials.
+Let $P$ be the maximum persistent writable controller/source-index/history
+state.  For realized trial $i$, let $t_i$ be its policy work, $r_i$ its
+rollback/reset/reinitialization work, $v_i$ its certificate-verification work,
+$b_i$ its maximum live writable policy/query/child state, and $c_i$ its maximum
+additional live certificate/verifier/output state.  These quantities include
+all relevant work and index tapes and are measured on the same host trace.
+
+\begin{theorem}[Serial certified transaction ledger]\label{thm:ledger}
+Suppose trials execute one at a time; after a failed or rejected trial, all of
+its source-dependent scratch is made unreachable to later semantics; only the
+declared persistent state survives; and a successful answer is committed only
+after an original-source verifier accepts it.  Then the realized controller is
+sound and its charged resources obey
+\[
+ T_{\rm host}\le T_{\rm setup}+\sum_i(t_i+r_i+v_i)+T_{\rm commit},
+\]
+\[
+ S_{\rm host}\le P+\max_i(b_i+c_i)+S_{\rm commit}.
+\]
+If a complete exact policy is eventually scheduled, the controller is total.
+The theorem supplies neither a cheap policy nor a cap-respecting complete
+policy.
+\end{theorem}
+\begin{proof}
+Certificate verification against the immutable source makes every committed
+answer sound; \texttt{UNRESOLVED}, timeout and rejected output commit no label.
+Serial execution partitions the realized transition trace into setup, trial,
+reset/verifier and commit intervals, so their transition counts add.  At every
+instant, writable state consists of the persistent controller plus the one
+current trial/verifier and commit state.  Therefore its high-water mark is the
+maximum, not the sum, of the live trial quantities.  Semantic rollback may be
+implemented by clearing, overwriting, abandoning or versioning scratch, but
+the chosen implementation's transition, metadata, address and visited-cell
+costs are already represented in $r_i,b_i,c_i,P$.  If a complete policy is
+eventually reached, soundness plus termination gives total exactness.
+\end{proof}
+
+\begin{corollary}[Cap-completeness gate]\label{cor:cap}
+Fix a cap $B(N)$.  Restricting every speculative trial to $b_i+c_i\le B(N)$
+proves a $P+B+S_{\rm commit}$ peak bound only for executions whose committed
+answer is also obtained within that cap.  To derive an all-input total
+$B(N)$-space SAT decider, one must prove
+\[
+ \forall F\;\exists\text{ realized cap-respecting checked terminal policy},
+\]
+or supply a separately proved cap-respecting complete fallback.  If on some
+$F$ the controller instead invokes an uncapped complete fallback $A(F)$, the
+valid bound is
+\[
+ S_{\rm host}(F)\le P+\max\{B(N),S_A(N),S_{\rm adapter}(N)\},
+\]
+not $P+B(N)$.
+\end{corollary}
+\begin{proof}
+Apply Theorem~\ref{thm:ledger} to all capped trials.  If none commits, a total
+controller must continue.  Any uncapped continuation is part of the same
+execution and its actual live space enters the maximum.  Omitting it would
+replace the realized trace by a counterfactual terminating capped trace.
+\end{proof}
+
+\paragraph{Relation to the ARC recurrence.}
+The proposed conditional space recurrence
+\[
+ L'\le\max\{1/2,L/2\}
+\]
+therefore needs an all-input $N^{1/2+o(1)}$ cap-completeness theorem, including
+guest work/index tapes, physical child buffers, output certificates, verifier,
+source indices and retained ancestors.  The time recurrence must separately
+include every failed trial and $r_i$.  LSPV-4's current simulation correctly
+warns that a physical guest-workspace reset may add a term depending on
+$S_A(M)$ to time.  This report does not prove that every reset has that cost;
+it proves only that the chosen cost cannot be deleted from the ledger.
+
+\section{Same-source both-label finite control}
+The deterministic standard-library producer and independently authored raw
+checker are
+\path{experiments/arc/lspv5_242/arc_transaction_cap_referee242.py} and
+\path{experiments/arc/lspv5_242/verify_arc_transaction_cap_referee242.py}.
+Raw source clauses, local extremes, trails and transaction clocks are at
+\path{results/raw/arc/2026-10-31_0648_LSPV5_ARC_TRANSACTION_CAP_REFEREE242_raw.json}.
+There is no randomness.
+
+The matched grammar uses all eight signed proper clauses on one triple for
+UNSAT and deletes the clause false at $101$ for a SAT source with the unique
+middle-layer core model $101$.  Disjoint positive proper triples pad the
+source.  The one fixed scanner authenticates either source, streams the SAT
+witness or checks the eight-row UNSAT truth-table certificate, and uses
+$O(\log N)$ counters.  A preceding silent policy writes one work bit per step.
+The finite scheduler charges policy entry, every unsuccessful budget, one
+concrete physical scrub reset, grammar scan, source certificate verification
+and commit.  The cap is at least the scanner's logarithmic workspace and
+otherwise $\lfloor\sqrt N\rfloor$.
+
+Every original clause $C_j$ records the local all-literals-true target $S_j$,
+its inversion $U_j$, the independently constructed all-literals-false target
+$U_j$ and its inversion $S_j$.  All $SS,SU,US,UU$ source-clause pairs are
+checked by exact enumeration of coherent shared variables.  These are hostile
+controls only; no occurrence is treated as an independent Boolean variable,
+and neither endpoint failure is used as an UNSAT certificate.
+
+\begin{center}\small
+\begin{tabular}{lrr}
+\toprule
+Recorded finite quantity & Value & Interpretation\\\midrule
+Original CNF sources & 16 & 8 SAT, 8 UNSAT\\
+Complete assignments & 75,940 & exact enumeration\\
+Clause-pair extreme modes & 1,984 & symbolic/exhaustive agreement\\
+UP-first DPLL states & 171 & actual searched states\\
+DPLL literal probes & 2,566 & source-literal inspections\\
+Rejected corrupted certificates & 10 & original-source verification\\
+Matched H7/H8 uncapped events & 22,305 & includes 7,670 reset events\\
+Matched H7/H8 capped events & 9,025 & includes 1,030 reset events\\
+Maximum uncapped/capped trial bits & 512 / 16 & exact abstract traces\\\bottomrule
+\end{tabular}
+\end{center}
+
+The extra controls include signed renaming, duplicate-support SAT/UNSAT,
+Horn, Krom and affine/XOR formulas.  Unrecognized controls use exact DPLL
+fallback, illustrating rather than hiding the cap-completeness gap.  The
+independent raw checker passed 3,900 checks.  SHA-256 digests are
+\path{e651c24d99ae1f43589b3c9fc1066e8bda12ef1cf0f00aede9f1087d5b964d9b}
+for the producer,
+\path{af3ca2090711931e200d52c885e72da80be4631dfe08f4113d74cb465b2fd137}
+for the checker, and
+\path{f8e0dcc5c4ef3630023b1ea7304290ce5e1ce5b1a2915834b1452144bf4e6c23}
+for the raw JSON.  These are abstract host-event and bit-allocation traces,
+not native FLMV transitions or industrial CDCL benchmarks.
+
+\section{Affine theorem audit and nonlinear controls}
+The AFFINE-SMALLBIAS-DESCENT-GATE2 proof survives this audit at exactly its
+restricted scope.  For source-independent affine maps $R_Z(x)=A_Zx\oplus b_Z$
+with the source $x$ fixed before independent seed $Z$, the corrected target-set
+count is
+\[
+ \log_2 B_N=O((u_N+1)\log(m+u_N+2)).
+\]
+The source YES distribution has circuit size below the source threshold, and
+the small-bias fiber argument compares $R_Z(D_N)$ with $R_Z(U_N)$; it does not
+assume surjectivity or uniform target output.  The quantifier and set-size
+steps are consistent.  The theorem does \emph{not} apply to source-dependent
+or nonlinear maps.  The prior bent-quadratic control already shows that small
+linear bias alone does not fool every quadratic output.  Consequently this
+restricted MCSP semantic no-go cannot be promoted to arbitrary SAT runtime or
+to cap completeness.
+
+\section{Corpus, duplication and contradiction reconciliation}
+\paragraph{CORPUS REVIEWED.}
+Surveyed the current repository tree; root \path{main.tex}; AGENTS, CODEX and
+the repository pnp-research skill; all current tasks, especially TASK-002 and
+TASK-003; issue \#3; 09:48 REDIRECT1 and CONTRACT1; AFFINE-SMALLBIAS-DESCENT-
+GATE2; CONSTRUCTION-STRENGTHEN17; ARC-LINEAR22-SATURATION1; the current
+HORN-FRONTIER273, CERTIFIED-RACE-SPACE-GATE275 and ARC-FAR-BLANK-GUARD274
+reports and their raw/check artifacts; earlier ADAPTIVE-SELECTOR-GATE255,
+ARC-SPACE-CAPPED-DOVETAIL262, ARC-TERMINAL-COVERAGE-FIREWALL233 and
+ARC-SEMANTIC-SELECTOR-FIREWALL236; and the prior LSPV-5
+MIXED-COMPATIBILITY-REFEREE241.  LSPV-1 ARC-CUBE-STATE-CAP271 remains a
+reported local result with repository publication pending, so it is not
+promoted here.  The immediate LSPV-4 predecessor has a valid header, final
+sentinel and GitHub readback; no recovery request was needed.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.}
+Geometric finite-portfolio time competition and the need for explicit space
+caps were already proved in ADAPTIVE-SELECTOR-GATE255 and
+ARC-SPACE-CAPPED-DOVETAIL262.  CERTIFIED-RACE-SPACE-GATE275 already supplied
+the decisive losing-policy space trace.  This report does not rebrand those
+results.  Its increment is the fully quantified serial transaction ledger,
+the cap-completeness corollary, explicit reset separation, an independent
+both-label replay, and synthesis with FAR-BLANK-GUARD274.  No verified prior
+claim is contradicted.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.}
+Root already states that caps need coverage, but its 05:48 executive synthesis
+predates the verified 06:12/06:28/06:36 specialist inserts.  The corrected
+executive statement should say: serial policy isolation controls peak space by
+a maximum, but exact totality and the desired ARC space exponent require a
+cap-respecting terminal on every input; any uncapped fallback, guest indexing,
+workspace reset, verification and retained ancestor state remain in the same
+machine ledger.
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.}
+Adopt certified source verifiers, serial restart, explicit caps, physical
+guest input/index simulation and strict FLMV comparison.  Reject free
+pointwise-best policy, winner-only peak space, uncharged reset, fake UNSAT from
+bounded repair, and cap-without-coverage.  Retain Horn projection blowup and
+mixed Horn/affine compatibility as representation controls, not universal
+hardness.  Retain original-clause $S/U$ extremes as adversarial checks only.
+
+\paragraph{STALE OR OVERSTATED CLAIMS FOUND.}
+No theorem needs retraction.  The root executive timestamp and peer cutoff are
+stale after the verified specialist publications; they require synthesis
+refresh, not mathematical reversal.  Any statement that a cap by itself
+establishes the $L'$ recurrence, or that transactional rollback is costless,
+would be an overstatement and is excluded here.
+
+\section{Primary literature and transfer classification}
+FLMV Section 2.1 and Theorem 5.7 provide the \textbf{direct exact theorem
+transfer}: the final contradiction must use one total deterministic SAT
+machine with simultaneous time and writable-space bounds in their indexed
+read-only-input model~\cite{flmv}.  Levin's universal sequential search is
+primary precedent for paid universal search, and Luby--Sinclair--Zuckerman is
+primary precedent for universal restart schedules~\cite{levin,luby}; neither
+paper supplies this project's deterministic both-label certificate semantics,
+ordinary SAT child contraction, or simultaneous FLMV space bound.  Their use
+here is therefore \textbf{contextual analogy}, not a transferred ARC theorem.
+Operating-system or database transaction rollback is likewise only an
+\textbf{analogy/candidate}: no physical-memory or recovery theorem transfers
+to the FLMV work/index-tape model.  The exact usable statement is instead the
+elementary same-model ledger proved above.
+
+\section{Barrier audits and the single next arrow}
+The ledger relativizes and algebrizes: semantic or algebraic oracles may make a
+terminal policy cheap, which reinforces that no unrestricted lower bound is
+proved.  No constructive circuit property is used, so Natural Proofs supplies
+no promotion.  DELAY/COPY/RECOMP wrappers remain valid controls on guest and
+reset accounting.  Horn, Krom, affine, renaming, padding and duplicate-support
+controls remain easy under their native representations.
+
+\textbf{Single weakest OPEN arrow.}
+Construct or falsify a uniform, source-computable, all-input partition for
+which every ordinary residual has a checked terminal or a genuine physical
+$N^{1/2+o(1)}$ ordinary-SAT child, and prove that one fixed serial controller
+finds it within the strict ARC time budget while every realized trial,
+certificate, guest/index tape, reset and retained ancestor obeys the strict
+simultaneous FLMV space cap.  The cap-completeness theorem is a necessary
+accounting condition, not the missing construction.  P versus NP remains
+\textbf{OPEN}.
+
+\begin{thebibliography}{9}
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek and A. Viglas,
+``Time-Space Lower Bounds for Satisfiability,'' \emph{JACM} 52(6), 835--865
+(2005), Sections 2.1 and 5. \url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{levin} L. A. Levin, ``Universal Sequential Search Problems,''
+\emph{Problems of Information Transmission} 9(3), 265--266 (1973).
+\url{https://m.mathnet.ru/php/archive.phtml?jrnid=ppi&option_lang=eng&paperid=914&wshow=paper}.
+\bibitem{luby} M. Luby, A. Sinclair and D. Zuckerman, ``Optimal Speedup of
+Las Vegas Algorithms,'' \emph{Information Processing Letters} 47(4),
+173--180 (1993). \url{https://doi.org/10.1016/0020-0190(93)90029-9}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::ARC-TRANSACTION-CAP-REFEREE242
