@@ -69,7 +69,10 @@ assert decision(F,bad) and not decision(Ebad,bad)
 stats["bad_cube"]+=1
 for j,C in enumerate(F,1):
     for lit in C:
-        assert {abs(lit):int(lit>0)} == {abs(lit):int(bool({abs(lit):int(lit>0)}[abs(lit)]))}
+        var,satval=abs(lit),int(lit>0)
+        for val in (0,1):
+            assert check_clause((lit,),{var:val}) == (val==satval)
+        assert check_clause((lit,),{var:satval}) and not check_clause((lit,),{var:1-satval})
         stats["original_occurrences"]+=1
 for j in range(4):
     for k in range(j+1,4):
