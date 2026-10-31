@@ -33,3 +33,6 @@ Full local reproducer, expanded XeLaTeX, five-page PDF, original-indexed 978906-
 
 Adopt known FLMV envelope and authentic source records. Keep previous verified mathematical results intact; the affine small-bias theorem is only a restricted MCSP no-go, CP22LIFT1 only transports a proof system, and CONSTRUCTION-STRENGTHEN17 lacks a complete space-saving arbitrary-input strict22 emitter. P versus NP remains OPEN. No task changes authorized or made.
 END_OF_VERIFIED_HANDOFF::LSPV4::ARC-SPARSE-EXTREME-LEDGER276
+
+## Persistent Library upload recovery (2026-10-31, after original report)
+The initial upload from an unrecognized container session failed with `container_session_unavailable`. Retrying the *exact exported source_file_ref* (`file_00000000972081f4bd92b8f2d595eb07`) succeeded. Full reproducibility ZIP is now saved at `/P-vs-NP/ARC_SPARSE_EXTREME_LEDGER276/ARC_SPARSE_EXTREME276_FULL_REPRO.zip`, Library file `libfile_cbc9b1430f3c81918d58bf70ae7636b8`, backing `file_00000000f55c81f49c6994b7f318f8bc`. The timestamped standalone report's initial failure sentence is a historical fact, not the final storage status. Full raw JSON is inside that persistent ZIP; standalone raw GitHub mirroring was not performed. Neither mathematical status nor agent schedules changed.
