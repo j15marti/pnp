@@ -200,11 +200,11 @@ function runAll(){
        requireTrue(tree.weighted.at_least_one_leaf_clause_floor,f.id+" bad leaf max");
        trees.push(tree);
     }
-    const baseline=upDPLL(f),candidate=controller(f,"occurrence",d);
-    requireTrue(baseline.result===expected&&candidate.result===expected,f.id+" SAT/UNSAT mismatch");
+    const baseline=upDPLL(f),candidate=controller(f,"occurrence",d),shallow=controller(f,"fixed",1);
+    requireTrue(baseline.result===expected&&candidate.result===expected&&shallow.result===expected,f.id+" SAT/UNSAT mismatch");
     rows.push({id:f.id,n:f.n,m:f.clauses.length,original_clauses:f.clauses,ground_truth_sat:expected,
       model_count:mod.length,satisfying_assignments:mod.map(a=>assignment(a,f.n)),original_clause_controls:ext,
-      audit_trees:trees,standard_up_dpll:baseline,charged_adaptive_controller:candidate});
+      audit_trees:trees,standard_up_dpll:baseline,charged_adaptive_controller:candidate,shallow_physical_guest_control:shallow});
   }
   suite.rows=rows;
   suite.summary={sources:rows.length,sat:rows.filter(r=>r.ground_truth_sat).length,unsat:rows.filter(r=>!r.ground_truth_sat).length,
@@ -217,7 +217,10 @@ function runAll(){
     standard_nodes:rows.reduce((s,r)=>s+r.standard_up_dpll.ledger.decision_nodes,0),
     candidate_nodes:rows.reduce((s,r)=>s+r.charged_adaptive_controller.ledger.decision_nodes,0),
     standard_selected_work:rows.reduce((s,r)=>s+r.standard_up_dpll.ledger.total_selected_operations,0),
-    candidate_selected_work:rows.reduce((s,r)=>s+r.charged_adaptive_controller.ledger.total_selected_operations,0)};
+    candidate_selected_work:rows.reduce((s,r)=>s+r.charged_adaptive_controller.ledger.total_selected_operations,0),
+    shallow_guest_calls:rows.reduce((s,r)=>s+r.shallow_physical_guest_control.ledger.guests,0),
+    shallow_child_chars_written:rows.reduce((s,r)=>s+r.shallow_physical_guest_control.ledger.child_output_chars,0),
+    shallow_guest_unsat_sources:rows.filter(r=>!r.ground_truth_sat&&r.shallow_physical_guest_control.ledger.guests>0).length};
   return suite;
 }
 if(typeof process!=="undefined" && typeof require!=="undefined" && require.main===module){
