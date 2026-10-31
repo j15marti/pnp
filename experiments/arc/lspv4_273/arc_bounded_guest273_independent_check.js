@@ -46,14 +46,15 @@ function verify(raw){
       let sat=false;
       for(let mask=0;mask<2**nv;mask++){
         assignments++;let a=Array.from({length:nv+1},(_,j)=>j===0?0:(mask>>(j-1))&1);
-        if(count(C,a).every(x=>x>0)){sat=true;break}
+        if(count(C,a).every(x=>x>0))sat=true;
       }
       if(sat!==summarySat)throw Error("enumerated SAT");
     }
     for(let j=0;j<r.q;j++){
       let c=r.children[j];if(c.j!==j||c.sourcePin!==b[j]||c.guestSAT!==!!b[j])throw Error("child bit");
       if(c.trace.guestIndexedJumps<1||c.trace.hostInputBufferReads<c.childChars||c.trace.hostIndexCellClears<=0)throw Error("trace");
-      if(c.trace.peakBufferCells!==c.childChars||c.reconstructedLength!==undefined){} // Ensure raw declared fields remain separate.
+      if(c.trace.peakBufferCells!==c.childChars)throw Error("buffer");
+      if(c.trace.hostIndexCellClears!==c.trace.guestIndexedJumps*Math.ceil(Math.log2(2*c.childChars+4)))throw Error("erasure tariff");
       bytes+=c.trace.hostInputBufferReads;
     }
     if(r.chargedController.childCharactersOutput!==r.children.reduce((s,c)=>s+c.childChars,0))throw Error("output");
