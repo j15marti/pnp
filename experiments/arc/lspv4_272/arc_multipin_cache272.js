@@ -122,8 +122,8 @@ for(const q of Q)for(const mode of statuses){
  for(let j of [...new Set([0,q-1])]){const child=serialize(build(q,b,j));for(let i of tested){if(oracle(f,src.value,j,i)!==(child.value[i]??" "))throw Error("oracle "+q+"/"+j+"/"+i);assertions.oracle++;}}
  let proof=null;if(mode==="allzero"){proof=proofUnsat(f,q);assertions.proof+=proof.steps.length;}
  cases.push({q,mode,pins:b.map(Number),sourceBits:src.value.length*8,childBits:serialize(build(q,b,0)).value.length*8,
- qChildren:q,padSource:P(q),padChild:H(q),baseline:{sat:baseline.sat,nodes:baseline.nodes,tests:baseline.tests,contradictions:baseline.contradictions},
- childTotals:{nodes:children.reduce((s,r)=>s+r.nodes,0),tests:children.reduce((s,r)=>s+r.tests,0),
+ qChildren:q,padSource:P(q),padChild:H(q),baseline:{sat:baseline.sat,nodes:baseline.nodes,tests:baseline.tests,contradictions:baseline.contradictions,witness:baseline.witness},
+ childTotals:{witnesses:children.map(r=>r.witness),nodes:children.reduce((s,r)=>s+r.nodes,0),tests:children.reduce((s,r)=>s+r.tests,0),
   contradictions:children.reduce((s,r)=>s+r.contradictions,0)},
  matchedLabel:baseline.sat,sourceScanBytes:src.value.length,requestedPinSourceReads:q,
  zero:{N:zero.N,counts:q<=8?zero.vec:null},one:{N:one.N,counts:q<=8?one.vec:null},flipTrail:flips,
