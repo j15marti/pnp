@@ -1,0 +1,52 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-31 (run 1)
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{prop}{Proposition}
+\title{Lower Bounds for Circuit-SAT: a Living, Parameterized Ledger}
+\author{Claude (scheduled hourly routine)}
+\date{Created 2026-10-31}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains OPEN. Nothing here is a superpolynomial bound.
+Labels: PROVED, COMPUTATIONAL, KNOWN, CANDIDATE, OPEN.
+
+\section{Model and parameters}
+Input: a circuit $C$ with $n$ input variables, $m$ gates of fan-in $\le 2$ ($w\le 2m$ wires),
+given as a list of gates with predecessor pointers, read by random access.
+Question: $\exists x\; C(x)=1$. Parameters: $n$, $m$ (or $w$), treewidth $\tau$.
+Known upper bounds (KNOWN): $O(2^n m)$ brute force; $O(2^{\tau} m)$ by dynamic programming.
+
+\section{Step-by-step ledger}
+\subsection*{Level 0: $n=1$}
+Functions: $0,1,x,\bar x$; 0 gates, 0 wires beyond literals (COMPUTATIONAL).
+\subsection*{Level 1: $n=2$}
+With AND/OR gates and free negation, all 16 functions need $\le 3$ gates (XOR), i.e.\ $\le 6$ wires (COMPUTATIONAL, \texttt{circuitsat/min\_wires.py}).
+\subsection*{Level 2: $n=3$}
+Exhaustive search to depth 5 gates found 238 of 256 functions, max 5 gates (10 wires). The remaining 18 (e.g.\ parity-type) need more gates; the depth cap means the maximum is not yet determined (COMPUTATIONAL, partial; next step: raise depth cap in chunks).
+
+Trend to track: $\mathrm{gates}(\text{AND}_n)=n-1$ (PROVED, fan-in 2 gives connectivity bound $w\ge 2(n-1)$ gate-wires needed to connect $n$ relevant inputs); parity needs $3(n-1)$ gates over $\{\wedge,\vee,\neg\}$ in the basis above (KNOWN upper bound; matching lower bound over this basis is KNOWN, Schnorr).
+
+\section{A proved unconditional bound: reading wires}
+\begin{prop}[Linear reading bound, PROVED]
+Any deterministic algorithm deciding Circuit-SAT in the random-access pointer model on instances with $m$ gates and $n\ge 2$ inputs must read $\Omega(m)$ pointers.
+\end{prop}
+\begin{proof}
+Let $g_1=x_1$, and $g_i=g_{i-1}\wedge \ell_i$ for $i=2..m$, with $\ell_i=x_{\min(i,n)}$ (the ``good'' instance, satisfiable by all-ones). Let $B_j$ be the same circuit with $\ell_j$ replaced by $\bar x_1$; $B_j$ is unsatisfiable since $g_j$ contains $x_1\wedge\bar x_1$. An algorithm that does not read the pointer of $\ell_j$ on the good instance behaves identically on $B_j$ and errs on one. So it reads all $m-1$ literal pointers.
+\end{proof}
+This is trivial but pins the parametrized baseline: $\Omega(m)\le T(n,m)\le O(2^{\min(n,\tau)}m)$. The whole content of the problem lives in the gap in the exponent of $n$ (SETH-type, CONDITIONAL; not claimed).
+
+\section{Parameterized targets}
+\begin{enumerate}
+\item T1 (CANDIDATE): for circuits with $m=\mathrm{poly}(n)$, show wire-by-wire that any ``local'' solver needs $2^{\Omega(\tau)}$ work; barrier: gate-elimination gives only linear-in-$m$ bounds (KNOWN, best $\approx 3.1n$ for circuits).
+\item T2: determine a per-level table $W(n)$ = minimal wires over all functions, vs.\ $W_{\mathrm{SAT}}(n)$ = wires of hard instance families.
+\item T3: connect to the repository's ARC/FLMV time--space spine (SAT time $n^{2\cos(\pi/7)}$ in small space, ledger row L13): Circuit-SAT inherits Williams-style bounds via linear-size reductions.
+\end{enumerate}
+
+\section{Repository cross-check}
+Repo surveyed 2026-10-31 (\texttt{AGENTS.md}, world ledger, TPORT/ONETAPE notes): project status is OPEN; one-tape crossing-sequence bounds apply to NP machines too, so they cannot separate P from NP; alternation-trading barrier (L34) limits Williams-style proofs. No reusable circuit-wire lower bound found beyond these time--space results.
+
+\section{Log}
+\begin{itemize}
+\item Run 1: created document; n$\le$3 enumeration; linear reading bound.
+\end{itemize}
+% END_OF_CLAUDE_CIRCUITSAT
+\end{document}
