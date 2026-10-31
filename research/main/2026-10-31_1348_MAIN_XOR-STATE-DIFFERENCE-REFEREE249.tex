@@ -1,0 +1,361 @@
+% LSPV-5 REPORT::XOR-STATE-DIFFERENCE-REFEREE249::2026-10-31 13:48 America/Los_Angeles
+\documentclass[11pt]{article}
+\usepackage[margin=.92in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,xurl,hyperref}
+\newcommand{\Status}[1]{\textsc{#1}}
+\title{LSPV-5 Independent Synthesis Referee 249:\\
+XOR State Difference Is an Exact Fixed-Tape Write Bound, Not a Universal SAT-Time Resource}
+\author{LSPV-5 synthesis referee}
+\date{31 October 2026, 13:48 PDT}
+
+\begin{document}
+\maketitle
+
+\section*{Executive finding}
+The user-approved XOR state-difference adjunct is sound after a strict type
+separation.  For one declared execution on $k$ fixed-location binary writable
+tapes, the Hamming distance between tape contents at two checkpoints is a lower
+bound on the number of cell changes in that interval.  If one native step can
+change at most one cell on each tape, then native interval time is at least the
+distance divided by $k$.  These interval bounds add across disjoint consecutive
+intervals.
+
+The corresponding claim for a source-indexed \emph{logical} residual vector is
+\Status{Falsified/Retired}.  The same logical clause counts may be materialized,
+stored lazily, or recomputed from the read-only source; reads, head moves,
+unchanged writes, restored writes, and DELAY steps can consume time with zero
+checkpoint XOR.  Binary versus Gray encodings change the physical delta of the
+same abstract counter sequence.  Variable-length insertion changes cell
+identity, making a positionwise XOR incomparable.  Thus $d_{\rm logic}$ is a
+useful offline diagnostic but not an arbitrary-machine time lower bound.
+
+This report preserves D"ocker's duplicate-free proper Monotone
+$3$-SAT-$(2,2)$ as the one canonical NP-complete target, rejects malformed
+strings, retains signed $S/U$ extrema as adversarial controls, and does not
+promote the affine small-bias MCSP theorem to SAT runtime.  The all-input
+hereditary arbitrary-$A\mapsto\Phi(A)$ ARC contraction, numerical FLMV
+transport, and P versus NP remain \Status{Open}.
+
+\section{Claim card, exact obstruction, and falsifiers}
+\paragraph{Claim card.}
+\begin{itemize}
+\item Claim ID: XOR-STATE-DIFFERENCE-REFEREE249.
+\item Quantifiers: for every fixed $k$, every binary $k$-work-tape execution,
+and every increasing checkpoint sequence in that same execution.
+\item Model: indexed read-only input, fixed binary work-tape cell addresses;
+finite control and head locations are not silently encoded into the tape XOR.
+Their native transitions remain charged time.
+\item SAME\_REALIZATION: all $d_{\rm phys}$ values refer to the actual contents
+of the same declared work tapes at the two stated times.
+\item Weakest useful conclusion: a write lower bound for those fixed cells;
+not a semantic SAT, source-read, query, or total-time lower bound.
+\end{itemize}
+
+The exact obstruction named before proof work was whether adjacent XOR can be
+made representation-independent and forced on every correct target-language
+decider.  Four falsifiers were tested.
+\begin{enumerate}
+\item Large $d_{\rm logic}$ forces equally large physical change.
+\Status{Falsified}: the lazy policy stores only assignments and recomputes all
+clause records by source reads.
+\item Zero checkpoint $d_{\rm phys}$ means zero work.
+\Status{Falsified}: DELAY/read-only loops, same-value writes, and
+toggle-then-restore traces all have equal endpoint tape contents.
+\item A state delta is invariant under harmless representation changes.
+\Status{Falsified}: binary and reflected Gray counters have different adjacent
+Hamming ledgers for the same abstract integer cycle.
+\item A large logical XOR trace predicts SAT versus UNSAT or solver work.
+\Status{Falsified}: the first-ten-variable $U_{198}$ and $V_{198}$ cycles have
+identical ledgers despite opposite exact labels, and the external solver work
+is sharply asymmetric.
+\end{enumerate}
+
+\section{Exact theorem and proof}
+Let $W_t\in\{0,1\}^{B}$ be the aligned contents of all declared writable tape
+cells at native time $t$.  Fix checkpoint times
+$0=t_0<t_1<\cdots<t_r=T$, and define
+\[
+ d_i=\operatorname{popcount}(W_{t_i}\oplus W_{t_{i+1}}).
+\]
+
+\paragraph{Physical interval XOR lemma (\Status{Proved/Exact}).}
+If one native step changes at most one binary cell on each of $k$ writable
+tapes, then
+\[
+ t_{i+1}-t_i\ge \left\lceil\frac{d_i}{k}\right\rceil,
+ \qquad
+ T\ge\sum_{i=0}^{r-1}\left\lceil\frac{d_i}{k}\right\rceil
+ \ge \left\lceil\frac{\sum_i d_i}{k}\right\rceil.
+\]
+Moreover the endpoint distance satisfies
+\[
+ \operatorname{popcount}(W_{t_0}\oplus W_{t_r})\le\sum_i d_i.
+\]
+
+\paragraph{Proof.}
+Every cell that differs between two interval endpoints must change an odd,
+hence positive, number of times in the interval.  There are $d_i$ such cells.
+At most $k$ cells change in one native step, so the interval contains at least
+$\lceil d_i/k\rceil$ steps.  The intervals are disjoint, so their lower bounds
+sum.  The endpoint inequality is the triangle inequality in the Boolean cube.
+\hfill$\square$
+
+The lemma remains true when reads, moves, control changes, and unchanged writes
+are present: they increase time without increasing $d_i$.  It becomes invalid
+if one compares different cell identities, treats a multi-bit word write as one
+single-bit change, or substitutes a virtual logical vector for physical tape
+contents.  A full-state tracer is charged if computed online; in this run it is
+explicitly an offline diagnostic.
+
+\section{Canonical logical and physical policies}
+For a target formula with $n$ variables and $m$ original clauses, the aligned
+logical checkpoint vector was
+\[
+ S_{\rm logic}(a)=
+  a_1\cdots a_n\;\Vert\;
+  \big\Vert_{j=1}^{m}
+   \left(\operatorname{bin}_2(t_j(a)),[t_j(a)>0]\right),
+\]
+of length $n+3m$.  Record IDs are
+\texttt{assignment:x\(i\)}, \texttt{clause:C\(j\):count\_bit0/1}, and
+\texttt{clause:C\(j\):sat}.  Two implementations were contrasted:
+\begin{itemize}
+\item \emph{eager materialized}: the assignment, every two-bit clause count,
+and every SAT flag occupy fixed cells, so this selected data layout has
+$d_{\rm phys}=d_{\rm logic}$;
+\item \emph{lazy assignment-only}: only assignment bits are retained.  Counts
+and flags are recomputed by scanning the $3m$ literal occurrences at each
+checkpoint.  Its selected physical delta is only the assignment Hamming
+distance, while all reads and head work remain charged.
+\end{itemize}
+Neither is asserted to model HiGHS, CDCL, or every target decider.
+
+\section{Exact finite controls}
+The deterministic producer, independent raw verifier, and raw record are:
+\begin{itemize}
+\item \path{experiments/arc/lspv5_249/xor_state_difference_referee249.py};
+\item \path{experiments/arc/lspv5_249/verify_xor_state_difference_referee249.py};
+\item \path{results/raw/arc/2026-10-31_1348_LSPV5_XOR_STATE_DIFFERENCE_REFEREE249_raw.json}.
+\end{itemize}
+Each invocation finished in under 30 seconds.  An exhaustive two-tape,
+four-cell test covered 16,105 traces and 105,415 exact assertions, including
+every split of every four-step trace.  No theorem check failed.
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+cycle & $\sum d_{\rm logic}$ & endpoint & eager $\sum d_{\rm phys}$ & lazy $\sum d_{\rm phys}$\\
+\midrule
+$Y_6$ binary & 648 & 0 & 648 & 126\\
+$Y_6$ Gray & 512 & 0 & 512 & 64\\
+$U_{198}$ binary, 10-bit cycle & 12,348 & 0 & 12,348 & 2,046\\
+$U_{198}$ Gray, 10-bit cycle & 7,728 & 0 & 7,728 & 1,024\\
+$V_{198}$ binary, 10-bit cycle & 12,348 & 0 & 12,348 & 2,046\\
+$V_{198}$ Gray, 10-bit cycle & 7,728 & 0 & 7,728 & 1,024\\
+\bottomrule
+\end{tabular}
+\end{center}
+The lazy policies perform 1,536 literal reads on either full $Y_6$ cycle and
+811,008 literal reads on each 10-bit large cycle, regardless of their smaller
+write deltas.  In particular the SAT and UNSAT large controls have identical
+selected traces because the two switched occurrences are outside the varied
+ten variables.  A partial trace therefore does not determine the label.
+
+The first $Y_6$ Gray transition changes exactly
+\[
+\begin{split}
+&\texttt{assignment:x1},\ 
+\texttt{C0:count\_bit0},\texttt{C0:sat},\
+\texttt{C1:count\_bit0},\texttt{C1:sat},\\
+&\texttt{C4:count\_bit0},\texttt{C5:count\_bit0},
+\end{split}
+\]
+so $d_{\rm logic}=7$ but the lazy selected physical delta is one.  All 64
+$Y_6$ transition rows include complete changed record IDs and false-clause IDs
+in the raw record.  Large rows are deterministically regenerated and protected
+by SHA-256 transition hashes.
+
+Forward and reverse monotone $0^{198}$-to-$V$-witness paths have distinct
+transition hashes but the same adjacent total, 709, and endpoint delta 485;
+the selected lazy delta is 93.  On $U_{198}$ the corresponding totals are 708,
+484, and 93.  Equality of forward/reverse totals here is explained by the
+one-way monotone count encoding and is not assumed for general traces.
+
+\paragraph{Both-label correctness.}
+$Y_6$ has exactly 20 models.  $U_{198}$ is independently UNSAT because its
+six exact module tables have empty joint boundary intersection; the verifier
+charged 59,504 DPLL nodes.  The occurrence-swapped $V_{198}$ is SAT; its
+198-bit witness satisfies all 264 original clauses with histogram
+$(N_0,N_1,N_2,N_3)=(0,158,80,26)$.  Full per-occurrence $S/U$ targets and
+inversions, all indexed $SS,SU,US,UU$ pair decisions, endpoints, and flip trails
+are retained as adversarial controls.
+
+\paragraph{Actual standard-solver comparison.}
+A fresh SciPy/HiGHS 0--1 MILP run found $V_{198}$ SAT in one branch-and-bound
+node and 0.084 seconds.  The fresh $U_{198}$ trial remained
+\texttt{UNRESOLVED\_AT\_CAP} after a charged 8.004 seconds; it is not reported
+as UNSAT on timeout.  The prior exact external run REFEREE247 reached the UNSAT
+classification after 46,035 nodes.  This run relies on the independent module
+certificate for exact UNSAT, while retaining the failed external trial as work.
+
+\section{Hostile representation and wrapper controls}
+\begin{itemize}
+\item A width-10 binary counter cycle has delta 2,046; the reflected Gray cycle
+has delta 1,024.  Both enumerate the same 1,024 abstract values.
+\item A 10,000-step read-only DELAY loop has endpoint $d_{\rm phys}=0$.
+\item Repeating scratch $0\to1\to0$ 1,000 times performs 2,000 writes and has
+endpoint delta zero.  Inserting checkpoints after every toggle would expose
+the changes; coarse checkpoints do not.
+\item One thousand same-value writes have endpoint delta zero but consume one
+thousand native write steps in the declared model.
+\item Prefix insertion into a variable-length packed record changes one
+semantic record but gives positionwise Hamming distance seven in the finite
+control.  The fixed-location lemma is inapplicable because later cell identities
+shifted.
+\end{itemize}
+These controls falsify equality between XOR and work.  They do not falsify the
+physical interval lower bound, which is intentionally one-sided.
+
+\section{Resource ledger and ARC/FLMV consequence}
+\begin{center}
+\begin{tabular}{p{.25\linewidth}p{.66\linewidth}}
+\toprule
+resource & charged conclusion\\
+\midrule
+source/input & read-only target tape is not included in writable XOR; every
+source reread and index-head move still costs native time.\\
+logical-state acquisition & computing all $t_j$ values costs a source scan or
+maintained occurrence index; the XOR tracer itself is offline here.\\
+writes & fixed-cell differing endpoints force writes exactly as in the lemma;
+unchanged and restored writes add cost not visible at coarse endpoints.\\
+heads/control/registers & not hidden inside $d_{\rm phys}$.  If encoded as
+binary registers, their own per-step bit-change bound must be declared; Gray
+versus binary makes that encoding material.\\
+policy selection & choosing eager/lazy, checkpoint placement, encoding, and
+flip order is charged; no best-policy oracle is supplied.\\
+failed trials/switching & DELAY, rereads, failed solver calls, re-encoding,
+cache resets, and restored scratch remain time even when XOR is zero.\\
+peak space & the Python experiment materializes traces.  No Python heap size is
+promoted to indexed-TM peak writable space.\\
+guest/child/output & no power-short target child was constructed; arbitrary
+guest execution, retained guest state, output access, and proof checking remain
+outside the XOR lemma and must be charged separately.\\
+\bottomrule
+\end{tabular}
+\end{center}
+Therefore XOR adds a typed write ledger to the universal controller but does
+not fill the load-bearing all-input successor arrow or transport any solver
+into the strict FLMV box
+\[
+ t<241/200,\qquad s<11642479/23232400.
+\]
+The affine small-bias theorem remains a restricted semantic MCSP statement;
+XOR tracing supplies no missing source YES/NO quantifier bridge and no SAT
+runtime consequence.
+
+\section{Literature and GitHub search record}
+Searches preceded proof work; failed searches are not novelty claims.
+\begin{itemize}
+\item ``write-efficient algorithms asymmetric read write memory lower bounds''
+found Blelloch--Fineman--Gibbons--Gu--Shun's $(M,\omega)$-ARAM work,
+\url{https://people.cs.georgetown.edu/~jfineman/papers/readwrite2.pdf}, and
+\url{https://arxiv.org/abs/1603.03505}.  \Status{Theorem transfer}: writes and
+reads can be separately charged in their declared asymmetric models.
+\Status{Failed transfer}: those bounds do not force an arbitrary SAT solver to
+materialize this project's clause-status vector.
+\item ``cell probe model reads writes memory Fredman Saks'' found the original
+STOC 1989 paper, \url{https://doi.org/10.1145/73007.73040}.  It counts accessed
+memory words in a powerful representation-flexible data-structure model.
+This is a structural analogy, not a SAT lower-bound transfer.
+\item ``original Gray code'' found Frank Gray's reflected-code history and the
+one-bit adjacency property summarized at
+\url{https://epubs.siam.org/doi/10.1137/1.9781611970166.ch1}.  Exact transfer:
+the finite counter construction.  No SAT hardness follows.
+\item Hennie--Stearns' multitape simulation
+\url{https://www.cs.toronto.edu/tss/files/papers/HennieStearns66.pdf} and
+Bennett's reversible-computation paper
+\url{https://www.cs.princeton.edu/courses/archive/fall04/cos576/papers/bennett73.html}
+were checked.  Bennett explicitly exhibits computations that restore auxiliary
+storage, supporting the restored-state hostile control.  Neither paper gives
+the desired SAT separation.
+\item Switching-activity/Hamming bounds for finite-state circuits,
+\url{https://doi.org/10.1145/280756.280766}, are a useful VLSI analogy.
+Transfer to unrestricted indexed Turing-machine SAT is \Status{Failed} absent
+a model-preserving simulation theorem.
+\item GitHub project queries for \texttt{"XOR state"},
+\texttt{popcount state}, and \texttt{Gray delta} found the prior
+BIT-LEDGER-CEILING120, BIT-CHANNEL-TYPE122, COMPLEMENT-GRAY248, and
+SOURCE-DELTA-REVALIDATION-GATE270 artifacts.  Thus the elementary bit ceiling
+is prior project work; this run independently reconstructs it and adds the
+canonical $U/V/Y_6$ same-source physical/lazy controls.
+\item The OpenAI GitHub query
+\url{https://api.github.com/search/code?q=%22Hamming+distance%22+%22state%22+org%3Aopenai}
+returned generic combinatorics/evaluation files but no all-target ARC or SAT
+runtime bridge.  The project issue query returned issue \#3.  No search access
+failure occurred; the expected LSPV-4 13:36 publication was absent and received
+a separate recovery request.
+\end{itemize}
+
+\section{Corpus reconciliation and specialist synthesis}
+\paragraph{Corpus reviewed.}
+The run surveyed the live GitHub tree, current root \texttt{main.tex},
+\texttt{AGENTS.md}, \texttt{CODEX.md}, the full \texttt{pnp-research} skill and
+references, every task specification, REDIRECT1, CONTRACT1,
+AFFINE-SMALLBIAS-DESCENT-GATE2, CONSTRUCTION-STRENGTHEN17,
+ARC-LINEAR22-SATURATION1, current issue \#3, REFEREE248 and its raw controls,
+the latest LSPV-1/2/3 reports, the newest available LSPV-4 report, and the
+materially relevant historical bit-ledger/Gray/source-delta artifacts.
+
+\paragraph{Duplication / contradiction audit.}
+BIT-LEDGER-CEILING120 already states that flips do not count reads or unchanged
+writes; BIT-CHANNEL-TYPE122 already separates source/head/control channels; and
+COMPLEMENT-GRAY248 studies Gray enumeration.  REFEREE249 does not claim novelty
+for those facts.  It adds a same-realization theorem statement, full target
+controls, lazy/eager separation, restored-write and unaligned-cell audits, and
+a fresh external solver comparison.  No verified prior theorem is contradicted.
+
+\paragraph{Newest specialist results.}
+LSPV-1 H22-DANGEROUS-HITSET282 and LSPV-3
+EXTENDIBLE-DANGER-SELECTOR-GATE282 produce stronger restricted
+matching-derived SAT terminals, but rejected guards yield UNKNOWN and neither
+builds hereditary target children.  LSPV-2 PRODUCT-PROBE280 gives a standard
+near-linear query lower bound on a disconnected product promise and an exact
+streaming batch compiler on that easy family; it explicitly does not transfer
+to connected all-input ARC.  These are adopted as restricted evidence only.
+
+\paragraph{What changed relative to root MAIN.}
+Add the exact physical interval XOR lemma and the canonical same-source
+controls.  Retire logical XOR as a universal runtime resource.  Preserve
+component closure, matching terminals, target scope, numerical FLMV ledger, and
+all OPEN arrows without strengthening.
+
+\paragraph{Predecessor recovery.}
+The expected LSPV-4 13:36 artifact was absent.  The newest visible 12:36 report
+remains substantive but lacks the required verification sentinel and published
+code/raw readback.  Issue \#3 received a nonblocking publication-only recovery
+request.  No role, schedule, or enabled state was changed.
+
+\section{Status and next lemma}
+\begin{center}
+\begin{tabular}{p{.39\linewidth}p{.20\linewidth}p{.31\linewidth}}
+\toprule
+claim & status & consequence\\
+\midrule
+fixed-tape interval XOR lower bound & \Status{Proved/Exact} & typed write lower bound\\
+canonical target trace measurements & \Status{Computational} & finite controls only\\
+logical XOR $\Rightarrow$ arbitrary SAT time & \Status{Falsified/Retired} & lazy/DELAY/encoding controls\\
+XOR tracer as free controller oracle & \Status{Falsified/Retired} & acquisition must be charged\\
+all-input target-hereditary $\Phi(A)$ & \Status{Open} & no power-short connected child\\
+quantitative SAT-to-target FLMV transport & \Status{Open} & exact local first leg missing\\
+P versus NP & \Status{Open} & no collapse or separation proved\\
+\bottomrule
+\end{tabular}
+\end{center}
+The next useful lemma is not a larger logical delta.  It is a same-model
+statement forcing a particular set of physical source accesses or writes on
+every exact target decider, invariant under lazy recomputation and admissible
+encodings, while simultaneously meeting the FLMV time-space accounting.  No
+such arbitrary-machine transfer is currently proved.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::XOR-STATE-DIFFERENCE-REFEREE249
+\end{document}
