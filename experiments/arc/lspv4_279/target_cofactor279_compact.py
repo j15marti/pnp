@@ -11,7 +11,8 @@ Y=((1,2,3),(1,4,5),(2,4,6),(3,5,6),(-1,-2,-4),(-1,-3,-6),(-2,-3,-5),(-4,-5,-6))
 W="010110111001100010001111000101011110010101001111010001001011010000110010000100001001010111010000111010101010001101001010010010110001100011111001010101011011001110000100000001110110111000101100100001"
 
 def valid(F):
-    if not F: return False
+    if not F or any(len(C)!=3 for C in F):return False
+    if any(type(x)!=int or x==0 for C in F for x in C):return False
     vs={abs(x) for C in F for x in C};n=max(vs)
     ct=collections.Counter(x for C in F for x in C)
     return (vs==set(range(1,n+1)) and len(F)*3==4*n
