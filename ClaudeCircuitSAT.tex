@@ -1,0 +1,48 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- first created 2026-10-31
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: a wire-by-wire, parameterized lower-bound ladder for Circuit-SAT}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-10-31}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. No super-polynomial lower bound for Circuit-SAT is claimed. This document tracks a ladder of exact small cases and proved trivial/parameterized bounds. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Model}
+Circuit: DAG over inputs $x_1..x_n$, fan-in-2 gates from $B_2$ (all 16 binary gates, so negation is free), output gate. Size $=$ number of gates $g$; wires $w=2g$ (every gate has two in-wires). Circuit-SAT: given $C$, is there $x$ with $C(x)=1$? Parameters: $n$ (inputs), $g$ (gates), later treewidth/depth $k$.
+
+\section{Ladder of exact results}
+\begin{prop}[connectivity floor; PROVED/EXACT]\label{p1}
+If $f$ depends on all $n$ inputs, any fan-in-2 circuit for $f$ has $g\ge n-1$ gates and $w\ge 2(n-1)$ wires.
+\end{prop}
+\emph{Proof.} Every input must have a directed path to the output, so the sub-DAG on the output's ancestors is connected with $n$ sources; a connected graph on $n+g'$ nodes has at least $n+g'-1$ edges while each gate contributes exactly 2 in-edges: $2g'\ge n+g'-1$, so $g'\ge n-1$. \qed
+
+\begin{prop}[reading bound for the solver; PROVED/EXACT]\label{p2}
+In the model where $C$ is given as a gate list with random access, any deterministic algorithm deciding Circuit-SAT reads $\ge g$ gate cells on the family $F_g$: ``AND of $g$ cells, each cell either an input wire or the constant $0$''. So time $\Omega(\text{size})$, linear in the parameter $g$.
+\end{prop}
+\emph{Proof.} Adversary answers ``input wire'' to every probe; if some cell is unread the answer is still undetermined (satisfiable iff that cell is not $0$). \qed
+
+\paragraph{Exact small cases (COMPUTATIONAL).} Script \texttt{research/agents/claude/circuitsat/mincirc.py} (exhaustive BFS over circuits, each run $<30$s) gives minimum $B_2$ circuit size over Boolean functions up to negation:
+\begin{center}\begin{tabular}{@{}cccc@{}}\toprule
+$n$ & functions (mod $\neg$) & max min-size & min size, depends on all $n$\\\midrule
+1&2&0&0\\2&8&1&1\\3&128&4&2\\\bottomrule\end{tabular}\end{center}
+Distribution for $n=3$: sizes $0,1,2,3,4$ occur for $4,15,57,40,12$ functions. $n=3$ matches Prop.~\ref{p1} (min $=n-1=2$, e.g.\ AND of three). Next step $n=4$ ($2^{15}$ classes) needs chunked search (see Next).
+
+\section{Parameterized view}
+\begin{itemize}
+\item \textbf{Size parameter $g$:} unconditional $\Omega(g)$ reading bound (Prop.~\ref{p2}); matched by $O(g)$ for structured families, so no gap yet.
+\item \textbf{Input parameter $n$:} brute force $2^n g$. Lower bounds $2^{(1-\epsilon)n}$ are CONDITIONAL on SETH (CNF-SAT$\le$Circuit-SAT); unconditional status OPEN.
+\item \textbf{Structure parameter (treewidth $k$):} $2^{O(k)}g$ upper bound is KNOWN; a $2^{o(k)}$ lower bound is CONDITIONAL on ETH. Candidate: relate minimal wire count of a width-$k$ circuit to the cut-width needed to carry satisfiability information (communication across a cut).
+\end{itemize}
+
+\section{Repository cross-check (j15marti/pnp)}
+Read AGENTS.md ledger notes. Relevant: world ledger rows L34--L40 (\texttt{research/agents/claude/tport}, \texttt{onetape}): alternation-trading barrier for portfolios, one-tape crossing sequences hold for nondeterministic machines hence cannot separate P from NP. Takeaway for this ladder: pure counting arguments (Props.~\ref{p1},\ref{p2}) are of the same ``reformulation/linear'' type and should be classified as such; progress needs a bound exceeding linear in $g$ that does not also hold for the nondeterministic or relativized version.
+
+\section{Next steps}
+\begin{enumerate}
+\item $n=4$ exact sizes in chunks (partition by first gate; checkpoint JSON).
+\item Define $W_{\mathrm{SAT}}(n)$: minimum wires of a circuit with exactly one satisfying assignment and all inputs relevant; conjecture $=2(n-1)$ (Prop.~\ref{p1} gives $\ge$).
+\item Track the minimum wires of circuits forcing a solver to examine $\ge 2^{\Omega(n)}$ assignments in a restricted (e.g. decision-tree over inputs) model, with $n$ and $g$ as parameters.
+\end{enumerate}
+\textbf{Log:} 2026-10-31 run 1: created document, Props.~1--2, $n\le3$ table.
+\end{document}
