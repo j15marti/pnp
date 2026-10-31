@@ -82,7 +82,7 @@ function fmt(a){return a[0]+"/"+a[1]}
 function FLMV(u,v){
  const c=frac(u,v);let f=frac(1),p=frac(1),best=frac(-1),win=0,rows=[];
  for(let k=1;k<40;k++){
-  f=div(mul(c,f),add(frac(1),f));p=div(p,c);if(k<2)continue;
+  f=div(mul(c,f),add(frac(1),f));p=div(p,c);if(k<2){const a=div(sub(div(frac(1),f),c),frac(k)),d=less(a,p)?a:p;rows.push({k,d:fmt(d)});if(less(best,d)){best=d;win=k}continue;}
   const x=div(sub(div(frac(1),f),c),frac(k)),d=less(x,p)?x:p;
   rows.push({k,d:fmt(d)});if(less(best,d)){best=d;win=k}
   const tail=div(p,c);
