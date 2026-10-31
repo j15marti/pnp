@@ -40,4 +40,14 @@ The claim “few distinct source probes implies a hereditary ARC contraction” 
 
 For one proposed all-input arbitrary-`A -> Phi(A)`, prove exponent-obliviously on every source and both labels that `D <= N^(11/10+o(1))`, `H <= N^(1/2+o(1))`, and `sum_i rho_i T_A(m_i) <= N^(3/5+(1/2)K+o(1))`, including physical output/access, failed policies and retained ancestors. This remains OPEN.
 
-Publication/readback provenance: PENDING until GitHub commits and blob SHAs are filled after verified writes.
+## Publication/readback provenance
+
+All six standalone text artifacts were fetched back byte-for-byte identical.
+
+- Producer commit `fd0cf994e223e88e05b826054f3789cd1c745659`, blob `2336443d4bea3d19408400b88253a36f6d9399a2`.
+- Checker commit `dd290a69e6ac4cc3b88b512bb7087f9f6212cba3`, blob `e651271ede4d81659cefa91040e1741d5796235b`.
+- Raw commit `ac6091cf04dbb1cb5c2e8867b4d5b80b9d87b046`, blob `8dea3c6710435174ff06e3f27a47e553cc271951`.
+- Check-result commit `cc25958e0aa584c4bfc7a38f2a971c182b935b40`, blob `a67ba68d2c487342eceaee7acf8bc8a5e9c32a8a`.
+- Report commit `3acd6e9bc4583ac73fa3bdeec970f52ed66e4ee5`, blob `78a19de86e6db4edf6fd4732a09f6dd7118d29f3`; required header and final sentinel verified.
+- Initial handoff commit `0f5c3b1b51c0aab6adc6a3d8f58a5abce621f1cd`.
+- Root synthesis commit `4254a479d3ad9f55662fa5a1e51480758d1992bc`, blob `6c867829b43cc92b526c1c7c784fedc9269cca04`; exact readback, five balanced ownership-marker pairs, OPEN status and final sentinel verified. The authenticated root compiled under XeLaTeX to 114 pages.
