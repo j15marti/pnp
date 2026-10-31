@@ -1,0 +1,46 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT::2026-10-31
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{thm}{Theorem}\newtheorem{lem}{Lemma}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder toward Circuit-SAT lower bounds}
+\author{Living document (hourly routine)}
+\date{Last updated 2026-10-31}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial lower bound for Circuit-SAT. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Setup}
+Circuit: DAG, fan-in-2 gates over the full basis $B_2$, $n$ inputs, $m$ gates, $w=2m$ wires (gate-input edges; fan-out counted per edge). Circuit-SAT$(n,m)$: given $C$, decide $\exists x\; C(x)=1$. Parameters: $n$, $m$ (or $w$), fan-out, treewidth $\mathrm{tw}$.
+
+\section{Ladder of exact small cases}
+\textbf{COMPUTATIONAL} (\texttt{research/agents/claude/circuitsat/ladder.py}, exhaustive, $<$20s): minimum gates $\mathrm{C}(f)$ and minimum formula leaves $\mathrm{L}(f)$ over all $f:\{0,1\}^n\to\{0,1\}$ (constants free).
+\begin{center}\begin{tabular}{c|l|l|c}
+$n$ & functions by $\mathrm{C}(f)=0,1,2,3,4$ & unique-SAT point functions & $\max(\mathrm L-\mathrm C)$\\\hline
+2 & 4,12 & $\mathrm C=1$ (2 wires) & 1\\
+3 & 5,33,114,80,24 & $\mathrm C=2$ (4 wires) & 1
+\end{tabular}\end{center}
+(Count at $\mathrm C=0$ includes constants and the $n$ literals.) For $n\le3$, $\mathrm L(f)=\mathrm C(f)+1$ for every non-trivial $f$: fan-out never saves a gate yet. Fan-out savings first appear at larger $n$ (e.g.\ XOR/parity chains); $n=4$ exact search is not yet done (needs chunked search, see Next).
+
+\section{Proved step lemmas}
+\begin{lem}[Relevance, PROVED/EXACT]\label{lem:rel} If $C$ depends on all $n$ inputs then $C$ has $\ge n-1$ gates and $\ge 2(n-1)$ wires. (Connectivity: the output must reach $n$ sources through fan-in-2 gates.)\end{lem}
+\begin{lem}[Point-function tightness, PROVED/EXACT]\label{lem:pt} For $a\in\{0,1\}^n$ the function $[x=a]$ has $\mathrm C=n-1$ (conjunction of literals; negations absorbed in $B_2$). Matches $n=2,3$ data: $1,2$.\end{lem}
+\begin{thm}[Black-box floor, KNOWN/PROVED]\label{thm:bb} Any algorithm that accesses $C$ only through evaluation needs $2^n$ evaluations worst case to decide SAT for the family $\{[x=a]\}\cup\{0\}$ (adversary answers 0 until one point is left). Hence with $m=n-1$ gates, black-box cost is $2^{\,m+1}$.\end{thm}
+\textbf{Consequence / parametrization.} A lower bound for white-box algorithms must exploit the wires. Trivial white-box bound: $\Omega(w)$ (read the circuit). Gap: $\Omega(w)$ vs.\ best known $2^{n}\cdot\mathrm{poly}$ upper bound is the whole problem. Ladder question per step $(n,m)$: the least $T(n,m)$ such that some algorithm decides all circuits with $\le m$ gates; computationally $T(n,m)$ is bounded by the number of distinct functions with $\mathrm C\le m$ (table above) only for a lookup-table algorithm, which is not a lower bound.
+
+\section{Parametrized targets (CANDIDATE)}
+\begin{enumerate}
+\item $\mathrm{tw}$: SAT is $2^{O(\mathrm{tw})}m$; tight under SETH (KNOWN, conditional). Unconditional analogue: OPEN.
+\item $m-n$ (excess gates over the relevance floor, Lemma~\ref{lem:rel}): CANDIDATE conjecture $T(n,m)\ge 2^{\,n-O(1)}$ for $m\le n+c$ is \emph{false-looking} because circuits with $m<n+c$ are near-trees and solvable by DP in $\mathrm{poly}$; so the hardness must come from fan-out. Record: parameter ``number of fan-out-$\ge2$ nodes'' $k$ gives FPT-style $2^{O(k)}\mathrm{poly}$ (decide by branching on those nodes; PROVED/EXACT). Lower bound in $k$: OPEN.
+\item Gate elimination (KNOWN THEOREM, Li--Yang $\approx3.1n$ circuit lower bound for explicit functions) bounds \emph{size of a function}, not time to solve SAT; transfer needs a new bridge.
+\end{enumerate}
+
+\section{Repository cross-check}
+Relevant existing work (surveyed, not re-proved): world ledger rows (research/agents/claude/world-ledger), L34--L37 alternation-trading barrier for portfolio/time-space; Buss--Williams $n^{2\cos(\pi/7)}$ time-space bound for SAT (KNOWN THEOREM) is the only unconditional non-trivial white-box SAT lower bound in the repo's spine, in a restricted space regime. LSPV-2 circuit QPORT/R15 reports exist under research/agents/lspv-2 (not audited here). Nothing found that gives a wire-count-parametrized bound.
+
+\section{Log and next steps}
+\begin{itemize}
+\item 2026-10-31 run 1: created document; $n\le3$ exact tables; Lemmas 1--2, Thm 1, branching-on-fan-out FPT upper bound.
+\item Next: (a) chunked exact $\mathrm C(f)$ for $n=4$ (65536 functions; known max 7 gates, to verify) and track $\mathrm L-\mathrm C$ gap onset; (b) prove or refute $\mathrm{SAT}\le 2^{k}\mathrm{poly}$ tightness for $k$ fan-out nodes via a query/space model; (c) audit lspv-2 circuit reports.
+\end{itemize}
+\end{document}
+% END_OF_LIVING_DOC::ClaudeCircuitSAT
