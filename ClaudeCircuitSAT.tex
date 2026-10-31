@@ -1,0 +1,59 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append-only log at the end; sections edited in place.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\title{ClaudeCircuitSAT: wire-by-wire lower bounds for Circuit-SAT\\ (living document)}
+\author{Claude (scheduled hourly run)}
+\date{Last updated 2026-10-31}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is an unconditional
+super-polynomial lower bound for white-box Circuit-SAT. Labels: PROVED/EXACT, COMPUTATIONAL, KNOWN, CONDITIONAL, OPEN.
+
+\section{Model and parameters}
+A circuit $C$ has $n$ inputs, $g$ fan-in-2 gates (full binary basis), one output, and $w$ wires
+(edges). Fan-in 2 gives $w\le 2g$. Circuit-SAT: given $C$, decide $\exists x\; C(x)=1$.
+Candidate parameters for a parametrised bound $T(n,g,w,\mathrm{tw},\dots)$: $n$, $g$, $w$, treewidth/cutwidth of the wire graph.
+\emph{Upper bounds (KNOWN):} $O(2^n g)$ by enumeration; $2^{O(\mathrm{tw})}\mathrm{poly}$ by dynamic programming over a tree decomposition.
+\emph{Unconditional white-box lower bound:} only $\Omega(g)$ (input must be read). Anything stronger is OPEN
+(SETH would give $2^{(1-\epsilon)n}$: CONDITIONAL).
+
+\section{Step 1: wire lower bound for dependence (PROVED/EXACT)}
+\begin{lemma}\label{lem:wires}
+If a single-output fan-in-2 circuit depends on all $n$ inputs then $g\ge n-1$ and $w\ge n+g-1\ge 2n-2$.
+\end{lemma}
+\begin{proof} Every input and every gate except the output has an outgoing wire into a gate, giving $w\ge (n+g)-1$ (distinct source nodes). With $w\le 2g$ we get $g\ge n-1$, hence $w\ge n+g-1\ge 2n-2$. A binary AND tree attains $g=n-1$, $w=2n-2$. \end{proof}
+The \emph{needle} $N_a(x)=[x=a]$ ($n$ literals ANDed, negations absorbed in the full binary basis) therefore has exact complexity $g=n-1$, $w=2n-2$ (a function with a unique satisfying point depends on all inputs).
+
+\section{Step 2: black-box lower bound (PROVED/EXACT, model-restricted)}
+\begin{proposition}\label{prop:needle}
+Any algorithm that learns about $C$ only through evaluation queries $x\mapsto C(x)$ needs $2^n$ queries in the worst case to decide Circuit-SAT, even when promised $C$ is $N_a$ or the constant $0$, with $g=n-1$.
+\end{proposition}
+\begin{proof} Adversary answers $0$ to every query $x$; after $2^n-1$ queries one point $a$ is unqueried and both $N_a$ and $0$ are consistent. \end{proof}
+\textbf{Caveat (failed transfer).} A white-box algorithm reads the AND tree and solves $N_a$ in $O(g)$. So the black-box bound measures only
+\emph{information hidden by the encoding}, and says nothing about P vs NP. The right parameter for a white-box bound must
+measure interaction among wires, not their number: $N_a$ has $\mathrm{tw}=1$.
+
+\section{Step 3: exact minimum circuit sizes for $n\le 3$ (COMPUTATIONAL)}
+Code and data: \texttt{research/agents/claude/circuitsat/mincost.py}, \texttt{mincost\_n*.json} (layered BFS over DAG states; every function reached; exact).
+Literals and constants cost 0.
+\begin{center}\begin{tabular}{@{}lccccc@{}}\toprule
+$n$ & \#functions & cost histogram (gates: count) & needle & parity & majority\\\midrule
+1 & 4 & 0:4 & 0 & 0 & 0\\
+2 & 16 & 0:6, 1:10 & 1 & 1 & 1\\
+3 & 256 & 0:8, 1:30, 2:114, 3:80, 4:24 & 2 & 2 & 4\\\bottomrule\end{tabular}\end{center}
+Observations: needle cost $=n-1$ matches Lemma~\ref{lem:wires}; the hardest 3-input functions need 4 gates ($w\le 8$) and these are the
+first functions whose minimal circuit is not a tree of dependence-forced size ($\mathrm{MAJ}_3$ needs $g=4>n-1=2$ gates).
+Extra gates beyond $n-1$ are exactly the \emph{wire-reuse (fan-out)} overhead; tracking this excess $e(f)=C(f)-(n-1)$ is the proposed ledger.
+
+\section{Next steps (OPEN agenda)}
+\begin{enumerate}
+\item Extend table to $n=4$ (65536 functions, max cost 7) in chunked stages; record $e(f)$ and the wire graph treewidth of optimal circuits.
+\item Define a \emph{hardness-of-search} measure $\mu(C)$ (e.g. min over decision-DAG widths) and prove $T\ge 2^{\Omega(\mu)}$ for restricted models (monotone / read-once / bounded-width branching programs), where known unconditional bounds exist; then test which parametrisation survives.
+\item Relate to repository results: \texttt{research/agents/claude/world-ledger} rows L34--L40 (alternation-trading barriers, one-tape crossing sequences) give model-specific bounds on SAT time/space; Buss--Williams (row L13) limits alternation trading below exponent $2\cos(\pi/7)$. Not yet linked to a wire-count argument.
+\end{enumerate}
+
+\section*{Run log}
+\begin{itemize}
+\item 2026-10-31: created document; Lemma 1, Prop 1, exact tables $n\le3$. Repo scan: no prior circuit-SAT wire-count work found beyond the P vs NP ledger above.
+\end{itemize}
+\end{document}
