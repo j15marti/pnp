@@ -1,0 +1,70 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::v1::2026-10-31
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,geometry}
+\geometry{margin=1in}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: a wire-by-wire, parametrized lower-bound ladder for Circuit-SAT\\\large Living document}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-10-31}
+\begin{document}\maketitle
+
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} No unconditional super-polynomial lower bound for \CSAT{} is claimed here.
+Labels: PROVED/EXACT, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup}
+Circuits use fan-in-2 gates over the full binary basis $B_2$ with free negation. A circuit has $n$ inputs, $g$ gates and $w=2g$ wires.
+$\CSAT(n,g)$: given such a circuit, decide whether some $x\in\{0,1\}^n$ gives output $1$.
+Trivial upper bound: $O(2^n g)$. Parameters: $n$, $g$, the excess $e=g-(n-1)$, and the number of satisfying assignments $k$.
+
+\section{Ladder of exact facts}
+\begin{lemma}[Connectivity / wire floor; PROVED/EXACT]\label{lem:conn}
+If the output of a circuit depends on $r$ inputs, the circuit has at least $r-1$ gates and $2(r-1)$ wires.
+\end{lemma}
+\begin{proof}
+Restrict to the cone of the output: each relevant input and each gate in the cone lies on a path to the output, so the undirected graph on $r$ inputs plus $g'$ gates is connected, hence has $\ge r+g'-1$ edges. Each gate has exactly two in-edges, so edges $=2g'$ and $g'\ge r-1$.
+\end{proof}
+\begin{proposition}[Needle floor, tight; PROVED/EXACT]
+A function with exactly one satisfying assignment depends on all $n$ inputs, so it needs $\ge n-1$ gates; the AND chain on $n$ literals achieves $n-1$.
+\end{proposition}
+\begin{proposition}[Small-gate regime is FPT in $g$; PROVED/EXACT]
+By Lemma~\ref{lem:conn} at most $g+1$ inputs are relevant, and they can be found by reachability, so $\CSAT(n,g)$ is solvable in time $2^{g+1}\mathrm{poly}$. The hard regime therefore has $g\ge n-1$, i.e. excess $e\ge0$; the natural parametrized question is the dependence of the best exponent on $e/n$.
+\end{proposition}
+\begin{proposition}[Black-box evaluation bound; PROVED/EXACT, model-limited]
+An algorithm that only evaluates the circuit as a black box needs $2^n-1$ evaluations in the worst case (adversary answers $0$ until one point is left). This says nothing about algorithms that read the wiring, which is the real question.
+\end{proposition}
+
+\section{Computational ladder (COMPUTATIONAL)}
+Script and raw output: \texttt{research/agents/claude/circuitsat/mincirc.py}, \texttt{mincirc\_results.json}.
+Exhaustive BFS over sets of computed truth tables gives the exact $B_2$ circuit size of every function on $n\le3$ inputs.
+
+\begin{center}\begin{tabular}{lcccccc}\toprule
+$n$ & functions & size 0 & 1 & 2 & 3 & 4\\\midrule
+1 & 4 & 4 & -- & -- & -- & --\\
+2 & 16 & 6 & 10 & -- & -- & --\\
+3 & 256 & 8 & 30 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+Maximum size by number $k$ of satisfying assignments ($n=3$): $k=1\!:\!2$, $2\!:\!3$, $3\!:\!4$, $4\!:\!4$, $5\!:\!4$, $6\!:\!3$, $7\!:\!2$.
+(The $n=1$ row is the trivial case; the $n=2,3$ rows are computed.) Observations: needles ($k=1$) hit the floor $n-1$ exactly; the costliest functions have $k$ near $2^{n-1}$, i.e. the instances with many satisfying assignments are the expensive circuits to \emph{build}, while needle instances are cheap to build but expensive to \emph{search}. Hence build-cost and search-cost pull in opposite directions, which is the tension any lower bound must exploit.
+Known (recalled, not re-verified here): the maximum $B_2$ size at $n=4$ is $7$.
+
+\section{Where lower bounds stand}
+\begin{itemize}
+\item Unconditional general bound on circuit size of explicit functions: gate elimination gives roughly $3n$--$3.1n$ for $B_2$ (literature; CITATION TO VERIFY). Nothing close to $2^{\Omega(n)}$ time for \CSAT{} is known. OPEN.
+\item CONDITIONAL: SETH implies no $2^{(1-\varepsilon)n}\mathrm{poly}$ algorithm for \CSAT{} with $g=\mathrm{poly}(n)$. Not a proof.
+\item Repository link (from \texttt{AGENTS.md}, not independently re-audited): ledger rows L34/L35 (T-PORT) show alternation-trading proofs hit a linear-time barrier when the portfolio size is about $N$ and give non-trivial bounds for $N^d$, $d<1$. This is a parametrized phenomenon of the same flavor as the excess parameter $e/n$ here; any transfer is CANDIDATE and needs an explicit bridge.
+\end{itemize}
+
+\section{Open targets for the ladder (next runs)}
+\begin{enumerate}
+\item Extend the exact table to $n=4$ (size by $k$) with a checkpointed search, and tabulate the minimal gates for functions with prescribed $k$ and a prescribed ``hidden'' structure.
+\item Define a wire-measure of \emph{search hardness}: the minimum number of wires a deterministic algorithm must \emph{inspect} to decide satisfiability, and prove it $\ge$ wires$-O(1)$ for needle instances in a model where wires are read once (a probe lower bound, weaker than time).
+\item Study the excess parameter: for $g=(1+\alpha)n$, does a restriction/gate-elimination argument give a \emph{conditional-free} lower bound for a restricted algorithm class (e.g.\ DPLL-style branching)? Known upper bounds for linear-size circuits should be located and cited first.
+\item Examine whether the T-PORT barrier has a circuit analogue in the parameter $e$.
+\end{enumerate}
+
+\section*{Log}
+\begin{tabular}{ll}2026-10-31 & Created. Lemma 1, needle floor, FPT-in-$g$, exact $n\le3$ table (computed).\end{tabular}
+\end{document}
+% END_OF_DOCUMENT_v1
