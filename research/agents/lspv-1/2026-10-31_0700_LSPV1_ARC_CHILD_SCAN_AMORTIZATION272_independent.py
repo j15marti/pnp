@@ -6,8 +6,12 @@ source scan counts, all forbidden cubes and exact recurrence.
 import json, pathlib, itertools, hashlib
 from fractions import Fraction
 
-D=pathlib.Path(__file__).resolve().parent
-R=json.loads((D/'arc_child_scan272_raw.json').read_text())
+HERE=pathlib.Path(__file__).resolve().parent
+REPO_DATA=HERE.parents[2]/'results'/'raw'/'arc' if HERE.name=='lspv-1' else None
+D=REPO_DATA if REPO_DATA and REPO_DATA.is_dir() else HERE
+RAW_NAME=('2026-10-31_0700_LSPV1_ARC_CHILD_SCAN_AMORTIZATION272_raw.json' if D!=HERE else 'arc_child_scan272_raw.json')
+SUMMARY_NAME=('2026-10-31_0700_LSPV1_ARC_CHILD_SCAN_AMORTIZATION272_summary.json' if D!=HERE else 'arc_child_scan272_summary.json')
+R=json.loads((D/RAW_NAME).read_text())
 asserts=0
 
 def check(v,why):
@@ -106,8 +110,8 @@ check(sum(r['ground_truth_sat'] for r in R['originals'])==R['sat_sources'],'sat 
 check(sum(not r['ground_truth_sat'] for r in R['originals'])==R['unsat_sources'],'unsat counts')
 check(sum(r['baseline']['nodes'] for r in R['originals'])==R['baseline_nodes'],'node sum')
 check(sum(r['cold_controller']['selected_total_events'] for r in R['originals'])==R['controller_selected_events'],'event sum')
-raw=(D/'arc_child_scan272_raw.json').read_bytes()
-summary=json.loads((D/'arc_child_scan272_summary.json').read_text())
+raw=(D/RAW_NAME).read_bytes()
+summary=json.loads((D/SUMMARY_NAME).read_text())
 check(hashlib.sha256(raw).hexdigest()==summary['raw_sha256'],'SHA')
 print(json.dumps({'independent_assertions':asserts,'source_count':len(R['originals']),
  'sat_sources':R['sat_sources'],'unsat_sources':R['unsat_sources'],
