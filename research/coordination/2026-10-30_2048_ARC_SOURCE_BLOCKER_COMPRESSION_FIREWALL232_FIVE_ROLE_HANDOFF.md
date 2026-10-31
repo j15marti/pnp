@@ -38,4 +38,17 @@ Independent checker: PASS, 822 assertions. At `b=5`, parent UP-DPLL selected wor
 
 After source-valid learning, either construct a separately verified answer-preserving ordinary SAT re-encoding of physical length `N^(1/2+o(1))`, or close the source with a complete checked proof, while charging acquisition, failures, source reads, proof checking, output/access and simultaneous retained state in the native ARC/FLMV recurrence.
 
-Publication/readback provenance: PENDING.
+Publication/readback provenance (all exact UTF-8 readbacks verified): report
+commit `1eb2e4fdfe08163f1e2ea3456238e7eb4d4c7a58`, blob
+`e8f0edb28c5a40a29afdfa52b388dee7c64b7114`; producer commit
+`779c0bcf9dc957619cb62af277add85791fe6d1e`, blob
+`3c7e6f047ad91819d79f8b17dcd930e249041dfa`; checker commit
+`51ed676133d5488d6dece6411a60c5b3575e1b35`, blob
+`e11b37c61d1650e3d7677ff98cdc115a462e9fca`; raw commit
+`feaecec5f888c40eb60fe7c5e87f3361a59c1843`, blob
+`ff8319bc500336994e95cfd91929d3a56d4e8e63`; check-result commit
+`e54c8d368ba2c665eba41067de761ea64bd9c97a`, blob
+`6636674618520a6ac6cd58c49b1b030d44f82f4c`; root reconciliation commit
+`a240b238b067e3bc97d208010a0643fa21ee3c21`, blob
+`7e2682942edc74b251914e03ba9503f7d85da91b`.  The root readback has five
+balanced ownership-marker pairs, the new sentinel, and explicit OPEN status.
