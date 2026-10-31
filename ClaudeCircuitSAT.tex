@@ -1,0 +1,56 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder toward (parameterized) lower bounds for Circuit-SAT}
+\author{Living document, hourly scheduled Claude runs}
+\date{Last updated: 2026-10-31 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. Nothing here is an unconditional super-linear time lower bound for Circuit-SAT. Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup and parameters}
+A circuit $C$ has $n$ inputs, $s$ gates of fan-in $2$ over the basis $B_2$ (all 2-input gates), hence $m=2s$ wires between nodes (plus output marker). Circuit-SAT: given $C$, is there $x$ with $C(x)=1$?
+Parameters: $n$ (inputs), $s$ (gates), $m$ (wires), and structural width $k$ (treewidth/cutwidth/pathwidth of the underlying graph). The target shape of a bound is $T(n,s,k)$, e.g.\ $2^{\epsilon k}\,\mathrm{poly}(s)$.
+
+\section{The ladder}
+\subsection*{Rung 0: connections needed for dependence on $n$ inputs}
+\begin{lemma}[PROVED/EXACT]\label{l:conn}
+If a fan-in-2 circuit's output depends on all $n$ inputs, then $s\ge n-1$ and $m\ge 2(n-1)$; both are tight for $\mathrm{AND}_n,\mathrm{OR}_n,\mathrm{XOR}_n$ (balanced trees).
+\end{lemma}
+\begin{proof} Each input has a path to the output, so the underlying undirected graph on inputs and gates is connected with $n+s$ nodes; every gate has two in-wires, and a connected graph on $n+s$ nodes needs $\ge n+s-1$ edges, i.e.\ $2s\ge n+s-1$, so $s\ge n-1$. Tightness: a tree. \end{proof}
+
+\subsection*{Rung 1: reading lower bound in the size parameter}
+\begin{proposition}[PROVED/EXACT]\label{p:read}
+For every $s$ there is a family of satisfiable circuits $C_s$ with $s$ gates such that changing any single gate's type to constant-$0$ gives an unsatisfiable circuit. Hence any deterministic algorithm for Circuit-SAT with probe access to the gate list makes $\ge s=\Omega(m)$ probes.
+\end{proposition}
+\begin{proof} Let $C_s$ be the chain $g_1=x_1\wedge x_2$, $g_{i+1}=g_i\wedge x_{(i \bmod n)+1}$, output $g_s$. Only $x=1^n$ satisfies it. An algorithm not probing gate $i$ cannot distinguish $C_s$ from $C_s^{(i)}$ (gate $i$ replaced by $0$), whose answer is UNSAT. \end{proof}
+
+\subsection*{Rung 2: exact minimum sizes for small $n$ (COMPUTATIONAL)}
+Exhaustive depth-limited search over all circuits (script \texttt{research/agents/claude/circuitsat/minsize.py}, runtime 27\,s, data \texttt{minsize\_results.json}); the counts include complements, which are free in $B_2$. Each function's row is its minimum gate count; wires are twice that.
+\begin{center}\begin{tabular}{lrrrrrr}\toprule
+$n$ & size 0 & 1 & 2 & 3 & 4 & total\\\midrule
+1 & 4 & 0 & 0&0&0 & 4\\ 2 & 6 & 10 & 0&0&0 & 16\\ 3 & 8 & 30 & 114 & 80 & 24 & 256\\\bottomrule\end{tabular}\end{center}
+Totals equal $2^{2^n}$, so the search is exhaustive and $n=3$ needs at most 4 gates (8 wires). The 24 functions of size 4 are those with no cheaper form (parity-/majority-type). This matches the known $B_2$ values (e.g.\ $\mathrm{MAJ}_3$ and $\mathrm{XOR}_3$-like functions are size-4 or less; $\mathrm{XOR}_3$ has size 2).
+\emph{Next:} $n=4$ (65\,536 functions, expected max size 7) needs a chunked/meet-in-the-middle search per the 30-second rule.
+
+\subsection*{Rung 3: parameterized time statements (KNOWN / CONDITIONAL)}
+\begin{itemize}
+\item KNOWN THEOREM: brute force is $2^n\cdot s$; with a tree decomposition of width $k$, dynamic programming gives $2^{O(k)}\,s$.
+\item CONDITIONAL: under SETH, no $2^{(1-\epsilon)n}\mathrm{poly}(s)$ algorithm exists for CNF-SAT, and CNF is a circuit family, so the same holds for Circuit-SAT; under SETH treewidth-parameterized CNF-SAT has no $(2-\epsilon)^{k}\mathrm{poly}$ algorithm (Lampis et al.; to be re-verified against primary sources in a later run).
+\item KNOWN (repository, ledger row L13): alternation-trading proofs cannot reach SAT time exponent $2\cos(\pi/7)$ with $n^{o(1)}$ space; rows L34--L40 limit portfolio and one-tape variants.
+\end{itemize}
+
+\section{Open targets for the ladder}
+\begin{enumerate}
+\item[T1] (COMPUTATIONAL) Extend Rung 2 to $n=4$; tabulate wires versus ``SAT-hardness'' of the smallest circuits (number of satisfying assignments, minimum certificate size).
+\item[T2] (CANDIDATE) A lower bound $T(n,s,k)$ for a restricted but natural algorithm class (splitting/DPLL with caching) that matches $2^{\Omega(k)}$ without SETH. Needs a proof; none yet.
+\item[T3] (OPEN) Any unconditional bound beyond Rung 1 for general algorithms. Equivalent to progress on P vs NP-scale questions; do not claim.
+\end{enumerate}
+
+\section{Repository cross-check}
+Reviewed: \texttt{AGENTS.md} summary of \texttt{research/agents/claude/world-ledger} (L13, L34--L40) and the TPORT/ONETAPE notes. Useful rule from the ledger: a statement equivalent to $\mathrm{P}=\mathrm{NP}$ is a reformulation, not progress. Not yet read in full: the ARC/FLMV spine files.
+
+\section{Run log}
+\begin{itemize}\item 2026-10-31 run 1: created document; Lemma~\ref{l:conn}, Prop.~\ref{p:read}, exhaustive table $n\le3$. No new lower bound beyond trivial ones.\end{itemize}
+\end{document}
+% END_OF_CLAUDECIRCUITSAT
