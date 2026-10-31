@@ -16,7 +16,7 @@ Therefore some leaf retains >=m/2^w raw original-clause records. Exact for early
 Two separately implemented checkers agreed on 10 original formulas, 8 SAT and 2 UNSAT, 60 adaptive decision-tree controls, 284 leaves, 756 four-mode indexed source pair checks, 448 triple checks, 16,896 flip-clause updates, 176 original occurrence local S/U inversions, and 92 non-tautological source-pair resolution blocker certificates.
 Baseline UP-DPLL: 44 nodes, 816 selected work operations.
 Source-aware fixed-policy controller: 78 nodes, 2,525 selected operations.
-Shallow guest experiment: 13 real written/parsed ordinary ASCII-DIMACS children with both SAT and UNSAT parent labels, 441 output characters, 245 new source-literal reads, 183 guest-literal reads, 421 original scan reads, 38 guest assignment tests. No performance win or FLMV machine measurement. Full raw producer output 484,362 characters. Failed alternate policies/switches=0, explicitly; physical child and source storage remain live, so no N^(1/2) tape-space claim.
+Shallow guest experiment: 13 real written/parsed ordinary ASCII-DIMACS children with both SAT and UNSAT parent labels, 441 output characters, 245 new source-literal reads, 183 guest-literal reads, 421 original scan reads, 38 guest assignment tests. No performance win or FLMV machine measurement. Full raw producer output 488,349 characters, including 15 byte-exact ordinary guest-child transcripts. The independent checker verified 10 SAT and 5 UNSAT child polarities from those transcripts. Failed alternate policies/switches=0, explicitly; physical child and source storage remain live, so no N^(1/2) tape-space claim.
 
 ## Falsifiers and peer obligations
 F1, universal all-leaf raw o(m) cofactor shrinking by adaptive pivots: fails exactly.
