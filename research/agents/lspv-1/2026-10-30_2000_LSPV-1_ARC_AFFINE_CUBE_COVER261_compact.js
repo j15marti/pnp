@@ -9,7 +9,7 @@ function restrict(F,r){return F.map(C=>C.some(l=>r[Math.abs(l)-1]===(l>0?1:0))?n
 function cube(i,n){let a=[];for(let k=0;k<n;k++){a.push(i%3-1);i=Math.floor(i/3);}return a;}
 function mass(b,r){let p=1;for(let j=0;j<b;j++){let a=r.slice(3*j,3*j+3),k=a.filter(x=>x>=0).length;if(k===3){if(pc(a)!==(j&1))return 0;}else p*=2**(2-k);}return p;}
 function extremes(F,i,j){let result={SS:false,SU:false,US:false,UU:false};let vars=[...new Set([...F[i],...F[j]].map(x=>Math.abs(x)-1))];for(let mask=0;mask<(1<<vars.length);mask++){let a=Array(Math.max(...vars)+1).fill(0);vars.forEach((v,k)=>a[v]=(mask>>k)&1);let t=[F[i],F[j]].map(C=>C.filter(l=>a[Math.abs(l)-1]===(l>0?1:0)).length);for(let key of Object.keys(result))if(t[0]===(key[0]==='S'?3:0)&&t[1]===(key[1]==='S'?3:0))result[key]=true;}return result;}
-function predicted(F,i,j){let ret={};for(let x of ['S','U'])for(let y of ['S','U']){let req=new Map(),ok=true;for(let [z,k] of [[i,x],[j,y]])for(let l of F[z]){let v=Math.abs(l),bit=(l>0?1:0)^(z==='U'?1:0);if(req.has(v)&&req.get(v)!==bit)ok=false;req.set(v,bit);}ret[x+y]=ok;}return ret;}
+function predicted(F,i,j){let ret={};for(let x of ['S','U'])for(let y of ['S','U']){let req=new Map(),ok=true;for(let [ix,mode] of [[i,x],[j,y]])for(let l of F[ix]){let v=Math.abs(l),bit=(l>0?1:0)^(mode==='U'?1:0);if(req.has(v)&&req.get(v)!==bit)ok=false;req.set(v,bit);}ret[x+y]=ok;}return ret;}
 let summary=[];
 for(let b of [2,3]){
  let n=3*b,F=make(b),G=make(b,true),models=[];
