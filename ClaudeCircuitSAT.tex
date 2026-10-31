@@ -1,0 +1,58 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- root file; append/revise in place each run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{thm}{Theorem}\newtheorem{lem}{Lemma}\newtheorem{prop}{Proposition}
+\title{Claude's Circuit-SAT Lower-Bound Ladder (living document)}
+\author{Claude scheduled routine}
+\date{Last updated: 2026-10-31 (run 1)}
+\begin{document}\maketitle
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing below is a super-polynomial lower bound for white-box Circuit-SAT. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and plan}
+Find (possibly parameterized) lower bounds for CIRCUIT-SAT, building from the simplest circuits: track, for each number of inputs $n$ and each wire/gate budget, the minimum number of connections needed and what any solver must pay. Parameters: $n$ (inputs), $s$ (gates), $w=2s$ (wires, fan-in 2), $k$ (number of satisfying assignments), $d$ (depth).
+
+\section{Model}
+Circuit $C$: DAG over inputs $x_1..x_n$, fan-in-2 gates from $B_2$ (all 16 binary functions; negation free), one output. Wires = gate input edges, $w=2s$. Solver models: (BB) black box, only evaluates $C$; (WB) white box, reads the description of $C$ ($\Theta(s\log s)$ bits).
+
+\section{Proved rungs}
+\begin{prop}[Connectivity rung, PROVED/EXACT]\label{p1}
+If $f=C(x)$ depends on all $n$ inputs then $C$ has $\ge n-1$ gates, i.e.\ $\ge 2(n-1)$ wires; tight for $f=\ell_1\wedge\dots\wedge\ell_n$ (literals). 
+\end{prop}
+\begin{proof}
+Each input must have a directed path to the output, so the underlying graph on inputs+gates is connected after restricting to the cone of the output; a connected graph on $n+s$ vertices has $\ge n+s-1$ edges, and edges $=2s$, so $2s\ge n+s-1$, $s\ge n-1$. A balanced tree of ANDs achieves it.
+\end{proof}
+\begin{prop}[Unique-solution rung, PROVED/EXACT]
+Any $C$ with exactly one satisfying assignment (a unique-SAT instance) on $n$ inputs has $\ge n-1$ gates: the unique-solution function depends on every variable (flipping a variable at the solution falsifies it), so Prop.~\ref{p1} applies. Tight.
+\end{prop}
+\begin{prop}[Black-box rung, PROVED/EXACT]\label{p3}
+In model BB, any deterministic algorithm that decides satisfiability on all circuits with $\le k$ satisfying assignments needs $2^n-k+1$ evaluations in the worst case (adversary answers 0 until only $k$ unqueried points remain and then plants the solutions there); randomized: $\ge (2^n+1)/(k+1)$ expected evaluations for $k$ planted solutions. Parameterized form: $\Omega(2^n/(k+1))$.
+\end{prop}
+\begin{prop}[Read-the-circuit rung, PROVED/EXACT]
+In model WB, any correct algorithm must examine $\Omega(s)$ wires, since a single unread gate can be changed so that the answer flips (e.g.\ turn a gate feeding the output into a constant-false/true gate on an otherwise unsatisfiable/satisfiable instance). So time $\Omega(s)$; this is the only unconditional WB bound we have. 
+\end{prop}
+
+\section{Computational ladder (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/ladder.py}, output \texttt{ladder\_out.json} (runtime $<1$ s). Exhaustive search over circuits with $\le 3$ gates in $B_2$:
+\begin{center}\begin{tabular}{rrrl}\toprule
+$n$ & functions of $2^{2^n}$ reached & gate-count histogram (0/1/2/3) & unique-SAT min gates\\\midrule
+1 & 4 of 4 & 4/0/0/0 & 0\\
+2 & 16 of 16 & 6/10/0/0 & 1\\
+3 & 232 of 256 & 8/30/114/80 & 2\\\bottomrule\end{tabular}\end{center}
+Unique-SAT minimum equals $n-1$ ($0,1,2$), matching Prop.~\ref{p1}. The 24 unreached 3-variable functions need $\ge 4$ gates (search depth limit; a depth-4 run was too slow in this naive implementation, to be rewritten with a level-set DP).
+
+\section{Parameterized picture so far}
+Summing up: BB cost $\Theta(2^n/(k+1))$ for planted instances; WB lower bound only $\Omega(s)$; upper bound $O(2^n s)$ trivially. The gap between $\Omega(s)$ and $2^n s$ is the whole of P vs NP. Any parameterized white-box bound of form $\Omega(2^{\epsilon n})$ for $s=\mathrm{poly}(n)$ would separate P from NP, so it is OPEN. Candidate parameter regimes where progress is plausible: small $k$-width / treewidth $t$ (known upper bound $2^{O(t)}s$, so lower bounds in terms of $t$ would be ETH/SETH-conditional), and small $w$ relative to $n$ ($s<n-1$ makes the function independent of some variable).
+
+\section{Related repo work checked (run 1)}
+Repository \texttt{j15marti/pnp}: P vs NP OPEN throughout. Relevant: world ledger rows L13/L34/L35 and \texttt{tport/} (alternation-trading barriers for SAT time--space, supports the view that unconditional white-box bounds need new methods); one-tape crossing notes (L38--L40) bound only restricted models. No result there gives a wire-count lower bound for Circuit-SAT. No duplication with this document found.
+
+\section{Next steps}
+\begin{enumerate}
+\item Level-set DP to get exact $B_2$ minimum sizes for $n=3,4$ (known literature values to be cited and verified, not assumed).
+\item Gate elimination for \emph{unique-SAT with promise}: cost of \emph{verifying} vs finding, as function of $s$ and $n$.
+\item ETH/SETH-conditional parameterized bound in treewidth $t$: state precisely which conditional.
+\item Study restricted white-box models (read-once, monotone, bounded-depth) where wire-by-wire accounting gives real bounds.
+\end{enumerate}
+% END_OF_CLAUDECIRCUITSAT_RUN::1
+\end{document}
