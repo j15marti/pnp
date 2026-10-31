@@ -1,0 +1,114 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append-only run log at the end; sections are edited in place.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: a wire-by-wire, parametrized ladder of lower bounds for Circuit-SAT}
+\author{Claude (hourly routine)}
+\date{Last updated: 2026-10-31 (run 1)}
+\begin{document}
+\maketitle
+
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial
+lower bound for \CSAT\ in the standard (full-description, random-access) model.
+Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+The document records (i) an exact computed ladder for $n\le 3$ inputs, (ii) lemmas that hold for
+\emph{every} $n$ and are tight, (iii) a clear separation of which bounds are model-restricted, and
+(iv) the next rung to attack. Repository context: \texttt{research/agents/claude/world-ledger} (rows L34--L40),
+\texttt{tport/}, \texttt{onetape/}. Code and data for this file: \texttt{research/agents/claude/circuitsat/}.
+
+\section{Model and parameters}
+A circuit $C$ has $n$ inputs, $s$ gates of fan-in 2 (basis $B_2$: all 16 binary Boolean functions,
+free negation of outputs), hence exactly $w=2s$ gate-input wires (plus one output wire).
+\CSAT: given $C$, decide $\exists x\,C(x)=1$.
+Parameters tracked per rung: $n$ (inputs), $s$ or $w$ (gates/wires), $\mathrm{tw}$ (treewidth of the underlying graph).
+A \emph{parametrized} bound has the form $T(n,s,\mathrm{tw})$; the classical statements are
+$T=O(2^n s)$ and $T=2^{O(\mathrm{tw})}s$ (KNOWN).
+
+\section{Rung ladder: minimal wires needed per step (COMPUTATIONAL, exact)}
+Let $C(f)$ be the minimum number of $B_2$ gates computing $f:\{0,1\}^n\to\{0,1\}$ (inputs and negations free).
+Exhaustive layered search over sets of computed functions (\texttt{synth.py}, finishes in about 10\,s for $n=3$)
+gives:
+\begin{center}
+\begin{tabular}{c|ccccc|c|c}
+$n$ & \#$f$ with $C=0$ & $C=1$ & $C=2$ & $C=3$ & $C=4$ & $\max C$ & $C(\mathrm{AND}_n)$\\\hline
+1 & 4 & -- & -- & -- & -- & 0 & 0\\
+2 & 6 & 10 & -- & -- & -- & 1 & 1\\
+3 & 8 & 30 & 114 & 80 & 24 & 4 & 2
+\end{tabular}
+\end{center}
+Counts sum to $2^{2^n}$ (4, 16, 256). Wires $=2C$. So the cheapest circuit realising any $n=3$ function uses at most 8 wires,
+and the 24 hardest functions need exactly 4 gates / 8 wires. The first \emph{non-trivial} satisfiability instance
+(a function with a unique satisfying input) appears at rung $n=2$ with 1 gate, 2 wires.
+
+\section{Lemmas valid for all $n$}
+\begin{lemma}[Connectivity, PROVED/EXACT]\label{lem:conn}
+If $f$ depends on all $n$ inputs, any fan-in-2 circuit for $f$ has $s\ge n-1$ gates and $w\ge 2(n-1)$ wires.
+$\mathrm{AND}_n$ (one satisfying input) meets this with equality.
+\end{lemma}
+\begin{proof}
+Every input must have a directed path to the output, so the underlying undirected graph on inputs and gates is connected
+on $n+s$ nodes with $2s$ gate-input edges; connectivity needs $2s\ge n+s-1$, i.e.\ $s\ge n-1$. A balanced tree of ANDs attains it.
+\end{proof}
+
+\begin{lemma}[Description-probe bound, PROVED/EXACT]\label{lem:probe}
+Fix $s$. Any deterministic algorithm that decides \CSAT\ on $s$-gate circuits, accessing the circuit only by probing
+gate records (type and two sources) at chosen indices, must probe at least $s$ records on some instance.
+\end{lemma}
+\begin{proof}
+Take the chain $g_i=\mathrm{AND}(g_{i-1},x_{i \bmod n})$, satisfiable by $x=1^n$. If the algorithm leaves record $j$
+unprobed, answer all probes as in the chain; the instance $I'$ where only gate $j$ is replaced by the constant-0 gate
+gives identical answers but is unsatisfiable. So the algorithm errs on one of them unless it probes all $s$ records.
+\end{proof}
+Consequence: the wire count is a genuine lower bound in the probe model, $T=\Omega(w)$ up to the record size
+($\Omega(w/\log w)$ bit probes). This is the formal content of ``every wire must be tracked''.
+
+\begin{lemma}[Black-box evaluation bound, PROVED/EXACT but \emph{model-restricted}]\label{lem:bb}
+If $C$ is accessible only as an evaluation oracle $x\mapsto C(x)$, deciding satisfiability needs $2^n$ queries in the worst case.
+\end{lemma}
+\begin{proof}
+Adversary answers $0$ to every query; after $2^n-1$ queries some input remains untested, and the oracle could accept exactly that input.
+\end{proof}
+\textbf{Caution (FALSIFIED as a route):} Lemma~\ref{lem:bb} says nothing about the real problem, because the real
+algorithm sees the description, and structured descriptions are solved faster (treewidth DP, below).
+The gap between $2^n$ (oracle) and $s$ (probe) is exactly the open region.
+
+\section{Known parametrized landscape}
+\begin{itemize}
+\item KNOWN THEOREM: $\CSAT\in \mathrm{TIME}(2^n\cdot s)$; and $2^{O(\mathrm{tw})}\cdot s$ by dynamic programming on a tree decomposition.
+\item CONDITIONAL (SETH): no $(2-\varepsilon)^n\mathrm{poly}(s)$ algorithm, since CNF-SAT embeds in \CSAT\ with the same $n$.
+Likewise no $(2-\varepsilon)^{\mathrm{pw}}\mathrm{poly}(s)$ under SETH (known for CNF-SAT parametrized by primal pathwidth).
+\item KNOWN THEOREM (transferred): Williams-type time--space bounds. \CSAT\ and 3-SAT are interreducible in linear size
+via Tseitin (computable in logarithmic space), so with $N=\Theta(s)$ the bound $T\ge N^{2\cos(\pi/7)-o(1)}\approx N^{1.80}$
+for algorithms with $N^{o(1)}$ space applies to \CSAT\ (reduction-transfer argument, to be re-verified in a later run with
+exact encodings). The repository row L13 (Buss--Williams) says alternation trading cannot push this exponent further.
+\item Gate-elimination gives circuit \emph{size} lower bounds for explicit functions ($3.1n-o(n)$ in $B_2$, Find--Golovnev--Hirsch--Kulikov; $5n-o(n)$ for $U_2$)
+but these bound the circuit, not the time of a \CSAT\ algorithm; the ladder in Section~2 is the exact, small-$n$ analogue.
+\end{itemize}
+
+\section{Repository check (this run)}
+No prior \texttt{ClaudeCircuitSAT.tex} existed; this file starts the living document. Relevant existing work:
+(a) L38--L40 (one-tape crossing sequences, bound also holds nondeterministically, hence cannot separate P from NP);
+(b) L34--L37 (alternation-trading barrier at portfolio size about $N$); (c) the AGENTS.md note that equivalent-to-P=NP statements are
+reformulations, not progress. No repository result gives a super-linear unconditional time bound for \CSAT\ beyond the Williams exponent.
+
+\section{Open obligations / next rungs}
+\begin{enumerate}
+\item OPEN: extend the exact ladder to $n=4$ (known max $C_{B_2}=7$; needs a smarter search than set-enumeration) and record $w$ per function class,
+in particular the \emph{minimum wires of any circuit whose only satisfying input is $a$} (expected $2(n-1)$, Lemma~\ref{lem:conn}).
+\item CANDIDATE: define a \emph{hardness profile} $H(n,w)=$ min over probing algorithms of worst-case probes on all circuits
+with $\le w$ wires and $n$ inputs; Lemmas~\ref{lem:probe}--\ref{lem:bb} give $\max(w,\cdot)\le H\le 2^n w$. Compute $H$ exactly for $n\le 3$ by game-tree search.
+\item OPEN: parametrize by treewidth: a lower bound $T\ge 2^{\Omega(\mathrm{tw})}$ for \emph{every} algorithm is equivalent in strength to a
+super-polynomial bound (the interesting regime is $\mathrm{tw}=s^{\varepsilon}$, since $\mathrm{tw}=O(\log s)$ is already polynomial) --
+state precisely which regime is not already implied by SETH-type conjectures.
+\item Re-verify the Williams transfer to \CSAT\ with exact encoding and write it as a proved proposition.
+\end{enumerate}
+
+\section*{Run log}
+\begin{itemize}
+\item Run 1 (2026-10-31): created document; computed exact $C(f)$ histograms for $n\le3$; proved Lemmas 1--3; audited repo (no prior circuit-SAT file); no progress on P vs NP.
+\end{itemize}
+\end{document}
