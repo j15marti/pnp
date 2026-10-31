@@ -1,0 +1,46 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\title{Claude Circuit-SAT Lower-Bound Notebook (living document)}
+\date{Last updated: 2026-10-31}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No super-linear unconditional lower bound for Circuit-SAT is claimed. Labels: PROVED, COMPUTATIONAL, KNOWN, CANDIDATE, OPEN.
+
+\section{Setup and parameters}
+Circuit-SAT: given a DAG circuit $C$ over fan-in-2 gates (basis $B_2$), $n$ inputs, $m$ gates, $w=2m$ wires, is there $x$ with $C(x)=1$?
+Candidate parameters for a parametrized bound: $n$ (inputs), $m$ (size), $w$ (wires), $d$ (depth), $k$ (treewidth / cutwidth / number of fan-out$>1$ wires).
+Known upper bounds (KNOWN): $O(2^n m)$ brute force; $2^{O(k)}\,m$ for treewidth $k$; ETH/SETH-type lower bounds are conditional.
+
+\section{Base cases: minimal wires, computed (COMPUTATIONAL)}
+Exact minimal gate count over $B_2$ (all 16 binary gates), via search over sets of computed truth tables
+(\texttt{research/agents/claude/circuitsat/mingates.py}). Wires $=2\cdot$gates. Constants/inputs/their projections count 0 gates; negation of a single input is omitted for $n=1$ since $B_2$ gates need two distinct operands in the search.
+\begin{center}\begin{tabular}{c|c|l}
+$n$ & functions & histogram \#functions by min gates\\\hline
+2 & 16 & 0 gates: 4;\ 1 gate: 12 (max wires 2)\\
+3 & 256 & 0:5;\ 1:33;\ 2:114;\ 3:80;\ 4:24 (max wires 8)
+\end{tabular}\end{center}
+Hardest 3-input functions need 4 gates (e.g.\ parity-type, 3-input XOR, uses 2 XOR gates; the 24 four-gate functions are the extremal class). Extending to $n=4$ needs smarter canonicalization (NPN reduction) -- next step.
+
+\section{Step-by-step growth of the trivial bound}
+\begin{proposition}[PROVED: reading bound $\Omega(m)$]
+Any algorithm for Circuit-SAT in the adjacency-query model (query ``source of input $j$ of gate $g$'') needs $\ge 2m-O(1)$ queries.
+\end{proposition}
+\emph{Proof.} Let $C_0$: $x$ feeds a chain of $m-1$ NOT gates ($m-1$ odd) into AND with $x$; $C_0\equiv x\wedge\neg x$ is UNSAT. For each wire $e$ in the chain, $C_e$ re-routes $e$ to skip one NOT: parity flips, giving $x\wedge x$ SAT. An algorithm missing a query to $e$ sees identical answers on $C_0$ and $C_e$. Hence all chain wires must be queried. $\square$
+
+This is size-of-input only and carries no $n$-dependence; a lower bound beating $\Theta(m)$ would be a genuine time lower bound for SAT and is OPEN.
+
+\section{Parametrized targets (CANDIDATE)}
+\begin{enumerate}
+\item \textbf{T1:} restricted algorithm class (e.g.\ DPLL/resolution): lower bound $2^{\Omega(n)}$ known for tree-like resolution on specific formulas (KNOWN, not general).
+\item \textbf{T2:} gate-elimination on the \emph{instance side}: for a fixed hard function $f_n$ with $\mathrm{size}(f_n)\ge c\,n$, how many wires must a SAT-algorithm's internal certificate-circuit contain? Link to circuit lower bounds ($3.1n$ record for $B_2$, KNOWN) -- these are lower bounds on circuit size, not on SAT time.
+\item \textbf{T3:} time-space: known SAT lower bounds $n^{2\cos(\pi/7)-o(1)}$ (Williams) for $n^{o(1)}$ space; see repo ledger (\texttt{research/agents/claude/world-ledger}, rows L13, L34--L40).
+\end{enumerate}
+
+\section{Repository cross-check}
+Repo contains the ARC/FLMV time-space spine, UWI portfolio barriers (T-PORT, rows L34--L37) and one-tape notes (L38--L40). Relevance: T-PORT shows alternation-trading proofs stall at linear time for near-$N$-size portfolios; this is a barrier for any Circuit-SAT parametrized bound proved by that method. No repo artifact gives a Circuit-SAT wire-count lower bound.
+
+\section{Next steps}
+(1) NPN-reduced search for $n=4$ minimal wires. (2) Track which hard $f_n$ force wires $\ge$ linear, and test whether SAT-instance hardness can be tied to $\mathrm{size}(f_n)$ for restricted solvers. (3) Choose a parameter ($k$ = cutwidth) and state a conditional (SETH) matching bound as a baseline.
+\end{document}
