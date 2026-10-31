@@ -26,3 +26,8 @@ Read REDIRECT1, CONTRACT1, AFFINE-SMALLBIAS-DESCENT-GATE2, CONSTRUCTION-STRENGTH
 - Root main.tex: LSPV-1 ownership region only, readback and external-byte preservation verified.
 
 **Single open theorem arrow:** uniform, hereditary, source-authenticated arbitrary-decider A -> Phi(A), both labels on ALL ordinary SAT inputs, physical children of length N^(1/2+o(1)) or valid terminals, fully charged time and peak space jointly inside the actual FLMV forbidden region. The affine small-bias theorem remains only restricted.
+
+## Newly confirmed exact re-entry self-loop and DELAY control
+When the prime implicate $R_h$ is reencoded by the canonical sequential proper-3CNF bridge gadgets, the output clause list is, under bridge-name substitution and literal-order conventions, identical to the original chain $F_h$: $h$ ternary clauses and $3h$ signed source occurrences both ways. Therefore this `eliminate-all-pivots then reencode` policy yields zero physical clause-list contraction even though its existential projection is exact. This says nothing about other encoders or arbitrary SAT algorithms.
+
+Exact DELAY/COPY symbolic wrapper audit with mandatory completed parent guest calls at unknown guest exponents $K=4,8,16,32$ gives claimed ARC target exponents $13/5,23/5,43/5,83/5$ respectively, all below the compulsory parent call cost exponent $K$. See `results/raw/arc/2026-10-31_0158_LSPV1_ARC_PRIME_CHAIN_GUARD267_DELAY_WRAPPER_EXACT.json`. All statements remain restricted architecture falsifiers. Report, raw, independent script and root-LSPV-1 reconciliation were readback verified; no scheduler actions were taken.
