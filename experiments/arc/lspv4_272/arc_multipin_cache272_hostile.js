@@ -15,7 +15,14 @@ const tests=[["xor_sat",parity(0),3,true],["xor_unsat",[...parity(0),...parity(1
  ["horn_sat",[[-1,-2,3],[1],[-3,2]],3,true],["horn_unsat",[[1],[2],[3],[-1,-2,-3]],3,false],
  ["dense_sat",[...parity(0),[1,2,3]],3,true],["dense_unsat",[...parity(0),...parity(1)],3,false]];
 for(let [name,c,n,label]of tests)add({n,c},name,label);
-const result={title:"ARC-MULTIPIN-WARM-CACHE272_HOSTILE",testType:"exhaustive, no random seeds",cases:rows.length,rows,
+let seed=20261031>>>0;function rnd(){seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;return seed>>>0}
+function randomClause(planted){const vars=[];while(vars.length<3){let v=1+rnd()%6;if(!vars.includes(v))vars.push(v)}
+ const out=vars.map(v=>(rnd()&1)?v:-v);if(planted&&!out.some(l=>l>0))out[0]=Math.abs(out[0]);return out;}
+const rs=Array.from({length:40},()=>randomClause(true));add({n:6,c:rs},"seeded_dense_planted_sat",true);
+const triples=[];for(let mask=0;mask<8;mask++)triples.push([1,4,6].map((v,i)=>((mask>>i)&1)?-v:v));
+for(let i=7;i>0;i--){let j=rnd()%(i+1);[triples[i],triples[j]]=[triples[j],triples[i]];}
+const rn=[...triples,...Array.from({length:40},()=>randomClause(false))];add({n:6,c:rn},"seeded_dense_forced_unsat",false);
+const result={title:"ARC-MULTIPIN-WARM-CACHE272_HOSTILE",testType:"exhaustive original labels, deterministic xorshift32 dense controls seed 20261031",cases:rows.length,rows,
  note:"Canonical recognition only. Nonmembers retain source labels but require a charged fallback or new sound policy. Native FLMV timing unmeasured."};
 if(typeof module!=="undefined"&&module.exports)module.exports={result};
 if(typeof require!=="undefined"&&typeof module!=="undefined"&&require.main===module)process.stdout.write(JSON.stringify(result,null,2)+"\n");
