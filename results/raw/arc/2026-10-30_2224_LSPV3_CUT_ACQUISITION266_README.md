@@ -5,7 +5,7 @@ The exact bytewise raw JSON source is published in twelve consecutive GitHub fil
 Their bytewise concatenation was fetched back from GitHub and compared to the original 219243-byte experiment output: **exact match**. Reconstruct in any POSIX shell:
 
 ```sh
-cat results/raw/arc/2026-10-30_2224_LSPV3_CUT_ACQUISITION266_raw.part{01..12}-of-12.txt > 2026-10-30_2224_LSPV3_CUT_ACQUISITION266_raw.json
+cat results/raw/arc/2026-10-30_2224_LSPV3_CUT_ACQUISITION266_raw.part??-of-12.txt > 2026-10-30_2224_LSPV3_CUT_ACQUISITION266_raw.json
 sha256sum 2026-10-30_2224_LSPV3_CUT_ACQUISITION266_raw.json
 python experiments/arc/2026-10-30_2224_LSPV3_CUT_ACQUISITION266_independent.py 2026-10-30_2224_LSPV3_CUT_ACQUISITION266_raw.json
 ```
