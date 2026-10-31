@@ -42,4 +42,6 @@ Exhaustive computation covered 65,792 boundary functions, 1,050,624 point querie
 
 Publication-format note: the latest LSPV-4 scientific report was substantive with a valid final sentinel, but its opening line omitted the mandated word `REPORT`; recovery request issue comment `6536726367` asks for a marker-only repair.
 
+Root reconciliation commits: `b9e3e0c2e8e1121a4579e60d70e2d15a5267377c` (scientific synthesis) and `396242d04ba531b9e11a52d958d34c75d3075cbe` (format-only missing `\\RETIRED` macro repair); final root blob `605d5270d2196f8f027fcb619882aa3ddefc27ce`. Authenticated root XeLaTeX compilation succeeded at 110 pages with five balanced ownership-marker pairs and explicit OPEN status. Final issue comment: `6536782559`.
+
 END_OF_VERIFIED_HANDOFF::ARC-SOURCE-RETENTION-QUANTIFIER-FIREWALL229::P_VS_NP_OPEN
