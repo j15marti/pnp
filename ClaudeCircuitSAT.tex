@@ -1,0 +1,77 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append/revise in place; log at the end.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{thm}{Theorem}\newtheorem{lem}[thm]{Lemma}\newtheorem{prop}[thm]{Proposition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: wire-by-wire lower bounds for Circuit-SAT\\\large living document}
+\author{Claude (hourly routine)}
+\begin{document}\maketitle
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} No unconditional super-polynomial lower bound for \CSAT\ solving is claimed.
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setting and parameters}
+An instance is a circuit $C$ over inputs $x_1..x_n$ with $g$ binary gates (negation free), $m=2g$ wires
+(fan-in 2). Question: $\exists a\ C(a)=1$? Parameters: $n$ (inputs), $g$ or $m$ (size), and further
+parameters to be introduced (fan-out profile, depth, treewidth of the wire graph, ``contradiction depth'').
+Two different quantities must not be confused:
+\begin{itemize}
+\item \emph{Expression cost}: minimum wires needed to \emph{write down} an instance with a given property
+(a circuit-size quantity; tracked step by step below).
+\item \emph{Solving cost}: time/probes needed to \emph{decide} instances. A lower bound on expression cost
+is \textbf{not} a lower bound on solving cost; it only calibrates how large the hard instances must be.
+\end{itemize}
+
+\section{Step-by-step ledger of minimal wire counts}
+Let $U(n)$ = min gates of a circuit in which every input reaches the output and which is UNSAT;
+$S_1(n)$ = same connectivity, exactly one satisfying assignment.
+\begin{lem}[PROVED/EXACT] $U(n)=n$ for $n\ge1$ (so $2n$ wires), and $S_1(n)=n-1$ for $n\ge2$.\end{lem}
+\begin{proof}
+If all $n$ inputs reach the output, the wire graph has $\ge n-1$ gates, with equality iff it is a tree in which
+every input has fan-out one, i.e.\ a read-once formula on $n$ distinct variables; such a function depends on
+every variable, hence is non-constant: so UNSAT needs $\ge n$ gates. Upper bound: $(x_1\wedge\neg x_1)\wedge x_2\wedge\dots\wedge x_n$
+uses $n$ gates; conjunction of $n$ literals gives $S_1\le n-1$, matching the tree bound.
+\end{proof}
+Each added input costs exactly one gate (two wires) in both families: the increment is $+1$ gate,
+$+2$ wires per input. Exhaustive search (\texttt{research/agents/claude/circuitsat/mincircuit.py}) agrees (COMPUTATIONAL):
+\begin{center}\begin{tabular}{cccc}\toprule
+$n$ & $U(n)$ & $S_1(n)$ & max $C(f)$ over all $f$ (B$_2$ basis)\\\midrule
+1 & 1 & 0 (input itself) & 0\\ 2 & 2 & 1 & 1\\ 3 & 3 & 2 & 4\\\bottomrule\end{tabular}\end{center}
+The $n=3$ gate-count distribution over the 256 functions is $0{:}8,\ 1{:}30,\ 2{:}114,\ 3{:}80,\ 4{:}24$.
+(Search covers distinct-node gates to depth 4; $U,S_1$ with repeated-node gates to depth 3.)
+Stage $n=4$ is not run: naive search exceeds the 30-second rule; it needs a C/SAT-based chunked search (next step).
+
+\section{Unconditional solving bound: probes}
+Access model: adjacency/wire-list oracle; cost = number of wire reads.
+\begin{prop}[PROVED/EXACT, trivial] Deterministic and randomized (error $<1/3$) \CSAT\ with $n\ge2$ requires $\Omega(m)$ wire reads.\end{prop}
+\begin{proof} Let $C_0$: output $=x_1\wedge y$, $y=\neg^{m'}x_1$ a chain of $m'$ NOT-gates with even $m'$ (UNSAT).
+Rewiring any single chain wire to $x_2$ makes the instance SAT (set $x_1=1$ and $x_2$ to the needed parity).
+Every wire is critical; a (random) hidden rewired wire is found only by reading it. Yao's principle gives $\Omega(m')$. \end{proof}
+This is only linear in $m$; it says the \emph{input must be read}, nothing about the $2^{\Omega(n)}$ regime.
+
+\section{Parametrized picture}
+Known upper bounds: $O^*(2^n)$ brute force; $2^{n-\Omega(n/\log m)}$-type improvements for restricted classes.
+\begin{itemize}
+\item CONDITIONAL (SETH): no $2^{(1-\varepsilon)n}\mathrm{poly}(m)$ algorithm; CNF-SAT reduces to \CSAT\ with $m=\mathrm{poly}(n)$.
+\item KNOWN THEOREM direction (Williams): faster-than-$2^n$ \CSAT\ for rich classes implies circuit lower bounds, not conversely.
+\item Candidate parameter spine: lower bound $T(n,m)\ge m\cdot f(\text{treewidth of wire graph})$ for low-width circuits is \emph{false} as a
+hardness claim (bounded treewidth is FPT: $O(2^{tw}m)$), so hardness must come from \emph{unbounded width}; the real target is a
+trade-off $T\ge 2^{\Omega(\mathrm{tw})}$ for \emph{some} family with $\mathrm{tw}=\Theta(n)$ -- CANDIDATE/OPEN, equivalent in spirit to SETH-style claims.
+\end{itemize}
+
+\section{Repository cross-links}
+From j15marti/pnp: ledger row L13 (Buss--Williams alternation-trading barrier, SAT exponent $2\cos(\pi/7)$ with $n^{o(1)}$ space)
+is the only unconditional time--space bound relevant to a parametrized \CSAT\ bound; T-PORT/ONETAPE notes
+(\texttt{research/agents/claude/}) show portfolio and one-tape routes are dominated or barrier-limited.
+A statement equivalent to P$=$NP is a reformulation, not progress. Nothing in the repo yet yields a width- or fan-out-parametrized bound.
+
+\section{Next steps}
+(1) Exact $U,S_1,C$ for $n=4,5$ via chunked C/SAT search; (2) define a \emph{hardness-robust} family (no unit-propagation/resolution
+refutation below size $s$) and compute the minimal wire count to \emph{express} it; (3) test whether minimal robust instances have wires growing as $\Theta(n)$ only
+(then expression cost gives nothing); (4) fan-out parameter: tabulate $U$ under fan-out $\le k$.
+
+\section*{Run log}
+\begin{itemize}
+\item 2026-10-31 run 1: created document; Lemma $U(n)=n$, $S_1(n)=n-1$; probe bound $\Omega(m)$; computed tables $n\le3$.
+\end{itemize}
+\end{document}
