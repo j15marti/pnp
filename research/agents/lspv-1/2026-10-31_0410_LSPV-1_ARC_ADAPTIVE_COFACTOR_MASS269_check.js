@@ -61,22 +61,53 @@ function auditTree(f,policy,depthCap){
   return {policy,depthCap,leaves,ledger:acc,weighted:{denominator,survivalNumerator,originalFalseCount,unresolvedSurplusNumerator,
     exact_identity:true,at_least_one_leaf_clause_floor:Math.max(...leaves.map(l=>l.remaining_original_clause_records))>=f.clauses.length/(1<<Math.max(...f.clauses.map(c=>c.length))) }};
 }
-function exhaustive(f,rho,acc){for(let a=0;a<(1<<f.n);a++){
-  let coherent=true;for(let i=0;i<f.n;i++)if(rho[i]!==null&&rho[i]!==((a>>i)&1)){coherent=false;break;}
-  if(!coherent)continue;acc.guest_assignment_tests++;
-  const z=assignment(a,f.n);let ok=true;for(const c of f.clauses){acc.guest_clause_visits++;acc.guest_literal_reads+=c.length;if(evalClause(c,z)===0){ok=false;break;}}
-  if(ok)return true;}return false;
+function physicalChild(f,rho,acc){
+  const out=[];for(const source of f.clauses){
+    acc.child_source_literal_reads+=source.length;
+    let sat=false,remaining=[];
+    for(const l of source){const x=rho[Math.abs(l)-1];
+      if(x===null)remaining.push(l);
+      else if((l>0?x:1-x)===1)sat=true;
+    }
+    if(!sat)out.push(remaining);
+  }
+  const physical="p cnf "+f.n+" "+out.length+"\n"+out.map(c=>c.join(" ")+" 0\n").join("");
+  acc.child_output_chars+=physical.length;
+  acc.max_retained_child_chars=Math.max(acc.max_retained_child_chars,physical.length);
+  return physical;
+}
+function exhaustive(f,rho,acc){
+  const physical=physicalChild(f,rho,acc);
+  const lines=physical.trim().split(/\r?\n/),h=lines[0].split(/\s+/);
+  requireTrue(h[0]==="p"&&h[1]==="cnf"&&Number(h[2])===f.n,"bad child header");
+  const child=lines.slice(1).map(s=>s.trim().split(/\s+/).map(Number));
+  requireTrue(child.length===Number(h[3]),"child clause count");
+  requireTrue(child.every(c=>c[c.length-1]===0),"child delimiter");
+  const clauses=child.map(c=>c.slice(0,-1));
+  for(let a=0;a<(1<<f.n);a++){
+    let coherent=true;for(let i=0;i<f.n;i++)if(rho[i]!==null&&rho[i]!==((a>>i)&1)){coherent=false;break;}
+    if(!coherent)continue;acc.guest_assignment_tests++;
+    const z=assignment(a,f.n);let ok=true;
+    for(const c of clauses){acc.guest_clause_visits++;acc.guest_literal_reads+=c.length;
+      if(evalClause(c,z)===0){ok=false;break;}}
+    if(ok)return true;
+  }
+  return false;
 }
 function controller(f,policy,depthCap){
   const acc={source_clause_visits:0,source_literal_reads:0,policy_clause_visits:0,policy_literal_reads:0,
-    guest_assignment_tests:0,guest_clause_visits:0,guest_literal_reads:0,decision_nodes:0,guests:0,rejected_branches:0};
+    guest_assignment_tests:0,guest_clause_visits:0,guest_literal_reads:0,
+    child_source_literal_reads:0,child_output_chars:0,max_retained_child_chars:0,
+    decision_nodes:0,guests:0,rejected_branches:0};
   const rho=Array(f.n).fill(null);
   function rec(depth){acc.decision_nodes++;const s=sourceProfile(f,rho,acc);if(s.empty){acc.rejected_branches++;return false;}
     if(s.remain===0)return true;if(depth>=depthCap){acc.guests++;return exhaustive(f,rho,acc);}
     const x=choose(f,rho,policy,acc);rho[x]=0;if(rec(depth+1)){rho[x]=null;return true;}
     rho[x]=1;const ans=rec(depth+1);rho[x]=null;return ans;
   }
-  const result=rec(0);acc.total_selected_operations=acc.source_literal_reads+acc.policy_literal_reads+acc.guest_literal_reads+acc.decision_nodes;
+  const result=rec(0);acc.total_selected_operations=acc.source_literal_reads+acc.policy_literal_reads+
+    acc.guest_literal_reads+acc.child_source_literal_reads+acc.child_output_chars+
+    acc.guest_assignment_tests+acc.decision_nodes;
   return {result,ledger:acc};
 }
 function upDPLL(f){
