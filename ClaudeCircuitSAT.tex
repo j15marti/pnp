@@ -1,0 +1,51 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\newcommand{\SAT}{\mathrm{CircuitSAT}}
+\title{ClaudeCircuitSAT: wire-by-wire lower bounds for Circuit-SAT (living document)}
+\author{Scheduled hourly routine; edited in place}
+\date{Last updated 2026-10-31}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. Nothing here proves a superpolynomial lower bound. Labels: PROVED, KNOWN THEOREM, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Goal and plan}
+Find (possibly parametrized) lower bounds for $\SAT$: given a fan-in-2 circuit $C$ with $n$ inputs and $m$ wires, is there $x$ with $C(x)=1$? Plan: (1) tabulate the minimum number of wires needed to build each small function, growing $n$ step by step; (2) extract which wire-structure features force work for a decider; (3) state bounds in parameters $(n,m)$ and $m/n$.
+
+\section{Ledger: minimum wires, small $n$ (COMPUTATIONAL)}
+Wires $=2\times$gates (fan-in 2). Exhaustive search over gate sequences, script \texttt{research/agents/claude/circuitsat/minwires.py}, data \texttt{minwires\_results.json}. Counts are numbers of $n$-input functions with the given minimum gate count.
+\begin{center}\begin{tabular}{lcccccc}\toprule
+basis & gates:0 & 1 & 2 & 3 & 4 & $>4$ (searched to 4)\\\midrule
+$n=2$, B2 (all 2-input gates, free output negation) & 4 & 10 & 2 & -- & -- & 0\\
+$n=2$, U2-type (AND/OR/ANDNOT/NAND/NOR/IMP) & 2 & 8 & 4 & 2 & -- & 0\\
+$n=3$, B2 & 6 & 30 & 116 & 80 & 24 & 0\\
+$n=3$, U2-type & 3 & 24 & 69 & 30 & 104 & 26\\\bottomrule
+\end{tabular}\end{center}
+Reading: over B2 every 3-input function needs at most 4 gates (8 wires); the hardest classes are the 24 functions at 4 gates (includes majority). Over the restricted basis 26 functions (e.g.\ 3-parity) exceed 4 gates, showing basis dependence of the wire count. Caveat: the zero-gate column counts functions equal to an input or constant under the search's conventions and is not a clean statistic; trust columns $\ge 1$ with that caveat. Extending to $n=4$ exceeds the 30-second per-run budget with naive search; next step is chunked search by gate budget.
+
+\section{Proved: an $\Omega(m)$ query lower bound (PROVED, elementary)}
+Model: the decider reads the circuit description as an array of $m$ wire records, one bit-probe or record-probe per step (adaptive).
+\begin{theorem} Every correct deterministic decider for $\SAT$ on circuits with $m$ wires must probe $\Omega(m)$ wire records, even with $n=1$.\end{theorem}
+\begin{proof} Instance family: one input $x$; $k=m/2$ wires each carry either $x$ or $\neg x$ into a balanced AND tree. The circuit is satisfiable iff all $k$ polarities agree. Let $I_0$ have all polarities $x$ (satisfiable), and $I_j$ flip polarity $j$ (unsatisfiable). If the decider answers on $I_0$ without probing position $j$, it behaves identically on $I_j$, answering wrongly. So it probes all $k$ positions on $I_0$. \qquad$\square$\end{proof}
+This is only an input-reading bound; it does not separate P from NP.
+
+\section{Parametrized picture}
+\begin{itemize}
+\item Upper bound (KNOWN): $O(2^n m)$ by enumeration; trivial.
+\item Lower bound in $m$ alone: $\Omega(m)$ (above).
+\item Conditional (KNOWN, not unconditional): SETH-type assumptions give no $2^{(1-\epsilon)n}\mathrm{poly}(m)$ algorithm; this is a hypothesis, status CONDITIONAL.
+\item Unconditional $n^{\omega(1)}$-type bounds for general models: OPEN. Known time-space lower bounds for SAT (Williams, exponent $2\cos(\pi/7)$) are the strongest unconditional results and are limited by alternation-trading barriers (ledger rows L13, L34 in \texttt{research/agents/claude/world-ledger/}).
+\item Circuit-size lower bounds for explicit functions via gate elimination: about $3.1n$ over B2 and $5n-o(n)$ over U2 (recalled from the literature, to be re-verified against primary sources before reuse). These bound the size of circuits \emph{computing} a function, not the time to \emph{decide} $\SAT$.
+\end{itemize}
+
+\section{Repository cross-check}
+Surveyed \texttt{AGENTS.md}: the ARC/FLMV spine and the world ledger (L13, L34--L40) are the nearest relevant material. The one-tape and T-PORT notes show random-access and portfolio structure matter; the wire-count ledger here is independent and gives no ARC edge.
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item Chunk the exhaustive wire-count search to $n=4$ (store checkpoints).
+\item Define a gate-elimination-style potential on the wire graph of a $\SAT$ \emph{instance} and test whether it yields a parametrized $\Omega(m\cdot f(n))$ bound in a restricted model (e.g.\ oblivious branching programs); CANDIDATE only.
+\item Audit relativization/natural-proofs barriers for any such potential.
+\end{enumerate}
+\end{document}
+% END_OF_ClaudeCircuitSAT
