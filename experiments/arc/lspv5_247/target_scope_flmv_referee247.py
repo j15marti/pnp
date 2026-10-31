@@ -16,7 +16,10 @@ from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-SOURCE = ROOT / "tmp/doecker61_source.txt"
+CANONICAL_SOURCE = ROOT / "research/agents/lspv-2/2026-10-24_0011_DOECKER61_original_source.txt"
+# The fallback exists only in the transient referee checkout; a repository clone uses
+# the canonical, already-published source artifact above.
+SOURCE = CANONICAL_SOURCE if CANONICAL_SOURCE.exists() else ROOT / "tmp/doecker61_source.txt"
 OUT = ROOT / "results/raw/arc/2026-10-31_1148_LSPV5_TARGET_SCOPE_FLMV_REFEREE247_raw.json"
 
 SAT_WITNESS = (
