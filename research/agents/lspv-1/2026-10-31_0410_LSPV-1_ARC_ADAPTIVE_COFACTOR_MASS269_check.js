@@ -73,6 +73,7 @@ function physicalChild(f,rho,acc){
   }
   const physical="p cnf "+f.n+" "+out.length+"\n"+out.map(c=>c.join(" ")+" 0\n").join("");
   acc.child_output_chars+=physical.length;
+  acc.physical_children.push({source_cube:rho.map((v,i)=>v===null?null:v),dimacs:physical});
   acc.max_retained_child_chars=Math.max(acc.max_retained_child_chars,physical.length);
   return physical;
 }
@@ -97,7 +98,7 @@ function exhaustive(f,rho,acc){
 function controller(f,policy,depthCap){
   const acc={source_clause_visits:0,source_literal_reads:0,policy_clause_visits:0,policy_literal_reads:0,
     guest_assignment_tests:0,guest_clause_visits:0,guest_literal_reads:0,
-    child_source_literal_reads:0,child_output_chars:0,max_retained_child_chars:0,
+    child_source_literal_reads:0,child_output_chars:0,max_retained_child_chars:0,physical_children:[],
     decision_nodes:0,guests:0,rejected_branches:0};
   const rho=Array(f.n).fill(null);
   function rec(depth){acc.decision_nodes++;const s=sourceProfile(f,rho,acc);if(s.empty){acc.rejected_branches++;return false;}
