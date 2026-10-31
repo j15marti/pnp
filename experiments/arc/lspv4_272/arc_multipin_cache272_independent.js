@@ -39,9 +39,11 @@ function check(data){let stats={cases:0,bruteOriginalAssignments:0,sourceClauses
  A(S.C.every(c=>c.length===3&&new Set(c.map(Math.abs)).size===3),"proper CNF");
  const expected=b.some(Boolean);
  A(expected===r.matchedLabel&&expected===r.baseline.sat,"source label");
+  const good=(cl,w)=>w&&cl.every(c=>c.some(l=>w[Math.abs(l)-1]===(l>0?1:0)));
+  A(expected?good(S.C,r.baseline.witness):r.baseline.witness===null,"original complete SAT witness / UNSAT nonwitness");
  if(q<=4){A(brute(S)===expected,"brute source");stats.bruteOriginalAssignments+=2**S.n;}
  // Independent existential check of first 9 child variables, with all private positive filler variables = 1.
- for(let j=0;j<q;j++){const D=child(q,b,j);stats.childLabels++;
+ for(let j=0;j<q;j++){const D=child(q,b,j);stats.childLabels++; A(b[j]?good(D.C,r.childTotals.witnesses[j]):r.childTotals.witnesses[j]===null,"full child SAT witness / UNSAT nonwitness");
  if(q<=8){let found=false;for(let m=0;m<512;m++){let mask=m;for(let i=9;i<D.n;i++)mask|=(2**i);
  if(D.C.every(c=>c.some(l=> ((Math.floor(mask/2**(Math.abs(l)-1)))%2)===(l>0?1:0)))){found=true;break;}}
  A(found===b[j],"brute child core "+q+" "+j);}
