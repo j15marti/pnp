@@ -1,0 +1,30 @@
+# ARC-PARITY-MOMENT-CAMOUFLAGE264 | LSPV-3 five-role handoff
+**October 30, 2026, 20:24 PDT.** The only active integrated spine remains the fully charged universal adaptive residual-SAT controller plus arbitrary-$A\mapsto\Phi(A)$ contraction to the *actual* FLMV forbidden region. P versus NP remains **OPEN**. No identities, schedules, task statuses or ownership are modified.
+
+## Falsifiable restricted lemma
+For any connected cubic $q$-vertex graph with even $q$, encode each vertex parity equation by its four original indexed proper 3CNF clauses. The number $N_0(a)$ of falsified clauses under an actual complete edge assignment equals the integer number of violated vertex parity equations. Flipping one vertex charge changes SAT to UNSAT while preserving all raw/factorial moments of $N_0$ of orders $0,1,\dots,q-1$ and the complete unsigned clause-support hypergraph. A connected incidence matrix has rank $q-1$; the violation syndrome is uniform over the prescribed parity class and every proper subtuple is independent fair bits. The even-charge source has $2^{n-q+1}$ SAT witnesses; the odd source none. For even $q$ the $q$th falling moment separates them by $q!/2^{q-1}$. **PROVED/EXACT restricted established parity/linear-algebra specialization, independent mathematical review pending.**
+
+This falsifies a universal decision rule based on any fixed truncation of the *number-of-falsified-original-clauses* moments. It does NOT falsify a complete source-aware controller: its input reveals signed clause charges, and a paid four-clause-block XOR recognizer plus GF(2) elimination decides both labels. It is not a decision-time lower bound for arbitrary SAT algorithms. The previously authenticated strict signed exact-$(2+,2-)$ W1 UNSAT / SWAP6 SAT twin has the same unsigned clause supports and identical first two raw $N_0$ moments, but distinct third moments and 0 versus 54 models. This is a separate strict22 adverse control.
+
+## Both-label and charged work
+Sixteen complete original sources, eight SAT and eight UNSAT. Four connected prism-graph pairs have $q=6,8,10,12$; $n=9,12,15,18$ edge variables, $4q$ original clauses, and SAT model counts 16, 32, 64, 128 versus zero. All eight parity sources have *both* globally coherent endpoints falsify at least one original clause. UP-first DPLL selected SAT/UNSAT events: 448/2865, 736/9065, 1095/26113, 1525/70825. Paid XOR-aware adaptive controller: 220/137, 286/177, 352/217, 418/257. W1 baseline/controller UNSAT events 10490/10618; SWAP6 SAT events 5042/5230. These include source recognizer scans, failed class tests, propagation, equation elimination and witness checks. They are Python selected-event counters, **not** native FLMV Turing-machine transitions, and do not establish universal performance.
+
+The independent checker, not importing producer solvers, re-enumerated **664624 full assignments**, **23136 source-indexed pair SS/SU/US/UU modes**, **1038 signed source occurrences**, **83095 complement comparisons**, **72 authenticated original-clause XOR blocks**, **four original-source XOR UNSAT proofs**, and three rejected deliberate corruptions. All clauses retain their local all-S and all-U targets, inversions, coherent endpoints, intermediate Gray flips, and source-proved prohibited cubes.
+
+## Verified artifacts and fallback
+Full producer, independent verifier, four-page PDF, detailed 2 MB raw JSON, summary, bibliography and checksum manifest were zipped, tested, SHA-256 **14abdc9d3f54719b4f8ecf06d26e4f2005ea505c2defd14eff8d22770c7cc6d4**, and stored successfully in Library:
+`/P-vs-NP/2026-10-30_2024_LSPV-3_PARITY_MOMENT_CAMOUFLAGE264_COMPLETE.zip` (library ID `libfile_b7fb4aa1966c8191a236ffe28c74647b`).
+GitHub contains compact mathematical report `research/agents/lspv-3/2026-10-30_2024_LSPV-3_ARC_PARITY_MOMENT_CAMOUFLAGE264.tex`, standalone independently executed compact checker `research/agents/lspv-3/2026-10-30_2024_LSPV-3_ARC_PARITY_MOMENT_CAMOUFLAGE264_check.py` and results `results/raw/arc/2026-10-30_2024_LSPV3_PARITY_MOMENT_CAMOUFLAGE264_summary.json`. The compact code is not presented as the complete producer. GitHub clone/preflight was locally blocked by DNS; connected repository inspection and standalone verifier ran. Full GitHub synchronization of 2 MB raw JSON is NOT claimed.
+
+## Role-specific relevance
+**LSPV-1 (:00):** Do not infer parent SAT/UNSAT or short-child cover from any finite moment vector; the original-source relative-cover certificate remains necessary. Formulate which structural policies can be checked on each inherited residual without a best-policy oracle.
+
+**LSPV-2 (:12):** Keep source-authenticated full affine recognition and its elimination proof as a constructive bypass. Do not infer SAT from a partial extracted parity subsystem or treat the XOR charge as a supplied answer bit.
+
+**LSPV-3 (:24):** Add $N_0$ moment order, authenticated affine rank, recognition time and proof acquisition into the measured evolving state vector. Test non-affine renamings and whether a uniformly cheap cross-class selector exists; do not use moment matching to classify intrinsic hardness.
+
+**LSPV-4 (:36):** Compare native indexed-input reads, local selected events, retained source, Gaussian elimination rows and guest output/access in the same-machine tariff. No short SAT children were emitted here, so the FLMV recurrence does not apply.
+
+**LSPV-5 (:48):** Referee the source-known parity bypass and the distinction between matched moments and full signed-source access. Preserve the restricted affine MCSP no-go scope, no universal SAT hardness, and P vs NP OPEN.
+
+**Single missing arrow:** A uniform, paid, both-label, source-cover-certified hereditary transformation into genuinely smaller ordinary SAT children with limited multiplicity and simultaneous writable space realizing $K'\le\max(11/10,3/5+K/2)$ and $L'\le\max(1/2,L/2)$. The formal fixed point $(6/5,1/2)$ is inside FLMV's excluded $(241/200,11642479/23232400)$ box only if the full compiler is constructed. **P versus NP remains OPEN.**
