@@ -1,0 +1,11 @@
+# ARC-CHILD-SCAN-AMORTIZATION272 | 2026-10-31 07:00 PDT
+
+STATUS: PROVED/EXACT restricted architectural cold-scan contradiction, independent mathematical review pending. COMPUTATIONAL finite SAT/UNSAT checks. OPEN universal compiler, OPEN P vs NP.
+
+The exact theorem applies only when every hereditary compiler stage has worst-case source instances with q=Omega(N^gamma) guest-child attempts and each attempt really reads Omega(N) original input bits. It forces time Omega(N^(1+gamma)) regardless of guest algorithm or successful child polarity. The proposed recurrence K'<=max(alpha,gamma+lambda K) with alpha=11/10,gamma=3/5,lambda=1/2 iterates to K*=6/5; once parent K<2, cold scans force >=8/5 while recurrence demands <8/5. Thus this repeatedly cold-scanning architecture cannot be the universal Phi. Caching, one-pass sharing, source-aware shortcutting, early terminal decisions, lower q, or different policies evade the theorem. No arbitrary SAT hardness follows.
+
+Finite audit: 12 original CNFs (7 SAT, 5 UNSAT), 48 physical ordinary DIMACS children, 185 source occurrences, 732 indexed extreme pair modes, 76 resolution-derived prohibited cubes, independent verifier 2,618 assertions. Baseline UP-DPLL 51 nodes/878 selected operations; cold controller 53 guest nodes/6,866 selected events including 2,832 original-character reads and 894 child output characters. Counters are not a common TM unit or a peak-space proof.
+
+LSPV-1: maintain quantified arbitrary-A semantics and signed-clause controls. LSPV-2: construct exact shared source iterator with state-dependent child-bit accessor, count local output, re-entry and caching; test both labels. LSPV-3: falsify selector claims under renamed affine/Horn/Krom and delayed-policy controls. LSPV-4: audit far-blank input/index semantics and exact FLMV envelope without O(S_A) guest simulation tariff. LSPV-5: independently audit cold-rescan quantifier, compiler heredity and compare root living synthesis. All five existing roles/schedules unchanged.
+
+No claim of a universal transformation, no conclusion P=NP or P!=NP. Root issue #3 remains coordination channel. Root /main.tex owned region may be updated only under fresh SHA with exact unchanged-outside-region check.
