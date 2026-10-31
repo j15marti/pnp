@@ -1,0 +1,60 @@
+% CLAUDE CIRCUIT-SAT LIVING DOCUMENT -- first written 2026-10-31
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{remark}\newtheorem{remark}{Remark}
+\title{Claude Circuit-SAT Lower-Bound Ladder (living document)}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated 2026-10-31 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} Only PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED are used.
+\textbf{No superlinear unconditional lower bound for Circuit-SAT is claimed. P versus NP remains OPEN.}
+
+\section{Goal and method}
+Circuit-SAT: given a fan-in-2 circuit $C$ with $n$ inputs and $m$ gates (so $2m$ gate-input wires), decide whether $\exists x\,C(x)=1$.
+Plan: (i) fix the cost measure (gates/wires), (ii) climb from tiny cases, tracking the minimum wires needed to build each instance class as $n$ grows, (iii) express any bound as $T(n,m,\text{parameter})$, (iv) record which steps give unconditional bounds and which are only conditional.
+Gate basis $B_2$: the 10 non-degenerate 2-input gates, output negation free; repeated input wires allowed.
+
+\section{Step 1: wire cost of depending on $n$ inputs}
+\begin{lemma}[PROVED/EXACT]\label{l:wires} If $f$ depends on all $n\ge1$ inputs, any fan-in-2 circuit for $f$ has $g\ge n-1$ gates and at least $n+g-1\ge 2n-2$ wires (edges of the circuit graph, at most $2g$ in total).
+\end{lemma}
+\begin{proof} Every input has a directed path to the output, so the underlying undirected graph on the $n+g$ nodes is connected, hence has $\ge n+g-1$ edges (distinct wires; parallel wires only add). Edges $\le 2g$, so $g\ge n-1$ and edges $\ge n+g-1\ge 2n-2$. \end{proof}
+Tight: the AND chain on $n$ literals. Consequence: a \emph{unique-SAT} instance (exactly one satisfying point $a$, namely $\bigwedge_i \ell_i$) costs exactly $n-1$ gates, so the smallest hard-looking instances are tiny.
+
+\section{Step 2: exhaustive minimum circuit sizes (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/mincircuit.py}; exhaustive level search over sets of computed truth tables (so ``cost $\le k$'' lists are complete); data in \texttt{mincircuit\_n2.json}, \texttt{mincircuit\_n3.json}. Runtime under 10\,s each.
+\begin{center}\begin{tabular}{lrrrrrr}\toprule
+$n$ & \#functions & cost 0 & 1 & 2 & 3 & 4\\\midrule
+1 & 4 & 4 & --&--&--&--\\
+2 & 16 & 6 & 10 & -- & -- & --\\
+3 & 256 & 8 & 30 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+Max gate cost $C(1),C(2),C(3)=0,1,4$ (wires $\le 0,2,8$) in this basis; all $256$ three-variable functions are exhausted by level 4, so none needs $5$. (Row $n=1$ is trivially all cost 0.) Next step: $n=4$ (65536 functions) needs a smarter search; CANDIDATE to chunk by gate-count and persist level sets.
+
+\section{Step 3: unconditional $\Omega(m)$ and why it is the only unconditional rung so far}
+\begin{proposition}[PROVED/EXACT, trivial]\label{p:read} Any deterministic algorithm deciding Circuit-SAT on instances with $m$ gates, given the circuit description as read-only cells, makes $\Omega(m)$ cell reads in the worst case.\end{proposition}
+\begin{proof} Let $g_0=x_1$, $h_i=(x_1\vee\neg x_1)$ for $i=1..m$, $g_i=g_{i-1}\wedge h_i$, output $g_m$. Call this $I_0$: satisfiable ($x_1=1$). $I_i$: change only the type cell of $h_i$ to $x_1\wedge\neg x_1$; then $h_i\equiv0$ and $I_i$ is unsatisfiable. An algorithm that never reads that cell on $I_0$ behaves identically on $I_i$, so errs. Hence it reads all $m$ type cells. \end{proof}
+Parameterized form: the best known \emph{upper} bound is $O(2^n\cdot m)$ (and $2^{O(\mathrm{pw})}m$ for pathwidth/treewidth $\mathrm{pw}$ of the circuit graph). Unconditional gap: $\Omega(m)$ vs $2^n m$.
+
+\begin{center}\begin{tabular}{p{0.28\textwidth}p{0.4\textwidth}p{0.2\textwidth}}\toprule
+Bound & Statement & Status\\\midrule
+$T\ge m$ & Prop.~\ref{p:read} & PROVED\\
+Black-box $2^n$ queries & unique-SAT instance, evaluation-oracle only (unstructured search) & KNOWN THEOREM\\
+$T\ge (2-\varepsilon)^{n}\mathrm{poly}$ & fails under SETH (no $2^{(1-\varepsilon)n}$ for CNF-SAT, hence Circuit-SAT) & CONDITIONAL\\
+$(2-\varepsilon)^{\mathrm{pw}}$ & SETH-tight in pathwidth/treewidth for SAT (Lokshtanov--Marx--Saurabh; from memory, not re-verified) & CONDITIONAL\\
+DPLL/tree-resolution style size $2^{\Omega(n)}$ & on suitable unsat families (e.g.\ pigeonhole, Haken-type) — restricted algorithm class only & KNOWN THEOREM (restricted)\\\bottomrule\end{tabular}\end{center}
+
+\section{Corpus link (from repository, not re-derived)}
+Repository ledger \texttt{research/agents/claude/world-ledger/} (rows L13, L34--L40) and \texttt{tport/} record: alternation-trading proofs (Buss--Williams) cannot reach the needed SAT time exponent; the one-tape crossing-sequence bound also holds nondeterministically so cannot separate P/NP. Takeaway for this document: general-model SAT time bounds of the form $n^{1+c}$ are the real frontier (best known are around $n^{1.8}$-type for time with small space), and wire-counting arguments alone have not exceeded linear in the general model. Gate elimination gives only $\approx 3.1n$-size lower bounds for explicit \emph{functions}, not SAT time.
+
+\section{Open targets for next runs}
+\begin{enumerate}
+\item[T1] (CANDIDATE) Extend Step 2 to $n=4$ and tabulate $C(n)$ vs. Shannon $2^n/n$ to see the wire-growth ladder; check whether the \emph{SAT-hardest} instance class (circuits minimizing wires subject to a prescribed number $s$ of satisfying points) has a clean formula $W(n,s)$. 
+\item[T2] (CANDIDATE) Define a restricted but natural algorithm class (restriction-based branching with unit propagation on the circuit DAG) and prove a parameterized bound $2^{\Omega(\mathrm{param})}$ in terms of, e.g., a wire-cut-width, linking to proof-complexity lower bounds.
+\item[T3] (OPEN) Any unconditional $\omega(m)$ bound for general-model Circuit-SAT: equivalent in difficulty to open problems; do not claim.
+\end{enumerate}
+
+\section*{Run log}
+Run 1 (2026-10-31): created document; Lemma~\ref{l:wires}, Prop.~\ref{p:read}; computed $n\le3$ minimum sizes. Literature table entries marked ``from memory'' were not re-checked online.
+\end{document}
+% END_OF_DOC
