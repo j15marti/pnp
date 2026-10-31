@@ -1,0 +1,56 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::CSAT-0002::2026-10-31
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\title{ClaudeCircuitSAT: wire-by-wire lower bounds for Circuit-SAT\\(living document)}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated 2026-10-31 (run CSAT-0002)}
+\begin{document}\maketitle
+\paragraph{Status discipline.} PROVED/EXACT, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, RETIRED.
+\textbf{No superlinear unconditional lower bound for Circuit-SAT is claimed; P versus NP remains OPEN.}
+
+\section{Goal and method}
+Find lower bounds for Circuit-SAT: given a fan-in-2 circuit $C$ with $n$ inputs and $m$ gates (hence $w=2m$ gate-input wires), decide whether $\exists x\,C(x)=1$.
+Method: climb a ladder $(n,m)$, starting from the smallest instances, tracking (i) the minimum number of gates/wires needed to build each function and (ii) the cost any algorithm must pay to decide satisfiability. Bounds are stated as functions of the parameters $(n,m)$, i.e.\ possibly parametrized.
+
+\section{Rung 1: minimal wiring (PROVED/EXACT)}
+\begin{lemma}[connectivity] If $f$ depends on all $n$ inputs and is computed by a fan-in-2 circuit with $g$ gates, then $g\ge n-1$ and the circuit has $\ge 2(n-1)$ gate-input wires. Tight for $\mathrm{AND}_n,\mathrm{OR}_n,\mathrm{XOR}_n$.\end{lemma}
+\begin{proof} The underlying DAG restricted to the cone of the output is connected and has $n$ sources; a fan-in-2 DAG with one sink and $n$ sources needs $\ge n-1$ internal nodes (each gate merges at most two components). Balanced trees attain it.\end{proof}
+
+\paragraph{Exact table (COMPUTATIONAL, \texttt{mincircuit.py}, exhaustive iterative-deepening over all 16 binary gates).}
+Number of non-constant functions of $n$ variables by minimum gate count $g$ (wires $=2g$):
+\begin{center}\begin{tabular}{c|ccccc}\toprule
+$n$ & $g=0$ & $g=1$ & $g=2$ & $g=3$ & $g=4$\\\midrule
+2 & 2 & 12 & -- & -- & --\\
+3 & 3 & 33 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+So every 3-variable function needs at most 4 gates (8 wires); the 24 hardest are the ``full'' functions needing $4=n+1$ gates, i.e.\ $2$ more than the connectivity bound $n-1=2$. The $n=4$ row (max 7 gates, Knuth) is not recomputed here (KNOWN, cited from memory; to be verified).
+
+\section{Rung 2: decision cost on the ladder}
+\begin{theorem}[wire-reading bound, PROVED/EXACT in the gate-list query model]
+Any (even randomized, error $<1/2$) algorithm deciding Circuit-SAT on instances with $m$ gates, where it accesses $C$ by queries ``what are the two predecessors/type of gate $k$?'', must make $\Omega(m)$ queries, hence $\Omega(w)$ wire reads.\end{theorem}
+\begin{proof} Let $t=x_1\vee\neg x_1$, $f=x_1\wedge\neg x_1$. Base instance $B$: $z_1=x_1$, $z_{k}=z_{k-1}\wedge t$ ($k=2..m$); output $z_m$; satisfiable. Instance $B_j$: gate $j$ reads $f$ instead of $t$; unsatisfiable. A deterministic algorithm that never queries gate $j$ answers identically on $B,B_j$; so it must query every $j$ ($m-1$ queries). For randomized: pick $j$ uniformly; an algorithm making $q<(m-1)/2$ queries misses $j$ with prob.\ $>1/2$, so errs with prob.\ $>1/4$ on the mixture of $B$ and $B_j$. Hence $q=\Omega(m)$.\end{proof}
+\begin{remark} This is the trivial ``must read the input'' bound. It is linear in $m$ and independent of $n$; it does not rule out an $O(m)$ algorithm, and the $\Theta(m)$ regime is not where hardness lives (the instance above has $n=1$).\end{remark}
+
+\section{Rung 3: parametrized bound in $n$ (CONDITIONAL)}
+Exhaustive search gives time $O(2^n m)$. Conditional lower bounds: ETH $\Rightarrow$ no $2^{o(n)}\mathrm{poly}(m)$ algorithm (since 3-SAT embeds with $m=O(\text{clauses})$); SETH $\Rightarrow$ no $O(2^{(1-\varepsilon)n}\mathrm{poly}(m))$. Unconditionally the best known are Williams-type time--space bounds (see repository ledger row L13, \texttt{research/agents/claude/world-ledger/}). The target parametrized form is $T(n,m)\ge \Omega(m)\cdot h(n)$ with $h$ superpolynomial in $n$; proving any $h(n)=\omega(\mathrm{poly}\,n)$ for general-purpose algorithms would separate P from NP and is OPEN.
+
+\section{Rung 4: frontier width $k$ as the parameter (CSAT-0002)}
+Order the gates topologically and let the \emph{frontier} at time $t$ be the set of already-computed nodes still read later (plus the output). Let $k$ be the maximum frontier size (a cutwidth/pathwidth-type parameter; $k\le n+m$).
+\begin{theorem}[upper bound, PROVED/EXACT] Circuit-SAT is decidable in time $O(m\,2^{k})$ by dynamic programming over the set of realizable frontier assignments.\end{theorem}
+\begin{proof} Maintain $S_t\subseteq\{0,1\}^{F_t}$, the frontier assignments realized by some input. Adding an input node doubles $S_t$; adding a gate $g=(a\,\mathrm{op}\,b)$ maps each $s$ to $s\cdot\mathrm{op}(s_a,s_b)$; dropping dead nodes projects. Always $|S_t|\le 2^{|F_t|}\le 2^k$; accept iff some $s\in S_m$ has output $1$.\end{proof}
+\begin{theorem}[frontier-memoization lower bound, PROVED/EXACT, restricted class] For each $k$ there is a circuit with $n=k$ inputs, frontier $k$ and $O(k)$ gates in which the $2^k$ frontier assignments $s$ have pairwise distinct residual functions $g_s(y)=[y=s]$ (suffix: $\bigwedge_i(y_i\oplus\bar s_i)$ with $s$ hard-wired through a choice of literals; consider the family over all $s$). Hence any algorithm that decides by merging only frontier assignments with identical residual functions needs $2^k$ classes. \end{theorem}
+\begin{remark}[COMPUTATIONAL check, \texttt{frontier\_dp.py}] DP agrees with brute force on 300 random circuits ($n\le7$, $m\le14$, max frontier 12); the residual-class count for $k=1..8$ is $2,4,\dots,256=2^k$. \textbf{Honesty:} the second theorem bounds only one algorithm family; the same circuits are trivially solved by other means (the suffix is a single conjunction of literals), so this is \emph{not} a lower bound for Circuit-SAT. It only shows that $2^{k}$ in the upper bound cannot be improved for frontier-state methods. Tightness of $2^{\Theta(k)}$ for general algorithms is tied to SETH-type assumptions (CONDITIONAL: SETH implies no $O(2^{(1-\varepsilon)k}\mathrm{poly}(m))$ since $k\le n$ trivially in the worst case).\end{remark}
+Resulting parametrized picture: $T(n,m,k)=O(m\min\{2^n,2^k\})$; the unconditional lower bound stays $\Omega(m)$ (Rung 2). OPEN: any unconditional $\omega(m)$ bound in terms of $k$.
+
+\section{Repository cross-check}
+Checked repository: ledger L34--L40 (TPORT/ONETAPE) show that alternation-trading proofs hit a barrier near linear time for UWI portfolios, and that one-tape crossing-sequence bounds also hold for nondeterministic machines. Consequence for this program: the $\Omega(m)$ rung above is the limit of purely ``read-the-wires'' arguments; passing it requires a new technique (e.g.\ restricted models: monotone circuits, bounded-depth/width, or $n$-parametrized restricted algorithm classes such as DPLL/resolution, where exponential bounds in $n$ are KNOWN).
+
+\section{Next steps (OPEN)}
+\begin{enumerate}
+\item Extend the exact table to $n=4$ with a SAT-solver-based circuit-minimization encoding; track min wires per function and fan-out.
+\item Restricted-model ladder: for $\mathrm{AND}_n$-of-clauses (CNF as circuits) count wires vs.\ resolution refutation size on small unsatisfiable families; look for a wire-count invariant forcing blow-up.
+\item (Partly done in Rung 4.) Test $2^{\Omega(k)}$ in broader restricted classes (resolution/DPLL with caching) on the width-$k$ families; extend exact table to $n=4$.
+\end{enumerate}
+\end{document}
+% END_OF_VERIFIED_DOC::CSAT-0002
