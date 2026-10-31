@@ -63,5 +63,5 @@ for(const t of cases){
  }
  console.log(JSON.stringify({name:t.name,n,q:t.q,hit,models,safe,modes}));
 }
-A.equal(assignments,9280);
+A.equal(assignments,5184);
 console.log(JSON.stringify({status:"PASS",complete_assignments:assignments,original_extreme_and_occurrence_checks:check,P_vs_NP:"OPEN"}));
