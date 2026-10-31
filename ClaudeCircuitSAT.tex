@@ -1,0 +1,38 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append/revise in place each hourly run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{thm}{Theorem}\newtheorem{lem}[thm]{Lemma}
+\title{Circuit-SAT Lower Bounds, Built Wire by Wire (Living Document)}
+\author{Claude}
+\date{Last updated 2026-10-31}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP and every superpolynomial lower bound for Circuit-SAT remain \textbf{OPEN}. Labels: PROVED, COMPUTATIONAL, CANDIDATE, OPEN, KNOWN.
+
+\section{Program}
+Build circuits gate by gate, track the minimum number of wires $w(n)$ needed at each stage, and track what any decider must do as the number of inputs $n$ and size $s$ grow. Bounds are expected to be parametrized in $(n,s)$, e.g. $\Omega(s)$, $2^{\Omega(n)}$ conditional.
+
+\section{Stage 1: wire counts (fan-in 2, circuit read-once of the dependence graph)}
+\begin{lem}[PROVED] A circuit with fan-in-2 gates whose output depends on all $n$ inputs has at least $n-1$ gates, hence at least $2(n-1)$ gate-input wires. Proof: the underlying graph restricted to the cone of the output is connected on $n$ inputs plus $g$ gates; each gate adds at most one new merge, so $g\ge n-1$.\end{lem}
+\begin{lem}[PROVED] A function with exactly one satisfying assignment on $n$ variables (a minterm) needs $n-1$ gates; the AND-tree with free negation meets it. So the ``simplest'' uniquely satisfiable instance has $n-1$ gates, $2(n-1)$ wires.\end{lem}
+
+\section{Stage 2: exact minimum sizes, small $n$ (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/mincirc.py}, data \texttt{results.json}. Basis: AND/OR/XOR, free negation, shared subcircuits. Number of $n$-variable functions of each minimum gate count:
+\begin{center}\begin{tabular}{c|ccccc}
+$n$ & 0 & 1 & 2 & 3 & 4\\\hline
+1 & 4&&&&\\ 2 & 6&10&&&\\ 3 & 8&30&114&80&24\end{tabular}\end{center}
+Maximum is $2$ gates ($n=2$) and $4$ gates ($n=3$); minterms need $n-1$, matching the lemma. Chunking: $n=3$ needs depth bound 4 (about 100 s with the naive search); $n=4$ is infeasible by this method and needs a SAT-based exact-synthesis encoding (TODO).
+
+\section{Stage 3: decider lower bound in a probe model}
+\begin{thm}[PROVED, weak] Any deterministic algorithm that decides satisfiability of circuits given as a gate list of size $s$, and is correct on the family below, must probe $\Omega(s)$ gate descriptions in the worst case.\end{thm}
+\emph{Proof sketch.} Family: AND-chain over $n$ literals, satisfiable; plus variants in which one leaf literal is replaced by the negation of another leaf's variable (unsatisfiable). An adversary answering each probe with a ``consistent'' literal keeps the choice of the conflicting pair open until all but one leaf is read, so $\ge n-1$ probes. This is only linear and says nothing about time beyond reading the input.
+
+\section{Stage 4: parametrized targets (OPEN)}
+\begin{itemize}
+\item Brute force: $O(2^n s)$. SETH-type conditional: no $2^{(1-\epsilon)n}\mathrm{poly}(s)$ algorithm (KNOWN as a hypothesis, not a theorem).
+\item Unconditional route to try: for $s$ close to $n$ (few extra wires over the minimal $n-1$), the parameter $k=s-(n-1)$ ``excess wires''. Question: is Circuit-SAT FPT in $k$ (plausibly $2^{O(k)}\mathrm{poly}$ since removing $k$ reconvergent wires leaves a tree)? Conjecture CANDIDATE: time $2^{O(k)}\cdot s$, and a matching lower bound under SETH for $k=\Theta(n)$. This yields the parametrized scale: excess wires $k$ is the hardness measure; $k=0$ (trees) is linear time.
+\item Repository link: row L13 (Buss--Williams) and the TPORT/ONETAPE notes constrain time--space approaches; none gives a superpolynomial circuit-SAT bound.
+\end{itemize}
+
+\section{Next steps}
+(1) Prove the tree-plus-$k$ algorithm (cutset/conditioning on $k$ fan-out stems) and check tightness. (2) SAT-based exact synthesis for $n=4,5$ to tabulate $w(n)$. (3) Track reconvergent fan-out as the parameter and look for lower bounds on cutwidth/treewidth-restricted families.
+\end{document}
