@@ -1,0 +1,89 @@
+% CLAUDE CIRCUIT-SAT LIVING DOCUMENT -- created 2026-10-31 (run 0001)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{remark}\newtheorem{remark}{Remark}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{Wire-by-Wire Lower Bounds for \CSAT\\ \large Living document (Claude), repository \texttt{j15marti/pnp}}
+\author{Maintained by scheduled Claude runs; append-only log in \S\ref{sec:log}}
+\date{Last updated: 2026-10-31 (run 0001)}
+\begin{document}\maketitle
+
+\section*{Status (honest summary)}
+\textbf{P versus NP remains OPEN.} No super-linear unconditional lower bound for \CSAT\ is claimed.
+Status labels: PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN, RETIRED.
+Run 0001 establishes the \emph{ladder framework}, exact data for $n\le 3$ inputs, and two elementary
+\emph{parametrized} bounds (wire count and probe count). They are baselines, not breakthroughs.
+
+\section{Model and parameters}
+A circuit is a DAG over inputs $x_1..x_n$, fan-in-2 gates $\{\wedge,\vee\}$, free negations on wires,
+one output. Parameters: $n$ inputs, $g$ gates, $m=2g+1$ wires (gate-input wires plus output wire),
+and structural parameters $\mathrm{tw}$ (treewidth), $\mathrm{pw}$, depth, fan-out.
+\textbf{Ladder:} $\mathcal L(n)$ = the set of all functions on $n$ inputs; for $f\in\mathcal L(n)$,
+$g(f)$ = minimum number of gates, $W(f)=2g(f)+1$ minimum wires. Questions tracked per rung:
+(a) $\min W$ over satisfiable $f$ with prescribed property (unique model, all variables essential);
+(b) a lower bound on the \emph{work} (probes / time) any \CSAT\ algorithm must do on instances of that rung,
+as a function of $(n,g,m)$ and structural parameters.
+
+\section{Proved baseline results}
+\begin{lemma}[Connectivity, PROVED]\label{lem:conn}
+If $f$ depends on all $n$ inputs and $C$ computes $f$ with fan-in-2 gates, then $g\ge n-1$, hence at least $2(n-1)$ gate-input wires.
+\end{lemma}
+\begin{proof}
+Restrict to the cone of the output. Its underlying undirected graph is connected, has $n+g'$ non-constant nodes
+($g'\le g$ gates) and $2g'$ edges. Connectivity gives $2g'\ge n+g'-1$, so $g\ge g'\ge n-1$.
+\end{proof}
+Tight: $\bigwedge_i x_i$ (unique model $1^n$) uses exactly $n-1$ gates. So the first rung of the ladder is $W=2(n-1)+1$.
+
+\begin{proposition}[Probe lower bound, PROVED]\label{prop:probe}
+Let the circuit be presented as a gate list and let an algorithm access it by probing gates (reading the gate's type and its two input wires).
+Every deterministic algorithm deciding \CSAT\ on circuits with $m'$ gates (any $2\le n\le m'/2$) must probe all $m'$ gates in the worst case;
+every randomized algorithm with error $\le 1/3$ must probe $\ge m'/3$ gates in the worst case.
+\end{proposition}
+\begin{proof}
+Base instance $C_0$: a chain computing $\bigwedge_{i=1}^{m'+1} \ell_i$ with $\ell_i=x_{(i \bmod n)+1}$ (each variable appears $\ge2$ times);
+$C_0$ is satisfiable. Pair position $i$ with its twin $i'=i\pm n$ carrying the same variable. Instance $C_{i}$: replace $\ell_i$ by $\neg x_{v}$; it contradicts the twin, so $C_i$ is UNSAT.
+$C_0$ and $C_i$ differ only at position $i$ (the twin stays as in $C_0$). A deterministic algorithm that probes fewer than $m'$ positions on $C_0$ leaves some $i$ unprobed;
+it behaves identically on $C_0$ and $C_i$, yet $C_0$ is SAT and $C_i$ UNSAT. Randomized: take $C_0$ w.p.\ $1/2$ and a uniform $C_i$ w.p.\ $1/2$; by Yao, a deterministic algorithm making $k$ probes
+follows its $C_0$-path unless it probes $i$, which happens w.p.\ $\le k/m'$, so its error is $\ge \tfrac12(1-k/m')$; error $\le1/3$ forces $k\ge m'/3$.
+\end{proof}
+\begin{remark}
+Proposition~\ref{prop:probe} is just ``you must read the input''. Its value is as the parametrized baseline $T=\Omega(m)$ against which any structural-parameter bound
+(e.g.\ $2^{\Omega(\mathrm{pw})}$) must be compared.
+\end{remark}
+
+\section{Computed ladder data (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/min\_circuit.py}, data \texttt{min\_circuit\_results.json}.
+Exact minimum gates over \emph{all} $2^{2^n}$ functions (BFS over sets of computed functions, runs in $<30$ s).
+\begin{center}\begin{tabular}{@{}rrrrl@{}}\toprule
+$n$ & \#functions & $\max_f g(f)$ & min $g$ unique-model & size histogram ($g$:count)\\\midrule
+1 & 4 & 0 & 0 & 0:4\\
+2 & 16 & 3 & 1 & 0:6, 1:8, 3:2\\
+3 & 256 & 6 & 2 & 0:8, 1:24, 2:64, 3:30, 4:104, 5:8, 6:18\\\bottomrule
+\end{tabular}\end{center}
+Checks: $n=2$ max 3 is XOR/XNOR; $n=3$ max 6 is 3-parity (two XORs); unique-model minimum $=n-1$ matches Lemma~\ref{lem:conn}.
+The jump from ``$g=n-1$'' (easy, unique model) to $g=3(n-1)$ (parity) shows that wires are consumed by \emph{non-monotone} interaction, not by
+satisfiability itself; the lower-bound question must therefore track \emph{how much of the circuit a solver must examine jointly}.
+
+\section{Known results and what they mean here}
+\begin{itemize}
+\item KNOWN: \CSAT\ is solvable in $2^{O(\mathrm{tw})}\mathrm{poly}$; under SETH no $(2-\varepsilon)^{\mathrm{pw}}\mathrm{poly}$ algorithm (CNF-SAT pathwidth, Lokshtanov--Marx--Saurabh). This is the model \emph{parametrized} lower bound, conditional.
+\item KNOWN: unconditional time--space tradeoffs for SAT (Fortnow--van Melkebeek, Williams): time $n^{2\cos(\pi/7)-o(1)}$ in $n^{o(1)}$ space; repo row L13 (Buss--Williams) shows alternation-trading cannot go beyond this.
+\item KNOWN: no super-linear \emph{general} circuit lower bound; best explicit gate lower bounds for fan-in-2 over the full binary basis are $\approx 3.1n$ (Li--Yang). Gate counts for a \emph{fixed function} (Lemma~\ref{lem:conn} regime) are therefore all we can force with wire-counting; the solver-work bound is a different quantity.
+\item Repo (\texttt{j15marti/pnp}): TPORT (\texttt{2026-10-28\_1326\_CLAUDE\_TPORT-0001.tex}, \texttt{TPORT-0002}) gives time bounds $1+\Theta(1-d)$ for portfolio-restricted alternation trading; ONETAPE (\texttt{ONETAPE-0001}) shows the one-tape crossing bound also holds for nondeterminism. Nothing there yet speaks about wire-level structure.
+\end{itemize}
+
+\section{Roadmap (CANDIDATES / OPEN)}
+\begin{enumerate}
+\item \textbf{Rung 2: restricted algorithm models.} Define a unit-propagation + branching ("DPLL on circuits") model; prove $2^{\Omega(\mathrm{pw})}$ unconditional lower bounds for explicit circuit families (known analog: tree-like resolution width/size for CNF encodings).  CANDIDATE.
+\item \textbf{Rung 3: parameter for the bound.} Conjecture the right parameters are $(n, m, \mathrm{pw}, \text{fan-out})$ and a bound of the shape $T\ge \max(m, 2^{c\cdot \mathrm{pw}})$ in restricted models; aim for a clean separation between ``linear in $m$'' (trivial, proved) and exponential in a structural parameter.
+\item \textbf{Rung 4: exact small cases.} Extend the exact table to $n=4$ (65\,536 functions) with a checkpointed search; add per-function \emph{solver work} (min DPLL tree size) next to $g(f)$ and look for the first rung where work $>$ wires.
+\item \textbf{Barriers.} Any claimed general bound must be checked against relativization, natural proofs and algebrization before promotion beyond CANDIDATE; the statement ``a function needs many wires'' does not bound solver work unless the solver is tied to the wires (see Proposition~\ref{prop:probe}).
+\end{enumerate}
+
+\section{Log}\label{sec:log}
+\begin{description}
+\item[2026-10-31 run 0001] Created document; surveyed repo (no circuit-SAT wire-level work existed; relevant: ledger L13, TPORT, ONETAPE). Proved Lemma~\ref{lem:conn} and Proposition~\ref{prop:probe}; computed exact $g(f)$ for $n\le3$. No new lower bound beyond $\Omega(m)$. Next: Rung 1 DPLL-work table for $n\le 3$, extend to $n=4$.
+\end{description}
+\end{document}
