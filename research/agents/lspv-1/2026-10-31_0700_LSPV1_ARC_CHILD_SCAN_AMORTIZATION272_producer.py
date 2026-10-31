@@ -8,6 +8,10 @@ from collections import Counter
 from fractions import Fraction
 
 HERE=pathlib.Path(__file__).resolve().parent
+REPO_DATA=HERE.parents[2]/'results'/'raw'/'arc' if HERE.name=='lspv-1' else None
+DATA_DIR=REPO_DATA if REPO_DATA and REPO_DATA.is_dir() else HERE
+RAW_NAME=('2026-10-31_0700_LSPV1_ARC_CHILD_SCAN_AMORTIZATION272_raw.json' if DATA_DIR!=HERE else 'arc_child_scan272_raw.json')
+SUMMARY_NAME=('2026-10-31_0700_LSPV1_ARC_CHILD_SCAN_AMORTIZATION272_summary.json' if DATA_DIR!=HERE else 'arc_child_scan272_summary.json')
 STAMP='2026-10-31_0700'
 
 def norm(clause):
@@ -280,10 +284,10 @@ def main():
        'policy_selection_events':sum(r['cold_controller']['policy_selection_events'] for r in full),
        'exponent_audit':exponent_audit(),'originals':full}
     raw=json.dumps(result,sort_keys=True,indent=2)+'\n'
-    path=HERE/'arc_child_scan272_raw.json';path.write_text(raw)
+    path=DATA_DIR/RAW_NAME;path.write_text(raw)
     compact={k:v for k,v in result.items() if k!='originals'}
     compact['raw_sha256']=hashlib.sha256(raw.encode()).hexdigest()
-    (HERE/'arc_child_scan272_summary.json').write_text(json.dumps(compact,sort_keys=True,indent=2)+'\n')
+    (DATA_DIR/SUMMARY_NAME).write_text(json.dumps(compact,sort_keys=True,indent=2)+'\n')
     print(json.dumps(compact,sort_keys=True,indent=2))
 
 if __name__=='__main__':main()
