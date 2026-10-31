@@ -1,0 +1,55 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::CCSAT-0001::2026-10-31
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: a wire-by-wire lower-bound ledger for circuit-SAT}
+\author{Living document (Claude scheduled routine)}
+\date{Last updated 2026-10-31 (run CCSAT-0001)}
+\begin{document}\maketitle
+\paragraph{Status.} Everything here is elementary or computational. \textbf{P versus NP remains OPEN}; no superlinear lower bound for circuit-SAT is claimed. Labels: PROVED/EXACT, COMPUTATIONAL, KNOWN, CANDIDATE, OPEN.
+
+\section{Model and parameters}
+A circuit is a DAG of fan-in-2 AND gates with free negation on wires, $n$ inputs, $g$ gates, $w=2g$ gate-input wires (plus one output wire). Circuit-SAT: is there $x\in\{0,1\}^n$ with $C(x)=1$? The input is the wire list, accessed by random access. Natural parameters: $n$, $g$, and the \emph{wire-cost} $w$. A parametrized bound has the form $T(n,g)$; the trivial regime $g\ge n-1$ is assumed.
+
+\section{Step 0: wires needed to depend on $n$ inputs}
+\begin{prop}[PROVED/EXACT] A fan-in-2 circuit whose output depends on all $n$ inputs has $g\ge n-1$ gates, hence $w\ge 2(n-1)$ wires, with equality for a tree.\end{prop}
+\emph{Proof.} The underlying graph restricted to ancestors of the output must connect $n$ input nodes; each gate merges at most two components, so $n-1$ gates are needed. \qed
+
+\section{Step 1: linear query lower bound (the base rung)}
+\begin{prop}[PROVED/EXACT, KNOWN-type] Any deterministic algorithm that decides circuit-SAT on wire-list encodings with $w$ wires, in the random-access model, makes $\Omega(w)$ queries in the worst case.\end{prop}
+\emph{Proof sketch.} Take $C=\bigwedge_{i}x_i\wedge\bigwedge_{i}(\text{a duplicate copy of }x_i)$ arranged as a tree, satisfiable. Redirect any single leaf wire to the negation of its duplicate. This makes $C$ unsatisfiable. An algorithm that skips a wire cannot distinguish the two instances. Hence all $w$ wires must be read. \qed
+
+This is the only rung proved so far. It is tight for \emph{formulas that are trees}, but it says nothing beyond linear time; the gap to $2^{\Omega(n)}$ is the whole problem.
+
+\section{Step 2: exact gate counts for small $n$ (COMPUTATIONAL)}
+Exhaustive search (\texttt{research/agents/claude/circuitsat/aig\_min.py}, depth-limited exhaustive over reachable function sets) gives the exact minimum number of AND gates (free negation, constants and inputs) needed to compute each $n$-input function:
+\begin{center}\begin{tabular}{@{}lcl@{}}\toprule
+$n$ & functions & distribution of min gates $g$ (count)\\\midrule
+1 & 4 & $g=0$ for all\\
+2 & 16 & $g{=}0$: 6, $g{=}1$: 8, $g{=}3$: 2 (XOR, XNOR)\\
+3 & 256 & $g{=}0$: 8, 1: 24, 2: 64, 3: 30, 4: 104, 5: 8, and 18 functions need $g\ge6$\\\bottomrule
+\end{tabular}\end{center}
+The $n=3$ search was exhaustive to depth 5, so the 18 remaining functions provably need $\ge6$ gates (not yet resolved exactly; parity needs 6 by the known construction). Thus the max over $n$-input functions of the minimum wire count $W(n)=2\,g_{\max}(n)$ satisfies $W(1)=0$, $W(2)=6$, $W(3)\ge12$. The shape is far from the information-theoretic $\Theta(2^n/n)$ asymptote; small cases are only a sanity ladder.
+
+\section{Step 3: the ladder and the parametrized goal}
+\begin{center}\begin{tabular}{@{}lll@{}}\toprule
+Rung & Statement & Status\\\midrule
+R0 & depend on $n$ inputs $\Rightarrow w\ge2(n-1)$ & PROVED\\
+R1 & decision needs $\Omega(w)$ reads & PROVED\\
+R2 & exact $g_{\max}(n)$ for $n\le3$ & COMPUTATIONAL ($n=3$ partly)\\
+R3 & decision time $\omega(w)$ for general algorithms & OPEN\\
+R4 & time--space tradeoffs (Williams-type) for SAT & KNOWN, exponent $\approx1.8$ at $n^{o(1)}$ space; limited by alternation-trading barriers\\
+R5 & parametrized $T(n,g)=2^{\Omega(n)}$ for $g=\mathrm{poly}(n)$ & OPEN (equivalent to hardness beyond SETH-type bounds in general)\\\bottomrule
+\end{tabular}\end{center}
+
+\section{Repository cross-check}
+The repository's \texttt{research/agents/claude/} contains the P-vs-NP world ledger and T-PORT work. Its relevant message: alternation-trading proofs cannot reach beyond linear time for portfolios of $\approx N$ programs (row L34), so a wire-counting argument must be non-black-box wrt that technique. One-tape crossing-sequence notes (L38--L40) show that any such bound must avoid also holding for nondeterminism. A wire-counting lower bound that also holds for nondeterministic verification would not separate P from NP; the next rung must use a property of \emph{finding} a satisfying assignment versus \emph{verifying} one.
+
+\section{Next steps}
+\begin{enumerate}
+\item Finish $g_{\max}(3)$ exactly (depth-6 search) and attempt $n=4$ with canonical-form pruning.
+\item Track $\mathrm{SAT}$-instance cost: minimal wires for circuits with a \emph{unique} satisfying assignment, as a function of $n$.
+\item Investigate known formula/monotone lower bounds (Razborov, Andreev) as parametrized rungs: for monotone circuits clique has $2^{\Omega(\sqrt k)}$; test which parameter makes the argument circuit-SAT-relevant.
+\end{enumerate}
+% END_OF_VERIFIED_CCSAT::CCSAT-0001
+\end{document}
