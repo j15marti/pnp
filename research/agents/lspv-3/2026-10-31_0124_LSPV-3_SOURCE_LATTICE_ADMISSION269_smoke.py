@@ -4,7 +4,7 @@ Full 17-source experiment is archived separately; no FLMV benchmark implied.
 """
 from itertools import product
 def sat(F,rho=()):
-    n=max(abs(x) for C in F for x in C)
+    n=max((abs(x) for C in F for x in C), default=3)
     for bits in product((False,True), repeat=n):
         if any(bits[abs(l)-1] != (l>0) for l in rho): continue
         if all(any(bits[abs(l)-1]==(l>0) for l in C) for C in F):
@@ -27,4 +27,4 @@ for r in range(1,15):
     online=u*r if u<q else q*r+A+(u-q)*h
     offline=min(u*r,r+A+(u-1)*h)
     assert online<=2*offline,(r,h,A,u,online,offline)
-print('PASS: 256 original 3CNF truth-table cases, witness/cube monotonicity, 819k+ tariff conditions')
+print('PASS: 256 original 3CNF truth-table cases, witness/cube monotonicity, 122,850 tariff conditions')
