@@ -1,0 +1,45 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: a wire-by-wire lower-bound ledger for Circuit-SAT}
+\author{Claude (hourly routine); living document}
+\date{Last updated: 2026-10-31 (run 1)}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No unconditional superlinear time lower bound for Circuit-SAT is known or claimed here. Labels: PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Model}
+A circuit has $n$ inputs, fan-in-2 AND/OR gates, free negation on wires. Size $g$ = number of gates; wires $w=2g$ (gate inputs) plus output tap. $\textsc{CSAT}(n,g)$: given such a circuit, is it satisfiable? Parameters $(n,g)$ are both allowed in the bound $T(n,g)$.
+
+\section{Ledger by level}
+\subsection{Level 0: connectivity (PROVED)}
+\begin{lemma}If the output depends on all $n$ inputs then $g\ge n-1$ and $w\ge 2(n-1)$.\end{lemma}
+\begin{proof}The wire graph restricted to the cone of the output is connected and contains the $n$ inputs; each gate merges at most two components, so $n-1$ merges need $\ge n-1$ gates.\end{proof}
+
+\subsection{Levels $n=1,2,3$: exact minimal gate counts (COMPUTATIONAL)}
+Exhaustive BFS over sets of computed truth tables (script \texttt{research/agents/claude/circuitsat/mincircuit.py}). Number of $n$-input functions needing exactly $g$ gates:
+\begin{center}\begin{tabular}{c|ccccccc}
+$n\backslash g$&0&1&2&3&4&5&6\\\hline
+2&6&8&0&2&&&\\
+3&8&24&64&30&104&8&18\end{tabular}\end{center}
+Maximum: $3$ for $n=2$ (XOR/XNOR), $6$ for $n=3$ (3-parity, 18 functions $=$ parity-type; wires $=12$). Both equal $3(n-1)$ for parity, matching the known $3(n-1)$ AND/OR-basis parity upper bound (KNOWN; lower bound $3(n-1)$ for the full binary basis-free-negation case is Schnorr's, KNOWN).
+Observation: every satisfiable minimal circuit is cheap to solve here; small $n$ carries no asymptotic information (finite data).
+
+\section{Time lower bounds for solving CSAT}
+\begin{theorem}[Black-box bound, PROVED] Any algorithm that accesses a circuit $C$ only by evaluating it on inputs needs $2^n$ evaluations in the worst case to decide satisfiability, even for $g=n$ ($C$ = AND of literals).\end{theorem}
+\begin{proof}Adversary answers 0 to every query; an unqueried $x$ remains consistent with $C=\mathbb 1[x=a]$ (a conjunction of $n$ literals, $g=n-1$ gates).\end{proof}
+Parametrized form: $T_{bb}(n,g)\ge 2^n$ evaluations, each costing $\Omega(g)$ to simulate, so $\Omega(2^n g)$ for this model. White-box lower bounds are the OPEN part: the only unconditional lower bounds are for restricted resource classes (e.g.\ Williams alternation trading, $n^{2\cos(\pi/7)}$ for time with $n^{o(1)}$ space; see repo ledger row L13, Buss--Williams barrier). CONDITIONAL: SETH gives $2^{(1-\epsilon)n}\mathrm{poly}$ impossible.
+
+\section{Repository cross-check (2026-10-31)}
+Relevant material in \texttt{j15marti/pnp}: \texttt{research/agents/claude/world-ledger/} (rows L13, L34--L40) and TPORT notes: alternation-trading proofs hit barriers at linear portfolio size; one-tape crossing sequences give nothing for NP. Takeaway for this document: a wire-count argument must be \emph{white-box} yet beat these barriers; Level-0 connectivity is far too weak (gives linear in $g$ only).
+
+\section{Next steps (OPEN)}
+\begin{enumerate}
+\item $n=4$ exact min-gate ledger via canonical/NPN-class search (65536 functions; chunk to $<30$s).
+\item Track min wires with fan-out constraint (wires $\ne 2g$ when fan-out counted) and ask how parity-like gadgets force $\Omega(n)$ wires per input.
+\item CANDIDATE parametrization: restrict to circuits of width/treewidth $k$; CSAT is solvable in $2^{O(k)}g$, so any lower bound must grow as $k\to n$; try to prove matching conditional bounds (SETH/ETH-type) as a baseline.
+\item Ask whether gate-elimination lower bounds ($\approx 3.1n$ for explicit functions) can be turned into a lower bound on a \emph{search} procedure (likely FAILED TRANSFER: circuit size of a function vs.\ time to decide SAT of given circuits).
+\end{enumerate}
+\end{document}
+% END_OF_VERIFIED_CLAUDECIRCUITSAT::run1
