@@ -1,0 +1,41 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-10-31
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT (living document)}
+\date{Last updated 2026-10-31 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. Nothing here is an unconditional superpolynomial lower bound for Circuit-SAT. Status labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Goal and plan}
+Find lower bounds, possibly parametrized, for Circuit-SAT. Plan: (1) build circuits from the simplest up, tracking exact minimal gate/wire counts $w(f)$ by input count $n$; (2) relate $w$ to the cost of deciding satisfiability; (3) find where a parametrized bound (in $n$, wires $m$, or a width/treewidth parameter $k$) can be unconditional.
+
+\section{Model}
+Circuit: DAG, gates of fan-in 2 from all 6 nondegenerate binary functions, distinct operands, no constants/unary gates (so $\neg x$ costs extra). Wires $=2\cdot\#\text{gates}$. Instance: circuit $C$ with $n$ inputs, $m$ wires; question: $\exists x\,C(x)=1$.
+
+\section{Proved baseline (run 1)}
+\begin{prop}[Black-box bound, PROVED] Any deterministic algorithm that accesses $C$ only by evaluating it on inputs must make $2^n$ evaluations in the worst case. \emph{Proof.} Adversary answers 0 until $2^n-1$ distinct points are queried; the circuit $[x=x^*]$ for the last unqueried $x^*$ is consistent with all answers and is satisfiable, while the zero circuit is not. \qed\end{prop}
+\begin{prop}[Reading bound, PROVED] If every wire of $C$ is non-redundant (changing its function can change satisfiability), any algorithm must read $\Omega(m)$ wires; hence time $\ge m$ for the whole instance. (Adversary argument, standard.)\end{prop}
+\textbf{Caveat.} Both are model-restricted; neither bounds a general algorithm that inspects the circuit's structure. The gap between $2^n$ (black box) and $\mathrm{poly}(m)$ (reading) is exactly the open question. KNOWN: under ETH, Circuit-SAT needs $2^{\Omega(n)}$ time (CONDITIONAL); best unconditional time--space result for SAT is $n^{2\cos(\pi/7)-o(1)}$ (Williams), see repo ledger row L13.
+
+\section{Computation: exact minimal size, $n\le3$ (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/minsize.py} (iterative deepening over sets of computed truth tables; $<30$\,s each).
+\begin{center}\begin{tabular}{lcl}\toprule
+$n$ & max gates (wires) over all $2^{2^n}$ functions & histogram (gates:count)\\\midrule
+2 & 3 (6) & 0:4, 1:4, 2:6, 3:2\\
+3 & 5 (10) & 0:5, 1:12, 2:43, 3:110, 4:76, 5:10\\\bottomrule\end{tabular}\end{center}
+Observation: the 3 gates at $n=2$ are only $\neg x,\neg y$ (artifact of no unary gates). Hardest $n=3$ functions need 5 gates. Counting argument (KNOWN, Shannon): most $n$-input functions need $\Omega(2^n/n)$ gates, but SAT-hardness needs \emph{explicit} instances, so this gives no Circuit-SAT bound.
+
+\section{Parametrized targets (CANDIDATE / OPEN)}
+\begin{enumerate}
+\item Parameter $w$ = circuit width/treewidth: SAT is $2^{O(w)}\mathrm{poly}$ (KNOWN); unconditional lower bound for restricted algorithms (e.g.\ DPLL/resolution of width $w$) is the tractable direction (proof complexity link).
+\item Parameter $d=$ number of gates beyond the minimal circuit of the underlying function (``redundancy''): conjecture that SAT on $n$ inputs with $m=n+d$ wires costs $\Omega(2^{n-O(d)})$ in a structure-inspecting model. OPEN.
+\item Extend exact table to $n=4$ (needs smarter search: canonical forms/SAT-based synthesis, split across stages).
+\end{enumerate}
+
+\section{Repository cross-check}
+Relevant: world ledger rows L13, L34--L40 (alternation trading, T-PORT barrier; one-tape bounds don't separate P/NP). A direct-product route is dominated; UWI/ARC remain OPEN. No repository result yet supplies a circuit-SAT wire-count bound.
+
+\section{Log}
+Run 1: created document, model, two restricted-model propositions, exact table $n\le3$. Next: $n=4$ via staged search; formalize width-parameter restricted-algorithm bound.
+\end{document}
