@@ -1,0 +1,54 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT::CCSAT-LIVE::2026-10-31
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{thm}{Theorem}\newtheorem{lem}{Lemma}\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: a wire-by-wire, parameterized lower-bound ledger for Circuit-SAT}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated 2026-10-31 (run 1)}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is a superlinear lower bound for Circuit-SAT. Labels: PROVED/EXACT, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Setup}
+A circuit $C$ has $n$ inputs and $s$ fan-in-2 gates over $B_2$ (all binary gates); wires $w=2s$. $\mathrm{CSAT}(n,s)$: given $C$, is some $x\in\{0,1\}^n$ accepted? Two quantities are tracked, as the goal asks:
+(i) $W(f)=2\,\mathrm{size}_{B_2}(f)$, minimal wires to \emph{build} $f$ (ladder in $n$);
+(ii) $T(n,s)$, the cost to \emph{decide} CSAT, with parameters $(n,s,\mathrm{tw})$ ($\mathrm{tw}$ = treewidth of the circuit graph). Upper bound $O(2^n s)$, and $2^{O(\mathrm{tw})}s$ by dynamic programming (KNOWN).
+
+\section{Ladder of minimal wires (build side)}
+\begin{lem}[PROVED/EXACT, connectivity]\label{lem:conn} A fan-in-2 circuit whose output depends on $n$ variables has $\ge n-1$ gates, hence $\ge 2n-2$ wires; $\mathrm{AND}_n$ meets this.\end{lem}
+\emph{Proof.} The underlying undirected graph must connect the output to all $n$ input nodes; a tree with $n$ leaves and fan-in 2 internal nodes has $n-1$ internal nodes. $\square$
+
+\textbf{COMPUTATIONAL ladder} (\texttt{circuitsat/exact\_synth.py}, exhaustive BFS over signal sets, full basis $B_2$, functions up to complement; results in \texttt{exact\_synth\_n*.json}):
+\begin{center}\begin{tabular}{@{}ccccl@{}}\toprule
+$n$ & functions (mod compl.) & max gates & max wires & distribution (gates: count)\\\midrule
+1 & 1 (+const) & 0 & 0 & trivial\\
+2 & 8 & 1 & 2 & 0:3, 1:5\\
+3 & 128 & 4 & 8 & 0:4, 1:15, 2:57, 3:40, 4:12\\
+4 & -- & 7 & 14 & KNOWN (Knuth), not recomputed here\\\bottomrule\end{tabular}\end{center}
+Check: $\mathrm{AND}_3$ (unique-satisfying-assignment indicator) needs 2 gates $=n-1$, matching Lemma~\ref{lem:conn}. The $n=4$ BFS exceeds the 30-second run rule in this naive form; next step is a chunked/canonical-form version or SAT-based exact synthesis.
+
+\section{Decision side: probe model}
+Model: the algorithm reads the circuit only through probes ``what are gate $i$'s type and input wires?''.
+\begin{prop}[PROVED/EXACT]\label{prop:probe} Any deterministic probe algorithm for $\mathrm{CSAT}(n,s)$ makes $\ge s-n$ probes, for $s\ge n$ (and $\ge s$ with the padding family below).\end{prop}
+\emph{Proof.} Take the chain $g_i=g_{i-1}\wedge \ell_i$, with $\ell_i$ literals of $x_{\pi(i)}$ (satisfiable). Changing any one $\ell_i$ to constant $0$ makes it unsatisfiable. An algorithm that skips gate $i$ gets the same answers on the satisfiable instance and its one-gate modification; so every gate must be probed. $\square$
+
+This is only linear: it says reading the instance costs $\Omega(s)$, which is the \emph{trivial} bound and equals the build-side count $s$. The whole problem lives in the gap between $\Omega(s)$ and $2^{O(\min(n,\mathrm{tw}))}s$.
+
+\section{Parameterized targets}
+\begin{itemize}
+\item \textbf{Treewidth.} KNOWN (conditional): no $2^{o(\mathrm{tw})}\mathrm{poly}(s)$ algorithm under ETH. So any honest lower bound is naturally $f(\mathrm{tw})\cdot s$; unconditional versions are OPEN.
+\item \textbf{Restricted models.} A superlinear bound for CSAT needs an uncheatable model; the repository's TPORT notes (\texttt{research/agents/claude/2026-10-28\_1326\_CLAUDE\_TPORT-0001.tex}) show alternation-trading proofs hit a linear barrier at portfolio size $\approx N$; reuse as a hostile control.
+\item \textbf{Gate elimination.} KNOWN (recalled, not re-verified this run): best circuit lower bound for explicit functions over $B_2$ is about $3.1n$. This is a build-side bound for a function, not for deciding CSAT.
+\end{itemize}
+
+\section{Next steps (queue)}
+\begin{enumerate}
+\item Chunked exact synthesis for $n=4$ (expect max 7 gates) and a table of $\mathrm{size}(f)$ vs.\ number of satisfying assignments $|f^{-1}(1)|$.
+\item Define a layered ``connection count'' invariant (wires crossing each cut) and prove/disprove that the minimum cut-width of CSAT instances yields a time--space bound in a bounded-width read-once model.
+\item Audit repository ARC/FLMV and UWI notes for a statement that can be specialized to circuits of treewidth $t$.
+\end{enumerate}
+
+\section{Log}
+Run 1 (2026-10-31): created document; Lemma~\ref{lem:conn}, Prop.~\ref{prop:probe}, $n\le3$ ladder. Repository survey was shallow (listing + AGENTS.md); no deep corpus read yet.
+% END_OF_LIVING_DOC::CCSAT-LIVE
+\end{document}
