@@ -1,0 +1,114 @@
+% LSPV-2 REPORT::GUARDED-AFFINE-CYCLE263::2026-10-30T21:12:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{GUARDED-AFFINE-CYCLE263: Source-Authenticated Parity Blockers from Proper-3CNF Split Pairs}
+\author{LSPV-2, Circuit and Reduction Builder}
+\date{30 October 2026, 21:12 PDT}
+\begin{document}\maketitle
+\noindent\textbf{Status.} \textbf{PROVED/EXACT, restricted} for the elementary guarded-XOR entailment and certified 4-to-3 split rules stated below; independent external mathematical referee pending. \textbf{COMPUTATIONAL} for the finite producer, independently written verification and ledger. The combined proof calculus is typed \emph{source resolution plus GF(2)}, not automatically an ordinary resolution proof or an FLMV machine bound. Uniform arbitrary-$A\mapsto\Phi(A)$ ARC contraction and both $P=NP$ and $P\ne NP$ are \textbf{OPEN}.
+
+\section{Target, four falsifiers, same-source semantics}
+We study a single component of the universal state-dependent parameterized residual-SAT controller: an independently checked learned source clause from an affine contradiction \emph{under source-variable guards}. The original CNF $F$ is immutable. Every occurrence $x_{i,j}$ has its original signed polarity and clause ID $j$; guards, private split variables, and source variables never become independent occurrence assignments. The controller may retain the learned clause across policy switches but cannot delete the parent without a separately proved equivalent encoding. All failed recognizers and recognition/source/proof costs are paid.
+
+\begin{enumerate}
+\item[] \textbf{F1 (falsified as a general rule):} Pooling conditional XOR rows without checking guard consistency always produces a nontrivial source blocker. A pair with guards $g$ and $\neg g$ yields only the tautology $g\lor\neg g$.
+\item[] \textbf{F2 (proved for authenticated blocks):} A GF(2) dependency with zero total variable incidence and odd total RHS exports a source-valid clause formed from its guards; the checker can validate the proof without visiting all global flip assignments.
+\item[] \textbf{F3 (falsified):} Three of four canonical XOR3 forbidden patterns suffice to authenticate an entire parity equation. Omitting a source parent removes the row certificate and the producer refuses export.
+\item[] \textbf{F4 (falsified on the implementation):} A shorter learned source blocker automatically generates an $N^{1/2}$ ordinary-SAT child and fits the $N^{1/2}$ writable-space target. The explicit $F\wedge D$ output retains the entire parent, and the Python implementation retains the full source in memory.
+\end{enumerate}
+
+\section{Exact reconstruction from indexed signed source clauses}
+For three distinct data variables $u,v,w$ and parity $b\in\{0,1\}$, let $\mathcal P_b(u,v,w)$ contain the four proper width-three clauses, each excluding exactly one triple $(a_u,a_v,a_w)$ whose parity differs from $b$. For a signed guard literal $g$ disjoint from $\{u,v,w\}$, define the guarded block
+\[
+ Q_{g,b} \;=\; \bigwedge_{C\in\mathcal P_b(u,v,w)}(g\lor C).
+\]
+If $g$ is false, this enforces $u\oplus v\oplus w=b$; if $g$ is true, all four clauses are vacuous. Every four-literal member $g\lor\ell_1\lor\ell_2\lor\ell_3$ is replaced by two \emph{original proper 3CNF} clauses with a fresh private split bit $z$:
+\[
+ (g\lor\ell_1\lor z)\land(\neg z\lor\ell_2\lor\ell_3).
+ \tag{1}
+\]
+For every setting of the four outer variables,
+\[
+ \exists z\,[(g\lor\ell_1\lor z)\land(\neg z\lor\ell_2\lor\ell_3)]
+ \ \Longleftrightarrow\ g\lor\ell_1\lor\ell_2\lor\ell_3.
+ \tag{2}
+\]
+The source clauses in (1) resolve on $z$ to the displayed four-literal clause. The recognizer obtains original source-parent indices by scanning the signed incidence list and testing private variables with one positive and one negative occurrence. It groups the resulting authentic four-literal resolvents by signed guard and three-variable support, and accepts \emph{only} the complete four-pattern parity truth table. It does not trust a promised variable-occurrence link, guessed splitter, signed-name convention, or the declared generator metadata. Distinct source blocks are source-index disjoint in this implementation; rejecting a valid overlapping block is allowed because the exact DPLL fallback remains.
+
+\begin{theorem}[Guarded affine dependency yields a source-only blocker]
+Let $F$ be any finite original CNF, and suppose source-indexed local-resolution checks authenticate guarded parity blocks $Q_{g_i,b_i}$ for row indices $i\in J$. Write $v_i\in\mathbb F_2^X$ for each block's three-variable incidence vector. If a nonempty index set $I\subseteq J$ satisfies
+\[
+ \bigoplus_{i\in I}v_i=0,\qquad \bigoplus_{i\in I}b_i=1,
+ \tag{3}
+\]
+then, writing $G_I=\{g_i:i\in I\}$,
+\[
+ \boxed{F\models D_I:=\bigvee_{g\in G_I}g,\quad F\wedge D_I\equiv F.}
+ \tag{4}
+\]
+If $G_I$ contains complementary literals the clause is a tautology, not a useful learned blocker. Otherwise it prohibits exactly the original-variable guard cube setting every $g\in G_I$ false. This implication holds on the same original source for SAT and UNSAT cases, and its validation requires only the original parent-pair resolutions, four-row parity truth tables, and the explicit GF(2) row-combination witness. It does \emph{not} assert that the learned clause has a short ordinary resolution proof.
+\end{theorem}
+\begin{proof}
+Every source parent pair implies its resolved four-literal clause. The four checked patterns for row $i$ therefore force $v_i\cdot X=b_i$ whenever $g_i$ is false. If an original-source model falsified $D_I$, it would falsify each $g_i$ in the dependency and satisfy all equations. XOR of their left sides would be $0$ by (3), while XOR of the right sides would be $1$, a contradiction. Hence every source model satisfies $D_I$, and conjoining it leaves precisely the same models. This argument never frees source literal occurrences or assumes that an unrecognized part of $F$ is affine.\qed
+\end{proof}
+
+\paragraph{Typed proof provenance.} A source clause is an axiom. A local split parent pair justifies its four-literal resolvent by the ordinary resolution rule. A complete quartet of these justifies a conditional XOR3 equation by an eight-case finite truth table. An XOR-combination node has two authenticated rows as parents and records exact bitmask/RHS XOR. A zero-mask, RHS-one node exports the guard union. This \emph{hybrid GF(2)/resolution certificate} must be checked as such, not mislabeled pure resolution or RUP. All other original clauses remain present. A SAT answer requires a full source assignment checked against every original clause. On UNSAT control instances below, source-only resolution also derives each forced guard unit, and the typed learned blocker plus these units has an explicit empty-clause refutation. The verified implication in (4) makes that mixed proof sound.
+
+\section{Cycle family, complete both-label controls}
+Fix even $r\ge4$. Let $x_1,\ldots,x_r,a$ be data variables, and let $g_1,\ldots,g_r$ be fresh guard variables. Encode for $i=1,\ldots,r$ the parity rows
+\[
+ x_i\oplus x_{i+1}\oplus a=b_i,\qquad x_{r+1}=x_1,\quad b_1=\cdots=b_{r-1}=0,\quad b_r=1,
+ \tag{5}
+\]
+using four signed forbidden patterns and the eight proper ternary split clauses per row, all guarded by $g_i$. Each $x_i$ appears twice, and $a$ appears $r$ times, so for even $r$ the XOR of every left side vanishes but the RHS XOR is one. Deleting any single parity row leaves a satisfiable linear system; all guards true also trivially satisfies the source parity blocks.
+
+For a SAT parent, force $g_1=1$ and all $g_{i>1}=0$. For an UNSAT parent force all $g_i=0$. Every force is encoded in original proper 3CNF by the four clauses $(\ell\lor\pm p\lor\pm q)$, with two fresh auxiliary variables. The quartet entails $\ell$ through three standard resolution steps. Consequently the UNSAT parent has a mixed certificate ending in the empty clause; the SAT parent has a complete checked source witness. Independently rename/complement original variables, including a split private bit and a guard: the same authenticated rule survives.
+
+\section{Independent computational checks, actual selected work}
+Producer seed 202610302112, no randomized solver decisions. A separate checker re-parses original signed clauses and source indices, replays every local resolution, independently enumerates all 8 payload triples per guard truth value, checks each GF(2) zero-row odd-syndrome certificate and each forced-guard source-resolution DAG, and checks all retained SAT witnesses against every source clause. Original-source $S_j,U_j$ targets and their inversions, the four SS/SU/US/UU pair modes, coherent global $0^n,1^n$ and multi-flip trails are independently checked. A deliberately corrupted source parent, parity RHS, guard and blocker are rejected. The independently checked W1/S15 strict signed exact-(2,2) pair has identical unsigned supports and opposite answers. This run's 25 cases include Horn, dual-Horn, 2-SAT, independent parity, high-width easy, incomplete and incoherently guarded patterns, and signed renamings.
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+Measure&Plain UP--DPLL&Guarded-parity plus UP--DPLL\\\midrule
+Original source instances (SAT / UNSAT)&\multicolumn{2}{c}{25 (17 / 8)}\\
+Authenticated parity rows&\multicolumn{2}{c}{95}\\
+Authenticated non-tautological source blockers&\multicolumn{2}{c}{15}\\
+Complete mixed-calculus UNSAT certificates&\multicolumn{2}{c}{6}\\
+DPLL nodes&29,059&28,987\\
+Selected Python event proxies&22,048,363&22,038,233\\
+Failed recognition policies&0&10\\
+Policy transitions&0&25\\
+\bottomrule
+\end{tabular}
+\end{center}
+The independent checker passed 83,775 checks, including 150,468 pair-extreme modes, 3,333 signed original-occurrence inversions, 524 or more resolution-pivot checks, and four corrupted-certificate rejection controls. The event proxy includes recognition scans, candidate tests, failed policies, source-resolution checking, DPLL UP/search and policy transitions; it does \emph{not} provide a native FLMV transition count. In particular the eight-row UNSAT source requires 9,223 hybrid versus 9,231 baseline nodes but costs 7,443,423 versus 7,438,846 selected events; the overhead exceeds the saving. The 25-case aggregate's tiny work improvement is neither stable nor asymptotic. The peak process resident-set-size observation was 112,357,376 bytes, including the Python experiment and saved raw arrays, not a certified guest-machine workspace bound.
+
+\section{Fully charged resource ledger and actual ARC barrier}
+For the explicit indexed signed-clause-word accounting, take $w=\max(2,\lceil\log_2(2n+2)\rceil)$ bits per signed literal/index word and source size
+\[
+ N=w\left(2+\sum_j(1+|C_j|)\right).
+ \tag{6}
+\]
+The tracked totals across the test set include 3,351 original-literal reads for the extractor, 10 failed recognizer attempts, 25 switches and 32,068 original source bits; every attempted explicit append-only child $F\wedge D$ includes the original records and has size $N+w(1+|D|)>N$ when $D$ exists. The tracked sum of those represented child lengths is 32,834 bits. The runnable producer also creates signed-occurrence indexes, source-parent pair/group dictionaries, a GF(2) basis, child-clause arrays and a DPLL stack, all retained as Python objects. A separate resource JSON accounts for their declared named-record estimates and for source reads, row pivots, proof checks, failed routes, input/output, and query counts; it explicitly labels unmeasured indexed-head motions and simultaneous FLMV writable tape space \texttt{NOT CERTIFIED}. There are zero calls to an arbitrary guest $A$.
+
+Thus the displayed source-preserving solver succeeds in a \emph{restricted logical deduction}, but fails the claimed ordinary-child power contraction $|F'|\le N^{1/2}$ and has no demonstrated $N^{1/2}$ writable-space bound. Even a short blocker does not replace the source without a two-sided correctness theorem. This dovetails with LSPV-5's SOURCE-BLOCKER-COMPRESSION-FIREWALL232 and the one-sided LSPV-2 TYPED-TRANSACTION260 sound-export theorem. Our affine checker supports short typed parity explanations; the primary literature demonstrates parity explanation and pseudo-Boolean proof logging already, so no new proof-system power is claimed \cite{laitinen,gocht}.
+
+\section{Corpus audit, transfer guards, and next single arrow}
+\begin{sloppypar}\paragraph{CORPUS REVIEWED.} Repository tree (8,264 entries), issue \#3, root \path{main.tex}, \path{AGENTS.md}, \path{CODEX.md}, \path{.codex/skills/pnp-research/SKILL.md}, governor REDIRECT1 and integrated CONTRACT1, AFFINE-SMALLBIAS-DESCENT-GATE2, CONSTRUCTION-STRENGTHEN17, ARC-LINEAR22-SATURATION1, HITTING-TREE-COMPOSITION-REFEREE222, LSPV-1 ARC-SPACE-CAPPED-DOVETAIL262, LSPV-2 GUARDED-SCC261/ASSUMPTION-DISCHARGE262/TYPED-TRANSACTION260/AFFINE-INTERFACE258, LSPV-3 PARITY-MOMENT-CAMOUFLAGE264, LSPV-4 COVER-GATE-SCOPE262 and LSPV-5 SOURCE-BLOCKER-COMPRESSION-FIREWALL232. Examined older SELECTOR-PROJECTION-FIREWALL65 to avoid recasting auxiliary-free exponential projection as a new result. Local Git clone/preflight failed because direct DNS cannot resolve github.com; connected source reads and local independent source-checker/repro are documented fallback. The imported W1/S15 original clauses come from the previously independently checked TYPED-TRANSACTION260 archive.
+
+\end{sloppypar}
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.} Conditional implication SCC is already in GUARDED-SCC261 and basic Gaussian elimination already in AFFINE-GUARD257/INTERFACE258. DPLL(XOR), XOR explanations, parity proof systems and source-resolution are known \cite{laitinen,gocht,davis}. The exact incremental integration here is a provenance-checked \emph{conditional XOR3 quartet recovered from paired original proper3CNF source clauses}, verified on both labels and signed renamings. It does not show a new general SAT solver or asymptotic improvement.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.} Added a typed source-resolution/GF(2) export path for guarded affine contradictions with mechanically checked parent indices, negative controls, complete source witness and mixed UNSAT certificate on the constructed family. No power-short ordinary child, new achievable FLMV exponents or unrestricted hardness claim was added.
+
+\paragraph{ADOPTED / REJECTED / RETIRED COMPONENTS.} Retain previous source-preserving proof DAG, exact Horn/Krom/XOR terminal policies, fully charged fallback, original S/U controls, and valid virtual strict22 compiler evidence. Reject free XOR-block discovery, unauthenticated split variables, inconsistent-guard cycles, partial parity quartets, replacing the source by a blocker without completeness, and treating restricted affine semantic no-go as universal hardness. No unconditional transfer from proof length, incidence width, parity model or analog hardware wiring to arbitrary-guest resource bounds is accepted.
+
+\paragraph{One next OPEN theorem arrow.} Construct a \emph{hereditary} source-cover-correct ordinary SAT child generator of physical size $N^{1/2+o(1)}$ for every source and every correct arbitrary guest $A$, and prove complete realized source-access, policy/failure, output, guest-head and simultaneously retained ancestor/cache space bounds on the single deterministic FLMV indexed-input random-access machine. Local source-derived parity clauses do not yet supply it. $P$ versus $NP$ remains \textbf{OPEN}.
+
+\bibliographystyle{plain}
+\bibliography{references263}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::GUARDED-AFFINE-CYCLE263
