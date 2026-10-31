@@ -30,7 +30,7 @@ function make(b,S,T){
  assert.equal(clauses.length,2*m*(b+3));
  assert(clauses.every(c=>c.length===3&&new Set(c.map(Math.abs)).size===3));
  const w=Math.ceil(Math.log2(n+1)),recordBits=3*(w+1);
- const source=Array(64).fill("0");
+ const source=(b.toString(2).padStart(16,"0")+n.toString(2).padStart(24,"0")+clauses.length.toString(2).padStart(24,"0")).split("");
  for(const c of clauses)for(const lit of c)source.push(lit<0?"1":"0",...Math.abs(lit).toString(2).padStart(w,"0"));
  const bits=source.join("");
  for(const p of pins){const first=64+p.firstClause*recordBits;assert.equal(Number(bits[first]),p.member?0:1);}
