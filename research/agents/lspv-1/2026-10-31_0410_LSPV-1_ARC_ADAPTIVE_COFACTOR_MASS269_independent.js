@@ -12,7 +12,7 @@ function verify(d){
    const truth=Array.from({length:ALL},(_,a)=>C.every(c=>countTrue(c,bits(a,n))!==0));
    const sat=truth.some(Boolean);check(sat===f.ground_truth_sat,f.id+": label");
    check(truth.filter(Boolean).length===f.model_count,f.id+": models");
-   check(f.standard_up_dpll.result===sat&&f.charged_adaptive_controller.result===sat,f.id+": solvers");
+   check(f.standard_up_dpll.result===sat&&f.charged_adaptive_controller.result===sat&&f.shallow_physical_guest_control.result===sat,f.id+": solvers");
    if(sat)correctSat++;
    for(const z of f.original_clause_controls.clauses){
      const ci=z.clause_index-1;
@@ -95,6 +95,10 @@ function verify(d){
    check(K>Math.max(11/10,3/5+K/2),"delay wrapper test failed");
  }
  check(d.summary.sources===nSources&&d.summary.sat===correctSat&&d.summary.unsat===nSources-correctSat,"summary labels");
+ const shallow=d.rows.reduce((s,f)=>s+f.shallow_physical_guest_control.ledger.guests,0);
+ const output=d.rows.reduce((s,f)=>s+f.shallow_physical_guest_control.ledger.child_output_chars,0);
+ check(shallow===d.summary.shallow_guest_calls&&output===d.summary.shallow_child_chars_written,"shallow child ledger");
+ check(d.rows.some(f=>!f.ground_truth_sat&&f.shallow_physical_guest_control.ledger.guests>0),"no UNSAT guest control");
  check(d.summary.leaves_audited===nLeaves&&d.summary.pair_modes_checked===nPairs&&d.summary.triple_modes_checked===nTriples,"summary audits");
  return {status:"PASSED",sources:nSources,SAT:correctSat,UNSAT:nSources-correctSat,
   leaf_partition_checks:nChecks,leaves:nLeaves,extreme_pair_modes:nPairs,extreme_triples:nTriples,
