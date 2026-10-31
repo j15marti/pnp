@@ -1,0 +1,64 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-10-31
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{thm}{Theorem}\newtheorem{lem}[thm]{Lemma}\newtheorem{prop}[thm]{Proposition}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT\\ \large Living document}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-10-31}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} No unconditional super-polynomial (indeed no
+superlinear-time) lower bound for Circuit-SAT is claimed. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL,
+CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Build circuits from the simplest case upward, increasing the number $n$ of inputs, and record at each stage
+(i) the minimum number of gates/wires needed to realize the object, and (ii) the best provable cost of
+\emph{deciding} satisfiability. The bound may be parametrized, by $n$, wires $m$, treewidth $k$, etc.
+Model: Boolean circuit, fan-in $\le2$ gates, free negation (AIG: AND gates with negatable edges); wires = gate input edges ($2g$ for $g$ gates).
+
+\section{Layer 1: structural wire lower bounds}
+\begin{prop}[PROVED/EXACT, wire connectivity]\label{p:conn}
+If a fan-in-2 circuit's output depends on all $n$ inputs, it has $g\ge n-1$ gates and at least $n+g-1\ge 2n-2$ edges in the output cone; both are attained by a balanced AND tree.
+\end{prop}
+\begin{proof} The underlying undirected graph of the output cone is connected on $n+g$ nodes, so it has $\ge n+g-1$ edges. Each gate has $\le 2$ in-edges, so edges $\le 2g$, hence $2g\ge n+g-1$. A tree attains equality. \end{proof}
+Consequently the \emph{unique-SAT} circuit $\bigwedge_{i}\ell_i$ costs exactly $n-1$ gates ($2n-2$ wires).
+
+\section{Layer 2: exact small cases (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/aig\_exact.py} does exhaustive iterative-deepening over AIGs with sharing.
+\begin{center}\begin{tabular}{@{}cccc@{}}\toprule
+$n$ & functions covered & min gates, unique-SAT function & max over all $f$ (hardest) \\\midrule
+1 & all & 0 & 0\\ 2 & 16/16 & 1 & 3 (XOR)\\ 3 & 256/256 & 2 & 6 (e.g.\ parity)\\ 4 & not run & $3$ (Prop.~\ref{p:conn}) & OPEN (not computed)\\\bottomrule\end{tabular}\end{center}
+$n=3$ gate-count histogram $(k{:}\#f)$: 0:8, 1:24, 2:64, 3:30, 4:104, 5:8, 6:18 (run 2026-10-31, 15\,s; search depth 6 covers all 256 functions, so the maximum 6 is exact).
+Observation: hardest-function cost goes $0,3,6$; known asymptotically $\Theta(2^n/n)$ (Shannon/Lupanov) --- KNOWN THEOREM.
+These measure circuit \emph{size}, a different thing from \emph{decision time}; the link is Layer 3.
+
+\section{Layer 3: cost of deciding satisfiability}
+\begin{prop}[PROVED/EXACT, trivial reading bound]
+In a model with gate descriptions (type, two input pointers) accessed by probes, any deterministic algorithm deciding Circuit-SAT on the AND-tree family with $n$ leaves must probe the type of every one of the $n-1$ gates; so $\Omega(n)=\Omega(m)$ probes.
+\end{prop}
+\begin{proof} The tree is satisfiable. If gate $g$'s type is unprobed, replace it by constant $0$ (allowed gate type): the answer flips, and the probed data are identical. \end{proof}
+This is linear only; it says nothing beyond reading the input.
+\begin{thm}[KNOWN THEOREM, black-box model]
+If $C$ is accessible only by evaluation queries, deterministic search needs $2^n$ queries, bounded-error randomized $\Omega(2^n)$, quantum $\Theta(2^{n/2})$ (BBBV/Grover).
+\end{thm}
+\emph{Barrier:} this is a relativized statement; it cannot prove $\mathrm{P}\ne\mathrm{NP}$ because white-box access to $C$ (wires) is exactly what an algorithm may exploit.
+\paragraph{Parametrized upper bounds (KNOWN).} Brute force $O(2^n m)$; dynamic programming over a tree decomposition of width $k$ gives $2^{O(k)}\,m$. Matching conditional lower bounds of the form $(2-\varepsilon)^{k}$ under SETH exist in the literature for CNF-SAT/related width parameters; \emph{exact citation not yet checked} (CANDIDATE, verify before use).
+\paragraph{Best unconditional time--space (KNOWN, via repo).} Williams-type alternation-trading gives SAT time $n^{2\cos(\pi/7)}\approx n^{1.80}$ for $n^{o(1)}$ space; Circuit-SAT inherits this via linear-size reduction. Repo ledger row L13 (Buss--Williams) shows the method stalls there; see \texttt{research/agents/claude/world-ledger/}.
+
+\section{Parametrized target (CANDIDATE)}
+Define $T(n,m)$ = optimal deterministic time for Circuit-SAT with $n$ inputs, $m$ wires.
+Known: $m\lesssim T\lesssim 2^n m$. Target statement to test (unproved, possibly false): \emph{for every fixed $\delta$, circuits with $m\le n^{1+\delta}$ need time $\omega(m)$.} Intermediate, checkable steps:
+\begin{enumerate}
+\item Extend exact table to $n=4$ (needs smarter search, e.g.\ SAT-based exact synthesis).
+\item Define a wire-by-wire \emph{information potential}: for the partial circuit after $j$ wires, the number of distinct restrictions (subfunctions) of the output; relate to branching-program width. Test whether a wire-count potential gives anything beyond Prop.~\ref{p:conn} --- OPEN.
+\item Audit relativization / natural proofs / algebrization against any candidate potential before claiming progress.
+\end{enumerate}
+
+\section{Relation to the P vs NP repository}
+Relevant: world ledger (rows L13, L34--L40) for time--space barriers and one-tape/portfolio results; ARC/FLMV spine is the repo's main route and is OPEN. Nothing here proves or strengthens it; this document currently adds only Layer 1--2 exact facts and the barrier remarks.
+
+\section{Run log}
+\begin{itemize}
+\item 2026-10-31 run 1: created document; Prop.~\ref{p:conn}; exact AIG table $n\le3$; black-box barrier; plan above.
+\end{itemize}
+\end{document}
