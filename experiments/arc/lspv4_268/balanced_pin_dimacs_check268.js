@@ -74,12 +74,13 @@ for(let q of [3,4,8,12]) {
  }
  cases.push({q,native_ascii_source_bits:text.length*8,blocks:q,all_odd_location_controls_checked:q,shared_header:true,equal_input_length:true});
 }
+function canonicalChild(b,pins){let requirements=[...new Set(pins)].sort((a,b)=>a-b),cls=[];for(let i=0;i<requirements.length;i++){let o=b+i*(b+1);for(let j=2;j<=b;j++)cls.push(...xor(j===2?1:o+j-2,j,o+j-1));cls.push(...pin(o+b-1,o+b,o+b+1,requirements[i]))}return {n:b+requirements.length*(b+1),clauses:cls};}
 let large=[];
 for(let [q,mixed] of [[1500,false],[7001,true]]){
 let pins=Array(q).fill(0);if(mixed)pins[q-1]=1;
 const f=build(3,pins),word=dim(f);
 const floor=Math.floor(Math.sqrt(word.length*8));
-const childLen=mixed?1984:1016; // LSPV-2 verified target byte grammar, stays identical after deleting private balancing pins.
+const childLen=dim(canonicalChild(3,pins)).length*8; // Independently reserialized literal-by-literal, not a peer hardcoded size.
 check(childLen<floor,"balanced source fails physical square root length");
 large.push({q,label:mixed?"UNSAT":"SAT",source_bits:word.length*8,source_clauses:f.clauses.length,
   original_unpadded_child_bits:childLen,sqrt_source_bits_floor:floor,necessary_differing_block_probes:q});
