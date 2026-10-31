@@ -1,0 +1,84 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- run 2026-10-31 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\title{ClaudeCircuitSAT: Step-by-step wire accounting and parametrized lower bounds for Circuit-SAT}
+\author{Living document (Claude scheduled runs)}
+\date{Last updated 2026-10-31}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is an
+unconditional super-polynomial lower bound for Circuit-SAT. Labels:
+PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Model and ledger variables}
+Circuits: fan-in-2 AND gates, free negation on wires/output, $n$ inputs,
+one output. $g(f)$ = minimum gates, $w(f)=2g(f)$ wires (each gate has two
+in-wires; every wire from an input or gate counts). Parameters of an instance:
+$n$ (inputs), $w$ (wires), later also treewidth $\tau$ and depth.
+Circuit-SAT$(C)$: is there $x$ with $C(x)=1$?
+
+\section{Step ledger (COMPUTATIONAL)}
+Exhaustive layered search (\texttt{research/agents/claude/circuitsat/mincircuit.py},
+exact over all $2^{2^n}$ functions; negation-normalized).
+\begin{center}\begin{tabular}{@{}cccc@{}}\toprule
+$n$ & $\max_f g(f)$ & $\max_f w(f)$ & distribution of $g$ over normalized $f$\\\midrule
+1 & 0 & 0 & $\{0{:}2\}$\\
+2 & 3 & 6 & $\{0{:}3,1{:}4,3{:}1\}$ (the one hard function is XOR)\\
+3 & 6 & 12 & $\{0{:}4,1{:}12,2{:}32,3{:}15,4{:}52,5{:}4,6{:}9\}$\\
+4 & ? & ? & not yet computed (search space too large for this script; next: SAT-solver-based exact synthesis)\\\bottomrule
+\end{tabular}\end{center}
+Constants and literals cost 0 gates. The 9 hardest 3-input classes need 6 gates.
+
+\section{Provable bounds}
+\begin{theorem}[Wire floor, PROVED]\label{thm:floor}
+If a fan-in-2 circuit with one output depends on all $n$ inputs, it has at least
+$n-1$ gates and at least $2n-2$ wires; both are attained by an AND tree
+(so $\mathrm{AND}_n$, the unique-satisfying-assignment instance, has $g=n-1$, $w=2n-2$).
+\end{theorem}
+\begin{proof} Every input has a directed path to the output, so the underlying
+graph is connected with $n+g$ nodes, hence $\ge n+g-1$ edges. Each gate has at
+most two in-wires, so edges $\le 2g$. Thus $2g\ge n+g-1$, i.e.\ $g\ge n-1$ and
+edges $\ge n+g-1\ge 2n-2$. (Edges here are wires between nodes; with exactly two
+in-wires per gate, $w=2g\ge 2n-2$.) \end{proof}
+Consistency check with the ledger: $n=2$: AND has $g=1=n-1$, XOR $g=3$; $n=3$: min over dependent functions $g=2$.
+
+\begin{theorem}[Probe lower bound linear in wires, PROVED, trivial model]\label{thm:probe}
+Let the circuit be given by an adjacency/negation-bit oracle. For the family
+$C_s=\bigvee_{i=1}^n (x_i\wedge \ell_i)$, $\ell_i=x_i$ if $s_i=0$ and $\ell_i=\neg x_i$ if $s_i=1$,
+$s\in\{0,1\}^n$, with $w=\Theta(n)$ wires, $C_s$ is satisfiable iff some $s_i=0$.
+Any deterministic algorithm deciding satisfiability must probe $\ge n=\Omega(w)$ negation bits.
+\end{theorem}
+\begin{proof} Adversary answers $s_i=1$ to every probe except the last unprobed
+index, leaving the answer undetermined until all $n$ bits are probed. \end{proof}
+This is only an input-reading bound; it is matched by an $O(w)$ algorithm for this family and
+says nothing about the general case. Classification: reformulation of ``must read the input''.
+
+\section{Parametrized view}
+\begin{itemize}
+\item Brute force: $O(2^n\cdot w)$. KNOWN.
+\item CONDITIONAL (SETH, known): no $2^{(1-\varepsilon)n}\mathrm{poly}(w)$ algorithm for Circuit-SAT, since
+CNF-SAT embeds with $w=\mathrm{poly}(n)$.
+\item Treewidth $\tau$: $2^{O(\tau)}\mathrm{poly}$ is known; a matching $2^{(1-\varepsilon)\tau}$ lower bound
+holds under SETH (known for CNF primal treewidth; transfer to circuit treewidth is CANDIDATE, needs check).
+\item Target shape of an unconditional parametrized bound: $T(n,w)\ge f(n)\cdot w$ with $f$ unbounded
+only in restricted models (e.g.\ oblivious/decision-tree, monotone, bounded-depth). OPEN for general RAM.
+\end{itemize}
+
+\section{Repository cross-check (2026-10-31)}
+Surveyed \texttt{AGENTS.md} and \texttt{research/agents/claude/}. Relevant: world-ledger rows L13 (Buss--Williams
+alternation-trading barrier for SAT time exponent), L29--L40 (UWI portfolio, TPORT barrier, one-tape crossing
+sequences). Consequence for this document: any lower bound of the form ``$n^{c}$ time on small space'' for
+Circuit-SAT is subject to those barriers; our wire-ledger approach is a counting approach and is
+independent of them but has not produced anything beyond Theorems~\ref{thm:floor},~\ref{thm:probe}.
+Not duplicated elsewhere: the exact small-$n$ minimum-size table above.
+
+\section{Next steps}
+\begin{enumerate}
+\item Exact $n=4$ synthesis (SAT-solver or C++); record $\max g$ and per-class sizes.
+\item Define a ``wire-critical'' measure $\kappa(C)$ (wires whose rewiring flips satisfiability) and
+bound query/probe complexity by $\kappa$; look for families with $\kappa$ superlinear in $n$ at fixed $w$.
+\item Study parametrization by the number of satisfying assignments / by cut-width in restricted models.
+\end{enumerate}
+% END_OF_CLAUDE_CIRCUITSAT_RUN::2026-10-31-1
+\end{document}
