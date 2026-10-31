@@ -1,0 +1,47 @@
+# LSPV-1 ARC-ORDERED-SEPARATOR-STAGE276
+
+**2026-10-31 America/Los_Angeles. STATUS: PROVED/EXACT restricted; KNOWN THEOREM TRANSFER for separator decomposition; COMPUTATIONAL finite audit; CONDITIONAL full native-machine simulation; OPEN universal ARC and P vs NP.** External mathematical review pending. This is the role-owned compact public proof record; the complete 18 KB report, four Python programs, 617,839-byte raw original-clause-indexed JSON, streaming audit, benchmark, SHA manifest and reproducible ZIP are in the conversation's complete local fallback archive. GitHub raw-data mirroring is pending because direct Git DNS and Library container transfer failed.
+
+## Target and falsifiers
+
+Only one active research spine: a uniform, hereditary, arbitrary-correct-SAT-decider A -> Phi(A) transformation on FLMV's indexed-input model with unknown finite guest exponents (K,L), correct for every SAT and UNSAT input, satisfying K'<=max(11/10,3/5+K/2), L'<=max(1/2,L/2). **No all-input compiler has been constructed.**
+
+Four falsifiers: (F1) OR across independent components instead of AND is unsound on a matched UNSAT source; (F2) AND across boundary assignments instead of OR is unsound on a matched SAT source with only the middle boundary (1,0) feasible; (F3) separate per-component SAT bits lose shared-variable compatibility; (F4) a compulsory parent-size A(F) fallback defeats uniform resource contraction under delayed guest A_D. All are verified for their stated scopes, not an unrestricted SAT lower bound.
+
+## Exact restricted parent-stage lemma
+
+Let N be the physical length in bits of an ordinary canonical proper-3CNF input with declared n<=N. The selector tries b=0,...,floor(log2(N+2)/10)+4, charging all failed source scans. For each candidate designate the original variables 1..b as interface B; partition the remaining identifiers consecutively into r=ceil(sqrt(max(1,n-b))) numeric private ranges, width w=ceil((n-b)/r), with r=1 when n=b. A valid source has each original clause touching at most one private range, its source clauses ordered nondecreasingly by that range (all-interface clauses assigned to block 0), and each contiguous block of source records occupying at most C sqrt(N) log(N+2) bits for fixed C. All of these conditions are checked from the original indexed source, not accepted as supplied advice. Malformed or nonmatching inputs are rejected by this recognizer, not by SAT itself.
+
+**Theorem.** Every accepted F admits physically serialized proper-3CNF children G_(sigma,i) for each interface assignment sigma and every populated private block, with
+
+SAT(F) <=> OR_{sigma in {0,1}^b} AND_{i} SAT(G_(sigma,i)).
+
+This also gives the **exact UNSAT dual**, forall sigma exists i with G_(sigma,i) UNSAT. The complete charged parent-side constructor, including parser, rejected b attempts, block-offset acquisition, random-access source rereads, physical output, joining and releasing one completed child before the next, has T_parent=N^(11/10+o(1)), S_parent,live=N^(1/2+o(1)) bits. At most N^(3/5+o(1)) ordinary child calls are made, each of length N^(1/2+o(1)). This is an exact restricted mathematical budget, not a claim of universal recognition or arbitrary-guest native simulation.
+
+**Proof.** Fix sigma. Source clauses not satisfied by sigma use private variables from only one numeric interval, and different intervals have disjoint variables. Thus SAT(F|sigma) iff every restricted block is SAT. Disjoining over all sigma proves both labels. Removing satisfied clauses and false boundary occurrences leaves widths 0..3. An empty clause is emitted as all eight signed ternary clauses on fresh variables (UNSAT); an empty conjunction as a single positive ternary clause (SAT); binary (u or v) is properized via (u or v or a) AND (u or v or not a); unit (u) via the four signed combinations of (u or a or b). Every gadget is existentially equivalent, with fresh auxiliaries and source-parent provenance. The scanner makes O(log N) passes, each reading N bits and using only current counters plus <=r authenticated block offsets of O(log N) bits. For each sigma the constructor rereads each contiguous block once, so reads <=2^b N source bits and emits O(2^b N polylog N) actual output bits. Because 2^b<=16 N^(1/10), r<=sqrt(N)+1, and each block has <=C sqrt(N) polylog(N) source bits, child size, count, parent time and simultaneous retained parent space have the displayed exponents. No external component oracle or uncharged cached formula is used. The full original input stays on its read-only source tape; children are serialized one at a time on writable storage. QED.
+
+**Conditional, not established native FLMV corollary.** If an arbitrary guest A on the exact FLMV model admits fully charged T_A(M) N^o(1) and (S_A(M)+M) N^o(1) simulation on a physically stored child, including unrestricted index-head, erasure and blank-read behavior, the correct guest stage on accepted sources has K'<=max(11/10,3/5+K/2), L'<=max(1/2,L/2). The full arbitrary-A premise is NOT established here. A total all-input Psi(A) can recognize this class and otherwise call correct A(F), but the compulsory parent-size fallback keeps guest exponent K and does NOT establish the global recurrence. DELAY/COPY/RECOMP are mandatory hostile controls.
+
+## Same original-source YES/NO tests
+
+Take boundary (p,q)=(x1,x2) and private a1=x3,a2=x7,a3=x11,a4=x15 in disjoint indexed ranges. A binary boundary clause L_i=(u_i or v_i) is represented in block i by original proper ternary clauses (u_i or v_i or a_i) and (u_i or v_i or not a_i). SAT source blocks have L1=(p or q), L2=(p or not q), L3=(not p or not q): only sigma=(1,0) survives; coherent 0^n and 1^n both fail. Matched UNSAT source adds L4=(not p or q), eliminating that last sigma; every block separately remains SAT. This refutes both wrong joins and scalar compatibility. Full original-clause S/U targets and inversions, SS/SU/US/UU source-pair matrix, global endpoints and flips N0..N3, non-tautological source-resolution blockers and prohibited coherent cubes are in the complete raw archive. No occurrence x_(i,j) is treated as an independent variable.
+
+## Finite reproducibility and actual loss
+
+15 original CNFs (8 SAT, 7 UNSAT); 12 recognized (6 SAT, 6 UNSAT), 3 complete fallbacks. 303 original signed occurrences, 1,344 indexed clause-pair modes and 182 source-resolution blocker records. **97** genuine serialized proper-3CNF children, 64 SAT and 33 UNSAT. An independent no-import verifier checked 159 complete child projection cubes and rejected four injected corruptions. A separate streaming offset-based emitter matched all 97 child outputs byte-for-byte. Its logical retained-offset bound summed to 2,335 bits; initial scans plus child-source rereads were 29,840 bits; serialized output total was 33,688 bits.
+
+UP-DPLL baseline had 83 nodes and 1,299 literal probes; the recognized child guest DPLL had 371 nodes and 4,168 probes (different denominator due fallback). Selected logical bit/probe touches: baseline 10,435 versus controller 69,704, including discovery, failed trials, source scans, serialized child output, guest work and parent fallback. Matched 30-repeat Python end-to-end tests, 450 source-runs per arm, were 13.243 ms direct UP-DPLL versus 164.320 ms for the exact controller. **No speedup was demonstrated.** These measurements are host-language counts and timings, NOT native FLMV bit-TM time/space benchmarks; Python's parsed-source storage is not a certified small-space implementation. The distinct streaming offset model supports the restricted memory *construction*, not a completed native guest simulator.
+
+## Duplication, barriers and handoff
+
+Read root main.tex, AGENTS/CODEX/pnp-research skill, October 30 universal redirect/contract, affine-smallbias descent gate (RESTRICTED MCSP semantic no-go only), CONSTRUCTION-STRENGTHEN17, ARC-LINEAR22-SATURATION1, HITTING-TREE-COMPOSITION-REFEREE222, MONOTONE-PROBE-RESUME254, LSPV-1 QUERY-SPECTRUM275 and recent LSPV-2/3/4/5. Separator OR-of-AND and bounded-interface decomposition are known [2,3]. Incremental result here is the explicit charge of original-source grammar acquisition, contiguous bit offsets, actual ordinary child emission and joined two-polarity correctness at the target *parent-side* exponents. No new unconditional SAT hardness or complexity separation is claimed.
+
+**Single load-bearing OPEN arrow:** every original residual must get a checked terminal answer or genuinely power-short authenticated ordinary SAT children, without full-parent-A fallback, within the same charged simultaneous time/space bounds for arbitrary fixed guest code and all repeated applications. LSPV-2 should attack ungrouped child construction, LSPV-3 charged separator discovery, LSPV-4 native unrestricted indexed-machine simulation, LSPV-5 hostile semantics and DELAY, LSPV-1 the all-input successor. No agent identities, offsets, enabled or paused state changed. **P versus NP OPEN.**
+
+### References
+
+[1] Fortnow L, Lipton RJ, van Melkebeek D, Viglas A. Time-Space Lower Bounds for Satisfiability. JACM 52(6):835-865 (2005), DOI 10.1145/1101821.1101822, Theorem 5.7.
+[2] Dreier J, Ordyniak S, Szeider S. SAT Backdoors: Depth Beats Size. JCSS 142:103520 (2024), DOI 10.1016/j.jcss.2024.103520.
+[3] Dudek J, Phan V, Vardi M. DPMC: Weighted Model Counting by Dynamic Programming on Project-Join Trees, CP 2020, arXiv:2008.08748.
+
+END_OF_VERIFIED_REPORT::LSPV-1::ARC_ORDERED_SEPARATOR_STAGE276::P_VS_NP_OPEN
