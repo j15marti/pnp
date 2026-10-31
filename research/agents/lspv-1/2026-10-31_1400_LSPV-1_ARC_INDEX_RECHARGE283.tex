@@ -1,0 +1,184 @@
+% LSPV-1 REPORT::ARC-INDEX-RECHARGE283::2026-10-31T14:00:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=.83in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newcommand{\pop}{\operatorname{popcount}}
+\title{ARC-INDEX-RECHARGE283: Amortized Full-Trace XOR Accounting for the FLMV Indexed Machine}
+\author{LSPV-1 Formal Proof Lead}
+\date{31 October 2026, 14:00 PDT}
+\begin{document}\maketitle
+\begin{center}\textbf{Status: PROVED/EXACT model-specific operational lemma, independent referee pending;}\\
+\textbf{COMPUTATIONAL separate verification; OPEN hereditary ARC, target FLMV transport and P versus NP.}
+\end{center}
+\section{Obstruction and prior results}
+The user's XOR adjunct compares each complete physical state to its predecessor and regards state capacity as a spatial resource and transitions as temporal work. Its exact machine-model obstacle is atomic bulk erasure: Fortnow--Lipton--van Melkebeek--Viglas (FLMV), Section 2.1, gives each non-index tape an associated index tape; an indexed jump erases the entire index tape in one native transition \cite{FLMV}. Prior project LSPV-4 ARC-XOR-INDEX-RESET281 proved $D_{\rm all}\le qT+E$, where $E$ is the number of erased live index cells, and falsified the one-step $T\ge d_{\rm all}/k$ bound on the native model. Prior LSPV-5 XOR-STATE-DIFFERENCE-REFEREE249 retained that bound only for ordinary fixed-location single-cell-write work tapes. Neither prior result used the index tape's initial blankness to control \emph{cumulative} erasure. The additional theorem below makes that charge explicit.
+
+Four preregistered falsifiers:
+\begin{enumerate}
+\item[] F1: Every native FLMV step changes at most $k$ writable tape bits. \textbf{FALSE}; one indexed jump erases $h$ ones in one step.
+\item[] F2: A \emph{complete initially blank-index} trace can erase arbitrary bits without having previously written them. \textbf{FALSE}; the recharge theorem below is exact.
+\item[] F3: The corresponding bound applies to \emph{any subinterval} without charging the index tape's initial nonblank bits. \textbf{FALSE}; the $h$-ones reset interval is a counterexample.
+\item[] F4: The logical XOR of original Monotone 3-SAT-(2,2) clause statuses is a universal physical-write lower bound or SAT-label discriminator. \textbf{FALSE}; U198 UNSAT and V198 SAT share equal sweeps and lazy states avoid materialization.
+\end{enumerate}
+
+\section{New exact amortized theorem}
+Fix a single uniform deterministic FLMV indexed multitape machine $A$ with a finite alphabet and fixed tape count. Include all \emph{actually physical} writable work/index tape cells in a stable-location binary coding, using blank=0. Exclude read-only source contents and synthetic binary encodings of head positions. Let $q=q_A$ be the fixed maximum number of changed physical \emph{local} bits per native transition on those tapes, including normal index-tape writes, ignoring the separate bulk index-erasure primitive. For a contiguous execution interval $[a,b]$, define:
+\[
+\Phi_a=\#\{\text{nonblank index cells at time }a\},
+\quad P_{a,b}=\#\{\text{ordinary blank-to-nonblank index edits}\},
+\]
+\[
+E_{a,b}=\#\{\text{nonblank index cells erased in native jumps}\},
+\quad
+W_{a,b}=\#\{\text{ordinary physically changed cell bits}\}.
+\]
+Ordinary same-value writes still cost time but not $W$. If a native step both changes a cell locally and bulk-erases it, resolve these as elementary events in their actual operational order and count both if both occur. Necessarily $P\le W\le q(b-a)$.
+
+At any chronological checkpoints $a=t_0<t_1<\cdots<t_r=b$, let
+$X_{a,b}=\sum_{i=0}^{r-1}d_H((W,I)_{t_i},(W,I)_{t_{i+1}})$,
+the \emph{physical-content} XOR path length.
+\begin{theorem}[Index recharge, arbitrary program and input]
+For every contiguous execution interval on the described machine,
+\begin{equation}\label{eq:amort}
+\boxed{E_{a,b}\le\Phi_a+P_{a,b},
+\qquad
+X_{a,b}\le2q(b-a)+\Phi_a.}
+\end{equation}
+Consequently, for an ordinary complete input execution whose index tapes begin blank,
+\[
+\boxed{T_A(F)\ge\frac{1}{2q_A}\sum_i
+d_H((W,I)_{t_i},(W,I)_{t_{i+1}}).}
+\]
+The bound holds for every \emph{algorithm} $A$ in the model, but is only an activity-to-time implication, not a lower bound on the activity that SAT intrinsically requires.
+\end{theorem}
+\begin{proof}
+Every erased nonblank index symbol was present at the interval's start or was created by a charged local blank-to-nonblank edit during that interval. Repeatedly erasing the same index cell requires a new charged creation after each prior erasure. Equivalently, $\Phi$ is a potential whose increases are at most $P$ and whose bulk-erasure decreases total $E$. Hence $E\le\Phi_a+P$. Hamming's triangle inequality bounds the sum of physical checkpoint distances by the actual changed local cell bits and the bulk-erased live index bits across those disjoint intervals:
+\[
+X\le W+E\le W+\Phi_a+P\le2q(b-a)+\Phi_a.
+\]
+For the whole computation, $\Phi_0=0$. Rearranging proves the claimed bound. All source/index read and move instructions still contribute to $T$ even when their tape-content XOR is zero.
+\end{proof}
+\begin{corollary}[Optimal asymptotic coefficient for one write port]
+With one local bit-write port and one index tape, the factor $2$ is asymptotically sharp. Write $h$ ones into a previously blank legal index address in $h$ charged transitions, then use one indexed jump, which erases those $h$ ones. Over the whole trace, $T=h+1$, $X=2h$, and $X/T\to2$. The one-step reset interval has $\Phi_a=h$, $T=1$ and $X=h$, verifying why arbitrary-interval bounds require the opening potential.
+\end{corollary}
+
+If a tape symbol has $b$ binary coding bits, use the finite maximum local changed-bit constant $q_A$ of that fixed machine; no machine-independent constant across arbitrary programs is asserted. The theorem excludes uncharged bulk creation, preloaded index advice, and synthetic head-position bit encodings. If a model supplies such resources, their costs require new terms. The ordinary work tape alone retains the stronger previously proved local bound $D_{\rm work}\le q_W T$.
+
+\section{Space versus time versus state activity}
+For one fixed physical work/index bit layout, define $S$ as the number of considered positions, $U$ as the number of \emph{distinct} bit positions changed, $Q$ as the number of distinct work/index \emph{content vectors} actually visited, and $D$ as the cumulative physical per-step XOR. The elementary capacity/path inequalities are
+\[
+\lceil\log_2 Q\rceil\le U\le S,\qquad U\le D,\qquad Q-1\le D,\qquad D\le2qT
+\]
+for an initially blank-index complete trace. $Q$ does \emph{not} include full machine configurations distinguished only by finite control, source-read head or index/work head positions. The first inequalities are a spatial-capacity statement, while $D$ measures temporal activity and $T$ the number of native operations. A one-bit toggling loop can have large $D$ and $S=1$; a read-heavy computation can have large $T$ and $D=0$. FLMV restricts simultaneous $(T,S)$ for SAT but does not imply an intrinsic $D$ lower bound. To obtain a new SAT time lower bound, one must prove that \emph{every} correct uniform solver in the declared indexed model must visit sufficiently many distinguishable writable \emph{contents} or pay alternate reread/head/reconstruction costs, without assuming assignment enumeration.
+
+The currently unconstructed arbitrary-decider hereditary contractor remains
+\[
+K'\le\max\{\alpha,\gamma+\lambda K\},\qquad
+L'\le\max\{\sigma,\lambda L\}
+\]
+at the hypothesized coefficients $(11/10,3/5,1/2,1/2)$ and fixed point $(6/5,1/2)$, strictly within the actual FLMV $c=241/200$ and $d(c)=11642479/23232400$ exclusion. No indexed-guest compiler, all-valid-target heredity or quantitative SAT-to-target transfer is obtained from the present lemma. NP-completeness alone cannot transfer the numerical FLMV curve.
+
+\section{Original-source SAT/UNSAT controls and exact finite tests}
+The canonical language is D\"ocker's \emph{duplicate-free proper clausewise-monotone} 3-SAT-(2,2), with exactly two positive and two negative occurrences per original variable, three distinct same-polarity literals per original clause, and malformed strings rejected. Our source fixtures are original $U_{198}$ (198 variables, 264 clauses, UNSAT from the \emph{prior independently replayed} six-module plus exhausted 64-row boundary certificate), $V_{198}$ (the same original record set with positive occurrence swap at zero-based clauses 2 and 44, SAT from a \emph{this-run independently replayed} 198-bit full witness), and $Y_6$ (6 variables, 8 original clauses, 20 independently enumerated satisfying assignments). For the comparative broader nonmonotone signed exact-(2,2) superset, $W_1$ was independently proved UNSAT by exhausting all $2^{15}$ assignments. Never infer U198 UNSAT from failed DPLL or the fact that V's witness falsifies U.
+
+Both 198-variable sources have exactly 351 same-sign-shared pairs, 786 opposite-sign-shared pairs and 33,579 disjoint original-clause pairs. The full indexed $SS,SU,US,UU$ compatibility masks are retained, with local original-occurrence $S_j/U_j$ targets and inverses. The all-zero/all-one coherent originals have the same $(N_0,N_1,N_2,N_3)=(132,0,0,132)$. A monotone one-variable-at-a-time full sweep visits exactly 792 altered original clause-count records; physical \emph{logical-buffer} binary-count XOR is 1056, Gray-count XOR 792, and adding assignment bits gives respectively 1254 and 990. The lazy assignment mask changes only 198 physical bits for that requested path and must separately pay all source-status recomputation reads. Both SAT/UNSAT labels have identical aggregate source-indexed activity; this is a falsifier of label inference, not an algorithm lower bound. V198's witness has verified histogram $(0,158,80,26)$; the same witness falsifies U198 original clause 2.
+
+The deterministic standard-Node.js producer enumerated 478,499 toy native-index machine states across widths 1,2,3,4 and depths 7,6,5,5, covering 415,874 terminal traces, including no-write reads, unchanged-value index writes, local edits, work flips, and atomic index resets. All $E\le P$, $D\le T+E$ and $D\le2T$ blank-index claims passed. The 16-one-index witness has one step with 16 changed index cells but requires 17 full-trace steps and 32 cumulative changes. A \emph{separately implemented} independent verifier passed 963,201 assertions, recomputing the machine traces, all source occurrence targets, pair masks, sweep identities and the SAT witness. The U198 UNSAT proof itself is sourced from earlier independent certification and was not rerun in this experiment. These tests falsify implementation errors; the theorem is proved symbolically.
+
+Published and readback-verified code:
+\path{experiments/arc/2026-10-31_1400_LSPV1_INDEX_RECHARGE283.js};
+independent checker:
+\path{experiments/arc/2026-10-31_1400_LSPV1_INDEX_RECHARGE283_independent.js};
+full indexed raw:
+\path{results/raw/arc/2026-10-31_1400_LSPV1_INDEX_RECHARGE283.json}.
+The producer is an \emph{offline auditor}; counting full XOR at run time would itself have to be charged.
+
+\section{Corpus, literature and transfer audit}
+\noindent\textbf{CORPUS REVIEWED.} GitHub issue \#3, root \path{main.tex},
+\path{AGENTS.md}, \path{CODEX.md}, research skill, current
+REDIRECT1 and CONTRACT1, AFFINE-SMALLBIAS-DESCENT-GATE2
+(restricted MCSP no-go only), CONSTRUCTION-STRENGTHEN17,
+ARC-LINEAR22-SATURATION1, LSPV-1 MONOTONE-QUOTA-CUBE281 and
+H22-DANGEROUS-HITSET282, verified predecessor LSPV-5 XOR-REFEREE249,
+LSPV-4 ARC-XOR-INDEX-RESET281, prior FLIPGAUGE ARC121 and
+BIT-LEDGER-CEILING120. Preflight script was attempted but unavailable
+without a checked-out repository; actual sources were recovered
+through the GitHub connector. The predecessor report's final
+verification sentinel was read back. No scheduler identities, states
+or schedules were changed.
+
+\noindent\textbf{DUPLICATION / CONTRADICTION AUDIT.} Prior LSPV-4 supplied
+$D_{\rm all}\le qT+E$ and the one-step native reset counterexample.
+This report adds the previously missing \emph{cumulative recharge}
+inequality $E\le\Phi_0+P$ and combines them into
+$D_{\rm all}\le2qT+\Phi_0$. Neither result contradicts the other.
+The known source balance identities, clause pair modes and one-flip
+laws are reused controls, not new theorems. Prior full-configuration
+head-encoding statements use a different resource type and cannot
+be substituted for actual tape-cell contents.
+
+\noindent\textbf{WHAT CHANGED RELATIVE TO ROOT MAIN.} The only
+mathematical addition is a properly typed amortized repair of native
+FLMV index erasure in the auxiliary XOR activity ledger.
+All-input ARC and numerical FLMV target transport remain OPEN.
+Adopted: machine-specific physical tape accounting and certified
+both-label original-source controls. Rejected: a one-step all-tape
+bit-write bound on indexed resets, a source-clause semantic-to-physical
+XOR transfer, and an intrinsic SAT time lower bound from FLMV space
+alone. No previous proof result is retired beyond the previously
+rejected typing errors.
+
+\noindent\textbf{SEARCH RECORD.} Google/web primary queries:
+\emph{Fortnow Lipton van Melkebeek Viglas indexed tape erasure},
+\emph{Monotone 3-SAT-(2,2) exact two positive negative occurrences},
+\emph{Kullmann conflict graph hitting clause sets},
+\emph{Ben-Sasson Wigderson resolution width}. FLMV author's
+September 2004 PDF page 4, Section 2.1, was opened and visually
+inspected; JACM publication is 2005 \cite{FLMV}.
+GitHub project queries:
+\emph{bulk erase amortized}, \emph{index erasure amortized},
+\emph{index recharge potential}, \emph{erasure 0 to 1 flips},
+\emph{index reset physical XOR factor two}.
+GitHub openai organization queries:
+\emph{SAT solver}, \emph{Turing machine index tape}, and
+\emph{bit state changes}; OpenAI Lean machine port-reindex sources
+were returned but did not establish the exact FLMV recharge lemma.
+Related project ARC-INDEX-ERASURE-TRAP261 and the latest Role-4/5
+reports were retrieved and explicitly credited. A failed search is
+not a novelty theorem. Streaming state-update bounds
+\cite{Jayaram2024} concern a different machine model and supply
+no automatic SAT transfer.
+
+\section{Single load-bearing OPEN arrow}
+Prove a uniform all-valid-target, answer-oblivious hereditary
+$A\mapsto\Phi(A)$ with genuinely power-short correct children or
+certified terminals, for every exact polynomial target decider $A$
+with unknown exponents, and provide a matching charged,
+bit-locally accessible quantitative SAT-to-canonical-target
+reduction or direct forbidden-region lower bound.
+Alternatively, prove an intrinsic machine-independent required
+state-separation versus source-reread bound strong enough to
+constrain simultaneous FLMV $(T,S)$ on the complete NP-complete
+target. None has been established. \textbf{$P$ versus $NP$ remains OPEN.}
+
+\begin{thebibliography}{9}
+\bibitem{FLMV} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas,
+\emph{Time-Space Lower Bounds for Satisfiability}, JACM 52(6), 2005.
+\url{https://lance.fortnow.com/papers/files/tst.pdf}.
+\bibitem{Doecker} J. D\"ocker, \emph{On simplified NP-complete
+variants of Monotone 3-SAT}, Discrete Applied Mathematics, 2021,
+DOI 10.1016/j.dam.2020.12.010.
+\url{https://arxiv.org/abs/1912.08032}.
+\bibitem{Jayaram2024} R. Jayaram, D. P. Woodruff, S. Zhou,
+\emph{Streaming Algorithms with Few State Changes}, PODS 2024,
+\url{https://arxiv.org/abs/2406.06821}.
+\bibitem{Kullmann2011} O. Kullmann,
+\emph{Constraint Satisfaction Problems in Clausal Form II},
+Fundamenta Informaticae 109, 2011.
+\url{https://doi.org/10.3233/FI-2011-429}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-1::ARC-INDEX-RECHARGE283::P_VS_NP_OPEN
