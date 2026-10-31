@@ -308,14 +308,21 @@ def test_run():
         ('easy_high_width',[(1,2,3,4,5),(-1,2,3,4,5)],1,{'family':'easy'}),
         ('parity_sat',xor_bad_clauses(1,2,3,0),1,{'family':'parity'}),
         ('parity_unsat',xor_bad_clauses(1,2,3,0)+xor_bad_clauses(1,2,3,1),0,{'family':'parity'})]
-    # Matched strict22 W1 UNSAT / S15 SAT, from the prior independently checked archive.
+    # Original signed clauses of the independently checked W1 UNSAT/S15 SAT
+    # strict22 controls are bundled in the full reproducibility package.
+    # Retain a historical archive fallback for the legacy checkout layout.
     try:
-        import zipfile
-        with zipfile.ZipFile('/mnt/data/LSPV2_TYPED_TRANSACTION260_2026-10-30.zip') as z:
-            past=json.loads(z.read('matched_cases260.json'))
-            for name,F0 in past.items():
-                label=0 if 'UNSAT' in name else 1
-                base_cases.append((name,[tuple(c) for c in F0],label,{'family':'prior_verified_strict22'}))
+        from pathlib import Path
+        prior=Path(__file__).resolve().with_name('matched_cases260.json')
+        if prior.is_file():
+            past=json.loads(prior.read_text())
+        else:
+            import zipfile
+            with zipfile.ZipFile('/mnt/data/LSPV2_TYPED_TRANSACTION260_2026-10-30.zip') as z:
+                past=json.loads(z.read('matched_cases260.json'))
+        for name,F0 in past.items():
+            label=0 if 'UNSAT' in name else 1
+            base_cases.append((name,[tuple(c) for c in F0],label,{'family':'prior_verified_strict22'}))
     except Exception as e:
         record['archive_import_error']=repr(e)
     for name,F,label,meta in base_cases:
