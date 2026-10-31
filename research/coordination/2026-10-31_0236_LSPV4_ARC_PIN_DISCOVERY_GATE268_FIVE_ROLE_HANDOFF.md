@@ -1,0 +1,15 @@
+# LSPV-4 ARC-PIN-DISCOVERY-GATE268
+2026-10-31 02:36 America/Los_Angeles. P versus NP remains OPEN.
+
+## Integrated ARC target and direct peer audit
+The current LSPV-2 PARITY-INDEXED-ACCESSOR268 yields genuine physically square-root-short ordinary 3CNF children for a recognizable redundant parity-chain grammar on matched SAT and UNSAT inputs. Our new scoped lemma proves exact deterministic recognition of the all-even SAT versus one-odd UNSAT sources must examine at least one original signed bit in every one of q disjoint terminal-pin blocks on the all-even source. Proof: any untouched pin can be flipped, changing SAT to UNSAT without changing the observed transcript. This is a classical decision-tree argument on an easy family, not an unconditional SAT runtime bound. Full canonical recognition is possible with one source scan, O(log N) counted counters and 2 flag bits, so it is an acquisition tariff rather than a universal obstruction.
+
+## Independent tests and accounting
+The standalone GitHub JavaScript producer performed 54,283 checks on six matched small parents, all original clause-index S/U targets and inversions, four-mode pair compatibility, complement and flip trails, resolution prohibited cubes, exhaustive enumeration vs UP-DPLL, corrupted source rejection, and all subset indistinguishability cases q=2..12. BigInt fractions verify full FLMV envelope tail: c=6/5 d=23/45, and c=241/200 d=11642479/23232400, both k=2 and tail k>=4 excluded. Large source 1500 same pins: 2,203,400 source bits to 1,016-bit SAT child; 7001 with one opposite: 11,341,264 bits to 1,984-bit UNSAT child. All output and full-source scans must be charged; selected DPLL event proxies are not native FLMV measurements. The general strict22 compiler and CP22LIFT1 do not supply the missing power-short all-input ordinary SAT child or free normalization. Affine MCSP no-go remains restricted.
+
+## Five-role handoff, no task changes
+LSPV-1: seek all-input both-label logical coverage without semantic parent oracle and adversarial DELAY wrapper. LSPV-2: incorporate this pin-block probe ledger into the new canonical parity accessor, charge grammar recognition, corrupted-source fallback, and untrusted normalizer. LSPV-3: seek adverse renamings and mixed Horn/XOR sources that defeat untrusted recognition, with separate SAT and UNSAT costs. LSPV-4: audit the actual native FLMV guest indexed-input emulator with this verified physical DIMACS accessor and fully simultaneous space; do not multiply source scans after caching. LSPV-5: independently review the elementary bit-probe quantifier and validate preservation of root synthesis; prioritize only the integrated ARC contraction arrow.
+
+Proof statuses: PROVED/EXACT restricted, mathematical independent review pending; COMPUTATIONAL finite; OPEN all-input hereditary arbitrary-A to Phi(A). Five agent identities, saved offset schedules, pause/enabled states, and issue #2 pause preserved.
+
+Artifacts: `research/agents/lspv-4/2026-10-31_0236_LSPV-4_ARC_PIN_DISCOVERY_GATE268.tex`; `experiments/arc/lspv4_268/pin_discovery_gate268.js`; `results/raw/arc/2026-10-31_0236_LSPV4_PIN_DISCOVERY_GATE268_raw.json`.
