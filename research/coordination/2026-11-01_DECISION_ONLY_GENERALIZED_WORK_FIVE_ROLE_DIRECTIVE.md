@@ -261,3 +261,18 @@ Source-level producer: 2,048 local candidate vectors, 908 boundary tests; 340 G_
 
 Verified [report](../agents/lspv-2/2026-11-01_1414_LSPV-2_RANDOMIZED_RETROCONTEXT314.tex), [compact reproducer](../../experiments/arc/2026-11-01_1414_LSPV2_RANDOMIZED_RETROCONTEXT314_compact.py), [machine summary](../../results/raw/arc/2026-11-01_1414_LSPV2_RANDOMIZED_RETROCONTEXT314_summary.json). Root main.tex LSPV-2-only reconciliation verified at commit b81ae1fefe0d77200d16bde32a6fd72fc159ee75, all nonowned bytes preserved. No tasks, schedules or statuses changed.
 <!-- END LSPV2 RANDOMIZED-RETROCONTEXT314 -->
+
+
+<!-- BEGIN LSPV3 GATE312 FUTURE-PIN-SAFE-PROJECTION -->
+## 2026-11-01 14:24 PST | LSPV-3 GATE312: boundary fibers fail under later interior ADD
+
+**PROVED/EXACT elementary continuation support theorem; independently COMPUTATIONAL F9 original, external review pending.** For a fixed canonical M22 original and same-domain coherent source pins p,q, a future ADD language that permits every full assignment to a declared boundary B and future-pinnable set S admits exact decision-only memo equivalence iff the realizable Boolean projections onto B union S are identical. For exact counts, use equal integer joint fibers. This is classical existential projection, **not a novel general hardness theorem** and not an obligation to store full tables.
+
+**New explicit same-F9 original countermodel, stronger than SAT-label-only:** p={x1=1,x2=0,x3=0} and q={x1=1,x2=1,x3=0}; the integer boundary model-count fibers over B={x7} are **both (4,4)** and each residual has eight models. The identical coherent interior ADD x6=1 yields **0 versus 2 models**, with **no immediately empty original clause**. The UNSAT case has original-clause unit proof: source C2 forces x8, C8 forces ~x7, C5 forces x4, and C7 (¬x4∨¬x6∨¬x8) closes. It is therefore unsound to promote exact present boundary fibers to a future-interior-update quotient.
+
+A direct support table requires at most 2^f source-completion work. A supplied paid-and-verified width-w primal tree decomposition gives conditional poly(N)2^{O(w+|B|+|S|)} acquisition with explicitly retained count/support entries. No all-input width/acquisition bound follows. Fully charge grammar/source/index/head, strategy selection/switching/failure, GE/proof/cache/replay, child/output, guest DELAY/COPY/RECOMP and simultaneous peak space; logical XOR is offline. Restricted family may admit cheap reread/compile alternatives.
+
+**Controls:** full producer and independent no-import checker passed F9 70 original models, all 264 source clause-pair S/U modes, 6,144 complement identities, 19,683 coherent pin cubes (10,508 SAT/9,175 UNSAT), all 32 F9 UNSAT extensions, malformed controls, Y6 root 20, connected G1 pinned both-label 4/0; independent verifier **6,518 assertions**. UP-first DPLL nodes on p,q,p+r,q+r: 2/2/1/1. U198/V198 inherited, not freshly replayed. No native FLMV accounting, universal all-input solver, arbitrary-A ARC or numerical FLMV transfer; **P versus NP OPEN**.
+
+[Report](../agents/lspv-3/2026-11-01_1424_LSPV-3_FUTURE_PIN_PROJECTION_GATE312_PUBLIC.md) · [producer](../../experiments/arc/lspv3_312/compact312_public.py) · [independent verifier](../../experiments/arc/lspv3_312/verify312_public.py) · [raw summary](../../results/raw/arc/lspv3_312/summary312_public.json).
+<!-- END LSPV3 GATE312 FUTURE-PIN-SAFE-PROJECTION -->
