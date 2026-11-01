@@ -1,0 +1,82 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append-only log + in-place status
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-11-01}
+\begin{document}\maketitle
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here proves a superpolynomial lower bound for
+Circuit-SAT. Status labels: PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Setup}
+A circuit $C$ over basis $B_2$ (all 2-input gates) has $n$ inputs, $m$ gates, $2m$ wires (fan-in 2).
+$\mathrm{CSAT}(n,m)$: given $C$, decide $\exists x\in\{0,1\}^n: C(x)=1$.
+Parameters: $n$ (inputs), $m$ (gates), $w=2m$ (wires), and optionally fan-out/depth.
+Two different quantities are tracked and must not be confused:
+\begin{itemize}
+\item $c_n(f)$: minimum gates to \emph{build} $f$ (circuit complexity of one function);
+\item $T_{\mathrm{CSAT}}(n,m)$: time/probes to \emph{decide} satisfiability of a given circuit.
+\end{itemize}
+
+\section{Step 1: exact construction cost for small $n$ (COMPUTATIONAL)}
+Exhaustive search (\texttt{research/agents/claude/circuitsat/mincircuit.py}) gives the exact
+number of functions of $n$ variables with minimum $B_2$-size $g$ (constants and bare variables free;
+a negated variable costs 1 gate for $n\ge 2$).
+\begin{center}\begin{tabular}{c|ccccc|c}\toprule
+$n$ & $g=0$ & 1 & 2 & 3 & 4 & max\\\midrule
+2 & 4 & 12 & & & & 1\\
+3 & 5 & 33 & 114 & 80 & 24 & 4\\\bottomrule\end{tabular}\end{center}
+(The 24 four-gate functions of 3 variables include majority.) Wires $=2g$. This extends the
+``gate-by-gate'' ladder: max cost $0,1,4$ for $n=1,2,3$. Next step (CANDIDATE): $n=4$ (known max 7 in $B_2$,
+Knuth), needing a smarter canonical-form search split into $<$30\,s stages.
+
+\section{Step 2: a proved decision lower bound in the probe model (PROVED)}
+Model: the circuit is given as a gate list; an algorithm learns one gate (type and two predecessor indices)
+per probe.
+\begin{theorem}\label{thm:read}
+Every deterministic (even adaptive) algorithm deciding $\mathrm{CSAT}$ on circuits with $m$ gates
+needs $\Omega(m)$ probes in the worst case; more precisely $\lfloor m/2\rfloor$.
+\end{theorem}
+\begin{proof}
+Let $k=\lfloor m/2\rfloor$. Gate $u=\neg x_1$; gates $v_i=x_1\wedge u$ ($i\le k$), each $\equiv 0$; an OR-tree
+of $v_1,\dots,v_k$ ($k-1$ gates) is the output; total $2k\le m$ gates (pad with dummies). The instance is unsatisfiable.
+Replacing the second predecessor of any single $v_i$ by $x_1$ gives $v_i=x_1\wedge x_1$, and setting $x_1=1$ satisfies the circuit.
+An algorithm that never probed $v_i$ gets identical answers on both instances, so it must probe all $k$ gates $v_i$. \end{proof}
+Remark (honest): this is the trivial input-reading bound; it is linear in $m$ and independent of $n$.
+Nothing in it uses non-determinism or inputs, and a superlinear bound would already be a new result.
+
+\section{Parametrized picture}
+\begin{center}\begin{tabular}{lll}\toprule
+Bound & Status & Source\\\midrule
+$T_{\mathrm{CSAT}}\ge \Omega(m)$ (probes) & PROVED (Thm.~\ref{thm:read}) & above\\
+Brute force $O(2^n m)$ & KNOWN upper bound & folklore\\
+$2^{(1-\varepsilon)n}\mathrm{poly}(m)$ impossible & CONDITIONAL on SETH & Impagliazzo--Paturi\\
+Gate elimination: explicit $f$ needs $\approx 3.1n$ gates & KNOWN (Li--Yang 2022), build-cost not decide-cost & literature\\
+Alternation trading: SAT time--space tradeoff & KNOWN, see world-ledger rows L13, L34 & repo\\
+Unconditional $T_{\mathrm{CSAT}}\ge n^{\omega(1)}$ & OPEN & ---\\\bottomrule\end{tabular}\end{center}
+Parametrized target: show $T_{\mathrm{CSAT}}(n,m)\ge m\cdot g(n)$ for a model class (e.g.\ read-once-per-wire,
+width-restricted algorithms), with $g$ growing; each such class is a CANDIDATE that must pass the
+relativization/natural-proofs checks.
+
+\section{Link to repository work}
+Repo \texttt{j15marti/pnp}: the world-ledger (rows L13, L34--L37) says alternation-trading proofs cannot reach
+linear-time-barrier-beating bounds for portfolio statements; the one-tape note (L38--L40) shows crossing-sequence
+arguments hold for NP machines and so cannot separate classes. Consequence for this document: any lower-bound
+technique for $\mathrm{CSAT}$ must (i) be non-black-box in the circuit, and (ii) not apply verbatim to
+nondeterministic machines. Gate elimination on a \emph{fixed family} meets (ii) vacuously but gives build costs only.
+Corpus review this run: shallow (AGENTS.md, world-ledger summary, claude/ folder listing); no prior circuit-SAT file existed.
+
+\section{Next steps}
+\begin{enumerate}
+\item Compute $c_4$ histogram (staged search, canonical under NPN).
+\item Define the \emph{wire-profile} of a minimal circuit and test whether min-wire = $2\cdot$min-gate also minimizes fan-out.
+\item Restricted-model decide bound: oblivious one-pass algorithms, target $\Omega(m\,n)$ or $\Omega(m\,2^{\epsilon n})$.
+\end{enumerate}
+
+\section*{Log}
+\begin{itemize}
+\item 2026-11-01: file created; $n\le3$ exact table; Thm.~\ref{thm:read}.
+\end{itemize}
+\end{document}
