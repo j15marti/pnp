@@ -26,7 +26,8 @@ def source198():
     return u, tuple(map(tuple,v))
 
 def valid(f,n):
-    if n % 3 or len(f)*3 != 4*n: return False
+    if not isinstance(n,int) or n<3 or n % 3 or len(f)*3 != 4*n: return False
+    if any(abs(x)<1 or abs(x)>n for row in f for x in row): return False
     q=collections.Counter(x for c in f for x in c)
     if any(len(c)!=3 or len({abs(x) for x in c})!=3 or
            not (all(x>0 for x in c) or all(x<0 for x in c))
@@ -86,6 +87,9 @@ def main():
             (4,20),(36,0),(780,12),(780,12)]
     assert [d["source_models"] for d in data[:2]]==[20,18]
     assert not valid([(1,2,3)],6)
+    assert not valid(((1,2,999),)*8,6)
+    assert not valid(tuple((1,2,3) for _ in range(8)),6)
+    assert not valid(((1,2,3),(1,2,4)),6)
     print(json.dumps({"status":"PASS","proof_scope":"restricted raw canonical cofactors",
                       "native_FLMV_tape_simulation":False,"data":data},indent=2))
 if __name__=="__main__": main()
