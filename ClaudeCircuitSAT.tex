@@ -1,0 +1,86 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-11-01 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\title{Claude Circuit-SAT Lower-Bound Ladder (living document)}
+\author{Scheduled Claude runs}
+\date{Last updated: 2026-11-01}
+\begin{document}
+\maketitle
+
+\section{Status (read first)}
+\textbf{P versus NP remains OPEN.} No unconditional super-linear lower bound for Circuit-SAT
+in a general model is proved here. Labels: PROVED, KNOWN THEOREM, COMPUTATIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Setup and parameters}
+Circuit: DAG, $n$ inputs, $g$ binary AND gates, free negation on edges, so $w=2g$ wires.
+$\textsc{CircSAT}(n,g)$: given such a circuit and an output node, decide whether some input
+makes it 1. Candidate lower bounds are functions $T(n,g)$ (a parametrized bound; $n$ and $g$
+are separate parameters, e.g.\ $2^{\Omega(n)}$ versus $\Omega(g)$).
+Model: deterministic random-access TM, gate records read by index.
+
+\section{Step ladder: exact minimum wiring (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/mincirc.py} (exhaustive BFS over sets of
+computed truth tables, negation free) gives the number of $n$-input functions, up to
+complement, whose minimum circuit has exactly $g$ gates:
+\begin{center}\begin{tabular}{@{}lcccccccc@{}}\toprule
+$n$ & $g=0$ & 1 & 2 & 3 & 4 & 5 & 6 & classes\\\midrule
+2 & 2 & 5 & 0 & 1 & & & & 8\\
+3 & 3 & 13 & 32 & 15 & 52 & 4 & 9 & 128\\\bottomrule\end{tabular}\end{center}
+(For $g=0$, $n{=}2$: the two inputs; constants cost one gate, $a\wedge\neg a$.)
+Hardest: $n{=}2$: XOR, $g=3$ ($w=6$); $n{=}3$: $g=6$ ($w=12$), 9 classes (parity/majority-type).
+Consistent with the KNOWN THEOREM that XOR$_n$ needs $3(n-1)$ AND gates in this basis.
+Next steps: $n=4$ ($2^{15}$ classes; needs smarter search than state-set BFS).
+
+\section{Proved lower bounds so far}
+\begin{lemma}[Connectivity; PROVED]
+A circuit whose function depends on all $n$ inputs has $g\ge n-1$, i.e.\ $w\ge 2(n-1)$.
+\end{lemma}
+\begin{proof} The part of the DAG reachable backwards from the output must connect all $n$ inputs;
+a fan-in-2 DAG with $g$ gates on $n+g$ nodes has the output's cone connected only if $n+g-1\le 2g$ edges
+are used as tree edges, giving $g\ge n-1$ (each gate merges at most two components).\end{proof}
+
+\begin{proposition}[Read bound; PROVED]
+Any deterministic algorithm deciding $\textsc{CircSAT}(n,g)$ in the record-probe model
+must probe all $g$ gate records in the worst case: time $\Omega(g)$, for every $n\ge1$.
+\end{proposition}
+\begin{proof} Let $C$: $h_0=x_1$, $h_i=h_{i-1}\wedge x_1$, output $h_g$; satisfiable.
+Let $C_j$ replace $h_j$ by $h_{j-1}\wedge\neg h_{j-1}$ (constant 0); unsatisfiable. $C$ and $C_j$
+differ only in record $j$. An algorithm not probing record $j$ on $C$ behaves identically on $C_j$
+and errs on one. Hence all records are probed.\end{proof}
+This is the trivial input-size bound and says nothing about the $n$-dependence.
+
+\section{Why wire counting does not yet give an algorithmic bound (honest gap)}
+Wire/gate lower bounds (gate elimination; best known $3.1n-o(n)$ for explicit functions, Li--Yang 2022)
+bound the \emph{size of circuits computing a function}. $\textsc{CircSAT}$ asks for the
+\emph{time of an algorithm} on a circuit given as input. The known bridge runs the other way
+(Williams' algorithmic method: faster Circuit-SAT $\Rightarrow$ circuit lower bounds), so
+this ladder does not by itself yield a decision-time bound. A candidate bridge must be an
+exact theorem; none is claimed. Status: OPEN.
+
+\section{Parametrized candidates (all CANDIDATE/OPEN)}
+\begin{enumerate}
+\item Width/treewidth $k$: $\textsc{CircSAT}$ is $2^{O(k)}g$-time; an unconditional matching lower
+bound is OPEN (known only under SETH-type assumptions, CONDITIONAL).
+\item Fixed small $n$ vs.\ growing $g$: lower bound $\Omega(g)$ (proved); is $\omega(g)$ forced for $n=\omega(1)$? OPEN.
+\item Model-restricted: tree-like resolution / oblivious branching programs / sequential access
+(see repository ONETAPE note, rows L38--L40 for the one-tape picture).
+\end{enumerate}
+
+\section{Repository cross-check}
+Reviewed (this run): \texttt{AGENTS.md}; world ledger rows L02, L03, L05, L06, L14;
+Williams-type time--space bound $n^{2\cos(\pi/7)}$ for SAT with $n^{o(1)}$ space (row L13 context:
+alternation trading cannot go further); TPORT results (barrier near linear time for portfolios).
+Takeaway: the only unconditional circuit-SAT/SAT time bounds known are time--space tradeoffs;
+a wire-ladder bound would need to be a time--space or restricted-model bound.
+
+\section{Log and next actions}
+\begin{itemize}
+\item Run 1 (2026-11-01): created document, exact ladder $n\le3$, two proved elementary bounds.
+\item Next: $n=4$ table; count wires with fan-out sharing vs.\ tree-unfolding (formula size) and
+compare; test whether minimum-wire structure of unique-solution instances forces any
+$n$-dependent probe count against a restricted algorithm class.
+\end{itemize}
+\end{document}
+% END_OF_DOCUMENT
