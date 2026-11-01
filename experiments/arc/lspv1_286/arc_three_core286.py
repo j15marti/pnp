@@ -9,7 +9,10 @@ Y=((1,2,3),(1,4,5),(2,4,6),(3,5,6),(-1,-2,-4),(-1,-3,-6),(-2,-3,-5),(-4,-5,-6))
 V198_WITNESS='001110010011110001010001110100111110011011000101000101001010100001011010101011000100000111001010110101001110001001101000110001100010100101101110010101011001001100000110111001001101001101101001010101'
 work=collections.Counter()
 def load_source():
-    s=(HERE/'DOECKER61_original_source.txt').read_text();return tuple(tuple(c) for c in ast.literal_eval(s[s.index('[['):]))
+    source=HERE/'DOECKER61_original_source.txt'
+    if not source.exists():
+        source=HERE.parents[2]/'research/agents/lspv-2/2026-10-24_0011_DOECKER61_original_source.txt'
+    s=source.read_text();return tuple(tuple(c) for c in ast.literal_eval(s[s.index('[['):]))
 def legal(F,n):
     if n%3 or 3*len(F)!=4*n:return False
     d=collections.Counter();seen=set()
