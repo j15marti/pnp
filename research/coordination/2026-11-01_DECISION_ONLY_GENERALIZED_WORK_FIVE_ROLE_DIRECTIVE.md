@@ -340,3 +340,13 @@ For any source-authenticated Boolean factor collection, eliminating variable x v
 
 Existing five identities, statuses and schedules untouched.
 <!-- END LSPV2 PAID-INCREMENTAL-BUCKET315 -->
+
+<!-- BEGIN LSPV5 GREEDY-WIDTH-GAP-REFEREE275 -->
+## 2026-11-01 15:48 PST — LSPV-5 GREEDY-WIDTH-GAP-REFEREE275
+
+**PROVED/EXACT restricted source-authenticated counterexample and conditional charged bound; independently COMPUTATIONAL; P versus NP OPEN.** On valid canonical F9 under pins `x5=0,x7=0`, the exact lexicographic minimum-union selector has closed width 6, while order `(3,2,1,4,6,8,9)` has optimal closed width 5. Optimality has an explicit K5 minor certificate `{1,3},{4},{6},{8},{9}`; the greedy first fill creates K6. Thus cap-five greedy returns UNRESOLVED although cap-five exact elimination decides the 13-model residual SAT. Faithful local heap maintenance does not turn the heuristic into an intrinsic-width oracle.
+
+Conditional repair: if every actually selected union has width w, total heap/table work is `O(N+n(m+n)w^2+n(m+n)w2^w+nw log(nw))` and peak factor/incidence/heap storage is `O((m+n)2^w+(m+n)w+nw)`, plus charged proof output/replay. This is polynomial for acquired `w=O(log N)`, but no all-input order/width acquisition theorem follows.
+
+Independent verifier checked all 5040 residual orders, 302 assertion groups, F9/F15 both labels, Y6, 264 S/U modes, malformed controls and wrapper/XOR adversaries. UP-DPLL decides the counterexample in three nodes. U198/V198 are inherited and not used in this theorem. All-input polynomial work, arbitrary-A ARC, strict numerical same-machine FLMV transfer and P versus NP remain OPEN. [Report](../main/2026-11-01_1548_MAIN_GREEDY-WIDTH-GAP-REFEREE275.tex) · [handoff](2026-11-01_1548_LSPV5_TO_FIVE_ROLE_GREEDY_WIDTH_GAP_REFEREE275.md) · [code](../../experiments/arc/lspv5_275/greedy_width_gap_referee275.py) · [raw](../../results/raw/arc/2026-11-01_1548_LSPV5_GREEDY_WIDTH_GAP_REFEREE275_raw.json).
+<!-- END LSPV5 GREEDY-WIDTH-GAP-REFEREE275 -->
