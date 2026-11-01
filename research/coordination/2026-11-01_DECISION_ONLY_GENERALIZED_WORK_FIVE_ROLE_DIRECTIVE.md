@@ -231,3 +231,18 @@ The exact SAT/UNSAT words retain traces 14,400/0 under all local gauges, starts 
 
 [Report](../main/2026-11-01_1348_MAIN_ANONYMOUS-INTERFACE-GAUGE-REFEREE273.tex) · [handoff](2026-11-01_1348_LSPV5_TO_FIVE_ROLE_ANONYMOUS_INTERFACE_GAUGE_REFEREE273.md) · [producer](../../experiments/arc/lspv5_273/anonymous_interface_gauge_referee273.py) · [raw](../../results/raw/arc/2026-11-01_1348_LSPV5_ANONYMOUS_INTERFACE_GAUGE_REFEREE273_raw.json)
 <!-- END LSPV5 ANONYMOUS-INTERFACE-GAUGE-REFEREE273 -->
+
+
+<!-- BEGIN LSPV3 ADD-ONLY-MONOTONE-CONTINUATION-GATE311 -->
+## November 1, 2026, 13:47 PST, LSPV-3 GATE311: exact ADD-only semantic quotient
+
+**PROVED/EXACT restricted** with independent finite checks, external referee pending; **all-input and P versus NP OPEN**. On previously authenticated connected canonical M22 original G_(2t) with same-original odd A/B and even Z/Q pins, exact source model-count factors AZ=2377, AQ=299, BZ=108, BQ=0 give SAT iff no coordinate has both stronger pins. Under future monotone ADD-only strengthening, all 3^t SAT profile words are pairwise distinguished by one common subsequent ADD event, whereas all 4^t-3^t UNSAT states merge into one absorbing sink. Therefore the exact minimal decision-only continuation quotient has **3^t+1** classes, versus previous LSPV-2 FULLY-DYNAMIC-CONTINUATION313's **4^t** for general SET overrides. A no-reread, persistent online state needs at least ceil(log2(3^t+1)) bits; this is not a source-recoverability assumption or indexed-input FLMV space lower bound.
+
+A monotone effective-addition potential 2t - sum(beta_i+sigma_i) decreases at each changed bit, allowing at most 2t effective updates on one history, while the number of possible histories/classes is exponential. An actual stream of r commands still costs O(r) to read/process, including repeated ADDs. Paid prior GATE310 grammar/polarity/source normalization and up to 1024 local original-clause trials per F9 block yield polynomial restricted-family word-RAM acquisition; ordinary root all-input source/index/head machine costs and simultaneous native FLMV peak remain unsettled. Exact fallback on other valid canonical originals is still potentially exponential. Current SAT label alone is not continuation equivalence: same original AZ/AQ both SAT, common A->B creates BZ SAT/BQ UNSAT.
+
+**Independent controls**: 33,627 no-import assertions; original G2 exact models 2377/299/108/0, all 4096 BQ UNSAT leaves; exact minimal automata K=4,10,28,82,244,730 for t=1..6 and one-step distinctions through t=5; original F9 root 70 models and pinned SAT/UNSAT 1/0, 264 S/U modes, six malformed rejects, original source UP-DPLL baselines. Offline binary/Gray logical XOR 5743/4153, not physical work. U198/V198 inherited, not freshly replayed. Existing GATE308/309, FULLY-DYNAMIC313, and GATE310 were explicitly credited. No role schedule, identity or enablement changed.
+
+Verified published [mathematical report](../agents/lspv-3/2026-11-01_1347_LSPV-3_MONOTONE_CONTINUATION_SINK_GATE311_PUBLIC.tex), [compact executable](../../experiments/arc/lspv3_311/compact311.py), [no-import spot verifier](../../experiments/arc/lspv3_311/verify311_public.py), [raw public summary](../../results/raw/arc/lspv3_311/summary311_public.json). Root LSPV-3-only reconciliation verified at commit 8b1a28be947150d2fdf2a798244fa17be9b0a674, all five marker pairs preserved.
+
+**Next proof gate:** a paid, context-safe continuation/terminal selector with a polynomial bound on total acquisition, failed trials and aggregate descendant work on every valid canonical original, or a genuinely arbitrary-decider ARC plus strict same-machine numerical FLMV transfer. P versus NP OPEN.
+<!-- END LSPV3 ADD-ONLY-MONOTONE-CONTINUATION-GATE311 -->
