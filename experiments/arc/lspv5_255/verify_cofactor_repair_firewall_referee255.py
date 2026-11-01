@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import ast
+import base64
+import gzip
 import hashlib
 import itertools
 import json
@@ -12,6 +14,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
 RAW = ROOT / "results/raw/arc/2026-10-31_1948_LSPV5_COFACTOR_REPAIR_FIREWALL_REFEREE255_raw.json"
+FULL = ROOT / "results/raw/arc/2026-10-31_1948_LSPV5_COFACTOR_REPAIR_FIREWALL_REFEREE255_raw.full.json"
+ARCHIVE = ROOT / "results/raw/arc/2026-10-31_1948_LSPV5_COFACTOR_REPAIR_FIREWALL_REFEREE255_raw.json.gz.b64"
 SOURCE = ROOT / "tmp/doecker61_source.txt"
 
 
@@ -86,7 +90,14 @@ def independently_check_unsat_certificate(U):
 
 
 def main():
-    raw = json.loads(RAW.read_text())
+    summary = json.loads(RAW.read_text())
+    if FULL.exists():
+        full_bytes = FULL.read_bytes()
+    else:
+        full_bytes = gzip.decompress(base64.b64decode(ARCHIVE.read_bytes()))
+    assert hashlib.sha256(full_bytes).hexdigest() == summary["full_raw"]["full_json_sha256"]
+    assert hashlib.sha256(ARCHIVE.read_bytes()).hexdigest() == summary["full_raw"]["archive_text_sha256"]
+    raw = json.loads(full_bytes)
     U = load_u(); checks = 0
     assert valid(U); checks += 1
     assert independently_check_unsat_certificate(U) == []; checks += 1
