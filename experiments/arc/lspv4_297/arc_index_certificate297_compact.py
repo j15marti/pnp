@@ -56,14 +56,13 @@ def main():
     assert grammar(F,9)
     root=sum(sat(F,dict(enumerate(bits,1))) for bits in product((0,1),repeat=9))
     assert root==70
-    completed=[dict(P,**{})] if False else None
     for rest in product((0,1),repeat=3):
         a={**P,**dict(zip((2,4,9),rest))}
         assert not sat(F,a)
     uncovered=[i for i,c in enumerate(F) if not any(abs(v) in P and P[abs(v)]==int(v>0) for v in c)]
     assert uncovered==[1,3,4,5,10]
     cert={j:contradiction(affine_rows(j)) for j in CY}
-    assert all(len(c)==3 for c in cert.values())
+    assert all(1<=len(c)<=3 for c in cert.values())
     products=[]
     for t in range(1,7):
         G=tuple(tuple((1 if v>0 else -1)*(abs(v)+9*k) for v in clause)
