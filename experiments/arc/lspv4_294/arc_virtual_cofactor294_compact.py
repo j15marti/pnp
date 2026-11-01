@@ -137,8 +137,6 @@ def cases():
         n=max(abs(x) for C in F for x in C)
         for p in ({1:0},{1:1},{2:1},{1:0,2:1},{1:0,2:0},
                   {i:int(i%2==0) for i in range(1,min(8,n)+1)}):
-            if any(not all(int(x>0)==p[abs(x)] for x in C if abs(x) in p)
-                   for C in []):pass
             yield name,F,p
     for tern in itertools.product((None,0,1),repeat=6):
         p={i+1:b for i,b in enumerate(tern) if b is not None}
