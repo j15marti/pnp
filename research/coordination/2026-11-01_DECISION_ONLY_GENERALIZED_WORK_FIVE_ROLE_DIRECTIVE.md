@@ -79,3 +79,18 @@ Independent red-team result: the CUBEKEY306 84-state local family and DECISION-W
 
 Artifacts: [report](../main/2026-11-01_1048_MAIN_DECISION-SUPPORT-TRANSFER-REFEREE270.tex), [producer](../../experiments/arc/lspv5_270/decision_support_transfer_referee270.py), [independent verifier](../../experiments/arc/lspv5_270/verify_decision_support_transfer_referee270.py), [raw JSON](../../results/raw/arc/2026-11-01_1048_LSPV5_DECISION_SUPPORT_TRANSFER_REFEREE270_raw.json), [manifest](../../results/raw/arc/2026-11-01_1048_LSPV5_DECISION_SUPPORT_TRANSFER_REFEREE270_manifest.json), [five-role handoff](2026-11-01_1048_LSPV5_TO_FIVE_ROLE_DECISION_SUPPORT_TRANSFER_REFEREE270.md).
 <!-- END LSPV5 DECISION-SUPPORT-TRANSFER-REFEREE270 -->
+
+
+<!-- BEGIN LSPV2 DECISION-SEMANTIC-QUOTIENT310 -->
+## LSPV-2 decision-only contextual quotient310 (2026-11-01 11:12 PST)
+
+**PROVED/EXACT restricted finite algebra; independent external review pending.** For every coherent per-block nine-variable partial pin on the recognized valid connected Döcker source family G_t, an exact source-authenticated 2x2 Boolean boundary transfer suffices for decision. All 3^9=19,683 local pin states collapse to eight exact support masks {0,2,3,8,10,11,12,15}; these plus identity generate a nine-element closed monoid {0,2,3,8,9,10,11,12,15}. The decision continuation quotient over this monoid has exactly SIX classes: {0}, {2}, {3}, {8,10}, {9,11}, {12,15}. Acquiring every local table is explicitly paid (at most 4*2^8 local assignment candidates per block, plus grammar/source/pin/index scans), not supplied by a free semantic oracle.
+
+**Two falsifiers:** Current-label equivalence is NOT continuation equivalence. On the same original valid connected G_2, two SAT-labeled local pin states with masks 8 versus 12, followed by the same pin mask 2, give respectively 0 and 299 complete satisfying extensions. The six-class quotient is restricted to continuations inside its generated monoid. An external Boolean context mask 1 (E00) distinguishes the restricted-equivalent masks 12 and 15. For arbitrary two-variable contexts retain the full four-bit relation, and for exact #SAT retain integer transfer matrices.
+
+The 84 CUBEKEY306 syntactic two-pin states collapse to masks 15 (81), 3 (2), 11 (1), each containing the 0->0 transition. Every promised 84^t product state is SAT, so 84^t syntactic multiplicity is not mandatory decision work. The separate A/B promise from DECISION-WORK307 still has a tight linear t-bit query lower bound.
+
+New independent no-producer-import verifier: 30,528 checks, all 264 F9 S/U pair modes, 512 complements, 5 malformed strings, same-original G2 299-model SAT and 0-model UNSAT with 96 source-indexed UNSAT proof leaves, fresh U198 interface replay (384 queries/19,488 DPLL nodes), V198 SAT witness. G2 local acquisition: 2,048 candidates with 7,024 SAT versus 1,694 UNSAT literal checks, compared to same-source UP-DPLL 6 nodes/673 probes versus 1 node/3 probes. The transfer is NOT generally faster. No CDCL executable was available.
+
+Verified published files: [mathematical report](../agents/lspv-2/2026-11-01_1112_LSPV-2_DECISION_SEMANTIC_QUOTIENT310.tex), [compact reproducer](../../experiments/arc/2026-11-01_1112_LSPV2_DECISION_SEMANTIC_QUOTIENT310_compact.py), [raw JSON](../../results/raw/arc/2026-11-01_1112_LSPV2_DECISION_SEMANTIC_QUOTIENT310_summary.json). Root main.tex LSPV-2-only reconciliation succeeded at commit 926e1428bf95d325796e78ae2e0cae2fb7eb78bc; outside bytes and all five marker pairs verified. All-input polynomial total work, arbitrary-A hereditary ARC, numerical same-machine FLMV transfer and P versus NP remain OPEN. No tasks or schedules modified.
+<!-- END LSPV2 DECISION-SEMANTIC-QUOTIENT310 -->
