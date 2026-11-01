@@ -68,5 +68,5 @@ for i,j in combinations(range(len(F)),2):
   else:continue
   seen.add((xs,ys))
  assert [(1,1) in seen,(1,0) in seen]==predicted
- assert (0,0) in seen == predicted[0] and (0,1) in seen == predicted[1]
+ assert (((0,0) in seen)==predicted[0]) and (((0,1) in seen)==predicted[1])
 print("INDEPENDENT PASS F9 coherent cubes",checked,"SAT/UNSAT controls",num(A),num(B),"pair modes",264,"P vs NP OPEN")
