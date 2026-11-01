@@ -10,6 +10,8 @@ unless a declared eager fixed-cell state is used.
 from __future__ import annotations
 
 import ast
+import base64
+import gzip
 import hashlib
 import importlib.util
 import itertools
@@ -24,6 +26,8 @@ ROOT = Path(__file__).resolve().parents[3]
 BASE_PATH = ROOT / "experiments/arc/lspv5_247/target_scope_flmv_referee247.py"
 SOURCE = ROOT / "tmp/doecker61_source.txt"
 OUT = ROOT / "results/raw/arc/2026-10-31_1948_LSPV5_COFACTOR_REPAIR_FIREWALL_REFEREE255_raw.json"
+FULL = ROOT / "results/raw/arc/2026-10-31_1948_LSPV5_COFACTOR_REPAIR_FIREWALL_REFEREE255_raw.full.json"
+ARCHIVE = ROOT / "results/raw/arc/2026-10-31_1948_LSPV5_COFACTOR_REPAIR_FIREWALL_REFEREE255_raw.json.gz.b64"
 
 
 def load_base():
@@ -320,13 +324,40 @@ def main():
         "runtime_note": "wall time is printed by the producer but excluded from immutable raw data",
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(result, separators=(",", ":"), sort_keys=True) + "\n")
+    full_bytes = (json.dumps(result, separators=(",", ":"), sort_keys=True) + "\n").encode()
+    FULL.write_bytes(full_bytes)
+    archive_bytes = base64.b64encode(gzip.compress(full_bytes, compresslevel=9, mtime=0)) + b"\n"
+    ARCHIVE.write_bytes(archive_bytes)
+    summary = {
+        "run_id": result["run_id"],
+        "timestamp": result["timestamp"],
+        "claim_status": result["claim_status"],
+        "falsifiers": result["falsifiers"],
+        "diophantine": result["diophantine"],
+        "same_target_labels": result["same_target_labels"],
+        "actual_search_baseline": result["actual_search_baseline"],
+        "resource_ledger": result["resource_ledger"],
+        "completion_summary": {k: {"pivots": v["pivots"], "rows": len(v["completion_rows"]), "checks": v["checks"]} for k, v in result["completion_audits"].items()},
+        "opposite_label_repairs": [{k: row[k] for k in ("pivot", "value", "pairing_index", "changed_clause_ids", "raw_residual_status", "repair_status", "repair_sha256", "source_xor")} for row in selected],
+        "xor_summary": {name: {enc: {k: trace[k] for k in ("state_length", "steps", "sum_adjacent_d_logic", "endpoint_d_logic", "eager_fixed_cell_d_phys", "lazy_assignment_only_d_phys")} for enc, trace in encs.items()} for name, encs in traces.items()},
+        "full_raw": {
+            "archive_path": str(ARCHIVE.relative_to(ROOT)),
+            "encoding": "base64(gzip(full UTF-8 JSON)); decode with base64 -d then gzip -d",
+            "full_json_bytes": len(full_bytes),
+            "archive_text_bytes": len(archive_bytes),
+            "full_json_sha256": hashlib.sha256(full_bytes).hexdigest(),
+            "archive_text_sha256": hashlib.sha256(archive_bytes).hexdigest(),
+        },
+    }
+    OUT.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
     elapsed = time.perf_counter() - started
     print(json.dumps({
         "out": str(OUT), "elapsed_seconds": elapsed,
         "completion_checks": sum(v["checks"] for v in audits.values()),
         "opposite_label_repairs": len(selected),
-        "raw_bytes": OUT.stat().st_size,
+        "summary_bytes": OUT.stat().st_size,
+        "full_raw_bytes": FULL.stat().st_size,
+        "archive_text_bytes": ARCHIVE.stat().st_size,
         "dpll": capped,
     }, indent=2))
     return 0
