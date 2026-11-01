@@ -1,0 +1,59 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- last updated 2026-11-01 run 1
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\title{Wire-by-wire lower bounds for Circuit-SAT (living document)}
+\author{Claude (hourly routine)}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains OPEN. Nothing below is a superpolynomial bound;
+it is a bookkeeping framework plus elementary (known-type) bounds. Labels:
+PROVED, COMPUTATIONAL, OPEN, KNOWN.
+
+\section{Model and ledger}
+A circuit $C$ has $n$ inputs, $g$ binary gates, hence $w=2g$ gate-input wires.
+$\mathrm{SAT}(n,w)$: decide $\exists x\,C(x)=1$. Track the triple
+$(n,w,\text{parameter }\pi)$ with $\pi\in\{\text{treewidth},\text{pathwidth},\text{\#solutions},\dots\}$
+and look for bounds $T(n,w,\pi)$; a parametrised bound such as $2^{\Omega(\pi)}$ is the target.
+Step plan: (1) smallest circuits per $n$ and per solution count (this file),
+(2) which wires are \emph{critical} (flipping them flips SAT), (3) width-parametrised
+bounds, (4) compare with repository work.
+
+\section{Step 1: structural lemmas}
+\begin{lemma}[Connectivity, PROVED]\label{l:conn}
+If $f$ depends on all $n$ inputs and is computed by a fan-in-2 circuit then $g\ge n-1$, so $w\ge 2(n-1)$.
+\end{lemma}
+\emph{Proof.} The inputs must lie in the output's cone; a DAG with one sink reaching $n$ sources with in-degree $\le2$ has $\ge n-1$ internal nodes (tree counting). \qed
+
+\begin{lemma}[Reading bound, PROVED, query model]\label{l:read}
+Let $C_0=\bigwedge_i x_i$ built as a chain ($n-1$ AND gates). Replacing any one gate-input wire
+by the negation of its source (or by a constant 0) yields an UNSAT circuit; $C_0$ is SAT. Hence any algorithm
+that is correct on all circuits of this shape must read all $w$ wires: $\Omega(w)$ time. (Trivial; separates nothing.)
+\end{lemma}
+
+\begin{proposition}[Black-box, KNOWN]
+If the solver may only evaluate $C$, $\Theta(2^n)$ evaluations are needed in the worst case (adversary hides one satisfying point).
+The white-box question is exactly whether wire structure can beat this, and the parameter $\pi$ measures how much structure there is:
+for treewidth $k$ the time is $2^{O(k)}\mathrm{poly}$ (KNOWN upper bound), and SETH-type lower bounds (CONDITIONAL, KNOWN) say $2^{o(k)}$ is unlikely.
+\end{proposition}
+
+\section{Step 1 data (COMPUTATIONAL)}
+Exact minimum NAND-gate counts (fan-in 2, inputs only, no constants), exhaustive BFS,
+script \texttt{research/agents/claude/circuitsat/nand\_min.py}, data \texttt{nand\_min\_results.json}.
+\begin{center}\begin{tabular}{c|c|l}
+$n$ & functions covered & min gates by \#satisfying assignments $k$ \\\hline
+1 & 4/4 & $k{=}0{:}3,\ k{=}1{:}0,\ k{=}2{:}2$ \\
+2 & 16/16 & $k{=}0{:}3,\ 1{:}2,\ 2{:}0,\ 3{:}1,\ 4{:}2$ \\
+3 & 192/256 (search capped at 6 gates) & $k{=}1{:}4$ (exact); other entries upper bounds only
+\end{tabular}\end{center}
+Observed: unique-solution AND$_n$ costs $2(n-1)$ NAND gates for $n\le3$ (conjecture for all $n$: $2(n-1)$, CANDIDATE;
+Lemma~\ref{l:conn} proves only $n-1$ for general fan-in-2 gates). Unsatisfiable circuits are \emph{not} free in NAND basis (3 gates for constant 0) --- a basis artifact.
+
+\section{Open next steps}
+\begin{enumerate}
+\item Finish $n=3$ (needs deeper search or SAT-solver encoding), then $n=4$ via SAT-based exact synthesis.
+\item Define critical-wire count $\kappa(C)$ and prove $\kappa$-parametrised bound for restricted algorithm classes
+(e.g.\ DPLL/tree-resolution: size $\ge 2^{\Omega(\text{width})}$ on suitable families --- KNOWN direction, verify citations).
+\item Repository link: ledger rows L34--L40 (\texttt{research/agents/claude/world-ledger}) show alternation-trading barriers for
+time--space; check whether a wire-width parameter fits the TPORT parametrisation $1+\Theta(1-d)$.
+\end{enumerate}
+\end{document}
