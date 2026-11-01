@@ -1,0 +1,26 @@
+# LSPV-3 GATE286: certified fixed-weight residual matching cut
+Date: October 31, 2026, 17:24 PDT. Status: PROVED/EXACT restricted elementary lemma; independent external mathematical review pending. Both P=NP and P!=NP OPEN.
+
+Target: every valid duplicate-free proper Döcker Monotone 3-SAT-(2,2) input, reject malformed inputs. Each original clause has three distinct same-polarity literals and each variable occurs twice with each sign.
+
+## Exact theorem
+For coherent partial assignment p with o fixed ones, z fixed zeros, and f free variables, let R_s be the original unsatisfied-by-fixed-literals clauses of sign s. Every free variable covers at most two of these clauses of either one sign. The minimum one-sign covering cost tau_s is exactly |R_s|-nu(H_s), where H_s is the graph whose vertices are those original clauses and each free variable covering two clauses contributes an edge (one-clause variables supply singleton options). If any required clause has no free candidate, tau_s=infinity. This is the classical Gallai/Edmonds matching edge-cover identity and the previously established GATE244 lemma, not newly claimed matching mathematics.
+Every satisfying extension b of exact Hamming weight w obeys tau_+(p)<=w-o and tau_-(p)<=n-w-z. Therefore violation of either inequality excludes the entire weight-w slice of the partial cube. Proof: b's free TRUE variables cover every required positive clause, and b's free FALSE variables cover every required negative clause. Requirements may compete across signs, so passing both tests does not certify SAT. Removing the weight condition recovers the previous unweighted paired cut tau_++tau_->f.
+
+## Strict improvement in a weight layer
+Valid canonical CUBE12 has 12 variables, 16 original clauses, 268 witnesses, including five weight-eight witnesses. At p=(x1,x2,x3)=(0,0,1), w=8, o=1, z=2, f=9: negative required source clause IDs are 9,10,11,14,15 (zero-based). Their matching number is 2 and tau_-=3>n-w-z=2. Independently, tau_+=3, so the earlier unweighted cut does not apply (3+3<=9). The whole p-weight8 cube is forbidden although the original formula is SAT and has weight-eight witnesses elsewhere.
+
+## Four falsifiers and independent tests
+F1: weight conditioning adds nothing to the prior unweighted cut, FALSIFIED by CUBE12. F2: fewer visited DPLL nodes guarantee less total work, FALSIFIED by matching acquisition. F3: endpoint repair parameters classify SAT versus UNSAT, FALSIFIED by original U198 UNSAT and V198 SAT, both with root (tau_+,tau_-)=(68,68). F4: matching gives hereditary target-language ARC contraction, OPEN.
+Twenty valid M22 sources tested, 18 small sources exhaustively checked over 28,032 assignments. Baseline UP-first fixed-layer DPLL: 809 nodes, 38,919 literal probes. Matching prepass: 559 nodes, 26,467 DPLL probes PLUS 970 matching calls and 13,008 matching-pass clause visits. The independent verifier checked 39 pruned source-indexed weight cubes against 11,184 complete extensions and 432 independently brute-forced one-sign cover minima. Previous U198 3,666-node modular UNSAT refutation and V198 complete SAT witness were independently rerun. Malformed input controls were rejected.
+Offline full logical aligned XOR was 655 versus 583 on K33, and 905 versus 657 on CUBE12, while matching overhead dominated. Logical XOR does NOT imply native physical writes or decision time. Native FLMV index/writable tapes, d_phys, source/child arbitrary-bit access, Guest A and simultaneous retained workspace were UNMEASURED.
+
+## Source literature and duplication searches
+Reviewed GitHub issue #3, root main.tex, AGENTS/CODEX/pnp-research skill, 2026-10-30 REDIRECT1 and CONTRACT1, AFFINE-SMALLBIAS-DESCENT-GATE2 (restricted MCSP only), CONSTRUCTION-STRENGTHEN17, ARC-LINEAR22-SATURATION1, GATE244/284/285, LSPV-1 MONOTONE-THREE-CORE286, LSPV-5 XOR-FLUX-CHURN252. Web searches: Döcker M22 NP complete; Edmonds matching; Gallai edge cover; FLMV SAT time space; cardinality-aware SAT local search. Separate GitHub app searches: partial cube matching residual edge cover; M22 conditional edge cover; fixed weight edge cover; GATE285; OpenAI SAT implementation; no originality claim inferred from absent hits.
+Primary references: Döcker https://arxiv.org/abs/1912.08032 ; Edmonds https://doi.org/10.4153/CJM-1965-045-4 ; Gallai 1959 Ann Univ Sci Budapest 2:133-138; FLMV https://doi.org/10.1145/1101821.1101822 .
+
+Full 18-file locally reproducible ZIP, five-page LaTeX/PDF, complete producer, independent verifier, old U/V proof controls, full raw results and SHA256 manifest: 2026-10-31_1724_LSPV-3_WEIGHT_LAYER_EDGE_COVER_GATE286_COMPLETE.zip; SHA256 5d4ca8e52b801c6aa087622b331697cf22e36655e7b95725219fcfefd4408bf3. Direct git from container failed DNS; compact GitHub code/summary, archive download in conversation.
+
+## Missing ARC proof arrow
+No hereditary canonical M22 children, no uniform fully charged arbitrary-A -> Phi(A), no matched numerical SAT-to-target FLMV transport. Proof obligations include selector discovery, failed policies, source/child access, space of guest and ancestors, and same-machine physical index accounting. P versus NP OPEN.
+<!-- END_OF_VERIFIED_REPORT::LSPV-3::WEIGHT-LAYER-EDGE-COVER-GATE286::P_VS_NP_OPEN -->
