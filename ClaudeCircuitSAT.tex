@@ -1,0 +1,50 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::CCS-0001::2026-11-01
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT}
+\author{Living document (Claude scheduled routine)}
+\date{Last updated 2026-11-01 (run CCS-0001)}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains OPEN. Nothing here is a superpolynomial bound. Labels: PROVED, KNOWN, COMPUTATIONAL, OPEN.
+
+\section{Model}
+A circuit $C$ has $n$ inputs and $g$ fan-in-2 gates (basis $B_2$, all 16 binary ops; negations are free on wires). Wires $=2g$ gate-input edges (plus output). $\mathrm{CSAT}(g,n)$: given $C$ as a gate list, decide $\exists x\,C(x)=1$. Parameters: $g$ (size), $n$ (inputs), later fan-out and depth. Goal: lower bounds $T(g,n)$, possibly parametrized.
+
+\section{Step-by-step ladder}
+\subsection{Exact minimum sizes, $n\le 3$ (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/min\_circuit.py}: breadth-first search over all gate sequences, all 16 ops, deduplicated node sets. Number of $n$-variable functions with minimum $B_2$-size $k$ (constants and literals have size 0):
+\begin{center}\begin{tabular}{c|ccccc}\toprule
+$n$ & $k=0$ & 1 & 2 & 3 & 4\\\midrule
+2 & 4 & 12 & -- & -- & --\\
+3 & 5 & 33 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+So every 2-variable function has $\le1$ gate ($\le2$ wires), every 3-variable function $\le4$ gates ($\le 8$ wires); 24 functions attain 4. Totals are 16 and 256 (checked). $n=4$ not yet done (state space grows $\sim25\times$ per level; needs canonical-form pruning/chunking).
+
+\subsection{Connectivity bound (PROVED)}
+\begin{lemma}A circuit whose output depends essentially on all $n$ inputs has $g\ge n-1$, hence $\ge 2(n-1)$ wires.\end{lemma}
+\begin{proof}The input--gate graph must connect all $n$ inputs to the output; a fan-in-2 DAG with $g$ gates has at most $g+1$ source nodes reaching a single sink.\end{proof}
+Tight: AND/XOR trees. Table above agrees ($n=3$: $\ge2$ gates).
+
+\subsection{Probe lower bound for CSAT (PROVED, trivial)}
+\begin{theorem}Any deterministic algorithm deciding CSAT on gate-list encodings with $g$ gates must probe $\ge g$ wire entries in the worst case (adaptive probes, random access).\end{theorem}
+\begin{proof}Let $C_0$ be the AND-chain over literals $x_1,\dots,x_{g+1}$ ($n=g+1$), satisfiable. Let $C_j$ replace the $j$-th leaf literal ($j\ge2$) by $\lnot x_1$; $C_j$ is unsatisfiable and differs from $C_0$ in one wire entry. Run the algorithm on $C_0$ (answer SAT). If some leaf entry $j\ge2$ is unprobed, the run on $C_j$ is identical, wrongly answering SAT. So all $g$ leaf entries ($j=2..g+1$) are probed.\end{proof}
+This is an input-reading bound; it is tight ($O(g)$ reading plus work) only for easy instances and says nothing about the $2^{\Omega(n)}$ regime.
+
+\section{Parametrized picture}
+\begin{tabular}{lll}\toprule Regime & Known & Status\\\midrule
+$g$ probes & $\Omega(g)$ (above) & PROVED\\
+Gate elimination, explicit functions & $\approx 3n$--$3.1n$ gates over $B_2$ (Blum; Find--Golovnev--Hirsch--Kulikov; Li--Yang, cited from memory, to be verified) & KNOWN\\
+CSAT time $2^{o(n)}\mathrm{poly}(g)$ & excluded under ETH & CONDITIONAL\\
+Unconditional $\omega(g)$ for CSAT & none & OPEN\\\bottomrule\end{tabular}
+
+\section{Link to repository work}
+Repo ledger rows L34--L40 (\texttt{research/agents/claude/world-ledger}) show alternation-trading barriers for time--space. For CSAT the analogue is that wire-count lower bounds from gate elimination bound \emph{circuit size of a function}, not \emph{time of the SAT decider}; the two need a bridge (a Karp--Lipton-type or uniform-to-nonuniform link), which is OPEN. Corpus review this run was shallow (survey of agent folders only); deeper reconciliation is scheduled.
+
+\section{Next steps}
+\begin{enumerate}
+\item $n=4$ exact sizes with canonical pruning, chunked $<30$s per stage (known max 7 gates, to be reproduced).
+\item Track fan-out: minimum wires when fan-out $\le1$ (formulas) vs unrestricted; formula/circuit gap table $n\le 4$.
+\item Restricted-model CSAT lower bound: e.g.\ oblivious/branching-program-style algorithms, with parameter $(g,n,\text{depth})$, trying to get $2^{\Omega(n)}$ in a restricted model.
+\end{enumerate}
+\end{document}
+% END_OF_LIVING_DOC::CCS-0001
