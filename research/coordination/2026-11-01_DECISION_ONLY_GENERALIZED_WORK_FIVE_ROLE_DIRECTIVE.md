@@ -291,3 +291,18 @@ All source/index/head rereads, failed policies/switches, proof/GE/cache/replay, 
 
 [Report](../main/2026-11-01_1448_MAIN_LOGSPACE-ANONYMOUS-CYCLE-REFEREE274.tex) · [handoff](2026-11-01_1448_LSPV5_TO_FIVE_ROLE_LOGSPACE_ANONYMOUS_CYCLE_REFEREE274.md) · [producer](../../experiments/arc/lspv5_274/logspace_anonymous_cycle_referee274.py) · [raw](../../results/raw/arc/2026-11-01_1448_LSPV5_LOGSPACE_ANONYMOUS_CYCLE_REFEREE274_raw.json)
 <!-- END LSPV5 LOGSPACE-ANONYMOUS-CYCLE-REFEREE274 -->
+
+
+<!-- BEGIN LSPV1 DECISION-TWO-SIDED-DIRECTSUM312 -->
+## 2026-11-01 15:10 PST, LSPV-1 two-sided original-source decision-work theorem312
+
+**PROVED/EXACT restricted known adversary; independent finite controls; external review pending.** Valid U198 UNSAT/V198 SAT originals differ in two physical source bits. On all-V198 disjoint product X_t (SAT), replacing block j by U198 yields valid same-length canonical original Y_{t,j} (UNSAT), with pairwise disjoint size-two physical differences. Every all-input exact deterministic decider makes at least t actual bit reads on X_t, at least t on some Y_{t,j}, and at least (t+1)/2 averaged over UNSAT j. Every bounded-error randomized decider of per-input error epsilon<1/2 obeys E Q(X_t)>=(1-2epsilon)t and mean_j E Q(Y_{t,j})>=(1-2epsilon)(t+1)/2. This requires no recovery of values, pin keys or free semantic oracle. It is only Omega(N/log N) observations and not a superpolynomial SAT lower bound.
+
+**Correct quantifiers:** LSPV-1 QUERY309's SAT-side direct sum and LSPV-4 SHUFFLED313's UNSAT source-order lower bound predate this run. New restricted increment is the same-source-order UNSAT-index mean and randomized both-label coupling. The previously proved uniform cheap UNSAT prefix family is compatible: it refutes pointwise universal floors, not worst-case choices of input. The t+1-promise scan meets the query bounds but is not an all-binary-input correct decider without extra grammar/access charges.
+
+Fresh authenticated source U/V replay: 64 U198 separator rows (16 direct, 48 DPLL, 152 module calls, 17,343 counted nodes), complete V198 witness, both canonical grammars. Independent Python: 11,279 checks, all 264 original F9 S/U pair extremes and 6,144 complement checks, same-source F9 2/0 SAT/UNSAT, malformed grammar controls. Source/index/head, semantic discovery, all failed policies/switches, proof/GE/cache/replay, children, guest DELAY/COPY/RECOMP and simultaneous peak writable space remain charged. No unknown-K power-short arbitrary A->Phi(A), no strict same-machine FLMV transfer and P versus NP **OPEN**.
+
+[Full verified LaTeX report](../agents/lspv-1/2026-11-01_1510_LSPV-1_DECISION_TWO_SIDED_DIRECTSUM312.tex) · [standalone producer](../../experiments/arc/lspv1_312/two_sided_decision312_compact.py) · [no-import verifier](../../experiments/arc/lspv1_312/verify_two_sided_decision312_independent.py) · [raw JSON](../../results/raw/arc/2026-11-01_1510_LSPV1_DECISION_TWO_SIDED_DIRECTSUM312_summary.json) · [role handoff](2026-11-01_1510_LSPV1_DECISION_TWO_SIDED_DIRECTSUM312_FIVE_ROLE_HANDOFF.md).
+
+**Root main.tex exception:** Current authenticated fetch returned empty content for nonempty SHA 6076c80ff60ea0338fb7c1e46a77d588baabf8e4; no unsafe marker rewrite attempted. Existing five tasks/schedules/roles and user priorities unchanged.
+<!-- END LSPV1 DECISION-TWO-SIDED-DIRECTSUM312 -->
