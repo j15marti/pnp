@@ -1,0 +1,79 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-11-01
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{prop}{Proposition}\newtheorem{lem}[prop]{Lemma}
+\title{Claude Circuit-SAT Lower Bounds: A Living Document}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-11-01 (run 1)}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is a superpolynomial lower bound.
+Labels: PROVED, KNOWN, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Circuit-SAT: given a fan-in-2 circuit $C$ with $n$ inputs and $m$ gates (so $2m$
+internal wires), decide $\exists x\; C(x)=1$. Plan: start from the smallest circuits,
+add inputs one at a time, and record (a) the minimum wires/gates any circuit with a given
+property needs, and (b) the cost any algorithm must pay. The bound may be parametrized
+in $(n,m)$ or in structural parameters (treewidth, depth).
+
+\section{Wire ledger: how many connections are forced}
+\begin{prop}[PROVED] A fan-in-2 circuit whose output depends on all $n$ inputs has $\ge n-1$ gates,
+hence $\ge 2(n-1)$ gate-input wires. (The underlying graph must be connected;
+a tree on $n$ leaves with fan-in 2 has $n-1$ internal nodes.) Tight for $\mathrm{AND}_n$.
+\end{prop}
+\begin{center}\begin{tabular}{c|c|c}
+$n$ & min gates (all inputs relevant) & min wires $2(n-1)$\\\hline
+1&0&0\\2&1&2\\3&2&4\\4&3&6\\5&4&8\\$n$&$n-1$&$2n-2$\end{tabular}\end{center}
+Known (KNOWN, gate elimination): explicit functions need $3n-o(n)$ gates over $B_2$
+(Find--Golovnev--Hirsch--Kulikov); nothing superlinear is known for explicit functions.
+Hence ``min wires to build the instance'' is only linear in $n$ for any provable family.
+
+\section{Cost of solving: first rigorous step}
+\begin{prop}[PROVED, trivial linear bound]\label{p:read}
+Any deterministic algorithm that decides Circuit-SAT on $n$-input circuits in the
+read-the-description model must read $\ge n-1$ leaf wires (hence $\Omega(m)$ time for
+$m=\Theta(n)$).
+\end{prop}
+\emph{Proof.} Take $C=\bigwedge_{i=1}^n \ell_i$ with each leaf $\ell_i\in\{x_i,\neg x_i\}$ over a pool of
+variables, arranged so a clash is ``same variable, opposite sign'' at two leaves (use $n/2$ variables each
+appearing twice, signs equal). Such $C$ is satisfiable. Flipping the sign of one leaf of a pair makes $C$
+unsatisfiable. If the algorithm leaves two paired leaves unread (or one leaf of any pair), the adversary
+answers consistently with both versions; so it must read all but at most one leaf of each pair, i.e. $\ge n/2$ leaves.\qed
+
+\begin{prop}[PROVED, black-box] An algorithm given only evaluation access to $C$ needs $2^n$ queries in
+the worst case: the adversary answers 0 until one point remains. Parametrized form: $2^{n}$ for
+$n$ inputs, i.e.\ the brute-force bound is tight for black-box access, which is why any
+nontrivial lower bound must use the circuit structure. (Relativization barrier.)
+\end{prop}
+
+\section{Parametrized landscape}
+\begin{tabular}{l|l|l}
+Parameter & Upper bound & Status\\\hline
+$n$ inputs & $2^n\cdot\mathrm{poly}(m)$ & KNOWN\\
+$m$ gates, general & $2^{n(1-\Omega(1/\log(m/n)))}$ style (Williams, Schuler) & KNOWN\\
+treewidth $w$ & $2^{O(w)}\mathrm{poly}(m)$ & KNOWN\\
+SETH-type lower bound & no $(2-\epsilon)^n\mathrm{poly}$ & CONDITIONAL\\
+unconditional beyond linear & -- & OPEN
+\end{tabular}
+
+\section{Candidate directions (OPEN)}
+\begin{enumerate}
+\item \textbf{Incremental-input ledger.} Define $W(n)=$ min wires of a circuit family in which
+adding input $n$ forces new structure. Goal: find a promise family where every correct algorithm must
+effectively enumerate $2^{\Omega(k)}$ partial states for some structural parameter $k$. Currently none.
+\item \textbf{Repository link.} The repo's TPORT/UWI work (rows L34--L37, alternation trading) shows
+Williams-style arguments cannot beat linear time in small space for polynomial-size portfolios; any
+parametrized bound here should be classified with the repo ledger (a statement equivalent to P=NP is
+a reformulation, not progress).
+\item Restrict to monotone / bounded-depth / bounded-width circuits where lower bounds are provable
+(KNOWN: monotone exponential bounds for CLIQUE) and see which parameter (depth, width) makes SAT hard.
+\end{enumerate}
+
+\section{Log}
+\begin{itemize}
+\item Run 1 (2026-11-01): created document; proved the linear wire bound and the black-box $2^n$ bound.
+No new theorem beyond folklore. Next: tabulate exact minimum circuit sizes for all 3- and 4-input functions
+and look for which additions of an input force extra wires.
+\end{itemize}
+\end{document}
