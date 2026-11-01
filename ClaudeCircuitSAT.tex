@@ -1,0 +1,61 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-11-01 (hourly routine, run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT\\\large Living document}
+\date{Last updated 2026-11-01}
+\begin{document}\maketitle
+
+\section*{Status (strict labels)}
+\textbf{P versus NP remains OPEN.} No unconditional super-linear lower bound for
+Circuit-SAT on general models is claimed. Labels: KNOWN, PROVED, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Goal: a lower bound for Circuit-SAT, possibly parametrized, e.g.\ in $(n,m,k)$ =
+(inputs, wires, structural parameter such as treewidth/depth).
+Method: build circuits from the simplest case upward, tracking at each step the
+minimum number of wires/gates and the number of inputs, and record what
+a SAT-solver must at least read/decide.
+
+\section{Step 0: trivial and parametrized facts}
+\begin{prop}[KNOWN/PROVED] Any algorithm for Circuit-SAT on $m$-wire inputs needs $\Omega(m)$ time
+(it must read the circuit; flipping one unread wire's gate changes satisfiability for suitable instances).
+\end{prop}
+\begin{prop}[KNOWN] Brute force gives $O(2^n m)$; under SETH no $O(2^{(1-\varepsilon)n}\mathrm{poly}(m))$ algorithm exists
+(CONDITIONAL, not a lower bound). Parametrized: circuits of treewidth $k$ are solvable in $2^{O(k)}m$ time, so any
+hardness must come from large treewidth/pathwidth.
+\end{prop}
+
+\section{Step 1: exact minimum circuit sizes, small $n$ (COMPUTATIONAL)}
+Script: \texttt{research/agents/claude/circuitsat/mincirc.py}. Exhaustive search over all
+straight-line programs with 2-input gates (all non-degenerate binary gate types). Counts of functions by
+minimum gate count $C(f)$ (wires $=2C(f)$, fan-in 2). Convention: negated variables are not free (cost 2), so
+rows for $C=2$ at $n=2$ are $\bar x,\bar y$; constants and variables cost 0.
+\begin{center}\begin{tabular}{lrrrrr}\toprule
+$n$ & $C=0$ & 1 & 2 & 3 & 4\\\midrule
+2 & 4 & 10 & 2 & 0 & 0\\
+3 & 5 & 30 & 117 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+Totals are $16$ and $256$ (checked). Max $C=4$ for $n=3$ agrees with the known value. Each new input raises the
+worst-case minimum size; this is the data layer for the wire-tracking ladder, not a lower bound on SAT.
+
+\section{Ladder plan (to be built hourly)}
+\begin{enumerate}
+\item $n=4$: exact $C(f)$ via SAT-based synthesis (chunked, $\le$30\,s per run); tabulate by class.
+\item Wire-count ladder for structured families (AND, XOR, MAJ, parity chains): minimal wires per added input.
+\item Gate-elimination for the \emph{verification} side: KNOWN $\ge 3n-o(n)$ gates for explicit functions
+ (Blum; Find--Golovnev--Hirsch--Kulikov $3.011n$; Li--Yang $3.1n-o(n)$). Transfer to SAT \emph{solving} time needs a new theorem (OPEN).
+\item Parametrized target (CANDIDATE): bound for restricted algorithm classes (DPLL/resolution) in terms of
+ $(n,m,\mathrm{tw})$, e.g.\ resolution size $2^{\Omega(\mathrm{tw})}$-type results, as honest unconditional baselines.
+\end{enumerate}
+
+\section{Repository cross-check}
+Repo corpus (\texttt{AGENTS.md}, \texttt{research/agents/claude/}) reports: Buss--Williams barrier for alternation trading
+(ledger L13), T-PORT barrier (L34), one-tape notes (L38--L40); all say P vs NP is OPEN. Useful principle there: a statement
+equivalent to $\mathrm{P}=\mathrm{NP}$ is a reformulation, not progress. Not yet read in depth: ARC/FLMV spine reports.
+
+\section{Log}
+\begin{itemize}
+\item 2026-11-01 run 1: created document; computed exact $C(f)$ tables $n\le3$; no new lower bound.
+\end{itemize}
+% END_OF_CLAUDECIRCUITSAT
+\end{document}
