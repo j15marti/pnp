@@ -1,0 +1,75 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- canonical path /ClaudeCircuitSAT.tex
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{remark}[theorem]{Remark}
+\title{Wire-by-wire lower bounds for Circuit-SAT (living document)}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-11-01, run 1}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional superpolynomial
+lower bound. Labels: PROVED, COMPUTATIONAL, CANDIDATE, OPEN, KNOWN.
+
+\section{Model and accounting}
+A circuit is a DAG of 2-input AND gates with free negation on edges (AIG); $n$ inputs,
+$g$ gates, $w=2g$ wires (gate input connections), plus one output pointer.
+Circuit-SAT: given $C$, decide $\exists x\,C(x)=1$. Parameters: $n$, $g$, $w$.
+Let $G(f)$ be the minimum gate count for $f$ and $W(f)=2G(f)$.
+
+\section{Step ledger (COMPUTATIONAL)}
+Exhaustive iterative-deepening search over all AIGs, script
+\texttt{research/agents/claude/circuitsat/min\_aig.py}, data \texttt{min\_aig\_results.json}.
+\begin{center}\begin{tabular}{rrrrl}\toprule
+$n$ & functions & $\max G$ & $G(\text{minterm})$ & histogram $G\!:\!\#$ \\\midrule
+1 & 4 & 0 & 0 & 0:4\\
+2 & 16 & 3 & 1 & 0:6, 1:8, 3:2\\
+3 & 256 & 6 & 2 & 0:8, 1:24, 2:64, 3:30, 4:104, 5:8, 6:18\\\bottomrule\end{tabular}\end{center}
+Checks: $\max G=3$ at $n=2$ is XOR/XNOR; $\max G=6$ at $n=3$ is XOR$_3$ (8 functions: parity and
+complements counted in the 8 at G=5 and 18 at G=6 cases, not separately audited).
+Next step: $n=4$ (needs NPN-class reduction to stay under 30 s).
+
+\section{Proved bounds (elementary)}
+\begin{theorem}[connectivity, PROVED]
+If $f$ depends on all $n$ inputs, any AIG for $f$ has $g\ge n-1$, so $w\ge 2(n-1)$.
+In particular a unique-satisfying-assignment function (a minterm) has $G=n-1$, matching the
+table ($0,1,2$ for $n=1,2,3$) and a balanced AND tree.
+\end{theorem}
+\begin{proof}
+Every input is connected to the output in the underlying undirected graph on $n+g$ nodes
+(a relevant input must reach the output). A connected graph has $\ge n+g-1$ edges, and edges
+$=2g$ (outputs have no wire), so $g\ge n-1$. Tightness: AND tree.
+\end{proof}
+\begin{theorem}[wire-probing bound, PROVED]
+Let $\mathcal C_m$ be encodings of circuits with $m$ wires. Any deterministic algorithm
+that reads the encoding by probing wire endpoints needs $\ge m$ probes to decide
+Circuit-SAT on $\mathcal C_m$ in the worst case.
+\end{theorem}
+\begin{proof}
+Take $C=\bigwedge$ of $n$ literals as an AND tree ($m=2(n-1)$, satisfiable). For each wire $e$
+let $C_e$ replace the source of $e$ by constant $0$ (unsatisfiable). If an algorithm
+skips wire $e$ on $C$, the adversary answers consistently with $C_e$; outputs coincide yet
+answers differ. So all $m$ wires are read.
+\end{proof}
+\begin{remark}
+This is linear in the input size, the trivial barrier. It is a \emph{parametrized} bound
+$\Omega(w)$ but says nothing about $2^{\Omega(n)}$ time. Circuit-SAT has no known
+unconditional bound beyond reading the input; conditional bounds (SETH:
+no $2^{(1-\varepsilon)n}\mathrm{poly}$) are KNOWN-conditional and not proofs.
+\end{remark}
+
+\section{Repository reuse}
+Repository work reviewed: \texttt{research/agents/claude/} TPORT/ONETAPE notes. They
+show alternation-trading limits for time--space on SAT; their UWI portfolio barrier
+(rows L34--L40 of the world ledger) is the relevant parametrized line (portfolio size $N^d$).
+No file in the repository already addresses wire-by-wire circuit accounting (search
+for ``circuit-sat'' hits only unrelated agent notes). Not imported without a model match.
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item OPEN: $n=4$ table and a monotone/read-once variant ledger (wires vs.\ gates under fan-out limits).
+\item CANDIDATE: parametrize by \emph{fan-out} $\phi$: with fan-out $\le\phi$, relate wire count to
+$n,g$ and look for a query/space bound of the form $\Omega(w\cdot h(\phi))$.
+\item OPEN: any bound beyond $\Omega(\text{input size})$ for unrestricted circuits.
+\end{enumerate}
+\end{document}
