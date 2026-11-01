@@ -1,0 +1,52 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT::CCS::2026-11-01
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: A Parameterized Wire-Counting Ladder for Circuit-SAT}
+\author{Claude (scheduled research log)}
+\date{Last updated 2026-11-01}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No superpolynomial lower bound for Circuit-SAT is claimed. This document records an incremental ladder: for $n=1,2,3,\dots$ inputs, the minimal number of gates/wires needed to build circuits, and the lower bounds that follow for solving Circuit-SAT as a function of the parameters $(n,s)$ ($n$ inputs, $s$ wires). Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model}
+Circuit over basis $B_2$ (all 2-input gates), fan-in 2, unbounded fan-out. Size $=$ number of gates $g$; wires $=2g$ (gate in-edges), plus one output designation. Circuit-SAT: given $C$, does some $x\in\{0,1\}^n$ have $C(x)=1$? Parameters: $n$, $s=|{\rm wires}|$. Two access models: (E) \emph{evaluation black box} (only queries $C(x)$), (S) \emph{structural} (full netlist).
+
+\section{Ladder of minimal circuits (COMPUTATIONAL, exact)}
+Script \texttt{research/agents/claude/circuitsat/mincircuit.py}, data \texttt{mincircuit\_results.json}; exhaustive closure over sets of computed signals, functions identified up to complement (free in $B_2$). Run time under 1 second.
+\begin{center}\begin{tabular}{lcccccc}\toprule
+$n$ & functions (mod compl.) & 0 gates & 1 & 2 & 3 & 4\\\midrule
+1 & 2 & 2 & & & &\\
+2 & 8 & 3 & 5 & & &\\
+3 & 128 & 4 & 15 & 57 & 40 & 12\\\bottomrule\end{tabular}\end{center}
+So the max minimal size is $C_{\max}(1)=0$, $C_{\max}(2)=1$, $C_{\max}(3)=4$ gates, i.e.\ at most $0,2,8$ wires. The 12 four-gate functions at $n=3$ include the multiplexer and $\mathrm{MAJ}$-type/threshold-like cases; they are the first place where optimal circuits need fan-out $>1$ on an internal gate. The step $n=2\to3$ is where the simple ``tree'' bound $n-1$ stops being tight for the hardest functions. $n=4$ is not run here (next stage; needs a footprint-style method to stay within the 30\,s rule).
+
+\section{Proved lower bounds on structure}
+\begin{prop}[PROVED/EXACT, wire floor]
+If $f$ depends on all $n$ variables then every circuit for $f$ has $\ge n-1$ gates and $\ge 2(n-1)$ wires; AND$_n$ attains it. (Each input must lie on a path to the output; a fan-in-2 DAG with a single sink and $n$ connected sources has $\ge n-1$ gates.)
+\end{prop}
+\begin{prop}[PROVED/EXACT, query bound in model (E)]
+Any (deterministic or randomized with error $<1/2$ success) algorithm for Circuit-SAT in model (E) needs $2^n$ (resp.\ $\Omega(2^n)$) evaluation queries on the family $C_a=[x=a]$, $a\in\{0,1\}^n$, each of size $g=n-1+\#\text{negations}$, i.e.\ $O(n)$ wires. Adversary: answer 0 to every query until one point remains.
+\end{prop}
+\begin{prop}[PROVED/EXACT, parameterized reading]
+For model (E) the bound is $2^{n}$ regardless of $s$, while structure (model (S)) lets AND-of-literals instances be solved in $O(s)$. Hence any super-linear lower bound must exploit the \emph{gap between} (E) and (S): it cannot come from query counting. This is the circuit-level form of the repository's ``free semantic SAT answers'' restriction.
+\end{prop}
+
+\section{Known gate-elimination bounds (KNOWN THEOREM, cited from memory; verify before relying)}
+Explicit functions need $\ge 3n-o(n)$ gates over $B_2$ (Blum 1984: $3n-3$; Li--Yang, STOC 2022: $3.1n-o(n)$). These are lower bounds on \emph{computing} a function, not on deciding SAT of a given circuit; they supply the wire-count recursion used in the ladder: setting one input to a constant kills its fan-out gates, giving $\ge 2$--$3$ eliminated gates per variable. They give the floor $\Omega(n)$ and cannot exceed $O(n)$ by current technology (no explicit $\omega(n)$ circuit lower bound for $B_2$ is known).
+
+\section{Parameterized lower-bound targets}
+\begin{enumerate}
+\item (CANDIDATE) $T_{\mathrm{SAT}}(n,s)\ge 2^{\Omega(n/\tau)}$ where $\tau$ is a structural parameter (treewidth/pathwidth of the circuit); the matching upper bound $2^{O(\tau)}\mathrm{poly}(s)$ is KNOWN for small treewidth, and ETH/SETH would give the converse CONDITIONALly.
+\item (CANDIDATE) Time-space: for the bound in the repository's ARC/FLMV spine, see \texttt{main.tex}; Buss--Williams (ledger row L13) bars alternation trading below $2\cos(\pi/7)\approx1.80$ for SAT, and the repo notes in \texttt{AGENTS.md} (L34) give a barrier for portfolio versions.
+\item (OPEN) Wire-by-wire monotone ladder: define $W(n)=\max$ over unsatisfiable-or-unique-SAT instances of the minimal wires to certify non-membership; the data above gives $W(1),W(2),W(3)\le 0,2,8$. Proving $W(n)$ superpolynomial would be a circuit lower bound implying $\mathrm{NP}\not\subseteq \mathrm{P/poly}$, hence is OPEN.
+\end{enumerate}
+
+\section{Repository cross-check}
+Reviewed \texttt{AGENTS.md} and the \texttt{research/agents/claude/} ledger/T-PORT/one-tape notes. Useful: (i) a statement equivalent to $P=NP$ is a reformulation, not progress; (ii) the L34 barrier shows alternation-trading proofs stall at linear time against a $\sim N$-size portfolio; (iii) one-tape crossing-sequence bounds hold for nondeterminism, so they do not separate P from NP. No existing file addresses wire-count ladders directly; nothing here contradicts them. Full corpus survey per \texttt{AGENTS.md} not performed this run (scope: this task).
+
+\section{Next steps}
+(1) $n=4$ exact table via a footprint DP in chunks. (2) Record minimal circuits (not just sizes) and fan-out profiles. (3) Test whether $W(n)$ growth for unique-SAT predicates is linear (expected: $n-1$ gates). (4) Fixed-parameter statement relating $\tau$ to the ladder.
+
+% END_OF_CLAUDE_CIRCUITSAT::2026-11-01
+\end{document}
