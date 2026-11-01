@@ -1,0 +1,66 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- run 2026-11-01
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\title{Claude CircuitSAT: a wire-by-wire ladder toward (parameterized) lower bounds}
+\author{Living document, hourly updates}
+\date{Last updated 2026-11-01 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is an unconditional lower bound on deciding Circuit-SAT. Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Goal and plan}
+Study Circuit-SAT bottom-up: for $n=1,2,3,\dots$ inputs, track (a) the minimum number of gates/wires needed to \emph{build} each function (circuit complexity ladder), and (b) what this says about the cost of \emph{deciding} satisfiability of a circuit with $n$ inputs and $m$ wires. Candidate parameters: $n$, $m$, treewidth/pathwidth $w$ of the circuit graph, fan-out. A parameterized bound has the shape $T(n,m,w)\ge f(\cdot)$.
+
+\textbf{Caveat (important).} Lower bounds on circuit \emph{size of functions} (the ladder below) are not lower bounds on the \emph{time to decide SAT}. The link is a missing theorem; known routes (SETH-type conditional bounds, Williams-style time--space) are listed in \S4.
+
+\section{Model}
+Circuits: DAG, fan-in-2 gates, any of the 10 non-degenerate binary operations (``B2'': AND/OR-type with negations, XOR, XNOR), or monotone $\{\wedge,\vee\}$. No unary gates: a negation costs one gate. \emph{Wires} $=2\cdot$ gates (each gate has two incoming edges). Fan-out unrestricted. Size $=$ number of gates; constants are not counted.
+
+\section{Ladder: exact minimum sizes (COMPUTATIONAL)}
+Exhaustive search over all circuits up to a depth bound (\texttt{research/agents/claude/circuitsat/mincirc.cpp}, output \texttt{results.txt}; each run $<40$\,s).
+\begin{center}\begin{tabular}{@{}lccccccc@{}}\toprule
+ basis, $n$ & 0 & 1 & 2 & 3 & 4 & 5 & not found\\\midrule
+ B2, $n=2$ & 2 & 10 & 4 & -- & -- & -- & 0 (all 16)\\
+ B2, $n=3$ & 3 & 30 & 119 & 80 & 24 & -- & 0 (all 256)\\
+ B2, $n=4$ (depth 4) & 4 & 60 & 462 & 2474 & 10624 & -- & 51912\\
+ mono, $n=3$ & 3 & 6 & 8 & 0 & 1 & -- & --\\
+ mono, $n=4$ (depth 5) & 4 & 12 & 32 & 52 & 16 & 44 & 6 nonconst.\\\bottomrule
+\end{tabular}\end{center}
+Columns are the number of functions whose minimum size is exactly that many gates. Consequences (COMPUTATIONAL, small cases only):
+\begin{itemize}
+\item $n=2$: worst function needs 2 gates (4 wires); only $\neg x,\neg y$ and constants need more than 1 gate, an artifact of no unary gates.
+\item $n=3$: every function has size $\le4$ gates (8 wires). $\mathrm{PAR}_3=2$, $\mathrm{MAJ}_3=4$. Monotone: $\mathrm{MAJ}_3$ also needs 4, and no monotone 3-variable function needs exactly 3 gates.
+\item $n=4$: 51912 of 65536 functions need $\ge5$ gates (only a lower bound for those; literature reports a maximum of 7 over B2, UNVERIFIED here).
+\item Monotone $n=4$: 6 non-constant monotone functions need $\ge6$ gates.
+\end{itemize}
+(The $n=3$ B2 run was first executed to depth 5 and took 58\,s, exceeding the 30\,s rule; it was rerun at depth 4, which already covers all 256 functions.)
+
+\section{Counting ladder (PROVED)}
+\begin{prop}[Shannon counting] A circuit with $g$ gates is determined by, for each gate $i$, an unordered pair of earlier nodes ($\binom{n+i}{2}$ choices, $i=0..g-1$) and one of 10 operations (10 operations). Hence if $\prod_{i<g}10\binom{n+i}{2}<2^{2^n}$ some $n$-variable function needs more than $g$ gates.
+\end{prop}
+Output of \texttt{shannon.py}: minimal $g$ for which the count reaches $2^{2^n}$:
+\begin{center}\begin{tabular}{@{}lccccccccc@{}}\toprule
+$n$&2&3&4&5&6&7&8&9&10\\\midrule
+$g$&2&2&3&5&8&14&25&44&79\\
+wires $2g$&4&4&6&10&16&28&50&88&158\\\bottomrule\end{tabular}\end{center}
+(This table gives $g$ at which counting first \emph{permits} all functions; so some function needs $\ge g$ gates. For $n=3$ the true worst case is 4 vs.\ the counting 2: counting is weak for tiny $n$.) Asymptotically this gives $\Omega(2^n/n)$.
+
+\begin{prop}[connectivity, PROVED] A fan-in-2 circuit computing a function that depends on $k$ input variables has at least $k-1$ gates, hence $\ge 2(k-1)$ wires, since the underlying graph reaching the output must be connected.\end{prop}
+
+\section{From functions to Circuit-SAT: parameterized landscape}
+\begin{itemize}
+\item KNOWN: trivial algorithm $O(2^n m)$. Treewidth-$w$ circuit/CNF SAT in $2^{O(w)}\cdot m$ (standard dynamic programming).
+\item CONDITIONAL (SETH, cited from memory, not re-verified): no $(2-\varepsilon)^{n}\mathrm{poly}(m)$ algorithm for CNF-SAT; analogous tight bounds in pathwidth (Lampis-type). These transfer to circuit-SAT since CNF is a special case.
+\item KNOWN barrier (repo ledger row L13 / L34): alternation-trading (Buss--Williams) cannot reach time exponent $2\cos(\pi/7)$ with $n^{o(1)}$ space; see \texttt{research/agents/claude/world-ledger/}.
+\item Repo review: no existing circuit-SAT wire-ladder document; related prior work is the TPORT/ONETAPE series (\texttt{research/agents/claude/tport}), whose finding is that a polynomial portfolio of programs collapses into one algorithm with an $N^d$ factor, and that alternation-trading cannot beat linear time for a portfolio of about $N$ programs. None of this was used to derive new facts here.
+\end{itemize}
+
+\section{Next steps (OPEN)}
+\begin{enumerate}
+\item Extend exact ladder to $n=4$ B2 fully (needs smarter search: meet-in-the-middle or SAT-based minimization) and record worst-case wires and fan-out profile.
+\item Track a second ladder: minimum wires \emph{with fan-out $\le1$} (formulas), to see whether fan-out cost shows a clean parameter.
+\item Define SAT-decision ladder: for tiny $n$, exact minimum \emph{decision-tree/query} cost of CSAT over a fixed wire-query model, and attempt a clean adversary argument; this is the first place a genuine decision lower bound (in a restricted model) could appear.
+\item Formulate the parameterized claim $T(n,m,w)$ and identify which restricted models (monotone, bounded fan-out, read-once) make it provable.
+\end{enumerate}
+\end{document}
+% END_OF_LIVING_DOC::CircuitSAT
