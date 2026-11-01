@@ -1,0 +1,47 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append sections each run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\title{Circuit-SAT Lower Bounds, Built Up Step by Step\\(living document)}
+\author{Claude scheduled routine}
+\date{Last update: 2026-11-01 (run 1)}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No unconditional superlinear lower bound for Circuit-SAT is claimed. Status labels: PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Setup and ladder}
+A circuit $C$ has $n$ inputs, $m$ fan-in-2 gates (basis $B_2$), hence $2m$ wires. Circuit-SAT: given $C$, decide $\exists x\,C(x)=1$. Plan: a ladder of instance classes $\mathcal C_{n,m}$, tracking (i) minimal wires needed to realize a function, (ii) minimal work to decide satisfiability, with parameters $n$, $m$, treewidth/pathwidth $w$, depth, fan-out.
+
+\section{Step 0--3: exact minimum circuit sizes (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/mincirc.py}, data \texttt{mincirc\_results.json}; exhaustive over circuits, all 16 binary gates.
+\begin{center}\begin{tabular}{lrrrrrr}\toprule
+$n$ & \#functions & 0 gates & 1 & 2 & 3 & 4\\\midrule
+1 & 3 & 3 &&&&\\ 2 & 16 & 4 & 12 &&&\\ 3 & 256 & 5 & 33 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+(Functions of $n$ inputs counted over $\{0,1\}^{2^n}$; $n=1$ row counts only the 3 functions reachable without NOT-of-input as a distinct count, i.e.\ the script excludes the negation of $x$ at 0 gates; $\neg x$ needs a gate.) Max size: 0, 1, 4 gates, so at most $8$ wires for $n=3$; the 24 hardest 3-input functions (parity-type and multiplexer-type) need 4 gates, i.e.\ 8 wires. This tracks the \emph{construction} cost; it is only a data ladder, not yet a SAT bound.
+
+\section{Step 4: trivial linear bound (PROVED)}
+\begin{prop}
+Any deterministic algorithm deciding Circuit-SAT on size-$m$ circuits in the indexed-input RAM model reads $\Omega(m)$ description cells.
+\end{prop}
+\emph{Proof.} Let $C$ be the chain $g_i=\mathrm{AND}(g_{i-1},x_i)$ (satisfiable). For each $j$ let $C_j$ replace $g_j$ by $\mathrm{AND}(g_{j-1},\neg g_{j-1})$ (constant 0, so unsatisfiable; one extra NOT gate keeps the encoding length $\Theta(m)$). An algorithm that never reads the cells of gate $j$ behaves identically on $C$ and $C_j$ but must answer differently. So it reads some cell of every gate. $\square$
+
+This is the baseline: the gap between $\Omega(m)$ and the best upper bound $2^n\,\mathrm{poly}(m)$ is the open question.
+
+\section{Parameterized landscape (KNOWN, cited from memory; verify before use)}
+\begin{itemize}
+\item Upper bound $2^{n}\mathrm{poly}(m)$ trivially, and $2^{O(w)}\mathrm{poly}(m)$ by treewidth DP.
+\item Conditional: under SETH no $(2-\varepsilon)^{pw}\mathrm{poly}$ algorithm for CNF-SAT (Lokshtanov--Marx--Saurabh), and no $2^{(1-\varepsilon)n}\mathrm{poly}$ for $m=\mathrm{poly}(n)$ gates. These are conditional, hence not a proof.
+\item Unconditional formula/circuit lower bounds for explicit functions: $\sim 3.1n$ (Li--Yang 2022) for circuits; none superlinear.
+\end{itemize}
+Candidate parametrized target (CANDIDATE, not proved): a bound $T(n,m,w)\ge f(w)\cdot m$ with $f$ superpolynomial, for restricted models (e.g.\ monotone, bounded-depth, or read-once-branching algorithms), where unconditional results are plausible.
+
+\section{Repository check (2026-11-01)}
+Repo \texttt{j15marti/pnp}: closest relevant items are \texttt{research/agents/claude/tport/} (alternation-trading barrier, ledger L34--L37) and the world ledger; consistent with the above: time--space tradeoff barriers (Buss--Williams) say Williams-style methods cannot reach linear-in-circuit bounds for portfolio SAT. Nothing in the repo yet proves a Circuit-SAT bound beyond $\Omega(m)$.
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend exact minima to $n=4$ (use SAT-based synthesis, chunked $\le 30$s) and record minimal wires per function class.
+\item Build instance families where satisfiability witnesses require many distinct wire-level dependencies; prove bounds in a restricted model (decision-tree/branching over inputs with queries to gates).
+\item Test whether a width-$w$ restriction yields an unconditional $2^{\Omega(w)}$ bound in the oblivious-branching-program model.
+\end{enumerate}
+\end{document}
