@@ -1,0 +1,53 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append/revise in place each hourly run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\title{Claude CircuitSAT: Parameterized Lower Bounds, Built Up Wire by Wire}
+\author{Living document (hourly routine)}
+\date{Last updated 2026-11-01 (run 1)}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No unconditional superlinear lower bound for general Circuit-SAT is claimed. Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup and parameters}
+Circuit: DAG of fan-in-2 AND/OR gates, negation free on wires. Parameters: $n$ inputs, $g$ gates, $w=2g$ wires (connections). Circuit-SAT$(n,g)$: is there $x\in\{0,1\}^n$ with $C(x)=1$? Bounds are sought as functions $T(n,g)$, e.g.\ $\Omega(g)$ (reading), $2^{\epsilon n}$ (conditional).
+
+\section{Step ladder: minimal connections}
+\subsection{Wire count of a connected circuit (PROVED/EXACT)}
+\begin{lemma}\label{lem:conn}
+If $C$ has an output depending on all $n$ inputs, then $g\ge n-1$ and $w\ge 2n-2$; equality holds iff $C$ is a formula tree with each input used once.
+\end{lemma}
+\begin{proof} The ancestor graph of the output is connected with $n+g'$ nodes ($g'\le g$ gates), so it has $\ge n+g'-1$ undirected edges. It has exactly $2g'$ edges, so $g'\ge n-1$. Equality of edges and spanning tree forces no cycles, i.e.\ fan-out~1. \end{proof}
+Consequence: the unique-SAT ``minterm'' $x_1^{a_1}\wedge\dots\wedge x_n^{a_n}$ costs exactly $n-1$ gates ($2n-2$ wires).
+
+\subsection{Exact small cases (COMPUTATIONAL)}
+Script: \texttt{research/agents/claude/circuitsat/exact\_wires.py} (BFS over negation-closed function sets; exhaustive, each run $<30$s). Minimum gates over all Boolean functions:
+\begin{center}\begin{tabular}{lcccccc}\toprule
+$n$ & 0 gates & 1 & 2 & 3 & 4 & $\ge5$\\\midrule
+2 & 6 & 8 & 0 & 2 (XOR/XNOR) & 0 & 0\\
+3 & 8 & 24 & 64 & 30 & 104 & 26 (unresolved, need depth 5)\\\bottomrule\end{tabular}\end{center}
+(Constants/literals have 0 gates.) Single-satisfying-point functions: 1 gate for $n=2$, 2 gates for $n=3$, matching Lemma~\ref{lem:conn}. Parity on 2 inputs needs 3 gates (6 wires) vs.\ 1 for AND: the first place where negation-free wiring forces fan-out~$>1$ (reuse of both inputs).
+
+\section{Lower bound I: wire-probe model (PROVED/EXACT, weak)}
+Model: instance is a gate list; the algorithm probes single wire entries (source id and polarity bit).
+\begin{theorem}\label{thm:probe}
+Every deterministic algorithm deciding Circuit-SAT on instances with $w$ wires probes $\ge (w+2)/4$ entries.
+\end{theorem}
+\begin{proof} Take $k$ gadgets $A_i=\mathrm{AND}(x_1,\neg x_1)$ joined by an OR-tree of $k-1$ gates; $w=2k+2(k-1)=4k-2$. The base instance is unsatisfiable. Flipping the polarity bit of the second wire of one gadget $A_i$ gives $x_1\wedge x_1$, satisfiable, and changes nothing else. If the algorithm leaves that bit of some $A_i$ unprobed, the adversary answers the base instance on all probes and the algorithm cannot distinguish the base instance from the $i$-th perturbation. So it probes all $k=(w+2)/4$ gadget bits. \end{proof}
+Scope: this is a reading bound, $\Omega(g)$ in the description-probe model. It says nothing about $2^n$ and does not bound Turing-machine time beyond input reading. Randomized version by Yao on a random perturbation: $\Omega(w)$ probes (CANDIDATE, not written out).
+
+\section{Lower bound II: exponential in $n$ (CONDITIONAL / KNOWN)}
+ETH/SETH-type: no $2^{(1-\epsilon)n}\mathrm{poly}(g)$ algorithm for Circuit-SAT under SETH (CNF-SAT embeds with $g=O(m n)$). This is a conditional parameterized bound $T(n,g)\ge 2^{(1-\epsilon)n}$, not new here. Unconditional: only the $\Omega(g)$ of Theorem~\ref{thm:probe} and the known time-space tradeoffs (Fortnow--van Melkebeek, Williams) for SAT; the repository records a barrier (ledger rows L13, L34, L38--L40 in \texttt{research/agents/claude/world-ledger/}) showing alternation trading cannot reach the relevant exponents with portfolios of $\approx N$ programs.
+
+\section{Repository review (run 1)}
+Surveyed \texttt{AGENTS.md} (ledger pointer and ARC/FLMV allocation) and \texttt{research/agents/claude/}. No prior circuit-wire-count work existed; this document and \texttt{circuitsat/} are new. Useful from the repo: the world ledger rule (``equivalent to P=NP is a reformulation, not progress'') and the one-tape/crossing-sequence audit (L38--L40). Not yet read in depth: HEC/CRS-PPC branches, \texttt{tasks/}. Nothing here changes ARC/FLMV status.
+
+\section{Next steps}
+\begin{enumerate}
+\item Resolve the 26 three-input functions needing $\ge5$ gates (chunked BFS, depth 5--6); extend to $n=4$ with canonical-form pruning.
+\item Track, per step $n\to n+1$, the minimum wires of circuits whose SAT instance has a unique witness and bounded fan-out; look for a fan-out-parameterized bound (the parameter: max fan-out $f$).
+\item Parameterize by treewidth/pathwidth $k$: known upper bound $2^{O(k)}g$; seek matching probe/space lower bound.
+\item Try to turn the probe argument into a restricted-algorithm bound (e.g.\ DPLL on circuit with no learning) on explicit hard families.
+\end{enumerate}
+\end{document}
+% END_OF_CLAUDE_CIRCUITSAT_RUN1
