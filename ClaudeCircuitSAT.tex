@@ -1,0 +1,63 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append/revise in place each hourly run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{thm}{Theorem}\newtheorem{lem}[thm]{Lemma}
+\title{Circuit-SAT Lower Bounds by Wire-by-Wire Construction\\\large Living document (ClaudeCircuitSAT)}
+\author{Claude (scheduled hourly runs)}
+\date{Last updated: 2026-11-01 (run 1)}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional superlinear lower bound for Circuit-SAT.
+Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Model and plan}
+Circuit $C$: $n$ inputs, $s$ fan-in-2 gates over $B_2$, wires $w=2s$. CircuitSAT asks whether some $x\in\{0,1\}^n$ gives $C(x)=1$.
+Plan: (i) fix the cost of \emph{building} circuits wire by wire; (ii) add inputs one at a time and track minimal size/wires;
+(iii) turn construction costs into a bound on \emph{deciding} satisfiability, as a function of $(n,s)$ or another parameter.
+
+\section{Step 1: construction cost (PROVED)}
+\begin{lem}[connectivity]\label{lem:conn}
+A $B_2$ circuit whose output depends on $k$ inputs has $\ge k-1$ gates and $\ge 2(k-1)$ wires.
+\end{lem}
+\begin{proof} The $k$ inputs and $s$ gates form a DAG whose output reaches each essential input. Each gate adds one new component-merge at most (two in-edges), so connecting $k$ sources to one sink needs $k-1$ gates. \end{proof}
+
+\section{Step 2: exact minima for small $n$ (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/mincircuit.py} (BFS over sets of computed functions, negation free on inputs/outputs, constants free). Complete runs:
+\begin{center}\begin{tabular}{c|c|l}
+$n$ & max gates over all $f$ & histogram (gates:\#functions)\\\hline
+2 & 1 & 0:6, 1:10\\
+3 & 4 & 0:8, 1:30, 2:114, 3:80, 4:24
+\end{tabular}\end{center}
+So the hardest 3-input function needs 4 gates (8 wires). $n=4$ not yet run (state space too large for the naive BFS; needs chunking or SAT-based exact synthesis).
+Observation: these are \emph{function} complexities, a different quantity from the \emph{decision} cost of SAT; they give a ladder for the construction side only. (Known: $C_{B_2}(f)\ge 2.5n-o(n)$-type bounds for explicit $f$ are the unconditional state of the art, far below superpolynomial.)
+
+\section{Step 3: a decision lower bound linear in the instance size (PROVED)}
+Model: random-access machine reading the circuit as a list of gate records.
+\begin{thm}\label{thm:read}
+Every deterministic algorithm for CircuitSAT on instances with $s$ gates must read $\Omega(s)$ cells in the worst case.
+\end{thm}
+\begin{proof}
+Let $k=\lfloor s/4\rfloor$. Gadget $i$: gates $N_i=\neg x_i$, $g_i=x_i\wedge h_i$ with $h_i\in\{x_i,N_i\}$; output is an AND-tree over $g_1..g_k$. Satisfiable iff all $h_i=x_i$. Let $I_0$ have all $h_i=x_i$ (satisfiable) and $I_j$ flip only $h_j$ (unsatisfiable). The cell storing $h_j$ differs only in $I_j$ and cells are distinct across $j$. If the algorithm on $I_0$ reads fewer than $k$ cells, some $h_j$ cell is unread; then $I_j$ yields the identical transcript but the opposite answer. Hence $\ge k=\Omega(s)$ reads.
+\end{proof}
+Parametrised reading: the bound is in $s$ and independent of $n$ here ($n=k$ is tied to $s$). Dependence on $n$ with $s\gg n$ is the missing part.
+
+\section{Step 4: parametrised upper bounds that constrain any lower bound}
+\begin{itemize}
+\item KNOWN: brute force $O(2^n s)$. CONDITIONAL (SETH): no $2^{(1-\varepsilon)n}\mathrm{poly}(s)$.
+\item KNOWN: circuit treewidth $w$: $2^{O(w)}s$ by dynamic programming. So a $2^{\Omega(n)}$ lower bound needs instances of treewidth $\Omega(n)$; the hard parameter is not width.
+\item KNOWN: $s=O(n)$ with bounded fan-out/depth classes lie inside SAT of CNF form; no improvement over $2^n$ known.
+\end{itemize}
+
+\section{Repository cross-check}
+Reviewed (AGENTS.md summaries only so far): world ledger rows L13, L34--L40 (Buss--Williams alternation-trading barrier; T-PORT barrier showing time $\ge$ linear for UWI-sized portfolios; one-tape crossing-sequence bound is also valid for NP, so cannot separate). Consistency: Theorem~\ref{thm:read} is the same linear read barrier; it is compatible with, and strictly weaker than, those results. Main ARC/FLMV spine not yet read in detail; \textbf{TODO}: read L34--L40 sources and \texttt{tport/} code for a transfer to circuit-SAT with parameters $(n,s)$.
+
+\section{Open arrows / next steps}
+\begin{enumerate}
+\item Extend the exact table to $n=4$ (chunked, or SAT-based synthesis); track gates \emph{and} fan-out profile.
+\item Define the incremental map: from optimal $C_n$ to a circuit on $n{+}1$ inputs; measure the minimal wires added (Shannon-type recurrence).
+\item Find a restricted model (e.g., oblivious/one-pass, read-once branching) where a bound in both $n$ and $s$ is provable, e.g.\ $\Omega(2^{n/2})$ for a stated space/time regime; check against the treewidth upper bound.
+\item Audit natural-proofs/relativization barriers before any claim beyond restricted models.
+\end{enumerate}
+\section*{Run log}
+Run 1 (2026-11-01): created document; Lemma 1, Theorem 2 proved; $n\le3$ minima computed.
+\end{document}
