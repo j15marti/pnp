@@ -1,0 +1,125 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- do not rename or move; edited in place each run.
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{remark}{Remark}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT\\\large Living document}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-11-01 (run 1)}
+\begin{document}
+\maketitle
+
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional lower bound on the
+\emph{time} of any algorithm for Circuit-SAT. Status labels follow the repository
+discipline (PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN,
+FALSIFIED/RETIRED).
+
+\section{Goal and method}
+Goal: lower bounds, possibly parametrized, for Circuit-SAT. Method: start from the
+smallest instances and build up, tracking for each step the minimum number of
+gates/wires a circuit needs, while increasing the number $n$ of inputs.
+
+\textbf{Model.} Circuits over the basis $B_2$ (all binary gates, negation free), fan-in~2,
+unbounded fan-out. $\mathrm{gates}(f)$ is the minimum number of gates computing $f$;
+\emph{wires} $=2\cdot$gates (each gate has two incoming wires). Parameters: $n$ inputs,
+$g$ gates, $\sigma=|f^{-1}(1)|$ number of satisfying assignments. A Circuit-SAT instance
+is a circuit $C$; the question is whether $\sigma(C)>0$.
+
+\section{Step 0: connectivity (the first wires)}
+\begin{lemma}[PROVED/EXACT]\label{lem:conn}
+If a circuit computes a function depending on all $n$ variables then it has
+$g\ge n-1$ gates, hence $\ge 2(n-1)$ wires.
+\end{lemma}
+\begin{proof}
+Restrict to the ancestors of the output: $n$ input nodes and at most $g$ gates, all
+relevant inputs are ancestors. This graph is (weakly) connected, so it has at least
+$n+g-1$ edges; it has exactly $2g$ edges (two per gate). So $2g\ge n+g-1$.
+\end{proof}
+\begin{proposition}[PROVED/EXACT]
+The single-solution function $\mathrm{AND}_n$ (up to input negations) has
+$\mathrm{gates}=n-1$, wires $=2(n-1)$; every function with $\sigma=1$ on $n$ variables
+depends on all variables, so $\mathrm{gates}=n-1$ for all of them.
+\end{proposition}
+Hence the cheapest satisfiable-with-unique-witness instances cost exactly $n-1$ gates, and
+this is tight but only linear. It is the base row of the ladder below.
+
+\section{Computational ladder: exact sizes, $n=1,2,3$}
+Script: \texttt{research/agents/claude/circuitsat/exact\_size.py}; data:
+\texttt{exact\_size\_results.json}. Exhaustive BFS over sets of computed functions
+(normalized under negation), runtime $<1$\,s. Status: COMPUTATIONAL (exhaustive).
+
+\begin{center}
+\begin{tabular}{@{}cccccc@{}}\toprule
+$n$ & functions & max gates & $\sigma=1$ gates & histogram (gates:count)\\\midrule
+1 & 4 & 0 & 0 & 0:4\\
+2 & 16 & 1 & 1 & 0:6, 1:10\\
+3 & 256 & 4 & 2 & 0:8, 1:30, 2:114, 3:80, 4:24\\\bottomrule
+\end{tabular}
+\end{center}
+Check against Lemma~\ref{lem:conn}: $\sigma=1$ gives $n-1$ ($n=2$: 1, $n=3$: 2). \ \
+Consistency with known values: max over 3-variable functions equals 4 gates in $B_2$.
+
+By satisfying-count for $n=3$ (min--max gates): $\sigma=0$: 0--0; $\sigma=1$: 2--2;
+$\sigma=2$: 1--3; $\sigma=3$: 2--4; $\sigma=4$: 0--4; symmetric under complement.
+Observation (COMPUTATIONAL): hardness is not monotone in $\sigma$; the hardest functions
+are balanced-ish ($\sigma=3,4,5$). Sparse solutions are \emph{cheap} to describe; this
+is why the interesting instances for a lower bound on solving are those where
+describing the circuit is cheap but locating $\sigma>0$ is not.
+
+\section{Parametrized bounds available now}
+\begin{proposition}[PROVED/EXACT, evaluation-oracle model]
+Any deterministic algorithm that decides satisfiability of an $n$-input circuit and
+may only \emph{evaluate} the circuit on chosen inputs needs $2^n$ evaluations in the
+worst case.
+\end{proposition}
+\begin{proof}
+Adversary answers $0$ to every query; after $2^n-1$ queries one unqueried point
+remains, where it may place a solution or not.
+\end{proof}
+\begin{remark}[Failed transfer]
+This is a black-box bound. A white-box algorithm reads the wires; the proposition
+says nothing about it. The wire-by-wire approach is exactly the attempt to replace
+black-box evaluation by structural reading, so the next target is a bound in a model
+that charges for reading wires.
+\end{remark}
+Known upper bound: $O(2^n\cdot g)$ by exhaustive evaluation. Parametrized form of the
+open question: is there $c<1$ with time $2^{cn}\,\mathrm{poly}(g)$ for all circuits?
+(Strong ETH says no for CNF-SAT; CONDITIONAL, not a theorem.)
+
+\section{Known circuit-size landscape (KNOWN THEOREM, from memory; verify before citing)}
+\begin{itemize}
+\item Counting (Shannon): some $n$-variable function needs $\Omega(2^n/n)$ gates.
+\item Gate elimination: explicit functions need $3n-o(n)$ gates in $B_2$ (Blum 1984);
+  improvement to roughly $3.1n$ (Li--Yang 2022). Nothing superlinear is known for
+  explicit functions in $B_2$ (and none for NP functions).
+\end{itemize}
+Gate elimination is the natural engine for a ``wire-by-wire'' count: each input
+restriction removes a bounded number of wires. Its linear ceiling is the main obstacle.
+
+\section{Obstacles and plan}
+\begin{enumerate}
+\item \textbf{Size lower bounds $\ne$ SAT time lower bounds.} A circuit-size bound for an
+  explicit function $f$ does not bound the time to decide satisfiability of a given circuit.
+  Needed bridge: a model (e.g.\ read-the-wires / bounded-space) where solving forces
+  reading a growing fraction of wires depending on $n$.
+\item \textbf{Linear barrier of gate elimination} at about $3n$ in $B_2$.
+\end{enumerate}
+Plan for later runs:
+(a) extend exact sizes to $n=4$ (known max 7 gates, to verify) with a smarter search;
+(b) tabulate minimal wires for \emph{structured} families (parity, threshold, adders)
+  as the parameter $n$ grows and fit the ladder;
+(c) define a wire-reading cost model and prove a parametrized bound for it;
+(d) mine the repository (ARC/FLMV time--space spine; ledger rows L34--L40 on
+  alternation trading and one-tape bounds) for time--space tradeoffs that can be
+  expressed in $(n,g)$.
+
+\section*{Run log}
+\begin{itemize}
+\item Run 1 (2026-11-01): created document; Lemma~1; exact sizes $n\le3$; oracle bound.
+  Repository surveyed lightly (AGENTS.md, claude-agent directory); no existing
+  circuit-SAT document found. No deep corpus reconciliation or literature search done yet.
+\end{itemize}
+\end{document}
