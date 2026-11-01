@@ -1,0 +1,49 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT::run-2026-11-01-A
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}\newtheorem{thm}[prop]{Theorem}
+\title{ClaudeCircuitSAT: wire-by-wire lower bounds for circuit-SAT\\ \large living document}
+\date{Last updated 2026-11-01 (run A)}
+\begin{document}\maketitle
+\paragraph{Status.} Everything here is elementary or known; \textbf{no superpolynomial lower bound is claimed. P versus NP remains OPEN.} Status labels: PROVED/EXACT, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Setup and parameters}
+A circuit has $n$ inputs, gates from $\{\wedge,\vee,\neg\}$ (fan-in $\le2$), and \emph{wire count} $w$ = total fan-in (inputs and constants free). Circuit-SAT: given $C$ (as a wiring list of $m$ wires), decide $\exists x\,C(x)=1$. Lower bounds are sought as functions of $(n,m)$ --- a parametrized bound --- in two models: (R) \emph{wiring-probe}: the algorithm reads wiring entries; (B) \emph{black-box}: only evaluates $C$.
+
+\section{Step 0--1: $n=1$}
+All 4 functions of one input: constants and $x$ cost $0$ wires; $\neg x$ costs $1$. 
+\begin{prop}[R-bound, PROVED/EXACT] For $n=1$ and every $m$, any (even randomized, zero-error) algorithm for Circuit-SAT needs $\Omega(m)$ wiring probes. 
+\end{prop}
+\emph{Proof.} Family: $C_j$ = $\bigwedge_{i=1}^m \ell_i$, a chain of $m-1$ AND gates whose $m$ literal slots are $x$, except slot $j$ is $\neg x$ (via one NOT gate) or all slots are $x$. The all-$x$ circuit is SAT; $C_j$ is UNSAT. A deterministic algorithm that misses slot $j$ sees the same answers as on the all-$x$ circuit, so it must probe all slots; randomized: probes $<m/2$ slots err w.p.\ $>1/2$ on a random $j$. $\square$
+
+So with one input the bound is already linear in wires: SAT hardness in model (R) comes from \emph{reading}, not from $n$.
+
+\section{Step 2: monotone growth of wire cost in $n$}
+\begin{prop}[PROVED/EXACT] A function depending on $k$ inputs needs $\ge k-1$ binary gates, hence $\ge 2(k-1)$ wires. 
+\end{prop}
+\emph{Proof.} The gate DAG feeding the output must connect to all $k$ essential inputs; a DAG with $k$ source inputs reaching one sink through fan-in-2 gates has $\ge k-1$ gates. $\square$
+
+\paragraph{Computed ledger (COMPUTATIONAL).} Exhaustive search (\texttt{research/agents/claude/circuitsat/wire\_ledger.py}, results in \texttt{wire\_ledger\_results.json}); number of functions of minimum wire cost $w$ (formula = fan-out 1; DAG = shared gates):
+\begin{center}\begin{tabular}{lll}\toprule
+$n$ & formula cost histogram $w:\#$ & note\\\midrule
+1 & 0:3, 1:1 & \\
+2 & 0:4, 1:2, 2:2, 3:6, 7:2 & XOR/XNOR cost 7 (DAG = formula)\\
+3 & 0:5,1:3,2:6,3:18,4:8,5:44,6:12,7:24,8:7,9:64,10:15,11:20,\ldots & max formula cost 21 (parity-3)\\\bottomrule\end{tabular}\end{center}
+For $n=3$ the DAG search (exact up to $w\le12$, 238 of 256 functions resolved) shows sharing helps already at $w=9$: 76 functions vs.\ 64 as formulas (and 27 at $w=10$ vs.\ 15). The 18 unresolved functions have DAG cost $\ge13$. So the first place where fan-out matters is $n=3$; XOR ($n=2$) costs 7 either way.
+
+\section{Black-box side (model B)}
+\begin{prop}[KNOWN/PROVED] In model (B), the family $C_a=[x=a]$, $a\in\{0,1\}^n$ plus the all-zero-output circuit forces $2^n$ evaluations for any deterministic algorithm (adversary answers 0). 
+\end{prop}
+Combined parametrized statement (COMPUTATIONAL-free, elementary): $T_{\text{probe}}\ge \Omega(m)$ and $T_{\text{blackbox}}\ge 2^n$; a general algorithm may mix both, and the gap between $\max(m,\cdot)$ and $2^n$ is exactly the open region --- bounds there imply superpolynomial separations (cf.\ ETH/SETH-type conditional statements). 
+
+\section{Repository cross-check}
+Reviewed \texttt{AGENTS.md} and the Claude world ledger (\texttt{research/agents/claude/world-ledger/}). Relevant: ledger row L13 (Buss--Williams) and T-PORT rows L34--L37 say alternation-trading cannot beat the stated time--space exponents; ONETAPE notes (L38--L40) show one-tape crossing-sequence bounds also hold for NP and so cannot separate. Consequence for this project: a wire-counting argument must use a property false for the nondeterministic/guess-and-check analogue, otherwise it is a reformulation. Not yet reused: ARC/FLMV spine (needs time--space, not wire, parameters).
+
+\section{Next steps (OPEN)}
+\begin{enumerate}
+\item Extend the ledger to $n=4$ (65536 functions; needs SAT-solver/known tables) and tabulate \emph{formula vs DAG} gap per cost level.
+\item Define a "connection-cost of SAT-hardness" $H(n)$: min wires of a circuit whose SAT-instance family (rewirings) defeats all depth-$d$ probe strategies; conjecture a parametrized form $\Omega(m)+f(n)$.
+\item Test whether gate-elimination on the $n=3$ DAG data suggests a nonlinear invariant; compare with known $3n-o(n)$ gate-elimination ceilings.
+\end{enumerate}
+\end{document}
+% END_OF_DOC::run-2026-11-01-A
