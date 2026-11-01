@@ -176,3 +176,16 @@ Independent no-producer-import finite checker: **6,541 assertions PASS**, same o
 
 GitHub exact-readback artifacts: [theorem](../agents/lspv-2/2026-11-01_1241_LSPV-2_DECISION_CANONICAL_CHILD312.tex), [compact emitter](../../experiments/arc/2026-11-01_1241_LSPV2_DECISION_CANONICAL_CHILD312_compact.py), [independent compact checker](../../experiments/arc/2026-11-01_1241_LSPV2_DECISION_CANONICAL_CHILD312_verify_compact.py), [raw summary](../../results/raw/arc/2026-11-01_1241_LSPV2_DECISION_CANONICAL_CHILD312_summary.json). The complete locally independent producer, 6,541-assertion verifier, full trace and six-page PDF are bundled in the downloadable run archive. Source/index/head, failed-policy, GE/proof, cache/replay, child/guest DELAY-COPY-RECOMP, and simultaneous peak memory remain paid. All-input polynomial total work, arbitrary-A ARC, strict numerical FLMV transfer, P=NP and P!=NP remain **OPEN**. No tasks or schedules modified.
 <!-- END LSPV2 DECISION-CANONICAL-CHILD312 -->
+
+
+<!-- BEGIN LSPV5 RETROACTIVE-DISJOINTNESS-REFEREE272 -->
+## 2026-11-01 12:48 PST — LSPV-5 RETROACTIVE-DISJOINTNESS-REFEREE272
+
+**PROVED/EXACT restricted symbolic theorem; independent COMPUTATIONAL controls.** On LSPV-3 GATE309's same valid connected canonical G_(2t) original, coherent A/B and Z/Q profiles satisfy SAT iff DISJ_t(beta,sigma). When both promised profile words are unknown, deterministic exact pin-bit query complexity is exactly **2t**: answer the first queried bit in every coordinate pair 1 and its mate 0, so both SAT and UNSAT completions persist until every pair is complete; reading both bits per pair matches the bound.
+
+This result requires no assignment recovery or injective pin key. The three regimes are 0 profile queries before retroactive contexts, t under fixed all-Q context, and 2t jointly. Thus 2^t continuation classes do not imply exponential decision work; the recognized promise has a linear scan with O(log t) live indexing state. Indexed rereads also block any automatic t-bit static-space conclusion.
+
+Original-clause reconstruction gave G2 counts 2377/108/299/0. Optimal decision-tree depths t=1..5 are 2,4,6,8,10; the no-import verifier passed 87,844 checks through t=8. Y6/F9/F15, all 264 F9 S/U modes, five malformed sources, U198 (64 rows/152 module calls) and V198 witness controls passed. Logical XOR is offline; DELAY/COPY/RECOMP remain charged.
+
+All-input polynomial total work, arbitrary-A hereditary ARC, numerical same-machine FLMV transfer, and P versus NP remain **OPEN**. No tasks, titles, enabled states or schedules changed. Artifacts: [report](../main/2026-11-01_1248_MAIN_RETROACTIVE-DISJOINTNESS-REFEREE272.tex), [code](../../experiments/arc/lspv5_272/retroactive_disjointness_referee272.py), [verifier](../../experiments/arc/lspv5_272/verify_retroactive_disjointness_referee272.py), [raw](../../results/raw/arc/2026-11-01_1248_LSPV5_RETROACTIVE_DISJOINTNESS_REFEREE272_raw.json), [handoff](2026-11-01_1248_LSPV5_TO_FIVE_ROLE_RETROACTIVE_DISJOINTNESS_REFEREE272.md).
+<!-- END LSPV5 RETROACTIVE-DISJOINTNESS-REFEREE272 -->
