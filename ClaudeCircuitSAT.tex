@@ -1,0 +1,96 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- owner: Claude hourly routine. Edited in place.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}
+\title{Claude Circuit-SAT Lower Bounds: A Wire-by-Wire Ladder}
+\date{Last updated: 2026-11-01 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} Nothing here separates P from NP. Every proved bound is
+linear in the instance size; superpolynomial bounds are \textbf{OPEN}.
+Labels: PROVED, COMPUTATIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Goal and method}
+Circuit-SAT: given a fan-in-2 circuit $C$ over $\{\wedge,\vee,\neg\}$ with $n$
+inputs and $m$ wires, decide $\exists x\,C(x)=1$. We climb a ladder: fix the
+simplest circuit families, track the minimum number of gates/wires needed to
+build each function, increase $n$, and look for a lower bound on solving
+SAT, possibly parameterised by $(n,m,\text{depth},\text{fan-out},\text{treewidth})$.
+Convention: negations are free on wires; a gate is an AND; $m=2g$ for $g$ gates.
+
+\section{Rung 1: building-cost lemmas (PROVED)}
+\begin{lemma}[Connectivity]\label{l:conn}
+If $f$ depends on $n$ inputs, any fan-in-2 circuit for $f$ has $g\ge n-1$
+gates, hence $m\ge 2(n-1)$ wires. Equality iff a read-once formula is possible.
+\end{lemma}
+\begin{proof} The underlying graph must connect the output to every essential
+input; $g$ binary gates add at most $g$ new nodes to the output's cone, so
+$n\le g+1$.\end{proof}
+
+\begin{lemma}[Parity-type cost, $n\le 3$]
+With free negation and AND gates, $\mathrm{XOR}_2$ needs 3 gates (6 wires),
+$\mathrm{XOR}_3$ needs 6 gates (12 wires).
+\end{lemma}
+Proof: exhaustive search, see COMPUTATIONAL table below (the unconditional
+argument for $n=2$ is the standard one: one or two ANDs give only monotone/unate
+functions up to negation).
+
+\section{Rung 2: exact minimum sizes (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/mincirc.py}, raw output
+\texttt{mincirc\_results.json}; breadth-first over sets of computed truth
+tables, runtime under 30\,s. Number of $n$-input functions of each optimum gate
+count $g$ (wires $=2g$):
+\begin{center}\begin{tabular}{@{}cccccccc@{}}\toprule
+$n$ & $g{=}0$&1&2&3&4&5&6\\\midrule
+1&4&&&&&&\\ 2&6&8&&2&&&\\ 3&8&24&64&30&104&8&18\\\bottomrule\end{tabular}\end{center}
+Observations: maximum cost $c(n)$: $0,3,6$ for $n=1,2,3$ (both attained by parity).
+Parity needs $3(n-1)$ gates in this basis (upper bound by chaining XOR; the
+matching lower bound is the known Schnorr bound $3(n-1)$ for $B_2$-with-AND-basis
+variants, KNOWN THEOREM for this basis type, not re-proved here). $n=4$ not run yet.
+
+\section{Rung 3: what this gives for SAT lower bounds}
+\begin{theorem}[Read-everything bound, PROVED, trivial]\label{t:read}
+Let SAT-instances be circuits given as wire lists with $n$ inputs and $m$
+wires. Any deterministic algorithm in the probe model (query a wire's endpoints)
+needs $\Omega(m)$ probes, already on AND-of-$n$-literals instances.
+\end{theorem}
+\begin{proof} Instance: $\bigwedge_i \ell_i$ with $\ell_i$ literals on distinct
+variables (satisfiable). If the algorithm never probes slot $j$, replace $\ell_j$
+by the negation of some $\ell_k$; the answer flips to UNSAT but all probes are
+identical. So all $n$ slots are probed; padding to $m$ wires with dummy gates
+gives $\Omega(m)$.\end{proof}
+This is parameterised ($\Omega(m)$) but linear, hence far from useful for P vs NP.
+
+\subsection{Parameterised picture (CANDIDATE roadmap)}
+\begin{center}\begin{tabular}{@{}lll@{}}\toprule
+Parameter regime & Known/expected & Status\\\midrule
+fan-out-free (formula), read-once & linear time & KNOWN\\
+treewidth $w$ & $2^{O(w)}m$ upper bound; ETH-type $2^{o(w)}$ lower bound & KNOWN (conditional)\\
+general, depth $d$, $m$ wires & best unconditional is linear probes & OPEN beyond\\
+SETH-style: $2^{(1-\epsilon)n}\mathrm{poly}(m)$ & conditional only & CONDITIONAL\\\bottomrule\end{tabular}\end{center}
+The wire-count ladder is the building-cost side; the missing step is a
+bridge from ``every circuit family for $f$ needs many wires'' (circuit lower
+bounds for explicit $f$, currently $\approx 3.1n$ for general $B_2$) to ``deciding
+satisfiability of an arbitrary given circuit is hard'', which is not implied: easy
+functions can be hard to decide only when the \emph{encoding} hides structure.
+
+\section{Cross-reference to the repository}
+Per \texttt{AGENTS.md} and \texttt{research/agents/claude/}: the world ledger
+(row L13 Buss--Williams) shows alternation trading cannot give SAT time exponent
+$2\cos(\pi/7)\approx1.247$ in $n^{o(1)}$ space; TPORT/ONETAPE reports show portfolio
+and one-tape routes yield only low-degree polynomial bounds. These are the
+strongest known time--space style \emph{conditional on model} bounds for SAT and
+are the natural parameterised targets (exponent as function of space $s$) for
+circuit-SAT. Nothing in the corpus claims an unconditional superpolynomial bound.
+
+\section{Next steps (log)}
+\begin{enumerate}
+\item Run $n=4$ exact minimum sizes with a SAT-based or Knuth-style search (chunked $<30$\,s).
+\item Tabulate, for each function, minimal wires \emph{and} minimal fan-out, to
+ study fan-out as the parameter.
+\item Try an adversary for SAT on circuits with $k$ reconvergent fan-outs: is
+ $2^{\Omega(k)}$ probes forced in the probe model? (CANDIDATE; would be a
+ genuine parameterised bound, but probe model $\ne$ Turing time.)
+\end{enumerate}
+\paragraph{Run log.} Run 1 (2026-11-01): created document, computed exact
+minima for $n\le3$, proved the $\Omega(m)$ probe bound and Lemma~\ref{l:conn}.
+\end{document}
