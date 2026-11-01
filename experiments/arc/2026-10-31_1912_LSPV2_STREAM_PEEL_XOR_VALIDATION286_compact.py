@@ -8,7 +8,7 @@ from itertools import product
 from collections import Counter
 
 Y6_POS=((1,2,3),(1,4,5),(2,4,6),(3,5,6))
-Y6=Y6_POS+tuple(tuple(-x for x in c) for c in Y6_POS)
+Y6=Y6_POS+((-1,-2,-4),(-1,-3,-6),(-2,-3,-5),(-4,-5,-6))
 
 def gamma(n):
     assert n>=1
