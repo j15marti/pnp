@@ -7,6 +7,7 @@ B=[(4,6,8),(1,6,7),(2,3,4),(3,5,8),(1,2,9),(5,7,9)]
 F=tuple(A+[tuple(-v for v in c) for c in B])
 Y=((1,2,3),(1,4,5),(2,4,6),(3,5,6),(-1,-2,-4),(-1,-3,-6),(-2,-3,-5),(-4,-5,-6))
 def check(n,cs):
+    if len({tuple(sorted(c)) for c in cs}) != len(cs):return False
     counter={}
     for c in cs:
         if len(c)!=3 or len(set(map(abs,c)))!=3:return False
