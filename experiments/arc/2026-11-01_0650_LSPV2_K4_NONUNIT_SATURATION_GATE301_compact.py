@@ -6,10 +6,8 @@ in the contemporaneous SHA-256-verified reproducibility archive.
 from itertools import product, combinations
 POS=[(1,2,6),(2,3,7),(3,4,8),(1,4,5),(5,11,12),
      (6,9,13),(7,10,14),(8,11,15),(9,12,13),(10,14,15)]
-NEG=[(1,3,11),(1,4,12),(2,4,13),(2,5,15),(3,5,15),
+NEG=[(1,3,11),(1,4,12),(2,4,13),(2,5,14),(3,5,15),
      (6,7,11),(7,8,12),(8,9,13),(9,10,14),(10,6,15)]
-# Source clause 13 has negative support (2,5,14), not (2,5,15).
-NEG[3]=(2,5,14)
 F=POS+[tuple(-v for v in c) for c in NEG]
 pU={**{v:0 for v in range(6,11)},**{v:1 for v in range(11,16)}}
 pS={**pU,11:0}
