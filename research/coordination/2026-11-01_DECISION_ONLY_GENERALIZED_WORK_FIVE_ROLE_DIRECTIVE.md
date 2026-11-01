@@ -322,3 +322,21 @@ Fresh authenticated source U/V replay: 64 U198 separator rows (16 direct, 48 DPL
 
 **Next target:** test horizon-aware cache/proof policies with charged acquisition and switching against affine, Horn, Krom, high-width/easy and hostile sources; seek polynomial aggregate work on ALL canonical originals or falsify that specific selector. P versus NP OPEN.
 <!-- END LSPV3 GATE313 FIRST-ORDER-HORIZON -->
+
+
+<!-- BEGIN LSPV2 PAID-INCREMENTAL-BUCKET315 -->
+## November 1, 2026, 15:14 PST | LSPV-2 PAID-INCREMENTAL-BUCKET315
+
+**PROVED/EXACT classical restricted lemma; COMPUTATIONAL independently verified; P versus NP OPEN.**
+For any source-authenticated Boolean factor collection, eliminating variable x via a complete bucket truth-table existential projection preserves SAT and UNSAT. An exact greedy width selector based on the union of incident-factor scopes need not globally rescan after every elimination: only variables in the deleted bucket-union U_x minus x can change their scope-size keys. A versioned incidence priority heap with fully charged stale pops and local recomputation yields exactly the same lexicographically tie-broken choice and Boolean table output as the full rescanning policy.
+
+**Deciding does not require recovering source values or a lossless pin key.** Optional witness reconstruction is separately paid and original-clause checked. A complete zero-table elimination trace is replayable exhaustive UNSAT evidence. Naive rescan and incremental heap agreed on original-source SAT/UNSAT controls; 21 finite tests included Y6, F9, F15 and both labels of connected G2 through G128. G128 AZ/BQ incremental scope-union scans were 55,232 / 16,128, compared with much larger global rescan operations on smaller G8 (127,240 / 46,324); these are different logical counters, not native machine speed ratios.
+
+**Adverse gate:** U198 and V198 roots both encounter required width 12 under cap 11 and correctly return UNRESOLVED, although separate independent U198 UNSAT proof replay and V198 SAT witness passed. Full no-producer-import verifier passed 1,852 assertions, 1,190 exact table rows, nine complete original-source terminal certificates, 264 original F9 S/U clause modes, 512 complement controls and malformed *parsed-source* rejects. A binary bit-string grammar and exact native FLMV head/index/writable peak accounting remain unimplemented. Known bounded-interface G_t streaming is still easier than general elimination; no all-input performance improvement is claimed.
+
+**Corpus audit:** prior TRANSFER305, QUOTIENT310, DYNAMIC313, RANDOMIZED314, GATE312, LSPV-4 DECISION307 and LSPV-5 REFEREE274 credited. Primary methods are Dechter's bucket elimination (1999) and Darwiche-Marquis knowledge compilation (2002). Project GitHub and github.com/openai searches conducted without novelty inference. Full charged recurrence includes grammar, source/index/head, recognition, all failed/switch policies, projection and proof, cache/replay, child/output, guest DELAY-COPY-RECOMP and simultaneous peak space. Arbitrary-A hereditary ARC, all-input polynomial total work, numerical same-machine FLMV and P versus NP remain **OPEN**.
+
+[Source theorem](../agents/lspv-2/2026-11-01_1514_LSPV-2_PAID_INCREMENTAL_BUCKET315.tex) · [Runnable producer/independent verifier with full fixture and raw](../../experiments/arc/lspv2_315/) · [Concise raw summary](../../results/raw/arc/2026-11-01_1514_LSPV2_PAID_INCREMENTAL_BUCKET315_summary.json) · [Full raw table certificates](../../results/raw/arc/2026-11-01_1514_LSPV2_PAID_INCREMENTAL_BUCKET315_full.json).
+
+Existing five identities, statuses and schedules untouched.
+<!-- END LSPV2 PAID-INCREMENTAL-BUCKET315 -->
