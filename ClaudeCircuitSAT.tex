@@ -1,0 +1,52 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append/revise in place each hourly run
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}\theoremstyle{definition}\newtheorem{definition}{Definition}
+\title{Lower Bounds for Circuit-SAT: a Wire-by-Wire Ladder\\ (living document)}
+\author{Claude (scheduled research routine)}
+\date{Last updated: 2026-11-01 (run 1)}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing below is an unrestricted lower bound for Circuit-SAT on a general machine; every PROVED item is in an explicitly restricted model. Labels: PROVED, COMPUTATIONAL, KNOWN, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Circuit-SAT: given a fan-in-2 circuit $C$ over $B_2$ with $n$ inputs, $g$ gates, $m$ wires, decide $\exists x\,C(x)=1$. We build up from the simplest instances, tracking (i) minimum wires/gates needed to realise the instance class and (ii) a lower bound on solving it, as a function of parameters $(n,m)$.
+
+\section{Ladder of instance classes}
+\begin{definition} $U_n$: circuits with exactly one satisfying assignment, depending on all $n$ inputs. $\mathrm{wires}(C)$ counts gate in-edges; $\mathrm{wires}\ge 2g$.\end{definition}
+\begin{lemma}[Wire floor, PROVED] A fan-in-2 circuit with one output depending on all $n$ inputs has $g\ge n-1$ gates and $\ge 2(n-1)$ wires.\end{lemma}
+\begin{proof} Count edges. Total in-edges $=2g$. Every input feeds some gate (it influences the output), giving $\ge n$ out-edges from inputs; every non-output gate must feed some gate (else it is irrelevant and can be deleted), giving $\ge g-1$ out-edges. Hence $2g\ge n+g-1$, i.e.\ $g\ge n-1$, wires $=2g\ge 2(n-1)$. PROVED.\end{proof}
+
+\subsection{Computational ladder (COMPUTATIONAL)}
+Exhaustive search over all gate sequences, all 16 binary gates (script \texttt{research/agents/claude/circuitsat/mingates.py}, outputs \texttt{n2.txt,n3.txt,n4.txt}):
+\begin{center}\begin{tabular}{lccc}\toprule
+$n$ & functions with exactly 1 sat.\ point & min gates (all attain) & min wires\\\midrule
+2 & 4 & 1 & 2\\ 3 & 8 & 2 & 4\\ 4 & 16 & 3 & 6\\\bottomrule\end{tabular}\end{center}
+In every case the minimum equals the floor $n-1$ (for $n=4$ the search was exhaustive up to 3 gates, covering 3000 functions; none of the 16 unique-sat functions appears with $\le2$ gates). Also for $n=3$, 232 of 256 functions need $\le3$ gates; the remaining 24 (parity-type) need 4. So tracked wires per step: $2(n-1)$, tight for $U_n$; the first gap between ``unique-sat'' and ``hard-to-build'' functions is parity ($3n-3$ vs.\ $2n-2$).
+
+\section{Lower bounds on solving}
+\begin{theorem}[Read bound, PROVED, deterministic algorithms with probe access to the circuit description]
+Let $\mathcal F_n$ be chains $\ell_1\wedge\dots\wedge\ell_n$ with literals $\ell_i\in\{x_i,\neg x_i\}$ replaced at one position $j$ by $\neg\ell_i$ or $\ell_i$ (so the circuit is UNSAT iff some variable appears with both signs). Any deterministic algorithm that decides satisfiability on $\mathcal F_n$ with $n$ variable-indexed literals must probe $\ge n-1$ literal positions; hence $\Omega(m)$ time for instances with $m=\Theta(n)$ wires.\end{theorem}
+\begin{proof} Two unprobed positions $i,j$ can be set by the adversary to make a clashing pair or not, with all probed answers consistent with both; the two circuits have different answers. \end{proof}
+
+\begin{theorem}[Black-box bound, PROVED] For $U_n$ accessed only through evaluation queries $x\mapsto C(x)$, any deterministic algorithm needs $2^n-1$ queries in the worst case and any randomized one $\ge (2^n+1)/2$ expected for the unique-sat promise. Parametrised form: $T(n,m)\ge 2^n-1$ queries, each costing $\ge1$; with $m$-wire evaluation the cost is $\Omega(2^n\cdot m)$ in the evaluation-cost model.\end{theorem}
+\begin{proof} Adversary answers 0 until one assignment remains; for randomized, Yao with uniform hidden assignment.\end{proof}
+These match the brute-force upper bound $O(2^n m)$, so \emph{in the evaluation-oracle model} the parametrised complexity of Circuit-SAT is $\Theta(2^n)$ queries. It says nothing about algorithms that inspect the wiring.
+
+\section{Why this does not give P$\ne$NP (barrier ledger)}
+\begin{itemize}
+\item Wire-inspecting algorithms: Theorem 2 fails; the best known are Williams-type SAT bounds for restricted circuit classes and SETH-conjectured $2^{n-o(n)}$ (CONJECTURE, not a theorem).
+\item Circuit-size lower bounds (gate elimination): $3.1n-o(n)$ for explicit functions, KNOWN; they bound circuit \emph{size} of functions, not SAT algorithm time.
+\item Any $n^{\omega(1)}$ general lower bound for Circuit-SAT is equivalent to P$\neq$NP (Circuit-SAT is NP-complete); this is OPEN.
+\end{itemize}
+See also repository items: \texttt{research/agents/claude/world-ledger} (rows on alternation trading: SAT time exponent barrier $2\cos(\pi/7)$ with $n^{o(1)}$ space), and \texttt{2026-10-28\_1521\_CLAUDE\_ONETAPE-0001.tex} (one-tape crossing sequences; no NP separation).
+
+\section{Next targets (parametrised)}
+\begin{enumerate}
+\item Extend the exhaustive table to parity-like and threshold classes at $n=4,5$ (SAT-solver-hard but small), recording min wires; chunk the search by gate count (each run $\le30$s).
+\item Define a restricted-algorithm model between ``evaluation oracle'' and ``full RAM'' (e.g.\ algorithms that read wires but treat gates as oracles with bounded-width state), and prove $2^{\Omega(n)}$ or a $2^{\Omega(\text{tw})}$-type bound with treewidth parameter; upper bound $2^{O(\text{tw})}m$ is KNOWN (CANDIDATE lower side).
+\item Fan-out-bounded and monotone/XOR-restricted circuit families as parameters.
+\end{enumerate}
+\section*{Run log}
+Run 1 (2026-11-01): created document; edge-count wire floor; computational ladder $n\le4$; read and black-box bounds. Corpus reviewed lightly (repo survey, AGENTS.md pointers, world-ledger/TPORT/ONETAPE addenda); no repository result found that bears on circuit-SAT wire bounds directly.
+\end{document}
