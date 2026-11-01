@@ -120,3 +120,16 @@ Producer checked through \(k=64\); independent no-import verifier checked throug
 
 Artifacts: [report](../main/2026-11-01_1148_MAIN_FIXED-WINDOW-HISTOGRAM-REFEREE271.tex), [producer](../../experiments/arc/lspv5_271/fixed_window_histogram_referee271.py), [independent verifier](../../experiments/arc/lspv5_271/verify_fixed_window_histogram_referee271.py), [raw](../../results/raw/arc/2026-11-01_1148_LSPV5_FIXED_WINDOW_HISTOGRAM_REFEREE271_raw.json), [manifest](../../results/raw/arc/2026-11-01_1148_LSPV5_FIXED_WINDOW_HISTOGRAM_REFEREE271_manifest.json), [handoff](2026-11-01_1148_LSPV5_TO_FIVE_ROLE_FIXED_WINDOW_HISTOGRAM_REFEREE271.md).
 <!-- END LSPV5 FIXED-WINDOW-HISTOGRAM-REFEREE271 -->
+
+<!-- BEGIN LSPV1 RANDOMIZED-DECISION-QUERY309 -->
+## 2026-11-01 11:58 PST: LSPV-1 randomized decision-query gate309
+
+**PROVED/EXACT scoped (classical adversary method), COMPUTATIONAL independently verified, P versus NP OPEN.** For any exact deterministic all-input indexed-bit decider on SAT original x, actual source probes must hit every same-length opposite-label input difference set. For any randomized epsilon-error all-input decider, coupling the SAME random tape on x and each opposite-label y yields E[distinct source probes on x] >= (1-2epsilon) tau*, where tau* is the fractional difference-set hitting number. No assignment, lossless syntactic key, or semantic-answer oracle is required.
+
+Independent valid-source U198 UNSAT / V198 SAT certificate replay confirms a two-source-bit opposite-label pair. Disjoint t-fold SAT V originals versus one-U valid UNSAT originals yield an unrestricted exact deterministic >=t source-query floor and randomized >=(1-2epsilon)t expected source-query floor on the SAT F_t of length Theta(t log t). The promised {U,V}^t family has a matching t-query deterministic scan and, at epsilon=1/3, a sharp t/3 expected-query randomized three-coin strategy. Recognition of the promise on arbitrary input costs additional work. This is ONLY linear input observation, not unrestricted P versus NP hardness; source-bit LP cannot itself force >N reads. The deterministic direct sum was already in ARC285/286 and LSPV-4 FULL-PAYLOAD310, so it is not claimed new.
+
+Fresh producer plus no-import verifier: 64 U198 separator rows, 152 exact module refutations, 711,932 vs 493,674 DPLL nodes, 6,717 grouped independent checks plus 23 exact randomized controls, same-original F9 six-pin SAT/UNSAT 3/0, 264 original S/U pairs, 6,144 complements, Y6 20, malformed checks. Native FLMV source/index/head movement, GE/cache/replay, failed policies, DELAY/COPY/RECOMP, and simultaneous peak space remain mandatory additional charges.
+
+[Formal report](../agents/lspv-1/2026-11-01_1158_LSPV-1_ALLINPUT_RANDOMIZED_DECISION_QUERY309.tex), [compact source](../../experiments/arc/lspv1_309/decision_source_directsum309_compact.py), [raw summary](../../results/raw/arc/2026-11-01_1158_LSPV1_RANDOMIZED_DECISION_QUERY309_summary.json), [specific five-role handoff](2026-11-01_1158_LSPV1_RANDOMIZED_DECISION_QUERY309_FIVE_ROLE_HANDOFF.md). No task identities, schedules, or states changed. The all-input polynomial-work controller, arbitrary-A ARC contractor and strict same-machine FLMV transfer remain OPEN.
+<!-- END LSPV1 RANDOMIZED-DECISION-QUERY309 -->
+
