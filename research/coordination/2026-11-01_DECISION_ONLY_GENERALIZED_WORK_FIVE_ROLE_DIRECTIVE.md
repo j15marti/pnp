@@ -107,3 +107,16 @@ This is a classical Myhill–Nerode/Boolean-semiring method applied to an authen
 
 Verified GitHub [mathematical report](../agents/lspv-3/2026-11-01_1119_LSPV-3_DECISION_CONTINUATION_QUOTIENT_GATE308_PUBLIC.tex), [standalone reproducer](../../experiments/arc/lspv3_308/compact308.py), and [raw finite summary](../../results/raw/arc/lspv3_308/summary308_public.json). LSPV-3's root \`main.tex\` region was reconciled with byte-preserving readback outside that region. **Next gate:** acquire the continuation quotient on unknown canonical sources without an oracle and prove a quantitative polynomial bound on all failed and successful transitions, or construct an adversarial family defeating that bound.
 <!-- END LSPV3 DECISION-CONTINUATION-QUOTIENT-GATE308 -->
+
+
+<!-- BEGIN LSPV5 FIXED-WINDOW-HISTOGRAM-REFEREE271 -->
+## 2026-11-01 11:48 PST — LSPV-5 FIXED-WINDOW-HISTOGRAM-REFEREE271
+
+**PROVED/EXACT restricted symbolic theorem; COMPUTATIONAL independent controls; P versus NP OPEN.** For every fixed window order \(k\ge1\), set \(L=\max(0,k-2)\) and inflate each letter \(a\) in WORK309's SAT/UNSAT words by \(h_L(a)=B^L a\). The two coherent residuals lie on the same valid connected canonical original \(G_{6(L+1)}\) and have identical cyclic factor-count decks at every length \(1,\ldots,k\), but retain opposite SAT labels. The deck equality follows because each window of length at most \(L+2\) depends only on an image offset and one source bigram. The label separation follows because Boolean support \(B=11\) is idempotent and the ordered products remain masks 3 (SAT) and 2 (UNSAT).
+
+This retires every fixed-order unordered local-profile histogram as a continuation key. It does **not** prove hard decision: paid ordered four-bit relation streaming remains linear on the recognized family, agreeing with QUOTIENT310 and GATE308's seven-state automaton. DECISION307's distinct A/B promise still has exact deterministic pin-query complexity \(t\), rechecked by disjoint difference regions and a matching scan.
+
+Producer checked through \(k=64\); independent no-import verifier checked through \(k=96\) with 4,974 assertions. Controls passed: Y6 20, F9 70, same-original F9 A/B 1/0, F15 SAT/UNSAT 2/0, all 264 F9 S/U modes, five malformed rejects. U198/V198 remain inherited. Logical XOR remains offline; all acquisition, source/index/head, failed-policy, proof/cache/replay, guest DELAY/COPY/RECOMP and simultaneous peak-space costs remain charged.
+
+Artifacts: [report](../main/2026-11-01_1148_MAIN_FIXED-WINDOW-HISTOGRAM-REFEREE271.tex), [producer](../../experiments/arc/lspv5_271/fixed_window_histogram_referee271.py), [independent verifier](../../experiments/arc/lspv5_271/verify_fixed_window_histogram_referee271.py), [raw](../../results/raw/arc/2026-11-01_1148_LSPV5_FIXED_WINDOW_HISTOGRAM_REFEREE271_raw.json), [manifest](../../results/raw/arc/2026-11-01_1148_LSPV5_FIXED_WINDOW_HISTOGRAM_REFEREE271_manifest.json), [handoff](2026-11-01_1148_LSPV5_TO_FIVE_ROLE_FIXED_WINDOW_HISTOGRAM_REFEREE271.md).
+<!-- END LSPV5 FIXED-WINDOW-HISTOGRAM-REFEREE271 -->
