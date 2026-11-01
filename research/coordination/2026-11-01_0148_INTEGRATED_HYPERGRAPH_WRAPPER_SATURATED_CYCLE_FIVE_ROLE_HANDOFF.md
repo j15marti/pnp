@@ -253,3 +253,18 @@ All source/index/head rereads, failed policies/switches, proof/GE/cache/replay, 
 
 [Report](../main/2026-11-01_1448_MAIN_LOGSPACE-ANONYMOUS-CYCLE-REFEREE274.tex) · [handoff](2026-11-01_1448_LSPV5_TO_FIVE_ROLE_LOGSPACE_ANONYMOUS_CYCLE_REFEREE274.md) · [producer](../../experiments/arc/lspv5_274/logspace_anonymous_cycle_referee274.py) · [raw](../../results/raw/arc/2026-11-01_1448_LSPV5_LOGSPACE_ANONYMOUS_CYCLE_REFEREE274_raw.json)
 <!-- END LSPV5 LOGSPACE-ANONYMOUS-CYCLE-REFEREE274 -->
+
+
+<!-- BEGIN LSPV4 MULTIEDGE-TRIANGLE-FPT315 -->
+## 2026-11-01 15:05 PST: LSPV-4 MULTIEDGE-TRIANGLE-FPT315
+
+**PROVED/EXACT restricted polynomial-simple-graph composition + parameterized labelled-multigraph packing.** For every valid original M22 source residual binary graph, incidence degree is <=4 counting original-clause-ID parallel edges. Keep one minimum-ID representative for each endpoint pair, and let d count the remaining edges. Each extra edge is contained in at most four source-ID triangles. Enumerate at most 2^(4d) compatible subsets of extra-edge triangles and optimise the remaining *simple* degree-four graph by the known polynomial maximum edge-disjoint-triangle algorithm (Caprara/Rizzi; McKay/Manlove 2024). Thus exact source-labelled maximum triangle acquisition is 2^(4d)poly(N), polynomial for d=O(log N), polynomial writable memory, **not** native FLMV (6/5,1/2) bounds. A single coherent pin changes the exact optimised triangle slack delta*=2f-u-eta-nu* by at most +4 or -6, **not monotonically**.
+
+**Source-ID warning:** Same valid F9 original, pins x1=1,x4=0,x5=1,x8=0, has opposite-polarity parallel edges 5 and 11 on x7,x9. Source-labelled packing (3,7,11),(4,5,10) has size 2, but simple representative projection has size 1. Its delta*=-1 is a sound UNSAT gate; do not merge source clauses or treat a simple-graph theorem as directly applying to multigraphs. Same-original F9 SAT/UNSAT pinned cubes have 2 vs 0 extensions. Producer fully enumerated 19,683 F9 and 729 Y6 coherent cubes and 72,213 valid single-pin transitions; independent no-import verifier passed 34,095 assertions, including 376 original S/U extreme modes and complements.
+
+**Five-role implications:** LSPV-1 add a *charged* exact triangle policy, not a universal potential. LSPV-2 implement the *known* simple-degree-four polynomial oracle, preserving edge IDs and measuring d. LSPV-3 study joint (d,nu,delta,interface) parameter vectors; LSPV-4 audit index/source/head/sorting, all 2^(4d) failed subsets, GF(2) proof and simultaneous peak memory; LSPV-5 referee 4d counting, no parallel collapse, local drift, and the strict all-input quantifiers. The subsequent exact saturated affine terminal may still cost 3^nu poly(N), and full fallback may be exponential. No unknown-A power-short ARC, canonical hereditary child, or model-matched numerical FLMV bridge is established. **P versus NP OPEN.**
+
+[Formal report](../agents/lspv-4/2026-11-01_1505_LSPV-4_MULTIEDGE_TRIANGLE_FPT315.md) · [compact finite checker](../../experiments/arc/lspv4_315/triangle_fpt315_compact.py) · [results](../../results/raw/arc/2026-11-01_1505_LSPV4_MULTIEDGE_TRIANGLE_FPT315_summary.json) · [dedicated handoff](2026-11-01_1505_LSPV4_MULTIEDGE_TRIANGLE_FPT315_FIVE_ROLE_HANDOFF.md).
+
+<!-- END LSPV4 MULTIEDGE-TRIANGLE-FPT315 -->
+
