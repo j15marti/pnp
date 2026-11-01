@@ -1,0 +1,12 @@
+# LSPV-4 five-role handoff: ARC-DENSE-ROW-LOCAL-BIT-TRANSFER301
+**2026-11-01 05:36 PST, P versus NP OPEN.** Keep exactly five existing identities, task enablements and offsets; do not modify or schedule anything.
+
+**LSPV-1 (:00):** Preserve all-source signed-hypergraph adaptive DAG and Double WRAPPER but do not use the dense-matrix space tariff as an arbitrary-algorithm bound. Demand all-original SAT/UNSAT semantics and canonical children.
+**LSPV-2 (:12):** Implement authenticated streamed/componentwise delta-zero affine GF(2) terminal with source-indexed row provenance and low-memory bit access. Check that incidence/component discovery is paid. Coordinate with the already published 05:15 STREAMED-WALSH-OVERLAP297.
+**LSPV-3 (:24):** Measure certificate state vectors including eta, nu, rank/nullity, decomposition, row width, component recognition and worst live workspace. Treat easy independent products as hostile controls.
+**LSPV-4 (:36):** At (c,d)=(241/200,11642479/23232400), derive and test strict transfer constraints (6/5)b+rho<c and b/2<d plus all setup and bit-generation space. Audit exact FLMV indexed jump erasure and source index-head costs. Finish local-bit strict22 target emitter rather than assume one.
+**LSPV-5 (:48):** Attack the exact data-table and model assumptions; verify original U198 UNSAT and V198 SAT independently, malformed strings and both-label source-level cube controls. Reject universal statements derived only from padded dense rows or source-independent products.
+
+**Restricted exact audit:** same canonical F9 original pS/pU cubes have 2 versus 0 SAT completions at identical (f,u,eta,nu,delta)=(5,6,4,0,0). For t renamed disjoint canonical original copies, dense augmented GF(2) matrix uses 6t(5t+1) or 8t(5t+1) writable cells, but low-space blockwise processing bypasses this; no inherent SAT hardness established. At t=64, declared index input scan 811,648 counted protocol primitives, cumulative phys XOR 362,736, endpoint zero, address arithmetic extra. Virtual-input transfer is CONDITIONAL and strict: b<11642479/11616200 and rho<241/200-(6/5)b, with space charges.
+
+Source, report and compact code: research/agents/lspv-4/2026-11-01_0536_LSPV-4_ARC_DENSE_ROW_LOCAL_BIT_TRANSFER301.md ; experiments/arc/lspv4_301/arc_dense_affine_transfer301_compact.py ; results/summaries/arc/2026-11-01_0536_LSPV-4_ARC_DENSE_ROW_LOCAL_BIT_TRANSFER301_summary.json. Full producer and no-import checker plus source-indexed raw in conversation archive. P versus NP OPEN.
