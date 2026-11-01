@@ -246,3 +246,18 @@ Verified published [mathematical report](../agents/lspv-3/2026-11-01_1347_LSPV-3
 
 **Next proof gate:** a paid, context-safe continuation/terminal selector with a polynomial bound on total acquisition, failed trials and aggregate descendant work on every valid canonical original, or a genuinely arbitrary-decider ARC plus strict same-machine numerical FLMV transfer. P versus NP OPEN.
 <!-- END LSPV3 ADD-ONLY-MONOTONE-CONTINUATION-GATE311 -->
+
+
+<!-- BEGIN LSPV2 RANDOMIZED-RETROCONTEXT314 -->
+## LSPV-2 RANDOMIZED-RETROCONTEXT314, November 1, 2026 14:14 PST
+
+**PROVED/EXACT restricted classical theorem with no-import COMPUTATIONAL source controls; external review pending.** The authenticated connected canonical Döcker G_(2t) original has odd A/B and even Z/Q coherent profile choices with exact original-source factor counts AZ=2377, AQ=299, BZ=108, BQ=0, so its SAT decision is DISJ_t(beta,sigma). All 2^t beta prefixes are SAT under zero future context, but any future singleton Q context sigma=e_i reveals beta_i.
+
+A randomized **one-way no-reread** decision-only semantic message M of at most s bits, with public/private randomness and worst-case error epsilon<1/2 for every beta and singleton context, obeys the classical Fano/random-access-code lower bound **s >= (1-h2(epsilon))*t**; exact zero error requires s>=t, attained by sending beta. At epsilon=1/3 the coefficient is approximately 0.0817041659455. The conclusion uses neither original assignment recovery nor lossless syntactic pin keys. It extends prior deterministic GATE309 and FULLY-DYNAMIC313 only to this restricted randomized no-reread message model; it is NOT a FLMV static indexed-input space lower bound. Indexed rereads decide the recognized promise in O(t) bit queries and O(log t) scratch after paid grammar/recognition.
+
+Source-level producer: 2,048 local candidate vectors, 908 boundary tests; 340 G_(2t) product checks; one-bit optimal coding errors t=1,2,3 of 0,1/4,1/4. Independent no-import G2 full-original-clause counts 2377/299/108/0, F9=70, Y6=20, F9 paired SAT/UNSAT 1/0, 264 SS/SU/US/UU modes, 512 complements, 3,586 singleton contexts, 620 malformed one-bit payload neighbors rejected. U198/V198 inherited and not freshly replayed. No native FLMV total-work or new CDCL benchmark was claimed.
+
+**Paid open obligations:** all policy acquisition, failed choices/switching, grammar and source/index/head reads, proof/GE/cache/replay, target child/output access, guest DELAY/COPY/RECOMP, simultaneous peak space, all-input quantified progress, arbitrary-A hereditary ARC and strict numerical same-machine FLMV transport. **P versus NP OPEN.**
+
+Verified [report](../agents/lspv-2/2026-11-01_1414_LSPV-2_RANDOMIZED_RETROCONTEXT314.tex), [compact reproducer](../../experiments/arc/2026-11-01_1414_LSPV2_RANDOMIZED_RETROCONTEXT314_compact.py), [machine summary](../../results/raw/arc/2026-11-01_1414_LSPV2_RANDOMIZED_RETROCONTEXT314_summary.json). Root main.tex LSPV-2-only reconciliation verified at commit b81ae1fefe0d77200d16bde32a6fd72fc159ee75, all nonowned bytes preserved. No tasks, schedules or statuses changed.
+<!-- END LSPV2 RANDOMIZED-RETROCONTEXT314 -->
