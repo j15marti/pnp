@@ -62,3 +62,20 @@ Propose 2–4 falsifiers; read primary FLMV/Döcker/decision-tree and current pr
 **Primary next deliverable:** a formally stated and falsifiable **representation-independent generalized computational-work lower-bound or adaptive total-work upper-bound candidate** with all quantifiers, all costs, and precise countermodels. Do not confuse mandatory computation with information in a recoverable final state.
 
 **Status:** user science direction disseminated, all-input complexity implication OPEN, P versus NP OPEN.
+
+
+<!-- BEGIN LSPV5 DECISION-SUPPORT-TRANSFER-REFEREE270 -->
+## 2026-11-01 10:48 PST — LSPV-5 DECISION-SUPPORT-TRANSFER-REFEREE270
+
+Independent red-team result: the CUBEKEY306 84-state local family and DECISION-WORK307 A/B family must not be conflated.
+
+- **Falsified/retired:** \(84^t\) recoverable CUBEKEY states imply hard SAT/UNSAT decision. All 84 local two-pin/value states are SAT; six explicit F9 witnesses with \(x_5=0\) cover them, so every connected cyclic product is SAT. The integer matrices collapse to 3 Boolean support relations, each containing \(0\to0\).
+- **Retained, exact restricted:** the distinct five-pin A/B promise is AND\(_t\): all-A is SAT and any B block is UNSAT. The accepting-input deterministic bit-query lower bound is exactly \(t\), attained by one discriminating pin read per block.
+- **Accepted with scope firewall:** GRAMMAR-FLOOR308 gives an \(m=4n/3\) accepting-path polarity-bit read floor only when malformed strings must be rejected; it uses malformed one-bit neighbors and does not apply to a prevalidated-valid promise or yield an UNSAT floor.
+- **Continuation quotient:** recognized G_t instances decide by streaming 4-bit Boolean relations in \(O(t)\) compositions and \(O(\log N)\) live index bits, after paid validation/recognition. Discovering such representatives on arbitrary valid originals is not free.
+- Fully charged recurrence retains grammar/source/index/head reads, every attempted policy and switch, relation/GE/proof/cache/replay work, child/output/access and guest DELAY/COPY/RECOMP, plus simultaneous peak live space. Exact fallback remains exponential outside the recognized family.
+- Producer and independent no-import verifier passed 144 checks, including all 84 cover obligations, A/B matrices, F9/Y6/F15, all 264 F9 S/U pair modes, six malformed controls; U198/V198 remain inherited controls.
+- All-input polynomial total work, arbitrary-A ARC, strict numerical same-machine FLMV transfer, and P versus NP remain **OPEN**.
+
+Artifacts: [report](../main/2026-11-01_1048_MAIN_DECISION-SUPPORT-TRANSFER-REFEREE270.tex), [producer](../../experiments/arc/lspv5_270/decision_support_transfer_referee270.py), [independent verifier](../../experiments/arc/lspv5_270/verify_decision_support_transfer_referee270.py), [raw JSON](../../results/raw/arc/2026-11-01_1048_LSPV5_DECISION_SUPPORT_TRANSFER_REFEREE270_raw.json), [manifest](../../results/raw/arc/2026-11-01_1048_LSPV5_DECISION_SUPPORT_TRANSFER_REFEREE270_manifest.json), [five-role handoff](2026-11-01_1048_LSPV5_TO_FIVE_ROLE_DECISION_SUPPORT_TRANSFER_REFEREE270.md).
+<!-- END LSPV5 DECISION-SUPPORT-TRANSFER-REFEREE270 -->
