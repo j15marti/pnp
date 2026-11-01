@@ -1,0 +1,43 @@
+# LSPV-4 ARC-LAYER-MOMENT-COLLISION287
+31 October 2026, 19:36 PDT. Status: PROVED/EXACT elementary restricted probability identities, independent mathematical referee pending; COMPUTATIONAL both-label certified control; KNOWN THEOREM FLMV 5.7; arbitrary-A ARC and P vs NP OPEN.
+
+## One obstruction and four falsifiers
+Target is every valid duplicate-free proper clausewise-monotone 3-SAT-(2,2) formula, with malformed encodings rejected: three distinct same-signed literals per original clause, two positive and two negative occurrences per variable. F1: weight-layer first moments distinguish SAT/UNSAT: FALSIFIED for every target instance by a source-independent formula. F2: all second moments distinguish U198 UNSAT vs V198 SAT: FALSIFIED by exact source pair-signature collision. F3: the incidence signature is a free selector: FALSIFIED as a resource assumption; acquisition has source/index/space costs. F4: offline logical XOR equals FLMV native physical writes: FALSIFIED by the declared lazy assignment-buffer countercontrol. None of these is a lower bound on arbitrary machines.
+
+## Exact target-wide theorem
+For a globally coherent full assignment a of Hamming weight w, let N_r(a) count ORIGINAL clauses containing exactly r true signed literals. Let m=4n/3 and mplus=mminus=m/2. Uniformly on the weight-w layer,
+
+E_w[N_r] = (m/2) * binom(3,r) * [(w)_r (n-w)_(3-r) + (n-w)_r (w)_(3-r)] / (n)_3,
+
+where (x)_k is the falling factorial, zero for k>x. Proof: a positive source clause has a three-draw hypergeometric count; a negative source clause interchanges TRUE and FALSE. There are exactly m/2 of each. Linearity of expectation proves the formula, so E N0=E N3 and E N1=E N2 for all w and all target SAT/UNSAT inputs. No original occurrence is treated as an independent Boolean.
+
+For unordered distinct original-clause pairs, define H[signpair,h] counting pairs by (++, +-, --) polarity and h shared variable IDs, h=0..3. The entire 4x4 second-moment matrix E_w[N_r N_s] on every layer is determined by n, sign counts and H alone. Proof: diagonal terms use the first moments; for each pair of distinct triples, the joint truth-count distribution on their 6-h distinct variables depends only on signs, overlap, n, and w by exact permutation symmetry of the uniform weight-w layer. Sum both ordered terms for each unordered pair. This is elementary finite probability and not a new SAT hardness theorem.
+
+## Opposite-label complete-language controls
+U198, a valid n=198,m=264 Döcker source, is UNSAT by a separately replayed six-private-module refutation and elimination of all 64 source boundary cubes. V198 is a valid SAT source obtained by swapping the first positive signed literal in zero-based original clauses 1 and 7. A complete 198-bit witness was independently checked against all V source clauses. Both sources have exactly identical H[signpair,h] arrays for h=0,1,2:
+++ (8471,152,23);
++- (16638,780,6);
+-- (8470,154,22).
+No h=3 pair occurs. Exactly 1,137 of the 34,716 pairs overlap. Hence all 16 second moments, and all first moments, agree for EVERY layer w=0..198 even though the formula labels differ. At w=99, both E(N0,N1,N2,N3)=(6402,19602,19602,6402)/197 and E[N0^2]=2653768161/2471365. Signatures are not a total SAT selector.
+
+Python full producer: 599 source/moment/XOR assertions; separately implemented independent checker: 1,227 assertions; independently rerun earlier U/V original-source certificate checker: 71,308 assertions. The valid Y6 SAT control has exactly 20 models from all 64 assignments, and its complete layer means and all 16 second moments agree with direct enumeration. Historical original-clause signed S/U targets and inversions, 4-way SS/SU/US/UU pair modes, coherent allzero/allone and intermediate-flip trails, original forbidden cubes, U/V certificates and five malformed tests are retained in the full archive. Matched capped UP-DPLL solved Y6 and returned UNKNOWN for both large inputs; timeout is not an UNSAT certificate.
+
+## Charges and physical XOR scope
+For any canonical source each variable has four ORIGINAL occurrences, generating exactly six candidate incidence-pair events. U/V have 6n=1,188 events; sparse merging yields 1,137 distinct overlap records, versus a naive 34,716 pair inspections. This is a declared Python logical-work comparison, not a FLMV native transition count. A fully stored occurrence index costs O(n log n) writable bits and cannot simply be given for free in the N^(1/2) target space regime at N=Theta(n log n). A full source rescan at all 63 measured checkpoints reads 49,896 source literal slots on U/V. Additional source-bit address preparation, selector discovery/switching, failed policies, child output and arbitrary-bit access, multiple tape/index states, guest execution, proof checks, replay and ancestor retention must be charged.
+
+An OFFLINE canonical logical state has n assignment bits, 2m Gray-coded original clause-count bits and m SAT flags. The separately declared fixed-location writable assignment-register SUBTAPE has only n bits, not a complete FLMV state. For U198/V198 63 transitions in Gray versus binary order yield cumulative logical XOR 413 versus 713 and physical assignment-subtape XOR 63 versus 120. Endpoint logical XOR is 7 versus 39; endpoint assignment-subtape XOR is 1 versus 6. For Y6, logical totals 377/494. The native complete d_phys, head/index operations, atomic index erasure, and simultaneous machine-peak tape state were NOT measured. Offline XOR is not an internal oracle.
+
+## Exact FLMV boundary and OPEN proof arrow
+FLMV Theorem 5.7: f0=1, f_k=c f_(k-1)/(1+f_(k-1)), d_k(c)=min((1/f_k-c)/k,c^(-k)), d*(c)=max over k>=1. Exact arithmetic:
+c=6/5: d1=7/15, d2=23/45, d3=401/810, c^(-4)=625/1296.
+c=241/200: d1=21919/48200, d2=11642479/23232400, d3=4077837439/8398512600, c^(-4)=1600000000/3373402561.
+At each point k=2 uniquely wins and every k>=4 is strictly excluded by d_k<=c^(-k)<=c^(-4)<d2. Exponent equality does not imply entry into a strict forbidden region. The candidate ARC fixed point (6/5,1/2) remains CONDITIONAL. The universal fully charged hereditary arbitrary-A->Phi(A) controller, valid target children or efficient re-encoding, and quantitatively adequate same-indexed-machine SAT-to-target reduction or direct applicable target lower bound remain OPEN. NP-completeness alone does not transfer the exact numerical SAT FLMV region. AFFINE-SMALLBIAS-DESCENT-GATE2 is restricted MCSP only; CP22LIFT1 and strict22 compiler lack a fully charged fast small-space bit accessor. No retired cosine formula is used.
+
+## Corpus, searches, provenance, and scope
+Reviewed root main, AGENTS/CODEX/pnp-research skill, issue #3, REDIRECT1, CONTRACT1, AFFINE-SMALLBIAS-DESCENT-GATE2, CONSTRUCTION-STRENGTHEN17, ARC-LINEAR22-SATURATION1, CP22LIFT1, LSPV1 MONOTONE-QUOTA-CUBE281 and ROOT-COFACTOR-DELAY288, LSPV2 BACKDOOR-GRAY-TERMINAL283, LSPV3 GATE286-288, prior LSPV4 EXTREME-SPARSE-MERGE240, SPARSE-EXTREME-SLACK244, CHILD-GATE251, PARETO269 and PROBE286, LSPV5 PARETO239. Prior first-flip histograms and 6n sparse pairing are credited; only the present certified U/V weight-layer second-moment collision is added to root. Pre-proof Google/web queries: FLMV indexed random-access theorem 5.7, Döcker monotone 3-SAT-(2,2) duplicate free, regular monotone SAT Hamming weights. Separate project GitHub queries: Hamming weight monotone 2 2, at most 6n clause pairs, balanced layer SAT, sparse pair batch scan time space, CP22LIFT1; authenticated GitHub org=openai SAT query returned unrelated Codex hits (a prior malformed query returned InvalidInputException, then corrected). Missing search hits never imply novelty.
+
+Primary sources: [1] J. Döcker (2019) https://arxiv.org/abs/1912.08032. [2] Fortnow, Lipton, van Melkebeek, Viglas, JACM 2005 Theorems 3.1 and 5.7 https://lance.fortnow.com/papers/files/tst.pdf (primary PDF theorem page visually inspected). [3] Kullmann, Combinatorics of Conflicts between Clauses, SAT 2003, for original-clause controls.
+
+Full four-page LaTeX/PDF, producer, separate verifier, raw JSON and previous 9-MB original-clause adversarial raw are in the downloadable complete ZIP. New raw SHA256 d66f9ddd3d39e67d1b77e57aeb9001584f38f883521042a72a88e6b20483da82. ZIP SHA256 f73d19290b2a94224c2de717f3b4e64520c06cf8fc5a364128240c114e2404e9. GitHub hosts a compact checker; U_source.json and V_witness.json from complete ZIP are needed for its U/V spot checks. Full raw GitHub mirroring remains pending. No existing agent/task identity, status or schedule modified. Independent mathematical review and native end-to-end FLMV profiling pending. P versus NP OPEN.
+
+END_OF_VERIFIED_REPORT::LSPV-4_ARC_LAYER_MOMENT_COLLISION287::P_VS_NP_OPEN
