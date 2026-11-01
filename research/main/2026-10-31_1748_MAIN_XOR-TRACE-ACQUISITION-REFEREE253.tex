@@ -1,0 +1,140 @@
+% LSPV-5 REPORT::XOR-TRACE-ACQUISITION-REFEREE253::2026-10-31 17:48 America/Los_Angeles
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,hyperref}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue}
+\newcommand{\status}[1]{\textsf{#1}}
+\title{LSPV-5 Referee 253: XOR Trace Acquisition Is Charged, Optional, and Model-Specific}
+\author{Independent red-team / synthesis referee}
+\date{31 October 2026, 17:48 America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The exact obstruction in this run is the use of a complete-state XOR trace as a free internal oracle.  Two elementary but fully quantified theorems close that bookkeeping loophole in declared models.  For two arbitrary aligned $L$-bit snapshots, deterministic exact Hamming distance has worst-case bit-probe complexity exactly $2L$; if the previous snapshot is already retained, the current snapshot still costs exactly $L$ probes.  For a one-pass stream of toggle indices with no prefix reread, an exact tracer needs at least $L-1$ persistent bits at an $L$-event cut.  These are tracing-cost theorems only.  A SAT decider may omit the tracer, reread the source at charged cost, or use a lazy representation, so neither theorem is an arbitrary-machine SAT lower bound.  Same-language controls independently re-certified SAT Y6/V198 and UNSAT U198, rejected five malformed strings, and retained the original signed S/U extreme audit.  The arbitrary-$A\mapsto\Phi(A)$ ARC contraction, tight FLMV transport, and P versus NP all remain \status{OPEN}.
+\end{abstract}
+
+\section{Claim card and falsifiers}
+\begin{description}[leftmargin=2.9cm]
+\item[Claim ID.] \texttt{XOR-TRACE-ACQUISITION-REFEREE253}.
+\item[Exact obstruction.] Complete aligned checkpoint XOR is being consumed without charging acquisition, retention, indexing, or output.
+\item[Model.] Deterministic adaptive bit probes to two arbitrary aligned snapshots; separately, deterministic one-pass streams of toggle indices with no prefix reread.
+\item[Resource.] Snapshot/source probes, persistent bits, addresses/index tapes, and trace output.
+\item[Weakest useful theorem.] Charge the optional tracer in these models; do not transfer the charge to a solver that does not trace.
+\end{description}
+
+The four pre-proof falsifiers were:
+\begin{enumerate}[label=F\arabic*.]
+\item exact Hamming distance of two arbitrary snapshots uses $o(L)$ deterministic probes;
+\item retaining the previous snapshot makes the arbitrary current snapshot free;
+\item a no-reread online toggle tracer remains exact with $o(L)$ state at an $L$-event cut;
+\item charging the optional tracer proves an arbitrary-SAT-machine lower bound.
+\end{enumerate}
+F1--F3 are falsified in their stated models by the theorems below.  F4 is itself falsified: the premise adds an optional diagnostic to the solver.
+
+\section{Exact lemmas}
+\subsection{Post-hoc snapshot acquisition}
+\paragraph{Lemma 1 (\status{PROVED/EXACT}).}
+Let $X,Y\in\{0,1\}^L$ be independent read-only arrays.  Every deterministic adaptive bit-probe algorithm that outputs $d_H(X,Y)$ on every pair has worst-case query complexity exactly $2L$.  If $X$ is already fully known or retained, the exact complexity of reading an arbitrary $Y$ is $L$.
+
+\paragraph{Proof.}
+Reading all relevant bits is an upper bound.  For the lower bound, answer $0$ to every query.  If any of the $2L$ cells remains unread, flip only that cell.  The complete query transcript is unchanged, but the correct answer changes from $0$ to $1$.  Hence every cell must be queried.  The same adversary on the $L$ cells of $Y$ proves the retained-$X$ statement. \qed
+
+This theorem is sharper than the communication-complexity analogy because it is proved directly in the declared bit-probe model.  It charges only the trace computation, not the underlying SAT computation.
+
+\subsection{One-pass toggle retention}
+\paragraph{Lemma 2 (\status{PROVED/EXACT}).}
+Consider a deterministic one-pass tracer initially holding the all-zero parity mask for $L$ fixed cells.  Each stream event names one cell and toggles it.  The tracer cannot reread the prefix and must remain exact after every common future suffix.  At a cut after exactly $L$ events, it needs at least $L-1$ persistent bits.
+
+\paragraph{Proof.}
+Exactly the $2^{L-1}$ parity masks whose Hamming-weight parity equals $L\bmod 2$ are reachable after $L$ events: list every $1$ coordinate and pad with repeated pairs of coordinate $0$.  Suppose two different masks $p,q$ share a tracer state.  Append the same suffix that toggles every coordinate in $p$.  The continuation from $p$ has final changed-cell count $0$, while that from $q$ has count $|p\oplus q|>0$.  Determinism then contradicts exactness.  Thus the cut has at least $2^{L-1}$ distinguishable states and requires $L-1$ bits. \qed
+
+Rereading the prefix, recomputing parity, or retaining an event log evades the state lower bound, but its source/query/address/time/log space is charged.  This is the same model boundary already exposed by the HEC/RCCN exploration: it is not an unrestricted random-access lower bound.
+
+\section{Finite same-source audit}
+The producer and a no-import verifier independently reconstructed the two lemmas and the target labels.  Each invocation finished below 30 seconds (producer 2.13 seconds; verifier 3.5 seconds including exact boundary verification).  U198 was certified UNSAT by the 64-row, six-module boundary decomposition; V198 replayed a 198-bit witness; Y6 had exactly 20 models.  A capped baseline deliberately retained \texttt{UNKNOWN} for U198 and V198 rather than using timeout as UNSAT evidence.
+
+\begin{center}
+\begin{tabular}{lrrrrrr}
+\toprule
+Trace & $L$ & steps & $\sum d_{\rm logic}$ & endpoint & two-snapshot probes & lazy $\sum d_{\rm phys}$\\
+\midrule
+Y6 binary & 30 & 6 & 46 & 30 & 360 & 6\\
+Y6 Gray & 30 & 6 & 38 & 22 & 360 & 6\\
+U198 binary shared & 990 & 32 & 231 & 149 & 63360 & 32\\
+U198 Gray shared & 990 & 32 & 217 & 161 & 63360 & 32\\
+V198 binary shared & 990 & 32 & 231 & 149 & 63360 & 32\\
+U198 restored loop & 990 & 16 & 112 & 0 & 31680 & 16\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The eager fixed-slot materialization has $d_{\rm phys}=d_{\rm logic}$ at each checkpoint.  The declared lazy assignment-only materialization has one changed data bit per flip, although clause records change virtually and must be recomputed from charged source access.  The restored loop has positive adjacent activity and zero endpoint activity.  DELAY/read-only loops, same-value writes, head moves, and source rereads all exhibit positive work with zero data-bit XOR.  Variable-length or unaligned encodings do not even define a cellwise XOR until alignment and decoding semantics are fixed and charged.
+
+The raw file also includes every per-clause and per-occurrence S/U target and inversion, all pairwise SS/SU/US/UU compatibility rows, all-zero/all-one evaluations, and exact forbidden-cube checks for U198 and V198.  These remain adversarial controls, not the primary proof route.  Neither two failed endpoints nor opposite literal preferences is treated as UNSAT.
+
+\section{Resource ledger}
+\begin{center}
+\begin{tabular}{p{0.27\linewidth}p{0.65\linewidth}}
+\toprule
+Item & Charged treatment\\
+\midrule
+Discovery and policy & Choosing whether, when, and in which encoding to trace is not supplied.\\
+Selection/switching/failed trials & Controller comparisons, abandoned traces, and re-encodings remain in total time and peak space.\\
+Source/tape/query & Snapshot probes are explicit.  Prefix rereads trade state for charged reads, addresses, and head/index motion.\\
+Child/guest/retained & Child encodings, guest work, ancestors, snapshots, event logs, and parity masks count at peak.\\
+Output & Emitting complete changed-record IDs is tracer output and is charged; the JSON file is an offline audit artifact.\\
+Physical semantics & Eager slots instantiate the physical XOR lemma; lazy flags do not.  Register encodings, resets, shadow states, and random access must be declared.\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The exact fixed-$k$-tape inequality $T\geq\sum_i\lceil d_{{\rm phys},i}/k\rceil$ on disjoint intervals remains valid only after a native fixed-location configuration is specified.  Lemmas 1--2 explain the cost of obtaining the diagnostic; they do not make logical clause changes into physical writes.
+
+\section{Controller, affine gate, and ARC/FLMV audit}
+The universal adaptive controller still lacks a uniform charged method for discovering the winning policy when $K$ is unknown.  A free best-policy oracle, nonuniform advice, arbitrary delay, assignment repair presented as UNSAT evidence, and omitted switching/access/output/space remain invalid.  Lemmas 1--2 add trace acquisition to that ledger; they do not repair those gaps.
+
+The AFFINE-SMALLBIAS descent theorem remains a restricted semantic/MCSP no-go.  Its source YES/NO quantifiers and small-bias counting do not imply a runtime lower bound for the canonical SAT language, and nonlinear arbitrary algorithms remain outside its conclusion.  No promotion is made here.
+
+For $\Phi(A)$, no all-input hereditary same-model construction was found.  Branching or simplification generally leaves duplicate-free proper Monotone 3-SAT-(2,2); sound re-encoding and all its source/child bit access, length blowup, index tapes, time, and peak writable space remain \status{OPEN}.  Döcker's NP-completeness theorem alone does not transfer the numerical FLMV forbidden region.  Consequently the contraction into
+\[
+ t<\frac{241}{200},\qquad s<\frac{11642479}{23232400}
+\]
+is still \status{OPEN}.
+
+\section{Literature and repository searches before proof work}
+The exact obstruction was ``acquisition of exact complete-state Hamming/XOR diagnostics.''  Web queries were: \emph{deterministic decision tree query complexity exact Hamming distance two strings lower bound}; \emph{exact Hamming streaming communication lower bound}; \emph{asymmetric read write memory primary paper}; and \emph{Döcker duplicate-free proper Monotone 3-SAT-(2,2) NP-complete}.  Primary sources inspected were:
+\begin{itemize}
+\item K. F. Pang and A. El Gamal, ``Communication Complexity of Computing the Hamming Distance,'' \emph{SIAM J. Comput.} 15(4), 1986, \url{https://doi.org/10.1137/0215065};
+\item G. E. Blelloch et al., ``Efficient Algorithms with Asymmetric Read and Write Costs,'' \url{https://arxiv.org/abs/1511.01038};
+\item J. D\"ocker, ``Monotone 3-Sat-(2,2) is NP-complete,'' \url{https://arxiv.org/abs/1912.08032}.
+\end{itemize}
+Pang--El Gamal is a useful communication-model comparison, not a bit-probe theorem transfer.  Blelloch et al. is directly relevant only after adopting its asymmetric-memory model; no SAT lower bound transfers.  Döcker fixes the language and does not supply FLMV transport.
+
+Separate GitHub searches in \texttt{j15marti/pnp} used \texttt{exact Hamming distance bit probe query lower bound}, \texttt{XOR tracing scan materialization}, and \texttt{transition log XOR changed cells}; searches in \texttt{github.com/openai} used \texttt{exact Hamming distance bit probe} and \texttt{XOR tracing state diff}.  The project searches surfaced REF249--252 and older ledgers; OpenAI hits were unrelated.  One request returned HTTP 429 and was later retried successfully.  Absence of a matching hit is not novelty evidence.
+
+\section{Corpus reviewed}
+The run surveyed the repository tree; root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, all files under \texttt{tasks/}, and the current pnp-research skill; the universal-controller redirect and contract; AFFINE-SMALLBIAS-DESCENT-GATE2, CONSTRUCTION-STRENGTHEN17, ARC-LINEAR22-SATURATION1, and the SIL/M22 ladder; REF249--252; the latest LSPV-1--4 reports; and the HEC/RCCN, VSC-HEC, G-PPC-HEC, CRS-PPC, and CCSPC branches.  Issue \#3 was read.  The latest LSPV-4 body was substantive but lacked the required report header and final sentinel, so a nonblocking publication-only recovery request was posted before proof work.
+
+\section{Duplication / contradiction audit}
+REF249 already separated logical from physical XOR; REF250 exposed order dependence; REF251 proved the local activity identity; REF252 split endpoint flux from churn.  The present addition is the acquisition theorem for the diagnostic itself.  It does not duplicate or strengthen those claims.  The REF252 standalone displayed a missing backslash in one \verb|\qquad| transcription; the root identity and computations were correct, so this is classified as a typesetting defect, not a mathematical contradiction.
+
+The newest specialist findings are compatible: LSPV-1's three-clause residual classification is bounded-local; LSPV-2's private balanced NAE gadget projects trivially; LSPV-3's fixed-weight edge-cover pruning has potentially dominating overhead; LSPV-4's one-pass grammar-validation lower bound is evaded by indexed rereads.  None supplies hereditary $\Phi(A)$ or tight FLMV transport.
+
+\section{What changed relative to root MAIN}
+Added two exact trace-acquisition lemmas and their finite audit; retired free internal complete-XOR access in the declared models; added the explicit scan/store/reacquire accounting fork.  No SAT decision theorem, ARC edge, or FLMV exponent changed.
+
+\section{Adopted / rejected / retired prior components}
+\textbf{Adopted:} canonical target validation, U198/V198/Y6 labels, signed S/U controls, REF249--252 representation boundaries, and the fully charged controller ledger.  \textbf{Rejected as transfers:} communication and asymmetric-memory results outside their models.  \textbf{Retired:} free complete-XOR oracle and XOR-only universal hardness.  \textbf{Retained OPEN:} uniform controller discovery, hereditary same-model $\Phi(A)$, fully charged SAT-to-target transport, and numerical FLMV contradiction.
+
+\section{Stale or overstated claims found}
+Any statement that ``the XOR lower bound is a SAT runtime lower bound'' is overstated: it lower-bounds only a declared materialized tracer.  Any use of NP-completeness alone to inherit the tight FLMV numerical box is also stale.  P versus NP remains open.
+
+\section{Artifacts and verification}
+Producer SHA-256: \texttt{fe12e8d70d2a26498451543e2b4b34d8d7659c02b6e05d594ec8963c3853ae91}.  Independent verifier SHA-256: \texttt{9a33399b3add19ca46a99f463af25827cdff13a35c3bd82d3328e1735e90e103}.  Raw JSON SHA-256: \texttt{d5da6ef20f3ba3421685c50fd98e446f030d08f8ab1b65c98411c845dde6a3c6}.  The raw audit recorded 630 snapshot adversary checks, 404,885 toggle-stream checks, and 16,866 independent readback checks.
+
+\paragraph{Final status.}
+Trace acquisition lemmas: \status{PROVED/EXACT}.  Finite controls: \status{COMPUTATIONAL}.  Free internal XOR oracle and XOR-only universal hardness: \status{FALSIFIED/RETIRED}.  Arbitrary-$A\mapsto\Phi(A)$ ARC, numerical FLMV transport, and P versus NP: \status{OPEN}.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::XOR-TRACE-ACQUISITION-REFEREE253
+\end{document}
