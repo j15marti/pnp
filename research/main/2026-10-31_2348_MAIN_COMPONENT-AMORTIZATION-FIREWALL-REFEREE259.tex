@@ -1,0 +1,202 @@
+% LSPV-5 REPORT::COMPONENT-AMORTIZATION-FIREWALL-REFEREE259::2026-10-31T23:48:00-07:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,enumitem,hyperref,longtable}
+\hypersetup{colorlinks=true,urlcolor=blue}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newcommand{\status}[1]{\textsf{#1}}
+\title{LSPV-5 Referee 259: Exact component amortization threshold and the power-shrink firewall}
+\author{Independent red-team / synthesis referee}
+\date{31 October 2026, 23:48 America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+REF258's canonical branch repair costs exactly 201 variables and 268 clauses.  This run proves the exact certificate-carrying condition under which disconnected satisfiable components can amortize that cost while preserving both SAT and UNSAT answers.  If a valid canonical source is $F=G\mathbin{\dot\cup}P$, the pivot lies in $G$, and every component of $P$ has a checked satisfying assignment, then
+\[
+ \operatorname{SAT}(F\!\upharpoonright_{x=b})
+ \iff \operatorname{SAT}(G\!\upharpoonright_{x=b})
+ \iff \operatorname{SAT}(R(G,x=b)).
+\]
+Writing $h=|\operatorname{var}(P)|$, the repaired child has exactly
+$(n-h+201,m-4h/3+268)$.  Strict structural shrink begins at $h=204$, but power shrink $n'\le n^\lambda$ requires the retained answer-bearing core already to have at most $n^\lambda-201$ variables.  Thus component peeling does not manufacture an ARC contraction; it requires a near-total certified peel and a charged selector.  Independent replay passed 575,026 checks.  Arbitrary-$A\mapsto\Phi(A)$, FLMV transport, and P versus NP remain \status{OPEN}.
+\end{abstract}
+
+\section{Verdict and falsifiers}
+The canonical language is D\"ocker's duplicate-free proper Monotone 3-SAT-$(2,2)$: every clause has three distinct variables of one sign, clauses are unique, and every variable occurs exactly twice at each polarity.  Malformed strings reject.  The strict-2P2N language is only a comparative superset.
+
+\begin{center}
+\begin{tabular}{p{0.46\linewidth}p{0.20\linewidth}p{0.25\linewidth}}
+\toprule
+Claim & Status & Evidence\\
+\midrule
+Certificate-carrying component concentration & \status{PROVED/EXACT} & conjunction semantics and checked witnesses\\
+Minimum strict structural threshold $h=204$ & \status{PROVED/EXACT} & exact occurrence/size identities\\
+Same-source SAT/UNSAT threshold controls & \status{COMPUTATIONAL} & independent reconstruction and replay\\
+All-input power-short child from peeling & \status{OPEN / NOT SUPPLIED} & near-total-peel inequality\\
+Arbitrary-$A\mapsto\Phi(A)$ and FLMV & \status{OPEN} & selector, contraction, and numerical transport missing\\
+P versus NP & \status{OPEN} & load-bearing arrows remain open\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Four concrete falsifiers were tested:
+\begin{enumerate}[label=F\arabic*.]
+\item fewer than 204 certified padding variables strictly amortize REF258's $+201,+268$ overhead;
+\item any strict additive shrink automatically yields $N^\lambda$ power shrink;
+\item component selection and component SAT certificates are free, including on UNSAT sources;
+\item component, endpoint, and XOR statistics distinguish the U198 and V198 labels.
+\end{enumerate}
+F1 is false by the exact threshold; F2 is false by the power inequality; F3 is an invalid oracle assumption; F4 is false on the paired controls.
+
+\section{Exact theorem}
+Let $F=G\mathbin{\dot\cup}P$ be the disjoint union of incidence components of a valid canonical formula.  Let $x\in\operatorname{var}(G)$ and $b\in\{0,1\}$.  A peel certificate lists one satisfying assignment for every component of $P$, each checked against its source clauses.
+
+\begin{lemma}[Certified component concentration]
+Under the preceding conditions,
+\[
+ \operatorname{SAT}(F\!\upharpoonright_{x=b})
+ \iff \operatorname{SAT}(G\!\upharpoonright_{x=b}).                 \tag{1}
+\]
+\end{lemma}
+\begin{proof}
+Because the variable sets of $G$ and $P$ are disjoint, any model of the left side restricts to a model of $G\!\upharpoonright_{x=b}$.  Conversely, join a model of $G\!\upharpoonright_{x=b}$ with the checked component witnesses for $P$.  The union satisfies every clause of $F\!\upharpoonright_{x=b}$.
+\end{proof}
+
+\begin{theorem}[Component-amortized canonical re-entry]
+Let $R$ be REF258's all-input canonical $q=4$ branch repair.  Under the lemma's hypotheses,
+\[
+ \operatorname{SAT}(F\!\upharpoonright_{x=b})
+ \iff \operatorname{SAT}(R(G,x=b)).                                \tag{2}
+\]
+If $F$ has $(n,m)$ and $P$ has $h$ variables, then $P$ has $4h/3$ clauses and the child has
+\[
+ (n',m')=(n-h+201,\;m-4h/3+268).                                    \tag{3}
+\]
+It strictly shrinks both counts iff $h>201$; since $3\mid h$, the minimum is $h=204$.
+\end{theorem}
+\begin{proof}
+Equation (2) is (1) composed with REF258's proved equivalence
+$\operatorname{SAT}(G\!\upharpoonright_{x=b})\iff\operatorname{SAT}(R(G,x=b))$.
+Every canonical component has four literal occurrences per variable and three per clause, so $4h=3|P|$.  Removing $P$ leaves $(n-h,m-4h/3)$; REF258 adds exactly $(201,268)$.  Both inequalities in (3) are strict precisely when $h>201$.  Divisibility follows again from $4h=3|P|$.
+\end{proof}
+
+This theorem is same-model and both-label correct.  It does not make certificate acquisition or component choice free.
+
+\section{Power-shortness and selection firewalls}
+For fixed $0<\lambda<1$, the variable condition is
+\[
+ n-h+201\le n^\lambda
+ \quad\Longleftrightarrow\quad
+ h\ge n+201-n^\lambda.                                               \tag{4}
+\]
+Equivalently, the retained answer-bearing core has at most $n^\lambda-201$ variables.  A constant additive saving is therefore categorically weaker than power shrink.
+
+On an UNSAT source at least one retained component must be UNSAT, while every discarded component requires a checked SAT witness.  A policy that always knows which component carries the negative answer is a best-policy oracle.  Discovering components, finding or receiving the witnesses, verifying them, selecting the retained core, and storing or rereading all certificate/source data are charged.  On a connected source $P=\varnothing$, (3) is exactly REF258's growth recurrence.  This is the decisive adversarial control.
+
+Large disjoint easy padding can make a fixed 399-variable child power-short relative to the padded source, for example at $\lambda=1/2$ after sufficient padding.  Such a padding-dominated family is not an all-input ARC theorem and supplies no direct FLMV contradiction.
+
+\section{Independent same-source controls}
+U198 is the certified canonical UNSAT core; V198 is its same-size SAT partner; Y6 is a valid six-variable SAT component.  For $p\in\{33,34\}$ the producer formed both
+$U198\mathbin{\dot\cup}pY6$ and $V198\mathbin{\dot\cup}pY6$ using disjoint renamings and checked every padding witness.
+
+\begin{center}
+\begin{tabular}{lrrrrrr}
+\toprule
+Source & label & $(n,m)$ & source bits & child $(n',m')$ & child bits & bit delta\\
+\midrule
+$U+33Y$ & UNSAT & $(396,528)$ & 14,820 & $(399,532)$ & 14,932 & $+112$\\
+$V+33Y$ & SAT   & $(396,528)$ & 14,820 & $(399,532)$ & 14,932 & $+112$\\
+$U+34Y$ & UNSAT & $(402,536)$ & 15,044 & $(399,532)$ & 14,932 & $-112$\\
+$V+34Y$ & SAT   & $(402,536)$ & 15,044 & $(399,532)$ & 14,932 & $-112$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The declared gamma-header/fixed-width source encoding thus crosses its local boundary at exactly the same $33/34$ split.  Encoding shrink is representation-specific evidence, not a native FLMV theorem.
+
+The independent verifier imports no producer.  It reconstructed U/V/Y and both children, checked canonical grammar, component partitions, the U boundary certificate, V and critical-gadget witnesses, all clause-local S/U extrema, all 286,788 pair rows, endpoints, binary/Gray XOR trails, malformed rejects, threshold rows, and archive hashes.  It reported 575,026 checks.  Six capped DPLL runs each consumed 600 nodes and remained unresolved; literal tests ranged from 2,203,788 to 2,343,519.  No solver conclusion is inferred from a cap, and no failed search is an UNSAT certificate.
+
+\section{Signed extremes and XOR adjunct}
+For each U/V padded control, the archive contains every original clause's S and U local target and inverse, exact SS/SU/US/UU compatibility for 143,380 clause pairs, global $0^n/1^n$ histograms, and intermediate flips.  U and V have identical endpoint and pair-signature counts; these data do not decide the label.
+
+\begin{center}
+\begin{tabular}{llrrr}
+\toprule
+Instance & logical code & state bits & $\sum d_{\rm logic}$ & endpoint delta\\
+\midrule
+$U+34Y$ & binary & 2,010 & 60 & 26\\
+$U+34Y$ & Gray   & 2,010 & 55 & 27\\
+$V+34Y$ & binary & 2,010 & 60 & 26\\
+$V+34Y$ & Gray   & 2,010 & 55 & 27\\
+Y6      & binary & 30 & 64 & 12\\
+Y6      & Gray   & 30 & 47 & 13\\
+\bottomrule
+\end{tabular}
+\end{center}
+These are offline source-indexed logical diagnostics.  No actual fixed-location machine was instrumented, so $d_{\rm phys}$ is \emph{not measured}.  A 10,000-step DELAY and 1,000 read-only rereads demonstrate positive work with zero data-bit changes.  Lazy flags, changed-then-restored bits, unaligned source/child encodings, head/register state, and trace computation block any universal runtime inference from XOR.
+
+\section{Full resource ledger}
+\begin{longtable}{p{0.24\linewidth}p{0.69\linewidth}}
+\toprule
+Resource & Required charge\\
+\midrule
+\endhead
+Validation & Full target grammar, duplicate detection, occurrence counts, malformed reject, and component discovery.\\
+Certificate acquisition & Finding or receiving a SAT witness for every peeled component; verification alone does not supply it.\\
+Policy/selection & Core choice, pivot, branch, order, retries, cutoff, unknown $K$, and switching; no advice or best-policy oracle.\\
+Source/index & Component IDs, renaming, q4 descriptor, source/template bits, index tapes, and head positions.\\
+Child/access/output & Materialized records or virtual bit queries, descriptor scan, certificate streams, and final answer.  Q4-VIRTUAL-INDEX290's accessor does not shorten the child.\\
+Guest/failed trials & Delay, copying, replay, abandoned policies, unresolved nodes, and proof checking.\\
+Peak space & Source indices, component queue, certificates, query/child, guest state, retained ancestors, caches, and output while live.\\
+XOR & Offline here; if internal, scans, alignment, popcount, registers, heads, shadows, and trace output all count.\\
+\bottomrule
+\end{longtable}
+
+\section{Literature and GitHub search}
+The obstruction was named before proof work: \emph{certified incidence-component peeling versus fixed canonical branch-repair overhead}.  Web queries were: ``SAT incidence graph connected component decomposition satisfiability primary paper preprocessing''; ``kernelization replacement gadget constant additive overhead protrusion replacement primary paper''; ``parameterized complexity polynomial kernel power size reduction definition primary paper''; and ``bounded occurrence SAT disjoint union components exact occurrence primary paper.''
+
+Biere--Sinz, \emph{Decomposing SAT Problems into Connected Components} (SAT 2006), proves the independent-component SAT equivalence used in (1).  The meta-kernelization literature formalizes answer-preserving size reduction but does not make representatives, acquisition, or selection constructive and free; recent kernelization surveys explicitly flag hidden/nonconstructive representative issues.  Berman--Karpinski--Scott supplies bounded-occurrence context, not exact target quotas or FLMV transport.  Direct transfer: component conjunction.  Structural analogy requiring a new bridge: protrusion replacement/kernelization.  Failed transfer: NP-completeness, generic representatives, or padding imply neither (4) nor the numerical FLMV region.
+
+Separate GitHub queries searched \texttt{j15marti/pnp} for ``component peel q4 branch reentry'', ``component amortization power-short'', and REF258, and the OpenAI organization for SAT component/kernelization and Monotone 3-SAT implementations.  REF258 and Q4-VIRTUAL-INDEX290 explicitly leave net shrink open; CHILD-SCAN-AMORTIZATION272 is model-restricted.  No relevant OpenAI implementation was found.  Search failure is not a novelty proof; this is only a project-local theorem.
+
+\section{Corpus reconciliation}
+\subsection*{CORPUS REVIEWED}
+The run surveyed the repository tree; root main, AGENTS, CODEX, the pnp-research skill and tasks; the 09:48 redirect/contract; AFFINE-SMALLBIAS-DESCENT-GATE2, CONSTRUCTION-STRENGTHEN17, ARC-LINEAR22-SATURATION1; REF255--258; issue 3; and the newest role reports.  The 23:36 LSPV-4 artifact was absent at preflight, so a nonblocking recovery request was posted.  SURVIVOR-FRONTIER292 then appeared and was read before synthesis: it proves the restricted all-input source-survivor bound $e(p)\le2\min(k_0,k_1)$ and hence that one-pivot source-identity-preserving canonical children cannot be shorter.  It explicitly does not cover semantic/noninjective compression.
+
+The current cycle contributes LSPV-1 SPILL-BUDGET294's restricted $\nu+\eta>e$ certificate and BRANCH-PLATEAU295's universal flat-$e$ path; LSPV-2 Q4-VIRTUAL-INDEX290's $O(\log N)$ virtual accessor after a charged descriptor scan; LSPV-3 FIRST-RESOLUTION-AND-WITNESS-FRAGILITY-GATE292's width-four/tautological first-round resolvents and critical-variable bound; and LSPV-4 SURVIVOR-FRONTIER292's source-identity survival theorem.  These are restricted evidence, not a universal solver or lower bound.
+
+\subsection*{DUPLICATION / CONTRADICTION AUDIT}
+Component conjunction is known and already appears in the corpus.  New here is the exact composition with REF258: the $h=204$ structural threshold and inequality (4).  There is no contradiction with REF258: connected inputs still grow by $(201,268)$.
+
+\subsection*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+The open ``can a certified peel dominate q4 overhead?'' question now has an exact answer.  It can dominate additively iff $h\ge204$, but power shrink demands a near-total peel and charged answer-bearing-core selection.  The highest-value next target is therefore a connected-instance semantic contraction or a strictly smaller critical gadget, not more easy disconnected padding.
+
+\subsection*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted: REF258 re-entry, Q4 virtual access, U/V/Y controls, component conjunction, exact target validation, and logical/physical XOR separation.  Rejected: free component certificates, a free UNSAT-core selector, endpoint failure, fake assignment-repair UNSAT, nonuniform advice, uncharged switching/access/output/space, and NP-completeness-only FLMV transport.  Retired: the claim that any positive additive component saving is an ARC contraction.
+
+\subsection*{STALE OR OVERSTATED CLAIMS FOUND}
+LSPV-1 BRANCH-PLATEAU295 lacks the required \texttt{REPORT::} token in its opening marker.  LSPV-3 GATE292 lacks both the required opening marker and final sentinel.  LSPV-4 SURVIVOR-FRONTIER292 has a final sentinel but no required opening report marker.  Their mathematical bodies remain restricted; these are publication-protocol defects.  Root main still carried REF258 at preflight and required whole-document reconciliation.
+
+\section{Affine/controller/$\Phi$/FLMV audit}
+The affine small-bias theorem remains only a restricted semantic/MCSP no-go.  Its construction, quantifiers, set-size count, and nonlinear controls do not imply arbitrary SAT runtime hardness.  The universal stateful controller still owes uniform policy discovery with unknown $K$, arbitrary guest delay, failed trials, and all selection/switching/access/output/space costs.
+
+Equation (2) certifies a conditional hereditary same-language composition for every valid disconnected target input having the stated witnesses.  It does not certify arbitrary-$A\mapsto\Phi(A)$ on all target inputs, because connected inputs and certificate/selector acquisition remain.  It does not enter the strict FLMV box
+\[
+t<241/200,\qquad s<11642479/23232400.
+\]
+P versus NP remains open.
+
+\section{Artifacts}
+\begin{itemize}
+\item \path{experiments/arc/lspv5_259/component_amortization_firewall_referee259.py}
+\item \path{experiments/arc/lspv5_259/verify_component_amortization_firewall_referee259.py}
+\item \path{results/raw/arc/2026-10-31_2348_LSPV5_COMPONENT_AMORTIZATION_FIREWALL_REFEREE259_raw.json}
+\item \path{results/raw/arc/2026-10-31_2348_LSPV5_COMPONENT_AMORTIZATION_FIREWALL_REFEREE259_raw.json.gz.b64}
+\item \path{research/coordination/2026-10-31_2348_LSPV5_TO_FIVE_ROLE_COMPONENT_AMORTIZATION_FIREWALL_REFEREE259.md}
+\end{itemize}
+
+\noindent\textbf{Final status.}  Certificate-carrying component concentration and the exact $h=204$ additive threshold are \status{PROVED/EXACT}.  Finite controls are \status{COMPUTATIONAL}.  All-input power-shortness, arbitrary-$A\mapsto\Phi(A)$, FLMV transport, and P versus NP are \status{OPEN}.
+
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::COMPONENT-AMORTIZATION-FIREWALL-REFEREE259
