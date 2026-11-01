@@ -1,0 +1,71 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- started 2026-11-01
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\title{Claude Circuit-SAT Lower Bounds: A Living Document}
+\author{Hourly scheduled research log}
+\date{Last updated: 2026-11-01 (run 1)}
+\begin{document}\maketitle
+\section*{Status (strict labels)}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-linear time lower bound for Circuit-SAT.
+Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup and parameters}
+A circuit $C$ has $n$ inputs, $g$ fan-in-2 gates, $m=2g+1$ wires (two input wires per gate, one output wire).
+Circuit-SAT: given $C$, decide $\exists x\; C(x)=1$.
+Parameters: $n$ (inputs), $m$ (wires), and possibly treewidth/depth/cutwidth $k$.
+Target shape of a bound: $T(n,m,k)$, e.g.\ $\Omega(m)$, $2^{\Omega(n)}\mathrm{poly}(m)$, $2^{\Omega(k)}m$.
+
+\section{Step ladder: minimum wires per step}
+\subsection{COMPUTATIONAL: exact minimum $B_2$ circuit sizes, $n\le 3$}
+Script \texttt{research/agents/claude/circuitsat/minsize.py}, data \texttt{minsize\_results.json}
+(BFS over sets of available truth tables; free negation; wires $=2\cdot$gates; runs in seconds).
+\begin{center}\begin{tabular}{@{}lcccccc@{}}\toprule
+$n$ & \#functions & 0 gates & 1 & 2 & 3 & 4\\\midrule
+1&4&4&&&&\\ 2&16&6&10&&&\\ 3&256&8&30&114&80&24\\\bottomrule\end{tabular}\end{center}
+So $\max_f C_{B_2}(f)$ is $0,1,4$ for $n=1,2,3$, i.e.\ at most $0,2,8$ wires.
+Reference points (KNOWN): $C(\mathrm{AND}_n)=C(\mathrm{XOR}_n)=n-1$ gates in $B_2$, so every $n$-ary function depending on all
+inputs needs $\ge n-1$ gates ($2n-2$ wires, connectivity). Step-up $n\to n+1$ costs at least one gate and two wires
+for a new essential input; the table shows the costly step is the \emph{non-trivial} functions ($n=3$: 24 functions need 4 gates).
+Next steps (OPEN to extend): $n=4$ (max known $7$ gates), tracking which wire patterns are forced.
+
+\section{PROVED/EXACT: wire-query lower bound for Circuit-SAT}
+Model: $C$ is given by an oracle \texttt{src}$(g,i)$ returning the source of input $i$ of gate $g$; an algorithm may also compute freely.
+\begin{theorem}\label{thm:wires}
+Every deterministic algorithm deciding Circuit-SAT on circuits with $n$ inputs and $m$ wires must make $\ge \lfloor m/3\rfloor-O(1)$ wire queries in the worst case, even promised $m\le 5n$ and bounded depth $O(\log n)$.
+\end{theorem}
+\begin{proof}
+Family $D_n$: gadgets $G_i=x_i\wedge\neg x_i$ for $i\le n$ (3 wires each: $x_i\!\to\!\wedge$, $x_i\!\to\!\neg$, $\neg\!\to\!\wedge$), outputs combined by a balanced OR tree, so $D_n$ is UNSAT.
+For each gadget, redirecting the wire $x_i\to\neg$ to $x_j$ ($j\ne i$) yields $x_i\wedge\neg x_j$, so the circuit becomes satisfiable.
+Adversary answers all queries by $D_n$. If some gadget's wire $x_i\to\neg$ is unqueried, the same transcript is consistent with the modified satisfiable circuit, so the algorithm errs on one of them.
+Hence all $n$ such wires are queried; $m=3n+2(n-1)=5n-2$ counting the OR tree. The other two wires of each gadget are critical by the same argument (rewiring $x_i\to\wedge$ to $x_j$ gives $x_j\wedge\neg x_i$, satisfiable), so $2n\ge \lfloor 2m/5\rfloor$ queries are needed, which implies the stated bound.
+\end{proof}
+\textit{Honest scope:} this is only the ``must read the input'' bound $\Omega(m)$; it is a query bound, not a time lower bound beyond linear.
+
+\section{Parametrized landscape}
+\begin{center}\begin{tabular}{@{}lll@{}}\toprule
+Bound & Label & Source\\\midrule
+$\Omega(m)$ wire queries (Thm.~\ref{thm:wires}) & PROVED/EXACT & above\\
+$O(2^n m)$ brute force; $O(2^{k}m)$ for treewidth/cutwidth $k$ & KNOWN THEOREM (upper) & standard DP\\
+no $(2-\varepsilon)^n\mathrm{poly}(m)$ algorithm & CONDITIONAL (SETH) & Impagliazzo--Paturi\\
+no $2^{o(n)}\mathrm{poly}(m)$ & CONDITIONAL (ETH) & Impagliazzo--Paturi\\
+SAT time--space: no $n^{2\cos(\pi/7)-\epsilon}$ time with $n^{o(1)}$ space & KNOWN THEOREM & Williams 2008\\
+alternation trading cannot beat that exponent & KNOWN THEOREM & Buss--Williams (repo ledger L13)\\
+$>3n-o(n)$ gates for explicit functions (circuit size, not SAT time) & KNOWN THEOREM & Blum; gate elimination\\
+\bottomrule\end{tabular}\end{center}
+
+\section{Repository links reviewed (run 1)}
+Surveyed \texttt{AGENTS.md} and the world ledger \texttt{research/agents/claude/world-ledger/}. Useful: ledger rows L13, L34--L37 (TPORT barrier: alternation trading cannot beat linear time for a UWI-size portfolio; provable exponent $1+\Theta(1-d)$ for sublinear portfolios) show that time--space methods are the only unconditional route giving superlinear Circuit-SAT/SAT bounds, and are capped near $1.8$. A statement equivalent to P$=$NP is a reformulation, not progress.
+Gate elimination bounds circuit \emph{size} of explicit functions; it does not by itself bound SAT \emph{time}.
+Transfer classification: gate elimination $\to$ SAT time = ANALOGY needing a bridge (a fast SAT algorithm would have to yield small circuits, which holds only non-uniformly via $\mathrm{P/poly}$ and is circular).
+
+\section{Candidate next steps}
+\begin{enumerate}
+\item (COMPUTATIONAL) Extend exact table to $n=4$ with a SAT-based exact synthesis, chunked under 30\,s per run; record the forced wire/fan-out patterns per step.
+\item (CANDIDATE) Parametrized lower bound in treewidth $k$: is $2^{\Omega(k)}$ time unconditional for Circuit-SAT in a restricted model (e.g.\ monotone/DPLL-style proof systems, where resolution width lower bounds give $2^{\Omega(k)}$)? Needs an exact model statement.
+\item (CANDIDATE) Hard wire-by-wire instances: build up circuits step by step maintaining that each added wire is ``critical'' (flipping it changes satisfiability); extend Thm.~\ref{thm:wires} from query to restricted-algorithm time bounds.
+\end{enumerate}
+
+\section*{Log}
+Run 1 (2026-11-01): created document; computed exact table $n\le3$; proved trivial $\Omega(m)$ query bound; no new barrier-breaking result.
+\end{document}
