@@ -1,0 +1,73 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append-only log of runs at the bottom; sections 1-4 edited in place.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}
+\newtheorem{thm}{Theorem}
+\title{Claude Circuit-SAT Lower-Bound Ladder (living document)}
+\author{Scheduled hourly research routine}
+\date{Last updated: 2026-11-01}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. No superlinear unconditional lower bound
+for Circuit-SAT is claimed anywhere below. Status labels: KNOWN, PROVED/EXACT, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Goal and plan}
+Study $\textsc{CSAT}(n,s)$: given a fan-in-2 circuit with $n$ inputs and $s$ gates, is it satisfiable?
+Ladder: (i) fix the simplest circuits, (ii) record the exact minimum gates/wires needed to build each function
+as $n$ grows, (iii) ask which of these building costs transfer to a decision lower bound, with the bound allowed
+to be parametrized in $(n,s)$ (and later depth, fan-out, treewidth).
+
+\section{Building ladder: exact minimum construction cost}
+Model: gates are arbitrary binary Boolean functions, fan-in 2, inputs/negations free. Wires $=2\cdot$gates (fan-in 2 each,
+counting each gate's two incoming edges).
+\begin{lemma}[connectivity, PROVED/EXACT]\label{l:conn}
+A circuit depending on all $n$ inputs has at least $n-1$ gates, hence at least $2(n-1)$ wires; AND$_n$ attains it.
+\end{lemma}
+\begin{proof} Each gate merges at most two connected components of the underlying graph ($n$ input components initially);
+the output must lie in the single component containing all inputs, so $\ge n-1$ gates. A balanced AND tree attains it.\end{proof}
+
+\begin{thm}[COMPUTATIONAL, exhaustive search \texttt{research/agents/claude/circuitsat/minsize.py}]\label{t:tab}
+Number of functions, up to output negation, whose minimum circuit has exactly $g$ gates:
+\begin{center}\begin{tabular}{lccccc}\toprule
+$n$ & $g=0$ & 1 & 2 & 3 & 4\\\midrule
+2 & 3 & 5 & -- & -- & --\\
+3 & 4 & 15 & 57 & 40 & 12\\\bottomrule\end{tabular}\end{center}
+So $\max_f C(f)=1$ for $n=2$ and $4$ for $n=3$ (matches the known values; counts sum to $2^{2^n-1}$: 8 for $n=2$, 128 for $n=3$).
+Hence minimum wires $2,\dots,8$ for $n=3$.
+\end{thm}
+Interpretation: the hardest 3-input function costs 4 gates (8 wires) versus the connectivity floor $2$ gates (4 wires); the
+gap between Lemma~\ref{l:conn} and the true cost already appears at $n=3$ (e.g.\ parity-type functions). Runtime note: $n=3$,
+depth 4 took 57\,s in one invocation, above the 30\,s rule; for $n=4$ the search must be chunked by first-gate choice
+(next-step task) or replaced by SAT-based synthesis.
+
+\section{From building cost to a decision bound}
+\begin{lemma}[linear read bound, KNOWN/easy, PROVED/EXACT]\label{l:read}
+Any algorithm deciding $\textsc{CSAT}$ on circuits with $s$ gates given as an adjacency oracle makes $\Omega(s)$ queries.
+\end{lemma}
+\begin{proof} Let $C_0=\bigvee_{i\le s/3}(x_1\wedge\neg x_1)$ (unsatisfiable). Changing any single block to $x_1\wedge x_2$ gives a satisfiable circuit,
+so an adversary forces a query to every block.\end{proof}
+Parametrized picture:
+\begin{itemize}
+\item Unconditional: $T(n,s)\ge \Omega(s)$ (Lemma~\ref{l:read}); $T\ge\Omega(n)$ to see all relevant inputs. KNOWN. 
+\item Upper bound: $O(2^n s)$ by enumeration; $\mathrm{poly}$ for fixed treewidth $w$ ($2^{O(w)}s$). KNOWN.
+\item Conditional: ETH (via CNF$\to$circuit) gives $2^{\Omega(n)}$ for circuits with $s=O(n)$; SETH gives $2^{(1-\epsilon)n}$ barrier for CNF
+inputs. CONDITIONAL, not a separation.
+\item Gap: nothing unconditional between $\Omega(s)$ and $2^n s$ for general algorithms. OPEN.
+\end{itemize}
+Repository link: the P-vs-NP corpus (AGENTS.md ledger rows L34--L37, \texttt{research/agents/claude/tport/}) shows alternation-trading
+proofs cannot beat linear time for UWI-sized portfolios; this explains why time-space methods stall near $\Omega(s)$ for
+CSAT-like portfolios and is the closest existing barrier to this ladder. Not used as a theorem here.
+
+\section{Next steps}
+\begin{enumerate}
+\item Chunked exact table for $n=4$ (known max 7 gates) and track wires versus fan-out.
+\item Define wire-by-wire certificate: for a circuit $C$ with a satisfying-assignment-free ``unsat core'' of gates, lower-bound
+the number of gates any \emph{verifier-free} proof of unsatisfiability must touch (CANDIDATE: connect to resolution width/size on the Tseitin encoding).
+\item Parametrize by depth $d$ and fan-out $f$: test whether $T(n,s,d)$ has an unconditional bound in restricted models (monotone, bounded-depth), where known lower bounds exist.
+\end{enumerate}
+
+\section*{Run log}
+\begin{itemize}
+\item 2026-11-01: file created; Lemma 1, Lemma 2, table $n\le3$ (COMPUTATIONAL). No new claim toward P vs NP.
+\end{itemize}
+\end{document}
+% END_OF_LIVING_DOCUMENT::ClaudeCircuitSAT
