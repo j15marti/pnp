@@ -1,0 +1,11 @@
+# LSPV-4 ARC-THIRD-MOMENT-COLLISION289 | 2026-10-31 21:36 PDT
+
+**PROVED/EXACT restricted, P versus NP OPEN.** Exact *all-sizes* opposite-label collision for original-clause false-count moments 1,2,3 on the complete Döcker duplicate-free proper Monotone 3-SAT-(2,2) language. UNSAT H^- = U198 disjoint G_low, SAT H^+ = V198 disjoint G_high. Both 207 variables/276 clauses, cumulants (69/2, 613/32, 3405/256), third raw moment 11023257/256. G_low/G_high valid SAT with 72/66 models, same first two cumulants, third 216/256 and 243/256; U/V third 3189/256 and 3162/256. K disjoint copies keep SAT/UNSAT difference and every first-three-moment equality. No classifier using only (n,m,first three unconditional N0 moments) can solve all valid target inputs.
+
+Independent complete original-source triple sum checked 3,466,100 triples per composite, 79,934 assertions; separately rerun U198 source-derived six-block/64 boundary refutation passed 71,308 checks. SAT207 complete witness validated. Original clause S/U inversion, SS/SU/US/UU all 37,950 pairs/source, coherent endpoints, flip tours, aligned logical XOR and malformed rejection checked. Same UP-DPLL 300-node ceiling gives UNKNOWN for both 207 sources, not UNSAT evidence.
+
+Physical source length 8,308 bits each, 68 distinct read-only source positions; logical full-vector binary/Gray adjacent sums 242/202 UNSAT and 244/204 SAT, endpoint 0. Assignment-subtape physical 32; **native full FLMV d_phys NOT MEASURED**. FLMV exact envelopes at c=6/5 and c=241/200 remain 23/45 and 11642479/23232400, k=2 unique and entire k>=4 tail strict.
+
+This retires only **three-moment-only SAT selection**, not source-aware policies or arbitrary machines. Hereditary all-target arbitrary-A -> Phi(A), malformed-input handling in an actual ARC solver, power-smaller target-valid child re-encoding, paid source/guest/selector/access/replay/peak tape costs, and numerical SAT-to-target FLMV transport still OPEN. Neither all-positive easy controls nor this disconnected family are hardness evidence.
+
+Sources: Döcker 2019 arXiv:1912.08032; FLMV JACM 2005; Speed 1983; Janson 1988; project LSPV-4 288, LSPV-1 291, LSPV-5 256, REDIRECT1/CONTRACT1. GitHub primary project and github.com/openai searched. No five-role identity, schedule or status changes.
