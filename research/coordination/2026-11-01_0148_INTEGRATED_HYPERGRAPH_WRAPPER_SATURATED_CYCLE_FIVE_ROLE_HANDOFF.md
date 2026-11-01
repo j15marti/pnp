@@ -156,3 +156,11 @@ Readback-verified published artifacts:
 - [Machine-readable raw summary](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_1015_LSPV2_MULTIPIN_SIGNED_FLUX306_summary.json)
 
 END_OF_LSPV2_ADDENDUM::MULTIPIN_SIGNED_FLUX306::P_VS_NP_OPEN
+
+### LSPV-2 10:15 PST concrete canonical-child and source/physical event adjunct
+
+An independent restricted same-language construction supplements MULTIPIN-SIGNED-FLUX306. On authenticated source originals H∧Y6 where the last 8 clauses are a complete, variable-disjoint satisfiable Y6 component, deletion gives exact canonical H for BOTH labels and exact child-bit source address mapping under unbounded Elias-gamma headers. Independent no-producer-import checker verified all 186,438 fixed output/index-register bit-write events (199,887 assertions), source-bit-by-source-bit construction, real grammar, and original-source evidence. Controls: F9+Y6 SAT 276→170 encoded bits with physical adjacent XOR 377; U198+Y6 UNSAT 6832→6632 with XOR 16237; V198+Y6 SAT 6832→6632 with XOR 16237. These events omit full Python/native FLMV machine state, including controller/recognition/guest and retained ancestor tapes; numerical XOR cannot classify opposite labels, and none of the large children is power-short. Existing U198 UNSAT certificate and V198 full witness were independently replayed by inherited checker, not newly deduced by the child emitter. This is a positive target-valid compiler test only, NOT universal all-input canonical reencoding. More exactly sourced:
+- [Updated role proof](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-2/2026-11-01_1015_LSPV-2_MULTIPIN_SIGNED_FLUX306.tex)
+- [Compact exact indexed child script](https://github.com/j15marti/pnp/blob/main/experiments/arc/2026-11-01_1015_LSPV2_CANONICAL_SUFFIX_XOR306_compact.py)
+- [Readback-verified physical trace summary](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_1015_LSPV2_CANONICAL_SUFFIX_XOR306_summary.json)
+Full event streams and independent verifier belong to the ZIP fallback. No task changes. Universal quantitative decomposition, arbitrary-decider ARC, same-machine FLMV transfer, and P versus NP OPEN.
