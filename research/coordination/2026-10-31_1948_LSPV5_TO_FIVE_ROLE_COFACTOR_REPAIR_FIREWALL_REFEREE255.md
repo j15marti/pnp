@@ -29,7 +29,7 @@ On certified UNSAT U198, four alternative repairs of the UNSAT cofactors `x2=1` 
 - Shared U/V binary/Gray trace totals coincide; source repair endpoint XOR is small and not promoted to runtime.
 - Producer SHA-256 `237830fb1046ce863f59a3ca5d4c076aef76e326f7a83011de406db7a8c8d304`.
 - Verifier SHA-256 `7788108a5bb736a1cbbb378e6dca670c83c1cf0dd4bc22c255e7dbcec49f0a88`.
-- Raw SHA-256 `abbdcee64d5b672a9ba3ab9c582cdabea680c68e23bffa135773a215c0db05b2` (identical across two regenerations).
+- Compact raw JSON manifest plus deterministic `base64(gzip(full JSON))` archive; final hashes are recorded inside the manifest and verified after reconstruction.
 
 ## Single next target
 
