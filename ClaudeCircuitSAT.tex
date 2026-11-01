@@ -1,0 +1,58 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\title{Claude's Living Document: Parametrized Lower Bounds for Circuit-SAT}
+\date{Last updated 2026-11-01 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. Nothing here is an unconditional super-linear lower bound for Circuit-SAT in a uniform model. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup and parameters}
+An instance is a fan-in-2 circuit $C$ with $n$ inputs, $g$ gates, $m$ wires (gate-input edges), one output. Circuit-SAT: $\exists x\,C(x)=1$? Parameters $(n,g,m)$; target bounds have the form $T(n,m)$. Model for decider: deterministic, random-access to the description of $C$, cost = probes + steps.
+
+\section{Ladder of levels (wire-by-wire)}
+\textbf{Level 0} ($n=1$): the circuits are literals/constants, 0 gates, SAT decided by inspection.
+\textbf{Level $k$}: functions on $n=k$ inputs; we record $\mathrm{mc}(f)$ = minimum gates over the full binary basis $B_2$ (so $m=2\,\mathrm{mc}$ wires of gate inputs).
+
+\begin{table}[h]\centering\begin{tabular}{@{}cccl@{}}\toprule
+$n$ & functions & distribution of $\mathrm{mc}$ (size: count) & status\\\midrule
+2 & 16 & 0:6, 1:10 & COMPUTATIONAL\\
+3 & 256 & 0:8, 1:30, 2:114, 3:80, 4:24 & COMPUTATIONAL\\\bottomrule\end{tabular}
+\caption{Exhaustive BFS synthesis, \texttt{research/agents/claude/circuitsat/min\_circuit\_ledger.py} (runs $<30$ s per $n$). For $n=4$ the BFS is too large for one 30 s run and needs chunking (next step).}\end{table}
+Every minterm (unique-satisfying-assignment function) has $\mathrm{mc}=n-1$ for $n=2,3$ (COMPUTATIONAL), matching Lemma~\ref{lem:dep}.
+
+\begin{lemma}[Dependence bound, PROVED/EXACT]\label{lem:dep}
+A fan-in-2 circuit computing a function that depends on all $n$ inputs has $\ge n-1$ gates and $\ge 2(n-1)$ gate-input wires.
+\end{lemma}
+\begin{proof} Each input must have a path to the output; the underlying graph restricted to ancestors of the output is connected on $n$ inputs plus $g$ gates, and the output gate is reachable from all inputs. A connected structure with $n$ sources feeding fan-in-2 gates needs at least $n-1$ merges (each gate reduces the number of distinct "components" by at most one). Each gate has two input wires. \end{proof}
+
+\section{Lower bounds for Circuit-SAT}
+\begin{proposition}[Reading lower bound, PROVED/EXACT]\label{prop:read}
+Let $n\ge2$. Any deterministic decider for Circuit-SAT that has random access to the wire list of an $m$-wire circuit must probe $\ge m'$ wires on some input, where $m'=\Omega(m)$ (specifically $m'\ge (m-3)/2$ for the family below).
+\end{proposition}
+\begin{proof} Let $C_0$: $g_0=x_1$; $g_i=g_{i-1}\vee g_{i-1}$ for $i=1..k$; output $g_k\wedge\neg x_1$. $C_0\equiv x_1\wedge\neg x_1$ is UNSAT. Let $C_{i}$ change the second input wire of $g_i$ from $g_{i-1}$ to $x_2$; then $g_i=g_{i-1}\vee x_2$, $g_k\supseteq x_1\vee x_2$ and the output is satisfied by $x_1=0,x_2=1$. If the decider never probes that wire on $C_0$, it answers identically on $C_0$ and $C_i$, so errs on one. Hence all $k$ such wires are probed; $m=2k+2$. \end{proof}
+This is the trivial $\Omega(m)$ bound; it is a \emph{parametrized} bound $T=\Omega(m)$ with no dependence on $n$.
+
+\begin{proposition}[Black-box query bound, PROVED/EXACT]\label{prop:bb}
+A decider that only evaluates $C$ (oracle access to $x\mapsto C(x)$) needs $2^n$ queries in the worst case: the adversary answers 0 until one point remains.
+\end{proposition}
+Combined statement: black-box access costs $2^n$, white-box access costs $\ge m$; the gap between them is exactly what a Circuit-SAT lower bound must address. Any white-box bound $T(n,m)=\omega(m)$ unconditional for general $m$ is OPEN (it would separate P from NP when $T$ is superpolynomial in $m$ for $n=\Theta(m)$... precisely: $T$ superpolynomial in $m$ at $n\le m$ implies P$\ne$NP).
+
+\section{Known parametrized landscape (KNOWN THEOREM / CONDITIONAL)}
+\begin{itemize}
+\item Brute force $O(2^n m)$; CNF-SAT: $2^{(1-\varepsilon)n}$ for $\varepsilon$ fixed contradicts SETH (CONDITIONAL).
+\item Circuit-SAT on size-$s$ circuits via Williams' algorithm for ACC$^0$ and related: not general.
+\item Time--space: SAT time $n^{2\cos(\pi/7)}$ barrier for alternation trading (Buss--Williams), see repo ledger row L13 and TPORT notes (rows L34--L37); these concern an orthogonal (time-space) parameter and are not reproved here.
+\end{itemize}
+
+\section{Next steps (OPEN)}
+\begin{enumerate}
+\item Chunk the exact-synthesis BFS for $n=4$ (states keyed by size, 30 s batches) and tabulate $\mathrm{mc}$ and fan-out.
+\item Define a \emph{wire-ledger potential}: for a decider run on a partial wire reveal, track the number of consistent unsat/sat completions; look for a potential forcing more than one probe per wire on a hard family where each wire carries $\Omega(1)$ bits of "unresolved" constraint (target: parametrized bound $\Omega(m\cdot f(n))$).
+\item Restrict to monotone / bounded-width / bounded-treewidth $w$ circuits: the expected parametrized bound is $2^{\Omega(w)}\!\cdot m$ under SETH (CANDIDATE); seek unconditional version in a restricted model (e.g.\ branching programs).
+\item Audit relation to repository ARC/FLMV spine and L29--L33 (UWI portfolio) for links.
+\end{enumerate}
+
+\section*{Log}
+Run 1 (2026-11-01): created document; Lemma~\ref{lem:dep}, Props~\ref{prop:read}, \ref{prop:bb}; exhaustive ledger $n\le3$.
+\end{document}
