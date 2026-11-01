@@ -65,3 +65,22 @@ Authored sources and verified GitHub readback:
 - [Complete raw JSON](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_0855_LSPV2_CONNECTED_AFFINE_SIGNATURE_COLLISION304_raw.json)
 
 **Five-role next action:** Require equality of exact original-source residual Boolean functions (or a separately proved collision-safe semantic representative) before reusing a policy/memo entry, account for key construction and comparison, and test connected instances on both SAT and UNSAT. Keep the five existing tasks and schedules unchanged.
+
+
+## LSPV-2 addendum, 2026-11-01 09:12 PST: CONNECTED-TRANSFER-MATRIX305
+
+**PROVED/EXACT restricted original-source theorem, independent external review pending; COMPUTATIONAL no-import original-source control, all-input theorem OPEN.** The previous CONNECTED-AFFINE-SIGNATURE-COLLISION304 family of connected canonical G_t originals admits an *exact two-state transfer matrix* for its cyclic x5 links: W=[[34,47],[23,36]], #SAT(G_t)=trace(W^t). Under coherent identical-original SAT pins P_t and UNSAT pins Q_t, the local matrices are WA=[[1,1],[0,0]] and WB=[[0,0],[0,0]], so #SAT(G_t|P_t)=1 and #SAT(G_t|Q_t)=0 for **all** t. The Q_t UNSAT proof needs only 32 original-source-labeled local false-clause leaves. Thus the prior nominal 3^t affine choices *do not imply* expensive arbitrary-policy search; connectedness and certificate-signature collisions are not intrinsic hardness.
+
+A newly audited signed canonical connected mixed family at n=18,36,72 has no primal vertex separator of size <=3, checked over 988, 7807, 62269 subsets, respectively; nevertheless UP-DPLL finds source SAT witnesses in 11/23/34 nodes. Neither easy bounded interfaces nor a hard lower bound can be assumed universally. One recognized large SAT-only source G_128 (52,266 gamma-encoded bits) emits canonical SAT child G_1 (170 bits), satisfying M^2<N, after paid exact grammar/recognition and witness, but *no* universal connected UNSAT canonical semantic compressor or arbitrary-A ARC follows.
+
+Independent checker passed 106,192 assertions, full source SAT and UNSAT F9/Y6/F15, exact coherent original-source proof trees and signed S/U, independently freshly replayed U198 UNSAT certificate (384 boundary queries, 19,488 local nodes) and V198 264-clause SAT witness, 12 malformed source/binary controls, and 105,465 fixed-register/output bit-XOR events. Physical event simulator is **NOT** full native indexed FLMV Turing space/time. No CDCL executable was available; measured UP-DPLL nodes and literal probes are reported. Existing signed-spill and saturated-cycle, matroid and K4 policies remain inherited and not falsely claimed as implemented in the compact transfer reproducer. All-input quantitative progress, paid policy acquisition/switching, exact noncanonical-to-canonical hereditary reencoder, unknown K,L guest A->Phi(A), and strict same-machine numeric FLMV transfer are **OPEN**. P versus NP OPEN. Preserve exactly five agent tasks and hourly offsets, unchanged.
+
+Verified GitHub role-owned artifacts:
+- [Restricted exact LaTeX report](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-2/2026-11-01_0912_LSPV-2_CONNECTED_TRANSFER_MATRIX305.tex)
+- [Runnable compact matrix reproducer](https://github.com/j15marti/pnp/blob/main/experiments/arc/2026-11-01_0912_LSPV2_CONNECTED_TRANSFER_MATRIX305_compact.py)
+- [Machine-readable verified summary](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_0912_LSPV2_CONNECTED_TRANSFER_MATRIX305_summary.json)
+- Full 18-file 5-page PDF, producer/no-import verifier, U198 fixture/checker, exact raw, physical events, adversarial families and SHA256 in conversation reproducibility archive.
+
+**Five-role follow-up:** LSPV-1 needs provable paid all-input OR-depth, not favorable interface alone; LSPV-2 should seek a *both-label* recognized semantic normalizer for arbitrary connected canonical sources; LSPV-3 should attack growth of minimum boundary rank under all certified dynamic policies; LSPV-4 should audit source-index/head/guest DELAY-COPY-RECOMP and strict same-machine FLMV; LSPV-5 should independently inspect the block-trace identity, malformed grammar, 32-leaf UNSAT proof and the exact quantifier firewall. No task changes.
+
+END_OF_LSPV2_ADDENDUM::CONNECTED_TRANSFER_MATRIX305::P_VS_NP_OPEN
