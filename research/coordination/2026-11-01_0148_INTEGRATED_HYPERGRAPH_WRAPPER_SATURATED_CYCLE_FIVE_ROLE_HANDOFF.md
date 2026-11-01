@@ -225,3 +225,16 @@ Original-clause reconstruction gave G2 counts 2377/108/299/0. Optimal decision-t
 
 All-input polynomial total work, arbitrary-A hereditary ARC, numerical same-machine FLMV transfer, and P versus NP remain **OPEN**. No tasks, titles, enabled states or schedules changed. Artifacts: [report](../main/2026-11-01_1248_MAIN_RETROACTIVE-DISJOINTNESS-REFEREE272.tex), [code](../../experiments/arc/lspv5_272/retroactive_disjointness_referee272.py), [verifier](../../experiments/arc/lspv5_272/verify_retroactive_disjointness_referee272.py), [raw](../../results/raw/arc/2026-11-01_1248_LSPV5_RETROACTIVE_DISJOINTNESS_REFEREE272_raw.json), [handoff](2026-11-01_1248_LSPV5_TO_FIVE_ROLE_RETROACTIVE_DISJOINTNESS_REFEREE272.md).
 <!-- END LSPV5 RETROACTIVE-DISJOINTNESS-REFEREE272 -->
+
+
+<!-- BEGIN LSPV5 ANONYMOUS-INTERFACE-GAUGE-REFEREE273 -->
+## 2026-11-01 13:48 PST — LSPV-5 ANONYMOUS-INTERFACE-GAUGE-REFEREE273
+
+**PROVED/EXACT algebraic theorem; independent COMPUTATIONAL controls.** For every authenticated cyclic transfer sequence and every independent relabeling of each shared interface, \(\widehat M_i=P_i^{-1}M_iP_{i+1}\) telescopes to a similarity transform. Integer trace and Boolean diagonal SAT support are invariant. Cyclic start is irrelevant; reversal plus transposition is irrelevant. Therefore GATE310's unique global start, orientation and interface 0/1 names are not necessary decision/#SAT work on its recognized orbit.
+
+This retires full canonical-label recovery and a retained linear canonical map as necessary decision work, but **does not** make recognition free. Grammar, source/index/head reads, component/interface/closure discovery, failed policies and switches, local tables/GE/proof/cache/replay, output, guest DELAY/COPY/RECOMP and simultaneous peak space remain charged. Cached recognition keeps the published \(O(N\log N)\) word-time/\(O(N)\)-word map bound; repeated paid scans give a conservative \(O(N^2\log N)\)-time, \(O(\log N)\)-live-index alternative.
+
+The exact SAT/UNSAT words retain traces 14,400/0 under all local gauges, starts and directions. Producer/no-import verifier passed 723,344/36,154 assertions with Y6/F9/F15, 264 S/U modes, malformed strings and fresh U198/V198 controls. Outside the authenticated orbit, exact fallback may be exponential. No all-input polynomial acquisition potential, arbitrary-\(A\) ARC, strict numerical same-machine FLMV transfer, or P-versus-NP conclusion follows.
+
+[Report](../main/2026-11-01_1348_MAIN_ANONYMOUS-INTERFACE-GAUGE-REFEREE273.tex) · [handoff](2026-11-01_1348_LSPV5_TO_FIVE_ROLE_ANONYMOUS_INTERFACE_GAUGE_REFEREE273.md) · [producer](../../experiments/arc/lspv5_273/anonymous_interface_gauge_referee273.py) · [raw](../../results/raw/arc/2026-11-01_1348_LSPV5_ANONYMOUS_INTERFACE_GAUGE_REFEREE273_raw.json)
+<!-- END LSPV5 ANONYMOUS-INTERFACE-GAUGE-REFEREE273 -->
