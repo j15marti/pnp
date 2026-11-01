@@ -2,6 +2,7 @@
 """No producer import. Independent finite transfer, direct source and update audit."""
 from itertools import product
 from collections import Counter
+from functools import lru_cache
 P=((1,5,6),(2,3,8),(1,3,5),(4,6,9),(2,4,7),(7,8,9))
 N=((4,6,8),(1,6,7),(2,3,4),(3,5,8),(1,2,9),(5,7,9))
 A={1:1,2:0,3:1,4:0,8:0};B={1:1,2:1,3:0,4:0,8:0}
@@ -12,7 +13,9 @@ def mk(t):
             ans.append(tuple(9*((i+1)%t)+5 if j==0 and x==5 else 9*i+x for x in C))
         for C in N:ans.append(tuple(-(9*i+x) for x in C))
     return ans
-def relation(pin):
+@lru_cache(None)
+def _relation(key):
+    pin=dict(key)
     z=0
     for num in range(512):
         w=tuple((num>>k)&1 for k in range(9))
@@ -22,6 +25,8 @@ def relation(pin):
             neg=all(any(w[x-1]==0 for x in C) for C in N)
             if pos and neg:z|=1<<(2*w[4]+b)
     return z
+def relation(pin):
+    return _relation(tuple(sorted(pin.items())))
 def times(a,b):
     out=0
     for i in range(2):
