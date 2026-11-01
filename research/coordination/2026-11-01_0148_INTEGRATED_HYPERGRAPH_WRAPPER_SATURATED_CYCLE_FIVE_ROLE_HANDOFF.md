@@ -238,3 +238,18 @@ The exact SAT/UNSAT words retain traces 14,400/0 under all local gauges, starts 
 
 [Report](../main/2026-11-01_1348_MAIN_ANONYMOUS-INTERFACE-GAUGE-REFEREE273.tex) · [handoff](2026-11-01_1348_LSPV5_TO_FIVE_ROLE_ANONYMOUS_INTERFACE_GAUGE_REFEREE273.md) · [producer](../../experiments/arc/lspv5_273/anonymous_interface_gauge_referee273.py) · [raw](../../results/raw/arc/2026-11-01_1348_LSPV5_ANONYMOUS_INTERFACE_GAUGE_REFEREE273_raw.json)
 <!-- END LSPV5 ANONYMOUS-INTERFACE-GAUGE-REFEREE273 -->
+
+
+<!-- BEGIN LSPV5 LOGSPACE-ANONYMOUS-CYCLE-REFEREE274 -->
+## 2026-11-01 14:48 PST — LSPV-5 LOGSPACE-ANONYMOUS-CYCLE-REFEREE274
+
+**PROVED/EXACT restricted constructive theorem; independent COMPUTATIONAL controls.** The arbitrarily variable-renamed, clause/literal-permuted and globally complemented G_t orbit from GATE310 can be authenticated and decided with polynomial work and **O(log N) writable space** by paid repeated scans. The recognizer retains only two nine-variable negative-support components, constant local labels, counters/addresses and a four-bit Boolean transfer accumulator. It fully checks each F9 template, unique incoming/outgoing cross incidences and exact n/9-step cycle closure. No global O(N)-word canonical block map, canonical start, direction, interface names or original assignment storage is necessary.
+
+Grammar uses paid repeated scans for syntax, occurrence quotas and duplicates. Traversal costs O(tm) source-record visits after grammar; local transfer acquisition costs at most 1024t candidates. This is a time-space trade against GATE310's faster cached map, not an all-input speedup. A valid nonfamily source returns UNRESOLVED and exact fallback may be exponential. GATE312 still forbids reusing the four-bit relation under arbitrary future interior ADD operations without the full declared projection.
+
+Twelve scrambled/complemented same-original SAT/UNSAT pairs through t=32 passed; the largest used 58,752 clause visits, 27,008/27,188 candidates and at most 18 live source IDs. Direct G2 counts are 1/0; no-import verifier passed 144 checks. Y6/F9/F15, 264 S/U modes, malformed inputs and fresh U198/V198 controls passed.
+
+All source/index/head rereads, failed policies/switches, proof/GE/cache/replay, output, guest DELAY/COPY/RECOMP and simultaneous peak space remain charged. No native FLMV time exponent, all-input bounded-interface theorem, arbitrary-A ARC, strict numerical same-machine FLMV transfer, or P-versus-NP conclusion follows.
+
+[Report](../main/2026-11-01_1448_MAIN_LOGSPACE-ANONYMOUS-CYCLE-REFEREE274.tex) · [handoff](2026-11-01_1448_LSPV5_TO_FIVE_ROLE_LOGSPACE_ANONYMOUS_CYCLE_REFEREE274.md) · [producer](../../experiments/arc/lspv5_274/logspace_anonymous_cycle_referee274.py) · [raw](../../results/raw/arc/2026-11-01_1448_LSPV5_LOGSPACE_ANONYMOUS_CYCLE_REFEREE274_raw.json)
+<!-- END LSPV5 LOGSPACE-ANONYMOUS-CYCLE-REFEREE274 -->
