@@ -1,0 +1,48 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- append run entries; keep status labels strict.
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{thm}{Theorem}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT (living document)}
+\date{Last updated 2026-11-01 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains OPEN. Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, OPEN.
+Nothing here is a superlinear unconditional lower bound.
+
+\section{Setup}
+A circuit $C$ has $n$ inputs, $g$ fan-in-2 gates (any of the 16 binary functions), $w=2g$ wires.
+Circuit-SAT: is there $x$ with $C(x)=1$? Parameters: $n$, $g$, $w$, and (later) treewidth $k$.
+
+\section{Step ladder (tracking minimal connections)}
+\begin{thm}[PROVED, wire floor] If $C$ depends on all $n$ inputs, then $g\ge n-1$ and $w\ge 2(n-1)$.\end{thm}
+\emph{Proof.} The underlying graph of the relevant part is connected on $n$ inputs plus $g$ gates with $2g$ edges; the output reaches every input, and each gate merges at most two components, so $g\ge n-1$. \qed
+
+\textbf{COMPUTATIONAL (exact, BFS over all circuits; \texttt{research/agents/claude/circuitsat/mincirc.py}).}
+Number of functions of $n$ variables by exact minimum gate count $g$ (inputs and constants free):
+\begin{center}\begin{tabular}{c|ccccc}
+$n$ & $g=0$ & 1 & 2 & 3 & 4\\\hline
+1 & 3 & 1 & & & \\
+2 & 4 & 12 & & & \\
+3 & 5 & 33 & 114 & 80 & 24
+\end{tabular}\end{center}
+So the hardest 3-variable function needs 4 gates (8 wires); every 3-variable function is realised with $\le 8$ wires. Extending to $n=4$ needs a smarter search (chunk by gate-count layers); OPEN as a table.
+
+\section{Input-reading lower bound}
+\begin{thm}[PROVED, trivial] Any deterministic algorithm that decides Circuit-SAT for circuits given as gate lists with $g$ gates must read $\Omega(g)$ gate records (at least $g$ for the family below).\end{thm}
+\emph{Proof.} Family: $G_i=\mathrm{AND}(G_{i-1},x_{i+1})$, $G_1=\mathrm{AND}(x_1,x_2)$; satisfiable. For each $i$, replacing one input pointer of $G_i$ by constant $0$ gives an unsatisfiable circuit. An algorithm that skips record $i$ cannot distinguish the two, so it must read all $g$ records. \qed
+
+This is a linear lower bound in the description, as expected; it is not a time lower bound beyond $\Theta(w)$.
+
+\section{Parametrized picture}
+\begin{itemize}
+\item KNOWN: time $2^n\cdot O(w)$ by enumeration; $2^{O(k)}\mathrm{poly}(w)$ for treewidth $k$ by dynamic programming.
+\item CONDITIONAL: CNF-SAT embeds in Circuit-SAT, so SETH implies no $(2-\epsilon)^n\mathrm{poly}(w)$ algorithm; ETH implies no $2^{o(n)}$.
+\item OPEN: unconditional $\omega(w)$ time bound in any natural model; gate elimination gives circuit-size lower bounds ($\approx 3n$ for explicit functions over $B_2$), which are about \emph{computing} functions, not deciding satisfiability.
+\end{itemize}
+
+\section{Repository cross-check (light survey this run)}
+The repo's world ledger (\texttt{research/agents/claude/world-ledger/}) and TPORT notes state that alternation-trading proofs cannot beat the stated exponents (row L13); the ARC/FLMV time--space spine is OPEN. No repo result yet transfers to circuit wire counts. Candidate bridge: relate the TPORT portfolio size to the number of wires in a Circuit-SAT instance (CANDIDATE, unproved).
+
+\section{Next steps}
+(1) Compute the 4-variable exact table layer by layer. (2) Track $\min$ wires for \emph{satisfiability-hard} gadgets (e.g.\ XOR chains plus AND) versus treewidth. (3) Look for a parametrized lower bound in $k$ under a restricted model (e.g.\ monotone/ read-once branching programs) and test transfer to general circuits.
+\end{document}
+% END_OF_RUN::CLAUDE-CIRCUITSAT::1
