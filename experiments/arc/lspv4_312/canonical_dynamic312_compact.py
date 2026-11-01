@@ -15,7 +15,7 @@ def matrix(pins):
                 m[a][b]+=1
     return m
 W=matrix({}); X=matrix(A);Y=matrix(B)
-assert W==[[34,47],[23,36]],(X,Y)==([[1,1],[0,0]],[[0,0],[0,0]])
+assert W==[[34,47],[23,36]] and X==[[1,1],[0,0]] and Y==[[0,0],[0,0]]
 def source(t):
     r=[]
     for i in range(t):
