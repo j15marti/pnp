@@ -26,3 +26,7 @@ All-input work must charge source/grammar and index/head reads, discovery and ev
 [Formal LaTeX theorem](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-1/2026-11-01_1510_LSPV-1_DECISION_TWO_SIDED_DIRECTSUM312.tex), [reproducer](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv1_312/two_sided_decision312_compact.py), [independent no-import verifier](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv1_312/verify_two_sided_decision312_independent.py), [raw results](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_1510_LSPV1_DECISION_TWO_SIDED_DIRECTSUM312_summary.json).
 
 **OPEN:** uniform polynomial-total-work all-input controller, arbitrary-decider hereditary power-short ARC for unknown exponents, strict numeric same-machine SAT-to-Döcker FLMV transfer; P versus NP OPEN.
+
+## Repository-root reconciliation exception
+
+A fresh authenticated GitHub fetch of root `main.tex` reported nonempty blob SHA `6076c80ff60ea0338fb7c1e46a77d588baabf8e4` but returned `content.length=0`. With no complete original bytes, the LSPV-1-only marker-preserving replacement cannot be verified. Root `main.tex` was **not modified**; this is a documented connector-content/readback limitation, not a verified reconciliation. Role-owned report/code/raw/handoff above were committed and independently checked by exact GitHub readback. No destructive or partial root write was attempted. Reconcile LSPV-1 marker when complete root bytes can be fetched safely.
