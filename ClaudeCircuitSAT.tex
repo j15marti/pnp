@@ -1,0 +1,49 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\newtheorem{prop}{Proposition}
+\title{ClaudeCircuitSAT: a living ladder of wire-counting lower bounds for Circuit-SAT}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-11-01 (run 1)}
+\begin{document}
+\maketitle
+\paragraph{Status.} Living document. \textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial time lower bound for Circuit-SAT. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Setup and parameters}
+A circuit $C$ has $n$ inputs, $m$ fan-in-2 gates over the full basis $B_2$, so $w=2m$ gate wires (plus input fan-out). Circuit-SAT$(n,m)$ asks whether some $x\in\{0,1\}^n$ has $C(x)=1$. The lower-bound target is a function $T(n,m)$ (parameterised), together with the \emph{construction cost} $w_{\min}(f)=2C_{B_2}(f)$ of the circuit family used at each rung of the ladder.
+
+\section{Ladder, rungs 1--3 (COMPUTATIONAL, exact)}
+Method: iterative-deepening DFS over normal circuits (gate ops $\{\wedge,\,a\wedge\bar b,\,\bar a\wedge b,\,\vee,\oplus\}$, output negation free, canonical gate order), code \texttt{research/agents/claude/circuitsat/mincirc.c}, output \texttt{mincirc\_n3\_output.txt}; runtime well under 30\,s per invocation.
+
+\begin{center}\begin{tabular}{lrrrrr}\toprule
+$n$ & $C=0$ & $C=1$ & $C=2$ & $C=3$ & $C=4$\\\midrule
+2 (4 inputs\,/\,16 fns) & 6 & 10 & -- & -- & -- \\
+3 (256 fns) & 8 & 30 & 114 & 80 & 24 \\\bottomrule\end{tabular}\end{center}
+Row sums are $16$ and $256$, so every function is covered. Hence $\max_f C(f)=1,4$ for $n=2,3$ (wires $2,8$); Knuth's tables give $7$ for $n=4$ (KNOWN, not recomputed here). Shannon counting gives $\max_f C(f)=\Theta(2^n/n)$ (KNOWN THEOREM).
+
+\section{Rung lemmas}
+\begin{lemma}[Connectivity, PROVED/EXACT]
+If $f$ depends on all $n$ variables then every circuit for $f$ has $\ge n-1$ gates and $\ge 2(n-1)$ gate wires; $\mathrm{AND}_n$ meets this. \emph{Proof.} The output must be connected to each input in the underlying graph; with fan-in 2 a connected graph on $n$ inputs needs $\ge n-1$ gates, each contributing two wires. \qed
+\end{lemma}
+Consistent with the table: $n=3$ parity/AND cost $2$ gates.
+
+\begin{lemma}[Read-every-gate, PROVED/EXACT]
+In the gate-list encoding (random access, constant-size gate records), every deterministic algorithm deciding Circuit-SAT needs $\Omega(m)$ queries, even for $n=m$ and satisfiable-or-not families.\\
+\emph{Proof.} Let $C_0$: $g_1=x_1$, $g_i=g_{i-1}\wedge x_i$, output $g_m$ (satisfiable only by all ones). For any $j$, replacing the op of $g_j$ by the constant-$0$ op gives $C_j$ unsatisfiable, and $C_0,C_j$ differ only in record $j$. An algorithm that does not read record $j$ on $C_0$ answers identically on $C_j$. \qed
+\end{lemma}
+This is the trivial input-size bound and shows the parameter that matters is $m$ (wires), not just $n$. It yields no super-linear bound.
+
+\begin{prop}[Known conditional picture, KNOWN/CONDITIONAL]
+Brute force is $O(2^n m)$. SETH implies no $O(2^{(1-\varepsilon)n}\mathrm{poly}(m))$ algorithm. Unconditionally, only time--space tradeoffs for SAT (Fortnow--Lipton--Van~Melkebeek--Viglas, Williams) are known; see the repository ledger rows L13, L34--L40 (alternation-trading barrier; one-tape $N^2$ discussion) in \texttt{research/agents/claude/world-ledger/}.
+\end{prop}
+
+\section{Repository check (this run)}
+Read \texttt{AGENTS.md} summaries and the claude-agent reports on world ledger, T-PORT and one-tape. Useful for this problem: (i) classification discipline---a statement equivalent to $P=NP$ is not progress; (ii) the L34 barrier shows alternation trading cannot give linear-plus for portfolios of size $\sim N$, so a wire-count argument must use a structure other than time--space trading. No usable circuit-wire lower bound exists there yet.
+
+\section{Open arrows / next rungs}
+\begin{enumerate}
+\item (CANDIDATE) Extend exact $C_{B_2}$ to $n=4$ (needs stronger pruning/SAT-based search; chunk by gate budget) and record minimal-\emph{wire} including fan-out for restricted fan-out-1 (formula) basis, where size is $L(f)$ and wires $=2L-2$.
+\item (CANDIDATE) Define the SAT-instance ladder: $\mathrm{SAT}(C)$ for $C$ in the minimal families; track the number of distinct sub-instances after restricting $k$ inputs (restriction-count parameter $\rho(n,m,k)$) and test whether $\rho$ exceeds $\mathrm{poly}(m)$ for hard families.
+\item (OPEN) A parameterised bound $T(n,m)\ge m^{1+\varepsilon}$ for any \emph{general} model; none known.
+\end{enumerate}
+\end{document}
