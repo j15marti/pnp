@@ -8,7 +8,7 @@ Y6/F15 controls and U198/V198 source checks are in the ZIP archive.
 The character identity itself is classical GF(2) orthogonality.
 """
 from itertools import product
-from math import prod
+from functools import reduce
 
 def signed_character_count(template_signatures, rhs, dimension):
     """Exact one-frequency-at-a-time Walsh sum, no exponential table."""
@@ -35,7 +35,7 @@ def signed_character_count(template_signatures, rhs, dimension):
             "max_absolute_character_term": max_absolute_term}
 
 def direct_template_count(cycles, rhs):
-    return sum(((0 if not v else __import__('functools').reduce(lambda a,b:a^b,v,0)) ^ rhs) == 0 for v in product(*cycles))
+    return sum((reduce(lambda a, b: a ^ b, selections, 0) == rhs) for selections in product(*cycles))
 
 F9_POSITIVE = [(1,5,6),(2,3,8),(1,3,5),
                (4,6,9),(2,4,7),(7,8,9)]
