@@ -84,3 +84,22 @@ Verified GitHub role-owned artifacts:
 **Five-role follow-up:** LSPV-1 needs provable paid all-input OR-depth, not favorable interface alone; LSPV-2 should seek a *both-label* recognized semantic normalizer for arbitrary connected canonical sources; LSPV-3 should attack growth of minimum boundary rank under all certified dynamic policies; LSPV-4 should audit source-index/head/guest DELAY-COPY-RECOMP and strict same-machine FLMV; LSPV-5 should independently inspect the block-trace identity, malformed grammar, 32-leaf UNSAT proof and the exact quantifier firewall. No task changes.
 
 END_OF_LSPV2_ADDENDUM::CONNECTED_TRANSFER_MATRIX305::P_VS_NP_OPEN
+
+
+## LSPV-3 additive handoff, 2026-11-01 09:24 PST: polarity-resolved saturation GATE304
+
+**PROVED/EXACT elementary original-source occurrence inequality; independent finite verification; external mathematical review pending.** For every valid duplicate-free proper Döcker Monotone 3-SAT-(2,2) original with n variables and every coherent source-variable cube pinning a TRUE and b FALSE variables, t=a+b, define c_+,c_- as numbers of original positive/negative clauses already covered; eta as authenticated minority signed covered-occurrence sum, and nu any certified edge-disjoint odd binary-clause-cycle count. Then delta=2(n-t)-u-eta-nu satisfies
+
+    delta >= (2n/3)-2t-floor(2t/3)+abs(c_+-c_-)
+          >= (2n/3)-2t-floor(2t/3)+max(0,ceil(2a/3)-2b,ceil(2b/3)-2a).
+
+Proof: eta<=2 min(c_+,c_-), c_+>=ceil(2a/3), c_->=ceil(2b/3), c_+<=2a, c_-<=2b, and previous LSPV-4 incidence ticket 3nu<=2t. The prior all-source n/4 necessary pin gate to delta=0 is sharpened to **n/3** along all-TRUE or all-FALSE-only pin paths, with an exact modular correction. One initial pin leaves delta=2n/3. This is solely a *restricted terminal availability obstruction*, **not** a lower bound for arbitrary solvers.
+
+Independent no-import verifier checked 21,870 coherent Y6/F9/F15 source cubes, 285,546 assertions, real original-source SAT/UNSAT completions and malformed grammars, all 1,136 original clause-pair extreme modes, and coherent original S/U targets. On the connected canonical G_r family inherited from LSPV-2 COLLISION304, all-r TRUE x1 pins yield c_+=2r,c_-=0,delta=6r, demonstrating a linear gain over polarity-blind onset without implying arbitrary-machine hardness. Original U198/V198 opposite labels are retained as inherited evidence, not independently replayed during GATE304. Offline XOR only; no native FLMV tape experiment or uniform P time proven.
+
+- [Full LSPV-3 GATE304 theorem](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-3/2026-11-01_0924_LSPV-3_POLARITY_RESOLVED_SATURATION_GATE304.tex)
+- [Executable finite-control checker](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv3_304/compact304.py)
+- [Independent F9 no-import checker](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv3_304/verify304_compact.py)
+- [Machine-readable summary](https://github.com/j15marti/pnp/blob/main/results/raw/arc/lspv3_304/summary304_public.json)
+
+**Five-role consequence:** LSPV-1 audit which signed polarities are forced under a paid adaptive selector; LSPV-2 test shallow mixed-sign/polynomial structure gates and genuine reencoding; LSPV-3 test whether positive-defect certificates cover mixed-sign hostile inputs; LSPV-4 cost same-machine source- and head-index access for this stronger guard; LSPV-5 red-team the eta and sign-quota bounds, especially before UP and with empty clauses. No task ID, identity, title, enabled state, schedule or ownership changed. Uniform all-input polynomial work, hereditary power-short arbitrary-A-to-Phi(A), strict same-machine FLMV transfer, and P versus NP all remain **OPEN**.
