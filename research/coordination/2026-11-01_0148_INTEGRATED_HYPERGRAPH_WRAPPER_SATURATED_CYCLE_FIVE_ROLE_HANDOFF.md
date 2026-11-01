@@ -50,3 +50,18 @@ The source signed hypergraph is read-only. Each adaptive typed-DAG node includes
 Every scheduled run: preflight current AGENTS/CODEX/pnp-research and issue #3, propose 2-4 falsifiers, web/Google and github.com/openai plus j15marti/pnp original literature/code search, build independent SAT and UNSAT tests, publish report/code/raw with exact Github readback or disclose fallback, root reconciliation only under role ownership. **Preserve P versus NP OPEN.**
 
 END_OF_VERIFIED_HANDOFF::INTEGRATED_HYPERGRAPH_WRAPPER_SATURATED_CYCLE1::P_VS_NP_OPEN
+
+
+## LSPV-2 addendum, 2026-11-01 08:55 PST: connected signed-affine signature collision304
+
+**PROVED/EXACT restricted construction; COMPUTATIONAL independent controls; external review pending.** The LSPV-2 constructor gives, for each integer t>=1, one **connected, valid canonical** Döcker monotone 3-SAT-(2,2) original G_t and two coherent source pins P_t/Q_t with the **same free names, identical source-indexed packed triangle IDs, identical residual clause-width histogram and identical (f,u,eta,nu,delta)=(4t,5t,2t,t,0)**, but respectively **one and zero satisfying extensions**. Construct G_t by taking t F9 copies and cyclically changing the x5 occurrence in the positive clause already satisfied by pinned x1; exact quotas and connectedness are preserved. Residuals retain the opposite SAT/UNSAT labels. A memo key restricted to these statistics, source cycle IDs and free names is therefore UNSOUND. This does not invalidate exact source-authenticated affine equations, residual-clause descriptors, or sound memoization keys.
+
+Independent no-producer-import verifier passed 9,743 assertions, with 120 original-clause GF(2) row-XOR UNSAT contradictions and brute complete SAT/UNSAT checks for t<=4; larger t=8 checked structurally. Baseline unit-propagating DPLL resolves each selected cube in one search node, whereas an un-factorized exact affine branch portfolio has nominal 3^t edge choices, so the example **falsifies guaranteed cheap fixed policy order**, not any arbitrary solver. A physical output-tape-only source splice H_t->G_t has **equal bit lengths** and cannot be used as power-short ARC child. Source U198/V198 independent control was freshly replayed (402,670 assertions) using the established LSPV-2 302 verifier. All original S/U and malformed controls are retained. The strict all-input quantitative progress recurrence, target-valid power-short child compiler, unknown-exponent A->Phi(A) and same-machine numerical FLMV transport are **OPEN**. P versus NP remains OPEN.
+
+Authored sources and verified GitHub readback:
+- [Proof and report](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-2/2026-11-01_0855_LSPV-2_CONNECTED_AFFINE_SIGNATURE_COLLISION304.tex)
+- [Producer](https://github.com/j15marti/pnp/blob/main/experiments/arc/2026-11-01_0855_LSPV2_CONNECTED_AFFINE_SIGNATURE_COLLISION304.py)
+- [Independent verifier](https://github.com/j15marti/pnp/blob/main/experiments/arc/2026-11-01_0855_LSPV2_CONNECTED_AFFINE_SIGNATURE_COLLISION304_no_import_verifier.py)
+- [Complete raw JSON](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_0855_LSPV2_CONNECTED_AFFINE_SIGNATURE_COLLISION304_raw.json)
+
+**Five-role next action:** Require equality of exact original-source residual Boolean functions (or a separately proved collision-safe semantic representative) before reusing a policy/memo entry, account for key construction and comparison, and test connected instances on both SAT and UNSAT. Keep the five existing tasks and schedules unchanged.
