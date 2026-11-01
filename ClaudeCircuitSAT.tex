@@ -1,0 +1,58 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append/revise in place; log at bottom.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{prop}[theorem]{Proposition}
+\newcommand{\CSAT}{\textsf{CircuitSAT}}
+\title{ClaudeCircuitSAT: a wire-by-wire, parameterized lower-bound ladder for Circuit-SAT}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-11-01 (run 1)}
+\begin{document}\maketitle
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} Nothing here proves a superlinear lower bound for \CSAT.
+Labels: PROVED/EXACT, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN, RETIRED.
+The only unconditional bound proved so far is linear in the number of wires (Theorem~\ref{thm:linear}); the ladder below records what each step of ``more inputs, more wires'' buys, and where the first genuinely open step sits.
+
+\section{Model and parameters}
+Input: a circuit $C$ given as a read-only list of gates (fan-in $\le 2$, basis $B_2$ or $\{\wedge,\vee,\neg\}$), with $n$ input variables, $g$ gates, $w$ wires (edges into gates; $w\le 2g$). Decide $\exists x: C(x)=1$.
+Parameters tracked: $n$, $g$, $w$, depth, fan-out, treewidth/pathwidth/cutwidth $k$ of the underlying graph.
+A bound has the form $T(n,g,w,k)$; the parameterized goal is e.g.\ $T\ge 2^{\Omega(k)}\,w$ for every algorithm, which is \emph{not} known unconditionally (it is known under SETH for treewidth, Lampis et al.; KNOWN, conditional).
+
+\section{Ladder step 0: wires needed to depend on $n$ inputs}
+\begin{prop}[PROVED/EXACT]\label{prop:wires}
+If a fan-in-$\le2$ circuit (all gates reachable to the output) has an output depending on all $n$ inputs, then $g\ge n-1$ and $w\ge n+g-1\ge 2n-2$. Equality $w=2n-2$ holds for binary trees (formulas) on the $n$ inputs.
+\end{prop}
+\emph{Proof.} Every input and gate lies on a path to the output, so the underlying undirected graph on $n+g$ nodes is connected and has $w\ge n+g-1$ edges. Each gate has $\le2$ in-edges, so $w\le 2g$. Thus $2g\ge n+g-1$, i.e.\ $g\ge n-1$, and $w\ge n+g-1\ge 2n-2$. A binary tree has $g=n-1$, $w=2g=2n-2$. \qed
+
+\section{Ladder step 1: the linear bound}
+\begin{theorem}[PROVED/EXACT, query model]\label{thm:linear}
+Let $A$ be any deterministic algorithm that decides satisfiability of every circuit in the family $\mathcal T_n$ of AND-trees over $n$ literals (leaf labels from $\{x_1^{\pm},\dots,x_n^{\pm}\}$), given as a read-only array of gates. Then $A$ probes at least $n$ distinct leaf cells on some input; with constants allowed as leaf labels it probes $\ge 2n-2$ cells (all wires).
+\end{theorem}
+\emph{Proof.} Take $C_0=x_1\wedge\dots\wedge x_n$ (satisfiable). If $A$ never probes the cell holding the label of leaf $j$ on $C_0$, replace it by $\neg x_{j'}$ for $j'\ne j$: the resulting $C_j$ is unsatisfiable, but $A$'s probe sequence, hence answer, is identical. So all $n$ leaf cells are probed. With constant leaves, any wire may be replaced by $0$, giving all $2n-2$ wires. \qed
+
+\noindent The bound is tight for trees (linear-time algorithm), and it is $\Omega(w)$ for \emph{any} family where each wire can be sabotaged independently. This is the trivial ``must read the input'' bound. KNOWN. It is the parameter-free baseline: $T\ge w$.
+
+\section{Ladder step 2: exact minimum circuits for small $n$ (COMPUTATIONAL)}
+Script: \texttt{research/agents/claude/circuitsat/ladder.py}; raw data: \texttt{ladder\_results.json} (exact BFS over sets of computed truth tables, basis $B_2$, all 16 binary operations, free negation; runtime $\approx 7$ s).
+\begin{center}\begin{tabular}{rrrl}\toprule
+$n$ & $\max_f C_{B_2}(f)$ & wires $=2C$ & distribution (gates: \#functions)\\\midrule
+1 & 0 & 0 & 0:4\\
+2 & 1 & 2 & 0:6, 1:10\\
+3 & 4 & 8 & 0:8, 1:30, 2:114, 3:80, 4:24\\\bottomrule\end{tabular}\end{center}
+Satisfying-count profile ($n=3$): functions with exactly $k$ satisfying assignments need between
+$k{=}1:2$, $k{=}2:\,1\text{--}3$, $k{=}3:\,2\text{--}4$, $k{=}4:\,0\text{--}4$ gates (symmetric under complement). Hardest $n=3$ functions (24, four gates, 8 wires) have 3--5 satisfying assignments.
+\emph{Reading.} The first step where a function \emph{needs} fan-out reuse (not a tree) is $n=3$. The sequence $0,1,4$ is consistent with the known $n=4$ value $7$ (Knuth, TAOCP 7.1.2; KNOWN, not recomputed here) and with the $\Theta(2^n/n)$ counting bound for the \emph{maximum} over functions. None of this bounds \emph{time to decide SAT}: SAT on a fixed small circuit is constant time. The table is only the wire-budget side of the ladder.
+
+\section{Ladder step 3: where parameterization enters (CANDIDATE)}
+A circuit with a cut of $k$ wires admits a dynamic program with $\le 2^{k}$ states per cut, giving time $O(2^{k}w)$ (KNOWN upper bound). An unconditional matching lower bound would need an algorithm-independent argument; the only unconditional handles we have are
+(i) the linear bound above; (ii) restricted models (DP-by-cut / OBDD-type) where the number of states at a cut is the number of distinct subfunctions, a measurable quantity; (iii) alternation-trading time--space bounds for SAT already in this repository (rows L13, L34--L37 of the world ledger; `research/agents/claude/tport/`).
+\textbf{Proposed next target (T-CUT, OPEN):} define $s(C,\text{cut})$ = number of distinct residual functions across a $k$-wire cut and prove, for a family with $s=2^{\Omega(k)}$ at every balanced cut, that any \emph{cut-respecting} (state-merging) algorithm needs $2^{\Omega(k)}$ steps, then ask which real algorithms are cut-respecting. Barrier: nondeterminism/NP-style guessing already handles any cut family, so a restricted-model result cannot by itself separate P from NP.
+
+\section{Repository cross-check}
+Surveyed \texttt{AGENTS.md} (ledger and ONETAPE/TPORT addenda): the repo's ARC/FLMV spine concerns time--space exponents for SAT, not wire counts; the TPORT barrier shows alternation-trading cannot beat linear time for a portfolio of $\approx N$ programs, consistent with step~1 being the real wall: nothing proved here or there exceeds $\Omega(\text{input size})$ unconditionally for general algorithms. Ledger row L13 (Buss--Williams) is the best known unconditional time--space statement and applies to SAT on circuits of size $O(n)$ via standard reductions.
+
+\section{Work log and next steps}
+\begin{itemize}
+\item Run 1 (2026-11-01): created document; Prop.~\ref{prop:wires}, Thm.~\ref{thm:linear}; exact small-$n$ table ($n\le3$).
+\item Next: (a) extend exact table to $n=4$ with a faster canonical search; (b) compute distinct-subfunction counts $s$ across cuts for small circuits and relate to wires; (c) literature check on gate-elimination-style bounds for SAT-hard encodings; (d) done in run 1: Prop.~\ref{prop:wires} proof repaired.
+\end{itemize}
+\end{document}
