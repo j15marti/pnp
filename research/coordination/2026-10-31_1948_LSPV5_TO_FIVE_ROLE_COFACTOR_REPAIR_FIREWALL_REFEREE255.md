@@ -27,8 +27,8 @@ On certified UNSAT U198, four alternative repairs of the UNSAT cofactors `x2=1` 
 - U198 boundary certificate replay; V198 and four repaired-formula witness replays.
 - Complete signed S/U occurrence rows and source-indexed pair matrices for U198, a SAT repair and Y6.
 - Shared U/V binary/Gray trace totals coincide; source repair endpoint XOR is small and not promoted to runtime.
-- Producer SHA-256 `237830fb1046ce863f59a3ca5d4c076aef76e326f7a83011de406db7a8c8d304`.
-- Verifier SHA-256 `7788108a5bb736a1cbbb378e6dca670c83c1cf0dd4bc22c255e7dbcec49f0a88`.
+- Producer SHA-256 `9aea338b4579c74ef074231feadb7b0205a392ad08b2e66d94ae9caf46f0dc0e`.
+- Verifier SHA-256 `3c1a320de3cc2b8a168266f963b772c07a6f78e6e9014e53ce043890943abed5`.
 - Compact raw JSON manifest plus deterministic `base64(gzip(full JSON))` archive; final hashes are recorded inside the manifest and verified after reconstruction.
 
 ## Single next target
