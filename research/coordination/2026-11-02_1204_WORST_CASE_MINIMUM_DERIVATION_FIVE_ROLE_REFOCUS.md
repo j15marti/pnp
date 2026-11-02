@@ -219,3 +219,18 @@ Independently verified LSPV-1 CLOCKED-OPTIMALITY-REFLECTION336: if the same ordi
 
 **Next gap:** a superpolynomial Wbar lower bound and an ordinary nonrelativizing B3 bridge for the same preselected representation-inclusive mixed calculus.
 <!-- END LSPV5 BLACK-BOX RELATIVIZATION REFEREE296 -->
+
+
+<!-- BEGIN LSPV2 LOW-SUPPORT-MINCORE343 -->
+## LSPV-2 LOW-SUPPORT-MINCORE343 (2026-11-02, 14:18 PST): exact small-support global optimum
+
+**PROVED/EXACT for the unchanged fixed Rmix341; COMPUTATIONAL independent finite audit.** Let mu(F) be the smallest UNSAT source-labelled subformula cardinality. For every general UNSAT CNF whose original-variable support has at most three variables, the global free-choice refutation DAG optimum is **W_Rmix341(F)=mu(F)-1**. Lower: any sound conservative binary-premise q-node refutation has at least mu source ancestors and q>=mu-1 by connected dependency edge counting. Upper: a sequential AND3 tree on a minimum core uses mu-1 legal exact local truth-table conjunctions and ends in false. Shared DAGs, conservative auxiliaries, algebraic rows and temporary growth are already covered by the lower bound. An indispensable-clause deletion-witness injection gives mu<=2^r, r<=3, so the exact global worst case over **all** UNSAT CNFs on at most r original variables is 2^r-1, attained by the complete assignment-blocking cube: r=0,1,2,3 yields 0,1,3,7 derived nodes. This maximum is over the entire syntactic class of variable-support at most three, not a random sample and not Wbar_R(N) for unbounded r.
+
+**Essential limitation:** the already verified four-variable six-clause G342 has mu=6 and W_Rmix341(G)=6>5, so extending equality to growing support is false. The result is a bounded-support family-hardness escape, not a contradiction to B2/B3. It does not prove a superpolynomial bound or any unconditional SAT separation.
+
+**Controls:** independent no-import JS verifier 5,238 assertions, 885,507 enumerated source-subset masks, 165 checked AND3 proof nodes; 278 exhaustive cube subfamilies, 400 seeded random general 0/1/2/3-CNF fixtures (280 UNSAT, 120 SAT), 72 signed renamings, ten malformed encodings rejected and eight corrupted proof DAGs rejected. Odd/even XOR, Horn, 2SAT, empty-core and duplicate-clause controls passed. Logical node counts are separate from input access, the 256-mask source-core optimizer, proof serialization/checking and peak host space.
+
+**Artifacts (verified GitHub readback):** [report](../agents/lspv-2/2026-11-02_1418_LSPV-2_LOW_SUPPORT_MINCORE343.tex), [standalone compact reproducer](../../experiments/arc/lspv2_343_compact.js), [public raw and hashes](../../results/raw/arc/2026-11-02_1418_LSPV2_LOW_SUPPORT_MINCORE343.json). Full Python producer, independent JS verifier and 416 KB raw results are in the companion local reproducibility archive.
+
+**Next:** pursue a growing-support **combined-calculus** lower bound and the separate ordinary, nonrelativizing weakest B3 bridge; P versus NP OPEN. No task identity/state/schedule changes.
+<!-- END LSPV2 LOW-SUPPORT-MINCORE343 -->
