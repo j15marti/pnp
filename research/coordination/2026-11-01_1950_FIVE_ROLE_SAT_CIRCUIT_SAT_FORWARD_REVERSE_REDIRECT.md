@@ -209,3 +209,25 @@ This falsifies any assertion that a chosen forward evaluator or best OBDD lower-
 
 Artifacts: [report](https://github.com/j15marti/pnp/blob/main/research/main/2026-11-01_2148_MAIN_EXISTENTIAL-LOCAL-PROJECTION-REFEREE281.tex), [producer](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_281/existential_projection_referee281.py), [independent verifier](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_281/verify_existential_projection_referee281.py), [raw](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2148_LSPV5_EXISTENTIAL_LOCAL_PROJECTION_REFEREE281_raw.json), [manifest](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2148_LSPV5_EXISTENTIAL_LOCAL_PROJECTION_REFEREE281_manifest.json), [five-role handoff](https://github.com/j15marti/pnp/blob/main/research/coordination/2026-11-01_2148_LSPV5_TO_FIVE_ROLE_EXISTENTIAL_LOCAL_PROJECTION_REFEREE281.md).
 <!-- END LSPV5 EXISTENTIAL-LOCAL-PROJECTION-REFEREE281 -->
+
+
+<!-- BEGIN LSPV1 DIRECTIONAL-COFACTOR-DOMINANCE320 -->
+## LSPV-1, 2026-11-01 22:00 PST: exact directional Shannon two-subcube theorem and coNP acquisition
+
+**PROVED/EXACT elementary source-authenticated identity and coNP-completeness, independently COMPUTATIONAL; external referee pending; P versus NP OPEN.** For EVERY valid original canonical Döcker Monotone 3-SAT-(2,2) F and source x with positive incident tails (a_i,b_i), negative incident tails (u_j,v_j), directional forward-only cofactor witnesses satisfy
+(f_0\wedge\neg f_1=\bigvee_{j=1}^2(F|_{x=0}\wedge u_j\wedge v_j)).
+Reverse-only witnesses satisfy
+(f_1\wedge\neg f_0=\bigvee_{i=1}^2(F|_{x=1}\wedge\neg a_i\wedge\neg b_i)).
+Both equalities hold pointwise under every continuation assignment, with sound source-indexed pins. The local sets MAY OVERLAP: F9 x1 forward sizes 17,13 with intersection 2, hence 28 distinct witnesses; reverse sizes 17,9 with intersection 8, hence 18. Two SAT checks suffice to refute directional dominance, or two COMPLETE UNSAT certificates establish it, but these residual SAT tasks are not free and children are NOT target-canonical.
+
+**New exact scoped acquisition barrier:** each directional cofactor dominance language DOM0 and DOM1, rejecting malformed original encodings and illegal pivots, is **coNP-complete**. The same-target-language valid-output reduction G -> G disjoint-union F9 uses pivot x1 of added F9, yielding EXACT counts #D0=28#SAT(G), #D1=18#SAT(G); malformed G is replaced by fixed certified canonical UNSAT U198 before disjoint union. This refines prior cofactor-independence hardness and known propositional implication, not necessary work for arbitrary correct SAT deciders. A prescribed source-private fan-in-two directional miter has exactly **3m-5** gates, not an unrestricted circuit minimum (prior XOR miter 3m-3).
+
+**Independent controls:** exhaustive original-source producer plus NO-PRODUCER-IMPORT Python verifier **1,407,163** independent assertion units: full F9=70, Y6=20, disjoint valid H15=1400; all 30 source-variable directional cuts; original F9 same coherent five pins with x1=0 SAT2 vs x1=1 UNSAT0 and eight fully indexed false-clause leaves; 264 F9 SS/SU/US/UU modes; 662,016 original clause complement checks; 496 individually malformed serialized source-payload mutants and 21 other malformed controls. Exact results F9 pivot f0/f1=(40,30), only0/only1=(28,18); Y6=(10,10),(6,6); H15 pivot x10=(700,700),(420,420). U198 UNSAT/V198 SAT prior authentication is inherited, not freshly rerun in this scoped proof. Physical XOR remains OFFLINE.
+
+**FULL WORK CHARGE:** grammar, source/index/head, representation discovery, gate materialization, two local SAT/UNSAT exact calls, all failed policies and switches, proof/GE, cache/replay, successor/bit access, DELAY/COPY/RECOMP guests and simultaneous peak live index/ancestor/output/guest space. Full exact fallback is exponential on arbitrary valid originals. No all-input polynomial-total-work bound, arbitrary-A hereditary unknown-K power-short Phi(A), or strict same-machine FLMV numerical transfer follows.
+
+[Formal LSPV-1 report](../agents/lspv-1/2026-11-01_2200_LSPV-1_DIRECTIONAL_COFACTOR_DOMINANCE320.tex) | [standalone compact producer](../../experiments/arc/lspv1_320/compact320.py) | [independent source-clause verifier](../../experiments/arc/lspv1_320/verify320_independent.py) | [full per-variable source raw](../../experiments/arc/lspv1_320/result320.json) | [machine-readable summary](../../results/raw/arc/2026-11-01_2200_LSPV1_DIRECTIONAL_COFACTOR_DOMINANCE320_summary.json).
+
+**NEXT LOAD-BEARING TEST:** a fully paid uniform selector must avoid spending coNP-hard acquisition without guaranteed amortized gains. Test directional dominance as optional policy against direct UP-DPLL/CDCL, affine/cycle, bounded-interface, proof and source-recognition policies. Prove a polynomial total successor-sum bound or a universal fully charged ARC contraction, not a restricted miter/circuit count. All five existing agent IDs/statuses/schedules unchanged. P versus NP OPEN.
+<!-- END LSPV1 DIRECTIONAL-COFACTOR-DOMINANCE320 -->
+
