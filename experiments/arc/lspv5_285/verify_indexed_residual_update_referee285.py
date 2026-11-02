@@ -51,6 +51,19 @@ def trail(gray):
  for a,b,x,y in zip(seq,seq[1:],D,D[1:]):
   h=(a^b).bit_count();flips+=h;occ+=4*h;summ+=sum(i!=j for i,j in zip(x[2],y[2]))
  return flips,occ,summ,5*flips,(seq[0]^seq[-1]).bit_count()
+def circuit():
+ g=[];dep={i:0 for i in range(1,10)};outs=[]
+ def add(op,a,b):
+  z=10+len(g);g.append((z,op,a,b));dep[z]=1+max(dep[abs(a)],dep[abs(b)]);return z
+ for c in F:
+  q=add('OR',c[0],c[1]);outs.append(add('OR',q,c[2]))
+ while len(outs)>1:outs=[add('AND',outs[i],outs[i+1]) if i+1<len(outs) else outs[i] for i in range(0,len(outs),2)]
+ return g,outs[0],dep[outs[0]]
+def ceval(g,r,a):
+ b={i+1:x for i,x in enumerate(a)}
+ for z,op,x,y in g:
+  u=b[abs(x)] if x>0 else 1-b[abs(x)];v=b[abs(y)] if y>0 else 1-b[abs(y)];b[z]=int((u or v) if op=='OR' else (u and v))
+ return bool(b[r])
 def main():
  ap=argparse.ArgumentParser();ap.add_argument("raw");a=ap.parse_args();r=json.load(open(a.raw))
  occ=[[] for _ in range(10)]
@@ -78,6 +91,11 @@ def main():
  for name,g in (("binary_trail",False),("gray_trail",True)):
   q=trail(g);x=r["F9"][name];ck(q==(x["variable_flips"],x["occurrence_record_changes"],x["clause_summary_record_changes"],x["core_fixed_layout_bit_xor"],x["endpoint_variable_delta"]))
  ck(r["F9"]["models"]==sum(truth([(z>>i)&1 for i in range(9)]) for z in range(512))==70)
+ g,root,depth=circuit();ck((len(g),depth)==(35,6))
+ ones=0
+ for z in range(512):
+  a=[(z>>i)&1 for i in range(9)];b=ceval(g,root,a);ck(b==truth(a));ones+=b
+ ck((ones,r["F9"]["forward_private"]["truth_table_rows"],r["F9"]["forward_private"]["output_ones"])==(70,512,70))
  ck(r["P_vs_NP"]=="OPEN" and r["malformed_rejections"]==6)
  print(json.dumps({"verified":True,"independent_assertion_groups":checks,"transition_rows":tot,"P_vs_NP":"OPEN"},sort_keys=True))
 if __name__=="__main__":main()
