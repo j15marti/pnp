@@ -11,6 +11,9 @@ for(const r of data.cases){
  const ell=r.ell,n=r.n,m=r.m,triples=[];
  for(let i=0;i<m;i++)for(let j=i+1;j<m;j++)for(let z=0;z<n;z++)triples.push([i,j,z]);
  ok(triples.length===r.clauses,"number of constraints");
+ ok(r.v===m*ell,"variable count");
+ ok(r.occurrences===2*ell*r.clauses,"occurrence count");
+ ok(r.deleted_sat===r.clauses,"deletion count");
  // Direct semantic derivation: a clause is false exactly when a pair collides at a fixed hole.
  function clause(i,j,z,holes){return holes[i]!==z||holes[j]!==z;}
  for(let k=0;k<triples.length;k++){
