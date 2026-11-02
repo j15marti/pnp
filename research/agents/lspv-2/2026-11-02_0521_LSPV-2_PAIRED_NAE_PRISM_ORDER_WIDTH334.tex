@@ -1,0 +1,73 @@
+% LSPV-2 research report 334, 2026-11-02 05:21 PST
+% Full local PDF and independent no-import verification archive accompanies this run.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,geometry,hyperref}
+\geometry{margin=0.88in}
+\newtheorem{theorem}{Theorem}
+\title{LSPV-2: Connected Canonical Paired-NAE Prism: Exponential Bad-Order OBDD Width, Constant-Width Escape}
+\author{Circuit and Reduction Builder}
+\date{2026-11-02, 05:21 PST}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT, RESTRICTED, independent outside review pending.}
+This is a lower bound for one \emph{declared variable-order OBDD model}, not a lower bound on general SAT decision work. Both P=NP and P$\ne$NP remain OPEN.
+
+\section{Obstruction and falsifiers}
+An evaluator $C_F(x)$ running in linear gate count on \emph{given} $x$ is not an algorithm for deciding $\exists x\,C_F(x)=1$. The four tested mechanisms were: (i) large cofactor spectra imply SAT decision hardness, \textbf{FALSIFIED}; (ii) a bad order cannot be escaped within OBDDs, \textbf{FALSIFIED}; (iii) continuation equivalence always requires a SAT oracle, \textbf{FALSIFIED on this restricted rim-prefix family}; (iv) a compact circuit necessarily reduces total decision work, \textbf{FALSIFIED on same-original controls}.
+
+\section{The canonical original}
+For each even integer $k\ge4$ introduce $3k$ original variables
+$T_i,B_i,S_i$ for $i\in\mathbb Z/k$. At each top vertex $i$, include the two distinct source clauses
+\[
+ (T_{i-1}\lor T_i\lor S_i),\qquad
+ (\neg T_{i-1}\lor\neg T_i\lor\neg S_i);
+\]
+include their bottom analogues using $B_{i-1},B_i,S_i$.
+This defines $4k$ clauses, all proper, same-sign, and duplicate-free.
+Every variable occurs in exactly two positive and two negative clauses, and the variable-clause incidence graph is connected. It is therefore a valid D\"ocker Monotone 3-SAT-(2,2) original, not an arbitrary signed $(4,4)$ surrogate.
+The source-clause pair at each prism vertex is $\mathrm{NAE}_3$. A three-gate XOR/XOR/OR evaluator per pair plus an AND tree uses exactly $8k-1$ fan-in-two gates in this \emph{declared architecture}, and its unique-trace output-one Tseitin encoding has $28k-2$ clauses. Neither number is an unrestricted circuit minimum, and Tseitin is not a canonical child.
+
+\begin{theorem}[Bad-order lower bound]
+For the variable order consisting of all $T$ wires, all $B$ wires, then $S_1$ and the remaining spokes, every reduced OBDD for this original has at least $2^{k/2}$ nodes at the level labeled $S_1$.
+\end{theorem}
+\begin{proof}
+For each $q\in\{0,1\}^{k/2}$, fix $T_{2j}=T_{2j+1}=q_j$ and $B_i=i\bmod2$. All bottom constraints become tautological on the remaining spokes. Top vertex $2j+1$ forces $S_{2j+1}=1-q_j$; top vertex $2j$ either forces a consistent value on $S_{2j}$ or leaves it free. Every resulting residual is satisfiable, each depends on $S_1$, and residual functions for different $q$ disagree on one forced odd spoke. Thus they require distinct reduced OBDD nodes at the next decision level.
+\end{proof}
+
+\begin{theorem}[Good-order upper bound]
+For the interleaved order $(T_0,B_0,S_0,\ldots,T_{k-1},B_{k-1},S_{k-1})$, the reduced OBDD width is at most $146$, with at most $438k$ nonterminal nodes.
+\end{theorem}
+\begin{proof}
+After $j$ complete triples, $1\le j<k$, a surviving residual is determined by the two wrap-edge constraints left at vertex zero (each free, forced zero or forced one) and the two last assigned rim bits $(T_{j-1},B_{j-1})$. Thus it has at most $3^2 2^2=36$ nonzero boundary summaries; every other suffix clause is source-identical. Before completing the next triple at most two new bit values have been read, giving at most $4\cdot36=144$ summaries, plus two terminals. Finite-state updates are obtained by checking the local original clause pairs and do not require a free semantic-equality oracle. Standard bottom-up BDD redundancy elimination cannot increase width. There are $3k$ levels.
+\end{proof}
+
+\begin{theorem}[Decision bypass and same-original opposite labels]
+The original formula is SAT by $T_i=B_i=i\bmod2$ and arbitrary spoke values, verified in $O(k)$ source-clause word operations after authentication. Two coherent rim contexts in the \emph{same original}, $q=0^{k/2}$ and $q'=(1,0,\ldots,0)$, are both currently SAT, but the common future pin $S_1=1$ preserves SAT for the first and makes the second UNSAT. Its original negative source clause at top vertex one (ID $2k+2$) is already false.
+\end{theorem}
+\begin{proof}
+Every top and bottom vertex then has two incident rim bits of opposite values, so both source NAE clauses hold. For the opposing rim context, $T_0=T_1=S_1=1$ falsifies $(\neg T_0\lor\neg T_1\lor\neg S_1)$.
+\end{proof}
+
+\section{Work, independent tests, and adverse controls}
+A rim-prefix continuation has a source-computable $(M,V)$ signature: each spoke is either free or forced to one value by its two incident NAE pairs; conflicting forces yield FALSE. Every signature is computed by $O(k)$ source-local reads, not an oracle. Equality of two nonempty such signatures is exactly equality of their continuation functions. However, explicit full-prefix enumeration costs $2^{2k}$ rows, so this experiment never treats the semantic quotient as free.
+
+\begin{center}\begin{tabular}{rrrrrr}\toprule
+$k$ & $n$ & bad nodes & bad $S_1$ width & good nodes & good peak width\\\midrule
+4&12&228&30&177&46\\
+6&18&2112&200&429&56\\
+8&24&17014&1362&681&56\\
+10&30&--&$\ge32$&933&56\\
+12&36&--&$\ge64$&1185&56\\
+16&48&--&$\ge256$&1689&56\\\bottomrule
+\end{tabular}\end{center}
+
+The producer and separately written no-import verifier passed 1,370,503 checks. Independent full original-source OBDD evaluations covered both variable orders at $k=4$ ($2^{12}$ inputs each) and $k=6$ ($2^{18}$ inputs each). The complete forward source/circuit evaluations covered those sizes and sampled $k=8$. Same-original F9 and F15 source-pinned SAT/UNSAT controls had two versus zero completions, with complete eight- and 64-leaf original-clause UNSAT covers. All 264 original F9 SS/SU/US/UU modes, original complements, renaming controls, and eight malformed sources were checked. A fresh U198 original UNSAT replay used 384 boundary queries, 19,488 DPLL nodes, and 6,099,608 source-literal reads; V198's witness satisfied all 264 original clauses.
+
+For the $k=4$ SAT/UNSAT opposing controls, direct original CNF UP-DPLL took 56/17 literal inspections versus output-one Circuit-SAT 1375/194, both at one search node. The circuit route excludes gate compilation and hence has still larger fully charged total work. Bad-order $k=8$ explicit reduced-OBDD construction materialized 191,709 source-residual states and had 125,991,400 traced host Python peak bytes, against 1077 states and 1,328,144 bytes for the good order. These are \emph{not} native same-machine FLMV transitions.
+
+\section{Resource accounting, prior art, and open gap}
+The unrestricted adaptive controller must charge grammar/source-index/head access, representation acquisition, every failed policy and switch, exact semantic merging, gate construction, output/bit access, proof and GE checking, caches/replay, each evaluated child, retained ancestors, DELAY/COPY/RECOMP guests, and simultaneous peak writable/index space. This construction proves only that the \emph{bad-order materialized BDD} costs at least its output size. It exhibits an easy SAT path and a good OBDD path for the same connected canonical original, thereby refuting a universal-lower-bound transfer from the bad path.
+
+Project duplication check: PAIRED-NAE-EULER-PRISM328 already proved source SAT tractability; COFACTOR-LATTICE-OBDD333 quantified optimal order on finite F15; PRISM-PARITY-FRONTIER214 concerns a different $(4,4)$ signed source, not this canonical family. Relevant primary literature includes Razgon (KR 2014), Amarilli et al. (2019), de Colnet et al. (2025), and Peng--Xiao (IJCAI 2023). OpenAI's October 25, 2026 ETH preprint is a \emph{conditional unreviewed claim} under outside scrutiny, not a settled theorem.
+
+No polynomial \emph{total} adaptive decider on every valid canonical original, no universal arbitrary-correct-decider power-short $A\mapsto\Phi(A)$, no hereditary canonical reencoder, and no strict numerical SAME-MACHINE FLMV transfer has been established. Both P=NP and P$\ne$NP remain OPEN.
+\end{document}
