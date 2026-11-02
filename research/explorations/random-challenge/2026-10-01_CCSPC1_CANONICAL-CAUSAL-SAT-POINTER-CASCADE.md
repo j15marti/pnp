@@ -192,21 +192,28 @@ The candidate charged resource is
 
 [
 oxed{
-mathcal R_{m CCSPC}
+mathcal R_{
+m CCSPC}
 =
-S_{m data}
+S_{
+m data}
 +
-S_{m pointer}
+S_{
+m pointer}
 +
-wQ_{m reread}
+wQ_{
+m reread}
 +
-C_{m recompute}
+C_{
+m recompute}
 +
-C_{m sequential}.
+C_{
+m sequential}.
 }
 ]
 
-A successful lower-bound theorem would force a large value of (mathcal R_{m CCSPC}) for every correct realization in the declared model.
+A successful lower-bound theorem would force a large value of (mathcal R_{
+m CCSPC}) for every correct realization in the declared model.
 
 ## 8. Why canonicalization matters
 
@@ -327,7 +334,8 @@ This must not contradict the fact that an NDTM can simulate any deterministic pr
 For an explicit dependency-DAG family,
 
 [
-mathcal R_{m CCSPC}ge L(n)
+mathcal R_{
+m CCSPC}ge L(n)
 ]
 
 even when the current SAT decision bit is free.

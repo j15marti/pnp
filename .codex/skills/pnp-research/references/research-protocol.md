@@ -59,7 +59,8 @@ If the answer is only “all known algorithms do,” “the formula contains it,
 
 ## 4. Acquisition accounting
 
-Whenever the proof uses an object (Q,D,W,Pi,ho,ldots), separately account for:
+Whenever the proof uses an object (Q,D,W,Pi,
+ho,ldots), separately account for:
 
 - representation;
 - construction/acquisition;
