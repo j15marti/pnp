@@ -1,0 +1,70 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append/revise in place; log of runs at end
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\title{Circuit-SAT Lower Bounds, Built Up Wire by Wire\\\large Living document (Claude)}
+\date{Last updated 2026-11-02}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} No super-linear unconditional lower bound
+for Circuit-SAT is claimed. Labels: PROVED, COMPUTATIONAL, KNOWN, CANDIDATE, OPEN.
+
+\section{Model and program}
+A circuit $C$ on $n$ inputs has $s$ gates of fan-in $2$ over $\{\wedge,\vee\}$ with free negation on wires
+(so $2s$ wires of gate input, plus the output). Circuit-SAT: given $C$, decide $\exists x\,C(x)=1$.
+Plan: (i) exact minimum gate/wire counts for small $n$ (the \emph{construction cost});
+(ii) lower bounds on \emph{solving} as a function of the parameters $(n,s)$, e.g.\ $T(n,s)$;
+(iii) look for parametrized bounds of the form $f(n)\cdot s$ or $s^{g(n)}$.
+Known upper bound: $O(2^n s)$ by exhaustion; ETH/SETH-style lower bounds are conditional (KNOWN, not proved here).
+
+\section{Construction cost: exact minima (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/minsize.py}, exhaustive BFS over sets of computed functions
+(negation free), all $2^{2^n}$ functions for $n\le 3$; data in \texttt{minsize\_n2.json}, \texttt{minsize\_n3.json}.
+
+\begin{center}\begin{tabular}{c|ccccccc}
+$n$ & \multicolumn{7}{c}{number of functions needing exactly $g$ gates}\\\hline
+2 & $g{=}0$:6 & 1:8 & 3:2 &&&& \\
+3 & 0:8 & 1:24 & 2:64 & 3:30 & 4:104 & 5:8 & 6:18
+\end{tabular}\end{center}
+Results: unique-solution functions ($|f^{-1}(1)|=1$) need $n-1$ gates ($n=2,3$: 1, 2);
+parity needs $3(n-1)$ gates ($n=2,3$: 3, 6; matches the KNOWN Schnorr bound for this basis); the maximum over $n=3$ is $6$.
+(Complement-closed counts: each function and its negation have equal cost.)
+Gate $\times$ wire accounting: a size-$g$ circuit has $2g$ input wires; the connectivity bound below shows $g\ge n-1$ is forced.
+
+\begin{proposition}[PROVED, connectivity] A fan-in-2 circuit depending on all $n$ inputs has $\ge n-1$ gates
+(the underlying DAG restricted to the output cone is connected, an $n$-leaf binary-in-degree structure needs $n-1$ merges).
+\end{proposition}
+Tight for the unique-solution (AND of literals) family.
+
+\section{Solving cost: an unconditional parametrized bound (PROVED, trivial regime)}
+Model: deterministic algorithm with random access to the encoding of $C$ (gate $j$'s two predecessors and polarities),
+cost = number of gate descriptions probed.
+\begin{proposition}\label{p:read}
+For every $s\ge2$, even with $n=1$, any exact Circuit-SAT algorithm probes $\ge s-1$ gate descriptions in the worst case.
+\end{proposition}
+\begin{proof} $I_0$: $g_1=x$, $g_j=g_{j-1}\wedge x$ ($j\ge2$); satisfiable ($x=1$). $I_i$ ($2\le i\le s$): same except
+$g_i=g_{i-1}\wedge\neg x$; then $g_i\equiv0$ and all later gates are $0$, unsatisfiable. If the algorithm on $I_0$ does not probe gate $i$ it
+answers identically on $I_i$, contradiction. \end{proof}
+Hence $T(n,s)=\Omega(s)$ for all $n$; combined with $O(2^ns)$, the open question is the exact $n$-dependence:
+is $T(n,s)\ge s\cdot 2^{\epsilon n}$ for $s=\mathrm{poly}(n)$? OPEN (that is the substantive statement; implies $\mathrm P\ne\mathrm{NP}$ only for $s$ polynomially large with $n$ — and would be SETH-flavoured).
+
+\section{Barriers recorded so far}
+Circuit-size lower bounds for explicit functions known: $3.1n-o(n)$ (Li--Yang, KNOWN, from literature; not rechecked this run) in full binary basis.
+Any argument via counting alone gives only hardness of \emph{some} function, not Circuit-SAT as an algorithmic problem; relativization/natural proofs
+barriers apply to circuit-size methods. Gate elimination yields linear bounds only.
+Connection to the repository (\texttt{AGENTS.md}): the world ledger rows L13, L34--L40 show alternation-trading/time--space and one-tape routes stall
+near linear/quadratic time; these bound \emph{time--space tradeoffs} for SAT, a parametrized route consistent with this document's $(n,s)$ view
+(CANDIDATE: transfer of the portfolio bounds to the $2^{\epsilon n}$ question; no theorem yet).
+
+\section{Next steps}
+\begin{enumerate}
+\item $n=4$ exact minima (needs a smarter search or SAT-based synthesis; keep each run $\le$30\,s via chunking by truth-table class).
+\item Track minimum \emph{wires with fan-out} for circuits with a prescribed number of solutions $k$; look for a pattern $g(n,k)$.
+\item Formalize a restricted model (e.g.\ DPLL/resolution-style algorithms) where $T(n,s)\ge 2^{\epsilon n}$ is provable for hard circuits, and read the repository's UWI/ARC files for reusable lemmas.
+\end{enumerate}
+
+\section*{Run log}
+\begin{itemize}
+\item 2026-11-02: created document; exhaustive minima $n\le3$; Proposition~\ref{p:read}; no repository ARC/UWI file consulted in depth (only AGENTS.md ledger pointers).
+\end{itemize}
+\end{document}
