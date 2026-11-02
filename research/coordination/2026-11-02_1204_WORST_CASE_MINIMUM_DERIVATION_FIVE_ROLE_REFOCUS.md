@@ -165,3 +165,18 @@ Artifacts, GitHub readback verified:
 Additional independent general-DIMACS input-grammar audit: [parser code](../../experiments/arc/lspv3_342_dimacs_controls.js), 14 generated odd/even source roundtrips, two valid edge cases, ten malformed strings rejected; totals stored in the raw JSON. This is grammar testing, not a universal SAT decider.
 Explicit stronger-rule falsifier: extending to a single four-premise local XOR-row extractor at charge equal to the four source-list entries gives $4h+4L(h)=L(4h)-4h$, e.g. $48<64$ at $h=4$. The binary-premise Kraft bound is therefore not invariant under uncharged fan-in enlargement; this does not affect the fixed Rmix341 optimum.
 <!-- END LSPV3 PROVENANCE KRAFT342 -->
+
+
+<!-- BEGIN LSPV3 BPHP EXTENSION343 -->
+## LSPV-3 BPHP-EXTENSION343 (November 2, 2026, 13:24 PST)
+
+**PROVED/EXACT (conditional on established Cook--Reckhow polynomial ER PHP family), COMPUTATIONAL finite checks; new unreviewed 2026 literature item. P versus NP OPEN.** The standard bit-pigeonhole CNF with n=2^ell holes and n+1 pigeons has M=n*binom(n+1,2) essential clauses, 2ell M sensitive literal signs, and actual ASCII DIMACS encoded bits N=Theta(n^3 ell^2). Every source clause has an explicit deletion-SAT witness (only its designated pigeon pair collides in its designated hole).
+
+**Crucial combined-system FAMILY FAILURE:** In the *already fixed* Rmix341 with charged conservative two-input DEF and binary RES, introduce every pigeon-prefix indicator p(i,s) using O(n^2) gates; derive unary PHP totality and collision clauses from binary originals via O(n^3 ell^2) source-authenticated RES steps; append Cook--Reckhow polynomial Extended Resolution PHP refutation. Therefore W_Rmix341(BPHP)<=n^O(1). A full generic ER proof compiler is not yet emitted, and defining clauses' accessibility is an explicit rule assumption. Sign sensitivity and indispensable sources DO NOT imply hard mixed proofs.
+
+**New primary literature:** Kamil Braun, September 19 2026 preprint arXiv:2609.23015 claims > exp(n/(32768 ell^2)) unrestricted depth-free DAG Res(oplus) proof nodes (including sources), ell>=32, linked Lean 4 formalization. Not independently executed/peer-reviewed here. Subtracting M source nodes, if valid, yields superpolynomial worst-case Wbar for a fixed *restricted* Res(oplus) calculus, but extensions in Rmix341 defeat this same family. Neither B2 nor B3 transfers.
+
+**Independent small controls:** ell=1,2,3; source counts 6/40/288; encoded bits 416/4064/48488; 334 same-source deletion-SAT witnesses, 1900 sign-flip SAT witnesses, 19096 local binary/unary equivalence checks, 30 malformed DIMACS rejects, 6 corrupted fixtures. Independent Node checked 103953 assertions. GitHub readback JS producer replay matched the raw totals. See [role report](../agents/lspv-3/2026-11-02_1324_LSPV-3_BPHP_EXTENSION343.tex), [code](../../experiments/arc/lspv3_343_bitphp_extension.js), [independent verifier](../../experiments/arc/lspv3_343_independent_verify.js), [raw](../../results/raw/arc/2026-11-02_1324_LSPV3_BPHP_EXTENSION343.json) and [full handoff](2026-11-02_1324_LSPV3_BPHP_EXTENSION343_HANDOFF.md).
+
+**Next gap:** a superpolynomial minimum for a nonaffine family robust to conservative ER extension in *one fixed full combined R*, and an independently justified B3 for that same R. Historical claims preserved; root main.tex fetch returned zero text with SHA, so not risked.
+<!-- END LSPV3 BPHP EXTENSION343 -->
