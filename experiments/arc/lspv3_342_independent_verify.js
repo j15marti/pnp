@@ -45,6 +45,7 @@ function verify(P){
  ck(volume===len(F.length),"weighted source bound");
  deleted.forEach((w,j)=>{ck(typeof w==="string"&&/^[0-9a-f]+$/.test(w),"witness hex");let x=BigInt("0x"+w);ck(x>>BigInt(n)===0n,"witness range");ck(!sat(F[j],x),"witness must falsify removed");F.forEach((c,k)=>{if(k!==j)ck(sat(c,x),"deletion witness fails")})});
  ck(Array.isArray(evenClauses)&&evenClauses.length===F.length&&evenClauses.every(c=>sat(c,0n)),"even SAT");
+ for(let v=0;v<h;v++){let T=255;for(let k=0;k<4;k++){let c=evenClauses[4*v+k];ck(Array.isArray(c)&&c.length===3&&eq(c.map(l=>Math.abs(l)-1),inc[v]),"even-edge pattern");T&=tabcl(c,inc[v])}ck(T===tabrow(inc[v],0,inc[v]),"even charge source parity")}
  let models=null;
  if(n<=12){let odd=0,even=0;for(let z=0;z<2**n;z++){let x=BigInt(z);if(F.every(c=>sat(c,x)))odd++;if(evenClauses.every(c=>sat(c,x)))even++}ck(odd===0&&even===2**(n-h+1),"exhaustive labels");models={odd,even}}
  return {h,m:F.length,q:nodes.length-F.length,source_reads:volume,L_m:len(F.length),models};
@@ -62,7 +63,8 @@ function run(R){
  negate(q=>q.nodes[0].source=999);
  negate(q=>q.h=5);
  negate(q=>q.nodes.push({kind:"oracle",parents:[0,1]}));
- ck(bad===8,"negative test count");
+ negate(q=>q.evenClauses[0][0]*=-1);
+ ck(bad===9,"negative test count");
  return {verified:out,negative_rejects:bad,exhaustive_original_pairs:out.filter(x=>x.models!==null).length};
 }
 if(require.main===module){let data=JSON.parse(require("fs").readFileSync(process.argv[2],"utf8"));process.stdout.write(JSON.stringify(run(data))+"\n")}
