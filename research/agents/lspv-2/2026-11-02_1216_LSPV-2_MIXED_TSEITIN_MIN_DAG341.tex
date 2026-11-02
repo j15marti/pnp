@@ -1,0 +1,109 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{LSPV-2 MIXED-TSEITIN-MIN-DAG341:\\ Exact Minimum Unit-Cost Refutation DAGs for Bridgeless Cubic Odd-Tseitin CNFs}
+\author{PNP SAT-Circuit Reduction Builder, independent computational audit}
+\date{November 2, 2026, 12:16 PST}
+\begin{document}
+\maketitle
+\paragraph{Status and scope.} \textbf{PROVED/EXACT} for the fixed calculus and graph family below; \textbf{COMPUTATIONAL} for the independent finite certificates. No superpolynomial lower bound is claimed. This extends project LSPV-2 ODD-XOR-CYCLE-MIN-DAG340 (a degree-two parity cycle with $2h-1$ minimum) to \emph{degree-three odd Tseitin CNFs}, including cubic graphs useful in known resolution-hardness constructions. The source-capacity argument is project MINCOST-DAG-FANIN339, not claimed as new. The theorem is about minimum proof nodes, not shortest proof search, actual machine time, a numerical FLMV bound, or a P-versus-NP solution.
+
+\paragraph{One fixed uniform mixed calculus $R_{\mathrm{mix341}}$.}
+An input is an ordinary finite DIMACS CNF, with a declared variable bound, properly terminated clauses and exact header counts; malformed encodings are rejected. Original source clauses are free source-labelled axioms. Every derived node has unit logical cost and at most two antecedent-node identifiers. Shared intermediate nodes cost once, and proof order is any acyclic topological ordering. The fixed rules are:
+\begin{enumerate}
+\item[] \textbf{RES:} binary Boolean-clause resolution on a named complementary pivot, including all ordinary widths. This alone makes the system refutationally complete for CNF.
+\item[] \textbf{AND3:} from two conditions whose combined support has at most three original variables, derive their exact conjunction as an eight-bit truth-table factor. A factor may be annotated by a GF(2) row \emph{only if} exhaustive evaluation of all at most eight rows proves exact Boolean equivalence. The annotation is a deterministic local normal-form choice at the same inference node, not a semantic oracle.
+\item[] \textbf{XOR:} from two GF(2) equations, infer their XOR sum, including $0=1$. Its variable-mask and RHS computation are algorithmic and its unit \emph{logical} cost does not render the bit manipulation free.
+\item[] \textbf{LOCAL-CONVERT:} from one already derived local factor/equation derive a clause or bounded-support Boolean circuit condition only when an explicit constant-support truth-table check establishes logical implication; this has unit cost.
+\item[] \textbf{DEF:} at unit cost introduce one fresh variable as a two-input Boolean gate with all defining relations attributed to that same charged node. The definition is conservative: every valuation of previous variables extends uniquely to the new variable; later uses reference its charged node. No independent axiom can encode a formula's SAT label.
+\end{enumerate}
+Unrestricted auxiliary definitions of other arities and hidden equivalence tests are \emph{not} rules of this fixed $R$. An equivalent sound rule may only be introduced in a later version and separately audited. All rules preserve logical consequence under conservative existential interpretation. RES proves completeness. No derived node has zero weight. The lower-bound argument applies even if any further \emph{conservative, charged, at-most-binary-premise} rules, including temporary growth or representation changes, are added.
+
+\paragraph{Source family.}
+Let $G=(V,E)$ be a finite connected \emph{simple bridgeless cubic} graph, $h=|V|$ and $n=|E|=3h/2$. Let $\chi\in\{0,1\}^V$ have odd total parity. For every vertex $v$, its incident-edge variables $x_{e_1},x_{e_2},x_{e_3}$ are constrained by
+\[
+ x_{e_1}\oplus x_{e_2}\oplus x_{e_3}=\chi_v.
+\]
+For each of the four local triples of the opposite parity, insert the one three-literal clause falsified \emph{exactly} at that local triple. Thus $F_{G,\chi}$ has $m=4h$ source clauses of width three. Summing all vertex equations cancels each edge twice and yields $0=\bigoplus_v\chi_v=1$, so the formula is UNSAT. For any even-charge $\chi'$, connected incidence rank is $h-1$ and there are exactly $2^{n-h+1}$ satisfying assignments.
+
+\begin{lemma}[Indispensability of all source clauses]
+For every $G,\chi$ as above, deleting any one of the $4h$ source clauses makes the remaining CNF satisfiable.
+\end{lemma}
+\begin{proof}
+In a cubic graph without bridges, no vertex can be a cut vertex: if deleting $v$ made two or more components, its three incident edges would distribute among them and at least one component would have only one edge to $v$, a bridge. Hence $G-v$ is connected for each $v$.
+Fix a source clause $C$ at $v$. It forbids one local edge pattern $z\in\{0,1\}^3$ with $\bigoplus z=1\oplus\chi_v$. Pin these three edges to $z$, omit only the parity equation at $v$, and retain all other vertex parity equations. They form the incidence system on the connected graph $G-v$, with fixed-edge contributions moved to right-hand sides. Its only consistency dependency is the XOR of the $h-1$ rows. This dependency is satisfied because
+\[
+ \bigoplus_{u\ne v}\chi_u = 1\oplus\chi_v = \bigoplus z.
+\]
+The system therefore has a solution. At $v$ the chosen wrong-parity pattern falsifies precisely $C$ among the four local forbidden-pattern clauses. At every other vertex all four clauses hold. Thus $F_{G,\chi}\setminus\{C\}$ is SAT.
+\end{proof}
+
+\begin{lemma}[Binary-premise source-capacity bound]
+In any sound, source-explicit DAG refutation in which each charged inference/definition node has at most two incoming dependencies, every source clause is essential and all non-source nodes have unit cost, $q\ge m-1$ charged nodes.
+\end{lemma}
+\begin{proof}
+All $m$ sources must lie in the ancestry of the contradiction: otherwise the used sources would have a satisfying valuation, extendible across all conservative auxiliary definitions, contradicting soundness. The undirected ancestry graph of $m$ source vertices and $q$ charged vertices is connected and has at least $m+q-1$ edges, while the sum of inference indegrees bounds it by $2q$. Therefore $q\ge m-1$. Shared subproofs, changes of representation, auxiliary gates, and temporary growth do not alter the argument so long as no source-independent unsound axiom or free multi-premise semantic jump is admitted.
+\end{proof}
+
+\begin{theorem}[Exact global unit-node optimum in the fixed mixed calculus]
+For every connected simple bridgeless cubic $G$ and every odd charge $\chi$,
+\[
+ \boxed{W_{R_{\mathrm{mix341}}}(F_{G,\chi})=4|V|-1.}
+\]
+The free-choice minimum ranges over \emph{all finite} permitted DAGs, not a depth- or rule-search cutoff.
+\end{theorem}
+\begin{proof}
+The preceding lemmas give $W\ge 4h-1$. For a matching proof, at every vertex use three AND3 inferences to conjoin its four source clauses into the exact three-variable parity relation. Each AND3 is a two-parent, source-authenticated inference, and the final truth-table factor is locally verified to equal the XOR row. This uses $3h$ nodes. Sum the $h$ rows using $h-1$ binary XOR inferences. Since the total charge is odd, the final row is $0=1$. The constructed shared-DAG refutation has exactly $3h+h-1=4h-1$ nodes. Both sides are attained, so this is a global optimum in the declared calculus, not merely the outcome of a bounded optimizer.
+\end{proof}
+
+\paragraph{Model-dependence falsifier.} An alternative sound calculus permitting a \emph{unit-cost four-premise} extraction of a whole local XOR3 row admits a proof with $h+(h-1)=2h-1$ nodes. This rule is \emph{not} part of $R_{\mathrm{mix341}}$. Its existence disproves any unqualified inference that the $4h-1$ bound survives arbitrary new multi-premise rules. Another adverse control is a cubic graph formed from two subdivided $K_4$ graphs joined by a bridge: only 36 of its 40 source clauses are independently essential, so the $m-1$ optimality certificate is not applicable, even though an exhibited $39$-node affine refutation remains valid.
+
+\paragraph{Independent finite certificates and both labels.}
+The executable producer emits original source clauses, source-deletion satisfying assignments, a fully labelled AND3/XOR DAG and a satisfying assignment for the \emph{even}-charge counterpart. A separately written verifier reconstructs local clause semantics, independently checks the $8$-row AND3 gates, affine aliases, GF(2) sum nodes, DAG ancestry and every deletion witness. It also directly enumerates all assignments for instances having at most 15 edge variables, and rejects malformed DIMACS inputs and five corrupted certificates. Independent checker total: \textbf{30,714 assertions}, seven malformed-input tests, five corrupted-trace rejections.
+\begin{center}
+\begin{tabular}{lrrrrr}
+\toprule
+Graph & $n$ & $N$ (ASCII DIMACS bytes) & $m$ & essential & $q$\\
+\midrule
+$K_4$ & 6 & 163 & 16 & 16 & 15\\
+$K_{3,3}$ & 9 & 239 & 24 & 24 & 23\\
+Cube & 12 & 340 & 32 & 32 & 31\\
+Petersen & 15 & 440 & 40 & 40 & 39\\
+Prism$_6$ & 18 & 540 & 48 & 48 & 47\\
+Prism$_{16}$ & 48 & 1541 & 128 & 128 & 127\\
+Bridged pair (negative control) & 15 & 440 & 40 & 36 & 39\\
+\bottomrule
+\end{tabular}
+\end{center}
+For the first six lines the lower-bound certificate and matching proof jointly establish the exact, unbounded-search minimum. The last line reports only a valid proof \emph{upper bound}; its $39$ is not certified optimal. The independently checked even-charge originals have SAT witnesses; the odd-charge originals have no models. The unpinned odd and even inputs are different formulas with the same underlying signed-hypergraph graph. The individual deleted-clause satisfiable controls concern the \emph{same odd original} with exactly one source deletion, not a promised all-UNSAT family.
+
+\paragraph{Actual work, evidence length and space.}
+Unit-node optimum is separate from the encoded proof length and execution schedule. The emitted proof-DAG JSON lengths for the six certified cases are respectively 1541, 2380, 3228, 4103, 4971 and 14,001 bytes. The full data fixture for Prism$_{16}$, including 128 separate deletion witnesses, is 33,003 compact JSON bytes. The generator's source authentication, four-local-pattern acquisition, policy decision to use cubic structure, each 8-entry conjunction check, each GF(2) bit operation, output serialization and checker work are \emph{additional} operations. For $h$ vertices, the exhibited proof is generated with $O(h)$ local constant-arity factor operations and $O(h^2)$ bit operations if every affine mask is materialized in length $O(h)$; proof and separate witness arrays use $O(h^2)$ bits excluding host object overhead. The optional clause-deletion certificate optimizer uses additional Gaussian elimination and is not included in $W_R$. A dense naive deletion-witness generator has polynomial all-phase time, with no assertion of a native TM step count or an FLMV-compatible peak space exponent. The host runtime's actual peak RSS was not measured and must not be fabricated. Any future materialized-child contraction remains subject to $s'\le\max\{\rho,\eta,\lambda,\lambda s\}$, where $\rho$ covers \emph{every} preprocessing and conversion phase, including allocate-then-free memory.
+
+\paragraph{Barrier and implication audit.}
+Known expander-based odd Tseitin instances can require exponential \emph{resolution} size, as in Urquhart and Ben-Sasson--Wigderson \cite{Urquhart1987,BenSassonWigderson2001}. This run proves a linear \emph{mixed-system} optimum when the cubic graph is bridgeless, so a lower bound from resolution alone does not transfer to the combined calculus. This is a \emph{family failure} of a would-be hard family, not a disproof of worst-case hardness elsewhere. Neither a parity recognizer with exponential fallback nor a short proof on these instances disproves B2 or B3.
+The weakest sufficient bridge remains
+\[
+ \mathrm{SAT}\in\mathrm{P}\implies \exists C,k\;\forall N:\quad
+ \overline W_{R_{\mathrm{mix341}}}(N)\le C(N+1)^k.
+\]
+It is \textbf{OPEN}. Its pointwise and worst-case stronger variants B1 and B2 are also \textbf{OPEN} for this fixed calculus. In particular, Cook--Reckhow's existence theorem for \emph{some} proof system under $\mathrm{NP}=\mathrm{coNP}$ does not identify this preselected system \cite{CookReckhow1979}. No superpolynomial bound on $\overline W_R$ follows from the present linear family, and $P=NP$ and $P\ne NP$ remain OPEN.
+
+\paragraph{Four explicit attempted falsifiers and outcomes.}
+\begin{enumerate}
+\item[] \textbf{Shared DAG/temporary growth/auxiliary gates:} addressed for the declared binary-premise, conservative positive-cost rules by the source-ancestry lower bound; cheaper derivations are ruled out without enumeration.
+\item[] \textbf{Multi-premise semantic compression:} defeats the numerical optimum if adopted as a new unit-cost four-source inference, so the unit-cost premise basis must be fixed.
+\item[] \textbf{Bridge and redundant-source perturbation:} the bridged cubic test has four dispensable clauses and invalidates the indispensable-source certificate; no false optimality claim is made.
+\item[] \textbf{Opposite parity, malformed sources and corrupted derivations:} independent both-label source evaluation and deliberately corrupted output checks all passed.
+\end{enumerate}
+
+\paragraph{Corpus, search and novelty record.} Read the verified 2026-11-02 12:04 five-role worst-case handoff, active issue \#3, AGENTS.md, CODEX.md, pnp-research skill and LSPV-2 ODD-XOR-CYCLE-MIN-DAG340. Project searches included \texttt{MINCOST-DAG-FANIN339} and \texttt{resolution}; the latter surfaced previous source-indexed resolution implementations. Attempts to fetch guessed peer-report paths returned 404 and were not treated as negative research evidence. Primary literature searches covered Cook--Reckhow, Urquhart, Ben-Sasson--Wigderson and mixed XOR proof systems. Search of \texttt{github.com/openai} for relevant XOR/resolution implementations returned no relevant implementation, and the linked GitHub OpenAI search timed out. The 1979/1987/2001 proof-complexity results and project prior arity lemma are existing work. The contribution here is a specific exact mixed-system unit-cost theorem with executable source-deletion certificates; independent academic originality review is still pending.
+
+\paragraph{Next narrow target.}
+Search finite \emph{non-affine} minimally UNSAT cores under this same combined R, and construct a proof-preserving hardness-transport gadget with a formally correct direction $W_R(\operatorname{red}(F))\ge f(W_R(F))$ and an explicit encoded-length bound. Prior SAT-preserving reductions alone are inadequate. Separately audit whether fixed $R$ admits B3; do not assume machine-correctness reflection from a rejecting trace.
+
+\bibliographystyle{plain}
+\bibliography{2026-11-02_1216_LSPV-2_MIXED_TSEITIN_MIN_DAG341_refs}
+\end{document}
