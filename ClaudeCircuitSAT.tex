@@ -1,0 +1,50 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- run 2026-11-02 1531 UTC
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: wire-by-wire lower bounds for Circuit-SAT}
+\author{Living document (scheduled hourly runs)}
+\date{Last updated: 2026-11-02}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains OPEN. Nothing below is an unconditional super-polynomial bound for general circuits. Labels: PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN.
+
+\section{Model and parameters}
+A circuit $C$ has $n$ inputs, $g$ fan-in-2 AND gates with free negation on wires (so OR is included), hence $w=2g+1$ wires counting the output. Circuit-SAT: is there $x$ with $C(x)=1$? Parameters: $n$, $g$ (or $w$), fan-out, depth, treewidth $\tau$. A lower bound is a function $T(n,g,\dots)$.
+
+\section{Step ladder (tracked each run)}
+\begin{center}\begin{tabular}{lll}
+Step & Object & Minimum wires / status\\\hline
+0 & constant circuit & 0 gates, 0 wires; SAT trivial\\
+1 & one literal $x_i$ & 0 gates; SAT iff not a contradiction\\
+2 & $x_1\wedge x_2$ & 1 gate, 2 input wires (COMPUTATIONAL: min for any function depending on 2 inputs)\\
+2 & $x_1\oplus x_2$ & 3 gates (COMPUTATIONAL, exhaustive search, \texttt{circuitsat/mingates.py}, $n=2$: 6 functions need 0, 8 need 1, 2 need 3 gates)\\
+$n$ & any function depending on all $n$ inputs & $\ge n-1$ gates (PROVED, Lemma 1)\\
+\end{tabular}\end{center}
+The $n=3$ exhaustive run exceeded the 30-second rule; next run should chunk it (checkpoint by BFS depth, or restrict to one canonical representative per NPN class).
+
+\begin{lemma}[connectivity] A circuit whose output depends on all $n$ inputs has $\ge n-1$ gates and $\ge 2(n-1)$ gate-input wires.\end{lemma}
+\emph{Proof.} The underlying graph restricted to the cone of the output must connect $n$ input nodes to the output; each fan-in-2 gate merges at most two components, so $n-1$ gates are needed. \qed
+
+\section{First lower bound (query/read model)}
+\begin{theorem}[PROVED, trivial but parametrized] Any algorithm that decides Circuit-SAT for circuits given as wire lists must examine $\Omega(g)$ wires, even for $n=1$.\end{theorem}
+\emph{Proof sketch.} Take a chain of $g$ gates computing $x\wedge x\wedge\cdots$, plus one designated wire $e$. Adversary: all wires are consistent except that exactly one wire $e$ (chosen last) is rewired to a gate computing $\neg x$ conjoined into the chain, making the circuit unsatisfiable; the algorithm cannot distinguish without reading $e$, so it reads $\ge g/2$ wires on average. \qed
+
+This is only linear. The parametrized frontier is where the real content lies:
+\begin{itemize}
+\item Upper bound (KNOWN): $2^n\cdot g$ by enumeration; $2^{O(\tau)}g$ by dynamic programming over a tree decomposition; so any lower bound must grow with $\tau$.
+\item Conditional (KNOWN): under SETH no $2^{(1-\varepsilon)n}\mathrm{poly}(g)$ algorithm exists; this is conditional and not admissible as a proof.
+\item Unconditional restricted models (KNOWN): resolution/read-once branching programs give exponential bounds in $n$ for specific families; these do not bound general algorithms.
+\end{itemize}
+
+\section{Connection to the repository}
+Rows L34--L40 of the world ledger (\texttt{research/agents/claude/world-ledger}) show alternation-trading proofs cannot go past linear time for a UWI-size portfolio; a circuit-SAT lower bound of the form $T(n,g)\ge g\cdot f(n)$ for \emph{every} algorithm would be an instance of the same open time--space frontier. Buss--Williams (row L13) limits the proof technique to exponent $2\cos(\pi/7)\approx 1.8019$ for SAT on formulas/circuits with $n^{o(1)}$ space.
+
+\section{Next targets}
+\begin{enumerate}
+\item Chunked exhaustive minimal-wire table for $n=3,4$ via NPN canonical forms (COMPUTATIONAL).
+\item Define the "critical wire" measure: wires whose rewiring flips satisfiability; show that families with $\Theta(g)$ critical wires force linear read cost, then look for families whose critical wires are \emph{combinatorially hidden} (parametrized bound $2^{\Omega(\tau)}$ in a restricted algorithm class such as DPLL/resolution).
+\item Check whether a monotone-wire invariant gives a bound in a bounded-width proof/decision-DAG model.
+\end{enumerate}
+\section*{Run log}
+2026-11-02 1531 UTC: created document, Lemma 1, read-model theorem, $n=2$ exhaustive table. No new results on P vs NP.
+\end{document}
