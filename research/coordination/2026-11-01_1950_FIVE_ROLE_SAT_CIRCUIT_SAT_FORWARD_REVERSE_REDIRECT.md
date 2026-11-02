@@ -539,3 +539,23 @@ Verified [formal role report](../agents/lspv-4/2026-11-02_0140_LSPV-4_PAIRED_NAE
 
 [Published role-owned report](../agents/lspv-2/2026-11-02_0141_LSPV-2_GENERAL_PINNED_NAE_TUTTE330.md) | [Published standalone matching checker](../../experiments/arc/lspv2_330_compact.py) | [Readback-verified summary JSON](../../results/raw/arc/2026-11-02_0141_LSPV2_GENERAL_NAE_TUTTE330_summary.json). Full 52-file independent verification archive, source fixtures, formal LaTeX/PDF and SHA256 manifest retained as a user-facing artifact. Root main.tex was deliberately left unchanged because authenticated fetch_file returned zero content despite a nonempty blob SHA, so ownership-marker-safe reconciliation could not be performed. No agent identity, state, or Pacific hourly schedule altered.
 <!-- END LSPV2 GENERAL-PINNED-NAE-TUTTE330 -->
+
+
+<!-- BEGIN LSPV1 COFACTOR-SENSITIVITY-CIRCUIT324 -->
+## LSPV-1 2026-11-02 02:00 PST: COFACTOR-SENSITIVITY-CIRCUIT324
+**PROVED/EXACT elementary all-input evaluation-circuit corollary of previously verified GATE292; COMPUTATIONAL finite independent original-source controls; P versus NP OPEN.**
+
+Let F be ANY valid proper duplicate-free Döcker Monotone 3-SAT-(2,2) original on n variables. For each ORIGINAL source pivot i, build its exact forward/reverse Shannon cofactor-XOR miter M_i=F|xi=0 XOR F|xi=1. The hypercube-edge double count and the **already known** sharp GATE292 witness-fragility lower bound show
+\[
+\sum_i\#SAT(M_i)=\sum_{a:F(a)=1}s_F(a)\ge(n/3)\#SAT(F).
+\]
+Therefore a nonempty combined miter boundary is equivalent to SAT, and deciding this positivity is NP-complete, not a free decision oracle. In an **unrestricted arbitrary binary Boolean-gate** acyclic evaluation circuit with free NOT/constants/wires and one output, SAT-labelled canonical F requires between n/3-1 and 4n-1 binary gates and depth between ceil(log2(n/3)) and 2+ceil(log2(4n/3)). These are all-input **evaluation function** lower/upper bounds, NOT unrestricted SAT-decider runtime/space hardness. UNSAT F has a post-answer zero-gate evaluator, which an arbitrary decider need not synthesize.
+
+**Independent reproducible numbers:** exact valid G6 source 26 SAT models, boundary76, min source-witness sensitivity2, 23-gate forward evaluator; F9 70/402/4/35; G6x2 676/3952/4/47. Same-original SAT/UNSAT coherent pin completions G6=3/0, F9=2/0; source-original false-clause leaves, S/U clause pairs, complements, six malformed encodings per source, offline binary/Gray clause-status XOR, and separate no-import integer-mask cofactor verifier (>=5528 measured assertion groups) passed. Direct UP-first DPLL on same G6 residuals 2 nodes/36 literal visits and 1 node/3 visits; F9 1/40 and 1/34. U198/V198 original labels inherited but not freshly replayed. Native FLMV time/physical peak not measured.
+
+**Hostile easy-family escape:** charged recognition of G6^t as constant-size signed incidence blocks decides SAT in polynomial time, while #SAT=26^t and cofactor boundary=t*76*26^(t-1). Hence boundary cardinality / linear evaluator size is not necessary universal decision work. The all-input polynomial TOTAL-work adaptive controller, arbitrary unknown-K A->Phi(A) hereditary power-short ARC and strict SAME-MACHINE FLMV transport are OPEN. Charge grammar, source/index/head, semantic acquisition, failed policies, switching, proof/GE, caching, bit/child/output, DELAY/COPY/RECOMP guest and simultaneous peak. XOR logical only offline.
+
+[Verified formal report](../agents/lspv-1/2026-11-02_0200_LSPV-1_COFACTOR_SENSITIVITY_CIRCUIT324.md) | [Compact code](../../experiments/arc/lspv1_324/cofactor_boundary324_compact.py) | [Raw summary](../../results/raw/arc/2026-11-02_0200_LSPV1_COFACTOR_SENSITIVITY_CIRCUIT324_summary.json) | [Issue #3 coordination](https://github.com/j15marti/pnp/issues/3#issuecomment-6574572292).
+
+Root main.tex current nonempty SHA 481221f067f60dd31dd70269f64a33595635b24c returned zero content bytes; root LSPV-1 ownership-safe write is PENDING with documented fallback. No task identity/title/enabled state/schedule changes. **P versus NP OPEN.**
+<!-- END LSPV1 COFACTOR-SENSITIVITY-CIRCUIT324 -->
