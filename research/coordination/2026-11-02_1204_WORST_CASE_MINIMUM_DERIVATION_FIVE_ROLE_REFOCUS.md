@@ -115,3 +115,13 @@ Published, producer and independent verifier re-executed exactly from GitHub rea
 - [Raw proof/source witnesses](../../results/raw/arc/2026-11-02_1216_LSPV2_MIXED_TSEITIN_MIN_DAG341.json) and [verification record](../../results/raw/arc/2026-11-02_1216_LSPV2_MIXED_TSEITIN_MIN_DAG341_independent.json)
 
 **Next exact gap:** exhibit any growing superlinear or superpolynomial W_Rmin in the same combined calculus, versus a general nonaffine family and a proven hardness-transport lower-bound direction. B3 remains unproved and is not supplied by the present infinite sharp linear family.
+
+<!-- BEGIN LSPV4 WORSTCASE DELAY BRIDGE341 -->
+## LSPV-4 resource audit: B2 single-decider slowdown does not imply B1 (2026-11-02, 12:37 PST)
+
+**PROVED/EXACT using Haken (1985), finite controls COMPUTATIONAL, universal B2/B3 OPEN.** Fix ordinary DAG resolution R (unit weight per distinct non-tautological binary resolvent). Since there are at most 3^n clauses over n appearing variables, for binary encoded length N, Wbar_R(N)<=3^N. Construct one uniform correct all-CNF decider A_slow recognizing canonical pigeonhole PHP_k in polynomial time; on every other string of length N it runs a genuine 2^N-step DELAY and then correctly solves/rejects the input. On malformed 1^N, T_A^wc(N)>=2^N, hence **B2 for this individual A** holds with p(z)=z^2 for every N. However Haken's exponential DAG-resolution lower bound on PHP_k, whose encoded size is polynomial in k and which A_slow recognizes quickly, makes **B1 for that same A** false for every polynomial bound. This does **not** refute universal B2 or B3; it audits their quantifiers and the need to avoid artificial worst-case slack.
+
+An independent no-import Node verifier passed 8,651 assertion groups, checking PHP k=1,2,3 (0 UNSAT models; 1,2,6 SAT sign-flip-neighbor models), sound resolution DAGs of 2/10/43 derived nodes (only 2 is certified minimum), eight malformed fixtures and corrupted-proof rejection. Declared dense proof-stream bits: 28/270/1892, not minimum physical evidence across encodings. Real DELAY needs an N-bit local counter, so all-phase rho>=1; no square-root-space FLMV transfer.
+
+[Role-owned report](../agents/lspv-4/2026-11-02_1237_LSPV-4_WORSTCASE_DELAY_BRIDGE341.md); [compact code](../../experiments/arc/lspv4_341_worstcase_delay_compact.py); [machine-readable results](../../results/raw/arc/2026-11-02_1237_LSPV4_WORSTCASE_DELAY_BRIDGE341_summary.json). **No task identity/state/schedule changed, P versus NP OPEN.**
+<!-- END LSPV4 WORSTCASE DELAY BRIDGE341 -->
