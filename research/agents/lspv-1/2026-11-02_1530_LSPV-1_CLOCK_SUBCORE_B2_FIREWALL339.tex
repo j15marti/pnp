@@ -1,0 +1,53 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}
+\title{CLOCK-SUBCORE-B2-FIREWALL339}
+\author{PNP General SAT Lower-Bound Lead, LSPV-1}
+\date{November 2, 2026, 15:30 PST}
+\begin{document}\maketitle
+\noindent\textbf{PROVED/EXACT, intentionally artificial calculus.} A fixed sound, complete, source-hereditary, locally polynomial-checkable proof calculus can force exponential minimum inference counts on easy minimally UNSAT Horn formulas. Even worst-case B2 fails for one fixed correct deterministic SAT decider. This is a refutation-system adequacy test, NOT a lower bound for the unchanged $R_{\mathrm{mix341}}$, nor P versus NP progress.
+
+\section{Fixed calculus and exact minimum}
+Fix an explicit binary CNF encoding: unary-framed declared variable and clause counts $1^n0,1^m0$, unary-framed clause lengths, and each literal as sign plus a variable ID of width $\max(1,\lceil\log_2(n+1)\rceil)$. Reject malformed input. For a selected source submultiset $U\subseteq F$, let $L(U)$ be its canonical encoded length with literal IDs unchanged, independent of clauses outside $U$. Fix a sound complete locally checkable calculus $R_0$, such as DAG Resolution or the already fixed binary-premise $R_{\mathrm{mix341}}$.
+
+Define a new fixed typed calculus $R_{\mathrm{tick}}[R_0]$. A proof authenticates $U\subseteq F$, refutes it with $R_0$, and additionally must derive the counter token $G(U,2^{L(U)}-1)$ from $G(U,0)$ via only the increment rule $G(U,i)\to G(U,i+1)$. Every clock node, including the first, has unit weight; its value occupies $L(U)$ bits and is locally checked. Only a final charged rule with premises the $R_0$ empty clause and terminal clock produces REFUTED(F). Clock tags denote true statements and encode no semantic oracle. Checks are polynomial in the input and individual proof-node size, although the full proof is exponentially long.
+
+\begin{theorem}
+For all valid UNSAT sources,
+\[
+\boxed{W_{R_{\mathrm{tick}}[R_0]}(F)=
+\min_{\substack{U\subseteq F\\U\in\mathrm{UNSAT}}}
+(2^{L(U)}+W_{R_0}(U)+1).}
+\]
+This calculus is source hereditary: $F\subseteq F'$ implies $W_{R_{\mathrm{tick}}}(F')\le W_{R_{\mathrm{tick}}}(F)$ when literal identities are preserved.
+\end{theorem}
+\begin{proof}
+The final node requires an $R_0$-refutation of $U$ and the terminal clock. Every counter has a unique immediate predecessor, hence exactly $2^{L(U)}$ distinct clock nodes are unavoidable. Types are disjoint, so the logical proof and final node add their costs. The matching construction attains the sum. The same $U$ remains eligible in any source extension, proving heredity. SAT inputs cannot produce an $R_0$ empty clause.
+\end{proof}
+
+\section{A minimally UNSAT Horn family and fixed-decider B2 falsification}
+Let $H_k=(x_1)\land\bigwedge_{i<k}(\neg x_i\lor x_{i+1})\land(\neg x_k)$. Its $k+1$ clauses are all essential: deleting the first permits all zeros, deleting the last all ones, and deleting the $i$th implication permits ones through $i$ then zeros. The binary-premise ancestry bound and unit-resolution upper proof give $W_{R_0}(H_k)=k$ for ordinary Resolution and $R_{\mathrm{mix341}}$. With $N_k=L(H_k)=\Theta(k\log(k+2))$,
+\[
+\boxed{W_{R_{\mathrm{tick}}}(H_k)=2^{N_k}+k+1.}
+\]
+
+\begin{theorem}[Unconditional B2 failure for the artificial system]
+There is ONE fixed uniform total correct SAT decider $A_{\mathrm{enum}}$ with $T_A^{\mathrm{wc}}(N)=2^{O(N/\log(N+2))}$. For every polynomial $p$ there are arbitrarily large $N$ such that
+\[
+\overline W_{R_{\mathrm{tick}}}(N)>p(N+T_A^{\mathrm{wc}}(N)).
+\]
+\end{theorem}
+\begin{proof}
+On a valid $N$-bit source with $d$ distinct occurring variables, at least $d$ literal IDs of at least $\log_2(d+1)$ bits each occur, so $N\ge d\log_2(d+1)$ and $d=O(N/\log(N+2))$. One fixed algorithm parses/compacts names, enumerates all $2^d$ assignments, checks each clause in polynomial time and rejects malformed strings. On the unbounded input-size sequence $N=N_k$, the clock-gated minimum is at least $2^{N_k}$ while any polynomial of $N_k+T_A^{\mathrm{wc}}(N_k)$ is only $2^{o(N_k)}$. No moving decider or free answer oracle occurs.
+\end{proof}
+\noindent For this artificial $R$, B3 is logically equivalent to $SAT\notin P$, because its worst-case refutation cost is unconditionally superpolynomial. This does not settle B3 for the unmodified $R_{\mathrm{mix341}}$.
+
+\section{Cost-simulation direction and falsifiers}
+If $W_{R_1}(F)\le p(|F|+W_{R_0}(F))$ for a fixed monotone polynomial $p$ and every UNSAT $F$, then B3 for $R_0$ implies B3 for $R_1$, and superpolynomial $\overline W_{R_1}$ forces superpolynomial $\overline W_{R_0}$. Take maxima and use polynomial upper bounds and contraposition. Mutual polynomial cost simulation preserves both properties. This is a normalization screen, NOT a proof of B3.
+
+\noindent\textbf{F1:} A smaller UNSAT $U$ might bypass the clock: $H_k$ is minimally UNSAT. \textbf{F2:} Shared proofs or XOR could skip clock states: only consecutive increments are allowed. \textbf{F3:} Moving-program quantifiers might distort B2: the comparator is one fixed decider correct on both labels and malformed strings. \textbf{F4:} A forged final answer might pass: source membership, increment arithmetic and actual refutation are locally checked.
+
+\noindent\textbf{COMPUTATIONAL controls}: independent Python/Node (no shared code) passed 168 Node assertions for Horn $k=1,\dots,6$ ($N_k=13,26,37,56,69,82$), deletion-SAT and SAT sign-neighbor witnesses, a complete 8192-state 13-bit clock trace with SHA-256 digest, source-hereditary tautology padding, odd/even $K_4$ parity 0/8 models with 16 deletion and 48 flip SAT witnesses, guarded $(2,0)/(2,1)$ continuations, nine malformed records and four corrupt clock moves. Finite tests are not the proof of the asymptotics.
+
+\noindent\textbf{STATUS AND GAP}: Cost counts distinct inference nodes, not proof search or native machine work; streaming the expanded counter uses polynomial memory and exponentially many steps. Earlier TABLEAU and DELAY controls are dual limitations. We reviewed the November 2 five-role handoff, issue 3, AGENTS/CODEX/skill, LSPV-1 FINITE-REFLECTION337/MOVING-MINIMAX338, LSPV-2 LOW-SUPPORT343, LSPV-3 SPLIT344, LSPV-4 NODE-EVIDENCE342, LSPV-5 REFEREE296/297 and Cook--Reckhow/Buss/Messner--Toran/Nordstrom. No novelty claim for artificial padding itself. Root main.tex must be updated only in the LSPV-1 ownership region using a complete current Git blob. No task or schedule modifications. B1/B2/B3 and a superpolynomial worst-case $\overline W$ for unchanged $R_{\mathrm{mix341}}$ remain OPEN. P versus NP OPEN.
+\end{document}
