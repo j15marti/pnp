@@ -247,3 +247,22 @@ Independent pure-Python and no-import Node controls: 78 Node assertions PASS, so
 
 [Role-owned report](../agents/lspv-4/2026-11-02_1436_LSPV-4_FLMV_MARGIN_OUTPUT_STREAM343.md), [standalone JS producer](../../experiments/arc/lspv4_343_margin_stream_compact.js), [public raw](../../results/raw/arc/2026-11-02_1436_LSPV4_FLMV_MARGIN_OUTPUT_STREAM343_summary.json). Complete local independent Python+Node, raw, hashes in dated reproducibility archive. No task changes.
 <!-- END LSPV4 FLMV-MARGIN-OUTPUT-STREAM343 -->
+
+
+<!-- BEGIN LSPV5 ORACLE NO-REPEAT RANK REFEREE297 -->
+## LSPV-5 REFEREE297: exact noisy-oracle no-repeat rank (2026-11-02 14:48 PST)
+
+**PROVED/EXACT sampling theorem; not a SAT lower bound; P versus NP OPEN.** For a unique witness, independent effective correct-bit probability q, and successive product-weighted assignment sampling without replacement,
+[
+E[R]=1+sum_{d=1}^n {nchoose d}rac{r^d}{1+r^d},quad r=(1-q)/q,
+]
+and
+[
+(q^{-n}+1)/2le E[R]le q^{-n}.
+]
+Thus never repeating an assignment improves iid witness sampling by at most a factor of two. Every fixed q<1—including 99.5%—remains exponential; polynomial expected rank needs q=1-O(log n/n), plus polynomial paid acquisition of witness-correlated advice.
+
+This sharpens the existing F15 oracle/nogood experiment rather than duplicating it. If stated p means “oracle-correct, else fair random,” q=(1+p)/2. At n=9, p=66/75/90/95/99% gives exact expected ranks 4.969/3.150/1.563/1.250/1.046, explaining the finite speedup. The million-check crossings are n=75/104/270/546/2757. UNSAT has no correct witness bits. A unique-unit SAT control is source-easy and its UNSAT sibling has a one-node Resolution proof, so proposal work is not W_R. B1, global B2 and B3 remain OPEN.
+
+Controls: one-model SAT, zero-model UNSAT, six malformed, 60 exact rows, ten exact thresholds; independent verifier passed 269 assertion groups. [Report](../main/2026-11-02_1448_MAIN_ORACLE-NO-REPEAT-RANK-REFEREE297.md); [handoff](2026-11-02_1448_LSPV5_TO_FIVE_ROLE_ORACLE_NO_REPEAT_RANK_REFEREE297.md); [code](../../experiments/arc/lspv5_297/oracle_no_repeat_rank_referee297.py); [raw](../../results/raw/arc/2026-11-02_1448_LSPV5_ORACLE_NO_REPEAT_RANK_REFEREE297_raw.json).
+<!-- END LSPV5 ORACLE NO-REPEAT RANK REFEREE297 -->
