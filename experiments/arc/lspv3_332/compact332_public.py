@@ -80,6 +80,20 @@ def bdd_nodes(cs,n,order):
     rec(0,truth)
     return len(nodes)
 
+def cut_rank(cs,left,right):
+    pivots={}
+    for a in range(1<<len(left)):
+        lo=sum(((a>>j)&1)<<(v-1) for j,v in enumerate(left))
+        row=0
+        for b in range(1<<len(right)):
+            hi=sum(((b>>j)&1)<<(v-1) for j,v in enumerate(right))
+            row |= int(sat(cs,lo|hi))<<b
+        while row:
+            p=row.bit_length()-1
+            if p in pivots:row ^= pivots[p]
+            else:pivots[p]=row;break
+    return len(pivots)
+
 def run(t):
     n=9*t;rng=random.Random(332+t);perm=list(range(1,n+1));rng.shuffle(perm)
     cs=[tuple((1 if x>0 else -1)*perm[9*i+abs(x)-1] for x in c) for i in range(t) for c in F9]
@@ -87,14 +101,16 @@ def run(t):
     assert valid(cs,n)
     parts=components(cs,n);acquired=[local_best(cs,p) for p in parts]
     order=sum((o for _,o in acquired),[])
-    return cs,order,sum(s for s,_ in acquired)
+    return cs,order,sum(s for s,_ in acquired),perm
 
 if __name__=='__main__':
     assert valid(F9,9)
-    cs,o,s=run(1)
+    cs,o,s,p=run(1)
     assert s==52 and bdd_nodes(cs,9,o)==52
-    cs,o,s=run(2)
+    cs,o,s,p=run(2)
     assert s==104 and bdd_nodes(cs,18,o)==104
     assert sum(sat(cs,a) for a in range(1<<18))==4900
     assert not valid(F9+(F9[0],),9)
+    assert cut_rank(F9,[1,2,3,4],[5,6,7,8,9])==14
+    assert cut_rank(cs,p[:4]+p[9:13],p[4:9]+p[13:18])==196
     print({'F9':52,'renamed_F9_squared':104,'bad_cut_rank_squared':196,'source_models_squared':4900,'order_acquired':o})
