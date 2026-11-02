@@ -51,7 +51,7 @@ function main(){
   equal([after,overlap,removed,added],[318,270,54,48]);
   (B[i][k]>0?positive++:negative++);swaps++;
  }
- equal([swaps,positive,negative],[288,144,144]);
+ equal(swaps,288);equal(positive,144);equal(negative,144);
  const H=swap(B,1,1,8,0),mG=new Uint8Array(64),mH=new Uint8Array(4096);
  for(let a=0;a<64;a++)mG[a]=Number(sat(Z,a));
  for(let a=0;a<4096;a++)mH[a]=Number(sat(H,a));
