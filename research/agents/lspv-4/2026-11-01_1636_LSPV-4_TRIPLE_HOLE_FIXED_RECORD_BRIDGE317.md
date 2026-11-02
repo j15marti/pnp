@@ -41,7 +41,7 @@ Although output clause-record q maps directly to source clause floor(q/1064), th
 12n+789j+3\#\{i<j: |C_i|=2\}.
 \]
 
-The prefix **binary-width rank** requires paid source reads or an acquired rank/select index. A naive fresh prefix rescan per guest bit query incurs up to Theta(m) source-record probes. A full eager child copy retained for a guest occupies Theta(M) actual host writable bits plus translator/index/caches, not a free read-only guest tape. Therefore neither polylog arbitrary output-bit access nor FLMV half-power guest workspace follows from the uniform 1,064 clause slots.
+The prefix **binary-width rank** requires paid source reads or an acquired rank/select index. A naive fresh prefix rescan per guest bit query incurs up to Theta(m) source-record probes. **New independent arbitrary-record oracle check:** [bitlocal317.py](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv4_317/bitlocal317.py) compared each of all 13,832 output clause records against separately built source-indexed clauses, with **zero mismatches**. Under its explicitly uncached arbitrary-query protocol it performed **82,992 source clause-width prefix inspections**, **13,832 individual source-clause reads** and **13,676 fixed-gadget record lookups**. An ordered sweep can reuse a rolling prefix rank; this measured cost is NOT a lower bound on arbitrary future guest query patterns nor a native FLMV TM count. A full eager child copy retained for a guest occupies Theta(M) actual host writable bits plus translator/index/caches, not a free read-only guest tape. Therefore neither polylog arbitrary output-bit access nor FLMV half-power guest workspace follows from the uniform 1,064 clause slots.
 
 ## Same-original SAT+UNSAT and S/U controls
 
