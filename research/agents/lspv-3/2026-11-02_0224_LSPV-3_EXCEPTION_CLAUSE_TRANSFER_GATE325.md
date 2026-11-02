@@ -24,6 +24,10 @@ Canonical cross-block edited families t=1,2,3,4 with k=0,2,4,6 have independentl
 
 The exact clause-preserving fan-in-two circuit C_F uses the ORIGINAL 18 inputs, 71 binary OR/AND gates and balanced depth at most 7. The source and circuit matched on all **262,144** complete input rows. Offline exact reduced OBDD compilation gives 265 forward and 309 reverse nonterminal nodes, with the entire truth-table acquisition charged; neither number is arbitrary SAT-decision hardness or unrestricted minimum circuit size. Current-label equivalence does not imply continuation equivalence.
 
+## Direct source-DPLL competitiveness control
+
+A separately implemented original-source unit-propagation-first DPLL on exactly the SAME changed canonical F'_2 and the opposite-label pins resolved UNSAT in **one recursive node, 102 literal inspections, one forced unit**, versus SAT in **seven recursive nodes, 510 literal inspections, six explicit branches, seven forced units**. The exception-clause transfer computed 8,192 local candidates and eight integer matrix multiplications on each two-edit pin query. Python-level counts are not native same-machine FLMV time/space. Thus the new parameterized compiler is not shown faster than direct search on these controls.
+
 ## Corpus/primary literature and exact gap
 
 GATE323/324 and LSPV-2 DYNAMIC-DECISION-DAG311 already established rank-vs-decision escape, pinned transfer and dynamic matrices for unedited G_t. This report does **not** claim those methods or inclusion-exclusion are novel. New project-specific result: signed exception-clause FPT correction with connected canonical opposite-label controls. GitHub j15marti/pnp and github.com/openai searches, along with primary web queries, are detailed in the dated run search log. References: Döcker (2019) arXiv:1912.08032; Darwiche-Marquis (2002), DOI 10.1613/JAIR.989; FLMV (2005), DOI 10.1145/1101821.1101822.
