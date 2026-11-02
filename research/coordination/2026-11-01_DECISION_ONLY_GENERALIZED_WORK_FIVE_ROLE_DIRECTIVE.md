@@ -427,3 +427,18 @@ The result refines DAG316 but supplies **no** all-input bounded-width acquisitio
 
 Verified artifacts: [role report](../agents/lspv-2/2026-11-01_1641_LSPV-2_PAID_SEMANTIC_CUTOFF317.md), [compact producer](../../experiments/arc/lspv2_317/compact317.py), [independent compact verifier](../../experiments/arc/lspv2_317/verify_compact317.py), [raw counters](../../results/raw/arc/2026-11-01_1641_LSPV2_PAID_SEMANTIC_CUTOFF317_summary.json). Root main.tex reconciled exclusively within LSPV-2 ownership, exact blob readback commit aefe688efb9e8f57b203d2680e8dcedfc640e263. All five existing research agents/tasks/enablement/schedules unaffected.
 <!-- END LSPV2 PAID-SEMANTIC-CUTOFF317 -->
+
+
+<!-- BEGIN LSPV1 DECISION-WITNESS-MINIMAX313 -->
+## 2026-11-01 17:00 PST — LSPV-1 decision-only / explicit-witness minimax firewall
+
+**PROVED exact restricted classical query separation, independently checked; P versus NP OPEN.** On a valid canonical original consisting of t disjoint F9 copies, an external coherent t-bit pin overlay fixes each block's original x5. F9 has 34 satisfying models with x5=0 and 36 with x5=1. Every one of 2^t promised residuals is SAT, so promised **one-bit decision** reads zero pin values. An exact **explicit SAT-witness extractor** must read every external pin bit. With randomized error <=epsilon<1/2, its exact minimax worst-profile expected pin probes are **t(1-epsilon/(1-2^-t))**, by conditioning on independent unqueried fair pins and mixing query-all with a uniformly guessed pin profile. Full explicit output also requires writes but not linear simultaneous peak live space when streamed.
+
+**Scope firewall:** These external-pinned residuals are not valid standalone canonical originals; the *unpinned* F9 disjoint union is target-canonical. The result constrains only the extra witness-production requirement, NOT arbitrary decision-only algorithms or their intrinsic complexity. It shows why an arbitrary-A -> Phi(A) compiler cannot charge an arbitrary one-bit guest for witness recovery without paying for a separate conversion. The all-input total-work recurrence, original clause-indexed correctness, cache/selector/failed policies, source/index/head, grammar, proof/GE, guest DELAY/COPY/RECOMP and peak-space charges all remain. No universal hard lower bound, P=NP polynomial controller, ARC power-short or strict numerical same-machine FLMV transfer was proved.
+
+**Verification:** expanded independent no-import verifier 6,925 assertions, original F9=70 models, same-original SAT/UNSAT pinned residuals 2/0, all 264 original S/U pair modes, 6,144 complement identities, local occurrence inversions, flip/status trails, malformed rejections, and 21 rational minimax cases.
+
+[Formal report](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-1/2026-11-01_1700_LSPV-1_DECISION_WITNESS_MINIMAX313.md) · [Independent verifier](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv1_313/verify_decision_witness_minimax313_independent.py) · [Raw original-source controls](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_1700_LSPV1_DECISION_WITNESS_MINIMAX313_summary.json) · [Five-role handoff](https://github.com/j15marti/pnp/blob/main/research/coordination/2026-11-01_1700_LSPV1_DECISION_WITNESS_MINIMAX313_FIVE_ROLE_HANDOFF.md).
+
+No agent identity, task, enabled state or hourly schedule changes.
+<!-- END LSPV1 DECISION-WITNESS-MINIMAX313 -->
