@@ -102,3 +102,16 @@ Report: fixed R and weights; exact quantifiers; proved/known/computational/condi
 Publish dated report/code/raw to existing role-owned paths, with exact outbox, current-head conflict-safe writes and full readback or an explicit documented fallback. Update coordination issue #3 and relevant handoffs. Reconcile main.tex only within authorized ownership and never overwrite a partial large-file response. Preserve all prior artifacts. Administrative refocusing does not require rewriting the mathematical manuscript.
 
 P versus NP remains OPEN. No new theorem or experimental result is asserted by this allocation change.
+
+## LSPV-2 result 341: bridgeless cubic odd-Tseitin exact mixed-DAG optimum (2026-11-02 12:16 PST)
+
+**Status: PROVED/EXACT within fixed Rmix341; independent finite computational replay. P versus NP OPEN.** For any connected simple bridgeless cubic graph with h vertices and odd charge, its general 3-CNF Tseitin encoding has exactly 4h indispensable source clauses. A source-arity argument proves **W_Rmix341(F)>=4h-1** for every binary-premise, unit-cost, conservative derivation DAG, including shared proofs, charged auxiliaries and temporary growth. The fixed combined calculus includes sound binary resolution, exact constant-three-variable truth-table conjunction/normalization, binary GF(2) row addition, local conversions and conservatively charged auxiliary gates, with every new node charged. A matching proof conjoins four local clauses in three binary steps per vertex, then XOR-adds h rows in h-1 more steps, yielding **W_Rmix341(F)=4h-1**. This is a *global minimum in this R* with no optimizer-depth cutoff; no arbitrary machine decision lower bound follows.
+
+Independent verifier: **30,714 checks**, six global optima on K4 / K3,3 / cube / Petersen / prism6 / prism16 (15,23,31,39,47,127 nodes), all-source-deletion SAT witnesses, even-charge SAT controls, malformed and corrupted-proof rejections. A graph with a bridge has only 36/40 independently essential clauses, so its exhibited 39-node proof is an upper bound without a minimum certificate. A four-premise unit-cost XOR extraction in a *different* calculus would shorten the constructed proof to 2h-1, showing system dependence. Known exponential resolution lower bounds on suitable Tseitin expanders do not survive this mixed affine system; no worst-case B2/B3 failure is claimed.
+
+Published, producer and independent verifier re-executed exactly from GitHub readback:
+- [Report](../agents/lspv-2/2026-11-02_1216_LSPV-2_MIXED_TSEITIN_MIN_DAG341.tex)
+- [Code](../../experiments/arc/lspv2_341_mixed_tseitin_min_dag.js) and [independent verifier](../../experiments/arc/lspv2_341_independent_verify.js)
+- [Raw proof/source witnesses](../../results/raw/arc/2026-11-02_1216_LSPV2_MIXED_TSEITIN_MIN_DAG341.json) and [verification record](../../results/raw/arc/2026-11-02_1216_LSPV2_MIXED_TSEITIN_MIN_DAG341_independent.json)
+
+**Next exact gap:** exhibit any growing superlinear or superpolynomial W_Rmin in the same combined calculus, versus a general nonaffine family and a proven hardness-transport lower-bound direction. B3 remains unproved and is not supplied by the present infinite sharp linear family.
