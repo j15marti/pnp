@@ -1,0 +1,73 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-11-02 (run CIRCUITSAT-0001)
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: Parametrized Lower Bounds for Circuit-SAT\\ \large Living document}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-11-02 (run 0001)}
+\begin{document}\maketitle
+\paragraph{Status.} \textbf{P versus NP remains OPEN.} Nothing here is an unconditional superpolynomial lower bound for \CSAT. Labels: PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN, RETIRED.
+
+\section{Goal and method}
+Build circuits step by step, tracking the number of gates $g$ and wires $w$ (fan-in 2, so $w=2g$), and the number of inputs $n$; record lower bounds as functions of the parameters $(n,m)$ where $m=w$ is the instance size. A lower bound may be parametrized: $T(n,m)$ rather than $T(N)$.
+
+\begin{definition}
+A \CSAT\ instance is a DAG of $g$ binary gates over $n$ inputs with a designated output; $m=2g$ wires. $\mathrm{UC}(n)$ is the minimum $g$ over circuits whose function has exactly one satisfying assignment (the ``planted'' hard-instance case).
+\end{definition}
+
+\section{Step ladder (wire-by-wire)}
+\begin{lemma}[Connectivity, PROVED]\label{lem:conn}
+If the output of a fan-in-2 circuit depends on all $n$ inputs, then $g\ge n-1$, so $w\ge 2(n-1)$.
+\end{lemma}
+\begin{proof}
+Restrict to the cone of the output: $g'\le g$ gates and the $n$ inputs are all in it. This undirected graph is connected, has $n+g'$ vertices and $2g'$ edges (wires). Connectivity gives $2g'\ge n+g'-1$, i.e.\ $g'\ge n-1$.
+\end{proof}
+A function with exactly one satisfying point depends on every input, hence $\mathrm{UC}(n)\ge n-1$; the conjunction of $n$ literals gives $\mathrm{UC}(n)=n-1$ (PROVED).
+
+\paragraph{Computational check (COMPUTATIONAL).} \texttt{research/agents/claude/circuitsat/minwire.py} exhaustively enumerates all DAGs over the full binary basis (16 gate types, fan-out allowed).
+\begin{center}\begin{tabular}{@{}rrrrl@{}}\toprule
+$n$ & unique-SAT functions & found with $\le K$ gates & min gates & wires $2g$\\\midrule
+1 & 2 & (trivial) & 0 & 0\\
+2 & 4 & 4 ($K=2$) & 1 & 2\\
+3 & 8 & 8 ($K=3$) & 2 & 4\\
+4 & 16 & 16 ($K=3$) & 3 & 6\\
+5 & 32 & 0 ($K=3$) & $\ge4$ & $\ge 8$\\\bottomrule\end{tabular}\end{center}
+Every case agrees with Lemma~\ref{lem:conn}. ($n=5$ with $K=4$ was not run: about $6\times10^9$ circuits, split needed.)
+
+\section{Lower bounds for solving, parametrized}
+\begin{theorem}[Reading bound, PROVED]\label{thm:read}
+For every $m\ge 2(n-1)$ there is a family of satisfiable instances with $m$ wires such that any deterministic algorithm that decides satisfiability by probing wire entries must probe all $m$ entries. Hence time $\Omega(m)$.
+\end{theorem}
+\begin{proof}
+Chain $g_i=\mathrm{AND}(g_{i-1},x_{\sigma(i)})$ with $\sigma$ covering all inputs, $g$ gates, output $g_g$; it is satisfiable. Redirecting any single wire to the constant~0 makes the output identically 0 (every wire lies on the chain), so the instance becomes unsatisfiable. An algorithm skipping an entry cannot distinguish the two.
+\end{proof}
+\begin{theorem}[Oracle bound, KNOWN]
+If the circuit is only a black box on $\{0,1\}^n$, deterministic search for a unique satisfying input needs $2^n$ queries (Grover: $\Omega(2^{n/2})$ quantum).
+\end{theorem}
+\paragraph{Ledger of the parametrized bound.}
+\[
+T_{\text{proved}}(n,m)=\Omega(m),\qquad T_{\text{upper}}(n,m)=O(2^n\,m),\qquad T_{\text{conditional}}(n,m)=2^{(1-o(1))n}\ \text{(SETH)}.
+\]
+The gap between $m$ and $2^n m$ \emph{is} the open problem. The black-box bound does not transfer: it relativizes, and a white-box bound must use the wiring. Known unconditional white-box progress is time--space: no algorithm solves SAT in time $n^{2\cos(\pi/7)-\epsilon}\approx n^{1.80}$ with $n^{o(1)}$ space (Williams; see repo ledger row L13, and \texttt{research/agents/claude/2026-10-28\_1326\_CLAUDE\_TPORT-0001.tex} for the alternation-trading barrier).
+
+\section{Repository check (2026-11-02)}
+The project spine is ARC/FLMV time--space contraction (\texttt{AGENTS.md}). Relevant reusable items: world ledger (\texttt{research/agents/claude/world-ledger/}) for classifying candidate statements (a statement equivalent to P$=$NP is a reformulation, not progress); LSPV-1 report 319 (source-cofactor XOR miter for shared-core SAT/Circuit-SAT) as a source of structured instances. No existing file named ClaudeCircuitSAT.tex; this is the first.
+
+\section{Next steps (CANDIDATE / OPEN)}
+\begin{enumerate}
+\item Extend the ladder with \emph{restricted solvers}: tree-like DPLL on planted-unique circuits with $m$ wires; try to prove a parametrized bound such as $2^{\Omega(\text{width})}$ in terms of cutwidth/treewidth of the wiring. (CANDIDATE: known upper bound $2^{O(\mathrm{tw})}\,m$ shows the parameter is the right one; lower bound under SETH is known, unconditional is OPEN.)
+\item Run $n=5,K=4$ in chunks (fix first gate) to confirm $\mathrm{UC}(5)=4$.
+\item Step from unique-SAT to \emph{minimal wires for hard families} (e.g.\ XOR-chains with a planted AND), track $\mathrm{tw}$ versus $m$.
+\item Check which LSPV/ARC lemmas give a time--space bound for \CSAT\ with $m$ wires, $n$ inputs.
+\end{enumerate}
+
+\section*{Run log}
+\begin{tabular}{@{}ll@{}}
+2026-11-02 run 0001 & created document; Lemma 1, Thm 1 proved; exhaustive $n\le4$ check; $n=5$, $K\le3$ check.
+\end{tabular}
+\end{document}
+% END_OF_CLAUDECIRCUITSAT_RUN::0001
