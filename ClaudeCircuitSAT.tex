@@ -1,0 +1,55 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- created 2026-11-02 (run 0001)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{lemma}{Lemma}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT\\ \large Living document}
+\date{Last updated: 2026-11-02 (run 0001)}
+\begin{document}\maketitle
+\section*{Status banner}
+\textbf{P versus NP remains OPEN.} No unconditional superlinear (in circuit size $m$) lower bound for Circuit-SAT is known to the author or in the repository corpus. Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Goal and method}
+Circuit-SAT: given a fan-in-2 circuit $C$ with $n$ inputs and $m$ gates, decide $\exists x\,C(x)=1$. Plan: (1) tabulate exact minimum construction cost (gates, hence wires $=2g$) of every function for growing $n$; (2) identify which structural invariants (wire count, fan-out, depth, treewidth) drive the cost of \emph{deciding} satisfiability; (3) seek bounds as a function of parameters $(n,m,\text{tw},\dots)$.
+
+\section{Step ledger: exact construction cost}
+Basis: all 16 binary gates, negation free, so wires $=2\cdot$gates. Code: \texttt{research/agents/claude/circuitsat/mincircuit.py} (BFS over sets of truth tables, f and $\neg f$ identified).
+\begin{center}\begin{tabular}{ccccl}\toprule
+$n$ & functions up to negation & max gates & max wires & histogram (gates:count)\\\midrule
+2 & 9 & 1 & 2 & 0:4, 1:5\\
+3 & 129 & 4 & 8 & 0:5, 1:15, 2:57, 3:40, 4:12\\\bottomrule\end{tabular}\end{center}
+Status: COMPUTATIONAL (exhaustive; $n=3$ matches the known maximum of 4 gates over $B_2$ for 3 variables up to the author's recollection---verify against Knuth TAOCP 7.1.2 when online). $n=4$ needs a smarter search (NPN canonicalisation + SAT-based synthesis); TODO next run.
+
+\section{Proved baseline: the trivial linear lower bound}
+\begin{lemma}[Read-all-gates, PROVED/EXACT in the gate-query model]
+Any deterministic algorithm that decides Circuit-SAT, accessing the circuit description by queries to gate/wire descriptors, needs $\ge m-O(1)$ queries.
+\end{lemma}
+\emph{Proof.} Let $g_1,\dots,g_{m-1}$ each be $x_1\wedge\neg x_1$ and the output be $\bigvee_i g_i$: unsatisfiable. Changing any single $g_i$ to $x_1\vee\neg x_1$ gives a satisfiable instance. An algorithm that skips $g_i$ answers identically on both, so it errs. \qed
+
+So the entire open question is the gap between $\Theta(m)$ and the best upper bound $2^n\mathrm{poly}(m)$ (brute force), or $2^{\mathrm{tw}}\mathrm{poly}(m)$ via treewidth DP (KNOWN THEOREM).
+
+\section{Parametrised view}
+\begin{center}\begin{tabular}{lll}\toprule
+Parameter & Upper bound & Lower bound status\\\midrule
+$n$ (inputs) & $O(2^n m)$ & CONDITIONAL: SETH $\Rightarrow$ no $O(2^{(1-\varepsilon)n}\mathrm{poly}(m))$ for CNF-SAT; OPEN unconditionally\\
+tw (treewidth) & $2^{\mathrm{tw}}\mathrm{poly}(m)$ & CONDITIONAL: SETH excludes $(2-\varepsilon)^{\mathrm{tw}}$ (Lokshtanov--Marx--Saurabh)\\
+$m$ (size), fixed $n$ & $O(m)$ & PROVED linear (Lemma 1)\\
+$m$ (size), $n=\omega(1)$ & $2^n m$ & OPEN\\\bottomrule\end{tabular}\end{center}
+Candidate parameter to study next: wires crossing a balanced cut (cutwidth) of the circuit, since the exact table above is a cut-structure statement about construction cost.
+
+\section{Corpus pointers (repository \texttt{j15marti/pnp})}
+\begin{itemize}
+\item World ledger row L13 (Buss--Williams): alternation trading cannot reach SAT time exponent $2\cos(\pi/7)\approx1.247$ with $n^{o(1)}$ space; the best known time--space tradeoffs for SAT are of this form (KNOWN THEOREM). Relevant as the only unconditional super-linear barrier for SAT in small space.
+\item \texttt{research/agents/claude/2026-10-28\_1326\_CLAUDE\_TPORT-0001.tex}: portfolio barrier; random-access specific.
+\item \texttt{research/agents/claude/2026-10-28\_1521\_CLAUDE\_ONETAPE-0001.tex}: one-tape crossing-sequence bounds hold for NP machines too, so cannot separate P from NP.
+\item Known circuit-side facts: gate elimination gives $\approx 3.1n$ lower bounds for explicit functions over $B_2$ (Find--Golovnev--Hirsch--Kulikov), nothing superlinear; this bounds \emph{construction} cost, not SAT decision cost.
+\end{itemize}
+
+\section{Open arrows and next steps}
+\begin{enumerate}
+\item Extend exact table to $n=4$ (222 NPN classes); record min wires with fan-out accounting (formula vs.\ circuit).
+\item Define a cut-based invariant $\kappa(C)$ and test whether $2^{\Omega(\kappa)}$ is forced for a restricted algorithm class (e.g.\ DPLL/resolution): CANDIDATE, restricted model only.
+\item Relate to proof-complexity: resolution lower bounds give exponential bounds for DPLL on specific unsatisfiable circuits; unrestricted algorithms remain OPEN.
+\end{enumerate}
+\section*{Log}
+Run 0001 (2026-11-02): created document; computed $n\le3$ table; proved Lemma 1; no new unconditional bound.
+\end{document}
