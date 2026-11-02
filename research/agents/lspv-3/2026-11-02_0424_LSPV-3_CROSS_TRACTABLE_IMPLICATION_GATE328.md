@@ -31,7 +31,7 @@ Explicit same-F9 nonvacuous example: pins to S={x1,x2,x3,x5,x6}. For p=(1,1,0,0,
 
 Original F9 pinned controls: common (x2,x3,x6)=(0,0,1); x1=0 has exactly one original-clause-checked witness, x1=1 has zero completions and all 32 UNSAT suffix leaves have original-clause falsification IDs. Original F9+Z6 (explicitly named to avoid other Y6/F15 fixture conflicts) is canonical n15,m20 with 1,260 models. An unshared fan-in-two OR/AND source evaluator matches all complete original-input truth values for Z6/F9/F9+Z6 with 23/35/59 gates. Source complement identities, all 112/264 clause-pair SS/SU/US/UU modes and five malformed originals passed. U198/V198 and differently sourced Y6/F15 inherited, not freshly replayed.
 
-The Python producer executed 112,583 paid clause-entailment attempts, 35,037 2SAT SCC calls, 3,042 Horn/dual-Horn calls, 111,856 implication edges and arc visits, 133,799 target-unit reads, 9,591 Horn rule scans on F9. An independent no-producer-import Node.js verifier recomputed source truth/cofactor semantics and completed **2,042,524 checked assertions**, agreeing on every reported count. Exact cofactor truth tables used exclusively for OFFLINE testing, not the proposed paid implication test.
+The Python producer executed 112,583 paid clause-entailment attempts, 35,037 2SAT SCC calls, 3,042 Horn/dual-Horn calls, 111,856 implication edges and arc visits, 133,799 target-unit reads, 9,591 Horn rule scans on F9. An independent no-producer-import Node.js verifier recomputed source truth/cofactor semantics and completed **2,042,706 checked assertions**, agreeing on every reported count. Exact cofactor truth tables used exclusively for OFFLINE testing, not the proposed paid implication test.
 
 ## Total-work recurrence and gap
 
@@ -53,3 +53,18 @@ Artifacts: role-owned report, compact executable, machine-readable summary; comp
 Independent UP-first source-CNF DPLL on the same F9 original coherent SAT1/UNSAT0 pins resolved both in one recursive node, with 70 versus 34 original-literal inspections, respectively; 5 versus 3 forced unit assignments, and zero branch decisions. In contrast, the cross-class semantic implication census builds reusable information for MANY possible future continuations; it is not shown to beat direct SAT decision on these easy controls.
 
 Fresh OFFLINE full clause-status logic encoding, fixed two bits per original clause, enumerated all 512 complete F9 assignments in both binary and Gray orders. Adjacent XOR popcount sums were 3,964 (binary) and 3,074 (Gray); endpoint XOR popcounts 24 versus 4, maximum adjacent changes 24 versus 8. Each of these summaries costs a complete source-state trace to obtain. They are NOT an online SAT oracle, do not measure actual changed writable tape cells and confer no native-machine time lower bound. The original 0^n/1^n assignments each falsify all six F9 clauses of the opposing sign; these endpoint failures do not establish global UNSAT.
+
+
+## Fresh forward/reverse source-pinned cofactor-DAG comparison
+
+Same valid F9 original, original-variable orders 1..9 and 9..1. Every prefix of each order was source-authenticated. Paid polynomial 2SAT/Horn/dual-Horn implication tests were performed on every retained tractable antecedent; full cofactor truth tables were acquired OFFLINE solely for verification of exact continuation semantics.
+
+| Fixed F9 order | Forward | Reverse |
+|---|---:|---:|
+| Sum of acquired tractable-antecedent prefix states | 944 | 973 |
+| Sum of exact continuation classes (OFFLINE) | 81 | 86 |
+| Additional valid typed implications not caught by source-only coverage | 9,470 | 7,678 |
+| Of those, with both Boolean cofactors nonzero | 588 | 887 |
+| Of those, nonzero tractable to GENERAL consequent | 25 | 1 |
+
+These are differences for TWO FIXED orders, not a minimum over all orders, no free best-policy selector, and no necessary decision-work bound. An independent no-producer-import Node.js verifier recomputed all prefix counts directly from complete original-source cofactor tables; after 182 additional checks, the FINAL independent verification count is **2,042,706 assertions**. The previous 2,042,524 baseline is a passing subset of this final verification.
