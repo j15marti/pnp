@@ -47,7 +47,7 @@ On F9, independent full projection checks verify pivots x1,x2,x9 with clause cou
 
 ## Computational and resource audit
 
-Standalone producer and independent no-producer-import checker PASS, **9,532** independently counted assertion groups: Y6=20, F9=70, F9 same-original SAT/UNSAT 1/0, F15 opposite cubes 2/0, C1 opposite cubes 1/0; all 264 F9 and 112 Y6 four-way original-clause S/U modes; 6,656 complement clause checks; 180 seeded three-policy confluence random CNFs; six malformed grammar rejections; exact source-ID tickets and reverse-reconstructed witness checks; connected C_t through t=16 and hostile toroidal k=4,6,8. U198/V198 inherited, NOT freshly replayed; logical XOR OFFLINE, native FLMV physical XOR unmeasured.
+Standalone producer and independent no-producer-import checker PASS, **9,617** independently counted assertion groups: Y6=20, F9=70, F9 same-original SAT/UNSAT 1/0, F15 opposite cubes 2/0, C1 opposite cubes 1/0; all 264 F9 and 112 Y6 four-way original-clause S/U modes; 6,656 complement clause checks; 180 seeded three-policy confluence random CNFs; six malformed grammar rejections; exact source-ID tickets and reverse-reconstructed witness checks; connected C_t through t=16 and hostile toroidal k=4,6,8. U198/V198 inherited, NOT freshly replayed; logical XOR OFFLINE, native FLMV physical XOR unmeasured.
 
 Fully charge each executed node by
 
