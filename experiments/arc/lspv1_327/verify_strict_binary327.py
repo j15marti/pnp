@@ -37,7 +37,7 @@ def run():
     bad=['',bits+'0',bits[:-1],bits.replace('0','2',1),
          '0'*16+bits[16:],bits[:16]+'0'*16+bits[32:],
          replace(33,49,'0'*16),replace(33,49,f'{10:016b}'),
-         replace(32,33,'1'),replace(49,65,bits[33:49]),
+         replace(32,33,'1'),replace(50,66,bits[33:49]),
          replace(83,134,bits[32:83]),replace(134,135,'1')]
     for x in bad:assert decode(x) is None
     print(json.dumps({'status':'PASS','source_roundtrips':2,
