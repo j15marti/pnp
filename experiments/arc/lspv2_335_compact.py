@@ -8,7 +8,7 @@ def prism(k):
     P=[(base+(i-1)%k+1,base+i+1,2*k+i+1) for base in (0,k) for i in range(k)]
     return P+[tuple(-x for x in c) for c in P]
 def accept(F,n):
-    if type(n)!=int or n<9 or n%3 or 3*len(F)!=4*n:return False
+    if type(n)!=int or n<3 or n%3 or 3*len(F)!=4*n:return False
     q=Counter();s=set()
     for c in F:
         if len(c)!=3 or len(set(map(abs,c)))!=3 or any(type(x)!=int or not 1<=abs(x)<=n for x in c):return False
@@ -33,6 +33,7 @@ def discover(F,n):
         E[a,b]=v;G[a][b]=v;G[b][a]=v
     if any(len(q)!=3 for q in G):return 'UNRESOLVED',None
     k=n//3
+    if k<3:return 'UNRESOLVED',None
     def check(mate):
         if len(mate)!=2*k or any(mate.get(mate[v])!=v for v in range(2*k)):return None
         H=[set(G[v])-{mate[v]} for v in range(2*k)];comps=[];left=set(range(2*k))
