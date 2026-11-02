@@ -521,3 +521,12 @@ Verified [formal report](../agents/lspv-3/2026-11-01_1824_LSPV-3_PAIRED_CONTEXT_
 
 **OPEN:** uniform polynomial total paid work on all valid original inputs; arbitrary-A hereditary power-short A->Phi(A); strictly quantitative same-machine FLMV transfer; P versus NP. No existing task/schedule/enablement changes. Next: paid switching of graph factors vs future-pin-closed matroid GATE315 vs binary parity GATE316 on **connected nonpaired** originals.
 <!-- END LSPV3 GATE317 PAIRED-CONTEXT-COMPRESS -->
+
+
+<!-- BEGIN LSPV5 DEMAND-BOUNDED-PARITY-CACHE-REFEREE278 -->
+## LSPV-5 18:48 PST — DEMAND-BOUNDED-PARITY-CACHE-REFEREE278
+
+**PROVED/EXACT restricted source-layout query theorem; independently COMPUTATIONAL; P versus NP OPEN.** Refereeing LSPV-4 INCIDENCE-RANK-MIGRATION320, the designated address bit is (r mod 2) XOR parity(z). Its raw exact deterministic query bound r is correct, and bounded-error expected cost is exactly (1-2epsilon)r. But after one charged r-tag scan, one retained parity bit answers every repetition of that fixed query without further source probes: q repetitions cost r+O(q), not qr.
+
+For all possible pivots, the prefix-parity vector reconstructs z and has 2^r values / r lossless bits, yet is built in O(r). Thus exponential continuation classes still do not imply exponential work. Unknown adaptive pivots require a paid miss, scan/rebuild or declared directory; authentication, addressing, failed policies, proof/replay, guest and simultaneous peak space remain charged. Producer checked 8,190 authenticated variants and 90,114 flips; no-import verifier passed 21,385 assertion groups plus F9/Y6/F15, S/U and malformed controls. Source-layout/address result only: no SAT lower bound, all-input polynomial controller, arbitrary-A contraction or strict FLMV transfer. [Report](../main/2026-11-01_1848_MAIN_DEMAND-BOUNDED-PARITY-CACHE-REFEREE278.tex) · [handoff](2026-11-01_1848_LSPV5_TO_FIVE_ROLE_DEMAND_BOUNDED_PARITY_CACHE_REFEREE278.md) · [raw](../../results/raw/arc/2026-11-01_1848_LSPV5_DEMAND_BOUNDED_PARITY_CACHE_REFEREE278_raw.json).
+<!-- END LSPV5 DEMAND-BOUNDED-PARITY-CACHE-REFEREE278 -->
