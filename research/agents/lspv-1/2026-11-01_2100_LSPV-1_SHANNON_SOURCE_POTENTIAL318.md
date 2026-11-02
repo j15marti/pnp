@@ -65,6 +65,14 @@ A complete 32-leaf original-source UNSAT certificate for the x7=0 child records 
 
 Standalone producer and completely independent no-import verifier passed. Independent checker: 127,969 counted assertion groups, including 87,900 precise cofactor mass-change assertions over 12,683 conflict-free source-pin states of F9; 33,344 exhaustive CNF-vs-forward-circuit rows on Y6/F9/F15 with 20/70/1032 models; 60 first-cofactor source profiles; 264 original-clause SS/SU/US/UU compatibility cases; 6,144 complements; six malformed-original rejections. The verifier found 5,026 inactive-variable branch comparisons with zero mass decrease, precisely covered by the theorem's active-variable condition. U198/V198 certified original labels are inherited, not freshly replayed. No native FLMV instruction counting, industrial CDCL, or general solver improvement is asserted.
 
+
+## Original-source UP-DPLL baseline on the same SAT/UNSAT pair
+
+A separate source-clause-only UP-first DPLL baseline was executed with a complete step-proxy ledger. On the common parent pins it used **one recursive node, 49 source-clause visits, 111 counted literal inspections, six forced unit assignments, and one original witness check**. On the SAT x7=1 child it used **one node, 44 source-clause visits, 96 literal inspections, five units, one checked witness**. On the UNSAT x7=0 child it used **one node, 14 source-clause visits, 37 literal inspections, two units and one checked original-clause contradiction**. No recursive search branches were required on this pair, so the 32-leaf exhaustive UNSAT cover is a **certificate control, not necessary DPLL search work**. This also demonstrates why converting a structural circuit-gate count (seven for either child) into algorithmic time would be invalid. Clause visits, literal inspections, compiled gates and native FLMV machine steps are different units; the measured proxies exclude code runtime, source grammar and compiler acquisition, and do not establish general speedup. An industrial CDCL benchmark was not run.
+
+The independent standalone implementation is [dpll318.py](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv1_318/dpll318.py) with [raw work ledger](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2100_LSPV1_DPLL318.json). The expanded local reproducibility archive includes its actual Python stdout.
+
+
 ## Fully charged recurrence, quantifier gap, and FLMV
 
 For a uniform adaptive source-authenticated controller D on the declared indexed read-only-input model, all executed work is charged:
