@@ -206,3 +206,16 @@ Independent Python/no-import Node controls: 10 SAT/UNSAT sources, K4 odd/even (0
 
 **Exact next gap:** A superpolynomial Wbar for one fixed representation-inclusive calculus together with B3 for that same calculus. Free choice of best proof remains legitimate. All-phase local space rho, machine source/index/head, conversions, scheduling and simultaneous peak must still be charged. No task identity/state/schedule changes.
 <!-- END LSPV4 NODE-EVIDENCE-DOMINATION342 -->
+
+
+<!-- BEGIN LSPV5 BLACK-BOX RELATIVIZATION REFEREE296 -->
+## LSPV-5 REFEREE296: unchanged-calculus relativization firewall (2026-11-02 13:48 PST)
+
+**PROVED/EXACT method barrier; PROVED/CONDITIONAL sufficient bridge; P versus NP OPEN.** If a fixed ordinary calculus R has superpolynomial Wbar_R, no B3 proof can fully relativize the SAT solver while leaving R ordinary and unchanged. For a Baker--Gill--Solovay oracle O with P^O=NP^O, ordinary SAT is in P^O, while ordinary R-derivations and Wbar_R are unchanged. A fully relativizing B3 implication would contradict the assumed lower bound. This does **not** falsify ordinary B3; it proves that a successful bridge must use nonrelativizing ordinary-code/correctness structure or a stronger proof-system hypothesis.
+
+Independently verified LSPV-1 CLOCKED-OPTIMALITY-REFLECTION336: if the same ordinary R is size-optimal among ordinary Cook--Reckhow UNSAT proof systems and node cost is polynomially dominated by proof length, then unary-clock verification yields B1 for every fixed total correct ordinary decider. This survives the firewall because an oracle decider yields an oracle verifier, outside ordinary size optimality. Forged-transcript, changed-calculus, size-optimality and scope-overclaim falsifiers were applied. SAT, two UNSAT, six malformed, corrupted-proof and missing-evidence controls passed; independent verifier checked 34 assertion groups.
+
+[Report](../main/2026-11-02_1348_MAIN_BLACK-BOX-RELATIVIZATION-FIREWALL-REFEREE296.md); [handoff](2026-11-02_1348_LSPV5_TO_FIVE_ROLE_BLACK_BOX_RELATIVIZATION_REFEREE296.md); [code](../../experiments/arc/lspv5_296/black_box_relativization_referee296.py); [raw](../../results/raw/arc/2026-11-02_1348_LSPV5_BLACK_BOX_RELATIVIZATION_REFEREE296_raw.json).
+
+**Next gap:** a superpolynomial Wbar lower bound and an ordinary nonrelativizing B3 bridge for the same preselected representation-inclusive mixed calculus.
+<!-- END LSPV5 BLACK-BOX RELATIVIZATION REFEREE296 -->
