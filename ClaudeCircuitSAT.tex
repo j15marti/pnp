@@ -1,0 +1,95 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- first entry 2026-11-02
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,geometry}
+\geometry{margin=1in}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}
+\newcommand{\cSAT}{\textsc{Circuit-SAT}}
+\title{Wire-by-wire lower bounds for Circuit-SAT: a living document}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-11-02 (entry 1)}
+\begin{document}\maketitle
+
+\paragraph{Status discipline.} PROVED, KNOWN, COMPUTATIONAL, CANDIDATE, OPEN, RETIRED.
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional super-polynomial lower bound.
+
+\section{Goal and method}
+Goal: a (possibly parametrized) lower bound for \cSAT. Method: start from the simplest circuits, add one
+wire/gate at a time, record the minimum number of wires needed, and record what any solver must pay at each step.
+
+\begin{definition}
+A circuit is a DAG with $n$ input nodes and $g$ gates of fan-in $2$ (basis $B_2$); a \emph{wire} is an edge, so
+$m=2g$ wires. Its \emph{cyclomatic number} is $c=m-(n+g)+1$ for a connected circuit (the number of independent
+undirected cycles = minimum number of wires whose deletion leaves a forest).
+\end{definition}
+\begin{lemma}[PROVED, wire ledger]\label{lem:ledger}
+For a connected fan-in-2 circuit, $c=g-n+1$, i.e.\ $g=n-1+c$. Hence every gate beyond the $n-1$ needed to
+connect $n$ inputs adds exactly one unit of cyclomatic number (one ``reused'' wire).
+\end{lemma}
+\begin{proof} $c=2g-(n+g)+1=g-n+1$. \end{proof}
+
+\section{Step ladder (COMPUTATIONAL)}
+Exhaustive search over all $B_2$ circuits (script \texttt{research/agents/claude/circuitsat/minwires.py}, runs
+in under a second; exhaustive up to the stated size) gives exact minimum sizes:
+\begin{center}\begin{tabular}{lcccc}\toprule
+function & $n$ & min gates $g$ & min wires $2g$ & $c=g-n+1$\\\midrule
+AND$_2$, XOR$_2$ & 2 & 1 & 2 & 0\\
+AND$_3$, XOR$_3$ & 3 & 2 & 4 & 0\\
+AND$_4$, XOR$_4$ & 4 & 3 & 6 & 0\\
+MUX$_3$ & 3 & 3 & 6 & 1\\
+MAJ$_3$ & 3 & 4 & 8 & 2\\
+EXACT-1$_3$ & 3 & 4 & 8 & 2\\\bottomrule\end{tabular}\end{center}
+Pattern: symmetric ``tree'' functions have $c=0$; the first function needing reuse is MUX$_3$ ($c=1$); MAJ$_3$ needs
+$c=2$. (Min size is for computing the function; a \cSAT\ instance asks whether the output can be $1$.)
+
+\section{Proved bounds}
+\begin{theorem}[PROVED, query lower bound $\Omega(g)=\Omega(\text{wires})$]\label{thm:query}
+In the model where the algorithm reads gate descriptions (operation and in-wire endpoints) one at a time, every
+deterministic \cSAT\ algorithm needs $\ge g$ reads on some input circuit with $g$ gates.
+\end{theorem}
+\begin{proof}
+Take the AND-tree $T$ on $n$ inputs ($g=n-1$): satisfiable (all ones). For each gate $i$ let $T_i$ replace gate $i$'s
+operation by constant $0$: unsatisfiable. An algorithm that never reads gate $i$ behaves identically on $T$ and $T_i$,
+so it errs on one. Hence it reads every gate. \end{proof}
+(Trivial but it fixes the baseline: the trivial linear term is tight for $c=0$, see below.)
+
+\begin{theorem}[PROVED, parametrized upper bound]\label{thm:fpt}
+\cSAT\ on a circuit with cyclomatic number $c$ is solvable in time $2^{c}\cdot O(m)$ and polynomial space; hence in time
+$\min(2^{n},2^{\,g-n+1})\cdot\mathrm{poly}$.
+\end{theorem}
+\begin{proof}
+Choose $c$ wires whose removal leaves a forest (non-tree edges of a spanning tree). Branch on the $2^c$ values of those
+wires (the source gate keeps its constraint that it equals the guess; the sink reads the guess as a constant input).
+The remaining constraints form a hypergraph whose incidence structure is a forest of stars, so it is acyclic;
+a join-tree/arc-consistency pass decides satisfiability in linear time. \end{proof}
+
+\begin{proposition}[PROVED, consequence]
+Circuits with $c=O(\log n)$ (i.e.\ $g=n+O(\log n)$) are in P; in particular $c=0$ (formulas of fan-out one) are linear-time.
+Any parametrized hardness must therefore be stated for $c=\omega(\log n)$, and brute force $2^n$ beats branching on
+cycles unless $g\ge 2n-1$.
+\end{proposition}
+
+\section{Parametrized lower-bound target}
+\textbf{Target T-CYC (OPEN):} show that no algorithm solves \cSAT\ in time $2^{(1-\varepsilon)\min(n,c)}\mathrm{poly}$,
+or identify the right parameter ($c$, feedback vertex set, treewidth). Known context:
+\begin{itemize}
+\item KNOWN: under SETH, no $2^{(1-\varepsilon)n}$ for CNF-SAT, which embeds in \cSAT\ with $g=\Theta(\text{clauses})$;
+treewidth-parametrized \cSAT\ is $2^{O(tw)}$ with matching SETH bound (standard).
+\item KNOWN: gate-elimination gives $\approx 3n$ circuit-size bounds for explicit functions -- a bound on \emph{circuit size},
+not on solver time; the ledger above is the size side of the wire/time trade.
+\item Repository cross-reference (CANDIDATE link): ledger row L13 (Buss--Williams) and rows L34--L37 (TPORT barrier)
+concern time--space bounds for SAT; the $2^{c}$ algorithm is polynomial-space, so the interesting regime is the
+small-space exponent only when $c=\Theta(\log n)$, where Thm~\ref{thm:fpt} gives polynomial time. No transfer is claimed.
+\end{itemize}
+
+\section{Next steps}
+\begin{enumerate}
+\item Extend the exact ladder to $n=4$ (MAJ$_4$, threshold functions) with SAT/chunked search; tabulate min $c$ vs.\ $n$.
+\item Test whether a function family forces $c=\Omega(n)$ (that would give $2^{\Omega(n)}$-size cutset structure, still not a time bound).
+\item Prove a lower bound in a restricted model (cutset-branching algorithms): any algorithm that only branches on wire values
+needs $2^{\mathrm{fvs}}$ branches -- state precisely and prove or refute.
+\end{enumerate}
+
+\section*{Log}
+\begin{itemize}\item 2026-11-02: created; Lemma~\ref{lem:ledger}, Thms~\ref{thm:query}, \ref{thm:fpt}; ladder $n\le4$ computed.\end{itemize}
+\end{document}
