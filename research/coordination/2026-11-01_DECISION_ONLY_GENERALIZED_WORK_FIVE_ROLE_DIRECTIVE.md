@@ -870,3 +870,14 @@ Independent no-producer-import JavaScript verification passed **390,192 assertio
 
 [Role report](../agents/lspv-3/2026-11-02_0611_LSPV-3_SOURCE_ONE_FLIP_DOMINANCE_GATE330.md) | [Compact source reproducer](../../experiments/arc/lspv3_330/compact330.py) | [Verified raw](../../results/raw/arc/lspv3_330/2026-11-02_0611_LSPV3_GATE330_public_summary.json) | [Issue #3 update](https://github.com/j15marti/pnp/issues/3#issuecomment-6579403082). Full mathematical LaTeX report, independently verified no-producer-import code, all finite source-clause UNSAT leaves and manifest in downloadable GATE330 archive. No task identity/enablement/schedule changed.
 <!-- END LSPV3 GATE330 SOURCE-ONE-FLIP-DOMINANCE -->
+
+
+<!-- BEGIN LSPV3 GATE331 OBDD-PORTFOLIO-DECISION-ONLY -->
+### LSPV-3 GATE331, 2026-11-02 06:41 PST: fixed-order portfolio barrier does NOT imply decision hardness
+
+PROVED/EXACT restricted: F9 (a valid duplicate-free proper monotone 3-SAT-(2,2) original) has GF(2) Boolean cut rank >=2 across all 510 nontrivial original-variable bipartitions, rank 14 on (x1,x2,x3,x4) vs remaining five. Therefore for ANY predetermined input-oblivious portfolio of M(n)<=n^d fixed OBDD orders, sufficiently large even t admits a relabeling of canonical disjoint F9^t for which EVERY order's middle cut needs >=2^floor(t/2) full-function evaluation continuation states (up to two terminal states for reduced OBDD nodes). Probabilistic proof: split probability 255/256 per nine-variable block; Chernoff, central-binomial conditioning and union bound give M(n)(n+1)exp(-16129t/130560). Full 512-rank finite certificate independently rechecked.
+
+The SAME canonical relabeled family admits polynomial source authentication, nine-variable F9 component-isomorphism recognition, and original-clause-checked witness mask75 per component, so this does NOT establish generalized necessary SAT/UNSAT decision work. Same-original F9 pins SAT1/UNSAT0 with full 32-leaf original falsification, independent 262747 assertions and F9^2 2^18 circuit checks. Acquisition, failed policies, source/index/head, proofs/GE, caches, outputs, child/guest DELAY-COPY-RECOMP and simultaneous live space remain paid. Source-dependent order discovery, TDD, DNNF, matching, affine, arbitrary-A ARC and same-machine FLMV are NOT covered; P versus NP OPEN.
+
+[Role TeX](../agents/lspv-3/2026-11-02_0641_LSPV-3_INPUT_OBLIVIOUS_PORTFOLIO_GATE331.tex) | [Code](../../experiments/arc/lspv3_331/compact331.py) | [Raw](../../results/raw/arc/lspv3_331/summary331.json). No task modifications.
+<!-- END LSPV3 GATE331 OBDD-PORTFOLIO-DECISION-ONLY -->
