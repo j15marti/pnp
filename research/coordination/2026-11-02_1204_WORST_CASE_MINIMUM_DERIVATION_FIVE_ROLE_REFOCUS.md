@@ -136,3 +136,30 @@ An independent no-import Node verifier passed 8,651 assertion groups, checking P
 
 [Report](../main/2026-11-02_1248_MAIN_WORST-CASE-RUNTIME-POLLUTION-REFEREE295.md); [code](../../experiments/arc/lspv5_295/b1_b2_separation_referee295.py); [independent verifier](../../experiments/arc/lspv5_295/verify_b1_b2_separation_referee295.py); [raw](../../results/raw/arc/2026-11-02_1248_LSPV5_B1_B2_SEPARATION_REFEREE295_raw.json).
 <!-- END LSPV5 B1-B2 VALID-SENTINEL REFEREE295 -->
+
+
+<!-- BEGIN LSPV3 PROVENANCE KRAFT342 -->
+## LSPV-3: exact shared-DAG provenance-read optimum, November 2, 2026, 12:49 PST
+
+**PROVED/EXACT, fixed Rmix341 rules with a separately declared explicit-source-list input-read weight; independently checked finite controls. General P versus NP OPEN.** For every sound conservative at-most-binary-premise proof DAG of clause-minimally UNSAT $m$-clause $F$, define source ancestry $\sigma(s_j)=\{j\}$ and $\sigma(v)=\bigcup_{u\in\mathrm{parents}(v)}\sigma(u)$. Charge each derived node $\max\{1,\sum_{u\in\mathrm{parents}(v)}|\sigma(u)|\}$ source-ID input reads. One source-authenticated root-to-leaf path for every indispensable clause defines $m$ distinct prefix-free binary words, even with DAG reconvergence. Kraft/Huffman gives the **universal weighted minimum lower bound**
+\[
+W_{\rm src}(F)\ \ge\ L(m)=m\lfloor\log_2m\rfloor+2(m-2^{\lfloor\log_2m\rfloor}).
+\]
+This is explicitly a **materialized source-support scan** model, not arbitrary-machine work. A fixed-width $b=\lceil\log_2(m+1)\rceil$ source-ID convention gives $bL(m)$ bit scans. This strengthens the old tight linear source-fan-in bound **only within the declared weighted representation**.
+
+For the growing minimally UNSAT odd cubic Tseitin graphs $K_4$, prism$_k$ ($k\ge3$, $h=2k$), the existing fixed **mixed** Rmix341 (binary AND3, XOR and resolution, conservative auxiliaries) realizes a balanced local-four-clause AND tree followed by a Huffman-balanced XOR tree. Thus both minima are globally attained:
+\[
+W_{\rm unit}(F_h)=4h-1,\quad W_{\rm src}(F_h)=L(4h),\quad W_{\rm bits}(F_h)=\lceil\log_2(4h+1)\rceil L(4h).
+\]
+There are $m=4h$ clauses, $n=3h/2$ variables, and signed ASCII DIMACS length $N(h)=\Theta(h\log h)$. Consequently the first weighted minimum is $\Theta(N)$ and the explicit-bit-scan minimum $\Theta(N\log N)$; lazy pointers/compact XOR eliminate the claimed necessity of explicit provenance reads. No superpolynomial $W_{\rm mix341}$ lower bound or B3 implication follows.
+
+**Finite verification:** seven $h=4,6,8,10,16,20,40$ cases, exact weighted read volumes $64,112,160,216,384,512,1184$, full 416 clause-deletion SAT witnesses on the same odd originals; even-charge SAT counterparts; exhaustive paired label counts for $h\le8$: $(0,8),(0,16),(0,32)$; and nine malformed/corrupted certificate rejections. Independent verifier reconstructs source local parity, every AND/XOR edge, ancestry and reading weight. Both programs were evaluated against GitHub readback; separate container curl failed on DNS resolution, with no unsupported native-host benchmark claim.
+
+Artifacts, GitHub readback verified:
+- [Role-owned formal report](../agents/lspv-3/2026-11-02_1249_LSPV-3_PROVENANCE_KRAFT342.tex)
+- [Producer](../../experiments/arc/lspv3_342_provenance_kraft.js)
+- [Independent verifier](../../experiments/arc/lspv3_342_independent_verify.js)
+- [Raw exact proof archive](../../results/raw/arc/2026-11-02_1249_LSPV3_PROVENANCE_KRAFT342.json)
+
+**Next gap:** find a nonaffine hard UNSAT family and a superpolynomial invariant robust under \emph{all} Rmix341 rules and compact representations. B3 for the same preselected R is still OPEN. Root main.tex was fetched but returned 0 content with a SHA; no owner-region rewrite was risked. Existing task identity/state/schedule unchanged.
+<!-- END LSPV3 PROVENANCE KRAFT342 -->
