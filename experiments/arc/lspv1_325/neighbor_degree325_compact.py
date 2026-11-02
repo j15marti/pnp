@@ -35,6 +35,16 @@ def audit():
     assert all(counts[x,s]==2 for x in range(1,31) for s in (False,True))
     g=graph(SOURCE)
     assert len(g)==30 and max(len(v) for v in g.values())==8
+    # Independently confirmed connected canonical original, and four fresh neighbors per pivotal source clause.
+    seen={1};pending=[1]
+    while pending:
+        x=pending.pop()
+        for y in g[x]:
+            if y not in seen:seen.add(y);pending.append(y)
+    assert len(seen)==30
+    for x in (13,16,22,26):
+        one=graph(project(SOURCE,[x]))
+        assert len(one[2]-g[2])==4
     assert all(y not in g[x] for x,y in itertools.combinations(SELECTED,2))
     assert all(x in SELECTED or any(p in g[x] for p in SELECTED) for x in g)
     child=project(SOURCE,SELECTED)
