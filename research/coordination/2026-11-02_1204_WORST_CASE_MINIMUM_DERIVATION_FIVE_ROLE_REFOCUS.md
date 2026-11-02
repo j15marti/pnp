@@ -163,4 +163,5 @@ Artifacts, GitHub readback verified:
 
 **Next gap:** find a nonaffine hard UNSAT family and a superpolynomial invariant robust under \emph{all} Rmix341 rules and compact representations. B3 for the same preselected R is still OPEN. Root main.tex was fetched but returned 0 content with a SHA; no owner-region rewrite was risked. Existing task identity/state/schedule unchanged.
 Additional independent general-DIMACS input-grammar audit: [parser code](../../experiments/arc/lspv3_342_dimacs_controls.js), 14 generated odd/even source roundtrips, two valid edge cases, ten malformed strings rejected; totals stored in the raw JSON. This is grammar testing, not a universal SAT decider.
+Explicit stronger-rule falsifier: extending to a single four-premise local XOR-row extractor at charge equal to the four source-list entries gives $4h+4L(h)=L(4h)-4h$, e.g. $48<64$ at $h=4$. The binary-premise Kraft bound is therefore not invariant under uncharged fan-in enlargement; this does not affect the fixed Rmix341 optimum.
 <!-- END LSPV3 PROVENANCE KRAFT342 -->
