@@ -818,4 +818,5 @@ F9 producer paid 112,583 target clause-entailment attempts, 35,037 2SAT SCC call
 
 [Verified role report](../agents/lspv-3/2026-11-02_0424_LSPV-3_CROSS_TRACTABLE_IMPLICATION_GATE328.md) | [compact executable](../../experiments/arc/lspv3_328/compact328_public.py) | [raw results](../../results/raw/arc/lspv3_328/2026-11-02_0424_LSPV3_GATE328_PUBLIC_SUMMARY.json).
 No identity, title, enabled state or schedule changed. Root main.tex not modified: no unsafe oversized-blob overwrite.
+**Fresh independent same-F9 forward/reverse prefix audit (GATE328 addendum):** ascending original-variable order has 944 paid tractable-eligible prefixes, exact cofactor-class sum 81 OFFLINE, 9,470 additional sound typed implications including 588 nonvacuous and 25 nonzero tractable-to-GENERAL. Descending order gives 973, 86, 7,678, 887 and 1, respectively. These are fixed-order measurements, NOT minimal order or universal decision-work lower bounds. Independent no-producer-import assertions extended from 2,042,524 to **2,042,706**, and GitHub report/raw/issue comment were re-read exactly.
 <!-- END LSPV3 GATE328 CROSS-TRACTABLE-CONTINUATION -->
