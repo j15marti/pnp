@@ -1,0 +1,74 @@
+% CLAUDE CIRCUIT-SAT LIVING DOCUMENT -- hourly routine; append-only ledger at the end
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\newcommand{\SAT}{\textsc{Circuit-SAT}}
+\title{Lower Bounds for \SAT: a Wire-by-Wire Ladder (Living Document)}
+\author{Claude (scheduled routine)}
+\date{Last updated 2026-11-02}
+\begin{document}\maketitle
+
+\paragraph{Status.} Statuses: PROVED, COMPUTATIONAL, KNOWN, CONDITIONAL, OPEN.
+\textbf{No superlinear unconditional lower bound for \SAT\ is claimed; P versus NP remains OPEN.}
+The ladder below is the honest, step-by-step part; the gap to superlinear is isolated at the end.
+
+\section{Model and parameters}
+A circuit $C$ has $n$ inputs, $g$ fan-in-2 gates (any of the 16 binary functions, free fan-out), $w=2g$ wires.
+\SAT\ input: description of $C$ ($m=\Theta(g\log(n+g))$ bits); question: $\exists x\,C(x)=1$.
+Parameters: $(n,g)$; lower bound is a function $T(n,g)$. Algorithms: $O(2^n g)$ brute force; trivial lower bound $\Omega(g)$.
+
+\section{Ladder, step 1: wires needed per input count}
+\begin{lemma}[Connectivity, PROVED]\label{lem:conn}
+If $f$ depends on all $n$ variables, any fan-in-2 circuit for $f$ has $\ge n-1$ gates and $\ge 2(n-1)$ wires.
+\end{lemma}
+\begin{proof}
+Every input must have a directed path to the output, so the underlying graph is connected on $n$ inputs plus $g$ gates;
+a connected graph with $n+g$ vertices has $\ge n+g-1$ edges, and edges $=2g$ (each gate has two in-wires), giving $2g\ge n+g-1$, i.e.\ $g\ge n-1$.
+\end{proof}
+\begin{lemma}[Tight for unique-SAT, PROVED]
+The $n$-literal AND (unique satisfying assignment) has size exactly $n-1$ gates, $2(n-1)$ wires; this is the minimum over all circuits with exactly one satisfying assignment.
+\end{lemma}
+\begin{proof} Upper bound: tree of ANDs. Lower bound: such $f$ depends on all $n$ variables; Lemma~\ref{lem:conn}.\end{proof}
+
+\subsection*{Computational table (exact synthesis, all 16 gates)}
+Script \texttt{research/agents/claude/circuitsat/mingates.py}, BFS over sets of computed truth tables; outputs \texttt{mingates\_n2.json}, \texttt{mingates\_n3.json}. (COMPUTATIONAL)
+\begin{center}\begin{tabular}{lccl}\toprule
+$n$ & max min-gates over all $f$ & min gates, unique-SAT $f$ & #functions by gate count $0,1,2,3,4$\\\midrule
+2 & 1 & 1 & 4, 12\\
+3 & 4 & 2 & 5, 33, 114, 80, 24\\\bottomrule\end{tabular}\end{center}
+Observation: unique-SAT is the cheapest end ($n-1$) of the ladder; hardness of \emph{finding} the point comes from how the sparse point is hidden, not from circuit size.
+Note for $n=3$ the maximum 4 exceeds $n-1$: the circuit-size ladder $\mathrm{max}_f S_n(f)$ is $1,4,\dots$ (next steps $n=4$ need a smarter search; OPEN as a computation).
+
+\section{Ladder, step 2: reading bound for the decision problem}
+\begin{theorem}[Reading lower bound, PROVED]\label{thm:read}
+Any deterministic (indeed bounded-error randomized with $\Omega(1)$ gap, by the same pairing) algorithm for \SAT\ on the AND-of-literals family with $n$ literal slots must probe $\ge n-1$ description entries in the worst case.
+\end{theorem}
+\begin{proof}
+Slot $j$ stores a literal $(a_j,\sigma_j)$ ($a_j\in[n]$, $\sigma_j\in\{\pm\}$); $C=\bigwedge_j \ell_j$, unsatisfiable iff two slots hold complementary literals of one variable.
+The adversary answers $(a_j,\sigma_j)=(j,+)$ to every probe; if some slot $j$ is unprobed and a slot $i\ne j$ is probed, it can set slot $j$ to $(i,-)$: unsat, versus sat for the answered instance. Hence after $\le n-2$ probes (two slots unprobed, at least one slot probed when $n\ge 3$ and probes $\ge1$) the algorithm cannot decide; with 0 probes both outcomes are also possible. So $\ge n-1$ probes. Randomized: with fewer than $n/2$ probes, the pairing of the all-sat instance with $n/2$ unsat neighbors defeats success $>1/2+\epsilon$ (Yao). \qquad(Sketch for the randomized clause; deterministic part complete.)
+\end{proof}
+Meaning: wire-by-wire, every wire of a minimal-instance circuit must be inspected: $T(n,g)=\Omega(g)$, matching the wire count of Lemma~\ref{lem:conn}.
+
+\section{Step 3: where the ladder stops (barriers)}
+\begin{itemize}
+\item \textbf{Superlinear size is the wall.} Best explicit circuit-size lower bounds over $B_2$ are $\approx 3.1n$ (Li--Yang 2022, KNOWN, from memory of the literature---re-verify cite). Gate elimination of this type gives linear bounds in $n$; a $T(n,g)=\omega(g)$ for \SAT\ would be a new separation technique.
+\item \textbf{Parameterized, conditional.} ETH gives $T(n,g)\ge 2^{\delta n}$; SETH gives $2^{(1-\epsilon)n}\mathrm{poly}(g)$ is impossible for CNF-type circuits (CONDITIONAL, KNOWN reductions).
+\item \textbf{Time--space.} Williams-style lower bounds $n^{2\cos(\pi/7)}\approx n^{1.8019}$ for SAT with $n^{o(1)}$ space (KNOWN); Buss--Williams show alternation trading cannot exceed it. Repository ledger row L13/L34--L37 (\texttt{research/agents/claude/world-ledger}, \texttt{tport}) records the portfolio analogues; one-tape crossing-sequence bounds (L38--L40) do not separate P from NP.
+\end{itemize}
+
+\section{Repository cross-check (this run)}
+From \texttt{AGENTS.md}: main spine is ARC/FLMV time--space contraction, OPEN; nothing in the repo supplies a circuit-SAT lower bound beyond the above. Usable pieces: (i) Buss--Williams barrier bounds what alternation trading can give circuit-SAT-like (SAT) instances; (ii) T-PORT shows the small-space portfolio statement is exponent $1+\Theta(1-d)$. Not usable: UWI/M22 material does not target circuit wires.
+
+\section{Next targets}
+\begin{enumerate}
+\item Extend exact table to $n=4$ (use SAT-solver exact synthesis, chunked $<30$s) and tabulate wires vs.\ number of satisfying assignments $k$: conjecture $S(n,k)$ is nonincreasing in structure for $k\in\{1,2^{n-1}\}$; parameter $k$ is the natural second parameter.
+\item Prove randomized clause of Thm~\ref{thm:read} fully, and extend to bounded fan-out / formula instances where gates count equals leaf count.
+\item Query-lower bound for \SAT\ when $C$ is given as an oracle (black box, only evaluations): $\Omega(2^n)$ for unique-SAT---a PROVED black-box bound that does not apply to white-box algorithms; determine precisely which structural restriction (e.g.\ $g<n^{1+\epsilon}$) preserves it. OPEN.
+\end{enumerate}
+
+\section*{Run log}
+\begin{tabular}{ll}
+2026-11-02 & Created doc; Lemma 1, Thm 1, exact tables $n\le3$; no superlinear result.\\
+\end{tabular}
+\end{document}
