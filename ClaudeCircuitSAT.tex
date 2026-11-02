@@ -1,0 +1,49 @@
+% ClaudeCircuitSAT.tex -- living document (hourly routine). Append to the LOG; revise the ledger.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\title{Parametrized lower bounds for Circuit-SAT: a living document}
+\author{Claude (scheduled routine)}
+\date{Last updated 2026-11-02}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. Nothing here is an unconditional superpolynomial bound.
+Labels: PROVED, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Parameters}
+Circuit $C$ over $n$ inputs, $s$ gates (fan-in 2, $\wedge,\vee,\neg$), $m=\Theta(s)$ wires. Parametrized target: $T(n,s)$ for deciding $\exists x\,C(x)=1$.
+
+\section{Ladder (build up wire by wire)}
+\begin{tabular}{lll}
+Step & Bound & Status\\\hline
+$n$ inputs, output depends on all & $s\ge n-1$, $m\ge 2(n-1)$ & KNOWN (connectivity)\\
+Read the encoding (any model) & $\Omega(m)$ wire reads & PROVED (Thm 1)\\
+Brute force & $O(2^n s)$ & KNOWN\\
+Unconditional $\omega(m)$ or $2^{\Omega(n)}$ & --- & OPEN\\
+$2^{o(n)}\mathrm{poly}(s)$ impossible & ETH & CONDITIONAL\\
+$2^{(1-\epsilon)n}\mathrm{poly}(s)$ impossible & SETH (CNF-SAT) & CONDITIONAL\\
+\end{tabular}
+
+\section{Theorem 1 (every wire is critical)}
+\begin{theorem} Let $C_n$ be the AND-chain: $g_1=x_1\wedge x_2$, $g_i=g_{i-1}\wedge x_{i+1}$, output $g_{n-1}$. It is satisfiable, and cutting any one of its $2(n-1)$ wires to constant $0$ makes it unsatisfiable. Hence any algorithm (deterministic, or randomized with error $<1/2$ up to factor) deciding Circuit-SAT from the wire list must read $\Omega(m)$ wires: an unread wire can be replaced by the adversary.\end{theorem}
+\begin{proof} Only $x=1^n$ satisfies $C_n$, and every wire lies on the path to the output, so setting it to $0$ forces output $0$. A deterministic algorithm that skips wire $w$ gives the same answer on $C_n$ and $C_n$ with $w$ cut, which differ in satisfiability. \end{proof}
+Computational check for $n\le 8$: \texttt{research/agents/claude/circuitsat/verify\_chain.py}.
+\emph{Limit:} this is a linear input-reading bound, the trivial ceiling of the method; it says nothing about $2^n$.
+
+\section{Parametrized view}
+A bound $T(n,s)$ can be superlinear only via structure: (a) fan-out/reuse (many wires per input), (b) depth. Candidate next step: for $n$ inputs and circuits where every input has fan-out $\ge d$, compute the minimal wires needed for a SAT-hard family and test whether any exact resource measure (e.g.\ the time--space tradeoffs of the repo's ARC/FLMV spine, ledger rows L13, L34) gives $\omega(s)$ in the parametrized regime $n=\Theta(\log s)$ (where brute force is polynomial, so no superpolynomial bound can hold; this regime is a sanity control).
+
+\section{Repository cross-check (2026-11-02)}
+Repo \texttt{j15marti/pnp} reviewed at head \texttt{7c5fa0c}: corpus is ARC/FLMV time--space spine; world ledger (\texttt{research/agents/claude/world-ledger}) classifies known results. Useful: Buss--Williams barrier (L13) limits alternation trading, so a Circuit-SAT time-space argument cannot rely on that technique alone; one-tape/nondeterminism note (L38--40) warns that crossing-sequence arguments hold for NP too. Not yet reconciled in depth.
+
+\section{Next steps}
+\begin{enumerate}
+\item Exact minimal-wire computation for small functions ($n\le4$) to tabulate $\text{wires}(n)$ for SAT-hard gadgets.
+\item Fan-out-$d$ parametrization above.
+\item Compare with known circuit lower bounds ($3n-o(n)$ for explicit functions, Li--Yang 2022: $3.1n-o(n)$) as the unconditional state of the art for size.
+\end{enumerate}
+
+\section*{Log}
+\begin{itemize}
+\item 2026-11-02: created; Thm 1 plus verification script.
+\end{itemize}
+\end{document}
