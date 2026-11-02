@@ -89,7 +89,16 @@ def verify(path=RAW):
                 assert odd==tb["odd_components"] and len(U)==tb["U_size"]
                 assert odd>len(U)
                 checks+=1
-            _,B,bounds=rebuild(pos,pins,allh[0])
+            # No admissible h is itself a checked parity contradiction.
+            # Rebuild intervals directly when the candidate list is empty.
+            bounds=[]
+            for C in pos:
+                t=sum(pins[x-1]==1 for x in C)
+                r=sum(pins[x-1]<0 for x in C)
+                lo,up=max(0,1-t),min(r,2-t)
+                assert lo<=up
+                bounds.append((lo,up))
+            B=sum(up-lo for lo,up in bounds)
             expected=[h for h in range(B+1)
                       if h%2==sum(up for lo,up in bounds)%2]
             assert expected==allh
