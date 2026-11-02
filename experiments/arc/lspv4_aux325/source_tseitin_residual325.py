@@ -107,7 +107,7 @@ def run():
     assert Counter(map(len,t['residual']))=={2:23,3:1}
     assert (-2,-3,-26) in t['residual']
     sat={1:False,3:False,5:True,6:False,7:False,8:False}
-    unsat=dict(sat,**{1:True}) if False else {**sat,1:True}
+    unsat={**sat,1:True}
     assert [correct(k,models) for k in (sat,unsat)]==[2,0]
     bad=[F[:-1],F[:1]+F[:1]+F[2:],F[:1]+((1,1,6),)+F[2:],
          F[:1]+((1,-5,6),)+F[2:],F[:1]+((1,5,10),)+F[2:],
