@@ -1,0 +1,33 @@
+# LSPV-3 GATE323: Connected canonical M22 communication rank and SAT decision escape
+
+**2026-11-02 00:49 PST. PROVED/EXACT restricted; computationally independently verified; external referee pending. P versus NP OPEN.**
+
+## Obstruction and falsifiers
+A lower bound for fixed-order *evaluation of the whole Boolean function* is not a bound for deciding whether some input satisfies it. Falsifiers: (F1) connected canonical M22 prohibits tensor rank explosion, falsified; (F2) high evaluation rank forces hard SAT decision, falsified; (F3) matrix rank counts the exact forward and reverse continuation quotient, falsified. Rank/communication is established OBDD theory, not a new universal lower-bound method.
+
+## Theorem on connected valid originals
+Let F9 have positive source triples (156),(238),(135),(469),(247),(789), and negative triples (468),(167),(234),(358),(129),(579). Its 12 source clause IDs remain fixed. Construct G_t for t>=2 from t disjoint renamed copies, except in positive clause zero of block i replace the occurrence x_(5,i) with x_(5,i+1 mod t). Every variable retains exactly two positive and two negative appearances; clauses remain distinct monotone triples and the source incidence graph becomes connected. Thus G_t is a valid duplicate-free proper D\u00f6cker M22 ORIGINAL with n=9t,m=12t.
+
+Let A_t be the 4t original variables x_(1,2,3,4) in each block, B_t all remaining 5t original variables. Define the truth/communication matrix M_t(a,b)=G_t(a,b), over GF(2). Then
+
+**rank_GF2(M_t) >= 9^t.**
+
+Proof: restrict all columns to x_(5,i)=0. All cyclic splice literals become zero and the restricted matrix is K^{tensor t}, where K[a,b]=F9(x5=0,left=(x1,x2,x3,x4)=a,right=(x6,x7,x8,x9)=b). A separately checked 16x16 enumeration shows rank_GF2(K)=9. A 9x9 nonsingular minor uses little-endian, zero-based row indices (1,3,4,5,6,9,11,12,13) and column indices (2,3,4,5,7,8,9,10,14). Rank multiplication gives rank(K^{tensor t})=9^t. Rank of a submatrix cannot exceed rank of the complete matrix. The number of distinct exact suffix-cofactor rows is at least the rank, giving >=9^t deterministic cut states in the declared **left-first ordered one-way function-evaluation model** (at least ceil(t log2(9)) retained bits) and a matching conditional OBDD state lower bound. This is NOT an arbitrary-decider SAT-work, general circuit, or native FLMV lower bound.
+
+## Paid polynomial escape
+All G_t are SAT with repeated F9 complete assignment bitmask 75, in which x5=0 and x1=1. Every spliced source clause zero is satisfied by its original local x1. Grammar and template recognition, witness construction and original clause checking can be performed in polynomial source/index/head work, rather than receiving a free SAT label. The previously verified transfer W=[[34,47],[23,36]] also gives exact #SAT(G_t)=trace(W^t)>0; W can be acquired by 4*2^8 local enumerations after paid recognition.
+
+## Independent exact forward/reverse controls on the SAME G2 original
+G2 has 18 original variables, 24 clauses, 4614 complete satisfying assignments. Its full 256x1024 prescribed forward-cut matrix has GF2 rank 184, with 189 distinct forward continuation rows and 346 distinct reverse continuation rows. The reduced OBDD node counts are: bad left-first 1132, bad right-first 1373, natural 9-variable block order 204, reverse block order 229. Each good block-order cut after the first complete block has only 5 semantic states. The unshared private 2-gate-per-clause OR and binary-AND evaluator uses 3m-1=71 fan-in-two gates, not an unrestricted minimum.
+
+On this same G2 source, coherent P_t all-A pins have 1 SAT completion and switching the first block to B has 0. Explicit original-clause checked UP-first DPLL needs one recursive node for each (232/107 literal inspections, respectively), excluding compilation. On F9, independently source-verified pinned residuals have SAT 2 versus UNSAT 0 with an eight-leaf source-clause refutation; UP-first DPLL uses 2/1 nodes and 150/46 literal inspections. Y6=20 models, F9 root=70. All 264 F9 clause-pair local extreme SS/SU/US/UU modes were checked (37/49/49/37); producer rejected 6 malformed originals and independent verifier rejected 5. F15 and U198/V198 are inherited and were not freshly replayed. All complete truth/rank/BDD tables are OFFLINE diagnostics, not free oracle work.
+
+## Full cost and quantifiers
+For original-source residual R,
+T_D(R) <= C_grammar+source+index+head + C_acquire+recognize+compile+failed+selector+switch + C_UP+GE+proof+cache+replay+output + sum_{R' in evaluatedSucc(R)}(C_child+reencode+guest+T_D(R')).
+Guests include DELAY/COPY/RECOMP, even when logical XOR=0. Peak writable space counts all *simultaneously live* source-derived caches, retained ancestors, index tapes/heads, proof/GE matrices, output, and guests. Actual G2 offline full-cut rank acquisition processed 2^18 original evaluations, and each separately measured BDD order was built from 2^18 original evaluations. It is not the cost of the cheap recognized-family SAT witness. The source length is Theta(t log t). Arbitrary canonical originals retain exponential exact fallback. Residual circuits and Tseitin clauses are not canonical children. Neither a polynomial all-input state-acquisition selector nor arbitrary-A hereditary ARC or strict same-machine numerical FLMV transfer is proved. **P versus NP OPEN.**
+
+## Literature and project duplicate search
+Web primary searches: 'OBDD width communication complexity matrix distinct rows rank fixed variable order lower bound Bryant Wegener'; 'communication matrix rank lower bound OBDD width rank over reals GF2'; 'Döcker monotone 3 SAT 2 2 NP complete arxiv 2019'. Sources: Wegener, *Branching Programs and Binary Decision Diagrams*, SIAM (2000), DOI 10.1137/1.9780898719789; Döcker (2019) arXiv:1912.08032; Bryant, IEEE TC (1986); FLMV, JACM (2005). GitHub code searches scoped to j15marti/pnp: 'OBDD communication rank', 'GATE322 source continuation', 'G_t cyclic F9', 'boolean matrix rank'; and 'OBDD' scoped to github.com/openai (only an unrelated Math Lean result). Project 19:50 handoff ALREADY proved bad-order rank explosion on DISJOINT F9 copies; the exact new restricted contribution is connectivity, rank-9 minor, G2 reverse asymmetry, and a paid same-original decision escape. Older Grok and SAT4 resource-firewall work discussed rank and alternate algorithms. No claimed general novelty.
+
+Proof/code/raw and independent no-producer-import verifier are provided in the dated complete reproducibility archive; the GitHub compact code is a separate minimal reproduction. Root main.tex is oversized: safe fallback publishes a role-owned fragment; no blind overwrite. Five task identities and hourly schedules unchanged.
