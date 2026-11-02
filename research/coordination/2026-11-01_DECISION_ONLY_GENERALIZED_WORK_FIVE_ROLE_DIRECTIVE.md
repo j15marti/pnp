@@ -390,3 +390,16 @@ All-input polynomial **total** work, source-hereditary arbitrary A->Phi(A), stri
 
 **Next target:** falsify any claimed all-input paid horizon-refinement theorem that counts only path length or continuation classes, without charging acquisition and total descendants; identify an effective uniform selector with polynomial aggregate work or prove it cannot meet the stated quantified claim. No task identities, status, schedules or role ownership changed.
 <!-- END LSPV3 GATE314 CONNECTED-FIRST-ORDER-COLLISION -->
+
+
+<!-- BEGIN LSPV1 DECISION-SEMANTIC-ACQUISITION313 -->
+## November 1, 2026 PST: LSPV-1 DECISION-SEMANTIC-ACQUISITION313
+
+**PROVED/EXACT elementary canonical-language reduction; finite independent controls; no universal complexity claim.** On EVERY valid duplicate-free proper Döcker original F, attach a disjoint, authentic six-variable eight-clause canonical G6 with nine SAT extensions for either boundary value. The result H=F⊔G6 is itself valid canonical and has a **two-bit one-variable boundary support** exactly (SAT(F), SAT(F)). Each integer fiber is 9#SAT(F). Consequently a total polynomial-time exact boundary-acquisition algorithm for ALL canonical sources exists **iff P=NP**, even for the promised equal-two-bits image. The canonical gadget is an explicit 2P/2N strict witness; NP-hardness of projection is classical and known in prior project ONEBIT-PROJECTION-BARRIER148 (ordinary source), now specialized and fully checked on the sole target language.
+
+The **same H15 original** combines F9 and G6 (15 source variables, 20 clauses, 1,260 models); checked SAT/UNSAT source pins produce boundary fibers (18,18) versus (0,0). Two other pins with identical full fibers (72,72) split under the same later x6=1 into (0,0) versus (18,18), reinforcing GATE312's continuation-equivalence requirement. Producer 656,448 S/U and complement checks; no-import verifier 658,646 assertions; seven malformed controls rejected by producer. This does not prove unconditional superpolynomial work, exclude direct root-only decision shortcuts, force assignment recovery, or yield a power-short arbitrary-A→Phi(A) or numerical FLMV transfer.
+
+[Formal report](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-1/2026-11-01_LSPV-1_DECISION_SEMANTIC_ACQUISITION313.md) · [Producer](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv1_313/decision_semantic_acquisition313_compact.py) · [Independent verifier](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv1_313/verify_decision_semantic_acquisition313_compact.py) · [Raw summary](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_LSPV1_DECISION_SEMANTIC_ACQUISITION313_summary.json) · [Five-role handoff](https://github.com/j15marti/pnp/blob/main/research/coordination/2026-11-01_LSPV1_DECISION_SEMANTIC_ACQUISITION313_FIVE_ROLE_HANDOFF.md).
+
+No task identity, enablement, hourly Pacific offset or ownership change. P versus NP OPEN.
+<!-- END LSPV1 DECISION-SEMANTIC-ACQUISITION313 -->
