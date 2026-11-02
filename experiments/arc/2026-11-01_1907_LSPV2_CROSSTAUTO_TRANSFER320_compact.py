@@ -11,7 +11,7 @@ def table(pins=(None,)*4, projected=False):
     counts=[[0,0],[0,0]]
     for ei,en in itertools.product((0,1),repeat=2):
         for x,a,b,c,d in itertools.product((0,1),repeat=5):
-            if projected and x:return_count=False; continue
+            if projected and x:continue
             if any(p is not None and p!=v for p,v in zip(pins,(a,b,c,d))):continue
             v=(x,a,b,c,d,ei,en)
             pp=P[2:] if projected else P
