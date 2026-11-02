@@ -22,6 +22,24 @@ def source(t):
             heapq.heappush(h,(dep+1,order,path+((4+i,side),)))
     leaves=[norm(BASE[0]+[v if side==0 else -v for v,side in path]) for _,_,path in sorted(h,key=lambda x:x[2])]
     return leaves+[norm(c) for c in BASE[1:]]
+def parse_dimacs(text):
+    lines=[line.strip() for line in text.splitlines() if line.strip() and not line.lstrip().startswith('c')]
+    if not lines or len(lines[0].split())!=4 or lines[0].split()[:2]!=['p','cnf']:
+        raise ValueError('header')
+    try: n,m=map(int,lines[0].split()[2:])
+    except Exception as e: raise ValueError('header counts') from e
+    if n<0 or m<0: raise ValueError('negative counts')
+    out=[];row=[]
+    for line in lines[1:]:
+        for tok in line.split():
+            try: x=int(tok)
+            except Exception as e: raise ValueError('invalid literal') from e
+            if x==0: out.append(row);row=[]
+            elif abs(x)<=n: row.append(x)
+            else: raise ValueError('undeclared variable')
+    if row or len(out)!=m: raise ValueError('missing terminator or wrong clause count')
+    return out
+
 def check_proof(form,steps):
     known={'s%d'%i:norm(c) for i,c in enumerate(form)}
     for j,s in enumerate(steps):
@@ -87,6 +105,14 @@ def main(fn):
         ck(max(map(len,F))==rec['maxWidth'],'max width')
         dimacs='p cnf %d %d\n'%(n,len(F))+''.join(' '.join(map(str,c))+' 0\n' for c in F)
         ck(len(dimacs.encode('ascii'))*8==rec['Nbits'],'bit encoding')
+        ck(parse_dimacs(dimacs)==F,'DIMACS valid input')
+        malformed=[dimacs.replace('p cnf','p xor',1),
+                   dimacs.replace(' %d\n'%len(F),' %d\n'%(len(F)+1),1),
+                   dimacs.rsplit('0',1)[0]]
+        for bad in malformed:
+            try: parse_dimacs(bad)
+            except ValueError: pass
+            else: raise AssertionError('malformed input accepted')
         controls+=1
         if t<=3:
             test=rec['sample']
@@ -123,7 +149,7 @@ def main(fn):
     print(json.dumps({'status':'PASS','assertions':ASSERTIONS,'cases':controls,
                       'deletion_witnesses':deletions,'sign_flip_witnesses':flips,
                       'base_read_once_count_layers':[6,18,46,84,112,54],
-                      'small_full_cubes':240,'corrupt_pivots_rejected':4},indent=2))
+                      'small_full_cubes':240,'corrupt_pivots_rejected':4,'malformed_rejections':27},indent=2))
 if __name__=='__main__':
     main(sys.argv[1] if len(sys.argv)>1 else
          'results/raw/arc/2026-11-02_1442_LSPV3_SPLIT_GAP344.json')
