@@ -1,0 +1,61 @@
+% CLAUDE CIRCUIT-SAT LIVING DOCUMENT -- created 2026-11-02, hourly routine
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\title{ClaudeCircuitSAT: a wire-by-wire ladder for Circuit-SAT lower bounds}
+\author{Living document (Claude routine), repo \texttt{j15marti/pnp}}
+\date{Last updated: 2026-11-02 (run 0001)}
+\begin{document}\maketitle
+\paragraph{Status discipline.} PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, RETIRED.
+\textbf{P versus NP remains OPEN; no unconditional super-polynomial lower bound for Circuit-SAT is claimed anywhere below.}
+
+\section{Goal and model}
+\begin{definition}[Circuit, wires]
+A circuit $C$ on inputs $x_1..x_n$ is a DAG of $s$ gates, each of fan-in $2$ over the basis $B_2$ (all 16 binary gates; negation costs one gate), one designated output. A \emph{wire} is an edge; $w(C)=2s$. $\mathrm{CSAT}(C)=[\exists x: C(x)=1]$.
+\end{definition}
+Ladder idea (user's plan): fix the family $\mathcal F_{n,s}$ of circuits with $n$ inputs and $s$ gates; for each step $(n,s)\to(n+1,s)$ or $(n,s+1)$ record (i) the minimal wires to realise each function, (ii) the cost of deciding CSAT. Lower bounds may be parametrised by $(n,s,w)$ with $w$ a structural width (pathwidth of the wire graph).
+
+\section{Step table: minimal wires (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/minsize.py} (exhaustive BFS over sets of computed functions, so minima are exact) gives the number of $n$-variable functions with minimum gate count $g$ in $B_2$ (constants and projections cost 0):
+\begin{center}\begin{tabular}{@{}lccccc@{}}\toprule
+$n$ & $g=0$ & 1 & 2 & 3 & 4\\\midrule
+1 & 3 & 1 & & & \\ 2 & 4 & 12 & & & \\ 3 & 5 & 33 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+So the hardest 1-,2-,3-variable functions need $1,1,4$ gates, i.e.\ $2,2,8$ wires. (Knuth, TAOCP 7.1.2: 7 gates for $n=4$; recalled from memory, not recomputed here, so treat as KNOWN-unchecked.) Identifying the 24 four-gate functions on 3 inputs is a TODO.
+
+Observation (PROVED, trivial): at fixed $n$ the table is finite, so every column is $O(1)$; the ladder only becomes informative via the growth rate $\max_f \min w(f)\ge 2^n/n$-type counting (Shannon, KNOWN), which is a function-complexity statement, not an algorithmic CSAT statement.
+
+\section{Proved lower bounds in explicit models}
+\begin{theorem}[Black-box bound, PROVED]\label{t:bb}
+Let $n\ge1$. Any deterministic algorithm that decides CSAT for circuits of size $\ge 2n-1$ using only evaluation queries $C(x)$ needs at least $2^n$ queries (on the zero-answering adversary). Randomised, error $\le 1/3$: $\ge 2^n/3$ queries.
+\end{theorem}
+\begin{proof}
+Adversary answers $0$ to every query. After $q<2^n$ queries some $a$ is unqueried; the zero circuit and the minterm circuit $[x=a]$ (size $\le 2n-1$, padded) agree on all answers but differ in CSAT. Randomised: Yao with $D_0$ = zero circuit versus $D_1$ = minterm at uniform $a$; $q$ queries see a $1$ with probability $\le q/2^n$, so error $\ge \tfrac12(1-q/2^n)$, which is $\le1/3$ only if $q\ge 2^n/3$.
+\end{proof}
+\begin{theorem}[Wire-reading bound, PROVED]\label{t:read}
+In the model where the algorithm reads wires (``which literal feeds slot $j$?''), CSAT for circuits with $s\ge2$ gates needs $\ge s$ wire reads, even randomised $\Omega(s)$.
+\end{theorem}
+\begin{proof}
+Take $C_0=\bigwedge_{j=1}^{s}\ell_j$ (a chain of $s-1$ ANDs plus slot structure, with literal-negation free on wires), $\ell_j=x_{a_j}$ all positive, every variable used appearing at least once. Replacing one slot $\ell_j$ by $\neg x_{a}$ where $x_a$ occurs in another slot makes the instance UNSAT, while $C_0$ is SAT. An algorithm that skips slot $j$ cannot distinguish. For randomised, the same sensitivity at a uniformly random slot gives $\Omega(s)$.
+\end{proof}
+Meaning: the white-box gap between $2^n$ (Thm.~\ref{t:bb}) and $s$ (Thm.~\ref{t:read}) is exactly the open question; any superlinear unconditional bound must exploit wire structure beyond reading it.
+
+\section{Parametrised view}
+\begin{itemize}
+\item \textbf{Upper bound (KNOWN):} dynamic programming over a path decomposition of the wire graph of width $w$ decides CSAT in $2^{O(w)}\mathrm{poly}(s)$; so any lower bound must be $2^{\Omega(\cdot)}$ in a width-type parameter if it is to be tight, and trivially $\le 2^n$.
+\item \textbf{Lower bound (CONDITIONAL):} under SETH one expects no $(2-\varepsilon)^{w}\mathrm{poly}(s)$ algorithm (known for CNF-SAT parametrised by primal pathwidth; transfer to circuit wire-width follows by CNF$\to$circuit with width $O(n)$; citation to be re-verified).
+\item \textbf{Unconditional, restricted:} Thm.~\ref{t:bb}; time--space tradeoffs for SAT with alternation trading ($n^{2\cos(\pi/7)}\approx n^{1.80}$, Williams; Buss--Williams show this technique cannot go further, ledger row L13 in repo). TPORT/ONETAPE reports (\texttt{research/agents/claude/}) show analogous barriers for the portfolio and one-tape variants.
+\end{itemize}
+
+\section{Repository check (2026-11-02)}
+No prior \texttt{ClaudeCircuitSAT.tex}. Relevant repo work: world ledger (L13), TPORT barrier (L34--L37), ONETAPE (L38--L40), all stating P vs NP OPEN. Useful transfer: a statement equivalent to P=NP is a reformulation, not progress; no repo lemma yet gives a wire-level (circuit-structure) lower bound for CSAT. Classification: TPORT/L13 = analogy requiring a new transfer theorem to the wire-ladder.
+
+\section{Next steps (OPEN)}
+\begin{enumerate}
+\item Extend table to $n=4$ (needs smarter search, e.g.\ canonicalisation under NPN) and track $w$ (pathwidth) of optimal circuits.
+\item Define $\mathrm{Hard}(n,s)$: the minimum, over all CSAT algorithms in a fixed machine model, of worst-case cost on $\mathcal F_{n,s}$; compute it exactly for tiny $(n,s)$ in the decision-tree-over-wire-queries model and look for a pattern in $(n,s,w)$.
+\item Attempt a gate-elimination style potential on the \emph{algorithm} (restrict an input, count eliminated wires) for the wire-query model; target: $\Omega(s\cdot\mathrm{something})$ beyond Thm.~\ref{t:read}.
+\end{enumerate}
+\section*{Run log}
+Run 0001: created document, exact minimal-size table $n\le3$, Theorems \ref{t:bb}--\ref{t:read}, repo scan.
+\end{document}
