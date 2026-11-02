@@ -39,3 +39,16 @@ Preserve exactly the five EXISTING enabled hourly LSPV tasks, IDs, titles, Pacif
 **Unchanged central all-input theorem:** uniform polynomial-total-work adaptive solver of ALL valid canonical originals OR genuinely power-short fully charged universal A→Phi(A) plus separately proved SAME-MACHINE strict FLMV numerical transfer. Neither is established by this redirect. P versus NP OPEN.
 
 END::FIVE_ROLE_SAT_CIRCUIT_SAT_FORWARD_REVERSE_REDIRECT::P_VS_NP_OPEN
+
+
+<!-- BEGIN LSPV1 CIRCUIT-MINZERO-COFACTOR317 -->
+## 2026-11-01 20:00 PST: LSPV-1 exact semantic minimum gate threshold and F9 Shannon 2/1/0
+
+**PROVED/EXACT elementary (external referee pending), COMPUTATIONAL independently checked.** For every **valid unpinned canonical** Döcker monotone 3-SAT-(2,2) original F, F(0^n)=F(1^n)=0. In a fixed unrestricted fan-in-two Boolean basis with free constants and unary NOT/COPY, **the minimum number of binary gates equals zero iff F UNSAT**, because every gate-free function is a constant or a literal. Canonical MINZERO22 (malformed reject) is **coNP-complete** via the coNP-complete canonical UNSAT language, with malformed reduction inputs mapped to fixed canonical U198 UNSAT. A polynomial *exact minimizer* would imply P=NP, but this is not an unconditional all-decider lower bound.
+
+On the **same canonical F9 original**, pins (x3,x5,x6,x7,x8)=(0,1,0,0,0) give exact pointwise F9|p=(NOT x1) AND x2 AND x9 with free x4 and **precise minimum binary-gate counts 2** at parent, **1** on SAT child x1=0 (2 completions) and **0** on UNSAT child x1=1 (eight original-clause-refuting leaves). General source-clause private evaluator 3m-1=4n-1 gates; F9 35 gates/depth6, unrestricted mc(F9) only bounded 8..35. No free minimization or semantic-quotient oracle; forward gate evaluation and existential Circuit-SAT solving remain distinct.
+
+Controls: Y6/F9/F15 original models 20/70/1032, explicit gate DAG 23/35/59 and exact all-input evaluation, independent no-import Python verifier 1,073,637 assertions, separate JavaScript source check, all 264 F9 S/U modes, 6 malformed checks. Earlier LSPV-2 COFACTOR319 coNP-hard independence and LSPV-1 COFACTOR316 restricted 2SAT gate are explicitly credited. Fully charged recurrence includes every source/index/head/gate/equality/failed-choice/proof/guest/child/peak-space tariff; no native FLMV bound or arbitrary A->Phi(A) established. P versus NP OPEN.
+
+[Report](../agents/lspv-1/2026-11-01_2000_LSPV-1_CIRCUIT_MINZERO_COFACTOR317.md) · [producer](../../experiments/arc/lspv1_317/circuit_minzero317_compact.py) · [independent verifier](../../experiments/arc/lspv1_317/verify_minzero317_independent.py) · [raw](../../results/raw/arc/2026-11-01_2000_LSPV1_CIRCUIT_MINZERO_COFACTOR317_summary.json) · [five-role handoff](2026-11-01_2000_LSPV1_CIRCUIT_MINZERO_COFACTOR317_FIVE_ROLE_HANDOFF.md).
+<!-- END LSPV1 CIRCUIT-MINZERO-COFACTOR317 -->
