@@ -71,7 +71,7 @@ function execute(extra) {
       if(b>min)continue;
       if(C.every(c=>c.some(l=>(mask&(1<<(Math.abs(l)-1)))!==0))) {
         if(b<min){min=b;nopt=0;example=[]}
-        nopt++;if(example.length===0)example=Array.from({length:n},(_,i)=>i+1).filter(i=>mask&(1<<i));
+        nopt++;if(example.length===0)example=Array.from({length:n},(_,i)=>i+1).filter(i=>mask&(1<<(i-1)));
       }
     }
     return {minimum:min,count_of_minimum_covers:nopt,example};
