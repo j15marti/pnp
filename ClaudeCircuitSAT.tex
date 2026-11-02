@@ -1,0 +1,74 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\newtheorem{thm}{Theorem}
+\title{ClaudeCircuitSAT: a living document on lower bounds for Circuit-SAT}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-11-02 (run 1)}
+\begin{document}
+\maketitle
+\noindent\textbf{Status discipline.} PROVED, COMPUTATIONAL, KNOWN, CANDIDATE, OPEN.
+\textbf{P versus NP remains OPEN}; nothing here claims a superpolynomial bound.
+
+\section{Goal and method}
+Find (possibly parametrized) lower bounds for Circuit-SAT: given a fan-in-2 circuit with
+$n$ inputs and $m$ gates, is there an input making the output 1? Method: start from the smallest
+circuits, record the exact minimum number of gates (hence wires, $w=2g$) needed for each function
+as $n$ grows, and look for structure that transfers to a bound on deciding satisfiability.
+Parameters tracked: $n$ (inputs), $m$ (gates), $w=2m$ (wires), and later treewidth/depth $d$.
+
+\section{Step ledger}
+\subsection{Step 1: exact minimum circuit size, $n=2,3$ (COMPUTATIONAL)}
+Basis $B_2$ (all binary gates), fan-out unrestricted, no constants as gates. Script
+\texttt{research/agents/claude/circuitsat/minsize.py} (exhaustive BFS over sets of computed truth tables;
+data in \texttt{results\_n2.json}, \texttt{results\_n3.json}).
+\begin{center}
+\begin{tabular}{@{}lcccccc@{}}\toprule
+ min gates $g$ & 0 & 1 & 2 & 3 & 4 & total\\\midrule
+ $n=2$ (functions) & 6 & 10 & 0 & 0 & 0 & 16\\
+ $n=3$ (functions) & 8 & 30 & 114 & 80 & 24 & 256\\\bottomrule
+\end{tabular}
+\end{center}
+So the hardest 3-input functions need 4 gates (8 wires), e.g.\ majority-type functions; the table is
+complete (all 256 covered). Wires needed for step $n$: $w_{\max}(2)=2$, $w_{\max}(3)=8$.
+These counts match the known $B_2$ values (max 4 for $n=3$); extending to $n=4$ (max 7 gates) requires a
+chunked search and is the next step.
+
+\subsection{Step 2: a parametrized, unconditional probe lower bound (PROVED)}
+Model: the circuit is given by gate-labelled adjacency lists; an algorithm learns the circuit only by
+probes (``what is gate $i$'s label / input $j$?''), and must output SAT/UNSAT correctly.
+\begin{prop}
+Any deterministic (or randomized zero-error) probe algorithm deciding satisfiability of circuits with $m$ gates
+and $n\ge m/2$ inputs makes at least $m/2-O(1)$ probes in the worst case, independent of $n$ beyond that.
+\end{prop}
+\begin{proof}
+Let $k=\lfloor m/4\rfloor$. Base instance $C_0$: AND of $2k$ literal leaves; leaf $i$ and leaf $k+i$ are both $x_i$
+($1\le i\le k$). It is satisfiable. For $j\in[k]$, instance $C_j$ replaces leaf $k+j$ by $\neg x_j$; it is unsatisfiable.
+$C_0$ and $C_j$ differ only in one leaf label. If on $C_0$ the algorithm never probes leaf $k+j$, it
+behaves identically on $C_j$ and errs. Hence it probes all $k$ leaves $k+1..2k$: $\ge k=\Omega(m)$. \qed
+\end{proof}
+This is the trivial ``must read the input'' bound; its value is as the baseline of the ledger: any
+super-linear bound needs an argument that is not an input-reading argument.
+
+\subsection{Step 3: planned}
+\begin{enumerate}
+\item Extend exact minimum sizes to $n=4$; fit growth of $w_{\max}(n)$ vs.\ the Shannon count $\Theta(2^n/n)$.
+\item Link: Circuit-SAT of $C$ asks whether $f_C\ne 0$; study which \emph{sub-circuit-size} structure forces
+ case analysis (gate-elimination view: each assignment to an input removes $\ge2$ wires, giving
+ $\ge 3n-o(n)$ for explicit functions; this is a bound on circuit size of $f$, not on time to decide SAT).
+\item Parametrized targets: time $f(n)\cdot m^{c}$ lower bounds under restricted algorithm classes
+ (DPLL/resolution-style: known exponential bounds via proof complexity), with parameter $n$ or treewidth.
+\item Review repository work (UWI/ARC/TPORT ledger, \texttt{research/agents/claude/tport}) for transfer.
+\end{enumerate}
+
+\section{Known results used (KNOWN)}
+Unconditional general-model lower bounds for Circuit-SAT beyond linear are not known; under ETH/SETH the
+conditional bound $2^{\Omega(n)}$ (resp.\ $2^{(1-o(1))n}$ for CNF-SAT) holds. Gate elimination: Blum 1984
+$3n-o(n)$; Find--Golovnev--Hirsch--Kulikov 2016 $3.011n$ for $B_2$ (functions, not SAT time).
+
+\section{Open items}
+\begin{itemize}
+\item OPEN: any superlinear unconditional lower bound for Circuit-SAT time in a general model.
+\item OPEN: $n=4$ table; transfer from circuit-size to decision-time bounds.
+\end{itemize}
+\end{document}
