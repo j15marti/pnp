@@ -1,0 +1,71 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- append-by-revision; newest run first in Section "Run log"
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}\newtheorem{observation}{Observation}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: a step-by-step, wire-counting route to (parametrized) lower bounds for Circuit-SAT}
+\author{Claude (scheduled hourly routine)}
+\date{Last revision: 2026-11-02 (run 1)}
+\begin{document}\maketitle
+\paragraph{Status.} $\mathrm P$ versus $\mathrm{NP}$ remains \textbf{OPEN}. Nothing here is an unconditional super-polynomial lower bound for \CSAT{}. Labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Model and the ladder idea}
+A circuit $C$ has $n$ inputs, $g$ fan-in-2 gates over the full basis $B_2$ (negation free), one output; \emph{wires} are gate-input edges ($2g$ of them, plus the output wire). \CSAT: given $C$, decide $\exists x\,C(x)=1$. Instance size $m=\Theta((n+g)\log(n+g))$ bits.
+
+\textbf{Program.} Climb a ladder of instance families $\mathcal L_{n}$, $n=1,2,3,\dots$, recording at each rung (i) the exact minimum number of gates/wires needed to build the circuits of that rung, (ii) the resulting lower bound on the resources to decide satisfiability, with the parameter $n$ (inputs), $w$ (treewidth) or $g$ as appropriate. Goal: see which parameter the hardness attaches to, then try to prove it in a restricted-but-meaningful model and test whether it lifts.
+
+\section{Rungs $n=1,2,3$: exact minimum circuits (COMPUTATIONAL)}
+Exhaustive level-by-level search over straight-line programs (script \texttt{research/agents/claude/circuitsat/minsize.py}; each run $<30$\,s). Histogram of $\min$ gates over all $2^{2^n}$ functions:
+\begin{center}\begin{tabular}{@{}cccc@{}}\toprule
+$n$ & functions & histogram (gates:count) & max gates (wires $=2\cdot$) \\\midrule
+1 & 4 & 0:4 & 0 (0)\\
+2 & 16 & 0:6, 1:10 & 1 (2)\\
+3 & 256 & 0:8, 1:30, 2:114, 3:80, 4:24 & 4 (8)\\\bottomrule\end{tabular}\end{center}
+Rung $n=4$ not yet computed (state space too large for the 30\,s rule without symmetry reduction/checkpointing; planned).
+
+\section{Proved rungs-to-all-$n$ statements}
+\begin{theorem}[connectivity, PROVED/EXACT]\label{thm:conn}
+If $f$ computed by a fan-in-2 circuit depends on all $n$ inputs, the circuit has $\ge n-1$ gates, hence $\ge 2(n-1)$ wires; tight for $\mathrm{AND}_n$ and $\mathrm{XOR}_n$.
+\end{theorem}
+\begin{proof} Restrict to ancestors of the output: a connected undirected graph on $n+g'$ vertices with exactly $2g'$ edges. Connectivity gives $2g'\ge n+g'-1$, i.e.\ $g'\ge n-1$. A balanced tree attains it.\end{proof}
+Consistency check: the $n=3$ row has the all-relevant functions needing $\ge2$ gates; the table's maximum 4 exceeds $n-1=2$, so size lower bounds above connectivity occur already at $n=3$ (e.g.\ majority needs 4).
+
+\begin{theorem}[description-reading bound, PROVED/EXACT]\label{thm:read}
+Any deterministic \CSAT{} solver that accesses the instance by probing gate descriptions must probe $\ge g$ distinct gates on the family below, i.e.\ $\Omega(m/\log m)$ probes.
+\end{theorem}
+\begin{proof} Base instance: chain $y_1=x_1\wedge x_2$, $y_{i}=y_{i-1}\wedge x_{i+1}$, output $y_g$ (satisfiable). Variant $V_i$: gate $i$ replaced by constant $0$ (unsatisfiable). A solver never probing gate $i$ behaves identically on base and $V_i$ but must answer differently.\end{proof}
+
+\begin{theorem}[black-box evaluation, PROVED/EXACT]\label{thm:bb}
+An algorithm that touches $C$ only through evaluations $x\mapsto C(x)$ needs $2^n$ evaluations in the worst case.
+\end{theorem}
+\begin{proof} Adversary answers $0$ to every query until all $2^n$ points are queried; any unqueried point could be the unique satisfying assignment.\end{proof}
+
+\section{What the ladder says so far (the key observation)}
+\begin{observation}[size does not see hardness, PROVED/EXACT]
+Satisfiable and unsatisfiable instances are indistinguishable by the quantities tracked so far: $\mathrm{AND}_n$ (satisfiable) and $\mathrm{AND}_n\wedge\neg x_1$ (unsatisfiable) both have $\Theta(n)$ gates; on the connectivity count, adding one input costs exactly $+1$ gate, $+2$ wires. So \emph{pure wire counting yields only the linear bound} of Theorem~\ref{thm:read}. Hardness must come from the \emph{interaction pattern} of wires (cycles in the undirected skeleton, i.e.\ reconvergent fan-out), not their number.
+\end{observation}
+This suggests the parametrization to chase: let $c$ = cyclomatic number of the skeleton ($c=2g-(n+g)+1=g-n+1$ for connected circuits; $c=0$ iff tree, where \CSAT{} is linear time by DP). Upper bound (KNOWN THEOREM, standard DP over a tree decomposition): $2^{O(w)}\cdot m$ with $w\le c+1$ the treewidth. Conversely, CONDITIONAL on SETH, no $(2-\varepsilon)^{w}\mathrm{poly}(m)$ algorithm is expected for \CSAT{}/CNF-SAT parametrized by pathwidth (recalled from the fine-grained literature, Lampis and Cygan et al.; \emph{citation to be re-verified before reliance}).
+
+\paragraph{Target T1 (OPEN).} Find an unconditional lower bound $T(m,c)$ in a restricted-but-nontrivial model (e.g.\ read-once branching programs with bounded space, or the repository's small-space time--space setting) of the form $2^{\Omega(c)}$ or $2^{\Omega(c/\log c)}$, and prove it by induction on the ladder: show that adding one reconvergent wire at most doubles the number of ``distinguishable partial assignments'' (a boundary/cut-rank invariant) and that some families force the doubling.
+
+\section{Reconciliation with the repository (read-only survey this run)}
+\begin{itemize}
+\item \texttt{research/agents/claude/world-ledger}, row L13 (Buss--Williams): alternation-trading proofs cannot reach SAT time exponent $2\cos(\pi/7)\approx1.247$ with $n^{o(1)}$ space; any time--space route for \CSAT{} inherits this barrier. (Repository claim, not re-verified here.)
+\item TPORT (rows L34--L37) and ONETAPE (L38--L40): barriers for portfolio/one-tape arguments; they say the unconstrained time--space route stalls near linear exponents, consistent with Theorem~\ref{thm:read} being the best wire-count bound so far.
+\item Repository status line (AGENTS.md): P vs NP OPEN; no ARC edge established. We do not import any of it as a lemma.
+\end{itemize}
+
+\section{Next rungs (planned)}
+\begin{enumerate}
+\item Compute $n=4$ exact sizes with symmetry reduction, checkpointed (compare to known maximum).
+\item For each rung compute, for the minimum circuits, the pathwidth/cut-width of the skeleton, and tabulate $(n,g,c,w)$.
+\item Define the boundary-rank invariant $\rho(C)$ = number of distinct residual functions across the best cut; prove $\rho\le2^{c}$ and look for matching families (T1).
+\item Audit relativization/natural-proofs obstacles to T1 before claiming anything beyond the restricted model.
+\end{enumerate}
+
+\section*{Run log}
+\begin{description}
+\item[2026-11-02, run 1] Created document. Computed exact min-gate histograms for $n\le3$. Proved Thms~\ref{thm:conn}--\ref{thm:bb} (all elementary). Identified that wire count alone gives only linear bounds; hardness must be attached to reconvergence (cyclomatic number / treewidth). No lower bound beyond linear obtained.
+\end{description}
+\end{document}
