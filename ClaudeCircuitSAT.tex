@@ -1,0 +1,60 @@
+% Living document: ClaudeCircuitSAT.tex  (append-only log section at end; edit status table in place)
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}{Lemma}\newtheorem{observation}{Observation}
+\newcommand{\CSAT}{\textsc{Circuit-SAT}}
+\title{ClaudeCircuitSAT: building lower bounds for \CSAT{} wire by wire}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated: 2026-11-02}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} No unconditional super-linear lower bound for \CSAT{} is claimed. Labels: PROVED, KNOWN, COMPUTATIONAL, CONDITIONAL, OPEN.
+
+\section{Setup and parameters}
+A circuit $C$ has $k$ inputs, $m$ fan-in-2 gates (any of the 10 non-degenerate binary operations; negation and constants free), and $w=2m$ gate-input wires. \CSAT: is there $x\in\{0,1\}^k$ with $C(x)=1$? Parameters: $(k,m)$; a bound is \emph{parametrized} if stated as $T(k,m)$.
+The wire-by-wire programme: for each $k$, record $\mathrm{size}(f)$ (minimum gates, hence minimum wires $2\,\mathrm{size}(f)$) over all $f:\{0,1\}^k\to\{0,1\}$, then ask what any solver must spend on instances of that size.
+
+\section{Step table (COMPUTATIONAL)}
+Exact minimum gate counts by exhaustive iterative-deepening search (\texttt{research/agents/claude/circuitsat/mincircuit.py}, under 5 s). Entry = number of functions with that size.
+\begin{center}\begin{tabular}{c|ccccc|c}\toprule
+$k$ & size 0 & 1 & 2 & 3 & 4 & total\\\midrule
+1 & 4 & 0&0&0&0 & 4\\
+2 & 6 & 10 & 0&0&0 & 16\\
+3 & 8 & 30 & 114 & 80 & 24 & 256\\\bottomrule
+\end{tabular}\end{center}
+(The $k=1$ row is immediate; $k=2,3$ computed.) Hardest $k=3$ functions need 4 gates / 8 wires (e.g. majority, consistent with the literature). Extending to $k=4$ needs SAT-based exact synthesis (next step); known maximum for $k=4$ is 7 gates in $B_2$ (to be re-verified before citing).
+
+\section{Lower bounds on solving \CSAT}
+\begin{theorem}[Reading bound, PROVED]\label{thm:read}
+In the model where $C$ is given as a gate list probed bit-by-bit, every deterministic \CSAT{} algorithm makes $\ge m$ probes (one per gate description) in the worst case, for every $m$ and $k\ge1$.
+\end{theorem}
+\begin{proof}
+Family: $g_0=x_1$, $g_i=g_{i-1}\wedge g_{i-1}$ for $i\le m$; output $g_m$. It is satisfiable. For $j\le m$ let $C_j$ replace gate $j$ by $g_{j-1}\wedge\neg g_{j-1}$; $C_j$ is unsatisfiable. An algorithm that never probes the description of gate $j$ behaves identically on $C$ and $C_j$, so errs on one. Hence it probes every gate. \qed
+\end{proof}
+\begin{theorem}[Black-box bound, PROVED]\label{thm:bb}
+With only evaluation access to $C$, deciding satisfiability needs $2^k$ queries.
+\end{theorem}
+\begin{proof}
+The adversary answers $0$ to every query; any unqueried $x$ could be the unique satisfying input. \qed
+\end{proof}
+\begin{observation}[Parametrized picture]
+Upper bound $O(2^k m)$ (brute force); Thm.~\ref{thm:read} gives $\Omega(m)$ for any $k$; Thm.~\ref{thm:bb} says any improvement must inspect structure. Conditionally (SETH), no $2^{(1-\varepsilon)k}\mathrm{poly}(m)$ algorithm (KNOWN, CONDITIONAL). The gap between $\Omega(m)$ and $2^k m$ unconditionally is OPEN; closing it for $m=\mathrm{poly}(k)$ is P vs NP.
+\end{observation}
+
+\section{Link to repository work}
+From \texttt{AGENTS.md} and the world ledger (\texttt{research/agents/claude/world-ledger/}): row L13 (Buss--Williams) bounds alternation-trading time--space proofs for SAT; rows L34--L37 (T-PORT) show such methods cannot beat linear time for portfolios of about $N$ programs. These constrain what \emph{technique} can give super-linear \CSAT{} bounds in small space but do not yet use the wire-count parameter; a transfer theorem is missing (CANDIDATE: view wire count $2m$ as the size parameter $N$ in the T-PORT barrier).
+Gate-elimination lower bounds (Schnorr, Stockmeyer, Iwama--Morizumi, Find--Golovnev--Hirsch--Kulikov; $\approx 3.1n$ for $B_2$) bound circuit \emph{size of a function}, not the time to \emph{decide} satisfiability of a given circuit; the distinction is the crux and the step table above lives on the size side.
+
+\section{Next steps}
+\begin{enumerate}
+\item $k=4$ exact sizes via SAT synthesis; record distribution and wire counts.
+\item Study \emph{restricted-solver} bounds: e.g.\ DPLL/resolution-style solvers on circuits of $m$ gates; parametrize by treewidth $\tau$ (upper bound $2^{O(\tau)}m$) and look for matching lower bounds in a fixed proof system.
+\item Test whether per-step wire minimality (functions of size $s$ need $\ge c\,s$ solver work) can be made rigorous in any restricted model.
+\end{enumerate}
+
+\section*{Log}
+\begin{description}
+\item[2026-11-02] Created document; table for $k\le3$; Theorems~\ref{thm:read},\ref{thm:bb}. Repository read only through \texttt{AGENTS.md}; the full corpus preflight was not done this run.
+\end{description}
+\end{document}
