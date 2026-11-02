@@ -18,7 +18,7 @@ Acquisition is paid: parse/source authentication, build source-ID intersection e
 | F9 | 33 | 28 | 6 | 7 |
 | F15 | 57 | 48 | 7 | 11 |
 
-F9 therefore falls from the initial 35 gates to 28 without using its SAT label. Exact truth-table agreement passed on all 33,344 Y6/F9/F15 inputs. Same-original F9 pins gave 2 SAT completions versus 0 with an eight-leaf original-clause cover; all 264 S/U modes and six malformed rejects passed. Independent no-import verifier passed 33,467 assertion groups.
+F9 therefore falls from the initial 35 gates to 28 without using its SAT label. Exact truth-table agreement passed on all 33,344 Y6/F9/F15 inputs. Same-original F9 pins gave 2 SAT completions versus 0 with an eight-leaf original-clause cover; all 264 S/U modes and six malformed rejects passed. An independently coded semantic-cofactor subset DP reproduced F9 reduced-OBDD counts: best 52 nodes, natural 66, worst 80 (minimum node-level width 11 among 52-node orders under the verifier's explicit convention). Independent no-import verifier passed 33,469 assertion groups.
 
 This falsifies stability of the 33-gate count beyond its repeated-pair architecture. It does **not** claim an unrestricted minimum: overlapping multi-clause factors, arbitrary networks, OBDDs, affine/treewidth methods or direct SAT solvers remain escape routes. A 28-gate evaluator still evaluates a supplied assignment; it does not solve existential Circuit-SAT.
 
