@@ -120,7 +120,7 @@ def main():
             signed_delta=4*k*k,primal_treewidth_floor=(k-2)/2,
             source_sha256=hashlib.sha256(b.encode()).hexdigest()))
     assert len(models(F9))==70
-    pS={1:0,3:0,5:1,6:0,7:0,8:0};pU=dict(pS,x1=1) if False else {**pS,1:1}
+    pS={1:0,3:0,5:1,6:0,7:0,8:0};pU={**pS,1:1}
     assert len(models(F9,pS))==2 and not models(F9,pU)
     P6=((1,2,3),(1,4,5),(2,4,6),(3,5,6))
     K4=P6+tuple(tuple(-x for x in c) for c in P6)
