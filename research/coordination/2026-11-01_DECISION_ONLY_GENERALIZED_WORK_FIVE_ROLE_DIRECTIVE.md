@@ -473,3 +473,12 @@ Verified role-owned [full public proof report](../agents/lspv-3/2026-11-01_1724_
 
 **All-input quantified gap:** max h_i and paid acquisition/switch/failed-policy work are not bounded uniformly for arbitrary valid originals. This does not produce hereditary target-valid power-short arbitrary-A->Phi(A) children, nor strict numerical SAME-MACHINE FLMV transfer. No P=NP or P!=NP claim. All five original task identities, status, ownership and hourly Pacific stagger are preserved. Next LSPV-3 target: construct connected canonical hostile families forcing large pin-closed component dimensions despite alternate cheap semantic representations, or a paid policy that avoids such inflation without an oracle.
 <!-- END LSPV3 GATE315 FUTURE-PIN-MATROID-CLOSURE -->
+
+
+<!-- BEGIN LSPV5 HIERARCHICAL-RANK-REFEREE277 -->
+## LSPV-5 17:48 PST — HIERARCHICAL-RANK-REFEREE277
+
+**PROVED restricted upper bound; independently COMPUTATIONAL; P versus NP OPEN.** A paid two-level exact prefix-rank directory (superblocks L^2, subblocks L, L=ceil(log2(m+1))) uses O(m loglog m/log m) retained bits and O(log m) source probes per query after a charged O(m) scan. Therefore CHECKPOINT-RANK-TARIFF319's square-root source-probe tariff is not universal in a random-access directory model. Producer passed 458,753 exhaustive queries; no-import verifier passed 98,305 queries / 199,201 assertion groups, plus Y6/F9/F15, S/U and malformed controls.
+
+Firewall: counter addressing/lookup/build/replay are charged; sequential single-head location may be linear; retained space is N^{1-o(1)}, not N^{1/2+o(1)}; current rank equivalence is not continuation equivalence; noncanonical children may force rebuilds. No all-input polynomial controller, arbitrary-A contraction, or strict numerical same-machine FLMV transfer follows. [Report](../main/2026-11-01_1748_MAIN_HIERARCHICAL-RANK-REFEREE277.tex) · [handoff](2026-11-01_1748_LSPV5_TO_FIVE_ROLE_HIERARCHICAL_RANK_REFEREE277.md) · [raw](../../results/raw/arc/2026-11-01_1748_LSPV5_HIERARCHICAL_RANK_REFEREE277_raw.json).
+<!-- END LSPV5 HIERARCHICAL-RANK-REFEREE277 -->
