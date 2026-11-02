@@ -90,3 +90,18 @@ A completely charged source-indexed frontier DP has conservative bit-operation T
 
 [Role-owned report](../agents/lspv-3/2026-11-01_2024_LSPV-3_CIRCUIT_CLAUSE_FRONTIER_FORWARD_REVERSE_GATE319.tex) | [Standalone compact reproducer](../../experiments/arc/lspv3_319/compact319.py) | [Machine-readable raw results](../../results/raw/arc/lspv3_319/summary319_public.json). Complete producer, separate no-import verifier, original-source transition traces, proofs and integrity manifest are in local GATE319 reproducibility archive. Existing agent identities, enabled states and hourly Pacific schedules unchanged.
 <!-- END LSPV3 CIRCUIT-CLAUSE-FRONTIER-FORWARD-REVERSE-GATE319 -->
+
+
+<!-- BEGIN LSPV5 SIGNED-CLAUSE-MATCHING-FACTOR-REFEREE280 -->
+## LSPV-5 independent red-team update — 2026-11-01 20:48 PST
+
+**Exact restricted theorem (not an unrestricted circuit minimum):** In the declared disjoint matched-clause fan-in-two AND/OR/NAND architecture, let each same-sign clause-intersection edge have weight equal to the shared-support size (1 or 2), and let \(W(F)\) be maximum total matching weight. Then the exact acquired evaluator size is
+\[
+ g_{\rm match}(F)=3m-1-W(F)=4n-1-W(F).
+\]
+The four signed pair identities were proved gate-by-gate, and maximum-weight matching is exact for this architecture. Exhaustive independent verification passed 33,467 assertion groups: 33,344 Y6/F9/F15 truth rows; F9 models 70; coherent same-original F9 pin SAT/UNSAT controls 2/0 completions with eight UNSAT cover leaves; all 264 F9 S/U modes; six malformed rejections. Sizes are Y6 19, F9 28, F15 48 gates, strictly below the prior 23/33/57 group-factor counts (and F9 35/34 baselines). This is a constructive falsifier of any universal decision lower bound inferred from those chosen forward evaluators.
+
+**Scope/gap:** polynomial construction and verification only for the declared evaluator architecture. It proves neither unrestricted circuit minimality nor SAT-decision hardness, gives no polynomial total-work all-input solver, no hereditary canonical child theorem, no universal arbitrary-A power-short \(A\mapsto\Phi(A)\), and no strict same-machine FLMV numerical transfer. P versus NP remains OPEN.
+
+Artifacts: [report](https://github.com/j15marti/pnp/blob/main/research/main/2026-11-01_2048_MAIN_SIGNED-CLAUSE-MATCHING-FACTOR-REFEREE280.tex), [producer](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_280/signed_clause_matching_factor_referee280.py), [independent verifier](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_280/verify_signed_clause_matching_factor_referee280.py), [raw JSON](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2048_LSPV5_SIGNED_CLAUSE_MATCHING_FACTOR_REFEREE280_raw.json), [manifest](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2048_LSPV5_SIGNED_CLAUSE_MATCHING_FACTOR_REFEREE280_manifest.json), [five-role handoff](https://github.com/j15marti/pnp/blob/main/research/coordination/2026-11-01_2048_LSPV5_TO_FIVE_ROLE_SIGNED_CLAUSE_MATCHING_FACTOR_REFEREE280.md).
+<!-- END LSPV5 SIGNED-CLAUSE-MATCHING-FACTOR-REFEREE280 -->
