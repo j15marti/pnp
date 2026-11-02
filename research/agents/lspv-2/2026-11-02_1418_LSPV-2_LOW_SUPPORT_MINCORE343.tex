@@ -1,0 +1,85 @@
+% LSPV-2 REPORT::LOW-SUPPORT-MINCORE343::2026-11-02_1418_PST
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newcommand{\WR}{W_{R_{\mathrm{mix341}}}}
+\title{LSPV-2 LOW-SUPPORT-MINCORE343: Exact Worst-Case Logical Refutation Cost at Three Variables}
+\author{PNP SAT-Circuit Reduction Builder}
+\date{November 2, 2026, 14:18 PST}
+\begin{document}
+\maketitle
+\noindent\textbf{PROVED/EXACT} for the preselected $R_{\mathrm{mix341}}$; \textbf{COMPUTATIONAL} independently checked examples; \textbf{OPEN} worst-case superpolynomial growth and the conditional bridge B3. P versus NP remains OPEN.
+
+\section{Scope and obstruction}
+The November 2, 12:04 PST five-role worst-case minimum-DAG handoff (verified blob 033b54b87b7cbe94912af5cf67daa52859143a07) directs general encoded CNF-SAT, both labels and malformed input handling, and a fixed, sound, complete calculus chosen before instances. Previous LSPV-2 MIXED-TSEITIN-MIN-DAG341 proves sharp linear mixed proofs for odd cubic Tseitin formulas; MIXED-NONAFFINE-GAP342 proves a four-variable minimally UNSAT $G$ with six clauses and minimum mixed refutation cost six, strictly exceeding the source-arity floor five. We ask whether this strict gap is possible on three or fewer original variables.
+
+Fix precisely the same $R_{\mathrm{mix341}}$: original source-labelled CNF clauses are zero-cost axioms; each non-source inference or conservative auxiliary-gate definition has weight one and at most two explicit parents. Permitted operations include binary resolution, exact AND3 of two Boolean factors whose combined essential support has at most three original variables, locally verified conversions/affine annotations, binary GF(2) row addition, and conservative two-input extension definitions. No free global truth oracle, arbitrary-arity semantic jump, or per-instance axiom is allowed. Shared derivation DAGs, optimal free choice, temporary growth, and mixed policies are allowed. Define $\mu(F)$ as the minimum number of clauses in an UNSAT source-labelled subformula. $N$ is encoded bit length, $n$ is variable count.
+
+\section{Exact all-input theorem}
+\begin{lemma}[Binary-premise source capacity]
+Every sound conservative refutation with $q$ charged nodes has $q\ge\mu(F)-1$.
+\end{lemma}
+\begin{proof}
+The set $S$ of original clauses in the backwards ancestry of contradiction is UNSAT: otherwise a satisfying assignment extends through each conservative auxiliary definition, contradicting soundness. Thus $|S|\ge\mu(F)$. The connected undirected ancestry graph has $|S|+q$ vertices, at least $|S|+q-1$ edges, and at most $2q$ dependency edges by the fixed fan-in bound. Therefore $q\ge |S|-1\ge\mu(F)-1$. Reconvergence, state growth, affine steps, and source reuse do not evade this count.
+\end{proof}
+\begin{theorem}[Exact mixed-DAG minimum on support at most three]
+For every finite valid UNSAT general CNF formula $F$ whose source clauses collectively depend on at most three distinct original variables,
+\[
+\boxed{\WR(F)=\mu(F)-1.}
+\]
+There is no bound on the number of clauses, repeated literals, repeated clauses, or source-order changes. With larger declared variable indices the theorem applies after authenticated support renaming; the executable standalone optimizer deliberately returns OUT\_OF\_EXACT\_SCOPE for declared $n>3$.
+\end{theorem}
+\begin{proof}
+The source-capacity lemma supplies the lower bound. Choose a minimum-cardinality UNSAT core $C_1,\ldots,C_\mu$. If $\mu=1$, its empty clause is contradiction already. Otherwise recursively construct $D_1=C_1$ and $D_i=\mathrm{AND3}(D_{i-1},C_i)$ for $2\le i\le\mu$. Since the union of all variable supports has size at most three, each eight-row exact conjunction is a legal charged inference. The last truth-table factor is identically false. There are exactly $\mu-1$ derived nodes, and neither search for the minimum core nor a global semantic-oracle step is included in the proof cost.
+\end{proof}
+\begin{lemma}[Clause-deletion witness injection]
+An UNSAT formula minimal by source-clause deletion on $r$ variables has at most $2^r$ source clauses.
+\end{lemma}
+\begin{proof}
+For each indispensable clause $C_i$, choose an assignment $a_i$ satisfying all other clauses and falsifying $C_i$. If $a_i=a_j$ for $i\ne j$, the common assignment would simultaneously satisfy and falsify $C_j$. Thus the deletion-witness map is injective into the $2^r$ assignments.
+\end{proof}
+\begin{theorem}[Exact global finite extremum, no enumeration cutoff]
+For each $r\in\{0,1,2,3\}$,
+\[
+\boxed{\max_{\substack{F\ \mathrm{UNSAT}\\|\mathrm{support}(F)|\le r}}\WR(F)=2^r-1.}
+\]
+In order these four exact maxima are $0,1,3,7$. This ranges over all finite general CNFs of the stated variable support, not only the experimentally sampled inputs.
+\end{theorem}
+\begin{proof}
+A minimum UNSAT core is deletion-minimal, so $\mu(F)\le2^r$ by the injection lemma; the first theorem gives the upper bound. Equality is attained by taking all $2^r$ clauses each of which forbids exactly one complete $r$-bit assignment. Every clause is indispensable and the AND3 construction has exactly $2^r-1$ inferences. For $r=0$ the sole source is the empty clause with zero inferences.
+\end{proof}
+
+\section{Four falsifiers and independent execution}
+\begin{enumerate}
+\item[] F1: permit shared intermediate proofs, source repetition, affine rows and temporary intermediate enlargement. The source-capacity lower bound remains valid; AND3 attains it.
+\item[] F2: test odd three-variable XOR, Horn contradictions, 2SAT, duplicate and tautological sources, a pre-existing empty clause and sign-flipped SAT counterparts. Exact model enumeration and independent truth checks support the theorem.
+\item[] F3: enumerate all subfamilies of the full assignment-blocking clause set for each $r=0,1,2,3$ (278 source families). Only the entire blocking family is UNSAT; its certified minimum is $2^r-1$.
+\item[] F4: drop the three-variable support condition. The already independently established four-variable source $G$ has $\mu(G)=6$ and $\WR(G)=6>5$, so an unrestricted extension of the equality is false.
+\end{enumerate}
+
+The Python producer constructs each source clause's falsified-assignment mask and performs minimum-cardinality set-cover dynamic programming over at most $2^{2^3}=256$ masks; it emits source core IDs, every local AND3 node truth table, SAT countermodels, and deletion witnesses. An independently authored JavaScript verifier does not call the optimizer: for its recorded cases it exhausts all named source subsets (up to $m=14$) to recompute $\mu$, checks the proof DAG and source deletion assignments, and rejects corrupted certificates. \textbf{5,238 independent assertions passed}, including 885,507 enumerated source-subset masks, 165 proof nodes, 278 exhaustive cube subfamilies, 400 seeded extra formulas (280 UNSAT, 120 SAT), 72 signed renamings in the producer, ten malformed encodings, and eight corrupted proofs. These counts are a finite computational audit, not the reason the global theorem is proved.
+
+\section{Costs and limits}
+The minimum $W_R$ grants free optimal sequence choice. The implementable three-variable core optimizer pays $O(N+m2^{2^r}+m2^r)$ parsing, indexed-clause inspection, mask-DP and proof construction work for $r\le3$; evidence encoding and checking are separately charged. Independent brute force on each sampled case takes $O(2^m m2^r)$, and is not the production algorithm. Host Python measured peak RSS 96,612 KiB in this execution. None of these are native matched-FLMV machine exponents. Logical proof sharing does not automatically save physical storage, retrieval or recomputation. For any future child reduction retain the all-phase space constraint $s'\le\max\{\rho,\eta,\lambda,\lambda s\}$, including memory allocated and freed during preprocessing.
+
+The exact extrema are in the variable-support parameter $r$, not bit length $N$. Arbitrary input padding and numerous redundant clauses therefore cannot force a superlinear minimum logical proof on globally bounded support. This is a \textbf{family failure} for bounded-support hardness amplification, not a worst-case transfer failure. The strict four-variable gap and growing-support obstruction remain active. The fixed combined system may admit polynomial shortcuts on known resolution-hard families, as current project pigeonhole and parity handoffs show. The 2026 Braun Res($\oplus$) lower bound concerns a different proof calculus; it is not a lower bound for extension-enabled $R_{\mathrm{mix341}}$.
+
+The team-wide research target is still
+\[
+\overline W_R(N)=\max_{\substack{|{\rm enc}(F)|\le N\\F\ \mathrm{valid\ UNSAT}}}W_R(F)
+\]
+with superpolynomial growth, together with the same-preselected-$R$ weakest sufficient bridge
+\[
+{\rm SAT}\in{\rm P}\ \Longrightarrow\ \exists C,k\ \forall N:\
+\overline W_R(N)\le C(N+1)^k.
+\]
+This B3 implication, the stronger B1/B2 transfers, and any strict same-machine FLMV contraction remain OPEN. Size-optimality of $R_{\mathrm{mix341}}$ is not established; an unrelated Cook--Reckhow proof system is not a substitute.
+
+\section{Provenance and next step}
+Read the verified five-role refocus, GitHub issue \#3 and current peer reports, root AGENTS.md/CODEX.md and pnp-research skill, LSPV-2 341--342, and root main.tex. Searched primary Cook--Reckhow (JSL 1979), Peitl--Szeider (JAIR 2021), Braun (arXiv:2609.23015, 2026), peitl/short-proof and github.com/openai implementations. No novelty is inferred from negative GitHub searches. Full Python producer, no-import JavaScript verifier and a 416 KB detailed raw file are supplied in the companion reproducibility archive; GitHub publishes the compact standalone solver and SHA-linked public raw summary. Prior verified theorems are preserved without strengthening. The next objective is a growing-support mixed-system hard family or a correct hardness-transport rule, plus independent B3 analysis. Independent mathematical peer refereeing is pending.
+
+\noindent\textbf{Status: P versus NP remains OPEN.}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::LOW-SUPPORT-MINCORE343
