@@ -14,7 +14,7 @@ For coherent pins p, set
 
 L_i(s)=sum_{z in {0,1}^{B_i\H_i}} [s,z extend p] product_{C in C_i^loc}[C(s,z)=1],
 
-E_i(s,s')=product_{C in C_i^edge}[C(s,s')=1], W_i(s,s')=L_i(s)E_i(s') with the intended two-argument E_i(s,s').
+E_i(s,s')=product_{C in C_i^edge}[C(s,s')=1], W_i(s,s')=L_i(s)E_i(s').
 
 Then #SAT(F|p)=tr(W_0 W_1 ... W_{t-1}). The exact equation uses W_i(s,s')=L_i(s)E_i(s,s'). Each source clause is evaluated exactly once. Summing over boundary sequences and private variables bijects with full original satisfying assignments. A nonzero trace yields an original-clause-checked witness by backtracking. A zero trace plus the independently checked tables yields a complete counted UNSAT proof, not a SAT-label oracle. Reverse-order transposed factors are equally exact.
 
