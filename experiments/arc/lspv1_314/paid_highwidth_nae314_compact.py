@@ -95,6 +95,37 @@ def encode(F):
         ('1' if c[0]>0 else '0')+''.join(format(abs(x),f'0{w}b') for x in c)
         for c in F)
 
+
+def decode_binary(bits):
+    """Exact full binary grammar check, rejecting malformed strings."""
+    if not isinstance(bits,str) or not bits or any(c not in '01' for c in bits):
+        raise ValueError("nonbinary")
+    p=0
+    def number():
+        nonlocal p
+        zeroes=0
+        while p<len(bits) and bits[p]=='0':
+            zeroes+=1;p+=1
+        if p+zeroes>=len(bits):raise ValueError("bad gamma header")
+        value=int(bits[p:p+zeroes+1],2)
+        p+=zeroes+1
+        return value
+    n=number();m=number()
+    if n<1 or m<1 or 3*m!=4*n:raise ValueError("bad canonical dimensions")
+    w=n.bit_length()
+    if len(bits)-p!=m*(1+3*w):raise ValueError("bad source bit length")
+    F=[]
+    for _ in range(m):
+        sign=1 if bits[p]=='1' else -1;p+=1
+        row=[]
+        for _ in range(3):
+            v=int(bits[p:p+w],2);p+=w
+            if not 1<=v<=n:raise ValueError("bad variable ID")
+            row.append(sign*v)
+        F.append(tuple(row))
+    if not canonical(F):raise ValueError("malformed original")
+    return tuple(F)
+
 F9_P=((1,5,6),(2,3,8),(1,3,5),(4,6,9),(2,4,7),(7,8,9))
 F9_N=((4,6,8),(1,6,7),(2,3,4),(3,5,8),(1,2,9),(5,7,9))
 F9=F9_P+tuple(tuple(-x for x in c) for c in F9_N)
@@ -114,11 +145,19 @@ def main():
         F,a=grid_source(k)
         verdict,empty=paired_bipartite_decision(F)
         assert verdict=="SAT" and empty is None
+        assert decode_binary(encode(F))==F
         assert paired_bipartite_decision(F,True)[0]=="SAT"
         b=encode(F)
         records.append(dict(k=k,n=6*k*k,m=8*k*k,bits=len(b),
             signed_delta=4*k*k,primal_treewidth_floor=(k-2)/2,
             source_sha256=hashlib.sha256(b.encode()).hexdigest()))
+    for malformed in (encode(F9)+'1', encode(F9)[:-1], encode(F9)+'x', '0'+encode(F9), '0'):
+        try:
+            decode_binary(malformed)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("malformed binary accepted")
     assert len(models(F9))==70
     pS={1:0,3:0,5:1,6:0,7:0,8:0};pU={**pS,1:1}
     assert len(models(F9,pS))==2 and not models(F9,pU)
