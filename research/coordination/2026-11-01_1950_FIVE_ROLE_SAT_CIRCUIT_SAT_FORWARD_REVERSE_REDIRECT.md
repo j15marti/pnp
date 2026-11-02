@@ -38,6 +38,18 @@ Preserve exactly the five EXISTING enabled hourly LSPV tasks, IDs, titles, Pacif
 
 **Unchanged central all-input theorem:** uniform polynomial-total-work adaptive solver of ALL valid canonical originals OR genuinely power-short fully charged universal A→Phi(A) plus separately proved SAME-MACHINE strict FLMV numerical transfer. Neither is established by this redirect. P versus NP OPEN.
 
+<!-- BEGIN LSPV2 SIGNED-PAIR-CIRCUIT-UP322 -->
+## LSPV-2, 2026-11-01 20:07 PST: exact signed-pair gate sharing and same-original SAT/Circuit-SAT checks
+
+**PROVED/EXACT only for a declared clause-preserving pair-first-level gate architecture; independent COMPUTATIONAL checks; all-input theorem OPEN.** For every valid duplicate-free proper Döcker 3-SAT-(2,2) original F with m=4n/3 source clauses, let d(F) count same-sign unordered variable pairs appearing in two original clauses. Since each variable has exactly two occurrences of either sign, those duplicated pairs form a disjoint matching on clause IDs. The exact two-input gate optimum **in the declared pair-then-clause-then-binary-AND architecture** is g(F)=3m-1-d(F)=4n-1-d(F). All optimal shares are acquired via O(m log m) paid signed-pair sorting, not exponential subset-oracle search. This is not the unrestricted circuit minimum and not SAT-decision hardness. F9's previous 35-gate unshared upper bound is improved to 34; Y6=23, F15=58, and U198/V198=746 each, versus 791 unshared gates. Tseitin clauses are 3g+1 and ordinary noncanonical, never target-valid children.
+
+The source-preserving output-one biconditional Tseitin encoding has a unique gate trace per original complete input. In this restricted construction its unit-propagation conflict status and projected original-variable UP closure agree with direct source-CNF UP. Separate no-producer-import Python verification checked 33,472 forward/equivalence input rows and 21,615 coherent original-source UP contexts, plus 16 same-original F9 completion leaves: x1=1 with five common pins UNSAT0, x1=0 SAT2. Fresh independent Node original-source U198 refutation checked 64 boundary rows, 152 local module tests and 711,932 DPLL nodes under its different branching order; V198's original 264-clause SAT witness was checked. Six malformed clause structures and eight malformed declared byte encodings were rejected.
+
+On F9 same-original UNSAT/SAT controls direct CNF UP-DPLL took 1/2 nodes and 22/67 literal inspections; the 103-clause Tseitin route took 1/2 nodes and 1,189/1,766 inspections **excluding compilation**, hence no total-work shortcut follows. No industrial CDCL or native same-machine FLMV trace obtained. The full charged adaptive recurrence still sums acquisition, unsuccessful policies, switches, source/index/head reads, proof/GE, caches, child/output/bit accesses, guest DELAY/COPY/RECOMP and simultaneous peak writable space. The aggregate successor cost remains potentially exponential, and universal arbitrary-A-to-Phi(A), hereditary target-valid successors and strict numerical FLMV transfer remain OPEN.
+
+Verified [LaTeX theorem](../agents/lspv-2/2026-11-01_2007_LSPV-2_SIGNED_PAIR_CIRCUIT_UP322.tex), [compact runnable compiler](../../experiments/arc/lspv2_322/compact322.py), and [machine-readable results](../../results/raw/arc/2026-11-01_2007_LSPV2_SIGNED_PAIR_CIRCUIT_UP322_summary.json). Complete local producer, independent Python/Node verifiers, full source-labeled gate DAGs and 5-page PDF are in the user-facing run archive. Root manuscript must be reconciled ONLY inside LSPV-2 markers; all five tasks remain unchanged. P versus NP OPEN.
+<!-- END LSPV2 SIGNED-PAIR-CIRCUIT-UP322 -->
+
 END::FIVE_ROLE_SAT_CIRCUIT_SAT_FORWARD_REVERSE_REDIRECT::P_VS_NP_OPEN
 
 
