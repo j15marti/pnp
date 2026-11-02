@@ -627,15 +627,29 @@ Independent no-producer-import checker enumerated 363600 complete orderings over
 <!-- BEGIN LSPV5 EXISTENTIAL-LOCAL-PROJECTION-REFEREE281 -->
 ## LSPV-5 independent red-team update — 2026-11-01 21:48 PST
 
-**PROVED/EXACT only in a declared source-local matched circuit architecture; independently COMPUTATIONAL; P versus NP OPEN.** For valid canonical original (F) and original variable (x), write (H_x) for the (m-4) nonincident clauses and (P_1,P_2,N_1,N_2) for the two positive/negative two-literal remainders. Exact Shannon projection gives
-[
-exists x,F=H_xwedge((P_1wedge P_2)ee(N_1wedge N_2)).
-]
-Let (W_x) be maximum same-sign matching weight among nonincident clauses and (d_xin{0,1,2}) count incident same-sign tail sharing. The exact gate count in the declared matched-(H_x), local-projector topology is (g_{exists x}=3m-5-W_x-d_x).
+**PROVED/EXACT only in a declared source-local matched circuit architecture; independently COMPUTATIONAL; P versus NP OPEN.** For valid canonical original F and original variable x, write H_x for the m-4 nonincident clauses and P1,P2,N1,N2 for the two positive/negative two-literal remainders. Exact Shannon projection gives:
 
-Exhaustive independent checking covered every Y6/F9/F15 variable on 248,256 projection rows and passed 248,336 assertion groups. F9 projection circuits use 26 or 27 gates versus the 28-gate forward evaluator; independently retained OBDD counts are 52/66/80. Same-original F9 pins give (2) SAT completions at (x_1=0), (0) at (x_1=1), and their exact projection is (x_2wedge x_9) with (x_4) free. All 264 F9 S/U modes and six malformed rejects passed.
+exists x F = H_x AND ((P1 AND P2) OR (N1 AND N2)).
 
-This falsifies any assertion that a chosen forward evaluator or best OBDD lower-bounds every first SAT-decision-preserving circuit. The projected circuit intentionally does not compute (F) pointwise and is not a canonical child. Repeated elimination can still have exponential induced width/BDD growth; no polynomial aggregate-work/order-acquisition theorem, unrestricted minimum, arbitrary-(A) contraction, or strict same-machine FLMV transfer is proved.
+Let W_x be maximum same-sign matching weight among nonincident clauses and d_x in {0,1,2} count incident same-sign tail sharing. The exact gate count in the declared matched-H_x, local-projector topology is g = 3m-5-W_x-d_x.
+
+Exhaustive independent checking covered every Y6/F9/F15 variable on 248,256 projection rows and passed 248,336 assertion groups. F9 projection circuits use 26 or 27 gates versus the 28-gate forward evaluator; independently retained OBDD counts are 52/66/80. Same-original F9 pins give 2 SAT completions at x1=0, 0 at x1=1, and their exact projection is x2 AND x9 with x4 free. All 264 F9 S/U modes and six malformed rejects passed.
+
+This falsifies any assertion that a chosen forward evaluator or best OBDD lower-bounds every first SAT-decision-preserving circuit. The projected circuit intentionally does not compute F pointwise and is not a canonical child. Repeated elimination can still have exponential induced width/BDD growth; no polynomial aggregate-work/order-acquisition theorem, unrestricted minimum, arbitrary-A contraction, or strict same-machine FLMV transfer is proved.
 
 Artifacts: [report](https://github.com/j15marti/pnp/blob/main/research/main/2026-11-01_2148_MAIN_EXISTENTIAL-LOCAL-PROJECTION-REFEREE281.tex), [producer](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_281/existential_projection_referee281.py), [independent verifier](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_281/verify_existential_projection_referee281.py), [raw](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2148_LSPV5_EXISTENTIAL_LOCAL_PROJECTION_REFEREE281_raw.json), [manifest](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2148_LSPV5_EXISTENTIAL_LOCAL_PROJECTION_REFEREE281_manifest.json), [five-role handoff](https://github.com/j15marti/pnp/blob/main/research/coordination/2026-11-01_2148_LSPV5_TO_FIVE_ROLE_EXISTENTIAL_LOCAL_PROJECTION_REFEREE281.md).
 <!-- END LSPV5 EXISTENTIAL-LOCAL-PROJECTION-REFEREE281 -->
+
+<!-- BEGIN LSPV5 FIRST-ELIMINATION-QUOTA-REFEREE282 -->
+## LSPV-5 independent red-team update — 2026-11-01 22:48 PST
+
+**PROVED/EXACT first-step theorem; independently COMPUTATIONAL iteration countercontrol; P versus NP OPEN.** For every valid canonical original F with m clauses and each original variable x, Davis--Putnam elimination considers exactly four positive-negative source-clause pairs and computes an exact CNF for exists x F with at most m clauses, 3m+4 literal records and width at most four.
+
+The original 2-positive/2-negative quota is not hereditary. On F9, eliminating x9 then x6 gives six candidate pairs at the second step. Exact subset-state DP found best/worst total candidate-pair costs 9/35, largest steps 4/12, projected peak literal records 28/36, with best order 3,2,1,5,9,4,6,7,8 and worst 8,5,7,4,2,9,6,3,1. All candidate pairs are charged even if their resolvents are later tautological or subsumed; normalization and order acquisition are additional paid work.
+
+The no-import verifier passed 248,340 assertion groups over 248,256 projection rows. It reproduced forward evaluators Y6/F9/F15 at 23/35/59 gates, depths 5/6/7, model counts 20/70/1032, F9 OBDD 52/66/80, all 264 F9 S/U modes, and six malformed rejects. Same-original F9 pins yield an x1=0 SAT residual with two completions and zero elimination pairs versus an x1=1 UNSAT residual with no completions and two pairs to derive contradiction.
+
+Fully charged work includes grammar, source/index/head reads, occurrence discovery, every resolvent and failed policy, selector/switching, semantic/proof/GE work, cache/replay, child/output/bit access, guest DELAY/COPY/RECOMP and simultaneous peak live space. Projected CNFs are ordinary noncanonical children. No polynomial aggregate-work theorem, free favorable-order oracle, arbitrary-A power-short contraction, or strict same-machine FLMV transfer is proved.
+
+Artifacts: [report](https://github.com/j15marti/pnp/blob/main/research/main/2026-11-01_2248_MAIN_FIRST-ELIMINATION-QUOTA-REFEREE282.tex), [producer](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_282/first_elimination_quota_referee282.py), [independent verifier](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_282/verify_first_elimination_quota_referee282.py), [raw](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2248_LSPV5_FIRST_ELIMINATION_QUOTA_REFEREE282_raw.json), [manifest](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2248_LSPV5_FIRST_ELIMINATION_QUOTA_REFEREE282_manifest.json), [five-role handoff](https://github.com/j15marti/pnp/blob/main/research/coordination/2026-11-01_2248_LSPV5_TO_FIVE_ROLE_FIRST_ELIMINATION_QUOTA_REFEREE282.md).
+<!-- END LSPV5 FIRST-ELIMINATION-QUOTA-REFEREE282 -->
