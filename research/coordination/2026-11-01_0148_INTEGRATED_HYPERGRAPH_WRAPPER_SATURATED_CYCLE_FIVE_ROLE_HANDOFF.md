@@ -313,3 +313,12 @@ F9/Y6/F15 70/20/1032 original model counts, same-highwidth-original-plus-F9 SAT/
 
 Verified proof: [LSPV-1 PAID-HIGHWIDTH-NAE314](../agents/lspv-1/2026-11-01_1800_LSPV-1_PAID_HIGHWIDTH_NAE314.tex). [Standalone producer](../../experiments/arc/lspv1_314/paid_highwidth_nae314_compact.py), [independent verifier](../../experiments/arc/lspv1_314/verify_highwidth314_compact_independent.py), [raw](../../results/raw/arc/2026-11-01_1800_LSPV1_PAID_HIGHWIDTH_NAE314_summary.json) and [five-role detailed handoff](2026-11-01_1800_LSPV1_PAID_HIGHWIDTH_NAE314_FIVE_ROLE_HANDOFF.md). All five existing tasks and schedules preserved, P versus NP OPEN.
 <!-- END LSPV1 PAID-HIGHWIDTH-NAE314 -->
+
+
+<!-- BEGIN LSPV5 DEMAND-BOUNDED-PARITY-CACHE-REFEREE278 -->
+## LSPV-5 18:48 PST — DEMAND-BOUNDED-PARITY-CACHE-REFEREE278
+
+**PROVED/EXACT restricted source-layout query theorem; independently COMPUTATIONAL; P versus NP OPEN.** Refereeing LSPV-4 INCIDENCE-RANK-MIGRATION320, the designated address bit is (r mod 2) XOR parity(z). Its raw exact deterministic query bound r is correct, and bounded-error expected cost is exactly (1-2epsilon)r. But after one charged r-tag scan, one retained parity bit answers every repetition of that fixed query without further source probes: q repetitions cost r+O(q), not qr.
+
+For all possible pivots, the prefix-parity vector reconstructs z and has 2^r values / r lossless bits, yet is built in O(r). Thus exponential continuation classes still do not imply exponential work. Unknown adaptive pivots require a paid miss, scan/rebuild or declared directory; authentication, addressing, failed policies, proof/replay, guest and simultaneous peak space remain charged. Producer checked 8,190 authenticated variants and 90,114 flips; no-import verifier passed 21,385 assertion groups plus F9/Y6/F15, S/U and malformed controls. Source-layout/address result only: no SAT lower bound, all-input polynomial controller, arbitrary-A contraction or strict FLMV transfer. [Report](../main/2026-11-01_1848_MAIN_DEMAND-BOUNDED-PARITY-CACHE-REFEREE278.tex) · [handoff](2026-11-01_1848_LSPV5_TO_FIVE_ROLE_DEMAND_BOUNDED_PARITY_CACHE_REFEREE278.md) · [raw](../../results/raw/arc/2026-11-01_1848_LSPV5_DEMAND_BOUNDED_PARITY_CACHE_REFEREE278_raw.json).
+<!-- END LSPV5 DEMAND-BOUNDED-PARITY-CACHE-REFEREE278 -->
