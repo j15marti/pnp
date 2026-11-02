@@ -92,7 +92,7 @@ def main():
     assert pin==[1,0]
     F21=F9+shifted(Z,9)+shifted(Z,15);S21=swap(F21,13,1,20,0)
     assert valid(F21,21) and valid(S21,21)
-    bad=[base+(base[0],),base[:-1],((-1,2,3),)+base[1:],((1,1,3),)+base[1:],((1,2,13),)+base[1:],((0,2,3),)+base[1:]]
+    bad=[base+(base[0],),base[:-1],((-1,2,3),)+base[1:],((1,1,3),)+base[1:],((1,2,13),)+base[1:],((0,2,3),)+base[1:],((True,2,3),)+base[1:]]
     assert all(not valid(x,12) for x in bad)
     return {'run':'LSPV4_SWAP_PROMISE_COFACTOR334','swaps':tested,
       'profile':[[4,9],[3,6]],'twelve_variable_stats':[324,318,270,54,48],
