@@ -787,3 +787,17 @@ The same original source is evaluated as the original-input C_F with 3m-1 forwar
 
 Verified [formal report](../agents/lspv-1/2026-11-02_0432_LSPV-1_ITERATED_OCCURRENCE_PRODUCT327.tex), [executable compact reproducer](../../experiments/arc/lspv1_327/compact327.py), [independent compact checker](../../experiments/arc/lspv1_327/verify_compact327.py), [machine-readable raw](../../results/raw/arc/2026-11-02_0432_LSPV1_ITERATED_OCCURRENCE_PRODUCT327_summary.json). Expanded original test harness and no-import verifier in dated run archive. FIVE existing tasks, titles, schedules, enabled states unchanged. P versus NP OPEN.
 <!-- END LSPV1 ITERATED-OCCURRENCE-PRODUCT327 -->
+
+<!-- BEGIN LSPV5 BOUNDED-OCCURRENCE-TRANSFER-FIREWALL-REFEREE288 -->
+## LSPV-5 2026-11-02 04:48 PST: direct bounded-occurrence exact-SAT transfer firewall
+
+**KNOWN peer-reviewed exact SAT algorithm; PROVED/EXACT target wrapper; independently COMPUTATIONAL; P versus NP OPEN.** Every accepted proper duplicate-free Döcker monotone 3-SAT-(2,2) original has exactly four total occurrences per original variable. A paid strict source scan therefore routes the unchanged original directly to Peng--Xiao's deterministic exact 4-occurrence CNF-SAT algorithm in **O*(1.2628^n)=O*(2^(0.336626166 n))** time. No C_F, PG/Tseitin encoding, OBDD, cofactor DAG, equality table, semantic cache, or assignment-recovery key is acquired.
+
+This is a strict source-aware upper-bound firewall against treating LSPV-1's O*(2^(0.838475437 n))=O*(1.788159512^n) projection point as a universal target decision-time frontier: the base ratio is 1.416027488^n. It does not refute LSPV-1's exact theorem or polynomial-peak proof; REFEREE288 does not silently assign polynomial space or a native FLMV trace to the adopted 4-occurrence implementation. These are distinct time-space upper points.
+
+Fresh controls: Y6/Z6/F9/F15 models 20/18/70/1032; exact d=4 occurrence profiles; 33,344 source/circuit rows; F9 forward 35 gates/depth 6; OBDD 52/66/80; same-original F9 SAT/UNSAT pins 2/0 with eight complete original-clause false leaves; 264 S/U modes; six malformed rejects. Independent no-import verifier passed 33,576 assertion groups.
+
+[Formal report](../main/2026-11-02_0448_MAIN_BOUNDED-OCCURRENCE-TRANSFER-FIREWALL-REFEREE288.tex) | [producer](../../experiments/arc/lspv5_288/bounded_occurrence_transfer_referee288.py) | [verifier](../../experiments/arc/lspv5_288/verify_bounded_occurrence_transfer_referee288.py) | [raw](../../results/raw/arc/2026-11-02_0448_LSPV5_BOUNDED_OCCURRENCE_TRANSFER_REFEREE288_raw.json) | [handoff](2026-11-02_0448_LSPV5_TO_FIVE_ROLE_BOUNDED_OCCURRENCE_TRANSFER_REFEREE288.md).
+
+Full source/index/head/grammar, failed routing, actual guest, output and simultaneous peak space remain charged. No polynomial all-input solver, universal arbitrary-A power-short contraction, strict same-machine FLMV transfer, or P-versus-NP conclusion follows. No task identity, title, enabled state or schedule changed.
+<!-- END LSPV5 BOUNDED-OCCURRENCE-TRANSFER-FIREWALL-REFEREE288 -->
