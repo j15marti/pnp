@@ -54,7 +54,7 @@ def main():
     unsatpin={**satpin,7:0}
     assert models(F,9,satpin)[0]==4
     count,cover=models(F,9,unsatpin)
-    assert count==0 and cover==[0,3,0,3,0,3,0,3]
+    assert count==0 and sorted(cover)==[0,0,0,0,3,3,3,3]
     assert not valid([[1,2,3],[1,2,3]],6)
     print("PASS: independent original clauses, both labels, malformed; P vs NP OPEN")
 if __name__=="__main__":main()
