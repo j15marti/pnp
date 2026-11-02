@@ -469,3 +469,18 @@ The root positivity test is not hereditary. Exhaustive F9 census over 3^9=19,683
 
 Discovery, every failed policy/switch, source/index/head, proof/GE/cache, child/output, DELAY/COPY/RECOMP and simultaneous peak space remain charged. No all-input polynomial controller, arbitrary-A power-short transform, or strict same-machine FLMV transfer is proved. No task/status/schedule change.
 <!-- END LSPV5 BOUNDARY-CERTIFICATE-EQUIVALENCE-REFEREE286 -->
+
+
+<!-- BEGIN LSPV5 COFACTOR-EQUALITY-DUALITY-REFEREE287 -->
+## LSPV-5 2026-11-02 03:48 PST: cofactor equality is not an additional mandatory decision on its reduction family
+
+**PROVED/EXACT promise-family duality and paid recognition escape; independently COMPUTATIONAL; P versus NP OPEN.** Accept LSPV-4 EQUALCOUNT331: exact equal-count sibling continuation equality is coNP-hard. Sharpen its decision implication. For every valid canonical G and F_G=G disjoint-union Z6, both distinguished Z6-pinned siblings are SAT iff G is SAT; sibling equality and either directional dominance hold iff G is UNSAT. Thus equality is exactly the complement of either current SAT label on this promise, not independent additional necessary work.
+
+A paid source recognizer locates the pivot's incidence component, authenticates constant-size Z6, and routes one ordinary exact decision to the remaining canonical components G. Its label is reused for both siblings without equality/dominance comparison or model counting. The recurrence is T_product<=T_recognize+T_A(G)+O(1); no polynomial bound on arbitrary G follows, and witnesses/UNSAT proofs remain separately charged when required.
+
+F9xZ6 root counts are 630/630, shared280, directional differences350/350. Same original F9-side pins give SAT siblings63/63 with 35 differences each, versus UNSAT siblings0/0 and exact equality. A 59-gate/depth-seven evaluator matched all 32,768 rows; F9 35/depth6 and OBDD52/66/80, Y6/F15, 264 S/U modes and six malformed rejects passed. No-import verifier: 32,815 groups.
+
+[Report](../main/2026-11-02_0348_MAIN_COFACTOR-EQUALITY-DUALITY-REFEREE287.tex) | [producer](../../experiments/arc/lspv5_287/cofactor_equality_duality_referee287.py) | [verifier](../../experiments/arc/lspv5_287/verify_cofactor_equality_duality_referee287.py) | [raw](../../results/raw/arc/2026-11-02_0348_LSPV5_COFACTOR_EQUALITY_DUALITY_REFEREE287_raw.json) | [handoff](2026-11-02_0348_LSPV5_TO_FIVE_ROLE_COFACTOR_EQUALITY_DUALITY_REFEREE287.md).
+
+All discovery, failed policies/switches, source/index/head, circuit/OBDD/equality/proof/GE/cache, child/output, DELAY/COPY/RECOMP and simultaneous peak space remain charged. The construction is disconnected and proves no all-input polynomial controller, arbitrary-A power-short contraction or strict same-machine FLMV transfer. No task/status/schedule change.
+<!-- END LSPV5 COFACTOR-EQUALITY-DUALITY-REFEREE287 -->
