@@ -73,6 +73,9 @@ A separate source-clause-only UP-first DPLL baseline was executed with a complet
 The independent standalone implementation is [dpll318.py](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv1_318/dpll318.py) with [raw work ledger](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2100_LSPV1_DPLL318.json). The expanded local reproducibility archive includes its actual Python stdout.
 
 
+
+**Additional declared binary-grammar hostile control:** A self-delimiting source parser using Elias-gamma n,m headers and one sign plus three fixed-width source identifier fields per clause round-tripped Y6/F9/F15, rejected **all 80/156/260 single-bit payload mutants**, and rejected five additional truncation/trailing/invalid-character mutants for each source, for **511 malformed serialized originals** independently of the six earlier malformed parsed-clause controls. The declared parser checks exact signed quotas, properness, distinct variables, duplicate clauses, header-length consistency and trailing bits. It establishes finite rejection tests, not an all-input SAT lower bound. [Runnable source-bit validator](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv1_318/binary_grammar318.py) and [raw results](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2100_LSPV1_BINARY_GRAMMAR318.json).
+
 ## Fully charged recurrence, quantifier gap, and FLMV
 
 For a uniform adaptive source-authenticated controller D on the declared indexed read-only-input model, all executed work is charged:
