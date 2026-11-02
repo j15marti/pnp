@@ -1,0 +1,56 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- last updated 2026-11-02 (run CCSAT-0001)
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{prop}{Proposition}
+\title{Claude Circuit-SAT Lower Bound Ladder\\\large Living document}
+\author{Claude (scheduled hourly routine)}
+\date{Last updated 2026-11-02}
+\begin{document}\maketitle
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing here is an unconditional superpolynomial lower bound for Circuit-SAT. Labels: PROVED, COMPUTATIONAL, KNOWN, CONDITIONAL, CANDIDATE, OPEN.
+
+\section{Goal and method}
+Build up from the simplest circuit-SAT instances; for each rung track (i) the minimum number of gates $g$ and wires $w$ (here $w=2g$ for fan-in-2 gates, plus one output wire) needed to build the instance, and (ii) the best lower bound on deciding it. Parameters: $n$ inputs, $m$ gates/wires, and possibly solution count $k=|f^{-1}(1)|$. A bound may be parameterized, e.g.\ $T(n,m)\ge \phi(n)\,m$.
+
+Model for construction cost: circuits over all 16 binary gates (complement free), fan-out unbounded, $C(f)$ = min gates. Truth tables are normalised $f(0)=0$ because $C(f)=C(\neg f)$.
+
+\section{Ladder of exact construction costs}
+\textbf{COMPUTATIONAL} (exhaustive search over sets of computed functions; code and raw JSON in \texttt{research/agents/claude/circuitsat/}; $n=3$ runs in 0.1\,s and matches Knuth's known maximum $4$).
+\begin{center}\begin{tabular}{c|ccccc|c}
+$n$ & \#$f$ with $C=0$ & $C=1$ & $C=2$ & $C=3$ & $C=4$ & $\max C$\\\hline
+1 & 4 & 0&0&0&0 & 0\\
+2 & 6 & 10 & 0&0&0 & 1\\
+3 & 8 & 30 & 114 & 80 & 24 & 4
+\end{tabular}\end{center}
+Cost by number $k$ of satisfying assignments, $n=3$ (min,max $C$): $k=1$: (2,2); $k=2$: (1,3); $k=3$: (2,4); $k=4$: (0,4); symmetric under $k\to 8-k$.
+Reading: the unique-solution instances (a single AND-minterm) are cheap ($C=2=n-1$), while mid-density instances ($k=3,4,5$) contain the costliest functions ($C=4$, e.g.\ majority-type/mux-type functions). Hardness-to-build is not monotone in $k$.
+
+\section{Proved rungs}
+\begin{prop}[connectivity, PROVED] If $f$ depends on all $n$ inputs, $C(f)\ge n-1$ and the circuit has $\ge 2(n-1)$ input-to-gate wires. Hence the minimal \emph{wire count} of an $n$-input instance whose answer depends on every input is $2n-2$, attained by AND/OR/XOR trees (matches the table: $n=2,3$ give $1,2$).
+\end{prop}
+\begin{prop}[read-all, PROVED, black-box wire model] Any algorithm that gets a circuit $\Phi$ with $m$ gates only through queries to gate descriptions and is correct on all circuits must read $\Omega(m)$ descriptions in the worst case on the instance family ``$\Phi$ = a fixed unsatisfiable circuit, plus one hidden gate whose flip makes it satisfiable''. Adversary: answer consistently with the all-clean instance until one gate is unread, then flip it. This is a query bound only, not a time bound for explicit inputs.
+\end{prop}
+
+\section{Parameterized upper/lower picture}
+\begin{tabular}{lll}\toprule bound & status & note\\\midrule
+$T\le 2^n\,m$ (brute force) & PROVED & baseline\\
+$T\ge \Omega(m)$ & PROVED & must read circuit\\
+$T\ge 2^{(1-\varepsilon)n}\mathrm{poly}(m)$ impossible & CONDITIONAL (SETH) & not unconditional\\
+Superlinear in $m$ for general Circuit-SAT & OPEN & no unconditional result known\\
+Williams-type time--space tradeoffs for SAT & KNOWN & see repo ledger L13, L34--L37\\\bottomrule\end{tabular}
+
+\section{Repository cross-links (checked 2026-11-02)}
+The repo (\texttt{j15marti/pnp}) currently treats the ARC/FLMV time--space contraction as its spine, all OPEN. Useful here: ledger row L13 (alternation trading cannot beat time exponent $2\cos(\pi/7)\approx1.80$ at $n^{o(1)}$ space) is the best-known \emph{unconditional} template for a parameterized (time,space) lower bound on SAT, and the TPORT/ONETAPE notes (rows L34--L40) show such methods stall near linear/quadratic time. Lesson for this ladder: gate-counting arguments (Section~2) are exact only for tiny $n$; general circuit lower bounds beyond $\approx 3n$ for explicit functions are unknown, so ladder data cannot extrapolate to a proof.
+
+\section{Next steps (OPEN)}
+\begin{enumerate}
+\item Extend exact costs to $n=4$ (65536 functions; Knuth: max $C=7$) with chunked search; tabulate by $k$.
+\item Track fan-out and \emph{wire} cost separately from gate cost (formula vs circuit: leaf-wire count).
+\item Define a satisfiability-hardness measure per rung, e.g.\ minimal DPLL tree size / resolution refutation size of the CNF encoding of the minimal circuit, and tabulate against $(n,g)$.
+\item Search for a parameter $\phi(n,g)$ such that rung data suggests a candidate lower bound of the form $\phi\cdot g$; then test against known upper bounds.
+\end{enumerate}
+
+\section{Log}
+\begin{tabular}{ll}2026-11-02 CCSAT-0001 & Created document; exact $C(f)$ for $n\le3$; connectivity and read-all propositions; repo cross-links.\end{tabular}
+\end{document}
