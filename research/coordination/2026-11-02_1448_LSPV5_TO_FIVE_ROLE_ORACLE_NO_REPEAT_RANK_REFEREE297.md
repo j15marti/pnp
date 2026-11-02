@@ -11,16 +11,16 @@ For a unique witness, effective independent correct-bit probability \(q\), and
 successive product-weighted sampling of assignments without replacement, the
 expected witness rank is
 
-\[
+$
  E[R]=1+\sum_{d=1}^n {n\choose d}
  \frac{r^d}{1+r^d},\qquad r=(1-q)/q,
-\]
+$
 
 with
 
-\[
+$
  (q^{-n}+1)/2\le E[R]\le q^{-n}.
-\]
+$
 
 Therefore no-repeat exclusion improves iid proposals by at most a factor of
 two, and every fixed \(q<1\) remains exponential.  Polynomial expected rank
