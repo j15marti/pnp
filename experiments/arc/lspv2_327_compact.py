@@ -103,7 +103,7 @@ def run(name, obj):
             "max_matching_weight": W, "matching_source_clause_ids": matching,
             "restricted_gates": gates, "shannon_upper_bound": bound,
             "disjoint_star_pivots": stars, "star_gates": 4*n-1-2*len(stars),
-            "bridge_counts": {str(s): len(list(nx.bridges(nx.Graph(h)))) for s,h in signed.items()}}
+            "bridge_counts": {str(s): len(list(nx.bridges(h))) for s,h in signed.items()}}
 
 if __name__ == "__main__":
     sources = [(p, json.load(open(p))) for p in sys.argv[1:]]
