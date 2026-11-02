@@ -61,7 +61,7 @@ function execute(extra) {
     assert(initial===8*n/3,"expected score mismatch");
     return {B,I,initial_scaled8:initial,selected_before_cleanup:selected,internal_triples:inside,
       conditional_comparisons:comparison,score_scaled8:conditional8(C,n,fixed),
-      construction_clause_scans:2*n*C.length+2*C.length};
+      construction_clause_scans:(3*n+5)*C.length};
   }
   function minimumCover(C,n) {
     if(n>16)return null;
