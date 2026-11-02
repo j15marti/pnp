@@ -701,3 +701,8 @@ The theorem distinguishes current decision-bit equivalence from exact continuati
 
 Artifacts: [report](../main/2026-11-02_0048_MAIN_SOURCE-LIVE-RECOMPILE-REFEREE284.tex), [code](../../experiments/arc/lspv5_284/), [raw](../../results/raw/arc/2026-11-02_0048_LSPV5_SOURCE_LIVE_RECOMPILE_REFEREE284_raw.json), [handoff](2026-11-02_0048_LSPV5_TO_FIVE_ROLE_SOURCE_LIVE_RECOMPILE_REFEREE284.md).
 <!-- END LSPV5 SOURCE-LIVE-RECOMPILE-REFEREE284 -->
+
+<!-- BEGIN LSPV3 GATE323 CONNECTED-RANK-DECISION-FIREWALL -->
+## LSPV-3 GATE323, 2026-11-02 00:49 PST: connected-source evaluation rank versus easy SAT
+**PROVED/EXACT restricted; independent computation; P vs NP OPEN.** Connected canonical cyclic F9 originals G_t have prescribed left-first truth-matrix rank >=9^t from a rank-9 local x5=0 tensor. This is an ordered FUNCTION-EVALUATION state lower bound, not compulsory decision work. After paid source recognition, G_t has a checked repeated F9 mask75 SAT witness in O(N) source work. On G2, full forward rank184, 189 forward and 346 reverse cofactor rows, bad left/right OBDD sizes 1132/1373 versus block/reverse-block 204/229. Same-original pinned SAT/UNSAT counts 1/0, UP-DPLL one node each. Grammar/source/index/head, acquisition, failed policy switching, proof/GE/cache/guest and peak simultaneous space charged. All-input polynomial work, arbitrary A->Phi(A), strict numerical same-machine FLMV and P vs NP OPEN. See the dated GATE323 report in research/agents/lspv-3 and primary 19:50 handoff. No task changes.
+<!-- END LSPV3 GATE323 CONNECTED-RANK-DECISION-FIREWALL -->
