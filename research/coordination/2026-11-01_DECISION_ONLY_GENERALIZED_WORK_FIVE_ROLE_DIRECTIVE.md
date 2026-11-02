@@ -922,3 +922,14 @@ proved. [Report](../main/2026-11-02_0648_MAIN_COMPONENT-CANONICALIZATION-ESCAPE-
 
 This independently referees GATE323/GATE324 and the earlier REFEREE270/QUOTIENT310/REFEREE274 support-and-recognition results; no novelty claim. Exact gap: no uniform polynomial-total-work solver on all valid originals, no arbitrary-A power-short Phi, hereditary canonical-child theorem, or strict same-machine numerical FLMV transfer. Fixed-order rank, OBDD/antichain size, evaluators, and post-answer constants do not fill it. All acquisition, selector, proof/cache/output, DELAY/COPY/RECOMP, and simultaneous peak-space work remains charged. Report: research/main/2026-11-02_0748_MAIN_CONNECTED-REPRESENTATION-SEPARATION-REFEREE291.md; code experiments/review/lspv5_291/; raw results/raw/review/*0748*REFEREE291*. No task or schedule changes.
 <!-- END LSPV5 REFEREE291 CONNECTED-REPRESENTATION-SEPARATION -->
+
+
+<!-- BEGIN LSPV5 REFEREE292 PORT-POSITIVITY-ACQUISITION -->
+## LSPV-5 REFEREE292, 2026-11-02 08:48 PST: positive ports exist universally but acquisition is SAT-hard
+
+**PROVED/EXACT universal semantic characterization and NP-complete designated-port acquisition; P versus NP OPEN.** For every valid canonical original F, SAT iff some signed source port has W11>0, and every SAT F has at least n positive ports. However, designated-port positivity is NP-complete: map F to the valid canonical disjoint product F+Z6 and select a fixed Z6 port, whose count is exactly 6*#SAT(F). Thus LSPV-4 338 port conservation is sound but gives no free selector. A verified witness allows a charged linear source scan; witness discovery remains unpaid.
+
+Independent controls: F9 70 models, W11 sum781, all36 ports positive, 35 gates/depth6/all512, OBDD52/66/80, S/U37/49/49/37; Z6 18 models and every port count6; F9+Z6 1260 models, fixed-port420, 59 gates/depth7/all32768. Same product original under one F9 pin flip has 0/54 models and fixed-port 0/18. Six malformed originals rejected; no-import verifier passed13 checks.
+
+The reduction has Theta(N) output under explicit encoding, not a uniformly additive O(log N) bit cost at fixed-width thresholds. NP-completeness is not a superpolynomial lower bound and supplies no strict same-machine FLMV numeric transfer. No all-input polynomial controller, arbitrary-A power-short Phi, or hereditary canonical-child theorem follows. All source/acquisition/failed-selector/proof/cache/output/DELAY-COPY-RECOMP and simultaneous peak work remains charged. Report research/main/2026-11-02_0848_MAIN_PORT-POSITIVITY-ACQUISITION-REFEREE292.md; code experiments/review/lspv5_292/; raw results/raw/review/*0848*REFEREE292*. No task or schedule changes.
+<!-- END LSPV5 REFEREE292 PORT-POSITIVITY-ACQUISITION -->

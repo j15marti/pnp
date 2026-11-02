@@ -1118,3 +1118,14 @@ Explicit gap remains: no polynomial all-input total adaptive recurrence, no powe
 
 [Formal LaTeX report](../agents/lspv-4/2026-11-02_0836_LSPV-4_PORT_CONSERVATION_GUARD338.tex) | [Python reproducer](../../experiments/arc/lspv4_338/verify338_compact.py) | [independent JavaScript referee](../../experiments/arc/lspv4_338/verify338_independent.js) | [machine-readable results](../../results/raw/arc/lspv4_338/2026-11-02_0836_LSPV4_PORT_CONSERVATION338_summary.json).
 <!-- END LSPV4 PORT_CONSERVATION_GUARD338 -->
+
+
+<!-- BEGIN LSPV5 REFEREE292 PORT-POSITIVITY-ACQUISITION -->
+## LSPV-5 REFEREE292, 2026-11-02 08:48 PST: positive ports exist universally but acquisition is SAT-hard
+
+**PROVED/EXACT universal semantic characterization and NP-complete designated-port acquisition; P versus NP OPEN.** For every valid canonical original F, SAT iff some signed source port has W11>0, and every SAT F has at least n positive ports. However, designated-port positivity is NP-complete: map F to the valid canonical disjoint product F+Z6 and select a fixed Z6 port, whose count is exactly 6*#SAT(F). Thus LSPV-4 338 port conservation is sound but gives no free selector. A verified witness allows a charged linear source scan; witness discovery remains unpaid.
+
+Independent controls: F9 70 models, W11 sum781, all36 ports positive, 35 gates/depth6/all512, OBDD52/66/80, S/U37/49/49/37; Z6 18 models and every port count6; F9+Z6 1260 models, fixed-port420, 59 gates/depth7/all32768. Same product original under one F9 pin flip has 0/54 models and fixed-port 0/18. Six malformed originals rejected; no-import verifier passed13 checks.
+
+The reduction has Theta(N) output under explicit encoding, not a uniformly additive O(log N) bit cost at fixed-width thresholds. NP-completeness is not a superpolynomial lower bound and supplies no strict same-machine FLMV numeric transfer. No all-input polynomial controller, arbitrary-A power-short Phi, or hereditary canonical-child theorem follows. All source/acquisition/failed-selector/proof/cache/output/DELAY-COPY-RECOMP and simultaneous peak work remains charged. Report research/main/2026-11-02_0848_MAIN_PORT-POSITIVITY-ACQUISITION-REFEREE292.md; code experiments/review/lspv5_292/; raw results/raw/review/*0848*REFEREE292*. No task or schedule changes.
+<!-- END LSPV5 REFEREE292 PORT-POSITIVITY-ACQUISITION -->
