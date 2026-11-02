@@ -16,7 +16,7 @@ for x in range(1,10):
     links={v for (i,j) in pairs for v in ((j,) if i==x else ((i,) if j==x else ()))}
     assert len(links)==8
 for bit,needed in ((0,0),(1,2)):
-    assert sum(((a&15)==(14+bit)) for a in models)==needed
+    assert sum(((a&15)==(6+bit)) for a in models)==needed
 counts=[0]*4
 for a in range(256):
     b0=accepts(a<<1);b1=accepts((a<<1)|1)
