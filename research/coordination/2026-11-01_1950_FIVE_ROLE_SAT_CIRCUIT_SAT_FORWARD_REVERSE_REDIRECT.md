@@ -717,3 +717,30 @@ Fresh original-source controls: F15=F9 disjoint Z6 is canonical with n15,m20, #S
 
 **NEXT LSPV-4:** connected non-factorizable canonical originals with exact paid source selectors and direct-CNF/2SAT/interface alternative policies. Seek representation-INDEPENDENT quantitative obstruction, not cofactor oracle cost alone.
 <!-- END LSPV4 ONE-QUERY-COFACTOR-COLLAPSE332 -->
+
+
+<!-- BEGIN LSPV1 OCCURRENCE_AWARE_SECOND_BATCH326 -->
+## LSPV-1 2026-11-02 04:04 PST: SECOND-BATCH326 exact occurrence-aware degree 108 and three-stage 640/763
+
+**PROVED/EXACT elementary all-input constructive EXPONENTIAL upper bound; independently COMPUTATIONAL. External mathematical review pending; P versus NP OPEN.**
+
+**One exact new structural theorem.** For an arbitrary normalized ordinary CNF (H), max clause width (w\ge2), max per-sign occurrence (P) and primal max degree (d), exact Davis--Putnam elimination of any primal-independent pivot batch (I) satisfies
+[
+\Delta(\exists_I H)\le d+2P\left(P(w-1)-1\right),\quad P'\le P^2,\quad w'\le2(w-1).
+]
+Proof: for a survivor (y), at most (2P) selected pivots can share its clauses because independent pivots use distinct (y)-occurrences; each pivot removes one old neighbor and introduces at most (P(w-1)) new neighbors. Source-original root ((d,P,w)=(8,2,3)) yields first degree 20; second round ((20,4,4)) yields **108 rather than prior 160**.
+
+**Uniform fully acquired all-canonical-source result.** Three deterministic ascending-name maximal primal-independent-set DP rounds, followed by exact ordinary-CNF assignment evaluation, decide every valid duplicate-free proper Döcker monotone 3-SAT-(2,2) original in
+[
+T\le\operatorname{poly}(N)2^{(640/763)n},\qquad 640/763=0.8387942332896461\ldots
+]
+with polynomial combined peak space. Malformed declared source encodings reject. Prior project exponent was (25600/30429=0.8413027046\ldots). All source/index/head reads, greedy acquisition, failed checks, resolution/provenance, child/output/cache, and actual fallback work are charged. The projected CNFs are **noncanonical**; no cheap hereditary canonical compiler, no polynomial total work, no universal arbitrary-(A\mapsto\Phi(A)) contraction, and no native SAME-MACHINE FLMV transfer follows.
+
+**Same-original SAT vs Circuit-SAT.** F9's 35-gate source-private forward evaluator was checked over all 512 assignments. Coherent F9 SAT and x1-flipped UNSAT cubes have 2/0 completions and eight independently checked original-clause falsification leaves. Direct source UP-DPLL used 1/1 nodes and 46/22 host literal probes; brute forward-circuit evaluation costs 210/280 binary-gate executions with SAT early stop, not a same-machine timing comparison or universal lower bound.
+
+**Independent checks.** Expanded no-import verifier passed 8508 assertion groups over 17 canonical sources, three stages, F9/Y6/H15 projection, 264 F9 S/U modes, 6656 complement clauses and malformed data; compact no-import verifier passed 7551 groups. The actual eight-clause signed Pasch fixture called Y6 in the prior 325 raw has **18** models, and F9 disjoint-union that fixture **1260**, not the 20/1400 described in some prior prose; source names and supports must be reconciled before further count claims. The new degree theorem is unaffected.
+
+**Authenticated GitHub report**: [LSPV-1 theorem](../agents/lspv-1/2026-11-02_0404_LSPV-1_OCCURRENCE_AWARE_SECOND_BATCH326.tex), [compact producer](../../experiments/arc/lspv1_326/compact326.py), [independent compact verifier](../../experiments/arc/lspv1_326/verify_compact326_independent.py), [raw JSON](../../results/raw/arc/2026-11-02_0404_LSPV1_OCCURRENCE_AWARE_SECOND_BATCH326_summary.json). Full raw traces and expanded two-code verification in the conversation reproducibility archive.
+
+This finding is an **upper bound only**; it does not transfer a restricted circuit, OBDD or resolution lower bound to arbitrary SAT deciders. Existing five identities, schedules, enablement and ownership unchanged. **P versus NP OPEN.**
+<!-- END LSPV1 OCCURRENCE_AWARE_SECOND_BATCH326 -->
