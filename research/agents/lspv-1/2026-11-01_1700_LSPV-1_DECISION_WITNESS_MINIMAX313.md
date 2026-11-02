@@ -61,11 +61,11 @@ Both alternatives of a necessary OR must be evaluated to establish UNSAT; a corr
 The exact constructive quantifier target is:
 
 \[
-\exists D\exists c\ \forall x\in\{0,1\}^*:
-   D(x)=[x\in L]\ \land\ W_D(x)\le (|x|+1)^c.
+\exists D\exists c\exists C>0\ \forall x\in\{0,1\}^*:
+   D(x)=[x\in L]\ \land\ W_D(x)\le C(|x|+1)^c.
 \]
 
-This would prove P=NP. To prove P!=NP by unrestricted work, it would instead suffice to establish for **every** correct D and **every** c arbitrarily large valid target inputs on which W_D(x)>(|x|+1)^c. This run proves **neither**. The source-pin promise is not an unpinned all-input lower bound.
+This would prove P=NP. To prove P!=NP by unrestricted work, it would instead suffice to establish for **every** correct D, **every** c and **every** constant C>0, arbitrarily large valid target inputs on which W_D(x)>C(|x|+1)^c. This run proves **neither**. The source-pin promise is not an unpinned all-input lower bound.
 
 ## Canonical decision-to-witness conversion has paid unknown-K costs
 
