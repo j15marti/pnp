@@ -1,0 +1,87 @@
+% LSPV-3 REPORT::SOURCE-SUPPORT-BOUNDARY340::2026-11-02_1124_PST
+\documentclass[11pt]{article}
+\usepackage[margin=.8in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{LSPV-3: SOURCE-SUPPORT-BOUNDARY340\\Exact minimal derivation cost and guarded boundary acquisition}
+\author{LSPV-3 Hypergraph and Proof Certificates}
+\date{2 November 2026, 11:24 PST}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT} elementary fixed-calculus theorem; \textbf{COMPUTATIONAL} finite controls; \textbf{OPEN} arbitrary-decider simulation and P versus NP.
+
+\section{Fixed assumptions and falsifiers}
+Let a source-labelled refutation DAG have $m$ distinct original clause leaves, source-independent sound inference rules, at most $d\ge2$ explicit parents per inference, and nonnegative unit weights on inference nodes. Nodes can be shared, intermediate clauses can grow, rule order is adaptive, and the best valid sequence is selected free. Input clauses and proof nodes are distinct; no global semantic oracle or hidden inference side condition may examine unlisted source clauses. Write $W_R(F)$ for the minimum inference count. The essential-source potential is investigated against four falsifiers: (F1) shared DAGs remove the support bound, (F2) a one-bit exact semantic relation removes acquisition work, (F3) the bound survives global unbounded-arity macro rules, and (F4) the proof minimum automatically dominates arbitrary SAT deciders. F1 and F2 are falsified under the stated assumptions. F3 and F4 are false as general transfers.
+
+\begin{theorem}[Essential-source fan-in lower bound]
+If $F$ is clause-minimally UNSAT, every sound $d$-premise refutation has at least $\lceil(m-1)/(d-1)\rceil$ distinct inference nodes. In particular, under ordinary binary Resolution,
+\[
+W_{\mathrm{Res}}(F)\ge m-1.
+\]
+\end{theorem}
+\begin{proof}
+Every source clause is an ancestor of the contradiction: otherwise the ancestors form a sound refutation of a satisfiable proper subset. The ancestor DAG, viewed undirected, is connected and has $m+q$ vertices and at least $m+q-1$ edges. Its edges all enter the $q$ inference nodes and there are at most $dq$ of them. Thus $m+q-1\le dq$. Reuse and nonmonotonic intermediate sizes do not invalidate the argument.
+\end{proof}
+The same support bound applies to an entailed target clause when all $m$ axioms are individually essential for that entailment. A fixed globally checked Horn-UNSAT rule with $m$ implicit premises can have one macro inference, with actual recognition and checking charged separately. Thus the premise cap and explicit sourcing are critical, not decorative.
+
+\section{An exact family and minimum resolution proof}
+For $k\ge1$ let
+\[
+U_k=(u_1)\wedge\bigwedge_{i=1}^{k-1}(\neg u_i\vee u_{i+1})\wedge(\neg u_k).
+\]
+It is minimally UNSAT: removing the first or last clause admits the all-zero or all-one assignment; removing the link at $i$ admits ones through $i$ and zeros afterwards. Let $U_k^{(j)}$ be $t$ disjoint copies and let $z_1,\ldots,z_t$ be fresh selectors. Put
+\[
+G_{t,k}=(z_1\vee\cdots\vee z_t)\wedge
+\bigwedge_{j=1}^{t}\bigwedge_{C\in U_k^{(j)}}(\neg z_j\vee C).
+\]
+Every clause of $G_{t,k}$ is necessary: deleting the selector permits all selectors zero; deleting a guarded block clause permits its selector one, other selectors zero, and the corresponding deletion witness. Hence $G_{t,k}$ is minimally UNSAT with $m=1+t(k+1)$ clauses.
+
+Define an exact one-boundary hypergraph region
+\[
+H_{t,k}(b)=\bigwedge_{D\in G_{t,k}}(\neg b\vee D),\quad
+R_H=\{a:\exists z,u\,H_{t,k}(a,z,u)\}.
+\]
+Then $R_H=\{0\}$; the region itself is SAT. Every one of
+\[
+L_H=(t+1)+t[2\cdot3+4(k-1)]=t(4k+3)+1
+\]
+independently encoded sign occurrences is pivotal for membership of $b=1$. Flipping an occurrence internal to $D$ makes $D$ true on a deletion witness of $G$; flipping its $\neg b$ guard to $b$ makes $D$ vacuous when $b=1$. Therefore every one-sign neighbor has $R_H=\{0,1\}$.
+
+A deterministic, total, both-label exact compiler and boundary-membership evaluator must inspect all $L_H$ signs \emph{across both phases} on this UNSAT-side base. An unread sign gives an identical transcript on its satisfiable neighbor. The bound is $L_H$ single-bit sign probes, or $\lceil L_H/w\rceil$ probes revealing at most $w$ signs. It remains only a linear source-acquisition result, not exponential SAT hardness.
+
+\begin{theorem}[Exact optimum, including after-the-fact free choice]
+\[
+\boxed{W_{\mathrm{Res}}(G_{t,k})=t(k+1)=m-1}.
+\]
+Exactly $m-1$ binary Resolution inferences also suffice and are necessary to derive $\neg b$ from $H_{t,k}$.
+\end{theorem}
+\begin{proof}
+For each block, start from $(\neg b\vee\neg z_j\vee u_1)$, resolve along the $k-1$ guarded implication clauses and finally the guarded $\neg u_k$ clause. In $k$ resolutions obtain $(\neg b\vee\neg z_j)$. Then resolve $(\neg b\vee z_1\vee\cdots\vee z_t)$ against the $t$ block conclusions to derive $\neg b$. This is $t(k+1)$ inferences. Deleting the common guard $\neg b$ everywhere yields the same derivation ending with the empty clause from $G_{t,k}$. The source-essentiality lower bound matches it exactly. Every intermediate node has a source-identified parent pair and pivot.
+\end{proof}
+This simultaneously certifies a smallest binary-derivation \emph{cost}, linear acquisition of a constant-size exact interface, and the failure of source support alone to generate any superlinear lower bound. Neither a smallest representation nor a preselected optimal order gives an unrestricted machine lower bound.
+
+\section{Checks, accounting and transfer firewall}
+The standard-library producer and independently written Node.js referee tested all $t,k\in\{1,2,3\}$: nine base UNSAT instances, $207$ individually sign-flipped SAT neighbors, $63$ individually deleted-clause SAT controls, $54$ replayed Resolution inferences (on guarded and unguarded sources), and $5$ malformed DIMACS rejections. Odd/even $K_4$ Tseitin examples were separately checked UNSAT/SAT. Largest $t=k=3$: 13 variables, 13 source clauses, 46 signs, exact 12-step proof. These are \textbf{COMPUTATIONAL} controls, not a proof of the asymptotic theorem.
+
+A uniform general-CNF decision procedure may parse and validate the source, recognize this grammar and verify its proof, and use exact exhaustive assignment search on all other inputs. This fallback is correct on SAT, UNSAT, and malformed sources; its worst-case cost is $O(2^v\mathrm{poly}(N))$ with $O(N)$ streaming workspace, not polynomial time. The explicit Python verifier materializes clause and proof objects, and has a conservative $O(N^2)$ bit all-phase workspace upper bound rather than an instrumented FLMV machine trace. Count source and index reads, parser, candidate discovery, proof generation, clause normalization, checking, failed policies, result output and every simultaneously live buffer. Materializing an $N$-bit child and releasing it before a guest call still gives $\rho=1$, and
+\[
+s'\le\max\{\rho,\eta,\lambda,\lambda s\}.
+\]
+The best-order relaxation in $W_R$ does not erase these real machine operations.
+
+\textbf{KNOWN THEOREM / prior project falsification.} Ordinary Resolution is \emph{not} universally polynomially simulated by every correct SAT decider: expander Tseitin CNFs have exponential Resolution proofs, while a fixed all-CNF decider can validate their four-clause parity blocks and use polynomial GF(2) elimination, with exhaustive fallback. This LSPV-1/334 result refutes the proposed universal domination theorem for $R=\mathrm{Resolution}$, not for all stronger fixed systems. A fixed Res+XOR calculus admits short source-authenticated parity derivations. No arbitrary computation-to-proof compiler has been established.
+
+\section{Corpus, literature, and next gate}
+\noindent\textbf{CORPUS REVIEWED:} verified November 2 general-SAT follow-up, LSPV-4/339 acquisition/query audit, LSPV-5/293 multi-boundary direct-sum theorem, LSPV-1/334 transfer falsifier, LSPV-3/272 source-selector study, project AGENTS.md/CODEX.md/skill, issue \#3 and current root \texttt{main.tex} fetch. Web and GitHub searches included proof complexity, shortest Resolution (peitl/short-proof), BDD+Extended Resolution (rebryant/pgbdd), and OpenAI GitHub code. Neither absence of a hit nor prior restricted work establishes novelty.
+
+\noindent\textbf{DUPLICATION / CONTRADICTION AUDIT:} guarding and sign-sensitivity were already established in the verified source and LSPV-4/339; multi-boundary acquisition appeared in LSPV-5/293. This run adds the exact source-essential fan-in potential and a family \emph{saturating} the shortest-Resolution bound while exhibiting the same small-interface acquisition barrier. The LSPV-1/334 Resolution-transfer counterexample is adopted unchanged. \textbf{ADOPTED:} fixed $R$, free shortest-sequence choice, source authentication, all-phase accounting, algebraic escapes. \textbf{REJECTED/RETIRED:} superlinear hardness by support counting alone, global transfer of Resolution minima.
+
+\noindent\textbf{ROOT MAIN STATUS:} The GitHub connector fetched an empty \texttt{main.tex} content string. Without authenticated nonempty source and ownership markers, no byte-preserving LSPV-3 region update was attempted; LSPV-5 receives this report for reconciliation. \textbf{OPEN NEXT GAP:} construct a representation-inclusive fixed calculus and a genuinely superpolynomial optimum on arbitrary CNF, together with a sound uniform simulation from \emph{every} correct SAT decider. Both remain unproved. P versus NP \textbf{OPEN}.
+
+\begin{thebibliography}{9}
+\bibitem{cr} S. Cook and R. Reckhow, \emph{J. Symbolic Logic} 44 (1979), 36--50, \url{https://doi.org/10.2307/2273702}.
+\bibitem{dm} A. Darwiche and P. Marquis, \emph{JAIR} 17 (2002), 229--264, \url{https://doi.org/10.1613/jair.989}.
+\bibitem{bw} E. Ben-Sasson and A. Wigderson, \emph{JACM} 48 (2001), 149--169, \url{https://doi.org/10.1145/375827.375835}.
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek and A. Viglas, \emph{JACM} 52 (2005), 835--865, \url{https://doi.org/10.1145/1101821.1101822}.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-3::SOURCE-SUPPORT-BOUNDARY340
