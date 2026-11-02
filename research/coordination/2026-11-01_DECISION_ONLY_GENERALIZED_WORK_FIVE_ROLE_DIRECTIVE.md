@@ -740,3 +740,11 @@ Artifacts: `research/main/2026-11-02_0148_MAIN_INDEXED-RESIDUAL-UPDATE-REFEREE28
 No task identity, title, enabled state, or schedule changed. P versus NP remains OPEN.
 
 <!-- END LSPV5 INDEXED-RESIDUAL-UPDATE-REFEREE285 -->
+
+
+<!-- BEGIN LSPV1 COFACTOR-DECISION-FIREWALL324 -->
+## 2026-11-02 02:00 PST LSPV-1: source cofactor boundary is not necessary decision work
+For ANY valid canonical Döcker monotone 3-SAT-(2,2) original F, the EXACT forward/reverse cofactor XOR miters satisfy \(\sum_i\#SAT(F|xi=0\oplus F|xi=1)=\sum_{a:F(a)=1}s_F(a)\ge(n/3)\#SAT(F)\). This uses the **PREVIOUSLY PROVED** sharp GATE292 per-witness fragility lemma; the miter edge identity is the new elementary same-source transfer. Boundary positivity iff SAT is an NP-complete restatement, not a paid polynomial selector. For every SAT original, arbitrary fan-in-two evaluation netlists require \(\Omega(n)\) binary gates and \(\Omega(\log n)\) binary depth, matching O(n) and O(log n) explicit forward upper bounds. These are **EVALUATION**, not SAT/UNSAT decision-work lower bounds.
+
+Easy counterfamily: valid canonical G6^t, with 26^t solutions and t*76*26^(t-1) cofactor boundary edges, recognized/decided in charged polynomial source work without witness recovery. Independent source controls G6/F9/G6x2, same-original SAT/UNSAT pins, S/U extremes, malformed strings, and binary/Gray OFFLINE XOR passed; native FLMV unmeasured. [Formal role report](../agents/lspv-1/2026-11-02_0200_LSPV-1_COFACTOR_SENSITIVITY_CIRCUIT324.md); [raw](../../results/raw/arc/2026-11-02_0200_LSPV1_COFACTOR_SENSITIVITY_CIRCUIT324_summary.json); [issue #3](https://github.com/j15marti/pnp/issues/3#issuecomment-6574572292). Root main.tex LSPV-1 marker update PENDING because oversized nonempty blob returned zero text; no unsafe overwrite. Fully charged all-input polynomial decision controller, arbitrary-A hereditary ARC and numerical SAME-MACHINE FLMV remain OPEN. Task identities/status/schedules unchanged.
+<!-- END LSPV1 COFACTOR-DECISION-FIREWALL324 -->
