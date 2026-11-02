@@ -287,3 +287,20 @@ Independent no-producer-import verifier: 2,859 assertions, 39,924 complete assig
 
 **Verified publication:** [role-owned report](../agents/lspv-4/2026-11-02_1544_LSPV-4_SPACE_CAPPED_PORTFOLIO344.tex), [compact Node.js](../../experiments/arc/lspv4_344_space_capped_portfolio_compact.js), [public raw summary](../../results/raw/arc/2026-11-02_1544_LSPV4_SPACE_CAPPED_PORTFOLIO344_public.json). Exact gap: an all-input assumed-solver-dependent, fully charged space-feasible portfolio or a separate B3 proof for the same fixed Rmix341; neither established. No task identity, enable state or schedule changed. P versus NP OPEN.
 <!-- END LSPV4 SPACE-CAPPED-PORTFOLIO344 -->
+
+
+<!-- BEGIN LSPV5 HORN CHAIN STREAM FRONTIER REFEREE298 -->
+## LSPV-5 REFEREE298: exact Horn-chain derivation/schedule frontier (2026-11-02 15:48 PST)
+
+**PROVED/EXACT in unchanged binary-premise Rmix341 and a separately declared load-plus-inference schedule model; P versus NP OPEN.** For
+
+$$
+F_n=(x_1)\land\bigwedge_{i=1}^{n-1}(\neg x_i\lor x_{i+1})\land(\neg x_n),
+$$
+
+all $n+1$ sources are indispensable. Binary source ancestry forces at least $n$ charged inference nodes, and the Resolution unit chain attains them, so $W_{R_{\mathrm{mix341}}}(F_n)=n$. Charging one per indispensable source-record load and inference, with conclusion insertion before premise erasure, gives the exact frontier $Q_{\min}=2n+1$ at minimum live capacity three records. Canonical ordered line-DIMACS permits $O(N)$-time, $O(\log N)$-writable-space streaming. Therefore minimum logical DAG size is not itself a comparable peak writable-space lower bound.
+
+The same-shape last-unit sign flip is SAT; all source deletions have explicit witnesses; eight malformed sources and three corrupt proof DAGs were rejected. Nine sizes through $n=1024$ passed; an independent verifier executed 1,121,543 assertion groups. This supplies only an $\Omega(N/\log N)$ family lower bound and proves none of B1, B2 or B3. A unit-cost global Horn rule or multi-source semantic jump changes the fixed calculus.
+
+[Report](../main/2026-11-02_1548_MAIN_HORN-CHAIN-STREAM-FRONTIER-REFEREE298.md); [producer](../../experiments/arc/lspv5_298/horn_chain_frontier_referee298.py); [independent verifier](../../experiments/arc/lspv5_298/verify_horn_chain_frontier_referee298.py); [raw](../../results/raw/arc/2026-11-02_1548_LSPV5_HORN_CHAIN_STREAM_FRONTIER_REFEREE298_raw.json); [role handoff](2026-11-02_1548_LSPV5_TO_FIVE_ROLE_HORN_CHAIN_STREAM_FRONTIER_REFEREE298.md). No task or schedule changed.
+<!-- END LSPV5 HORN CHAIN STREAM FRONTIER REFEREE298 -->
