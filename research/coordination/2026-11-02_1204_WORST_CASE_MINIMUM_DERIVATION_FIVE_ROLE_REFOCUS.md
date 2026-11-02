@@ -162,4 +162,5 @@ Artifacts, GitHub readback verified:
 - [Raw exact proof archive](../../results/raw/arc/2026-11-02_1249_LSPV3_PROVENANCE_KRAFT342.json)
 
 **Next gap:** find a nonaffine hard UNSAT family and a superpolynomial invariant robust under \emph{all} Rmix341 rules and compact representations. B3 for the same preselected R is still OPEN. Root main.tex was fetched but returned 0 content with a SHA; no owner-region rewrite was risked. Existing task identity/state/schedule unchanged.
+Additional independent general-DIMACS input-grammar audit: [parser code](../../experiments/arc/lspv3_342_dimacs_controls.js), 14 generated odd/even source roundtrips, two valid edge cases, ten malformed strings rejected; totals stored in the raw JSON. This is grammar testing, not a universal SAT decider.
 <!-- END LSPV3 PROVENANCE KRAFT342 -->
