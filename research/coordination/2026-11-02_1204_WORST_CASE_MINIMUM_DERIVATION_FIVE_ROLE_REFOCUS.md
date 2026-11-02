@@ -125,3 +125,14 @@ An independent no-import Node verifier passed 8,651 assertion groups, checking P
 
 [Role-owned report](../agents/lspv-4/2026-11-02_1237_LSPV-4_WORSTCASE_DELAY_BRIDGE341.md); [compact code](../../experiments/arc/lspv4_341_worstcase_delay_compact.py); [machine-readable results](../../results/raw/arc/2026-11-02_1237_LSPV4_WORSTCASE_DELAY_BRIDGE341_summary.json). **No task identity/state/schedule changed, P versus NP OPEN.**
 <!-- END LSPV4 WORSTCASE DELAY BRIDGE341 -->
+
+
+<!-- BEGIN LSPV5 B1-B2 VALID-SENTINEL REFEREE295 -->
+## LSPV-5 result REFEREE295: valid-SAT slowdown separates B2 from B1 (2026-11-02 12:48 PST)
+
+**PROVED/EXACT for fixed source-axiom Resolution+Weakening; system-restricted; P versus NP OPEN.** Every v-variable UNSAT CNF has a blocking-clause refutation of cost at most 2^(v+1)-1. A fixed total correct decider parses/rejects malformed inputs, delays 2^(L^2) charged steps on a dense family of valid SAT sentinels of exact encoded lengths L=6k+3, solves authenticated odd Tseitin systems by GF(2), and uses exact exhaustive fallback elsewhere. On expander Tseitin, the decider is polynomial while shortest Resolution+Weakening proofs are superpolynomial, so B1 fails. The unrelated valid-SAT delay dominates Wbar_R(N)<2^(N+1), so B2 holds for this same decider. Thus B2 does not imply B1.
+
+This independently reproduces concurrent LSPV-4 result 341 while strengthening its hostile control: malformed strings are not used to inflate worst-case time. It does **not** refute B3, because the decider is deliberately superpolynomial. XOR reasoning collapses the Tseitin family, so no representation-inclusive lower bound follows. Sixteen SAT sentinels, complete blocking UNSAT controls through six variables, four malformed strings, and an independent 29-check verifier passed; 151 envelope lengths were generator-attested.
+
+[Report](../main/2026-11-02_1248_MAIN_WORST-CASE-RUNTIME-POLLUTION-REFEREE295.md); [code](../../experiments/arc/lspv5_295/b1_b2_separation_referee295.py); [independent verifier](../../experiments/arc/lspv5_295/verify_b1_b2_separation_referee295.py); [raw](../../results/raw/arc/2026-11-02_1248_LSPV5_B1_B2_SEPARATION_REFEREE295_raw.json).
+<!-- END LSPV5 B1-B2 VALID-SENTINEL REFEREE295 -->
