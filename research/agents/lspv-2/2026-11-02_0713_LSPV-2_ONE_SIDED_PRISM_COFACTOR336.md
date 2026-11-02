@@ -1,0 +1,7 @@
+# LSPV-2 ONE-SIDED-PRISM-COFACTOR336
+
+November 2, 2026, 07:13 PST. PROVED/EXACT restricted, independently COMPUTATIONAL, P versus NP OPEN.
+
+For valid duplicate-free proper Döcker monotone 3-SAT-(2,2) originals whose negative original-clause dual is a simple prism C_k square K_2, let d be the number of positive source clauses lacking a complementary negative support. A source-acquired prism variable order has at most six crossing negative vertices. At most d unmatched positive clauses contribute one satisfaction bit each. Thus an exact SAT/#SAT source-state DP has at most 1+3^6 2^d live continuation-sufficient representatives per layer, with all acquisition and state transitions paid. For fixed d the total work is polynomial, not a universal all-input claim.
+
+Finite controls: F9 negative dual is a prism, d=6, original #SAT=70, measured peak 37. One-occurrence-swapped connected canonical prisms at n=9,12,15,18,24 have d=2, model counts 84,466,1896,9068,186596 and peak states 26,76,120,160,160. Independent Node checker asserted 831596 properties, checked 300544 complete source assignments and 38912 original-versus-circuit rows. Same-original pinned SAT/UNSAT and malformed controls passed. Direct original UP-DPLL was cheaper than Circuit-SAT on SWAP3/SWAP4/F9. Uniform all-input polynomial total work, arbitrary-A power-short ARC, same-machine numerical FLMV transfer, and P versus NP remain OPEN.
