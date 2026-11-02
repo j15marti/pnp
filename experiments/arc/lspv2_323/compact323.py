@@ -137,6 +137,18 @@ def run():
         except ValueError:pass
         else:raise AssertionError("malformed serialized original accepted")
     results["malformed_serial_strings_rejected"]=len(invalid)
+    # Independent-label check on the SAME original F15, changing only x7.
+    G15,o15,_=compile(F15,15)
+    base15=dict(zip(range(7,16),(0,0,0,0,1,1,1,1,0)))
+    pin15={}
+    for x7 in (0,1):
+        ct=0
+        for mask in range(64):
+            a=[(mask>>i)&1 for i in range(6)]+[base15[i] if i!=7 else x7 for i in range(7,16)]
+            ct+=evaluate(G15,o15,a)
+        pin15[x7]=ct
+    assert pin15=={0:0,1:2}
+    results["same_original_F15_pins"]=pin15
     results["same_original_F9_pins"]=pin_count
     results["status"]="restricted exact forward circuit, NOT SAT-decision lower bound"
     print(json.dumps(results,indent=2))
