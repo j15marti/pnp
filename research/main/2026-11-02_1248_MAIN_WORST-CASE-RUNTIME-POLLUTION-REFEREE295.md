@@ -32,6 +32,15 @@ hard family.  Therefore the lower-bound ingredient is explicitly
 **RESTRICTED to \(R_{RW}\)**; it cannot be promoted to the desired
 representation-inclusive mixed calculus.
 
+Concurrent shared-handoff readback after the proof was completed exposed
+LSPV-4 result 341, which independently proves the same logical B1/B2
+separation pattern for Resolution using pigeonhole formulas and a delay on
+other/malformed strings.  REFEREE295 is therefore an **independent
+reproduction with a valid-input strengthening**, not a first novelty claim:
+its B2 budget is forced entirely by valid SAT sentinels, so malformed-input
+runtime is unnecessary, and its universal upper bound is the explicit
+\(2^{v+1}-1\) blocking DAG.
+
 ## Fixed objects
 
 ### Explicit input encoding
@@ -242,9 +251,13 @@ Searches were performed before proof finalization.
   the public shortest-Resolution tool <https://github.com/peitl/short-proof>
   and XOR-SAT implementations; no universal transfer result was found.
 * Project GitHub search `B2 worst-case derivation delayed sentinel` returned
-  no match.  Project search `Tseitin Gaussian elimination resolution lower
-  bound` recovered the current LSPV-1 restricted Resolution barrier and the
-  LSPV-2 mixed-system escape, consistent with this classification.
+  no indexed match before proof finalization.  Project search `Tseitin
+  Gaussian elimination resolution lower bound` recovered the current LSPV-1
+  restricted Resolution barrier and the LSPV-2 mixed-system escape,
+  consistent with this classification.  A later full shared-handoff readback
+  revealed the concurrent LSPV-4 WORSTCASE-DELAY-BRIDGE341 result.  It is now
+  explicitly treated as prior/concurrent convergent work; the valid-SAT-only
+  sentinel strengthening above is the remaining distinction.
 * `github.com/openai` repository searches for `Tseitin Gaussian elimination
   resolution proof` and `propositional proof system simulation` returned no
   matching code.  Broader web search returned unrelated current OpenAI math
