@@ -11,9 +11,9 @@ user-directed F15 noisy-oracle experiment.  Suppose a CNF has a unique
 satisfying assignment \(z\).  A proposal at Hamming distance \(d\) from \(z\)
 has product weight
 
-\[
+$
   w_d=q^{n-d}(1-q)^d,
-\]
+$
 
 where \(q\) is the effective probability that each bit agrees with \(z\).
 Generate a weighted random permutation of all assignments—equivalently,
@@ -21,26 +21,26 @@ successively sample proportional to weight and remove every sampled
 assignment, so no assignment is ever repeated.  Let \(R\) be the rank of
 \(z\) in this permutation.  Then, exactly,
 
-\[
+$
  \mathbb E R
  =1+\sum_{d=1}^n {n\choose d}
    \frac{r^d}{1+r^d},
  \qquad r=\frac{1-q}{q},
-\]
+$
 
 and for every \(q\in[1/2,1]\),
 
-\[
+$
  \boxed{\frac{q^{-n}+1}{2}\le \mathbb E R\le q^{-n}.}
-\]
+$
 
 Therefore for each fixed \(q<1\), even perfect no-repeat conditioning leaves
 \(\mathbb E R=\Theta(q^{-n})\).  It improves the iid expected proposal count
 \(q^{-n}\) by at most a factor of two.  Polynomial expected rank requires
 
-\[
+$
  -n\log q=O(\log n),
-\]
+$
 
 equivalently \(q=1-O(\log n/n)\) as \(q\to1\).  This is an
 **EXACT SAMPLING THEOREM**, not a SAT lower bound.
@@ -95,11 +95,11 @@ is the standard exponential-race realization of successive weighted sampling
 without replacement.  Let \(z\) be the unique target.  For any assignment
 \(a\) at distance \(d\),
 
-\[
+$
  \Pr[T_a<T_z]
  =\frac{w_a}{w_a+w_z}
  =\frac{r^d}{1+r^d}.
-\]
+$
 
 The rank of \(z\) is one plus the number of other clocks that ring first.
 Linearity of expectation and the \({n\choose d}\) assignments at distance
@@ -108,14 +108,14 @@ indicators is not required.
 
 For \(q\ge1/2\), \(0\le r^d\le1\), hence
 
-\[
+$
  \frac{r^d}{2}\le\frac{r^d}{1+r^d}\le r^d.
-\]
+$
 
 Summing and using
-\[
+$
  \sum_{d=1}^n{n\choose d}r^d=(1+r)^n-1=q^{-n}-1
-\]
+$
 proves both bounds.  The polynomial threshold follows by taking logarithms.
 ∎
 
@@ -132,9 +132,9 @@ source-aware reductions remove only one assignment.
 Indeed, the finite control deliberately exposes this distinction.  The unique
 SAT formula
 
-\[
+$
  U_n=(x_1)\land\cdots\land(x_n)
-\]
+$
 
 has one model, but unit propagation finds it in linear source work.  Its UNSAT
 sibling \(U_n\land(\neg x_1)\) has a one-node Resolution contradiction in any
@@ -220,9 +220,9 @@ native-machine complexity bounds.
 No materialized-child contraction or FLMV transfer is claimed.  Any such
 implementation still requires the all-phase envelope
 
-\[
+$
  s'\le\max\{\rho,\eta,\lambda,\lambda s\},
-\]
+$
 
 where \(\rho\) includes oracle acquisition, preprocessing, population
 construction, duplicate/exclusion storage, proposal generation and
