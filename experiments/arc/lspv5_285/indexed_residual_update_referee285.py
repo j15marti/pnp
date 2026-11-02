@@ -147,9 +147,26 @@ def trail(F,n,gray):
             "endpoint_variable_delta":endpoint,"endpoint_occurrence_delta":4*endpoint,
             "endpoint_core_dphys":5*endpoint}
 
+def compile_private(F,n):
+    gates=[];outs=[];depth={v:0 for v in range(1,n+1)}
+    def add(op,a,b):
+        z=n+len(gates)+1;gates.append((z,op,a,b));depth[z]=1+max(depth[abs(a)],depth[abs(b)]);return z
+    for c in F:
+        q=add("OR",c[0],c[1]);q=add("OR",q,c[2]);outs.append(q)
+    while len(outs)>1:
+        outs=[add("AND",outs[i],outs[i+1]) if i+1<len(outs) else outs[i] for i in range(0,len(outs),2)]
+    return tuple(gates),outs[0],depth[outs[0]]
+
+def eval_private(gates,root,a):
+    b=dict(a)
+    for z,op,x,y in gates:
+        xv=b[abs(x)] if x>0 else 1-b[abs(x)];yv=b[abs(y)] if y>0 else 1-b[abs(y)]
+        b[z]=int((xv or yv) if op=="OR" else (xv and yv))
+    return bool(b[root])
+
 def private_stats(F):
-    m=len(F);depth=2+(m-1).bit_length()
-    return {"gates":3*m-1,"depth":depth}
+    n=max(abs(x) for c in F for x in c);g,_,d=compile_private(F,n)
+    return {"gates":len(g),"depth":d}
 
 def obdd_extrema(F,n):
     table=tuple(int(sat(F,{i+1:(z>>i)&1 for i in range(n)})) for z in range(1<<n));cost={}
@@ -200,6 +217,11 @@ def main():
     obdd=obdd_extrema(F9,9);assert obdd=={"best":52,"natural":66,"worst":80}
     binary=trail(F9,9,False);gray=trail(F9,9,True)
     assert binary["variable_flips"]==1013 and gray["variable_flips"]==511
+    gates,root,depth=compile_private(F9,9);forward_rows=forward_ones=0
+    for z in range(512):
+        a={v:(z>>(v-1))&1 for v in range(1,10)};b=eval_private(gates,root,a)
+        assert b==sat(F9,a);forward_rows+=1;forward_ones+=b
+    assert (len(gates),depth,forward_rows,forward_ones)==(35,6,512,70)
     out={
       "run":"INDEXED-RESIDUAL-UPDATE-REFEREE285","status":"PROVED_EXACT_REPRESENTATION_PLUS_COMPUTATIONAL",
       "P_vs_NP":"OPEN","seed":285,
@@ -215,7 +237,8 @@ def main():
         "Logical/physical update distance alone yields an arbitrary-machine SAT lower bound."],
       "F9":{"models":sum(sat(F9,{v:(z>>(v-1))&1 for v in range(1,10)}) for z in range(512)),
             "pin_states":fs,"continuation_rows":fr,"transitions":trans,
-            "forward_private":private_stats(F9),"obdd":obdd,"same_original":siblings,
+            "forward_private":dict(private_stats(F9),truth_table_rows=forward_rows,output_ones=forward_ones),
+            "obdd":obdd,"same_original":siblings,
             "binary_trail":binary,"gray_trail":gray},
       "Y6":{"models":sum(sat(Y6,{v:(z>>(v-1))&1 for v in range(1,7)}) for z in range(64)),
             "pin_states":ys,"continuation_rows":yr},
