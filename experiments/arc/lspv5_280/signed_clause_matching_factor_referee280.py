@@ -120,6 +120,61 @@ def su_modes(F):
         assert tuple(act)==pred;checks+=4
     return checks
 
+def obdd_order_dp(F,n):
+    """Exact reduced OBDD node counts for every global variable order.
+
+    For an assigned-variable set S, the set of all semantic cofactors is
+    independent of the order used to reach S.  The arc cost (S,v) is the
+    number of distinct S-cofactors that genuinely depend on v.  Subset DP
+    therefore gives the exact best/worst order without a syntactic key.
+    """
+    full=(1<<n)-1; costs={}; widths={}
+    for mask in range(1<<n):
+        rem=[i for i in range(n) if not(mask>>i)&1]
+        assigned=[i for i in range(n) if (mask>>i)&1]
+        residuals=set()
+        for av in range(1<<len(assigned)):
+            sig=0
+            for rv in range(1<<len(rem)):
+                z=0
+                for k,i in enumerate(assigned):z|=((av>>k)&1)<<i
+                for k,i in enumerate(rem):z|=((rv>>k)&1)<<i
+                sig|=int(sat(F,{i+1:(z>>i)&1 for i in range(n)}))<<rv
+            residuals.add(sig)
+        for p,v in enumerate(rem):
+            dep=0
+            for sig in residuals:
+                lo=hi=0
+                for y in range(1<<(len(rem)-1)):
+                    low=y&((1<<p)-1);high=y>>p
+                    i0=low|(high<<(p+1));i1=i0|(1<<p)
+                    lo|=((sig>>i0)&1)<<y;hi|=((sig>>i1)&1)<<y
+                dep+=lo!=hi
+            costs[(mask,v)]=dep
+    @lru_cache(None)
+    def best(mask):
+        if mask==full:return (0,0,())
+        return min((costs[(mask,v)]+best(mask|1<<v)[0],
+                    max(costs[(mask,v)],best(mask|1<<v)[1]),
+                    (v+1,)+best(mask|1<<v)[2])
+                   for v in range(n) if not(mask>>v)&1)
+    @lru_cache(None)
+    def worst(mask):
+        if mask==full:return (0,0,())
+        return max((costs[(mask,v)]+worst(mask|1<<v)[0],
+                    max(costs[(mask,v)],worst(mask|1<<v)[1]),
+                    (v+1,)+worst(mask|1<<v)[2])
+                   for v in range(n) if not(mask>>v)&1)
+    def order_stats(order):
+        mask=total=peak=0
+        for vv in order:
+            v=vv-1;w=costs[(mask,v)];total+=w;peak=max(peak,w);mask|=1<<v
+        return total,peak
+    b,bw,bo=best(0);w,ww,wo=worst(0);natural=tuple(range(1,n+1))
+    return {"best_nodes":b,"best_order":list(bo),"best_width":bw,
+            "natural_nodes":order_stats(natural)[0],"natural_width":order_stats(natural)[1],
+            "worst_nodes":w,"worst_order":list(wo),"worst_width":ww}
+
 def main():
     ap=argparse.ArgumentParser();ap.add_argument("--out",required=True);a=ap.parse_args()
     fixtures={"Y6":(Y6,6),"F9":(F9,9),"F15":(F15,15)};circuits={};rows=0
@@ -134,16 +189,18 @@ def main():
     assert controls=={"truth_rows":33344,"Y6_models":20,"F9_models":70,"F15_models":1032,"F9_SAT_models":2,"F9_UNSAT_models":0,"F9_UNSAT_cover_leaves":8,"F9_SU_modes":264}
     malformed=[(),((1,1,2),),((1,-2,3),),((1,2,3),),F9+(F9[0],),((1,2,3),(1,2,4))]
     assert all(not canonical(x,max([abs(v) for c in x for v in c],default=3)) for x in malformed);controls["malformed_rejected"]=6
+    obdd=obdd_order_dp(F9,9)
+    assert obdd["best_nodes"]==52 and obdd["best_width"]==11 and obdd["natural_nodes"]==66 and obdd["worst_nodes"]==80
     result={"run":"SIGNED-CLAUSE-MATCHING-FACTOR-REFEREE280","timestamp_pst":"2026-11-01 20:48","status":"PROVED_EXACT_RESTRICTED_PLUS_COMPUTATIONAL","P_vs_NP":"OPEN",
       "obstruction":"Every claimed forward-circuit minimum is basis/topology dependent; existential SAT still requires finding an accepting input or a complete UNSAT proof, and exact minimization cannot be supplied as a free semantic oracle.",
       "theorem":"Let W(F) be the maximum total intersection weight of a matching in the disjoint union of positive and negative clause-intersection graphs, with edge weight one or two. The declared matched-clause factor architecture has exact optimum 3m-1-W(F) gates, acquired by paid maximum-weight matching.",
       "identities":{"positive_one":"(a OR b OR c) AND (a OR d OR e) = a OR ((b OR c) AND (d OR e))","positive_two":"(a OR b OR c) AND (a OR b OR d) = (a OR b) OR (c AND d)","negative_one":"(~a OR ~b OR ~c) AND (~a OR ~d OR ~e) = NAND(a,(b AND c) OR (d AND e))","negative_two":"(~a OR ~b OR ~c) AND (~a OR ~b OR ~d) = NAND(a AND b,c OR d)"},
-      "circuits":circuits,"controls":controls,
+      "circuits":circuits,"controls":controls,"F9_OBDD":obdd,
       "falsified":["33 gates is a stable forward-evaluator bound for F9 once only repeated signed pairs are grouped","only repeated two-literal clause intersections yield polynomially discoverable gate sharing","a smaller evaluator by itself reduces existential SAT decision work"],
       "charged_work":{"compile":"grammar and 3m signed occurrences; build weighted clause-intersection graph; paid maximum-weight matching; write g gate descriptors and source-ID provenance","decision":"W=grammar+source/index/head+compile+all failed policy/acquisition/switch costs+proof/GE+cache/replay+child/output/bit access+guest DELAY/COPY/RECOMP+sum of every evaluated successor","peak":"maximum co-live parser+graph+matching+circuit+proof+cache+ancestor+child+guest writable/index space; materializing the graph is O(m^2 log m) bits, while streamed recomputation trades paid time for space"},
       "scope":["exact only in the declared disjoint matched-clause architecture","not an unrestricted circuit minimum","not a Circuit-SAT algorithm","Tseitin output is ordinary noncanonical CNF","no all-input polynomial successor sum","no arbitrary-A power-short contraction","no strict same-machine FLMV transfer"],
       "wrappers":{"DELAY":"adds charged time without changing circuit semantics","COPY":"gate/proof copies are charged writes","RECOMP":"may discard the matching/circuit and pay source rereads","logical_XOR":"offline only"},
       "large_controls":{"U198_V198":"prior authenticated opposite-label controls inherited; not used to prove the matching theorem"}}
     Path(a.out).write_text(json.dumps(result,indent=2,sort_keys=True)+"\n")
-    print(json.dumps({"status":"PASS","gates":{k:v["gate_count"] for k,v in circuits.items()},"weights":{k:v["total_weight"] for k,v in circuits.items()},"controls":controls,"P_vs_NP":"OPEN"},indent=2))
+    print(json.dumps({"status":"PASS","gates":{k:v["gate_count"] for k,v in circuits.items()},"weights":{k:v["total_weight"] for k,v in circuits.items()},"F9_OBDD":obdd,"controls":controls,"P_vs_NP":"OPEN"},indent=2))
 if __name__=="__main__":main()
