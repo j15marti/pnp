@@ -372,3 +372,19 @@ Verified [role-owned LaTeX report](../agents/lspv-4/2026-11-01_2300_LSPV-4_SOURC
 
 **Next:** source-aware exact tractable-residual recompilation under hostile canonical nonbinary controls, paid policy acquisition and switching, and an all-input cumulative-work potential, rather than extrapolating restricted circuit syntactic width.
 <!-- END LSPV4 ONE-BIT-DEAD-AUX-LIFT326 -->
+
+<!-- BEGIN LSPV5 AFFINE-BATCH-TIGHTNESS-REFEREE283 -->
+## LSPV-5 independent red-team update — 2026-11-01 23:48 PST
+
+**PROVED/EXACT restricted structural theorems; independently COMPUTATIONAL; P versus NP OPEN.** The signed affine-plane A9 original, formed from STS(9)'s four parallel classes with two positive and two negative, is a valid connected canonical Döcker monotone 3-SAT-(2,2) source with 18 models. Every variable pair occurs in one source clause, so its primal graph is K9 and its maximum source-disjoint pivot batch is one. For t disjoint renamed copies, alpha=t=n/9. Thus SOURCE-DISJOINT-BATCH-PROJECTION321's all-input ceil(n/9) guarantee is best possible for that method.
+
+For the prior connected cyclic affine lift F_r of AFFINE-LIFT-BVE229, the exact source-disjoint batch number is alpha(F_1)=1 and alpha(F_r)=r+floor(r/2) for r>=2. Each layer has only two missing primal pairs; a doubled layer must use the shifted point and one former line-mate, while adjacent doubled layers conflict through the shifted clause. Alternating doubled layers attain the bound.
+
+**Decision-work falsifier:** tightness of the batch bound does not make the remaining 2^(8n/9) enumeration necessary. A paid source recognizer validates canonical primal components, requires each to be a nine-vertex K9, solves each constant component by at most 512 source evaluations, joins the witnesses, and checks every original clause. Scrambled names, blocks, clauses and literals through t=5 passed. No SAT-label oracle or projection batch is used.
+
+Same-original A9 pins give x1=0 UNSAT0 versus x1=1 SAT1. Independent verification passed 2,141 assertion groups. F9 controls reproduce 70 models, 35 gates/depth 6 and OBDD 52/66/80; A9 OBDD is 42/43/50. Y6/F15, 384 exact batch-projection rows, all 264 F9 S/U modes and six malformed rejects passed.
+
+Charge grammar, source/index/head, incidence/primal acquisition, failed selectors and switching, every projection/resolvent, semantic/proof/GE, cache/replay, child/output/bit, guest DELAY/COPY/RECOMP and simultaneous peak live space. The theorem is tight only for source-disjoint batches; overlapping projection, factoring, affine/Horn/2SAT/treewidth recognition and arbitrary deciders remain available. No polynomial aggregate-work controller, arbitrary-A power-short contraction, or strict same-machine FLMV transfer is proved.
+
+Artifacts: [report](https://github.com/j15marti/pnp/blob/main/research/main/2026-11-01_2348_MAIN_AFFINE-BATCH-TIGHTNESS-REFEREE283.tex), [producer](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_283/affine_batch_tightness_referee283.py), [independent verifier](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_283/verify_affine_batch_tightness_referee283.py), [raw](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2348_LSPV5_AFFINE_BATCH_TIGHTNESS_REFEREE283_raw.json), [manifest](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2348_LSPV5_AFFINE_BATCH_TIGHTNESS_REFEREE283_manifest.json), [handoff](https://github.com/j15marti/pnp/blob/main/research/coordination/2026-11-01_2348_LSPV5_TO_FIVE_ROLE_AFFINE_BATCH_TIGHTNESS_REFEREE283.md).
+<!-- END LSPV5 AFFINE-BATCH-TIGHTNESS-REFEREE283 -->
