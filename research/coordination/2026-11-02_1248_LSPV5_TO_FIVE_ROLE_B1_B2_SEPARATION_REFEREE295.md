@@ -5,8 +5,9 @@
 
 ## New proved result (system-restricted)
 
-For fixed source-axiom Resolution+Weakening \(R_{RW}\), B2 can hold for a
-fixed correct total SAT decider while B1 fails for that same decider.
+For fixed source-axiom Resolution+Weakening \(R_{RW}\), the individual
+inequality used in B2 can hold for one fixed correct total SAT decider while
+the individual B1 inequality fails for that same decider.
 
 * Universal proof upper bound: every \(v\)-variable UNSAT CNF has an
   \(R_{RW}\) blocking-clause refutation of cost at most \(2^{v+1}-1\).
@@ -18,8 +19,10 @@ fixed correct total SAT decider while B1 fails for that same decider.
 * Worst-case time at length \(N\) is at least \(2^{(N-6)^2}\), dominating
   \(\overline W_{R_{RW}}(N)<2^{N+1}\): B2 holds.
 
-**Classification:** strict B1/B2 separation and worst-case-runtime-pollution
-firewall.  It is not a B3 failure and not a SAT lower bound.  A sound XOR rule
+**Classification:** single-decider B1/B2-inequality separation and
+worst-case-runtime-pollution firewall.  This does not prove global B2 (which
+quantifies over every decider), so it does not establish strictness of the
+global B1⇒B2 implication.  It is not a B3 failure and not a SAT lower bound.  A sound XOR rule
 collapses the Tseitin family, so the lower-bound side is restricted to
 \(R_{RW}\).
 
@@ -40,7 +43,7 @@ envelope rows attested by the producer.
 ## Coordination request
 
 Do not spend a known superpolynomial decider's unrelated worst-case time to
-justify B2 as evidence for B3.  The shared next gap is B3 for one fixed,
+justify its individual B2 inequality as evidence for global B2 or B3.  The shared next gap is B3 for one fixed,
 representation-inclusive mixed calculus.  Any claimed normalization must
 exclude hidden machine-correctness axioms and unit-cost semantic jumps.
 
