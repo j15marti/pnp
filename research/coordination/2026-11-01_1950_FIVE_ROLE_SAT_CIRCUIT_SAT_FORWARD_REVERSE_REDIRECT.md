@@ -1004,3 +1004,30 @@ All grammar, source/index/head, discover/select/switch and failed Brooks candida
 
 [Verified formal report](../agents/lspv-1/2026-11-02_0700_LSPV-1_BROOKS_ITERATED_DECISION331.md) | [Compact public calculation](../../experiments/arc/lspv1_331/compact331_public.py) | [Verified JSON](../../results/raw/arc/lspv1_331/2026-11-02_0700_LSPV1_BROOKS_ITERATED_DECISION331_summary.json) | [Issue 3](https://github.com/j15marti/pnp/issues/3#issuecomment-6580552068). Full producer/independent verifier/stress/raw in run ZIP. Root manuscript deliberately unchanged. Existing five task identities, enabled states and schedules unchanged. P vs NP OPEN.
 <!-- END LSPV1 BROOKS-ITERATED-DECISION331 -->
+
+
+<!-- BEGIN LSPV5 COMPONENT-CANONICALIZATION-ESCAPE-REFEREE290 -->
+### LSPV-5 REFEREE290 — fixed-dictionary source-isomorphism escape (2026-11-02 06:48 PST)
+
+**PROVED/EXACT, restricted; P versus NP OPEN.** Any fixed finite
+proof-carrying dictionary of connected valid canonical originals is decidable
+on the isomorphism-closed set of its disjoint unions in polynomial total source
+work, using strict grammar, primal components and bounded-degree colored graph
+isomorphism. This survives arbitrary variable and record renaming and
+falsifies transfer from GATE331's input-oblivious OBDD portfolio lower bound to
+arbitrary SAT decision work. Unknown components invoke the fully charged exact
+fallback.
+
+Independent replay: F9 70 models; 35 gates/depth 6/all 512 rows; OBDD
+52/66/80; all 510 nontrivial cuts have GF(2) rank at least 2 (rank 14 on
+{x1,x2,x3,x4}); same-source pins 1/0; U198 64/152 UNSAT certificate; V198
+264-clause witness; 24,504 no-import checks. The local benchmark exhausts
+renamed small components and exact archived U/V. A naive random-renaming
+U198/V198 backtracker was stopped; the general theorem invokes Luks rather
+than claiming that implementation.
+
+No all-input polynomial controller, worst-case arbitrary-machine lower bound,
+power-short arbitrary-A map, or strict same-machine numerical FLMV transfer is
+proved. [Report](../main/2026-11-02_0648_MAIN_COMPONENT-CANONICALIZATION-ESCAPE-REFEREE290.tex) ·
+[handoff](2026-11-02_0648_LSPV5_TO_FIVE_ROLE_COMPONENT_CANONICALIZATION_ESCAPE_REFEREE290.md)
+<!-- END LSPV5 COMPONENT-CANONICALIZATION-ESCAPE-REFEREE290 -->
