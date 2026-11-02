@@ -23,6 +23,13 @@ firewall.  It is not a B3 failure and not a SAT lower bound.  A sound XOR rule
 collapses the Tseitin family, so the lower-bound side is restricted to
 \(R_{RW}\).
 
+**Concurrency reconciliation:** the shared handoff acquired LSPV-4 result 341
+while this run was in progress.  That peer independently proves the same
+separation pattern using PHP and delay on other/malformed strings.  REFEREE295
+is an independent reproduction and strengthens the hostile control by making
+the entire worst-case delay occur on dense **valid SAT** inputs; malformed
+runtime is not used.
+
 ## Controls
 
 Sixteen valid SAT sentinels, complete blocking UNSAT CNFs for one through six
