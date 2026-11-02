@@ -1,0 +1,86 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}\newtheorem{prop}{Proposition}
+\title{Claude CircuitSAT: a ladder of wire-counting lower bounds}
+\author{Living document, maintained by hourly Claude runs}
+\date{Last updated: 2026-11-02 (run 2, consolidated)}
+\begin{document}\maketitle
+
+\section*{Status (read first)}
+\textbf{P versus NP remains OPEN.} No new unconditional lower bound for CircuitSAT is claimed.
+Labels: PROVED, COMPUTATIONAL, KNOWN (literature, recalled and not re-checked this run), CANDIDATE, OPEN.
+
+\section{Goal and model}
+Goal: lower bounds for CircuitSAT (given a circuit $C$ on $n$ inputs of size $s$, is there $x$ with $C(x)=1$?).
+Idea: climb a ladder, starting with the simplest circuits and adding inputs one at a time, recording for each $n$
+the exact minimum number of gates and wires needed, then look for structure that extrapolates.
+Model: $B_2$ circuits (fan-in 2, any binary gate, negation free, unbounded fan-out); $G(f)$ = minimum gates,
+and wires $W(f)=2G(f)$ (gate-input wires; fan-out edges counted per use). Parameters: $n$ inputs, $s$ size,
+and possible structural parameters $k$ (treewidth/pathwidth of the circuit graph, depth, number of essential inputs).
+
+\section{Ladder, exact data (COMPUTATIONAL)}
+Script \texttt{research/agents/claude/circuitsat/exact\_small.py} exhaustively searches all circuits level by level
+(raw data \texttt{exact\_small\_results.json}; runs in a few seconds). Number of functions needing exactly $g$ gates:
+\begin{center}\begin{tabular}{lccccc}\toprule
+$n$ & $g=0$ & 1 & 2 & 3 & 4\\\midrule
+1 & 4 & & & & \\ 2 & 6 & 10 & & & \\ 3 & 8 & 30 & 114 & 80 & 24\\\bottomrule\end{tabular}\end{center}
+Hence $L(n)=\max_f G(f)$ is $0,1,4$ for $n=1,2,3$ (wires $0,2,8$). (KNOWN: $L(4)=7$ by Knuth's exhaustive tables;
+not recomputed here.) The totals $4,16,256$ match $2^{2^n}$, a sanity check.
+
+\section{Proved lemmas of the ladder}
+\begin{lemma}[connectivity, PROVED]\label{l:ess}
+If $f$ depends on $e$ inputs then $G(f)\ge e-1$, so $W(f)\ge 2(e-1)$.
+\end{lemma}
+\emph{Proof.} The circuit restricted to the cone of the output is a connected DAG with fan-in $\le2$ whose leaves include
+all $e$ essential inputs; a binary tree/DAG with $e$ distinct leaves has at least $e-1$ internal nodes. \qed
+
+\begin{prop}[unique-SAT instances are cheap to write down, PROVED]
+The minterm $[x=a]$ and parity on $n$ inputs both have $G=n-1$ exactly.
+\end{prop}
+\emph{Proof.} Upper bound: a balanced tree of $n-1$ gates (AND with free negations; XOR). Lower bound: Lemma~\ref{l:ess}. \qed
+
+\noindent Consequence: the \emph{instances} of the hardest black-box CircuitSAT problem (unique satisfying assignment) have
+linear size, so any lower bound must come from the cost of \emph{solving}, not from instance size. Data point: at $n=3$
+the 24 functions needing 4 gates (e.g.\ majority-type) are the first to exceed $n-1=2$ gates.
+
+\section{Lower bounds on solving CircuitSAT}
+\begin{enumerate}
+\item \textbf{Black-box (query) model, KNOWN/PROVED.} Any algorithm that only evaluates $C$ must make $2^n$ queries in the worst case
+(adversary answers 0 until one point is left). Quantum: $\Omega(2^{n/2})$ (BBBV). Not a white-box bound, since the algorithm sees $C$.
+\item \textbf{Conditional.} SETH $\Rightarrow$ no $(2-\epsilon)^n\mathrm{poly}$ algorithm for CNF-SAT (KNOWN definition; CONDITIONAL).
+Parameterised by pathwidth $k$ of the instance, SAT is $2^k\mathrm{poly}$ and SETH-based tightness results are in the literature (recalled).
+\item \textbf{Circuit-size lower bounds for explicit functions, KNOWN.} Best $B_2$ bound is about $3.1n$ (Li--Yang, STOC 2022; Blum $3n-o(n)$).
+These bound the size of circuits \emph{computing} a function, which is what a CircuitSAT lower bound for a fixed circuit family would need,
+but they are linear, far from superpolynomial.
+\end{enumerate}
+
+\section{Candidate parameterised target (CANDIDATE)}
+Let $T(n,s)$ be the best worst-case time for CircuitSAT on $n$ inputs and size $s$. Targets in increasing strength:
+(a) $T\ge 2^{\Omega(n)}$ for $s=\mathrm{poly}(n)$ (implies $\mathrm{P}\ne\mathrm{NP}$, OPEN);
+(b) $T\ge (2-\epsilon)^{n}$ for $s=O(n)$ (SETH-like, CONDITIONAL);
+(c) restricted-model versions: monotone, bounded-depth, bounded-treewidth, read-once, where unconditional bounds may be reachable.
+Next ladder steps: compute exact $G$ for $n=4$ with canonical-form pruning; tabulate depth and treewidth of optimal circuits;
+find a quantity (e.g.\ number of distinct sub-functions, cofactor rank) that matches $L(n)$ for $n\le4$ and test whether it
+yields a provable restricted bound.
+
+\section{Repository cross-check}
+Relevant existing work in \texttt{j15marti/pnp}: the world ledger (\texttt{research/agents/claude/world-ledger/}); the alternation-trading
+barrier (rows L13, L34, L35, T-PORT) shows Williams-style time--space proofs stall near linear time for the UWI portfolio;
+the one-tape crossing-sequence note (L38--L40) shows its bound holds for nondeterminism so cannot separate P from NP.
+Moral for this document: counting-style or locality-style arguments must break the nondeterminism symmetry to matter.
+Nothing in the repository yet supplies a CircuitSAT-specific wire-count bound; the main spine is ARC/FLMV time--space, a different route.
+
+\section{Basis dependence (COMPUTATIONAL, run 2)}
+The table above is for the full $B_2$ basis. In the AND-with-free-negation basis (AIG), $x_1\oplus x_2$ needs 3 gates instead of 1
+(\texttt{mingates.py}, from an earlier run on another branch). So the ladder must always state its basis; constants differ by
+a factor $\le 3$ per gate, which does not affect asymptotic statements.
+
+\section{Run log}
+\begin{itemize}
+\item 2026-11-02 run 1: created document; exact ladder $n\le3$; Lemma 1, Proposition 1; no new lower bound.
+\item 2026-11-02 run 2 (16:37 UTC): earlier hourly runs each left a separate version of this file on its own branch, none merged; consolidated the
+$n\le3$ ladder (re-ran \texttt{exact\_small.py}, 4s, same counts) and the AIG basis note. No new lower bound; P versus NP remains OPEN.
+Next: $n=4$ via NPN-class pruning in chunks; critical-wire measure.
+\end{itemize}
+\end{document}
