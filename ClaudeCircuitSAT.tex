@@ -1,0 +1,51 @@
+% CLAUDE CIRCUITSAT LIVING DOCUMENT -- last updated 2026-11-02 (run 1)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{lemma}{Lemma}\newtheorem{proposition}{Proposition}
+\title{Circuit-SAT Lower Bounds by Wire Accounting (living document)}
+\author{Claude (hourly routine)}
+\date{Last update: 2026-11-02}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains OPEN. Nothing here is an unconditional lower bound on time for general algorithms; all statements carry their model.
+
+\section{Goal and method}
+Track, for the smallest circuits, the number of wires $w(C)$ and gates $g(C)$ needed, as the input count $n$ grows, and ask what any solver \emph{must} look at. Bounds are parametrized by $(n,g,w)$ and by the access model.
+
+\section{Model}
+Circuits: fan-in-2 AND/OR gates, free negation on wires, $n$ inputs, one output; $w=2g$ gate-input wires. \emph{Wire-query model}: the solver gets the circuit by an oracle answering ``what feeds gate $i$, port $j$?'' (and gate type); cost = number of queries.
+
+\section{Proved results (PROVED/EXACT)}
+\begin{lemma}[Connectivity, step $n\to n+1$]
+A circuit on which all $n$ inputs are essential has $g\ge n-1$ gates, $w\ge 2(n-1)$. Each new essential input adds at least one gate (two wires). 
+\end{lemma}
+\begin{proof}
+The gates and inputs form a DAG whose output reaches every input; fan-in 2 means a tree-like cover needs $\ge n-1$ gates (a connected graph on $n+g$ nodes with $2g$ edges into gates, $2g\ge n+g-1$ gives $g\ge n-1$).
+\end{proof}
+\begin{proposition}[Wire-query lower bound, PROVED]
+Any deterministic algorithm deciding satisfiability of circuits with $g$ gates in the wire-query model needs $\Omega(g)$ queries (precisely $\ge g$ for the family below).
+\end{proposition}
+\begin{proof}
+Take the base circuit $C_0$: a chain computing $x_1\wedge\dots\wedge x_n$ padded with $g-n+1$ gates computing $\lnot$-pattern identities feeding the output through an AND with a gate $h_i$. For each unqueried port, an adversary answers consistently with $C_0$ (satisfiable); a single unqueried port $p$ can be rewired to constant-false (an input paired with its negation in an AND), making the circuit unsatisfiable while agreeing with every answer given. Hence an algorithm that leaves any of the $\Omega(g)$ relevant ports unqueried errs on one of two consistent circuits. $\square$
+\end{proof}
+This is a sensitivity bound for \emph{reading} the instance; it is not a bound on search over assignments, and it is matched by trivial linear-time reading.
+
+\section{Computation (COMPUTATIONAL)}
+\texttt{research/agents/claude/circuitsat/mingates.py} does exhaustive search over circuits with sharing (AND/OR, free negation). Results:
+\begin{center}\begin{tabular}{c|c|c}
+$n$ & exact min gates of the point function (unique satisfying assignment) & coverage\\\hline
+1 & 0 & all 4 functions\\
+2 & 1 & all 16 functions (max size 3)\\
+3 & 2 & 230 of 256 (search capped at 5 gates; the 26 uncovered need $\ge5$)
+\end{tabular}\end{center}
+The point-function values equal $n-1$, matching Lemma 1; no better pattern is visible yet.
+
+\section{Where the real difficulty sits}
+The wire-accounting lower bounds are about circuit \emph{size} and \emph{reading}. A SAT lower bound needs a bound on search, i.e.\ work beyond reading, as a function of $(n,g)$. Candidate parametrization: time $T(n,g)$ with $g\ge n$; known context (repository, not re-proved here): the L34/L35 alternation-trading barriers in \texttt{research/agents/claude/tport/} and the one-tape crossing-sequence notes in \texttt{research/agents/claude/onetape/} suggest any bound beyond $\Omega(g)$ for general machines runs into the Buss--Williams exponent barrier. The ledger row L13 and its README are the relevant prior work.
+
+\section{Next steps (OPEN)}
+\begin{enumerate}
+\item Extend the exhaustive search to $n=4$ with a smarter canonical form; tabulate min gates and fan-out for point functions and for hard-to-satisfy families.
+\item Define a restricted solver class (e.g.\ DPLL/resolution on circuits, bounded-fan-out) where a parametrized bound $2^{\Omega(\mathrm{tw}(C))}$-type statement (treewidth parameter) can be proved or reduced to known proof-complexity results.
+\item Examine whether wire-count progress lemmas reduce to a known formula-size lower bound.
+\end{enumerate}
+\end{document}
