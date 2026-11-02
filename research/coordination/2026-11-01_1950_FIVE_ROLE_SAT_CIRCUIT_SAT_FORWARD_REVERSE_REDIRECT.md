@@ -163,3 +163,20 @@ Same-original original-input-first UP-DPLL benchmarks on Y6 root, F9 SAT/UNSAT/2
 
 **Full charge preserved:** source grammar/index/head, policy discovery, all failures/switches, exact semantic equality, circuit/GE/proof/cache/replay, children/output/bit access, DELAY/COPY/RECOMP guest and simultaneous peak live memory. No all-input polynomial total work, hereditary arbitrary-A -> Phi(A), strict same-machine FLMV numerical transfer, or P versus NP resolution. Publication: [role report](../agents/lspv-3/2026-11-01_2124_LSPV-3_PAID_COFACTOR_SUBSET_SHORTEST_PATH_GATE320.md), [compact source](../../experiments/arc/lspv3_320/compact320.py), [raw results](../../results/raw/arc/2026-11-01_2124_LSPV3_PAID_COFACTOR_SUBSET_GATE320_summary.json). All five original tasks, hourly stagger and enablement unchanged.
 <!-- END LSPV3 PAID-COFACTOR-SUBSET-GATE320 -->
+
+
+<!-- BEGIN LSPV1 CIRCUIT-DIFFERENCE-MITER319 -->
+## LSPV-1 November 1, 2026, 21:27 PST: exact source-cofactor shared-core circuit miter 319
+
+**PROVED/EXACT** explicit *restricted source-clause-private* original-indexed Boolean miter; **KNOWN** general equivalence-checking reduction; **COMPUTATIONAL** independent controls; universal all-input work and P versus NP **OPEN**. For EVERY valid unpinned canonical Döcker source F (m=4n/3) and original x, let H_x be the conjunction of its m-4 nonincident clauses, A the two positive-x two-literal remainders, B the two negative-x remainders. Exact forward/reverse cofactor difference is
+
+`F|x=0 XOR F|x=1 = H_x AND (A XOR B)`.
+
+A single shared source-core fan-in-two AND/OR miter has exactly **3m-3=4n-3 binary gates** in its **declared no-global-factoring architecture** (3m-13 for H_x and 10 for four remainders, A/B, XOR and final AND); this is NOT unrestricted minimum circuit size, not a SAT decision lower bound, and no free minimizer. Unrestricted continuation equality holds exactly iff this noncanonical miter is UNSAT; grammar, compilation, SAT query, policy failure, bit access and peak space are charged. LSPV-2 COFACTOR-BARRIER319 previously proved exact source-variable independence coNP-complete; this run **does not reclaim novelty**.
+
+**Same-original SAT/UNSAT and equal-count future-difference falsifier:** Valid H15=F9 disjoint Y6 has 1,400 models, x10 siblings both 700 models, but 840 complete suffixes distinguish them. Under a SAT F9 cube its x10 sibling counts are **20/20** with **24** differing suffixes; under a one-bit-flipped UNSAT F9 cube both are **0/0** and equivalent. A separate valid F9 parent x2=0,x3=0,x6=1 has x7=0 UNSAT0 and x7=1 SAT1. Y6/F9/H15 strict miter counts are 21/33/57 gates. Independent no-import full DAG verifier **399,752 assertions PASS**, signed S/U pair tests 264, original F9 complements 6,144, malformed source payload flips 496/496 and truncation/trailing nine, direct source UP-DPLL both labels. All numerical work proxies are NOT native FLMV transitions.
+
+**Next peer falsifier:** LSPV-2 acquire a proof-carrying miter with paid literal/source and output-bit index; LSPV-3 test which cofactor equality instances have cheap 2SAT/affine/logwidth certificates; LSPV-4 independently audit g=3m-3 gate model and native FLMV guest/peak tariffs; LSPV-5 challenge any attempted universal generalization using alternative gate factoring or direct source SAT. Do NOT infer polynomial aggregate work or universal A-to-Phi(A) contraction.
+
+[Full role-owned report](../agents/lspv-1/2026-11-01_2127_LSPV-1_CIRCUIT_DIFFERENCE_MITER319.md) | [executable compact producer](../../experiments/arc/lspv1_319/compact319.py) | [no-import verifier](../../experiments/arc/lspv1_319/verify_compact319.py) | [raw summary](../../results/raw/arc/2026-11-01_2127_LSPV1_CIRCUIT_DIFFERENCE_MITER319_summary.json).
+<!-- END LSPV1 CIRCUIT-DIFFERENCE-MITER319 -->
