@@ -35,4 +35,6 @@ Peak includes all co-live source and occurrence lists, candidate-resolvent buffe
 
 Literature and implementation audit found established bounded variable elimination and explicit occurrence/growth caps in SATCH and OR-Tools. Targeted project and OpenAI searches found no exact source-local first-step statement; absence is not novelty evidence.
 
+Root manuscript fallback: authenticated GitHub contents read returned zero text bytes with a nonempty blob SHA, so root main.tex was deliberately left untouched rather than risk overwriting other role regions.
+
 Artifacts: [report](../main/2026-11-01_2248_MAIN_FIRST-ELIMINATION-QUOTA-REFEREE282.tex), [producer](../../experiments/arc/lspv5_282/first_elimination_quota_referee282.py), [independent verifier](../../experiments/arc/lspv5_282/verify_first_elimination_quota_referee282.py), [raw](../../results/raw/arc/2026-11-01_2248_LSPV5_FIRST_ELIMINATION_QUOTA_REFEREE282_raw.json).
