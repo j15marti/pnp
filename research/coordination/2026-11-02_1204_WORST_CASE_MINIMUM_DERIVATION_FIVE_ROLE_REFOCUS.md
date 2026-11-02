@@ -234,3 +234,16 @@ Independently verified LSPV-1 CLOCKED-OPTIMALITY-REFLECTION336: if the same ordi
 
 **Next:** pursue a growing-support **combined-calculus** lower bound and the separate ordinary, nonrelativizing weakest B3 bridge; P versus NP OPEN. No task identity/state/schedule changes.
 <!-- END LSPV2 LOW-SUPPORT-MINCORE343 -->
+
+
+<!-- BEGIN LSPV4 FLMV-MARGIN-OUTPUT-STREAM343 -->
+## LSPV-4 343: sharp conditional FLMV robustness and output retention (2026-11-02 14:36 PST)
+
+**PROVED conditional algebraic margin theorem and model-specific allocation falsifiers; COMPUTATIONAL finite checks; B1/B2/B3, splitter and same-machine FLMV transfer OPEN.** For sequential child count N^a, child length N^b, aggregate local time N^d, all-local-phase peak N^rho, retained state N^eta, an actually implemented repeatable transformation would obey exponent envelope t'<=max(d,a+bt), s'<=max(rho,eta,b,bs); limits are t*=max(d,a/(1-b)), s*=max(rho,eta,b). These are bounds on a HYPOTHETICAL transformed SAT machine, not a bridge from W_R to arbitrary-decider runtime.
+
+For beta(c)=((c+2)/c^2-c)/2 and baseline a=3/5,b=1/2,d=11/10,rho=eta=1/2, t*=6/5, s*=1/2 and beta(t*)-s*=1/90. The unique ccrit>1 solving c^3+c^2-c-2=0 is 1.2055694304005903. Holding other exponents fixed, a positive fanout exponent increase must stay below 0.0027847152, child-length increase below 0.0023098754, local-time increase below 0.10556943; N^gamma per-child source access requires gamma<0.60556943. A source scan of N bits for all N^.6 children costs N^1.6, and an N-bit temporary writable source copy forces all-phase rho>=1. Eagerly retaining q=N^.6 one-bit answers sets eta>=.6, and materializing all q child descriptions of N^.5 bits uses N^1.1 writable bits. Online OR or AND aggregation can instead retain a single result bit, conditional on paid sequential child generation and correct combination.
+
+Independent pure-Python and no-import Node controls: 78 Node assertions PASS, source-minimal 3-clause UNSAT has exact two-node binary-premise resolution optimum and SAT sign-flip neighbor with one model; odd/even K4 Tseitin controls 0/8 models; eight malformed DIMACS encodings rejected. Allocation schedules reported for N=10^4,10^6,10^8. Logical source/answer bit counts are not host heap, native FLMV or proof of general hardness. No shortest-proof optimizer is charged to W_R; all actual solver-policy/guest/source/index/head costs remain chargeable. P vs NP remains OPEN.
+
+[Role-owned report](../agents/lspv-4/2026-11-02_1436_LSPV-4_FLMV_MARGIN_OUTPUT_STREAM343.md), [standalone JS producer](../../experiments/arc/lspv4_343_margin_stream_compact.js), [public raw](../../results/raw/arc/2026-11-02_1436_LSPV4_FLMV_MARGIN_OUTPUT_STREAM343_summary.json). Complete local independent Python+Node, raw, hashes in dated reproducibility archive. No task changes.
+<!-- END LSPV4 FLMV-MARGIN-OUTPUT-STREAM343 -->
