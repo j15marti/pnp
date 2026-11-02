@@ -74,6 +74,23 @@ Verified [LaTeX theorem](../agents/lspv-2/2026-11-01_2007_LSPV-2_SIGNED_PAIR_CIR
 [Role report](../agents/lspv-3/2026-11-01_2251_LSPV-3_ORDER_SWITCH_SAFE_SOURCE_QUOTIENT_GATE321.tex) | [Runnable compact code](../../experiments/arc/lspv3_321/compact321_public.py) | [Public raw summary](../../results/raw/arc/2026-11-01_2251_LSPV3_GATE321_PUBLIC_SUMMARY.json). Full no-import verifier, per-subset raw, and manifest in run ZIP archive. Five tasks/identities/schedules unchanged.
 <!-- END LSPV3 GATE321 ORDER-SWITCH-SAFE-SOURCE-QUOTIENT -->
 
+
+<!-- BEGIN LSPV3 GATE322 SOURCE-UP-ANTICHAIN -->
+## LSPV-3 2026-11-01 23:24 PST: GATE322 exact source-antichain and unit-continuation keys
+
+**KNOWN** clause subsumption/UP and **PROVED/EXACT RESTRICTED** M22 locality theorem; independently **COMPUTATIONAL** original-source checks. For every canonical proper duplicate-free Döcker monotone 3-SAT-(2,2) original and coherent original-variable pin, a subsumption-minimal literal-set residual CNF and its unit-saturated version, **retaining all forced unit clauses**, are pointwise Boolean-cofactor equivalent under every further original-variable pin and any branch-order switch. Proof provenance must be retained as a separate source-ID sidecar. The signed-literal two-occurrence quota gives a new exact **at most 16 original source-clause records changed** by any single non-DEAD antichain transition, NOT a 16-step physical-time bound or an UP-cascade bound.
+
+**Exact finite compression ladder:** F9 19,683 coherent cubes, source keys **10,325**, antichain **8,486**, UP **7,036**, UP+2SAT-UNSAT **7,033**, exact Boolean cofactors **7,026**. Y6 729 cubes: **483/420/400/400/400**. F9 natural forward cut totals (source, antichain, UP, exact) **139/105/81/81**; reverse **131/96/86/86**, so UP is exact on these specific ordered cuts but not on arbitrary subset cuts. Independently checked **118,098 + 2,916 source transitions**, **262,144 + 4,096 offline complete cofactor truth bits**, max actual changed source IDs **6/5**, no-producer-import verifier **393,674 assertion groups**. Same-original F9 SAT/UNSAT pinned residuals **2/0** models with two checked SAT witness masks (274, 282) and all eight UNSAT original-clause-falsified leaves; 264 S/U source clause-pair modes (37/49/49/37), 6,144 complement checks, four malformed rejects. Independent UP-first DPLL uses SAT two nodes/61 literal reads, UNSAT one node/34 literal reads. Offline logical XOR Gray/binary F9 3074/3964, Y6 380/420, not native time/space.
+
+**Strict falsifier of antichain-minimum equivalence:** SAME original F9 p=(x1..x5)=(0,0,0,1,1) and q=(1,0,0,1,1) both have exactly three satisfying completions and equal complete future cofactors, although q's antichain has an extra (¬x6∨¬x7) implied by unit x8 and (¬x6∨¬x8). Source canonical provenance IDs themselves may differ even when literal-set keys commute. Neither key cardinality nor a small forward circuit is unavoidable SAT decision work.
+
+**Charged conditional fixed-order theorem:** with K_pi=sum of distinct sound UP keys across actual fixed-order cuts, exact two-child decision DAG costs at most poly(N)(1+K_pi) fully paid, including source/index/head, grammar, acquisition, failed strategies/order switches, unit/2SAT/GE, proof/cache/replay, child/output, DELAY/COPY/RECOMP guests and simultaneous peak writable memory. No uniform polynomial all-input K_pi or paid order selector, arbitrary-A hereditary power-short ARC, or separately strict numerical SAME-MACHINE FLMV transfer. **P versus NP OPEN.** F15/U198/V198 inherited controls, not freshly replayed.
+
+[Verified role-owned formal report](../agents/lspv-3/2026-11-01_2324_LSPV-3_SOURCE_UP_CONTINUATION_GATE322.tex) | [Executable compact reproducer](../../experiments/arc/lspv3_322/compact322.py) | [Verified raw JSON](../../results/raw/arc/lspv3_322/2026-11-01_2324_LSPV3_GATE322_PUBLIC_SUMMARY.json) | [Root-authorized fallback fragment](../agents/lspv-3/2026-11-01_2324_LSPV-3_GATE322_ROOT_FRAGMENT.tex). Full no-producer-import verifier, DPLL, offline controls, source-labeled raw and SHA256 manifest in user-facing ZIP.
+
+No five-role task identities, enabled states or hourly Pacific schedules modified.
+<!-- END LSPV3 GATE322 SOURCE-UP-ANTICHAIN -->
+
 END::FIVE_ROLE_SAT_CIRCUIT_SAT_FORWARD_REVERSE_REDIRECT::P_VS_NP_OPEN
 
 
