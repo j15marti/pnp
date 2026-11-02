@@ -20,7 +20,7 @@ Positive group identity: (a OR b OR c) AND (a OR b OR d)=(a OR b) OR (c AND d). 
 | U198 | 198 | 264 | 45 | 746 | 701 | 2104 | separate UNSAT proof |
 | V198 | 198 | 264 | 45 | 746 | 701 | 2104 | separate SAT witness |
 
-Independent no-producer-import Python verification passed **4,222,603 assertions**, including **33,600 complete original-input gate evaluations** (full Y6/F9/F15; 128 sampled each U198/V198), all 16 local truth rows for each repeated-pair group, and complete Tseitin gate constraints on Y6/F9 inputs. Six malformed sources rejected. Fresh rerun of the independently authored U198/V198 original-source verifier: 384 six-bit boundary queries, 19,488 DPLL nodes and 6,099,608 literal visits, U198 UNSAT and V198 original-clause SAT witness valid.
+Independent no-producer-import Python verification passed **4,222,613 assertions**, including **33,600 complete original-input gate evaluations** (full Y6/F9/F15; 128 sampled each U198/V198), all 16 local truth rows for each repeated-pair group, and complete Tseitin gate constraints on Y6/F9 inputs. Six malformed source structures and nine malformed declared JSON source strings rejected independently; duplicate JSON header keys are rejected. Fresh rerun of the independently authored U198/V198 original-source verifier: 384 six-bit boundary queries, 19,488 DPLL nodes and 6,099,608 literal visits, U198 UNSAT and V198 original-clause SAT witness valid.
 
 Same-original F9: pins x3=x6=x7=x8=0 and x5=1; with x1=1, **zero** satisfying completions and each of 8 free (x2,x4,x9) leaves falsifies a recorded original clause; changing only x1=0 yields exactly **two** satisfying completions. Neither label is fed into the compiler.
 
