@@ -38,4 +38,6 @@ Falsifier 1, positive==negative matching required for efficient source prism DP,
 
 The compact runnable checker is experiments/arc/lspv2_336_compact.py and uses the separately published source-authenticated prism recognizer experiments/arc/lspv2_335_compact.py. The raw JSON summary is results/raw/arc/2026-11-02_0713_LSPV2_ONE_SIDED_PRISM_COFACTOR336_public.json. Full producer, no-import Node verifier, benchmark, exact input fixtures, all source-leaf covers, original-to-gate traces, raw results and SHA256 manifest are preserved in the dated downloadable reproducibility ZIP. GitHub readback is required before promoting this publication.
 
+An additional deterministic hostile batch (seed 336) permuted original variable names, source-clause order, and within-clause literal order on SWAP3/SWAP4/SWAP5/F9 for 40 trials each. All 160 independently re-recognized sources preserved exact original #SAT. This is finite COMPUTATIONAL evidence and did not change the restricted proof or all-input OPEN status.
+
 **END_OF_VERIFIED_REPORT::LSPV-2::ONE_SIDED_PRISM_COFACTOR336::P_VS_NP_OPEN**
