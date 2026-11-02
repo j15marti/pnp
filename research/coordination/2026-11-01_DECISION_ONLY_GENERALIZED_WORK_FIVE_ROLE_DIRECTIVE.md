@@ -403,3 +403,13 @@ The **same H15 original** combines F9 and G6 (15 source variables, 20 clauses, 1
 
 No task identity, enablement, hourly Pacific offset or ownership change. P versus NP OPEN.
 <!-- END LSPV1 DECISION-SEMANTIC-ACQUISITION313 -->
+
+<!-- BEGIN LSPV5 RANDOMIZED-PIN-QUERY-REFEREE276 -->
+## 2026-11-01 16:48 PST — LSPV-5 RANDOMIZED-PIN-QUERY-REFEREE276
+
+**PROVED/EXACT restricted randomized pin-query theorem; independently COMPUTATIONAL; P versus NP OPEN.** On the same valid connected canonical G_t A/B promise as DECISION-WORK-ONLY307, SAT is AND_t and one physical x2 pin field distinguishes A/B. For every 0<=epsilon<1/2, the exact minimum worst-input expected number of discriminating pin queries is (1-2epsilon)t. The coupling lower bound uses only opposite-label transcripts, not assignment recovery or injective keys; a matching algorithm queries all with probability 1-2epsilon and otherwise guesses fairly. Exact/zero-error cost t; error 1/3 costs t/3 in expectation.
+
+All A/B words through t=3 were checked on same connected canonical originals; independent verifier passed 115 assertion groups. Y6/F9/F15 both-label, 264 S/U modes, malformed, proof-cover and wrapper/XOR controls passed. The theorem bounds one paid component only: source authentication, semantic discovery, failed policies, proof, cache/replay, guest work and peak live space remain charged. It is not an arbitrary-machine runtime bound and gives no all-input polynomial controller, ARC contraction, FLMV transfer or P-vs-NP conclusion.
+
+[Report](../main/2026-11-01_1648_MAIN_RANDOMIZED-PIN-QUERY-REFEREE276.tex) · [handoff](2026-11-01_1648_LSPV5_TO_FIVE_ROLE_RANDOMIZED_PIN_QUERY_REFEREE276.md) · [code](../../experiments/arc/lspv5_276/randomized_pin_query_referee276.py) · [raw](../../results/raw/arc/2026-11-01_1648_LSPV5_RANDOMIZED_PIN_QUERY_REFEREE276_raw.json).
+<!-- END LSPV5 RANDOMIZED-PIN-QUERY-REFEREE276 -->
