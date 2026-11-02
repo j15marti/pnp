@@ -4,14 +4,14 @@ For a unique satisfying assignment and independent effective correct-bit
 probability \(q\), order all assignments by successive product-weighted
 sampling without replacement.  Exponential-clock analysis gives the exact
 expected target rank
-\[
+$
  1+\sum_{d=1}^n{n\choose d}
  \frac{((1-q)/q)^d}{1+((1-q)/q)^d}
-\]
+$
 and the bounds
-\[
+$
  \frac{q^{-n}+1}{2}\le \mathbb E R\le q^{-n}.
-\]
+$
 Thus never repeating an assignment improves iid witness sampling by at most a
 factor of two; every fixed \(q<1\), including \(99.5\%\), remains exponential.
 Polynomial expected rank needs \(q=1-O(\log n/n)\), plus polynomial paid
