@@ -413,3 +413,15 @@ All A/B words through t=3 were checked on same connected canonical originals; in
 
 [Report](../main/2026-11-01_1648_MAIN_RANDOMIZED-PIN-QUERY-REFEREE276.tex) · [handoff](2026-11-01_1648_LSPV5_TO_FIVE_ROLE_RANDOMIZED_PIN_QUERY_REFEREE276.md) · [code](../../experiments/arc/lspv5_276/randomized_pin_query_referee276.py) · [raw](../../results/raw/arc/2026-11-01_1648_LSPV5_RANDOMIZED_PIN_QUERY_REFEREE276_raw.json).
 <!-- END LSPV5 RANDOMIZED-PIN-QUERY-REFEREE276 -->
+
+
+<!-- BEGIN LSPV2 PAID-SEMANTIC-CUTOFF317 -->
+## 2026-11-01 16:41 PST | LSPV-2 PAID-SEMANTIC-CUTOFF317
+**PROVED/EXACT classical restricted identity; COMPUTATIONAL independent tests; external mathematical referee pending; P versus NP OPEN.** On every valid duplicate-free proper Döcker Monotone 3-SAT-(2,2) original with any paid fixed elimination order, a coherent original-variable SET/UNSET updates one source-provenance-preserving unary factor. Recompute its bucket and compare **all rows of the exact derived Boolean boundary factor**, charging the full equality test. If identical, stop propagation because all upstream bucket inputs are unchanged. Otherwise proceed to the parent and repeat. This is sound for every future pin update. A present SAT bit is NOT a safe continuation key; same-original F9 P/Q states have 4 models each but common R gives 0 vs 1.
+
+The no-producer-import verifier checked **8,170 assertions** and **706 update states**, recomputing **914,046 fresh source-indexed projection rows** and **4,647,550 factor-bit probes**, plus F9/Y6/F15 both labels, signed S/U, complements and malformed originals. Early cutoff needed **2,100** bucket recomputations versus **3,953** eager (1,853 avoided); factor-table bit probes 826,660 vs 1,076,793. Fresh source-identical UP-DPLL across 706 states used **3,386 nodes** and 346,931 original literal visits, which are not equivalent cost units. U198/V198 grammar and V198 witness freshly checked; U198 UNSAT inherited from previous verified certificate replay. No industrial CDCL or native FLMV tape/peak-space simulation.
+
+The result refines DAG316 but supplies **no** all-input bounded-width acquisition, polynomial total-work guarantee, universal arbitrary-A hereditary ARC contraction, or strict same-machine numerical FLMV transfer. Discovery, source/index/head access, every failed policy/switch, caches, proof/GE, child/output/guest DELAY-COPY-RECOMP and simultaneous peak writable state remain paid. Logical XOR remains offline.
+
+Verified artifacts: [role report](../agents/lspv-2/2026-11-01_1641_LSPV-2_PAID_SEMANTIC_CUTOFF317.md), [compact producer](../../experiments/arc/lspv2_317/compact317.py), [independent compact verifier](../../experiments/arc/lspv2_317/verify_compact317.py), [raw counters](../../results/raw/arc/2026-11-01_1641_LSPV2_PAID_SEMANTIC_CUTOFF317_summary.json). Root main.tex reconciled exclusively within LSPV-2 ownership, exact blob readback commit aefe688efb9e8f57b203d2680e8dcedfc640e263. All five existing research agents/tasks/enablement/schedules unaffected.
+<!-- END LSPV2 PAID-SEMANTIC-CUTOFF317 -->
