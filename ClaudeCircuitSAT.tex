@@ -1,0 +1,420 @@
+% CLAUDE-CIRCUITSAT LIVING DOCUMENT -- last updated 2026-10-27 (run 9)
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{prop}{Proposition}
+\newcommand{\OPEN}{OPEN}
+\newcommand{\SAT}{\textsc{Circuit-SAT}}
+\begin{document}
+\title{ClaudeCircuitSAT: Wire-by-Wire Lower Bounds for Circuit-SAT\\(living document)}
+\date{Last updated 2026-11-02 (run 10)}
+\maketitle
+
+\section*{0. Status (strict labels)}
+\textbf{P versus NP remains OPEN.} Nothing here proves a superpolynomial lower bound
+for \SAT{} on a general Turing/RAM model. Labels: PROVED/EXACT, KNOWN THEOREM,
+COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Program}
+Build up from the simplest circuits, tracking for each step $(n,g)$ ($n$ inputs, $g$ fan-in-2
+gates, $w=2g$ gate-input wires): (i) the minimal wire/gate count needed to realize the
+function class, and (ii) a lower bound on the work needed to decide satisfiability.
+Two cost models must be kept separate:
+\begin{itemize}
+\item \textbf{Black-box} (oracle access to $C$): adversary lower bound.
+\item \textbf{White-box} (algorithm reads the netlist): only trivial bounds are known unconditionally.
+\end{itemize}
+
+\section{Ladder of exact results}
+\begin{prop}[Read bound; PROVED/EXACT, trivial] If $C$ depends on $n$ inputs and is a
+connected fan-in-2 circuit with a single output then $g\ge n-1$, $w\ge 2n-2$. Any
+white-box SAT algorithm that is correct on all circuits must inspect, for the worst-case
+instance, every gate lying on a path to the output that cannot be pruned, hence
+$\Omega(g)$ time. This is linear and carries no hardness content.
+\end{prop}
+\begin{prop}[Black-box bound; PROVED/EXACT] Deterministic query complexity of \SAT{} with
+evaluation-oracle access is exactly $2^n$ in the worst case: for the family
+$\{C_a=[x=a]\}_{a\in\{0,1\}^n}$ each query $x$ eliminates at most one $a$, so an adversary
+answers 0 until one candidate remains. Each $C_a$ has $g=n-1$ (an AND of literals; negations are free
+on wires in the $B_2$ basis), so black-box hardness is already present at $g=n-1$.
+\end{prop}
+\begin{prop}[Relativization caveat; KNOWN THEOREM context] The black-box bound is
+an oracle bound and is not a lower bound for white-box algorithms (cf.\ Baker--Gill--Solovay).
+White-box algorithms exploit structure: the $C_a$ above are solved in $O(n)$ by reading
+the netlist. Hence the real question is whether any \emph{small-size family} can force
+$\omega(\mathrm{poly}(g))$ white-box work; this is exactly P vs NP and is OPEN.
+\end{prop}
+
+\subsection{Computational table (exact, $B_2$ basis, gates counted, negation free)}
+Script: \texttt{results/claude\_circuitsat/min\_circuit\_enum.py}; output
+\texttt{results/claude\_circuitsat/n3\_s4.json}. Exhaustive over all circuits (COMPUTATIONAL).
+\begin{center}\begin{tabular}{@{}cccl@{}}\toprule
+$n$ & functions reached & min gates (max over $f$) & unique-SAT functions\\\midrule
+1 & 3 (const.\ and $x$ via wires) & 0 & min size 0\\
+2 & 16/16 & 1 & all 4 minterms: 1 gate\\
+3 & 256/256 & 4 & all 8 minterms: 2 gates $=n-1$\\\bottomrule
+\end{tabular}\end{center}
+Counts by minimal gate number for $n=3$: $0{:}8,\ 1{:}30,\ 2{:}114,\ 3{:}80,\ 4{:}24$ (sum 256; size 0 = 2 constants + 6 literals).
+\emph{Corrected in run 5:} runs 1--4 printed $0{:}5,1{:}33$, which is wrong (1 gate = $3$ pairs $\times$ 10 nondegenerate binary functions $=30$); the corrected counts are re-derived independently in \S\ref{sec:r5}.
+Observation: unique-SAT functions are never the hardest functions to build, so the
+hard-to-build functions ($g=4$ at $n=3$, parity-like/threshold-like) are not hard SAT instances in the black-box
+sense; build cost and search cost are decoupled. (COMPUTATIONAL, finite.)
+Chunking note: the $n=3$, $s\le4$ run took $\approx 60$\,s, exceeding the 30\,s rule; next steps must split by first-gate choice.
+
+\section{Barrier audit and transfer ledger}
+\begin{itemize}
+\item Gate-elimination yields only $\approx 3.1n$ for explicit functions (KNOWN THEOREM, Find--Golovnev--Hirsch--Kulikov); a SAT-specific lower bound via gate elimination is not known to extend.
+\item Natural proofs / relativization / algebrization bar generic counting or diagonal routes (KNOWN THEOREMS). Counting shows most $n$-input functions need $\Omega(2^n/n)$ gates, but not for explicit/NP functions: ANALOGY only.
+\item Conditional: under ETH, \SAT{} on $n$ inputs needs $2^{\Omega(n)}$ (CONDITIONAL, not proved).
+\item Repository (\texttt{j15marti/pnp}): root \texttt{main.tex} reports P vs NP OPEN with restricted-model results (SWAP-STAR, EXCLUSIVEQUOTIENT78); the all-decider bridge is OPEN. No repo result so far gives a circuit-wire lower bound for SAT; it was not adopted here.
+\end{itemize}
+
+\section{Dynamic and reverse dynamic programming (run 3)}
+\label{sec:dp}
+\textbf{Question.} Can forward or reverse dynamic programming (DP) model a lower bound
+for an NP-complete problem? Can comparing the 3-SAT and circuit-SAT versions of one
+problem pick out the ideal algorithm?
+
+\subsection{The two DPs on one instance}
+Fix a 3-CNF $F$ (or a circuit $C$) on variables $x_1,\dots,x_n$ and an order $\pi$.
+\begin{itemize}
+\item \textbf{Forward DP:} after assigning prefix $S=\{\pi_1,\dots,\pi_i\}$ by $a$,
+the state is the residual subproblem $F|_a$ (for a circuit: the netlist after constant
+propagation, i.e.\ the values on the live wire frontier). Merge equal states and drop dead ones
+(a falsified clause, or output forced to $0$). Width $W_\pi(i)=\#$distinct live states.
+\item \textbf{Reverse DP:} start from ``output $=1$'' and eliminate variables from the back.
+For CNF this is Davis--Putnam variable elimination (1960). It equals the forward DP on the reversed order.
+\item \textbf{Meet in the middle:} $F$ is SAT iff a forward state at cut $S$ and a reverse
+state at $\bar S$ are compatible. With the syntactic states below this check is set
+disjointness on the clauses crossing the cut.
+\end{itemize}
+
+\subsection{Exact statements}
+\begin{prop}[Semantic DP is representation-independent; PROVED/EXACT]
+If states are residual \emph{functions} $f|_a$, then the width at cut $S$ is the number of
+distinct nonzero rows of the $2^{|S|}\times2^{n-|S|}$ truth-table matrix $M_S$, which is
+$2^{D^{\to}(M_S)}$ (one-way communication complexity). Reverse DP uses columns. This depends
+only on $f$, so the 3-SAT and circuit-SAT versions of the same function give identical widths.
+Over all orders, forward and reverse optima coincide (reverse the order).
+\end{prop}
+\begin{prop}[Semantic DP is clairvoyant; PROVED/EXACT] For UNSAT $f$ every residual is
+$0$, so semantic width is $\le1$. Semantic DP therefore assumes the answer and gives no lower
+bound. A lower-bound model must use \emph{syntactic} states, as real DP algorithms do.
+\end{prop}
+\begin{prop}[3-SAT vs.\ circuit-SAT under syntactic DP; PROVED/EXACT, easy]
+\leavevmode
+(i) For CNF, the state at cut $S$ is determined by the set of crossing clauses that $a$
+leaves unsatisfied, so $W(S)\le 2^{\#\text{crossing clauses}}$. The circuit
+$\bigwedge_j\bigvee_{\ell\in c_j}\ell$ with constant propagation has exactly the same
+residuals.
+(ii) For the Tseitin 3-CNF $T(C)$ of a general circuit, assigning inputs and gate variables in a
+topological layout gives $W\le 2^{\mathrm{vs}}$, where $\mathrm{vs}$ is the number of
+assigned wires with an unassigned consumer (the wire frontier). So DP on the 3-SAT
+encoding \emph{simulates} the wire-by-wire circuit DP of \S2. Non-topological orders amount
+to guessing gate values, which only adds freedom.
+(iii) DP over the \emph{inputs only} (no gate variables) may need width up to
+$2^{w_f2^{w_r}}$ for forward/reverse cutwidths $w_f,w_r$ (McMillan's OBDD bound; KNOWN THEOREM).
+Encoding with auxiliary wire variables avoids this doubly exponential term.
+\end{prop}
+\textbf{Answer on the ``ideal algorithm'' (within DP).} The 3-SAT (Tseitin) form is the better
+substrate: it contains the circuit DP and can beat input-only DP. The ideal DP is
+tree/path-decomposition DP on the netlist, time $2^{O(\mathrm{tw}(C))}\mathrm{poly}$
+(KNOWN THEOREM; cf.\ Alekhnovich--Razborov, branch-width SAT algorithms, FOCS 2002).
+
+\begin{prop}[DP lower bounds exist but only for the DP class; KNOWN THEOREMS $\Rightarrow$ EXACT TRANSFER]
+On an UNSAT $F$ the forward syntactic DP has no early exit. Its merged state graph is an
+ordered read-once branching program for the search problem ``find a falsified clause''.
+Such programs correspond to ordered/regular resolution refutations of polynomially related
+size (Krajíček; Lovász--Naor--Newman--Wigderson). The reverse DP \emph{is} ordered
+resolution (Davis--Putnam). Hence explicit 3-CNFs force total DP work $2^{\Omega(n)}$:
+pigeonhole (Haken 1985, after 3-CNF encoding), Tseitin formulas on expanders (Urquhart 1987),
+and random 3-CNF at constant ratio (Chvátal--Szemerédi 1988).
+\end{prop}
+
+\subsection{Why this does not reach P vs NP (barrier audit)}
+\begin{itemize}
+\item \textbf{FAILED TRANSFER to all algorithms.} A lower bound for a DP class is a lower
+bound for a proof system (resolution-type). Superpolynomial lower bounds for \emph{every}
+proof system is equivalent to NP $\ne$ coNP (Cook--Reckhow 1979), which is stronger than P $\ne$ NP.
+\item \textbf{No single ideal algorithm.} Tseitin formulas are exponential for every DP above,
+yet Gaussian elimination solves them in polynomial time. Pigeonhole is exponential for DP
+but polynomial for cutting planes. Comparing the 3-SAT and circuit versions therefore picks the best \emph{DP}, not the best algorithm.
+\item \textbf{Communication-style caps.} Any lower bound obtained by cutting the
+\emph{instance description} (streaming, one-way protocol) is at most the input length.
+Exponential DP widths come from cutting the \emph{assignment space}, which arbitrary
+algorithms need not enumerate.
+\item \textbf{Richer states = stronger proof systems.} DP with affine/parity states
+corresponds to Res($\oplus$)-type systems, and DP with linear-inequality states to cutting
+planes. Each strengthening is a known open or partially solved lower-bound frontier.
+Recent exponential bounds for regular Res($\oplus$) exist (to be verified next run, so
+treated as CANDIDATE citations).
+\end{itemize}
+
+\subsection{Computational data (exact optimal orders)}
+Script \texttt{results/claude\_circuitsat/dp\_width.py}; data \texttt{dp\_scaling.jsonl}.
+The optimal order is found exactly by a bottleneck DP over the $2^n$ subset lattice (each run
+$\le6$\,s, within the 30\,s rule). Width = max live syntactic states over the order. Random
+3-CNF has $m=5n$ (seeds 1--3).
+\begin{center}\begin{tabular}{@{}lccc@{}}\toprule
+instance & opt.\ max width & opt.\ total states & identity-order max width\\\midrule
+$\mathrm{PHP}^3_2$ ($n=6$) & 4 & 12 & 4\\
+$\mathrm{PHP}^4_3$ ($n=12$, native 3-CNF) & 11 & 48 & 11\\
+rand $n=6$ & 4,5,5 & 13,15,19 & 9,8,10\\
+rand $n=8$ & 5,5,6 & 23,24,29 & 10,24,20\\
+rand $n=10$ & 6,9,6 & 41,53,24 & 24,21,28\\
+rand $n=12$ & 9,9,12 & 41,60,79 & 21,61,44\\
+rand $n=14$ & 13,12,11 & 99,64,56 & 55,136,71\\\bottomrule
+\end{tabular}\end{center}
+Findings (COMPUTATIONAL, finite):
+(1) Order matters a lot: the optimal order cuts the max width 2--11$\times$ versus the identity order.
+(2) Optimal width grows from $\approx4$ to $\approx12$ over $n=6..14$, about $2^{0.2n}$. This
+is consistent with, but far too small to confirm, the asymptotic $2^{\Omega(n)}$ of the
+resolution lower bounds.
+(3) Meet-in-the-middle never lowered the max width below the one-directional optimum on
+these instances, and it adds a disjointness join cost.
+
+\subsection{State-parameterized (adaptive) forward/reverse DP (run 3)}
+\label{sec:adaptive}
+\textbf{Question.} Suppose each step's parameters depend on the current state: which
+variable to branch on next, which branch to try first, whether to step forward (branch) or
+backward (eliminate), and possibly how the state is represented. Does this change the conclusion above?
+
+Write the DP as a \emph{policy} $\sigma$ mapping each state $s$ to a parameter $\sigma(s)$.
+Cost is the number of states visited. Two quantities must be kept apart:
+\[
+\mathrm{OPT}(F)=\min_{\sigma}\mathrm{cost}_\sigma(F)\quad\text{(best policy, chosen with hindsight)},\qquad
+\mathrm{ALG}_\sigma(F)\ \text{for a fixed policy }\sigma\text{ computable in poly time}.
+\]
+
+\begin{prop}[Optimal adaptivity on SAT instances is a certificate; PROVED/EXACT]
+If $F$ is satisfiable, $\mathrm{OPT}(F)\le n+1$. The policy that always branches toward a fixed
+satisfying assignment visits one path. Hence an adaptive DP lower bound \emph{must} charge for
+computing $\sigma$. Choosing the parameters optimally is as hard as SAT itself: an optimal parameter sequence \emph{is} an NP witness.
+\end{prop}
+
+\begin{prop}[Syntactic adaptive DP stays inside resolution; KNOWN THEOREMS]
+On UNSAT $F$, with states being residual formulas:
+(i) per-state branching variable plus merging of equal states is a read-once branching
+program, i.e.\ regular resolution;
+(ii) mixing branching with backward elimination steps, and storing derived (learned) clauses,
+is CDCL-style search. Its runs are simulated by general resolution, and CDCL with restarts
+p-simulates resolution (Pipatsrisawat--Darwiche 2011; Atserias--Fichte--Thurley 2011).
+Haken, Urquhart and Chvátal--Szemerédi are lower bounds for \emph{general} resolution.
+So $\mathrm{OPT}(F)\ge 2^{\Omega(n)}$ still holds for explicit 3-CNFs, and adaptivity does not
+remove the exponential bound for this class.
+\end{prop}
+
+\begin{prop}[Optimal vs.\ achievable adaptivity; KNOWN THEOREM]
+Even inside resolution, finding a near-optimal policy is hard: resolution is not
+automatable unless P $=$ NP (Atserias--Müller 2019). So $\mathrm{ALG}_\sigma$ can be far above
+$\mathrm{OPT}$. That gap shows how hard \emph{choosing} the parameters is. It is not a lower bound on SAT.
+\end{prop}
+
+\paragraph{Where the conclusion changes: adaptive state representation.}
+If the parameter may also switch the state \emph{type}, the DP climbs the proof-system hierarchy:
+\begin{center}\begin{tabular}{@{}lll@{}}\toprule
+state type chosen per step & proof system & superpoly.\ lower bound\\\midrule
+residual clauses & resolution / CDCL & KNOWN (Haken 1985)\\
+parities / affine spaces & Res($\oplus$) & regular/tree-like versions (CANDIDATE citations, verify); general: OPEN\\
+linear inequalities & cutting planes & KNOWN (Pudl\'ak 1997, via interpolation)\\
+polynomials & polynomial calculus & KNOWN (Razborov 1998, PHP)\\
+bounded-depth formulas & $AC^0$-Frege & KNOWN (Ajtai; Beame--Impagliazzo--Pitassi; PHP)\\
+arbitrary formulas / circuits & Frege / extended Frege & OPEN\\
+arbitrary poly-time state map & every algorithm & OPEN $=$ P vs NP\\\bottomrule
+\end{tabular}\end{center}
+Every deterministic algorithm is an adaptive DP whose state is its full machine configuration.
+So the fully parameterized model is universal: a lower bound for it is exactly P $\ne$ NP.
+Lower bounds for the nondeterministic optimum $\mathrm{OPT}$ over all state types would be
+NP $\ne$ coNP (Cook--Reckhow). \textbf{Answer:} parameterization leaves the conclusion unchanged
+while states are syntactic restrictions, possibly with learned clauses. It turns into the full open problem once the
+parameter may choose the state representation freely. The open frontier is the
+Frege row.
+
+\paragraph{Computational check.}
+Script \texttt{results/claude\_circuitsat/adaptive\_dp.py}; data \texttt{adaptive.jsonl}. Exact
+optimal adaptive tree-like DP: best variable and best first branch per state, early exit on SAT,
+no merging. Compared with the optimal ordered DP with merging from \S\ref{sec:dp}:
+\begin{center}\begin{tabular}{@{}lcccc@{}}\toprule
+instance & SAT? & ordered+merge total & adaptive tree OPT & residuals explored\\\midrule
+$\mathrm{PHP}^3_2$ & no & 12 & 21 & 214\\
+$\mathrm{PHP}^4_3$ & no & 48 & 85 & 60838\\
+rand $n=6$ s1 / s3 & no / yes & 13 / 19 & 21 / 7 & 298 / 316\\
+rand $n=8$ s1 / s2 & no / yes & 23 / 24 & 25 / 8 & 2207 / 2193\\
+rand $n=10$ s3 / s1 & no / yes & 24 / 41 & 27 / 10 & 15032 / 15657\\
+rand $n=12$ s1 / s2 & no / yes & 41 / 60 & 33 / 12 & 102823 / 114035\\\bottomrule
+\end{tabular}\end{center}
+COMPUTATIONAL findings:
+(1) On SAT instances adaptive OPT is $\approx n$, a single guided path, as the proposition predicts.
+(2) On UNSAT instances, adaptivity without merging is comparable to ordered DP with merging.
+Neither collapses.
+(3) Computing OPT required exploring $10^5$ residual states at $n=12$. The exploration cost
+grows far faster than OPT, which illustrates the policy-selection gap.
+Runtime note: the two $n=12$ runs took $\approx31$\,s, at the 30\,s limit; larger $n$ must be chunked by first branching variable.
+
+\section{Run 4: consolidation and the $n=4$ rung}
+\textbf{Housekeeping.} Runs 1--3 had been committed on separate unmerged branches, each restarting from a
+base without the file. This version merges them: the run-3 text is the base, and the run-1 AIG ledger and
+reading theorem below are added. Peer reports in \texttt{research/} were surveyed only through
+root \texttt{main.tex} status (P vs NP OPEN); none gives a wire lower bound for \SAT{}, and none was adopted.
+
+\subsection{Exact $n=4$ rung ($B_2$ basis, COMPUTATIONAL)}
+Script \texttt{results/claude\_circuitsat/b2\_n4.c}; data \texttt{b2\_n4\_k5.json}. Exhaustive enumeration of all
+circuits with $\le5$ gates over 4 inputs (10 binary ops, negation free), chunked into 6 runs by the input pair of the
+first gate ($\approx20$\,s each, within the 30\,s rule) and merged by minimum. Functions by exact minimum gate count:
+\begin{center}\begin{tabular}{@{}lccccccc@{}}\toprule
+gates & 0 & 1 & 2 & 3 & 4 & 5 & $\ge6$\\\midrule
+$\#$ functions ($n=4$) & 10 & 60 & 456 & 2474 & 10624 & 24184 & 27728\\\bottomrule\end{tabular}\end{center}
+Total $=65536$. These counts agree with the table I recall from Knuth, TAOCP 7.1.2 (recalled, not re-checked
+here). Computed ladder:
+$\max_f C_{B_2}(f)=0,1,4$ for $n=1,2,3$, and $\ge6$ for $n=4$ (27728 functions need six or more gates).
+
+\subsection{Wire ledger for the unique-SAT family (PROVED/EXACT)}
+For $C_a=[x=a]$ the minimum is exactly $n-1$ gates, $2(n-1)$ gate-input wires: $0,1,2,3$ for $n=1..4$.
+Lower bound: relevance (all $n$ inputs matter, connected cone); upper bound: AND of literals. So the
+incremental cost of one more input is exactly \emph{one gate, two wires}. For the hardest functions the
+increments are $0,1,3,\ge2$, noisy, and they grow as $\Theta(2^n/n)$ by counting (Shannon/Lupanov, KNOWN THEOREM).
+Parametrised reading: write $s=$ gates, $n=$ inputs. The black-box bound is $2^n$ queries for every $s\ge n-1$;
+the white-box cost of the same instances is $O(s)$. The exponent in $n$ is therefore a property of the access model,
+not of the wiring, which is the Baker--Gill--Solovay gap again.
+
+\subsection{AIG ledger and reading bound (run 1, merged)}
+In the AIG model (2-input ANDs, free edge negation) the exact sizes are $C_{\mathrm{AIG}}(1,2,3)=0,3,6$
+(XOR costs 3; parity costs $3(n-1)$ for $n\le3$). Script \texttt{research/claude\_circuitsat/aig\_exact.py},
+COMPUTATIONAL. The $B_2$ and AIG ladders differ by the XOR gadget, so sizes are only comparable within one model.
+\begin{prop}[Reading bound; PROVED/EXACT] Any algorithm deciding \SAT{} on $m$-gate instances must read $\Omega(m)$ gates.
+Take $\varphi=x_1\wedge\bigwedge_i s_i$ with each slot $s_i$ a tautology; replacing one slot $s_j$ by $\neg x_1$ makes it UNSAT, so
+an algorithm skipping $s_j$ errs on one of the two. This is linear and carries no hardness content.
+\end{prop}
+
+\subsection{Repair of a claim in the run-1 text}
+Run 1 stated that parity costs $3(n-1)$ in AIG for all $n$; only $n\le3$ is verified here. The general statement is
+a known upper bound, and its optimality is unproved here (CANDIDATE).
+
+\section{Run 5: where is fan-out needed? Formula size versus circuit size}\label{sec:r5}
+\textbf{Obstacle targeted.} The wire ledger so far counts $w=2g$ but does not say how many of those wires are \emph{reuse} (fan-out $>1$) as opposed to tree wires. Reuse is the only thing that separates circuits from formulas, and it is the structural quantity that circuit-design transfer domains (fan-out, routing congestion, VLSI area-time) say should carry cost.
+Define $L_{B_2}(f)$ = minimum number of leaves of a $B_2$ formula (a fan-out-1 circuit) and $g_L(f)=L_{B_2}(f)-1$ its gate count.
+Always $C_{B_2}(f)\le g_L(f)$.
+
+\subsection{Exact formula-size table (COMPUTATIONAL)}
+Script \texttt{results/claude\_circuitsat/formula\_n4.c} (level-by-level closure under the 5 monotone-class ops $\wedge,\ \wedge\neg,\ \neg\wedge,\ \neg\wedge\neg,\ \oplus$ and output complement; $0.4$\,s, no chunking needed);
+data \texttt{formula\_n4.json}, \texttt{formula\_n4\_levels.txt}. Number of $n=4$ functions by $g_L=L-1$:
+\begin{center}\begin{tabular}{@{}lcccccccc@{}}\toprule
+$g_L$ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7\\\midrule
+$\#f$ & 10 & 60 & 456 & 2474 & 10624 & 24184 & 24640 & 3088\\\bottomrule\end{tabular}\end{center}
+The $n=3$ run gives $8,30,114,80,24$ for $g_L=0..4$, matching the corrected circuit table above.
+\begin{prop}[Fan-out-free up to five gates; COMPUTATIONAL, exact for $n\le4$]
+For every $f$ on $n\le 4$ inputs, $C_{B_2}(f)=g_L(f)$ whenever $C_{B_2}(f)\le5$.
+\end{prop}
+\begin{proof}
+$\{f:g_L(f)\le k\}\subseteq\{f:C(f)\le k\}$, and for $k\le5$ the two sets have the same cardinality
+($10,70,526,3000,13624,37808$ cumulative from the run-4 circuit histogram, and the same cumulative numbers here), so they are equal.
+\end{proof}
+Consequences. (a) Sharing a subcircuit first helps only at $\ge6$ gates for $n=4$ and never for $n\le3$ (all functions, max 4 gates). So \emph{all wires in the minimum circuits of the small ladder are tree wires}: the fan-out excess is zero.
+(b) The point functions $[x=a]$ have $g_L=n-1$ for $n\le4$, matching Lemma~1 (this is the unique-SAT family; a formula loses nothing there).
+(c) $\max_f g_L=0,1,4,7$ for $n=1..4$; since $\max C\le g_L$ and run~4 showed $\max C\ge 6$, the exact $n=4$ maximum is in $\{6,7\}$ (Knuth's table says 7, recalled, not re-verified).
+(d) The increments of the hard-function profile are $1,3,3$ gates per added input for $n=2,3,4$; three data points do not support an extrapolation and none is claimed. By counting, the true growth is $\Theta(2^n/n)$ (KNOWN THEOREM).
+
+\subsection{Why this matters for the lower-bound ladder (barrier audit)}
+\begin{itemize}
+\item \textbf{Directly transferable theorem (KNOWN).} Formula size $\ge$ circuit size, and the gap between them is exactly the cost of fan-out. Khrapchenko-type and Ne\v{c}iporuk-type bounds ($\Omega(n^2)$ for parity, $\Omega(n^3/\log n)$-type for explicit functions under $B_2$) are \emph{formula} lower bounds and are KNOWN THEOREMS; they do not bound circuit size.
+\item \textbf{Analogy needing a new transfer theorem (CANDIDATE).} A fan-out/routing-congestion measure (electronics) could separate circuit from formula only at larger $n$. Here the measured separation threshold is $\ge6$ gates at $n=4$; locating the first separating function and its fan-out profile is the next computable step.
+\item \textbf{Failed transfer (FALSIFIED/RETIRED for this ladder).} Reading ``wires needed to build'' as a driver of SAT hardness: for the unique-SAT family build cost is tree-like and minimal ($2(n-1)$ wires) while black-box search cost is $2^n$ and white-box cost is $O(w)$. Construction wires carry no search-cost information in this ladder.
+\end{itemize}
+
+\subsection{Corpus audit (run 5)}
+\textbf{Corpus reviewed.} Root \texttt{main.tex} status lines (P vs NP \OPEN; restricted-model results only), \texttt{AGENTS.md}, \texttt{tasks/} listing, and the five existing \texttt{ClaudeCircuitSAT.tex} variants on unmerged branches \texttt{ccr-8d8a5ce7-\{asaaqw, mi81yg, cps0sf, vri3et, ...\}}.
+\textbf{Duplication / contradiction.} Runs 1--4 were created independently on separate branches; this file is the run-4 consolidation (branch \texttt{asaaqw}) plus run 5. Contradiction found and fixed: the $n=3$ size-0/1 counts (5/33 vs.\ correct 8/30; see above). The sibling variants' partial tables (e.g.\ $n=3$ modulo complement: $4,15,57,40,12$) are consistent with the corrected counts after pairing complements.
+\textbf{Not yet used.} The repository's LSPV-3 backward AND/OR circuit counts ($29k-1$ gates) are labelled by their authors as not SAT lower bounds; no repository theorem supplies a white-box lower bound above linear in $w$. Nothing was imported.
+\textbf{Housekeeping risk.} Because every hourly run starts on a fresh branch from \texttt{main}, which lacks this file, edits are repeatedly forked. The living document only accumulates if this branch is merged into \texttt{main}; the owner should do that (not done automatically).
+
+\section{Run 6: the first fan-out witnesses ($n=4$, exact $C_{B_2}$ through 7 gates)}\label{sec:r6}
+\textbf{Obstacle targeted.} Run 5 left open whether circuits ever beat formulas on the small ladder; the only possible gap at $n=4$ is among the $3088$ functions with $g_L=7$ (every function with $g_L\le6$ already has $C\ge g_L$ by Run 5). \textbf{Housekeeping:} this run restored the file and its \texttt{results/claude\_circuitsat/} scripts from the unmerged run-5 branch into the current branch (they were absent from it).
+
+\subsection{Exact result (COMPUTATIONAL)}
+Script \texttt{results/claude\_circuitsat/b2\_n4\_k6.c}, closure/check \texttt{b2\_n4\_k6\_check.py}, data \texttt{b2\_n4\_k6.json}. Exhaustive over all 6-gate $B_2$ circuits on 4 inputs (complement-normalised nodes; first gate fixed to $x_0\wedge x_1$ or $x_0\oplus x_1$ by input permutation/negation symmetry, hit set then closed under the 384-element group and output complement; $2$\,s total, no chunking needed). Result:
+\begin{center}\begin{tabular}{@{}lcccccccc@{}}\toprule
+gates & 0&1&2&3&4&5&6&7\\\midrule
+$\#f$ by $C_{B_2}$ & 10&60&456&2474&10624&24184&25008&2720\\
+$\#f$ by $g_L$ & 10&60&456&2474&10624&24184&24640&3088\\\bottomrule\end{tabular}\end{center}
+Both rows total $65536$. Hence exactly $368$ functions have $C_{B_2}=6<7=g_L$, and $\max_f C_{B_2}=7$ for $n=4$ (the Run-5 range $\{6,7\}$ is resolved). The $25008,\,2720$ entries agree with the Knuth TAOCP 7.1.2 table as I recall it (recalled, not re-checked).
+\begin{prop}[First fan-out gap; COMPUTATIONAL, exact] For $n\le3$ circuits equal formulas for all $f$. For $n=4$ sharing first helps at 6 gates (a 7-gate formula becomes a 6-gate circuit), for exactly $368$ of the $65536$ functions, each saving exactly one gate.
+\end{prop}
+\textbf{Soundness note.} A first version pruned by a canonical gate order and lost $64$ functions with $g_L=6$ (detected because those must be reached); that pruning is unsound together with the ``last gate uses gate 5'' rule and was removed. The reported numbers come from the unpruned search.
+
+\subsection{Witness and fan-out profile}
+\texttt{b2\_n4\_k6\_witness.c} (output \texttt{b2\_n4\_k6\_witness.txt}) prints one such circuit: $g_1=x_0\wedge x_1$, $g_2=\mathrm{NOR}(x_0,x_1)$ (stored complemented), $g_3=x_2\wedge\neg g_1$, $g_4=x_3\oplus g_1$, $g_5=g_2\wedge g_4$, $g_6=\mathrm{NOR}(g_5,g_3)$. The gate $g_1$ has fan-out $2$ (feeding $g_3$ and $g_4$); a formula must duplicate it. So the first measurable internal fan-out is one reused gate saving one gate.
+
+\subsection{Meaning for the lower-bound ladder (barrier audit)}
+\begin{itemize}
+\item \textbf{Exact fact.} $\max_f C_{B_2}=0,1,4,7$ for $n=1..4$, increments $1,3,3$; three increments support no extrapolation.
+\item \textbf{Parameterised reading (CANDIDATE).} Let $\delta(f)=g_L(f)-C(f)$. Data: $\delta=0$ for $n\le3$; at $n=4$, $\delta=1$ on $368/65536\approx0.56\%$ of functions. A statement of the form ``sharing saves a congestion-type amount that grows with $n$'' is the only route by which wire structure could enter a bound; nothing is proved.
+\item \textbf{Failed transfer reaffirmed.} Circuit-versus-formula build cost at this size says nothing about SAT search cost: the unique-SAT family is tree-like ($\delta=0$).
+\end{itemize}
+
+\textbf{Corpus audit (run 7).} Surveyed root \texttt{main.tex} status (updated 2026-10-26 18:48, \emph{P versus NP remains OPEN}), \texttt{AGENTS.md} (ARC/FLMV allocation) and the recent LSPV reports by name only, plus the unmerged ClaudeCircuitSAT branches (run-5 branch \texttt{770wqq} was the most complete and was adopted as base). No repository theorem gives a white-box SAT lower bound above linear in $w$, and none was imported. No new contradiction; the Run-5 claim ``maximum in $\{6,7\}$'' is resolved to $7$.
+
+\section{Run 7: symmetric functions on $n=4$ (exact, $C_{B_2}$ versus $g_L$)}\label{sec:r7}
+\textbf{Obstacle targeted.} Run 6 left open which \emph{structured} functions carry the fan-out saving $\delta(f)=g_L-C$. Using the exact Run-5/6 data (formula table plus the 6-gate hit set, regenerated by \texttt{formula\_n4.c}, \texttt{b2\_n4\_k6.c}; script \texttt{sym\_n4.py}, runtime a few seconds) I tabulated all $2^5=32$ symmetric 4-variable functions (value vector indexed by Hamming weight $0..4$).
+
+\subsection{Result (COMPUTATIONAL, exact)}
+\begin{center}\begin{tabular}{@{}lc@{}}\toprule
+$(g_L,C_{B_2})$ & number of symmetric $f$\\\midrule
+constants $(0\text{ gates})$ & 2\\ $(3,3)$ & 6\\ $(5,5)$ & 2\\ $(6,6)$ & 8\\ $(7,7)$ & 12\\ $(7,6)$ & 2\\\bottomrule\end{tabular}\end{center}
+The two fan-out beneficiaries are \textsc{Exact}$_2$ (weight exactly $2$) and its complement; both drop from $7$ to $6$ gates. Parity/XNOR, $T_1$ (OR), $T_4$ (AND) cost $3$; $T_2,T_3$ and \textsc{Exact}$_1$ cost $7=g_L$ (no saving). $\max C=7$ among symmetric $f$.
+\begin{prop}[COMPUTATIONAL] Among the 32 symmetric functions of 4 inputs, sharing helps exactly for \textsc{Exact}$_2$ and its complement ($\delta=1$). In particular $\delta$ is not monotone in ``threshold-ness'': $T_2,T_3$ gain nothing, while the middle-slice indicator does.
+\end{prop}
+\textbf{Meaning (barrier audit).} Same status as Run 6: a small-$n$ census, no extrapolation; the $\max C$ sequence $0,1,4,7$ is unchanged. Failed transfer reaffirmed: nothing here bounds white-box circuit-SAT time. \textbf{Corpus audit (run 7).} Rebuilt from the latest ClaudeCircuitSAT branch (\texttt{bmkk7y}, run 6); the repository's newest LSPV handoff (2026-10-27 11:12, SCAN-INTERNAL-INVERSE177) restates ARC-EDGE-90 and P versus NP as OPEN and supplies no white-box SAT lower bound; none imported. No contradiction found.
+
+\section{Run 8: solution count versus build cost ($n=4$, exact formula size)}\label{sec:r8}
+\textbf{Obstacle targeted.} The ladder tracks the cost of \emph{building} an instance; a lower bound for \emph{solving} must say which instances are hard. A natural parameter is the number of solutions $s=\#\mathrm{SAT}(f)$. Using the exact Run-5 formula-size table ($g_L=$ leaves$-1$ gates; regenerated by \texttt{formula\_n4.c}, script \texttt{sat\_count\_n4.py}, runtime $<1$\,s, data \texttt{sat\_count\_n4.json}) I tabulated min/max $g_L$ over all $2^{16}$ four-input functions grouped by $s$.
+\subsection{Result (COMPUTATIONAL, exact)}
+\begin{center}\begin{tabular}{@{}c|ccccccccc@{}}\toprule
+$s=\#\mathrm{SAT}$ & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9--16 (mirror)\\\midrule
+$\min g_L$ & 3 & 2 & 3 & 1 & 3 & 2 & 3 & 0 & symmetric under $f\mapsto\neg f$\\
+$\max g_L$ & 3 & 5 & 6 & 7 & 7 & 7 & 7 & 7 & \\
+\# functions & 16 & 120 & 560 & 1820 & 4368 & 8008 & 11440 & 12870 & \\\bottomrule\end{tabular}\end{center}
+\begin{prop}[COMPUTATIONAL] For $n=4$: unique-solution functions ($s=1$) all have exactly $g_L=n-1=3$ gates (Run-4 wire ledger, now checked on all 16); $\max g_L$ grows with $s$ and saturates at $7$ from $s=4$. Hence extremal build cost lives at \emph{middle} solution counts, while the sparsest solution sets (hardest to find by blind search, $2^n$ queries) are the cheapest to build.
+\end{prop}
+\textbf{Meaning (barrier audit; failed-transfer note).} This sharpens the Run-1 barrier: black-box hardness ($2^n$ queries, maximal at $s=1$) and construction cost ($\Theta(n)$ at $s=1$) are anti-correlated, so no lower bound can be inherited from circuit size alone; any parametrized bound $T(n,g,s,\dots)$ must use white-box structure. Small-$n$ census only; no extrapolation to larger $n$ is claimed and no white-box circuit-SAT lower bound results. \textbf{Corpus audit (run 8).} Rebuilt from the latest ClaudeCircuitSAT branch (\texttt{5fyoah}, run 7); the repository's recent GROKPROOF commits (2026-10-28 13:18, 15:13 UTC) restate the All-Input Resource Contraction transformation as OPEN with only numerical confirmations; nothing imported; no contradiction found. \emph{Housekeeping:} dozens of unmerged \texttt{ccr-8d8a5ce7-*} branches carry diverging copies of this file (3--33\,KB); this run restored the largest (run 7) lineage.
+
+\section{Run 9: a solution-count parameter for the black-box bound}\label{sec:r9}
+\textbf{Obstacle targeted.} Run 8 showed construction cost and black-box hardness are anti-correlated in $s=\#\mathrm{SAT}$. This run gives the exact parametrized black-box bound in $s$, the baseline any white-box $T(n,g,s)$ must beat.
+\begin{prop}[Parametrized black-box bound; PROVED/EXACT, elementary] Let $N=2^n$. Under the promise that the $n$-input $f$ has either $0$ or at least $s$ satisfying assignments, deterministic evaluation-query complexity of deciding satisfiability is exactly $N-s+1$.
+\end{prop}
+\emph{Proof.} Upper bound: query $N-s+1$ distinct points; if all are $0$, fewer than $s$ points remain, so $f\equiv0$. Lower bound: the adversary answers $0$ to every query; after $q\le N-s$ queries at least $s$ points are unqueried, so both $f\equiv 0$ and ``$f=1$ on $s$ unqueried points'' remain consistent.\qed
+
+\textbf{Check (COMPUTATIONAL).} Exhaustive minimax over query strategies for $n\le3$, all $s\in[1,N]$ (\texttt{results/claude\_circuitsat/promise\_query.py}, $<1$\,s, output \texttt{promise\_query.json}) gives exactly $N-s+1$ in every case. An ``at most $s$ solutions'' promise gives no saving (still $N$): the first formula attempt in this run was wrong for that reason and was corrected.
+
+\textbf{Meaning (barrier audit).} $s=1$ recovers $2^n$; dense instances ($s\ge N/2$) cost $\le N/2+1$, randomized $O(N/s)$. Combined with Run 8, the hardest black-box instances ($s=1$) are the cheapest to build ($n-1$ gates, $2(n-1)$ wires): any white-box lower bound of the form $T(n,g,s)$ must beat the $O(w)$ treewidth algorithm on tree-like unique-SAT circuits, hence cannot be derived from $(g,s)$ alone; it needs a structural parameter such as treewidth or fan-out profile. \textbf{Failed transfer reaffirmed:} nothing here bounds white-box time. \textbf{Corpus audit (run 9).} Repository state: root \texttt{main.tex} and AGENTS.md (2026-10-28 ledger: TPORT barrier rows L34--L37, ONETAPE L38--L40) still list P versus NP as OPEN; no white-box circuit-SAT lower bound exists there to import. \emph{Housekeeping:} restored the run-8 lineage (commit \texttt{c67f2ab4}, branch \texttt{toh19y}) onto this branch; about 190 unmerged ClaudeCircuitSAT commits across branches (later ones were short resets) were not merged.
+
+\section{Run 10: randomized version of the parametrized black-box bound}\label{sec:r10}
+\textbf{Obstacle targeted.} Run 9 gave the deterministic promise bound $N-s+1$; a white-box algorithm might hope randomness helps. In the black-box model it helps exactly up to a factor $s$.
+\begin{prop}[PROVED/EXACT, elementary] Under the promise ``$f\equiv0$ or $|f^{-1}(1)|\ge s$'' ($N=2^n$), every randomized evaluation-query algorithm with error $\le1/3$ on every promise input makes at least $N/(3s)$ queries in the worst case; $O(N/s)$ queries suffice (sample $\lceil 2N/s\rceil$ random points; for $|f^{-1}(1)|\ge s$ the miss probability is $\le e^{-2}<1/3$).
+\end{prop}
+\emph{Proof of lower bound.} Fix a $q$-query algorithm (Yao: a distribution over deterministic ones is handled by averaging). Compare $f_0\equiv0$ with $f_S=\mathbf 1_S$, $S$ a uniform random $s$-subset. On $f_0$ the run is determined by the algorithm's coins; let $p$ be its acceptance probability, so $p\le1/3$. On $f_S$ the run coincides with the run on $f_0$ unless a queried point lies in $S$; by union bound this happens with probability $\le qs/N$. So acceptance on $f_S$ is $\le p+qs/N$, but it must be $\ge2/3$; hence $qs/N\ge1/3$.\qed
+
+\textbf{Meaning (barrier audit).} $s=1$ gives $\Omega(N)$ randomized, $s=N^{1-\epsilon}$ gives $N^{\epsilon}$: the black-box cost interpolates smoothly in $s$, again independent of circuit size ($s=1$ instances cost $n-1$ gates, Run 8). Not checked by exhaustive computation (the $n\le3$ minimax check of Run 9 is deterministic only). \textbf{Failed transfer reaffirmed:} no white-box bound. \textbf{Corpus audit (run 10).} Restored the run-9 lineage (branch \texttt{8v37lx}) onto this branch; repository AGENTS.md/root \texttt{main.tex} still state P versus NP OPEN and supply no circuit-SAT white-box bound. Still no merged copy of this file on the main line; many divergent branch copies exist.
+
+\section{Next steps (OPEN arrows)}
+\begin{enumerate}
+\item $n=4$ done exactly (Run 6). Next: $n=5$ exhaustive search is out of reach; use SAT-based exact synthesis for chosen families (symmetric/threshold, point functions), chunked, and tabulate $\delta(f)=g_L-C$ (symmetric $n=4$ done in Run 7).
+\item Run the syntactic DP on Tseitin encodings with gate variables placed by the solver, and measure against the circuit wire-frontier width.
+\item DP with parity states (Res($\oplus$)-style) on Tseitin formulas: test whether the exponential DP width collapses, as it must since Gaussian elimination is polynomial.
+\item Adaptive DP with merging \emph{and} per-state variable choice (regular resolution optimum) for $n\le12$; measure the gap to ordered and tree-like DP.
+\item Verify the regular-Res($\oplus$) lower-bound citations, and state precisely which DP-state class each covers.
+\item Repeat the $s$-grouped census for exact circuit size $C_{B_2}$ ($n=4$) and for a $n=5$ family via SAT-based exact synthesis (no SAT solver is installed in this environment; needs one).
+\item Test whether a fan-out/wire-congestion measure (VLSI area-time analogy; CANDIDATE) gives a monotone lower bound along the ladder.
+\end{enumerate}
+
+\section*{Run log}
+Run 1 (2026-10-23): created document; black-box ladder proved; $n\le3$ exhaustive table computed; no new lower bound for general white-box SAT.
+Run 2 (2026-10-23): forward/reverse DP analysis (\S\ref{sec:dp}); 3-SAT vs circuit-SAT DP comparison; exact optimal-order DP widths for $n\le14$; DP lower bounds identified as resolution lower bounds (EXACT TRANSFER for DP class only; FAILED TRANSFER to all algorithms).
+Run 3 (2026-10-23): state-parameterized DP (\S\ref{sec:adaptive}); conclusion unchanged for syntactic states (resolution/CDCL lower bounds); becomes full P vs NP once state representation is free; optimal adaptive search computed for $n\le12$.
+Run 4 (2026-10-24): consolidated runs 1--3 from unmerged branches into one file; exact $n=4$ $B_2$ histogram through 5 gates (chunked C enumeration); unique-SAT wire increment is exactly one gate per input; no new lower bound for white-box SAT.
+Run 5 (2026-10-24): corrected the $n=3$ size-0/1 counts; exact $n=4$ formula-size histogram; showed circuits $=$ formulas for $\le5$ gates ($n\le4$), i.e.\ no fan-out is needed on the small ladder; corpus/branch-fragmentation audit; no new white-box lower bound.
+Run 6 (2026-10-27): restored the file and scripts onto the current branch; exact $n=4$ circuit histogram through 7 gates ($25008$ at 6, $2720$ at 7); first fan-out gap is $368$ functions at 6 gates; witness circuit; corrected an unsound pruning during the run; no new white-box lower bound.
+Run 7 (2026-10-27): symmetric $n=4$ census of $g_L$ vs $C_{B_2}$; only \textsc{Exact}$_2$ and complement gain a gate; no new white-box lower bound.
+Run 8 (2026-10-28): restored the run-7 lineage; tabulated exact $n=4$ formula size against $\#\mathrm{SAT}$ (unique-solution functions all cost $n-1=3$, extremal cost at middle $s$); no new white-box lower bound.
+Run 9 (2026-11-01): restored run-8 lineage; exact parametrized black-box bound $2^n-s+1$ under a ``0 or $\ge s$ solutions'' promise, brute-force checked for $n\le3$; corrected an initial wrong ``$\le s$'' formula; no white-box lower bound.
+Run 10 (2026-11-02): restored run-9 lineage; randomized promise black-box bound $\Omega(N/s)$, $O(N/s)$ (proved, not brute-forced); no white-box lower bound.
+% END_OF_CLAUDECIRCUITSAT_RUN::10
+\end{document}
