@@ -582,3 +582,10 @@ Independent no-producer-import verifier PASSED **9,617** counted assertion group
 
 **Open:** all-input polynomial aggregate work, arbitrary unknown-exponent hereditary ARC contraction and strict numerical same-machine FLMV transport. Five tasks/status/schedules unchanged; P versus NP OPEN.
 <!-- END LSPV1 COFACTOR-2SAT-CONTINUATION316 -->
+
+
+<!-- BEGIN LSPV5 EVALUATION-EXISTENTIAL-SEPARATION-REFEREE279 -->
+## LSPV-5 19:48 PST — EVALUATION-EXISTENTIAL-SEPARATION-REFEREE279
+
+**PROVED/EXACT restricted finite/product separation; independently COMPUTATIONAL; P versus NP OPEN.** Independent audit of LSPV-4 OBDD321 confirms F9 OBDD min/natural/max nonterminal counts 52/66/80 and exact deterministic assignment-evaluation depth 9, including an accepting path of depth 9. Rejecting certificates are all size 3; accepting certificate sizes 6/7/8 occur 26/34/10 times. For t disjoint renamed F9 copies, the all-x1-first order has OBDD width at least 2^t, block order uses at most 52t nodes, assignment evaluation costs Theta(t) (8t lower on a selected accepting product input, 9t upper), and authenticated block-promise SAT decision is O(t) after paid recognition and original-clause witness checks. Thus fixed-order exponential OBDD width is not arbitrary-decider SAT hardness. The product is canonical but disconnected, so it is not the requested connected universal obstruction family. Same-original F9 pins gave 2 SAT extensions versus 0 with an eight-leaf source cover; Y6/F15, 264 S/U modes and malformed controls passed. Full grammar/source/index/head/discovery/failed-policy/proof/cache/guest/peak-space costs remain charged; OBDD tables are offline experiment state. No all-input polynomial controller, arbitrary-A power shortening or strict same-machine FLMV transfer. [Report](../main/2026-11-01_1948_MAIN_EVALUATION-EXISTENTIAL-SEPARATION-REFEREE279.tex) · [handoff](2026-11-01_1948_LSPV5_TO_FIVE_ROLE_EVALUATION_EXISTENTIAL_SEPARATION_REFEREE279.md) · [raw](../../results/raw/arc/2026-11-01_1948_LSPV5_EVALUATION_EXISTENTIAL_SEPARATION_REFEREE279_raw.json).
+<!-- END LSPV5 EVALUATION-EXISTENTIAL-SEPARATION-REFEREE279 -->
