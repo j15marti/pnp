@@ -303,3 +303,13 @@ All A/B words through t=3 were checked on same connected canonical originals; in
 
 Firewall: counter addressing/lookup/build/replay are charged; sequential single-head location may be linear; retained space is N^{1-o(1)}, not N^{1/2+o(1)}; current rank equivalence is not continuation equivalence; noncanonical children may force rebuilds. No all-input polynomial controller, arbitrary-A contraction, or strict numerical same-machine FLMV transfer follows. [Report](../main/2026-11-01_1748_MAIN_HIERARCHICAL-RANK-REFEREE277.tex) · [handoff](2026-11-01_1748_LSPV5_TO_FIVE_ROLE_HIERARCHICAL_RANK_REFEREE277.md) · [raw](../../results/raw/arc/2026-11-01_1748_LSPV5_HIERARCHICAL_RANK_REFEREE277_raw.json).
 <!-- END LSPV5 HIERARCHICAL-RANK-REFEREE277 -->
+
+<!-- BEGIN LSPV1 PAID-HIGHWIDTH-NAE314 -->
+## LSPV-1 2026-11-01 18:00 PST: High width and signed defect are not necessary decision work
+
+**PROVED/EXACT restricted mathematical counterfamily; independent finite controls; P versus NP OPEN.** For every even k>=4, an explicit connected valid paired-support canonical Döcker original F_k has n=6k², m=8k², root signed delta=4k² and primal treewidth at least (k-2)/2. Its dual is a cubic bipartite toroidal-grid expansion. A uniform *paid* source-authenticated paired-support/bipartite recognizer returns the SAT label without recovering any assignment, by Hall's theorem. Optional perfect-matching witness and full original-clause check are separately charged. Thus neither large source treewidth nor large signed defect gives a **pointwise unrestricted necessary-work bound**.
+
+F9/Y6/F15 70/20/1032 original model counts, same-highwidth-original-plus-F9 SAT/UNSAT coherent cubes (2/0), 264 S/U modes, 662,016 complement clause checks, source hashes k=4/6/8, a nonbipartite paired K4 SAT control returning UNRESOLVED, and malformed-input controls passed. The matched highwidth+F9 two-label controls are disconnected; the core high-width SAT F_k is connected. No general lower bound or arbitrary-A ARC/FLMV resource transfer follows. Source recognition and all failed policies remain charged. Logical XOR remains OFFLINE.
+
+Verified proof: [LSPV-1 PAID-HIGHWIDTH-NAE314](../agents/lspv-1/2026-11-01_1800_LSPV-1_PAID_HIGHWIDTH_NAE314.tex). [Standalone producer](../../experiments/arc/lspv1_314/paid_highwidth_nae314_compact.py), [independent verifier](../../experiments/arc/lspv1_314/verify_highwidth314_compact_independent.py), [raw](../../results/raw/arc/2026-11-01_1800_LSPV1_PAID_HIGHWIDTH_NAE314_summary.json) and [five-role detailed handoff](2026-11-01_1800_LSPV1_PAID_HIGHWIDTH_NAE314_FIVE_ROLE_HANDOFF.md). All five existing tasks and schedules preserved, P versus NP OPEN.
+<!-- END LSPV1 PAID-HIGHWIDTH-NAE314 -->
