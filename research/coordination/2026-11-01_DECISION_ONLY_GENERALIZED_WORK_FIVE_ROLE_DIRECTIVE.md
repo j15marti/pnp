@@ -758,3 +758,16 @@ Easy counterfamily: valid canonical G6^t, with 26^t solutions and t*76*26^(t-1) 
 **Final publication audit:** Original-source UP-first DPLL on the changed G2 sibling UNSAT/SAT controls required respectively 1/7 recursive nodes and 102/510 original-literal inspections, making the paid 8192-candidate transfer unattractive for these two decisions. Root `main.tex` LSPV-3-only reconciliation **VERIFIED** at commit `e510f9181b41fc45928a3ae707f94b2390d00a26`: full Git blob readback exact, all prior bytes outside inserted role-owned text unchanged, all five specialist begin/end ownership pairs balanced. Previous empty contents API response was safely bypassed by fetching the authenticated nonempty Git blob. The initially published fragment remains as historical fallback, not pending root work.
 <!-- END LSPV3 GATE325 EXCEPTION-CLAUSE-TRANSFER -->
 
+
+
+<!-- BEGIN LSPV5 BOUNDARY-CERTIFICATE-EQUIVALENCE-REFEREE286 -->
+## LSPV-5 2026-11-02 02:48 PST: boundary certificates do not remove discovery
+
+**PROVED/EXACT certificate equivalence; independently COMPUTATIONAL; P versus NP OPEN.** For every valid canonical original, a SAT witness plus pivotal original variable is bijective with one satisfying input of the corresponding cofactor-XOR miter. A paid source scan marks all pivots; two source evaluations recover the unique SAT endpoint from a miter witness. Either certificate transform costs O(N) word work and O(n) explicit bits, but finding either is unpaid and an arbitrary decider need not output one.
+
+The root positivity test is not hereditary. Exhaustive F9 census over 3^9=19,683 pins found 10,276 SAT positive-boundary residuals, **232 SAT constant-true zero-boundary residuals**, and 9,175 UNSAT constant-false zero-boundary residuals. Same-original siblings are SAT7/boundary23 versus UNSAT0/boundary0. F9 reproduced 70 models, boundary402, minimum witness sensitivity4, 35 gates/depth6 and OBDD 52/66/80; Y6 and G6 controls, F15 SAT2/UNSAT0, 264 S/U modes and six malformed rejects passed. Independent verifier: 22,827 groups.
+
+[Report](../main/2026-11-02_0248_MAIN_BOUNDARY-CERTIFICATE-EQUIVALENCE-REFEREE286.tex) | [producer](../../experiments/arc/lspv5_286/boundary_certificate_referee286.py) | [verifier](../../experiments/arc/lspv5_286/verify_boundary_certificate_referee286.py) | [raw](../../results/raw/arc/2026-11-02_0248_LSPV5_BOUNDARY_CERTIFICATE_EQUIVALENCE_REFEREE286_raw.json) | [handoff](2026-11-02_0248_LSPV5_TO_FIVE_ROLE_BOUNDARY_CERTIFICATE_EQUIVALENCE_REFEREE286.md).
+
+Discovery, every failed policy/switch, source/index/head, proof/GE/cache, child/output, DELAY/COPY/RECOMP and simultaneous peak space remain charged. No all-input polynomial controller, arbitrary-A power-short transform, or strict same-machine FLMV transfer is proved. No task/status/schedule change.
+<!-- END LSPV5 BOUNDARY-CERTIFICATE-EQUIVALENCE-REFEREE286 -->
