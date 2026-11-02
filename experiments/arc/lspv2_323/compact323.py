@@ -29,6 +29,25 @@ def validate(F,n):
         for v in c:count[abs(v),v>0]+=1
     return all(count[i,True]==count[i,False]==2 for i in range(1,n+1))
 
+def parse_serialized_original(payload):
+    """Declared JSON source text grammar; malformed source strings are rejected."""
+    def no_duplicates(pairs):
+        d={}
+        for k,v in pairs:
+            if k in d:raise ValueError("duplicate header")
+            d[k]=v
+        return d
+    try:
+        obj=json.loads(payload,object_pairs_hook=no_duplicates,
+                       parse_constant=lambda x: (_ for _ in ()).throw(ValueError(x)))
+    except (json.JSONDecodeError, TypeError) as exc:
+        raise ValueError("malformed original serialization") from exc
+    if type(obj) is not dict or set(obj)!={"n","clauses"} or type(obj["n"]) is not int or type(obj["clauses"]) is not list:
+        raise ValueError("invalid original source header")
+    if any(type(c) is not list for c in obj["clauses"]) or not validate(obj["clauses"],obj["n"]):
+        raise ValueError("not canonical Döcker M22")
+    return obj["clauses"],obj["n"]
+
 def compile(F,n):
     if not validate(F,n):raise ValueError("malformed canonical original")
     incidence=defaultdict(list)
@@ -103,6 +122,21 @@ def run():
             ct+=evaluate(G,o,bits)
         pin_count[x1]=ct
     assert pin_count=={0:2,1:0}
+    # Strict serialized source-input controls. This is a declared JSON grammar,
+    # not the separate native FLMV indexed binary-string representation.
+    good=json.dumps({"n":9,"clauses":F9})
+    assert parse_serialized_original(good)==(json.loads(good)["clauses"],9)
+    invalid=["","{broken","[]",'{"n":9}',
+             '{"n":9,"n":9,"clauses":[]}',
+             json.dumps({"n":True,"clauses":F9}),
+             json.dumps({"n":9,"clauses":F9[:-1]}),
+             json.dumps({"n":9,"clauses":F9,"extra":1}),
+             json.dumps({"n":9,"clauses":F9+[F9[0]]})]
+    for payload in invalid:
+        try:parse_serialized_original(payload)
+        except ValueError:pass
+        else:raise AssertionError("malformed serialized original accepted")
+    results["malformed_serial_strings_rejected"]=len(invalid)
     results["same_original_F9_pins"]=pin_count
     results["status"]="restricted exact forward circuit, NOT SAT-decision lower bound"
     print(json.dumps(results,indent=2))
