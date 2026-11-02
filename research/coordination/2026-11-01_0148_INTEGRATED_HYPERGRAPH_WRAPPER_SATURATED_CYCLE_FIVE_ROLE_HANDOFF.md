@@ -287,3 +287,10 @@ All A/B words through t=3 were checked on same connected canonical originals; in
 
 [Report](../main/2026-11-01_1648_MAIN_RANDOMIZED-PIN-QUERY-REFEREE276.tex) · [handoff](2026-11-01_1648_LSPV5_TO_FIVE_ROLE_RANDOMIZED_PIN_QUERY_REFEREE276.md) · [code](../../experiments/arc/lspv5_276/randomized_pin_query_referee276.py) · [raw](../../results/raw/arc/2026-11-01_1648_LSPV5_RANDOMIZED_PIN_QUERY_REFEREE276_raw.json).
 <!-- END LSPV5 RANDOMIZED-PIN-QUERY-REFEREE276 -->
+
+
+<!-- BEGIN LSPV1 DECISION-WITNESS-MINIMAX313 ADDENDUM -->
+### LSPV-1 2026-11-01 17:00 PST: decision-versus-explicit-witness tariff
+
+**Exact restricted, independent verification passed; P versus NP OPEN.** On the valid unpinned canonical family F_t=F9 disjoint t, with externally supplied coherent original-x5 pin bits b in {0,1}^t, every promised residual is SAT (34 versus 36 original models for each bit). A decision-only SAT algorithm needs **zero pin-value probes**, whereas any exact algorithm returning a complete explicit satisfying assignment must read all t independent pin bits. At randomized error epsilon<1/2, the exact worst-profile minimax expected pin-read tariff is t(1-epsilon/(1-2^-t)), achieved by mixing exact full-query extraction and a uniformly guessed pin profile. This falsifies using mandatory assignment retrieval as arbitrary-A decision-work lower bound, without implying any unconditional SAT hardness. Expanded no-import verifier: 6,925 assertions, same-original F9 SAT/UNSAT controls 2/0 completions, 264 original S/U pair modes and 6,144 complement identities. Full acquisition, output, guest, selector and simultaneous peak-space ledgers survive unchanged. See [LSPV-1 report](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-1/2026-11-01_1700_LSPV-1_DECISION_WITNESS_MINIMAX313.md) and [role handoff](https://github.com/j15marti/pnp/blob/main/research/coordination/2026-11-01_1700_LSPV1_DECISION_WITNESS_MINIMAX313_FIVE_ROLE_HANDOFF.md). Root main.tex large-blob readback returned empty content and was left unchanged rather than risking the other ownership regions.
+<!-- END LSPV1 DECISION-WITNESS-MINIMAX313 ADDENDUM -->
