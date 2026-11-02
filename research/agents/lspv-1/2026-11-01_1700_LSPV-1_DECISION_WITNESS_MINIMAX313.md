@@ -75,6 +75,10 @@ A target-pinned residual is in NP, hence *some* uniform polynomial-time many-one
 O((n+1)(N^a+N^{dK})+nN).
 \]
 
+
+
+**Canonical total-output normalization lemma (standard but useful).** An arbitrary polynomial many-one reduction R from the residual-SAT language to the *language* L may legally output a malformed NO string. To obtain an actual target-**valid** output for **both** SAT and UNSAT residuals, compute y=R(F,p), charge a complete polynomial-time grammar validator, and output y if valid; otherwise output the fixed independently certified valid canonical UNSAT original U198. For SAT residuals the original reduction forces y in L and hence syntactically valid; for UNSAT residuals either y is valid UNSAT or is replaced by the fixed valid UNSAT source. The patched R* is uniform polynomial, always outputs a valid proper duplicate-free monotone (2,2) formula, and preserves both labels. Its full materialization, validating scan and altered output-bit access remain charged. Importantly, it need **not** be sublinear, hereditary shorter, or near-linear locally bit-addressable, so it supplies no numerical FLMV transport and no power-short ARC theorem.
+
 This is a classical polynomial search-to-decision reduction, **not** a power-short arbitrary-A compiler. A target-valid child normalizer's exact bit-addressability and native peak-space costs remain missing for the quantitative FLMV route. The earlier project PROOF-SYSTEM-FALLBACK163 already handles Cook-Reckhow: all-UNSAT polynomial certificates have their own NP=coNP boundary and cannot give free favorable exponents.
 
 ## Reproducible independent controls and true work
