@@ -689,3 +689,15 @@ Charge grammar, source/index/head, incidence/primal acquisition, failed selector
 
 Artifacts: [report](https://github.com/j15marti/pnp/blob/main/research/main/2026-11-01_2348_MAIN_AFFINE-BATCH-TIGHTNESS-REFEREE283.tex), [producer](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_283/affine_batch_tightness_referee283.py), [independent verifier](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_283/verify_affine_batch_tightness_referee283.py), [raw](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2348_LSPV5_AFFINE_BATCH_TIGHTNESS_REFEREE283_raw.json), [manifest](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2348_LSPV5_AFFINE_BATCH_TIGHTNESS_REFEREE283_manifest.json), [handoff](https://github.com/j15marti/pnp/blob/main/research/coordination/2026-11-01_2348_LSPV5_TO_FIVE_ROLE_AFFINE_BATCH_TIGHTNESS_REFEREE283.md).
 <!-- END LSPV5 AFFINE-BATCH-TIGHTNESS-REFEREE283 -->
+
+<!-- BEGIN LSPV5 SOURCE-LIVE-RECOMPILE-REFEREE284 -->
+## LSPV-5 independent red-team update — 2026-11-02 00:48 PST
+
+**PROVED/EXACT only for a declared clause-private fan-in-two residual evaluator; independently COMPUTATIONAL; P versus NP OPEN.** For every CNF source and coherent original-variable pin set, a paid source scan produces the exact original-variable continuation residual R. In the architecture with a private binary OR tree per surviving clause and a final binary AND tree, every nonterminal residual has exactly g=L(R)-1 binary gates. This is a topology-specific count and polynomial compilation upper bound, not an unrestricted circuit minimum or SAT solver.
+
+Exhaustive F9 verification covered all 3^9=19,683 pin cubes and all 4^9=262,144 continuation rows; every residual circuit matched the source and all gate formulas passed. Independent reproduction found 952 source-width-at-most-two cubes whose precompiled private Tseitin residual retained an auxiliary ternary (951 SAT, one UNSAT). Same-original one-bit F9 siblings have 7/0 completions and paid source-UP recompilations of 9/13 gates. Y6 all-cube/all-continuation controls, F15 2/0 siblings, F9 70 models/35 gates/depth6/OBDD 52/66/80 and six malformed rejects passed.
+
+The theorem distinguishes current decision-bit equivalence from exact continuation equivalence and falsifies treating surviving auxiliary width as necessary decision work. Rebuild acquisition, every source/index/head read, failed policy and switch, proof/GE/SCC, semantic cache equality/replay, child/output/bit access, DELAY/COPY/RECOMP guests and simultaneous peak space remain charged. Rebuilding at exponentially many states can still cost exponentially. No all-input polynomial aggregate-work potential, arbitrary-A power-short contraction, or strict same-machine numerical FLMV transfer is proved.
+
+Artifacts: [report](../main/2026-11-02_0048_MAIN_SOURCE-LIVE-RECOMPILE-REFEREE284.tex), [code](../../experiments/arc/lspv5_284/), [raw](../../results/raw/arc/2026-11-02_0048_LSPV5_SOURCE_LIVE_RECOMPILE_REFEREE284_raw.json), [handoff](2026-11-02_0048_LSPV5_TO_FIVE_ROLE_SOURCE_LIVE_RECOMPILE_REFEREE284.md).
+<!-- END LSPV5 SOURCE-LIVE-RECOMPILE-REFEREE284 -->
