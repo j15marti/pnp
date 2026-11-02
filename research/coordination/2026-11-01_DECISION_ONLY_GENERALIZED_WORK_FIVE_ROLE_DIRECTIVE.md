@@ -622,3 +622,20 @@ New first-priority SAT-versus-Circuit-SAT experiment: for every canonical monoto
 
 Independent no-producer-import checker enumerated 363600 complete orderings over F9/Y6; 29 grouped assertions passed, with source S/U, complement and five malformed controls. F15/U198/V198 inherited, not freshly rerun. All input/index/head, policy failures/switching, proof/GE, caches/replay, child/guest DELAY-COPY-RECOMP, and PEAK simultaneous space remain charged. The full truth table already computes SAT prior to DP and takes O(poly(N)4^n) time in the tested implementation. No universal arbitrary-decider lower bound or same-machine FLMV numeric transfer; P versus NP OPEN. See [role report](../agents/lspv-3/2026-11-01_2124_LSPV-3_PAID_COFACTOR_SUBSET_SHORTEST_PATH_GATE320.md), [reproducer](../../experiments/arc/lspv3_320/compact320.py), [raw](../../results/raw/arc/2026-11-01_2124_LSPV3_PAID_COFACTOR_SUBSET_GATE320_summary.json). Preserve all five existing tasks without schedule/status change.
 <!-- END LSPV3 COFACTOR-DECISION-ACQUISITION-GATE320 -->
+
+
+<!-- BEGIN LSPV5 EXISTENTIAL-LOCAL-PROJECTION-REFEREE281 -->
+## LSPV-5 independent red-team update — 2026-11-01 21:48 PST
+
+**PROVED/EXACT only in a declared source-local matched circuit architecture; independently COMPUTATIONAL; P versus NP OPEN.** For valid canonical original (F) and original variable (x), write (H_x) for the (m-4) nonincident clauses and (P_1,P_2,N_1,N_2) for the two positive/negative two-literal remainders. Exact Shannon projection gives
+[
+exists x,F=H_xwedge((P_1wedge P_2)ee(N_1wedge N_2)).
+]
+Let (W_x) be maximum same-sign matching weight among nonincident clauses and (d_xin{0,1,2}) count incident same-sign tail sharing. The exact gate count in the declared matched-(H_x), local-projector topology is (g_{exists x}=3m-5-W_x-d_x).
+
+Exhaustive independent checking covered every Y6/F9/F15 variable on 248,256 projection rows and passed 248,336 assertion groups. F9 projection circuits use 26 or 27 gates versus the 28-gate forward evaluator; independently retained OBDD counts are 52/66/80. Same-original F9 pins give (2) SAT completions at (x_1=0), (0) at (x_1=1), and their exact projection is (x_2wedge x_9) with (x_4) free. All 264 F9 S/U modes and six malformed rejects passed.
+
+This falsifies any assertion that a chosen forward evaluator or best OBDD lower-bounds every first SAT-decision-preserving circuit. The projected circuit intentionally does not compute (F) pointwise and is not a canonical child. Repeated elimination can still have exponential induced width/BDD growth; no polynomial aggregate-work/order-acquisition theorem, unrestricted minimum, arbitrary-(A) contraction, or strict same-machine FLMV transfer is proved.
+
+Artifacts: [report](https://github.com/j15marti/pnp/blob/main/research/main/2026-11-01_2148_MAIN_EXISTENTIAL-LOCAL-PROJECTION-REFEREE281.tex), [producer](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_281/existential_projection_referee281.py), [independent verifier](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_281/verify_existential_projection_referee281.py), [raw](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2148_LSPV5_EXISTENTIAL_LOCAL_PROJECTION_REFEREE281_raw.json), [manifest](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-01_2148_LSPV5_EXISTENTIAL_LOCAL_PROJECTION_REFEREE281_manifest.json), [five-role handoff](https://github.com/j15marti/pnp/blob/main/research/coordination/2026-11-01_2148_LSPV5_TO_FIVE_ROLE_EXISTENTIAL_LOCAL_PROJECTION_REFEREE281.md).
+<!-- END LSPV5 EXISTENTIAL-LOCAL-PROJECTION-REFEREE281 -->
