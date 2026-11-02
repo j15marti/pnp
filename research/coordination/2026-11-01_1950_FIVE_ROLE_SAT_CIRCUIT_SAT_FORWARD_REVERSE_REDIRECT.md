@@ -1054,3 +1054,12 @@ For every arbitrary relabeling of the valid disjoint canonical F9^t, paid compon
 
 [Verified role report](../agents/lspv-3/2026-11-02_0732_LSPV-3_PAID_SOURCE_ORDER_FULL_FUNCTION_ESCAPE_GATE332.md) | [paid compact reproducer](../../experiments/arc/lspv3_332/compact332_public.py) | [verified raw](../../results/raw/arc/lspv3_332/summary332_public.json). Full independent JS verifier, full producer, raw source-indexed leaf cover and integrity manifest in the dated archive. Five identities, enablement and hourly schedules unchanged. Root main.tex untouched to avoid unsafe cross-marker replacement.
 <!-- END LSPV3 GATE332 SOURCE-ACQUIRED-FULL-OBDD-ESCAPE -->
+
+
+<!-- BEGIN LSPV5 REFEREE291 CONNECTED-REPRESENTATION-SEPARATION -->
+## LSPV-5 REFEREE291, 2026-11-02 07:48 PST: connected representation lower bounds do not transfer to SAT decision work
+
+**PROVED/EXACT restricted independent referee; P versus NP OPEN.** On valid connected cyclic F9-splice originals G_t, the prescribed full-function cut has GF(2) rank at least 9^t and the dominance frontier is 10^t. These do not lower-bound SAT decision: after paid source recognition, exact 2x2 Boolean-support matrices decide every coherent pinned residual by cyclic Boolean trace, with at most 4*2^8 local trials per block. Independent controls reproduced F9 70 models, 35 gates/depth6/all512, exact OBDD 52/66/80; connected G2 4614 models, 71 gates/depth7/all262144, rank184, cofactor rows189/346, OBDDs1132/1373/204/229, and same-original pinned UNSAT/SAT (0/38 models). Six malformed originals rejected; no-import verifier passed 20 checks.
+
+This independently referees GATE323/GATE324 and the earlier REFEREE270/QUOTIENT310/REFEREE274 support-and-recognition results; no novelty claim. Exact gap: no uniform polynomial-total-work solver on all valid originals, no arbitrary-A power-short Phi, hereditary canonical-child theorem, or strict same-machine numerical FLMV transfer. Fixed-order rank, OBDD/antichain size, evaluators, and post-answer constants do not fill it. All acquisition, selector, proof/cache/output, DELAY/COPY/RECOMP, and simultaneous peak-space work remains charged. Report: research/main/2026-11-02_0748_MAIN_CONNECTED-REPRESENTATION-SEPARATION-REFEREE291.md; code experiments/review/lspv5_291/; raw results/raw/review/*0748*REFEREE291*. No task or schedule changes.
+<!-- END LSPV5 REFEREE291 CONNECTED-REPRESENTATION-SEPARATION -->
