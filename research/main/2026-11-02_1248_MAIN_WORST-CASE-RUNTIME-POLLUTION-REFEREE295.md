@@ -6,8 +6,8 @@
 
 ## Result at a glance
 
-This run proves a concrete separation between the pointwise bridge B1 and the
-worst-case bridge B2.  For one fixed, sound, complete, effective calculus
+This run proves a concrete **single-decider separation** between the
+inequalities underlying B1 and B2.  For one fixed, sound, complete, effective calculus
 \(R_{RW}\) (source-axiom Resolution plus Weakening, unit inference-node
 weights), there is a fixed total correct SAT decider \(A^\dagger\) such that:
 
@@ -15,14 +15,17 @@ weights), there is a fixed total correct SAT decider \(A^\dagger\) such that:
    \(A^\dagger\) runs in polynomial time while
    \(W_{R_{RW}}(F)=2^{\Omega(h)}\); under the explicit unary-index encoding
    used here, \(|F|=O(h^2)\), so this is still superpolynomial in \(|F|\);
-2. **B2 holds:** \(A^\dagger\) deliberately waits for
+2. **the B2 inequality holds for this \(A^\dagger\):** it deliberately waits for
    \(2^{|S_k|^2}\) steps on a dense family of valid SAT sentinels \(S_k\), so
    its unrelated worst-case time dominates the elementary universal upper
    bound \(\overline W_{R_{RW}}(N)<2^{N+1}\).
 
-Thus **B2 does not imply B1**.  A B2 inequality for a slow decider can be true
-for the wrong reason: worst-case runtime on unrelated valid SAT inputs can pay
-for every shortest refutation at that length.  This is a
+Thus the **per-decider B2 inequality does not recover the per-decider B1
+inequality**.  This does not prove the globally quantified B2 statement, which
+requires the inequality for every correct decider, and therefore does not
+separate the global implications B1⇒B2.  A worst-case inequality for a slow
+decider can be true for the wrong reason: runtime on unrelated valid SAT inputs
+can pay for every shortest refutation at that length.  This is a
 **WORST-CASE-TRANSFER FIREWALL**, not a lower bound for SAT and not a failure of
 B3.  B3 remains the primary open bridge because it speaks only under the
 existence of a polynomial-time SAT decider.
@@ -132,7 +135,7 @@ The fallback makes the decider total on every valid formula.  The delay can be
 implemented by an \(L_k^2\)-bit counter, so it is real charged work rather than
 an oracle or an after-answer constant circuit.
 
-### Theorem — B2 can hold while B1 fails (PROVED, SYSTEM-RESTRICTED)
+### Theorem — the B2 inequality can hold for one \(A\) whose B1 inequality fails (PROVED, SYSTEM-RESTRICTED)
 
 Choose a standard polynomially recognizable constant-degree expander-Tseitin
 family \(U_h\) with odd total charge.  Urquhart's
@@ -154,7 +157,8 @@ No polynomial \(p_{A^\dagger}\) can satisfy B1.  This is a
 **POINTWISE-TRANSFER FAILURE** for the fixed pair
 \((R_{RW},A^\dagger)\).
 
-For B2, take the largest sentinel length \(L_k\le N\).  For every \(N\ge10\),
+For the individual inequality used inside B2, take the largest sentinel length
+\(L_k\le N\).  For every \(N\ge10\),
 
 \[
  T^{wc}_{A^\dagger}(N)\ge2^{L_k^2}
@@ -163,20 +167,23 @@ For B2, take the largest sentinel length \(L_k\le N\).  For every \(N\ge10\),
 
 because \(L_k>N-6\) and \((N-6)^2\ge N+1\).  The finitely many smaller
 lengths are absorbed by the fixed polynomial \(p(z)=1024+z\).  Therefore B2
-holds for this same fixed \(R_{RW}\) and \(A^\dagger\).  ∎
+holds for this same fixed \(R_{RW}\) and \(A^\dagger\).  This proves
+\(B2(A^\dagger)\wedge\neg B1(A^\dagger)\), not global B2.  ∎
 
 ## Correct classification of the three bridges
 
 | Obligation | Status from this run | Reason |
 |---|---|---|
 | B1, pointwise | **FALSE for the concrete pair** | Easy authenticated Tseitin branch versus exponential \(R_{RW}\) proofs |
-| B2, worst-case | **TRUE for the concrete pair** | Valid SAT-sentinel delay dominates the universal proof upper bound |
+| B2, worst-case | **Individual inequality TRUE for the concrete pair; global B2 OPEN** | Valid SAT-sentinel delay dominates the universal proof upper bound only for this \(A^\dagger\) |
 | B3, `SAT in P` ⇒ polynomial \(\overline W_R\) | **OPEN** | \(A^\dagger\) is deliberately superpolynomial, so this construction is irrelevant to B3's antecedent |
 
-This proves the implication B1⇒B2 is strict in general.  It does **not** prove
-that B2 is false for all deciders, that B2 implies B3, or that B3 fails.  It
+This proves there is no converse from the B2 inequality to B1 at the level of
+one fixed decider.  It does **not** prove that the globally quantified
+implication B1⇒B2 is strict: that would require global B2 for every correct
+decider.  It does not prove global B2, global B2⇒B3, or a failure of B3.  It
 also explains why a fast algorithm on a single hard-for-\(R\) family refutes
-B1 but need not touch B2/B3.
+B1 but need not touch global B2/B3.
 
 ## Four falsifiers applied
 
