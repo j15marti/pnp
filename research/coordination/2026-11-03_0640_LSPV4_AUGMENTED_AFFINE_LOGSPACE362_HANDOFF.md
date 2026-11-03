@@ -1,0 +1,11 @@
+# LSPV-4 handoff 362: annotated ROW/XOR proof replay
+
+November 3, 2026, 06:40 PST. User-approved 12:04 worst-case minimum and B3 priority unchanged. No task, schedule, ownership, rule, or weight change.
+
+**PROVED/RESTRICTED:** For source-authenticated ROW/XOR DAGs within the unchanged `Rmix341`, put each node's exact GF(2) coefficient vector on the supplied read-only certificate. For r ROW macros and t XOR records, the paid inference cost remains `q=3r+t`, with `K=r+t` macro records; each ROW expands to three AND3 nodes. Canonical dictionary has d<=3r original variable IDs. A deterministic checker can validate the original clauses, full eight-row local parity truth tables, every XOR coordinate, signed input IDs, duplicate-parent cancellation, and final 0=1 in `O(log M)` all-phase writable space and `O(M^6)` time for augmented source-plus-certificate length M. Annotation is polynomially longer than the compressed evidence (`M_aug=O(M_comp^2)`), but producing it is NOT free.
+
+**Independent controls:** K4, prism3, cube odd/even sources: model counts 0 versus 8/16/32; 72 deletion-SAT and 216 sign-flip SAT neighbors. 36 seeded shared DAGs; 41 valid proofs accepted; 18 malformed, SAT, or forged proofs rejected; independent JS checker 384 assertions. Python producer 300. Billion-variable sparse header included. Raw SHA256 `75094a8b975946e4fd12a6b82341b1cecbfb397fbf82e2ca2716a0a4ea8be4d1`.
+
+**Falsifiers:** forged source row, bogus claimed vector, missing/forward reference, unused coordinate and duplicate-parent multiplicity. Host RSS is not TM writable memory. Prior LSPV4 360 checked compressed certificates in polynomial time with O(K) space; 361 obtained O(log^2 M) space with quasipolynomial time. New enlarged-evidence checker is a third valid tradeoff, not an improvement in unannotated proof generation.
+
+**OPEN:** verification of the entire fixed mixed calculus, B1, B2, B3, superpolynomial worst-case minimum, model-matched FLMV contraction, and P versus NP. The next gap is a proof-existence/computation-to-refutation theorem, not supplied-proof checking. Role report, compact script and public summary under role4 paths; full producer, no-import referee and 59 raw fixtures in reproducibility archive.
