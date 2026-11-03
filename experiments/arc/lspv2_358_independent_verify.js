@@ -72,14 +72,17 @@ function verifyAll(raw) {
   vAssert(raw.run_id==="LSPV-2_DPLL_IMPLICATE_PRUNE358","bad run");
   vAssert(raw.seed===3582026,"seed mismatch");
   const count={proofs:0,satSources:0,unsatSources:0,early:0,defs:0,res:0,charged:0,statementReads:0,corruptRejected:0,malformedRejected:0};
-  const seen=new Set();let priorSource=null,priorN=null;
+  vAssert(Array.isArray(raw.sourceRecords),"missing source ledger");
+  for(const e of raw.sourceRecords){
+    vAssert(e.n>=1&&e.n<=10&&Array.isArray(e.F),"bad source record");
+    for(const c of e.F){vAssert(vSame(vCanon(c),c),"bad source clause record");for(const l of c)vAssert(Math.abs(l)<=e.n,"source variable out of range");}
+    const isSat=Array.from({length:1<<e.n},(_,m)=>m).some(m=>vSat(e.F,m));
+    vAssert(isSat===e.isSat,"bad original label");
+    if(isSat)count.satSources++;else count.unsatSources++;
+  }
   for(const e of raw.cases){
     const v=verifyOne(e);count.proofs++;count.early+=v.early?1:0;
     count.defs+=v.defs;count.res+=v.res;count.charged+=v.q;count.statementReads+=v.reads;
-    const key=e.n+"|"+JSON.stringify(e.F);
-    if(key!==priorSource){priorSource=key;priorN=e.n; if(seen.has(key))throw Error("interleaved duplicated sources");seen.add(key);
-      if(Array.from({length:1<<priorN},(_,i)=>i).some(m=>vSat(e.F,m)))count.satSources++;else count.unsatSources++;
-    }
   }
   const sample=raw.cases.filter(x=>x.proof.some(p=>p.op==="res"||p.op==="def")).slice(0,30);
   for(const e of sample){
