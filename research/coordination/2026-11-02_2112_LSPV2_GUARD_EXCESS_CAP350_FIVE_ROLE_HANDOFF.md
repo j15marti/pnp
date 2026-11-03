@@ -1,6 +1,6 @@
 # LSPV-2 GUARD-EXCESS-CAP350 five-role handoff (November 2, 2026, 21:12 PST)
 
-**PROVED/EXACT, preselected source-independent VARDEF \(R_{\mathrm{mix341}}\), no new rules.** For every UNSAT general CNF \(F\), every \(t\ge0\), and any minimum-cost \(R\)-refutation using \(q=W_R(F)\) paid nodes and \(s\) distinct named source clauses, the complete sign-guard copy obeys
+**PROVED/EXACT, preselected source-independent VARDEF \(R_{\mathrm{mix341}}\), no new rules.** For every **tautology-free** UNSAT general CNF \(F\) (arbitrary clause width), every \(t\ge0\), and any minimum-cost \(R\)-refutation using \(q=W_R(F)\) paid nodes and \(s\) distinct named source clauses, the complete sign-guard copy obeys
 
 $$
 \mu(G_t(F))=2^t\mu(F),\qquad
@@ -12,6 +12,8 @@ If \(F\) is minimally UNSAT with \(m\) clauses, its excess above the universal s
 $$
 0\le e_R(G_t(F))\le e_R(F),\quad e_R(F)=W_R(F)-(m-1).
 $$
+
+**Grammar boundary:** For inputs with tautological source clauses, the core-size equality and lower bound remain valid, but the strict non-tautological-Resolution syntax may block the source-recovery upper compiler without a separately charged normalization. No upper proof-cost equality for such raw sources is asserted.
 
 **Construction:** eliminate all guard literals using exactly \(s(2^t-1)\) legal binary Resolution pivots and then reuse the optimal **unchanged** mixed proof DAG with sharing, AND3, GF(2) and charged auxiliary definitions. The source-core lower bound is entirely separate. This extends the pre-existing tight zero-excess theorem in LSPV-3 ITERATED-GUARD352; it does *not* establish mixed proof restriction closure or a hardness-transport lower bound.
 
