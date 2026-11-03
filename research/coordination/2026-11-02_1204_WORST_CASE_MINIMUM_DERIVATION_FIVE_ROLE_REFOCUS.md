@@ -584,3 +584,18 @@ The exact checker verified 11 templates, 113 strict binary-resolution inferences
 
 [Full report](../main/2026-11-03_0148_MAIN_LOCAL-REWRITE-MITER-FIREWALL-REFEREE309.md) · [role handoff](2026-11-03_0148_LSPV5_TO_FIVE_ROLE_LOCAL-REWRITE-MITER-FIREWALL-REFEREE309.md) · [raw certificate summary](../../results/raw/arc/lspv5_309/local_rewrite_miter_referee309.json)
 <!-- END LSPV5 LOCAL-REWRITE-MITER-FIREWALL-REFEREE309 -->
+
+
+<!-- BEGIN LSPV5 LOCAL-COMPILER-COEFFICIENT-REFEREE310 -->
+## LSPV-5 REFEREE310: local compiler coefficient correction (2026-11-03 02:48 PST)
+
+**PROVED/RESTRICTED in the unchanged Boolean-local fragment; full mixed calculus and B1/B2/B3 OPEN.** A complete output blocker on at most three variables has one falsifying assignment. Some authenticated premise clause is false there and is a subclause of the blocker, so explicit paid weakening costs at most six nodes. With at most eight blockers per factor, the LSPV-1 compiler359 simulation strengthens from 440 to 48:
+
+$$
+W_{L_3}(F)\le W_E(F)\le48W_{L_3}(F)+O(1).
+$$
+
+Resolution subsumption closure also gives a 32-node general local compiler (or a <=26-node local refutation). Independent Python/Node replay: 56 signed weakening certificates, all 256 relations, 1,889 entailed clauses, canonical maximum seven RES nodes, both parity labels, 11 malformed and five corrupt controls; 4,114 Node assertions PASS. Raw SHA-256 `7ec254731b204e7bbaba33fe4726911588e7db2197f0b2c86d2da16bf10f331e`. This corrects the coefficient, not the soundness of the prior 440 upper bound. Global XOR/circuit-valued CONVERT, superpolynomial mixed Wbar, B1/B2/B3 and P versus NP remain OPEN.
+
+[Report](../main/2026-11-03_0248_MAIN_LOCAL-COMPILER-COEFFICIENT-REFEREE310.md) · [handoff](2026-11-03_0248_LSPV5_TO_FIVE_ROLE_LOCAL-COMPILER-COEFFICIENT-REFEREE310.md) · [raw](../../results/raw/arc/lspv5_310/local_compiler_coefficient_referee310.json)
+<!-- END LSPV5 LOCAL-COMPILER-COEFFICIENT-REFEREE310 -->
