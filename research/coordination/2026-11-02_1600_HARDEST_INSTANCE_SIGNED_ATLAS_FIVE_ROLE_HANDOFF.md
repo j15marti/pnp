@@ -66,3 +66,15 @@ Thus a superpolynomial mixed-minimum lower bound would also be an Extended-Resol
 
 **PROVED/EXACT at the source floor; finite/computational; B1/B2/B3 OPEN.** For clause-minimally UNSAT m-source formulas in binary-premise Rmix341, W is at least m-1, and equality forces a source-once binary tree. Complete relaxed equality DP on seven authentic Peitl–Szeider maximizers finds W_Rmix341=4<5=W_Resolution for rsmu_3_5_1.cnf, a concrete family failure. It excludes the floor for the authentic six-, seven-, and eight-clause cases, giving only 6<=W<=7, 7<=W<=9, and 8<=W<=11. All 19 corpus files passed exhaustive UNSAT/minimality/sign-sensitivity controls; independent verifier passed 607 checks including malformed and odd/even parity controls. No arbitrary-decider transfer or asymptotic lower bound follows. [Report](../main/2026-11-02_1748_MAIN_PEITL-MIXED-FLOOR-REFEREE300.md).
 <!-- END LSPV5 PEITL MIXED FLOOR REFEREE300 -->
+
+<!-- BEGIN LSPV5 PEITL EXACT SIX REFEREE301 -->
+## LSPV-5 REFEREE301: exact mixed cost seven (2026-11-02 18:48 PST)
+
+**PROVED/EXACT in fixed source-independent-VARDEF Rmix341; finite/computational; B1/B2/B3 OPEN.** For authentic `rsmu_4_6_1.cnf`, the excess identity forces any six-node proof into one exact-unary tree or one unicyclic binary DAG and excludes charged zero-premise DEF. A stronger free-alias tree search excludes the unary class; a complete shared/left/right/tail decomposition excludes every unicyclic class after 7,212 relaxed tests. A seven-node Resolution refutation supplies the upper certificate. Therefore
+
+$$
+W_{Rmix341}(\texttt{rsmu\_4\_6\_1})=7.
+$$
+
+All deletions and 16 occurrence-sign neighbors are SAT; malformed, corrupted-proof, and odd/even parity controls passed. Independent Node verifier: 49 checks. This is a finite optimum strictly above the universal source floor, not an asymptotic or transfer theorem. [Report](../main/2026-11-02_1848_MAIN_PEITL-EXACT-SIX-REFEREE301.md).
+<!-- END LSPV5 PEITL EXACT SIX REFEREE301 -->
