@@ -125,6 +125,8 @@ Current peer versions checked: LSPV-1 `RESTRICTION_STABLE_REFLECTION367` at blob
 
 Queries covered Tseitin Resolution lower bounds, restrictions of Resolution proofs, reflection principles, optimal proof systems, Pich--Santhanam witnessing formulas, project reflection/B3 files and `github.com/openai` implementations.
 
+Recorded query strings were: `Pudlak reflection principles propositional proof systems theories 2007.14835`; `ECCC TR23-199 reflection principles proof complexity`; `Krajicek Pudlak propositional proof systems consistency first order theories 1989 DOI`; `resolution closed under restrictions proof complexity theorem`; GitHub project query `reflection B3 Rmix341`; and scoped OpenAI GitHub queries `propositional proof system reflection resolution` and `Tseitin resolution lower bound`.
+
 - A. Urquhart, [Hard Examples for Resolution](https://doi.org/10.1145/7531.8928), JACM 34 (1987), supplies expander/Tseitin Resolution hardness.
 - E. Ben-Sasson and A. Wigderson, [Short Proofs Are Narrow--Resolution Made Simple](https://doi.org/10.1145/375827.375835), JACM 48 (2001), supplies the width-size route to exponential Resolution bounds.
 - P. Pudlak, [Reflection Principles, Propositional Proof Systems, and Theories](https://arxiv.org/abs/2007.14835), surveys precisely the distinction between semantic reflection and short proofs.
@@ -132,6 +134,8 @@ Queries covered Tseitin Resolution lower bounds, restrictions of Resolution proo
 - J. Pich and R. Santhanam, [Towards P != NP from Extended Frege Lower Bounds](https://eccc.weizmann.ac.il/report/2023/199/), requires explicit witnessing/self-provability conditions; it does not give the present B3 transfer for free.
 
 Project search found the earlier LSPV-1 353 one-family equivalence and the four current peers above. Scoped `github.com/openai` searches found no applicable reflection-to-`Rmix341` theorem or implementation. Search absence is not novelty evidence.
+
+Access record: the first attempted spelling `research/agents/lspv-2/2026-11-03_1012_LSPV-2_INLINE-CONE-TRANSFER367.tex` returned GitHub 404. Repository search located the actual underscore path `research/agents/lspv-2/2026-11-03_1012_LSPV-2_INLINE_CONE_TRANSFER367.tex`, which was then read completely at blob `ff7fa6df98d45ce62ba2a3f852cdbfcbe8ae59c7`. No inaccessible Grok or Claude file is represented as reviewed.
 
 ## Work and all-phase space ledger
 
