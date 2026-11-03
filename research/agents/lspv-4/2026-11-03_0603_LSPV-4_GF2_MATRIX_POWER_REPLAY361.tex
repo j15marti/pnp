@@ -1,0 +1,69 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{LSPV-4: GF(2) Matrix-Power Replay of Signed Parity Proof DAGs}
+\author{PNP Time-Space Resource Auditor}
+\date{November 3, 2026, 06:03 PST}
+\begin{document}\maketitle
+
+\paragraph{Proof status and exact scope.}
+\textbf{PROVED/EXACT} for a declared ROW/XOR fragment of the already-fixed sound complete mixed calculus $R_{\mathrm{mix341}}$, with deterministic indexed-read-only-input Turing-machine work accounting; \textbf{COMPUTATIONAL} for independently checked finite controls. General SAT is the target. Full mixed-calculus verification, B1, B2, B3, any superpolynomial lower bound on $\overline W_R(N)$ and $P\ne NP$ remain \textbf{OPEN}. This is a standard characteristic-two matrix-powering/Savitch-style tradeoff with an application to our restricted proof format, not an academic novelty claim.
+
+\paragraph{Fixed rules and charged evidence.}
+Source CNF clauses are free axioms. Each unit-cost binary AND3/XOR inference contributes one node to $W_R$. Each source-authenticated \texttt{ROW} macro explicitly names the four clauses over three distinct variables whose eight-row conjunction is exactly $a\oplus b\oplus c=d$. It expands to \emph{three} charged binary AND3 nodes, never one free four-premise step. Every \texttt{XOR} record names two earlier ROW/XOR records; a repeated parent is counted \emph{twice} and cancels over GF(2). With $r$ ROW records and $t$ XOR records, the macro certificate has $K=r+t$ records but $q=3r+t$ paid logical nodes. Signed row variables, RHS values, source indices, antecedents, declaration counts and proof grammar are checked against the original source without importing an SAT oracle. The final equation must equal $0=1$. This fragment is sound within $R_{\mathrm{mix341}}$ but does not remove its other rules RES, LOCAL-CONVERT or conservative DEF.
+
+\begin{theorem}[Fully charged low-space affine certificate replay]
+Let $M=N+P$ be the binary length of an input CNF together with a supplied ROW/XOR certificate. There is a fixed deterministic indexed-input verifier that accepts exactly the authenticated contradiction proofs in this fragment with \emph{all-phase} peak writable space $O(\log^2(M+2))$ bits and worst-case native time $M^{O(\log(M+2))}$. The cost of finding a proof is not included; the theorem does not imply polynomial-time SAT decision or a machine-time lower bound.
+\end{theorem}
+\begin{proof}
+First validate the entire source and certificate grammar by rereading the read-only input. Count clauses and validate signed decimal variable IDs by retaining substring pointers and lengths instead of allocating an array indexed by the possibly enormous declared variable bound. Check every ROW locally by all eight valuations of its exact three named variables. Validate each XOR operand as a backward macro reference. This needs only logarithmically many writable pointer, counter and truth-table bits.
+
+Number records in topological order $0,\dots,K-1$ and let $f$ be the final index. Define a conceptual strictly upper-triangular $K\times K$ adjacency matrix $A$ over $\mathbb F_2$ whose entry $A_{uv}$ is the \emph{parity} of antecedent-slot occurrences from $u$ to $v$. In particular, duplicate operands give $A_{uv}=0$. Because $A^K=0$, each source ROW $i$ contributes to the final row with coefficient
+\[
+ c_i=\sum_{\ell=0}^{K-1}(A^\ell)_{i,f}\pmod2.
+\]
+This counts all directed source-to-output proof paths modulo two, including sharing and cancellations. Form the conceptual $2K\times2K$ matrix
+\[
+ B=\begin{pmatrix}A&I_K\\0&I_K\end{pmatrix},
+ \qquad c_i=(B^K)_{i,K+f}.
+\]
+The identity crossing gives one and only one padded path for each original source-to-output path of length less than $K$. Evaluate the requested entry of $B^e$ recursively with
+\[
+ P_0(u,v)=[u=v],\quad P_1(u,v)=B_{uv},\quad
+ P_e(u,v)=\bigoplus_{z=0}^{2K-1}
+ P_{\lfloor e/2\rfloor}(u,z)
+ P_{\lceil e/2\rceil}(z,v).
+\]
+The recursion has $O(\log K)$ levels, with $O(\log M)$ bits for its endpoints, middle-index counter, exponent and accumulator at each level. All $B_{uv}$ bits are obtained by charged proof rescans. Hence all phases stay within $O(\log^2(M+2))$ writable bits; the number of recursive calls, including paid indexed source queries, is $M^{O(\log M)}$.
+
+Finally iterate over actual source-literal occurrences. For each named variable, recompute the $c_i$ and XOR the coefficients of ROWs containing it; the resulting final row must have zero coefficient at every variable. Separately XOR ROW RHS bits weighted by $c_i$ and require one. Unused declared variables never occur in an authenticated ROW. Every accepted certificate therefore derives precisely $0=1$ from the named original clauses. Conversely every correctly formatted ROW/XOR contradiction passes these calculations.
+\end{proof}
+
+\paragraph{Exact cost ledger and controls.}
+The Python prototype deliberately materializes source and adjacency host objects; it is \emph{not} an implementation of the theoretical bit-level low-space Turing machine. Its recursive coefficient computation uses no memoization. An independently written Node.js referee builds original sources separately and compares a topological GF(2) computation with literal $2K\times2K$ matrix multiplication, independently of the Python proof recursion. For even and odd $K_4$ Tseitin controls, $q=15$, $K=7$, complete source plus JSON certificate $M=468$ host bytes, 5,811 recursive calls and four recursion levels; the model counts are 8 and 0. For even and odd prism$_3$, $q=23$, $K=11$, $M=691$ bytes, 120,626 recursive calls and five recursion levels; model counts are 16 and 0. The generator separately logs 5,431 and 115,526 adjacency probes per case. The actual encoded host bytes are \emph{not} purported minimum binary evidence lengths.
+
+Python completed 37 controls, including 16 individual source-clause literal-sign changes from the original odd $K_4$: each makes the source SAT and invalidates ROW authentication; eleven malformed DIMACS encodings, three forged operand references and a forged ROW RHS are rejected. A duplicate-parent DAG yields the correct $[0,1]$ path coefficients rather than a false extra source contribution. Independent JavaScript verification passed 276 assertions, including all four odd/even sources, 40 generated XOR DAGs with repeated parents, source-sign SAT controls and malformed strings. Measured host peak memory was about 96,400 KiB (Python) and 31,988 KiB (Node), \emph{not} FLMV writable-space bounds. Experimental search and discovery work is outside the free-choice $W_R$ minimum and inside any implemented solver's work ledger.
+
+\paragraph{Falsifiers and precise classifications.}
+\begin{enumerate}
+\item[] \textbf{F1, FALSIFIED (restricted):} a supplied ROW/XOR certificate inherently needs $K$ simultaneously writable coefficients for deterministic checking. Matrix-power rescanning gives a quasipolynomial-time checker with $O(\log^2 M)$ writable bits.
+\item[] \textbf{F2, FALSIFIED:} duplicate XOR antecedent references may be collapsed into one ordinary graph edge. Multiplicity must be reduced modulo two.
+\item[] \textbf{F3, FALSIFIED:} an even-charge SAT source or a sign-flipped SAT neighbor with a forged local row can be accepted. Authenticated row truth tables and final RHS reject these controls.
+\item[] \textbf{F4, OPEN:} this restricted verifier implies a polynomial-time $N^{1/2}$-space universal SAT decider or B2/B3. It is quasipolynomial in proof size, requires the proof to be supplied, and does not cover other mixed rules.
+\end{enumerate}
+The all-phase materialized-child space envelope still is $s'\le\max\{\rho,\eta,\lambda,\lambda s\}$, where $\rho$ includes \emph{every} parsing, source access, order discovery, proof materialization and conversion phase. A representation that first stores all $M$ source/certificate bits writable has peak exponent at least one in $M$, regardless of later deallocation. An indexed-read-only proof certificate makes the present restricted verifier's low-space bound possible; neither it nor a family-local Tseitin recognizer establishes B2. The latter requires $T_A^{\mathrm{wc}}(N)$ maximized over \emph{all} binary strings up to length $N$, not over the tested formulas. B3 remains the weakest sufficient implication $\mathrm{SAT}\in P\Rightarrow \overline W_{R_{\mathrm{mix341}}}(N)\in N^{O(1)}$ and remains unproved.
+
+\paragraph{Project and literature reconciliation.}
+The verified November 2 12:04 five-role handoff was read first, then issue \#3, AGENTS.md, CODEX.md, pnp-research skill, LSPV-2 mixed-calculus 341, the prior LSPV-4 affine-coordinate 360 and the LSPV-5 factor/alias referees 312/313. LSPV-4 360 already supplies an $O(K+\log M)$-writable-space polynomial-time verifier; this report offers a different time-space point rather than claiming that earlier result false. Project GitHub searches for \texttt{matrix powering}, \texttt{GF(2) path} and \texttt{Savitch} surfaced no preceding exact ROW/XOR checker with this tradeoff. Searches of github.com/openai retrieved unrelated matrix results. Savitch's divide-and-conquer and elementary matrix-powering are established techniques; Cook--Reckhow guarantees existence of \emph{some} polynomially bounded proof system if NP=coNP, not for this fixed $R$.
+
+\paragraph{Remaining gap and publication safeguard.}
+Extend a paid source-coordinate representation to RES, LOCAL-CONVERT and DEF with output-length and downstream-dependency invariants, then examine whether a \emph{polynomial-time} source/index/schedule implementation can meet the strict all-phase square-root target. This does not itself prove B3. Root main.tex is too large for a safe full-file ownership edit via ordinary contents fetch; if authenticated full-blob recovery is not completed, report a reconciliation fallback rather than overwriting any other agent's work. No task identities, states or schedules changed. P versus NP remains OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{Savitch} W. Savitch, Relationships Between Nondeterministic and Deterministic Tape Complexities, JCSS 4(2), 177--192 (1970).
+\bibitem{CR} S. Cook and R. Reckhow, The Relative Efficiency of Propositional Proof Systems, JSL 44(1), 36--50 (1979).
+\bibitem{CDST} G. Cohen, D. Doron, A. Sberlo and A. Ta-Shma, Approximating Iterated Multiplication of Stochastic Matrices in Small Space, STOC 2023, 35--45. Different matrix domain, no SAT transfer asserted.
+\bibitem{Project} PNP LSPV-4 AFFINE-COORDINATE-REPLAY360, November 3, 2026.
+\end{thebibliography}
+\end{document}
