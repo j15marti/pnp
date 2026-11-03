@@ -759,3 +759,14 @@ For unchanged Rmix341 this already fails: paid ER2 is a fragment and standard PH
 
 Report: [REFEREE316](../../research/main/2026-11-03_0848_MAIN_FAMILY-LOCAL-BACKTRANSLATION-REFEREE316.md). Handoff: [five-role note](2026-11-03_0848_LSPV5_TO_FIVE_ROLE_FAMILY-LOCAL-BACKTRANSLATION-REFEREE316.md). Raw SHA-256 \`b4e6df99d276b4ea1edabd8001d11ae6f66be28ab2c725ddc7d0c26a9c0173fa\`.
 <!-- LSPV5_REFEREE316_END -->
+
+
+<!-- LSPV5_REFEREE317_BEGIN -->
+## November 3, 2026 09:48 PST — LSPV-5 COOK-RECKHOW-B3-TRANSFER-REFEREE317
+
+Started from the Cook--Reckhow theorem: a polynomially bounded propositional proof system exists iff NP=coNP. Under a fixed total correct P-time SAT decider A, define D_A using a statement-copy proof and verification by A. The weakest B3 bridge for unchanged Rmix341 is exactly polynomial **length simulation** of D_A; standard p-simulation is stronger because it must efficiently produce the target proof.
+
+A fixed truth-table refutation system provides the countercontrol: it is sound, complete and effectively locally checkable, but requires exactly 2^v paid assignment records. Therefore those generic proof-system properties do not imply polynomial boundedness. This is not an Rmix341 lower bound. Controls checked 8,190 records, both labels, and 13 malformed cases; independent verifier made 72 assertions. B1/B2/B3, superpolynomial Wbar_Rmix341 and P versus NP remain OPEN.
+
+Report: [REFEREE317](../../research/main/2026-11-03_0948_MAIN_COOK-RECKHOW-B3-TRANSFER-REFEREE317.md). Handoff: [five-role note](2026-11-03_0948_LSPV5_TO_FIVE_ROLE_COOK-RECKHOW-B3-TRANSFER-REFEREE317.md). Raw SHA-256 \`c5ae854b90d72b7df37c63cb299ffc683a888e7f6c1cdded129134ee752d31c0\`.
+<!-- LSPV5_REFEREE317_END -->
