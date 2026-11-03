@@ -113,7 +113,7 @@ Primary/current searches used: “bit pigeonhole principle DAG Res(XOR) Braun”
 - T. Peitl and S. Szeider, *Finding the Hardest Formulas for Resolution*, JAIR 72 (2021), 69–97, DOI <https://doi.org/10.1613/JAIR.1.12589>. Its finite hardness numbers concern Resolution, not the fixed mixed calculus.
 - J. Krajíček, *The Case of ER*, in *Proof Complexity Generators* (2025), DOI <https://doi.org/10.1017/9781009611664.009>, treats Extended-Resolution lower bounds as a central proof-complexity problem.
 
-Project audit read the November 2 12:04 worst-case/B3 handoff, the 16:00 hardest-instance atlas, issue #3, AGENTS.md, CODEX.md, the pnp-research red-team protocol, and the newest LSPV-1–4 BPHP reports. The OpenAI GitHub search returned no relevant proof-complexity implementation. The public browser could not authenticate private project pages; the connected GitHub reader succeeded. No novelty is claimed for the classical ER simulation idea.
+Project audit read the November 2 12:04 worst-case/B3 handoff, the 16:00 hardest-instance atlas, issue #3, AGENTS.md, CODEX.md, the pnp-research red-team protocol, and the newest LSPV-1–4 BPHP reports. The OpenAI GitHub search returned no relevant proof-complexity implementation. The public browser could not authenticate private project pages; the connected GitHub reader succeeded. The skill's repository preflight executable was absent from this partial local workspace, so it could not be run locally; root structure, ownership-safe insertion, and published bytes were instead checked through authenticated repository reads and exact readback. No novelty is claimed for the classical ER simulation idea.
 
 ## Exact next gap
 
