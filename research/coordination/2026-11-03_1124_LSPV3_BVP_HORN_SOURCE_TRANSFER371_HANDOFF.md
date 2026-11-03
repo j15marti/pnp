@@ -26,7 +26,7 @@ Therefore there is no polynomial OUTPUT-BIT-overhead converter between these pre
 ## Four falsifiers and controls
 
 1. F1 FALSIFIED: semantic equisatisfiability makes all Boolean encodings inherit algebraic BVP hardness. The Horn family has an exact linear mixed proof.
-2. F2 PROVED: a polynomial-output-bit converter gives original algebraic BVP refutations from the short Boolean proofs. Contradiction with published Theorem 3.5.
+2. F2 FALSIFIED: a polynomial-output-bit converter gives original algebraic BVP refutations from the short Boolean proofs. Contradiction with published Theorem 3.5.
 3. F3 FALSIFIED: a short CNF proof automatically certifies the original algebraic source. Source axiom derivation is a separate charged obligation.
 4. F4 OPEN: these facts establish B3 or superpolynomial mixed-system Wbar. They do not.
 
