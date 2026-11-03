@@ -22,6 +22,8 @@ function run(){
  }
  const malformed=[null,undefined,"",{},-1,2**60,[],[2],[-1],[0],["bad"]];
  for(const i of malformed){assert.throws(()=>strict("0101",i,1));rejected++}
+ const badSources=["","0102","2","0 1","01a","00\\n1",null,42,[],{},undefined];
+ for(const x of badSources){assert.throws(()=>strict(x,0,1));rejected++}
  for(let L=1;L<=32;L++){const s="01".repeat(32).slice(0,L);for(let i=0;i<L;i++){assert.equal(strict(s,i,Number(s[i])),true);assert.equal(strict(s,i,1-Number(s[i])),false);checks+=2;authentication+=2}}
  for(let w=2;w<=12;w++){
     const N=2**w,ids=Array.from({length:N},(_,i)=>i);
