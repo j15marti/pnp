@@ -544,7 +544,7 @@ Readback-verified role-owned publication:
 
 **PROVED/EXACT finite result under the already operative source-independent zero-proof-premise VARDEF convention; exhaustive stronger-relaxation searches independently reimplemented. P versus NP OPEN.** For the nine indispensable clauses of canonical PHP(3,2), the identity
 `q-8=beta+u+2d0`
-reduces every proof below cost ten to three classes. Complete truth-table searches exclude the cost-eight all-binary tree (8,392 pair tests), cost-nine one-unary tree even after granting every implied relation on the same at-most-three-variable support (273,641 tests), and cost-nine all-binary unicycle in complete shared-branch-tail normal form (58,193 reconvergence tests). A ten-step Resolution certificate independently replays, hence
+reduces every proof below cost ten to three classes. Complete truth-table searches exclude the cost-eight all-binary tree (8,392 pair tests), cost-nine one-unary tree even after granting every implied relation over any at-most-three-variable subset, including outside-variable weakenings (631,592 tests), and cost-nine all-binary unicycle in complete shared-branch-tail normal form (58,193 reconvergence tests). A ten-step Resolution certificate independently replays, hence
 `W_Rmix341(PHP(3,2))=10`.
 A premise-consuming DEF is a different calculus and is not covered.
 
