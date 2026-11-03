@@ -210,6 +210,14 @@ def main():
     t0 = time.perf_counter()
     T, x, xp, y, a, b, c, u, v, p, q, r = range(1, 13)
     templates = []
+    rail_t, rail_u, rail_d, rail_f, rail_e = range(13, 18)
+    templates.append(prove_template(
+        "true_rail_four_gate",
+        [("DEF_AND_d_tu", and_slots(rail_d, rail_t, rail_u)),
+         ("DEF_AND_f_dnt", and_slots(rail_f, rail_d, -rail_t)),
+         ("DEF_AND_e_fu", and_slots(rail_e, rail_f, rail_u)),
+         ("DEF_AND_T_nfne", and_slots(T, -rail_f, -rail_e))],
+        [(-rail_f,), (-rail_e,), (T,)]))
     templates.append(prove_template(
         "xor_commutativity",
         [("DEF_XOR_q_ab", xor_slots(q, a, b)),
