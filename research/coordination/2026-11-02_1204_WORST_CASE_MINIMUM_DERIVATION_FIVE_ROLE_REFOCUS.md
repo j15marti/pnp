@@ -506,3 +506,16 @@ Independent Python producer and no-import Node referee: 12 balanced/comb cases a
 
 [Role-owned report](../agents/lspv-4/2026-11-02_2201_LSPV-4_SELECTOR_SHAPE_SOURCE_AUDIT351.md); [executable](../../experiments/arc/lspv4_351_selector_compact.js); [numeric raw ledger](../../results/raw/arc/2026-11-02_2201_LSPV4_SELECTOR_SHAPE_SOURCE_AUDIT351_summary.json); [role handoff](2026-11-02_2201_LSPV4_SELECTOR_SHAPE_SOURCE_AUDIT351_HANDOFF.md). Next: seek an operator with provable mixed-system excess amplification; separately target the weakest B3 bridge.
 <!-- END LSPV4 SELECTOR-SHAPE-AUDIT351 -->
+
+
+<!-- BEGIN LSPV4 PEITL-SELECTOR-LINEAR-CAP352 -->
+## LSPV-4 352: nontrivial mixed-hard seed is not amplified superpolynomially by selectors (2026-11-02 22:43 PST)
+
+**PROVED/EXACT selector sandwich (already established in LSPV-3 GUARD-SUM349); COMPUTATIONAL independent Peitl-core stress test; B1/B2/B3 and P versus NP OPEN.** For minimally UNSAT disjoint leaf CNFs F_i with m_i sources and explicit genuine Resolution refutations of q_i nodes, source-authenticated binary-premise fixed Rmix341 satisfies **sum m_i-1 <= W_mix(H_T) <= sum q_i+k-1** for any binary selector-guard tree T. Lower bound is indispensability/source ancestry; upper bound lifts all leaf proofs through guards and resolves sibling guards. No new rule or oracle is introduced.
+
+Apply this to the authentic Peitl–Szeider 5-variable 7-source core with **exact mixed W=9** independently certified in LSPV-5 REFEREE304, and 9-node ordinary Resolution proof. For k guarded copies, **n=6k-1, m=7k, 7k-1<=W_mix(H_T)<=10k-1**; thus the selector composition of this fixed seed cannot produce superpolynomial cost in encoded input length. This is an explicit **family failure**, not a bound on worst-case Wbar_R(N) or an exact mixed minimum for k>1.
+
+Python and separate no-import Node implementations: 11 balanced/comb cases k=1,2,4,8,16,32; **16,293 Node assertions PASS**, **10,137 SAT deletion/sign-flip neighbor witness checks**, **66 malformed binary inputs rejected**, K4 parity odd/even model counts 0/8, invalid proof pivot rejected. k=32: balanced source **17,438 bits**, 1,760 sign fields, 4,610 eager antecedent literal inspections; comb **40,875 bits**, 4,329 signs, 11,950 inspections. Both have identical exhibited q=319 Resolution nodes and 8,932 additional pivot-only evidence bits; these are proof-upper records and implementation-specific verification work. All-phase host memory Python 97,680 KiB/Node 33,524 KiB, not native FLMV writable space. Keep rho covering every local phase; B1/B2/B3 and the superpolynomial fixed-system minimum remain OPEN.
+
+[Role report](../agents/lspv-4/2026-11-02_2243_LSPV-4_PEITL_SELECTOR_LINEAR_CAP352.md); [standalone code](../../experiments/arc/lspv4_352_peitl_selector_compact.js); [raw summary](../../results/raw/arc/2026-11-02_2243_LSPV4_PEITL_SELECTOR_LINEAR_CAP352_summary.json); [handoff](2026-11-02_2243_LSPV4_PEITL_SELECTOR_LINEAR_CAP352_HANDOFF.md). Next: a genuinely interacting, mixed-rule-resistant excess-amplifying gadget, with B3 independently treated. No task/state/schedule changes.
+<!-- END LSPV4 PEITL-SELECTOR-LINEAR-CAP352 -->
