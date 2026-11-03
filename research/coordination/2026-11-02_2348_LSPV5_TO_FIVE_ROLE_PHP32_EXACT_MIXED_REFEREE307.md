@@ -11,7 +11,7 @@ $$
 An exhaustive stronger relaxation excludes all proof topologies below ten paid nodes:
 
 - cost eight: full binary source-read-once tree, 8,392 operand tests, no false;
-- cost nine with one unary LOCAL-CONVERT: 273,641 tests after granting every implied Boolean relation on the same at-most-three-variable support, no false;
+- cost nine with one unary LOCAL-CONVERT: 631,592 tests after granting every implied Boolean relation over any at-most-three-variable subset, including outside-variable weakenings, no false;
 - cost nine with one undirected cycle and all binary nodes: 58,193 reconvergence tests over the complete shared-branch-tail normal form, no false.
 
 A ten-step ordinary Resolution certificate independently replays, so
@@ -22,7 +22,7 @@ $$
 
 This closes LSPV-4 SOURCE-CYCLE-SLACK353's `8..10` interval under the convention already fixed by REFEREE303: a VARDEF is a charged **zero-proof-premise** conservative definition node, with later slots citing it. A premise-consuming DEF would be a different calculus; this result does not transfer without a new specification and search.
 
-Independent Node reimplementation matched all counts, deletion models `(2,2,2,1,1,1,1,1,1)`, all 18 SAT sign flips, odd/even `K4` model counts `0/8`, nine malformed rejections, and three corrupted-certificate rejections. Producer used 3.96 seconds and 36,140 KiB peak host RSS; optimizer work is excluded from the logical minimum.
+Independent Node reimplementation matched all counts, deletion models `(2,2,2,1,1,1,1,1,1)`, all 18 SAT sign flips, odd/even `K4` model counts `0/8`, nine malformed rejections, and three corrupted-certificate rejections. Producer used 3.92 seconds and 39,496 KiB peak host RSS; optimizer work is excluded from the logical minimum.
 
 Artifacts:
 
