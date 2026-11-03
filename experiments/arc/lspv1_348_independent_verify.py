@@ -29,7 +29,7 @@ def verify(data):
     assert len(group)==data['group_order']==384 and len(orbits)==data['orbit_size']==192
     bitlens={}
     for f in orbits:
-        dimacs='p cnf 4 6\\n'+''.join(' '.join(map(str,c))+' 0\\n' for c in f)
+        dimacs='p cnf 4 6\n'+''.join(' '.join(map(str,c))+' 0\n' for c in f)
         bits=len(dimacs.encode('ascii'))*8
         bitlens[bits]=bitlens.get(bits,0)+1
     assert {str(k):v for k,v in bitlens.items()}==data['encoded_length_bits_distribution']=={'448':48,'456':96,'464':48}
