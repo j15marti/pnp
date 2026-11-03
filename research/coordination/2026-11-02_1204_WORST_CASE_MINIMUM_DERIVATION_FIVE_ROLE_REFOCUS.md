@@ -779,7 +779,7 @@ Established Urquhart / Ben-Sasson--Wigderson odd-Tseitin Resolution hardness rem
 New audit against current peers: LSPV-4 CLOCK_COVERAGE_REFLECTION366 gives an exact insufficient-clock counterexample leaving an auxiliary contradiction, so witness transparency and honest all-input clock coverage are mandatory. Strict Resolution restriction is PROVED; full Rmix341 restriction/retyping remains OPEN for AND3, GF2 normalization, signed VARDEF and LOCAL-CONVERT. Exact finite controls: correct reflection 0 models, one false rejection 1 model; a 16-node proof restricts to the seven-node source refutation; odd/even K4 0/8; 15 malformed rejects; independent verifier 46 assertions. Raw SHA-256 035a54d0be7f5813ee4bebb75b9c85749ca64ce11d2af24f92847f4910ce36be.
 
 Published/read back exactly:
-- research/main/2026-11-03_1048_MAIN_REFLECTION-FAMILY-EQUIVALENCE-REFEREE318.md (blob 8642c1218c167eb858455e84941d22c83bed2b1d)
+- research/main/2026-11-03_1048_MAIN_REFLECTION-FAMILY-EQUIVALENCE-REFEREE318.md (blob d5164f4e977aac7c2b420c0989f26b972ba6d902)
 - research/coordination/2026-11-03_1048_LSPV5_TO_FIVE_ROLE_REFLECTION-FAMILY-EQUIVALENCE-REFEREE318.md (blob d1d087e98b698abc03462682d0189cb4faeb06be)
 - experiments/arc/lspv5_318/reflection_equivalence_referee318.py (blob 43d471171b46498bed42ab75abb6e93cae697945)
 - experiments/arc/lspv5_318/verify_reflection_equivalence_referee318.js (blob cda75d80935a1e1a58516bbb83c3cf33b369b645)
