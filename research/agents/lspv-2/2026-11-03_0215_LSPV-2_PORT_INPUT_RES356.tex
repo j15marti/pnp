@@ -1,0 +1,91 @@
+% LSPV-2 PORT-INPUT-RES356, November 3 2026 02:15 PST
+\documentclass[11pt]{article}
+\usepackage[margin=.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{PORT-INPUT-RES356: Proof-Carrying Small-Input Equivalence Miters in the Fixed Mixed Calculus}
+\author{PNP SAT-Circuit Reduction Builder / LSPV-2}
+\date{November 3, 2026, 02:15 PST}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT symbolic restricted construction, pending external specialist review; COMPUTATIONAL independent finite replay.} Classification: FAMILY FAILURE for bounded-primary-input miter constructions. General all-input superpolynomial $\overline W_R$, B1, B2, B3 and P versus NP are OPEN.
+
+\section*{Preselected calculus and encoded source}
+Retain unchanged $R_{\mathrm{mix341}}$: authentic CNF source leaves cost zero; strict two-premise binary Resolution inferences cost one, as do the other fixed legal operations under their declared conditions. We \emph{only} use source clauses and strict Resolution, never a new semantic equivalence axiom. Shared derivation DAG nodes count once. Best proof selection is free; search and checking are separately charged.
+
+For any $k\ge2$, fix two signed-pin acyclic Boolean circuits $C,D$, with $g_C,g_D\ge1$ two-input AND/XOR gates, common $k$ primary inputs and distinct fresh gate outputs. Each gate's two absolute input wires differ and refer to inputs or earlier outputs. Internal outputs of the two circuits are disjoint. Encode each gate as original Tseitin \emph{source} clauses. An AND output $z=a\land b$ uses the three clauses
+\[
+(\neg z\lor a),\quad(\neg z\lor b),\quad(z\lor\neg a\lor\neg b).
+\]
+An XOR gate uses its four forbidden-triple clauses. Append an extra original XOR gate $m=o_C\oplus o_D$ and original source unit $(m)$. Denote this authentic \emph{output-disequality} CNF by $M_\oplus(C,D)$, let $g=g_C+g_D$, and set $s=g+1$ including the miter XOR gate. The source has $n=k+s$ Boolean variables and at most $4s+1$ clauses of width at most three. Its canonical decimal-DIMACS source length is $N=O((k+g)\log(k+g+2))$ bytes (eight bits per byte). The source-gate clauses are zero-cost because they are given original source, not proof-time auxiliary definitions.
+
+\begin{theorem}[All-size strict-Resolution miter cost cap]
+For every pair of circuits in this fixed source grammar,
+\[
+M_\oplus(C,D)\in\mathrm{UNSAT}\quad\Longleftrightarrow\quad
+(\forall a\in\{0,1\}^k)\ C(a)=D(a).
+\]
+If they are equivalent, a uniform explicit compiler emits an authenticated strict Resolution refutation DAG of cost at most
+\[
+\boxed{W_{R_{\mathrm{mix341}}}(M_\oplus(C,D))\le(g+2)2^k-1.}
+\]
+Every derived clause contains at most $n$ literals and a conservative explicit proof-bit bound is $O((g+2)2^k\,n\log(n+2))$. Thus any recognizable equivalent-miter family with $k\le c\log_2(N+1)$ for fixed $c$ has polynomial minimum $R_{\mathrm{mix341}}$ cost in encoded source length $N$. This is a cost \emph{upper} bound, not an exact minimum or proof of B3.
+\end{theorem}
+\begin{proof}
+The Tseitin clauses uniquely extend each of the $2^k$ primary assignments through both circuits and the mismatch XOR gate. The required output unit $(m)$ is satisfiable exactly if the circuit functions differ somewhere. A primary mismatch therefore gives a source-checked SAT witness. Conversely, for equivalent functions every primary assignment forces $m=0$, contradicting $(m)$.
+
+To obtain a legal Resolution proof without treating primary branch decisions as axioms, fix a complete primary assignment $\alpha$ as temporary DPLL decisions. Unit propagation over original source clauses determines all $s$ gate outputs in topological order, or reaches a conflict earlier. In either case an original source clause becomes false. Record each forced output variable's original signed source-reason clause and its propagation timestamp. Starting from the falsified clause, resolve any nondecision literal against its authentic source reason, always choosing the latest assigned such literal. All other reason literals were falsified at earlier timestamps, so the resulting resolvent is a genuine non-tautological clause false under the same assignment. Each propagation timestamp strictly decreases, so at most $s$ Resolution inferences eliminate all nondecision variables. The resulting source-derived clause contains only signed primary literals falsified by $\alpha$.
+
+Merge these learned blocking clauses up the complete binary tree of the $k$ primary decisions. At a split $x_i$, if one child clause omits $x_i$, retain it. Otherwise the left ($x_i=0$) clause includes $x_i$ and the right ($x_i=1$) includes $\neg x_i$, and a single genuine Resolution step removes the pivot. Induction shows the parent clause is falsified by its common partial assignment and uses only previously fixed decision variables. At the root the clause is empty. No temporary decision is ever a proof antecedent. There are at most $2^k$ leaf derivations of at most $s$ steps and at most $2^k-1$ merging steps, giving $(s+1)2^k-1=(g+2)2^k-1$. Every line names original source clauses or earlier genuine resolvents. Construction and checking require polynomial work in the explicit produced certificate plus its input, not a free semantic oracle. \hfill$\square$
+\end{proof}
+
+\section*{Four falsifiers and source controls}
+\begin{description}
+\item[] \textbf{F1, FALSIFIED as hard-family strategy.} Syntactically different AND/XOR circuits need not have large proof cost. The compiler handles distributivity and absorption without a supplied rewrite trace, at exponential cost only in the number $k$ of common primary inputs. No all-CNF polynomial upper bound follows when $k$ is large.
+\item[] \textbf{F2, FALSIFIED.} An oriented pair of output units is an equivalence test. For $C(a,b)=a\land b$ and $D(a,b)=a\lor b=(a\oplus b)\oplus(a\land b)$, the oriented constraint $o_C=1,o_D=0$ is UNSAT, even though the functions differ. Reversed orientation is SAT. The genuine XOR-mismatch gate used here is SAT in \emph{both} orders. This false-equivalence trap was specifically tested.
+\item[] \textbf{F3, FALSIFIED.} DPLL input assignments can be treated as free proof axioms. The actual certificate derives each leaf blocking clause from original signed reasons using strict Resolution; the independent checker rejects invented branch premises.
+\item[] \textbf{F4, OPEN.} A short proof for small-$k$ circuit miters implies a polynomial minimum for arbitrary general CNF or provides B3. Neither follows. A two-port summary can hide an expensive acquisition problem.
+\end{description}
+
+\section*{Finite independent experiment}
+A deterministic no-import JS producer emitted complete proof DAGs and source assignment witnesses. A separately authored Node verifier rebuilt each AND/XOR source clause from algebraic gate identities, checked every pivot, enumerated all $2^k$ input assignments, and rejected source corruption and bad pivots. The independent checker passed \textbf{472 counted checks}, including all five emitted UNSAT refutations, three SAT controls, \textbf{25 corrupted certificate rejections} and four malformed input rejections.
+
+\begin{center}
+\begin{tabular}{lrrrrr}\toprule
+source & $k$ & $g$ & DIMACS bytes & verified RES nodes & bound\\\midrule
+distributivity &3&5&201&48&55\\
+signed distributivity &3&5&201&48&55\\
+absorption &2&3&139&16&19\\
+four-input distributivity &4&8&330&136&159\\
+XOR re-parenthesization &4&6&295&127&127\\
+AND-to-OR trap &2&4&177& SAT &23\\
+OR-to-AND reverse &2&4&177& SAT &23\\
+inequivalent neighbor &3&5&187& SAT &55\\\bottomrule
+\end{tabular}
+\end{center}
+This is finite verification of an all-size explicit construction, \emph{not} a finite proof-cost minimum search. The public complete 94,776-ASCII-byte JSON includes all derived clauses, parents, pivots, and SAT witnesses. The four-input distributive source is 330 DIMACS bytes, its emitted Resolution certificate has 136 charged nodes and an uncompressed 4,810-byte JSON node list. The three SAT searches attempted five, five and 21 intermediate Resolution nodes respectively; these were discarded and \emph{not} counted as logical proof costs. Optimizer discovery is a separate activity.
+
+Implementation-side time/peak-space upper accounting must include source parsing, index/head reads, branch generation, failed policies, selection, storage of all clauses/reasons, derivation checking, output, caching and simultaneous ancestors; no native indexed-TM measurements or FLMV resource margins are asserted. In any later recursive implementation $s'\le\max\{\rho,\eta,\lambda,\lambda s\}$ retains all allocate/free preprocessing costs.
+
+\section*{CORPUS REVIEWED; DUPLICATION / CONTRADICTION AUDIT}
+Read verified November 2 12:04 PST refocus (blob \texttt{033b54b8}), issue \#3, AGENTS.md, CODEX.md, repository pnp-research skill, latest peer handoffs, LSPV-2 CLONE-MITER-RES355, LSPV-5 LOCAL-REWRITE-MITER-REFEREE309, LSPV-1 ER2-SOURCE-PADDING358, LSPV-3 COMPLETE-LIFTED-K4-358, and LSPV-4 RANDOMIZED-SOURCE-FIRST-FANO356. Project history search recovered LSPV-2 RUP-CIRCUIT-PROOF-BRIDGE325 and LSPV-3 BOUNDED-INTERFACE-GATE326, both concerning other bounded-parameter decision/certification routes. The fundamental DPLL-to-Resolution conversion and bounded-input enumeration are \emph{known}, not claimed as a novelty in proof complexity. The checked increment is an explicit strict-Resolution, charged-source, signed-AND/XOR-XOR-miter cost compiler and the oriented-miter falsifier, with no rewrite-trace hypothesis.
+
+Primary literature checked: Chatterjee et al., DAC 2007, DOI 10.1145/1278480.1278631; Bryant and Heule, TACAS 2021, DOI 10.1007/978-3-030-72016-2\_5; Cook and Reckhow, 1979. Project GitHub queries covered port-input DPLL Resolution and bounded interface equivalence; searches within github.com/openai found generic or unrelated matches, no authoritative fixed-calculus verifier. No research theorem was imported solely by analogy.
+
+\textbf{Adopted:} fixed signed source syntax, strict Resolution, shared proof nodes, free optimal proof choice. \textbf{Rejected:} uncharged truth-table inference, automatic hard proof from distinct topology, one-orientation equivalence. \textbf{Stale or overstated claim corrected within this run:} preliminary code used four blocking clauses rather than the required three for AND, and initially used one oriented pair of output units; both were rejected, replaced with authenticated three-clause AND gates and a full XOR mismatch gate, and independently checked before publication. \textbf{Root change:} only this restricted upper construction; leave all universal lower bounds and B1/B2/B3 OPEN.
+
+\section*{Published outbox and next gap}
+\begin{description}
+\item[] \texttt{research/agents/lspv-2/2026-11-03\_0215\_LSPV-2\_PORT\_INPUT\_RES356.tex}
+\item[] \texttt{experiments/arc/lspv2\_356\_port\_input\_resolution.js}
+\item[] \texttt{experiments/arc/lspv2\_356\_port\_input\_independent\_verify.js}
+\item[] \texttt{results/raw/arc/2026-11-03\_0215\_LSPV2\_PORT\_INPUT\_RES356.json}
+\item[] \texttt{results/raw/arc/2026-11-03\_0215\_LSPV2\_PORT\_INPUT\_RES356\_independent.json}
+\end{description}
+\noindent Next: prioritize growing nonaffine high-deficiency miter/source families with $k=\omega(\log N)$ whose minimal mixed proofs resist all cheap AND3, GF$(2)$, VARDEF and justified conversions; independently establish a same-$R$ B3 bridge. \textbf{P versus NP remains OPEN.}
+\begin{thebibliography}{9}
+\bibitem{Chatterjee} S. Chatterjee, A. Mishchenko, R. Brayton, and A. Kuehlmann, On Resolution Proofs for Combinational Equivalence, DAC 2007, doi:10.1145/1278480.1278631.
+\bibitem{BryantHeule} R. Bryant and M. Heule, Generating Extended Resolution Proofs with a BDD-Based SAT Solver, TACAS 2021, doi:10.1007/978-3-030-72016-2\_5.
+\bibitem{CookReckhow} S. Cook and R. Reckhow, The Relative Efficiency of Propositional Proof Systems, JSL 44 (1979), 36--50.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV2::PORT_INPUT_RES356
