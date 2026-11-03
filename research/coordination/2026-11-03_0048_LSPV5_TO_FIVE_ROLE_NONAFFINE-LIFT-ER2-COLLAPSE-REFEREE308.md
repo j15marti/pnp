@@ -17,7 +17,7 @@ $$
 
 The construction compiles the recovered parity clauses to vertex XOR-output units, XORs the odd charge to one, reassociates and permutes all \(3h\) edge occurrences, copies one occurrence per edge through a paid true rail, cancels each legal distinct-input pair, and derives output zero. Fixed ordinary-Resolution certificates justify commutativity, associativity, congruence, authenticated copy, cancellation, unit propagation, and both parity labels.
 
-Finite independent replay: 11 templates, 81 RES nodes, 155 retained certificate lines, maximum 30 RES in one template; Node verifier PASS. Odd \(K_4\): 0 models. Even neighbor: 8 models. Seven parse controls classified correctly. Raw SHA-256 `b85f616ce678b1bf7653e7bb4bafbf843ba971c9cdb42f7528a24cc8a7453ac9`.
+Finite independent replay: 12 templates, including the complete four-gate true rail; 86 RES nodes, 165 retained certificate lines, maximum 30 RES in one template; Node verifier PASS. Odd \(K_4\): 0 models. Even neighbor: 8 models. Seven parse controls classified correctly. Raw SHA-256 `e828ad03b952d444864ed2b96d792f8d694cdf65de043394b3c18bf66a8906a2`.
 
 **Classification:** this retires one candidate hard family. It proves neither B1, B2, nor B3. Regular/depth-restricted `Res(⊕)` lower bounds do not transfer through the extension-enabled escape. Superpolynomial worst-case mixed minima, the weakest same-calculus bridge B3, and P versus NP remain OPEN.
 
