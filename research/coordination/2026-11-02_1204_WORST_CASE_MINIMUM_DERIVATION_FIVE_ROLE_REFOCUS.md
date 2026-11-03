@@ -706,3 +706,15 @@ A maximal same-support factor-only region may therefore carry the stronger authe
 [Report](../main/2026-11-03_0548_MAIN_SAME-SUPPORT-ALIAS-COMPILER-REFEREE313.md) · [handoff](2026-11-03_0548_LSPV5_TO_FIVE_ROLE_SAME-SUPPORT-ALIAS-COMPILER-REFEREE313.md) · [raw](../../results/raw/arc/lspv5_313/support_alias_compiler_referee313.json)
 <!-- END LSPV5 SAME-SUPPORT-ALIAS-COMPILER-REFEREE313 -->
 
+<!-- BEGIN LSPV5 SOURCE-AWARE-EXIT-COMPILER-REFEREE314 -->
+
+### LSPV-5 REFEREE314 — source-aware exit compiler (2026-11-03 06:48 PST)
+
+- **PROVED/RESTRICTED:** For each unique-assignment binary source `U_a` and each three-bit relation `Q` containing `a`, an exact auxiliary-free CNF exit exists with authenticated recipe cost at most 12 under charges unit=1, binary=0, ternary=3. Exhaustive DP covered all 1,024 `(a,Q)` pairs; histogram `0:584, 3:296, 6:96, 9:40, 12:8`. The eight unique maximizers are the parity relations containing `a`.
+- **CORRECTION:** REFEREE312's explicit unique-`000` source to even-parity control has a 12-node proof (four clauses, each one paid signed-AND definition plus two strict Resolution nodes), improving the displayed 24-node construction. This does **not** lower the global coefficient 24.
+- **FALSIFIED:** A strict support drop need not cost a paid inference. Equality/disequality on two retained variables is represented by two original clauses of `U_a`, hence costs zero in all eight polarity controls.
+- **CHECKS:** 1,024 exact source/output pairs; 32 explicit ternary certificates; 104 replayed paid nodes including unit controls; eight zero-cost drops; 12 malformed records; five corruptions. Raw SHA-256 `f049ffb592c765ee098280bca017247bb5addb26188b01f46cc55897c9480fdf`.
+- **CLASSIFICATION:** B1 OPEN; B2 OPEN; B3 OPEN; no superpolynomial worst-case lower bound. P versus NP remains OPEN.
+- [Full report](https://github.com/j15marti/pnp/blob/main/research/main/2026-11-03_0648_MAIN_SOURCE-AWARE-EXIT-COMPILER-REFEREE314.md) · [role handoff](https://github.com/j15marti/pnp/blob/main/research/coordination/2026-11-03_0648_LSPV5_TO_FIVE_ROLE_SOURCE-AWARE-EXIT-COMPILER-REFEREE314.md) · [producer](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_314/source_aware_exit_compiler_referee314.py) · [verifier](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_314/verify_source_aware_exit_compiler_referee314.js) · [raw](https://github.com/j15marti/pnp/blob/main/results/raw/arc/lspv5_314/source_aware_exit_compiler_referee314.json)
+
+<!-- END LSPV5 SOURCE-AWARE-EXIT-COMPILER-REFEREE314 -->
