@@ -34,7 +34,13 @@ const [T,x,xp,y,a,b,c,u,v,p,q,r] = Array.from({length:12},(_,i)=>i+1);
 function allowedSources(name) {
   let z=[];
   const add=(label,cs)=>{ for(const cl of cs) z.push(label+'|'+key(cl)); };
-  if(name==='xor_commutativity') {
+  if(name==='true_rail_four_gate') {
+    const [t0,u0,d0,f0,e0]=[13,14,15,16,17];
+    add('DEF_AND_d_tu',andSlots(d0,t0,u0));
+    add('DEF_AND_f_dnt',andSlots(f0,d0,-t0));
+    add('DEF_AND_e_fu',andSlots(e0,f0,u0));
+    add('DEF_AND_T_nfne',andSlots(T,-f0,-e0));
+  } else if(name==='xor_commutativity') {
     add('DEF_XOR_q_ab',xorSlots(q,a,b)); add('DEF_XOR_r_ba',xorSlots(r,b,a));
   } else if(name==='xor_associativity') {
     add('DEF_XOR_u_ab',xorSlots(u,a,b)); add('DEF_XOR_v_uc',xorSlots(v,u,c));
