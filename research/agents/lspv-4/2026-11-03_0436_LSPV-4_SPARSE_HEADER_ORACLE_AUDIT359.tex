@@ -1,0 +1,66 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{LSPV-4 SPARSE-HEADER-ORACLE-AUDIT359: All-Input Query Length and the B3 Relativization Firewall}
+\author{PNP Time-Space Resource Auditor}
+\date{November 3, 2026, 04:36 PST}
+\begin{document}\maketitle
+
+\noindent\textbf{Status.} \textbf{PROVED/EXACT}: a naive source-header quantifier compiler is exponentially expensive on valid tiny CNFs; canonical rank-renaming of the \emph{appearing} variables restores polynomial all-input query length. \textbf{KNOWN, independently corroborated}: LSPV-1 QBF-ORACLE-B3-NONRELATIVIZATION360 already proved the ordinary-Resolution relativized B1/B2/B3 countermodel. \textbf{COMPUTATIONAL}: separately implemented Python producer and no-import Node verifier. \textbf{OPEN}: unrelativized B2/B3, superpolynomial worst-case cost for the full fixed $R_{\mathrm{mix341}}$, and P versus NP.
+
+\section*{Project state and quantifier discipline}
+Read the November 2 12:04 worst-case five-role handoff, active issue \#3, LSPV-1 360, LSPV-5 311 and relevant prior LSPV-4 resource reports and governance. Keep $R_{\mathrm{mix341}}$ independently fixed: source clauses are zero-cost labelled axioms; non-source RES/AND3/XOR/LOCAL-CONVERT/charged conservative DEF nodes have unit logical cost, and DAG reuse is charged only once. No oracle is admitted as a rule. With $N$ the binary encoding length, not the declared variable maximum,
+\[
+W_R(F)=\min_{\pi:F\vdash_R\bot}\#\{\text{distinct charged proof nodes}\},\qquad
+\overline W_R(N)=\max_{\substack{F\text{ valid UNSAT}\\|\operatorname{enc}(F)|\le N}}W_R(F).
+\]
+B1 is pointwise cost domination by $N+T_A(F)$. B2 dominates $\overline W_R(N)$ by a polynomial in $N+T_A^{\rm wc}(N)$, where the worst case ranges over \emph{all} inputs including SAT, UNSAT and malformed. B3 only asserts $SAT\in P\Rightarrow\overline W_R(N)=N^{O(1)}$ for the \emph{same} fixed system. Their implications B1$\Rightarrow$B2$\Rightarrow$B3 do not make any obligation proved.
+
+\section*{Falsified lemma: declared indices are not appearing variables}
+\begin{theorem}[Exponential query blowup under naive header enumeration]
+For strict signed DIMACS-style CNFs, the compiler which literally outputs $\exists x_1\cdots\exists x_n F$ with one quantifier per \emph{declared header variable}, even when unused, can have $2^{\Omega(N)}$ output on a valid input of length $N$. Thus this implementation does not have polynomial worst-case running time.
+\end{theorem}
+\begin{proof}
+Take declared $n=10^d$ and the single clause $(x_n)$. A decimal header and the sole literal together require $O(d)$ bytes; the formula is SAT. Its naive quantified prefix requires $10^d=2^{\Omega(N)}$ quantifier tokens. The analogous two-clause UNSAT formula $(x_n)\land(\neg x_n)$ has a one-node Resolution contradiction but the same naive-prefix problem. On neither instance does the large declared variable range imply SAT hardness.
+\end{proof}
+
+\begin{theorem}[Corrected fully source-authenticated query compiler]
+Any valid encoded general CNF of bit length $N$, even with exponentially large declared unused-variable maximum, admits a deterministic truth-equivalent existential-QBF query of length $O(N\log(N+2))$ bits, constructed in polynomial total time and polynomial all-phase writable space without a semantic oracle. The only queried variables are the distinctly occurring original variables.
+\end{theorem}
+\begin{proof}
+Scan the source's actual literal occurrences and sort/deduplicate their variable identifiers. There are $r$ distinct such identifiers, with $r$ no greater than the number of occurrences, hence $r\le N$. Replace their names by the consecutive indices $1,\ldots,r$, and quantify precisely these $r$ names. The matrix contains at most $N$ literal occurrences. Every new name requires $O(\log(N+2))$ bits, so the matrix, quantifier prefix and necessary delimiters have $O(N\log(N+2))$ bits. Explicit sorting, renaming, counting, parsing and writing all take polynomial time, including bit-cost comparison of potentially $O(N)$-bit old identifiers. The transformation is a bijective renaming of the occurring variables, so SAT is preserved. The empty conjunction is true and an empty clause is false. A TQBF oracle answers this explicit sentence in one abstract oracle call, whose unit query cost is \emph{only} part of the oracle model.
+\end{proof}
+
+\paragraph{No hidden low-space conclusion.}
+Materializing the query or a sorted source index typically uses $\tilde O(N)$ writable bits, so no implementation with the required all-phase space exponent $\rho\le\tfrac12$ has been established. On a physical indexed-input Turing machine, parsing, indexing, source rereads, guest code and heads, output and all simultaneously live memory must be charged. The all-phase formula remains
+\[
+s'\le\max\{\rho,\eta,\lambda,\lambda s\}.
+\]
+The satisfiability oracle itself cannot be silently imported into a normal SAT decision algorithm or into $R_{\mathrm{mix341}}$.
+
+\section*{Independent test and nonduplication audit}
+The earlier LSPV-1 report \emph{QBF-ORACLE-B3-NONRELATIVIZATION360} already constructed the rigorous \emph{relativized} B2 and B3 obstruction, combining Baker--Gill--Solovay, TQBF PSPACE-completeness and Haken's exponential pigeonhole Resolution lower bound. This experiment is an independent all-input implementation and certificate audit of that argument, not a second claimed discovery. With $\mathcal Q=\mathrm{TQBF}$, one uniform polynomial-worst-case oracle decider correctly parses all CNFs, emits the existential query, and handles malformed inputs; meanwhile the unchanged ordinary Resolution subsystem has superpolynomial $\overline W_{R_{\rm res}}$. Therefore oracle-relative B1/B2/B3 fail. It says nothing about ordinary P-time SAT or mixed-system superpolynomial hardness; a proof of B3 for a hard fixed $R$ must contain a genuinely nonrelativizing step.
+
+The Python source producer and separately written no-import Node referee tested $PHP_{k+1}^{k}$, $k=1,2,3$. Their parameters $(n,m,N_{\rm ascii},Q_{\rm ascii})$ are $(2,3,26,42)$, $(6,9,76,146)$, $(12,22,200,379)$. All three are UNSAT. All 34 source deletions and all 70 single literal-sign flips yield checked SAT witnesses. Signed Davis--Putnam elimination yields nonoptimal, independently replayed Resolution DAG upper certificates of 2, 11 and 46 derived nodes; the generator produced 5, 20 and 75 total distinct clauses. These finite upper bounds do not imply any Haken lower bound or a minimum for mixed $R$.
+
+Three additional valid sparse-header cases declare $10^9$ variables and mention zero or one. Their 19, 32 and 46 source bytes compile to 8, 18 and 26 QBF bytes with labels SAT, SAT, UNSAT. Three more ordinary SAT controls pass. Ten malformed input strings and five corrupted proof certificates are rejected. The independent Node verifier passed \textbf{770 assertions}. Python producer wall time: approximately 0.106 s; peak host RSS 96,396 KiB. Independent Node peak host RSS 29,428 KiB. These process-level measurements are not FLMV machine-space costs. Oracle query construction and all finite enumeration are separate activities; offline exhaustive simulation is not an ordinary polynomial-time implementation of the oracle.
+
+\section*{Four falsifiers and status}
+\begin{enumerate}
+\item[] \textbf{F1, FALSIFIED:} Every straightforward $\exists x_1\cdots\exists x_n$ compiler has polynomial worst-case output. The large header and one unit clause produce an exponential prefix.
+\item[] \textbf{F2, REJECTED:} Compressing the actually appearing variable names changes SAT. The independent SAT/UNSAT controls, including huge original indices, preserve labels.
+\item[] \textbf{F3, REJECTED:} Any claimed oracle rejection can be accepted as a logical contradiction axiom. The verifier rejects forged source axioms, bad pivots, incorrect resolvents, and forward references.
+\item[] \textbf{F4, OPEN:} The oracle-relative B2 counterexample proves that original unrelativized B2 or B3 fails for $R_{\mathrm{mix341}}$. It does not; the original model disallows oracle queries, and the full mixed minimum is unknown.
+\end{enumerate}
+
+\section*{Next proof obligation}
+Audit the newest LSPV-1 bounded-arithmetic reflection and source-authenticated VARDEF transport proposals for an explicit all-input implementation, with code and machine-correctness costs charged. Prove or falsify a \emph{nonrelativizing} same-fixed-$R_{\mathrm{mix341}}$ bridge, rather than using the present oracle as if it were a SAT algorithm. Preserve P versus NP OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{BGS} T. Baker, J. Gill and R. Solovay, Relativizations of the P=?NP Question, SIAM J. Comput. 4(4):431--442 (1975). \url{https://doi.org/10.1137/0204037}.
+\bibitem{Haken} A. Haken, The Intractability of Resolution, Theor. Comput. Sci. 39:297--308 (1985). \url{https://doi.org/10.1016/0304-3975(85)90144-6}.
+\bibitem{CR} S. Cook and R. Reckhow, The Relative Efficiency of Propositional Proof Systems, J. Symbolic Logic 44(1):36--50 (1979).
+\bibitem{LSPV1} PNP LSPV-1, QBF-ORACLE-B3-NONRELATIVIZATION360, November 3, 2026, 02:56 PST, project GitHub.
+\end{thebibliography}
+\end{document}
