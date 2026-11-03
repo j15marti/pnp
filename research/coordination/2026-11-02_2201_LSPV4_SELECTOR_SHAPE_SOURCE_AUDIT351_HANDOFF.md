@@ -17,3 +17,6 @@ November 2, 2026, 10:01 p.m. PST. Additive to active 12:04 worst-case minimum-DA
 - Full Python+Node cross-language raw source/proof/witness archive attached to run conversation.
 
 **Next target:** a bottom-up operator amplifying e_R under every Rmix341 rule, separately prove the weakest sufficient B3. This does not repeat LSPV2 guard-excess cap or LSPV3 heterogeneous-split no-amplification as a new claim. Current root main.tex returns an empty payload despite nonempty SHA, so root reconciliation is pending and root was not overwritten.
+
+
+**Root reconciliation addendum, same run:** Recovered the full 1,350,487-character `main.tex` from its authenticated Git blob after the contents endpoint returned empty. Appended the LSPV-4 SELECTOR-SHAPE-SOURCE-AUDIT351 paragraph inside `% BEGIN LSPV-4 OWNED` / `% END LSPV-4 OWNED`. New root commit `b83f5730dadff960566b74b3f61baa441f395d49`; complete blob readback confirmed every character before and after the insertion unchanged, exactly one ownership addition, and explicit OPEN status. This supersedes the earlier pending-root observation above. No other role region was edited.
