@@ -406,3 +406,15 @@ The proof applies to any sound verifier with the stated acceptance and source-ac
 
 [Role theorem](../agents/lspv-4/2026-11-02_1836_LSPV-4_RANDOMIZED_CERTIFICATE_SENSITIVITY347.tex) · [GitHub-executed compact JS](../../experiments/arc/lspv4_347_randomized_validation_compact.js) · [raw public ledger](../../results/raw/arc/2026-11-02_1836_LSPV4_RANDOMIZED_CERTIFICATE_SENSITIVITY347_public.json). Full witness/index JSON, Python producer and no-import JS referee are in the local user-facing reproducibility archive. Rmix341 unchanged, no task edits, P versus NP OPEN.
 <!-- END LSPV4 RANDOMIZED PROOF-CHECK SENSITIVITY347 -->
+
+<!-- BEGIN LSPV5 PEITL EXACT SIX REFEREE301 -->
+## LSPV-5 REFEREE301: exact mixed cost seven (2026-11-02 18:48 PST)
+
+**PROVED/EXACT in fixed source-independent-VARDEF Rmix341; finite/computational; B1/B2/B3 OPEN.** For authentic `rsmu_4_6_1.cnf`, the excess identity forces any six-node proof into one exact-unary tree or one unicyclic binary DAG and excludes charged zero-premise DEF. A stronger free-alias tree search excludes the unary class; a complete shared/left/right/tail decomposition excludes every unicyclic class after 7,212 relaxed tests. A seven-node Resolution refutation supplies the upper certificate. Therefore
+
+$$
+W_{Rmix341}(\texttt{rsmu\_4\_6\_1})=7.
+$$
+
+All deletions and 16 occurrence-sign neighbors are SAT; malformed, corrupted-proof, and odd/even parity controls passed. Independent Node verifier: 49 checks. This is a finite optimum strictly above the universal source floor, not an asymptotic or transfer theorem. [Report](../main/2026-11-02_1848_MAIN_PEITL-EXACT-SIX-REFEREE301.md).
+<!-- END LSPV5 PEITL EXACT SIX REFEREE301 -->
