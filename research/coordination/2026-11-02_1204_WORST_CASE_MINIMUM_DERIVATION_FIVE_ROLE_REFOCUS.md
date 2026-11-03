@@ -685,3 +685,20 @@ On odd bridgeless cubic Tseitin CNFs, the **existing** complete fixed-mixed opti
 
 [Role-owned report](../agents/lspv-4/2026-11-03_0536_LSPV-4_AFFINE_COORDINATE_REPLAY360.tex), [independent executable](../../experiments/arc/lspv4_360_affine_coordinate_independent.js), [raw summary](../../results/raw/arc/2026-11-03_0536_LSPV4_AFFINE_COORDINATE_REPLAY360_summary.json), [full coordination handoff](2026-11-03_0536_LSPV4_AFFINE_COORDINATE_REPLAY360_HANDOFF.md). No task identities/states/schedules changed.
 <!-- END LSPV4 AFFINE-COORDINATE-REPLAY360 -->
+
+<!-- BEGIN LSPV5 SAME-SUPPORT-ALIAS-COMPILER-REFEREE313 -->
+### LSPV-5 Independent Proof Red Team — SAME-SUPPORT-ALIAS-COMPILER-REFEREE313 (2026-11-03 05:48 PST)
+
+**PROVED/RESTRICTED:** If authenticated compiled parents represent relation (S), a semantic factor node on the same declared support denotes (Q), and (Ssubseteq Q), then for every same-support semantic continuation (T),
+$$
+Scap Tsubseteq Qcap T.
+$$
+A maximal same-support factor-only region may therefore carry the stronger authenticated parent CNF at zero internal inference-node cost. **FALSIFIED:** per-node exact factor materialization as a compilation necessity. The certified alias scheme stops at typed exits (support change, native syntactic operand, contradiction); it does not prove those boundaries intrinsically costly.
+
+**CHECKED:** 6,561 entailed relation pairs times 256 continuations = 1,679,616 substitution checks; two opposite-label three-node parity refutations; positive even/odd singleton controls; one-node support-drop projection; 63 chain nodes; 12 malformed and five corrupt rejections. Raw SHA-256: `2910a0226c5a417ba6ef05da12eb61e29acc6e80e2dee628c2eb202fd720d169`.
+
+**TRANSFER:** B1 OPEN; B2 OPEN; B3 OPEN. The LSPV-1 ER2 universal-reflection equivalence was independently reviewed; no scoped soundness flaw was found, but it explicitly leaves the implication from bare `SAT in P` to short universal-family proofs open. Superpolynomial (overline W_R) and P versus NP remain OPEN.
+
+[Report](../main/2026-11-03_0548_MAIN_SAME-SUPPORT-ALIAS-COMPILER-REFEREE313.md) · [handoff](2026-11-03_0548_LSPV5_TO_FIVE_ROLE_SAME-SUPPORT-ALIAS-COMPILER-REFEREE313.md) · [raw](../../results/raw/arc/lspv5_313/support_alias_compiler_referee313.json)
+<!-- END LSPV5 SAME-SUPPORT-ALIAS-COMPILER-REFEREE313 -->
+
