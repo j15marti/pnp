@@ -481,3 +481,16 @@ $$
 
 and any cost-eight proof must now have bicyclic all-binary ancestry. Exact nine, superpolynomial worst-case mixed cost, B1/B2/B3 and P versus NP remain OPEN. [Report](../main/2026-11-02_2048_MAIN_PEITL-ONE-DEF-EXCLUSION-REFEREE303.md); [handoff](2026-11-02_2048_LSPV5_TO_FIVE_ROLE_PEITL_ONE_DEF_REFEREE303.md).
 <!-- END LSPV5 PEITL-ONE-DEF-EXCLUSION-REFEREE303 -->
+
+
+<!-- BEGIN LSPV4 MIXED-SPLIT-FLOOR350 -->
+## LSPV-4 350: exact finite mixed minimum across six G342 fresh splits, nested depth three (2026-11-02 21:36 PST)
+
+**PROVED/EXACT in the preselected source-independent VARDEF version of Rmix341, independent two-implementation finite certificates; B1/B2/B3 and P versus NP OPEN.** Prior LSPV-3 SPLIT-HARDNESS-TRANSPORT344 gave only 5+t <= W_mix(G_t) <= 6+t for fresh splitting of the six-clause nonaffine G342 source. New full binary-source-tree exclusion closes this to **W_mix(G_t)=6+t for t=0,1,2,3**, and gives **W_mix(G^(i))=7 for each of the six choices of original source clause split once**. All original sources remain indispensable.
+
+The lower bound first shows that a hypothetical q=m-1 refutation must be a full binary source-once tree, with no paid zero-premise VARDEF, unary conversion or reconvergence. Independently executed source-subset dynamic programs exhaust all such trees while allowing a STRICTLY STRONGER output-support<=3 AND3 operation, plus free exact clause/affine aliases, genuine RES and XOR. The complete-source false function is absent. Six single-split operand-pair counts: 2170/2642/2679/2642/2170/1949; nested depth t=0/1/2/3 counts: 844/2170/6715/24618. Source/derived-node certificates verify matching 6+t resolution upper bounds. Finite worst-case points under declared binary encoding are (N,W)=(88,6),(115,7),(144,8),(179,9); no extrapolation to superpolynomial growth. Every single-split source is UNSAT; each original-source deletion and every occurrence-sign flip is SAT; an easy six-clause Horn core passes a positive proof check; eight malformed encodings reject. Separate V8 reruns from exact GitHub readback of primary truth-vector script and no-import BigInt referee reproduced every state/pair tally. Logical proof count is separate from optimizer discovery, source queries, materialized 2^n-bit factor tables, proof validation and all-phase peak writable space; no same-machine FLMV bound is claimed.
+
+**Grammar caveat:** a new two-source-factor-input DEF would be a DIFFERENT rule from the fixed source-independent VARDEF and is not covered. Exact result is only finite. No universal mixed restriction theorem and no B3 bridge; P versus NP remains OPEN.
+
+[Full report](../agents/lspv-4/2026-11-02_2136_LSPV-4_G342_MIXED_SPLIT_FLOOR350.md); [primary executable](../../experiments/arc/lspv4_350_mixed_split_floor_primary.js); [independent referee](../../experiments/arc/lspv4_350_mixed_split_floor_referee.js); [raw proofs and controls](../../results/raw/arc/2026-11-02_2136_LSPV4_MIXED_SPLIT_FLOOR350.json); [role handoff](2026-11-02_2136_LSPV4_MIXED_SPLIT_FLOOR350_HANDOFF.md). No task/state/schedule change. Root main.tex empty-content retrieval prevented a safe ownership-region edit, so it was left unchanged.
+<!-- END LSPV4 MIXED-SPLIT-FLOOR350 -->
