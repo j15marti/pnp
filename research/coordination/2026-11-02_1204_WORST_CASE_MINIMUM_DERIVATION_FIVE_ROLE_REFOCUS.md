@@ -418,3 +418,19 @@ $$
 
 All deletions and 16 occurrence-sign neighbors are SAT; malformed, corrupted-proof, and odd/even parity controls passed. Independent Node verifier: 49 checks. This is a finite optimum strictly above the universal source floor, not an asymptotic or transfer theorem. [Report](../main/2026-11-02_1848_MAIN_PEITL-EXACT-SIX-REFEREE301.md).
 <!-- END LSPV5 PEITL EXACT SIX REFEREE301 -->
+
+<!-- BEGIN LSPV4 PIVOT-ONLY-REPLAY-COST348 -->
+### LSPV-4 / 348, November 2, 2026 19:36 PST: output-free Resolution proof evidence and explicit-replay resource inversion
+
+**PROVED/EXACT for the Resolution-only subsystem of unchanged fixed Rmix341; COMPUTATIONAL independently checked; B1/B2/B3 and P versus NP OPEN.** Any binary Resolution refutation DAG with q nodes over m source clauses and n variables has a complete checkable proof stream consisting of q (left-parent,right-parent,signed-pivot) triples, requiring at most q[2ceil(log2(m+q+1))+ceil(log2(2n+1))+O(1)] bits beyond source. Derived clauses need not be written; a deterministic sound checker reconstructs them. The source-premise/cost conventions are unchanged.
+
+For the **SAME** all-sign-sensitive minimally UNSAT guarded-grid G_r peer source (k=r^2, m=2k+6), independently replayed node-optimal wide Resolution witness has q_w=2k+5, reconstructed derived literal slots L_w=k^2+4k+6, eager parent-literal inspections I_w=k^2+11k+21. A legal non-node-optimal narrow witness has q_n=3k+4, L_n=7k+4, I_n=16k+17. Therefore the diagnostic q+slots cost of the particular node-optimal witness exceeds the narrow witness by (k-1)(k-3)>0 for all r>=2. Yet the node-optimal wide proof has O(k log k) bits of pivot-only evidence. This is an exact encoding and **specific checker** work contrast, not a lower bound on the minimum verification work, all equal-node-cost proofs, or arbitrary SAT computation.
+
+Independent Python producer and no-import JS referee replayed r=2,3,4,5,8,12, all 48 cross-language counter comparisons. r=2 same-source opposite label: original UNSAT0 versus single-sign-flip SAT4. Nine malformed DIMACS rejected, corrupt pivot/truncated/source-changed certificate rejected; K4 odd/even parity 0/8, 2SAT positive. No optimizer cost charged to W_R; all-phase peak machine space remains separate with rho covering every local phase, temporary materialization, read/index and output. No native same-machine FLMV trace.
+
+Published and authenticated GitHub readback:
+- [Role LaTeX report](../agents/lspv-4/2026-11-02_1936_LSPV-4_PIVOT_ONLY_REPLAY_COST348.tex)
+- [Runnable standalone JS proof replayer](../../experiments/arc/lspv4_348_pivot_only_replay_compact.js)
+- [Raw counters and controls](../../results/raw/arc/2026-11-02_1936_LSPV4_PIVOT_ONLY_REPLAY_COST348_public.json)
+Full independent Python/JS, raw data and longer TeX are available in the dated run archive. Next: hard-family invariant covering **every** rule in fixed Rmix341, plus independent B3 bridge; no changes to task ID/state/schedule.
+<!-- END LSPV4 PIVOT-ONLY-REPLAY-COST348 -->
