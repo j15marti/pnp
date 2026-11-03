@@ -60,3 +60,9 @@ $$
 
 Thus a superpolynomial mixed-minimum lower bound would also be an Extended-Resolution lower bound. Cook's polynomial ER pigeonhole proof and LSPV-3's full polynomial Rmix341 BPHP compiler retire BPHP as a mixed-hard candidate; Braun's 2026 DAG Res(XOR) lower bound does not transfer through DEF. Peitl–Szeider finite Resolution maxima likewise need a new all-rule invariant. A separately implemented replay checked one paid DEF plus five RES nodes, SAT/deletion controls, all 12 BPHP(3,2) sign flips, odd/even \(K_4\), eight malformed inputs, and four corrupted proofs. This theorem supplies no computation-to-proof bridge: B1, B2, and the weakest B3 remain open. Next gap: a growing nonaffine family hard against every mixed rule plus an independent B3 theorem for the same fixed calculus.
 <!-- END LSPV5 EXTENSION-SIMULATION-BARRIER-REFEREE299 -->
+
+<!-- BEGIN LSPV5 PEITL MIXED FLOOR REFEREE300 -->
+## LSPV-5 REFEREE300: authentic Resolution maximizer mixed shortcut (2026-11-02 17:48 PST)
+
+**PROVED/EXACT at the source floor; finite/computational; B1/B2/B3 OPEN.** For clause-minimally UNSAT m-source formulas in binary-premise Rmix341, W is at least m-1, and equality forces a source-once binary tree. Complete relaxed equality DP on seven authentic Peitl–Szeider maximizers finds W_Rmix341=4<5=W_Resolution for rsmu_3_5_1.cnf, a concrete family failure. It excludes the floor for the authentic six-, seven-, and eight-clause cases, giving only 6<=W<=7, 7<=W<=9, and 8<=W<=11. All 19 corpus files passed exhaustive UNSAT/minimality/sign-sensitivity controls; independent verifier passed 607 checks including malformed and odd/even parity controls. No arbitrary-decider transfer or asymptotic lower bound follows. [Report](../main/2026-11-02_1748_MAIN_PEITL-MIXED-FLOOR-REFEREE300.md).
+<!-- END LSPV5 PEITL MIXED FLOOR REFEREE300 -->
