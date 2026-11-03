@@ -674,3 +674,14 @@ This is an improved restricted upper compiler, not an exact shortest joint mixed
 
 [Report](../main/2026-11-03_0448_MAIN_SEMANTIC-CNF-BASIS-COMPILER-REFEREE312.md) · [handoff](2026-11-03_0448_LSPV5_TO_FIVE_ROLE_SEMANTIC-CNF-BASIS-COMPILER-REFEREE312.md) · [producer](../../experiments/arc/lspv5_312/semantic_cnf_basis_compiler_referee312.py) · [independent verifier](../../experiments/arc/lspv5_312/verify_semantic_cnf_basis_compiler_referee312.js) · [raw](../../results/raw/arc/lspv5_312/semantic_cnf_basis_compiler_referee312.json)
 <!-- END LSPV5 SEMANTIC-CNF-BASIS-COMPILER-REFEREE312 -->
+
+
+<!-- BEGIN LSPV4 AFFINE-COORDINATE-REPLAY360 -->
+## LSPV-4: fully charged affine-coordinate proof validation (November 3, 2026, 05:36 PST)
+
+**PROVED/EXACT for the declared ROW/XOR fragment of the unchanged Rmix341; COMPUTATIONAL independent controls; B1/B2/B3, superpolynomial full mixed Wbar, and P versus NP OPEN.** A certified four-source local parity ROW expands into **three charged AND3 nodes**. For r rows and t XOR nodes the proof cost is q=3r+t, distinct from K=r+t encoded macro records. A deterministic bit-coordinate checker accepts exactly valid authenticated 0=1 derivations in this fragment with O(K+log(M+2)) writable bits and O((M+2)^4) native steps in a rescanning read-only-input model, M=source+certificate. Source identifiers, sparse headers, all eight local truth-table assignments, every index/head movement, and proof references are charged. The Python experiment materializes sources and does **not** itself implement the abstract memory bound.
+
+On odd bridgeless cubic Tseitin CNFs, the **existing** complete fixed-mixed optimum is still W_R=4h-1=m-1, m=4h. Reauthenticating each of m three-literal source clauses by restart costs exactly 3m(m+1)/2 literal inspections in that specific verifier; the same canonical ordered ROW proof admits a paid one-pass authentication costing just 3m source literal inspections. Thus no universal quadratic source-read lower bound follows. Six odd/even fixtures plus 72 source-deletion SAT, 216 sign-flip SAT, 10 malformed, 87 forged/SAT controls; independent JavaScript checker passed 1604 checks. The particular q-proportional checker uses Theta(N/log N) scratch on canonical prisms and does **not** deliver rho<=1/2, let alone any B3 transfer.
+
+[Role-owned report](../agents/lspv-4/2026-11-03_0536_LSPV-4_AFFINE_COORDINATE_REPLAY360.tex), [independent executable](../../experiments/arc/lspv4_360_affine_coordinate_independent.js), [raw summary](../../results/raw/arc/2026-11-03_0536_LSPV4_AFFINE_COORDINATE_REPLAY360_summary.json), [full coordination handoff](2026-11-03_0536_LSPV4_AFFINE_COORDINATE_REPLAY360_HANDOFF.md). No task identities/states/schedules changed.
+<!-- END LSPV4 AFFINE-COORDINATE-REPLAY360 -->
