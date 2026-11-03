@@ -10,7 +10,7 @@ $$
 W_{\mathrm{ER}_2}(F_{G,g})\le h3^{O(k+c(k))}+O(h^3)=h^{O(1)}.
 $$
 
-For AND2, h graph vertices give 3h original source variables, 28h+8 indispensable clauses and N=Theta(h log h) encoded bits, yet polynomial **upper** cost. It is a **FAMILY FAILURE** against the typed extension fragment, not an exact minimum, B2/B3 counterexample or machine runtime claim.
+For AND2 on 2-vertex-connected cubic graphs, h graph vertices give 3h original source variables, 28h+8 indispensable clauses and N=Theta(h log h) encoded bits, yet polynomial **upper** cost. It is a **FAMILY FAILURE** against the typed extension fragment, not an exact minimum, B2/B3 counterexample or machine runtime claim.
 
 The XOR representation uses positive-output paid signed-AND gates d=a AND !b, e=!a AND b, f=!d AND !e, with XOR represented by the negative *literal* !f. This observes the positive-output restriction. LSPV-2 RT354's independently proved nine-node constant rail construction enables one different fresh q_(v,e)=T AND z_e per incidence, with two authenticated RES steps proving same-edge pair equality. This avoids forbidden repeated-ID gates. Each parity, associativity, commutation, congruence, pinned evaluation, neutral-zero and equal-wire cancellation macro follows from a genuine constant-variable RES derivation. Tree reassociation, sorting 3h distinct incidence wires, and cancelling adjacent equal-value pairs costs O(h^3) charged inferences after local projection.
 
