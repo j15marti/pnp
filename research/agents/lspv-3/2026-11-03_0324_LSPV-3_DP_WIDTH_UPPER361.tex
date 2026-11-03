@@ -1,0 +1,68 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\title{LSPV-3 DP-WIDTH-UPPER361: Authenticated Resolution Cost from Elimination Frontiers}
+\date{November 3, 2026, 03:24 PST}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT as an upper-bound construction in the unchanged pure-Resolution fragment of $R_{\mathrm{mix341}}$; COMPUTATIONAL for eleven finite source and certificate fixtures; independent external research review pending.} Superpolynomial worst-case mixed proof cost, B1/B2/B3, and P versus NP are OPEN.
+
+\paragraph{Fixed calculus, quantifiers, and encoding.}
+Use exactly the original $R_{\mathrm{mix341}}$ system of LSPV-2 MIXED-TSEITIN341, including its fixed types, signed pivots, conservative charged source-independent VARDEF gates and additional AND3, GF$(2)$ and LOCAL-CONVERT rules. The present certificates use \emph{only} ordinary signed binary Resolution, with one charged unit-weight node per distinct derived clause and zero for authentic source clauses. Shared nodes are counted once. There is no new inference rule and no semantic oracle. Input is valid encoded CNF (e.g. properly formed DIMACS, including empty-clause and duplicate handling); malformed strings are rejected. Let $v(F)$ denote the number of \emph{occurring} variable IDs, not the potentially enormous numeric DIMACS header bound, and let $N$ be encoded input \emph{bits}. In any valid explicit encoding, $v(F)\le N$.
+
+\begin{theorem}[Frontier-budget refutation upper bound, standard DP reasoning instantiated in fixed $R$]
+For every finite UNSAT CNF $F$, and \emph{every} elimination order $\sigma$ of its $v$ occurring variables, let $w_i(\sigma)$ be the number of still-present neighbors of the variable removed at stage $i$ in the usual \emph{filled} primal graph. Then an authenticated Resolution refutation exists with
+\[
+\boxed{W_{R_{\mathrm{mix341}}}(F)\le W_{\mathrm{RES}}(F)\le
+       \sum_{i=1}^{v}3^{w_i(\sigma)}
+       \le v\,3^{w(\sigma)},\quad
+       w(\sigma)=\max_i w_i(\sigma).}
+\]
+If the source already contains the empty clause, the minimum is zero, and the bound still holds. The argument is uniform in formula, order, and input length and makes no claim about a shortest refutation.
+\end{theorem}
+\begin{proof}
+At a stage with elimination variable $x$, partition active clauses into $x$-positive, $x$-negative and $x$-free. For each complementary pair, take the exact signed-pivot resolvent and discard tautologies. Retain each \emph{distinct} non-tautological resulting clause at most once, with one genuine two-parent Resolution node; if an $x$-free copy already exists, reuse it. Remove clauses containing $x$ only from the \emph{working list} (not from historical DAG ancestry), and continue. This is the classical Davis--Putnam existential elimination identity, so the remaining CNF is equisatisfiable. All literals of a new clause are among the remaining filled neighbors of $x$, whose number is $w_i$; there are at most $3^{w_i}$ non-tautological clauses over those variables, including the empty clause (positive, negative or absent for each variable). Thus at most $3^{w_i}$ distinct new inferences are needed at this stage. Since the initial $F$ is UNSAT, the final variable-free CNF contains an empty clause. All inferences are legal in the \emph{same preselected} $R$; pruning unused DAG nodes decreases cost. Summing the stage bounds proves the claim. Neither source deletions nor optimizer discoveries are inference steps. The minimum exists because the Resolution construction gives a finite nonnegative integer cost.
+\end{proof}
+
+\begin{corollary}[A necessary, not sufficient, condition for a superpolynomial-hard family]
+For $N=|\operatorname{encode}(F)|$ and primal treewidth $\mathrm{tw}(F)$,
+\[
+W_{R_{\mathrm{mix341}}}(F)\le N\,3^{\mathrm{tw}(F)}.
+\]
+Consequently, any growing UNSAT sequence with superpolynomial $W_R(F)$ relative to $N$ has unbounded ratio $\mathrm{tw}(F)/\log(N+2)$ along its hard subsequence. A family with $\mathrm{tw}(F)=O(\log N)$ has polynomial minimum mixed proof cost. Conversely, \emph{large treewidth is not sufficient}: previously checked odd cubic Tseitin families have exact linear mixed proof cost.
+\end{corollary}
+\noindent The corollary is a direct screening criterion for candidate hard hypergraphs, not a new general proof-complexity lower bound. The standard parameterized upper bound $2^{O(w)}\operatorname{poly}(N)$ is known; the displayed $3^{w_i}$ ledger is an explicit charged source-DAG implementation of it. For a sequence with no hard subsequence, no assertion of $\mathrm{tw}/\log N\to\infty$ is made.
+
+\paragraph{Three precise falsifiers and controls.}
+F1: a small treewidth UNSAT family could require superpolynomial mixed proof cost: \textbf{FALSIFIED} by the theorem. F2: an unbounded-treewidth or high-deficiency family must have large mixed cost: \textbf{FALSE as a converse}, by the previously certified affine/Tseitin exact source-floor controls; restricted regular-Resolution lower bounds do not transfer to $R_{\mathrm{mix341}}$. F3: counting at most $3^{w_i}$ \emph{different resolvents} also bounds all attempted pair comparisons or certificate bits: \textbf{FALSE as an inference}, because the procedure may inspect up to $9^{w_i}$ signed positive/negative pairs (and may repeat source reads), and literal names and pointers consume bits. A malformed DIMACS string and a nonexact resolution step must be rejected; they are not negative-label proofs.
+
+\paragraph{Independent finite experiment.}
+A standalone Python producer and a separately written no-import Node.js referee checked eleven explicit fixtures, including Horn, renamed Horn, square 2SAT, odd/even parity, $K_4$ odd/even Tseitin, PHP with 3 into 2 and 4 into 3, contradiction with unrelated SAT padding, and a SAT single-parity control. Every source label was independently evaluated by exhaustive assignment checks over at most twelve variables. The checker independently reconstructed the signed Resolution premises, exact pivots, clauses, active primal graph, fill edges, width profile, input length, claimed SAT models and full UNSAT ancestry. Eleven malicious or malformed perturbations were rejected. The independent run passed 96,255 counted assertions, replayed 102 charged Resolution nodes and 545 parent-literal reads over the eleven refutations, and rejected 11 forged/malformed records. The two labels of $K_4$ used matched parity charges on the same graph. Selected $({\rm label},N,w,q,\sum 3^{w_i},{\rm attempted\ pairs})$:
+\[
+\begin{array}{c|rrrrr}
+{\rm instance}&N&w&q&{\rm bound}&{\rm pairs}\\
+\hline
+{\rm 2SAT\ square}&304&1&3&4&5\\
+{\rm Horn\ chain}&264&1&3&7&3\\
+{\rm opposed\ XOR3}&688&2&7&13&21\\
+{\rm odd\ }K_4&1304&4&31&202&109\\
+{\rm PHP}_{4\to3}&1600&9&43&31954&458
+\end{array}
+\]
+These are explicit ASCII-DIMACS bit lengths, not variable counts. The unpruned pair-work and generated intermediate clauses are additional to the refutation cost $q$. The Python producer outputs all eleven source lists, ordered signed proof DAGs, exact input strings, witnesses and width profiles. Raw JSON is 14,348 bytes with SHA-256 \texttt{01515347a3efb399d0b97bc3ce4d8f475178664588e6ee5a7a27998a1bc7ec7e}. Source, independent verifier and full raw are included in the conversation reproducibility ZIP; a compact runnable project version and raw summary are committed in the usual outboxes.
+
+\paragraph{Uniformity and machine resource caution.}
+For a \emph{given} elimination order, the explicit producer computes these candidate proofs by finite source scans, pair comparisons, deduplication and proof serialization; those costs are not the sum-of-nodes measure. A simple dense implementation has time and memory upper bounds polynomial in the input length times $2^{O(w)}$, but the observed host counters do not constitute a native random-access Turing-machine schedule, an FLMV bound, or a proof-search lower bound. Under any future all-phase FLMV transport, parsing, source/head/index reads, failed pairs, active-clause table, pointers, output, checking and peak live buffers must be charged; keep $s'\le\max\{\rho,\eta,\lambda,\lambda s\}$ with $\rho$ covering \emph{every} phase.
+
+\paragraph{Literature, overlap, and model mismatch.}
+The elimination argument is the classical Davis--Putnam procedure, not a novelty claim. Reviewed Itsykson--Riazanov--Smirnov (SAT 2022) on matching treewidth bounds for \emph{regular Resolution}; Efremenko--Garlik--Itsykson (SIAM J. Comput. 2025) on \emph{regular} Resolution over parities with unrestricted dag-like Res$(\oplus)$ still challenging; and Alekseev (Theory of Computing 2026) on a \emph{different} algebraic proof system over $\mathbb Q$ and BVP. These lower bounds cannot be lifted to the present richer Boolean mixed calculus. Project overlaps: LSPV-2 MIXED341 and DPLL-IMPLICATE-PRUNE358, LSPV-3 359 and 360, LSPV-5 REFEREE306/310 and LSPV-4 CVP357. The new contribution is the explicit elimination-frontier screening bound, charged source-DAG finite replay and sharp distinction between a small refutation DAG and search-pair work.
+
+\paragraph{Audit and next gap.}
+Read November 2 12:04 controlling directive at verified SHA, current issue \#3, AGENTS.md, CODEX.md, repo skill and peer handoffs. Local container could not resolve github.com for a fresh checkout, so repository-only preflight and report-check scripts could not run. Authenticated GitHub reads were used. No task was created or modified. Root manuscript reconciliation is restricted to the LSPV-3 ownership region, with full-blob conflict check. The next substantive target is an explicit nonaffine, superlogarithmic-treewidth family with a lower-bound invariant surviving the full fixed mixed calculus, not merely regular Resolution. The weakest sufficient same-$R$ B3 transfer remains independently OPEN. \textbf{P versus NP remains OPEN.}
+
+\begin{thebibliography}{9}
+\bibitem{IRSmirnov2022} D. Itsykson, A. Riazanov, P. Smirnov. Tight Bounds for Tseitin Formulas, SAT 2022, doi:10.4230/LIPIcs.SAT.2022.6.
+\bibitem{EGI2025} K. Efremenko, M. Garlik, D. Itsykson. Lower Bounds for Regular Resolution over Parities, SIAM J. Comput. 54(4), 887--915 (2025), doi:10.1137/24M1696640.
+\bibitem{Alekseev2026} Y. Alekseev. A Lower Bound for Polynomial Calculus with Extension Rule, Theory of Computing 22, Article 4 (2026), doi:10.4086/toc.2026.v022a004.
+\end{thebibliography}
+\end{document}
