@@ -1,3 +1,6 @@
+/* LSPV-2 356. Usage: node lspv2_356_port_input_independent_verify.js raw.json */
+const fs=require("node:fs");
+function independentlyVerify(data){
 "use strict";
 /* Independent authenticated signed-Tseitin clause and resolution verifier. */
 function key(a){return [...new Set(a)].sort((x,y)=>x-y).join(",")}
@@ -13,7 +16,8 @@ function expected(t){
    E.push(...cs.map(key));
   }
  }
- E.push(key([t.k+t.A.length]),key([-t.k-t.A.length-t.B.length]));
+ const a=t.k+t.A.length,b=a+t.B.length,m=b+1;
+ E.push(...[[a,b,-m],[a,-b,m],[-a,b,m],[-a,-b,-m],[m]].map(key));
  return E.sort();
 }
 function check(r){
@@ -26,7 +30,7 @@ function check(r){
   if(!Array.isArray(node.p)||node.p.length!==2)throw Error("parents absent");
   const [a,b]=node.p,v=node.v;
   if(!Number.isInteger(a)||!Number.isInteger(b)||a<0||b<0||a>=lines.length||b>=lines.length||a===b)throw Error("nonprevious parent");
-  if(!Number.isInteger(v)||v<1||v>t.k+t.A.length+t.B.length)throw Error("pivot range");
+  if(!Number.isInteger(v)||v<1||v>t.k+t.A.length+t.B.length+1)throw Error("pivot range");
   const A=lines[a],B=lines[b];
   if(!((A.includes(v)&&B.includes(-v))||(A.includes(-v)&&B.includes(v))))throw Error("no complementary pivot");
   const cl=[...new Set([...A,...B].filter(x=>Math.abs(x)!==v))].sort((x,y)=>x-y);
@@ -37,7 +41,7 @@ function check(r){
  if(r.root!==null){
   if(r.root!==lines.length-1||lines[r.root].length!==0||r.satWitness!==null)throw Error("invalid proof target");
  }else{
-  if(!Array.isArray(r.satWitness)||r.satWitness.length!==t.k+t.A.length+t.B.length)throw Error("missing model");
+  if(!Array.isArray(r.satWitness)||r.satWitness.length!==t.k+t.A.length+t.B.length+1)throw Error("missing model");
   if(!r.source.every(c=>c.some(x=>x>0?r.satWitness[x-1]===1:r.satWitness[-x-1]===0)))throw Error("invalid model");
  }
  if(r.metrics.derived!==r.lines.length||r.lines.length>r.metrics.bound)throw Error("bad logical cost");
@@ -47,10 +51,10 @@ function evaluate(gates,a0){const a=[null,...a0];for(const g of gates){const x=g
 let checks=0,corruptRejected=0,malformedRejected=0,proofs=0,satCases=0;
 for(const r of data.cases){
  checks+=check(r);
- const t=r.test;let agree=true,orientedMismatch=false;
+ const t=r.test;let agree=true;
  for(let m=0;m<2**t.k;m++){
   let bits=Array.from({length:t.k},(_,j)=>m>>j&1),a=evaluate(t.A,bits),b=evaluate(t.B,bits);
-  if(a!==b)agree=false;if(a===1&&b===0)orientedMismatch=true;
+  if(a!==b)agree=false;
   if(r.truth[m].A!==a||r.truth[m].B!==b)throw Error("truth table mismatches");
   checks++;
  }
@@ -63,10 +67,14 @@ for(const r of data.cases){
   {const x=JSON.parse(JSON.stringify(r));x.root=0;mutations.push(x)}
   {const x=JSON.parse(JSON.stringify(r));x.source[0][0]*=-1;mutations.push(x)}
   for(const x of mutations){let err=false;try{check(x)}catch{err=true}if(!err)throw Error("accepted corruption");corruptRejected++;checks++}
- }else{satCases++;if(agree||!orientedMismatch)throw Error("SAT control wrong")}
+ }else{satCases++;if(agree)throw Error("SAT control wrong")}
 }
 for(const t of [{k:0,A:[],B:[]},{k:3,A:[{op:"A",a:1,b:1}],B:[{op:"A",a:1,b:2}]},{k:2,A:[{op:"Z",a:1,b:2}],B:[{op:"A",a:1,b:2}]},{k:2,A:[{op:"A",a:1,b:5}],B:[{op:"A",a:1,b:2}]}]){
  let err=false;try{check({test:t,source:[],lines:[],root:null})}catch{err=true}if(!err)throw Error("malformed accepted");malformedRejected++;checks++;
 }
-return {status:"PASS",checks,proofs,satCases,corruptRejected,malformedRejected,rawBlob:raw.sha};
+return {status:"PASS",checks,proofs,satCases,corruptRejected,malformedRejected};
 
+
+}
+const data=JSON.parse(fs.readFileSync(process.argv[2],"utf8"));
+console.log(JSON.stringify(independentlyVerify(data),null,2));
