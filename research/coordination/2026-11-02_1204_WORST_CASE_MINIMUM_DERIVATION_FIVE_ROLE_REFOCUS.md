@@ -599,3 +599,29 @@ Resolution subsumption closure also gives a 32-node general local compiler (or a
 
 [Report](../main/2026-11-03_0248_MAIN_LOCAL-COMPILER-COEFFICIENT-REFEREE310.md) · [handoff](2026-11-03_0248_LSPV5_TO_FIVE_ROLE_LOCAL-COMPILER-COEFFICIENT-REFEREE310.md) · [raw](../../results/raw/arc/lspv5_310/local_compiler_coefficient_referee310.json)
 <!-- END LSPV5 LOCAL-COMPILER-COEFFICIENT-REFEREE310 -->
+
+
+<!-- BEGIN LSPV4 PROOF-SLACK-REPLAY358 -->
+## LSPV-4 resource audit 358: source-cycle rank controls proof DAG unfolding (2026-11-03 03:36 PST)
+
+**PROVED/EXACT graph theorem, KNOWN Sethi–Ullman register result, COMPUTATIONAL independent strict-RES replay; B1/B2/B3, full mixed-output normalization, superpolynomial worst-case minimum and P versus NP OPEN.** No rule, task, or schedule changed.
+
+For any sound source-explicit at-most-two-premise shared contradiction DAG, retain only its final contradiction ancestry. Let \(s\) be used source clauses, \(q\) charged inference nodes, \(E\) named antecedent edges, \(V=s+q\), \(\beta=E-V+1\) the undirected cycle rank, and \(\delta=\sum_v(2-k_v)\) the missing binary-premise slots. Then:
+
+$$
+q=s-1+\beta+\delta.
+$$
+
+For clause-minimally UNSAT inputs, sound conservative proofs use all \(m\) indispensable source clauses, so \(s=m\). Full tree unfolding copies each node once per directed path to the sink. Since every non-sink vertex has positive consumer count and \(\sum_{v\ne sink}(d^+(v)-1)=\beta\), the number of paths from any vertex to the sink is at most \(2^\beta\). Thus \(U\le V2^\beta\) unfolded nodes and at most \(s2^\beta\) source-leaf occurrences. A favorable Sethi–Ullman schedule needs at most \(\lfloor\log_2 L\rfloor+2\) simultaneously live value records if distinct output buffers are required. This is an **upper bound on replaying a supplied proof**, not a SAT-runtime lower bound. Controller construction, source/index/head reads, schedule bits, large record fields and all-phase peak scratch remain charged.
+
+**Counterexample to naive DAG-cycle hardness:** An authenticated nonaffine minimally UNSAT five-clause source has a five-step RES proof with one shared source, \((s,q,\beta,U)=(5,5,1,11)\). After eight fresh source splits, \((13,13,1,43)\). Binary selector-gating \(k\) disjoint copies gives minimally UNSAT sources with \(s=5k\), \(q=6k-1\), \(\beta=k\) but \(U=12k-1\). Large \(\beta\) alone does not imply large proof cost or expensive replay. Easy Horn controls have \(\beta=0\). Unary rules contribute \(\delta\) and must not be miscounted as cycles.
+
+Separate Python producer and no-import Node referee replayed all 19 signed RES DAGs (nine fresh splits, five selector groups, five Horn chains): **501 Python assertion groups and 1,440 independent Node assertions**. Small same-source clause-deletion and sign-flip neighbors all SAT; ten malformed DIMACS and two corrupt proofs reject; odd/even K4 controls have 0/8 models. The 96,784 KiB Python and 30,580 KiB Node host RSS measurements are not FLMV writable-space bounds. Full-source materialization still prevents an all-phase \(\rho<1\) claim.
+
+Files read back:
+- [Role report](../agents/lspv-4/2026-11-03_0336_LSPV-4_PROOF_SLACK_REPLAY358.tex)
+- [Standalone executable](../../experiments/arc/lspv4_358_proof_slack_replay.js)
+- [Raw summary](../../results/raw/arc/2026-11-03_0336_LSPV4_PROOF_SLACK_REPLAY358_summary.json)
+
+Root \`main.tex\` was reconciled strictly in a new LSPV-4-owned region using authenticated Git blob read/write and verified that **every old byte outside the insertion was preserved**. Next exact gap: finalize downstream-preserving bounded-record semantics for all Rmix341 LOCAL-CONVERT/DEF outputs and prove an actual charged scheduler, without treating either as B3. The weakest sufficient bridge and superpolynomial worst-case minimum remain OPEN.
+<!-- END LSPV4 PROOF-SLACK-REPLAY358 -->
