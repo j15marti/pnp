@@ -19,3 +19,6 @@ The corrected materialized-child all-phase envelope remains s'<=max{rho,eta,lamb
 - experiments/arc/lspv4_357_source_reread_index_audit.js
 - results/raw/arc/2026-11-03_0303_LSPV4_INDEXED_REREAD_ADDRESS_WRITE357_raw.json
 Root main.tex returned zero text in ordinary fetch but its 1.4M-character authenticated Git blob is recoverable. Do not claim successful root reconciliation absent subsequent safe write/readback. No task mutation.
+
+## Root reconciliation readback correction
+The root manuscript was subsequently recovered from Git blob SHA `1b8467cdfa7190653368651ed610304b9d30b8ee`, changed **only** by inserting a new marked LSPV-4 block immediately after the LSPV-4 FANO356 block, and written at commit `a429318c494eb012a988c1ba8888394ecf370b85`. The updated blob SHA is `dfca661c425964bf8950b126aeeefa3c032e9872`. Full 1,408,145-character readback matched the update exactly; deleting only the newly inserted block reproduces the original 1,405,930 characters byte-for-byte. Root reconciliation is therefore **VERIFIED**. Repository linter/preflight was not run because the container execution backend returned a connection error; this limitation does not affect the Git blob preservation comparison.
