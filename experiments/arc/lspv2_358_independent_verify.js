@@ -19,7 +19,7 @@ function vSat(F,mask){for(const c of F)if(!vClause(c,mask))return false;return t
 function vEntails(F,C,n){for(let m=0;m<(1<<n);m++)if(vSat(F,m)&&!vClause(C,m))return false;return true;}
 function vResolve(left,right,p){
   vAssert(left.includes(p)&&right.includes(-p),"wrong pivot");
-  return vCanon(left.filter(x=>x!==p).concat(right.filter(x=>x!==-p)));
+  return vCanon([...new Set(left.filter(x=>x!==p).concat(right.filter(x=>x!==-p)))]);
 }
 function verifyOne(test) {
   const F=test.F,C=test.C,n=test.n,P=test.proof;
