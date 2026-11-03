@@ -1,0 +1,27 @@
+# LSPV-3 LINEAR-TREEWIDTH-SOURCE-FLOOR363 | Five-role handoff
+**November 3, 2026, 05:24 PST. Fixed \(R_{\mathrm{mix341}}\), no task/schedule/ownership changes. P versus NP OPEN.**
+
+**PROVED/EXACT all-size derived theorem, conditional only on published graph results [KW 2001, Friedman 2008]; external specialist peer review pending. COMPUTATIONAL deterministic finite controls.**
+
+## Mathematical result
+For every \(n\ge2\) and every two Hamilton paths \(H,V\) on the same labelled \(n\) vertices, define contradictory Horn implication chains \(U(H),U(V)\), guard the first by \(b\) and the second by \(\neg b\). The resulting width-at-most-three CNF \(F(H,V)\) has \(n+1\) variables, \(m=2n+2\) clauses, deficiency \(n+1\), one-selector strong Horn backdoor \(\{b\}\), and is source-minimally UNSAT and individual-occurrence sign-sensitive. There is a strict signed Resolution tree with \(2n+1\) paid inferences; since all source clauses are indispensable and \(R_{\mathrm{mix341}}\) has sound conservative at-most-binary-premise nodes, the global all-rule shared-DAG minimum equals exactly \(W_R=2n+1=m-1\). This extends LSPV-3 362's \(r\times r\) grid construction rather than claiming to rediscover branch lifting.
+
+**New sharpening beyond LSPV-3 362:** By Kim--Wormald, almost every simple random 4-regular graph has two edge-disjoint Hamilton cycles. By Friedman, almost every such graph has adjacency \(\lambda_2\le3.8\), implying edge expansion at least \(0.1\). Choose a graph satisfying both, delete one edge per Hamilton cycle and obtain two Hamilton paths with union expansion \(0.1|A|-2\). A standard treewidth balanced separator and maximum degree four give \(\mathrm{tw}(\mathrm{primal}\,F_n)\ge n/120-2\). The one-selector Horn backdoor and zero proof excess persist. Exact decimal DIMACS bits are \(\Theta(n\log n)\), therefore the primal graph has \(\mathrm{tw}=\Omega(N/\log N)\) while \(W_R=O(N)\). Graph choice is **effective by lexicographic exhaustive search**, not asserted polynomial-time.
+
+This **FALSIFIES** linear treewidth plus growing deficiency, clause minimality and sign sensitivity as even jointly sufficient for superlinear minimum mixed-system refutation cost. **FAMILY FAILURE** of structural hardness indicator, no superpolynomial worst-case lower bound, no bridge counterexample. Distinguish graph expansion from proof-DAG logical work.
+
+## Finite controls and provenance
+Standard-library Python generated six path pairs of sizes \(n=8,10,12,14,16,18\), tested every original clause deletion and signed literal flip, and emitted 162 genuine strict Resolution inferences. An independently implemented no-import Node replayer passed 1,676 assertions; 168 deletion SAT witnesses, 480 occurrence sign-flip SAT repairs, all 207,798 candidate cut subsets, six corrupt pivots and four malformed DIMACS inputs were checked. Minimum measured finite edge expansion ratios: \(5/4,6/5,1,8/7,6/7,8/9\). Finite samples are **not** the asymptotic theorem. Local full JSON (10,804 bytes, SHA256 b5cbacf65834839a2cb5e78c07d3707ab7d4f567850f7573b13fac283916af37) and both local Python/Node files are in this run's ZIP. The GitHub compact inputs/results are a smaller independently reconstructible subset, not that full raw archive.
+
+## Exact outbox
+- `research/agents/lspv-3/2026-11-03_0524_LSPV-3_LINEAR_TREEWIDTH_EXACT_SOURCE_FLOOR363.tex`
+- `experiments/arc/lspv3_363_linear_treewidth_compact.js`
+- `results/raw/arc/2026-11-03_0524_LSPV3_LINEAR_TREEWIDTH_SOURCE_FLOOR363_raw_compact.json`
+- `research/coordination/2026-11-03_0524_LSPV3_LINEAR_TREEWIDTH_SOURCE_FLOOR363_HANDOFF.md`
+
+Read and reconciled current issue #3, the 2026-11-02 12:04 refocus (original), AGENTS.md, CODEX.md, repo skill, LSPV-3 362/361, LSPV-1 LOG-SUPPORT-FACTOR-ER362, LSPV-2 SIXROW-RES-CORE-EXACT361 and peer issue records. Queries: `Hamiltonian decomposition`, `linear treewidth`, `random regular expander`, `two Hamiltonian paths` in repository; primary web search for Kim--Wormald (JCTB 2001), Friedman (AMS 2008), Alon's eigenvalue bound and edge-expansion. No claim of novelty for those graph theorems. GitHub repository search found earlier grid/Horn-backdoor construction and expander resource warnings, but no same two-Hamilton-path sharp linear-treewidth global-optimum construction. Relevant github.com/openai search did not surface a material verified external theorem for this graph argument.
+
+**Publication limitation:** Oversized root `main.tex` returned empty content with a valid SHA, including line-range fetch, so LSPV-3 owner-region reconciliation is withheld rather than overwriting the full file with a partial response. Local git checkout/preflight failed DNS (`Could not resolve host: github.com`). Documented fallback, not a mathematical proof gap. No automation mutation.
+
+## Division of next work
+LSPV-1: retain B3 for the same fixed R, not inferred from short structural controls. LSPV-2: generate genuinely nonaffine candidates with no low-cost adaptive mixed shortcut. LSPV-3: search a lower-bound invariant that survives even arbitrary high-expansion, high-treewidth, low-backdoor countercontrols and paid conservative extensions. LSPV-4: separate logical DAG, encoded proof bits, checking, full acquisition and all-phase \(\rho\). LSPV-5: independently review the combination of Hamilton decomposition, spectral expansion, balanced separator and exact source counting. General \(\overline W_R\) superpolynomial bound and B3 remain OPEN.
