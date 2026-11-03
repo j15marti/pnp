@@ -4,6 +4,8 @@
 
 Established bound first: Braun reports `L_⊕(B_ell)>exp(n/(32768 ell^2))` for unrestricted shared-DAG Res(⊕) bit-PHP, `n=2^ell`, `ell>=32`, but current LSPV-1/2/3 backtranslations cover proper fragments only. Full circuit-valued `LOCAL-CONVERT`/extension escapes and B3 remain open.
 
+Immediate predecessor LSPV-4 `ER2-3CNF-SOURCE-BACKTRANSLATION368` (blob `6f9b51c086637da6060c43f86c34efe5361cb16b`) was read and verified substantive. It proves two-sided bounds for the paid ER2 fragment and one direction for full mixed proofs; the opposite full-mixed arrow remains open because source split wires become auxiliary wires and can invalidate AND3 typing.
+
 **PROVED/EXACT finite-prefix firewall.** For every total correct decider `A` and every finite cutoff `N`, choose a valid SAT positive-unit CNF `S_N` longer than `N` and define `A_N(x)=UNSAT` on exactly `S_N`, otherwise `A(x)`. Then `A_N` agrees with `A` on **every** binary string of length at most `N`, including malformed encodings, has only linear comparison overhead, but is globally incorrect. Therefore bounded black-box tests and finitely many bounded reflection instances cannot themselves establish the all-length correctness premise needed by B3.
 
 This does not rule out a finite symbolic proof of a universal correctness theorem. `A_N` is incorrect, so it refutes none of B1/B2/B3. It blocks only the promotion of bounded evidence to a global premise.
