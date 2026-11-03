@@ -1,7 +1,7 @@
 "use strict";
 // LSPV-2 INLINE-CONE-TRANSFER367, finite source-authenticated compiler.
 // Legal paid mixed steps: RES, AND3, GF(2) XOR, and conservative AND2 VARDEF.
-// This is a finite control (n<=6), not a proof of the all-size theorem.
+// This is a finite control (n<=10), not a proof of the all-size theorem.
 const ck=(x,m)=>{if(!x)throw Error(m);}, b=(a,v)=>(a>>(v-1))&1;
 const uniq=(...xs)=>[...new Set(xs.flat())].sort((u,v)=>u-v);
 const eq=(A,B)=>A.length===B.length&&A.every(x=>B.includes(x));
@@ -26,7 +26,7 @@ function ovars(p,v){return p.defs[v]?uniq(...p.defs[v].map(x=>ovars(p,Math.abs(x
 function supp(p,i){let z=p.lines[i];if(["src","slot","res"].includes(z.op))return uniq(...C(p,z).map(l=>ovars(p,Math.abs(l))));
  if(z.op==="and")return uniq(...z.P.map(j=>supp(p,j)));if(z.op==="xor")return uniq(z.mask);throw Error("support");}
 function vm(p){
- let {lines:L,n}=p;ck(n>=1&&n<=6,"n cap");let q=Object.keys(p.defs).length,src=L.filter(z=>z.op==="src");
+ let {lines:L,n}=p;ck(n>=1&&n<=10,"n cap");let q=Object.keys(p.defs).length,src=L.filter(z=>z.op==="src");
  for(let i=0;i<L.length;i++){let z=L[i],S=supp(p,i);ck(S.every(v=>v>=1&&v<=n),"bad variable");
   if(z.op==="src"||z.op==="slot")continue;
   ck(z.P.length===2&&z.P.every(j=>j>=0&&j<i),"parents");q++;
@@ -76,8 +76,33 @@ function compile(p){
  let bound=profile.reduce((s,w)=>s+2**(w+1),0),paid=strict.length-orig.length;ck(paid<=bound,"scope bound exceeded");
  return {name:p.name,n,m:orig.length,q:v.q,maximum_inlined_scope:Math.max(...profile),scope_cost_bound:bound,
    strict_resolution_nodes:paid,temporary_weak_res_nodes:raw.length-orig.length,source:orig,strict};}
+function makeGraph(name,h,edges,odd){
+ let inc=Array.from({length:h},()=>[]),L=[],local=[];
+ edges.forEach(([u,v],i)=>{inc[u].push(i+1);inc[v].push(i+1);});
+ ck(inc.every(x=>x.length===3),"noncubic graph");
+ for(let v=0;v<h;v++){
+  let rhs=(v===0&&odd)?1:0,root=[];
+  for(let k=0;k<8;k++)if((b(k,1)^b(k,2)^b(k,3))!==rhs)
+   root.push(L.push({op:"src",C:inc[v].map((e,j)=>b(k,j+1)?-e:e)})-1);
+  let last=root[0];
+  for(let t=1;t<4;t++){last=L.push({op:"and",P:[last,root[t]]})-1;
+   if(t===3)L[last].row={mask:inc[v].slice(),rhs};}
+  local.push(last);
+ }
+ let acc=local[0];
+ for(let j=1;j<local.length;j++){
+  let A=L[acc].row,B=L[local[j]].row;
+  let mask=uniq(A.mask,B.mask).filter(e=>A.mask.includes(e)!==B.mask.includes(e));
+  acc=L.push({op:"xor",P:[acc,local[j]],mask,rhs:A.rhs^B.rhs,row:{mask,rhs:A.rhs^B.rhs}})-1;
+ }
+ return {name,n:edges.length,defs:{},lines:L,root:acc};
+}
 function main(){
- let tests=[makeDef(),makeXor()],full=tests.map(compile);
+ let k4=[],k33=[];for(let i=0;i<4;i++)for(let j=i+1;j<4;j++)k4.push([i,j]);
+ for(let i=0;i<3;i++)for(let j=3;j<6;j++)k33.push([i,j]);
+ let tests=[makeDef(),makeXor(),makeGraph("odd_K4",4,k4,true),makeGraph("odd_K33",6,k33,true)],full=tests.map(compile);
+ let even=makeGraph("even_K4",4,k4,false),ec=vm(even);
+ ck(!ec.unsat&&!ec.rootFalse,"even Tseitin SAT control");
  let sat=[{C:[1,2]},{C:[-1,2]}];
  ck([0,1,2,3].some(a=>sat.every(z=>z.C.some(l=>b(a,Math.abs(l))===(l>0?1:0)))),"SAT witness absent");
  let bad=0;for(let f of [
