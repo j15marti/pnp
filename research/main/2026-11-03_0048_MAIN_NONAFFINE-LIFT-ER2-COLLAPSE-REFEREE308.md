@@ -63,8 +63,9 @@ Substituting \(L=3h\) proves the general displayed bound. For `AND2`, LSPV-3 exh
 
 ## Exact finite certificates
 
-The Python producer saturated ordinary binary Resolution and retained only target ancestry for eleven fixed templates:
+The Python producer saturated ordinary binary Resolution and retained only target ancestry for twelve fixed templates:
 
+- the four-gate true rail, deriving both false units and the true unit;
 - XOR commutativity;
 - XOR associativity;
 - XOR congruence under an already proved input equality;
@@ -73,9 +74,9 @@ The Python producer saturated ordinary binary Resolution and retained only targe
 - all four Boolean unit-input XOR cases;
 - both three-bit parity labels compiled to the corresponding XOR-output unit.
 
-The retained certificates contain 155 lines, of which 81 are genuine Resolution nodes. The largest template is associativity, with 30 Resolution nodes. A separately implemented Node.js verifier reconstructs every permitted source slot, checks every pivot and exact resolvent, and accepts all eleven targets. Raw SHA-256:
+The retained certificates contain 165 lines, of which 86 are genuine Resolution nodes. The largest template is associativity, with 30 Resolution nodes. A separately implemented Node.js verifier reconstructs every permitted source slot, checks every pivot and exact resolvent, and accepts all twelve targets. Raw SHA-256:
 
-`b85f616ce678b1bf7653e7bb4bafbf843ba971c9cdb42f7528a24cc8a7453ac9`.
+`e828ad03b952d444864ed2b96d792f8d694cdf65de043394b3c18bf66a8906a2`.
 
 This is a finite verification of the constant templates, not a finite extrapolation to the global theorem: the polynomial global composition is the explicit rewrite construction above.
 
@@ -109,7 +110,7 @@ The exact implication chain B1 \(\Rightarrow\) B2 \(\Rightarrow\) B3 is unchange
 
 Logical cost counts only the exhibited proof DAG. Best-sequence discovery is free in \(W_R\), as required. Materializing the global certificate has polynomial output work and encoded length; checking requires parsing sources, validating gate freshness/slots, references, pivots, and final ancestry. A schedule that stores all clauses uses polynomial space, while a streaming/recomputation schedule may use less; no machine-space lower bound is claimed.
 
-The finite producer charged closure discovery, exhaustive label enumeration, malformed parsing, certificate extraction, JSON serialization, and host overhead: 4.375 seconds wall time and 10,112 KiB peak RSS. The independent verifier was a separate process. These measurements are experimental upper costs, not logical weights or a Turing/RAM transfer. Any recursive use retains
+The finite producer charged closure discovery, exhaustive label enumeration, malformed parsing, certificate extraction, JSON serialization, and host overhead: 4.893 seconds wall time and 10,240 KiB peak RSS. The independent verifier was a separate process. These measurements are experimental upper costs, not logical weights or a Turing/RAM transfer. Any recursive use retains
 
 $$
 s'\le\max\{\rho,\eta,\lambda,\lambda s\},
