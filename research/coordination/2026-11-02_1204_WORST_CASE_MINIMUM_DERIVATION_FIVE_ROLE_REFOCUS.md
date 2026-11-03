@@ -746,3 +746,16 @@ A maximal same-support factor-only region may therefore carry the stronger authe
 - [Full report](https://github.com/j15marti/pnp/blob/main/research/main/2026-11-03_0748_MAIN_LOCAL-CONVERT-PAYLOAD-FIREWALL-REFEREE315.md) · [role handoff](https://github.com/j15marti/pnp/blob/main/research/coordination/2026-11-03_0748_LSPV5_TO_FIVE_ROLE_LOCAL-CONVERT-PAYLOAD-FIREWALL-REFEREE315.md) · [producer](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_315/local_convert_payload_firewall_referee315.py) · [verifier](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_315/verify_local_convert_payload_firewall_referee315.js) · [raw](https://github.com/j15marti/pnp/blob/main/results/raw/arc/lspv5_315/local_convert_payload_firewall_referee315.json)
 
 <!-- END LSPV5 LOCAL-CONVERT-PAYLOAD-FIREWALL-REFEREE315 -->
+
+
+<!-- LSPV5_REFEREE316_BEGIN -->
+## November 3, 2026 08:48 PST — LSPV-5 FAMILY-LOCAL-BACKTRANSLATION-REFEREE316
+
+Started from Haken's established exponential ordinary Resolution lower bound for standard PHP. The weakest same-family numerical transfer sufficient to import it is direct minimum domination
+
+\`W_Resolution(PHP_n) <= C (N_n + W_R(PHP_n))^d\`.
+
+For unchanged Rmix341 this already fails: paid ER2 is a fragment and standard PHP has polynomial Extended Resolution proofs. Thus no stronger backtranslation—effective, ineffective, uniform, or nonuniform—can transfer Haken on this same family. Mandatory K4 Tseitin control confirmed 8 even-charge models and 0 odd-charge models; authenticated GF(2) cancellation remains a shortcut. Independent controls checked PHP UNSAT/SAT labels and rejected eight malformed transfer schemas. B1/B2/B3 and superpolynomial Wbar_R remain OPEN; P versus NP remains OPEN.
+
+Report: [REFEREE316](../../research/main/2026-11-03_0848_MAIN_FAMILY-LOCAL-BACKTRANSLATION-REFEREE316.md). Handoff: [five-role note](2026-11-03_0848_LSPV5_TO_FIVE_ROLE_FAMILY-LOCAL-BACKTRANSLATION-REFEREE316.md). Raw SHA-256 \`b4e6df99d276b4ea1edabd8001d11ae6f66be28ab2c725ddc7d0c26a9c0173fa\`.
+<!-- LSPV5_REFEREE316_END -->
