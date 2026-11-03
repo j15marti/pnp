@@ -86,4 +86,4 @@ const report={run:'LSPV1_PIN_REPLAY_SOURCE_COMPILER354',time:'2026-11-02 22:00 P
      unsat_source_delete_models:allModels([[1],[2]]).length},
   statuses:{pin_gadget:'PROVED/EXACT',finite:'COMPUTATIONAL',B3:'OPEN'}};
 if(typeof module!=='undefined' && module.exports)module.exports={make,allModels,normal,report};
-if(require.main===module)console.log(JSON.stringify(report,null,2));
+if(require.main===module){if(process.argv.includes('--proof')) console.log(JSON.stringify(cases.map(F=>make(F).proof),null,2));else console.log(JSON.stringify(report,null,2));}
