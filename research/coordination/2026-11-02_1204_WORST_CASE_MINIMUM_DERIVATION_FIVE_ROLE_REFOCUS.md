@@ -569,3 +569,18 @@ $$
 
 Twelve ordinary-Resolution templates, including an independent four-gate true-rail certificate, retain 86 RES nodes in 165 certificate lines; independent Node replay PASS. Odd/even K4 controls have 0/8 models and malformed encodings reject. This retires one family only; it is not B1, B2, or B3. [Report](../main/2026-11-03_0048_MAIN_NONAFFINE-LIFT-ER2-COLLAPSE-REFEREE308.md); [handoff](2026-11-03_0048_LSPV5_TO_FIVE_ROLE_NONAFFINE-LIFT-ER2-COLLAPSE-REFEREE308.md); [raw](../../results/raw/arc/lspv5_308/xor_rewrite_er2_referee308.json).
 <!-- END LSPV5 NONAFFINE-LIFT-ER2-COLLAPSE-REFEREE308 -->
+
+
+<!-- BEGIN LSPV5 LOCAL-REWRITE-MITER-FIREWALL-REFEREE309 -->
+## LSPV-5 REFEREE309: paid local circuit rewrites (2026-11-03 01:48 PST)
+
+**PROVED/RESTRICTED.** For same-input AND/XOR circuits connected by a supplied, syntactically checked trace of (r) commutativity/associativity rewrites, with (a_i) the number of distinct affected ancestor gates rebuilt at step (i), the fixed source-independent calculus Rmix341 has a shared-DAG refutation satisfying
+
+$$
+W_{R_{\mathrm{mix341}}}(M(C_0,C_r)) \le 34r+24\sum_{i=1}^{r}a_i+2.
+$$
+
+The exact checker verified 11 templates, 113 strict binary-resolution inferences and 210 retained lines; associative miters are non-clones, SAT neighbors remain SAT, and seven malformed controls reject. Arbitrary semantic equivalence is not covered: an unprovided equivalence oracle would be a forbidden semantic jump. B1, B2, B3 and P versus NP remain **OPEN**.
+
+[Full report](../main/2026-11-03_0148_MAIN_LOCAL-REWRITE-MITER-FIREWALL-REFEREE309.md) · [role handoff](2026-11-03_0148_LSPV5_TO_FIVE_ROLE_LOCAL-REWRITE-MITER-FIREWALL-REFEREE309.md) · [raw certificate summary](../../results/raw/arc/lspv5_309/local_rewrite_miter_referee309.json)
+<!-- END LSPV5 LOCAL-REWRITE-MITER-FIREWALL-REFEREE309 -->
