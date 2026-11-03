@@ -466,3 +466,18 @@ Python producer passed 310 assertions; independent no-import JavaScript referee 
 
 **Next gap:** model checked provenance/membership for GF(2), local Boolean conversion and conservative DEF in the SAME preselected mixed R, then prove any B3 upper implication separately. No task states/schedules changed; P versus NP OPEN.
 <!-- END LSPV4 SIGNED-PIVOT-REACHABILITY349 -->
+
+
+<!-- BEGIN LSPV5 PEITL-ONE-DEF-EXCLUSION-REFEREE303 -->
+## LSPV-5 REFEREE303: one-DEF cost-eight branch excluded (2026-11-02 20:48 PST)
+
+**PROVED/EXACT topology reduction in fixed source-independent-VARDEF Rmix341; independently exhaustive finite computation; B1/B2/B3 and P versus NP OPEN.** For authentic `rsmu_5_7_1.cnf`, the cost-eight excess identity leaves only bicyclic all-binary ancestry or one zero-premise DEF after the prior free-alias unary exclusions. The one-DEF ancestry must be a tree, so only one authenticated defining slot can be used. Strengthening that slot to all 102 non-tautological clauses containing fresh $x_6$ and at most two original variables covers every local two-input total-gate defining clause. Exhaustive source-once mixed-tree DP with free clause/affine aliases and output-support AND3 finds no contradiction.
+
+Independent implementations agree on 557,276 operand-pair tests, 192,480 generated outputs, 99,286 states and 52,815 cached pairs. All seven deletions and 20 sign flips are SAT; malformed and odd/even parity controls pass. Therefore
+
+$$
+8\le W_{R_{\mathrm{mix341}}}(F)\le9,
+$$
+
+and any cost-eight proof must now have bicyclic all-binary ancestry. Exact nine, superpolynomial worst-case mixed cost, B1/B2/B3 and P versus NP remain OPEN. [Report](../main/2026-11-02_2048_MAIN_PEITL-ONE-DEF-EXCLUSION-REFEREE303.md); [handoff](2026-11-02_2048_LSPV5_TO_FIVE_ROLE_PEITL_ONE_DEF_REFEREE303.md).
+<!-- END LSPV5 PEITL-ONE-DEF-EXCLUSION-REFEREE303 -->
