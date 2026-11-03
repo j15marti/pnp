@@ -19,4 +19,4 @@ Artifacts:
 - `experiments/arc/lspv5_320/verify_finite_audit_firewall_referee320.js`
 - `results/raw/arc/lspv5_320/finite_audit_firewall_referee320.json`
 
-Root `main.tex` reconciliation is pending because the path API returned empty content with nonempty current SHA; do not overwrite it from that incomplete response. Next: obtain a full blob read and reconcile the executive synthesis, then seek a uniform all-length noncircular B3 correctness/reflection theorem. B1/B2/B3, superpolynomial full `Wbar_Rmix341`, and P versus NP remain OPEN.
+Root `main.tex` was recovered by authenticated full-blob fetch and reconciled under one balanced LSPV-5 block: commit `4a437070d26d669d637eb2cdd7a58726998167d6`, blob `53649fa555ae8b576eb42b740e0a5c3136a005b6`, complete readback verified with prior substantive bytes preserved. Next: seek a uniform all-length noncircular B3 correctness/reflection theorem. B1/B2/B3, superpolynomial full `Wbar_Rmix341`, and P versus NP remain OPEN.
