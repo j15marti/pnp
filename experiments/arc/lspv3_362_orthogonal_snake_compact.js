@@ -11,7 +11,7 @@ const sat=(cl,a)=>cl.some(x=>Boolean(a[Math.abs(x)-1])===(x>0));
 function produce(r){
  ok(Number.isInteger(r)&&r>=2,"invalid size");
  const n=r*r,b=n+1,H=[],V=[];
- for(let row=0;row<r;row++)for(let j=0;j<r;j++)H.push(row*r+(row%2?r-j:j)+1);
+ for(let row=0;row<r;row++)for(let j=0;j<r;j++)H.push(row*r+(row%2?r-1-j:j)+1);
  for(let col=0;col<r;col++)for(let j=0;j<r;j++)V.push((col%2?r-j-1:j)*r+col+1);
  const S=[];
  for(let [guard,p] of [[b,H],[-b,V]]){
