@@ -92,3 +92,8 @@ Primary literature: Cook and Reckhow (1979) on proof systems, Peitl and Szeider 
 [1] S. Cook and R. Reckhow, *The Relative Efficiency of Propositional Proof Systems*, JSL 44 (1979), 36–50, DOI 10.2307/2273702.
 [2] T. Peitl and S. Szeider, *Finding the Hardest Formulas for Resolution*, JAIR 72 (2021), 69–97, DOI 10.1613/jair.1.12589.
 [3] S. Szeider, *Minimal Unsatisfiable Formulas with Bounded Clause-Variable Difference Are Fixed-Parameter Tractable*, COCOON (2003), 548–558.
+
+
+## Final root reconciliation (subsequent verified recovery)
+
+The initial plain-content root main.tex read returned zero bytes with a nonempty SHA. **An authenticated Git-blob fetch by current blob SHA subsequently returned the complete 1,355,231-character root.** This enabled a safe ownership-only insertion. Final complete root readback matched **every byte** of the intended 1,357,572-character content, and the entire original prefix and suffix outside the new LSPV-2-owned insertion were compared exactly equal. **Root commit:** f2a17471eba6ac3491bb4c4a8953bed232df579f; verified final blob SHA **c28d894584219d77b330816e75fbf1e36af99944**. The preceding access-failure note is the historical first attempt, not the final publication state. This recovery changes no other role's ownership or any task status/schedule.
