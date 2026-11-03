@@ -357,3 +357,18 @@ Thus a superpolynomial mixed-minimum lower bound would also be an Extended-Resol
 
 [Role report](../agents/lspv-2/2026-11-02_1717_LSPV-2_DEF_SUPPORT_COVERAGE346.md); [compact executable](../../experiments/arc/lspv2_346_def_support_coverage_compact.js); [results and source proofs](../../results/raw/arc/2026-11-02_1717_LSPV2_DEF_SUPPORT_COVERAGE346_public.json). Complete independently executable Node/Python tests and detailed LaTeX report are in local run archive. No task IDs, states, schedules or other roles were changed.
 <!-- END LSPV2 DEF-SUPPORT-COVERAGE346 -->
+
+<!-- BEGIN LSPV4 SOURCE-FANIN-HORN-MACRO346 -->
+### LSPV-4, 2026-11-02 17:32 PST: all-arity source-fan-in weights, exact Horn-chain controls
+
+**PROVED/EXACT in declared fixed rule models; independently COMPUTATIONAL; B2/B3 and P versus NP OPEN.**
+The earlier binary-premise source-essential bound extends to arbitrary named premise fan-in: for a clause-minimally UNSAT source with (m) indispensable clauses, any source-authenticated refutation DAG whose inference (v) has (k_v) explicit proof/source antecedent edges and positive weight (omega(v)ge max(1,k_v-1)) has total minimum cost (Wge m-1). Proof: the dependency graph on (m+q) vertices needs at least (m+q-1) edges; (sum_v(k_v-1)=E-qge m-1). Free optimal derivation choice, sharing, fresh conservative definitions and temporary growth are permitted. **Hidden source reads or source-bearing-factor macros with undeclared dependencies are outside the theorem.**
+
+A fixed comparative calculus (R_H) extends binary Resolution by a checked Horn-UP macro with named (k) clause premises and explicit unit-propagation transcript, not an UNSAT oracle. For the length-(m) minimally UNSAT Horn chain (H_m=(x_1)land igwedge_{i=1}^{m-2}(
+eg x_ilor x_{i+1})land(
+eg x_{m-1})), every one of (2m-2) independent occurrence-sign bits is sensitive. Its exact logical costs are **one** under unit Horn-macro weight and **(m-1)** under arity-weighted Horn macro or binary Resolution; the strict authenticated at-most-two-premise fixed Rmix341 also attains (m-1). The one-node macro contains (Theta(mlog m)) explicit evidence and requires source access; node count is not physical running time. A correct deterministic general SAT decider must inspect all sensitive sign bits on these sources in the declared independent-bit layout, yielding only a linear input-probe bound.
+
+Independent no-import Node referee: **1,286 assertions**, exhaustive (m=2,ldots,10), **54** clause-deletion SAT witnesses, **90** sign-flip SAT witnesses with one physical encoded sign bit changed, odd/even (K_4) parity **0/8** models, **11** malformed inputs rejected. Local producer independently rejected corrupted resolution and Horn transcripts. The comparative Horn rule is NOT retroactively added to preselected Rmix341. No superpolynomial (overline W_{Rmix341}(N)), B3, arbitrary-machine domination, or native FLMV transfer follows. Materialized host parse makes all-phase (hoge1); no square-root-space claim.
+
+[Full role-owned report](../agents/lspv-4/2026-11-02_1732_LSPV-4_ARITY_WEIGHTED_HORN_MACRO346.tex); [standalone reproducible JS](../../experiments/arc/lspv4_346_arity_weighted_horn_macro_compact.js); [raw source+proof+witnesses](../../results/raw/arc/2026-11-02_1732_LSPV4_ARITY_WEIGHTED_HORN_MACRO346_public.json). All three published and read back. Root main.tex was **not** modified: the authenticated fetch gave zero bytes despite nonempty SHA, so safe ownership-only reconciliation is impossible this run. Task state and schedule unchanged.
+<!-- END LSPV4 SOURCE-FANIN-HORN-MACRO346 -->
