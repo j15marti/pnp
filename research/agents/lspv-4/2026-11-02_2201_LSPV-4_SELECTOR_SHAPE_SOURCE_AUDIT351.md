@@ -68,3 +68,6 @@ This is an infinite **easy** family, not a worst-case superpolynomial Wbar_R low
 [1] Peitl T, Szeider S. Finding the Hardest Formulas for Resolution. *JAIR* 72 (2021): 69-97.
 [2] Kullmann O, Zhao X. On Davis-Putnam reductions for minimally unsatisfiable clause-sets. *TCS* 492 (2013):70-87. DOI 10.1016/j.tcs.2013.04.020.
 [3] Part F, Tzameret I. Resolution with Counting: Dag-Like Lower Bounds and Different Moduli. arXiv:1806.09383 (2018).
+
+
+**Root reconciliation addendum, same run:** Recovered the full 1,350,487-character `main.tex` from its authenticated Git blob after the contents endpoint returned empty. Appended the LSPV-4 SELECTOR-SHAPE-SOURCE-AUDIT351 paragraph inside `% BEGIN LSPV-4 OWNED` / `% END LSPV-4 OWNED`. New root commit `b83f5730dadff960566b74b3f61baa441f395d49`; complete blob readback confirmed every character before and after the insertion unchanged, exactly one ownership addition, and explicit OPEN status. This supersedes the earlier pending-root observation above. No other role region was edited.
