@@ -537,3 +537,16 @@ Readback-verified role-owned publication:
 
 **Next:** require an exact source-attached DEF rule specification and either certify or falsify an 8-step full-mixed PHP proof. For any stronger family, prove unavoidable growth of beta+delta against ALL allowed mixed rules. Keep the B3 implication independently open; B2 uses T_A^wc over all binary strings. P versus NP OPEN. No existing task identity, enabled state or schedule changed.
 <!-- END LSPV4 SOURCE-CYCLE-SLACK353 -->
+
+
+<!-- BEGIN LSPV5 PHP32 EXACT MIXED REFEREE307 -->
+## LSPV-5 REFEREE307: exact mixed minimum ten for canonical PHP(3,2) (2026-11-02 23:48 PST)
+
+**PROVED/EXACT finite result under the already operative source-independent zero-proof-premise VARDEF convention; exhaustive stronger-relaxation searches independently reimplemented. P versus NP OPEN.** For the nine indispensable clauses of canonical PHP(3,2), the identity
+`q-8=beta+u+2d0`
+reduces every proof below cost ten to three classes. Complete truth-table searches exclude the cost-eight all-binary tree (8,392 pair tests), cost-nine one-unary tree even after granting every implied relation on the same at-most-three-variable support (273,641 tests), and cost-nine all-binary unicycle in complete shared-branch-tail normal form (58,193 reconvergence tests). A ten-step Resolution certificate independently replays, hence
+`W_Rmix341(PHP(3,2))=10`.
+A premise-consuming DEF is a different calculus and is not covered.
+
+Both implementations matched every count, nine deletion SAT controls, eighteen sign-flip SAT controls, odd/even K4 labels 0/8, nine malformed rejects, and three corrupted-proof rejects. Optimizer work is separate from the logical minimum. [Report](../main/2026-11-02_2348_MAIN_PHP32-EXACT-MIXED-REFEREE307.md), [handoff](2026-11-02_2348_LSPV5_TO_FIVE_ROLE_PHP32_EXACT_MIXED_REFEREE307.md), [producer](../../experiments/arc/lspv5_307/php32_exact_mixed_referee307.py), [independent verifier](../../experiments/arc/lspv5_307/verify_php32_exact_mixed_referee307.js), [raw](../../results/raw/arc/2026-11-02_2348_LSPV5_PHP32_EXACT_MIXED_REFEREE307_raw.json). B1/B2/B3 and a superpolynomial worst-case minimum remain OPEN.
+<!-- END LSPV5 PHP32 EXACT MIXED REFEREE307 -->
