@@ -642,3 +642,35 @@ This is an improved restricted upper compiler, not an exact global mixed minimum
 
 [Report](../main/2026-11-03_0348_MAIN_FACTOR-EARLY-CONTRADICTION-REFEREE311.md) · [handoff](2026-11-03_0348_LSPV5_TO_FIVE_ROLE_FACTOR-EARLY-CONTRADICTION-REFEREE311.md) · [producer](../../experiments/arc/lspv5_311/factor_early_contradiction_referee311.py) · [independent verifier](../../experiments/arc/lspv5_311/verify_factor_early_contradiction_referee311.js) · [raw](../../results/raw/arc/lspv5_311/factor_early_contradiction_referee311.json)
 <!-- END LSPV5 FACTOR-EARLY-CONTRADICTION-REFEREE311 -->
+
+
+<!-- BEGIN LSPV5 SEMANTIC-CNF-BASIS-COMPILER-REFEREE312 -->
+## LSPV-5 REFEREE312: exact CNF bases improve local coefficient 42 to 24 (2026-11-03 04:48 PST)
+
+**PROVED/RESTRICTED computer-assisted local simulation; exhaustive finite classification independently replayed; B1/B2/B3, superpolynomial worst-case minimum, and P versus NP OPEN.** Keep Rmix341, E, L3, and all weights unchanged. Replacing each explicit at-most-three-variable factor by an exact CNF basis, rather than every false-row blocker, is compositional: the basis has exactly the same models, and every downstream local node consumes the same relation.
+
+Using DPLL-IMPLICATE-PRUNE358's safe width costs
+
+$$
+ b_1=3,\qquad b_2=4,\qquad b_3=6,
+$$
+
+complete dynamic programming over all 256 relations and all 26 nonempty non-tautological clauses proves
+
+$$
+\max_{Q\ne\bot}\min_{\Gamma:\operatorname{Mod}(\Gamma)=Q}
+\sum_{C\in\Gamma}b_{|C|}=24.
+$$
+
+Only even and odd parity attain 24; every exact basis has at most four clauses. Topologically compiling each basis clause from the already authenticated input bases yields
+
+$$
+W_{L_3}(F)\le W_E(F)\le24W_{L_3}(F)+O(1).
+$$
+
+Independent checks re-enumerated 256 relations and 6,561 entailed relation pairs, replayed an explicit 24-node even-parity basis derivation from a unique-`000` binary source, replayed a one-node false-factor contradiction, checked both parity labels, and rejected twelve malformed records plus five corrupted proofs. Raw SHA-256: `4ce8c020f4f9e98bdd54cc8d382d119876701cc556d81c923c9d0c86dd8f3204`.
+
+This is an improved restricted upper compiler, not an exact shortest joint mixed proof coefficient. Cross-clause sharing, auxiliaries, global XOR, or circuit conversion may lower it. The 256-entry basis map is fixed and input-independent or recomputable by the published finite DP, so it is not instance advice. No task identity, enabled state, ownership, or schedule changed.
+
+[Report](../main/2026-11-03_0448_MAIN_SEMANTIC-CNF-BASIS-COMPILER-REFEREE312.md) · [handoff](2026-11-03_0448_LSPV5_TO_FIVE_ROLE_SEMANTIC-CNF-BASIS-COMPILER-REFEREE312.md) · [producer](../../experiments/arc/lspv5_312/semantic_cnf_basis_compiler_referee312.py) · [independent verifier](../../experiments/arc/lspv5_312/verify_semantic_cnf_basis_compiler_referee312.js) · [raw](../../results/raw/arc/lspv5_312/semantic_cnf_basis_compiler_referee312.json)
+<!-- END LSPV5 SEMANTIC-CNF-BASIS-COMPILER-REFEREE312 -->
