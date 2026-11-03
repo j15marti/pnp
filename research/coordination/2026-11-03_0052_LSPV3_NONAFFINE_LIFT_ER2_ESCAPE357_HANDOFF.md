@@ -16,7 +16,7 @@ The XOR representation uses positive-output paid signed-AND gates d=a AND !b, e=
 
 ## Hostile controls and code
 
-Both six-input relations parity(AND2,AND2,AND2)=0/1 have full affine rank six, with respectively 36/28 satisfying valuations. There is no nontrivial affine local row in original bits. Python generates twelve complete local proof streams, with 48 paid DEF plus 483 paid RES across separate tests, and 33,628-byte local certificate JSON. Independently written no-import Node verifier checked 3,680 assertions, named gate slots, distinct input IDs, strict binary pivots, exhaustive semantic implication and six malformed/corrupted fixtures. No **complete global lifted K4 proof** has been emitted; full Rmix checker integration remains to be audited. Discovery, explicit encoded evidence, verification time and all-phase peak memory are independent of the minimal logical node count.
+Both six-input relations parity(AND2,AND2,AND2)=0/1 have full affine rank six, with respectively 36/28 satisfying valuations. There is no nontrivial affine local row in original bits. Python generates twelve complete local proof streams, with 67 paid DEF plus 614 paid RES across separate tests, and 33,628-byte local certificate JSON. Independently written no-import Node verifier checked 3,680 assertions, named gate slots, distinct input IDs, strict binary pivots, exhaustive semantic implication and six malformed/corrupted fixtures. No **complete global lifted K4 proof** has been emitted; full Rmix checker integration remains to be audited. Discovery, explicit encoded evidence, verification time and all-phase peak memory are independent of the minimal logical node count.
 
 ## Corpus reconciliation and next exact check
 
