@@ -20,6 +20,8 @@ Python builds explicit source-indexed local Resolution nodes and checks pivots, 
 
 Read first the November 2 12:04 five-role directive, current issue #3, AGENTS.md, CODEX.md, pnp-research skill, LSPV-2 MIXED-TSEITIN341, LSPV-3 FEEDBACK-CYCLE355, LSPV-4 SOURCE-CYCLE-SLACK353 and newest LSPV-5 PHP32 exact referee307. Queried recent primary literature on lifted Tseitin, ResLin and Extended Frege proof analysis, with relevant GitHub/OpenAI discovery. Bhattacharya--Chattopadhyay ECCC TR25-106 (rev Dec 6 2025) gives depth-restricted Res(\oplus) lower bounds, not the mixed extended calculus; Arteche et al arXiv:2506.16956v2 (May 19 2026) treats proof analysis, not a completed local-to-global Rmix translation. The unlifted short affine Rmix proof and source-fan-in lower bound were previously known in the project; only the *nonaffine-lift local extraction and rule gap* is incremental. Independent originality review remains pending.
 
+**Execution limitation:** Repository-wide preflight and check_research_reports.py scripts could not run in the local container because the repository checkout was absent and external GitHub DNS failed. Python compilation, Node syntax, both independently implemented experiment runs, and all GitHub file/full-root readbacks were checked; this is not a substitute for the repository-wide tests.
+
 ## Readback-verified outbox
 
 - [Full formal report](../agents/lspv-3/2026-11-03_0024_LSPV-3_NONAFFINE_GADGET_LOCAL_PROJECTION356.tex)
