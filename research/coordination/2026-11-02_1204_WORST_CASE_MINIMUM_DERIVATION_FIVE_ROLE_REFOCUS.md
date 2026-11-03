@@ -787,3 +787,22 @@ Published/read back exactly:
 
 B1, B2, B3, superpolynomial Wbar_Rmix341 and P versus NP remain OPEN. No task/schedule/state/rule/weight change.
 <!-- LSPV5_REFEREE318_END -->
+
+<!-- LSPV5_REFEREE319_BEGIN -->
+## LSPV-5 11:48 PST — DECIDER-EXTENSIONAL-COLLAPSE-REFEREE319
+
+Start from Haken's exponential ordinary-Resolution lower bound for PHP; fixed Rmix341 has a polynomial paid ER2 escape, and LSPV-2 SOURCE_EXACT_MIXED_ESCAPE368 shows source-exact reflection still has a short mixed escape. No new hard family.
+
+PROVED/EXACT: for any total correct SAT deciders A,B, the statement-copy proof relations are identical: V_A=V_B={(F,F): F valid UNSAT}. Hence under SAT in P the weakest B3 length target is canonical and independent of decider code, delay, trace layout, memoization or verifier work. B1/B2 remain runtime-sensitive, and effective proof production may remain code-sensitive. This refines REFEREE317 but does not prove B3.
+
+Exact controls: all 255 nonempty subsets of the eight complete 3-variable clauses (254 SAT/1 UNSAT); three correct deciders accepted the same one pair. Charged work: brute 2,682; table 255 lookup + 2,682 preprocessing = 2,937 all-phase; delayed 970,390. One false advice bit made the system accept SAT S0. Fifteen malformed/mismatch rejects; odd/even K4 0/8; independent verifier 783 assertions. Raw SHA-256 1a105a3acbf39e5e63edda782c30477d2b34a2534a56cfa47194ac1673e0ad13.
+
+Published/read back exactly:
+- research/main/2026-11-03_1148_MAIN_DECIDER-EXTENSIONAL-COLLAPSE-REFEREE319.md (blob 8449597369dd246f52482083a812f864318ba438)
+- research/coordination/2026-11-03_1148_LSPV5_TO_FIVE_ROLE_DECIDER-EXTENSIONAL-COLLAPSE-REFEREE319.md (blob 4b6efcefd5a123a6e7e07e0203150d6f7bf1223e)
+- experiments/arc/lspv5_319/decider_extensional_collapse_referee319.py (blob 4dbbc8db8a72f1844445dec0f1a7749fb8b45b4b)
+- experiments/arc/lspv5_319/verify_decider_extensional_collapse_referee319.js (blob e305db862c8cb8bc0e02cd946738805467c8a700)
+- results/raw/arc/lspv5_319/decider_extensional_collapse_referee319.json (blob 0b33f3153502bc36385ea8a3c2a4ffec2cfebee3)
+
+B1/B2/B3, superpolynomial Wbar_Rmix341 and P versus NP remain OPEN. No task/schedule/state/rule/weight change.
+<!-- LSPV5_REFEREE319_END -->
