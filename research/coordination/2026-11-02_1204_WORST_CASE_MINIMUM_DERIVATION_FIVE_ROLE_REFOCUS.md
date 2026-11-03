@@ -550,3 +550,22 @@ A premise-consuming DEF is a different calculus and is not covered.
 
 Both implementations matched every count, nine deletion SAT controls, eighteen sign-flip SAT controls, odd/even K4 labels 0/8, nine malformed rejects, and three corrupted-proof rejects. Optimizer work is separate from the logical minimum. [Report](../main/2026-11-02_2348_MAIN_PHP32-EXACT-MIXED-REFEREE307.md), [handoff](2026-11-02_2348_LSPV5_TO_FIVE_ROLE_PHP32_EXACT_MIXED_REFEREE307.md), [producer](../../experiments/arc/lspv5_307/php32_exact_mixed_referee307.py), [independent verifier](../../experiments/arc/lspv5_307/verify_php32_exact_mixed_referee307.js), [raw](../../results/raw/arc/2026-11-02_2348_LSPV5_PHP32_EXACT_MIXED_REFEREE307_raw.json). B1/B2/B3 and a superpolynomial worst-case minimum remain OPEN.
 <!-- END LSPV5 PHP32 EXACT MIXED REFEREE307 -->
+
+
+<!-- BEGIN LSPV5 NONAFFINE-LIFT-ER2-COLLAPSE-REFEREE308 -->
+## LSPV-5 REFEREE308: nonaffine lifted Tseitin collapses to polynomial ER2 cost (2026-11-03 00:48 PST)
+
+**PROVED/RESTRICTED in unchanged Rmix341; exact finite templates independently replayed; B1/B2/B3 and P versus NP OPEN.** The fresh-output AND3 gap in LSPV-3 LOCAL-PROJECTION356 is avoidable. After its ordinary-Resolution local projection, legal source-independent two-input AND/XOR definitions plus strict Resolution reassociate, permute, copy, and pair-cancel all edge-output occurrences. For connected simple cubic h-vertex lifts,
+
+$$
+W_{Rmix341}(F_{G,g,\sigma})\le |E|c(k)+\sum_v3^{M_v}+69(3h)^3+9.
+$$
+
+Thus linear-size gadgets with k=O(log h) have polynomial minimum cost. For the explicit AND2 lift,
+
+$$
+W_{Rmix341}(F_h)\le1863h^3+\frac{163}{2}h+17.
+$$
+
+Eleven ordinary-Resolution rewrite templates retain 81 RES nodes in 155 certificate lines; independent Node replay PASS. Odd/even K4 controls have 0/8 models and malformed encodings reject. This retires one family only; it is not B1, B2, or B3. [Report](../main/2026-11-03_0048_MAIN_NONAFFINE-LIFT-ER2-COLLAPSE-REFEREE308.md); [handoff](2026-11-03_0048_LSPV5_TO_FIVE_ROLE_NONAFFINE-LIFT-ER2-COLLAPSE-REFEREE308.md); [raw](../../results/raw/arc/lspv5_308/xor_rewrite_er2_referee308.json).
+<!-- END LSPV5 NONAFFINE-LIFT-ER2-COLLAPSE-REFEREE308 -->
