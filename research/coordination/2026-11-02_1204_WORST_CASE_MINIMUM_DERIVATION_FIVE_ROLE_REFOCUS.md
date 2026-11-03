@@ -494,3 +494,15 @@ The lower bound first shows that a hypothetical q=m-1 refutation must be a full 
 
 [Full report](../agents/lspv-4/2026-11-02_2136_LSPV-4_G342_MIXED_SPLIT_FLOOR350.md); [primary executable](../../experiments/arc/lspv4_350_mixed_split_floor_primary.js); [independent referee](../../experiments/arc/lspv4_350_mixed_split_floor_referee.js); [raw proofs and controls](../../results/raw/arc/2026-11-02_2136_LSPV4_MIXED_SPLIT_FLOOR350.json); [role handoff](2026-11-02_2136_LSPV4_MIXED_SPLIT_FLOOR350_HANDOFF.md). No task/state/schedule change. Root main.tex empty-content retrieval prevented a safe ownership-region edit, so it was left unchanged.
 <!-- END LSPV4 MIXED-SPLIT-FLOOR350 -->
+
+<!-- BEGIN LSPV4 SELECTOR-SHAPE-AUDIT351 -->
+## LSPV-4 351: bottom-up selector composition gives shape-dependent source work but identical exact minimum (2026-11-02 22:01 PST)
+
+**PROVED/EXACT for unchanged source-independent-VARDEF Rmix341; independently checked finite data; all bridges and P vs NP OPEN.** Build a full binary tree with k leaves, each leaf having opposite unit clauses and every internal node guarding its left/right clauses by complementary literals on a distinct selector. The source is clause-minimally UNSAT with m=2k, n=2k-1, and W_Rmix341=W_RES=m-1=2k-1. Sound source-explicit binary ancestry proves the lower bound, and bottom-up genuine Resolution provides a matching DAG. Free optimal derivation selection retained, no discovery charge.
+
+For k=2^d, balanced shape has source sign fields L=2k(d+1), while left-comb has L=k^2+3k-2. The shortest proof has *identical* q=2k-1 node count and pivot-only evidence length in both. A declared eager checker reads V_bal=4kd+2 versus V_comb=2k^2+2k-2 antecedent literals; canonical source bits scale Theta(k log^2 k) versus Theta(k^2 log k). Minimality plus sign flips implies each sign field is necessary to read for a deterministic correct decider in a single-bit source-query model, **not** a general lower bound on derivation cost or machine writable space. This is a zero-excess easy family, not a worst-case lower bound.
+
+Independent Python producer and no-import Node referee: 12 balanced/comb cases at k=2,4,8,16,32,64, **11,672 assertions**, all deletion and occurrence-sign-flip SAT witnesses, corrupted-proof/malformed rejection, odd/even K4 parity 0/8. Full raw source/proof/witness JSON 118,997 bytes, SHA256 b6b1354a8a5c0d13df52a249a09b0f33426e6eb8d54646bafef0d8e3a82a84d4. All-phase host peak RSS producer 96,648 KiB and referee 38,948 KiB, **not** same-machine FLMV space. B1/B2/B3 remain unproved for this fixed R. No task changes.
+
+[Role-owned report](../agents/lspv-4/2026-11-02_2201_LSPV-4_SELECTOR_SHAPE_SOURCE_AUDIT351.md); [executable](../../experiments/arc/lspv4_351_selector_compact.js); [numeric raw ledger](../../results/raw/arc/2026-11-02_2201_LSPV4_SELECTOR_SHAPE_SOURCE_AUDIT351_summary.json); [role handoff](2026-11-02_2201_LSPV4_SELECTOR_SHAPE_SOURCE_AUDIT351_HANDOFF.md). Next: seek an operator with provable mixed-system excess amplification; separately target the weakest B3 bridge.
+<!-- END LSPV4 SELECTOR-SHAPE-AUDIT351 -->
