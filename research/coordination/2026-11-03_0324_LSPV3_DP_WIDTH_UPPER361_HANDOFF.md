@@ -5,7 +5,7 @@
 For *every* valid UNSAT finite CNF F and *every* ordering sigma of its v **occurring** variables, write w_i for the size of the filled primal-graph frontier immediately before eliminating variable sigma(i). Because only 3^{w_i} distinct nontautological clauses exist over the remaining frontier, signed Davis–Putnam elimination generates a genuine shared Resolution DAG with at most one paid inference per distinct resolvent:
 
 $$
-W_{R_{\rm mix341}}(F)\le W_{\rm RES}(F)\le \sum_i3^{w_i}\le v\,3^{\operatorname{tw}(F)}\le N\,3^{\operatorname{tw}(F)}.
+W_{R_{\rm mix341}}(F)\le W_{\rm RES}(F)\le \min_{\sigma}\sum_i3^{w_i(\sigma)}\le v\,3^{\operatorname{tw}(F)}\le N\,3^{\operatorname{tw}(F)}.
 $$
 
 The bound involving treewidth chooses an optimum elimination order. N is actual encoded bit length, not the number of variables nor the declared DIMACS header n: v<=N holds even with huge unused declared indices. The source clauses cost zero, valid exact pivots cost one, sharing counts once, and all further mixed rules can only shorten the minimum. A source empty clause has zero cost. This eliminates **bounded and logarithmic treewidth** families as superpolynomial-hard candidates in this fixed system. Converse false: project MIXED341 established high-width odd-Tseitin examples with linear mixed proofs. This is a screening upper bound, not a new unrestricted hardness lower bound.
