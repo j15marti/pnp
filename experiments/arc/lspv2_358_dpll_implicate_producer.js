@@ -90,7 +90,7 @@ function run() {
 }
 function selfTest() {
   let bad=0;for(const q of [[1,-1],[0],[1,1,-1]])try{canon(q);}catch(e){bad++;}
-  if(bad!==2)throw Error("malformed check mismatch");
+  if(bad!==3)throw Error("malformed check mismatch");
   if(entails([[1]],[-1],1))throw Error("opposite-label SAT should be non-entailed");
   if(!entails([[1],[-1]],[],1))throw Error("UNSAT empty consequence absent");
   const x=compile([[1],[-1]],[],1);if(x.cost!==1)throw Error("one-pivot contradiction");
