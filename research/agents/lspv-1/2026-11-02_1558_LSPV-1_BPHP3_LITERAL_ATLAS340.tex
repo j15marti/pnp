@@ -1,0 +1,95 @@
+% LSPV-1 BPHP3-LITERAL-ATLAS340 | 2026-11-02 15:58 PST
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{BPHP3-LITERAL-ATLAS340: Exact Signed 3-CNF Bit Pigeonhole Sources and a Proof-System Transfer Firewall}
+\author{PNP General SAT Lower-Bound Lead (LSPV-1)}
+\date{2 November 2026, 15:58 PST}
+\begin{document}\maketitle
+\noindent\textbf{Proof status.} PROVED/EXACT symbolic strict-3CNF satisfiability preservation, clause-minimal UNSAT, source-sign sensitivity, and binary-premise proof-cost floor in the preselected $R_{\rm mix341}$. COMPUTATIONAL finite controls. LITERATURE CLAIM, author-reported Lean formalization: Braun 2026 unrestricted DAG $\mathrm{Res}(\oplus)$ bit-PHP exponential bound. Transfer of this lower bound to strict 3-CNF or extension-enabled $R_{\rm mix341}$ OPEN. B1/B2/B3 and P vs NP OPEN.
+
+\section{Literature and proof system}
+The newly available Braun preprint (arXiv:2609.23015, submitted 19 September 2026) states, for $n=2^\ell$ and $\ell\ge32$,
+\[
+W_{\mathrm{Res}(\oplus)}(\mathrm{BPHP}_n^{n+1})>\exp(n/(32768\ell^2)).
+\]
+It covers unrestricted shared-DAG proofs without regularity or depth bounds. The original BPHP contains $(n+1)\ell$ Boolean variables and $M=n\binom{n+1}2$ clauses of width $2\ell$, so $\Theta(n^3\ell)$ signed literal fields. The lower bound is subexponential in encoded source length. Its Lean 4 theorem is \texttt{MathResearch.bitPHP\_exponential} in \url{https://github.com/kbr-/math-research/blob/main/formalization/claims/BitPHPExponential.lean}; a sibling superpolynomial theorem and an aggregate proof module are also available. We inspected the published declarations at commit \texttt{8904bf09a5376f48a00d1c25d079bf0c6441502a} but did not reproduce the expensive kernel build or independently referee the proof.
+
+The other relevant 2025--2026 sources are Itsykson--Podolskii--Shekhovtsov (ECCC TR26-018), width lifting to unrestricted parity resolution; Byramji--Impagliazzo (arXiv:2511.20023), bounded-depth parity-resolution BPHP lower bounds; and Carenini (ECCC TR26-158), random 3-CNF hardness for bounded $k$-DNF resolution. Only Braun is an unrestricted exponential \emph{parity-resolution} refutation-size candidate among those examined. None is automatically a lower bound for $R_{\rm mix341}$.
+
+Fix the ORIGINAL, not unioned, $R_{\rm mix341}$ from the existing peer report: free source axioms; each derived node has weight one and at most two explicit parent IDs; legal local RES, AND3, GF(2) XOR, authenticated local conversion and charged conservative two-input DEF. Shared derivations counted once; all free adaptive choices; no semantic SAT oracle. Four-parent unit-cost PARITY4 from a peer's separate calculus is NOT a rule here.
+
+\section{Strict signed three-CNF chain}
+For $n=2^\ell\ge4$ and $m=n+1$, let $b_{it}$ denote the $t$th Boolean hole-label bit of pigeon $i$. For each $0\le i<j<m$ and $z\in\{0,1\}^\ell$, the original pigeon collision-forbidding clause is
+\[
+C_{ijz}=\bigvee_{t<\ell}[b_{it}\ne z_t]\ \lor\ \bigvee_{t<\ell}[b_{jt}\ne z_t],
+\]
+with $[b\ne0]$ the positive literal $b$ and $[b\ne1]$ the negative literal $\neg b$. The source is UNSAT by pigeonhole counting. For each width-$k=2\ell$ clause with ordered signed literals $(a_1,\ldots,a_k)$, choose $k-3$ \emph{private fresh} variables $y_1,\ldots,y_{k-3}$ and substitute
+\[
+(a_1\lor a_2\lor y_1)\land
+\bigwedge_{r=1}^{k-4}(\neg y_r\lor a_{r+2}\lor y_{r+1})
+\land(\neg y_{k-3}\lor a_{k-1}\lor a_k).
+\]
+Every resulting clause is proper strict three-CNF. Write $G_n$ for the resulting formula. Exact counts:
+\[
+M=n\binom{n+1}{2},\quad
+M_3=M(2\ell-2),\quad
+V_3=(n+1)\ell+M(2\ell-3).
+\]
+The private chain is satisfiable under a fixed original assignment iff its original disjunction is true. If all original literals are false, the chain is $y_1\land(\neg y_1\lor y_2)\land\cdots\land\neg y_{k-3}$, unsatisfiable. Otherwise set each $y_j$ true iff the first $j+1$ source literals are false; this satisfies the chain.
+
+\begin{theorem}[Every literal-exact 3-CNF source clause is essential]
+For all $n=2^\ell\ge4$, $G_n$ is clause-minimally UNSAT; every individual literal-occurrence sign is sensitive. In particular, deleting one three-clause or flipping the sign of any one literal-occurrence makes the full result SAT.
+\end{theorem}
+\begin{proof}
+Pigeonhole counting and chain equisatisfiability show UNSAT. For any chain clause $D$ of parent $C_{ijz}$, place pigeons $i,j$ at the same label $z$ and biject the other $n-1$ pigeons with the remaining $n-1$ labels. This falsifies exactly the parent $C_{ijz}$ and satisfies every other original clause, with satisfying private chain extensions. The sole false parent's chain has every $a_r=0$. To make its $r$th chain clause (zero-based, $0\le r\le k-3$) false and every other chain clause true, set its first $r$ auxiliary variables to true and all remaining auxiliary variables to false. Thus $D$ has a source-deletion witness. Every literal in $D$ is false under this witness; flipping any one literal's sign satisfies $D$ while retaining all other clauses.
+\end{proof}
+
+\begin{theorem}[Absolute mixed-DAG source-capacity floor]
+For this very same $R_{\rm mix341}$, the globally minimum refutation cost satisfies
+\[
+\boxed{W_{R_{\rm mix341}}(G_n)\ge M_3-1
+=n\binom{n+1}2(2\ell-2)-1.}
+\]
+\end{theorem}
+\begin{proof}
+All $M_3$ essential original three-clauses must occur in the backwards ancestry of contradiction, or a satisfying assignment of the used sources extends conservatively over every DEF, contradicting soundness. If the ancestry has $q$ charged nodes, its connected undirected graph has $M_3+q$ vertices and at least $M_3+q-1$ edges, while each derived node has indegree at most two, so it has at most $2q$ edges. Therefore $q\ge M_3-1$. This counts every shared DAG and permits arbitrary legal rule order, temporary growth and auxiliary gates.
+\end{proof}
+
+\begin{center}\begin{tabular}{rrrrrr}\toprule
+holes $n$&label bits $\ell$&source clauses&3CNF clauses&3CNF variables&minimum-node floor\\\midrule
+4&2&40&80&50&79\\
+8&3&288&1152&891&1151\\
+16&4&2176&13056&10948&13055\\
+\bottomrule\end{tabular}\end{center}
+
+\section{Transfer firewall}
+\textbf{Braun's exponential bound is not a bound on $G_n$ in $R_{\rm mix341}$.} Braun treats original width-$2\ell$ BPHP clauses in unrestricted $\mathrm{Res}(\oplus)$ WITHOUT unrestricted conservative extension axioms. The present strict 3CNF conversion creates many fresh private chain variables, and our $R_{\rm mix341}$ permits charged extension gates absent from the cited proof system. Equisatisfiability does not preserve shortest refutation cost in either direction. A full model-preserving polynomial-overhead reverse simulation of EVERY $R_{\rm mix341}$ proof of $G_n$ into an original-BPHP parity-resolution refutation would be required before transporting the exponential bound. It remains OPEN. The current $M_3-1$ bound is polynomial in source length, not an unrestricted SAT hardness result.
+
+\section{Computational provenance and hostile controls}
+The companion Python standard-library generator constructs complete signed DIMACS instances with source labels and provenance, assignment witnesses for deletion of every individual three-clause, sign-reversal repairs, and the strict n=16 symbolic count. The independently coded no-import Node.js checker reconstructs the original collision clauses and private fresh variable IDs from the mathematical definition, checks all 1232 deletion witnesses and all 3696 signed-literal neighbor repairs for n=4,8, rejects malformed and corrupted variants, and passes 342380 explicit assertions. No random seed. SHA256 n4 \texttt{87506ed478b8b748b0d86edcd0bf1517fc802fa1b594469fe5d9af4f9ff70e5d}, n8 \texttt{398d0a2c274133aeb4fd2b443222494f543b73fb08b4c1a532a73bfe71dff201}. The larger n=16 was generated and counted, not exhausted for deletions. Optimizer discovery, input reads, proof encoding and verification, all-phase memory, real machine time and FLMV transfer are entirely separate from the minimum logical node cost.
+
+\section{Prior corpus, falsifiers and next gap}
+The project had ALREADY proved the source-hereditary reduction to minimal UNSAT cores, per-literal sign sensitivity and explicit-generator/B1 firewall (LSPV-1 WORSTCASE-CORE-EXPLICIT-BARRIER335); these are not claimed new. It had also proved source-ancestry cost floors (LSPV-2) and a short mixed parity refutation for odd Tseitin. Current handoff and issue \#3, AGENTS/CODEX/skill, LSPV-1 338/339, peers LSPV-2 341/344, LSPV-3 344/345, LSPV-4 344 and LSPV-5 298, and root main.tex full blob were inspected. One known read-only file path for LSPV-5 298 returned HTTP 404 while the corresponding coordination-issue handoff was available.
+
+\begin{enumerate}
+\item[] F1: A claimed fewer-than-$M_3-1$ node proof in this fixed binary $R$ falsifies either source indispensability or the dependency model.
+\item[] F2: A four-parent unit-cost parity macro defines a DIFFERENT $R$ and invalidates this particular binary source-capacity proof.
+\item[] F3: Any claim of Braun's exponential bound on 3CNF $G_n$ must supply a verified model-preserving reverse compiler.
+\item[] F4: Reversing any one source literal sign must yield a concrete satisfying complete assignment. Independently checked for all n=4,8 signed neighbors.
+\end{enumerate}
+The weakest sufficient bridge
+\[
+\mathrm{SAT}\in P \Rightarrow \exists C,k\,\forall N:\quad\overline W_{R_{\rm mix341}}(N)\le C(N+1)^k
+\]
+is OPEN. This polynomially generated and recognizable candidate also invokes the existing B1 explicit-generator caution: hypothetical superpolynomial $W_R(G_n)$ would defeat B1 via a recognizer with exhaustive fallback, but would NOT disprove B2 or B3. NEXT: verify or refute a reverse translation from extension-enabled mixed 3CNF proofs to original bit-PHP parity proofs with paid overhead. Keep optimizing the B3 proof separately. P versus NP OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{braun} K.~Braun, \emph{An exponential lower bound for the bit pigeonhole principle in resolution over parities}, arXiv:2609.23015, September 2026, \url{https://arxiv.org/abs/2609.23015}.
+\bibitem{ips} D.~Itsykson, V.~Podolskii, A.~Shekhovtsov, \emph{Resolution Width Lifts to Near-Quadratic-Depth Res($\oplus$) Size}, ECCC TR26-018, 2026.
+\bibitem{bi} F.~Byramji and R.~Impagliazzo, \emph{Lower Bounds for Bit Pigeonhole Principles in Bounded-Depth Resolution over Parities}, arXiv:2511.20023, 2025.
+\bibitem{car} G.~Carenini, \emph{Random 3-CNF formulas are hard for k-DNF resolution}, ECCC TR26-158, 2026.
+\end{thebibliography}
+\end{document}
