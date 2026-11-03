@@ -18,7 +18,7 @@ For growing prism graphs G_r=C_r x K_2, r>=3, source bit length N=Theta(r log r)
 
 ## Finite controls and artifact status
 
-K4, prism3, prism4: exact UP backdoors 3/4/5; exact paid mixed nodes 15/23/31; deleted clauses SAT 16/24/32; sign-flip SAT controls 48/72/96; matched even-charge SAT model counts 8/16/32 and odd-charge UNSAT. Every one of 22/130/794 smaller-variable subsets has a nonrefuting assignment and every assignment to an exhibited minimum feedback set refutes. Independent Python producer + no-import Node referee passed 4,431 assertions; standalone published Node reproducer 39,260 assertions. Malformed DIMACS and forged typed parity proof tests rejected.
+K4, prism3, prism4: exact UP backdoors 3/4/5; exact paid mixed nodes 15/23/31; deleted clauses SAT 16/24/32; sign-flip SAT controls 48/72/96; matched even-charge SAT model counts 8/16/32 and odd-charge UNSAT. Every one of 22/130/794 smaller-variable subsets has a nonrefuting assignment and every assignment to an exhibited minimum feedback set refutes. Independent Python producer + no-import Node referee passed 4,548 assertions; standalone published Node reproducer 39,260 assertions. Malformed DIMACS and forged typed parity proof tests rejected.
 
 Logical node counts, explicit source bits, proof JSON bytes, verification work and optimizer discovery were recorded separately, with no machine time-space lower bound. Source bytes 163/239/340; proof JSON bytes 1426/2135/2868. The same machine all-phase peak-space envelope and its full rho remain applicable.
 
