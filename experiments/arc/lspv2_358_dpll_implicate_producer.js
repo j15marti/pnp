@@ -64,13 +64,13 @@ function compile(Fraw,Craw,n) {
 }
 function seedRng(seed){let x=seed|0;return ()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return (x>>>0)/4294967296;};}
 function run() {
-  const r=seedRng(3582026),cases=[],counts={twoVarSources:0,threeVarSources:0,claims:0,early:0,exact:0,logicalNodes:0,defNodes:0,resNodes:0,satSources:0,unsatSources:0};
-  function trySource(F,n,group){
+  const r=seedRng(3582026),cases=[],sourceRecords=[],counts={twoVarSources:0,threeVarSources:0,paritySources:0,claims:0,early:0,exact:0,logicalNodes:0,defNodes:0,resNodes:0,satSources:0,unsatSources:0};
+  function trySource(F,n,group,onlyEmpty=false){
     if(F.every(c=>c.length>0)&&(F.some(c=>!c.length)))throw Error("unreachable");
     const N=2**n;
-    if(Array.from({length:N},(_,m)=>m).some(m=>sat(F,m)))counts.satSources++;else counts.unsatSources++;
+    const isSat=Array.from({length:N},(_,m)=>m).some(m=>sat(F,m));sourceRecords.push({F,n,isSat});if(isSat)counts.satSources++;else counts.unsatSources++;
     counts[group]++;
-    for(const C of targets(n))if(entails(F,C,n)){
+    for(const C of (onlyEmpty?[[]]:targets(n)))if(entails(F,C,n)){
       const item=compile(F,C,n);cases.push(item);counts.claims++;
       counts.early+=item.early?1:0;counts.exact+=item.early?0:1;counts.logicalNodes+=item.cost;
       for(const v of item.proof){counts.defNodes+=(v.op==="def");counts.resNodes+=(v.op==="res");}
@@ -85,8 +85,18 @@ function run() {
   ];trySource(five,4,"threeVarSources");
   const horn=[[1],[-1,2],[-2,3],[-3]];trySource(horn,3,"threeVarSources");
   const oddK4=[[1,2,3],[1,-2,-3],[-1,2,-3],[-1,-2,3]];
-  trySource(oddK4,3,"threeVarSources"); // local parity row: four clauses SAT; control only.
-  return {run_id:"LSPV-2_DPLL_IMPLICATE_PRUNE358",seed:3582026,grammar:"canonical nonempty nontautological source clauses; signed literals 1..n",status:"COMPUTATIONAL",counts,cases};
+  trySource(oddK4,3,"threeVarSources"); // one satisfiable affine row
+  const vertices=[[1,2,3],[1,4,5],[2,4,6],[3,5,6]];
+  function k4(charges){
+    const f=[];for(let j=0;j<4;j++)for(let mask=0;mask<8;mask++){
+      const b=[mask&1,(mask>>1)&1,(mask>>2)&1];
+      if((b[0]^b[1]^b[2])===charges[j])continue;
+      f.push(canon(vertices[j].map((v,i)=>b[i]?-v:v)));
+    }return f;
+  }
+  trySource(k4([1,0,0,0]),6,"paritySources",true); // UNSAT, exactly one target: empty
+  trySource(k4([0,0,0,0]),6,"paritySources",true); // SAT, 8 assignments
+  return {run_id:"LSPV-2_DPLL_IMPLICATE_PRUNE358",seed:3582026,grammar:"canonical nonempty nontautological source clauses; signed literals 1..n",status:"COMPUTATIONAL",counts,sourceRecords,cases};
 }
 function selfTest() {
   let bad=0;for(const q of [[1,-1],[0],[1,1,-1]])try{canon(q);}catch(e){bad++;}
