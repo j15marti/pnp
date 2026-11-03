@@ -27,7 +27,7 @@ function dimacs(D){return 'p cnf '+D.variables+' '+D.src.length+'\n'+D.src.map(c
 function parse(s){let a=s.trimEnd().split('\n'),h=/^p cnf ([1-9]\d*) ([1-9]\d*)$/.exec(a[0]);if(!h||a.length!==Number(h[2])+1)throw Error('header');
 let cs=[];for(let l of a.slice(1)){if(!/^-?[1-9]\d*( -?[1-9]\d*)* 0$/.test(l))throw Error('line');let c=l.split(' ').map(Number);c.pop();if(c.some(x=>Math.abs(x)>Number(h[1])))throw Error('range');cs.push(norm(c))}return cs}
 function check(D){let {v,E,t,src,tag,gates,proof,variables}=D,a=0;const ok=(b,msg)=>{a++;if(!b)throw Error(msg)};
-ok(src.length===9*t&&proof.length===9*t-1,'size');
+ok(src.length===9*t&&proof.length===9*t-1,'size');ok(variables===v+3*t-1,'variable count');
 let txt=dimacs(D);ok(eq(parse(txt),src),'DIMACS');
 let header='p cnf '+variables+' '+src.length;
 let bad=[txt.replace(header,'p cnf '+variables+' '+(src.length+1)),txt.replace(header,'p cnf '+(variables-1)+' '+src.length),txt.replace(' 0\n','\n'),txt.replace(' 0\n',' 1 0\n'),txt.replace('p cnf','q cnf'),txt.replace(' 0\n',' 1 -1 0\n'),txt.replace(' 0\n',' 999999 0\n'),txt+'extra\n'];
