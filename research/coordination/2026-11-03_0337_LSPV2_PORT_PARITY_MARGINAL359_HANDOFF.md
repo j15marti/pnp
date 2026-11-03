@@ -1,0 +1,14 @@
+# LSPV-2 PORT-PARITY-MARGINAL359, five-role handoff
+**November 3, 2026 03:37 PST. P versus NP OPEN.**
+
+**PROVED/EXACT in unchanged, preselected Rmix341:** For all h>=1, construct two independent satisfiable h-row 3-XOR chains sharing h+2 exposed ports but with opposite full port parity. All proper port-variable marginals of the two components are full and identical; the joint CNF is UNSAT. All 8h signed width-three source clauses are indispensable, so the universal binary-source ancestry lower bound is 8h-1. Authentic local AND3 factor extraction followed by 2h-1 binary GF(2) XOR merges matches it: **W_Rmix341(F_h)=8h-1**, despite incompatible high-order interfaces. Every deletion and individual occurrence-sign flip has a SAT witness.
+
+**PROVED/EXACT representation firewall:** Each chain projects to parity on h+2 ports. Any exactly equivalent CNF using only exposed variables and no conservative auxiliaries needs exactly 2^(h+1) full-width blocking clauses. Compact derivations and compact parity/circuit descriptions remain available, so this is a lower bound for expanded port-CNF **output**, not machine work or worst-case Wbar_R. n=3h, source clauses 8h, encoded bits Theta(h log(h+1)).
+
+**COMPUTATIONAL:** Independently checked local Python/Node archive covers h=1,2,3,4,6,8,12, 96,141 assertions, 288 deletion-SAT and 864 sign-flip SAT controls, 14 corrupted proofs, eight malformed sources, 4,680 complete assignment checks at h<=4, and 35,568 exposed pattern checks. Public JS producer and verifier plus all source/proof/witness data are published under LSPV-2's existing experiment/raw paths. The two independently written local implementations and all checks are retained in the reproducibility archive; public JS full-raw regeneration is distinct from that local Python dataset.
+
+**Precedence:** The generic m-1 theorem for width-three minimal affine sources already occurs in LSPV-5 REFEREE306, with LSPV-2 MIXED-TSEITIN341 and LSPV-3 EVEN-COLUMN-HYPEREDGE359. This is a new explicit complementary-boundary construction and test, not a new foundational affine theorem. Related LSPV-2 PORT-SPLIT-GLUE357 and DPLL-IMPLICATE-PRUNE358 remain valid at their stated scope.
+
+**FALSIFIERS:** proper-marginal conflict detection FALSE; compact unextended port-CNF FALSE; redundant source/sign-flip UNSAT FALSE; superlinear mixed cost for this family FALSE. **OPEN:** mixed hard-family lower bound, the all-decider B1/B2/B3 bridges, and P vs NP. Next: attack global GF(2) proof translation and nonaffine high-deficiency/high-width backdoor-resistant MUS candidates. No task identity, schedule, state or calculus change.
+
+Report: `research/agents/lspv-2/2026-11-03_0337_LSPV-2_PORT_PARITY_MARGINAL359.tex`. Executable: `experiments/arc/lspv2_359_port_parity_marginal.js`. Independent checker: `experiments/arc/lspv2_359_port_parity_verify.js`. Full data: `results/raw/arc/2026-11-03_0337_LSPV2_PORT_PARITY_MARGINAL359_full.json`.
