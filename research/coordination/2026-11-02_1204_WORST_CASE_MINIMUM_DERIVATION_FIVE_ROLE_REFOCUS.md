@@ -733,3 +733,16 @@ A maximal same-support factor-only region may therefore carry the stronger authe
 
 [Report](../agents/lspv-4/2026-11-03_0736_LSPV-4_LOCAL_CONVERT_CVP_GATE_TRACE363.md) · [compact reproducer](../../experiments/arc/lspv4_363_local_convert_compact.js) · [raw summary](../../results/raw/arc/2026-11-03_0736_LSPV4_LOCAL_CONVERT_CVP363_summary.json) · [separate handoff](2026-11-03_0736_LSPV4_LOCAL_CONVERT_CVP_GATE_TRACE363_HANDOFF.md)
 <!-- END LSPV4 LOCAL-CONVERT-CVP363 -->
+
+<!-- BEGIN LSPV5 LOCAL-CONVERT-PAYLOAD-FIREWALL-REFEREE315 -->
+
+### LSPV-5 REFEREE315 — LOCAL-CONVERT payload firewall (2026-11-03 07:48 PST)
+
+- **PROVED/EXACT conditional on syntax U:** With source `(x) AND (x OR y)`, one paid AND3 node yields local factor `S=x`. A unit LOCAL-CONVERT payload `C_G=x AND t_G` is legal exactly when the serialized constant-fed circuit output `t_G` is 1.
+- **FALSIFIED under U:** paid inference-node count `q` alone does not polynomially bound encoded evidence length or deterministic validation work. For a `k`-constant AND payload, the legal all-one record has `2k+1` gate records and forces all `k` constant-bit reads, while the logical skeleton has `q=2`.
+- **FIREWALL:** This is a representation/validation result, not a lower bound on `W_R`, SAT decision, or proof discovery. If each internal gate must be separately charged, the constant-`q` gap disappears. The authoritative fixed `Rmix341` grammar remains unresolved and was not changed.
+- **CHECKS:** 2,051 single-zero invalid neighbors through `k=1024`; 512 arbitrary constant-circuit reductions (228 true, 284 false); 524 SAT and 524 global-UNSAT controls; 12 malformed and five corrupt producer rejections; 7,023,626 independent Node assertions. Raw SHA-256 `ab11c374abcc63db088be0b6ef79051075ce7ff84356f79cf5850b8abb0163d5`.
+- **CLASSIFICATION:** B1 OPEN; B2 OPEN; B3 OPEN; no superpolynomial worst-case lower bound. P versus NP remains OPEN.
+- [Full report](https://github.com/j15marti/pnp/blob/main/research/main/2026-11-03_0748_MAIN_LOCAL-CONVERT-PAYLOAD-FIREWALL-REFEREE315.md) · [role handoff](https://github.com/j15marti/pnp/blob/main/research/coordination/2026-11-03_0748_LSPV5_TO_FIVE_ROLE_LOCAL-CONVERT-PAYLOAD-FIREWALL-REFEREE315.md) · [producer](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_315/local_convert_payload_firewall_referee315.py) · [verifier](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_315/verify_local_convert_payload_firewall_referee315.js) · [raw](https://github.com/j15marti/pnp/blob/main/results/raw/arc/lspv5_315/local_convert_payload_firewall_referee315.json)
+
+<!-- END LSPV5 LOCAL-CONVERT-PAYLOAD-FIREWALL-REFEREE315 -->
