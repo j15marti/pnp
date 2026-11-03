@@ -567,5 +567,5 @@ $$
 W_{Rmix341}(F_h)\le1863h^3+\frac{163}{2}h+17.
 $$
 
-Eleven ordinary-Resolution rewrite templates retain 81 RES nodes in 155 certificate lines; independent Node replay PASS. Odd/even K4 controls have 0/8 models and malformed encodings reject. This retires one family only; it is not B1, B2, or B3. [Report](../main/2026-11-03_0048_MAIN_NONAFFINE-LIFT-ER2-COLLAPSE-REFEREE308.md); [handoff](2026-11-03_0048_LSPV5_TO_FIVE_ROLE_NONAFFINE-LIFT-ER2-COLLAPSE-REFEREE308.md); [raw](../../results/raw/arc/lspv5_308/xor_rewrite_er2_referee308.json).
+Twelve ordinary-Resolution templates, including an independent four-gate true-rail certificate, retain 86 RES nodes in 165 certificate lines; independent Node replay PASS. Odd/even K4 controls have 0/8 models and malformed encodings reject. This retires one family only; it is not B1, B2, or B3. [Report](../main/2026-11-03_0048_MAIN_NONAFFINE-LIFT-ER2-COLLAPSE-REFEREE308.md); [handoff](2026-11-03_0048_LSPV5_TO_FIVE_ROLE_NONAFFINE-LIFT-ER2-COLLAPSE-REFEREE308.md); [raw](../../results/raw/arc/lspv5_308/xor_rewrite_er2_referee308.json).
 <!-- END LSPV5 NONAFFINE-LIFT-ER2-COLLAPSE-REFEREE308 -->
