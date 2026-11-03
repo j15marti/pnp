@@ -691,11 +691,11 @@ On odd bridgeless cubic Tseitin CNFs, the **existing** complete fixed-mixed opti
 
 **PROVED/RESTRICTED:** If authenticated compiled parents represent relation S, a semantic factor node on the same declared support denotes Q, and
 $$
-S\\subseteq Q,
+S\subseteq Q,
 $$
 then for every same-support semantic continuation T,
 $$
-S\\cap T\\subseteq Q\\cap T.
+S\cap T\subseteq Q\cap T.
 $$
 A maximal same-support factor-only region may therefore carry the stronger authenticated parent CNF at zero internal inference-node cost. **FALSIFIED:** per-node exact factor materialization as a compilation necessity. The certified alias scheme stops at typed exits (support change, native syntactic operand, contradiction); it does not prove those boundaries intrinsically costly.
 
