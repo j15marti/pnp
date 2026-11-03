@@ -81,39 +81,40 @@ def aliases(n=N):
 CLAUSE_ALIAS, AFFINE_ALIAS = aliases()
 
 
+def all_local_relations():
+    out = set()
+    for smask in range(1 << N):
+        if smask.bit_count() > 3:
+            continue
+        vs = [v for v in range(N) if smask >> v & 1]
+        for allowed in range(1 << (1 << len(vs))):
+            lifted = 0
+            for a in range(1 << N):
+                p = sum(((a >> v) & 1) << j for j, v in enumerate(vs))
+                if allowed >> p & 1:
+                    lifted |= 1 << a
+            out.add(lifted)
+    return tuple(sorted(out))
+
+
+LOCAL_RELATIONS = all_local_relations()
+ALL_ASSIGNMENTS = (1 << (1 << N)) - 1
+
+
 @functools.lru_cache(None)
 def free_local_converts(tt):
     """Strong relaxation of paid unary LOCAL-CONVERT.
 
-    For a relation of essential support at most three, grant for free every
-    Boolean relation on that same support logically implied by it.  This
-    contains every legal clause/bounded-circuit implication and permits any
-    number of conversions, so failure here excludes the one-unary cost class.
+    For a relation of essential support at most three, grant every Boolean
+    relation on ANY at-most-three-variable subset logically implied by it.
+    This includes weakenings that introduce an outside variable, contains all
+    legal constant-support clause/circuit implications, and is strictly more
+    permissive than the fixed rule.
     """
     smask = essential_support(tt)
     if smask.bit_count() > 3:
         return (tt,)
-    vs = [v for v in range(N) if smask >> v & 1]
-    local_true = 0
-    for p in range(1 << len(vs)):
-        a = sum(((p >> j) & 1) << v for j, v in enumerate(vs))
-        if (tt >> a) & 1:
-            local_true |= 1 << p
-    missing = ((1 << (1 << len(vs))) - 1) ^ local_true
-    out = []
-    sub = missing
-    while True:
-        allowed = local_true | sub
-        lifted = 0
-        for a in range(1 << N):
-            p = sum(((a >> v) & 1) << j for j, v in enumerate(vs))
-            if allowed >> p & 1:
-                lifted |= 1 << a
-        out.append(lifted)
-        if sub == 0:
-            break
-        sub = (sub - 1) & missing
-    return tuple(sorted(set(out)))
+    return tuple(g for g in LOCAL_RELATIONS if tt & (ALL_ASSIGNMENTS ^ g) == 0)
 
 
 @functools.lru_cache(None)
