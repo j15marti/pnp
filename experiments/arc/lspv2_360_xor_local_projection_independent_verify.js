@@ -1,6 +1,6 @@
 "use strict";
 // LSPV-2 360 independent checker: no import from producer, own parser/rank and proof replay.
-function verify(data){
+function verify(data, internal=false){
 let checks=0;function ck(t,s){checks++;if(!t)throw Error("verification failed: "+s);}
 function parity(a){let p=0;for(;a;a>>=1)p^=a&1;return p;}
 function matrixRank(rows,width){let r=rows.slice(),i=0;for(let col=width-1;col>=0;col--){let pivot=-1;for(let j=i;j<r.length;j++)if((r[j]>>col)&1){pivot=j;break;}if(pivot===-1)continue;[r[i],r[pivot]]=[r[pivot],r[i]];for(let j=i+1;j<r.length;j++)if((r[j]>>col)&1)r[j]^=r[i];i++;}return i;}
@@ -92,6 +92,12 @@ const corrupt=JSON.parse(JSON.stringify(f));corrupt.proof.nodes[0].truthMask^=1;
 mustReject(()=>{const nd=corrupt.proof.nodes[0],p=byID.get(nd.parents[0]),q=byID.get(nd.parents[1]);if(nd.truthMask!==(p.truthMask&q.truthMask))throw Error("corrupt truthmask");},"corrupted proof");
 }
 ck(tested===4&&rankChecks===18,"expected fixed test cases");
+if(!internal){
+const bad1=JSON.parse(JSON.stringify(data));bad1.fixtures[0].proof.nodes[0].truthMask^=1;
+mustReject(()=>verify(bad1,true),"end-to-end malformed AND3 proof");
+const bad2=JSON.parse(JSON.stringify(data));bad2.fixtures[1].proof.nodes[bad2.fixtures[1].proof.nodes.length-1].affine.rhs^=1;
+mustReject(()=>verify(bad2,true),"end-to-end false XOR contradiction");
+}
 return {status:"PASS",fixtures:tested,sourceClauses:clausesCount,paidNodes:paid,signFlipSAT:satMut,rankChecks,assertions:checks};
 }
 if(typeof module!=="undefined"&&module.exports)module.exports={verify};
