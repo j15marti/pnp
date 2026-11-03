@@ -29,12 +29,11 @@ function genStates(pos,arr){ if(pos===N){const c=[];for(let i=0;i<N;i++)if(arr[i
   for(const z of [-1,0,1]){arr[pos]=z;genStates(pos+1,arr);} }
 genStates(0,Array(N).fill(0));
 for(let m=0;m<(1<<N);m++)for(const r of [0,1]){const t=affineTT(m,r);if(!AFFINE.has(t))AFFINE.set(t,[m,r]);}
+const LOCAL_SET=new Set();for(let sm=0;sm<(1<<N);sm++){if(pop(sm)>3)continue;const vs=[];for(let v=0;v<N;v++)if(sm&(1<<v))vs.push(v);for(let allow=0;allow<(1<<(1<<vs.length));allow++){let lift=0n;for(let a=0;a<(1<<N);a++){let p=0;for(let j=0;j<vs.length;j++)if(a&(1<<vs[j]))p|=1<<j;if(allow&(1<<p))lift|=1n<<BigInt(a);}LOCAL_SET.add(lift);}}
+const LOCAL=[...LOCAL_SET], ALL=(1n<<64n)-1n;
 const freeMemo=new Map();let freeHits=0,freeMisses=0;
 function freeConverts(t){if(freeMemo.has(t)){freeHits++;return freeMemo.get(t);}freeMisses++;const sm=support(t);if(pop(sm)>3){const z=[t];freeMemo.set(t,z);return z;}
-  const vs=[];for(let v=0;v<N;v++)if(sm&(1<<v))vs.push(v);let local=0;
-  for(let p=0;p<(1<<vs.length);p++){let a=0;for(let j=0;j<vs.length;j++)if(p&(1<<j))a|=1<<vs[j];if((t>>BigInt(a))&1n)local|=1<<p;}
-  const missing=((1<<(1<<vs.length))-1)^local,out=new Set();for(let sub=missing;;sub=(sub-1)&missing){const allow=local|sub;let lift=0n;for(let a=0;a<(1<<N);a++){let p=0;for(let j=0;j<vs.length;j++)if(a&(1<<vs[j]))p|=1<<j;if(allow&(1<<p))lift|=1n<<BigInt(a);}out.add(lift);if(sub===0)break;}
-  const z=[...out];freeMemo.set(t,z);return z;}
+  const z=LOCAL.filter(g=>(t&(ALL^g))===0n);freeMemo.set(t,z);return z;}
 const combineMemo=new Map(); let combineHits=0,combineMisses=0;
 function combine(a,b){const key=a.toString()+":"+b.toString();if(combineMemo.has(key)){combineHits++;return combineMemo.get(key);}combineMisses++;
   const out=new Set(),ca=CLAUSE.get(a),cb=CLAUSE.get(b);
