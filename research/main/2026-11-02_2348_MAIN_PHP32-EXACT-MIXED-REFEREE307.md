@@ -11,7 +11,7 @@ No task, title, enabled state, schedule, ownership, calculus, or weight was crea
 The exact obstruction is the two-valued gap left by LSPV-4 SOURCE-CYCLE-SLACK353 for canonical pigeonhole `PHP(3,2)`: can a cost-eight source tree, a cost-nine unary tree, or a cost-nine one-cycle binary DAG beat its exhibited ten-node Resolution proof in the same mixed calculus?
 
 1. **F1 — FALSIFIED:** a cost-eight source-read-once mixed tree refutes `PHP(3,2)`.
-2. **F2 — FALSIFIED:** one paid LOCAL-CONVERT inside such a tree yields a cost-nine proof. The search grants every implied Boolean relation on at most three essential variables, not merely exact aliases.
+2. **F2 — FALSIFIED:** one paid LOCAL-CONVERT inside such a tree yields a cost-nine proof. The search grants every implied Boolean relation on any at-most-three-variable subset, including outside-variable weakenings, not merely exact aliases.
 3. **F3 — FALSIFIED:** one shared subderivation, hence one undirected proof cycle, yields a cost-nine all-binary proof.
 4. **F4 — MODEL-LOCK FINDING:** treating VARDEF as a two-proof-premise inference instead of the previously operative source-independent zero-premise definition is a different calculus. The exact result does not transfer to that unformalized alternative.
 
@@ -59,17 +59,17 @@ Every state is its exact 64-bit truth table. The combiner grants more than the l
 - every legal clause resolvent is available;
 - affine rows may be XORed;
 - exact conjunction is allowed whenever the **output** has at most three essential variables, even if the inputs jointly mention more;
-- in the one-unary class, the single LOCAL-CONVERT may be placed at any source or derived state and may output **every** Boolean relation on the same at-most-three-variable support logically implied by its input.
+- in the one-unary class, the single LOCAL-CONVERT may be placed at any source or derived state and may output **every** logically implied Boolean relation over **any** subset of at most three of the six variables, including weakenings that introduce an outside variable.
 
 The last item includes arbitrary bounded-circuit or clause implications and is stronger than an exact representation conversion. Absence of contradiction in this relaxation excludes the actual rule class.
 
 | Exhausted class | operand-pair tests | generated outputs | contradictory terminal |
 |---|---:|---:|---:|
 | cost-8 binary tree | 8,392 | 1,974 | no |
-| cost-9 one-unary tree | 273,641 | 71,563 | no |
+| cost-9 one-unary tree | 631,592 | 158,170 | no |
 | cost-9 binary unicycle | 58,193 reconvergence tests | 15,749 | no |
 
-The unicycle normal-form search made 20,147 memoized branch-extension calls. The combined rule cache had 146,600 misses and 1,550,725 hits. The one-unary terminal bank contained 169 truth functions, none false. Two independent implementations reproduce every count.
+The unicycle normal-form search made 20,147 memoized branch-extension calls. The combined rule cache had 162,866 misses and 1,892,410 hits. The one-unary terminal bank contained 798 truth functions, none false. Two independent implementations reproduce every count.
 
 ## Matching ten-node upper proof
 
@@ -96,10 +96,10 @@ A no-import Node.js verifier independently reconstructs all truth tables, clause
 - both-label parity control: odd-charge `K4` Tseitin has 0 models; even charge has 8;
 - nine malformed DIMACS strings were rejected;
 - three corrupted proof certificates (pivot, predecessor index, claimed resolvent) were rejected;
-- producer raw payload hash: `b2b5cf6b253e43abb58324897393b3b4256b1f090e580da605804b2d2b3817a8`;
-- producer: 3.96 seconds, 36,140 KiB peak host RSS;
-- independent verifier: 2.81 seconds observed command wall time; `/usr/bin/time` was unavailable, so no verifier RSS is fabricated;
-- file sizes: producer 17,008 bytes, verifier 9,840, raw result 3,864, independent result 1,308.
+- producer raw payload hash: `09c4ec1df6c78cfcc99ed6adbd25fca594846e01279d6d3ac286f458f3970e26`;
+- producer: 3.92 seconds, 39,496 KiB peak host RSS;
+- independent verifier: 2.93 seconds observed command wall time; `/usr/bin/time` was unavailable, so no verifier RSS is fabricated;
+- file sizes: producer 17,024 bytes, verifier 9,759, raw result 3,865, independent result 1,309.
 
 These are host implementation measurements. Parsing, alias generation, failed states, policy selection, caches, JSON materialization, proof replay and independent checking are external scheduled work. None is charged to the ideal ten-node `W_R`. Conversely, the ten-node logical minimum is not a native-machine time or space lower bound. Any recursive space claim still must charge every local phase in
 
