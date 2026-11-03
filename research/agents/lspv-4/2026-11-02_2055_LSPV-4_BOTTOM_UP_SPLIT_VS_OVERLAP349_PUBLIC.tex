@@ -1,0 +1,74 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{LSPV-4: Bottom-up SAT construction and exact minimum derivations}
+\author{PNP Time-Space Resource Auditor}
+\date{November 2, 2026, America/Los\_Angeles}
+\begin{document}\maketitle
+\noindent\textbf{Status:} Exact elementary construction theorems and independently reproduced finite experiments. No novelty claim for splitting, resolution restriction, minimal-unsatisfiability generation or exact proof search. External mathematical review pending. P versus NP OPEN.
+
+\section{Fixed systems}
+General CNF is the target. In $R_{res}$, source clauses are free axioms and a non-tautological binary resolvent has unit cost; shared derivations count once. We compare the unchanged $R_{mix341}$ specified in LSPV-2 MIXED-TSEITIN-MIN-DAG341. It includes RES, binary AND3 on at most three original variables, checked local conversions, XOR and charged conservative definitions. All mixed lower bounds assume its source-explicit at-most-binary-premise semantics, including complete attribution of source dependencies. No new macro is introduced. Optimizer discovery is NOT charged to the ideal minimum.
+
+\section{Exact bottom-up growth}
+\begin{theorem}
+Let $F$ be UNSAT, let $C$ be indispensable ($F\setminus\{C\}$ is SAT), and let $z$ be fresh. Put
+\[
+F'=(F\setminus\{C\})\cup\{C\vee z,C\vee\neg z\}.
+\]
+Then $W_{res}(F')=W_{res}(F)+1$. If $F$ is minimally UNSAT, so is $F'$.
+\end{theorem}
+\begin{proof}
+Resolve the two new clauses to recover $C$ and append a shortest proof of $F$: this gives the upper bound. Every refutation of $F'$ uses a split clause, since all other sources are satisfiable. A path from that clause to contradiction must eliminate its $z$ literal, hence some inference pivots on $z$. Restrict the entire proof to $z=0$. Standard topological restriction retains derived subclauses, removes satisfied lines and assigned-pivot steps, and resolves remaining parents only when necessary. This yields a refutation of exactly $F$ with at most $q-1$ inferences if the original had $q$. Thus the matching lower bound holds. Minimality follows by extending witnesses for deletion of an unchanged source arbitrarily in $z$, and extending a witness for $F\setminus\{C\}$ with the value satisfying the remaining split clause.
+\end{proof}
+Starting at $\{\bot\}$ and performing $s$ fresh splits gives $m=s+1$ and exact $W_{res}=W_{mix341}=m-1$. The lower bound follows because all $m$ sources must occur in the connected contradiction ancestry: $m+q-1\le E\le2q$. This is an exact growing lower bound but only linear in source clause count and encoded length.
+
+\section{Exhaustive three-variable census}
+We generated every minimally UNSAT set of nonempty, non-tautological clauses drawn from three named variables, allowing unused variables. The empty-clause singleton has cost zero and is separate. There are 26 available clauses. Python uses uncovered-assignment branching over their falsification subcubes; independently written JavaScript uses increasing-index subset enumeration. Both find 869 labelled formulas in 43 signed-variable symmetry classes. Independent breadth-first searches over all available-clause sets certify ordinary DAG-resolution minima, with no proof-depth cutoff. Repeated clauses can be redirected to their earlier occurrence, so omitting duplicate derivations loses no minimum.
+\begin{center}\begin{tabular}{rrrrr}\toprule
+$m$&labelled MUS&classes&$W_{res}$&$W_{mix341}$\\\midrule
+2&3&1&1&1\\3&24&2&2&2\\4&245&11&3&3\\5&266&12&4 or 5&4\\6&286&13&5&5\\7&44&3&6&6\\8&1&1&7&7\\\bottomrule
+\end{tabular}\end{center}
+Every mixed minimum is exactly $m-1$: binary AND3 conjoins all clauses on the same three-variable support in $m-1$ steps, and source arity supplies the lower bound. Only eight labelled formulas, one class, have resolution excess over $m-1$.
+
+\section{Seed, mathematical optimality certificate, and growth}
+Use
+\[
+F_*=(\neg b\vee\neg c)\wedge(\neg a\vee b)\wedge(a\vee c)
+\wedge(\neg a\vee\neg b\vee c)\wedge(a\vee b\vee\neg c).
+\]
+Adding these clauses in the displayed order leaves $8,6,4,2,1,0$ models. Every source is indispensable. A five-step proof, numbering source clauses in order, is
+\[
+D_1=Res_c(C_1,C_4)=\neg a\vee\neg b,
+\quad D_2=Res_b(D_1,C_2)=\neg a,
+\]
+\[
+D_3=Res_b(C_1,C_5)=a\vee\neg c,
+\quad D_4=Res_c(D_3,C_3)=a,
+\quad D_5=Res_a(D_2,D_4)=\bot.
+\]
+Four steps are impossible: equality in the source-arity bound would force a tree with each of five sources used once. Its final parents are complementary units. No source is a unit and no pair of sources resolves to a unit, so each unit subtree needs at least three source leaves, requiring six in total. Consequently $W_{res}(F_*)=5$, whereas $W_{mix341}(F_*)=4$.
+
+After any $s$ fresh source-clause splits, $n=3+s$, $m=5+s$, and
+\[
+W_{res}=5+s,\qquad W_{mix341}=4+s.
+\]
+The mixed proof recovers original clauses in $s$ resolutions and uses four AND3 steps. Thus splitting preserves resolution excess one but does not amplify it; mixed excess remains zero. Measured $(n,m,N,W_{res},W_{mix341})$, with $N$ in binary bits: $(3,5,65,5,4)$, $(4,6,102,6,5)$, $(5,7,133,7,6)$, $(7,9,193,9,8)$, $(9,11,303,11,10)$, $(11,13,392,13,12)$. Encoder: gamma-coded $n+1,m+1$, gamma-coded clause widths plus sign bits and fixed-width identifiers.
+
+\section{Falsifiers and verification}
+Freshness is essential: splitting $C_1$ using the existing variable $a$ gives six indispensable clauses but resolution minimum five, not six. Appending any unit on $a,b,c$ gives six clauses and minimum three; more clauses need not mean a harder refutation. A construction history without a matching lower-bound theorem only proves an upper bound.
+
+The no-producer-import JavaScript referee passed 25,594 assertions, independently reconstructing all 869 sources and 43 orbits; it checks 114 refutation certificates, 4,420 deletion-SAT cases, 9,924 sign-flip-SAT cases, and 8,192 split-identity assignments across 95 SAT and 161 UNSAT two-variable formulas. Eight malformed binary strings and five corrupt proofs reject. An independent four-variable BFS certifies six steps for the first fresh split; completed shorter-proof layers have sizes $1,13,90,475,2216,9780$. Odd/even K4 Tseitin controls have zero/eight models. Guarded-boundary and compact-equality controls remain intact.
+
+\section{Resources and next gap}
+The optimizer stores explicit sources, truth tables and BFS frontiers. Its work, eager verification cost, encoded evidence bits and all-phase peak memory are separate from $W_R$. No native low-space timing claim is made. Retain $s'\le\max\{\rho,\eta,\lambda,\lambda s\}$; $\rho$ covers every local phase. Neither superpolynomial $\overline W_R$ nor B3 is proved. The next construction should amplify excess beyond mandatory source aggregation under every permitted mixed rule, rather than only inflate the formula with fresh splits. A bounded mixed-proof search is not a lower bound.
+
+Read the 12:04 handoff, issue 3, project governance, repository research skill and Rmix341 definition. Searches of project inverse-resolution/bottom-up work and primary literature show substantial prior overlap. OpenAI GitHub search returned SAT transport/random-SAT code, not a theorem used here. The root main.tex contents request returned empty text with a nonempty blob SHA; no root overwrite. No task changes. Complete producer, separate referee, all raw DAGs and witnesses, five-page report, logs and hashes are in the user-facing reproducibility package.
+
+\begin{thebibliography}{3}
+\bibitem{p} T. Peitl and S. Szeider. Finding the Hardest Formulas for Resolution. IJCAI 2021 extended abstract, 4814--4818. DOI: 10.24963/ijcai.2021/657. Their proof length includes sources; ours counts derived nodes only.
+\bibitem{k} O. Kullmann and X. Zhao. On Davis--Putnam Reductions for Minimally Unsatisfiable Clause-Sets. TCS 492:70--87, 2013. DOI: 10.1016/j.tcs.2013.04.020.
+\bibitem{f} Y. Filmus et al. Proving Unsatisfiability with Hitting Formulas. ITCS 2024, LIPIcs 287, 48:1--48:20. DOI: 10.4230/LIPIcs.ITCS.2024.48.
+\end{thebibliography}
+\end{document}
