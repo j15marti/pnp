@@ -39,6 +39,25 @@ function verify(data) {
     assertions++;
   }
   if(data.derived!==data.rows.length-ca)throw Error('derived count');
+  const g=new Map([...new Set(data.source.flat().map(Math.abs))].map(x=>[x,new Set()]));
+  for(const c of data.source){
+    const vars=[...new Set(c.map(Math.abs))];
+    for(let i=0;i<vars.length;i++)for(let j=i+1;j<vars.length;j++){
+      g.get(vars[i]).add(vars[j]);g.get(vars[j]).add(vars[i]);
+    }
+  }
+  if(new Set(data.order).size!==g.size||data.order.some(x=>!g.has(x)))throw Error('bad elimination order');
+  let actualWidth=0;
+  for(const x of data.order){
+    const nei=[...g.get(x)];actualWidth=Math.max(actualWidth,nei.length);
+    for(let i=0;i<nei.length;i++)for(let j=i+1;j<nei.length;j++){
+      g.get(nei[i]).add(nei[j]);g.get(nei[j]).add(nei[i]);
+    }
+    for(const y of nei)g.get(y).delete(x);
+    g.delete(x);
+  }
+  if(actualWidth!==data.width||data.width_upper!==data.n_vars*3**actualWidth||data.derived>data.width_upper)throw Error('wrong primal width bound');
+  assertions++;
   const n=data.n_vars,vs=[...new Set(data.source.flat().map(Math.abs))];
   if(vs.length!==n)throw Error('var count');
   if(n<=15){
