@@ -30,7 +30,7 @@ def produce(name):
             if (sum(bits)&1)==chi[v]:continue
             lits=[(-a if b else a) for a,b in zip(inc[v],bits)]
             ident='s'+str(len(sources))
-            sources.append({'id':ident,'v':v,'lits':lits})
+            sources.append({'id':ident,'type':'SRC','v':v,'lits':lits})
             tables[ident]=[int(any(((k>>j)&1)==int(l>0) for j,l in enumerate(lits))) for k in range(8)]
             ls.append(ident)
         pairs=[]
@@ -67,7 +67,7 @@ def produce(name):
             'charge':[chi[v] for v in V],'nvariables':n,'dimacs':dimacs,
             'sources':sources,'nodes':nodes,'root':layer[0],
             'claimed':{'m':len(sources),'q':len(nodes),'depth':depths[layer[0]],
-                       'dimacs_utf8_bits':8*len(dimacs.encode())}}
+                       'lower_depth':math.ceil(math.log2(4*h)), 'dimacs_utf8_bits':8*len(dimacs.encode())}}
 
 def main(folder):
     p=pathlib.Path(folder);p.mkdir(parents=True,exist_ok=True)
