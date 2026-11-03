@@ -32,7 +32,7 @@ function verify(data){
    let A=lookup(node.parents[0]),B=lookup(node.parents[1]);
    if(node.op==="AND3"){
     must(Array.isArray(node.support)&&node.support.length===3,"AND3 declared");
-    function tm(a){if(a.type==="source")return table(a.idx,node.support);must(a.type==="factor"&&JSON.stringify(a.support)===JSON.stringify(node.support),"AND3 typed");return a.truth;}
+    function tm(a){if(a.type==="source"){must(JSON.stringify(supports[z.sources[a.idx].eq])===JSON.stringify(node.support),"AND3 source support");return table(a.idx,node.support);}must(a.type==="factor"&&JSON.stringify(a.support)===JSON.stringify(node.support),"AND3 typed");return a.truth;}
     let truth=tm(A)&tm(B);must(node.table===truth,"factor result");derived.push({type:"factor",support:node.support,truth});checks+=8;
    }else if(node.op==="XOR"){
     function norm(a){if(a.type==="xor")return a;must(a.type==="factor","xor input");let ids=[];
