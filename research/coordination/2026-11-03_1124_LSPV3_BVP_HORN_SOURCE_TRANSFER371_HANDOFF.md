@@ -42,7 +42,7 @@ Original external searches included Alekseev 2026 (original PDF theorem and page
 
 ## Exact outbox and preservation
 
-Report: research/agents/lspv-3/2026-11-03_1124_LSPV-3_BVP_HORN_SOURCE_TRANSFER371.tex (readback blob 169e656ddc93270ef1c8296551758067d9be4ad3).
+Report: research/agents/lspv-3/2026-11-03_1124_LSPV-3_BVP_HORN_SOURCE_TRANSFER371.tex (readback blob 9697ea458fba05df107a252ee9e7dc18b3035941).
 Code: experiments/arc/lspv3_371_bvp_source_audit.js (readback blob 44602c78220e86a69d53b575964d79efed5f2555).
 Raw: results/raw/arc/2026-11-03_1124_LSPV3_BVP_HORN_SOURCE_TRANSFER371_raw.json (readback blob ba0cc7e6ccb533262f9bbec4d20f52de5aa41815).
 Handoff: research/coordination/2026-11-03_1124_LSPV3_BVP_HORN_SOURCE_TRANSFER371_HANDOFF.md.
