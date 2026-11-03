@@ -9,8 +9,10 @@ const main=function runner(){
   if(mask===0||mask===255)return {mask,gates:0,expr:{op:"const",value:mask===255?1:0}};
   const invert=pc(mask)>4,work=invert?(255^mask):mask;
   let terms=[];
+  const vars=[0,1,2].map(i=>({op:"var",i}));
+  const negs=vars.map(a=>({op:"not",a}));
   for(let x=0;x<8;x++)if((work>>x)&1){
-   const lits=Array.from({length:3},(_,i)=>(x>>i)&1?{op:"var",i}:{op:"not",a:{op:"var",i}});
+   const lits=Array.from({length:3},(_,i)=>((x>>i)&1)?vars[i]:negs[i]);
    terms.push({op:"and",a:{op:"and",a:lits[0],b:lits[1]},b:lits[2]});
   }
   let e=terms[0];for(let i=1;i<terms.length;i++) e={op:"or",a:e,b:terms[i]};
