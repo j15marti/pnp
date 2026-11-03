@@ -46,4 +46,24 @@ for(let name of ['K4','PRISM3','PRISM4'])for(let odd of [true,false]){let f=fixt
    if(!odd){assert(f.source_clauses.every(c=>sat(c,0)));controls++}
 }
 for(let bad of [[1,-1],[0,1],[null],['x']]){let n=bad.every(x=>Number.isInteger(x)&&x!==0)&&norm(bad)!==null;assert(!n);controls++}
+// Strict independent DIMACS grammar, separate from logical witness tests.
+function parseDimacs(src){
+  let declared=null,clauses=[],current=[];
+  for(const line0 of src.split(/\r?\n/)){
+    const line=line0.trim();if(!line||line.startsWith('c '))continue;
+    if(!declared){let m=/^p cnf (\d+) (\d+)$/.exec(line);assert(m,'invalid header');declared={n:Number(m[1]),m:Number(m[2])};continue;}
+    const tokens=line.split(/\s+/);
+    for(const x of tokens){assert(/^-?(0|[1-9]\d*)$/.test(x)&&x!=='-0','invalid literal');
+      const l=Number(x);assert(Number.isSafeInteger(l),'big literal');
+      if(l===0){clauses.push(current);current=[]}else{assert(Math.abs(l)<=declared.n,'out-of-bounds variable');current.push(l)}
+    }
+  }
+  assert(declared,'header missing');assert(current.length===0,'unterminated clause');
+  assert(clauses.length===declared.m,'clause count mismatch');return {n:declared.n,clauses};
+}
+const invalidDimacs=['1 0\n','p cnf 2 1\n1 0\n-1 0\n','p cnf 2 1\n1 2\n',
+  'p cnf 1 1\n2 0\n','p cnf 2 1\nx 0\n','p cnf 2 1\np cnf 2 1\n1 0\n',
+  'p cnf 2 0\n1 0\n','p cnf 2 1\n1 0\nbogus\n'];
+for(const bad of invalidDimacs){assert.throws(()=>parseDimacs(bad));controls++}
+assert.strictEqual(parseDimacs('p cnf 2 1\n0\n').clauses.length,1);
 console.log(JSON.stringify({run:'GADGET-LIFT356/no-import-referee',controls,results},null,2));
