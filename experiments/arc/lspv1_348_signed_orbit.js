@@ -31,6 +31,7 @@ function atlas(){
   witness(BASE,p,mask);proofNodesChecked+=6;
  }
  if(transformations!==384||orbit.size!==192)throw Error('orbit size incorrect');
+ const negatives=new Map(); for(const key of orbit.keys()){const n=parse(key).flat().filter(v=>v<0).length;negatives.set(n,(negatives.get(n)||0)+1);}
  const neighbors=new Set(),neighborTypes=new Map(),deletionMultiset=[];
  for(const [key] of orbit){
   const F=parse(key);if(satCount(F)!==0)throw Error('orbit member SAT');
@@ -60,7 +61,7 @@ function atlas(){
  const stabilizer=[];
  for(const p of PERMS)for(let mask=0;mask<16;mask++)if(canonical(apply(BASE,p,mask))===canonical(BASE))stabilizer.push({permutation:p,complemented_variables:[1,2,3,4].filter(i=>mask&(1<<(i-1)))});
  if(stabilizer.length!==2)throw Error('wrong stabilizer');
- return {run:'LSPV1_SIGNED_ORBIT_MINCOST348',calculus:'Rmix341 binary premise unit weight',status:'PROVED/EXACT conditional on signed-rule equivariance; finite COMPUTATIONAL',original:BASE,group_order:384,orbit_size:orbit.size,stabilizer,proof_nodes_checked:proofNodesChecked,mixed_W_interval:[5,6],resolution_only_W_peer_reported:6,deletion_model_counts:deletionMultiset,source_deletion_checks:delControls,one_occurrence_sign_flips:flipControls,distinct_sat_neighbor_formulas:neighbors.size,distinct_sat_neighbor_orbits:neighborTypes.size,neighbor_orbit_classes:[...neighborTypes.values()],neighbor_orbit_size:384,control_labels:{original:'UNSAT',all_signed_renamings:'UNSAT',all_one_occurrence_flips:'SAT'},limitations:'Finite signed-orbit reduction only, not an asymptotic mixed lower bound or B3. Exact mixed W=6 unresolved due DEF seam.'};
+ return {run:'LSPV1_SIGNED_ORBIT_MINCOST348',calculus:'Rmix341 binary premise unit weight',status:'PROVED/EXACT conditional on signed-rule equivariance; finite COMPUTATIONAL',original:BASE,group_order:384,orbit_size:orbit.size,stabilizer,encoded_length_bits_distribution:Object.fromEntries([...negatives].map(([n,count])=>[8*(50+n),count])),proof_nodes_checked:proofNodesChecked,mixed_W_interval:[5,6],resolution_only_W_peer_reported:6,deletion_model_counts:deletionMultiset,source_deletion_checks:delControls,one_occurrence_sign_flips:flipControls,distinct_sat_neighbor_formulas:neighbors.size,distinct_sat_neighbor_orbits:neighborTypes.size,neighbor_orbit_classes:[...neighborTypes.values()],neighbor_orbit_size:384,control_labels:{original:'UNSAT',all_signed_renamings:'UNSAT',all_one_occurrence_flips:'SAT'},limitations:'Finite signed-orbit reduction only, not an asymptotic mixed lower bound or B3. Exact mixed W=6 unresolved due DEF seam.'};
 }
 if(typeof module!=='undefined' && require.main===module)console.log(JSON.stringify(atlas(),null,2));
 if(typeof module!=='undefined')module.exports={atlas,BASE,canonical,parse,apply,satCount,resolve};
