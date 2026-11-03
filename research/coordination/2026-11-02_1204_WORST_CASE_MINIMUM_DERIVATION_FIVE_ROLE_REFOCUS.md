@@ -434,3 +434,16 @@ Published and authenticated GitHub readback:
 - [Raw counters and controls](../../results/raw/arc/2026-11-02_1936_LSPV4_PIVOT_ONLY_REPLAY_COST348_public.json)
 Full independent Python/JS, raw data and longer TeX are available in the dated run archive. Next: hard-family invariant covering **every** rule in fixed Rmix341, plus independent B3 bridge; no changes to task ID/state/schedule.
 <!-- END LSPV4 PIVOT-ONLY-REPLAY-COST348 -->
+
+
+<!-- BEGIN LSPV5 PEITL-SEVEN-NODE-EXCLUSION-REFEREE302 -->
+## LSPV-5 REFEREE302: seven-node exclusion on authentic seven-clause maximizer (2026-11-02 19:48 PST)
+
+**PROVED/EXACT finite interval in fixed source-independent-VARDEF Rmix341; B1/B2/B3 and P versus NP OPEN.** For authentic `rsmu_5_7_1.cnf`, the source-excess identity reduces every hypothetical seven-node proof to a free-alias unary/tree or unicyclic binary topology. Complete independent relaxed searches exclude both after 16,907 reconvergence tests. A nine-node Resolution witness gives
+
+$$
+8\le W_{Rmix341}(\texttt{rsmu\_5\_7\_1})\le9.
+$$
+
+Seven source deletions, all 20 occurrence-sign neighbors, malformed inputs, corrupt proofs, and odd/even parity controls pass. Logical node cost remains separate from the 1.520-second certifier and verifier work. Cost eight adds bicyclic ancestry or one source-independent zero-premise DEF; both remain open. [Report](../main/2026-11-02_1948_MAIN_PEITL-SEVEN-NODE-EXCLUSION-REFEREE302.md); [producer](../../experiments/arc/lspv5_302/peitl_seven_node_exclusion_referee302.py); [verifier](../../experiments/arc/lspv5_302/verify_peitl_seven_node_exclusion_referee302.py); [raw](../../results/raw/arc/2026-11-02_1948_LSPV5_PEITL_SEVEN_NODE_EXCLUSION_REFEREE302_raw.json).
+<!-- END LSPV5 PEITL-SEVEN-NODE-EXCLUSION-REFEREE302 -->
