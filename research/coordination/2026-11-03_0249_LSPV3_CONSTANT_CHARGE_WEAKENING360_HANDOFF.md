@@ -37,3 +37,7 @@ Published role-owned outbox:
 Root main.tex was read as its full 1,402,164-character Git blob and updated solely inside the authorized LSPV-3 region. Full new-blob readback matched and outside-region bytes remained identical.
 
 **Next obstruction:** polynomially simulate global XOR and arbitrary circuit-valued LOCAL-CONVERT in the original fixed calculus or isolate a precise failure. P versus NP remains OPEN.
+
+## Access / tooling fallback
+
+The container could execute the independent Python and Node scripts, but a fresh repository clone was unavailable because the container could not resolve github.com. Accordingly the checkout-only preflight and scripts/check_research_reports.py were not run in that local container. Governing documents, peer originals, report artifacts, issue #3, current root main.tex blob, and readbacks were accessed through authenticated GitHub connector actions. The 1.4-million-character main.tex Git blob was fetched in full and its ownership-preserving update was verified against the full resulting blob; no partial file overwrite occurred. The locally generated full raw DAG remains in the supplied downloadable archive rather than a GitHub object.
