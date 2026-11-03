@@ -1,0 +1,69 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{LSPV-3 ADAPTIVE-RESIDUAL-WIDTH364: A Charged Resolution Envelope and Exact Heterogeneous Controls}
+\date{November 3, 2026, 06:24 PST}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT in the fixed calculus, finite independent checks COMPUTATIONAL, external specialist review pending.}
+The bounds below synthesize classical resolution branching and Davis--Putnam elimination. No new P versus NP separation is claimed.
+
+\paragraph{Fixed system.}
+Keep $R=R_{\mathrm{mix341}}$ (LSPV-2 341), including binary signed Resolution (RES), local AND3, GF(2) XOR, checked LOCAL-CONVERT and paid conservative signed two-input VARDEF. Original signed CNF clauses are authenticated source leaves of cost zero. Every derived node costs one and has at most two antecedents. Optimize freely over all permitted adaptive choices and shared acyclic DAGs. Define $W_R(F)$ as the minimum sum of distinct non-source inference weights, attained because RES is complete and costs are integral. Encoded size $N$ denotes bits, never just the number of variables.
+
+\begin{lemma}[Zero-weakening lifting]
+For every CNF $F$, partial assignment $\alpha$ with UNSAT residual $F\upharpoonright\alpha$, and RES refutation with $q_\alpha$ nodes, there is an authentic RES derivation from original sources of some clause $D_\alpha\subseteq B_\alpha$ with at most $q_\alpha$ nodes. $B_\alpha$ is the disjunction of the signed literals falsified by $\alpha$.
+\end{lemma}
+\begin{proof}
+Every surviving restricted source clause comes from a genuine original clause obtained by adjoining only literals falsified by $\alpha$. Lift every source occurrence back to its original, and perform the identical Resolution pivots on variables outside $\operatorname{dom}(\alpha)$. Inductively the lifted result equals the restricted result together with a subset of $B_\alpha$. These added literals do not contain complementary pairs or the pivot, so every step is legal strict RES. The final empty residual result lifts to a subset of $B_\alpha$. No weakening or semantic oracle is used.
+\end{proof}
+
+\begin{theorem}[Adaptive residual-width proof envelope]
+Let $F$ be UNSAT and let $\mathcal T$ be any finite binary adaptive decision tree (no variable repeats on a path) with UNSAT residual at every leaf $\alpha$. Suppose the leaf has a valid RES refutation of $q_\alpha$ nodes. Then
+\[
+\boxed{W_R(F)\le |I(\mathcal T)|+\sum_{\alpha\in L(\mathcal T)}q_\alpha.}\tag{1}
+\]
+For filled primal-neighbor counts $w_i(\sigma_\alpha)$ from independently chosen leaf Davis--Putnam elimination orders $\sigma_\alpha$,
+\[
+\boxed{W_R(F)\le |I(\mathcal T)|+\sum_{\alpha\in L(\mathcal T)}\sum_i3^{w_i(\sigma_\alpha)}.}\tag{2}
+\]
+If a set of $b$ variables has primal residual treewidth at most $w$ under every assignment, with binary input length $N$, then
+\[
+\boxed{W_R(F)\le 2^bN3^w+2^b-1.}\tag{3}
+\]
+Hence $b+w=O(\log N)$ is incompatible with superpolynomial $W_R(F)$, even if the original primal graph has large treewidth.
+\end{theorem}
+\begin{proof}
+Lift each leaf proof. At an internal branch $x=0,1$, the two derived clauses are subsets of the prefix blocking literals plus respectively $x$ and $\neg x$. If either omits the branch literal, reuse it. Otherwise resolve the two on $x$, costing one node. Induction to the root gives contradiction and (1). At each Davis--Putnam elimination of $x_i$, every new resolvent lies over at most $w_i$ remaining neighbor variables; there are at most $3^{w_i}$ distinct, non-tautological resolvent clauses. Derive each necessary distinct resolvent once using genuine binary RES. UNSAT elimination eventually yields the empty clause, giving (2). A width-$w$ order uses at most $N$ occurring variables and a complete $b$-variable tree has $2^b$ leaves and $2^b-1$ branches, giving (3). Optimizer discovery and machine work are not included in this free-choice upper bound.
+\end{proof}
+
+\begin{theorem}[Heterogeneous guarded Horn paths attain the source floor]
+For every $n\ge2$, $b\ge0$, and arbitrary permutations $P_\alpha=(p_1,\dots,p_n)$ indexed by selector assignments $\alpha\in\{0,1\}^b$, let
+\[
+U(P)=\{x_{p_1}\}\cup\{\neg x_{p_i}\vee x_{p_{i+1}}:1\le i<n\}\cup\{\neg x_{p_n}\},
+\qquad H_{n,b}=\bigcup_\alpha\{B_\alpha\vee C:C\in U(P_\alpha)\}.
+\]
+Every one of the $m=2^b(n+1)$ source clauses is indispensable and individually sign-sensitive, each selector residual is a width-one UNSAT Horn chain, and in the fixed complete mixed system,
+\[
+\boxed{W_{R_{\mathrm{mix341}}}(H_{n,b})=2^b(n+1)-1=m-1.}\tag{4}
+\]
+\end{theorem}
+\begin{proof}
+Fix selector assignment $\alpha$. Only its indexed guarded path is active. To falsify precisely path clause $j\in\{0,\ldots,n\}$ assign $x_{p_i}=1$ iff $i\le j$. This satisfies every other source, proving deletion SAT and each individual signed-occurrence flip SAT. Hence all $m$ clauses are essential. In any sound conservative proof with $q$ paid at-most-two-premise inference nodes and all $m$ sources in contradiction ancestry, the connected underlying DAG has at least $m+q-1$ premise edges but at most $2q$, so $q\ge m-1$ regardless of sharing, extensions, GF(2), adaptivity or temporary growth. Resolve each guarded Horn path in $n$ strict RES steps to $B_\alpha$, then resolve the $2^b$ blocking clauses through a selector tree using $2^b-1$ further steps. The cost $n2^b+2^b-1=m-1$ attains the global bound. Because all $m$ sources appear explicitly, this is not a superpolynomial bound in actual input bits.
+\end{proof}
+
+\paragraph{Falsifiers and controls.}
+F1 (lifting requires free weakening): FALSIFIED by the lemma. F2 (a logarithmic strong residual-width backdoor can produce superpolynomial mixed minimum): FALSIFIED by (3). F3 (heterogeneous guarded Horn paths cause superlinear excess): FALSIFIED by (4). F4 (allowing a free three-premise semantic macro cannot break the source-floor lower bound): FALSE, because this is a different inference system. These are proof-size, not all-algorithm runtime, results.
+
+A seeded independent Python producer made six source-authenticated strict Resolution refutations for $(n,b)=(3,0),(4,1),(5,2),(6,3),(8,2),(8,3)$. An independently implemented Node verifier replayed 196 genuine RES nodes, checked 202 unique source-deletion SAT witnesses and 864 sign-flip repairs, and exhaustively confirmed UNSAT over 3,752 assignments. Thirty malformed-input and twelve corrupt-certificate cases were rejected. Odd/even $K_4$ Tseitin models were 0 and 8; Node completed 2,361 assertions. Encoded input bits were $(264,768,2232,6264,3680,9280)$, exact global node minima were $(3,9,23,55,35,71)$. The full local reproducibility archive includes the independent verifier and source/proof DAGs; GitHub holds the producer and raw summaries. Lower-bound cost is not certificate acquisition or verification work; storage/retrieval/recomputation, output, caches and all-phase peak space are charged separately. Retain $s'\le\max\{\rho,\eta,\lambda,\lambda s\}$ with $\rho$ covering every local phase.
+
+\paragraph{Literature, duplication and next gap.}
+Searches: DPLL resolution lifting; Davis--Putnam induced width; strong SAT backdoors to bounded treewidth; backdoor depth; extended Resolution lower bounds; github.com/openai theorem proving. The general techniques are known: Beame--Kautz--Sabharwal (IJCAI 2003), Fomin et al. (SODA 2015), Dreier--Ordyniak--Szeider (JCSS 2024). Project predecessors LSPV-3 354/361/362/363 and LSPV-2 341 already separately established branching upper bounds, DP upper bounds, and linear exact source-floor controls; the present change makes the zero-weakening adaptive composition and heterogeneous exact mixed calibration explicit in a single fixed calculus. The 2026 algebraic extended polynomial-calculus bit-size result is a different system and supplies no unit-node lower bound here. Corpus access: coordination directive, issue 3, AGENTS.md, CODEX.md, repo skill, relevant original reports/code and LSPV-4 peer handoff were examined. No old files are deleted.
+
+A superpolynomial bound on $\overline W_{R_{\mathrm{mix341}}}(N)$ remains OPEN, as does the independent B3 implication $\mathrm{SAT}\in\mathrm P\Rightarrow \overline W_R(N)\le\operatorname{poly}(N)$ for this same $R$. Next: find nonaffine UNSAT families with residual structural parameters large along \emph{every} adaptive branch tree, and test mixed GF(2)/extension shortcuts before asserting hardness. P versus NP remains OPEN. No task identity, ownership, schedule or enabled state was changed.
+\begin{thebibliography}{9}
+\bibitem{BKS} P. Beame, H. Kautz, A. Sabharwal, Understanding the Power of Clause Learning, IJCAI (2003).
+\bibitem{Fomin} F. Fomin et al., Solving $d$-SAT via Backdoors to Small Treewidth, SODA (2015), doi:10.1137/1.9781611973730.43.
+\bibitem{Dreier} J. Dreier, S. Ordyniak, S. Szeider, SAT Backdoors: Depth Beats Size, JCSS 142 (2024).
+\end{thebibliography}
+\end{document}
