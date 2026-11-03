@@ -20,7 +20,7 @@ const main=function runner(){
   return {mask,gates,expr:e,terms:terms.length,invert};
  }
  function ev(e,a){
-  switch(e.op){case "const":return e.value;case "var":return a[e.i];case "not":return 1-ev(e.a,a);case "and":return ev(e.a,a)&ev(e.b,a);case "or":return ev(e.a,a)|ev(e.b,a);default:throw Error("bad op");}
+  switch(e.op){case "const":if(e.value!==0&&e.value!==1)throw Error("bad const");return e.value;case "var":if(!Number.isInteger(e.i)||e.i<0||e.i>=3)throw Error("bad input index");return a[e.i];case "not":return 1-ev(e.a,a);case "and":return ev(e.a,a)&ev(e.b,a);case "or":return ev(e.a,a)|ev(e.b,a);default:throw Error("bad op");}
  }
  const truth=e=>{let mask=0;for(let x=0;x<8;x++){let a=[x&1,(x>>1)&1,(x>>2)&1];mask|=ev(e,a)<<x;}return mask};
  let max=0,counts={},gt=0;
@@ -43,7 +43,7 @@ const main=function runner(){
   try{let t=truth(bad);if(t!==0 && t!==255)throw Error("invalid");}catch(_){malformed++}
  }
  // 'const 2' invalid via extensional range checking
- check(malformed>=3);
+ check(malformed===4);
  check(truth(norm(170).expr)!==truth(norm(0).expr));
  return {run:"LSPV3_366",status:"COMPUTATIONAL controls for conditional bounded-interface lemma",n_inputs:3,all_boolean_functions:gt,max_overestimated_gates:max,histogram:counts,long_chain_controls:chains,original_source_labels:{satModels:models(satSource),unsatModels:models(unsatSource)},bad_syntax_rejections:malformed,checked_corruption:true,assertions:nAssertions,notes:"Gates overestimate by charging all 3 input negations even when unused; logical node cost is not gate count or verifier work. This script tests extensional normalizer, NOT the authoritative mixed inference grammar."};
 };
