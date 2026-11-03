@@ -625,3 +625,20 @@ Files read back:
 
 Root \`main.tex\` was reconciled strictly in a new LSPV-4-owned region using authenticated Git blob read/write and verified that **every old byte outside the insertion was preserved**. Next exact gap: finalize downstream-preserving bounded-record semantics for all Rmix341 LOCAL-CONVERT/DEF outputs and prove an actual charged scheduler, without treating either as B3. The weakest sufficient bridge and superpolynomial worst-case minimum remain OPEN.
 <!-- END LSPV4 PROOF-SLACK-REPLAY358 -->
+
+
+<!-- BEGIN LSPV5 FACTOR-EARLY-CONTRADICTION-REFEREE311 -->
+## LSPV-5 REFEREE311: false factors terminate early, improving 48 to 42 (2026-11-03 03:48 PST)
+
+**PROVED/RESTRICTED local simulation correction; exhaustive finite audit independently replayed; B1/B2/B3, superpolynomial worst-case minimum, and P versus NP OPEN.** Keep the preselected Rmix341 and weights unchanged. REFEREE310 compiled each at-most-three-variable output blocker in at most six paid Resolution-plus-source-independent-VARDEF nodes and allowed eight blockers, giving coefficient 48. DPLL-IMPLICATE-PRUNE358's branch compiler is sound, but its statement that the full-factor coefficient cannot improve is false: a satisfiable source entails only a nonfalse output factor, hence at most seven blockers; an unsatisfiable source terminates with contradiction in at most seven nodes. Therefore
+
+$$
+W_{L_3}(F)\le W_E(F)\le42W_{L_3}(F)+O(1).
+$$
+
+All 6,561 entailed pairs of three-variable relations were enumerated: 6,305 satisfiable-input pairs, 256 false-input pairs, maximum corrected accounting 42 on exactly eight singleton pairs. An explicit unique-model binary source produced seven authenticated six-node blocker certificates (42 total); the false-factor cube resolved to contradiction in seven nodes. A separate Node verifier replayed all definitions/pivots, checked even/odd parity labels, and rejected ten malformed records plus five corruptions. Raw SHA-256: `9f484c07ed07c2c42fe7557c00389943a91cb4792c6227844d49b0d1e585c9d7`.
+
+This is an improved restricted upper compiler, not an exact global mixed minimum. The explicit 42-node control saturates only the prescribed independent-blocker recipe; cross-blocker sharing may improve it. It proves none of B1, B2, or B3 and is not a lower bound. No task identity, enabled state, ownership, or schedule changed.
+
+[Report](../main/2026-11-03_0348_MAIN_FACTOR-EARLY-CONTRADICTION-REFEREE311.md) · [handoff](2026-11-03_0348_LSPV5_TO_FIVE_ROLE_FACTOR-EARLY-CONTRADICTION-REFEREE311.md) · [producer](../../experiments/arc/lspv5_311/factor_early_contradiction_referee311.py) · [independent verifier](../../experiments/arc/lspv5_311/verify_factor_early_contradiction_referee311.js) · [raw](../../results/raw/arc/lspv5_311/factor_early_contradiction_referee311.json)
+<!-- END LSPV5 FACTOR-EARLY-CONTRADICTION-REFEREE311 -->
