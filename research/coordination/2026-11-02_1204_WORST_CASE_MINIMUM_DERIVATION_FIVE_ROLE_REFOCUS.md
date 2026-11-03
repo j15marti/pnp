@@ -519,3 +519,21 @@ Python and separate no-import Node implementations: 11 balanced/comb cases k=1,2
 
 [Role report](../agents/lspv-4/2026-11-02_2243_LSPV-4_PEITL_SELECTOR_LINEAR_CAP352.md); [standalone code](../../experiments/arc/lspv4_352_peitl_selector_compact.js); [raw summary](../../results/raw/arc/2026-11-02_2243_LSPV4_PEITL_SELECTOR_LINEAR_CAP352_summary.json); [handoff](2026-11-02_2243_LSPV4_PEITL_SELECTOR_LINEAR_CAP352_HANDOFF.md). Next: a genuinely interacting, mixed-rule-resistant excess-amplifying gadget, with B3 independently treated. No task/state/schedule changes.
 <!-- END LSPV4 PEITL-SELECTOR-LINEAR-CAP352 -->
+
+
+<!-- BEGIN LSPV4 SOURCE-CYCLE-SLACK353 -->
+## LSPV-4 exact cycle--slack ledger and 2-CNF read-once falsifier (2026-11-02 23:18 PST)
+
+**PROVED/EXACT for any source-explicit ancestry:** With s distinct used source clauses, q distinct derived nodes, E source/proof antecedent edges, beta=E-(s+q)+1 and delta=sum_v(2-indeg(v)), every binary-premise unit-weight refutation has **q=s-1+beta+delta**. For arbitrary fixed node weights the exact identity is W(pi)=s-1+beta+sum_v[omega(v)-(indeg(v)-1)]. If F is minimally UNSAT, all m sources are indispensable, giving W_R(F)=m-1+min_pi(beta+delta). An m-1-cost proof necessarily has a tree-shaped ancestry, with two explicit antecedents per inference. These are graph-counting identities, not SAT decision lower bounds.
+
+**Computational, complete finite source-tree exclusion:** 3-pigeon/2-hole CNF has n=6, m=9, all clauses width two, zero models, every source deletion SAT, all 18 literal-sign flips SAT. An independently reproduced source-subset dynamic program rules out any 8-step read-once ordinary resolution refutation: output counts by number of used sources **[9,12,18,12,24,24,21,0,0]**. A verified 10-step shared resolution refutation exists, with s=9,q=10,E=20,beta=2,delta=0 and 37 premise-literal reads. Hence **9<=W_res<=10**. For the DEF-free typed RES/AND3/XOR subgrammar, output counts **[9,30,68,126,198,243,207,30,0]**, and **9<=W_R0<=10**. Full fixed **Rmix341 remains only 8<=W_mix341<=10**, because charged binary-antecedent DEF semantics are not eliminated. A unary LOCAL-CONVERT cannot occur in the m-1 equality case. Do NOT promote the fragment exclusion to the full mixed calculus.
+
+The entire example is an easy 2-SAT formula: even a positive structural excess does not establish arbitrary-machine hardness. Independent JavaScript referee passed 75 structured checks; 9 deletion SAT controls, 18 sign-flip SAT witnesses, nine malformed-input and three corrupt-proof rejections, K4 parity odd/even model counts 0/8. N=608 encoded source bits, 130 fixed-width pivot-only proof bits, eager proof replay checks 37 antecedent literals. The offline mixed subset optimizer processed 9,298 state pairs and 1,902 AND3 joins; those are proof-discovery work excluded from W, not necessary machine work for all deciders. Python/JS peak host RSS 97,040/34,928 KiB are not same-machine FLMV space bounds. rho still includes all phases.
+
+Readback-verified role-owned publication:
+- [LaTeX theorem/report](../agents/lspv-4/2026-11-02_2318_LSPV-4_SOURCE_CYCLE_SLACK353.tex)
+- [Standalone reproducer](../../experiments/arc/lspv4_353_source_cycle_compact.js)
+- [Raw data summary and proof DAG](../../results/raw/arc/2026-11-02_2318_LSPV4_SOURCE_CYCLE_SLACK353_summary.json)
+
+**Next:** require an exact source-attached DEF rule specification and either certify or falsify an 8-step full-mixed PHP proof. For any stronger family, prove unavoidable growth of beta+delta against ALL allowed mixed rules. Keep the B3 implication independently open; B2 uses T_A^wc over all binary strings. P versus NP OPEN. No existing task identity, enabled state or schedule changed.
+<!-- END LSPV4 SOURCE-CYCLE-SLACK353 -->
