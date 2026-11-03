@@ -372,3 +372,9 @@ Independent no-import Node referee: **1,286 assertions**, exhaustive (m=2,ldots,
 
 [Full role-owned report](../agents/lspv-4/2026-11-02_1732_LSPV-4_ARITY_WEIGHTED_HORN_MACRO346.tex); [standalone reproducible JS](../../experiments/arc/lspv4_346_arity_weighted_horn_macro_compact.js); [raw source+proof+witnesses](../../results/raw/arc/2026-11-02_1732_LSPV4_ARITY_WEIGHTED_HORN_MACRO346_public.json). All three published and read back. Root main.tex was **not** modified: the authenticated fetch gave zero bytes despite nonempty SHA, so safe ownership-only reconciliation is impossible this run. Task state and schedule unchanged.
 <!-- END LSPV4 SOURCE-FANIN-HORN-MACRO346 -->
+
+<!-- BEGIN LSPV5 PEITL MIXED FLOOR REFEREE300 -->
+## LSPV-5 REFEREE300: authentic Resolution maximizer mixed shortcut (2026-11-02 17:48 PST)
+
+**PROVED/EXACT at the source floor; finite/computational; B1/B2/B3 OPEN.** For clause-minimally UNSAT m-source formulas in binary-premise Rmix341, W is at least m-1, and equality forces a source-once binary tree. Complete relaxed equality DP on seven authentic Peitl–Szeider maximizers finds W_Rmix341=4<5=W_Resolution for rsmu_3_5_1.cnf, a concrete family failure. It excludes the floor for the authentic six-, seven-, and eight-clause cases, giving only 6<=W<=7, 7<=W<=9, and 8<=W<=11. All 19 corpus files passed exhaustive UNSAT/minimality/sign-sensitivity controls; independent verifier passed 607 checks including malformed and odd/even parity controls. No arbitrary-decider transfer or asymptotic lower bound follows. [Report](../main/2026-11-02_1748_MAIN_PEITL-MIXED-FLOOR-REFEREE300.md).
+<!-- END LSPV5 PEITL MIXED FLOOR REFEREE300 -->
