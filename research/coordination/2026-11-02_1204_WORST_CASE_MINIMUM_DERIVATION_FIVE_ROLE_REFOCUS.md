@@ -718,3 +718,18 @@ A maximal same-support factor-only region may therefore carry the stronger authe
 - [Full report](https://github.com/j15marti/pnp/blob/main/research/main/2026-11-03_0648_MAIN_SOURCE-AWARE-EXIT-COMPILER-REFEREE314.md) · [role handoff](https://github.com/j15marti/pnp/blob/main/research/coordination/2026-11-03_0648_LSPV5_TO_FIVE_ROLE_SOURCE-AWARE-EXIT-COMPILER-REFEREE314.md) · [producer](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_314/source_aware_exit_compiler_referee314.py) · [verifier](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv5_314/verify_source_aware_exit_compiler_referee314.js) · [raw](https://github.com/j15marti/pnp/blob/main/results/raw/arc/lspv5_314/source_aware_exit_compiler_referee314.json)
 
 <!-- END LSPV5 SOURCE-AWARE-EXIT-COMPILER-REFEREE314 -->
+
+
+<!-- BEGIN LSPV4 LOCAL-CONVERT-CVP363 -->
+## LSPV-4 LOCAL-CONVERT-CVP363 gate-payload resource audit (2026-11-03 07:36 PST)
+
+**PROVED/EXACT conditional on syntax U, KNOWN CVP theorem, COMPUTATIONAL finite controls. P versus NP OPEN.** The unchanged Rmix341 LOCAL-CONVERT permits a bounded-original-support Boolean circuit condition. If this allows *arbitrarily long internal circuit representations inside one charged node*, then LOCAL-CONVERT legality is **P-complete** even with one original variable: from the authenticated SAT factor \(S=x\), test the proposed circuit \(C_G=x\wedge t_G\), with constant-input CVP output \(t_G\); \(S\models C_G\) iff \(t_G=1\). This **does not prove** L differs from P, nor any SAT runtime or shortest-proof lower bound. A k-constant AND circuit forces k independent certificate-bit reads on the legal all-ones case.
+
+**VERIFICATION REPAIR:** Appending a full at-most-8-bit local truth vector to every gate supplies an O(log M)-writable-bit, O(M^3)-time deterministic checker by paid indexed read-only rescans, for augmented evidence length M. This is a *supplied-certificate* checker; generation and all-phase materialization are separately charged. It does not establish full mixed-calculus verification bounds or B3.
+
+**PENDING SYNTAX DECISION:** Whether internal circuit gates inside one LOCAL-CONVERT conclusion require their own independently charged DEF nodes is still unformalized. If required, q counts those gates and the one-node payload counterexample no longer applies. Downstream-preserving canonical proof normalization is OPEN. Do not change the preselected Rmix341 silently.
+
+**INDEPENDENT TESTS:** Python 792 SAT/UNSAT-labelled conversions, 396 SAT witnesses, 396 exhaustive UNSAT controls, 259 constant-bit falsifiers, ten malformed DIMACS and eleven malformed proof records; no-import JS 5,858 independent assertions; both-label and gate-forgery controls pass. Host memory is not FLMV tape space. B1/B2/B3 and superpolynomial \(\overline W_{R_{\rm mix341}}\) OPEN.
+
+[Report](../agents/lspv-4/2026-11-03_0736_LSPV-4_LOCAL_CONVERT_CVP_GATE_TRACE363.md) · [compact reproducer](../../experiments/arc/lspv4_363_local_convert_compact.js) · [raw summary](../../results/raw/arc/2026-11-03_0736_LSPV4_LOCAL_CONVERT_CVP363_summary.json) · [separate handoff](2026-11-03_0736_LSPV4_LOCAL_CONVERT_CVP_GATE_TRACE363_HANDOFF.md)
+<!-- END LSPV4 LOCAL-CONVERT-CVP363 -->
