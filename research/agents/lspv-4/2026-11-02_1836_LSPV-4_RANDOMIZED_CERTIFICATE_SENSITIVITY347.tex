@@ -1,0 +1,82 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\title{LSPV-4 / 347: Randomized Certificate Source-Sensitivity\\and Minimum-DAG Resource Transfer}
+\author{PNP Time-Space Resource Auditor}
+\date{November 2, 2026, 18:36 PST}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT elementary source-query theorem in a specified model; COMPUTATIONAL finite tests independently checked; external peer referee pending.}
+The fixed mixed proof calculus $R_{\rm mix341}$ is unchanged. General CNF-SAT is the target. For UNSAT $F$, $W_R(F)$ is the minimum over sound, complete refutation DAGs of the sum of charged inference-node weights, with best-path selection granted free. Define $\overline W_R(N)=\max_{F\ {\rm UNSAT},\,|\operatorname{enc}(F)|\le N}W_R(F)$. No inference rule or certificate is retroactively added.
+
+\section*{Exact obstruction and randomized theorem}
+An inference DAG can be short without authenticating its claimed source. Fix one structurally valid CNF $F$ whose $L$ literal-occurrence sign fields are independently encoded as distinct source bits, such that reversing any one sign gives a valid SAT formula $F^{(i)}$. Fix an arbitrary proof string $\pi$. Consider any randomized sound certificate verifier $V(F,\pi;r)$, with the same randomness space for all inputs and independently chargeable source-bit queries. Assume
+\[
+\Pr_r[V(F,\pi;r)=1]\ge c,\qquad
+\Pr_r[V(F^{(i)},\pi;r)=1]\le s<c
+\quad (1\le i\le L).
+\]
+The soundness requirement is for the \emph{same fixed proof} on the SAT neighbor. The checker may adaptively read the source and proof, move heads and indices, switch proof representations, or recompute shared DAG nodes.
+
+\begin{theorem}[Same-certificate randomized source-probe bound]
+For each sign field $i$, the probability that $V$ probes that field on the original pair $(F,\pi)$ is at least $c-s$. Hence
+\[
+\boxed{\mathbb E_r[\#\text{ distinct original sign fields read}]\ge(c-s)L.}
+\]
+When one source access reveals at most $w$ sign fields, expected ordinary source probes are at least $(c-s)L/w$. A perfectly sound deterministic verifier accepting $\pi$ reads all $L$ sign fields. Under completeness $1-\delta$ and soundness error $\epsilon$, the bound is $(1-\delta-\epsilon)L$ when positive.
+\end{theorem}
+\begin{proof}
+Couple the two executions on $(F,\pi)$ and $(F^{(i)},\pi)$ with the same random tape. Unless the first run reads changed sign field $i$, both runs have identical replies to every query and follow identical transcripts, so they produce the same output. With acceptance indicators $A,A_i$ and original-run event $Q_i$ of querying the field,
+\[
+\Pr(Q_i)\ge\mathbb E|A-A_i|\ge|\mathbb EA-\mathbb EA_i|\ge c-s.
+\]
+Sum over fields by linearity of expectation. A $w$-bit probe accounts for at most $w$ field observations. No independence among queries or random coins is required.
+\end{proof}
+
+\begin{corollary}
+Every clause-minimally UNSAT CNF with independently encoded literal-occurrence signs satisfies the theorem for any fixed accepted proof. For each source clause $C$, a witness for $F\setminus\{C\}$ falsifies every literal in $C$; reversing any one of them makes the whole original formula SAT.
+\end{corollary}
+
+\section*{Falsifiers and tight diagnostic}
+\begin{description}
+\item[] \textbf{F1 FALSIFIED:} A sound checker may trust an alleged source digest in $\pi$ and skip one sensitive input sign without paying earlier authentication. Coupled SAT-neighbor soundness forbids this.
+\item[] \textbf{F2 FALSIFIED:} Bounded-error verification always reads every sensitive sign. After separate structural authentication, a diagnostic 3-way verifier (full sign comparison, blind accept, blind reject, each with probability $1/3$) has completeness $2/3$, soundness $1/3$ and exactly $L/3$ expected sign queries on its fixed UNSAT template. This is \emph{not} a permitted $R_{\rm mix341}$ inference.
+\item[] \textbf{F3 FALSIFIED:} The source-probe lower bound also forces $\Omega(L)$ writable space. A streamed template verifier can use $O(\log N)$ index/counter space. Python and JavaScript finite checks materialized input, so their measured host memory is not a same-machine FLMV trace.
+\item[] \textbf{F4 OPEN:} Sensitive sign acquisition implies superpolynomial $\overline W_{R_{\rm mix341}}(N)$ or B3. Sign probes are only linear; they do not lower-bound inference node count.
+\end{description}
+
+\section*{Independent finite controls}
+An independent Python producer and no-import Node referee checked Horn chains
+\[
+H_m=(x_1)\wedge\bigwedge_{i=1}^{m-2}(\neg x_i\vee x_{i+1})\wedge(\neg x_{m-1}),\quad2\le m\le10
+\]
+and the odd-charge $K_4$ Tseitin source. All 10 originals are UNSAT and all 138 one-sign-bit neighbors have verified SAT witnesses. For Horn $H_m$, $L=2m-2$ and every flipped neighbor has exactly one model; for the 16-clause odd $K_4$, $L=48$ and every sign-flip neighbor has two models. Both-label controls: even-charge $K_4$ has eight models and Horn7 with its last unit flipped has one model. Ten malformed encodings were rejected. Independent JS replay passed 6,400 assertions, including exhaustive checks of 5,460 sign-vectors in the Horn $m\le7$ randomized diagnostic. These are \textbf{COMPUTATIONAL} finite checks, not an asymptotic lower bound. Deterministic source queries on these families require $L$ single-bit probes; in the source-sign-only $2/3$ vs $1/3$ diagnostic, expected queries are $L/3$.
+
+\section*{Space, witness length and B1/B2/B3 ledger}
+The logical node-count minimum $W_R(F)$ is distinct from certificate length, verifier bit queries, machine time, and scheduled peak writable space. An enormous proof may be validated by more reads than its node count; a compact proof still requires source authentication when its original is sign-sensitive. An ordinary general CNF decider must also distinguish UNSAT $F$ from each SAT neighbor and thus incurs the deterministic $L$-field source-probe floor; this is at most linear in the number of sign occurrences. None of these facts gives a lower bound on arbitrary decider proof-production cost. The needed bridge has the \emph{opposite} direction:
+\[
+\operatorname{cost}(\pi_A(F))\le p_A(N+T_A(F))\quad\text{(unproved)},
+\]
+and the weakest sufficient bridge remains
+\[
+\boxed{\mathrm{SAT}\in P\Longrightarrow\overline W_{R_{\rm mix341}}(N)\in N^{O(1)}\quad\text{(OPEN)}.}
+\]
+B2 uses $T_A^{wc}(N)$ over \emph{all} valid, invalid and malformed inputs, not runtime on one recognizable UNSAT family. No arbitrary decider is obliged to emit this certificate.
+
+For implementable algorithms, all source/index/head probes, parsing, proof checking, failed choices, cached provenance and representation conversion must be charged. The all-phase child space envelope is
+\[
+s'\le\max\{\rho,\eta,\lambda,\lambda s\},
+\]
+where $\rho$ covers all local phases. Temporarily materializing an $N$-bit copy gives $\rho\ge1$, even if the copy is freed before child calls. Streaming sign checks do not establish the desired square-root-space reduction or numerical FLMV transfer.
+
+\section*{Duplication, literature, reproducibility and next gap}
+The 2026-11-02 12:04 PST five-role handoff and issue \#3, AGENTS.md, CODEX.md, the project pnp-research skill, LSPV-4 339/346, LSPV-2 347, and LSPV-1 SOURCE-EXCESS-EULER349 were inspected. Deterministic sign-flip sensitivity was already established in LSPV-4 339. The increment here is the explicit randomized same-fixed-proof query coupling and physical-verification ledger. Related randomized query complexity is classical (Jain--Zhang 2011); this elementary coupling is not claimed novel. GitHub project and github.com/openai searches found no B3 implementation; this does not prove absence. Executable reconstruction, independent verifier, source indices, 138 SAT witnesses and raw JSON are in the local reproducibility archive; a compact JS reproducer and machine-readable public ledger are in role-owned GitHub paths.
+\par\noindent\textbf{Next exact gap:} Construct a superlinear, eventually superpolynomial invariant against \emph{all} fixed $R_{\rm mix341}$ rules, or independently prove B3 for this same calculus. The query theorem alone cannot do either. \textbf{P versus NP remains OPEN.}
+
+\begin{thebibliography}{9}
+\bibitem{cookreckhow} S. Cook and R. Reckhow, The Relative Efficiency of Propositional Proof Systems, Journal of Symbolic Logic 44(1), 36--50 (1979).
+\bibitem{jainzhang} R. Jain and S. Zhang, The Influence Lower Bound Via Query Elimination, Theory of Computing 7, 147--153 (2011), \url{https://doi.org/10.4086/toc.2011.v007a010}.
+\bibitem{flmv} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas, Time-Space Lower Bounds for Satisfiability, JACM 52(6), 835--865 (2005), \url{https://doi.org/10.1145/1101821.1101822}.
+\end{thebibliography}
+\end{document}
