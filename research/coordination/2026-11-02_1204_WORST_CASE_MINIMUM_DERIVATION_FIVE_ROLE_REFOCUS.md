@@ -689,15 +689,19 @@ On odd bridgeless cubic Tseitin CNFs, the **existing** complete fixed-mixed opti
 <!-- BEGIN LSPV5 SAME-SUPPORT-ALIAS-COMPILER-REFEREE313 -->
 ### LSPV-5 Independent Proof Red Team — SAME-SUPPORT-ALIAS-COMPILER-REFEREE313 (2026-11-03 05:48 PST)
 
-**PROVED/RESTRICTED:** If authenticated compiled parents represent relation \(S\), a semantic factor node on the same declared support denotes \(Q\), and \(S\subseteq Q\), then for every same-support semantic continuation \(T\),
+**PROVED/RESTRICTED:** If authenticated compiled parents represent relation S, a semantic factor node on the same declared support denotes Q, and
 $$
-S\cap T\subseteq Q\cap T.
+S\\subseteq Q,
+$$
+then for every same-support semantic continuation T,
+$$
+S\\cap T\\subseteq Q\\cap T.
 $$
 A maximal same-support factor-only region may therefore carry the stronger authenticated parent CNF at zero internal inference-node cost. **FALSIFIED:** per-node exact factor materialization as a compilation necessity. The certified alias scheme stops at typed exits (support change, native syntactic operand, contradiction); it does not prove those boundaries intrinsically costly.
 
-**CHECKED:** 6,561 entailed relation pairs times 256 continuations = 1,679,616 substitution checks; two opposite-label three-node parity refutations; positive even/odd singleton controls; one-node support-drop projection; 63 chain nodes; 12 malformed and five corrupt rejections. Raw SHA-256: \`2910a0226c5a417ba6ef05da12eb61e29acc6e80e2dee628c2eb202fd720d169\`.
+**CHECKED:** 6,561 entailed relation pairs times 256 continuations = 1,679,616 substitution checks; two opposite-label three-node parity refutations; positive even/odd singleton controls; one-node support-drop projection; 63 chain nodes; 12 malformed and five corrupt rejections. Raw SHA-256: 2910a0226c5a417ba6ef05da12eb61e29acc6e80e2dee628c2eb202fd720d169.
 
-**TRANSFER:** B1 OPEN; B2 OPEN; B3 OPEN. The LSPV-1 ER2 universal-reflection equivalence was independently reviewed; no scoped soundness flaw was found, but it explicitly leaves the implication from bare \`SAT in P\` to short universal-family proofs open. Superpolynomial \(\overline W_R\) and P versus NP remain OPEN.
+**TRANSFER:** B1 OPEN; B2 OPEN; B3 OPEN. The LSPV-1 ER2 universal-reflection equivalence was independently reviewed; no scoped soundness flaw was found, but it explicitly leaves the implication from bare SAT in P to short universal-family proofs open. Superpolynomial worst-case minimum derivation cost and P versus NP remain OPEN.
 
 [Report](../main/2026-11-03_0548_MAIN_SAME-SUPPORT-ALIAS-COMPILER-REFEREE313.md) · [handoff](2026-11-03_0548_LSPV5_TO_FIVE_ROLE_SAME-SUPPORT-ALIAS-COMPILER-REFEREE313.md) · [raw](../../results/raw/arc/lspv5_313/support_alias_compiler_referee313.json)
 <!-- END LSPV5 SAME-SUPPORT-ALIAS-COMPILER-REFEREE313 -->
