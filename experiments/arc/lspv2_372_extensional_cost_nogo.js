@@ -13,7 +13,7 @@ function parse(s){
   for(const t of q.split(/\s+/)){
    yes(/^-?\d+$/.test(t),"noninteger literal");
    let x=+t;yes(Number.isSafeInteger(x)&&Math.abs(x)<=h.n,"literal range");
-   if(!x){yes(new Set(c.map(Math.abs)).size===c.length,"repeated variable");C.push(c);c=[]}else c.push(x);
+   if(!x){C.push(c);c=[]}else c.push(x);
   }
  }
  yes(h&&c.length===0&&C.length===h.m,"count/terminator");return{n:h.n,C};
@@ -108,9 +108,11 @@ function run(){
   const evalc=C=>C.every(c=>c.some(l=>Boolean((a>>(Math.abs(l)-1))&1)===(l>0)));
   ck(evalc(G)===evalc(Gp),"nonempty extensional pair");
  }
- for(const s of ["","p cnf 2 1\n1 0\n-1 0\n","p cnf x 1\n1 0\n","p cnf 2 1\n3 0\n","p cnf 2 1\n1\n","p cnf 2 1\n1 1 0\n","p cnf 2 1\n1 -1 0\n"]){
+ for(const s of ["","p cnf 2 1\n1 0\n-1 0\n","p cnf x 1\n1 0\n","p cnf 2 1\n3 0\n","p cnf 2 1\n1\n","p cnf 2 1\n1 q 0\n","p cnf 2 1\n1 0\np cnf 2 1\n"]){
   ck(decide(s).label==="MALFORMED","malformed");bad++;
  }
+ ck(decide(dim(2,[[1,1]])).label==="SAT","duplicate-literal valid CNF");
+ ck(decide(dim(2,[[1,-1]])).label==="SAT","tautological valid CNF");
  return{run:"LSPV2_EXTENSIONAL_COST_NOGO372",assertions,malformed_rejected:bad,fixtures:results.length,results,
  theorem:"Identical empty satisfying sets over n=3h/2 variables, while established exact W_Rmix341(F_oddTseitin)=4h-1 and W_Rmix341(H_n)=1",
  status:"PROVED/EXACT symbolically using inherited 341 theorem; COMPUTATIONAL finite controls",
