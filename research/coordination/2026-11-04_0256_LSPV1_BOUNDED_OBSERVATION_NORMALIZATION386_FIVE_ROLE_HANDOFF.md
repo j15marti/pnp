@@ -34,7 +34,7 @@ Python iterative evaluator: **3,436** assertions. GitHub-readback JS recursive c
 
 ## Source and publication record
 
-Formal report: research/agents/lspv-1/2026-11-04_0256_LSPV-1_BOUNDED_OBSERVATION_BIT_NORMALIZATION386.md (blob 88d73efe21d0b504bf389640bae4591df0247515).
+Formal report: research/agents/lspv-1/2026-11-04_0256_LSPV-1_BOUNDED_OBSERVATION_BIT_NORMALIZATION386.md (blob 82f85a2d66841929970b261a360156be0306ac90).
 Producer: experiments/arc/lspv1_386_observed_port_normalize.py (blob 9553b4224babc182ff99063bf8411a09cf106815).
 Independent verifier: experiments/arc/lspv1_386_independent_verify.js (blob 5244542747ced6ef1942e338f9f62287f35c1375).
 Raw results: results/raw/arc/2026-11-04_0256_LSPV1_BOUNDED_OBSERVATION386.json (blob c87383913cf56b822641cb0e2844580dc96c5f0f).
