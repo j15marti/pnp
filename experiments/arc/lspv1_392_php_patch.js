@@ -17,12 +17,13 @@ function recognized(s) {
 function parse(s){
   if(typeof s!=="string"||!s.endsWith("\n")) return null;
   const lines=s.slice(0,-1).split("\n");
-  const a=/^p cnf ([1-9][0-9]*) ([1-9][0-9]*)$/.exec(lines[0]);
+  const a=/^p cnf (0|[1-9][0-9]*) (0|[1-9][0-9]*)$/.exec(lines[0]);
   if(!a) return null;
   const v=Number(a[1]),m=Number(a[2]);
   if(!Number.isSafeInteger(v)||!Number.isSafeInteger(m)||v>20||m!==lines.length-1) return null;
   const cls=[];
   for(const line of lines.slice(1)){
+    if(line==="0"){cls.push([]);continue;}
     if(!/^-?[1-9][0-9]*( -?[1-9][0-9]*)* 0$/.test(line)) return null;
     const c=line.split(" ").slice(0,-1).map(Number);
     if(c.some(x=>Math.abs(x)>v)) return null;
@@ -58,12 +59,16 @@ function produce(){
   }
   const bad=["","p cnf 1 1\n1\n","p cnf 1 1\n2 0\n",
     "p cnf 1 1\n1 0\n1 0\n","p cnf 1 1\n-1 0\nx\n",
-    "p cnf 0 1\n1 0\n","p cnf 1 1\n0\n","p cnf 1 1\n1 0"];
+    "p cnf 0 1\n1 0\n","p cnf 1 1\n0 0\n","p cnf 1 1\n1 0"];
   for(const x of bad){if(patch(x)!=="MALFORMED"||recognized(x))throw Error("malformed");
     checks+=2;}
   const neg="p cnf 1 2\n1 0\n-1 0\n";
   if(patch(neg)!=="UNSAT"||recognized(neg))throw Error("ordinary UNSAT");
   checks+=2;
+  for(const [x,want] of [["p cnf 0 0\n","SAT"],["p cnf 0 1\n0\n","UNSAT"],["p cnf 1 1\n0\n","UNSAT"]]){
+    if(patch(x)!==want)throw Error("empty/zero-clause control");
+    checks++;
+  }
   return {schema:"LSPV1-392-v1",model:"ordinary shared-DAG Resolution; logic tests, not time measurements",
     cases,lookalikes,malformed_rejections:bad.length,checks,seed:null};
 }
