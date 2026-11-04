@@ -1,0 +1,51 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{LSPV-2/381: Exact Guarded AND2-Extension Restriction}
+\author{PNP SAT-Circuit Reduction Builder}
+\date{November 3, 2026, 23:12 PST}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT within the stated signed-AND2 plus Resolution fragment, specialist referee pending. COMPUTATIONAL finite controls. Full Rmix341, B1, B2, B3, and P versus NP OPEN.}
+\paragraph{Known hard anchor and precise limitations.}
+For the standard unary pigeonhole CNF \(P_h=\mathrm{PHP}_{h+1}^h\) on \(h(h+1)\) variables, there are \(h+1\) occupancy clauses and \(h\binom{h+1}{2}\) collision clauses. Explicit signed ASCII DIMACS length is \(\Theta(h^3\log(h+2))\) bits. Haken (1985) gives \(\exists c>0,h_0\ \forall h\ge h_0\ \forall\pi\) unrestricted ordinary shared-DAG Resolution refutations of \(P_h\), \(|\pi|\ge 2^{ch}\) lines. Cook (1976) constructs polynomial Extended Resolution PHP proofs. No proof-system lower bound here is an unrestricted deterministic-SAT-time lower bound. Odd/even Tseitin with polynomial GF(2) elimination is the mandatory affine control.
+\paragraph{Fixed audited grammar.}
+Use a prechosen source-indexed fragment \(E_{\land2}\) of the unchanged project Rmix341: original signed CNF clauses cost zero; a paid acyclic conservative gate \(z\leftrightarrow(\ell_1\land\ell_2)\) costs one and exposes exactly the three CNF views \((\neg z\vee\ell_1),(\neg z\vee\ell_2),(z\vee\neg\ell_1\vee\neg\ell_2)\); binary signed strict Resolution costs one per distinct shared-DAG inference. Signed literals may use previous gates and the guard \(t\). No free semantic conversion, weakening, hidden validity oracle or other LOCAL-CONVERT is admitted.
+Let \(G_t(F)=\bigwedge_{C\in F}(\neg t\vee C)\), with fresh \(t\). Let \(D_E(F\vdash\bot)\) be minimum paid node cost; guarded \(D_E(G_t(F)\vdash\neg t)\) admits arbitrary guard-dependent gates.
+\begin{lemma}[Signed literal/constant substitution closure]
+For a substitution \(\sigma\) taking variables to constants or signed literals, a Resolution DAG concluding \(C\) maps to a Resolution DAG, with no more inference nodes, concluding a subclause of \(\sigma(C)\) when \(\sigma(C)\) is not tautological.
+\end{lemma}
+\begin{proof}
+Process original lines topologically. A source maps to its substituted clause, discarding tautologies. Suppose \(C=\mathrm{Res}_x(A\vee x,B\vee\neg x)\), and \(\sigma(C)\) is non-tautological. If \(\sigma(x)\) is a constant, one parent becomes true and the other subsumes the target. Otherwise \(\sigma(x)\) is signed literal \(u\). If an already-derived stronger parent lacks its required pivot \(u\) or \(\neg u\), it itself subsumes the target. If both have opposite pivots, one strict Resolution on \(u\) yields a subclause of the target. Any tautological parent can be discarded: its complementary pair must involve the pivot, as a complementary pair away from that pivot would also make the target tautological; then the other parent subsumes the target. A shared original inference creates at most one derived node. For the empty conclusion, its only subclause is empty.
+\end{proof}
+\begin{theorem}[Full guard-dependence permitted in the paid AND2 fragment]
+For every finite UNSAT signed CNF \(F\), including empty sources,
+\[
+\boxed{D_{E_{\land2}}(F\vdash\bot)
+=D_{E_{\land2}}(G_t(F)\vdash\neg t).}
+\]
+\end{theorem}
+\begin{proof}
+The forward inequality guards every clause with original-source ancestry by \(\neg t\), while leaving t-free conservative definition-only lines unchanged; every Resolution pivot is preserved, and the contradiction must have source ancestry. For the reverse inequality, take any guarded derivation, set \(t=1\), and process its acyclic signed-AND2 definitions in topological order. If the inputs reduce to constants, equal or complementary literals, or a literal with a constant, replace the gate output by its signed literal/constant value and drop the definition. All three corresponding definition-clause views become tautologies. Otherwise retain one paid AND2 gate on the simplified signed inputs; its three defining clauses are exactly the substituted views. The resulting global signed-literal/constant substitution maps every guarded source clause to its original source clause and maps the target \(\neg t\) to contradiction. The lemma transports the Resolution DAG without increasing paid inferences; gate count never increases. Hence the reverse inequality. The construction handles positive-t definition clauses that make naive guard erasure invalid.
+\end{proof}
+\paragraph{Falsifiers and limitations.}
+\begin{itemize}
+\item[] F1: \(z=t\land x\) blocks all guard transport. False in this fragment: restrict \(t=1\) to obtain \(z=x\), then normalize. LSPV-3/385's naive-erasure counterexample remains correct.
+\item[] F2: Shared nodes or signed-identification force duplication. False: each mapped RES step needs at most one step, and sharing is preserved or collapsed.
+\item[] F3: This transfers Haken to the mixed calculus. False: Cook's polynomial ER PHP proof defeats that interpretation.
+\item[] F4: Hard guarded entailment means hard SAT decision. False: every \(G_t(F)\) is SAT via \(t=0\).
+\end{itemize}
+\paragraph{Independent finite controls.}
+Two signed fixtures use guarded contradictory units, one paid \(z=t\land(\pm x)\) definition and three signed RES steps to \(\neg t\). Restriction yields one RES step from original opposite units. This is an upper witness, not a global four-node minimum. A deterministic Python producer exhaustively tested 1,296 two-variable local substitution cases (864 non-tautological results), and 2,304 two-gate signed AND templates (18,432 valuation checks). A separate Node.js verifier performed 23,618 checks, rejecting five deliberately corrupted records. Published code and raw data are separate from this proof. Exact global optimum claims stop at the proved fragment and do not extend to AND3, unrestricted GF(2), or LOCAL-CONVERT.
+\paragraph{Physical resources.}
+Paid logical node count is not scheduled machine time or peak space. Given explicit source length \(N\) and serialized proof length \(L\), a literal parser and topological gate simplifier can implement the restriction and proof rewriting in polynomial bit-time, for example \(O((N+L)^2)\) time and \(O(N+L)\) writable space, charging reads, source/index lookups, parent access, rewrites, checking and output. An exponentially long intermediate included in \(L\) remains expensive. Lazy/implicit encodings require a separate access/verification model. This result gives neither FLMV transfer nor an unrestricted SAT lower bound.
+\paragraph{Corpus, duplication and independent assessments.}
+Read November 2 12:04 coordination directive, issue \#3, AGENTS.md, CODEX.md, pnp-research skill, LSPV-2/380 (strict RES guarded isometry), LSPV-3/385 (t-free ER isometry and failed naive erasure), LSPV-1/382, LSPV-5/330. Current Grok report \texttt{GROKPROOF/2026-11-04\_0615\_PROGRESS.md}, blob 6603e613853e7cc358b9b0181f06b19fa26ec39c, lacks fully charged all-input contraction. Claude \texttt{research/agents/claude/2026-10-28\_1452\_CLAUDE\_TPORT-0002.tex}, blob 1f9fc727d3e2b009cba7afec2a93beb62959dd67, concerns restricted alternation-trading rules; ONETAPE-0001 concerns sequential models. Neither provides B3. No novelty claim is made for standard Resolution restriction closure; only the specific paid t-dependent DEF normalization extends the project's last exact guarded model.
+\paragraph{Bridges and next obligation.}
+For fixed complete Rmix341, \(\overline W_R(N)=\max_{F\in UNSAT,|F|\le N}W_R(F)\), and each fixed total correct uniform SAT decider A handling malformed strings, \(T_A^{wc}(N)=\max_{|x|\le N}T_A(x)\). B1: \(\forall A\exists p_A\forall F\in UNSAT:W_R(F)\le p_A(|F|+T_A(F))\). B2: \(\forall A\exists p_A\forall N:\overline W_R(N)\le p_A(N+T_A^{wc}(N))\). B3: \(SAT\in P\Rightarrow\overline W_R(N)=N^{O(1)}\) for that same fixed R. B1 implies B2 implies B3, all remain OPEN. Next audit actual AND3, GF(2), named-wire LOCAL-CONVERT rule-by-rule under \(t=1\); prove polynomial transport or find a legal minimal counterexample. No changes to schedules, identities or proof rules.
+\begin{thebibliography}{9}
+\bibitem{h} A. Haken, The Intractability of Resolution, Theor. Comput. Sci. 39 (1985), 297--308.
+\bibitem{c} S. A. Cook, A Short Proof of the Pigeon Hole Principle Using Extended Resolution, SIGACT News 8(4) (1976), 28--32.
+\bibitem{cr} S. A. Cook and R. A. Reckhow, The Relative Efficiency of Propositional Proof Systems, JSL 44 (1979), 36--50.
+\end{thebibliography}\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::GUARD_DEPENDENT_AND2_RESTRICTION381
