@@ -1,0 +1,88 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.93in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{LSPV-3/390: Guarded Bit-Pigeonhole Pivotality Forces Charged Reads in Arbitrary SAT Computations}
+\author{PNP Hypergraph \& Proof Certificates (LSPV-3)}
+\date{November 4, 2026, 02:24 PST}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT} in the stated explicit-bit query and randomized verifier models, external specialist review pending. \textbf{COMPUTATIONAL} independent finite sign-flip checks. The argument is a specialized classical sensitivity/coupling argument and not a novel general query-complexity theorem. B1/B2/B3 and P versus NP remain \textbf{OPEN}.
+\section*{Published theorem and fixed calculus firewall}
+For $n=2^\ell$ holes, the standard bit-PHP CNF $B_\ell$ has $M=n\binom{n+1}{2}$ clauses of width $2\ell$ over $(n+1)\ell$ variables. K. Braun, arXiv:2609.23015 (September 19, 2026), reports
+\[
+\forall\ell\ge32\ \forall\pi\in \mathrm{Res}(\oplus)\text{-DAGRef}(B_\ell):
+|\pi|>\exp(n/(32768\ell^2)).
+\]
+The model is unrestricted DAG-like Resolution over disjunctions of affine $\mathbb F_2$ equations, with semantic weakening and affine pivot, \emph{without} conservative Extended Resolution gates. The preprint reports Lean 4 formalization but independent specialist review of the mathematics remains pending. The signed original has $\Theta(n^3\ell^2)$ explicitly binary-indexed CNF bits. This restricted proof lower bound is not an arbitrary-machine SAT-time bound. The inherited $R_{\mathrm{mix341}}$ has zero-cost original sources and unit-cost, at-most-binary-premise RES, AND3, GF$(2)$ XOR, justified LOCAL-CONVERT, and conservative two-input DEF nodes; its payload grammar remains partly unresolved. Existing Cook-style charged DEF proofs give polynomial refutations on these PHP sources, and odd/even Tseitin has a native GF$(2)$ shortcut. No new hard formula is sought here.
+\section*{One fixed original source and explicit input encoding}
+For each $i<j$ among $n+1$ pigeons and each hole $a\in\{0,1\}^\ell$, let $C_{i,j,a}$ be the $2\ell$-literal disjunction saying that one of pigeons $i,j$ is different from $a$. Introduce fresh guard $t$ and put
+\[
+H_\ell=\{\neg t\vee C_{i,j,a}:i<j,\ a\in\{0,1\}^\ell\}\cup\{t\}.
+\]
+This formula is UNSAT; removing the unit $t$ makes it SAT with $t=0$. Prior LSPV-3/389 proves all its source literals pivotal and $M\le W_{R_{\mathrm{mix341}}}(H_\ell)\le n^{O(1)}$ under the paid DEF source compiler. We adopt that family unchanged.
+For physical bit observations only, define fixed self-delimiting CNF encoding $E$ with tag \texttt{1011}, Elias gamma integers $\gamma(V+1),\gamma(m+1)$ for declared variable count $V$ and clause count $m$, and for every $k$-literal clause $\gamma(k+1)$ followed by a polarity bit and a fixed-width $w=\lceil\log_2(V+1)\rceil$ variable ID for each literal. The parser rejects invalid tags, empty/truncated fields, out-of-range IDs, wrong clause count and trailing bits. This \emph{declared binary observation grammar} is not silently substituted for the repository's original DIMACS parser. On $H_\ell$, $V=(n+1)\ell+1$ and $m=M+1$.
+The number of independent literal-polarity bit positions is
+\[
+K_\ell=M(2\ell+1)+1.
+\]
+Its complete bit length is
+\[
+\begin{split}
+N_\ell={}&4+|\gamma(V+1)|+|\gamma(M+2)|\\
+&+M\left(|\gamma(2\ell+2)|+(2\ell+1)(1+w)\right)
++|\gamma(2)|+1+w.
+\end{split}
+\]
+Thus $K_\ell=\Theta(n^3\ell)$ and $N_\ell=\Theta(n^3\ell^2)$, hence $K_\ell=\Theta(N_\ell/\log N_\ell)$.
+\begin{lemma}[All source sign bits are pivotal]
+For every $\ell\ge1$, write $x_\ell=E(H_\ell)$. For each of the $K_\ell$ sign-bit coordinates $p$, the one-bit neighbor $x_\ell^{(p)}$ is a valid SAT CNF encoding of exactly the same length, whereas $x_\ell$ is UNSAT.
+\end{lemma}
+\begin{proof}
+For the collision clause $(i,j,a)$, assign pigeons $i,j$ to $a$, all other $n-1$ pigeons bijectively to the other $n-1$ holes, and $t=1$. Only the selected guarded clause is false, and every one of its $2\ell+1$ literals is false. Flipping any selected literal's sign makes the whole formula true under this same assignment. Flipping the final unit $t$ instead makes $\neg t$ an axiom; setting $t=0$ satisfies all guarded clauses and the new unit. The unmodified source is UNSAT since $n+1$ pigeons cannot inject into $n$ holes. Each polarity is one independent encoded bit, so length and grammatical validity are unchanged.
+\end{proof}
+\begin{theorem}[Universal bounded-error source acquisition]
+Let $A$ be any fixed total uniform adaptive randomized SAT/UNSAT/malformed classifier, with error probability at most $\epsilon<1/2$ on every binary input. All original input-dependent bit accesses, including preprocessing, lazy circuits, GF$(2)$ processing, conservative auxiliaries and shared DAG work, are charged. If one paid input probe reveals at most $b$ original bits, then for every $\ell$
+\[
+\mathbb E[\#\text{ distinct sign positions read by }A(x_\ell)]
+\ge (1-2\epsilon)K_\ell,\qquad
+\mathbb E[T_{\mathrm{probe}}(x_\ell)]\ge(1-2\epsilon)K_\ell/b.
+\]
+For deterministic exact classifiers, every sign bit must be read. In the bit-probe model this gives $\Omega(N_\ell/\log N_\ell)$ input reads on this explicitly encoded UNSAT family.
+\end{theorem}
+\begin{proof}
+Fix sign bit $p$ and couple runs on $x_\ell,x_\ell^{(p)}$ using the identical private random tape. Until $p$ is read, both executions see identical answers and take identical steps. Their outputs can differ only on the event $E_p$ that $p$ was queried. Their probabilities of output UNSAT differ by at least $1-2\epsilon$ because their correct labels are opposite, and by at most $\Pr(E_p)$. Thus $\Pr(E_p)\ge1-2\epsilon$. Sum the indicators of $E_p$ across all $K_\ell$ pivotal coordinates; one paid probe can expose at most $b$ coordinates. All adaptivity and intermediate representations are included in the coupled execution, but no hidden full-input hash or semantic answer oracle is licensed.
+\end{proof}
+\begin{theorem}[Same-certificate verifier extension]
+Let $V(x,\pi;r)$ be a sound randomized UNSAT-certificate verifier with soundness error at most $\epsilon$ on \emph{every SAT input and every claimed certificate}. For any fixed certificate $\pi_\ell$ that it accepts on $x_\ell$ with probability at least $1-\epsilon$, its verification execution on $(x_\ell,\pi_\ell)$ obeys the identical two lower bounds.
+\end{theorem}
+\begin{proof}
+For every SAT neighbor $x_\ell^{(p)}$, submit the \emph{same} $\pi_\ell$. Soundness forces acceptance probability at most $\epsilon$. Couple verifier randomness. The identical-input-bit argument then applies with the proof string fixed, irrespective of proof grammar, sharing or encoded length.
+\end{proof}
+\section*{Falsification and measured controls}
+\noindent\textbf{F1.} A compact GF$(2)$ or paid-DEF solver avoids reading a pivotal sign: false if it must remain correct on the SAT neighbor. \textbf{F2.} Random coins or a fixed alleged proof evade the bound: false under both-label bounded-error correctness/soundness. \textbf{F3.} The bound gives a superpolynomial SAT lower bound: false; there are only $N$ input bits, and a uniform recognizer of the family followed by exhaustive fallback is polynomial on this family but not necessarily on all inputs. Neither an input-read bound nor an exponential proof in a different calculus establishes B3.
+The dependency-free Python source producer tested $\ell=1,2,3$, obtaining respective $(M+1,N_\ell,K_\ell)$ values $(7,125,19)$, $(41,1230,201)$ and $(289,14151,2017)$. Every one of the 2237 sign flips was independently reconstructed and checked against an explicit satisfying assignment; Python passed 5172 assertion groups and rejected 21 malformed records. A separately implemented Node checker passed 4844 checks, including corrupted-witness rejection. The algebraic theorem does not depend on these finite experiments. No seed.
+Logical $W_R$, bit probes, proof bit length, proof discovery, full verification work and peak space are distinct costs. Expanded intermediate circuits can be exponential and must be charged if used; compact alternatives remain legal. The all-phase FLMV envelope remains $s'\le\max\{\rho,\eta,\lambda,\lambda s\}$, with $\rho$ including allocate-then-free phases. The read bound gives no writable-space lower bound.
+\section*{Corpus and novelty firewall}
+Read the November 2 refocus (commit 4e29ed7, blob 033b54b8), issue \#3, AGENTS.md, CODEX.md, pnp-research skill and original Rmix341/341. This run reuses LSPV-3/389 signed bit-PHP witnesses and explicitly credits LSPV-3/377 deterministic Tseitin source query, LSPV-4/347 randomized certificate sensitivity, LSPV-2/381 paid-DEF guard restriction and LSPV-1/385 payload-computability firewall. It is not a novelty claim for decision-tree sensitivity. Consulted real external reports \path{GROKPROOF/2026-11-04_1217_PROGRESS.md}, blob cae0560d, and \path{research/agents/claude/2026-10-28_1452_CLAUDE_TPORT-0002.tex}, blob 1f9fc727. They remain restricted FLMV/circuit-cut and alternation-trading analyses; neither supplies unrestricted SAT hardness or B3. Literature searched Braun 2026, Cook--Reckhow 1979, O'Donnell--Saks--Schramm--Servedio 2005; project searched pivotal-bit, randomized sensitivity and LOCAL-CONVERT grammar. The large root \texttt{main.tex} yielded zero text with a nonzero blob SHA; no unsafe overwrite was made and full-checkout preflight was unavailable. Report, executable, raw and coordination handoff are the explicit publication fallback.
+\section*{Bridges and next target}
+For unchanged fixed $R=R_{\mathrm{mix341}}$, $W_R(F)$ is minimum paid shared proof-DAG node cost, $\overline W_R(N)$ its maximum over valid UNSAT sources of bit length $\le N$ (empty maximum zero). For each fixed total correct uniform deterministic $A$, $T_A^{wc}(N)=\max_{|x|\le N}T_A(x)$. All three \textbf{OPEN} obligations are
+\[
+\begin{array}{ll}
+B1:&\forall A\ \exists p_A\ \forall F\in\mathrm{UNSAT}:
+W_R(F)\le p_A(|F|+T_A(F)),\\
+B2:&\forall A\ \exists p_A\ \forall N:
+\overline W_R(N)\le p_A(N+T_A^{wc}(N)),\\
+B3:&\mathrm{SAT}\in P\Longrightarrow\overline W_R(N)=N^{O(1)}
+\quad\text{for this SAME preselected }R.
+\end{array}
+\]
+The next proof obligation is to authenticate a genuinely legal nonlinear LOCAL-CONVERT record and test cost-reflecting guard cofactor restriction without adding free circuit-naming operations. P versus NP remains OPEN.
+\begin{thebibliography}{9}
+\bibitem{B} K. Braun, \emph{An exponential lower bound for the bit pigeonhole principle in resolution over parities}, arXiv:2609.23015 (2026).
+\bibitem{C} S. A. Cook, \emph{A Short Proof of the Pigeon Hole Principle Using Extended Resolution}, SIGACT News 8(4), 28--32 (1976).
+\bibitem{CR} S. A. Cook and R. A. Reckhow, \emph{The Relative Efficiency of Propositional Proof Systems}, J. Symbolic Logic 44, 36--50 (1979).
+\bibitem{ODSS} R. O'Donnell, M. Saks, O. Schramm and R. Servedio, \emph{Every decision tree has an influential variable}, FOCS (2005).
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-3::GUARDED_BPHP_RANDOMIZED_INPUT_READ390
