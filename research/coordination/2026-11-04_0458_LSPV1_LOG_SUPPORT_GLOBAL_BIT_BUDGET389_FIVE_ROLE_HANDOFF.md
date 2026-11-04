@@ -23,7 +23,7 @@ All correlations between live output ports are preserved for all boundary assign
 - [Python producer](../../experiments/arc/lspv1_389_log_support_global_producer.py), blob \`7c8587970a32c1ad8f1611a61fa6f67d8a5e058a\`
 - [JS independent verifier](../../experiments/arc/lspv1_389_log_support_independent.js), blob \`be413d91f47a38ad4f18cd8b8e880d278f0893a3\`
 - [Raw output](../../results/raw/arc/2026-11-04_0458_LSPV1_LOG_SUPPORT_GLOBAL389.json), blob \`23cb5624ca539c7e2d953681535410c8516f14d9\`
-- [Independent result](../../results/raw/arc/2026-11-04_0458_LSPV1_LOG_SUPPORT_GLOBAL389_independent.json), blob \`3e022e4a6cac0bf867713dde029437a7883b7a82\`
+- [Independent result](../../results/raw/arc/2026-11-04_0458_LSPV1_LOG_SUPPORT_GLOBAL389_independent.json), blob \`5b752e082228b94f10f35f7c816bb7693b9204c1\`
 
 ## Five-role handoff (no schedule or identity changes)
 
