@@ -37,4 +37,4 @@ for(const k of [0,3,4]){
 return {status:"PASS",tests,fixtures, theorem_scope:"Fixed Rmix341 mathematical proof; finite enumeration checks labels only",seed:null};}
 const result=main();
 
-/* Standalone: append console.log(JSON.stringify(main(),null,2)); to run with node. */
+if(typeof console!=='undefined'&&console.log) console.log(JSON.stringify(result,null,2));
