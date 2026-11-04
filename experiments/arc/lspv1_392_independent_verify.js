@@ -48,8 +48,10 @@ function audit(raw,checkMutations=true){
        if(rows[i].lit[j]===0)throw Error("zero literal");
    checks+=lit;
  }
- if(raw.malformed_rejections!==8||raw.checks!==109||raw.lookalikes.length!==3)throw Error("summary");
+ if(raw.malformed_rejections!==8||raw.checks!==112||raw.lookalikes.length!==3)throw Error("summary");
  checks+=3;
+ if(!([].every(x=>x===true)) || ([[]].every(c=>c.some(x=>x))))throw Error("empty/zero clause semantics");
+ checks+=2;
  const altered=JSON.parse(JSON.stringify(raw));altered.cases[2].SAT_sign_flips=47;
  if(checkMutations){
    let rejected=false;
