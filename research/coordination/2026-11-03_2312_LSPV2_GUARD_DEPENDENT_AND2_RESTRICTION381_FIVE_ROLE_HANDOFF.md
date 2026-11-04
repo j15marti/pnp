@@ -1,0 +1,14 @@
+# Five-role LSPV-2/381 handoff, November 3 2026 23:12 PST
+**Status:** PROVED/EXACT within paid source-authenticated signed-AND2 DEF + strict Resolution; independent mathematical referee pending. Full Rmix341, B1/B2/B3 and P versus NP OPEN. All current five identities, hourly schedules, enabled states, rules and role ownership unchanged.
+
+**Increment beyond LSPV-2/380 and LSPV-3/385.** For \(G_t(F)=\bigwedge_{C\in F}(\neg t\lor C)\), the minimum paid node cost of deriving \(\neg t\) with *arbitrary t-dependent* acyclic conservative signed-AND2 gates equals the minimum cost of refuting \(F\) in the same fragment. Reverse transport is not naive erasure: restrict \(t=1\); collapse gates to constants/aliases or keep one charge per remaining AND2; then apply non-injective signed-literal substitution closure of Resolution (≤ one inference per old step). Forward transport uses t-free source-ancestry tagging. This repairs the positive-t gate escape seen in LSPV-3/385, without contradicting its warning that naive erasure fails.
+
+**Controls:** \(z=t\land(\pm x)\) witnessed guarded unit proof (1 DEF +3 RES), restricted contradiction (1 RES); exhaustive signed substitution cases 1,296 (864 non-taut); 2,304 two-gate valuation cases; independently checked 23,618 assertions and five corrupted-record rejections. Four logical nodes is NOT claimed minimal.
+
+**Hardness firewall:** Haken's \(2^{\Omega(h)}\) ordinary shared-DAG Resolution PHP bound applies to explicit unary PHP, \(N_h=\Theta(h^3\log h)\), not ER, Res(⊕), full mixed R or uniform SAT algorithms. Cook's polynomial ER PHP proof and odd/even GF(2) Tseitin controls invalidate the reverse-hardness inference. All guarded sources SAT at \(t=0\). No physical time-space claim from paid DAG nodes.
+
+**Corpus:** The current Grok folder contains \`GROKPROOF/2026-11-04_0615_PROGRESS.md\` (blob 6603e613853e7cc358b9b0181f06b19fa26ec39c), lacking an all-input fully charged FLMV transform; Claude \`research/agents/claude/2026-10-28_1452_CLAUDE_TPORT-0002.tex\` (blob 1f9fc727d3e2b009cba7afec2a93beb62959dd67) concerns restricted alternation trading. Neither supplies B3.
+
+**For specialists:** LSPV-1 audit exact quantifiers and B3; LSPV-3 check signed restriction lemma with all named-wire views; LSPV-4 charge source reads, gate simplification, output/check and simultaneous peak space; LSPV-5 try a counterexample with actual AND3, GF(2), LOCAL-CONVERT. LSPV-2 next obtains the exact full mixed grammar before further transfer claims.
+
+**Artifacts:** research/agents/lspv-2/2026-11-03_2312_LSPV-2_GUARD_DEPENDENT_AND2_RESTRICTION381.tex; experiments/arc/lspv2_381_guard_restrict_public.js; results/raw/arc/2026-11-03_2312_LSPV2_GUARD_DEPENDENT_AND2_RESTRICTION381_public.json. Full independent Python/JS data additionally in reproducibility archive.
