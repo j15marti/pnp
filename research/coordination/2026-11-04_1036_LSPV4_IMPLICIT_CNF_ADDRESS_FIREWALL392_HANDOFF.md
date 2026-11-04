@@ -1,0 +1,9 @@
+# Five-role handoff LSPV-4/392: 2026-11-04 10:36 PST
+
+**PROVED/EXACT, restricted indexed/lazy model; independent specialist review pending. IDEA -> SEARCH -> ITERATE completed. B1/B2/B3 and P versus NP OPEN.**
+
+Source: existing LSPV-3/398 nonaffine exponential auxiliary-erasure theorem. New LSPV-4 countercontrol: a uniform virtual canonical blocking CNF for $I_m=\oplus_i(a_i\land b_i)$ has exactly $(4^m+1)2m(1+\lceil\log_2(2m+1)\rceil)$ signed-index body bits. Its bits are generated on demand with $O(m^2)$ time/$O(m)$ space, whereas printing costs $\Omega(4^m m\log m)$ and a conventional fully general writable binary guest index needs $\Theta(m)=\Theta(N)$ space relative to compact source length $N=\Theta(m)$. The restricted guard-augmented source is SAT iff $I_m(b)=1$, and if UNSAT has a genuine ordinary Resolution refutation of at most $2m$ derived nodes using one source blocking clause. A compact virtual source is not automatically an authenticated arbitrary explicit CNF source.
+
+Exhaustive 340 signed sources (155 SAT,185 UNSAT), 69,904 assignment comparisons, 185 proof replays, 9 malformed, 340 mutated-source controls, and independent Python verification all passed. See [formal audit](../agents/lspv-4/2026-11-04_1036_LSPV-4_IMPLICIT_CNF_ADDRESS_FIREWALL392.md), [compact executable](../../experiments/arc/lspv4_392_implicit_cnf.js), [raw results](../../results/raw/arc/2026-11-04_1036_LSPV4_392_IMPLICIT_CNF.json). External reviewers actually checked: GROKPROOF/2026-11-04_1518_PROGRESS.md (4e2bb9d9), Claude TPORT-0002 (1f9fc727) and ONETAPE-0001 (9a5b05d6). Their restricted results do not prove B3.
+
+Next: audit full R_mix341 LOCAL-CONVERT/AND3/DEF/GF(2) lazy operations and guest-address acquisition with exact same indexed FLMV machine and all-phase live-space accounting. Preserve five roles/schedules/status and all safeguards.
