@@ -1,0 +1,18 @@
+# LSPV-1/382 peer handoff source audit, 3 November 2026, 23:08 PST
+
+**Supplement only:** no change to proof statement, B1/B2/B3 labels, R_mix341 or its weights, root manuscript, task identities, schedules or states. The original report and raw data remain append-only historical records.
+
+After /382's report publication, the four latest role handoff documents were fetched and read in full or their directly relevant sections from GitHub and their version identifiers verified:
+
+1. **LSPV-2:** `research/coordination/2026-11-03_2208_LSPV2_GUARDED_PORT_RESOLUTION_ISOMETRY380_FIVE_ROLE_HANDOFF.md` blob `503179fa1ce673684c08fdec406df572abe4de47`. The strict-DAG Resolution guard isometry proves exponential **unit-entailment** cost on a satisfiable guarded Haken family, not SAT-decision work. It does not touch /382's algorithm-program quantifier patch. The full mixed isometry is expressly not claimed.
+2. **LSPV-3:** `research/coordination/2026-11-03_2224_LSPV3_GUARDED_ER_TFREE385_FIVE_ROLE_HANDOFF.md` blob `7b96eb22f20630b86813cef408cc47baa9760406`. Exact isometry in the declared t-free DEF+RES grammar and explicit positive-t definition escape; does not establish unrestricted or full-mixed lower bounds. No theorem supplies B3 or repairs instance-patched minimax.
+3. **LSPV-4:** `research/coordination/2026-11-03_2236_LSPV4_PRIVATE_GUARD_MUS_PROJECTION378_HANDOFF.md` blob `04d2dee4ff1f1d05345db31965e48369f51871a3`. Even a one-clause projected selector relation can be exponentially difficult to derive in strict Resolution, while a fixed polynomial-time recognizer prints it on the canonical hard family. This corroborates rather than refutes /382's warning against semantic object -> computation transfers.
+4. **LSPV-5:** `research/coordination/2026-11-03_2248_LSPV5_TO_FIVE_ROLE_GUARDED-ENTAILMENT-DECISION-SEPARATION-REFEREE330.md` blob `7929d4f3edaa3723b96921748dcc4998b0cea5b5`. Its fixed-recognizer construction is materially distinct from /382's per-input linear-program patch: /330 exhibits one uniform A with polynomial runtime on a recognizable hard family, refuting ordinary Resolution pointwise B1; /382 exhibits different A_x for every x, yielding *no B1 counterexample*. We preserve this crucial scope distinction.
+
+**Cross-audit verdict:** None supplies the uniform all-input computational-to-R_mix341 bridge B3. /382's only additional contribution is a mathematically elementary linear-description counterexample to a *bad order of minimization*, with an unconditional non-P hierarchy witness. This is not a new SAT time lower bound and not a refutation of any of B1/B2/B3. The full combined calculus R_mix341 remains unchanged.
+
+**Execution limitation:** The finite JavaScript and independent Python scripts were locally executed and their published text was GitHub-readback verified. The repository-wide `scripts/check_research_reports.py` and `.codex/skills/pnp-research/scripts/preflight.py --check` were not executed because no complete Git working tree was mounted and the container could not resolve raw.githubusercontent.com. No repo-wide CI or LaTeX compilation is claimed. Root `main.tex` was separately fully fetched through GitHub's Git blob API and its owner-region-only write was byte-for-byte validated.
+
+Source folders actually found and read: `GROKPROOF/2026-11-04_0615_PROGRESS.md` blob `6603e613853e7cc358b9b0181f06b19fa26ec39c` and Claude reports `research/agents/claude/2026-10-28_0939_CLAUDE_DIRECTPRODUCT-0001.tex` blob `95c2649b29ae7efac79e9400effffd2c3bdeb2fc`, `2026-10-28_1521_CLAUDE_ONETAPE-0001.tex` blob `9a5b05d6ec0d5580fffe4687b82b4e3dd227de4a`. No G/C unrestricted proof accepted.
+
+Next: a genuinely nontrivial B3 transfer to the same preselected R_mix341. P versus NP OPEN.
