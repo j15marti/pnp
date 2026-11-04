@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+"use strict";
+const fs=require("fs"),data=JSON.parse(fs.readFileSync("results/raw/arc/lspv5_342/source_bit_materialization_referee342.json","utf8"));let checks=0;
+function ok(x,m){if(!x)throw new Error(m);checks++;} function key(c){return [...new Set(c)].sort((a,b)=>Math.abs(a)-Math.abs(b)||a-b).join(",");}
+function res(a,b,p){const A=new Set(a),B=new Set(b);let x,y;if(A.has(p)&&B.has(-p)){x=p;y=-p;}else if(A.has(-p)&&B.has(p)){x=-p;y=p;}else throw new Error("pivot");A.delete(x);B.delete(y);const c=[...A,...B],S=new Set(c);if(c.some(z=>S.has(-z)))throw new Error("taut");return [...S].sort((a,b)=>Math.abs(a)-Math.abs(b)||a-b);}
+function slots(g){const [a,b]=g.inputs,o=g.out;if(g.op==="AND")return [[-o,a],[-o,b],[o,-a,-b]];if(g.op==="OR")return [[-a,o],[-b,o],[a,b,-o]];throw new Error("op");}
+for(const rec of data.mux_records){const env=new Map([["C0",[-99]]]);for(const g of rec.defs){const s=slots(g);ok(g.slots.length===3,"slots");g.slots.forEach((v,i)=>{ok(key(v.clause)===key(s[i]),"facet");env.set(v.id,v.clause);});}for(const r of rec.res){ok(env.has(r.left)&&env.has(r.right),"parents");ok(key(res(env.get(r.left),env.get(r.right),r.pivot))===key(r.clause),"res");env.set(r.id,r.clause);}const [rp,rn]=rec.alias_refs;ok(key(env.get(rp))===key([-rec.selected,rec.q]),"positive alias");ok(key(env.get(rn))===key([rec.selected,-rec.q]),"negative alias");ok(rec.paid===8,"paid");}
+ok(data.constant_bank_records===511,"bank count");ok(data.mux_paid_excluding_authenticated_false_unit===8,"mux formula");ok(data.unsat_control.label==="UNSAT"&&data.sat_control.label==="SAT","labels");ok(data.malformed_rejected===5,"malformed");console.log(JSON.stringify({checks,status:"PASS"}));
