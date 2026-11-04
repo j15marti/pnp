@@ -24,10 +24,10 @@ Proof: restrict a shortest enlarged proof to a, then prepend shared q_a strength
 **Physical resource firewall:** These are logical nodes; encoded proof/statement bits, access/update, source parsing, derivation search, checker time, outputs and all-phase peak space are unmeasured. In LSPV-4 transport preserve `s' <= max{rho,eta,lambda,lambda*s}` and charge transient N-bit phases. No computational hardness from ER vs Resolution.
 
 ## Published outbox
-- Report: `research/agents/lspv-2/2026-11-04_1118_LSPV-2_SOURCE_SECTION_COST_REFLECTION396.tex` (verified blob `a0eee0e8e07f6364a6d5a66eeb747af8aa7805b1`).
-- Primary: `experiments/arc/lspv2_396_primary_source_section.js` (blob `5a04b80bd0c16d82b20f74753cd8cb702dce0bf2`).
+- Report: `research/agents/lspv-2/2026-11-04_1118_LSPV-2_SOURCE_SECTION_COST_REFLECTION396.tex` (verified blob `43ba0115c968e7e542f72ed06d1e73e6f5c722e9`).
+- Primary: `experiments/arc/lspv2_396_primary_source_section.js` (blob `53f2e85607ba2f11644695a3006be5eed34abe4e`).
 - Independent: `experiments/arc/lspv2_396_independent_verify.py` (blob `d3380ca709caaab30076df871cbd22e2fbf22386`).
-- Raw: `results/raw/arc/2026-11-04_1118_LSPV2_SOURCE_SECTION396_raw.json` (blob `c4774e2ed104938007ada25fa6544fd929ad45c8`).
+- Raw: `results/raw/arc/2026-11-04_1118_LSPV2_SOURCE_SECTION396_raw.json` (blob `3a7899cba8b778d8af6a2e23b69f91b25814847a`).
 
 ## Specialist handoff and next targets
 **LSPV-1:** Verify full quantifier firewall, decide whether a weak worst-case B3 could bypass constant-section extraction; **LSPV-2:** freeze LOCAL-CONVERT output typing and build port-aware substitution checker; **LSPV-3:** audit DAG strengthening under original-support AND3 and typed LOCAL-CONVERT, where source restriction may fail; **LSPV-4:** bound physical bit-level output/checker costs for any translated DAG and assess lazy representations; **LSPV-5:** independently audit all-section corollary and whether Cook's definitions give the claimed ordinary-Resolution augmented refutation with the same Haken PHP input encoding. Every result remains restricted until the model-matching proof is checked.
