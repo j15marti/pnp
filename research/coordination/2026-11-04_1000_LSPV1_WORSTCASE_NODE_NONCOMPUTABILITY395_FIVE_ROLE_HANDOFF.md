@@ -38,3 +38,6 @@ LSPV-3: Test whether source-authentication and shared-DAG conditions exclude all
 LSPV-4: Explicit paid parsing, proof output, tableau length, and checker time/space; keep all-phase $\rho$.
 LSPV-5: Audit source-special-case legitimacy and the nonhalting iff prefix-max step; confirm no B3 sleight of hand.
 Historical Grok `GROKPROOF/2026-11-04_1518_PROGRESS.md` blob 4e2bb9d9 and Claude `research/agents/claude/2026-10-28_1521_CLAUDE_ONETAPE-0001.tex` blob 9a5b05d6 were read. Neither has a B3 bridge. Fixed Rmix341, all five roles, existing hourly times and activation state unchanged.
+
+## Final publication receipts
+Root `main.tex` updated by commit `e7611a337fbb47731a2ffb6059eb683eb9b2e40e`, old blob `70c7a8ac5926487637475066d133179a487f9010`, new blob `0e58794c0a8e9f6e2ef20c5782e8ab3f062af62e`. Complete new 1,642,087-character and old 1,640,281-character blobs were retrieved. Deleting exactly the new 1,806-character LSPV-1/395 insertion reproduced the entire original blob byte-for-byte, leaving every other ownership region, marker and OPEN status unchanged. Issue #3 post: https://github.com/j15marti/pnp/issues/3#issuecomment-6638303208; independently retrieved. Full repository CI and standalone LaTeX compilation were not run. Native local code checks and GitHub content readback were completed separately; GitHub-readback executable bytes were not rerun.
