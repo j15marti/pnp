@@ -1,0 +1,69 @@
+% LSPV3 REPORT::394::2026-11-04_0624PST
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{LSPV-3/394: Reversible Semantic Recodings Do Not Preserve Resolution Proof Cost}
+\author{PNP Hypergraph and Proof Certificates}
+\date{November 4, 2026, 06:24 PST}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT in the stated uniform CNF coding and ordinary Resolution models; independent computational checks, external mathematical referee pending.} Not a legal inference rule in the fixed \(R_{\mathrm{mix341}}\). P versus NP OPEN.
+
+\section*{Established starting bound and exact model}
+For \(h\ge1\), let \(P_h\) be the standard unary pigeonhole CNF with \(h+1\) pigeons, \(h\) holes and variables \(x_{ij}\), positive clauses \(\bigvee_{j=1}^h x_{ij}\), and binary collision clauses \(\neg x_{ij}\vee\neg x_{kj}\) for \(i<k\). It has \(h(h+1)\) variables, \(m=(h+1)+h\binom{h+1}{2}\) source clauses, and \(\Theta(h^3\log(h+2))\) encoded bits in decimal-indexed signed DIMACS. It is UNSAT. Haken (1985) establishes constants \(c>0,h_0\) such that \emph{for every} \(h\ge h_0\), \emph{every ordinary unrestricted shared-DAG Resolution refutation} of \(P_h\) requires at least \(2^{ch}\) lines. Subtracting \(O(h^3)\) original clauses leaves \(2^{\Omega(h)}\) paid derived nodes. The lower bound does NOT concern Extended Resolution, \(R_{\mathrm{mix341}}\), Res(\(\oplus\)) or arbitrary uniform SAT algorithms. Cook (1976) gives polynomial Extended Resolution PHP proofs.
+
+Fix \(R_{\mathrm{res}}\) with original signed clauses free, one paid node per ordinary binary resolvent, and arbitrary shared-DAG proofs. A source empty clause gives a zero-paid-node refutation. Let \(W_{\mathrm{res}}(F)\) be the minimum number of paid nodes, attained by completeness and integer costs.
+
+\section*{Theorem: polynomial-time invertible semantic collapse}
+\begin{theorem}
+There exist two fixed, uniform deterministic polynomial-bit-time programs \(E,D\), independent of instance size, such that for every raw finite byte string \(s\): \(E(s)\) is valid explicit signed DIMACS, \(D(E(s))=s\), and \(|E(s)|=O((|s|+1)\log(|s|+2))\). For every \emph{valid} original CNF \(F\), the projection of the models of \(E(F)\) onto the renamed even-index original variables is exactly the model set of \(F\). Nevertheless, for all sufficiently large \(h\),
+\[
+W_{\mathrm{res}}(P_h)\ge2^{c'h},\qquad W_{\mathrm{res}}(E(P_h))=0 .
+\]
+The polynomial-time recoder \(E\) is NOT a legal \(R_{\mathrm{mix341}}\) inference or a checked Resolution proof translation.
+\end{theorem}
+\begin{proof}
+Choose a canonical signed DIMACS byte serialization of the standard PHP clauses with IDs \(x_{ij}=(i-1)h+j\), positive rows first and negative collision clauses in lexicographic order. A uniform parser recognizes these strings in polynomial time by recovering a possible \(h\) from the quadratic header variable count and comparing the exact reconstructed byte sequence. Every recognized string is UNSAT by the elementary pigeonhole argument. Recognition uses neither a SAT oracle nor per-size advice.
+
+Let \(N=8|s|\) be the number of raw input bits. For each \(0\le i<N\) and duplicate index \(r\in\{0,1\}\), set \(j=2i+r\), \(z_j=4j+1\) and \(a_j=4j+3\); insert the \emph{tautological genuine signed CNF clause}
+\[
+z_j\vee\neg z_j\vee \ell_{i,r},\qquad
+\ell_{i,r}=\begin{cases}a_j,&\text{bit }i=1,\\\neg a_j,&\text{bit }i=0.\end{cases}
+\]
+The two copies encode each raw bit redundantly. All tag IDs are odd. If \(s\) parses as a valid CNF and is not a recognized canonical PHP, emit all its original clauses under \(x_i\mapsto y_{2i}\), followed by all tags. If \(s\) is recognized canonical PHP, emit a single \emph{empty source clause} followed by the tags. If \(s\) is malformed, emit tags only. Correct DIMACS headers, variable bounds and clause counts are generated in all cases.
+
+To decode, find the uniquely indexed \(z_j,\neg z_j,\pm a_j\) tags, read the sign of \(a_j\), check duplicated pairs agree, and reconstruct the original bytes in 8-bit groups. The original non-tag clauses use only even variable IDs, so cannot be confused with the odd-index tags. This yields \(D(E(s))=s\) even for malformed raw bytes. Each tag is a tautology; for a valid non-PHP source, its model projection remains the original formula on even variables. For the recognized PHP sources, both old and new formulas have empty model sets, so projection equivalence holds as well.
+
+There are \(2N\) constant-width tags whose maximum indices are \(O(N)\); their explicit serialization uses \(O((N+1)\log(N+2))\) bits. Doubling the original variable indices increases decimal width by at most one. The uniform encoder, recognizer and inverse use polynomial bit time and workspace. A recognized PHP output contains an input empty clause, hence \(W_{\mathrm{res}}(E(P_h))=0\), while Haken lower-bounds the ordinary Resolution cost of the untransformed original \(P_h\).
+\end{proof}
+
+\begin{lemma}[Representation-invariance firewall]
+For any \(I\ge0\) on CNFs and fixed polynomial \(p\), if \(I(F)=I(E(F))\) for every valid \(F\) and \(I(F)\le p(W_{\mathrm{res}}(F))\), then \(I(P_h)\le p(0)\) for all \(h\).
+\end{lemma}
+\begin{proof} Substitute \(E(P_h)\), whose source empty clause yields \(W_{\mathrm{res}}=0\).\end{proof}
+
+\section*{Falsifiers and cost firewall}
+\begin{enumerate}
+\item[] F1. Lossless polynomial-time inversion preserves minimum Resolution proof complexity: \textbf{FALSIFIED} under unrestricted projection-equivalent recoding.
+\item[] F2. Retaining original signed source bytes forces their logical use as proof premises: \textbf{FALSIFIED}; source data are recoverable from tautologies but are not active proof premises.
+\item[] F3. The recoding refutes B3 or produces a short legal mixed proof of original PHP: \textbf{NOT ESTABLISHED}; it changes the initial source theory and is not an allowed local \(R_{\mathrm{mix341}}\) conversion.
+\item[] F4. The construction uses nonuniform hardcoded answers: \textbf{FALSE}; the same polynomial-time syntactic recognizer handles all sizes and all inputs.
+\end{enumerate}
+The \(W=0\) statement counts only paid inference DAG nodes. The actual encoder reads source bits, parses, recognizes PHP, constructs and writes \(\Theta(N\log N)\) possible output bits, and incurs nonzero time and all-phase peak space if materialized. Checking the input-to-output equivalence is an additional task; it is NOT automatically a locally authenticated proof of contradiction. Lazy representations, proof verification, bit access, temporary allocation and output must be separately charged. This is not a machine-time lower bound.
+
+\section*{Reproducibility and independent assessments}
+A deterministic Python producer and independently written Node verifier tested all \(256\) subsets of eight two-variable signed clauses, canonical \(P_1,P_2,P_3\), and nine malformed/edge strings. Both passed \(268\) cases, including \(260\) syntactically valid inputs, eight invalid inputs, four recognized PHP records (the enumerated \(P_1\) is duplicated), and \(267\) corrupted duplicate-tag rejections. They checked full byte roundtrip, tag tautologies, original even-variable clauses and both SAT/UNSAT source controls. This is a finite coding check, not an independent Haken proof or proof-length optimum search.
+
+The starting governance is the November 2 12:04 worst-case-minimum five-role refocus; original fixed calculus is LSPV-2/341 (blob c87acd11), which charges RES/AND3/XOR/LOCAL-CONVERT/DEF and does not license this unbounded semantic encoding jump. Related LSPV-3/391 and /393 compare interface/provenance controls but do not supply this invertible exponential-hard-family recoder. LSPV-5/335 distinguishes compact output from physical input validation. Actual Grok report \path{GROKPROOF/2026-11-04_1322_PROGRESS.md}, blob 0850246c, still leaves its universal charged FLMV transfer OPEN. Actual Claude report \path{research/agents/claude/2026-10-28_1452_CLAUDE_TPORT-0002.tex}, blob 1f9fc727, concerns restricted alternation trading, not B3. Claude-0266 at blob 694c1c81 already warns against spectral noninvariance. Previous project's fast PHP recognizer with fallback already countercontrols B1 for ordinary Resolution, but not this precise reversible CNF recoding.
+
+Role report: \path{research/agents/lspv-3/2026-11-04_0624_LSPV-3_LOSSLESS_SEMANTIC_RECODING_FIREWALL394.tex}. Reproducible implementations: \path{experiments/arc/lspv3_394_lossless_php_encoding.py}, \path{experiments/arc/lspv3_394_independent_verify.js}, raw \path{results/raw/arc/2026-11-04_0624_LSPV3_LOSSLESS_SEMANTIC_RECODING394_raw.json}, and five-role handoff \path{research/coordination/2026-11-04_0624_LSPV3_LOSSLESS_SEMANTIC_RECODING394_FIVE_ROLE_HANDOFF.md}. Local LaTeX compiled and Python/Node passed. Root \path{main.tex} gave blob 1dc979b9 but ZERO content; no unsafe ownership-region replacement was made. Full checkout/preflight unavailable due to DNS.
+
+The weakest sufficient B3 bridge for the SAME preselected \(R_{\mathrm{mix341}}\), its superpolynomial \(\overline W_R\) lower bound, and B1/B2 remain OPEN. Next: establish a charged, locally verifiable source-preserving transformation for \emph{actual} LOCAL-CONVERT grammar or exhibit a genuinely legal mixed-rule counterexample. P versus NP OPEN.
+\begin{thebibliography}{9}
+\bibitem{Haken} A. Haken, The Intractability of Resolution, \emph{TCS} 39 (1985), 297--308.
+\bibitem{Cook} S. A. Cook, A Short Proof of the Pigeon Hole Principle Using Extended Resolution, \emph{SIGACT News} 8(4) (1976), 28--32.
+\bibitem{CookReckhow} S. A. Cook and R. A. Reckhow, The Relative Efficiency of Propositional Proof Systems, \emph{JSL} 44 (1979), 36--50.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV3::394
