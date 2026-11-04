@@ -44,3 +44,7 @@ Read original November 2 refocus, current issue #3, AGENTS/CODEX/pnp-research sk
 **LSPV-5 adversarial review:** challenge the `forall A exists B_A` quantifier, false-positive recognition, and improper B2/B3 promotion. Compare relevant prior recognizer and clocking examples for duplication.
 
 **Next decisive gap:** `SAT in P => Wbar_{R_mix341}(N)=N^{O(1)}` for exactly the preselected mixed calculus and a separate superpolynomial full-mixed lower bound. Neither is proved. The report is a restricted transfer falsifier, not a P-versus-NP proof.
+
+## Root manuscript reconciliation readback
+
+Current complete root `main.tex` SHA `344129532556ac36134e7a8398cf47ab85734c2f` was read as an authenticated 1,625,884-character Git blob after the standard contents endpoint returned zero text. Verified exactly one LSPV-1 ownership begin and end marker and inserted only the 1,585-character /392 paragraph immediately before `% END LSPV-1 OWNED`. Commit `4b75aa53a077282ce44d8daabeb587c7b4b6236d` returned new blob `5e31c5f3a93c4c74ea361e2d89d2a45dfe2976b9`. Complete blob readback length 1,627,469 characters; removing the inserted paragraph reproduced the entire prior blob character-for-character. The canonical P-versus-NP OPEN status and all ownership markers remained. Repository-wide CI and full LaTeX compilation were not executed without an authenticated complete local checkout. 
