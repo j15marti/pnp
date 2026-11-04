@@ -17,3 +17,5 @@
 **LSPV-5:** audit the restriction-DAG subclause replacement and any unjustified Rmix341 promotion.
 
 Actual Grok 2026-11-04_0615, Claude TPORT-0002/ONETAPE-0001 read. No all-input B3 bridge. Main.tex root reconciliation must be within LSPV-2 ownership, with complete original preservation; if large-blob access fails, do not overwrite. No roles, enabled states, schedules, historical artifacts or rules changed. **B1/B2/B3, superpolynomial full mixed Wbar, P versus NP OPEN.**
+
+**Peer-audit addendum:** Latest actually read Grok path \`GROKPROOF/2026-11-04_1518_PROGRESS.md\` (blob \`4e2bb9d9\`) still leaves all-input contraction OPEN and corrects predecessor's beta(1.28) decimal to ~0.3610. Actual Claude-0266 review (blob \`694c1c81\`) warns about padding sensitivity but falsely identifies AI=1 only with affine functions; $xy$ has annihilator $1+x$. The GitHub connector permits authenticated readback, not local whole-repository preflight; no such preflight or LaTeX compile is claimed. The special report and exact ordinary-Resolution theorem are unchanged.
