@@ -40,3 +40,8 @@ Read first approved five-role refocus commit 4e29ed7, blob 033b54b; current issu
 **Root main.tex:** update only within unique LSPV-3 owner region after fresh COMPLETE-blob fetch and SHA-guard; if large-file fetch returns partial/empty, leave root unchanged and record fallback. No lost outside edits are permitted.
 
 **Open:** B1, B2, B3, superpolynomial Wbar_Rmix341 and P versus NP. Proof-discovery, node count, serialized evidence, checking work, original bit observations and machine peak space remain separate resources.
+
+
+## Verified main.tex reconciliation and reproducibility archive
+
+After publication, full root main.tex was recovered via authenticated Git blob (not empty line-range content), updated only immediately before the unique LSPV-3 OWNED terminator, and fetched back in full. Old blob `a003c61e10476052dc1f15a62b9888762692c393` (1,505,657 chars); new blob `eb30ee559cd5272eb2b2057a6d05ceec2c1e1591` (1,507,558 chars); root commit `992cf2b5edf516ca6ed880b00ae6cc35a636435c`. Removing the single new LSPV-3 377 insertion from the complete updated blob reproduced the old file exactly, byte-for-byte. The current root SHA matched this new blob on readback. No outside content was changed. The locally executed full-code ZIP is `lspv3_377_signed_input_query_repro.zip` (211,521 bytes; SHA-256 `64a46f0d07b86e8771163ee4facbfaaa2f09130ab1057668e5ad89e91565a86e`). Full independent JS replay passed 2,152 checks after the producer's negative-witness test was hardened and rerun.
