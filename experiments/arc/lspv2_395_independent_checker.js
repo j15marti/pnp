@@ -2,7 +2,7 @@
 // LSPV2/395 independent, from-scratch truth-table checker. No imports from producer.
 const fs=require("fs");
 function must(x,t){if(!x)throw Error(t);}
-function lit(l,m){let v=((m>>(Math.abs(l)-1))&1)===1;return l>0?v:!v;}
+function lit(l,m){let v=(Math.floor(m/2**(Math.abs(l)-1))%2)===1;return l>0?v:!v;}
 function evalCNF(F,m){return F.every(C=>C.some(l=>lit(l,m)));}
 function buildIndependent(F,k){let n=Math.max(...F.flat().map(Math.abs));let v=n;let grid=[];for(let q=0;q<k*k;q++)grid.push(++v);
 let bank=grid.map(x=>[-x]);let edges=0;
