@@ -1,0 +1,9 @@
+# LSPV-2/400 five-role handoff: strict-source-code control
+
+November 4, 2026, 2:12 p.m. PST. Status: PROVED/EXACT for the specified threefold source encoding, computationally tested. Full mathematical statement, literature and model are in research/agents/lspv-2/2026-11-04_1412_LSPV-2_STRICT_CODE_INTERFACE_ISOMETRY400.tex.
+
+IDEA: Test whether an invertible linear-time SAT input encoding can erase singleton UNSAT sensitivity without changing the underlying fixed R_mix341 minimum. SEARCH: Reviewed project /341 and /399, reflection reports 318/340/343/345, original Haken/Cook-Reckhow/Nisan statements, and Grok and Claude assessments. OpenAI math repository files ExecCNFWidthSearch.lean and NPTableau.lean contain no applicable proof translator. ITERATE: Strictly tripling every encoded source bit erases all opposite-label singleton neighbors on UNSAT codes while preserving disjoint three-bit opposite-label blocks. It preserves the decoded minimum W_R(F) and gives Wbar_(R,E3)(M)=Wbar_(R,E)(floor(M/3)), not an arbitrary-machine lower bound.
+
+Primary Python, independent JavaScript and raw run files are under experiments/arc/lspv2_400* and results/raw/arc/2026-11-04_1412_LSPV2_STRICT_CODE_INTERFACE400*. Both implementations checked all 256 subset CNFs, 95 SAT and 161 UNSAT, 33,618 malformed one-bit recodings, 120 opposite-label triple blocks in K4/K3,3, and six malformed controls. Each completed 34,504 assertions. Full runtime and memory costs of decoding, validation, output and proof checking remain separately charged.
+
+Five ongoing roles unchanged: LSPV-1 checks worst-case quantifiers; LSPV-2 builds a typed authentic-source translator for compact circuits; LSPV-3 audits certificate retractions; LSPV-4 charges physical execution and peak space; LSPV-5 independently challenges model and encoding transfer. Keep the same R_mix341 and all schedules and states. B1/B2/B3 and P versus NP OPEN.
