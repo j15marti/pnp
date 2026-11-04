@@ -1,0 +1,78 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{LSPV-2/385: Guarded Tseitin Ancestry Trimming and a Linear Mixed-Calulus Envelope}
+\author{PNP SAT-Circuit Reduction Builder, LSPV-2}
+\date{November 4, 2026, 02:12 PST}
+\begin{document}\maketitle
+\noindent\textbf{Status:} PROVED/EXACT for the all-graph elementary $R_{\mathrm{mix341}}$ bounds and proof-DAG pruning; COMPUTATIONAL for the four independently verified strict-Resolution refutations. No claimed global optimum for the guarded formulas, no general polynomial pure-Resolution construction, and no arbitrary-algorithm lower bound. B1, B2, B3 and P versus NP remain OPEN.
+
+\paragraph{Preselected calculus and established theorem.}
+Use exactly the unchanged $R_{\mathrm{mix341}}$ as defined in the original LSPV-2/341 source at Git blob \texttt{c87acd11d32ccfc3b7acd3667ef11daeb60079cb}: paid binary RES, paid two-parent AND3 on support of at most three original variables, paid binary GF(2) sum, constant-support verified LOCAL-CONVERT, and conservative paid signed two-input DEF. Original source clauses are authenticated free leaves. All paid inference nodes have at most two premises and cost one; shared nodes count once. Its strict Resolution subsystem has no added gate or semantic rules.
+
+Urquhart (1987) proves an exponential lower bound for every unrestricted DAG ordinary-Resolution refutation of a suitable infinite odd-charge bounded-degree expander-Tseitin CNF family. There are $c>0,h_0$ such that for every $h\ge h_0$, all such ordinary-Resolution refutations have at least $2^{ch}$ lines. Cubic source clauses are four signed width-three clauses per vertex, with canonical explicit binary-index encoding $N_h=\Theta(h\log h)$. This theorem does not concern Extended Resolution, Res$(\oplus)$, $R_{\mathrm{mix341}}$, or arbitrary correct SAT algorithms. The same affine family is uniformly solvable by Gaussian elimination and has the existing exact $4h-1$ mixed-node optimum on original unguarded input (LSPV-2/341). Haken (1985) and Cook (1976) establish corresponding PHP resolution-versus-extension controls.
+
+\paragraph{All-graph theorem.}
+Let $G$ be connected, simple, bridgeless and cubic, with $h$ vertices and odd vertex-charge vector $\chi$. Let $F_{G,\chi}$ consist of the four forbidden-pattern three-clauses at each vertex, and let $t$ be fresh. Define
+\[
+H_{G,\chi,t}=t\wedge\bigwedge_{C\in F_{G,\chi}}(\neg t\lor C).
+\]
+\begin{theorem}
+For every such $G,\chi,t$,
+\[
+\boxed{4h\le W_{R_{\mathrm{mix341}}}(H_{G,\chi,t})\le8h-1.}
+\]
+All $4h+1$ source clauses are independently indispensable. The $8h-1$ bound has a uniform source-authenticated construction using only the fixed rules.
+\end{theorem}
+\begin{proof}
+Deletion of source unit $t$ permits $t=0$. Deletion of guarded source $(\neg t\lor C)$ permits $t=1$ and the previously proved satisfying deletion witness for $F_{G,\chi}\setminus\{C\}$ from LSPV-2/341. Thus every source is essential. Binary-premise ancestry connectivity of $m=4h+1$ source leaves and $q$ paid nodes gives $q\ge m-1=4h$.
+
+For the upper construction resolve $t$ against each of the $4h$ guarded source clauses, paying $4h$ RES nodes, and thereby obtain all unguarded original $C$. At each vertex conjoin the four recovered clauses using three existing two-premise AND3 inferences with exactly three original-edge-variable support, paying $3h$. The verified local factor is the corresponding GF(2) parity row. XOR-add the $h$ rows, paying $h-1$ nodes, and obtain $0=1$ because every edge occurs twice and the total vertex charge is odd. The total is $4h+3h+h-1=8h-1$. No new rule, free guard erasure, or high-support semantic conversion is used.
+\end{proof}
+
+\begin{lemma}[Backwards live-ancestor trimming]
+Given any valid finite source-labelled proof program, retain only the recursively reachable ancestors of its final contradiction and renumber parent IDs. Every retained inference keeps its parents and justification, and the resulting refutation has no more paid nodes than the original. Any conservative DEF whose view survives remains paid; definitions with no live view can be deleted.
+\end{lemma}
+\begin{proof}Induction over original topological line order preserves all remaining premise and inference checks. The last contradiction is retained by construction.\end{proof}
+
+\paragraph{Independent finite strict Resolution certificates.}
+An independent Python producer constructs each signed guarded source quartet and performs Davis--Putnam elimination on original edge variables only, retaining the ancestors of the final $(\neg t)$ and resolving with source unit $t$. A separately implemented Node.js verifier authenticated graph edges, charge, exact original signed source clauses and IDs, every RES pivot and both parent references, topological order, full source ancestry, exact output bytes, every original-clause deletion satisfiability witness, each single-literal sign flip, and odd/even plus $t=0$ SAT controls. The verifier passed 85,986 assertions and rejected 24 corruptions. No random seeds were used.
+\[
+\begin{array}{lrrrr}
+\toprule
+G & h & \#\text{sources} & \text{strict RES paid} & 8h-1\\
+\midrule
+K_4&4&17&32&31\\
+K_{3,3}&6&25&76&47\\
+\text{cube}&8&33&184&63\\
+\text{prism}_6&12&49&952&95\\
+\bottomrule
+\end{array}
+\]
+The independently checked full proof lengths in the original Python JSON serialization are 3475, 7057, 15335 and 78418 bytes respectively. The public independent JavaScript producer, using a distinct serialization, reports 3375, 6955, 15232 and 78312 bytes. These are different byte streams for equivalent valid proofs and are not claimed identical. The 32/76/184/952 counts are \emph{upper bounds}, not exact proof minima.
+
+\paragraph{Correction to predecessor LSPV-2/384.}
+The earlier 128-paid-node guarded $K_4$ proof remains a valid untrimmed witness, but 24 paid gate definitions and additional resolutions were not ancestors of the terminal contradiction. Backward slicing of the previously recorded proof leaves exactly 32 paid strict-Resolution inferences, 17 original source clauses, zero auxiliary gates and zero gate views. A fresh direct source-only producer independently obtains this same 32-node bound. Therefore 128 is not the live-ancestor cost of the refutation; the earlier proof did not establish that AND2 gates are needed on $K_4$. No global shortest-proof optimality was established either then or now.
+
+\paragraph{Hostile controls, physical costs and quantifiers.}
+The guard adds a fourth syntactic variable to each source clause, so a direct free AND3 extraction would be illegal. The all-graph upper construction \emph{pays} one RES step per guarded clause before the legal three-variable extraction. The strict-Resolution DP producer has potentially exponential intermediate clauses and no asserted polynomial growing-expander bound; with $n$ edge variables there are at most $3^n$ distinct surviving edge-pattern clauses with fixed $\neg t$, but a naive elimination pass can attempt $O(n9^n)$ pairs. Any materialization/access, failed search, canonicalization, output and peak storage must be charged. A conservative bit implementation of the mixed upper compiler uses polynomial $O(N^6)$ time and $O(N^3)$ all-phase writable space including source validation, row arithmetic, output and proof replay; this is not an FLMV low-space contraction. For canonical explicit inputs the mixed proof evidence length is $O(h^2\log h)$ bits, separate from its $8h-1$ paid logical node count.
+
+The shared worst-case target $\overline W_R(N)=\max_{F\text{ valid UNSAT},|F|\le N}W_R(F)$ is over all general CNF inputs; B1 quantifies $\forall A\exists p_A\forall F$, B2 quantifies $\forall A\exists p_A\forall N$ with all-string worst-case $T_A^{wc}(N)$, and B3 remains
+\[
+\mathrm{SAT}\in P\Longrightarrow \overline W_{R_{\mathrm{mix341}}}(N)=N^{O(1)}.
+\]
+This result neither proves a superpolynomial $\overline W_R$ bound nor any B-bridge. P versus NP remains OPEN.
+
+\paragraph{Audit and provenance.}
+Read the November 2 12:04 five-role refocus, issue \#3, AGENTS/CODEX/skill, original /341, /383 and /384, and peer LSPV-1/385, LSPV-3/389, LSPV-4/381 and LSPV-5/333. Reviewed actual Grok folder file \texttt{GROKPROOF/2026-11-04\_1217\_PROGRESS.md} (its circuit-cut claims do not establish the unrestricted bridge; numerical claims lack attached complete data) and Claude file \texttt{research/agents/claude/2026-10-28\_1452\_CLAUDE\_TPORT-0002.tex} (restricted alternation trading, not B3). Original literature and public DRAT checker repositories were searched. Public code and exact raw data are at \url{https://github.com/j15marti/pnp/tree/main/experiments/arc} and \url{https://github.com/j15marti/pnp/tree/main/results/raw/arc} under the LSPV-2/385 names. The full independently implemented local verifier and alternate-serialization proof files are included in the dated archive.
+
+Next: construct or falsify a uniform growing-graph AND2+RES-only compiler, and audit the exact circuit-valued LOCAL-CONVERT output grammar before any computational cost-reflection theorem. Five role identities, schedules, enabled states and rule system remain unchanged.
+\begin{thebibliography}{4}
+\bibitem{u} A.~Urquhart, Hard Examples for Resolution, J. ACM 34 (1987), 209--219.
+\bibitem{h} A.~Haken, The Intractability of Resolution, Theor. Comput. Sci. 39 (1985), 297--308.
+\bibitem{c} S.~Cook, A Short Proof of the Pigeon Hole Principle Using Extended Resolution, SIGACT News 8(4) (1976), 28--32.
+\bibitem{m} A.~de Colnet and S.~Mengel, Characterizing Tseitin Formulas with Short Regular Resolution Refutations, arXiv:2103.09609 (2021).
+\end{thebibliography}
+\end{document}
