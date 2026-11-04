@@ -1,5 +1,5 @@
 "use strict";
-(function(){
+const LSPV1_RESULTS = (function(){
 let checks=0;
 function ok(v,m){checks++;if(!v)throw Error(m||"assertion failed")}
 function rng(seed){let s=seed>>>0;return ()=>{s^=s<<13;s^=s>>>17;s^=s<<5;return s>>>0}}
@@ -13,3 +13,4 @@ let identities=0;for(let mask=0;mask<256;mask++){let truth=[];for(let a=0;a<8;a+
 const edges=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];function models(charge){let count=0;for(let e=0;e<64;e++){let yes=true;for(let v=0;v<4;v++){let p=0;for(let i=0;i<6;i++){const [u,w]=edges[i];if(u===v||w===v)p^=(e>>i)&1}if(p!==charge[v]){yes=false;break}}if(yes)count++}return count}ok(models([1,0,0,0])===0,"odd K4");ok(models([0,0,0,0])===8,"even K4");
 const invalid=[{op:"AND",a:1,b:0},{op:"NOT",a:-1},{op:"MULT",a:0,b:0},{op:"IN",a:8},{op:"CONST",bit:2}];for(const g of invalid){let bad=false;try{if(g.op==="AND"&&g.a>=1||g.op==="NOT"&&g.a<0||!["AND","NOT","IN","CONST"].includes(g.op)||g.op==="IN"&&g.a>2||g.op==="CONST"&&g.bit>1)throw Error("malformed circuit")}catch(e){bad=true}ok(bad,"reject malformed")}
 return {run_id:"LSPV1_MULTIWIRE_INTERFACE_QUOTIENT379",seed:"fixed deterministic xorshift32 seeds 379001-379003",proof_status:"COMPUTATIONAL for tests; symbolic theorem separate",producer_assertions:checks,mask_dnf_identities:identities,fixtures:runs,odd_even_K4_models:[0,8],malformed_rejections:invalid.length,corrupt_alias_control:true,bank_gate_upper_bound_for_b3:256*26,conclusion:"all extensional observed wire valuations and sampled suffix contexts matched"};})();
+if (typeof process !== "undefined") process.stdout.write(JSON.stringify(LSPV1_RESULTS,null,2)+"\\n");
