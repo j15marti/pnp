@@ -1,0 +1,112 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\title{LSPV-3/395: Hereditary Source Conservativity, Exact Core Transversals, and Hard-Subformula Noninheritance}
+\author{PNP Hypergraph and Proof Certificates}
+\date{November 4, 2026, 06:51 PST}
+\begin{document}
+\maketitle
+\noindent\textbf{Status: PROVED/EXACT for the elementary source-provenance and explicit augmentation lemmas under the fixed declared rules; COMPUTATIONAL for the finite tests. Independent specialist review pending. No general SAT-time lower bound, no B3, and no P versus NP separation.}
+
+\section*{Fixed source grammar, theorem quantifiers, and published hard anchor}
+The preselected $R_{\mathrm{mix341}}$ is the unchanged LSPV-2/341 system (Git blob \texttt{c87acd11d32ccfc3b7acd3667ef11daeb60079cb}): explicit DIMACS CNF, free individually labelled input clauses, paid one-unit binary Resolution, AND3 with combined support at most three original variables, binary GF(2) addition, unary checked constant-support LOCAL-CONVERT, and unit-paid conservative two-input gate DEF. Every charged DAG vertex has at most two parent vertices. All proof lines must be sound and all used original source labels are tracked through antecedent ancestry. The unresolved full typed semantics of LOCAL-CONVERT is \emph{not} silently enlarged.
+
+For $h$ holes, standard unary $\mathrm{PHP}_{h+1}^{h}$ has $(h+1)h$ original variables, $(h+1)$ positive pigeon row clauses of width $h$, and $h\binom{h+1}{2}$ pairwise negative collision clauses of width two. Thus $m_h=(h+1)+h\binom{h+1}{2}=\Theta(h^3)$, and ordinary explicit signed binary-index DIMACS source encoding has $N_h=\Theta(h^3\log(h+2))$ bits. Haken's theorem states that there exist $c>0,h_0$ such that for \emph{every} $h\ge h_0$ and \emph{every ordinary unrestricted shared-DAG Resolution refutation} of precisely this CNF, there are at least $2^{ch}$ lines, hence at least $2^{ch}-m_h$ derived nodes. It does not include definitions, GF(2), EXTENDED Resolution, the mixed system, or arbitrary uniform deciders. Cook's Extended Resolution PHP proofs are polynomial, so unrestricted lower-bound transfer is forbidden.
+
+\section*{A complete semantic source-core invariant}
+Let $F=(C_1,\ldots,C_m)$ be \emph{any} finite valid UNSAT labelled CNF. For every assignment $a$ to its original variables, define the hyperedge
+\[
+U_F(a)=\{i\in[m]:C_i(a)=0\}.
+\]
+All such edges are nonempty. Define the \emph{integral falsified-source transversal}
+\[
+\kappa(F)=\min\{|S|:S\subseteq[m],\quad
+                    \forall a,\;S\cap U_F(a)\ne\varnothing\}.
+\]
+The minimum is attained since the ground set is finite.
+
+\begin{theorem}[Core-transversal equality and universal provenance floor]
+For every valid UNSAT $F$, $\kappa(F)$ equals the minimum cardinality of an UNSAT subformula of $F$. For \emph{every} sound, source-explicit, conservative, at-most-two-parent refutation DAG $\pi$ of $F$, including every legal $R_{\mathrm{mix341}}$ proof with adaptive rule choice and shared subderivations,
+\[
+       \operatorname{paid}(\pi)\ \ge\ \kappa(F)-1 .
+\]
+More precisely, the set $S_\pi$ of distinct original source labels actually used in the final contradiction's ancestry is UNSAT, and
+$|S_\pi|\le 1+\operatorname{paid}(\pi)$.
+\end{theorem}
+\begin{proof}
+For any $S\subseteq[m]$, the conjunction $\bigwedge_{i\in S}C_i$ has no model exactly when for every assignment $a$ some $i\in S$ is false. This is exactly the transversal condition, proving the equality. Suppose the ancestry's source subset $S_\pi$ were SAT. Take a satisfying assignment to the original variables and extend it to every introduced auxiliary variable according to its fresh conservative gate definition in topological order. Each original source used by $\pi$ and each gate definition would hold. Induction on the sound checked proof rules then makes every later inference true, contradicting a final falsehood. Hence $S_\pi$ is UNSAT and has size $k\ge\kappa(F)$. The undirected graph of the final ancestor cone is connected, with $k$ free source vertices and $q$ paid vertices. It has at least $k+q-1$ edges. Every edge ends at a paid child whose indegree is at most two, so there are at most $2q$ edges. Thus $k+q-1\le 2q$, giving $q\ge k-1\ge\kappa(F)-1$. No search optimality, computational step count, or representation restriction beyond sound ancestry and the fixed paid parent bound enters.
+\end{proof}
+
+\begin{corollary}[Hereditary conservative-definition stability]
+Let $D(x,y)$ be any collection of fresh conservative definitions such that for \emph{every} valuation $a$ of the original variables, a valuation $b$ of the auxiliary variables exists satisfying $D(a,b)$. Then for \emph{every} original source subset $S$,
+\[
+   \bigwedge_{i\in S}C_i \text{ is SAT }
+   \iff (\bigwedge_{i\in S}C_i)\land D \text{ is SAT}.
+\]
+Consequently $\kappa(F)$ is unchanged by such paid conservative definitions; the provenance floor is stable under every permitted combination of their derived uses. It need not be stable under a transformation preserving satisfiability of the \emph{whole UNSAT} formula only.
+\end{corollary}
+\begin{proof}
+Projecting a model of the conjunction with $D$ gives a model of the original clauses. Conversely every original model extends to one of $D$, by its total conservativity, independently of which source subset $S$ is retained.
+\end{proof}
+
+\section*{Exact falsifier: adding two satisfiable source clauses defeats hard-subformula inheritance}
+For every $h\ge1$, let $P_h$ be the Haken PHP CNF on $n_h=h(h+1)$ variables; take a new variable $z$ and define the \emph{different source input}
+\[
+       P_h^+ = P_h\ \cup\ \{(z),(\neg z)\}.
+\]
+This is \textbf{not} a legal LOCAL-CONVERT operation on $P_h$: it replaces the original source instance with a new input. The original hard subformula is still present verbatim.
+
+\begin{theorem}[Noninheritance within the same Resolution grammar]
+For every $h\ge1$, every clause of $P_h$ is individually indispensable and
+$\kappa(P_h)=m_h$. Nevertheless
+\[
+        \kappa(P_h^+)=2,\qquad
+        W_{\mathrm{Resolution}}(P_h^+)
+        =W_{R_{\mathrm{mix341}}}(P_h^+)=1.
+\]
+In contrast, for all sufficiently large $h$,
+$W_{\mathrm{Resolution}}(P_h)\ge 2^{ch}-m_h$.
+The additional indexed source length is $O(\log(h+2))$ bits relative to the existing source under a conventional indexed layout, apart from changing the header. No lower bound on the mixed-system cost of $P_h$ beyond its source floor is claimed here.
+\end{theorem}
+\begin{proof}
+If a positive row clause for pigeon $p$ is deleted, set that pigeon's entire row false and place the remaining $h$ pigeons injectively into the $h$ holes. If a collision clause for pigeons $p,q$ in hole $j$ is deleted, place precisely $p,q$ in hole $j$, put the other $h-1$ pigeons injectively into the remaining holes, and set all other placement variables false. Thus deleting any original clause makes $P_h$ SAT. All $m_h$ originals are indispensable, yielding $\kappa(P_h)=m_h$.
+
+In $P_h^+$ the two added sources have a one-inference Resolution refutation on pivot $z$, so both proof systems have $W\le1$. Every source clause is nonempty and no unit source is itself false, so zero paid inference nodes cannot constitute a sound contradiction; hence $W=1$. No singleton source clause is UNSAT, whereas $\{z,\neg z\}$ is, so $\kappa(P_h^+)=2$. Haken supplies the comparison only for the original instance in the ordinary Resolution model. This proves that mere preservation of a certified-hard subformula and global UNSAT semantics does not preserve the hard lower bound.
+\end{proof}
+
+\section*{Limit, extraction costs, and exact falsifiers}
+Since $\kappa(F)\le m\le O(N)$ for explicit input length $N$, the entire source-transversal/at-most-binary-ancestry approach can certify \emph{at most a linear} lower bound in $N$. This ceiling holds regardless of computational difficulty of discovering a minimum core. To turn a proof into a core, traverse the backward ancestor DAG and enumerate its labelled sources. With an explicitly materialized, validated proof bitstring of length $L$, parsing and reachability take $O(L)$ typical RAM word operations and $O(L)$ storage, plus source extraction and clause verification; native bit-machine costs, output and peak allocations must be charged separately. This is an \emph{extraction from an available proof}, not an efficient procedure for discovering the proof or for deciding SAT. Exponentially long encodings are allowed, but must be paid to materialize, access and verify; a compact alternative may instead be tested.
+
+\begin{enumerate}
+\item[] F1: Presence of an exponentially Resolution-hard subformula forces the larger CNF to be Resolution-hard. \textbf{FALSIFIED} by $P_h^+$, in the same ordinary Resolution system.
+\item[] F2: Full-formula logical equivalence suffices for source-core invariance. \textbf{FALSIFIED} by the two UNSAT inputs $P_h$ and $P_h^+$; hereditary source-subset conservativity is sufficient.
+\item[] F3: Conservative paid two-input definitions alone can erase indispensable original source ancestry. \textbf{FALSIFIED} by the model-extension theorem, under the fixed soundness assumptions.
+\item[] F4: The proved source-transversal floor yields superpolynomial $W_{\mathrm{mix341}}$ or B3. \textbf{FALSIFIED AS A TRANSFER}: $\kappa(F)\le m\le O(N)$.
+\end{enumerate}
+The previous exact odd-Tseitin and duplicated-source optima LSPV-2/341 and LSPV-3/393 are recovered as calibrations: $\kappa=4h$ and $W_{\mathrm{mix341}}=4h-1$ whether each original clause is present once or copied $r$ times. This is a corollary of their previously verified matching proofs, not a new family or a new minimum-cost claim. Gaussian elimination and the Cook Extended Resolution shortcut remain hostile controls; matched even-charge Tseitin is satisfiable.
+
+\section*{Independent computation, corpus, and publication status}
+The public deterministic Node program \path{experiments/arc/lspv3_395_source_core_ceiling.js} exhaustively tested $P_h$ for $h=1,2,3$ and every one-clause-deletion SAT neighbor, verified the two-unit refutation and rejected invalid derivation pivots and source IDs. It passed 55 assertions, with source counts $3,9,22$ and exact original minimum core sizes $3,9$ on $h=1,2$. Its new augmented minimum core is exactly two for all three tested sizes. The independent Python implementation \path{experiments/arc/lspv3_395_independent_core_check.py} reconstructs the sources and evaluates the exact cases independently; finite checks are not Haken's asymptotic proof. Raw ledger: \path{results/raw/arc/2026-11-04_0651_LSPV3_SOURCE_CORE_CEILING395_raw.json}. No false native runtime or peak RSS is claimed.
+
+\noindent\textbf{CORPUS REVIEWED:} November 2 12:04 refocus (blob \texttt{033b54b8}), issue \#3, root AGENTS/CODEX and pnp skill, original R/341, LSPV-3/393 and /394, LSPV-1/390 multi-flip fractional neighbor bound, LSPV-2/391 MaxCut source-repair countercontrol, LSPV-5/337 growing-support dominance, original LOCAL-CONVERT addendum, Grok \path{GROKPROOF/2026-11-04_1322_PROGRESS.md} (blob \texttt{0850246c}), Claude \path{research/agents/claude/2026-10-28_1452_CLAUDE_TPORT-0002.tex} (blob \texttt{1f9fc727}). The latter two do not establish B3. Literature searches: Haken 1985, Cook 1976, Ben-Sasson--Wigderson 2001, minimal UNSAT cores and Cook--Reckhow. Academic novelty is not claimed for the standard core and hitting-set duality.
+
+\noindent\textbf{DUPLICATION AUDIT:} Prior LSPV-2/341 and LSPV-3/393 already establish the source-arity bound for indispensable source classes. Prior LSPV-3/394 already exhibits a different, polynomial-time invertible semantic recoding firewall. New here is the exact general assignment-transversal formulation and the same-grammar two-source preservation-of-hard-subformula falsifier. \textbf{ADOPTED:} sound source ancestry and total conservative DEF. \textbf{REJECTED:} global equivalence as a substitute for hereditary source conservativity. \textbf{ROOT MAIN DELTA:} this is a new conditional firewall and does not upgrade the proof spine. Root edit is subject to full current-content readback.
+
+The free-choice $W$ lower bound has no discovery charge; all mechanical time, space, verification and source reads in an implemented algorithm do. B1 and B2 remain OPEN. The weakest sufficient B3 implication
+\[
+  \mathrm{SAT}\in P\quad\Longrightarrow\quad
+     \exists C,k\ \forall N:\ \overline W_{R_{\mathrm{mix341}}}(N)
+       \le C(N+1)^k
+\]
+remains OPEN. A superpolynomial lower bound for this same $R$ is also OPEN. \textbf{P versus NP remains OPEN.}
+\begin{thebibliography}{9}
+\bibitem{Haken} A. Haken, The Intractability of Resolution, \emph{Theoretical Computer Science} 39 (1985), 297--308.
+\bibitem{Cook} S. A. Cook, A Short Proof of the Pigeon Hole Principle Using Extended Resolution, \emph{SIGACT News} 8(4) (1976), 28--32.
+\bibitem{BW} E. Ben-Sasson and A. Wigderson, Short Proofs are Narrow: Resolution Made Simple, \emph{Journal of the ACM} 48(2) (2001), 149--169.
+\bibitem{CR} S. A. Cook and R. A. Reckhow, The Relative Efficiency of Propositional Proof Systems, \emph{Journal of Symbolic Logic} 44(1) (1979), 36--50.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV3::395
