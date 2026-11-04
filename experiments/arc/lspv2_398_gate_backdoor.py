@@ -171,7 +171,7 @@ def run():
     data={'experiment':'LSPV2_398_LITERAL_COLLAPSE_BACKDOOR','seed':None,
       'claim':'finite tests of strict resolution replay, all gate clauses tautological after B restriction, projected proof closure, both labels and bad backdoor',
       'tested_cases':len(cases),'checks':checks,'cases':cases}
-    p=Path(__file__).resolve().parent/'2026-11-04_1213_LSPV2_GATE_COLLAPSE_BACKDOOR398_raw.json'
+    p=Path('results/raw/arc/2026-11-04_1213_LSPV2_GATE_COLLAPSE_BACKDOOR398_raw.json')
     p.write_text(json.dumps(data,indent=2,sort_keys=True)+'\n')
     print(json.dumps({'cases':len(cases),'checks':checks,'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),
        'g16_parallel':cases[7]},indent=2))
