@@ -1,0 +1,84 @@
+% LSPV-2 REPORT::STRICT-ENCODING-ISOMETRY400::2026-11-04_1412_PST
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\title{LSPV-2/400: A Cost-Preserving Uniform Encoding with Zero UNSAT Singleton Sensitivity}
+\author{PNP SAT-Circuit Reduction Builder}
+\date{November 4, 2026, America/Los\_Angeles}
+\begin{document}
+\maketitle
+\noindent\textbf{PROVED/EXACT:} elementary uniform triple-code theorem, restricted to the stated source recoding and fixed decoded-CNF interpretation. \textbf{COMPUTATIONAL:} independent Python and JavaScript tests. \textbf{KNOWN THEOREM:} ordinary-Resolution hardness of explicit cubic-expander Tseitin contradictions. \textbf{OPEN:} complete mixed-calculus superpolynomial minimum, B1/B2/B3, representation-independent all-algorithm superpolynomial lower bound, and P versus NP. Specialist mathematical review pending.
+
+\section*{IDEA (before SEARCH), assumptions, and falsifiers}
+LSPV-2/399 established \(12h\) pivotal signed polarity bits in a canonical odd cubic Tseitin CNF and destroyed singleton sensitivity through explicit clause padding. Test a \emph{stronger, invertible, constant-factor input encoding} instead of changing the source CNF: can such recoding erase all UNSAT singleton SAT neighbors while leaving SAT decision and the exact fixed-calculus minimum intact? Hypothesis: strict threefold repetition does so, but exact malformed-input classification moves the required bit inspection into syntax validation. Four falsifiers were specified: (F1) some one-bit edit of a strict triple code is still a valid source; (F2) a source SAT/UNSAT label changes after strict decoding; (F3) a deterministic valid-code SAT solver can omit every bit in a pivotal triple; and (F4) a three-way total validator can omit some bit on a valid code while correctly rejecting its one-bit malformed neighbor.
+
+\section*{Exactly fixed interface and calculus}
+Let \(E\) be the injective signed-CNF binary encoding of LSPV-2/399, with magic \(110101\), Elias-gamma \(n\) and \(m+1\), a gamma length \(k+1\) per clause, and for each occurrence a polarity bit followed by a fixed-width nonzero variable index of width \(\lfloor\log_2 n\rfloor+1\). The parser accepts \(n\ge1\), properly bounded indices, exact lengths and no trailing bits; malformed inputs receive a separate \({\rm MALFORMED}\) outcome. For any binary string \(x=x_1\cdots x_N\), define
+\[
+T(x)=x_1x_1x_1\,x_2x_2x_2\cdots x_Nx_Nx_N.
+\]
+The new canonical source encoding is \(E_3(F)=T(E(F))\). Its strict decoder requires every triple to agree, then parses the decoded source with the original parser; any failure is \({\rm MALFORMED}\). No unit-cost representation-conversion inference is added to \(R_{\mathrm{mix341}}\). Every proof is still a source-authenticated proof of the decoded \(F\) under the unchanged RES, AND3, XOR, LOCAL-CONVERT, DEF grammar of LSPV-2/341, with nonnegative unit cost per paid DAG inference and at most two premise nodes.
+
+Write \(L_E\subseteq\{0,1\}^*\) for the \emph{total} SAT language, with malformed and UNSAT strings not in \(L_E\), and \(L_{E_3}=\{T(x):x\in L_E\}\). Let \(P_E(x)\) be the set of positions where toggling one bit preserves valid CNF syntax and switches its SAT/UNSAT label.
+
+\begin{theorem}[Uniform coding firewall, all strings and all valid CNFs]
+For all binary strings \(x,x'\), \(T\) is injective, \(|T(x)|=3|x|\), and \(d_H(T(x),T(x'))=3d_H(x,x')\) when \(|x|=|x'|\). The two total SAT languages \(L_E,L_{E_3}\), including their malformed-input convention, are interreducible by \emph{fixed uniform linear-time} many-one reductions: \(x\mapsto T(x)\) in one direction and strict decode or a fixed valid UNSAT source in the other.
+
+For every valid encoded CNF \(x=E(F)\), \emph{every} one-bit mutation of \(T(x)\) is malformed. Thus the number of valid, opposite-SAT-label singleton neighbors of \(T(x)\) is zero, whether \(F\) is SAT or UNSAT. Under the ordinary two-label total SAT language, the single-bit sensitivity at \(T(x)\) is \(0\) if \(F\) is UNSAT and \(3|x|\) if \(F\) is SAT. Under the \emph{three-label} total classification SAT/UNSAT/MALFORMED, it is \(3|x|\) for either valid label.
+
+For every deterministic uniform correct SAT decider on the \emph{promise of valid} \(E_3\)-codes, its execution on \(T(x)\) must read at least one bit of each of the \(|P_E(x)|\) pairwise-disjoint triples indexed by \(P_E(x)\). With randomized two-sided error at most \(\epsilon<1/2\) on each valid code, its expected number of distinct input-bit queries is at least \((1-2\epsilon)|P_E(x)|\). For a deterministic \emph{total three-label} correct decider, every valid \(T(x)\) requires reading all \(3|x|\) bits; for a total randomized three-label decider with error at most \(\epsilon\), the expected number is at least \((1-2\epsilon)3|x|\).
+\end{theorem}
+\begin{proof}
+Tripling each bit proves injectivity, exact length and Hamming-distance multiplication. For the reverse many-one reduction, scan triples and output decoded \(x\) if all triples agree; otherwise output \(E((u)\land(\neg u))\). If the triples agree but \(x\) is malformed under \(E\), original \(L_E\) still rejects it. This gives linear-time, total, fixed-code reductions both ways. Flipping one position of a triple of \(000\) or \(111\) leaves a nonconstant triple and is therefore malformed; this proves the singleton statements. For every \(i\in P_E(x)\), the input \(T(x^{(i)})\) is valid and opposite-labelled, and differs from \(T(x)\) in precisely the three positions of triple \(i\). A correct deterministic adaptive query transcript must touch one of those positions or it is identical on two opposite labels. Distinct \(i\) give disjoint blocks. For randomized deciders couple the random coins on the two inputs: before reading any bit in the block the transcripts agree, so the block-hit probability is at least the output-distribution total-variation lower bound \(1-2\epsilon\). Sum over blocks. In the three-label case, each of the \(3|x|\) single-bit flips is a valid adversarial \emph{input string} with a different, malformed output label. The same transcript coupling applies to each singleton.
+\end{proof}
+
+\begin{theorem}[Exact worst-case minimum-cost rescaling for the unchanged fixed \(R\)]
+Fix any sound, complete, effective proof calculus \(R\) on \emph{decoded authentic source CNFs}, in particular the preselected \(R_{\mathrm{mix341}}\), with its original inference-node weights. Let
+\[
+\overline W_{R,E}(N)=\max_{\substack{F\ {\rm UNSAT}\\|E(F)|\le N}} W_R(F),\qquad \max\emptyset=0.
+\]
+Then for every integer \(M\ge0\),
+\[
+\boxed{\overline W_{R,E_3}(M)=\overline W_{R,E}(\lfloor M/3\rfloor).}
+\]
+Moreover, for each \(F\), the globally minimum logical DAG \(W_R(F)\) is \emph{exactly the same object and cost} whether the external input is \(E(F)\) or \(E_3(F)\). This equality concerns logical cost after source decoding, not physical decoder execution or a new implicit rule.
+\end{theorem}
+\begin{proof}
+The correspondence between valid source encodings is a bijection, \(|E_3(F)|=3|E(F)|\), and neither the authenticated source \(F\) nor any legal \(R\)-proof changes after decoding. Thus the sets whose maxima are taken are identical under \(N=\lfloor M/3\rfloor\).
+\end{proof}
+
+\section*{Established hard-family anchor and model firewall}
+For a suitable infinite family of connected bridgeless cubic edge expanders \(G_h\) with odd vertex charges, the \emph{explicit} width-three Tseitin encoding \(F_h\) has \(3h/2\) edge variables, \(4h\) signed source clauses and \(N_h=\Theta(h\log(h+2))\) canonical encoded bits. The published lower-bound consequence of Urquhart and Ben-Sasson--Wigderson has constants \(c>0,h_0\) for which, for all admissible \(h\ge h_0\), \emph{every unrestricted shared-DAG ordinary Resolution refutation} has at least \(2^{ch}\) lines. This is \emph{not} an all-algorithm, Extended Resolution, \({\rm Res}(\oplus)\), or mixed-\(R_{\mathrm{mix341}}\) lower bound. In the unchanged mixed system the independently established /341 odd bridgeless-cubic proof costs precisely \(4h-1\) paid nodes by a source-arity lower bound and a matching AND3/GF(2) construction. It is a polynomial shortcut and a mandatory negative control. LSPV-2/399 shows \(P_E(E(F_h))\) has \(12h\) pivotal sign positions, hence the new threefold source has \emph{zero} singleton opposite-label neighbors but \(12h\) disjoint pivotal three-bit blocks. This negative result concerns input representation, while exact worst-case \(W_R\) survives this \emph{specific} recoding.
+
+\section*{SEARCH, novelty audit and iteration}
+Actual general-web searches included \texttt{decision tree complexity sensitivity under input encoding error correcting code repetition code promise domain query complexity}, \texttt{block sensitivity decision tree lower bound for partial boolean functions repetition code encoding input}, \texttt{Haken The Intractability of Resolution 1985 PDF original}, \texttt{Cook Reckhow relative efficiency propositional proof systems 1979}, and \texttt{Noam Nisan CREW PRAMs and Decision Trees 1991}. Read Cook--Reckhow (1979) publisher abstract, Nisan (1991) original publisher abstract, and reviewed the primary Haken theorem statement through project REFEREE318 and an authoritative Atserias proof-complexity source. No direct branded Google UI is available; general web search is \emph{not} called a Google-specific run.
+
+Authenticated GitHub search queried \texttt{Grok}, \texttt{Claude}, \texttt{R\_mix341}, \texttt{reflection soundness machine proof R\_mix341}, and \texttt{ExecCNFWidthSearch}. Directly read \texttt{openai/math/lean/OAI/Algorithms/SubexponentialSAT/ExecCNFWidthSearch.lean} (blob \texttt{14a9f16d}) and \texttt{openai/math/lean/OAI/Computability/DirectedFeedback/CookLevin/NPTableau.lean} (blob \texttt{d8c0a32e}); these contain formal circuit/tableau and execution mechanisms, not the present coding theorem, a mixed proof compiler, or B3. Primary project sources read: Nov.\ 2 five-role directive (blob \texttt{c3889a3e}), original /341 (blob \texttt{c87acd11}), LSPV-2/399 (blob \texttt{a307ff93}), REFEREE318 (blob \texttt{d5164f4e}), REFEREE340 (blob \texttt{d5fcfa4a}), REFEREE343 (blob \texttt{36ab89ec}), REFEREE345 (blob \texttt{10f4db83}), AGENTS, CODEX, skill and issue \#3. The broad polynomial encoding equivalence principle is \emph{known}, and prior /399 already supplied the adversarial transcript argument. The contribution here is its exact invertible strict-code application with two/three-label separation and same-\(R\) worst-case identity; it is not claimed as a novel general complexity theorem.
+
+The Grok folder \texttt{GROKPROOF/} and Claude folder \texttt{research/agents/claude/} were located through repository search. Read \texttt{GROKPROOF/2026-11-04\_2113\_PROGRESS.md} (blob \texttt{a5bba58d}) and \texttt{research/agents/claude/2026-10-28\_1521\_CLAUDE\_ONETAPE-0001.tex} (blob \texttt{9a5b05d6}). They leave unrestricted transfer open. The Grok claim that an \(\Omega(N^{1.1})\) writing cost \emph{strictly exceeds} an \(N^{1.1+o(1)}\) budget is an invalid strict exponent comparison, independently flagged in current LSPV-1/399. No Grok/Claude assessment is treated as authority for B3.
+
+\emph{Revision after search:} the original hope for a robust \emph{singleton} source sensitivity invariant is falsified by the triple code, despite injectivity and linear-time interconversion. The surviving claims are a more qualified valid-promise \emph{block}-access bound, an artificial linear validation bound for three-label total input classification, and an \emph{exact} worst-case logical-\(W_R\) reindexing theorem for this adapter. None yields superlinear machine time, still less a superpolynomial worst-case all-algorithm bound. Arbitrary noninvertible auxiliary encodings, lazy exponential representations and GF(2) shortcuts are outside the exact reindexing theorem and remain hostile controls.
+
+\section*{Computational verification and physical cost ledger}
+Standalone Python producer and independently authored Node.js checker, no shared logic imported, tested \emph{all} 256 subsets of the eight canonical non-tautological two-variable signed clauses: 95 SAT, 161 UNSAT, 33,618 one-bit triple-code edits classified malformed. Odd and even controls used \(K_4\) and \(K_{3,3}\); 48+72=120 original pivotal sign bits each led to a disjoint three-bit opposite-label valid-code block. Six malformed input controls rejected. Each implementation executed 34,504 assertions and agreed on every count, with no random seed. Source lengths and triple lengths were \(292,876\) for \(K_4\) and \(502,1506\) for \(K_{3,3}\). These are \textbf{COMPUTATIONAL} controls, not a finite minimum-\(R\) optimizer or an asymptotic hardness proof.
+
+Producing \(E_3(F)\) explicitly requires \(3N\) output bits, \(\Theta(N)\) bit operations and \(\Theta(N)\) materialized output space; streaming can reduce writable working space but cannot remove output work or input validation. Strict decoding checks all \(3N\) input bits on valid codes, costs \(O(N)\) bit operations plus parser overhead, and can use \(O(N)\) materialized storage or a streaming counter and parser workspace. Running a generic decider \(A\) on the decoded formula contributes \(T_A(E(F))\), not zero. If proof-producing, charge each explicit DAG statement, index, auxiliary construction, output and independent proof check separately; discovery/search costs are not hidden inside the logical \(W_R\) minimum. No polynomial domination of all-machine SAT work by mixed DAG nodes is asserted, and no FLMV favorable resource profile is obtained. Retain \(s'\le\max\{\rho,\eta,\lambda,\lambda s\}\), with \(\rho\ge1\) for materialized \(N\)-bit local preprocessing.
+
+\section*{Handoff and unresolved bridge}
+The only proven representation invariance is the specified invertible source adapter; arbitrary compact circuits, conservative definitions, shared logical DAG rewrites and adaptive algorithms are not covered. LSPV-1 should retain the B1/B2/B3 quantified boundary. LSPV-3 should test certificate semantics under strict decoding and nontransparent retractions. LSPV-4 should audit charged streaming/materialization costs. LSPV-5 should red-team the valid-promise versus three-label distinction and other polynomially invertible code families. LSPV-2's next target is a \emph{typed, uniform polynomial source and proof translator} covering a genuine nontrivial \(R_{\mathrm{mix341}}\) representation switch without assuming opaque semantic correctness; this needs explicit rule-by-rule verification. The decisive B3 claim,
+\[
+{\rm SAT}\in{\rm P}\quad\Longrightarrow\quad
+\exists C,k\ \forall N:\overline W_{R_{\mathrm{mix341}}}(N)\le C(N+1)^k,
+\]
+remains \textbf{OPEN}. So do B1, B2, superpolynomial mixed minima, and P versus NP.
+
+\begin{thebibliography}{9}
+\bibitem{Haken} A. Haken. The intractability of resolution. \emph{Theoretical Computer Science} 39 (1985), 297--308, DOI 10.1016/0304-3975(85)90144-6.
+\bibitem{Nisan} N. Nisan. CREW PRAMs and decision trees. \emph{SIAM Journal on Computing} 20(6) (1991), 999--1007, DOI 10.1137/0220062.
+\bibitem{CR} S. Cook and R. Reckhow. The relative efficiency of propositional proof systems. \emph{Journal of Symbolic Logic} 44(1) (1979), 36--50, DOI 10.2307/2273702.
+\bibitem{BW} E. Ben-Sasson and A. Wigderson. Short proofs are narrow: Resolution made simple. \emph{Journal of the ACM} 48(2) (2001), 149--169.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-2::STRICT-ENCODING-ISOMETRY400
