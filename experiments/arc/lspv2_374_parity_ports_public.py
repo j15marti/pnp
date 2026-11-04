@@ -25,15 +25,16 @@ def xor_gate(a,b,y):
 
 def compact(k, rhs_b=1):
     assert k>=2
-    n=k; rails=[]; src=[]
+    n=k; rails=[]; src=[]; units=[]
     for rhs in (0,rhs_b):
         previous=1
         for j in range(2,k+1):
             n+=1
             src.extend(xor_gate(previous,j,n))
             previous=n
-        src.extend([[previous if rhs else -previous]]*2)
+        units.extend([[previous if rhs else -previous]]*2)
         rails.append(previous)
+    src.extend(units)
     return {'variables':n,'clauses':src,'outputs':rails}
 
 def truth_clause(cl, assign):
