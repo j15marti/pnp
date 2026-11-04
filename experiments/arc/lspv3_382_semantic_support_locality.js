@@ -103,10 +103,26 @@ function runSupportAudit() {
     if(validate(c))errors.push("accepted malformed "+JSON.stringify(c));
     checks++;
   }
+  const correct=build(254);
+  const tamperedRoot=cloned(correct);
+  tamperedRoot.root.neg=!tamperedRoot.root.neg;
+  const tamperedGate=cloned(correct);
+  const last=tamperedGate.gates.length-1;
+  tamperedGate.gates[last].a.neg=!tamperedGate.gates[last].a.neg;
+  const corrupt=[tamperedRoot,tamperedGate];
+  for(let j=0;j<corrupt.length;j++){
+    if(!validate(corrupt[j]))errors.push("wrongly rejected well-typed corruption "+j);
+    let found=false;
+    for(let b=0;b<(1<<n);b++){
+      if(circuitValue(corrupt[j],b)!==circuitValue(correct,b)){found=true;break;}
+    }
+    if(!found)errors.push("undetected functional corruption "+j);
+    checks++;
+  }
   return {status:errors.length===0?"PASS":"FAIL",cases:256,
     sat_cases:sat,unsat_cases:unsat,checks,max_gate_count:maxGate,
     essential_support_histogram:essentialCount,
-    support_witness_pairs:witnessPairs,malformed_rejected:malformed.length,
+    support_witness_pairs:witnessPairs,malformed_rejected:malformed.length,corrupt_semantics_rejected:corrupt.length,
     canonical_satisfiable_mask:254,canonical_unsatisfiable_mask:255,
     errors:errors.slice(0,8),method:"exhaustive 256 3-CNF subformula masks, 7-bit gate and truth-table outputs; signed two-input AND DEF circuits"};
 }
