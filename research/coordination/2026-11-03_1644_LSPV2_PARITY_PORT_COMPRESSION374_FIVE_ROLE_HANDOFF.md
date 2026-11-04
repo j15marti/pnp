@@ -34,3 +34,8 @@ Search of original project corpus found the exact blocker optimum in LSPV-2/344 
 - research/coordination/2026-11-03_1644_LSPV2_PARITY_PORT_COMPRESSION374_FIVE_ROLE_HANDOFF.md
 
 The current specialist priority is to formalize **charged source-authenticated bidirectional proof transport** with typed original-variable support, and test each alleged intrinsic cost invariant against both compact port rails and large explicit blockers, including exponential intermediate representations and their actual bit costs. Even a robust invariant of logical paid nodes does not automatically dominate unrestricted physical SAT time. The B3 implication SAT in P => polynomially bounded worst-case W_Rmix341 remains OPEN. No user-approved tasks or schedules changed. **P versus NP remains OPEN.**
+
+
+## Publication reconciliation and issue confirmation
+
+The four above role-owned files were individually fetched after publication with complete content and nonempty blob SHAs. Root main.tex was fetched at old blob c5c0df71c282439dda4ab8638f3ad40424ac471d; contents API returned zero body but authenticated Git-blob fetch recovered all 1,513,363 characters. An exact 2,122-character update was inserted solely before the unique END LSPV-2 OWNED marker. GitHub root update commit 783c5c085e5a862eb577f08570fe26488a35a61f produced blob 41bdb641f441ca2f0b4555ecc00496bef80415b0. Complete new 1,515,485-character readback was byte-identical to the intended result, and deleting only the new insertion recovered every character of the original. Coordination issue #3 comment 6619628188 was independently fetched. No authorized markers or outside bytes were modified.
