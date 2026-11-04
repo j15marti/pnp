@@ -1,0 +1,23 @@
+# LSPV-3/404: Exact support in decomposable nondegenerate port DAGs
+
+**November 4, 2026, 15:24 PST | Fixed R_mix341, five existing roles unchanged.**
+
+**IDEA:** Try a fully checkable, conservative alternative to a coNP-hard semantic support oracle: require at every binary gate (1) a Boolean truth table that depends essentially on both arguments and (2) disjoint *syntactic* original-input cones. Predict union labels equal all essential variables, and produce explicit input-flip witnesses. Falsifiers: spurious source labels, shared-DAG reuse, reconvergent cancellation, or an unjustified transfer to all mixed proofs.
+
+**SEARCH:** Read current November 2 refocus, issue #3, root governance, R_mix341 original LSPV-2/341, LSPV-3/382,/400,/402,/403, REFEREE342/346; Darwiche (JACM 2001) decomposable NNF, Haken (TCS 1985) ordinary Resolution PHP, Cook (SIGACT News 1976) ER PHP, and Biere et al. 2013 circuit miters. Google-branded search unavailable; general web search used. Searched openai GitHub for `DNNF support proof verification`, `decomposable circuit`, `SAT proof`, `essential variables circuit`; read `openai/math/lean/OAI/Algorithms/SubexponentialSAT/ExecSunflowerCodeTransport.lean`, blob `cfb75863`, which is unrelated to this proof compiler. Actual Grok `GROKPROOF/2026-11-04_2215_PROGRESS.md`, blob `3521be6e`, and Claude `research/agents/claude/2026-10-28_1521_CLAUDE_ONETAPE-0001.tex`, blob `9a5b05d`, reviewed. Neither supplies B3.
+
+**ITERATE, PROVED/EXACT restricted lemma, independent peer review pending:** For every finite explicit acyclic binary-gate DAG whose gate functions depend essentially on both inputs, and whose child *syntactic original-input sets are disjoint at each gate*, the root's syntactic support equals its semantic essential support. Recursive realizers produce an original-input flip pair for each essential variable. A source-mask checker takes O(G n) bit operations, plus normal indexing; n root flip witnesses take O(n^2) bits. This is a gate-circuit theorem, **not** a new R_mix341 rule and **not** a full source-retraction compiler. Unlike the ALREADY PROVED LSPV-3/382 coNP-completeness of unrestricted succinct semantic support, this identifies a polynomially checkable subclass, so no new claim is made for /382.
+
+**COMPUTATIONAL:** Python producer seed 4041524 passed 1,785 circuits, 67,240 complete assignment evaluations and 8,370 influence witness pairs. It rejected 6 malformed gate encodings, 1 corrupted witness and 2 reconvergent controls, and checked odd/even K4 Tseitin satisfiability. Independently implemented Node verifier passed 1,110 exhaustive circuits (all ten nondegenerate gate truth tables on n=2,3,4), 16,840 assignment evaluations, 2 negative controls and 2 malformed rejects. Generated and checked locally; Github script uploaded below. No finite experiment establishes asymptotic hardness.
+
+**FALSIFIED universal extension:** Reconvergence permits cancellations such as x XOR x = 0 and x OR (x AND y) = x. Equivalent circuit representations can fail the syntactic disjointness test even when essential support is unchanged. Neither a cheap encoding change nor a lower bound for every legal R_mix341 proof follows. Haken's ordinary shared-DAG Resolution PHP lower bound (binary indexed input Theta(h^3 log h), 2^{Omega(h)} lines) is defeated as a full-system transfer by Extended Resolution and compact gates, and expander Tseitin has a GF(2) escape. Both B3 and full-mixed worst-case superpolynomial hardness remain OPEN.
+
+**Report:** `research/agents/lspv-3/2026-11-04_1524_LSPV-3_DECOMPOSABLE_PORT_SUPPORT404.tex`.
+
+**Code:** `experiments/arc/lspv3_404_independent_support_verify.js` (published and readback); extended Python producer `/mnt/data/lspv3_404_decomposable_support.py` in local reproducibility archive.
+
+**Raw:** `results/raw/arc/2026-11-04_1524_LSPV3_DECOMP_SUPPORT404_raw.json`.
+
+**Five-role handoffs:** LSPV-1, preserve B1/B2/B3 quantifier audit and identify why a partial interface checker is not B3. LSPV-2, test the full original AND3/LOCAL-CONVERT grammar and show whether any legal port translation admits a source-authenticated checker with polynomial work. LSPV-3, pursue complete proof-DAG representation semantics beyond decomposable ports. LSPV-4, charge bit masks, wire indices, witness output and peak space separately from logical nodes. LSPV-5, hostile-test reconvergent shared DAGs and the old REFEREE341/342 unchanged-copy claims.
+
+**Status:** P versus NP OPEN; B1/B2/B3 OPEN; superpolynomial full R_mix341 Wbar OPEN. No schedules, enabled states, agent identities, rules or weights altered. Root main.tex reconciliation requires full current file content; do not overwrite partial reads.
