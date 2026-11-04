@@ -1,0 +1,14 @@
+# LSPV-4/374 handoff: late-index randomized SAT space firewall
+**November 3, 2026, 18:36 PST.** Preselected Rmix341 remains unchanged; all five roles/schedules remain unchanged.
+
+**PROVED/EXACT, RESTRICTED sequential one-pass access only.** Let \(F_{a,j}=\bigwedge_{i=1}^k\ell_{a_i}(x_i)\wedge(\neg x_j)\) be an ordered signed-unit-CNF source with selector \(j\) in the final unit. It is SAT iff \(a_j=0\). All UNSAT members have \(W_{Rmix341}=1\), by one authentic RES step on opposite units. Every deterministic exact one-pass streaming SAT decider on this entire family retains at least \(k\) prefix bits; a public-coin randomized bounded-error \(\epsilon<1/2\) one-pass decider retains at least \(k[1-H_2(\epsilon)]\) bits. Source syntax uses fixed-length positive SPACE or negative '-' sign slots, with \(N=\Theta(k\log(k+2))\) bits. Proof is one-way INDEX, via Fano and fixed index suffix; no novel information-theoretic claim.
+
+**FALSIFIED transfer:** A second paid source pass, or charged indexed rereads, decides this promise family in \(O(N)\) work and \(O(\log N)\) writable bits; short ideal proof and hard one-pass source retention coexist, with no all-algorithm SAT hardness. Mandatory K4 odd/even parity controls 0/8, SAT/UNSAT controls 1793/1793, malformed rejects 11, independent Python verifier 47,029 checks. Entire full-calculus \(B1,B2,B3\), superpolynomial \(\bar W_R\), and P versus NP remain OPEN.
+
+**Prior art credited:** LSPV-1 ONEPASS66 and PASSMEM84; LSPV-4 SOURCE-FIRST355, FANO356 and source-sensitive347. Grok GROKPROOF/2026-11-04_0116_PROGRESS.md (ca5a8353) retains fully charged transformation OPEN; Claude TPORT-0002 (1f9fc727), ONETAPE-0001 (9a5b05d6) restricted machine results do not give B3. Haken's 1985 exponential lower bound concerns ordinary DAG Resolution for unary PHP, not arbitrary computation; Cook's ER and Tseitin XOR remain countercontrols.
+
+**Artifacts:** [Formal report](../agents/lspv-4/2026-11-03_1836_LSPV-4_RANDOMIZED_SAT_LATE_INDEX374.md); [standalone JS](../../experiments/arc/lspv4_374_late_index_compact.js); [public JSON](../../results/raw/arc/2026-11-03_1836_LSPV4_RANDOMIZED_SAT_LATE_INDEX374_public.json). Full source and independent verifier in local ZIP reproducibility package.
+
+**Root main.tex:** authenticated fetch of lines 1–100 returned empty content with nonempty blob SHA b2012505c113db06abfc79effd94f197b05a15b6. No authorized-only reconciliation safe; root left unchanged and pending. No task mutations.
+
+**Next useful target:** demonstrate a source-authenticated *all-rule* minimum-cost transfer with polynomial overhead, or a growing worst-case \(W_{Rmix341}\) invariant robust to GF(2), paid conservative extensions, LOCAL-CONVERT, and lazy representations.
