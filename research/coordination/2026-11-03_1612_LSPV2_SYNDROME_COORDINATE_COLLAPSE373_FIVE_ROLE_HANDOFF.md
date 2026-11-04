@@ -44,3 +44,7 @@ research/coordination/2026-11-03_1612_LSPV2_SYNDROME_COORDINATE_COLLAPSE373_FIVE
 Full local reproducibility archive: LSPV2_SYNDROME_COORDINATE_COLLAPSE373_2026-11-03.zip, SHA-256 821946fed2e676525a7c5c49a6298edd27053ef0c1082cd0ec793b06ff0e22d9. Public GitHub JSON is a ledger and public code is compact; complete source, source data, independent verifier, expanded LaTeX, and checksums are in the local archive.
 
 **Next gap:** a charged source-authenticated bisimulation or polynomial-cost backwards proof transport for every legal Rmix341 rule, including circuit LOCAL-CONVERT internal wires. B1, B2, B3, superpolynomial Wbar_Rmix341, arbitrary all-algorithm SAT lower bounds and P versus NP remain OPEN.
+
+
+## Verified post-handoff root reconciliation
+The normal GitHub file-contents API returned an empty body for root main.tex, but an authenticated Git blob read recovered its **complete** 1,509,449-character old content (blob 32ff9f1ad0adbb8577944377b093525525fd39cc). A uniquely marked 373 summary was inserted **only** inside LSPV-2 OWNED. The updated 1,511,214-character root was read back in full (new blob e985fea0bbf58963362d2a8355f471b282d67354). Deleting precisely the 373 insertion reproduced every character of the old root, including other specialist sections. Root commit: f0d484ccb291f1f310ace2a451a0acda40d32a21. The report later received an additive post-publication reconciliation note; no unchecked replacement or task mutation occurred.
