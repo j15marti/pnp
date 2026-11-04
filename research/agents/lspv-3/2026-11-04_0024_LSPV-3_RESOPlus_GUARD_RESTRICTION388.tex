@@ -1,0 +1,121 @@
+% LSPV-3 REPORT::RESOPLUS-GUARD-RESTRICTION388::2026-11-04T00:24:00-08:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{LSPV-3/388: Exact Guard Restriction for Arbitrary DAG Res($\oplus$), Including Guard-Dependent Pivots}
+\author{PNP Hypergraph \& Proof Certificates}
+\date{November 4, 2026, 00:24 PST}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT in the declared Res($\oplus$) grammar; COMPUTATIONAL for finite independent controls; CONDITIONAL on Braun's published but externally unreviewed 2026 lower bound for its numerical hard-family corollary. Full unchanged $R_{\mathrm{mix341}}$, B1/B2/B3 and P versus NP remain OPEN. Independent specialist referee pending.}
+
+\section*{The published-hard anchor, with exact encoding and quantifiers}
+Braun (arXiv:2609.23015, September 19, 2026, revision 2) reports the following theorem. Put $n=2^\ell$, $\ell\ge32$, $m=n+1$; use Boolean bits $b_{it}$, $i\in[m],t\in[\ell]$, and the explicit source CNF
+\[
+B_\ell=\bigwedge_{\substack{i<j\in[m]\\ z\in\{0,1\}^\ell}}
+\left(\bigvee_{t=1}^\ell[b_{it}\ne z_t]\ \vee\
+\bigvee_{t=1}^\ell[b_{jt}\ne z_t]\right).
+\]
+It has $(n+1)\ell$ Boolean variables, $n\binom{n+1}{2}$ clauses of width $2\ell$, and $\Theta(n^3\ell)$ literal occurrences. Every unrestricted shared-DAG Res($\oplus$) refutation has more than
+\[
+\exp\!\left(\frac{n}{32768\,\ell^2}\right)
+\]
+nodes, counting initial lines, for each $\ell\ge32$. The Res($\oplus$) lines are disjunctions of affine equations over $\mathbb F_2$; the grammar admits complementary-parity Resolution on any affine form and semantic weakening $C/D$ when $C\models D$. Its proofs may reuse nodes arbitrarily; no depth or regularity restriction. \emph{Conservative extension axioms are not permitted.} This is not a machine-time lower bound. The preprint reports Lean formalization, but its independent research review remains incomplete.
+
+\noindent\textbf{Input-bit firewall.} In a canonical explicit signed-binary-variable-ID encoding, each literal occupies $\Theta(\log((n+1)\ell))=\Theta(\ell)$ bits, hence input length
+\[
+N_\ell=\Theta(n^3\ell^2)\quad\text{bits}.
+\]
+The paper's $\Theta(n^3\log n)$ formula-size convention counts literal occurrences, not the above full binary-ID serialization. After guarding all clauses, the bit length is still $\Theta(n^3\ell^2)$; this input-bit point was already correctly recorded in LSPV-1/370 and is not claimed new here.
+
+\section*{The fixed Res($\oplus$) subsystem and guarded semantics}
+Let $P_\oplus$ be exactly the above published subsystem, with the two rules
+\[
+\frac{A\vee(u=0)\quad B\vee(u=1)}{A\vee B},
+\qquad \frac{C}{D}\ \ (C\models D),
+\]
+where $u$ is any affine form in the displayed variables, possibly involving a fresh guard $t$. Tautological clauses may be deleted, and false affine atoms may be removed at no paid inference cost when restricting or comparing proof representations. No new source axiom, definitional gate, AND3, LOCAL-CONVERT, global truth oracle or macro is introduced. Write $S_\oplus(F\vdash D)$ for the minimum number of DISTINCT source and inference DAG nodes in a derivation of $D$ from the specified source clause collection, and $S_\oplus(F)=S_\oplus(F\vdash\bot)$. With this positive integer size convention, the minimum is attained.
+
+For any clause collection $F=(C_i)_{i=1}^M$ whose data variables omit $t$, set
+\[
+G_t(F)=\{\ (t=0)\vee C_i:1\le i\le M\ \},\quad
+H_t(F)=G_t(F)\cup\{(t=1)\}.
+\]
+$G_t(F)$ is SAT for every $F$ (choose $t=0$); $G_t(F)\models(t=0)$ iff $F$ is UNSAT; and $H_t(F)$ is UNSAT iff $F$ is UNSAT.
+
+\begin{theorem}[Exact minimum guarded-unit isometry, arbitrary shared DAGs]
+For every UNSAT collection $F$ of linear clauses, without any restriction on its size, incidence pattern, branching policy or derived pivot support,
+\[
+\boxed{S_\oplus(F)=S_\oplus(G_t(F)\vdash(t=0)).}
+\]
+The reverse inequality remains valid for proofs with mixed pivots $u(t,x)$, as well as semantic weakening steps that mention $t$. For the guarded UNSAT form,
+\[
+\boxed{S_\oplus(F)\le S_\oplus(H_t(F))\le S_\oplus(F)+2.}
+\]
+\end{theorem}
+\begin{proof}
+\textit{Forward map.} Take any DAG refutation of $F$. Replace \emph{every} source or derived linear clause $D$ by $(t=0)\vee D$. This preserves every complementary affine pivot on data variables verbatim. If $C\models D$, then $(t=0)\vee C\models(t=0)\vee D$, so every semantic weakening remains legal. The empty conclusion becomes $(t=0)$. Distinct input and inference nodes can be replayed once each. Thus $S_\oplus(G_t(F)\vdash(t=0))\le S_\oplus(F)$.
+
+\textit{Reverse map.} Take an arbitrary DAG derivation of $(t=0)$ from $G_t(F)$, allowing affine pivots involving $t$. Apply the \emph{single fixed restriction} $t=1$ to every affine atom $(a t)\oplus v(x)=b$. It becomes $v(x)=b\oplus a$, possibly constant true or false. Normalize each clause by removing false atoms and replacing any clause with a true atom by truth. Source clauses restrict to the authentic original $C_i$; the conclusion $(t=0)$ becomes false.
+
+A semantic weakening remains valid under restriction. A complementary-affine pivot $u$ either remains nonconstant, in which case the same pivot Resolution remains legal, or becomes a Boolean constant. In the latter case one premise's pivot literal becomes true and its clause is tautological, while the other premise loses a false pivot and semantically entails the restricted conclusion $A\vee B$. Reproduce that step with at most one permitted semantic weakening from the non-tautological predecessor. Tautological output steps can be omitted, and duplicate nodes shared. Working in topological order, there are no more proof nodes than originally, including surviving sources. Hence $S_\oplus(F)\le S_\oplus(G_t(F)\vdash(t=0))$, proving equality.
+
+For $H_t(F)$ restrict any refutation by $t=1$; the added unit source becomes true and disappears, giving $S_\oplus(F)\le S_\oplus(H_t(F))$. Conversely guard-lift an optimal refutation of $F$ to $(t=0)$, then append source $(t=1)$ and one complementary-pivot inference to obtain false, adding at most two nodes. \end{proof}
+
+\noindent\textbf{Scope boundary.} This theorem does not assert cost equivalence for arbitrary proof grammars or arbitrary encodings. It uses closure under common-disjunct lifting, cofactor restriction and the explicit semantic-weakening rule. $R_{\mathrm{mix341}}$ includes paid conservative definitions, GF(2), nonlinear factors and LOCAL-CONVERT with different typing, so no full-mixed cost inequality follows. Extensional equality of SAT functions alone supplies no cost-preserving compiler.
+
+\begin{theorem}[Guarded bit-PHP lower bound, restricted]
+Assuming the published Braun lower-bound theorem is correct for the exact $P_\oplus$ above, for all $\ell\ge32$,
+\[
+S_\oplus(G_t(B_\ell)\vdash(t=0)) >
+\exp\!\left(\frac{2^\ell}{32768\ell^2}\right),\qquad
+S_\oplus(H_t(B_\ell)) >
+\exp\!\left(\frac{2^\ell}{32768\ell^2}\right).
+\]
+This provides a genuinely UNSAT hard guarded family $H_t(B_\ell)$ \emph{only in Res($\oplus$)}. It establishes nothing about $W_{R_{\mathrm{mix341}}}$ or $T_A^{\rm wc}$.
+\end{theorem}
+\begin{proof}
+Apply the exact equality and the restriction lower bound to $F=B_\ell$ and then the quoted lower bound. \end{proof}
+
+\section*{Falsifiers, controls and physical accounting}
+\noindent\textbf{F1 (survived):} a guard-dependent affine pivot is not cofactor-stable. Restricting $u(t,x)$ simply yields another affine pivot; when it becomes a constant, one valid semantic-weakening step replaces Resolution. The independent bitset checker tests all 9,583 two-premise inference combinations from two-input local affine clauses, including 5,476 guard-containing pivots and 1,369 constant-pivot cases.
+
+\noindent\textbf{F2 (survived):} a semantic weakening ceases to be sound when restricting $t=1$. Semantic entailment is closed under fixed substitutions; 4,191 restricted weakening cases and 591 lifted data weakening cases were independently tested.
+
+\noindent\textbf{F3 (valid scope attack):} adding conservative extension axioms, a compact macro or a semantic oracle preserves the inequality. It does not. These operations are outside $P_\oplus$ and may produce short proofs or change rule costs. Cook's polynomial ER pigeonhole proofs, the mixed-system XOR/Tseitin shortcut, and LSPV-5/331 proof padding are mandatory countercontrols.
+
+\noindent\textbf{F4 (failed runtime transfer):} a long guarded unit proof means the guarded formula is hard to decide as SAT. The guarded formula is SAT with $t=0$ regardless of $F$. On the same explicit small signed source, opposing $x=0,x=1$ is UNSAT but its guard has four models on $(x,y,t)$; the SAT control $x=0$ has two models and its guard has six. Malformed affine atoms and corrupted semantic steps are rejected. The theorem is about deriving the entailed \emph{unit} in one specified proof calculus, not finding any satisfying assignment.
+
+\noindent\textbf{Reproducibility.} Original exhaustive JS producer \path{experiments/arc/lspv3_388_guard_resxor_audit.js} passed 29,439 assertions; separately implemented truth-table-bitset JS checker \path{experiments/arc/lspv3_388_independent_bitset.js} passed 29,429 assertions. Both counted 9,583 local complementary-affine steps, 4,191 cofactor-preserved semantic entailments, 591 guarded semantic lift instances and 4,107 guarded data-pivot steps. The raw ledgers are \path{results/raw/arc/2026-11-04_0024_LSPV3_RESOPlus_GUARD_TRANSPORT388_raw.json} and \path{results/raw/arc/2026-11-04_0024_LSPV3_RESOPlus_GUARD_TRANSPORT388_independent.json}. These are exhaustive \emph{finite rule tests}, not global proof minima or an independent replay of Braun's Lean file. No random seed and no new hard-family generation.
+
+\noindent\textbf{Cost separation.} $S_\oplus$ charges logical DAG lines once, and its minimum allows a free optimal selection. The bit encoding of a proof also charges its explicit clause/equation content, signed input indices and parent references. Construction, bit access, verification, output, caching and all-phase peak memory, especially for large affine forms and any compact circuit alternative, remain separate. No runtime or FLMV inference is made; any implemented machine bound must charge every phase and preserve $s'\le\max\{\rho,\eta,\lambda,\lambda s\}$ with $\rho$ covering all phases.
+
+\section*{Corpus reconciliation, independent assessments and weakest bridge}
+Read November 2 12:04 refocus at commit \texttt{4e29ed7}, current issue \#3, AGENTS.md, CODEX.md, pnp-research skill, root main.tex blob \texttt{e874de13}, LSPV-2/381 \texttt{f67c91fa}, LSPV-3/386 \texttt{bcf48c65}, LSPV-3/387 (current report), LSPV-4/379 \texttt{16939bba}, LSPV-5/331 \texttt{6b602a0c}, LSPV-1/383 \texttt{ea20ed6b}, and LSPV-1/370 \texttt{fdc2bb0c}. The LSPV-2/381 t-dependent signed-AND2 isometry, LSPV-3/385 guarded ER, and LSPV-5/331 representation-padding firewall are \emph{predecessors}, not new results restated as discoveries. The present increment is a quantified exact \emph{affine-pivot and semantic-weakening} cofactor isometry for the published Braun proof grammar, including a sourced bit-PHP corollary and independent all-rule finite falsifiers.
+
+Grok was found in \path{GROKPROOF/}, specifically \path{GROKPROOF/2026-11-04_0720_PROGRESS.md} (blob \texttt{06304e87e0}), which still lacks an all-input fully charged SAT-to-FLMV transform. Claude was found in \path{research/agents/claude/}; read \path{2026-10-28_1452_CLAUDE_TPORT-0002.tex} (blob \texttt{1f9fc727}) and \path{2026-09-30_CLAUDE-0266_review.tex} (blob \texttt{694c1c81}). Claude's alternation-trading threshold is restricted-model; its spectral critiques warn against semantic-to-work promotion. Neither is authority for B3.
+
+External literature searched: Braun's 2026 original arXiv text, Haken's original 1985 Resolution lower bound, Cook's 1976 polynomial Extended Resolution PHP theorem, and Itsykson--Sokolov's 2020 Res($\oplus$) definitions. Searched public github.com/openai for relevant proof-checking examples; no applicable original Rmix341 verifier surfaced. Duplicative guarded ordinary Resolution and source-sensitivity results were identified and not claimed new. No program can infer an unrestricted SAT lower bound merely from the present guard isometry.
+
+For the \emph{unchanged preselected} $R_{\mathrm{mix341}}$,
+\[
+W_R(F)=\min_{\pi:F\vdash_R\bot}\sum_{\text{distinct paid nodes }u\in\pi}w(u),\quad
+\overline W_R(N)=\max_{\substack{F\ {\rm valid\ UNSAT}\\|\mathrm{enc}(F)|\le N}}W_R(F).
+\]
+The primary weakest sufficient transfer remains \textbf{OPEN}:
+\[
+\mathrm{SAT}\in P\stackrel{?}{\Longrightarrow}
+\overline W_R(N)\le\operatorname{poly}(N)\quad(\mathrm{B3}).
+\]
+B1 and B2 are stronger optional obligations, also OPEN. Superpolynomial $\overline W_R$ is OPEN. P versus NP remains OPEN. \textbf{Next falsifier:} identify the first actual legally encoded full-calculus LOCAL-CONVERT/GF(2)/AND3/DEF record that defeats common-guard lifting or $t=1$ specialization, with source-identical certificates, not an invented semantic rule.
+
+\begin{thebibliography}{9}
+\bibitem{Braun2026} K. Braun, \emph{An exponential lower bound for the bit pigeonhole principle in resolution over parities}, arXiv:2609.23015, revision 2, 2026.
+\bibitem{IS2020} D. Itsykson and D. Sokolov, \emph{Resolution over linear equations modulo two}, Annals of Pure and Applied Logic 171 (2020), 102722.
+\bibitem{Haken1985} A. Haken, \emph{The intractability of resolution}, Theoretical Computer Science 39 (1985), 297--308.
+\bibitem{Cook1976} S. A. Cook, \emph{A short proof of the pigeon hole principle using extended resolution}, SIGACT News 8(4) (1976), 28--32.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-3::RESOPLUS-GUARD-RESTRICTION388
