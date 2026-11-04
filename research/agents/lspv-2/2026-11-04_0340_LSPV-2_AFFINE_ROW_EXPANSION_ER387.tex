@@ -1,0 +1,81 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.95in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\title{LSPV-2/387: A Uniform Paid-AND2 and Resolution Compiler for Explicit Affine CNFs}
+\author{PNP SAT-Circuit Reduction Builder}
+\date{November 4, 2026, 03:40 PST}
+\begin{document}
+\maketitle
+\noindent\textbf{Status: PROVED/EXACT symbolic upper construction in a restricted fragment; COMPUTATIONAL local certificates.} This is not a shortest-proof theorem for general CNF or a machine lower bound. Independent specialist review and a full parameterized proof emitter remain pending. P versus NP OPEN.
+
+\section*{Fixed system, encoding and known hardness}
+The proof system is the unchanged signed-AND2/strict binary Resolution fragment $E_{\land2}$ of the fixed $R_{\mathrm{mix341}}$ (original LSPV-2/341, blob c87acd11d32ccfc3b7acd3667ef11daeb60079cb). Original clauses are free leaves; each non-tautological Resolution inference costs one node; each conservative signed two-input AND definition costs one node, supplying all three CNF definition clauses. Underlying input wire names of each new gate must differ. No free XOR, AND3, LOCAL-CONVERT, semantic oracle or unrestricted computation rule is used.
+
+Urquhart's 1987 theorem gives constants $c>0$ and an infinite expander-based family of odd Tseitin signed CNFs on $h$ bounded-degree vertices, length $\Theta(h\log(h+2))$ bits in indexed explicit encoding, such that \emph{every} ordinary unrestricted DAG Resolution proof needs at least $2^{ch}$ lines for sufficiently large $h$. This lower bound does not cover $E_{\land2}$, extended Resolution or arbitrary SAT algorithms. Polynomial-time GF(2) elimination is the mandatory control. See \cite{Urquhart87,Cook76}.
+
+A row $r$ consists of $\bigoplus_{i\in S_r}x_i=b_r$ with distinct original variables. Its explicit parity CNF contains all $2^{|S_r|-1}$ signed clauses falsified by assignments of opposite parity. We require a canonical block ordering, or an explicit polynomial-size source-index partition whose complete row pattern is independently verified. The original signed CNF length is $M$ bits; the source-plus-partition evidence length is $N\le O(M\log(M+2))$. This is a recognizable \emph{restricted} input family, not arbitrary CNF.
+
+\begin{theorem}[Uniform fully expanded affine upper compiler]
+A single fixed deterministic algorithm handles every complete, authenticated affine-row CNF in the preceding encoding. For consistent rows it outputs an original-variable satisfying assignment. For inconsistent rows it outputs a source-rooted proof in $E_{\land2}$ with at most $O((N+2)^{20})$ paid gates/Resolution nodes and $O((N+2)^{20})$ explicit certificate bits. Construction, input verification, every intermediate encoded statement, parent access, output, checking and peak writable storage have polynomial bounds in $N$. The exponent $20$ is a loose bound. It is \emph{not} a native low-space or FLMV exponent.
+\end{theorem}
+
+\begin{proof}
+Gaussian elimination finds a nonempty set of input rows $I$ such that
+\[
+ \bigoplus_{r\in I}\mathbf a_r=\mathbf0,\qquad
+ \bigoplus_{r\in I}b_r=1.
+\]
+A charge-one empty row already contains $\bot$. If all selected nonempty rows are unary, an inconsistent row subset contains opposite original units, giving one Resolution step. Otherwise select any row of width at least two, with \emph{either} charge. Build its XOR circuit from paid conservative signed-AND2 gates:
+\[
+ u=a\land\neg c,\qquad v=\neg a\land c,\qquad
+ w=\neg u\land\neg v,\qquad a\oplus c=\neg w.
+\]
+The complete original parity CNF plus gate definitions entails a unit for the output signed literal $s$, namely $s=b$. Davis--Putnam variable elimination \cite{DavisPutnam60} of every variable except the output derives the corresponding \emph{exact} unit by strict Resolution. The projection is a singleton, so no weakening is needed. Set the signed initial rail to $z=s$ if $b=0$, and $z=\neg s$ if $b=1$. Thus a unit $\neg z$ is source-derived in both cases. The underlying rail wire is fresh, not an original input wire. This removes the zero-charge-row restriction of earlier cubic compiler /386.
+
+Let $L=\sum_{r\in I}|S_r|$ and append all $L$ selected variable occurrences, in row order, to a paid XOR left fold starting at $z$. After each row, take the unit for the previous accumulator, the full row source clauses and the $O(d_r)$ new charged gates. Their projection onto the new accumulator output is a singleton with value updated by $\oplus b_r$. Strict Resolution elimination therefore derives its output unit. At the end the final wire $y$ is proved $1$, because the selected charges sum to $1$.
+
+Every original variable occurs an even number of times in the selected multiset because the selected coefficient rows sum to zero. Stable-sort the occurrence list by at most $L(L-1)/2$ adjacent swaps. For each distinct-variable swap, build fresh paid gates for the transformed local prefix, and use the constant-port Boolean identity
+\[
+ (a\oplus x)\oplus y=(a\oplus y)\oplus x.
+\]
+The projection of the two bounded-size definitional circuits onto their signed outputs is Boolean equality, whose two prime binary clauses are derived by strict Resolution elimination. Rebuild at most $L$ suffix gates and propagate the equality by constant-port congruence, also strictly resolved from paid gate definitions. This costs $O(L)$ nodes per swap, hence $O(L^3)$ nodes.
+
+Once equal occurrences are adjacent, remove each pair by the locally certified identity $(a\oplus x)\oplus x=a$, with fresh accumulator wire $a$ distinct from original $x$. Rebuild and justify the suffix after each cancellation, spending $O(L^2)$ total. No illegal same-input XOR gate or free constant is introduced. The final syntactic circuit is $z$; propagating equality of each replaced root derives $z=1$, contradicting the original source-derived $z=0$.
+
+For a row of width $d$, local inference uses at most $q=4d+1$ named variables. There are at most $3^q$ non-tautological clauses, and a complete explicit Davis--Putnam sweep uses at most $q9^q$ resolution-pair attempts, recording each new non-tautological resolvent and its two parents. Since the input contains $2^{d-1}$ source clauses, $2^d\le 2(M+2)$; thus $9^{4d+1}=O((M+2)^{4\log_2 9})$ is polynomial in the \emph{explicit} input length. The global rewrite templates use only constantly many variables per local equivalence and $L\le M$, so a conservative polynomial envelope $O((N+2)^{20})$ covers all generated proof nodes, encoded bits, scans, gate validation, certificate replay, and peak materialized storage. This argument would not carry over unchanged to a compact, unexpanded width-$d$ parity oracle.
+\end{proof}
+
+\section*{Exact no-zero-charge countercontrol}
+Take
+\[
+ x\oplus y=1,\qquad y\oplus z=1,\qquad x\oplus z=1.
+\]
+All three rows have charge one and the system is UNSAT. Its six source clauses, in order, are
+\[
+(x\vee y),(\neg x\vee\neg y),(y\vee z),(\neg y\vee\neg z),
+(x\vee z),(\neg x\vee\neg z).
+\]
+Every original clause is independently indispensable. A binary-premise ancestry argument therefore forces at least five paid nodes even in the complete fixed mixed calculus. Five strict Resolution steps achieve it: first derive $(\neg x\vee y)$ from $(y\vee z)$ and $(\neg x\vee\neg z)$; derive $(x\vee\neg y)$ from $(\neg y\vee\neg z)$ and $(x\vee z)$; derive $(y)$ and $(\neg y)$ using the first two original signed clauses; resolve these units to $\bot$. Thus the exact mixed minimum is $W_{R_{\mathrm{mix341}}}(F_\triangle)=5$. Changing the third charge to zero produces two SAT models.
+
+\section*{Falsification, verification and provenance}
+The four falsifiers were (F1) a zero-charge row is necessary (false); (F2) local parity output units need weakening (false for source-complete rows); (F3) compact, unexpanded width-$d$ parity has the same bit cost (false); and (F4) this restricted polynomial upper bound proves B3 (unsupported).
+
+An executable producer yielded six complete strict-Resolution local unit derivations at widths $d=2,3,4$ and both charge values. The charged (AND2, Resolution) pairs are $(3,7),(3,6),(6,33),(6,35),(9,199),(9,204)$. The independent checker replayed 489 strict Resolution steps, 36 paid AND2 definitions, eight swap/cancellation Boolean input patterns, all SAT/UNSAT controls, six triangle source-deletion models and five deliberately corrupted inputs. It passed 10,230 assertions. The finite traces check local rules and the exact triangle; they are not a full unbounded compiler execution. Only the symbolic theorem asserts the all-size polynomial construction.
+
+Producer: \url{https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv2_387_affine_row_controls.js}.
+Independent checker: \url{https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv2_387_affine_independent_verify.js}.
+Raw: \url{https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-04_0340_LSPV2_AFFINE_ROW_ER387_raw.json}.
+The raw JSON wraps the producer dataset under key \texttt{dataset} and records the independent-check summary separately. Verification used fresh V8 execution of complete GitHub-fetched source. Container-backed native execution was unavailable, so no native host RSS/timing or local ZIP is asserted.
+
+Project state review included the November 2 12:04 refocus, issue 3, AGENTS, CODEX, repo skill, original /341, previous /386, LSPV-1/386, LSPV-3/391, LSPV-4/382 and LSPV-5/334. The actual Grok assessment \texttt{GROKPROOF/2026-11-04\_1217\_PROGRESS.md}, blob cae0560d, does not establish its universal charged transformation and lacks full backing data for its expander runtime claim. Claude's actual \texttt{research/agents/claude/2026-10-28\_1452\_CLAUDE\_TPORT-0002.tex}, blob 1f9fc727, concerns a restricted alternation-trading system. Neither supplies B3.
+
+The fixed $R_{\mathrm{mix341}}$ B1, B2, B3, and superpolynomial general-input $\overline W_{R_{\mathrm{mix341}}}(N)$ lower bound remain OPEN. In particular, $SAT\in P\Rightarrow \overline W_{R_{\mathrm{mix341}}}(N)=N^{O(1)}$ is not established by this affine result. No agent identity, schedule, state or proof grammar is changed. Next: materialize and independently check a full generic multirow proof emitter and audit named LOCAL-CONVERT public-wire semantics.
+
+\begin{thebibliography}{4}
+\bibitem{Urquhart87} A. Urquhart, Hard Examples for Resolution, J. ACM 34(1):209--219, 1987.
+\bibitem{Cook76} S. Cook, A Short Proof of the Pigeon Hole Principle Using Extended Resolution, SIGACT News 8(4):28--32, 1976.
+\bibitem{DavisPutnam60} M. Davis and H. Putnam, A Computing Procedure for Quantification Theory, J. ACM 7(3):201--215, 1960.
+\bibitem{CookReckhow79} S. Cook and R. Reckhow, The Relative Efficiency of Propositional Proof Systems, J. Symbolic Logic 44(1):36--50, 1979.
+\end{thebibliography}
+\end{document}
