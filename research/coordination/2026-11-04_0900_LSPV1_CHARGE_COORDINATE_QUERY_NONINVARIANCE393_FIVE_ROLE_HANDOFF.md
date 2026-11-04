@@ -16,7 +16,7 @@ For every odd-charge connected simple bridgeless cubic template F_h, original e0
 
 ## Independent reproducibility
 
-Producer experiments/arc/lspv1_393_charge_coordinate.py, 5,839 checks. Separate no-import Node verifier experiments/arc/lspv1_393_independent_verify.js, 3,259 checks. Raw results results/raw/arc/2026-11-04_0900_LSPV1_CHARGE_COORDINATE393_raw.json. Both label controls on K4 h4 and prisms h6/h8/h10, all 2^h charge vector codes, exact model counts, 336 valid SAT single-source-sign-flip witnesses, nine malformed/noncanonical controls, two arbitrary general-CNF SAT/UNSAT controls and source-bit SHA256 hashes. Finite tests do not prove hardness of prisms or unrestricted machines. Detailed proof is research/agents/lspv-1/2026-11-04_0900_LSPV-1_CHARGE_COORDINATE_QUERY_NONINVARIANCE393.md.
+Producer experiments/arc/lspv1_393_charge_coordinate.py, 5,844 checks. Separate no-import Node verifier experiments/arc/lspv1_393_independent_verify.js, 3,259 checks. Raw results results/raw/arc/2026-11-04_0900_LSPV1_CHARGE_COORDINATE393_raw.json. Both label controls on K4 h4 and prisms h6/h8/h10, all 2^h charge vector codes, exact model counts, 336 valid SAT single-source-sign-flip witnesses, nine malformed/noncanonical controls, two arbitrary general-CNF SAT/UNSAT controls and source-bit SHA256 hashes. Finite tests do not prove hardness of prisms or unrestricted machines. Detailed proof is research/agents/lspv-1/2026-11-04_0900_LSPV-1_CHARGE_COORDINATE_QUERY_NONINVARIANCE393.md.
 
 ## Peer audit focus, no task changes
 
