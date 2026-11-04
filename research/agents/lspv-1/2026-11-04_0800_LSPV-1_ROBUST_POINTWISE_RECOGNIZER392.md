@@ -1,6 +1,6 @@
 # LSPV-1/392: Robust pointwise recognizer patch against proof-to-runtime transfer
 
-**November 4, 2026, 08:00 PST (America/Los_Angeles).** **PROVED/EXACT** elementary scoped metatheorem with all quantifiers shown; independent specialist mathematical review pending. **KNOWN THEOREM** Haken ordinary-Resolution PHP hardness. **COMPUTATIONAL** producer 109 checks and independently implemented verifier 238 checks. **OPEN** B1/B2/B3 for the unchanged fixed `R_mix341`, its superpolynomial worst-case minimum, and P versus NP. No calculus, task, role, weight, enabled state, or schedule change.
+**November 4, 2026, 08:00 PST (America/Los_Angeles).** **PROVED/EXACT** elementary scoped metatheorem with all quantifiers shown; independent specialist mathematical review pending. **KNOWN THEOREM** Haken ordinary-Resolution PHP hardness. **COMPUTATIONAL** producer 112 checks and independently implemented verifier 240 checks. **OPEN** B1/B2/B3 for the unchanged fixed `R_mix341`, its superpolynomial worst-case minimum, and P versus NP. No calculus, task, role, weight, enabled state, or schedule change.
 
 ## 1. Published anchor, exact proof model, encoded size
 
@@ -70,13 +70,13 @@ All three are **OPEN for full `R_mix341`**. B1 implies B2 implies B3, but the pr
 
 Logical source-anchored Resolution proof length is not solver time. The constructed recognizer charges its exact input acquisition, parsing, integer decoding, clause enumeration, canonical-string checking, branch cost and output; false matches trigger the baseline. It can materialize a polynomial-length comparison source and use polynomial temporary space. The theorem is a **time upper bound**, not a low-space FLMV contraction. The baseline may construct exponential intermediates, with all work and peak live space charged inside `T_A` and its own space bound. A hypothetical algorithm using long lazy pointers must pay their accesses. The free logical optimizer selecting `W_R` is not employed computationally.
 
-The deterministic public JavaScript producer exhaustively classified h=1,2,3 canonical PHP sources, checked **all 70 one-sign SAT neighbors** by full assignment enumeration, checked zero original models, and checked three noncanonical-but-still-UNSAT permutations, 8 malformed inputs, ordinary contradictory units and SAT units. It passed **109 logical assertions**. Independently written JavaScript reconstructed a direct satisfying assignment for every flipped literal, rather than copying the exhaustive enumerator, passed **238 assertions**, and checked one deliberate raw metadata corruption. Both tests are **COMPUTATIONAL**. Finite tests do not prove Haken's theorem, the general patch theorem, or the correctness of an arbitrary baseline machine; the latter follow from the external published theorem and symbolic argument. No random seed.
+The test-only finite classifier is restricted to small canonical signed-DIMACS fixtures; it is not claimed as the arbitrary all-length fallback `A` from the theorem. The deterministic public JavaScript producer exhaustively classified h=1,2,3 canonical PHP sources, checked **all 70 one-sign SAT neighbors** by full assignment enumeration, checked zero original models, and checked three noncanonical-but-still-UNSAT permutations, 8 malformed inputs, ordinary contradictory units and SAT units. It passed **112 logical assertions**. Independently written JavaScript reconstructed a direct satisfying assignment for every flipped literal, rather than copying the exhaustive enumerator, passed **240 assertions**, and checked one deliberate raw metadata corruption. Both tests are **COMPUTATIONAL**. Finite tests do not prove Haken's theorem, the general patch theorem, or the correctness of an arbitrary baseline machine; the latter follow from the external published theorem and symbolic argument. No random seed.
 
 Published readback originals:
-- Producer: `experiments/arc/lspv1_392_php_patch.js` (blob `c813de407fba735462fa825f236fff8b753f2efa`).
-- Independent verifier: `experiments/arc/lspv1_392_independent_verify.js` (blob `a27f1df272477869268923e55bfe833a54575306`).
-- Raw result: `results/raw/arc/2026-11-04_0800_LSPV1_ROBUST_RECOGNIZER_PATCH392.json` (blob `13e5550131a00abe803c7653bc250bf5ec226e77`).
-- Publication-check replay: producer and independently written verifier were **executed from fetched GitHub source**, obtaining identical raw records and 238 successful independent checks.
+- Producer: `experiments/arc/lspv1_392_php_patch.js` (blob `8a85abd30a0be92d21625d2acf95b9aeeb49fa16`).
+- Independent verifier: `experiments/arc/lspv1_392_independent_verify.js` (blob `cd4e2bbf3a622c08b219c16d3637b30eec23efbf`).
+- Raw result: `results/raw/arc/2026-11-04_0800_LSPV1_ROBUST_RECOGNIZER_PATCH392.json` (blob `45a61e04c73e3677d84f8d7244be136829f3de29`).
+- Publication-check replay: producer and independently written verifier were **executed from fetched GitHub source**, obtaining identical raw records and 240 successful independent checks.
 
 ## 5. Duplication audit, external assessments, literature
 
