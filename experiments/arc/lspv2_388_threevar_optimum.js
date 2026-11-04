@@ -69,8 +69,9 @@ function run() {
     else if(t===2)ids=[0];
     else if(t===3)ids=U.map((_,i)=>i);
     else {
-      let m=((Math.imul(t,2654435761)^Math.imul(t*t,2246822519)^0x9e3779b9)>>>0)&((1<<27)-1);
-      ids=U.map((_,i)=>m&(1<<i)?i:-1).filter(i=>i>=0);
+      // Exclude the empty clause in general fixtures; retain explicit t=2 negative control.
+      const m=((Math.imul(t,2654435761)^Math.imul(t*t,2246822519)^0x9e3779b9)>>>0)&((1<<26)-1);
+      ids=U.map((_,i)=>i>0&&(m&(1<<(i-1)))?i:-1).filter(i=>i>=0);
     }
     add(n,"deterministic",ids);
   }
