@@ -1,0 +1,58 @@
+\documentclass[11pt]{article}
+\usepackage[margin=.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\title{LSPV-3/391: Identical Signed-Horn Boundary Semantics, Distinct Exact Mixed Proof Costs}
+\author{PNP Hypergraph and Proof Certificates}
+\date{November 4, 2026, 03:24 PST}
+\begin{document}\maketitle
+\noindent \textbf{Status: PROVED/EXACT for the all-size fixed-system theorem; COMPUTATIONAL for the independently checked finite controls; external specialist review pending.} B1/B2/B3 and P versus NP remain OPEN.
+\section*{Published hardness and original proof grammar}
+Haken (1985) proved that for some positive c and all sufficiently large h, every ordinary Resolution shared-DAG refutation of the unary pigeonhole CNF PHP(h+1,h) has at least 2^{ch} lines. This signed source has h(h+1) variables, (h+1)+h binom(h+1,2) clauses, and Theta(h^3 log h) explicit indexed-DIMACS bits. Cook (1976) supplies polynomial Extended Resolution proofs of the same formulas. Braun (arXiv:2609.23015, September 19, 2026) reports for every ell>=32, n=2^ell, a bound above exp(n/(32768 ell^2)) on every unrestricted DAG extension-free Res(oplus) refutation of bit-PHP; its complete explicit signed binary-index input occupies Theta(n^3 ell^2) bits. Neither result quantifies over all uniform SAT algorithms, or establishes hardness in the fixed stronger mixed calculus.
+
+We use exactly original R_mix341, LSPV-2/341 Git blob c87acd11: free original signed source clauses and unit-paid RES, AND3, GF(2) XOR, LOCAL-CONVERT and conservative two-input DEF. Every derived DAG node has at most two premises; all source clauses and paid nodes are authenticated. The proof below uses RES only for upper bounds and the two-premise source-ancestry argument for a lower bound covering \emph{all} legal mixed proofs, including adaptive order, sharing and conservative extensions. Ambiguous private LOCAL-CONVERT port syntax is irrelevant to this argument.
+\section*{Two source-indexed signed families}
+Fix any integer h>=2, original variables x_0,...,x_h and a sole interface bit b=x_h. Put D=(\neg x_h) and
+\[
+ L_h^A=(x_0)\land\bigwedge_{i=1}^{h}(\neg x_{i-1}\vee x_i),\qquad
+ L_h^B=(x_h)\land\bigwedge_{i=0}^{h-1}(\neg x_i\vee x_{(i+1)\bmod h}),
+\]
+and A_h=L_h^A\land D, B_h=L_h^B\land D. The projection at the cut is \(\mathcal I(L;b)=\{a(b):\exists a(x_0,...,x_{h-1})\ L(a)=1\}\).
+\begin{theorem}
+For every h>=2, both left interfaces have exactly the same feasible boundary image and satisfy the same downstream queries:
+\[
+ \mathcal I(L_h^A;b)=\mathcal I(L_h^B;b)=\{1\},
+ \qquad \forall Q:\{0,1\}\to\{0,1\},\quad
+ \mathrm{SAT}(L_h^A\land Q(b))\iff\mathrm{SAT}(L_h^B\land Q(b)).
+\]
+Both full formulas are UNSAT Horn 2-CNF with h+1 appearing variables, h+2 source clauses (two unit, h binary), 2h+2 signed literal occurrences, exactly one positive and one negative occurrence of \emph{each} variable, and exactly equal canonical ASCII DIMACS byte lengths N_h=Theta(h log(h+2)). Yet the \emph{global minima in the unchanged full R_mix341} are
+\[
+ \boxed{W_{R_{\mathrm{mix341}}}(A_h)=h+1,\qquad W_{R_{\mathrm{mix341}}}(B_h)=1.}
+\]
+Every individual source clause and every literal sign in A_h is independently pivotal.
+\end{theorem}
+\begin{proof}
+The chain's positive initial unit and implications force all x_i=1. The cycle admits all-zero or all-one internal assignments while its separate unit forces b=1. Thus both projected images equal the singleton \{1\}; every downstream query Q(b) has the same SAT response. The negative unit D contradicts the left in both cases.
+
+For A_h, deleting x_0 admits the all-zero assignment, and deleting D admits all ones. Deleting the i-th binary link admits the step assignment x_0=...=x_{i-1}=1 and x_i=...=x_h=0. The same witness satisfies the formula if either one sign of that link is reversed; the old false literal becomes true. Likewise either unit sign reversal admits the corresponding all-zero/all-one assignment. Therefore every original source is indispensable, with each polarity independently pivotal.
+
+With m=h+2 indispensable sources, any sound refutation uses all m source leaves in the contradiction ancestry. With q paid nodes of at most two antecedents, connectedness yields m+q-1 <=2q, hence q>=h+1. A chain of h strict Resolution steps successively produces x_1,...,x_h and one final step with D produces false, achieving the bound. In B_h the unit x_h resolves directly with D in one step and zero is impossible because no source is empty. These are exact global minima, not finite-search optima.
+
+Both have identical numbers of unit and binary clauses. For each named variable one positive and one negative signed token occur in \emph{both}, so the total ASCII digit, sign, space, clause terminator and header counts are equal, including at decimal digit changes. The encoded strings need not be identical.
+\end{proof}
+\section*{Consequence and exact limitations}
+Any purported universally sound minimum-node lower bound determined \emph{only} by the full feasible interface set, N_h, m, variable count, signed-degree-by-variable and clause-width histogram must give the same value for A_h and B_h. Since the latter has W=1, it cannot certify the growing h+1 bound on A_h. The ratio h+1 diverges. This \textbf{falsifies semantic-cut and signed-degree sufficiency}, not a richer topology- and provenance-aware invariant. A polynomial gap does not refute any polynomial-cost simulation, B1/B2/B3, or an arbitrary-machine SAT lower bound. Both families are uniformly easy Horn/2SAT instances.
+
+Falsifiers: F1 equal projected interface implies equal W: FALSIFIED. F2 equal signed degree, clause widths, source count and encoded length imply equal W: FALSIFIED. F3 all essential sources force superpolynomial proof cost: FALSIFIED by the exact linear optimum. F4 polynomial quotient gap refutes B3: INVALID inference.
+
+A deterministic Python producer generated complete authenticated strict-Resolution DAGs for h=2,3,4,6,8,12,24,64, plus 139 deletion and 262 literal-flip SAT witnesses. An independently implemented JavaScript verifier reconstructed sources and rechecked 1,566 assertions, including exact ASCII sizes, proof pivot signs and indices, exhaustive both-label and interface enumerations through h=8, and forged-proof rejections. Input is Theta(h log h) bits, the A proof O(h log h) output bits, and the B proof one node with O(log h) identifier bits. Proof search, input acquisition, every gate check, output, and peak space are charged separately from W. The larger all-witness ledger is for testing, not a minimum proof.
+
+The inspected project corpus: November 2 refocus, issue #3, AGENTS.md, CODEX.md, repository skill, original LSPV-2/341, LSPV-3/386,/389,/390, LSPV-1/386, LSPV-2/385, LSPV-4/382 and LSPV-5/334. LSPV-4/382 already gave distinct cut-entropy and terminal-width falsifiers, not this matched-statistics exact minimum pair. Grok \texttt{GROKPROOF/2026-11-04_1217_PROGRESS.md} (blob cae0560d) discusses an unproved fully charged uniform circuit-cut solver bridge; Claude \texttt{research/agents/claude/2026-10-28_1452_CLAUDE_TPORT-0002.tex} (blob 1f9fc727) concerns restricted alternation trading. Both actual files were inspected; neither gives B3. Primary searches covered Haken, Cook, bit-PHP/Res(oplus), and minimal unsatisfiable 2-SAT.
+\section*{Next missing theorem}
+The weakest sufficient B3 bridge still requires \(\mathrm{SAT}\in P\implies \overline W_{R_{\mathrm{mix341}}}(N)\le\mathrm{poly}(N)\) for the same preselected R. Neither B3 nor superpolynomial worst-case mixed-system minimum is proved; P versus NP remains OPEN. Next: source-authenticated interface certificates which preserve signed provenance alongside extensional boundary behavior and survive exact LOCAL-CONVERT and paid DEF checks. No agent, schedule, proof rule or weight was changed.
+\begin{thebibliography}{9}
+\bibitem{Haken} A. Haken, The Intractability of Resolution, Theoretical Computer Science 39 (1985) 297--308.
+\bibitem{Cook} S. Cook, A Short Proof of the Pigeon Hole Principle Using Extended Resolution, SIGACT News 8(4) (1976), 28--32.
+\bibitem{Braun} K. Braun, An Exponential Lower Bound for the Bit Pigeonhole Principle in Resolution over Parities, arXiv:2609.23015 (2026).
+\end{thebibliography}
+\end{document}
