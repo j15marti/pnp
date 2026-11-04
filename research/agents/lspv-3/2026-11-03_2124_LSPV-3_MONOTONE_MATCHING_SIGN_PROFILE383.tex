@@ -1,0 +1,61 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{LSPV-3/383: Monotone-Hard Signed-Hypergraph Feasibility Profile with Easy Uniform Decision}
+\author{PNP Hypergraph \& Proof Certificates}
+\date{November 3, 2026, 21:24 PST}
+\begin{document}\maketitle
+\noindent\textbf{STATUS:} KNOWN THEOREM for monotone matching hardness; PROVED/EXACT for the signed-CNF construction, duality and algorithm; COMPUTATIONAL finite controls; B1/B2/B3, full mixed minimum and P versus NP OPEN. Independent specialist review pending.
+
+\section*{Source and exact restrictions}
+Cavalar, G\"o\"os, Riazanov, Sofronova and Sokolov, ECCC TR25-102 (revision November 6, 2025), Theorem 1, published at STOC 2026, prove: for every sufficiently large $n$, every nonuniform fan-in-two monotone AND/OR \emph{shared-DAG} circuit computing bipartite perfect matching $\operatorname{PM}_n:\{0,1\}^{n^2}\to\{0,1\}$ correctly on all adjacency matrices has at least $2^{n^{1/3-o(1)}}$ gates. It allows shared gates and unlimited depth, but excludes NOT, arbitrary algebraic steps and unrestricted machines. This is not a general SAT lower bound. Haken's exponential ordinary-Resolution pigeonhole theorem similarly does not transfer to Cook's polynomial Extended Resolution proofs. The fixed project $R_{\mathrm{mix341}}$ from LSPV-2/341 (Git blob c87acd11d32ccfc3b7acd3667ef11daeb60079cb) remains unchanged: free authenticated CNF clauses; paid unary/binary shared-DAG RES, AND3 on at most three original variables, native GF(2) addition, LOCAL-CONVERT from verified local antecedents, and conservative signed two-input DEF; each derived node costs one.
+
+\section*{Same unsigned incidence hypergraph, varying unit signs}
+For all $n\ge2$ and $a\in\{0,1\}^{n\times n}$ let $x_{ij},p_{ij}$ be independent Boolean variables. The mask $a_{ij}=1$ disables edge $(i,j)$. Form ordinary CNF
+\[
+\begin{split}
+F_{n,a}={}&\bigwedge_i(\bigvee_jx_{ij})\wedge\bigwedge_j(\bigvee_ix_{ij})
+\wedge\bigwedge_{i;\,j<k}(\neg x_{ij}\vee\neg x_{ik})\\
+&\wedge\bigwedge_{j;\,i<k}(\neg x_{ij}\vee\neg x_{kj})
+\wedge\bigwedge_{i,j}(p_{ij}\vee\neg x_{ij})
+\wedge\bigwedge_{i,j}\ell_{ij}(a),\\
+&\ell_{ij}(a)=\begin{cases}p_{ij}&a_{ij}=0\\\neg p_{ij}&a_{ij}=1.\end{cases}
+\end{split}
+\]
+All $2^{n^2}$ formulae have the same clause IDs, absolute literal lists, and unsigned signed-hypergraph incidence; only $n^2$ unit polarities differ. There are $v=2n^2$ variables, $m=n^3+n^2+2n$ clauses, $L=2n^3+3n^2$ literal occurrences and $N=\Theta(n^3\log n)$ explicitly encoded CNF bits. This is GENERAL CNF, not an asserted strict 3-CNF hard family.
+
+\begin{theorem}[Exact source-sign semantics and restricted hardness counterexample]
+For every $n\ge2$ and mask $a$, satisfying assignments of $F_{n,a}$ biject with perfect matchings of the bipartite graph whose adjacency matrix is $b=1-a$. Thus
+\[
+U_n(a)={\bf1}[F_{n,a}\ \mathrm{UNSAT}]
+=1-\operatorname{PM}_n(1-a)
+=\bigwedge_{\pi\in S_n}\bigvee_i a_{i,\pi(i)}.
+\]
+Every monotone AND/OR shared circuit computing $U_n$ on all sign masks has size
+\[
+2^{n^{1/3-o(1)}}=2^{(N/\log N)^{1/9-o(1)}}.
+\]
+Nevertheless one uniform deterministic algorithm recognizes the formula template and decides all its SAT labels in polynomial bit time by bipartite matching. Therefore large monotone semantic source-sign profile complexity is NOT a representation- or algorithm-independent SAT runtime lower bound.
+\end{theorem}
+\begin{proof}
+The row/column positive clauses and pairwise at-most-one negatives force $x$ to be a permutation matrix. Each unit forces $p_{ij}=1-a_{ij}$, so the gate clause rules out exactly the disabled selected edges. Every perfect matching determines one assignment of all $x,p$. An AND/OR circuit for $U_n$ dualizes at the same gate count by interchanging $\wedge,\vee$ and constants to a circuit computing $1-U_n(1-b)=\operatorname{PM}_n(b)$. Apply the cited monotone theorem. For the unrestricted upper bound, uniformly parse and authenticate all source clauses and signs, recover $b$ and run a deterministic augmenting-path matching algorithm. A total correct general SAT decider can use this shortcut on recognized formulas, exhaustive SAT elsewhere and explicitly reject malformed strings. Its global worst case may be exponential. No short mixed refutation is asserted.
+\end{proof}
+
+\section*{Falsifiers and accounting}
+F1: polarity changes incidence, FALSIFIED. F2: rogue satisfying assignments, FALSIFIED. F3: nonmonotone profile, FALSIFIED; direct semantic equivalence and monotonicity hold. F4: exponential monotone-profile size forces general SAT time, FALSIFIED by polynomial matching. All conclusions are restricted to specified models. Python producer exhaustively inspected $n=2$ (16 masks: 7 SAT, 9 UNSAT) and $n=3$ (512 masks: 247 SAT, 265 UNSAT); deterministic 90 sampled masks at $n=4$ gave 43 SAT, 47 UNSAT. Independently written JavaScript verifier passed 5,098 checks including six malformed/corrupted records and all 19,764 comparable mask pairs through $n=3$. These finite controls do not certify shortest mixed DAGs.
+
+The source requires $O(N)$ bits of parsing; enabled adjacency uses $O(n^2)$ bits and matching is polynomial in $n$; construction, bit reads, updates, evidence output, verification and all-phase memory must be charged. The expanded semantic CNF of $n!$ permutations is not compulsory for a compact nonmonotone algorithm. $W_{R_{\mathrm{mix341}}}$ is an offline shortest logical proof DAG; its node count is not runtime. For FLMV preserve $s'\le\max\{\rho,\eta,\lambda,\lambda s\}$ and fully account for $\rho$.
+
+\section*{Corpus and independent-folder assessment}
+Read November 2 12:04 five-role refocus, current issue 3, AGENTS.md, CODEX.md, repository skill, LSPV-2/341 and /378, LSPV-3/382, LSPV-5/328, LSPV-1/379, plus original project discussions. Searches included monotone circuit matching, perfect matching source activation, Razborov monotone, signed-hypergraph matching. Prior research/main/2026-10-18_1304_SAT_OUTPUT_COMPOSITION1.md already warns about monotone CLIQUE nontransfer, while research/main/2026-11-01_2048_MAIN_SIGNED-CLAUSE-MATCHING-FACTOR-REFEREE280.tex studies a different restricted architecture. This new example does not claim novelty for the general warning.
+
+Grok read: GROKPROOF/2026-11-04_0513_PROGRESS.md blob 085e27e9984a46697556125c37beb18d4eea7113, universal all-input fully charged FLMV contraction unproved. Claude read: research/agents/claude/2026-10-28_1452_CLAUDE_TPORT-0002.tex blob 1f9fc727d3e2b009cba7afec2a93beb62959dd67, restricted alternation trading; and 2026-09-30_CLAUDE-0266_review.tex blob 694c1c8169d9a193397b94e6ee572c476e639a94, spectral pseudo-hardness countercontrols. Neither supplies B3. Previous root MAIN LSPV-3 claims preserved outside this added report.
+
+\noindent\textbf{Next gap.} B1 pointwise, B2 worst-case and B3 primary, $\mathrm{SAT}\in P\Rightarrow\exists C,k\,\forall N:\overline W_{R_{\mathrm{mix341}}}(N)\le C(N+1)^k$, remain OPEN. A separate superpolynomial bound on the same fixed $\overline W$ is OPEN. The matching shortcut is a mandatory adversarial test for future intrinsic cost invariants. P versus NP remains OPEN.
+
+\section*{References}
+\noindent[1] Cavalar et al., Monotone Circuit Complexity of Matching, ECCC TR25-102 (2025), STOC 2026. DOI: 10.1145/3798129.3800824.\par
+\noindent[2] Haken, The Intractability of Resolution, TCS 39 (1985) 297--308.\par
+\noindent[3] Cook, A Short Proof of the Pigeon Hole Principle Using Extended Resolution, SIGACT News 8(4) (1976) 28--32.\par
+\end{document}
