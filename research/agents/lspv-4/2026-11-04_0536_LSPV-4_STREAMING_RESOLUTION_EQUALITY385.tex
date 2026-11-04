@@ -1,0 +1,59 @@
+\documentclass[11pt]{article}
+\usepackage[margin=.92in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{LSPV-4/385: Streaming and Indexed Verification of One Authenticated Resolution Edge}
+\author{PNP Time-Space Resource Auditor}
+\date{November 4, 2026, 05:36 PST}
+\begin{document}\maketitle
+\noindent\textbf{PROVED/EXACT within a restricted deterministic access model; independent specialist review pending.}
+The authoritative fixed $R_{\mathrm{mix341}}$ is unchanged. No P-versus-NP separation, unrestricted SAT computational lower bound, or B1/B2/B3 transfer is proved.
+\section*{Published hard-family anchor}
+Haken (1985) proves: for the explicit unary pigeonhole CNF $\mathrm{PHP}_{h+1}^{h}$ with $h(h+1)$ Boolean variables, $(h+1)+h\binom{h+1}{2}$ clauses and binary-index encoding $N_h=\Theta(h^3\log(h+2))$, there exist $c>0,h_0$ such that for every $h\ge h_0$ and every \emph{ordinary shared-DAG Resolution} refutation $\pi$, $|\pi|\ge2^{ch}$. The theorem has no tree-like/regular restriction but does have a proof-system restriction. Cook (1976) gives polynomial Extended Resolution proofs, and GF(2) collapses odd-Tseitin parity certificates. Neither transfers Haken to all uniform SAT algorithms or to $R_{\mathrm{mix341}}$.
+\section*{Exact signed source and validation problem}
+Fix $m\ge1$, signed variables $v_1,\ldots,v_m$, and fresh $p,z$. For $b\in\{0,1\}^m$ set $\ell_i(b)=v_i$ if $b_i=1$, and $\ell_i(b)=\neg v_i$ otherwise. Define
+\[
+C_b=p\vee\bigvee_{i=1}^{m}\ell_i(b),\qquad
+F_b^S=C_b\wedge\neg p,\qquad
+F_b^U=F_b^S\wedge z\wedge\neg z.
+\]
+The first formula is SAT and the second UNSAT for every $b$. A mandatory proposed strict source-authenticated Resolution inference from $C_b$ and $\neg p$, on pivot $p$, has claimed conclusion $E_y=\bigvee_i\ell_i(y)$. It is legal iff $b=y$. Encodings place the $m$ source signs in an initial block and claimed signs in a final block, with fixed intervening parent/pivot records; both source labels use the same information pattern. Source and certificate are externally supplied. We study \emph{local legality}, not a requirement that any optimal UNSAT proof contain this particular step. Packed signs need $M=\Theta(m+\log m)$ bits; explicit signed binary-index lists need $M=\Theta(m\log(m+2))$.
+\begin{theorem}[Exact deterministic one-pass lower bound]
+Every fixed deterministic one-pass left-to-right streaming verifier accepting precisely legal source-authenticated Resolution inferences of this grammar must distinguish $2^m$ working configurations immediately after the source-sign block, separately for the SAT and UNSAT sources. Thus a machine with $s$ logical work bits requires $s\ge m-O(1)$. A matching $O(m+\log M)$-bit one-pass checker exists.
+\end{theorem}
+\begin{proof}
+If two different $b,b'$ led to the same working configuration after the sign block, append one identical suffix including the proposed conclusion $y=b$. Its inference is valid for $b$ and invalid for $b'$, but the deterministic one-pass machine has the same state, input position and unread suffix, a contradiction. Therefore all $2^m$ prefixes must have different configurations. The final fixed source records in the SAT and UNSAT cases do not change the argument. Storing all $m$ earlier signs provides the matching upper bound.
+\end{proof}
+\begin{theorem}[Multi-pass time-space tradeoff]
+In the deterministic $r$-pass streaming model, each pass left-to-right with an allowed, charged restart, working bit space $s$ satisfies $r(s+O(1))=\Omega(m)$. A deterministic implementation exists using $\lceil m/r\rceil+O(\log(M+r))$ working bits and conservative $O(rM^2)$ bit steps.
+\end{theorem}
+\begin{proof}
+Simulate the stream as a two-party deterministic protocol for equality: Alice holds source signs $b$, Bob holds claimed signs $y$; the fixed intervening fields are public. In at most $2r$ cut crossings, the protocol exchanges a memory configuration of $s+O(1)$ bits. The $2^m$ diagonal accepting pairs $(b,b)$ are a fooling set: no accepting transcript rectangle can contain two distinct diagonal pairs, since it would also accept a crossed unequal pair. Deterministic communication therefore uses $\Omega(m)$ bits, implying the tradeoff. For the upper bound partition positions into $r$ consecutive blocks and check just block $j$ on pass $j$, storing at most $\lceil m/r\rceil$ source signs and $O(\log(M+r))$ counters.
+\end{proof}
+\begin{theorem}[Indexed read-only contrast]
+On the same externally supplied source-plus-certificate record placed on immutable indexed read-only input, a single fixed deterministic checker uses $O(\log(M+2))$ writable bits and conservatively $O(M^2)$ native bit steps. It checks grammar, source references, chronological labels, pivot and exact resolvent by paired indexed rescans. It does not construct a proof or decide SAT.
+\end{theorem}
+\begin{proof}
+Store only an $O(\log M)$-bit position/index and the current pair of signed bits. For each $i$, seek the source and claimed sign fields, compare, and reject on any disagreement. Validate fixed records separately. All $O(m)$ accesses, index updates, rereads and output are charged. No $m$-bit sign vector is materialized. Consequently the one-pass lower bound does not survive this different access model.
+\end{proof}
+\section*{Falsifiers and resource ledger}
+\begin{enumerate}
+\item[] F1. One-pass exact verification can forget every earlier source sign: FALSIFIED even for one strict Resolution inference.
+\item[] F2. This $\Omega(m)$ peak applies to all sound representations: FALSIFIED by indexed rescanning, with its work charged.
+\item[] F3. A constant-size proof conclusion makes source acquisition free: FALSIFIED for the mandatory signed-step authentication problem.
+\item[] F4. The result implies superlinear $W_{R_{\mathrm{mix341}}}$ or an arbitrary SAT time/space lower bound: FALSE TRANSFER. Proof optimization can omit this step; the UNSAT control has a trivial unrelated two-unit contradiction.
+\end{enumerate}
+The first theorem measures actual working-state capacity for a declared one-pass input machine, not mandatory work of an arbitrary solver. Logical DAG node cost, proof bit count, rule verification, discovery, materialization, output and all-phase peak memory remain separate. Exponentially long intermediate evidence is allowed; any algorithm using it pays construction/access/verification/output. For FLMV the materialized-child ledger retains $s'\le\max\{\rho,\eta,\lambda,\lambda s\}$ and $\rho$ bounds \emph{every} local phase. Logical-state XOR is offline only and does not imply physical writes in a lazy encoding. Multiple read-only scans and head/index movement are not zero cost.
+\section*{Verification and literature/peer audit}
+A deterministic full Python producer exhaustively checked all $(b,y)$ for $1\le m\le6$ and both source labels: 10,920 records (252 legal, 10,668 illegal), 126 SAT/UNSAT source pairs, 5,334 separating ordered pairs, 642 single-sign forged conclusions, 27,300 pass-block comparisons, and 14 malformed-input rejections, totaling 55,382 checks. Independent JavaScript checks 10,920 cases, 5,334 separating pairs, 27,300 multi-pass comparisons, eight corrupted inputs and 49,148 assertions. Finite execution is COMPUTATIONAL only; the all-$m$ conclusion comes from the proof above. GitHub compact code and raw manifest are under \texttt{experiments/arc/lspv4\_385\_streaming\_resolution\_equality.py} and \texttt{results/raw/arc/2026-11-04\_0536\_LSPV4\_STREAM\_EQUALITY385.json}.
+Actual paths reviewed include the Nov 2 12:04 five-role handoff (blob c3889a3e), issue \#3, AGENTS.md, CODEX.md, the pnp-research repository skill, LSPV-2/341, LSPV-3/392 and LSPV-4/384. Grok \texttt{GROKPROOF/2026-11-04\_1322\_PROGRESS.md} (blob 0850246c) leaves the universal charged transformation OPEN; its self-reduction barrier is restricted. Claude \texttt{research/agents/claude/2026-10-28\_1521\_CLAUDE\_ONETAPE-0001.tex} (blob 9a5b05d6) concerns sequential-access SAT lower bounds, not B3. The lower-bound tool is the standard deterministic equality communication fooling set; no claim of academic novelty. Project URLs returned 404 through unauthenticated web but were fetched through the GitHub connector. Search for OpenAI implementations of this exact mixed calculus yielded no verified implementation; absence is not evidence.
+\section*{Next open implication}
+The weakest sufficient bridge remains $\mathrm{SAT}\in P\Rightarrow \overline W_{R_{\mathrm{mix341}}}(N)=N^{O(1)}$ for the SAME fixed system. B1, B2, B3 and a superpolynomial full-mixed minimum remain OPEN. A next exact task is machine-readable sound verification semantics for LOCAL-CONVERT, DEF, AND3 and GF(2), with scheduled generation and all-phase space separately accounted for. No agent identity or schedule was modified.
+\begin{thebibliography}{9}
+\bibitem{Haken} A. Haken, The Intractability of Resolution, \emph{TCS} 39 (1985), 297--308.
+\bibitem{Cook} S. Cook, A Short Proof of the Pigeon Hole Principle Using Extended Resolution, \emph{SIGACT News} 8(4) (1976), 28--32.
+\bibitem{KN} E. Kushilevitz and N. Nisan, \emph{Communication Complexity}, Cambridge University Press, 1997.
+\bibitem{CR} S. Cook and R. Reckhow, The Relative Efficiency of Propositional Proof Systems, \emph{JSL} 44 (1979), 36--50.
+\bibitem{FLMV} L. Fortnow, R. Lipton, D. van Melkebeek, A. Viglas, Time-space lower bounds for satisfiability, \emph{JACM} 52 (2005), 835--865.
+\end{thebibliography}
+\end{document}
