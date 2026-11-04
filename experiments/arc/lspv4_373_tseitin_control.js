@@ -1,0 +1,4 @@
+// Independent K4 Tseitin opposite-label and malformed controls
+const edges=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
+const count=charges=>{if(!Array.isArray(charges)||charges.length!==4||charges.some(x=>x!==0&&x!==1))throw Error("charges");if(new Set(edges.map(e=>e.join(","))).size!==6||edges.some(e=>e.length!==2||e.some(v=>v<0||v>=4)))throw Error("edges");let c=0;for(let a=0;a<64;a++){let ok=true;for(let v=0;v<4;v++){let p=0;for(let i=0;i<6;i++)if(edges[i].includes(v))p^=(a>>i)&1;if(p!==charges[v])ok=false}if(ok)c++}return c};
+let even=count([0,0,0,0]),odd=count([1,0,0,0]);if(even!==8||odd!==0)throw Error("wrong counts");let malformed=0;for(const x of [[0],[0,0,0,2],"odd",null]){try{count(x)}catch(e){malformed++}}if(malformed!==4)throw Error("failed malformed");return {even_models:even,odd_models:odd,malformed_rejected:malformed,checks:6};
