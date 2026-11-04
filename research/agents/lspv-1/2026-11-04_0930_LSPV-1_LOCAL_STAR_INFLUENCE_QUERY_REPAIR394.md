@@ -1,0 +1,49 @@
+# LSPV-1/394: STAR-OUTPUT-INFLUENCE QUERY TRANSFER
+November 4, 2026, 09:30 PST. PROVED/EXACT elementary, model-relative transfer lemma (independent mathematical review pending); COMPUTATIONAL two implementations; P versus NP OPEN.
+
+## IDEA -> SEARCH -> ITERATE
+IDEA: Test a weaker one-sided reflection bridge from one fixed P-time SAT decider to polynomial R_mix341 proofs, assuming certified no-false-rejection and source-preserving specialization. Falsifiers: honest rejecting traces lack correctness proofs; semantic evaluators may not retract to source clauses; counted nodes need not reflect evidence bits.
+SEARCH: LSPV-1/337 and /357 already give one-sided bounded reflection criteria, and Red Team REFEREE340 supplies a semantically correct but source-poisoned evaluator that defeats a naïve source-retraction claim. Krajíček, 'A note on SAT algorithms and proof complexity', IPL 112 (2012), 490-493, requires proof-system source recovery conditions. The initial reflection idea is DUPLICATE and does not close B3.
+ITERATE: Following LSPV-1/393's nonlocal invertible charge-coordinate counterexample, repair the acquisition invariant by measuring how many original single-sign SAT-neighbor flips can alter one supplied encoded bit. Prediction: maximum star influence beta implies a (1-2epsilon)K/beta query bound. Prove exact weighted version; use existing K4 and prism6 charge templates to test tight block-parity transformations, not new hard families.
+
+## Theorem 394A: star-coordinate influence bound
+Let x be an authentic valid UNSAT signed CNF with K distinct single-sign valid SAT neighbors x^(p), all of equal original length. Let E be a fixed canonical source-preserving encoding with equal-length valid outputs y=E(x) and y^(p)=E(x^(p)), of M bits. Define D_p={j:y_j != y^(p)_j}, Delta_j=|{p:j in D_p}|, and beta=max_j Delta_j in [1,K]. Let A be ONE fixed uniform total adaptive randomized all-input SAT/UNSAT/malformed classifier, reading supplied encoded bits, with error alpha on y and beta_p on SAT neighbor p (different use of beta subscript for error). Q_j is the event that A reads coordinate j on y.
+
+PROVED/EXACT (elementary coupling):
+$$
+\sum_{j=1}^{M}\Delta_j\Pr_y(Q_j)\ge\sum_{p=1}^{K}\max\{0,1-\alpha-\beta_p\}.
+$$
+For per-input error at most epsilon<1/2,
+$$
+\mathbb E_y[\#\text{distinct encoded bits read}]\ge(1-2\epsilon)K/\beta.
+$$
+If each supplied output bit syntactically depends on at most b of the K original sign coordinates on the whole star, then beta<=b and the RHS is (1-2epsilon)K/b. For probes returning at most w supplied bits, divide the corresponding probe lower bound by w.
+
+Proof: Couple A on y and y^(p) with the identical random tape. Before the first access to D_p, all answers and all adaptive states agree. Hence Pr_y[query intersects D_p]>=max(0,1-alpha-beta_p). Union bound gives <=sum_{j in D_p}Pr_y(Q_j). Sum over p, interchange sums, and use Delta_j<=beta and linearity of expectation. No independence of queries is assumed, and all data-dependent preprocessing/implicit circuits/GF(2) operations that read supplied bits remain charged. Correctness on both labels and malformed inputs is essential.
+
+Corollary 394B: the integral and fractional hitting numbers of these K SAT-neighbor difference edges are each >=K/beta. This also lower-bounds the full SAT-neighbor hypergraph containing them, but does not claim completeness of the selected star.
+
+## Tight restricted control: block parity
+On the existing fixed connected cubic Tseitin charge-template sublanguage, divide h charge bits into blocks of size g|h and transform each block (b1,...,bg) into (b1 XOR ... XOR bg, b2,...,bg). This is invertible. At an odd center, a first-position charge flip changes ONLY the block-parity output; every other charge flip changes its block parity and its own raw coordinate. Thus beta=g and exact star integral/fractional hitting number is h/g, attained by reading one parity coordinate per block. All charge vectors of the fixed connected graph have SAT iff total charge parity is EVEN, hence a template-restricted recognizer may decide using those h/g parity coordinates once supplied. This controls only K=h original CHARGE bits, not all 12h individually pivotal original clause-sign bits in LSPV-1/393. Full-CNF fallback and canonical template validation are separate. Computing this encoding from a different supplied grammar is not free.
+
+## Falsifiers and precise status
+F1 FALSIFIED: arbitrary polynomial-time invertible same-source recoding preserves pointwise input-bit sensitivity. LSPV-1/393 can put global parity in one output bit, with large beta.
+F2 PROVED under stated access model: if beta<=b, randomized and adaptive policy choices cannot lower the expected number of read encoded bits below (1-2epsilon)K/b.
+F3 FALSIFIED as a transfer: query acquisition yields superpolynomial arbitrary-machine SAT time or a full mixed-system proof lower bound. K and M are input-scale, and proof-node count, bit-time, output and peak space differ.
+F4 REJECTED: an affine template promise solver is an all-CNF P-time solver. It requires a correct total fallback and source-tag/malformed validation.
+
+## Existing hard theorem and fixed calculus
+KNOWN Haken (1985): for standard unary PHP(h+1,h), h(h+1) variables, (h+1)+h*binom(h+1,2) clauses, Theta(h^3 log(h+2)) explicit signed indexed bits, exists c>0,h0 forall h>=h0 forall ordinary unrestricted shared-DAG Resolution proofs pi: |pi|>=2^(ch) lines. This is NOT an arbitrary SAT-algorithm, Extended Resolution, Res(XOR), or R_mix341 lower bound. Cook (1976) gives polynomial ER pigeonhole proofs; Urquhart (1987) supplies ordinary Resolution expander-Tseitin lower bounds with GF(2) escape in mixed calculus. Braun 2026 bit-PHP Res(XOR) preprint is extension-free and does not supply unrestricted machine hardness.
+Fix original R_mix341, LSPV-2/341 blob c87acd11: zero-cost authenticated original CNF clauses, unit-paid distinct shared-DAG RES, bounded AND3, binary GF(2) XOR, locally justified LOCAL-CONVERT and conservative paid two-input DEF. The signed source and calculus are not changed by this study. Its LOCAL-CONVERT public-port semantics remain separately under audit.
+Define W_R(F)=min cost of valid paid-node UNSAT refutation, and Wbar_R(N)=max over valid UNSAT encoded inputs of length<=N, empty maximum zero. B1 (forall A exists p_A forall UNSAT F, W_R(F)<=p_A(N(F)+T_A(F))) OPEN. B2 (forall A exists p_A forall N, Wbar_R(N)<=p_A(N+T_A^wc(N)), with all binary x included in T_A^wc) OPEN. B3 (SAT in P implies Wbar_R(N)=N^O(1) for the SAME R_mix341) OPEN. B1=>B2=>B3. A superpolynomial Wbar for full R also OPEN. Free perfect minimum derivation choice differs from proof optimizer discovery.
+
+## Verification and charging
+COMPUTATIONAL: locally executed Python producer 1,191 assertions and independently written Node verifier 1,354 assertions on all 16 K4 and all 64 prism6 parity-charge formulas using canonical signed local clauses and direct edge-assignment enumeration; odd UNSAT, even SAT, exact model counts, block parity conversions, output influence vectors, exhaustive star cover optima, nine malformed rejects. Three corrupted raw-record types were independently rejected. No randomness. These finite checks test the restricted charge-template examples, not asymptotic claims, all-CNF solver correctness or R_mix341 shortest proofs.
+Parser/source/index reads, encoding calculation, XOR gates, private gate materialization, conversions, failed policies, proof checking, output bits, caching and simultaneous all-phase peak space must be charged when claiming actual solver resources. Exponential intermediates are permitted but never free; check compact alternatives. For materialized-child reasoning s'<=max{rho,eta,lambda,lambda*s}, with rho all local phases. No FLMV transfer or post-acquisition superpolynomial invariant follows.
+
+## Corpus, actual searches, independent external assessments
+Read November 2 governing directive current blob c3889a3e, issue #3 through REFEREE340 and LSPV-1/393, AGENTS.md 19656af1, CODEX.md 754999f5, pnp skill b8df83a7, LSPV-1/337 340b8ab2, /357 d1ff1c3a, /393 89d596be, Red Team/329 ecfe9f0d and /340 d5fcfa4a, and original LSPV-2/341 c87acd11. Original Grok report GROKPROOF/2026-11-04_1518_PROGRESS.md blob 4e2bb9d9 and Claude research/agents/claude/2026-10-28_1452_CLAUDE_TPORT-0002.tex blob 1f9fc727 were found by real directory listings and read. They do not supply B3. Searched GitHub code: reflection, one-sided reflection, forward locality, star sensitivity and query transfer in j15marti/pnp; SAT in openai/math. Actually read openai/math/lean/OAI/Algorithms/SubexponentialSAT/SAT.lean blob 14dcfd0c: finite CNF semantics, not a B3 transfer. Web engine searched reflection, Haken/Cook PHP, decision-tree influence, local encoding, randomized query composition, Krajíček 2012. Direct Google-branded UI was unavailable; not searched directly.
+Primary references: Haken TCS 39 (1985), DOI 10.1016/0304-3975(85)90144-6; Cook SIGACT News 8(4) (1976); Krajíček IPL 112(12) (2012), DOI 10.1016/j.ipl.2012.03.009; O'Donnell, Saks, Schramm, Servedio FOCS (2005); Anshu et al. FSTTCS (2017); Cook-Reckhow JSL 44 (1979); Pich-Santhanam ECCC TR23-199 (2023). Coupling/revealment is classical, not claimed novel.
+
+## Next gap
+Develop a post-acquisition unavoidable-work measure or a proof of authentic-source retraction plus fully charged polynomial computation-to-R_mix341 translation establishing B3, and independently a superpolynomial Wbar_R_mix341. Neither is achieved. Keep the same five specialist roles and schedules. P versus NP OPEN.
