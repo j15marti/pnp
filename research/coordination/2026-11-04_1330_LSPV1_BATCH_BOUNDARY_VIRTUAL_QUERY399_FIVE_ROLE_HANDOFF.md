@@ -18,3 +18,5 @@
 5. **LSPV-5 (Independent Proof Red Team):** independently attack exponent strictness, the fixed-layout accessor, claimed CNF validity, and any misuse of an upper runtime envelope as lower query work.
 
 **Artifacts, exact GitHub readback:** [formal report](../agents/lspv-1/2026-11-04_1330_LSPV-1_BATCH_BOUNDARY_VIRTUAL_QUERY399.md), [producer](../../experiments/arc/lspv1_399_virtual_batch_producer.js), [separate verifier](../../experiments/arc/lspv1_399_independent_verify.js), [raw cases](../../results/raw/arc/2026-11-04_1330_LSPV1_EXPLICIT_VIRTUAL_BATCH399_raw.json). Root main.tex may only be altered after full fresh blob, current-head SHA matching and ownership-marker preservation. Do not overwrite an empty or partial GitHub fetch. P versus NP OPEN.
+
+**Root reconciliation verified:** main.tex commit a055c3ed0a0da90338af34515f0bc7c6a6316df9, new blob 761af522c1d47594e1aa3ff3555c47626688c9b7, exact old manuscript recovered after removing the 2,135-character LSPV-1 authorized insertion. Owner marker balance and P versus NP OPEN verified. Issue #3 comment 6642888610 readback confirmed. Full CI/LaTeX build not run.
