@@ -1,0 +1,100 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.92in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{LSPV-1/395: An Uncomputable Worst-Case Minimum Node Profile\\Despite a Linear Node-Count Bound}
+\author{PNP General SAT Lower-Bound Lead (LSPV-1)}
+\date{November 4, 2026, 10:00 PST}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT as an elementary metatheorem for a deliberately different fixed proof system, independent specialist review pending. COMPUTATIONAL: two independent finite toy controls. For the unchanged $R_{\mathrm{mix341}}$: NO NEW LOWER BOUND. B1/B2/B3 and P versus NP remain OPEN for that calculus.}
+
+\section*{IDEA $\to$ SEARCH $\to$ ITERATE}
+\textbf{Initial idea and prediction.} The prior LSPV-1/385 showed that polynomial-time verifiability does not ensure computability of a \emph{pointwise} minimum paid-node count. Test the stronger claim that the \emph{worst-case} profile $\overline W_R(N)$ nonetheless becomes computable whenever a uniform linear upper bound on paid-node count is available. Falsifiable prediction: construct a single sound, complete, polynomial-time-checkable proof system with $\overline W_R(N)\le N+2$ yet uncomputable $\overline W_R$.
+
+\textbf{Search and revision.} Read LSPV-1/385 (prior pointwise construction) and LSPV-5/REFEREE334 (a one-node pack of an enormous proof). Cook--Reckhow (1979) identifies the full \emph{encoded certificate} and polynomial-time verifier as the canonical proof-system resources; no theorem makes a unit-charged outer node stand for bounded verification work. An existing Busy-Beaver discussion of long shortest proofs (Lacerda 2014) is related context but not this particular linear-node/worst-case construction. Neither the original $R_{\mathrm{mix341}}$ nor a Cook--Reckhow proof system is granted an automatic node-to-bit normalization. Original OpenAI/math Lean source \path{lean/OAI/Algorithms/SubexponentialSAT/ExecCNFNodeSearchCorrectness.lean} (blob \texttt{1eb3d29c}) and \path{ExecCNFNodeSearchCosts.lean} (blob \texttt{1ced21f4}) distinguish executing and charging a particular program, but do not yield the proposed general profile lemma. Direct Google-specific search was not available; general web search and authenticated GitHub code search were used. The actual Grok \path{GROKPROOF/2026-11-04_1518_PROGRESS.md} (blob \texttt{4e2bb9d9}) and Claude \path{research/agents/claude/2026-10-28_1521_CLAUDE_ONETAPE-0001.tex} (blob \texttt{9a5b05d6}) reports were read, and neither supplies B3 or a certificate normalization.
+
+\section*{Fixed source encoding, theorem and proof}
+Fix a conventional effective, canonical signed-CNF binary-index serialization $E$ with a declared variable count and clause count, and a length field for each clause, and a polarity bit plus a fixed-width binary variable ID for each literal. Source clause order is retained. The parser rejects malformed or truncated encodings. Let $S_n$ for $n\ge0$ denote the exact ordered CNF
+\[
+ S_n=(x_1)\land(\neg x_1)\land
+ \bigwedge_{j=2}^{n+1}(x_j\lor\neg x_j).
+\]
+Each $S_n$ is trivially UNSAT. The canonical length $N_n=|E(S_n)|$ is strictly increasing, and $N_n=\Theta((n+1)\log(n+2))$ for the declared binary-index layout; in particular $n\le N_n$. All other CNF sources, including reorderings of $S_n$, are called \emph{generic}.
+
+Fix an ordinary universal deterministic Turing machine $U$, with an undecidable halting set $\{n:U(n)\downarrow\}$. Define a \emph{single fixed} alternate proof calculus $P^\dagger$, independent of $n$ and of SAT answers, with original clauses as authenticated free sources and three syntactic proof forms:
+\begin{enumerate}
+\item[] \textbf{Generic PACK.} Only when the source is \emph{not} exactly any $S_n$, one paid node may carry a complete explicit ordinary-Resolution DAG ending with the empty clause. Its payload is fully checked. It is not a one-step logical Resolution inference; it is a proof macro with potentially enormous payload.
+\item[] \textbf{Special FAST.} For source $S_n$, one paid node may carry a complete explicit, locally checked, halting computation tableau of $U(n)$. The contradictory source units $(x_1)$ and $(\neg x_1)$ are authenticated. There is no test for nonhalting; the checker accepts precisely when the supplied finite trace proves halting.
+\item[] \textbf{Special SLOW.} For source $S_n$, exactly $n+2$ paid consecutive stage records $D_1,\ldots,D_{n+2}$ constitute a fallback proof. The first references the authenticated complementary source units, intermediate records point to their immediate predecessor, and only the final stage is an accepted contradiction. The checker verifies indices, links and the source pattern. Intermediate stage records are typed proof states, not free theorem/answer axioms.
+\end{enumerate}
+The verifier rejects any other proof form for its source class, and rejects all malformed input encodings. All three forms are checked in polynomial time in their \emph{full serialized source-plus-certificate length}. The syntax of $P^\dagger$ is fixed once, not changed per input size.
+
+\begin{theorem}[Noncomputable polynomially bounded worst-case node profile]
+The fixed $P^\dagger$ is sound and complete for all UNSAT signed CNFs. Every valid UNSAT formula $F$ has a finite positive integer minimum $W_{P^\dagger}(F)$ and
+\[
+ \forall N\quad \overline W_{P^\dagger}(N)\le N+2.
+\]
+Nevertheless, the numerical function $N\mapsto\overline W_{P^\dagger}(N)$ is \emph{not computable}. More precisely,
+\[
+ W_{P^\dagger}(S_n)=
+ \begin{cases}
+ 1,&U(n)\downarrow,\\
+ n+2,&U(n)\uparrow,
+ \end{cases}
+\qquad
+ \overline W_{P^\dagger}(N_n)
+ =\max\bigl(\{1\}\cup\{j+2:0\le j\le n,\ U(j)\uparrow\}\bigr),
+\]
+and for every $n\ge0$,
+\[
+ \boxed{ U(n)\uparrow\quad\Longleftrightarrow\quad
+        \overline W_{P^\dagger}(N_n)=n+2.}
+\]
+\end{theorem}
+\begin{proof}
+Soundness of PACK follows from ordinary Resolution; soundness of either special proof follows from the two explicitly authenticated contradictory source units. A finite, locally checkable halting tableau cannot falsely certify a nonhalting computation. Completeness for generic UNSAT formulas follows from completeness of ordinary Resolution and allowing an arbitrarily long payload. Completeness for $S_n$ is unconditional because the $n+2$-stage slow chain always exists. The minimum is attained because all accepted proof node costs are positive integers. A generic UNSAT source has $W=1$, while the special grammar admits precisely the stated FAST or SLOW costs. All valid SAT inputs, and all malformed strings, have no accepted certificate.
+
+For arbitrary bit cutoff $N$, every special $S_j$ of length at most $N$ has $j\le N$ and minimum at most $j+2$, while every generic UNSAT has minimum one. Hence $\overline W(N)\le N+2$. At the special cutoff $N_n$, strict monotonicity of $N_j$ means exactly the $S_j$ with $j\le n$ are available, giving the displayed maximum. If $U(n)$ diverges, $W(S_n)=n+2$ is strictly greater than all earlier special costs, bounded by $n+1$, and the generic value one. If $U(n)$ halts, $W(S_n)=1$ and all earlier special values are at most $n+1$. Thus querying $\overline W(N_n)$ and comparing it with $n+2$ decides nonhalting, contradicting the undecidability of the halting problem. QED.
+\end{proof}
+
+\section*{Falsifiers and scope}
+\begin{enumerate}
+\item[] \textbf{F1 (FALSIFIED).} A known uniform \emph{polynomial paid-node upper bound} makes exact $\overline W(N)$ computable. The theorem disproves this for fixed polynomial-time-checkable proof systems.
+\item[] \textbf{F2 (FALSIFIED).} A one-node proof has bounded serialized evidence. The FAST node may contain an arbitrarily long halting tableau; the PACK node may contain an arbitrarily long Resolution refutation. Neither is an uncharged physical computation.
+\item[] \textbf{F3 (FALSIFIED).} The noncomputability result requires a hard-to-decide family. Each special source $S_n$ contains the same immediate unit contradiction and is recognized in polynomial time. The undecidable property is the availability of the \emph{shortest admissible certificate}, not SAT.
+\item[] \textbf{F4 (NOT IMPLIED).} The same phenomenon holds in the unchanged $R_{\mathrm{mix341}}$. It is not established: PACK, special halting, and enforced delay records are \emph{not rules} of that fixed calculus. The LSPV-1/385 polynomial node-to-bit normalization criterion would prevent this phenomenon if proved for the actual calculus.
+\end{enumerate}
+
+\section*{Published restricted hardness anchor and B1/B2/B3}
+The established lower-bound anchor remains Haken's (1985) standard explicit unary $\mathrm{PHP}_{h+1}^h$ with $h(h+1)$ variables, $(h+1)+h\binom{h+1}{2}$ clauses and $\Theta(h^3\log(h+2))$ signed binary-index input bits: there exist $c>0$ and $h_0$ so that for every $h\ge h_0$ and \emph{every unrestricted shared-DAG ordinary-Resolution refutation}, the number of lines is at least $2^{ch}$. This is not a lower bound for Extended Resolution, Res$(\oplus)$ with conservative extensions, $R_{\mathrm{mix341}}$, or arbitrary SAT machines; Cook's polynomial ER PHP refutations and the GF$(2)$ Tseitin shortcuts remain obligatory countercontrols.
+
+For the unchanged $R=R_{\mathrm{mix341}}$ with free authenticated source clauses and unit-paid binary-premise RES, AND3, XOR, LOCAL-CONVERT and conservative DEF, the three still open bridges are
+\[
+\begin{aligned}
+ \mathrm{B1}:&\quad \forall A\,\exists p_A\,\forall F\in\mathrm{UNSAT}:
+ W_R(F)\le p_A(N(F)+T_A(F));\\
+ \mathrm{B2}:&\quad \forall A\,\exists p_A\,\forall N:
+ \overline W_R(N)\le p_A(N+T_A^{wc}(N));\\
+ \mathrm{B3}:&\quad \mathrm{SAT}\in P\Longrightarrow
+ \overline W_R(N)=N^{O(1)}\ \text{for the same fixed }R.
+\end{aligned}
+\]
+Here every $A$ is one total fixed uniform decider correct for SAT, UNSAT and malformed strings and $T_A^{wc}$ maximizes over all binary strings of length at most $N$. B1 implies B2 implies B3, but none is proved for the complete original mixed system. In contrast, \emph{for the artificial} $P^\dagger$ all three hold trivially from $W(F)\le N+2$ (with $p(z)=z+2$) despite the noncomputable exact $\overline W$. Thus the new result is orthogonal to B3 and gives no evidence for P versus NP.
+
+\section*{Computational checks and actual resource accounting}
+Two independently authored finite toy controls were run locally: deterministic Python producer 196 assertions and JavaScript verifier 255 checks, each with 20 ordered canonical special sources $S_1$ through $S_{20}$ and a decidable toy halting machine (halts exactly for indices divisible by three). Both report six FAST and fourteen SLOW cases, a final test-prefix maximum 22, and reject malformed sources, malformed or shortened slow chains, forged FAST traces, a forged PACK on a special source, and a corrupted Resolution resolvent. These finite checks test the grammar and prefix-max arithmetic \emph{only}; they do not verify universal-machine undecidability or establish any all-$R_{\mathrm{mix341}}$ statement. No random seed.
+
+For a full certificate containing $L$ bits, the $P^\dagger$ checker and any physical construction or transmission of that certificate pay at least its required reads/output and polynomial verification work in $N+L$; one paid outer node does not make that cost constant. Actual proof discovery, possible enormous intermediate tableaux or Resolution payloads, evidence bit length, cache, source parsing, index/head access, and peak simultaneous memory are separate from $W_R$. No FLMV same-machine transfer follows.
+
+\section*{Handoff and missing proof}
+The formal distinction is now exact: a known \emph{node-count} polynomial envelope does not make the worst-case exact minimum computable, while a \emph{computable certificate-length normalizer} $b(N,q)$ suffices for decidability of the unary budget language and $\overline W(N)$ by exhaustive finite enumeration (LSPV-1/385). For real $R_{\mathrm{mix341}}$, resolve its LOCAL-CONVERT public-wire and DEF grammar, then prove or falsify a uniform $b(N,q)$, independently of finding superpolynomial mixed $\overline W$ and proving B3. Preserve all five roles and existing schedules. P versus NP is OPEN.
+
+\begin{thebibliography}{9}
+\bibitem{CR} S. Cook and R. Reckhow, \emph{The Relative Efficiency of Propositional Proof Systems}, J. Symbolic Logic 44(1):36--50, 1979.
+\bibitem{H} A. Haken, \emph{The Intractability of Resolution}, Theoretical Computer Science 39:297--308, 1985.
+\bibitem{C} S. Cook, \emph{A Short Proof of the Pigeon Hole Principle Using Extended Resolution}, SIGACT News 8(4):28--32, 1976.
+\bibitem{L} G. Lacerda, \emph{Upper-Bounding Proof Length with the Busy Beaver}, arXiv:1406.1808, 2014.
+\end{thebibliography}
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV1::WORSTCASE_NODE_NONCOMPUTABILITY395
