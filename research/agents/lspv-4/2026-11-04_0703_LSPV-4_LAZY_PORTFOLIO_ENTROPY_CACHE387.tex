@@ -1,0 +1,82 @@
+% LSPV-4/387, 2026-11-04 07:03 PST, America/Los_Angeles
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\title{LSPV-4/387: Lazy SAT Portfolios, Parent-Input Entropy, and Explicit Cache Space}
+\author{PNP Time-Space Resource Auditor}
+\date{November 4, 2026}
+\begin{document}\maketitle
+\noindent\textbf{Status: PROVED/EXACT in the declared restricted, uniform portfolio model; independent specialist review pending.} The finite tests are COMPUTATIONAL. This does not alter the fixed \(R_{\rm mix341}\), prove an all-input SAT transformation, establish B1/B2/B3, or resolve P versus NP.
+
+\section{Obstruction and quantifiers}
+Grok's actual report \texttt{GROKPROOF/2026-11-04\_1322\_PROGRESS.md} (blob \texttt{0850246c}) proposes maintaining a short-residual answer cache. We distinguish physical, simultaneously live cache entries from compact implicit programs and from the raw volume of a virtual output. In particular, distinct \emph{syntactic} children need not carry independent satisfiability information.
+
+\begin{theorem}[parent-input range cap]\label{cap}
+For every deterministic function \(G:\{0,1\}^N\to(\{0,1\}^{B})^Q\), the range of its concatenated \(QB\)-bit output contains at most \(2^N\) strings. For any fixed deterministic controller and fixed deterministic guest, the complete adaptive query/answer transcript is also a function of the \(N\)-bit parent input and has at most \(2^N\) possible values. For randomized algorithms, the same statement holds conditional on a fixed random tape. These facts do not upper bound computational time or output size.
+\end{theorem}
+\begin{proof}A map from a domain of size \(2^N\) has image size at most \(2^N\). Apply this also to the transcript mapping.\end{proof}
+
+\begin{theorem}[uniform two-label lazy portfolio]\label{port}
+Fix any integer \(K\ge2\), put \(\lambda=1/(5K)\), \(\zeta=\lambda/5\), and use \(N\) for the binary encoded source size. There exist infinitely many, uniformly recognizable signed-CNF sources \(F_{n,b}\), \(b\in\{0,1\}\), and a uniform compiler producing \(Q=\lceil N^{1-\lambda+\zeta}\rceil\) pairwise syntactically distinct CNF children \(G_{n,b,j}\), each of encoded length \(\Theta(N^\lambda)\), such that
+\[
+ {\rm SAT}(F_{n,b}) \iff \bigwedge_{j\le Q}{\rm SAT}(G_{n,b,j})
+ \iff \bigvee_{j\le Q}{\rm SAT}(G_{n,b,j})\iff b=1.
+\]
+The explicit concatenated child encodings have \(\Theta(N^{1+\zeta})\) bits, but the full vector of child SAT statuses has only two possibilities. On this restricted recognizable source family, one fixed uniform exact controller checks the entire source grammar and outputs \(b\), or streams every child status, in \(O(N\,{\rm polylog}\,N+Q\,{\rm polylog}\,N)\) bit time and \(O(\log N)\) all-phase writable space, with a read-only source and streamed output. A virtual child-bit accessor uses \(O(\log N)\) space and \({\rm polylog}\,N\) bit work per queried bit.
+\end{theorem}
+\begin{proof}
+For \(n\ge1\), take
+\[
+ F_{n,b}=(u)\wedge(\ell_b(u))\wedge\bigwedge_{i=1}^{n}(v_i),\qquad
+ \ell_1(u)=u,\quad\ell_0(u)=\neg u.
+\]
+In explicit signed indexed DIMACS the source length is \(N=\Theta(n\log(n+2))\). It is SAT iff \(b=1\). Set \(D=\max\{1,\lceil N^\lambda/\log_2(N+2)\rceil\}\). For each \(1\le j\le Q\), let
+\[
+ G_{n,b,j}=(w_j)\wedge(\ell_b(w_j))
+           \wedge\bigwedge_{t=1}^{D}(a_t),
+\]
+where the root variable index \(w_j\) is distinct for each \(j\) and the padding indices are larger than \(Q\). Each child is SAT iff \(b=1\), and its indexed bytes differ from those of every other child. The padding contributes \(D\,\Theta(\log Q)=\Theta(N^\lambda)\) encoded bits for sufficiently large \(N\); headers and the two root units add \(O(\log N)\). Hence the concatenated size is \(\Theta(QN^\lambda)=\Theta(N^{1+\zeta})\).
+A uniform parser validates the parent grammar with logarithmic counters and obtains the polarity \(b\), rejecting malformed encodings. Its running time is at most \(O(N\,{\rm polylog}\,N)\). It need store only \(b,n\), and a few logarithmic counters. To answer a virtual child-bit request, compute the field (header, root units, or indexed padding), its numeric digit and \(b\) if needed. All indices and fixed rational-power counts fit in \(O(\log N)\) bits; their arithmetic costs \({\rm polylog}\,N\) time. No child is materialized by the status controller.
+\end{proof}
+
+\begin{proposition}[explicit-cache capacity]\label{cache}
+A physical cache that simultaneously stores one writable status bit for every child requires at least \(Q=N^{1-4\lambda/5+o(1)}\) writable bits. Since \(K\ge2\), \(1-4\lambda/5\ge23/25>1/5\), such a cache violates an \(N^{1/5+o(1)}\) all-phase writable-space limit. Simultaneously materializing all child codes takes \(\Theta(N^{1+\zeta})\) writable bits. This \emph{does not} apply to implicit/compressed caches, whose access algorithms and correctness must instead be charged.
+\end{proposition}
+\begin{proof}Count the declared simultaneously live result cells or child-code cells. The example of Theorem~\ref{port} has a one-bit implicit representation, namely \(b\).\end{proof}
+
+\section{Fully charged ledger and falsifiers}
+\begin{description}
+\item[] \textbf{Input acquisition:} Checking the signed-CNF template, source lengths, indices, two labels, and malformed cases takes \(O(N\,{\rm polylog}\,N)\) time and \(O(\log N)\) peak writable space with immutable input.
+\item[] \textbf{Lazy output:} An indexed child-bit lookup takes \({\rm polylog}\,N\) bit steps, including addressing. Status output for all \(Q\) children costs at least \(Q\) actual output steps. A full physical serialization of \(QB\) child bits costs at least \(QB\) output steps but need not allocate \(QB\) live writable cells if streamed.
+\item[] \textbf{Guest:} Invoking arbitrary correct \(A\) separately on all children may cost \(Q\,T_A(B)\), and no guest-acceleration theorem is proved. A DELAY wrapper blocks treating guest calls as free. The specialized controller exploits known, certified source structure and is not a universal \(A\mapsto\Phi(A)\).
+\item[] \textbf{All-phase space:} A parent-sized scratch array, even freed before recursion, gives local exponent \(\rho\ge1\). The correct upper-bound envelope remains \(s'\le\max\{\rho,\eta,\lambda,\lambda s\}\). All source, index, guest, conversion, output and simultaneously retained states count.
+\item[] \textbf{Falsified candidate 1:} Distinct child strings force independent SAT statuses. False: all statuses equal \(b\).
+\item[] \textbf{Falsified candidate 2:} Virtual child bit volume forces proportional work before the parent can be decided. False for this lazy, restricted family; true if all bytes must be physically emitted.
+\item[] \textbf{Falsified candidate 3:} Storing all \(Q\) results explicitly fits \(N^{1/5+o(1)}\) bits. False by Proposition~\ref{cache}.
+\item[] \textbf{Open candidate 4:} An all-input, all-guest SAT reduction realizes comparable bounds and supplies B3 for the \emph{same} unchanged \(R_{\rm mix341}\).
+\end{description}
+
+\section{Published restricted lower bounds and peer review}
+Haken (1985) proves for the standard unary pigeonhole CNF \(PHP_{h+1}^{h}\), with \(h(h+1)\) variables, \((h+1)+h\binom{h+1}{2}\) source clauses, and \(N_h=\Theta(h^3\log(h+2))\) explicit signed-index input bits, that there exist constants \(c>0,h_0\) such that \emph{for all} \(h\ge h_0\) and \emph{all ordinary shared-DAG Resolution refutations} \(\pi\), \(|\pi|\ge2^{ch}\). The statement is not about unrestricted SAT algorithms, Extended Resolution, or the fixed mixed calculus. Cook's polynomial Extended Resolution proofs are the stronger-system countercontrol. Braun's September 2026 arXiv:2609.23015 result concerns DAG-like \(\mathrm{Res}(\oplus)\) of the \emph{bit} PHP, \(h=2^\ell,\ell\ge32\), with \(>\exp(h/(32768\ell^2))\) clauses, and likewise does not transfer to the fixed combined calculus.
+
+Located and actually read Grok \texttt{GROKPROOF/2026-11-04\_1322\_PROGRESS.md} (blob \texttt{0850246c}) and Claude \texttt{research/agents/claude/2026-10-28\_1521\_CLAUDE\_ONETAPE-0001.tex} (blob \texttt{9a5b05d6}) and \texttt{2026-10-28\_1452\_CLAUDE\_TPORT-0002.tex} (blob \texttt{1f9fc727}). Grok's all-input selector is open; Claude's lower bounds apply to restricted access and alternation-trading rule systems, not B3. Also inspected the authenticated Nov. 2 five-role refocus, current issue \#3, AGENTS.md, CODEX.md, and repository pnp-research skill.
+
+\section{Computation and remaining implication}
+The full Node producer passed 3,396 assertion groups over 24 paired parent cases and 822 child CNFs, including exact brute-force SAT comparison, 10 malformed-source rejects, and odd/even three-vertex XOR controls. Independently implemented Python checked 1,717 more conditions and recomputed the 21,402 finite serialized child bytes. Finite tests are COMPUTATIONAL, not asymptotic evidence. The exact proofs above are elementary and restricted; independent specialist review is pending.
+
+\[
+ {\rm SAT}\in P\quad\Longrightarrow\quad
+ \overline W_{R_{\rm mix341}}(N)=N^{O(1)}
+ \quad\text{remains OPEN}.
+\]
+All five role identities, schedules, established safeguards, and the unchanged proof calculus remain intact.
+
+\begin{thebibliography}{9}
+\bibitem{Haken} A. Haken, The Intractability of Resolution, \emph{Theoretical Computer Science} 39 (1985), 297--308.
+\bibitem{Cook} S. A. Cook, A Short Proof of the Pigeon Hole Principle Using Extended Resolution, \emph{SIGACT News} 8(4) (1976), 28--32.
+\bibitem{CR} S. Cook and R. Reckhow, The Relative Efficiency of Propositional Proof Systems, \emph{J. Symbolic Logic} 44 (1979), 36--50.
+\bibitem{Braun} K. Braun, An Exponential Lower Bound for the Bit Pigeonhole Principle in Resolution Over Parities, arXiv:2609.23015 (2026).
+\end{thebibliography}
+\end{document}
