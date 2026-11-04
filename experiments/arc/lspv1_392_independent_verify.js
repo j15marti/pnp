@@ -23,7 +23,7 @@ function witness(h,row){
   for(let p=0;p<=h;p++)if(assigned[p]>=0)a[1+p*h+assigned[p]]=true;
   return a;
 }
-function audit(raw){
+function audit(raw,checkMutations=true){
  if(!raw||raw.schema!=="LSPV1-392-v1"||!Array.isArray(raw.cases)||raw.cases.length!==3)throw Error("schema");
  let checks=0,total=0;
  const expect=[[1,2,3,4,208],[2,6,9,18,608],[3,12,22,48,1600]];
@@ -51,8 +51,12 @@ function audit(raw){
  if(raw.malformed_rejections!==8||raw.checks!==109||raw.lookalikes.length!==3)throw Error("summary");
  checks+=3;
  const altered=JSON.parse(JSON.stringify(raw));altered.cases[2].SAT_sign_flips=47;
- if(altered.cases[2].SAT_sign_flips!==48)checks++;
- else throw Error("mutation control");
+ if(checkMutations){
+   let rejected=false;
+   try{audit(altered,false)}catch(e){rejected=true}
+   if(!rejected)throw Error("tampered metadata unexpectedly accepted");
+   checks++;
+ }
  return {verifier:"independent constructive witness checker",passed:true,checks,flips_verified:total,seed:null};
 }
 if(typeof require!=="undefined"&&typeof module!=="undefined"&&require.main===module){
