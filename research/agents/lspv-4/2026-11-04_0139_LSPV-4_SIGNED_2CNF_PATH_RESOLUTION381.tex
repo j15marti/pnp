@@ -1,0 +1,47 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\title{LSPV-4/381: A Uniform Source-Certified Linear Resolution Bound for 2-CNF}
+\date{2026-11-04 01:39 PST}
+\begin{document}\maketitle
+\noindent\textbf{PROVED/EXACT (restricted), COMPUTATIONAL finite replay, B1/B2/B3 and P versus NP OPEN.}
+
+\paragraph{Published starting point.} Haken (1985) proves that for the standard unary pigeonhole CNF $P_h=\mathrm{PHP}(h+1,h)$, with $h(h+1)$ variables, $(h+1)+h\binom{h+1}{2}$ clauses and binary-indexed explicit source length $N_h=\Theta(h^3\log(h+2))$, there exist $c>0,h_0$ such that for every $h\ge h_0$ every ordinary unrestricted shared-DAG Resolution proof has at least $2^{ch}$ lines. This is a \emph{Resolution-only} lower bound, not a SAT machine lower bound. Cook's Extended Resolution PHP upper bound is polynomial. The fixed Rmix341 also has stronger rules. The separate 2SAT implication-graph theorem below is a classical positive control (Aspvall--Plass--Tarjan 1979), not a new complexity separation.
+
+\begin{theorem}[All signed 2-CNFs; strict binary-Resolution fragment]
+Fix the existing Rmix341 unit-weight, at-most-two-premise source-authenticated proof calculus. Let $F$ be any well-formed explicit signed 2-CNF with $v\ge1$ \emph{distinct appearing variables}, no source empty clause and unsatisfiable. Then
+\[
+W_{R_{\mathrm{mix341}}}(F)\le 4v-3.
+\]
+Moreover, one fixed uniform deterministic compiler classifies every 2-CNF, rejects malformed strings, produces an original-clause-checked witness for SAT inputs and a strict signed Resolution DAG of at most $4v-3$ nodes for UNSAT inputs. A source empty clause has cost zero.
+\end{theorem}
+\begin{proof}
+Construct the $2v$-vertex implication graph, with every arc retaining its original clause ID. For a binary clause $(a\vee b)$ insert $\neg a\to b$ and $\neg b\to a$; for a unit $(a)$ insert $\neg a\to a$. By the SCC characterization of 2-SAT, UNSAT gives a literal $x$ and directed paths $x\leadsto\neg x$ and $\neg x\leadsto x$. Select simple paths of lengths $r,s\le2v-1$. Each arc $u\to w$ has the source clause $(\neg u\vee w)$, possibly unit. Resolution along the first path yields $\neg x$ in at most $r-1$ inference nodes; the second yields $x$ in at most $s-1$ nodes. If an intermediate clause is already the required unit, terminate that path before attempting further pivots. Resolving the two units uses one final inference; hence $q\le r+s-1\le4v-3$. All source references and signed pivots are retained. SAT witnesses come from SCC topological ordering with original-source checking. This uses only ordinary Resolution, which is already legal in Rmix341.
+\end{proof}
+\begin{theorem}[Exact family calibration]
+For $m\ge2$, $H_m=(x_1)\wedge\bigwedge_{i=1}^{m-2}(\neg x_i\vee x_{i+1})\wedge(\neg x_{m-1})$ is clause-minimally UNSAT and $W_{R_{\mathrm{mix341}}}(H_m)=m-1$.
+\end{theorem}
+\begin{proof}
+Unit resolution yields an $m-1$ node refutation. Removing any clause permits a satisfying assignment. All $m$ source clauses must appear among the ancestors of contradiction, and at-most-binary-premise sound DAGs require at least $m-1$ distinct inference nodes to combine them.
+\end{proof}
+
+\paragraph{Fully charged implementation bounds.} The variable parameter $v$ counts appearing signed IDs, not the possibly huge declared header maximum. For binary input length $N$, $v\le N$. Parse/authenticate the complete source, compress signed IDs, build the $O(N)$-arc graph, find SCCs/paths, emit each proof node with explicit parent references, and validate/replay every resolution. A conservative RAM implementation uses $O(N^2)$ graph/index word operations, and a deterministic bit-tape realization with explicit random-access simulation admits $O(N^6)$ total native bit time, $O(N^2)$ all-phase peak writable bits, and $O(N^2)$ serialized output bits. Discovery cost of the proof is paid for this upper-bound implementation, although it is omitted from minimum derivation cost. Temporary $N$-bit preprocessing would give $\rho\ge1$, and this is not a square-root-space FLMV contraction.
+
+\paragraph{Falsifiers.} F1: a naive path derivation attempts a pivot after a unit is already obtained, which is illegal; the producer's first test caught this and early-unit termination repaired it. F2: a header declaring one million variables while only $x_1$ occurs still has $v=1$ and a one-inference contradiction. F3: a width-three source is not in this theorem; odd/even $K_4$ Tseitin has zero/eight models, respectively, and admits a GF(2) shortcut in stronger systems. F4: a short logical DAG is not itself an $O(v)$ physical runtime or low-space bound.
+
+\paragraph{Verification.} Full Python producer: 3,760 well-formed inputs (1,380 SAT; 2,380 UNSAT); each label independently checked by exhaustive assignment, every UNSAT Resolution proof replayed, every SAT witness checked. Eleven clause-minimal Horn chain controls (2--12 clauses), nine malformed rejects, four corrupted proof rejects, sparse-header/tautology/empty-source controls, even/odd K4 model counts 8/0. A separately implemented independent JavaScript referee accepted 235 published fixtures (116 SAT, 119 UNSAT) with 6,176 checks. Fixed seed 381. Finite tests are COMPUTATIONAL, not the source of the asymptotic proof. Python heap consumption is not a native TM-space measurement.
+
+\paragraph{Peer and previous-work recovery.} Read the shared five-role refocus at research/coordination/2026-11-02\_1204\_WORST\_CASE\_MINIMUM\_DERIVATION\_FIVE\_ROLE\_REFOCUS.md (SHA c3889a3e), issue \#3, AGENTS.md (19656af1), CODEX.md (754999f5), pnp-research skill (b8df83a7), LSPV-1/384 (a0c8cab0), LSPV-4/380 and LSPV-1 BPHP-to-unary ER341 (80d4e3dd). Actual Grok file GROKPROOF/2026-11-04\_0720\_PROGRESS.md (06304e87) and Claude ONETAPE-0001 (9a5b05d6), TPORT-0002 (1f9fc727) were read; neither establishes B3. Literature searches: Haken 1985, Aspvall Plass Tarjan 1979, 2CNF Resolution, GitHub searches for Rmix341/2SAT and github.com/openai proof checker. No claim of novelty for implication-graph 2SAT is made.
+
+\paragraph{Gap.} The statement is only for 2-CNF, so it does not imply all-CNF B1, B2 or B3. In particular
+\[
+\mathrm{SAT}\in P\Longrightarrow\overline W_{R_{\mathrm{mix341}}}(N)=N^{O(1)}
+\]
+remains OPEN. A source-authenticated extension to a broader CNF class is the next falsifiable target; no new task, inference rule, unit weight or schedule was created or edited. P versus NP remains OPEN.
+
+\begin{thebibliography}{3}
+\bibitem{h} A. Haken, The Intractability of Resolution, TCS 39 (1985), 297--308.
+\bibitem{c} S. Cook, A Short Proof of the Pigeon Hole Principle Using Extended Resolution, SIGACT News 8(4) (1976), 28--32.
+\bibitem{a} B. Aspvall, M. Plass, R. Tarjan, A Linear-Time Algorithm for Testing the Truth of Certain Quantified Boolean Formulas, IPL 8(3) (1979), 121--123.
+\end{thebibliography}
+\end{document}
