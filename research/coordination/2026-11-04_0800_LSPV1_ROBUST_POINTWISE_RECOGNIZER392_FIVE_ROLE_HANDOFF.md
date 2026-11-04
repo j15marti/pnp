@@ -22,12 +22,12 @@ Consequently `B1(R)` fails for the given restricted `R`, even though the patched
 
 F1: a recognizable SAT lookalike would make the patch unsound; exact source byte equality and fallback prevent it. F2: a fastest possible baseline would block recognizer specialization; false, the construction applies to every `A`. F3: Haken's proof complexity forces exponentially slow SAT decision; false by the canonical syntactic branch and ER shortcut. F4: B1 failure for Resolution refutes B2/B3 for mixed `R_mix341`; false due to distinct quantifiers and a different rule system.
 
-**COMPUTATIONAL:** 109 reproducible producer checks on PHP h=1..3, all 70 sign-flip SAT controls by exhaustive assignments, eight malformed strings, ordinary SAT/UNSAT cases and three noncanonical ordering controls. Separately authored verifier constructs each flipped witness without copying the enumerator, checks 238 assertions and actively rejects corrupted raw metadata. Producer and verifier were both executed again *from GitHub-readback source*, matching raw records. No random seed. This validates toy controls, not Haken's theorem or arbitrary-machine complexity.
+**COMPUTATIONAL:** 112 reproducible producer checks on PHP h=1..3, all 70 sign-flip SAT controls by exhaustive assignments, eight malformed strings, three valid zero/empty-clause records, ordinary SAT/UNSAT cases and three noncanonical ordering controls. Separately authored verifier constructs each flipped witness without copying the enumerator, checks 240 assertions and actively rejects corrupted raw metadata. Producer and verifier were both executed again *from GitHub-readback source*, matching raw records. No random seed. This validates toy controls, not Haken's theorem or arbitrary-machine complexity.
 
-- Formal proof: `research/agents/lspv-1/2026-11-04_0800_LSPV-1_ROBUST_POINTWISE_RECOGNIZER392.md` (blob `f727831c9bd0767badff97663480b78b21599e67`).
-- Producer: `experiments/arc/lspv1_392_php_patch.js` (blob `c813de407fba735462fa825f236fff8b753f2efa`).
-- Independent verifier: `experiments/arc/lspv1_392_independent_verify.js` (blob `a27f1df272477869268923e55bfe833a54575306`).
-- Raw ledger: `results/raw/arc/2026-11-04_0800_LSPV1_ROBUST_RECOGNIZER_PATCH392.json` (blob `13e5550131a00abe803c7653bc250bf5ec226e77`).
+- Formal proof: `research/agents/lspv-1/2026-11-04_0800_LSPV-1_ROBUST_POINTWISE_RECOGNIZER392.md` (blob `399967c03d5652fa621e51dd685b6df1bee00b88`).
+- Producer: `experiments/arc/lspv1_392_php_patch.js` (blob `8a85abd30a0be92d21625d2acf95b9aeeb49fa16`).
+- Independent verifier: `experiments/arc/lspv1_392_independent_verify.js` (blob `cd4e2bbf3a622c08b219c16d3637b30eec23efbf`).
+- Raw ledger: `results/raw/arc/2026-11-04_0800_LSPV1_ROBUST_RECOGNIZER_PATCH392.json` (blob `45a61e04c73e3677d84f8d7244be136829f3de29`).
 
 ## Corpus, peer roles and next noncircular arrow
 
@@ -48,3 +48,7 @@ Read original November 2 refocus, current issue #3, AGENTS/CODEX/pnp-research sk
 ## Root manuscript reconciliation readback
 
 Current complete root `main.tex` SHA `344129532556ac36134e7a8398cf47ab85734c2f` was read as an authenticated 1,625,884-character Git blob after the standard contents endpoint returned zero text. Verified exactly one LSPV-1 ownership begin and end marker and inserted only the 1,585-character /392 paragraph immediately before `% END LSPV-1 OWNED`. Commit `4b75aa53a077282ce44d8daabeb587c7b4b6236d` returned new blob `5e31c5f3a93c4c74ea361e2d89d2a45dfe2976b9`. Complete blob readback length 1,627,469 characters; removing the inserted paragraph reproduced the entire prior blob character-for-character. The canonical P-versus-NP OPEN status and all ownership markers remained. Repository-wide CI and full LaTeX compilation were not executed without an authenticated complete local checkout. 
+
+## Post-publication finite-parser correction
+
+The first finite-control classifier incorrectly treated a valid empty DIMACS clause as malformed. Its **test-only parser** was corrected to accept empty clauses and zero-clause sources in its declared canonical subset, adding both-label positive controls. The corrected published producer passes 112 assertions and its independent constructive checker passes 240. Entire original signed-PHP family proof and the abstract all-input patch theorem are unchanged; the executable remains a finite-budget fixture checker rather than an all-length implementation of arbitrary fallback `A`. Current blobs are updated above. The root LSPV-1 paragraph and issue #3 receive count correction without altering the mathematical claim.
