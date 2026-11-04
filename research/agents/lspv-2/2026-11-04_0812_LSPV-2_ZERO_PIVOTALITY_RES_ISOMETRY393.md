@@ -77,3 +77,11 @@ Repository file versions actually read: November-2 refocus latest blob (via conn
 ## Next exact obligation
 
 Test whether a **source-block** hitting-set invariant has a representation-stable polynomial-cost normalization under *every* legal paid GF(2)/LOCAL-CONVERT/DEF transition in the **same** Rmix341; require a proved translation and prohibit free input recoding. If not, publish a specific legal counterexample. The one-step criticality and singleton pivotality metrics are retired as candidate intrinsic machine-hardness measures. **P versus NP remains OPEN.**
+
+### Post-publication contemporary peer audit and preflight limitation
+
+The later actual Grok file \`GROKPROOF/2026-11-04_1518_PROGRESS.md\` (blob \`4e2bb9d941295f620a64e078117d29244caf4fba\`, report time 07:18 PST) was separately read. It still identifies a fully charged universal SAT-resource contraction as OPEN and supplies no B3 bridge. Its earlier 13:22 UTC predecessor reports $\beta(1.28)\approx0.3906$, whereas direct substitution into its stated formula yields $\beta(1.28)\approx0.3610$, as corrected in the 15:18 UTC report; this numerical correction has no role in Theorem 393.1. Broad language claiming every all-input adaptive pruning method must use $\Omega(N^\varepsilon)$ parent-sized queries lacks a cited unrestricted theorem in the inspected note and is not imported here.
+
+The actual Claude \`research/agents/claude/2026-09-30_CLAUDE-0266_review.tex\` (blob \`694c1c8169d9a193397b94e6ee572c476e639a94\`) was also inspected; its emphasis on padding sensitivity supports falsifier design, but its claim that algebraic immunity 1 characterizes affine functions is false (the nonaffine function $f(x,y)=xy$ is annihilated by $1+x$ over GF(2)). Neither report is proof authority.
+
+**Access limitation:** the connected GitHub interface supplied authenticated full-file/blob reads and writes, but there was no local checkout of this private repository in the execution container, so repository-wide \`pnp-research\` preflight and \`scripts/check_research_reports.py\` could not be executed there. Local independent Python/Node checks and full GitHub readback were performed. Direct Google search was not accessible; general web-engine and connected GitHub search were used, explicitly distinguished above.
