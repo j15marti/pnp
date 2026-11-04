@@ -61,18 +61,18 @@ def decode0(s):
     if not s.startswith('1011'): raise ValueError('bad source tag')
     V,z=read_gamma(s,4); M,z=read_gamma(s,z)
     V-=1;M-=1
-    if V<1 or M<0:raise ValueError('illegal v,m')
-    if V>len(s) or M>len(s):raise ValueError('illegal excessive count')
+    if V<0 or M<0:raise ValueError('illegal v,m')
+    if M>len(s):raise ValueError('illegal excessive clause count')
     w=(V+1).bit_length();F=[]
     for _ in range(M):
         k,z=read_gamma(s,z);k-=1
-        if k<1 or k>V or k>len(s): raise ValueError('bad clause width')
-        c=[];prev=0
+        if k<0 or k>len(s): raise ValueError('bad clause width')
+        c=[]
         for _ in range(k):
             if z+1+w>len(s):raise ValueError('truncated literal')
             sign=s[z]=='1';idx=int(s[z+1:z+1+w],2);z+=1+w
-            if idx<=prev or idx>V:raise ValueError('noncanonical IDs')
-            prev=idx;c.append((idx,sign))
+            if idx<1 or idx>V:raise ValueError('out-of-range literal ID')
+            c.append((idx,sign))
         F.append(c)
     if z!=len(s):raise ValueError('trailing garbage')
     return F,V
@@ -162,10 +162,24 @@ def full_decide_e1(s):
     try:
         typ,F,V=e1_parse(s)
         assert typ=='general'
-        return ('S' if next(models(F,V),None) is not None else 'U'),len(s)
+        return ('S' if exact_sat_full_grammar(F) else 'U'),len(s)
     except ValueError:return 'M',len(s)
 
-def brute_class(clauses,V):return 'S' if next(models(clauses,V),None) is not None else 'U'
+def exact_sat_full_grammar(clauses):
+    # Enumerate appearing IDs only; unused declared variables do not cause massive loops.
+    ids=sorted({i for C in clauses for i,_ in C})
+    a={}
+    def recurse(j):
+        if j==len(ids):
+            return all(any(a[i]==int(sign) for i,sign in C) for C in clauses)
+        v=ids[j]
+        a[v]=0
+        if recurse(j+1):return True
+        a[v]=1
+        return recurse(j+1)
+    return recurse(0)
+
+def brute_class(clauses,V):return 'S' if exact_sat_full_grammar(clauses) else 'U' 
 
 def main():
     checks=0;records=[];examples=[]
@@ -212,7 +226,7 @@ def main():
     bad=['', '1', '101', '1'+gamma(5)+'0'*3,'1'+gamma(5)+'0'*5+'1', '0', '01111', '11','0'+encode0(*formula(4,[1,0,0,0]))]
     for s in bad:
         assert full_decide_e1(s)[0]=='M';checks+=1
-    for F,V,want in [([[(1,True)]],1,'S'),([[(1,True)],[(1,False)]],1,'U')]:
+    for F,V,want in [([[(1,True)]],1,'S'),([[(1,True)],[(1,False)]],1,'U'),([],0,'S'),([[]],0,'U'),([[(1,True),(1,False)]],1,'S'),([[(513,True)]],513,'S'),([[(1,True)],[(1,True)]],1,'S')]:
         z='0'+encode0(F,V)
         assert full_decide_e1(z)[0]==want;checks+=1
     out={'result_id':'LSPV1_393','status':'COMPUTATIONAL FINITE CONTROLS ONLY',
