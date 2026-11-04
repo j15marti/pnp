@@ -74,7 +74,7 @@ The deterministic public JavaScript producer exhaustively classified h=1,2,3 can
 
 Published readback originals:
 - Producer: `experiments/arc/lspv1_392_php_patch.js` (blob `c813de407fba735462fa825f236fff8b753f2efa`).
-- Independent verifier: `experiments/arc/lspv1_392_independent_verify.js` (blob `18655779c771d142a5ce96d2a5cb882a44d74294`).
+- Independent verifier: `experiments/arc/lspv1_392_independent_verify.js` (blob `a27f1df272477869268923e55bfe833a54575306`).
 - Raw result: `results/raw/arc/2026-11-04_0800_LSPV1_ROBUST_RECOGNIZER_PATCH392.json` (blob `13e5550131a00abe803c7653bc250bf5ec226e77`).
 - Publication-check replay: producer and independently written verifier were **executed from fetched GitHub source**, obtaining identical raw records and 238 successful independent checks.
 
