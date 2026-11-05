@@ -11,7 +11,7 @@ function evaluate(code,x){
  const m=/^Q([0-9]{5}):([01]+):A([01]+)$/.exec(code);
  if(!m)throw Error('grammar');
  const q=Number(m[1]),w=Math.max(1,Math.ceil(Math.log2(q)));
- if(q<1||q>99999||m[2].length!==q||m[3].length!==w)throw Error('length');
+ if(q<1||q>99999||m[2].length!==q||m[3].length!==w||code.length!==9+q+w)throw Error('length');
  const j=parseInt(m[3],2);
  if(j>=q)throw Error('index');
  const a=[];
