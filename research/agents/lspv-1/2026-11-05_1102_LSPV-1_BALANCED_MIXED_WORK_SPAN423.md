@@ -14,9 +14,9 @@ For a valid source-authenticated shared derivation DAG (pi), let (W(pi)) be the 
 ## PROVED/EXACT simultaneous optimum
 $$
 \boxed{W_{R_{\mathrm{mix341}}}(F_{G,\chi})=4h-1,\qquad
-D_{R_{\mathrm{mix341}}}(F_{G,\chi})=\lceil\log_2$4h$\rceil.}
+D_{R_{\mathrm{mix341}}}(F_{G,\chi})=\lceil\log_2(4h)\rceil.}
 $$
-**Lower bound across all native rules.** Every essential source must be in the final contradiction's ancestry, because deleting any unused source would leave a satisfiable formula and all local sound inference justifications intact. For $m$ source vertices and $q$ paid nodes, connectivity of the undirected ancestor DAG and fan-in at most two give (m+q-1\le2q), hence $q\ge m-1$. Independently, an inference at depth (d) has at most (2^d) distinct source ancestors by induction, even with shared predecessors. Thus $D\ge\lceil\log_2 m\rceil$.
+**Lower bound across all native rules.** Every essential source must be in the final contradiction's ancestry, because deleting any unused source would leave a satisfiable formula and all local sound inference justifications intact. For $m$ source vertices and $q$ paid nodes, connectivity of the undirected ancestor DAG and fan-in at most two give $m+q-1\le2q$, hence $q\ge m-1$. Independently, an inference at depth (d) has at most (2^d) distinct source ancestors by induction, even with shared predecessors. Thus $D\ge\lceil\log_2 m\rceil$.
 
 **Matching one DAG.** For each vertex, combine its four clause truth tables using two parallel AND3 steps, then one final AND3 step annotated with the exactly equivalent parity equation. This costs three paid nodes at depth two; equivalence checks only eight valuations. Combine the $h$ local GF(2) rows by a balanced binary XOR tree, $h-1$ additional nodes and at most $\lceil\log_2 h\rceil$ additional depth. The contradiction is the false row $0=1$. The *same* proof attains both minima, with no new branch/assumption/merge/weakening rule.
 
