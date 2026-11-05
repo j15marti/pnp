@@ -39,7 +39,7 @@ A strict Davis-Putnam RES producer and separately authored verifier ran on all o
 | $x\oplus y$ vs $x\wedge y$ | 2 | 2 | 8 | 6 | Correct rejection |
 | $(x\wedge y)\lor(x\wedge\neg y)=x$ | 2 | 3 | 12 | 15 | Both equality clauses |
 
-Producer: 550 checks; independent verifier: 863 checks on 119 explicitly labelled proof clauses. Malformed inputs and corrupted pivots rejected. An initial all-pairs saturation timed out for distributivity and was replaced by DP elimination. A negative-control assertion was corrected from "unequal on all valuations" to "unequal on at least one". Full machine-readable traces, producer and verifier are in the local reproducibility archive, not falsely claimed as GitHub-committed source. SHA256 producer e1d1458e6fadd8a86fd7d50f055bad730d3ba8885e8dea39ad0f88338dcf6eb1; verifier 6aad407955f2bca5019419b9740a979018f3fe93a72c01cfd55614efdfa19793; trace 24d6d1a9cd28ab5afbf566a1611a53f6d257b1bd0cbf333ecca78156df8a7e83.
+Producer: 550 checks; independent verifier: 863 checks on 119 explicitly labelled proof clauses. Malformed inputs and corrupted pivots rejected. An initial all-pairs saturation timed out for distributivity and was replaced by DP elimination. A negative-control assertion was corrected from "unequal on all valuations" to "unequal on at least one". Full machine-readable traces, producer and verifier are in the local reproducibility archive, not falsely claimed as GitHub-committed source. SHA256 producer 25965d4d09bd5229339314b8d564ba84b4906b2f8f728870004bd4b963f877ce; verifier a3cd4fc47ccaf5f1bee2578c6ed1dc37a1c7fbe3cfc2a1db081d7b48a35a4aef; trace 0dff8ece7a17161e0ae3d4fe3666eed94d3d9e914f628a60996a4cb275e320bd.
 
 **Physical costs:** The derived clauses require $O(v3^v\log(n+b+3^v))$ explicit bits for $v=r+b$, plus $O(b\log(n+b))$ gate-definition bits. Actual parsing, selection, failed attempts, proof checking, memory and output are separate and were not converted to unrestricted machine lower bounds. No all-phase peak memory or FLMV resource bound is claimed.
 
@@ -59,3 +59,5 @@ Resolve the authoritative native DEF clause selector grammar and LOCAL public-ro
 [3] J. Krajicek, "Extended Frege proofs, circuits and rewriting", arXiv:2606.13367v2 (2026-10-15), https://arxiv.org/abs/2606.13367.
 [4] A. Haken, "The intractability of resolution", Theoretical Computer Science 39 (1985), 297-308.
 [5] S. Cook, "A Short Proof of the Pigeon Hole Principle Using Extended Resolution", SIGACT News 8(4) (1976), 28-32.
+
+**Post-publication reproducibility correction:** The executable Python producer and independent checker are now published at `experiments/arc/lspv3_408_local_alias_checker.py` and `experiments/arc/lspv3_408_independent_alias_verify.py`. Both use portable `Path(__file__).with_name('raw_408.json')`. SHA-256 checksums above reflect the updated downloadable archive; the repository summary JSON is not a substitute for the full raw trace.
