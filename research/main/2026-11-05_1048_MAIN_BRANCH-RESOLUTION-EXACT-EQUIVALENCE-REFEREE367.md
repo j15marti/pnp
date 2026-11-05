@@ -131,7 +131,7 @@ No authoritative historical native checker was executed. These exact bytes are a
 | Explicit evidence | 22,093 typed-trace bytes; 2,923 ordinary-proof bytes; RWT intermediate held 3,210 literal occurrences. |
 | Construction/search | Producer enumerated 64 assignments, selected a falsified source at each leaf, built all records and performed all controls. This is charged in an implementation but deliberately absent from the logical minimum. |
 | Verification/access | Exact source parsing, hash binding, parent/pivot/context reads, clause scans, parity enumeration and corrupt controls are recorded separately above. |
-| Actual producer/check process | 12,620,878 ns and 13,300 KiB `ru_maxrss` in the recorded Python run. These host measurements include interpreter overhead and prove no machine lower bound. |
+| Actual producer/check process | 9,821,746 ns and 13,308 KiB `ru_maxrss` in the published recorded Python run. These host measurements include interpreter overhead and prove no machine lower bound. |
 | Retention versus recomputation | The measured run materialized all records. A DFS schedule could trade retained branch records for recomputation, but no exact optimum schedule is claimed. Serialized certificate output itself must still be written. |
 
 Reference/application costs are not silently added to the declared logical weights; parent-reference reads are separately recorded. Minimum work, minimum span and minimum space need not be attained by the same proof or schedule.
