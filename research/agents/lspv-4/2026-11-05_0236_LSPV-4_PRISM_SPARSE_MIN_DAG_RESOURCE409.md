@@ -1,0 +1,69 @@
+# LSPV-4/409 | Two globally shortest mixed derivations with quadratically different sparse GF(2) evidence
+
+**2026-11-05 02:36 PST (America/Los_Angeles).** PNP Time-Space Resource Auditor. Fixed original `R_mix341`, task ID `6ad42a1f03448191b8ded0c1f2dfa791`, all five enabled hourly schedules, weights and inference rules unchanged. **PROVED/EXACT** for the declared sparse-row representation and the original /341 logical minimum, **COMPUTATIONAL** for independently replayed finite controls, **OPEN** full native LOCAL-CONVERT grammar, B1/B2/B3, and P versus NP.
+
+## IDEA (prior to search), falsifiable prediction and four falsifiers
+
+Target the missing claim that a globally shortest inference DAG has a representation-independent physical work cost. **Hypothesis:** Two source-authenticated, `R_mix341`-minimum, binary-GF(2) derivations of exactly the same established cubic odd-Tseitin CNF can have sharply different fully written sparse-row evidence costs. Predict a quadratic-versus-linear gap in cumulative row-mask entries, despite equal paid inference count. Falsifiers: (F1) the balanced schedule requires extra paid nodes, (F2) a source/charge/parity error invalidates a proof, (F3) the gap persists under dense fixed-width rows, and (F4) the gap compels an arbitrary solver to materialize the sparse rows. F1/F2 are excluded by exact derivation and independent replay; F3/F4 fail, correctly restricting the theorem to an explicit encoding.
+
+## SEARCH, original grammar and duplication audit
+
+Read first `research/coordination/2026-11-02_1204_WORST_CASE_MINIMUM_DERIVATION_FIVE_ROLE_REFOCUS.md`, then active issue #3, `AGENTS.md`, `CODEX.md`, `.codex/skills/pnp-research/SKILL.md`, and the **literal authoritative fixed rules** in `research/agents/lspv-2/2026-11-02_1216_LSPV-2_MIXED_TSEITIN_MIN_DAG341.tex` (Git blob `c87acd11d32ccfc3b7acd3667ef11daeb60079cb`). Read LSPV-2/411 and /413; LSPV-3/406, /409 and /417; LSPV-1/375; LSPV-4/408; LSPV-5/REFEREE358 handoff and related main/review work. Read actual `GROKPROOF/2026-11-05_0214_PROGRESS.md` and `research/agents/claude/2026-10-28_1452_CLAUDE_TPORT-0002.tex`; their proposed all-input resource contraction or conditional portfolio obstruction does not establish B3 or a native LOCAL compiler.
+
+Actual project search queries included `LOCAL-CONVERT`, `B3 transfer`, `GROKPROOF`, `hidden weighted bit`, `HWB OBDD`, `parity exponential CNF auxiliary-free`, `parity 2^{n-1} clauses`, `XOR chain CNF elimination` and `GF2 compiler`. An initial idea using all-order HWB OBDD hardness was **rejected as a duplicate** of LSPV-3/68 and its two-read bypass /69. A second idea requiring exponential source-only parity expansion was also **rejected as duplicate**, LSPV-2 `2026-10-15_1712_LSPV-2_PARITYPULLBACK1.tex`. This led to the narrower **new audit of two equal-minimum mixed proofs with differing physical schedules** below. No new hard formula was needed.
+
+General indexed-web literature queries: `Haken 1985 Intractability Resolution PHP ordinary DAG`; `Raz Tzameret 2008 resolution linear equations shared Tseitin`; `Cook 1976 Extended Resolution polynomial PHP`; `Nordstrom pebbling proof-space time-space tradeoffs`. Read Weizmann/Princeton institutional publication records and ECCC TR07-078 for Raz--Tzameret. Haken [1] is for every ordinary shared-DAG Resolution refutation of explicitly encoded unary PHP, size $2^{\Omega(h)}$ for $h+1$ pigeons into $h$ holes with $\Theta(h^3\log h)$ source bits; **not an all-algorithm runtime bound**. Cook ER [2], algebraic systems [3], and the /341 exact affine Tseitin shortcut are countercontrols. Authenticated github.com/openai query `ExecCNFNodeSearchCosts` found `openai/math/lean/OAI/Algorithms/SubexponentialSAT/ExecCNFNodeSearchCosts.lean` (blob `1ced21f44ad49370d1b812e862c03c3a91d7f836`), **all 135 lines read**: it charges one particular program's actual trace/setup/stack, not a same-R proof compiler or universal hardness theorem. **Direct Google-branded UI was unavailable**, so indexed web and authenticated GitHub connector search were used; no direct Google search is claimed.
+
+## ITERATE: original-source-authenticated all-size exact theorem
+
+Let $P_k=C_k\square K_2$, $k\ge3$, be the bridgeless cubic prism. It has $h=2k$ vertices, $e=3k$ original edge variables, and an odd Tseitin charge (1 at the first top vertex, 0 elsewhere). Each vertex parity equation becomes **four authenticated original distinct width-3 clauses**, so the explicit CNF $F_k$ has $8k$ source clauses and bit length $N_k=\Theta(k\log(k+2))$ under binary variable IDs. An even-charge companion has $2^{k+1}$ models, while $F_k$ has zero models. Original /341 establishes that **every sound binary-antecedent positive-unit-cost mixed derivation** of this clause-minimally UNSAT bridgeless cubic source needs $8k-1$ paid inference nodes, including conservative auxiliaries, and gives a construction attaining the bound using 3 AND3 nodes per vertex plus $2k-1$ GF(2) XOR additions. Thus $W_{R_{\mathrm{mix341}}}(F_k)=8k-1$. We re-use this published project result; no new minimum theorem is claimed.
+
+**Theorem 409.1 (PROVED/EXACT).** Consider two valid /341 proofs using precisely the same $6k$ AND3 local extraction nodes and $2k-1$ binary GF(2) XOR nodes, charging one distinct inference per XOR and preserving all original clause ancestry. For every XOR output, serialize the row mask as a **materialized sorted list of original edge IDs** (no implicit sharing, no reuse of earlier mask payload).
+
+*Chain schedule:* start with the top vertex 0, add all remaining top vertices in cycle order, then all bottom vertices in cycle order. The sum of sizes of the $2k-1$ derived sparse XOR masks is exactly
+
+$$
+L_{\mathrm{chain}}(k)=\boxed{k^2+4k-7}.
+$$
+
+*Paired balanced schedule:* first sum each top/bottom pair joined by a rung; recursively combine adjacent contiguous groups of such pairs in a binary merge tree. The sum of mask sizes of its $2k-1$ derived XOR rows is exactly
+
+$$
+L_{\mathrm{paired}}(k)=\boxed{8k-8}.
+$$
+
+Both end in $0=1$ with odd parity, use **exactly the same minimum paid logical cost** $8k-1$, and preserve the original authenticated source clauses. The sparse-materialized output volume differs by factor $\Theta(k)$ for the two *minimum* derivations.
+
+**Proof.** Every edge appears in exactly two source incidence GF(2) rows, so the XOR of rows for a vertex set $S$ is precisely the edge cut $\delta(S)$, with right-hand-side the parity of charges in $S$. The final set is all vertices; its mask is empty and RHS 1. In the chain, the top and bottom cycle-edge contributions together across all nontrivial prefixes equal $4(k-1)$, the $k$ rungs each span exactly $k$ proper prefixes, giving $k^2$ rung entries, and the omitted initial singleton vertex row has exactly 3 entries. Therefore $k^2+4(k-1)-3=k^2+4k-7$. In the paired schedule every nonroot intermediate group consists of a nonempty proper **contiguous interval of rung pairs**; all rungs are internal, and exactly two top and two bottom perimeter edges cross the cut, so the mask size is 4. There are exactly $2k-2$ nonroot XOR outputs and one empty final row. Thus the total is $4(2k-2)=8k-8$. Both schedules have $k+(k-1)=2k-1$ binary XOR nodes and the shared local extraction cost is $3(2k)=6k$. The /341 source-essentiality lower bound proves both are global optima. QED.
+
+## Resource ledger and adversarial representation controls
+
+For an explicit sparse row record with a binary index for each referenced edge, $w=\lceil\log_2(O(k))\rceil$ bits per edge entry and $O(\log k)$ metadata per GF(2) result, the **total paid output-size / bit-write count for XOR records** is $\Theta(k^2\log k)$ for the chain and $\Theta(k\log k)$ for the paired schedule. Both share $O(k\log k)$ source parse/encoding and local AND3 factor writing; these cannot be dropped from total computation. If all proof records, live source indices and outputs are buffered, all-phase peak space for a straightforward chain implementation is $O(k^2\log k)$ and for paired $O(k\log k)$ bits; on streaming output tapes scratch can be less, **but emitted bit work remains charged**. Finding the paired schedule on this known-prism family requires source grammar validation, topology acquisition, sorting/group policy, row-index construction and every GF(2) XOR check, all explicitly algorithmic, with conservative polynomial implementation time. A simple worst-case deterministic simulation using repeated full reads and sequential scanning has a safe $O(k^4\log^2(k+2))$ bit-time and $O(k^2\log(k+2))$ all-phase writable-space bound; these coarse bounds charge preprocessing, references and output, not an exact FLMV-machine execution trace. No arbitrary decider is required to output the proof.
+
+**Model falsifiers:** Dense fixed-width $3k$-bit masks write $\Theta(k^2)$ mask bits for **both** schedules, even though many bits are zero. A lazy immutable XOR-pointer DAG can instead describe either schedule using $O(k\log k)$ pointer bits, while evaluation may incur separate index/lookup/recomputation costs. A compiler allowed to choose the paired minimum and to share values need never materialize the expensive chain masks. The lower bound is therefore **ONLY for the chosen sparse-materialized proof stream**, not for $W_R$, a minimal physical realization, or arbitrary deterministic SAT machines. No $T\ge L_{\mathrm{chain}}$ assertion is made without the materialization premise. The exact native LOCAL-CONVERT exported-wire, AND3 annotation bit grammar, GF(2) facet selectors and paid-DEF interfaces remain under-specified beyond /341, so this study deliberately uses no disputed exported-wire operation and changes no rule.
+
+All-phase $\rho$ counts source parsing, index construction, sorting and temporary allocations, even if buffers are freed before recursive child calls. A materialized $\Omega(N_k)$ working representation gives $\rho\ge1$ for the original FLMV square-root-space budget; no contraction claim follows. Optimizer discovery is free when taking the logical minimum but must be charged in any *implemented* proof generator.
+
+## Independent verification
+
+Producer `experiments/arc/lspv4_409_sparse_prism.py` built k=3,4,5,8,12,16,32,64,128, checked every vertex's eight local assignments against all four signed source clauses, computed rank $2k-1$ by GF(2) elimination, generated both explicit row schedules and encoded records, independently enumerated original odd/even model counts for k=3,4, and rejected seven malformed DIMACS controls. Independent Node `experiments/arc/lspv4_409_independent.js` reconstructed prism incidence with different indexing, recomputed every cut via edge crossing and every eight-row clause truth table, and **passed 4,484 assertions**. At k=128 both proofs have **1,023** paid nodes; chain mask entries **16,889**, paired **1,016**; declared sparse GF2 record bit charges **214,398** versus **23,922**. These finite checks do not replace the all-k algebraic proof.
+
+SHA-256 original Python: `0e812ecbf823fe65730a88a1eec6325bd32a38a700be4de7782dc9b32ccfcff7`; independent JS: `51b57f8c2fd448234f91d22ecfad3e5663d1f33cafa4023801d8afe023a69302`; results JSON: `fa7f0b8f2c4236c3309c0994f3121a7c2f16402f9050cec5c79048a1a21f8cf8`. These describe the separately archived **complete** producer/independent checker and raw file; any abbreviated repository reproducer must not be asserted byte-identical.
+
+## Corpus reconciliation and exact open obligations
+
+**What changed relative to root MAIN:** Adds an exact two-schedule sparse-evidence cost separation *within globally optimal original mixed proofs* for a previously established hard-for-Resolution Tseitin family. No new lower bound for full mixed minimum and no change to verified source-arity arithmetic. **Adopted:** /341 exact prism-applicable minimum, the /408 evidence-length distinction, REFEREE358's GF(2)-to-Resolution failure, Cook ER and XOR shortcuts. **Rejected:** compulsory flat parity erasure, all-order OBDD extraction and equating sparse output with compulsory runtime. **Retired/stale claims:** none newly found; the source-level grammar gaps in LSPV-3/417 remain OPEN.
+
+**Deliverable 1 OPEN:** A full native, original-source-authenticated consumer-preserving polynomial grammar compiler or legal counterexample, including LOCAL private/public selectors, AND3 annotations, GF(2) typed rows and DEF facet serialization. The present construction avoids these ambiguous operations but proves no universal compiler.
+
+**Deliverable 2 OPEN:** The noncircular same-system B3 implication
+$$
+\mathrm{SAT}\in\mathrm P\ \Longrightarrow\ \overline W_{R_{\mathrm{mix341}}}(N)=N^{O(1)}.
+$$
+No decider rejection trace is a free refutation, and no polynomial correctness/reflection certificate is assumed. B1/B2/B3, superpolynomial full-mixed minimum, P=NP and P!=NP remain OPEN. The published Haken bound is restricted to ordinary Resolution, not this fixed mixed calculus nor all machines.
+
+**Next precise work:** Decide which fully authenticated native rule output actually demands materialization or permits lazy row references; prove a charged source/consumer-preserving translation **for every legal derivation**, not just a favorable schedule. Independently seek a B3 argument that does not assume the needed short proofs.
+
+**Primary references.** [1] A. Haken, *The Intractability of Resolution*, Theor. Comput. Sci. 39 (1985), 297--308. [2] S. Cook, *A Short Proof of the Pigeon Hole Principle Using Extended Resolution*, SIGACT News 8(4) (1976), 28--32. [3] R. Raz and I. Tzameret, *Resolution over Linear Equations and Multilinear Proofs*, Ann. Pure Appl. Logic 155 (2008), 194--224, DOI 10.1016/j.apal.2008.04.001. [4] J. Nordström, *Pebble Games, Proof Complexity, and Time-Space Trade-offs*, LMCS 9(3) (2013).
+
+Publication path owned by LSPV-4. No other manuscript region edited; no task mutated.
