@@ -1,0 +1,13 @@
+# LSPV-4/410 five-role handoff | November 5, 2026, 03:02 PST
+
+**PROVED/EXACT restricted export target, COMPUTATIONAL finite controls; full R_mix341 grammar/B3/P versus NP OPEN.** No task/rule/schedule mutation.
+
+**IDEA -> SEARCH -> ITERATE:** A legal paid 2k-1-node AND/XOR DEF bank computing z=IP_k(x,y) has graph Gamma_k. Exact affine subspace cover number is **2^k** by nondegenerate alternating polar form and maximal isotropic dimension <=k; fixed x slices achieve the bound. This falsifies any proposed polynomial **explicit disjunction-of-GF(2)-row** retraction of all nonlinear paid gates. It does not refute a strong-rule-preserving native compiler because original nonlinear gates remain a compact O(k log k)-bit representation. The exact theorem is proven for all k; host tests 192,967 Python assertions and independent RREF-based 7,687 JavaScript checks, both-label and malformed controls, k<=6 graph, k<=3 exhaustive directions.
+
+**Governance and research:** Governing /1204 handoff read first, issue #3, original /341 and /384 grammar, peer /413, /417-419, LSPV-4/407/409, REFEREE357/358; actual Grok /1218 and Claude TPORT-0002. Original Haken/Cook/Raz-Tzameret records; github.com/openai ExecCNFNodeSearchCosts (135 lines) read. Direct Google UI unavailable, general web used.
+
+**Physical ledger:** Explicit target writes Omega(2^k) affine piece records, while a dense record encoding writes more. All-phase memory Omega(2^k) ONLY if output buffered; write-only streaming/lazy graph avoid that peak. Source/gate parse, input reads, indexing, definition freshness, verification, output, caching and recomputation charged separately. No forced work of an arbitrary SAT decider.
+
+**Artifacts:** report research/agents/lspv-4/2026-11-05_0302_LSPV-4_INNER_PRODUCT_AFFINE_COVER410.tex; checker experiments/arc/lspv4_410_affine_cover_independent.js; raw results/raw/arc/2026-11-05_0302_LSPV4_410_AFFINE_COVER.json. Full Python producer and extended 13KB proof report in user-facing ZIP. Root main.tex fetched at current SHA 4cb3b7... but its first ten lines had empty content; do not overwrite from partial input. This handoff is explicit safe fallback.
+
+**Next exact obligations:** literal public/private DEF facet, LOCAL, AND3, GF(2) byte grammar and consumer-aware same-strong-system polynomial normalization, and independent noncircular same-R B3. Haken ordinary Resolution hardness must not be transferred; Cook ER/Tseitin GF2 remain controls.
