@@ -36,6 +36,7 @@ function validate(second='XOR',completion='Splus',opposite=false,corrupt=''){
  if(!same(p[3].row,xorRow(p[1].port,p[2].port)))return {accepted:false,first_rejected_node:4,reason:'GF2 arithmetic invalid'};
  if(!same(p[4].row,xorRow(p[3].row,p[0].row)))return {accepted:false,first_rejected_node:5,reason:'GF2 arithmetic invalid'};
  if(!same(p[5].clause,['b']))return {accepted:false,first_rejected_node:6,reason:'LOCAL target corrupted'};
+ if(completion==='SrowOnly')return {accepted:false,first_rejected_node:6,reason:'auxiliary LOCAL conclusion export unavailable'};
  for(let x=0;x<2;x++)for(let y=0;y<2;y++){
   if(source(x,y,opposite)){const a=x^y,b=(a^y)^(second==='XNOR'?1:0);if(!b)return {accepted:false,first_rejected_node:6,reason:'LOCAL output not entailed'};}
  }
@@ -45,9 +46,9 @@ const cases=[];for(let x=0;x<2;x++)for(let y=0;y<2;y++){
  const a=x^y,b=a^y;cases.push({x,y,source:source(x,y),a,b});ck(b===x,'conservative equality');ck(source(x,y)===(x===1),'source semantics');
 }
 ck(cases.filter(z=>z.source).length===2,'two models');
-const plus=validate(),minus=validate('XOR','Sminus');
-ck(plus.accepted,'Splus');ck(!minus.accepted&&minus.first_rejected_node===4,'Sminus');
+const plus=validate(),minus=validate('XOR','Sminus'),rowOnly=validate('XOR','SrowOnly');
+ck(plus.accepted,'Splus');ck(!minus.accepted&&minus.first_rejected_node===4,'Sminus');ck(!rowOnly.accepted&&rowOnly.first_rejected_node===6,'SrowOnly');
 const falsifiers={XNOR_definition:validate('XNOR'),opposite_signed_source:validate('XOR','Splus',true),incorrect_def_equation:validate('XOR','Splus',false,'def'),incorrect_row_sum:validate('XOR','Splus',false,'sum'),incorrect_output_clause:validate('XOR','Splus',false,'local')};
 for(const [name,res] of Object.entries(falsifiers))ck(!res.accepted,'negative '+name);
-const result={run:'LSPV2_407_PORT_DIVERGENCE',scope:'two completions of an unresolved original-R_mix341 selector, not native legality',source_dimacs:sourceText,source_ascii_bytes:Buffer.byteLength(sourceText),original_variables:['x','y'],source_models:cases.filter(x=>x.source).length,truth_table:cases,proof:proof(),logical_nodes:6,malformed_controls_rejected:bad.length,producer_assertions:ncheck,completions:{Splus:plus,Sminus:minus},Splus:plus,Sminus:minus,falsifiers,bit_cost:'q=6 separate from E explicit proof+gate+row bits; no N+q bound',claim_status:'PROVED/EXACT conditional typing; native R, B1, B2, B3 OPEN'};
+const result={run:'LSPV2_407_PORT_DIVERGENCE',scope:'two completions of an unresolved original-R_mix341 selector, not native legality',source_dimacs:sourceText,source_ascii_bytes:Buffer.byteLength(sourceText),original_variables:['x','y'],source_models:cases.filter(x=>x.source).length,truth_table:cases,proof:proof(),logical_nodes:6,malformed_controls_rejected:bad.length,producer_assertions:ncheck,completions:{Splus:plus,Sminus:minus,SrowOnly:rowOnly},Splus:plus,Sminus:minus,SrowOnly:rowOnly,falsifiers,bit_cost:'q=6 separate from E explicit proof+gate+row bits; no N+q bound',claim_status:'PROVED/EXACT conditional typing; native R, B1, B2, B3 OPEN'};
 const out=process.argv[2]||'2026-11-04_2012_LSPV2_PORT_DIVERGENCE407_raw.json';fs.writeFileSync(out,JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify({status:'PASS',file:out,producer_assertions:ncheck,malformed:bad.length,plus,minus,falsifiers}));
