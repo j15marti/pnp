@@ -1,6 +1,6 @@
 // LSPV-3/411: exact 3-input, paid arbitrary binary DEF synthesis.
 "use strict";
-function synth(){
+function synth(includeWitnesses=false){
 const X=[170,204,240],apply=(o,a,b)=>(((o&1)?~a&~b:0)|((o&2)?~a&b:0)|((o&4)?a&~b:0)|((o&8)?a&b:0))&255;
 const dist=Array(256).fill(-1),wit=Array(256).fill(null);X.forEach(f=>{dist[f]=0;wit[f]=[]});
 let states=[{out:[],steps:[]}],stateCounts=[];
@@ -34,7 +34,7 @@ const mutant=wit[maj].map(g=>({...g}));mutant.at(-1).op^=15;
 const vv=X.slice();for(const g of mutant)vv.push(apply(g.op,vv[g.i],vv[g.j]));if(vv.at(-1)===maj)throw Error("corrupt witness accepted");
 const countModels=F=>{let c=0;for(let a=0;a<8;a++)if(F.every(C=>C.some(l=>((a>>(Math.abs(l)-1))&1)===(l>0?1:0))))c++;return c};
 if(countModels([[1],[1,2]])!==4||countModels([[1],[-1]])!==0)throw Error("SAT control");
-return {statesByDepth:stateCounts,histogram:hist,missingAfter3:missing3,missingAfter4:remaining,checks,majority:{mask:maj,steps:wit[maj]},exactlyOne:{mask:one,steps:wit[one]},models:{sat:4,unsat:0},mutantRejected:true};
+return {statesByDepth:stateCounts,histogram:hist,missingAfter3:missing3,missingAfter4:remaining,checks,majority:{mask:maj,steps:wit[maj]},exactlyOne:{mask:one,steps:wit[one]},models:{sat:4,unsat:0},mutantRejected:true,...(includeWitnesses?{witnesses:wit,distances:dist}:{})};
 }
 if(typeof module!=="undefined")module.exports={synth};
 if(typeof require!=="undefined"&&typeof module!=="undefined"&&require.main===module)console.log(JSON.stringify(synth(),null,2));
