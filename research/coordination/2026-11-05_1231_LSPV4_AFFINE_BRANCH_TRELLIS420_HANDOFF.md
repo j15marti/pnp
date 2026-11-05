@@ -1,0 +1,15 @@
+# LSPV-4/420 five-role handoff | 2026-11-05 12:31 PST
+
+**Route A primary, exact restricted theorem. P versus NP OPEN.**
+
+**New transfer-relevant lemma:** For affine child-branch consistency Ma=u and any fixed variable order, partition M=[P_j|Q_j], with d_j=rank(P_j)+rank(Q_j)-rank(M). If u is consistent, the exact minimal number of distinct nonempty suffix Boolean functions after prefix j is 2^d_j; total including one dead class is 2^d_j+1[d_j<rank(P_j)]. If inconsistent all future functions are FALSE. Proof and all-phase physical ledger: research/agents/lspv-4/2026-11-05_1231_LSPV-4_AFFINE_TRELLIS_BRANCH_QUOTIENT420.md.
+
+**Verified controls:** 16 source-labelled cubic Tseitin 3-CNF rows on K4/cube/Petersen/Heawood, both odd/even charge; Python 410 assertions and independent JS 1401. A source-labelled cofactor may remain unique even if its *future Boolean function* shares a quotient state. K4/all even: 64 assignments, 8 SAT, max 5 distinct continuations; cube/all even: 4096 assignments, 32 SAT, max 9 continuations. All corresponding odd cases collapse semantically to FALSE after paid global GF2 reasoning. Reproducer full raw/code is in user-facing LSPV4_420_AFFINE_TRELLIS_REPRO.zip; GitHub compact regression experiments/arc/lspv4_420_affine_trellis_compact.mjs and summary results/raw/arc/2026-11-05_1231_LSPV4_420_AFFINE_TRELLIS_summary.json.
+
+**Falsifiers resolved:** unreachable syndromes must be merged; different feasible syndromes distinguish future suffix functions; semantic quotient does NOT establish a short ordinary-CNF guest input, legal historical Rmix derivation, or uniform all-input indexed-machine contraction. No assumption scope leaks: branch constraints must be justified; AND obligations require all cases unless paid algebra bypasses splitting. Cache and rank construction can require Theta(N) or more peak written bits (rho>=1) and repeated source/index access.
+
+**LSPV-2 next candidate:** On a published-hard cubic-expander Tseitin original, seek an actual uniform source-authenticated child compiler that preserves exact shared future functions using no more than N^(1/2+o(1)) guest-input bits and at most N^(3/5+o(1)) children, with all-phase rho, eta, guest delay/recompute/head costs proved. The affine quotient is only a strong shortcut control. Prior LSPV-2/341 linear native Rmix proof defeats ordinary Resolution transfer; Route B B3 is separate.
+
+**Search provenance:** governing 2026-11-02 handoff, current issue #3, peer /424/425, actual Grok GROKPROOF/2026-11-05_1913_PROGRESS.md, Claude research/agents/claude/2026-10-28_1452_CLAUDE_TPORT-0002.tex, konard/p-vs-np, blkph0x/p-vs-np-proof-research, openai/math exact costed Lean, CNFgen Tseitin, Forney/Kashyap coding trellises, FLMV author PDF section 2.1, Urquhart and Ben-Sasson–Wigderson. No direct Google-branded search access.
+
+**Preserved:** exact five roles, Route A/B allocation, all task schedules/enabled status, fixed R_mix341 and weights, verified history, proof-status safeguards; no root main.tex overwrite.
