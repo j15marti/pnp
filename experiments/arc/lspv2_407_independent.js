@@ -41,5 +41,6 @@ for(let x=0;x<=1;x++)for(let y=0;y<=1;y++){
 ok(sourceModels===2,'two SAT original-source valuations');
 ok(data.Splus.accepted&&!data.Sminus.accepted,'distinct semantics');
 ok(data.Sminus.first_rejected_node===4,'first disputed row export');
+ok(!data.SrowOnly.accepted&&data.SrowOnly.first_rejected_node===6,'independent LOCAL auxiliary export gap');
 for(const v of Object.values(data.falsifiers))ok(!v.accepted,'invalid fixture rejected');
 console.log(JSON.stringify({status:'PASS',independent_checks:tests,completion_difference:'Splus accepts; Sminus rejects at node 4',source_models:sourceModels}));
