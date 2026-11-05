@@ -30,7 +30,7 @@ def bad(k,f):
         for a in product((0,1),repeat=d):
             p=alg(k,restrict(f,a))
             if d==2:
-                if p!=not any(len(c)==0 for c in restrict(f,a)):return True
+                if p!=(not any(len(c)==0 for c in restrict(f,a))):return True
             else:
                 left=alg(k,restrict(f,a+(0,)))
                 right=alg(k,restrict(f,a+(1,)))
