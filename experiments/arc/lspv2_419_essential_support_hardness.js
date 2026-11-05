@@ -3,7 +3,7 @@
 // This is a semantic circuit-support test, NOT a native R_mix341 proof checker.
 function assert(cond,msg){if(!cond)throw Error(msg);}
 function clauseValue(clause, assignment){
-  if(!Array.isArray(clause) || clause.length===0)throw Error("bad clause");
+  if(!Array.isArray(clause))throw Error("bad clause"); // Empty clause is legal and false.
   return clause.some(lit=>{
     if(!Number.isInteger(lit)||lit===0)throw Error("bad literal");
     const v=Math.abs(lit)-1;
@@ -79,7 +79,9 @@ function run(){
  // Adversarial controls: a single changed gate breaks identity.
  const altered=bits=>((bits[0]^bits[1])&bits[1])^bits[1];
  assert(support(altered,2).length!==1 || support(altered,2)[0].variable!==0,"mutated circuit escaped");checks++;
- for(const malformed of [[[0]],[[4]],[[1.2]],"invalid",[[1],[]]]){
+ // Correct general-CNF semantics: an empty clause is a valid UNSAT clause.
+ assert(cnfValue([[]],[1,0,0])===false,"empty clause not handled");checks++;
+ for(const malformed of [[[0]],[[4]],[[1.2]],"invalid",[[1],null]]){
    let rejected=false;try{cnfValue(malformed,[1,0,0]);}catch(e){rejected=true;}
    assert(rejected,"bad CNF accepted");checks++;
  }
