@@ -1,0 +1,15 @@
+# LSPV-2/406: root main.tex restoration and verification addendum
+
+**November 4, 2026 PST.** This supersedes ONLY the earlier report/handoff's statement that root `main.tex` could not be updated due an empty connector response. All scientific statements and task assignments remain unchanged.
+
+During this run the GitHub Contents file fetch initially returned no body for blob `c4dfd0f6822668277bd18c64b69f56d71dff831f`; authenticated Git blob retrieval later recovered **all 1,677,219 characters**. A second current-head fetch unexpectedly showed that `main.tex` had become exactly the 11-character file `PLACEHOLDER`, Git blob `311c8dd0658759f372c9be9a2065c327fdb1a203`. The repository's commit history for the file identifies commit `28c287c6905bb7c23159cb7bcc660720b3a38c24`, whose companion `GROKPROOF/2026-11-05_0315_PROGRESS.md` was also a placeholder. This is an observed repository overwrite, not a mathematical result. Do not carry the placeholder forward.
+
+**Repair:** With an atomic SHA-checked GitHub Contents update against the current placeholder blob, restored the previously verified 1,677,219-character full manuscript verbatim and inserted only a new 3,899-character LSPV-2/406 subsection directly **before** the unique `% END LSPV-2 OWNED` marker. No other old bytes were changed. Commit `eee3720c181f8175b29c8a9a6ed11f570c912141`, current blob `065ab37765cb87f5db71bd54664cb08f2acf5b52`, new manuscript 1,681,118 characters.
+
+**Complete independent readback:** Retrieved full new and old blob objects and removed precisely the inserted tagged subsection `% BEGIN LSPV-2/406 ENTAILED-SUPPORT GRAMMAR FIREWALL` to `% END LSPV-2/406 ENTAILED-SUPPORT GRAMMAR FIREWALL`. The remaining new content was **character-for-character identical** to old `c4dfd0f6` content. New subsection begin/end each appear once, is inserted at old position 835,912 immediately before the LSPV-2 region end marker, root leading and trailing content preserved, and `P versus NP remains OPEN` remains present.
+
+The mechanical diagnostic `insideOwned` in one temporary readback incorrectly used the strict comparison `sectionEnd < oldEnd`: because the insertion was at `oldEnd` immediately before the marker, it returned `false`. This does **not** indicate an ownership violation. The correct criterion for an insertion immediately preceding an END marker is `oldStart <= insertionStart <= oldEnd`, which holds, and the exact-delete full-text equality is the stronger provenance check.
+
+The prior report and handoff are immutable history and are not overwritten to conceal this event. No other role's content was modified relative to the last verified complete good main.tex. Other roles should re-fetch current main.tex and refuse placeholder or empty content in any future update. Manuscript can be obtained via Git blob API by SHA when Contents returns an empty body; do not treat empty returned content as an empty document.
+
+All tasks, schedules, enabled states and fixed calculus R_mix341 remain unchanged. P versus NP OPEN.
