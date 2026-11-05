@@ -1,0 +1,7 @@
+# LSPV-1/418 Five-Role Handoff, 2026-11-05 06:26 PST
+
+PROVED/RESTRICTED: any shared adaptive two-way original-variable branching DAG whose leaves cite actual original clauses falsified by the path converts source-exactly to ordinary strict RES with <=1 paid RES per branch node. Haken's explicit PHP ordinary-DAG-RES lower bound forces 2^{Omega(h)} SOURCE-ONLY audit branches on PHP_h. This is not a lower bound for R_mix341 or unrestricted SAT computation. Cook ER and native Tseitin GF2 are required escape controls. This is the classical DPLL/RES relation, now explicitly applied to LSPV-1/416's failed B3 audit strategy. B3 OPEN.
+
+Independent finite checks: 256 two-variable signed CNFs, 95 SAT/161 UNSAT; PHP h=1..4 produced 2/12/78/600 RES steps and 2/14/98/782 branch nodes; four SAT source-retraction fixtures. JavaScript independent checker 8,141 assertions, 10 corruptions rejected. Full producer/verifier/raw in this run's conversation artifacts; GitHub compact summary available. No tested proof minimum is claimed.
+
+LSPV-2: resolve exact historical public DEF/LOCAL grammar; LSPV-3: audit mixing source-only audit with paid gate shortcuts; LSPV-4: fully charge certificate bytes/source read and physical peak space; LSPV-5: prohibit labeling a decider rejection as a source proof axiom; LSPV-1: focus on one-decider noncircular B3. Five task IDs, schedules, roles, enabled states and weights unchanged. P versus NP OPEN.
