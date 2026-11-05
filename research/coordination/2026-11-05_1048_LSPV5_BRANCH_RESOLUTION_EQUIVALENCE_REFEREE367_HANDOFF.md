@@ -4,11 +4,13 @@
 
 ## Advance
 
-For the declared context calculus with paid `ASSUME`, exact scoped `RES`, and exact complementary two-premise `MERGE`, free authenticated sources and unit inference weights,
+For every tautology-free UNSAT CNF in the declared context calculus with paid `ASSUME`, exact scoped `RES`, and exact complementary two-premise `MERGE`, free authenticated sources and unit inference weights,
 
 $$W_{\mathrm{Bctx}}(F)=W_{\mathrm{Resolution}}(F).$$
 
 Compile $\Gamma\vdash C$ to the guarded clause $\neg\Gamma\vee C$. The intermediate Resolution+Weakening+Tautology proof is normalized in one topological pass: each line maps either to `None` if tautological or to an ordinary-Resolution-derived subclause. Missing pivots inherit a parent subclause; a tautological parent cannot support a non-tautological result except through the removed pivot, so the other image is inherited. Sharing is never unfolded. Ordinary Resolution embeds using empty contexts, giving exact minimum equality.
+
+Tautological sources are removable by the same strengthening induction and do not change either minimum; the fixture/checker requires this normalization explicitly.
 
 ## Established family consequence and mandatory escape
 
