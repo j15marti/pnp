@@ -3,7 +3,7 @@
 Only tests the explicitly hypothesized readable-CNF-DEF convention, not a completed native grammar.
 """
 from __future__ import annotations
-import json, itertools, time, hashlib
+import json, itertools
 from collections import defaultdict
 from pathlib import Path
 
@@ -103,7 +103,7 @@ def proof_case(case,build,out_a,out_b):
         for c,z in defs:
             check(any((lit>0)==v[abs(lit)] for lit in c),'bad gate definition')
     check((mismatches==0)==case['expected_equal'],'bad control')
-    start=time.perf_counter();known,parents,idx=saturate(defs,goals); elapsed=time.perf_counter()-start
+    known,parents,idx=saturate(defs,goals)
     verify(known,parents,defs)
     if case['expected_equal']:
         check(goals.issubset(idx),'missing equality certificate')
@@ -116,7 +116,7 @@ def proof_case(case,build,out_a,out_b):
         try:verify(known[:at+1],wrong[:at+1],defs)
         except AssertionError:pass
         else:raise AssertionError('corrupted proof accepted')
-    return dict(name=case['name'],n_inputs=C.n,paid_def_gates=len(C.gates),def_clauses=len(defs),res_nodes=len(known)-len({x for x,_ in defs}),goal_indices=sorted(idx[g] for g in goals) if goals.issubset(idx) else None,closure_clauses=len(known),runtime_seconds=round(elapsed,4),expected_equal=case['expected_equal'],passed=True,ports=[a,b],gates=[list(g) for g in C.gates],proof=[{'clause':sorted(c),'step':list(v)} for c,v in zip(known,parents)])
+    return dict(name=case['name'],n_inputs=C.n,paid_def_gates=len(C.gates),def_clauses=len(defs),res_nodes=len(known)-len({x for x,_ in defs}),goal_indices=sorted(idx[g] for g in goals) if goals.issubset(idx) else None,closure_clauses=len(known),expected_equal=case['expected_equal'],passed=True,ports=[a,b],gates=[list(g) for g in C.gates],proof=[{'clause':sorted(c),'step':list(v)} for c,v in zip(known,parents)])
 
 cases=[]
 cases.append((dict(name='xor_cancel',n=2,expected_equal=True),lambda C: (C.gate('XOR',C.gate('XOR',1,2),2),1),lambda C,p,q:p,lambda C,p,q:q))
