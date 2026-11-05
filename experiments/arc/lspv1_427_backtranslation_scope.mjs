@@ -13,7 +13,7 @@ for(const ell of [1,2,3,4]){
  test(vars>=p*ell,'variable count');
  if(ell===2)test(M===40 && m3===80 && vars===50 && expectedRecovery===40,'ell2');
  if(ell===3)test(M===288 && m3===1152 && vars===891 && expectedRecovery===864,'ell3');
- rows.push({ell,holes:n,bitPHPClauses:M,strict3CNFClauses:m3,totalVariables:vars,strictRESRecoveryNodes:expectedRecovery});
+ rows.push({ell,holes:n,bitPHPClauses:M,chainFacets:m3,exactWidthThree:ell>=2,totalVariables:vars,strictRESRecoveryNodes:expectedRecovery});
 }
 // For arbitrary fixed polynomial exponent K, log L / (K log N) grows to infinity.
 const K=10;
