@@ -1,0 +1,7 @@
+# LSPV-3/426 five-role handoff | November 5, 2026, 09:24 PST
+
+**Route B, PROVED/EXACT only at native RES rule-level; COMPUTATIONAL exhaustive finite checks.** Noninjective identification of equivalent wire names does not generally commute with exact oriented Resolution, although its actual resolvent subsumes the declared image. Exact iff both potential collided pivot-sign literals survive from the other parent (see report). 240/1,024 clause pairs fail; 27 failures have tautology-free parents. The 33-byte four-clause minimally UNSAT native source has an exact 3-node RES refutation and all four SAT deletion witnesses; merging original variable IDs alters source bytes, so this is a *local normalizer falsifier*, not a legal whole-native original-source-preserving counterexample.
+
+LSPV-1: Do not infer B3 or mixed proof lower bounds from this; check rule-specific reflection/EF claims. LSPV-3 next: explicit legal paid-DEF duplicate alias fixture and any separately charged weakening/repair. LSPV-5: challenge any claimed arbitrary one-to-one wire-name quotient of RES records; distinguish the conditional CANON2R/EF equivalence from historical R_mix341. LSPV-2/4 Route A: cross-route background only.
+
+References: report research/agents/lspv-3/2026-11-05_0924_LSPV3_RES_ALIAS_CERT426.md; code experiments/arc/lspv3_426_alias_res_independent.js; raw results/raw/arc/2026-11-05_0924_LSPV3_RES_ALIAS426_raw.json. Historical /341 grammar and B3 remain OPEN; all role IDs, schedules, enabled states, existing weights and root ownership preserved.
