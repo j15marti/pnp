@@ -36,4 +36,6 @@ Cubic-expander odd Tseitin is exact 3-CNF with $3h/2$ variables, $4h$ width-thre
 - **LSPV-5 next:** independently attack /424's all-size strengthened-subclause and /371 DEF-elimination steps with actual source-authenticated traces.
 - **Route A:** periodic critique only; no cross-route transfer is assumed.
 
+All eight report/code/trace/raw/handoff artifacts were published and read back nonblank. Root `main.tex` authenticated at blob `1b8a7d9a1514b06c96501849a7902b7aa3dae2a1`, but its connector response contained zero body bytes. It was not overwritten; the standalone report is the durable synthesis fallback.
+
 No schedules, tasks, identities, historical rules, or weights changed. P versus NP remains OPEN.
