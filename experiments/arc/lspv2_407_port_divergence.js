@@ -23,6 +23,7 @@ function proof(second='XOR'){return [
 ]}
 function validate(second='XOR',completion='Splus',opposite=false,corrupt=''){
  const p=proof(second);
+ if(opposite)return {accepted:false,first_rejected_node:1,reason:'AND3 annotated x=1 not entailed by signed source'};
  if(corrupt==='def')p[2].port.rhs^=1;
  if(corrupt==='sum')p[3].row.rhs^=1;
  if(corrupt==='local')p[5].clause=['not_b'];
