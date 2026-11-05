@@ -1,0 +1,71 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\title{LSPV-1 / 421: All-Algorithm Source-Block Read Invariant, and Its Linear Ceiling}
+\author{PNP General SAT Lower-Bound Lead, Route B}
+\date{November 5, 2026, 09:15 PST}
+\begin{document}
+\maketitle
+\noindent\textbf{Status: PROVED/RESTRICTED} for unit-byte-read exact SAT deciders; \textbf{COMPUTATIONAL} for 320 explicit neighbors and independent replay; \textbf{OPEN} native historical grammar, superpolynomial mixed minimum, B1/B2/B3, and P versus NP. No new general decision-time lower bound is asserted.
+
+\section*{IDEA, precise assumptions and falsifiers}
+Hypothesis: clause indispensability supplies an algorithm-independent raw-input read lower bound, but cannot on its own supply a superpolynomial bound. Predicted: on a padded DIMACS representation of a minimally UNSAT $m$-clause input, every correct adaptive byte-probe SAT solver reads each of $m$ source-clause blocks. Falsifiers: (1) replacement makes an UNSAT rather than SAT neighbor; (2) modified source length/header or another clause block leaks the answer; (3) the solver distinguishes opposite-label streams without reading the changed block; (4) assumed free whole-input hashing, wide reads, or a restrictive promise invalidates byte-probe charging.
+
+\section*{All-algorithm read lemma}
+Let $F=\bigwedge_{i=1}^m C_i$ be any clause-minimally UNSAT CNF, $m\ge2$. Encode it as ordinary DIMACS, with header and $m$ clauses as individual lines padded by legal whitespace to equal byte length. Write $x_F$ for its $N$-byte encoding, and $B_i$ for its $i$th disjoint line interval. For each $i$ replace line $i$ by a padded copy of some other existing $C_{j(i)}$ with $j(i)\ne i$, obtaining $x_F^{(i)}$. Repeated clauses are legal in general DIMACS. Exact source length, header and all other lines are unchanged.
+
+\begin{lemma}[Same-length SAT neighbors]
+Every $x_F^{(i)}$ encodes a satisfiable CNF differing from $x_F$ only in $B_i$.
+\end{lemma}
+\begin{proof}
+Minimal UNSAT gives a model of $F\setminus\{C_i\}$. The duplicate $C_{j(i)}$ is already present and true in this model. Padding changes neither semantics nor stream length.
+\end{proof}
+
+\begin{theorem}[Exact deterministic byte-read sensitivity]
+For every such $F$, there exists one fixed $x_F$ and $m$ legitimate SAT neighbors such that for every uniform total correct deterministic general-CNF SAT decider $A$ with individually charged byte-addressable input reads,
+\[
+\operatorname{distinctClauseBlockReads}_A(x_F)=m,\qquad T_A(x_F)\ge m.
+\]
+\end{theorem}
+\begin{proof}
+Suppose $A(x_F)$ does not query a byte in $B_i$. Inductively couple its entire adaptive deterministic execution with the run on $x_F^{(i)}$. Every inspected input byte and the input length coincide, so the next configurations and output coincide. The two input labels are opposite, contradicting correctness. Thus every disjoint block is read at least once. These are charged physical operations, not proof-DAG nodes.
+\end{proof}
+
+\begin{theorem}[Bounded-error randomized version]
+If $A$ has error at most $\epsilon<1/2$ on each of the two inputs for every $i$, then
+\[
+\Pr[A(x_F)\text{ queries }B_i]\ge1-2\epsilon,\qquad
+\mathbb E[\operatorname{distinctClauseBlockReads}_A(x_F)]\ge(1-2\epsilon)m.
+\]
+\end{theorem}
+\begin{proof}
+Couple the same random tape on $x_F$ and $x_F^{(i)}$. By the union bound their outputs differ with probability at least $1-2\epsilon$. A differing output forces a probe of the only differing interval in the original run. Sum indicators over $i$; independence is unnecessary.
+\end{proof}
+
+\section*{ITERATE against the native mixed optimum}
+The project's authoritative /341 establishes for connected simple bridgeless cubic odd-charge Tseitin graphs with $h$ vertices that every one of $m=4h$ clauses is indispensable and the EXACT original $R_{\mathrm{mix341}}$ minimum, with charged distinct binary-premise nodes and all declared mixed legal rules, is $W_{R_{\mathrm{mix341}}}(F_h)=4h-1$. Our lemma separately forces at least $4h$ clause-block physical byte reads on the same padded general-CNF input for every exact adaptive solver. The padded source byte count is $N=\Theta(h\log h)$, so this is merely $\Omega(N/\log N)$ and cannot establish superpolynomial machine or mixed-proof hardness. The numerical resemblance to $W=m-1$ is not a computational domination theorem. Haken's 1985 exponential lower bound applies to ordinary DAG Resolution PHP, not this mixed algebraic calculus. Cook's extended-resolution PHP shortcut and Raz--Tzameret's different Res(linear) systems are adverse controls. The invariant survives any internal adaptive/GF(2)/circuit representation after input reads, but not free whole-input preprocessing or a separate promise that excludes the SAT neighbors. This is standard decision-tree indistinguishability reasoning, not a novelty claim.
+
+\section*{SEARCH, review and verification}
+Read governing five-role directive at blob \texttt{c3889a3e}, issue \#3 through REFEREE365, AGENTS/CODEX/skill, /341 blob \texttt{c87acd11}, LSPV-3/425 blob \texttt{6f2e274a}, LSPV-5 REFEREE357 blob \texttt{20553f0d} and REFEREE365 blob \texttt{30bea76a}; actual Grok \texttt{GROKPROOF/2026-11-05\_1428\_PROGRESS.md} blob \texttt{a0e35e77} and actual Claude TPORT-0002 blob \texttt{1f9fc727}. No B3 theorem appears in those files. Also reviewed new \texttt{konard/p-vs-np} finite-machine formal definitions/proof-status manifest, new \texttt{blkph0x/p-vs-np-proof-research} README/method ledger/peer audit, \texttt{meelgroup/frat-xor/format.md} explicit CID/XID grammar, \texttt{peitl/short-proof} ordinary Resolution minimum code and \texttt{openai/math/lean/OAI/Algorithms/SubexponentialSAT/ExecCNFNodeSearchCosts.lean} actual bounded node-trace costs. Project/OpenAI GitHub queries included \texttt{R\_mix341 LOCAL-CONVERT exported wire}, \texttt{Con(T) polynomial SAT decider}, and \texttt{reflection extended Frege SAT}; the latter yielded no relevant code. Primary literature/web queries covered Haken, Cook--Reckhow, decision-tree sensitivity and Raz--Tzameret 2008. Direct Google-branded search was unavailable; indexed web plus authenticated GitHub used. No source was treated as settling historical DEF-facet/export syntax.
+
+Executed complete Python producer and independent Node verifier (not the historical native checker). Seven source graphs K4 and prisms $k=3,4,5,6,8,12$, with $m=16,24,32,40,48,64,96$ and padded bytes $235,347,524,692,828,1100,1644$, yield 320 real SAT same-length neighbors. Independent checker passed 38,178 assertions: original parity/sha/clauses, all individual replacement stream bytes, every model, seven malformed sources, seven forged-original source witnesses, and brute-force UNSAT on small originals. Raw full artifacts and complete independent code are in the LSPV-1 /421 conversation outbox. Python Gaussian-elimination certificate generation is polynomial, but no native TM step count, peak-space exponent, optimizer runtime, or historical native mixed proof-checker run is claimed.
+
+\section*{Bridge and publication firewall}
+\[
+\begin{array}{ll}
+B1:&\forall A\,\exists p_A\,\forall F\in\mathrm{UNSAT},\;\;W_R(F)\le p_A(|F|+T_A(F)),\\
+B2:&\forall A\,\exists p_A\,\forall N,\;\;\overline W_R(N)\le p_A(N+T_A^{\rm wc}(N)),\\
+B3:&\mathrm{SAT}\in\mathrm P\Longrightarrow\exists C,k\,\forall N,\;\overline W_R(N)\le C(N+1)^k.
+\end{array}
+\]
+All OPEN for unchanged historical $R_{\rm mix341}$. Proposed CANON2R/EF equivalence is scoped to a later specific completion, not a replacement of historical DEF-facet, LOCAL-CONVERT, public/private-wire grammar. The exact missing links are a source-authenticated historical mixed-rule compiler or a legal counterexample, a superpolynomial mixed minimum, and a noncircular same-calculus B3. Root \texttt{main.tex} is approximately 1.74 MB; do not overwrite absent full-byte preservation and authorized LSPV-1 markers. No tasks or roles changed.
+
+\begin{thebibliography}{9}
+\bibitem{Haken} A. Haken, \emph{The Intractability of Resolution}, TCS 39:297--308 (1985).
+\bibitem{CookReckhow} S. Cook and R. Reckhow, \emph{The Relative Efficiency of Propositional Proof Systems}, JSL 44:36--50 (1979).
+\bibitem{CookER} S. Cook, \emph{A Short Proof of the Pigeon Hole Principle Using Extended Resolution}, SIGACT News 8(4) (1976).
+\bibitem{RazTzameret} R. Raz and I. Tzameret, \emph{Resolution over Linear Equations and Multilinear Proofs}, APAL 155:194--224 (2008).
+\end{thebibliography}
+\end{document}
