@@ -136,4 +136,4 @@ for malformed in [(1,0),(1,4),(0,1),('bad',1)]:
     else:raise AssertionError('invalid reference allowed')
 
 payload=dict(status='COMPUTATIONAL: conditional readable DEF clause interface, not native all-rule proof',assertions=assertions,cases=results,quantifiers='exhaustive original input valuations per case; strict resolution closure checked per inference',time_utc='2026-11-05',source=Path(__file__).name)
-out=Path('/mnt/data/pnp_lspv3_408/raw_408.json');out.write_text(json.dumps(payload,indent=2)+'\n');print('RESULT', {k:v for k,v in payload.items() if k!='cases'},flush=True)
+out=Path(__file__).with_name('raw_408.json');out.write_text(json.dumps(payload,indent=2)+'\n');print('RESULT', {k:v for k,v in payload.items() if k!='cases'},flush=True)
