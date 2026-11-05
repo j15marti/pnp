@@ -70,6 +70,17 @@ for label in ("bad_GF2","wrong_source","false_LOCAL","wrong_DEF","false_AND3"):
         controls.append(label)
 assert len(controls) == 5
 
+# Four-variable support-width countercontrol: zero-cost AND3 affine/factor alias is NOT universal.
+assert len({1,2,3}|{4}) == 4 and len({1}|{4}) == 2
+support_checks = 0
+for x,y,z,w in itertools.product((0,1),repeat=4):
+    f = x and (x or y or z)
+    affine = x
+    assert f == affine
+    assert (affine and w) == (f and w)
+    support_checks += 2
+assert support_checks == 32
+
 print(json.dumps({"status":"PASS","strict_paid_nodes":stats["paid_nodes"],
                   "strict_references":stats["references"],"strict_truth_rows":stats["truth_rows"],
                   "broad_rejection":"bad AND3 parents","raw_source_bytes":len(raw),
