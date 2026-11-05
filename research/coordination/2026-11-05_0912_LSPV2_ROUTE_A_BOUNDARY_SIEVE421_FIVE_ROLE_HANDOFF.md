@@ -1,0 +1,21 @@
+# LSPV-2/421 Route A five-role handoff
+
+**November 5, 2026, 09:12 PST.** Status **PROVED/RESTRICTED + COMPUTATIONAL**; universal Route A A -> Phi(A), FLMV applicability, P vs NP **OPEN**. Exact five agents preserved: LSPV-2/LSPV-4 Route A, LSPV-1/3/5 Route B; no task, schedule, clock, calculus or ownership mutation.
+
+## Exact restricted theorem
+
+For a checked original tagged DIMACS formula F=AND_i G_i(B,X_i), with each X_i private and pairwise disjoint and b shared variables B, SAT(F) iff EXISTS beta in {0,1}^b FORALL i SAT(G_i restricted to beta). A streaming constructor keeps 2^b survivor bits, validates the full source before an early NO, rereads only one block at a time, emits authenticated ordinary CNF children and uses one fixed total decider A on each child, preserving both labels and coherent shared boundary assignments. Cannot replace the join by independent AND of SAT_i.
+
+Under a *restricted syntactic promise* 2^b<=N^.5, h*2^b<=N^.6, max complete encoded block/child <=N^.5, small canonical numeric IDs n<=N, and fully charged indexed-work-tape child materialization, local time <=N^(1.1+o(1)), peak local writable <=N^(.5+o(1)); with a fixed guest of exponent t,s the **promise-only** recurrent upper profile is t'<=max(1.1,.6+.5t), s'<=max(.5,.5s). Input, work tape, index-tape writes and erasures, output, failed policy, two whole-source passes, and all-phase live space charged; no free virtual child. This argument is a declared theoretical tape compilation, NOT an actual measured FLMV-native execution. An unbounded easy SAT/UNSAT padded family has N=Theta(h²/log h), child=O(h/log h)=o(sqrt N), q=2h=o(N^.6); it does not prove unrestricted SAT hardness.
+
+## Independent finite checks
+
+Python producer passed **40 assertions** (includes huge cut tag allocation guard); separately written Node verifier passed **1,721 checks**; standalone replay available in experiments/arc/lspv2_421_streaming_boundary_replay.py and verified readback blob bf14a1c6bdab5a5f2a55d68b76af51eeb455eedd. Two h=700 originals: N=181592/181608 bits, max materialized child=168/200 bits, q<=1400, actual guest calls=701, bounds sqrtN floor=426 and N^.6 floor=1430. Cases h=2,7,100 do NOT meet the finite child-size bound; recorded as failures of that cap, not passes. Corrupt/malformed tag, shared-beta false join and forged cofactor rejected. Immutable raw summary: results/raw/arc/2026-11-05_0912_LSPV2_BOUNDARY421_summary.json (blob 5179699e579ac24b61fa8b616f53e7e0c364ea13). Full producer and independent verifier in local reproducibility ZIP.
+
+## Peer review and external sources
+
+Read LSPV-4/416 (per-guest-step tax), archived LSPV-2 PADDED-GUEST157 and FALLBACK118 (already showed full-parent fallback fails against padded A); actual GROKPROOF/2026-11-05_1218_PROGRESS.md, research/agents/grok/2026-10-12_1859_GROK_FL2.tex and research/agents/claude/2026-10-28_1452_CLAUDE_TPORT-0002.tex; governing handoff, issue #3, AGENTS, CODEX, skill. New requested konard/p-vs-np and blkph0x/p-vs-np-proof-research methods audited, as well as openai/math Lean costed SAT files. Primary FLMV 2005 indexed-tape model read directly and PDF page 4 inspected. Direct branded Google unavailable; general indexed web search and authenticated GitHub connector used. No new external mathematical transfer found.
+
+## Decisive remaining gap and assignments
+
+**Uniform all-input and recursive closure OPEN.** On an untagged or malformed source the total wrapper either rejects malformed or invokes A on unchanged full N-bit input; arbitrary-A padded guest family defeats this branch's exponent contraction. Furthermore emitted ordinary children are not guaranteed to stay in the tagged promise. This is a proof of *scope*, not a refutation of all conceivable white-box A-dependent adaptive compilers. LSPV-4: audit constant-overhead child-work-tape input remapping, endmarkers, indexed-access tape clearing, interpreter state, and malformed tags. LSPV-2: seek adaptive discovery of authenticated sublinear separator structures from actual A computation with N^1.1 local budget, or certify a precise architectural no-go. Route B agents: do not infer B3 from this. Historical R_mix341 proofs preserved, root main.tex left unchanged because authenticated fetch returned empty content with nonempty SHA. P vs NP OPEN.
