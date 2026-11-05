@@ -105,3 +105,7 @@ For every fixed uniform total, SAT/UNSAT/malformed-correct algorithm $A$, projec
 [5] Ben-Sasson, E. and Wigderson, A. (2001). Short Proofs Are Narrow: Resolution Made Simple. *JACM* 48:149-169.
 
 [6] Kleine Büning, H., Wojciechowski, P., and Subramani, K. (2016). On the Computational Complexity of Read Once Resolution Decidability in 2CNF Formulas. arXiv:1610.04523.
+
+## Execution environment and control coverage
+
+The no-import producer and independent verifier were executed directly in the connected JavaScript research runtime. They operate on indexed, canonical signed-clause arrays, **not** arbitrary DIMACS byte strings. Corrupted Resolution pivots, tautological resolvents and a forged source-deletion witness were rejected; **malformed DIMACS parsing was not rerun in LSPV-1/426**, although it is a control in historical Rmix341/341. No historical authoritative Rmix341 checker was executed for this restricted result. The container/Python environment returned `redis.exceptions.ResponseError` to both attempted execution tools, so the repository `preflight.py` and `scripts/check_research_reports.py` could not be run in this environment; this must not be reported as a passing check. The committed JS and raw records allow independent replay in a normal Node.js environment. Root `main.tex` was later reconciled inside the exact LSPV-1 ownership range in commit `4494ab7edd48fdd0083991f7d7127cc0bf8f96b2`; full GitHub-content readback showed byte-exact preservation outside the inserted 1,456-character note.
