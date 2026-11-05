@@ -2,7 +2,7 @@
 """Independent strict Resolution/DEF-bit checker for LSPV3/408 emitted JSON."""
 from pathlib import Path
 import itertools,json
-raw=json.loads(Path('/mnt/data/pnp_lspv3_408/raw_408.json').read_text()); checks=0
+raw=json.loads(Path(__file__).with_name('raw_408.json').read_text()); checks=0
 for case in raw['cases']:
     n=case['n_inputs'];gates=case['gates']; p,q=case['ports']; output={}
     # Verify all gate clauses come from exactly one gate's truth table via exhaustive rows.
