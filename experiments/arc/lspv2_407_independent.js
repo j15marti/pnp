@@ -43,4 +43,5 @@ ok(data.Splus.accepted&&!data.Sminus.accepted,'distinct semantics');
 ok(data.Sminus.first_rejected_node===4,'first disputed row export');
 ok(!data.SrowOnly.accepted&&data.SrowOnly.first_rejected_node===6,'independent LOCAL auxiliary export gap');
 for(const v of Object.values(data.falsifiers))ok(!v.accepted,'invalid fixture rejected');
+ok(data.falsifiers.opposite_signed_source.first_rejected_node===1,'signed source invalidates AND3 first');
 console.log(JSON.stringify({status:'PASS',independent_checks:tests,completion_difference:'Splus accepts; Sminus rejects at node 4',source_models:sourceModels}));
