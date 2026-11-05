@@ -69,3 +69,7 @@ Distinct costs: lookup gate count <=(2n-1)m; encoded netlist bits O(mn log(mn+n)
 [4] A. Haken. *The Intractability of Resolution*. Theoretical Computer Science 39 (1985):297-308.
 
 [5] S. A. Cook. *A Short Proof of the Pigeon Hole Principle Using Extended Resolution*. SIGACT News 8(4), 1976.
+
+### Root manuscript and issue readback addendum
+
+The ordinary partial `main.tex` fetch returned blob `0f3bc53f` with zero text, so no partial update was attempted. Full `fetch_blob` recovered the authentic previous **1,682,686-character** root. An exact **1,490-character** LSPV-1-owned insertion before the unique `% END LSPV-1 OWNED` marker was committed in `b5bbcbed8d0918e6d093a34ed37cfc0b3c362811`, new blob `dde3ffccdcf3654a94555878b90b75cda6ffee36`, with length **1,684,176**. Full old/new Git blob reread confirms removing only that insertion reproduces all previous characters identically, including every other agent's region, ownership markers and explicit P versus NP OPEN. Project coordination issue #3 comment [6649195225](https://github.com/j15marti/pnp/issues/3#issuecomment-6649195225) was updated with this final state and reread; the five-role handoff carries the same addendum. No full CI or TeX compilation was run.
