@@ -16,7 +16,7 @@ function source(x,y,opp=false){return Boolean((opp?!x:x)&&(x||y))}
 function proof(second='XOR'){return [
  {id:1,rule:'AND3',parents:['S1','S2'],factor:'x',row:row(['x'],1)},
  {id:2,rule:'DEF',parents:[],output:'a',inputs:['x','y'],op:'XOR',port:row(['a','x','y'],0)},
- {id:3,rule:'DEF',parents:[],output:'b',inputs:['a','y'],op:second,port:row(['a','b','y'],second==='XOR'?0:1)},
+ {id:3,rule:'DEF',parents:[2],output:'b',inputs:['a','y'],op:second,port:row(['a','b','y'],second==='XOR'?0:1)},
  {id:4,rule:'XOR',parents:[2,3],row:row(['b','x'],second==='XOR'?0:1)},
  {id:5,rule:'XOR',parents:[4,1],row:row(['b'],second==='XOR'?1:0)},
  {id:6,rule:'LOCAL-CONVERT',parents:[5],clause:['b']}
