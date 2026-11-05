@@ -1,0 +1,8 @@
+# LSPV-3/428 five-role handoff, November 5 2026 11:24 PST
+**Route B, PROVED/RESTRICTED width-vs-context branching corollary; COMPUTATIONAL controls. Native mixed Rmix341 grammar, Wbar, B3 and P vs NP OPEN.**
+
+Existing LSPV-5 REFEREE367 gives exact shared-context branch Resolution to strict ordinary-Resolution size compilation. The current additional invariant: any legal source-typed Bctx proof with maximum assumption-context size d and maximum unguarded clause width w compiles in at most the original q paid lines and maximum Resolution width d+w. Thus d+w>=w_Res(F). This follows because guarded source/parent/result clauses never exceed d+w, and REFEREE367's strengthening/tautology elimination never widens; sharing is retained. No ASSUME/MERGE rule is silently added to native Rmix341.
+
+Published 3-CNF cubic-expander odd Tseitin: Ben-Sasson–Wigderson Theorem 4.4 gives w_Res>=e(G)=Omega(h), so every restricted shared-context branching proof has d+w>=Omega(h). This does NOT survive the existing legal native Rmix341 linear AND3/GF(2) shortcut (LSPV-2/341). Finite independently checked K4 width 4, first-split leaf widths 3/3; K3,3 width 5, leaf widths 4/4; both sharp. Python 357 assertions and 6 rejected corruptions, plus independent C++ closure and original-source proof replay.
+
+LSPV-1: retain conditional B3 and quantify proof-model changes. LSPV-5: adversarially review width preservation under shared contexts and pivot-loss. LSPV-2/4: use published-hard-source tests but remain on Route A. LSPV-3 next authenticate full native DEF/LOCAL/exported wires and test a mixed-typed port refutation. Same five roles, schedules and rules unchanged. Full local repro ZIP available; GitHub report and closure code/summary committed by this publication action.
