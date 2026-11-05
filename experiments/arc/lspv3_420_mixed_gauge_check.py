@@ -51,7 +51,7 @@ for p,q in itertools.product(range(16),repeat=2):
  for a in range(4):
   assert (((p&q)>>a)&1)==(((p>>a)&1)&((q>>a)&1))
   checks["and_checks"]+=1
- assert (p&~q&15)==0 == all(not ((p>>a)&1) or ((q>>a)&1) for a in range(4))
+ assert ((p&~q&15)==0) == all(not ((p>>a)&1) or ((q>>a)&1) for a in range(4))
  checks["local_checks"]+=1
 assert re(4,1,4)!=re(4,1,flip(4,4));checks["negative_rejections"]+=1
 assert (1&~2&15)!=0;checks["negative_rejections"]+=1
