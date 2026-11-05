@@ -104,6 +104,8 @@ def check_wrapper(w: dict) -> dict:
         raw = base64.b64decode(w["source_raw_b64"], validate=True)
     except Exception as exc:
         raise RawReject("invalid raw base64") from exc
+    if base64.b64encode(raw).decode("ascii") != w["source_raw_b64"]:
+        raise RawReject("noncanonical raw base64")
     if w["source_raw_sha256"] != raw_sha(raw):
         raise RawReject("raw hash mismatch")
     parsed = parse_strict_dimacs(raw)
@@ -234,6 +236,19 @@ def main() -> None:
     bad_b64 = wrap(raw_a, p)
     bad_b64["source_raw_b64"] = "***"
     b64_reject = expect_reject(lambda: check_wrapper(bad_b64), "invalid raw base64")
+    noncanonical_b64 = wrap(raw_a, p)
+    enc = noncanonical_b64["source_raw_b64"]
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+    pad = len(enc) - len(enc.rstrip("="))
+    pos = len(enc) - pad - 1
+    old = alphabet.index(enc[pos])
+    # Change only ignored padding bits: raw_a has two '=' padding characters.
+    assert pad == 2
+    enc2 = enc[:pos] + alphabet[(old & 0b110000) | ((old + 1) & 0b001111)] + enc[pos + 1:]
+    assert base64.b64decode(enc2, validate=True) == raw_a and enc2 != enc
+    noncanonical_b64["source_raw_b64"] = enc2
+    noncanonical_reject = expect_reject(
+        lambda: check_wrapper(noncanonical_b64), "noncanonical raw base64")
 
     firewall = direct_def_injection_tests()
     assert firewall["total"] == 208
@@ -266,6 +281,7 @@ def main() -> None:
             "semantic_raw_mismatch": mismatch,
             "bad_raw_hash": hash_reject,
             "bad_base64": b64_reject,
+            "noncanonical_base64": noncanonical_reject,
         },
         "affine_firewall": firewall,
         "physical_cost": {
