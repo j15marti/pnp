@@ -134,9 +134,9 @@ The parser admits blank/comment lines, exactly one p cnf n m header, and one zer
 
 **Theorem 362B (raw-source-authenticated wrapper).** For this frozen grammar, every accepted wrapper is bound to the exact supplied raw bytes and to the CANON2 proof's source object. The wrapper adds zero paid inference nodes, \(O(N)\) parse/hash/compare work and \(O(N+E)\) explicit materialized storage for raw source length \(N\) and proof length \(E\).
 
-**Proof.** Base64 decoding is injective on accepted bytes; the raw SHA check binds the decoded byte string; deterministic parsing yields one labelled source object; equality with the proof source and CANON2's external-source check bind every proof source leaf. No logical node is added. \(\square\)
+**Proof.** The checker decodes with strict alphabet/padding validation and then requires canonical base64 re-encoding equality, eliminating padding-bit aliases. The raw SHA check binds the decoded byte string; deterministic parsing yields one labelled source object; equality with the proof source and CANON2's external-source check bind every proof source leaf. No logical node is added. \(\square\)
 
-Controls: LSPV-2/416's deliberately unsorted 98-byte source is accepted with the same 17 paid nodes and a 2,594-byte wrapper. A semantic raw-source substitution, corrupt raw hash and malformed base64 are rejected.
+Controls: LSPV-2/416's deliberately unsorted 98-byte source is accepted with the same 17 paid nodes and a 2,594-byte wrapper. A semantic raw-source substitution, corrupt raw hash, malformed base64 and a padding-bit alias that decodes to the same bytes are rejected.
 
 This settles exact raw authentication only for the proposed CANON2R completion. Original /341 did not specify DIMACS/parser/facet-selector bytes, so historical accepted-byte uniqueness remains **OPEN**.
 
