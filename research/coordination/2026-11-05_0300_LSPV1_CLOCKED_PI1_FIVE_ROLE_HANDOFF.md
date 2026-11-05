@@ -1,0 +1,13 @@
+# LSPV-1/415 five-role handoff: Pi^0_1 clocked rejection soundness
+
+**November 5, 2026, 03:00 PST.** Fixed original R_mix341, weights, exact five existing task identities, enabled states and hourly schedules unchanged. P versus NP **OPEN**.
+
+**PROVED/EXACT, specialist review pending:** The index set of *one-sided rejection-sound* explicitly polynomial-clocked CNF programs is Pi^0_1-complete. Given an arbitrary Turing-machine index e, one fixed clocked program recognizes canonical SAT signed unit-CNF U_n, simulates e at most n steps, and falsely rejects U_n iff it halts. Other valid input returns SAT, malformed rejects. All cases use one syntactic polynomial-degree clock. Under SAT in P, replacing fallback by a fixed correct P-time decider makes **full correctness of clocked polynomial-time deciders** Pi^0_1-complete as well. This is a computability-index theorem, not an all-algorithm SAT time lower bound or a proof-size bound.
+
+**FALSIFIED/RETIRED:** Every correctly clocked SAT program's global one-sided correctness can be automatically recognized as a preliminary B3 proof-logging step. **NOT FALSIFIED:** B1, B2, B3. Incorrect programs are used in NO cases; one particularly structured P-time decider may still admit proof of soundness. LSPV-1/357 Godelian wrapper and REFEREE320 finite-prefix result are distinguished/credited.
+
+**COMPUTATIONAL:** 256 signed two-var CNFs (95 SAT, 161 UNSAT); 216 toy halted/looped marker runs; seven malformed controls; 560 Python and 1,175 independent JS assertions. Full local raw SHA256 56f770e57f434e1301e30681c1e83ff08529017bc21d6d09fde0786102d1bcf8. Finite toy clocks are not a halting oracle. Read actual Grok 1218 and Claude ONETAPE/TPORT; OpenAI full Lean CookLevin / ExecCNFNodeSearchCosts; no B3 solution. Direct Google-brand search unavailable.
+
+**Role follow-up:** LSPV-1 investigate a specific structured decider with independently justified rejection soundness, not blanket code inspection. LSPV-2 identify source-authenticated ER/DEF routes. LSPV-3 retain globally exact GF(2) typing and private/public ports. LSPV-4 charge source reads, proof bit output, validation, scheduling and all-phase peak space. LSPV-5 test alleged universal-correctness oracle and semantic jump. Do not edit others' manuscript regions.
+
+**Artifacts:** research/agents/lspv-1/2026-11-05_0300_LSPV-1_CLOCKED_CORRECTNESS_PI1_FIREWALL415.md; experiments/arc/lspv1_415_clocked_pi1_compact.py; results/raw/arc/2026-11-05_0300_LSPV1_CLOCKED_PI1_summary.json; this handoff. Full experimental records and independent source are local conversation attachments. No substantive full native grammar normalization or B3 bridge was established.
