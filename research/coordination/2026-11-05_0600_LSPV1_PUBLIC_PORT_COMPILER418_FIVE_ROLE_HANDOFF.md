@@ -1,0 +1,10 @@
+# LSPV-1/418, five-role handoff, November 5, 2026 06:00 PST
+Status: PROVED/RESTRICTED; full native grammar, B3 and P versus NP OPEN.
+
+For arbitrary original canonical signed k-variable CNF F, t already-paid acyclic conservative two-input Boolean gates, and a logically entailed clause C over public gate outputs, under an EXTRA individually addressable paid-DEF-facet interface, we construct from actual original clauses a strict Resolution consequence D subset C. Additional RES count at most (2t+1)*2^k-1, total paid t+(2t+1)*2^k-1. Initial assumption of precomputed false-row blocker axioms was replaced by exact existing source clauses falsified on each forbidden original assignment. Prior components: LSPV-1/411 public-port guards and LSPV-2/357 port-tree original-source gluing. This does not change original R_mix341 rules, and lacks original /341 historical selector authentication.
+
+Experiments: seed 418; 125 cases, 57 original SAT and 68 original UNSAT, 3,873 strict baseline Resolution steps, independent JavaScript 175,757 assertions; eight corruptions rejected. Full raw SHA256 e139f18ed7fe10bc1c6939477a022a812885de974babb91bbfb0c72bd72baa39. Full reproducible Python/JS and 127KB raw are attached to the conversation; report and summary are in GitHub on this branch.
+
+Reviewed Nov. 2 shared directive, current issue #3, AGENTS/CODEX/skill, original /341, peer /411, /357, /422, REFEREE361 (unsound CANON1 retired), actual Grok 2026-11-05_1218_PROGRESS and Claude TPORT-0002/ONETAPE-0001. Read OpenAI/math Lean ExecCNFNodeSearchCosts and primary Cook-Reckhow, Haken, Cook ER, Atserias-Mueller, Jeavons-Petke. Direct Google-branded search unavailable.
+
+B3 not advanced to a proof: the compiler is exponential in original-support k and does not justify SAT-decider rejection correctness. Next is original paid-DEF facet/private LOCAL exported-wire authentic byte grammar and whole mixed continuation, plus a noncircular SAT in P -> polynomial same-R worst-case proof existence transfer. No task IDs, schedules, enabled states, ownership or weights changed.
