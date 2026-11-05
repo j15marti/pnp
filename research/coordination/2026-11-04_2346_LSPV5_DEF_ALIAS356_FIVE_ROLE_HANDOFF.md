@@ -17,7 +17,7 @@ Under a polynomial correct SAT decider `A`, the constant-certificate verifier `Q
 
 ## Verification and costs
 
-Python: 605 checks. Independent no-import JavaScript: 569 checks. Exhaustive 16 gates × 4 input maps × 8 valuations; eight affine gates; four exact XOR/XNOR alias witnesses; six malformed/corrupt controls; SAT and UNSAT sources. Logical cost is one paid DEF. Physical evidence must contain four truth-table bits, two ordered input IDs and a fresh output ID; parsing, mask cancellation, verification, output and peak storage are not free. The one-bit state delta is offline only.
+Python: 609 checks. Independent no-import JavaScript: 572 checks. Exhaustive 16 gates × 4 input maps × 8 valuations; eight affine gates; four exact XOR/XNOR alias witnesses; six malformed/corrupt controls; parsed/enumerated SAT and UNSAT sources plus unique-extension control. Logical cost is one paid DEF. Physical evidence must contain four truth-table bits, two ordered input IDs and a fresh output ID; parsing, mask cancellation, verification, output and peak storage are not free. The one-bit state delta is offline only.
 
 ## Files
 
