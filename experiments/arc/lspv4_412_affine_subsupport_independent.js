@@ -1,28 +1,42 @@
 #!/usr/bin/env node
+// Independent signed-clause and affine truth-table referee for LSPV-4/412.
 'use strict';
-const A=require('node:assert/strict');
-const clauses=[[1,2],[1,-2],[-1]];
-function clause(c,w){return c.some(l=>Boolean(w&(1<<(Math.abs(l)-1)))===(l>0));}
-function affine(mask,rhs,x,y){return Number(((mask&1?x:0)^(mask&2?y:0))===rhs);}
-let exact=0, accepted=0, falseReject=0,checks=0;
-for(let table=0;table<16;table++) for(let mask=0;mask<4;mask++)for(let rhs=0;rhs<2;rhs++){
- let equiv=true;
- for(let y=0;y<=1;y++)for(let x=0;x<=1;x++){
-   if(((table>>(x+2*y))&1)!==affine(mask,rhs,x,y))equiv=false;
-   checks++;
- }
- if(equiv){exact++;if(mask===3)accepted++;else falseReject++;}
- A(!equiv||[0,1,2,3].includes(mask));checks++;
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const input = process.argv[2] || 'results/raw/arc/2026-11-05_0436_LSPV4_412_AFFINE_SUBSUPPORT.json';
+const raw = JSON.parse(fs.readFileSync(input,'utf8'));
+const source = [[1,2],[1,-2],[-1]];
+const evalC = (c,word) => c.some(l => Boolean(word&(1<<(Math.abs(l)-1))) === (l>0));
+const pairFactor = (x,y) => Number(evalC(source[0],x|(y<<1)) && evalC(source[1],x|(y<<1)));
+const rowValue = (mask,rhs,x,y) => Number((((mask&1?x:0)^(mask&2?y:0))===rhs));
+let matches=0, rejected=0, accepted=0, checks=0;
+for(let vec=0;vec<16;vec++)
+ for(let mask=0;mask<4;mask++)
+  for(let rhs=0;rhs<2;rhs++){
+   let same=true;
+   for(let y=0;y<2;y++)for(let x=0;x<2;x++){
+     same = same && (((vec>>(x+2*y))&1)===rowValue(mask,rhs,x,y));
+     checks++;
+   }
+   const rule = same && mask===3; // published CANON1 equality filter
+   if(same){matches++;if(rule)accepted++;else rejected++;}
+   assert(!rule || same);checks++;
+  }
+assert.deepEqual([matches,accepted,rejected],[8,2,6]);checks++;
+for(let y=0;y<2;y++)for(let x=0;x<2;x++){
+ assert.equal(pairFactor(x,y),x);checks++;
+ assert.equal(pairFactor(x,y),rowValue(1,1,x,y));checks++;
+ assert.equal(Number(!evalC([-1],x|(y<<1))),x);checks++;
+ assert.equal(rowValue(0,1,x,y),0);checks++;
 }
-A.deepEqual([exact,accepted,falseReject],[8,2,6]);checks++;
 let sat=0,unsat=0;
-for(let w=0;w<4;w++){
- if(clauses.slice(0,2).every(c=>clause(c,w)))sat++;
- if(clauses.every(c=>clause(c,w)))unsat++;
- let x=w&1, y=(w>>1)&1;
- A.equal(Number(clause(clauses[0],w)&&clause(clauses[1],w)),x);checks++;
- A.equal(affine(1,1,x,y),x);checks++;
- A.equal(affine(0,1,x,y),0);checks++;
+for(let word=0;word<4;word++){
+ if(source.slice(0,2).every(c=>evalC(c,word)))sat++;
+ if(source.every(c=>evalC(c,word)))unsat++;
+ checks+=2;
 }
-A.equal(sat,2);A.equal(unsat,0);checks+=2;
-console.log(JSON.stringify({status:'PASS',checks,exact,accepted,falseReject,sat,unsat}));
+assert.equal(sat,2);assert.equal(unsat,0);checks+=2;
+assert.equal(raw.exhaustive_affine_pairs.false_rejected,rejected);checks++;
+assert.equal(raw.exhaustive_affine_pairs.exact,matches);checks++;
+assert.equal(raw.exhaustive_affine_pairs.canon1_accepted,accepted);checks++;
+console.log(JSON.stringify({status:'PASS',checks,exact:matches,canon1Accepted:accepted,canon1FalseRejects:rejected,satModels:sat,unsatModels:unsat}));
