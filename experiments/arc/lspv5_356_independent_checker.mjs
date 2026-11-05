@@ -16,6 +16,31 @@ const facets = (t, l, r, z) => {
 const sat = (cnf, asn) => cnf.every(c => c.some(x => lit(x[0], x[1], asn)));
 const names = {6: "XOR", 9: "XNOR"};
 
+const parseDimacs = text => {
+  const lines=text.split(/\n/).map(s=>s.trim()).filter(s=>s && !s.startsWith("c"));
+  if(!lines.length) fail("missing header");
+  const h=lines[0].split(/\s+/);
+  if(h.length!==4 || h[0]!=="p" || h[1]!=="cnf") fail("bad header");
+  const n=Number(h[2]), m=Number(h[3]), clauses=[];
+  for(const line of lines.slice(1)) {
+    const xs=line.split(/\s+/).map(Number);
+    if(!xs.length || xs.at(-1)!==0 || xs.slice(0,-1).includes(0)) fail("bad termination");
+    const c=xs.slice(0,-1);
+    if(c.some(x=>Math.abs(x)<1 || Math.abs(x)>n)) fail("bound");
+    clauses.push(c);
+  }
+  if(clauses.length!==m) fail("count");
+  return {n,clauses};
+};
+const dimacsModels = text => {
+  const {n,clauses}=parseDimacs(text), out=[];
+  for(let mask=0;mask<(1<<n);mask++) {
+    const b=Array.from({length:n},(_,i)=>(mask>>i)&1);
+    if(clauses.every(c=>c.some(l=>l>0 ? b[l-1]===1 : b[-l-1]===0))) out.push(b);
+  }
+  return out;
+};
+
 const maps = [["x","y"], ["y","x"], ["x","x"], ["y","y"]];
 for (let t = 0; t < 16; t++) for (const [l,r] of maps) {
   const cnf = facets(t,l,r,"z");
@@ -55,10 +80,16 @@ ok(JSON.stringify(ext)==="[0]", "XOR(x,x) does not force z=0");
 ok(gate(6,1,1)===0, "XOR diagonal corrupt");
 ok(gate(9,1,1)===1, "XNOR diagonal corrupt");
 
-// Hostile malformed and freshness controls.
-ok(!"p cnf 1 1\n1".endsWith(" 0"), "accepted unterminated clause");
-ok("p cnf 1 2\n1 0\n".includes("1 2"), "missed count mismatch");
-ok(2>1, "missed variable-bound violation");
+// Same-source labels, conservative extension, malformed and freshness controls.
+const sm=dimacsModels("p cnf 1 1\n1 0\n");
+const um=dimacsModels("p cnf 1 2\n1 0\n-1 0\n");
+ok(JSON.stringify(sm)==="[[1]]", "SAT source control wrong");
+ok(JSON.stringify(um)==="[]", "UNSAT source control wrong");
+ok(sm.every(([x])=>[0,1].filter(z=>sat(xorAliased,{x,y:0,z})).length===1), "not uniquely extending");
+for(const bad of ["p cnf 1 1\n1", "p cnf 1 2\n1 0\n", "p cnf 1 1\n2 0\n"]) {
+  let rejected=false; try { parseDimacs(bad); } catch { rejected=true; }
+  ok(rejected, "accepted malformed DIMACS");
+}
 ok(new Set(["x","z"]).size===2, "freshness control corrupt");
 
 console.log(JSON.stringify({status:"PASS", run_id:"LSPV5_REFEREE356", checks, alias_bugs:bugs}, null, 2));
