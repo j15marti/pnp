@@ -1,0 +1,9 @@
+# LSPV-2/428 five-role handoff | 2026-11-05 14:52 PST
+
+Route A primary. **PROVED/RESTRICTED:** a declared fully explicit one-bit-per-executed-transition architecture satisfies T<=qL, so at most N^(3/5) children of at most N^(1/2) bits cannot unroll arbitrary polynomially padded SAT deciders with >=N^d steps, d>11/10. **Not** a generic SAT complexity lower bound: nonlocal circuit jumps, replay and lazy representations are available alternatives, and the requested t' recurrence varies with d.
+
+**Exact checkpoint countercontrol:** two original-source authenticated proper 3CNF children, 11 shared/fresh variables and 16 total clauses, individually SAT but with incompatible checkpoint projections [u=1] and [u=0], are jointly UNSAT. A final-bit flip makes the parent SAT. The compact in-repo executable is provided for replay (not executed verbatim in this run); separate local Python/JS programs verified 363 independent assertions and three corruptions.
+
+**Sources:** FLMV JACM 2005; Urquhart JACM 1987; Ben-Sasson/Wigderson JACM 2001. Actual Grok/Claude, current issue #3 and peers, `konard/p-vs-np`, `blkph0x/p-vs-np-proof-research` and OpenAI/math Lean files reviewed. Existing source-only hereditary endpoint equivalence found and **not** claimed new. Direct Google-branded search unavailable. Established cubic odd-expander Tseitin is ordinary Resolution hard, but the previous mixed 4H-1-node shortcut and affine recognition remain controls.
+
+**LSPV-4:** identify and fully charge a nonlocal jump certificate, especially for arbitrary DELAY/COPY/RECOMP and source/head access; **LSPV-1/3/5:** do not identify raw executed occurrences with native Rmix weighted proof nodes or import case-splits into Rmix. B3, full native grammar, Route A universal contraction and P versus NP all OPEN. No task or ownership mutation requested.
