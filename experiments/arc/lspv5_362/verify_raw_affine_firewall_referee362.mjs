@@ -39,6 +39,16 @@ const b = "c byte-distinct source\np cnf 2 3\n1 2 0\n1 0\n-1 0\n";
 ok(a !== b, "raw differ");
 ok(JSON.stringify(parse(a)) === JSON.stringify(parse(b)), "same parsed source");
 ok(sha(a) !== sha(b), "raw hashes differ");
+const canonicalA = Buffer.from(a, "ascii").toString("base64");
+const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+const pos = canonicalA.length - 3;
+const old = alphabet.indexOf(canonicalA[pos]);
+const aliasChar = alphabet[(old & 0b110000) | ((old + 1) & 0b001111)];
+const noncanonicalA = canonicalA.slice(0,pos) + aliasChar + canonicalA.slice(pos+1);
+ok(Buffer.from(noncanonicalA, "base64").equals(Buffer.from(a, "ascii")), "padding alias decodes");
+ok(noncanonicalA !== canonicalA, "padding alias differs");
+ok(Buffer.from(noncanonicalA, "base64").toString("base64") !== noncanonicalA,
+   "canonical re-encoding rejects alias");
 ok(JSON.stringify(parse(peer.raw_dimacs)) === JSON.stringify(cert.source), "peer raw parse");
 ok(cert.nodes.length === 17, "peer node count");
 ok(cert.nodes.every((n,i)=>n.id===i), "topological ids");
