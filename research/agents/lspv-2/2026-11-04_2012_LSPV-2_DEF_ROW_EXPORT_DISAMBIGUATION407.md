@@ -36,12 +36,12 @@ Write its original variables as x,y. It has exactly two models: x=1 and y arbitr
 |---|---|---|---|---|
 | 1 | AND3 | source (x), source (x or y) | factor x=1, annotated GF(2) row x=1 | support {x,y}; exact truth table |
 | 2 | DEF | no earlier derived node required for gate introduction | fresh a := x XOR y | charged binary conservative gate; possible row a+x+y=0 |
-| 3 | DEF | prior named a allowed | fresh b := a XOR y | charged binary conservative gate; possible row b+a+y=0 |
+| 3 | DEF | paid node 2 (named a) | fresh b := a XOR y | charged binary conservative gate; possible row b+a+y=0 |
 | 4 | XOR | defining rows of nodes 2 and 3 | b+x=0 | first disputed DEF-row selector |
 | 5 | XOR | rows from nodes 4 and 1 | b=1 | exact GF(2) sum |
 | 6 | LOCAL-CONVERT | row from node 5 | clause (b) | on both source models, b=x=1 |
 
-All plus signs in equation rows denote GF(2) sum, **not** assertion of standalone true gate outputs. Each fresh definition uniquely extends each original assignment. The original support of a is {x,y}; that of b is at most {x,y} and in fact its Boolean function simplifies to x. The emitted clause (b) is **not** inferred from x without accounting for the two definitions.
+All plus signs in equation rows denote GF(2) sum, **not** assertion of standalone true gate outputs. The second DEF explicitly points to the paid first DEF (node 2), since its input a is not a source variable. Each fresh definition uniquely extends each original assignment. The original support of a is {x,y}; that of b is at most {x,y} and in fact its Boolean function simplifies to x. The emitted clause (b) is **not** inferred from x without accounting for the two definitions.
 
 Define two precise completions of the **unresolved DEF port syntax**, while retaining all original rule names, unit weights, source axioms and explicit RES completeness:
 
@@ -56,7 +56,7 @@ This proves that the *present prose does not uniquely certify this trace*. It **
 
 ## Computational controls and physical costs
 
-The local Python producer ran 17 assertions plus **7 malformed DIMACS rejects**, independently verified all four valuations of x,y and the complete 6-node positive/negative typing. A separately implemented JavaScript checker ran **38 independent assertions** from the machine-readable record. It validated all XOR identities and type distinctions, the two original SAT models, source-sign and XNOR countercontrols and five corrupted/false conclusions. No random seed, no heuristic optimization, no SAT oracle and no numeric shortest-proof claim.
+A local Python scratch producer ran 17 semantic assertions plus **7 malformed DIMACS rejects**. The **published JavaScript producer** ran 24 assertions including malformed controls, independently verified all four valuations of x,y and the complete 6-node positive/negative typing. A separately implemented JavaScript checker ran **39 independent assertions** from the machine-readable record. It validated all XOR identities and type distinctions, the two original SAT models, source-sign and XNOR countercontrols and five corrupted/false conclusions. No random seed, no heuristic optimization, no SAT oracle and no numeric shortest-proof claim.
 
 The 20-byte source input is **N**, while evidence length **E** includes six paid records, gate types, input IDs, output IDs, signed RHSs, two GF(2) operand references, the conclusion and any serialized gate facets. The logical cost is **q=6** under Splus (1 AND3 + 2 DEF + 2 XOR + 1 LOCAL). It is not the physical bit-cost. Parsing, all truth-table/gate row checks, proof DAG pointers, source lookups, row mask XORs, LOCAL validation and output bits must be charged. For the displayed 2-original-variable trace they are finite constant-work verifications. For an arbitrary M=N+E evidence length with explicit bounded-arity gate truth tables and row masks, a straightforward fully materialized checker uses at most polynomial bit time and polynomial peak memory in M, **not necessarily polynomial in N+q** if uncharged payloads can be arbitrarily long. Host RSS was not measured, and no FLMV-compatible simultaneous (T,S) claim is made. One compact alternative representation is simply the *shared two-gate network* with 2 paid DEF records, computing b=x without unfolding the circuit into a large CNF; extracting a consequence still requires an authenticated consumer proof.
 
