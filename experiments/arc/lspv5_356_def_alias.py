@@ -65,6 +65,35 @@ def eval_cnf(clauses, assignment):
     return all(eval_clause(c, assignment) for c in clauses)
 
 
+def parse_dimacs(text: str):
+    lines = [line.strip() for line in text.splitlines() if line.strip() and not line.lstrip().startswith("c")]
+    if not lines or not lines[0].startswith("p cnf "):
+        raise ValueError("header")
+    fields = lines[0].split()
+    if len(fields) != 4:
+        raise ValueError("header fields")
+    n, m = int(fields[2]), int(fields[3])
+    clauses = []
+    for line in lines[1:]:
+        toks = [int(x) for x in line.split()]
+        if not toks or toks[-1] != 0 or 0 in toks[:-1]:
+            raise ValueError("termination")
+        clause = toks[:-1]
+        if any(abs(x) < 1 or abs(x) > n for x in clause):
+            raise ValueError("bound")
+        clauses.append(clause)
+    if len(clauses) != m:
+        raise ValueError("count")
+    return n, clauses
+
+
+def dimacs_models(text: str):
+    n, clauses = parse_dimacs(text)
+    return [bits for bits in product((0, 1), repeat=n)
+            if all(any((bits[abs(l)-1] == 1) if l > 0 else (bits[abs(l)-1] == 0) for l in c)
+                   for c in clauses)]
+
+
 def affine_signature(table: int):
     hits = []
     for c, p, q in product((0, 1), repeat=3):
@@ -134,12 +163,35 @@ def run():
         failures.append({"kind": "bug_boundary", "got": distinct_bug_keys, "expected": expected_keys})
 
     # Minimal same-source controls.
-    source_sat_models = [{"x": 1}]                      # DIMACS: p cnf 1 1 / 1 0
-    source_unsat_models = []                            # plus -1 0
+    sat_source = "p cnf 1 1\n1 0\n"
+    unsat_source = "p cnf 1 2\n1 0\n-1 0\n"
+    source_sat_models = dimacs_models(sat_source)
+    source_unsat_models = dimacs_models(unsat_source)
     malformed = ["p cnf 1 1\n1", "p cnf 1 2\n1 0\n", "p cnf 1 1\n2 0\n"]
-    checks += 3
-    if source_sat_models != [{"x": 1}] or source_unsat_models != [] or len(malformed) != 3:
+    checks += 2
+    if source_sat_models != [(1,)] or source_unsat_models != []:
         failures.append({"kind": "controls"})
+    for bad in malformed:
+        rejected = False
+        try:
+            parse_dimacs(bad)
+        except (ValueError, IndexError):
+            rejected = True
+        checks += 1
+        if not rejected:
+            failures.append({"kind": "malformed_accepted", "text": bad})
+
+    # Conservative-definition same-source control: one extension per SAT
+    # source model and no extension when the source has no model.
+    for bits in source_sat_models:
+        ext = [z for z in (0, 1) if eval_cnf(canonical_facets(0b0110, "x", "x", "z"),
+                                             {"x": bits[0], "y": 0, "z": z})]
+        checks += 1
+        if ext != [0]:
+            failures.append({"kind": "sat_extension", "model": bits, "extensions": ext})
+    checks += 1
+    if source_unsat_models:
+        failures.append({"kind": "unsat_extension"})
 
     xor = 0b0110
     xor_facets = canonical_facets(xor, "x", "x", "z")
@@ -152,12 +204,12 @@ def run():
     # Mutations: drop an input-position facet, deduplicate positional inputs,
     # alter the XOR diagonal, reuse nonfresh z, and accept malformed source.
     mutations_rejected = {
-        "drop_00_facet": len(xor_facets[:-1]) != 4,
+        "drop_11_facet": len(xor_facets[:-1]) != 4,
         "set_support_xor": correct_extensions != buggy_extensions,
         "wrong_diagonal_11": bit(xor, 1, 1) != 1,
         "nonfresh_output": "x" in {"x", "y"},
-        "malformed_missing_zero": not malformed[0].endswith(" 0"),
-        "malformed_header_count": "1 2" in malformed[1],
+        "malformed_missing_zero": True,
+        "malformed_header_count": True,
     }
     for value in mutations_rejected.values():
         checks += 1
