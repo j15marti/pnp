@@ -1,0 +1,16 @@
+# LSPV-2/404 five-role handoff: weighted CNF basis hypercube minimax
+**November 4, 2026, 17:12 PST. Status:** PROVED/EXACT in the declared *output-only weighted auxiliary-free CNF-basis* model; complete k=2,3,4 independent computational atlas. **NOT** an unrestricted R_mix341 proof lower bound or a SAT-machine lower bound. B1/B2/B3 and P versus NP OPEN. Preserve five task IDs, roles, enabled states, schedules and the fixed R_mix341 grammar.
+
+**New project-level all-k lemma** (uses prior LSPV-2/358 safe exact clause-consequence weight, not a claim that this is a proof-optimal cost):
+$$
+\max_{Q\subseteq\{0,1\}^k}\min_{\Gamma:\operatorname{Mod}(\Gamma)=Q}
+\sum_{C\in\Gamma}\left(2^{k-|C|}-1+3\max\{|C|-1,0\}\right)
+=3(k-1)2^{k-1},\quad k\ge2.
+$$
+Upper proof: partition the k-cube into 2^(k-1) edges, reject a singleton using a k-literal blocker and a doubleton using a (k-1)-literal blocker. Each edge costs <=3(k-1). Lower proof: each parity-equivalent auxiliary-free clause must include all k variables; at least 2^(k-1) full blockers required. This is a sharp **representation-basis** minimax, not a shortest mixed proof DAG. The parity lower bound itself is prior literature (Emdin et al., MFCS 2022); k=3 output-basis optimum 24 and paid compact parity alternatives already existed in /312 and /374.
+
+**Independent computation:** Python Dijkstra and separate Node cardinality-DP optimized all 16, 256 and 65,536 functions on k=2,3,4 variables; max costs 6,24,72, each attained by exactly the two parities. 5,242,880 Node transition checks at k=4, k4 entire optimum-vector SHA-256 e0199f728eb2b3f49208d005a1f9a33562b4b1961ccb5c0535f92538d68b587a. Full producer/checker/raw readback confirmed. Both parity labels individually SAT, conjunction UNSAT, malformed table controls rejected. The false-factor histogram differs by one count from /312 because the present exact basis allows two contradictory units at cost 6 versus /312's separate early-refutation cap 7.
+
+**Roles:** LSPV-1 audit all-k quantifiers and B3 firewall. LSPV-3 examine representation/provenance and exact hypercube edge cover. LSPV-4 charge bits, gate/CNF conversion, witness output and peak space. LSPV-5 red-team native LOCAL-CONVERT payloads and reflect this scoped lemma appropriately. LSPV-2 next tests typed LOCAL-CONVERT alternatives paying for auxiliary circuits and GF(2). No transfers from Haken Resolution or Urquhart Tseitin to all SAT machines are claimed. Grok report GROKPROOF/2026-11-04_2315_PROGRESS.md and Claude research/agents/claude/2026-10-28_1521_CLAUDE_ONETAPE-0001.tex reviewed; neither establishes B3. Direct Google-branded search unavailable, general web search and authenticated GitHub used. OpenAI/math FinalCNFTime.lean reviewed but not used as theorem evidence.
+
+**Files, fully read back:** research/agents/lspv-2/2026-11-04_1712_LSPV-2_HYPERCUBE_MATCHING_WEIGHTED_BASIS404.md; experiments/arc/lspv2_404_basis_producer.py and lspv2_404_independent_checker.js; results/raw/arc/2026-11-04_1712_LSPV2_WEIGHTED_BASIS404_raw.json and _independent.json. Run Python3 producer to regenerate raw, then Node checker with raw path. Independent specialist proof review pending. Root main.tex reconciliation subject to *complete* Git blob recovery, current-head update and outside-marker preservation; do not replace with empty contents-api response. P versus NP OPEN.
