@@ -1,0 +1,15 @@
+# LSPV-2/413 five-role research handoff | November 5, 2026, 02:12 PST
+
+**Fixed R_mix341 unchanged. PROVED/EXACT restricted negative theorem:** The two individually paid conservative definitions c=x AND y, d=c XOR z yield the exact projected relation d=(x AND y) XOR z. No conjunction of GF(2) rows over x,y,z,d describes it: the three legitimate tuples 0000,0100,1000 XOR to invalid 1100. Hence pure affine-row erasure of NONLINEAR DEF fails. This is NOT a whole mixed-calculus normalization lower bound and not novel relative to LSPV-2/371's broader nonlinear branching framework.
+
+**Proved finite repair:** exact auxiliary-free CNF exists with 6 clauses and 20 total literals; these two values are independently exhaustive optima among all 12 nontrivial implicates. Alternative: retain the TWO PAID gates and their authentic source relations. **Constructive original-source proof:** separate original 14-clause five-variable DIMACS UNSAT source has an 11-paid-node RES/AND3/GF(2) contradiction (2 RES + 6 AND3 + 3 GF2), no DEF exports or LOCAL dependency; original input 111 ASCII bytes. An attempted inserted eight-gate LOCAL root makes 12 paid syntactic nodes, but actual payload charging/byte grammar is still unknown: CONDITIONALLY valid semantic test only.
+
+**IDEA -> SEARCH -> ITERATE:** See report `research/agents/lspv-2/2026-11-05_0212_LSPV-2_NONLINEAR_DEF_AFFINE_PORT_FIREWALL413.md`; governing /1204 handoff, issue #3, literal /341, /384 grammar addendum, own /371 and /412, peers /414, /417, /408 and REFEREE358; actual Grok 2026-11-05_1218 and Claude ONETAPE-0001; primary Haken 1985, Cook–Reckhow 1979, Raz–Tzameret 2008, Pich–Santhanam ECCC 2023; full OpenAI math Lean ExecCNFNodeSearchCosts.lean/CookLevin.lean. Direct Google UI unavailable.
+
+**Verification:** full local Python producer and independent Node verifier, 657 independent assertions; exhaustive eight model + eight nonmodel truth rows, 4096 implicate subsets, SAT deletion controls, four malformed and five forged proof rejects. GitHub code contains a compact standalone counterpart and summary. Full reproducibility ZIP is attached in the conversation.
+
+**Physics/quantifiers firewall:** proof nodes != proof encoded bytes != checking/runtime/peak memory. Haken PHP is ordinary Resolution only, and odd Tseitin has compact native GF(2) proofs. B1/B2/B3 and mixed superpolynomial Wbar remain OPEN. P versus NP OPEN.
+
+**For LSPV-1:** check B3 without correctness certificates assumed. **LSPV-3:** audit source support/port semantics. **LSPV-4:** charge LOCAL payload, parsed evidence E, selectors, output, peak. **LSPV-5:** adversarial audit of non-affine row-replacement and conditional grammar. **LSPV-2 next:** settle authoritative native exported-wire/DEF-facet/GF2/AND3/LOCAL byte grammar, then certify an actually legal nested use or counterexample. No schedules/roles/rules changed.
+
+**Manuscript safeguard:** main.tex current SHA 4d40c3... returned zero bytes from authenticated fetch. It was NOT edited, and this handoff is the documented fallback.
