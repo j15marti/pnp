@@ -1,0 +1,18 @@
+# LSPV-1/428 Route B five-role handoff
+**2026-11-05 15:02 PST | PROVED/RESTRICTED local exact optimum; independent finite tests COMPUTATIONAL. P versus NP OPEN.**
+
+**LSPV-1 new scoped lemma.** When the only axioms are the two complete canonical blocker CNFs for opposite affine equations on the same t boundary variables, and the only paid rule is genuine oriented binary Resolution, each of the 2^t original canonical clauses is indispensable. Therefore any shared/reconvergent proof DAG costs at least 2^t-1 paid nodes. Balanced pivot elimination attains exactly 2^t-1 work and t ideal span. Crucially, these are **derived canonical interface axioms, not the 4h original 3-CNF sources**.
+
+**Established strict-3CNF family.** For odd cubic-expander Tseitin, 4h original signed width-three clauses and 3h/2 variables; published ordinary DAG Resolution size 2^{Omega(h)}. Partition vertices into two parts: source-justified GF(2) sums give opposite RHS equations with common cut width t. At expander bisections t=Omega(h). Expanding BOTH operands into canonical CNFs and joining only by strict RES requires 2^t-1 paid steps and t2^t explicit source-row literal occurrences. But the historical semantic R_mix341 has a native **one-paid-node GF(2) join**, with total 4h-1 proof. Thus the exact lower bound is a *normalizer-choice failure*, not full mixed proof hardness or B3. Literal/node output bits and physical work, ideal span and peak space are separately accounted for in the report.
+
+**Verification.** A full Python producer generated t=1..9 (1,013 RES nodes), and four source-authenticated proper 3-CNF graph controls (K4/K33/cube/Petersen, odd UNSAT, even SAT). Independent Node verification passed 344,724 assertions. Malformed inputs and corrupt/deleted canonical evidence tested. Neither is the authoritative historical native checker.
+
+**LSPV-3 (typed certificates)**: authenticate historical /341 exported GF(2) row and LOCAL-CONVERT/DEF-facet selector **bytes**, investigate whether the end join can be represented as actual accepted proof records, and test context-sensitive shared-branch certificates without adding case-split/discharge as an undocumented rule.
+
+**LSPV-5 (adversarial)**: challenge the exact minimality when axioms are not both fully canonicalized; check noncanonical strengthening, earlier original clauses, extension gates and mixed native shortcuts. Verify that no restricted inequality is promoted to Wbar_Rmix341 or unrestricted SAT machine hardness.
+
+**LSPV-2/LSPV-4 (Route A only for cross-route critique)**: high-width row materialization demonstrates an exponential *physical output* cost for one strategy, but does not establish all-input same-machine FLMV contraction or its negation. Keep all-phase rho and peak-space charges.
+
+**State:** historical native rule weights and roles/schedules/enabled state unchanged. Root main.tex not overwritten because complete outside-owned content could not be safely read. Haken PHP (ordinary RES), Cook ER, Braun bit-PHP Res(XOR), and Tseitin GF(2) controls retained. B1/B2/B3 and P versus NP **OPEN**.
+
+Artifacts: [report](../agents/lspv-1/2026-11-05_1502_LSPV-1_OPPOSITE_AFFINE_CUT_JOIN428.md), [compact executable](../../experiments/arc/lspv1_428_canonical_join_compact.mjs), [raw summary](../../results/raw/arc/2026-11-05_1502_LSPV1_CANONICAL_PARITY_JOIN428_summary.json). Full Python/independent JS/raw/extended report and SHA-256 manifest are supplied in the conversation reproducibility ZIP.
