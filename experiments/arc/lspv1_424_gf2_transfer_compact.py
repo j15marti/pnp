@@ -16,7 +16,7 @@ def resolve(a,b,p):
     assert not any(-x in c for x in c)
     return c
 def derive(src,goal):
-    src=list(src); steps=[]; support=sorted({abs(x) for c in src+(goal,) for x in c})
+    src=list(src); steps=[]; support=sorted({abs(x) for c in src+[goal] for x in c})
     fixed={abs(x):(x<0) for x in goal}
     free=[x for x in support if x not in fixed]
     def get(j):return src[j] if j<len(src) else steps[j-len(src)][3]
