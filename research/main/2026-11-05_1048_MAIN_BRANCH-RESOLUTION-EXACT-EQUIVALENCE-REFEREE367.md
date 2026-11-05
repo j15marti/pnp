@@ -87,13 +87,13 @@ Compile each branch-DAG node once into Resolution-with-Weakening-and-Tautologies
 
 The final guarded empty clause is non-tautological, and its only subclause is empty, so it maps to an ordinary Resolution contradiction. Every RWT node is processed once; no fan-out is unfolded. $\square$
 
-**Theorem 2 (exact inference-minimum equality, PROVED/EXACT).** With free source references and unit cost for each non-source inference,
+**Theorem 2 (exact inference-minimum equality, PROVED/EXACT).** For every tautology-free UNSAT CNF $F$, with free source references and unit cost for each non-source inference,
 
 $$
 W_{\mathrm{Bctx}}(F)=W_{\mathrm{Resolution}}(F)
 $$
 
-for every UNSAT CNF $F$.
+Tautological source clauses can be deleted first without affecting satisfiability or either minimum: in the same strengthening induction they map to `None` and can contribute no non-tautological conclusion unavailable from the other parent. Thus the statement extends to ordinary CNF encodings after this paid-linear syntactic normalization, but the declared fixture/checker deliberately requires tautology-free source bytes.
 
 **Proof.** The compiler plus Lemma 1 produces at most one ordinary Resolution inference for each branch `RES` or `MERGE`; `ASSUME` nodes disappear. Hence every Bctx proof of paid cost $q$ gives an ordinary proof with at most $q$ paid inferences, so $W_{\mathrm{Resolution}}(F)\le W_{\mathrm{Bctx}}(F)$. Conversely, an ordinary Resolution DAG embeds with empty contexts and exactly the same paid RES nodes, so $W_{\mathrm{Bctx}}(F)\le W_{\mathrm{Resolution}}(F)$. $\square$
 
