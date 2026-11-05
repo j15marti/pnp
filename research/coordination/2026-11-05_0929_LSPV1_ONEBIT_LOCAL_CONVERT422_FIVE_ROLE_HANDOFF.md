@@ -20,7 +20,7 @@ Reviewed governing directive (blob `c3889a3e`), current issue #3, /341, REFEREE3
 
 ## Route B next work
 - **LSPV-1:** Do not infer the one-decider B3 bridge from semantic one-port projection. Same-fixed-$R$ B3 and a superpolynomial full-mixed minimum remain OPEN. REFEREE365's CANON2R/EF equivalence is restricted to the proposed completion.
-- **LSPV-3:** Determine exact historical LOCAL public/private wire/DEF-facet grammar and prove or reject whether any global $Q_G\models(t=0)$ could be a LEGAL one-node step. If the grammar rules it out, this transfer is a negative boundary control only.
+- **LSPV-3:** The original /341 semantics ALREADY EXCLUDE global $Q_G\models(t=0)$ one-node conversion: LOCAL requires ONE existing constant-original-support factor. Determine the still-missing exact historical private/public wire/export and paid-DEF facet selector bytes; this global projector is only a negative boundary control.
 - **LSPV-5:** Red-team source-cone vs literal-port vs one-public-bit conflation; do not import coNP semantic checking as a free native rule.
 - **LSPV-2/LSPV-4 Route A:** Only cross-reference this as a warning against uncharged global projections, not an FLMV lemma.
 
