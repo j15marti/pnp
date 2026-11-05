@@ -1,0 +1,22 @@
+# LSPV-2/405: all-valid LOCAL-CONVERT root-acquisition firewall
+**November 4, 2026 18:12 PST.** IDEA -> SEARCH -> ITERATE, unchanged R_mix341, five roles and schedules. P versus NP OPEN.
+
+**Original idea and falsifier.** Earlier REFEREE315 and LSPV4/399 gave k-sensitive **invalid** neighbors of valid unannotated circuit payloads. Test the stronger proposition that even when every one-bit-mutated payload is source-entailed, a faithful exact-root extraction must still read all independent encoded constants. Countercontrols: prepaid gates, supplied certified root truth table, private internal gates, same SAT/UNSAT sources, paid DEF/genuine GF2.
+
+**Result, proved only for conditional explicit payload syntax U.** From SAT source F=(x) AND (x OR y), one paid AND3 derives S=x. One paid unary LOCAL-CONVERT can bear an explicit (unannotated) root condition C_b=x OR NOT(AND_{j=1}^k b_j), with all original support in {x}. All 2^k Boolean constant strings yield VALID entailed conclusions. For b=1^k the exact root is x, while flipping *any one* encoded b_j makes the exact root TRUE. Therefore every deterministic exact-root truth-table extractor must read all k independently encoded constant positions on the all-one valid input, randomized expected probes >=(1-2epsilon)k. Original N=20 ASCII bytes, logical q=2 constant, but raw payload evidence E grows with k. This does not refute the existence of a constant-sized equivalent normalized root or any minimum proof bound. It shows that exact faithful **supplied-presentation** normalization/checking needs an E charge, unless the proof grammar already includes compact certified roots or separately charged internal DEF gates. U itself is **not certified as native** by the original /341 wording.
+
+**Nested test:** three separately paid fresh two-input XOR definitions z=x XOR y, w=z XOR x, t=w XOR y; two paid binary GF(2) sums give w+y=0 then t=0; AND3 and conditional LOCAL record provide separate source-authenticated conjunct. Total 7 paid nodes in this semantic/typed test. Neither an uncharged free assertion of w nor use of a paid DEF relation as a GF2 input has been established by the exact original exported-wire grammar; no full legal native proof-counterexample is claimed.
+
+**Search/read:** governing 2026-11-02 1204 handoff, issue #3 through REFEREE349, original LSPV2/341 c87acd11, LSPV3/406, LSPV4/399, LSPV5 REFEREE315/349, AGENTS/CODEX/skill, Grok GROKPROOF/2026-11-04_2315_PROGRESS.md, Claude TPORT-0002 and ONETAPE-0001. Primary Haken PHP ordinary Resolution, Cook ER, Cook-Reckhow formal proof systems, Ladner CVP, Itsykson-Riazanov-Smirnov Tseitin restricted bounds. OpenAI/math CookLevin VerifierCircuit.lean and Completeness.lean were actually read; they prove verifier SAT encoding, not fixed-R proof reflection. Direct Google-branded interface unavailable; general search used.
+
+**Computational:** independent Python full producer and JavaScript checker locally verified k=1,2,3,5,8,16,32,64,128,256, all 515 single-bit legal neighbors, exact truth vectors, both SAT and UNSAT labels, six malformed/corrupted cases, nested GF2 truth tables; independent checker reported 713,003 assertions. Complete producer/verifier and raw data are in local reproducibility archive; GitHub publishes a compact independent Node repro and summary raw. Finite checks do not establish native grammar.
+
+**Five role next actions:** LSPV-1 classify REFEREE349 raw-input normalization assumption separately from compact-proof existence and pursue B3 without assuming correctness reflection. LSPV-2 obtain normative serialization of root payload/DEF relation slots and prove full original-source compiler or legal obstruction. LSPV-3 check global freshness/port provenance/definition-vs-assertion and typed standalone verdict. LSPV-4 charge k bit reads, gate indexing, proof output, peak memory and all stages. LSPV-5 independently attack the all-neighbor-valid lemma and its applicability to original /341 grammar, check REF349 claim is not overstated. Nothing about B1/B2/B3 proved.
+
+**Publications (readback pending when authored):**
+- `research/agents/lspv-2/2026-11-04_1812_LSPV-2_ALL_VALID_ROOT_NORMALIZATION405.md`
+- `experiments/arc/lspv2_405_all_valid_root.js`
+- `results/raw/arc/2026-11-04_1812_LSPV2_ALL_VALID_ROOT405_summary.json`
+- This handoff at `research/coordination/2026-11-04_1812_LSPV2_ALL_VALID_ROOT405_FIVE_ROLE_HANDOFF.md`.
+
+No tasks, rules, schedule, or ownership region changed. B3 and P versus NP OPEN.
