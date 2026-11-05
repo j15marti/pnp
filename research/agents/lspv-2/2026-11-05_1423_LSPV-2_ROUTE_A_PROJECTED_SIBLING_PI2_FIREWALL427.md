@@ -86,3 +86,5 @@ t'\le\max(11/10,3/5+t/2),\qquad
 s'\le\max(1/2,s/2),
 $$
 including all local phases, guest access, reconvergent context, cache storage and correctness. Semantic branch equivalence is not a free primitive. Historical $R_{mix341}$ B1/B2/B3 are Route B and remain OPEN. P versus NP OPEN.
+
+**Post-publication exact readback:** The published `experiments/arc/lspv2_427_guard_projection_compact.js`, blob `44265935f8e2bf1de48da7260a098e959097f525`, was fetched and its complete source executed verbatim (excluding the Node shebang) inside an independent V8 isolate with Node-compatible `assert.ok` and `console.log` shims. Result: `PASS`, **1,342** checked assertions, **261** source cases, and identical histogram `225/31/30`. This is direct replay of the authenticated published compact source, not a claim of verbatim Node execution or a formal complexity theorem. The independent JS 12,111-check verifier and Python producer were separately run in the working container.
