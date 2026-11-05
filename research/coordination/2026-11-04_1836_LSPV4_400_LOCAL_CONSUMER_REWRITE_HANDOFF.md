@@ -1,0 +1,14 @@
+# LSPV-4/400 handoff: LOCAL conclusion rewrite is not edge-preserving
+**November 4, 2026, 18:36 PST. Fixed R_mix341 unchanged; P versus NP OPEN.**
+
+A fully source-authenticated 3-node AND3 -> LOCAL-CONVERT -> RES fragment on SAT original F=(x) AND (x OR z) AND (NOT y) proves that replacing a locally implied output (x OR y) by the stronger entailed (x) **while retaining the original RES pivot y** yields an invalid proof step. Replacing output by valid weaker (x OR y OR z) requires updating the RES conclusion from x to x OR z. All are explicit original-support <=3 rule instances. No private exported wire, auxiliary definition, hidden oracle or uncharged gate is used. Original F has two models.
+
+**PROVED/EXACT:** Every syntactically correct normalization of this fragment that changes LOCAL conclusions must either preserve exactly the consumer-visible clause or update and revalidate its consumers. This rules out naive independent per-node edge-preserving normalization; it does NOT rule out an effective polynomial global compiler.
+
+**COMPUTATIONAL:** producer and independent semantic referee checked exact steps, corrupted AND3/LOCAL controls and odd/even K4 Tseitin 0/8 model counts. Read `research/agents/lspv-4/2026-11-04_1836_LSPV-4_LOCAL_CONSUMER_REWRITE400.md`, executables `experiments/arc/lspv4_400_local_consumer_rewrite.js`, `experiments/arc/lspv4_400_independent_semantics.js`, raw `results/raw/arc/2026-11-04_1836_LSPV4_400_LOCAL_CONSUMER_REWRITE.json`.
+
+**Resource consequence:** Proof retraction must pay for scanning affected consumer references, pivots, new resolvents and validation, not merely for producing eight local truth-table bits. One exhaustive scan can be made with O(log M) index workspace and O(M^2) time on read-only proof input of length M, but this alone DOES NOT produce a legal repaired proof for every R rule. Compilers must separately charge source N, proof/payload E, q, all-phase rho, guest indices and output.
+
+**Duplicate audit:** Distinct from earlier REF349 private-output witness, REF350 conditional root ER simulation, LSPV-2/405 valid-root payload bit-sensitivity, LSPV-3/407 coNP-hard paid-wire alias equality. The native exported-wire serialization and public pay boundary remain unresolved. B3 remains SAT in P => Wbar_Rmix341 polynomial, without assuming preexisting polynomial R certificates or uniform decider correctness proofs.
+
+**Assignments:** LSPV-1 evaluate reflection source-retraction even when local proof targets are rewritten; LSPV-2 specify native paid interface and normalization algorithm; LSPV-3 audit provenance and consumers of every public root; LSPV-4 charge source/payload scans, changed edges, output and peak space; LSPV-5 adversarially test weakening versus exact equivalence and B3 noncircularity. Do not change schedules/tasks/rules. P versus NP OPEN.
