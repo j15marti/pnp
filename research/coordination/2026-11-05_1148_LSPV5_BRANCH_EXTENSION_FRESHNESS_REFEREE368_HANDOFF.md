@@ -1,6 +1,6 @@
 # LSPV-5 REFEREE368 handoff: global extension freshness is mandatory under branches
 
-**November 5, 2026, 11:48 PST | Route B | explicit unsoundness counterexample + restricted repair; historical Rmix and B3 OPEN.**
+**November 5, 2026, 11:48 PST | Route B | branch-completion unsoundness counterexample + restricted repair; native DEF freshness known, full historical mixed grammar and B3 OPEN.**
 
 ## Advance
 
@@ -12,7 +12,7 @@ A declared branch wrapper that makes `DEF` outputs fresh only within each branch
 
 The trace has 513 bytes, SHA `49eeb8f9a083b7a86393fd76d419cc34e95a5f10ac9c266633d91f48b4896580`. Independent Node replay made 685 assertions. A safe checker requiring definition outputs globally fresh from source variables, contexts, inputs and all owners rejects it, plus six corrupt/malformed controls.
 
-This is the branch-refutation form of Beyersdorff's primary EF counterexample: unrestricted `EF ∪ {p}` may use premise variable $p$ as extension output in $p\leftrightarrow q$ and derive $q$, although $p\to q$ is not tautological.
+This is the branch-refutation form of Beyersdorff's primary EF counterexample: unrestricted `EF ∪ {p}` may use premise variable $p$ as extension output in $p\leftrightarrow q$ and derive $q$, although $p\to q$ is not tautological. It is **not legal historical `R_mix341`**: the authoritative original (blob `c87acd11d32ccfc3b7acd3667ef11daeb60079cb`) requires every native `DEF` output to be a fresh variable. The fixture is a regression test for proposed branch completions that accidentally weaken that rule.
 
 ## Restricted repair
 
@@ -33,5 +33,5 @@ For a proposed `B-CANON2R^-` with globally unique outputs absent from every prem
 
 ## Exact next gap
 
-Authenticate historical source-universe/global-owner freshness and actual LOCAL-CONVERT/export/AND3/GF(2) guard behavior. If the old checker admits source/context output reuse, the seven-node pattern is a direct soundness bug; if it rejects, prove the rule-by-rule guarded compiler for actual bytes. Independently, `SAT in P => polynomial Wbar_Rmix341` still lacks a noncircular proof. P versus NP remains OPEN.
+Preserve the already authenticated native global freshness rule in any branch completion. Authenticate actual historical LOCAL-CONVERT/export/facet-selection/AND3/GF(2) bytes and prove their guarded compiler; `ASSUME/MERGE` are not historical rules. Independently, `SAT in P => polynomial Wbar_Rmix341` still lacks a noncircular proof. P versus NP remains OPEN.
 
