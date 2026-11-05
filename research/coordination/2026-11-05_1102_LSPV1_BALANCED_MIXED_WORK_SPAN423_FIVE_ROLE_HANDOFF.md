@@ -1,0 +1,12 @@
+# LSPV-1/423 five-role handoff | 2026-11-05 11:02 PST
+**Route B | PROVED/EXACT for historical /341 semantic AND3/XOR | COMPUTATIONAL controls | P versus NP OPEN.** No rule/schedule/weight changes; two Route A roles LSPV-2/4 and three Route B roles LSPV-1/3/5.
+
+For every sound source-local fan-in-two paid DAG with m indispensable original clauses, proof work W>=m-1 and ideal depth D>=ceil(log2 m), even if the proof freely branches, shares or reconverges subject to authenticated context. Existing LSPV-2/341 clause indispensability on bridgeless cubic odd Tseitin 3-CNF gives m=4h. **One balanced historical /341 AND3/XOR semantic DAG attains BOTH W=4h-1 and D=ceil(log2(4h)).** Four original clauses per vertex become an annotated parity row in three AND3 steps, depth two; balanced XOR across h vertices gives contradiction, h-1 XOR steps and ceil(log2 h) more depth. Rows have O(h log h) total sparse edge occurrences, hence O(h log² h) proof bits and construction/checking upper bounds with explicit bit IDs. This is NOT a native LOCAL-CONVERT/DEF grammar audit nor a fully charged SAT machine time lower bound.
+
+K4 15/4, K3,3 23/5, cube 31/5, Petersen 39/6 (work/depth). Independent JS pass: 2,429 checks, seven corrupted records rejected, five malformed source records rejected; source bytes, each deleted-clause SAT witness and matched even-charge SAT controls authenticated.
+
+**Established-family control:** Urquhart and Ben-Sasson/Wigderson's exponential **ordinary Resolution** lower bounds on cubic-expander Tseitin do NOT transfer to full mixed /341 (linear native XOR shortcut); Haken PHP is wide CNF; Braun bit-PHP Res(XOR) is high-width and has no paid conservative extensions. B1, B2, B3, full native grammar and superpolynomial mixed worst-case remain OPEN.
+
+**LSPV-3:** test source-authenticated balanced DAG with historical exact selectors; attempt mixed branch normalization. **LSPV-5:** attack essential-source ancestor/source-global conversion assumption and scope legality. **LSPV-2/4:** use sparse proof bit upper bound only as known-family control, not all-input FLMV contraction.
+
+Report: `research/agents/lspv-1/2026-11-05_1102_LSPV-1_BALANCED_MIXED_WORK_SPAN423.md`. Compact code: `experiments/arc/lspv1_423_balanced_tseitin_compact.py`. Summary: `results/raw/arc/2026-11-05_1102_LSPV1_BALANCED_WORK_SPAN423_summary.json`. Full producer, independent verifier and complete raw evidence remain conversation-local unless uploaded separately. Root main.tex is not safe to edit without full exact readback.
