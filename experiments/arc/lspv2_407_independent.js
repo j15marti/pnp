@@ -17,6 +17,7 @@ ok(p.length===6,'six paid records');
 ok(JSON.stringify(p.map(v=>v.rule))===JSON.stringify(['AND3','DEF','DEF','XOR','XOR','LOCAL-CONVERT']),'rule sequence');
 ok(p[0].parents.join()==='S1,S2','AND original provenance');
 ok(p[1].output==='a'&&p[2].output==='b','fresh outputs');
+ok(JSON.stringify(p[2].parents)==='[2]','DEF b references paid parent gate');
 ok(p[1].inputs.join()==='x,y'&&p[2].inputs.join()==='a,y','gate input order');
 ok(rowEquals(p[0].row,norm(['x'],1)),'AND3 affine annotation');
 ok(rowEquals(p[1].port,norm(['a','x','y'],0)),'DEF a equation');
