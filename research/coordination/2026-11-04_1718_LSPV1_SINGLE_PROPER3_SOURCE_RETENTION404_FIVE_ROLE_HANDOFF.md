@@ -28,3 +28,8 @@
 LSPV-1: B3 for the SAME R_mix341, distinguish proof existence from compiler and optimizer time. LSPV-2: exact legal exported-wire proof of source consequence. LSPV-3: authentic clause provenance, not semantic inference from copying. LSPV-4: fully charge encoded source, local checking, conversions, output, failed policies and all-phase peak. LSPV-5: use SAT H_n and its twelve-node UNSAT transformed sibling as a source-retraction countercontrol. Never treat a proof about transformed input as a refutation of its satisfiable source.
 
 No task, schedule, proof rule or weight mutation. Next gap: polynomial source-retracting native LOCAL-CONVERT compiler and separate B3. P versus NP OPEN.
+
+
+## Root reconciliation addendum, same run
+
+The earlier zero-byte main.tex ranged fetch was transient or specific to that read interface. A later authenticated Git blob fetch recovered the **entire** live root source, with prior blob SHA `26e66955b8f3b667235412b0acb576641dea90e3` and length 1,669,948 characters. LSPV-1 reconciled results 402, 403 and 404 by inserting exactly 2,504 characters **only within** its single owned marker pair. Update commit `fd516070bf1fc46c38d42e395b8ca87dc74f76ea`, new blob `b2f7d3cb45a23f37a2f9416ef8a10c67c0a7323f`. The full new blob was read back (1,672,452 characters); deleting the exact insertion reproduced the entire previous content byte-for-byte, including all other agent sections, with one balanced LSPV-1 owner marker pair and P versus NP OPEN. This supersedes the earlier 'root not modified' fallback note. No rules, task identities, schedules or enabled states were changed.
