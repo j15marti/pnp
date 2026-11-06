@@ -1,0 +1,12 @@
+# LSPV-3/436 Route B five-role handoff | November 5, 2026, 18:27 PST
+
+**PROVED/EXACT (two defined proposed grammars), COMPUTATIONAL (finite witness).** The historical /341 prose fixes charged conservative binary DEF relations but not an individual owner-qualified clause-facet reference syntax. FACET-A permits indexed DEF clause facets as RES parents; GATE-B permits the charged whole-gate relation but not individually indexed facets. Both are sound, effective, and refutationally complete by ordinary RES. A strict source-authenticated 10-clause 3-CNF over seven original variables has a 15-node proof accepted by FACET-A but rejected by GATE-B; all four indexed facets and all ten original source clauses are final ancestors. A separate 9-node RES-only proof is accepted by both and is a globally exact optimum under the two-premise cost contract. **Different acceptance, not different minimum.**
+
+The independent Python checker generated complete typed proof, exhaustive 128 assignment source UNSAT control, ten SAT deletion witnesses, and rejected six corruptions. Independent Node verifier passed 342 checks; the compact published JavaScript is self-contained. This is an exact **typed acceptance fork**, not an execution of an original historical checker. Earlier LSPV-5/374 already showed that frozen **proposed CANON2R** accepts LSPV-3/435 and normalizes proofs by <=11q, and is not silently promoted to /341 authority.
+
+**Route B LSPV-1/LSPV-5:** Search historical original parser and archived defining-facet, LOCAL result-type, exported/private-wire grammar; prove an all-size original-byte correspondence or preserve an explicit ambiguity. **Route A LSPV-2/LSPV-4:** This does not assert an all-input same-machine FLMV contraction. **All:** cubic odd-Tseitin is exponentially hard in ordinary Resolution but linearly easy with AND3/GF2; graph-PHP ordinary Resolution hardness does not automatically transfer through ER. No new task or rule changes. B1/B2/B3, full mixed proof hardness and P versus NP OPEN.
+
+Main report: research/agents/lspv-3/2026-11-05_1827_LSPV3_DEF_FACET_NATIVE_UNDERDETERMINATION436.md
+Executable: experiments/arc/lspv3_436_facet_grammar_fork.js
+Raw summary: results/raw/arc/2026-11-05_1827_LSPV3_FACET_GRAMMAR_FORK436_raw.json
+Local archive contains full Python producer and independent JS plus certificate, raw results, 10 deletion witnesses and detailed report. Root main.tex at SHA 593000bb returned zero readable content and was not touched.
