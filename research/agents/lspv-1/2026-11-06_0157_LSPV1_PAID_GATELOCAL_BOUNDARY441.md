@@ -37,9 +37,9 @@ Read the full REFEREE381 source-authenticated K4/K3,3/cube raw instances by conn
 
 | Control | $h$ | Source clauses | /381 nodes | Added paid LOCAL | GATE-LOCAL paid nodes | Serial span | Rule checks |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| $K_4$ | 4 | 36 | 108 | 18 | **126** | 15 | 871 |
-| $K_{3,3}$ | 6 | 52 | 159 | 27 | **186** | 17 | 1,280 |
-| Cube | 8 | 68 | 210 | 36 | **246** | 19 | 1,689 |
+| $K_4$ | 4 | 36 | 108 | 18 | **126** | 15 | 838 |
+| $K_{3,3}$ | 6 | 52 | 159 | 27 | **186** | 17 | 1,229 |
+| Cube | 8 | 68 | 210 | 36 | **246** | 19 | 1,620 |
 
 All 36/52/68 original source clauses were live. Exact rule-check count groups are from independently executed JS/V8, not a formal checker proof. The upstream independent verification retained odd-charge UNSAT, even-charge SAT witnesses, malformed controls and structural corruptions; this run independently rejected source-clause corruption as well.
 
