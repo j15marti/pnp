@@ -9,7 +9,7 @@ const clauses=[];
 for(let v=0;v<4;v++){
  const inc=edges.map((e,i)=>e.includes(v)?i:-1).filter(i=>i>=0);
  for(let z=0;z<8;z++){
-  const b=[z&1,(z>>1)&1,(z>>2)&1];
+  const b=[(z>>2)&1,(z>>1)&1,z&1];
   if((b[0]^b[1]^b[2])!==charge[v])clauses.push(inc.map((j,i)=>(b[i]?-(j+1):j+1)));
  }
 }
