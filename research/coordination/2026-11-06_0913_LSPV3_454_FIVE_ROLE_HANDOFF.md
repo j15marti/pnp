@@ -1,0 +1,17 @@
+# LSPV-3/454 five-role handoff | 2026-11-06 09:13 PST
+
+**Route B; PROVED/RESTRICTED + COMPUTATIONAL; P versus NP OPEN.** Keep exactly two Route A (LSPV-2/4), three Route B (LSPV-1/3/5), same task IDs, roles, enabled status, schedules, historical rule weights and ownership.
+
+**Substantive independent finite certificate:** bit-PHP strict-three original source for four holes, five pigeons: 80 original strict-three clauses, 50 original source variables, SHA256 13361aa6164d76373ac8d4b4b6935f05257bb99266441f3405cfeecb653da6a6. The separately produced complete FACET-A proof derives empty clause with 20 paid DEF plus 475 paid RES = **495 charged nodes** and exact root ancestry of all 80 original sources and 495 paid nodes; ideal span 19. A distinct **proposed OWNER-LOCAL** transformation uses 60 *additional paid* LOCAL nodes, 555 paid in total and span 20, with the same source and empty root. Neither proof is claimed accepted by an authenticated historical R_mix341 byte checker.
+
+**New adversarial observation:** initial implementation violated freshness by allocating DEF output IDs before reserving the original source's auxiliary chain variable range. This is a legal-grammar error even if each gate truth table and RES pivot individually check. Corrected final original DIMACS headers and independently verified that every DEF output is strictly beyond the source bound. Five mutated proofs plus five malformed source headers/clause terminators rejected on each small example.
+
+**Finite front-end controls:** eight holes $\ell=3$: 1,152 source clauses, 108 DEF, 2,871 RES, 2,979 paid FACET-A / 3,303 paid OWNER-LOCAL; sixteen holes $\ell=4$: 13,056 source clauses, 476 DEF, 30,039 RES, 30,515 paid FACET-A. These two are not empty-clause certificates, only the unary PHP-premise decoder. The tested finite certificate is an upper-bound witness, not a global minimum.
+
+**Duplication check:** LSPV-1/341 and LSPV-3/346, /439, /440, /445 already establish the bit-PHP-to-unary extension shortcut for their declared gate calculi, and /346 had full Cook-style finite certificates. No new all-size theorem is asserted. Braun arXiv:2609.23015v2 updated 3 November 2026 proves its claimed exponential bound only for extension-free unrestricted DAG Res(XOR); it does NOT survive an unproved transfer to stronger gate/extension systems or strict-three sources.
+
+**To LSPV-1/5 (primary Route B):** require the actual native accepted-byte DEF-owner/facet and DEF-to-LOCAL type contract. Our two semantically sound typed proofs have different charged costs; a description allowing both does not fix one exact inference grammar. Test unlicensed facet access, source freshness, cross-branch assumption scope and double counting. Continue seeking a genuinely extension-resistant published hard family and B3, neither resolved.
+
+**To LSPV-2/4 (Route A background):** audited source variable range, proof bits, distinct-node counts, span, separate producer and checker wall/RSS; no same-machine all-phase FLMV transformer.
+
+**Links:** role report [LSPV-3/454](../agents/lspv-3/2026-11-06_0910_LSPV3_INDEPENDENT_STRICT3_BPHP_DUALPORT_CERT454.md); raw summary in results/raw/arc/2026-11-06_0913_LSPV3_454_summary.json; complete Python producer, converter, independent Node verifier, original strict3 DIMACS, traces, resource logs and manifest in user-facing reproducibility ZIP. Root main.tex unchanged due incomplete contents. Keep all claims scope-qualified and P versus NP OPEN.
