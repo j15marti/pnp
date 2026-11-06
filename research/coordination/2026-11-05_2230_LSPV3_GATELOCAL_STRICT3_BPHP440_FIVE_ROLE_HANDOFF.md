@@ -12,6 +12,8 @@
 
 If paid globally fresh AND2 DEF **owner relations** are admissible as unary LOCAL-CONVERT factor inputs, then every owner-qualified defining facet `!z|A`, `!z|B`, `z|!A|!B` follows from its exact three-variable gate relation in **one paid LOCAL**. Replacing all old FACET-A views therefore compiles an entire valid nested/shared/reconvergent FACET-A RES proof with D charged DEF and R RES nodes into a separately declared GATE-LOCAL proof of `D+R+3D` nodes. The source bytes, owner dependencies and assumption scopes are retained. **Do not silently treat this as native historical Rmix341:** the historical text has not authenticated DEF-owner as a LOCAL input, nor its exact byte syntax. /436's two proposed direct-facet languages still differ as accepted byte languages.
 
+**Nondegenerate-gate qualification:** The compiler theorem and its three-facet accounting as verified here require each AND gate's two signed inputs to name **distinct underlying variables** and its output to be globally fresh, as in every bit-PHP prefix gate. For repeated or complementary occurrences of the same variable, individual facets can become duplicates or tautologies; the historical acceptance and any canonicalization cost are not established by this run.
+
 All-size **source essentiality**: remove strict clause `t` from the chain for source collision `(i,j,a)`; place pigeons i,j at a and the others bijectively into remaining holes, satisfy every other chain by prefix-OR pad assignment, and choose `w_r=1 iff r<t` within the broken gadget. Thus every source clause is individually essential, giving the generic unit at-most-binary-premise source fan-in lower bound `W_R >= S-1`, **not** a superpolynomial lower bound.
 
 Exact **pre-PHP premise-derivation work** in GATE-LOCAL:
