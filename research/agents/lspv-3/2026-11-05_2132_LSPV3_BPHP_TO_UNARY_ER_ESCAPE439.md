@@ -6,6 +6,12 @@
 
 **Hypothesis:** Published bit pigeonhole lower bounds for unrestricted DAG-like Res($\oplus$) may be defeated by a shared two-input Boolean extension decoder in a stronger calculus. Fix four falsifiers: a nonconservative prefix gate; an incorrectly oriented source-to-collision Resolution step; a required free tautology in the at-least-one proof; or a hidden illegitimate original /341 defining-facet port. The first three were rejected mathematically and by finite independent replay. The fourth remains **OPEN** for historical /341. The proof is explicitly for proposed **FACET-A**, not the authenticated historical parser.
 
+## Mandatory published proper-3-CNF baseline and why it is an upper-bound control
+
+Before choosing bit-PHP, retain the established **Urquhart / Ben-Sasson–Wigderson odd cubic-expander Tseitin family**, which is directly proper 3-CNF: for connected 3-regular expander $G_h$ on $h$ vertices, let edge variables be $x_e$ ($3h/2$ variables); choose charges $\chi_v$ with $\bigoplus_v\chi_v=1$, and encode each local row $\bigoplus_{e\ni v}x_e=\chi_v$ as the four 3-literal clauses forbidden by its opposite-parity assignments ($4h$ clauses, $N=O(h\log h)$ indexed bits). Odd total charge certifies UNSAT. Published ordinary **shared-DAG Resolution** expander bounds are $2^{\Omega(h)}$, not full-calculus or all-machine bounds (Urquhart, JACM 1987; Ben-Sasson and Wigderson, JACM 2001). The **known legal mixed GF(2)/AND3 shortcut** gives the exact historical-semantic minimum $W_{R_{\mathrm{mix341}}}=4h-1$ for bridgeless cubic graphs (LSPV-2/341), so this published directly-3-CNF candidate cannot yield a full-mixed superpolynomial lower bound. This is reused established work, not a new result.
+
+Braun's later bit-PHP is investigated **only as a stronger published Res($\oplus$) lower-bound control and an ER/DEF transfer challenge**; it starts at width $2\ell$ and no hard strict-3-CNF transfer is claimed. This order avoids inventing a new hard family or silently upgrading restricted hardness.
+
 ## Exact established family and theorem
 
 Braun, arXiv:2609.23015, revised 2026-10-22, §1.1 and Theorem 1.1, defines $n=2^\ell$ holes, $m=n+1$ pigeons, bits $b_{it}$, and source clauses
