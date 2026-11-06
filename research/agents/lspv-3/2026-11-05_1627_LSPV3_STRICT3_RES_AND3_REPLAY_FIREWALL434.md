@@ -51,3 +51,23 @@ Python producer 1,289 assertions plus all 8 deletion witnesses; independently im
 Read original /341 blob c87acd11, prior /433 blob 561c4da2, REFEREE360 blob 8719eba6, issue #3 through LSPV-2/429 and LSPV-5/372, AGENTS/CODEX/repo skill, Grok 2026-11-05 03:15 report, actual Claude TPORT-0002. Required new repo checks: konard/p-vs-np proofs/experiments/README.md blob 4c8752aa states admitted/sorry gaps; blkph0x/p-vs-np-proof-research METHOD_INDEX.md blob 18d693ea maps scoped results only. FRAT-XOR format.md blob 986a21aa describes explicit XOR proof IDs/checker trust boundary; cake_lpr README blob e94f45e9 identifies formally verified LPR checker. Primary CCC2020, Ben-Sasson/Wigderson, Cook ER, Buss Frege references reviewed. Indexed web used; direct Google-branded interface unavailable. Duplicate search found no identical private-padding RES-to-AND3 case, not a novelty claim. Root main.tex complete content unavailable from connector; not edited.
 
 **NEXT:** Prove a polynomial, source-authenticated TYPED repair of arbitrary mixed RES-strengthening -> AND3/GF(2) consumers (including shared DAG and nonzero context), or exhibit a precisely stronger legal failure; then settle historical LOCAL/DEF/export facets. Full mixed lower bound, B3 and P versus NP remain OPEN.
+
+## Addendum 434A: Exact paid-node minimum for the same source
+
+**PROVED/EXACT finite result, all permitted rules:** All eight strict source clauses S0..S7 are individually essential, as independently enumerated, and every paid inference has at most two dependencies. The connected source-ancestry counting lemma therefore forces **at least 8−1=7 paid derived nodes** in *any* sound conservative original-source-authenticated historical Rmix341 proof, even with sharing, GF(2), paid definitions and arbitrary legal branching. A matching **seven-node original-source Resolution refutation** exists:
+
+1. R1: S0,S1 resolved on w yields (u OR z).
+2. R2: S2,S3 resolved on w yields (u OR NOT z).
+3. R3: S4,S5 resolved on t yields (NOT u OR v).
+4. R4: S6,S7 resolved on s yields (NOT u OR NOT v).
+5. R5': R1,R2 resolved on z yields (u).
+6. R6': R3,R4 resolved on v yields (NOT u).
+7. R7': R5',R6' resolved on u yields empty.
+
+The unpadded three original clauses all are individually essential, yielding the lower bound two, matched by two Resolution steps. Therefore
+
+$$
+\boxed{W_{R_{\mathrm{mix341}}}(\operatorname{Pad}_3(F))=7,\qquad W_{R_{\mathrm{mix341}}}(F)=2.}
+$$
+
+The exhibited 13-node mixed proof is **not shortest**, yet its exact-annotation replay obstruction remains valid and testable. This is not a growing superpolynomial family or a B3 theorem. Updated standalone code checks the seven-node matching proof; producer Python 1,292 checks, separate JS 157 and standalone published JS 153.
