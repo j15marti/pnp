@@ -4,7 +4,7 @@
 
 ## Restricted theorem and exact firewall
 
-**PROVED/RESTRICTED and CONDITIONAL (ETH):** If an unconditionally available, decider-independent polynomial-time controller decides *all* sparse 3-CNF inputs with polynomially many adaptive explicit ordinary SAT queries of binary length at most N^lambda for fixed lambda<1, replacing each query by exhaustive SAT gives a uniform 2^{o(n)} algorithm. This follows from sparse binary N=O(n log n) and exact adaptive transcript preservation. Under ETH no such unconditional controller exists.
+**PROVED/RESTRICTED and CONDITIONAL (ETH), essential density quantifier:** For any *fixed* density c, an unconditional decider-independent polynomial-time controller with polynomially many actual ordinary SAT queries of length N^{lambda_c}, lambda_c<1, gives 2^{o(n)} time for that density slice. This **alone does not contradict ETH**, since some low-density slices are easy. If such controllers exist **for every fixed c** (or one true all-input controller covers all densities), IPZ sparsification plus linear proper-3CNF padding gives, for every epsilon>0, a 2^{epsilon n} algorithm on general 3-SAT; then ETH is false. The all-density quantifier is mandatory.
 
 **NOT a refutation of Route A.** Route A asks for a compiler under the counterfactual existence of a total correct polynomial-time SAT decider A and may transform its code. ETH rules out existence of such A, so its lower-bound premise cannot contradict that conditional implication. Descriptor bits for a parent-sized lazy SAT guest are not actual short ordinary SAT input bits. Polynomial preparatory cost, malformed handling, branch combination and all machine state must be fully charged.
 
