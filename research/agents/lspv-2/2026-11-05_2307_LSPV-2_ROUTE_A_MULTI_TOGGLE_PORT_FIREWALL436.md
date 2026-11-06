@@ -6,35 +6,51 @@ The earlier LSPV-4/432 *one-toggle* source-authenticated Tseitin child port does
 
 ## Published-hard family and exact strict 3-CNF encoding
 For a connected cubic graph $G=(V,E)$ with $H$ vertices, $M=3H/2$ edges, and sorted incident edge IDs $a_v<b_v<c_v$, take the **standard Tseitin parity clauses**:
+
 $$
-C_{v,p,q}(chi)=ell_p(x_{a_v})lorell_q(x_{b_v})lorell_{poplus qoplus1opluschi_v}(x_{c_v}),
-quad(p,q)in{0,1}^2,qquad ell_0(x)=x, ell_1(x)=
-eg x.
+C_{v,p,q}(\chi)=\ell_p(x_{a_v})\lor\ell_q(x_{b_v})\lor\ell_{p\oplus q\oplus1\oplus\chi_v}(x_{c_v}),
+\quad(p,q)\in\{0,1\}^2,\qquad \ell_0(x)=x,\ \ell_1(x)=\neg x.
 $$
-There are $4H$ proper signed three-clauses, $M$ variables, and $N_0=Theta(Hlog H)$ encoded bits. The historical LSPV-2/435 serialization (8-bit magic, unary $H,M$, $2Mw$ endpoint bits, $12H(w+1)$ signed-literal bits, terminal 00) gives
+
+There are $4H$ proper signed three-clauses, $M$ variables, and $N_0=\Theta(H\log H)$ encoded bits. The historical LSPV-2/435 serialization (8-bit magic, unary $H,M$, $2Mw$ endpoint bits, $12H(w+1)$ signed-literal bits, terminal 00) gives
+
 $$
 N_0=8+(H+1)+(M+1)+2Mw+12H(w+1)+2.
 $$
-Odd charge is UNSAT by XOR of vertex equations. On *suitable growing cubic expander graphs* with odd charge, Urquhart (1987) and Ben-Sasson/Wigderson (2001) establish $2^{Omega(H)}$ **ordinary shared-DAG Resolution** refutation-size lower bounds. This is not hardness for arbitrary algorithms, extended Resolution, GF(2) or all legal $R_{mathrm{mix341}}$ proofs. The earlier $4H-1$-node mixed GF(2)/AND3 derivation is a mandatory short-proof control. K4, cube and Petersen below are finite controls, not a certified expanding sequence.
+
+Odd charge is UNSAT by XOR of vertex equations. On *suitable growing cubic expander graphs* with odd charge, Urquhart (1987) and Ben-Sasson/Wigderson (2001) establish $2^{\Omega(H)}$ **ordinary shared-DAG Resolution** refutation-size lower bounds. This is not hardness for arbitrary algorithms, extended Resolution, GF(2) or all legal $R_{\mathrm{mix341}}$ proofs. The earlier $4H-1$-node mixed GF(2)/AND3 derivation is a mandatory short-proof control. K4, cube and Petersen below are finite controls, not a certified expanding sequence.
 
 ## Theorem 436.1: exact virtual source, with repeats
-Take authenticated base charge $bin{0,1}^H$ and arbitrary valid vertex-ID edits $u_1,ldots,u_r$ (repeated IDs legal). Define $chi_v=b_voplusigoplus_{j=1}^r[u_j=v]$. **Every bit** of the generated child 3-CNF agrees with its original base bit except the third-literal sign in the four rows at vertex $v$, which flips by that edit-incidence parity. Proof: the charge appears in exactly that signed position of each canonical row, as an XOR summand. Repeated flips cancel. This is an exact-original-source identity, not only equisatisfiability.
+Take authenticated base charge $b\in\{0,1\}^H$ and arbitrary valid vertex-ID edits $u_1,\ldots,u_r$ (repeated IDs legal). Define
+
+$$
+\chi_v=b_v\oplus\bigoplus_{j=1}^r[u_j=v].
+$$
+
+**Every bit** of the generated child 3-CNF agrees with its original base bit except the third-literal sign in the four rows at vertex $v$, which flips by that edit-incidence parity. Proof: the charge appears in exactly that signed position of each canonical row, as an XOR summand. Repeated flips cancel. This is an exact-original-source identity, not only equisatisfiability.
 
 ## Theorem 436.2: unsorted edit-bit access is expensive, though decision label is cheap
-Let $H=2^wge4$ so every $w$-bit edit word is valid, let $v$ be a fixed vertex, and request one of its four charge-sensitive literal-sign bits. For a read-only **unsorted** $r$-word edit stream, any deterministic correct exact-bit port *without a prepaid index or summary* must read at least one source bit in **every** update word on the stream $u_j=z
-e v$. If word $j$ is never sampled, replace its ID by $v$: the queried bits remain equal, the required child source sign flips, and deterministic identical execution would produce a contradiction. Thus worst-case **source-bit query complexity** is at least $r$ for this port. A scan uses $O(r,mathrm{polylog}N)$ native bit time in the indexed model.
+Let $H=2^w\ge4$ so every $w$-bit edit word is valid, let $v$ be a fixed vertex, and request one of its four charge-sensitive literal-sign bits. For a read-only **unsorted** $r$-word edit stream, any deterministic correct exact-bit port *without a prepaid index or summary* must read at least one source bit in **every** update word on the stream $u_j=z\ne v$. If word $j$ is never sampled, replace its ID by $v$: the queried bits remain equal, the required child source sign flips, and deterministic identical execution would produce a contradiction. Thus worst-case **source-bit query complexity** is at least $r$ for this port. A scan uses $O(r\,\mathrm{polylog}\,N)$ native bit time in the indexed model.
 
 Yet, for a connected $G$ the SAT status of that generated child is
+
 $$
-operatorname{SAT}(F_{G,chi})iff
-left(igoplus_v b_vight)oplus(rmod2)=0.
+\operatorname{SAT}(F_{G,\chi})\iff
+\left(\bigoplus_v b_v\right)\oplus(r\bmod2)=0.
 $$
+
 After base and grammar authentication, the label depends only on $r$, not on edit IDs. Therefore exact virtual-child input access can be asymptotically harder than deciding this promised child's label. This is **not** a lower bound against any general SAT decider or all-input FLMV transformation.
 
 ## Theorem 436.3: sorted, authenticated repair
-For a validated nondecreasing list of IDs, child-bit sign parity is $(mathrm{upper_bound}(v)-mathrm{lower_bound}(v))mod2$. Two binary searches use $O(log(r+1))$ indexed ID reads, with $O(log N)$ densely addressed physical work/index space and $O(log(r+1)mathrm{polylog}N)$ native bit time. An untrusted list must first be validated at $Omega(r)$ update-word probes and charged source/index-head costs. Sorting is not silently assumed. A fully charged precomputed index is another legal option.
+For a validated nondecreasing list of IDs, child-bit sign parity is
 
-For $q$ *explicitly recorded* edit lists of lengths $r_j$, the original-source length includes $sum_j r_jlog H$ bits. A once-only sorted-list validation scans those source bits; $Q$ subsequent exact-port reads then cost $O(Qlog(r_{max}+1)mathrm{polylog}N)$ under a **separately established** polylog-local graph/template generator. Guest A executions, their own read requests, failed policies, output, cache retention and physical work-tape high-water are additional. The $qH$ lower bound of LSPV-4/432 concerned **independent fully supplied original children**; it cannot be applied to authenticated correlated virtual descendants.
+$$
+(\mathrm{upper\_bound}(v)-\mathrm{lower\_bound}(v))\bmod2.
+$$
+
+Two binary searches use $O(\log(r+1))$ indexed ID reads, with $O(\log N)$ densely addressed physical work/index space and $O(\log(r+1)\mathrm{polylog}\,N)$ native bit time. An untrusted list must first be validated at $\Omega(r)$ update-word probes and charged source/index-head costs. Sorting is not silently assumed. A fully charged precomputed index is another legal option.
+
+For $q$ *explicitly recorded* edit lists of lengths $r_j$, the original-source length includes $\sum_j r_j\log H$ bits. A once-only sorted-list validation scans those source bits; $Q$ subsequent exact-port reads then cost $O(Q\log(r_{\max}+1)\mathrm{polylog}\,N)$ under a **separately established** polylog-local graph/template generator. Guest $A$ executions, their own read requests, failed policies, output, cache retention and physical work-tape high-water are additional. The $qH$ lower bound of LSPV-4/432 concerned **independent fully supplied original children**; it cannot be applied to authenticated correlated virtual descendants.
 
 ## Verification and original-source controls
 The Python producer passed **483,910 assertions** on 421 K4, 665 cube and 1,191 Petersen edit streams, including duplicates and lists through length 17. Every generated child literal was checked against an independently regenerated exact three-CNF. The separately implemented Node.js verifier passed **212,595 assertions**, with independent exact literal checks and exhaustive K4 SAT/UNSAT charge controls. Five malformed/invalid-ID or invalid-sorting controls were rejected; corrupt records are not relabeled UNSAT. Host tests do **not** measure FLMV native machine time or peak space. The complete executed originals, full 11-KB mathematical report, raw JSON and SHA-256 manifest are preserved in the run's reproducibility archive.
@@ -46,7 +62,13 @@ External actual files: `konard/p-vs-np/proofs/complexity/README.md` (`7ee9a11e`)
 
 Proof branching DAG OR/AND, contextual assumptions, fixed mixed rules/weights, B1/B2/B3 and the two Route A/three Route B allocation are preserved. No R_mix341 checker was run. Root `main.tex` blob `fb95952d` returned zero readable bytes; it was not overwritten.
 
-**OPEN:** Construct a uniform all-input recursively iterable same-FLMV-machine transformation $AmapstoPhi(A)$ for every polynomial SAT decider, satisfying $t'lemax{11/10,3/5+t/2}$ and $s'lemax{1/2,s/2}$, with effective source-authenticated child generation, join, same-machine time and physical peak. Same-R B3 and P vs NP OPEN.
+**OPEN:** Construct a uniform all-input recursively iterable same-FLMV-machine transformation $A\mapsto\Phi(A)$ for every polynomial SAT decider, satisfying
+
+$$
+t'\le\max\{11/10,3/5+t/2\},\qquad s'\le\max\{1/2,s/2\},
+$$
+
+with effective source-authenticated child generation, join, same-machine time and physical peak. Same-$R$ B3 and P vs NP OPEN.
 
 ### Primary references
 1. Urquhart, *Hard examples for resolution*, JACM 34 (1987), 209–219, DOI 10.1145/7531.8928.
