@@ -63,7 +63,17 @@ function verify(x){
 function run(raw){
  const results=[];let rejected=0;
  for(const original of raw.instances){
-  const x=compile(original);results.push(verify(x));
+  const x=compile(original), vr=verify(x);
+  // Coordinate-policy audit: historical /341 AND3 is original-variable scoped.
+  // These fresh-wire AND3 and boundary LOCAL nodes are rejected as in REFEREE382.
+  const fresh=new Set(x.trace.nodes.filter(n=>n.kind==="DEF").map(n=>n.out));
+  const badAND=x.trace.nodes.filter(n=>n.kind==="AND3"&&n.support.every(v=>fresh.has(v))).length;
+  const badLOCAL=x.trace.nodes.filter(n=>n.kind==="LOCAL"&&n.gate_facet===undefined&&n.clause.every(v=>fresh.has(Math.abs(v)))).length;
+  if(badAND!==3*(x.vertices-1)||badLOCAL!==4)throw Error("coordinate-policy audit mismatch");
+  vr.historical_and3_rejections=badAND;
+  vr.historical_boundary_local_rejections=badLOCAL;
+  vr.historical_support_rejections=badAND+badLOCAL;
+  results.push(vr);
   const invalid=fn=>{const y=JSON.parse(JSON.stringify(x));fn(y);let fail=false;try{verify(y)}catch(e){fail=true;}if(!fail)throw Error("bad mutation accepted");rejected++;};
   invalid(y=>{y.trace.sources[0].clause[0]*=-1;});
   invalid(y=>{y.trace.nodes.find(z=>z.gate_facet===2).clause=[1];});
@@ -72,7 +82,7 @@ function run(raw){
   invalid(y=>{y.trace.nodes=y.trace.nodes.filter(z=>z.id!=="PN1F2");});
   invalid(y=>{y.trace.nodes.find(z=>z.gate_facet===1).parent="FAKE";});
  }
- return {schema:"LSPV1_441_GATELOCAL_BOUNDARY/v1",status:"CONDITIONAL GATE-LOCAL, not authenticated R_mix341",source:"LSPV5_REFEREE381",cases:results,hostile_rejections:rejected,all_passed:true};
+ return {schema:"LSPV1_441_WIRE_GATELOCAL_BOUNDARY/v2",status:"CONDITIONAL WIRE_GATELOCAL_PROPOSED only; historical original-coordinate R_mix341 rejects the fresh-wire AND3 and boundary LOCAL uses",source:"LSPV5_REFEREE381; LSPV5_REFEREE382 correction",cases:results,historical_support_violations:results.reduce((u,z)=>u+z.historical_support_rejections,0),historical_native_accepted:false,hostile_rejections:rejected,all_passed:true};
 }
 // Usage: node lspv1_441_gate_local_boundary.js upstream381.json [expanded_certificate.json]
 if(typeof process!=="undefined"&&process.argv[1]&&process.argv[1].includes("lspv1_441_gate_local_boundary")){
