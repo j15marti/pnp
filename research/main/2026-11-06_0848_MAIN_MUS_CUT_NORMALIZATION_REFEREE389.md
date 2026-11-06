@@ -57,7 +57,7 @@ $$
 Assume $L$ and $R$ are satisfiable and $F=L\cup R$ is minimally unsatisfiable. In strict oriented binary Resolution, $F$ has a source-once refutation if and only if, after possibly exchanging signs, there are source-once derivations using every local source exactly once
 
 $$
-L\vdash b,qquad R\vdash\neg b,
+L\vdash b,\qquad R\vdash\neg b,
 $$
 
 followed by one final RES. No weakening, source copying, split, discharge, or semantic oracle is used.
