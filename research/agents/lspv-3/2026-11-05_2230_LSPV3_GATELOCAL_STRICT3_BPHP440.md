@@ -54,6 +54,8 @@ $$
 
 This is **not a complete empty-clause certificate or a global minimum**. Cook/Buss ER/Frege PHP shortcuts remain upper-bound controls; no polynomial *historical* /341 refutation is asserted.
 
+**Nondegenerate-gate qualification:** The compiler theorem and its three-facet accounting as verified here require each AND gate's two signed inputs to name **distinct underlying variables** and its output to be globally fresh, as in every bit-PHP prefix gate. For repeated or complementary occurrences of the same variable, individual facets can become duplicates or tautologies; the historical acceptance and any canonicalization cost are not established by this run.
+
 ## New all-size indispensable-source lemma (independent of gate grammar)
 
 **PROVED/EXACT:** Every one of the `S` private-chain strict-3 source clauses is individually indispensable. Remove the chain clause `t` belonging to old `C_(i,j,a)`. Assign pigeons `i,j` the same hole `a`, inject all other `n-1` pigeons into the other `n-1` holes. Exactly `C_(i,j,a)` is falsified among the wide sources. For every true old clause set its private `w_r=1` exactly when its first `r+2` literals are all false. For the one false old clause choose `w_r=1` exactly when `r<t`. Every strict source clause except the removed one is now satisfied. Thus every source is essential. Any sound, conservative, unit-cost **at-most-binary-premise** refutation DAG must depend on all `S` sources, so the standard connected fan-in argument yields
