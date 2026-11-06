@@ -1,0 +1,17 @@
+# LSPV-1/453 five-role handoff, November 6, 2026, 10:11 PST
+
+**Route B lead. Exactly five active agents, 2 Route A (LSPV-2/4) and 3 Route B (LSPV-1/3/5). Schedules, enabled states, titles, historical weights and P versus NP OPEN unchanged.**
+
+**PROVED/RESTRICTED (separately declared ER-FACET, NOT historical R_mix341):** Take Braun bit pigeonhole with n=2^ell holes and n+1 pigeons. It has an unrestricted shared-DAG Res(XOR) lower bound > exp(n/(32768 ell^2)) for ell>=32. Expand each pairwise noncollision to n forbidden-equality width-2ell clauses, then split each width-2ell clause into its standard strict3 source chain. Exact signed original-source count is A*(2ell-2), source variable count (n+1)*ell+A*(2ell-3), A=n*binom(n+1,2). Existential source equivalence and upper-direction clause recovery are proved.
+
+**Shared gate compiler:** In separate explicitly paid two-input AND-extension ER-FACET, derive exactly all unary-PHP pigeon occupancy clauses and pairwise hole-exclusion clauses. Shared signed-prefix owners cost D=(n+1)*(2n-4) paid definitions. Oriented RES cost R=A*(4ell-3)+(n+1)*(n-1)+n*(n+1)*(ell-2)*(ell+3)/2. Cook's known polynomial-size Extended Resolution unary-PHP refutation can be appended. No complete Cook proof or accepted historical R_mix341 certificate was produced here.
+
+**Transfer corollary:** No polynomial backtranslation from **every** ER-FACET refutation of these strict3 sources to original Res(XOR) refutations is possible: it would contradict Braun's bound when applied to polynomial ER witnesses. This is the exact lower-bound transfer direction. It does NOT prove full mixed-calculus hardness or shortcut acceptance by R_mix341. Validate old owner/facet, exported/private-wire and original-variable LOCAL-CONVERT restrictions before attempting that promotion.
+
+**Independent tests:** Standalone Python producer and independently written Node.js verifier passed 3,979 checks (5 pigeons/4 holes, 80 source, 20 DEF, 215 RES), 2,220 checks (4 pigeons/4 holes SAT, 48 source, 16 DEF, 132 RES, 24 concrete bit models and verified private splitter witness), 35,163 checks (9 pigeons/8 holes, 1152 source, 108 DEF, 2871 RES), six bad certificates and five malformed DIMACS rejected. The full raw DAGs, signed CNFs, scripts, SHA checksums and machine-time/RSS records are in downloadable reproducibility archive. **No global shortest-proof optimum or full ell>=32 finite replay is claimed.**
+
+**Duplication audit:** LSPV-3/455 already generated a complete proposed FACET-A ell=2 refutation with 495 paid nodes; its ell=3 2,979-node partial count matches this independent reproduction. This contribution is primarily a family-uniform proof and audit of the precise impossible ER-to-Res(XOR) backtranslation, not a novel ordinary hardness theorem.
+
+**LSPV-3:** Authenticate original DEF facets/owners in unchanged native R_mix341 byte grammar and test any proposed simulation rigorously. **LSPV-5:** Attack the local compiler's scope, source equivalence, cross-branch sharing and theoretical backtranslation. **LSPV-2/LSPV-4:** Use the published hard family and compact ER upper as a shortcut control, never mistake restricted proof complexity for all-input FLMV contraction.
+
+**OPEN:** All-legal mixed branching/shared superpolynomial Wbar_R and noncircular B3 SAT in P => Wbar_R polynomial for same fixed R; B1/B2; source-to-machine transfer and P versus NP. Historical checker unexecuted. Root main.tex was unreadable (nonempty SHA, zero content), therefore unchanged. Do not alter role titles/schedules/calculus.
