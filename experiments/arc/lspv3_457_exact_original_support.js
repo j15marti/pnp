@@ -80,6 +80,7 @@ function audit(t){
   wide_owner_facet_references_by_facet:refCount.byType,unique_wide_owner_facets:uniqWide.length,all_unique_owner_facets:refCount.unique.size,
   owners_used:refCount.owners.size,first_essential_gt3:gt3[0],bdd_nodes:nodes.length,bdd_and_calls:and_calls,independent_truth_table:brute};
 }
+if(typeof module!=='undefined')module.exports={audit};
 if(typeof module!=='undefined'&&require.main===module){
  const fs=require('fs'),p=process.argv[2];if(!p){console.error('Provide LSPV-5/379 raw JSON path');process.exit(2);}
  const start=process.hrtime.bigint(),raw=JSON.parse(fs.readFileSync(p,'utf8')),result=raw.traces.map(audit);
