@@ -15,7 +15,7 @@ for(let n=1;n<=4;n++){const P=spaces(n),R=P.map(p=>constraints(p,n));assert.equa
  for(let i=0;i<P.length;i++)for(let j=0;j<P.length;j++){let v=combined(R[i],R[j]);assert.ok(v.size>0&&(v.size&(v.size-1))===0);assertions++;if(n<4||((i*P.length+j)%97===0)){assert.ok(equal(v,direct(P[i],P[j],n)));assertions++;checked++;}}
  record[n]={nonempty_affine_spaces:P.length,ordered_pairs:P.length**2,full_truth_pairs:checked};
 }
-function sat(C,a){return C.every(row=>row.some(l=>(((a>>(Math.abs(l)-1))&1)===(l>0?1:0))));}
+function sat(C,a){for(const row of C){let yes=false;for(const l of row){const v=(a>>(Math.abs(l)-1))&1;if(v===(l>0?1:0))yes=true;}if(!yes)return false;}return true;}
 function validCNF(C,n){return Array.from({length:2**n},(_,a)=>a).filter(a=>sat(C,a));}
 const parityCNF=[];for(let a=0;a<8;a++)if(parity(a))parityCNF.push([0,1,2].map(i=>((a>>i)&1)?-(i+1):(i+1)));
 const pm=validCNF(parityCNF,3);assert.deepEqual(pm,[0,3,5,6]);assertions++;
