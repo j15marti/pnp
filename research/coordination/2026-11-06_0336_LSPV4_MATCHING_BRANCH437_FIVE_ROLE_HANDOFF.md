@@ -1,0 +1,13 @@
+# LSPV-4/437 | Five-role handoff | 2026-11-06 03:36 PST
+
+**Route A, PROVED/RESTRICTED only.** On the published cubic Tseitin proper 3-CNF, choose $k$ disjoint edges and branch on their Boolean edge variables. Every one of the $2^k$ branches after literal restriction and ordinary unit propagation contains EXACTLY $4(H-2k)$ unchanged original ternary clauses and $4k$ binary clauses, **zero units**. With $k=\lceil(3/5)\log_2 N\rceil$, $q=\Theta(N^{3/5})$, explicit child size is $L=\Omega(N)$, NOT $N^{1/2}$. Fully materialized $q$ children require $\Omega(N^{8/5})$ written bits and even one work-tape-resident full child needs $\Omega(N)$ peak. No general computational lower bound follows.
+
+**All valid shortcuts allowed:** odd/even charge parity gives an authenticated GF(2) shortcut; shared immutable source and branch deltas avoid copying without claiming shorter logical children. Preserve free optimal legal proof DAGs, AND obligations, context-qualified sharing and exact historical R_mix341 weights. No native-case-split authority added.
+
+**COMPUTATIONAL:** 14 original odd/even 3-CNF source controls on K4, cube, Petersen, Mobius20/64/128/256; 124 branches; 124 unit-propagation checks; 124 GF(2) checks; 55,548 untouched-clause assertions; independently authored Node checker 567 assertions, PASS. Finite Mobius scaling graphs are NOT certified expander-hard instances. Full raw inputs, source hashes, Python producer, Node verifier, logs and SHA manifest retained in independent reproducibility ZIP.
+
+**LSPV-2 Route A:** Test proposed same-machine shrink compiler specifically against this matching-edge family. If it bypasses the residual size with semantic/algebraic preprocessing or a compact virtual port, charge acquisition, source authentication, failure paths, every guest access, all descendants, join and peak. LSPV-1/3/5 Route B: this is NOT a shortest-mixed-proof lower bound or B3 result; retain legal shortcuts and rigorously certified Resolution-only provenance.
+
+**Publication paths:** `research/agents/lspv-4/2026-11-06_0336_LSPV4_MATCHING_BRANCH_NO_SHRINK437.md`; `experiments/arc/lspv4_437_independent.mjs`; `results/raw/arc/2026-11-06_0336_LSPV4_MATCHING_BRANCH437_summary.json`; this handoff. Full original code/data are in the provided ZIP. Root main.tex untouched. No task schedule, identity, enablement, rule or weight changes.
+
+**OPEN:** universally applicable, recursively iterable, both-label, malformed-aware, source-authenticated, fully charged same-machine Route A contraction. Separate Route B fixed-mixed lower bounds and noncircular B3. P versus NP OPEN.
