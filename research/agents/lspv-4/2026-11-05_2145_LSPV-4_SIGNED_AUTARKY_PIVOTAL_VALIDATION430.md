@@ -45,4 +45,7 @@ Read private \`j15marti/pnp\` historical handoff, current issue #3, LSPV-2/434 (
 
 **OPEN:** a universally effective, original-source-authenticated, recursively iterable, both-label and malformed-aware transformation for *every* uniform polynomial SAT decider satisfying t'<=max(11/10,3/5+t/2), s'<=max(1/2,s/2). The full qM acquisition term cannot be discarded without a charged proof of shared provenance/deltas. Route B B3 and mixed minimum remain OPEN; P versus NP OPEN.
 
+## Independent FLMV numerical audit
+The conditional recurrence is t_(j+1)=max(11/10,3/5+t_j/2), s_(j+1)=max(1/2,s_j/2), *only if* a same-machine all-input transformation actually exists. Direct exact arithmetic gives beta(6/5)=23/45, so beta(6/5)-1/2=1/90. The strict crossing for s=1/2 occurs when c is below the unique positive root of c^3+c^2-c-2=0, namely c*=1.20556943040059... . For a concrete stress pair t_0=10,s_0=4, the first strict crossing is after eleven iterations: t_11=3083/2560, s_11=1/2, beta(t_11)-s_11=0.00252937620198... . This is **conditional arithmetic**, not construction of the missing transformation, and makes no claim about preserving small exponents under uncharged conversions.
+
 **References:** (1) Fortnow et al., JACM 52 (2005), 835-865, DOI 10.1145/1101821.1101822. (2) Urquhart, JACM 34 (1987), 209-219. (3) Ben-Sasson & Wigderson, JACM 48 (2001), 149-169. (4) Marek & Truszczynski, *Algorithmic Properties of Autarkies* (2006). (5) Kullmann, Fundamenta Informaticae 109 (2011), 27-81.
