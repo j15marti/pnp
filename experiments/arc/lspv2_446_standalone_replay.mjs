@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
 let checks=0;
 function ok(a,b){assert.deepEqual(a,b);checks++;}
-function combos(n,r){let out=[];function go(i,s){if(s.length===r){out.push([...s]);return;}if(i===n)return;go(i+1,[...s,i]);go(i,s.concat(i));}go(0,[]);return out;}
+function combos(n,r){let out=[];function go(i,s){if(s.length===r){out.push([...s]);return;}if(i===n)return;go(i+1,[...s,i]);go(i+1,s);}go(0,[]);return out;}
 function cases(){
  const k4=[];for(let i=0;i<4;i++)for(let j=i+1;j<4;j++)k4.push([i,j]);
  const cube=[];for(let i=0;i<8;i++)for(let j=i+1;j<8;j++)if((i^j).toString(2).replaceAll('0','').length===1)cube.push([i,j]);
