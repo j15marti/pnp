@@ -4,21 +4,21 @@
 
 ## IDEA, falsifiers, revision
 
-**Hypothesis:** Earlier LSPV-4/435 and /436 retained a dense (H)-bit bank to reconstruct nested Tseitin child bits. For at most (K=O(\log N)) authenticated immutable vertex-charge edits, the same child can be served through a sparse path with polylogarithmic writable space. Before searching, four falsifiers were fixed: (F1) edits affect bits outside the third literal's sign; (F2) repeated edits or nested return corrupt source bits; (F3) malformed descriptors escape validation when a guest never queries an affected bit; (F4) sparse ports imply either an (N^{1/2})-bit guest CNF or the target arbitrary-guest space reduction.
+**Hypothesis:** Earlier LSPV-4/435 and /436 retained a dense $H$-bit bank to reconstruct nested Tseitin child bits. For at most $K=O(\log N)$ authenticated immutable vertex-charge edits, the same child can be served through a sparse path with polylogarithmic writable space. Before searching, four falsifiers were fixed: (F1) edits affect bits outside the third literal's sign; (F2) repeated edits or nested return corrupt source bits; (F3) malformed descriptors escape validation when a guest never queries an affected bit; (F4) sparse ports imply either an $N^{1/2}$-bit guest CNF or the target arbitrary-guest space reduction.
 
-**Results:** F1 and F2 fail by a complete bit-identity proof. F3 **found a defect in the new local prototype:** bounds checks deferred to affected-bit queries allowed an invalid descriptor to go undetected if the guest read only metadata. We added a mandatory paid pre-guest validation scan and reran Python/JS controls. F4 is *false*, because every child still has size (N) and its guest space is unchanged. This improves an implementation bound, not the universal missing theorem.
+**Results:** F1 and F2 fail by a complete bit-identity proof. F3 **found a defect in the new local prototype:** bounds checks deferred to affected-bit queries allowed an invalid descriptor to go undetected if the guest read only metadata. We added a mandatory paid pre-guest validation scan and reran Python/JS controls. F4 is *false*, because every child still has size $N$ and its guest space is unchanged. This improves an implementation bound, not the universal missing theorem.
 
 ## Published hard family, precise qualification
 
-Let (G=(V,E)) be a connected simple cubic graph with (H=|V|), (M=3H/2), and sorted incident edge IDs (a_v<b_v<c_v). For each charge (chi_v\in\mathbb F_2), use exactly the four original strict 3-clauses
+Let $G=(V,E)$ be a connected simple cubic graph with $H=|V|$, $M=3H/2$, and sorted incident edge IDs $a_v<b_v<c_v$. For each charge (chi_v\in\mathbb F_2), use exactly the four original strict 3-clauses
 
 $$
 C_{v,p,r}(\chi)=\ell_p(x_{a_v})\lor\ell_r(x_{b_v})\lor\ell_{p\oplus r\oplus1\oplus\chi_v}(x_{c_v}),\qquad p,r\in\{0,1\},
 $$
 
-with (ell_0(x)=x), (ell_1(x)=\neg x). There are (4H) clauses, (12H) literal occurrences, and no reduction from a wider CNF. By the GF(2) incidence rank theorem, a connected instance is SAT iff (igoplus_v\chi_v=0). On *suitable growing cubic expander* sequences with odd charge, the Urquhart (1987) and Ben-Sasson/Wigderson (2001) lower bounds give (2^{\Omega(H)}) size against **ordinary shared-DAG Resolution only**. Not against ER, XOR, the complete fixed (R_{\mathrm{mix341}}), or unrestricted SAT algorithms. K4, cube, Petersen, and prism graphs in the finite experiment are representation controls, not asymptotically certified hard instances. GF(2) parity is an explicit legal **upper-bound control**.
+with (ell_0(x)=x), (ell_1(x)=\neg x). There are $4H$ clauses, $12H$ literal occurrences, and no reduction from a wider CNF. By the GF(2) incidence rank theorem, a connected instance is SAT iff (igoplus_v\chi_v=0). On *suitable growing cubic expander* sequences with odd charge, the Urquhart (1987) and Ben-Sasson/Wigderson (2001) lower bounds give (2^{\Omega$H$}) size against **ordinary shared-DAG Resolution only**. Not against ER, XOR, the complete fixed $R_{\mathrm{mix341}}$, or unrestricted SAT algorithms. K4, cube, Petersen, and prism graphs in the finite experiment are representation controls, not asymptotically certified hard instances. GF(2) parity is an explicit legal **upper-bound control**.
 
-The tested source packet includes eight magic bits, unary (H), unary (w=\operatorname{bitlength}(M)), (3H) incidence IDs of width (w), and (12H) original signed literal records of (w+1) bits. The exact charged packet length is
+The tested source packet includes eight magic bits, unary $H$, unary $w=\operatorname{bitlength}(M)$, $3H$ incidence IDs of width $w$, and $12H$ original signed literal records of (w+1) bits. The exact charged packet length is
 
 $$
 N=8+(H+1)+(w+1)+3Hw+12H(w+1)=\Theta(H\log H).
@@ -28,36 +28,36 @@ Graph metadata is **supplied and must be authenticated**, not inferred by an ora
 
 ## Theorem 439.1: sparse bit-exact charge overlay (PROVED/RESTRICTED)
 
-Let (P) be a validated immutable source packet, (b) the body offset, and (L=(v_1,\ldots,v_K)) a **fully prevalidated** edit stream. Repetitions are permitted. Let (chi'_v=\chi_v\oplus (\#\{i:v_i=v\}\bmod 2)) and let (P_L) be the exact original-source signed CNF packet for (chi').
+Let $P$ be a validated immutable source packet, $b$ the body offset, and $L=(v_1,\ldots,v_K)$ a **fully prevalidated** edit stream. Repetitions are permitted. Let (chi'_v=\chi_v\oplus (\#\{i:v_i=v\}\bmod 2)) and let $P_L$ be the exact original-source signed CNF packet for (chi').
 
-For every address (j), (P_L[j]=P[j]) except when (j) is the polarity sign of the third literal in a quartet belonging to vertex (v). For that one sign field,
+For every address $j$, $P_L[j]=P[j]$ except when $j$ is the polarity sign of the third literal in a quartet belonging to vertex (v). For that one sign field,
 
 $$
 P_L[j]=P[j]\oplus \bigoplus_{i=1}^{K}\mathbf 1[v_i=v].
 $$
 
-**Proof.** In each of the four canonical vertex clauses, the charge occurs only in the term (p\oplus r\oplus1\oplus\chi_v). Every edge identifier, metadata bit, and first/second sign is independent of the charge. Repeated toggles cancel over GF(2). The vertex for a candidate third-sign record can be recovered by fixed-width address arithmetic, and a sequential scan of the (K) edit IDs reconstructs the parity without writing an (H)-bit bank. The immutable root and complete current path keep sibling/ancestor scopes separate. QED.
+**Proof.** In each of the four canonical vertex clauses, the charge occurs only in the term (p\oplus r\oplus1\oplus\chi_v). Every edge identifier, metadata bit, and first/second sign is independent of the charge. Repeated toggles cancel over GF(2). The vertex for a candidate third-sign record can be recovered by fixed-width address arithmetic, and a sequential scan of the (K) edit IDs reconstructs the parity without writing an $H$-bit bank. The immutable root and complete current path keep sibling/ancestor scopes separate. QED.
 
 **Machine model and real costs:** FLMV Section 2.1, p. 4, explicitly uses read-only indexed input, indexed work tapes, *erasure of the index tape on indexed jumps*, write-only output, and a high-water-address work-space measure. Count descriptor generation, its **mandatory pre-guest validation**, all source/metadata read and index-head updates, guest simulation, source authentication, failed policies, caches, child/ancestor retention, replays, and output separately. For (D) DFS frame pointers, when validated descriptors are retained on work tape, port costs are
 
 $$
 T_{\mathrm{bit}}=O((K+1)\operatorname{polylog} N),\qquad
-S_{\mathrm{port}}=O((K+D+1)\log N),
+S_{\mathrm{port}}=O($K+D+1$\log N),
 $$
 
-**in addition to guest and generator high-water**. For (K,D=O(\log N)), the *port* uses (O(\log^2N)) physical space. If (Q) bit requests occur and (R) descriptors are generated, a conservative whole-phase ledger is
+**in addition to guest and generator high-water**. For $K,D=O(\log N)$, the *port* uses (O(\log^2N)) physical space. If (Q) bit requests occur and (R) descriptors are generated, a conservative whole-phase ledger is
 
 $$
-T\le T_{\mathrm{auth}}(N)+T_{\mathrm{gen}}(N,R)+O((R+Q(K+1)+D)\operatorname{polylog}N)+T_{\mathrm{guest,nonread}},
+T\le T_{\mathrm{auth}}$N$+T_{\mathrm{gen}}(N,R)+O((R+Q(K+1)+D)\operatorname{polylog}N)+T_{\mathrm{guest,nonread}},
 $$
 
 $$
-S\le S_{\mathrm{auth,simultaneous}}+S_A(N)+S_{\mathrm{gen,simultaneous}}+O((K+D+1)\log N).
+S\le S_{\mathrm{auth,simultaneous}}+S_A$N$+S_{\mathrm{gen,simultaneous}}+O($K+D+1$\log N).
 $$
 
-**Correction:** On the native (N=\Theta(H\log H)) Tseitin packets, the old dense (H)-cell writable bank is (\Theta(N/\log N)) space and is **not** within (N^{1/2+o(1)}). LSPV-4/435's previous small-space corollary explicitly assumed (H\le N^{1/2+o(1)}), which natural-size Tseitin packets do not satisfy. The new sparse port repairs that component under sparse-edit assumptions.
+**Correction:** On the native $N=\Theta(H\log H)$ Tseitin packets, the old dense $H$-cell writable bank is $\Theta(N/\log N)$ space and is **not** within $N^{1/2+o(1)}$. LSPV-4/435's previous small-space corollary explicitly assumed $H\le N^{1/2+o(1)}$, which natural-size Tseitin packets do not satisfy. The new sparse port repairs that component under sparse-edit assumptions.
 
-**No FLMV contraction:** The guest-facing child remains length (N). Sequential faithful replay of a guest using (N^t) time and (N^s) space across (q=N^{3/5}) children has an upper bound (qN^t\operatorname{polylog}N), not the desired (N^{3/5+t/2}), and does not reduce the guest's own (N^s) state. No arbitrary-CNF all-input, both-label, malformed-aware recursive transformation is obtained.
+**No FLMV contraction:** The guest-facing child remains length $N$. Sequential faithful replay of a guest using $N^t$ time and $N^s$ space across $q=N^{3/5}$ children has an upper bound $qN^t\operatorname{polylog}N$, not the desired $N^{3/5+t/2}$, and does not reduce the guest's own $N^s$ state. No arbitrary-CNF all-input, both-label, malformed-aware recursive transformation is obtained.
 
 ## Independent checks and source inventory
 
