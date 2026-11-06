@@ -178,6 +178,18 @@ rows = [
      O, T, T, T, T, "Open", "n.a.", "n.a.", "n.a.",
      "CLAUDE ONETAPE-0001 Prop 5 (Hartmanis–Stearns translation)",
      "Would imply a superlinear deterministic multitape lower bound for SAT, which is open. Crossing-sequence counting is capped at O(N²)."),
+    ("L41", "Bridge(R) for a fixed proof system R with an unconditional superpolynomial worst-case lower bound (Resolution, Cutting Planes, bounded-depth Frege, Res(⊕)): SAT ∈ P ⇒ worst-case minimum derivation cost of R is polynomial",
+     F, T, T, T, T, "Open", "n.a.", "n.a.", "n.a.",
+     "CLAUDE BRIDGE-0001 Prop 1 (contrapositive of the lower bound)",
+     "Equivalent to P ≠ NP: the bridge for such R carries the whole content of the goal, so it cannot be proved cheaply."),
+    ("L42", "A p-optimal propositional proof system exists",
+     T, O, O, O, O, "Open", "n.a.", "n.a.", "n.a.",
+     "CLAUDE BRIDGE-0001 Prop 2 (P = NP ⇒ E = NE by padding; Krajíček–Pudlák 1989: E = NE ⇒ p-optimal system)",
+     "Under P = NP an optimal system R* exists and is polynomially bounded, so Bridge(R*) holds; R* is existential and not named independently of the decider."),
+    ("L43", "For a p-optimal proof system R, worst-case minimum derivation cost is superpolynomial (equivalent to NP ≠ coNP)",
+     F, O, O, O, O, "Open", "n.a.", "n.a.", "n.a.",
+     "CLAUDE BRIDGE-0001 Prop 3 (Cook–Reckhow 1979)",
+     "For optimal R the lower bound is equivalent to NP ≠ coNP, which is at least as strong as P ≠ NP, so the bridge adds nothing there."),
 ]
 
 headers = ["ID", "Statement", "Algorithmica (P = NP)", "Heuristica", "Pessiland",
