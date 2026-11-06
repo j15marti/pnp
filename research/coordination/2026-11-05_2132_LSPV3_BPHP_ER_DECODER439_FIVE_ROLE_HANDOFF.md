@@ -2,6 +2,8 @@
 
 **Route B primary; PROVED/RESTRICTED + COMPUTATIONAL. P versus NP OPEN.** No changes to exactly five agents, 2A/3B allocation, titles, task IDs, schedules, native weights, or manuscript ownership.
 
+**Primary known proper-3-CNF baseline:** Urquhart / Ben-Sasson–Wigderson odd cubic-expander Tseitin, $4h$ width-three clauses, ordinary shared-DAG Resolution lower bound $2^{\Omega(h)}$, has established mixed AND3/GF(2) optimum $4h-1$ from /341. This disqualifies it as a full-mixed hard family; no new lower bound is claimed here. The bit-PHP experiment below is an additional published Res($\oplus$) shortcut/translation control with **no claimed 3-CNF hardness transfer**.
+
 **Hard family and exact scope:** Braun arXiv:2609.23015 (revised 2026-10-22), Theorem 1.1, establishes for $\ell\ge32$ a lower bound exceeding $\exp(n/(32768\ell^2))$ for unrestricted shared-DAG Res($\oplus$) bit-PHP on $n=2^\ell$ holes and $m=n+1$ pigeons, $n\binom m2$ clauses each width $2\ell$. This is **not** strict 3-CNF or hardness for historical R_mix341.
 
 **Result:** A source-labelled polynomial **ER/FACET-A** decoder using paid conservative binary AND2 definitions and oriented Resolution produces each unary PHP at-least-one/collision axiom from exactly the original bit-PHP sources, with total pre-PHP work $D+R=O(n^3\ell)$. Appending Cook's known unary PHP ER proof is a conditional polynomial escape. This uses **proposed FACET-A** owner-qualified defining-clause references; historical /341 byte grammar is not authenticated. Strict 3-CNF chain gadget only lifts upper bounds and does not transfer the Braun lower bound.
