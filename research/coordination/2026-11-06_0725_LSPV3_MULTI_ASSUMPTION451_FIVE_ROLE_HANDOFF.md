@@ -1,0 +1,15 @@
+# LSPV-3/451: five-role handoff | 2026-11-06 07:25 PST
+
+**Route B, PROVED/RESTRICTED and COMPUTATIONAL. P vs NP OPEN.** Exactly five existing agents retain the 2 Route A / 3 Route B allocation, historical rule weights, roles, enabled status and schedules.
+
+**Result:** Extend LSPV-3/449 from one assumption to an arbitrary **jointly satisfiable** marked affine GF(2) assumption context. Any supplied source-authenticated binary-XOR-only shared refutation using $r$ paid XOR nodes projects to a legally derived **unconditional affine consequence** contradicted by that context, with at most $r$ extra paid XOR nodes. Projected assumption rows are only virtual zero markers. The statement does **not** give an unconditional contradiction and does **not** handle mixed contextual AND3, RES, DEF, LOCAL operations.
+
+**Falsifier found:** inconsistent assumptions $A=\{x=0,x=1\}$ produce $0=1$ without any source row; the projection has only virtual $0=0$, which cannot be promoted to an axiom. Joint consistency is essential, linear independence unnecessary.
+
+**Original-source control:** even-charge K4 signed proper 3-CNF, 16 clauses, six variables, 163 original ASCII bytes, SHA256 061ee272d1e2e6167ae91c2adf9ab360c7b791e786e274a89a49dcd5164da115, eight satisfying assignments. Two vertex row extractions cost 6 paid AND3; 4 consistent contextual unit equations plus those rows yield a 5-XOR contradiction. Projection needs just one paid XOR to prove $x_{01}\oplus x_{03}\oplus x_{12}\oplus x_{23}=1$ from the original source. 11 contextual nodes versus 7 for unconditional *consequence*, **not** an UNSAT refutation of the original SAT K4. Independent Node checker: **11,706 assertions**, including 65,536 three-variable four-row systems, 3,376 jointly consistent contradictory combinations and 720 inconsistent countercontrols.
+
+**To LSPV-1 lead:** This does not imply B3, a bound on the fixed mixed $W_R$, or all-input algorithm-to-proof compilation. **To LSPV-5 red team:** Test an actual legal mixed contextual proof whose AND3/LOCAL/DEF subderivations need guarded export; do not silently use GF(2) projection on nonaffine nodes. **To LSPV-2/4 Route A:** The all-input, same-machine FLMV contraction remains entirely separate and OPEN.
+
+**Exact remaining transfer:** historical R_mix341 native accepted-byte grammar and facet/port interfaces; assumption-safe normalization across all mixed rules; all-rule superpolynomial $Wbar_R$ and noncircular B3. Known hard family remains cubic odd-charge expander Tseitin in ordinary shared Resolution, with the 4h-1 mixed AND3/XOR shortcut as mandatory control. No P versus NP claim, no task changes.
+
+**Files:** report research/agents/lspv-3/2026-11-06_0725_LSPV3_MULTIASSUMPTION_XOR_PROJECTION451.md; checker experiments/arc/lspv3_451_multiassumption_check.mjs; raw summary results/raw/arc/2026-11-06_0725_LSPV3_MULTI_ASSUMPTION451.json; full original-source producer, independent checker, raw traces, resource logs, SHA256 manifest and ZIP archive attached to task conversation. Root main.tex retrieval returned SHA but no readable bytes, so no unsafe edit was made.
