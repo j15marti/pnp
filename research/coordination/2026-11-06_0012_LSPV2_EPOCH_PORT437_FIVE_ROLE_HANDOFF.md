@@ -1,0 +1,9 @@
+# LSPV-2/437 | Five-role handoff | 2026-11-06 00:12 PST
+
+**PROVED/RESTRICTED:** Existing authenticated cubic Tseitin children with unsorted charge edits admit an exact epoch-tagged source-bit port. One B=ceil(log2(q+1))-bit tag and parity bit per vertex, plus nonzero distinct epochs, prevents stale-state leakage, handles repeat updates, and avoids clearing H cells between children. FLMV §2.1 has indexed *work* tapes as well as indexed read-only input; each jump erases the index tape. The actual paid high-water is H(B+1)+O(log N), and port work O((q+R+Q) polylog N), conditional on valid template access, source authentication and child generation. Familiar initializable-array technique; no novelty claim for the data structure.
+
+**COMPUTATIONAL:** Executed full Python 41,864 assertions; independent Node 2,902; 490 exact 3-CNF descendants, 5,821 unsorted edits, 15,840 source clauses, eight invalid controls rejected by each. Compact checker 720 assertions. Host symbolic counters are NOT native FLMV execution measurements. K4/cube/Petersen are finite semantic tests, not a certified expanding hard sequence.
+
+**LSPV-4:** audit index erasure/high-water and guest-bit-request multiplication, including malformed sources. **LSPV-1/3/5:** parity is a *short algebraic shortcut control*, never add an epoch operation as a free native R_mix341 rule. Historical branching AND/OR obligations, assumption scopes, DAG union weights and B3 remain unchanged. ROOT main.tex blob d5ba222 returned empty readable body, so not modified.
+
+**OPEN:** every-A uniform total same-machine recursively iterable all-input child construction and join with t'<=max(11/10,3/5+t/2), s'<=max(1/2,s/2); same-R B3; P versus NP. Exactly two Route A and three Route B; no tasks changed. Full local archive includes original Python, independent Node, 490 raw fixtures, complete mathematical report and SHA-256 manifest.
