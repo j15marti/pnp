@@ -22,7 +22,7 @@ $$
 
 for some universal c>0. Pang Theorem 1.1 has the **sharp syntactic** numerical formula ln(S)>=D^2/(2048n), but /369's compiler outputs **semantic weakening** and must undergo Pang's cited *polynomial syntactic simulation*. Therefore /456 does **not** assert an uncharged 2048 coefficient for the mixed proof.
 
-On Pang's published a.a.s. hard random strict3 family: b+ln(n+q+2)=Omega(n), and for sufficiently small fixed epsilon>0, b<=epsilon*n implies q>=exp(Omega(n)). DEF-free locally opaque mixed proofs are exp-hard even with unrestricted GF2 and shared DAG. Any polynomial-q proof must use b=Omega(n) distinct original inputs through paid DEF. **DOES NOT cover all historical Rmix341** because LOCAL-private/exported wires and original DEF-facet accepted-byte grammar are unresolved. Does not establish B3 or arbitrary machine SAT hardness.
+On Pang's published a.a.s. hard random strict3 family: b+ln(n+q+2)=Omega(n), and for sufficiently small fixed epsilon>0, b<=epsilon*n implies q>=exp(Omega(n)). DEF-free locally opaque mixed proofs are exp-hard even with unrestricted GF2 and shared DAG. Any polynomial-q proof must use b=Omega(n) distinct original inputs through paid DEF. Since each paid binary DEF exposes at most two distinct original inputs, b<=2q also gives the **whole scoped subgrammar paid-work floor q=Omega(n)**, even allowing arbitrary paid binary definitions. This remains only linear and does not cover the full historical calculus. **DOES NOT cover all historical Rmix341** because LOCAL-private/exported wires and original DEF-facet accepted-byte grammar are unresolved. Does not establish B3 or arbitrary machine SAT hardness.
 
 ## Finite original-source and adversarial control
 
