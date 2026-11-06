@@ -38,8 +38,12 @@ let malformed=0;for(let bad of [valid.replace('6 8','6 9'),valid.replace(/ 0\n/,
  valid.replace('1 3 4 0','1 3 7 0'),valid.replace('1 3 4 0','1 3 3 0'),valid.replace('p cnf','p dnf')]){
  try{dimacs(bad)}catch(e){malformed++}}
 A.equal(malformed,5);count++;
+// Addendum 434A: matching seven-node source-authenticated Resolution refutation.
+// Four reconstructive nodes n.a,n.b,n.c,n.d plus these three steps.
+const optU=R(n.a,n.b,3),optNU=R(n.c,n.d,2),optEnd=R(optU,optNU,1);
+A.deepStrictEqual([optU,optNU,optEnd],[[1],[-1],[]]);count++;
 const result={id:'LSPV3-434',status:'PROVED/RESTRICTED exact-replay obstruction; mixed-minimum and B3 OPEN',
- source_variables:6,strict_3cnf_clauses:8,full_mixed_refutation_nodes:13,indispensable_clause_witnesses:witness,
+ source_variables:6,strict_3cnf_clauses:8,full_mixed_refutation_nodes:13,certified_optimal_padded_mixed_nodes:7,indispensable_clause_witnesses:witness,
  expected_parity_truth_table:xor,restricted_replay_truth_table:stronger,
  original_source_resolution_repair_nodes:2,independent_assertions:count,hostile_controls_rejected:rejected,
  malformed_dimacs_rejected:malformed,historical_native_checker_execution:false};
