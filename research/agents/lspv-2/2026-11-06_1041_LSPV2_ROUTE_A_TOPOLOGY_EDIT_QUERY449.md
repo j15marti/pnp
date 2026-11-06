@@ -58,3 +58,7 @@ Root main.tex returned empty readable content despite nonempty blob ab900e0e and
 **OPEN:** every-processor uniform all-input malformed-aware both-label recursively iterable A -> Phi(A) with t'<=max(11/10,3/5+t/2), s'<=max(1/2,s/2), all construction/guest/source/search/cache phases charged. Route B's all-rule Wbar_R lower bound and noncircular B3 remain separately OPEN. P vs NP remains OPEN.
 
 References: Urquhart, JACM 34 (1987), doi:10.1145/7531.8928; Ben-Sasson/Wigderson, JACM 48 (2001), doi:10.1145/375827.375835; Fortnow et al., JACM 52 (2005), doi:10.1145/1101821.1101822; Jeřábek, https://cs.stackexchange.com/questions/166831/tseitin-formula-on-2-connected-graph.
+
+## Verified compact-script replay addendum (after publication)
+
+The exact script bytes read from GitHub blob 9b020a5351404885bb78426d5283b50436a162b8 were executed **verbatim** in the connected V8 JavaScript isolate, with only a supplied console.log capture callback. No source edits or Node imports were needed. Result: **PASS**, 648 odd-charge original sources, 6,176 four-edit query checks, 155,040 scripts of length <=3, and **241,579** runtime assertions. This replay is host-language execution, not the native FLMV random-access Turing machine or proof of every-input SAT contraction. It supplements the expanded Python and independently authored Node verifier (13,440 assertions, 120 SHA pairs). The earlier statement that the compact script was not executed verbatim described its initial publication state and is superseded by this dated addendum.
