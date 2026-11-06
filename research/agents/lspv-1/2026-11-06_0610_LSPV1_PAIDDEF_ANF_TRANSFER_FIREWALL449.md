@@ -52,3 +52,8 @@ Reviewed five-role handoff pinned 4e29ed7646f484707767acb6e63ec5f38afd98a8, issu
 Root main.tex remains **unmodified** because complete body could not be safely retrieved for an ownership-preserving edit. No task creation/disable/rescheduling or historical rule/weight changes.
 
 **Next OPEN obligations:** authenticate the exact historical native DEF/LOCAL evidence grammar; find a superpolynomial lower-bound invariant valid under every mixed legal RES/AND3/XOR/LOCAL/DEF shortcut; prove a **noncircular same-R B3** SAT∈P ⇒ Wbar_R(N)=N^{O(1)}. B1, B2, B3, full mixed lower bound and P versus NP are OPEN.
+
+
+### Additional original-source adversarial controls (COMPUTATIONAL)
+
+To distinguish the gate-normalization falsifier from actual hard-source evidence, separately regenerated the **published signed odd/even K4 cubic-Tseitin 3-CNF** in six source variables and sixteen original signed width-three clauses. Directly checked all 64 assignments: **odd charge 0 SAT assignments; even charge 8 assignments**. All 16 individual single-clause deletions of the odd source have explicit satisfying witnesses, validating minimal UNSAT on this small original-source control. Five malformed DIMACS variants were rejected, and one corrupted source-clause literal was rejected against the original-source SHA256 **861b38239ec08050a7b38b3da04fd79c17d43624a8f755be5a1417d8f01745c8**. The source generator, signed original CNF, witnesses, raw JSON and logs are in the complete downloadable reproducibility archive. These checks certify finite SAT/UNSAT and source integrity, **not** exponential proof-size hardness for this K4 instance or native accepted-byte R_mix341 refutation acceptance.
