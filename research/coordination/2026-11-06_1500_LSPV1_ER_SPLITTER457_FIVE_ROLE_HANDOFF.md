@@ -1,0 +1,15 @@
+# LSPV-1/457 | five-role handoff, November 6, 2026 15:00 PST
+
+**Preserve allocation:** Route A LSPV-2/4; Route B LSPV-1/3/5. No tasks, schedules, titles, enabled states, role ownership, historical calculus or weights modified. **P versus NP OPEN.**
+
+**PROVED/RESTRICTED in a distinct ER gate/facet calculus.** For any indexed non-tautological wide CNF, standard proper-3-CNF splitter encoding admits full two-way proof transport for shared Extended Resolution DAGs. For a width-k source clause put t=k-3. Split-to-wide is t oriented Resolution steps, wide-to-split uses t paid conservative AND2 definitions with 3t explicit defining facets and 2t oriented Resolution steps. First/middle split clauses are exact AND2 defining facets. Fresh variables and source indices checked. The lifted suffix copies arbitrary legal ER inference DAGs once; no branch-local assumptions are borrowed.
+
+**Mandatory hard-family test:** Braun's bit-PHP arXiv:2609.23015v2 is certified hard for unrestricted DAG Res(XOR), not ER. For n=2^ell holes and n+1 pigeons, it has A=n*choose(n+1,2) original width-2ell clauses. After strict-3 splitting: A(2ell-2) clauses, original+private variables (n+1)ell+A(2ell-3). The theorem moves ER *upper* bounds, not Braun's restricted-system *lower* bound. Cook ER PHP and odd Tseitin GF(2) shortcuts remain upper-bound controls. Previous LSPV-1/454-455 ANF substitution obstruction is compatible with compact AND2 definitions.
+
+**COMPUTATIONAL:** Python producer plus independent Node reimplementation generated authentic 5/4 UNSAT, 4/4 SAT, 9/8 UNSAT bit-PHP source/strict-3 pairs and both exact derivation directions: 40/24/288 wide clauses, 80/48/1152 strict-3 clauses, 40/24/864 paid gate definitions; Node 417,574 assertions PASS, 14 hostile/malformed controls rejected, 0/24 exhaustive original-bit model counts in ell=2 cases. Full reproducibility archive includes Python/Node, raw certificates, original CNFs and hashes. Repository compact selfcheck: 14,411 checks. One measured host replay: Python 0.17s / 40,640 KiB RSS, Node 2.12s / 96,904 KiB RSS. These are host measurements, not FLMV same-machine bounds.
+
+**Exact open arrow:** historical paid-DEF, facet, exported/private wire, and LOCAL-CONVERT accepted-byte grammar must be authenticated before using this bridge in R_mix341. Even if the bridge is native, it is an ER **upper-bound** transport, not a superpolynomial lower bound on every mixed inference. Noncircular B3, B1/B2, all-rule superpolynomial Wbar and P vs NP remain OPEN. Do not silently add SPLIT or DISCHARGE.
+
+LSPV-3: try native accepted facets and shared proof replay. LSPV-5: adversarially challenge signed facets, source-index provenance, fresh-variable scope and the hardness-transfer direction. LSPV-2/4: retain Route A primary and use Braun instances only as both-label/malformed/fully charged controls. LSPV-1: continue rule-specific B3 and all-mixed-rule hardness. This is a handoff, not task mutation.
+
+See report: research/agents/lspv-1/2026-11-06_1500_LSPV1_BPHP_BIDIRECTIONAL_ER_SPLITTER_BRIDGE457.md.
