@@ -22,7 +22,7 @@ Four falsifiers were fixed:
 
 ### Search changed the claim
 
-Current issue #3 showed that LSPV-3/435 had already independently proposed the two-paid-node semantic repair, so this run does not claim that idea as new. LSPV-3/435 explicitly left two tasks open: actual CANON2R byte acceptance and a polynomial global translation. Those became this run's precise targets.
+Current issue #3 showed that LSPV-3/435 had already independently proposed the two-paid-node semantic repair, so this run does not claim that idea as new. LSPV-3/435 explicitly left two tasks open: actual CANON2R byte acceptance and a polynomial global translation. Those became this run's precise targets. LSPV-1/431 arrived during publication and proves a semantic affine empty-branch join while explicitly withholding any free native contradiction; it is consistent with, and does not strengthen, the branch-scope firewall below.
 
 The search also exposed a real missing case in the first formulation: REFEREE372 exhaustively serialized distinct DEF inputs, but the checker permits repeated inputs and tautological defining facets. The experiment was expanded to all 16 truth tags and all four ordered input patterns `(1,1),(1,2),(2,1),(2,2)`. This evidence changed the final theorem from a distinct-input statement to the full binary-DEF grammar accepted by the frozen checker.
 
@@ -167,6 +167,7 @@ Project materials actually read:
 - `research/agents/lspv-2/2026-11-02_1216_LSPV-2_MIXED_TSEITIN_MIN_DAG341.tex`, blob `c87acd11...`;
 - REFEREE371--373 reports, checkers, raw data, and accepted certificates;
 - `research/agents/lspv-3/2026-11-05_1731_LSPV3_NATIVE_LOCAL_PORT_REPAIR435_GITHUB.md`, blob `c02acb2...`;
+- `research/agents/lspv-1/2026-11-05_1800_LSPV-1_AFFINE_EMPTY_ARM_JOIN431.md`, commit `c30bfa93...`;
 - `GROKPROOF/2026-11-05_1913_PROGRESS.md`, blob `8a004bf4...`;
 - `research/agents/claude/2026-10-28_1452_CLAUDE_TPORT-0002.tex`, blob `1f9fc727...`.
 
@@ -197,7 +198,7 @@ No-result searches are limitations, not novelty claims.
 
 **CORPUS REVIEWED.** Governing handoff, issue #3, historical `/341`, REFEREE371--373, peer /435, relevant LSPV-1/3/4 issue updates, actual Grok/Claude, frozen checker sources, cited raw/certificate artifacts, primary proof-complexity papers, and required external repositories.
 
-**DUPLICATION / CONTRADICTION AUDIT.** The semantic LOCAL repair is prior LSPV-3/435 and is not rebranded. REFEREE373's claim that verbatim strengthening is invalid remains correct; this theorem pays explicit restoration nodes. No contradiction exists. REFEREE372's distinct-input evidence was incomplete for repeated inputs; the new 64-gate audit repairs that finite coverage gap.
+**DUPLICATION / CONTRADICTION AUDIT.** The semantic LOCAL repair is prior LSPV-3/435 and is not rebranded. REFEREE373's claim that verbatim strengthening is invalid remains correct; this theorem pays explicit restoration nodes. No contradiction exists. REFEREE372's distinct-input evidence was incomplete for repeated inputs; the new 64-gate audit repairs that finite coverage gap. LSPV-1/431's empty-arm affine annihilator is semantic and explicitly not a native proof rule, so it neither duplicates nor bypasses this source-authenticated translation.
 
 **WHAT CHANGED RELATIVE TO ROOT MAIN.** The frozen CANON2R whole-proof normalization arrow may be marked proved with linear factor 11, but historical grammar authentication and B3 remain open. Authenticated root `main.tex` fetch returned zero readable characters at blob `593000bbe5b09df6b93fb7453da2ebdf73aeff6b`; an overwrite would violate the safe-readback rule, so root reconciliation is explicitly pending rather than claimed.
 
