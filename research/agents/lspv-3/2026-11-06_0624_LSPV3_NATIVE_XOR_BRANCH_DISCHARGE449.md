@@ -8,7 +8,7 @@ Given a source-authenticated, shared, **GF(2)-XOR-only** refutation from already
 
 ## Theorem: assumption-coefficient projection
 
-Let $\pi$ be an acyclic shared-DAG, native binary XOR-of-rows derivation of $0=1$ from $E\cup\{a\}$, with $r$ distinct paid XOR inferences in its root ancestry; all equations in $E$ have their own independently authenticated source derivations. Then a source-preserving DAG over $E$ alone derives either $0=1$ or the **complement of $a$**, using at most $r$ additional paid native XOR nodes.
+Let $\pi$ be an acyclic shared-DAG, native binary XOR-of-rows derivation of $0=1$ from $E\cup\{a\}$, with **nonzero variable mask in the assumption $a$**, and with $r$ distinct paid XOR inferences in its root ancestry; all equations in $E$ have their own independently authenticated source derivations. Then a source-preserving DAG over $E$ alone derives either $0=1$ or the **complement of $a$**, using at most $r$ additional paid native XOR nodes.
 
 For each original line $L$, track one bit $t(L)$ and the row
 
@@ -16,7 +16,7 @@ $$
 P(L)=L\oplus t(L)a.
 $$
 
-For $e\in E$, take $t(e)=0$, $P(e)=e$; the assumption has $t(a)=1$, $P(a)=0=0$ represented only as a **virtual zero marker**. At each original XOR inference, XOR the two tags and the two projected rows. If both parents have materialized rows, emit one ordinary paid XOR. If one projection is virtual zero, copy the other existing reference, adding no inference; if both vanish, keep virtual zero. Induction gives $L=P(L)\oplus t(L)a$ and preserves topology. At the contradictory root, $P(0=1)$ is either $0=1$ or $\neg a$, never a virtual zero. QED. This is a familiar linear-algebra deduction principle specialized to paid source-authenticated proof DAGs, **not a new general theorem about P versus NP**.
+For $e\in E$, take $t(e)=0$, $P(e)=e$; the assumption has $t(a)=1$, $P(a)=0=0$ represented only as a **virtual zero marker**. At each original XOR inference, XOR the two tags and the two projected rows. If both parents have materialized rows, emit one ordinary paid XOR. If one projection is virtual zero, copy the other existing reference, adding no inference; if both vanish, keep virtual zero. Induction gives $L=P(L)\oplus t(L)a$ and preserves topology. At the contradictory root, $P(0=1)$ is either $0=1$ or $\neg a$, never virtual zero **because the variable mask of $a$ is nonzero**. QED. The hypothesis is necessary: with $E=\varnothing$ and the degenerate contradictory assumption $a:(0=1)$, its apparent complement $0=0$ is only a virtual marker and cannot be claimed as a source-derived proof line. This is an explicit degenerate-assumption counterexample to the unqualified formulation. This is a familiar linear-algebra deduction principle specialized to paid source-authenticated proof DAGs, **not a new general theorem about P versus NP**.
 
 Two contextual proofs $E,x=0\vdash0=1$ and $E,x=1\vdash0=1$ (both **AND** obligations) yield either an unconditional contradiction or opposing unconditional equations $x=0,x=1$, joined by **one paid native XOR**. Given input branch costs $r_0,r_1$ and union of common pre-derived source rows costing $B$, the exhibited upper-bound witness satisfies
 
