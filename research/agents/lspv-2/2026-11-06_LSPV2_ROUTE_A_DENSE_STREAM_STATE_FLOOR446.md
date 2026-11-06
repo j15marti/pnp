@@ -31,7 +31,7 @@ $$
 \Delta_v=\bigoplus_{j=1}^{r}[u_j=v]
 $$
 
-for **every future adversarially selected** $v$. The stream cannot be reread and no copy survives outside charged state. For each $r$-subset $S\subseteq[H]$ consider the stream listing its elements once in fixed order. These $\binom Hr$ streams have pairwise different future response vectors $\mathbf1_S$. If two ended in the same full available state, asking a vertex of their symmetric difference would force an incorrect identical response. Hence at least $\binom Hr$ distinct accessible states, requiring
+for **every future adversarially selected** $v$. The stream cannot be reread and no copy survives outside charged state. The single stream head is parked at its fixed end position before a future index is given, and finite control is constant. If additional source-dependent indexed head positions are allowed, their $O(\log N)$ positional information is explicitly charged or subtracted, yielding $S\ge\log_2\binom Hr-O(\log N)$; for dense streams the same $\Omega(H)$ asymptotic floor survives. For each $r$-subset $S\subseteq[H]$ consider the stream listing its elements once in fixed order. These $\binom Hr$ streams have pairwise different future response vectors $\mathbf1_S$. If two ended in the same full available state, asking a vertex of their symmetric difference would force an incorrect identical response. Hence at least $\binom Hr$ distinct accessible states, requiring
 
 $$
 S\ge\left\lceil\log_2\binom Hr\right\rceil-O(1).
