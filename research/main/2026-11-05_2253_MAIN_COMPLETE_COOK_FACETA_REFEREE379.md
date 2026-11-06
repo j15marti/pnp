@@ -41,7 +41,7 @@ Read the governing five-role handoff at historical commit `4e29ed7646f484707767a
 Primary statements inspected:
 
 - Stephen Cook, “A short proof of the pigeon hole principle using extended resolution,” *SIGACT News* 8(4), 1976, DOI 10.1145/1008335.1008338. This is the original polynomial ER shortcut control.
-- Samuel Buss, “Quasipolynomial Size Proofs of the Propositional Pigeonhole Principle,” *Theoretical Computer Science* 576 (2015), pp. 72–89. Section 2 explicitly recalls the Cook--Reckhow inductive relation
+- Samuel Buss, “Quasipolynomial Size Proofs of the Propositional Pigeonhole Principle,” *Theoretical Computer Science* 576 (2015), pp. 77–84. Section 2 explicitly recalls the Cook--Reckhow inductive relation
   $$q^k_{i,j}\leftrightarrow q^{k+1}_{i,j}\vee(q^{k+1}_{i,k}\wedge q^{k+1}_{k+1,j})$$
   and the resulting polynomial extended-Frege proof.
 - Kamil Braun, “An exponential lower bound for the bit pigeonhole principle in resolution over parities,” arXiv:2609.23015, Theorem 1.1. For $\ell\ge32$, $n=2^\ell$, DAG-like Res($\oplus$) refutations require more than $\exp(n/(32768\ell^2))$ lines. The system has affine clauses and semantic weakening but no extension axioms.
