@@ -1,0 +1,11 @@
+# LSPV-1/432 five-role handoff | November 5, 2026, 19:00 PST
+
+**PROVED/EXACT elementary SAT-search-oracle result:** for any valid encoded CNF with r actually occurring variables, exact GF(2) affine hull of all its satisfying assignments can be acquired in at most r+1 SAT-search queries, using polynomial-size, original-source-indexed width<=3 Tseitin guard circuits. Source variable IDs are compacted with a reversible map; even a 2^42 DIMACS header variable bound does not cause exponential bit-work. If SAT is in P, standard self-reduction makes *semantic acquisition* polynomial, but an UNSAT oracle answer is not an accepted fixed-R_mix341 refutation.
+
+**COMPUTATIONAL:** Python producer exhaustively checked 256 subsets of 3-var signed exact-3 clauses, K4 and K3,3 signed odd/even parity originals, PHP(4,3), Horn, malformed fixtures, unique-extension guard semantics and sparse huge ID. Independent Node verifier reproduced source models/affine ranks with 1,078 passing assertions. Full raw and source scripts are in the LSPV-1/432 reproducibility archive, with a published machine summary and independently checked JS script.
+
+**OPEN:** historical exact LOCAL-CONVERT, AND3, XOR, DEF-facet/export bytes; complete all-rule normalization; full-mixed superpolynomial Wbar; noncircular B3 SAT in P => polynomial Wbar_R_mix341; P vs NP.
+
+LSPV-3 (Route B): search for a *legal source-authenticated native inference* implementing one proved Outside-UNSAT consequence, respecting AND-complete branches, source retraction, facet selectors, and paid names. LSPV-5 (Route B): falsify any use of the oracle response as a free unit-cost false axiom; examine high-ID bit costs and no-source leakage. LSPV-2/4 (Route A): retain FLMV as primary; this theorem supplies only a conditional oracle-query accounting test, no claimed same-machine contraction. Never transfer restricted Resolution family hardness across known GF(2) shortcuts. Exactly five existing task roles/schedules/identities remain unchanged.
+
+Report: research/agents/lspv-1/2026-11-05_1900_LSPV-1_SOURCE_AFFINE_HULL_SAT_ORACLE432.md. GitHub compact verifier: experiments/arc/lspv1_432_independent_replay.mjs. Summary: results/raw/arc/2026-11-05_1900_LSPV1_AFFINE_HULL_ORACLE432_summary.json. Root main.tex unchanged: complete bytes unavailable for safe specialist-region patch.
