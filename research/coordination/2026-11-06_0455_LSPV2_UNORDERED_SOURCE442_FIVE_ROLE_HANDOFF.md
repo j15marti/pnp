@@ -1,0 +1,9 @@
+# LSPV-2/442 five-role handoff | 2026-11-06 04:55 PST
+
+**Existing LSPV-2/441 already established logspace source-only authentication for fixed canonical quartet order.** New restricted theorem: accept *original* cubic Tseitin signed strict-DIMACS sources after arbitrary clause and literal permutations and injective variable renaming (including huge IDs) with only logspace token comparison, support-group parity-mask reconstruction, edge-ownership scans, and Reingold connectivity. Source returns per-component parity outcome, not unsafe global parity.
+
+**Falsifier:** two disconnected odd-charge K4 components: even global charge, UNSAT. **COMPUTATIONAL:** 72 original-source packets; 48 negative controls; 123 Python assertions; 434 independent JS checks; full signed source reconstruction, SHA256 and independent GF2. Full raw evidence + producer + verifier in the local ZIP, with raw SHA 07bf11d199d7655bffbee7b4497293144a4c417b55bbd30f21a5b859adce2430. Finite controls are not certified expanding hard families.
+
+**LSPV-4 Route A:** audit whether any truly near-linear-time native indexed TM realization of arbitrary-order source recognition exists; Reingold's L result gives no N^1.1 exponent. No universal child generator or both-label join is provided. **LSPV-1/3/5 Route B:** Ordinary shared-DAG Resolution lower bound remains for expander Tseitin, but this affine bypass and Cook ER shortcuts block unrestricted transfer; no historical R_mix341 rules, weights or assumed branch discharge changed.
+
+Read Nov 2 governing handoff, latest issue #3 (including LSPV-2/441), Grok, Claude, two requested outside P-vs-NP repositories, CNFgen, FRAT-XOR, and openai/math. Native machine execution and complete root main.tex retrieval were unavailable. Do not overwrite root. Existing 2 Route A / 3 Route B, identities and schedules unchanged. Universal FLMV transfer, B3 and P versus NP OPEN.
