@@ -147,14 +147,14 @@ Change-aware external review used these pinned heads, unchanged from the immedia
 
 | Repository/path reviewed | Head | Result relevant to this run |
 |---|---|---|
-| `konard/p-vs-np`: `README.md`, `DETAILED_SOLUTION_PLAN.md`, root method/issue indexes | `ecedd2b...` | Hypothesis inventory only; no authenticated $R_{\rm mix341}$ grammar, bridge trace, or transfer theorem. |
-| `blkph0x/p-vs-np-proof-research`: root index, `AFFINE_COMPRESSION_TEST_SUMMARY.json`, `AFFINE_DECOMPOSITION_NEXT_REVIEW.md` | `7dedc73...` | Affine experiments are useful controls, not a lower-bound-preserving mixed-calculus transfer. |
-| `meelgroup/frat-xor`: `README.md`, `format.md`, `src/`, `cake_xlrup/` | `18cd6bc...` | Concrete XOR certificate/checker engineering; its format is not the historical $R_{\rm mix341}$ grammar. |
-| `tanyongkiam/cake_lpr`: checker/formalization root | `033aad...` | Verified-checker trust control; no theorem turning arbitrary P-time SAT decisions into this fixed mixed proof. |
-| `peitl/short-proof`: root optimizer/checker material | `2c524...` | Finite proof minimization control; bounded searches do not establish the unbounded mixed minimum. |
-| `MassimoLauria/cnfgen`: generators/README | `24e633...` | Reproducible family generation; no transfer theorem. |
-| `openai/math` | `4eaee...` | No relevant authenticated historical grammar or B3 bridge found in the change-aware review. |
-| `anthropics/formal-math` | `16a5ce...` | Formalization/reproducibility control only; no relevant transfer theorem found. |
+| `konard/p-vs-np`: `README.md`, `DETAILED_SOLUTION_PLAN.md`, root method/issue indexes | `ecedd2b45f1c524d85c00b2da27a9c140025550c` | Hypothesis inventory only; no authenticated $R_{\rm mix341}$ grammar, bridge trace, or transfer theorem. |
+| `blkph0x/p-vs-np-proof-research`: root index, `AFFINE_COMPRESSION_TEST_SUMMARY.json`, `AFFINE_DECOMPOSITION_NEXT_REVIEW.md` | `7dedc73f758dfbdc072e7aa29dfc08505761ebd5` | Affine experiments are useful controls, not a lower-bound-preserving mixed-calculus transfer. |
+| `meelgroup/frat-xor`: `README.md`, `format.md`, `src/`, `cake_xlrup/` | `18cd6bc17af10a9891c10a846ce966166f9fe0dc` | Concrete XOR certificate/checker engineering; its format is not the historical $R_{\rm mix341}$ grammar. |
+| `tanyongkiam/cake_lpr`: checker/formalization root | `033aad53d1733bd4b8ca41cf6f1b5fb5d84f8de2` | Verified-checker trust control; no theorem turning arbitrary P-time SAT decisions into this fixed mixed proof. |
+| `peitl/short-proof`: root optimizer/checker material | `2c524cfceecf68b56f51d23f6b63255b502856d3` | Finite proof minimization control; bounded searches do not establish the unbounded mixed minimum. |
+| `MassimoLauria/cnfgen`: generators/README | `24e633bdbed0d0998493bee99c42faf480c7dc96` | Reproducible family generation; no transfer theorem. |
+| `openai/math` | `4eaee87548250b2682affda7d05d947c05554bae` | No relevant authenticated historical grammar or B3 bridge found in the change-aware review. |
+| `anthropics/formal-math` | `16a5ce41304fcdaea4e0be7c132e1c361dc26da5` | Formalization/reproducibility control only; no relevant transfer theorem found. |
 
 The literature authentication found Haken 1985, Urquhart 1987, Ben-Sasson–Wigderson 2001, the STOC/SICOMP regular-$\operatorname{Res}(\oplus)$ result, and Braun's 2026 DAG-like preprint.  The 2024 regular result explicitly does not establish unrestricted DAG hardness; Braun's later preprint claims a specific unrestricted DAG result for bit-PHP, still in $\operatorname{Res}(\oplus)$ rather than arbitrary mixed systems.
 
