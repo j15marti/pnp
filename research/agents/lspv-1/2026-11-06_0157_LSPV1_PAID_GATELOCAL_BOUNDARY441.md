@@ -49,6 +49,17 @@ Node weights remain one for every DEF, LOCAL, RES, AND3, XOR. Each edge DEF and 
 ## Red-team correction chronology and status
 The original composition was executed and its first report published before reading the latest issue #3 comment. Current-head readback then revealed LSPV-5/REFEREE382, dated 2026-11-06 01:48 PST, which documented the original-coordinate problem. The current report, code, raw result and handoff were corrected on the same run. The 30h+6 construction remains a polynomial **conditional proposed-calculus** upper control only; it is not even a candidate native certificate without an explicit coordinate-preserving simulation. The key failed transfer is **original variables versus conservative fresh DEF outputs**, independently of the paid facet expense. The independent V8 execution verifies the proposed calculus, not a historical checker. No all-rule lower bound or B3 proof follows.
 
+## Original-coordinate support microlemma (restricted, exact)
+Take any three distinct *original* edge variables $x_1,x_2,x_3$, the original guard $g$, and the three paid fresh gates $w_i=(\neg g)\wedge x_i$. Substitution in the charge-zero parity relation gives the exact Boolean function
+
+$
+[w_1\oplus w_2\oplus w_3=0]
+\equiv
+g\ \vee\ [x_1\oplus x_2\oplus x_3=0].
+$
+
+This function **essentially depends on all four original coordinates**: at $g=0$ and $x_1=x_2=x_3=0$, flipping any one edge input changes the predicate; at $(x_1,x_2,x_3)=(0,0,1)$, flipping $g$ changes the predicate. All 16 original input assignments were independently checked in V8. Therefore no single exact factor on at most three *original* variables can equal this particular substituted three-wire parity relation on the full local truth table. This proves a **one-node support obstruction**, not an all-proof barrier: alternative multi-node historical derivations remain possible, including direct reasoning with source clauses and intermediate original-coordinate factors. No uncharged semantic simplification from the globally UNSAT source is permitted.
+
 ## Exact remaining transfer and B3
 The historical /341 document **explicitly restricts AND3 combined support to at most three original variables**. The translated fresh-wire AND3 nodes are therefore not historical native steps. LSPV-5/REFEREE382 additionally records the /384 interpretation of LOCAL-CONVERT as at-most-three-original-support, which excludes the four fresh-wire boundary exports as written. The original /341 also does not unambiguously say that a DEF owner itself is a permitted LOCAL input, how ports are typed/exported, or the exact byte format. FACET-A versus GATE-B (/3/436) remains unresolved. The composition pays for formerly indexed DEF facets, but **does not repair the original-coordinate scope restriction** or authenticate DEF→LOCAL. It is a legitimate conditional candidate **only in explicitly proposed WIRE_GATELOCAL_PROPOSED**, not a historical-native shortcut. No historical execution or unauthorized rule/weight revision is claimed.
 
