@@ -12,18 +12,18 @@ Binary source: 8-bit magic `10101110`, positive unary threshold `1^b0`; one or m
 
 **Theorem 429.1 (PROVED/RESTRICTED).** With G the conjunction of core clauses and T of tail clauses, the authenticated source satisfies
 
-$$
-mathrm{SAT}(Gland T)iffmathrm{SAT}(G).
-$$
+$
+\operatorname{SAT}(G\land T)\iff\operatorname{SAT}(G).
+$
 
 Indeed every core ID is <2^b, every tail ID >=2^b, so variable sets are disjoint. Assign TRUE to all tail variables: every tail clause has a true positive literal. Every satisfying assignment of G extends to G and T, and every model of G and T restricts to G. No SAT/equivalence oracle is used.
 
 **Theorem 429.2 (PROVED/RESTRICTED).** On FLMV's read-only indexed input and writable random-access/index tapes, a deterministic scanner processes the entire input in O(N) sequential native steps and O(log N) *highest-position physical* workspace on dense packed tapes; it stores positions, ID lengths, signs and flags but never numerical variable IDs. Sparse 1025-bit ID values are therefore legal with O(log N) storage. Record cut position P before the first tail (or terminator). The exact projected child has bits source[0..P-1] followed by `00`. Each virtual guest bit or end-of-input probe is served by at most O(log N) native indexed operations, dense O(log N) address scratch and a charged source read. No full input/child is copied into writable workspace. With a fixed total correct indexed guest A, full parsing and guest simulation obey
 
-$$
-T_{mathrm{proj}}(N)=O!left(N+T_A(P+2)log^{O(1)}Night),qquad
-S_{mathrm{proj}}(N)=O!left(log N+S_A(P+2)ight).
-$$
+$
+T_{\mathrm{proj}}(N)=O\!\left(N+T_A(P+2)\log^{O(1)}N\right),\qquad
+S_{\mathrm{proj}}(N)=O\!\left(\log N+S_A(P+2)\right).
+$
 
 Every indexed-head movement, address write/erase, repetition, error path, guest frame, and all-phase peak must be charged. This is a concrete *conditional special-class* virtual port and not an all-input resource contraction. For malformed sources reject. For other well-formed CNFs the valid fallback is to call A on the original input, with no claimed exponent improvement.
 
