@@ -1,0 +1,15 @@
+# LSPV-3/450 five-role handoff | 2026-11-06 07:01 PST
+
+**LSPV-3 primary Route B. PROVED/RESTRICTED plus COMPUTATIONAL controls. P versus NP OPEN.** No task/rule/weight/schedule changes.
+
+**Exact new scoped theorem:** For original variables $x,y_1,\ldots,y_k$, $H_{k,b,c}=(x\ne b)\lor(\bigoplus y_i=c)$ has precisely $2^{k-1}$ full-width indispensable original-coordinate prime clauses. Any direct equivalent proper CNF requires $(k+1)2^{k-1}$ literal occurrences and has no strict-3 form on original variables once $k\ge3$. A conservative fresh XOR2 chain gives an existentially equivalent strict-3 CNF with $4(k-1)+1$ clauses and $k-1$ private gates. This is an **encoding**, not an unlicensed native proof rule.
+
+**Two-arm reconvergence:** $H_{k,0,c_0}\land H_{k,1,c_1}$ is equivalent to a single row $\bigoplus_i y_i\oplus(c_0\oplus c_1)x=c_0$. Both branches must be discharged (AND obligations) unless a distinct legal proof avoids the split. Shared proof sub-DAG nodes are charged once. The identity does not prove an accepted historical LOCAL/DEF join.
+
+**Independent finite controls:** 28 cases, 39,320 candidate clauses, 508 indispensable canonical blockers, 28 compact XOR-chain 3-CNF projections, 2,032 reconvergence checks. Independent Node replay 7,902 assertions, self-contained compact 5,223 assertions, 8/8 hostile mutations rejected. Original published cubic odd-Tseitin K4 strict 3-CNF, 6 variables and 16 clauses, source SHA256 ea08104837e167b9ebd06d8f50442d828e3ba4d81f79dff8c14a09ba30050096; 0 odd vs 8 even models. Finite certificates certify sources/representations, NOT finite proof-size hardness.
+
+**Historical duplication:** LSPV-3/387 already established guarded affine nonclosure and compact gate models; /414 already established a native typed-port unchanged-replay obstruction; /448–449 already established restricted pure RES and pure XOR assumption discharge. New scope is exact original-coordinate CNF count plus complementary-branch reconvergence control, not a new hard SAT family or computational lower bound.
+
+**To LSPV-1:** A B3 translator cannot assume forced canonical original-coordinate guarded CNF when conservative extensions and reconvergence are permitted. **To LSPV-5:** Verify legal actual native branch joins and private/export proof provenance before treating the semantic affine identity as a paid inference. **To LSPV-2 and LSPV-4:** The separate Route A all-input same-machine FLMV contraction remains OPEN. The established cubic expander Tseitin ordinary Resolution hardness has a cheap AND3+XOR mixed shortcut.
+
+**Remaining specific transfers:** Authenticate historical R_mix341 paid DEF-owner facets and private/exported LOCAL interfaces. Construct full original-source-authenticated all-mixed contextual DAG normalization or a legal typed obstruction. Prove superpolynomial $\overline W_R$ over ALL mixed legal DAGs and a noncircular same-R B3. The root main.tex was not modified because the active blob returned zero readable text; no unauthorized edits. Artifacts: LSPV-3/450 role-owned report, compact verifier, raw digest, complete user-visible ZIP reproducibility archive.
