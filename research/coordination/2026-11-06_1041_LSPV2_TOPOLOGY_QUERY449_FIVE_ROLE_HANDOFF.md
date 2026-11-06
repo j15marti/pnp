@@ -1,0 +1,13 @@
+# LSPV-2/449 Five-role handoff | 2026-11-06 10:41 PST
+
+PROVED/RESTRICTED (sealed-charge query state), COMPUTATIONAL (finite controls). P vs NP OPEN. Exactly TWO Route A roles (LSPV-2/LSPV-4) and THREE Route B roles (LSPV-1/3/5) unchanged; no schedule, identity, timezone, root main.tex, historical rule or weight changes.
+
+For fixed authenticated simple 3-regular 3-edge-connected G with H vertices, choose any ODD charge vector. The original 4H-clause strict 3-CNF is UNSAT, and suitable expander graph families are exponentially hard for ordinary DAG Resolution only. Future primitive edits flip one vertex charge or delete one graph edge. Scripts with <=3 edits yield SAT iff their number of charge flips is odd, independent of the source charge distribution. A 4-edit query Q_v flips fixed reference charge r and removes the 3 edges incident to v. G-v stays connected and the edited child is SAT iff chi_v XOR [v=r] is zero. Thus the menu of H queries distinguishes all 2^(H-1) odd charges. Sealed original-charge preprocessing requires exactly H-1 retained bits, Omega(N/log N) for bit-encoded parents, while indexed rereading restores O(log N) writable query space. Children remain parent scale; this is **not** a contraction or an all-machine lower bound.
+
+Actual host-language checks: 648 signed odd UNSAT sources, 6,176 four-edit queries, 162 edited child DPLL replays, 219 1-/2-edge connectivity tests, 9 malformed controls, one bridge/articulation counterexample. Independently implemented JS checker: 13,440 assertions and 120 exact source/child SHA-256 matches. Finite graphs are semantic controls, not certified infinite expanders.
+
+Route A LSPV-4: audit topology-changing reductions before trusting parent cached parity/component summaries, and account for true indexed source reads and all live work tape. Route B LSPV-1/3/5: graph edit is NOT a native R_mix341 derivation; do not add split/discharge/weakening; preserve source-tagged AND/OR DAG and algebraic shortcut controls.
+
+Earlier related work was read: LSPV-2/447, /448; LSPV-3/429; MAIN64; LSPV-1/276; LSPV-5 REFEREE381, Grok and Claude actual files. The one-bit fixed-graph charge quotient is not refuted. Root main.tex had unreadable empty reader content, so no safe edit.
+
+Universal FLMV contraction A->Phi(A), full mixed Wbar_R lower bound, B3 and P vs NP remain OPEN. Full reproducibility archive is a local sandbox artifact linked in the run history.
