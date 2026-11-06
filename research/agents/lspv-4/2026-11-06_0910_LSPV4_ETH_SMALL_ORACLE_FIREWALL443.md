@@ -4,27 +4,27 @@
 
 ## IDEA -> SEARCH -> ITERATE: hypothesis and falsifiers
 
-Hypothesis: An **unconditional decider-independent** polynomial-time algorithm that decides every sparse 3-CNF by making polynomially many SAT queries of sublinear actual binary length would yield a deterministic subexponential algorithm for sparse 3-SAT. Falsifiers: (F1) a child is only a compact descriptor of a *larger virtual query*; (F2) hidden superpolynomial preprocessing or query count; (F3) incorrect normalization of binary input size N versus variable count n; (F4) a construction that only exists *assuming* SAT in P or that nonblackbox transforms a particular polynomial-time solver. F4 prevents this ETH argument from refuting the current conditional Route A.
+Hypothesis: An **unconditional decider-independent** polynomial-time algorithm that decides every sparse 3-CNF by making polynomially many SAT queries of sublinear actual binary length would yield deterministic subexponential algorithms at every fixed density and hence violate ETH via sparsification. Falsifiers: (F1) a child is only a compact descriptor of a *larger virtual query*; (F2) hidden superpolynomial preprocessing or query count; (F3) incorrect normalization of binary input size N versus variable count n; (F4) a construction that only exists *assuming* SAT in P or that nonblackbox transforms a particular polynomial-time solver. F4 prevents this ETH argument from refuting the current conditional Route A.
 
 Search correction: project LSPV-2/DELAYOR1 (blob 1c53f86b) already proves the padded-blackbox exponent coefficient restriction and the subcube covering bound; LSPV-4/441 (blob 704db91d) proves guarded full-length fallback failure. LSPV-4/442 (2c49fef5) is a distinct branching/UP materialization falsifier. This note adds the precise adaptive small-oracle to subexponential consequence and **does not claim novelty** over standard ETH methodology.
 
 ## Theorem 443.1 (PROVED/RESTRICTED; ETH consequence CONDITIONAL)
 
-Fix constants b, mu > 0 and 0 <= lambda < 1. Let C be a single uniform deterministic, **decider-independent** procedure which, for every proper sparse 3-CNF F with n occurring variables, at most c*n clauses, and ordinary dense-renumbered binary encoding N <= C0*n*log2(n+2), correctly decides the SAT/UNSAT label using:
+**Density quantifier, essential:** Fix a particular constant c>0. Suppose a uniform deterministic **decider-independent** procedure C_c correctly decides every proper sparse 3-CNF F with n occurring variables, at most c*n clauses, and dense-renumbered binary length N<=C0(c)*n*log2(n+2), with fixed per-density constants b_c, mu_c>0 and 0<=lambda_c<1, using:
 
-1. At most N^b own steps, charging all source reads, parsing, preprocessing, policy and failed policy search, child construction, joins, caching and output.
-2. At most N^mu **actually executed**, possibly adaptive, ordinary SAT queries, each of **explicit guest input bit length** <= N^lambda.
+1. At most N^{b_c} own steps, charging all source reads, parsing, preprocessing, policy and failed policy search, child construction, joins, caching and output.
+2. At most N^{mu_c} **actually executed**, possibly adaptive, ordinary SAT queries, each of **explicit guest input bit length** <= N^{lambda_c}.
 3. Correct answers for SAT, UNSAT, with a defined polynomial-time malformed-input path.
 
-Then there is a total uniform deterministic sparse-3-SAT decider with
+Then that **fixed-density slice** of proper sparse 3-SAT has a total uniform deterministic decider with
 
 $$
-T(n) \le N^b + N^{\mu+O(1)}2^{O(N^\lambda)}
-=2^{O((n\log(n+2))^\lambda)+O(\log n)}
+T_c(n) \le N^{b_c} + N^{\mu_c+O(1)}2^{O(N^{\lambda_c})}
+=2^{O((n\log(n+2))^{\lambda_c})+O(\log n)}
 =2^{o(n)}.
 $$
 
-**Proof.** Simulate C, replacing each queried SAT oracle by exhaustive assignment search on the actual explicit queried formula. A formula encoded in ell bits contains at most ell distinct occurring variables, so exhaustive SAT takes 2^{O(ell)} poly(ell) time. Feeding the exact answer to the controller yields the exact same adaptive future transcript by induction. Thus even adaptive OR/AND branching, early termination, reconvergence and reuse of previously answered queries cannot defeat the upper bound. Because ell <= N^lambda and N=O(n log n), (n log n)^lambda=o(n) for lambda<1. ETH (in its equivalent sparse-3-SAT form by the sparsification lemma of Impagliazzo, Paturi and Zane) prohibits the derived 2^{o(n)} algorithm. QED.
+**Proof.** Simulate C, replacing each queried SAT oracle by exhaustive assignment search on the actual explicit queried formula. A formula encoded in ell bits contains at most ell distinct occurring variables, so exhaustive SAT takes 2^{O(ell)} poly(ell) time. Feeding the exact answer to the controller yields the exact same adaptive future transcript by induction. Thus even adaptive OR/AND branching, early termination, reconvergence and reuse of previously answered queries cannot defeat the upper bound. Because ell<=N^{lambda_c} and N=O_c(n log n), (n log n)^{lambda_c}=o(n). This proves a 2^{o(n)} algorithm for **that fixed density c only**. It does NOT contradict ETH alone, since small-density 3-SAT can be easy. Now assume such a C_c exists **for every fixed c>0**. Given any general 3-CNF with n variables and any fixed epsilon>0, the IPZ sparsification lemma produces at most 2^{epsilon*n/2} formulas, each with at most c(epsilon)*n clauses, in time 2^{epsilon*n/2}poly(n). Convert any clauses of width <=2 to proper width-three with fresh-variable gadgets: (a OR b) becomes (a OR b OR z) AND (a OR b OR NOT z), and a unit a becomes the four clauses (a OR +/-p OR +/-q). Empty clauses are immediately UNSAT. This uses O(n) new variables/clauses for each fixed epsilon. Apply C_{c'(epsilon)} and brute-force oracle replacement to each sparse proper formula in 2^{o(n)} time. Total time is 2^{epsilon*n/2+o(n)}<=2^{epsilon*n} for sufficiently large n. Since epsilon>0 is arbitrary, the positive ETH exponent cannot exist. QED. **The quantifier over all fixed densities is essential.**
 
 **Corollary (CONDITIONAL on ETH).** A polynomial-time, unconditionally available, decider-independent all-input shrink-and-join controller with q=N^{3/5+o(1)} and genuinely short ordinary SAT children L=N^{1/2+o(1)} would refute ETH. This is **not an unrestricted time lower bound**, and the corresponding 2^{o(n)} upper bound is not an FLMV polynomial time-space contradiction.
 
