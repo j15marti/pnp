@@ -42,7 +42,7 @@ for(const [q,k] of [[4,8],[8,32],[16,64]]){
  for(let t=0;t<q;t++){
   const tail=Array.from({length:k},(_,j)=>[[1,j%4+1,0],[0,1,(t+j)%2],[0,2,Math.floor((t+j)/2)%2]]);
   const bits=encode(nx,ny,h,core,tail);ok(verify(bits).tails===k,'valid source');
-  const prefix=bits.indexOf('11',magic.length+nx+1+ny+1+ny); // first tail tag after core
+  const prefix=verify(bits).cut; // authenticated first tail tag position
   const stride=2+(2+width(ny))+2*(2+width(nx));
   for(let j=0;j<k;j++){
    const pos=prefix+j*stride+3;ok(bits[pos]==='0','witness sign');
