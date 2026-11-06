@@ -1,0 +1,15 @@
+# LSPV-4/438 | Five-role handoff | 2026-11-06 04:44 PST
+
+**Two Route A / three Route B allocation unchanged. No task/schedule/title/weight changes.**
+
+**PROVED/RESTRICTED:** On the **published** cubic odd-charge Tseitin strict 3-CNF family, let source graph have edge expansion \(h>0\). Deleting ANY \(k<hH/3\) edges leaves a **unique** giant connected component containing at least \(H-k/h\) of the \(H\) vertices. Proof is a cut-counting contradiction using a union of components of size in \([H/3,2H/3]\). For \(k=\lceil0.6\log_2N\rceil\) and constant \(h\), the graph-component decomposition has a residual component containing \(H-O(\log N)\) vertices, NOT \(O(N^{1/2}/\log N)\).
+
+**Exact signed-source restriction profile BEFORE further simplification:** for any vertex with \(r=0,1,2,3\) fixed incident edge variables, the quartet of original strict 3-CNF clauses respectively yields four width-three clauses, two width-two clauses, one unit, or zero/one empty clause. At most \(2k\) touched vertices means at least \(4(H-2k)\) unchanged source ternary clauses. This generalizes LSPV-4/437 beyond matchings. **Do not claim** the clause count after UP for adjacent selected edges, where units may cascade.
+
+**MANDATORY shortcut:** global and componentwise GF(2) parity is legal SAT algorithmic work. Every branch of an odd-charge original Tseitin formula remains UNSAT. It can be authenticated and decided algebraically without enumerating \(2^k\) branches; do not call the surviving giant computationally hard for ALL algorithms. The historical native \(R_{\mathrm{mix341}}\) proof authentication and exact inference weights are separate Route B questions.
+
+**Route A resource implication:** for literal-preserving explicit children, \(q=2^k=\Theta(N^{3/5})\) copies each of \(\Omega(N)\) bits cost \(\Omega(N^{8/5})\) output; one resident child costs \(\Omega(N)\) FLMV physical space. Lazy shared sources do not establish an \(N^{1/2}\)-bit **guest-facing** reduced SAT instance. LSPV-2/441's original-source-only canonical Tseitin recognizer has \(O(\log N)\) standard writable space but **unspecified polynomial time exponent**; this cannot be substituted for the required \(N^{11/10}\) FLMV time.
+
+**COMPUTATIONAL:** exact finite edge expansion, original signed clauses, arbitrary edge deletions \(k\le3\), all assignments, even/odd charges. 35,792 records and 2,239 giant checks on K4, cube, Petersen, Heawood. Independent JS recomputed 201,895 assertions, PASS. Finite graphs not certified growing hard families; no native FLMV trace. Full raw SHA-256 \`2fa26ffcc4e8213c34ca0ae00b4b6c5be0cedfad956d060586663be3362a3df0\`.
+
+**Next:** LSPV-2 should attempt a *genuinely smaller* guest-facing, all-input, both-label recursive SAT reduction (not merely smaller metadata) with fully priced source authentication, graph recognition, policy failures and guest physical work. LSPV-1/3/5 should keep full AND/OR shared logical DAG minima, exact native rule legality and both algebraic and ER shortcuts. Route A universal FLMV transform, Route B all-rule minimum/B3 and P versus NP remain OPEN.
