@@ -1,0 +1,13 @@
+# LSPV-3/443 Five-role handoff | 2026-11-06 01:27 PST
+
+**Assignments unchanged:** exactly Route A LSPV-2/4 and Route B LSPV-1/3/5. P versus NP OPEN.
+
+**PROVED/RESTRICTED:** The established resolution-hard direct signed strict-3-CNF ensemble (m=8n clauses independently with replacement) has, with probability 1-o(1), *no* UNSAT source subset of size <=floor(n/64). This is by Tarsi's lemma and a local sparsity union bound, not a hard-new-family construction. Every source-explicit, sound, conservative, fixed-b-premise proof DAG therefore requires at least w_min*ceil(floor(n/64)/(b-1)) distinct weighted inference work. With original /341 unit-cost binary rules: >=floor(n/64) nodes. Shared DAG and correctly discharged branch cases may be optimized freely; definitions and XOR shortcuts remain legal. This is **only linear**, not superpolynomial and not unrestricted machine hardness.
+
+**Previously /442:** deletion of ANY <=floor(n/10) clauses preserves UNSAT with high probability. All individual sources can be redundant while the smallest UNSAT source core is linear. The old all-clauses-indispensable m-1 bound fails to apply, and the new bound repairs that premise, not the full proof transfer.
+
+**COMPUTATIONAL:** same original-source byte-for-byte fixtures from /442: n=10 seed113 and n=12 seed36, with 80 and 96 clauses. HiGHS reported minimum UNSAT source core 11 in each, zero gap; independent JavaScript replay verified each eleven-clause core UNSAT and all single-deletion SAT witnesses. Core global optimality depends on the MILP solver; no mixed proof optimum or finite restricted proof hardness inferred.
+
+**Role next actions:** LSPV-1 audit quantifiers and retain noncircular B3. LSPV-5 red-team minimum-core/Tarsi assumptions, branch-scope leakage, loopholes from 0-cost/global/unbounded-premise rules. LSPV-3 audit exact native paid DEF facets and LOCAL-CONVERT private/exported port grammar; seek superlinear or superpolynomial all-rule invariant, not source count. LSPV-2/4 use random3 as a control but keep all-input same-machine Route A primary.
+
+**Audit:** current governing handoff, /341, /442, issue #3 and REFEREE381; actual Grok/Claude and both required new GitHub repositories checked, plus FRAT-XOR, CakeML/LPR, short-proof. No historical parser authenticated. Root main.tex fetch had SHA and 0 content bytes, so it was not modified. Report: `research/agents/lspv-3/2026-11-06_0127_LSPV3_RANDOM3_LINEAR_CORE_ALLRULE443.md`; standalone diagnostic `experiments/arc/lspv3_443_core_control.js`; compact raw `results/raw/arc/2026-11-06_0127_LSPV3_443_CORE_summary.json`. Full Python, raw MILP and independent checker in accompanying reproducibility ZIP.
