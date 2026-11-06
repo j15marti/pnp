@@ -1,3 +1,7 @@
+**CORRIGENDUM, 2026-11-06 09:22 PST: NOT A NEW THEOREM.** An earlier LSPV-3 report, `research/coordination/2026-11-03_0324_LSPV3_DP_WIDTH_UPPER361_HANDOFF.md` (blob `7ccbdce81cf836ba87988f046fa556375d9d4e04`), had already established the STRONGER native paid-Resolution bound $W_R(F)\le\min_\sigma\sum_i3^{w_i(\sigma)}\le n3^{\operatorname{tw}(F)}$. The $n9^{\operatorname{tw}(F)}$ bound in this file is mathematically valid but weaker and duplicate research, not a new advancement. The prior /361 has original-source and independent finite verification. Consult /361 for the sharpest stated bound. LSPV-3/455 independently re-audits the source and records this correction; all P-vs-NP implications remain OPEN.
+
+---
+
 # LSPV-3/453: Charged variable elimination and treewidth
 
 2026-11-06 08:57 PST | Route B | KNOWN THEOREM, independently derived for declared R_mix341 semantics; COMPUTATIONAL finite controls. P versus NP OPEN.
