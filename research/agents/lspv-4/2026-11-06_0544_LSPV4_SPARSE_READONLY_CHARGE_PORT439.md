@@ -28,7 +28,7 @@ Graph metadata is **supplied and must be authenticated**, not inferred by an ora
 
 ## Theorem 439.1: sparse bit-exact charge overlay (PROVED/RESTRICTED)
 
-Let $P$ be a validated immutable source packet, $b$ the body offset, and $L=(v_1,\ldots,v_K)$ a **fully prevalidated** edit stream. Repetitions are permitted. Let (chi'_v=\chi_v\oplus (\#\{i:v_i=v\}\bmod 2)) and let $P_L$ be the exact original-source signed CNF packet for (chi').
+Let $P$ be a validated immutable source packet, $b$ the body offset, and $L=(v_1,\ldots,v_K)$ a **fully prevalidated** edit stream. Repetitions are permitted. Let $\chi'_v=\chi_v\oplus (\#\{i:v_i=v\}\bmod 2)$ and let $P_L$ be the exact original-source signed CNF packet for $\chi'$.
 
 For every address $j$, $P_L[j]=P[j]$ except when $j$ is the polarity sign of the third literal in a quartet belonging to vertex (v). For that one sign field,
 
@@ -36,16 +36,16 @@ $$
 P_L[j]=P[j]\oplus \bigoplus_{i=1}^{K}\mathbf 1[v_i=v].
 $$
 
-**Proof.** In each of the four canonical vertex clauses, the charge occurs only in the term (p\oplus r\oplus1\oplus\chi_v). Every edge identifier, metadata bit, and first/second sign is independent of the charge. Repeated toggles cancel over GF(2). The vertex for a candidate third-sign record can be recovered by fixed-width address arithmetic, and a sequential scan of the (K) edit IDs reconstructs the parity without writing an $H$-bit bank. The immutable root and complete current path keep sibling/ancestor scopes separate. QED.
+**Proof.** In each of the four canonical vertex clauses, the charge occurs only in the term (p\oplus r\oplus1\oplus\chi_v). Every edge identifier, metadata bit, and first/second sign is independent of the charge. Repeated toggles cancel over GF(2). The vertex for a candidate third-sign record can be recovered by fixed-width address arithmetic, and a sequential scan of the $K$ edit IDs reconstructs the parity without writing an $H$-bit bank. The immutable root and complete current path keep sibling/ancestor scopes separate. QED.
 
-**Machine model and real costs:** FLMV Section 2.1, p. 4, explicitly uses read-only indexed input, indexed work tapes, *erasure of the index tape on indexed jumps*, write-only output, and a high-water-address work-space measure. Count descriptor generation, its **mandatory pre-guest validation**, all source/metadata read and index-head updates, guest simulation, source authentication, failed policies, caches, child/ancestor retention, replays, and output separately. For (D) DFS frame pointers, when validated descriptors are retained on work tape, port costs are
+**Machine model and real costs:** FLMV Section 2.1, p. 4, explicitly uses read-only indexed input, indexed work tapes, *erasure of the index tape on indexed jumps*, write-only output, and a high-water-address work-space measure. Count descriptor generation, its **mandatory pre-guest validation**, all source/metadata read and index-head updates, guest simulation, source authentication, failed policies, caches, child/ancestor retention, replays, and output separately. For $D$ DFS frame pointers, when validated descriptors are retained on work tape, port costs are
 
 $$
 T_{\mathrm{bit}}=O((K+1)\operatorname{polylog} N),\qquad
 S_{\mathrm{port}}=O($K+D+1$\log N),
 $$
 
-**in addition to guest and generator high-water**. For $K,D=O(\log N)$, the *port* uses (O(\log^2N)) physical space. If (Q) bit requests occur and (R) descriptors are generated, a conservative whole-phase ledger is
+**in addition to guest and generator high-water**. For $K,D=O(\log N)$, the *port* uses $O(\log^2 N)$ physical space. If $Q$ bit requests occur and $R$ descriptors are generated, a conservative whole-phase ledger is
 
 $$
 T\le T_{\mathrm{auth}}$N$+T_{\mathrm{gen}}(N,R)+O((R+Q(K+1)+D)\operatorname{polylog}N)+T_{\mathrm{guest,nonread}},
