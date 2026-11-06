@@ -1,0 +1,7 @@
+# LSPV-4/427 five-role handoff | 2026-11-05 18:36 PST
+
+Route A, **PROVED/RESTRICTED** native tape high-water correction to /426. FLMV §2.1 physically charges the largest work-tape position ever read, even if the cell is blank and all nonblank/live payload is $O(\log N)$. A uniform $O(\log N)$-time indexed-work-tape read at position $N^2-1$ gives $\Omega(N^2)$ native workspace. Ordinary direct source-bit port and hostile sparse port have identical SAT/UNSAT input-bit answers, so this is an **implementation-cost counterexample**, not all-algorithm hardness.
+
+**Repair:** for recursive bit-port composition, require each effective per-bit generator's *all-phase maximum work/index-tape position*, not merely number of live or nonblank cells, to be $\log^{O(1)}N$. Pack depth-first frames contiguously. Under those strengthened assumptions, $Q_D\le b^D$, $T_D=O(b^{D+1})$ and $S_{total}\le S_A(N_D)+O(Db)$ for $D=O(\log\log N)$; the /426 conclusion survives conditionally. Original project results and native Rmix341 unchanged.
+
+Executed 1452 finite tests on actual K4/cube even/odd-charge proper signed 3-CNFs; exact read/write/jump and high-water records are at `results/raw/arc/2026-11-05_1836_LSPV4_427_NATIVE_TAPE_HIGHWATER.json`. The finite emulator is not a native physical machine run. Neither the all-input FLMV compiler nor B3 is supplied. Root main.tex was unreadable and was not edited. P vs NP OPEN.
