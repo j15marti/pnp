@@ -58,3 +58,20 @@ Actual repository reads: governing five-role handoff, current issue #3, AGENTS.m
 ### Additional OpenAI GitHub source inspection (same run)
 
 Searched github.com/openai for the exact node-cost name and fetched **openai/math/lean/OAI/Algorithms/SubexponentialSAT/ExecCNFNodeSearchCosts.lean**, Git blob **1ced21f44ad49370d1b812e862c03c3a91d7f836**. The file's named theorem **command_eval** explicitly composes a setup program's evaluation with a width driver's concrete visit log and bounds the *same execution's* number of steps; theorem **program_runs** carries final storage and computed counter words. Its header explicitly disclaims a uniform cost for arbitrary callbacks or unbounded state. It concerns its declared bit-program/width-driver model, **not** a proof of our arbitrary-decider SAT child-generation or original-source membership costs. No all-input FLMV contraction is imported. This inspection was completed after the initial report publication, and this source-audit addendum was appended under the existing role-owned path with current-blob-safe readback.
+
+
+## Theorem 443.3: indexed-access countercontrol (same run addendum)
+
+**PROVED/RESTRICTED, fixed-layout original-source packet only.** The *same* equality-embedded packet family has a deterministic source authenticator with **$O(\log N)$ writable space** and **$O(N\operatorname{polylog}N)$ time** on a random-access read-only input machine, provided the fixed quartet packet layout and constant-size local graph gadget specification are part of the recognized promise. This is a stronger opposite-model control than merely observing that FLMV's indexed machine is different; it explicitly defeats transferring Theorem 443.2 to that model.
+
+All 15 gadget edge ID fields have the same $d+1$ decimal digits, where $d=|\mathrm{decimal}(100m+100)|+1$. In each wrong-parity quartet, every one of its three variables is negated exactly twice over the four clauses, so the total four-clause block has the **exact constant length**
+
+$$
+L_{\rm quartet}=4[3(d+1)+5]+6=12(d+1)+26
+$$
+
+bytes, independent of the bridge charge bit, its identifier choice and the parity convention. Each K4 anchor quartet has 38 bytes because its IDs are one decimal digit. Therefore with a header of computable length $L_{\rm hdr}$, the first gadget quartet begins at $L_{\rm hdr}+4\cdot38$, and the offsets of each later vertex quartet are computed from its block index using a logarithmic-space counter. Check the entire original source against locally recomputed expected quartet templates; for the two bridge-endpoint blocks compare either of their two allowed local templates, extract the corresponding single charge-selection bit, and use an indexed reread of the opposite bridge endpoint to test equality. Charge all indexed address generation, index erasure, head positioning, input reads and comparisons; there are $O(N)$ read/comparison operations and each uses at most polylogarithmic time with only $O(\log N)$ writable bits.
+
+No externally supplied graph annotation, source-size memory array, semantic oracle, or uncharged duplicated-source buffer is needed **for this narrowly fixed syntax**. The construction does **not** give a near-linear logspace recognizer for arbitrary *permuted* /442 source order, all general CNFs, or arbitrary SAT deciders; on other inputs, a correct universal SAT procedure still needs a fully charged fallback.
+
+**COMPUTATIONAL:** An independent Python block-offset control checked all **127,440** canonical gadget vertex quartets over the same **2728** finite source packets, verifying the formula $L_{\rm quartet}=12(d+1)+26$, the 38-byte K4 anchor quartets, every signed original literal, and the exact total source endpoint. All **130,168** local assertions passed. This is a host finite byte-index test, not a native FLMV transition trace. Its full executed script is included in the refreshed local reproducibility archive. The countercontrol does not weaken or revise the already published one-/multipass streaming lower bound because that lower bound explicitly forbids arbitrary indexed rereads.
