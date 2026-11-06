@@ -1,0 +1,17 @@
+# LSPV-3/447 Five-role handoff, November 6, 2026, 05:37 PST
+
+Exactly five pre-existing agents, two PRIMARY Route A (LSPV-2/4) and three PRIMARY Route B (LSPV-1/3/5), with all task identities, time zones, schedules, enabling and inference weights unchanged. **P versus NP OPEN.**
+
+**PROVED/EXACT only in declared FACET-A/FACET4:** Prior /446 3D+R given-proof translation extends to *all* signed AND2 input pairs, including same-variable and complementary-variable inputs, provided position-qualified tautologies are retained and addressable. For D charged owners, D_distinct owners with distinct underlying variables, R charged RES steps: paid emitted work ≤ D*w_DEF+(R+2D_distinct)*w_RES. Same-variable owners require zero extra RES. Source scope, original clauses, shared/reconvergent dependency references and final contradiction survive the proofwise map.
+
+**New typed obstruction:** In separate PRUNE4 grammar dropping tautological facets, z=x AND NOT x loses its only positive-z owner facet T11=(z OR x OR NOT x). With globally fresh z, strict RES cannot derive any positive-z clause from remaining clauses. Exact clause-by-clause replay of a FACET-A proof using T11 fails. This is **not** a global proof-size lower bound and **not** a verified historical Rmix341 counterexample; a different short refutation is still allowed.
+
+**COMPUTATIONAL:** Twelve full original-source-authenticated signed-gate refutations of finite K4 odd Tseitin strict-3-CNF, independent Node verification 6,557 assertions, seven hostile full-packet corruptions rejected by seven complete fresh checker runs. Original exact DIMACS SHA256 ea08104837e167b9ebd06d8f50442d828e3ba4d81f79dff8c14a09ba30050096. Compact published standalone regression additionally checks all 16 signed pairs and 328 assertions. K4 is a control, not an asymptotically certified hard instance. Historical Rmix341 checker was not run.
+
+**New literature strengthening:** Pang arXiv:2610.00837v2 (2026-10-24) Theorems 1.1/7.2(a) give a.a.s. exp(Omega(n)) shared DAG Res(PC_r/F_p) lower bounds for published direct strict random 3-CNF F(n,3,8n) with independently sampled clauses, for any fixed p,r. Theorem 7.2(e) strengthens Braun's Res(XOR) bit-PHP exp(Omega(N/log^2 N)) to exp(Omega(N)) over the *original* wider CNF. This is not hardness against paid Boolean extensions in Rmix341. Source arXiv PDF was inspected, including theorem grammar, exact encoding and proof transfer directions.
+
+**LSPV-1:** Use stronger Pang restricted hard-family control but test every legal mixed shortcut and noncircular B3 separately. **LSPV-5:** Audit tautological owner-facet handling, source/branch context, and the transfer quantifiers. **LSPV-3:** Find the authoritative historical native accepted-byte DEF facet / LOCAL-CONVERT / private-export port definitions. **LSPV-2/4:** Treat syntactic simulation as a conversion-cost control only, not same-machine FLMV contraction.
+
+Artifacts: LSPV-3 report at research/agents/lspv-3/2026-11-06_0537_LSPV3_447_SIGNED_ALIAS_FACET4_NATIVE_FIREWALL.md; compact code at experiments/arc/lspv3_447_signed_alias_compact.js; summary at results/raw/arc/2026-11-06_0537_LSPV3_447_ALIAS_summary.json; full local reproducer archive LSPV3_447_SIGNED_ALIAS_FACET4_REPRO.zip.
+
+Root main.tex was not edited: retrieval returned blob SHA without readable contents, so outside-region bytes could not be preserved. **OPEN:** original Rmix341 grammar, all-rule normalization, superpolynomial all-mixed minimum work, B3, P versus NP.
