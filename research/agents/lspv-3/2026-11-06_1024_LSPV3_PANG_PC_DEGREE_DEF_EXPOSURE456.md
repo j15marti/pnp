@@ -76,6 +76,14 @@ $$
 
 In particular **all DEF-free proofs within the scoped calculus** have exponential paid mixed logical work on this family, even with arbitrary global GF(2) XOR, exact 3-local transformations, shared proof DAGs, and optimal after-the-fact rule choice. A polynomial-\(q\) proof, if it exists in this fragment, must have \(b=\Omega(n)\) (linear distinct original variables explicitly feeding paid definition owners). With normalized original bit length \(N=O(n\log n)\), \(\exp(\Omega(n))\) implies \(\exp(\Omega(N/\log N))\) along the family, *within this fragment only*.
 
+**Corollary 456.3 (linear work even with every allowed paid DEF, still scoped):** Each charged binary DEF gate can directly expose at most two original input variables, so the number of distinct original DEF-input variables always obeys $b\le 2q$. Theorem 456.1 therefore also yields
+
+$
+2q+\ln(n+m+q+2)+1\ge c\,D^2/n.
+$
+
+On Pang's random strict3 family, $m=8n$ and $D\ge\delta n$ a.a.s.; consequently **every locally opaque mixed proof, including those using arbitrary paid conservative binary DEF gates, has $q=\Omega(n)$ paid nodes**. Proof: if $q=o(n)$, both $2q$ and $\ln(9n+q+2)$ are $o(n)$, contradicting the displayed bound. This is only *linear* full-fragment hardness, not the targeted superpolynomial *full fixed historical calculus* lower bound. Definitions can expose $\Omega(n)$ inputs with merely $\Omega(n)$ charged gates, so the argument by itself cannot preclude polynomial-size proofs.
+
 The exact coefficient in the degree term is NOT claimed through the semantic-to-syntactic converter. The finite \(n=10\) original is NOT certified to have PC degree \(D\ge32\), so the asymptotic theorem does not predict or exclude its short exhibited proof.
 
 ## 5. Independently executed finite control
