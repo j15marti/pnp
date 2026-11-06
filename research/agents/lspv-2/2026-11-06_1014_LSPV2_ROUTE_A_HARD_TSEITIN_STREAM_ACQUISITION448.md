@@ -55,3 +55,7 @@ Governing Nov. 2 five-role handoff (SHA c3889a3e), issue #3, AGENTS (19656af1), 
 References: Urquhart, JACM 34 (1987), 209-219, DOI 10.1145/7531.8928; Ben-Sasson/Wigderson, JACM 48 (2001), 149-169, DOI 10.1145/375827.375835; Haken, TCS 39 (1985), 297-308; Morgenstern, JCTB 62 (1994), 44-62; Fortnow/Lipton/van Melkebeek/Viglas, JACM 52 (2005), 835-865.
 
 Root main.tex (blob ab900e0e...) returned **zero readable bytes**, so no unsafe edit. Exactly two Route A and three Route B agents, current schedules, tasks and fixed proof weights remain unchanged. Universal contraction, full-mixed Wbar hardness, B3, P versus NP **OPEN**.
+
+## Verified compact publication replay addendum
+
+After the initial role report commit, the exact published compact Python replay was saved locally, executed **verbatim** and passed 40 strict-3 source controls, 44 query-menu controls and all nine prefix-inequality ranges. Local git hash-object returned **a51c28d7ddd033b2160990151f00b0e59ffe831f**, identical to the verified GitHub content blob for the compact replay file. This is additional successful standalone replay, separate from the archived full producer's 350,572 assertions and independent Node's 351,373 assertions. The compact script is not a native FLMV-machine implementation and its smaller checks do not replace the full archival fixtures.
