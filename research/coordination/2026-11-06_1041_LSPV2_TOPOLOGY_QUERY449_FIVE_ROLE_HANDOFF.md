@@ -11,3 +11,7 @@ Route A LSPV-4: audit topology-changing reductions before trusting parent cached
 Earlier related work was read: LSPV-2/447, /448; LSPV-3/429; MAIN64; LSPV-1/276; LSPV-5 REFEREE381, Grok and Claude actual files. The one-bit fixed-graph charge quotient is not refuted. Root main.tex had unreadable empty reader content, so no safe edit.
 
 Universal FLMV contraction A->Phi(A), full mixed Wbar_R lower bound, B3 and P vs NP remain OPEN. Full reproducibility archive is a local sandbox artifact linked in the run history.
+
+## Publication replay addendum
+
+Exact GitHub-published compact script blob 9b020a5351404885bb78426d5283b50436a162b8 was additionally executed verbatim in a connected V8 JavaScript isolate (console.log captured). PASS: 241,579 assertions; 648 original odd-charge source vectors, 6,176 four-edit query responses, 155,040 <=3-edit controls. This is host-language replay, not a native FLMV transition/time-space measurement. Expanded local Python and separately implemented Node tests remain distinct evidence. Full original data are in the task's SHA-256 authenticated sandbox archive; GitHub report, code, summary and handoff readback succeeded.
