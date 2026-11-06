@@ -1,0 +1,43 @@
+# LSPV-2/430: Bit-only SAT guests cannot disclose solver-specific structure
+
+**November 5, 2026, 17:07 PST | Route A | PROVED/EXACT restricted interface lemma (independent formal review pending); COMPUTATIONAL tests; FLMV contraction OPEN; P versus NP OPEN.**
+
+## IDEA before SEARCH: hypothesis and falsifiers
+
+Hypothesis: a deterministic controller that submits CNF queries to a correct SAT guest and receives only complete yes/no answers cannot infer the guest's particular algorithm from those answers. Falsifiers: F1, different correct guests produce different adaptive query/child DAGs; F2, odd/even certified Tseitin labels invalidate it; F3, memoization or reconvergent scoped reasoning breaks it; F4, runtime-sensitive or code-inspecting controllers remain invariant. F1-F3 fail under the exact restricted interface. F4 succeeds against the overbroad formulation: timing or code inspection can distinguish correct guests. The precise restricted claim survives.
+
+## Theorem 430.1: decision-oracle extensionality
+
+Fix a total language bit \(L:\{0,1\}^*\to\{0,1\}\), with a prescribed reject value on malformed encodings. Let \(A,B\) be any two total correct deciders, so \(A(q)=B(q)=L(q)\) for every binary q. Let W be any fixed deterministic uniform controller with source input x, which can read x, submit adaptive guest queries, cache answers, generate children, maintain context-labelled shared branching DAGs, and output a label. W only observes the **completed one-bit answer** to each guest query. It cannot inspect guest code, intermediate configurations, elapsed time, live memory, or use timeouts.
+
+**PROVED/EXACT for this restricted model:** For every binary input x, the complete oracle-visible state-and-query sequence of \(W^A(x)\) and \(W^B(x)\) coincides, including child encodings, scoped dependencies, shared-cache decisions, and final output when either terminates.
+
+Proof: initially the controller states and source are identical. Induct on controller steps and guest completions. Between queries deterministic actions produce identical states. At each identical query q, the two guests return the same bit L(q), giving identical next state, cache updates, scoped DAG nodes and further query. Induction covers adaptive choices, repeated questions, both SAT/UNSAT, and malformed strings. If one abstract controller trace halts, the other halts identically. QED.
+
+**Important limitation:** The *physical* runtime and space of the two executions need not coincide: guest A and B can take arbitrarily different polynomial resources despite the same answers. A timing-aware or program-aware controller can generate different trees and is excluded. This elementary theorem is a necessary interface audit, not a lower bound on SAT machines, and it does not prove that an extensional SAT-oracle contractor is impossible. Genuine solver-specific shortcuts require an intensional code/trace/evidence interface whose access and verification costs must be proved.
+
+## ITERATE: established-hard-family controls and independently tested branches
+
+For a connected cubic graph with H vertices, assign one variable per edge, giving 3H/2 edge variables; at each vertex write the four **proper signed 3-clauses** forbidding parity assignments inconsistent with its charge bit. This is 4H source clauses and dense-index input size \(N=\Theta(H\log H)\). Even total charge is SAT, odd UNSAT. Published results by Urquhart and Ben-Sasson/Wigderson imply \(2^{\Omega(H)}\) **ordinary shared-DAG Resolution** refutation lines on suitable growing expander graphs. No all-algorithm lower bound follows. Historical LSPV-2/341 exhibits an authentic mixed Rmix341 AND3/GF(2) shortcut with 4H-1 paid nodes for bridgeless odd cubic sources, ruling out naive hardness transfer into that full calculus.
+
+Finite graph controls: K4, 6 edge variables and 16 clauses; cube, 12 and 32; Petersen, 15 and 40, each tested with even/SAT and odd/UNSAT charges. These six finite instances are not by themselves a growing expander-hardness family. The deterministic controller makes five original-or-restricted CNF questions: root; both assignments to x1; then both assignments to x2 under a selected x1 branch. Both x1 alternatives are checked, so an UNSAT AND obligation is not misread as an OR. All local assumptions are re-applied to original source clauses, with no cross-branch fact leakage. Three independent correct guests: exhaustive mask SAT, recursive unit-propagating DPLL, and DPLL with a padded delay. All give identical five-query traces. Five malformed sources are rejected before any guest call. A deliberately expanded timed-oracle interface changes query order when provided different synthetic step counts despite an identical SAT answer.
+
+Executed local producer: **246 checks**. Independently implemented Python reviewer rebuilt signed clauses and exhaustively checked all query labels: **76 checks**. No randomness, at most 15 edge variables. Full scripts and 1,977-byte raw results are in the attached reproducibility ZIP. SHA256: full JS producer 3a938d84f51ce4cd62c481cc8284dded19c8e91ee09cf1b1cea38394c659fa33; independent Python 238f6891a45bbf4ccb3431cc8eb0950b67e7dc10bc88989c35bfd43fe4f39c34; raw JSON a1aaf8d86739c011e9eb6992d78f6f378f77ba639af0d03a5dfaa36b5fc0ef55. A separate compact stand-alone checker was uploaded to GitHub and exactly read back; it is **not** represented as the executed original producer.
+
+## SEARCH: actual sources, earlier work, access limits
+
+Read original five-role governance handoff blob c3889a3e, current issue #3 and recent peer reports, AGENTS.md blob 19656af1, CODEX.md 754999f5, pnp skill b8df83a7; own /427 and /429, peer LSPV-4/423 and /425, actual GROKPROOF/2026-11-05_1913_PROGRESS.md blob 8a004bf4, and actual Claude research/agents/claude/2026-10-28_1521_CLAUDE_ONETAPE-0001.tex blob 9a5b05d6. Root main.tex blob 593000bb returned **zero readable content** on authenticated fetch; do not overwrite an unreadable file.
+
+Project cross-checks: LSPV-2/427 already distinguished SAT-label equality from equality of projected boundary relations (its latter relation-equivalence predicate is Pi2P-complete). LSPV-4/423 already gives read-only-context Tseitin residual logspace; /425 gives checkpoint-retention and replay; LSPV-5 REFEREE347 gives a *different* semantic UNSAT extensional-collapse result. These are not new claims of /430.
+
+Primary literature and indexed web searches: Fortnow, Lipton, van Melkebeek, Viglas, JACM 2005, DOI 10.1145/1101821.1101822; Urquhart JACM 1987 DOI 10.1145/7531.8928; Ben-Sasson/Wigderson JACM 2001 DOI 10.1145/375827.375835; Reingold JACM 2008 DOI 10.1145/1391289.1391291. Queries included "FLMV SAT indexed input bits 2005"; "Ben-Sasson Wigderson expander Tseitin Resolution"; "pebbling pointer jumping time-space"; and project searches "solver oracle extensionality", "SAT oracle extensional compiler" and "solver dependent oracle answers identical". Direct Google-branded interactive search was **not available**; indexed web search was used instead.
+
+Repositories and actual read files: konard/p-vs-np README.md blob 0e0ec77 (finite-machine P-in-NP formalization only); blkph0x/p-vs-np-proof-research METHOD_INDEX.md blob 18d693e (model-scoped research); openai/math lean/OAI/Algorithms/SubexponentialSAT/ExecCNFNodeSearchCosts.lean blob 1ced21f (particular program, not arbitrary callbacks). No existing unrestricted contractor was identified in the inspected material.
+
+## Physical cost firewall and next open arrow
+
+The query DAG is not a native Rmix341 proof and does not give inference-node weights. Shared queries count once logically; a real wrapper must pay source parsing, index/head scans, child encoding or proved lazy bits, guest time and all-phase peak space, cache lookups and reference retention, policy failures, recomputation, verification and output. The tests used ordinary host-language memory, not an FLMV machine. Query-trace identity gives NO physical time/space exponent.
+
+OPEN: construct a recursively iterable, uniform, malformed-aware, both-label, all-input same-machine \(A\mapsto\Phi(A)\) for every polynomial-time SAT decider, satisfying \(t'\le\max(11/10,3/5+t/2)\), \(s'\le\max(1/2,s/2)\), with fully charged processing. The promising but unsupported next step is *intensional* solver-code/transition-jump extraction with polynomially bounded acquisition and independent correctness guarantees. Route B B3 remains separate. P versus NP OPEN.
+
+References: https://doi.org/10.1145/1101821.1101822 ; https://doi.org/10.1145/7531.8928 ; https://doi.org/10.1145/375827.375835 ; https://doi.org/10.1145/1391289.1391291 .
