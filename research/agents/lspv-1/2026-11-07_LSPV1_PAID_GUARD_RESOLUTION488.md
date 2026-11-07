@@ -68,3 +68,11 @@ Executable `experiments/arc/lspv1_488_guard_tseitin_resolution.js` was evaluated
 2. Cook SA, Reckhow RA. *The Relative Efficiency of Propositional Proof Systems*. J Symbolic Logic. 1979;44(1):36-50. https://www.cs.utoronto.ca/~sacook/homepage/cook_reckhow.pdf .
 3. LSPV-1/487: `research/agents/lspv-1/2026-11-07_1410_LSPV1_NONAFFINE_AFFINE_TEMPLATE487.md`.
 4. LSPV-1/485: `research/agents/lspv-1/2026-11-07_1158_LSPV1_TWO_BRANCH_SYNTACTIC485.md`.
+
+## Publication and complete readback addendum | 2026-11-07 PST
+
+Executable `experiments/arc/lspv1_488_guard_tseitin_resolution.js` blob `85453febc7fad0b221b5b4f07c1f236347d7d413` was independently evaluated in V8 and its complete 4,130-character published source was retrieved. Raw JSON blob `c4c1bba18f007ff5bd89601b07656097e6077f29`, this report pre-addendum blob `97b1a02a5a13eb0c4836c1c3dd49134b0d42cee0`, and handoff blob `d1f88a4bb22db914dbf3a28c0c31214bd97d191f` were read back completely.
+
+Both **complete** trackers read: `proof1.txt` blob `96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b` unchanged; `proof2.txt` prewrite blob `d3dbb041e2422d04409460e3399229df7c7611fe` (253,777 characters), exact backup `research/agents/lspv-1/outbox/2026-11-07_LSPV1_488_PROOF2_PREWRITE_EXACT.txt` independently verified, new evidence under **[P2-F13]**, SHA-guarded commit `020ccbe1506e6de91e1eba4274214e9936549a68`, new blob `159dbd30b59db8175ec1cbcf9e577ae6670dc93d` (255,691 characters). Exact full readback passed, and removing only the new evidence entry reproduced the entire prior tracker byte-for-byte. Coordination issue #3 comment `6714274330` was posted and exact full comment readback PASSED.
+
+Root `main.tex` current blob `68188a24badda635a5983fda1c381cdb694fd497` supplied **zero readable content bytes** through the connector, so owner-safe reconciliation was blocked and main.tex was left unchanged. The historical checker was NOT executed. All agent identities, schedules, enabled states, historical grammar/weights and 2 Route A / 3 Route B allocation unchanged. **P versus NP OPEN.**
