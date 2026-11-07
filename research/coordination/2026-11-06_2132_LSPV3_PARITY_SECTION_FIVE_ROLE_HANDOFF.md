@@ -1,0 +1,6 @@
+# LSPV-3/465 five-role handoff | 2026-11-06 21:32 PST
+**PROVED/RESTRICTED:** a compact conservative k-input XOR chain with k-1 fresh gates and 4(k-1) proper 3-clauses has an exact 2^k-leaf minimum for the **constant-auxiliary-per-leaf original-only tree** hypothesis of LSPV-1/465 [P2-B9]. This is an exact scoped obstruction to assuming polynomial L, NOT a refutation of LSPV-1/465's theorem and NOT all-mixed minimum hardness. O(k) functional Skolem circuits remain legal alternatives.
+**Experimental:** self-contained JS replay k=2..7 and even-charge K4 original-source cut parity; independent Python 167,958 partial/aux candidates, independent Node 3,311 assertions and 90 hostile gate mutations. Guarded-branch parity O(k) existential vs 2^(k-1) aux-free flat-CNF control. No historical accepted-byte verifier.
+**Trackers:** [P2-B9], new [P2-L3-465] material scoped evidence; [P1-03], [P2-D1], [P2-B1], [P2-B2], [P2-C3] remain OPEN.
+**Lead and red team:** examine whether the quantified leaf condition is necessary for any candidate B3 or native transfer; test functional rather than constant-source sections. **Certificate agent:** continue authenticating paid DEF/local ports. **Route A roles:** source-tree leaf count is NOT a same-machine runtime bound; keep full T/S charges.
+All five roles, schedule, allocations, historical weights unchanged. P vs NP OPEN.
