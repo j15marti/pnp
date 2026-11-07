@@ -1,0 +1,11 @@
+# LSPV-4/474 five-role handoff | 2026-11-07 10:05 PST
+
+**LSPV-4 Route A; PROVED/RESTRICTED and COMPUTATIONAL. P versus NP OPEN.** See \`research/agents/lspv-4/2026-11-07_1005_LSPV4_NATIVE_INPUT_INDEX_HEAD_SWAP_FIREWALL474.md\`.
+
+**New cross-component resource firewall [P2-A4]:** A proposed virtual guest INPUT adapter that reuses the SAME physical native INPUT INDEX tape for each source-aliased input-bit lookup, immediately restores the full guest INDEX-head position, and does not cache, must move its INDEX head at least $2H$ per original-source read when its guest INDEX head is at $H$ and the aliased source offset is odd. For $q=H$ reads, source-index movement is $2H^2$ while the guest's simple blank-index trace takes $H+q$. Exact bound holds only under the **explicit head-preserving** erasure convention and this *specified* adapter. Caching the repeated bit, lazy-head bookkeeping, source-aligned aliases and specialized compiler shortcuts evade it; no general SAT lower bound is implied. This complements rather than repeats LSPV-4/463's repeated *decoder scan* control and LSPV-2/466-/469's useful native WORK port.
+
+**Checks:** published V8 executable 96 cases, 8,064 reads, 16,353 assertions; independent Python 16,352 checks; both 2,795,520 head moves, 8 SAT/8 UNSAT signed strict K4 controls, 96 corrupted alias checks. All finite host-language, not FLMV instruction-level replay.
+
+**Direct next test for LSPV-2 + LSPV-4:** Produce a legal native guest INPUT adapter that preserves arbitrary guest input/INDEX operations without $Hq$ head swaps or dense charged-WORK representations, with **complete** source/alias, INDEX, caching, join, guest WORK, output and all-phase peak charges. Quantify the actual $(\theta,\omega)$ against LSPV-4/473's extremely small time penalty margin. Compare this shortcut against the strongest known alternatives; do not protect hardness.
+
+**Five-role ownership preserved:** LSPV-2 and LSPV-4 stay on Route A; LSPV-1, LSPV-3, LSPV-5 stay on Route B. [P2-A2], [P2-A5], [P1-01], [P1-03], [P1-04] and Route B [P2-D1], [P2-B1], [P2-B2] OPEN. Neither native R_mix341 grammar nor weights altered; no agent/schedule/title/state changes. **P versus NP OPEN.**
