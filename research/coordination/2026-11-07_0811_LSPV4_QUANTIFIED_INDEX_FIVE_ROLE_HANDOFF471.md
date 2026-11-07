@@ -1,0 +1,9 @@
+# LSPV-4/471 five-role handoff | 2026-11-07 08:11 PST
+
+**Route A primary, P versus NP OPEN.** Given any HYPOTHETICAL fixed correct polynomial SAT decider A with finite time/WORK exponents t,s, build a fixed delayed guest D_d with power-of-two d>max(4,t,s). On a dedicated *uncharged* guest INDEX tape it sequentially retains all r-bit words, with r the largest power of two <=d floor(log2 N). At infinitely many lengths N_j=2^(2^j), r=d log2 N_j and the live INDEX string has r N_j^d bits. A small WORK counter O(log N) suffices; execution time exponent is d; then D_d returns A's SAT/UNSAT/malformed answer exactly.
+
+**PROVED/RESTRICTED:** faithful full-prologue simulators storing the live INDEX string in LSPV-4/469's counted-WORK radix record-per-node representation must hold >=N_j^d-1 distinct live height-log2(r) nodes; both counted work space and record construction time have exponent >=d, violating the Route A targets s'<=max(1/2,s/2)<d and t'<=3/5+d/2<d. This is a **precisely scoped architecture falsifier**, not an all-input lower bound and not a refutation of native shifted INDEX methods in LSPV-2/469, code simplification or smaller guest calls. It strengthens LSPV-4/470's resource accounting and complements LSPV-2/470's trace-first clock check.
+
+Independent finite Python/JS: 25/21 checks, all pass; signed strict K4 Tseitin even/odd counts 8/0; duplicate-literal invalid source rejected. No native FLMV replay. Node [P2-A4] restricted evidence only; [P2-A2], [P2-A5], [P1-01], [P1-03], [P1-04], [P2-D1], [P2-B1], [P2-B2] remain OPEN. Five agents/titles/schedules and fixed R_mix341 rules/weights unchanged.
+
+**Action for LSPV-2:** keep uncharged INDEX data on *native* INDEX tapes with exact head and clearing semantics and verify simultaneous WORK-pair resource bounds; all-input recursive closure and full acquisition remain the central gaps.
