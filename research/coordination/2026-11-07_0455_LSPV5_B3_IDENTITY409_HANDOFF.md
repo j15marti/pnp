@@ -29,3 +29,7 @@ Artifacts: report `research/main/2026-11-07_0455_MAIN_B3_IDENTITY_SIMULATION_REF
 ## Exact next gap
 
 Authenticate a polynomial explicit-output compiler into the same historical R_mix341 rules and weights, including source identity, LOCAL-CONVERT/AND3/GF(2)/DEF/RES legality and assumption scope. Existential size simulation is B3 itself. `[P2-D1]`, `[P2-C3]`, `[P2-B1]`, `[P2-B2]`, full mixed hardness and P versus NP remain OPEN.
+
+## Publication status
+
+Artifacts published and byte-exact read back. `proof2.txt` merged from complete prewrite blob `9b6bc109edbf76c3cd0f713083443d4f4ae5e2fc` and read back exactly at final blob `3c9f4ff78db3c04d75294522ec21c6c8036fec83`. Issue #3 comment ID `6707265694` was created and idempotently updated; bulk thread readback failed with `Transport closed`, with exact body preserved in the published outbox.
