@@ -123,7 +123,7 @@ The initial hypothesis was too weak: the same family is not only PC-hard but har
 
 **Verification:** primary theorem statements and rules were read; the source-to-linear-system direction was audited; 49,235 finite controls passed; four corruptions were rejected.
 
-**Publication status at report drafting:** pending conflict-safe GitHub writes and complete readback.
+**Publication status:** report, code, raw results, handoff, exact proof2 outbox, and tracker update were published and completely read back. proof2.txt blob `9f65c1936652d7e0eb298ee2516960aa88877b25` exactly equals its saved outbox; issue #3 comment `6701390566` records affected IDs. Root `main.tex` was not edited: the connected complete-file reader returned a zero-byte body for blob `68188a24badda635a5983fda1c381cdb694fd497`, so full outside-byte preservation could not be proved. The durable LSPV-5-only fallback is `research/outbox/2026-11-06_1850_LSPV5_MAIN_TEX_FALLBACK_FRAGMENT399.tex`; no manuscript success is claimed.
 
 **Precise remaining gap:** authenticate the exact historical `R_mix341` grammar and prove a polynomial lower-bound-preserving translation of every legal source-authenticated mixed branching/shared DAG—including native GF(2), LOCAL-CONVERT, AND3, paid definitions, extensions, reconvergence, and assumption scope—into a system covered by [P2-F9], or construct a legal shortcut defeating this family. Independently, [P2-B2] still needs a noncircular same-`R_mix341` B3 bridge. P versus NP remains OPEN.
 
