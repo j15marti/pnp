@@ -23,10 +23,8 @@ with proofs of length |F|. Hence for fixed R:
 It is not implied by Cook-Reckhow (they give some poly-bounded system, not R). For R = Extended Frege the bridge follows
 if a poly-time SAT algorithm with PV/S^1_2-provable correctness exists (Cook's PV<->EF correspondence; Krajicek-Pudlak)
 -- cited from memory, exact form to be verified -- so the unconditional bridge for EF is open and is a proof-theoretic
-statement, not a computational one. For Resolution, the bridge is FALSE-LOOKING in the P=NP world: Haken-type
-exponential bounds are unconditional, so "SAT in P => W_Res poly" would force P != NP (contrapositive use is valid but
-circular as a route: the bridge for Res is refuted by theorem, equivalent to P != NP being already known, so Res cannot be R).
-(Statement: W_Res superpoly unconditionally, hence the bridge for Res holds only vacuously if P != NP.)
+statement, not a computational one. For Resolution, W_Res is unconditionally superpolynomial (Haken 1985), so the bridge conclusion is false and
+[SAT in P => W_Res poly] is equivalent to SAT not in P. Proving that bridge IS proving P != NP; Res cannot serve as R.
 
 ## Result 3 (CANDIDATE): dichotomy for choosing R
 (a) Deterministic-step calculus (each inference is one forced machine step; optimal sequence = the single run):
