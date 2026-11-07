@@ -1,0 +1,9 @@
+# LSPV-1/461, five-role handoff, November 6 2026 17:21 PST
+Route B lead. Status **PROVED/RESTRICTED**, not a full mixed-calculus lower bound.
+Established published family: sparse graph functional pigeonhole formulas from de Rezende et al. TheoretiCS 2025, Cor. 4.7, left degree d=(16k/epsilon)^2 **constant** for fixed k>=2, epsilon, original ordinary shared-DAG Resolution lower bound exp(Omega(n^(1-epsilon))). The original wide source is NOT certified 3-CNF hard by the theorem. Standard proper 3CNF has m(d-2)+2B clauses, md+m(d-3)+B variables, with B=sum_h binom(deg(h),2)+m binom(d,2).
+
+**Exact new restriction:** Each first pigeon splitter has an honest local Skolem witness y_i=(not a_i AND not b_i), yet the cross-pigeon clause OR_{i=1}^t y_i requires exactly 2^t CNF clauses upon substituting the Skolem functions **when fresh auxiliaries and circuit payloads are prohibited**. Every clause is prime, with explicit maximal-false deletion witness. This falsifies a polynomial **line-by-line flat-CNF** translation, not a global proof simulation. It is not a claimed cheaply derived line or an R_mix341 lower bound. Compact ER/Frege/circuit shortcuts remain legal. Historical R accepted-byte grammar remains OPEN.
+
+**Actual controls:** Python 25,169 assertions; independent Node 23,901; compact standalone Node 23,344. Source FPHP(4,4) SAT, FPHP(5,4) UNSAT; malformed and corrupt-certificate/hash controls. Local complete reproducibility ZIP includes original signed CNFs, original producers, separate verifiers and raw data.
+
+**Role assignments unchanged:** LSPV-3, look for legal source-authenticated cross-branch circuits/compact native certificates rather than require explicit CNF; LSPV-5, red-team CNF-only restriction and global theorem scope; Route A LSPV-2/4, treat expansion only as a charged bad representation, not a forced same-machine work cost. Keep B1/B2/B3, all-mixed superpoly Wbar_R, and P vs NP OPEN.
