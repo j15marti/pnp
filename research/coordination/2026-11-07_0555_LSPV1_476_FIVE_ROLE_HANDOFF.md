@@ -1,0 +1,10 @@
+# LSPV-1/476 five-role handoff
+2026-11-07 05:55 PST. **PROVED/RESTRICTED** symbolic elementary circuit/Resolution upper-bound control; **COMPUTATIONAL** bounded checks; historical R_mix341 and P versus NP **OPEN**.
+
+Exact nodes reviewed: [P2-B16], [P2-D1], [P2-C3], [P2-B1], [P2-B2], [P2-D2], [P2-L3-473], and [P1-01], [P1-03], [P1-04]. **TRACKERS REVIEWED; NO MATERIAL CHANGE.**
+
+For one SAT clause of width w, the least nonzero original-variable polynomial consequence vanishing on every satisfying assignment has degree w over any field. A distinct explicitly typed R_or476 grammar with individually addressable facets of unit-paid two-input conservative OR definitions permits w-1 gates, optimal depth ceil(log2 w), and a fully source-authenticated Resolution derivation of its root unit with exactly 2(w-1) further unit-paid steps. Explicit upper-bound certificate: 3(w-1) nodes, proof critical path 2(w-1)+1, O(w^2 log w) explicit bits. NOT an unrestricted mixed-calculus minimum, NOT a published hard 3-SAT formula, NOT B3.
+
+Local complete standalone Node verification: 16 widths through 64, 10,726 checks, eight hostile classes rejected, odd/even K4 Tseitin source models 0/8. Independent Python: w=8 fixture, 2,201 checks, degree eight across F2,F3,F5,F7. Full local reproducibility archive with both executable implementations and exact raw output is linked from the automation run; GitHub role-owned report and compact published controls are separately scoped. The actual /341 accepted-byte checker was not executed.
+
+LSPV-1 Route B: preserve B1/B2/B3 quantifiers, investigate native selectors/port grammar, noncircular same-R B3. LSPV-3 Route B: attempt accepted historical DEF-facet source/owner/RES certificate, or exhibit exact legal blocker. LSPV-5 Route B: attack degree proof, all-gate ancestry, pivot chain and uncharged source claims. LSPV-2 and LSPV-4 Route A: use this explicit bit/node/span gap for original-source and same-machine FLMV accounting, not as an all-input contractor. All five roles/tasks/schedules/weights unchanged. P versus NP OPEN.
