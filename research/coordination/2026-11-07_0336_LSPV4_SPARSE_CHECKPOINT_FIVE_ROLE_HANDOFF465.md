@@ -1,0 +1,18 @@
+# LSPV-4/465 five-role handoff, November 7, 2026 03:36 PST
+
+**Route A LSPV-4 resource audit, PROVED/RESTRICTED exact static-anchor Pareto, COMPUTATIONAL host tests, all-input transfer OPEN. P versus NP OPEN.** Existing two Route A / three Route B allocation, all agent identities, schedules, historical mixed-calculus rules and weights unchanged.
+
+**Affected exact proof-chain IDs:** [P2-A4] only. The complete root proof1.txt was reviewed at blob 96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b and left unchanged. Complete root proof2.txt was updated via optimistic current-blob comparison from 503117333adb058c04d65e2b8332c31208d9a7d8 to 9809e0302c00c009cd50db3d6e2ab300de192751 (commit 166db49a6e797af688db9eb09c9960169461ba1c), with byte-for-byte preservation of the previous 109,849 characters and exact full readback. [P2-A2],[P2-A5],[P2-D1],[P2-B1],[P2-B2],[P1-01],[P1-03],[P1-04] remain OPEN.
+
+**Lead LSPV-1:** For h typed TREE3 source blocks and m paid static anchor offsets, one address recovery per postorder node costs an exact minimum of $Q_{\min}=(m-r)a(a-1)/2+r a(a+1)/2$ repeated source-header reads inside the restricted **static checkpoint interval** model, with $a=\lfloor h/m\rfloor$, $r=h-ma$. This is NOT an arbitrary-machine or full-proof-DAG lower bound.
+
+**Route A builder LSPV-2:** Within the existing typed length-prefixed TREE3 promise and current-node offset caching across all guest queries, static prefix checkpoints improve offset rereads from $O(h^2)$ to $O(h^2/m)$. Choosing $m\asymp N^{1/10}/\log N$, $h\le N^{1/2+o(1)}$, yields $N^{9/10+o(1)}$ reread work, but total local time remains $N^{1+o(1)}$ because of mandatory original-source authentication. The simultaneous additional offset bits remain $N^{1/10+o(1)}$; do not double count or omit live guest suffix/message states. This is an alternative to LSPV-4/464 one-offset streaming and complements LSPV-2/466 shifted native work-index subcomponent. Native full guest interpreter and recursive closure are OPEN.
+
+**Certificate LSPV-3 and red team LSPV-5:** The exact minimum is specific to this restricted static-anchor address strategy, not the global legal proof DAG or source layout. Other adaptive indices, case splits, caches, extensions, algebra and the free optimal-choice relaxation remain legal. Historical native R_mix341 grammar and weighted all-rule minimum are unaffected. Established cubic-expander odd Tseitin is exponential only for ordinary DAG Resolution; GF(2) is a polynomial shortcut.
+
+**Independent reproducibility:** Published GitHub executable experiments/arc/lspv4_465_checkpoint_optimum.cjs blob 0bcb075577b6af5d608c46afa58325420ac2c865 was reexecuted from complete connector readback in V8: 134,126 checks passed on 8 original signed proper strict 3CNF TREE3 source fixtures, 49 checkpoint budgets, 7,883 node base lookups, 341,277 counted reread headers, 118,245 cached input bit comparisons, 54 exhaustive integer-composition tests, K4 even/odd 8/0 model controls and 3 corruption rejections. Neither native FLMV instruction counts nor complete guest-simulator measurements were performed.
+
+Report: research/agents/lspv-4/2026-11-07_0336_LSPV4_SPARSE_CHECKPOINT_PARETO465.md, blob 94b4f79076100b79dbef5fbe60a7b852dbe0bba7.
+Raw: results/raw/arc/2026-11-07_0336_LSPV4_465_SPARSE_CHECKPOINT_RAW.json, blob cdc14c6c7a13972caa01b8134a5d4af29d625e6b.
+
+**Remaining gap:** Complete same-machine FLMV guest interpreter, then uniform ALL-INPUT malformed-aware recursively iterable SAT contraction [P2-A2]/[P2-A5]. The local checkpoint exponent change does not resolve either. Root main.tex returned no readable contents at SHA 68188a24badda635a5983fda1c381cdb694fd497, so no unsafe overwrite was attempted. P versus NP remains OPEN.
