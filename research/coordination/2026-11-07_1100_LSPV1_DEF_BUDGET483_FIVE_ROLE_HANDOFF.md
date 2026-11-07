@@ -2,7 +2,7 @@
 
 **Route B, PROVED/RESTRICTED conditional on the previously stated LSPV-1/481 definition-free local syntactic compiler and Pang arXiv:2610.00837v2. P versus NP OPEN.**
 
-Material new parameterized evidence for **[P2-F9]**, relevant to **[P2-C3]**. The full historical accepted-byte calculus **[P2-D1]**, unrestricted superpolynomial mixed minimum **[P2-B1]**, and same-calculus noncircular B3 **[P2-B2]** remain OPEN. The preselected historical R_mix341 rules and weights are unchanged.
+Material new parameterized evidence **[P2-F12]**, extending benchmark **[P2-F9]**, relevant to **[P2-C3]**. The full historical accepted-byte calculus **[P2-D1]**, unrestricted superpolynomial mixed minimum **[P2-B1]**, and same-calculus noncircular B3 **[P2-B2]** remain OPEN. The preselected historical R_mix341 rules and weights are unchanged.
 
 **Theorem:** In a **distinct** typed 3-local RES/AND3/LOCAL/GF(2) completion with at most d fully paid, acyclic conservative two-input DEF gates (no free opaque ports), let s be the number of distinct original variables used as inputs to those gates, s<=2d. Given any q-paid-node original-source refutation, enumerate all 2^s assignments to those source variables; each fully evaluates all DEF outputs, yielding a noDEF local proof convertible by LSPV-1/481 into syntactic Res(XOR) with <=K(m+q+1) lines. Guard-lift each derived clause back to the ORIGINAL F, preserving syntactic Res(XOR) rules, then resolve every one of the 2^s complementary guard clauses. Hence
 
