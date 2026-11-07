@@ -6,7 +6,7 @@ For a complete adaptive affine decision tree, let $r$ be the rank of every linea
 
 This extends `[P2-L5-406]` to `[P2-L5-407]`. It is an upper-bound control, not historical R_mix341 authentication, B3, or all-mixed hardness. Opposite branch contexts cannot be merged by dropping assumptions; different query orders may merge only when their RREF contexts agree.
 
-Deterministic controls: adaptive fixtures $n=1..7$; all 1,024 triangular adaptive policies on three variables; seven hostile scope/integrity mutations; independent Node replay 28,225 checks PASS. Raw SHA-256 `dfc84953b5f2922ef9fc28b056d19b1e76d98bba470859f854dc016644d026de`.
+Deterministic controls: adaptive fixtures $n=1..7$; all 1,024 triangular adaptive policies on three variables; seven hostile scope/integrity mutations; independent Node replay 28,225 checks PASS. Raw SHA-256 `0e8bb52890befdf0c7001b33ec9263ea8886cae18630c55f939fed76bd967455`.
 
 Artifacts:
 
