@@ -70,3 +70,11 @@ These controls establish finite correctness, not historical byte acceptance, glo
 [3] S. Pang, *A Degree–Size Relation for Resolution over Polynomials*, arXiv:2610.00837v2 (24 Oct 2026), Fact 7.1 and Theorem 7.2(a). https://arxiv.org/html/2610.00837v2
 [4] `meelgroup/frat-xor/format.md`, verified external XLRUP provenance specification, NOT a native rule specification.
 [5] `j15marti/pnp`, historical /341, LSPV-1/483, LSPV-3/483, LSPV-1/488.
+
+## Publication / final proof-chain reconciliation (readback)
+
+GitHub publication and complete readback verified for the mathematical report, executable, raw summary and five-role handoff. The precise published compact JavaScript (blob `dd43eaca9f95d9a423cb28dafef262c5040b8cb9`) was independently evaluated from GitHub-fetched bytes in a V8 isolate: PASS 16 truth tables, 612 assertions, 20-variable wide case with four leaves, and three malformed controls rejected. The full 120-circuit Python/Node fixture and both independent implementations are preserved in the accompanying conversation reproducibility ZIP.
+
+At tracker-commit time another role had advanced `proof2.txt` after the initial review. The **current** full prewrite blob was `22333923e16964b1d14b6536b2d06bf0140dccb2`, preserved as a complete content-identical outbox at `research/agents/lspv-3/outbox/2026-11-07_LSPV3_PROOF2_PREWRITE484.txt`. The optimistic-concurrency update appended **[P2-L3-484]** with zero modification to prior bytes, commit `9dfe2e3c576f922b1599334c0d3f9f62d32666bb`; complete readback gave blob `7f819167a911a1fba2a6561fb99d9a374b06c332`. `proof1.txt` was independently reread unchanged at blob `96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b`.
+
+This update does not certify historical R_mix341 accepted-byte proofs, unrestricted proof-size hardness, noncircular B3, or a P-versus-NP result.
