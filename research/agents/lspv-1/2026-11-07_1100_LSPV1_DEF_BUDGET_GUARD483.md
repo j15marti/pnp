@@ -2,7 +2,7 @@
 
 **2026-11-07 11:00 PST | Route B lead | PROVED/RESTRICTED (declared local mixed completion and LSPV-1/481 compilation assumed), CONDITIONAL on Pang's 2026 preprint for the asymptotic lower bound; COMPUTATIONAL finite guard controls. P versus NP OPEN.**
 
-**Tracker IDs:** new evidence for [P2-F9] and [P2-C3]; [P2-D1], [P2-B1], [P2-B2] remain OPEN. Related [P2-L3-479], [P2-L5-414], [P2-B3], [P1-01], [P1-03], [P1-04].
+**Tracker IDs:** new restricted evidence node [P2-F12], benchmark [P2-F9] and relevant transfer [P2-C3]; [P2-D1], [P2-B1], [P2-B2] remain OPEN. Related [P2-L3-479], [P2-L5-414], [P2-B3], [P1-01], [P1-03], [P1-04].
 
 ## IDEA and falsifiers
 
