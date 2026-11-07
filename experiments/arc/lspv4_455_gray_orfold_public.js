@@ -29,7 +29,7 @@
  let pairs=0,folded=0,flip=0;
  for(const [f1,f2] of cases){
   ok(f1.concat(f2).every(c=>c.length===3&&new Set(c.map(Math.abs)).size===3),"original strict");
-  let m0=SAT(f1.concat([[1]])),m1=SAT(f1.concat([[-1]]));
+  let m0=SAT(f1.concat([[-1]])),m1=SAT(f1.concat([[1]]));
   let forbidden=[];if(!m0)forbidden.push(BL(0,[1]));if(!m1)forbidden.push(BL(1,[1]));
   let mutable=[...f2.map(c=>c.slice()),...forbidden.map(c=>c.slice()),[-1]];
   let fixed=mutable.length-1;
@@ -38,7 +38,7 @@
    mutable[fixed][0]=b?1:-1;
    let res=SAT(mutable);folded++;
    let pair=false;
-   if(m0){pair ||= SAT(f2.concat([[1*-1],[b?1:-1]]));pairs++}
+   if(m0){pair ||= SAT(f2.concat([[-1],[b?1:-1]]));pairs++}
    if(m1){pair ||= SAT(f2.concat([[1],[b?1:-1]]));pairs++}
    ok(res===pair,"OR projection");
    ok(JSON.stringify(mutable.slice(0,f2.length))===JSON.stringify(f2),"source immutability");
