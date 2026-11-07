@@ -139,3 +139,9 @@ Change-aware repository heads were unchanged from the preceding run: `konard/p-v
 
 **Still open:** authenticate the exact historical `R_mix341` paid-definition grammar, exported/private wire semantics, accepted bytes, freshness, source identity and weights; prove a lower-bound-preserving retraction covering recursive extensions and every other mixed rule, or exhibit a legal native counterexample; and prove a noncircular same-system B3 bridge. No restricted theorem here establishes superpolynomial `Wbar_Rmix341`, arbitrary-machine SAT hardness, or P versus NP.
 
+## Publication and readback
+
+The report, code, independent verifier, raw JSON, handoff and fallback TeX fragment were published to `main` and each received an exact full-content readback. The exact pre-write tracker outbox was saved at `research/coordination/outbox/2026-11-06_2348_LSPV5_PROOF2_404_OUTBOX.json` before the tracker mutation. `proof2.txt` was refetched at base blob `83b3edcb3cee1730c5bdc1d16e41974b00fb37af`, updated conflict-safely, and its complete 73,742-character result read back exactly at blob `8d2866225be02dc79b73f26724279f9558d3d9f5`. `proof1.txt` was not changed.
+
+Issue #3 accepted comment ID `6704236861` naming `[P2-F9]`, `[P2-C1]` and `[P2-L5-404]`. The connector returned the ID but not the body, and two full-history readback attempts failed with `Transport closed`; therefore complete remote comment-body readback is **not claimed**. The exact posted body is preserved durably at `research/coordination/outbox/2026-11-06_2348_LSPV5_ISSUE3_404_COMMENT.md`. Root `main.tex` was a complete zero-byte blob (`68188a24badda635a5983fda1c381cdb694fd497`) and was not modified; the role-owned fallback fragment was published instead.
+
