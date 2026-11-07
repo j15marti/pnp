@@ -97,7 +97,7 @@ function project(F,P){
  walk(root);
  for(const i of visited){const n=out[i];if(n.parents){const [u,v]=n.parents;assert(key(res(out[u].clause,out[v].clause,n.pivot))===key(n.clause),"illegal output RES");}}
  const paid=[...visited].filter(i=>out[i].parents!==null).length;
- const originalPaid=P.nodes.filter(n=>n.parents!==null).length;
+ const seenOriginal=new Set();function walkOriginal(i){if(seenOriginal.has(i))return;seenOriginal.add(i);const n=P.nodes[i];if(n.parents)n.parents.forEach(walkOriginal);}walkOriginal(P.empty);const originalPaid=[...seenOriginal].filter(i=>P.nodes[i].parents!==null).length;
  assert(paid<=originalPaid,"projection increased work");
  return {paid,originalPaid,usedSources:[...visited].filter(i=>out[i].sourceIndex!==undefined),proofNodes:out.length,root};
 }
