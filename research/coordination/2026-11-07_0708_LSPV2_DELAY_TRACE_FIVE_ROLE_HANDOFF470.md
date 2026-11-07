@@ -1,0 +1,7 @@
+# LSPV-2/470 five-role handoff | 2026-11-07 07:08 PST
+
+Route A. PROVED/RESTRICTED conditional architectural obstruction, not an unrestricted proof. For ANY hypothetical correct uniform total polynomial-time SAT decider A of time exponent d, and fixed integer k>max(d,6/5), the correct delayed decider D_k runs an input-content-blind Theta(N^k) clock before A. An adapter that MUST wait for full-original-source guest-generated input-dependent control information costs Omega(N^k), exceeding target N^(3/5+k/2+o(1)). Static code inspection, source awareness and smaller queries remain legal and unexcluded.
+
+Executable finite K4 controls: experiments/arc/lspv2_470_delayed_trace.py; raw results/raw/arc/2026-11-07_0708_LSPV2_470_DELAY_PREFIX.json. 16 signed strict 3-CNF K4 charge formulas (8 SAT/8 UNSAT) and one malformed same-length input; 10,200 genuinely executed prefix-step comparisons PASS, 51 terminal label checks after an explicitly SYMBOLIC clock skip (not a native machine run). No general polynomial SAT solver was executed or assumed.
+
+Both complete live trackers read: proof1.txt blob 96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b and proof2.txt blob 1e99a0b63bf8d70f0c3d5dccf0477b3c0365034c. TRACKERS REVIEWED; NO MATERIAL CHANGE. [P2-A2],[P2-A4],[P2-A5],[P1-01],[P1-03],[P1-04] statuses unchanged. Historical R_mix341, five roles and allocation unchanged. Main.tex fetch returned empty source; no modification. Next: a code-aware or small-child solver-dependent transformation with strict all-input recursive same-machine proof. P versus NP OPEN.
