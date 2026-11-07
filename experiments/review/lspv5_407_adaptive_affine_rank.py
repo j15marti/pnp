@@ -230,7 +230,8 @@ def negative_controls() -> dict[str, bool]:
     dropped_context_rejected = rref([(1, 0)], 1) != rref([(1, 1)], 1)
 
     forged_rank_rejected = rank([nd["mask"] for nd in t["nodes"]]) != 2
-    duplicate_id_rejected = len({nd["id"] for nd in t["nodes"]}) == len(t["nodes"])
+    forged_ids = [nd["id"] for nd in t["nodes"]] + [t["nodes"][0]["id"]]
+    duplicate_id_rejected = len(set(forged_ids)) != len(forged_ids)
     cycle_rejected = not (5 < 4)  # parent 5 -> child 4 violates topological order.
     out = {
         "omitted_leaf_rejected": omitted_leaf_rejected,
