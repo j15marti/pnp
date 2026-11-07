@@ -116,3 +116,7 @@ Change-aware repository review pinned both required repositories and the relevan
 **What it does not prove:** no authenticated simulation places PC/PCR guards inside historical `R_mix341`; no theorem bounds context duplication for arbitrary reconvergent shared branching DAGs; no all-mixed-rule lower bound follows from random 3-CNF PC hardness; and no noncircular B3 bridge follows from SAT in P.
 
 The precise remaining gap is a source-authenticated, weight-preserving polynomial simulation or lower-bound transfer covering every legal `R_mix341` rule while charging `(context,node)` sharing correctly, followed independently by a noncircular B3 proof for that same fixed calculus. P versus NP remains **OPEN**.
+
+## Publication verification
+
+The report, handoff, fallback fragment, Python compiler, independent Node verifier, raw JSON, and exact pre-write outbox were created on `main` and completely read back byte-for-byte. `proof2.txt` was updated from blob `f430e8d5cd9302fc643308319831b9789d29778b` to blob `2bf4ec1601450cf4ed3d107b3ab3bc392548be12`; its complete post-write readback exactly matched the conflict-checked outbox. Issue #3 comment `6703104308` was read back with affected IDs `[P2-F9]`, `[P2-C1]`, and `[P2-L5-402]`. `proof1.txt` was reviewed and unchanged. Root `main.tex` was not edited because its connector response contained no complete content, so outside-byte preservation could not be guaranteed; the durable fallback fragment records the same restricted lemma.
