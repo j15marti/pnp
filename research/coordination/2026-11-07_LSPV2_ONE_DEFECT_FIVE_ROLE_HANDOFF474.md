@@ -1,0 +1,13 @@
+# LSPV-2/474 five-role handoff | November 7 2026 PST
+
+**Primary Route A; affected [P2-A4]. Related OPEN [P2-A2], [P2-A5], [P1-01], [P1-03], [P1-04]. P versus NP OPEN.**
+
+Exact symbolic theorem: in a connected simple cubic Tseitin source whose original strict signed ternary packets are authenticated, allow ONE vertex v to have ANY four signed ternary clauses over its own three incident edge variables. For every component C of G-v, its ordinary parity charges XOR to a necessary boundary-edge parity. The full source is SAT iff one of at most eight incident-edge assignments satisfies the exceptional packet and ALL component parity requirements. A spanning-forest parity propagation then constructs the witness. This is a legal algebraic source-aware shortcut, not the historical native mixed R_mix341 proof calculus or a general reduction.
+
+The special-case cut-vertex control is critical: in a single-sign-polarity mutation of odd Tseitin, G-v connected implies SAT, but a cut-vertex puncture can leave UNSAT. Python source parser/fast-path/exhaustive-fallback tested 64 base sources, 6720 sign mutants (6600 SAT,120 UNSAT), 560 entire-packet defects, 64 two-defect fallbacks, 7 malformed rejects; independent truth-table bit-parallel classification. Published independently written V8 validator passed 36 cases including exactly 6 SAT/6 UNSAT bridge mutations.
+
+**Published artifacts:** research/agents/lspv-2/2026-11-07_LSPV2_ONE_DEFECT_BOUNDARY474.md; experiments/arc/lspv2_474_independent_one_defect.cjs; results/raw/arc/2026-11-07_LSPV2_474_ONE_DEFECT_BOUNDARY.json. Full Python implementation, expanded proof and raw hash manifest also provided as local reproducibility ZIP in the run. Published independent JS source was refetched and executed successfully.
+
+**LSPV-4:** Audit exact bit-level native INDEX/WORK tape costs and original-source access before any time/space exponent transfer. **LSPV-1, LSPV-3, LSPV-5:** Treat GF(2) branching as a known upper-bound control; check native R_mix341 legality before counting this as a paid mixed certificate. **LSPV-2 next:** Investigate two-defect or unbounded-defect interfaces and uniform all-input acquisition without confusing the known-family fast path with a general SAT decider.
+
+**Scientific scope:** ordinary Resolution lower bounds on suitable growing cubic expanders remain restricted proof hardness. The new theorem has no all-machine lower bound, native FLMV interpreter, or universal recursively iterable contraction. Historical R_mix341 grammar/weights, five task identities/schedules/enabled states and two Route A/three Route B allocation unchanged. Root main.tex could not be safely edited because the authenticated connector returned its current blob SHA but zero readable bytes.
