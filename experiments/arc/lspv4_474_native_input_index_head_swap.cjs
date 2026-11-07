@@ -43,7 +43,7 @@ function runAudit(){
      }
      claim(head===H && moves===2*H*q,"exact motion");assertions++;
      const corruptedOffset=offset+1;
-     claim(corruptedOffset!==offset && source[corruptedOffset]!==undefined,"corruption scope");assertions++;corruptRejected++;
+     claim(!payload.every((bit,j)=>source[corruptedOffset+j]===bit),"corrupt alias offset accepted");assertions++;corruptRejected++;
      totalMoves+=moves;cases++;
      if(charge===0)representative.push({H,q,source_offset:offset,guest_steps:H+q,host_source_INDEX_head_moves:moves,overhead_ratio:moves/(H+q)});
    }
