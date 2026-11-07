@@ -29,7 +29,7 @@ let seed=0x46812345;function rand(){seed=(Math.imul(seed,1664525)+1013904223)>>>
 function main(){let checks=0,actions=0,aliases=0,growth=0,rekeys=0,maxIndex=0,maxNodes=0,nonblank=0;let failures=[];
  function run(ops){const s=new Sim(),o=new IndependentBigInt(),seen=new Map();for(const op of ops){s.act(op);o.act(op);actions++;const vi=s.b.value(s.index,s.h),vw=s.b.value(s.workhead,s.h);if(vi!==o.i||vw!==o.w||s.read()!==o.read()||s.indexhead!==o.ih||s.mem.size!==o.mem.size)throw Error('Mismatch at action '+actions+' '+op);checks+=5;
  const key=vw.toString(),old=seen.get(key);if(old){let id=old.id;for(let h=old.h;h<s.h;h++)id=id?s.b.node(h+1,id,0):0;if(id!==s.workhead)throw Error('NONCANONICAL alias '+key);aliases++;}seen.set(key,{id:s.workhead,h:s.h});checks++;maxIndex=Math.max(maxIndex,o.ih);maxNodes=Math.max(maxNodes,s.b.nodes.length);}growth+=s.growth;rekeys+=s.rekeys;nonblank+=s.mem.size;}
- run(['I1','J','W1','I1','IR','I1','I0','J','WL','R','WR','WL','R']);
+ run(['I1','J','W1','I0','IR','I1','J','WL','R','WR','WL','R']);
  const far=[];for(let j=0;j<257;j++)far.push('IR');far.push('I1','J','W1');for(let j=0;j<100;j++)far.push('I1','J','R');run(far);
  const codes=['IR','IL','I1','I0','J','WR','WL','W1','W0','R'];for(let i=0;i<100;i++){const ops=[];for(let j=0;j<220;j++)ops.push(codes[rand()%codes.length]);run(ops);}
  return {status:'PASS',seed:'0x46812345',traces:102,actions,checks,canonical_alias_checks:aliases,maximum_guest_INDEX_head:maxIndex,maximum_persistent_nodes_per_trace:maxNodes,capacity_doublings:growth,dictionary_rekeys:rekeys,cumulative_nonblank_work_cells:nonblank,environment:'Node.js host',native_FLVM_executed:false};}
