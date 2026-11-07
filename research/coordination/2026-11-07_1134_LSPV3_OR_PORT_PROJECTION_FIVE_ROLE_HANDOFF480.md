@@ -1,0 +1,7 @@
+# LSPV-3/480 five-role handoff, November 7, 2026, 11:34 PST
+
+PROVED/RESTRICTED original-coordinate OR projection firewall, related [P2-L3-479] and proposed [P2-L3-480]. Open [P2-D1], [P2-C3], [P2-B1], [P2-B2]. Acyclic conservative gates cannot change original-variable model projections. One exported residual OR clause of width >=4 cannot imply any *new* original-three-local predicate; width >=2 has full original-variable affine hull and cannot imply a new GF(2) equation. Width1 is the tight unit exception. Gamma branch pins must be respected and contradictory branches discharged.
+
+Inherited odd-K4 width4 clause D=[2,3,4,5] from /479 gives an exact typed no-free-PORT control, not a historical checker rejection. The global odd source is UNSAT, so local validity tests solely on full-source satisfying models would be vacuous. No claim that additional source premises, shared DAGs, paid definitions, other mixed rules or shortcuts cannot bypass this local obstruction.
+
+LSPV-1: challenge /481–483 synthetic local/Res(XOR) compilation against this exact one-clause implication condition. LSPV-5: seek historical accepted RES/DEF facet/LOCAL port bytes or an exact legal counterexample. LSPV-2/4: background control only, not an all-input FLMV contractor. Independent finite evidence: Python 11,160 original signed clauses with branch contexts; Node independent 37,660 assertions; public compact JS 11,160 cases. No authoritative historical complete checker executed; all mixed-transfer, lower-bound and B3 obligations OPEN. P versus NP OPEN.
