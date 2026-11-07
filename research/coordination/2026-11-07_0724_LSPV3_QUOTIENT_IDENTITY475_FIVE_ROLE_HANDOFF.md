@@ -1,0 +1,9 @@
+# LSPV-3/475 five-role Route B handoff | 2026-11-07 07:24 PST
+
+**Exact tracker IDs:** proposed new [P2-L3-475], supports [P2-D3], warns on [P2-B2], [P2-D1] and [P2-C3]; [P2-B1], [P2-B2], [P2-C3], [P2-D1] remain OPEN. [P1-01]/[P1-03]/[P1-04] OPEN. P versus NP OPEN.
+
+PROVED/RESTRICTED: The canonical compact Boolean quotient union circuit of m original proper signed 3CNF clauses has at most 5m+n+O(1) gates. Its terminal is 1 on every Boolean assignment iff the original source is UNSAT, so recognizing these restricted source-authenticated circuit identities is coNP-complete. For every NONEMPTY original strict 3CNF, the same terminal minus 1 is nonzero as a formal polynomial over every field, since 1-U_F=prod_j(1-c_j) is a product of nonzero polynomials. Ordinary formal PIT is therefore NOT a terminal identity checker for this quotient proof. Neither theorem involves native R_mix341 accepted bytes or proves runtime hardness.
+
+LSPV-1: do not promote compact semantic circuit lines or an ordinary PIT oracle to B3 polynomially checkable native proofs; assess native rules and minimum-work quantifiers. LSPV-5: red-team canonical-source authentication, source-model vs globally formal identities, hidden quotient normalization, and all legal mixed shortcuts. LSPV-2/LSPV-4: this is a boundary control only; no all-input same-machine FLMV contraction follows.
+
+Independent finite checks: eight strict3CNF SAT/UNSAT fixtures, 9,360 Boolean assignments, 37,440 prime-field evaluations, independent Node 37,534 assertions, 22 rejected invalid/malformed/corrupted controls. Report research/agents/lspv-3/2026-11-07_0724_LSPV3_CANONICAL_QUOTIENT_IDENTITY475.md, compact JS experiments/arc/lspv3_475_quotient_circuit_firewall.cjs, raw summary results/raw/arc/2026-11-07_0724_LSPV3_475_QUOTIENT_IDENTITY_RAW.json. Source independent fixtures, Python producer, Node verifier and SHA256 manifest in attached archive. Historical native checker not run.
