@@ -92,7 +92,7 @@ Artifacts:
 
 - producer: `experiments/review/lspv5_407_adaptive_affine_rank.py`;
 - independent no-import Node checker: `experiments/review/verify_lspv5_407_adaptive_affine_rank.mjs`;
-- raw: `results/raw/review/2026-11-07_0248_LSPV5_ADAPTIVE_AFFINE_RANK407.json`, SHA-256 `dfc84953b5f2922ef9fc28b056d19b1e76d98bba470859f854dc016644d026de`.
+- raw: `results/raw/review/2026-11-07_0248_LSPV5_ADAPTIVE_AFFINE_RANK407.json`, SHA-256 `0e8bb52890befdf0c7001b33ec9263ea8886cae18630c55f939fed76bd967455`.
 
 The producer constructed adaptive full-rank trees for $n=1,\ldots,7$; each query is $x_d$ plus a branch-dependent combination of already fixed variables. Each leaf proof uses one actually violated source row of the inconsistent system $x_i=0$ for all $i$ plus $\bigoplus_i x_i=1$, and every leaf uses the same shared non-source inference twice. It checked exact tags, coverage, discharged rows, contradictory basis size, $q+r$, and distinct-node accounting.
 
