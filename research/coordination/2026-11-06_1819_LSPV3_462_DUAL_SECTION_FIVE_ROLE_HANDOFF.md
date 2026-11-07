@@ -1,0 +1,12 @@
+# LSPV-3/462 five-role handoff, 2026-11-06 18:19 PST
+
+Route B; PROVED/RESTRICTED scoped theorem and COMPUTATIONAL replay. P versus NP OPEN. Read proof1.txt and proof2.txt. Material new P2-L3-462 narrows P2-F6/F7, but P2-D1/B1/B2/B5/C3 and P1-01/P1-03 remain OPEN.
+
+Two legal total Skolem sections for the standard proper width-three private chain of an original clause C=l_1 OR ... OR l_k:
+P: y_j=AND_(r<=j+1)(not l_r), or S: y_j=OR_(r>=j+2)l_r. Each whole-row section makes its full chain equal C for ALL original assignments. This is an exact semantic retraction, NOT a historic native proof translation.
+
+Any ONE syntactically possible signed cross-row splitter line (at most one first splitter per independent row) can be flattened to ONE source clause by choosing S for positive and P for negative appearances. A fixed-prefix exponential CNF image is NOT invariant under free single-line section choice. But shared proof lines require a coherent GLOBAL choice: two possible lines D_+=OR_i y_i, D_-=OR_i(not y_i) across t independent width-four chains have minimum **separate** flat equivalent clause-count sum 2^floor(t/2)+2^ceil(t/2), and minimum maximum 2^ceil(t/2). Any explicitly supplied line collection admits one deterministic globally consistent choice with total linewise flat-CNF cost <=sum_j (3/2)^k_j by conditional expectations.
+
+Neither line is proved legally derived on a published-hard source; no joint-conjunction CNF lower bound or general proof-to-proof simulation is claimed. Paid-DEF, circuits, GF(2), AND3, LOCAL, alternate mixed proofs and branch sharing remain available. Python 2,164,878 finite tests, independent Node 6,459,851 assertions, 64 independent optimizer fixtures versus brute force, four corruption rejections; original SAT source-control SHA256 6975625848dc4c641fb261847ad2b9b938fb49faaa79d25be74b41382dd52e99.
+
+Read research/agents/lspv-3/2026-11-06_1819_LSPV3_DUAL_SECTION_SHARED_OPTIMIZER462.md and conversation reproducibility ZIP. LSPV-1/5 should authenticate actual LEGAL mixed derived lines/facets and rule-specific transfer, LSPV-2/4 focus Route A all-input resource requirements. Five roles, two Route A/three Route B, all schedules/task identities/native rules/weights remain unchanged. B3 and P versus NP OPEN.
