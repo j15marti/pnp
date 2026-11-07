@@ -1,0 +1,17 @@
+# LSPV-1/479 | Five-role Route B handoff | November 7, 2026 PST
+
+**Proposed new affected node [P2-B20], building on [P2-B17], [P2-B18], [P2-B19]. No universal proof claim. P versus NP OPEN.**
+
+Known-Pang-2026 quantitative degree-size theorem, combined with the established characteristic-odd expander-Tseitin ordinary-PC degree lower bound and the already established precise split-3CNF degree preservation, yields a **superpolynomial** minimum shared-DAG node lower bound for a DIFFERENT system that allows disjunctions of polynomial equations of degree up to $r=\Theta(\log n)$.
+
+Fix an odd prime $p$, arbitrary $0<\epsilon<1$, a published expander-Tseitin family of $h$ cubic vertices, and its standard 8h-clause strict-proper split 3-CNF on $n=11h/2$ variables. With PC degree at least $ch$, $D=\lfloor ch\rfloor-1$, and $r_h=\lfloor(1-\epsilon)\ln h/((p-1)\ln(176/c))\rfloor$, Pang's preprint Theorem 1.1 implies
+$$
+\boxed{\ln S\ge\frac{c}{64p^2\kappa_0}\frac{h^\epsilon}{\ln h}.}
+$$
+For $\epsilon=1/2$, this is $S\ge\exp(\Omega(\sqrt h/\log h))$ even with logarithmically growing permitted polynomial degree. The proof covers ALL DAG proofs legal in that syntactic Res(PC_r) system, not the historical mixed R_mix341. The alternative positive-alias split [P2-B19] has the same consequence; the original exact split [P2-B18] needs only PC **degree** preservation, not the positive-alias polynomial-bit compiler. A single separately specified uniform cap $r(n)=\max(1,\lfloor\kappa_0\ln(n+1)/2\rfloor)$ also works for all sufficiently large family members. This is an application of Pang's published preprint bound, not a new mathematical technique or a noncircular B3 mechanism.
+
+**LEAD LSPV-1:** do not promote [P2-B20] to [P2-B1] because characteristic-two GF(2) / AND3 under declared mixed semantic rules defeats the chosen family. Keep noncircular [P2-B2] OPEN and audit historical grammar [P2-D1]. **CERTIFICATE LSPV-3:** audit possibility of legal polynomial-equation-to-native conversion and explicit proof bits; never equate a Res(PC_r) node with one unit-paid historical node. **RED TEAM LSPV-5:** independently check Pang's $D\ge\max(32(p-1)^2r,8w)$ precondition, negative-characteristic, exact original clause encoding, and the [P2-L5-412] AND3 RES-parent grammar ambiguity. **Route A LSPV-2/4:** use only as hard-family source controls and benchmark; no all-input recursively iterable contraction or native FLMV work/space bound follows.
+
+The exact executed published JS audit `experiments/arc/lspv1_479_pang_logdegree_audit.cjs` passed 2,383 checks (78 numeric eligible, 66 skipped preconditions, 2,048 K4 sections with odd/even model counts 0/8). Independent local 80-digit Python: 312 numeric inequalities, 2,048 K4 checks; illustrative numeric $c$ values NOT verified literature hardness constants. Report `research/agents/lspv-1/2026-11-07_LSPV1_LOGDEGREE_RESPC_TSEITIN479.md`, raw `results/raw/arc/2026-11-07_LSPV1_479_PANG_LOGDEGREE.json`. Other role files, historical unit costs and current two Route A/three Route B allocation unchanged. `main.tex` unavailable as content bytes and not edited.
+
+**Next exact gap:** find a genuinely mixed-rule, globally source-authenticated invariant that cannot be defeated by characteristic-two affine cancellation or legal DEF/AND3/LOCAL-CONVERT shared shortcuts. Native historical grammar [P2-D1], full mixed transfer [P2-C3], superpolynomial mixed minimum [P2-B1] and noncircular B3 [P2-B2] OPEN. P versus NP OPEN.
