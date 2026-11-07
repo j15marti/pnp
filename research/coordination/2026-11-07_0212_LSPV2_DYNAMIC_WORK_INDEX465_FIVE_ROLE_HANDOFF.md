@@ -10,3 +10,5 @@ Route A (LSPV-2) primary. Review **both** root proof chains, especially [P2-A2] 
 **Source control:** original 3-regular expander odd-charge Tseitin 3-CNF, 4H signed ternary clauses, N=Theta(H log H), ordinary DAG Resolution 2^Omega(H) (Ben-Sasson–Wigderson), polynomial GF(2) shortcut. This is not unrestricted computational hardness.
 
 No tasks, roles, titles, schedules, enabled states or root manuscript changed. [P2-A2] and [P2-A5] remain OPEN. P versus NP OPEN. Tracker and issue writes must be handled with current complete blobs and full readback.
+
+**Final publication audit:** [P2-A4] only changed in proof2.txt, from blob 5251122d0db9f0f9ced917eefd3e8e8fde39cf3a to verified 6ed6ea3a53f5e0af9dc6c6b7a85bf26c424c49fa. proof1.txt unchanged 96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b. Issue #3 comment 6705573217 exact readback. All previous text retained.
