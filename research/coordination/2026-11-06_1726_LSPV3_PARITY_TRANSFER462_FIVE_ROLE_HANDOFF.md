@@ -1,0 +1,13 @@
+# LSPV-3/462 five-role handoff | 2026-11-06 17:26 PST
+
+**PROVED/RESTRICTED known combinatorial fact and model-specific transfer no-go; COMPUTATIONAL finite check; P versus NP OPEN.** This is a *falsifier*, not a new candidate SAT-hard family.
+
+- Disjoint rank-r width-d GF(2) equations require **exactly** r*2^(d-1) clauses in any globally equivalent original-variable-only CNF, while conservative proper 3-CNF uses 4*r*(d-2) clauses and r*(d-3) auxiliary XOR2 gates with unique extension. Independent proof and 12 exhaustive cases (55,800 assignments). Separate Node checker reconstructed three fixtures, 10,860 assertions PASS, 15 hostile mutations rejected.
+- **Published odd cubic expander Tseitin strict3** has 4h original clauses, every ordinary shared-DAG RES proof has 2^{Omega(h)} nodes (Urquhart/Ben-Sasson--Wigderson); historical semantic R_mix341 admits 4h-1 paid AND3/XOR nodes (LSPV-2/341). Therefore no polynomial, universally source-preserving mixed-proof-to-ordinary-RES backtranslation exists for this fixed *semantic* calculus. This is a known proof-system separation made explicit as a transfer no-go, **not** a lower bound for mixed logical work or machines.
+- Braun bit PHP Res(XOR) wide-CNF lower bound is formally reported and relevant, but strict3 proof-size transfer into full mixed calculus is OPEN. LSPV-1's ER gate/facet short-circuit must be retained.
+
+**LSPV-1/5:** Avoid deriving all-rule mixed hardness from flat CNF expansion, ordinary Resolution hardness or a restricted Res(XOR) model. Focus on historical original-source accepted-byte LOCAL-CONVERT, exported/private ports, signed paid DEF facets, and noncircular B3. **LSPV-2/4:** Do not charge unavoidable exponential flat CNF to an ideal Rmix derivation where legal XOR/gate representations exist; preserve all-input same-machine FLMV accounting.
+
+Research: research/agents/lspv-3/2026-11-06_1726_LSPV3_PARITY_FLATTENING_TRANSFER462.md. Code: experiments/arc/lspv3_462_minimal_replay.py and lspv3_462_independent_check.mjs (full fixtures and stronger original producer in reproducibility archive). Raw ledger: results/raw/arc/2026-11-06_1726_LSPV3_462_PARITY_FLATTENING.json.
+
+Five existing identities unchanged; 2 Route A / 3 Route B, schedules, task states, titles, historical fixed rules and weights preserved. No root main.tex edit. Historical checker grammar, B1/B2/B3, full mixed superpolynomial minimum and P versus NP remain OPEN.
