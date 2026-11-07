@@ -33,7 +33,7 @@ These bounds include retained historical nodes. They do NOT give $O(S_{\rm guest
 
 ## Theorem 468.2: exponential append-only retention at linear guest space (PROVED/RESTRICTED)
 
-For $r\ge1$, enumerate all $2^r$ distinct reflected Gray words $g_i=i\oplus\lfloor i/2\rfloor$ on the guest INDEX tape, flipping one bit per transition between successive words. The guest can implement the sequence with a counter, $O(r)$ live INDEX and auxiliary work bits and $O(r2^r)$ time. No indexed WORK jump or WORK write is required.
+For $r\ge1$, enumerate all $2^r$ distinct reflected Gray words $g_i=i\oplus\lfloor i/2\rfloor$ on the guest INDEX tape, flipping one bit per transition between successive words. The guest can implement the sequence with a counter, $O(r)$ live INDEX and auxiliary work bits and $O(r2^r)$ time. No indexed WORK jump or write on the **designated guest data WORK tape** is required; a uniform Gray-code generator may use O(r) auxiliary WORK bits for its counter.
 
 The permanent canonical interner has recorded every distinct INDEX-root representation, hence
 
