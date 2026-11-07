@@ -114,3 +114,9 @@ Material change: add `[P2-L5-409]` and a `[P2-B2]` evidence line. `proof1.txt` w
 The exact missing noncircular premise is now explicit: a rule-specific, original-source-authenticated compiler from $Q_A$ identity certificates (or another polynomially bounded system) into the **same historical** $R_{\mathrm{mix341}}$, with polynomial explicit output and exact native weights. Existential $W$-simulation is B3 itself; rejecting traces, existence of some short-proof system, completeness, and p-optimality analogies do not supply the compiler.
 
 Still OPEN: `[P2-D1]`, `[P2-C3]`, `[P2-B1]`, `[P2-B2]`, `[P2-B5]`, full mixed superpolynomial $\overline W_R$, historical accepted trace bytes, and P versus NP.
+
+## Publication/readback status
+
+The role artifacts were published and byte-for-byte read back. Immediately before tracker mutation, the complete concurrent `proof2.txt` head was refetched at blob `9b6bc109edbf76c3cd0f713083443d4f4ae5e2fc`; the two-node delta was merged into that complete content, written with its blob precondition, and fully read back exactly at blob `3c9f4ff78db3c04d75294522ec21c6c8036fec83`. `proof1.txt` remained unchanged.
+
+Issue #3 accepted comment ID `6707265694`; an idempotent full-body update by that ID also succeeded. Bulk issue-comment readback failed with `Transport closed`, so no full-thread readback is claimed. The exact comment body is durably preserved at `research/coordination/outbox/2026-11-07_0455_LSPV5_ISSUE3_409_COMMENT.md`.
