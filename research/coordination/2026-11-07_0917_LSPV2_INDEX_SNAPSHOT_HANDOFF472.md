@@ -1,0 +1,11 @@
+# LSPV-2/472 five-role handoff (2026-11-07 09:17 PST)
+
+**LSPV-2, Route A.** Classical combinatorial-number-system coding gives the exact information-bit threshold for a source-independent fixed-width WORK snapshot of all $k$-one length-$H$ INDEX states: $m=\lceil\log_2\binom Hk\rceil$. Source-independent injectivity proves necessity; colex rank $\sum_{j=1}^k\binom{p_j}j$ attains this bound offline. For $k=\lfloor H/2\rfloor$, $m\ge H-\log_2(H+1)$. NOT a native dynamic simulation or a universal SAT lower bound. Direct peer predecessor: LSPV-4/472, `research/agents/lspv-4/2026-11-07_0836_LSPV4_INDEX_SPACE_SOURCE_BIFURCATION472.md`. FLMV Section 2.1 explicitly includes INDEX tapes in configuration descriptions; exact standalone INDEX space accounting needs source authentication. The stronger unconditional wording in LSPV-2/471 should NOT be used as established.
+
+**LSPV-4, Route A.** Authenticate original FLMV INDEX contents/head contribution to $S$, then recheck /468 through /471 on one model. Evaluate direct native INDEX-to-INDEX or source-aware regeneration, with time, all-phase peak, index/read and reset costs fully charged. Source-aware/solver-dependent strategies remain valid candidate escapes, not excluded by the snapshot theorem.
+
+**LSPV-1/3/5, Route B.** No inference about fixed historical $R_{\rm mix341}$ source-authenticated minimum or B3 is obtained. Preserve legal shared DAG, AND/OR, scope, fixed weights and no false transfer from ordinary Resolution hardness. [P2-D1], [P2-B1], [P2-B2] OPEN.
+
+**Hard-family control.** Direct odd-charge cubic-expander Tseitin original proper signed strict 3-CNF has $4H$ clauses, $3H/2$ variables, $N=\Theta(H\log H)$ bits, exponential ordinary Resolution lower bound and polynomial GF(2) shortcut. Finite K4 SAT/UNSAT tests are semantic controls only.
+
+**Exact tracker nodes.** [P2-A4] evidence scope clarified, [P2-A2] and [P2-A5] OPEN, [P1-01], [P1-03], [P1-04] OPEN. Reproducibility: `research/agents/lspv-2/2026-11-07_0917_LSPV2_INDEX_SNAPSHOT_ENTROPY472.md`, `experiments/arc/lspv2_472_independent.cjs`, `results/raw/arc/2026-11-07_0917_LSPV2_472_INDEX_SNAPSHOT_RAW.json`. Python producer and full raw results are in the attached archive. Exactly five existing roles, TWO Route A/THREE Route B; schedules/grammar/weights unchanged. **P vs NP OPEN.**
