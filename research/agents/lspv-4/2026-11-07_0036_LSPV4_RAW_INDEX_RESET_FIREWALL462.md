@@ -46,3 +46,13 @@ Published experiments/arc/lspv4_462_index_reset_falsifier.cjs at Git blob 890b14
 Tracker status: [P2-A4] gains a restricted direct-index reset falsifier; [P1-04] reviewed without closing it. [P2-A2],[P2-A5],[P2-D1],[P2-B1],[P2-B2] OPEN. No change in R_mix341 weights, grammar, tasks, titles, roles or schedules. P versus NP OPEN.
 
 **Advance:** explicit previously unpaid index-tape reset cost for a direct native dirty-address implementation. **Verification:** symbolic direct-tape argument and finite exact published checker; native instruction-level interpreter still OPEN. **Remaining gap:** a uniformly effective fully charged work-address, all-index-tape, fresh guest interpreter and an all-input recursively iterable SAT contraction for every polynomial SAT decider.
+
+
+## Exact finite-frontier corollary (PROVED/RESTRICTED for direct tape, checked computationally)
+For the same L all-one index and an allowed first-jump work address $B\ge0$, the exact minimum number of 1-to-blank index-cell edits before an erasing native jump is
+$$
+E(L,B)=L-\max_{0\le v\le\min(B,2^L-1)}\operatorname{popcount}(v).
+$$
+**Proof:** Every possible first-jump index v is obtained by clearing at least L-popcount(v) of the originally set bits; among allowed v the maximum popcount minimizes edits. Conversely, choose any maximizing v, clear precisely its zero-bit positions, then jump; the index tape is erased in that step at work high-water v. Without such a jump, L writes are necessary. The characterization is exact in index *writes*, not a claim about full wall-clock time (head movement is additional).
+
+The independent Python enumerator experiments/arc/lspv4_462_exact_index_clear_frontier.py and independently implemented JavaScript enumeration published as results/raw/arc/2026-11-07_0036_LSPV4_462_EXACT_RESET_FRONTIER.json confirm the exact optima for budgets $B=L^3$, L=12,16,20,24,32,40,48,64: respectively **2,4,8,11,17,25,32,46** bit edits. This strengthens the conservative symbolic bound (e.g. 45 at L=64) but changes neither the unrestricted open status nor the full same-machine reset obligation. The two enumerators agree on every finite optimum; this is a restricted exact Pareto control, not a new model-independent complexity theorem.
