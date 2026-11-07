@@ -15,7 +15,7 @@ function run(name,h,edges){
  inc.forEach(a=>a.sort((a,b)=>a-b));
  let C=[],src='p cnf '+edges.length+' '+(4*h)+'\n';
  for(let v=0;v<h;v++){
-  for(let a=0;a<8;a++){const bits=[a&1,(a>>1)&1,(a>>2)&1];if((bits[0]^bits[1]^bits[2])===(v===0?1:0))continue;
+  for(let a=0;a<8;a++){const bits=[(a>>2)&1,(a>>1)&1,a&1];if((bits[0]^bits[1]^bits[2])===(v===0?1:0))continue;
    let clause=inc[v].map((e,i)=>bits[i]?-e:e);C.push(clause);src+=clause.join(' ')+' 0\n';
   }
  }
