@@ -30,10 +30,10 @@ $$
 
 Proof: select the earliest factor/row paid inference in any topological ordering. RES lines remain clauses and cannot feed AND3. XOR cannot be the first affine inference because source factors have no rows. AND3 cannot be first because its two distinct original factor antecedents have union support >=4. Hence no factor or affine inference exists in any such proof. All paid nodes are RES. Every ordinary Resolution refutation is an S refutation with identical paid work, proving equality, including arbitrary legal DAG sharing. QED.
 
-**Corollary (published hard family):** with probability 1-o(1) at density 6,
+**Corollary (published hard family):** with probability 1-o(1) at density 6. Subtract at most m=6n original axioms if a cited Resolution-size convention counts source lines rather than paid inferences:
 
 $$
-W_S(F_n)\ge(1+\epsilon)^n=\exp(\Omega(n))=\exp(\Omega(N/\log N)).
+W_S(F_n)\ge(1+\epsilon)^n-6n\ge\exp(\Omega(n))=\exp(\Omega(N/\log N))\quad\text{for sufficiently large }n.
 $$
 
 This proves a superpolynomial lower bound only for the explicitly **new sealed S**, **not** for the historical full R_mix341 or arbitrary SAT algorithms. It improves the interpretation of [P2-L3-477]'s *incomplete* native-fragment obstruction: a separately defined complete RES completion is also hard if it forbids an effective cross-type bridge.
