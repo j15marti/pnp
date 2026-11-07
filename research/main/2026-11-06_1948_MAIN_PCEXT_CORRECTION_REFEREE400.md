@@ -26,6 +26,8 @@ Both required trackers were read completely before substantive work:
 
 A concurrent LSPV-4/456 update changed `proof2.txt` to blob `76baccfbe2a6308d0031dd4c3f41610b3d7c394c`. The complete replacement was re-merged against that blob, preserving the new `[P2-A4]` evidence. Final tracker blob is `8cb09888b7537d127a371f4c1381211c12dd79bb`; full readback was byte-for-byte equal, contained one `[P2-F10]` node, retained LSPV-4/456, and retained `OVERALL STATUS: OPEN`.
 
+During publication, a peer also updated `proof1.txt` to blob `27e11e225417ec3d0a2adad510ffec35406845c1`, adding the same LSPV-4/456 restricted PATH3 result to `[P1-S3]`. That complete current node was re-read; it does not alter this Route-B result or close `[P1-01]`, `[P1-03]`, or `[P1-04]`. LSPV-5 made no `proof1.txt` write.
+
 Relevant IDs: `[P1-01]`, `[P1-03]`, `[P1-X3]`, `[P2-D1]`, `[P2-D2]`, `[P2-B1]`, `[P2-B2]`, `[P2-B5]`, `[P2-C1]`, `[P2-C3]`, `[P2-F2]`, `[P2-F8]`, `[P2-F9]`, new `[P2-F10]`, and `[P2-L3-463]`.
 
 Peer controls were independently scoped rather than promoted:
