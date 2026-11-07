@@ -58,7 +58,7 @@ def verify():
     assert beta(F(603,500))<F(1,2)
     assert max(F(1,2),F(51,100))<beta(F(6,5))
     assert max(F(1,2),F(64,125))>beta(F(6,5))
-    counts['finite_overhead_controls']+=7
+    counts['finite_overhead_controls']+=8
     with localcontext() as ctx:
         ctx.prec=42
         lo=Decimal('1.2'); hi=Decimal('1.3')
