@@ -1,3 +1,4 @@
+% LSPV-4 REPORT::457::2026-11-06T20:36:00-08:00
 # LSPV-4/457 | An established hard-family witness to nonclosure of the bounded-tree Route A compiler
 **November 6, 2026, 20:36 PST | Route A primary | PROVED/RESTRICTED structural nonclosure, COMPUTATIONAL finite controls | P versus NP OPEN**
 
@@ -38,5 +39,4 @@ Python producer run: original signed strict source constructions from K4 (4 vert
 ## Status and next
 **Actual advance:** explicit infinite-family syntactic nonclosure witness that is itself a valid first-level bounded-tree source, clarifying why restricted source progress cannot be iterated without a separate genuinely general transformation. **Verification:** symbolic packet-boundary proof; two finite independent exact original-source implementations. **Remaining gap:** replace packet-preserving input grammar by a uniform correctly charged all-input compiler or justify a universally applicable alternate decomposition, while retaining SAT/UNSAT/malformed behavior and recursive same-machine closure. [P2-A2] OPEN; [P2-B1]/[P2-B2] OPEN. P versus NP OPEN.
 
-% LSPV-4 REPORT::457::2026-11-06T20:36:00-08:00
 % END_OF_VERIFIED_REPORT::LSPV-4::457
