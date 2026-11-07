@@ -1,6 +1,8 @@
 "use strict";
-/* LSPV-2/467: finite controls for the FLMV read-only input-head register firewall.
-   This emulates individual abstract guest steps, NOT a native FLMV machine. */
+/* LSPV-2/467 CORRECTED: original attempted input-head firewall was FALSIFIED.
+   FLMV writable INDEX tape extent must be charged to guest space even though
+   the separate read-only INPUT tape is space-exempt. This is an abstract check,
+   not native FLMV execution. See report LSPV-2/467 and prior LSPV-4/273. */
 function verify() {
   let assertions=0, traces=0, labels={SAT:0,UNSAT:0,MALFORMED:0};
   function ok(p,msg){assertions++;if(!p)throw Error(msg);}
@@ -24,10 +26,13 @@ function verify() {
     // The simulation under attack stores exact guest INPUT head in a
     // conventional counted binary WORK register. That register uses m bits.
     const countedWorkBitsForCounters=4+k*Math.ceil(Math.log2(n+1));
+    const guestIndexTapeSpaceLower=m; // Sequential INDEX head visited all m positions.
+    ok(guestIndexTapeSpaceLower>=m,"guest INDEX head not charged");
+    ok(m<=guestIndexTapeSpaceLower,"binary host head worse than guest index high-water");
     if(k>=2)ok(m>n,"counted binary head exceeds sqrt(parent N=n^2)");
     ledger.push({n,k,index_bits:m,far_address_bit_length:bitLength(exact),
       guest_counter_work_upper_bits:countedWorkBitsForCounters,
-      naive_counted_input_head_bits:m,synthetic_parent_N:n*n,
+      naive_counted_input_head_bits:m,guest_index_space_lower:guestIndexTapeSpaceLower,synthetic_parent_N:n*n,
       target_sqrt_N:n});
     traces++;
   }
@@ -98,9 +103,9 @@ function verify() {
   return {status:"PASS",scope:"Host semantic plus exact arithmetic, not native FLMV",
     assertions,trace_cases:traces,source_controls:16,
     labels,ledger,conclusions:{
-      model:"FLMV input tape indexed/read-only; INPUT head and input INDEX cells do not contribute counted non-index work space",
-      test:"An explicit exact binary register for input head (2^(n^k)-1) needs n^k counted WORK bits",
-      boundary:"No bound against compressed/symbolic/host-input-head approaches, solver white-box simplification, or all SAT deciders"
+      model:"FLMV read-only INPUT head is space-exempt, but its writable sequential INDEX tape contributes visited index extent to guest space; original uncharged-index interpretation is RETIRED",
+      test:"An explicit binary INPUT head register uses n^k counted WORK bits, but constructing the original INDEX contents already incurs Omega(n^k) guest space",
+      boundary:"Proposed excess-space witness fails; this is an independent falsifier of the earlier mistaken uncharged-INDEX premise. It does NOT establish a complete input-port simulation or universal FLMV contraction"
     }};
 }
 if(typeof require!=="undefined" && typeof module!=="undefined" && require.main===module){
