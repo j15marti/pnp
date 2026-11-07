@@ -1,0 +1,2 @@
+# Living log: worst-case derivation complexity (W_R) programme
+- 2026-11-07 WORSTCASE-0001 (`../2026-11-07_WORSTCASE-0001.tex`): dichotomy. Weak R (resolution etc.): lower bounds known, bridge SAT in P => W_R poly is equivalent to P != NP (circular). Optimal R: bridge true, lower bound equivalent to NP != coNP. Time-charged R: reformulation of P != NP. Real bridge content = uniform reflection (R p-simulates R_A for every poly SAT solver A). Next: T-REFL for EF/Frege. P vs NP remains OPEN.
