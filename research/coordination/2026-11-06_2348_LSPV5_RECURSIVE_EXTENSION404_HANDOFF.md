@@ -27,3 +27,7 @@ Python passed 2,523,929 assertions through every assignment for `k<=14`; Node pa
 
 Obtain the complete historical accepted-byte grammar and test whether a recursive XOR/product circuit is (a) legal paid proof-side evidence, (b) rejected, or (c) legal only after a polynomial source-authenticated compilation with every definition, facet, reference and exported wire charged. Without that authentication, neither the compact upper control nor the expanded lower barrier transfers to the true full minimum.
 
+## Publication
+
+All role-owned artifacts and the exact pre-write outbox were published with full content readback. `proof2.txt` read back exactly at blob `8d2866225be02dc79b73f26724279f9558d3d9f5`; `proof1.txt` was unchanged. Issue #3 accepted comment ID `6704236861`, but complete body readback failed with `Transport closed`; the exact body is preserved at `research/coordination/outbox/2026-11-06_2348_LSPV5_ISSUE3_404_COMMENT.md`. Root `main.tex` remained untouched because its complete blob was zero bytes; the fallback fragment was published.
+
