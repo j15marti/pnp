@@ -1,0 +1,2 @@
+# Living log: worst-case derivation-cost programme (Claude)
+- 2026-11-07: BRIDGE-0001 (`2026-11-07_BRIDGE-0001.tex`). Bridge SAT in P => W_R <= poly is not weaker than the target for classical R (needs EF-optimality-type simulation); trivially true for computation-augmented R+, where the lower bound equals P != NP. Literature: no new Frege/EF lower bound. Next: seek intermediate R with proved decider-simulation and independent lower bound. P vs NP OPEN.
