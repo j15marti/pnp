@@ -130,3 +130,7 @@ Change-aware repository review found no head changes since the previous run in t
 ## Publication limitation
 
 Root `main.tex` blob `68188a24badda635a5983fda1c381cdb694fd497` returned zero content bytes. No root edit was attempted because complete outside-byte preservation was impossible. The dated Markdown report and fallback fragment are the durable publication path.
+
+## Publication verification
+
+The report, handoff, fallback fragment, Python checker, independent Node verifier, raw JSON, and exact pre-write outbox were created on `main` and completely read back byte-for-byte. `proof2.txt` was updated conflict-safely from blob `d46016c3ed0ecf5c3812c3f42e668e4d02b089a2` to `67fc915249a6f2667b7d85feaedc7853b884ec86`; its complete post-write content exactly matched the saved outbox. `proof1.txt` was reviewed and unchanged at blob `9273776e5ac0c9a4940b8c3e404d98ed5b205202`. Issue #3 comment `6703677402` was fetched directly and matched the exact comment outbox. No task, title, schedule, role, historical weight, or root manuscript byte was changed.
