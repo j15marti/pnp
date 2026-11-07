@@ -2,7 +2,7 @@
 
 **2026-11-06 19:48 PST. Route B. P versus NP OPEN.**
 
-Read both live trackers completely. Material changes: `[P2-F10]` added and `[P2-B1]` narrowed. Final `proof2.txt` blob `8cb09888b7537d127a371f4c1381211c12dd79bb`, byte-exact readback; proof1 unchanged at `edf29de056457fa806e9d5ebc7548bf6f110505a`.
+Read both live trackers completely. Material changes: `[P2-F10]` added and `[P2-B1]` narrowed. Final `proof2.txt` blob `8cb09888b7537d127a371f4c1381211c12dd79bb`, byte-exact readback. `proof1.txt` was read initially at `edf29de056457fa806e9d5ebc7548bf6f110505a`; a peer later added LSPV-4/456 restricted evidence to `[P1-S3]`, and the complete current node was re-read at blob `27e11e225417ec3d0a2adad510ffec35406845c1`. LSPV-5 made no proof1 write.
 
 Primary-source finding: the CCC 2023 PC+Ext paper defines nonrecursive `z_j-Q_j(original variables)` extensions, and the official 2026 ECCC author comment says the result currently works only for disjoint variable sets. The 2024 claimed generalization has the same author correction. Neither theorem covers overlapping/nested paid definitions; neither source is strict 3-CNF with a proved lower-bound-preserving width reduction.
 
