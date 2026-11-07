@@ -127,6 +127,7 @@ function run(){
   budgetConfigurations:results.length,lookups,lookupHeaderProbes:reads,
   cachedVirtualBitReads:virtualBits,corruptControls:err,
   parityControls:{evenK4Models:8,oddK4Models:0},
+  cases:results,
   samples:results.filter(r=>[127,511].includes(r.h)&&[1,8,32,r.h].includes(r.m))};
 }
 if(typeof module!=="undefined"&&require.main===module)console.log(JSON.stringify(run(),null,2));
