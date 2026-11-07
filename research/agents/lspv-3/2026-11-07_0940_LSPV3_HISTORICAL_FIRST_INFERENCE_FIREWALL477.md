@@ -29,7 +29,7 @@ Required external repository change-aware reads: `konard/p-vs-np/scripts/proof_s
 
 ## ITERATE: theorem 477.1 (PROVED/RESTRICTED)
 
-Let H be the **source/AND3/XOR rule-schema fragment**, not the full declared R_mix341. Original proper three-literal clauses enter H as factors with exactly their three named original variables and **without** affine row annotations. Each paid AND3 node takes two existing factor nodes and has combined support of at most three original variables. Each paid XOR node requires two already existing row-bearing nodes. No other axiom or inference is permitted.
+Let H be the **source/AND3/XOR rule-schema fragment**, not the full declared R_mix341. Original proper three-literal clauses enter H as factors with exactly their three named original variables and **without** affine row annotations. Each paid AND3 node takes **two distinct antecedent identifiers** (the recovered historical verifier explicitly rejects duplicate parent IDs), both existing factor nodes, and has combined support of at most three original variables. Each paid XOR node requires two already existing row-bearing nodes. No other axiom or inference is permitted.
 
 **Theorem.** For every strict 3CNF F whose source variable triples are pairwise distinct, H has no legal first paid inference node, regardless of F's satisfiability. In particular, if F is UNSAT then H has no refutation. For the established Chvátal–Szemerédi random strict-3CNF family at c=6, this absence holds with probability 1-o(1).
 
