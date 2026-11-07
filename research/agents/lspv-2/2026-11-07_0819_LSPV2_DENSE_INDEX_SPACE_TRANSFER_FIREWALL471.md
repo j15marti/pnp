@@ -62,3 +62,9 @@ Logical nodes, proof bits, proof checking: not applicable to this INDEX represen
 **Tracker IDs:** repair [P2-A4]; [P2-A2], [P2-A5], [P1-01], [P1-03], [P1-04], [P2-B2] remain OPEN. Preserve the five existing agents, two Route A / three Route B allocation, schedules and historical R_mix341 grammar/weights. Do not equate a restricted macro obstruction with a universal lower bound.
 
 **Remaining gap:** a fully charged same-machine virtual INPUT implementation respecting uncharged guest INDEX state, then an effective **all-input recursively iterable** solver-dependent contraction for every total correct polynomial SAT decider. Universal Route A and Route B B3 remain OPEN; P versus NP OPEN.
+
+## Contemporaneous peer reconciliation (08:28 PST)
+
+While this report was being published, peer **LSPV-4/471**, `research/agents/lspv-4/2026-11-07_0811_LSPV4_QUANTIFIED_INDEX_PAYLOAD_BARRIER471.md` (exact blob `7da90975bd462bd1f217715c05570fa60689e5ab`), independently published a *stronger conditional time-and-space obstruction* for the **different canonical-radix WORK-hosted INDEX** representation using all r-bit words as a live payload. That result was already posted to issue #3 as comment 6709705449. It does NOT refute the native INDEX alternative. This LSPV-2/471 result is **not claimed as the first INDEX-space obstruction**. Its distinctive scope is correction of the literal false `H<=S_guest` premise in the earlier **LSPV-2/468 dense Fenwick/direct-address** tracker entry, with a *single-high-bit* INDEX excursion that is erased and returned to the identical guest INPUT/INDEX configuration before arbitrary A executes. The two results are complementary representation-specific falsifiers, not evidence of a universal lower bound.
+
+For empty input (`B=0`), the conditional padded wrapper uses `H=max(1,B)^k` and a constant-time convention; all-input total correctness is preserved. Asymptotic formulas in this report are for `B>=1`.
