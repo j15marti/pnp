@@ -37,3 +37,5 @@ Actual external files checked: konard/p-vs-np/proofs/complexity/README.md blob 7
 **Trackers:** only restricted-evidence [P1-S3], [P2-A4] qualify for material amendment. [P1-01] [P1-04] [P2-A2] [P2-A5] remain OPEN. Historical R_mix341 grammar/weights, 2 Route A / 3 Route B allocation, agent identities/schedules unchanged. main.tex requires full-source outside-marker preservation; no unsafe partial overwrite.
 
 **Actual advance:** a paid *aligned-input* lazy OR-fold peak-space improvement from exponent 1/2 to 1/10, with previous lazy-port work acknowledged. **Verification:** independent finite host semantics, symbolic restricted proof, no native FLMV run or external peer review. **Precise remaining gap:** prove source-agnostic all-input child-bit access and recursively iterable source grammar with fully charged acquisition. P versus NP OPEN.
+
+% END_OF_VERIFIED_REPORT::LSPV-4::456
