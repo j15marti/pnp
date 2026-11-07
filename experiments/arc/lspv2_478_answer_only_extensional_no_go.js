@@ -68,4 +68,48 @@ for(const n of [16,36,64,100,256]){
 }
 let sFast=5,sSlow=7*25;
 check(fast('10000')===slow('10000')&&sFast!==sSlow,'timing distinguisher');
-console.log(JSON.stringify({role:'LSPV-2/478',status:'COMPUTATIONAL finite toy controls; exact rational arithmetic',cases,checks,seed:'478+n, LCG 1664525/1013904223',frontier:{alpha:'3/5',lambda:'1/2',rho:'11/10',eta:'1/2',time:'6/5',beta:'23/45',gap:'1/90'},timing_distinguisher:true,limitations:'This toy predicate is not SAT; no native FLMV executor or full solver-dependent contraction.'},null,2));
+// Original signed strict-3CNF K4 Tseitin regression controls.
+const edges=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
+function ts(charges){
+ const clauses=[];
+ for(let v=0;v<4;v++){
+  const ids=edges.map((e,i)=>e.includes(v)?i:-1).filter(i=>i>=0);
+  for(let mask=0;mask<8;mask++){
+   const parity=((mask&1)!==0)^((mask&2)!==0)^((mask&4)!==0);
+   if(Number(parity)===charges[v])continue;
+   clauses.push(ids.map((id,j)=>((mask>>j)&1)?-(id+1):id+1));
+  }
+ }
+ return clauses;
+}
+function validClause(c){
+ return Array.isArray(c)&&c.length===3&&c.every(x=>Number.isInteger(x)&&x!==0&&Math.abs(x)<=6)&&new Set(c.map(Math.abs)).size===3;
+}
+function satisfies(cls,assignment){
+ return cls.every(c=>c.some(lit=>((assignment>>(Math.abs(lit)-1))&1)===(lit>0?1:0)));
+}
+function findWitness(cls){
+ if(!cls.every(validClause))return 'MALFORMED';
+ for(let x=0;x<64;x++)if(satisfies(cls,x))return x;
+ return null;
+}
+let original_sat=0,original_unsat=0,corrupt_rejections=0;
+for(let mask=0;mask<16;mask++){
+ const charges=Array.from({length:4},(_,j)=>(mask>>j)&1);
+ const cls=ts(charges);
+ check(cls.length===16&&cls.every(validClause),'authenticated 4K4 packets');
+ const w=findWitness(cls),even=charges.reduce((a,b)=>a+b,0)%2===0;
+ check((w!==null)===even,'original-source Tseitin label');
+ if(even){
+  original_sat++;
+  check(satisfies(cls,w),'original witness');
+  check(!satisfies(cls,w^1),'corrupted witness rejected');
+  corrupt_rejections++;
+ }else original_unsat++;
+}
+let malformed_controls=0;
+for(const bad of [[[1,1,-2]],[[0,2,3]],[[1,2]]]){
+ check(findWitness(bad)==='MALFORMED','typed malformed');
+ malformed_controls++;
+}
+console.log(JSON.stringify({role:'LSPV-2/478',status:'COMPUTATIONAL finite toy controls; exact rational arithmetic',cases,checks,original_sat,original_unsat,corrupt_rejections,malformed_controls,seed:'478+n, LCG 1664525/1013904223',frontier:{alpha:'3/5',lambda:'1/2',rho:'11/10',eta:'1/2',time:'6/5',beta:'23/45',gap:'1/90'},timing_distinguisher:true,limitations:'This toy predicate is not SAT; no native FLMV executor or full solver-dependent contraction.'},null,2));
