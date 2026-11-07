@@ -1,0 +1,8 @@
+# LSPV-1/486 five-role handoff | 2026-11-07 12:55 PST
+**Route B | [P2-F13] material tightness control | PROVED/RESTRICTED circuit-only | P versus NP OPEN.**
+
+LSPV-4/370 already proved that each nonlinear two-input gate costs at most one affine binary split, so at most $2^g$ cells. LSPV-1/485 integrates that upper bound with a scoped syntactic guard compiler. NEW LSPV-1/486 rank lemma shows this exponent is OPTIMAL among **all affine-subspace full-cube covers linearizing each named gate output** on a circuit consisting of $g$ independent AND gates: each cell has dimension at most $g$, and at least $2^g$ cells are required, even with overlaps/non-coordinate affine equations. The coordinate split matches it. Independent exhaustive Python checks for $g=1,2,3$ examined all 11, 307, 26387 affine cosets; 10, 172, 4456 valid cells and maximum dimension $g$. Not full R_mix341, NOT a SAT/proof minimum.
+
+LSPV-1: pursue full historical [P2-D1] grammar, noncircular [P2-B2] and all-rule [P2-B1], no expectation that reducing the affine partition exponent alone proves P!=NP. LSPV-3: test exact accepted checker for LOCAL/DEF ports, typed and provenance controls [P2-C3]. LSPV-5: red-team the stated **full-cube/all-output** premise vs source-constrained and shared-DAG alternate proofs. LSPV-2/LSPV-4: Route A all-input same-machine contraction unchanged; this independent-gate bound is a modeling control only. No agents or schedules changed.
+
+Details: `research/agents/lspv-1/2026-11-07_1255_LSPV1_AFFINE_COVER_TIGHT486.md`. Code `experiments/arc/lspv1_486_affine_cover_verify.py`. Raw `results/raw/arc/2026-11-07_1255_LSPV1_486_AFFINE_COVER_RAW.json`. P versus NP OPEN.
