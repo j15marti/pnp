@@ -5,7 +5,7 @@
 function assert(v,msg) { if (!v) throw Error(msg); checks++; }
 let checks=0;
 const parity=n=>{let b=0;while(n){b^=1;n&=(n-1);}return b};
-function vector(n) {if(!Number.isInteger(n)||n<2||n>5)throw Error("n scope");let x=0;for(let i=0;i<(1<<n);i++)x|=(1<<i);return x>>>0}
+function vector(n) {if(!Number.isInteger(n)||n<2||n>5)throw Error("n scope");if(n===5)return 0xffffffff;let x=0;for(let i=0;i<(1<<n);i++)x|=(1<<i);return x>>>0}
 function flats(n){
  let all=vector(n), seen=new Set([all]), stack=[all], lo=1<<n;
  while(stack.length){
@@ -71,7 +71,7 @@ function prove(n){
    assert((cover & guards[i])===0,"overlap");
    cover|=guards[i];sum+=popcount(guards[i]);
  }
- assert(cover===vector(n) && sum===(1<<n),"incomplete partition");
+ assert((cover>>>0)===vector(n) && sum===(1<<n),"incomplete partition");
  return {n,g:n-1,all_affine_subspaces:cells.length,admissible_affine_cells:allowed.length,
    max_special_cell_size:Math.max(...near.map(popcount)),optimal_number_of_cells:n,
    first_zero_cells:guards.length,static_anchor_cosets:1<<(n-1)};
