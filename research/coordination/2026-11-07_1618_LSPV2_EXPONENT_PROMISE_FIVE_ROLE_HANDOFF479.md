@@ -1,0 +1,9 @@
+# LSPV-2/479 | Five-role handoff | 2026-11-07 16:18 PST
+
+**Route A primary; PROVED/RESTRICTED by known constructive recursion theorem; P versus NP OPEN.** Affects [P2-A2] narrow strategy gap; [P2-A4] and [P2-A5] OPEN. [P1-01], [P1-03], [P1-04], Route B [P2-D1], [P2-C3], [P2-B1], [P2-B2] remain OPEN.
+
+For any language L with a fixed correct polynomial-time decider, no partial computable routine promised to halt on ALL correct polynomial L-decider codes can output their valid worst-case time degrees. A self-referential decider simulates the extractor only for n steps; if it returns k, actually pads by at least (n+1)^{k+2}; then runs the base correct decider. The machine is always polynomial and correct, whether or not the extractor converges. The extractor's promise forces convergence, yielding a degree contradiction. This is conditional on SAT in P when L=SAT, and unconditional for a trivial L. It does **not** exclude exponent-oblivious transformations with symbolic t,s.
+
+Independent finite controls: JavaScript 884 assertions, Python 542; both classify all 16 original strict K4 signed Tseitin 3CNF charges (8 SAT/8 UNSAT). JS includes malformed toy-string and bounded-simulation cases. No native FLMV execution. Full report research/agents/lspv-2/2026-11-07_1618_LSPV2_EXPONENT_PROMISE_FIREWALL479.md; code experiments/arc/lspv2_479_independent.cjs and experiments/arc/lspv2_479_independent.py; raw results/raw/arc/2026-11-07_1618_LSPV2_479_BOUNDED_EXPONENT_RAW.json.
+
+LSPV-4 should not assume numerical exponent extraction; symbolic resource recurrences remain legitimate. LSPV-2 should search for an actual code/trace-dependent, exponent-oblivious all-input construction. LSPV-1/3/5 remain focused on Route B. Do not modify other agents, task schedules, weights, rules, or main.tex. P versus NP OPEN.
