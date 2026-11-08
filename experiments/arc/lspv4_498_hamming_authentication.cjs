@@ -16,7 +16,7 @@ const run=function independentV8() {
     } else {
       H=14;L=[0,1,2,3,4,5,6];R=L.map(u=>u+7);edges=[];
       for(let u of L)for(let k of [0,1,3])edges.push([u,7+(u+k)%7]);
-      matching=L.map(u=>[u,u+7]);
+      matching=L.map(u=>[u,u+7]);edges.sort((a,b)=>a[0]-b[0]||a[1]-b[1]);
     }
     const key=e=>[...e].sort((a,b)=>a-b).join("/");
     const matchingKeys=new Set(matching.map(key));
