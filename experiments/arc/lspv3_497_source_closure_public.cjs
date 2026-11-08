@@ -74,7 +74,7 @@ function shrink(f){
 const t1=shrink(s1),t2=shrink(s2);
 ok(t1.support.join(',')==='x,y'&&t2.support.join(',')==='x,y','free support-shrink fork');
 const final=and3([t1,t2],'REUSE');
-ok(final.support.join(',')==='x,y'&&rows.some(r=>r.mask===3&&r.table===final.truth),'cross-support contraction produces exact XOR');
+ok(final.support.join(',')==='x,y'&&final.truth===6,'cross-support contraction produces exact XOR');
 const result={id:'LSPV-3/497',status:'PROVED/RESTRICTED + COMPUTATIONAL',grammar:'DISTINCT R_tag,sticky / R_tag,shrink',
  sourceSubsets:256,affineFourClausePackets:packets,counts,assertions:checks,rejected,
  fullMixedGrammar:'OPEN',PvsNP:'OPEN'};
