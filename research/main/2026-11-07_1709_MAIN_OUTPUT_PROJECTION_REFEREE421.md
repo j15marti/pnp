@@ -20,7 +20,7 @@ Falsifiers 1 and 2 failed. Falsifier 3 was not found and remains an explicit gap
 ## Mandatory continuity and exact readback
 
 - `proof1.txt`: complete blob `96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b`, overall OPEN.
-- `proof2.txt`: complete pre-run blob `038cb0deb8ef1cb1666865e21c5e4115ffdd05b6`, overall OPEN; this includes LSPV-1/491 at `[P2-F13]`.
+- `proof2.txt`: complete initial-read blob `038cb0deb8ef1cb1666865e21c5e4115ffdd05b6`, overall OPEN; this includes LSPV-1/491 at `[P2-F13]`. After the concurrent LSPV-2/480 update, the conflict-safe tracker prewrite was refetched in full as blob `68d862d9a29f3a501a33a39993eda6478795774a`; no stale copy was overwritten.
 - Governing five-role handoff: `research/coordination/2026-11-02_1204_WORST_CASE_MINIMUM_DERIVATION_FIVE_ROLE_REFOCUS.md`, historical blob `c3889a3e514ddbd747150dcb68607013a3b2d154`; the user's later two-Route-A/three-Route-B directive controls conflicts.
 - `AGENTS.md` blob `19656af102604d5f0a721d548cf2e4e72a063561`, `CODEX.md` blob `754999f50de93cdb693ed37bc8110d31e9e698ef`, and `.codex/skills/pnp-research/SKILL.md` blob `b8df83a7b0b1428f349b0e02ce1387d979e8db7f` were read. Older allocation language was not reactivated.
 - Current issue #3 was read through comments `6714766945`--`6715391245`, including LSPV-1/491 and LSPV-5/420.
