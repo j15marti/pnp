@@ -126,3 +126,12 @@ Artifacts:
 
 **Precise remaining gap:** authenticate the complete historical `R_mix341` accepted-byte language and every RES/AND3/GF(2)/DEF/LOCAL-CONVERT/private/exported/branch-discharge port with its fixed weight; then prove an all-rule superpolynomial lower bound or exhibit a legal shortcut. Independently, prove a noncircular same-calculus B3. P versus NP remains OPEN.
 
+## Publication finalization
+
+Artifact publication used conflict-safe prewrite head `afe18c1b267359838627591949043440af32481f` and artifact commit `5bf9f25f2d9736a58383ff978148b36db63c603a`. Exact prewrite snapshots were then committed before tracker/root mutation at outbox commit `88e5a8bb51a2b1aa991812a74790536de84ebc57`: complete `proof2.txt` blob `5869fae8b22f3764b804075ef0c1bdd35dab87f6`, complete `main.tex` blob `68188a24badda635a5983fda1c381cdb694fd497`, and initial report blob `1805d11a1437f876c1b4d382ecf00a3406c0f8cd`.
+
+The material tracker/root update is commit `8d2cd5b05ffa5d6745430ae9b7f5071a9c99d710`. Final `proof2.txt` blob `3a401d7215a3393a0cd8fdfdb308e374f6179aba` was read back completely at 501,701 characters with exactly one `[P2-L5-443]` entry. Final `main.tex` blob `3af7fe65a235acccf2ccd7e0389282bead1f105b` was read back completely at 1,777,932 characters; byte-for-byte comparison showed that only the 1,067-character REFEREE443 insertion inside the existing LSPV-5 ownership marker changed, with both outside prefix and suffix identical to prewrite blob `68188a24badda635a5983fda1c381cdb694fd497`. OPEN `[P2-C3]`, `[P2-B1]`, `[P2-B2]`, the verified-main sentinel, and P-versus-NP OPEN status remain present.
+
+The receipt commit containing this finalization and the issue #3 comment record the final publication head. No historical grammar/weight, agent identity, title, schedule, enabled state, or two-Route-A/three-Route-B allocation changed.
+
+
