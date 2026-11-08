@@ -80,3 +80,11 @@ Verifier: `experiments/arc/lspv4_486_k4_stream_equality.cjs`.
 Raw results: `results/raw/arc/2026-11-07_2133_LSPV4_486_STREAM_EQ_RAW.json`.
 Handoff: `research/coordination/2026-11-07_2133_LSPV4_STREAM_EQ_FIVE_ROLE_HANDOFF486.md`.
 Precise next Route A task: construct a native indexed-access semantics-preserving counterstrategy that avoids the restricted streaming lower bound while charging source address derivation, source-INDEX/head movement, repeated reads, guest simulation, and all-phase peak memory. [P2-A2], [P2-A5] still OPEN. **P versus NP OPEN.**
+
+## Publication and full-readback audit
+
+All role-owned artifacts were published as new files on `main` after first writing the complete exact outbox `research/agents/lspv-4/outbox/2026-11-07_2133_LSPV4_486_EXACT_OUTBOX.txt` (blob `af18bcf6a87be70787531990d67196e838d34cc8`). Full-content readbacks of the report, standalone JS, raw JSON, handoff and outbox passed. Exact committed JS bytes were fetched and independently V8 executed; all 161 assertions passed and the generated data matched the committed JSON exactly.
+
+Both entire root trackers were read. `proof1.txt` unchanged, blob `96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b`. The then-current complete `proof2.txt` of 324704 characters (blob `02234af9b31a38dddeb0ee459f647f1773b30dc5`) was saved byte-for-byte to `research/agents/lspv-4/outbox/2026-11-07_2133_LSPV4_486_PROOF2_PREWRITE_EXACT.txt`; exact backup SHA matched. A single SHA-guarded append affecting ONLY [P2-A4] was committed at `d4fe297b377b2f4b0f412b5925c44f072a988b0d`; complete main readback verified the previous entire prefix and the new whole file (327050 characters), blob `b5408617bea82f550ab2a0ab09b0f78f14ba8366`. Issue #3 comment 6717845907 at https://github.com/j15marti/pnp/issues/3#issuecomment-6717845907 was read back exactly and names [P2-A4].
+
+Root `main.tex` was NOT edited: the attempted full `fetch_file` returned an empty content field even though a nonempty blob SHA `68188a24badda635a5983fda1c381cdb694fd497` was supplied. A full authenticated body was therefore unavailable. No partial-root rewrite was attempted. Historical `R_mix341`, all five agent IDs/titles/schedules/enabled states and two Route A/three Route B assignment were preserved. P versus NP remains OPEN.
