@@ -40,3 +40,8 @@ Source parsing, input INDEX addressing, range checking and marker retention cost
 [2] Urquhart, Hard Examples for Resolution, JACM 34 (1987), 209-219, doi:10.1145/7531.8928.
 [3] Ben-Sasson, Wigderson, Short Proofs Are Narrow: Resolution Made Simple, JACM 48 (2001), 149-169, doi:10.1145/375827.375835.
 [4] Dell, van Melkebeek, Satisfiability Allows No Nontrivial Sparsification Unless the Polynomial-Time Hierarchy Collapses, JACM 2014, doi:10.1145/2629620.
+
+
+## FLMV numeric recurrence firewall (independently recomputed, KNOWN/CONDITIONAL)
+
+The requested Route A stage is still t' <= max(11/10, 3/5+t/2), s' <= max(1/2,s/2) for EVERY hypothetical uniform total polynomial SAT decider on the SAME indexed random-access machine. At its formal limit (t,s)=(6/5,1/2), direct rational evaluation of beta(c)=((c+2)/c^2-c)/2 yields beta(6/5)=23/45 and beta(6/5)-1/2=1/90>0. A strict finite interior check at c=1201/1000 and s=501/1000 gives beta(c)-s=23390597/2884802000>0. These are verified arithmetic under the published FLMV model, NOT evidence that an applicable all-input transformation exists. In this run's exact-state adversary, q=N^(3/5-o(1)) and K=M^k=N^(k/2) already give paid qK=N^(3/5+k/2-o(1)); no extra worst-case checkpoint speedup can be inserted into the recurrence. Full indexed source/head construction, actual guest simulation, fresh-input verification, caches, failed matching, all simultaneously live buffers, output and high-water WORK/index costs must be charged to invoke FLMV. This counterexample merely prevents incorrectly crediting a free worst-case decrease in qK under exact-state caching. Universal [P2-A2] and [P2-A5] remain OPEN.
