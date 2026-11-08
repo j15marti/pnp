@@ -99,6 +99,7 @@ function check(P){
    if(p.row){
     let mask=BigInt(p.row.mask),rhs=p.row.rhs;
     ok(rhs===0||rhs===1,"rhs");ok(mask>=0n&&mask<(1n<<BigInt(2*E)),"invalid mask");
+    for(let bit=0;bit<2*E;bit++)if(mask&(1n<<BigInt(bit)))ok(s.includes(bit+1),"unscoped affine-mask bit");
     for(let k=0;k<1<<s.length;k++){
      let sum=0;for(let i=0;i<s.length;i++)if(mask&(1n<<BigInt(s[i]-1)))sum^=(k>>i)&1;
      ok(((t>>k)&1)===(sum===rhs?1:0),"row not equivalent");
@@ -139,6 +140,7 @@ function run(){
    x=>x.nodes.find(y=>y.rule==="RES").c=[999],
    x=>x.nodes.find(y=>y.rule==="AND3").t^=1,
    x=>x.nodes.find(y=>y.rule==="XOR").row.rhs^=1,
+   x=>{let n=x.nodes.find(y=>y.rule==="AND3"&&y.row);n.row.mask=String(BigInt(n.row.mask)|(1n<<BigInt(2*e.length-1)))},
    x=>x.nodes[1].parents[0]="future",
    x=>x.charge[0]^=1
   ]){let x=JSON.parse(JSON.stringify(p));f(x);let did=false;try{check(x)}catch(e){did=true};ok(did,"corruption accepted");reject++}
