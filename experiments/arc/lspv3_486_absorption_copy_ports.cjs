@@ -83,8 +83,10 @@ function main() {
     ()=>resolve([-7,15],[16,-7,-15],16), // wrong pivot
     ()=>resolve([-7,15],[16,-7,15],15), // wrong polarity
     ()=>facets("FORGED",1,2,7), // unknown gate
-    ()=>{const d=defs[0]; if(d.a===d.a)throw Error("repeated operand prohibited");},
-    ()=>{if(16<=7) return 0; throw Error("cycle input not permitted");},
+    ()=>{const d={kind:"and",a:1,b:1,out:7};
+      if(d.a===d.b||d.a>=d.out||d.b>=d.out)throw Error("invalid distinct-operand DEF");},
+    ()=>{const d={kind:"and",a:16,b:1,out:7};
+      if(d.a===d.b||d.a>=d.out||d.b>=d.out)throw Error("forward-reference cycle");},
     ()=>{if(sources.even.minus_scope)throw Error("global e not entailed");},
   ]) {try{f()}catch{rejected++}}
   ck(rejected===6,"all hostile controls rejected");
