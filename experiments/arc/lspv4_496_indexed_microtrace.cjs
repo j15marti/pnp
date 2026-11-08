@@ -113,4 +113,6 @@ function audit496(){
  }
  return {status:'PASS',kind:'finite operational microtrace, not compiled native FLMV',source_cases,sat:8,unsat:8,sessions,guest_virtual_bit_reads:reads,guest_index_erasures_checked:erased,work_index_jumps:work_jumps,primitive_tape_transitions:total_steps,charged_local_address_arithmetic_proxy:total_local,maximum_all_phase_peak_proxy_bits:maximum,total_session_peak_proxy_bits:total_peak,high_work_index_test:2**25,zero_padded_index_bits:48,invalid_source_controls:invalid,assertions:checks,limitations:['The host JavaScript packet arithmetic, Map storage and macro transition scheduler are not compiled to the original indexed Turing machine.','The child bit stream has unchanged encoded length 448; no Route A contraction follows.','Only a subset of indexed operations is modeled. No arbitrary guest WORK-index decoder, native proof checker, or all-input SAT compiler is established.']};
 }
-return audit496();
+if (typeof module !== 'undefined' && require.main === module) {
+  console.log(JSON.stringify(audit496(),null,2));
+}
