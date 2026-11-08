@@ -31,6 +31,11 @@ For any sufficiently small fixed $\epsilon>0$ one has $n^{7/5+o(1)}=O(n^{3/2-\ep
 
 This is an **unconditional** language-general compiler no-go *on the stated standard model*. It is a direct consequence of a known hierarchy theorem, not an original proof of a new time hierarchy. It proves neither SAT hardness nor a no-go for SAT-specific, solver-dependent code-aware contraction. In particular, do NOT silently transfer standard-multitape exponents to the FLMV indexed random-access machine; a separate native-model hierarchy/simulation would be required.
 
+## Theorem 481.2 (stronger one-step firewall; PROVED/RESTRICTED)
+**Recursive closure is not needed** for the language-general obstruction. The standard deterministic time hierarchy also provides a language $L\in\mathrm{DTIME}(n^2)\setminus\mathrm{DTIME}(n^{7/4})$. If an effective language-general code-aware compiler preserves every such $L$ and maps a decider of exponent $t=2$ to the fully charged same-standard-multitape bound $f(2)=8/5$, its **first** output would decide $L$ in time $n^{8/5+o(1)}=O(n^{7/4})$, contradiction. Therefore **even a one-shot** all-P-languages time-contraction compiler with that envelope is impossible on the stated model. The two-step $2\to8/5\to7/5$ analysis remains a separate exact recurrence/recursive-closure control, but is not logically necessary for this stronger no-go. No claim about a SAT-only transformer or the native FLMV model follows.
+
+**Independent challenge:** Removing the recursive-closure assumption was a valid strengthening discovered after checking the hierarchy quantifiers. The theorem's *domain-general* assumption cannot be removed by this argument, since time-hierarchy languages need not admit SAT-specific source semantics. A practical candidate $A\mapsto\Phi(A)$ must therefore disclose where it uses SAT semantics, not merely full access to program code.
+
 ## SEARCH (primary statements and actual code)
 Checked:
 - Hennie and Stearns (1966), *Two-Tape Simulation of Multitape Turing Machines*, JACM 13(4):533-546, DOI 10.1145/321356.321362. Together with the deterministic time hierarchy, supports strict separation of $\mathrm{DTIME}(n^{3/2})$ and $\mathrm{DTIME}(n^2)$ for standard multitape machines.
