@@ -19,7 +19,7 @@ function test492(){
     return Number.isInteger(n)&&n>=0 && Array.isArray(cs)&&cs.every(c=>Array.isArray(c)&&c.length===3&&c.every(x=>Number.isInteger(x)&&x!==0&&Math.abs(x)<=n)&&new Set(c.map(Math.abs)).size===3);
   }
   let state=74291;
-  function rand(k){state=(Math.imul(state,1664525)+1013904223)>>>0;return state%k;}
+  function rand(k){state=(Math.imul(state,1664525)+1013904223)>>>0;return Math.floor(state / 4294967296 * k);}
   for(let n=3;n<=9;n++){
     for(let trial=0;trial<20;trial++){
       const cs=[];
