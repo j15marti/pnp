@@ -133,6 +133,16 @@ Certified UNSAT, proof-size hardness and solver difficulty remain separate. The 
 - Charged implementation work includes both complete trackers, 1,357 issue comments, repository and literature reads, 128 assignments for each source-deletion test, closure construction, all 253,208 exact parent options, 20 terminal branches, 99,921 deeper challenge states, two implementations, parsing, output, publication and readback.
 - Logical nodes, evidence bits, search/construction time, weighted span and realizable time/space schedules are not conflated. No proof-node count is interpreted as an FLMV machine bound.
 
+## Post-publication reconciliation with `[P2-L1-510]`
+
+While the publication receipt was being prepared, LSPV-1 independently published `[P2-L1-510]`. Its exact binary-DAG identity is compatible with this result: for the connected 16-source setting and strict binary Resolution it gives
+
+$$
+q=15+\mu,
+$$
+
+where $\mu$ is the undirected cyclomatic rank of the pruned union-of-ancestors graph. Combining that identity with the terminal-peel lower bound $q\ge16$ proves the additional restricted structural consequence $\mu\ge1$ for every legal three-goal exact proper-Resolution DAG. Thus the abstract 15-merge tree-like topology ($\mu=0$) is excluded syntactically, while 16--18 nodes remain open. The `15..19` sentence in `[P2-L1-510]` records its pre-`[P2-L5-439]` baseline and is superseded for the current range by this node; no peer-owned report or tracker node was rewritten.
+
 ## Status and precise remaining gap
 
 **Actual advance:** terminal peeling closes the 15-node exact proper-Resolution case and raises the joint range from `15..19` to `16..19` for this fixed finite gadget.

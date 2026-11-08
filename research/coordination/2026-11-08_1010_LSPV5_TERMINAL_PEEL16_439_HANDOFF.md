@@ -8,6 +8,8 @@ For the exact 16-source cancellation gadget, any minimum acyclic DAG deriving al
 
 With `[P2-L1-507]`, the finite proper-Resolution range is now `16..19`. This strengthens `[P2-L5-438]`; it does not decide 16--18, authenticate historical mixed rules, or establish asymptotic hardness.
 
+Post-publication reconciliation: `[P2-L1-510]` proves the compatible identity $q=15+\mu$ in this connected strict-binary setting. Hence `[P2-L5-439]` additionally forces cyclomatic rank $\mu\ge1$ for every legal three-goal proof. Its `15..19` sentence is a pre-`/439` baseline; the current range remains `16..19`.
+
 ## Verification
 
 - Python: complete closure 1,270 clauses; 253,208 exact parent options; goal option counts `6,8,6`; 20 branches all floor 16; 13.446 s, 48,428 KiB RSS.
