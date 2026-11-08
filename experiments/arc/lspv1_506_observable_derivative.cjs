@@ -59,6 +59,17 @@ function run() {
   if(src){models++;ck(h===(x&t),"observable identity false")}
  }
  ck(models===8&&mp.R033.d===4,"unexpected model count or depth");
+ let satPositive=0, unsatNegative=0;
+ for(let a=0;a<128;a++){
+  let x=a&1,t=(a>>2)&1,h=(a>>6)&1;
+  if(sources.every(cl=>sat(cl,a))&&x===1&&t===1&&h===1)satPositive++;
+  if(sources.every(cl=>sat(cl,a))&&x===1&&t===1&&h===0)unsatNegative++;
+ }
+ ck(satPositive===2&&unsatNegative===0,"SAT/UNSAT control fails");
+ const corruptedSource=sources.map(c=>c.slice()); corruptedSource[3]=[-1,-2,-4];
+ ck(Array.from({length:128},(_,a)=>a).some(a=>sources.every(c=>sat(c,a))&&!corruptedSource.every(c=>sat(c,a))),"bad source was not detected");
+ const proper=(c)=>Array.isArray(c)&&c.length===3&&new Set(c.map(x=>Math.abs(x))).size===3&&c.every(x=>Number.isInteger(x)&&x!==0&&Math.abs(x)<=7);
+ ck(sources.every(proper)&&!proper([1,1,99]),"malformed source accepted");
  ck(res(mp.R029.clause,mp.R030.clause,7)===null,"malformed pivot accepted");
  ck(!eq(norm([99]),mp.R001.clause),"corrupted inference accepted");
  function subs(n){
