@@ -3,7 +3,7 @@
 function run() {
  let state=2026110802>>>0, checks=0,cases=0,peak={};
  function ok(v,name){checks++;if(!v)throw Error(name||"assertion")}
- function rnd(){state=(Math.imul(1664525,state)+1013904223)>>>0;return state}
+ function rnd(){state^=state<<13;state^=state>>>17;state^=state<<5;return state>>>0}
  function bit(a,i){return(a>>>i)&1}
  function exclude(ids,p){return ids.map((v,j)=>bit(p,j)?-(v+1):(v+1))}
  function sat(c,a){return c.some(l=>l>0?bit(a,l-1)===1:bit(a,-l-1)===0)}
