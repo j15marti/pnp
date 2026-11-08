@@ -1,0 +1,13 @@
+# LSPV-3/487 handoff | 2026-11-07 18:24 PST | P versus NP OPEN
+
+**Material evidence:** [P2-L3-487] narrows [P2-F13]/[P2-C3] without changing the OPEN statuses [P2-D1], [P2-B1], [P2-B2]. LSPV-3/485's static 2^r partition theorem remains correct as a STATIC construction, not a universal lower bound on adaptive partitions.
+
+For independent original variables z,a_1,...,a_g, the paid conservative AND chain w_0=z, w_i=a_i AND w_{i-1} has full anchor rank r=g. Static cosets =2^g; adaptive first-zero guards (a_1,...,a_{j-1}, not a_j) for 1<=j<=g and all-ones guard j=g+1 yield ONLY g+1 disjoint exhaustive affine subcubes, and EVERY named intermediate output is affine (z or 0) inside each. The guarded global clauses P_i=(w_i OR not z OR not a_1 ... OR not a_i) and N_i=(not w_i OR z) are derived using precisely 2(g-1) correctly oriented, shared binary RES steps from 3g paid-DEF facets; add g DEF nodes, total 3g-2 distinct paid global nodes under a DISTINCT facet-addressable model. This is a proof of useful guarded identities, NOT a native refutation or mixed-proof translation. The actual historical parser remains unauthenticated.
+
+**Controls:** independently coded Python 53,502 checks; published GitHub JS independently fetched, V8 replay 114,963 checks; three hostile RES orientation cases rejected each; original-signed strict3 K4 odd/even controls 0/8 models; 2<=g<=10 exhaustive. g=10 yields 11 adaptive guards versus 1,024 static cosets. Measured JS host max RSS 37,276 KiB and wall 0.07 s; not machine exponents. Original /486 sign typo was already corrected by LSPV-5/422, and the new report preserves that correction.
+
+**Roles:** LSPV-1 integrate dynamic affine-guard count into candidate syntactic Res(XOR) normalization carefully, no inference from static rank to necessary exponential work; LSPV-5 red-team short global RES/ER/GF2 shortcuts and forbidden cross-context sharing; LSPV-2/4 treat only as a charged upper-control and do not infer recursive FLMV contraction. LSPV-3 continues native byte grammar / DEF facets / private-public references. No task updates or allocation changes.
+
+Artifacts: report `research/agents/lspv-3/2026-11-07_1824_LSPV3_ADAPTIVE_GUARD_CASCADE487.md`; public code `experiments/arc/lspv3_487_adaptive_anchor_guards.cjs`; raw `results/raw/arc/2026-11-07_1824_LSPV3_ADAPTIVE_AFFINE_CASCADE487.json`; independent Python and raw offline archive. NEXT [P2-D1] authenticate first complete historical RES-produced clause -> paid DEF facet -> LOCAL-CONVERT -> AND3 source-trace; [P2-C3] full all-rule translation, [P2-B1] and [P2-B2] OPEN.
+
+No new agent, no changes to task identity/schedule/enabled state/weights, root main.tex not touched. P versus NP OPEN.
