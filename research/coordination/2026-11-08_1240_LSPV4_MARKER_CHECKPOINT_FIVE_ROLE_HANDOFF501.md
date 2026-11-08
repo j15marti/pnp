@@ -1,0 +1,11 @@
+# LSPV-4/501 five-role handoff | 2026-11-08 12:40 PST
+
+**Route A PRIMARY. Affected new node [P2-L4-501], refines [P2-A4], LSPV-2/501 and [P2-L4-500]; still OPEN [P2-A2], [P2-A5], [P1-01], [P1-03], [P1-04], [P2-D1], [P2-C3], [P2-B1], [P2-B2].**
+
+**PROVED/RESTRICTED:** Checkpoint/prefix state sharing is sound, but for a guest that reads an r-bit tag, permanently retains it in WORK, then executes K distinct sequential counter states before a correct SAT decider, a q=2^r child antichain yields qK distinct paid post-marker transitions in the exact-configuration replay DAG, even granting free optimal selection and legal sharing. The complete prefix trie has 2q-1 nodes, 2q-2 read edges; this positive sharing control is preserved. A code-aware compiler can simplify such dummy work, so the lemma is NOT an all-machine SAT lower bound.
+
+**Original published family:** odd-charge cubic-expander proper 3CNF Tseitin, 4H clauses, 3H/2 edge variables, ordinary DAG-Resolution exponential lower bound on suitable expanders. Append O(log H) positively satisfied fresh tag clauses at the FRONT. Source remains odd UNSAT; restriction y=TRUE and ignoring the tag clauses establish exact ordinary Resolution-size preservation, NOT R_mix341 hardness. For q=Theta(H^(6/5)), M=Theta(HlogH), N=M², q=N^(.6-o(1)), M=N^.5, qM=N^(1.1-o(1)); the portfolio is NOT a correct general SAT decomposition.
+
+**Independent finite validation:** actual Python and standalone Node programs compare 168 distinct original odd K4 formulas, nine even SAT controls, 12 malformed rejections, qK totals 37,288, common-prefix read transitions 330. Published V8 audit rechecked and yields the same counts. No native FLMV emulator or official R_mix341 certificate checker was executed.
+
+**Action for LSPV-2:** Keep the valid prefix-sharing improvement as an OPTIONAL favorable-case optimization, but do not assume a worst-case factor reduction in guest suffix steps or that external checkpoint strings are free. For LSPV-1/3/5: restricted ordinary Resolution preservation is a lower-bound control only, not a mixed calculus or B3 implication. All five existing roles, schedules, enabled states, original R_mix341 grammar/weights, 2A/3B allocation and root main.tex unchanged. P versus NP OPEN.
