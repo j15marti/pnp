@@ -1,0 +1,19 @@
+# LSPV-4/502 | Five-role handoff: paid sparse repair for one high-water indexed WORK cell
+
+**2026-11-08 13:36 PST | Route A primary | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN**
+
+**Tracker node:** [P2-L4-502], refining resource evidence under [P2-A4], [P2-L4-496], [P2-L4-501] and LSPV-2/502. Required universal Route A [P2-A2] and recursive [P2-A5] remain OPEN; companion [P1-01], [P1-03], [P1-04] remain OPEN. Historical R_mix341, Route B [P2-D1], [P2-C3], [P2-B1], [P2-B2] unchanged OPEN. Five roles, title IDs, enabled states, schedules and 2A/3B allocation unchanged.
+
+**IDEA:** On FLMV's actual indexed random-access Turing machine, a single indexed WORK access to position A=2^(k ceil(log2(n+1))) gives native high-water Theta(n^k) even when only one data bit is stored. A fresh typed SAT guest G_k(B) can construct that INDEX, write a data-dependent source bit, reconstruct INDEX, read the bit, and call any hypothetical correct total polynomial SAT guest B unchanged. Correctness holds for all binary inputs including malformed. Time is O(T_B(n)+n+k log n). The huge work high-water belongs to unchanged execution, not to all equivalent algorithms.
+
+**SEARCH:** FLMV JACM 2005 author manuscript §2.1, page 4 screenshot, explicitly notes sparse-cell normalization with polylog overhead; this technique is established, not novel. Read both root trackers completely, issue #3 through LSPV-2/502, governing 2026-11-02 five-role handoff, AGENTS.md, CODEX.md, skill, peer LSPV-2/502, prior LSPV-4/496 and /501 and LSPV-2/433, /479; actual Grok and Claude files; both new repositories konard/p-vs-np and blkph0x/p-vs-np-proof-research; CNFgen, FRAT-XOR, openai/math costed code. Search limitation: no separately branded Google interface; standard web indexing used.
+
+**ITERATE / rigorous bounded repair:** For the *explicit, private one-cell macro only*, replace both indexed high-address operations by one low-address physical WORK cell, retain exact read-back bit/branch, clear scratch and call B with fresh guest tapes. It is a same-machine semantics-preserving compiler with local time O(n+k log n) and local WORK/INDEX O(k log n), not a general arbitrary-guest sparse dictionary. If B has workspace S_B, overall space is O(max(S_B,log n)); all scan, INDEX, head, output, clearing and guest phases are charged. Native macro's Θ(n^k) address is NOT an implementation-independent lower bound. Neither result constructs the missing all-input SAT decomposition or changes the guest B's own cost.
+
+**Finite check:** Python 644 and independently implemented V8 JS 644 checks; 16 original signed K4 208-bit strict 3-CNF controls (eight SAT, eight UNSAT), 7 malformed mutations, three short/empty inputs; k={1,2,3,4,6}; 130 instances; all 16 original-source SHA-256 hashes matched. At n=208,k=6: indexed high-water 2^48, sparse HOSTED slot ledger 244 bits, not a native instruction-level measurement. No historical R_mix341 checker run. Original expanding Tseitin proof hardness is ordinary shared-DAG Resolution only, with known GF(2) shortcut preserved.
+
+**Published:** research/agents/lspv-4/2026-11-08_1336_LSPV4_INDEXED_SPIKE_SPARSE_REPAIR502.md ; experiments/arc/lspv4_502_sparse_spike_independent.cjs ; results/raw/arc/2026-11-08_1336_LSPV4_502_SPARSE_INDEX_RAW.json ; this handoff. Local independent Python code and raw archived separately.
+
+**LSPV-2:** Continue toward actual solver-dependent all-input recursively iterable Φ(A), but allow paid white-box address virtualization and semantic port rewrites; do not infer impossibility from an indexed address spike alone. **LSPV-1/3/5:** no inference about mixed R_mix341 minimum or B3; only cross-route resource audit.
+
+**Precise remaining gap:** No universal same-FLMV-machine SAT contraction meeting t'<=max(11/10,3/5+t/2), s'<=max(1/2,s/2). P versus NP OPEN.
