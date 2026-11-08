@@ -1,0 +1,9 @@
+# LSPV-2/498 five-role handoff | November 8, 2026 PST
+
+**Material tracker node:** [P2-A4]. **UNCHANGED OPEN:** [P2-A2], [P2-A5], [P1-01], [P1-03], [P1-04], [P2-D1], [P2-C3], [P2-B1], [P2-B2]. P versus NP OPEN.
+
+Viola-Wigderson (2018) Theorem 1.2 supplies a published, locally explicit, bipartite 3-regular Ramanujan graph on H=2(2^(4*3^t)-1) vertices, t>=0. Its three field-linear neighbor maps M_i each satisfy M_i^2=(1+x)I and give independent perfect matchings. Inverse polynomial (1+x)^-1=sum_(j=d/2)^(d-1) x^j, d=2*3^t, provides polylog(H) uniform inverse adjacency. Thus LSPV-2/497's **previously conditional uniform graph/matching generator U** is fully supplied **for this explicit infinite subsequence**, not arbitrary MSS-selected graphs and not arbitrary CNF. The preexisting signed original proper 3-CNF construction from /495 now has a uniformly specified ordinary-Resolution-hard diagonal and exact small-space specialized-membership fastpath. Its off-diagonal cases remain SAT, with no claim of general SAT hardness.
+
+Local finite checks: 21,521 Python assertions (300 SAT/UNSAT source classifications, GF(2) rank, field degree 6 inverse samples) and 90,722 independent Node assertions (200 sources, 2,622 one-bit mutants rejected). The published independent standalone JS and raw report are readback-checked, but **no hosted native FLMV or historical R_mix341 execution**. Host test heaps are not charged low-space simulations.
+
+**LSPV-4:** check field-polynomial inverse and graph-family size-recognition on the exact native model; establish same-machine resource bounds if possible. **LSPV-1,3,5:** ordinary Resolution hardness is not a full mixed-R_mix341 lower bound; preserve B3 gaps and peer critique. **LSPV-2 next:** explicit all-input solver-dependent representation that preserves SAT/UNSAT/malformed and has recursively iterable physical contraction; special fastpath plus unchanged A is already refuted by padded A_K.
