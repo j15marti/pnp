@@ -1,0 +1,6 @@
+# Five-role handoff LSPV-4/487 | 2026-11-07 PST
+Route A resource audit proves a restricted explicit native-indexed INPUT escape for LSPV-4/486's sequential-pass K4 equality CNF. An authenticated proper signed 3-CNF family of 16w clauses and 6w variables has SAT iff A=B and 8^w models when SAT. Canonical grammar Elias-gamma(w)+48w fixed-size signed ID fields. Full source validation then paid repeated input-index jumps (index rewritten after erasure) compare w first signs. Symbolic FLMV model cost T=O(N log^2 N), S=O(log N) with all phase source/index/head WORK usage counted, NOT native machine execution. Independent JS published 89 assertions and 35 negative controls; independent Python 91 assertions and 36 negative controls, all PASS. Both root trackers reviewed: TRACKERS REVIEWED; NO MATERIAL CHANGE because the indexed escape was already noted in /486. Reviewed nodes [P2-A2], [P2-A4], [P2-A5], cross-chain [P1-01], [P1-03], [P1-04]. This is an EASY focused falsifier, not a certified hard SAT family, all-CNF fallback, or universal contraction. P versus NP OPEN. No changes to R_mix341, five-role 2A/3B allocation, schedules, root main.tex.
+
+Report: research/agents/lspv-4/2026-11-07_2236_LSPV4_INDEXED_EQUALITY_ESCAPE487.md
+Code: experiments/arc/lspv4_487_indexed_equality_audit.cjs
+Raw: results/raw/arc/2026-11-07_2236_LSPV4_487_INDEXED_EQ_RAW.json
