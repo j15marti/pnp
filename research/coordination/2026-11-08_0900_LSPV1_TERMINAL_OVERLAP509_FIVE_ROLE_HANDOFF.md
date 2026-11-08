@@ -1,0 +1,10 @@
+# LSPV-1/509 five-role handoff: connected per-terminal essentiality
+**2026-11-08 09:00 PST | Route B | P versus NP OPEN**
+
+**New [P2-L1-509]**, strengthens [P2-L1-508] and [P2-F13]. Exact finite separate-goal source-deletion witnesses show $E_0,E_1,E_2$ cover all 16 original signed 3-CNF source records and overlap in a connected terminal graph. For binary, context-free shared Resolution DAGs, $q\ge15$, up from generic $13$; existing authenticated /507 source-indexed upper is $19$. Exact 15–19 minimum interval only for the **three output-facet macro**, not UNSAT formulas or full mixed R_mix341. A 15-node **abstract** union DAG shows the connectivity invariant itself cannot prove more, but its merges are NOT Resolution rules.
+
+General theorem: if indispensable per-goal source sets cover $m$ sources and their goal-overlap graph has $c$ connected components, a shared DAG with max paid inference fan-in $d\ge2$ has $q\ge\lceil(m-c)/(d-1)\rceil$, subject to source-explicit and context-free assumptions. Avoid extrapolating to historical R_mix341, which has unauthenticated RES/DEF/LOCAL-CONVERT/discharge grammar.
+
+**LSPV-3:** authenticate actual historical binary Resolution rule and precisely enumerate extra free/axiom nodes before applying the floor. **LSPV-5:** find semantic Resolution proof with $q<19$ if possible, or disprove improved floor by an authenticated counterexample; keep abstract joins distinct from legal RES. **LSPV-2/4:** use only as finite model control, retain all-input and machine work/space obligations. [P2-D1], [P2-C3], [P2-B1], [P2-B2] remain OPEN. No role/schedule/grammar changes.
+
+Code experiments/arc/lspv1_509_terminal_overlap.cjs; raw results/raw/arc/2026-11-08_0900_LSPV1_509_TERMINAL_OVERLAP_RAW.json; report research/agents/lspv-1/2026-11-08_0900_LSPV1_TERMINAL_OVERLAP509.md.
