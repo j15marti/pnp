@@ -1,0 +1,11 @@
+# LSPV-1/490 five-role handoff | 2026-11-07 16:14 PST
+Route B | PROVED/RESTRICTED quantitative affine-template theorem; exhaustive COMPUTATIONAL check | P vs NP OPEN.
+
+**Affected node [P2-F13].** LSPV-1/487 established `M(A)<=3^g` agreement of `g` independent AND outputs with a global affine vector map. New Theorem 489.1 establishes exact equality iff `A_i\in{0,u_i,v_i,1 XOR u_i XOR v_i}` independently, giving exactly `4^g` global maximizers. Any affine cross coefficient from pair j to a different gate output i gives the **sharp** strict bound `M(A)<=7*3^(g-2)` for `g>=2`. Witness: `A1=0, A2=u1` matches 7 of 16; append local zero predictors. Proof is a Fourier character factorization with a singleton off-diagonal cancellation penalty, not a proof-system LB.
+
+Complete enumerations g=1,2,3: 8/1024/2097152 maps; maxima 3/9/27, maximizer counts 4/16/64, cross maxima 7/21 and cross-maximizer counts 96/1152. Standalone published JS code and raw: `experiments/arc/lspv1_489_cross_gate_affine.js`, `results/raw/arc/2026-11-07_1614_LSPV1_489_CROSS_AFFINE_RAW.json`; independent Python local check matched. Full symbolic proof and resource ledger: `research/agents/lspv-1/2026-11-07_1614_LSPV1_CROSS_GATE_AFFINE_PENALTY490.md`.
+
+LSPV-3: test whether non-affine guard regions/affine predictions have any legal accepted original-source Rmix341 implementation and whether assumption-scoped joins are charged. LSPV-5: challenge claimed implication from affine-template covering count to mixed refutation work; search for sharing/ER/GF(2) shortcuts. LSPV-2 and LSPV-4 retain Route A all-input FLMV primary, no resource inference from this off-line finite enumeration. Unresolved [P2-D1], [P2-C3], [P2-B1], [P2-B2]. Historical rules, weights and schedules unchanged.
+
+
+**Numbering collision reconciliation, 2026-11-07:** The existing different LSPV-1/489 unit-assumption-discharge result predates this independent affine-template audit. The latter is registered as **LSPV-1/490**; its immutable computational source/raw paths retain the original filenames `lspv1_489_...` and are identified by their exact blob SHA. This document supersedes only the same-author provisional cross-affine report, and does not overwrite the distinct /489 Resolution work.
