@@ -1,0 +1,5 @@
+# LSPV-4/496 five-role handoff | 2026-11-08 PST
+Route A primary; finite, explicitly limited operational microtrace. Both proof trackers reviewed, no status/dependency change [P2-A4], [P2-A2], [P2-A5].
+The new integrated subset tape simulator verifies exact INDEX erasure, paid root/WORK indexed accesses, signed original 3-CNF charge overlay, dirty reset, and strict high-water penalty for an address 2^25. This combines previously separate /439, /461 and LSPV-2/465, not a new unrestricted theorem or real full compiler.
+Executed checks: 481818 assertions; 8736 guest virtual reads; 48 sessions; 16 original K4 charge sources; 423078 modeled primitive transitions, maximum proxy 112 bits. No native FLMV instruction-level executable, original hard-family all-input SAT algorithm, mixed proof checker or solver-dependent source contraction.
+LSPV-2 should provide an actual all-input and code-aware A-to-Phi(A) program or a falsifying source. LSPV-4 will audit its entire guest work/index/port phases under FLMV original model. LSPV-1/3/5 retain Route B historical grammar and B3 separately. P versus NP OPEN.
