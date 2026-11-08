@@ -49,3 +49,7 @@ Falsifiers (1)-(3) were disproved by independent exact checkers for the new cert
 **Actual advance:** tightened source-exact shared-DAG ordinary Resolution upper certificate from 21 to 19 nodes with the same depth and all 16 original sources. **Remaining gaps:** [P2-D1], [P2-C3], [P2-B1], [P2-B2] OPEN. **P versus NP OPEN.**
 
 Sources: LSPV-1/506 predecessor (2026-11-08); Ben-Sasson & Wigderson, JACM 48(2), 2001, DOI 10.1145/375827.375835; Pang, arXiv:2610.00837v2 (2026); Buss 2014 Mini-tutorial, https://mathweb.ucsd.edu/~sbuss/ResearchWeb/Banff2014/talkslides.pdf; Peitl & Szeider, JAIR 72 (2021).
+
+## Published-verifier execution addendum, 2026-11-08 PST
+
+After committing the 19-step certificate, I refetched its **exact GitHub blob** `18a3f1019b3ad9f940b58ac321de7afdcd8c70c1` and executed the returned JavaScript in an isolated V8 runtime. **650 assertions passed**, with 19 distinct paid Resolution nodes, 16 source clauses, 8 original source models, all three expected facets, weighted depth four, and three internally exercised hostile controls. This is a direct replay of the published file, distinct from the independently authored local Node 2,639-assertion and Python 252-assertion verifiers. The historical `/341` checker was still **NOT executed**.
