@@ -28,7 +28,7 @@ Every accepted source has exactly 4H pairwise distinct original proper 3-CNF cla
 
 ## Theorem 497.1: exact fixed-grammar all-bit authentication, conditional uniformity
 
-**Hypothesis U:** ONE uniform deterministic algorithm computes the public graph's vertex packet order, matching index, the two fixed nonmatching IDs, both matching endpoints and local odd-charge bit from (H,v) or (H,j) with time T_G(H) and space S_G(H). No growing advice table or source-independent semantic oracle. MSS existence alone does not discharge U for a selected expander sequence.
+**Hypothesis U:** ONE total uniform deterministic algorithm decides whether H belongs to the supported graph family (returning OUTSIDE if not) and, for supported H, computes the public graph's vertex packet order, matching index, the two fixed nonmatching IDs, both matching endpoints and local odd-charge bit from (H,v) or (H,j) with time T_G(H) and space S_G(H). No growing advice table or source-independent semantic oracle. MSS existence alone does not discharge U for a selected expander sequence.
 
 **Claim:** There exists a fixed three-label indexed-input classifier correct for EVERY binary string relative to this specialized grammar, outputting MEMBER_SAT, MEMBER_UNSAT or OUTSIDE. With all source/index/head arithmetic and state charged:
 
