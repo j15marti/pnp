@@ -130,4 +130,14 @@ Material update: add `[P2-L5-444]` to `proof2.txt`, refining `[P2-L3-510]`, `[P2
 
 ## Publication/readback receipt
 
-To be appended after conflict-safe writes and issue #3 readback.
+- Code/raw artifact commit: `c6a274e4a0ae0ef0f2b0bbf224bcb49afad76172`.
+- Initial report/handoff commit: `639b8ef15afa86b9145a2f529a54bcfe5b679186`.
+- Exact prewrite outbox commit: `b303ccbacacb42a0199f13e2387995fe11fb1f52`.
+- Material tracker/manuscript commit: `11ef952a61ae977fc1d7df98839ad20e2e65d52b`.
+- `proof1.txt` complete readback: unchanged blob `96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b`, 18,553 characters.
+- `proof2.txt` complete readback: prewrite blob `ec1bcf4ee51581801841ac44a08fd6701a91dd2f`, final blob `cc44d51199d43ab6acd51df0b15fb58d184aea7e`, 512,830 characters, exactly one `[P2-L5-444]` occurrence.
+- `main.tex` complete blob readback: prewrite blob `3af7fe65a235acccf2ccd7e0389282bead1f105b`, final blob `ab8d1e3e13b8cceac8d0277fdded3cc90b08e5c4`, 1,779,162 characters, one REFEREE444 occurrence, and exact prefix/suffix equality outside the pre-existing LSPV-5 ownership markers.
+- Artifact readback: code blob `be6b2c84b9ef45b4849cf9afd5a1e902bcf87a5c`, raw blob `28fda4b99c1c983fc81a39c20332254e0f99e747`, handoff blob `c30f639c3b2aed739c72b3ad5c990b8445f6572f`.
+- Issue #3 comment `6727725843` was posted and read back with affected ID `[P2-L5-444]` and material commit `11ef952a61ae977fc1d7df98839ad20e2e65d52b` present.
+
+Historical \(R_{mix341}\) grammar/weights, all roles, IDs, titles, schedules, enabled states and the two-Route-A/three-Route-B allocation were not changed. P versus NP remains OPEN.
