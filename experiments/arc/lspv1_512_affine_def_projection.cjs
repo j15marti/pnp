@@ -98,12 +98,14 @@ function audit(name,h){
  const even=source.map(x=>[...x]);even[0][1]=0;
  const evenRoot=even.reduce(xor,[0,0]);
  check(JSON.stringify(evenRoot)==="[0,0]","even charge false contradiction");
+ let evenModels=0; for(let a=0;a<(1<<n);a++)if(even.every(([m,r])=>evalPar(m,a)===r))evenModels++;
+ check(evenModels===(1<<(n-h+1)),"even-charge model-count mismatch");
  check(!validateDefs([defs[0],[defs[0][0],1]],n),"nonfresh definition accepted");
  check(JSON.stringify(xor(rows[0].r,rows[1].r))!=="[0,1]","forged root accepted");
  return {family:name,vertices:h,edge_variables:n,source_clauses:cnf.length,source_models:assignments,
    paid_affine_defs:defs.length,paid_xors:h+1,unique_coeff_rows:rows.length,
    beta,source_mass_at_cross:pop(coeff[cross]),width_at_cross:pop(projection[0]),
-   bound:beta*h/3,root_row:rows[root].r,even_control_root:evenRoot};
+   bound:beta*h/3,root_row:rows[root].r,even_control_root:evenRoot,even_charge_models:evenModels};
 }
 function run(){return {status:"PASS",system:"R_affDEF_XOR512: source parity equations + paid acyclic affine definitions + paid binary XOR",cases:[audit("K4",4),audit("K33",6),audit("cube3",8)],hostile_controls:["even charge rejected as contradiction","duplicate/nonfresh definition rejected","forged row rejected","source-CNF parity checked exhaustively"]}}
 if(typeof require!=="undefined"&&require.main===module){console.log(JSON.stringify(run(),null,2));}
