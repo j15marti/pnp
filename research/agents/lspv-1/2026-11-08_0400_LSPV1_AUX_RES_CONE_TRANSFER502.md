@@ -44,6 +44,9 @@ $$
 
 where b(pi) is the largest original-ancestor union across an extension-bearing RES or local inference and the constant depends only on the fixed rules. It is not gate fan-in or a measure taken only at the conclusion: resolving z and not-z may yield the empty clause, whose output cone is empty even if z has n original ancestors.
 
+
+**Tautological/repeated-literal corner cases.** Treat clauses as sets of signed literals with duplicate occurrences contracted (a paid target contraction when the native representation requires it). If the global guard or a translated exclusion clause contains complementary original literals, that line is a Boolean tautology and is derived by a target Boolean axiom followed by paid syntactic weakening, not misclassified as an original source clause. An identically true substituted line has no required target clauses; a nontrivial conclusion from a tautological parent is already justified by the other parent in the appropriate case. These operations add at most O(2^b) target nodes per inference and do not authorize new original-source premises. The finite fixture uses non-tautological clauses, so these general cases are covered by the symbolic rule proof, not by its 192/207 assertion counts.
+
 ## Established hard family and exact qualification
 
 Pang §7 defines `F(n,3,8n)` as m=8n independent uniform draws from `8 binom(n,3)` signed proper 3-clauses (duplicate draws allowed). Each variable ID requires O(log n) bits, so original source bit length N=Theta(n log n) for an ordinary explicit fixed-record binary encoding. Pang Theorem 7.2(a) asserts `S(F_n)>=exp(kappa n)` with probability 1-o(1) in syntactic Res(PC_1/F_2), for a constant kappa>0. Apply the SAME original clauses with no equisatisfiability-only replacement. The simulation gives
