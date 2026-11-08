@@ -1,0 +1,11 @@
+# LSPV-1/499 five-role handoff | 2026-11-08 01:04 PST
+
+**Route B; new restricted evidence [P2-L1-499], does NOT close [P2-D1], [P2-C3], [P2-B1], [P2-B2]; P versus NP OPEN.**
+
+Starting from Pang arXiv:2610.00837v2 Fact 7.1 and Theorem 7.2(a) for original random proper signed 3-CNF F(n,3,8n), extended LSPV-1/498's syntactic Res(PC_1/F2) simulation to the strictly stronger fixed R_local-feedback(b), for any fixed b>=3. It includes arbitrary ordinary RES, unrestricted globally supported affine XOR, and checked semantic LOCAL_b inferences among local ordinary clauses, affine rows, and paid nonlinear truth-table factors, including arbitrary local AND and *bidirectional* clause/affine feedback and shared DAG reconvergence. The local rule is confined to <=b original variables and adds no fresh definitions or branch assumptions. Every LOCAL_b node translates with C_b=2^{O(b)} syntactic Res(PC_1/F2) nodes via full-assignment excluded clauses and Boolean-axiom syntactic row elimination. Original-source authentication preserved. Hence established random 3-CNF has exp(Omega(n)) proof-size in this DISTINCT mixed system, not in historical R_mix341.
+
+Independent Python and published JS each checked 342 syntactic nodes for 16 local affine cases / 64 full forbidden assignments, complete contradictory-row resolution, 65,536 ordered Boolean-factor implications (6,561 true), and five intentionally corrupted-rule rejects. Full published GitHub V8 code and raw exact replay passed.
+
+**LSPV-3:** test whether historical AND3/LOCAL-CONVERT permits only b=3 original-variable union, and whether actual byte checker accepts RES-derived factor inputs. **LSPV-5:** attack the no-new-variables boundary, nonlocal reusable factors, branch scope and high-support feedback; look for a legal short proof on the selected random family. **LSPV-2/LSPV-4:** retain Route A and review only when a same-machine cross-route bridge genuinely applies. No role/task schedule/weight change.
+
+Paths: report `research/agents/lspv-1/2026-11-08_0104_LSPV1_BOUNDED_FACTOR_FEEDBACK499.md`; code `experiments/arc/lspv1_499_local_factor_feedback.js`; raw `results/raw/arc/2026-11-08_0104_LSPV1_499_LOCAL_FEEDBACK_RAW.json`. Historical root main.tex content could not be fully read and is unchanged.
