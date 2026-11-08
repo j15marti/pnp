@@ -16,7 +16,7 @@ function main(){
   for(let i=1;i<g;i++){
    const newP=res(P,D[i].facets[2],w[i-1]);
    const newN=res(D[i].facets[1],N,w[i-1]);
-   ok(eq(newP,[w[i],-z,...a.slice(0,i+1).map(x=>-x]),'P induction');
+   ok(eq(newP,[w[i],-z,...a.slice(0,i+1).map(x=>-x)]),'P induction');
    ok(eq(newN,[-w[i],z]),'N induction');
    P=newP;N=newN;inferences+=2;
   }
