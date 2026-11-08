@@ -5,12 +5,12 @@
 ## Artifact publication
 
 - Conflict-safe artifact commit: `97724f1ad4967e94e92422ba0a9a0a7073f8ae21`, parent/current-head lease `8ee740fcfdf818736897c8c1050e01f285af289c`.
-- Report blob: `research/main/2026-11-08_1045_MAIN_UNICYCLIC_RESIDUAL_FLOOR17_REFEREE440.md`, `cab7fae154515f52793a443688aa4a68d9d01143`.
+- Final report blob after adding the verified publication-status footer: `research/main/2026-11-08_1045_MAIN_UNICYCLIC_RESIDUAL_FLOOR17_REFEREE440.md`, `45ca90a771e889b6474258b32caf29a332713561`.
 - Handoff blob: `research/coordination/2026-11-08_1045_LSPV5_UNICYCLIC_RESIDUAL440_HANDOFF.md`, `13b7ca4a7a4ee77d99eca164e9760e5488c90101`.
 - Python / Node blobs: `f33dcad87413bc088737195e732f8040ce83104f`, `2df03b634b49b8ccb2050cf1061c8866228f63bf`.
 - Python / Node raw blobs: `6b270f994b043d7a40e736f644ee36d9c8824c4a`, `7ea2a44949eb17e70a7daf46d6227e634b424785`.
 - Delta / issue outbox blobs: `56ae0c34cfac5e3cc1a2df235eac166a01a307c1`, `3a63df6cf54e832637cbef3ccebd3ae22b01ec4c`.
-- All eight local `git hash-object` values exactly matched the created GitHub blob SHAs; the committed tree was read back.
+- All eight initial local `git hash-object` values exactly matched the created GitHub blob SHAs; the committed tree was read back. The final report/receipt metadata-only readback update preserves the scientific content and tracker bytes.
 
 ## Tracker publication
 
