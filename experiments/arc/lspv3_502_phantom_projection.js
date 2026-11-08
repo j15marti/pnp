@@ -8,7 +8,7 @@ const root=path.resolve(__dirname,'../..');
 const checker=path.join(__dirname,'lspv2_341_independent_verify.js');
 const packetPath=path.join(root,'results/raw/arc/2026-11-07_2224_LSPV3_491_BALANCED_341_PACKET.json');
 const binderPath=path.join(__dirname,'lspv3_490_external_source_bind.cjs');
-const sha=f=>{const b=fs.readFileSync(f);return crypto.createHash('sha1').update('blob '+b.length+'\\0').update(b).digest('hex')};
+const sha=f=>{const b=fs.readFileSync(f);return crypto.createHash('sha1').update('blob '+b.length+'\0').update(b).digest('hex')};
 assert.equal(sha(checker),'fcb7d4ced8f922de14c0bda16263a8cc7853e8e0');
 assert.equal(sha(packetPath),'481423a2f5271ab600bbc2f9a526fe62523239a9');
 assert.equal(sha(binderPath),'b113119b7b87dac7510603804d91918e80f301b0');
