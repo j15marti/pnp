@@ -82,9 +82,35 @@ for(let t of cases){let v=parse(pack(t.n,t.F)),o=material(v),u=parse(o),d=spec(v
  if(samples.length<8)samples.push({n:v.n,m:v.m,N:v.s.length,n2:d.no,m2:d.mo,M:o.length,legacy_rejected:rejected});
  for(let x of [o+"0",o.slice(0,-1),"x"+o.slice(1)]){let fail=false;try{parse(x)}catch(e){fail=true}ok(fail,"accepted corruption");bad++}
 }
+let K4={SAT:0,UNSAT:0,sources:0,clauses_checked:0};
+const edges=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
+for(let ch=0;ch<16;ch++){
+ let F=[];
+ for(let v=0;v<4;v++){
+  let incident=edges.map((e,i)=>e.includes(v)?i+1:0).filter(Boolean);
+  for(let mask=0;mask<8;mask++){
+   let parity=(mask&1)^((mask>>1)&1)^((mask>>2)&1);
+   if(parity!==((ch>>v)&1))F.push(incident.map((id,k)=>(mask>>k)&1?-id:id))
+  }
+ }
+ ok(F.length===16,"K4 source clause count");
+ let source=parse(pack(6,F)),out=material(source),guest=parse(out),d=spec(source);
+ ok(guest.m===256&&d.mo===256,"K4 guest count");
+ for(let i=0;i<out.length;i++)ok(bit(source,i)===out[i],"K4 guest bit mismatch");
+ let has=false;
+ for(let mask=0;mask<64;mask++){
+  let assignment={};for(let id=1;id<=6;id++)assignment[id]=Boolean(mask&(1<<(id-1)));
+  if(F.every(c=>sat(c,assignment)))has=true;
+ }
+ let odd=[0,1,2,3].reduce((p,i)=>p^((ch>>i)&1),0);
+ ok(has===(odd===0),"K4 original parity");
+ if(has)K4.SAT++;else K4.UNSAT++;
+ K4.sources++;K4.clauses_checked+=256;
+}
+ok(K4.SAT===8&&K4.UNSAT===8,"K4 8/8");
 let s0=witness([[]]),s1=witness([[1]]);
 globalThis.lspv489={run:"LSPV-4/489",status:"COMPUTATIONAL",sources:cases.length,guard_parses:cases.length,
- bit_queries:queries,malformed_rejections:bad,second_guard_checked_clauses:second,
+ bit_queries:queries,malformed_rejections:bad,second_guard_checked_clauses:second,K4,
  second_witnesses:[s0,s1],assertions:checks,samples,
  qualification:"Source-grammar closure ONLY. Iterated one-port SAT signal collapses; no universal Phi(A); host V8 not a native FLMV machine."};
 if(typeof console!=="undefined"&&typeof module!=="undefined"&&module?.parent==null)console.log(JSON.stringify(globalThis.lspv489,null,2));
