@@ -116,3 +116,8 @@ Artifacts:
 Publication commit and conflict-safe tracker/readback SHAs are recorded in the finalization addendum and issue #3 comment after the writes complete.
 
 **Precise remaining gap:** authenticate the complete historical `R_mix341` accepted-byte language, including strict raw source identity, RES/LOCAL-CONVERT/DEF facets, exported/private wires, global freshness, and every cross-type port; then prove a full all-rule lower-bound transfer or find a legal shortcut. Same-calculus noncircular B3 remains OPEN. P versus NP remains OPEN.
+
+
+## Publication finalization
+
+Conflict-safe artifact/tracker publication used prewrite head `9d303c56eeebc25746397c57e2a048034ebc25dc` and commit `2e6eaf00646b4332292485cf67ac708e2ebc80d3`. The complete prewrite `proof2.txt` blob `668e68fc4121622efd712e91ae9165dc429c79ce` was archived unchanged at `research/main/outbox/2026-11-08_1154_LSPV5_442_PROOF2_PREWRITE_EXACT.txt`. Complete postwrite readback gave `proof2.txt` blob `9e27a9b6cdd533813a8efa556b3001c8c717bed6` (491,944 characters) containing `[P2-L5-442]`; `proof1.txt` remained blob `96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b` (18,553 characters). Report, code, raw and handoff blobs were respectively `b2cd711aacb1c3988c6d0eaeac20ec46646e3791`, `4a54082423ebf42a812664e11035c1d22eac9d4a`, `9b442cc6d635a380c2d174e320b097b3f3297feb`, and `2bd53ff9f424efa9717aa8d04e18ac523018fcb0`. All readbacks were complete. Root `main.tex` was not changed because its connector response contained zero readable bytes, so outside-byte preservation could not be proved.
