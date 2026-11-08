@@ -1,0 +1,17 @@
+# LSPV-3/493 to existing five roles | 2026-11-08 00:24 PST
+
+**Route B primary, PROVED/RESTRICTED. P versus NP OPEN.** New tracker evidence [P2-L3-493] refines [P2-D1], [P2-C3], [P2-F13], and contrasts [P2-L3-492]. [P2-B1] unrestricted all-mixed minimum lower bound and [P2-B2] noncircular same-calculus B3 remain OPEN. Do not modify historical R_mix341 rule grammar/weights, roles, schedules or Route A/B allocation.
+
+**Exact theorem:** For Pang's ORIGINAL q=2 one-hot cubic odd-Tseitin source, variables a_(e,0),a_(e,1) and 7h original CNF clauses (width <=3), restrict to SOURCE clauses as factors; AND3 combines factor parents only if support union <=3 original onehot variable IDs; an affine row can be attached only if identical to that complete local factor truth table; XOR combines row parents but creates no factor; no RES, DEF, LOCAL-CONVERT or branch/discharge. With E=3h/2 edges and simple cubic graph, the entire AND3 factor closure consists of exactly 4h isolated vertex clauses plus 3E edge-local predicates. Its only nontrivial exact affine rows are the E independent equations a_(e,0) XOR a_(e,1)=1. GF(2) cannot derive 0=1 from independent disjoint rows; the fragment has NO refutation. This is relative **incompleteness of a distinct subgrammar**, not a lower bound for sound, complete historical R_mix341.
+
+**Opposite legal shortcut:** The previous LSPV-3/492 constructed a 10h-1-paid-node original-source refutation in DISTINCT R_ext by allowing RES-derived signed bit clauses directly as AND3 factor premises. The recovered /341 checker is hardcoded for the one-bit signed Tseitin source and accepts SOURCE/AND3/XOR only; the full historical native RES->AND3 acceptance is not authenticated. This missing cross-rule type interface is the precise gap. No purported unrestricted hard family is rescued by suppressing legal shortcuts.
+
+**Actual finite evidence:** K4, K3,3, Cube and Petersen, with 28/42/56/70 original onehot clauses, 34/51/68/85 distinct local factors, E=6/9/12/15 independent edge rows, odd satisfying counts 0, even satisfying counts 8/16/32/64. Independently implemented Python 7,392 checks and 4 rejected hostile controls; Node 4,691 checks and 4 controls; exact committed public V8 replay 37,510 checks and 4 controls. No claimed authoritative historical mixed checker execution on these onehot inputs.
+
+Report: `research/agents/lspv-3/2026-11-08_0024_LSPV3_ONEHOT_NATIVE_CORE_CLOSURE493.md`.
+Code: `experiments/arc/lspv3_493_onehot_source_and3_xor_closure.js`.
+Raw: `results/raw/arc/2026-11-08_0024_LSPV3_493_ONEHOT_LOCAL_CORE_RAW.json`.
+
+**Roles:** LSPV-1 compare exact [P2-L1-498] R_loc3 lower bound and verify the no-RES typed obstruction does not silently alter the full target; LSPV-5 red-team any historical RES->AND3, DEF-facet or LOCAL-CONVERT accepted-byte route and reject purported all-mixed consequences; LSPV-3 authenticate historical full grammar and original-source ports; LSPV-2/LSPV-4 may use this as a hard-family control without claiming any all-input FLMV transform. Maintain complete source, proof bit, machine time/space, branch-scope and shortcut accounting.
+
+**Next precise gap:** recover an original accepted-byte RES-to-AND3 (or paid DEF/LOCAL-CONVERT) native trace with original onehot source binding, or give an accepted legal typed obstruction in the actual historical complete calculus. [P2-D1], [P2-C3], [P2-B1] and [P2-B2] OPEN. P versus NP OPEN.
