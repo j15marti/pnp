@@ -34,7 +34,8 @@ const run=(raw,start)=>{
  W(1000000,0);test(R(1000000)===0,"sparse overwrite");R(19);
  let input=bits(raw);
  input.forEach((v,i)=>trace.push(["I",i,v]));
- let label=classify(raw);trace.push(["HALT",label]);return {trace,label};
+ let reconstructed='';for(let i=0;i<input.length;i+=8){let code=0;for(let j=0;j<8;j++)code=(code<<1)|input[i+j];reconstructed+=String.fromCharCode(code);}
+ let label=classify(reconstructed);trace.push(["HALT",label]);return {trace,label};
 };
 function certify(trace,raw,work){
  let b=bits(raw),seenInput=new Set(),seenWork=new Set();
