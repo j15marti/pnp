@@ -1,0 +1,17 @@
+# LSPV-4/503 five-role handoff: source-replay port optimization and snapshot scope
+
+**2026-11-08 14:36 PST | Route A resource audit | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN**
+
+**Affected proof-chain node:** [P2-L4-503] refines [P2-A4], LSPV-2/503 and [P2-L4-502]. Required [P2-A2] universally correct solver-dependent transformation and [P2-A5] recursively iterable charged same-machine conversion remain OPEN, as do P1-01/P1-03/P1-04 and Route B [P2-D1], [P2-C3], [P2-B1], [P2-B2]. Five roles, two Route A/three Route B, all existing title/ID/timezone/schedule/enabled states and fixed R_mix341 rules/weights unchanged.
+
+**IDEA:** Check whether LSPV-2/503's Theta(sqrt n) sparse physical private cells are actually necessary for its precisely typed write-once readback interface. Falsifiers were wrong readback/digest, hidden native address/source charges, a false extension to sealed-source arbitrary queries, or overpromotion to universal SAT contraction.
+
+**SEARCH:** Complete root proof1.txt and proof2.txt, issue #3, historical five-role coordination, AGENTS.md, CODEX.md, repo research skill, actual LSPV-2/503 and LSPV-4/502, current Grok and Claude, konard and blkph0x repos, CNFgen Tseitin source, FRAT-XOR format, openai/math costed Lean program; FLMV 2005 original section 2.1 PDF screenshot. FLMV explicitly notes sparse-cell normalization; no new general theorem claimed. Standard web search yes, independently branded Google interface not used.
+
+**ITERATE: three model-scoped statements.** (1) With immutable indexed INPUT and statically authenticated private ports $v_i=x_{i\bmod n}\oplus(i\bmod2)$, reverse readbacks and 8-bit digest can be computed by source replay with local $O(n+r\log n)$ time and only $O(\log n)$ WORK, plus the unchanged B time/space. Original unchanged guest still pays high-water Theta(n^k). (2) If only the final SAT/UNSAT/MALFORMED output is observable, entire side-effect-free private wrapper may be erased, leaving exactly B: no contraction of B. (3) In a different sealed-source interface with arbitrary future port index, an exact state encoder requires $2^r$ distinguishable configurations; this information lower bound is NOT portable to readable-source macro.
+
+**Finite controls:** Published JS verifier read back and V8 replay PASS 17,755 assertions, 141 input strings, 8 SAT/8 UNSAT/125 malformed, 5,133 port observations, 63 source-mutability negatives. Independently authored Python PASS 42,823 checks, 143 inputs, 8 SAT/8 UNSAT/127 malformed; cross-language first/last authenticated K4 source hashes agreed after fixing independent enumeration order. No native FLMV instruction-level interpreter or R_mix341 historical checker executed.
+
+**Files:** report research/agents/lspv-4/2026-11-08_1436_LSPV4_TRACE_RECOMPUTE_SNAPSHOT_FIREWALL503.md; executable experiments/arc/lspv4_503_streaming_snapshot_control.cjs; raw results/raw/arc/2026-11-08_1436_LSPV4_503_PORT_RECOMPUTE_SCOPE_RAW.json; this handoff. No main.tex editing.
+
+**Next for LSPV-2:** Treat log-workspace streaming as a valid typed compiler, but stop allocating sqrt(n) cells merely to preserve private write-once, input-reconstructible ports. Do not presume arbitrary writes/aliases are reconstructible, or that unchanged B can be accelerated. Find a source-agnostic, both-label, malformed-aware q/L child theorem and recursive closure. **Route B:** no transfer of these machine costs into proof minimum or B3. P versus NP OPEN.
