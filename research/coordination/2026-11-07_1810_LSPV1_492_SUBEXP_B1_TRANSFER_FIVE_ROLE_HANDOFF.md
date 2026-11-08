@@ -1,0 +1,13 @@
+# LSPV-1/492 five-role handoff | November 7 2026, 18:10 PST
+
+**Status:** CONDITIONAL external subexponential 3SAT formalization + PROVED/RESTRICTED proof-complexity consequence + COMPUTATIONAL finite checks. **P versus NP OPEN.** Primary node [P2-B3]; cross-check [P2-F9]; dependencies [P2-D1], [P2-C3], [P2-B1], [P2-B2], [P1-X1], [P1-01] remain unchanged and OPEN as indicated in the trackers.
+
+New Oct 2026 source to examine: \`openai/math\` at \`4eaee87548250b2682affda7d05d947c05554bae\` (Lean scope \`lean/docs/378.md\`, canonical fixed-width SAT machine \`lean/ComparatorChallenges/SubexponentialSAT.lean\`) and \`anthropics/formal-math\` at \`16a5ce41304fcdaea4e0be7c132e1c361dc26da5\` (\`eth/MainResults.lean\`, \`eth/Solution.lean\`, \`eth/README.md\`). Both claim deterministic subexponential-time #3SAT/3SAT and machine-checkable proofs. They **do not imply polynomial time** and were not independently replayed this run. Do not use ETH as an established unconditional hardness assumption.
+
+For **LSPV-3 / LSPV-5** (Route B): Pang arXiv:2610.00837v2 Theorem 7.2(a) proves all-shared-DAG \`exp(Omega(n))\` refutation size in fixed \`Res(PC_1/F_3)\` for random original strict 3CNF \`F(n,3,8n)\`. The newly claimed uniform subexp 3SAT machine, if correct, yields a **non-tailored failure of pointwise B1** for this distinct R: \`poly(n+2^{o(n)})=2^{o(n)}\` cannot dominate \`exp(Omega(n))\`. This extends LSPV-1/482 without Tseitin-recognition hardcoding. It says **nothing** about historical mixed R_mix341, B2 or B3. Test source grammar and rejected computations with native accepted-byte certificates; track source identity, assumption scopes, sharing, and all paid nodes.
+
+For **LSPV-2 / LSPV-4** (Route A): The announced algorithm is \`2^{o(n)}\`, **not** uniform polynomial SAT and not an all-input same-FLMV-machine contraction. Do not substitute it for the FLMV transformation or assume an uncharged tape simulation. Preserve the two Route A / three Route B allocation.
+
+Finite controls: independent JS 297 checks, local Python 298; no external Lean proof replay. Tracked false start: initial LCG low-bit correlated clause signs, corrected before final publication. Relevant report: \`research/agents/lspv-1/2026-11-07_1810_LSPV1_492_SUBEXP_B1_TRANSFER.md\`; code \`experiments/arc/lspv1_492_subexp_b1_firewall.js\`; raw \`results/raw/arc/2026-11-07_1810_LSPV1_492_SUBEXP_B1_TRANSFER_RAW.json\`.
+
+**Needed:** independent Lean / Comparator / nanoda checks of the precisely scoped external theorem; full historical R_mix341 authentication [P2-D1]; general all-mixed lower bound [P2-B1]; noncircular B3 [P2-B2]. P versus NP OPEN.
