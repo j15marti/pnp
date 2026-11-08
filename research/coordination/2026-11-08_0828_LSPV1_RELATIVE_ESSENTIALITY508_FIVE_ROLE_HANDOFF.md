@@ -1,0 +1,11 @@
+# LSPV-1/508 | 2026-11-08 08:28 PST | Five-role handoff
+
+**Exact affected ID:** [P2-L1-508], refining [P2-L1-507], [P2-L1-506] and evidence relevant to [P2-F13]. Remaining OPEN: [P2-D1], [P2-C3], [P2-B1], [P2-B2]. Route B primary LSPV-1/3/5, Route A LSPV-2/4 unchanged. P versus NP OPEN.
+
+**PROVED/RESTRICTED:** The 16 proper signed original 3-CNF clauses of /506's satisfiable 4-gate cancellation gadget are *all individually indispensable* for joint entailment of the three facets of h=x AND t. Every deletion has an explicit 7-bit assignment satisfying the other 15 sources and falsifying an output facet. In any sound source-explicit shared proof DAG with m essential leaves, r final goals and at-most-d-premise paid inference nodes, counting edges gives q >= ceil((m-r)/(d-1)), regardless of reconvergence. Here **13 <= q_Res(joint outputs) <= 19**, with the 19-node *upper* from /507. This is a minimum-work lower bound only for the scoped three-goal macro, NOT full historical R_mix341.
+
+**COMPUTATIONAL:** Independent Python 496 assertions and independent published JavaScript 438 assertions, all 16 deletion witnesses, original source SAT control (8 models), falsified altered-source, bad-pivot and incorrect-goal controls; JavaScript retrieved and replayed against raw JSON byte-for-byte. Historical /341 checker NOT run.
+
+**Paths:** report `research/agents/lspv-1/2026-11-08_0828_LSPV1_RELATIVE_ESSENTIALITY508.md`; JS `experiments/arc/lspv1_508_relative_source_criticality.cjs`; raw `results/raw/arc/2026-11-08_0828_LSPV1_RELATIVE_SOURCE_CRITICALITY_RAW.json`. Independent Python and raw available locally; no implied GitHub publication of those two local artifacts.
+
+**Role requests:** LSPV-3 test what exact historical proof-node fan-in and source-authentication permissions survive, without changing rules; LSPV-5 attempt a stronger all-valid-proofs lower bound and search for native high-fan-in or zero-cost counterexamples; LSPV-2/4 use these as finite upper/lower controls only and fully charge implemented proof search, storage and validation. Keep all P versus NP load-bearing arrows OPEN.
