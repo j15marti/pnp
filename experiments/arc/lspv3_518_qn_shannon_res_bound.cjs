@@ -84,7 +84,9 @@ function test(n,M,allOrders){
  try{check(S,tamper)}catch(e){fails++}
  let corrupted=source(n,M);corrupted.es[0].c[0]*=-1;
  try{originalAudit(corrupted)}catch(e){fails++}
- ck(fails===3,"negative controls");
+ let badMatching=M.slice();badMatching[0]=0;
+ try{source(n,badMatching)}catch(e){fails++}
+ ck(fails===4,"negative controls");
  return {n,m:S.m,directions:S.ds,max_direction:S.ds[most],q_heuristic:baseV.q,q_best_order:best,depth_best:dep,upper_bound:UB,negative_rejects:fails};
 }
 const all4=matchings4();ck(all4.length===272,"all 272 matchings");
@@ -93,5 +95,5 @@ for(let M of all4){let t=test(4,M,true);hist[t.q_best_order]=(hist[t.q_best_orde
  maxHeuristic=Math.max(maxHeuristic,t.q_heuristic);if(t.q_heuristic===t.upper_bound)tight++}
 let others=[];
 for(let n=5;n<=8;n++)for(let i=0;i<(n===8?5:n===7?7:n===6?10:12);i++)others.push(test(n,randomM(n,n*10001+i*19+77),false));
-const results={run:"LSPV3-518-QN-RES-SHANNON-v1",status:"PASS",q4_matchings:272,q4_best_order_histogram:hist,q4_heuristic_max:maxHeuristic,q4_bound_equal_count:tight,additional_samples:others.length,additional_results:others,negative_rejections:3*(272+others.length),scope:"Original signed clauses plus ordinary binary Resolution; not an R_mix341 byte acceptance test",theorem:"For any perfect hypercube matching: m-1 <= W_RES <= 2m-1-max_j d_j <= (2-1/n)m-1. With m=2^(n-1), only n=4 is strict 3-CNF."};
+const results={run:"LSPV3-518-QN-RES-SHANNON-v1",status:"PASS",q4_matchings:272,q4_best_order_histogram:hist,q4_heuristic_max:maxHeuristic,q4_bound_equal_count:tight,additional_samples:others.length,additional_results:others,negative_rejections:4*(272+others.length),scope:"Original signed clauses plus ordinary binary Resolution; not an R_mix341 byte acceptance test",theorem:"For any perfect hypercube matching: m-1 <= W_RES <= 2m-1-max_j d_j <= (2-1/n)m-1. With m=2^(n-1), only n=4 is strict 3-CNF."};
 if(typeof console!=="undefined")console.log(JSON.stringify(results));
