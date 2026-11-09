@@ -39,7 +39,8 @@ for(let a=0;a<3;a++)for(let b=0;b<3;b++){let X=[0,1,2].map(i=>+(i===a)),Y=[0,1,2
 for(let p=0;p<3;p++)for(let a=0;a<3;a++)for(let b=0;b<3;b++)
  ok(mod(mod(p+a)+b)===mod(mod(p+b)+a),'swap identity');
 for(let p=0;p<3;p++)for(let a=0;a<3;a++)ok(mod(mod(p+a)-a)===p,'cancel');
-let result={id:'LSPV-1/519',status:'COMPUTATIONAL',checks,cases:['K4','K33','Q3'].flatMap(g=>[false,true].map(odd=>build(g,odd))),
+const cases=['K4','K33','Q3'].flatMap(g=>[false,true].map(odd=>build(g,odd)));
+let result={id:'LSPV-1/519',status:'COMPUTATIONAL',checks,cases,
  native_checker_executed:false,limitation:'No complete historical ER2 certificate verified'};
 if(require.main===module)process.stdout.write(JSON.stringify(result,null,2)+'\n');
 module.exports=result;
