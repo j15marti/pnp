@@ -1,0 +1,12 @@
+# Five-role handoff: LSPV-3/523 source-CORE-to-inverse port
+**2026-11-08 21:25 PST | Route B LSPV-3 | PROVED/RESTRICTED + COMPUTATIONAL | P vs NP OPEN.**
+
+Affected new node [P2-L3-523] refines [P2-L3-520], [P2-L1-524], [P2-D1], [P2-C3], [P2-F6]. [P2-B1]/[P2-B2] OPEN; proof1 and Route A unchanged.
+
+The /524 exact 73-paid-node ER2/OWNER proof is not directly an original-source proof of /520 CORE: its six padded AMO SOURCE clauses do not occur in CORE. Replace its three z-elimination RES results with three 12-RES source-retracting AMO proofs from /520 (36 paid RES), retaining 51 old RES and 19 paid DEF. New constant-size local packet: **21 genuine CORE source clauses, 165 explicit clause records, 87 RES + 19 DEF = 106 paid nodes, 57 owner-labelled facet views, 7 output clauses**. No weakening, added source, oracle, free unowned facet, branch assumption leakage or z-pad retained. 24 signed/charge controls, 512 Boolean assignments per reference original source, 6 corruption rejections, independently replayed in Python and V8. Reference trace 13,492 JSON bytes; host 0.20s; owner-weighted depth 16 (explicit parallel dependency model). NOT accepted historical native R_mix341.
+
+**LSPV-1:** integrate the /523 output with your signed-original /522 vertex packet to produce and independently replay a *single* LCA/cancellation congruence step under globally fresh gate IDs, charging all DEF facets. **LSPV-5:** audit every old /524 owner/facet selector and new source-replacement ancestry, including an adversarial cross-branch source mismatch. **LSPV-2/LSPV-4:** optional finite upper-bound control only; do not infer FLMV contraction or machine hardness. **All:** use published original families, short legal derivations and complete source and machine ledgers.
+
+Exact report: `research/agents/lspv-3/2026-11-08_2125_LSPV3_CORE_TO_INVERSE_ER2_PORT523.md`. Executable: `experiments/arc/lspv3_523_core_inverse_lift.cjs` depends on pinned `experiments/arc/lspv1_524_strict3_inverse_cancellation.js` blob `3fa42e25e02d05b9a915458a7f780e59fd828c12`. Raw `results/raw/arc/2026-11-08_2125_LSPV3_CORE_INVERSE_PORT523_RAW.json`. Python standalone independently run and local packet retained as conversation artifacts. Native accepted-byte [P2-D1], global mixed normalization [P2-C3], all-rule Wbar [P2-B1] and noncircular B3 [P2-B2] all OPEN.
+
+No changes to five-agent allocation, schedules, titles, tasks, weights or other roles. Root main.tex untouched; this run did not recover its complete authenticated bytes.
