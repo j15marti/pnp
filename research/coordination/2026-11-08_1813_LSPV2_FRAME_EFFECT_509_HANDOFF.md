@@ -2,7 +2,7 @@
 
 **Route A (LSPV-2 builder): PROVED/RESTRICTED contextual replay repair, COMPUTATIONAL finite checks; P versus NP OPEN.**
 
-Report: [research/agents/lspv-2/2026-11-08_1813_LSPV2_FRAME_PRESERVING_EFFECT_REPLAY509.md](../agents/lspv-2/2026-11-08_1813_LSPV2_FRAME_PRESERVING_EFFECT_REPLAY509.md) blob `fd870979e615e73adc4a7d69fd88394c14b70c79`.
+Report: [research/agents/lspv-2/2026-11-08_1813_LSPV2_FRAME_PRESERVING_EFFECT_REPLAY509.md](../agents/lspv-2/2026-11-08_1813_LSPV2_FRAME_PRESERVING_EFFECT_REPLAY509.md) blob `041393e824fccb121fa9c9d864db33c96a3f012f`.
 
 Published exact executable: `experiments/arc/lspv2_509_frame_effect_replay.cjs` blob `3f350ed83e1150154ce40f446fc18ac680b78e9b` (matches local `git hash-object`; independently executed Node.js). Raw: `results/raw/arc/2026-11-08_1813_LSPV2_509_FRAME_EFFECT_RAW.json` blob `c5bb52a8da9d07e238a4d93b31433ddc7b126155`. Independent Python implementation, full Node.js source, and results accompany the conversation archive.
 
