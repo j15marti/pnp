@@ -16,33 +16,33 @@ Actual change from /526: instead of prohibiting non-RUP RAT transitions, the new
 Fix a source-authenticated proper signed 3-CNF F on its original n variables, parsed from complete ASCII DIMACS bytes. A concrete database D is a finite set of clauses over those original variables. Initial D=F. Legal actions:
 1. **DEL(D,C)** removes C, with zero paid *addition* records; separate record bytes and checker/machine work are not zero.
 2. **RUP(D,C)** adds C if unit propagation on D plus the unit assumptions negating every literal of C conflicts.
-3. **RAT(D,C,p)** for nonempty C and p the explicitly chosen first literal: for each D_i in D containing -p, the non-tautological resolvent (C\\{p}) union (D_i\\{-p}) is RUP in D. Add C if all succeed. RAT is satisfiability preserving, not necessarily consequence preserving. The empty-clause goal is permitted only by RUP.
+3. **RAT(D,C,p)** for nonempty C and p the explicitly chosen first literal: for each D_i in D containing -p, the non-tautological resolvent (C\{p}) union (D_i\{-p}) is RUP in D. Add C if all succeed. RAT is satisfiability preserving, not necessarily consequence preserving. The empty-clause goal is permitted only by RUP.
 
 There are no fresh variables, branching/split-discharge rules, GF(2) commands, native R_mix341 inference weights, or claims about a complete solver in this experimental calculus. Extension, algebra and arbitrary fallback are *excluded* and must not be silently subsumed into its lower bounds.
 
 Abstract state I=(M,U), meaning M subseteq D subseteq U. A join uses M=intersection(M_i), U=union(U_i). After addition of C, both bounds gain C; after deletion both bounds lose C. Two abstract permission guards are:
 $$
-\\mathrm{mayRUP}(M,U;C) := \\mathrm{UPconflict}(U,\\neg C).
+\mathrm{mayRUP}(M,U;C) := \mathrm{UPconflict}(U,\neg C).
 $$
 $$
-\\mathrm{mayRAT}(M,U;C,p) :=
-\\bigwedge_{E\\in M:\\,-p\\in E}
-\\left[
-\\mathrm{taut}(\\mathrm{res}_p(C,E))
-\\lor
-\\mathrm{UPconflict}(U,\\neg\\mathrm{res}_p(C,E))
-\\right].
+\mathrm{mayRAT}(M,U;C,p) :=
+\bigwedge_{E\in M:\,-p\in E}
+\left[
+\mathrm{taut}(\mathrm{res}_p(C,E))
+\lor
+\mathrm{UPconflict}(U,\neg\mathrm{res}_p(C,E))
+\right].
 $$
 For the empty clause, use mayRUP, not RAT. The guards are *necessary*, not sufficient, for an actual step. This is intentional for a MAY abstraction.
 
-**Theorem 527.1 (PROVED/RESTRICTED).** For EVERY concrete D with M subseteq D subseteq U, any legal concrete RUP step satisfies mayRUP, and any legal concrete RAT step satisfies mayRAT. The interval updates after addition/deletion and the intersection/union join contain all corresponding concrete successors. **Proof:** Unit-propagation contradiction is monotone under adding source clauses: D subseteq U. For RAT, every opposite-pivot clause E in M is present in concrete D, and every non-tautological resolvent against it is RUP under D, hence under U. Clauses in D\\M introduce no extra necessary constraints. Addition and deletion preserve the interval containments by set algebra. The same holds for arbitrary finite joins. Therefore all budget-bounded concrete proof-log paths stay represented if record-count budgets are carried monotonically; no claimed nonreachability may rely on rejection of a path by this abstraction without proving the abstract reachability invariant. This theorem does not lower-bound machine time or storage.
+**Theorem 527.1 (PROVED/RESTRICTED).** For EVERY concrete D with M subseteq D subseteq U, any legal concrete RUP step satisfies mayRUP, and any legal concrete RAT step satisfies mayRAT. The interval updates after addition/deletion and the intersection/union join contain all corresponding concrete successors. **Proof:** Unit-propagation contradiction is monotone under adding source clauses: D subseteq U. For RAT, every opposite-pivot clause E in M is present in concrete D, and every non-tautological resolvent against it is RUP under D, hence under U. Clauses in D\M introduce no extra necessary constraints. Addition and deletion preserve the interval containments by set algebra. The same holds for arbitrary finite joins. Therefore all budget-bounded concrete proof-log paths stay represented if record-count budgets are carried monotonically; no claimed nonreachability may rely on rejection of a path by this abstraction without proving the abstract reachability invariant. This theorem does not lower-bound machine time or storage.
 
 ## Parameterized spurious low-cost RAT path
 For any k>=1, use distinct original variables a,b_i,c_i,d_i and proper signed clauses:
 $$
-D_i=(\\neg a\\lor b_i\\lor c_i),\\quad
-E_i^+=(a\\lor b_i\\lor d_i),\\quad
-E_i^-=(\\neg d_i\\lor b_i\\lor c_i).
+D_i=(\neg a\lor b_i\lor c_i),\quad
+E_i^+=(a\lor b_i\lor d_i),\quad
+E_i^-=(\neg d_i\lor b_i\lor c_i).
 $$
 Let F_k contain all 3k clauses. It has 3k+1 variables and is SAT (set all b_i=true). The proposed candidate is the original-variable unit C=(a).
 
@@ -52,7 +52,7 @@ Let F_k contain all 3k clauses. It has 3k+1 variables and is SAT (set all b_i=tr
 
 Their single coarse join is
 $$
-M=\\{D_i:1\\le i\\le k\\},\\qquad
+M=\{D_i:1\le i\le k\},\qquad
 U=F_k.
 $$
 The abstract mayRAT guard is TRUE, because U contains BOTH E_i variants. Thus the joined abstract state admits one spurious low-cost RAT(a) addition although no concrete state does. A precise CEGAR replay on each D_s rejects it. Splitting into exact singleton interval states eliminates the false transition while retaining the genuine pre-deletion RAT shortcut.
