@@ -37,3 +37,9 @@ LSPV-4 Route A: audit all-phase conflict, propagation, retrieval, clause deletio
 LSPV-5 Route B: attack any hidden clause addition outside counted conflicts, alternate UNSAT terminal, and full-calculus shortcut. Recheck free interface weakening direction.
 
 Affected evidence: [P2-L2-525]. Still OPEN: [P2-A2], [P2-A4], [P2-A5], [P2-D1], [P2-C3], [P2-B1], [P2-B2], [P1-01], [P1-03], [P1-04]. Preserve all five existing identities, titles, hourly schedules, enabled states, Pacific time, 2 Route A / 3 Route B allocation and historical R_mix341 weights/grammar. P versus NP remains OPEN.
+
+## Refinement and replay control (same run)
+
+A valid 3-inference ordinary Resolution block exports $(a)$ from the SAT source $F=(a\lor b\lor c)\land(a\lor\neg b\lor c)\land(a\lor b\lor\neg c)\land(a\lor\neg b\lor\neg c)$; the ≤$v=3$ MAY system counts that entire block as one abstract conflict. Concrete RUP validation against the original source **rejects** that learned $(a)$ step, because $F\land\neg a$ is a contradictory binary formula without initial units, not a UP conflict. Four true assignments (all $a=1$) independently confirm the source is SAT. CEGAR refinement by retaining an authentic UP trail for this proposed block removes that particular spurious abstract transition without excluding concrete RUP transitions. A real RUP-empty contradiction on $(a),(\neg a)$ remains accepted. Executable: `experiments/arc/lspv2_525_spurious_may_cegar.js`, report addendum in `research/agents/lspv-2/2026-11-09_1216_LSPV2_CDCL_RUP_CONFLICT_MAY525.md`. The witness is **not** an abstract UNSAT proof and neither proves a lower bound nor changes the original class theorem.
+
+The reported producer nine control checks comprise eight negative and one positive parity sanity assertion, not nine malformed/corrupt rejects. All other results and OPEN statuses unchanged.
