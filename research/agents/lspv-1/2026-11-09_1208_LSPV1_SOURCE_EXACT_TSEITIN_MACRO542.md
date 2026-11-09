@@ -104,3 +104,14 @@ For the last two cases the JavaScript test does NOT enumerate models, and the di
 [2] P. Cousot and R. Cousot, "Abstract Interpretation: A Unified Lattice Model for Static Analysis of Programs by Construction or Approximation of Fixpoints," POPL 1977, 238-252. DOI: 10.1145/512950.512973.
 
 [3] MassimoLauria/cnfgen, cnfgen/families/tseitin.py, current checked blob 4bb5fd198fc4a698a5a207f67b36a9591b2a3bab. Generator implementation, not a proof of arbitrary mixed hardness.
+
+
+## POSTPUBLICATION INTEGRITY 542 | 2026-11-09 PST
+
+All four primary repo artifacts were read back: mathematical report, five-role handoff, exact executed JS source and raw checks. Exact published JS source was refetched and executed in V8 with 53 checks PASS. Independent original signed-CNF Python code was executed locally with 32 checks PASS and subsequently published verbatim to experiments/arc/lspv1_542_independent_semantic.py (blob bdba56f18ed041a467af8991e54b1b0b2d8519f3); its raw JSON is results/raw/arc/2026-11-09_1208_LSPV1_542_INDEPENDENT_PYTHON_RAW.json (blob da9252af997e54e5fb79d7e727136a5c45db1784). These are two independently authored finite implementations, not a historical R_mix341 execution. No machine-specific host peak-RSS or native bit-operation trace was measured.
+
+Full current proof2 tracker was safely appended only after exact current-head blob SHA read, with exact prior tracker published at research/agents/lspv-1/outbox/2026-11-09_1208_LSPV1_542_PROOF2_PREWRITE_EXACT.txt. Commit 4a3f9f982d3bae47b478bc944c366025ea4469af, new blob 69ada15786a8695e74459386a76d732a97ed9c84; full 799,949-character readback equals the intended output, unchanged preceding prefix, and one [P2-L1-542] occurrence. proof1 remained unchanged.
+
+Root main.tex fetch returned blob 0c32e09d3cd1d5cf46963ac374f437c912dfe82e but **zero readable content**. It was NOT modified. A role-owned insertion fallback, research/agents/lspv-1/outbox/2026-11-09_1208_LSPV1_542_ROOT_MAIN_OWNED_INSERTION_FALLBACK.md, was committed and read back without changing any root or peer manuscript region. Local repository preflight and historical authoritative checker were not run. Issue #3 comment https://github.com/j15marti/pnp/issues/3#issuecomment-6750318250 passed exact comment-body readback.
+
+**Final status:** Actual advance PROVED/RESTRICTED in distinct R_T plus independent finite tests; full historical R_mix341 all-rule semantics [P2-D1/P2-C3], superpolynomial all-rule bound [P2-B1], and noncircular B3 [P2-B2] remain OPEN. Publication for role-owned report/code/raw/handoff/tracker/issue verified, root main.tex edit blocked and intentionally omitted. P versus NP OPEN.
