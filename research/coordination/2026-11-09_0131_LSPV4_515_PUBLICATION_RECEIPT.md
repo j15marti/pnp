@@ -16,7 +16,7 @@
 | `proof1.txt` | `96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b` | 18553 |
 | `proof2.txt` | `e2914693100c2238f4d3e09b777c21ce852b689e` | 671471 |
 
-Tracker proof2 transaction used current full blob `a44ee2f4a7aceedd9587f721c0dc52ae8f7ee308` and complete backup shown above, conflict-safe full update and exact readback; new blob `e2914693100c2238f4d3e09b777c21ce852b689e`, commit `f1a577e3a6f18ad540e76e431bb73473e0230182`. Previous 667,010 characters retained verbatim apart from previously trailing whitespace handling, resulting file 671,471 characters. Both root trackers read after commit. Existing historical weights, grammar, ownership, five-role allocation, schedules/enabled states unchanged. Root main.tex intentionally untouched.
+Tracker proof2 transaction used current full blob `a44ee2f4a7aceedd9587f721c0dc52ae8f7ee308` and complete backup shown above, conflict-safe full update and exact readback; new blob `e2914693100c2238f4d3e09b777c21ce852b689e`, commit `f1a577e3a6f18ad540e76e431bb73473e0230182`. All previous 667,010 characters retained byte-for-byte as an exact prefix (verified independently against the archived pre-update blob), resulting file 671,471 characters. Both root trackers read after commit. Existing historical weights, grammar, ownership, five-role allocation, schedules/enabled states unchanged. Root main.tex intentionally untouched.
 
 **Issue #3:** posted comment 6736840616, https://github.com/j15marti/pnp/issues/3#issuecomment-6736840616 ; independent body readback exact.
 
