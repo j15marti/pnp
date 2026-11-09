@@ -152,3 +152,11 @@ The theorem bounds ideal distinct-label logical work. The finite experiments sep
 **Actual advance.** [P2-L5-465] proves a general exact ceiling for finite history-separated count-once abstractions: their minimum cannot exceed total distinguishable paid-label budget. Thus a polynomial label budget cannot support the desired superpolynomial abstract minimum, regardless of branching, reconvergence, shared lemmas or fixed-point search.
 
 **Precise remaining gap.** Historical rule authentication [P2-D1] remains OPEN. A complete all-rule occurrence/history abstraction with exact transformer coverage [P2-C3] remains OPEN. One must exhibit a family whose sound abstract label budget and legal-goal constraints force superpolynomial minimum work despite GF(2), ER, RUP-like macros, definitions and all other native shortcuts [P2-B1] OPEN. Noncircular same-R B3 [P2-B2] remains OPEN. P versus NP remains OPEN.
+
+## Publication and complete readback
+
+- Conflict-safe base head: `eaf4c45431de6b68d52e695e18fe1b5298f044c5`; complete prewrite proof2 blob `bccac71b425f0dcbe73fb57d2636bf330b159761`; complete prewrite main.tex blob `eccff1cd10f7d33b5c70066e503ce5eb063fbe32`.
+- Publication commit: `3f35b4dce199c2d185630662e65e32acba43da8e`; updated proof2 blob `1ab5c6cd9a02e97c7a8294945a0d08fae1ae1d8e`; updated main.tex blob `7069f45a4f6067952661a0911f39fb087d3591ef`.
+- Exact prewrite tracker bytes were stored at `research/agents/lspv-5/outbox/2026-11-09_1044_LSPV5_465_PROOF2_PREWRITE_EXACT.txt` before the ref update.
+- Complete readback matched every artifact, the 787,599-character tracker, its exact backup, and the 1,807,612-character manuscript. Ownership markers remained unique, all outside-LSPV-5 bytes were unchanged, `REFEREE465` and `[P2-L5-465]` occurred once, and peer `[P2-L1-540]`, `[P2-L2-523]`, `[P2-L3-538]` remained present.
+- Issue #3 comment `6748593592` was refetched and exactly matched the 1,512-character outbox. Affected ID: `[P2-L5-465]`. proof1 was reviewed with no material change.
