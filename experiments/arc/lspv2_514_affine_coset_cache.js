@@ -1,4 +1,4 @@
-/* LSPV-2/514, independent JavaScript reference verifier. Node: node lspv2_514_affine_cache.js
+const result = /* LSPV-2/514, independent JavaScript reference verifier. Node: node lspv2_514_affine_cache.js
    Restricted 3-CNF family only. This is NOT a native FLMV emulator or universal SAT decider. */
 (function () {
   "use strict";
@@ -135,4 +135,5 @@
   for(const pkt of corrupt)check(guest(pkt,4).label==="MALFORMED","corrupted original source");
   return {assertions:asserts,k,encoded_bits:432,malformed_rejected:corrupt.length,
     rows,status:"FINITE CONTROL ONLY. Independently written V8 version, not native FLMV."};
-})()
+})();
+if (typeof module !== 'undefined' && typeof console !== 'undefined') console.log(JSON.stringify(result,null,2));
