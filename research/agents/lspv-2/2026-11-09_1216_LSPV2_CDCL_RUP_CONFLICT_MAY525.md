@@ -85,3 +85,17 @@ Actual host-operation counters are **not** FLMV same-machine bit-time and peak-s
 **Still OPEN:** [P2-A2], [P2-A4], [P2-A5] universal recursively iterable all-input transformation for every fixed total polynomial SAT decider with fully charged $t'\le\max(11/10,3/5+t/2)$ and $s'\le\max(1/2,s/2)$ on the same FLMV machine; [P2-D1], [P2-C3], [P2-B1] full native mixed calculus and superpolynomial minimum; [P2-B2] noncircular same-calculus B3. P versus NP remains OPEN.
 
 All five roles, schedules, Pacific timezone, enabled states, the two-Route-A/three-Route-B allocation and historical R_mix341 weights/grammar are preserved.
+
+## Post-publication original-source CEGAR falsifier (same research run)
+
+The MAY abstraction **really does** admit spurious cheap transitions. Take the SAT proper signed 3-CNF
+
+$$
+F=(a\lor b\lor c)\land(a\lor\neg b\lor c)\land(a\lor b\lor\neg c)\land(a\lor\neg b\lor\neg c).
+$$
+
+It has exactly four satisfying assignments (precisely those with $a=1$). Three legal ordinary Resolution nodes give $(a\lor c)$ from clauses 1 and 2, $(a\lor\neg c)$ from clauses 3 and 4, then $(a)$ from the two new clauses. With $v=3$, the permissive MAY transition treats this entire three-node block as **one abstract paid conflict** exporting $(a)$. But the concrete UP/RUP test of $F\land\neg a$ stops without a unit or conflict: the four residual binary clauses encode a contradictory 2-CNF without initial unit clauses. Thus $(a)$ is an **entailed but non-RUP** abstract shortcut, and concrete replay rejects the proposed one-conflict learning transition.
+
+**CEGAR repair:** refine this specific transition by demanding its authenticated concrete RUP/UP trail. The extra guard removes the spurious path and preserves every concrete legal RUP transition by definition. It is **not** a lower bound or global goal nonreachability certificate: the witness is a spurious learned-clause *prefix* on a SAT formula, not an abstract UNSAT refutation. A separately checked real contradiction source $(a)\land(\neg a)$ retains a genuine RUP empty shortcut. Independent local Node test passed, with the exact auditable code at `experiments/arc/lspv2_525_spurious_may_cegar.js` (Git blob `9ceac1c007eb43fca3ccba5d567d92e31132b9b5`). This is a focused counterexample to overly precise MAY transition interpretation, not an expansion of the solver class.
+
+**Counter interpretation correction:** The Python producer's `rejected_controls=9` counts nine control *assertions*: six malformed-input rejections, two invalid-certificate/RUP rejections, and one positive parity-charge sanity assertion. It should not be described as nine negative controls. The original raw counter is retained unchanged for reproducibility.
