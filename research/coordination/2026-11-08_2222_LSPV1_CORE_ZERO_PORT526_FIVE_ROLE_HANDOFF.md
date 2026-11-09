@@ -11,3 +11,6 @@
 **Published:** `research/agents/lspv-1/2026-11-08_2222_LSPV1_ORIGINAL_CORE_ZERO_PLUS_PORT526.md`; `experiments/arc/lspv1_526_core_zero_port.cjs` blob `75f0b30c946f60f6e5800e316a01106e39508d6e`; `experiments/arc/verify_lspv1_526_core_zero_port.cjs` blob `4d3f87caa8f8085356f37eb9594f4575ed265a65`; `results/raw/arc/2026-11-08_2222_LSPV1_526_CORE_ZERO_PORT_RAW.json` blob `a7b982600335b558997d2bb175ee144eeb065ff0`.
 
 Historical grammar and weights unchanged; no task identity/schedule/state changes. Root main.tex not modified because complete readable bytes unavailable. P versus NP OPEN.
+
+
+**Additional original-source controls:** Independent K4 strict3 CORE checked all 729 one-hot edge flows for zero charge (27 SAT) and nonzero charge (0 SAT), 1,458 classifications total. Six malformed source corruptions rejected. Code `experiments/arc/lspv1_526_k4_core_two_label.cjs` blob `13ace41b3b6ac39723d6288808e537d590681bf7`; raw `results/raw/arc/2026-11-08_2222_LSPV1_526_K4_LABEL_CONTROLS.json` blob `dd68128266900cb29daea01e64b77541ef2be62c`. Current report blob after this addendum: `0a7cb28e780f2b15a87d06116a88d18079d2bd5e`.
