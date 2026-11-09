@@ -23,6 +23,18 @@ function gen(name,charge){
  }
  return {bits,clauses,m,H};
 }
+function validHeader(bits){
+ if(!bits.startsWith("10100110"))return false;
+ let k=8;function readGamma(){let z=0;while(k<bits.length&&bits[k]==="0"){z++;k++;}if(k+z>=bits.length)return null;const num=parseInt(bits.slice(k,k+z+1),2);k+=z+1;return num;}
+ const H=readGamma(),m=readGamma();if(H===null||m===null||H<1||m<1)return false;
+ const w=Math.ceil(Math.log2(m+1));
+ if(bits.length-k!==12*H*(w+1))return false;
+ for(let j=0;j<4*H;j++){let ids=[];for(let t=0;t<3;t++){
+  const id=parseInt(bits.slice(k,k+w),2);k+=w+1;
+  if(id===0||id>m||ids.includes(id))return false;ids.push(id);
+ }}
+ return k===bits.length;
+}
 function sat(f){
  for(let a=0;a<2**f.m;a++){
   if(f.clauses.every(c=>c.some(l=>(((a>>(Math.abs(l)-1))&1)===(l>0?1:0)))))return true;
@@ -33,6 +45,7 @@ function audit(name){
  const H=edges(name)[1],z=Array(H).fill(0),o=[...z];o[0]=1;
  const a=gen(name,z),b=gen(name,o);
  if(!sat(a)||sat(b)||a.bits.length!==b.bits.length)throw Error("label/length");
+ if(!validHeader(a.bits)||!validHeader(b.bits)||validHeader(a.bits.slice(1))||validHeader(a.bits+"0"))throw Error("malformed");
  const mask=[...a.bits].map((x,j)=>+(x!==b.bits[j]));
  let raw0={},raw1={},v0="",v1="";
  for(let j=0;j<a.bits.length;j++){
@@ -45,7 +58,7 @@ function audit(name){
  if(mismatches!==4||v0===v1)throw Error("change scope");
  return {graph:name,H,edges:a.m,clauses:a.clauses.length,child_bits:a.bits.length,
   parent_reads_equal:true,parent_bits_read:a.bits.length,virtual_mismatches:mismatches,
-  label0:"SAT",label1:"UNSAT",naive_parent_only_reuse:"WRONG",
+  label0:"SAT",label1:"UNSAT",malformed_rejections:2,naive_parent_only_reuse:"WRONG",
   virtual_observation_guard:"REJECTS"};
 }
 function main(){return {status:"PASS",model:"abstract virtual-input transducer + full truth-table check",
