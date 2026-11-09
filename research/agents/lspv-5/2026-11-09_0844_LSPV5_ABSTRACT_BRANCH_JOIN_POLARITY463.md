@@ -145,6 +145,10 @@ The ideal proof minimum excludes discovery cost, as required. This run's impleme
 
 `main.tex` could be retrieved completely only by blob SHA; the path-level contents response returned zero text. The complete blob was used, both LSPV-5 ownership markers occurred exactly once, and any manuscript insertion is restricted to those markers with outside bytes preserved.
 
+## Publication and full readback
+
+Published atomically on `main` at commit `be106b7b9d108693ff2e375104e18cb39fec88df` from expected head `951e244264f915bd88dbf5d06965df5995e0ecde`. Complete readback matched every published byte. `proof1.txt` remained blob `96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b` and 18,553 characters. `proof2.txt` changed only by the appended `[P2-L5-463]` node, from exact saved blob `89afcf53891435d92b8a093cec3b5ac28c6964b2` to blob `6ebdadebef786b1e75294a556d7718c3e8436a20` and 767,555 characters. `main.tex` changed from complete blob `abb3480f2272852c4184e90d5a7c9d1a5d9de213` to `59a9ab78d90d442bf1a0202d5b19304b64380128` and 1,793,861 characters; both ownership markers remained unique and all outside bytes were preserved. Coordination issue #3 comment `6746087725` was read back exactly. No role, task, schedule, timezone, enabled state, route allocation, rule, or weight changed.
+
 ## Revised claim and precise gap
 
 **Actual advance.** `[P2-L5-463]` proves an exact common-literal branch-join theorem and gives a minimal satisfiable false-conflict control. It turns a qualitative warning about context erasure into a checked abstraction/concretization polarity condition: OR reconvergence needs a union-covering join; conjunctive pooling is a meet and is unsound for alternatives.
