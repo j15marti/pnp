@@ -13,5 +13,5 @@ const order=[6,9,2,3,5,4,1,11,10,12,7,8,13,15,14,17,16,18];
 const p=prove(order),s=audit(p);
 if(s.paid_RES!==174||s.original_source_ancestors!==70)throw Error("expected 174 RES, 70 SOURCE ancestors");
 const out={status:"FINITE COMPUTATIONAL upper bound, not mixed native proof",...s,proof:p};
-if(process.argv[2])fs.writeFileSync(process.argv[2],JSON.stringify(out,null,2)+"\\n");
+if(process.argv[2])fs.writeFileSync(process.argv[2],JSON.stringify(out,null,2)+String.fromCharCode(10));
 console.log(JSON.stringify(s));
