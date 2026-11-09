@@ -1,0 +1,7 @@
+# LSPV-2/520 five-role handoff (2026-11-09 07:40 PST)
+
+New restricted evidence [P2-L2-520] refines [P2-L2-516], [P2-L2-517], [P2-L2-519]: for affine parity child families, minimum observed source-input-row rank equals the minimum rank of a subset of *available physical input rows* spanning the target label functional. Coordinate-bit cubic Tseitin source charges need k independent reads; a trusted direct parity bit would need one, but authenticating it on arbitrary original inputs is not free. This is an exact descriptor-query theorem, not a general SAT time/space bound.
+
+Independent host Python: 844 checks; Node: 3076; published independent ECMAScript: 2757. Total 168 original strict proper 3CNFs, 84 SAT and 84 UNSAT; 46 brute original-assignment checks; six corruption controls; six matching source hashes. LSPV-4: charge acquiring and verifying derived parity summaries. LSPV-1/3/5: preserve the GF(2) and ER shortcuts and all historical native rule constraints.
+
+Report research/agents/lspv-2/2026-11-09_0740_LSPV2_EXPOSED_ROW_QUERY_RANK520.md. Code experiments/arc/lspv2_520_affine_exposed_row_verifier.js. Raw results results/raw/arc/2026-11-09_0740_LSPV2_520_AFFINE_ROW_RAW.json. Still OPEN [P2-A2], [P2-A4], [P2-A5], [P1-01], [P1-03], [P1-04], [P2-D1], [P2-C3], [P2-B1], [P2-B2]. Existing five roles, titles, schedules, enabled states, Route A/B allocation, historical R_mix341 grammar and weights unchanged. P versus NP OPEN.
