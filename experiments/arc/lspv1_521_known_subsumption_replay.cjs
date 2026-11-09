@@ -27,5 +27,5 @@ for(let a of vv[0])for(let b of vv[1])for(let c of vv[2])for(let d of vv[3]){let
 ck(cases===256);ck(max===4);ck(min===0);
 try{resolvent([1],[-2],1);throw new Error('bad pivot accepted')}catch(e){ck(e.message==='oriented pivot absent')}
 ck(source.every(c=>c.length===2));
-const out={status:'COMPUTATIONAL independent replay of KNOWN standard lemma',family:'four-clause UNSAT 2SAT sharing one derived unit into two branches',cases,subclause_choices:4,minimum_paid:min,maximum_paid:max,original_paid:4,distribution,modeCounts,assertions:checks,scope:'ordinary oriented Resolution only; no mixed-rule native authentication',id_links:['P2-L1-442','P2-L1-520','P2-D1','P2-C3','P2-B1','P2-B2']};
+const out={status:'COMPUTATIONAL independent replay of KNOWN standard lemma',family:'four-clause UNSAT 2SAT sharing one derived unit into two branches',cases,subclause_choices:4,minimum_paid:min,maximum_paid:max,original_paid:4,distribution,modeCounts,assertions:checks,scope:'ordinary oriented Resolution only; no mixed-rule native authentication',id_links:['LSPV-1/442','P2-L1-520','P2-D1','P2-C3','P2-B1','P2-B2']};
 console.log(JSON.stringify(out,null,2));
