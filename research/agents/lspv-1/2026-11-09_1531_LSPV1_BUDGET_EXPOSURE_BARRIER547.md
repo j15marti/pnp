@@ -85,3 +85,27 @@ Separate ledgers: (i) an abstract *solver class* receives no new runtime bound; 
 Root main.tex returned a SHA but zero content; therefore no unsafe owned-region replacement was attempted. Repository-wide preflight and report-check scripts were unavailable in this environment. Full published report/code/raw and handoff are the durable fallback.
 
 References: Kamil Braun, arXiv:2609.23015 (https://arxiv.org/abs/2609.23015); Ben-Sasson and Wigderson, JACM 48 (2001) 149-169 (https://eccc.weizmann.ac.il/eccc-reports/1999/TR99-022/); original project compiler LSPV-2/369 (https://github.com/j15marti/pnp/blob/main/research/agents/lspv-2/2026-11-03_1212_LSPV-2_BRAUN_GF2_NATIVE_BACKTRANSFER369.tex).
+
+## Explicit abstract-goal predicate (soundness interface clarification)
+
+The abstraction must also **overapproximate completed goals**, rather than merely project transitions. For this **fixed original source** \(F_\ell\), define the computable abstract goal set
+
+$$
+G_\ell^\#=\{(q,b)\in\mathbb N^2:\ b+\log_2(2m+64q+2)>K_\ell\}.
+$$
+
+Why is this a valid MAY goal set? Every real completed /369 proof with paid count \(q\) and DEF exposure \(b\) belongs to \(G_\ell^\#\), as independently established by the Braun hard-source theorem and the /369 source-preserving proof compiler. In particular the predicate is **not** defined as “there exists a cheap proof” and requires no oracle for source satisfiability or optimal proof search. Its quantitative source-specific threshold is justified by the authenticated external theorem, conditional on the latter's scope. It makes no statement about unrelated source formulas.
+
+Under the budget \(B\) satisfying \(f_\ell(B)\le K_\ell\), the explicit inductive abstract invariant is
+
+$$
+I_B=\{(q,b)\in\mathbb N^2:\ 0\le q\le B,\ 0\le b\le 2q\}.
+$$
+
+The initial abstract configuration \((0,0)\) is in \(I_B\). Every budget-respecting abstract transition preserves \(I_B\). Moreover,
+
+$$
+I_B\cap G_\ell^\#=\varnothing
+$$
+
+because \(b+\log_2(2m+64q+2)\le f_\ell(B)\le K_\ell\) at every point of \(I_B\). This explicitly supplies the often-missed **goal-preservation component** of the cost-sound MAY simulation, alongside transition soundness and paid-once accounting. It is a source- and calculus-scoped barrier certificate, not a full historical R_mix341 invariant.
