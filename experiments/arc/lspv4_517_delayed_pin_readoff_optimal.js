@@ -32,7 +32,7 @@ function verify517() {
      let key=c.join(',');
      if(memo.has(key))return memo.get(key);
      states++;
-     if(c.every(x=>x===4))return 0;
+     if(c.every(x=>x===4)){memo.set(key,0);return 0;}
      const live=2**c.filter(x=>x===0).length;
      let best=Infinity;
      for(let j=0;j<k;j++)if(c[j]<4) {
