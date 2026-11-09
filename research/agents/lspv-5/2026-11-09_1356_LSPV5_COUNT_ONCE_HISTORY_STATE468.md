@@ -253,4 +253,17 @@ LOCAL-CONVERT, nonlinear and shared-DAG shortcuts.  [P2-D1], [P2-C3],
 
 ## Publication and readback
 
-Publication pending conflict-safe current-head merge and complete readback.
+Published by lease-protected content commit
+`f5db6d2f5bce52907d796858a0f4a513cd95527a` on refreshed parent
+`ae7a395136175781a1611d2450c5b28f446abae4`.  All nine role-owned artifacts
+read back byte-for-byte.  `proof1.txt` remained blob
+`96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b`; `proof2.txt` read back as blob
+`24f942315c8558396499c336061fd514c6b669f4` with exactly one [P2-L5-468].
+The contents endpoint returned only manuscript metadata, so full readback used
+the blob endpoint: all 1,829,326 bytes of blob
+`13e66d0bc721a26a389aa9b98042a6dd9d431ccf` matched, with one ownership-marker
+pair, one REFEREE468 insertion and exact bytes outside the LSPV-5 region.
+Issue #3 comment
+<https://github.com/j15marti/pnp/issues/3#issuecomment-6752669395> read back with
+the exact 1,150-byte body.  This receipt is committed separately after those
+checks.
