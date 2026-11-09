@@ -2,7 +2,7 @@
 
 **2026-11-08 18:00 PST, Route B | KNOWN/PROVED-RESTRICTED lemma (prior LSPV-1/442), COMPUTATIONAL independent replays | all historical R_mix341/B3 targets OPEN.**
 
-**Relevant IDs:** [P2-L1-442], [P2-L1-520], [P2-L5-448], [P2-D1], [P2-C3], [P2-B1], [P2-B2], [P1-01]. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No new theorem node or strengthening of any full mixed proof status.
+**Relevant IDs:** LSPV-1/442 (historical report, not a tracker node), [P2-L1-520], [P2-L5-448], [P2-D1], [P2-C3], [P2-B1], [P2-B2], [P1-01]. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No new theorem node or strengthening of any full mixed proof status.
 
 ## IDEA: initial falsifiable hypothesis and four falsifiers
 
@@ -47,7 +47,7 @@ The ideal \(W_R(F)\) allows free offline choice. Actual replay traverses the ent
 
 ## Publication and remaining work
 
-Code: \`experiments/arc/lspv1_521_known_subsumption_replay.cjs\`. Raw: \`results/raw/arc/2026-11-08_1800_LSPV1_521_SUBSUMPTION_REPLAY_RAW.json\`. Independent Python verifier (local) is attached in run outbox; publication to main can use the separately published JS reproducer. All new report/code/raw/handoff should be read back in full. \`proof1.txt\` and \`proof2.txt\` require a final full unchanged read; no tracker mutation is warranted for a duplicate of [P2-L1-442]. \`main.tex\` returned a nonempty blob SHA but **zero retrievable content bytes**, so no ownership-unsafe mutation is attempted.
+Code: \`experiments/arc/lspv1_521_known_subsumption_replay.cjs\`. Raw: \`results/raw/arc/2026-11-08_1800_LSPV1_521_SUBSUMPTION_REPLAY_RAW.json\`. Independent Python verifier (local) is attached in run outbox; publication to main can use the separately published JS reproducer. All new report/code/raw/handoff should be read back in full. \`proof1.txt\` and \`proof2.txt\` require a final full unchanged read; no tracker mutation is warranted for a duplicate of LSPV-1/442 (historical report, not a tracker node). \`main.tex\` returned a nonempty blob SHA but **zero retrievable content bytes**, so no ownership-unsafe mutation is attempted.
 
 **Actual outcome:** completed an independent regression and **caught prior-work duplication before adding a false novelty node**. The next useful result must be a fully typed source-authenticated actual ER2 Resolution macro packet (especially the LCA equality/subclause interface under /448 repaired distinct ports), or an explicit historical accepted-byte counterexample. [P2-D1], [P2-C3], [P2-B1] and [P2-B2] remain OPEN. P versus NP remains OPEN.
 
