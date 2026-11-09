@@ -1,0 +1,55 @@
+# LSPV-3/539: affine-hull equivalence obstruction and two-stage CEGAR for typed XOR export
+
+**2026-11-09 11:24 PST | LSPV-3 Hypergraph & Proof Certificates | Route B | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN.**
+
+**Proof-chain IDs:** new [P2-L3-539], refining [P2-L3-537], [P2-L3-538], [P2-L5-464], [P2-L5-465], [P2-L1-541], and still-OPEN [P2-D1], [P2-C3], [P2-B1], [P2-B2]. No Route A or proof1 status changes.
+
+## IDEA: precommitted falsifiers and exact target
+
+Candidate: retaining only the GF(2) affine hull of an exact local Boolean factor is insufficient to decide whether a historical /341 **same-node exact-equivalence** XOR annotation is legal. Adding the number of satisfying local assignments is a sound, exact test for affine *representation eligibility*, but hull plus count is still insufficient to implement a precise binary AND3 conjunction. The exact 8-bit factor resolves the remaining CEGAR counterexample on at-most-three-variable interfaces. No claim about full native accepted-byte grammar is made.
+
+F1: removing one model from a three-variable parity plane changes its affine hull. F2: the punctured plane is itself equivalent to the original parity row. F3: same affine hull and model count determine the exact intersection cardinality for every pair of factors. F4: the historical accepted-byte grammar explicitly permits FREE export of all merely implied affine rows from arbitrary derived factors; such a rule would invalidate the **rule-eligibility** distinction but would have to be included in the full-cost abstraction. F1-F3 are refuted by explicit witnesses and symbolic proofs; F4 remains unverified, rather than excluded.
+
+## SEARCH / continuity and family ledger
+
+Read *complete* root proof1.txt (blob `96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b`) and proof2.txt (startup blob `dbcdc964000410b38b92b76249335ac1c6f3d9ee`); the governing `research/coordination/2026-11-09_ABSTRACT_INTERPRETATION_NEGATIVE_FIVE_ROLE_REFOCUS.md` (blob `8a6fd9f5dc73a2ed943e8630cad63bdd768b0b1b`); issue #3 and latest LSPV-1/541, LSPV-5/465, LSPV-3/538 comments; AGENTS.md (blob `4ae902888754d0b06ba4ce1aaeca0657a92b46a9`); CODEX.md (blob `754999f50de93cdb693ed37bc8110d31e9e698ef`); .codex/skills/pnp-research/SKILL.md (blob `b8df83a7b0b1428f349b0e02ce1387d979e8db7f`); the original semantic declaration `research/agents/lspv-2/2026-11-02_1216_LSPV-2_MIXED_TSEITIN_MIN_DAG341.tex` (blob `c87acd11d32ccfc3b7acd3667ef11daeb60079cb`), LSPV-3/537 and /538, actual `GROKPROOF/2026-11-09_1230_PROGRESS.md` (blob `0ee19c6b2fdf92b64427ab737fe563346779c828`) and Claude's `research/agents/claude/2026-10-28_0924_CLAUDE_WORLD-LEDGER-0001.tex` (blob `79e4d4e7e0e3edff3aba8610852c45534bdde128`).
+
+Change-aware external repository reads: `konard/p-vs-np:scripts/proof_status.json` blob `93b77ed3d8fe456f81c690035f45f07910a247f2` (scoped Lean statements, not P versus NP); `blkph0x/p-vs-np-proof-research:METHOD_INDEX.md` blob `18d693ea71dfa433370eb7afbebc3106e32f03e5` (scoped methods); `meelgroup/frat-xor:format.md` blob `986a21aa92b62f844ef1fce852193142c41b2b1f` (EXTERNAL typed XOR/FRAT proof syntax, distinct from native grammar); `tanyongkiam/cake_lpr:README.md` blob `e94f45e9aa000cd9ada12f4c771ac9daf28fe53c` (independent formal-checker trust boundary); `MassimoLauria/cnfgen:cnfgen/families/tseitin.py` blob `4bb5fd198fc4a698a5a207f67b36a9591b2a3bab` (Tseitin encoding); `openai/math:README.md` blob `cc5b0a03bca6c742f045d683b6647a6f44ef2cae` (mixed verification stages). Targeted GitHub searches for LOCAL-CONVERT, DEF, mixed341 and prior LSPV-3 interfaces surfaced `research/main/2026-11-03_0748_MAIN_LOCAL-CONVERT-PAYLOAD-FIREWALL-REFEREE315.md` and prior /357, /360, /413; none authenticates every original accepted-byte transition. Google-specific search service was unavailable; normal web literature search was used.
+
+Literature: Cousot & Cousot, POPL 1977 (https://www.di.ens.fr/~cousot/COUSOTpapers/POPL77.shtml): sound overapproximation; D'Silva, Haller & Kroening, *Abstract Satisfaction*, POPL 2014 DOI 10.1145/2535838.2535868 (https://www.kroening.com/papers/popl2014.pdf): abstract SAT procedures, not proof work; Giacobazzi, Ranzato & Scozzari, *Making Abstract Interpretations Complete*, JACM 47(2), 2000 DOI 10.1145/333979.333989: abstraction completeness; Pommerening et al., *Abstraction Heuristics, Cost Partitioning and Network Flows*, ICAPS 2017 DOI 10.1609/icaps.v27i1.13806: admissible cost partitioning. The inference-system transfer is original project work, not a claim inherited from these papers.
+
+**Established hard-family control:** odd-charge Tseitin strict 3-CNF on connected cubic expander graphs of h vertices; m=4h clauses, n=3h/2 edge variables, O(h log h) bit encoding with standard IDs; every local vertex is four wrong-parity signed facets, global XOR charge odd implies UNSAT. Urquhart (1987), *Hard Examples for Resolution*, JACM 34:209–219, DOI 10.1145/7531.8928: exponential ordinary Resolution proof length for qualifying expander Tseitin instances; **NOT** all-rule R_mix341 hardness. The /341 declared mixed system admits h paid local three-join parity extractions and h-1 paid XOR sums (4h-1 total), a mandatory linear-cost countercontrol. Cook extended Resolution/PHP and external FRAT-XOR are mandatory stronger-rule controls. The present three-variable witness is a *focused local typed-obstruction control*, not a new claimed hard family.
+
+## ITERATE: symbolic results
+
+Let X={0,1}^k, let H be any GF(2) affine hyperplane of codimension one and k>=3, and choose p in H. Let M=H and M'=H\{p}. For every proper affine subspace K of H, |K|<=2^(k-2), whereas |M'|=2^(k-1)-1>2^(k-2). Thus
+
+$$
+\operatorname{Aff}(M)=\operatorname{Aff}(M')=H,\qquad M\ne M'.
+$$
+
+An abstract state recording the affine hull cannot distinguish an exact factor equivalent to an XOR row from a factor which merely entails that row. In the historical **semantic declaration** (/341), a factor is annotated by a GF(2) row *only if an exhaustive local truth table proves exact Boolean equivalence*. A free annotation of M' as equal to H fails this exactness test; whether a distinct PAID LOCAL-CONVERT can imply/export it is a separate rule and must not be conflated.
+
+**CEGAR refinement 1 (hull + count):** for any *nonempty* finite factor M,
+
+$$
+M=\operatorname{Aff}(M)\quad\Longleftrightarrow\quad |M|=|\operatorname{Aff}(M)|.
+$$
+
+Containment into the affine hull is automatic, so equality of cardinalities is necessary and sufficient. In particular, for k=3, full even parity has 4 models, and punctured even parity has 3.
+
+**CEGAR refinement 2 (binary conjunction):** hull plus exact count is NOT a sufficient statistic for AND3. Let H be the even-parity 3-bit plane and p != q in H. Both A=H\{p} and B=H\{q} have identical (hull, count)=(H,3), but |A cap A|=3 and |A cap B|=2. Therefore the same two abstract input summaries allow incompatible exact successor cardinalities. A may abstraction must include both; claiming an exact single successor is invalid. An exact at-most-three-variable mask (8 bits) implements intersection as bitwise AND, unary local implication as M subseteq N, and same-node row annotation as M==rowMask. This is a *local* sound reduced product: source identities, active contexts, paid node history and interface types must remain separate, not collapsed into the mask.
+
+**Concrete strict-3-CNF witness:** four source clauses excluding 001,010,100,111 are (-1 2 3), (1 -2 3), (1 2 -3), (-1 -2 -3). Three binary paid AND3 nodes derive even-parity factor mask 105, exactly equal to row x1 xor x2 xor x3=0; a legitimate local same-node annotation under /341's stated semantic rule. Adding source clause (1 2 3), excluding 000, produces a fourth paid AND3 node with mask 104. Its affine hull remains mask 105, but this *new node* is not equivalent to the row. Earlier distinct node 105 remains in the shared DAG and may be reused without repaying its inference; the new 104 node may not inherit its free exact-row annotation. Original-source IDs and all four distinct charged AND3 nodes are retained.
+
+**Cost qualification:** The exact-mask operations are an OFFLINE mathematical abstraction over the declared factor fragment, not free concrete inference. A complete concrete-to-abstract proof mapping charges each native paid node once using its fixed weight and preserves parent node references; overapproximating unknown grammar may permit extra zero-cost or unit-cost transitions but cannot be used to delete a legal path. Binary AND3, LOCAL-CONVERT and GF(2) must stay distinguishable types. Branch discharge, DEF facets, exported/private wires, large identifier semantics and arbitrary nonlocal LOCAL-CONVERT remain **UNAUTHENTICATED/OPEN**. A full proof-construction nonreachability invariant is NOT obtained.
+
+## REPRODUCTION / hostile controls
+
+The independently authored Python generator used a row-equation affine-hull computation; a separate Node.js verifier used XOR-difference span. Both are LOCAL independent implementations, not the authoritative historical checker. Exact enumeration: 256 local truth sets, 3,584 equation-equivalence tests, 65,536 ordered factor pairs and 6,561 true local unary implications; 41,260 pairs strictly lose precision under hull-of-intersection versus intersection-of-hulls. Python recorded 200,964 assertion groups; JS independently passed 69,903 checks. Corrupted exact-row tagging (104 mislabeled 105), changed source clause, incorrect AND3 result, odd/even parity collision all passed rejection controls. Python sequential runtime 0.08 s / peak RSS 31,984 KiB; Node runtime 0.68 s / peak RSS 96,012 KiB on the container. These time/space values measure only this finite analysis, *not* full SAT proof construction or native verification. Proof node work: 3 nodes to exact parity, +1 strengthening node; node references: 2 per AND3; critical path: 3 and 4 respectively; exact local evidence fits 8 bits per mask but signed IDs/source/proof bits scale with encoding and must be separately charged in implemented systems.
+
+Generated files: `experiments/arc/lspv3_539_affine_tag_cegar.cjs`, `results/raw/arc/2026-11-09_1124_LSPV3_539_AFFINE_TAG_RAW.json`, `research/coordination/2026-11-09_1124_LSPV3_AFFINE_TAG_CEGAR539_FIVE_ROLE_HANDOFF.md`. Independent Python source and Node verifier plus complete raw results are in the conversation reproduction package. The JS repository runner is a finite semantic control, not authoritative grammar replay.
+
+## Publication / exact gap
+
+PROVED/RESTRICTED: a hull-only domain cannot exactly test native declared same-node parity annotation; hull+cardinality repairs annotation eligibility but not exact AND3 conjunction; exact local masks repair both for supported <=3-variable factors. COMPUTATIONAL: complete 3-bit enumeration and independent replay. This adds a typed CEGAR obstruction but not the requested all-rule negative certificate. [P2-D1] authentication, [P2-C3] full rule-by-rule abstraction/simulation, [P2-B1] superpolynomial all-rule mixed minimum and [P2-B2] noncircular B3 remain **OPEN**. P versus NP OPEN.
