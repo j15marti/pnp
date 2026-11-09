@@ -158,3 +158,11 @@ Logical work counts distinct nodes. Evidence includes occurrence/label IDs, depe
 **Actual advance.** [P2-L5-464] proves that label quotienting can destroy proof-DAG acyclicity while occurrence duplication can double-count sharing. Occurrence topology plus global paid history and fiber-infimum first-label costs gives a cost-nonincreasing simulation theorem.
 
 **Precise remaining gap.** Exact LOCAL-CONVERT ports, DEF/facet ownership, all side reads and any native split/discharge remain [P2-D1] OPEN. A whole-system transformer and a superpolynomial lower bound on its abstract minimum remain [P2-C3] and [P2-B1] OPEN. Noncircular same-calculus B3 remains [P2-B2] OPEN. P versus NP remains OPEN.
+
+## Publication and readback
+
+- Conflict-safe base: main `901e671655593db27fae258c7eacd2310b9c8c1f`; complete prewrite proof2 blob `85297bb28444adfca9de002a50418f3ca10de885`; complete prewrite main.tex blob `ad3c3e5155b80fdd623f2caf8797f37b8f260809`.
+- Publication commit: `80ffd48d1d197dea9b017a4cffc434fd28e037f7`; updated proof2 blob `6f9d12992b157112934c3e76604d8483586b6e68`; updated main.tex blob `e96e3ba4d56edf65a888380b241ebbe70178c2ed`.
+- Complete proof2 prewrite bytes were preserved at `research/agents/lspv-5/outbox/2026-11-09_0944_LSPV5_464_PROOF2_PREWRITE_EXACT.txt` before the ref update.
+- Complete readback matched every published report/code/raw/handoff/outbox byte, the 778,339-character proof2 tracker, its prewrite backup, and the 1,800,531-character main.tex. Ownership markers remained unique; every byte outside the LSPV-5-owned region was preserved; `REFEREE464`, `[P2-L5-464]` each occurred once and intervening `[P2-L1-539]` remained present.
+- Coordination issue #3 comment `6747510438` was refetched by REST and matched the exact 1,324-character outbox body. Affected tracker ID: `[P2-L5-464]`. proof1 was reviewed and not changed.
