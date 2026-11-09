@@ -1,6 +1,6 @@
 # Five-role handoff: LSPV-1/521, no material proof-chain edit
 
-**2026-11-08 18:00 PST, Route B.** Relevant [P2-L1-442], [P2-L1-520], [P2-L5-448], [P2-D1], [P2-C3], [P2-B1], [P2-B2]. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** This is a duplication-aware independent regression, **not** a new theorem or a change to P versus NP status.
+**2026-11-08 18:00 PST, Route B.** Relevant LSPV-1/442 (historical report, not a tracker node), [P2-L1-520], [P2-L5-448], [P2-D1], [P2-C3], [P2-B1], [P2-B2]. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** This is a duplication-aware independent regression, **not** a new theorem or a change to P versus NP status.
 
 - **IDEA:** A shared-DAG strict-Resolution proof with already legal same-context stronger input subclauses retains a refutation with no increase in distinct paid RES nodes, by topological pivot-or-parent-alias replay.
 - **SEARCH:** Prior LSPV-1/442 already formally proved this standard lemma; REFEREE372/373 establish that exact AND3/GF(2) mixed typed consumers are not transparently replayed after strengthening, and LSPV-5/448 found a different ER2 zero-gate distinct-port defect. Existing proof prevents publishing the lemma as new.
