@@ -12,7 +12,7 @@ function source(charges){
   }
  }
  const t="K4:"+clauses.map(c=>c.join(",")).join(";")+";";
- return {clauses,bits:t.split("").flatMap(c=>Array.from({length:8},(_,i)=>(c.charCodeAt(0)>>(7-i))&1))};
+ return {clauses,text:t,bits:t.split("").flatMap(c=>Array.from({length:8},(_,i)=>(c.charCodeAt(0)>>(7-i))&1))};
 }
 function sat(clauses){for(let a=0;a<64;a++){if(clauses.every(c=>c.some(l=>((a>>(Math.abs(l)-1))&1)===(l>0?1:0))))return true}return false}
 function monitor(bits,events){
@@ -54,7 +54,7 @@ function monitor(bits,events){
  assert(scanSteps<=2*inputMoves+2*n,"amortized scan bound");
  return {n,reads:reads.size,scans,scanSteps,inputMoves,indexWrites,checked,headBits:worstHead.toString(2).length};
 }
-let summary={status:"PASS",sources:0,sat:0,unsat:0,malformed:5,cases:0,guest_steps:0,input_moves:0,index_writes:0,scans:0,scan_transitions:0,max_head_bits:0,max_read_mask_address:0,samples:[]};
+let summary={status:"PASS",sources:0,sat:0,unsat:0,malformed:0,cases:0,guest_steps:0,input_moves:0,index_writes:0,scans:0,scan_transitions:0,max_head_bits:0,max_read_mask_address:0,samples:[]};
 for(let charge=0;charge<16;charge++){
  const ch=Array.from({length:4},(_,i)=>(charge>>i)&1),s=source(ch);
  const truth=sat(s.clauses),want=(ch.reduce((a,b)=>a+b,0)&1)===0;
@@ -74,5 +74,14 @@ for(let charge=0;charge<16;charge++){
    if(charge===0)summary.samples.push({mode,...q});
  }
 }
+const validSources=new Set();
+for(let charge=0;charge<16;charge++)validSources.add(source(Array.from({length:4},(_,i)=>(charge>>i)&1)).text);
+for(const bad of ["","K4?","not a formula","K4:1,2,3;","K4:0,0,0;"]){
+ assert(!validSources.has(bad),"malformed source accepted");
+ const bits=bad.split("").flatMap(c=>Array.from({length:8},(_,i)=>(c.charCodeAt(0)>>(7-i))&1));
+ const q=monitor(bits,Array.from({length:bits.length+2},(_,i)=>[i&1?"S":"R"]));
+ assert(q.n===bits.length);summary.malformed++;
+}
+assert(summary.malformed===5);
 globalThis.LSPV4_505_RESULT=summary;
 if(typeof module!=="undefined"&&module.exports)module.exports=summary;
