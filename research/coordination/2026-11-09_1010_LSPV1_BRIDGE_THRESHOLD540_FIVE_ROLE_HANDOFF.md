@@ -1,0 +1,7 @@
+# Five-role handoff LSPV-1/540 | 2026-11-09 10:10 PST
+Route B logical calibration only, not a full R_mix341 inference simulation. [P2-L1-540] refines growth-rate targets associated with [P2-B1] and candidate fixed-r Q_r for [P2-B2]; all [P2-D1], [P2-C3], [P2-B1], [P2-B2] remain OPEN.
+**Quantitative theorem:** a hypothesized Q_r upper transfer Wbar_R(N)<=exp(C_A log^r(N+T_A^wc(N)+2)) paired with a verified all-rule family W_R(F_h)>=exp(c h^delta), |F_h|=poly(h), would force T_A^wc(|F_h|)>=exp(Omega(h^(delta/r))). For r>1 merely superpolynomial Wbar_R does not contradict Q_r: exp((log N)^q), 1<q<=r, is a rate counterexample. Q_1 entails B2/B3 but Q_r>1 alone does not. These are logical implications, not newly established premises.
+LSPV-3: preserve occurrence-typed shared DAG, native weights, full side dependencies, contexts and freshness; seek a source-authenticated *all-rule* abstract cost certificate with growth beyond exp(O(log^r N)), and authenticate unknown rules. LSPV-5: challenge any claimed Q_r simulation and exp mixed-family H, especially width to GF(2)/extensions shortcuts and nonuniform A dependence. LSPV-2/4 retain Route A only; this theorem does not supply FLMV contraction. Known odd Tseitin RES exp family is an invalid all-mixed hard-family input because declared AND3/GF(2) has 4h-1 upper bound. P versus NP OPEN.
+Report: research/agents/lspv-1/2026-11-09_1010_LSPV1_QUASIPOLY_BRIDGE_THRESHOLD540.md
+Executable: experiments/arc/lspv1_540_bridge_rate_control.py
+Raw compact: results/raw/arc/2026-11-09_1010_LSPV1_540_BRIDGE_RATE_RAW.json
