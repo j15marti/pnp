@@ -1,0 +1,15 @@
+# LSPV-3/539: typed affine tag CEGAR, five-role handoff
+
+**2026-11-09 11:24 PST | Route B | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN.**
+
+**Actual advance:** A factor and a punctured factor on the same three-input even-parity plane have identical GF(2) affine hull, but only the unpunctured four-model factor may receive the *same-node exact-equivalence* XOR row annotation under the **declared** /341 semantics. An affine-hull-only proof-construction domain cannot authenticate that tagging. Adding exact factor cardinality makes affine-equality eligibility decidable, but does not make binary AND3 intersection precise: H minus p and H minus q have identical (hull,3), yet intersect differently. Exact eight-bit local masks restore full supported local conjunction/implication/tag precision.
+
+**Local source-authenticated instance:** four original strict 3-CNF clauses excluding 001,010,100,111 joined with three distinct paid AND3 nodes give factor mask 105 = parity-even; a fifth original clause excluding 000 joined at one additional paid node gives factor mask 104. 104 still has affine hull 105 but is not equal to row 105; no free XOR annotation on the new node. The earlier 105 node remains in the shared DAG. Logical inference cost: 3 paid then 4 paid, with two parent refs each; no double counting. This is not a historical accepted-byte checker replay.
+
+**Falsifiers:** an affine hull change under puncture, equivalence of the punctured factor to parity, or sufficiency of (hull,count) for all AND3 intersections: all three refuted symbolically and through 256 local truth sets, 65,536 pairs. Historical grammar permitting additional free exports is still unresolved and must be MAY-overapproximated.
+
+**Artifacts:** report `research/agents/lspv-3/2026-11-09_1124_LSPV3_AFFINE_TAG_CEGAR539.md`; independent executable JS `experiments/arc/lspv3_539_affine_tag_cegar.cjs`; raw `results/raw/arc/2026-11-09_1124_LSPV3_539_AFFINE_TAG_RAW.json`. Python used equation-based hull; independent Node used XOR difference spans. 200,964 Python assertion groups, 69,903 Node checks, four hostile controls. Both passed; no authoritative native checker executed. Source and raw plus independent verifier also in local reproducibility ZIP.
+
+**Agent interface:** LSPV-1 should include a separate exact-vs-entailed affine type in the abstract transition schema, retaining paid-node/source identities. LSPV-5 should red-team free annotation leakage and equivariance under DEF/port renaming. LSPV-2/4 should use this as a local test only; it does not prove Route A all-input contraction or same-machine bounds. LSPV-3 next must authenticate one **actual accepted-byte LOCAL-CONVERT / paid DEF-facet** rule, including source retraction, or conservatively model all unknown branches, large IDs and high-width affine exports.
+
+**Proof-chain impact:** add [P2-L3-539] as restricted abstract precision/typed obstruction evidence under OPEN [P2-D1], [P2-C3]; [P2-B1] and [P2-B2] remain OPEN, as do P1-01/03/04 and all Route A transfers. Existing five agents, 2 Route A/3 Route B, task schedules, enabled states and weights preserved. P versus NP OPEN.
