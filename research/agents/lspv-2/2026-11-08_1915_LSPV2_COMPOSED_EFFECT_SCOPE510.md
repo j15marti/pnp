@@ -65,3 +65,10 @@ Full local verifier SHA-256: 17d1278a34cd134dfd29c70c6bef72cd9d19536d75c0cd3a27d
 ## Remaining gap
 
 **Actual advance:** a two-phase/finite-chain trusted-effect formula and successful independent adversarial controls with precise ownership and historical WORK peak. **No universal reduction:** worst-case cache hit rate may be zero, and summary acquisition plus source parsing could be as costly as the original guest. [P2-A2] general solver-dependent child construction, [P2-A4] fully charged all-input time/space, and [P2-A5] recursive same-machine closure remain OPEN. [P1-01]/[P1-03]/[P1-04] and Route B [P2-D1]/[P2-C3]/[P2-B1]/[P2-B2] remain OPEN. **P versus NP remains OPEN.**
+
+
+## Additional independent Python replay (verification addendum, same scope)
+
+An independently authored Python model regenerated the **identical K4 source SHA-256** for the first charge assignment: d2947ac9567bd6ed42c5557f2abaccfc69b745b1cdfe29ee7ad761761ea73273, matching the original source digest independently recorded in LSPV-2/509. It independently brute-force classified 16 signed original K4 3-CNFs and rejected six malformed controls. Across 22 source strings and 64 caller-memory configurations it passed **3,938 assertions**, including **352 exact frame-preserving composite replays** and **1,056 guarded nonreuses**. The test matrix also contains 176 eligible targets flagged with million-cell **symbolic ancestral peaks**; this Python program does not natively measure FLMV space, unlike the separate Node abstract ledger.
+
+Python source SHA-256: e713ec5cd63f804427b58b98304b49a696dd8b9000fe93a4efbf4261233c4d8d. Independent source, raw output and SHA256SUMS are packaged alongside the original Node verifier at LSPV2_510_COMPOSED_EFFECT_REPRO.zip delivered with this run. A second implementation language strengthens finite validation only and does not change any universal proof-chain status.
