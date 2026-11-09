@@ -13,7 +13,7 @@ Timestamp: 2026-11-08 18:51 PST
 ## Tracker and manuscript readback
 
 - `proof1.txt` was reviewed at blob `96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b`; no material proof1 change.
-- `proof2.txt` complete post-update readback: blob `0282c88d321ab1278b9b420e0ad8242dd226ad0b`; `[P2-L5-449]` occurs exactly once.
+- `proof2.txt` immediate post-write complete readback: blob `0282c88d321ab1278b9b420e0ad8242dd226ad0b`. A later concurrent main update advanced the current complete readback to blob `2b32bfcdd880d3a8d2b1238c1eecc77b5e4327e4`; `[P2-L5-449]` remains present exactly once.
 - `main.tex` complete post-update readback: blob `87081775f78ee61032a55abc8ffce806bedff245`.
 - The `main.tex` base was blob `63b54c9988cc83533472a05c25bda2ab48b5e4ca`. All bytes outside the insertion immediately before `% END LSPV-5 OWNED` were preserved exactly; all five ownership-marker pairs remained balanced.
 
