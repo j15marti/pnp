@@ -10,7 +10,7 @@ function graph(name){
  if(name==="prism"){h=6;e=[[0,1],[1,2],[0,2],[3,4],[4,5],[3,5],[0,3],[1,4],[2,5]]}
  if(name==="cube"){h=8;for(let i=0;i<8;i++)for(let j=i+1;j<8;j++)if(popcount(i^j)===1)e.push([i,j])}
  if(name==="Petersen"){h=10;for(let i=0;i<5;i++){e.push([i,(i+1)%5],[i,i+5],[i+5,((i+2)%5)+5])}}
- return {h,e:e.sort((a,b)=>Number(0 in b?false:false)||((a.includes(0)?0:1)-(b.includes(0)?0:1)))};
+ return {h,e:e.sort((a,b)=>(a.includes(0)?0:1)-(b.includes(0)?0:1))};
 }
 function popcount(x){let s=0;while(x){s+=x&1;x>>=1}return s}
 function norm(cl){return [...new Set(cl)].sort((a,b)=>Math.abs(a)-Math.abs(b)||b-a)}
