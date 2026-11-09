@@ -82,7 +82,7 @@ function verify518() {
   }
   // Tampering with one member of a complementary padded pair must break source equality.
   const base=cases[0],bad=base.strict_raw.map(c=>c.slice());
-  bad[4][2]=base.aux+1;
+  bad[1][2]=base.aux+1;
   function restrict(cnf,z,flag){const taut=flag?z:-z;return cnf.filter(c=>!c.includes(taut)).map(c=>c.filter(l=>Math.abs(l)!==z));}
   ok(JSON.stringify(restrict(bad,base.aux,false))!==JSON.stringify(base.source_raw),"tampered pair rejected");
   // Verify normalized strict clause, and reject a false new auxiliary.
