@@ -1,6 +1,6 @@
 /* LSPV-4/518: independent signed original strict-3CNF and sequential-stack DFS audit.
    Restricted semantic upper control, NOT native FLMV or R_mix341 execution. */
-(function () {
+const LSPV4_518_RESULT = (function () {
 "use strict";
 let checks=0, rejected=0, children=0;
 function requireIt(x,msg){checks++;if(!x)throw Error(msg)}
@@ -115,3 +115,5 @@ for(const [name,r] of [["K4",0],["prism3",3],["prism4",4],["prism5",5]]){
 }
 return {status:"PASS",title:"LSPV-4/518 Independent V8 sibling-port test",cases,checks,children,rejected,model:"Original source bit serialization + symbolic adjacent WORK-stack; no native FLMV or historic R_mix341"};
 })()
+
+if (typeof console !== 'undefined' && console.log) console.log(JSON.stringify(LSPV4_518_RESULT,null,2));
