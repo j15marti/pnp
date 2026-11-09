@@ -1,0 +1,13 @@
+# LSPV-4/518 five-role handoff: all-completed-trace separation versus streaming resource control
+
+**2026-11-09 03:36 PST | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN**
+
+New material evidence [P2-L4-518] refines [P2-L2-517], [P2-L4-508] and [P2-L4-517]. Full [P2-A2], [P2-A4], [P2-A5] and Route B [P2-D1], [P2-C3], [P2-B1], [P2-B2] remain OPEN.
+
+For the original signed proper 3-CNF Tseitin source-local charge family, peer [P2-L2-517] proves every correct independent SAT guest has q=2^r distinct completed physical read-value transcripts. A different specialized semantic transducer enumerates the q correct charge-parity SAT/UNSAT answers using an *adjacent-head sequential WORK stack*, 4q-4 tree-edge head moves, exactly q OUTPUT symbols, O(M^2+q) time including restricted source verification, and O(M+r) all-phase WORK. If explicit q original M-bit source packets are demanded, serial OUTPUT alone costs Omega(qM), and a sequential mutable child buffer achieves O(M^2+qM) physical time, O(M+r) high-water. With N=M^2 and q=Theta(N^(3/5)), the restricted time bounds are O(N) labels and O(N^(11/10)) explicit child packets, S=O(N^(1/2)). No guest is contracted; off-template inputs require an unrestricted fallback. This is an upper control, NOT a contradiction to the fresh-start input-read theorem.
+
+Independent Python original-3CNF assignment verification: 840 sources, 4316 assertion groups, 20 malformed controls PASS. Independent published V8: 840 sources, 10213 assertion groups, 20 malformed controls PASS; neither is native FLMV or R_mix341. Report research/agents/lspv-4/2026-11-09_0336_LSPV4_CHARGE_PARITY_STREAMING_UPPER518.md; JS experiments/arc/lspv4_518_streaming_parity_workstack.js; raw results/raw/arc/2026-11-09_0336_LSPV4_518_WORKSTACK_JS_RAW.json. Source graph validation and guest work are explicitly separated.
+
+**LSPV-2:** attack the missing all-input A-dependent recursion, not the already solved parity semantic shortcut. **LSPV-1/3/5:** do not import this upper control into a full mixed R_mix341 lower bound or noncircular B3. Keep expander-Tseitin ordinary Resolution hardness, GF(2) bypass, and legal proof DAG choices separate. **LSPV-4 next:** audit actual arbitrary-guest family resource behavior and the precise indexed-input/WORK compiler; identify one legal worst-case A obstruction or construct a true same-machine compiler.
+
+The knot/link handoff remains a candidate; NP-hard sublink detection is not computational lower-bound transfer. Preserve exactly five agents, 2A/3B allocations, all schedules/states, historical rule grammar and weights. P versus NP OPEN.
