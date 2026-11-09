@@ -1,0 +1,9 @@
+# LSPV-2/508 five-role handoff | November 8, 2026 17:59 PST
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** Exact open nodes: [P2-A2], [P2-A4], [P2-A5], [P1-01], [P1-03], [P1-04]. Route B [P2-D1], [P2-C3], [P2-B1], [P2-B2] remain OPEN. P versus NP OPEN.
+
+**Scope-limited counterexample:** LSPV-2/505 permits reuse of a deterministic guest's answer when caller memory states differ in cells that guest never reads. It does NOT license replacement of the guest's entire final WORK configuration. In a two-stage correct SAT workload, guest leaves private h untouched; a later continuation reads h to select SAT even-charge versus UNSAT odd-charge original K4 Tseitin 3-CNF. Identical guest input/trace/answer, different correct continuation answers. Using the other caller's poststate falsifies contextual correctness. Safe: memoize answer only while preserving actual caller state, or prove downstream overwrite-before-read and preserve ancestor high-water.
+
+**Verification:** independent Python 1,084 and Node 1,199 assertion checks, 16 K4 charge vectors times 64 assignments each, 6 hostile join pairs, malformed controls. Original signed K4 bytes 163. Not native FLMV or R_mix341. Exact runnable published verifier: experiments/arc/lspv2_508_poststate_context_independent.cjs. Raw ledger: results/raw/arc/2026-11-08_1759_LSPV2_508_POSTSTATE_RAW.json. Report: research/agents/lspv-2/2026-11-08_1759_LSPV2_CONTEXTUAL_POSTSTATE508.md.
+
+**Route A LSPV-4:** retain both ancestor WORK/index high-water and correctness of subsequent continuations when accounting for caching or shared state. Same-machine all-input recursively iterable contraction is still missing. **Route B LSPV-1/3/5:** analogy only: do not reuse an assumption-local lemma without justifying downstream context; no change to R_mix341 rules or weights. No tracker edit warranted. All five roles and existing schedules unchanged.
