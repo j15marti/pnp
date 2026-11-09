@@ -20,13 +20,28 @@ Published primary literature controls: Urquhart, *Hard Examples for Resolution*,
 
 ## Family/encoding/model ledger
 
-Fix simple connected cubic G=(V,E), H=|V| even, m=3H/2, edge variables e_1,...,e_m in lexicographic edge order. At each vertex v, place four **original proper signed width-3 clauses** excluding exactly those assignments to its three incident edge variables whose XOR disagrees with charge chi_v. Clauses are ordered by lexicographic forbidden triple, edge IDs increasingly in each clause. There are exactly 4H original source clauses and 12H literal occurrences, no new variables. Use explicitly stipulated 8-bit A5 marker, 12-bit H, 12-bit m, and for each literal a w=ceil(log2(m+1))-bit ID and a single polarity bit (sign=forbidden triple bit). Then
+Fix simple connected cubic G=(V,E), H=|V| even, m=3H/2, edge variables e_1,...,e_m in lexicographic edge order. At each vertex v, place four **original proper signed width-3 clauses** excluding exactly those assignments to its three incident edge variables whose XOR disagrees with charge chi_v. Clauses are ordered by lexicographic forbidden triple, edge IDs increasingly in each clause. There are exactly 4H original source clauses and 12H literal occurrences, no new variables. The finite tested grammar uses an 8-bit A5 marker, a **12-bit H and 12-bit m**, and for each literal a w=ceil(log2(m+1))-bit ID and a single polarity bit (sign=forbidden triple bit). Its **finite-domain** exact length is
 
-$$
-N=32+12H(w+1)=\Theta(H\log H).
-$$
+$
+N_{\mathrm{fixed}}=32+12H(w+1),\qquad H\le2730\ \text{(even)}.
+$
 
-This is LSPV-4/507's own fixed-field encoding, NOT byte-identical to LSPV-2/495, not an authenticated historical R_mix341 parser. Validity of the graph/template and fixed-field syntax is an additional source promise. For connected G, incidence-matrix GF(2) rank H-1 gives `SAT(F_chi) iff XOR_v chi_v=0`. A flip of chi_v changes exactly the four third-literal sign positions Q_v in its four clauses, leaving identifiers and length unchanged. On growing cubic expanders with odd total charge, ordinary shared-DAG **Resolution** refutations have exponential size under the cited model; a GF(2) shortcut decides promised-family satisfiability in polynomial time. No hardness transfer to all algorithms or fixed R_mix341 follows.
+Because m=3H/2 must fit in twelve bits, **this grammar cannot encode an unbounded expanding graph sequence**. The earlier notation $\Theta(H\log H)$ cannot be read as an asymptotic claim about this finite encoding. A separately defined unbounded grammar, with different bytes, uses marker A6 followed by prefix-free Elias-gamma encodings of H and m; with $\ell(x)=2\lfloor\log_2x\rfloor+1$ it has
+
+$
+N_{\gamma}=8+\ell(H)+\ell(m)+12H(w+1)=\Theta(H\log H).
+$
+
+Its ordered signed original 3-CNF clauses are **identical as Boolean clauses** to the abstract Tseitin sources, so ordinary Resolution proof-size hardness on those clauses is unaffected by the header change. The $γ$ header needs its own parser/source-authentication and native-machine ledger, and finite tests in this run only produce the original A5 fixed-field 3-CNF bits. This is LSPV-4/507's own finite fixed-field encoding, NOT byte-identical to LSPV-2/495 or an authenticated historical R_mix341 parser. Validity of the graph/template and fixed-field syntax is an additional source promise. For connected G, incidence-matrix GF(2) rank H-1 gives `SAT(F_chi) iff XOR_v chi_v=0`. A flip of chi_v changes exactly the four third-literal sign positions Q_v in its four clauses, leaving identifiers and length unchanged. On growing cubic expanders with odd total charge, ordinary shared-DAG **Resolution** refutations have exponential size under the cited model; a GF(2) shortcut decides promised-family satisfiability in polynomial time. No hardness transfer to all algorithms or fixed R_mix341 follows.
+
+
+## Additional adversarial encoding audit after initial search: a material scope correction
+
+**Post-search falsifier F6**, discovered during the resource/encoding readback: the apparently asymptotic original 12-bit H/m grammar has finite capacity. Since m=3H/2 <= 2^12-1=4095, H can be **at most 2730** for simple cubic graphs. The next possible even size H=2732 has m=4098 and is unrepresentable even though its abstract Tseitin CNF is well-defined. Thus [P2-L4-507]'s literal original-source **fixed-header bit grammar cannot itself supply an unbounded asymptotic hard-family sequence**. This changes no finite /507 certificate and does not refute the abstract charge/parity or ROBDD lemma; it is a significant encoding-to-resource dependency.
+
+**Repair (PROVED/RESTRICTED).** Define a different uniform source grammar: 8-bit marker `A6`, Elias-gamma(H), Elias-gamma(m), then the unchanged 12H ordered signed literal records of w=ceil(log2(m+1)) ID bits plus sign. Its total bit length is $N_\gamma=8+(2\lfloor\log_2 H\rfloor+1)+(2\lfloor\log_2 m\rfloor+1)+12H(w+1)=\Theta(H\log H)$, with no fixed numeric H/m cap. Gamma codes are prefix-free and uniquely decodable (unary length-of-binary plus binary value); parsing performs O(log H) arithmetic per header and requires a correct, paid indexed-input implementation. This preservation is **syntactic equality of underlying clause lists after header decoding**, not automatic native proof-system acceptance or universal computation hardness. Abstract expander-Resolution hardness remains ordinary-Resolution-only.
+
+**Independent new finite boundary checks:** Full published JavaScript `experiments/arc/lspv4_508_gamma_header_boundary.cjs` (Git blob `0438bdec00fa183c1aa28095314e414a225fb9d9`) was read back and V8-replayed with an assertion adapter; H=2730,m=4095 old format fits, while H=2732,m=4098 does NOT. New gamma header N is 425934 for H=2730 and 459032 for H=2732, versus only **nominal/unrepresentable** old N=459008 at H=2732. This repair is not a fully audited native FLMV input translator and cannot be used to claim the target all-input contraction. The exact [P2-L4-508] status remains PROVED/RESTRICTED, with [P2-A2]/[P2-A4]/[P2-A5] OPEN.
 
 ## ITERATE: exact semantic quotient and Gray-code source-sharing control
 
