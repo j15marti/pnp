@@ -1,6 +1,6 @@
 # LSPV-4/510 | Growing Resolution-hard Tseitin trace cylinder and trailing-length guard
 
-**2026-11-08 20:36 PST | Route A | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN.**
+> **CORRIGENDUM 510R (same research run):** The gamma-header guard's $O(\log M)$ WORK-space upper bound is proved only for accepted/source-size-consistent inputs. On malformed length-$L$ inputs, a gamma field may encode a parameter exponential in $L$, forcing $\Theta(L)$ bits merely to store that integer. Do NOT treat this version as a fully charged all-input small-space guard. The corrected separate unary-$H$ grammar and independent full malformed-input $O(\log(L+2))$ WORK guard are at [LSPV-4/510R](2026-11-08_2036_LSPV4_UNARY_MALFORMED_RESOURCE_CORRIGENDUM510R.md), with [new executable](../../../experiments/arc/lspv4_510_unary_safe_node.mjs) and [raw](../../../results/raw/arc/2026-11-08_2036_LSPV4_510_UNARY_SAFE_RAW.json). Original evidence and packet code below preserved as historical restricted results.\n\n**2026-11-08 20:36 PST | Route A | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN.**
 
 **Nodes:** new [P2-L4-510] (restricted evidence toward [P2-A4]); [P2-A2], [P2-A4] full, [P2-A5], [P1-01], [P1-03], [P1-04], [P2-D1], [P2-B1], [P2-B2] remain OPEN. Historical R_mix341 unchanged.
 
