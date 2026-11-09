@@ -2,7 +2,7 @@
 
 **November 8, 2026, 22:03 PST | Route A | PROVED/RESTRICTED + COMPUTATIONAL. P versus NP OPEN.**
 
-**Exact chain references:** new [P2-L4-512] refines [P2-L4-511], peer [P2-L2-513] (peer report LSPV-2/513), [P2-L4-509], [P2-A4]. [P2-A2], full [P2-A4], [P2-A5] remain OPEN. Cross-route [P2-D1], [P2-C3], [P2-B1], [P2-B2] remain OPEN. Companion [P1-01], [P1-03], [P1-04] unchanged and OPEN.
+**Exact chain references:** new [P2-L4-512] refines [P2-L4-511], peer LSPV-2/513 (role-owned report; no tracker node claimed), [P2-L4-509], [P2-A4]. [P2-A2], full [P2-A4], [P2-A5] remain OPEN. Cross-route [P2-D1], [P2-C3], [P2-B1], [P2-B2] remain OPEN. Companion [P1-01], [P1-03], [P1-04] unchanged and OPEN.
 
 ## IDEA -> SEARCH -> ITERATE and precise falsifiers
 
