@@ -35,7 +35,8 @@ function easy(n,m){const out=allbits().map(bits=>signed([1,2,3],bits));
 function models(clauses,n){let count=0;for(let a=0;a<2**n;a++){
  if(clauses.every(cl=>cl.some(l=>Boolean(a&(2**(Math.abs(l)-1)))===(l>0))))count++;
  }return count}
-function encode(clauses,n,m){let w=Math.ceil(Math.log2(n+1)),s=n+"#"+m+"#";
+function gamma(x){let b=x.toString(2);return "0".repeat(b.length-1)+b}
+function encode(clauses,n,m){let w=Math.ceil(Math.log2(n+1)),s=gamma(n)+gamma(m);
  for(const cl of clauses){assert(cl.length===3);s+="0";for(const x of cl)s+=(x<0?"1":"0")+Math.abs(x).toString(2).padStart(w,"0")}return s}
 function resolve(left,right,pivot){
  assert(left.includes(pivot)&&right.includes(-pivot),"pivot not present");
