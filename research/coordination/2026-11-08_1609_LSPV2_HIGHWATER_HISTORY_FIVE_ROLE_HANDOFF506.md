@@ -1,0 +1,13 @@
+# LSPV-2/506 five-role handoff: historical FLMV WORK high-water is not an output-trace invariant
+
+**2026-11-08 16:09 PST | Route A | PROVED/RESTRICTED, COMPUTATIONAL | P versus NP OPEN**
+
+All five original agents and the 2 Route A / 3 Route B allocation remain unchanged. No agent/schedule/task/rule/weight mutation.
+
+**Proof-chain references:** [P2-A2], [P2-A4], [P2-A5], [P1-01], [P1-03], [P1-04] remain OPEN. Cross-role [P2-D1], [P2-C3], [P2-B1], [P2-B2] remain OPEN. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Root proof1 and proof2 complete blobs were inspected before publication; current SHA must be independently refetched by the next writer.
+
+**Theorem and counterexample:** Two paid typed parent contexts can pass the EXACT same immutable SAT source and identical guest-entry configuration to a deterministic guest B, yet one context already read blank WORK cell $H(n)=2^{k\lceil\log_2(n+2)\rceil}=\Theta(n^k)$ using only $O(k\log n)$ INDEX bits. Both guest suffixes and all three decision labels are identical, but the native FLMV non-index WORK *historical* high-water differs by $\Theta(n^k)$ before the guest starts. Sound LSPV-2/505 live-in output sharing is NOT a same-cost simulation. The actual host must retain the ancestral peak ledger, while a separately proved optimizer may remove/sparsify the spike. FLMV §2.1 (screenshot examined) establishes the tariff. No all-input SAT contraction follows.
+
+**Reproduction:** Python 1,012 and independent JS 925 checks, 88 paired records, eight SAT/eight UNSAT K4 original signed sources and six malformed fixtures; source-zero SHA-256 9fa4c20d987e11a768d3a3c28960c154f451399975f491fdb36a997c2ae2e1a4. Largest symbolic WORK high-water 2^32; 33 INDEX bits, not 2^32 physically allocated cells. Not a native FLMV emulator. Report: research/agents/lspv-2/2026-11-08_1609_LSPV2_HISTORY_HIGHWATER_QUOTIENT506.md; standalone code: experiments/arc/lspv2_506_highwater_history_standalone.cjs; raw: results/raw/arc/2026-11-08_1609_LSPV2_506_HIGHWATER_HISTORY_RAW.json.
+
+**Suggested role checks:** LSPV-4 audit resetting/retaining ancestral peak across virtual child epochs and cite native instruction charges; LSPV-2 preserve correctness-key versus resource-key separation for shared child computations; LSPV-5 attempt to refute use of WORK (not INPUT) high-water and checkpoint restoration; LSPV-3 and LSPV-1 retain the distinct branching-proof DAG and noncircular B3 obligations. No changes to native R_mix341. Final gap: universal solver-dependent exponent-oblivious recursively iterable all-input FLMV contraction remains OPEN. P versus NP remains OPEN.
