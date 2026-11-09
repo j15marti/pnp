@@ -73,8 +73,34 @@ ok(K4.odd.sourceModels===0&&K4.even.sourceModels===8,"label controls");
 ok(gates[8].facets.some(C=>JSON.stringify(C)==="[0,0,1]"),"missing owner-bound RES facet");
 const paid=["DEF-owner-9007199254740993","RES-1","RES-2"];
 ok(new Set(paid).size===3,"shared owner double charge");
-const invalidExamples=["false-facet-owner","wrong-pivot","duplicate-output","cross-context-join","malformed-source"];
-for(const kind of invalidExamples)ok(kind.length>0,"bad mutation case");
+// The following is a distinct DECLARED typed packet validator, not the /341 checker.
+function validates(p){
+ const uniqueOutputs=new Set(["x","y"]);
+ const owners=new Set(["DEF-owner-9007199254740993"]);
+ const cleanSource=Array.isArray(p.source)&&p.source.length===3 &&
+  p.source.every(t=>Number.isInteger(t.v)&&t.v>=0&&t.v<6&&[0,1].includes(t.sign)) &&
+  new Set(p.source.map(t=>t.v)).size===3;
+ if(!cleanSource||!owners.has(p.owner)||!Number.isInteger(p.facet)||p.facet<0||
+    p.facet>=gates[8].facets.length||p.gate!==8||uniqueOutputs.has(p.output))return false;
+ if(p.pivot!=="x")return false;
+ if(p.leftCtx.some(([key,val])=>p.rightCtx.some(([key2,val2])=>key===key2&&val!==val2)))return false;
+ return true
+}
+const packet={source:[{v:0,sign:1},{v:1,sign:0},{v:2,sign:1}],
+ owner:"DEF-owner-9007199254740993",gate:8,facet:2,output:"z",pivot:"x",
+ leftCtx:[["assumption",1]],rightCtx:[["assumption",1]]};
+ok(validates(packet),"valid typed packet");
+const mutations=[
+ ["false-facet-owner",{owner:"SOURCE"}],
+ ["wrong-pivot",{pivot:"z"}],
+ ["duplicate-output",{output:"x"}],
+ ["cross-context-join",{rightCtx:[["assumption",0]]}],
+ ["malformed-source",{source:[{v:0,sign:1},{v:0,sign:0},{v:2,sign:1}]}],
+ ["missing-facet",{facet:99}],
+ ["invalid-truth-function",{gate:17}]
+];
+const invalidExamples=[];
+for(const [kind,change] of mutations){ok(!validates({...packet,...change}),"bad packet admitted "+kind);invalidExamples.push(kind)}
 return {classification:count,checks,gateTable:gates,nestedUniqueExtensions:extensions,
  K4,paidDemo:{DEF:1,RES:2,totalDistinct:3},invalidExamples,
  note:"Standalone typed Boolean audit; no historical R_mix341 accepted-byte execution."}
