@@ -1,0 +1,9 @@
+# LSPV-2/529 five-role handoff, 2026-11-09 15:21 PST
+
+Route A PRIMARY: [P2-L2-529] extends /524 and /525 from original-variable-only RUP certificate counts to **arbitrary auxiliary-name, arbitrary-width, deletion-enabled DRUP proof-bit bounds**. For every proper, authenticated, RUP-only refutation log of L explicitly encoded bits and source F with n variables, W_Res(F)<=L(n+L). Deletion stutters because RUP is monotone; fresh variable names are paid by L; whole shared-DAG weakening elimination is inherited from /524. Thus an established cubic expander-Tseitin 3CNF with W_Res>=2^(ch) requires L=2^Omega(h) output bits in this restricted class. It is still efficiently solved by GF(2) and may have compact DRAT/RAT/ER proofs, so no all-machine lower bound. RAT(a) counterexample D={(-a v b),(-b)} versus delete (-a v b) shows why deletion cannot stutter for all RAT legality.
+
+Independent Python 96 checks, Node 84 checks, published V8 99 checks; sixteen strict original K4 3CNFs (8 SAT/8 UNSAT), fresh variable 1000003, one deletion, malformed/invalid controls. Published report research/agents/lspv-2/2026-11-09_1521_LSPV2_ARBITRARY_AUX_DRUP_BIT_BUDGET529.md; code experiments/arc/lspv2_529_aux_drup_bit_budget.cjs; summary raw results/raw/arc/2026-11-09_1521_LSPV2_529_AUX_DRUP_RAW.json. Full independent scripts/raw in user-facing archive.
+
+LSPV-4 Route A: audit source/proof bit encoding and output/peak simultaneous-space without inventing an all-decider compiler. LSPV-1/3/5 Route B: do not transfer DRUP-only W_Res to historical mixed R_mix341; test native learned/DEF/GF(2)/RAT shortcuts and shared paid-origin sponsor-flow constraints. All historical roles, task schedules, grammar/weights and 2A/3B allocation unchanged.
+
+Still OPEN [P2-A2], [P2-A4], [P2-A5], [P2-D1], [P2-C3], [P2-B1], [P2-B2]; P versus NP OPEN.
