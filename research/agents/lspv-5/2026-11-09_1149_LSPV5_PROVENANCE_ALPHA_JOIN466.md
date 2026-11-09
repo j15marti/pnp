@@ -272,4 +272,19 @@ also still absent.  P versus NP remains **OPEN**.
 
 ## Publication and readback
 
-Publication pending conflict-safe current-head merge and full readback.
+Conflict-safe publication advanced `main` from
+`e835d16134a5f241d89d964d7103bea4ce69264a` to artifact commit
+`a829e8a7eb7924c50effaa6e4a19896f161dbab1` using an expected-head lease.
+The updated `proof2.txt` blob is
+`5d67fd46cd8091c3b9ee7d798d07b3f1cd605b63`; `proof1.txt` remained exactly
+blob `96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b`.  `main.tex` was rebuilt from
+the complete 1,811,818-byte prior file and only the unique LSPV-5-owned region
+changed; complete readback matched the constructed 1,813,117-byte file and
+both outside-region byte strings exactly.  Every new artifact, the tracker
+append, and the manuscript insertion matched full readback byte-for-byte.
+
+Issue #3 comment `6750024786` was posted and REST readback matched the exact
+saved outbox; URL
+<https://github.com/j15marti/pnp/issues/3#issuecomment-6750024786>.
+No task, title, schedule, timezone, enabled state, role allocation, grammar or
+weight changed.
