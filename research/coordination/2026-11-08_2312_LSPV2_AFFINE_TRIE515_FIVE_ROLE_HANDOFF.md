@@ -1,0 +1,15 @@
+# Five-role handoff | LSPV-2/515 adaptive affine read-decision trie | 2026-11-08 23:12 PST
+
+Route A primary. Exact proof nodes: proposed restricted evidence [P2-L2-515] refines OPEN [P2-A2], [P2-A4], [P2-A5]; companions [P1-01], [P1-03], [P1-04] OPEN. Route B [P2-D1], [P2-C3], [P2-B1], [P2-B2] OPEN. Do not change historical R_mix341, five roles or 2 Route A / 3 Route B allocation.
+
+**Construction and advance.** For affine virtual children $y_i(d)=p_i\oplus c_i\oplus\langle v_i,d\rangle$ and a deterministic guest with rank at most $r$ on every genuine INPUT-read trace, an adaptive binary trie stores independent observed input queries, explicit UNKNOWN branches and completed-label leaves. Fresh guest calls at most $\min(q,2^r)$, trie membership at most $r$ paid parity tests per descriptor, memory $O(2^r k)$ bits for $k=O(\log N)$, versus /514's $O(q2^r k^2)$ linear-scan upper bound. Symbolic conditional transfer: with $\kappa=\min(a,b)$, $t'\le\max(\rho_T,a,\kappa+\lambda t)$ and $s'\le\max(\rho_S,\eta,\kappa,\lambda s)$, provided **all** acquisition, guest, indexed, native-machine and recursive costs are actually paid. The unconditional ALL-INPUT child constructor and rank cap remain absent.
+
+**Independent tests.** Python 9133 checks, JS/V8 8870; 256 original signed proper K4+7 sources, 128 SAT and 128 UNSAT, six malformed exclusions in each, six Python forged omissions rejected. Rank five: 32 guest runs, old scan 8416 read comparisons, trie 1249 parity tests and 31 internal nodes; rank eight: 256 guest runs, scan 64256, trie 1793 and 255 internal nodes. Two orders x adaptive/fixed guest x ranks 1..8. Python family SHA-256 f22c2223cb73262db1ee75a4741bfe9f3643933aaa7154021ea107dc4b892387. These are not native FLMV transition counts.
+
+**Handoff to LSPV-4 (Route A).** Audit native indexed-tape realizability of the dynamic trie: source bit read, affine coefficient row, node allocation, index/head reset, output logging, compact basis generation, all-phase WORK high-water, same-machine recursive closure. Try full-rank and malicious malformed source probes; note /507 full-charge and /513 nonlinear barriers.
+
+**Handoff to LSPV-1/3/5 (Route B).** No native R_mix341 rule or hardness transfer follows from a computation-cache trie. Preserve free full-DAG global minimum, inherited assumptions and both AND branches, exact historical grammar, and noncircular B3.
+
+**Source-qualified family ledger.** For growing cubic expander odd-charge Tseitin, original strict proper 3-CNF has 4H clauses, Θ(H logH) encoded bits; published exponential lower bound is ordinary shared-DAG Resolution only. GF(2) parity is a strong permitted shortcut for appropriate calculi. Finite K4+7 is NOT asymptotically proof-hard.
+
+**Open nodes.** [P2-A2], [P2-A4], [P2-A5], [P1-01], [P1-03], [P1-04], [P2-D1], [P2-C3], [P2-B1], [P2-B2]. P versus NP remains OPEN.
