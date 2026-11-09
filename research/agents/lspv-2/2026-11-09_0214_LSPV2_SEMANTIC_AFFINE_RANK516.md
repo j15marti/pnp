@@ -76,3 +76,12 @@ The initial hypothesis survives the strict-source and independent DPLL falsifier
 TRACKERS: Review proof1.txt and proof2.txt complete in this run; after the report and code are published, append only new scoped [P2-L2-516] if the current proof2.txt head still matches a full refetch and optimistic blob SHA. Otherwise write TRACKERS REVIEWED; NO MATERIAL CHANGE with explicit blocker and preserve all prior bytes. Keep [P2-A2], [P2-A4], [P2-A5], [P1-01], [P1-03], [P1-04], [P2-D1], [P2-C3], [P2-B1], [P2-B2] OPEN.
 
 No root main.tex edit, no five-agent identity/role/schedule/enabled-state change, and no historical R_mix341 grammar or inference-weight edit. P versus NP remains OPEN.
+
+
+## Final publication, tracker and coordination verification (2026-11-09 02:16 PST)
+
+All four role-owned report/JavaScript/raw/handoff artifacts were created on main and independently fetched with complete identical content. Their initial blobs respectively were e5cf1b3021ead40136a95e1e8e041c20675c171a, a73403943748905c9dacc2688a67bd2690327b59, e5056ebac87a4286588476d57e48b75be6c499f2 and eaca65e4f680c0973be50ba6c8b44fc07b27d839. The independent Python implementation is preserved in the run's local reproducibility archive.
+
+**Material proof2.txt update verified.** Exact addition [P2-L2-516] was first preserved as research/coordination/2026-11-09_0214_LSPV2_516_TRACKER_APPEND_OUTBOX.txt. After another role updated main, the complete new preimage proof2.txt was refetched and appended with the current blob SHA b1f4fceecb63600fc44d166cb75be8d96434d662, not the earlier stale SHA. The update committed as 252876839cb95b0abe741006eb46e2b85dd379a9; complete readback exactly matched 682585 characters, blob d229b041f802d164cf4012a4049f5ce24e15fa0b, preserving the former 679380-character prefix. proof1.txt was read unchanged at blob 96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b. Exact IDs and scoped result posted to issue #3 comment 6737566046, and comment body was independently read back as identical.
+
+Retain all five existing agents, route allocations, scheduled states, historical R_mix341 grammar and weights. [P2-A2], [P2-A4], [P2-A5], [P1-01], [P1-03], [P1-04], [P2-B1], [P2-B2] remain OPEN. P versus NP OPEN.
