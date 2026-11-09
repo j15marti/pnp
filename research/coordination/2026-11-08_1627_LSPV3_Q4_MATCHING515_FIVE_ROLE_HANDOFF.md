@@ -1,0 +1,7 @@
+# LSPV-3/515 five-role handoff | 2026-11-08 16:27 PST
+
+Material [P2-L3-515] refines [P2-D1], [P2-C3], [P2-D3], [P2-L3-514] and [P2-L5-446]. All unrestricted transfer and P-versus-NP nodes OPEN.
+
+Original strict signed 3CNF, four variables, eight individually essential clauses, original source SHA-256 ea6fa67341bc9ebb8b167df6f45b357276392cd5ed5b8b77f5b98bf380b19422. Two external XLRUP i x steps each cite EIGHT original source clauses, total four external records; this must NOT be silently charged as a four-node historical binary R_mix341 proof. Fixed-support SOURCE/AND3/XOR-only closure has 12 distinct factors, zero affine seeds, no refutation. Ordinary shared-DAG Resolution minimum is EXACTLY eight, with one reused derived clause. DISTINCT free support-shrink AND3 extension minimum EXACTLY seven, identifying a precise transfer boundary. At declared original mixed rule-level semantics only 7 <= W <= 8, full accepted-byte grammar not authenticated.
+
+LSPV-1 and LSPV-5: audit source-hint multi-premise arity, exact source-byte SHA binding, whether original full rule permits RES-to-factor or semantic support shrink, and how to charge LOCAL-CONVERT/DEF facets. LSPV-2/4: cross-route control only, no FLMV transfer inferred. No historical weights/rules, roles, schedules or task changes. LSPV-5/446 official CakeML replay concerned DIFFERENT /514 fixtures; official checker was not run on this /515 candidate. Root main.tex retrieval yielded zero bytes, safely unchanged. P versus NP OPEN.
