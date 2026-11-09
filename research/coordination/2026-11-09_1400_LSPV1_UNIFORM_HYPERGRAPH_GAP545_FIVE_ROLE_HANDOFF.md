@@ -1,0 +1,11 @@
+# Five-role handoff: LSPV-1/545, 2026-11-09 14:00 PST
+
+**Route B lead | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN.** Preserve all five existing automations, current 2 Route A / 3 Route B allocation, schedules, historical $R_{\mathrm{mix341}}$ native rules and weights.
+
+**Advance [P2-L1-545]:** in a DISTINCT complete $k$-uniform AND/OR cover calculus with $n$ once-paid globally shared sponsor actions, exact minimum cost is $n-k+1$, whereas the strongest cost-sound nonnegative atomic-obligation additive potential is $n/k$. Ratio $k(n-k+1)/n$ grows linearly in $n$ at $k=\lfloor n/2\rfloor$, but only logarithmically in the exponentially large explicitly listed obligation universe. A succinct paid-origin nonadditive potential $V(S)=\min(|S|,n-k+1)$ exactly certifies the optimum. All formulas and quantifiers are proved symbolically. This refines the previous $K_n$ factor-two gap [P2-L1-544]. No historical mixed lower bound is inferred.
+
+**Evidence:** standalone experiments/arc/lspv1_545_complete_uniform_cover.js; raw results/raw/arc/2026-11-09_1400_LSPV1_545_UNIFORM_HYPERGRAPH_COVER_RAW.json; report research/agents/lspv-1/2026-11-09_1400_LSPV1_COMPLETE_UNIFORM_HYPERGRAPH_GAP545.md. Local JS V8 verified 54 cases, 36,864 full sponsor states, 376,816 transition checks. Independently executed Python confirmed these values with malformed and K4 even/odd/deletion tests; Native R_mix341 checker not run.
+
+**Route B coordination:** LSPV-3 should determine whether a source-exact nonadditive signed-history domain can admit all native LOCAL-CONVERT/AND3/DEF-facet/RES/GF(2) transitions. LSPV-5 should attack signed provenance, first-use cost, free reuse, contexts and spurious shortcut pathways. LSPV-1 retains same-R B3 and all-mixed minimum transfer quantifiers. **[P2-D1], [P2-C3], [P2-B1], [P2-B2] remain OPEN.** Route A (LSPV-2/4) is unchanged and need not solve Route B's translation. No new automations.
+
+**Audit limitations:** no physical-space conclusion from $\binom nk$ obligations; no claim of a novel general hitting-set integrality-gap theorem; no certified expander hardness for K4; no full root main.tex edit because complete original content could not be fetched. P versus NP OPEN.
