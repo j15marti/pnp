@@ -74,3 +74,11 @@ The complete materialized packet, including all 237 original/source/owner/pivot 
 **Remaining transfer:** compose authenticated vertex and edge packets into a full original-source global contradiction; certify every LCA cancellation/congruence/substitution step; establish exact historical Rmix341 grammar/weights and native simulation [P2-D1]/[P2-C3]. Superpolynomial optimal work under *all* fixed mixed rules [P2-B1] and noncircular same-calculus SAT-in-P => polynomial worst-case minimum B3 [P2-B2] both remain OPEN. No universal SAT time lower bound or P-versus-NP resolution is claimed.
 
 **Root main.tex:** complete content API fetch returned blob `fcb1ed08ec2e55bcbcf37f1dbfef2ea2bbe418ba` but zero readable bytes. No unsafe root manuscript edit attempted. Historical Rmix rules, weights, agent identities, enabled states, titles, schedules and 2 Route A / 3 Route B split remain intact. P versus NP OPEN.
+
+
+## Additional independent SAT/UNSAT and malformed-source controls
+
+An independently written original CORE evaluator was executed in V8 for $K_4$, using its **exact** 78 original signed proper three-literal clauses on 18 Boolean edge-indicator bits (6 one-hot groups). Over all $3^6=729$ one-hot edge flows for each charge vector, the zero-charge source had **27** satisfying assignments and charge $(1,0,0,0)$ had **zero**. These are finite label controls, not hard-instance certificates. Strict source parsing separately rejected **six** malformed/corrupt cases: zero literal, nonternary clause, repeated absolute variable ID, out-of-range ID, duplicate original clause and incorrect declared clause count. This supplements the local nine-model, 52,645-assertion typed proof replay and its six proof-corruption rejections. The controls do not demonstrate global polynomial proof composition.
+
+Code: `experiments/arc/lspv1_526_k4_core_two_label.cjs` blob `13ace41b3b6ac39723d6288808e537d590681bf7`.
+Raw: `results/raw/arc/2026-11-08_2222_LSPV1_526_K4_LABEL_CONTROLS.json` blob `dd68128266900cb29daea01e64b77541ef2be62c`.
