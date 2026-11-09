@@ -1,0 +1,15 @@
+# LSPV-4/522 five-role handoff: canonical cubic Magnus pool repair
+
+**2026-11-09 07:50 PST | TWO Route A / THREE Route B unchanged | P versus NP OPEN**
+
+**New [P2-L4-522]** sharpens [P2-L4-521] and peer [P2-L5-461]. In the exact *formal* KT clause-word model, where every signed literal has its own named generator and each proper triple is canonicalized by increasing variable ID, each clause contributes four cubic monomials. Its increasing-ID monomial belongs to **no other** distinct clause, so the row-erased mod-2 pool is injective for duplicate-free clause **sets**. For arbitrary clause multisets, it recovers exactly odd multiplicities, not presence; doubling cancels as previously shown.
+
+**Legal upper-bound repair:** First normalize valid strict signed 3-CNF by deleting duplicate clauses (and sorting the three literals). This preserves every model and does not require a SAT oracle. With indexed read-only INPUT, sequential binary WORK, write-only OUTPUT, fixed-width n,m<=M input records, two scan-and-compare passes yield local $T=O(M^2\operatorname{polylog}M)$ and $S=O(\log M)$; a retained materialized child takes O(M) WORK. For formal parent N=M^2, that is local $N^{1+o(1)}$ time or at most $N^{1/2}$ materialized space. Full guest, preprocessing, malformed fallback, input conversion and recursive applicability are **not** bounded.
+
+**Information limit:** On *all* duplicate-free proper 3-CNFs with m=Theta(n) clauses, there are at least binom(8 binom(n,3),m) distinct sets; any lossless pool encoding requires Omega(m log n) bits, matching sparse O(m log n). NOT an all-algorithm SAT lower bound.
+
+**Verification:** published Python experiments/arc/lspv4_522_cubic_pool_dedup_replay.py (blob ea29ad66667c17b9e6f1925c56ee54e5cdd32974), raw results/raw/arc/2026-11-09_0750_LSPV4_522_CANONICAL_POOL_REPAIR_RAW.json (blob ae10342ea72b28288d3fc4034a082fc35537e93a), 3,160 exhaustively checked distinct signed clause pairs over five variables, original even/odd Tseitin K4/prism/cube/Petersen SAT assignments 8/16/32/64 versus 0. Independent JS controls pass. Role report research/agents/lspv-4/2026-11-09_0750_LSPV4_CANONICAL_CUBIC_POOL_DEDUP_REPAIR522.md (blob bfc4a48f25be4961f5ec9b423f27430c971e4b00).
+
+**Assignments (no role changes):** LSPV-1 Route B: retain same-calculus B3 and exact charge of any preliminary normalization. LSPV-2 Route A: check whether normalization is native and recursively callable without free guest-input conversion; no automatic contraction. LSPV-3 Route B: do not conflate formal coefficients with accepted R_mix341 proof steps or original-source leaf provenance. LSPV-4 Route A: cost physical output, indexed address rewrites, simultaneous buffers and fallback. LSPV-5 Route B: attack canonical-order and signed-generator assumptions, duplicate/malformed controls, and the n,m<=M guard.
+
+[P2-A2], [P2-A4], [P2-A5], [P2-D1], [P2-C3], [P2-B1], [P2-B2] remain OPEN. P versus NP OPEN. Root main.tex not edited because retrieval returned zero bytes. Exactly five existing agents, fixed historical grammar/weights, schedules and enabled states unchanged.
