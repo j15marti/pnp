@@ -85,4 +85,44 @@ function run(){
 }
 const result=run();
 
+function transitionKernelTests(){
+  // Binary guest transition may ignore input: delta(state,0)==delta(state,1).
+  // Live rows are ONLY transitions where the two next configurations differ.
+  const masks=[9,18,36,8,16,32,64,128];
+  const live=[true,true,true,false,false,false,false,false];
+  const b=streamingRank(masks.filter((_,i)=>live[i]),8);
+  const all=streamingRank(masks,8);
+  let calls=0, exact=0, raw=0;
+  const anchor=0;
+  const neutralTrace=(d)=>masks.map((row,i)=>live[i]?parity(row&d):0);
+  for(let d=0;d<256;d++){
+    const same=neutralTrace(d).every(x=>x===0);
+    const predicted=b.piv.every(v=>parity(v&d)===0);
+    if(same!==predicted)throw Error("transition-kernel equivalence");
+    if(same)exact++;
+    if(masks.every(row=>parity(row&d)===0))raw++;
+    calls++;
+  }
+  if(exact!==32||raw!==1||b.rank!==3||all.rank!==8)throw Error("neutral-vs-raw example");
+  // More neutral and sensitive patterns, including zero coefficients and duplicate reads.
+  let randomized=0;
+  let seed=0xcafe1234;
+  function rng(){seed=(Math.imul(seed,1103515245)+12345)>>>0;return seed;}
+  for(let k=1;k<=10;k++){
+    for(let n of [0,1,8,43]){
+      const rows=Array.from({length:n},()=>rng()%(1<<k));
+      const flags=rows.map(()=>Boolean(rng()&1));
+      const basis=streamingRank(rows.filter((_,i)=>flags[i]),k);
+      for(let d=0;d<(1<<k);d++){
+        const exactTrace=rows.every((row,i)=>!flags[i]||parity(row&d)===0);
+        const sameBasis=basis.piv.every(row=>parity(row&d)===0);
+        if(exactTrace!==sameBasis)throw Error("random transition mismatch");
+        randomized++;
+      }
+    }
+  }
+  return {model:"fixed deterministic binary guest, exact full configuration trace; neutral delta(0)=delta(1)",allReadMasksRank:all.rank,transitionSensitiveRank:b.rank,anchorCompatibleDescriptors:exact,rawValueCompatibleDescriptors:raw,fullTraceChecks:calls,randomizedTransitionChecks:randomized};
+}
+result.transitionKernel=transitionKernelTests();
+
 console.log(JSON.stringify(result,null,2));
