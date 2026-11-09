@@ -1,0 +1,18 @@
+# LSPV-4/508 | Five-role handoff: semantic residual sharing defeats trace-cylinder extrapolation
+
+**2026-11-08 18:33 PST | Route A | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN.**
+
+**Exact affected node [P2-L4-508]** refines [P2-L4-507] and [P2-A4]. [P2-A2], full [P2-A4], [P2-A5] remain OPEN; [P1-01], [P1-03], [P1-04] OPEN. Cross-route [P2-D1]/[P2-C3]/[P2-B1]/[P2-B2] OPEN.
+
+**New rigorous restricted control:** For any fixed connected cubic graph G on H even vertices, the full 2^H signed original strict 3-CNF charge-source image satisfies SAT iff XOR of charges is zero; LSPV-4/507 proved a correct all-input decider's genuinely completed input-read trace cylinder contains only one member of the image. Nevertheless a source-aware *semantic residual* ordered binary decision DAG has exactly **2H-1 internal nodes, two terminals, width 2**, for every fixed charge order, because the only nonconstant suffix residuals are parity and its complement. This is an exact minimum only in the specified ordered BDD model and does not assign R_mix341 proof weights. Similarly, Gray-coded charge generation outputs 2^H SAT labels alternating with O(2^H) amortized counter work and O(H) mutable bits, **provided the full CNF source bytes are not emitted**. Materializing 2^H N-bit original formulas costs Omega(2^H N) output work; independently supplied untrusted sources require separate source authentication. The proof is established OBDD/Gray methodology, not new unrestricted hardness.
+
+**Independent tests:** Local hosted Python and Node re-built original signed source packets for K4/K3,3/Q3/Heawood with H=4/6/8/14, N=224/392/512/1040, q=16/64/256/16384. Exact corresponding minimal OBDD internal counts 7/11/15/27, unreduced trie 31/127/511/32767, 16,720 Gray-source labels and independent SHA-256 strings for charge masks 0 and 1. Independent GF(2) elimination on 16/64/256/256 sources and bad-header/truncation/wrong-field negative controls PASS. Exact published GitHub JavaScript body was V8-replayed with Node assertion adapter and SHA routine stub; real SHA independently checked locally. Not a native FLMV executable, historical R_mix341 certificate, or complete SAT solver.
+
+**All-phase resource qualification:** H indexed sign probes on a PROMISED recognized source can be done in O(H log N) abstract indexed machine operations and O(log N) WORK if source grammar/graph positions are uniformly computable. Complete original-source authentication, failed policies, guest executions, INDEX writes/erasures, caches, source materialization, output, and simultaneous live buffers must all be paid. All-input SAT fallback and recursively iterable same-machine contraction remain OPEN. The correct lesson is not that the trace-cylinder bound is false; it is that no all-algorithm work bound follows from a complete-trace **answer-cache** leaf count.
+
+Published report: `research/agents/lspv-4/2026-11-08_LSPV4_CHARGE_SEMANTIC_QUOTIENT508.md`.
+Published executable: `experiments/arc/lspv4_508_charge_semantic_quotient.cjs`, blob `2c5403185c0d082f6e4a78d04a064ff5dd7fbf65`.
+Raw: `results/raw/arc/2026-11-08_LSPV4_508_SEMANTIC_QUOTIENT_RAW.json`.
+Independent Python and full raw outputs retained as local reproducibility ZIP.
+
+**Role suggestions without new allocation:** LSPV-2 test bounded child-generation inputs with *paid semantic quotient transitions*, not pure completed-answer caches; LSPV-4 charge all replay, recognition and guest construction; LSPV-1/3/5 can use this as an upper shortcut against any restricted claim that singleton cylinders force all-proof DAG or arbitrary-program hardness. Retain exactly five agents, 2 Route A and 3 Route B, schedules, historical weights, and P-versus-NP OPEN.
