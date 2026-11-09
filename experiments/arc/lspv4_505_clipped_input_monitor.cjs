@@ -6,7 +6,7 @@ function source(charges){
  const clauses=[];
  for(let v=0;v<4;v++){
   const es=edges.map((e,i)=>e.includes(v)?i:-1).filter(i=>i>=0);
-  for(let b=0;b<8;b++){const bs=[b&1,(b>>1)&1,(b>>2)&1];
+  for(let b=0;b<8;b++){const bs=[(b>>2)&1,(b>>1)&1,b&1];
    if(((bs[0]+bs[1]+bs[2])&1)===charges[v])continue;
    clauses.push(bs.map((z,i)=>z?-(es[i]+1):es[i]+1));
   }
@@ -54,9 +54,10 @@ function monitor(bits,events){
  assert(scanSteps<=2*inputMoves+2*n,"amortized scan bound");
  return {n,reads:reads.size,scans,scanSteps,inputMoves,indexWrites,checked,headBits:worstHead.toString(2).length};
 }
-let summary={status:"PASS",sources:0,sat:0,unsat:0,malformed:0,cases:0,guest_steps:0,input_moves:0,index_writes:0,scans:0,scan_transitions:0,max_head_bits:0,max_read_mask_address:0,samples:[]};
+let summary={status:"PASS",sources:0,sat:0,unsat:0,malformed:0,cases:0,guest_steps:0,input_moves:0,index_writes:0,scans:0,scan_transitions:0,max_head_bits:0,max_read_mask_address:0,source0_prefix:"",samples:[]};
 for(let charge=0;charge<16;charge++){
  const ch=Array.from({length:4},(_,i)=>(charge>>i)&1),s=source(ch);
+ if(charge===0)summary.source0_prefix=s.text.slice(0,100);
  const truth=sat(s.clauses),want=(ch.reduce((a,b)=>a+b,0)&1)===0;
  assert(truth===want,"Tseitin charge label");summary.sources++;if(truth)summary.sat++;else summary.unsat++;
  for(let mode=0;mode<4;mode++){
