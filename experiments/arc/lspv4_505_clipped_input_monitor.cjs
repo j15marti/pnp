@@ -85,4 +85,4 @@ for(const bad of ["","K4?","not a formula","K4:1,2,3;","K4:0,0,0;"]){
 }
 assert(summary.malformed===5);
 globalThis.LSPV4_505_RESULT=summary;
-if(typeof module!=="undefined"&&module.exports){module.exports=summary;if(require.main===module)process.stdout.write(JSON.stringify(summary,null,2)+"\\n");}
+if(typeof module!=="undefined"&&module.exports){module.exports=summary;if(require.main===module)process.stdout.write(JSON.stringify(summary,null,2)+String.fromCharCode(10));}
