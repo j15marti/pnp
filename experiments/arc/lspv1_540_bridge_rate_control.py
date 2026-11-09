@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Finite arithmetic checks for the logical bridge-rate theorem, not a SAT proof."""
-import json, math
+import json, math, sys
+
 checks=[]
 for r in (2,3,4):
     q=(1+r)/2
