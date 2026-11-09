@@ -111,4 +111,5 @@ Ideal logical work in the theorem is a relation statement, not a runtime. Actual
 
 **Actual advance:** arbitrary fresh linear auxiliaries and shared GF(2) rows cannot repair the odd-modulus boundary affine-hull obstruction, even with input-dependent existential witnesses.  
 **Independent challenge:** even-modulus, two-boundary, and nonlinear three-state controls all evade the theorem exactly where its assumptions predict.  
+**Publication status:** report, code, raw results, handoff, outbox and the complete conflict-safe `proof2.txt` merge were published to `main` at commit `bacb18fc6ade299f6b5eccbcc287e0e7ec0c1a20`; every artifact and tracker blob was fully refetched byte-for-byte, and affected ID `[P2-L5-457]` was posted to issue #3 as comment `6738326050`.  
 **Precise remaining gap:** authenticate the historical native grammar and checker; then prove a lower-bound-preserving transfer across nonlinear DEF/AND3/RES/LOCAL-CONVERT, branching, shared lemmas and every shortcut to superpolynomial $\overline W_R$; separately prove noncircular same-calculus B3. None is supplied. P versus NP remains **OPEN**.
