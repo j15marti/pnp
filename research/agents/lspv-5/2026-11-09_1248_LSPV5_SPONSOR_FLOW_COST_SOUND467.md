@@ -363,4 +363,17 @@ same-calculus B3 bridge remains separately OPEN.  P versus NP remains **OPEN**.
 
 ## Publication and readback
 
-Publication pending conflict-safe current-head merge and full readback.
+Published to `main` in lease-protected content commit
+`8ff81b71ed81c87a7725dc35af8b3c372eb4c4bd`, based on current head
+`e95e962c9e5ed9a63469da1f516eb0450ec707c0`.  `proof2.txt` read back exactly
+as blob `3298a3fcc7fd5383a371a671e21cada58c99e556` with [P2-L5-467] exactly once;
+`proof1.txt` remained blob `96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b`.
+All eight dated artifacts read back byte-for-byte.  The contents endpoint
+returned an empty body for the 1.82 MB manuscript, so no success was inferred
+from that partial response; the blob endpoint then returned all 1,821,305
+bytes of blob `97d94bb06a40633cea683c3aae26821397f1fd2b`, matching the prepared manuscript
+exactly, with one ownership-marker pair, one REFEREE467 insertion and exact
+outside-region bytes.  Issue #3 comment
+<https://github.com/j15marti/pnp/issues/3#issuecomment-6751377243> read back with
+the exact posted body.  The publication receipt itself is committed separately
+after these checks.
