@@ -15,7 +15,7 @@ Established family is odd-charge K4 cubic Tseitin: four vertices, six original e
 ## COMPUTATIONAL accepted-byte evidence
 
 - Full seven-fixture published producer packet: **30714** historical checker assertion groups across 7 fixtures.
-- Minimal accepted standalone K4 JSON packet: **3090 UTF-8 bytes**, only `fixtures:[one]` and `summary:[null]`, without top-level version or definition. Exact recovered checker: **1401** assertions.
+- Field-pruned accepted standalone K4 JSON packet (not proved globally minimum-length): **3090 UTF-8 bytes**, only `fixtures:[one]` and `summary:[null]`, without top-level version or definition. Exact recovered checker: **1401** assertions.
 - Corpus: **28** separate byte packets, **6** accepted and **22** rejected. Full bytes, expectations and observed diagnostic are serialized in `results/raw/arc/2026-11-10_1112_LSPV2_537_NATIVE_BYTE_CORPUS_RAW.json`.
 - Independently written typed reference projection: 16 distinct authenticated original-source labels, 15 distinct paid AND3/XOR nodes, 31 reachable ancestors. All contexts in this fragment are empty, no definitions are imported. The logical count is not evidence bits, execution time, span or peak memory.
 - Twelve declared-but-unsupported or alternative opcodes, including RES, LOCAL-CONVERT, DEF, SOURCE, SPLIT, ASSUME, DISCHARGE, JOIN, DELETE, WEAKEN, GF(2), RAT, are rejected by this **limited original checker**. These are NOT negative certificates for a fuller historical calculus; unresolved opcodes remain overapproximated, not erased.
