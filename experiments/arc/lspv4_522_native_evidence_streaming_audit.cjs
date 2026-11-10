@@ -30,6 +30,18 @@ function audit(producerText,checkerText){
  const first=runNative(base),paid=f.proof.filter(p=>p.rule==="AND3"||p.rule==="XOR");
  requireTrue(first.accept&&first.checks===1401&&paid.length===15&&f.clauses.length===16,"baseline native K4");
  requireTrue(new Set(paid.map(x=>x.id)).size===15,"paid node identities unique");
+ // Independently enumerate original K4 signed 3-CNF, and its even-charge twin.
+ const E=f.graph.edges.length;let oddModels=0,evenModels=0;
+ for(let m=0;m<(1<<E);m++){
+  const sat=f.clauses.every(c=>c.literals.some(l=>{
+    const b=(m>>(Math.abs(l)-1))&1;return l>0?b===1:b===0;}));
+  if(sat)oddModels++;
+  const even=f.graph.edges.every(()=>true)&&Array.from({length:f.graph.n},(_,v)=>{
+    let p=0;for(let e=0;e<E;e++)if(f.graph.edges[e].includes(v))p^=(m>>e)&1;
+    return p===0;}).every(Boolean);
+  if(even)evenModels++;
+ }
+ requireTrue(oddModels===0&&evenModels===8,"independent K4 odd UNSAT/even SAT model counts");
  // Stable byte-template with precisely ONE semantically active numeric literal token variable.
  const s0=clone(base);s0.fixtures[0].clauses[0].literals[0]="1";
  const full=JSON.stringify(s0),j=full.indexOf('"literals":["1"');
@@ -90,7 +102,7 @@ function audit(producerText,checkerText){
   scope:"Pinned original 341 SOURCE/AND3/XOR FIXTURE checker only, not the historical complete R_mix341",
   exactOriginalGitBlobSHAs:PIN,
   nativeExecution:"Original unchanged JavaScript bodies in V8, only Node CLI I/O shimmed",
-  fixture:{name:f.graph.name,sourceClauses:16,chargedNodes:15,bytes:first.bytes,
+  fixture:{name:f.graph.name,sourceClauses:16,chargedNodes:15,oddModels,evenModels,bytes:first.bytes,
     originalCheckerAssertions:first.checks,weightedSpan:depth.get(paid.at(-1).id)},
   streamingFiber:{regex:"FIXED_PREFIX (0*) 1 FIXED_SUFFIX",
     prefixBytes:prefix.length,suffixBytes:suffix.length,rows,sensitivePositions:sensitive,
