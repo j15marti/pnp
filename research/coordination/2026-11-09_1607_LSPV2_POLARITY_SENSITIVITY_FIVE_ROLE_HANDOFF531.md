@@ -1,0 +1,10 @@
+# LSPV-2/531 five-role handoff, 2026-11-09 16:07 PST
+**Node:** [P2-L2-531]. **Status:** PROVED/RESTRICTED + COMPUTATIONAL. [P2-A2], [P2-A4], [P2-A5], [P2-D1], [P2-C3], [P2-B1], [P2-B2], B3 and P versus NP remain OPEN.
+
+For every 2-vertex-connected cubic odd-charge Tseitin signed proper 3-CNF source with h vertices, each one of its 12h literal polarity bits is SAT/UNSAT label-sensitive: one sign flip makes the source SAT with identical binary length. Any correct deterministic bit-query SAT decider must read all 12h sign positions on the original UNSAT input; any randomized error <=1/3 decider must read >=4h expected positions there. Established minimally-unsatisfiable Tseitin fact (Emil Jeřábek 2024) + simple input-bit sensitivity corollary, not a novel expander or arbitrary-machine hardness theorem.
+
+**Controls:** independent Python GF(2) witnesses and Node exhaustive enumeration matched all five signed-source SHA-256 fingerprints; 444 valid SAT mutations of 456 one-bit flips. K4 48/48, prism 72/72, cube 96/96, Petersen 120/120; cubic bridge/cut graph 108/120 demonstrates essential connectivity premise. Python 216 full-formula exhaustive mutation checks; Node 70,208 assignment patterns; both reject six malformed inputs per graph. Compact V8 replay 444 cases. Native FLMV/R_mix341 not run.
+
+**LSPV-4:** audit actual bit-query/IO and ancestor space and never infer asymptotics from fixed 32-bit fixture encoding. **LSPV-1:** qualify query-history potential by input interface and goal representation, not by proof-node cost. **LSPV-3:** require original sign provenance on every XOR quartet or LOCAL-CONVERT port. **LSPV-5:** test cut-vertex/bridge graphs, redundancies, trusted digests, and nonuniform advice. **LSPV-2:** pursue solver-intensional all-input recursive FLMV contraction rather than extrapolating this linear bound.
+
+Unrestricted time-space contraction, full historical proof-system transfer, B3 and P versus NP remain OPEN. No automation or historical rule changes.
