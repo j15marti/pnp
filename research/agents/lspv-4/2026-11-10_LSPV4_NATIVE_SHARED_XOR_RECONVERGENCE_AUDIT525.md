@@ -92,3 +92,33 @@ The numerical packet-size increments happen to be 191 bytes per pair for the tes
 **Artifacts:** experiments/arc/lspv4_525_native_shared_xor_audit.cjs; results/raw/arc/2026-11-10_LSPV4_525_NATIVE_SHARED_XOR_RAW.json; research/coordination/2026-11-10_LSPV4_NATIVE_SHARED_XOR_FIVE_ROLE_HANDOFF525.md.
 
 **Verification:** original-function V8 differential and negative controls; published executable not OS-executed in this run. **Publication:** role-owned report/code/raw created; tracker and issue updates must be current-SHA, merge-safe and fully read back. **Remaining gap:** authenticate the actual all-rule historical byte parser [P2-D1], prove every-rule cost-sound concrete-inclusive abstraction [P2-C3], then establish all-legal-proof lower bounds [P2-B1], with B3 separate. P versus NP OPEN.
+
+
+### Theorem 525.3: exact joint fanout times identifier-length evidence floor (PROVED/RESTRICTED)
+
+For any k>=1 and integer L>=3, rename the existing paid anchor ID d12 (three ASCII characters) to a globally fresh, JSON-safe ASCII string consisting of L copies of the letter L, replacing **all** its parent occurrences, with no other proof alteration. The separate typed /539 checker still accepts, and the source/semantic graph, distinct-node logical weight $W=15+2k$, fanout, span and proof conclusion are unchanged.
+
+The ID appears exactly once at its definition and $1+2k$ times as a reference, for $2k+2$ occurrences. Because all identifiers are encoded as unescaped ASCII JSON strings and their quotation/syntax is unchanged, the exact increase in serialized certificate bytes is
+
+$$
+\boxed{\Delta B(k,L)=(2k+2)(L-3).}
+$$
+
+This is a **cross-term** in fanout and physical identifier length. Counting a referenced lemma once in $W_R$ is correct, but does not make its repeated **byte-string occurrences** free to emit, parse, compare or retrieve.
+
+| Detour pairs k | New anchor-ID length L | Paid W | Extra JSON bytes | Total packet bytes | /539 reference |
+|---:|---:|---:|---:|---:|---|
+| 1 | 128 | 17 | 500 | 4254 | ACCEPT |
+| 1 | 512 | 17 | 2036 | 5790 | ACCEPT |
+| 1 | 2048 | 17 | 8180 | 11934 | ACCEPT |
+| 1 | 8192 | 17 | 32756 | 36510 | ACCEPT |
+| 16 | 128 | 47 | 4250 | 10869 | ACCEPT |
+| 16 | 512 | 47 | 17306 | 23925 | ACCEPT |
+| 16 | 2048 | 47 | 69530 | 76149 | ACCEPT |
+| 16 | 8192 | 47 | 278426 | 285045 | ACCEPT |
+
+This proves a representation-specific explicit-byte lower bound of $\Omega(kL)$ for these particular certificates, **not** a lower bound on the shortest encoding, cheapest semantically equivalent proof, or any SAT algorithm. Compact canonical IDs or a different proof DAG can avoid the overhead; the original k=0 15-step proof remains a valid cheaper option.
+
+The **published GitHub audit file** (blob 388996bfdec25bfd1d349903ce462c86f58c3b83) was subsequently executed inside V8 with mock Node file/VM/crypto/Buffer adapters, and passed **84 assertions** covering six unrenamed cases, eight long-ID cases, original checker rejection, and source/parent/terminal corruption. This is **not** an OS-level Node execution. Cryptographic adapters were stubs; GitHub blob SHAs were checked independently using actual repository fetch results. Its raw file, blob 7bedec99de08a2460cca6fec285a5c74d1d9821a, contains the exact byte ledger.
+
+The additional theorem is the new physical resource advance beyond the earlier count-once logical work identity. For full R_mix341, reference tariffs and any compact reference addressing scheme must be authenticated before promoting the $\Omega(kL)$ cost to a rule-system-wide statement.
