@@ -45,7 +45,7 @@ function k4(odd){
  return enc(6,cs);
 }
 function prelude(x){
-  let acc='1', steps=1;const N=x.length;
+  let acc='1', steps=1;const N=x.length*8;
   for(let i=0;i<N;i++){acc+='0';steps++;}
   const address=BigInt('0b'+acc);steps+=2; // 1 indexed reposition + 1 blank read
   const visited=new Set([address.toString()]);
@@ -58,12 +58,12 @@ for(let i=0;i<120;i++)cases.push(Buffer.from([i>>8,i&255]));
 assert.equal(cases.length,133);
 let counts={sources:cases.length,sat:0,unsat_valid:0,malformed:0,verified:0},examples=[];
 for(const x of cases){
- const f=parse(x),res=sat(x),j=prelude(x),N=x.length;
+ const f=parse(x),res=sat(x),j=prelude(x),N=x.length*8;
  assert.equal(j.steps,N+3);assert.equal(j.native,1n<<BigInt(N));
  assert.equal(sat(Buffer.from(x)),res); // preserve source byte-exact, binary/malformed semantics
  counts.sat+=Number(res);counts.unsat_valid+=Number(Boolean(f)&&!res);
  counts.malformed+=Number(f===null);counts.verified++;
- if(examples.length<13)examples.push({N_bytes:N,source_sha256:crypto.createHash('sha256').update(x).digest('hex'),label:!f?'MALFORMED':res?'SAT':'UNSAT',wrapper_extra_steps:j.steps,native_space_exact:j.native.toString(),sparse_bit_upper:j.sparseUpper});
+ if(examples.length<13)examples.push({N_bytes:x.length,N_bits:N,source_sha256:crypto.createHash('sha256').update(x).digest('hex'),label:!f?'MALFORMED':res?'SAT':'UNSAT',wrapper_extra_steps:j.steps,native_space_exact:j.native.toString(),sparse_bit_upper:j.sparseUpper});
 }
 assert.deepEqual(counts,{sources:133,sat:3,unsat_valid:2,malformed:128,verified:133});
 const exact=(c)=>((c+2)/(c*c)-c)/2;
