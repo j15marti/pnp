@@ -1,0 +1,17 @@
+# Five-role handoff: LSPV-1/557 alternate prism checker counterexample replication
+
+**2026-11-10 15:03 PST | LSPV-1 General SAT Lower-Bound Lead, Route B | PROVED/RESTRICTED (alternate construction) + COMPUTATIONAL | P versus NP OPEN**
+
+**Non-duplication:** LSPV-3/551 FIRST showed a satisfiable original 48-clause source accepted by the recovered incomplete /341 fixture checker. LSPV-3/552 FIRST proved a parameterized triangle-expansion family; LSPV-3/553 FIRST proved exact source model counts; LSPV-3/554 FIRST proved checker-acceptance/semantic-goal no-go. This run provides an **independently constructed, prism-based parameter family and direct original-checker differential controls**, rather than claiming any of those again.
+
+**Alternate construction:** Subdivide one K4 edge and one k-prism edge (k>=3), connect their subdivision vertices by a bridge, and enumerate the K4-side vertex-zero edges as 0,1,12. The genuine strict signed 3-CNF has V=2k+6, E=3k+9, m=8k+24, and 2^(k+3) satisfying assignments (LSPV-3/553 cycle-space corollary). The fixed cycle edges 0,2,5,12 provide an explicit SAT witness. A charge string "1" plus malformed third AND3 support string "012" fools the **unchanged recovered partial checker** into accepting a false affine row, producing an apparent 0=1 with q=8k+23 purported paid records. No legitimate mathematical refutation is obtained.
+
+**Original-function V8 differential:** k=3,4,5,8,12: five out of five forged packets ACCEPT, with 2272/2416/2560/2992/3568 assertion groups respectively; 20 out of 20 one-field hostile controls REJECT; full exhaustive enumeration of k=3 confirms 64 SAT models. Original producer/checker/seed blobs pinned. New Node CLI reproducer syntax parsed but not independently run as an OS process.
+
+**Published:** research/agents/lspv-1/2026-11-10_1503_LSPV1_ALTERNATE_PRISM_NATIVE_CHECKER557.md (blob 33bc869ccd7778577a57446b8904f14af947e6ce); experiments/arc/lspv1_557_prism_independent_replay.cjs (blob 39189ef40eaadadd30f4e9a10a462ed606de134b); results/raw/arc/2026-11-10_1503_LSPV1_557_PRISM_INDEPENDENT_RAW.json (blob 7a4fc22888481832dda2e6c505fbdf78da094903). All three readback checked.
+
+**Remaining dependency:** P2-D1 OPEN -> P2-C3 OPEN -> P2-B1 OPEN. P2-B2/B3 separate OPEN. The counterfeit is a failure of the **recovered fixture checker only**, not evidence of a legal cheap R_mix341 proof. A semantic goal cannot be inferred from bare acceptance of this recovered checker. Free whole-shared-DAG choice, count-once paid identity, contexts, source authentication, DEF/RES/GF(2)/LOCAL-CONVERT and all unknown native steps remain mandatory.
+
+**Role interfaces:** LSPV-3 should challenge this independent graph/byte construction and continue authenticating native full grammar. LSPV-5 should perform independently executable OS Node CLI and source-model checks, especially spoofed support/charge type behavior and 2^(k+3) assignment count. LSPV-2 and LSPV-4 retain Route A and may audit provenance/certificate byte costs, without promoting a checker artifact to actual machine-space complexity.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** Complete proof1 blob 96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b; proof2 blob 6338814517505963386646c288a4ecb47c68bb77. Full root main.tex contents unavailable (empty read with blob SHA df94dfa745e2578095e6e7aa6df86d351598de28); untouched. Five roles/weights/identities/schedules/enablements/2 Route A + 3 Route B labels unchanged. P versus NP remains OPEN.
