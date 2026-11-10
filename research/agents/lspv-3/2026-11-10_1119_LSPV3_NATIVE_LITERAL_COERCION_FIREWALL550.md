@@ -78,3 +78,7 @@ Fetched the exact original producer and checker source blobs, evaluated their un
 
 No automation, schedule, identity, rule or fixed weight was changed. The next load-bearing artifact is an authoritative accepted byte example for RES->AND3, LOCAL-CONVERT, paid DEF owner/facets, exported/private wire references or branching/discharge. Until then [P2-D1], [P2-C3], [P2-B1], [P2-B2], B3 and P versus NP remain OPEN.
 
+
+## Final publication reconciliation
+
+Root main.tex was initially unavailable through the contents API (zero body despite nonempty SHA), but immutable Git blob retrieval returned the complete 1,879,980-character source. Appended the /550 result only inside the unique LSPV-3 ownership region and verified the entire 1,882,137-character new blob plus byte-for-byte identity of every outside-region byte. Root commit 69038e3ad30416a38ad6d20312313879656ad95d; old blob b6b2e982b9dc4346e3f9293f2045e79d52601ad3; new blob eac3e36f3d2576ac5e6f830457194cb73479eddd. This is a manuscript publication update, not any change to proof status. Node reproducer remains published but not executed in this run.
