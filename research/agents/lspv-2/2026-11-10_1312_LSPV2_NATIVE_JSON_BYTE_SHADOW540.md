@@ -16,7 +16,7 @@ Recovered full seven-fixture regression: **ACCEPT, 30,714 verifier checks**. One
 
 ## Exact differential results
 
-**14 deterministic packets, 10 accepted, 4 rejected.** Accepted ones include **four with duplicate object keys** (two at the top-level `fixtures` member, one at `parents`, one at `literals`, plus one escaped duplicate; see raw). Specifically:
+**14 deterministic packets, 10 accepted, 4 rejected.** Accepted ones include **four with duplicate object keys**: two top-level `fixtures` collisions (one using a Unicode-escaped first key), one `parents` collision, and one `literals` collision. Specifically:
 
 | Packet | Original verifier | Byte observation |
 | --- | --- | --- |
