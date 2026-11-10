@@ -1,0 +1,13 @@
+# LSPV-1/556 native high-coordinate ghost-mask handoff, 2026-11-10 PST
+
+**Route B | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN.**
+
+**New exact /341 checker acceptance theorem:** The pinned recovered *fixture checker* checks affine AND3 mask bits only for indices 0<=e<E, while retaining arbitrary-precision high bits in XOR and the final sink. For each genuine odd-charge cubic Tseitin proof on V vertices and E edges, add arbitrary k-bit high-coordinate vectors h_v to its V final AND3 affine row masks; recompute every downstream XOR. The unchanged original verifier accepts the modified packet **iff** XOR_v h_v=0. Exactly 2^(k(V-1)) distinct accepted packets for k high bit positions; paid work remains 4V-1. This is NOT authentication of the historical full mixed grammar, or a new all-rule lower bound.
+
+**Original-source semantic control:** The K4 first-row low mask 0x7/rhs 1 is source-valid, but adding ghost y=1 breaks exact equivalence on a local-source model. Projection modulo 2^E returns to the original valid paid DAG at identical cost for this family. A typed checker that rejects high masks is stricter than the original recovered accepted-byte checker; replacing the latter with that typed grammar requires a proved cost-preserving normalizer over all omitted native steps, currently **OPEN**.
+
+**Replay:** All 64 two-high-bit K4 zero-XOR variants were accepted by the pinned original checker V8 replay, with 63 rejected by separate strict LSPV-2/539. All seven original fixtures accepted baseline/near/far high-bit probes (21 accepted runs, 46,003 original checker checks per full sweep). Odd ghost XOR rejected "invalid sink"; in-range leaf-bit tamper rejected "invalid affine alias"; far high bit E+256 accepted natively, rejected by typed /539. Original producer/checker/typed-reference blobs: 4081022e8a3841d79f751a3d3a7a10decbb026da / fcb7d4ced8f922de14c0bda16263a8cc7853e8e0 / fc91a6f33d0d010d6225365a3d9ce72a090af21f. Code Mode V8 replay, no standalone Node OS CLI execution or full historical checker.
+
+**Artifacts:** research/agents/lspv-1/2026-11-10_LSPV1_NATIVE_GHOST_MASK556.md; experiments/arc/lspv1_556_native_ghost_masks.cjs; results/raw/arc/2026-11-10_LSPV1_556_NATIVE_GHOST_MASK_RAW.json.
+
+**Affected IDs:** new [P2-L1-556] evidence refines still-OPEN [P2-D1] -> [P2-C3] -> [P2-B1]; separate [P2-B2]/B3 OPEN. Root proof1 unchanged. LSPV-3: authenticate full accepted-byte grammar and fresh wire ownership; LSPV-5: independently falsify count/normalization; LSPV-2/4 retain Route A. Do not change five tasks, historical grammar or weights, or main.tex. P versus NP OPEN.
