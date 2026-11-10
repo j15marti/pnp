@@ -39,5 +39,22 @@ for(const k of [0,1,2,4,8,16]){
 }
 const bad=extend(1);const sourceMut=source.replace('1 2 3 0','-1 2 3 0');assert(sourceMut!==source);assert(!ref.tryAudit(sourceMut,packetOf(bad)).accepted,'source mismatch');assertions++;
 bad.proof.at(-1).parents[0]='missing';assert(!ref.tryAudit(source,packetOf(bad)).accepted,'missing parent');assertions++;
-const result={run:'LSPV-4/525',scope:'SEPARATE typed SOURCE/AND3/XOR fragment; historical R_mix341 full byte language remains OPEN',pinnedGitBlobs:files,cases,hostile:{sourceMismatch:'REJECT',missingParent:'REJECT'},assertions,qualification:'logical unit-first-creation costs only; actual parser bytes and work/space separately charged; no native CASE, DEF, LOCAL-CONVERT or RES'};
+// Long-identifier cross-term: one first-created anchor ID, 1+2k parent references.
+const longIdentifierControls=[];
+for(const k of [1,16]){
+  const baseProof=extend(k),before=packetOf(baseProof);
+  for(const L of [128,512,2048,8192]){
+    const proof=JSON.parse(JSON.stringify(baseProof)),newID='L'.repeat(L);
+    for(const node of proof.proof){
+      if(node.id==='d12')node.id=newID;
+      node.parents=node.parents.map(id=>id==='d12'?newID:id);
+    }
+    const mutated=packetOf(proof),checked=ref.tryAudit(source,mutated);
+    const delta=Buffer.byteLength(mutated)-Buffer.byteLength(before),expected=(L-3)*(2*k+2);
+    assert(checked.accepted,checked.diagnostic);assert.strictEqual(delta,expected);
+    assert.strictEqual(checked.result.logicalWeight,15+2*k);assertions+=3;
+    longIdentifierControls.push({k,idLength:L,paid:checked.result.logicalWeight,packetBytes:Buffer.byteLength(mutated),extraBytes:delta,expectedExtraBytes:expected,typedReference:'ACCEPT'});
+  }
+}
+const result={run:'LSPV-4/525',scope:'SEPARATE typed SOURCE/AND3/XOR fragment; historical R_mix341 full byte language remains OPEN',pinnedGitBlobs:files,cases,longIdentifierControls,hostile:{sourceMismatch:'REJECT',missingParent:'REJECT'},assertions,qualification:'logical unit-first-creation costs only; actual parser bytes and work/space separately charged; no native CASE, DEF, LOCAL-CONVERT or RES'};
 const json=JSON.stringify(result,null,2)+'\n';if(process.argv[2])fs.writeFileSync(process.argv[2],json);process.stdout.write(json);
