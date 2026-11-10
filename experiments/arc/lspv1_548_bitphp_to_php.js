@@ -21,7 +21,7 @@ function compile(ell) {
   function own(i,p,kind,input,pivot=null) {
     const z=++next, id="D:"+i+":"+p;
     if(defOwners.has(z))throw Error("DEF name collision");
-    defs++;defOwners.set(z,{id,kind,input,pivot});
+    defs++;defOwners.set(z,{id,kind,input,pivot:kind==="AND"?pivot:x(i,1)});
     if(kind==="COPY"||kind==="NEG"){
       const t=input, e=kind==="COPY"?t:-t;
       add(id+":bit",[-z,e],"FACET",z);
@@ -42,7 +42,7 @@ function compile(ell) {
       else throw Error("illegal oriented Resolution pivot");
     }
     const c=norm([...A.filter(v=>v!==p),...B.filter(v=>v!==-p)]);
-    resolutions++;return add("R:"+(++serial),c,"RES:"+tag);
+    resolutions++;const id=add("R:"+(++serial),c,"RES:"+tag); rows.get(id).parents=[a,b]; rows.get(id).pivot=p; return id;
   }
   // Original wide bit-PHP source: no arbitrary or derived source clauses.
   for(let i=0;i<pigeons;i++)for(let j=i+1;j<pigeons;j++)
@@ -114,8 +114,49 @@ function compile(ell) {
       throw Error("unary collision mismatch");
     collisions.push(r);
   }
-  // Independently audit ALL recorded RES additions and owner-bound facets,
-  // rather than trusting only the producer's designated derived clauses.
+  // Independently replay all RES nodes from saved parent IDs and pivots,
+  // and truth-table check every paid DEF owner's exact facet set.
+  let replayedResolution=0, gateTruthRows=0;
+  const seen=new Map();
+  for(const [id,row] of rows){
+    if(row.tag.startsWith("RES:")){
+      const [a,b]=row.parents||[],p=row.pivot;
+      if(!seen.has(a)||!seen.has(b))throw Error("RES premise not earlier");
+      const A=seen.get(a), B=seen.get(b);
+      let c;
+      if(A.includes(p)&&B.includes(-p))
+        c=norm([...A.filter(x=>x!==p),...B.filter(x=>x!==-p)]);
+      else if(A.includes(-p)&&B.includes(p))
+        c=norm([...A.filter(x=>x!==-p),...B.filter(x=>x!==p)]);
+      else throw Error("invalid replay pivot "+id);
+      if(!equal(c,row.clause))throw Error("replay mismatch "+id);
+      replayedResolution++;
+    }
+    seen.set(id,row.clause);
+  }
+  for(const [z,owner] of defOwners){
+    const kind=owner.kind,inp=owner.input,other=owner.pivot;
+    if(!other||Math.abs(inp)===Math.abs(other))throw Error("not two distinct inputs");
+    const suffixes=kind==="AND"?["parent","bit","join"]:["bit","rev"];
+    const facetsOwner=suffixes.map(x=>rows.get(owner.id+":"+x));
+    if(facetsOwner.some(r=>!r||r.owner!==z||r.tag!=="FACET"))throw Error("bad owner/facet");
+    for(let t=0;t<8;t++){
+      const u=(t>>0)&1,v=(t>>1)&1,zz=(t>>2)&1;
+      const value=(lit)=>{
+        let b=Math.abs(lit)===z?zz:Math.abs(lit)===Math.abs(inp)?u:
+          Math.abs(lit)===Math.abs(other)?v:undefined;
+        if(b===undefined)throw Error("facet references third input");
+        return lit>0?!!b:!b;
+      };
+      const legal=facetsOwner.every(r=>r.clause.some(value));
+      const output=kind==="COPY"?u:kind==="NEG"?!u:
+        (!!u&&(other>0?!!v:!v));
+      if(legal!==(zz===Number(output)))throw Error("non-exact owner gate "+owner.id);
+      gateTruthRows++;
+    }
+  }
+  if(replayedResolution!==resolutions||gateTruthRows!==8*defs)
+    throw Error("independent replay totals mismatch");
   const sourceCount=n*pigeons*(pigeons-1)/2;
   const expectedDefs=pigeons*(2*n-2);
   if(defs!==expectedDefs||collisions.length!==sourceCount||
@@ -131,7 +172,7 @@ function compile(ell) {
           freeOwnerFacets:[...rows.values()].filter(v=>v.tag==="FACET").length,
           derivedUnaryPigeonClauses:unaryCoverage.length,
           derivedUnaryCollisionClauses:collisions.length,
-          hostileControlsRejected:rejections,
+          hostileControlsRejected:rejections, replayedResolution, gateTruthRows,
           proofSemantics:"Two-input DEF owners; authenticated exact facets and signed Resolution",
           caveat:"Cook ER append stage not generated; historical accepted-byte grammar not authenticated"};
 }
