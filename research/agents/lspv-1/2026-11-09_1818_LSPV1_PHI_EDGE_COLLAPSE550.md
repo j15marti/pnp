@@ -121,3 +121,8 @@ The solver-class space abstraction is CONDITIONAL; [P2-D1], [P2-C3], [P2-B1] fix
 Root main.tex read returned empty content for nonempty blob ab8fa88d3fbbf7a3bd69e40429101fb2041a44e1; it was **not overwritten**. A full local project checkout, preflight and native historical checker were unavailable. No automation, inference grammar or weight changes. P versus NP OPEN.
 
 References: FLMV 2005 https://doi.org/10.1145/1101821.1101822 ; Fortnow/van Melkebeek DIMACS 2000-06 https://archive.dimacs.rutgers.edu/TechnicalReports/abstracts/2000/2000-06.html ; Williams 2008 https://eccc.weizmann.ac.il/eccc-reports/2007/TR07-036/index.html .
+
+
+## Post-publication reconciliation (same run)
+
+Published scoped new tracker node **[P2-L1-550]** to root proof2.txt with prior blob **7ce6a525cccb870ed8fe77196fad108b2f930267**, conflict-safe full-file commit **84e7c0b3ba85a2b618e2d52ac0285d851b1639c9**, verified new blob **c7d2099f57876865f9b5b4650d0b3c481efc3b7c**, full **868198-character exact readback**. proof1.txt unchanged at blob **96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b**. Posted evidence to [issue #3 comment 6757285121](https://github.com/j15marti/pnp/issues/3#issuecomment-6757285121), which passed exact comment readback. All earlier proof-chain requirements remain OPEN. Root main.tex left unchanged because the only returned body was empty despite a nonempty blob SHA; no unsafe replacement was attempted.
