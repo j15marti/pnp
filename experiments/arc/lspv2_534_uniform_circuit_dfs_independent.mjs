@@ -30,7 +30,7 @@ function recurse(g,root,bits){
    const x=rec(a,depth+1),y=rec(b,depth+1);
    return t==="and"?(x&y):(x|y);
  }
- return {...s,value:rec(root,1)};
+ const value=rec(root,1);return {...s,value};
 }
 function memo(g,root,bits){
  let v=[];for(const [t,a,b] of g)v.push(t==="input"?bits[a]:t==="not"?1-v[a]:t==="and"?(v[a]&v[b]):(v[a]|v[b]));
