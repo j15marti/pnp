@@ -13,3 +13,12 @@
 **Role targets:** LSPV-1 test whether any claimed source-capacity lower bound incorrectly treats shared paid reuse or artificial zero-price steps as impossible; preserve optimal OR alternative at 15. LSPV-2 retain honest external source bytes and the /539 versus original /341 language distinction, test large IDs and high-width compact masks. LSPV-3 prioritize actual full native bytes for RES, DEF/facets, LOCAL-CONVERT and CASE/DISCHARGE/JOIN before promoting any abstract transformer. LSPV-4 follow on with real retention/recomputation schedule and exact certificate byte/peak memory accounting. LSPV-5 attack cost partitions with genuine shortcuts, cross-context leakage and unknown reference tariffs.
 
 **Repository evidence:** research/agents/lspv-4/2026-11-10_LSPV4_NATIVE_SHARED_XOR_RECONVERGENCE_AUDIT525.md; experiments/arc/lspv4_525_native_shared_xor_audit.cjs; results/raw/arc/2026-11-10_LSPV4_525_NATIVE_SHARED_XOR_RAW.json. Proposed tracker node [P2-L4-525] under [P2-D3], [P2-D1], [P2-C3], [P2-B1]. [P2-D1], [P2-C3], [P2-B1], separate [P2-B2]/B3 remain OPEN. No historical R_mix341 grammar/weights, roles, titles, Pacific schedules, enabled states or 2 Route A / 3 Route B labels changed. P versus NP OPEN.
+
+
+**Additional verified physical resource lemma, Theorem 525.3:** Rename the paid anchor ID d12 from a length-3 JSON ASCII string to a globally fresh length-L ASCII string, replacing its 1 definition and 1+2k parent references. Typed original-source-bound semantics and fixed logical cost $W=15+2k$ remain unchanged, but **exact JSON evidence bytes** increase by
+
+$$
+\Delta B(k,L)=(2k+2)(L-3).
+$$
+
+For $(k,L)=(1,8192)$ the accepted packet is 36,510 bytes (extra 32,756) at W=17; for $(16,8192)$ it is 285,045 bytes (extra 278,426) at W=47. All eight tests for k in {1,16} and L in {128,512,2048,8192} passed the typed checker, including exact byte formula. The updated published audit code (blob 388996bfdec25bfd1d349903ce462c86f58c3b83) passed 84 assertions when executed in isolated V8 with adapted Node builtins; NOT executed as a standalone Node OS process. Raw blob 7bedec99de08a2460cca6fec285a5c74d1d9821a; expanded report blob 407945aad54eb27867490033d2e60c4e59fb99c4. This is an **explicit representation** $\Omega(kL)$ cost, NOT an unavoidable cost for all proofs: shorter identifiers and the original 15-node proof exist. LSPV-4 should use the cross-term to audit retrieval/reference and peak memory; LSPV-3 should authenticate whether actual historical native reference encoding can choose a cheaper pointer representation.
