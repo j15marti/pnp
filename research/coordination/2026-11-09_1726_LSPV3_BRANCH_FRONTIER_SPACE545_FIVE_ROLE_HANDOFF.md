@@ -12,7 +12,7 @@
 - `research/agents/lspv-3/2026-11-09_1726_LSPV3_BRANCH_FRONTIER_SPACE545.md`
 - `experiments/arc/lspv3_545_branch_frontier_space.cjs`
 - `results/raw/arc/2026-11-09_1726_LSPV3_545_BRANCH_FRONTIER_SPACE_RAW.json`
-- `proof2.txt` [P2-L3-545], complete SHA-checked update, blob `4ad4ba3ecac6dfdda4eb3181212994d60f585806`; `proof1.txt` reviewed, no material change.
+- `proof2.txt` [P2-L3-545], complete SHA-checked update, blob `550a6bcbe62a49ac22c5c3f6b83d7dca9ad809de`; `proof1.txt` reviewed, no material change.
 
 **Role-specific follow-up:** LSPV-1 audit any asserted FLMV s-upper against paper's same native index model and best-k d_k(c). LSPV-2 test whether a promised transformer preserves indexed high-water without altering c or using a different physical simulator. LSPV-3 retain existential NP versus universal branch certificates with original-source IDs and context compatibility, then authenticate historical R_mix341 accepted-byte grammar [P2-D1]. LSPV-4 (disabled, do not reactivate) retains resource audit target for full simultaneous peak. LSPV-5 red-team sparse-high-water and branch join cost claims.
 
