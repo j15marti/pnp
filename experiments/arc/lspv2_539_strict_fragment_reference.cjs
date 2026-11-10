@@ -42,7 +42,7 @@ function strictIntList(v,n,why){
 }
 function normalizedMask(mask,nv){
   chk(typeof mask==='string'&&/^0x(?:0|[1-9a-f][0-9a-f]*)$/.test(mask),'canonical nonnegative hex mask');
-  const x=BigInt(mask);chk(x<(1n<<BigInt(nv)),'mask references outside source');return x;
+  const x=BigInt(mask);chk(x.toString(2).length<=nv,'mask references outside source');return x;
 }
 function factorEval(f,bits){
   let idx=0;f.support.forEach((e,j)=>{idx|=(bits[e]<<j)});
@@ -86,7 +86,7 @@ function auditCertificate(sourceText,packetText){
       chk(sup.length===u.length&&u.every(k=>sup.includes(k)),'AND3 exact support');
       chk(isInt(p.table)&&p.table>=0&&p.table<(1<<(1<<sup.length)),'AND3 table width');
       for(let i=0;i<(1<<sup.length);i++){
-        const bits=Array(F.nv).fill(0);sup.forEach((e,j)=>bits[e]=(i>>j)&1);
+        const bits=Object.create(null);sup.forEach((e,j)=>bits[e]=(i>>j)&1);
         chk(((p.table>>i)&1)===(factorEval(a,bits)&factorEval(b,bits)),'AND3 semantic mismatch');
       }
       v={kind:'factor',support:sup,table:p.table};
@@ -94,9 +94,9 @@ function auditCertificate(sourceText,packetText){
         chk(plain(p.row),'affine alias shape');
         const mask=normalizedMask(p.row.mask,F.nv),rhs=p.row.rhs;
         chk(isInt(rhs)&&(rhs===0||rhs===1),'affine alias RHS');
-        for(let e=0;e<F.nv;e++)if((mask>>BigInt(e))&1n)chk(sup.includes(e),'affine alias external variable');
+        for(let z=mask,e=0;z!==0n;z>>=1n,e++)if(z&1n)chk(sup.includes(e),'affine alias external variable');
         for(let i=0;i<(1<<sup.length);i++){
-          const bits=Array(F.nv).fill(0);sup.forEach((e,j)=>bits[e]=(i>>j)&1);
+          const bits=Object.create(null);sup.forEach((e,j)=>bits[e]=(i>>j)&1);
           chk(((p.table>>i)&1)===affineEval({mask,rhs},bits),'affine alias not equivalent');
         }
         v.row={mask,rhs};
