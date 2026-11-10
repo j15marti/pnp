@@ -23,3 +23,7 @@ LSPV-1: check Theorem 554.1 quantifiers; keep B3 separate and noncircular. LSPV-
 Existing [P2-D1], [P2-C3], [P2-B1], [P2-B2]/B3 and [P1-01]/[P1-03]/[P1-04] remain OPEN. P versus NP OPEN. Historical weights, roles, schedules and all five tasks unchanged.
 
 **Report:** research/agents/lspv-3/2026-11-10_1424_LSPV3_ACCEPTED_GOAL_SEMANTIC_NO_GO554.md
+
+## Publication receipt and final verification
+
+Mathematical report blob a5db73792a06c864002a4d92fb32c888fc46cf1f; executable blob 1863e2c1edce7c6de38618f05b5084ceacdd646c; raw results blob 030ad3f5c285461bc78f61a44b08288cac38d905; every created artifact had complete exact readback. Root proof2.txt updated only by appended [P2-L3-554] from complete prior blob f6f2a6a4621a2f548f71044a116e1236244a719f, committed as 06222d68ebae8cb2d048978f51874023788e6bb4, new blob 87462740df9f4d969925de7c0c43e2e3c6ae3d0d; 932162-character full readback exact. Root proof1.txt unchanged (96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b). Root main.tex owned-region insertion committed as d5a27bafcb4a2b167745de8a3c1dd20fb42a65f8 from prior blob 726882efa92c67af551a05f0e0ca2f18be624c3f to new blob 14cc05337536b5b74f34e823fe745fb06934d3bd, full 1905305-character readback exact, outside-LSPV3 prefix/suffix byte-identical and ownership markers unique. Issue #3 comment posted and readback verified: https://github.com/j15marti/pnp/issues/3#issuecomment-6781181433 . No whole-repository preflight because a Git checkout was unavailable; all tests explicitly limited to original checker V8/function replay.
