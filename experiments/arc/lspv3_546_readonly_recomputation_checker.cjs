@@ -12,7 +12,8 @@ function proof(F,n){let nodes=[];function rec(ctx,k){if(k>n){let S=new Set(ctx),
 let pos=rec(ctx.concat(k),k+1),neg=rec(ctx.concat(-k),k+1);nodes.push({kind:"case",ctx:ctx.slice(),var:k,pos,neg});return nodes.length-1;}
 return {source:F,nodes,root:rec([],1)};}
 function eq(a,b){return JSON.stringify(a)===JSON.stringify(b);}
-function verify(P,F){if(!eq(P.source,F)||!Array.isArray(P.nodes)||P.root!==P.nodes.length-1)return false;
+function validSource(F){return Array.isArray(F)&&F.length>0&&F.every(C=>Array.isArray(C)&&C.length===3&&C.every(l=>Number.isSafeInteger(l)&&l!==0)&&new Set(C.map(l=>Math.abs(l))).size===3);}
+function verify(P,F){if(!validSource(F)||!eq(P.source,F)||!Array.isArray(P.nodes)||P.root!==P.nodes.length-1)return false;
 function rec(id,ctx){if(!Number.isSafeInteger(id)||id<0||id>=P.nodes.length)return false;let n=P.nodes[id];if(!n||!eq(n.ctx,ctx))return false;
 if(n.kind==="leaf")return Number.isSafeInteger(n.source)&&n.source>=0&&n.source<F.length&&F[n.source].every(l=>ctx.includes(-l));
 if(n.kind!=="case"||!Number.isSafeInteger(n.var)||n.var<=0||ctx.some(l=>Math.abs(l)===n.var)||!Number.isSafeInteger(n.pos)||!Number.isSafeInteger(n.neg)||n.pos<0||n.neg<0||n.pos>=id||n.neg>=id||n.pos===n.neg)return false;
@@ -28,6 +29,12 @@ let Q=JSON.parse(JSON.stringify(P));Q.nodes[0].source=F.length;chk(!verify(Q,F),
 Q=JSON.parse(JSON.stringify(P));Q.nodes.at(-1).neg=Q.nodes.at(-1).pos;chk(!verify(Q,F),"omitted case");
 Q=JSON.parse(JSON.stringify(P));Q.nodes.at(-1).pos=Q.root;chk(!verify(Q,F),"cycle");
 Q=JSON.parse(JSON.stringify(P));Q.nodes.at(-1).ctx=[1];chk(!verify(Q,F),"undischarged context");
+let malformed=JSON.parse(JSON.stringify(P));malformed.source[0][0]=0;
+chk(!verify(malformed,malformed.source),"malformed zero");
+malformed=JSON.parse(JSON.stringify(P));malformed.source[0][1]=malformed.source[0][0];
+chk(!verify(malformed,malformed.source),"duplicate variable");
+malformed=JSON.parse(JSON.stringify(P));malformed.root="999999999999999999999999999999";
+chk(!verify(malformed,F),"huge noncanonical numeric ID");
 let B=JSON.stringify(P).length*8; // all characters ASCII in this fixture
 tests.push({vertices:v,variables:n,clauses:F.length,even_models:models(G,n),nodes:P.nodes.length,paid_cases:2**n-1,depth:n+1,evidence_bits:B});}
 console.log(JSON.stringify({checks:count,tests,status:"restricted typed CASE/LEAF; no historical checker or FLMV implementation"},null,2));
