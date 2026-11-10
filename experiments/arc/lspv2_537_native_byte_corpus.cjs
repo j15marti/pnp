@@ -7,7 +7,7 @@
 const fs=require("fs"),crypto=require("crypto");
 const paths={producer:"experiments/arc/lspv2_341_mixed_tseitin_min_dag.js",checker:"experiments/arc/lspv2_341_independent_verify.js"};
 const pin={producer:"4081022e8a3841d79f751a3d3a7a10decbb026da",checker:"fcb7d4ced8f922de14c0bda16263a8cc7853e8e0"};
-function shaGit(s){const b=Buffer.from(s,"utf8");return crypto.createHash("sha1").update(Buffer.concat([Buffer.from("blob "+b.length+"\\0"),b])).digest("hex");}
+function shaGit(s){const b=Buffer.from(s,"utf8");return crypto.createHash("sha1").update(Buffer.concat([Buffer.from("blob "+b.length+" "),Buffer.from([0]),b])).digest("hex");}
 function audit(producerText,checkerText){
   let pOut=[];
   new Function("console",producerText)({log:x=>pOut.push(x)});
