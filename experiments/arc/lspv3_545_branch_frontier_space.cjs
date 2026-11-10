@@ -57,9 +57,9 @@ function controls(){
 function highwater(n){
   if(!Number.isInteger(n)||n<1||n>40)throw Error("unsafe test size");
   let index=1n<<BigInt(n),work=new Map();
-  work.set(index,1); // one read/write at address 2^n
+  work.set(index,1); const readback=work.get(index); // indexed write AND read
   let time_upper=12*n+40; // coarse tally for constructing index plus scan
-  return {n,largest_work_position:index.toString(),distinct_work_cells:work.size,index_tape_bits:n,time_upper};
+  if(readback!==1)throw Error('readback');return {n,largest_work_position:index.toString(),distinct_work_cells:work.size,index_tape_bits:n+1,time_upper};
 }
 
 let results=[];for(let h of [4,6,8])for(let odd of [true,false])results.push(exhaustive(h,odd));
