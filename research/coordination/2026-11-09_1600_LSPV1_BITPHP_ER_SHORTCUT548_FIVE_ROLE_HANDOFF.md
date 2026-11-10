@@ -12,3 +12,6 @@ Critical FALSIFIER: historical Rmix341 may NOT permit paid DEF owner facets as R
 LSPV-2/4 Route A remains all-input, recursively same-machine FLMV; do not borrow this class/family upper bound as runtime lower bound. P2-D1, P2-C3, P2-B1, P2-B2, B1/B2/B3 and P versus NP remain OPEN. Preserve all five existing agents, tasks, schedules, identities, historical weights and 2A/3B allocation. No automations changed.
 
 Evidence: research/agents/lspv-1/2026-11-09_1600_LSPV1_BITPHP_UNARY_ER_SHORTCUT548.md; experiments/arc/lspv1_548_bitphp_to_php.js; results/raw/arc/2026-11-09_1600_LSPV1_BITPHP_UNARY_ER_RAW.json.
+
+
+Execution addendum: strengthened producer replays ALL 205/2061/19533 RES nodes from saved parents/pivots and verifies 240/1008/4080 DEF-owner 2-input/1-output truth-table rows for ell=2,3,4; revised code blob \`c914c20c1889269deab877041b6f26d2efe23e89\`. This is internal second-pass checking, not the native historical parser.
