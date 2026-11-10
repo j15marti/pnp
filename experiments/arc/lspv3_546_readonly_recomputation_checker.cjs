@@ -13,12 +13,13 @@ let pos=rec(ctx.concat(k),k+1),neg=rec(ctx.concat(-k),k+1);nodes.push({kind:"cas
 return {source:F,nodes,root:rec([],1)};}
 function eq(a,b){return JSON.stringify(a)===JSON.stringify(b);}
 function validSource(F){return Array.isArray(F)&&F.length>0&&F.every(C=>Array.isArray(C)&&C.length===3&&C.every(l=>Number.isSafeInteger(l)&&l!==0)&&new Set(C.map(l=>Math.abs(l))).size===3);}
-function verify(P,F){if(!validSource(F)||!eq(P.source,F)||!Array.isArray(P.nodes)||P.root!==P.nodes.length-1)return false;
+function verify(P,F,rootCtx=[]){if(!validSource(F)||!eq(P.source,F)||!Array.isArray(P.nodes)||P.root!==P.nodes.length-1)return false;
 function rec(id,ctx){if(!Number.isSafeInteger(id)||id<0||id>=P.nodes.length)return false;let n=P.nodes[id];if(!n||!eq(n.ctx,ctx))return false;
 if(n.kind==="leaf")return Number.isSafeInteger(n.source)&&n.source>=0&&n.source<F.length&&F[n.source].every(l=>ctx.includes(-l));
+if(n.kind==="weaken"){let p=n.from;if(!Number.isSafeInteger(p)||p<0||p>=id)return false;let before=P.nodes[p].ctx;if(!Array.isArray(before)||ctx.length!==before.length+1||!before.every(l=>ctx.includes(l))||ctx.some(l=>ctx.includes(-l)))return false;return rec(p,before);}
 if(n.kind!=="case"||!Number.isSafeInteger(n.var)||n.var<=0||ctx.some(l=>Math.abs(l)===n.var)||!Number.isSafeInteger(n.pos)||!Number.isSafeInteger(n.neg)||n.pos<0||n.neg<0||n.pos>=id||n.neg>=id||n.pos===n.neg)return false;
 return rec(n.pos,ctx.concat(n.var))&&rec(n.neg,ctx.concat(-n.var));}
-return rec(P.root,[]);}
+return rec(P.root,rootCtx);}
 let tests=[];
 for(const v of [4,6,8]){let {F,n}=tseitin(v,true),G=tseitin(v,false).F;
 chk(models(F,n)===0,"odd");chk(models(G,n)===2**(n-v+1),"even");
@@ -37,4 +38,23 @@ malformed=JSON.parse(JSON.stringify(P));malformed.root="999999999999999999999999
 chk(!verify(malformed,F),"huge noncanonical numeric ID");
 let B=JSON.stringify(P).length*8; // all characters ASCII in this fixture
 tests.push({vertices:v,variables:n,clauses:F.length,even_models:models(G,n),nodes:P.nodes.length,paid_cases:2**n-1,depth:n+1,evidence_bits:B});}
+// Shared paid CASE node is visited through two strengthenings, but paid only once.
+{
+let F=tseitin(4,true).F, ctx=F[0].map(l=>-l).sort((a,b)=>Math.abs(a)-Math.abs(b));
+let unused=[1,2,3,4,5,6].filter(v=>!ctx.some(l=>Math.abs(l)===v)),a=unused[0],b=unused[1];
+let S={source:F,nodes:[
+ {kind:"leaf",ctx,source:0},
+ {kind:"weaken",ctx:ctx.concat(a),from:0},
+ {kind:"weaken",ctx:ctx.concat(-a),from:0},
+ {kind:"case",ctx,var:a,pos:1,neg:2},
+ {kind:"weaken",ctx:ctx.concat(b),from:3},
+ {kind:"weaken",ctx:ctx.concat(-b),from:3},
+ {kind:"case",ctx,var:b,pos:4,neg:5}
+],root:6};
+chk(verify(S,F,ctx),"shared DAG under correct signed context");
+chk(!verify(S,F),"nonempty root context is not global UNSAT");
+chk(S.nodes.filter(z=>z.kind==="case").length===2,"paid CASE shared once");
+let fake=JSON.parse(JSON.stringify(S));fake.nodes[5].ctx=ctx.concat(b);
+chk(!verify(fake,F,ctx),"incompatible shared context");
+}
 console.log(JSON.stringify({checks:count,tests,status:"restricted typed CASE/LEAF; no historical checker or FLMV implementation"},null,2));
