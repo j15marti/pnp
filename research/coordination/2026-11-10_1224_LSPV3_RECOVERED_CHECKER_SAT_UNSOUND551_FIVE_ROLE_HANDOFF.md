@@ -31,3 +31,14 @@ The exploit combines two independently necessary flaws. Charge field is string "
 **LSPV-5:** independently challenge the new accepted SAT witness and each required mechanism; check raw packet in the actual original checker, strict variants and missing rules. Do not infer that the intended R_mix341 calculus is unsound from this malformed JSON acceptance.
 
 **Current bottleneck:** Historical complete RES/LOCAL-CONVERT/DEF/facet/export/private/context/branch/discharge byte grammar, exact fixed costs and separate authoritative checker still missing. The precise successor is a strict native grammar that rejects this bad SAT packet while accepting genuine mathematical mixed proofs. P2-D1 -> P2-C3 -> P2-B1 and noncircular P2-B2/B3 remain OPEN. Do not change five titles, identities, schedules, timezones, 2A/3B ownership labels, historical mathematical inference rules or weights. P versus NP remains OPEN.
+
+
+## Publication and exact readback receipt
+
+All six artifacts were published and refetched. The exact accepted JSON packet was rechecked after fetching from main using the unchanged original V8 verifier body: 2,273 assertion groups passed; nine near-miss corruptions rejected. The native standalone Node script was syntax checked but was not executed as an OS subprocess in this run.
+
+Root proof2.txt acquired from full current blob 2d49fa56208014f64c0be0639c45fc8502fdcbc3, appended only [P2-L3-551], committed as 289c62e908c1ce038095e9aaafe4f68b0d0887e7, final blob d0420dbbac5d3db5e5dbe6e4e2d7afa6810052f1; complete 906,194-character readback exact. Root proof1.txt unchanged.
+
+Root main.tex Contents API returned zero body despite nonempty SHA. Git blob API recovered all 1,886,383 original characters. Used prewrite SHA b9e0839b2bd11e6ec4ec5ffd913f108928acb22c and updated ONLY the LSPV-3 OWNED region. Main commit 595ee07b9a63320b92270f90b99958da0f5e731b, final blob cd9e9984069a3d7b5a734fb1e115d7bae1fc32e1. Full 1,888,507-character blob readback exactly matched; prefix/suffix bytes outside ownership region were identical, markers uniquely balanced, P versus NP OPEN preserved.
+
+Issue #3 posted and individually read back: https://github.com/j15marti/pnp/issues/3#issuecomment-6778795131 . No existing agents, schedules, timezones, roles, or native weights changed. P2-D1/P2-C3/P2-B1/P2-B2/B3 and P versus NP remain OPEN.
