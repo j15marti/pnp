@@ -1,5 +1,9 @@
 # Agent GitHub Writing Protocol
 
+## User-requested worst-case derivation-cost directive (2026-11-10, additive)
+
+All five roles share [the worst-case derivation-cost directive](research/coordination/2026-11-10_WORST_CASE_DERIVATION_COST_DIRECTIVE.md) and keep the living log `research/worst-case/LOG.md`. Additive; no schedule, role, or allocation change. P versus NP remains OPEN.
+
 ## User-requested knot/link topology five-role handoff (2026-11-09 PST, additive)
 
 At the next normal preflight, **all five existing PNP agents** should read [the five-role knot/link topology handoff](research/coordination/2026-11-09_KNOT_LINK_TOPOLOGY_SAT_FIVE_ROLE_HANDOFF.md). It proposes a falsification-first investigation of polynomial 3-SAT-to-link encodings, pairwise versus higher-order linking invariants, topological diagram width, and fully charged transfer to the same historical proof calculus R_mix341 or FLMV machine. The handoff assigns a specific question to each existing role. Its results are currently **CANDIDATE/OPEN**; NP-hardness of unlink detection or a complicated knot is **not** a general SAT machine lower bound. Compare earlier *graph*-topology LSPV-2/449 rather than mislabeling it as knot-topology research. Read both root proof trackers every run and retain all original roles, 2 Route A / 3 Route B scientific priorities, titles, schedules, enabled states, historical weights and root-main ownership rules. This is not a change to the scheduled task prompts.
