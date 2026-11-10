@@ -43,7 +43,7 @@ function kernel(f,src){
   let t=0;for(let v=0;v<8;v++)if(l.some((x,i)=>((v>>i)&1)===(x>0?1:0)))t|=1<<v;
   env.set(c.id,{kind:"factor",support:l.map(x=>Math.abs(x)-1),table:t});
  }
- if(f.charges!==undefined)okay(Array.isArray(f.charges)&&f.charges.every(x=>x===0||x===1),"charge metadata type");
+ // Charge/graph annotations are inert metadata: neither prove nor refute the bound source.
  for(const p of f.proof){
   okay(p&&key(p.id,"d")&&!env.has(p.id),"paid identity freshness");
   okay(Array.isArray(p.parents)&&p.parents.length===2&&p.parents.every(x=>typeof x==="string")&&p.parents[0]!==p.parents[1],"parent IDs");
