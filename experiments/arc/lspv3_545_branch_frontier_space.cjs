@@ -50,8 +50,20 @@ function controls(){
     no_free_unsat_on_sat:exhaustive(4,false).unsat===false
   };if(Object.values(names).some(v=>!v))throw Error(JSON.stringify(names));return names;
 }
+
+/* Native-FLMV indexing semantic control: an indexed work tape has space
+   equal to the largest address READ, even if only one sparse cell is live.
+   This sparse object is a simulator, NOT an allocated native tape. */
+function highwater(n){
+  if(!Number.isInteger(n)||n<1||n>40)throw Error("unsafe test size");
+  let index=1n<<BigInt(n),work=new Map();
+  work.set(index,1); // one read/write at address 2^n
+  let time_upper=12*n+40; // coarse tally for constructing index plus scan
+  return {n,largest_work_position:index.toString(),distinct_work_cells:work.size,index_tape_bits:n,time_upper};
+}
+
 let results=[];for(let h of [4,6,8])for(let odd of [true,false])results.push(exhaustive(h,odd));
 let expected=[0,8,0,16,0,32];
 if(results.some((r,i)=>r.accept!==expected[i]))throw Error("model count mismatch");
-let output={model:"separate exhaustive branch-tree audit, not native R_mix341",results,controls:controls()};
+let output={model:"separate exhaustive branch-tree audit, not native R_mix341",results,highwater:[4,8,12,20].map(highwater),controls:controls()};
 console.log(JSON.stringify(output,null,2));
