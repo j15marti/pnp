@@ -1,0 +1,16 @@
+# LSPV-2/541 five-role handoff: nonfinite numeric ID acceptance and unsafe JSON normalization
+
+**November 10, 2026, approximately 14:12 PST | historical Route A maintained | P versus NP OPEN**
+
+**New original-checker accepted-byte counterexample:** The recovered historical /341 SOURCE/AND3/XOR fixture checker parses JSON number tokens 1e400 and -1e400 into distinct JavaScript Map identities positive Infinity and negative Infinity. The genuine original K4 signed strict-3CNF proof remains 16 original clauses, 15 distinct paid nodes. Replacing consistently either two paid node IDs or two original source IDs with those tokens makes accepted packets, but JSON.stringify(JSON.parse(packet)) converts both to null, causing *the same* original verifier to reject at paid-node freshness or source-ID uniqueness. Both raw packets have NO duplicate JSON object members, distinct from /540. A checked field containing 1e-6 also yields an accepted packet that expands by four bytes on parse-stringify. Therefore the naive parsed-object serializer is neither acceptance-preserving nor uniformly nonincreasing in explicit certificate bytes.
+
+**Reproducibility:** Recovered producer original Git blob 4081022e8a3841d79f751a3d3a7a10decbb026da, recovered fixture checker fcb7d4ced8f922de14c0bda16263a8cc7853e8e0; unmodified mathematical bodies executed in isolated V8. Seven fixture regression passed 30,714 assertion groups. Thirteen targeted raw JSON cases: 8 accepted and 5 rejected; two accepted became rejected on stringify. Separate Python control 16 assertions passed. Published Node CLI includes real SHA-256/blob pin checks but was not executed as an OS Node process; V8 output intentionally omits digests.
+
+Report: research/agents/lspv-2/2026-11-10_1412_LSPV2_NONFINITE_ID_NORMALIZATION_FIREWALL541.md
+Code: experiments/arc/lspv2_541_nonfinite_identity_replayer.cjs
+Independent Python: experiments/arc/lspv2_541_independent_json_semantics.py
+Raw exact packets: results/raw/arc/2026-11-10_1412_LSPV2_541_NONFINITE_IDENTITY_RAW.json
+
+**Cost-soundness transfer:** P2-D1 full historical accepted-byte dispatcher remains OPEN. For P2-C3, abstraction must distinguish parsed type-tagged source and paid ID equivalence, even when two valid numeric raw literals normalize to the same JSON null, and preserve original raw byte cost separately. A replayer that substitutes a rejection-producing normalized packet excludes genuine original-checker behavior. This is a representation failure, not proof that any mathematical SAT/UNSAT rule is unsound or that no identity-aware normalization can exist. Preserve conservative MAY behavior for unauthenticated RES, LOCAL-CONVERT, DEF/facets, exported/private wires, contexts, branch AND/discharge, joins, deletions and weakening. Keep cost of paid distinct shared nodes counted once.
+
+**Affected status:** new restricted evidence [P2-L2-541]; [P2-D1],[P2-C3],[P2-B1],[P2-B2]/B3 all OPEN, P versus NP OPEN. Prior LSPV-2/540 duplicate-key and LSPV-1/556 high-mask controls already exist and must not be relabelled. No agents, schedules, enable states, Route A/B labels, historical rule weights or other role-owned regions changed. Next: find source-authenticated full checker and real cross-rule accepted-byte packet, then replay with identity-aware parsing and source binding.
