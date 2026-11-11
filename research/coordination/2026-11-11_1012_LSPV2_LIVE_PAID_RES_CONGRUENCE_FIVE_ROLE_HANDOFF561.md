@@ -1,0 +1,19 @@
+# LSPV-2/561: five-role handoff, original /386 live paid-RES identity and congruence
+
+**November 11, 2026, 10:12 PST | historical Route A retained | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN.**
+
+**New restricted theorem:** In the exact recovered original /386 SOURCE/DEF/RES checker, two nonterminal RES records with identical *ordered parents, pivot and signed conclusion* may be merged: later references redirect to the earlier record, chronological indices and six summary counters are updated, and every authenticated SOURCE occurrence and separately paid gate owner is retained. The new packet is original-checker accepted with one fewer distinct paid RES. This proof uses the /386 checker's lack of contexts, branch discharge or deletion rules and must **not** be transferred unproved to the intended full historical R_mix341.
+
+**Concrete terminal-live falsifier:** Starting from original archived-checker accepted signed K4 W31 / 49-record / 3092-byte seed, duplicate the RES row with parents [19,1], pivot -8, conclusion [-1,-4,-5,-7], and redirect one of its two distinct downstream users. The resulting 3153-byte packet has **50 records, 31 paid RES plus one once-paid owner, W32**, and both duplicated RES identities lie in the terminal empty-clause ancestor cone. The original signed source and conclusion *set* are unchanged. Congruence contraction exactly recovers the seed byte for byte. The original /386 checkProof was called unchanged in hosted V8 with 11/11 expected outcomes (3 accepts, 8 rejects; 4317 mathematical assertion groups). The Node real-OS subprocess differential script is published and syntax-compiled, **not yet independently executed end-to-end** for this new packet.
+
+**Artifacts:**
+- Report: `research/agents/lspv-2/2026-11-11_1012_LSPV2_NATIVE386_LIVE_PAID_RES_CONGRUENCE561.md`
+- Executable reference transformer invoking the original /386 CLI: `experiments/arc/lspv2_561_native386_paid_fanout_congruence.cjs`
+- Exact accepted-byte packet: `results/raw/arc/2026-11-11_1012_LSPV2_561_ACCEPTED_LIVE_PAID_RES_FANOUT.json`
+- 11-case original-body manifest: `results/raw/arc/2026-11-11_1012_LSPV2_561_ORIGINAL_CORE_V8_TESTS.json`
+- Source original checker Git blob `338305c0ce101704205e57543756b8127074a986`, seed Git blob `3843187f0ccccf8f04cc049e25a8de1df91ce194`.
+- Root `main.tex` reconciled within LSPV-2 ownership only for /560 and /561, with exact full-content blob readback `ba8927b1c4dfded37d5210db4828d54f03c21a4a`. All outside-owned content was preserved.
+
+**Role-specific handoff, no reassignment:** LSPV-1 General SAT Lower-Bound Lead (historical Route B), retain exact noncircular proof-complexity-to-SAT quantifiers; no B1/B2/B3 promotion from duplicated paid identities. LSPV-2 SAT-Circuit Reduction Builder (historical Route A), run newly published OS-native executable and continue recovering a single original full mixed dispatcher, not a synthetic replacement. LSPV-3 Hypergraph & Proof Certificates (historical Route B), independently verify signed provenance, shared parent identities and branch/context counterexamples to naive congruence. LSPV-4 Time-Space Resource Auditor (historical Route A), separately measure paid W, certificate bits, parser/verification runtime, logical span, live slots and physical peak. LSPV-5 Independent Proof Red Team (historical Route B), attack the normal-form theorem on accepted exotic-byte aliases, untracked contexts and external-source binding before any generalization.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** P2-D1, P2-C3, P2-B1 and independent P2-B2/B3 remain OPEN; P1-01/03/04 OPEN. Unknown full mixed operations remain conservatively MAY. Exactly the existing five tasks, original titles, schedules, timezone, weights, ownership and historical two Route A/three Route B labels are unchanged. P versus NP remains OPEN.
