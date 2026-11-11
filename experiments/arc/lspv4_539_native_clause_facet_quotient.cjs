@@ -83,7 +83,7 @@ function audit(src,s1,s2){
     paidAfter:b.paid,removedFacetRecords:norm.removedDEF,removedPaidRES:norm.removedRES,
     recordCountBefore:a.records,recordCountAfter:b.records,bytesBefore:JSON.stringify(q).length,
     bytesAfter:JSON.stringify(z).length,sourceRecords:a.sources};
-   if((f===1&&n===1)||(f===32&&n===3)){
+   if((f===0&&n===0)||(f===1&&n===1)||(f===32&&n===3)){
     const u=cli(src,q),v=cli(src,z);
     if(u.paid!==a.paid||v.paid!==b.paid)throw Error('complete CLI mismatch');
     row.completeCLIInput='ACCEPT';row.completeCLINormalized='ACCEPT';
