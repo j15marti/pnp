@@ -11,7 +11,7 @@ const repo=process.cwd();
 const seed=path.join(repo,'results/raw/arc/2026-11-11_1200_LSPV1_579_BRIDGE_DP_W61.json');
 const checker=path.join(repo,'experiments/arc/lspv2_386_independent_verify.js');
 const target=path.join(repo,'results/raw/arc/2026-11-11_1256_LSPV1_580_NATIVE_TWO_RES_WEAKENING_PACKET.json');
-const git=b=>crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+b.length+'\\0'),b])).digest('hex');
+const git=b=>crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+b.length+'\0'),b])).digest('hex');
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 assert.equal(git(fs.readFileSync(seed)),'807aaf7b7cf5e4a4feb29c2599f9e582ea140e30');
 assert.equal(git(fs.readFileSync(checker)),'338305c0ce101704205e57543756b8127074a986');
@@ -29,13 +29,13 @@ const added=[
 ];
 const packet={...original,records:[...rows.slice(0,-1),...added,rows.at(-1)],
  summary:{...original.summary,resolution:62,def_views:2,paid_total:63,live_records:105}};
-const payload=Buffer.from(JSON.stringify(packet)+'\\n');
+const payload=Buffer.from(JSON.stringify(packet)+'\n');
 assert.equal(payload.length,6755);
 assert.equal(fs.readFileSync(target).equals(payload),true,'published packet differs');
 const exec=f=>cp.spawnSync(process.execPath,[checker,f],{encoding:'utf8',timeout:10000});
 const valid=exec(target);
 assert.equal(valid.status,0,valid.stderr);
-const evidence=JSON.parse(valid.stdout.trim().split('\\n').at(-1));
+const evidence=JSON.parse(valid.stdout.trim().split('\n').at(-1));
 for(const [k,v] of Object.entries({paid:63,res:62,def:1,records:105,sources:41,negativeTests:11}))
  assert.equal(evidence[k],v,'checker field '+k);
 const corrupt={
@@ -51,7 +51,7 @@ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'lspv1-580-')),rejections={};
 try {
  for(const [name,edit] of Object.entries(corrupt)){
   const d=structuredClone(packet);edit(d);
-  const f=path.join(dir,name+'.json');fs.writeFileSync(f,JSON.stringify(d)+'\\n');
+  const f=path.join(dir,name+'.json');fs.writeFileSync(f,JSON.stringify(d)+'\n');
   const out=exec(f);rejections[name]=out.status!==0;
   assert.equal(rejections[name],true,'hostile accepted '+name);
  }
