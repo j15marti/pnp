@@ -104,12 +104,13 @@ function main(){
  const orderArea=rearrange(base,AREA_ORDER),orderLiteral=rearrange(base,LITERAL_ORDER);
  const specimens={original575:base,area546:orderArea,literal546:orderLiteral,tree545:unfold};
  const positives={};
- const originalSources=JSON.stringify(base.records.filter(r=>r.kind==='SOURCE'));
+ const sourceSignature=p=>JSON.stringify(p.records.filter(r=>r.kind==='SOURCE').map(r=>[r.source,r.c]).sort((x,y)=>JSON.stringify(x).localeCompare(JSON.stringify(y))));
+ const originalSources=sourceSignature(base);
  for(const [name,p] of Object.entries(specimens)){
   const m=audit(p),test=runOriginal(checker,p,name);
   assert(test.accept,name+': original CLI rejected '+test.error);
   assert.strictEqual(test.bundledNegatives,11);
-  assert.strictEqual(JSON.stringify(p.records.filter(r=>r.kind==='SOURCE')),originalSources);
+  assert.strictEqual(sourceSignature(p),originalSources);
   assert.deepStrictEqual(p.spec,base.spec);
   assert.deepStrictEqual(p.gate_defs,base.gate_defs);
   positives[name]={...m,checker:test};
