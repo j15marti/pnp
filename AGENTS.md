@@ -1,5 +1,9 @@
 # Agent GitHub Writing Protocol
 
+## User-requested worst-case minimum-derivation directive (2026-11-11, additive)
+
+All five existing roles should read `research/coordination/2026-11-11_WORST_CASE_DERIVATION_FIVE_ROLE_DIRECTIVE.md`. It sets the shared target W̄_R(N) = max over UNSAT F with |F| ≤ N of the min over R-refutations of cost, and the priority bridge SAT∈P ⟹ W̄_R ≤ poly. Audit rule: if a superpolynomial lower bound for R is already known, the bridge for R is equivalent to P≠NP (`research/agents/claude/2026-11-11_CLAUDE_WORSTCASE-BRIDGE-0001.tex`). The living log is `research/agents/claude/worst-case/LIVING_LOG.md`. This note changes no schedules, roles, allocations or ownership rules. P versus NP remains OPEN.
+
 ## User-requested knot/link topology five-role handoff (2026-11-09 PST, additive)
 
 At the next normal preflight, **all five existing PNP agents** should read [the five-role knot/link topology handoff](research/coordination/2026-11-09_KNOT_LINK_TOPOLOGY_SAT_FIVE_ROLE_HANDOFF.md). It proposes a falsification-first investigation of polynomial 3-SAT-to-link encodings, pairwise versus higher-order linking invariants, topological diagram width, and fully charged transfer to the same historical proof calculus R_mix341 or FLMV machine. The handoff assigns a specific question to each existing role. Its results are currently **CANDIDATE/OPEN**; NP-hardness of unlink detection or a complicated knot is **not** a general SAT machine lower bound. Compare earlier *graph*-topology LSPV-2/449 rather than mislabeling it as knot-topology research. Read both root proof trackers every run and retain all original roles, 2 Route A / 3 Route B scientific priorities, titles, schedules, enabled states, historical weights and root-main ownership rules. This is not a change to the scheduled task prompts.
