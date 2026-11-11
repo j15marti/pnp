@@ -152,7 +152,7 @@ function main(){
   const files={
    'results/raw/arc/2026-11-11_0936_LSPV4_546_AREA_SCHEDULE_ACCEPTED.json':orderArea,
    'results/raw/arc/2026-11-11_0936_LSPV4_546_LITERAL_SCHEDULE_ACCEPTED.json':orderLiteral,
-   'results/raw/arc/2026-11-11_0936_LSPV4_546_BRIDGE_PARETO_RAW.json':raw};
+   'results/raw/arc/2026-11-11_0936_LSPV4_546_BRIDGE_PARETO_OS_RAW.json':raw};
   for(const [p,obj] of Object.entries(files)){
    const dest=path.join(ROOT,p);
    fs.mkdirSync(path.dirname(dest),{recursive:true});
