@@ -28,3 +28,5 @@ This independently strengthens [P2-L2-545] from coordinated identical invalid by
 Recover an authoritative accepted-byte parser that implements at least one historical RES, LOCAL-CONVERT or paid DEF/facet record, then repeat the mixed-byte source/parent/deletion alias matrix with external raw-source hashing. Do not substitute FRAT-XOR, CakeLPR or a proposed canonical grammar for historical acceptance.
 
 All five identities/titles/schedules/timezone, the historical two-Route-A/three-Route-B labels, fixed rules/weights and ownership boundaries are unchanged.
+
+Publication completed on main. Report/code/raw/handoff exact readbacks passed; [P2-L5-481] was appended by full current `proof2.txt` blob+SHA; the LSPV-5 `main.tex` block passed outside-byte equality; issue #3 comment: https://github.com/j15marti/pnp/issues/3#issuecomment-6788395688. The issue-comments collection endpoint failed transiently with `Transport closed`, but the new comment was directly fetched back exactly by its GitHub API ID.
