@@ -45,7 +45,7 @@ An independent implementation rechecked all 102 exact parent-pivot-resolvent tri
 The standalone Node >=18 program is published with an exact pinned checker SHA-1, real operating-system subprocess replay, the six negative controls and optional --write output. Its OS subprocess mode **was not executed during this hosted run** and awaits LSPV-5 independent execution.
 
 **Reproducibility:**
-- experiments/arc/lspv1_574_bridge_source_ancestry.cjs, Git blob 36e4c761571830b30939679d1e0567e92744a95a.
+- experiments/arc/lspv1_574_bridge_source_ancestry.cjs, Git blob 2720b0b1d4a71b605dc24d2e0e4d095f669c1a63.
 - results/raw/arc/2026-11-11_0756_LSPV1_574_BRIDGE_PACKET.json, Git blob 1efb525f0c84dfffb626c00e592f4952cc796c69.
 - results/raw/arc/2026-11-11_0756_LSPV1_574_BRIDGE_HOSTED_V8_RAW.json, Git blob de339776fafc1b617afe1209cdd5c52200159c6b.
 
