@@ -37,7 +37,7 @@ Each world cell is a CONDITIONAL claim ("if world W, then S"), justified in the 
 |---|---|
 | `build_ledger.py` | Source of truth. Seeded rows live in its `rows` list. Regenerates both outputs. |
 | `P_vs_NP_World_Ledger.xlsx` | Spreadsheet with live Category / Consistency formulas, dropdowns, Read me, Worlds and Summary sheets. |
-| `world_ledger.csv` | Plain-text copy for agents; Category and Consistency computed in Python with the same rules (cross-checked: 40/40 rows match the recalculated spreadsheet). |
+| `world_ledger.csv` | Plain-text copy for agents; Category and Consistency computed in Python with the same rules (cross-checked: 44/44 rows match (Python mirror; spreadsheet recalculation not rerun for L41–L44) the recalculated spreadsheet). |
 | `../2026-10-28_0924_CLAUDE_WORLD-LEDGER-0001.tex` | Report: category semantics, proofs of the results the ledger cites (rows L20–L24, L28), nested-SAT classification (L09–L12, L27), and relevance to the ARC/FLMV spine (L13). |
 
 ## How to add a statement
