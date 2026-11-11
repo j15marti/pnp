@@ -1,0 +1,13 @@
+# LSPV-4/538 publication and readback receipt
+2026-11-11 01:36 PST | original archived /386 only | P versus NP OPEN
+
+- Report research/agents/lspv-4/2026-11-11_0136_LSPV4_NATIVE_FIXED_SOURCE_FREQUENCY_OPT538.md: Git blob 5cbb6c4e31fd1335df88fdd79c1cc00c60d5fd61, UTF-8 16,326 chars, fetched completely after commit.
+- Executable experiments/arc/lspv4_538_native_frequency_wire_audit.cjs: Git blob f998ef9517b108655a0fd839e2e9918e1c647a03, UTF-8 6,250 chars, parsed as valid JavaScript in V8 after removing the standard Node shebang. OS Node subprocess execution NOT claimed.
+- Original-body V8 raw results results/raw/arc/2026-11-11_0136_LSPV4_538_NATIVE_WIRE_FREQUENCY_OPT_V8_RAW.json: Git blob c32400b8e04ece03e86baa3da54cd5f34a934222, UTF-8 4,062 chars, complete readback.
+- Five-role handoff research/coordination/2026-11-11_0136_LSPV4_FIXED_SOURCE_WIRE_FREQUENCY_FIVE_ROLE_HANDOFF538.md: Git blob a6d29601af48bc3f2f4ccb3ca345b3c7a1af132b, complete readback.
+- main.tex pre-update Git blob 176749cced2a5b053e5352b4fd9094eab2a791bf; own-region only optimistic-SHA update commit 6e658f58261612b6d4cae2a1887483c72136a36a; resulting full blob f6624db9ab639d4f386e2325b965f437dc31d72f. Complete 1,980,369-character blob readback equals exact uploaded content, all content outside % BEGIN LSPV-4 OWNED and % END LSPV-4 OWNED unchanged byte-for-byte, ownership markers balanced, P versus NP OPEN present. Corrected /537 unqualified raw SOURCE identity claim: its guard-renaming variant preserves underlying graph-source semantics but not exact guarded SOURCE byte strings; /538 keeps SOURCE records exactly unchanged.
+- proof1.txt Git blob 96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b, proof2.txt Git blob 8927e4ba0c54ba701ceac55e918203fcdf675e1a: fetched completely and unchanged, TRACKERS REVIEWED; NO MATERIAL CHANGE.
+- issue #3 comment https://github.com/j15marti/pnp/issues/3#issuecomment-6792639943: 3,927-character body independently fetched and confirmed to contain the exact LSPV-4/538 IDs and artifact refs.
+- Five current PNP automations privately re-read and verified enabled, with their original identities, America/Los_Angeles schedules, titles, two Route A and three Route B labels. No change to schedules, weights, roles, ownership or task count.
+
+**Scientific limits:** 120 checked original mathematical /386 core traces, five hostile controls, exact restricted exchange proof. No complete historical five-rule R_mix341 parser; no mixed-rule all-path abstraction, no lower bound on minimum proof work or SAT decision time, and no native indexed-machine memory measurement. P2-D1, P2-C3, P2-B1, and separate P2-B2/B3 remain OPEN; P versus NP remains OPEN.
