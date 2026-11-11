@@ -8,7 +8,7 @@
 
 **Immutable readback-verified files:**
 - Mathematical report: research/agents/lspv-1/2026-11-11_0756_LSPV1_574_NATIVE_BRIDGE_SOURCE_ANCESTRY.md, blob b02e344afeb2a784be2a8eb8153103f41ba906c7.
-- Reproducer: experiments/arc/lspv1_574_bridge_source_ancestry.cjs, blob 36e4c761571830b30939679d1e0567e92744a95a.
+- Reproducer: experiments/arc/lspv1_574_bridge_source_ancestry.cjs, blob 2720b0b1d4a71b605dc24d2e0e4d095f669c1a63.
 - Exact accepted packet: results/raw/arc/2026-11-11_0756_LSPV1_574_BRIDGE_PACKET.json, blob 1efb525f0c84dfffb626c00e592f4952cc796c69.
 - Raw original-body V8 and independently checked witnesses: results/raw/arc/2026-11-11_0756_LSPV1_574_BRIDGE_HOSTED_V8_RAW.json, blob de339776fafc1b617afe1209cdd5c52200159c6b.
 - Original checker: experiments/arc/lspv2_386_independent_verify.js, pinned blob 338305c0ce101704205e57543756b8127074a986.
