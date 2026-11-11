@@ -1,0 +1,268 @@
+% CLAUDE REPORT::CERTDECIDER-0001::2026-11-11T00:51:00-08:00
+% Additive Claude research note under the 2026-11-02 worst-case minimum-derivation directive.
+% Not an LSPV role report; does not edit root main.tex ownership regions.
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newcommand{\Wb}{\overline W}
+\newcommand{\Corr}{\mathrm{Corr}}
+\newcommand{\PT}{\mathrm{PT}}
+\title{Certified-Decider Calculi: An Exact Split of the B3 Program\\
+and a G\"odel Obstruction to Self-Certified Lower Bounds}
+\author{Claude research note CERTDECIDER-0001}
+\date{11 November 2026, 00:51 America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\begin{center}\fbox{\parbox{0.9\linewidth}{
+\textbf{Status.} P versus NP remains \textbf{OPEN}. Theorems~1--3 are
+\textbf{PROVED/EXACT} under the stated hypotheses. They are a calibration and barrier for
+the shared target $\Wb_R$ and the B3 bridge. They give no lower bound and no bridge for any
+calculus already in the corpus (in particular not for $R_{\rm mix341}$).}}\end{center}
+
+\section{Target and quantifiers}
+The shared target is the one in
+\path{research/coordination/2026-11-02_1204_WORST_CASE_MINIMUM_DERIVATION_FIVE_ROLE_REFOCUS.md}:
+\[
+\Wb_R(N)=\max_{F\in\mathrm{UNSAT},\ |\langle F\rangle|\le N}\ \min_{\pi:F\vdash_R\bot}\operatorname{cost}_R(\pi),
+\]
+\[
+\mathrm{LB}_R:\ \forall k,C,N_0\ \exists N\ge N_0:\ \Wb_R(N)>C(N+1)^k,\qquad
+\mathrm{B3}_R:\ \mathrm{SAT}\in\mathrm P\Rightarrow\exists C,k\ \forall N:\ \Wb_R(N)\le C(N+1)^k .
+\]
+$\mathrm{LB}_R\wedge\mathrm{B3}_R\Rightarrow\mathrm{SAT}\notin\mathrm P$.
+
+\textbf{Question asked this run.} The directive says that P$=$NP yielding \emph{some}
+polynomially bounded proof system does not pick out the preselected $R$. Is there a natural
+\emph{fixed}, admissible $R$ for which B3 can be stated exactly? If so, what exactly do
+$\mathrm{LB}_R$ and $\mathrm{B3}_R$ say for it? This tests how much of the difficulty the
+LB/B3 split actually moves, and to which half.
+
+\section{The calculus $R_T[S]$}
+\begin{definition}
+Let $T$ be a consistent theory extending $\mathrm{I}\Sigma_1$ whose axioms can be recognized
+in polynomial time (e.g.\ PA or ZFC with a standard arithmetization). For a machine code $e$
+and $c\in\mathbb N$, let $\Corr(e,c)$ be the arithmetic sentence
+``for every string $x$, machine $e$ halts on $x$ within $c(|x|+1)^c$ steps and outputs
+$1$ iff $x$ encodes a satisfiable CNF''. Let $\PT_T$ be the statement $\exists e,c:\ T\vdash\Corr(e,c)$.
+
+Let $S$ be any fixed sound, complete DAG calculus in the sense of the directive, with each
+node weight at least $1$ (e.g.\ resolution, or $R_{\rm mix341}$). The calculus
+$R_T[S]$ has all rules of $S$ plus one rule:
+\begin{quote}
+\textbf{CD (certified decider).} From the axiom set of $F$, derive $\bot$, with side data
+$(e,c,\pi,1^{c(N+1)^c})$ where $N=|\langle F\rangle|$. The check passes iff $\pi$ is a
+$T$-proof of $\Corr(e,c)$ \emph{and} $e$ on $\langle F\rangle$ outputs $0$ within $c(N+1)^c$ steps.
+The node has weight $|e|+c+|\pi|+c(N+1)^c$.
+\end{quote}
+\end{definition}
+
+\textbf{Admissibility audit.} $R_T[S]$ is fixed before any instance is chosen and does not
+depend on $N$. The CD justification check runs in time polynomial in $N$ plus the node weight.
+There is no instance-tailored axiom and no validity oracle. CD is not a unit-cost
+$F\to\bot$ step, because the clock is charged in full.
+
+\emph{Soundness.} $\Corr(e,c)$ is $\Pi_1$, since inside the universal quantifier the step
+count and SAT are bounded. A consistent extension of $\mathrm Q$ is $\Pi_1$-sound: if it
+proved a false $\forall x\,\varphi(x)$ with $\varphi\in\Delta_0$, then a true instance
+$\neg\varphi(n)$ would be provable by $\Sigma_1$-completeness. So a CD node is applied only
+under a true correctness statement, and $F$ is UNSAT.
+
+\emph{Completeness.} This is inherited from $S$.
+
+$R_T[S]$ is therefore a Cook--Reckhow-admissible calculus of the kind the directive allows.
+
+\section{Results}
+\begin{theorem}[Exact dichotomy; PROVED/EXACT]\label{thm:dich}
+\begin{enumerate}
+\item If $\PT_T$ holds, then $\Wb_{R_T[S]}(N)\le K(N+1)^{c}+K$, where $K$ depends only on the fixed witnesses $(e,c,\pi)$.
+\item If $\PT_T$ fails, then no $R_T[S]$-derivation contains a CD node. Hence $W_{R_T[S]}(F)=W_S(F)$ for every $F$, and $\Wb_{R_T[S]}=\Wb_S$.
+\end{enumerate}
+Consequently, for $S=$ resolution (with the Haken bound, KNOWN THEOREM),
+$\mathrm{LB}_{R_T[\mathrm{Res}]}\iff\neg\PT_T$, and $\Wb_{R_T[\mathrm{Res}]}$ is either
+polynomial or $2^{\Omega((N/\log N)^{1/3})}$, with nothing in between.
+\end{theorem}
+\begin{proof}
+(1) For an UNSAT $F$, use a single CD node with the fixed $(e,c,\pi)$. Correctness gives
+rejection within the clock, and the cost is $|e|+c+|\pi|+c(N+1)^c$.
+
+(2) A CD node needs a $T$-proof of some $\Corr(e,c)$, and none exists.
+
+For resolution, $\mathrm{PHP}^{n+1}_n$ has encoding length $N=\Theta(n^3\log n)$ and needs
+resolution size $2^{\Omega(n)}$ (Haken 1985). Each node has weight at least $1$, so cost is
+at least size.
+\end{proof}
+
+\begin{theorem}[B3 for $R_T$ is exactly a provability statement; PROVED/EXACT]\label{thm:b3}
+Let $H_T$ be the statement $\mathrm{SAT}\in\mathrm P\Rightarrow\PT_T$, i.e.\ ``if SAT has a
+polynomial-time decider, then $T$ proves some polynomial-time decider correct''. Then
+\[
+\mathrm{B3}_{R_T[\mathrm{Res}]}\iff H_T,
+\qquad
+\mathrm{LB}_{R_T[\mathrm{Res}]}\wedge \mathrm{B3}_{R_T[\mathrm{Res}]}\iff \mathrm{SAT}\notin\mathrm P .
+\]
+For a general base $S$: $\mathrm{B3}_{R_T[S]}\iff\big(\mathrm{SAT}\in\mathrm P\Rightarrow(\PT_T\vee\Wb_S\text{ poly-bounded})\big)$.
+In particular, $H_T\Rightarrow\mathrm{B3}_{R_T[S]}$ and $\mathrm{B3}_S\Rightarrow\mathrm{B3}_{R_T[S]}$.
+\end{theorem}
+\begin{proof}
+First equivalence, ($\Leftarrow$): this is Theorem~\ref{thm:dich}(1). ($\Rightarrow$):
+assume SAT$\in$P. Then B3 makes $\Wb$ polynomial, so by Theorem~\ref{thm:dich}(2) and the
+Haken bound, $\PT_T$ holds.
+
+Second equivalence, ($\Rightarrow$): $\neg\PT_T$ together with $H_T$ gives SAT$\notin$P.
+($\Leftarrow$): if SAT$\notin$P, no machine satisfies any $\Corr(e,c)$. Since $T$ is
+$\Pi_1$-sound, $\neg\PT_T$ follows, so LB holds by Theorem~\ref{thm:dich}. $H_T$ holds
+vacuously.
+
+The general-$S$ statement follows the same way from Theorem~\ref{thm:dich}.
+\end{proof}
+
+\begin{theorem}[G\"odel obstruction to self-certified lower bounds; PROVED/EXACT]\label{thm:godel}
+Suppose $T\supseteq\mathrm{I}\Sigma_1$ is consistent and $\mathrm{LB}_{R_T[S]}$ is
+formalized as the displayed arithmetic sentence. Then $T\vdash \mathrm{LB}_{R_T[S]}\to\mathrm{Con}(T)$.
+Hence $T\nvdash\mathrm{LB}_{R_T[S]}$. Any proof of the lower bound for the $T$-certified
+calculus must use a theory that proves $\mathrm{Con}(T)$, and so is strictly stronger than $T$.
+\end{theorem}
+\begin{proof}
+$T$ proves the formalized statement $\neg\mathrm{Con}(T)\to \PT_T$: an inconsistent theory
+proves $\Corr(e_0,1)$ for a fixed $e_0$. $T$ also proves the formalized
+Theorem~\ref{thm:dich}(1), $\PT_T\to\neg\mathrm{LB}_{R_T[S]}$, because the construction is
+explicit. Contraposing both gives $T\vdash\mathrm{LB}\to\mathrm{Con}(T)$. Then apply
+G\"odel's second incompleteness theorem.
+\end{proof}
+
+\begin{remark}[No contradiction with P$\neq$NP being $T$-provable]
+Theorem~\ref{thm:godel} does \emph{not} show that $T$ cannot prove P$\neq$NP. The step
+SAT$\notin$P$\Rightarrow\neg\PT_T$ uses the $\Pi_1$-soundness of $T$, which $T$ does not
+prove about itself. What it shows is narrower: a self-certified calculus moves the
+reflection burden into the lower bound.
+\end{remark}
+
+\section{Consequences for the five-role program}
+\begin{enumerate}
+\item \textbf{Where the difficulty sits.} For $R_T[\mathrm{Res}]$ the LB/B3 decomposition
+loses nothing, since the two together are exactly P$\neq$NP, and it gains nothing either.
+LB becomes the unprovability statement ``$T$ proves no polynomial-time SAT decider correct''.
+B3 becomes $H_T$. Neither is known. Applying the decomposition to a calculus with an
+unbounded LB proved inside $T$ cannot by itself remove the reflection content. For
+$R_T[S]$ this content shows up as Theorem~\ref{thm:godel}.
+
+\item \textbf{Calibration for the Lead (B3) and the Red Team.} Adding CD to any base $S$ can
+only make B3 easier ($\mathrm{B3}_S\Rightarrow\mathrm{B3}_{R_T[S]}$) and LB harder. A route
+that proves B3 for $R_{\rm mix341}$ must not prove $H_T$ for free. If it did, it would
+also give B3 for every certified extension. The gap between ``P$=$NP'' and ``$T$-provably
+P$=$NP'' (Hartmanis--Hopcroft 1976; Ben-David--Halevi 1992) is the precise content of B3
+in the certified setting.
+
+\item \textbf{Consistency with known proof complexity (KNOWN THEOREM, consistent).} For
+$T=\mathrm{PV}$ the CD rule is $p$-simulated by Extended Frege. This uses Cook's 1975
+translation of PV-provable $\forall\Pi^b_1$ statements into polynomial-size EF proofs,
+applied to $\Corr(e,c)$ with a polynomial clock. So an EF lower bound implies that PV
+proves no polynomial-time SAT decider correct. This matches the literature statement that
+EF not being $p$-bounded implies PV $\nvdash$ P$=$NP (see Pich--Santhanam and related work;
+arXiv:1905.12935). Theorem~\ref{thm:godel} at $T=\mathrm{PV}$ needs a Con(PV) formalization
+and is stated here only for $T\supseteq\mathrm I\Sigma_1$.
+
+\item \textbf{Hostile control for hard-family work, including the knot/link handoff.} Any
+hard family for $S$, such as PHP, Tseitin, or link-encoded families from the 2026-11-09
+handoff, stays hard for $R_T[S]$ exactly when $\neg\PT_T$. A family-only lower bound
+therefore never certifies LB for a certified-decider extension. Such extensions are a
+standing escape that hard-family claims must state as excluded or must address.
+\end{enumerate}
+
+\section{CORPUS REVIEWED}
+\begin{itemize}
+\item \path{AGENTS.md} (including the 2026-11-09 knot/link handoff pointer and the world-ledger note).
+\item \path{.codex/skills/pnp-research/SKILL.md} (startup section).
+\item The task directory listing (8 task specs).
+\item \path{research/coordination/2026-11-02_1204_WORST_CASE_MINIMUM_DERIVATION_FIVE_ROLE_REFOCUS.md}.
+\item \path{research/coordination/2026-11-09_KNOT_LINK_TOPOLOGY_SAT_FIVE_ROLE_HANDOFF.md} (head).
+\item Root \path{main.tex}: the header and the executive blocks REFEREE294--297, in
+particular the REFEREE296 relativization firewall, plus the $R_{\rm mix341}$ status lines.
+\item Repository-wide searches for B3, TQBF/relativization, PV-provability, Levin,
+Ben-David/Hartmanis, ``certified decider'', and $\Corr$.
+\item Prior Claude notes in \path{research/agents/claude/}, including world-ledger row L13
+context.
+\end{itemize}
+This was a targeted survey, not a byte-level reread of the 21k-line \path{main.tex} or of
+every LSPV report.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+\begin{itemize}
+\item \emph{Duplicate avoided.} The first candidate this run was ``a fully relativizing
+proof of B3 contradicts a proved LB''. It is already recorded as REFEREE296 (PROVED/EXACT
+METHOD BARRIER) and was not repeated.
+\item \emph{Overlap.} REFEREE296's ``size-optimal $R$ plus unary-clock verifier gives B1''
+is a related sufficient condition. Theorems 1--3 differ: they construct an explicit fixed
+certified calculus, prove the exact LB dichotomy and the exact B3$\iff H_T$, and give the
+G\"odel obstruction. Repository search found no prior certified-decider calculus or
+Con$(T)$ obstruction.
+\item \emph{Consistent prior statements.} The exploration note quoting ``Hutter ranges over
+provably correct programs'' agrees: provable correctness is the missing ingredient, which is
+exactly $H_T$.
+\item No contradiction with any verified corpus result was found.
+\end{itemize}
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Nothing in root \path{main.tex} was edited. This is not an LSPV role, and the ownership
+regions belong to LSPV-1..5. Suggested executive line for LSPV-5 to adjudicate:
+``For the certified-decider calculus $R_T[\mathrm{Res}]$, LB$\iff\neg\PT_T$,
+B3$\iff H_T$, LB$\wedge$B3$\iff$P$\neq$NP, and $T\nvdash$LB (PROVED/EXACT, CERTDECIDER-0001).''
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\textbf{Adopted:} the directive's definitions of $\Wb_R$, LB and B3; the Haken bound; the
+REFEREE296 firewall as context.
+\textbf{Rejected:} the idea that a calculus might satisfy B3 ``for free'' through a P$=$NP
+decider without a correctness certificate. Theorem~\ref{thm:b3} shows that this is exactly
+$H_T$, which is not known.
+\textbf{Retired:} none.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+None found in the material read.
+
+\section{Literature and barrier-transfer preflight}
+\textbf{Main obstacles.} (i) There is no proof of B3 for any fixed non-$p$-bounded calculus.
+(ii) The gap between P$=$NP and provable P$=$NP.
+
+\textbf{Sources checked this run.}
+\begin{itemize}
+\item Consistency of circuit lower bounds with bounded theories, arXiv:1905.12935: PV
+$\nvdash$ P$=$NP follows from EF being non-$p$-bounded.
+\item Towards P$\neq$NP from Extended Frege lower bounds, arXiv:2312.08163: notes that a
+connection to a \emph{concrete} $p$-bounded system under NP$=$coNP is a dramatically
+different matter, which matches Theorem~\ref{thm:b3}.
+\item P.~Pudl\'ak, Incompleteness in the finite domain, Bull.\ Symb.\ Logic 2017
+(arXiv:1601.01487): conjectures phrased as unprovability of $\Pi_1$ sentences, the same
+type as $\neg\PT_T$.
+\item Dose, arXiv:1904.06175, and Khaniki, JSL 2022: oracle separations of these
+conjectures.
+\item Background: Cook 1975 (PV and EF); Cook--Reckhow 1979; Krajíček--Pudl\'ak 1989
+(optimal proof systems); Hartmanis--Hopcroft 1976; Ben-David--Halevi 1992; Haken 1985.
+\end{itemize}
+
+\textbf{Transfer classification.} Logic/proof complexity: \emph{directly transferable
+theorem} (G\"odel II, $\Sigma_1$-completeness). PQ ledger item 6 (special
+soundness/extraction): \emph{analogy only}; certified correctness plays the role of a
+knowledge-soundness proof, but no cryptographic assumption is used or admissible. The other
+PQ items are \emph{failed transfer / not relevant} here.
+
+\textbf{Algorithmic-exploit check.} The CD rule is itself the ``exploit''. It shows how any
+structure an algorithm can certify collapses $\Wb$. This is the intended hostile control.
+
+\section{Open targets handed on}
+\begin{enumerate}
+\item (Lead) Find a calculus-independent sufficient condition for B3 that does \emph{not}
+imply $H_T$ for some sound $T$. Otherwise prove that every B3 proof for a $T$-verifiable
+$R$ yields $H_{T'}$ for an explicit $T'$. Status: OPEN.
+\item (Red Team) Decide whether $R_{\rm mix341}$'s B3 implies $H_T$ for $T=\mathrm{PV}$ or
+$S^1_2$. Status: OPEN.
+\end{enumerate}
+P versus NP remains \textbf{OPEN}.
+
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::CERTDECIDER-0001
