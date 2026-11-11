@@ -85,11 +85,11 @@ function replay(P,F){
 }
 
 const aPath='results/raw/arc/2026-11-10_2124_LSPV3_561_ARCHIVED_386_NATIVE_PACKET.json',bPath='results/raw/arc/2026-11-10_2212_LSPV2_549_DUAL_NATIVE_POLYGLOT_PACKET.json';
-function gitBlob(buf){return crypto.createHash('sha1').update(Buffer.from('blob '+buf.length+'\\0')).update(buf).digest('hex')}
+function gitBlob(buf){return crypto.createHash('sha1').update(Buffer.from('blob '+buf.length+'\0')).update(buf).digest('hex')}
 const ab=fs.readFileSync(aPath),bb=fs.readFileSync(bPath);
 assert.strictEqual(gitBlob(ab),'d0fa96a155672f8f6a6a3428eacafa15e79b9e88');assert.strictEqual(gitBlob(bb),'b9c1d306c300a3f1917ee01ecab16358ac77d4de');
 const B=JSON.parse(ab),F=JSON.parse(bb).fixtures[0];
-const source='p cnf '+F.graph.edges.length+' '+F.clauses.length+'\\n'+F.clauses.map(x=>x.literals.join(' ')+' 0').join('\\n')+'\\n';
+const source='p cnf '+F.graph.edges.length+' '+F.clauses.length+'\n'+F.clauses.map(x=>x.literals.join(' ')+' 0').join('\n')+'\n';
 assert.strictEqual(Buffer.byteLength(source),163);
 assert.strictEqual(crypto.createHash('sha256').update(source).digest('hex'),'861b38239ec08050a7b38b3da04fd79c17d43624a8f755be5a1417d8f01745c8');
 const P=project(B,F),verdict=replay(P,F);
@@ -97,7 +97,7 @@ const changes=[['bad-source',x=>x.records.find(r=>r.kind==='SOURCE').c[0]*=-1],[
 const rejected=[];for(const [name,mut] of changes){let z=structuredClone(P),error='';mut(z);try{replay(z,F)}catch(e){error=e.message}assert.ok(error,'hostile accepted: '+name);rejected.push({name,error})}
 const original=[];
 for(const [checker,file] of [['experiments/arc/lspv2_386_independent_verify.js',aPath],['experiments/arc/lspv2_341_independent_verify.js',bPath]]){const q=cp.spawnSync(process.execPath,[checker,file],{encoding:'utf8'});assert.strictEqual(q.status,0,checker+' original checker rejected: '+q.stderr);original.push({checker,status:q.status,stdout:q.stdout.trim()})}
-const packet=JSON.stringify(P,null,2)+'\\n';fs.writeFileSync('results/raw/arc/2026-11-10_2224_LSPV3_562_PROJECTED_SIGNED_K4_REFERENCE.json',packet);
+const packet=JSON.stringify(P,null,2)+'\n';fs.writeFileSync('results/raw/arc/2026-11-10_2224_LSPV3_562_PROJECTED_SIGNED_K4_REFERENCE.json',packet);
 const raw={...{"original_386_blob":"d0fa96a155672f8f6a6a3428eacafa15e79b9e88","original_549_polyglot_blob":"b9c1d306c300a3f1917ee01ecab16358ac77d4de","source_341_count":16,"source_386_count":17,"guard":7,"original_paid":50,"projected":{"paid":34,"records":52,"source":16,"resolution":33,"liveFacets":2,"allSourcesLive":true},"omitted":[{"old":16,"reason":"guard-unit"},{"old":22,"reason":"guard-resolution-alias","to":0},{"old":23,"reason":"guard-resolution-alias","to":20},{"old":24,"reason":"guard-resolution-alias","to":2},{"old":25,"reason":"guard-resolution-alias","to":3},{"old":26,"reason":"guard-resolution-alias","to":4},{"old":27,"reason":"guard-resolution-alias","to":5},{"old":28,"reason":"guard-resolution-alias","to":6},{"old":29,"reason":"guard-resolution-alias","to":7},{"old":30,"reason":"guard-resolution-alias","to":8},{"old":31,"reason":"guard-resolution-alias","to":9},{"old":32,"reason":"guard-resolution-alias","to":10},{"old":33,"reason":"guard-resolution-alias","to":11},{"old":34,"reason":"guard-resolution-alias","to":12},{"old":35,"reason":"guard-resolution-alias","to":13},{"old":36,"reason":"guard-resolution-alias","to":14},{"old":37,"reason":"guard-resolution-alias","to":15}],"negative_controls":[{"name":"bad-source","error":"wrong source"},{"name":"bad-gate-view","error":"facet invalid 16"},{"name":"wrong-pivot","error":"pivot signs 51"},{"name":"future-parent","error":"parent order 51"},{"name":"undercharged","error":"bad paid or record count"},{"name":"missing-owner","error":"facet owner 16"},{"name":"duplicate-owner","error":"gate nonfresh"},{"name":"wrong-source-id","error":"wrong source"},{"name":"wrong-source-hash","error":"wrong bound source hash"},{"name":"wrong-sink","error":"wrong resolvent 51"}],"parser_status":"independent restriction/replay, NOT an original R_mix341 native accepted certificate","runtime":"core executed in V8 code-mode JS isolate; prior /561 and /549 original-checker acceptance reused without new native checker reexecution"},original_node_subprocesses:original,independent_negative_controls:rejected,projected_packet_sha256:crypto.createHash('sha256').update(packet).digest('hex')};
-fs.writeFileSync('results/raw/arc/2026-11-10_2224_LSPV3_562_GUARD_PROJECTION_RAW.json',JSON.stringify(raw,null,2)+'\\n');
+fs.writeFileSync('results/raw/arc/2026-11-10_2224_LSPV3_562_GUARD_PROJECTION_RAW.json',JSON.stringify(raw,null,2)+'\n');
 console.log(JSON.stringify({verdict,original,negative_controls:rejected.length,packet_sha256:raw.projected_packet_sha256}));
