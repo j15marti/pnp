@@ -6,6 +6,27 @@ function bits(x){let n=0;for(;x;x&=x-1)n++;return n}
 function cube(){return Array.from({length:8},(_,a)=>[0,1,2].map(i=>a&(1<<(2-i))?-(i+1):i+1))}
 function models(C,n){let r=[];for(let a=0;a<(1<<n);a++)
  if(C.every(c=>c.some(l=>{let v=!!(a&(1<<(Math.abs(l)-1)));return l>0?v:!v})))r.push(a);return r}
+function resolveOn(a,b,p){
+ ck(a.includes(p)&&b.includes(-p),"complementary signed pivot");
+ const r=[...new Set([...a.filter(x=>x!==p),...b.filter(x=>x!==-p)])].sort((x,y)=>Math.abs(x)-Math.abs(y)||y-x);
+ ck(!r.some(x=>r.includes(-x)),"tautological resolvent");
+ return r;
+}
+function semanticMixedControl(F){
+ const eq=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+ const R=[resolveOn(F[0],F[1],3),resolveOn(F[2],F[3],3),
+          resolveOn(F[4],F[5],3),resolveOn(F[6],F[7],3)];
+ ck(eq(R[0],[1,2])&&eq(R[1],[1,-2])&&eq(R[2],[-1,2])&&eq(R[3],[-1,-2]),"incorrect RES controls");
+ const cl=(r,a)=>r.some(l=>{let v=!!(a&(1<<(Math.abs(l)-1)));return l>0?v:!v});
+ for(let a=0;a<8;a++){
+   const PLUS=cl(R[0],a)&&cl(R[1],a),MINUS=cl(R[2],a)&&cl(R[3],a);
+   ck(PLUS===cl([1],a)&&MINUS===cl([-1],a),"AND3 equivalence");
+   ck(!(PLUS&&MINUS),"XOR contradiction");
+ }
+ return {resolutions:4,truth_table_and3:2,xor_rows:1,
+        plus_truth_table_four_assignments:10,minus_truth_table_four_assignments:5,
+        checked_full_assignments:8,terminal:"0=1"};
+}
 function minimumUnion(m){
  ck(m>=1&&m<=12,"DP bound");const N=1<<m,D=Array(N).fill(Infinity);
  for(let s=1;s<N;s++){
@@ -43,7 +64,7 @@ function run(){
  ["d2","AND3","d0","d1"],["d3","RES","s4","s5"],
  ["d4","RES","s6","s7"],["d5","AND3","d3","d4"],
  ["d6","XOR","d2","d5"]].map(([id,rule,a,b])=>({id,rule,parents:[a,b]}));
- const positive=replay(8,P),DP=minimumUnion(8);
+ const positive=replay(8,P),DP=minimumUnion(8),semantic=semanticMixedControl(F);
  ck(positive.source_mask===ALL&&positive.logical_paid===7&&DP===7,"reference positive");
  const globalMay={rule:"MAY-GLOBAL-SEMANTIC",parents:[],sources_mask:ALL,
   conclusion:"BOTTOM",paid:1,globally_entailed:models(F,3).length===0};
@@ -59,6 +80,7 @@ function run(){
  return {run:"LSPV-2/550",mode:"independent provenance abstraction",
  source:"full signed 3-CNF cube /547",clauses:F,models:0,
  individual_source_deletion_witnesses:del,reference_paid_DAG:positive,
+ positive_semantic_replay:semantic,
  exact_union_partition_DP:DP,semantic_global_may:globalMay,
  may_abstraction_min_cost_upper_bound:1,
  binary_provenance_min_cost_lower_bound:7,
