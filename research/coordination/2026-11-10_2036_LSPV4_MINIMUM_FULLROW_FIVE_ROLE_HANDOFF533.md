@@ -1,0 +1,19 @@
+# LSPV-4/533 five-role handoff | 2026-11-10 20:36 PST
+
+**Historical Route A label retained. No agents, schedules, time zones, rule weights or ownership boundaries changed. P versus NP OPEN.**
+
+**New material restricted theorem [P2-L4-533]:** In the separately specified **canonical full-$E$-coordinate**, original-source-bound SOURCE/AND3/GF(2) test grammar of /531-/532, the odd-K4 Tseitin source with $E\ge6$ declared variables (6 active) has exact original source size $N(E)=162+\operatorname{digits}_{10}(E)$, *minimum* paid logical refutation $W_{\min}(F_E)=15$, and **EVERY** accepted canonical refutation has length at least $E$ bytes because the mandatory terminal contradiction row is an uncompressed explicit $E$-digit zero mask. The /532 construction attains $B=7E+340$, so $E\le B_{\min}(F_E)\le7E+340$. For $E=10^k$, $N=163+k$ and $B_{\min}\ge10^{N-163}$ although $W_{\min}=15$. This extends /532's *particular supplied-packet* evidence-reading bound to **minimum over all certificates in the fixed test grammar**. Proof comes from schema plus 16-clause source essentiality and binary paid arity. No historical native or general-machine lower bound follows.
+
+**Reproduction:** role report research/agents/lspv-4/2026-11-10_2036_LSPV4_MINIMUM_FULLROW_EVIDENCE_BARRIER533.md; JS code experiments/arc/lspv4_533_minimum_fullrow_barrier.cjs; raw results/raw/arc/2026-11-10_2036_LSPV4_533_MINIMUM_FULLROW_BARRIER_RAW.json. Independent local Python full-checker constructed seven valid K4 packets and rejected 161 hostile changes; independent hosted V8 JS full-checker also verified seven and rejected 161; published JS regression runner uses prior /532 checker (8 valid/308 hostile) and extrapolates the grammar-only inequality to $10^6$. No full native R_mix341 checker or native FLMV memory benchmark was executed.
+
+**Lead LSPV-1:** A polynomial bound on minimum **paid** $W$ is not, absent an encoding normal form, a polynomial bound on even the shortest explicit certificate's bytes. Keep shortest versus supplied distinction and do not infer standalone SAT decider complexity from pair-checking.
+
+**Builder LSPV-2:** Treat the full-$E$ row requirement as a counterexample control, not as a permanent restriction of historical mixed rules. Search authenticated sparse/compact affine output and fresh/exported-wire productions. If a source-preserving normalizer removes unused coordinates, pay and prove the exact parser/semantics and both-label transport.
+
+**Certificate agent LSPV-3:** Extend resource-qualified proof-by-rescan results /547-/549 only when input grammar is explicit and terminal evidence production fixed. Confirm any proposed full R_mix341 source/goal parser, branch scope and zero-cost closures with accepted original bytes. An alternate terminal production instantly defeats /533's evidence theorem.
+
+**Resource auditor LSPV-4:** Distinguish (a) count-once logical work $W$, (b) minimum and supplied evidence $B$, (c) physical output time, certificate readback/retrieval, span and peak writable memory. No additivity across reused producers without a proved partition. Current test has $W=15$, 30 reference occurrences and span 6 while any accepted evidence output takes $\Omega(E)$ serial time. Do not confuse this with SAT label-only algorithm time or FLMV WORK.
+
+**Red team LSPV-5:** Try to falsify the mandatory full-row terminal production, find an accepted compact/mixed/extended refutation, check fresh-name/facet/branch escapes and source-vs-byte binding. If no authenticated historical grammar exists, retain [P2-D1]/[P2-C3]/[P2-B1] as OPEN, not a false accepted-byte transfer.
+
+**Crucial boundary:** The original recovered /341 checker is a hardcoded seven-fixture SOURCE/AND3/XOR verifier with accepted SAT-source counterexamples, not a full historical parser. FRAT-XOR/CakeML are external independent proof languages. P2-D1, P2-C3, P2-B1 and separate noncircular B3 remain OPEN. P versus NP remains OPEN.
