@@ -1,0 +1,163 @@
+% CLAUDE REPORT::WBAR-0001::2026-11-11T03:48-08:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,hyperref,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\title{CLAUDE/WBAR-0001: Exact worst-case minimum resolution cost on few variables,\\
+the smallest instance where the source bound $m-1$ fails, and a literature check}
+\author{Claude Code scheduled routine (independent contributor; not one of LSPV-1..5)}
+\date{November 11, 2026, 03:48 PST}
+\begin{document}\maketitle
+
+\paragraph{Status summary.} Theorem~\ref{t:var}: PROVED/EXACT (an elementary argument, folklore-level, not claimed new).
+Theorem~\ref{t:g5}: COMPUTATIONAL/EXACT, certified by two independent exhaustive searches.
+Section~\ref{s:lit}: literature check. Nothing here is a superpolynomial lower bound, nothing here proves B1, B2 or B3, and
+\textbf{P versus NP remains OPEN.}
+
+\paragraph{Role and scope.} This scheduled Claude routine works on the shared worst-case target
+\[
+\overline W_R(N)=\max_{F\in\mathrm{UNSAT},\ |\langle F\rangle|\le N}\ \min_{\pi:F\vdash_R\bot}\mathrm{cost}_R(\pi)
+\]
+of the 2026-11-02 12:04 five-role directive. It owns no region of root \texttt{main.tex}, so it does not edit
+\texttt{main.tex}, \texttt{proof1.txt} or \texttt{proof2.txt}. It writes only under \texttt{research/agents/claude/}. The living log for
+this routine is \texttt{research/agents/claude/worst-case-derivation/LIVING\_LOG.md}.
+
+\section*{Fixed system and cost}
+$R=\mathrm{Res}$: ordinary DAG resolution with free source clauses. Each \emph{distinct} derived non-tautological clause costs 1.
+There is no weakening. $W(F)$ is the minimum cost over all refutations; the full minimum is taken, so the best derivation sequence is
+chosen for free, as the directive allows. Let $\overline W^{\mathrm{var}}(n)=\max\{W(F): F \text{ UNSAT over variables } x_1..x_n\}$.
+This is a variable-count worst case. The directive's $\overline W_R(N)$ uses encoded length instead. The relation between the two is
+Corollary~\ref{c:N}.
+This is \emph{not} the historical $R_{\mathrm{mix341}}$. Its AND3, GF(2) and DEF rules can only lower the values reported here.
+
+\section*{Results}
+\begin{lemma}[Worst case sits on MU formulas]\label{l:mono}
+If $F\subseteq G$ are UNSAT then $W(G)\le W(F)$. Hence the maximum defining $\overline W^{\mathrm{var}}(n)$ is attained on a minimally
+unsatisfiable (MU) formula.
+\end{lemma}
+\begin{proof}Every refutation from $F$ is a refutation from $G$ at the same cost, because sources are free. Every UNSAT formula
+contains an MU subformula.\end{proof}
+
+\begin{lemma}[Source-count bound]\label{l:src} If $F$ is MU with $m$ clauses, then $W(F)\ge m-1$.\end{lemma}
+\begin{proof}The sources used by a refutation form an UNSAT subset (soundness), so by minimality the refutation uses all $m$ sources.
+Take the sub-DAG of nodes that are ancestors of $\bot$. It has $m+q$ nodes and $2q$ edges, where $q$ is the number of derived nodes,
+and it is connected, so $2q\ge m+q-1$.\end{proof}
+
+\begin{theorem}[Variable-count worst case is exactly $2^n-1$]\label{t:var}
+For every $n\ge1$, $\overline W^{\mathrm{var}}(n)=2^n-1$.
+The maximum is attained by the complete formula $K_n$, which has all $2^n$ full-width clauses.
+\end{theorem}
+\begin{proof}
+Upper bound: take a complete decision tree of depth $n$. Label each leaf by a source clause that the leaf's assignment falsifies.
+Moving bottom-up, label each internal node querying $x$ by the resolvent of its children's labels on $x$. If a child's label does not
+contain the literal of $x$ on that side, use that child's label instead and add no new clause. Every label is falsified by the partial
+assignment at its node, so the root label is $\bot$. There are at most $2^n-1$ internal nodes, so at most $2^n-1$ distinct derived clauses.
+Lower bound: $K_n$ is MU with $m=2^n$, so Lemma~\ref{l:src} gives $W(K_n)\ge 2^n-1$.
+\end{proof}
+
+\begin{corollary}[Superpolynomial hardness needs $\omega(\log N)$ variables]\label{c:N}
+Every UNSAT $F$ with $n$ occurring variables has $W(F)\le 2^n-1$. So a family with $W(F_N)\ge N^{k}$ for every fixed $k$ must have
+$n(F_N)=\omega(\log N)$. The complete formulas, which maximize $W$ for a given $n$, have encoded length $N=2^{n}n^{1+o(1)}$, so $W=N^{1-o(1)}\le N$:
+at most linear in the directive's measure.
+\end{corollary}
+This shows that the variable-count worst case is solved and gives no superpolynomial bound. Any superpolynomial
+$\overline W_R(N)$ must come from families with $\mathrm{poly}(n)$ clauses, such as PHP, Tseitin and bit-PHP. Those are exactly the
+families on which compact rules (ER/DEF, GF(2), and Cook's PHP proofs) are known to break hardness. The corpus already records this for
+$R_{\mathrm{mix341}}$ (LSPV-1/398, LSPV-3/343).
+
+\begin{theorem}[Exact tables; smallest violation of the $m-1$ bound]\label{t:g5}
+COMPUTATIONAL/EXACT.
+\begin{enumerate}
+\item $n=2$: there are 11 MU formulas in 4 classes up to variable renaming and sign flips. $\overline W^{\mathrm{var}}(2)=3$.
+This matches the corpus's LSPV-1/408 control.
+\item $n=3$: there are 869 MU formulas in 43 classes. $\overline W^{\mathrm{var}}(3)=7$, attained only by $K_3$. For every class except
+one, $W=m-1$. The exception is
+\[
+G_5=(\bar x_1\lor\bar x_2)\land(x_1\lor\bar x_3)\land(\bar x_1\lor x_2\lor\bar x_3)\land(x_1\lor\bar x_2\lor x_3)\land(x_2\lor x_3),
+\]
+whose class contains 8 formulas. It has $m=5$ and $W(G_5)=5>m-1$. A witness refutation reuses $x_2\lor x_3$:
+$(\bar x_1\lor x_2)$, then $\bar x_1$, then $(x_1\lor x_3)$, then $x_1$, then $\bot$.
+\item Minimality over all $n$: every MU formula with at most 5 clauses has $W=m-1$, except the class of $G_5$. Formulas over at most 4
+variables were enumerated exhaustively (23{,}098 MU formulas with $m\le5$, 112 classes). An MU formula with $m$ clauses has at most
+$m-1$ variables (Tarsi's lemma; Aharoni--Linial 1986), so formulas with $m\le5$ have at most 4 variables and the enumeration covers
+all of them.
+\end{enumerate}
+\end{theorem}
+\noindent\emph{Certification.} The producer \texttt{wbar\_exact.py} runs a breadth-first search over sets of derived clauses, ordered
+by size. It skips resolvents that are subsumed by an available clause. This is safe: replacing a subsumed clause by the clause that
+subsumes it never increases the number of distinct derived clauses (standard subsumption normalization of resolution). The verifier
+\texttt{verify\_independent.py} shares no code with the producer. For all 159 classes it checks, by brute force over assignments, that
+the formula is UNSAT and MU. It also checks that every stored proof is valid and has exactly $W$ derived nodes. Finally, it runs an
+\emph{unpruned} depth-first search, without subsumption skipping, and confirms that no refutation with $W-1$ derived nodes exists.
+Result: 159 classes checked, 0 failures.
+\emph{Comparison.} LSPV-2/342 found a 4-variable, 6-clause MU formula with a gap, in $R_{\mathrm{mix341}}$. $G_5$ is smaller and is
+shown to be the unique smallest gap instance, but only in plain Res. The Rmix341 value of $G_5$ is not computed here, because AND3 over
+three original clauses may close the gap.
+\emph{Runtime.} The $n\le3$ runs take less than 1\,s. The $n=4$, $m\le5$ run took 46\,s, which exceeds the 30\,s guideline, and was not
+chunked; it is recorded here. Full $n=4$ enumeration was abandoned: a 25\,s probe found more than $1.2\times10^6$ raw minimal-cover
+sequences. A checkpointed, symmetry-first enumerator is needed for $n=4$.
+
+\section*{Falsifiers proposed before computing}
+F1: a 3-variable MU formula with $W>7$ would break the decision-tree upper bound. Not found; the proof rules it out.
+F2: the subsumption pruning might hide shorter proofs. Ruled out by the unpruned verifier.
+F3: the $m-1$ bound might be tight for all small MU formulas. Falsified by $G_5$.
+F4: the corpus might cite a nonexistent Res$(\oplus)$ paper. Checked: arXiv:2609.23015 exists (Section~\ref{s:lit}).
+
+\section*{Literature check (this run)}\label{s:lit}
+\begin{itemize}
+\item K.~Braun, \emph{An exponential lower bound for the bit pigeonhole principle in resolution over parities},
+arXiv:2609.23015 (v1 19 Sep 2026, v2 3 Nov 2026). The arXiv record was fetched. It claims a $\exp(n/(32768\ell^2))$ lower bound for
+unrestricted DAG-like Res$(\oplus)$ on BPHP, for $\ell\ge32$. The corpus cites it in LSPV-3/343, which is consistent with the record.
+It is still not peer-reviewed or independently checked here. The ECCC 2026/018 report and the depth-restricted line
+(arXiv:2507.23008; Itsykson--Knop, ITCS 2026; CCC 2026) describe the unrestricted question as open. They appear to predate Braun or
+not account for the paper, so this is a time-ordering point, not a contradiction. Consequence, if Braun is correct:
+$\overline W_{\mathrm{Res}(\oplus)}$ is superpolynomial (KNOWN THEOREM, pending review). B3 for Res$(\oplus)$ is then
+equivalent to SAT$\notin$P, by the same material-implication argument as LSPV-1/398, so it is circular. BPHP has
+polynomial-size proofs in $R_{\mathrm{mix341}}$ via DEF/ER (LSPV-3/343), so this result does not transfer to the combined system.
+\item Search for ``P$=$NP implies EF p-bounded'' found no such theorem. The known links are: Cook--Reckhow (a p-bounded system exists
+iff NP$=$coNP); P$=$NP implies automatability (Atserias--M\"uller, JACM 2020, for the converse direction in Resolution); and the
+conditional EF results of Pich--Santhanam (ECCC TR23-199), already in corpus LSPV-1/406. For $R\ge_p$EF, the primary bridge B3 remains
+the open problem ``P$=$NP $\Rightarrow$ EF p-bounded'', as the corpus already states (REFEREE-series, LSPV-1/406).
+\end{itemize}
+\emph{Barrier-transfer and post-quantum ledger:} not applicable. This is a finite optimization certificate; the item closest to the
+post-quantum ledger is lossiness/collision counting, which does not apply. FAILED/NOT ATTEMPTED transfer is recorded, and no analogy
+is claimed.
+
+\section*{Corpus reviewed}
+\texttt{AGENTS.md}; the 2026-11-02 1204 five-role refocus directive; \texttt{proof2.txt} header and P2-D1/D2/D3/A1--A4; \texttt{main.tex}
+status lines and the LSPV-1/540 region; LSPV-1/398 (B3$\Leftrightarrow$SAT$\notin$P for Res); LSPV-1/406 (Pich--Santhanam); LSPV-1/408
+(search-to-decision under SAT$\in$P; $n=2$ control); LSPV-2/341--342; LSPV-3/342--343; LSPV-4/341--342; REFEREE295; the git log up to
+LSPV-4/540 (\texttt{4e82d851}). Searches covered automatability, Res$(\oplus)$, Krajíček/Pudlák/Santhanam/Atserias and existing
+small-instance optima.
+
+\section*{Duplication / contradiction audit}
+Lemmas~\ref{l:mono} and \ref{l:src} duplicate known corpus arguments (source-arity, LSPV-2/341) and are restated for self-containment.
+Theorem~\ref{t:var} is folklore. No exact corpus statement was found by search, but it is not claimed as new mathematics.
+Theorem~\ref{t:g5}, parts 2--3 (exhaustive $n=3$ table, unique smallest gap instance), was not found in the corpus. The corpus's
+$n=2$ table is reproduced exactly. No contradiction was found.
+
+\section*{What changed relative to root main}
+Nothing in \texttt{main.tex} was edited, because this routine owns no ownership region. Suggested input for LSPV-5 synthesis: the
+variable-count worst case is closed at $2^n-1$ (Corollary~\ref{c:N}), and the source bound $m-1$ already fails at $m=5$ in plain Res.
+
+\section*{Adopted / rejected / retired prior components}
+Adopted: the directive's definitions, B1/B2/B3 classification, and the LSPV-1/398 equivalence. Rejected: none. Retired: none.
+
+\section*{Stale or overstated claims found}
+None. The Braun citation is verified to exist and remains unreviewed.
+
+\section*{Next missing implication}
+Unchanged and OPEN: a superpolynomial $\overline W_{R}(N)$ for one fixed combined $R$ that contains DEF/ER-strength rules, together with
+B3 for that same $R$. For $R\ge_p$EF, the second half is the open problem ``P$=$NP$\Rightarrow$EF p-bounded''.
+The next concrete routine step is to compute $W_{R_{\mathrm{mix341}}}(G_5)$, to see whether AND3 closes the gap, and then to run a
+checkpointed $n=4$ worst-case table.
+
+\noindent Artifacts: \texttt{research/agents/claude/worst-case-derivation/}
+(\texttt{wbar\_exact.py}, \texttt{small\_m\_n4.py}, \texttt{verify\_independent.py}, raw JSON \texttt{wbar\_n2\_*}, \texttt{wbar\_n3\_*},
+\texttt{wbar\_n4\_mle5.json}).
+
+\noindent\textbf{P versus NP remains OPEN.}
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WBAR-0001
