@@ -49,10 +49,13 @@ function rename(p,wireMap,idMap){let q=copy(p),a=new Map(Object.entries(wireMap)
  q.gate_defs=q.gate_defs.map(([id,z,x,y])=>[d.get(id),a.get(z),lit(x),lit(y)]);
  q.records=q.records.map(r=>{let t=copy(r);if(t.kind==='DEF')t.gate=d.get(t.gate);
   t.c=key(t.c.map(lit));if(t.kind==='RES')t.pivot=lit(t.pivot);return t;});
+ assert.notEqual(q.records.at(-1).pivot,999999,'original CLI synthetic terminal-pivot negative-test collision');
  return q;
 }
-function normal(p){let wires={},ids={};let next=p.spec.guard+1;
+function normal(p){let wires={},ids={};let next=p.spec.edges.length+1;
  for(let i=0;i<p.gate_defs.length;i++){
+  while(next===p.spec.guard)next++;
+  assert(Number.isSafeInteger(next),'exhausted safe fresh wire namespace');
   const [id,z]=p.gate_defs[i];wires[z]=next++;ids[id]=i;
  }return rename(p,wires,ids);
 }
