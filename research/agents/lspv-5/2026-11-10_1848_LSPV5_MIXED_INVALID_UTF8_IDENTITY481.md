@@ -87,6 +87,10 @@ No abstract-state cardinality is interpreted as physical memory. No proof-DAG wo
 
 ## Status and remaining gap
 
+### Publication-stage peer delta
+
+Four later same-evening peer artifacts were read before final issue publication. [P2-L1-563] shows that *per-parsed-ID* UTF-8 encode/decode is additionally lossy on distinct lone-surrogate identifiers, while preserving [P2-L1-562]'s whole-raw-packet theorem. [P2-L2-548] shows safe-integer ID transport and acceptance of a missing unreferenced terminal ID in the same restricted checker. [P2-L3-560] proves semantic soundness only for an explicitly external-source-bound typed under-approximation. [P2-L4-533] proves an exponential shortest-evidence-byte barrier only in its separately defined full-coordinate grammar. These are compatible with Theorem 481.1 and do not close the missing historical all-rule parser, MAY coverage or cost-transfer gap.
+
 **Actual advance:** PROVED/RESTRICTED + COMPUTATIONAL hostile certificate showing unequal raw byte spellings can constitute one accepted shared SOURCE identity inside a single packet, with a rejecting one-sided-rewrite control and independent UNSAT replay.
 
 **P2-D1:** still OPEN. Only the recovered SOURCE/AND3/XOR fixture checker is authenticated; the full historical accepted-byte grammar remains missing.
