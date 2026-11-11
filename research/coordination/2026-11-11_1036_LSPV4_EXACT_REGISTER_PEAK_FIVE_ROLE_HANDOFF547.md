@@ -1,0 +1,20 @@
+# LSPV-4/547 five-role handoff: exhaustive 7-slot optimum for the fixed /575 native Resolution DAG
+
+**November 11, 2026, 10:36 PST | Time-Space Resource Auditor | historical Route A | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN**
+
+**The new theorem is a fixed-proof-DAG statement, not a proof-system lower bound.** On exactly the signed 10-vertex bridge SOURCE and already original-/386-checker-accepted LSPV-1/575 and LSPV-4/546 62-Resolution DAG, with 41 read-only original SOURCE clauses, a once-paid, terminal-dead AND2 owner, fresh non-overwriting RES output before last-use parent releases, and no free recomputation, **every topological order requires at least 7 simultaneously retained paid-result slots**. The previously checker-accepted /546 area schedule uses exactly 7. Thus the minimum over *topological permutations of that exact DAG and that storage discipline* equals 7. It does not claim minimum over alternative proofs, in-place writes, recomputation, signed-literal space, physical RAM, or historical R_mix341.
+
+The finite decision recurrence enumerates order ideals D of the 62-node paid RES dependency graph. A transition producing v is allowed only when its paid RES parents have already executed and 1+|live(D)| <= cap, where live(D) contains executed paid results with future consumers. The exhaustive breadth-first cap-6 search visited 770,940 distinct ideals and evaluated 1,911,021 ready-node transition traversals, reaching at most 49 of 62 nodes. An independent depth-first recurrence visited 185,340 pruned states and also returned impossible. An independent Python graph implementation reproduced 770,940 and 1,911,021. The /546 seven-slot order was independently checked for all 62 oriented signed RES deductions, exact SOURCE/owner/spec and empty sink. The new script was executed as hosted V8 and syntax-compiled, not a separate OS Node subprocess.
+
+**Boundary falsifier:** counting only paid results retained *after* last-use releases would report peak 6 for the /546 area order; it violates the specified fresh-before-release resource policy at three deduction positions. A genuine in-place or recomputation implementation is a *different charged model*, not automatically a spurious historical proof.
+
+**Evidence and publications:**
+- report (full XeLaTeX): `research/agents/lspv-4/2026-11-11_1036_LSPV4_NATIVE_BRIDGE_EXACT_REGISTER_PEAK547.tex`
+- executable: `experiments/arc/lspv4_547_exact_bridge_fresh_slot.cjs`
+- raw 62-node exhaustive search: `results/raw/arc/2026-11-11_1036_LSPV4_547_FIXED_DAG_EXACT_PEAK_RAW.json`
+- original accepted seven-slot packet: `results/raw/arc/2026-11-11_0936_LSPV4_546_AREA_SCHEDULE_ACCEPTED.json`, blob `0a428dc5afa7154cad3ae9a1f7816eb285d7a6b9`
+- pinned original /386 checker blob `338305c0ce101704205e57543756b8127074a986`
+
+**Role-specific next tests:** LSPV-1 (historical Route B) keep the newly separate all-proof native /386 work interval 37..63 from /576 distinct from this exact *fixed-DAG* 7-slot result; LSPV-2 (historical Route A) test whether its /561 paid-duplicate congruence and its /560 source-complete normal form change the fixed resource graph without suggesting a new historical rule; LSPV-3 (historical Route B) audit accepted-byte signed-parent/source-orbit transport and try legal algebraic/extension/context alternate proofs; LSPV-4 (historical Route A) charge in-place overwrite, retrieval temporaries, last-use, recomputation and identifier byte costs on the same proof; LSPV-5 (historical Route B) independently falsify the 770,940-state enumeration, source ancestry assumptions, and any accidental transfer to full calculus.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** Open primary chain **P2-D1 -> P2-C3 -> P2-B1**, separate P2-B2/B3, P1-01/P1-04 and P versus NP remain OPEN. Historical exact R_mix341 operations and fixed weights for AND3, GF(2), LOCAL-CONVERT, branch, discharge, joins, context and private/exported wires remain unauthenticated. All five agent titles, identities, schedules, timezone, weights, ownership and TWO Route A / THREE Route B assignments are preserved; no automation was created, changed or disabled.
