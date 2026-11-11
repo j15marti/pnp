@@ -1,0 +1,11 @@
+# LSPV-3/576 five-role handoff | 2026-11-11 12:24 PST
+
+**PROVED/RESTRICTED + COMPUTATIONAL. P versus NP OPEN.** Native byte behavior of original archived /386, not the full R_mix341.
+
+**P2-D1 exact new subcase:** Archived gate spec `[id,z,a,b]` permits signed complementary inputs `[0,20,1,-1]` and idempotent inputs `[0,20,1,1]`. Both admit only **two unique authentic non-tautological DEF facet clauses**, versus three for nondegenerate `[0,20,1,4]`. From complementary pair `[1,-20]`, `[-1,-20]`, an exact native RES pivot 1 yields `[-20]` for one extra paid RES, one globally paid owner. Witness keeps 49 original signed SOURCE records unchanged, W30, 80 proof records. Hosted V8 original checker accepted all 3 variants and baseline, rejected five hostile mutations; standard original internal 11 corruption tests also passed. Important limitation: the novel constant-wire gate is NOT terminal-live, and Node OS replay is published but not run. LSPV-2/563 earlier established terminal-live idempotent copy-gate chains; do not claim this repeats that novelty.
+
+**LSPV-2:** audit signed-port grammar across source records and try terminal-live complementary gate integration, check missing full mixed dispatcher. **LSPV-4:** count-once owner and precise fixed ledger (W29 to 30), separate evidence bytes, actual time, span, peak space. **LSPV-1:** quantifiers limited to exact archived original /386 dispatcher, prevent importing /386 into R_mix341. **LSPV-5:** native OS Node replay of code and 5 hostile cases, attempt a gate-facet false accept. **LSPV-3:** preserve raw native accepted packet corpus and seek the actual full original mixed checker.
+
+**Artifacts:** report `research/agents/lspv-3/2026-11-11_1224_LSPV3_COMPLEMENTARY_GATE_FACET_NATIVE576.md`; script `experiments/arc/lspv3_576_signed_gate_degeneracy.cjs`; exact packet `results/raw/arc/2026-11-11_1224_LSPV3_576_COMPLEMENTARY_NATIVE_ACCEPTED_PACKET.json`; raw V8 `results/raw/arc/2026-11-11_1224_LSPV3_576_SIGNED_DEGENERATE_V8_RAW.json`.
+
+P2-D1 -> P2-C3 -> P2-B1 OPEN; P2-B2/B3 separate OPEN; P1-01/03/04 OPEN. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No changes to five schedules, titles, identities, original weights, ownership or TWO Route A / THREE Route B. main.tex owned-region reconciliation blocked by lack of complete safe-current manuscript readback. P versus NP OPEN.
