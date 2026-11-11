@@ -85,8 +85,8 @@ hostile('unsorted_relabel',
 const mutations=[
  ['duplicate_owner',p=>{p.gate_defs[1][0]=p.gate_defs[0][0]}],
  ['duplicate_output',p=>{p.gate_defs[1][1]=p.gate_defs[0][1]}],
- ['dangling_gate_ref',p=>{p.records.find(r=>r.kind==='DEF').gate=999]}],
- ['wrong_pivot',p=>{p.records.find(r=>r.kind==='RES').pivot=123456789]}],
+ ['dangling_gate_ref',p=>{p.records.find(r=>r.kind==='DEF').gate=999}],
+ ['wrong_pivot',p=>{p.records.find(r=>r.kind==='RES').pivot=123456789}],
  ['underpayment',p=>{p.summary.paid_total-=1}],
  ['unsafe_numeric_owner',p=>{p.gate_defs[1][0]=9007199254740992}]
 ];
