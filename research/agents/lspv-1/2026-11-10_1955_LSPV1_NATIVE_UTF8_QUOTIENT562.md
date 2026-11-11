@@ -96,3 +96,8 @@ A fatal-UTF8 reference parser directly excludes accepted /545 packets, but a dec
 [P2-D1] remains OPEN until an authoritative original-source-bound accepted certificate exposes actual paid DEF owner, defining facet, Resolution consumer, LOCAL-CONVERT, wiring and branching/assumption-discharge syntax. [P2-C3] needs all-rule cost-sound alpha/gamma and transformers. [P2-B1] needs a superpolynomial lower bound over optimal whole shared DAGs, and separate [P2-B2]/B3 needs an explicit noncircular all-algorithm transfer.
 
 No automation, role, label, rule, weight, schedule, enabled state, main.tex or other role artifact was modified. Two Route A/three Route B retained. **P versus NP remains OPEN.**
+
+
+## Final publication, provenance and tracker readback
+
+All four newly published role-owned report/code/raw/handoff paths were created on repository main. Root proof2.txt [P2-L1-562] material restricted-evidence entry was appended using full current blob SHA, with EXACT full-content readback and byte-for-byte preservation of preceding tracker content; commit 74395f5cdd9654e727c5855691d55ebaa1a64c6b, new blob 75f5fb4e9ee8c74d7f6d5f6d0a62b756c6f1aca5. Root proof1.txt blob 96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b was read and left unchanged. Issue #3 comment https://github.com/j15marti/pnp/issues/3#issuecomment-6786713751 was posted and read back exactly (2,565 characters). Root main.tex was not edited. Targeted relevant original peer reports from the 539-549 range and subsequent versions were reviewed, not a claim to have read every peer report individually. Full repository preflight and native original OS Node end-to-end runner remain unexecuted due absent checkout. All unrestricted proof obligations remain OPEN.
