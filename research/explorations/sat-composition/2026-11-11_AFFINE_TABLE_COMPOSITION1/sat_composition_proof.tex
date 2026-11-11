@@ -1,0 +1,541 @@
+% PNP RESEARCH REPORT::AFFINE-TABLE-COMPOSITION1::2026-11-11T11:32:00-08:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,microtype,xurl,hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\F}{\mathbb F_2}
+\DeclareMathOperator{\aff}{aff}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\SAT}{SAT}
+\title{Exact SAT Composition with Affine Constraints and Finite Tables}
+\author{P versus NP Research Project\\Constructive implementation and independent review}
+\date{11 November 2026, Pacific Standard Time}
+\begin{document}
+\maketitle
+
+\section*{Status and accomplished step}
+\noindent\textbf{P versus NP remains open.} This report constructs an exact symbolic
+interface for SAT blocks, proves closure under conjunction and existential projection,
+proves the optimal table dimension within the chosen representation, and supplies a
+tested implementation. It also constructs explicit easy formulas that prohibit a
+universal small-table guarantee in this representation. A separate terminal criterion
+allows arbitrarily many independent affine coordinates when their constraints are
+binary. The all-input polynomial schedule or richer compression theorem remains
+\textbf{OPEN}.
+
+The operator statements below are \textbf{PROVED/EXACT} for their declared model and
+have been independently reviewed. Finite implementation checks are
+\textbf{COMPUTATIONAL}. No restricted representation obstruction is promoted to a
+lower bound on arbitrary SAT algorithms. These statements are mathematical deductions
+for this build, not claims of historical novelty.
+
+\section{Target, quantifiers, and input model}
+The original target is one deterministic uniform procedure which, on every encoded
+3-CNF $F$ of bit length $N$, constructs and evaluates an exact composition with total
+cost $N^{O(1)}$. It must account for construction, unfavorable intermediate objects,
+choice of order, and compatibility of shared variables.
+
+The result proved here has a parameter. For every finite input formula and every
+explicitly generated sequence of valid joins and projections, the same implementation
+computes the exact result with a bound in the maximum table dimension encountered.
+No favorable bound on that dimension is assumed for arbitrary formulas.
+
+Variables are Boolean. Matrix arithmetic is over $\F$. A source is parsed and its
+occurring variable identifiers are relabeled densely before integer bit masks are
+allocated. Thus a large binary identifier cannot hide a huge memory allocation.
+After relabeling $n\le 3m$ for a proper 3-CNF with $m$ clauses. Matrix and table costs
+are charged in the same deterministic computation. Python counters record selected
+table operations; they are not a complete bit-instruction ledger.
+
+\section{A compact interface that preserves compatibility}
+For a block with boundary $s$ and private variables $t$, its exact interface is
+\[
+ R(s)=\exists t\,F(s,t).
+\]
+Unlike an unconditional SAT bit, $R$ records which shared assignments extend to a
+local solution. The representation used in this report is
+\begin{equation}\label{eq:form}
+ R(x)=[Ax=b]\land f(Lx+c),
+\end{equation}
+where $A,L$ are explicit binary matrices, $b,c$ are binary vectors, and $f$ is an
+explicit Boolean table on $k$ coordinates. The affine core $Ax=b$ may involve all
+boundary variables. The table contains $2^k$ entries. Pure affine relations have
+$k=0$, so a large physical boundary need not require a large table.
+
+Every source clause of width at most three has an immediate representation with
+$k\le3$. All clauses on the same three-variable scope may be combined by an eight-entry
+table, allowing an exact parity packet to be recognized without a semantic oracle.
+The previous project affine-facet work already establishes why all parity facets
+must be retained before taking an affine hull; this construction preserves the exact
+table until that recognition is justified.
+
+\section{The minimum possible table dimension in this format}
+For nonempty $R\subseteq\F^n$, write
+\[
+ \aff(R)=a+V,\qquad
+ P(R)=\{p\in\F^n:R+p=R\}.
+\]
+Here $V$ is a vector space and $P(R)$ is the translation-period subspace. Indeed,
+periods are closed under addition, and every period lies in $V$. Define
+\[
+ \rho(R)=\dim V-\dim P(R).
+\]
+Set $\rho(\varnothing)=0$ by convention.
+
+\begin{theorem}[Exact minimum within the declared format]\label{thm:min}
+For every nonempty $R$, the minimum number of independent table coordinates in
+any direct representation \eqref{eq:form} is $\rho(R)$.
+\end{theorem}
+\begin{proof}
+Suppose \eqref{eq:form} represents $R$. Every affine equation valid on $R$ is valid
+on its affine hull. If $v\in V$ and $Lv=0$, then translating a point of $R$ by $v$
+preserves the affine core and the table argument. Translation is an involution, so
+$R+v=R$. Hence $\ker(L|_V)\subseteq P(R)$ and rank-nullity gives
+\[
+ k\ge\rank(L|_V)\ge\dim V-\dim P(R).
+\]
+Conversely, impose $a+V$ as the affine core and choose linear coordinates for the
+quotient $V/P(R)$. Extend these coordinate maps to the ambient space and absorb the
+origin $a$ into $c$. Membership in $R$ is constant on each coset of $P(R)$, so the
+accepted cosets form a table on exactly $\rho(R)$ coordinates.
+\end{proof}
+
+The theorem concerns this representation class. It does not identify the minimum
+unrestricted circuit, decision DAG, proof, or runtime.
+
+\subsection{Constructive normalization from an existing table}
+First row-reduce the affine core, detecting inconsistency if present. Reduce the
+rows of $L$ modulo that core. Keep a basis of the remaining linear forms, translating
+the old table into these coordinates. The resulting independent coordinate values
+range over the full Boolean cube on the affine solution set.
+
+Next find the affine hull of the accepted table points by Gaussian elimination of
+their differences from one accepted point. Move its equations into $A$ and reduce
+the coordinates again. Finally quotient the table by its translation periods.
+This last step is computed exactly by a Walsh transform, not by a SAT query.
+
+For a $k$-bit table, define integer coefficients
+\[
+ \widehat f(u)=\sum_{z\in\F^k} f(z)(-1)^{u\cdot z}.
+\]
+Translation by $p$ multiplies the coefficient at $u$ by $(-1)^{u\cdot p}$.
+Invertibility of the transform therefore proves
+\begin{equation}\label{eq:walsh}
+ P(f)=\operatorname{span}\{u:\widehat f(u)\ne0\}^{\perp}.
+\end{equation}
+A row basis of the nonzero frequencies gives the quotient coordinate map. A fast
+Walsh transform uses $O(k2^k)$ integer additions, each on $O(k+1)$ bits. All affine
+hull and basis operations are polynomial in the matrix size and the existing table
+size. Constant true and false tables have immediate exits. The normalized table
+attains Theorem~\ref{thm:min}.
+
+This is a paid algorithm on an explicit table. It does not provide a polynomial-time
+period oracle on an arbitrary compact CNF.
+
+\section{Exact composition operations}
+\begin{theorem}[Conjunction]\label{thm:join}
+Given two interfaces with $k_1,k_2$ table coordinates, their conjunction has an
+explicit interface obtained using at most $k_1+k_2$ temporary table coordinates.
+\end{theorem}
+\begin{proof}
+Embed both interfaces in the same variable namespace and stack their affine cores.
+If the core is inconsistent, return false. Stack their table-coordinate maps and
+reduce these modulo the combined core. At most $k_1+k_2$ independent rows remain.
+For every assignment to their basis, evaluate the two old table arguments and take
+the conjunction. Normalize the resulting interface. Every operation preserves
+the same shared variable values, so no incompatible local solutions are combined.
+\end{proof}
+
+\begin{theorem}[Existential projection]\label{thm:projection}
+Given \eqref{eq:form} on variables $(s,t)$, the relation $\exists t\,R(s,t)$ has an
+explicit interface with at most $k$ table coordinates. It is computable using
+polynomial matrix work and a scan of the existing $2^k$ table entries.
+\end{theorem}
+\begin{proof}
+Introduce $y=L(s,t)+c$. Existentially eliminate $t$ from the linear system consisting
+of this definition and the affine core. Gaussian elimination yields precisely
+\[
+ Cs+Dy=e.
+\]
+Row operations on $D$, applied also to $C,e$, separate the system into
+\[
+ C_0s=e_0,\qquad D_1y=e_1+C_1s,
+\]
+where $D_1$ has full row rank $r\le k$. Define an $r$-coordinate table by
+\[
+ g(z)=\bigvee_{y:D_1y=z}f(y).
+\]
+It is constructed by initializing zero entries and scanning accepted old table
+points, marking their images $D_1y$. The required projected relation is exactly
+\[
+ [C_0s=e_0]\land g(e_1+C_1s).
+\]
+The linear elimination is an if-and-only-if projection, so every accepted image
+admits an eliminated-variable completion. Further normalization can only reduce
+the table dimension.
+\end{proof}
+
+As consequences of the constructions and Theorem~\ref{thm:min},
+\[
+ \rho(\pi R)\le\rho(R),\qquad
+ \rho(R_1\cap R_2)\le\rho(R_1)+\rho(R_2).
+\]
+These inequalities do not give a logarithmic bound after an arbitrary number of
+joins. Union needs separate accounting: two affine coordinate subspaces can each
+have $\rho=0$ while their union has arbitrarily large $\rho$.
+
+\section{An executable SAT decider and its complete parameterized bound}
+Maintain an exact conjunction of factors. Choose a variable $x$, join all factors
+that actually depend on it, existentially project $x$ from the result, and leave the
+other factors untouched. This uses the identity
+\[
+ \exists x\,[G(x,s)\land H(s,z)]
+   =(\exists x\,G(x,s))\land H(s,z).
+\]
+It is valid because $H$ does not depend on $x$. After all variables have been
+eliminated, the remaining constant factors decide SAT or UNSAT exactly.
+
+\begin{theorem}[Charged evaluation]\label{thm:cost}
+Let $N$ be the dense input encoding length, let $p$ bound the number of explicitly
+generated joins, projections, and normalization operations, and let $K$ be the
+largest coordinate rank before any table enumeration. All matrix descriptions and
+scopes are explicit and polynomially bounded in $N+p$. There is one deterministic
+implementation with time and space bounded by
+\[
+ (N+p)^{O(1)}2^K.
+\]
+For polynomial $p$ and $K=O(\log N)$ this is polynomial time and space.
+\end{theorem}
+\begin{proof}
+Every linear row has at most $n$ bits and every row-reduced core at most $n$ rows.
+Matrix elimination, coordinate bookkeeping, sorting, and scope inspection cost a
+polynomial in $N+p$. Each table construction or projection scans at most $2^K$
+entries with polynomial work per entry. Affine hull extraction and the exact
+Walsh transform add polynomial factors in $K\le O(N+p)$. Summing over $p$
+operations gives the bound; retaining polynomially many such objects gives the
+space bound. This includes the table constructed before a later normalization
+discovers a smaller output.
+\end{proof}
+
+For ordinary factor elimination without branching, there are at most $n$
+projections and $m-1$ binary joins, plus polynomial preprocessing. The prototype
+uses a deterministic scope-size heuristic; it does not enumerate candidate orders.
+Choosing the table cap $n$ gives a finite exact algorithm on every input, with no
+polynomial worst-case claim. A smaller resource cap returns \texttt{UNRESOLVED}
+when exceeded. It never substitutes a timeout for UNSAT.
+
+For an externally proposed more general DAG, its construction cost and description
+size must be included in $p$ and the polynomial factor. Existential variables must
+be local to the factor being projected, or all other factors containing them must
+first be joined. Sharing a factor description does not authorize reusing private
+variable choices across incompatible contexts.
+
+\section{A broader polynomial terminal case}
+Tables are not the only available final representation. Suppose every remaining
+factor has at most two table coordinates. Combine all affine cores and reduce all
+table-coordinate forms modulo them. Constants are evaluated directly, and equal
+nonzero linear rows are identified, with shifts retained as literal signs.
+
+\begin{theorem}[Independent coordinate reduction to 2-SAT]\label{thm:2sat}
+If the distinct remaining nonzero coefficient rows are linearly independent, the
+conjunction of the factors is decidable in polynomial time, regardless of how many
+such rows there are.
+\end{theorem}
+\begin{proof}
+Solve the affine core as $x=x_0+Vz$. The reduced independent coefficient rows define
+a surjective linear map from the free coordinates $z$ onto their joint values.
+Assign one fresh Boolean variable to each row value. Each factor constrains at most
+two of these variables; encode it as the conjunction of the binary or unit clauses
+excluding its forbidden local assignments. Thus every satisfying assignment of the
+resulting 2-CNF lifts to a solution of the core, and every original solution gives
+a 2-CNF assignment. Solve the 2-CNF by implication-graph strongly connected
+components. All transformations, checks, and the decision are polynomial.
+\end{proof}
+
+This criterion includes ordinary 2-SAT and compatible affine reparameterizations.
+If the rows have genuine dependencies, their values are not independent Boolean
+choices. Dropping those dependencies is unsound. Some dependent cases can still be
+easy; failing this sufficient test means unresolved, not hard.
+
+\section{An explicit limit of universal table compression}
+\begin{proposition}[A short 3-CNF with a large exact table interface]\label{prop:or}
+For $n\ge3$, a proper 3-CNF with $n-2$ clauses and $n-3$ private variables has projected
+boundary relation $x_1\lor\cdots\lor x_n$. Every direct representation of that
+relation in format \eqref{eq:form} needs $2^n$ table entries.
+\end{proposition}
+\begin{proof}
+Use the familiar clause-splitting chain
+\[
+ (x_1\lor x_2\lor z_1)\land
+ (\neg z_1\lor x_3\lor z_2)\land\cdots\land
+ (\neg z_{n-3}\lor x_{n-1}\lor x_n).
+\]
+For $n=3$ use the single clause. If all boundary bits are zero, the chain forces
+successive $z_i=1$ and contradicts the last clause. If some boundary bit is one,
+choose each $z_i$ to indicate that all earlier boundary bits are zero; all clauses
+then hold. Hence its projection is the long OR.
+
+Its support is $\F^n\setminus\{0\}$. For $n\ge2$ it has full affine hull. No nonzero
+translation preserves it, because that translation moves the unique excluded point.
+Theorem~\ref{thm:min} gives $\rho=n$ and hence $2^n$ explicit entries.
+\end{proof}
+
+The long clause itself is a short, easy representation. This proposition refutes
+an all-boundary small-table claim, not $P=NP$. A SAT decision procedure can choose
+another elimination order or keep a clause representation. The prototype decides
+the tested chain cases with maximum table width three, while their forced boundary
+tables have widths three through eight.
+
+Likewise, the product of $m$ disjoint positive 3-clauses has full affine hull and
+trivial periods, so a single global table has $\rho=3m$. Keeping factors separate
+and projecting private variables handles the same family at width three. This
+control prevents a representation cost from being mistaken for necessary computation.
+
+\section{A concrete connection to contextual pruning}
+Let $C$ be a proper three-literal clause and write its literal-truth coordinates as
+$y=(y_1,y_2,y_3)$, so $C(y)=y_1\lor y_2\lor y_3$. Let $F=C\land G$.
+
+\begin{theorem}[Certified pattern exclusion]\label{thm:prune}
+Suppose a checked proof establishes that an assignment $a\ne000$ to $y$ cannot
+extend to a model of $F$. Choose a rank-two linear map $Q$ with kernel
+$\operatorname{span}(a)$. Then replacing $C$ in $F$ by
+\[
+ D(y)=(Qy)_1\lor(Qy)_2
+\]
+preserves the full formula exactly and lowers this local relation's intrinsic
+table dimension from three to two.
+\end{theorem}
+\begin{proof}
+$Qy=0$ exactly on $\{0,a\}$. Thus $D=C\land[y\ne a]$. Every model of $F$ already
+avoids $a$ by the checked certificate, whereas $D$ implies $C$. Consequently
+$G\land D$ and $G\land C$ have identical models. The six-point support has full
+affine hull in $\F^3$ and precisely the two periods $\{0,a\}$, so $\rho=3-1=2$.
+\end{proof}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Additional excluded pattern & Exact replacement & Structure\\
+\midrule
+$100$ & $y_2\lor y_3$ & Ordinary binary clause\\
+$110$ & $(y_1\oplus y_2)\lor y_3$ & Two affine coordinates\\
+$111$ & $(y_1\oplus y_2)\lor(y_1\oplus y_3)$ & NAE constraint\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+If every original clause has a checked exclusion at Hamming distance one from its
+falsifying pattern, all strengthened clauses are ordinary binary clauses. Replacing
+them simultaneously is exact because each strengthening is entailed by the original
+formula. Polynomially many polynomially checked certificates therefore give a
+polynomial 2-SAT algorithm for this class. Finding such certificates on every
+formula is not established. A certificate remains valid under further restriction;
+discarding its supporting context requires a separate justification.
+
+\subsection{Why universal local shrinkage is still insufficient}
+NAE$(a,b,c)$ is represented by the two clauses
+\[
+ (a\lor b\lor c)\land(\neg a\lor\neg b\lor\neg c).
+\]
+Each clause has its all-true pattern excluded by the other, with an immediate
+constant-size contradiction after pinning. Hence every clause in a NAE-3SAT
+encoding has this local $3\to2$ certificate.
+
+Nevertheless this family can encode arbitrary 3-SAT. Replace an original clause
+$(a\lor b\lor c)$ by
+\[
+ \operatorname{NAE}(a,b,u)\land\operatorname{NAE}(\neg u,c,s),
+\]
+with fresh $u$ per clause and one common variable $s$. Complementing every variable
+preserves NAE, so a satisfying model can be oriented to have $s=0$. When $c=0$,
+the second constraint forces $u=0$, and the first requires $a\lor b$. When $c=1$,
+the second is automatic and a suitable $u$ always exists. Thus existentially
+eliminating $u$ gives the original clause. This is a polynomial exact decision
+reduction. Local two-coordinate factors and readily available exclusion proofs
+do not imply polynomial total composition.
+
+\section{A small, precise universal composition challenge}
+For every clause $(a_j\lor b_j\lor c_j)$ introduce selectors $p_j,q_j,r_j$ and impose
+\[
+ p_j\oplus q_j\oplus r_j=1.
+\]
+Add the six binary clauses
+\[
+ (\neg p_j\lor\neg q_j),\quad(\neg p_j\lor\neg r_j),\quad
+ (\neg q_j\lor\neg r_j),
+\]
+\[
+ (\neg p_j\lor a_j),\quad(\neg q_j\lor b_j),\quad
+ (\neg r_j\lor c_j).
+\]
+Let $A$ be all the parity equations and $H$ all the binary clauses.
+
+\begin{proposition}[Exact compatibility reduction]
+For every original assignment $x$,
+\[
+ F(x)=\exists p,q,r\,[H(x,p,q,r)\land A(p,q,r)].
+\]
+The system $H$ is an always-satisfiable Horn 2-CNF with an acyclic implication
+graph of path length at most two. The system $A$ consists of disjoint, always-
+satisfiable ternary parity equations. The reduction uses $3m$ new variables,
+$6m$ binary clauses, and $m$ parity equations.
+\end{proposition}
+\begin{proof}
+The parity equation permits one or three true selectors. Pairwise exclusion
+eliminates three, so exactly one selector is true and its implication requires a
+true original literal. Conversely, choose one true original literal per satisfied
+clause and select it. Selectors from different clauses are disjoint.
+
+All selectors zero satisfy $H$, and one selector per triple satisfies $A$.
+Every binary clause has at most one positive variable, proving Horn form. In
+the implication graph, edges go from positive selectors to original literals
+or negative selectors, and from original literals to negative selectors.
+Negative selectors have no outgoing edges. Hence paths have at most two edges.
+\end{proof}
+
+An efficient general compatibility algorithm even for these two simple modules
+would solve arbitrary 3-SAT. Eliminating each selector triple merely recovers the
+original clause; that transformation is correct but gives no speedup. This is
+an explicit target for the next attempted composition theorem, not evidence
+that the target is impossible.
+
+\section{Implementation, verification, and limits of the evidence}
+The dependency-free Python implementation contains exact GF(2) row operations,
+coordinate reduction, affine-hull extraction, an integer Walsh normalizer,
+conjunction, projection, and factor elimination. It uses no external SAT oracle.
+\texttt{independent\_2sat.py} provides the additional terminal criterion of
+Theorem~\ref{thm:2sat} separately; its return value is unresolved when independence
+does not hold.
+
+The main implementation's independently audited source SHA256 is
+\begin{center}\small
+\texttt{61a894fab61f1faef3f4049a0ee2b677447a33b9a224509fdb16df2c11bec17e}.
+\end{center}
+The independent verifier checked all 256 Boolean functions on three variables,
+all 2,048 coordinate projections, and all 65,536 pairs under conjunction,
+comparing every output assignment with its truth-table meaning. It also compared
+normalized width against an independently computed intrinsic dimension. All passed.
+
+The root runner additionally tested 300 seeded affine/table interfaces and 144
+seeded proper 3-CNFs with 3--10 variables against exhaustive SAT. There were 129
+SAT and 15 UNSAT cases, all correctly classified. The seed is 20261111. Dedicated
+controls include a 4,096-variable affine boundary, both parity charges and
+contradictory pins, disjoint products, clause-splitting chains, all seven pruned
+clause patterns, selector gadgets, sparse variable identifiers, and correct
+unresolved output on a deliberate table-cap overflow.
+
+The independent-coordinate terminal passed 996 small cases: 351 SAT, 631 UNSAT,
+and 14 deliberately unresolved dependent-coordinate cases. Every resolved result
+agreed with exhaustive enumeration, and every returned witness was checked against
+the original factors. Four additional 1,000-coordinate controls, consisting of
+ordinary and invertibly transformed 2-SAT in both answer classes, passed without
+constructing a global exponential table. All source hashes and full generated
+inputs are retained in the machine-readable outputs.
+
+Every root stage took under one second in the observed environment; the independent
+all-pairs audit took about three seconds. Runs were separated into parameter chunks
+well below the project's 30-second Python limit. Timings describe these finite
+experiments only. The prototype is not an industrial SAT benchmark, and selected
+operation counters are not a complete measurement of physical bit-time or memory.
+
+\section{Literature and corpus reconciliation}
+Knowledge compilation distinguishes compact representations, tractable queries,
+and tractable transformations \cite{DarwicheMarquis2002}. The present proof keeps
+their costs separate: a fast lookup after compilation does not make compilation
+free. Ganian, Ramanujan, and Szeider give an established hybrid of structural and
+language tractability through backdoor treewidth \cite{Ganian2017}. Their
+fixed-parameter discovery guarantee cannot simply be substituted at a logarithmic
+parameter to obtain a polynomial discovery bound without checking that dependence.
+
+Arvind and Guruswami's polynomial algorithms for fixed affine codimension in
+2-CNF \cite{ArvindGuruswami2021} are relevant alternatives, but their parameter
+is not the same as the table dimension used here. The previous ETH premise was
+verified against its released scope statement \cite{OpenAI2026scope}. None of
+Theorems~\ref{thm:min}--\ref{thm:prune} needs that speedup: the composition operators
+are explicit linear algebra and table computations. This leaves the bound useful
+independently of that source's status or subsequent refinements.
+
+\paragraph{Corpus reviewed.}
+The current root \texttt{main.tex}, both proof trackers, issue 3, repository
+instructions, the complete \texttt{pnp-research} skill and its mode/protocol
+references, the repository directory survey, and the hostile-control task were
+read. Materially related sources include AFFINE-INTERFACE-REFEREE203,
+FULL-INTERFACE-GLUING-REFEREE204, AFFINE-MESSAGE-RANK-REFEREE205,
+BOUNDARY-CERTIFICATE-EQUIVALENCE-REFEREE286, AFFINE-COVER-RETRACTION-REFEREE408,
+and the LSPV-3/537 affine-facet threshold. The attached contextual-pruning text
+and its pruned-or-easy target were read directly. The attached boundary-DAG and
+charged-access results informed the initial target; their restricted scope is
+preserved. This was a targeted review of the surveyed corpus, not a claim that
+every historical report was reread.
+
+\paragraph{Duplication and contradiction audit.}
+Exact projected interfaces, paid compatibility, and affine absorption already
+appear in the project. The current contribution is their explicit mixed
+affine-core/table normal form, optimal coordinate count, constructive exact
+projection and Walsh normalization, independently audited implementation, and
+the precise pruning/hardness controls. No priority claim is made. The construction
+does not repair historical mixed-proof byte grammars or the separate lower-bound
+bridge. It does not contradict prior original-clause decomposition obstructions:
+it allows algebraic summaries, while still leaving universal coverage open.
+
+\paragraph{What changed relative to root MAIN.}
+There is now an executable parameterized composition algorithm and an exact
+normalization theorem for a declared representation. The all-input algorithm,
+uniform polynomial runtime, and both separation and equality goals remain open.
+The Codex report is an additive handoff; no specialist ownership region or
+executive synthesis was overwritten.
+
+\paragraph{Adopted, rejected, and retained.}
+Adopt exact boundary semantics, full construction costs, local parity recognition,
+and context-authenticated exclusions. Reject unconditional one-bit block interfaces,
+universal small affine tables, and the inference that universal local $3\to2$
+pruning establishes polynomial time. Retain the small-query and power-shrinkage
+theorems as conditional implications, with construction and recursive closure
+still unproved.
+
+\section{Barrier and scope audit}
+\paragraph{Hostile controls.}
+Affine systems stay at table width zero. Independent products remain factored.
+An easy OR chain separates table cost from decision cost. Renaming is handled
+by dense relabeling; complement shifts are retained. Plain 2-SAT is covered by
+the independent-coordinate terminal. General Horn and dual-Horn inputs are not
+claimed to have small table width; their standard solvers remain separate options.
+Padding or retaining unnecessary variables can worsen a chosen schedule, so its
+width is not an intrinsic lower bound on arbitrary algorithms.
+
+\paragraph{Relativization and algebrization.}
+No unrestricted separation is asserted. The operator proofs apply to explicitly
+represented Boolean tables and affine systems. Replacing a table by an arbitrary
+oracle predicate removes the finite table-construction premise; exact projection
+is not thereby free. Algebraic oracle access is neither assumed nor ruled out.
+No claim that this construction bypasses relativization or algebrization barriers
+is made.
+
+\paragraph{Natural proofs and same realization.}
+The report gives upper bounds for an explicit algorithm and format-relative
+representation obstructions, not a constructive property separating general
+circuits. All time/space claims use the same program, input encoding, and generated
+objects. No proof-node minimum or semantic cardinality is substituted for runtime.
+
+\section{Precise remaining proof obligation}
+The next target is an explicit deterministic controller for the selector
+compatibility family above. It may retain factorizations, use the independent-
+coordinate 2-SAT terminal, apply certified contextual exclusions, and perform
+affine/table joins and projections. It must prove a polynomial bound on the
+\emph{total} constructed tables, their temporary ranks, all policy work, and any
+fallback. One sufficient route is polynomially many operations with
+$K=O(\log N)$ unless a polynomial terminal applies. There is currently no proof
+that every input admits a uniformly discoverable execution with this property.
+
+\bibliographystyle{plain}
+\bibliography{composition_references}
+% END_OF_VERIFIED_REPORT::CODEX::AFFINE-TABLE-COMPOSITION1
+\end{document}
