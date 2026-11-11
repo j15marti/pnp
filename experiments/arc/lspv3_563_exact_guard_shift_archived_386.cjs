@@ -144,9 +144,23 @@ function mutate(packet) {
  for(const [name,f] of Object.entries(m)){const p=deep(packet);f(p);cases[name]=p}
  return cases;
 }
+function replayOriginalCore(originalSource,packet) {
+ const modules=name=>name==='fs'?{}:name==='crypto'?{}:name==='assert'?{}:(()=>{throw Error(name)})();
+ try {
+  // The archived checkProof is obtained from the original file without changing its function body.
+  // No fixture argv are supplied, so the checker CLI negative-test harness is not executed.
+  const getCheck=new Function('require','process','console','structuredClone',originalSource+'\nreturn checkProof;');
+  const check=getCheck(modules,{argv:['node',CHECKER_PATH]},{log:()=>{}},deep);
+  return {accepted:true,outcome:check(packet,{control:true})};
+ } catch(e){return {accepted:false,error:String(e)}}
+}
 function hostedAudit(originalSource,realCrypto) {
  const {packet,search}=produce(),independentResult=independent(packet),native=replayOriginalBody(originalSource,packet,realCrypto);
  if(!native.accepted)throw Error('archived checker REJECT: '+native.error);
+ const noOwner=deep(packet);noOwner.gate_defs=[];noOwner.summary.paid_gates=0;noOwner.summary.paid_total--;
+ const noOwnerCore=replayOriginalCore(originalSource,noOwner);
+ const noOwnerFullCLI=replayOriginalBody(originalSource,noOwner,realCrypto);
+ if(!noOwnerCore.accepted||noOwnerFullCLI.accepted)throw Error('core/CLI asymmetry falsifier failed');
  const hostile={};
  for(const [name,p] of Object.entries(mutate(packet))){
   const r=replayOriginalBody(originalSource,p,realCrypto);
@@ -156,10 +170,10 @@ function hostedAudit(originalSource,realCrypto) {
  return {packet,raw:{run:'LSPV-3/563',timestamp:'2026-11-10 23:24 PST',
    model:'archived /386 checker; not full R_mix341 /341',
    originalVerifierGitBlob:PINNED_CHECKER_BLOB,search,independent:independentResult,
-   originalChecker:{...native,hostile},packetBytes:JSON.stringify(packet).length,
+   originalChecker:{...native,hostile},noOwnerDifferential:{originalCore:noOwnerCore,originalCLI:noOwnerFullCLI},packetBytes:JSON.stringify(packet).length,
    provenanceNote:'Original archived checker body executed unchanged in V8; JS source SHA-256 from Node CLI only.'}};
 }
-if(typeof module==='object')module.exports={produce,independent,replayOriginalBody,hostedAudit};
+if(typeof module==='object')module.exports={produce,independent,replayOriginalBody,replayOriginalCore,hostedAudit};
 if(typeof require==='function'&&require.main===module) {
  const fs=require('fs'),crypto=require('crypto');
  const source=fs.readFileSync(CHECKER_PATH,'utf8');
