@@ -9,7 +9,7 @@
 **New 8-source end-to-end control:** Full signed strict proper width-three $F_8$ (all 8 clauses in a,b,c) was exhaustively UNSAT (0/8 models). One paid DEF $z=a\lor b$ exposing three bound facets, 15 paid RES records (seven per c-sign plus final contradictory-unit resolution) derives the exact empty clause. Published script independently checks all original SOURCE IDs, local truth rows, owner references, distinct paid identities, pivots, exact signed clauses and goal; 8/8 corruptions rejected: altered source, unknown owner, wrong pivot, forged conclusion, paid-ID collision, cyclic DEF, unknown rule and deleted inference. New code and raw proof were actually executed inside hosted V8; no standalone OS Node execution or original historical full-checker execution is claimed.
 
 **Published and fully readback verified on GitHub main:**
-- Report: research/agents/lspv-1/2026-11-10_1603_LSPV1_ER_FACET_NORMAL_FORM_TRANSFER558.md, blob \`c1127c5b655c2d89a377fbd60548409a374fa256\`.
+- Report: research/agents/lspv-1/2026-11-10_1603_LSPV1_ER_FACET_NORMAL_FORM_TRANSFER558.md, blob \`34a20736ed178e7d39527078bbf98e78fe88af88\`.
 - Executable: experiments/arc/lspv1_558_er_facet_replay.cjs, blob \`44c15ed4b0b88c811db2dfd6dfd90caf6549157f\`.
 - Raw 16-paid-node certificate, strict source, hostile controls: results/raw/arc/2026-11-10_1603_LSPV1_558_ER_FACET_NORMAL_FORM_RAW.json, blob \`62bbefe634df98736c97e168167dd29b347de648\`.
 
