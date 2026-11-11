@@ -9,7 +9,7 @@ const fs=require("fs"),os=require("os"),path=require("path"),cp=require("child_p
 const root=path.resolve(__dirname,"../..");
 const producer=path.join(root,"experiments/arc/lspv2_341_mixed_tseitin_min_dag.js");
 const checker=path.join(root,"experiments/arc/lspv2_341_independent_verify.js");
-const rawPath=path.join(root,"results/raw/arc/2026-11-10_1755_LSPV1_560_SOURCE_DRIVEN_REPAIR_RAW.json");
+const rawPath=path.join(root,"results/raw/arc/2026-11-10_1755_LSPV1_560_SOURCE_DRIVEN_REPAIR_REPLAY_LOCAL.json");
 function gitSHA(p){const b=fs.readFileSync(p);return crypto.createHash("sha1").update(Buffer.concat([Buffer.from("blob "+b.length+"\0"),b])).digest("hex");}
 function assert(x,m){if(!x)throw Error(m)}
 assert(gitSHA(producer)==="4081022e8a3841d79f751a3d3a7a10decbb026da","producer Git SHA changed");
