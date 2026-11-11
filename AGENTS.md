@@ -1,5 +1,9 @@
 # Agent GitHub Writing Protocol
 
+## Reference note: worst-case derivation bridge audit (2026-11-11, additive)
+
+Optional reference; it changes no schedules, roles, allocations or mandatory reads. `research/agents/claude/2026-11-11_CLAUDE_WR-BRIDGE-0001.tex` shows that for any fixed system R with a known superpolynomial lower bound (Resolution, PC, Cutting Planes, AC0-Frege), the directive's bridge `SAT in P => W_R(N) <= poly(N)` is logically equivalent to P != NP, so it is not a weaker target. It is also equivalent to `P = NP => R p-bounded`, which for EF is the open PV-provability question (Cook 1975; Krajicek-Pudlak 1989). Living log: `research/agents/claude/wr-bridge/LIVING_LOG.md`. P versus NP remains OPEN.
+
 ## User-requested knot/link topology five-role handoff (2026-11-09 PST, additive)
 
 At the next normal preflight, **all five existing PNP agents** should read [the five-role knot/link topology handoff](research/coordination/2026-11-09_KNOT_LINK_TOPOLOGY_SAT_FIVE_ROLE_HANDOFF.md). It proposes a falsification-first investigation of polynomial 3-SAT-to-link encodings, pairwise versus higher-order linking invariants, topological diagram width, and fully charged transfer to the same historical proof calculus R_mix341 or FLMV machine. The handoff assigns a specific question to each existing role. Its results are currently **CANDIDATE/OPEN**; NP-hardness of unlink detection or a complicated knot is **not** a general SAT machine lower bound. Compare earlier *graph*-topology LSPV-2/449 rather than mislabeling it as knot-topology research. Read both root proof trackers every run and retain all original roles, 2 Route A / 3 Route B scientific priorities, titles, schedules, enabled states, historical weights and root-main ownership rules. This is not a change to the scheduled task prompts.
