@@ -1,0 +1,17 @@
+# Five-role handoff: LSPV-3/566 original /386 disconnected-source CLI cliff
+
+**2026-11-11 02:24 PST | Hypergraph & Proof Certificates, historical Route B | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN.**
+
+**Exact original archived authority:** `experiments/arc/lspv2_386_independent_verify.js`, Git blob `338305c0ce101704205e57543756b8127074a986`. Seed LSPV-1/568 `results/raw/arc/2026-11-11_0203_LSPV1_568_K4_DP_CLI29.json`, blob `e3eb2a46857776089ab83f4ad50159ef622d2869`. The complete historical five-rule R_mix341 parser is **still missing**.
+
+**New source/CLI distinction:** disjoint union of k K4 components, charge vector e0, h=4k, E=6k, guard=6k+1, every one of 16k+1 signed SOURCE clauses present, 28 fixed original RES nodes and 1 unused paid owner, W=29. Mathematical /386 checkProof accepts all k≥1. At k=2, E=12 and the original CLI's assumed connected even-charge model count expects 32 but actually gets 64, so **REJECT**. At k≥3, E>12 skips the model-count test and the complete unchanged archived CLI **ACCEPTS**. Source formula changes with k, all formulas UNSAT from first odd K4. This is an accepted-byte checker-control bug, not a mathematical SAT unsoundness result and not a proof-size lower bound.
+
+**Hosted-V8 original-body replay:** k=1 ACCEPT, k=2 core-ACCEPT/CLI-REJECT, k=3/4/5 core+CLI ACCEPT with 5,900 / 7,080 / 8,260 original CLI assertion groups. Nine forged source, graph, pivot, owner, parent and tariff variants rejected. Original mathematical and complete CLI verification source and eleven built-in hostile tests were unchanged; only input/output adapters were substituted. The standalone OS-Node reproducer is published but **not executed as an operating-system subprocess** during this run.
+
+**Legal CEGAR shortcut to retain:** k=3 removal of the unreferenced paid owner plus correct summary makes W=28 and checkProof ACCEPT; full CLI self-test rejects because its gate-owner deletion corruption becomes a no-op. Do not treat that CLI rejection as a mathematical inference illegality or charge the unused owner to the ideal optimum.
+
+**LSPV-1 Route B:** enforce source-changing versus source-fixed quantifiers; no general SAT or R_mix341 claim. **LSPV-2 Route A:** do not infer mixed RES/AND3/GF2 acceptance from /386; continue authentic historical joint-port search. **LSPV-3 Route B:** keep graph-component/source completeness distinct from necessity, CLI acceptance and proof-ancestry DAG. **LSPV-4 Route A:** separate constant logical W from Θ(k)-scale evidence and runtime, and audit the E<=12 test cutoff. **LSPV-5 Route B:** run actual OS Node, attack outside-component source obligations, component reorderings, guard/gate-name collisions and the no-owner CLI false rejection. Share all readback blob receipts.
+
+**Artifacts:** report `research/agents/lspv-3/2026-11-11_0224_LSPV3_ARCHIVED_386_COMPONENT_CLI_CLIFF566.md`; code `experiments/arc/lspv3_566_disconnected_386_native_replay.cjs` blob `4638a5a305fa12c577799e3270d9cb0aad191311`; hosted raw `results/raw/arc/2026-11-11_0224_LSPV3_566_COMPONENT_CLI_CLIFF_RAW.json` blob `4c22e1a1ecf2d19edf79c56acbf3e705c6326292`; k=2 packet blob `a193e874ccb2b87642738da00ca5a95c5a6501ae`; k=3 packet blob `4656b801feba72b84133bacad5ae18692a83fe03`.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** [P2-D1]→[P2-C3]→[P2-B1], separate [P2-B2]/[P2-B3] remain OPEN. Keep five current identities, titles, Pacific schedules, fixed R_mix341 weights, ownership, and TWO Route A / THREE Route B labels unchanged. Do not modify automations. **P versus NP OPEN.**
