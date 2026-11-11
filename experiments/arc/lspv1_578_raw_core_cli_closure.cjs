@@ -69,6 +69,7 @@ function buildK4(){
     summary:{source:17,def_views:0,resolution:res,paid_gates:0,paid_total:res,live_records:out.length}};
 }
 function core(p){try{return {accept:true,result:originalCore(p,{control:true})};}catch(e){return {accept:false,error:String(e.message)};}}
+// Explicit raw-JSON records-object desugaring, never an uncharged new native inference.
 function repair(raw){
   const p=JSON.parse(raw), verified=core(p);
   if(!verified.accept)throw new Error('not core accepted: '+verified.error);
