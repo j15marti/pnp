@@ -38,7 +38,7 @@ where $b$ is the raw certificate byte string; $J$ the parsed JSON value; $\sigma
 Use the restricted abstraction
 
 $$
-\alpha(C)=\bigl(\mathrm{coreOK},\ |G|>0,\ p_{\mathrm{last}}=+999999,\ W,\
+\alpha(C)=\bigl(\mathrm{coreOK},\ |G|>0,\ p_{\mathrm{last}}=+999999,\ W,
 H_{\sigma},\ H_{\mathrm{SOURCE}},\ H_{\mathrm{RES}},\ \mathrm{done}\bigr).
 $$
 
