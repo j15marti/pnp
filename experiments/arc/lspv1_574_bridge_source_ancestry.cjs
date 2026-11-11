@@ -130,7 +130,7 @@ function run(){
  const root=path.resolve(__dirname,'../..');
  const checker=path.join(root,'experiments/arc/lspv2_386_independent_verify.js');
  const checkerSource=fs.readFileSync(checker);
- const hash=crypto.createHash('sha1').update(checkerSource).digest('hex');
+ const hash=crypto.createHash('sha1').update(Buffer.from('blob '+checkerSource.length+'\0')).update(checkerSource).digest('hex');
  ck(hash==='338305c0ce101704205e57543756b8127074a986',
     'original /386 checker changed: '+hash);
  const {packet,perPivot}=build(),evidence=independent(packet);
