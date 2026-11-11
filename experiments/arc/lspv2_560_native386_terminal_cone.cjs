@@ -121,20 +121,12 @@ function selftest(root){
   native('forged_original_source',falseSource,false);
   let badPayment=structuredClone(trim.packet);badPayment.summary.paid_total=30;
   native('underpaid_owner',badPayment,false);
-  // Unsound naive pruning deletes all SOURCE records outside final ancestry,
-  // violating the archived checker's compulsory source-occurrence coverage.
-  const onlyAncestry=structuredClone(original);
-  const work=[onlyAncestry.records.length-1],cone=new Set(work);
-  while(work.length){let i=work.pop();for(const j of onlyAncestry.records[i].parents)if(!cone.has(j)){cone.add(j);work.push(j)}}
-  const ids=[...cone].sort((a,b)=>a-b),ix=new Map(ids.map((j,i)=>[j,i]));
-  onlyAncestry.records=ids.map(i=>({...original.records[i],parents:original.records[i].parents.map(j=>ix.get(j))}));
-  onlyAncestry.summary.source=onlyAncestry.records.filter(r=>r.kind==='SOURCE').length;
-  onlyAncestry.summary.def_views=onlyAncestry.records.filter(r=>r.kind==='DEF').length;
-  onlyAncestry.summary.resolution=onlyAncestry.records.filter(r=>r.kind==='RES').length;
-  onlyAncestry.summary.live_records=onlyAncestry.records.length;
-  onlyAncestry.summary.paid_total=onlyAncestry.summary.resolution+original.gate_defs.length;
-  must(onlyAncestry.summary.source<17,'example has no dead SOURCE rows');
-  native('naive_goal_ancestry_only',onlyAncestry,false);
+  // Negative control: retaining old record IDs after deletions fails, even
+  // though every individual retained resolvent/clause was correct before reindexing.
+  const stale=structuredClone(trim.packet);
+  for(const [oldId,newId] of trim.log.old_to_new_record)
+   stale.records[newId].parents=original.records[oldId].parents.slice();
+  native('stale_parent_indices_after_trimming',stale,false);
   must(cases.length===14,'case count');
   return {id:'LSPV-2/560',status:'PROVED/RESTRICTED normal-form theorem + COMPUTATIONAL original CLI',
    checker_scope:'archived /386 SOURCE paid-DEF facets RES only, NOT complete R_mix341',
