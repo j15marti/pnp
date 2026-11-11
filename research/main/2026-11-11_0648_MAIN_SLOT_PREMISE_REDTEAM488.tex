@@ -1,0 +1,86 @@
+% MAIN SNAPSHOT — LSPV/RMV::SLOT-PREMISE-REDTEAM488::2026-11-11T06:48:00-08:00
+% LSPV-5 REPORT::SLOT-PREMISE-REDTEAM488::2026-11-11T06:48:00-08:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{xurl}
+\title{LSPV-5/488: OS-Node replay of LSPV-4/543 and a same-checker counterexample to the ``slots linear in packet size'' reading}
+\author{PNP Independent Proof Red Team (LSPV-5, :48 slot)}
+\date{11 November 2026, 06:48 America/Los\_Angeles}
+\begin{document}
+\maketitle
+\noindent\textbf{Status: PROVED/RESTRICTED (source-code + executed) red-team lemma; COMPUTATIONAL replay. Historical $R_{\mathrm{mix341}}$, [P2-D1], [P2-C3], [P2-B1], separate [P2-B2]/B3 and P versus NP remain OPEN.}
+
+\section*{Shared objective and what this run addresses}
+Shared target: $\overline W_R(N)=\max_{F\in\mathrm{UNSAT},|\langle F\rangle|\le N}\min_{\pi:F\vdash_R\bot}\mathrm{cost}_R(\pi)$ for one preselected $R$, plus the bridge B3: $\mathrm{SAT}\in\mathrm{P}\Rightarrow\overline W_R(N)\le\mathrm{poly}(N)$. The free choice of the optimal $\pi$ is retained; optimizer/search cost is not charged. This run is a red-team audit of the most recent resource claim (LSPV-4/543) at its exact quantifiers. It addresses no bridge directly; it guards the separation between (i) logical cost $W$, (ii) encoded proof size $L$, and (iii) one checker implementation's memory, which any B2/B3 resource transport must keep apart.
+
+\section*{Predecessor write check}
+LSPV-4/543 (06:36 slot): report \path{research/agents/lspv-4/2026-11-11_0636_LSPV4_NATIVE_INMEMORY_VERIFY_FIREWALL543.md}, runner, raw JSON, handoff and owned \texttt{main.tex} region all present at HEAD \texttt{d0dd5f5a}. \textbf{VERIFIED WRITE; no recovery request needed.}
+
+\section*{Falsifiers declared before experiment}
+\begin{itemize}
+\item[F1] LSPV-4/543's published OS-Node runner (not executed by its author) fails on the unchanged checker.
+\item[F2] Over \emph{all} accepted packets of the original /386 checker, the forced simultaneous reference-slot count is $\Omega(L)$ in packet length $L$.
+\item[F3] Ignored padding masks a hostile defect (paid count, record count, parent, source, owner, clause type) or malformed JSON.
+\item[F4] Padding changes paid cost $W$.
+\end{itemize}
+Outcome: F1 does not survive (replay passes); F2 is \textbf{FALSIFIED}; F3 and F4 do not survive.
+
+\section*{1. OS-Node replay of LSPV-4/543 (COMPUTATIONAL)}
+\texttt{node experiments/arc/lspv4\_543\_native\_inmemory\_firewall.cjs} on Node v22.23.4 (real OS subprocesses), checker blob \texttt{338305c0ce101704205e57543756b8127074a986}, seed blob \texttt{25b5c1f95734f6eae36bdbb4a17c948c00753cff}: all five positives $k=0,1,16,128,512$ accepted with $W=31$, $R=60$, $N=49+k$, eleven bundled negatives each; all five hostile packets rejected; exit 0, 0.8\,s. This closes the ``OS subprocess not executed'' gap stated in /543.
+
+\section*{2. Theorem 488.1 (PROVED/RESTRICTED): accepted length is unbounded at fixed record count}
+Let $D$ be the /540 seed packet and, for $m\ge0$, let $Q_m$ be $\mathtt{JSON.stringify}$ of $D$ with one additional top-level key \texttt{"pad"} whose value is $m$ ASCII letters \texttt{a} (and $S_m$ the same with the key on record 0). Within representable JavaScript limits, the unchanged checker accepts $Q_m$ and $S_m$ with
+\[
+W=31,\qquad N_{\mathrm{records}}=49,\qquad L(Q_m)=L(S_m)=3088+m .
+\]
+\emph{Proof.} \texttt{checkProof} reads only \texttt{spec}, \texttt{records}, \texttt{gate\_defs}, \texttt{summary} and, per record, \texttt{kind}, \texttt{c}, \texttt{parents}, \texttt{pivot}, \texttt{source}, \texttt{gate}; no check enumerates keys, so an extra key alters no tested value. Each of the eleven CLI mutators modifies a read field and still produces the same rejection as on $D$ (structuredClone copies the pad unchanged). The output is canonical (no whitespace), so this is distinct from the LSPV-4/413 whitespace lemma. $\square$
+
+\textbf{Corollary 488.2.} For the original program the 543 bound $2N$ satisfies, over accepted packets,
+\[
+\min_{P\ \mathrm{accepted},\,|P|=L}2N(P)\le 98\quad\text{for every }L\ge3088,
+\qquad
+\max_{P\ \mathrm{accepted},\,|P|\le L}2N(P)=\Theta(L)
+\]
+(the upper envelope by the 543 family $P_k$, using $N\le L$). Hence the statement ``the /386 checker forces slots linear in packet size'' holds only for the explicit family $P_k$ (as 543 itself states) and is \textbf{FALSIFIED} as a universal statement over accepted inputs. Conversely, the CLI's $11$ structuredClone calls copy the pad, so its sequential copy work is $\ge 11m$ on $Q_m$: work and slot count decouple in opposite directions.
+
+\section*{3. Executed evidence (COMPUTATIONAL)}
+Runner \path{experiments/review/lspv5_488_slot_premise_redteam.cjs} (asserts both blobs), raw \path{results/raw/arc/2026-11-11_0648_LSPV5_488_SLOT_PREMISE_REDTEAM_RAW.json} (SHA-256 \texttt{6c71d4e43c4249ecb8b122c496050c1503e12cfe4be000ce8a3e66a61b41caa1}); total run 1.6\,s, well inside the 30\,s rule (no chunking needed).
+\begin{center}
+\begin{tabular}{lrrrrr}
+family & $k$ & $m$ & $L$ bytes & $N$ & $2N/L$\\\hline
+$Q$ & 0 & 0 & 3088 & 49 & $3.17\times10^{-2}$\\
+$Q$ & 0 & $10^4$ & 13088 & 49 & $7.49\times10^{-3}$\\
+$Q$ & 0 & $10^6$ & 1003088 & 49 & $9.77\times10^{-5}$\\
+$S$ & 0 & $10^6$ & 1003088 & 49 & $9.77\times10^{-5}$\\
+$P$ & 16 & $10^5$ & 103879 & 65 & $1.25\times10^{-3}$\\
+$P$ & 128 & $10^6$ & 1009317 & 177 & $3.51\times10^{-4}$
+\end{tabular}
+\end{center}
+All twelve positives accepted with $W=31$ and eleven passing bundled negatives (assertion groups 3750 at $k=0$, identical across pads). Hostile controls on $Q_{10^5}$, all rejected with the original messages: paid count $-1$ (\texttt{paid cost}); live\_records $+1$ (\texttt{record count}); forward parent (\texttt{bad parents 48}); charge flip (\texttt{not odd}); empty \texttt{gate\_defs} (\texttt{undefined gate}); clause replaced by a string (\texttt{record kind or clause at 0}); control character in pad (JSON \texttt{SyntaxError}); truncated packet (JSON \texttt{SyntaxError}).
+
+\section*{4. Literature and barrier transfer}
+Obstacle: conflating an implementation's retention with proof-language or SAT space. Checked: Esteban--Tor\'an clause space (verification memory = maximal simultaneously kept clauses), Atserias--Dalmau space $\ge$ width, Ben-Sasson--Nordstr\"om (arXiv:1008.1789; 1409.2978 small space to small width); drat-trim/cake\_lpr practice (backward checking verifies only clauses used by the derivation of $\bot$; deletion information frees memory). \textbf{Directly transferable:} the clause-space notion is a property of the proof and its deletion schedule, not of a checker that never deletes; /386 has no deletion record, so its $2N$ retention is a format/implementation fact (consistent with LSPV-4/541's $O(\log L)$ rescan verifier). \textbf{Failed transfer:} none of these yields a SAT-decider time or space lower bound, nor B2/B3. PQ ledger: item 4 (lossiness) is the only analogy---the map packet $\mapsto$ (proof DAG) has unbounded fibers here; FAILED TRANSFER as a hardness source.
+
+\section*{CORPUS REVIEWED}
+AGENTS.md (incl.\ knot/link 2026-11-09 and world-ledger notes); worst-case refocus directive \path{research/coordination/2026-11-02_1204_WORST_CASE_MINIMUM_DERIVATION_FIVE_ROLE_REFOCUS.md}; handoffs /541--543 (LSPV-4), /571--572 (LSPV-1), /556--557 (LSPV-2), /568--570 (LSPV-3), LSPV-5/486--487; LSPV-4/413 whitespace lemma; LSPV-5/409 B3-identity handoff; original checker and seed source; root \texttt{main.tex} (local full file, blob \texttt{18480e8f1667b57d139ba1b0efe3f86e33507ac3}) LSPV-4/543 and LSPV-5 regions; \texttt{proof1.txt} (blob \texttt{96aefb3d\ldots}) and \texttt{proof2.txt} (blob \texttt{7db80e8b\ldots}) tails and P2 node entries. \textbf{TRACKERS REVIEWED; NO MATERIAL CHANGE.}
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+LSPV-4/413 already showed raw whitespace padding forces $\Omega(M)$ validator reading; 488 differs: canonical no-whitespace bytes, and the target is the slot lower bound, not reading time. No contradiction with 543.1, which is explicitly family-scoped; 488 blocks only a universal paraphrase.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Adds one LSPV-5 EXEC block after LSPV-5/487: OS replay of 543 and Theorem 488.1/Corollary 488.2. LSPV-4's region (which records ``OS Node subprocess not tested'') is left untouched; the replay is recorded in the LSPV-5 block.
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted: 543.1 as family-scoped; 541 rescan upper bound. Rejected: any reading of 543 as ``accepted /386 packets force $\Omega(L)$ slots''. Retired: none.
+
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+543 handoff line ``scaling linearly with packet size'' is correct only for $P_k$; flagged, not edited.
+
+\section*{Next missing implication}
+Unchanged: an authenticated full $R_{\mathrm{mix341}}$ byte grammar, a superpolynomial $\overline W_R$ lower bound in that fixed $R$, and B3 for the same $R$. Recall (LSPV-5/409): for any $R$ with a proved superpolynomial $\overline W_R$, B3$(R)$ is equivalent to SAT$\notin$P, so it cannot be ``weaker'' than the separation for such $R$.
+
+P versus NP remains \textbf{OPEN}.
+\end{document}
+% END_OF_VERIFIED_MAIN::SLOT-PREMISE-REDTEAM488
+% END_OF_VERIFIED_REPORT::LSPV-5::SLOT-PREMISE-REDTEAM488
