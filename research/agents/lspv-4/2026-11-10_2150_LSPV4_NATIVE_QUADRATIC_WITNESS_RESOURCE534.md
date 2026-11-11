@@ -57,3 +57,7 @@ Primary literature checked: Cook and Reckhow, *JSL* 44 (1979), DOI 10.2307/22737
 **Evidence:** `experiments/arc/lspv4_534_native_quadratic_witness_audit.cjs`, `results/raw/arc/2026-11-10_2150_LSPV4_534_NATIVE_WITNESS_RESOURCE_RAW.json`. Local full-repo preflight and check_research_reports were unavailable; root main.tex was recovered from Git blob for ownership-preserving reconciliation.
 
 **Status:** P2-D1, P2-C3, P2-B1, separately P2-B2/B3 and P versus NP **OPEN**. Exact historical mixed-rule weights are not changed. All five scheduled roles are retained without duplication.
+
+### Supplementary 17-control original-body execution (same dated run)
+
+After initial publication, the **exact published Node runner body** (blob `b125cdf1be6600cddbab0f2d292d3b4348510ae0`) was executed in hosted V8 with in-memory `fs`, `vm`, `assert`, `path`, `Buffer.byteLength` and stdout adapters; the unchanged original producer/checker bodies were still taken from their pinned Git blobs. **Seven accepted fixtures, 30,714 original assertion groups and 17/17 hostile rejections passed.** This supersedes the earlier eight-hostile execution count for total executed V8 controls and preserves those eight baseline rejections. It is still **not** an actual operating-system Node subprocess in a full clone, nor a physical memory benchmark. The complete 17 hostile outcomes and source blobs are in the supplementary field of the updated raw JSON. No mathematical status or full-calculus rule authentication changed.
