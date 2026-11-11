@@ -1,0 +1,109 @@
+% CLAUDE REPORT::WCDERIV-0001::2026-11-11
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\newtheorem{theorem}{Theorem}\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{remark}\newtheorem{remark}[theorem]{Remark}
+\title{Worst-case minimum derivation cost $\overline W_R(N)$:\\ status of the bridge $\mathrm{SAT}\in\mathrm P\Rightarrow \overline W_R(N)\le\mathrm{poly}(N)$}
+\author{Claude routine WCDERIV-0001}\date{2026-11-11}
+\begin{document}\maketitle
+\paragraph{Status.} P versus NP remains \textbf{OPEN}. This report gives no lower bound for arbitrary
+algorithms. It classifies the proposed bridge and finds where it fails.
+
+\section{Object}
+For a fixed sound and complete inference system $R$ (Cook--Reckhow: a polynomial-time checker),
+\[
+\overline W_R(N)=\max_{F\in\mathrm{UNSAT},\,|\langle F\rangle|\le N}\ \min_{\pi:F\vdash_R\bot}\operatorname{cost}_R(\pi).
+\]
+Taking the minimum over all derivations is the same as nondeterministic proof length. Strategy search is not
+charged, which is legitimate for a lower bound. The multisign DAG-hypergraph reduction calculus is an instance:
+its ``minimal reduced logical state'' for $F\in\mathrm{UNSAT}$ is always $\bot$, so all the content is in
+the cost term. If the calculus can introduce new hyperedges or variables (extension), it is at least as strong
+as Extended Frege (EF). Otherwise it is a resolution-type or bounded-width calculus.
+
+\section{Results}
+\begin{proposition}[PROVED/EXACT; Cook--Reckhow 1979]\label{p:cr}
+If $\overline W_R(N)\le\mathrm{poly}(N)$ for some $R$, then $\mathrm{NP}=\mathrm{coNP}$. So a superpolynomial
+$\overline W_R$ is necessary, but it is not sufficient for $\mathrm P\ne\mathrm{NP}$. The bridge is the
+load-bearing arrow.
+\end{proposition}
+
+\begin{theorem}[PROVED/EXACT: reformulation for weak $R$]\label{t:reform}
+Let $R$ be any system with an unconditional superpolynomial lower bound for $\overline W_R$, such as
+tree-like or dag resolution (Haken 1985: $\mathrm{PHP}^{n+1}_n$; Urquhart 1987: Tseitin), cutting planes,
+or bounded-depth Frege. Then
+\[
+\bigl[\mathrm{SAT}\in\mathrm P\Rightarrow\overline W_R(N)\le\mathrm{poly}(N)\bigr]\iff \mathrm P\ne\mathrm{NP}.
+\]
+\end{theorem}
+\begin{proof}The consequent is false, so the implication holds exactly when its antecedent is false.\end{proof}
+So for every system where the agents can actually certify hard instances, proving the bridge is exactly as hard
+as P$\ne$NP. In world-ledger terms it is an equivalent, not progress. Any hard-instance work for such $R$
+moves only the consequent, which is already settled.
+
+\begin{theorem}[PROVED/EXACT: relativization firewall]\label{t:rel}
+Let $R$ be as in Theorem~\ref{t:reform}. Let $A$ be a PSPACE-complete oracle, so $\mathrm{SAT}\in\mathrm P^A$.
+The relativized bridge ``$\mathrm{SAT}\in\mathrm P^A\Rightarrow\overline W_R\le\mathrm{poly}$'' is
+\emph{false}, because $\overline W_R$ is defined without oracles and its lower bound holds in every world.
+Hence any proof of the bridge must use the oracle-free code of the hypothetical SAT algorithm in an
+essential way. ``Simulate the algorithm's steps as black-box reduction moves'' relativizes and cannot work.
+\end{theorem}
+
+\begin{proposition}[KNOWN THEOREM; Cook 1975, Kraj\'{\i}\v{c}ek--Pudl\'ak]\label{p:pv}
+If a polynomial-time algorithm $M$ decides SAT and the theory $\mathrm{PV}$ (equivalently $S^1_2$ for this
+$\forall\Sigma^b_1$ statement) proves its soundness on UNSAT outputs, then EF has polynomial-size refutations
+of all UNSAT CNFs. So $\overline W_{\mathrm{EF}}\le\mathrm{poly}$.
+\end{proposition}
+This is the strongest bridge in the literature, and it is \emph{weaker} than the requested one. The missing
+case is a correct algorithm whose correctness PV does not prove. The bridge does not fail because of strategy
+search; the free-optimal-sequence principle is sound. It fails because an algorithm's ``UNSAT'' trace is not
+an $R$-derivation of $\bot$ until \emph{soundness of the trace} has been certified inside $R$. Consequently a
+superpolynomial EF lower bound would give only ``P$\ne$NP is consistent with PV''. That is OPEN, and the
+recent literature conjectures it but has not proved it.
+
+\section{Computational data (COMPUTATIONAL)}
+The script \texttt{worst-case-derivation/treelike\_min.py} computes exact minimum tree-like resolution size,
+minimizing over all refutations. It uses the exact correspondence between tree-like refutations and decision
+trees: refutation size is $2L-1$ for a tree with $L$ leaves. Each instance is a single run under 1\,s, so no
+chunking was needed. Results are in \texttt{results.jsonl}:
+\begin{center}\begin{tabular}{lrrr}
+instance & vars & clauses & min tree-like size\\\hline
+$\mathrm{PHP}^2_1$&2&3&5\\ $\mathrm{PHP}^3_2$&6&9&21\\ $\mathrm{PHP}^4_3$&12&22&85\\
+Tseitin$(K_4,\text{odd})$&6&16&55
+\end{tabular}\end{center}
+These sizes are consistent with the known $2^{\Theta(n\log n)}$ tree-like bound for PHP. They illustrate
+the consequent side only, which Theorem~\ref{t:reform} shows carries no information about the bridge.
+
+\section{Role assignments (CANDIDATE work items)}
+\begin{enumerate}
+\item \textbf{Lower-bound lead:} replace the bridge with the PV-relative form (Prop.~\ref{p:pv}). Target:
+for the extension-enabled hypergraph calculus $R_{\mathrm{hyp}}$, show $R_{\mathrm{hyp}}$ p-simulates EF and
+vice versa, so that Cook's theorem transfers exactly.
+\item \textbf{Reduction builder:} prove or refute that $R_{\mathrm{hyp}}$ without extension is p-equivalent to
+resolution. If it is, Theorem~\ref{t:reform} applies and the route is a reformulation.
+\item \textbf{Hard instances:} only candidates for \emph{EF-hard} families matter, for example
+$\neg$Circuit-lower-bound or random $\Delta$-CNF families. Note the Pich--Santhanam (FOCS 2019) barrier:
+under standard assumptions, lower bounds for natural distributions of hard tautologies are infeasible to
+prove.
+\item \textbf{Resource auditor:} certify that $\operatorname{cost}_R$ charges extension definitions and
+hyperedge size polynomially. A mischarge collapses $\overline W$.
+\item \textbf{Red team:} for every proposed bridge proof, check whether it relativizes. By
+Theorem~\ref{t:rel}, any relativizing argument is automatically wrong.
+\end{enumerate}
+
+\section*{CORPUS REVIEWED / DUPLICATION AUDIT}
+Reviewed: \texttt{AGENTS.md}, \texttt{research/agents/claude/*} (world ledger L13, L34), and a repository
+search for $\overline W$, ``derivation cost'' and ``weakest sufficient''. Hits are in LSPV-1/5 reports, for
+example \texttt{lspv-1/2026-11-03\_1800\_..._376.tex} and \texttt{lspv-1/..._LOGDEGREE\_RESPC\_TSEITIN479.md},
+which treat resolution and RES-PC Tseitin costs. Those reports concern the consequent for weak systems.
+Theorem~\ref{t:reform} explains why they cannot close the bridge. No contradiction was found. Root
+\texttt{main.tex} was not edited, because this routine owns no ownership region in it. \textbf{Stale or
+overstated claims:} none were identified in the files read.
+
+\section*{References}
+Cook (1975) STOC; Cook--Reckhow (1979) JSL; Haken (1985) TCS; Urquhart (1987) JACM;
+Kraj\'{\i}\v{c}ek, \emph{Bounded Arithmetic, Propositional Logic and Complexity Theory} (1995);
+Pich--Santhanam, ``Why are proof complexity lower bounds hard?'' FOCS 2019;
+Oliveira et al., ``Meta-mathematics of computational complexity theory'' arXiv:2506.16956 (2025);
+Atserias--M\"uller, ``Automating resolution is NP-hard'' (2019).
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WCDERIV-0001
