@@ -74,7 +74,8 @@ try{
   const p=spawnSync(process.execPath,[checker,f],{encoding:'utf8',timeout:30000,maxBuffer:1048576});
   const accepted=p.status===0&&!p.error;
   assert(accepted===q.want,q.name+' checker mismatch '+(p.stderr||'').slice(0,300));
-  const cg=cone(q.packet),live=q.k>0&&cg.seen.has(3)&&Array.from({length:2*q.k},(_,i)=>cg.seen.has(21+i)).every(Boolean);
+  const cg=accepted?cone(q.packet):{seen:new Set(),depth:null};
+  const live=accepted&&q.k>0&&cg.seen.has(3)&&Array.from({length:2*q.k},(_,i)=>cg.seen.has(21+i)).every(Boolean);
   const row={case:q.name,k:q.k,accepted,bytes:bytes.length,sha256:sha256(bytes),
      paid:q.packet.summary.paid_total,records:q.packet.records.length,
      sink_depth:cg.depth,sink_reachable:cg.seen.size,all_splice_nodes_live:live};
