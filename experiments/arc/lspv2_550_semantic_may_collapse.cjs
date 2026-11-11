@@ -3,7 +3,7 @@
  Run: node experiments/arc/lspv2_550_semantic_may_collapse.cjs */
 function ck(x,m){if(!x)throw Error(m)}
 function bits(x){let n=0;for(;x;x&=x-1)n++;return n}
-function cube(){return Array.from({length:8},(_,a)=>[0,1,2].map(i=>a&(1<<i)?-(i+1):i+1))}
+function cube(){return Array.from({length:8},(_,a)=>[0,1,2].map(i=>a&(1<<(2-i))?-(i+1):i+1))}
 function models(C,n){let r=[];for(let a=0;a<(1<<n);a++)
  if(C.every(c=>c.some(l=>{let v=!!(a&(1<<(Math.abs(l)-1)));return l>0?v:!v})))r.push(a);return r}
 function minimumUnion(m){
