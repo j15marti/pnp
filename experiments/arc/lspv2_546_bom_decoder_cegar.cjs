@@ -44,11 +44,11 @@ assert.equal(invalid.count,3);
 const packets=[
  ['baseline',baseline,true],
  ['leading_bom',Buffer.concat([bom,baseline]),false],
- ['leading_bom_after_whitespace',Buffer.concat([Buffer.from(' \\n'),bom,baseline]),false],
+ ['leading_bom_after_whitespace',Buffer.concat([Buffer.from([32,10]),bom,baseline]),false],
  ['double_leading_bom',Buffer.concat([bom,bom,baseline]),false],
  ['trailing_bom',Buffer.concat([baseline,bom]),false],
  ['leading_zwsp',Buffer.concat([zws,baseline]),false],
- ['legal_whitespace',Buffer.concat([Buffer.from(' \\n'),baseline]),true],
+ ['legal_whitespace',Buffer.concat([Buffer.from([32,10]),baseline]),true],
  ['graph_name_literal_bom',inside.bytes,true],
  ['graph_name_escaped_bom',escaped.bytes,true],
  ['source_id_all_bom',idAll.bytes,true],
