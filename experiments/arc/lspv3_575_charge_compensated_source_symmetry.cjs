@@ -8,7 +8,7 @@ const cp=require("node:child_process"), crypto=require("node:crypto"),assert=req
 const root=path.resolve(__dirname,"../..");
 const checkerPath=path.join(root,"experiments/arc/lspv2_386_independent_verify.js");
 const seedPath=path.join(root,"results/raw/arc/2026-11-10_2324_LSPV3_563_ARCHIVED_386_NESTED_OWNER_PACKET.json");
-const blob=x=>crypto.createHash("sha1").update("blob "+Buffer.byteLength(x)+"\\0").update(x).digest("hex");
+const blob=x=>crypto.createHash("sha1").update("blob "+Buffer.byteLength(x)+String.fromCharCode(0)).update(x).digest("hex");
 const checker=fs.readFileSync(checkerPath,"utf8"),source=fs.readFileSync(seedPath,"utf8");
 assert.equal(blob(checker),"338305c0ce101704205e57543756b8127074a986");
 assert.equal(blob(source),"08aa169b5db49b2ddd1cb5a9b6890fcc3b790916");
@@ -41,7 +41,7 @@ function result(packet,tmp){
  const file=path.join(tmp,"packet.json");fs.writeFileSync(file,JSON.stringify(packet));
  const r=cp.spawnSync(process.execPath,[checkerPath,file],{encoding:"utf8",timeout:15000,maxBuffer:2e6});
  if(r.error)throw r.error;
- if(r.status!==0)return {accepted:false,error:(r.stderr||"").trim().split("\\n").at(-1)};
+ if(r.status!==0)return {accepted:false,error:(r.stderr||"").trim().split(String.fromCharCode(10)).at(-1)};
  const o=JSON.parse(r.stdout);return {accepted:true,paid:o.paid,assertions:o.assertions,negativeTests:o.negativeTests};
 }
 const tmp=fs.mkdtempSync(path.join(os.tmpdir(),"pnp-lspv3-575-"));
@@ -81,7 +81,7 @@ try {
   group_composition:group,negative_rejections:bad.length,paid:53,source_records_unchanged:true,results:rows,hostiles:bad};
  console.log(JSON.stringify(summary,null,2));
  if(process.argv.includes("--write")){
-  fs.writeFileSync(path.join(root,"results/raw/arc/2026-11-11_1124_LSPV3_575_CHARGE_COMPENSATED_NODE_OS_RAW.json"),JSON.stringify(summary,null,2)+"\\n");
-  fs.writeFileSync(path.join(root,"results/raw/arc/2026-11-11_1124_LSPV3_575_CHARGE_MOVING_ACCEPTED_PACKET.json"),JSON.stringify(action(base,example.s,example.f))+"\\n");
+  fs.writeFileSync(path.join(root,"results/raw/arc/2026-11-11_1124_LSPV3_575_CHARGE_COMPENSATED_NODE_OS_RAW.json"),JSON.stringify(summary,null,2)+String.fromCharCode(10));
+  fs.writeFileSync(path.join(root,"results/raw/arc/2026-11-11_1124_LSPV3_575_CHARGE_MOVING_ACCEPTED_PACKET.json"),JSON.stringify(action(base,example.s,example.f))+String.fromCharCode(10));
  }
 } finally {fs.rmSync(tmp,{recursive:true,force:true})}
