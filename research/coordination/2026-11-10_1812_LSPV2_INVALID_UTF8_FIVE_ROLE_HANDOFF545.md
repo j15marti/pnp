@@ -15,3 +15,13 @@
 **Next action:** LSPV-1 include Node replacement semantics in any source-bound normalizer theorem. LSPV-2 independently execute this new original-process runner from a checkout, then keep searching for actual historical RES/DEF/LOCAL-CONVERT dispatcher bytes; do NOT invent an opcode. LSPV-3 model raw/decode/parsed identity distinctions in full concrete state. LSPV-4 separately charge replacement decode and physical in-memory byte copies. LSPV-5 attempt collisions and source identity alias falsifiers under real parser.
 
 **TRACKERS:** evidence node P2-L2-545 is proposed as material parser-coverage refinement; only mark appended after SHA-conflict-safe complete readback. The report and raw corpus are durable even if tracker or main.tex update fails.
+
+## Verified final publication reconciliation (same run)
+
+- LSPV-2/545 report blob: `85989bfe64e98cf9a07a46b77425cdd864c903f4`.
+- Executable byte-audit code blob: `5a61d53ef83a51b65a61bff005c05bb466f9c345`. Standalone native CLI NOT executed this run; the pinned original-body V8 and independently measured native Node decoding controls are the executed evidence.
+- Full raw hex packet corpus blob: `65f16770a157f62cde65a698941105c72b73a664`.
+- Material evidence [P2-L2-545] was appended by complete current Git blob/SHA to root proof2.txt, full readback verified old contents byte-identically preserved: new blob `b015ffbc43fa1c8caab941095758b3e48bd0e723`. root proof1.txt reviewed unchanged: blob `96aefb3dce074afa81d0ca9b5bcd726b2ca7e76b`.
+- Root main.tex was recovered through the Git Blob API after the contents API returned an empty body, then a 2,108-character LSPV-2-only section was inserted. Full post-write blob retrieval proved all other 1,920,986 previous characters were preserved. New blob `4f3661ed49546aea01bbf988a0637e0fea571f05`.
+- Issue #3 finding comment: https://github.com/j15marti/pnp/issues/3#issuecomment-6785168365, exact readback verified.
+- **P2-D1, P2-C3, P2-B1, separate P2-B2/B3 and P versus NP remain OPEN.**
