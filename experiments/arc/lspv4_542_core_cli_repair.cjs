@@ -47,17 +47,20 @@ function makeSentinel(P) {
   assert.equal(q.records.at(-1).pivot,target, 'seed final pivot not guard');
   return q;
 }
-function repair(P) {
+function addUnusedOwner(P) {
   const q=deep(P), E=q.spec.edges.length;
-  if (q.gate_defs.length===0) {
-    let z=E+1;
-    if (z===q.spec.guard) z=E+2;
-    assert(Number.isSafeInteger(z) && z> E && z!==q.spec.guard);
-    // A paid but unused AND2 definition, no DEF/RES records, no new parents.
-    q.gate_defs.push([0,z,1,2]);
-    q.summary.paid_gates++;
-    q.summary.paid_total++;
-  }
+  assert.equal(q.gate_defs.length,0);
+  let z=E+1;
+  if (z===q.spec.guard) z=E+2;
+  assert(Number.isSafeInteger(z) && z>E && z!==q.spec.guard);
+  // A paid but unused AND2 definition, no DEF/RES records, no new parents.
+  q.gate_defs.push([0,z,1,2]);
+  q.summary.paid_gates++;
+  q.summary.paid_total++;
+  return q;
+}
+function repair(P) {
+  const q=P.gate_defs.length===0?addUnusedOwner(P):deep(P);
   const last=q.records.at(-1);
   if (last.pivot===999999) {
     last.pivot=-999999;
@@ -115,7 +118,7 @@ function main() {
     ['core28_no_gate_normal',deep(base)],
     ['core28_no_gate_sentinel',makeSentinel(base)],
     ['core29_one_gate_normal',repair(base)],
-    ['core29_one_gate_sentinel',repair(makeSentinel(base))]
+    ['core29_one_gate_sentinel',addUnusedOwner(makeSentinel(base))]
   ];
   const active=JSON.parse(pinned(activeRel,activeSha).toString('utf8'));
   variants.push(['active_shared_owner31',active]);
