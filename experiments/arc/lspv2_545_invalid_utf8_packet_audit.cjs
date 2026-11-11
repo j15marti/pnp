@@ -36,7 +36,7 @@ assert(!a.bytes.equals(b.bytes)&&a.bytes.toString('utf8')===b.bytes.toString('ut
 const one=splice(base,q('s0'),bad(0x80),true);
 const opcode=splice(base,q('AND3'),bad(0x80),true);
 const collision=splice(a.bytes,q('s1'),bad(0x81));
-assert.equal(collision.count,2);
+assert.equal(collision.count,3);
 const graph=splice(base,q('K4'),bad(0x80),true);
 const cases=[['baseline',base,true],['invalid80_all_source_refs',a.bytes,true],
  ['invalid81_all_source_refs',b.bytes,true],['invalid80_one_source_ref',one.bytes,false],
