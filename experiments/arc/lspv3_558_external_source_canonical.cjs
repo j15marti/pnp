@@ -75,10 +75,10 @@ function runProducer(js){let out="";new Function("console",js)({log:x=>{out=x}})
 function runChecker(js,o){let out="";const fs={readFileSync:()=>JSON.stringify(o)};
  new Function("require","process","console",js)(n=>{insist(n==="fs","unrecognized module");return fs},{argv:["node","checker","packet"]},{log:x=>{out=x}});
  return JSON.parse(out)}
-function audit(producerSrc,checkerSrc){
+function audit(producerSrc,checkerSrc,k4IndependentDIMACS){
  const orig=runProducer(producerSrc),rows=[];let total=0;
  for(const sourceFix of orig.fixtures){
- const external=formatCNF(sourceFix),canonical=canonicalFixture(sourceFix,external),packet=packetFor(canonical);
+ const external=(sourceFix.graph.name==="K4"&&k4IndependentDIMACS!==undefined)?k4IndependentDIMACS:formatCNF(sourceFix),canonical=canonicalFixture(sourceFix,external),packet=packetFor(canonical);
  const verdict=runChecker(checkerSrc,packet),byteCount=JSON.stringify(packet).length;
  insist(verdict.checks>0&&verdict.cases.length===1,"canonical rejected");total+=verdict.checks;
  const corrupted=JSON.parse(JSON.stringify(sourceFix));corrupted.proof[0].table^=1;
@@ -101,5 +101,6 @@ if(require.main===module){
  const fs=require("fs"),path=require("path");
  const base=process.cwd(),a=fs.readFileSync(path.join(base,"experiments/arc/lspv2_341_mixed_tseitin_min_dag.js"),"utf8"),
  b=fs.readFileSync(path.join(base,"experiments/arc/lspv2_341_independent_verify.js"),"utf8");
- console.log(JSON.stringify(audit(a,b),null,2));
+ const independent=fs.readFileSync(path.join(base,"results/raw/arc/2026-11-10_1824_LSPV3_558_K4_EXTERNAL.cnf"),"utf8");
+ console.log(JSON.stringify(audit(a,b,independent),null,2));
 }
