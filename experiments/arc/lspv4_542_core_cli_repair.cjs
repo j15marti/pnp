@@ -17,11 +17,14 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '../..');
 const checkerRel = 'experiments/arc/lspv2_386_independent_verify.js';
 const seedRel = 'results/raw/arc/2026-11-11_0203_LSPV1_568_K4_DP_CORE28.json';
-const sentinelRel = 'results/raw/arc/2026-11-11_0057_LSPV1_567_POSITIVE_SENTINEL.json';
+const positiveRel = 'results/raw/arc/2026-11-11_0057_LSPV1_567_PIVOT999999_CORE_ONLY_PACKET.json';
+const negativeRel = 'results/raw/arc/2026-11-11_0057_LSPV1_567_NEGATIVE_PIVOT_CLI_ACCEPT_PACKET.json';
 const activeRel = 'results/raw/arc/2026-11-11_0336_LSPV4_540_OWNER_FACET_CROSS_CONE_ACCEPTED.json';
 const checkerSha = '338305c0ce101704205e57543756b8127074a986';
 const seedSha = 'c68eeaf67015416dae49a34ad5ce25432b839bee';
 const activeSha = '25b5c1f95734f6eae36bdbb4a17c948c00753cff';
+const positiveSha = 'b2216a95f65d765028410ec3db9520dfcb104015';
+const negativeSha = '717970007a1988cda31b70ac5abce8fd81519f4c';
 function gitBlob(buf) {
   return crypto.createHash('sha1').update(Buffer.from('blob '+buf.length+'\0')).update(buf).digest('hex');
 }
@@ -116,6 +119,8 @@ function main() {
   ];
   const active=JSON.parse(pinned(activeRel,activeSha).toString('utf8'));
   variants.push(['active_shared_owner31',active]);
+  variants.push(['nested_56_paid_positive_sentinel',JSON.parse(pinned(positiveRel,positiveSha).toString('utf8'))]);
+  variants.push(['nested_56_paid_negative_sentinel',JSON.parse(pinned(negativeRel,negativeSha).toString('utf8'))]);
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'lspv4_542_'));
   const cases=[], negatives=[];
   try {
@@ -157,7 +162,7 @@ function main() {
     }
     const out={
       id:'LSPV-4/542',status:'COMPUTATIONAL + PROVED/RESTRICTED source-code theorem',
-      timestamp:'2026-11-11 05:36 PST',checkerBlob:checkerSha,seedBlob:seedSha,activeBlob:activeSha,
+      timestamp:'2026-11-11 05:36 PST',checkerBlob:checkerSha,seedBlob:seedSha,activeBlob:activeSha,positiveBlob:positiveSha,negativeBlob:negativeSha,
       node:process.version,platform:process.platform,arch:process.arch,
       originalCodeUnmodified:true,exactOriginalOSSubprocesses:cases.length*2+negatives.length,
       observations:cases,hostiles:negatives,caseCount:cases.length,hostileCount:negatives.length,
