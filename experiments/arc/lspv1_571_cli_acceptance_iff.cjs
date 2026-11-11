@@ -18,13 +18,13 @@ const cases=[
  ['relabel_even_control','results/raw/arc/2026-11-10_2303_LSPV1_565_ARCHIVED_386_RELABEL_CORE_ACCEPT_CLI_REJECT.json','5f8236b622fe340e1d485dd32be4b987cc158c84',false,false]
 ];
 const blob=s=>crypto.createHash('sha1').update(Buffer.concat([
-  Buffer.from('blob '+Buffer.byteLength(s)+'\\0'),Buffer.from(s)])).digest('hex');
+  Buffer.from('blob '+Buffer.byteLength(s)+'\0'),Buffer.from(s)])).digest('hex');
 const original=fs.readFileSync(checker,'utf8');
 assert.equal(blob(original),'338305c0ce101704205e57543756b8127074a986');
 function coreAccept(payload){
  const context={require,structuredClone,console:{log(){}},process:{argv:[process.execPath,checker]},__payload:payload};
  try{
-   vm.runInNewContext(original+'\\nglobalThis.__verdict=checkProof(__payload,{control:true});',context,{timeout:10000});
+   vm.runInNewContext(original+'\nglobalThis.__verdict=checkProof(__payload,{control:true});',context,{timeout:10000});
    return {accept:true,paid:context.__verdict.paid};
  }catch(e){return {accept:false,error:String(e.message||e)};}
 }
@@ -34,7 +34,7 @@ function nativeCli(raw){
  const z=cp.spawnSync(process.execPath,[checker,file],{encoding:'utf8',timeout:10000,maxBuffer:20000000});
  if(z.error)throw z.error;
  if(z.status===0){const j=JSON.parse(z.stdout);return {accept:true,assertions:j.assertions,paid:j.paid};}
- const errors=(z.stderr||'').split('\\n').filter(s=>s.includes('Error:'));
+ const errors=(z.stderr||'').split('\n').filter(s=>s.includes('Error:'));
  return {accept:false,error:errors[0]||'nonzero exit '+z.status};
 }
 const deep=x=>JSON.parse(JSON.stringify(x)), test=[];
@@ -73,5 +73,5 @@ const out={result:'LSPV1-571 full original /386 CLI acceptance iff controlled co
  accepted_cli:test.filter(x=>x.cli.accept).length, accepted_core:test.filter(x=>x.core.accept).length,
  counted_original_cli_assertions:test.reduce((a,b)=>a+(b.cli.assertions||0),0),tests:test,
  status:'PROVED/RESTRICTED theorem, COMPUTATIONAL native OS regression; P versus NP OPEN'};
-const i=process.argv.indexOf('--write');if(i>=0){assert(process.argv[i+1],'--write needs path');fs.writeFileSync(process.argv[i+1],JSON.stringify(out,null,2)+'\\n');}
+const i=process.argv.indexOf('--write');if(i>=0){assert(process.argv[i+1],'--write needs path');fs.writeFileSync(process.argv[i+1],JSON.stringify(out,null,2)+'\n');}
 console.log(JSON.stringify(out,null,2));
