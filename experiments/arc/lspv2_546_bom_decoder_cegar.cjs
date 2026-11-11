@@ -9,7 +9,7 @@ const pinned=[
  ['experiments/arc/lspv2_341_mixed_tseitin_min_dag.js','4081022e8a3841d79f751a3d3a7a10decbb026da'],
  ['experiments/arc/lspv2_341_independent_verify.js','fcb7d4ced8f922de14c0bda16263a8cc7853e8e0']
 ];
-function blobSHA(b){return crypto.createHash('sha1').update(Buffer.from('blob '+b.length+'\\0')).update(b).digest('hex')}
+function blobSHA(b){return crypto.createHash('sha1').update(Buffer.from('blob '+b.length+' ')).update(Buffer.from([0])).update(b).digest('hex')}
 function digest(b){return crypto.createHash('sha256').update(b).digest('hex')}
 for(const [file,sha] of pinned)assert.equal(blobSHA(fs.readFileSync(path.join(root,file))),sha,'PIN DRIFT '+file);
 function replaceAllBuffer(b,needle,repl,first=false){
