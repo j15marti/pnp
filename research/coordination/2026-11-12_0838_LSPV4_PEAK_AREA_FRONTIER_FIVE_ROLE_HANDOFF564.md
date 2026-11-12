@@ -35,7 +35,7 @@ The finding is distinct from LSPV-4/563's work/recomputation non-dominance: even
 - [P45 full certificate](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-12_0838_LSPV4_564_P45_W38_NATIVE386_CERT.json)
 - [P50 full certificate](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-12_0838_LSPV4_564_P50_W38_NATIVE386_CERT.json)
 - [P51 full certificate](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-12_0838_LSPV4_564_P51_W38_NATIVE386_CERT.json)
-- root main.tex insertion inside exactly balanced LSPV-4 OWNED markers, full outside-preservation readback, new Git blob `ad11002bdb0d6177180e419b5b4395f433c7e7ea`; commit `e4bce6f3fa0dc1acea5868aceb2bbf9619df86ad`
+- root main.tex insertion inside exactly balanced LSPV-4 OWNED markers, full outside-preservation readback, current Git blob `97c1677a01a0b0cfeb0f31b0e8152962b08d6bc8`; OS-replay reconciliation commit `0043221573df1963aa565ed3b5659157d2e7bab9`
 
 Primary literature: Nordström (LMCS 2013) on pebbling/proof-space models; Nordström and Håstad (Theory of Computing 2013) on Resolution time-space; Cousot/Cousot (POPL 1977) for abstract interpretation. These give discipline and analogies, not an all-rule theorem.
 
