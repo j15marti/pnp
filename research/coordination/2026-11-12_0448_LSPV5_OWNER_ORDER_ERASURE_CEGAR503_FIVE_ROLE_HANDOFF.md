@@ -1,7 +1,7 @@
 # LSPV-5/503 five-role handoff — owner-order erasure CEGAR
 
 **Date:** 2026-11-12 04:48 America/Los_Angeles  
-**Status:** PROVED/RESTRICTED for the pinned `/386` five-owner declaration phase; P2-D1, P2-C3, P2-B1 and P2-B2/B3 remain OPEN; P versus NP remains OPEN.
+**Status:** PROVED/EXACT for the explicitly restricted pinned `/386` five-owner declaration phase; P2-D1, P2-C3, P2-B1 and P2-B2/B3 remain OPEN; P versus NP remains OPEN.
 
 ## Exact result
 
