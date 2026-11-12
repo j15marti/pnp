@@ -67,6 +67,7 @@ for(const slot of slots){
   run(`${slot.name}_${tag}`,d,tag===slot.accepted);
  }
 }
+// Distinguish a recognized opcode failing on arity from unknown opcode rejection.
 for(const [name,mutate] of [
  ['bad_source_literal',d=>{d.records[0].c=[-d.spec.guard]}],
  ['bad_RES_signed_pivot',d=>{d.records.at(-1).pivot=123}],
@@ -77,6 +78,8 @@ for(const [name,mutate] of [
  ['bad_source_spec',d=>{d.spec.charge[0]^=1}],
  ['bad_fresh_wire',d=>{d.gate_defs[0][1]=1}]
 ]){const d=structuredClone(live);mutate(d);run(name,d,false)}
+// Non-normative metadata is ignored by the original checker. This is a positive
+// accepted-byte case, not evidence that any hidden LOCAL-CONVERT was executed.
 let metadata=structuredClone(live);metadata.records.at(-1).annotations={
   'LOCAL-CONVERT':'untrusted user annotation','GF(2)':'untrusted',
   'context':'not checked','discharge':'not checked'};
