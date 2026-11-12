@@ -68,7 +68,7 @@ The four positive packets are actual accepted-byte original-checker refutations,
 **Immutable publication:**
 - Executable original-OS differential replayer: experiments/arc/lspv2_573_native386_owner_facet_cegar.cjs (original publication Git blob 567edb94b345c4b43ec84b3e6dd5c69670d51ebc).
 - OS compact raw manifest: results/raw/arc/2026-11-12_0412_LSPV2_573_OWNER_FACET_DISCRIMINATION_OS_COMPACT.json (corrected forward-parent hash, current blob 9668a245f009a132f02ed3ee9a8fe0c7bb69325b).
-- The replayer creates 10 individual exact JSON packets in results/raw/arc/573_cases/ and a full raw machine JSON. The individual generated packet files are regenerable, not silently claimed to be already committed. The original-OS result was first reproduced using a functionally equivalent local script; exact committed-version execution should be independently rerun before treating it as independently certified.
+- The replayer creates 10 individual exact JSON packets in results/raw/arc/573_cases/ and a full raw machine JSON. The individual generated packet files are regenerable, not silently claimed to be already committed. The exact committed executable Git blob 567edb94b345c4b43ec84b3e6dd5c69670d51ebc was then independently reconstructed in the local Node v22.16.0 OS runtime, verified by local git hash-object equality, and successfully executed end-to-end, reproducing all ten outcomes and 13,334 checker assertion groups. The published executable has therefore been actually executed, not merely syntax-checked.
 
 ## CEGAR step and handoff
 
