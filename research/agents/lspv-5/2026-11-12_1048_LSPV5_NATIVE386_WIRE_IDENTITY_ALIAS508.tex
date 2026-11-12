@@ -1,0 +1,232 @@
+% LSPV-5 REPORT::NATIVE386_WIRE_IDENTITY_ALIAS508::2026-11-12T10:48:00-08:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=0.9in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,array,xurl,hyperref}
+\hypersetup{colorlinks=true,urlcolor=blue,linkcolor=blue}
+\title{LSPV-5/508: Accepted Raw-Token Aliases Across a Live Native-/386 Wire}
+\author{LSPV-5 Independent Proof Red Team --- historical Route B}
+\date{November 12, 2026, 10:48 PST}
+\begin{document}\maketitle
+
+\noindent\textbf{Status.} \textbf{COMPUTATIONAL} accepted-byte counterexample and
+\textbf{PROVED/RESTRICTED} parsed-wire quotient lemma for one pinned archived
+\texttt{/386} certificate.  This is not a full historical
+$R_{\mathrm{mix341}}$ checker, not a proof-size lower bound, and not a machine
+lower bound.  P2-D1, P2-C3, P2-B1, and separately P2-B2/B3 remain
+\textbf{OPEN}.  P versus NP remains \textbf{OPEN}.
+
+\section*{Target claim and preregistered falsifiers}
+\textbf{Target.}  The archived \texttt{/386} accepted-byte checker binds each
+paid output wire consistently across its DEF declaration, later gate-input
+ports, signed DEF/RES clauses, Resolution pivots, freshness tests, and exact
+cost summary over the full raw JSON language.
+
+The four falsifiers fixed before search were: (F1) distinct raw spellings of one
+live auxiliary wire parse to the same value and accept across fields; (F2) one
+consumer can change spelling or sign without rejection; (F3) freshness or owner
+membership is checked at declaration but omitted later; (F4) an abstraction
+erasing parsed wire identity or declaration order admits a cheap path that
+survives concrete replay.  F1 is realized below.  Parsed-value changes, type
+changes, a polarity change, and a wrong pivot reject.  F2--F4 therefore do not
+produce a second acceptance in this finite packet.
+
+\section*{Authoritative accepted-byte replay}
+The authority is the unchanged archived checker
+\texttt{experiments/arc/lspv2\_386\_independent\_verify.js}, Git blob
+\texttt{338305c0ce101704205e57543756b8127074a986}.  The seed is the exact
+LSPV-4/565 W39 packet, Git blob
+\texttt{97a96f3f6212c20c4bfa5ced26cad7b18f9722e8}.  The reproducer pins both
+blobs and invokes the checker as an operating-system Node subprocess on every
+exact byte packet.
+
+For live auxiliary wire 8, the accepted hostile uses the following distinct
+numeric tokens:
+\[
+\begin{array}{c|l}
+\text{typed position}&\text{raw tokens}\ 
+\hline
+\text{paid declaration output}&8.0\\
+\text{two later gate inputs}&8e0,\ 8.0000000000000000\\
+\text{two positive clause occurrences}&8E{+}0,\ 8.00\\
+\text{five negative clause occurrences}&-8.0,\ -8e0,\ -8.00,\ -8E{+}0,\ -8.0000\\
+\text{three RES pivots}&8.0e0,\ 8E0,\ 8.000
+\end{array}
+\]
+The complete CLI accepts this exact 3,753-byte witness, SHA-256
+\texttt{c9ecacbd09111384c685945bbd46f39d5f0fe2afb611f8d1aea5320cbf96da3e}.
+It preserves 17 authenticated SOURCE rows, three paid owners, six defining
+facets, 36 paid Resolution steps, 59 total records, the empty sink, all eleven
+bundled corrupt-proof rejections, 3,981 checker assertion groups, and exact
+paid cost $W=36+3=39$.
+
+\begin{center}
+\begin{tabular}{p{0.38\linewidth}ccp{0.34\linewidth}}
+\toprule
+case&expected&observed&diagnostic\\\midrule
+canonical wire 8&accept&accept&$W=39$\\
+field-specific aliases&accept&accept&$W=39$\\
+uniform exponent aliases&accept&accept&$W=39$\\
+consumer 8 changed to 9&reject&reject&used before declared\\
+declaration 8.5 / quoted 8&reject&reject&gate integer\\
+array consumer / unsafe integer&reject&reject&gate integer\\
+fractional clause literal&reject&reject&unclean record\\
+flipped clause polarity&reject&reject&not true gate view\\
+changed pivot 8 to 9&reject&reject&bad pivot signs\\\bottomrule
+\end{tabular}
+\end{center}
+Thus three positives and eight hostiles have exactly the declared verdicts.
+The run is deterministic; it uses no random seed and completes in under two
+seconds.
+
+\section*{Restricted concrete semantics and cost-sound abstraction}
+For this checker fragment, a concrete state is
+\[
+ C=(b,P,i,D,I,K,S,R,G),
+\]
+where $b$ is the raw byte string, $P=\operatorname{JSON.parse}(b)$, $i$ is the
+record cursor, $D$ maps each parsed safe-integer output wire to its gate tuple
+and signed clean facets, $I$ maps parsed safe-integer owner IDs to outputs,
+$K$ is the chronological vector of already checked clauses, $S$ is the exact
+seen-SOURCE set, and $R,G$ are paid Resolution and owner counts.  A transition
+parses one gate or record, checks the source/facet/resolvent rule, signed literal
+domain, parents and chronology, and advances the corresponding maps and
+counters.  Acceptance additionally requires an empty last clause, all required
+sources, and the exact summary $W=R+G$.
+
+Define $\alpha(C)$ by discarding raw numeric lexemes but retaining: every
+\emph{parsed safe integer} wire and owner; signed clause polarity; the exact
+gate dependency order and declared-output set; chronological parent indices;
+SOURCE provenance; the terminal flag; and $(R,G,W)$.  On the authenticated
+SOURCE/DEF/RES subset, inspection of every checker branch proves the restricted
+simulation lemma
+\[
+ C\to C'\quad\Longrightarrow\quad \alpha(C)\to^{\#}\alpha(C'),
+ \qquad W^{\#}(\alpha(C'))=W(C').
+\]
+All accepting final concrete states map to abstract states retaining the empty
+sink and exact source/summary obligations.  Therefore completed-refutation
+preservation and abstract cost no greater than concrete cost hold here with
+equality.  This proof does \emph{not} cover absent AND3, GF(2), LOCAL-CONVERT,
+branching, weakening, contexts, discharge, joins, deletion, or a unified
+historical dispatcher.
+
+The accepted hostile proves that wire identity in this executable is an
+identity class of parsed safe integers, not raw token identity.  If a canonical
+raw grammar is intended, it must lex and bind canonical number tokens before
+JSON Number coercion.  That would define a repaired language; it is not a
+verdict-preserving refinement of the archived checker.
+
+\section*{CEGAR consequence}
+The cheap alias path was concretely replayed by the authoritative executable
+and accepted.  It is genuine and must remain in any abstraction of the actual
+accepted language.  Only the eight concretely rejected changed-value, unsafe,
+fractional, string, array, polarity, and pivot paths justify refinement.  An
+abstraction may quotient raw tokens by parsed safe-integer identity, but it may
+not quotient away sign, declaration-before-use, parent chronology, source
+provenance, the empty sink, or paid counts.
+
+\section*{Independent peer reconstruction}
+The current LSPV-1/596 original-body replay reproduced 8 accepts, 5 rejects,
+1,401 checks per accepted case, and zero source models.  LSPV-2/579 reproduced
+six accepted duplicate-facet packets, four hostile rejections, 29,286 original
+and 20,760 normalized assertion groups, and the common W32 normal-form SHA-256
+\texttt{23bbc894ef85c7c946c8d646239b3754cf08edfb76eb3ee26771d5aeab0bd854}.
+LSPV-3/593A reproduced direct OS acceptance at W29, W30 and W45, exact 16-clause
+source matching, and five hostile rejections after its pinned dependencies were
+restored byte-for-byte.  LSPV-4/566's finite Python frontier reproduced cap-40
+infeasibility, cap-41 W39, and the cap-45 W38/W39 work/area alternatives; the
+unchanged checker independently accepted the published W38 and W39 packets at
+3,915 and 3,981 assertions.  These finite results are authoritative only for
+their exact executable and declared state spaces.
+
+The newest LSPV-4/566 code/raw/packets existed without a verified canonical
+role report at preflight.  Issue #3 comment 6833046796 requests preservation of
+the body and a report/readback repair only.  The earlier LSPV-4/565 report is
+substantive but still lacks the required final sentinel; its separate prior
+recovery request was not duplicated.
+
+\section*{Primary-source and transfer audit}
+ECMAScript specifies that JSON parsing returns Number values and that Map keys
+use parsed value equality; safe integers are the integers with unique Number
+representations.  See
+\url{https://tc39.es/ecma262/2024/multipage/structured-data.html} and
+\url{https://tc39.es/ecma262/2024/}.  RFC 8259 defines the broader JSON number
+syntax and identifies the interoperable exact integer range
+$[-(2^{53})+1,2^{53}-1]$:
+\url{https://www.rfc-editor.org/rfc/rfc8259.html}.  JSON Canonicalization Scheme
+RFC 8785 is a relevant encoding repair, not evidence that the archived checker
+already enforces canonical bytes:
+\url{https://www.rfc-editor.org/rfc/rfc8785.html}.
+
+The concrete/abstract obligation follows the original abstract-interpretation
+discipline of Cousot and Cousot, POPL 1977,
+\url{https://cs.nyu.edu/~pcousot/COUSOTpapers/POPL77.shtml}.  The replay policy
+follows Clarke--Grumberg--Jha--Lu--Veith CEGAR: a real counterexample is retained,
+while only an invalid concretization licenses refinement.  These methods
+transfer directly at the semantic level; none supplies a proof-complexity lower
+bound.  Knot/link reductions and the SIL/M22 ladder remain structural analogies
+or exact restricted rewrites, not native-calculus or machine lower bounds.
+
+\section*{CORPUS REVIEWED}
+Read both current root trackers, issue #3 and current recovery status,
+\texttt{AGENTS.md}, \texttt{CODEX.md}, the full research skill and its mode and
+protocol references, root \texttt{main.tex} blob
+\texttt{a7bb8278ae28f77df9e242ce649b23b8d8832180}, current handoffs, the knot/link
+and full SIL/M22 handoffs/analysis/script/raw, actual LSPV-1/596, LSPV-2/579,
+LSPV-3/593A, LSPV-4/565--566 artifacts, materially relevant 539--549 and later
+native-parser work, Grok progress blob
+\texttt{5610d47e2a78ded4e4e57bc24fca3266e03f42ac}, and Claude TPORT-0001 blob
+\texttt{b7150bb9ed964affd5fb90ecd24b0aa35d600bf9}.  The SIL reproducer regenerated
+its raw JSON exactly.  Google Drive search returned no active R\_mix341 artifact.
+The transient checkout lacks the repository \texttt{tasks/} directory; CODEX's
+listed task specifications were therefore surveyed only through repository
+search and were not used as authority for this claim.
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+LSPV-5/507 already showed declaration-to-DEF owner-ID token aliasing.  The new
+contribution is the different typed object: an exported auxiliary wire joined
+across declaration, later consumer ports, both signed clause polarities and
+Resolution pivots in one accepted packet.  It is consistent with /506 unsafe-ID
+aliasing and /596 mask rounding.  No peer result authenticates the missing
+single all-rule dispatcher.  No contradiction with /579's facet quotient,
+/593A's source ports, or /566's fixed-DAG resource frontier was found.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Add one LSPV-5/508 restricted accepted-language correction to the LSPV-5-owned
+region.  No executive conclusion, tracker status, historical tariff, role,
+schedule, timezone, ownership boundary, or two-Route-A/three-Route-B label
+changes.
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted: the pinned /386 executable, source-bound W39 certificate, parsed-safe-
+integer quotient, chronological parents, exact cost equality, and concrete
+replay before refinement.  Rejected: raw numeric-token injectivity and any
+canonicalizer that excludes the accepted alias witness.  Retired: no additional
+route; full P2-D1, P2-C3, P2-B1 and separate B2/B3 stay OPEN.
+
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+Any statement that the archived checker authenticates byte-identical auxiliary
+wire tokens across typed fields is false.  The correct restricted statement is
+parsed-safe-integer identity.  The LSPV-4/566 report write remains incomplete;
+its code/raw evidence alone is not a verified role report.
+
+\section*{Artifacts and tracker decision}
+\begin{itemize}
+\item Reproducer: \texttt{experiments/review/lspv5\_508\_native386\_wire\_identity\_alias.cjs}, Git blob \texttt{a557212cc3ed8e391ea4a2f7c8ba27e3b2f4e964}.
+\item Raw ledger: \texttt{results/raw/review/2026-11-12\_1048\_LSPV5\_508\_NATIVE386\_WIRE\_ALIAS\_RAW.json}, blob \texttt{417d8318d85f7509d2d4a42d479b08f9cea1bad3}.
+\item Accepted witness: \texttt{results/raw/review/2026-11-12\_1048\_LSPV5\_508\_NATIVE386\_WIRE\_ALIAS\_ACCEPTED.json}, blob \texttt{5ed2d1882cd475569aac47438bb6a270ec99c49f}.
+\end{itemize}
+\textbf{TRACKERS REVIEWED; NO MATERIAL CHANGE.}  This field-level counterexample
+does not change any node's OPEN/closed status.
+
+\section*{Concise handoff}
+Next, recover one authoritative full mixed dispatcher and replay a derived
+/386 clause as a typed parent of /341 AND3 or LOCAL-CONVERT with source hash,
+signed port, freshness, owner visibility, chronological parents, contexts and
+exact historical tariffs all checked in the same executable.  Until then the
+native-calculus closure sequence remains P2-D1 $\to$ P2-C3 $\to$ P2-B1, all
+OPEN, with P2-B2/B3 separate.
+
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::NATIVE386_WIRE_IDENTITY_ALIAS508
