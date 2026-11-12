@@ -1,0 +1,111 @@
+% LSPV-5 REPORT::506::2026-11-12T07:48:00-08:00
+\documentclass[10pt]{article}
+\usepackage[margin=.82in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,hyperref}
+\newtheorem{lemma}{Lemma}
+\title{LSPV-5/506: The /563 Work--Retention Non-Dominance Is an Artifact of a Source-Rederiving Detour}
+\author{Independent Proof Red Team, Historical Route B}
+\date{November 12, 2026, 07:48 PST}
+\begin{document}\maketitle
+\noindent\textbf{Status.}
+LSPV-4/563's two corrected vectors \((38,83,885)\) and \((39,71,748)\) are \textbf{CONFIRMED} as exact
+optima of their fixed DAG, \emph{even with unlimited recomputation} (COMPUTATIONAL, exhaustive).
+Its restricted fixed-DAG theorem stands.  However, its abstraction-firewall reading is
+\textbf{FALSIFIED/RETIRED as a statement about the minimum over proofs}: a same-source, original-checker-accepted
+shortening of the very same packet has post-step vector \((28,61,615)\) (core) / \((29,61,615)\) (CLI),
+strictly dominating both.  A source-redirection simulation lemma is \textbf{PROVED/EXACT} in the restricted
+register model.  [P2-D1], [P2-C3], [P2-B1] and separate [P2-B2]/[P2-B3] remain \textbf{OPEN}.
+\textbf{P versus NP remains OPEN.}
+
+\section*{Shared objective and why this matters}
+The common target is \(\overline W_R(N)=\max_{F\in\mathrm{UNSAT},|\langle F\rangle|\le N}\min_{\pi:F\vdash_R\bot}\mathrm{cost}_R(\pi)\),
+with the optimal \(\pi\) granted free.  Any cost phenomenon observed on one \emph{fixed} \(\pi\) is relevant to
+\(\overline W_R\) only if it survives the inner \(\min_\pi\).  The red-team question was therefore: does the
+/563 work-versus-retention tradeoff survive proof choice on the same signed source?
+
+\section*{Registered falsifiers}
+\begin{enumerate}
+\item[F1] A legal 4-register schedule beating \((35\text{ RES};83,885)\) or \((36;71,748)\) with recomputation. \textbf{Rejected}: exhaustive.
+\item[F2] A legal 3-register trace on the /560 DAG. \textbf{Rejected} for every execution count (5,355 reachable resident sets, sink unreachable). This duplicates and confirms /561's restricted result as recorded in /505.
+\item[F3] A same-source accepted proof whose joint vector is componentwise \(\le\) both /563 vectors. \textbf{Found} (below).
+\item[F4] A noncanonical byte alias in the clause sizes. \textbf{Rejected}: sizes recomputed from packet bytes equal LSPV-4's table exactly.
+\end{enumerate}
+
+\section*{Exact finding: the /560 detour re-derives a SOURCE clause}
+In the W38 packet (Git blob \texttt{6b72c961\ldots}), RES records 23--29 (paid RES 0--6) use all six DEF facets and all three
+AND2 owners and terminate at RES 5 and RES 6, both equal to \([-1,-4,-5,-7]\).  That clause is \emph{original SOURCE record 7}.
+RES 0 and RES 4 coincide (\([-4,-5,-7,-8]\)), as do RES 1 and RES 3.  The only shared paid node of the whole DAG is RES 0.
+Redirecting the two uses of records 28/29 to record 7 and deleting records 17--29 and all owners gives a
+45-record packet with 17 SOURCE and 28 strict RES (SHA-256 \texttt{0fe358fd\ldots}).  The unchanged archived /386 core
+\texttt{checkProof} accepts it (paid 28; odd models 0, even models 8).  The full CLI rejects it solely because the
+\texttt{gate\_defs.shift()} hostile mutation is a no-op on \([]\) --- the ownerless-CLI artifact already tracked as [P2-L1-577]/[P2-L5-505].
+Keeping original owner 0 \emph{unused} gives a W29 packet (SHA-256 \texttt{ec848522\ldots}, 2,894 bytes) that the unchanged CLI accepts
+with 3,542 assertions and 11 negative tests.  The resulting RES DAG is tree-like (max RES fan-out 1), so the /576 tree lower bound 28 shows it is
+tree-optimal; LSPV-2/576's own W29 witness (2,883 bytes) is an independent precedent, not identical bytes.
+
+\section*{Exact frontier (four nonexpanding registers, post-step convention of /562--/563)}
+Layered exact search over resident sets with arbitrary recomputation and free deletion; every witness replayed by an independent Python validator.
+\begin{center}\begin{tabular}{lrrrr}\toprule
+DAG & RES executions & min slot-area (bytes at min) & min byte-area & paid \(W\)\\\midrule
+/560 W38 & 35 & 83 (885) & 885 & 38\\
+/560 W38 & 36 & \textbf{71} (748) & \textbf{748} & 39\\
+/560 W38 & 37,38,\ldots,42 & 72,\ldots,77 & 754,\ldots,784 & \(\ge40\)\\
+excised & 28 & \textbf{61} (615) & \textbf{615} & 28 core / 29 CLI\\
+excised & 29,\ldots,36 & 62,\ldots,69 & 621,\ldots,663 & \(\ge29\)\\\bottomrule
+\end{tabular}\end{center}
+Register floors (all execution counts): 1, 2, 3 registers infeasible and 4 feasible on both DAGs.  On the excised tree-like DAG recomputation never helps.
+Hence, over the three known accepted same-source realizations, a single proof minimizes \(W\), slot-area and byte-area simultaneously: the /563 Pareto
+non-dominance does \emph{not} survive \(\min_\pi\) on this instance.
+
+\section*{Lemma (source-redirection simulation; PROVED/EXACT, restricted model)}
+\begin{lemma}
+Let \(\pi\) be a strict-RES DAG proof with read-only free SOURCE, \(v\) a paid node whose clause equals a SOURCE clause \(s\), and \(\pi'\) obtained by
+redirecting every use of \(v\) to \(s\) and deleting every paid node that no longer reaches the sink.  Then for every capacity \(c\) and every legal
+schedule \(\sigma\) of \(\pi\) (with recomputation, overwrite and free deletion), deleting the executions of removed nodes and erasing them from all
+resident sets yields a legal schedule \(\sigma'\) of \(\pi'\) with \(W(\sigma')\le W(\sigma)-|\text{removed}|_{\ge1}\), \(A(\sigma')\le A(\sigma)\), \(B(\sigma')\le B(\sigma)\).
+\end{lemma}
+\begin{proof}
+Removed nodes have no surviving consumer, so deleting their steps leaves every surviving step's paid parents among its (shrunk) old residents, except
+parents equal to \(v\), now read from free SOURCE.  Kept sets only shrink, so \(|{\rm keep}'\cup P'_j|\le|{\rm keep}\cup P_j|\); if the original step needed an
+overwrite of \(v\), then \(v\notin P'_j\) and the peak drops by one, so no overwrite is needed.  Each surviving post-set loses only removed nodes and each
+deleted step contributes a nonnegative area term, so both areas are nonincreasing; at least one execution of \(v\) is removed.
+\end{proof}
+So the cost-sound quotient is ``collapse to the free read-only representative'', not ``collapse to the earliest paid occurrence''.  /563 correctly
+showed the latter is not jointly cost-sound; the former is, for every schedule, but only for clauses literally equal to a SOURCE clause.
+
+\section*{Literature check}
+Ben-Sasson and Nordstr\"om, \emph{Understanding Space in Proof Complexity} (ICS 2011; journal version) and Nordstr\"om, \emph{Pebble Games, Proof
+Complexity, and Time-Space Trade-offs}, LMCS 9(3:15), 2013 (arXiv:1307.3913): genuine length--space tradeoffs exist for \emph{all} proofs of
+pebbling formulas; the tradeoff found here on a padded DAG is not of that kind.  Peitl and Szeider, \emph{Finding the Hardest Formulas for
+Resolution}, IJCAI 2021: SAT encoding of ``\(F\) has a resolution proof of length \(\le s\)'', the right tool for the open question below.
+\textbf{Transfer classification:} pebbling tradeoffs --- useful analogy only (no pebbling-formula structure here); proof-length SAT encoding --- directly
+transferable method for exact finite DAG minima.
+
+\section*{Corpus reviewed; duplication audit}
+AGENTS.md (incl.\ 11-09 knot/link handoff pointer), proof1.txt, proof2.txt, LSPV-4/560--563 reports, raw W38/W39 packets (blobs re-hashed), /386 checker
+(blob \texttt{338305c0\ldots}), LSPV-2/576 and LSPV-1/592, LSPV-3/590 handoffs, LSPV-5/505.  Duplicates: W38 3-register impossibility (/561), ownerless CLI
+rejection ([P2-L1-577]), tree minimum 28 and a W29 witness (/576).  New: unlimited-recomputation exactness of both /563 vectors; the detour diagnosis;
+same-source joint dominance; the redirection lemma; 3-register impossibility on the excised DAG.
+
+\section*{What changed relative to root main; adopted / rejected / retired}
+\textbf{Adopted}: /563 fixed-DAG numbers.  \textbf{Retired}: reading /563's non-dominance as evidence of a work/retention tradeoff for
+\(\min_\pi\) on this source.  \textbf{Stale/overstated}: none found in /563 itself, which already caveated alternative proofs; the risk is downstream citation.
+
+\section*{Predecessor check}
+LSPV-4/563 report, raw, executable, handoff and owned main.tex region exist on \texttt{main} and read back; no retry request needed.
+(Its report is Markdown without the LaTeX sentinel, consistent with recent LSPV-4 practice.)
+
+\section*{Open, next tests}
+(i) Exact shared-DAG Resolution minimum for this 17-clause source (could be \(<28\)): run a Peitl--Szeider encoding (LSPV-2).
+(ii) Does any authentic source admit a genuine tradeoff surviving \(\min_\pi\)? Pebbling formulas are the known candidates (LSPV-4).
+(iii) Historical \(R_{\rm mix341}\) accepts K4 in 15 nodes (LSPV-2/341, LSPV-5/412); strict-RES numbers are not \(R_{\rm mix341}\) numbers (LSPV-3).
+\par\smallskip
+Artifacts: \path{experiments/arc/lspv5_506_w28_surgery.py}, \path{experiments/arc/lspv5_506_frontier.c}, \path{experiments/arc/lspv5_506_emit.py},
+\path{experiments/arc/lspv5_506_recompute_frontier.py}, \path{experiments/arc/lspv5_506_register_floor.py}, \path{experiments/arc/lspv5_506_assemble.py};
+raw \path{results/raw/arc/2026-11-12_0748_LSPV5_506_DETOUR_EXCISION_FRONTIER_RAW.json}, \path{results/raw/arc/2026-11-12_0748_LSPV5_506_REGISTER_FLOOR_RAW.json},
+packets \path{results/raw/arc/2026-11-12_0748_LSPV5_506_W28_EXCISED_NATIVE386.json}, \path{results/raw/arc/2026-11-12_0748_LSPV5_506_W29_EXCISED_UNUSED_OWNER_NATIVE386.json}.
+Chunking: each solver call is one (DAG, cap, objective) run under 15\,s.
+Exactly five roles, schedules, titles, Pacific timezone, historical weights, ownership and TWO Route A / THREE Route B labels unchanged; no automation changed.
+P versus NP remains \textbf{OPEN}.
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::506
