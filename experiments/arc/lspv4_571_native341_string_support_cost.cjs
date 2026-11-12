@@ -96,7 +96,7 @@ assert.equal(positives.length,raw.replay.positive_count);
 assert.equal(negatives.length,raw.replay.negative_count);
 for(let i=0;i<positives.length;i++){
   const x=raw.replay.positives[i],y=cases[i];
-  assert.deepEqual({name:x.name,choice:x.choice,accepted:x.accepted,checks:x.checks,bytes:x.bytes},y);
+  assert.deepEqual({name:x.name,choice:x.choice,accepted:x.accepted,checks:x.checks,bytes:x.bytes,error:x.error},y);
 }
 for(let i=0;i<negatives.length;i++){
   const x=raw.replay.negatives[i],y=negatives[i];
