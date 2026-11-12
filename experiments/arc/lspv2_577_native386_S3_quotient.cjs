@@ -74,8 +74,12 @@
   const x=transport(perms[1].v,perms[1].p);
   const mutants={bad_source:d=>d.records[0].source=3,bad_pivot:d=>d.records.at(-1).pivot=6,underpay:d=>d.summary.paid_total=28,unknown_AND3:d=>d.records.at(-1).kind='AND3',gate_collision:d=>d.gate_defs[0][1]=7};
   for(const [name,mut] of Object.entries(mutants)){const d=structuredClone(x);mut(d);checkCase(`REJECT_${name}`,d,false)}
-  const compact={scope:'tree-like strict Resolution only; original restricted /386, not R_mix341',source_sha256:sum(F),witness_sha256:sum(P),checker_git_blob:gitblob(fs.readFileSync(checker)),signed_clause_states:2187,orbits:495,group:'S3 on vertices 1,2,3, vertex 0 fixed',edge_maps:perms.map(z=>z.p),values:reps.map(i=>[i,values.get(i)])};
-  const cb=Buffer.from(JSON.stringify(compact)+'\n');fs.writeFileSync(path.join(out,'S3_POTENTIAL_495.json'),cb);
+  // Dense 495-entry orbit certificate. Orbit indices are regenerated, never trusted.
+  const cb=Buffer.from(JSON.stringify(reps.map(i=>values.get(i)))+'\n');
+  fs.writeFileSync(path.join(out,'S3_POTENTIAL_495.json'),cb);
+  const dense=JSON.parse(fs.readFileSync(path.join(out,'S3_POTENTIAL_495.json'),'utf8'));
+  assert.equal(dense.length,495);
+  for(let i=0;i<U.length;i++)assert.equal(dense[reps.indexOf(canonical[i])],h[i]);
   const result={status:'PROVED/EXACT restricted orbit quotient + COMPUTATIONAL original /386 OS checker; P versus NP OPEN',clause_states:2187,quotient_orbits:495,legal_resolution_inequalities:inequalities,oriented_inference_orbits:transitionOrbits.size,wrong29_inequalities:fail29,accepted:6,rejected:5,original_checker_assertions:cases.filter(x=>x.accepted).reduce((s,x)=>s+x.assertions,0),logical_work:29,tree_RES_work:28,quotient_file_sha256:sum(cb),cases};
   fs.writeFileSync(path.join(out,'S3_RAW.json'),JSON.stringify(result,null,2)+'\n');
   console.log(JSON.stringify({...result,cases:undefined}));
