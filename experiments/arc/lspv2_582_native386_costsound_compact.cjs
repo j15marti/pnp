@@ -11,7 +11,9 @@ assert.equal(sha(fs.readFileSync(checker)),'22d12f665fecede1a047ea20c0c2d3f245c7
 assert.equal(sha(src),'3b94f215568099b24756872b0391db550092fb24ef6e67f05ee024bf9330f35c');
 function native(obj){const f=path.join(os.tmpdir(),'pnp582_'+process.pid+'_'+(++native.i)+'.json');fs.writeFileSync(f,typeof obj==='string'?obj:JSON.stringify(obj));const r=cp.spawnSync(process.execPath,[checker,f],{encoding:'utf8',timeout:25000});fs.unlinkSync(f);return {accept:r.status===0,exit:r.status,assertions:r.status===0?JSON.parse(r.stdout).assertions:null,error:r.status===0?null:r.stderr.slice(0,160)};}native.i=0;
 function norm(c){return [...new Set(c)].sort((a,b)=>Math.abs(a)-Math.abs(b)||a-b)}
-function alpha(data){let seen=new Set(),paid=0,paidFirst=0,duplicate=0,views=0,sources=0,depth=[];const trace=[];
+
+function externalClauses(){const t=src.toString('utf8').trim().split(/\s+/);assert.equal(t[0],'p');assert.equal(t[1],'cnf');const n=Number(t[2]),m=Number(t[3]);const cs=[];let r=[];for(const token of t.slice(4)){const v=Number(token);assert(Number.isSafeInteger(v));if(v===0){cs.push(norm(r));r=[];}else{assert(Math.abs(v)<=n);r.push(v);}}assert.equal(r.length,0);assert.equal(cs.length,m);return cs.map(JSON.stringify).sort();}
+function alpha(data){assert.deepEqual(data.records.filter(r=>r.kind==='SOURCE').map(r=>JSON.stringify(norm(r.c))).sort(),externalClauses(),'external signed SOURCE mismatch');let seen=new Set(),paid=0,paidFirst=0,duplicate=0,views=0,sources=0,depth=[];const trace=[];
  for(let i=0;i<data.records.length;i++){const r=data.records[i],k=JSON.stringify(r.c);assert(r.parents.every(p=>p<i&&p>=0));if(r.kind==='RES'){
  assert.equal(r.parents.length,2);const [A,B]=r.parents.map(p=>data.records[p].c);assert(A.includes(r.pivot)&&B.includes(-r.pivot));assert.deepEqual(norm([...A.filter(x=>x!==r.pivot),...B.filter(x=>x!==-r.pivot)]),r.c);}
  const newClause=!seen.has(k);seen.add(k);if(r.kind==='RES'){paid++;paidFirst+=Number(newClause);duplicate+=Number(!newClause);}else if(r.kind==='DEF')views++;else if(r.kind==='SOURCE')sources++;else throw Error('unrecognised opcode');
