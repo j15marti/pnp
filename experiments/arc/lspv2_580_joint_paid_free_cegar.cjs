@@ -16,7 +16,7 @@ const clone=x=>JSON.parse(JSON.stringify(x));
 const sort=c=>[...new Set(c)].sort((a,b)=>Math.abs(a)-Math.abs(b)||a-b);
 function sourceAudit(packet){
  const bytes=fs.readFileSync(sourcePath),actual=sha(bytes);
- assert.equal(actual,'3b94f215568099b24756872b0391db550092fb24ef9330f35c'.replace('ef9330','ef05ee024bf9330'),'external signed SOURCE SHA');
+ assert.equal(actual,'3b94f215568099b24756872b0391db550092fb24ef6e67f05ee024bf9330f35c','external signed SOURCE SHA');
  const text=bytes.toString('utf8').trim().split(/\s+/),nv=Number(text[2]),m=Number(text[3]);
  assert.equal(text[0],'p');assert.equal(text[1],'cnf');assert.equal(nv,7);assert.equal(m,17);
  const clauses=[],cur=[];for(const word of text.slice(4)){
