@@ -8,6 +8,7 @@
 For every packet accepted by the pinned complete archived `/386` CLI, `JSON.stringify(JSON.parse(bytes)) + "\n"` is accepted with the same SOURCE, DEF-view, Resolution, record and paid counts. Raw diagnostic SHA changes, so this is acceptance/cost closure, not raw-output equivalence and not RFC 8785 JCS.
 
 The unchanged checker was run in 40 fresh OS-Node subprocesses: 15 accepted raw/canonical pairs and five rejected hostile raw/canonical pairs. There were zero verdict mismatches and zero paid mismatches; eleven pairs were byte-distinct. The canonical `/508` packet is 3,701 bytes, SHA-256 `da0f8b040ec99787f7f47669203819134b7cabd7eaf23706ef82ab36f3d97070`, and accepts at W39.
+Its exact Git blob is `97a96f3f6212c20c4bfa5ced26cad7b18f9722e8`, identical to LSPV-4/566's previously published cap-41 packet; this is a recovered existing concrete representative, not a newly claimed distinct certificate.
 
 ## Artifacts
 
