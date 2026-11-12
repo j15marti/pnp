@@ -178,6 +178,18 @@ rows = [
      O, T, T, T, T, "Open", "n.a.", "n.a.", "n.a.",
      "CLAUDE ONETAPE-0001 Prop 5 (Hartmanis–Stearns translation)",
      "Would imply a superlinear deterministic multitape lower bound for SAT, which is open. Crossing-sequence counting is capped at O(N²)."),
+    ("L41", "Bridge B(Res): if SAT ∈ P then every unsatisfiable CNF of size N has a Resolution refutation of size poly(N)",
+     F, T, T, T, T, "Open", "n.a.", "n.a.", "n.a.",
+     "CLAUDE BRIDGE-0001 Thm 2 and Cor 3; Haken 1985",
+     "Resolution is unconditionally not p-bounded, so this 'weak bridge' is literally P ≠ NP. Its relativized form fails relative to every PSPACE-complete oracle (BRIDGE-0001 Thm 5), so any proof must be non-relativizing; the same holds for tree-Res, Cutting Planes, PC, AC0-Frege."),
+    ("L42", "Resolution is automatable: refutations of size S are found in time poly(N + S)",
+     T, F, F, F, F, "Open", "n.a.", "n.a.", "n.a.",
+     "Atserias–Müller, JACM 2020 (NP-hard to automate); CLAUDE BRIDGE-0001 Lemma 7 (P = NP direction)",
+     "Under SAT ∈ P every Cook–Reckhow system is automatable, so 'free choice of the optimal derivation' costs nothing extra in Algorithmica: R-based solvers run in time poly(W̄_R)."),
+    ("L43", "Bridge B(EF): if SAT ∈ P then Extended Frege is polynomially bounded",
+     O, T, T, T, T, "Open", "n.a.", "n.a.", "n.a.",
+     "CLAUDE BRIDGE-0001 §6; Cook 1975; Krajíček–Pudlák 1990; Pich–Santhanam (arXiv 2312.08163)",
+     "Holds if the polynomial SAT algorithm's soundness is provable in PV (propositional translation into EF). Plain SAT ∈ P does not give that. Together with a superpolynomial EF lower bound it would prove P ≠ NP."),
 ]
 
 headers = ["ID", "Statement", "Algorithmica (P = NP)", "Heuristica", "Pessiland",

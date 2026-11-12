@@ -1,0 +1,374 @@
+% CLAUDE REPORT::BRIDGE-0001::2026-11-12_1049_PST
+% Shared worst-case derivation objective: what the conditional bridge
+%   SAT in P  ==>  \overline W_R(N) <= poly(N)
+% can and cannot be, for a fixed refutation calculus R.
+% UTF-8, XeLaTeX/pdfLaTeX compatible.
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\usepackage{url}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\Pclass}{\mathsf{P}}
+\newcommand{\NP}{\mathsf{NP}}
+\newcommand{\coNP}{\mathsf{coNP}}
+\newcommand{\PSPACE}{\mathsf{PSPACE}}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\UNSAT}{\mathrm{UNSAT}}
+\newcommand{\Wb}{\overline W}
+\newcommand{\PB}{\mathrm{PB}}
+\title{CLAUDE BRIDGE-0001: The Conditional Bridge for a Fixed Calculus --- Truth Table, Monotonicity, and a Relativization Barrier}
+\author{P vs NP Research Project --- Claude scheduled research run}
+\date{12 November 2026, 10:49 PST}
+\begin{document}
+\maketitle
+
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Nothing below proves or refutes it.
+Lemma~\ref{lem:truth}, Theorem~\ref{thm:conservation}, Theorem~\ref{thm:mono},
+Theorem~\ref{thm:relativ} and Lemma~\ref{lem:auto} are \textbf{PROVED/EXACT}
+(elementary). Corollary~\ref{cor:known} and \S\ref{sec:ef} combine these with
+\textbf{KNOWN THEOREMS} from the literature. The bridge $B(R)$ for every
+calculus whose worst-case minimum is not yet known to be superpolynomial
+(Extended Frege, Frege, the project calculus $R_{\mathrm{mix341}}$) is
+\textbf{OPEN}. No finite experiment is claimed; the only executed code is the
+ledger regeneration in \S\ref{sec:ledger}.
+
+\section*{Target (shared five-role objective)}
+For a fixed Cook--Reckhow refutation system $R$ with cost $\operatorname{cost}_R$
+polynomially related to proof size,
+\[
+\Wb_R(N)=\max_{\substack{F\in\UNSAT\\|\langle F\rangle|\le N}}\
+\min_{\pi:F\vdash_R\bot}\operatorname{cost}_R(\pi),
+\qquad
+\PB(R):\ \exists c\ \forall N\ \Wb_R(N)\le N^c+c,
+\]
+\[
+B(R):\qquad \SAT\in\Pclass\ \Longrightarrow\ \PB(R).
+\]
+The plan is: prove $\neg\PB(R)$ and $B(R)$ for the same fixed $R$, which gives
+$\SAT\notin\Pclass$. The optimal derivation is granted for free; this is a
+valid lower-bound relaxation for any procedure that executes an $R$-derivation.
+This run asks what $B(R)$ is logically, how it moves with $R$, and which proof
+techniques cannot establish it.
+
+\section{Barrier-transfer literature preflight}
+\textbf{Main obstacles.} (O1) $B(R)$ asks for an \emph{oracle-free} conclusion
+(short proofs in a fixed calculus) from a hypothesis about an arbitrary
+algorithm. (O2) Every calculus with a proved superpolynomial lower bound is weak
+enough that some polynomial-time algorithm defeats its hard family.
+
+\textbf{Sources checked this run.}
+\begin{itemize}
+\item Cook--Reckhow 1979: $\NP=\coNP$ iff some propositional proof system is
+polynomially bounded.
+\item Baker--Gill--Solovay 1975: $\Pclass^O=\NP^O$ for any $\PSPACE$-complete $O$.
+\item Aaronson--Wigderson 2009 (algebrization): there are $A,\tilde A$ with
+$\NP^{\tilde A}\subseteq\Pclass^{A}$ ($A$ $\PSPACE$-complete, $\tilde A$ a
+low-degree extension).
+\item Cook 1975 and Krajíček--Pudlák 1990: $\forall\Pi^b_1$ theorems of $PV$
+translate to polynomial-size Extended Frege proofs.
+\item Atserias--Müller, JACM 2020: Resolution is not automatable unless
+$\Pclass=\NP$.
+\item Pich--Santhanam, \emph{Towards $\Pclass\ne\NP$ from Extended Frege lower
+bounds} (ECCC TR23-199, arXiv:2312.08163; journal version cited in the corpus
+as JACM 2026). Under self-provability or bounded-arithmetic hypotheses,
+superpolynomial lower bounds for EF (or EF plus extra axioms) imply
+$\Pclass\ne\NP$ or $\NP\not\subseteq\Pclass/\mathrm{poly}$.
+\item Recent relativized optimal-proof-system work (Egidy--Glaßer and coauthors,
+arXiv:2408.07408 and arXiv:2602.02294) builds oracles that separate questions
+about optimal proof systems. That confirms relativized proof-system statements
+are delicate. It does not supply a fixed-$R$ bridge.
+\end{itemize}
+Titles and years are recalled from memory except where a URL was fetched
+(arXiv:2312.08163 abstract was read this run). The technique tags in the
+ledger stay \texttt{n.a.}/\texttt{Unverified} accordingly.
+
+\textbf{Transfer classification.} The oracle-world construction (complexity
+theory $\to$ proof complexity) is an \emph{exact object transfer}: the
+proof system is fixed, so its proof lengths do not depend on the oracle
+(Theorem~\ref{thm:relativ}). The worst-case/average-case architecture of LWE
+(PQ ledger item 5, ``extract the resource from black-box solver behaviour'')
+is a \emph{failed transfer} for every calculus in Corollary~\ref{cor:known}.
+Any black-box extraction argument relativizes, and Theorem~\ref{thm:relativ}
+rules relativizing arguments out. Schur-square, collision-entropy and hash
+ideas (items 1--4, 6--7) do not bear on O1 or O2; no transfer is claimed.
+
+\section{The bridge is a disjunction}
+\begin{lemma}[Truth table of the bridge]\label{lem:truth}
+For every fixed $R$: $B(R)\iff(\SAT\notin\Pclass\ \vee\ \PB(R))$.
+\end{lemma}
+\begin{proof}
+$X\Rightarrow Y$ is equivalent to $\neg X\vee Y$.
+\end{proof}
+
+\begin{theorem}[Conservation: the decomposition is never easier than the goal]\label{thm:conservation}
+For every fixed $R$,
+\[
+B(R)\wedge\neg\PB(R)\iff \SAT\notin\Pclass\wedge\neg\PB(R).
+\]
+In particular, once $\neg\PB(R)$ is proved, $B(R)$ is equivalent to
+$\Pclass\neq\NP$.
+\end{theorem}
+\begin{proof}
+Use Lemma~\ref{lem:truth}. Under $\neg\PB(R)$ the disjunction reduces to
+$\SAT\notin\Pclass$.
+\end{proof}
+
+So the two-step plan always costs \emph{at least} a proof of
+$\Pclass\neq\NP$, plus the extra obligation $\neg\PB(R)$. Its value can only be
+methodological: a structured route into the separation, not a weaker statement.
+Codex 2026-11-11 1203 §``A weaker sufficient bridge'' observed the
+quasipolynomial form of this; Theorem~\ref{thm:conservation} is the polynomial
+form, adopted here as the baseline.
+
+\begin{corollary}[Known-hard calculi]\label{cor:known}
+Each of the following calculi has an unconditional superpolynomial lower
+bound on unsatisfiable CNF families, so for each of them $B(R)$ \emph{is}
+$\Pclass\neq\NP$: tree-like and general Resolution (Haken 1985); Cutting
+Planes (Pudlák 1997); Polynomial Calculus over any field (Razborov 1998;
+Impagliazzo--Pudlák--Sgall 1999); depth-$d$ Frege for each fixed $d$ (Ajtai
+1988; Pitassi--Beame--Impagliazzo 1993; Krajíček--Pudlák--Woods 1995).
+\end{corollary}
+\begin{proof}
+These are KNOWN THEOREMS giving $\neg\PB(R)$. Apply Theorem~\ref{thm:conservation}.
+\end{proof}
+
+\section{Monotonicity: bridge and lower bound move in opposite directions}
+Write $R\le_p R'$ if $R'$ p-simulates $R$ in proof size.
+\begin{theorem}[Opposite monotonicity]\label{thm:mono}
+If $R\le_p R'$ then $B(R)\Rightarrow B(R')$ and $\neg\PB(R')\Rightarrow\neg\PB(R)$.
+If $R_{\mathrm{mix}}$ contains $R_1,\dots,R_k$ as subsystems, each step charged at
+most a fixed polynomial of its native cost, then for every UNSAT $F$
+\[
+\min_{\pi:F\vdash_{R_{\mathrm{mix}}}\bot}\operatorname{cost}(\pi)
+\le q\Bigl(\min_i\ \min_{\pi:F\vdash_{R_i}\bot}\operatorname{cost}_{R_i}(\pi)\Bigr)
+\]
+for a fixed polynomial $q$.
+\end{theorem}
+\begin{proof}
+$\PB(R)$ implies $\PB(R')$ by composing the simulation polynomial with the
+bound. Both implications follow, the second by contraposition. For the mixed
+system, take the cheapest component refutation and embed it.
+\end{proof}
+
+\textit{Reading.} Strengthening the calculus makes the bridge easier and the
+lower bound harder. Adaptive strategy switching (priority 4 of the directive)
+can only \emph{lower} the minimum: a hard instance must beat every component on
+the \emph{same} source. The corpus Tseitin/XOR control (LSPV-1/334) and the
+PHP/Cutting-Planes control are instances of this.
+
+\begin{proposition}[Endpoint: optimal calculus; ADOPTED from LSPV-1/336]
+If $R^\ast$ is size-optimal (p-simulates every Cook--Reckhow system in length),
+then $B(R^\ast)$ holds, and $\neg\PB(R^\ast)\iff\NP\neq\coNP$.
+\end{proposition}
+\begin{proof}
+$\SAT\in\Pclass$ gives $\NP=\coNP$. Cook--Reckhow then gives a polynomially
+bounded system, which $R^\ast$ simulates. Conversely, $\neg\PB(R^\ast)$ means no
+system is polynomially bounded, by optimality.
+\end{proof}
+
+So the spectrum runs from weak calculi, where the lower bound is known and the
+bridge is all of $\Pclass\ne\NP$, to an optimal calculus, where the bridge is
+free and the lower bound is $\NP\ne\coNP$, strictly at least as hard. Both
+obligations are open only at intermediate strength (Frege, EF, and conditionally
+$R_{\mathrm{mix341}}$ by LSPV-1/592).
+
+\section{A relativization and algebrization barrier for $B(R)$}\label{sec:relativ}
+For an oracle $O$ keep $R$ \emph{fixed and oracle-free}, exactly as the
+directive does (one preselected calculus, fixed weights). Define
+\[
+B^O(R):\qquad \NP^O\subseteq\Pclass^O\ \Longrightarrow\ \PB(R).
+\]
+Call a proof of $B(R)$ \emph{relativizing} if the same argument proves
+$B^O(R)$ for every $O$.
+
+\begin{theorem}[Relativization barrier]\label{thm:relativ}
+Let $O$ be $\PSPACE$-complete. Then $B^O(R)\iff\PB(R)$. Consequently:
+\begin{enumerate}
+\item a relativizing proof of $B(R)$ proves $\PB(R)$, hence $\NP=\coNP$;
+\item for every $R$ in Corollary~\ref{cor:known}, $B(R)$ has no relativizing
+proof (unconditionally);
+\item for every $R$, if $\NP\neq\coNP$, then $B(R)$ has no relativizing proof.
+\end{enumerate}
+The same holds with algebrizing proofs: for the Aaronson--Wigderson pair
+$(A,\tilde A)$, the algebrized bridge
+$\NP^{\tilde A}\subseteq\Pclass^{A}\Rightarrow\PB(R)$ is again equivalent to
+$\PB(R)$.
+\end{theorem}
+\begin{proof}
+$\PB(R)$ makes no reference to $O$: proofs, verifier and $\Wb_R$ are
+oracle-free. By Baker--Gill--Solovay the antecedent $\NP^O\subseteq\Pclass^O$
+holds, so $B^O(R)$ reduces to its consequent. Item 1: a relativizing argument
+yields $B^O(R)$ for this $O$, hence $\PB(R)$; Cook--Reckhow gives $\NP=\coNP$.
+Item 2: $\PB(R)$ is false there. Item 3: $\PB(R)$ implies $\NP=\coNP$. The
+algebrization case is identical, using the known pair with
+$\NP^{\tilde A}\subseteq\Pclass^A$.
+\end{proof}
+
+\textit{Convention firewall.} If instead the calculus is relativized too
+($R^O$ may cite oracle answers as axioms), then $R^O$ is trivially polynomially
+bounded for $\PSPACE$-complete $O$ and $B^O(R^O)$ holds vacuously. The barrier
+is about the project's convention, a fixed oracle-free calculus. It
+says the argument must use the \emph{code} or resource bound of the hypothetical
+algorithm in a way that does not survive adding a $\PSPACE$ oracle. Black-box
+use of the decider's answers, query counts, or input/output behaviour is not
+enough.
+
+\textit{Consequence for the five roles.} Any proposed transfer theorem with
+the shape ``given any SAT decider (used only through its answers or its
+runtime), construct an $R$-derivation of comparable cost'' relativizes. For the
+calculi in Corollary~\ref{cor:known} it is therefore false outright. This
+generalizes the corpus counterexamples to $\mathrm{TR}(\mathrm{Res})$
+(LSPV-1/334, Tseitin versus Gaussian elimination) from one family to all
+relativizing arguments.
+
+\section{Free optimal sequence: exactly realized under the hypothesis}
+\begin{lemma}[Automation under $\SAT\in\Pclass$]\label{lem:auto}
+If $\SAT\in\Pclass$, then for every Cook--Reckhow $R$ there is a polynomial-time
+algorithm that, given $F$ and $1^S$, outputs an $R$-refutation of $F$ of size
+at most $S$ whenever one exists. Hence under the hypothesis some $R$-executing
+SAT procedure runs in time $\mathrm{poly}(N+\min_\pi|\pi|)$ on every UNSAT input.
+\end{lemma}
+\begin{proof}
+The language $\{(F,1^S,p):p\text{ extends to an }R\text{-refutation of size}\le S\}$
+is in $\NP$, hence in $\Pclass$. Build the refutation bit by bit
+(search-to-decision).
+\end{proof}
+
+So the directive's principle --- not charging for discovery of the optimal
+sequence --- costs nothing in the world where $\SAT\in\Pclass$. Then
+$\Wb_R$ \emph{is} the running time of the best $R$-based solver, up to a
+polynomial, and $B(R)$ says exactly that this solver is polynomial. In
+$\Pclass\ne\NP$ worlds, discovery is genuinely expensive for Resolution
+(Atserias--Müller). Not charging it there is a real relaxation, but a legitimate one
+for lower bounds, as the directive states.
+
+\section{The only known code-using bridge (Extended Frege)}\label{sec:ef}
+\textbf{KNOWN THEOREM} (Cook 1975; Krajíček--Pudlák 1990). Suppose $A$ runs in
+polynomial time and $PV\vdash\forall F\,\forall\alpha\,(A(F)=0\rightarrow
+\neg\mathrm{Sat}(F,\alpha))$. Then every UNSAT $F$ has an EF refutation of size
+$\mathrm{poly}(|F|)$. Its two parts are the translation of the $PV$ proof and
+an EF verification of the concrete run $A(F)=0$. Hence
+\[
+B_{PV}(\mathrm{EF}):\quad
+\exists A\ \bigl(A\text{ poly-time, } PV\vdash\mathrm{Sound}_A,\ A\text{ complete}\bigr)
+\Longrightarrow\PB(\mathrm{EF})
+\]
+is a theorem. The argument uses the code of $A$, consistent with
+Theorem~\ref{thm:relativ}. The gap to $B(\mathrm{EF})$ is exactly that
+$\SAT\in\Pclass$ does not supply $PV$-provable soundness. Pich--Santhanam work
+in this gap. By Theorem~\ref{thm:mono}, any calculus that p-simulates ER
+inherits $B_{PV}$. LSPV-1/592 shows $R_{\mathrm{mix341}}$ would p-simulate ER,
+conditional on its unauthenticated native rule interface, so the same holds
+for $R_{\mathrm{mix341}}$. That route also makes the needed lower bound at
+least an EF lower bound, which is open.
+
+\textbf{Recommended target (CANDIDATE).} Replace the open $B(R)$ by the
+already-proved $B_{PV}(\mathrm{EF})$ plus a theory-level obligation:
+\[
+\text{(T)}\qquad \SAT\in\Pclass\ \Longrightarrow\ \exists\text{ poly-time }A
+\text{ correct for SAT with } PV\vdash\mathrm{Sound}_A .
+\]
+Then (T) and $\neg\PB(\mathrm{EF})$ together give $\Pclass\neq\NP$. (T) is a
+statement about \emph{provability}, not proof length. It is not refuted by
+Theorem~\ref{thm:relativ}, since it is not oracle-free in the relevant sense.
+(T) is \textbf{OPEN}, and Theorem~\ref{thm:conservation} still applies: (T) is
+at least as hard as the separation once $\neg\PB(\mathrm{EF})$ is known.
+
+\section{Hostile controls and red team}
+\begin{itemize}
+\item Tseitin on expanders: Resolution exponential, Gaussian elimination
+polynomial. This is consistent with Corollary~\ref{cor:known}: $B(\mathrm{Res})$ is not
+refuted by it (it is $\Pclass\ne\NP$), but every \emph{pointwise}
+algorithm-to-derivation simulation into Resolution is (LSPV-1/334, retained).
+\item PHP: Resolution exponential, Cutting Planes polynomial. This instantiates
+Theorem~\ref{thm:mono} under strategy switching.
+\item Relativized-calculus convention: $B^O(R^O)$ is vacuous. Recorded as a
+firewall, not a counterexample.
+\item Machine-trace soundness (LSPV-1/334): a trace of $A$ ending in
+``UNSAT'' is not a proof unless the soundness of $A$ is itself justified. This is
+precisely the $PV\vdash\mathrm{Sound}_A$ premise of \S\ref{sec:ef}.
+\item Natural proofs: no circuit lower bound or constructive property is
+claimed. Not invoked.
+\end{itemize}
+
+\section*{CORPUS REVIEWED}
+Root \path{AGENTS.md} (including the 2026-11-09 knot/link handoff note and the
+world-ledger pointer); recent root \path{main.tex} ownership markers;
+\path{research/agents/codex/2026-11-11_1203_SAT_POLYNOMIAL_ASSUMPTION_AUDIT.tex}
+(bridges (B), (12)); \path{research/agents/codex/2026-11-11_1331_TRANSFER_RECOVERY_AND_RATE_AMPLIFICATION.tex}
+(relativization paragraph);
+\path{research/agents/lspv-1/2026-11-12_0703_LSPV1_ER_STRENGTH_BARRIER592.md};
+\path{research/agents/lspv-1/2026-11-02_1100_LSPV-1_FREE_CHOICE_TRANSFER_BARRIER334.md};
+\path{research/agents/lspv-1/2026-11-02_1256_LSPV-1_CLOCKED_OPTIMALITY_REFLECTION336.tex};
+the coordination handoff list through LSPV-4/566 (2026-11-12 10:31);
+the Claude folder and world ledger. Repository searches covered
+``optimal proof system'', ``automatab'', ``relativiz'', ``bridge'' and
+$\Wb_R$. This is a targeted survey, not a byte-level reread of all
+historical files.
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+\begin{itemize}
+\item Theorem~\ref{thm:conservation}: the quasipolynomial form is already in
+Codex 1203. It is \emph{duplicated} here in polynomial form and marked as such.
+\item Optimal-calculus endpoint: already LSPV-1/336. ADOPTED with attribution.
+\item New this run: Theorem~\ref{thm:relativ} (fixed-calculus relativization and
+algebrization barrier). Codex 1331's relativization note concerns a different,
+oracle-matched computation bridge, and says only that its transfers do not
+bypass relativization. Also new: Theorem~\ref{thm:mono} (opposite monotonicity),
+Corollary~\ref{cor:known} as an explicit list, Lemma~\ref{lem:auto} tied to the
+directive's free-optimal-sequence principle, and target (T).
+\item No contradiction found with the root \path{main.tex} status (``P versus
+NP remains OPEN'', B1/B2/B3 OPEN).
+\end{itemize}
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root \path{main.tex} is \emph{not edited} by this run. It has ownership regions
+only for LSPV-1..5, and this Claude run owns none of them. Its OPEN status is
+unchanged. Suggested input for the LSPV-5 arbiter: record that $B(R)$ for any
+fixed oracle-free $R$ cannot have a relativizing or algebrizing proof unless
+$R$ is polynomially bounded. Record also that for every currently lower-bounded
+calculus, $B(R)$ is literally $\Pclass\ne\NP$.
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+ADOPTED: LSPV-1/334 counterexample to pointwise $\mathrm{TR}(\mathrm{Res})$;
+LSPV-1/336 optimal-calculus bridge; LSPV-1/592 conditional ER simulation;
+Codex 1203 quasipolynomial bridge.
+REJECTED (as a route to $\Pclass\ne\NP$ for weak calculi): any black-box
+solver-to-derivation extraction (Theorem~\ref{thm:relativ}).
+RETIRED: none.
+
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+None found in the files reviewed. One caution for future text: describing
+$B(R)$ as ``the weakest sufficient bridge'' is accurate as a sufficient
+condition, but by Theorem~\ref{thm:conservation} it is never logically weaker
+than $\Pclass\neq\NP$ once the lower bound for $R$ is in hand.
+
+\section*{Predecessor write check}
+This Claude run is outside the LSPV-1..5 stagger and has no cyclic predecessor.
+The most recent LSPV-4/566 commits on \texttt{main} (2026-11-12 10:31 handoff)
+were present on \texttt{origin/main} at fetch time.
+
+\section{Ledger update}\label{sec:ledger}
+Rows L41--L43 were added to
+\path{research/agents/claude/world-ledger/build_ledger.py}, and the CSV/XLSX
+were regenerated (43 rows; one run under 30 s). Automatic categories:
+L41 $B(\mathrm{Res})$ --- \emph{Equivalent to $\Pclass\ne\NP$};
+L42 Resolution automatable --- \emph{Equivalent to $\Pclass=\NP$};
+L43 $B(\mathrm{EF})$ --- \emph{Half-win (true if $\Pclass\ne\NP$)}.
+All consistency checks are OK.
+
+\section*{Next gap}
+Either (a) prove a nonrelativizing, code-using bridge for a calculus whose
+lower bound is open (the target is (T), or a Pich--Santhanam-style
+self-provability statement), or (b) prove $\neg\PB(R)$ for a calculus at least as
+strong as EF. Both are \textbf{OPEN}. \textbf{P versus NP remains OPEN.}
+
+% END_OF_VERIFIED_REPORT::CLAUDE::BRIDGE-0001
+\end{document}
