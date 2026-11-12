@@ -100,11 +100,14 @@ def check_grammar_and_construction(original, new):
 def main():
     base, new, opt = load(SOURCE), load(WITNESS), load(OPTIMAL)
     check_grammar_and_construction(base, new)
-    assert sorted(json.dumps(r, sort_keys=True) for r in new["records"]) == \
-           sorted(json.dumps(r, sort_keys=True) for r in opt["records"]
-                  if r["kind"] != "RES") + \
-           sorted(json.dumps(r, sort_keys=True) for r in opt["records"]
-                  if r["kind"] == "RES") or len(opt["records"]) == len(new["records"])
+    from collections import Counter
+    def signatures(packet):
+        return Counter((r["kind"], tuple(r["c"]), r.get("pivot"),
+                        r.get("source"), r.get("gate")) for r in packet["records"])
+    assert signatures(new) == signatures(opt), "reordered evidence changed an inference"
+    assert len(new["records"]) == len(opt["records"]) == 58
+    for i, r in enumerate(opt["records"]):
+        assert all(0 <= parent < i for parent in r["parents"]), "forward parent"
     output = {}
     for label, packet in [("base_571", base), ("new_560", new)]:
         parents, sizes, paid = charged_graph(packet)
