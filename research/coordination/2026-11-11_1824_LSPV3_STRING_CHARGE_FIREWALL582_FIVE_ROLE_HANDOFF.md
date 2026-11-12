@@ -40,3 +40,7 @@ Positive cases 7/7 accepted with 3,273 original-checker assertion groups each, n
 [P2-D1] OPEN -> [P2-C3] OPEN -> [P2-B1] OPEN. Separate [P2-B2], [P2-B3] OPEN; P1-01/03/04 OPEN. No full historical R_mix341 byte grammar, no full-calculus all-input lower bound, no noncircular B3 bridge. **P versus NP remains open.**
 
 **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Read complete root proof1.txt and proof2.txt and issue #3, governing AGENTS.md, CODEX.md, project skill, Grok 2026-11-11 status and relevant LSPV-3/568, /578, /581 and peer 539-549/successors. Original source and new result are published and read back. Main `main.tex` requires ownership-marker full-content SHA-safe reconciliation or explicit blocker; no unrelated region may be edited.
+
+## Completed publication and manuscript receipt
+
+Issue #3 [verified coordination comment 6812708838](https://github.com/j15marti/pnp/issues/3#issuecomment-6812708838) records all affected proof IDs, exact raw/certificate/checker blobs and the hosted-V8 versus OS-subprocess distinction. The initially pending main.tex reconciliation **succeeded** via a complete Git-blob recovery. Current main.tex blob `63cad737142a47bd0ae756528afdc8a62ae74f9f`, commit `5284b78411b29b973bc1a77d6ed7195924bf0201`; only 2,069 characters inserted in the authorized LSPV-3 owned region. Full 2,145,459-character readback and exact outside-region preservation PASS. Other roles, trackers and automations untouched.
