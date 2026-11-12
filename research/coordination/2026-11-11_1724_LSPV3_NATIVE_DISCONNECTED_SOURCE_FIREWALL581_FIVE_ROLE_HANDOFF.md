@@ -28,11 +28,11 @@ All three shared DAGs have 72 terminal ancestors, including 17 SOURCEs; **0/16**
 
 ## Verified role-owned artifacts
 
-- [LaTeX report](../../agents/lspv-3/2026-11-11_1724_LSPV3_DISCONNECTED_SOURCE_CLI_CLIFF581.tex), blob `a2768e74e5b766b4c011895bb346394c3a96191e`.
-- [Complete Node original-OS reproducer](../../../experiments/arc/lspv3_581_disconnected_native386_cli_cliff.cjs).
-- [Exact 6019-byte original-checker accepted packet](../../../results/raw/arc/2026-11-11_1724_LSPV3_581_K4_DISJOINT_K33_NATIVE386_ACCEPTED.json), blob `639edd4dc88c33953ad3e1bb15b0cfbf922974fc`.
-- [Exact 5496-byte original-checker rejected packet](../../../results/raw/arc/2026-11-11_1724_LSPV3_581_K4_DISJOINT_K4_NATIVE386_CLI_REJECTED.json), blob `296adfc5af87475852669098a52ace76fa9e2c0a`.
-- [All original-code hosted verification and hostile raw results](../../../results/raw/arc/2026-11-11_1724_LSPV3_581_DISCONNECTED_ORIGINAL386_V8_RAW.json), blob `afd1b48252f4249f0d7f231b18e938dd3553d4e0`.
+- [LaTeX report](../agents/lspv-3/2026-11-11_1724_LSPV3_DISCONNECTED_SOURCE_CLI_CLIFF581.tex), blob `a2768e74e5b766b4c011895bb346394c3a96191e`.
+- [Complete Node original-OS reproducer](../../experiments/arc/lspv3_581_disconnected_native386_cli_cliff.cjs).
+- [Exact 6019-byte original-checker accepted packet](../../results/raw/arc/2026-11-11_1724_LSPV3_581_K4_DISJOINT_K33_NATIVE386_ACCEPTED.json), blob `639edd4dc88c33953ad3e1bb15b0cfbf922974fc`.
+- [Exact 5496-byte original-checker rejected packet](../../results/raw/arc/2026-11-11_1724_LSPV3_581_K4_DISJOINT_K4_NATIVE386_CLI_REJECTED.json), blob `296adfc5af87475852669098a52ace76fa9e2c0a`.
+- [All original-code hosted verification and hostile raw results](../../results/raw/arc/2026-11-11_1724_LSPV3_581_DISCONNECTED_ORIGINAL386_V8_RAW.json), blob `afd1b48252f4249f0d7f231b18e938dd3553d4e0`.
 
 ## Exact responsibilities and next falsifiers
 
@@ -49,3 +49,7 @@ All three shared DAGs have 72 terminal ancestors, including 17 SOURCEs; **0/16**
 **CEGAR:** An abstraction that drops the <=12-edge model-count control admits a *spurious* accepted 12-edge path and must refine after original-checker rejection; it must retain the genuine 15-edge path. Neither branch can be used to claim a lower bound in the unverified historical full mixed calculus.
 
 **Proof-chain IDs:** [P2-D1], [P2-C3], [P2-B1] all OPEN; [P2-B2], [P2-B3] separately OPEN; [P1-01], [P1-03], [P1-04] OPEN. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Original tracker blobs `proof1.txt=f46f6aae25571340a5fd17a5181d51c271509947`, `proof2.txt=42943fe447c6061fb8009a526f46ac8a6684765c`. The next decisive requirement remains an independently source-bound genuine native RES-to-AND3 or DEF-facet-to-LOCAL-CONVERT/GF(2) cross-edge in one original checker.
+
+## Publication reconciliation receipt
+
+The complete root `main.tex` was updated exclusively within the unique LSPV-3-owned region in commit [`f26e736`](https://github.com/j15marti/pnp/commit/f26e736e97efd6c920a12a5be2a7648b893676e5), from prior blob `1251e41bd40c51f85b8c7bce671fedb29577e3b3` to new blob `49e8d8236cef7c349cc157b5e9fbea0192aacc30`. Full 2,136,623-character readback and exact deletion of the 2,379-character insertion reconstruct the original file. The LaTeX role report was subsequently updated with its verified receipt, current blob `3f6f66a2b8eb29baca738f344794284f1e11f892`; the original OS script blob is `d1458965f188e9aaed24be74f7541800238ea8b6`. Findings and affected proof IDs were posted to [issue #3](https://github.com/j15marti/pnp/issues/3#issuecomment-6811949460). Source blocker remains the missing authoritative full historical R_mix341 mixed-rule checker. Independent OS Node replay of this run's new script remains pending; hosted V8 original checker body and its internal negative suite were executed and are reported precisely.
