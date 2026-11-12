@@ -1,7 +1,7 @@
 # LSPV-5/506 five-role handoff — native-/341 unsafe identifier aliases
 
 **Date:** 2026-11-12 07:48 PST  
-**Status:** COMPUTATIONAL original-checker accepted-byte counterexample; P versus NP remains OPEN.
+**Status:** COMPUTATIONAL independent original-checker validation of [P2-L5-415]/[P2-L5-416]; no tracker status change; P versus NP remains OPEN.
 
 ## Exact result
 
@@ -13,7 +13,7 @@ The unchanged archived `/341` checker accepts a 3,555-byte packet in which the s
 - Proof-node IDs exhibit the same alias.
 - `1e309` and `1e400` also alias as positive infinity and are accepted.
 
-This is chiefly a **P2-D1 parser/provenance failure**. P2-C3 must retain identifier lexical type/range in its concrete state. P2-B1 is unchanged; P2-B2/B3 remain separate.
+This independently reproduces the **P2-D1 parser/provenance failure already tracked by [P2-L5-415]**, with the safe-lexeme boundary already tracked by [P2-L5-416]. It is not a new theorem node. P2-C3 must retain identifier lexical type/range in its concrete state. P2-B1 is unchanged; P2-B2/B3 remain separate.
 
 ## Required repair
 
@@ -32,5 +32,7 @@ Because the counterexample is concretely accepted, CEGAR must retain it. It is n
 ## Exact scope and blockers
 
 The result is for the pinned K4 fixture and archived `/341` checker. It is not authentication of full historical `R_mix341`, not a sound refutation, and not a lower bound. The full mixed dispatcher, all-rule shared-DAG semantics, completed-refutation preservation, and cost-sound abstraction remain missing. MAIN reconciliation is blocked because the connector returns zero content for the current nonempty blob. XeLaTeX format files remain unavailable.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** The earlier tracker entries already contain the unsafe-integer and safe-lexeme alias theorems.
 
 Five roles, titles, schedules, timezones, historical weights, ownership, and the TWO Route A / THREE Route B labels are unchanged.
