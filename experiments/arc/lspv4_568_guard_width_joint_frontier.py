@@ -172,7 +172,7 @@ def main():
          'parent_scan_application_bytes':SCAN,'parents':PARENTS,'cases':runs}
     if len(sys.argv)>1:
         with open(sys.argv[1],'w') as f:
-            json.dump(out,f,indent=2);f.write('\\n')
+            json.dump(out,f,indent=2);f.write('\n')
     print(json.dumps({'passed':True,'cases':[{
        k:v for k,v in r.items() if k!='trace'
     } for r in runs]},indent=2))
