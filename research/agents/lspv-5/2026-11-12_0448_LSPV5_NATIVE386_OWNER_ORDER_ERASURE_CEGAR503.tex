@@ -1,0 +1,138 @@
+% LSPV-5 REPORT::503::2026-11-12T04:48:00-08:00
+% !TEX program = xelatex
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,xurl}
+\newcommand{\st}[1]{\textbf{[#1]}}
+\newcommand{\Rmix}{R_{\mathrm{mix341}}}
+\title{LSPV-5/503: Native /386 owner-order erasure is not an exact P2-C3 abstraction}
+\author{LSPV-5 --- Independent Proof Red Team}
+\date{2026-11-12 04:48 America/Los\_Angeles}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Executive status.}
+\st{PROVED/RESTRICTED} For the pinned archived /386 checker and the five-owner W33 packet family of LSPV-2/572, an abstraction that retains the entire packet but replaces the chronological owner-declaration list by its owner-ID-sorted set is not acceptance-exact: all 120 concrete owner orders map to one 3,157-byte abstract representative, while the unchanged checker accepts exactly the six topological orders and rejects the other 114.  A prefix refinement retaining declared owners, available owner outputs, and once-paid owners restores declaration legality for this restricted phase.  \st{COMPUTATIONAL} The unchanged checker was invoked in 130 OS processes by the peer replayer and independently in 130 OS processes by this audit; all expected verdicts matched.  \st{OPEN} This is not the missing full historical \(\Rmix\) grammar, an all-rule shared-DAG semantics, an asymptotic lower bound, or a P-versus-NP proof.  P versus NP remains OPEN.
+
+\section{Target claim and predeclared falsifiers}
+\textbf{Target.} Test whether a P2-C3 abstraction retaining final clauses, owner identities and paid total, but forgetting chronological producer availability and once-paid prefix history, admits a zero-cost abstract shortcut absent from the concrete accepted-byte calculus.
+
+\textbf{Falsifiers.}
+\begin{enumerate}
+\item Every cheap abstract path replays chronologically in the authoritative checker with no larger native cost.
+\item Restoring producer identity and paid prefix history does not remove the shortcut.
+\item The hostile packet is rejected before reaching the proposed abstraction boundary for a reason unrelated to producer availability.
+\item The witness is not reproducible under the pinned checker, or exists only in a convenient completion rather than the published native packet grammar.
+\end{enumerate}
+Falsifier 1 is false: the rejected concrete preimage has no native replay.  Falsifiers 2--4 are excluded for the restricted /386 owner-declaration phase by the exact replay below.  They remain open for the missing full historical grammar.
+
+\section{Pinned concrete objects and exact replay}
+The unchanged checker is \texttt{experiments/arc/lspv2\_386\_independent\_verify.js}, Git blob
+\texttt{338305c0ce101704205e57543756b8127074a986}.  The exact accepted packet has Git blob
+\texttt{a681b3fb26083055206a3e13ebde4bbf1ee2a0a8}, SHA-256
+\texttt{8830fe8553ec76d906890f6d7098c12e38492fa67bbaa5597e087b6e5cc51924}; the exact rejected order 40123 packet has Git blob
+\texttt{95e983ad36039ed69958a15cbc5477cd252634d8}, SHA-256
+\texttt{47fe880b333eebaf82279e8af1f443f45c855f812b6ad0f1de1ac5fd86d80f71}.
+
+There are five paid owners
+\[
+(0,8,1,4),\ (1,9,2,5),\ (2,10,8,3),\ (3,11,9,-6),\ (4,12,10,11),
+\]
+and dependency edges \(0\to2,1\to3,2\to4,3\to4\).  Every packet has 17 SOURCE records, five genuine zero-additional-paid DEF facets, 28 RES records, 50 records total, and declared work W33 when accepted.  The underlying signed DIMACS source SHA-256 is
+\texttt{3b94f215568099b24756872b0391db550092fb24ef6e67f05ee024bf9330f35c}.
+
+\begin{center}
+\begin{tabular}{lrrl}
+\toprule
+test & cases & accepted & exact observation\\
+\midrule
+all owner permutations & 120 & 6 & precisely the topological orders\\
+non-topological orders & 114 & 0 & rejected; 40123 says ``gate used before declared''\\
+hostile source/facet/port/payment/opcode controls & 10 & 0 & all rejected\\
+accepted assertion groups & 6 & 21,144 & 66 built-in negative tests\\
+\bottomrule
+\end{tabular}
+\end{center}
+The full run took 8.27 seconds for LSPV-2/572 and 9.09 seconds for the independent LSPV-5/503 replay, each below the 30-second per-program rule.
+
+\section{Counterexample: order erasure creates a spurious zero-cost edge}
+Let \(\alpha_{\mathrm{set}}\) copy every packet field byte-for-byte after JSON parsing, except that \texttt{gate\_defs} is sorted by owner ID.  Then for every one of the 120 permutations \(\pi\),
+\[
+ \operatorname{SHA256}(\alpha_{\mathrm{set}}(P_\pi))
+ =\texttt{8830fe8553ec76d906890f6d7098c12e38492fa67bbaa5597e087b6e5cc51924}.
+\]
+This common representative is exactly the accepted 01234 packet.  In particular,
+\[
+\alpha_{\mathrm{set}}(P_{01234})=\alpha_{\mathrm{set}}(P_{40123}),
+\]
+but the checker accepts the former and rejects the latter at owner 4 because producers 2 and 3 have not been declared.
+
+If the coarse abstract transition system treats canonicalization as a free transition, it contains
+\[
+P_{40123}\xrightarrow{\;0\;}\alpha_{\mathrm{set}}(P_{40123})=P_{01234},
+\]
+yet the concrete grammar contains no owner-sorting transition.  Concrete replay therefore classifies this path as \st{SPURIOUS}.  The accepted 01234 proof remains genuine and must not be excluded.  This is the required CEGAR polarity: refine only the rejected preimage path, not the valid shortcut or its W33 cost.
+
+This result is a transition-discriminability failure, not a violation of the inequality ``abstract cost no greater than concrete cost.''  A MAY abstraction may deliberately include the extra edge.  It then cannot support a positive lower bound above the new cheaper path until the edge is either concretely replayed or refined away.
+
+\section{Repaired restricted lemma}
+At owner-declaration prefix \(i\), retain
+\[
+S_i=(D_i,V_i,H_i),
+\]
+where \(D_i\) is the set of declared owner IDs, \(V_i\) is the set of their available output wires together with original wires, and \(H_i\) is the once-paid owner set.  A declaration \((o,z,a,b)\) is legal only if every owner-produced input among \(|a|,|b|\) has its producer in \(D_i\), \(o,z\) are fresh under the native checks, and the transition adds exactly one unit when \(o\notin H_i\).  Genuine DEF facets remain tied to the recorded owner operands and add no second owner charge.
+
+\textbf{Lemma 503.1 (restricted).} For the five owners above, iterating this prefix rule accepts exactly the six linear extensions of the owner dependency DAG, rejects the other 114 at their first missing producer, and reproduces the native declaration verdict.  For 40123 the first step requests owner 4 while producers 2 and 3 are absent.  The refinement separates the collision immediately.
+
+This lemma proves neither completed-refutation preservation nor cost soundness for Resolution, AND3, GF(2), LOCAL-CONVERT, branching, weakening, contexts, discharge, joins, deletions, exported/private wires, or any other unrepresented historical transition.  A full P2-C3 theorem still requires source-authenticated concrete-step inclusion, completed-refutation preservation, and \(W_{\mathrm{abs}}\le W_{\mathrm{concrete}}\) for every actual accepted rule.
+
+\section{Independent review of current LSPV-1/2/3/4 evidence}
+\begin{longtable}{p{0.13\textwidth}p{0.72\textwidth}}
+\toprule
+artifact & independent result\\
+\midrule
+LSPV-1/589 & The published standard-library Python program reran in 0.37 s: 4,096 weighted MAY graphs, 12,288 graph-goal cases and 373,248 bounded integer potentials passed.  Its Bellman-potential theorem is exact for the declared finite MAY graph, but it explicitly is not a native checker or a full-calculus bound.  Its paid-history quotient control already shows a concrete minimum 1 collapsing to 0.\\
+LSPV-2/572 & The exact Node replayer reran in 8.27 s: 120 permutations plus ten hostiles, six accepts, 114 order rejects, all ten hostiles rejected.  The present report adds the explicit one-state order-erasure collision and prefix repair; it does not rebrand /572 as a minimum theorem.\\
+LSPV-3/587 & The exact Node replayer reran in 1.32 s: six accepts, 12 rejects, 19,764 accepted assertion groups, and the reported semantic collision.  Functional equality of constant-false gates does not authenticate crossed native DEF facets; operand signatures must be retained.\\
+LSPV-4/560 & After refetching the missing exact W38 witness files, the published program reran in 0.95 s: base W37, candidate and area-optimal W38 packets accepted; seven hostiles rejected; the non-SOURCE-equivalent shared paid record has two terminal-live consumers.  This is a restricted /386 fact.  At preflight no canonical LSPV-4/560 report existed, so issue \#3 recovery comment 6824044508 requested preservation and retry; the missing report remains a publication blocker, not a reason to invent its prose.\\
+\bottomrule
+\end{longtable}
+
+\section{Corpus reviewed and external search}
+\textbf{CORPUS REVIEWED.} Both complete root trackers, issue \#3, root \texttt{main.tex}, \texttt{AGENTS.md}, \texttt{CODEX.md}, the research instructions, all task specifications, current handoffs, the knot/link and SIL/M22 additive handoffs and their executable/raw evidence, current LSPV-1/589, LSPV-2/572--573, LSPV-3/587, LSPV-4/560 code/raw, LSPV-5/502, historical 539--549 artifacts, the original /341 manuscript and relevant /386 checker lineage were reviewed.  Current Grok \texttt{GROKPROOF/2026-11-12\_1118\_PROGRESS.md} and Claude \texttt{2026-10-28\_1521\_CLAUDE\_ONETAPE-0001.tex} were read; neither authenticates full \(\Rmix\) or supplies P2-C3/P2-B1/P2-B2.
+
+Primary literature consulted:
+\begin{itemize}
+\item Cousot and Cousot, ``Abstract interpretation,'' POPL 1977, \url{https://www.di.ens.fr/~cousot/COUSOTpapers/POPL77.shtml}; directly transferable principle: consistency must be proved against the concrete semantics, not inferred from a convenient quotient.
+\item Clarke, Grumberg, Jha, Lu and Veith, ``Counterexample-Guided Abstraction Refinement,'' CAV 2000, \url{https://web.stanford.edu/class/cs357/cegar.pdf}; directly transferable method: replay the abstract counterexample and refine only when it is spurious.
+\item Mauborgne and Rival, ``Trace Partitioning in Abstract Interpretation Based Static Analyzers,'' ESOP 2005, \url{https://www.di.ens.fr/~mauborgn/publi/esop05.html}; useful structural transfer: recover precision by retaining selected trace distinctions, here owner-declaration prefixes.  It does not itself prove the native repair.
+\item Cook and Reckhow, ``The Relative Efficiency of Propositional Proof Systems,'' JSL 1979, \url{https://www.cs.toronto.edu/~sacook/homepage/cook_reckhow.pdf}; proof-system context only.  It supplies no lower bound for this mixed calculus.
+\end{itemize}
+
+\section{Duplication, contradiction and reconciliation audit}
+\textbf{DUPLICATION / CONTRADICTION AUDIT.} LSPV-2/572 already proved the topological-order acceptance split; LSPV-2/573 and LSPV-3/587 already showed distinct facet-signature collisions.  The new contribution is the explicit \(120\!:\!1\) acceptance/nonacceptance collision for the owner-order-erasing map, its concrete CEGAR replay, and the prefix-state repair.  It is consistent with LSPV-1/589's general MAY-potential warning and with LSPV-5/462's paid-history collapse.  No contradiction with a full P2-C3 theorem exists because no such theorem is present.
+
+\textbf{WHAT CHANGED RELATIVE TO ROOT MAIN.} Add one restricted P2-C3 red-team entry: declaration chronology is mandatory for any exact abstraction of this /386 owner phase; a final owner bank/set is insufficient.  All load-bearing nodes remain OPEN.
+
+\textbf{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.} Adopt /572's exact bytes and original-checker replay, /589's MAY-graph polarity, /573 and /587's operand-signature refinements, and /560's once-paid sharing evidence within their scopes.  Reject owner-set canonicalization as an exact transition abstraction.  Retain, rather than exclude, every concretely accepted topological proof.  Retired: none of the genuine native shortcuts.
+
+\textbf{STALE OR OVERSTATED CLAIMS FOUND.} Any statement that final owner identity, output wire, function and paid total alone determine native legal transitions is overstated for /386.  The absent LSPV-4/560 report also prevents treating its successful program as a fully published role result.
+
+\section{Exact node status and handoff}
+Affected node: new restricted evidence \texttt{[P2-L5-503]} supporting refinement of \texttt{[P2-C3]}.  Classification:
+\begin{itemize}
+\item family failure: not shown; the finite source is a guarded signed K4 control;
+\item P2-D1: OPEN, because /386 is not the authenticated complete historical \(\Rmix\) grammar;
+\item P2-C3: this owner-order-erasing candidate FAILS; the prefix repair is proved only for the five-owner declaration phase;
+\item P2-B1: OPEN; no all-rule family lower bound follows;
+\item P2-B2/B3: transfer unsupported and kept separate;
+\item P versus NP: OPEN.
+\end{itemize}
+
+Reproducer: \texttt{experiments/review/lspv5\_503\_native386\_owner\_order\_erasure\_cegar.cjs}.  Raw ledger: \texttt{results/raw/review/2026-11-12\_0448\_LSPV5\_503\_OWNER\_ORDER\_ERASURE\_CEGAR\_RAW.json}, SHA-256 \texttt{742f8262b11fff561093c01a441a6551f038c22873dfe22a3d8376d87ae21595}.  Five-role handoff: \texttt{research/coordination/2026-11-12\_0448\_LSPV5\_OWNER\_ORDER\_ERASURE\_CEGAR503\_FIVE\_ROLE\_HANDOFF.md}.
+
+\textbf{Blockers disclosed.} Complete historical byte grammar and authoritative checker unavailable; /386 lacks many required operations; no complete shared-DAG semantics or all-rule cost abstraction; no hard-family asymptotic theorem; no noncircular B3; LSPV-4/560 report missing at cutoff.  The local \texttt{xelatex} binary exists but compilation is blocked because \texttt{xelatex.fmt} is absent; Node syntax, report sentinels, and the complete executable replay were checked independently.  Exactly five current roles, their names, schedules, timezones, enabled states, historical weights, ownership boundaries and TWO Route A / THREE Route B labels were not modified.
+
+\end{document}
+% END_OF_VERIFIED_REPORT::LSPV-5::503
