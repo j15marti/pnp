@@ -30,7 +30,7 @@ function run(){
   function verify(packet,extern){
     ok(JSON.stringify(packet.source)===JSON.stringify(extern),"external signed source mismatch");
     let {n,source:F,records}=packet,m=F.length;
-    ok(Number.isInteger(n)&&n>=1&&n<=20,"finite runner bound");ok(m>=2&&records.length===2*m-1,"source/node cardinality");
+    ok(Number.isInteger(n)&&n>=1&&n<=20,"finite runner bound");ok(m>=2&&records.length>=m+1,"source/node minimum");
     let idx=new Map(),paid=0;
     for(let j=0;j<records.length;j++){
       let r=records[j];ok(typeof r.id==="string"&&!idx.has(r.id),"fresh record ID");
@@ -61,6 +61,13 @@ function run(){
     cases.push({name,n,clauses:F.length,models:0,minDeletionModels:Math.min(...dels),maxDeletionModels:Math.max(...dels),paid:v.paid,assignmentWitnesses:v.rows,certificateBytes:v.bytes,logicalSpanAtMost:Math.ceil(Math.log2(F.length)),workFormulaMatches:v.paid===F.length-1});
     certs[name]=P;
   }
+  const padded=JSON.parse(JSON.stringify(certs.odd_K4));
+  const copied=padded.records[padded.records.length-2];
+  padded.records.splice(-1,0,{id:"P_UNUSED_DUP",kind:"MERGE",parents:copied.parents.slice(),mask:copied.mask.slice(),charge:1});
+  padded.summary.paid+=1;
+  const paddedVerifier=verify(padded,padded.source);
+  ok(paddedVerifier.paid===16 && paddedVerifier.source===16 && paddedVerifier.rows===64,"redundant paid shared DAG must remain legal");
+  const paddingControl={family:"odd_K4",originalPaid:15,paddedPaid:paddedVerifier.paid,extraPaidNodes:1,accepted:true,minimumNotEnforcedByLength:true};
   const bad=[];
   function hostile(label,packet,external){let failure="";try{verify(packet,external)}catch(e){failure=String(e.message)}ok(!!failure,"hostile must reject "+label);bad.push({label,rejected:true,reason:failure})}
   const base=certs.odd_K4,clone=x=>JSON.parse(JSON.stringify(x));
@@ -77,6 +84,6 @@ function run(){
   const sat=k4([0,0,0,0]);ok(models(sat.F,sat.n)===8,"even_K4_is_SAT");
   let satRejected=false;try{make(sat.F,sat.n)}catch(e){satRejected=true}ok(satRejected,"SAT builder must reject");
   {let x=clone(base);x.source=sat.F;x.records=x.records.map(r=>r);hostile("SAT_even_K4_replay",x,sat.F)}
-  return {theorem:"hypothetical evidence-explicit two-premise calculus: for every UNSAT CNF with m>=2, optimal paid work is m-1; verifier polynomial in entire certificate bytes",checker:"deterministic pure JavaScript; exact signed source; chronological binary parents; all 2^n assignment rows; zero uncharged SAT-oracle calls",cases,hostile:bad,satControls:{even_K4_models:8,even_K4_builder_rejected:satRejected},checks,certificates:certs,limitations:"NOT an authenticated R_mix341 opcode; witness table can be exponential in input size; finite test n<=12; OS Node subprocess not executed in this run"};
+  return {theorem:"hypothetical evidence-explicit two-premise calculus: for every UNSAT CNF with m>=2, optimal paid work is m-1; verifier polynomial in entire certificate bytes",checker:"deterministic pure JavaScript; exact signed source; chronological binary parents; all 2^n assignment rows; zero uncharged SAT-oracle calls",cases,paddingControl,hostile:bad,satControls:{even_K4_models:8,even_K4_builder_rejected:satRejected},checks,certificates:certs,limitations:"NOT an authenticated R_mix341 opcode; witness table can be exponential in input size; finite test n<=12; OS Node subprocess not executed in this run"};
 }
 console.log(JSON.stringify(run(),null,2));
