@@ -92,3 +92,9 @@ The no-new-derivations transformation preserves all **47** existing paid AND3/XO
 **P2-B1 OPEN; P2-B2 and P2-B3 separately OPEN:** no superpolynomial all-rule minimum, no B3 fixed-system simulation theorem, no SAT decision-time transfer. P1-01/03/04 unchanged. **P versus NP remains open.**
 
 **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Both complete root proof trackers were read with their GitHub contents and SHA. Existing exactly five role identities, Pacific hourly schedules, two Route A / three Route B assignments, ownership boundaries and all historical fixed weights remain unchanged. No automations were created or modified.
+
+## Publication receipt and owned manuscript reconciliation
+
+The dated five-role handoff is published at `research/coordination/2026-11-11_1824_LSPV3_STRING_CHARGE_FIREWALL582_FIVE_ROLE_HANDOFF.md`, original Git blob `8a9771511a4cb65a85ee42744e82eb32e321cdb5`. Issue #3 coordination comment was posted as [issue comment 6812708838](https://github.com/j15marti/pnp/issues/3#issuecomment-6812708838).
+
+`main.tex` was recovered through its complete Git blob, because the standard GitHub contents fetch returned empty text for this large file. Prewrite blob `d58bcdbacff8c17dd7a090dd463cad1a0a89bf29`, 2,143,390 characters; authorized `LSPV-3/582` insertion 2,069 characters, entirely within the unique LSPV-3 owned sentinels; commit `5284b78411b29b973bc1a77d6ed7195924bf0201`; postwrite blob `63cad737142a47bd0ae756528afdc8a62ae74f9f`, 2,145,459 characters. Full Git blob readback confirmed byte-for-byte equality to the composed manuscript, and removing the insertion exactly reconstructs every character of the previous manuscript. No unrelated owner's region was altered.
