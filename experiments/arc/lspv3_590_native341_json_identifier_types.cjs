@@ -16,7 +16,7 @@ function blob(b){return crypto.createHash('sha1').update('blob '+b.length+'\0').
 const raw={};
 for(const [name,[p,sha]] of Object.entries(files)){
  const bytes=fs.readFileSync(path.join(root,p));
- if(sha!=='PIN_WITNESS_SHA_ON_READBACK')assert.equal(blob(bytes),sha,'drift '+p);
+ assert.equal(blob(bytes),sha,'drift '+p);
  raw[name]=JSON.parse(name==='checker'?'null':bytes.toString('utf8'));
 }
 const cpj=x=>JSON.parse(JSON.stringify(x));
