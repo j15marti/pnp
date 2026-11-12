@@ -10,9 +10,9 @@ const root=path.resolve(__dirname,'../..');
 const files={
  checker:['experiments/arc/lspv2_341_independent_verify.js','fcb7d4ced8f922de14c0bda16263a8cc7853e8e0'],
  original:['results/raw/arc/2026-11-02_1216_LSPV2_MIXED_TSEITIN_MIN_DAG341.json','fe27fe1011d0021e721ccaeb747ed58da65d7464'],
- witness:['results/raw/arc/2026-11-12_0728_LSPV3_590_NULL_SOURCE_OBJECT_TERMINAL_NATIVE341.json','PIN_WITNESS_SHA_ON_READBACK']
+ witness:['results/raw/arc/2026-11-12_0728_LSPV3_590_NULL_SOURCE_OBJECT_TERMINAL_NATIVE341.json','496ef912af8db00940143a3e1440ef2e76b53c89']
 };
-function blob(b){return crypto.createHash('sha1').update('blob '+b.length+'\\0').update(b).digest('hex')}
+function blob(b){return crypto.createHash('sha1').update('blob '+b.length+'\0').update(b).digest('hex')}
 const raw={};
 for(const [name,[p,sha]] of Object.entries(files)){
  const bytes=fs.readFileSync(path.join(root,p));
@@ -32,7 +32,7 @@ function checkOne(name,mut,expected){
  const f=cpj(base);mut(f);
  const pkt=cpj({fixtures:[f],summary:[original.summary[0]]});
  const file=path.join(temp,name+'.json');
- fs.writeFileSync(file,JSON.stringify(pkt)+'\\n');
+ fs.writeFileSync(file,JSON.stringify(pkt)+'\n');
  const run=cp.spawnSync(process.execPath,[path.join(root,files.checker[0]),file],
   {encoding:'utf8',timeout:30000});
  const ok=run.status===0;
@@ -40,7 +40,7 @@ function checkOne(name,mut,expected){
  return {name,accepted:ok,expected,
   checks:ok?JSON.parse(run.stdout).checks:null,
   rejection:ok?null:run.stderr.slice(0,200),
-  bytes:Buffer.byteLength(JSON.stringify(pkt)+'\\n')};
+  bytes:Buffer.byteLength(JSON.stringify(pkt)+'\n')};
 }
 const rows=[];
 try{
