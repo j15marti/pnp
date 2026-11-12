@@ -1,0 +1,595 @@
+% PNP RESEARCH REPORT::AFFINE-TABLE-COMPOSITION2::2026-11-11T19:46:00-08:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,microtype}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\F}{\mathbb F_2}
+\newcommand{\cl}{\operatorname{cl}}
+\newcommand{\aff}{\operatorname{aff}}
+\title{Exact Compatibility Beyond Independent Coordinates}
+\author{P versus NP Research Project\\Constructive implementation and independent review}
+\date{11 November 2026, 19:46 Pacific Standard Time}
+\begin{document}
+\maketitle
+
+\section*{Status and accomplished step}
+\textbf{P versus NP remains OPEN.} The earlier AFFINE-TABLE-COMPOSITION1
+prototype had exact affine/table operations but a polynomial 2-SAT terminal
+requiring independent coordinate forms. This continuation implements exact
+compatibility of dependent coordinates by closure polynomials, adds a Horn
+backend and a polynomial-workspace seed backend, and connects them to the
+existing interfaces and a general CNF selector encoding.
+
+The fixed-codimension tractability regime is \textbf{KNOWN THEOREM}, already
+partly recorded in project ARC225--229 and established in the literature
+\cite{arvind2021,brakensiek2019,mastrolilli2019}.
+The complete constructive proofs below are \textbf{PROVED/EXACT}
+for their declared inputs and costs, with independent review.
+Implementation results are \textbf{COMPUTATIONAL}.
+A uniform polynomial controller for arbitrary SAT remains \textbf{OPEN}.
+No mathematical priority or new complexity-class separation is claimed.
+
+\section{Input, target, and exact bridge}
+The target is to decide \(H(x)\land Ax=b\), where \(H\) is an explicitly
+given Horn CNF or 2-CNF, and \(A\) is an explicit binary matrix.
+Let \(n\) be the number of dense variable slots and \(N\) the explicit input
+length, including that variable universe. Computation uses exact bit vectors
+and ordinary deterministic polynomial-cost graph, closure, and Gaussian
+operations. A source may contain positive facts, negative constraints, and
+redundant or inconsistent affine rows. Every returned model is checked
+against the original source. All costs refer to this same execution.
+
+For the preceding interface language,
+\[
+ R_i(x)=[A_i x=b_i]\land f_i(L_i x),
+\]
+combine the affine cores and reduce every coordinate form modulo them,
+retaining all constant shifts. A table on at most two coordinates is
+bijunctive. A larger \emph{already explicit} table can also be recognized
+as bijunctive by collecting every implied unary and binary clause and
+checking that their conjunction agrees with every table entry.
+This is polynomial in the explicit table size, not a free CNF
+compilation operation.
+
+After substituting reduced forms, retain every coordinate occurring in
+a unary \emph{or} binary clause. Constants and repeated forms are handled
+exactly. This explicitly preserves the ARC228 repair of the earlier
+binary-only observation error. Let the remaining distinct forms be rows
+\(\ell_1,\ldots,\ell_q\), named \(y_1,\ldots,y_q\).
+Their exact image is
+\[
+ \{y:D y=0\},
+ \qquad
+ d=\operatorname{rank}D
+   =q-\operatorname{rank}\{\ell_1,\ldots,\ell_q\}.
+\]
+A tagged Gaussian reduction of the \(\ell_i\) computes a full basis of
+dependencies \(D\) in polynomial time. The residual tables become a
+2-CNF \(H(y)\). Hence the new backends decide the exact projected problem
+\(H(y)\land Dy=0\). A satisfying \(y\) lifts by Gaussian solving to the
+original variables, and every original factor is rechecked.
+The previous independent-coordinate terminal is the special case \(d=0\).
+Unsupported non-bijunctive explicit tables return \texttt{UNRESOLVED}.
+
+\section{The exact closed-set function basis}
+A Horn clause has at most one positive literal. It can be viewed as a
+rule whose antecedent variables imply a positive head, or imply
+contradiction when no positive head occurs.
+Let \(\mathcal R\) be the family of supports of satisfying assignments
+of a nonempty Horn formula \(H\).
+For \(S\subseteq[n]\), let
+\[
+ \cl_H(S)=
+ \bigcap\{T\in\mathcal R:S\subseteq T\},
+\]
+with result \(\bot\) if no such model exists.
+
+\begin{lemma}[Least-model closure]
+If \(\cl_H(S)\ne\bot\), it is itself an \(H\)-model and is the least model
+containing \(S\). It is computable by Horn forward chaining in polynomial
+time. For every \(T\in\mathcal R\),
+\[
+ S\subseteq T
+ \quad\Longleftrightarrow\quad
+ \cl_H(S)\ne\bot\ \hbox{and}\ \cl_H(S)\subseteq T.
+\]
+\end{lemma}
+\begin{proof}
+Horn models are closed under intersection: if every variable in a rule
+antecedent is true in an intersection, that antecedent is true in every
+intersected model, so its head is also true there, or the negative rule
+would already be violated. Forward chaining from the asserted variables
+and positive facts adds only variables forced in every extending model.
+If a negative rule fires there is no extension. Otherwise the fixed
+point satisfies every rule and is contained in every extending model.
+An antecedent-counter implementation processes each rule incidence at
+most once per closure call.
+\end{proof}
+
+Write \(x_S=\prod_{i\in S}x_i\). On \(\mathcal R\),
+\[
+ x_S =
+ \begin{cases}
+ 0,&\cl_H(S)=\bot,\\
+ x_{\cl_H(S)},&\cl_H(S)\ne\bot.
+ \end{cases}
+\]
+In particular the canonical key of the constant function is
+\(\cl_H(\varnothing)\), which can be nonempty when \(H\) has positive facts.
+
+\begin{lemma}[Independent canonical keys]
+The functions
+\[
+ f_K(T)=\mathbf 1[K\subseteq T],
+ \qquad K,T\in\mathcal R,
+\]
+form a basis of all functions \(\mathcal R\to\F\).
+Their multiplication is
+\[
+ f_K f_L =
+ \begin{cases}
+ 0,&\cl_H(K\cup L)=\bot,\\
+ f_{\cl_H(K\cup L)},&\text{otherwise}.
+ \end{cases}
+\]
+\end{lemma}
+\begin{proof}
+Order \(\mathcal R\) by nondecreasing cardinality. Its evaluation matrix
+has entry \(\mathbf 1[K\subseteq T]\) in row \(T\), column \(K\).
+It is triangular with diagonal entries one, and hence invertible over
+\(\F\). The product identity is the least-model closure identity applied
+to \(K\cup L\).
+\end{proof}
+
+Thus distinct consistent closed keys cannot secretly cancel as functions.
+For implication-only Horn systems a union of closed sets is already
+implication-closed, and one only checks negative conflicts.
+For general Horn rules, the full closure of the union is essential:
+a multi-antecedent rule may fire only after the union.
+
+\section{Exact parity compatibility and a direct witness}
+Gaussian elimination either detects an inconsistent affine system or
+retains \(d\) independent equations \(a_jx=b_j\).
+Define the following Boolean satisfaction indicator over \(\F\):
+\[
+ P(x)=\prod_{j=1}^{d}\bigl(1+b_j+a_jx\bigr).
+\]
+Each factor is one exactly when its equation holds.
+The implementation expands this product in the canonical closed-set
+basis, dropping inconsistent closures and adding coefficients modulo two.
+
+\begin{theorem}[Closure-polynomial compatibility]
+The conjunction \(H(x)\land Ax=b\) is satisfiable exactly when its
+canonical closure-polynomial dictionary is nonempty.
+If it is nonempty, a key of minimum cardinality gives a satisfying
+assignment directly.
+\end{theorem}
+\begin{proof}
+For every \(H\)-model, \(P\) is exactly the indicator of \(Ax=b\).
+Every closure replacement and coefficient cancellation preserves this
+function. By independence of the canonical basis, an empty dictionary
+is equivalent to \(P\) vanishing on every \(H\)-model.
+
+Conversely choose a minimum-cardinality surviving key \(K\).
+At the assignment with support \(K\), a surviving term \(f_L\) contributes
+one only when \(L\subseteq K\). No strictly smaller surviving key exists,
+so precisely \(f_K\) contributes one. Hence \(P(K)=1\).
+By construction \(K\) itself is an \(H\)-model. This gives a common model,
+which the implementation verifies against all source clauses and rows.
+\end{proof}
+
+\begin{corollary}[2-CNF backend]
+The same construction handles an arbitrary 2-CNF \(C\) together with
+affine equations.
+\end{corollary}
+\begin{proof}
+Find a model \(a\) of \(C\) using ordinary 2-SAT, or conclude UNSAT.
+Substitute \(x=a\oplus y\). The translated formula is satisfied by zero.
+A nontrivial translated clause has a negative literal; because its width
+is at most two, it is a negative unit, an implication, or a negative
+pairwise constraint, and is Horn. The affine right-hand side becomes
+\(b+Aa\). Apply the theorem and undo the substitution.
+\end{proof}
+
+This operation retains the exact interaction of the two components.
+It does not replace either component by only its affine hull.
+
+\section{Complete costs and a polynomial-workspace alternative}
+Let
+\[
+ D(n,j)=\sum_{i=0}^{\min(n,j)}\binom ni.
+\]
+Let \(B_j\) be the number of surviving closed keys after multiplying
+the first \(j\) affine indicators.
+
+\begin{theorem}[Generator degree and charged work]
+For every stage \(j\), including a temporary output prefix,
+the number of distinct keys is at most \(D(n,j)\).
+If \(F_j\) is the number of terms in the canonicalized \(j\)-th affine
+factor, then \(F_j\le n+1\), and the uncapped implementation generates
+\(B_{j-1}F_j\) candidate products at that stage.
+Its time is bounded by
+\[
+ \operatorname{poly}(N)
+ \left(1+\sum_{j=1}^{d}(n+1)B_{j-1}\right)
+ \le \operatorname{poly}(N)D(n,d).
+\]
+\end{theorem}
+\begin{proof}
+Before closure, the product of \(j\) linear factors has degree at most
+\(j\). Boolean multilinearization makes every monomial \(x_S\) have
+\(|S|\le j\). Every canonical key is therefore \(\cl_H(S)\) for such
+a seed \(S\), even when the closure itself is large. This applies also
+to any prefix of the raw products. There are \(D(n,j)\) possible seeds.
+
+Each affine factor has at most \(n+1\) raw terms, and merging cannot
+increase this number. The program visits every pair of current and
+factor terms, performs a polynomial-cost closure and consistency check,
+and inserts or cancels the resulting key. Canceled products still cost
+work. Initial graph and Gaussian work, factor construction, sorting,
+source checks, and \(n\)-bit arithmetic add polynomial overhead.
+Since \(d\le n\), summing stages yields the stated bound.
+\end{proof}
+
+If \(B=\max_j B_j\), a temporary product can contain up to
+\((n+1)B\) keys; completed-stage sizes alone do not account for this
+temporary work. The optional term cap is checked at each attempted
+insertion, before a future cancellation. Cap exhaustion returns
+\texttt{UNRESOLVED}. Reported counters count selected operations and
+active polynomial sets, not all Python object memory or native tape
+instructions.
+
+For fixed \(d\), the bound is polynomial. For \(d=O(\log N)\), this
+bound generally gives only \(2^{O(\log^2 N)}\), not polynomial time.
+Affine row order, row basis, and the chosen 2-SAT base model can change
+actual intermediate sizes; the measured \(B\) is an execution property.
+
+\begin{corollary}[Small generating seed and streaming space]
+If \(H\land Ax=b\) is satisfiable, there exists \(S\subseteq[n]\),
+\(|S|\le d\), such that \(\cl_H(S)\) is a common model.
+Enumerating these seeds one at a time decides the conjunction in
+\[
+ \operatorname{poly}(N)D(n,d)
+\]
+time and polynomial workspace, even when \(d\) grows.
+\end{corollary}
+\begin{proof}
+The minimum surviving key in the compatibility theorem is the closure
+of a seed of size at most \(d\), by the degree argument.
+For an alternative algorithm, stream every seed of size at most \(d\),
+compute its least Horn model, and check the affine equations.
+A found model is verified. If all seeds fail, the preceding existence
+statement proves UNSAT. Store only the source, row basis, current seed,
+its closure, and iterator state. Discard unsuccessful closures rather
+than caching all visited sets. Each of these objects has polynomial
+size. The 2-CNF translation and witness lifting also use polynomial space.
+\end{proof}
+
+The implementation supplies both strategies. The seed cap bounds
+attempted seeds and returns \texttt{UNRESOLVED} on exhaustion.
+Polynomial workspace does not make the potentially exponential seed
+search polynomial.
+
+\section{A precise limit of separate abstract summaries}
+For a 2-CNF \(H\), let \(\alpha_{\rm aff}(H)=\aff(\operatorname{Mod}H)\).
+For affine \(A\), let \(\alpha_2(A)\) be the conjunction of all unary
+and binary clauses implied by \(A\). Consider the repeated exact exchange
+\[
+ A\leftarrow A\cap\alpha_{\rm aff}(H),
+ \qquad
+ H\leftarrow H\land\alpha_2(A).
+\]
+These operations are sound, but a consistent fixed point need not
+contain a common model.
+
+\begin{lemma}[Affine consequences of 2-CNF]
+The affine hull of a satisfiable 2-CNF is defined by forced literals and
+variable equalities or complemented equalities.
+\end{lemma}
+\begin{proof}
+Its model set is majority-closed: if the majority of three models
+falsifies a binary clause, one of the three falsifies both literals.
+Translate by a model \(a\), obtaining a majority-closed set \(S\) containing
+zero. Then \(S\) is closed under coordinatewise AND because
+\(\operatorname{maj}(u,v,0)=u\wedge v\).
+Its linear span is also AND-closed by bilinearity of coordinatewise
+multiplication over \(\F\).
+An AND-closed linear subspace consists of vectors constant on equivalence
+blocks and zero on inactive coordinates. To see this, construct the
+union of supports using \(u\vee v=u+v+(u\wedge v)\), then multiply vectors
+and their complements relative to this active support to isolate each
+class of coordinates with identical evaluation maps. The resulting
+block indicators span exactly that subspace.
+Translate back by \(a\).
+\end{proof}
+
+Polynomially many ordinary 2-SAT entailment tests find these constraints.
+For an affine relation, all binary consequences are likewise computed by
+Gaussian consistency checks of the four possible assignments to each
+coordinate pair.
+
+\begin{lemma}[One equation is special]
+For any nonempty relation \(R\) and affine hyperplane \(E\) over \(\F\),
+\[
+ R\cap E\ne\varnothing
+ \quad\Longleftrightarrow\quad
+ \aff(R)\cap E\ne\varnothing.
+\]
+\end{lemma}
+\begin{proof}
+If a linear functional never has the required Boolean value on \(R\),
+it has the opposite constant value on all of \(R\), hence on its affine
+hull. The other direction follows by inclusion.
+\end{proof}
+
+It is unsound to iterate this using the intersection of the \emph{old}
+hull in place of the hull of the exact residual. For \(H=(x\vee y)\),
+adding \(x\oplus y=0\) leaves the actual model \(11\), whereas intersecting
+the old full hull leaves \(00\) as well. The subsequent condition \(x=0\)
+distinguishes them.
+
+\begin{proposition}[Smallest rank-two fixed-point failure]
+On five variables let
+\[
+ H=\bigwedge_{i=1}^{4}(\neg x_{i+1}\vee x_i),
+\]
+and impose
+\[
+ x_2+x_3+x_5=1,\qquad x_1+x_4+x_5=0.
+\]
+Then \(H\land A\) is UNSAT, but the separate-summary exchange is already
+at a consistent fixed point. Five variables are minimal for this
+phenomenon at affine codimension two.
+\end{proposition}
+\begin{proof}
+The models of \(H\), in variable order, are
+\(00000,10000,11000,11100,11110,11111\).
+Successive differences are the five unit vectors, so their affine hull
+is full. The two left-hand sides take respectively the value pairs
+\[
+ (0,0),(0,1),(1,1),(0,1),(0,0),(1,1),
+\]
+never the required \((1,0)\).
+The three nonzero homogeneous row-space vectors have weights \(3,3,4\);
+there is no nontrivial unary or binary affine consequence. Thus neither
+direction of exchange refines the other component.
+
+For minimality, if a rank-two affine system has a nonzero consequence
+of support at most two, the full binary abstraction adds it to \(H\).
+Only one further independent affine condition remains, and the previous
+lemma makes hull compatibility exact. Otherwise all three nonzero
+dual rows have weight at least three. Every nonzero column contributes
+two to their total weight, so \(2n\ge9\), forcing \(n\ge5\).
+\end{proof}
+
+For a larger projection scope \(k\), take two blocks of \(k+1\) variables,
+all cross-block negative pairwise clauses in \(H\), and odd parity in
+each block. The conjunction is UNSAT, the Horn hull is full because
+zero and all unit vectors are models, and every at-most-\(k\)-coordinate
+projection of \(A\) is full. This refutes that bounded-coordinate
+exchange. These simple examples are solved by failed-literal probing,
+so a stronger control is needed for that extension.
+
+\section{A verified obstruction to every singleton probe}
+Construct the Mycielski graph of a five-cycle. Its original vertices
+are \(v_0,\ldots,v_4\). Add \(u_0,\ldots,u_4\), joining \(u_i\) to
+the two cycle neighbors of \(v_i\), and an apex \(w\) joined to every
+\(u_i\). There are eleven vertices and twenty edges, with no triangle.
+
+For each vertex introduce three color bits. The Horn 2-CNF \(H\)
+contains within-vertex pairwise exclusions and same-color edge
+exclusions. It has ninety-three binary clauses.
+The affine part \(A\) imposes odd parity on each of the eleven
+variable-disjoint triples. There are thirty-three Boolean variables.
+Together the constraints require exactly one color per vertex and a
+proper three-coloring.
+
+\begin{proposition}[UNSAT with consistent singleton fixed points]
+This instance is UNSAT, but the full iterated affine-hull/binary exchange
+is consistent after either value is pinned to any one of its thirty-three
+bits. Thus every one of its sixty-six singleton probes survives.
+\end{proposition}
+\begin{proof}
+Suppose the graph had a three-coloring. Give the apex color \(3\);
+all \(u_i\) then have colors \(1\) or \(2\).
+Recolor each original cycle vertex \(v_i\) of color \(3\) with the color
+of \(u_i\). Adjacent cycle vertices could not both have been color \(3\).
+The edge from \(u_i\) to each cycle neighbor guarantees that a recolored
+vertex differs from those neighbors. This yields a two-coloring of the
+odd cycle, a contradiction.
+
+The following fixed-point argument holds for every triangle-free graph
+under this encoding. Pinning \(x_{v,c}=0\) generates an affine relation
+\(E\) consisting of that zero and a disequality between the two other
+color bits at \(v\). The two available local colors give the local
+affine direction. For every external coordinate, choose a compatible
+available color at \(v\), set that external bit to one with all other
+external bits zero, then toggle it off. These are \(H\land E\)-models
+and yield every external unit direction. Hence
+\(\aff(H\land E)=E\).
+The disjoint parity blocks in \(A\land E\) give no further binary
+consequences, so the exchange is at a consistent fixed point.
+
+Pinning \(x_{v,c}=1\) fixes the full color triple at \(v\), excludes color
+\(c\) at every neighbor, and gives each neighbor a disequality between
+its other two colors. Let these restrictions be \(E\).
+Triangle-freeness makes the neighbors independent. All combinations
+of their two available colors, with the rest uncolored, are valid
+\(H\land E\)-models, spanning all local freedoms.
+For a color coordinate outside the closed neighborhood of \(v\), turn it
+on and choose each adjacent neighbor's available color to differ from
+it. Such choices are independent. Toggling the external bit off yields
+its unit direction. These directions show
+\(\aff(H\land E)=E\), while the remaining independent parity triples
+again give no new binary consequence. The fixed point is consistent.
+Thus none of the singleton branches yields a failed literal.
+\end{proof}
+
+The independent verifier computed all sixty-six fixed points, each after
+two rounds. Its separate graph-coloring search visited 154 nodes and
+found no three-coloring. It also checked its 2-CNF affine-hull routine
+against direct affine spans for all 166 three-variable 2-CNF relations.
+The complete mixed instance and a 137-clause ordinary CNF encoding are
+included. The new exact closure-polynomial engine refutes the mixed
+instance with 1,416 candidate products and a peak of 120 polynomial
+terms. The old independent-coordinate terminal returns unresolved.
+
+This is a limitation of the specified summaries and singleton
+conditioning. It does not limit arbitrary abstract interpretation,
+stronger lookahead, or exact SAT algorithms.
+
+\section{Why exact symbolic composition still needs a controller}
+Use \(m\) selector triples \((p_i,q_i,r_i)\), pairwise exclusions within
+each triple, and implications from every selector to one common anchor
+\(a\). Add odd parity in each triple. This is a connected easy SAT family:
+choose every \(p_i\) and the anchor true. Bags
+\(\{a,p_i,q_i,r_i\}\) give primal treewidth at most three.
+
+\begin{proposition}[Exponential flat expansion on an easy family]
+For the Horn backend, the canonical product after \(j\) odd-parity
+factors has exactly \(3^j\) surviving keys.
+\end{proposition}
+\begin{proof}
+The \(i\)-th parity indicator is \(p_i+q_i+r_i\) over \(\F\).
+Every product selecting one variable per processed triple is consistent.
+Its Horn closure adds the common anchor and no other selector.
+Different selections give different closed supports, all with coefficient
+one. No cancellation occurs. There are \(3^j\) such selections.
+\end{proof}
+
+A factored product or an anchor separator avoids this flat expansion.
+The proposition therefore refutes a universal polynomial bound for this
+particular expansion path, not for SAT decision.
+The code reproduces \(3^m\) terms through \(m=7\), and the independent
+closed-support checker through \(m=9\).
+
+For arbitrary CNF, the earlier selector reduction is now executable.
+For each clause \((\ell_1\vee\cdots\vee\ell_k)\), introduce \(k\) selectors,
+odd parity, all pairwise exclusions, and implications from each selector
+to its literal. Odd parity plus at-most-one means exactly one selection,
+so the exact projected relation is the original clause.
+The binary part is Horn even with negative original literals.
+An empty clause produces an inconsistent zero-row parity.
+The DIMACS frontend densely relabels occurring identifiers before
+allocating masks. The resulting solver is exact when uncapped, but its
+affine rank and symbolic or seed cost can grow with the input.
+
+\section{Verification and reproducibility}
+All programs require Python 3.10 or later and only the standard library.
+Experiments were split into short independent stages; every invocation
+in this run completed below thirty seconds.
+The root integration seed is \(271828\).
+The independent scripts record their own seeds, parameters, hashes,
+exhaustive enumeration recipes, and capped outcomes.
+
+\begin{center}
+\begin{tabular}{p{0.62\linewidth}r}
+\toprule
+Finite verification & Cases\\
+\midrule
+2-CNF/affine relation pairs on zero to three variables, per backend & 8,844\\
+Horn/affine relation pairs on zero to three variables, per backend & 6,532\\
+Larger randomized/capped comparisons, per backend & 1,400\\
+Previous affine-interface cases, now all resolved & 996\\
+Additional affine-factor integration controls & 402\\
+Explicit table recognition through arity three & 278\\
+CNF selector frontend comparisons and edge cases & 164\\
+Consistent singleton probes on the UNSAT graph control & 66\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The previous interface suite now gives 354 SAT and 642 UNSAT results.
+Its fourteen formerly unresolved cases split into three SAT and eleven
+UNSAT, all agreeing with exhaustive semantics.
+The seed verifier additionally reconstructs each reported least-model
+witness by intersecting all truth-table models extending its seed and
+checks seed size against affine rank.
+Budget exhaustion, long closures, positive facts, multi-antecedent Horn
+rules, zero-variable formulas, sparse identifiers, duplicate literals,
+tautologies, and unary-only observations are included.
+
+Source SHA256 values are recorded in the machine-readable manifest and
+raw results. The closure engine is
+\path{9adfc46f465debb1d1e104c0a682f8057dc74edc30eb2e8ba308420dc88f4193};
+the seed engine is
+\path{2b8db485931551713d27e0539d49f6afae8f7706174a684da7e6250e0143163e}.
+These finite checks support the implementation; they do not establish
+a universal asymptotic bound. No proof-assistant kernel was executed.
+
+\section{Literature and corpus reconciliation}
+Arvind and Guruswami give the fixed-codimension 2-Sub-SAT bound
+\(\operatorname{poly}(N)D(n,d)\) and establish W[1]-hardness parameterized
+by codimension \cite{arvind2021}. This is not an unconditional exclusion
+of FPT, and does not contradict polynomial time for each fixed \(d\).
+
+Brakensiek, Gopi, and Guruswami's least-model seed method and their
+multiple modular-constraint result include Horn formulas with fixed
+numbers of parity constraints \cite{brakensiek2019}.
+Mastrolilli's sparse-polynomial ideal-membership argument for Min-closed
+languages uses cancellation of vanishing or equivalent monomials
+\cite{mastrolilli2019}. Those results are direct prior art for this
+implementation. The elementary closed-set basis proof here makes
+the exact representation and witness extraction explicit; it is not
+presented as new tractability theory.
+
+The repository was surveyed at commit
+\path{d44d35ce5bd572675792db4c906f9d9da1301b73}.
+The current full root manuscript, both proof trackers, issue 3, root
+instructions, task list, exploration directories, and latest historical
+MAIN listing were recovered. The current MAIN blob was
+\path{5fc5a7c0d04eca30b5f6109e5046da46f6ff1352}.
+Original reports ARC227, ARC228, ARC229, LSPV-3/537 and LSPV-3/539
+were read directly, alongside the previous AFFINE-TABLE-COMPOSITION1
+implementation and the attached contextual-pruning statements.
+
+ARC227 already supplied the one-parity meet-generator result.
+ARC228 already supplied the literature correction for all fixed
+codimensions and repaired omitted unary observations.
+ARC229 and ARC233 already supplied restricted message and separator
+composition results. LSPV-3/537 and /539 documented the limitations of
+affine-only local abstractions.
+This run adds an integrated exact symbolic implementation, the Horn
+and streaming-seed backends, concrete finite coverage gains, and the
+fully specified minimal and singleton-resistant summary obstructions.
+The survey was targeted; it is not a claim that every historical file
+was read. Root \texttt{main.tex} was not edited outside an owned region;
+an additive synthesis handoff accompanies both tracker updates.
+
+\section{Barrier audit and next target}
+All algorithms here operate on explicit Horn or 2-CNF sources and
+explicit affine rows. Replacing closure by a semantic oracle on arbitrary
+CNF would remove a paid polynomial premise and is not permitted.
+No relativization or algebrization barrier is claimed to be bypassed.
+The finite-poset function basis is an exact algebraic transfer; no
+cryptographic or physical assumption enters the proofs.
+
+The negative examples concern fixed summary languages or eager flat
+representations. They do not authenticate every historical mixed rule,
+force arbitrary algorithms to build these objects, or imply an
+unrestricted proof-size or machine-time lower bound. No Natural Proofs
+property separating general circuits is asserted.
+The polynomial-workspace backend is a concrete algorithmic guarantee;
+its potentially exponential time gives no simultaneous FLMV
+contradiction.
+
+The next target is a uniformly charged \emph{factored} compatibility
+controller: preserve exact factor scopes, choose multiplication,
+conditioning, and elimination operations, and bound the actual total
+intermediate representation and acquisition cost. It should exploit
+the anchor-separated easy family while retaining enough joint
+information to refute the singleton-resistant graph example.
+Prior bounded-separator theorems are reusable components.
+A proof that every SAT input admits, and permits polynomial discovery
+of, such a polynomial-total-cost execution remains \textbf{OPEN}.
+
+\bibliographystyle{plain}
+\bibliography{continuation_references}
+% END_OF_VERIFIED_REPORT::CODEX::AFFINE-TABLE-COMPOSITION2
+\end{document}
