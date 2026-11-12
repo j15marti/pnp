@@ -65,9 +65,23 @@ function main(){
  const c=audit(C);chk(c.q.index[0]===c.q.index[1]&&c.values[0]===2,"SCC witness");
  const D=graph(G.n,G.e.concat([{u:0,v:3,w:0,rule:"HYPOTHETICAL_UNKNOWN_RULE"}]),[...G.goals]);
  const d=audit(D);chk(d.values[0]===0&&a.values[0]===1,"zero rule omitted");
+ let finiteGraphs=0,finiteStateChecks=0;
+ const pairs=[[0,1],[0,2],[1,0],[1,2],[2,0],[2,1]];
+ for(let encoding=0;encoding<4096;encoding++){
+  let bits=encoding,es=[];
+  for(const [u,v] of pairs){
+   const kind=bits%4;bits=Math.floor(bits/4);
+   if(kind!==0)es.push({u,v,w:kind-1});
+  }
+  for(let goal=0;goal<3;goal++){
+   audit(graph(3,es,[goal]));
+   finiteGraphs++;finiteStateChecks+=3;
+  }
+ }
  return {id:"LSPV-1/587",status:"PROVED/RESTRICTED theorem; COMPUTATIONAL finite controls",
   scope:"declared nonnegative weighted full-state graphs, NOT authenticated historical R_mix341",
-  allStateExactComparisons:a.states+b.states+c.states+d.states,
+  allStateExactComparisons:a.states+b.states+c.states+d.states+finiteStateChecks,
+  exhaustiveThreeStateGraphs:finiteGraphs,
   paidOwner:{states:a.states,zeroEdges:a.q.ze,positiveEdges:a.q.pe,
     saturatedStates:a.q.G.n,startCost:a.values[0],afterPaidCost:a.values[4],
     facetsInFreeClosure:a.q.sets[a.q.index[4]].size},
