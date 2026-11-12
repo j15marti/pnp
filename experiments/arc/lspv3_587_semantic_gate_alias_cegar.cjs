@@ -44,6 +44,20 @@ function prependFacet(d,c,gateId=0){
  q.summary.def_views++;q.summary.live_records++;
  return q;
 }
+// Two genuinely free native facets plus one paid strict RES yield the
+// semantically implied unit [-8]. Direct zero-cost DEF emission is forbidden.
+function paidUnitFromFacets(d,x,underpay=false){
+ const q=copy(d);
+ q.records=q.records.map(r=>({...r,parents:r.parents.map(j=>j+3)}));
+ q.records.unshift(
+   {kind:'DEF',gate:0,c:[x,-8],parents:[]},
+   {kind:'DEF',gate:0,c:[-x,-8],parents:[]},
+   {kind:'RES',c:[-8],parents:[0,1],pivot:x}
+ );
+ q.summary.def_views+=2;q.summary.resolution++;q.summary.live_records+=3;
+ q.summary.paid_total+=underpay?0:1;
+ return q;
+}
 // An intentionally incomplete abstraction: retains source, signed proof DAG,
 // owner identity/output, paid work, and the COMPLETE Boolean truth-function
 // of the paid gate, but forgets its native defining-operand and facet signature.
@@ -65,7 +79,7 @@ function replay(label,p,expect){
  assert.equal(accepted,expect,label+' expected='+expect+' actual='+accepted+' '+proc.stderr);
  let native=null;
  if(accepted){native=JSON.parse(proc.stdout.trim().split(/\r?\n/).at(-1));
-  assert.equal(native.paid,29);assert.equal(native.def,1);assert.equal(native.res,28);
+  assert.equal(native.paid,p.summary.paid_total);assert.equal(native.def,1);assert.equal(native.res,p.summary.resolution);
   assert.equal(native.sources,17);assert.equal(native.negativeTests,11);
  }
  results.push({label,accepted,expected:expect,bytes:input.length,sha256:sha(input),
@@ -81,10 +95,14 @@ try{
  replay('base_y_and_not_y',B,true);
  specimen=replay('native_facet_x_accepts_x',prependFacet(A,[1,-8]),true);
  replay('native_facet_y_accepts_y',prependFacet(B,[2,-8]),true);
+ replay('paid_unit_x_W30',paidUnitFromFacets(A,1),true);
+ replay('paid_unit_y_W30',paidUnitFromFacets(B,2),true);
  replay('cross_facet_x_rejected_under_y',prependFacet(B,[1,-8]),false);
  replay('cross_facet_y_rejected_under_x',prependFacet(A,[2,-8]),false);
  replay('semantic_implied_unit_not_native_x',prependFacet(A,[-8]),false);
  replay('semantic_implied_unit_not_native_y',prependFacet(B,[-8]),false);
+ replay('underpaid_unit_x_W29',paidUnitFromFacets(A,1,true),false);
+ replay('underpaid_unit_y_W29',paidUnitFromFacets(B,2,true),false);
  replay('foreign_owner',prependFacet(A,[1,-8],1),false);
  replay('foreign_defining_literal',prependFacet(A,[3,-8]),false);
  let p=prependFacet(A,[1,-8]);p.summary.paid_total=28;replay('underpaid',p,false);
@@ -92,7 +110,7 @@ try{
  p=prependFacet(A,[1,-8]);p.records[1].c[0]=-1;replay('source_forgery',p,false);
  p=prependFacet(A,[1,-8]);p.records[0].kind='LOCAL-CONVERT';replay('foreign_rule',p,false);
  const positives=results.filter(r=>r.accepted).length,rejects=results.filter(r=>!r.accepted).length;
- assert.equal(positives,4);assert.equal(rejects,10);
+ assert.equal(positives,6);assert.equal(rejects,12);
  const report={
   id:'LSPV-3/587',status:'PROVED/RESTRICTED original-code theorem + COMPUTATIONAL real original OS replay',
   scope:'archived separate /386 SOURCE/DEF/RES only; full historical R_mix341 OPEN',
