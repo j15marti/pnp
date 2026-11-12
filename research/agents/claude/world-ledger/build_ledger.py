@@ -178,6 +178,18 @@ rows = [
      O, T, T, T, T, "Open", "n.a.", "n.a.", "n.a.",
      "CLAUDE ONETAPE-0001 Prop 5 (Hartmanis–Stearns translation)",
      "Would imply a superlinear deterministic multitape lower bound for SAT, which is open. Crossing-sequence counting is capped at O(N²)."),
+    ("L41", "Worst-case derivation bridge for Resolution: SAT ∈ P ⟹ Wbar_Res(N) ≤ poly(N)",
+     F, T, T, T, T, "Open", "n.a.", "n.a.", "n.a.",
+     "CLAUDE BRIDGE-PINCER-0001 Thm 2 (bridge collapse); Haken 1985",
+     "Conclusion is false unconditionally (Haken), so the bridge is equivalent to SAT ∉ P. Same for every system with a known superpolynomial worst-case minimum (tree-like Res, Res, CP, PC, AC0-Frege)."),
+    ("L42", "Pich–Santhanam optimality: for fixed k ≥ 3, if SAT_n ∈ Circuit[n^k] for all n then EF + α^{n^k} has poly(n)-size proofs of all tautologies",
+     T, T, T, T, T, "Theorem", "n.a.", "n.a.", "n.a.",
+     "Pich–Santhanam, Towards P≠NP from EF lower bounds (arXiv 2312.08163, JACM 2026), Thm 2; CLAUDE BRIDGE-PINCER-0001 Thm 3",
+     "Known fixed-system (per k, nonuniform axioms) form of the worst-case derivation bridge: SAT ∈ P ⟹ some EF + α^{n^k} is p-bounded."),
+    ("L43", "For every k ≥ 3, EF + α^{n^k} is not polynomially bounded",
+     F, O, O, O, O, "Open", "n.a.", "n.a.", "n.a.",
+     "CLAUDE BRIDGE-PINCER-0001 Cor 4 (from L42)",
+     "Implies NP ⊄ P/poly, hence P ≠ NP. At least as hard as superpolynomial Extended Frege lower bounds, since EF ≤_p EF + α^{n^k}."),
 ]
 
 headers = ["ID", "Statement", "Algorithmica (P = NP)", "Heuristica", "Pessiland",
