@@ -31,7 +31,7 @@ Because the counterexample is concretely accepted, CEGAR must retain it. It is n
 
 ## Exact scope and blockers
 
-The result is for the pinned K4 fixture and archived `/341` checker. It is not authentication of full historical `R_mix341`, not a sound refutation, and not a lower bound. The full mixed dispatcher, all-rule shared-DAG semantics, completed-refutation preservation, and cost-sound abstraction remain missing. MAIN reconciliation is blocked because the connector returns zero content for the current nonempty blob. XeLaTeX format files remain unavailable.
+The result is for the pinned K4 fixture and archived `/341` checker. It is not authentication of full historical `R_mix341`, not a sound refutation, and not a lower bound. The full mixed dispatcher, all-rule shared-DAG semantics, completed-refutation preservation, and cost-sound abstraction remain missing. The ordinary MAIN contents endpoint returned an empty body, but the Git blob endpoint recovered the full current document; only the LSPV-5 region was reconciled, and deleting the inserted `/505`–`/506` block reconstructs the prior blob exactly. XeLaTeX format files remain unavailable.
 
 **TRACKERS REVIEWED; NO MATERIAL CHANGE.** The earlier tracker entries already contain the unsafe-integer and safe-lexeme alias theorems.
 
