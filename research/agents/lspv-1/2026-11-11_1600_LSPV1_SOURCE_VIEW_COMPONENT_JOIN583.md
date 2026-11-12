@@ -29,7 +29,7 @@ Primary disciplines: Cook and Reckhow (1979), [doi:10.2307/2273702](https://doi.
 
 Fix arbitrary $n,m\ge0$, an **immutable** original source
 $$
-F=$C_1,\ldots,C_m$
+F=(C_1,\ldots,C_m)
 $$
 whose separate SOURCE occurrences have unique authenticated identities. Consider any finite number $k\ge1$ of components $P_1,\ldots,P_k$, each having a declared view $V_i\subseteq\{1,\ldots,m\}$, and a finite globally acyclic joint proof DAG $D$. Assume:
 
@@ -42,11 +42,11 @@ Then $F$ is UNSAT. **No assumption (V_i=V_j) or $V_i=\{1,\ldots,m\}$ is needed**
 
 **Proof.** Suppose $a\models F$. Every authenticated SOURCE leaf is one of the true clauses $C_j$ under (a). Extend (a) to every fresh conservative definition in its topological declaration order. Induct over the complete shared-DAG topological order. Sound inference rules preserve all their assertions under every valuation satisfying their premises, with the appropriately recorded contexts. Each sound discharged branch or join preserves the assertion in the resulting outer context; undischargeable contexts cannot supply the terminal goal. All nodes are therefore valid in the interpretation extending (a), including nodes used by several consumers. But the empty clause is false in every interpretation. Contradiction. Global occurrence identities affect cost, not this semantic induction. QED.
 
-**Cost lemma 583.2 (conditional on the fixed rule tariffs).** If (E_{\rm paid}$D$) is the set of distinct globally charged occurrences, the witnessed logical work is
+**Cost lemma 583.2 (conditional on the fixed rule tariffs).** If $E_{\rm paid}(D)$ is the set of distinct globally charged occurrences, the witnessed logical work is
 $$
-W$D$=\sum_{e\in E_{\rm paid}$D$}w_R(e).
+W(D)=\sum_{e\in E_{\rm paid}(D)}w_R(e).
 $$
-The paid work is a global union sum, not (∑_i W$P_i$); cross-component paid joins are included and shared paid owners counted only once. This proves no lower bound for arbitrary proof selection: (\overline W_R$F$) minimizes over **every** legal whole DAG, including cheaper alternative refutations. It also charges neither the physical evidence bytes nor search, verifier work, span, actual time, or peak space, which are separate measures.
+The paid work is a global union sum, not $\sum_i W(P_i)$; cross-component paid joins are included and shared paid owners counted only once. This proves no lower bound for arbitrary proof selection: $\overline W_R(F)$ minimizes over **every** legal whole DAG, including cheaper alternative refutations. It also charges neither the physical evidence bytes nor search, verifier work, span, actual time, or peak space, which are separate measures.
 
 **Conservative CEGAR interpretation.** An abstraction retaining the root occurrence IDs, local views, exact signed parent ports and explicit verified joins can admit the genuine joint trace. Requiring every view to equal the root would reject this legal trace in the *declared* component calculus and is a **MUST-like underapproximation**, unsuitable as a general MAY coverage argument. It remains permissible as a restricted sufficient validation firewall. A truly native $R_{\mathrm{mix341}}$ abstract transformer still needs authenticated byte grammar and pricing for every historical operation. No cheap path is ruled out by a source-view mismatch alone.
 
@@ -54,15 +54,15 @@ The paid work is a global union sum, not (∑_i W$P_i$); cross-component paid jo
 
 Let
 $$
-F=$x\vee y$\wedge$\neg y$\wedge$\neg x$,
+F=(x\vee y)\wedge(\neg y)\wedge(\neg x),
 $$
 with distinct signed SOURCE occurrences (s_0,s_1,s_2). Component (A) authenticates only $V_A=\{s_0,s_1\}$ and derives by one **paid** oriented Resolution on $y$:
 $$
-$x\vee y$,\ \neg y\ \vdash_{\rm RES}\ x.
+(x\vee y),\ \neg y\ \vdash_{\rm RES}\ x.
 $$
-Component (B) authenticates only $V_B=\{s_2\}$, the original ($\neg x$) clause. A **separately paid, explicitly verified** cross-component Resolution on $x$ derives (□). The entire joint DAG has exactly two paid inference occurrences and three authenticated SOURCE leaves, and is valid as a typed SOURCE/Resolution proof of this root. Both component source views differ from each other and from the full root. There is no unchecked transfer from one accept/reject predicate to another.
+Component (B) authenticates only $V_B=\{s_2\}$, the original $\neg x$ clause. A **separately paid, explicitly verified** cross-component Resolution on $x$ derives (□). The entire joint DAG has exactly two paid inference occurrences and three authenticated SOURCE leaves, and is valid as a typed SOURCE/Resolution proof of this root. Both component source views differ from each other and from the full root. There is no unchecked transfer from one accept/reject predicate to another.
 
-The root is UNSAT by direct enumeration of its four assignments. If (s_2) is **forged** from ($\neg x$) to $x$, the altered root has exactly one model, (x=1,y=0). The source-bound verifier rejects the original component's claimed ($\neg x$) leaf before accepting any join.
+The root is UNSAT by direct enumeration of its four assignments. If $s_2$ is **forged** from $\neg x$ to $x$, the altered root has exactly one model, $x=1,y=0$. The source-bound verifier rejects the original component's claimed $\neg x$ leaf before accepting any join.
 
 ## Reproducible computational audit
 
