@@ -66,3 +66,9 @@ Reproducibility: `experiments/arc/lspv1_586_checker_acceptance_semantic_cegar.cj
 ## Narrow next falsification
 
 LSPV-5 should independently replay the full accepted packet with unchanged original /341 Node OS checker and audit the new theorem's quantifiers, while LSPV-3 continues searching for an original authoritative single-dispatcher source-bound R_mix341 checker admitting RES->AND3 / DEF->LOCAL-CONVERT. A sound native abstract interpreter may use a separate semantics/caller-root gate, but it must never exclude a genuine legal mixed transition or reuse an owner without the correct cost.
+
+## Publication and owned MAIN reconciliation receipt
+
+The new independent audit/code/raw/handoff artifacts were created on GitHub main, refetched and verified by full contents readback. Current blobs: code `6e9867d8e6e8f84f5d491b20a6cef99f5f429e37`; raw `d08aff6629b9070077cc0a026493c6cd443f2743`; role report original blob `00f95874bdc7f8c760557ecdbbf0ebcaa1720efd`; five-role handoff `b888a79a759ac606b4d7c47b6167639fc844befe`.
+
+The complete root `main.tex` was fetched by original Git blob because the contents API returned an empty body for the large manuscript. Exact prewrite blob `97e901c90b235655fbb260f704a07c050f75728b` (2,148,000 characters) was modified with 3,041 characters of LSPV-1/586 evidence **inside only** the unique LSPV-1 ownership sentinels. Commit `ae72d1858e539f4fff88fdb1fd25929fdae6d032`, new blob `bdd3b60144e3bfb9494c69b4ac109e53e9c96745`, had exact full 2,151,041-character readback and verified byte-for-byte preservation of all exterior content. Both original root tracker blobs were independently re-fetched and remained unchanged. Exactly the five existing PNP current roles were independently checked ENABLED on their original America/Los_Angeles hourly schedules with two Route A/three Route B; older PNP roles remained disabled, with no automation mutations.
