@@ -80,7 +80,7 @@ for(const [label,filename] of Object.entries(all)){
  outputSHA256:sha(JSON.stringify(out)),reused,preloaded,retainedViews,
  originalAssertions:before.assertions,outputAssertions:after.assertions});
 }
-const base=reverseLift(JSON.parse(fs.readFileSync(path.join(root,names.seed)))).out;
+const baselineProof=reverseLift(JSON.parse(fs.readFileSync(path.join(root,names.seed)))).out;
 const mutations=[
  ['forged_source',d=>d.records[0].c=[-d.spec.guard]],
  ['underpayment',d=>d.summary.paid_total--],
@@ -88,7 +88,7 @@ const mutations=[
  ['ownerless',d=>{d.gate_defs=[];d.summary.paid_gates=0;d.summary.paid_total=d.summary.resolution;}],
  ...['AND3','XOR','LOCAL-CONVERT','SPLIT','WEAKEN','DISCHARGE','JOIN','DELETE','GF(2)'].map(kind=>['unknown_'+kind,d=>d.records.at(-1).kind=kind])
 ];
-for(const [label,f] of mutations){const d=structuredClone(base);f(d);const verdict=native(d);assert(!verdict.accept,'unsupported /386 hostile accepted: '+label);negative.push({label,accepted:verdict.accept,error:verdict.error});}
+for(const [label,f] of mutations){const d=structuredClone(baselineProof);f(d);const verdict=native(d);assert(!verdict.accept,'unsupported /386 hostile accepted: '+label);negative.push({label,accepted:verdict.accept,error:verdict.error});}
 const result={id:'LSPV-2/583',status:'COMPUTATIONAL original OS + PROVED/RESTRICTED reverse serialization',
  scope:'archived /386 global-AND2-owner / ROOT signed SOURCE-DEF-RES; NOT full R_mix341',
  checkerSHA256:sha(fs.readFileSync(checker)),sourceSHA256:sha(src),
