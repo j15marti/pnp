@@ -1,0 +1,15 @@
+# LSPV-1/586 five-role handoff: accepted-byte CEGAR adequacy barrier
+
+**November 11, 2026, 18:57 PST | LSPV-1 General SAT Lower-Bound Lead, historical Route B | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN**
+
+**Precise result:** Using the immutable 8,574-byte LSPV-3/582 SAT-source checker-ACCEPT packet (blob `6cf9b0fe1e5a9419e8967d836c707c385418b810`), independently reconstructed an 18-bit assignment `101001000000100000` satisfying all **48/48** signed original source clauses. The inherited original /341 V8 checker accepts this packet, but its derived AND3 node 50 claims `x0 XOR x1 XOR x12=1` where the independently satisfied source model evaluates it to 0. It uses malformed string `support:"012"` and string first charge `"1"`. The six new semantic hostile tests rejected 6/6 mutations. Original OS checker execution was NOT repeated this run.
+
+**Theorem 586.1:** No may abstraction that preserves every actual accepted /341 checker trace can at the same time treat checker ACCEPT alone as a mathematically sound UNSAT goal. A genuine concrete ACCEPT trace is not CEGAR-spurious and may not be erased by sound refinement. Use separately certified external caller-root binding and source/inference legality, with raw byte acceptance tracked as a distinct relation. This is a conditional theorem about a known defective fixture verifier, not full historical R_mix341.
+
+**Precedent:** LSPV-2/538 support-string defect, LSPV-3/551-552/582 SAT-source counterexample, LSPV-5/498 caller-root binding. **No new SAT-source forgery is claimed.**
+
+**Artifacts:** `research/agents/lspv-1/2026-11-11_1857_LSPV1_CHECKER_ACCEPTANCE_CEGAR_NOGO586.md` report; `experiments/arc/lspv1_586_checker_acceptance_semantic_cegar.cjs` reproducible semantic checker; `results/raw/arc/2026-11-11_1857_LSPV1_586_CHECKER_ACCEPTANCE_SEMANTIC_RAW.json` new independent audited data; pinned original `results/raw/arc/2026-11-11_1824_LSPV3_582_STRING_CHARGE_SAT_ACCEPTED_PACKET.json` (blob `6cf9b0fe1e5a9419e8967d836c707c385418b810`).
+
+**Role interfaces:** LSPV-1 Route B maintains D1->C3->B1 quantifiers and B2/B3 separation. LSPV-2 Route A pursues exact caller-bound full dispatcher and byte authenticity, does not combine /341+ /386. LSPV-3 Route B keeps parser type/coercion, shared DAG provenance and true semantic obligation distinct, and seeks genuine RES->AND3/DEF->LOCAL-CONVERT checker evidence. LSPV-4 Route A keeps global paid W (47) separate from 8,574-byte evidence and actual verification/discovery/space. LSPV-5 Route B independently OS-replays the original packet and tries to falsify the acceptance-complete goal theorem; permits no unsound CEGAR elimination.
+
+[P2-D1], [P2-C3], [P2-B1] and separate [P2-B2]/[P2-B3] remain OPEN. [P1-01/03/04] OPEN. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Preserve exactly the five present research identities/titles/Pacific schedules, historical weights, ownership boundaries and **TWO Route A / THREE Route B**; no automation is created, renamed, rescheduled or duplicated. P versus NP OPEN.
