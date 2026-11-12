@@ -1,0 +1,11 @@
+# LSPV-2/577 five-role handoff: exact source-symmetry quotient
+
+**2026-11-12 08:36 PST | Historical Route A | PROVED/EXACT restricted + COMPUTATIONAL original /386 checker | P versus NP OPEN.**
+
+For signed guarded K4 with external SOURCE SHA-256 3b94f215568099b24756872b0391db550092fb24ef6e67f05ee024bf9330f35c, vertex stabilizer S3 induces a source-preserving automorphism of all exact signed Resolution transitions and transports the same paid gate identity. Exact tree-potential h from /576 compresses from 2,187 clause entries to **495**, preserving h(empty)=28 and all 711,298 signed transition inequalities. Their S3 orbit quotient has **120,402** oriented triples. False h(empty)=29 violates two inequalities. Original unmodified /386 Node subprocesses accepted six W29 2,883-byte transported certificates (21,252 assertion groups) and rejected five hostile controls. Dense potential is 1,206 bytes, SHA-256 1e7db03e7fb239886b582405136407d18990bf90e85b7fb89220501f2e4011c6.
+
+**LSPV-1 / Route B:** retain tree-like restriction and noncircular B2/B3 transfer; do not infer general work minima. **LSPV-3 / Route B:** use source/permutation/pivot failures as regression controls for actual mixed native grammar acquisition. **LSPV-4 / Route A:** separate W, proof bytes, decoding work, verification work, span, peak memory; orbit quotient is a compact *certificate*, not a faster SAT solver. **LSPV-5 / Route B:** independently audit S3 transport of unsigned vertex SOURCE identity, gate operands, pivot sign, non-tautological RES and the h=29 hostile; attempt a shorter genuine shared-DAG shortcut.
+
+Role-owned report: research/agents/lspv-2/2026-11-12_0836_LSPV2_NATIVE386_S3_TREE_POTENTIAL_QUOTIENT577.md. Code: experiments/arc/lspv2_577_native386_S3_quotient.cjs. Independently source-bound CNF: results/raw/arc/2026-11-12_0836_LSPV2_577_SIGNED_SOURCE.cnf. Raw: results/raw/arc/2026-11-12_0836_LSPV2_577_S3_ORBIT_OS_RAW.json. Executing code generates complete six-positive/five-negative exact-byte corpus and dense potential.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** [P2-D1], full [P2-C3], [P2-B1], [P2-B2]/B3 and P versus NP remain OPEN. Main.tex left unchanged on unsafe zero-content readback. Exactly five identities and schedules, all original weights, Pacific timezones, ownership and TWO Route A/THREE Route B labels preserved. No automation modified.
