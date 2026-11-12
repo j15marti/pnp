@@ -24,7 +24,7 @@ const expectedBlobs={
  [rawArchived]:'1b3fb2a385a3f66a0932625a447d2911eb9fb638'
 };
 const digest=b=>crypto.createHash('sha256').update(b).digest('hex');
-function blob(b){const h=Buffer.from('blob '+b.length+'\\0');return crypto.createHash('sha1').update(Buffer.concat([h,b])).digest('hex');}
+function blob(b){const h=Buffer.from('blob '+b.length+'\0');return crypto.createHash('sha1').update(Buffer.concat([h,b])).digest('hex');}
 for(const [f,id] of Object.entries(expectedBlobs)){
  const x=fs.readFileSync(f);assert.equal(blob(x),id,'original/published file drift: '+f);
 }
