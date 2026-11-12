@@ -8,7 +8,7 @@ const root=path.resolve(__dirname,'../..');
 const original=path.join(root,'results/raw/arc/2026-11-12_0424_LSPV3_587_NATIVE_CONSTANT_FACET_ACCEPTED_PACKET.json');
 const checker=path.join(root,'experiments/arc/lspv2_386_independent_verify.js');
 const expected={seed:'4177ec15a0c7253378d5652a6b13b7152601d300',checker:'338305c0ce101704205e57543756b8127074a986'};
-function gitBlob(b){return crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+b.length+'\\0'),b])).digest('hex');}
+function gitBlob(b){return crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+b.length+'\0'),b])).digest('hex');}
 for(const [p,id] of [[original,expected.seed],[checker,expected.checker]]) assert.equal(gitBlob(fs.readFileSync(p)),id,'immutable upstream blob drift');
 const base=JSON.parse(fs.readFileSync(original,'utf8'));
 function canonical(c){return [...new Set(c)].sort((a,b)=>Math.abs(a)-Math.abs(b)||a-b);}
