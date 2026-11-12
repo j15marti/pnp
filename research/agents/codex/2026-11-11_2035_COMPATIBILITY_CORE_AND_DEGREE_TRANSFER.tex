@@ -1,0 +1,622 @@
+% PNP RESEARCH REPORT::COMPATIBILITY-CORE-DEGREE-TRANSFER::2026-11-11T20:35:00-08:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,array,xurl}
+\usepackage[hidelinks]{hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newcommand{\F}{\mathbb F_2}
+\newcommand{\poly}{\operatorname{poly}}
+\newcommand{\SAT}{\operatorname{SAT}}
+\newcommand{\degM}{\operatorname{deg}_{\mathcal M}}
+\title{Compatibility Constraints Revisited:\\
+An Exact Degree Transfer and a Stronger Selector Algorithm}
+\author{P vs NP Research Project\\Codex research with independent temporary-agent review}
+\date{11 November 2026, 20:35 PST}
+\begin{document}
+\maketitle
+
+\section*{Status and new attempt}
+\textbf{P versus NP remains open.}
+The user requested another attempt after the adaptive collision and
+closure barriers \cite{barriers2026}. This report deliberately removes
+the all-prefix-extension premise. It constructs and checks formulas
+with locally feasible prefixes that have no global continuation.
+
+Three exact results emerge. First, the recovered selector encoding has
+a minimum restricted algebraic degree equal to the source clause count
+on satisfiable inputs and zero on unsatisfiable inputs.
+Second, this special encoding admits a global $2^m\poly(N)$ controller,
+stronger than the generic $N^{O(m)}$ closure-seed bound.
+Third, adaptive collisions from efficiently invertible permutations have
+explicit global coordinates, even after a final compatibility restriction.
+These are \textbf{PROVED/EXACT} within the stated models; finite checks
+are \textbf{COMPUTATIONAL}. The all-program work amplification needed
+for a separation remains \textbf{OPEN}.
+
+\section*{Quantifiers, input measure, and SAME\_REALIZATION}
+Inputs are explicit Boolean formulas or circuits with dense occurring
+variable names, or with a charged preprocessing step making them so.
+$N$ denotes total encoded input length plus two, including the source,
+compatibility conditions, construction metadata, and any explicitly
+supplied stage circuits. The source clause count is $m$.
+For a fixed $q\ge1$, a degree-$q$ quasipolynomial bound means
+$2^{O((\log N)^q)}$; this is an upper bound unless stated otherwise.
+
+The previous minimum-work benchmark is
+\[
+ H(F)=\min_{|p|\le b_0+\lfloor\log(|F|+2)\rfloor}
+       \{t_p(F)+q_0(|F|+2)+1\},
+ \tag{1}
+\]
+where successful outputs are independently verified witnesses and
+$q_0$ is a fixed polynomial verification allowance.
+One fixed correct SAT decider of worst-case time $T_A$ gives
+\[
+ \overline H(N)\le C_A(N+T_A(KN)+2)^D
+ \tag{2}
+\]
+for fixed $K,D$. The preceding transfer report proves the converse
+polynomial and fixed-quasipolynomial-degree equivalences
+\cite{transfer2026}.
+The all-program amplification target is
+\[
+ s_{j+1}\le Cs_j,\qquad
+ H(F_{j+1})\ge H(F_j)s_j^c/B,\quad s_j\longrightarrow\infty,
+ \tag{3}
+\]
+with fixed $C>1,c>0,B\ge1$. It would force
+$H(F_j)\ge2^{\Omega((\log s_j)^2)}$.
+None of the structural results below establishes (3).
+The degree resource and the witness-work resource are not identified.
+
+\section{An exact compatibility encoding recovered from the corpus}
+Let
+\[
+ F(x)=\bigwedge_{j=1}^m C_j(x),\qquad
+ C_j(x)=\bigvee_{t=1}^{k_j}L_{jt}(x),
+ \tag{4}
+\]
+with $m\ge1$ and every clause nonempty.
+Introduce one selector $s_{jt}$ per literal occurrence.
+The Horn 2-CNF is
+\[
+ B_F(x,s)=
+ \bigwedge_j
+ \left[
+ \bigwedge_{t<u}(\neg s_{jt}\vee\neg s_{ju})
+ \ \wedge\
+ \bigwedge_t(\neg s_{jt}\vee L_{jt}(x))
+ \right].
+ \tag{5}
+\]
+Add the disjoint affine rows
+\[
+ \bigoplus_{t=1}^{k_j}s_{jt}=1,\qquad j=1,\ldots,m.
+ \tag{6}
+\]
+Pair exclusions enforce at most one selected literal, and odd parity
+enforces at least one. Thus exactly one true literal is selected in
+every clause:
+\[
+ \boxed{
+ F(x)\ \Longleftrightarrow\
+ \exists s\,[B_F(x,s)\wedge A_Fs=\mathbf1].
+ }
+ \tag{7}
+\]
+Both witness transformations are explicit. A source model selects one
+true literal per clause; a target model projects to its $x$ assignment.
+
+This is the actual construction in AFFINE-TABLE-COMPOSITION2 and in its
+\texttt{selector\_encoding} implementation \cite{atc2026,atccode2026}.
+For exact 3-CNF it uses $n+3m$ variables, $6m$ Horn binary clauses,
+and $m$ disjoint nonzero affine rows of rank exactly $m$.
+Here $n$ counts occurring original variables.
+For general widths, the Horn clause count is
+$\sum_j[\binom{k_j}{2}+k_j]$, still polynomial in explicit source length.
+An empty source clause is handled separately as immediate inconsistency.
+
+\section{Exact degree dichotomy: the algebraic property encodes SAT}
+Let $\mathcal M_F$ be the set of all Horn models of $B_F$,
+identified with Boolean vectors $(x,s)$. This family is nonempty:
+all selectors zero satisfies the Horn part for every $x$.
+It is also closed under intersection.
+
+The affine acceptance function on $\mathcal M_F$ is
+\[
+ a_F(x,s)=
+ \prod_{j=1}^m\left(\sum_{t=1}^{k_j}s_{jt}\right)
+ \quad\text{over }\F.
+ \tag{8}
+\]
+Its value is one precisely when all rows (6) hold.
+Define
+\[
+ D(F)=\min\{\deg p:
+ p\text{ is a multilinear }\F\text{-polynomial agreeing with }
+ a_F\text{ on }\mathcal M_F\}.
+ \tag{9}
+\]
+Use zero as a nonnegative degree bound for the zero function.
+
+\begin{theorem}[Exact restricted-degree transfer]\label{thm:degree}
+For every source formula in (4),
+\[
+ \boxed{
+ D(F)=
+ \begin{cases}
+  m,& F\text{ is satisfiable},\\
+  0,& F\text{ is unsatisfiable}.
+ \end{cases}}
+ \tag{10}
+\]
+\end{theorem}
+
+\begin{proof}
+If $F$ is unsatisfiable, (7) says no Horn model satisfies every affine
+row. Thus $a_F$ is identically zero on $\mathcal M_F$, proving
+$D(F)=0$.
+
+Suppose $F$ has a satisfying assignment $a$.
+For each clause choose one position $t_j$ whose literal is true under $a$.
+Fix $x=a$ and all selectors other than $s_{j,t_j}$ to zero.
+Leave the $m$ chosen selectors free, calling them $u_1,\ldots,u_m$.
+Every point of this entire Boolean cube satisfies $B_F$:
+there is at most one selector per clause, and every possibly selected
+literal is true under $a$.
+On this cube, (8) becomes
+\[
+ a_F=\prod_{j=1}^m u_j=\operatorname{AND}_m(u).
+\]
+Any representing polynomial in (9), after this substitution, must agree
+with $\operatorname{AND}_m$ on the full Boolean cube.
+The unique multilinear representation of $\operatorname{AND}_m$
+has degree $m$, and substitution of constants cannot increase degree.
+Therefore $D(F)\ge m$. Formula (8) already gives a degree-$m$
+representation, so equality follows.
+\end{proof}
+
+The proof does not require agreement outside $\mathcal M_F$:
+the lower-bound cube lies wholly inside that model family.
+
+\begin{corollary}[Computational consequence]\label{cor:degree}
+On canonical selector-image inputs with their source metadata,
+deciding $D(F)<m$ is coNP-complete. Even deciding $D(F)=0$
+has the same property. Computing $D(F)$ in polynomial time is
+equivalent to polynomial-time SAT.
+The equivalence also preserves every fixed quasipolynomial
+logarithmic degree.
+\end{corollary}
+
+\begin{proof}
+By (10), both decision predicates are exactly source UNSAT.
+The compiler is polynomial time; validity of the canonical construction
+can be checked from the supplied source. On malformed representations
+use a fixed rejection convention.
+On valid images, the complement has an NP certificate consisting of
+a source model; malformed inputs are recognized directly in polynomial time.
+A SAT algorithm computes $D(F)$ by outputting $m$ or zero.
+Conversely a degree algorithm decides SAT by testing for output $m$.
+The reductions have polynomial encoded size, and deterministic
+quasipolynomial log-degree is preserved under polynomial substitutions
+and complementation.
+\end{proof}
+
+This is a transfer of \emph{computational difficulty of determining a
+degree property}. It is not a transfer from a large numerical degree
+to large computation time.
+For example,
+\[
+ F_m=\bigwedge_{j=1}^m(a\vee u_j\vee v_j)
+ \tag{11}
+\]
+is a connected family with the immediate model $a=1$.
+Its selector representation still has $D(F_m)=m$ and rank $m$.
+Its witnesses are uniformly easy.
+
+There is a further exact obstruction for the closure-enumeration
+procedure. No positive Horn implication in (5) has a selector as its
+head. Thus Horn propagation never creates a selector not already
+in the seed. Any accepted closure must contain one selector from each
+of the $m$ clauses and consequently needs at least $m$ selector seeds.
+This proves a limitation of that particular seed-enumeration method,
+while (11) has a direct polynomial witness algorithm.
+
+Under $\mathsf P=\mathsf{NP}$, the degree problem in
+Corollary \ref{cor:degree} is in P. There is no contradiction with
+$D(F)=m$: $\operatorname{AND}_m$ itself has degree $m$ and a linear
+evaluation algorithm. A lower bound on \emph{computing} the degree
+property would be the missing ingredient, and would already separate
+P from NP on this family.
+
+\section{A stronger global controller: exponential in clauses, not seeds}
+For original variable $x_i$, let
+\[
+ P_i=\{j:x_i\in C_j\},\qquad
+ M_i=\{j:\neg x_i\in C_j\}.
+\]
+A dynamic-programming state records the set of clauses already made
+true. Put
+\[
+ \mathcal D_0=\{\varnothing\},
+\]
+\[
+ \mathcal D_i=
+ \{S\cup P_i:S\in\mathcal D_{i-1}\}
+ \ \cup\
+ \{S\cup M_i:S\in\mathcal D_{i-1}\}.
+ \tag{12}
+\]
+
+\begin{theorem}[Clause-coverage controller]\label{thm:dp}
+For an explicitly represented $m$-clause CNF, (12) decides
+satisfiability and finds a model in $2^m\poly(N)$ time.
+It therefore solves the canonical selector representation (5)--(6)
+within the same bound, including construction of a full selector witness.
+\end{theorem}
+
+\begin{proof}
+Inductively, $\mathcal D_i$ is exactly the family of clause sets made
+true by assignments to the first $i$ variables. The two successors
+in (12) set $x_i$ to one or zero. Hence the full clause set $[m]$
+belongs to $\mathcal D_n$ exactly when a satisfying assignment exists.
+There are at most $2^m$ states and two transitions per state per
+variable. Bitmask operations and input preparation cost a polynomial
+in explicit length. Predecessor records reconstruct a source model,
+which is lifted by (7).
+Unused variables can first be removed with their identifiers recorded;
+the theoretical input convention is dense occurring variables.
+\end{proof}
+
+In this special representation $d=\operatorname{rank}A_F=m$, so the
+upper bound is
+\[
+ 2^d\poly(N),
+ \tag{13}
+\]
+rather than the generic Horn/affine closure bound $N^{O(d)}$.
+The generic tractability results are established in the literature
+\cite{brakensiek2019}; (12) is an elementary direct algorithm for the
+particular recovered image, with a proof included here.
+No priority claim is made for clause-parameter dynamic programming.
+
+For fixed width three, the closure universe has
+$U=n+3m\le6m$, since only occurring original variables are counted.
+The previous refined binomial bound already yields
+$\sum_{j\le m}\binom Uj\le2^U=2^{O(m)}$.
+Thus (13) improves the explicit base and controller, not the qualitative
+clause-exponential frontier in this constant-width case.
+Its distinction from the general seed bound is stronger for unbounded
+clause width, where $U$ can be much larger than $m$.
+
+Thus $m=O(\log N)$ is polynomial for this compatibility core.
+For an extension chain with polynomially many \emph{actually satisfiable}
+selector residuals and uniformly charged representation acquisition,
+lifting, and replay, let $m_*$ be the maximum residual clause count.
+Then
+\[
+ H(F_J)\le \poly(N)2^{O(m_*)}.
+ \tag{14}
+\]
+The fixed-program and canonical-reconstruction requirements from the
+previous report remain in force.
+A squared-logarithm $H$ lower bound on such a chain would require
+\[
+ m_*=\Omega((\log N)^2).
+ \tag{15}
+\]
+If a previously chosen witness leaves an unsatisfiable residual,
+(14) cannot simply be applied to that residual as a successful
+extension. One must solve the represented global compatibility problem
+or give a charged repair procedure. Equation (12) does solve a fully
+supplied global CNF, with its \emph{total} clause count charged.
+
+\section{A concrete locally feasible prefix with no continuation}
+Consider
+\[
+\begin{aligned}
+ F={}&(x\vee y\vee z)\\
+ &\wedge(\neg x\vee a\vee b)
+ \wedge(\neg x\vee a\vee\neg b)\\
+ &\wedge(\neg x\vee\neg a\vee b)
+ \wedge(\neg x\vee\neg a\vee\neg b).
+\end{aligned}
+ \tag{16}
+\]
+The last four clauses force $x=0$. The formula has 12 models, because
+$y\vee z$ must hold while $a,b$ are free.
+Selecting $x$ in the first clause is locally feasible under the Horn
+constraints and first parity row. It has no full continuation.
+
+The new controller finds, for example,
+$(x,y,z,a,b)=(0,0,1,0,0)$.
+In the recorded run it uses 26 attempted transitions and at most six
+states in a layer.
+The selector representation has 20 variables, 30 Horn binary clauses,
+and five affine rows of rank five.
+Its acceptance degree is exactly five by Theorem \ref{thm:degree}.
+Therefore dead prefixes, nonconstant degree, and full row rank can
+coexist with a small global computation.
+
+\section{Global coordinates for compatible adaptive collision chains}
+At stage $i$, let $P_{a_i}$ be a uniformly efficiently invertible
+permutation on $r_i+1$ bits. Its key $a_i$ is a deterministic,
+efficiently computed function of earlier ordered collision pairs.
+Stage validity requires $u_i\ne v_i$ and equal first $r_i$ output bits.
+
+\begin{theorem}[Collision coordinate normal form]\label{thm:coords}
+The full chain of ordered collision pairs is in polynomial-time
+bijection with coordinates
+$(z_1,b_1,\ldots,z_k,b_k)$, where $|z_i|=r_i$ and $b_i$ is one bit:
+\[
+ u_i=P_{a_i}^{-1}(z_i b_i),\qquad
+ v_i=P_{a_i}^{-1}(z_i(1-b_i)).
+ \tag{17}
+\]
+All sizes, key generation, forward/inverse evaluation and stage counts
+must be uniformly polynomially charged.
+\end{theorem}
+
+\begin{proof}
+Given a collision, injectivity says the full outputs differ. Since
+their first $r_i$ bits agree, their last bits are complementary.
+The common prefix uniquely defines $z_i$, and the last bit of
+$P_{a_i}(u_i)$ uniquely defines $b_i$. This proves the single-stage
+bijection. In a chain, previous pairs determine the next key.
+Sequential application gives the global bijection and its efficient
+inverse. Gate values are completed afterward.
+\end{proof}
+
+Write $E(z,b)$ for this encoding.
+An arbitrary explicit compatibility circuit $K$ on the whole chain
+becomes the exact remaining constraint
+\[
+ K(E(z,b))=1.
+ \tag{18}
+\]
+This is a polynomial-size ordinary circuit under the hypotheses.
+It is a normal form, not a polynomial algorithm for arbitrary $K$.
+
+When compatibility is a source CNF $F(z)$ on the common output labels,
+the search problems are witness-preserving equivalent.
+A source model lifts by choosing every $b_i=0$ in (17).
+A compatible chain projects by reading its common output labels.
+Each source model has exactly $2^k$ ordered primary-chain lifts
+when orientations are unrestricted.
+
+In particular, some forward-chosen prefixes can be dead even though
+every satisfying \emph{source assignment} has an easy lift.
+A global source-first algorithm avoids the bad choices.
+Iterating this wrapper from one fixed witnessed seed, with polynomial
+total reconstruction and generation cost in final size, still gives
+a fixed short replay program and polynomial $H$.
+No pointwise equality of optimal short-program costs is asserted.
+
+\subsection*{A precise inversion alternative}
+Remove efficient inverse evaluation. For a fixed uniformly
+polynomial-time, length-preserving permutation family $Q_r$, put
+\[
+ P_r(x,b)=(Q_r(x),b).
+\]
+Unconstrained truncated collisions are trivial:
+$(x,0),(x,1)$. Requiring their common output to equal a supplied label
+$y$ makes compatible collision search exactly inversion of $Q_r$ at
+target $y$, meaning finding $Q_r^{-1}(y)$.
+A recovered inverse gives the pair, and either member of a valid pair
+contains that inverse.
+
+The inverse-bit language for a \emph{fixed uniform permutation family}
+lies in $\mathsf{UP}\cap\mathsf{coUP}$: the unique preimage certifies
+either bit value. For an arbitrary circuit supplied as input, this
+statement instead needs the promise that the circuit is a permutation.
+Worst-case one-way permutations and the related class separation are
+studied by Homan and Thakur \cite{homan2003}.
+No superpolynomial inversion lower bound is proved here.
+Under $\mathsf P=\mathsf{NP}$, SAT search in the polynomially verifiable
+inverse relation gives a polynomial inverter.
+If $y$ is constructed as $Q_r(w)$ from an already available witness $w$,
+replay already has its preimage.
+
+\section{Explicit constraints and semantic SNSAT must be distinguished}
+An explicitly supplied existential Boolean network with $G$ bounded-fan-in
+gates and constant-arity constraints has a Tseitin encoding with $O(G)$ variables/clauses and
+$O(G\log G)$ bits. A hypothetical SAT algorithm of time $M^a$ solves it
+in polynomial time; witness self-reduction uses at most $O(G)$
+restricted queries. Circuit depth does not multiply $a$ once this
+whole explicit network is encoded.
+
+Ordinary SNSAT instead defines semantic truth bits
+\[
+ y_i=1\quad\Longleftrightarrow\quad
+ \exists z_i\;\phi_i(y_1,\ldots,y_{i-1},z_i).
+ \tag{19}
+\]
+Deciding the final bit is the standard $\mathsf P^{\mathsf{NP}}$-complete
+SNSAT problem \cite{markey2003}. False bits must be actual negative SAT answers.
+Merely guessing a false bit and one falsifying assignment does not
+enforce (19).
+
+If a complete explicit list has total encoded length $N$ and $k$ stages,
+each restricted query has length at most $O(N)$. A SAT algorithm with
+a nondecreasing bound $T$ evaluates the list in
+\[
+ \poly(N)+\sum_{i=1}^kT(O(N_i))
+ \ \le\ \poly(N)+kT(O(N)),
+ \tag{20}
+\]
+where $N_i$ is its explicitly charged query length.
+Polynomial $T$ therefore stays polynomial for $k\le\poly(N)$;
+a fixed quasipolynomial logarithmic degree also stays unchanged.
+For succinct recursive or alternating variants, one must account for
+the resulting queries or expansion. They are not automatically
+covered by either (18) or (20).
+The notation $\mathrm{SNSAT}^{\mathrm{SNSAT}}$ alone does not specify
+which semantic construction is intended.
+
+\section{Verified computations}
+All experiments are bounded finite controls, not measurements of $H$.
+Every invocation finished below 30 seconds.
+\begin{description}
+\item[] \path{experiments/review/compatibility_selector_dp_20261111.py}.
+SHA-256:
+\texttt{5bc4907bd3e865d221433d9819405e5c7a657ce3a2f51c7a2632ce8fc65b39d5}.
+One recorded run took about 1.02 seconds.
+It exhausts all 256 subsets of the eight proper signed 3-clauses on
+three variables, then checks 128 fixed-seed four/five-variable formulas,
+nine hostile controls, and (16). Seed: 20261111.
+All 394 cases agree with exhaustive SAT: 385 SAT and nine UNSAT.
+The projection checks cover 5,372 source assignments and 273,481
+local selector patterns. All 385 reconstructed encoded witnesses verify.
+\item[] The degree audit fixes a source model of (16), checks all 32
+points of the selected five-dimensional cube, and obtains exactly
+$\operatorname{AND}_5$, with one ANF monomial of degree five.
+For the unsatisfiable conjunction of all eight proper 3-clauses on
+three variables, it enumerates all 6,912 Horn models and finds zero
+accepting models.
+\item[] \path{experiments/review/compatibility_collision_coordinates_20261111.py}.
+SHA-256:
+\texttt{068118e72ad3d923e47bca3701f4afd6151ef27c3a3970e094789367343d076e}.
+The recorded run took about 0.478 seconds.
+It explicitly depends on the already verified collision producer,
+SHA-256
+\texttt{9197bc468d255e7746f6d2f6c8a421c6186bce887584ef12212c8cd26c6a5ff8}.
+It checks a two-stage, four-bit Feistel chain with eight proper
+compatibility clauses on its six label bits.
+All 256 coordinate strings give distinct valid primary chains;
+independent forward enumeration checks 4,352 candidate pairs and
+finds the identical 256-chain set.
+All four adaptive second-stage keys occur.
+\item[] The collision source has 16 satisfying label assignments and
+64 compatible ordered primary chains. The compiled proper 3-CNF has
+201 variables and 805 clauses.
+All 1,024 chain-valid primary/padding completions agree with source
+compatibility, with 256 accepted completions.
+Eight of the 16 oriented first prefixes are dead.
+The all-zero-label first prefix is dead, while labels
+$100\,|\,100$ lift directly to a full solution.
+\end{description}
+Every recorded mismatch count is zero.
+These checks do not enumerate all auxiliary assignments independently:
+functional gate equivalences, previously truth-checked, determine
+the completions. The general statements have separate mathematical
+proofs and independent temporary-agent review.
+
+Raw artifacts are under
+\path{results/raw/review/2026-11-11_COMPATIBILITY_CORE_RETRY/}:
+\path{selector_dp.json}, \path{collision_coordinates.json},
+and the exact \path{dead_prefix.cnf}.
+
+\section*{CORPUS REVIEWED}
+This retry extends the immediately preceding corpus survey and
+20:17 report. It directly reopens the material ATC2 manuscript and
+the actual executable compiler, rather than inferring the gadget
+from a schematic description. Source blobs:
+\begin{description}
+\item[] ATC2 manuscript:
+\texttt{3809296b0a5f6ea85fc03bf1d8441b04e3017585}.
+\item[] ATC2 executable:
+\texttt{575a6aec2c49e21452f1d6b28d6aca87a8c66f85}.
+\item[] Root manuscript snapshot for the parent continuation:
+\texttt{ca1c40a11155442a7ecdf74d0e05db3f83abae9a}.
+\end{description}
+Governance, both root proof trackers, prior transfer/closure reports,
+and targeted specialist history were reviewed in the ongoing run.
+Markey's original thesis definitions and theorem were opened for
+the SNSAT semantics distinction.
+This is a targeted read of material original artifacts, not an
+all-byte survey or full-checkout test claim.
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+The selector compiler and general Horn/affine algorithm are prior
+components. The degree dichotomy explicitly strengthens the previous
+generic warning about acquiring a restricted-degree bound:
+on this concrete image the degree-drop question is exactly UNSAT.
+The clause-coverage controller sharpens the generic bound for this
+specific encoding; it is an elementary algorithm, not a claimed new
+complexity-class separation.
+The collision coordinate theorem extends the previous inverse control
+to arbitrary global compatibility restrictions and makes the actual
+remaining constraint explicit.
+
+No contradiction with $\mathsf P=\mathsf{NP}$ is found.
+A genuine lower bound for the degree-decision problem, the compatibility
+core, or inversion would transfer to a separation, but none follows
+from the numerical degree, rank, or number of dead prefixes.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+The exact degree-transfer statement and specialized $2^m$ controller
+can refine the parameter ledger. They close a representation-equivalence
+question, not the all-program lower-bound arrow.
+The canonical root manuscript ownership regions and previous
+timestamped reports are unchanged. This is a Codex handoff for the
+synthesis owner.
+\textbf{TRACKERS REVIEWED; NO MATERIAL CHANGE} to a load-bearing
+OPEN status.
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{description}
+\item[] Adopted: the exact selector compiler, independent source
+witness verification, global shared-state computation, and the
+fixed-program replay accounting.
+\item[] Refined: generic closure degree to the exact gap (10);
+seed enumeration to clause-coverage DP on this image;
+collision prefixes to global label/orientation coordinates.
+\item[] Rejected: high minimum algebraic degree as a runtime lower
+bound, dead prefixes as mandatory unrestricted branching,
+and freely guessed false SNSAT answers.
+\item[] Retired for this architecture: efficiently invertible
+collision wrapping with polynomial source-witness lifting as a
+fixed-seed growing-$H$ amplifier.
+\end{description}
+
+\section*{Hostile controls and barrier audit}
+The nine selector controls include empty and contradictory formulas,
+short or repeated literals, tautologies and sparse identifiers.
+The exact theory charges dense relabelling and only occurring variables.
+The connected easy family (11) has arbitrarily high restricted degree.
+The explicit dead-prefix family (16) is solved globally.
+The collision audit varies all orientation and padding bits.
+
+The algorithms and reductions are model-matched explicit computations.
+Oracle or algebraic access cannot invalidate these upper algorithms.
+The degree transfer identifies a semantic decision problem; it does
+not prove a lower bound against algebraic-oracle machines.
+No Natural Proofs barrier is claimed to have been crossed.
+No cryptographic hardness hypothesis, ETH assumption, or claimed
+ETH refutation is used.
+
+\section*{Status table}
+\begin{longtable}{p{0.58\textwidth}p{0.30\textwidth}}
+\toprule
+Claim & Status\\
+\midrule
+Exact selector witness projection & PROVED/EXACT; recovered\\
+Degree dichotomy (10) and coNP transfer & PROVED/EXACT\\
+Clause-coverage algorithm & PROVED/EXACT\\
+Actual dead-prefix examples & PROVED/EXACT and COMPUTATIONAL\\
+Collision coordinate bijection & PROVED/EXACT\\
+Pinned collision/inversion equivalence & PROVED/EXACT\\
+Numerical degree/rank implies superpolynomial $H$ & FALSIFIED/RETIRED\\
+Growing-$H$ inequality (3) & OPEN\\
+P versus NP & OPEN\\
+\bottomrule
+\end{longtable}
+
+\section*{Single next target}
+Use a fully specified global compatibility core and seek a lower bound
+on its \emph{uniform computational cost}, with source recovery and
+witness maps charged. The exact degree gap supplies one such
+decision problem, while the clause-coverage controller supplies an
+upper bound every proposed lower bound must respect.
+A proof must exclude global compression of states, not merely exhibit
+many prefixes or a large algebraic degree.
+
+\bibliographystyle{plain}
+\bibliography{research/agents/codex/2026-11-11_2035_COMPATIBILITY_CORE_AND_DEGREE_TRANSFER_refs}
+% END_OF_VERIFIED_REPORT::CODEX::COMPATIBILITY-CORE-DEGREE-TRANSFER
+\end{document}
