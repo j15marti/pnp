@@ -86,6 +86,7 @@ const mutations=[
  ['underpayment',d=>d.summary.paid_total--],
  ['terminal_pivot_sentinel',d=>d.records.at(-1).pivot=999999],
  ['ownerless',d=>{d.gate_defs=[];d.summary.paid_gates=0;d.summary.paid_total=d.summary.resolution;}],
+ ['false_owner_facet',d=>{Object.assign(d,JSON.parse(fs.readFileSync(path.join(root,names.expanded))));const f=d.records.find(r=>r.kind==='DEF');assert(f);f.c=[123456];}],
  ...['AND3','XOR','LOCAL-CONVERT','SPLIT','WEAKEN','DISCHARGE','JOIN','DELETE','GF(2)'].map(kind=>['unknown_'+kind,d=>d.records.at(-1).kind=kind])
 ];
 for(const [label,f] of mutations){const d=structuredClone(baselineProof);f(d);const verdict=native(d);assert(!verdict.accept,'unsupported /386 hostile accepted: '+label);negative.push({label,accepted:verdict.accept,error:verdict.error});}
