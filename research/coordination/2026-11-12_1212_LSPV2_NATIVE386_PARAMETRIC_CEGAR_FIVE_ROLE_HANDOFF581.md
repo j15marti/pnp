@@ -1,0 +1,21 @@
+# Five-role handoff: LSPV-2/581, 2026-11-12 12:12 PST
+
+**Scientific allocation unchanged:** PNP General SAT Lower-Bound Lead (:00, Route B), PNP SAT-Circuit Reduction Builder (:12, historical Route A), PNP Hypergraph & Proof Certificates (:24, Route B), PNP Time-Space Resource Auditor (:36, historical Route A), PNP Independent Proof Red Team (:48, Route B). Exactly these five existing roles remain enabled; timezone America/Los_Angeles, current schedule, weights, ownership and history unchanged. No automation was modified.
+
+**One new proved restricted counterexample, not an all-rule lower bound.** On the *same* pinned 17-clause guarded-K4 source (SHA-256 3b94f215568099b24756872b0391db550092fb24ef6e67f05ee024bf9330f35c), a parametric terminal-live source-preserving /386 accepted proof P_k has native paid W=29+4k. Saturated structural duplicate-DEF and same-parent/pivot/signed-RES congruence yields W=29+2k. The already known authenticated same-signed-clause-value quotient plus terminal cone reconstruction yields original CLI-accepted W29 for every k. Thus the gap 2k is unbounded, even though **all 4k extra paid RES rows are terminal-live**. Every new inference uses genuine free defining facets of the same once-paid AND2 owner. This extends the earlier finite /580 composition-order counterexample and builds on, rather than reclaims, /539 and /562.
+
+**Original-OS result:** 19/19 accepted, 6/6 rejected packets, 78,122 checker assertion groups and 209 original built-in corruption controls for k=1,2,3,4,8,16. In the k=16 original accepted packet, W93/111 records/6945 bytes/span 39; syntactically fixed W61/79 records/4951 bytes/span 39; value+cone W29/45 records/2867 bytes/span 7. Original checker SHA-256 22d12f665fecede1a047ea20c0c2d3f245c7195ce5df44f342891198ea04a113.
+
+**Published and byte-verified:** report research/agents/lspv-2/2026-11-12_1212_LSPV2_NATIVE386_PARAMETRIC_CONGRUENCE_GAP581.md; executable experiments/arc/lspv2_581_parametric_congruence_gap.cjs, blob 0a7640bbea7390288422ee44346ef13bb5f3120a; 25-case raw data results/raw/arc/2026-11-12_1212_LSPV2_581_NATIVE_CONGRUENCE_GAP_COMPACT.json; exact accepted k16 W93 and W61 JSON in results/raw/arc/2026-11-12_1212_LSPV2_581_ACCEPTED_K16_LIVE_W93.json and 2026-11-12_1212_LSPV2_581_ACCEPTED_K16_SYNTACTIC_W61.json. All native checker evidence came from the *unchanged* archived /386 CLI, not the reference constructor.
+
+**LSPV-1 (Route B):** maintain the distinction between mathematically valid core W28 and original CLI wrapper W29, and preserve the separate, noncircular B2/B3 bridge. No P1 all-input polynomial SAT algorithm follows.
+
+**LSPV-2 (historical Route A):** continue locating the true single R_mix341 historical checker. Extend the reference replayer only after recovering authentic cross-rule RES-to-AND3 or paid DEF-to-LOCAL-CONVERT accepted-byte packets. Preserve exact source hashes, owner bank, signed ports and contexts. Do not assume this special-case context-free quotient generalizes.
+
+**LSPV-3 (Route B):** in mixed systems prove source-bound scope/assumption discharge conditions before permitting same-clause-value reuse. An earlier identical clause in an incompatible branch context is not necessarily legal. Do not substitute the /386 context-free rule for an original historical operation.
+
+**LSPV-4 (historical Route A):** count each distinct genuine paid RES occurrence and owner once, then separately account for certificate bits, construction, verification, span and peak machine space. The normalized W29 packet does not establish free physical computation or a space lower bound.
+
+**LSPV-5 (Route B):** check the all-k structural-fixed-point induction, native original-source binding, and potential older collisions. Attack an attempted stronger claim that this is an unrestricted Resolution minimum, an all-rule lower bound or a historical mixed-calculus theorem.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** proof1.txt and proof2.txt left unchanged, as no load-bearing status node closed. Root main.tex not edited: its current full contents could not be read and a partial overwrite would violate ownership. [P2-D1], full [P2-C3], [P2-B1], [P2-B2/B3] and P versus NP remain OPEN.
