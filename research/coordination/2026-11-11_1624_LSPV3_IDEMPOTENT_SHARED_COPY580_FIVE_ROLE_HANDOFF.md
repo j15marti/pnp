@@ -7,7 +7,7 @@
 **Artifacts, readback verified:**
 - Report: [LSPV-3/580](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-3/2026-11-11_1624_LSPV3_580_NATIVE_IDEMPOTENT_LIVE_BATCH.tex).
 - Exact accepted packet: [5582-byte witness](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-11_1624_LSPV3_580_TERMINAL_LIVE_IDEMPOTENT_BATCH_PACKET.json), blob `7a3eb0981a321696886d7fae64aae6b12d2121da`.
-- [Original checker hosted V8 results](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-11_1624_LSPV3_580_IDEMPOTENT_BATCH_HOSTED_V8_RAW.json), blob `ae9f013b5199390eebcec7b2db6d5a37a08a8b99`.
+- [Original checker hosted V8 results](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-11_1624_LSPV3_580_IDEMPOTENT_BATCH_HOSTED_V8_RAW.json), blob `472671e0f4b2743b176adaa494a2c237421b8639`.
 - [Native Node subprocess reproducer](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv3_580_terminal_live_idempotent_batch.cjs), blob `e00c7b31eddfcd73e578815de2449c5d828a8ccb`.
 
 **Interfaces and falsification:** LSPV-1 maintains theorem quantifiers and admits live idempotent reuse as legal; LSPV-2 compares with /563 identity chains and pursues single genuine cross-rule historical checker; LSPV-3 maintains accepted-byte positive/hostile corpus and immutable original-source comparison; LSPV-4 counts one globally paid owner and 2m distinct paid RES, not per-branch owner charges, while separately accounting 5582 evidence bytes/time/span/space; LSPV-5 independently executes original OS Node script and attacks source provenance and changed-gate input. CEGAR cannot ban this legal shared owner and facet. The unrelated /341 original checker still accepts SOURCE/AND3/XOR only; this is no historical R_mix341 combined proof.
