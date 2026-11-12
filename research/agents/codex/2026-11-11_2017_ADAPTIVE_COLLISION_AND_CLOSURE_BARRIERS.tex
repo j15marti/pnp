@@ -1,0 +1,683 @@
+% PNP RESEARCH REPORT::ADAPTIVE-COLLISION-CLOSURE-BARRIERS::2026-11-11T20:17:00-08:00
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs,longtable,array,xurl}
+\usepackage[hidelinks]{hyperref}
+\setlength{\emergencystretch}{3em}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newcommand{\poly}{\operatorname{poly}}
+\newcommand{\cl}{\operatorname{cl}}
+\newcommand{\F}{\mathbb F_2}
+\newcommand{\SAT}{\operatorname{SAT}}
+\title{Adaptive Collision Chains and Closure Algorithms:\\
+Two Quantitative Obstructions to SAT Work Amplification}
+\author{P vs NP Research Project\\Codex research with independent temporary-agent review}
+\date{11 November 2026, 20:17 PST}
+\begin{document}
+\maketitle
+
+\section*{Status and accomplished step}
+\textbf{P versus NP remains open.}
+This continuation tests the previous report's explicit amplification target
+\cite{transfer2026}. The adaptive collision upper bound, the nonlinear
+inverse-based construction, the closure lemma, and the stated clock obstruction
+are \textbf{PROVED/EXACT} under their explicit computational assumptions.
+The finite Boolean and CNF audits are \textbf{COMPUTATIONAL}.
+The required lower bound on minimum verified witness work remains \textbf{OPEN}.
+
+The concrete nonlinear candidate fails: truncating a uniformly invertible
+keyed permutation permits a collision from two inverse evaluations at every
+stage, including when the key depends on the preceding witnesses.
+The positive progress is a quantitative exclusion test for later candidates:
+small output width and small closure degree both force upper bounds below
+the proposed squared-logarithm lower bound. No mathematical priority claim
+is made for pigeonhole enumeration, Feistel inversion, or fixed-rank
+Horn/affine tractability.
+
+\section*{Model, exact target, and SAME\_REALIZATION}
+All logarithms have base two. Inputs are explicitly encoded canonical
+3-CNFs with densely indexed occurring variables. Set $N=|F|+2$.
+Use the previous report's fixed efficiently universal deterministic machine,
+verification allowance $q(N)\ge N+1$, and description budget
+$b(N)=b_0+\lfloor\log N\rfloor$:
+\[
+ H(F)=\min_{|p|\le b(N)}\{t_p(F)+q(N)+1\}.
+ \tag{1}
+\]
+The time is infinite unless $p$ halts with an independently verified
+satisfying assignment. A fixed exhaustive finder is admitted.
+Constant-size programs eventually fit the budget.
+
+For every fixed correct total SAT decider $A$, the recovered bridge gives
+\[
+ \overline H(N)\le C_A\bigl(N+T_A(KN)+2\bigr)^D,
+ \tag{2}
+\]
+where $T_A$ is its global worst-case envelope and $K,D$ are fixed
+machine/encoding constants. Conversely, an explicit uniform envelope
+$\overline H(N)\le h(N)$ yields SAT time $\poly(N+h(N))$ by clocking
+the $O(N)$ admitted programs. Hence polynomial boundedness and each fixed
+quasipolynomial logarithmic degree transfer in both directions
+\cite{transfer2026}. An upper bound for one generated family is not an
+upper bound for all SAT.
+
+The target under audit is a satisfiable sequence $F_j$ with
+$s_j=|F_j|+2\to\infty$ and fixed $C>1,c>0,B\ge1$ such that
+\[
+ s_{j+1}\le Cs_j,\qquad
+ H(F_{j+1})\ge H(F_j)s_j^c/B.
+ \tag{3}
+\]
+The previous report proves that this would force
+\[
+ \log H(F_j)\ge
+ \frac{c}{2\log C}(\log s_j)^2-O(\log s_j),
+ \tag{4}
+\]
+and a corresponding lower bound on every SAT decider through (2).
+Inequality (3) has not been proved. A fixed work multiplier alone does
+not yield (4).
+
+All upper bounds below refer to one uniform algorithm constructing the
+witness for the exact final formula. Circuit acquisition, prefix
+reconstruction, representation extraction, auxiliary gate assignments,
+and verification are charged. They are not claims that optimal programs
+for separate instances can be concatenated for free under budget (1).
+
+\section{Adaptive total-extension chains have additive search cost}
+
+Let the $i$th stage have an explicit Boolean circuit
+\[
+ D_i:\{0,1\}^{\ell_i}\times\{0,1\}^{r_i+1}\longrightarrow
+       \{0,1\}^{r_i}.
+\]
+Its first argument $z$ contains the preceding collision pairs.
+A stage witness is a pair $u_i\ne v_i$ with
+$D_i(z,u_i)=D_i(z,v_i)$. Let $F_k$ encode all stages, their interfaces,
+and circuit evaluations using exact Tseitin constraints and standard
+proper-3CNF completion.
+
+\begin{theorem}[Adaptive collision replay]\label{thm:collision}
+Assume the stage descriptions are explicitly supplied or recoverable by
+one uniform polynomial-time procedure from the canonical input family.
+Assume the number of stages, circuit sizes, interface lengths, reconstruction
+cost, and witness-lifting cost are bounded by one fixed polynomial in the
+final length $N$. Assume \emph{every valid prefix} admits the next shrinking
+map as specified. Put $R=\max_{i\le k}r_i$. Then a deterministic algorithm
+finds a witness in native time
+\[
+ \poly(N)\sum_{i=1}^k 2^{r_i},
+ \tag{5}
+\]
+and the fixed-machine benchmark satisfies
+\[
+ H(F_k)\le \poly(N)2^{O(R)}.
+ \tag{6}
+\]
+\end{theorem}
+
+\begin{proof}
+At stage $i$, fix the already obtained prefix. Evaluate the circuit on
+$2^{r_i}+1$ distinct inputs. There are only $2^{r_i}$ possible outputs,
+so sorting the output/input pairs exposes a repeated output with distinct
+inputs. Evaluation, sorting, and bookkeeping cost
+$\poly(N)2^{r_i}$. Retain one collision and proceed.
+Because every chosen valid prefix extends, no earlier collision needs
+to be reconsidered. Summing gives (5). Evaluate all circuit gates and
+fill the proper-3CNF auxiliary variables to obtain a full satisfying
+assignment. One fixed program implements the procedure. The fixed
+polynomial universal-simulation overhead and verification allowance
+give (6).
+\end{proof}
+
+Consequently $R=O(\log N)$ gives polynomial witness work.
+If $R=o((\log N)^2)$, (6) is
+$2^{o((\log N)^2)}$, contradicting (4).
+Within this architecture a squared-logarithm amplifier therefore requires
+\[
+ R=\Omega((\log N)^2).
+ \tag{7}
+\]
+This is a necessary condition, not sufficient hardness.
+
+The same proof applies to any sequential total search interface whose
+next valid extension can be found in time $Q_i(N)$ for \emph{every
+selected valid prefix}: the native cost is a polynomial overhead plus
+$\sum_i Q_i(N)$. The stronger condition is essential.
+Satisfiability preservation alone, meaning that \emph{some} old witness
+extends, does not permit this greedy replay. A construction with
+incompatible prefixes requires a separately charged compatibility search.
+
+Hubacek's NestedCollision definition is a precise literature counterpart:
+find a collision of $f$, then a collision of $g$ after fixing the first
+pair. Its adaptive reduction uses two collision calls.
+The paper's separation is for shallow decision-tree reductions accessing
+function tables through queries \cite{hubacek2026}.
+It does not supply an unrestricted time lower bound for explicit
+Boolean circuits, and does not turn (5) into a product.
+
+\section{An explicit nonlinear construction that stays easy}
+
+Let $P_z$ be a permutation of $\{0,1\}^{r+1}$ whose forward and inverse
+maps are uniformly computable in polynomial time from the prefix-derived
+key $z$. Define
+\[
+ C_z(u)=\operatorname{prefix}_r(P_z(u)).
+\]
+Then
+\[
+ u=P_z^{-1}(0^r0),\qquad v=P_z^{-1}(0^r1)
+ \tag{8}
+\]
+are distinct and satisfy $C_z(u)=C_z(v)=0^r$.
+This applies at every stage, irrespective of earlier keys.
+
+The implemented control uses four Feistel rounds on two $h$-bit halves.
+For each round,
+\[
+ (L,R)\longmapsto(R,L\oplus f_z(R)),\qquad
+ (L',R')\longmapsto(R'\oplus f_z(L'),L').
+ \tag{9}
+\]
+The round function contains an AND of two right-half coordinates,
+XORs, prefix-key bits, and round constants. It is nonlinear for the
+tested four-bit controls; inversion follows directly from (9), not from
+guessing or a cryptographic assumption. The collision map discards one
+of the $2h$ output bits, so $r=2h-1$.
+
+The code fixes a three-bit witnessed seed, derives every next key from
+the preceding collision inputs, and compiles all XOR/AND/OR gates,
+truncated-output equalities, and input inequalities into proper 3-CNF.
+Short clauses are expanded with two shared fresh padding variables,
+with exact truth-table checks.
+For fixed four-round depth, the compiler has
+\[
+ \begin{aligned}
+ \text{gates}&=k(45h-1),\\
+ \text{variables}&=7+k(49h-1),\\
+ \text{clauses}&=15+k(198h-5).
+ \end{aligned}
+ \tag{10}
+\]
+Binary variable identifiers contribute the usual logarithmic encoding
+factor. The family is canonical and polynomially reconstructible:
+the integer parameters can be enumerated within polynomial bounds
+and the generated encoding compared with the input.
+
+Two inverse evaluations per layer construct all primary witnesses;
+forward evaluations then validate them and fill gate variables.
+Thus the whole family has polynomial $H$, including when output widths
+grow beyond (7). High nonlinearity and candidate-dependent sequential keys
+do not prevent this shortcut. The quantity recorded as inverse
+round-function calls counts the collision-construction phase only,
+not all forward checks and CNF completion.
+
+All well-formed instances of the shrinking collision search problem
+are satisfiable by construction. Its recognized promise decision
+question is therefore trivial. A general SAT decider would still yield
+a search algorithm by self-reduction, which queries formulas outside
+that promise family. Thus a genuine $H$ lower bound on this family
+would remain meaningful, but the present construction has the explicit
+upper bound (8).
+
+\section{A closure-degree algorithm for compatible extensions}
+
+The current project note AFFINE-TABLE-COMPOSITION2 proves a closure
+enumeration algorithm for Horn constraints plus affine equations
+\cite{atc2026}. The following statement exposes the more general
+algebraic reason and its quantitative consequence for the amplifier.
+
+\begin{lemma}[Small seeds in an intersection-closed family]\label{lem:seed}
+Let $\mathcal M\subseteq 2^{[m]}$ be a nonempty finite family closed under
+intersection. For a seed $S\subseteq[m]$, let $\cl(S)$ be the intersection
+of all members containing $S$, or $\bot$ if none exists.
+Suppose $a:\mathcal M\to\{0,1\}$ is represented on $\mathcal M$ by a
+multilinear polynomial over $\F$ of degree at most $d$.
+If some $M\in\mathcal M$ has $a(M)=1$, then
+\[
+ a(\cl(S))=1
+ \quad\text{for some }S,\quad |S|\le \min(d,m).
+ \tag{11}
+\]
+\end{lemma}
+
+\begin{proof}
+Write the representing polynomial as
+$p(x)=\sum_{|S|\le d}c_S\prod_{i\in S}x_i$.
+On members $M$ of the family, a monomial is one exactly when
+$S\subseteq M$, equivalently $\cl(S)\subseteq M$.
+A seed with no extension contributes zero everywhere.
+Group coefficients of seeds having the same closure:
+\[
+ p(M)=\sum_{K\in\mathcal M}\gamma_K\,1[K\subseteq M].
+ \tag{12}
+\]
+Since $p$ is one somewhere, at least one $\gamma_K$ is nonzero.
+Choose an inclusion-minimal such $K$. Evaluating (12) at $K$ gives
+$p(K)=\gamma_K=1$: any other contributing closure would have to be a
+strict subset of $K$ with nonzero coefficient, which minimality excludes.
+Some seed of size at most $d$ generates this $K$, since otherwise
+$\gamma_K$ would be zero. This proves (11).
+\end{proof}
+
+\begin{corollary}[Uniform search bound]\label{cor:seedsearch}
+If $m\le\poly(N)$ and least-extension computation and acceptance evaluation
+take polynomial time in the explicit input size $N$, an accepted member, when one exists,
+can be found in
+\[
+ \poly(N) B(m,d),\qquad
+ B(m,d)=\sum_{i=0}^{\min(d,m)}\binom mi,
+ \tag{13}
+\]
+using polynomial workspace.
+\end{corollary}
+
+\begin{proof}
+Enumerate seeds by increasing size, compute each consistent closure
+(including the empty set), and evaluate acceptance.
+Lemma \ref{lem:seed} guarantees success by size $d$.
+The algorithm does not need the expanded polynomial. For successful
+witness search it does not even need $d$ as input: it continues until a
+witness is found. To stop early and declare absence, it needs a justified
+degree bound, or must enumerate all seeds. Seeds and closures can be
+streamed, yielding polynomial workspace.
+\end{proof}
+
+For Horn CNF, models are intersection closed and forward chaining computes
+the least extension or detects contradiction.
+For a consistent rank-$d$ affine system, retain independent equations
+$\ell_j(x)=b_j$. Its acceptance predicate is
+\[
+ a(x)=\prod_{j=1}^d(1+\ell_j(x)+b_j)
+ \quad\text{over }\F,
+ \tag{14}
+\]
+whose multilinear degree is at most $d$.
+This gives (13) for Horn plus rank-$d$ affine constraints.
+For satisfiable 2-CNF, first find a model $a$ and substitute $x=a\oplus y$.
+The resulting 2-CNF is satisfied by zero, so every nontrivial clause
+has a negative literal and is Horn. Shift the affine right-hand side
+accordingly. Unsatisfiable 2-CNF is detected before the transformation.
+
+These tractability regimes are established in the literature.
+Brakensiek, Gopi, and Guruswami give an
+$n^{k(M-1)+O(1)}$ algorithm for Horn with $k$ modular equations for
+prime-power $M$, including $M=2$ \cite{brakensiek2019}.
+Arvind and Guruswami study 2-CNF under affine-subspace constraints,
+including its unrestricted and parameterized hardness
+\cite{arvind2021}. These results do not give an unconditional
+superpolynomial lower bound for our explicit family.
+
+\begin{theorem}[Closure obstruction for a sequential witness chain]\label{thm:chainclosure}
+Suppose one uniform algorithm reconstructs the chain from its canonical
+input, and, for every prefix it actually selects, obtains an intersection-closed
+extension representation with $m_j$ coordinates and an acceptance predicate
+of degree at most $d_j$ on that family.
+Assume every selected valid prefix extends, and all representation
+acquisition, closure computations, predicate evaluations, witness lifts,
+and the number of stages have one uniform polynomial bound in final
+length $N$. Then
+\[
+ H(F_J)\le
+ \left[\poly(N)\sum_{j<J}B(m_j,d_j)\right]^{D_0}
+ \tag{15}
+\]
+for a fixed simulation exponent $D_0$.
+In particular, if $m_j\le N^{O(1)}$ and $d_*=\max_{j<J}d_j$,
+\[
+ H(F_J)\le N^{O(d_*+1)}.
+ \tag{16}
+\]
+\end{theorem}
+
+\begin{proof}
+Use Corollary \ref{cor:seedsearch} on the current actual prefix, lift the
+accepted closure to a valid next witness, and retain only this witness.
+Every selected prefix extends, so no backtracking is needed.
+Sum the uniform costs, reconstruct and verify the final assignment,
+and account for fixed polynomial simulation overhead. The same fixed
+program performs every stage. This proves (15); the elementary bound
+$B(m,d)\le(m+1)^{d+1}$ gives (16).
+\end{proof}
+
+A sharper statement retains the binomial count. Put
+$\delta_j=\min(d_j,m_j)$, and interpret the expression below as zero
+when $\delta_j=0$:
+\[
+ E_j=\min\left\{m_j,\ 
+    \delta_j\log\left(\frac{e m_j}{\delta_j}\right)\right\}.
+\]
+The standard bounds $B(m,d)\le2^m$ and
+$B(m,d)\le(em/\delta)^\delta$ yield
+\[
+ \log H(F_J)\le O\left(\log N+\max_{j<J} E_j\right).
+ \tag{17}
+\]
+Therefore a chain satisfying (4) must have
+\[
+ \max_{j<J}E_j=\Omega((\log N)^2).
+ \tag{18}
+\]
+In particular, $m_j=O(\log N)$ for every stage forces polynomial work,
+whatever the degrees; and $d_*=o(\log N)$ with polynomially many
+coordinates rules out (4). Thus $d_*=\Omega(\log N)$ is another
+necessary condition within this represented extension architecture.
+
+The degree here is the degree of the \emph{acceptance predicate on the
+closure family}; a matrix rank is only a usable upper bound in (14).
+Large rank alone need not mean large search cost.
+The current project note's connected selector control already has
+$3^m$ surviving closure-polynomial terms and rank $m$, yet an explicit
+simple witness and treewidth at most three \cite{atc2026}.
+An expensive expanded representation does not require an algorithm
+to construct that representation.
+
+\section{Implications for the polynomial and quasipolynomial hypotheses}
+
+Theorems \ref{thm:collision} and \ref{thm:chainclosure} are upper bounds.
+They are consistent with both $\mathsf P=\mathsf{NP}$ and
+$\mathsf P\ne\mathsf{NP}$. They invalidate proposed hardness statements
+for the covered construction regimes, not either complexity universe.
+
+For a fixed desired lower degree $p>1$,
+\[
+ H(F_N)\ge2^{\Omega((\log N)^p)},
+ \tag{19}
+\]
+the same comparison gives necessary conditions
+\[
+ R=\Omega((\log N)^p),\qquad
+ \max_jE_j=\Omega((\log N)^p).
+ \tag{20}
+\]
+When $m_j\le\poly(N)$, the second implies
+$d_*=\Omega((\log N)^{p-1})$. The conditions apply only if the respective
+collision or closure representation is available with the charged
+hypotheses. A candidate need not have both representations.
+
+If (19) were established for the actual benchmark, (2) would exclude
+SAT algorithms of time $2^{O((\log N)^q)}$ for every $q<p$.
+For $p=2$ this excludes all polynomial algorithms and permits consistency
+with a sufficiently large quasipolynomial upper bound.
+It does not exclude the whole union of quasipolynomial time classes.
+No ETH assumption or claimed ETH refutation is used here.
+
+\section{A second attempted contradiction: finding errors in short solvers}
+
+In this section only, $N$ denotes the exact input length; replacing it
+by $N+2$ elsewhere changes no asymptotic bound.
+Fix an integer clock exponent $k$. Let $S_{p,N,k}$ simulate $p$ for
+$N^k$ steps on an input of length $N$, treating timeout as failure.
+For the explicit SAT verifier $V$, define
+\[
+ \operatorname{Err}_{N,k}(p,x,y)=
+ V(x,y)\wedge\neg V(x,S_{p,N,k}(x)).
+\]
+The short-program error language is
+\[
+ L_k=\{1^N\#p:\ |p|\le b_0+\lfloor\log N\rfloor,\
+       \exists x,y,\ |x|=N,\ \operatorname{Err}_{N,k}(p,x,y)\}.
+ \tag{21}
+\]
+For every fixed $k$, $L_k$ is in NP and is sparse.
+The verifier has fixed polynomial runtime and there are only
+polynomially many admitted codes through each input length.
+By Mahaney's theorem, a polynomial many-one reduction from SAT to $L_k$
+would imply $\mathsf P=\mathsf{NP}$ \cite{mahaney1980}.
+Trying to hardcode an arbitrary $n$-bit formula into a program with
+$O(\log N)$ bits generally forces exponential $N$, so the unary output
+ceases to be a polynomial-size reduction.
+
+A polynomial-size nonuniform table of counterexamples exists:
+for every erroneous admitted code select one pair $(x,y)$.
+This counts only representation size. It supplies neither a polynomial
+uniform acquisition algorithm nor short proofs that omitted programs
+are correct. For a correct program, the corresponding witnessing
+implication still expresses global clocked correctness at that length.
+This is the earlier reflection gap, not a solution to it.
+Also, $L_k\in\mathsf P$ by itself does not give a generic prefix-search
+self-reduction confined to the special short-description format.
+
+\begin{proposition}[The refuter must pay for the candidate clock]\label{prop:refuter}
+Use an ordinary effective programming language with a fixed-point
+construction having fixed polynomial simulation overhead.
+Assume there are at least two distinct satisfiable encodings at
+arbitrarily large admissible lengths $N$.
+There is no single total deterministic refuter
+$R(1^N,1^k,p)$ that, for every $k,N$ and admitted $p$, returns a valid
+same-length pair witnessing (21) whenever such a pair exists, and
+whose runtime is bounded by one polynomial in $N+k+|p|$ with degree
+independent of $k$.
+\end{proposition}
+
+\begin{proof}
+Suppose such an $R$ exists. By a standard self-quoting fixed-point
+construction, define a fixed program $p_{R,k}$ that, on input $x$
+of length $N$, runs $R(1^N,1^k,p_{R,k})$. If the returned pair is
+$(x^*,y^*)$ and $x=x^*$, return $y^*$; otherwise fail.
+The polynomial degree of this program, including fixed simulation
+overhead, is independent of the fixed constant $k$.
+Choose $k$ larger than that degree. For sufficiently large admissible
+$N$, this fixed code fits the logarithmic description budget and
+finishes within the candidate clock $N^k$.
+
+The program can succeed on at most one input at that length.
+Because there are two distinct satisfiable encodings, it has an error.
+The refuter must therefore return a valid error pair $(x^*,y^*)$.
+But on input $x^*$ the program returns exactly $y^*$ within its clock,
+so that pair is not an error. This contradiction proves the proposition.
+\end{proof}
+
+The proposition does not prohibit
+$\forall k\,\exists R_k$ with exponent depending on $k$.
+Nor does it prohibit a procedure polynomial in the unary clock
+$N+N^k$. Under a hypothetical SAT algorithm of time $N^a$,
+compiling and searching the error predicate can cost $N^{O(ka)}$.
+It does not fit the candidate's $N^k$ clock in the way the proof
+requires. Thus the self-reference creates no contradiction with
+$\mathsf P=\mathsf{NP}$.
+
+The deterministic dreambreaker theorem of Bogdanov, Talwar, and Wan
+assumes $\mathsf P\ne\mathsf{NP}$ and guarantees certified errors
+infinitely often with resources charged to the candidate running time
+\cite{bogdanov2010}. It cannot be inserted as an unconditional lemma
+inside an argument starting from $\mathsf P=\mathsf{NP}$.
+
+\section{Computational verification and provenance}
+
+Both programs are deterministic and use exact Boolean arithmetic.
+No randomized seed is used. Each invocation completed well below
+the repository's 30-second budget.
+\begin{description}
+\item[] Producer:
+\path{experiments/review/witness_amplifier_controls_20261111.py}.
+SHA-256:
+\texttt{9197bc468d255e7746f6d2f6c8a421c6186bce887584ef12212c8cd26c6a5ff8}.
+Runtime in the recorded run: approximately $0.245$ seconds.
+\item[] Independent audit:
+\path{experiments/review/witness_amplifier_independent_audit_20261111.py}.
+SHA-256:
+\texttt{55a09519a0883617bd891b1d65cbf5ace4c3e24b33cd6723b49077d1a69edbdc}.
+The audit does not import the producer.
+Runtime: approximately $0.0043$ seconds.
+\item[] Raw directory:
+\path{results/raw/review/2026-11-11_WITNESS_AMPLIFIER_CONTROLS/}.
+Files: \path{witness_amplifier_controls.json},
+\path{independent_audit.json}, \path{nested_feistel_h2_k2.cnf},
+and \path{nested_feistel_h2_k2_witness.json}.
+\end{description}
+
+\begin{center}
+\begin{tabular}{rrrrr}
+\toprule
+Half-width $h$ & Depth $k$ & Variables & Clauses & Inverse evaluations\\
+\midrule
+2&1&104&406&2\\
+2&2&201&797&4\\
+3&2&299&1193&4\\
+4&3&592&2376&6\\
+5&4&983&3955&8\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The producer checks 4,080 permutation/inverse pairs and 24 elementary
+gate truth cases. It exhausts 2,048 primary assignments on the smallest
+nonlinear chain and finds exactly 16 satisfying primary assignments,
+with no disagreement between the direct collision semantics and the
+CNF construction. This is not enumeration of all assignments to all
+104 variables: exact gate equivalences justify completing auxiliaries.
+The independent audit additionally checks 96 proper gate/padding cases,
+48 aliased-input cases, all four padding settings of the exported
+201-variable/797-clause witness, and 64 inputs across all four two-bit
+keys of a separate four-bit permutation control. All pass.
+The last control has coordinate algebraic degrees two or three,
+confirming nonlinearity.
+
+For the closure lemma, the producer enumerates all 121 nonempty
+intersection-closed families on three coordinates and all polynomial
+coefficient choices of degree at most $0,1,2,3$.
+Across 48,642 family/polynomial pairs it finds zero mismatches between
+existence of an accepted model and existence of an accepted
+small-seed closure. This is finite evidence supporting the separately
+proved lemma, not an asymptotic proof or a proof-assistant check.
+Neither program measures minimum $H$ or establishes a lower bound.
+
+Independent temporary-agent review checked the collision theorem and
+canonical-recognition hypothesis, the closure proof and sharper binomial
+bound, and the self-repair clock quantifiers. The producer and independent
+CNF auditor are separate implementations. This is mathematical review
+and executable finite validation, not formal proof-assistant verification.
+
+\section*{CORPUS REVIEWED}
+The run reviewed the current root manuscript, AGENTS.md, CODEX.md,
+the repository research skill and mode/protocol references, both
+root proof trackers, the November 9 governing coordination handoff,
+targeted MAIN and specialist history, and material exploration/source
+artifacts. Root manuscript was pinned to blob
+\texttt{ca1c40a11155442a7ecdf74d0e05db3f83abae9a}.
+This is a targeted corpus reconciliation, not a claim to have reread
+every historical byte or run tests on a full repository checkout.
+
+Material additions to the previous run's source set:
+\begin{description}
+\item[] The actual October 13 uploaded minimum-work note,
+SHA-256
+\texttt{3dd480be5ed2450447519565ba2a23f596f4cf19cc8ce78e47425aeff63e654d}.
+\item[] AFFINE-TABLE-COMPOSITION2,
+\path{research/explorations/sat-composition/2026-11-11_AFFINE_TABLE_COMPOSITION2/compatibility_continuation.tex},
+blob \texttt{3809296b0a5f6ea85fc03bf1d8441b04e3017585}.
+\item[] LSPV-1/586,
+\path{research/agents/lspv-1/2026-11-11_1857_LSPV1_CHECKER_ACCEPTANCE_CEGAR_NOGO586.md},
+blob \texttt{129ae6001f1067244458f1dc5f58f705441216ae}.
+Its reported accepted-byte semantic counterexample is not independently
+rerun in this continuation.
+\item[] The uploaded block-protection/GC draft and Type-I pruning notes.
+Their structural or conditional algorithm statements do not supply
+the all-program lower bound in (3).
+\end{description}
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+The October 13 note already gives a fixed-seed replay obstruction and
+the constant-output collision-search objection. The new contribution
+is the adaptive all-prefix accounting, explicit growing-width thresholds,
+the implemented nonlinear inverse control, and the closure-degree
+transfer to the same minimum-work target.
+Horn/affine tractability and the closure basis are prior results;
+this report does not rename them as a new complexity separation.
+
+The counterexample table, sparse-language consequence, and clock
+self-repair proposition block stronger witnessing claims. None
+contradicts a fixed-degree polynomial SAT assumption.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+The quantitative exclusion region is enlarged.
+The root's OPEN all-solver arrows remain OPEN.
+The latest /341 fixture acceptance defect strengthens the need for
+source and inference soundness before any proof-system transfer.
+It does not affect the independently verified positive-witness
+benchmark (1). No root ownership region is modified by this Codex run;
+the handoff is for the synthesis owner.
+\textbf{TRACKERS REVIEWED; NO MATERIAL CHANGE} to a load-bearing status.
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{description}
+\item[] Adopted: the $H$ bridge, fixed-seed replay warning, exact circuit
+encoding, Horn closure, affine-rank reduction, and paid prefix interfaces.
+\item[] Refined: constant-output enumeration to adaptive chains and
+output-width thresholds; affine rank to degree on a closure family;
+coarse seed counts to the binomial bound (17).
+\item[] Falsified for the explicit candidate: a growing minimum-work
+multiplier produced by truncated efficiently invertible Feistel layers.
+\item[] Rejected: multiplying stage costs merely because queries depend
+on earlier answers; inferring work from a large expanded polynomial;
+using a black-box separation as an explicit-machine lower bound;
+using one clock-independent refuter without paying its time.
+\item[] Stale or overstated: any use of the archived /341 checker's
+raw ACCEPT as universal semantic soundness. The source report already
+identified that defect; this continuation does not claim a new checker
+counterexample.
+\end{description}
+
+\section*{Hostile controls and barrier audit}
+\begin{description}
+\item[] Horn, 2-SAT and affine: exact algorithms give the closure bound.
+High affine rank alone is harmless for Gaussian elimination.
+\item[] Nonlinearity and sequential dependence: the Feistel control
+contains both and still has polynomial witness construction.
+\item[] Padding and auxiliary variables: all short clauses are expanded
+exactly; independent controls check padding and aliased gates.
+\item[] Representation and wrappers: one fixed program reconstructs
+the canonical family; arbitrary descriptions or a free decomposition
+are not assumed. Some-prefix existence is not all-prefix extension.
+\item[] Relativization: the collision enumeration upper bound uses only
+evaluation and survives adding an oracle with its actual query costs
+charged. The cited black-box lower bound has a different model.
+\item[] Algebrization: the closure argument is finite Boolean algebra.
+Extra algebraic access cannot invalidate an explicit upper algorithm;
+it gives no separation against such access.
+\item[] Natural Proofs: no constructive property of arbitrary Boolean
+circuits is used to claim a general circuit lower bound. No barrier
+avoidance is asserted.
+\item[] Cryptographic transfer: efficient Feistel inversion is an exact
+algorithmic transfer. Hardness of a hash or permutation is not assumed.
+\end{description}
+
+\section*{Status table}
+\begin{longtable}{p{0.54\textwidth}p{0.20\textwidth}p{0.18\textwidth}}
+\toprule
+Claim & Status & Scope\\
+\midrule
+Adaptive collision upper bound (6) & PROVED/EXACT & Paid explicit family\\
+Feistel polynomial witness algorithm (8) & PROVED/EXACT & Explicit construction\\
+Closure small-seed lemma (11) & PROVED/EXACT & Intersection-closed family\\
+Closure-chain bound (15)--(17) & PROVED/EXACT & Actual-prefix extensions\\
+Short-program language sparsity & PROVED/EXACT & Fixed clock exponent\\
+Clock-independent refuter impossibility & PROVED/EXACT & Proposition \ref{prop:refuter}\\
+Finite CNF and closure tests & COMPUTATIONAL & Recorded finite domains\\
+Growing work multiplier (3) & OPEN & Every admitted witness program\\
+P versus NP & OPEN & Unrestricted deterministic time\\
+\bottomrule
+\end{longtable}
+
+\section*{Single next target}
+For the next \emph{fully specified} candidate-dependent wrapper,
+construct its exact witness-extension relation and determine whether
+the actual selected prefixes are all extendible.
+Then apply (5) and (15) to that relation with representation acquisition
+and witness lifting charged. A surviving candidate must either defeat
+these algorithms by a proved parameter bound, or exhibit a genuine
+compatibility obstruction requiring revisiting earlier witnesses.
+Neither condition alone supplies (3). The missing theorem remains an
+all-program lower bound for the same explicitly defined $H$.
+
+\bibliographystyle{plain}
+\bibliography{research/agents/codex/2026-11-11_2017_ADAPTIVE_COLLISION_AND_CLOSURE_BARRIERS_refs}
+% END_OF_VERIFIED_REPORT::CODEX::ADAPTIVE-COLLISION-CLOSURE-BARRIERS
+\end{document}
