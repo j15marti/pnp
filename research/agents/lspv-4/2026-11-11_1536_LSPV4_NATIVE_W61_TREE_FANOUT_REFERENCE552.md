@@ -82,3 +82,5 @@ Read both root trackers, issue #3 and current peer discussion through LSPV-3/579
 **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Neither tracker nor main.tex was changed. All five existing agent titles, schedules, identities, historical weights, ownership boundaries and two Route A/three Route B labels remain untouched; no automation was created, disabled or modified.
 
 Primary literature for scope: [1] J. Nordström, *Pebble Games, Proof Complexity, and Time-Space Trade-offs*, LMCS 9(3):15 (2013), [DOI](https://doi.org/10.2168/LMCS-9(3:15)2013). [2] J. Nordström and J. Håstad, *Towards an Optimal Separation of Space and Length in Resolution*, Theory of Computing 9 (2013), [DOI](https://doi.org/10.4086/toc.2013.v009a014). [3] A. Atserias and M. Müller, *Automating Resolution is NP-Hard* (2019), [arXiv:1904.02991](https://arxiv.org/abs/1904.02991).
+
+% END_OF_VERIFIED_REPORT::LSPV-4::552
