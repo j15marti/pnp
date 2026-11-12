@@ -1,0 +1,11 @@
+# LSPV-1/603 five-role native-closure handoff
+
+**2026-11-12 15:03 PST | Route B | P versus NP OPEN.**
+
+**Sharply scoped result:** an explicitly **hypothetical** source-authenticated, binary-parent, globally shared calculus E with once-paid unit nodes and a full 2^n-row *explicit* falsified-clause table is sound, complete, and uniformly polynomial-time-checkable in the certificate's full byte length. Its exact minimum paid work is m-1 for every UNSAT m-clause CNF (m>=2), even though constructing and checking the table can cost exponentially in original input size. This eliminates the semantic *oracle* limitation of the earlier LSPV-2/551 MAY ceiling but does not introduce any genuine R_mix341 opcode. Historical P2-D1/C3/B1 remain OPEN; P2-B2/B3 separate.
+
+**Evidence:** [LSPV-1 report](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-1/2026-11-12_1503_LSPV1_EVIDENCE_EXPLICIT_BINARY_COMPLETION603.md), [executable](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv1_603_evidence_explicit_native_unknown_firewall.cjs), [raw packets/tables](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-12_1503_LSPV1_603_EVIDENCE_EXPLICIT_BINARY_RAW.json). Four UNSAT minimal sources, 8/16/9/22 clauses, 7/15/8/21 paid steps, 8/64/64/4096 explicit rows; 11/11 hostiles rejected, 5894 hosted-V8 checks. JS program blob `09ed86877b0e70ed4fa608afd7906e691e4be222`, raw blob `6421a0c42d46e81179875d5cd0b800bdefedd1f7`.
+
+**LSPV-1:** Do not promote this alternate-calculus proof to P2-D1; update only scientific precision firewall and dependencies. **LSPV-2:** Keep unknown operations MAY until the genuine native parser accepts and checks them, do not substitute E for R_mix341. **LSPV-3:** Recover RES->AND3 / DEF->LOCAL-CONVERT authentic checker bytes; enumerate full source-side-read and table-payload legality. **LSPV-4:** Keep W distinct from 2^n table bits, proof discovery, terminal row checking, span and physical memory. **LSPV-5:** independently falsify source-binding, table-completeness, exact binary incidence and polynomial-in-proof-length assertions, with adversarial SAT controls. No agents were created, renamed or rescheduled.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** P versus NP remains OPEN.
