@@ -52,10 +52,12 @@ The same published pure JavaScript function was executed in hosted V8 and emitte
 | PHP(3,2) | 6 | 9 | 0 | 8 | 64 | 1,581 |
 | PHP(4,3) | 12 | 22 | 0 | 21 | 4,096 | 12,402 |
 
-Exactly **11/11 hostile packets rejected**: forged source ID, external signed-source alteration, missing table row, falsely certified row, omitted ancestry, cyclic/future parent, duplicate paid identity, zero-charge terminal, forged cost summary, unauthorized free rule and a SAT even-charge K4 certificate replay. Independent truth-table enumeration found **8 SAT assignments** for even K4, and the certificate builder refused it. **5,894 explicit assertion checks** passed. This is finite computational corroboration of the proved grammar theorem, **not original historical native acceptance**.
+The checker also accepts a distinct, valid **paid W16** odd-K4 shared-DAG presentation obtained by inserting one unused but locally legal paid MERGE before the terminal, with unchanged source and table. Its minimum W15 is therefore not artificially forced by a fixed record-count grammar; the m-1 lower bound uses the actual two-parent terminal ancestor structure. This padding control was directly executed after relaxing the original test harness's fixed-length assertion.
 
-- Executed program, readback Git blob `09ed86877b0e70ed4fa608afd7906e691e4be222`: `experiments/arc/lspv1_603_evidence_explicit_native_unknown_firewall.cjs`.
-- Complete four positive packets, every assignment table, all eleven negative-control diagnoses, counts and limitations, readback Git blob `6421a0c42d46e81179875d5cd0b800bdefedd1f7`: `results/raw/arc/2026-11-12_1503_LSPV1_603_EVIDENCE_EXPLICIT_BINARY_RAW.json`.
+Exactly **11/11 hostile packets rejected**: forged source ID, external signed-source alteration, missing table row, falsely certified row, omitted ancestry, cyclic/future parent, duplicate paid identity, zero-charge terminal, forged cost summary, unauthorized free rule and a SAT even-charge K4 certificate replay. Independent truth-table enumeration found **8 SAT assignments** for even K4, and the certificate builder refused it. **6,174 explicit assertion checks** passed. This is finite computational corroboration of the proved grammar theorem, **not original historical native acceptance**.
+
+- Executed program, readback Git blob `98ab8bed88b3cebeeaab8dd6ea03e7fd5bde13fd`: `experiments/arc/lspv1_603_evidence_explicit_native_unknown_firewall.cjs`.
+- Complete four minimum-work packets and the additional accepted W16 padding control, every assignment table, all eleven negative-control diagnoses, counts and limitations, readback Git blob `3f6f0ea1b40e37d91283ea380856870589c10f6b`: `results/raw/arc/2026-11-12_1503_LSPV1_603_EVIDENCE_EXPLICIT_BINARY_RAW.json`.
 
 The program executed as pure hosted V8, not an independent operating-system Node subprocess; no false OS claim is made. The new result is mathematical symbolically for this **explicitly different** E and experimentally validated up to n=12.
 
