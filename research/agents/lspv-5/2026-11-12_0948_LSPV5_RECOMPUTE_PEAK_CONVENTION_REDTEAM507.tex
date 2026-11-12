@@ -1,0 +1,79 @@
+% LSPV-5 REPORT::507::2026-11-12T09:48:00-08:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+\title{LSPV-5/507: Independent Red-Team Re-solve of the LSPV-4/565 Recomputation Peak, and Its Convention Dependence}
+\author{LSPV-5 Independent Proof Red Team (Route B)}
+\date{12 November 2026, 09:48 PST}
+\begin{document}
+\maketitle
+
+\paragraph{Status.} \textbf{COMPUTATIONAL} independent reproduction plus a \textbf{PROVED/EXACT} (finite, restricted) convention-sensitivity table for one fixed DAG.  No proof-tracker node changes.  This is not a lower bound on $\overline W_R(N)$, not an all-proof statement, not historical $R_{\mathrm{mix341}}$, and not machine space.  B1, B2, B3, superpolynomial $\overline W_R$ and P versus NP remain \textbf{OPEN}.
+
+\section{Target and falsifiers stated before search}
+\textbf{Target.} LSPV-4/565 claims, for the fixed signed /386 DAG from LSPV-4/560 (35 RES nodes, canonical clause payload sizes), that under its resident-register semantics (at most 4 derived results resident; a fresh output coexists with its premises; an output may instead overwrite one already-read parent whose payload is no smaller): the minimum transient payload is exactly 41 bytes with paid recomputation (36 RES executions, 793 post-step byte-area), 40 is infeasible, and no-recomputation (35 RES) needs 45.
+
+\textbf{Falsifiers.} (i) A legal schedule at peak 40; (ii) a 35-execution schedule below 45; (iii) a smaller area at the same work; (iv) the result changing under a different but equally natural formalization of the \emph{same} rules; (v) the stated parameters (4 registers, the overwrite rule) not actually being the ones that bind.
+
+\section{Method}
+A new Node solver, \path{experiments/review/lspv5_507_peak_frontier_redteam.cjs}, was written without importing or calling the LSPV-4 Python program.  It formalizes deletion as an explicit atomic zero-cost move (LSPV-4 folds deletions into the compute edge), and runs lexicographic Dijkstra on (RES executions, byte area) over resident sets.  Area is charged as the resident payload entering each subsequent execution plus the final payload, which equals LSPV-4's post-step area at every optimum.  Minimizing executions with recomputation allowed also decides the no-recomputation question: the minimum equals 35 exactly when a schedule without any recomputation exists.  The DAG constants were transcribed from \path{experiments/arc/lspv4_565_recompute_peak.py}; the solver does not check that transcription against the archived certificate (see Section~5).
+
+\textbf{Hostile self-control (a real bug, caught).} The first draft built resident sets with JavaScript \texttt{\&} on masks up to $2^{34}$.  JavaScript bitwise operators truncate to 32 bits, so the draft wrongly reported a feasible schedule at peak 40.  Replaying that schedule through LSPV-4's \texttt{verify\_trace} rejected it with transient peak 45.  After the fix (arithmetic bit tests) every claim reproduced.  Lesson for all roles: any JavaScript checker or optimizer that builds bitmasks over more than 31 items with \texttt{\&}, \texttt{|} or \texttt{<<} is unsound.  The archived /386 checker uses \texttt{(m>>i)\&1} only under an explicit guard of at most 12 edges, so it is not affected.
+
+\section{Results}
+\textbf{Reproduction (all four claims match).} Peak 40: infeasible (4,084 settled states, the same count LSPV-4 reports).  Peak 41: (36, 793).  Peak 44: (36, 760).  Peak 45: (35, 958).  Falsifiers (i)--(iii) did not occur.  Separately, running LSPV-4's script with \texttt{--replay} invoked the unchanged original \path{experiments/arc/lspv2_386_independent_verify.js} as an operating-system Node process on the P41/W39 certificate, and it exited with success.  That fills the limitation LSPV-4 lists in its raw data (``No independent OS Node original-checker replay for the new P41 cert'').
+
+\textbf{Convention sweep} (peak scanned upward from 29; each entry gives the first peak at which that minimum number of executions becomes feasible):
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+registers & parent overwrite & min peak, 36 RES (one recompute) & min peak, 35 RES (no recompute)\\
+\midrule
+4 & yes & 41 (area 793) & 45 (area 958)\\
+35 (unbounded) & yes & 41 (area 793) & 45 (area 958)\\
+3 & yes & infeasible at every peak & infeasible\\
+4 & no & infeasible at every peak & infeasible\\
+5 & no & 53 (area 791) & 59 (area 956)\\
+35 (unbounded) & no & 53 (area 791) & 59 (area 956)\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{Findings.}
+\begin{enumerate}
+\item \emph{The 4-register limit never binds under overwrite.}  With overwrite allowed, removing the register limit changes nothing.  The byte budget alone fixes 41/45.  The phrase ``four registers never overflow'' in LSPV-4/565 is true, but it constrains nothing.
+\item \emph{The overwrite rule is load-bearing.}  Without it, 4 registers cannot finish at \emph{any} byte budget, at least 5 registers are needed, and the thresholds rise to 53 and 59.  The 41-byte result is therefore a property of the rule set \{fresh output or nonexpanding overwrite\}, not of the DAG alone.  Any downstream use must name that rule.
+\item \emph{Known-theorem match.}  The register gap (4 with overwrite, 5 without) agrees with the KNOWN THEOREM of van Emde Boas and van Leeuwen (1978/79): in the unit-weight black-pebble game, allowing sliding moves saves exactly one pebble on every DAG with at least one edge.  The match is a consistency check, not new mathematics.  The weighted byte thresholds (41 vs.\ 53) are outside that theorem: the size condition on overwrite makes this a weighted pebbling variant.  So the theorem is a \textbf{useful structural analogy} for the byte thresholds and a \textbf{directly transferable theorem} only for unrestricted unit-weight sliding.
+\item \emph{Paid recomputation lowers the peak by 4 bytes with overwrite (45 to 41) and by 6 without it (59 to 53).}  This is the familiar pebbling space--time trade-off on one fixed small DAG.  It says nothing about $\min_\pi$ over alternative derivations, so it is not a $\overline W_R$ statement.
+\end{enumerate}
+Falsifier (iv) occurred in a precise sense: a different natural reading of ``legal register reuse'' (no in-place overwrite) changes every number.  Falsifier (v) occurred: the stated 4-register parameter is not the binding one.  Neither falsifies LSPV-4/565 as stated; both narrow how it may be cited.
+
+\section{Literature and transfer audit}
+Obstacle 1: whether resource numbers on one fixed DAG transfer to $\min_\pi$ over all derivations.  Obstacle 2: whether the numbers depend on the move rules.  Relevant literature: van Emde Boas and van Leeuwen, \emph{Move rules and trade-offs in the pebble game}, 4th GI Conference, LNCS 67, 1979, DOI 10.1007/3-540-09118-1\_12 (sliding saves exactly one pebble; a linear-to-exponential time trade-off when that pebble is saved), as restated in arXiv:2401.10579 (Theorem A there).  Hong and Kung, STOC 1981 (red-blue pebbling) is the I/O-model analogue: a \textbf{useful analogy} only.  Proof-complexity space measures (Esteban--Tor\'an clause space; Ben-Sasson--Nordstr\"om) are defined as minima over all refutations, which is exactly the quantifier a fixed-DAG schedule lacks.  Transferring this result to them is a \textbf{failed transfer} unless one proves that every alternative refutation of the source formula has at least the same peak.  Post-quantum ledger: no PQ technique applies; classified \textbf{FAILED TRANSFER}.
+
+\section{CORPUS REVIEWED}
+Root \texttt{AGENTS.md} (including the knot/link and SIL/M22 handoff notices), root \texttt{main.tex} (LSPV-5 owned region and the B3/bridge passages at lines 52--140 and 3511--3800), the newest LSPV-4/565 report, handoff, code and raw data, the LSPV-4/564 frontier handoff, the newest LSPV-1/595, LSPV-2/578 and LSPV-3/592 commit set, LSPV-5/505--506, the archived /386 checker, and the recent five-role handoffs in \texttt{research/coordination/}.  This run did not re-read every historical report.  Repository search shows the bridge barriers (Gödel/reflection firewall /357, /294 trace-correctness, /336--/356 reflection families) are already recorded, so this run does not restate them.  The transcribed DAG constants were not compared field-by-field against \path{results/raw/arc/2026-11-12_0936_LSPV4_565_P41_W39_NATIVE386_CERT.json}; the LSPV-4 script itself does check RES pivots and record counts against that certificate.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+No contradiction with LSPV-4/565: every number reproduced.  The convention table is new to the corpus; repository search found no earlier no-overwrite or register-limit sweep for this DAG.  The sliding-pebble theorem was not previously cited in \texttt{main.tex} (search for ``sliding'' and ``Emde Boas'').
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+An LSPV-5/507 entry is added inside the LSPV-5 owned region.  It records the independent reproduction, the original-checker operating-system replay, the convention-dependence qualifier, and the bitmask-truncation hazard.  No other region or status changed.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted: LSPV-4/565's finite theorem, scoped to its exact move rules.  Rejected as a citation form: ``41-byte floor with four registers'' without naming the overwrite rule.  The binding constraint is bytes plus overwrite, and the register count is redundant under overwrite.  Retired: nothing.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+None false.  One citation hazard: ``four registers never overflow'' could be read as saying four registers is the binding resource.  It is not; under overwrite the register limit is slack.
+
+\section{Predecessor write check}
+LSPV-4 (predecessor) wrote \path{research/agents/lspv-4/2026-11-12_0936_LSPV4_NATIVE386_RECOMPUTE_TRANSIENT_FIREWALL565.md} (14,984 bytes, header present, read back), its handoff, and its owned-region update to \texttt{main.tex}.  LSPV-4 publishes Markdown without a final sentinel, which matches its 274 earlier reports; the content is substantive.  Verified write; no retry request needed.
+
+\section{Reproduction}
+From the repository root: \texttt{node experiments/review/lspv5\_507\_sweep.cjs <k>} for $k=0,\dots,5$.  Each convention runs in 1.4--14.4\,s, split into chunks so that no single run exceeds the 30\,s rule.  The combined no-argument run takes about 33\,s and produced \path{results/raw/review/2026-11-12_0948_LSPV5_507_PEAK_CONVENTION_SWEEP_RAW.json}.  For a single point: \texttt{node experiments/review/lspv5\_507\_peak\_frontier\_redteam.cjs <peak> <registers> <overwrite 0|1> 1}.
+
+\paragraph{Conclusion.} LSPV-4/565 survives independent attack within its exact rules.  Its 41-byte figure is a weighted-sliding-pebbling quantity for one fixed DAG.  It is not a minimum over derivations, and so it does not bear on $\overline W_R(N)$ or on the bridge $\mathrm{SAT}\in\mathrm P\Rightarrow\overline W_R(N)\le\mathrm{poly}(N)$.  P versus NP remains \textbf{OPEN}.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::507
+\end{document}
