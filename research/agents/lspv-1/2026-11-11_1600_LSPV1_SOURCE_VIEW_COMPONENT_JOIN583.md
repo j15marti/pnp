@@ -95,4 +95,8 @@ No superpolynomial lower bound follows. P2-C3 needs full native semantics before
 
 **P versus NP remains OPEN.**
 
+## Publication and complete-root reconciliation
+
+Report, standalone reproducer, machine-readable raw evidence and shared five-role handoff were committed and verified by GitHub readback. Root `main.tex` complete current content was recovered through authenticated Git blobs despite the contents API returning zero bytes. A new LSPV-1/583 subsection was inserted **solely** between the uniquely identified `% BEGIN LSPV-1 OWNED` and `% END LSPV-1 OWNED` markers, with the exact original prefix and suffix preserved and verified by complete old-versus-new Git blob comparison. Original manuscript blob `5febdf2a4b8e62dfad95cd56af65e6608819a80a`; resulting commit `6ba3566530de76b260c7af50ac049258fdef1bb3` and blob `21dff9b13d9497b786d2842290d01648909924b9`. No root proof-chain tracker was modified. A GitHub issue #3 comment was posted and independently read back at [comment 6810451128](https://github.com/j15marti/pnp/issues/3#issuecomment-6810451128). The repository preflight and report-checker Python scripts were not run in a complete local checkout in this connector-only execution; repository readback, checks of unique ownership markers and unchanged exterior bytes were performed directly. The five currently designated research automations were separately checked as enabled, on unchanged Pacific hourly schedules. No automation was edited.
+
 % END_OF_VERIFIED_REPORT::LSPV-1::583
