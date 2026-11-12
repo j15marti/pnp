@@ -1,0 +1,140 @@
+% CLAUDE REPORT::WR-BRIDGE-0001::2026-11-12T11:48-08:00
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\title{Worst-case minimum derivation cost $\overline W_R(N)$:\\ what the bridge $\mathrm{SAT}\in\mathrm P\Rightarrow \overline W_R\le\mathrm{poly}$ can and cannot be}
+\author{Claude scheduled routine (red-team / bridge audit), run WR-BRIDGE-0001}
+\date{2026-11-12 11:48 America/Los\_Angeles}
+\begin{document}\maketitle
+
+\section*{Status}
+P versus NP remains \textbf{OPEN}. This run proves no separation. It classifies the
+shared bridge target and records exact small data. Status labels follow \texttt{AGENTS.md}.
+
+\section{Objects}
+For a Cook--Reckhow proof system $R$ with cost measure $\mathrm{cost}_R$ (size, unless
+stated otherwise),
+\[
+\overline W_R(N)=\max_{F\in\mathrm{UNSAT},\,|\langle F\rangle|\le N}\ \min_{\pi:F\vdash_R\bot}\mathrm{cost}_R(\pi).
+\]
+The inner minimum ranges over \emph{all} derivations, so the optimal sequence is free. That
+makes $\overline W_R$ a valid lower bound on the cost of \emph{any} $R$-derivation of $F$.
+This principle is correct and is adopted. The load-bearing question is different: does an
+arbitrary polynomial-time SAT algorithm produce, or get simulated by, an $R$-derivation?
+\[
+(\mathrm B_R)\qquad \mathrm{SAT}\in\mathrm P\ \Longrightarrow\ \overline W_R(N)\le N^{O(1)}.
+\]
+In the 3-SAT setting, the DAG hypergraph and reduced-state formulation is a choice of $R$
+together with $\mathrm{cost}_R$. Everything below applies to it once $R$ is fixed and
+polynomially verifiable.
+
+\section{Results}
+\begin{theorem}[EXACT: collapse of the bridge for systems with known lower bounds]\label{thm:collapse}
+Suppose $R$ satisfies $\overline W_R(N)\ne N^{O(1)}$ as a KNOWN THEOREM. Examples are
+tree-like and general resolution (Haken 1985 for PHP; Urquhart, Ben-Sasson--Wigderson for
+Tseitin and random 3-CNF), cutting planes (Pudl\'ak 1997), bounded-depth Frege (Ajtai;
+Beame--Impagliazzo--Pitassi; H\aa stad--Risse), and polynomial calculus in degree or size.
+Then $\mathrm B_R\iff \mathrm{SAT}\notin\mathrm P$.
+\end{theorem}
+\begin{proof}
+$\mathrm B_R$ has the form $A\Rightarrow C$, where $C$ is known to be false. Hence
+$\mathrm B_R\iff\neg A$.
+\end{proof}
+So for every system where hard UNSAT families are actually known, the ``weakest sufficient
+bridge'' is \emph{literally equivalent} to $\mathrm P\ne\mathrm{NP}$. It is a
+reformulation, in the world-ledger sense (row category ``equivalent of P$\neq$NP''), and not
+a weaker intermediate target. This includes 3-SAT encodings of these families with
+extension variables of constant width. Any new hard family that work packages 3--5 certify
+for such an $R$ therefore cannot lower the difficulty of $\mathrm B_R$.
+
+\begin{proposition}[EXACT: family-locality barrier]\label{prop:local}
+Let $\{F_n\}$ be any UNSAT family whose members are recognisable in polynomial time
+(PHP$^{n+1}_n$, Tseitin on an explicit expander, or any explicit construction from this
+corpus). If $A$ is a polynomial-time SAT decider, then so is
+$A'(F)=$``if $F\in\{F_n\}$ output UNSAT, else $A(F)$''. On $F_n$, $A'$ runs in linear time
+and executes no inference steps at all.
+\end{proposition}
+\begin{proof}
+$A'$ is correct because every $F_n$ is UNSAT. Its running time is at most the
+recognition time plus the running time of $A$.
+\end{proof}
+Consequence: no proof of $\mathrm B_R$ can lower-bound an algorithm's running time by
+inspecting its behaviour on the hard family. The bridge must use $A$'s correctness on
+\emph{all} inputs. Concretely, it must produce short $R$-proofs of $\neg F_n$ from a short
+proof that $A$ is sound. This is a \emph{reflection} statement, and it is exactly the form
+of the known positive result:
+
+\begin{theorem}[KNOWN THEOREM: Cook 1975; Krajíček--Pudlák 1990]\label{thm:pv}
+Suppose $A$ is polynomial-time and $\mathrm{PV}$ (equivalently $S^1_2$ for the
+$\forall\Sigma^b_1$ consequences used here) proves
+$\mathrm{Sound}(A)\equiv\forall F\,(A(F)=\mathrm{UNSAT}\to F\text{ unsatisfiable})$. Then
+extended Frege has refutations of size $|F|^{O(1)}$ for every $F$ that $A$ rejects. In
+particular, if $\mathrm{SAT}\in\mathrm P$ via such an $A$, then
+$\overline W_{\mathrm{EF}}(N)\le N^{O(1)}$.
+\end{theorem}
+So $\mathrm B_{\mathrm{EF}}$ holds \textbf{CONDITIONALLY}, restricted to SAT algorithms
+whose soundness is PV-provable. The precise remaining gap is:
+
+\begin{definition}[OPEN target GAP-PV]
+Show that if $\mathrm{SAT}\in\mathrm P$, then some polynomial-time SAT algorithm has
+PV-provable soundness. (Correctness on satisfiable inputs is free, because it can be
+certified by self-reduction. Only the UNSAT direction matters.)
+\end{definition}
+GAP-PV together with Theorem~\ref{thm:pv} gives $\mathrm B_{\mathrm{EF}}$. That would leave
+the superpolynomial EF lower bound, which is OPEN with no unrestricted Frege or EF bound
+known as of this search, as the sole open arrow. GAP-PV is unprovability-flavoured: it says
+PV cannot be ``too weak'' about a true $\mathrm{P}=\mathrm{NP}$. It is CANDIDATE as a
+research direction, not a claim. Natural relativising arguments cannot settle it, since
+oracle worlds separate provability from truth.
+
+\begin{remark}[Proof-system choice is forced into a dilemma]
+Pick $R$ to make $\mathrm B_R$ easy, for example by adding a rule ``apply any PV-verified
+poly-time refuter''. Then $R$ p-simulates EF, and $\overline W_R$ lower bounds are at least
+as hard as EF lower bounds. Pick $R$ weak, so that lower bounds are known. Then
+Theorem~\ref{thm:collapse} applies. No fixed multisign-hypergraph calculus escapes this
+dilemma unless it comes with a new argument of reflection type.
+FAILED TRANSFER: ``free optimal sequence $\Rightarrow$ algorithm lower bound'' is valid only
+after a p-simulation of the algorithm by $R$. That simulation is the entire content of the
+bridge.
+\end{remark}
+
+\section{COMPUTATIONAL: exact $\overline W$ data for tree-like resolution on PHP}
+Script: \texttt{experiments/claude\_wr/min\_treeres\_php.py}. Raw data:
+\texttt{results/raw/claude\_wr/2026-11-12\_min\_treeres\_php.json}. The minimum is taken over
+all branching orders (free strategy), by exhaustive memoised search over $\{0,1,*\}^{n(n+1)}$.
+The total run took 1.9\,s, so no chunking was needed.
+\begin{center}\begin{tabular}{rrrrr}
+$n$ & vars & clauses & min leaves & min tree-res size\\\hline
+1&2&3&3&5\\ 2&6&9&11&21\\ 3&12&22&43&85
+\end{tabular}\end{center}
+The leaf counts satisfy $L_n=4L_{n-1}-1$ for $n\le3$. This is a small-$n$ coincidence and is
+not conjectured to continue, because tree-like PHP needs $2^{\Omega(n\log n)}$
+(Iwama--Miyazaki; Ben-Sasson--Impagliazzo--Wigderson), which eventually exceeds $4^n$.
+$n=4$ requires $3^{20}$ states and is deferred to a chunked run. For every $n$, the
+syntactic counting refuter of Proposition~\ref{prop:local} accepts PHP$^{n+1}_n$ in linear
+time. This is an explicit witness that the per-family gap between $\overline W_R$ and
+algorithm time is unbounded.
+
+\section*{Literature checked this run}
+Pudl\'ak, \emph{Reflection principles, propositional proof systems, and theories},
+arXiv:2007.14835. Lu--Santhanam--Tzameret, ECCC TR25-134 / ITCS 2026 (AC$^0[p]$-Frege).
+H\aa stad--Risse, SICOMP 2025 (bounded-depth Frege, Tseitin). arXiv:2506.16956
+(EF automatability is NP-hard). ECCC TR25-098 (IPS; general Frege bounds remain open).
+None of these gives an unrestricted Frege or EF lower bound or a GAP-PV result.
+
+\section*{CORPUS REVIEWED / DUPLICATION AUDIT / ADOPTED--REJECTED}
+I surveyed the repository tree, \texttt{AGENTS.md}, the latest LSPV-1..5 directory heads
+(through LSPV-4/567, 2026-11-12 11:45), the codex reports from 2026-11-11 on SAT-polynomial
+assumptions and adaptive collision and closure barriers, and the Claude world-ledger rows
+(L13, L34--L40). Theorem~\ref{thm:collapse} matches the world-ledger convention: a statement
+equivalent to P$\neq$NP is a reformulation. No corpus file states the PV-reflection form of
+the bridge. Adopted: free-optimal-sequence minimisation as a lower bound on $R$-cost.
+Rejected as overstated: any reading in which it lower-bounds arbitrary algorithm time
+without p-simulation. Root \texttt{main.tex} was \emph{not} edited, because this routine owns
+no LSPV region. LSPV-5 should consider adding GAP-PV to the open-arrow table. Stale claims
+found: none in this scope.
+
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WR-BRIDGE-0001
