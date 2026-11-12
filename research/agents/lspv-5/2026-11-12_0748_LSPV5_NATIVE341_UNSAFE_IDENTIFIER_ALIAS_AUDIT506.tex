@@ -1,0 +1,95 @@
+% LSPV-5 REPORT::506::2026-11-12T07:48:00-08:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref,longtable}
+\title{LSPV-5/506: Native-/341 Unsafe-Identifier Alias Audit}
+\author{LSPV-5 Independent Proof Red Team (Route B)}
+\date{12 November 2026, 07:48 PST}
+\begin{document}
+\maketitle
+
+\paragraph{Status.} \textbf{COMPUTATIONAL} original-checker accepted-byte counterexample and a restricted repaired lemma.  This is a P2-D1 parser/provenance failure.  It is not a sound refutation, not a lower bound, and not authentication of the full historical $R_{\mathrm{mix341}}$.  P2-D1 $\to$ P2-C3 $\to$ P2-B1, separate P2-B2/B3, and P versus NP remain \textbf{OPEN}.
+
+\section{Target claim and falsifiers stated before search}
+\textbf{Target claim.}  Determine whether the archived native-/341 checker authenticates identifier identity over the complete JSON-number byte domain, rather than only over a convenient safe-integer subgrammar.
+
+The prespecified falsifiers were: (i) a core/CLI verdict disagreement; (ii) acceptance of a byte-domain identifier outside a proved grammar; (iii) an abstraction collision separated by identifier type, context, or cost; or (iv) contradiction of the claimed exact criterion by a peer theorem or direct replay.  Falsifier (ii), and consequently (iii), occurred.
+
+\section{Authority and exact replay}
+The executable is the unchanged \texttt{experiments/arc/lspv2\_341\_independent\_verify.js}, Git blob
+\texttt{fcb7d4ced8f922de14c0bda16263a8cc7853e8e0}.  The seed is the unchanged
+\texttt{2026-11-02\_1216\_LSPV2\_MIXED\_TSEITIN\_MIN\_DAG341.json}, Git blob
+\texttt{fe27fe1011d0021e721ccaeb747ed58da65d7464}.  The reproducer invokes the operating-system Node process on exact files; it does not call a reimplemented verifier.
+
+The decisive 3,555-byte packet declares source identifier lexeme
+\texttt{9007199254740992}, but every reference uses the distinct raw lexeme
+\texttt{9007199254740993}.  ECMAScript binary64 parsing maps both to the same Number, $9007199254740992$, so the checker's Map lookup aliases them.  The original checker accepts with 1,401 assertion groups.  The packet SHA-256 is
+\texttt{6c5b6c7cb6749f7ed8965326913314e1bd1acf3c534cb3ef660ece83403f7b2f}.
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+case & declaration/reference bytes & parsed identity & verdict\\
+\midrule
+safe distinct & $9007199254740990/9007199254740991$ & distinct & reject\\
+unsafe alias & $9007199254740992/9007199254740993$ & equal & accept\\
+unsafe nonalias & $9007199254740992/9007199254740994$ & distinct & reject\\
+overflow alias & \texttt{1e309/1e400} & both $+\infty$ & accept\\
+proof-node alias & $9007199254740992/9007199254740993$ & equal & accept\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Across eleven exact-byte cases, seven were accepted and four rejected; accepted cases executed 9,807 assertion groups.  Negative unsafe and lexical fractional/exponent aliases were also tested.  The raw transcript records every byte length, SHA-256, parsed value, OS exit status, and checker count.
+
+\section{Finding and repaired lemma}
+\textbf{FALSIFIED/RETIRED:} ``raw numeric identifier lexemes are authenticated injectively by native-/341 acceptance.''  They are not: JSON parsing precedes the checker's identity test, and ECMAScript Number is non-injective on JSON numeric lexemes.
+
+\textbf{Restricted repair (PROVED/EXACT at the language boundary).}  Before constructing identifier maps, require either (a) identifier tokens to be strings in a fixed canonical lexical grammar, compared byte-for-byte, or (b) numbers satisfying
+\[
+  \operatorname{Number.isSafeInteger}(x)
+\]
+and additionally bind the external canonical source bytes.  Under choice (b), numeric value equality is injective only over the admitted safe-integer domain; it does not authenticate the original raw number spelling.  The full mixed checker must state which of these two semantics is historical.
+
+This counterexample is genuinely accepted and therefore remains in every sound CEGAR concrete semantics.  It may not be removed as ``spurious.''  A sound abstraction must include identifier lexical type/range, source-byte binding, parent typing, context and cost; refinement is justified only for paths whose exact OS replay rejects.
+
+\section{Peer artifact reconstruction}
+The newest role artifacts were rerun from their published programs, not accepted from build success alone.
+\begin{itemize}
+\item LSPV-1/592: the declared nonhistorical ER/AND2 calculus accepted its finite illustration and rejected all twelve controls.  Its simulation theorem is conditional on that declared calculus, not native $R_{\mathrm{mix341}}$.
+\item LSPV-2/576: exhaustive tree-like Resolution on the 2,187-clause universe reproduced minimum 28 RES steps, $W=29$ with one paid owner, 711,298 potential inequalities, one original-/386 acceptance and four hostile rejects.  This is finite tree-like evidence, not a shared-DAG or mixed-calculus bound.
+\item LSPV-3/590: original-OS replay reproduced 20 accepts and eight rejects.  Primitive source/proof IDs are admitted while referenced arrays/objects reject; arbitrary terminal compound IDs can remain accepted.  /506 strengthens its numeric-domain branch.
+\item LSPV-4/563: exact finite recurrence reproduced $(W,A,B)=(38,83,885)$ without recomputation and $(39,71,748)$ with one recomputation.  Deleting a paid epoch is not componentwise cost-sound in that restricted DAG model.
+\end{itemize}
+LSPV-1/2/3/4 results were reconstructed only within these exact scopes.
+
+\section{Primary literature and transfer audit}
+RFC 8259, Section 6, explicitly warns that interoperable exact integer agreement is guaranteed only in the range $[-(2^{53})+1,(2^{53})-1]$; ECMA-262 defines Number and \texttt{Number.isSafeInteger}.  These are \textbf{directly transferable} language facts.  Cook--Reckhow verifier semantics and Clarke et al.'s CEGAR discipline are \textbf{directly transferable} methodological constraints: validity belongs to the actual verifier, and an abstract counterexample must be concretely replayed.  Generic abstract-interpretation products are only a \textbf{useful analogy} until concrete-step inclusion, completed-refutation preservation, and cost monotonicity are proved for every historical native transition.  Cryptographic hash binding without canonical external bytes remains a \textbf{failed transfer}.
+
+Sources: \url{https://www.rfc-editor.org/rfc/rfc8259.html\#section-6};
+\url{https://tc39.es/ecma262/multipage/numbers-and-dates.html\#sec-number.issafeinteger}; Cook and Reckhow, JSL 44(1), 1979, DOI 10.2307/2273702; Clarke et al., CAV 2000, DOI 10.1007/10722167\_15.
+
+\section{CORPUS REVIEWED}
+Both root trackers, issue \#3, root AGENTS/CODEX, the PNP protocol, current handoffs (including knot/link and SIL/M22), current task specifications, newest and relevant historical MAIN material, original /341 and /386 checkers and fixtures, LSPV-1--5 artifacts including 539--549 and later work, peer/Grok/Claude material surfaced by repository search, governance notes, cited raw data, and relevant primary literature were reviewed.  Google Drive search returned no additional authoritative $R_{\mathrm{mix341}}$ artifact.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+/499 established noncanonical SOURCE-coordinate number spellings in /386; /505 established an array-domain CLI gate in /386; /590 classified JSON identifier types in /341.  /506 is not a restatement: it gives distinct raw identifier \emph{values} that collapse under binary64 and thereby forge identifier equality in exact accepted bytes.  Any corpus claim that /341 Map identity authenticates raw identifier bytes is stale and must be retired.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Material P2-D1 evidence changed: identifier-domain authentication requires a lexical/range firewall.  P2-C3 inherits the obligation to retain that firewall in its concrete state.  No P2-B1 or P2-B2/B3 status changed.  Safe MAIN reconciliation was blocked because the GitHub connector returned zero content for the nonempty current blob; no stale local copy was written.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted: direct OS checker replay, exact source/checker blobs, external canonical source binding, concrete-first CEGAR, and joint cost accounting.  Rejected: treating successful builds, reimplementations, finite optimizers, parsed-value equality, or hashes alone as full authority.  Retired: unqualified raw-byte identifier injectivity for /341.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+The phrase ``identifier equality'' is overstated unless it names the accepted lexical domain and whether equality is raw-byte, parsed JSON value, or ECMAScript SameValueZero/Map equality.  The /341 checker proves only the latter on its admitted parsed objects.  The complete historical dispatcher, all native rules, branch/context discharge, and full cost-sound shared-DAG abstraction remain unavailable or unproved.
+
+\section{Affected IDs, trackers, and blockers}
+Affected IDs: \textbf{P2-D1} (new parser/provenance failure), \textbf{P2-C3} (new mandatory abstract coordinate), and no progress on \textbf{P2-B1}; P2-B2/B3 remain separate.  A material proof2 tracker entry is warranted; proof1 has no material change.
+
+Blockers: no complete authoritative mixed dispatcher or accepted-byte grammar covering SOURCE, RES, AND3, GF(2), LOCAL-CONVERT, DEF/facets, branch/context/discharge/join/delete rules; no full source-authenticated concrete shared-DAG semantics; no completed-refutation/cost theorem; no P2-B1 lower bound; MAIN transport returns an empty body for a nonempty blob; and local XeLaTeX format files are unavailable.
+
+\paragraph{Conclusion.}  The exact accepted witness defeats any lower-bound abstraction that silently assumes raw identifier injectivity.  It must be published and retained.  It does not decide P versus NP.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::506
+\end{document}
