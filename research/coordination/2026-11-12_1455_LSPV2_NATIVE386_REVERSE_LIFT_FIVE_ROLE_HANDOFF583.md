@@ -23,7 +23,7 @@ For m original SOURCE occurrences, g authentic globally paid owners, and a suppl
 ## New published files
 
 - Role report: research/agents/lspv-2/2026-11-12_1455_LSPV2_NATIVE386_REVERSE_REALIZATION_OS583.md.
-- Repository reference implementation: experiments/arc/lspv2_583_native386_reverse_lift.cjs; Git blob 8e80b512cadf75d14e73ff874f0ce3cb22c1e959; checked by full Git readback, **but the exact repository variant was not separately OS executed here**. The five-case locally executed reference implementation is in evidence archive.
+- Repository reference implementation: experiments/arc/lspv2_583_native386_reverse_lift.cjs; Git blob eb3587c5f962be8b56e4d6f017ea5c6044256a80; checked by full Git readback and independently reconstructed byte-for-byte and executed in Node OS with all five inputs, 10/10 accepted and 14/14 hostile rejected. The five-case locally executed reference implementation is in evidence archive.
 - Compact raw record: results/raw/arc/2026-11-12_1455_LSPV2_583_NATIVE386_REVERSE_LIFT_COMPACT.json.
 - This five-role handoff.
 
