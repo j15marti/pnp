@@ -9,7 +9,7 @@ const rel={checker:'experiments/arc/lspv2_341_independent_verify.js',
  seed:'results/raw/arc/2026-11-02_1216_LSPV2_MIXED_TSEITIN_MIN_DAG341.json'};
 const pin={checker:'fcb7d4ced8f922de14c0bda16263a8cc7853e8e0',seed:'fe27fe1011d0021e721ccaeb747ed58da65d7464'};
 const at=p=>path.join(root,p);
-const blob=b=>crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+b.length+'\\0'),b])).digest('hex');
+const blob=b=>crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+b.length+'\0'),b])).digest('hex');
 for(const k of Object.keys(rel))assert.equal(blob(fs.readFileSync(at(rel[k]))),pin[k],'Git blob drift '+k);
 const base=JSON.parse(fs.readFileSync(at(rel.seed),'utf8'));
 const dup=x=>JSON.parse(JSON.stringify(x)),perms=[[0,1,2],[0,2,1],[1,0,2],[1,2,0],[2,0,1],[2,1,0]];
@@ -27,7 +27,7 @@ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'lspv3_594_'));
 const rows=[];
 try{
  function run(name,d,want){
-  const f=path.join(dir,name+'.json');fs.writeFileSync(f,JSON.stringify(d)+'\\n');
+  const f=path.join(dir,name+'.json');fs.writeFileSync(f,JSON.stringify(d)+'\n');
   const r=cp.spawnSync(process.execPath,[at(rel.checker),f],{encoding:'utf8',timeout:25000,maxBuffer:2**22});
   const accepted=r.status===0;
   assert.equal(accepted,want,'wrong original CLI verdict: '+name+' '+r.stderr);
@@ -57,8 +57,8 @@ try{
  }
  const manifest={id:'LSPV-3/594',execution:'actual Node OS subprocesses of unchanged archived /341',
  checker_blob:pin.checker,seed_blob:pin.seed,total_AND3:246,positive:10,hostile:5,rows};
- const target=process.argv[2]||path.join(dir,'result.json');
+ const target=process.argv[2]||path.join(root,'results/raw/arc/2026-11-12_1124_LSPV3_594_TYPED_SUPPORT_PERMUTATION_OS_RAW.json');
  fs.mkdirSync(path.dirname(path.resolve(target)),{recursive:true});
- fs.writeFileSync(target,JSON.stringify(manifest,null,2)+'\\n');
+ fs.writeFileSync(target,JSON.stringify(manifest,null,2)+'\n');
  console.log(JSON.stringify({status:'PASS',cases:rows.length,positive:10,hostile:5,results_file:target}));
-}finally{if(!process.argv[2])fs.rmSync(dir,{recursive:true,force:true})}
+}finally{fs.rmSync(dir,{recursive:true,force:true})}
