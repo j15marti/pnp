@@ -1,0 +1,262 @@
+% LSPV-5 REPORT::NATIVE386_OWNER_REFERENCE_ALIAS507::2026-11-12T09:48:00-08:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,longtable,url}
+\usepackage[T1]{fontenc}
+\title{LSPV-5/507: raw numeric aliases cross the archived /386 paid-owner--DEF boundary}
+\author{LSPV-5 Independent Proof Red Team (historical Route B)}
+\date{2026-11-12 09:48 PST}
+\begin{document}
+\maketitle
+
+\noindent\textbf{Status.} COMPUTATIONAL accepted-byte counterexample plus a
+PROVED/RESTRICTED parsed-owner identity lemma.  This is an audit of the unchanged
+archived /386 sibling checker, not authentication of the complete historical
+$R_{\mathrm{mix341}}$ dispatcher.  P2-D1, P2-C3, P2-B1, and separate P2-B2/B3
+remain OPEN.  P versus NP remains OPEN.
+
+\section{One target and precommitted falsifiers}
+
+\paragraph{Target claim.} The archived /386 checker authenticates paid-owner
+identity consistently across a \texttt{gate\_defs} declaration and every DEF
+record's \texttt{gate} reference over the full accepted raw-JSON domain.
+
+\paragraph{Falsifiers.}
+\begin{enumerate}
+\item Distinct raw owner-ID lexemes alias after parsing and are accepted.
+\item Owner identity is checked in the declaration but omitted or differently
+interpreted at a DEF facet port.
+\item A declared owner can be reused under a different parsed type without a cost change.
+\item A cheap abstract path collapsing freshness, order, or once-paid ownership
+concretely replays in the authoritative checker.
+\end{enumerate}
+
+Falsifier 1 occurs.  The checker rejects the tested cross-type and noninteger
+cases, so falsifiers 2--3 do not occur on the tested fields.  No proof-shortening
+path was found; falsifier 4 is therefore not established as a cost shortcut.
+
+\section{Authority, source, and exact checker path}
+
+The authority is the unchanged OS-Node checker
+\texttt{experiments/arc/lspv2\_386\_independent\_verify.js}, Git blob
+\texttt{338305c0ce101704205e57543756b8127074a986}.  Its complete control flow was
+inspected and then executed as Node v24.22.1 subprocesses.  The source packet is
+the independently generated LSPV-4/565 native certificate
+\texttt{results/raw/arc/2026-11-12\_0936\_LSPV4\_565\_P41\_W39\_NATIVE386\_CERT.json},
+Git blob \texttt{97a96f3f6212c20c4bfa5ced26cad7b18f9722e8}, SHA-256
+\texttt{da0f8b040ec99787f7f47669203819134b7cabd7eaf23706ef82ab36f3d97070}.
+It contains 17 authenticated SOURCE rows, three paid owners, six zero-additional-
+charge DEF facet rows, 36 paid RES rows, and an empty-clause sink.
+
+For each declaration tuple $[i,z,a,b]$, the checker requires all four parsed
+values to satisfy \texttt{Number.isSafeInteger}, requires $i\geq0$, checks
+freshness with \texttt{gids.has(i)}, and stores \texttt{gids.set(i,z)}.  At a DEF
+row it requires \texttt{gids.has(r.gate)}, retrieves the owner with
+\texttt{gids.get(r.gate)}, and authenticates the exact defining facet.  Thus the
+join is genuine, but it is a join on parsed ECMAScript Number keys, not raw token
+spans.
+
+\section{Accepted-byte counterexample}
+
+Starting from the exact W39 packet, replace only owner 1's declaration token by
+\texttt{1.0} and both references to that owner by \texttt{1e0}.  The resulting
+3,707-byte packet has SHA-256
+\texttt{493a071472c35e7c93ff29abe05b3495084cd241d3b1cb570200785757265178}.
+It contains the literal raw fragments
+\[
+  [\texttt{1.0},9,8,8]
+  \qquad\text{and}\qquad
+  \texttt{"gate":1e0}
+\]
+twice at the corresponding DEF records.  The unchanged checker accepts it with
+exactly 39 paid nodes, three paid owners, 36 RES rows, 59 records, 17 SOURCE rows,
+zero odd-charge models, eight even-charge models, eleven negative tests, and
+3,981 accumulated assertion groups.
+
+The following differential was executed.  Every accepted row retained the same
+logical outcome and cost.
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+owner & declaration token & DEF-reference token & verdict\\
+\midrule
+1 & \texttt{1} & \texttt{1} & ACCEPT\\
+1 & \texttt{1.0} & \texttt{1e0} & ACCEPT\\
+1 & \texttt{1E+0} & \texttt{1.0000000000000000} & ACCEPT\\
+0 & \texttt{-0} & \texttt{0e100} & ACCEPT\\
+0 & \texttt{1e-324} & \texttt{-1e-324} & ACCEPT\\
+1 & \texttt{1} & \texttt{2} & REJECT: wrong owner facet\\
+1 & \texttt{1.5} & \texttt{1} & REJECT: declaration not safe integer\\
+1 & \texttt{1} & \texttt{1.5} & REJECT: undefined gate\\
+1 & \texttt{"1"} & \texttt{1} & REJECT: declaration not safe integer\\
+1 & \texttt{1} & \texttt{[1]} & REJECT: undefined gate\\
+1 & \texttt{9007199254740992} & same & REJECT: not safe integer\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The underflow row is stronger than a spelling-only example: the mathematical
+decimal values $\pm10^{-324}$ are nonzero, while ECMAScript binary64 parsing maps
+them to signed zeros; \texttt{Number.isSafeInteger} accepts those parsed zeros and
+Map key equality identifies them.  This is consistent with RFC 8259 permitting
+fractional and exponent syntax while allowing implementation precision limits,
+and with ECMAScript's specified Number and Map equality behavior.
+
+\paragraph{Restricted parsed-owner lemma.}
+Fix any /386 packet accepted by this checker.  If every raw token at one owner
+declaration and all of its DEF references is replaced by a JSON number token
+that parses to the same safe integer $i$, while all other bytes decode to the
+same values, then every owner lookup, facet check, SOURCE/RES transition, terminal
+condition, and summary equality follows the original execution.  Consequently
+the modified packet is accepted with the same paid work.  For $i=0$, the class
+also contains $+0$ and $-0$ because Map key equality treats them identically.
+This is a theorem about this program's decoded-value trace, not a claim that raw
+spellings are historically intended to be interchangeable.
+
+\section{Concrete semantics, abstraction, and CEGAR polarity}
+
+A byte-complete concrete state for this replay must contain at least
+\[
+ c=(b,p,F,G,R,K,A,\Sigma,W,M,O),
+\]
+where $b$ is the immutable raw byte string; $p$ is parser cursor, stack, token
+span, exact decimal spelling and decoded Number; $F$ is the internally generated
+signed SOURCE table; $G$ is the ordered paid-owner map including fresh wire and
+signed ports; $R$ is the chronological typed record list; $K$ is the checked
+clause table; $A$ is terminal ancestry; $\Sigma$ is the summary; $W$ is the
+once-per-owner plus once-per-RES cost; $M$ is transient parser/checker state; and
+$O$ is rejection or accepted output.  This state authenticates the source,
+owner/facet join, parent typing, order, exact Resolution, final empty clause, and
+cost.  It does not invent AND3, GF(2), LOCAL-CONVERT, branching, context,
+discharge, join, weakening, or deletion transitions absent from this checker.
+
+For the proved alias family define $\alpha$ to retain $F,G,R,K,A,\Sigma,W$ but
+map each owner token to its parsed safe-integer identity class.  Define
+$\gamma(a)$ as all raw byte configurations whose historical JSON parse produces
+that same retained trace.  Parser consumption and every subsequent checker step
+have a matching abstract successor; completed empty-clause acceptance is
+preserved; and
+\[
+  W^{\#}(\alpha(c))=W(c)=39.
+\]
+Thus this local quotient has concrete-step inclusion, completed-refutation
+preservation, and abstract cost no greater than concrete cost.  An abstraction
+that instead demands raw spelling equality omits the concretely accepted
+\texttt{1.0}/\texttt{1e0} path and is not an overapproximation of this checker.
+
+CEGAR therefore cannot declare the alias path spurious: it was replayed in the
+authority and accepted.  A canonical raw-owner lexer is a useful \emph{repaired
+language}, but rejecting this witness changes the accepted language unless
+independent historical authority first requires canonical bytes.  For the full
+calculus, all unauthenticated operations remain MAY transitions at safe charge;
+the local quotient does not complete P2-C3.
+
+\section{Peer reconstruction and hard-family controls}
+
+The current LSPV-1/595 OS rerun passed 315 probes (40 accepts, 275 rejects),
+including 157 nested-mask accepts and six hostiles.  LSPV-2/578 OS rerun covered
+4,320 schedules, reproduced its 28-RES restricted best and two CLI accepts, and
+rejected six semantic/rule hostiles.  LSPV-4/565 independently reran and its new
+W39 certificate was additionally accepted by the unchanged checker here with
+3,981 assertions.  LSPV-3/592 could not be byte-exactly rerun: the required
+/587 packet was recovered, but local patch materialization appended one LF,
+changing the pinned Git-blob hash from
+\texttt{4177ec15a0c7253378d5652a6b13b7152601d300} to
+\texttt{2fc9d03a73bd50a097ec30b5c63d3dbb3a552ca7}; the script correctly stopped
+before proof checking.  No /592 result is promoted from this failed replay.
+
+No established hard-family lower bound was tested because the target was a
+parser/identity boundary and the full mixed dispatcher is still missing.  The
+odd K4 source here is a finite UNSAT control, not an asymptotic hard family.
+Ordinary Resolution-hard Tseitin families remain GF(2)-easy in the declared
+/341 fragment; Extended Resolution/PHP and compact-circuit shortcuts remain
+mandatory controls before any P2-B1 claim.
+
+\section{Literature and transfer classification}
+
+Cook--Reckhow proof systems justify treating the checker relation itself as part
+of the proof-system definition; they do not specify this project's grammar.
+Verified SAT certificate-checking work demonstrates the value of binding the
+checker to the integer sequence representing the formula, but supplies no
+$R_{\mathrm{mix341}}$ rule.  Cousot--Cousot abstract interpretation and
+Clarke--Grumberg--Jha--Lu--Veith CEGAR provide the soundness polarity used here:
+a concretely replayed accepting path is not a spurious abstract counterexample.
+These are directly transferable methodological constraints.  Treating JSON
+canonicalization as automatically verdict-preserving is a failed transfer.
+
+Primary references: S. Cook and R. Reckhow, \emph{J. Symbolic Logic} 44 (1979),
+36--50, DOI \texttt{10.2307/2273702}; P. and R. Cousot, POPL 1977,
+DOI \texttt{10.1145/512950.512973}; E. Clarke et al., \emph{JACM} 50(5)
+(2003), 752--794; RFC 8259; ECMAScript 2026, Sections 21.1.2.5 and Map key
+equality; P. Lammich, \emph{J. Automated Reasoning} 2020, ``Efficient Verified
+(UN)SAT Certificate Checking.''
+
+\section{Corpus reviewed and reconciliation}
+
+\paragraph{CORPUS REVIEWED.} Both root trackers; issue \#3; root \texttt{AGENTS.md},
+\texttt{CODEX.md}, repository research protocol and red-team references; root
+\texttt{main.tex}; current LSPV-1/595, LSPV-2/578, LSPV-3/592, LSPV-4/565 and
+their handoffs/code/raw data; /341 and /386 checker sources; relevant /539--/549
+work, especially LSPV-3/544 owner/context abstraction and LSPV-2/549
+dual-checker noncomposition; current LSPV-5 /497--/506; knot/link and SIL/M22
+five-role handoffs, SIL script and raw census; and primary proof-checking,
+abstract-interpretation, CEGAR and JSON/ECMAScript sources.  A Google Drive
+search returned no competing authoritative artifact.
+
+\paragraph{DUPLICATION / CONTRADICTION AUDIT.} /483--/485 already prove numeric
+aliases at /386 Resolution-parent positions; /416 and /506 cover /341 identifier
+aliases.  /507 does not relabel these as novel.  Its new field-complete evidence
+is the /386 paid-owner declaration-to-DEF-reference join, including safe-integer
+enforcement and facet authentication.  It agrees with /544's warning that owner
+identity must be retained, and with /549's proof that two separate checkers do
+not compose into one mixed calculus.
+
+\paragraph{WHAT CHANGED RELATIVE TO ROOT MAIN.} A new independently replayed
+/386 field-level counterexample and local parsed-value quotient are available.
+No proof-spine status, asymptotic theorem, historical tariff, or tracker node is
+promoted.
+
+\paragraph{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS.} Adopted: exact
+source/owner/facet/parent/cost state, Map-key identity, and concretely replayed
+CEGAR polarity.  Rejected: raw-token injectivity and unproved canonicalization as
+a semantics-preserving refinement.  Retired: nothing.
+
+\paragraph{STALE OR OVERSTATED CLAIMS FOUND.} Any statement that /386 authenticates
+owner identity at the raw-token level is overstated; it authenticates parsed
+safe-integer identity classes.  LSPV-4/565 exists and is substantive, but its
+published Markdown report lacks the AGENTS.md final verification sentinel; a
+sentinel-only retry request is included in the issue handoff without changing
+its science.
+
+\section{Node impact, trackers, and handoff}
+
+Affected open IDs: P2-D1 (raw owner-byte injectivity falsified for /386) and
+P2-C3 (local parsed-value quotient required).  P2-B1 is unchanged because the
+accepted aliases preserve $W=39$; P2-B2/B3 remain separate and unsupported.
+This is neither family failure nor a lower-bound failure.  It is a P2-D1
+accepted-byte grammar result with a local P2-C3 repair.
+
+\textbf{TRACKERS REVIEWED; NO MATERIAL CHANGE.} The already tracked parser-
+quotient barrier covers the status consequence, and this field-specific
+extension does not change a node's OPEN/PROVED status.  Exactly five enabled PNP
+roles remain at :00/:12/:24/:36/:48 America/Los\_Angeles; their titles,
+identities, historical weights, ownership boundaries, and TWO Route A / THREE
+Route B labels are unchanged.
+
+Reproducer:
+\texttt{experiments/review/lspv5\_507\_native386\_owner\_reference\_alias.cjs}.
+Raw ledger:
+\texttt{results/raw/review/2026-11-12\_0948\_LSPV5\_507\_NATIVE386\_OWNER\_ALIAS\_RAW.json}.
+Accepted witness:
+\texttt{results/raw/review/2026-11-12\_0948\_LSPV5\_507\_NATIVE386\_OWNER\_ALIAS\_ACCEPTED.json}.
+
+\paragraph{Next falsifier.} Audit raw owner identity simultaneously across
+declaration, every facet, summary, duplicate-owner freshness and any actual
+single-dispatcher cross-rule port.  Do not infer a mixed proof from /341 and
+/386 independent acceptance.  Require one externally source-bound historical
+single-dispatcher packet before extending the result to AND3/GF(2)/LOCAL-CONVERT
+or branch/context rules.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::NATIVE386_OWNER_REFERENCE_ALIAS507
+\end{document}
