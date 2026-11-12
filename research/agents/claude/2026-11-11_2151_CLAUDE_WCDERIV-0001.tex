@@ -1,0 +1,297 @@
+% CLAUDE REPORT::WCDERIV-0001::2026-11-12T05:51Z
+% !TEX program = xelatex
+% Compiles with XeLaTeX or pdfLaTeX (ASCII source).
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\UNSAT}{\mathrm{UNSAT}}
+\newcommand{\Wb}{\overline W}
+\newcommand{\Sound}{\mathrm{Sound}}
+\newcommand{\status}[1]{\textbf{[#1]}}
+
+\title{CLAUDE WCDERIV-0001\\[2pt]
+\large Worst-case minimum derivation cost: the optimal choice of the fixed system $R$,\\
+and an exact sandwich for the weakest bridge B3}
+\author{CLAUDE (scheduled routine, shared worst-case directive)}
+\date{2026-11-11 21:51 America/Los\_Angeles}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Status.} P versus NP remains \textbf{OPEN}. This run proves no separation. It
+makes the user's ``free optimal reduction sequence'' program exact at its best possible choice
+of fixed system, and shows where its two remaining obligations sit. Additive report: no schedules,
+role allocations, ownership regions, or root \texttt{main.tex} were changed. This is not an LSPV
+run, so it writes no ownership region. Living log:
+\url{research/agents/claude/LIVING_LOG.md}.
+
+\section{Setup (as in the five-role directive of 2026-11-02 12:04)}
+
+Fix a Cook--Reckhow refutation system $R$, i.e.\ a polynomial-time verifier $V_R(F,\pi)$ that is
+sound and complete for $\UNSAT$. Take $\operatorname{cost}_R(\pi)=|\pi|$, or any weighting
+that is polynomially related to it. Define
+\[
+W_R(F)=\min_{\pi:\,V_R(F,\pi)=1}\operatorname{cost}_R(\pi),\qquad
+\Wb_R(N)=\max_{F\in\UNSAT,\ |\langle F\rangle|\le N}W_R(F),
+\]
+together with the two obligations
+\[
+\mathrm{LB}(R):\ \Wb_R(N)\ne N^{O(1)},\qquad
+\mathrm{B3}(R):\ \SAT\in P\ \Longrightarrow\ \Wb_R(N)\le N^{O(1)}.
+\]
+$\mathrm{LB}(R)\wedge\mathrm{B3}(R)$ implies $\SAT\notin P$ \status{PROVED/EXACT, trivial}.
+
+\paragraph{Multisign DAG hypergraph reading.} The minimal reduced logical state of an
+unsatisfiable 3-CNF hypergraph is the empty signed hyperedge $\bot$. The minimal work needed to
+reach it, minimized over all valid reduction DAGs with shared nodes, is $W_R(F)$ for the calculus $R$
+whose moves are the declared hypergraph reductions. Granting free knowledge of the best sequence is
+legitimate for a \emph{lower} bound. The inner minimum is a nondeterministic certificate length,
+so any search for the sequence only adds cost. \status{PROVED/EXACT}. The same freedom is exactly
+what makes B3 nontrivial. A lower bound on certificate length bounds an algorithm only if the
+algorithm's run can be \emph{converted into} a short certificate, and that conversion is B3.
+
+\section{Monotonicity along p-simulation}
+
+\begin{lemma}[\status{PROVED/EXACT}]\label{lem:mono}
+If $S\le_p R$ ($R$ p-simulates $S$), then $\mathrm{B3}(S)\Rightarrow\mathrm{B3}(R)$ and
+$\mathrm{LB}(R)\Rightarrow\mathrm{LB}(S)$.
+\end{lemma}
+\begin{proof}
+$W_R(F)\le q(|F|+W_S(F))$ for a fixed polynomial $q$, so $\Wb_R(N)\le q(N+\Wb_S(N))$. Both
+claims follow.
+\end{proof}
+
+So B3 gets easier, and LB harder, as $R$ moves up the simulation order. The two obligations pull in
+opposite directions.
+
+\section{The canonical extremal system $R_T$}
+
+\begin{definition}
+Fix a recursively axiomatized theory $T$ (e.g.\ PA or ZFC) that is sound for $\Pi^0_1$ sentences.
+An $R_T$-refutation of $F$ is a tuple $\langle S,c,\sigma,\pi,1^{m}\rangle$, where:
+\begin{itemize}
+\item $S$ is a verifier code;
+\item $\sigma$ is a $T$-proof of the $\Pi^0_1$ sentence $\Sound(S,c)$, ``for all $G,\rho$: if $S$
+accepts $(G,\rho)$ within $(|G|+|\rho|+2)^c$ steps, then $G$ is unsatisfiable'';
+\item $S$ accepts $(F,\pi)$ within $(|F|+|\pi|+2)^c$ steps;
+\item $m=(|F|+|\pi|+2)^c$.
+\end{itemize}
+\end{definition}
+
+The padding $1^m$ makes verification linear-time in the proof length. Checking $\sigma$ is
+polynomial in $|\sigma|$. Soundness of $R_T$ follows from the $\Pi^0_1$-soundness of $T$.
+Completeness already holds through the Resolution entry with its constant-size $\sigma$. So $R_T$ is a
+Cook--Reckhow system \status{PROVED/EXACT}. This is the standard Krajíček--Pudlák construction
+\cite{KP89}, restated in the directive's notation.
+
+\begin{theorem}[Extremality \status{KNOWN THEOREM, KP89; restated EXACT}]\label{thm:ext}
+For every clocked verifier $(S,c)$ with $T\vdash\Sound(S,c)$, $S\le_p R_T$. The overhead is
+the fixed constant $|\langle S,c,\sigma\rangle|$ plus the padding $(|F|+|\pi|+2)^c$. Consequently:
+\begin{enumerate}
+\item B3 for any $T$-provably sound system implies $\mathrm{B3}(R_T)$;
+\item $\mathrm{LB}(R_T)$ implies LB for every $T$-provably sound system. This includes Resolution,
+Cutting Planes, Polynomial Calculus, bounded-depth Frege, Frege, Extended Frege, and the
+historical mixed calculus $R_{\mathrm{mix341}}$, provided its soundness is $T$-provable.
+\end{enumerate}
+\end{theorem}
+
+So $R_T$ is the \emph{optimal} fixed system for the user's program among $T$-sound systems. It
+minimizes the bridge obligation, and every other admissible choice either has a harder bridge or a
+lower bound already implied by $\mathrm{LB}(R_T)$.
+
+\begin{theorem}[Exact B3 sandwich \status{PROVED/EXACT}]\label{thm:sand}
+Let $T^{+}=T+\text{``}T\text{ is }\Pi^0_1\text{-sound''}$. Then
+\[
+\bigl[\SAT\in P\Rightarrow\exists\ T\text{-provably sound p-bounded }S\bigr]
+\ \Longrightarrow\ \mathrm{B3}(R_T)\ \Longrightarrow\
+\bigl[\SAT\in P\Rightarrow\exists\ T^{+}\text{-provably sound p-bounded }S\bigr].
+\]
+\end{theorem}
+\begin{proof}
+The left arrow is Theorem \ref{thm:ext}(1). For the right arrow, $T^{+}$ proves
+$\Sound(R_T,c_0)$ for the linear clock $c_0$ of $R_T$, so $S=R_T$ is a witness.
+\end{proof}
+
+\begin{corollary}[\status{PROVED/EXACT}]\label{cor:alg}
+If some polynomial-time algorithm $A$ (clock $n^k$) decides $\SAT$ and $T\vdash$ ``$A$ is correct'',
+then $\Wb_{R_T}(N)\le O(N^{k'})$. Contrapositive:
+$\mathrm{LB}(R_T)\Rightarrow$ no polynomial-time SAT algorithm has $T$-provable correctness.
+\end{corollary}
+\begin{proof}
+Let $S_A(F,1^{|F|^k})$ accept iff $A$ outputs UNSAT within $|F|^k$ steps. Then $T$ proves
+$\Sound(S_A,k)$, $S_A$ is p-bounded, and Theorem \ref{thm:ext} applies.
+\end{proof}
+
+\paragraph{Exact residual obligations at the optimal choice.}
+\begin{itemize}
+\item \textbf{LB-side.} $\mathrm{LB}(R_T)$ \status{OPEN}. By Theorem \ref{thm:ext}(2), it implies
+superpolynomial Extended Frege lower bounds. No such bound is known: only small polynomial
+lower bounds are known for Frege and EF, and the 2025--2026 literature surveyed below gives
+none. It is also stronger than ``$R_T$ is not p-optimal'' type statements tied to Pudlák's
+conjectures \cite{Pud17}.
+\item \textbf{Bridge-side.} The \emph{provability gap} \status{OPEN}. This is the world where
+$\SAT\in P$ but every p-bounded system, including every correct polynomial SAT decider viewed as a
+system, has soundness unprovable in $T$ (and in $T^{+}$). By Theorem \ref{thm:sand}, B3 fails for
+$R_T$ only inside this world. By Lemma \ref{lem:mono} and Theorem \ref{thm:ext}, \emph{no other
+$T$-provably sound choice of $R$ can do better}. The gap cannot be removed by changing the
+calculus. It needs an argument about formal provability of correctness of fast SAT algorithms.
+\end{itemize}
+
+This is consistent with, and sharpens, the corpus finding (LSPV-5/376, LSPV-1/337). That finding
+falsifies a bridge requiring \emph{every} correct decider to be $T$-provable, but leaves open the
+existential version. Theorem \ref{thm:sand} locates the existential version between two exact
+provability statements.
+
+\section{Where the two halves cross in the hypergraph hierarchy}
+
+\begin{proposition}[\status{PROVED/EXACT} from known theorems]\label{prop:cross}
+Suppose the reductions of the multisign DAG hypergraph are hyperedge resolution, weakening,
+subsumption and node sharing, with no new variables. Then $R_{\mathrm{hyp}}\le_p\mathrm{Res}$.
+Hence $\mathrm{LB}(R_{\mathrm{hyp}})$ holds unconditionally: $2^{\Omega(n)}$ for random 3-CNF
+\cite{CS88} and for Tseitin formulas on expanders \cite{Urq87}, both with $N=\Theta(n\log n)$. As a
+result, $\mathrm{B3}(R_{\mathrm{hyp}})\Leftrightarrow\SAT\notin P$.
+\end{proposition}
+
+The last equivalence repeats the corpus firewall LSPV-1/398 for Resolution; it is \emph{not}
+progress. Adding auxiliary signed hyperedges that define new variables (extension) makes the
+calculus equivalent to Extended Resolution, which is p-equivalent to EF. Here LB is OPEN, while
+B3 is strictly easier (Lemma \ref{lem:mono}). The two obligations thus trade places between
+Resolution and EF. No currently known system has a proved LB together with a proved or plausible
+B3: weak systems have $\mathrm{B3}\equiv$ the full problem, and strong systems have LB beyond the
+state of the art. \status{PROVED/EXACT as a classification of known systems; no claim about
+unknown intermediate systems.}
+
+\section{Test of the directive's priority 4 (alternative reasoning)}
+
+The hard families of Proposition \ref{prop:cross} do \emph{not} survive stronger reasoning, so a
+hypergraph-only lower bound must never be reported as an $R_T$ bound:
+\begin{itemize}
+\item Tseitin formulas have polynomial-size refutations in Polynomial Calculus over
+$\mathbb{F}_2$ (Gaussian elimination) and in Frege;
+\item PHP has polynomial Cutting Planes refutations;
+\item random 3-CNF is OPEN for Frege.
+\end{itemize}
+\status{KNOWN THEOREM; hostile control passed}: the report does not transfer them.
+
+\section*{Barrier-transfer literature preflight}
+
+The obstacles are (i) superpolynomial lower bounds for EF-or-stronger, and (ii) the provability
+gap. Classification:
+\begin{itemize}
+\item \textbf{Directly transferable theorem:} Krajíček--Pudlák reflection/simulation
+\cite{KP89}, and Cook's PV / EF correspondence \cite{Coo75}.
+\item \textbf{Useful analogy needing a new theorem:} Gödel-style obstruction theory. The finite
+reflection separator of LSPV-1/337 shows the gap is real for \emph{specific} deciders. A transfer
+theorem would have to show that \emph{some} correct fast decider is $T$-provable whenever any is.
+\item \textbf{Misleading or failed transfer:} the PQ ledger item 5 (black-box extraction of the
+resource from an arbitrary solver). An answer-only black box yields no certificate for UNSAT
+answers, so it gives no B3 without the provability gap being closed. Classified FAILED TRANSFER.
+Items 1--4 and 6--7 are not relevant this run.
+\end{itemize}
+
+\section*{Literature checked this run (2025--2026)}
+\begin{itemize}
+\item Egidy--Glaßer (STOC 2025) build oracles showing that positive answers on the existence of
+p-optimal proof systems for SAT/TAUT-type sets cannot be proved by relativizing methods. So
+relativizing proofs cannot settle the existence question that Theorem \ref{thm:sand} sits next to.
+\item Monroe (arXiv 2507.13576), on characterizing p-simulation between theories. Version~3
+\emph{withdraws} the claim that its Theorem~3.3 implies that no p-optimal system exists. Flagged
+as a \textbf{stale claim}: do not cite the earlier version.
+\item Alekseev, ``A lower bound for Polynomial Calculus with extension rule'' (Theory of Computing
+22, 2026). The system simulates EF, but per its own discussion this does not yield an EF lower bound
+for CNF tautologies. It is not an $\mathrm{LB}(R_T)$ input.
+\item ``The Proof Analysis Problem'' (FOCS 2025; arXiv 2506.16956) shows that analysing EF proofs is
+NP-complete. This is a search or verification fact, irrelevant to the free-sequence minimum.
+\item Fleming--Grosser--Pitassi--Robere, ``Provable reductions in TFNP'' (ECCC TR26-109).
+EF-based systems for TFNP reductions; not an $\mathrm{LB}(R_T)$ input.
+\end{itemize}
+None of these establishes a superpolynomial EF or Frege lower bound.
+
+\section*{CORPUS REVIEWED}
+\begin{itemize}
+\item \texttt{AGENTS.md}; the five-role worst-case directive
+(\texttt{research/coordination/2026-11-02\_1204\_WORST\_CASE\_MINIMUM\_DERIVATION\_FIVE\_ROLE\_REFOCUS.md});
+the recent knot/link handoff (noted, not used).
+\item Codex reports 2026-11-11 1203, 1331, 2017 and 2035: the B3 assumption audit, transfer
+recovery and rate amplification, and adaptive collision and compatibility.
+\item LSPV-1/336, /337, /354, /364 and /398 (clocked optimality, finite reflection, ER-only
+route, quantifier firewall, Resolution back-translation firewall), and LSPV-5/376 (strict
+reflection handoff).
+\item Prior CLAUDE reports (world ledger, TPORT, ONETAPE).
+\end{itemize}
+Repository-wide searches covered B3 equivalence statements, ZFC and $T$-provability, and
+Haken/Tseitin.
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+\begin{itemize}
+\item \emph{Duplicates:} Proposition \ref{prop:cross}'s equivalence for Resolution is
+LSPV-1/398. Corollary \ref{cor:alg} is the KP89/Cook reflection idea already used in
+LSPV-1/336--361, here applied to the canonical $R_T$.
+\item \emph{New in this run:} the extremality framing of $R_T$ as the optimal fixed $R$ for the
+directive (Lemma \ref{lem:mono} + Theorem \ref{thm:ext}) and the two-sided sandwich
+(Theorem \ref{thm:sand}). Repository search found no prior statement of the $T$/$T^{+}$ sandwich.
+\item No contradictions were found with the corpus.
+\end{itemize}
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Nothing in root \texttt{main.tex} was edited; this is a non-LSPV, additive report. Suggested
+inputs for LSPV-5 synthesis: the sandwich (Theorem \ref{thm:sand}) and the crossing
+classification (Proposition \ref{prop:cross}).
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{itemize}
+\item \emph{Adopted:} the directive's definitions; LSPV-1/398; and LSPV-5/376's scope
+(the existential B3 is not falsified).
+\item \emph{Rejected:} treating any hypergraph-only (Resolution-strength) lower bound as
+evidence for B3 progress.
+\item \emph{Retired:} none.
+\end{itemize}
+
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+Monroe arXiv 2507.13576 versions~1--2 (the claim of no p-optimal system, withdrawn in v3). No
+overstated claim was found in the corpus files reviewed.
+
+\section*{Status table}
+\begin{tabular}{ll}
+Free-sequence lower-bound principle & PROVED/EXACT\\
+Lemma \ref{lem:mono} (monotonicity) & PROVED/EXACT\\
+Theorem \ref{thm:ext} (extremality of $R_T$) & KNOWN THEOREM (KP89), restated EXACT\\
+Theorem \ref{thm:sand} (B3 sandwich) & PROVED/EXACT\\
+Corollary \ref{cor:alg} & PROVED/EXACT\\
+Proposition \ref{prop:cross} & PROVED/EXACT from known theorems\\
+$\mathrm{LB}(R_T)$ & OPEN\\
+$\mathrm{B3}(R_T)$ (provability gap) & OPEN\\
+P versus NP & OPEN
+\end{tabular}
+
+\section*{Single next target}
+Decide whether the provability gap can be shrunk \emph{existentially}. Given a correct
+polynomial-time SAT decider $A$ with unknown correctness proof, construct, uniformly from $A$'s
+code, a polynomial-time decider $A'$ and a $T^{+}$-proof of its correctness, or find an oracle or
+model obstruction to doing so. Egidy--Glaßer-style oracles are the first hostile control. A
+positive result would make B3 for $R_T$ unconditional relative to $T^{+}$. That would leave the
+user's program exactly equivalent to $\mathrm{LB}(R_T)$: a superpolynomial lower bound for the
+strongest provably sound proof system.
+
+\begin{thebibliography}{9}
+\bibitem{KP89} J.~Krajíček, P.~Pudlák. Propositional proof systems, the consistency of first
+order theories and the complexity of computations. \emph{J.\ Symb.\ Logic} 54(3), 1989.
+\bibitem{Coo75} S.~Cook. Feasibly constructive proofs and the propositional calculus. STOC 1975.
+\bibitem{Pud17} P.~Pudlák. Incompleteness in the finite domain. \emph{Bull.\ Symb.\ Logic} 23(4), 2017.
+\bibitem{CS88} V.~Chvátal, E.~Szemerédi. Many hard examples for resolution. \emph{J.\ ACM} 35, 1988.
+\bibitem{Urq87} A.~Urquhart. Hard examples for resolution. \emph{J.\ ACM} 34, 1987.
+\bibitem{EG25} F.~Egidy, C.~Glaßer. Oracle constructions concerning p-optimal proof systems. STOC 2025 (title abbreviated; verify before citing).
+\end{thebibliography}
+
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WCDERIV-0001
