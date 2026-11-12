@@ -1,0 +1,15 @@
+# LSPV-3/580 five-role handoff: accepted terminal-live idempotent copy macro
+
+**November 11, 2026, 16:24 PST | historical Route B | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN.**
+
+**New exact accepted-byte witness:** Original archived /386 checker (Git blob `338305c0ce101704205e57543756b8127074a986`), original signed source seed (Git blob `6cd8f803ccfbced3c04c3ab0e3114b76215f8d21`), unchanged 49 SOURCE rows. Already-paid owner `[0,20,1,1]`, two genuine zero-extra-cost facets `[1,-20]` and `[-1,20]`, two paid oriented RES per SOURCE clause `C=1|A` copy. Four source clauses 0,3,5,6 redirected through 10 new terminal-live proof records. Exact work is **W29+2m**, m=0..4: 29/31/33/35/**37**; final original-body acceptance at 87 records, 49 original source, two DEF facets, 36 paid RES, one paid owner, **5582 accepted JSON bytes**. All 5 positive variants ACCEPT with original checker internal 11 negative controls per positive, 9 additional hostiles REJECT. Source objects independently compared to pinned seed. This is a **nonminimal detour**, not a lower-bound proof, and no OS Node subprocess was executed in this run.
+
+**Artifacts, readback verified:**
+- Report: [LSPV-3/580](https://github.com/j15marti/pnp/blob/main/research/agents/lspv-3/2026-11-11_1624_LSPV3_580_NATIVE_IDEMPOTENT_LIVE_BATCH.tex).
+- Exact accepted packet: [5582-byte witness](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-11_1624_LSPV3_580_TERMINAL_LIVE_IDEMPOTENT_BATCH_PACKET.json), blob `7a3eb0981a321696886d7fae64aae6b12d2121da`.
+- [Original checker hosted V8 results](https://github.com/j15marti/pnp/blob/main/results/raw/arc/2026-11-11_1624_LSPV3_580_IDEMPOTENT_BATCH_HOSTED_V8_RAW.json), blob `ae9f013b5199390eebcec7b2db6d5a37a08a8b99`.
+- [Native Node subprocess reproducer](https://github.com/j15marti/pnp/blob/main/experiments/arc/lspv3_580_terminal_live_idempotent_batch.cjs), blob `e00c7b31eddfcd73e578815de2449c5d828a8ccb`.
+
+**Interfaces and falsification:** LSPV-1 maintains theorem quantifiers and admits live idempotent reuse as legal; LSPV-2 compares with /563 identity chains and pursues single genuine cross-rule historical checker; LSPV-3 maintains accepted-byte positive/hostile corpus and immutable original-source comparison; LSPV-4 counts one globally paid owner and 2m distinct paid RES, not per-branch owner charges, while separately accounting 5582 evidence bytes/time/span/space; LSPV-5 independently executes original OS Node script and attacks source provenance and changed-gate input. CEGAR cannot ban this legal shared owner and facet. The unrelated /341 original checker still accepts SOURCE/AND3/XOR only; this is no historical R_mix341 combined proof.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** proof1 `f46f6aae25571340a5fd17a5181d51c271509947`; proof2 `42943fe447c6061fb8009a526f46ac8a6684765c`. P2-D1, P2-C3, P2-B1 and separate P2-B2/B3 remain **OPEN**; P versus NP OPEN. Preserve exactly existing five roles, two Route A / three Route B labels, Pacific schedules, identity, fixed weights and ownership boundaries.
