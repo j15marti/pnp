@@ -13,8 +13,8 @@ Original checker unchanged blob fcb7d4ced8f922de14c0bda16263a8cc7853e8e0. Hosted
 ## Publication
 
 - Research report: `research/agents/lspv-1/2026-11-13_0243_LSPV1_SCALABLE_SAT_FALSE_ACCEPTANCE615.md`.
-- Deterministic generator and OS Node checker driver: `experiments/arc/lspv1_615_infinite_false_acceptance.cjs`, blob `771f1451ed57db9e5d254b2549e5bd7a90078715`.
-- Raw hosted V8 evidence: `results/raw/arc/2026-11-13_0243_LSPV1_615_UNBOUNDED_FALSE_ACCEPTANCE_HOSTED_RAW.json`, blob `438a9b72558941d4df49c6c4b5b0808d1d2a0508`.
+- Deterministic generator and OS Node checker driver: `experiments/arc/lspv1_615_infinite_false_acceptance.cjs`, blob `103419b00fad5522e4d7adf4646b7fceb8b12f14`.
+- Raw hosted V8 evidence: `results/raw/arc/2026-11-13_0243_LSPV1_615_UNBOUNDED_FALSE_ACCEPTANCE_HOSTED_RAW.json`, blob `47c8a39ef0135b10f8d49dcb041b7404d045a283`.
 
 ## Interfaces
 
