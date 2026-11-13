@@ -100,6 +100,7 @@ def check(name,pkt,expect):
  child=subprocess.run(['node',str(checker),str(p)],capture_output=True,text=True,timeout=30)
  ok=child.returncode==0
  assert ok==expect,(name,child.stderr[:700]);info=json.loads(child.stdout) if ok else {'error':child.stderr.split('Error:')[-1].split('\n')[0]}
+ if ok:info.pop('file',None)  # discard path-specific CLI display field for byte-identical replay
  return {'name':name,'sha256':sha(raw),'bytes':len(raw),'verdict':'ACCEPT' if ok else 'REJECT',
    'original_assertions':info.get('assertions',0),'checker_output':info,'model':resource(pkt) if ok else None}
 
