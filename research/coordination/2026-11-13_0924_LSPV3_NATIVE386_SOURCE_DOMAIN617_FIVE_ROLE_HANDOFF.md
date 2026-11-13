@@ -16,4 +16,4 @@
 
 Report `research/agents/lspv-3/2026-11-13_0924_LSPV3_617_NATIVE386_SOURCE_DOMAIN_SOUNDNESS_NO_GO.md`; code `experiments/arc/lspv3_617_native386_source_domain.cjs`; raw ledger `results/raw/arc/2026-11-13_0924_LSPV3_617_NATIVE386_SOURCE_DOMAIN_HOSTED_RAW.json`.
 
-**TRACKERS REVIEWED; NO MATERIAL CHANGE.** All five established titles/identities, schedules, Pacific zone, fixed weights, ownership and 2 Route A/3 Route B labels remain unchanged. P2-D1 -> P2-C3 -> P2-B1 still OPEN; B2/B3 separately OPEN. No automations modified.
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** Private scheduler verification confirmed exactly five current PNP research roles enabled, each on the preserved America/Los_Angeles hourly schedule. Older legacy PNP tasks remain disabled. All five established titles/identities, schedules, fixed weights, ownership and 2 Route A/3 Route B labels remain unchanged. P2-D1 -> P2-C3 -> P2-B1 still OPEN; B2/B3 separately OPEN. No automations modified.
