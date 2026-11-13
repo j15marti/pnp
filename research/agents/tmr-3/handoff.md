@@ -1,3 +1,27 @@
+# TMR-3 latest handoff | 2026-11-13 15:27 PST | BATCHED-SEQUENTIAL-PARETO-FRONTIER003
+
+**Status:** NEW TMR-3, no schedule/task mutations. Upper construction CANDIDATE pending TMR-5 independent review; previous TMR-3/002 full crossing lower bound PROVED/RESTRICTED after independent TMR-5 review; finite regression COMPUTATIONAL. P versus NP OPEN.
+
+**New scoped result:** For exact, recognizable strict proper-3CNF equality inputs $E_n(a,b)$, $L_n=13n+2+24n(1+\max(1,\lceil\log_2(5n)\rceil))$, and any fixed efficiently computable chunk function $\lceil c\log n\rceil\le\sigma(n)\le n$, ONE fixed total all-input-correct sequential-input-head machine authenticates the source, checks $n$ equality sign pairs in batches of $\sigma(n)$, and falls back to paid exhaustive SAT on nonmembers. Same family-input trace $T=O(L_n\lceil n/\sigma(n)\rceil)$, $S=O(\sigma(n))$ (including work buffers, counters, parser and input rewind costs). TMR-3/002's independently reviewed same-input lower product $T(S+1)=\Omega_A(L_n n)$ implies worst-case family time $\Omega_A(L_n n/\sigma(n))$ for ANY fixed correct machine satisfying a family-wide $O(\sigma(n))$ workspace budget. Thus the restricted family's entire logarithmic-to-linear work-space frontier is matched up to constants. This extends the known $\sigma=n$ matching upper, not the historical Hennie/Cobham/Santhanam crossing theory. It cannot transfer to indexed input or prove P != NP.
+
+**Verified report:** research/agents/tmr-3/2026-11-13_1527_TMR3_BATCH_SEQUENTIAL_PARETO_FRONTIER003.md, blob 3769680d76b767b924e16aeded5dc992d66a1e7e.
+**Verified independent V8-executable source:** experiments/tmr/tmr3_batch_frontier003.cjs, blob 25c36eb3a9daf2d1197b4e3419c863390692afff.
+**Verified immutable raw:** results/raw/tmr/2026-11-13_1527_TMR3_BATCH_FRONTIER003_RAW.json, blob 672425942fd73eefef8c4dc1e4bce9e25212de73.
+
+**ACTUALLY EXECUTED:** 1,364 exhaustive n<=5 original source pairs and 120 seeded n=6,8,16,32,64,128 pairs, 6,008 batch executions, 40,428 assertions, 4,452 malformed controls and 1,484 local sign-corruption controls, zero failures. V8 emulated 210,294,700 forward source-bit visits and 198,630,820 paid reverse moves. This was not a physical multitape TM emulator or OS Node CLI. Full preflight, report validator and LaTeX compiler unexecuted. Code and raw were published/read back exactly.
+
+**Primary literature checked:** Hennie 1965 original off-line single-tape crossing sequences, distinct machine model. Fortnow-Lipton-van Melkebeek-Viglas JACM 2005 original Theorem 1.1, random-access SAT exclusion only for simultaneous $T=n^c$, $S=n^d$ with $c<\varphi$, $d>0$ appropriately chosen, NOT all polynomial workspace. Prior original project LSPV-5/167 and Claude ONETAPE-0001 read.
+
+**Root scope:** Full proof1.txt and genuine 1,051,196-char proof2.txt Git blob inspected; full root main.tex 2,487,713 chars recovered by Git blob. TRACKERS REVIEWED; NO MATERIAL CHANGE. Existing TMR-3 main.tex ownership region left unchanged until candidate peer review and synthesis. Superseding directive rechecked; no scheduled tasks/agents modified.
+
+**Peer requests:** TMR-5 independently review concrete streaming grammar checker $O(L_n)$ transitions with fixed tapes and work-head movements, and the use of TW2 under an on-family workspace cap. TMR-1 audit fixed-program quantifiers and comparison of all simultaneous time-space pairs; TMR-2 test cheap XOR/product alternate summaries; TMR-4 model every step and terminal label in an abstract cost transition graph.
+
+**ONE next target:** identify a true all-algorithm, representation-independent global-consistency charge stronger than physical input transport, or falsify a proposed charge with compact algebra, caching, shared computation or indexed reading. The universal superpolynomial arrow remains OPEN.
+
+END_OF_HANDOFF::TMR3::2026-11-13_1527_PST
+
+---
+
 # TMR-3 handoff | 2026-11-13 13:35 PST
 
 **Current owner:** NEW TMR-3 Time-Space Tradeoffs, 2026-11-13 five-role replacement directive, j15marti/pnp main. **P versus NP OPEN.** No schedule changes or legacy role reuse.
