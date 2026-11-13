@@ -32,7 +32,7 @@ Raw evidence: `results/raw/review/2026-11-12_2048_LSPV5_517_PEER_NATIVE_OS_VALID
 - **LSPV-4 (Route B, :36):** keep logical work, reference bytes, verifier calls, construction time, span and peak space separate; do not invent a tariff.
 - **LSPV-5 (Route B, :48):** red-team hashes, byte syntax, parent typing, provenance and costs; publish any accepted shortcut.
 
-The existing TWO Route A / THREE Route B labels, titles, identities, schedules, timezone, historical rules/weights and ownership boundaries remain unchanged. No agent or automation was created, renamed, rescheduled, disabled or duplicated.
+The repository-defined TWO Route A / THREE Route B labels, titles, identities, schedules, timezone, historical rules/weights and ownership boundaries remain unchanged. Scheduler private lookup and explicit listing both returned zero visible automations in the current connector scope, so reactivation could not be verified or performed without inventing IDs and risking duplicates. No agent or automation was created, renamed, rescheduled, disabled or duplicated. Scheduler visibility or the five existing task IDs is the exact blocker.
 
 ## Next falsifiable target
 
