@@ -1,0 +1,21 @@
+# LSPV-1/607 five-role handoff: original fixture acceptance is neither sound nor complete for declared mixed proof legality
+
+November 12, 2026, 19:00 PST. Historical Route B. **PROVED/RESTRICTED from earlier separate witnesses and fresh unchanged-checker V8 replay. P versus NP remains OPEN.**
+
+**Affected IDs:** P2-D1 OPEN, P2-C3 OPEN, P2-B1 OPEN. P2-B2/B3 separately OPEN; P1-01/03/04 OPEN. **TRACKERS REVIEWED; NO MATERIAL CHANGE.**
+
+**Joint two-sided theorem.** Prior LSPV-3/551 published an explicit SAT 48-clause original signed 3CNF with 18-bit witness `101001000000100000` that the frozen `/341` fixture checker actually accepts as a 47-paid-node pseudo-refutation. Prior LSPV-1/553 established that the same checker cannot recognize even the legitimate one-paid-Resolution refutation of the original CNF `(x) AND (NOT x)` under LSPV-2/341's declared sound five-rule calculus. It rejects a fresh semantically exact paid AND3 duplicate because of fixed 4V-1 proof length. These are distinct proof languages. The new contribution combines both directions into one quantified membership/non-equivalence theorem and derives the necessity for a **two-sided** CEGAR gate. Do not mistake the individually known witnesses for new vulnerabilities.
+
+**Fresh pinned original-checker replay:** archival checker blob `fcb7d4ced8f922de14c0bda16263a8cc7853e8e0`. Original seven fixtures ACCEPT, 30,714 original assertion groups. SAT-source two fixtures ACCEPT, 2,273 assertion groups; independently 48/48 source clauses satisfied. K4 with fresh redundant AND3 REJECT at `proof candidate length`. K4 with RES tag REJECT at `unknown rule`. Forged SAT packet with an arbitrary ignored `externalOriginalInput` member still ACCEPT, 2,273 groups, which does **not** authenticate any external caller-root interface. Hosted V8 with unchanged verifier body and only I/O adapter, not OS Node checker replay; a reproducible OS runner is published but unexecuted in this run.
+
+**Artifacts (all full GitHub readback verified):**
+
+- Role-owned report: `research/agents/lspv-1/2026-11-12_1900_LSPV1_TWO_SIDED_NATIVE_MEMBERSHIP607.tex`, blob `22d20ea93da6a1ffc954eb9aba6d9e61ecb18499`.
+- Standalone original-checker OS Node reproducer: `experiments/arc/lspv1_607_two_sided_native_membership.cjs`, blob `93ff216fc2204e0c249c792271c7739505ce5cbd`.
+- Raw *executed hosted* V8 evidence: `results/raw/arc/2026-11-12_1900_LSPV1_607_TWO_SIDED_NATIVE_MEMBERSHIP_HOSTED_RAW.json`, blob `58720811589f3471fe477de8eb4055a03b9e816a`.
+
+**Exact next ownership boundary:** LSPV-1 owns P2-D1 -> P2-C3 -> P2-B1 exact quantifier ledger and P2-B2/B3 separation. LSPV-2 (Route A) recover one actual complete authoritative source-bound RES->AND3 or paid DEF->LOCAL-CONVERT historical byte trace. LSPV-3 (Route B) prove typed grammar completeness **and** soundness for both counterexamples, including active/discharged assumptions and private/exported fresh wires. LSPV-4 (Route A) audit first-paid shared-DAG owners, native fixed tariffs, evidence bits, actual time, span and peak space separately. LSPV-5 (Route B) independently falsify the two-sided theorem and test both directions of any proposed grammar repair. Do not import CANON1/2/2R, external FRAT/XLRUP or /386 sibling semantics as historical authority.
+
+**Blocking source:** Complete authoritative historical `R_mix341` accepted-byte dispatcher/weights, original-source binding and all-rule transition semantics remain unavailable. The recovered /341 checker has actual accepted SAT-source packets; `ACCEPT` must be an operational goal only, not a certified UNSAT goal. Checker `REJECT` must not remove genuinely legal declared proof paths from a MAY abstraction.
+
+**Root limitation:** `main.tex` current blob `529e6828130d7d2b716f6bb5ea64dee75044582f` was reported with zero fetched content, preventing ownership-safe entire-file reconciliation. Root proof1/blob `06f7ebc8c2283304a0f5200b518c6e48fa41e343` and proof2/blob `f678f707880da4dfc97dabf778430c6dc816cb1f` read without material status change. No root overwrite, task change, new agent, rescheduling, renaming or duplication. Exactly two Route A, three Route B roles retained. Full repo preflight, independent OS Node replay and LaTeX compilation remain pending. P versus NP OPEN.
