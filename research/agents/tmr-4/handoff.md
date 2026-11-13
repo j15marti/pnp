@@ -1,3 +1,26 @@
+# TMR-4 latest handoff | 2026-11-13 15:40 PST | PROGRAM-BLIND-POTENTIAL-CEILING004
+
+**New CANDIDATE theorem, pending TMR-5 audit:** For a fixed valid encoded input $x$ with bit length $L$, any nonnegative MAY graph with a *common initial state $s_x$ independent of the particular correct total deterministic SAT decider*, preserving every concrete transition via abstract paths of cost no greater than concrete cost and preserving correct terminal labels, has **every admissible edge potential bounded by $\Phi_x(s_x)\le L+1$**. Proof: choose the different fixed correct total machine $B_x$ that hardwires $x$ and its true answer in $L+O(1)$ finite control states, scans $x$ and its endmarker in $L+1$ transitions, and runs a paid total exhaustive fallback on any nonmatch. Telescope across this **genuine** concrete trace. This is NOT a uniform polynomial SAT algorithm and NOT an all-machine P != NP barrier; the theorem does **not** apply to program-dependent initial abstract states. TMR-1/001 warned about the underlying per-input hardcoding; /004 makes the all-transition input-common potential obstruction precise.
+
+**Independent TMR-4 second review:** TMR5-SF2's $\Theta(\log K)$ deferred suffix construction is PROVED/RESTRICTED for the declared-length strict proper 3-CNF grammar. At most $K$ virtual completions are fully paid; valid-only fast-runtime assumptions require pre-parsing malformed virtual completions; the two last candidate labels are fetched and cached *before* the last physical input read. Endmarker check and terminal output require only $O(1)$ additional transitions. This is a time-**phase** counterexample, not a bound on total work. Physical TM simulator not executed.
+
+**Published and exact GitHub readback verified:**
+- Report: research/agents/tmr-4/2026-11-13_1540_TMR4_PROGRAM_BLIND_POTENTIAL_CEILING004.md, blob 3cf5828901e0aa2b051c23fe901c9830447680e4
+- Hosted V8-executed JS: experiments/tmr/tmr4_program_blind_ceiling004.cjs, blob 0fad5f8df5ef596ca36665a55b88430c4792cba8
+- Immutable raw data: results/raw/tmr/2026-11-13_1540_TMR4_PROGRAM_BLIND_CEILING004_RAW.json, blob 796d17c507c1bdb14399253f933ccf438d2a0f4f
+
+**COMPUTATIONAL:** 45 valid source controls, 45 on-target finite-control matches, 180 probes, 3,888 MAY-edge checks, 45 hostile zero-cost shortcut falsifiers, 1,976 paid virtual completion classifications, 47 suffix lookup checks, two strict proper opposite-label last-bit siblings. Zero failures. Independently executed local Python, **not published**, verified 60 source tests and 2,504 virtual completions. No physical TM simulator, OS Node CLI, repository preflight or LaTeX compile.
+
+**Corpus/tracker state:** Recovered full proof1.txt (28,714 chars), proof2.txt (1,051,196 authentic blob), main.tex (2,487,713 authentic blob), current issue #3, five handoffs, original TMR-4/001 and /003, TMR-5/002, TMR-2/004 and historical LSPV-5/510/511 accepted-byte counterexamples. Read 12:49 PST directive first and rechecked. TRACKERS REVIEWED; NO MATERIAL CHANGE. P versus NP OPEN. No task/schedule mutations.
+
+**Peer request:** TMR-5 test the quantifier/initial-state identity in PB4, genuine hardwired comparison machine's fallback and exact telescoping including zero-cost edges. TMR-1 challenge any attempted unjustified transfer from the machine-blind no-go to program-dependent abstractions. TMR-3/2 seek candidate processing charges not broken by cheap affine families and temporal speculation.
+
+**Next:** design a sound **program-dependent** state abstraction with every-step cost simulation for arbitrary A that charges genuine whole-trace computational work and is not defined circularly from A's unknown runtime.
+
+END_OF_HANDOFF::TMR-4::2026-11-13_1540_PST
+
+---
+
 # TMR-4 handoff | 2026-11-13 13:36 PST
 
 **Role:** NEW TMR-4 Cost-Sound Abstraction. No schedule changes and no legacy LSPV role adoption. **P versus NP OPEN.**
