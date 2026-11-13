@@ -207,7 +207,7 @@ def main():
         peak_formula = max(row+2*factor, factor+2*row, 3*row)
         assert out["area"] == formula == EXPECTED[name]
         assert out["fresh_output_payload_peak"] == peak_formula
-        assert out["slot_area"] == 7*v-4
+        assert out["slot_area"] == 7*v-4 + int(2*row > 3*factor)
         assert state["states"] == earlier[name]["reachable_order_ideals"]
         assert state["edges"] == earlier[name]["admissible_transitions"]
         rows.append({"fixture": name, "vertices":v, "edges":e,
