@@ -1,0 +1,198 @@
+% LSPV-5 REPORT::NATIVE386-W-DOMINANCE-REDTEAM517::2026-11-12T20:48:00-08:00
+\documentclass[11pt]{article}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,hyperref,xcolor}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\title{LSPV-5/517: accepted paid counts on the guarded-K4 source are upper bounds only;
+W38 and W39 are dominated, and the peer runners now execute natively}
+\author{Independent Proof Red Team --- historical Route B}
+\date{November 12, 2026, 20:48 America/Los\_Angeles}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\parbox{0.94\linewidth}{
+\textbf{Executive status.} On the single guarded K4 Tseitin source (17 signed clauses,
+7 variables) every accepted native-/386 packet in the corpus, including W38, the
+tree-unrolled W39 and a dead-RES W30, is dominated by a 28-RES pure-Resolution DAG.
+That DAG is byte-identical to W29 with its unused paid gate deleted. The unchanged CLI
+rejects it only through its self-test sentinel, already known from LSPV-1/590.
+Accepted \texttt{paid} values are therefore upper bounds on
+$\min_\pi \mathrm{cost}_R(\pi)$, never lower-bound witnesses.
+LSPV-3/604 and LSPV-4/576 \texttt{--native} were executed natively in the OS for the
+first time, and both passed.
+P2-D1, P2-C3, P2-B1 stay \textbf{OPEN}; P2-B2/B3 stay separately \textbf{OPEN};
+P versus NP stays \textbf{OPEN}.}}
+\end{center}
+
+\section{Shared objective and the role of this run}
+The common target is
+\[
+\overline W_R(N)=\max_{F\in\mathrm{UNSAT},\ |\langle F\rangle|\le N}\ \min_{\pi:F\vdash_R\bot}\mathrm{cost}_R(\pi),
+\qquad\text{bridge: } \mathrm{SAT}\in\mathrm P\Rightarrow \overline W_R(N)\le\mathrm{poly}(N).
+\]
+The red-team obligation here is the one LSPV-4/576 assigned to LSPV-5. We test whether the
+native W38 can be pushed to W39 by tree unrolling or by charging parent applications, and
+whether any accepted count can serve as a value of the inner $\min$.
+
+\textbf{Falsifiers stated before execution.}
+(F1) The unchanged /386 CLI rejects the tree-unrolled packet, which would make the W39
+charge unreachable.
+(F2) The unchanged CLI rejects a packet carrying a dead RES record, which would make
+acceptance imply minimality.
+(F3) A pure-RES packet on the same source has more than 29 RES steps under every
+Davis--Putnam order.
+(F4) W38 is posed on a different specification from W29.
+None of F1--F4 occurred.
+
+\section{CORPUS REVIEWED}
+Root \texttt{main.tex} (25,144 lines; the LSPV-5 owned region through /516),
+\texttt{proof2.txt} through [P2-L5-511] and \texttt{proof1.txt}, \texttt{AGENTS.md},
+and the knot/link five-role handoff (2026-11-09).
+Predecessor LSPV-4/576: the report, runner, raw output and handoff.
+LSPV-3/604: the report, runner and recovered SOURCE.
+LSPV-1/590, the CLI sentinel cone repair.
+The LSPV-5/490, /491, /503, /504, /505, /506 and /516 entries.
+LSPV-2/576, the exhaustive tree-like minimum of 28 RES and $W=29$, as recorded in /506.
+The W29 seed (Git blob \texttt{318c52d9\ldots}) and the W38 packet (Git blob
+\texttt{28fc9f41\ldots}).
+The unchanged checker
+\texttt{experiments/arc/lspv2\_386\_independent\_verify.js} (Git blob
+\texttt{338305c0ce101704205e57543756b8127074a986}).
+
+\textbf{Predecessor write check.} LSPV-4/576 is verified. The report exists, is
+nonblank, and carries the header \texttt{\% LSPV-4 REPORT::576} and the sentinel
+\texttt{END\_OF\_VERIFIED\_REPORT::LSPV-4::576}. No recovery request was needed.
+
+\section{Results}
+\begin{proposition}[PROVED/EXACT, restricted to the pinned spec and checker]
+Let $\Sigma$ be the guarded K4 source ($h=4$, charge $(1,0,0,0)$, guard $7$).
+\begin{enumerate}
+\item W29 and W38 have identical \texttt{spec}.
+W29's single paid gate $8=1\wedge4$ has zero DEF views, and variable 8 occurs in no
+record.
+W38's gates $9=8\wedge8$ and $10=9\wedge9$ are idempotent copies, $z\leftrightarrow a$.
+\item Deleting W29's dead gate gives a 45-record packet with 28 RES and paid 28.
+The unchanged \texttt{checkProof} body (hosted evaluation, \texttt{control=true}) accepts
+it and confirms 0 odd models.
+The unchanged CLI rejects it only with \texttt{accepted a corrupted proof}.
+That rejection is the \texttt{gate\_defs.shift()} sentinel already identified by
+LSPV-1/590, not a logical rejection.
+\item Over all $7!=5040$ Davis--Putnam elimination orders, the needed-ancestor cone of
+$\bot$ has a RES count in $\{28,29,31,32,33,35,39,43,47\}$ with multiplicities
+$144,144,144,576,576,720,720,720,1296$.
+The minimum is 28, at order $(1,2,4,3,5,6,7)$.
+After renumbering, the cone is byte-identical to the dead-gate-deleted W29
+(SHA-256 \texttt{d39d73ab\ldots083e0e45}).
+\item The unchanged native CLI \emph{accepts} two inflated packets.
+The first is literal tree unrolling of W38's index-23 shared RES: the record is duplicated
+and its second user (record 31) is rerouted, giving paid 39 (36 RES + 3 gates).
+The second is W29 with a dead duplicate RES inserted before $\bot$, giving paid 30.
+\end{enumerate}
+Consequently, on $\Sigma$, under the native CLI's charge
+$\mathrm{cost}=|\mathrm{RES}|+|\text{gate owners}|$:
+\[
+\min_{\pi\ \text{core-accepted}}\mathrm{cost}(\pi)\ \le 28
+\quad\text{and}\quad
+\min_{\pi\ \text{CLI-accepted}}\mathrm{cost}(\pi)\ \le 29 < 30 < 38 < 39 .
+\]
+The checker certifies no minimality, and it charges dead and duplicated work.
+\end{proposition}
+
+\textbf{Answer to the LSPV-4/576 challenge.} W38 is not \emph{falsely pushed} to W39 in
+the shared-DAG ledger: /576 correctly reports $W38$. However, the native CLI \emph{does}
+accept W39. Any argument that reads an accepted \texttt{paid} as $\mathrm{cost}_R$ of an
+optimal derivation is therefore unsound. This includes per-packet rows in tables,
+``accepted W38'' used as evidence for a minimum, and tree-unrolled counts.
+The minimum operator in $\overline W_R$ ignores all inflated packets, so only
+certified-minimum arguments, such as LSPV-2/576's exhaustive tree-like search, can enter
+the inner $\min$. Whether the shared-DAG minimum on $\Sigma$ is below 28 is still
+\textbf{OPEN}. This run gives a DAG upper bound of 28 that matches the tree-like minimum,
+not a DAG lower bound.
+
+\textbf{Peer native-OS closure (COMPUTATIONAL).}
+\texttt{lspv3\_604\_restored\_signed\_source\_replay.cjs} exited 0. It reproduced
+W29: paid 29, 28 RES, 1 DEF owner, 17 sources, 11 negative tests and 3,542 assertions,
+and it rejected the pivot-999 hostile with \texttt{bad pivot signs 44}.
+\texttt{lspv4\_576\_dual\_native\_reference\_accounting.cjs --native} exited 0 and
+reproduced native $W38$, naive unfolded work 39, and both original CLIs (/341 and /386)
+exiting 0. Both items that were outstanding (``not independently OS executed'') are now
+closed. Total wall time was below 1 s, and the Python sweep took 2.6 s.
+
+\section{Bridge red team (literature-checked)}
+Two points bear on the bridge $\mathrm{SAT}\in\mathrm P\Rightarrow\overline W_R\le\mathrm{poly}$.
+\begin{enumerate}
+\item \textbf{KNOWN THEOREM.} Haken (1985) and Urquhart (1987) prove that
+$\overline W_{\mathrm{Res}}(N)=2^{\Omega(N)}$ unconditionally.
+For $R=$ Resolution, the bridge is therefore equivalent to $\mathrm{P}\ne\mathrm{NP}$
+itself. The bridge is ``weak'' only if $R$ is strong enough that its p-boundedness is
+plausible under $\mathrm P=\mathrm{NP}$. This was already recorded in the corpus
+(the Haken entry of \path{research/coordination/2026-11-02_1204_WORST_CASE_MINIMUM_DERIVATION_FIVE_ROLE_REFOCUS.md},
+together with that file's Urquhart and fixed-Rmix341 escape entries) and is re-adopted here.
+\item \textbf{KNOWN THEOREM + OPEN.} $\mathrm P=\mathrm{NP}\Rightarrow
+\mathrm{NP}=\mathrm{coNP}$, which by Cook--Reckhow gives \emph{some} p-bounded system.
+For a \emph{fixed} $R$ such as Extended Frege, ``$\mathrm P=\mathrm{NP}\Rightarrow R$
+p-bounded'' is open and is tied to p-optimality.
+Pich--Santhanam (arXiv:2405.02232) obtain ``EF not p-bounded $\Rightarrow\mathrm P\ne
+\mathrm{NP}$'' only under additional hypotheses. That is the nearest literature instance
+of the bridge, and it is \textbf{CONDITIONAL}.
+Atserias--M\"uller (J.~ACM 2020) shows that approximating the minimum Resolution
+refutation is NP-hard. This supports the directive's choice not to charge for
+strategy search, but it does not give the bridge.
+\end{enumerate}
+\textbf{Post-quantum ledger.} We considered item 4 (collision and lossiness). The
+proof-to-cost map is many-to-one, with inflated packets giving collisions at higher cost.
+FAILED TRANSFER: collisions of $\pi\mapsto\mathrm{cost}$ carry no lower-bound information
+about the minimum. \textbf{Barrier transfer.} Dead-code elimination and common-subexpression
+sharing from compiler and circuit design are an EXACT OBJECT TRANSFER for normalizing
+accepted packets: cone pruning gives a minimum-preserving normal form. They give no lower bound.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+The CLI sentinel's rejection of zero-owner packets duplicates LSPV-1/590 and
+[P2-L5-504/505]. This run adopts that finding and adds no new claim on the point.
+The tree-like minimum of 28 duplicates LSPV-2/576. The new content is the following:
+the all-order DP cone histogram; byte identity of the DP-optimal cone with W29's RES DAG;
+the explicit idempotent-gate structure of W38; native CLI acceptance of W39 and W30; and
+first native OS execution of /604 and /576. No contradiction with /576 was found, since
+/576 never claimed W38 minimal.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+One new LSPV-5/517 subsection is added inside the LSPV-5 owned region, and one
+[P2-L5-517] entry is added to \texttt{proof2.txt}. Statuses, roles, schedules and
+weights are unchanged. \texttt{proof1.txt} is unchanged.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted: LSPV-1/590 sentinel normal form, LSPV-2/576 tree-like minimum, and the LSPV-4/576
+count-once ledger.
+Retired as a reading: \textbf{FALSIFIED/RETIRED} that any accepted native-/386
+\texttt{paid} value (W29, W30, W38, W39) is an instance of the inner $\min$ of
+$\overline W_R$.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+The LSPV-3/604 and LSPV-4/576 handoffs state that native OS execution is outstanding;
+both runners have now been executed. LSPV-3/604 also reported that \texttt{main.tex} and
+\texttt{proof2.txt} were unreadable through the connector. In a local git checkout of
+\texttt{origin/main} at \texttt{4127667e}, both files are readable (25,144 lines and
+1,049,735 bytes), so that blocker was connector-side.
+
+\section{Artifacts}
+Report: this file.
+Constructor: \path{experiments/review/lspv5_517_w_dominance_redteam.py}.
+Native runner: \path{experiments/review/lspv5_517_w_dominance_native.cjs}.
+Raw: \path{results/raw/review/2026-11-12_2048_LSPV5_517_W_DOMINANCE_RAW.json}.
+Packets: \path{results/raw/review/2026-11-12_2048_LSPV5_517_W28_dead_gate_deleted.json},
+\path{..._W30_dead_duplicate_res.json}, \path{..._W39_tree_unrolled_idx23.json}.
+Handoff:
+\path{research/coordination/2026-11-12_2048_LSPV5_W_DOMINANCE517_FIVE_ROLE_HANDOFF.md}.
+Write target: the session branch \texttt{ccr-1695bd63-51orq6}. The harness forbids
+pushing to \texttt{main} without explicit permission, so the owner must merge this
+branch for the artifacts to reach root main.
+
+All five roles, titles, schedules, the TWO Route A / THREE Route B allocation and the
+historical weights are unchanged. P versus NP remains \textbf{OPEN}.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::NATIVE386-W-DOMINANCE-REDTEAM517
+\end{document}
