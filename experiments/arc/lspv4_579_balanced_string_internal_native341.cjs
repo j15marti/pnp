@@ -142,6 +142,33 @@ for(const f of both.packet.fixtures.slice(0,2)){
  }
 }
 const semantic=both.packet.fixtures.slice(0,2).map(verifyLocal);
+function minPaidRegisters(f) {
+ // Sethi-Ullman optimum for a binary proof TREE with read-only SOURCE leaves,
+ // atomic paid output registers, in-place last-use overwrite and no recomputation.
+ const by=new Map(f.proof.map(p=>[p.id,p])),memo=new Map();
+ function needed(id) {
+  if(!by.has(id))return 0;
+  if(memo.has(id))return memo.get(id);
+  const [a,b]=by.get(id).parents.map(needed);
+  const r=a===b?a+1:Math.max(1,a,b);
+  memo.set(id,r);return r;
+ }
+ return needed(f.proof.at(-1).id);
+}
+const ranks={
+ baseline:original.fixtures.slice(0,2).map(f=>({fixture:f.graph.name,registers:minPaidRegisters(f)})),
+ balanced:both.packet.fixtures.slice(0,2).map(f=>({fixture:f.graph.name,registers:minPaidRegisters(f)})),
+ globalOriginalMax:Math.max(...original.fixtures.map(minPaidRegisters)),
+ globalBalancedMax:Math.max(...both.packet.fixtures.map(minPaidRegisters))
+};
+assert.deepEqual(ranks.baseline,[{fixture:"K4",registers:2},{fixture:"K33",registers:2}]);
+assert.deepEqual(ranks.balanced,[{fixture:"K4",registers:3},{fixture:"K33",registers:3}]);
+assert.equal(ranks.globalOriginalMax,2);
+assert.equal(ranks.globalBalancedMax,3);
+const parentPayload=o=>o.fixtures.reduce((s,f)=>s+f.proof.reduce((t,p)=>t+p.parents.reduce((u,id)=>u+id.length,0),0),0);
+assert.equal(parentPayload(original),1840);
+assert.equal(parentPayload(both.packet),1840);
+
 const tmp=fs.mkdtempSync(path.join(os.tmpdir(),"lspv4_579_"));
 const runs=[];
 try{
@@ -176,7 +203,7 @@ const result={
  status:"PROVED/RESTRICTED code theorem and COMPUTATIONAL original OS checker replay",
  original_checker_git_blob:gitBlob(checkerBytes),original_packet_git_blob:gitBlob(packetBytes),
  counts:{original_packet_bytes:size(original),K4_only_bytes:size(k4.packet),K33_only_bytes:size(k33.packet),both_bytes:size(both.packet),saved_bytes:60,transformed_AND3:30,paid_global_7_fixture:321,parent_applications_global:642,source_local_checks:semantic.reduce((s,x)=>s+x.rowChecks,0)},
- semantic,runs,
+ semantic,ranks,parentIdBytes:parentPayload(original),runs,
  note:"/341 SOURCE/AND3/XOR fixture checker only; full historical mixed R_mix341 and original fixed mixed tariff unauthenticated."
 };
 const at=process.argv.indexOf("--out");
