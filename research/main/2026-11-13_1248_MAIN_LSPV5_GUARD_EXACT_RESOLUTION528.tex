@@ -1,0 +1,171 @@
+% MAIN SNAPSHOT — LSPV/RMV::528::2026-11-13T12:48:00-08:00
+% LSPV-5 REPORT::528::2026-11-13T12:48:00-08:00
+\documentclass[11pt]{article}
+\usepackage[margin=.85in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,xurl}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\begin{document}
+\begin{center}
+{\Large LSPV-5/528: Red-team audit of LSPV-4/592 guard erasure;\\ exact all-proof guard identity for Resolution}\\[2pt]
+November 13, 2026, 12:48 PST\\
+LSPV-5 Independent Proof Red Team (historical Route B; synthesis arbiter)\\
+\textbf{LSPV-4/592 PASS/RESTRICTED; Theorem 528.1 PROVED/EXACT (ordinary Resolution only);\\ P2-D1, P2-C3, P2-B1 OPEN; P2-B2/B3 OPEN; P versus NP OPEN}
+\end{center}
+
+\section*{Shared objective and target fixed before literature search}
+The common objective is
+\[
+\overline W_R(N)=\max_{F\in\mathrm{UNSAT},\ |\langle F\rangle|\le N}\ \min_{\pi:F\vdash_R\bot}\operatorname{cost}_R(\pi),
+\qquad\text{bridge: } \mathrm{SAT}\in\mathrm P\implies \overline W_R(N)\le\mathrm{poly}(N).
+\]
+LSPV-4/592 proved, for one canonical Davis--Putnam (DP) compiler, that the guarded source
+$G_g(F)=(g)\wedge\bigwedge_{C\in F}(\neg g\vee C)$ has the same shared DAG as $F$ plus one terminal $g$-pivot,
+and explicitly left open whether this holds for \emph{every} legal proof. The handoff asked LSPV-5 to attack the
+guard-parent mapping, SAT/even-charge controls, alternate eliminations, and any promotion of guard removal to native
+acceptance of unguarded strict $F_m$.
+
+\textbf{Target.} (T) For ordinary DAG-like Resolution with unit cost per inference, the minimum is \emph{exactly}
+$S(G_g(F))=S(F)+1$ for every UNSAT CNF $F$ and fresh $g$ --- not only along the DP path.
+
+\textbf{Precommitted falsifiers.} (F1) some legal $G_g(F)$-refutation is shorter than $S(F)+1$ (e.g.\ by resolving
+$(g)$ early or by $g$-pivots that interleave with $x$-pivots); (F2) the restriction $g{:=}1$ does not map a
+$G$-refutation to an $F$-refutation of no greater size; (F3) exhaustive minimum search on small formulas finds
+$S(G)\ne S(F)+1$; (F4) /592 contains a claim that /386 natively accepts strict $F_m$ bytes.
+None occurred.
+
+\section*{Main result}
+\begin{theorem}[528.1, PROVED/EXACT]
+Let $F$ be an unsatisfiable CNF, $g$ a variable not in $F$, and $S_{\mathcal P}(\cdot)$ the minimum number of
+Resolution inferences in a DAG-like ($\mathcal P=\mathrm{dag}$) or tree-like ($\mathcal P=\mathrm{tree}$) refutation.
+Then $S_{\mathcal P}(G_g(F))=S_{\mathcal P}(F)+1$. Moreover every minimum $G_g(F)$-refutation contains exactly one
+inference whose pivot is $g$.
+\end{theorem}
+\begin{proof}
+\emph{Upper bound.} Replace each source leaf $C$ of a refutation of $F$ by $\neg g\vee C$. Since $g$ is fresh, every
+$x$-resolvent of lifted parents is the lift of the original resolvent (no new clash, no tautology), so the same DAG
+(or tree) derives $(\neg g)$; one further inference with $(g)$ gives $\bot$.
+
+\emph{Lower bound.} Let $\pi$ be a $G_g(F)$-refutation and $\rho=\{g\mapsto1\}$. By induction along $\pi$ assign to
+each line $D$ with $D|_\rho\neq1$ a clause $D'\subseteq D|_\rho$ derivable from $F$, using at most as many new
+inferences as there are non-$g$-pivot inferences among $D$'s ancestors (counting shared ancestors once in the DAG
+case). Sources: $(\neg g\vee C)'=C$; $(g)|_\rho=1$. For an inference with pivot $g$, say $D=\mathrm{Res}_g(A,B)$
+with $g\in A$, $\neg g\in B$: $A|_\rho=1$, set $D'=B'\subseteq B\setminus\{\neg g\}\subseteq D$ (no new inference).
+For pivot $x\neq g$ with $D|_\rho\neq1$: both parents restrict to non-$1$; if $x\notin A'$ set $D'=A'$, if
+$\neg x\notin B'$ set $D'=B'$, otherwise $D'=\mathrm{Res}_x(A',B')\subseteq D|_\rho$ (one inference; $A',B'$ cannot
+clash on a second variable since they are subclauses of $A,B$). The root gives $\bot'=\bot$. Hence $S_{\mathcal P}(F)\le
+|\pi|-k$, where $k$ is the number of $g$-pivot inferences. Finally $k\ge1$: $(g)$ contains no other variable, so it
+can be a parent only of a $g$-pivot inference; if $k=0$ then $(g)$ is unused and $\pi$ refutes
+$\{\neg g\vee C\}_{C\in F}$, which is satisfied by $g=0$, contradicting soundness. The tree case is identical because
+the construction never duplicates subproofs. For a minimum $\pi$, $|\pi|=S(F)+1$ forces $k=1$.
+\end{proof}
+
+\begin{corollary}[528.2, PROVED/EXACT, Resolution only]
+The guard map is cost-neutral for the worst-case objective: with $N'=N+O(m\log n)$ bits,
+$\overline W_{\mathrm{Res}}(N)+1\le\overline W_{\mathrm{Res}}^{\rm guarded}(N')$ and conversely. Guarding can neither
+manufacture nor hide Resolution hardness. In particular the /592 DP identity
+$R_{\rm guarded}=R_{\rm strict}+1$ is the DP-path shadow of an all-proof identity; and since the DP count
+$R_{\rm strict}(F_m)=80m-161$ (observed, not proved for all $m$) is an \emph{upper} bound on $S(F_m)$, odd-charge prism
+remains an easy family ($S=O(m)$), unsuitable for P2-B1, exactly as /592 states.
+\end{corollary}
+
+\textbf{Scope firewall.} The lower-bound half uses closure of Resolution under restrictions. This fails or needs a
+fresh proof for systems with extension/definition rules (a definition $y\leftrightarrow(g\wedge x)$ restricts to a
+different definition whose re-introduction is a paid step) and for redundancy rules (PR/DRAT-style systems are not
+closed under restriction in the same way; Buss--Thapen). So Theorem 528.1 does \emph{not} transfer to the historical
+mixed calculus $R_{\rm mix341}$, its DEF/XOR/AND3/LOCAL-CONVERT rules, or /386 native acceptance. It is a
+same-calculus statement about ordinary Resolution with an explicit, different source $G_g(F)$; the source-binding
+gate P2-D1 is untouched.
+
+\section*{Independent computation (COMPUTATIONAL)}
+\path{experiments/review/lspv5_528_guard_min_resolution_audit.py} (SHA-256
+\texttt{46da661ff9dcc122c9c006dfd64992cf686452619a1e99e6c7ce1e84b2201f7a}, standard library, written independently of
+the /592 code) computes the \emph{exact minimum} DAG-Resolution length by breadth-first search over derived-clause
+sets, pruning only clauses subsumed by an available clause (sound for minimum length: any use of a subsumed clause can
+be replaced by its subsumer without adding inferences). Chunking: three independent batches, each under 30\,s
+(0.02\,s, 1.61\,s, 24.89\,s).
+\begin{center}
+\begin{tabular}{lrrl}
+\toprule
+Batch & cases & failures & content\\
+\midrule
+0 & 161 & 0 & every UNSAT set of width-$\le2$ clauses on 2 variables\\
+1 & 120 & 0 & seeded minimally-UNSAT width-$\le2$ sets on 3 variables\\
+2 & 40 & 0 & complete 8-clause 3-CNF on 3 variables ($S=7$, $S_G=8$) and seeded mixed UNSAT sets\\
+\bottomrule
+\end{tabular}
+\end{center}
+Observed $(S(F),S(G))$ pairs: $(1,2)\times123$, $(2,3)\times79$, $(3,4)\times93$, $(4,5)\times22$, $(5,6)\times3$,
+$(7,8)\times1$; zero search-cap skips. Raw: \path{results/raw/arc/2026-11-13_1248_LSPV5_528_GUARD_MIN_RESOLUTION_RAW.json}
+(SHA-256 \texttt{021b5dc5d03e5a804fec59456040d090e9fb7ff777dfe6ccb1ab5e7373bac378}). These are finite checks of a
+theorem already proved above; they do not test /386 or $R_{\rm mix341}$.
+
+\section*{Red-team verdict on LSPV-4/592}
+\begin{itemize}
+\item Theorem 592.1 (DP projection): \textbf{PASS}. Its tautology/duplicate argument is correct because $g$ is fresh
+and $L_g$ is injective; it is now implied in strengthened form by Theorem 528.1 for minimum cost.
+\item SAT / even-charge controls: \textbf{PASS}. For satisfiable $F$, $G_g(F)$ is satisfiable, no refutation exists in
+either system; the absence of a terminal $g$-pivot is forced.
+\item Alternate eliminations: \textbf{PASS, superseded}. The all-proof identity holds for every proof, so no
+elimination order can beat $S(F)+1$.
+\item Native-acceptance promotion (F4): \textbf{none found}. /592 explicitly denies that /386 accepts strict $F_m$ and
+that the map is a same-source P2-C3 simulation. Correctly scoped.
+\item Minor: the family-restricted inequality $W_{\rm RES}(F_m)\le C(N_m+T_A(N_m))$ is vacuous evidence for B2/B3,
+since it holds from the $O(m)$ upper bound alone. /592 says this; we concur.
+\end{itemize}
+
+\section*{Bridge quantifier firewall (KNOWN THEOREM consequence)}
+For $R=$ ordinary Resolution, $\overline W_{\rm Res}(N)$ is unconditionally superpolynomial (Haken 1985; Urquhart 1987
+Tseitin). Hence the boxed bridge $\mathrm{SAT}\in\mathrm P\Rightarrow\overline W_{\rm Res}\le\mathrm{poly}$ is
+logically equivalent to $\mathrm P\neq\mathrm{NP}$ itself: it is a reformulation, not a weaker step (world-ledger
+lesson). For any fixed $R$, the bridge says ``$\mathrm P=\mathrm{NP}$ implies $R$ is polynomially bounded'', which
+(Cook--Reckhow) is at least as strong as needing $R$ to be the proof system made p-bounded by $\mathrm{NP}=\mathrm{coNP}$;
+no fixed natural system is known to have this property. The bridge is therefore informative only for an $R$ strong
+enough that no superpolynomial $\overline W_R$ lower bound is known, and for such $R$ (e.g.\ Extended Frege) the
+hardness side is wide open. Restriction-closed systems that allow Theorem 528.1-type reductions are exactly those with
+known lower-bound technology, and that is why they cannot carry the bridge. Status: P2-B2/B3 OPEN.
+
+\section*{Literature (this run)}
+Primary sources checked for the two current obstacles (restriction closure of the target calculus; the meaning of the
+bridge for a fixed proof system): Cook--Reckhow, JSL 44 (1979), DOI 10.2307/2273702; Haken, TCS 39 (1985), DOI
+10.1016/0304-3975(85)90144-6; Urquhart, JACM 34 (1987), DOI 10.1145/7531.8928; Ben-Sasson--Wigderson, JACM 48
+(2001), DOI 10.1145/375827.375835 (restriction arguments for Resolution); Buss--Thapen, ``DRAT and propagation
+redundancy proofs without new variables'', LMCS 17 (2021) (closure under restriction for redundancy systems);
+Atserias--M\"uller, JACM 67 (2020), DOI 10.1145/3409472 (finding near-minimum Resolution refutations is NP-hard: the
+user's ``search is free'' convention is consistent with known theory, since $\overline W$ is defined by the minimum).
+\textbf{Barrier transfer:} control-theory simulation/abstraction (Cousot--Cousot) is a useful analogy for the potential
+inequality $\Phi(a)\le c(a,b)+\Phi(b)$ but supplies no theorem; restriction closure is a directly transferable theorem
+only within Resolution-like systems. \textbf{PQ ledger:} FAILED TRANSFER; no Schur-square or collision object appears.
+
+\section*{CORPUS REVIEWED}
+Root \texttt{main.tex} (LSPV-5 EXEC blocks to /527 and specialist regions), \texttt{AGENTS.md}, \texttt{proof1.txt}
+(P2 node list), LSPV-4/592 report, raw and handoff; LSPV-3/621 and LSPV-2/605 commit set; LSPV-5/527 report;
+LSPV-1/483 (guard-lift upper bound) and MAIN/321 (Haken/Braun transfer ceiling); world-ledger rows on
+reformulations. \texttt{proof2.txt} surveyed by grep only.
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+The guard-\emph{lift} upper bound already appears in LSPV-1/483 and /592. The exact matching \emph{lower} bound via
+restriction for all Resolution proofs (Theorem 528.1) was not found in the corpus; it is a routine application of
+standard restriction closure, and no novelty relative to the literature is claimed. No contradiction with /592,
+/605, /621 or /527.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Adds LSPV-5 EXEC block 528: /592 PASS/RESTRICTED; Theorem 528.1 PROVED/EXACT for ordinary Resolution; scope
+firewall against $R_{\rm mix341}$; bridge-reformulation note.
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted: /592 Theorem 592.1 and Corollary 592.2 as restricted. Rejected: none. Retired: odd-charge prism as a
+P2-B1 hard candidate (already flagged by /592; confirmed).
+
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+None in /592. Caution recorded: any future use of the bridge with $R=$ Resolution must be labelled a reformulation
+of $\mathrm P\ne\mathrm{NP}$.
+
+\section*{Status}
+Theorem 528.1: PROVED/EXACT (ordinary Resolution). Computation: COMPUTATIONAL. P2-D1, P2-C3, P2-B1: OPEN. P2-B2/B3:
+OPEN. Predecessor LSPV-4/592 write verified (header, sentinel, GitHub readback). TRACKERS REVIEWED; NO MATERIAL CHANGE.
+No schedules, roles or automations changed. \textbf{P versus NP remains OPEN.}
+
+\end{document}
+% END_OF_VERIFIED_MAIN::528
+% END_OF_VERIFIED_REPORT::LSPV-5::528
