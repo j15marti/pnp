@@ -55,3 +55,22 @@ END_OF_HANDOFF::TMR-1::2026-11-13_1407_PST
 **Next TMR-1 step:** formal transition-by-transition proof of N2 with exact state mapping, then seek a genuinely nontrivial candidate d_A not defeated by the copy/compact-invariant controls.
 
 END_OF_HANDOFF::TMR-1::2026-11-13_1308_PST
+
+
+---
+
+# TMR-1 latest handoff | 2026-11-13 about 15:00 PST | POLY-SHORTCUT-CORE003
+
+**New CANDIDATE symbolic negative theorem, independently review before promotion.** If a valid 3-SAT subset `K` is P-recognizable and its SAT labels on `K` are P-computable, one fixed all-input correct total decider first recognizes/solves `K` in polynomial time and otherwise runs a paid exhaustive fallback. Hence a statement that EVERY correct decider has superpolynomial time on this same `K` is false. Generalizes to any polynomial-time sound YES/NO/UNKNOWN partial classifier. This does not construct a general polynomial-time 3-SAT decider, and does not exclude algorithm-dependent or hard-to-recognize hard families.
+
+**Concrete connected high-width proper-3CNF falsifier.** `F_n` consists of all positive triples over `x1..xn`, and eight clauses forcing simultaneously `x1` and `not x1` using four auxiliaries. Every `F_n` is UNSAT and has primal `K_n` (treewidth >= n-1) with a polynomial-time recognizable constant-size contradictory core. Signed variable relabelings, within-clause order, and full clause reordering do not defeat recognition. Removing any one of the eight clauses makes the formula SAT. Thus growing primal treewidth alone, even for connected strict-proper UNSAT inputs, cannot entail an all-algorithm SAT runtime lower bound.
+
+**Published/readback:** report `research/agents/tmr-1/2026-11-13_1500_TMR1_POLY_SHORTCUT_CORE003.md` SHA `e2930a35ece2cd0a3263fcf1f6a4d74179b91b55`; executed V8 source `experiments/tmr/tmr1_poly_shortcut_core003.cjs` SHA `93dd19216e51d8da27105945f972996aee585981`; raw `results/raw/tmr/2026-11-13_1500_TMR1_SHORTCUT_CORE003_RAW.json` SHA `8f4ca4975e2a1d3aa725b2570fedb3dc7ea8d111`. 273 deterministic assertions, 0 failures, including 30 permuted negated UNSAT cases, 48 minimal-core deletion SAT cases, n<=8 exhaustive semantic controls and n=50 431432-bit source. Finite status COMPUTATIONAL; no physical TM, OS Node CLI or preflight run.
+
+**Primary literature check:** Nancy Lynch (1975) JACM, section 3, complexity-core existence conditional on language not in P, original author-hosted PDF https://groups.csail.mit.edu/tds/papers/Lynch/jacm75.pdf. Our easy-promise shortcut is elementary and does not claim priority.
+
+**Review assignments:** TMR-5 independently check both-label total fast-path proof, recognizer complexity, eight-clause contradiction and algorithm-dependent quantifier limitation. TMR-2 test proposed necessary information charges against this fast UNSAT island. TMR-3 test simultaneous same-machine costs, and TMR-4 keep fast-path concrete transitions in every MAY abstraction.
+
+**Status:** Current directive, proof1/proof2, large main.tex, issue #3, protocols, and peer handoffs reviewed. TRACKERS REVIEWED; NO MATERIAL CHANGE. No root main.tex editing, no agent/task changes. P versus NP remains OPEN. One next target: derive or falsify a temporal-order-invariant processing charge that remains positive under every polynomial-time sound partial classifier and under arbitrary general machines.
+
+END_OF_HANDOFF::TMR-1::2026-11-13_1500_PST
