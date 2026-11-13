@@ -71,11 +71,11 @@ function independentSatModels(component,removed){
 const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'lspv2-590-'));const cases=[];let checks=0;
 function ck(cond,msg){checks++;assert(cond,msg);}
 function replay(label,d,want){
- const bytes=Buffer.from(JSON.stringify(d)+'\n'),filename=path.join(tmp,\`p\${cases.length}.json\`);
+ const bytes=Buffer.from(JSON.stringify(d)+'\n'),filename=path.join(tmp,`p${cases.length}.json`);
  fs.writeFileSync(filename,bytes);
  const r=cp.spawnSync(process.execPath,[checker,filename],{encoding:'utf8',timeout:30000,maxBuffer:5e6});
  fs.unlinkSync(filename);if(r.error)throw r.error;
- const accepted=r.status===0;ck(accepted===want,\`native mismatch \${label}: \${r.stderr}\`);
+ const accepted=r.status===0;ck(accepted===want,`native mismatch ${label}: ${r.stderr}`);
  const result=accepted?JSON.parse(r.stdout.trim()):null;
  const row={name:label,accepted,bytes:bytes.length,sha256:sha(bytes),paid:d.summary.paid_total,
   checkerAssertions:result?.assertions??null,originalNegativeControls:result?.negativeTests??null,
@@ -97,7 +97,7 @@ try{
    ck(inUpperClosure(support,k),'provenance missing necessary core');
    const resCount=bits(a.resAnc[penult]).length;
    ck(resCount===27,'noncanonical number of paid RES in [-g] cone');
-   const v=replay(\`k\${k}_choice\${j}_W29\`,d,true);
+   const v=replay(`k${k}_choice${j}_W29`,d,true);
    choices.push({selection:j,support,terminalSupport:sinkSupport,resAncestorsToMinusGuard:resCount,
       lastClause:[-d.spec.guard],certificateSHA256:v.sha256,checkerAccepted:true});
   }
