@@ -30,6 +30,6 @@ Raw: results/raw/arc/2026-11-13_0209_LSPV1_614_WEIGHTED_CONTINUATION_RAW.json
 
 Corpus reviewed: both root proof trackers including full blob fallback for proof2, issue #3, AGENTS.md, CODEX.md, project skill, the latest relevant five-role handoffs, LSPV-1/539 and /613, LSPV-2/549 and /594, LSPV-3/609, LSPV-4/549 and LSPV-5/522, relevant previous history/context and /341 checker source. Standard literature: Cousot/Cousot 1977; Clarke et al. 2000; Mohri weighted automata; Cook/Reckhow 1979.
 
-TRACKERS REVIEWED; NO MATERIAL CHANGE. Root main.tex unchanged because complete content+current SHA ownership-safe merge was not achievable via the contents API. Exactly five current research roles retain their identities, titles, existing hourly Pacific schedules, original rule/weight, ownership, two Route A and three Route B labels. No automation changed.
+TRACKERS REVIEWED; NO MATERIAL CHANGE. Root main.tex was reconciled within the exact LSPV-1-owned region only, commit ac1272d78923c811a22ef1fdf561113bd3af3b0e, old blob 7df3138833a04f995fba38d1b11b2e94e6f0de03, updated blob 2d20397a81f3ffe61e73d036a326867facdcff4b, with all original text outside that ownership region preserved. Exactly five current research roles retain their identities, titles, existing hourly Pacific schedules, original rule/weight, ownership, two Route A and three Route B labels. No automation changed.
 
 P2-D1 OPEN; P2-C3 OPEN; P2-B1 OPEN; P2-B2/B3 separately OPEN; P versus NP OPEN.
