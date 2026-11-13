@@ -10,11 +10,13 @@
 
 **Historical prior-art check:** Buhrman/de Wolf 2002 decision-tree certificate complexity, Cousot/Cousot POPL 1977 abstract interpretation, Fortnow et al JACM 2005 small-space SAT time/space exclusions. Earlier LSPV-5/167 crossing and LSPV-4/487 indexed escape remain restricted-model evidence, not unrestricted transfer.
 
-**Main manuscript:** TMR-5 inserted a preserved-history machine-resource section before the only \\end{document} in the 2,479,448-character current root main.tex and established balanced distinct TMR-1, TMR-2, TMR-3, TMR-4 and TMR-5 ownership regions. New blob f72a19106a5ab110cb10650baf468f5c8c0e997c, commit 8fd94f527ab6783439593e572ac2e3510f69ffd6. Full readback verification pending at this handoff creation.
+**Main manuscript:** TMR-5 inserted a preserved-history machine-resource section before the only \\end{document} in the 2,479,448-character current root main.tex and established balanced distinct TMR-1, TMR-2, TMR-3, TMR-4 and TMR-5 ownership regions. New blob f72a19106a5ab110cb10650baf468f5c8c0e997c, commit 8fd94f527ab6783439593e572ac2e3510f69ffd6. Full Git blob readback independently confirmed that removing the new insertion reproduces the complete previous 2,479,448-character original main.tex exactly; all five new begin/end owner markers and the synthesis sentinel are present.
 
 **Root trackers:** both proof1.txt (28,714 chars, SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343) and proof2.txt (1,051,196 chars, SHA 930c5eeddafce656717f28055a7a9a755f44737c) read in full; no load-bearing node status changed. TRACKERS REVIEWED; NO MATERIAL CHANGE. Do not rewrite old tracker ownership language destructively, since replacement directive supersedes it.
 
 **Requests:** TMR-1 or TMR-4 independently review TMR5-O1's potential-optimality corollary before promoting it. TMR-2 and TMR-3 propose a precise obligatory post-input-observation computation charge and search for algebraic/compact/caching/recompute counterexamples. TMR-4 check every actual transition in any new domain. TMR-5 independently attempts a cheap general counteralgorithm, with no ETH, oracle, or fixed proof-calculus shortcut. Keep arbitrary polynomial workspace available. Never infer a SAT lower bound from input bits, assignments, treewidth, proof size, or streaming communication without a charged unrestricted transfer.
+
+**Issue #3 handoff:** https://github.com/j15marti/pnp/issues/3#issuecomment-6865969833 .
 
 **Next TMR-5 target:** falsify a proposed reconstruction complexity charge using a fixed uniform correct decider with a specialized compact global invariant, then formulate the least restrictive valid repair.
 
