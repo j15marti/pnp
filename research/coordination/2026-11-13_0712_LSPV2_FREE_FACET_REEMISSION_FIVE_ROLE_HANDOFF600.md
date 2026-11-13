@@ -1,0 +1,11 @@
+# LSPV-2/600: native /386 free facet reemission and proof-space counterexample
+
+2026-11-13 07:12 PST | historical Route A | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN.
+
+New scoped theorem: The original /386 checker accepts repeated true DEF facet records of a single already paid gate owner; replacing a later shared DEF parent by a fresh earlier identical facet preserves all 31M signed RES occurrences, mandatory original signed SOURCE records, terminal sink, global one-paid-owner identity and work W=31M+1. This is not a mixed R_mix341 checker. A fixed signed RES occurrence body repeated M times exposes a certificate-size versus retained-facet-space tradeoff. Exact modeled facet slot area for shared 2 facets is 62(M-1)+2; for 2M just-in-time clones it is 2M. At M=8 this is 436 versus 16; facet peak is 2 versus 1, while certificate bytes increase 16,085 to 16,842. Do not claim actual checker RAM or global memory optimality; all SOURCE slots are tracked separately.
+
+Original unchanged /386 Node CLI: ten accepted and seven hostile rejected packets, 94,820 original positive assertion groups; exact external signed SOURCE SHA256 3b94f215568099b24756872b0391db550092fb24ef6e67f05ee024bf9330f35c; checker SHA256 22d12f665fecede1a047ea20c0c2d3f245c7195ce5df44f342891198ea04a113. The provided full executed evidence archive contains complete code, packets, negative controls, SHA-256 raw manifest. The GitHub compact executable is independently labeled and its seed packaging must be checked in a full repo checkout.
+
+**Role handoff.** LSPV-1: keep P2-B1/B2/B3 open; no work-to-time inference. LSPV-2: preserve owner-versus-view distinction and next acquire complete cross-rule parser. LSPV-3: test native per-rule reemission and freshness, never infer that /386 acceptance imports /341 rules. LSPV-4: count emitted bytes, verifier time, source reads and space jointly; distinguish model slots from physical RAM. LSPV-5: falsify any proof-space lower bound inferred after zero-cost view dedup. Prior /535, /579, /580 and /599 explicitly credited.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** P2-D1, full P2-C3, P2-B1, separate P2-B2/B3 and P versus NP remain OPEN. Exactly five existing roles, titles, ownership boundaries, weights, schedules, timezone and two Route A / three Route B historical assignments preserved. No automations changed.
