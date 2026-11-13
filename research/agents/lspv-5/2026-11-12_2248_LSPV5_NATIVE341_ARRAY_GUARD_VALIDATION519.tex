@@ -1,0 +1,272 @@
+% LSPV-5 REPORT::NATIVE341-ARRAY-GUARD-VALIDATION519::2026-11-12T22:48:00-08:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,hyperref}
+\usepackage[T1]{fontenc}
+\newcommand{\OPEN}{\textbf{OPEN}}
+\newcommand{\EXACT}{\textbf{PROVED/EXACT}}
+\newcommand{\COMP}{\textbf{COMPUTATIONAL}}
+\title{LSPV-5 Independent Proof Red Team\\Native-/341 Array-Guard Validation 519}
+\author{LSPV-5 independent proof red team}
+\date{2026-11-12 22:48 America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\section*{Executive status}
+\noindent
+\textbf{P versus NP remains OPEN.}  This run independently validates one
+restricted theorem about the pinned recovered
+\path{experiments/arc/lspv2_341_independent_verify.js} program (Git blob
+\texttt{fcb7d4ced8f922de14c0bda16263a8cc7853e8e0}).  It does not authenticate a
+complete historical $R_{\rm mix341}$ dispatcher, does not establish P2-D1,
+P2-C3, or P2-B1, and does not transfer to P2-B2/B3.
+
+\medskip\noindent
+\textbf{Result.}  Under the explicit hypotheses that every SOURCE literal is
+an ordinary signed safe integer and every AND3 support is a JavaScript Array,
+an accepted completed refutation in this pinned SOURCE/AND3/XOR checker implies
+that the source clauses are unsatisfiable.  Status: \EXACT{} for this restricted
+checker theorem and \COMP{} for the independent native-OS replay.  The
+array-only domain is a source-sound under-approximation of accepted bytes, not
+a complete abstraction of the actual accepted-byte language.
+
+\section*{Target claim and falsifiers fixed before search}
+\noindent
+\textbf{Target claim.}  Falsify LSPV-1/610's one-guard theorem for the pinned
+recovered /341 checker.
+
+\begin{enumerate}
+\item Find an accepted satisfiable source packet whose AND3 supports are all
+JavaScript Arrays and whose SOURCE literals are ordinary signed safe integers.
+\item Find an accepted Array support large enough that ECMAScript's
+\texttt{Number::leftShift} reduction of the shift count modulo 32 aliases two
+distinct local assignments.
+\item Find accepted high or negative affine masks whose low-$E$ projection is
+not preserved through exact XOR to the final numeric row $0=1$.
+\end{enumerate}
+No falsifier was found.  The second falsifier is excluded directly by the
+checker assertion \texttt{sup.length <= 3}.
+
+\section*{Pinned object and repaired restricted lemma}
+Let $E$ be the number of original graph edges.  A SOURCE clause is interpreted
+over coordinates $0,\ldots,E-1$.  Each AND3 record takes the union $S$ of its
+three parents' supports, checks $|S|\leq 3$, enumerates every
+$m\in\{0,\ldots,2^{|S|}-1\}$, and checks the asserted affine row on every
+assignment passing the three parent tables.  XOR records combine rows by exact
+BigInt XOR of masks and XOR of right-hand sides.  Parents must already exist,
+and the final row is checked to be exactly the numeric pair $(0,1)$.
+
+\paragraph{Lemma.}
+For this program, suppose (i) SOURCE literals are ordinary signed safe integers
+with the checker-authenticated incidences and forbidden parities, and (ii) each
+AND3 field \texttt{support} is an Array.  If the checker accepts a completed
+refutation, the source CNF is unsatisfiable.
+
+\paragraph{Proof.}
+For an AND3 node, the program checks equal length, pairwise distinct asserted
+members, and inclusion of every numeric member of the computed union $S$.
+Because the asserted support is an Array, these checks make it a permutation of
+exactly $S$; no substring coercion is available.  As $|S|\leq3$, the shift
+counts used to decode the local assignment lie in $\{0,1,2\}$, so ECMAScript's
+modulo-32 shift rule cannot identify two positions.  Exhaustive local checking
+therefore proves the asserted affine equation on every Boolean assignment
+satisfying the three parents.
+
+Project every mask to coordinates $0,\ldots,E-1$.  Extra high bits and sign
+extension of a negative BigInt do not change this projection.  Exact XOR
+preserves validity of the projected affine equations.  By chronological
+induction, every accepted derived row is true on every source model.  The final
+exact numeric row $0=1$ is false on every model.  Hence no source model exists.
+\hfill$\square$
+
+\paragraph{Scope warning.}
+The proof does not validate the checker's actual unguarded language.  In that
+language, a three-code-unit String can pass membership by substring coercion
+and can misalign the enumerated assignment positions.  LSPV-1/609's satisfiable
+packet is a genuine original-checker execution and must remain in a correct
+CEGAR abstraction.
+
+\section*{Independent executable validation}
+\noindent
+New reproducer:
+\path{experiments/review/lspv5_519_native341_array_guard_validation.cjs}.
+Machine-readable evidence:
+\path{results/raw/review/2026-11-12_2248_LSPV5_519_NATIVE341_ARRAY_GUARD_RAW.json}.
+The reproducer pins the original checker, producer, and satisfiable /609 packet
+by hashes, executes the unchanged original checker in fresh Node processes,
+and separately executes a diagnostic copy with one added
+\texttt{Array.isArray} assertion.  The diagnostic copy is not historical
+authority.
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Case & Original checker & Diagnostic one-guard copy\\
+\midrule
+Seven original hardcoded fixtures & accept, 30,714 checks & accept, 30,985 checks\\
+Paired high mask bits & accept, 30,714 checks & accept, 30,985 checks\\
+Paired negative masks & accept, 30,714 checks & accept, 30,985 checks\\
+/609 satisfiable String support & accept, 5,155 checks & reject\\
+/609 integer Array support & reject & not needed\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Every baseline fixture was independently checked to have four authenticated
+width-three source clauses at each vertex, safe signed literals, exact graph
+incidences, one forbidden-parity class, and all AND3 supports represented as
+Arrays.  The paired high-bit and paired negative-mask packets preserve every
+low-$E$ projection and cancel at the exact XOR sink.
+
+The runner also independently reconstructed LSPV-4/578's complete decoded
+String orbit: 131,068 accepted local strings, four rejected local candidates,
+and JSON-literal UTF-8 byte histogram
+\[
+  5:184,\qquad 6:3854,\qquad 7:122880,\qquad 10:4150.
+\]
+Three representative front/back/surrogate packets were newly executed against
+the unchanged OS checker and each was accepted with 5,155 assertion groups.
+Thus the peer's previously pending original-OS execution step is resolved for
+these representative cases, not for every one of the 131,068 decoded strings.
+
+Final SHA-256 values are
+\begin{align*}
+\text{runner} &=
+\texttt{0f68b09bbc199c4d1212be7b0bd031cdb6729e097dafe587b817cce3a6a8b6f8},\\
+\text{raw} &=
+\texttt{1cac3b0ddffb6d30043dcc8d5b57149415e1214560762a7eccd7b7dafb0b31b8}.
+\end{align*}
+Two consecutive executions produced byte-identical raw output.
+
+\section*{Peer reconstruction and exact scope}
+\begin{itemize}
+\item LSPV-1/610: exact Python rerun completed 598,948 ordered pairs and
+5,557,412 checks.  Its theorem is adopted only with its stated Array and
+ordinary-source hypotheses.
+\item LSPV-2/591: exact Node rerun returned 254 accepts, 35 rejects, and
+279,616 subset checks.  The result is a reference Horn-diamond provenance
+circuit, not a theorem about historical $R_{\rm mix341}$.
+\item LSPV-3/606: exact OS rerun returned 11 positive accepts, seven rejects,
+56,705 accepted-check groups, and the exact 131,068 String count.  This resolves
+that report's OS-pending status for its selected cases.
+\item LSPV-4/577: exact OS rerun returned one accept, four rejects, and 5,155
+checks for its 64-model semantic cut.
+\item LSPV-4/578: source and raw evidence were read after delayed publication;
+no standalone report with required framing was found.  The new LSPV-5 runner
+independently verifies its symbolic orbit and three representative OS packets.
+\end{itemize}
+
+\section*{CEGAR and abstraction verdict}
+Let $C$ be the actual accepted-byte transition system of the pinned checker and
+$A$ the Array-support sublanguage.  The present theorem establishes a
+source-sound concrete semantics for $A\subset C$ and preservation of completed
+refutations inside $A$.  It does not show that every transition of $C$ is
+represented, nor that an abstract cost is no greater than every concrete cost.
+The cheap String path is concretely replayable in the authoritative recovered
+checker, so it is genuine and cannot justify refinement.  Refinement may only
+exclude a path after a concrete rejection; that condition is not met here.
+
+Consequently:
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Node & Status after this run\\
+\midrule
+Family claim & \OPEN; no hard-family theorem was tested\\
+P2-D1 grammar authentication & \OPEN; pinned /341 subset only\\
+P2-C3 concrete/abstract semantics & \OPEN; Array fragment only\\
+P2-B1 hard-family lower bound & \OPEN\\
+P2-B2/B3 transfer & \OPEN; kept separate\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section*{Primary literature and barrier-transfer audit}
+The ECMAScript specification's exact \texttt{Number::leftShift} conversion and
+modulo-32 shift-count rule transfers directly to the program proof; the local
+support bound prevents that alias.  Cook--Reckhow supplies the proof-system
+verification frame, Cousot--Cousot supplies the sound-abstraction obligation,
+and Clarke et al. supplies the counterexample-guided refinement discipline.
+These are directly transferable definitions/semantics, not lower bounds for
+the recovered checker.  Compact provenance circuits and topology/knot
+invariants remain useful structural analogies requiring new transfer theorems.
+Schur-square, lossiness, hash/random-oracle, and cryptographic binding ideas do
+not yield an unconditional bridge here and are classified as failed transfers
+for this target.
+
+Primary sources reviewed include ECMA-262, \S6.1.6.1.10; Cook and Reckhow,
+\emph{The Relative Efficiency of Propositional Proof Systems}, JSL 44 (1979);
+Cousot and Cousot, POPL 1977; and Clarke et al., CAV 2000.  No literature
+statement was imported as a checker-specific theorem without an explicit
+object correspondence.
+
+\section*{CORPUS REVIEWED}
+Both root trackers \path{proof1.txt} and \path{proof2.txt}; issue \#3;
+\path{AGENTS.md}, \path{CODEX.md}, the complete project research skill and its
+mode/protocol references; all task specifications; the current root
+\path{main.tex}; current handoffs; the knot/link and SIL/M22 handoffs with code
+and raw results; governing allocation notes; the actual /341 checker and
+producer; LSPV-1/559, /609, /610; LSPV-2/591; LSPV-3/606; LSPV-4/577 and the
+new /578 code/raw; LSPV-5/480 and /518; materially relevant /539--/549 lineage;
+and current Grok/Claude artifacts surfaced by repository search.
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+LSPV-1/559's high-mask guard was proved over an extended coordinate domain.
+The /610 theorem projects to the original $E$ coordinates.  These statements
+are not contradictory; their domains differ.  LSPV-3/606 and LSPV-4/578 count
+the same String orbit; /578 adds an exact byte tariff, while this run adds
+independent representative OS replays.  LSPV-2/591's compact symbolic
+provenance does not authenticate the /341 language and is not merged into the
+native proof spine.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+One restricted proof boundary is now independently validated: adding the
+Array hypothesis blocks the known String-coercion semantic forgery for the
+pinned SOURCE/AND3/XOR checker.  This does not close a tracked P2 node.  The
+LSPV-5 root region should record the validation and preserve all OPEN labels.
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\textbf{Adopted:} /610's explicit restricted hypotheses and proof skeleton,
+after independent source and execution audit.  \textbf{Rejected:} treating the
+diagnostic guard as the historical grammar, deleting the genuine String path,
+or treating finite optimizers as general lower bounds.  \textbf{Retired:} no
+new route.  Existing retirement decisions remain unchanged.
+
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+The delayed /578 raw file says original OS execution was pending; three
+representative original-OS cases are now completed independently.  The current
+root LSPV-5 region contains an extra trailing character in the recorded /518
+report blob and should be corrected within that owned region.  Current peer
+/610, /591, and /606 standalone Markdown reports lack the repository's exact
+required opening/final sentinels; their science was reviewed, but their
+publication framing is not fully verified.
+
+\section*{Trackers, scheduler, and blockers}
+\noindent
+\textbf{TRACKERS REVIEWED; NO MATERIAL CHANGE.}  The root trackers' SHAs were
+unchanged at preflight, and this restricted validation closes no tracked node.
+The task inventory connector returned no visible automations, so this run could
+not independently reactivate or verify the five existing schedules without
+risking duplicate creation.  No agent was created, renamed, rescheduled,
+disabled, or duplicated; the two Route A / three Route B labels are preserved.
+
+Remaining blockers are the unavailable authenticated full historical mixed
+dispatcher and fixed weights; no full shared-DAG concrete semantics covering
+SOURCE, Resolution, AND3, GF(2), LOCAL-CONVERT, paid DEF, branching, contexts,
+discharge, joins, deletion, and every other accepted transition; no
+cost-nonincreasing abstraction for that complete language; no completed hard
+family; and no P2-B1 lower bound.  The issue-comment listing endpoint repeatedly
+closed its transport.  The project skill's referenced report template is not
+present in the installed skill package.  Any XeLaTeX environment failure is an
+artifact-build blocker, not evidence about the mathematics.
+
+\section*{Concise handoff}
+Keep the String path in every MAY abstraction.  Use the Array lemma only as a
+source-sound restricted component.  Next, obtain an authoritative complete
+historical dispatcher and prove an explicit transition table with syntax,
+provenance, context/freshness, shared-DAG, and cost obligations for every rule
+before testing a hard family.  A cheap accepted proof must be published, not
+filtered out.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::NATIVE341-ARRAY-GUARD-VALIDATION519
+\end{document}
