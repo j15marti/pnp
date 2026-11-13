@@ -1,3 +1,34 @@
+# CURRENT TMR-1 handoff, 2026-11-13 14:07 PST | SAME-MACHINE-PRODUCT-CEILING002
+
+**Superseding authority:** research/coordination/2026-11-13_1249_TM_RESOURCE_AGENT_REPLACEMENT.md, reread on main. New five TMR identities, no LSPV reactivation or task mutation. **P versus NP remains OPEN.**
+
+**New full report (Git blob a21269c0878e325d474c76623d0ab03428c63f51):**
+research/agents/tmr-1/2026-11-13_1407_TMR1_SAME_MACHINE_PRODUCT_CEILING002.md
+
+**Reproducible Python (blob 16dafc5be8764bece6066d1d313c2dac4b5a8375):**
+experiments/tmr/tmr1_time_space_bridge_audit.py
+
+**Immutable raw output (blob 033f08ad8b5fa41cc4e1cae72c54e73e50001c69):**
+results/raw/tmr/2026-11-13_1402_TMR1_TS_BRIDGE_RAW.json
+
+**TMR1-R1, CANDIDATE pending TMR-5:** For one fixed b-tape deterministic multitape decider on the *same actual input/trace*, S<=b(T+1). If T^alpha(S+1)^beta>=G(L), with alpha,beta>=0 fixed and alpha+beta>0, then T>=(G(L)/(2b+1)^beta)^(1/(alpha+beta)) for T>=1. All time/space and costs are from the same realization, no cross-machine pooling.
+
+**TMR1-R2, quantified no-go:** TMR-3's exact *restricted complete-sweep* T(S+1)>=c L n, L=Theta(n log n), even under a hypothetical unrestricted transfer, implies merely T=Omega(L/sqrt(log L)) through the b-tape occupancy bound. This is below linear as an extracted growth lower bound, not a superpolynomial time bound. The real complete-sweep restriction separately forces T>=L. No unrestricted transfer has been proved.
+
+**TMR1-R3, independent second review of TMR-5 O1:** Correct graph theorem for the full observation-only MAY abstraction: all real-valued potentials satisfying Phi(U)<=cost(U,V)+Phi(V) on *every* graph edge and Phi(empty)<=0 have Phi(initial)<=tau(D)<=L, and tau itself attains the maximum. **PROVED/RESTRICTED at precisely that graph scope, after TMR-1 and TMR-5 independent symbolic audits.** This is not a time upper bound or a proof that more expressive abstractions fail.
+
+**Executed verification:** One published Python run 2.26 sec, 494,590 deterministic check groups, zero failures. Includes 132 source lengths, 1056 minimal-T checks, 528 same-machine domination, 120 polynomial resource witnesses, 230917 exhaustive integer implications, 6939 independently computed MAY graph optimality families and 254898 all-edge inequalities. Only integer/finite graph audits, not physical TM simulation or a general SAT solver. Node, repo-wide preflight and LaTeX compile not run. Source and raw fully readback-verified on GitHub.
+
+**Dependencies and peer requests:** TMR-2 construct a truly post-observation necessary processing charge, not first-bit reads. TMR-3 derive a superpolynomial-strength tradeoff *and* a genuine unrestricted multitape transfer. TMR-4 require initial, every-step, terminal and source-binding cost soundness for any new abstraction. TMR-5 independently test R1/R2, and integrate the qualified second verification of O1. Recognizable islands and earlier equality/crossing arguments are historical prior art, not claimed novel here.
+
+**Root status:** Full proof1/proof2 reviewed; no P=NP or P!=NP central proof obligation closed. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Root main.tex left to TMR-5 synthesis; no old region overwritten.
+
+**Single next target:** Formulate a non-tautological post-input-acquisition lower-bound invariant with charged operations and quantifiers sufficient to exclude *every* polynomial deterministic time exponent, or construct a correct compact-invariant counteralgorithm.
+
+END_OF_HANDOFF::TMR-1::2026-11-13_1407_PST
+
+---
+
 # TMR-1 handoff, 2026-11-13 13:08 PST
 
 **Current role:** TMR-1 Machine Model Lead; superseding replacement directive research/coordination/2026-11-13_1249_TM_RESOURCE_AGENT_REPLACEMENT.md. **P versus NP remains OPEN.** No schedule or legacy checker ownership changes made.
