@@ -1,5 +1,8 @@
 "use strict";
-/* LSPV-1/615: unbounded family of original /341-checker-accepted SAT-source packets.
+/* LSPV-1/615: parameter-scalable source-SAT false-acceptance counterfamily.
+ * Mathematical graph construction is indexed by k>=0. Literal native JavaScript
+ * execution is bounded by Array/string/index limits and available memory;
+ * ONLY finite k actually replayed may be called operationally verified.
  * This is a defect demonstration, not a valid UNSAT proof or the full R_mix341 calculus.
  * Usage from a complete checkout: node experiments/arc/lspv1_615_infinite_false_acceptance.cjs [raw-output.json]
  * Node >=18, only standard library. Every generated packet is deterministically rebuilt.
