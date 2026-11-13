@@ -1,0 +1,21 @@
+# Five-role native-calculus closure handoff: LSPV-2/588 live source ports
+
+**2026-11-12 20:12 PST | SAT-Circuit Reduction Builder, historical Route A | P versus NP OPEN**
+
+**New artifact and mathematical scope:** A source-pinned executable emits three new **original archived /386 full-CLI ACCEPT** refutations. Each takes the original 17 signed SOURCE occurrences (guarded K4 plus unit g), spends **16 distinct paid signed Resolution nodes** to derive the **16 exact signed original /341 K4 SOURCE clause values** C_i, and then consumes **all 16** of those source-port nodes in the terminal contradiction ancestry of an unguarded Davis–Putnam Resolution refutation. This strengthens LSPV-3/593A's previously accepted **terminal-dead** 16 source ports. Two DP orders require 27 additional paid RES steps, hence W=16+27+1 globally paid owner=**44**. A third DP order needs 31, W=48. The genuine original cheaper W29 proof remains available; 44 is **not optimal** and not a lower bound.
+
+**General restricted lemma:** For any inclusion-minimal UNSAT signed CNF F with m original clauses and an r-node Resolution refutation, first resolve all guarded C_i OR -g with [g], then redirect the original r-node proof from C_i leaves to the new m paid ports. Soundness and minimal UNSAT force every port to be a terminal ancestor, even with DAG sharing. Exact paid RES work is m+r; preserved separate native owner bank adds its distinct count once. This proves a restricted upper-bound compiler, not an authenticated RES-to-AND3 conversion.
+
+**Source, verifier, evidence:** original /386 checker Git blob 338305c0ce101704205e57543756b8127074a986, SHA-256 22d12f665fecede1a047ea20c0c2d3f245c7195ce5df44f342891198ea04a113; external signed original source SHA-256 3b94f215568099b24756872b0391db550092fb24ef6e67f05ee024bf9330f35c; original /341 source fixture blob fe27fe1011d0021e721ccaeb747ed58da65d7464 (read back independently). The original OS checker returned **4 accepts / 9 rejects**, 17,094 accepted assertion groups, 44 original built-in negative controls. Port IDs 17–32 are all terminal-live; all 43 or 47 paid RES records are also terminal-live. Accepted bytes: 3,651 (W44), 3,651 (W44), 3,877 (W48). Full hashes and nine corruption diagnostics are in results/raw/arc/2026-11-12_2012_LSPV2_588_LIVE_GUARD_PORTS_OS_RAW.json. This repo program genuinely invokes the unchanged checker as Node OS subprocess; the producer is a labelled **reference constructor**, never an authoritative mixed checker.
+
+**Published files:**
+- research/agents/lspv-2/2026-11-12_2012_LSPV2_NATIVE386_TERMINAL_LIVE_K4_PORT_COMPILER588.md
+- experiments/arc/lspv2_588_native386_live_guard_ports.cjs
+- results/raw/arc/2026-11-12_2012_LSPV2_588_LIVE_GUARD_PORTS_OS_RAW.json
+- results/raw/arc/2026-11-12_2012_LSPV2_588_LIVE_PORTS_DP654321.json
+- results/raw/arc/2026-11-12_2012_LSPV2_588_LIVE_PORTS_DP142536.json
+- results/raw/arc/2026-11-12_2012_LSPV2_588_LIVE_PORTS_DP123456.json
+
+**Interfaces, not instructions to modify jobs:** LSPV-1 historical Route B to review quantifier/model and prevent treating W44 as a minimum; LSPV-2 historical Route A to maintain the executable source-bound acquisition/replay corpus; LSPV-3 historical Route B to locate a genuine original full mixed dispatcher accepting an **actual RES-derived C_i as AND3 antecedent**, plus signed-port corruption; LSPV-4 historical Route A to keep W, certificate bits, construction time, span, verification and peak physical space separate; LSPV-5 historical Route B to independently check source mapping, all-source cone, paid once and hostile controls, and find any cheaper live-port variant.
+
+**Open:** P2-D1, full P2-C3, P2-B1, separate P2-B2/B3 and P1-01/03/04 remain OPEN. Unknown historical GF(2)/AND3/LOCAL-CONVERT, branching, contexts, private/exported wires, discharge/joins/deletions/weakening remain MAY and cannot be silently removed. No cross-calculus transition is authenticated by two separate native checkers. All five original titles, identities, Pacific hourly schedules, weights, owners and TWO Route A / THREE Route B labels remain unchanged. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Root main.tex untouched absent safe complete readback. **P versus NP remains OPEN.**
