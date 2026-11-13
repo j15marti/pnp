@@ -1,0 +1,108 @@
+% CLAUDE REPORT::WBAR-EXACT-0001::2026-11-13T14:00-08:00
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\title{The Worst-Case Minimum-Derivation Functional Computed Exactly:\\ $\overline W_{\rm Res}$ over All Minimally Unsatisfiable Exact-3-CNFs on Four Variables, Tree-Like versus DAG-Like\\(WBAR-EXACT-0001)}
+\author{Claude (scheduled routine; non-LSPV contributor, \texttt{research/agents/claude/})}
+\date{13 November 2026, 14:00 PST}
+\begin{document}\maketitle
+
+\noindent\textbf{Status summary.}
+Lemma~1 (the maximum in $\overline W_R$ is attained on minimally unsatisfiable formulas): \textbf{PROVED/EXACT}.
+Lemma~2 (an MU formula with $m$ clauses needs at least $m-1$ resolution steps): \textbf{PROVED/EXACT} (elementary, folklore).
+Lemma~3 (MU exact-3-CNFs on 4 variables are exactly the minimal edge covers of the 4-cube): \textbf{PROVED/EXACT}.
+Table~1 (exact $\overline W$ for tree-like and general resolution, all 188 isomorphism classes, 50\,528 labelled formulas): \textbf{COMPUTATIONAL}.
+Superpolynomial $\overline W_R$ for any $R$ at least as strong as Extended Resolution, the bridge B3, and P versus NP: \textbf{OPEN}.
+
+\section{Target and why this run computes it}
+The shared directive object is
+\[
+\overline W_R(N)=\max_{F\in\mathrm{UNSAT},\,|\langle F\rangle|\le N}\ \min_{\pi:F\vdash_R\bot}\operatorname{cost}_R(\pi),
+\]
+with the best derivation chosen for free, so search cost is never charged. Earlier routine runs settled the logical status of the bridge $\mathrm{B3}_R$: SAT $\in$ P $\Rightarrow \overline W_R\le\mathrm{poly}$. For any $R$ with a known lower bound, B3 is a reformulation of P $\neq$ NP. For $R\ge_p$ ER, a lower bound is an Extended Frege lower bound (BRIDGE-CLASS-0001 and earlier runs, which live on unmerged branches; see the living log). Those runs computed tree-like minima only, and only on chosen families (PHP, Tseitin, random). This run computes the max--min object itself exactly. That is, it takes the worst case over \emph{every} unsatisfiable formula in a complete finite class, uses general DAG-like resolution (shared subderivations allowed), and compares the result with tree-like resolution. The point is to test directive item~4, ``shared DAGs'', on the actual functional rather than on a hand-picked family.
+
+\section{Exact lemmas}
+\begin{lemma}[Reduction to MU]
+Let $R$ be any calculus in which a derivation from $F$ is also a derivation from every superset of $F$; resolution and every corpus calculus qualify. If $F'\subseteq F$ then $W_R(F')\ge W_R(F)$. Hence the maximum defining $\overline W_R(N)$ is attained on a minimally unsatisfiable (MU) formula of size $\le N$.
+\end{lemma}
+\begin{proof}
+A refutation of $F'$ is a refutation of $F$ with the same cost. Every unsatisfiable $F$ contains an MU subformula $F'$, and $|\langle F'\rangle|\le|\langle F\rangle|$ for clause-list encodings.
+\end{proof}
+\begin{lemma}[MU length floor]
+If $F$ is MU with $m$ clauses, every resolution refutation (tree-like or DAG-like) has at least $m-1$ resolution steps.
+\end{lemma}
+\begin{proof}
+If some source clause were unused, a proper subformula would be unsatisfiable, so all $m$ sources are used. In the proof DAG with $I$ derived nodes, each node has in-degree 2. Every source and every derived node other than $\bot$ has out-degree at least 1. Counting edges gives $2I\ge m+(I-1)$, so $I\ge m-1$.
+\end{proof}
+\begin{lemma}[4-cube picture]
+An exact-3 clause on variables $x_1,\dots,x_4$ is falsified by exactly the two endpoints of one edge of the cube $Q_4=\{0,1\}^4$, namely the edge in the direction of the absent variable. So an exact-3-CNF on 4 variables is a set of $Q_4$ edges. It is unsatisfiable iff the edges cover all 16 vertices. It is MU iff the cover is minimal, i.e.\ iff it is a spanning forest of stars $K_{1,k}$, $k\ge1$. Renaming and negating variables acts as $\mathrm{Aut}(Q_4)$, a group of order 384.
+\end{lemma}
+\begin{proof}
+The clause is false iff its three literals are false. That fixes three coordinates and leaves the fourth free. A cover is minimal iff every edge has an endpoint covered by no other edge. That holds iff no edge joins two vertices of degree $\ge2$ in the cover, which is exactly the star-forest condition. Signed permutations of coordinates are exactly the automorphisms of $Q_4$.
+\end{proof}
+
+\section{Computation}
+Code: \texttt{research/agents/claude/wbar-exact/}. Raw data: \texttt{results/raw/claude\_wbar/}.
+\begin{itemize}
+\item \texttt{enum\_mu.py} enumerates star-forest covers. Each partition is generated exactly once, and each is canonicalised under all 384 automorphisms. Result: \textbf{50\,528} labelled MU formulas in \textbf{188} isomorphism classes, with $m\in\{8,\dots,12\}$ clauses. Runtime is about 6\,s.
+\item \texttt{min\_res.py}, tree-like part: exact minimum tree-like refutation size, using the standard decision-tree dynamic program $t(C)=\min_v 1+t(C\cup\{v\})+t(C\cup\{\bar v\})$, with $t(C)=0$ when $C$ contains a source clause.
+\item \texttt{min\_res.py}, DAG part: exact iterative deepening over \emph{sets} of derived clauses, enumerated in canonical greedy topological order. The pruning rules are all admissible: (a) a derived clause subsumed by an available clause never occurs in a minimal proof; (b) width drops by at most one per step; (c) a counting bound from Lemma~2, under which the $r$ remaining steps must consume the $u$ sources and $d$ derived clauses that no step so far can consume, so $r\ge u+d-1$.
+\item Only 15 classes have a tree-like optimum above $m-1$, so only those need search. Each length $L$ in $[m-1,\ \text{tree}-1]$ was refuted or witnessed in checkpointed stages (\texttt{--stage}, \texttt{stages\_n4.jsonl}). Each stage stayed under 30\,s. The hardest level ($k{=}7$, $L{=}10$) was split by first and second canonical branch into 21 stages.
+\item \texttt{verify.py} is an independent recheck that shares no search code. It confirms that every formula is exact-3 and MU, that orbit sizes divide 384 and sum to 50\,528, that $m-1\le$ DAG $\le$ tree on every row, and it revalidates the DAG witness step by step. All checks PASS.
+\end{itemize}
+
+\section{Results (COMPUTATIONAL, exact for this class)}
+\begin{center}
+\begin{tabular}{rrrrrr}
+$m$ & classes & labelled & $\max W_{\rm tree}$ & $\max W_{\rm DAG}$ & classes with DAG $<$ tree\\\hline
+8 & 8 & 272 & 11 & 11 & 1\\
+9 & 35 & 9\,408 & 9 & 9 & 0\\
+10 & 105 & 29\,792 & 10 & 10 & 0\\
+11 & 35 & 10\,656 & 11 & 11 & 0\\
+12 & 5 & 400 & 11 & 11 & 0
+\end{tabular}
+\end{center}
+\begin{enumerate}
+\item $\overline W_{\rm Res}=11$ resolution steps over all exact-3-CNFs on 4 variables. The sparsest hardest instance has only $m=8$ clauses, a perfect matching of $Q_4$, with orbit size 8:
+\[
+(x_1{\vee}x_2{\vee}x_3),(\bar x_1{\vee}\bar x_2{\vee}\bar x_3),(\bar x_1{\vee}x_2{\vee}x_4),(\bar x_2{\vee}x_3{\vee}x_4),(x_1{\vee}\bar x_3{\vee}x_4),(\bar x_1{\vee}x_3{\vee}\bar x_4),(x_1{\vee}\bar x_2{\vee}\bar x_4),(x_2{\vee}\bar x_3{\vee}\bar x_4).
+\]
+Its cost exceeds the Lemma~2 floor by 4 ($11$ versus $7$), and DAG sharing does not help: every length $7$--$10$ is exhaustively refuted. The other maximisers ($m=11,12$) sit exactly on the floor $m-1$ or $m-2$, which makes them dense but proof-trivial. \emph{So per clause, hardness is maximised by the sparsest formula, not the largest one.}
+\item Excess over the floor $m-1$ in DAG-like resolution: 0 for 173 classes, 1 for 14 classes, and 4 for 1 class (the instance above). At this size, the max--min is dominated by the trivial counting floor.
+\item Shared DAGs help in exactly \textbf{one} of 188 classes ($k=5$, $m=8$, 32 labelled formulas): tree-like 9, DAG-like 8. The verified witness is in \texttt{gap\_witness\_k5.json}. In every other class, ``shared DAGs'' and ``adaptive strategy switching'' cannot lower the free-choice minimum below the tree-like value.
+\end{enumerate}
+
+\section{Interpretation and limits}
+\begin{itemize}
+\item This is finite data, so nothing asymptotic follows. Resolution already has exponential lower bounds, and for Resolution the bridge is a reformulation (earlier runs). The table's value is calibration. It exactly instantiates the directive's max--min with free sequence choice, it shows where the maximum sits (sparse, highly symmetric MU formulas), and it shows that at $n=4$ DAG sharing barely matters.
+\item For the stronger corpus calculus $R_{\rm mix341}$, which is at least ER (BRIDGE-CLASS-0001), extension variables can only help, so the tree column is an upper bound. The exact $R_{\rm mix341}$ functional on this class is \textbf{OPEN}. With DEF the search space is unbounded, so a bound on fresh variables would be needed.
+\item \textbf{Red-team note:} the directive's ``minimal reduced logical state'' framing does not change Lemma~1. Whatever cost measure is used, worst-case instances may be taken MU, so candidate hard families should always be reduced to an MU core before cost is reported.
+\end{itemize}
+
+\section{Literature checked this run}
+\begin{itemize}
+\item Peitl and Szeider, ``Finding the Hardest Formulas for Resolution'', CP 2020 (LNCS, doi:10.1007/978-3-030-58475-7\_30); JAIR 72 (2021) 69--97. They define resolution hardness numbers, the largest shortest-proof length over formulas with $m$ clauses and unrestricted width, and compute them for $m\le10$ using MU and symmetry reduction plus a SAT encoding. This is a \textbf{directly transferable method}. This run's class is different (exact width 3, $n=4$, steps rather than total proof lines), so the numbers are not directly comparable. A cross-check against their published tables is the next validation step. Status of the comparison: \textbf{OPEN}.
+\item A JAIR (2026) branch-and-bound method for shortest resolution proofs surfaced in search. It is the same kind of computational tool, and it was not used or verified here.
+\item Transfer domains: in combinatorial optimisation, minimal edge covers of $Q_4$ (Lemma~3) are an \textbf{exact object transfer}. Post-quantum ledger: \textbf{failed transfer}, since nothing applies to proof length at this scale.
+\end{itemize}
+
+\section*{CORPUS REVIEWED}
+AGENTS.md (all directives, including the TMR replacement directive of 2026-11-13 12:49 in \texttt{research/coordination/}); recent TMR-1..4 commits on \texttt{main}; the routine's earlier reports and logs on unmerged branches \texttt{ccr-1695bd63-\{nmunbf,8kfgww,1fip8t,87wmo6,srwfd2\}} (BRIDGE-CLASS-0001, WR-BRIDGE-0001, B3-WRONGPROOF-0001, B3-CONSERVATION-0001, BRIDGE-COLLAPSE-0001); corpus mentions of Peitl--Szeider (LSPV-1/78 and later).
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+Earlier routine runs computed tree-like minima on fixed families only. No corpus artifact computes the max--min over a complete class with DAG-like resolution. The corpus's LSPV-2 G342 minimum length 6 concerns a different calculus and formula, so there is no conflict. The bridge classification was \emph{not} re-derived this run, to avoid the repetition visible across about 15 earlier runs.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Nothing. Root \texttt{main.tex} has no Claude ownership region and was not edited. Proof trackers were reviewed; no material change.
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted: the bridge classification from earlier runs (not re-derived). Rejected: none. Retired: none.
+
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+Process issue, not a mathematical one: the routine's outputs sit on many unmerged \texttt{ccr-1695bd63-*} branches, so later runs re-derived the same B3 classification many times. The living log on this branch indexes the most recent ones.
+
+\noindent\textbf{P versus NP remains OPEN.}
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WBAR-EXACT-0001
