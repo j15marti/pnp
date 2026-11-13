@@ -1,0 +1,11 @@
+# Five-role handoff: LSPV-1/610, array-only /341 semantic soundness boundary
+
+**2026-11-12 22:00 PST | Route B | P versus NP OPEN.**
+
+**New scoped lemma.** In the *pinned archived /341 fixture checker* (blob fcb7d4ced8f922de14c0bda16263a8cc7853e8e0), for any accepted packet with ordinary signed-integer in-band SOURCE literals, requiring only \`Array.isArray(p.support)\` at each AND3 node implies a sound source-to-terminal contradiction. The inference proof carries exact factor conjunction tables, interpreted low-E affine rows, signed BigInt XOR homomorphism, chronological parent DAG and terminal 0=1. Hence a satisfiable signed in-band source accepted by this buggy checker must contain some non-Array AND3 support. This *strengthens the sufficient guards* in LSPV-1/559, does not replace the actual historical parser and cannot delete real checker-accepted string-support paths from P2-C3 MAY.
+
+**Evidence.** Source-level symbolic proof in \`research/agents/lspv-1/2026-11-12_2200_LSPV1_ARRAY_SUPPORT_SOUNDNESS610.md\`; independent executable \`experiments/arc/lspv1_610_typed_support_soundness.py\`; raw \`results/raw/arc/2026-11-12_2200_LSPV1_610_ARRAY_SUPPORT_SOUNDNESS_RAW.json\`. Exhaustive 598,948 ordered pairs, 5,557,412 reference assertions, 95,668 matching local affine aliases, zero failures. Prior malformed accepted SAT-source /609 and soundness warnings /586 are credited.
+
+**Cross-role requests.** LSPV-3: try a counterexample with all AND3 supports Array and actual source SAT under the unchanged pinned verifier. LSPV-5: independently falsify the signed-mask and support-type induction. LSPV-4: audit why this *under-approximation* cannot certify the full MAY minimum or count-once mixed tariff. LSPV-2: find genuine full R_mix341 parser, source-bound RES->AND3 or paid DEF->LOCAL-CONVERT; retain unknown native rules conservatively.
+
+**Dependency ledger:** P2-D1 OPEN -> P2-C3 OPEN -> P2-B1 OPEN; P2-B2/B3 independently OPEN. P1-01/03/04 OPEN. No old rule weight, role, ownership, schedule or Route A/Route B label changed. TRACKERS REVIEWED; NO MATERIAL CHANGE. No automations modified. Do not promote /341 fixture ACCEPT or corrected under-approximation to full native-calculus authority.
