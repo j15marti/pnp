@@ -20,20 +20,20 @@ prioritized bridge `Bridge(R): SAT ∈ P ⟹ W_R(N) ≤ poly(N)`.
 
 **Findings (all negative, all PROVED/EXACT but elementary):**
 
-1. **Bridge collapse (Thm 1).** For a fixed system `R`,
+1. **Bridge collapse.** For a fixed system `R`,
    `P ≠ NP ⟹ Bridge(R)` vacuously, and if `W_R` is superpolynomial then
    `Bridge(R) ⟹ P ≠ NP`. Hence for **every** `R` with a *known* unconditional
    superpolynomial lower bound — resolution (Haken), tree-resolution, Res(k),
    NS/PC/PCR over a fixed field, cutting planes (Pudlák), bounded-depth Frege
    (Ajtai; Pitassi–Beame–Impagliazzo) — `Bridge(R)` is **logically equivalent to
    P ≠ NP**, and is *false* in Algorithmica. Ledger row **L41**.
-2. **No decomposition gain (Cor 2).** For every fixed `R`, the conjunction
+2. **No decomposition gain.** For every fixed `R`, the conjunction
    "superpolynomial lower bound on `W_R`" ∧ `Bridge(R)` is equivalent to
    `P ≠ NP`. Splitting the goal in two transfers difficulty, it does not reduce
    it. The decomposition carries information only where the lower-bound half is
    **OPEN**: Frege, Extended Frege, TC⁰-Frege, and unrestricted-sharing /
    extension multisign DAGs. Ledger row **L42**.
-3. **What P = NP actually buys (Thm 3).** `SAT ∈ P` makes every Cook–Reckhow
+3. **What P = NP actually buys.** `SAT ∈ P` makes every Cook–Reckhow
    system *automatable*: a **minimum-length** refutation is computable in time
    `poly(N + min_π |π|)` (binary search on the size bound + prefix
    self-reduction). It yields **no** bound on `min_π |π|` for a fixed `R`.
@@ -43,7 +43,7 @@ prioritized bridge `Bridge(R): SAT ∈ P ⟹ W_R(N) ≤ poly(N)`.
    system. Atserias–Müller (non-automatability of resolution is NP-hard) cannot
    restore the link: it is conditional, and an unconditional version would
    already imply `P ≠ NP`. Ledger row **L43**.
-4. **Cost-measure collapse (Prop 4).** Any cost measure dominated by resolution
+4. **Cost-measure collapse.** Any cost measure dominated by resolution
    clause space (`≤ n+2`), width (`≤ n`) or derivation depth (`≤ n`) has
    `W_R(N) ≤ poly(N)` unconditionally, so it cannot carry the target at all;
    Torán's `Ω(n)` space bound for PHP already matches the trivial ceiling. The
