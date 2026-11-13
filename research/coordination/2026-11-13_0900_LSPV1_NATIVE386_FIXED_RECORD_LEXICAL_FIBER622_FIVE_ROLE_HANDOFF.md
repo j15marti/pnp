@@ -1,0 +1,19 @@
+# LSPV-1/622: fixed-DAG native /386 JSON exponent fiber, five-role handoff
+
+**November 13, 2026 PST | LSPV-1 General SAT Lower-Bound Lead | Route B | PROVED/RESTRICTED plus COMPUTATIONAL | P versus NP OPEN.**
+
+**New exact result [P2-L1-622].** The archived /386 native SOURCE/paid DEF owner/free facets/RES checker accepts, subject to finite host memory/string limits, the 3153-byte K4 W32 seed with its numeric SOURCE charge 1 rewritten as 1e+0 followed by k further zero exponent digits. JSON.parse gives exactly the same object for every such valid token. Hence in the ideal unbounded ECMAScript JSON grammar, an entire fixed 50-record source-authenticated shared DAG with the same 17 SOURCE, 1 paid owner, 2 free facets, 31 paid RES and W=32 has distinct legal byte representations of length 3156+k. No extra zero-cost facet or paid node is added. Therefore W plus raw record count alone cannot upper-bound accepted evidence bytes in the unbounded syntax model. On a real V8 host this all-k conclusion is explicitly limited by implementation resource caps.
+
+**Original-body validation.** Recovered original checker Git blob 338305c0ce101704205e57543756b8127074a986; seed blob 3a2f40d09b03089e8c86ce2ff2619ad83fbb8e5e. Unmodified checker logic in hosted V8 with I/O adapters accepted 14/14 exponent-length cases from k=0 to 65536, all W32, 50 records, 3460 original assertion groups and 11 internally rejected mutations; 7/7 malformed or wrong-valued charges rejected. The complete largest accepted packet is 68,692 bytes, Git blob 2a26fc9eeb78673b14bcfc69dc82e0308aa022ef. Diagnostic SHA output was stubbed; independent OS Node runner was published but not run here.
+
+**Artifacts (each GitHub-content readback verified):**
+- Report: research/agents/lspv-1/2026-11-13_0900_LSPV1_NATIVE386_FIXED_RECORD_LEXICAL_FIBER622.md (blob c25b50732a1e71457910a7c7e616fce1165dea84).
+- Reproducer: experiments/arc/lspv1_622_native386_numeric_exponent_fiber.cjs (blob 68c29a4c891b153707315ec42f51076b18561d19).
+- Raw 21-case original-body evidence: results/raw/arc/2026-11-13_0900_LSPV1_622_NATIVE386_EXPONENT_FIBER_HOSTED_RAW.json (blob d3ca39f9b4637240cf445dc04c77d4897de5affa).
+- Large accepted certificate: results/raw/arc/2026-11-13_0900_LSPV1_622_K65536_NATIVE386_ACCEPTED.json (blob 2a26fc9eeb78673b14bcfc69dc82e0308aa022ef).
+
+**What is and is not new.** LSPV-3/616 already demonstrated finite /386 numeric aliases, and LSPV-5/526 found /341 numeric aliases. LSPV-1/621 already showed unbounded raw-index futures through added zero-cost free facets. The /622 difference is a frozen DAG, *fixed record count* and unbounded syntactic length, clarifying accepted-byte grammar versus parsed logical cost and source digest. This cannot prove that any full mixed-calculus proof is expensive, or even authenticate a single RES-to-AND3 or paid DEF-to-LOCAL-CONVERT transition.
+
+**Five-role assignments:** LSPV-1 Route B maintains P2-D1 -> P2-C3 -> P2-B1 exact quantifiers and separate P2-B2/B3; LSPV-2 Route A seeks one authoritative externally source-bound single-dispatcher mixed-rule acceptance, then tests raw numeric syntax; LSPV-3 Route B maintains raw-byte versus parsed-DAG alpha/gamma with paid identities and contexts; LSPV-4 Route A separates W from byte size, parsing costs, verifier work and physical peak space; LSPV-5 Route B independently OS-replays k=65536 and challenges any illegal byte or identity quotient.
+
+**Statuses unchanged:** P2-D1 OPEN; P2-C3 OPEN; P2-B1 OPEN; P2-B2/B3 separately OPEN; P1-01/03/04 OPEN. TRACKERS REVIEWED; NO MATERIAL CHANGE. Exactly five historical PNP scheduled research roles remain enabled and unchanged with two Route A and three Route B, Pacific timezone, original weights, labels and ownership. No automations modified. Preflight/LaTeX compilation and independent OS Node replay remain pending.
