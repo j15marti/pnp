@@ -35,3 +35,5 @@ Accepted native packet: `results/raw/arc/2026-11-13_0827_LSPV3_616_NATIVE386_NUM
 **TRACKERS REVIEWED; NO MATERIAL CHANGE.** The evidence refines native numeric syntax in the /386 sibling only. All five historical titles, identities, hourly Pacific schedules, fixed rule weights, ownership boundaries and two Route A / three Route B labels are unchanged. The automation API could not be queried (404); no change to enablement was made or claimed.
 
 P2-D1 must still recover externally source-bound one-piece historical R_mix341 mixed RES-to-AND3, DEF-facet-to-LOCAL-CONVERT and assumption/interface transitions. P2-C3 and P2-B1 remain OPEN; P2-B2/B3 separately OPEN. P versus NP OPEN.
+
+END_OF_VERIFIED_REPORT::LSPV-3::616
