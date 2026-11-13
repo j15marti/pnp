@@ -23,3 +23,25 @@
 **Next precise open research question:** Develop a sound abstract charge for repeated *processing* or *reconstruction*, beyond at-most-L original source observations, that remains obligatory under source copying, compact global invariants, arbitrary algebraic encodings and unlimited rereads. TMR-2/3 may supply candidate charges; TMR-4 must check all-transition simulation, and TMR-5 should red-team alternative computations.
 
 END_OF_HANDOFF::TMR-4::2026-11-13_1336_PST
+
+
+---
+
+# TMR-4 latest handoff | 2026-11-13 14:40 PST | DEFERRED-FINAL-SYMBOL-FALSIFIER003
+
+**New CANDIDATE self-contained construction:** On the declared-length $1^N0\,1^M0$ strict-proper 3-CNF encoding, for any fixed correct total uniform decider $A$ build another ONE fixed correct total decider $B_A$: copy the first $K-1$ actual source bits; keep the physical head parked before the final bit; run *paid* simulations $A(p0)$ and $A(p1)$ on virtual tapes; store both answers in control; only then read the real final bit, inspect endmarker and halt in $O(1)$ further transitions. Malformed/overlong inputs take a fully charged fallback. All real processing occurs somewhere in total $T_{B_A}$, potentially exponentially before the final read. Thus no universal lower bound based solely on the computational interval **after the final original source bit is first observed** can hold for all correct deciders on valid inputs. A hypothetical polynomial-time $A$ remains polynomial under this fixed two-completion construction; neither outcome is presumed.
+
+**Strict opposite-label final-bit control:** $N=14$, $M=17$ proper three-distinct-literal clauses force $x_0=1$, $x_1=0$, $x_4=1$, $x_5=0$; last clause $(\neg x_0\lor x_1\lor x_j)$ with $j=4$ or $5$ changes only the actual last input bit and flips SAT to UNSAT. The construction really must compute both virtual answers and select by the final observed bit.
+
+**Verified report:** research/agents/tmr-4/2026-11-13_1440_TMR4_DEFERRED_FINAL_SYMBOL_FALSIFIER003.md, blob 1f684ba972693534863c0823f534a6e39b3eabb7.
+**Executed OS Node code:** experiments/tmr/tmr4_deferred_final_bit_audit003.cjs, blob ddfd91076cc229e3296d43eeb07c37ec779f5ada.
+**Immutable raw:** results/raw/tmr/2026-11-13_1440_TMR4_DEFERRED_FINAL_BIT003_RAW.json, blob 2036d563f03a760eb12c03f3e831dc201bd9996e.
+All three paths verified by GitHub readback. Local OS Node invocation tested 865 semantic cases, including 84 original E-family formulas, 2 opposite-label strict final-bit siblings, 256 generic CNFs, 12 malformed cases and 511 short binary strings; 0 failures. The driver is bounded at $N<22$, so only the mathematical construction, using an unbounded total subroutine, establishes uniform all-length behavior. No physical TM simulator or full preflight/LaTeX compiler executed. Status **CANDIDATE** until independent TMR-5 proof audit; finite evidence **COMPUTATIONAL**.
+
+**Corpus and scope:** Current five-TMR directive, both full root trackers recovered (proof2 via blob, not blank contents response), large main.tex via blob, latest issue #3 through TMR-3/002, root operating files, current five handoffs and TMR-4/001, TMR-2/002, TMR-3/002, TMR-5/001 read. TMR-5's first-read observation maximality no-go has TMR-1 independent review and remains restricted to that graph. Older proof-calculus abstraction and checker failures remain preserved. TRACKERS REVIEWED; NO MATERIAL CHANGE. No task mutation.
+
+**TMR-5 independent target:** verify the physical source head truly remains parked before its final cell throughout both virtual simulations, both opposite-label last-bit completions are correctly charged, and malformed-input fallback is total. In any new cost-sound domain, a purported post-read potential must be at most $O(1)$ on this machine's actual post-final-read states.
+
+**Next TMR-4 target:** abstract a *temporal-order-invariant* compulsory processing charge across the entire physical trace, including speculative early work, copying, compact algebra and recomputation. Establish genuine all-step cost simulation and try to falsify with easy Horn/XOR/treewidth families. General superpolynomial arrow OPEN.
+
+END_OF_HANDOFF::TMR-4::2026-11-13_1440_PST
