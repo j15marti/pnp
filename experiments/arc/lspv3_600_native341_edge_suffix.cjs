@@ -8,7 +8,7 @@ const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypt
 const root=path.resolve(__dirname,'../..');
 const checkerFile=path.join(root,'experiments/arc/lspv2_341_independent_verify.js');
 const packetFile=path.join(root,'results/raw/arc/2026-11-02_1216_LSPV2_MIXED_TSEITIN_MIN_DAG341.json');
-function gitBlob(b){return crypto.createHash('sha1').update(Buffer.from('blob '+b.length+'\\0')).update(b).digest('hex')}
+function gitBlob(b){return crypto.createHash('sha1').update(Buffer.from('blob '+b.length+'\0')).update(b).digest('hex')}
 const checkerBytes=fs.readFileSync(checkerFile),packetBytes=fs.readFileSync(packetFile);
 assert.equal(gitBlob(checkerBytes),'fcb7d4ced8f922de14c0bda16263a8cc7853e8e0','wrong archived checker');
 assert.equal(gitBlob(packetBytes),'fe27fe1011d0021e721ccaeb747ed58da65d7464','wrong original fixture');
@@ -69,6 +69,6 @@ const result={run:'LSPV-3/600',checker_git_blob:gitBlob(checkerBytes),
   positives:trials.filter(t=>t.accepted).length,negatives:trials.filter(t=>!t.accepted).length,
   positive_assertions:trials.reduce((s,t)=>s+(t.checks||0),0),
   K4_specimen_checks:single.checks,trials};
-if(process.argv[2])fs.writeFileSync(process.argv[2],JSON.stringify(result,null,2)+'\\n');
+if(process.argv[2])fs.writeFileSync(process.argv[2],JSON.stringify(result,null,2)+'\n');
 console.log(JSON.stringify({status:'PASS',positives:result.positives,negatives:result.negatives,
   positive_assertions:result.positive_assertions,K4_specimen_checks:single.checks},null,2));
