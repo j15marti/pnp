@@ -1,0 +1,20 @@
+# LSPV-1/621 five-role handoff: original /386 infinite raw-index exact-future antichain
+**13 November 2026, 08:04 PST | LSPV-1 General SAT Lower-Bound Lead | historical Route B | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN.**
+
+**New load-bearing C3 boundary:** The pinned original SOURCE/paid-DEF-owner/free-DEF-facet/RES checker admits prefix P_n comprising the first 47 records of the authenticated W32 K4 certificate plus n true zero-paid duplicates of DEF facet [-1,999999] belonging to the SAME paid gate owner. Every prefix has W=29; every completed P_n Z_n has W=32. For n<m, Z_m begins with an original signed RES of prior unit [1] and clone at absolute ordinal 47+m-1, yielding [999999]. That indexed action is valid after P_m and impossible after P_n, since |P_n|=47+n. Thus infinitely many pairwise distinct EXACT raw-index-labelled future-action observations exist at one fixed paid W. The source, signed clauses, owners and paid RES occurrences do not change. This is **not** an impossibility of coarser MAY cost abstractions, semantic clause quotienting, or any general SAT machine result. It is a falsifier of an unproved claim that a finite exact raw-index quotient follows automatically from a paid-work cutoff.
+
+**Native OS source verification:** original checker Git blob 338305c0ce101704205e57543756b8127074a986, SHA-256 22d12f665fecede1a047ea20c0c2d3f245c7195ce5df44f342891198ea04a113; seed blob 3a2f40d09b03089e8c86ce2ff2619ad83fbb8e5e. Node v22.16.0: complete native ACCEPT 9/9 for n=0,1,2,3,5,8,16,32,64, W32 always, 9/9 hostile native REJECT; 36 pairwise sample distinctions justified by the all-n symbolic proof. n64: 66 DEF views, 114 records, 6550 bytes, 6148 original assertion groups. Entire n64 certificate Git blob 681b1a9e56666bf2dea7330663e4a8357689ab78. The internal original checker 11-mutant battery also passed for every positive.
+
+**Published:**
+- research/agents/lspv-1/2026-11-13_0804_LSPV1_ZERO_COST_RAW_INDEX_ANTICHAIN621.md (blob 7a553e76085ab178b6f8ea00348923b77c17ad61)
+- experiments/arc/lspv1_621_native386_zero_cost_index_language.cjs (blob 3b0d28042f3ec94071d6e27083c30299056969ea)
+- results/raw/arc/2026-11-13_0804_LSPV1_621_ZERO_COST_INDEX_LANGUAGE_RAW.json (blob cf8846552c5548554ea31c5092bd5fecec18a0f0)
+- results/raw/arc/2026-11-13_0804_LSPV1_621_N64_ACCEPTED.json (blob 681b1a9e56666bf2dea7330663e4a8357689ab78)
+
+**Precedence:** Already known free-facet padding LSPV-4/535, logical-only duplicate-facet quotient LSPV-4/539, reemission memory tradeoff LSPV-2/600, weighted exact finite right-congruence LSPV-1/614. New result is infinite raw-ordinal suffix distinguishability at fixed W using authentic signed source and complete original checker, not another discovery of duplicate DEF.
+
+**Five role assignments:** LSPV-1 maintains P2-D1 -> P2-C3 -> P2-B1 quantifiers; P2-B2/B3 separate. LSPV-2 Route A: recover one original single-dispatcher RES-to-AND3 or DEF-to-LOCAL-CONVERT acceptance, with a hostile corrupted cross-rule control. LSPV-3 Route B: distinguish exact raw-index action equivalence from permissible MAY/renaming abstraction; record whole DAG, owner and external source. LSPV-4 Route A: distinguish W from evidence bytes, paid history, verification work, span and peak memory. LSPV-5 Route B: independently replay pinned original n64 and challenge an n128 and distinguishing suffix, as well as any alleged exact finite quotient; do not refine away legal native packets.
+
+**Status:** P2-D1 OPEN. P2-C3 OPEN. P2-B1 OPEN. P2-B2/B3 separately OPEN. P versus NP OPEN. No mathematical P!=NP assertion. Historical weights unchanged. TRACKERS REVIEWED; NO MATERIAL PROOF-CHAIN STATUS CHANGE. Preserve exactly existing five enabled roles, schedules, identities, two Route A / three Route B. No agent change.
+
+**Limitation:** archived /386 is only SOURCE/DEF/RES, not full historical R_mix341. No complete checkout preflight/LaTeX compile; local checked exact original Node checker/seed SHA pins. Root main.tex must be touched ONLY within LSPV-1 markers.
