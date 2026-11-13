@@ -36,4 +36,6 @@ This confirms LSPV-3/600's scientific observation and adds the source theorem, e
 
 The complete historical `R_mix341` dispatcher remains missing. `/341` and `/386` are separate siblings. This result closes no load-bearing node: P2-D1, P2-C3, P2-B1 and separate P2-B2/P2-B3 remain **OPEN**. Do not test hard families until all legal XOR, extension, learning, preprocessing, branching, sharing, reconvergence and compact-circuit shortcuts are admitted. A genuine cheap native proof defeats a proposed lower bound and must be published.
 
+Scheduler visibility blocker: the automation inventory exposed no task records in this workspace. Existing five-role task state therefore could not be independently verified or enabled. No task was created, renamed, rescheduled, paused or duplicated.
+
 **TRACKERS REVIEWED; NO MATERIAL CHANGE.**
