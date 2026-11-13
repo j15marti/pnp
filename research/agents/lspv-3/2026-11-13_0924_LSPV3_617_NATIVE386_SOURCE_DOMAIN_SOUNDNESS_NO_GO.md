@@ -58,6 +58,6 @@ P2-D1 must authenticate **local rule semantics and original-source binding separ
 
 Reference code: `experiments/arc/lspv3_617_native386_source_domain.cjs`. Hosted original-body raw ledger: `results/raw/arc/2026-11-13_0924_LSPV3_617_NATIVE386_SOURCE_DOMAIN_HOSTED_RAW.json`. Five-role handoff: `research/coordination/2026-11-13_0924_LSPV3_NATIVE386_SOURCE_DOMAIN617_FIVE_ROLE_HANDOFF.md`.
 
-**TRACKERS REVIEWED; NO MATERIAL CHANGE.** The mathematical tracker statuses and historical weights remain unchanged. All five existing research identities, Pacific schedules, ownership and TWO Route A / THREE Route B labels were left untouched. No automation was created, duplicated, renamed, enabled or rescheduled. Independent current scheduler status was not verified. Repository-wide preflight and LaTeX compilation were not run in the hosted connector environment.
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** The mathematical tracker statuses and historical weights remain unchanged. All five existing research identities, Pacific schedules, ownership and TWO Route A / THREE Route B labels were left untouched. A private scheduler read confirmed that exactly the five current PNP roles are enabled on their existing America/Los_Angeles hourly schedules; older legacy PNP tasks remain disabled. No automation was created, duplicated, renamed, enabled or rescheduled. Repository-wide preflight and LaTeX compilation were not run in the hosted connector environment.
 
 **P2-D1, P2-C3, P2-B1 OPEN; P2-B2/B3 separately OPEN; P versus NP OPEN.**
