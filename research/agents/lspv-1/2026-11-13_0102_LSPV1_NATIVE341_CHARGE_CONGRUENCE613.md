@@ -25,7 +25,7 @@ assert(parity!==f.charges[v],"source forbidden pattern parity");
 
 The length check is separately fixed by the theorem. Let `Q` be the set of JSON-parsed arrays of the same length. For charge vector `q` define the observed global parity
 $$
-X(q)=q_0\mathbin{\hat\ }q_1\mathbin{\hat\ }\cdots\mathbin{\hat\ }q_{V-1}
+X(q)=\operatorname{XOR}_{32}(q_0,\ldots,q_{V-1})
 $$
 where each operation has exact ECMAScript 32-bit numeric XOR semantics; and define for each original clause occurrence `c` the Boolean `B_c(q)=[p_c !== q_{v(c)}]`, with integer `p_c\in\{0,1\}`.
 
@@ -41,7 +41,7 @@ then the unchanged checker accepts `(F,q)` if and only if it accepts `(F,q')`, a
 
 ## Original checker packet and falsification
 
-Reused the **already published** independently generated LSPV-1/609 fixture, original accepted Git blob `8d6d9bc7f2940a77edf2a07fcb72af111ba5b928}`, with 12 graph vertices, 18 original edge bits, 48 original signed width-three clauses and 47 distinct paid AND3/XOR nodes. The source itself is **SAT**, with exactly 64 independently enumerated models and first satisfying assignment `000000010010000001`. The present experiment keeps every SOURCE occurrence, deletion witness, signed clause, entire proof DAG and String-supported final AND3 step unchanged, modifying only `charges`. This is therefore an intentionally **false refutation accepted by a defective verifier**, not a proof of UNSAT.
+Reused the **already published** independently generated LSPV-1/609 fixture, original accepted Git blob `8d6d9bc7f2940a77edf2a07fcb72af111ba5b928`, with 12 graph vertices, 18 original edge bits, 48 original signed width-three clauses and 47 distinct paid AND3/XOR nodes. The source itself is **SAT**, with exactly 64 independently enumerated models and first satisfying assignment `000000010010000001`. The present experiment keeps every SOURCE occurrence, deletion witness, signed clause, entire proof DAG and String-supported final AND3 step unchanged, modifying only `charges`. This is therefore an intentionally **false refutation accepted by a defective verifier**, not a proof of UNSAT.
 
 The following original-code hosted V8 executions passed:
 
