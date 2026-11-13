@@ -9,7 +9,7 @@ const fs=require("node:fs"),path=require("node:path"),os=require("node:os"),cp=r
 const ROOT=path.resolve(__dirname,"../..");
 const checker=path.join(ROOT,"experiments/arc/lspv2_341_independent_verify.js");
 const seed=path.join(ROOT,"results/raw/arc/2026-11-12_1725_LSPV3_600_NATIVE341_K4_EDGE_SUFFIX_ACCEPTED.json");
-const sha=b=>crypto.createHash("sha1").update("blob "+Buffer.byteLength(b)+"\\0").update(b).digest("hex");
+const sha=b=>crypto.createHash("sha1").update("blob "+Buffer.byteLength(b)+"\0").update(b).digest("hex");
 const rawCheck=fs.readFileSync(checker),rawSeed=fs.readFileSync(seed);
 assert.equal(sha(rawCheck),"fcb7d4ced8f922de14c0bda16263a8cc7853e8e0");
 assert.equal(sha(rawSeed),"393d13265192b4e43073c6f6559bc22b6a71ece5");
@@ -33,6 +33,6 @@ try{
  run("hostile_parent_id",[1,{},0,0],false,p=>p.fixtures[0].proof[0].parents[0]="INVALID-PARENT");
  run("hostile_terminal_rhs",[1,{},0,0],false,p=>p.fixtures[0].proof.at(-1).row.rhs^=1);
  const output={tag:"LSPV-3/601 CLI OS replayer",node:process.version,originalCheckerBlob:sha(rawCheck),originalSeedBlob:sha(rawSeed),cases,positive:cases.filter(x=>x.expected).length,negative:cases.filter(x=>!x.expected).length,originalPositiveChecks:cases.filter(x=>x.accepted).reduce((s,x)=>s+x.checks,0),scope:"Archived /341 core ONLY; not historical complete R_mix341"};
- const rendered=JSON.stringify(output,null,2)+"\\n";
+ const rendered=JSON.stringify(output,null,2)+"\n";
  if(process.argv[2])fs.writeFileSync(process.argv[2],rendered);process.stdout.write(rendered);
 }finally{fs.rmSync(tmp,{force:true,recursive:true});}
