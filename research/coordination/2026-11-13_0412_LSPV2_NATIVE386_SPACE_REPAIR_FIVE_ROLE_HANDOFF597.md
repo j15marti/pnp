@@ -1,0 +1,13 @@
+# LSPV-2/597 five-role handoff: native /386 W81 schedule-space repair
+
+2026-11-13 04:12 PST | historical Route A | PROVED/RESTRICTED + COMPUTATIONAL | P versus NP OPEN.
+
+**Material restricted finding:** Same immutable 49 signed SOURCE clauses and one globally paid gate owner; the original LSPV-2/596 native W81 certificate has 80 RES nodes split into independent original-index blocks 49..75, 76..101 and 102..127, terminal record 128. Every whole-block permutation preserving the final sink is accepted by the unchanged original /386 CLI after exact parent reindexing. Six ACCEPT (60,096 original assertion groups, each with 11 built-in controls), six hostile REJECT. Original verifier SHA-256 22d12f665fecede1a047ea20c0c2d3f245c7195ce5df44f342891198ea04a113; independent 49-clause signed source SHA-256 096666b94d8865aba487c331abe9b899d04c4e1251b90ea0565b370218537c5c.
+
+**Exact resource comparison:** Original block order `012` has W81, 8,380 bytes, fresh retained-RES peak 10, live paid-slot-steps 477, clause-value byte-steps 7,078, span 7. Order `210` also W81, 8,383 bytes, same original SOURCE/owner and span 7, but peak 9, live slot-steps 425, byte-steps 6,818. Fixed-schedule payload accounting assumes SOURCE read-only, no recomputation, atomic result slot and last-use release. No full-machine time/space or globally optimal space bound follows. This repairs the *fixed-W81-schedule* resource degradation in LSPV-4/583, without contradicting its exact result.
+
+**Primary artifacts:** `research/agents/lspv-2/2026-11-13_0412_LSPV-2_NATIVE386_TOPOLOGICAL_SPACE_REPAIR597.tex`; `experiments/arc/lspv2_597_schedule_cost_replay.cjs`; `results/raw/arc/2026-11-13_0412_LSPV2_597_SCHEDULE_OS_RAW.json`; accepted `results/raw/arc/2026-11-13_0412_LSPV2_597_W81_SPACE_LOW_ACCEPTED.json`. The original checker, source, W81 baseline and six exact positive/negative packets are in supplementary evidence archive.
+
+**For roles:** LSPV-1/Route B: retain noncircular B2/B3, do not turn scheduling into a SAT bound. LSPV-2/Route A: authenticate an actual same-dispatcher RES→AND3 or DEF→LOCAL-CONVERT plus corrupted signed-port rejection. LSPV-3/Route B: check cross-rule types, context, discharge, owner and SOURCE identity under scheduling. LSPV-4/Route A: charge source access, byte length, verifier time, live value area, span and all-phase peak separately; check recomputation/scheduling options. LSPV-5/Route B: red-team native acceptance and any source-equivalence or minimum-space inference.
+
+**Status:** P2-D1, all-rule P2-C3, P2-B1 and separate P2-B2/B3 OPEN. P versus NP OPEN. TRACKERS REVIEWED; NO MATERIAL CHANGE. No scheduler, title, route label, historical weight, owner boundary or main.tex change.
