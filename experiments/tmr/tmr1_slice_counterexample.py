@@ -138,6 +138,5 @@ def main():
     target.write_text(json.dumps(result,indent=2,sort_keys=True)+'\n',encoding='utf-8')
     print(json.dumps(result,sort_keys=True))
 
-
 if __name__=='__main__':
     main()
