@@ -40,7 +40,7 @@ The resulting V local row masks XOR to zero since every graph edge is incident t
 
 ## Actual unchanged-checker execution
 
-The newly published `lspv1_615_infinite_false_acceptance.cjs` was fetched from its verified Git blob `771f1451ed57db9e5d254b2549e5bd7a90078715`. Its `produce` function generated each packet. The exact unchanged original checker body was executed in hosted V8 with **only** fs input, argv and console adapters. No mathematical checks were replaced. The standalone source is also an OS Node subprocess driver, but **that OS driver has not been executed in this run**.
+The newly published `lspv1_615_infinite_false_acceptance.cjs` was fetched from its verified Git blob `103419b00fad5522e4d7adf4646b7fceb8b12f14`. Its `produce` function generated each packet. The exact unchanged original checker body was executed in hosted V8 with **only** fs input, argv and console adapters. No mathematical checks were replaced. The standalone source is also an OS Node subprocess driver, but **that OS driver has not been executed in this run**.
 
 | k | Vertices V | Edges E | Signed SOURCE | Paid records | Actual source models | Original-checker assertions |
 |---:|---:|---:|---:|---:|---:|---:|
