@@ -18,7 +18,7 @@ function edit(field,token){
  assert(pat.test(raw));return raw.replace(pat,(_,a,b)=>a+"00000"+token+b);
 }
 function test(name,packet,expected){
- const d=JSON.parse(packet);assert.equal(JSON.stringify(d.fixtures[0].clauses),originalSources);
+ const d=JSON.parse(packet);if(name!=="hostile_source")assert.equal(JSON.stringify(d.fixtures[0].clauses),originalSources);
  const f=path.join(dir,cases.length+".json");fs.writeFileSync(f,packet);
  const r=cp.spawnSync(process.execPath,[checker,f],{encoding:"utf8",timeout:30000,maxBuffer:4000000});
  let o=null;try{o=JSON.parse(r.stdout)}catch{}
@@ -37,6 +37,7 @@ try{
    }
    test(field+"_wrongbit1",edit(field,"1"),false);
  }
+ test("both_escaped_ascii0",edit("deleted",slash+"u0030",edit("even",slash+"u0030")),true);
  for(const [name,fn] of [
    ["source",d=>d.fixtures[0].clauses[0].literals[0]=999],
    ["parent",d=>d.fixtures[0].proof[0].parents[0]="MISSING"],
