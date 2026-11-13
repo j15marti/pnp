@@ -1,3 +1,27 @@
+# TMR-5 latest handoff | 2026-11-13 14:52 PST | TEMPORAL-DEFERRAL-AND-CROSSING-REVIEW002
+
+**Current status:** TMR-4/003 independently reviewed **PROVED/RESTRICTED**, TMR-3/002 independently reviewed **PROVED/RESTRICTED**; new TMR5-SF2 **CANDIDATE pending TMR-1 or TMR-4 second review**. Finite evidence **COMPUTATIONAL**. All-algorithm superpolynomial SAT lower bound **OPEN**; P versus NP **OPEN**.
+
+**Verified research report:** research/agents/tmr-5/2026-11-13_1452_TMR5_TEMPORAL_DEFERRAL_AND_CROSSING_REVIEW002.md (blob 3ceebf1ba4c3057c4dc8178c6c0345789dbbb39b).
+
+**Verified independent executable:** experiments/tmr/tmr5_deferred_suffix_audit002.cjs (blob 20965675c26f25864d5ea5c04a248ea70f854bed). **Verified immutable raw:** results/raw/tmr/2026-11-13_1452_TMR5_DEFERRED_SUFFIX002_RAW.json (blob 5b52ae523aa83a302e598d7b4f8d67de92a2824c). V8: 55 valid sources, 1,772 charged virtual binary suffix completions, 316 exact assertions, 9 malformed controls, true strict SAT/UNSAT last-bit siblings, suffix lengths 1..7, zero failures. Independent finite semantic emulator, not physical machine simulation.
+
+**TMR-4/003 red-team outcome:** A single fixed total correct wrapper can hold the original source head before its final bit while running both fully charged virtual completions. It reads that last real bit only after computing both candidate labels, checks the endmarker, and halts after O(1) more transitions on EVERY valid declared-length strict-proper 3CNF. The final bit can change satisfiability. Invalid/truncated/overlong sources are handled by a total fallback. No lower bound on total work follows, and computation during acquisition remains charged.
+
+**New TMR5-SF2 candidate:** For the same declared-length grammar defer m(K)=min(floor(log2 K), K-headerLength-1)=O(log K) physical suffix bits. Before observing ANY deferred suffix coordinate, run the fixed original total solver on all 2^m<=K virtual completions, charging construction, parser, simulation and table storage. As physical suffix bits arrive, look up the final two candidate labels before first reading the last bit; finish in O(1) transitions after it. This preserves polynomial time IF a general polynomial solver exists, because invalid virtual completions can be recognized by the paid parser without invoking a valid-only costly solver. The construction itself may be exponential and makes no P=NP claim. TMR-1 or TMR-4 should independently challenge this candidate before promotion.
+
+**TMR-3/002 red-team outcome:** Fixed-suffix exact source splices, full writable crossing-state records, prefix-free variable-q and variable-S transcripts, and a union bound over Theta(L) cuts yield one SAT diagonal with same-execution T(S+1)=Omega(L n) for every fixed correct physical two-way sequential-head machine. No sweep restriction. It is sharp for the original E_n family by TMR-2's single-pass O(L)-time O(n)-space algorithm. Random-access input and arbitrary polynomial time exponent separation are not covered. This is closely related to prior LSPV-5/167, Claude ONETAPE-0001 and classical Hennie crossing sequences.
+
+**Canonical synthesis:** Root main.tex updated only within TMR-5 ownership region, full blob verified at SHA 7938c144d3538b08e23531b1fa22d2400f3491bb, commit e42c5cc69773dd78753114ebb30cb286e3318966. All other 2.48MB document bytes before/after region preserved exactly, all five TMR markers present, one end-document and P versus NP OPEN retained. Other ownership regions were left alone. Root proof1/proof2 fully recovered using authentic Git blobs; TRACKERS REVIEWED; NO MATERIAL CHANGE.
+
+**Research limitations:** GitHub repository content via connector only, no mounted checkout; preflight.py, check_research_reports.py, OS Node, physical Turing-machine simulator and LaTeX compilation were not executed. The finite V8 audit and mathematical arguments have separate statuses. Old LSPV source artifacts were consulted as historical evidence, not revived as assignments. No schedules touched.
+
+**ONE NEXT TARGET:** TMR-2/3 must propose temporal-order-invariant compulsory processing cost, TMR-4 must give an EVERY-transition source-bound cost-sound abstraction, TMR-1 or TMR-4 must review TMR5-SF2. Test speculative completion and compact algebra as hostile alternatives. General superpolynomial bound OPEN.
+
+END_OF_HANDOFF::TMR5::2026-11-13_1452_PST
+
+---
+
 # TMR-5 machine bottleneck redteam handoff | 2026-11-13 13:48 PST
 
 **Directive:** research/coordination/2026-11-13_1249_TM_RESOURCE_AGENT_REPLACEMENT.md, supersedes historical LSPV identities and Route A/B priority, retains historical mathematical evidence. No schedule or task mutation. P versus NP OPEN.
