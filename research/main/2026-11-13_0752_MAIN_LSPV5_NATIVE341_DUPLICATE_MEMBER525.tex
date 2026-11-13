@@ -1,0 +1,126 @@
+% LSPV-5 REPORT::525::2026-11-13T07:52:00-08:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{longtable,booktabs,hyperref}
+\title{LSPV-5/525: Historical /341 Duplicate-Member Accepted-Byte Counterexample}
+\author{LSPV-5 Independent Proof Red Team (Route B)}
+\date{13 November 2026, 07:52 PST}
+\begin{document}\maketitle
+
+\paragraph{Status.} \textbf{PROVED/EXACT} as a theorem about the archived checker source and
+\textbf{COMPUTATIONAL} as an OS-Node replay.  This is a \textbf{P2-D1 byte/provenance
+authentication failure}; it is not a logical refutation, a lower-bound counterexample, or a
+transfer to P2-C3, P2-B1, P2-B2, or P2-B3.  P versus NP remains \textbf{OPEN}.
+
+\section{Target claim and falsifiers}
+\textbf{Target claim.}  The archived \texttt{/341} verifier authenticates typed source and proof
+identifiers after parsing, but does not authenticate the raw JSON member sequence.  Its concrete
+accepted-byte language therefore includes duplicate decoded member names whose earlier values
+are discarded by \texttt{JSON.parse}.
+
+The claim would be falsified if (i) duplicate source/proof/deletion members were rejected before
+proof checking; (ii) reversing the two occurrences did not change disposition; (iii) the checker
+authenticated member multiplicity from the raw bytes; or (iv) an accepted duplicate changed the
+parsed proof, reported cost, or result rather than only unauthenticated raw provenance.
+
+\section{Exact replay}
+The reproducer ran the authoritative archived checker
+\texttt{experiments/arc/lspv2\_341\_independent\_verify.js} (SHA-256
+\texttt{0a8167fc65f324860f60abd2a0e0176d0def968cb6ee7055b6aa1bfd43c255ae}) against
+the full seven-family fixture (SHA-256
+\texttt{12d723c92c683ec1a59e17d95d0d47156babe7febe27b7432dc01279abcb8d95}).
+The unique-key baseline was accepted with 30,714 checks.  Each hostile packet placed a forged
+value first and the valid value last.  All eight were accepted with byte-for-byte identical parsed
+checker output after the temporary filename was removed.  Reversing the order rejected every
+packet:
+
+\begin{longtable}{lll}
+\toprule
+Decoded member & forged-first disposition & valid-first/forged-last control\\\midrule
+source \texttt{id} & ACCEPT, identical output & reject: missing antecedent\\
+escaped \texttt{\textbackslash u0069d} / \texttt{id} & ACCEPT, identical output & reject: missing antecedent\\
+source \texttt{literals} & ACCEPT, identical output & reject: local width\\
+proof \texttt{kind} & ACCEPT, identical output & reject: AND3 types\\
+proof \texttt{rule} & ACCEPT, identical output & reject: unknown rule\\
+proof \texttt{parents} & ACCEPT, identical output & reject: binary parent count\\
+proof \texttt{table} & ACCEPT, identical output & reject: incorrect conjunction\\
+deletion \texttt{sourceId} & ACCEPT, identical output & reject: deletion indexing\\
+\bottomrule
+\end{longtable}
+
+A single hostile packet containing all eight duplicate members was also accepted with the same
+30,714 checks and seven cases.  Its SHA-256 is
+\texttt{0ef3572a84d81b8e1f42ff0b8f38ea5740eb1051236c230c47127276240c9b3b}.
+
+\section{Theorem and proof}
+Let $P$ be ECMAScript \texttt{JSON.parse} and $V$ the archived verifier body.  The checker computes
+$V(P(b))$ for raw bytes $b$ and never retains the raw member sequence.  Hence
+\[
+  P(b_1)=P(b_2)\quad\Longrightarrow\quad V(P(b_1))=V(P(b_2)).
+\]
+For duplicate decoded member names, the runtime retains the last value.  Thus any forged-first,
+valid-last packet in the replay is in the historical accepted-byte language, while its reverse is
+checked with the forged value.  The OS replays establish that all eight chosen mutations reach
+exactly those two cases.  This proves the stated quotient property for the archived source and the
+listed packets.
+
+\section{Concrete semantics, abstraction, cost, and CEGAR}
+Any source-authenticated concrete semantics must begin with the raw byte string and include the
+deterministic parse transition $b\mapsto P(b)$.  A parsed-object abstraction is sound only if it
+explicitly quotients every byte string in $P^{-1}(o)$ to object $o$; it cannot later claim to have
+authenticated discarded member occurrences.  Logical work and the accepted result are unchanged
+in the eight accepted packets, so this is not a zero-logical-cost proof shortcut.  Physical parsing
+and an optional uniqueness scan still consume resources and must be charged by any machine-level
+model.
+
+CEGAR was applied correctly: every cheap abstract hostile path was concretely replayed in the
+authoritative checker.  The paths are genuine and therefore may not be refined away.  A recursive
+unique-decoded-member scan is a valid repaired front end, including escaped aliases, but it defines
+a new versioned grammar; it does not rewrite the historical accepted-byte calculus.
+
+\section{Scope and proof-chain classification}
+This run establishes a failure of the proposed strong P2-D1 claim that every accepted raw byte is
+source/provenance authenticated.  It does not show semantic unsoundness of the parsed proof, does
+not produce a cheaper native refutation, and leaves P2-C3 and P2-B1 \textbf{OPEN}.  P2-B2/B3 remain
+separate and unsupported.  No hard-family lower-bound test is justified from this parser result.
+
+\section{CORPUS REVIEWED}
+Reviewed both root proof trackers; issue \#3; root \texttt{AGENTS.md}, \texttt{CODEX.md}, task
+specifications and the PNP research protocol; the knot/link and SIL/M22 handoffs; the archived
+\texttt{/341} checker and full fixture; reports 539--549 and later native-calculus work; current
+LSPV-1/2/3/4 reports and handoffs; and the earlier LSPV-5/486 duplicate-member guard experiment.
+Primary references checked were ECMA-262 \S24.5.1, RFC 8259 \S4, RFC 7493 \S2.3, Cousot--Cousot
+abstract interpretation, Clarke et al. CEGAR, LRAT/cake\_lpr/FRAT proof-checking work, and AIGER.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+LSPV-5/486 already found the general JSON duplicate-name problem for a \texttt{/386} packet.  The
+new contribution is the first exact replay on the original \texttt{/341} authority across source
+IDs, escaped aliases, source literals, proof kind/rule/parents/table, and deletion provenance,
+including the composite accepted packet.  This contradicts only claims of complete raw-byte
+authentication; it does not contradict the typed parsed-object checks established by LSPV-3/611.
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+The historical \texttt{/341} byte front end is now explicitly classified as last-member-wins and
+therefore not provenance complete.  The parsed-object theorem remains valid at its exact scope.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted the archived checker, full fixture, typed-ID results, and the recursive duplicate-name
+scanner.  Rejected treating the scanner as historical authority or treating a successful build,
+finite optimizer, or reimplementation as evidence beyond its exact scope.  Retired no verified
+logical theorem.
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+Any statement that the \texttt{/341} checker authenticates every accepted raw JSON member is
+overstated.  The defensible statement is: it authenticates the parsed last-member-wins object.
+
+\section{Artifacts, tracker disposition, and blockers}
+Reproducer: \texttt{experiments/review/lspv5\_525\_native341\_duplicate\_member\_provenance.cjs}.
+Raw ledger and accepted packet are stored under \texttt{results/raw/arc/} with run 525 names.
+\textbf{TRACKERS REVIEWED; NO MATERIAL CHANGE}: the load-bearing node statuses remain OPEN.
+Blocker: no recovered signed historical grammar independently requires unique decoded JSON member
+names before \texttt{JSON.parse}; therefore the accepted-byte quotient is authoritative for this
+archived checker unless a source-authenticated earlier front end is produced.
+
+% END_OF_VERIFIED_REPORT::LSPV-5::525
+\end{document}
+
