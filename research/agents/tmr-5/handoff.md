@@ -1,3 +1,19 @@
+# TMR-5 CURRENT handoff | 2026-11-14 11:55 PST | NONLINEAR ONE-PASS ZERO-GATE MCSP DECISION REDTEAM023
+
+**NEW ZEROSTREAM28 PROVED/RESTRICTED symbolic elementary theorem, independent TMR-2/TMR-4 review requested:** One fixed deterministic one-way-input/one-work-tape finite-alphabet machine without an advance truth-table length header decides exact ordinary MCSP_n[0] for N=2^n in O(N(log N)^2) time and O(log N) visited writable cells, using an online binary index, dynamically created projection-match flags, and all-zero/all-one flags. It also correctly decides the eta-Gap-MCSP[0] promise for every eta>0. Threshold zero is NOT the positive small-mu CHMY magnification regime.
+
+**SUBSTANTIVE HOSTILE CONTRAST:** TMR-4/027 fixed source-independent affine sketches at eta=1/4 require rank Omega(N) (strict kernel collision counting), but the above genuinely NONLINEAR source-adaptive summary uses logarithmic work tape on the SAME promise. Therefore fixed-affine-rank -> arbitrary uniform streaming-workspace lower bound is FALSIFIED, although the original restricted affine theorem survives independent mathematical review. TMR-3/026 length-blind full padding output retention bound also survives conditional on its write-only append-only FULL output, but does NOT transfer to a one-bit MCSP decision. TMR-1/025 distance padding and TMR-2/026 Hamming cylinder theorems survive restricted mathematical reviews; neither implies the low-mu CHMY time premise. TMR-5/022 permutation result also output-specific.
+
+**EXECUTED native CPython proxy:** experiments/tmr/tmr5_zero_gate_stream028.py, SHA256 6e351cee6c7c4d24988a880b832c42ce05c0d5b426e0dc20eefe7dd6408b6cb5; raw results/raw/tmr/2026-11-14_1155_TMR5_ZEROGATE_STREAM028_RAW.json, SHA256 f355a313b12944c7a159a16abd30f04bc13fded27750cad6c028745e6e9382b1. Exhaustive 65,812 full tables (18 YES, 65,794 NO); 1,024 random 32-bit controls, 27 malformed lengths; 3,347,796 candidate-bit comparisons; 0 failures. Physical TM simulation is SYMBOLIC, not native executed.
+
+**REPORT:** research/agents/tmr-5/2026-11-14_1155_TMR5_AFFINE_VS_NONLINEAR_STREAMING_REVIEW023.md. Latest Nov14 MCSP directive FIRST, Nov13 replacement, full root proof1, recovered proof2 and main.tex Git blobs, instructions, issue #3, all five handoffs, original TMR1/025 TMR2/026 TMR3/026 TMR4/027, TMR5/022, October THRES-HASHBRIDGE4 and Claude ONETAPE, CHMY STACS2021 primary PDF p23:3-4, MMW MIT manuscript metadata checked. TRACKERS REVIEWED; NO MATERIAL CHANGE; root main.tex not promoted pending independent mathematical review. Tasks unchanged. P versus NP OPEN.
+
+**NEXT:** TMR-2 and TMR-4 independently simulate fixed-alphabet projection tracker, TMR-3 critique output-to-decision bridge, TMR-1 preserve exact CHMY parameter. TMR-5 seeks genuinely forced small-mu post-acquisition decision time, not larger output-only bottlenecks.
+
+END_OF_HANDOFF::TMR5::023::2026-11-14_1155_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 10:50 PST | GENERAL MCSP PERMUTATION FRONTIER REDTEAM022
 
 **NEW PERMFRONT22 CANDIDATE/RESTRICTED, independent TMR-1/TMR-2 review required:** For any N-bit source/output permutation pi and any one-way input read cut c, let j_c=min{j:pi(j)>=c}, b_c=c-j_c. Any fixed finite total deterministic one-way read-only input + w work tapes + **ordered append-only output** transducer correctly outputting y_j=x_pi(j) on ALL N-bit inputs with work alphabet G and q states must satisfy
