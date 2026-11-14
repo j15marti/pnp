@@ -1,3 +1,24 @@
+# TMR-1 CURRENT handoff | 2026-11-14 05:06 PST | HONEST POLYNOMIAL PADDING AND OUTPUT-LABEL FRONTIER019
+
+**TMR1-HPP19 CANDIDATE/RESTRICTED, pending TMR-2/TMR-5 independent mathematical review.** For any fixed standard polynomially parseable NP-complete explicit 3CNF encoding E, each fixed integer d>=2 gives an injective, polynomially reversible and label-preserving encoding p_d(x)=1^L 0 x 0^(L^d), N=2L+1+L^d. The padded membership language stays NP-complete and remains polynomial-time equivalent to E in BOTH directions, with all translations physically chargeable. It does NOT become easy by brute force as the exponential-padding TMR-1/018 counterexample did. The all-A, all-k target remains OPEN.
+
+**TMR-2/018 independent scoped peer extension:** On every valid padded source, ANY fixed correct tri-label SAT/UNSAT/MALFORMED decider must read ALL L^d required zero suffix bits. Exact all-trace source-bit indistinguishability gives Q>=L^d=N-O(N^(1/d)) and T>=Omega(N) for the locally moving one-original-head model. Thus nearly all-bit *syntactic* observation can be compulsory even in a polynomially honest NP-complete representation, proving NO SAT semantic-processing lower bound beyond linear acquisition. For ordinary two-label membership, all such reads are necessary on valid SAT inputs, but NOT on valid UNSAT inputs: one fixed total correct (possibly exponential-time) binary decider exhaustively classifies the short payload first, rejects UNSAT without reading ANY suffix, and validates the full suffix only if payload SAT. Both labels and malformed handling were audited separately. This is NOT a P algorithm.
+
+**ACTUALLY EXECUTED native CPython, COMPUTATIONAL:** Published exact source Git blob 0738dd6cd0925831c83f8d334fb45087fefb9b68 and exact raw blob 6925c97ac1b206155f3766d94138245c4763edfe match local executed files. In three <25-second chunks d=2,3,4: 378 valid toy payloads (36 SAT,342 UNSAT), 130,302 exhaustively flipped suffix-bit malformed neighbors, 5,614 SAT-to-NO flips, 342 binary UNSAT physical-prefix early rejections, 186 independently truth-table verified proper-3CNF force-gadget controls, 134,910 actual full-scan input-head movements, ZERO failures. The finite toy is an easy gadget sign language and NOT arbitrary SAT; Python semantics are NOT a generic charged instruction-table simulator.
+
+**GITHUB MAIN READBACK VERIFIED:**
+- report research/agents/tmr-1/2026-11-14_0506_TMR1_HONEST_POLYNOMIAL_PADDING019.md, blob c02d7e928bb3ffc0e82f6806ab30095418eaa90b;
+- native executed source experiments/tmr/tmr1_polynomial_padding019.py, blob 0738dd6cd0925831c83f8d334fb45087fefb9b68;
+- raw results/raw/tmr/2026-11-14_0506_TMR1_HONEST_POLY_PADDING019_RAW.json, blob 6925c97ac1b206155f3766d94138245c4763edfe.
+
+**Corpus:** authoritative replacement directive read first and rechecked SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4. Root proof1 complete 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 original Git blob complete 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c; canonical main.tex original Git blob complete 2,530,965 chars SHA 91b4e582c16cb7f60c9aa1ea2aebf09cd4caa2c6. Read issue #3 through TMR-4/019, AGENTS/CODEX/skill, all TMR handoffs, originals TMR-1/018, TMR-2/018 report/code/raw and TMR-5/016, Cook 1971/Karp 1972/Berman-Hartmanis 1977/Buhrman-de Wolf 2002 sources. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Root main.tex preserved for authorized TMR-5 synthesis. No tasks changed.
+
+**ONE NEXT TARGET:** TMR-2/TMR-5 independently scrutinize the all-invalid tri-label polynomial-encoding translations and the binary early-UNSAT decider. Seek a necessary *semantic* cost that survives honest polynomial padding, syntax-bit saturation, inexpensive Horn/XOR/treewidth controllers, input caching, and every polynomial space budget. General P versus NP OPEN.
+
+END_OF_HANDOFF::TMR-1::2026-11-14_0506_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 04:00 PST | HONEST-ENCODING PADDING FRONTIER018
 
 **NEW TMR1-PAD18 CANDIDATE/RESTRICTED pending TMR-5/TMR-2 independent review:** For any fixed explicit proper-3CNF bit encoding E with polynomial syntax validation, the all-algorithm/all-polynomial-exponent lower-bound quantifier Q_E is equivalent to the absence of a fixed total uniform polynomial valid-input decider. If E and D have **two-way fixed uniform polynomial-time SAT/UNSAT-preserving translations**, Q_E iff Q_D. This is a charged encoding/model-transfer safeguard, not a proof of P!=NP.
