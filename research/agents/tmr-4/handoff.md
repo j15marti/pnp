@@ -1,3 +1,25 @@
+# TMR-4 CURRENT handoff | 2026-11-14 13:36 PST | ADAPTIVE ORACLE GAP LOCALITY029
+
+**NEW ORACLEGAP29 PROVED/RESTRICTED elementary theorem, independent TMR-2/TMR-5 review OPEN:** Given unknown v-input source f, any source-independent deterministic target table y(f) of N bits, with EACH output bit computed by an arbitrary nonlinear adaptive at-most-q evaluation-query decision tree, obeys
+$$
+\sum_{a\in\{0,1\}^v} d_H(y(f_a),y(0))\le Nq.
+$$
+Here f_a is the single-1 source. Some f_a therefore remains at relative Hamming distance <= q/2^v from the zero-source image. If y(0) has circuit size <=s and every singleton must map to a promised Hamming-far Gap-MCSP NO of distance >=eta from ALL size-s circuits, necessarily q>=eta 2^v. Balanced cyclic OR output trees attain the reference-distance bound, **not** a full Gap-MCSP hardness reduction. **Critical restriction:** real SAT reductions see formula syntax, may precompute, adapt globally and share, so no arbitrary uniform SAT lower bound follows.
+
+**SECOND exact finite construction:** For 3-CNF F(x) on v variables, table h_F(x,u,w)=F(x) AND u AND w has N=2^(v+2) bits; UNSAT implies CC=0, SAT implies CC>0 by restricting to u AND w. Thus SAT maps to ordinary MCSP[0] NO only with potentially superpolynomial output; unique SAT gives one nonzero bit (distance 1/N from zero) and dummy-variable padding does not improve the normalized Gap-MCSP distance. This explicitly retires naive local evaluation plus padding as a robust cheap SAT-to-Gap-MCSP reduction, **not** any unrestricted transfer.
+
+**NATIVE CPython EXECUTION:** exact source `experiments/tmr/tmr4_oracle_gap029.py`, SHA256 a90975128b1156747f25f135458f9551b0a34697ad640d08c9df94f74ac5d476; immutable stdout `results/raw/tmr/2026-11-14_1336_TMR4_ORACLE_GAP029_RAW.json`, SHA256 fee34d495a28b42e193716430504c803b968ab0b27711c6dcbb5f96ac74dd037. 65,814 exhaustively tested functions, 5,586 cyclic checks, 160 adaptive suites (162,660 singleton output-bit comparisons), 60 padding checks, zero failed assertions. Semantic oracle proxy, not compiled finite-alphabet TM.
+
+**FULL REPORT:** `research/agents/tmr-4/2026-11-14_1336_TMR4_ORACLE_LOCALITY_GAP_MASK029.md`. Primary CHMY STACS21 Thms 1-2 p23:3 and MMW STOC19 Thms 1.2-1.3 inspected in original PDFs/page images. Exact positive mu CHMY one-work-tape decision-time premise OPEN. Previous affine-sketch theorem and fixed-gate cofactor result preserved and credited, not replaced.
+
+**PREFLIGHT:** latest Nov14 directive checked first/rechecked (SHA 1e11aa64a0b0d635a65cea58500b09f2b0fe010a), Nov13 replacement, AGENTS/CODEX/skill, latest issue #3 through TMR3/028, all TMR handoffs, original relevant TMR/Claude/legacy work; proof1 full 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2 full Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c, main.tex full 2,545,859 chars SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. TRACKERS REVIEWED; NO MATERIAL CHANGE; TMR-5 owns main.tex, unchanged. Schedules untouched; P versus NP OPEN.
+
+**NEXT / REQUEST:** TMR-2 audit adaptive double-count and strict CNF family; TMR-5 independently reimplement sharpness and test global preprocessing counterexamples; TMR-1 audit threshold and Gap-versus-exact promise; TMR-3 charge input/output/full truth-table construction. Investigate source-dependent globally shared evaluation rather than repetition of prior affine-survey results.
+
+END_OF_HANDOFF::TMR4::029::2026-11-14_1336_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-14 12:43 PST | LENGTH-BLIND FIXED-GATE MCSP COFACTOR INHERITANCE028
 
 **NEW FIXEDGATE28 PROVED/RESTRICTED, independent TMR-1/TMR-2/TMR-3/TMR-5 review OPEN:** For EVERY *fixed integer* s0>=0, ordinary exact MCSP[s0] on explicit full truth-table inputs N=2^n in standard binary order has a single (for that s0) uniform total finite-control deterministic **one-way read-only input + one physical two-way work tape** decider **without an advance length header**, using S(N)=(log N)^(O_s0(1)) work cells and T(N)=N(log N)^(O_s0(1)) transitions. At each input-length doubling, enumerate all <=s0-gate DAG descriptions on the new arity and inherit their first-half match flags from the zero-high-variable **syntactic cofactors**, which still have <=s0 gates; then continue online comparisons. All input movement, index/counter storage, gate evaluation, dual-list promotion and final output charged. This extends PRIOR TMR-5/023 and TMR-2/027 threshold ZERO to **all fixed gate counts**. It is elementary and not claimed externally novel; it is NOT the CHMY small positive mu regime s=N^mu.
