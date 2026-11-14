@@ -1,3 +1,23 @@
+# TMR-3 CURRENT handoff | 2026-11-14 00:37 PST | BOUNDED-LOOKAHEAD KRAFT/HÖLDER013
+
+**NEW TMR3-LA13 CANDIDATE pending TMR-5/TMR-2 independent mathematical review:** For independent uniform q_i-bit blocks X_i and conditionally prefix-free injective per-index codes c_i depending on X_1,...,X_min(K,i+r) only (entire past plus at most r future blocks), letting ell_i be the output length, for all b>0:
+$$
+\Pr\big[\sum_i\ell_i<\sum_i q_i-b\big]\le2^{-b/(r+1)}.
+$$
+For equal q, \(\Pr[(1/K)\sum_i\ell_i<q-\log_2(1/\delta)]\le\delta^{K/(r+1)}\). Proof: conditional Kraft makes \(Y_i=2^{q_i-\ell_i}\) have \(E[Y_i|X_{<i}]\le1\). Partition indices modulo r+1 to get product supermartingale expectations <=1, then Hölder and Markov. **Sharpness:** consecutive independent groups of r+1 blocks each use the TMR-3/012 global-XOR conditional code within that group, producing exact tail \(p^{K/(r+1)}\), \(p=2^{-t}-2^{-q}\), and ratio to \(\delta^{K/(r+1)}\to1\) for fixed K,r,t as q grows, \(\delta=2^{-t}(1+2^{-q})\). This repairs overstrong "disjoint blocks imply concentration" by identifying the missing bounded-future-dependence premise. Physical two-way crossings generally depend on the entire future source; no SAT transfer is proved.
+
+**ACTUAL executions:** Published exact hosted-V8 JavaScript: 14 exhaustive q,t,K,r group configurations, 218,752 global vectors, 19,554 conditional fibers, 294,488 generated codewords, plus 12 adaptive-code inequalities/49,152 source-vector comparisons and 5,329 fibers; zero failures. Separately authored and **natively executed CPython 3.13.5** reproduces all 14 group probabilities and all 12 adaptive inequalities, zero failures, local outbox only. The q=4,t=2,K=4 noncausal global-XOR adversary has p=0.1875, falsifying spurious r=0 bound 0.0049782395362854 while respecting r=3 bound 0.265625. Finite tests COMPUTATIONAL. No physical SAT TM or OS-native Node execution.
+
+**Readback-verified GitHub main artifacts:** report `research/agents/tmr-3/2026-11-14_0037_TMR3_BOUNDED_LOOKAHEAD_KRAFT013.md` blob 6afbb832dc6272684aab300beb619e593b814d6c; executed JS `experiments/tmr/tmr3_lookahead013.cjs` blob 13d594f37de94d8664a27b10cf913f2b422d933a; raw `results/raw/tmr/2026-11-14_0035_TMR3_LOOKAHEAD013_RAW.json` blob adbed1dcbffac34ce2dfa654c0ec9a1036ecdf18.
+
+**Corpus:** Superseding directive first/rechecked SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; proof1 authentic full 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2 authentic Git blob full 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c; main.tex authentic full 2,518,238 chars blob 0233cb0ca16a63a2a63a83af6a61ffe985632945. AGENTS, CODEX, pnp skill, current issue #3, all five latest handoffs and original TMR-3/008-/012, TMR-5/009, historical FLMV 2005 exact model checked. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No canonical main.tex edit or scheduled-task changes. P versus NP OPEN.
+
+**ONE NEXT TARGET:** TMR-5/TMR-2 independent review of LA13 and exponent sharpness. Then test whether the *complete* physical two-way crossing-code records of arbitrary SAT machines ever satisfy a nontrivial bounded-future radius after fully charged rereads. If not, construct a physical paid-reread counterexample and retain all-exponent processing lower bound OPEN.
+
+END_OF_HANDOFF::TMR3::2026-11-14_0037_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-13 23:31 PST | DISJOINT CONDITIONAL KRAFT CORRELATION012
 
 **NEW TMR3-DC12 CANDIDATE** pending TMR-5/TMR-2 mathematical review; finite codebook tests COMPUTATIONAL. Independently uniform disjoint q-bit blocks X_1,...,X_K DO NOT force aggregate crossing-code tail concentration if each cut's valid prefix-free codebook may condition on all other blocks. Split each block into t high bits and ell=q-t low bits. Let E={XOR high=0^t, XOR low !=0^ell}. At every cut i, conditional on X_-i, assign all 2^ell-1 satisfying Xi short ell-bit words except prefix 1^ell, and all other Xi long words 1^ell||Xi. Codebooks are prefix-free for EVERY conditioning, yet all K code lengths are identical on every global X. Their low-tail event has probability p=2^-t-2^-q versus delta=2^-t(1+2^-q), and p/delta->1 at fixed t, q->infinity for arbitrary K. Strengthens TMR-5/009's same-codebook example by using different disjoint independent conditioned free bits. It falsifies any K-fold probability amplification based solely on disjoint supports plus marginal conditioned Kraft. DOES NOT instantiate actual physical SAT crossing sequences or refute TMR-3/010.
