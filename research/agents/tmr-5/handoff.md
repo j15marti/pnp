@@ -1,3 +1,19 @@
+# TMR-5 CURRENT handoff | 2026-11-14 12:59 PST | BOUNDED-THRESHOLD MCSP ENVELOPE REDTEAM024
+
+**NEW ENVELOPE29 CANDIDATE/RESTRICTED, independent TMR-1/TMR-2 review OPEN:** Favorably audited TMR-4/028's length-blind fixed-gate cofactor inheritance using a separately authored exact straight-line-circuit enumeration and staged online prefix test. NEW constructive extension: for every fixed gate cap S and any fixed polynomial-in-n computable *bounded* schedule b(n) in {0,...,S}, a single finite deterministic one-way-input/one-work-tape machine can report the capped exact minimum gate count K_S(f)=min(CC_n(f),S+1) on the full N=2^n truth table with **T=N(log N)^{O_{S,b}(1)}, S_work=(log N)^{O_{S,b}(1)}**, even without an advance input length. At EOF compare to b(n). Stage flags are maintained for the full S envelope, not prematurely pruned at b(n). This **repairs** prior TMR-4's stage s(1)=0 to s(2)=1 naive-flag counterexample: prefix 10 is n=1 threshold0 NO, full 1010 is n=2 threshold1 YES, both handled with S=1. **Growing unbounded s(n)=N^mu not covered.**
+
+**Executed independent native CPython:** exact file `experiments/tmr/tmr5_bounded_envelope029.py`, Git blob `81cd1e2b67495409c0dec407ed7ffdde0b364785` = native file git hash; exact raw stdout `results/raw/tmr/2026-11-14_1259_TMR5_ENVELOPE029_RAW.json`, Git blob `9f8b0447ef1468801584cbaa03f27ce0eb6640cc` = local git hash. 27 bounded schedules; 7,452 exhaustive truth table/threshold controls, 1,024 additional seeded n=4 tables, 148 cofactor checks, 12 malformed lengths, specific 10/1010 repair, zero failed assertions. Semantic mask proxy only, not native finite-alphabet TM execution. Full report: `research/agents/tmr-5/2026-11-14_1259_TMR5_BOUNDED_ENVELOPE_REVIEW024.md`.
+
+**Primary model check:** STACS 2021 CHMY Theorem 1 p23:3 requires ordinary MCSP[2^(mu1*n)] deterministic one-way-input one-work-tape **N^1.01 exclusion** to imply P!=NP; Theorem 2 gives randomized N^1.99 exclusion at **different larger mu2**; Theorem 3 p23:4 limits short-oracle-query routes for mu>1/2. Constant S or bounded b(n) is outside hypothesis. TMR-3/027 annotated-head fusion and full-output header retention remain restricted; TMR-1 dummy-padding mismatch, TMR-2 high YES query depth and TMR-4 affine rank restrictions do not transfer to general one-bit MCSP decision lower bounds.
+
+**PREFLIGHT:** latest Nov14 directive read FIRST/rechecked blob 1e11aa64a0b0d635a65cea58500b09f2b0fe010a, Nov13 replacement, AGENTS/CODEX/skill, latest issue #3 through TMR4/028, all five TMR handoffs, full proof1 (28,714), proof2 recovered original Git blob (1,051,196), canonical main.tex original Git blob (2,545,859), original TMR/Claude/legacy/Walsh/threshold/MKTP sources, publisher CHMY PDF pp23:3-4 with page images. **TRACKERS REVIEWED; NO MATERIAL CHANGE; main.tex unchanged.** No schedules modified. P versus NP OPEN.
+
+**NEXT:** TMR1/TMR2 audit bounded-envelope minimal-gate proof and fixed program; TMR3 check physical single-tape sweeps; TMR4 seek/falsify genuine unbounded s(N)=N^mu inherited summary, with both labels and exact resource charges. TMR5 continue independent redteam. No promotion before peer review.
+
+END_OF_HANDOFF::TMR5::024::2026-11-14_1259_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 11:55 PST | NONLINEAR ONE-PASS ZERO-GATE MCSP DECISION REDTEAM023
 
 **NEW ZEROSTREAM28 PROVED/RESTRICTED symbolic elementary theorem, independent TMR-2/TMR-4 review requested:** One fixed deterministic one-way-input/one-work-tape finite-alphabet machine without an advance truth-table length header decides exact ordinary MCSP_n[0] for N=2^n in O(N(log N)^2) time and O(log N) visited writable cells, using an online binary index, dynamically created projection-match flags, and all-zero/all-one flags. It also correctly decides the eta-Gap-MCSP[0] promise for every eta>0. Threshold zero is NOT the positive small-mu CHMY magnification regime.
