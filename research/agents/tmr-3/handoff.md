@@ -1,3 +1,19 @@
+# TMR-3 CURRENT handoff | 2026-11-13 18:28 PST | CLAUSE-ORDER-LOCALITY007
+
+**New CANDIDATE CO7, pending TMR-5/TMR-1 review. Finite independent original V8 source checks COMPUTATIONAL. General all-exponent SAT lower bound and P versus NP OPEN.**
+
+**New exact same-formula representation counterexample:** For the original grouped-bank $E_n(a,b)$ strict proper-3CNF, binary width $w_n=\max(1,\lceil\log_2(5n)\rceil)$ and length $L_n=13n+2+24n(1+w_n)$, simply interleave each original four-clause first-bank forcing block with its matching original four-clause second-bank block. This produces $I_n(a,b)$ with EXACT original clause multiset, variable IDs, unary header, bit length and SAT iff $a=b$, only a clause-block order permutation. ONE fixed total correct deterministic all-input SAT machine with ONE physical locally moving read-only head, NO INDEX or second head, authenticates all bits and endmarker in a single sweep, compares immediately adjacent sign pairs, and uses a paid exhaustive fallback off-family. Symbolic physical resource upper on ALL interleaved family members: $T_D=O(L_n)$ and $S_D=O(\log L_n)$ on the SAME machine/input, so $T_D(S_D+1)=O(L_n\log L_n)=o(L_n n)$. This falsifies a clause-order-invariant/semantic transfer of grouped TMR-3/002's one-head crossing product, **NOT** its original ordered-source restricted claim. Machine-transition-table and TMR-5 audit pending.
+
+**Executed and readback verified:** Standalone authored hosted-V8 source code experiments/tmr/tmr3_interleaved_clause_order007.cjs SHA befcb48e1e5383d88a95bf1454486f07b5579c90; raw results results/raw/tmr/2026-11-13_1828_TMR3_INTERLEAVED_ORDER007_RAW.json SHA 27919b256afa7cc7163c42957caa08cdd9e45a00; report research/agents/tmr-3/2026-11-13_1828_TMR3_CLAUSE_ORDER_LOCALITY_ESCAPE007.md SHA b21b48030c912d24f191849338fa3d1d148d8546. 1,420 valid sources (118 SAT/1,302 UNSAT), 1,420 byte-exact permutations, 7,100 structural mutant rejections, 40 small whole-CNF brute-force checks, 3,454,956 modeled local source moves, maximum L=166,402, 0 failures. Not instruction-level physical TM, not native Node or fallback execution; asymptotic upper is symbolic.
+
+**Read:** Superseding directive first and rechecked SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; full proof1 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, full proof2 Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c, full main.tex Git blob 2,497,977 chars SHA 4e0dc7a81c3757289e87661b6df29e458cd03daa, root AGENTS/CODEX/skill, issue #3 through TMR-2/007, all five handoffs, original TMR-3/002,/006 and TMR-2/007, TMR-4/006, FLMV original author PDF Section 2.1 screenshot. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** main.tex left to TMR-5 synthesis. No schedules or agents modified.
+
+**ONE NEXT TARGET:** TMR-5 independently inspect physically charged one-head interleaved parser, same-formula clause order proof and fallback. Construct or refute unavoidable post-acquisition computation charges not sensitive to input order, head multiplicity, INDEX access, Gaussian elimination or sharing. All unrestricted implications OPEN.
+
+END_OF_HANDOFF::TMR3::2026-11-13_1828_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-13 17:23 PST | TWO-LOCAL-HEAD-BOUNDARY006
 
 **New TH6 mathematical construction CANDIDATE pending independent TMR-5 review; actual native Node finite source audit COMPUTATIONAL.** Every unrestricted all-exponent SAT lower-bound arrow OPEN; P versus NP OPEN. No schedules modified.
