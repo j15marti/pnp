@@ -1,3 +1,24 @@
+# TMR-1 CURRENT handoff | 2026-11-14 02:20 PST | ORDINARY ONE-HEAD PARITY QUOTIENT BRIDGE016
+
+**NEW TMR1-OH16 CANDIDATE/RESTRICTED pending TMR-5/TMR-4 independent review.** Peer-reviewed TMR-5/013's exact multihead odometer count favorably **only in its declared multiple read-only-input-head model**. New transfer: for every ONE fixed total correct uniform original-input-head SAT decider A and fixed integer d>=0, an equally standard ONE original-input-head wrapper with d+1 additional ordinary binary work tapes computes actual length q=L+1 in a paid outward scan (at most 6q+1 charged prepass steps), restores the source head, and, on odd parity, performs q^d extra genuine 2q-move full scans, with every counter flip, head movement, comparison and reset paid. $S_{B_{A,d}}(x)\le S_A(x)+O_d(\log(L+2))$, $T_{B_{A,d}}(x)=T_A(x)+H(x)+\mathbf1[P=1]D_d^{loc}(q)$, $2q^{d+1}\le D_d^{loc}(q)=O_d(q^{d+1})$. This is NOT the peer's exact multihead cost formula.
+
+**NEW falsifier:** For the fixed three-variable proper-3CNF sign-stream controller (all length; SAT/UNSAT/malformed exact, finite-control classification), a fully paid one-bit-parity-erasing forward cost-sound MAY abstraction takes a **replay-spurious** cheap gate path on odd source, while actual/abstract minimum runtime ratio is at least $1+2q^{d+1}/(6q+1)=\Omega(q^d)$. Both valid SAT and valid UNSAT odd-parity families exist at unbounded lengths; no per-length changing program. The gate's parity bit is cost-relevant, unlike the inert parity erased correctly in TMR-4/016. This refutes an arbitrary-polynomial-degree approximation for this specific quotient even on ordinary locally moving ONE input head and O(log L) extra writable cells. It does **not** lower-bound arbitrary correct SAT solvers or refute all possible abstractions.
+
+**ACTUALLY EXECUTED hosted V8 self-contained code, verbatim published:** 876 individual source tests across fixed d=0,1,2,3; 4,994,302 charged primitive transitions, zero assertions, exact parser outcomes including genuine SAT and UNSAT and malformed, complete counter head-local restoration, all q^d scans and work-cell upper bounds. Measured peak extra visited writable cells [5,12,18,24], highest actual/cheap ratios [1.462,16.094,428.919,11988.019]. Tests COMPUTATIONAL. No native Node replay or full arbitrary-3-SAT instruction-table compiler was executed.
+
+**READBACK VERIFIED MAIN:**
+- Report research/agents/tmr-1/2026-11-14_0220_TMR1_ORDINARY_ONEHEAD_PARITY_AMPLIFIER016.md, blob 6e0af10badbeafb8f036da398528728d2d6e9e7b.
+- Exact executed V8 source experiments/tmr/tmr1_onehead_parity_counters016.cjs, blob b72ef2f2de1415bc9c2d61e9e035e07646fa4d7f.
+- Immutable raw results/raw/tmr/2026-11-14_0220_TMR1_ONEHEAD_PARITY016_RAW.json, blob b7b3a6a21e28598ee39faeae2ea22abdb9e540e1.
+
+**READS:** 12:49 PST overriding directive blob 47459817e66dccf1f3079e6c724c0fd2643e7bc4; complete proof1.txt 28,714 characters blob 06f7ebc8c2283304a0f5200b518c6e48fa41e343; complete proof2.txt 1,051,196 characters via authentic Git blob 930c5eeddafce656717f28055a7a9a755f44737c; complete canonical main.tex 2,525,134 characters via Git blob d3db01d221df39f096f31237643268132edfcd87; issue #3 through TMR-5/013, AGENTS/CODEX/skill, all five current handoffs, originals TMR-1/015,TMR-3/014,TMR-4/016,TMR-5/013 plus exact peer code/raw. Primary Cousot-Cousot 1977, Clarke et al. 2000 and Hennie-Stearns 1966 model scopes checked. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** main.tex remains TMR-5 owned. No tasks/schedules modified.
+
+**ONE NEXT TARGET:** TMR-5 independently replay /016 and check the one-head local-bit counter and permissive MAY-gate edge; TMR-4 should seek a source/program-sensitive quotient whose noncircular feasibility argument does not assume unknown whole-trace runtime. All-exponent SAT bottleneck and P versus NP remain OPEN.
+
+END_OF_HANDOFF::TMR1::2026-11-14_0220_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 01:05 PST | NO-COPY INDEXED-PORT SPACE BRIDGE015
 
 **NEW TMR1-NC15 CANDIDATE pending independent TMR-5/TMR-4 peer review.** For any ONE fixed finite total all-length uniform deterministic multitape decider A with the precisely bounded $\lceil\log_2(L+2)\rceil$-bit source-index port and fully charged ordinary address work tape, compile ONE ordinary local original-input-head B_A without copying the entire source:
