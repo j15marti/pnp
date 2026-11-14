@@ -1,0 +1,92 @@
+% CLAUDE REPORT::WCD-KWIDTH-0001::2026-11-14T11:30-08:00
+% Claude routine "worst-case minimum derivation cost". User follow-up: continue TW-T2 / FL-T1 (target FL-T2).
+% Role-neutral and additive. It does NOT edit root main.tex or any TMR/LSPV region.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\title{WCD-KWIDTH-0001: knowledge width is not bounded by space}
+\author{Claude scheduled routine (worst-case derivation complexity log)}
+\date{2026-11-14 11:30 America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\paragraph{Status line.}
+\begin{itemize}
+\item Lemma~\ref{lem:lab} (labelling form of the bridge): \textbf{PROVED/EXACT}.
+\item Theorem~\ref{thm:sep} (a correct $O(\log n)$-space, linear-time machine with knowledge width $\Omega(n/\sqrt{\log n})$): \textbf{PROVED/EXACT} given the \textbf{KNOWN THEOREMS} TR26-018 Cor.~1.3 and Ben-Sasson--Wigderson; toy instance \textbf{COMPUTATIONAL}. Not independently reviewed.
+\item FL-T2 (``knowledge width is bounded by a function of space''): \textbf{FALSIFIED/RETIRED} for machines correct on a slot class.
+\item FL-T2 for machines correct on \emph{all} CNFs: \textbf{OPEN}; Corollary~\ref{cor:L} shows a positive answer would imply SAT $\notin$ L.
+\item P versus NP remains \textbf{OPEN}.
+\end{itemize}
+
+\section{Setting and a correction}
+WCD-REACH-0001 attached to each step of a run the predicate $I_t$, ``$x$ could still be a model given what the machine holds'', and measured its parity-decision depth $\kappa$. That measure is too generous to the lower bound, for a simple reason.
+
+\paragraph{The chain example.} Take slots $D_0=(x_0)$, $D_i=(\neg x_{i-1}\vee x_i)$, $D_n=(\neg x_{n-1})$, each present or $\top$. A subformula is unsatisfiable exactly when every slot is present. A one-pass machine with a counter decides this in $O(\log n)$ space. Its predicate at time $t$ is $x_0=\dots=x_{t-1}=1$, of depth $t$. Yet the labels $x_{t-1}=1$ are also valid and have depth 1. So $\kappa$ can be large when a narrow reading of the same run exists. The right measure takes the best labelling.
+
+\paragraph{Labellings.} Let $M$ read each slot at most once on every path. A \emph{labelling} assigns a predicate $J_{C,t}$ to each reachable configuration, with $J\equiv$ true at the start, $J\equiv$ false at rejecting configurations, and $J_{C,t}\wedge v\models J_{C',t+1}$ whenever $M$ moves from $(C,t)$ to $(C',t+1)$ on reading constraint $v$. The \emph{knowledge width} $\lambda(M)$ is the least, over labellings, of the largest parity-decision depth of a label.
+
+\begin{lemma}\label{lem:lab}
+The reachability predicates of WCD-REACH-0001 form a labelling, and every labelling is implied by it pointwise. For every labelling and every unsatisfiable input $F$ refuted in $L$ steps,
+\[\lambda\cdot\log L\cdot(\log L+\lambda)\ \ge\ \Omega(w^2)\quad\text{when }F=\varphi\circ\mathrm{MAJ}_3\text{ and }\varphi\text{ has resolution width }w.\]
+A slot may hold a conjunction of $O(1)$ clauses on $O(1)$ variables.
+\end{lemma}
+\begin{proof}
+The first sentence is Lemma 1 of WCD-REACH-0001 with empty re-read set. Pointwise implication is an induction along any path. The inequality is the checkpoint argument of that report applied to the labels on the run of $F$; at the end a slot is false, and querying its $O(1)$ variables finds a false clause.
+\end{proof}
+
+\section{The separation}
+Let $G$ be a connected cubic expander on $h$ vertices and $n=\tfrac92h$ the number of lifted variables. The \emph{block class} of $G$ has one slot per vertex $v$. The slot holds $\top$, or the lifted parity constraint ``the XOR of $\mathrm{MAJ}_3$ gadget outputs on the edges at $v$ equals $c$'' for $c\in\{0,1\}$. With all slots present and odd total charge this is $T_G\circ\mathrm{MAJ}_3$.
+
+\begin{theorem}[small space, wide knowledge]\label{thm:sep}
+Let $M_0$ read the $h$ slots once in order, keeping a counter, a flag ``all present so far'' and the parity of the charges. It rejects exactly when all slots are present and the parity is odd. Then:
+\begin{itemize}
+\item[(a)] $M_0$ is correct on the whole block class, uses $O(\log h)$ bits and $h$ steps;
+\item[(b)] every labelling of $M_0$ has width $\lambda\ge\Omega(h/\sqrt{\log h})$.
+\end{itemize}
+\end{theorem}
+\begin{proof}
+(a) The gadget outputs are independent and each takes both values, so an input is satisfiable exactly when its linear system over the gadget outputs is. A dependency among the present equations is a vertex set, all present, with no edge leaving it. $G$ is connected, so this is the whole vertex set, and the system is inconsistent exactly when the total charge is odd.
+
+(b) Apply Lemma~\ref{lem:lab} with $L=h$ and $w=e(G)=\Theta(h)$: $\lambda\log h(\log h+\lambda)\ge\Omega(h^2)$.
+\end{proof}
+The strongest labelling shows where the width comes from. After $t$ slots the machine's one parity bit stands for ``the XOR of the gadget outputs on the edges leaving the first $t$ vertices equals $b$''. That is one parity of $\Theta(h)$ majorities. In the unlifted class the same bit stands for a single parity of the input, of depth 1.
+
+\paragraph{Check.} \texttt{kwidth/knowledge\_vs\_space.py} takes $G=K_4$ (18 lifted variables, 81 inputs). $M_0$ is correct on every input, lifted and unlifted. The bridge lemma holds on all 32 steps of the 8 unsatisfiable inputs. The midway label has Fourier sparsity $256=4^4$ in the lifted class, so its parity-decision depth is at least 4, the size of the cut. In the unlifted class its sparsity is 1. $M_0$ has 20 state values.
+
+\section{Consequences}
+\begin{itemize}
+\item \textbf{FL-T2 is false as a general principle.} A machine can hold wide knowledge in one bit. So Theorem 2 of WCD-REACH-0001 (time versus knowledge width) cannot be turned into a time--space bound by a general inequality $\lambda\le g(S)$.
+\item \textbf{The lower bound is not about the machine.} For this class the width is forced by the formula, through TR26-018, whatever the machine does. The machine pays nothing for it.
+\item \textbf{What survives.} The time versus knowledge-width inequality is still true for every correct machine. It says every fast machine must at some moment hold knowledge that no few parity queries can evaluate. It does not say that this is expensive.
+\item \textbf{Where a space bound could still come from.} $M_0$ is correct only on the block class, where the problem is linear algebra. A bound $\lambda\le g(S)$ restricted to machines correct on \emph{all} CNFs is not refuted by this example.
+\end{itemize}
+
+\begin{corollary}[calibration]\label{cor:L}
+Suppose every machine correct on all CNF inputs with space $S$ has knowledge width at most $g(S)$ on lifted expander Tseitin. Then every such machine running in polynomial time has $g(S)\ge\Omega(n/\sqrt{\log n})$. If $g(O(\log n))=n^{1-\Omega(1)}$, then SAT $\notin$ L.
+\end{corollary}
+\begin{proof}
+A machine correct on all CNFs is correct on the clause-slot subformulas of $T_G\circ\mathrm{MAJ}_3$, so WCD-REACH-0001 Theorem 2 applies with $L$ polynomial. A bit-reading machine is a slot-reading machine with the same time and space.
+\end{proof}
+So the remaining form of FL-T2 is at least as hard as separating NP from L. It is a restatement of a known open problem and is recorded as such, not as progress.
+
+\section{CORPUS REVIEWED / DUPLICATION AUDIT / CHANGES}
+\begin{itemize}
+\item \textbf{Corpus reviewed:} the five earlier reports of this session and the consolidated living log. TMR-4's abstraction reports were again not read in full.
+\item \textbf{Duplication / contradiction audit:} no earlier artifact of this routine separates knowledge width from space. The conclusion matches log item 11 (an easy family gives no bridge) from a new direction. No contradiction found.
+\item \textbf{What changed relative to root main:} nothing; \texttt{main.tex} is not edited.
+\item \textbf{Adopted:} the bridge lemma and checkpoint argument. \textbf{Rejected / retired:} FL-T2 in general form; the measure $\kappa$ of WCD-REACH-0001, replaced by $\lambda$.
+\item \textbf{Stale or overstated claims found:} WCD-REACH-0001 called a positive answer to FL-T2 a possible unconditional time--space bound ``beyond FLMV''. For class-correct machines that answer is now known to be negative, and for all-CNF machines it would imply SAT $\notin$ L.
+\end{itemize}
+
+\section{Evidence}
+\texttt{kwidth/knowledge\_vs\_space.py}, \texttt{kwidth/raw\_results.json}; single stage, 1.7\,s. No TeX engine was available, so this file was not compiled. No new literature search was run in this step.
+
+\paragraph{Next target KW-T1.} Use NP-hardness of the class. For the clause-slot class of $T_G\circ\mathrm{MAJ}_3$ (arbitrary subsets of clauses), decide whether satisfiability is NP-hard. If it is, a small-space machine correct on that class is no longer available for free, and the question whether such a machine can hold wide knowledge becomes a statement about an NP-hard problem on explicit inputs.
+
+\medskip\noindent P versus NP remains OPEN. One OPEN load-bearing arrow means P $\ne$ NP is not proved.
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WCD-KWIDTH-0001

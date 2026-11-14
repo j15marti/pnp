@@ -132,6 +132,12 @@ soundness. P versus NP remains **OPEN**.
     formulas, kappa = parity-decision depth of the I_t ("knowledge width"). Holds for all machines; kappa is not
     bounded by space (OPEN, FL-T2). TW-T1 RETIRED: a time-only speedup would imply DTIME[t] in DSPACE[t^gamma].
 
+20. PROVED/EXACT, not independently reviewed (`vw499c`, WCD-KWIDTH-0001). **Knowledge width is not bounded by
+    space.** On the vertex-block class of lifted expander Tseitin, the one-pass machine "all present and odd
+    parity?" is correct, uses O(log n) space and linear time, yet every valid labelling of its configurations has
+    parity-decision width Omega(n/sqrt(log n)). FL-T2 is FALSIFIED/RETIRED in general form. For machines correct
+    on all CNFs a bound width <= g(S) would imply SAT not in L, so it restates a known open problem.
+
 ## Literature check (2026-11-12)
 - arXiv:2506.16956 (rev. May 2026): the Proof Analysis Problem is NP-complete for EF but in P
   for Resolution. Classed as a useful structural analogy: it suggests EF-level systems
@@ -488,3 +494,9 @@ soundness. P versus NP remains **OPEN**.
   **Single open target FL-T2:** bound knowledge width by machine space on an explicit family, or exhibit a correct
   small-space machine with wide knowledge. Should be compared with TMR-4's abstraction work, which was not read
   in full. P versus NP remains **OPEN**.
+
+- **2026-11-14 ~19:30 UTC · WCD-KWIDTH-0001** (branch `ccr-1695bd63-vw499c`, user follow-up: continue TW-T2 /
+  FL-T1). Result is item 20: FL-T2 answered negatively. Report:
+  `research/agents/claude/worst-case-derivation/2026-11-14_1130_CLAUDE_WCD-KWIDTH-0001.tex`; evidence in `kwidth/`.
+  **Next target KW-T1:** is satisfiability of arbitrary clause subsets of lifted Tseitin NP-hard? P versus NP
+  remains **OPEN**.
