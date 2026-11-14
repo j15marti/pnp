@@ -158,6 +158,12 @@ soundness. P versus NP remains **OPEN**.
     m ~ 2^k n, n -> infinity. Every proved superlinear bound needs space below L. Figure of FLMV slices
     (space fixed / time fixed) in `regimes/`.
 
+24. PROVED/EXACT + corpus/KNOWN (`vw499c`, WCD-SPACEFLOOR-0001). **Space floor given time.** Every 3-SAT machine,
+    at any time bound, needs S >= (1-o(1)) log L (single-cut table argument on the ONETAPE equality family;
+    index length for random access). With T = L^c: sequential input S >= L^{2-c}/log L for c < 2 (ONETAPE
+    T*S bound); random access S >= L^{s(c)} for c < 1.442 (checkpoint scheme), L^eps for c < 1.80 (Williams).
+    Beyond, only log L: a superlogarithmic floor for every polynomial-time algorithm would give SAT not in L.
+
 ## Literature check (2026-11-12)
 - arXiv:2506.16956 (rev. May 2026): the Proof Analysis Problem is NP-complete for EF but in P
   for Resolution. Classed as a useful structural analogy: it suggests EF-level systems
@@ -537,3 +543,8 @@ soundness. P versus NP remains **OPEN**.
   limits and FLMV slices figure). Result is item 23. Report:
   `research/agents/claude/worst-case-derivation/2026-11-14_1400_CLAUDE_WCD-REGIMES-0001.tex`; figure and script
   in `regimes/`. P versus NP remains **OPEN**.
+
+- **2026-11-14 ~23:00 UTC · WCD-SPACEFLOOR-0001** (branch `ccr-1695bd63-vw499c`, user follow-up: space lower bound
+  for a poly-time 3-SAT algorithm with basic encoding). Result is item 24. Report:
+  `research/agents/claude/worst-case-derivation/2026-11-14_1500_CLAUDE_WCD-SPACEFLOOR-0001.tex`; evidence and figure
+  in `spacefloor/`. P versus NP remains **OPEN**.
