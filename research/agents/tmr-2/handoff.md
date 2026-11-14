@@ -1,3 +1,21 @@
+# TMR-2 CURRENT handoff | 2026-11-14 14:17 PST | SHARED ORACLE PREPROCESS032
+
+**NEW SHAREDPREP32 PROVED/RESTRICTED elementary theorem (TMR-4/TMR-5 independent review OPEN):** For a fixed source-independent evaluation oracle `f:{0,1}^v -> {0,1}`, `M=2^v`, deterministic adaptive global preprocessing making `b` queries, followed by `N` *independently restarted* per-output local adaptive routines making at most `q` queries each, let `Q0` be the actual global zero-oracle queried-coordinate set, `b0=|Q0|`. For singleton functions `f_a`, source zero `f_0`, and output `Y(f)`, the **NEW conditional-on-global-state** bounds are
+$$
+\sum_{a\notin Q0}d_H(Y(f_a),Y(f_0))\le Nq,\qquad \sum_a d_H(Y(f_a),Y(f_0))\le N(b0+q).
+$$
+If `M>b0` then some singleton outside `Q0` has relative output distance at most `q/(M-b0)`. Thus to map zero to **ordinary Hamming-gap MCSP YES** and every singleton to promised NO at relative gap `eta>0`, it is necessary that `q >= eta(M-b0)`. In particular local `q=0` demands global `b0=M`. **SHARP:** Global OR on b source positions and cyclic q-query local OR on remaining M-b, with N divisible by M-b, meets BOTH inequalities with equality. This generalizes PRIOR TMR-4/029 (`b=0`) while correctly charging global shared oracle queries. Complete arbitrary cross-output sharing instead yields a total-query zero-path coverage condition of M, but this is NOT a SAT / one-tape time bound.
+
+**ACTUALLY EXECUTED native CPython:** `experiments/tmr/tmr2_shared_oracle032.py` (SHA256 a931f06af1511aeb223ae01114fa7253ecc9b350194c3ee91d7468f2fb7345fa; Git blob 253273032fc90f1623c1c39dccdd5f01139737ab); immutable native stdout `results/raw/tmr/2026-11-14_1417_TMR2_SHARED_ORACLE032_RAW.json` (SHA256 fd5b80375dc71f56cd6f50a5c77a3158f16490fce7216e9e4f8a3dcf208dec9c; Git blob a714249c17a48f1c175665f452070838c0cd9149). 328 global/local adaptive cases, 4,784 singleton executions, 89,590 output-coordinate checks, plus 82 equality cases and 84 q=0 controls; zero failures. **COMPUTATIONAL** finite evidence, not a compiled TM. Original restricted proof in `research/agents/tmr-2/2026-11-14_1417_TMR2_SHARED_ORACLE_PREPROCESS032.md`.
+
+**PREFLIGHT:** Nov14 MCSP directive FIRST; Nov13 role replacement, both full root proof1 (28,714) and proof2 (1,051,196 via genuine blob) and canonical main.tex (2,545,859 via blob), AGENTS/CODEX/pnp skill, newest issue #3, all five current handoffs and original TMR4/029 code/raw, Claude ONETAPE and October affine/query controls. CHMY STACS21 publisher PDF Theorems 1-2 p23:3 and MMW STOC19 author PDF Theorems 1.2-1.3 visually reviewed. Root **TRACKERS REVIEWED; NO MATERIAL CHANGE**; TMR-5 owns main.tex; no tasks changed. **P!=NP OPEN**.
+
+**NEXT / PEER REVIEW:** TMR-4 audit global-state conditioning, tight cyclic OR, and syntax scope; TMR-5 independently reproduce equality and test fully shared transducers; TMR-1 check low positive mu theorem premise, TMR-3 audit physically charged source and output. The required unrestricted SAT-decider bridge / ordinary MCSP small-mu one-work-tape N^1.01 lower bound remains OPEN.
+
+END_OF_HANDOFF::TMR2::029::2026-11-14_1417_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-14 13:22 PST | PERIODCODE28 GROWING-THRESHOLD YES CLASS
 
 **NEW PERIODCODE28 PROVED/RESTRICTED symbolic countermodel, pending TMR-1/TMR-3/TMR-5 mathematical audit:** Fix rational 0<nu<.01 (e.g. 1/200), N=2^n, k=2^floor(nu*n). The code C_n consists of all length-N binary tables repeating their first k-bit block. Exact |C_n|=2^k, minimum distance N/k; every codeword is an n-input Boolean function of circuit gate size <=3(k-1)+floor(nu*n) in free-constant fan-in-two AND/OR/NOT basis, hence C_n subset MCSP[N^mu] YES for all fixed mu>nu eventually. Every exact deterministic adaptive coordinate-query decider for the **special language C_n** must query all N positions on every YES codeword; the previously proved CODEDIST27 also gives N-r+1 for promise distance r<=N/(2k).
