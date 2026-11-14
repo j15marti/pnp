@@ -1,3 +1,28 @@
+# TMR-1 CURRENT handoff | 2026-11-14 00:06 PST | MINIMAL-SEVEN PEER REVIEW AND SHARP EXTREMUM014
+
+**INDEPENDENT PEER VERDICT:** TMR-5/011's exact seven-sign inclusion-minimal certificate classification and 4+3 intersection-count formula receive a separate rigorous Hall-neighbor-set review at **PROVED/RESTRICTED**, only for the authenticated original eight-mask sign-position promise G_r. This is distinct from minimum cardinality (five or six sign bits), machine storage, and post-input-processing cost. No general SAT lower bound.
+
+**NEW TMR1-M7MAX14 CANDIDATE pending TMR-5/TMR-2 independent review:** The total number M7(a) of inclusion-minimal seven-position SAT certificates on any satisfiable eight-mask block obeys
+$$
+0\le M_7(a)\le8\binom74\cdot3\cdot2=1680.
+$$
+Equality iff all eight complete three-bit masks are identical. Proof: unique unqueried row (8), unique 4-of-7 group (35), and ordered distinct queried coordinates (6); equality implies every four-row group agrees in every coordinate, forcing all masks equal. Every all-equal tuple realizes 1680. Crucial hostile opposite-order pair: all-equal (7,7,7,7,7,7,7,7) has M7=1680 and *minimum* certificate C=5, whereas balanced (0,0,3,3,5,5,6,6) has M7=0 but C=6. Certificate multiplicity cannot serve as obligatory observation/time proxy. Uniform polynomial eight-mask classification remains the fast control.
+
+**ACTUAL independently implemented native CPython (not a wrapper):** For EACH of seven fixtures, enumerate ALL binom(24,7)=346,104 seven-sign subsets and compute Hall violation by explicit row-subset domain unions. For each SAT certificate test all seven deletions; verify full physical-query 4+3 shape and independently count by disjoint actual row sets. 2,422,728 exhaustive size-seven queries, zero mismatches. Cases: inclusion-minimal counts 16,0,18,0,1680,30,0, matching TMR-5/011 independently. Deterministic seed 0x51A7EED structural sweep of 2048 tuples plus 8 constant tuples, zero failures. Individual native runs 2.6 to 3.4 seconds. Finite results COMPUTATIONAL, not native physical SAT TM runs.
+
+**READBACK VERIFIED on GitHub main:**
+- Full report: research/agents/tmr-1/2026-11-14_0006_TMR1_MINIMAL_SEVEN_PEER_EXTREMUM014.md, Git blob 601f672305ca542eef04e007ed1d3f01ba2752c9.
+- Exact executed native Python source: experiments/tmr/tmr1_minimal_seven_hall014.py, Git blob cbb96727df7393e49d3c1d6bc18c8e99032faadc, MATCHES git hash-object of physically executed local source.
+- Machine-readable raw: results/raw/tmr/2026-11-14_0006_TMR1_MINIMAL_SEVEN_HALL014_RAW.json, Git blob fad052c8b72c016ead84729f87a20a39f7e36827.
+
+**Corpus and scientific guard:** Superseding 12:49 PST TMR directive read first, rechecked unchanged SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; complete proof1.txt (28,714 chars), proof2.txt recovered from authentic Git blob (1,051,196 chars), canonical main.tex authentic Git blob (2,518,238 chars), current issue #3 through TMR-5/011, AGENTS.md, CODEX.md, skill and all five peer handoffs; original TMR-5/011 report/code/raw, TMR-2/013, TMR-1/013, TMR-4/014 and primary Hall 1935/Buhrman-de Wolf 2002/FLMV 2005 checked at scope. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Root main.tex left for TMR-5 whole-document synthesis. No schedule/task mutation. P=NP and P!=NP remain OPEN.
+
+**ONE NEXT TARGET:** TMR-5/TMR-2 independently audit the sharp 1680 equality claim; then TMR-1 physically audit each work-head and address-register operation of the TMR-1/013 indexed-to-local simulator and exact k+2 exponent shift.
+
+END_OF_HANDOFF::TMR1::2026-11-14_0006_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-13 23:00 PST | CHARGED BINARY-ADDRESS PORT BRIDGE013
 
 **NEW TMR1-IP13 CANDIDATE pending TMR-5/TMR-4 independent mathematical review.** Precisely bounded source-index access does not evade the all-exponent time target by a model mismatch: for any one fixed total deterministic multitape A with a **unit-cost indexed input port** whose address is a fully charged delimited w=ceil(log2(L+2))-bit work-tape register plus invalid tag, there exists one fixed local-original-input-head B_A with
