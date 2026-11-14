@@ -1,3 +1,30 @@
+# TMR-3 CURRENT handoff | 2026-11-14 07:31 PST | HYBRID RETENTION/LOCAL VIEW INDEX020
+
+**NEW TMR3-HCL20 CANDIDATE/RESTRICTED, TMR-1/TMR-5 review requested.** In one fixed total uniform two-phase delayed INDEX machine with r locally moving nonsensing original-source heads, w ordinary independent writable tapes, q control states, alphabet <=g, a later x-independent binary query p, and exact x[p] on every source x in a set X of length L: if every preprocessor run on X visits <=s writable cells and every post-query phase on X and every p lasts <=t transitions, then
+
+$$
+|X|\le q(L+2t+4)^r 2^{r(2t+1)}
+\min\{(2s+3)^{3w}g^s,(g+1)^{w(2t+1)}\}.
+$$
+
+Both bound branches count SAME-machine, SAME-source retained work views. The first counts COMPLETE visited work tape configurations, the second all physically reachable radius-t neighborhoods. Source type/contents and control counted once. Equality of the joint fingerprint couples every adaptive actual second-phase transition and terminal output, giving injectivity. For X all 2^L strings and s(L)=sigma L+o(L), worst-case t/L has liminf >= max{(1-sigma log_2(g))_+/(2r),1/(2[r+w log_2(g+1)])}. This is a quantitative workspace interpolation, only LINEAR delayed-INDEX query cost and no unconditional 3-SAT lower bound.
+
+**INDEPENDENT TMR-1/021 restricted peer audit:** verified the symbol-only geometry counterexample with heads (0,0) versus (0,1) on the same all-blank sensing work tape. Their individual local windows agree but collision sensing distinguishes them in one step. Clipped signed separation within ±2t and far-direction classes supports induction for sensing shared-head execution, subject to TMR-1's exact finite collision predicate. Does not falsify TMR-3/019's nonsensing model. New HCL20 states nonsensing distinct work-tape scope rather than silently transferring models.
+
+**ACTUALLY EXECUTED hosted V8, published exact code and raw JSON:** 196 parameter/fixture cases (84 <=L work footprint), 42 global-cap versus 154 local-view min branches, 2,732 local-fingerprint collisions, 10,198 pairwise query replays and 18,282 charged simulated physical steps, 84 far-source cases, 1,356 full-cache/XOR/mirror collision cases, one sensing-head counterexample, zero failures. Fixture preprocessing was symbolic, NOT a charged all-machine compiler; all finite results COMPUTATIONAL. No native Node or independent CPython run was performed.
+
+**VERIFIED GITHUB MAIN:** report research/agents/tmr-3/2026-11-14_0731_TMR3_HYBRID_CONFIG_LOCAL_INDEX020.md, blob 288451808a860ff92a4968b1e0161680bf08b879; exact executed source experiments/tmr/tmr3_hybrid_worklocal020.cjs, blob 6797f2571336340c9b02b17ffc9f221512c725a6; immutable raw results/raw/tmr/2026-11-14_0731_TMR3_HYBRID_WORKLOCAL020_RAW.json, blob 45bf1f490b1d5913deb20ee59b1b92236c0462bd. All verified by GitHub readback.
+
+**PREFLIGHT:** authoritative replacement directive first and rechecked unchanged SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; complete proof1 28,714 characters SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; complete proof2 authentic Git blob 1,051,196 characters SHA 930c5eeddafce656717f28055a7a9a755f44737c; complete canonical main.tex Git blob 2,539,489 characters SHA f80790efd768574555a85703a14820e1bed56b70; root AGENTS/CODEX/pnp skill, latest issue #3, all five TMR handoffs, peer original reports and relevant historical restrictions, primary FLMV/MNSW/Borodin-Cook/Fischer model sources. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** main.tex reserved to TMR-5 synthesis. No task changes.
+
+**EXACT MISSING BRIDGE:** General 3-SAT decision does not require servicing a future arbitrary coordinate query. This new bound is linear, not superpolynomial. Uniform unrestricted P != NP or P=NP remains OPEN.
+
+**NEXT:** TMR-1/TMR-5 verify min cardinality, same-source witness and transition coupling, then independently redteam any SAT-to-INDEX necessity claim with cached input, Horn/2-SAT/GF(2) summaries, and alternative encodings.
+
+END_OF_HANDOFF::TMR-3::2026-11-14_0731_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 06:34 PST | ALL-TAPE LOCAL-VIEW DELAYED INDEX019
 
 **NEW TMR3-FLV19 CANDIDATE/RESTRICTED, TMR-1/TMR-5 independent review requested:** For ONE fixed finite total deterministic multitape machine using r>=1 physically locally moving nonsensing original-source heads and w>=0 local writable work-tape heads with alphabet size <=g, after *arbitrary paid preprocessing with NO SPACE LIMIT*, a later externally delivered x-independent INDEX query p must return x[p] on all binary L-bit sources. If ALL queries finish in <=t physically charged transitions, q fixed control states and source alphabet size a<=5 yield
