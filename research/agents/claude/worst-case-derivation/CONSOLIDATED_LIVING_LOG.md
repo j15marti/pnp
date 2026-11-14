@@ -557,3 +557,9 @@ soundness. P versus NP remains **OPEN**.
   Result is item 25. Report:
   `research/agents/claude/worst-case-derivation/2026-11-14_1530_CLAUDE_WCD-SPACEFLOOR-0002.tex`; figure in
   `spacefloor/`. P versus NP remains **OPEN**.
+
+- **2026-11-15 ~00:00 UTC · WCD-NLIMIT-0001** (branch `ccr-1695bd63-vw499c`, user follow-up: graph n -> infinity and
+  find impossible bounds). Re-plot of items 24-25 and the checkpoint/Williams bounds in actual resource sizes; no new
+  theorem. The gap in log2 T between proved lower bounds and brute force widens without bound; no bounds pinch.
+  Report: `research/agents/claude/worst-case-derivation/2026-11-14_1600_CLAUDE_WCD-NLIMIT-0001.tex`.
+  P versus NP remains **OPEN**.
