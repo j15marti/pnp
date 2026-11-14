@@ -43,7 +43,7 @@ $$
 In particular, for fixed rational \(\kappa>0\), let
 
 $$
-s_\kappa(n)=\left\lfloor\frac{\kappa n}{\log_2n}\right\rfloor,\qquad n\ge2.
+s_\kappa(n)=\left\lfloor\frac{\kappa n}{\lceil\log_2(n+1)\rceil}\right\rfloor,\qquad n\ge2.
 $$
 
 Then
@@ -60,7 +60,7 @@ Next enumerate all syntactic DAG circuits with 0 through s(n) gates, each gate c
 
 A one-work-tape implementation of each pass carries the candidate description, gate registers and temporary binary index in a **mobile finite-alphabet scratch block** adjacent to the current source record. Moving a scratch block of \(m=O(n+s\log(n+s+2))\) cells past an immutable \(O(n)\)-cell source record, evaluating a circuit, and updating the comparison flag can all be compiled into a fixed finite-head routine using \(\operatorname{poly}(m+n)\) adjacent operations, preserving the source record. After each pass return to the list origin in \(O(N\operatorname{poly}(m+n))\) moves. Gate enumeration and construction are also charged. There are at most D candidates, so total time is \(N D\operatorname{poly}(n+s)+N\operatorname{poly}(n)\). This is an existence-level explicit compiler, not a compiled transition-table run. Its unspecified polynomial overhead is harmless for the exponent claimed when s=O(n/log n).
 
-For \(s=\lfloor\kappa n/\log_2n\rfloor\), since \(\log_2(n+s+2)=(1+o(1))\log_2n\),
+For \(s=\lfloor\kappa n/\lceil\log_2(n+1)\rceil\rfloor\), since \(\log_2(n+s+2)=(1+o(1))\log_2n\),
 
 $$
 \log_2D(n,s)=\log_2((s+1)(n+s+2))+
@@ -84,7 +84,7 @@ The TMR-1 result is a **counterexample** to claims that every positive unbounded
 
 ## Reproducible finite evidence, hostile controls and next target
 
-**Executed native CPython**, script experiments/tmr/tmr1_slowthreshold030.py, SHA256 ce6c00289083d952e04761e0927faf0ff8338f0dde7523b95939bc829ea8c377, with seed 20261114. Raw JSON results/raw/tmr/2026-11-14_1307_TMR1_SLOWTHRESH030_RAW.json, SHA256 ea32f4875bb91becc2c4f08c68081456f62fb2570062cd4d8ea817e761939007. Checked all 828 n=1,2,3 full-table/threshold combinations for s=0,1,2, nine independently expected exact circuit function-count controls, 36 malformed lengths and ten finite count-bound checks: **884 assertions, zero failures**. At n=3 the distinct circuit functions for s=0/1/2 were 5/14/40. The test is a semantic indexed-record proxy, NOT a native one-head tape execution. The symbolic proof, not these finite tests, establishes the asymptotic statement.
+**Executed native CPython**, script experiments/tmr/tmr1_slowthreshold030.py, SHA256 03e7554f228d4654eeec71d91072f56c4ecdb7b32f9b242424fa211a9401c4fd, with seed 20261114. Raw JSON results/raw/tmr/2026-11-14_1307_TMR1_SLOWTHRESH030_RAW.json, SHA256 f13b7809c330e067ce0fe4dd8dd266b8981d3588e6b6a324627f53e791dcc855. Checked all 828 n=1,2,3 full-table/threshold combinations for s=0,1,2, nine independently expected exact circuit function-count controls, 36 malformed lengths and ten finite count-bound checks: **884 assertions, zero failures**. At n=3 the distinct circuit functions for s=0/1/2 were 5/14/40. The test is a semantic indexed-record proxy, NOT a native one-head tape execution. The symbolic proof, not these finite tests, establishes the asymptotic statement.
 
 Free constants, projections, NOT/AND/OR, gate sharing, all n<=3 tables, malformed lengths, counter/index tags and source rereading restrictions were addressed. Other SAT controls (Horn, 2-SAT, XOR/Gaussian elimination, bounded-treewidth DP, products, sharing, renaming, padding, auxiliary variables, cache/recompute) remain permitted unrestricted-machine escape strategies, not tested as alleged hard SAT families.
 
