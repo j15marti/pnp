@@ -1,3 +1,21 @@
+# TMR-3 CURRENT handoff | 2026-11-14 14:31 PST | GENERAL-NETWORK QUADRATIC SERIALIZATION029
+
+**NEW NETSIM33 PROVED/RESTRICTED, independent TMR-1/TMR-5 model audit OPEN:** A fixed finite uniform initializer G(F) running B(F) transitions produces an explicit arbitrary directed K-processor, E-edge network with actual charged initial private input/work tapes and programs. Every synchronous round gives each deterministic one-work-tape processor one local transition, and each directed edge at most one paid bit delivered for the next round. If the all-input correct network halts after R(F) rounds, a **single fixed** one-way-read-only-input + **ONE two-way work tape** deterministic machine preserves both terminal labels with $T=O(M^2)$ and $S=O(M)$, where $M=1+L+B+(K+E)(R+1)$. Proof: one-work-tape input spool and charged generator simulation, serialized local states/FIFO queues/graph/programs, O(M) per local transition or edge event, <=(K+E)(R+1) events. This is an **upper simulation** and does not assert that arbitrary SAT requires large M.
+
+**EXPLICIT FALSIFIER:** An exponential-time uniform setup G may brute-force SAT and initialize one processor's correct output; then K=R=1 for every input while B is exponential. A dichotomy in K and R alone is false if preprocessing is uncharged. With B,K,E,R polynomial, this network model is P, a standard-equivalence observation not a P-vs-NP result.
+
+**NEW EXACT EXPONENT TRANSFER FIREWALL:** For full MCSP truth-table length N=2^n and B=N^u, K=N^a, E=N^e, R=N^b upper bounds, this generic compiler gives at best $T=O(N^{2m})$ where $m=\max(1,u,a+b,e+b,a,e,b)>=1$. To contradict CHMY STACS21 large-threshold N^1.99 lower bound through this upper certificate would need $m<0.995$, impossible. To use the distinct small-threshold N^1.01 magnification premise through this compiler would need $m<0.505$, impossible. This falsifies the **generic quadratic-serialization transfer**, not specialized faster simulation or a direct lower bound.
+
+**ACTUALLY EXECUTED native CPython 3.13:** experiments/tmr/tmr3_network_sim033.py, raw results/raw/tmr/2026-11-14_1431_TMR3_NETWORK_SIM033_RAW.json, 2,880 exhaustive cases + 300 seeded random graph cases, 12,720 state/equality/space/message checks, 0 failures and 41,040 exhaustive delivered messages. Semantic Python emulators only, NOT a physical compiled single-tape universal simulator. Full report research/agents/tmr-3/2026-11-14_1431_TMR3_GENERAL_NETWORK_QUADRATIC_FRONTIER029.md.
+
+**PREFLIGHT:** Nov14 directive FIRST and rechecked, Nov13 replacement, AGENTS/CODEX/pnp skill, latest issue #3, all five handoffs, root proof1 fully and authentic proof2 and main.tex recovered via Git blobs; original TMR3/025 ring construction, TMR3/028 raw scan, TMR2/029 preprocessing, TMR4/029 source oracle, TMR5/025 syntax controls, Claude DIRECTPRODUCT/TPORT/ONETAPE and Grok reviewed. **TRACKERS REVIEWED; NO MATERIAL CHANGE; main.tex left untouched.** Tasks unchanged; P versus NP OPEN.
+
+**NEXT / PEER REVIEW:** TMR-5 audit fully finite alphabet O(M)-per-event implementation and FIFO delivery for arbitrary graph; TMR-1 audit uniform generator and the two distinct mu/exponent regimes; TMR-2/4 examine genuinely unavoidable small-mu post-acquisition decision costs. All unrestricted lower-bound arrows remain OPEN.
+
+END_OF_HANDOFF::TMR3::029::2026-11-14_1431_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 13:27 PST | RAWCACHE/ANNOTATED FRONTIER028
 
 **NEW RAWSCAN28 PROVED/RESTRICTED symbolic upper bound, TMR-1/TMR-5 physical model audit OPEN:** Independently strengthen TMR-1/027's cached-truth-table MCSP enumeration. On bare **length-blind one-way input plus exactly ONE two-way work tape**, copy raw N=2^n data bits contiguously without permanent indexed records; retain a single mobile finite-alphabet scratch block with circuit description, assignment index and gate workspace. Literal head-local cyclic scratch/bit rotations cost O(m) per cell, m=O(n+(s+1)log(n+s+2)). Enumerate D(n,s)=(s+1)(n+s+2)[3(n+s+2)^2]^s circuits. For any uniformly computable s(n), **T=O(N D(n,s) poly(n+s+1)), S=N+O(m)** visited writable cells. For s_kappa=floor(kappa*n/ceil(log2(n+1))), T=N^(1+2kappa+o(1)), S=O(N). This is an upper bound, not evidence N cells are necessary.
