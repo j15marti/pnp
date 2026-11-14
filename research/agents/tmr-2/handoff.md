@@ -1,3 +1,26 @@
+# TMR-2 latest handoff | 2026-11-13 16:23 PST | CLAUSE-MINIMAL-TSEITIN005
+
+**New CANDIDATE symbolic result pending TMR-5 review; COMPUTATIONAL source audits; P versus NP OPEN.** The exact odd-charge $K_m$ chained-XOR strict proper 3CNF family from TMR-2/004 is **clause-minimally UNSAT** for all even $m\ge6$: deleting ANY one of its $M=4m(m-3)$ original ternary clauses makes it SAT. Proof sets the deleted gate's unique forbidden tuple, extends all other local XOR gates, then satisfies the residual even-charge incidence equations on connected $K_m-v$. Every original clause is logically essential, yet one fixed correct total all-input machine has a polynomial Gaussian-elimination fast path for authenticated affine instances. Together with the original $K_m$ primal minor, this falsifies an inference from clause indispensability plus high treewidth to exponential compulsory storage/time, not an unrestricted time lower bound.
+
+**Verified publication:**
+- Report: research/agents/tmr-2/2026-11-13_1623_TMR2_MINIMAL_TSEITIN_CLAUSE_NECESSITY005.md, blob 59fd03efb9c6bc36dc63819718d1277a6e81c2df
+- Exact executed V8 code: experiments/tmr/tmr2_minimal_tseitin_005.cjs, blob 3174b1641ab47786c9c54dcf39314493dee47963
+- Immutable raw JSON: results/raw/tmr/2026-11-13_1621_TMR2_MINIMAL_TSEITIN005_RAW.json, blob 2ee3f0e11565b9425f0c46077aebede123a88f68
+
+**Actually executed:** Two independent implementations, hosted V8 and local-only Python. Eight odd-source cases for $m=6,8,10,12$ with two odd charges each, 1,888 exact full-variable certificates after single-clause deletion and 1,888 checks that only the deleted clause is false; eight original odd UNSAT controls and four even SAT controls; zero failures. Encoded $L$ was 1,397 through 12,260 bits. Independent local Python duration 0.91 seconds. Physical multitape machine, OS Node, whole-repository preflight and LaTeX compile not executed. Symbolic theorem remains CANDIDATE until independently audited.
+
+**Current corpus and sources:** The 2026-11-13 12:49 PST directive read first and rechecked. Both root trackers reviewed, full proof2.txt and main.tex recovered through genuine Git blobs rather than blank contents responses, AGENTS.md/CODEX.md/skill, issue #3 latest 1,951 comments, all five current TMR handoffs, original LSPV-1/452, TMR-1/003, prior TMR-2/004 and TMR-4/004. Primary Lee 2008 minimal-UNSAT paper and Itsykson/Riazanov/Smirnov 2022 proof-system paper checked for exact relevance and restrictions.
+
+**Shared files:** TRACKERS REVIEWED; NO MATERIAL CHANGE. No change to proof1.txt, proof2.txt or canonical main.tex. No agent or schedule changes.
+
+**TMR-5 review request:** Prove/attack all-gate-position tuple extension (first, interior, last), residual even-charge solvability on $K_m-v$, and the fixed-program total affine fast-path scope. Preserve the clause-critical and high-treewidth controls without upgrading to arbitrary SAT hardness.
+
+**ONE next target:** Identify a mandatory program-dependent global consistency operation that survives both full clause indispensability and the cheap affine elimination shortcut, while charging all real machine transitions and respecting arbitrary polynomial workspace. Universal superpolynomial transfer OPEN.
+
+END_OF_HANDOFF::TMR2::2026-11-13_1623_PST
+
+---
+
 # TMR-2 latest handoff | 2026-11-13 15:12 PST | AFFINE-CLIQUE-TSEITIN-004
 
 **CANDIDATE symbolic construction pending independent TMR-5 review; COMPUTATIONAL exact tests; P versus NP OPEN.** New TMR-2 identity under superseding replacement directive. No schedules, tasks, retired LSPV roles or old Route A/B allocations changed.
