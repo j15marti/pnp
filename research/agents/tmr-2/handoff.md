@@ -1,3 +1,26 @@
+# TMR-2 CURRENT handoff | 2026-11-14 08:23 PST | MAXSAT SIGN DISTANCE AND WALSH-FLAT UNSAT022
+
+**NEW SRG22 CANDIDATE/RESTRICTED; elementary complete all-length argument, TMR-1/TMR-5 review requested.** On a proper 3-CNF ordered clause-occurrence list with fixed variable IDs and editable polarity bits, exact minimum legal sign-bit Hamming distance to any SAT input equals min_a(number of clauses violated by a) = m-MAXSAT(F). Since each proper clause is falsified with probability 1/8 on a uniform random assignment, distance <=floor(m/8), sharp for repeated complete sign cubes U_r. For clause i with falsifying triple eta_i, define signed Walsh moments M_F(S)=sum_{i:S subset V_i}prod_{v in S}eta_{i,v}, |S|=1..3. Then 8v_F(x)=m+sum_{S neq empty}M_F(S)chi_S(x). Therefore exact maximum robustness d=m/8 holds iff every nonconstant moment vanishes. Checking at most 7m integer contributions is a deterministic polynomial-time physically charged UNSAT recognizer when m>0; on failure run a paid correct general SAT fallback. This is a compact algebraic global invariant, not a general polynomial SAT algorithm or computational necessity.
+
+**INDEPENDENT mathematical peer audits:** TMR-5/019 corrected U_r result survives: d=r, 8*3^r nearest SAT sign edits, individual sensitivity zero for r>=2, block sensitivity exactly 24 (not the retracted 8), with explicit 24 disjoint r-bit blocks and matching edit-distance upper bound. TMR-1/022 also receives favorable restricted symbolic audit: C0(U_{k,r})=k2^k; for nearest SAT V and r>=2, C1=m, because every untouched clause permits a one-clause UNSAT completion; at r=1, two duplicated complete k-bit signatures provide a cheaper 2k-bit certificate (six vs eight for k=3). These distinct sign distance, legal certificate and charged runtime measures must not be conflated. Peer review of this run's new Walsh result remains pending.
+
+**ACTUALLY EXECUTED hosted V8 exact published source; COMPUTATIONAL:** 15,585 formulas, 203,992 full-assignment Walsh equalities, 12,870 exhaustive 3-variable signature multisets m<=8, 2,700 seeded n4/n5/n6 sources, seven explicit controls (Horn-like, XOR, auxiliary lifted 2-SAT, path, products, duplicates, renaming), 192 sensitive-block checks, 63,471 exhaustive Hamming neighbors U1..U3, 312 nearest SAT neighbors, zero failed assertions. NO native Node, independently authored CPython, generic charged TM compiler, specialized Horn/XOR/DP solver, full repo preflight or TeX compilation.
+
+**GitHub main VERIFIED report/source/raw:**
+- report research/agents/tmr-2/2026-11-14_0823_TMR2_MAXSAT_WALSH_SIGN_ROBUSTNESS022.md (blob 073107a28b0bfade2095af498e9c4d4143a8c61b);
+- executable experiments/tmr/tmr2_walsh_sign_robustness022.cjs (blob b38366925c045f91d3c036849939b606fc707f5c);
+- raw results/raw/tmr/2026-11-14_0820_TMR2_WALSH_SIGN_ROBUSTNESS022_RAW.json (blob 984e21330b126d74f1826d061717048f24b58957).
+
+**Original Claude reviewed:** newest directly named standalone Claude files under research/agents/claude/ are dated 2026-10-28: ONETAPE, TPORT-0001/0002 and DIRECTPRODUCT. The crossing-sequence bounds are sequential-access and even apply to nondeterministic one-tape computation; TPORT barrier applies only to the specified alternating proof rules/random-access small-space model. No unrestricted transfer. Primary O'Donnell 2014 Boolean Fourier and standard 7/8 Max-E3SAT averaging checked; FLMV 2005 exact small-space/time scope verified.
+
+**Integrity:** authoritative directive SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4 read first/rechecked, root proof1 28,714 characters SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, authentic root proof2 1,051,196 chars via blob 930c5eeddafce656717f28055a7a9a755f44737c, root main.tex full 2,542,866 chars via blob 5ec8fffb16ec9a7f262e60321bf5aad172d153d8. AGENTS/CODEX/skill, issue #3 through TMR1/022, all TMR handoffs, original TMR5/019, TMR1/022, TMR2/021 and relevant Claude sources read. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Canonical main.tex left for TMR-5. No task modification.
+
+**ONE NEXT TARGET:** independently falsify any proposed all-machine post-acquisition charge against the Walsh-flat polynomial recognizer plus TMR-1/022 valid-source certificates. The arbitrary all-exponent deterministic 3-SAT processing lower bound and P versus NP are OPEN.
+
+END_OF_HANDOFF::TMR2::022::2026-11-14_0823_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-14 07:25 PST | GENERAL PROPER-3CNF POLARITY DICHOTOMY021
 
 **NEW TMR2-SCB21 CANDIDATE/RESTRICTED, independent TMR-1/TMR-5 review requested.** For arbitrary ordered proper 3-CNF F with three distinct variables per clause, let H_i=F without occurrence C_i. Exact one-original-sign-bit SAT/UNSAT sensitivity:
