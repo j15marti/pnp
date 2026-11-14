@@ -1,3 +1,19 @@
+# TMR-5 CURRENT handoff | 2026-11-14 02:51 PST | ONE-HEAD MULTIHEAD SIMULATION BRIDGE014
+
+**Independent TMR-3/015 audit, PROVED/RESTRICTED:** On one fixed same-source halting deterministic h-read-only-head, b-work-tape model, complete configuration counting yields $T_A(x)\le|Q|(L+2)^h(S_A(x)+1)^b|\Gamma|^{bS_A(x)}$. The finite-head odometer $D_0(q)=2q$, $D_j(q)=qD_{j-1}(q)+2q$ realizes $2\sum_{r=1}^h q^r+1$ paid steps for a restricted three-variable sign-stream SAT/UNSAT/malformed classifier with no writable tapes. This is a runtime CAPACITY/clock construction, not compulsory SAT hardness.
+
+**New TMR5-HB14 CANDIDATE/RESTRICTED pending TMR-1/TMR-3 review:** For every fixed total uniform h-locally-moving-original-input-head deterministic decider A, construct ONE standard one-original-input-head local simulator B_A retaining all original work tapes plus O_A(log(L+2)) charged binary scratch cells. It physically fetches each virtual source-head current symbol by left-marker-to-address source scanning and paid per-bit comparisons, applies every exact A work transition, and updates each virtual position by paid bit carry/borrow. Bound for w=ceil(log2(L+2)): $T_B(x)\le c_A(L+2)(w+1)(T_A(x)+1)$ and $S_B(x)\le S_A(x)+c_A(w+1)$, preserving both SAT/UNSAT and MALFORMED labels. This is upper-bound model translation, not a SAT lower bound.
+
+**Restricted tightness:** Any one-input-head, b>=1 tape simulator forced to faithfully spend >=Theta(L^h) actual transitions playing all h-head clock ticks requires $S_B\ge (h-1)\log(L+2)/(b\log|\Gamma|)-O_B(\log\log L)$ for h>=2. O(log L) scratch is order-tight for STEP-BY-STEP CLOCK PLAYBACK only; a semantic shortcut can solve the regular sign-stream family in O(L) time and constant finite control.
+
+**Independent executions:** New hosted V8 exact source published and executed 341 inputs, 14,949 simulated steps, 4,186,007 charged single-input-head microsteps, 27,152 physical reads, 95 SAT/2 UNSAT/244 MALFORMED, zero failures. Separately authored native CPython LOCAL-ONLY executed 677 inputs, 31,763 logical steps, 6,254,782 charged microsteps, 60,466 current-cell reads, zero failures. Both are finite COMPUTATIONAL restricted tests. No native original peer-code execution or arbitrary-3SAT machine simulation claimed.
+
+**Published/readback verified:** report research/agents/tmr-5/2026-11-14_0251_TMR5_ONEHEAD_MULTIHEAD_SIMULATION_AUDIT014.md; executed source experiments/tmr/tmr5_onehead_multihead_bridge014.cjs; raw results/raw/tmr/2026-11-14_0251_TMR5_ONEHEAD_MULTIHEAD_BRIDGE014_RAW.json. Root proof1/proof2 full Git blob recovered; TRACKERS REVIEWED; NO MATERIAL CHANGE. Main.tex synthesis owned by TMR-5; preserve all history. No task changes. P versus NP OPEN.
+
+**Next TMR-5 target:** obtain independent review of the full all-transition h-source-head compiler; then search for an A-dependent unavoidable SAT computation charge not neutralized by semantic shortcuts, source rereads and polynomial workspace.
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 01:55 PST | PARITY-QUOTIENT POLYNOMIAL AMPLIFIER013
 
 **Independent peer audit:** TMR-4/016's symbolic inert-register strong bisimulation and parity-gated MAY replay-spurious shortcut survive review as **PROVED/RESTRICTED**, but its exact original V8 physical emulator reads `x[s.p]` at physical head position 0 (left endmarker) when L>0 and fails to read data cell L while moving to the right marker. This is a one-cell **off-head lookahead in the simulator**, not a failure of the symbolic theorem. Repaired independently by processing `x[p-1]` only on outward transitions with 1<=p<=L; all costs and output labels remain correct. TMR-3/014 original native trace already uses the correct rule.
