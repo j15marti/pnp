@@ -1,3 +1,17 @@
+# TMR-1 CURRENT handoff | 2026-11-14 13:07 PST | GROWING MCSP THRESHOLD ENUMERATION027
+
+**NEW SLOWTHRESH30 PROVED/RESTRICTED elementary upper-bound construction; TMR-3/TMR-5 physical compiler peer review OPEN:** For ordinary exact MCSP on full N=2^n truth tables with AND/OR/NOT gates, one fixed deterministic one-way read-only-input plus ONE two-way physical work-tape decider can copy length-unknown input into tagged records, then enumerate all size-s circuits and sequentially compare using mobile finite-alphabet scratch. D(n,s)=(s+1)(n+s+2)[3(n+s+2)^2]^s descriptions; T<=N D(n,s) poly(n+s)+N poly(n), space O(N poly(n+s)). For each fixed rational kappa>0 and s(n)=floor(kappa n/log2 n), T=N^(1+2kappa+o(1)). For kappa<0.005, the SAME uniform program lies in DTIME_1[N^1.01]. This gives an **unbounded** slowly growing threshold, unlike prior TMR4/028 fixed S or TMR5/024 bounded schedule, but **does not** reach CHMY s=N^mu and does not provide poly(s)-space streaming.
+
+**EXECUTED native CPython**, exact source experiments/tmr/tmr1_slowthreshold030.py (blob 346afd3d533b63cf9418c20556181c1036df5431, SHA256 ce6c00289083d952e04761e0927faf0ff8338f0dde7523b95939bc829ea8c377), raw results/raw/tmr/2026-11-14_1307_TMR1_SLOWTHRESH030_RAW.json (blob 5442e4cfd8fa8d0c797663654277a038823eba67, SHA256 ea32f4875bb91becc2c4f08c68081456f62fb2570062cd4d8ea817e761939007). 828 exhaustive small-table classifications n=1,2,3 s=0..2 plus nine count controls, 36 malformed lengths and ten description-bound checks, 884 assertions, zero failures. This was a semantic index/description proxy, NOT an executed finite TM transition compiler. The asymptotic theorem is symbolic.
+
+**REPORT:** research/agents/tmr-1/2026-11-14_1307_TMR1_MCSP_GROWING_THRESHOLD_ENUMERATION027.md. All four artifacts are on branch pending merged readback at publication time. Current Nov14 MCSP directive read first/rechecked blob 1e11aa64a0b0d635a65cea58500b09f2b0fe010a. Also Nov13 TMR replacement, all five handoffs, latest issue #3 through TMR5/024, root AGENTS/CODEX/skill, full proof1 (28,714), proof2 (1,051,196) and main.tex (2,545,859) via genuine Git blobs. Primary CHMY STACS21 Thms1–3 and MMW STOC19 Thms1.2–1.3 checked from original PDF/page images. TRACKERS REVIEWED; NO MATERIAL CHANGE. main.tex TMR-5-owned, unchanged. No schedules touched. P versus NP OPEN.
+
+**NEXT:** TMR3/TMR5 independently audit mobile scratch preservation, variable-length record compiler, EOF and exact single-tape cost; TMR2 audit decision-vs-search/stream distinction; TMR4 target s=omega(n/log n) with no uncharged oracle. TMR1 must seek a fully charged match at s=N^mu, not call this upper bound separation progress.
+
+END_OF_HANDOFF::TMR1::027::2026-11-14_1307_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 12:00 PST | O(n) MCSP gate-spectrum resolution026
 
 **NEW SPECTRUM26-A, PROVED/RESTRICTED elementary proof, TMR-5 independent mathematical review OPEN:** For AND/OR/NOT gate circuits with free constants and wires, if the standard circuit-description count $D(n,a)=(a+1)(n+a+2)[3(n+a+2)^2]^a<2^{2^n}$ then some $n$-input Boolean $f$ has $a<CC_n(f)\le a+2n+4$. Proof: use a one-bit-flip path from zero truth table to a function exceeding $a$; each flip costs $\le 2n-1$ for the minterm and five gates for XOR; first threshold crossing gives the bound. This tightens PRIOR TMR-1/023's fixed-exponent shell to an **additive O(n) size gap**. Original counting/hierarchies are not claimed as a novel general circuit-theory discovery.
