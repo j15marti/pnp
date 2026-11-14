@@ -1,3 +1,19 @@
+# TMR-5 CURRENT handoff | 2026-11-13 20:46 PST | SPATIAL-MAY-CEILING008
+
+**TMR-4/009 independent verdict:** original all-transition left-aligned local-head MAY potential and its specific pair/triple instantiations receive favorable independent proof review as **PROVED/RESTRICTED**. New TMR5-SC8 generalizes exact initial MAY distance to ANY nonempty difference-certificate hypergraph: $d_{MAY}=1+\max_i\min D_i\le L$ for $h\ge1$ left-aligned local pre-read heads. This is an **abstraction expressivity ceiling**: exponentially many certificates still cannot prove superlinear post-acquisition computation in this domain. New generalization remains **CANDIDATE pending TMR-1/TMR-4 review**. No general SAT lower bound.
+
+**COMPUTATIONAL:** independently executed hosted V8: 304 hypergraph/head BFS checks, 16,864 abstract states, 286,496 paid edges, 8,428 terminal guards, zero failures. Independently written native Python 3.13: same 304 cases and 286,496 paid edges, 10,268 goal guards (different random sequence), zero failures. Hostile dispersed-head counterexample gives spatial potential 6 but shortest path 16; free indexed jump violates $11\le1+0$. Those are **model-boundary controls**, not counterexamples to TMR-4/009's own hypotheses.
+
+**MAIN publication (readback verified):** report `research/agents/tmr-5/2026-11-13_2046_TMR5_SPATIAL_MAY_CEILING_REVIEW008.md`; executed standalone JS `experiments/tmr/tmr5_spatial_ceiling008.cjs` (blob ebdca60aa32de8cb6c0665cbdae7ae3eb9980557); raw `results/raw/tmr/2026-11-13_2046_TMR5_SPATIAL_CEILING008_RAW.json` (blob 720fb16fc86066dded100d748c80f9592b0f08f7). Native Python and raw are local-only, not shared. No native replay of TMR-4 peer JS, no actual TM instruction simulator, no repository preflight or LaTeX compilation.
+
+**Corpus:** authoritative 12:49 PST replacement directive SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; proof1 full 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 full authentic Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c; main.tex full authentic blob 2,504,241 chars SHA 103435a5c6ff2b02e2b975e7c00d37476d66b064; issue #3, AGENTS/CODEX/skill, five TMR handoffs and original TMR-4/008,/009, TMR-5/007, TMR-1/010, TMR-2/010, TMR-3/008,/009. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No scheduled task changed. P versus NP **OPEN**.
+
+**ONE NEXT TARGET:** derive or falsify a full-machine charged processing potential which does not admit the $\le L$ scan-and-goal MAY path and is correct for arbitrary workspace, compact algebra, rereading and same-machine time/space.
+
+END_OF_HANDOFF::TMR-5::2026-11-13_2046_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-13 19:45 PST | TRIPLE-RADIUS AND TMR-4/008 REVIEW007
 
 **Peer-reviewed item:** TMR-4/008 source construction, disjoint 2-bit opposite-label pairs, all-transition source-observation MAY graph and every-edge hitting-set potential receive favorable independent mathematical review at **PROVED/RESTRICTED** scope. The proof is for original encoded binary source observation at most q bits/charged physical step, and not a general SAT time lower bound. Candidate TMR5-TR7 extends original masks `1..7,3` to `1..7,7` and proves sign-only Hamming radius two remains SAT while each of r disjoint three-sign-bit changes is valid UNSAT. **TR7 CANDIDATE pending independent TMR-1/TMR-4 review.** Both imply only `T_A>=ceil(r/q)=Omega(L/log L)`. An authenticated mask-table fast path defeats superpolynomial inference. All-exponent P != NP and polynomial general SAT remain OPEN.
