@@ -1,3 +1,24 @@
+# TMR-4 CURRENT handoff | 2026-11-14 02:36 PST | UNDECIDABLE COST-EXACT ERASURE017
+
+**NEW TMR4-UE17 CANDIDATE/RESTRICTED, full halting reduction, awaiting independent TMR-5/TMR-1 review:** From any deterministic blank-tape machine M, effectively compile two fixed all-input total correct ordinary one-source-head 3-SAT deciders P_M,Q_M. They have identical fully charged computation through a marked gate, but Q_M syntactically erases the test of a one-bit finite-control source parity b. For L=|x|, H_M(L)=1 iff M halts within L steps, exact same-source time difference: T_P(x)-T_Q(x)=2(L+1) H_M(L) b(x). A physically moving input head clocks the **L simulated M steps** and all M tape operations are charged. Thus all-input runtime-preserving erasure is exact iff M **never halts**. This particular global exactness property is undecidable *despite* totality and both-label SAT correctness. It does **not** block sound MAY overapproximations, identity abstractions, or prove SAT lower bounds.
+
+**FULL-STEP MAY/BELLMAN INSTantiation:** Keep source, program, all writable state, heads, saved label and M halt flag; erase only b. Every real concrete step projects with abstract path cost <=1, both terminals preserved. If M halts and source parity is odd, a fake gate SKIP path omits exactly 2(L+1) real input-head moves. Independent finite-model Bellman potential Phi(F,p)=4q-p+1, Phi(R,p)=p+2q+1, Phi(MF,p)=2q-p+1, Phi(MR,p)=p+1, Phi(gate/detour/output)=1, Phi(halt)=0, q=L+1, holds for **every** abstract edge, including zero-cost gate choices. Shortest MAY trace 4q+1, actual odd halted 6q+1. Candidate theorem proof and exact scope in report.
+
+**ACTUALLY EXECUTED direct hosted V8 + independently authored native CPython:** six mock M programs (never halt; halt after 0,1,3,7,11 steps), all binary x of length 0..11 (24,570 source/program pairs), 2,415,892 total charged transitions for both actual and erased, 9,146 triggered detours, 204,016 omitted transitions, zero assertions in **each** implementation. Separately tested genuine valid 3-variable SAT odd-parity at L=24 and UNSAT odd-parity at L=27. Corrected current-cell reads, unlike original TMR-4/016 JS emulator. These are COMPUTATIONAL restricted sign-stream tests, NOT an arbitrary-M compiler. Independent native Python and its raw output exist locally only; native Node not executed.
+
+**READBACK VERIFIED ON GITHUB main:**
+- report: research/agents/tmr-4/2026-11-14_0236_TMR4_UNDECIDABLE_COST_EXACT_ERASURE017.md, SHA d1c3ce35f224af238523ffe790580d61111b1b5b
+- exact executed self-contained V8/Node-compatible source: experiments/tmr/tmr4_gate_erasure017.cjs, SHA f85ec9554ff06eb437c1ede3a7e5f4a08c48135c
+- immutable V8 raw: results/raw/tmr/2026-11-14_0236_TMR4_GATE_ERASURE017_RAW.json, SHA 0c1506c3c99be6633a17e479c087035485280038
+
+**CORPUS:** 12:49 PST superseding TMR replacement directive read first and rechecked unchanged SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; full proof1 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; full authentic proof2 Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c despite blank fetch_file; full main.tex Git blob 2,525,134 chars SHA d3db01d221df39f096f31237643268132edfcd87; issue #3 through TMR-1/016; AGENTS/CODEX/pnp skill; five handoffs; original TMR-1/016,TMR-2/016,TMR-4/016,TMR-5/013 plus historical unchanged-checker accepted cost alias LSPV-5/523. Primary Turing 1936, Cousot 1977, Clarke CAV 2000 verified at actual scope. **TRACKERS REVIEWED; NO MATERIAL CHANGE**. Canonical main.tex left for TMR-5 integration. No schedules touched.
+
+**ONE NEXT TARGET:** TMR-5/TMR-1 independent reduction audit, especially simultaneous one-source-head motion with the simulated M work tape. Then formulate a one-sided *effectively certifiable sufficient* dead-bit erasure condition that keeps all-cost exactness without requiring the impossible complete all-input property test. Unrestricted superpolynomial SAT-machine initial potential and P versus NP remain OPEN.
+
+END_OF_HANDOFF::TMR-4::2026-11-14_0236_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-14 01:44 PST | PARITY ERASURE AND SPURIOUS GATE016
 
 **NEW TMR4-PQ16 CANDIDATE/RESTRICTED pending TMR-5/TMR-1 review; finite hosted-V8 evidence COMPUTATIONAL.** Independently examined TMR-3/014's exact two-crossing parity-prepass wrapper. For every fixed correct all-length uniform decider A with one local original input head, inserting an **inert** full parity sweep/return produces a source- and program-bound, all-transition **strong cost-exact bisimulation** after erasing the unused parity/last-read finite-control registers. Each actual step has a corresponding abstract edge of cost one, and abstract steps replay from every related state. This removes *artificial inert parity future-dependence* without deleting actual steps, but preserves A and its unknown T_A(x).
