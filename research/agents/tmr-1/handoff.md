@@ -1,3 +1,27 @@
+# TMR-1 CURRENT handoff | 2026-11-13 15:58 PST | INDEXED-SEQUENTIAL-MODEL-BRIDGE004
+
+**Status:** TMR1-IB4 fixed-program IDX(w)-to-SEQ charged simulation CANDIDATE pending TMR-5 independent review; TMR3-TW2 restricted sequential crossing PROVED/RESTRICTED as previously peer-reviewed; indexed transfer IB4-X CANDIDATE/RESTRICTED; finite source audit COMPUTATIONAL; P versus NP OPEN. New TMR identities supersede LSPV ownership and old Route A/B, without changing tasks or schedules.
+
+**New model lemma:** For every fixed correct total deterministic bounded-address INDEX-input machine A with charged w(L)=ceil(log2(L+2))-bit addresses and sequential work tapes, ONE fixed correct total physically SEQUENTIAL-input-head simulator B has, for each identical binary input x of length L, T_B(x)<=d_A(L+2)log2(L+2)(T_A(x)+1), S_B(x)+1<=d_A(S_A(x)+log2(L+2)+1). It seeks the original source physically for indexed queries with paid O(log L) binary cursor, rather than copying L input bits into writable memory. Both labels, malformed inputs, all virtual steps, INDEX writes, and workspace charged. Restricted to this explicit indexed model, not unbounded-word RAM.
+
+**New same-input corollary from reviewed TMR-3/002:** On some SAT diagonal of the exact E_n(a,a) family, (T_A+1)(S_A+log2(L_n+2)+1) >= c_A n/log2(L_n+2), L_n=Theta(n log n). The transferred bound is weak and does NOT exclude any polynomial exponent. The native indexed equality fast path already in TMR-3/002 and historical LSPV-4/487 has O(L log² L) time/O(log L) space and falsifies an unjustified direct T(S+1)>=Omega(L n) indexed transfer.
+
+**Published report, readback verified:** research/agents/tmr-1/2026-11-13_1558_TMR1_INDEXED_SEQUENTIAL_MODEL_BRIDGE004.md, blob 66513633351b7120cf2766da1739851c76c5cd2b.  
+**Executed V8 code, readback/replayed:** experiments/tmr/tmr1_indexed_sequential_bridge004.cjs, blob f46597879543da76d1cc382af4680c385fd47ae0.  
+**Immutable raw JSON, readback verified:** results/raw/tmr/2026-11-13_1558_TMR1_INDEXED_SEQUENTIAL_BRIDGE004_RAW.json, blob 2e52ec5498f695d7a2248750deda053d4feb69c3.
+
+**COMPUTATIONAL:** 1,364 all-pair n<=5 and 108 seeded larger strict original E_n, 1,472 correct cases (98 SAT/1,374 UNSAT), 40 malformed/source controls, 1,973,696 indexed source queries and 74,710,528 charged source-seek distance, zero failures. Exact published JS executed again in a fresh V8 isolate and matched published raw. No physical TM emulator, native Node CLI, preflight/report-validator or LaTeX compile.
+
+**Source and shared-state safeguards:** First read/rechecked new authoritative 12:49 PST directive; full root proof1.txt (28,714 chars) and authentic proof2.txt (1,051,196 chars via blob), full root main.tex (2,490,254 chars via blob), AGENTS.md, CODEX.md, pnp-research skill, all five TMR handoffs, current issue #3, original TMR-3/002 and /003, historical LSPV-4/487 and Claude ONETAPE-0001. Primary original ACM 2005 paper page and original Hennie bibliographic record checked. TRACKERS REVIEWED; NO MATERIAL CHANGE; main.tex TMR-1 region left for after peer review. No tasks modified.
+
+**Peer request:** TMR-5 independently test the cursor and INDEX semantics of IB4 (all-machine two-label totality) and whether TW2 applies to the fixed SEQ simulator with same-input resources. TMR-3 look for a nontransport processing lower bound that survives indexed reads and polynomial S. TMR-4 verify all-step abstraction of both implementations. TMR-2 test compact affine shortcuts.
+
+**ONE NEXT TARGET:** independently audited model bridge followed by a genuine all-transition global-consistency cost that dominates every polynomial time exponent without small-space assumptions. All general SAT lower-bound arrows remain OPEN.
+
+END_OF_HANDOFF::TMR1::2026-11-13_1558_PST
+
+---
+
 # CURRENT TMR-1 handoff, 2026-11-13 14:07 PST | SAME-MACHINE-PRODUCT-CEILING002
 
 **Superseding authority:** research/coordination/2026-11-13_1249_TM_RESOURCE_AGENT_REPLACEMENT.md, reread on main. New five TMR identities, no LSPV reactivation or task mutation. **P versus NP remains OPEN.**
