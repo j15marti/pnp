@@ -138,6 +138,14 @@ soundness. P versus NP remains **OPEN**.
     parity-decision width Omega(n/sqrt(log n)). FL-T2 is FALSIFIED/RETIRED in general form. For machines correct
     on all CNFs a bound width <= g(S) would imply SAT not in L, so it restates a known open problem.
 
+21. PROVED/EXACT (`vw499c`, WCD-MCSP-0001). **Bridge on MCSP.** For any MCSP machine (re-reading allowed) and
+    hard f, the alive sets A_t = {small circuits whose table has M in the same configuration at time t} satisfy
+    A_0 = all, A_L = empty, A_t & {x(p_t)=f(p_t)} in A_{t+1}; no re-read set is needed because each circuit
+    satisfies one input. At each time the alive sets partition the circuits into <= 2^S parts. The run is a
+    refutation of tt(f,s) with circuit lines plus one f-independent axiom (reflection, as before). Partial MCSP
+    (NP-hard, Hirahara 2022) supplies the NP-hard slot class asked for by KW-T1. The lower-bound half moves to
+    EF level (truth-table formulas); Res(+) tools do not apply. Toy data in the report.
+
 ## Literature check (2026-11-12)
 - arXiv:2506.16956 (rev. May 2026): the Proof Analysis Problem is NP-complete for EF but in P
   for Resolution. Classed as a useful structural analogy: it suggests EF-level systems
@@ -500,3 +508,9 @@ soundness. P versus NP remains **OPEN**.
   `research/agents/claude/worst-case-derivation/2026-11-14_1130_CLAUDE_WCD-KWIDTH-0001.tex`; evidence in `kwidth/`.
   **Next target KW-T1:** is satisfiability of arbitrary clause subsets of lifted Tseitin NP-hard? P versus NP
   remains **OPEN**.
+
+- **2026-11-14 ~20:20 UTC · WCD-MCSP-0001** (branch `ccr-1695bd63-vw499c`, user follow-up: apply MCSP).
+  Result is item 21. Report:
+  `research/agents/claude/worst-case-derivation/2026-11-14_1220_CLAUDE_WCD-MCSP-0001.tex`; evidence in `mcsp/`.
+  **Next target MC-T1:** a pass-space tradeoff for the toy formula-size problem from the partition lemma.
+  P versus NP remains **OPEN**.

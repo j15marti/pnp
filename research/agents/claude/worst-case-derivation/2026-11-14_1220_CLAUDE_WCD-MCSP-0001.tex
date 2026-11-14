@@ -1,0 +1,97 @@
+% CLAUDE REPORT::WCD-MCSP-0001::2026-11-14T12:20-08:00
+% Claude routine "worst-case minimum derivation cost". User follow-up: apply the minimum circuit size problem to these ideas.
+% Role-neutral and additive. It does NOT edit root main.tex or any TMR/LSPV region.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{WCD-MCSP-0001: the bridge lemma on the minimum circuit size problem}
+\author{Claude scheduled routine (worst-case derivation complexity log)}
+\date{2026-11-14 12:20 America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\paragraph{Status line.}
+\begin{itemize}
+\item Lemma~\ref{lem:mcsp} (exact bridge for MCSP, any machine, re-reading allowed): \textbf{PROVED/EXACT}; toy checks \textbf{COMPUTATIONAL}.
+\item Lemma~\ref{lem:part} (labels at one time form a partition into at most $2^{S}$ parts): \textbf{PROVED/EXACT}.
+\item The proof-system reading (Section~\ref{sec:ps}): \textbf{PROVED/EXACT}, and a restatement of the known reflection principle (log entry \texttt{o78at4}); not new.
+\item Facts about MCSP used: \textbf{KNOWN THEOREMS}. Hirahara's NP-hardness of partial MCSP was confirmed by a search this run. The others are quoted from memory and were not re-read.
+\item A lower bound for truth-table formulas in a system that contains the labels: \textbf{OPEN}; it sits at Extended Frege level.
+\item P versus NP remains \textbf{OPEN}.
+\end{itemize}
+
+\section{MCSP as a slot class}
+MCSP$[s]$: given the truth table of $f:\{0,1\}^{k}\to\{0,1\}$, with $N=2^{k}$ bits, decide whether $f$ has a circuit of size at most $s$.
+
+This is a slot class in the sense of WCD-REACH-0001:
+\begin{itemize}
+\item the assignment $x$ is the description of a circuit of size at most $s$;
+\item slot $a\in\{0,1\}^{k}$ holds the constraint ``$x(a)=0$'' or ``$x(a)=1$'';
+\item an input is satisfiable exactly when $f$ has a small circuit;
+\item for hard $f$ the constraints form the truth-table formula $\mathrm{tt}(f,s)$, and refuting it is proving a circuit lower bound.
+\end{itemize}
+In \emph{partial} MCSP a slot may also be empty ($\top$).
+
+\begin{lemma}[exact bridge for MCSP]\label{lem:mcsp}
+Let $M$ be any machine that decides MCSP$[s]$ on $N$-bit tables; it may re-read. Let $f$ be hard, with run $C_0,\dots,C_L$ and queried positions $p_0,\dots,p_{L-1}$. Define the \emph{alive set}
+\[A_t=\{x:\ M\text{ on the table of }x\text{ is in configuration }C_t\text{ at time }t\}.\]
+Then $A_0$ is every small circuit, $A_L=\emptyset$, and $A_t\cap\{x:x(p_t)=f(p_t)\}\subseteq A_{t+1}$.
+\end{lemma}
+\begin{proof}
+A circuit satisfies exactly one total input, its own table. So the witness in the bridge lemma is unique and no re-read set is needed. If the table of $x$ is at $C_t$ and its bit at $p_t$ equals $f(p_t)$, it moves to $C_{t+1}$. $A_L=\emptyset$ because $M$ accepts every table of a small circuit and rejects $f$.
+\end{proof}
+The label at time $t$ is the set of small circuits the machine has not yet told apart from $f$. Forgetting is visible: $A_{t+1}$ can be larger than $A_t$ when configurations merge.
+
+\begin{lemma}[partition]\label{lem:part}
+At each time $t$, the alive sets over all inputs partition the small circuits into at most $2^{S}$ parts, where $S$ is the space in bits.
+\end{lemma}
+\begin{proof}
+Each circuit has one table and that table is in one configuration at time $t$.
+\end{proof}
+This is the link between space and knowledge that was missing in general. In WCD-KWIDTH-0001 a one-bit state could stand for a wide predicate, and nothing constrained the family of labels. Here the labels at one time are disjoint and number at most $2^{S}$.
+
+\paragraph{Check.} \texttt{mcsp/mcsp\_bridge.py} uses De Morgan formula size (leaves) in place of circuit size. For $k=3$ and threshold 4 there are 126 easy and 130 hard tables.
+\begin{itemize}
+\item Lemma~\ref{lem:mcsp} holds on every step for a one-pass machine (1{,}040 steps) and for a two-pass machine that keeps only the number of ones after the first pass and then re-reads (2{,}080 steps). No failures.
+\item \emph{Certificates.} Every hard table is separated from all easy ones by 5 positions (122 tables) or 6 positions (8 tables) out of 8. Any machine must read at least that many distinct positions.
+\item \emph{One-pass space.} The number of distinguishable prefixes at a cut peaks at 26 for $k=3$. For $k=4$, threshold 5 (3{,}302 easy tables), it peaks at 447 at cut 11. So every one-pass machine needs at least 8.8 bits on 16-bit tables.
+\end{itemize}
+
+\section{Reading the run as a proof}\label{sec:ps}
+By Lemma~\ref{lem:mcsp} the run of $M$ on a hard $f$ is a refutation of $\mathrm{tt}(f,s)$ with one line of memory. Its lines are the alive sets, and its last step uses one fact that does not depend on $f$: ``$M$ accepts the table of every small circuit''. Each alive set is computed from $x$ by a circuit of size polynomial in the running time. So:
+\begin{itemize}
+\item if MCSP has a fast algorithm $M$, then every true circuit lower bound $\mathrm{tt}(f,s)$ has a short proof in the system ``lines are circuits in $x$, plus the one axiom about $M$'';
+\item this is the bridge B3 for that system, and it is the reflection principle already in the log;
+\item what MCSP adds is that the extra axiom is one-sided. It asserts only that $M$ accepts easy tables.
+\end{itemize}
+
+\section{What MCSP changes for the earlier targets}
+\begin{itemize}
+\item \textbf{KW-T1.} The target was an NP-hard slot class. Partial MCSP is one: Hirahara (FOCS 2022) proved it NP-hard under randomized reductions. This replaces the lifted-Tseitin clause-subset class, whose hardness is still unsettled. In partial MCSP a circuit is consistent with many inputs, so the witness is not unique and the re-read set returns.
+\item \textbf{Two worlds.} If MCSP is in P, then one-way functions do not exist (Razborov--Rudich; Kabanets--Cai). MCSP is not known to be NP-hard, so ``MCSP in P'' lies strictly between the two worlds as far as is known. It is a natural separator between the worlds with and without cryptography in the world ledger.
+\item \textbf{Knowledge width.} The Res($\oplus$) tools of this session do not apply. An alive set is ``$M$ behaves the same on the table of $x$ as on $f$'', a general circuit in $x$ and not a function of few parities. A lower bound must be for truth-table formulas in a system with circuit lines, which is Extended Frege level. That is the Razborov--Kraj\'i\v{c}ek programme on the proof complexity of circuit lower bounds, and the Pich--Santhanam results in log item 5 are stated for exactly these formulas.
+\item \textbf{Depth and checkpoints.} The checkpoint search still works on the alive sets. Its cost is the query complexity of deciding membership in an alive set, which is the cost of simulating $M$ on the table of $x$. No lower bound for that quantity is proved here.
+\end{itemize}
+So MCSP makes the bridge exact and gives a real link between space and labels, and it moves the lower-bound half to the hardest level. This agrees with log item 6: bridge and lower bound are both available only where the other is open.
+
+\section{CORPUS REVIEWED / DUPLICATION AUDIT / CHANGES}
+\begin{itemize}
+\item \textbf{Corpus reviewed:} the six earlier reports of this session; the consolidated living log (items 5, 6, 9, 10 and the reflection entry); the world-ledger pointer in AGENTS.md. A corpus search for earlier MCSP work was not run, so earlier MCSP material in other roles' reports may exist and is unchecked.
+\item \textbf{Duplication / contradiction audit:} within this routine's log, no entry applies the bridge to MCSP. The proof-system reading repeats the reflection entry. No contradiction found.
+\item \textbf{What changed relative to root main:} nothing; \texttt{main.tex} is not edited.
+\item \textbf{Adopted:} the bridge lemma; Hirahara's theorem. \textbf{Rejected:} Res($\oplus$) width as a tool for MCSP labels. \textbf{Retired:} KW-T1 in its lifted-Tseitin form, replaced by partial MCSP.
+\item \textbf{Stale or overstated claims found:} none.
+\end{itemize}
+
+\section{Evidence and literature}
+\texttt{mcsp/mcsp\_bridge.py}, \texttt{mcsp/raw\_results.json}; single stage, under 1\,s. No TeX engine was available, so this file was not compiled.
+
+Literature: Hirahara, \emph{NP-hardness of learning programs and partial MCSP}, FOCS 2022 (ECCC TR22-119), confirmed from a search summary. Razborov--Rudich (natural proofs), Kabanets--Cai (MCSP), Razborov and Kraj\'i\v{c}ek on truth-table formulas, and the one-tape and branching-program lower bounds for MCSP by Cheraghchi--Hirahara--Myrisiotis--Yoshida are cited from memory; the search this run returned nothing on them.
+
+\paragraph{Next target MC-T1.} Use Lemma~\ref{lem:part} for more than one pass. For a machine that makes $r$ passes over the table with $S$ bits, bound the number of circuits that can leave the alive set per pass, and from that derive a pass--space tradeoff for the toy formula-size problem. Compare with the exact one-pass numbers above. This is a restricted model; a bound there would not transfer to random access without a further argument.
+
+\medskip\noindent P versus NP remains OPEN. One OPEN load-bearing arrow means P $\ne$ NP is not proved.
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WCD-MCSP-0001
