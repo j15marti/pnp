@@ -73,7 +73,7 @@ Per-degree counts, fixture digests and limitations are in immutable results/raw/
 **Primary works freshly checked, with exact scope:**
 
 1. Stephen A. Cook, *The Complexity of Theorem-Proving Procedures*, STOC 1971, pp. 151-158, https://doi.org/10.1145/800157.805047. Establishes polynomial reducibility and completeness context, not a deterministic 3-SAT time lower bound.
-2. Richard M. Karp, *Reducibility Among Combinatorial Problems*, 1972, pp. 85-103, https://doi.org/10.1007/978-1-46884-2001-2_9. NP-complete reduction context, with no claimed source-bit observation theorem.
+2. Richard M. Karp, *Reducibility Among Combinatorial Problems*, 1972, pp. 85-103, https://doi.org/10.1007/978-1-4684-2001-2_9. NP-complete reduction context, with no claimed source-bit observation theorem.
 3. Leonard Berman and Juris Hartmanis, *On Isomorphisms and Density of NP and Other Complete Sets*, SIAM J. Comput. 6(2), 1977, pp. 305-322, https://doi.org/10.1137/0206023. P-isomorphism investigation, not a theorem that arbitrary padding preserves cost.
 4. Harry Buhrman and Ronald de Wolf, *Complexity Measures and Decision Tree Complexity: A Survey*, Theor. Comput. Sci. 288(1), 2002, pp. 21-43, https://doi.org/10.1016/S0304-3975(01)00144-X. Certificate/query and decision-tree model distinctions, not unrestricted SAT machine separation.
 
