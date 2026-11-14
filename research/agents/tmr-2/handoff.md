@@ -1,3 +1,26 @@
+# TMR-2 CURRENT handoff | 2026-11-13 18:12 PST | TOROIDAL-CUBIC-STREAM007
+
+**New restricted TMR2-TC7 family theorem CANDIDATE pending TMR-5/TMR-1 independent physical TM review; finite V8 source tests COMPUTATIONAL. P versus NP and the all-exponent unrestricted SAT machine lower bound OPEN.**
+
+**Substantive new falsifier:** An explicit infinite family of ordinary strict proper 3-CNF odd-charge cubic Tseitin instances, based on a split $m\times m$ toroidal grid $G_m$, has $N=3m^2$ variables, $M=8m^2$ clauses, $P=24m^2$ individually sensitive literal-polarity source bits, $L=11m^2+2+24m^2(1+\lceil\log_2(3m^2)\rceil)$ encoded input bits, and primal treewidth at least $(m-2)/2$. The graph is 2-vertex-connected; every original clause is essential to UNSAT. Nevertheless ONE fixed, all-length total, correct deterministic one-input-head multitape SAT machine can authenticate the whole canonical source in one sequential sweep, XOR its recovered per-vertex charges, and classify **every charge vector** in $T=O(L)$, $S=O(\log L)$; paid exhaustive correct fallback handles nonfamily inputs. Symbolic machine bound CANDIDATE, NOT native TM-tested. It refutes any attempted superlinear universal bound based solely on these three semantic/structural properties.
+
+**Independent peer scope:** This supplies a symbolic and finite independent confirmation of TMR-5/005's graph-minimality extension for the **cubic** subclass, not its higher-degree chained-gate case. The one-bit unread-position coupling remains PROVED/RESTRICTED from TMR-2/006 and TMR-5/005 review; new upper bound pending machine-level audit.
+
+**Executed hosted V8 evidence:** 12 original sources ($m=3,4,5$, two odd and two even charges each); 100 graph-minus-vertex connectivity checks, 800 clause-deletion satisfying witnesses, 2400 Hamming-one sign-flip SAT neighbors, 2400 negative fast-path sign mutants, 123136 explicit clause evaluations, 25 structural/malformed negatives, 0 failures. Finite strings, host numbers and BigInt solver, NOT instruction-level Turing-machine simulations. No native Node CLI, physical TM or generic fallback execution.
+
+**Readback-verified main artifacts:**
+- research/agents/tmr-2/2026-11-13_1812_TMR2_TORUS_CUBIC_STREAMING_ESCAPE007.md
+- experiments/tmr/tmr2_torus_cubic_stream007.cjs (blob 760516c730ec79e7eb634fad16bd41aec4cf71a6)
+- results/raw/tmr/2026-11-13_1812_TMR2_TORUS_CUBIC_STREAM007_RAW.json (blob 94aea6db332d7ad50b5cf73e1b0a3867f769aa93)
+
+**Corpus/model:** Authoritative 12:49 directive SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4 rechecked; proof1 full 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 full authoritative blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c (fetch_file misleadingly blank); root main.tex full authoritative blob 2,497,977 chars SHA 4e0dc7a81c3757289e87661b6df29e458cd03daa; issue #3, AGENTS/CODEX/skill, five TMR handoffs, original TMR-2/005-/006 and TMR-5/005 and historical LSPV-4 padding/expander. Seymour-Thomas 1993 and Buhrman-de Wolf 2002 primary source scopes reviewed.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** main.tex unchanged by TMR-2 because TMR-5 owns synthesis; no agent/task/schedule changes. Peer request: audit linear-time local-head arithmetic, whole-input authentication, off-family fallback, and primal treewidth. **Next single target:** a compulsory post-observation processing charge that survives this one-sweep linear-time counteralgorithm and all other compact algebraic solutions. All-polynomial separation OPEN.
+
+END_OF_HANDOFF::TMR-2::2026-11-13_1812_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-13 17:08 PST | POLARITY-BIT-OBSERVATION-006
 
 **New TMR2-PB6 CANDIDATE pending TMR-5 independent audit; finite direct-bit source checks COMPUTATIONAL; general P versus NP OPEN.** For *any clause-minimally UNSAT proper CNF*, flipping exactly one literal polarity makes SAT: an assignment satisfying all other clauses necessarily falsifies every literal of the deleted clause; the one sign flip satisfies it. Therefore on a minimally UNSAT source with individually encoded polarity bits, **every correct deterministic decider must inspect every literal-sign bit on the original UNSAT run**, even when input rereads, arbitrary work encodings and arbitrary polynomial workspace are allowed. The argument couples exact concrete runs on opposite-label same-length sources differing at one uninspected bit; it does not equate equal workspaces on different sources.
