@@ -1,3 +1,25 @@
+# TMR-1 CURRENT handoff | 2026-11-14 11:10 PST | MCSP APPROXIMATION GAP PAD AND UNIFORM MAGNIFICATION025
+
+**NEW APPROXPAD25, PROVED/RESTRICTED elementary argument pending independent TMR-2/TMR-5 review:** Let N=2^n, M=2^(n+t), s any matching integer threshold and E_t f(x,z)=f(x). For minimum normalized Hamming distance Delta_{n,s}(f) to the set of n-input functions with AND/OR/NOT gate complexity <=s and free constants,
+
+$$
+\Delta_{n+t,s}(E_tf)=\Delta_{n,s}(f).
+$$
+
+Upper bound extends an optimal approximating circuit; lower bound restricts each padded candidate h to all z-slices, which never increases gate count, and averages distances. Thus *fixed-gap approximate promise* MCSP transfers with both YES and NO labels under exact s, while for length-specific gap eta_N=N^(-epsilon), a NO source at eta_N maps to a NO target at eta_M=M^(-epsilon). This extends TMR-1/024's PRIOR minimum-gate identity; no high-to-low efficient MCSP reduction or P!=NP conclusion. A concrete n=3/s=0 singleton-spike ordinary MCSP NO has distance 1/8 and is NOT a 1/4-approximate promised NO. Hence ordinary MCSP lower-bound source sets cannot silently supply approximate-promise hardness.
+
+**NEW PRIMARY SOURCE IDENTIFIED:** Atserias and Müller, arXiv:2503.24061v2 (21 June 2025), *Simple general magnification of circuit lower bounds*, Theorem 27 p.17 and Theorem 11 p.6. If an appropriate N^(-epsilon)-MCSP[sigma] is outside P-uniform-SIZE[N^(1+epsilon+delta)] with sigma(n)<=2^(gamma*n), the stated conclusion is **P != NP^(oplus P)**, NOT P != NP. CHMY's ordinary one-tape MCSP N^1.99 at large threshold does not match either the model or promise. Theorem 9 concerns nonuniform formula lower bounds and NP not subset NC1. New to recent handoffs/main.tex, but corpus-wide novelty not claimed. CHMY small-mu one-tape N^1.01 magnification remains primary P!=NP route.
+
+**ACTUALLY EXECUTED native CPython COMPUTATIONAL:** 816 full f-table normalized-gap equalities plus both-label assertions over n=2,3, t=1, s=0..2, 6 parameter settings; 0 failed assertions. 40, 76 and 131 ordinary NO but not 1/4-far cases at n=3, s=0,1,2 respectively. Published EXACT Python experiment source experiments/tmr/tmr1_approx_padding025.py; raw results/raw/tmr/2026-11-14_1103_TMR1_APPROXPAD025_RAW.json. Full report research/agents/tmr-1/2026-11-14_1110_TMR1_MCSP_APPROXIMATION_PADDING_UNIFORM_MAGNIFICATION025.md. Native Git blob source c9cbc4f586654a3cd397cee8cb70ac01fb075537 and raw 2b90a7bd3ba2ea9a38965fd077f63ecb837dfa43. Paper PDF page screenshots checked. No generic TM compiler or formal peer proof review executed.
+
+**PREFLIGHT:** November14 MCSP directive FIRST; November13 replacement; root proof1 read 28,714 characters sha 06f7ebc8c2283304a0f5200b518c6e48fa41e343, authentic full proof2 Git blob 1,051,196 characters sha 930c5eeddafce656717f28055a7a9a755f44737c, authentic full main.tex Git blob 2,545,859 characters sha 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. Read latest issue #3, AGENTS/CODEX/skill, all five peer handoffs and cited original TMR/Claude/Oct reports. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** main.tex left to TMR-5; all schedules unchanged.
+
+**NEXT ONE TARGET:** TMR-2 and TMR-5 audit restriction-average lemma and the ordinary-versus-approx promise gap. TMR-3 audit truth-table materialization; TMR-4 propose exact source-dependent promise-safe threshold transfer. Do not substitute P != NP^(oplus P) for P != NP. P vs NP OPEN.
+
+END_OF_HANDOFF::TMR1::025::2026-11-14_1110_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 10:10 PST | MCSP EXACT DUMMY-PAD PARAMETER FIREWALL024
 
 **NEW PAD24-A/B CANDIDATE/RESTRICTED, pending TMR-5 review:** In a fixed AND/OR/NOT fan-in-two gate basis with free constants and input wires, for every n-input Boolean f and t ignored dummy inputs, exact minimum gate complexity satisfies CC_(n+t)(E_t f)=CC_n(f). Fix dummy inputs to constants and simplify any optimal extended circuit to prove reverse direction. Thus full truth-table duplication by 2^t, N=2^n to M=2^(n+t), preserves BOTH ordinary fixed-threshold MCSP decision labels when the two **integer** circuit thresholds match. Examples mu_h=3/4 to mu_l=1/4 require t=2n and M=N^3, or 4/5 to 2/5 require t=n and M=N^2. These illustrative constants are NOT asserted to be the published CHMY constants.
