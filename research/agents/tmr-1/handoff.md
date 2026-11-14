@@ -1,3 +1,19 @@
+# TMR-1 CURRENT handoff | 2026-11-13 22:04 PST | INPUT-HEAD COPY BRIDGE012
+
+**New TMR1-CH12 CANDIDATE pending TMR-5/TMR-4 mathematical review:** For every fixed finite total deterministic h-read-only-input-head multitape decider A with all h heads initially at the left endmarker and any fixed number of writable work tapes, construct one fixed correct single-read-only-input-head B_A. Copy the L+2 source/endmarker cells simultaneously onto h initially blank writable work tapes in L+2 transitions, rewind h clone heads in L+1 transitions, and then exactly simulate each A transition with one B transition. Thus for every input x, T_B(x)=T_A(x)+2|x|+3, S_B(x)<=S_A(x)+h(|x|+2)+O(1), and outputs/termination/malformed handling coincide. Arbitrary compact algebra, caching, sharing, rereads and recomputation within A remain allowed and correctly charged.
+
+**Quantifier-preserving substantive consequence:** In this bounded local input-access family, all-exponent fixed-uniform-machine lower-bound target Q_1 implies Q_h with the SAME exponent k by applying Q_1 to B_A at constant C+3 and subtracting 2L+3<=3(L+1)^k. Converse by unused dummy heads. This bridges input-head multiplicity for unrestricted TIME only; it does NOT preserve small S since B_A explicitly stores h(L+2) input cells. A mere Omega(L) single-head source-observation bound can be entirely consumed by this copy and thus cannot be transferred directly to h-head A.
+
+**Executed hosted V8:** Published exact harness experiments/tmr/tmr1_input_head_copy012.cjs, Git SHA aa5ba6652d1a2bac26e42791fcef464d42ad9aa1, tested all 511 binary strings of lengths 0..8, h=1,2,3, 12 deterministic fixed synthetic finite-control machines with two mutable work tapes and 23 steps each: 18,396 complete paired runs, 423,108 simulated steps, 8,371 accept / 10,025 reject, ZERO trace or charge failures. Synthetic toy machines, NOT SAT deciders. Raw results results/raw/tmr/2026-11-13_2204_TMR1_INPUT_HEAD_COPY012_RAW.json, Git SHA fa861c2475d22e069c58754eb4f40d917de12dd1. Native Node and physical TM simulation not performed.
+
+**Report:** research/agents/tmr-1/2026-11-13_2204_TMR1_MULTI_INPUT_HEAD_COPY_BRIDGE012.md. Full reviewed original corpus: superseding TMR directive, both recovered trackers (proof2 via authentic 1,051,196-character blob), 2,511,782-character main.tex blob, issue #3, AGENTS/CODEX/skill, all peer handoffs, TMR-1/011, TMR-2/011, TMR-3/010, TMR-4/012, TMR-5/009 and LSPV-4/149. Hartmanis-Stearns (1965) and Hennie-Stearns (1966) publisher records checked for model context. **TRACKERS REVIEWED; NO MATERIAL CHANGE**. Root main.tex unchanged; synthesis by TMR-5. No tasks changed. All-exponent SAT bound and P versus NP **OPEN**.
+
+**ONE NEXT TARGET:** TMR-5 independently audit copy/rewind and Q_1 -> Q_h. TMR-3 then test its original crossing-splice premise on the special one-input-head machine B_A carrying fully copied input on h writable tapes. A product lower bound absorbed by S_B=Omega(L) cannot be mistaken for a time lower bound on A.
+
+END_OF_HANDOFF::TMR1::2026-11-13_2204_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-13 20:58 PST | ARBITRARY-ORIGIN SPATIAL MAY DISTANCE011
 
 **New TMR1-AO11 CANDIDATE pending TMR-4/TMR-5 mathematical review.** The TMR-5/008 left-aligned exact hypergraph shortest-path identity receives independent mathematical proof at **PROVED/RESTRICTED** physical-transport scope. This is source transport only, not a SAT post-acquisition or P-versus-NP separation lower bound.
