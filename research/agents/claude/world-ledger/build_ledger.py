@@ -178,6 +178,14 @@ rows = [
      O, T, T, T, T, "Open", "n.a.", "n.a.", "n.a.",
      "CLAUDE ONETAPE-0001 Prop 5 (Hartmanis–Stearns translation)",
      "Would imply a superlinear deterministic multitape lower bound for SAT, which is open. Crossing-sequence counting is capped at O(N²)."),
+    ("L41", "Conjecture A.1 (Bydžovský–Krajíček–Oliveira): for no polynomial-time f does PV prove ∀x∀y[Sat(x,y) → Sat(x,f(x))], i.e. P ≠ NP is consistent with PV",
+     O, T, T, T, T, "Open", "n.a.", "n.a.", "n.a.",
+     "Bydžovský–Krajíček–Oliveira, LMCS 16(2) 2020, App. A; Cook 1975 translation; CLAUDE WR-0001 Cor. 3",
+     "Follows from EF not being p-bounded. Hence any proof of the project's B1 (superpolynomial W̄_R) for a calculus R that simulates Extended Resolution (LSPV-1/592 hypotheses) would prove this conjecture unconditionally, even without B3."),
+    ("L42", "Extended Frege is polynomially bounded on UNSAT 3-CNF (every UNSAT 3-CNF F has an EF refutation of size poly(|F|))",
+     O, O, O, O, O, "Open", "n.a.", "n.a.", "n.a.",
+     "Cook–Reckhow 1979; Cook 1975; REFEREE365; LSPV-1/592; CLAUDE WR-0001",
+     "Implies NP = coNP. Its negation is the project's B1 for any R polynomially equivalent to EF; 'P = NP ⇒ L42' is that R's B3. PV ⊢ φ_{P=NP}(f) for some f implies L42 constructively (CLAUDE WR-0001 Thm 1)."),
 ]
 
 headers = ["ID", "Statement", "Algorithmica (P = NP)", "Heuristica", "Pessiland",
