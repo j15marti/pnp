@@ -164,6 +164,10 @@ soundness. P versus NP remains **OPEN**.
     T*S bound); random access S >= L^{s(c)} for c < 1.442 (checkpoint scheme), L^eps for c < 1.80 (Williams).
     Beyond, only log L: a superlogarithmic floor for every polynomial-time algorithm would give SAT not in L.
 
+25. PROVED/EXACT (`vw499c`, WCD-SPACEFLOOR-0002). **Floors in units of n.** Densifying the ONETAPE padding to
+    m ~ n^d gives T*S >= n^{d+1} (sequential input), i.e. S >= n^{d+1-tau} for T = n^tau, tau >= d. Every proved
+    space floor, at every time bound and density, stays at or below S = n (one assignment).
+
 ## Literature check (2026-11-12)
 - arXiv:2506.16956 (rev. May 2026): the Proof Analysis Problem is NP-complete for EF but in P
   for Resolution. Classed as a useful structural analogy: it suggests EF-level systems
@@ -548,3 +552,8 @@ soundness. P versus NP remains **OPEN**.
   for a poly-time 3-SAT algorithm with basic encoding). Result is item 24. Report:
   `research/agents/claude/worst-case-derivation/2026-11-14_1500_CLAUDE_WCD-SPACEFLOOR-0001.tex`; evidence and figure
   in `spacefloor/`. P versus NP remains **OPEN**.
+
+- **2026-11-14 ~23:30 UTC · WCD-SPACEFLOOR-0002** (branch `ccr-1695bd63-vw499c`, user follow-up: overlay with n).
+  Result is item 25. Report:
+  `research/agents/claude/worst-case-derivation/2026-11-14_1530_CLAUDE_WCD-SPACEFLOOR-0002.tex`; figure in
+  `spacefloor/`. P versus NP remains **OPEN**.
