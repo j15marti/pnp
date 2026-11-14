@@ -1,3 +1,19 @@
+# TMR-5 CURRENT handoff | 2026-11-14 15:52 PST | MCSP DEGREE WINDOW AND CONSTRUCTOR INPUT-HEAD AUDIT027
+
+**NEW DEGREE40 CANDIDATE/RESTRICTED pending TMR-4/TMR-1 peer review:** Independent quantitative sharpening of TMR-4/031's indexed-table circuit simulation. Fixed uniform evaluator E(F,i) running worst-index time t=O(L^{d+o(1)}), with full output N=L^{a+o(1)}, generates only ordinary MCSP[N^mu] YES outputs whenever a*mu>2*d. For any actual NO output, t>sqrt(floor(N^mu)/K_E)-(L+n+2). This is a per-bit compiler restriction, not a SAT lower bound or a ban on all polynomial-time reductions. Original direct one-hot circuit simulation hypothesis retained.
+
+**NEW CONHEAD40 MODEL AUDIT/OPEN:** TMR-3/030 assumes binary-n-input constructor costs additive C inside a one-way-MCSP-source + one-work-tape simulator after source EOF. That is justified for a constructor whose binary n is prewritten on its SAME work tape. If n lives on a separate constructor input head, an explicit interface simulation is missing. A fully serialized generic repair costs O(C(C+log N)), requiring 2c<1.99 rather than c<1.99 to invoke CHMY high-mu2 N^1.99 theorem with C=O(N^c); C=N, E=N^.8 is a sharp budget countercontrol. No optimality lower bound for constructor conversion is claimed; TMR-3 should prove a sharper header bridge or state the restricted native-work-tape model.
+
+**Independent native CPython execution:** EXACT Git-published source experiments/tmr/tmr5_degree_constructor_audit040.py, raw results/raw/tmr/2026-11-14_1552_TMR5_DEGREE_CONHEAD040_RAW.json. 3,302 exact assertions, zero failures: 208 hypergeometric sharpness configurations, 3,864 exhaustive supports, 192 counting-n values, 2,268 degree threshold comparisons, 384 network rational-exponent comparisons. Git blobs verified against native git-hash-object. Finite evidence COMPUTATIONAL, not physical finite-state TM or asymptotic proof.
+
+**Full report:** research/agents/tmr-5/2026-11-14_1552_TMR5_DEGREE_WINDOW_CONSTRUCTOR_REVIEW027.md. CHMY STACS 2021 Theorems 1-3 pp.23:3-4 and MMW STOC 2019 Theorems 1.2-1.3 verified against original PDF/page images. Read newest Nov14 MCSP directive FIRST and rechecked SHA 1e11aa64a0b0d635a65cea58500b09f2b0fe010a, Nov13 replacement, AGENTS/CODEX/skill, latest issue #3, five TMR handoffs, authentic entire proof1 and full proof2/main blobs. Prior TMR, Claude, Grok, Walsh/moment, original peer source/raw controls inspected. TRACKERS REVIEWED; NO MATERIAL CHANGE; no root main.tex promotion. All schedules untouched.
+
+**Peer requests:** TMR-3 constructor-model head conversion; TMR-4 quantitative a*mu>2d floor and t inversion; TMR-1 threshold quantifiers; TMR-2 hypergeometric scope. CHMY small-mu1 one-way one-work-tape lower bound and P versus NP still OPEN.
+
+END_OF_HANDOFF::TMR5::027::2026-11-14_1552_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 14:52 PST | UNIVERSAL DUMMY-INPUT PADDING FIREWALL026
 
 **NEW DUMMY-PAD34 PROVED/RESTRICTED, independent TMR-1/TMR-4 review OPEN:** In standard AND/OR/NOT circuits with free constants and unrestricted fanout, adding $r$ unused high-order Boolean inputs, whose explicit full table is a repetition of the old $N=2^n$ table $2^r$ times, leaves minimum circuit gate count **exactly** unchanged: $CC_{n+r}(P_r(f))=CC_n(f)$ (both directions by ignoring dummies or fixing them to constants). For every fixed positive $\mu$, an explicit uniformly computed $r=O_\mu(n)$ makes the new threshold $(N')^\mu$ exceed the universal DNF gate upper bound $n2^n+n+2$, so **every padded output is ordinary MCSP YES**, with $N'=N^{O_\mu(1)}$. This retires dummy-variable table repetition as a generic positive-power hardness/promise amplifier for **any** source function, strengthening TMR-4/030's direct-SAT-compiler-specific collapse, without ruling out nontrivial transformations.
