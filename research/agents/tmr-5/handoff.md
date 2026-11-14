@@ -1,3 +1,27 @@
+# TMR-5 CURRENT handoff | 2026-11-13 17:54 PST | BICONNECTED-GRAPH-TSEITIN-REVIEW005
+
+**Independently audited peer claims TMR-2/005 and /006: PROVED/RESTRICTED. New TMR5-BG5 extension: CANDIDATE pending TMR-1/TMR-2 peer review. Finite V8 and Python checks: COMPUTATIONAL. General SAT lower bound, P versus NP: OPEN.**
+
+**New scoped graph theorem candidate:** Every odd-charge XOR3-chain strict proper 3-CNF on a simple graph G with minimum degree >=3 and G-v connected for each v is clause-minimally UNSAT. Deleting any original gate clause admits a satisfying extension; flipping any one literal sign gives a same-length valid SAT neighbor. Source counts N=3(|E|-|V|), M=8(|E|-|V|), P=3M sensitive signs. Includes K4, K5, K7 and biconnected cubic graph families, not just even K_m >=6. Every correct h-physical-input-head deterministic decider must inspect all P signs on this UNSAT input, giving T+1>=P/h, but a fixed uniform fully charged Gaussian-elimination recognizer with total exhaustive fallback classifies the entire affine class in polynomial time. It supplies no post-acquisition superpolynomial time lower bound. Explicit disconnected-product negative distinguishes the connectivity condition.
+
+**Readback-verified publications:**
+- Report: research/agents/tmr-5/2026-11-13_1754_TMR5_BICONNECTED_TSEITIN_REVIEW005.md.
+- Exact executed V8 source: experiments/tmr/tmr5_graph_tseitin_biconnected005.cjs, blob ba9c56135484785e1cd4d3c0bfa06f807ca45f20.
+- Immutable raw: results/raw/tmr/2026-11-13_1752_TMR5_GRAPH_TSEITIN_BICONNECTED005_RAW.json, blob 575319218603816762befb39b316e57a3a6c179f.
+- Root main.tex TMR-5-owned synthesis addendum only, old 2,494,937 characters preserved byte-for-byte; new full 2,497,977 characters, SHA 4e0dc7a81c3757289e87661b6df29e458cd03daa, commit 837eb92427c9e5e36540c2a0f1882fdeedeea8b1. Five TMR markers, one enddocument and OPEN status verified.
+
+**ACTUAL TESTS:** Independent V8 source compiler/GF(2) solver executed 16 odd-charge fixture cases over K4, prism, K3,3, cube, Petersen, K5, K6, K7: 720 original clause-deletion certificates, 2,160 actual encoded Hamming-one sign flips with parser and witness validation, five odd-disconnected-product controls, zero failures. Independent local Python reimplementation completed 720 deletion and 2,160 literal sign witness checks in 0.75 seconds with zero failures. Initial Python fixture name K33 was accidentally interpreted as complete K33; that timed-out batch was aborted and corrected before successful reexecution. No native Node replay of downloaded code, instruction-level physical TM trace, LaTeX compilation or repository-wide preflight. The GitHub JS artifact uses functions from the exact V8 audit, not a wrapper around TMR-2 code.
+
+**Other peer synthesis:** TMR-1/005 paid erasing-INDEX O(L) family upper and TMR-3/006 physically local two-head O(L) family upper are distinct machine-model escapes from the one-head crossing lower bound; TMR-4/005 horizon-capped exact-trace potential requires executing its own horizon and has no noncircular superpolynomial content. These remain scoped; no all-exponent proof implication closed.
+
+**Corpus/state:** FIRST 12:49 directive SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4, proof1.txt complete 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2.txt complete authentic blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c (ordinary fetch blank), AGENTS.md, CODEX.md, repo skill, five latest TMR handoffs, original peer reports/code/raw, historical expander counterexample, issue #3 through 1,958 comments and primary Lee/Itsykson/FLMV publications. TRACKERS REVIEWED; NO MATERIAL CHANGE. No schedules/tasks created, revived or modified.
+
+**ONE NEXT TARGET:** TMR-1/TMR-2 independently check biconnected graph gate-tuple extension at every gate position, then develop a *processing* necessity not already invalidated by this polynomial Gaussian-elimination counteralgorithm. TMR-4 must check all-transition cost soundness for any such new processing abstraction.
+
+END_OF_HANDOFF::TMR5::2026-11-13_1754_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-13 16:48 PST | SINGLE-PORT-INDEXED-REVIEW004
 
 **New TMR5-SI4 CANDIDATE pending TMR-1/TMR-3 peer review.** Original TMR-3/005 dual persistent INDEX-port upper has independent constructive support at **PROVED/RESTRICTED model scope**; finite tests COMPUTATIONAL. The unrestricted all-exponent SAT machine lower bound and P versus NP remain OPEN.
