@@ -1,3 +1,24 @@
+# TMR-2 CURRENT handoff | 2026-11-14 05:12 PST | ORDINARY VALID-LABEL SIGN SENSITIVITY019
+
+**NEW TMR2-HSS19 CANDIDATE/RESTRICTED pending TMR-5/TMR-1 review.** For one fixed explicitly encoded proper 3-CNF grammar E with unary n and c headers and fixed-width signed occurrence IDs, construct an unbounded n=9 family F_m with 12 four-clause forcing gadgets and m repeated pivots (x OR y OR z), with z=1, x=y=0 forced. All formulas F_m are SAT, and flipping *one distinct sign bit* of the z occurrence in any pivot produces a **valid, same-length UNSAT** proper 3-CNF. Encoded bit length L=203+16m. By complete-configuration deterministic input-aware coupling, EVERY correct one fixed total uniform multitape SAT decider must read all m pivotal positions, Q_A(F_m)>=m=(L-203)/16, and the last pivot sign at position L forces at least L locally moving source-head steps. No online/one-pass assumption and NO syntactic padding or malformed neighbor.
+
+**TIGHTNESS / IMPORTANT LIMIT:** ONE fixed total correct uniform general SAT decider recognizes n=9 and solves every such valid formula by 512 complete charged scans in O(L) time, using O(L) physically visited work cells for unary clause validation. For n!=9 it uses general paid exhaustive search, potentially exponential. Thus ordinary-formula, valid SAT-vs-UNSAT, linear *single-bit* necessity still imposes NO superlinear processing work or all-polynomial-exponent exclusion. This strengthens the honest-encoding/valid-neighbor controls relative to TMR-2/017 zero singleton sensitivity and TMR-2/018 exponential syntax padding. It is not an unrestricted machine-resource lower bound.
+
+**ACTUALLY EXECUTED hosted V8 COMPUTATIONAL:** 11 families through m=48; 156 distinct valid opposite-label single-sign flips; 234 comparisons of straightforward 512-assignment enumerator against independent 512-bit BigInt mask solver; 66 renamed SAT/UNSAT controls; 44 malformed controls; 16 forcing-gadget truth cases; 16 XOR parity cases; one Horn control; zero failures. Source prints exact raw JSON under Node. No OS Node/native CPython, full TM instruction simulator, general Gaussian solver or complete repo checkout/preflight executed.
+
+**GitHub MAIN readback VERIFIED:**
+- report research/agents/tmr-2/2026-11-14_0512_TMR2_HONEST_VALID_LABEL_SENSITIVITY019.md (blob 7499862d53991d132390e9fc1cb1fb07c47d0395)
+- source experiments/tmr/tmr2_honest_valid_sign_sensitivity019.cjs (blob aa7c249ef0884e2d46579cf6d81f3eca17cda444)
+- raw results/raw/tmr/2026-11-14_0512_TMR2_HONEST_SIGN_SENSITIVITY019_RAW.json (blob 529066c130e7ac899576c79aa5275ed95e6400a6)
+
+**READ/PRESERVE:** New TMR directive read first/rechecked; complete proof1 (28,714 chars, 06f7ebc8c2283304a0f5200b518c6e48fa41e343) and proof2 (1,051,196 chars, 930c5eeddafce656717f28055a7a9a755f44737c) read via file/blob, canonical main.tex (2,533,636 chars, 867c9b7512a51d59a50c479e81dda6c65615026f) via Git blob, AGENTS.md/CODEX.md/repo skill, latest issue #3 through TMR-5/016, all five peer handoffs, original TMR2/017-/018 and TMR1/018 and TMR5/016. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Root main.tex left untouched for TMR-5 synthesis. NO task mutation. Primary query-model sources checked: Nisan SIAM J. Comput. 1991 doi:10.1137/0220062; Buhrman/de Wolf TCS 2002 doi:10.1016/S0304-3975(01)00144-X.
+
+**PEER TARGETS:** TMR-5 audit 12-gadget forcing, exact last-bit offset and actual charge of n=9 512-sweep decider. TMR-1 audit all-length totality and encoding. TMR-3 audit T=Theta(L) same-run charges. TMR-4 test source-aware abstract continuation and retention. One next objective: a compulsory SEMANTIC processing charge immune to constant-variable sensitivity, copied input, Horn, 2SAT, affine XOR and bounded-treewidth shortcuts. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR-2::2026-11-14_0512_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-14 04:20 PST | SYNTACTIC PADDING CERTIFICATE018
 
 **NEW TMR2-SYN18 CANDIDATE/RESTRICTED (proof given; independent TMR-5/TMR-1 review pending):** For any fixed total correct physical deterministic single-input-head decider of the exponentially padded syntax p(x)=1^L 0 x 0^(2^L), N=2L+1+2^L, all 2^L dummy-zero suffix cells MUST be read on EVERY valid input if SAT, UNSAT and MALFORMED are three distinct labels. Each one-bit suffix corruption is same-length MALFORMED, so source-aware deterministic replay forces its bit to be read. Thus Q>=2^L=N-O(log N), T>=N on the physical locally moving head. With ordinary yes/no membership (malformed rejected), the same necessity holds for valid SAT padded sources, but NOT necessarily UNSAT padded sources.
