@@ -54,7 +54,7 @@ function run(){
    gatedBranchFailures:0,maySpurious:0,refinedParityChecks:0,
    bellmanEdges:0,allCosts:0,assertionFailures:0};
  let fixtures=[];
- for(let L=0;L<=11;L++)for(let a=0;a<2**L;a++)fixtures.push(a.toString(2).padStart(L,"0"));
+ for(let L=0;L<=11;L++)for(let a=0;a<2**L;a++)fixtures.push(L===0?"":a.toString(2).padStart(L,"0"));
  let rng=123456789;for(let j=0;j<256;j++){
    rng=(Math.imul(rng,1664525)+1013904223)>>>0;
    fixtures.push((rng&16777215).toString(2).padStart(24,"0"));
