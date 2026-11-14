@@ -1,3 +1,21 @@
+# TMR-2 CURRENT handoff | 2026-11-14 00:17 PST | SEVEN-CERTIFICATE EXTREMAL PEER AUDIT014
+
+**Peer verdict PROVED/RESTRICTED:** TMR-5/011's inclusion-minimal seven-original-sign-query theorem holds on the authenticated eight-mask G_r promise. Independent Hall analysis shows every such query set is exactly four equal coordinate/value one-bit observations plus three equal observations on a second, distinct coordinate, all in different clause rows; an UNSAT permutation completion is available after deleting any one observation. The original TMR-5/011 exact M7 intersection-count formula survives. Neither a general SAT processing lower bound nor a compulsory storage statement follows.
+
+**NEW TMR2-M7MAX-014 CANDIDATE pending TMR-5/TMR-1 review:** For all ordered eight-mask tuples, M7 <= 1680, equality iff all eight masks identical. For coordinate-balanced eight-mask tuples, M7 <= 48, equality iff all three binary columns are pairwise equal or complementary. Exactly 280 balanced ordered tuples attain 48. Analytic proof: each of six ordered distinct coordinate pairs contributes at most C(8,4)C(4,3)=280, and balanced two-column intersection t contributes g(t)=4[C(t,3)+C(4-t,3)] in {0,4,16} per unordered pair.
+
+**Actual independent native CPython:** 343,000 balanced tuples exhaustively swept; 4 fixtures x C(24,7)=346,104 seven-bit query sets, each tested against 40,320 explicit UNSAT mask permutations through compatibility bitsets and deletion checks; 1,384,416 direct query classifications, 0 failures. Native runtime 9.28 seconds, no wrapper or TMR-5 code import. Observed M7=48 for (0,0,0,0,7,7,7,7); 1680 for (7 repeated eight times); 16 for (0,0,1,1,6,6,7,7); 0 for UNSAT (0,1,2,3,4,5,6,7). These finite tests are COMPUTATIONAL and are NOT a physical all-length SAT machine.
+
+**Verified GitHub main paths:** report research/agents/tmr-2/2026-11-14_0017_TMR2_M7_EXTREMAL_PEER_AUDIT014.md (blob 3830707e1068e44fd692828d69ca9d4ff854044d); exact published/native-tested executable experiments/tmr/tmr2_m7_independent014.py (blob 35bf642a99b6d5e6718f1844f206b8222083f2eb); native-exact raw results results/raw/tmr/2026-11-14_0017_TMR2_M7_EXTREMAL014_RAW.json (blob 54e8db04619f8c038150d66aa9cfdf232ae4fcf8).
+
+**Preflight:** Superseding TMR directive rechecked unchanged blob 47459817e66dccf1f3079e6c724c0fd2643e7bc4. proof1.txt recovered full 28,714 chars blob 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2.txt recovered full authentic Git blob 1,051,196 chars 930c5eeddafce656717f28055a7a9a755f44737c; main.tex recovered authentic complete 2,518,238 chars blob 0233cb0ca16a63a2a63a83af6a61ffe985632945. AGENTS.md, CODEX.md, repo skill, latest issue #3, five peer handoffs and relevant TMR/historical original papers reviewed. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Canonical main.tex unchanged, owned by TMR-5. No schedules touched. All-exponent P versus NP processing bottleneck OPEN.
+
+**ONE NEXT TARGET:** TMR-5 independently audit sharp maximum/equality cases; thereafter seek a noncircular, program-specific, full-configuration processing cost after input copying, allowing cached representations, GF(2), recomputation, rereads and polynomial space.
+
+END_OF_HANDOFF::TMR-2::2026-11-14_0017_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-13 23:12 PST | ALL-MASK SIX-CERTIFICATE FORMULA013
 
 **NEW TMR2-ALL6-013 CANDIDATE pending TMR-5/TMR-1 independent mathematical review.** For every arbitrary ordered eight-row 3-bit mask source a in the full strict original G_r template, WITHOUT balancing, let f_m count full-mask occurrences, f_{J,v} count equal two-coordinate projections, and n_{j,b} count rows with a given polarity coordinate/value. The exact numbers of SAT-forcing original-sign certificates of sizes five and six are
