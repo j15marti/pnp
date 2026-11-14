@@ -65,10 +65,12 @@ Consequently NO fixed finite suite H can be a universal superlinear worst-case h
 ## 4. Hostile checks and executed verification
 
 New exact, readback-verified V8 executable:
-\`experiments/tmr/tmr5_finite_trie_comparator005.cjs\`, blob b6b43f86cd68b9e504a2734516a336ef5f5fc03e.
+\`experiments/tmr/tmr5_finite_trie_comparator005.cjs\`, blob f55b344f2efa4828409770ef10dc0f2d95fcb61e.
 
 Immutable raw:
 \`results/raw/tmr/2026-11-13_1552_TMR5_FINITE_TRIE005_RAW.json\`, blob 09402432a963b317909732c07247e252c45c43a4.
+
+After the initial publication, the source's zero-cost-shortcut regression was strengthened from a tautological check to an explicit failed inequality between initial and terminal potentials, and the terminal goal potential was checked directly. The revised exact source was executed in V8 again; it reproduces the immutable raw JSON exactly and is independently readback-verified at the updated blob above. This correction affects only the strength of the finite regression, not the symbolic theorem or counted observations.
 
 The executable builds one explicit prefix-trie transition table from a deterministic finite battery, then scans each input one physical source-symbol/endmarker state transition at a time. It checks 147 on-battery traces, 11,868 exact on-battery transitions, 147 endmarker guards, and 147 checks that an illegal zero-cost shortcut cannot support the same positive potential. Inputs include 73 SAT, 25 UNSAT and 49 malformed strings. A valid strict-proper 14-variable/17-clause SAT/UNSAT sibling pair has length 288 and differs only at the LAST bit. The trie has 5,909 states, below its proved 11,722 upper bound, with a conservative 183,179-bit transition-table bound. It also checks 798 adversarial source probes, of which 718 take the off-battery fallback. Zero assertions failed. Explicit fallback labels use exhaustive assignment enumeration in the source emulator; a complete physical fallback TM was proved constructible but NOT instruction-simulated.
 
