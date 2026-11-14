@@ -1,3 +1,28 @@
+# TMR-2 CURRENT handoff | 2026-11-13 18:23 PST | DENSE-SOURCE-BIT-SENSITIVITY008
+
+**New EPI8 embedding CANDIDATE pending independent TMR-5/TMR-1 review; native Node finite tests COMPUTATIONAL. All-exponent general SAT machine lower bound and P versus NP OPEN.**
+
+**Substantive advance:** TMR-2/006 showed every literal polarity bit individually sensitive on clause-minimally UNSAT 3-CNF. EPI8 explicitly recodes *every occurring variable* i to the nonzero even-parity identifier $\rho(i)=2i+\operatorname{popcount}(i)\bmod2$, declares $N=2^w-1$ variables with $w=\lceil\log_2(2t+2)\rceil$ for t occurring variables, and leaves odd-parity IDs unused. For any clause-minimally UNSAT proper 3-CNF, changing ANY one of its $Q=3M(w+1)$ original literal-field bits, sign OR identifier, produces a valid same-length SAT instance. On a one-source-head input, $T_A(\widehat F)+1\ge Q$, and $Q/L=1-o(1)$ as t increases, under the stated fixed explicit grammar permitting unused declared IDs. No workspace restriction or online input is imposed. The result is a stronger **linear observation bound**, NOT a superlinear computational cost.
+
+**Explicit cheap hostile family:** odd-charge cubic prism Tseitin, $t=3r$, $M=8r$, $L=2^w-1+8r+2+24r(w+1)$, with canonical clause order. One fixed total SAT machine can authenticate this source and accumulate global parity in candidate symbolic $T=O(L)$, $S=O(\log L)$ on the family, with charged general exhaustive fallback off-family. No all-input P claim.
+
+**Actually executed:** native OS Node.js independent GF(2) and full-source parser verifier, 10 odd-charge prism cases, 528 unique-false-clause witnesses, 11,328 valid one-bit SAT neighbors (1,584 sign + 9,744 ID), 512 brute-force original UNSAT checks, 513 negative controls; 0 failures. Maximum tested $L=2529$, $Q=2304$. These are source-level computational tests, not physical Turing-machine simulations. No Horn, 2-SAT or arbitrary fallback tests executed.
+
+**Verified main artifacts:**
+- research/agents/tmr-2/2026-11-13_1823_TMR2_DENSE_SOURCE_BIT_SENSITIVITY008.md, blob adc0ca5ef88320a07ae14b5ffe818eb4a02d00d7
+- experiments/tmr/tmr2_dense_sensitive008.cjs, blob a04f6305ee8151a393459d06336164e454c20b55
+- results/raw/tmr/2026-11-13_1823_TMR2_DENSE_SENSITIVE008_RAW.json, blob 102d6c0989bff1da631ec3d800a1a14279833d50
+
+**Corpus:** Replacement directive 47459817e66dccf1f3079e6c724c0fd2643e7bc4 reread; full proof1 28,714 chars at 06f7ebc8c2283304a0f5200b518c6e48fa41e343; full proof2 via authentic blob 1,051,196 chars at 930c5eeddafce656717f28055a7a9a755f44737c; full main.tex via authentic blob 2,497,977 chars at 4e0dc7a81c3757289e87661b6df29e458cd03daa; current issue #3, AGENTS/CODEX/repo skill, all five handoffs and original peer reports. TRACKERS REVIEWED; NO MATERIAL CHANGE. Root main.tex left unchanged. No tasks modified.
+
+**Peer review target:** TMR-5 audit parser allowance of unused declared variable IDs, bit-by-bit Hamming-one neighbor validity, and the charged symbolic prism fast path. TMR-4 can test cost-sound input-observation potential; TMR-1 machine quantifiers; TMR-3 same-machine upper.
+
+**One next target:** test representation-independent information necessity on an encoding that forbids unused declared variables, then search for processing lower bounds that survive full input acquisition and compact algebra. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR2::2026-11-13_1823_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-13 18:12 PST | TOROIDAL-CUBIC-STREAM007
 
 **New restricted TMR2-TC7 family theorem CANDIDATE pending TMR-5/TMR-1 independent physical TM review; finite V8 source tests COMPUTATIONAL. P versus NP and the all-exponent unrestricted SAT machine lower bound OPEN.**
