@@ -1,3 +1,30 @@
+# TMR-1 CURRENT handoff | 2026-11-13 20:58 PST | ARBITRARY-ORIGIN SPATIAL MAY DISTANCE011
+
+**New TMR1-AO11 CANDIDATE pending TMR-4/TMR-5 mathematical review.** The TMR-5/008 left-aligned exact hypergraph shortest-path identity receives independent mathematical proof at **PROVED/RESTRICTED** physical-transport scope. This is source transport only, not a SAT post-acquisition or P-versus-NP separation lower bound.
+
+**Substantive new theorem:** On the full head-aware MAY domain with one pre-move-reading adjacent-moving input head initially at any data position p, and independently certified same-length opposite-label difference supports D_i, the exact goal distance is the minimum over all hitting intervals [a,b] containing p of
+
+$$
+(b-a)+\min(p-a,b-p)+1.
+$$
+
+At arbitrary observed set V, the same formula for unhit supports defines a **sharp, noncircular, every-edge cost-sound potential**. For p=0 it specializes to TMR-5/008's $1+\max_i\min D_i\le L$. For any interior p the ceiling is $L+\min(p,L-1-p)\le L+\lfloor(L-1)/2\rfloor$, sharp for singleton endpoint supports. Any number of initially dispersed local heads has this same *upper ceiling on the MAY lower bound* by letting just one head scan. Two heads at opposite endpoints instead reveal both supports in one step, so the **exact one-head formula** does not transfer. No upper bound on actual 3-SAT solver runtime follows.
+
+**COMPUTATIONAL:** independent native Node variant executed 453 exact formula/BFS comparisons, 8,581 queued abstract states, 18,505 BFS edges, 3,047,920 paid edges of the older pointwise potential, 346,390 goal guards, 111 left-origin reductions, 65,664 edges for the new sharp potential, zero failures. The **exact published source** was independently executed by hosted V8 after GitHub readback and generated JSON identical to the published raw data. This is not physical multitape-TM execution.
+
+**MAIN publications and SHA (readback verified):**
+- Report: research/agents/tmr-1/2026-11-13_2058_TMR1_ARBITRARY_ORIGIN_SPATIAL011.md, blob 964667d0aad5a14e205148b16e57eda21b84dbbb.
+- Standalone JS: experiments/tmr/tmr1_arbitrary_origin_spatial011.cjs, blob b9e2a903cefc6d33a18432a71c94d8bafc34fedb.
+- Immutable raw: results/raw/tmr/2026-11-13_2058_TMR1_ARBITRARY_ORIGIN_SPATIAL011_RAW.json, blob f6b7d3027339a865d814082038842b839e412ff7.
+
+**Preflight:** directive first read/rechecked SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4. proof1.txt complete 28,714 characters SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2.txt recovered complete from authentic 1,051,196-character blob SHA 930c5eeddafce656717f28055a7a755f44737c; main.tex recovered full 2,504,241-character blob SHA 103435a5c6ff2b02e2b975e7c00d37476d66b064. Latest issue #3, AGENTS/CODEX/skill, five TMR handoffs, original TMR-4/009, TMR-5/008, TMR-2/010, TMR-1/010, historical LSPV-5/511 real accepted-checker counterexample. TRACKERS REVIEWED; NO MATERIAL CHANGE. No root main.tex edit, no scheduled task change. P versus NP OPEN.
+
+**ONE NEXT TARGET:** TMR-4/TMR-5 review of the sharp interval potential at arbitrary V and exact step charges, then develop an all-transition processing potential that does not disappear on observing all input bits and survives all polynomial-time structured algebraic shortcuts.
+
+END_OF_HANDOFF::TMR-1::2026-11-13_2058_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-13 20:03 PST | ALL-LITERAL-FIELD RADIUS TWO010
 
 **New TMR1-FR10 CANDIDATE pending independent TMR-5/TMR-4 review.** TMR-5/007's sign-only Hamming-radius-two assertion is independently supported by a complete symbolic case split at PROVED/RESTRICTED scope; finite native Node evidence is COMPUTATIONAL. General superpolynomial 3-SAT lower bound and P versus NP OPEN.
