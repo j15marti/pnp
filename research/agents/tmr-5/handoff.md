@@ -1,3 +1,17 @@
+# TMR-5 CURRENT handoff | 2026-11-14 14:52 PST | UNIVERSAL DUMMY-INPUT PADDING FIREWALL026
+
+**NEW DUMMY-PAD34 PROVED/RESTRICTED, independent TMR-1/TMR-4 review OPEN:** In standard AND/OR/NOT circuits with free constants and unrestricted fanout, adding $r$ unused high-order Boolean inputs, whose explicit full table is a repetition of the old $N=2^n$ table $2^r$ times, leaves minimum circuit gate count **exactly** unchanged: $CC_{n+r}(P_r(f))=CC_n(f)$ (both directions by ignoring dummies or fixing them to constants). For every fixed positive $\mu$, an explicit uniformly computed $r=O_\mu(n)$ makes the new threshold $(N')^\mu$ exceed the universal DNF gate upper bound $n2^n+n+2$, so **every padded output is ordinary MCSP YES**, with $N'=N^{O_\mu(1)}$. This retires dummy-variable table repetition as a generic positive-power hardness/promise amplifier for **any** source function, strengthening TMR-4/030's direct-SAT-compiler-specific collapse, without ruling out nontrivial transformations.
+
+**ACTUAL EXECUTION:** Hosted V8 independently ran the exact standalone source \`experiments/tmr/tmr5_dummy_padding034.js\`, yielding \`results/raw/tmr/2026-11-14_1452_TMR5_PADDING034_RAW.json\`: 15,492 assertions, 276 exhaustive Boolean functions up to $n=3$, 120 independently enumerated bounded-gate equivalence tests, 128 exact threshold comparisons, zero failures. Additional local native CPython independently ran 15,620 checks (local source SHA256 5a4264cb96689e804eee2aac8fa14620cb7aa4d3de888457c9f49e1ab84cb398), **not** claimed GitHub-published. Finite execution does not constitute an asymptotic proof or a compiled physical TM.
+
+**REPORT:** \`research/agents/tmr-5/2026-11-14_1452_TMR5_DUMMY_PADDING_UNIVERSAL_COLLAPSE026.md\`. Primary CHMY STACS2021 Theorems 1-3 and MMW STOC2019 Theorems 1.2-1.3 rechecked in original PDF/page images. Reviewed current directive FIRST and rechecked, Nov13 directive, AGENTS/CODEX/skill, five handoffs, issue #3, complete root proof1, full authentic proof2 Git blob and full main.tex blob, TMR-1/028, TMR-2/029, TMR-3/028, TMR-4/030 and original code and historical controls. No tracker/main promotion or schedules changed.
+
+**NEXT / REQUEST:** TMR-4 audit circuit constant substitution and seek a non-dummy encoding; TMR-1 audit $\mu$ and $N'=N^{O(1/\mu)}$ arithmetic; TMR-2 audit changing Gap-MCSP comparison class; TMR-3 audit output tape charges. Leading unresolved hypothesis remains **ordinary low-$\mu_1$ MCSP outside $\mathrm{DTIME}_1[N^{1.01}]$**, not the already proved distinct high-$\mu_2$ bound. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR5::026::2026-11-14_1452_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 13:50 PST | MCSP CERTIFICATE-ORIENTATION AND SYNTAX ORACLE FIREWALL025
 
 **NEW CERT-ORIENT30 PROVED/RESTRICTED elementary implication (TMR-1 independent review OPEN):** A uniform polynomial-time reduction emitting a **complete N=poly(L)** ordinary MCSP (or Gap-MCSP with standard small-circuit YES) truth table, sending **3UNSAT to MCSP YES** and **3SAT to MCSP NO**, with polynomially bounded circuit threshold, would place 3UNSAT in NP via a guessed small circuit and exhaustive verification. Thus NP=coNP; if the target MCSP slice is in P, the same reversal would imply P=NP. This is CONDITIONAL on hypothetical reduction existence, not a nonexistence proof. TMR-4/029's h_F(x,u,w)=F(x) AND u AND w has N=2^(v+2) and unique-witness Hamming density 1/N, so it does not meet the polynomial-output or robust-gap premises.
