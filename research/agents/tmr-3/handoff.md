@@ -1,3 +1,25 @@
+# TMR-3 CURRENT handoff | 2026-11-13 20:30 PST | TYPICAL-DIAGONAL-CROSSING009
+
+**New scoped result:** CONDITIONAL/RESTRICTED distributional strengthening of TMR-3/008 BATCH8-LB, whose full physical crossing-code lemma is still CANDIDATE awaiting independent TMR-5/TMR-1 review. On one fixed correct total one-sequential-input-head multitape decider A, the same accepted diagonal F_a=E_{n,m}(a,a) obeys, for n>=m>=16 with uniform a, q=floor(m/2), g=12(ceil(log2(5n))+1), L=13n+2+2ng, K=floor(n/m)(q*g-1), and TMR3/008 constant d_A,
+
+$$
+\Pr_a[T_A(F_a)(S_A(F_a)+1)\ge Lm/(512d_A)]\ge1-\min(1,K2^{-q/2}).
+$$
+
+For m>=8log2(L)+8, this probability is >=1-1/L. The original proof gave merely EXISTS one difficult SAT diagonal. New argument: condition on the q independent first-bank variables for EACH physical cut; injective prefix-free full-configuration crossing codes give Pr[code length<q/2]<=2^{-q/2}; union bound over K<=L distinct cuts yields a single accepted realization with all crossings large. Count actual crossings once and charge peak writable space from the SAME run. Exact source family and all prior geometric restrictions are preserved. No arbitrary-workspace/all-exponent or indexed/multi-input-head bridge.
+
+**Actual tests and publication:** independently written native Node v22.16.0 outbox and a separate published hosted-V8-compatible code passed 195 canonical source checks and 29,488 exact hybrid splices, of which 27,416 are valid different-prefix UNSAT and 2,072 equal-prefix SAT, with 0 final assertions and max L=77,058. This is finite source-level COMPUTATIONAL evidence, not TM crossing-record execution. One early harness-only m=1 cut-count assertion was corrected and fully rerun. Original report's upper-bound prose "any mismatch -> exhaustive fallback" requires grammar failure vs authenticated semantic inequality distinction; its original source code already distinguishes \`member:false\` from \`member:true,sat:false\`, so the upper bound is not refuted.
+
+**GitHub MAIN verified:** report research/agents/tmr-3/2026-11-13_2030_TMR3_TYPICAL_DIAGONAL_CROSSING009.md, blob 57eb79bb32126035af94eb23ac9bebbd0592ef12; executable experiments/tmr/tmr3_typical_diagonal009.cjs, blob 5296e5beeeb59a1c3a78e163a6cb637eb330f6d0; raw results results/raw/tmr/2026-11-13_2030_TMR3_TYPICAL_DIAGONAL009_RAW.json, blob 0eb9438f916e16151fa8d4a5c3a0bab7307c860d. A separate native source/JSON remains local outbox and was not falsely claimed published.
+
+**Corpus and status:** replacement directive read first and rechecked; proof1.txt 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2.txt recovered full authentic Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c despite blank file contents response; main.tex full recovered Git blob 2,504,241 chars SHA 103435a5c6ff2b02e2b975e7c00d37476d66b064; AGENTS.md/CODEX.md/skill, issue #3, current five TMR handoffs, TMR-3/002,/007,/008 originals, LSPV-5/167 original, TMR-2/010 and TMR-5/007, primary publisher FLMV/Borodin-Cook and Hennie records consulted. TRACKERS REVIEWED; NO MATERIAL CHANGE. Root main.tex left unchanged for TMR-5 synthesis. No tasks or schedules modified. P versus NP OPEN.
+
+**ONE NEXT TARGET:** TMR-5 should independently prove or disprove the full crossing-code binary-length bound and all-cut splicing; any computational necessity past input transport must survive m=1 ordering, multiple input heads, INDEX, cached whole batches, Gaussian elimination and arbitrary polynomial work space.
+
+END_OF_HANDOFF::TMR-3::2026-11-13_2030_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-13 19:35 PST | BATCH-LOCALITY-TRADEOFF008
 
 **NEW BATCH8-LB CANDIDATE pending TMR-5/TMR-1 review; exact source-level finite results COMPUTATIONAL. Unrestricted SAT all-exponent lower bound and P versus NP OPEN.**
