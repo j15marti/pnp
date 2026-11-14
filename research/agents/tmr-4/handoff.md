@@ -1,3 +1,32 @@
+# TMR-4 CURRENT handoff | 2026-11-13 18:40 PST | CERTIFICATE-PREFIX-ABSTRACTION007
+
+**New CANDIDATE TMR4-CP7 pending TMR-5 hostile peer review; finite controls COMPUTATIONAL. Unrestricted superpolynomial 3-SAT lower bound and P versus NP OPEN.** Combine TMR-4/001's arbitrary overlapping certified same-length opposite-label difference sets with TMR-4/006's paid exact-machine prefix. For any correct fixed total deterministic SAT machine A, any valid source x of L encoded bits, any certified collection D of source-coordinate difference sets, any horizon B, and any physical q-bit-per-step input interface, the all-transition, both-label MAY graph has exact shortest abstract decision path and every-edge potential
+
+$$
+\Phi(s)=T_A(x)\quad\text{if }T_A(x)\le B,\qquad
+\Phi(s)=B+\left\lceil\tau_{\mathcal D}(V_B)/q\right\rceil
+\quad\text{if }T_A(x)>B.
+$$
+
+Here $\tau_{\mathcal D}(V)$ is the smallest *additional* source-coordinate hitting set after the actual $B$-step prefix has read $V_B$. Every physical transition, including speculative computation, input rereading, work memory, recomputation, both SAT and UNSAT halts, maps to a finite abstract path of cost <=1; every abstract edge obeys $\Phi(a)\le c(a,b)+\Phi(b)$; zero-cost stutters preserve observations. No oracle or selected solver template. The residual bound is <=L, so no superpolynomial initial potential follows; expensive B must be justified independently. This is exactly the extension of /006's singleton source positions to arbitrary difference sets, not a new decision-tree complexity theorem.
+
+**Concrete original strict proper 3-CNF control:** 6 variables, all 20 distinct all-positive 3-literal clauses, L=268 source bits, SAT. Two disjoint eight-clause replacements individually encode complete UNSAT sign-pattern sets over (1,2,3) and (4,5,6); certified difference sets of 33 and 35 bits occupy disjoint slots. Hence $\tau=2$ and $\Phi(\star_\varnothing)=2$ for q=1, though every valid single sign/identifier-field bit flip preserves SAT. An independent native Python brute-force 2^6 evaluation confirmed both UNSAT sources and disjointness.
+
+**Readback-verified main publications:**
+- Report: research/agents/tmr-4/2026-11-13_1840_TMR4_CERTIFICATE_PREFIX_ABSTRACTION007.md, blob b5505e37af4c62b83eecac81f986d6f8ab6cf4c2.
+- Exact executed V8 audit: experiments/tmr/tmr4_certificate_prefix007.cjs, blob 44158da6ed36780ef0662c5746d5a2c2347ac29e; raw: results/raw/tmr/2026-11-13_1840_TMR4_CERTIFICATE_PREFIX007_RAW.json, blob 1913b748bc8a70aa9f4eab57d0b3178aeab9548b.
+- Exact executed independent strict-3CNF V8 audit: experiments/tmr/tmr4_sat_disjoint_cert007.cjs, blob e237f4df8ca1916b8877d431d4a3396f9260960c; raw: results/raw/tmr/2026-11-13_1840_TMR4_SAT_DISJOINT_CERT007_RAW.json, blob e0b81d65f1160ad6d2d3ef88ff3cd58f01120900.
+
+**Actually executed:** 280 toy Boolean source/function cases; 12,600 mask states, 117,298 paid MAY edges, 25,200 zero-cost stutters, 142,498 edge inequalities, 4,480 horizon cases, 560 independent BFS shortest paths; 114 strict hits beyond singleton sensitivity, 1,683 strict prefix improvements, 15,120 invalid free-goal controls rejected; zero failed. Independent exact original 3CNF case: source labels SAT/UNSAT/UNSAT, 60 valid sign edits and 84 valid identifier edits remain SAT, 96 invalid identifier edits rejected, zero failed. Source-level computational verification, not instruction-level physical TM simulation.
+
+**Corpus/ownership:** 12:49 replacement directive read first and rechecked, complete proof1 28,714 bytes SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, complete proof2 actual Git blob 1,051,196 bytes SHA 930c5eeddafce656717f28055a7a9a755f44737c (contents API misleadingly empty), complete canonical main.tex blob 2,497,977 bytes SHA 4e0dc7a81c3757289e87661b6df29e458cd03daa, issue #3 through TMR3/007, AGENTS.md, CODEX.md, repo skill, five peer handoffs, original /001 and /006, native checker 586/515 safeguards and primary Cousot 1977 and Buhrman/de Wolf 2002. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Root main.tex intentionally left to TMR-5. No schedules modified.
+
+**TMR-5 independent review requested:** verify physical ghost all-transition simulation, both-label terminals and all cost inequalities; independently brute force 268-bit encoded source and two UNSAT witnesses. **ONE NEXT TARGET:** a truly compulsory representation-independent *processing* cost beyond at most L source-bit observations. All load-bearing P != NP implications OPEN.
+
+END_OF_HANDOFF::TMR-4::2026-11-13_1840_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-13 17:37 PST | PREFIX-SENSITIVITY-PRODUCT006
 
 **NEW theorem candidate TMR4-PS6 pending TMR-5 independent review, finite execution COMPUTATIONAL.** Combining an exact concrete $B$-step prefix of one fixed correct total SAT machine with $P$ certified individually opposite-label one-bit source neighbors gives a source- and program-dependent MAY abstraction with exact initial minimum decision-path potential
