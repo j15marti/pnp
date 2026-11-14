@@ -1,3 +1,21 @@
+# TMR-1 CURRENT handoff | 2026-11-14 12:00 PST | O(n) MCSP gate-spectrum resolution026
+
+**NEW SPECTRUM26-A, PROVED/RESTRICTED elementary proof, TMR-5 independent mathematical review OPEN:** For AND/OR/NOT gate circuits with free constants and wires, if the standard circuit-description count $D(n,a)=(a+1)(n+a+2)[3(n+a+2)^2]^a<2^{2^n}$ then some $n$-input Boolean $f$ has $a<CC_n(f)\le a+2n+4$. Proof: use a one-bit-flip path from zero truth table to a function exceeding $a$; each flip costs $\le 2n-1$ for the minterm and five gates for XOR; first threshold crossing gives the bound. This tightens PRIOR TMR-1/023's fixed-exponent shell to an **additive O(n) size gap**. Original counting/hierarchies are not claimed as a novel general circuit-theory discovery.
+
+**NEW SPECTRUM26-B, PROVED/RESTRICTED:** If thresholds $a<b$ differ by $\ge 2n+4$ and $D(n,a)<2^{2^n}$, the pure ignored-variable truth-table extension $E_t$ fails exact both-label threshold change: an intermediate function is NO for $a$ and YES for $b$, since PRIOR TMR-1/024 proved $CC(E_t f)=CC(f)$. For source $s_H(N)=\lfloor N^\beta\rfloor$, target $s_L(M)=\lfloor M^\alpha\rfloor$, $M=N^{\rho+o(1)}$, $0<\alpha<\beta<1$, $\rho\alpha\ne\beta$ necessarily causes a polynomial threshold gap and thus a counterexample for all large $N$. Equal exponents alone do not ensure equal integer thresholds. Explicit output charge and the PRIOR $1.01\rho<1.99$ firewall remain.
+
+**EXECUTED:** Native CPython script \`experiments/tmr/tmr1_spectrum_gap026.py\`, local SHA256 \`35c1f80295c5f2ae5e0c189eb5d4724b42a4cbffde09f0547be6c0793134122f\`; raw \`results/raw/tmr/2026-11-14_1200_TMR1_SPECTRUM_GAP026_RAW.json\`, local SHA256 \`4226f98f3d08d147d7c1ad4c6ba0f0c1dd9f31a0f3ae534171fd7ed6af3cab73\`. 57 assertions, 0 failures, 48 exact same-threshold padding controls, six finite intermediate-shell examples, three path controls, max 3 gates. Finite computation COMPUTATIONAL. See report \`research/agents/tmr-1/2026-11-14_1200_TMR1_MCSP_GATE_SPECTRUM_RESOLUTION026.md\`.
+
+**PREFLIGHT/PRIMARY:** First Nov14 directive verified blob 1e11aa64a0b0d635a65cea58500b09f2b0fe010a; then Nov13 replacement; both root proof1 28,714 / proof2 1,051,196 / main.tex 2,545,859 chars (last two via Git blob), AGENTS/CODEX/skill, issue #3 and all TMR handoffs; original TMR1/023, 024, 025 and TMR2-5 artifacts, prior Oct 18 threshold/promise counterexamples, Claude ONETAPE/TPORT/DIRECTPRODUCT. Primary CHMY STACS21 Theorems 1/2 distinguish low $\mu_1$, high $\mu_2$ and one-work-tape models; MMW STOC19 search/oracle streaming differs; Oliveira/Pich/Santhanam and 2025 Atserias/Muller use different promises and nonuniform/P-uniform circuit models.
+
+**STATUS:** Small-threshold one-work-tape MCSP LB OPEN; charged general high-to-low transformation OPEN; arbitrary uniform 3-SAT lower bound OPEN. **TRACKERS REVIEWED; NO MATERIAL CHANGE; main.tex left to TMR-5.** No schedules or agent identities changed.
+
+**NEXT/PEER:** TMR-5 audit gate counting, 2n+4 XOR construction and first crossing; TMR-4 search nonlinear source-dependent threshold transforms; TMR-3 charge physical source and tape composition; TMR-2 test short-query and compression escape. Do not promote theorem to unrestricted machine lower bound.
+
+END_OF_HANDOFF::TMR1::026::2026-11-14_1200_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 11:10 PST | MCSP APPROXIMATION GAP PAD AND UNIFORM MAGNIFICATION025
 
 **NEW APPROXPAD25, PROVED/RESTRICTED elementary argument pending independent TMR-2/TMR-5 review:** Let N=2^n, M=2^(n+t), s any matching integer threshold and E_t f(x,z)=f(x). For minimum normalized Hamming distance Delta_{n,s}(f) to the set of n-input functions with AND/OR/NOT gate complexity <=s and free constants,
