@@ -174,6 +174,11 @@ soundness. P versus NP remains **OPEN**.
     S = n for tau < 5. **This corrects item 25: the "no floor above S = n" reading is RETIRED** (true only for
     equality families). No transfer to random access.
 
+27. PROVED/EXACT, not independently reviewed (`vw499c`, WCD-ACCESS-0001). **Access models on the disjointness
+    family.** One head with move cost D^alpha: T*S >= N|P|^alpha ~ n^{3+3alpha} = L^{1+alpha}, tight on the family.
+    Jump budget: J + T/|P| >= N/S'. Two sequential heads decide the (sorted) family in linear time and log
+    space, so the one-head bound does NOT transfer (RETIRED). Unit-cost random access: trivial bound only.
+
 ## Literature check (2026-11-12)
 - arXiv:2506.16956 (rev. May 2026): the Proof Analysis Problem is NP-complete for EF but in P
   for Resolution. Classed as a useful structural analogy: it suggests EF-level systems
@@ -574,4 +579,10 @@ soundness. P versus NP remains **OPEN**.
   formulas result). Result is item 26, correcting item 25. Report:
   `research/agents/claude/worst-case-derivation/2026-11-14_1640_CLAUDE_WCD-DENSE-0001.tex`; evidence in `dense/`.
   **Next target DN-T1:** restricted random-access models where the excluded-set information must still be carried.
+  P versus NP remains **OPEN**.
+
+- **2026-11-15 ~01:20 UTC · WCD-ACCESS-0001** (branch `ccr-1695bd63-vw499c`, user follow-up: target DN-T1).
+  Result is item 27. Report:
+  `research/agents/claude/worst-case-derivation/2026-11-14_1720_CLAUDE_WCD-ACCESS-0001.tex`; evidence in `dense/`.
+  **Next target AC-T1:** unsorted lists against two heads (element-distinctness-type hardness).
   P versus NP remains **OPEN**.
