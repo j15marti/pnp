@@ -1,3 +1,19 @@
+# TMR-3 CURRENT handoff | 2026-11-14 09:36 PST | MCSP FIXED-NETWORK QUADRATIC SERIALIZATION024
+
+**Priority:** User's November 14 MCSP directive overrides superseded scientific topics, preserving the five TMR roles, schedules and historical results.
+
+**NEW FIXED-NET24 (CANDIDATE/RESTRICTED; TMR-1/TMR-5 review requested):** Any fixed finite network of p locally moving one-work-tape processors sharing one one-way read-only input scan, with fixed finite-graph delayed channel messages and fully charged local steps, has a **single** one-work-tape / one-way-input deterministic simulator using O_p((R+1)^2) transitions and O_p(R+1) writable cells after R elapsed rounds. Concrete proof uses fixed-p multi-track encoding, finite machine control and O_p(t+1) charged sweeps per round, with no input rewind. Growing p(N), arbitrary random ports, asynchronous uncharged channels and per-length topology/advice are excluded.
+
+**EXACT CHMY EXPONENT FIREWALL:** Cheraghchi et al. STACS 2021 Theorem 2 establishes ordinary MCSP[N^mu2] outside BPTIME_1[N^1.99], with mu2 near 1, not the smaller mu1 of Theorem 1's P!=NP magnification premise. Combined with the quadratic fixed-p simulator, this only excludes network elapsed rounds O(N^(199/200)) for the **large-threshold** language. For whole-stream protocols R>=N already, so this transferred lower bound is strictly weaker than scanning. It is NOT a polynomial-network-size vs superpolynomial-elapsed-time dichotomy. The threshold mismatch and polynomially growing p remain OPEN.
+
+**NATIVE CPYTHON COMPUTATIONAL CONTROL:** Independent direct network and swept-track proxy agreed for 2,044 binary streams, p=1..4, lengths 0..8; 2,008 YES/36 NO, 20 malformed; 207,782 charged adjacent sweep moves; 2,044 upper checks; ZERO failures. The sweep implementation is a Python proxy, not a native finite-alphabet compiler. An initial missing-return/duplicate-update sweep bug was corrected before the final run, and remains acknowledged. Executed source SHA256 920bed2a0a6ffb28bc2ef34a8b0ca4c0995fc1ecc2cd75a1b13f4ada8b206bfd.
+
+**Published paths:** research/agents/tmr-3/2026-11-14_0936_TMR3_MCSP_FIXED_NETWORK_SERIALIZATION024.md; experiments/tmr/tmr3_mcsp_network024.py; results/raw/tmr/2026-11-14_0936_TMR3_MCSP_NETWORK024_RAW.json.
+
+**Peer target:** TMR-1/TMR-5 independently prove or falsify FIXED-NET24 and model translation; TMR-2 audit input-scan necessity; TMR-4 test explicit low-mu transfer preserving circuit threshold, two labels, input length and paid cost. P versus NP OPEN.
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 08:49 PST | GF4 ORACLE-VERSUS-WHITE-BOX COMPOSITION023
 
 **NEW GF4-OR23 CANDIDATE/RESTRICTED**, complete elementary proof, TMR-2/TMR-5 independent review requested. Over GF(4)=GF(2)[alpha]/(alpha^2+alpha+1), for arbitrary Boolean f on b inputs, a deterministic algorithm with **only Boolean-value oracle access** must query all 2^b input points to compute exactly the multilinear extension at (alpha,...,alpha), even with unlimited workspace. The zero-oracle versus unqueried-single-spike proof has all Lagrange weights nonzero. The black-box restriction is essential: for OR_b, canonical ANF has exactly 2^b-1 nonzero monomials but the extension factors as 1+product_i(1+z_i). **ONE fixed locally moving finite-control machine** computes either Boolean OR of b bits or that extension on b explicitly encoded GF(4) elements, with each read/output transition charged, **same-machine T<=L+5, S<=2 writable visited cells**. This is a genuine two-model counterexample to uncharged transfer from canonical monomial count or generic extension oracle queries to compulsory physical local-block evaluation. It is not a general SAT decider or a complete Williams/Cook-Mertz compiler.
