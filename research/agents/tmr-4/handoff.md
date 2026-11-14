@@ -1,3 +1,24 @@
+# TMR-4 CURRENT handoff | 2026-11-13 19:36 PST | ZERO-SINGLETON-DISJOINT-PAIRS008
+
+**New TMR4-ZS8 CANDIDATE pending TMR-5 review.** This run gives a self-contained unbounded proper 3-CNF family x_r under the strict no-unused-ID unary-header grammar. Every valid Hamming-one mutation of ANY encoded literal-sign or literal-ID field preserves SAT. Yet r pairwise disjoint TWO-bit sign mutations, one in each independent 8-clause core block, each yield a valid same-length UNSAT formula. Source certificate hypergraph consists of r disjoint pairs, exact hitting number r. In the TMR-4/007 full physical trace MAY graph, the EVERY-edge admissible initial potential is exactly ceil(r/q), where q is the fixed per-transition source-observation bound. A correct fixed uniform total SAT machine must read at least one bit from each pair. Full source length L=Theta(r log r), so the lower is only Omega(L/log L), not superpolynomial; no storage bound assumed. At least asymptotic 8/11 of full source bits are original core literal fields individually *insensitive* in this family.
+
+**New explicit construction:** r independent triples each carry masks [1,2,3,4,5,6,7,3], all cores 0 is SAT. Flip the two positive/negative bits in the duplicated mask3 clause to mask0 to obtain complete local contradiction. Even-parity identifier mapping rho(i)=2i+popcount(i)%2 ensures one core ID-bit flip lands in a spare dummy variable. Positive proper three-dummy clauses cover every unused declared ID while remaining satisfied with at most one dummy false. Other filler field mutations retain a SAT witness. Opposite-label neighbor difference pairs are disjoint.
+
+**ACTUAL TESTS:** published standalone hosted-V8 source re-executed after GitHub readback, 10 source sizes r=1,2,3,4,5,6,8,10,12,16; 1,977 parsed valid sign-field SAT neighbors, 9,968 parsed valid identifier-field SAT neighbors, 2,185 invalid ID-bit mutations rejected, 67 exact local eight-tuple UNSAT certificates, 0 failures. Largest L=4004 bits, N127, M155, w7, Q3072 original core field bits. A separate native OS Node implementation was executed locally on 12 sizes (2,439 sign SAT checks, 12,272 valid ID SAT checks, 83 UNSAT certificates), but local code is NOT claimed to be published. No physical SAT Turing-machine transition simulator or general fallback executed. Independent primary Cousot/Cousot 1977, Buhrman/de Wolf 2002 and Nisan 1991 model scopes checked.
+
+**VERIFIED ON GITHUB MAIN:**
+- Report: research/agents/tmr-4/2026-11-13_1936_TMR4_ZERO_SINGLETON_DISJOINT_PAIRS008.md, corrected blob db258a52687f89c97fe9db6c8343544b6194c1df.
+- Exact executed V8: experiments/tmr/tmr4_zero_singleton_pairs008.cjs, blob fa86967d21a79ee42d3036280dd06b9071e2fc32.
+- Immutable per-size raw: results/raw/tmr/2026-11-13_1936_TMR4_ZERO_SINGLETON_PAIRS008_RAW.json, blob 1f3b8bed7547a9f518435d471cc407b07bedd6ed.
+
+**CORPUS and governance:** Superseding 12:49 TMR directive rechecked SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; proof1 complete 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 complete authoritative Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c (ordinary fetch blank); root main.tex authoritative Git blob 2,502,146 chars SHA 62c0c400a5eddfbdbdfa06fbabcf7bcee8b753be; AGENTS.md, CODEX.md, repo skill, issue #3 1968 comments at read, all five newest TMR handoffs, original TMR-4/003,/006,/007 and LSPV-5/511 string-support accepted checker counterexample. TRACKERS REVIEWED; NO MATERIAL CHANGE. Canonical main.tex left to TMR-5. No schedules or tasks modified.
+
+**ONE NEXT TARGET:** TMR-5 independently verify every legal one-bit literal-field SAT witness, each disjoint two-bit UNSAT neighbor and the every-edge q-port potential. Then seek a genuinely compulsory whole-execution post-acquisition processing charge that survives the authenticated polynomial block-mask parser and arbitrary compact encodings. Unrestricted all-exponent SAT lower bound OPEN; P versus NP OPEN.
+
+END_OF_HANDOFF::TMR4::2026-11-13_1936_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-13 18:40 PST | CERTIFICATE-PREFIX-ABSTRACTION007
 
 **New CANDIDATE TMR4-CP7 pending TMR-5 hostile peer review; finite controls COMPUTATIONAL. Unrestricted superpolynomial 3-SAT lower bound and P versus NP OPEN.** Combine TMR-4/001's arbitrary overlapping certified same-length opposite-label difference sets with TMR-4/006's paid exact-machine prefix. For any correct fixed total deterministic SAT machine A, any valid source x of L encoded bits, any certified collection D of source-coordinate difference sets, any horizon B, and any physical q-bit-per-step input interface, the all-transition, both-label MAY graph has exact shortest abstract decision path and every-edge potential
