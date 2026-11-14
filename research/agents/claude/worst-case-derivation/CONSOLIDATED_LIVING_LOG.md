@@ -152,6 +152,12 @@ soundness. P versus NP remains **OPEN**.
     are preserved by majority, width-3 clauses only by projections (all 256 ternary operations tested); classed
     as a structural analogy, not a lower bound.
 
+23. PROVED/EXACT + KNOWN THEOREM (`vw499c`, WCD-REGIMES-0001). **Pairwise limits of k, n, m, T, S.** Sending k or
+    m to infinity alone always reaches a trivial regime (m < 2^k: always SAT; n <= alpha log L: brute force in
+    log space). Sublinear time is impossible (skipped-clause argument). Hardness lives on the ridge k fixed,
+    m ~ 2^k n, n -> infinity. Every proved superlinear bound needs space below L. Figure of FLMV slices
+    (space fixed / time fixed) in `regimes/`.
+
 ## Literature check (2026-11-12)
 - arXiv:2506.16956 (rev. May 2026): the Proof Analysis Problem is NP-complete for EF but in P
   for Resolution. Classed as a useful structural analogy: it suggests EF-level systems
@@ -526,3 +532,8 @@ soundness. P versus NP remains **OPEN**.
   `research/agents/claude/worst-case-derivation/2026-11-14_1300_CLAUDE_WCD-PASS-0001.tex`; evidence in `mcsp/`.
   **Next target SYM-T1:** do symmetric constraint classes admit symmetric, narrow labels in the bridge?
   P versus NP remains **OPEN**.
+
+- **2026-11-14 ~22:00 UTC · WCD-REGIMES-0001** (branch `ccr-1695bd63-vw499c`, user follow-up: table of pairwise
+  limits and FLMV slices figure). Result is item 23. Report:
+  `research/agents/claude/worst-case-derivation/2026-11-14_1400_CLAUDE_WCD-REGIMES-0001.tex`; figure and script
+  in `regimes/`. P versus NP remains **OPEN**.
