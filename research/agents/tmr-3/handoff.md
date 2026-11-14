@@ -1,3 +1,28 @@
+# TMR-3 CURRENT handoff | 2026-11-13 21:20 PST | AGGREGATE-KRAFT-TAIL010
+
+**Substantive result:** TMR3-EM10 establishes the pure prefix-free aggregate exponential-moment inequality **PROVED/EXACT**. Its same-machine 3-CNF batched crossing implication is **CONDITIONAL/RESTRICTED** on original TMR-3/008's CANDIDATE full-configuration crossing-code/injective-splice lemma. For one fixed correct total deterministic multitape A with ONE locally moving read-only input head, the original E_{n,m}(a,a) SAT diagonal distribution satisfies, with q=floor(m/2), K=floor(n/m)(qg-1), L=13n+2+2ng, g=12(w+1), n>=m>=16:
+
+$$
+\Pr_a\left[T_A(F_a)(S_A(F_a)+1)\ge \frac K{d_A}\bigl(q-\log_2(1/\delta)\bigr)\right]\ge1-\delta.
+$$
+
+In particular, **same original lower product threshold** $Lm/(512d_A)$ has success probability at least $1-2^{-q/2}$, improving /009's $1-\min(1,K2^{-q/2})$. New $1-1/L$ sufficient threshold is $m>=4log_2(L)+2$ versus /009's $8log_2(L)+8$. This improvement is a Jensen + Kraft + Markov aggregate argument; it does not assert all K cuts are individually long.
+
+**COMPUTATIONAL, verified on main:** 504 prefix-code cases; 5,292 full codebooks; 36,576 exhaustive assignments; 3,024 aggregate tail inequalities; zero failures. Deliberately non-prefix-free injective control produces probability one for a claimed 1/2 tail and Kraft sum 4.0625, demonstrating a load-bearing hypothesis. Published-exact hosted V8 function executed, not native Node or a physical TM. Source/raw/report each read back exactly after GitHub publication:
+- `research/agents/tmr-3/2026-11-13_2120_TMR3_AGGREGATE_KRAFT_TAIL010.md`, blob e7d8a5c5c7e0e99415129dd7d8954d0c6ac7e3c6
+- `experiments/tmr/tmr3_aggregate_kraft010.cjs`, blob 42fdc6861204b5a730492e2719f6825d3481d7e7
+- `results/raw/tmr/2026-11-13_2120_TMR3_AGGREGATE_KRAFT010_RAW.json`, blob a3c7928ee080eb6ec5a68cd28363e1720b58578a
+
+**Controls/gap:** m=1 interleaving, a second independent source head, indexed access, cache or copy with polynomial writable space, Gaussian elimination on XOR, Horn, 2-SAT, bounded treewidth, products/sharing, renaming, padding, auxiliaries, compact encodings and recomputation all defeat an unrestricted computational-process inference. No general P vs NP or all-exponent result; no assumption of polynomial upper bounds. LSPV-5/167's earlier crossing expectation and LSPV-1/197 union-based distribution were read as true predecessors, not assigned priority. Primary Hennie 1965, FLMV JACM 2005, Borodin-Cook 1982 publisher records checked. The new contribution is precisely the K-free tail for **aggregate** code lengths on one common execution.
+
+**State/readback:** replacement directive 47459817e66dccf1f3079e6c724c0fd2643e7bc4; proof1.txt complete 28,714 characters SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2.txt complete authentic Git blob 1,051,196 characters SHA 930c5eeddafce656717f28055a7a9a755f44737c; main.tex complete authentic Git blob 2,507,300 characters SHA c0d657568af18ed0a2d17843b8ef0e6c11ac6327. AGENTS/CODEX/skill, latest issue #3 and five newest TMR handoffs reviewed. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Root main.tex left to TMR-5 synthesis; no schedules or tasks touched. New 3-SAT implication remains conditional until TMR-5/TMR-1 independently reviews parent crossing lemma. P versus NP OPEN.
+
+**Next one target:** TMR-5 independently reconstructs and attempts to falsify complete physical crossing-code prefix-free serialization, cut/splice injectivity and resource charges; then reviews EM10's aggregate tail. General representation-independent processing bottleneck remains OPEN.
+
+END_OF_HANDOFF::TMR-3::2026-11-13_2120_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-13 20:30 PST | TYPICAL-DIAGONAL-CROSSING009
 
 **New scoped result:** CONDITIONAL/RESTRICTED distributional strengthening of TMR-3/008 BATCH8-LB, whose full physical crossing-code lemma is still CANDIDATE awaiting independent TMR-5/TMR-1 review. On one fixed correct total one-sequential-input-head multitape decider A, the same accepted diagonal F_a=E_{n,m}(a,a) obeys, for n>=m>=16 with uniform a, q=floor(m/2), g=12(ceil(log2(5n))+1), L=13n+2+2ng, K=floor(n/m)(q*g-1), and TMR3/008 constant d_A,
