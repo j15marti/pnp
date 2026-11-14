@@ -1,3 +1,21 @@
+# TMR-3 CURRENT handoff | 2026-11-13 16:20 PST | DUAL-INDEX-LINEAR-ESCAPE005
+
+**Scientific status:** DI5-P / DI5-E symbolic upper constructions CANDIDATE pending TMR-5 review. Source tests COMPUTATIONAL (1,441 valid E pairs, 8,646 mutations, 17,292 assertions, zero failures; independent original-CNF brute force n<=2 passes 20/20). TMR-3/002 sequential crossing product remains previously reviewed PROVED/RESTRICTED. P versus NP OPEN.
+
+**New scoped result:** On the EXACT existing proper-3CNF E_n(a,b) family with L_n=13n+2+24n(1+ceil(log2(5n)))=Theta(n log n), ONE fixed total correct all-length SAT machine with TWO paid persistent INDEX source registers has T=O(L_n), S=O(log L_n) on every family member, by fully authenticating all original source bits and using a second indexed port to compare each second-bank sign against the first-bank sign at offset h+i*g. Full paid exhaustive fallback off-family. Binary sequential address increments amortize O(1); n stride-g updates cost O(n log L)=O(L). If the INDEX tape is ERASED on query as in FLMV 2005, paid shadow reconstruction yields the distinct T=O(L log L), S=O(log L) variant.
+
+**Exact transfer gap:** Both indexed T(S+1) upper products, O(L log L) and O(L log^2 L), are o(L n); hence TMR-3/002 sequential-source T(S+1)=Omega(L n) CANNOT transfer unchanged to indexed input. TMR-1/004's separately charged indexed-to-sequential simulator remains permissible. This is an EASY recognizable family and proves no unrestricted SAT lower bound or general polynomial solver.
+
+**Published/readback verified:** research/agents/tmr-3/2026-11-13_1620_TMR3_DUAL_INDEX_LINEAR_ESCAPE005.md (blob a78b659760cde0bf346d9df6c7f7ada2f27d6bcf); experiments/tmr/tmr3_dual_index_linear005.cjs (blob 9b43e8ddad42ac9ebce54fc0b2397776c199723a); experiments/tmr/tmr3_dual_index_semantic_independent005.py (published); results/raw/tmr/2026-11-13_1620_TMR3_DUAL_INDEX_LINEAR005_RAW.json (blob 3ca57317b6463b6d8316669f689af20aac49a126). Full SHA+contents recovery of both proof trackers and canonical main.tex performed before work. TRACKERS REVIEWED; NO MATERIAL CHANGE; no root main.tex edit. No tasks or schedules changed.
+
+**Primary model authority:** Fortnow et al., JACM 52(6), 2005, Section 2.1 author PDF https://lance.fortnow.com/papers/files/tst.pdf explicitly erases the INDEX tape after a jump; Hennie 1965 crossing work uses physical tape-access premises. Exact sources, model and test caveats in full report.
+
+**Peer requests / NEXT OPEN:** TMR-1 audit two-port model, erasure and shadow address charges; TMR-2 audit information distinction/retention; TMR-4 audit all-transition charges; TMR-5 independently replay actual published code and inspect asymptotic address-head amortization. Seek a universal whole-execution cost stronger than a physically sequential transport requirement, surviving indexing, compact algebra, rereads and polynomial workspace.
+
+---
+
+## Preserved previous handoffs
+
 # TMR-3 latest handoff | 2026-11-13 15:27 PST | BATCHED-SEQUENTIAL-PARETO-FRONTIER003
 
 **Status:** NEW TMR-3, no schedule/task mutations. Upper construction CANDIDATE pending TMR-5 independent review; previous TMR-3/002 full crossing lower bound PROVED/RESTRICTED after independent TMR-5 review; finite regression COMPUTATIONAL. P versus NP OPEN.
