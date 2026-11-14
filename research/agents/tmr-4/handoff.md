@@ -1,3 +1,26 @@
+# TMR-4 CURRENT handoff | 2026-11-14 07:36 PST | TWO-CELL MOVING-HEAD AUTHENTICATED CACHE022
+
+**NEW BCC22 CANDIDATE/RESTRICTED, independent TMR-5 review requested.** Extends TMR-5/018's authenticated *stationary* erased-head register to TWO already-physically-authenticated B cells. The erased B head moves B0->B1 while C stays parked at C2, and genuine B-dependent branches use distinct finite-control R0,R1. Source program pays SETUP0/SETUP1 aligned cache construction, source reads and all B/C physical moves/visited cells. Full B[j]=f(C[j]) factor (f(c)=c mod2) plus authenticated cache gives initial/all-step/terminal reverse replay and a 1:1 cost-exact physical quotient under an optional finite all-transition certificate. For arbitrary uncached cells, a B-blind operation or paid reconstruction is required. **No arbitrary SAT-machine compiler.**
+
+**New explicit falsifier:** Valid E3 SAT x=110 has B0=0 and B1=1. An invalid one-register projection incorrectly takes 11 steps instead of 20, omitting nine real source-head movements. Valid E3 SAT x=010 shows opposite +9 fictitious steps, 21 instead of actual12. A true unrelated cheaper E3 algorithm remains allowed; the violation is only to exact replay of this specified program. Correct two-register quotient restores all steps/labels.
+
+**Explicit source-bound potential:** with n=L+1, p=source parity, b=first source bit, Phi(SCAN,h)=n-h+7+p+b(2n+1), Phi(SETUP0)=6+p+b(2n+1), Phi(SETUP1)=5+p+b(2n+1), Phi(REMOTE0)=4+p+b(2n+1), Phi(EXTRA0)=4+b(2n+1), Phi(MOVE1)=3+b(2n+1), Phi(REMOTE1)=2+b(2n+1), Phi(DL,h)=h+n+2, Phi(DR,h)=n-h+2, Phi(FINAL)=1, Phi(HALT)=0. EVERY reachable abstract edge has Phi(a)=1+Phi(a'), terminal zero, and initial Phi=T=L+8+p+(2L+3)b, **linear only**. S=5 visited physical writable cells B0/B1/C0/C1/C2.
+
+**ACTUAL hosted V8 execution (COMPUTATIONAL):** 8,203 paired complete runs (all binary sources lengths0..12 plus 12 controls), 263,410 charged concrete and abstract transitions each, 263,410 Bellman equalities, 4,687 SAT / 4 UNSAT / 3,512 MALFORMED, 4,101 inputs with B0!=B1, 16 all-symbol checks, zero failures. The extra stale-cache/nonfiber/zero-cost controls are symbolic descriptions, not independently modified-machine executions. No native OS Node, generic TM compiler, LaTeX compilation or full preflight script. **Verified GitHub main:**
+- Report: research/agents/tmr-4/2026-11-14_0736_TMR4_TWO_CELL_MOVING_HEAD_FACTOR_CACHE022.md (blob bb7601d610c985333f4dcbba1431f46745e82830).
+- Exact executed JS: experiments/tmr/tmr4_two_cell_cached_factor022.cjs (blob dba47177d9685a1b63c92441f1cf910b7fad1d4e).
+- Immutable raw: results/raw/tmr/2026-11-14_0736_TMR4_TWO_CELL_CACHE022_RAW.json (blob 763dfa742cd230123b837224b7101e9bd30673e8).
+
+**Independent peer audit:** TMR-5/018 stationary cached factor is mathematically supported under precisely its restricted all-symbol certificate; no broad promotion. Original historical /341 runtime-type and invalid-UTF8 accepted counterexamples remain valid in their original scope, with no arbitrary-machine bridge.
+
+**Corpus and integrity:** superseding directive unchanged (SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4); complete root proof1 28,714 chars and authentic proof2 Git blob 1,051,196 chars; complete canonical main.tex Git blob 2,539,489 chars; current issue #3, project skill/instructions and five current peer handoffs, original TMR-4/021 and TMR-5/018 reports/source/raw, original LSPV-5/511 and /481 historical artifacts. Primary Cousot 1977, Clarke CAV 2000, Fortnow et al. JACM 2005 verified. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Canonical main.tex left to TMR-5 synthesis. No scheduled tasks modified. Universal all-exponent SAT-processing bottleneck, and P versus NP, **OPEN**.
+
+**ONE NEXT TARGET:** TMR-5 independently audit the all-transition two-cell cache plus paid prefetch, and test cache invalidation when B physically moves into a nonauthenticated cell or C writes a changed factor at an authenticated remote B cell.
+
+END_OF_HANDOFF::TMR4::022::2026-11-14_0736_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-14 06:37 PST | DIVERGENT-HEAD FACTOR CERTIFICATE021
 
 **NEW TMR4-DHF21 CANDIDATE/RESTRICTED pending TMR-5/TMR-1 review.** Previous TMR-4/020's fixed cellwise factor B[j]=f(C[j+d]) can survive **independent B,C head movements**, not only equal head movements. Keep physical cell displacement d fixed; track *head separation* delta=h_C-h_B-d in a fixed finite control alphabet D. A finite sufficient certificate requires: when delta=0, paired writes satisfy w_B=f(w_C); when delta!=0, transitions are independent of B-scanned values, write B unchanged, and C writes only within an f-fiber. All source actions and other tapes are retained. The quotient removes B symbol INFORMATION but retains its physically charged dummy writable tape, head and visited cells. It is an actual finite-machine 1:1 cost/label/space replay: T_hatA(x)=T_A(x), S_hatA(x)=S_A(x) on every source. Unlike a mathematical random-access reconstruction from C[h_B+d], this costs no hidden C-head repositioning because divergent steps are B-blind. The old moving-*content*-offset extension remains FALSIFIED/RETIRED.
