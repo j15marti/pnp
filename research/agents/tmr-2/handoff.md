@@ -1,3 +1,24 @@
+# TMR-2 CURRENT handoff | 2026-11-14 01:18 PST | PHYSICAL FULL-SUFFIX CROSSING NO-GO015
+
+**NEW TMR2-PC15 CANDIDATE pending TMR-5/TMR-3 peer review:** For ANY one fixed correct total uniform local-input-head 3-SAT decider A, a single fixed B_A physically computes XOR parity P of all L encoded source bits by one rightward scan, returns left, optionally repeats a full roundtrip when P=0, then runs A from its unchanged initial configuration. Exact same-input costs are T_B=T_A+2(L+1)(1+[P=0]) and S_B=S_A. All outputs, including malformed, are preserved; prepass is 2 or 4 genuine local crossings at EVERY original cut, globally correlated by one parity bit. At a cut just after a selected free sign bit X_i, the tagged forward/backward crossing-state projection c_i=(X_i,P) is conditionally prefix-free and depends on EVERY future free sign bit X_j; for K free original sign bits from valid authenticated G_r sources, all R_i=K, so interval depth D=K=Theta(L/log L) for this natural physical crossing-code projection. This **falsifies any universal small-future-dependence inference from independent source blocks, local heads, read-only source or both-label correctness alone**, NOT TMR-5/012 ID12 and NOT every possible crossing-record normalization. Useless prepass can be normalized only with separately proved cost-soundness, not by assertion. General SAT processing lower bound remains OPEN.
+
+**INDEPENDENT PEER MATHEMATICAL VERDICT: TMR-5/012 ID12 PROVED/RESTRICTED CODING SCOPE.** Conditional prefix-free Y_i=2^(q_i-|c_i|) has E[Y_i|past]<=1. Greedy coloring of intervals [i,R_i] into D nonoverlap classes, iterated conditional expectation, Holder and Markov prove Pr[sum|c_i|<sum q_i-b]<=2^(-b/D). Exact coding premise reviewed; NO transfer to all correct two-way SAT crossing codes established.
+
+**ACTUALLY EXECUTED:** Exact published standalone hosted V8 executable checked all 2,047 binary inputs lengths 0..10 plus 259 24-bit SAT/UNSAT source fixtures (2,306 total), 18,434 bitflips, 18,434 conditional prefix-free code fibers, 18,434 actual crossing-code projections, 109,156 counted local transitions; SAT 842, UNSAT 2, MALFORMED 1,462, ZERO failed assertions. Independent native CPython implementation, locally executed, checked 2,306 different deterministic test fixtures, 18,434 bitflips/fibers, 109,856 counted transitions, ZERO failures. Source/fixtures differ across V8 and Python; the native Python artifact is LOCAL-ONLY. Both finite runs COMPUTATIONAL, not an arbitrary-machine SAT compiler.
+
+**VERIFIED GITHUB MAIN:**
+- Report research/agents/tmr-2/2026-11-14_0118_TMR2_PHYSICAL_SUFFIX_CROSSING_PEER015.md, Git blob a681982e194cfc2d2da6fb80e9d6d3f886d383b5.
+- Exact executed JS experiments/tmr/tmr2_physical_suffix_crossing015.cjs, Git blob dc1e65f3f39b7eb45c9f7d83ffd727dec6dd926b.
+- Immutable raw results/raw/tmr/2026-11-14_0116_TMR2_PHYSICAL_SUFFIX015_RAW.json, Git blob 0cf0d5be1b4a594b1fd1cea58e804083914b26e2.
+
+**Corpus:** Current 12:49 PST directive first and rechecked unchanged blob 47459817e66dccf1f3079e6c724c0fd2643e7bc4; proof1 full 28,714 chars blob 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 recovered authentic full Git blob 1,051,196 chars 930c5eeddafce656717f28055a7a9a755f44737c; main.tex authentic full Git blob 2,522,180 chars 903092cd483c0b17694c9f500fa03b5a703508cc; AGENTS, CODEX, project skill, issue #3 through TMR-1/015, all newest TMR handoffs, original TMR-3/012,/013, TMR-5/012, TMR-4/015, TMR-1/015, TMR-2/014 and primary Hennie 1965, McMillan 1956. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Canonical main.tex left for TMR-5. No scheduled tasks modified. P versus NP OPEN.
+
+**ONE NEXT TARGET:** TMR-5 independently review PC15's genuine phase-tagged crossing projections and attempt a fully charged canonical-normalization theorem; TMR-3 seek a representation-independent physical causality property surviving the O(L) parity wrapper. All-exponent SAT resource arrow OPEN.
+
+END_OF_HANDOFF::TMR-2::2026-11-14_0118_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-14 00:17 PST | SEVEN-CERTIFICATE EXTREMAL PEER AUDIT014
 
 **Peer verdict PROVED/RESTRICTED:** TMR-5/011's inclusion-minimal seven-original-sign-query theorem holds on the authenticated eight-mask G_r promise. Independent Hall analysis shows every such query set is exactly four equal coordinate/value one-bit observations plus three equal observations on a second, distinct coordinate, all in different clause rows; an UNSAT permutation completion is available after deleting any one observation. The original TMR-5/011 exact M7 intersection-count formula survives. Neither a general SAT processing lower bound nor a compulsory storage statement follows.
