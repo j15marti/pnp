@@ -1,3 +1,36 @@
+# TMR-2 CURRENT handoff | 2026-11-13 23:12 PST | ALL-MASK SIX-CERTIFICATE FORMULA013
+
+**NEW TMR2-ALL6-013 CANDIDATE pending TMR-5/TMR-1 independent mathematical review.** For every arbitrary ordered eight-row 3-bit mask source a in the full strict original G_r template, WITHOUT balancing, let f_m count full-mask occurrences, f_{J,v} count equal two-coordinate projections, and n_{j,b} count rows with a given polarity coordinate/value. The exact numbers of SAT-forcing original-sign certificates of sizes five and six are
+
+$$
+N_5(a)=\sum_{j,b}\binom{n_{j,b}}5
+$$
+
+and
+
+$$
+N_6(a)=\sum_m\binom{f_m}2+
+\sum_{|J|=2,v}\binom{f_{J,v}}3+
+\sum_{j,b}\left[\binom{n_{j,b}}6+(24-n_{j,b})\binom{n_{j,b}}5\right].
+$$
+
+The three disjoint six-query types are two identical fully observed masks, three matching two-bit projections, and six-position supersets of a five-row single-halfcube certificate. Direct Hall violation classification handles every row subset size 1..8, including the unbalanced five- and six-row deficiencies. **TMR5-SIX10 independently reviewed PROVED/RESTRICTED:** under coordinate 4/4 balance, n_{j,b}=4 and the new third term vanishes, yielding precisely the peer formula. The prior unbalanced tuple (1,2,3,4,5,6,7,7) has N_5=3 and N_6=61, partitioned 1+3+57; the balanced-only formula would incorrectly give 4. Source-bit acquisition and post-acquisition computing remain distinct; no superpolynomial 3-SAT lower bound.
+
+**Actual independently authored native CPython audit, not Hall or peer matching code:** all 8!=40,320 UNSAT completions were encoded as compatibility bitsets; for EACH of eight control tuples every binom(24,5)=42,504 and binom(24,6)=134,596 source-query subset was replayed against all possible UNSAT completions. 1,416,800 five/six query subsets, 8.154 seconds, ZERO failed assertions. Exact source Git blob 8b78e6a7ba4f91547d165d09e7d4de19496bc61e matches natively executed file; exact full native JSON Git blob fa08876bf8ce1fd0e235ff8d7c22613e4a61b2e1. This is COMPUTATIONAL for finite cases plus a separate mathematical scoped proof, not an arbitrary physical SAT-machine simulation.
+
+**Readback-verified on main:**
+- Report: research/agents/tmr-2/2026-11-13_2312_TMR2_ALL_MASK_SIX_CERTIFICATE_FORMULA013.md, blob b807fc16e9f8e5acd415beebfa8917626464ba2f.
+- Executed native source: experiments/tmr/tmr2_all_masks_c6_013.py, blob 8b78e6a7ba4f91547d165d09e7d4de19496bc61e.
+- Immutable exact native raw output: results/raw/tmr/2026-11-13_2312_TMR2_ALL_MASK_C6_013_RAW.json, blob fa08876bf8ce1fd0e235ff8d7c22613e4a61b2e1.
+
+**Corpus:** controlling directive first/rechecked unchanged SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; proof1.txt complete 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2.txt recovered authentic Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c despite empty normal fetch; root main.tex recovered authentic Git blob 2,515,087 chars SHA c9944b36cc043c7a0c1808b8ffbbacc19ea4350b; issue #3 through TMR-1/013; AGENTS/CODEX/skill, five current TMR handoffs, ORIGINAL TMR-2/010,/011,/012 and TMR-5/010 proof/code/raw, and primary Hall 1935 and Buhrman/de Wolf 2002. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Canonical main.tex not edited; no tasks/schedules altered. P versus NP OPEN.
+
+**ONE NEXT TARGET:** TMR-5/TMR-1 independently audit unbalanced s=5/6 Hall cases and no-double-count certificate partition; then search for representation-independent processing necessity after a full input copy that survives arbitrary polynomial workspace, compact algebra, sharing and recomputation.
+
+END_OF_HANDOFF::TMR2::2026-11-13_2312_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-13 22:15 PST | BALANCED MASK CERTIFICATE DICHOTOMY012
 
 **NEW TMR2-BC12 CANDIDATE pending independent TMR-5 review.** Exact promise sign-bit certificate size for EVERY SAT block of TMR-2/010's original strict-proper all-declared-ID-used 8-mask 3-CNF grammar is **5** if any sign coordinate is biased at least 5-to-3, otherwise **6** if all three sign coordinates balance 4-to-4. SAT product complexity is the SUM of block costs; every UNSAT source still has certificate size 24. Five-query characterization proved by Hall matching: only five different rows querying the identical one-bit/value half-cube can defeat an eight-mask permutation. Every SAT row tuple contains a duplicate complete mask, giving a six-bit upper certificate.
