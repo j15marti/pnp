@@ -1,3 +1,30 @@
+# TMR-4 CURRENT handoff | 2026-11-13 20:36 PST | HEAD-AWARE COST-SOUND SPATIAL CERTIFICATES009
+
+**New TMR4-SPATIAL9 CANDIDATE, pending TMR-5 independent proof audit.** An all-transition MAY graph retaining each physically local input-head coordinate H as well as original-bit observation set V admits the explicit every-edge potential
+$$
+\Phi(H,V)=\max_{i:D_i\cap V=\varnothing}\left(1+\min_{j,p\in D_i}|H_j-p|\right)
+$$
+(with empty maximum zero). On a charged source read and local head move, newly-hit certificate D had prior potential contribution exactly one; an unhit D can approach a head by at most one. Every abstract cost-one edge obeys the inequality; every zero-cost stutter and two-label goal edge does too. Every real concrete SAT/UNSAT transition has a matching abstract edge at cost at most one, with complete tape/control/source state retained on the concrete side; correct termination requires hitting every independently certified opposite-label difference set.
+
+For h fixed left-aligned local input heads under pre-move reading, shortest abstract initial decision path is EXACTLY $1+\max_i\min D_i$. Applied to the ORIGINAL TMR-4/008 pair-certificates and TMR-5/007 triple-certificates, canonically ordered strict proper no-unused-ID SAT sources of bit length $L=N+M+2+3M(w+1)$ yield
+$$
+\Phi(s_0)=1+N+M+2+3(8r-1)(w+1),\qquad
+\liminf\Phi(s_0)/L\ge 8/11.
+$$
+At r=16: old location-blind potential 16, new spatial potential 3333, L=4004. At r=256: 256 versus 78217, L=93624. This is **only linear physical source transport**, not SAT processing or a P != NP result. It does not apply to free indexed source jumps, free dispersed input heads, arbitrary source reencodings or unsupported model transfers. TMR-2/010 supplies the polynomial authenticated mask-classifier counterexample to any superpolynomial inference.
+
+**Verified publications:** report research/agents/tmr-4/2026-11-13_2036_TMR4_SPATIAL_CERTIFICATE_POTENTIAL009.md; executable experiments/tmr/tmr4_spatial_certificate009.cjs; immutable hosted-V8 output results/raw/tmr/2026-11-13_2036_TMR4_SPATIAL_CERTIFICATE009_RAW.json. Exactly published JS blob 19c173be050af83a29dc66c402ce2b61a386ecf9 was fetched/read back and actually executed in fresh hosted V8. Aggregate checks: 28 formula instances, 1094 disjoint certificate supports, 8992 finite abstract states, 193760 paid MAY edges, 8 independent BFS comparisons, zero failures. A separately assembled OS Node local variant also passed, but was not byte-identical. No physical universal TM replay, exhaustive fallback or LaTeX compilation.
+
+**Root state:** Current five-TMR replacement directive, full proof1, full proof2 recovered by Git blob, full main.tex recovered by Git blob, newest issue #3, operating guides, all peer handoffs, TMR-4/001,/003,/007,/008, TMR-5/007, TMR-2/010, and original historical checker counterexamples read. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** main.tex untouched for TMR-5 synthesis; no schedule or task changes.
+
+**Peer target:** TMR-5/TMR-1 should independently audit clipping beyond endmarkers, cost of pre-move source read, both-terminal goal guards, the exact spatial shortest path and the r-dependent 8/11 coefficient. Do not infer mandatory post-acquisition processing from this proof. P versus NP and the unrestricted all-exponent deterministic 3-SAT time lower bound remain OPEN.
+
+**One next TMR-4 objective:** find and falsify an all-step computational-work potential that survives physically concurrent parsing/processing, input copies, alternative clause orders, compact GF(2), sharing, cache/recompute and the authenticated two-label mask fast path.
+
+END_OF_HANDOFF::TMR-4::2026-11-13_2036_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-13 19:36 PST | ZERO-SINGLETON-DISJOINT-PAIRS008
 
 **New TMR4-ZS8 CANDIDATE pending TMR-5 review.** This run gives a self-contained unbounded proper 3-CNF family x_r under the strict no-unused-ID unary-header grammar. Every valid Hamming-one mutation of ANY encoded literal-sign or literal-ID field preserves SAT. Yet r pairwise disjoint TWO-bit sign mutations, one in each independent 8-clause core block, each yield a valid same-length UNSAT formula. Source certificate hypergraph consists of r disjoint pairs, exact hitting number r. In the TMR-4/007 full physical trace MAY graph, the EVERY-edge admissible initial potential is exactly ceil(r/q), where q is the fixed per-transition source-observation bound. A correct fixed uniform total SAT machine must read at least one bit from each pair. Full source length L=Theta(r log r), so the lower is only Omega(L/log L), not superpolynomial; no storage bound assumed. At least asymptotic 8/11 of full source bits are original core literal fields individually *insensitive* in this family.
