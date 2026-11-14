@@ -1,3 +1,21 @@
+# TMR-5 CURRENT handoff | 2026-11-14 05:49 PST | UNRESET DELAYED-INDEX LOCALITY REDTEAM017
+
+**Independent peer mathematical verdict on ORIGINAL TMR-3/018: PROVED/RESTRICTED**, specifically its two-phase delayed INDEX service with all-input <=s visited work cells, one physical read-only source head RESET to the left marker and charged query tape: complete retained-configuration counting and the far-suffix collision argument entail a source travel of >=L-floor(log2 M_A(s)) steps for some input/query. Its published V8 source uses sketches, NOT a compiled arbitrary TM, and was reviewed statically, not natively replayed.
+
+**NEW TMR5-UW17 CANDIDATE/RESTRICTED pending independent TMR-1/TMR-3 audit:** Remove RESET, allow an input-dependent parked source-head coordinate u. For the same *delayed INDEX* service, complete retained configurations <=M_A(s)=q(2s+3)^(3h)g^s, and all-query worst-case time t must satisfy 2^L <= (L+2)M_A(s)2^(2t+1), hence t >= max(0,ceil((L-1-log2((L+2)M_A(s)))/2)). In particular if s=o(L) then t >= (1/2-o(1))L. Proof: x -> (full retained config, parked head, at-most-2t+1 visible source bits) is injective if all delayed queries finish within t. This counts physical source locality and arbitrary rereads, source-dependent parking, compact sketches, all control/work tape positions, both outputs; it is still NOT a SAT lower bound.
+
+**Hostile falsifier to naïve reset removal:** A fixed uniform O(log L)-work machine can pay preprocessing to park at the source midpoint and answer later requested source bits with at most ceil(L/2) original-source-head movements per query (plus charged work). Thus the peer's almost-L *movement bound* cannot survive without RESET. Full source caching with s=L escapes both small-retention premises. Strongest surviving all-machine statement remains only for the optional delayed INDEX interface.
+
+**ACTUALLY EXECUTED native CPython independent source, EXACT GIT BLOB verified:** lengths 4..10; 4,080 synthetic sketch/parking/radius configurations, including 840 forced collisions, 3,293 observed collision/opposite-query pairs, 2,032 full-cache controls and 49 centered-distance controls; 0 failed assertions. Four sketches, six input-dependent parking policies. Finite results COMPUTATIONAL. No peer JS native replay, no complete charged generic TM compiler, no unrestricted SAT 3CNF algorithm or superpoly potential.
+
+**Verified GitHub main artifacts:** report research/agents/tmr-5/2026-11-14_0549_TMR5_UNRESET_INDEX_WINDOW_REDTEAM017.md; exact executed Python experiments/tmr/tmr5_unreset_window_audit017.py blob 795a878f74137c2ca6e5e3e80a8dda8c63f6f36a; exact raw stdout results/raw/tmr/2026-11-14_0549_TMR5_UNRESET_WINDOW017_RAW.json blob 130065801eb41a15bbe7fbcd94ff62ae05a276f2.
+
+**Corpus:** new 2026-11-13 directive SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; complete root proof1 28,714 chars, proof2 authentic blob 1,051,196 chars (blank file endpoint ignored); canonical main.tex full blob 2,533,636 chars; issue #3 through TMR-3/018; AGENTS, CODEX, repository pnp skill; all five newest handoffs; original TMR-3/018 report, executed code and raw, TMR-1/019, TMR-2/019, TMR-4/019, TMR-5/016; primary Yao 1979, Miltersen-Nisan-Safra-Wigderson 1998, FLMV 2005. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No tasks created, revived, or modified. P versus NP OPEN.
+
+**NEXT:** TMR-1/TMR-3 independently audit new window-injectivity theorem and physical movement counterexample; TMR-2 attempt an actual charged all-machine SAT-semantic bridge that does not assume delayed queries, reset, or sublinear memory; TMR-4 verify any proposed full SAT all-edge potential. No arbitrary polynomial-workspace processing lower bound is known.
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 04:59 PST | OFFSET-MIRROR INDEPENDENT AUDIT016
 
 **Final verification update:** canonical main.tex TMR-5 owned region amended, commit 0b6e0100a3336ed74a7a21a5935b3f9206da2be4, new blob 867c9b7512a51d59a50c479e81dda6c65615026f; full 2,533,636-character Git-blob readback verified exact insertion preserving every prior character and all five TMR roles. Issue #3 handoff verified: https://github.com/j15marti/pnp/issues/3#issuecomment-6877644229 .
