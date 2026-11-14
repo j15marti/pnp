@@ -1,3 +1,25 @@
+# TMR-4 CURRENT handoff | 2026-11-14 11:42 PST | ROBUST Gap-MCSP AFFINE-KERNEL COLLISION027
+
+**NEW AFFGAP27 PROVED/RESTRICTED elementary theorem, TMR-2/TMR-5 peer review OPEN:** For ordinary small-circuit YES class C_(n,s) on full N=2^n truth tables, let D(n,s)=(s+1)(n+s+2)[3(n+s+2)^2]^s. For eta in (0,1), d=ceil(eta N), V(N,d-1)=sum_(j=0)^(d-1) binom(N,j). Every **fixed, source-independent** GF(2)-affine sketch A x+u with rank r, and ANY deterministic nonlinear postprocessor psi, necessarily gives the same output on zero YES and some promised Hamming-far NO if
+
+$$
+2^{N-r}>D(n,s)V(N,d-1).
+$$
+
+Proof: kernel has more vectors than the union of radius-(d-1) balls around all size-s circuit tables, so one kernel vector is far-NO; zero is YES; their complete sketch+decoded outputs coincide. Thus no both-label reduction of this fixed-sketch form to any MCSP target is valid. For s=N^mu (mu<1), eta=N^(-lambda) (lambda>0), any r<=(1-epsilon)N is eventually insufficient. For constant eta<1/2, enough rank deficit is r<=(1-H_2(eta)-epsilon)N. This is a semantic **failed implication**, NOT a computational lower bound or SAT separation.
+
+**NOVELTY FIREWALL:** Original October 18 AFFINE-KERNEL4 in research/agents/threshold-descent/2026-10-18_1416_THRES_HASHBRIDGE4.tex ALREADY proved exact-MCSP kernel collisions, and TMR-2/026 supplies Hamming volume cylinders. New this run is the exact **distance-promise** affine-kernel synthesis, any deterministic decoder, explicit rank margins and all-label counterexamples. This does not generalize to source-adaptive A or fully nonlinear frontends. Earlier HASHIMAGE9, FIBER27, Hamming and transport/one-tape results preserved.
+
+**ACTUALLY EXECUTED native CPython source and GitHub readback byte-equivalent:** experiments/tmr/tmr4_affine_kernel027.py (Git blob 61a9ea6151ea38f4676af9dac2479d7dc87c2c4e, local SHA256 62cb176296c17d4cdeaaab662df8d28a2b4323c4e1eb35c7b073f9fc59331bbe), raw results/raw/tmr/2026-11-14_1142_TMR4_AFFINE_GAP_KERNEL027_RAW.json (Git blob 870ea027cbb107a9ac5d7905ea54d26985ae100b, local SHA256 ff7f4cd27d7f646d56b502fcdaea638f6c2299aec073e4b97c092eb18fe369d0), full report research/agents/tmr-4/2026-11-14_1142_TMR4_GAPMCSP_AFFINE_KERNEL_CYLINDER027.md (Git blob 441ddfb454b2bd19e15153a9283176d224e5009a). **135,015 checks, zero failures**, including full small YES/NO classifications, 12 exhaustive n=4 rank-eight kernel/circuit threshold cases, Hamming-distance witnesses, n=6 full 64-bit promised-NO witness 0xc28affa6574e6000 at distance 25, and integer arithmetic n=8 bounds. Finite checks COMPUTATIONAL, no generic charged TM compiler or TeX CI.
+
+**PRIMARY MODEL:** CHMY STACS2021 Theorem1 needs low-mu deterministic one-way input plus one work-tape time N^1.01 lower bound for P!=NP; known randomized N^1.99 lower bound is at different larger mu. MMW STOC2019 search-MCSP^A streaming oracle update/space magnification is another interface. OPS nonuniform Gap-MCSP and 2025 Atserias-Mueller approximate MCSP use different promises/models. No transfer asserted. Current five-agent directive SHA 1e11aa64a0b0d635a65cea58500b09f2b0fe010a, Nov13 replacement, latest issue #3, all TMR handoffs, AGENTS/CODEX/skill, original AFFINE-KERNEL4/HASHIMAGE9/FIBER27 and Claude historical caveats checked. Full root proof1 28,714 chars blob 06f7ebc8c2283304a0f5200b518c6e48fa41e343; authentic proof2 1,051,196 chars blob 930c5eeddafce656717f28055a7a9a755f44737c; canonical main.tex 2,545,859 chars blob 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. **TRACKERS REVIEWED; NO MATERIAL CHANGE; main.tex untouched.** No agent/schedule changes.
+
+**NEXT:** construct/falsify a **source-adaptively chosen** linear sketch that escapes the fixed kernel collision while preserving MCSP YES/NO, exact target full truth-table length, and uniform charged CHMY one-way-input/one-work-tape total time. TMR-2 review Hamming rounding; TMR-5 independently audit strict kernel inequality and prior-art attribution; TMR-1 check threshold direction, TMR-3 tape charges. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR4::027::2026-11-14_1142_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-14 10:39 PST | MCSP PERMUTATION STREAMING BUFFER026
 
 **NEW TRANS26 CANDIDATE/RESTRICTED, peer review by TMR-1/TMR-5 OPEN:** Let N=2^n, n>=2. Swap first and last **assignment-index** bits in a standard-order N-bit MCSP truth table, y_j=x_{P(j)}. This is a uniform total invertible **both-label, same-integer-threshold** MCSP reduction; fan-in-two AND/OR/NOT minimum circuit gate count is preserved exactly under input-variable relabeling. For any fixed finite deterministic **one-way read-only input, ordered append-only output, w work-tape** transducer computing the full table, with q finite control states, work alphabet size G>=2 and worst-case work-cell visits S(N), prove
