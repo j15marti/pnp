@@ -1,3 +1,26 @@
+# TMR-3 CURRENT handoff | 2026-11-13 19:35 PST | BATCH-LOCALITY-TRADEOFF008
+
+**NEW BATCH8-LB CANDIDATE pending TMR-5/TMR-1 review; exact source-level finite results COMPUTATIONAL. Unrestricted SAT all-exponent lower bound and P versus NP OPEN.**
+
+**Quantitative new theorem candidate:** For the original proper 3-CNF equality source, batch m consecutive first-bank forcing blocks beside their m matched second-bank blocks. This is an EXACT whole-clause permutation with identical L=13n+2+24n(w+1) and SAT iff a=b. For ANY one fixed total correct deterministic machine A with ONE physically local read-only input head and finite ordinary work tapes, the full-configuration crossing-code and same-realization average argument gives (pending independent audit): for each n sufficiently large and each 1<=m<=n, some SAT diagonal F has **T_A(F)(S_A(F)+1)>=c_A Lm**. For each cut in the second half of each full first bank, floor(m/2) first forcing blocks are fully left and their matching second blocks wholly right; a valid UNSAT splice forces injective prefix-free crossing transcripts. Average *T(S+1)* over a single uniform diagonal distribution before taking any maximum. Small m handled by physical reach of the final source block. All real input crossings and all visited work cells charged. Not a random-access/dual-head theorem.
+
+**Matching upper:** for fixed rational 0<=beta<=alpha<=1, batch m(n)=2^floor(alpha floor(log2 n)), cache r(n)=2^floor(beta floor(log2 n)). One fixed total all-input correct fallback machine authenticates every literal in local batch rescans, uses **T=O(L ceil(m/r))**, **S=O(r+log L)** on this family, and pays all reads, rewinds, scratch tapes, comparisons, counters and output. The lower/upper product matches for beta>0, up to a logarithmic factor for beta=0. For m=Theta(n^alpha), the restricted product bound is Omega(L^{1+alpha}/(log L)^alpha) and only excludes simultaneous exponent pairs k+s<1+alpha. S<=O(T) gives no stronger time bound than compulsory input traversal. Alternative source order, extra input heads, INDEX, algebraic summaries and unrestricted polynomial workspace remain all-program transfer blockers.
+
+**ACTUALLY EXECUTED and readback-verified:** native Node v22.16.0 and separate hosted-V8 execution of exact published code, 2,468 canonical parse-and-answer cases (223 SAT/2,245 UNSAT), 1,232 exact original CNF multiset/permutation checks, 1,236 undersized-cache cases, 4,928 rejected structural negatives, 40 original-CNF exhaustive checks, 677,552,068 modeled adjacent source movements with 331,481,280 rewind moves, largest L=77,058, zero failures. These are NOT physical-TM transition traces; the exponential off-family fallback was not executed.
+
+**Verified paths:**
+- research/agents/tmr-3/2026-11-13_1935_TMR3_BATCH_LOCALITY_TRADEOFF008.md
+- experiments/tmr/tmr3_batch_crossing008.cjs
+- results/raw/tmr/2026-11-13_1935_TMR3_BATCH_CROSSING008_RAW.json
+
+**Preflight:** Superseding directive first, rechecked SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; full proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; full proof2 authentic Git blob SHA 930c5eeddafce656717f28055a7a755f44737c; full main.tex authentic Git blob SHA 62c0c400a5eddfbdbdfa06fbabcf7bcee8b753be, all protocols, issue #3, five latest TMR handoffs, original TMR-3/002,/006,/007 and FLMV original model. TRACKERS REVIEWED; NO MATERIAL CHANGE. No main.tex or schedule/task mutation.
+
+**Next:** TMR-5 audit variable-space prefix-free transcript coding, cut-and-paste legality, unconditional same-run expectation and matching fully charged uniform upper. Then seek a post-acquisition bottleneck immune to batch m=1, extra source heads, INDEX and Gaussian elimination. ALL unrestricted implications OPEN.
+
+END_OF_HANDOFF::TMR3::2026-11-13_1935_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-13 18:28 PST | CLAUSE-ORDER-LOCALITY007
 
 **New CANDIDATE CO7, pending TMR-5/TMR-1 review. Finite independent original V8 source checks COMPUTATIONAL. General all-exponent SAT lower bound and P versus NP OPEN.**
