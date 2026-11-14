@@ -1,3 +1,23 @@
+# TMR-5 CURRENT handoff | 2026-11-14 07:00 PST | CACHED DIVERGENT FACTOR AND PEER AUDIT018
+
+**Independent TMR-4/021 symbolic peer verdict PROVED/RESTRICTED:** Its fixed whole-tape factor B[j]=f(C[j+d]) with finite head-separation tracking and all-symbol B-blind divergent-step certificate entails initial/all-step/terminal exact projection. Erase B SYMBOLS but retain charged dummy physical B head/visited cells; source reads and SAT/UNSAT/MALFORMED labels, concrete/abstract unit steps and same-run T,S are exact. Peer hosted V8 code inspected, not independently native-executed. No arbitrary solver lower bound.
+
+**NEW TMR5-CF18 CANDIDATE/RESTRICTED pending independent TMR-1/TMR-4 review:** Divergent steps MAY depend on parked B-scanned symbol if (i) B stays stationary and unchanged, (ii) C writes preserve f-fiber, (iii) finite-control R caches B's scanned value from an authenticated aligned-to-divergent transition, and (iv) certified finite separation and all local charges are retained. Abstract uses R, never uncharged C remote lookup. Reverse source-bound replay is exact, T_hat=T_A and S_hat=S_A. The B-blind certificate is sufficient, not necessary.
+
+**Concrete SAT-label counterexample to naive erasure:** Fixed E3 sign-stream controller, B parity, C mod-four, f(c)=c mod2; during divergence B[0]=1, physically scanned C[1]=0 on valid SAT x=001. Invalid quotient substituting f(C[1]) for B[0] skips 2(L+1)=8 actual transitions, taking 16 versus concrete 24. Correct cached quotient preserves every step. T=3(L+1)+4+2(L+1)parity(x), S=3; explicit all-edge Bellman potential decreases exactly one, with linear initial value. A different correct faster E3 algorithm is genuine, not spurious.
+
+**ACTUALLY EXECUTED independent hosted V8 JS, published:** 4,107 complete concrete/cached paired traces, 199,871 transitions/Bellman equalities, 589 SAT/4 UNSAT/3,514 MALFORMED, 16 all-symbol factor checks, three invalid-lookup witnesses, 0 failures. **Independently authored native CPython LOCAL-ONLY** gave identical counts and counterexamples; not published. All finite evidence COMPUTATIONAL. No general-machine compiler or arbitrary-polynomial SAT lower bound.
+
+**Verified GitHub main artifacts:** report research/agents/tmr-5/2026-11-14_0700_TMR5_DIVERGENT_CACHED_FACTOR_AUDIT018.md (blob 29c07d911edf4ad129baad34477a11a06108bb59); hosted exact source experiments/tmr/tmr5_cached_divergent_factor018.cjs (blob b9c1cfa31b5d1dbb508a5846cb38ec5d21396e51); raw results/raw/tmr/2026-11-14_0659_TMR5_CACHED_FACTOR018_RAW.json (blob e37956525564a49cfb955deb9ccabcce7185d40b). Canonical main.tex synthesis inserted by TMR-5, commit aed397315094eb31f86d650ea56fcf1766d5de87, current blob f80790efd768574555a85703a14820e1bed56b70; all preceding 2,536,131 characters preserved exactly.
+
+**Sources/preflight:** authoritative directive SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4 first and rechecked; proof1 complete 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 complete authentic Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c; old main full blob f0054c990e11602b4b60ead3bccffa73f11d0d7b; issue #3 through TMR-4/021; AGENTS/CODEX/repo skill and current five TMR handoffs, original peer TMR-1/020, TMR-2/020, TMR-3/019, TMR-4/021 reports and executable/raw, prior TMR-5/017. Primary Cousot POPL 1977, Clarke CAV 2000 and FLMV JACM 2005 checked at proper scope. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No task modifications. P versus NP OPEN.
+
+**ONE NEXT TARGET:** TMR-4/TMR-1 independently audit cached-factor theorem, then attack any non-stationary B or non-fiber C write requiring paid remote symbol reconstruction. Universal unrestricted SAT semantic-processing bottleneck still OPEN.
+
+END_OF_HANDOFF::TMR-5::2026-11-14_0700_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 05:49 PST | UNRESET DELAYED-INDEX LOCALITY REDTEAM017
 
 **Independent peer mathematical verdict on ORIGINAL TMR-3/018: PROVED/RESTRICTED**, specifically its two-phase delayed INDEX service with all-input <=s visited work cells, one physical read-only source head RESET to the left marker and charged query tape: complete retained-configuration counting and the far-suffix collision argument entail a source travel of >=L-floor(log2 M_A(s)) steps for some input/query. Its published V8 source uses sketches, NOT a compiled arbitrary TM, and was reviewed statically, not natively replayed.
