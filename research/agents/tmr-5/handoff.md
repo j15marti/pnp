@@ -1,3 +1,24 @@
+# TMR-5 CURRENT handoff | 2026-11-13 21:55 PST | PARALLEL-HEAD AND KRAFT-SHARPNESS009
+
+**Independent peer theorem verdict: TMR-4/012 PROVED/RESTRICTED** at the exact local-input-head source-observation MAY model. Multihead interval-cover formula is shortest-path exact for arbitrary head origins and previously observed input positions. Each physical concrete step maps to cost-one MAY edge, both terminal labels preserved via unread-opposite-source deterministic replay, and the every-edge sharp potential inequality holds. It has only an $O(L)$ source-transport expressive ceiling; no general SAT processing lower bound. Separately authored native Python 3.13 audited 224 exact BFS/formula comparisons and 8,816 every-edge inequalities, three hostile endpoint controls, zero failures. Peer exact Python inspected but not reexecuted.
+
+**New TMR5-KS9 CANDIDATE pending TMR-3 independent review:** For any $q>t\ge1$, $\ell=q-t$, use all $2^\ell-1$ binary $\ell$-bit prefixes except $1^\ell$ as short codewords, and encode remaining uniform $q$-bit inputs by $1^\ell$ followed by distinct $q$-bit suffixes. Valid prefix-free injection. Use this SAME code on each of arbitrary $K$ cuts. At $\delta=2^{-t}(1+2^{-q})$, TMR-3/010's failure event has probability $2^{-t}-2^{-q}$ for every $K$, and the ratio to $\delta$ approaches 1 as $q\to\infty$. Thus the proven K-free aggregate Kraft/Markov tail is asymptotically coefficient-sharp from marginal prefix-free assumptions alone; no growing-K concentration follows without new joint structural constraints. This is a **limitation**, not a refutation of TMR-3/010 or an actual physical crossing transcript construction. Physical splice/coding of TMR-3/008 remains CANDIDATE, its SAT application remains CONDITIONAL/RESTRICTED.
+
+**ACTUAL executions:** Exact published JS SHA d3efe70db2f88f883bfd0658de9d9c8eb29523c7 ran in native Node 22.16 and hosted V8: 60 codebooks, 196,276 sorted-prefix comparisons, 240 $K$-tail checks, zero failures. Independently written native Python verified 60/240, no failures. At q=14,t=3,K=4096, observed probability 0.1249389648 versus delta 0.1250076294 (ratio 0.9994507171). All finite data COMPUTATIONAL, native Python local-only. No instruction-level SAT TM simulation.
+
+**Readback-verified main artifacts:**
+- research/agents/tmr-5/2026-11-13_2155_TMR5_PARALLEL_HEAD_AND_KRAFT_SHARPNESS009.md
+- experiments/tmr/tmr5_correlated_prefix009.cjs
+- results/raw/tmr/2026-11-13_2155_TMR5_CORRELATED_PREFIX009_RAW.json
+
+**Corpus:** Superseding directive read first/rechecked SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4, root proof1.txt complete 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2.txt complete authoritative Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c, main.tex full authentic Git blob 2,507,300 chars SHA c0d657568af18ed0a2d17843b8ef0e6c11ac6327; latest issue #3, AGENTS.md, CODEX.md, repo skill, all five latest TMR handoffs, original TMR-4/012, TMR-3/008,/010, TMR-2/011, TMR-5/008 reports/code/data and relevant primary literature. TRACKERS REVIEWED; NO MATERIAL CHANGE. No scheduled task modified. All-exponent uniform SAT lower bound and P versus NP OPEN.
+
+**ONE NEXT TARGET:** TMR-3 independently review correlated Kraft sharpness, then certify/falsify full-machine crossing configurations and exact legal-splice injection in TMR-3/008. Pursue an all-transition full-program processing potential surviving a complete source scan, arbitrary polynomial workspace, algebraic representations, cache/recompute and alternate machine access.
+
+END_OF_HANDOFF::TMR-5::2026-11-13_2155_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-13 20:46 PST | SPATIAL-MAY-CEILING008
 
 **TMR-4/009 independent verdict:** original all-transition left-aligned local-head MAY potential and its specific pair/triple instantiations receive favorable independent proof review as **PROVED/RESTRICTED**. New TMR5-SC8 generalizes exact initial MAY distance to ANY nonempty difference-certificate hypergraph: $d_{MAY}=1+\max_i\min D_i\le L$ for $h\ge1$ left-aligned local pre-read heads. This is an **abstraction expressivity ceiling**: exponentially many certificates still cannot prove superlinear post-acquisition computation in this domain. New generalization remains **CANDIDATE pending TMR-1/TMR-4 review**. No general SAT lower bound.
