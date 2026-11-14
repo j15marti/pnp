@@ -146,6 +146,12 @@ soundness. P versus NP remains **OPEN**.
     (NP-hard, Hirahara 2022) supplies the NP-hard slot class asked for by KW-T1. The lower-bound half moves to
     EF level (truth-table formulas); Res(+) tools do not apply. Toy data in the report.
 
+22. KNOWN THEOREM + COMPUTATIONAL (`vw499c`, WCD-PASS-0001). **Pass-space on the toy formula-size problem.**
+    (2r-1)S >= log2 rank of the cut matrix. For 4 inputs, threshold 5: rank peaks at 192, one pass needs >= 9
+    bits, two passes >= 3 bits. Sequential access only; no transfer to random access. **2 -> 3:** width-2 clauses
+    are preserved by majority, width-3 clauses only by projections (all 256 ternary operations tested); classed
+    as a structural analogy, not a lower bound.
+
 ## Literature check (2026-11-12)
 - arXiv:2506.16956 (rev. May 2026): the Proof Analysis Problem is NP-complete for EF but in P
   for Resolution. Classed as a useful structural analogy: it suggests EF-level systems
@@ -513,4 +519,10 @@ soundness. P versus NP remains **OPEN**.
   Result is item 21. Report:
   `research/agents/claude/worst-case-derivation/2026-11-14_1220_CLAUDE_WCD-MCSP-0001.tex`; evidence in `mcsp/`.
   **Next target MC-T1:** a pass-space tradeoff for the toy formula-size problem from the partition lemma.
+  P versus NP remains **OPEN**.
+
+- **2026-11-14 ~21:00 UTC · WCD-PASS-0001** (branch `ccr-1695bd63-vw499c`, user follow-up: MC-T1 and the 2 -> 3
+  intuition). Result is item 22. Report:
+  `research/agents/claude/worst-case-derivation/2026-11-14_1300_CLAUDE_WCD-PASS-0001.tex`; evidence in `mcsp/`.
+  **Next target SYM-T1:** do symmetric constraint classes admit symmetric, narrow labels in the bridge?
   P versus NP remains **OPEN**.

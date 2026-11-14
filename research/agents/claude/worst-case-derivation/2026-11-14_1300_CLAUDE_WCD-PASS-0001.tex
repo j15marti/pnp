@@ -1,0 +1,77 @@
+% CLAUDE REPORT::WCD-PASS-0001::2026-11-14T13:00-08:00
+% Claude routine "worst-case minimum derivation cost". User follow-up: target MC-T1, and the 2 -> 3 intuition.
+% Role-neutral and additive. It does NOT edit root main.tex or any TMR/LSPV region.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{lemma}{Lemma}
+\title{WCD-PASS-0001: pass--space tradeoff on the toy formula-size problem, and the step from 2 to 3}
+\author{Claude scheduled routine (worst-case derivation complexity log)}
+\date{2026-11-14 13:00 America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\paragraph{Status line.}
+\begin{itemize}
+\item Lemma~\ref{lem:pass} (pass--space tradeoff from a cut): \textbf{KNOWN THEOREM} (the standard reduction from multi-pass streaming to communication), restated for alive sets.
+\item Toy numbers: \textbf{COMPUTATIONAL}.
+\item Polymorphism counts for clauses of width 2 and 3: \textbf{COMPUTATIONAL}, agreeing with the \textbf{KNOWN THEOREM} of Schaefer.
+\item An asymptotic pass--space bound for MCSP, and any transfer to random access: \textbf{OPEN}.
+\item P versus NP remains \textbf{OPEN}.
+\end{itemize}
+
+\section{MC-T1: passes against space}
+\begin{lemma}\label{lem:pass}
+Let a machine read the $N$-bit table left to right $r$ times with $S$ bits of memory. Fix a cut after position $t$ and let $M_t$ be the 0/1 matrix with rows indexed by prefixes, columns by suffixes, and entry 1 when the joined table is easy. Then
+\[(2r-1)\,S\ \ge\ \log_2\operatorname{rank}(M_t).\]
+For $r=1$ the sharper bound is $S\ge\log_2(\text{number of distinct rows of }M_t)$.
+\end{lemma}
+\begin{proof}
+The memory contents each time the head crosses the cut form a two-party protocol with $2r-1$ messages of $S$ bits. Deterministic communication is at least the logarithm of the rank. In the language of WCD-MCSP-0001: at each crossing the alive sets split the easy tables into at most $2^{S}$ parts, and after $2r-1$ crossings the parts must separate easy from hard.
+\end{proof}
+
+\paragraph{Toy data.} De Morgan formula size, 4 inputs, threshold 5 (3{,}302 easy tables of 16 bits). Rank is computed modulo $2^{61}-1$, which cannot exceed the true rank.
+\begin{center}
+\begin{tabular}{l|ccccccccc}
+cut $t$ & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12\\\hline
+rank & 16 & 32 & 62 & 120 & 192 & 120 & 62 & 32 & 16\\
+distinct prefixes (one pass) & 16 & 32 & 63 & 121 & 206 & 325 & 434 & 447 & 183
+\end{tabular}
+\end{center}
+The largest two-way bound is $\log_2192=7.58$ bits at the middle cut. So one pass needs at least 9 bits (from 447 classes), two passes at least 3 bits each, three or more at least 2. For 3 inputs and threshold 4 the ranks at cuts 2 to 6 are 4, 8, 14, 8, 4.
+
+\paragraph{Reading.} The one-pass requirement is close to the table length at this size, and it falls quickly with extra passes. The tradeoff is real but shallow, and it is for sequential access only. A random-access machine is not bound by any single cut. This is the same limitation as ledger rows L38--L40 for one-tape machines.
+
+\section{The step from 2 to 3}
+A ternary operation \emph{preserves} a constraint if applying it coordinatewise to any three satisfying assignments gives a satisfying assignment. Such an operation is a symmetry of the solution sets. \texttt{mcsp/pass\_space.py} tests all 256 ternary Boolean operations:
+\begin{itemize}
+\item clauses of width 2 are preserved by 4 operations: the three projections and \emph{majority};
+\item clauses of width 3 are preserved by 3 operations: the projections only.
+\end{itemize}
+Majority is why 2-SAT is easy: any three solutions can be combined into a fourth, which forces solution sets to be determined by their pairwise projections. With width 3 that symmetry is gone. Schaefer's theorem, and its extension to all finite constraint languages by Bulatov and by Zhuk, say this is the whole story for constraint problems: a language is tractable exactly when it has a non-trivial symmetry of this kind, and NP-complete otherwise.
+
+The same pattern has appeared twice in this session:
+\begin{itemize}
+\item Resolving two clauses of width 2 gives a clause of width at most 2, so the derivable clauses stay within $O(n^{2})$. With width 3 the resolvent has width 4, and width grows. Width growth is what every lower bound of this session measures.
+\item Parity constraints of any width keep a symmetry (the sum of three solutions is a solution), and unlifted Tseitin was easy. Lifting by $\mathrm{MAJ}_3$ removed it, and the formulas became hard for Res($\oplus$).
+\end{itemize}
+
+\paragraph{What it does and does not give.} The symmetry criterion explains which problems are hard and predicts it exactly within constraint satisfaction. It is a theorem only in the form ``no symmetry implies NP-complete''. It does not show that NP-complete problems lack fast algorithms: an algorithm is not obliged to work through symmetries of the solution set. Classed as a useful structural analogy that needs a new transfer theorem, in the terms of AGENTS.md.
+
+\section{CORPUS REVIEWED / DUPLICATION AUDIT / CHANGES}
+\begin{itemize}
+\item \textbf{Corpus reviewed:} the seven earlier reports of this session; the consolidated living log; the one-tape entries in the world-ledger pointer of AGENTS.md (rows L38--L40).
+\item \textbf{Duplication / contradiction audit:} the one-tape notes use crossing sequences for SAT; this report uses the same idea for the formula-size problem with passes. No earlier entry of this routine computes polymorphisms. No contradiction found.
+\item \textbf{What changed relative to root main:} nothing; \texttt{main.tex} is not edited.
+\item \textbf{Adopted:} the partition lemma of WCD-MCSP-0001. \textbf{Rejected:} sequential-access tradeoffs as evidence about random access. \textbf{Retired:} none.
+\item \textbf{Stale or overstated claims found:} none.
+\end{itemize}
+
+\section{Evidence}
+\texttt{mcsp/pass\_space.py}, \texttt{mcsp/pass\_space\_results.json}; single stage, 1.2\,s. No TeX engine was available, so this file was not compiled. No literature search was run in this step; Schaefer, Bulatov and Zhuk are cited from memory.
+
+\paragraph{Next target SYM-T1.} Make the symmetry reading quantitative inside the bridge. For a machine on a constraint class with a majority symmetry, test whether the alive sets or labels can always be taken closed under that symmetry, and whether that bounds their width. If so, loss of symmetry would be visible as growth of label width, which is the quantity the lower bounds here control.
+
+\medskip\noindent P versus NP remains OPEN. One OPEN load-bearing arrow means P $\ne$ NP is not proved.
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WCD-PASS-0001
