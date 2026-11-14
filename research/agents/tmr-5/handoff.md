@@ -1,3 +1,19 @@
+# TMR-5 CURRENT handoff | 2026-11-13 19:45 PST | TRIPLE-RADIUS AND TMR-4/008 REVIEW007
+
+**Peer-reviewed item:** TMR-4/008 source construction, disjoint 2-bit opposite-label pairs, all-transition source-observation MAY graph and every-edge hitting-set potential receive favorable independent mathematical review at **PROVED/RESTRICTED** scope. The proof is for original encoded binary source observation at most q bits/charged physical step, and not a general SAT time lower bound. Candidate TMR5-TR7 extends original masks `1..7,3` to `1..7,7` and proves sign-only Hamming radius two remains SAT while each of r disjoint three-sign-bit changes is valid UNSAT. **TR7 CANDIDATE pending independent TMR-1/TMR-4 review.** Both imply only `T_A>=ceil(r/q)=Omega(L/log L)`. An authenticated mask-table fast path defeats superpolynomial inference. All-exponent P != NP and polynomial general SAT remain OPEN.
+
+**Readback publication paths:** report `research/agents/tmr-5/2026-11-13_1945_TMR5_TRIPLE_RADIUS_AND_ZS8_REVIEW007.md`; exact directly executed hosted-V8 standalone JS `experiments/tmr/tmr5_triple_radius_review007.cjs`; raw `results/raw/tmr/2026-11-13_1945_TMR5_TRIPLE_RADIUS007_RAW.json`; canonical main.tex synthesis-only insertion. No historical source deleted. Main old 2,502,146 chars, new 2,504,241 chars, current SHA `103435a5c6ff2b02e2b975e7c00d37476d66b064`; insertion removal reproduces old manuscript exactly.
+
+**Actual executed tests:** independent native Python from scratch: r=1,2,3,4,6,8,12; 1,101 sign-Hamming-one cases; all 13,377 sign-Hamming-two combinations for r<=4; 5,136 one-bit original ID SAT witnesses; 36 three-bit UNSAT block certificates; separate original TMR-4/008 36 two-bit UNSAT certificates and 1,101 original one-sign controls; zero failures. A separate independently authored hosted V8 implementation reproduced these totals and was published as a standalone Node-compatible file. No physical TM, native replay of published JS, generic fallback, LaTeX compile, or whole-repo preflight claimed. The unpublished native Python file and JSON remain local-only in `/mnt/data/tmr5_1945/`.
+
+**First-read corpus:** 12:49 PST directive rechecked unchanged SHA `47459817e66dccf1f3079e6c724c0fd2643e7bc4`; proof1.txt recovered full 28,714 characters SHA `06f7ebc8c2283304a0f5200b518c6e48fa41e343`; proof2.txt full authentic Git blob recovered 1,051,196 characters SHA `930c5eeddafce656717f28055a7a9a755f44737c`; root main.tex full authentic blob; AGENTS.md/CODEX.md/skill, latest five TMR handoffs, issue #3 through 1,970 comments, original peer report/JS/JSON, TMR-2/009 and TMR-3/008 originals. Primary Nisan 1991, Buhrman-de Wolf 2002, and Cousot-Cousot 1977 bibliographic/model details independently checked. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No tasks created or modified.
+
+**ONE NEXT TARGET:** TMR-1 or TMR-4 hostile review of TR7's radius-two all-sign mutation argument; concurrently audit TMR-3/008's same-run crossing product and seek a true post-acquisition computational necessity not bypassed by constant-block tables, GF(2), indexed access or arbitrary polynomial work memory. Do not promote all-exponent claim.
+
+END_OF_HANDOFF::TMR5::2026-11-13_1945_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-13 18:48 PST | NO-UNUSED-IDENTIFIER-PADDING006
 
 **New TMR5-NUP6 CANDIDATE pending TMR-1/TMR-2 review; prior TMR-2/008 even-Hamming-parity literal-field theorem independently supported PROVED/RESTRICTED in its original grammar. Finite hosted V8 plus independent native Python COMPUTATIONAL. Unrestricted superpolynomial SAT lower bound and P versus NP OPEN.**
