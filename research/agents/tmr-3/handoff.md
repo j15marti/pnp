@@ -1,3 +1,19 @@
+# TMR-3 CURRENT handoff | 2026-11-14 10:28 PST | UNIFORM GROWING-RING MCSP SERIALIZATION025
+
+**NEW RING25 CANDIDATE/RESTRICTED pending TMR-1/TMR-5 formal review.** A uniformly constructible synchronous ring with polynomially growing p(N) locally moving one-work-tape processors, one common ONE-WAY new source bit per round, fixed finite catalogue of local rules, two unit-capacity nearest-neighbor ports and a polynomial clock B(N)>=R(N), is simulated by ONE finite deterministic one-way-input/one-work-tape machine in **T=O(U(N)+B(N)[N+p(N)B(N)])** and S=O(N+p(N)B(N)). U(N) is full physically charged uniform initialization/generator cost. The proof spools source input on the sole work tape and uses O(1) complete finite-alphabet sweeps per round over p adjacent 2B+O(1)-cell processor regions, including source retrieval, old-to-new head markers, adjacent-port messages and ring wrap. **Only RING topology**, not arbitrary interconnect or free input fanout. Distinct from PRIOR fixed-p TMR-3/024.
+
+**EXACT CHMY exponent firewall.** For p=N^a, B=N^b, U=N^u, this compiler certifies only an upper N^max(u,b+1,a+2b). A hypothetical **same large-threshold** MCSP ring solver needs strict max<1.99 to contradict CHMY Theorem 2 using this certified upper bound. In a full-scan one-new-bit/round protocol, B>=N, so b>=1 and a+2b>=2. Thus the generic simulation certificate alone gives no nontrivial CHMY network-time exclusion, even for p=1. No claim that an alternative faster compiler is impossible. The CHMY *small-threshold* N^1.01 premise remains OPEN. Model-specific polynomial-resource ring MCSP existence is equivalent to MCSP in P, not a shortcut to P versus NP.
+
+**EXECUTED COMPUTATIONAL:** hosted V8 source experiments/tmr/tmr3_ring_network025.cjs and raw results/raw/tmr/2026-11-14_1028_TMR3_RING_NETWORK025_V8_RAW.json: 3,366 complete direct/swept configuration checks, p<=12, 1,623 YES / 1,743 NO / five malformed controls, 27,970,425 charged proxy movements, zero final assertions. Independent native CPython local-only source SHA256 98bfda5e6be25239774b018a9a4f7f086c810e09af6e812d30c9992e1aeea2bb: 3,366 cases and 0 final failures, differing seeded samples. Initial native false check p=1 source "1" caused by advancing a head into later same-sweep position and executing it AGAIN; fixed by freezing OLD head markers. Neither proxy is a compiled native finite-alphabet TM.
+
+**REPORT:** research/agents/tmr-3/2026-11-14_1028_TMR3_MCSP_POLY_RING_SERIALIZATION025.md. Current directive SHA 1e11aa64a0b0d635a65cea58500b09f2b0fe010a read FIRST; replacement SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4. Full proof1 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; full Git-blob proof2 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c; full Git-blob root main.tex 2,545,859 chars SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34; issue #3 through TMR-2/025; all five TMR handoffs and relevant originals and CHMY/MMW PDFs reviewed. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** main.tex reserved for TMR-5. No scheduled tasks changed.
+
+**NEXT:** TMR-1/TMR-5 audit all-transition fixed-sweep ring compiler; TMR-2 audit full-scan premise; TMR-4 find exact, same-machine online padding composition if possible. TMR-3 next tests concrete dummy-pad source + low-threshold target machine, all interface costs. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR3::025::2026-11-14_1028_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 09:36 PST | MCSP FIXED-NETWORK QUADRATIC SERIALIZATION024
 
 **Priority:** User's November 14 MCSP directive overrides superseded scientific topics, preserving the five TMR roles, schedules and historical results.
