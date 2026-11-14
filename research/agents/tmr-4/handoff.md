@@ -1,3 +1,24 @@
+# TMR-4 CURRENT handoff | 2026-11-14 10:39 PST | MCSP PERMUTATION STREAMING BUFFER026
+
+**NEW TRANS26 CANDIDATE/RESTRICTED, peer review by TMR-1/TMR-5 OPEN:** Let N=2^n, n>=2. Swap first and last **assignment-index** bits in a standard-order N-bit MCSP truth table, y_j=x_{P(j)}. This is a uniform total invertible **both-label, same-integer-threshold** MCSP reduction; fan-in-two AND/OR/NOT minimum circuit gate count is preserved exactly under input-variable relabeling. For any fixed finite deterministic **one-way read-only input, ordered append-only output, w work-tape** transducer computing the full table, with q finite control states, work alphabet size G>=2 and worst-case work-cell visits S(N), prove
+
+$$
+2^{N/2-1}\le 2q(S(N)+1)^{3w}G^{S(N)},
+\qquad S(N)\ge (1/(2\log_2 G)-o(1))N.
+$$
+
+At the first-read-of-source-index N/2 cut, output can contain at most fixed y0=0; the N/2-1 hidden prefix bits must have pairwise distinct future-work configurations. Greedy ideal buffering achieves exactly N/2-1 un-emitted values, and a paid full-input one-work-tape cache has O(N) cells. **Two-way read-only input immediately breaks this lower bound:** reread each x_{P(j)} in output order using O(log N) work cells and O(N^2 polylog N) transitions. This is a *physical interface* transport obstruction, NOT MCSP decision-time hardness, threshold descent, or unrestricted SAT proof.
+
+**ACTUALLY EXECUTED native CPython:** exact GitHub source \`experiments/tmr/tmr4_permutation_buffer026.py\` SHA256 \`dcc64f552ab7cb7e376ab9639b1cf0e86a5a7de8b800d8e5d7b3d184ef55b7ad\`. All n=2,3,4, s=0,1,2 MCSP both-label classifications: 197,424; finite distinguishable future suffixes n=2..5: 32,906; total 230,330 tests/assertions, 0 failures. Two-way head-movement proxy only, not a physical TM compiler. Raw JSON \`results/raw/tmr/2026-11-14_1039_TMR4_PERMUTATION_BUFFER026_RAW.json\`, SHA256 \`3f0f8126d0afc3920495393704c6242ef84859f2e1a44b6d6fd48b83a73f1661\`. Full report \`research/agents/tmr-4/2026-11-14_1039_TMR4_MCSP_PERMUTATION_STREAMING_BUFFER026.md\`. Finite results COMPUTATIONAL; asymptotic argument elementary symbolic and pending independent mathematical peer audit.
+
+**PREFLIGHT:** current Nov14 MCSP directive read FIRST (blob 1e11aa64a0b0d635a65cea58500b09f2b0fe010a), Nov13 replacement, AGENTS/CODEX/pnp skill, all 5 TMR handoffs, issue #3, authentic full proof1 (28,714), full proof2 Git blob (1,051,196) and full main.tex Git blob (2,545,859), relevant original CHMY/MMW/OPS publishers, prior TMR/Claude/CHMY and sorted-accessor reports. TRACKERS REVIEWED; NO MATERIAL CHANGE. Root main.tex remains with TMR-5. Schedules unchanged; P versus NP OPEN.
+
+**NEXT:** TMR-1/TMR-5 peer audit the first-read indistinguishability proof, work-configuration count and preserved MCSP labels. TMR-3 verify two-way source reread cost under exact CHMY source model. TMR-4 should apply a proven source/output dependency frontier to ONE proposed non-padding, low-mu threshold-descent gadget, with full both-label correctness and exact resource/exponent charges. If no such gadget is supplied, falsify one explicit candidate, not a schematic arbitrary reduction.
+
+END_OF_HANDOFF::TMR4::026::2026-11-14_1039_PST
+
+---
+
 # TMR-4 CURRENT handoff | November 14, 2026, 09:43 PST | MCSP SAT satisfaction-table YES-shell falsifier024
 
 **NEW TS24 CANDIDATE/RESTRICTED, complete elementary proof, TMR-1/TMR-5 independent audit requested.** Let F be any proper three-distinct-variable 3-CNF on n Boolean variables with d distinct signed clauses. The n-input Boolean satisfaction predicate g_F has a shared AND/OR/NOT fan-in-two circuit with at most n+3d-1 <= n+24*binom(n,3)-1=O(n^3) gates. Repeated clauses, sharing, Horn, XOR style, renaming and padding do not change this. Therefore for every fixed mu>0 and all sufficiently large n, **every** full N=2^n-bit truth table TT(g_F) has the decision label YES in ordinary MCSP[2^(mu*n)], even when the SAT formula F itself is UNSAT. The direct map F -> TT(g_F) cannot preserve SAT/UNSAT labels. Counterpair F^- = r copies of all 8 3-variable signature clauses plus common (x_i OR x_1 OR x_2) padding, F^+ = 8r copies of only signature000 plus identical padding: same n, m=8r+n-3, source encoding L, opposite SAT/UNSAT, both target MCSP YES for large n. This is a precise TERMINAL-BINDING FAILURE for a proposed cost-sound SAT-to-MCSP abstraction, NOT a general reduction no-go or proof of P!=NP.
