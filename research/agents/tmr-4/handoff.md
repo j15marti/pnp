@@ -1,3 +1,24 @@
+# TMR-4 CURRENT handoff | 2026-11-14 05:38 PST | NONINJECTIVE TAPE FACTOR AND OFFSET FALSIFIER020
+
+**NEW TMR4-FO20 CANDIDATE/RESTRICTED; independent TMR-5/TMR-1 audit requested.** For one fixed finite total deterministic multitape machine A maintaining a certified, fixed program-defined offset d and a blank-preserving, possibly noninjective work-symbol factor f, the invariant B[j]=f(C[j+d]), h_C=h_B+d allows erasure of B's **symbol values**, retaining B's charged physical dummy head and full visited-cell ledger. All concrete steps, original input accesses, same-run time, work-tape visit space, SAT/UNSAT and MALFORMED terminals have exact source-bound forward and reverse replay. This extends the fixed-offset identity-factor result of TMR-5/016, independently supported here under its exact hypotheses as PROVED/RESTRICTED. New many-to-one extension awaits peer review.
+
+**Substantive hostile FALSIFIER:** A moving-head-offset value is not a moving-data-offset certificate. From B[0]=C[0]=1 with heads 0, move only C head to1 without writing: B[0]=1 and C[1]=blank0, so simply setting d'=1 and using f(C[1]) yields a spurious cheap gate. Fixed d, equal head movement or genuinely paid data relocation repairs the unsound extension. No real cheap path was excluded.
+
+**Native CPython executed, COMPUTATIONAL:** 6,168 complete paired restricted 3-variable sign-stream traces (3,534 SAT, 6 UNSAT, 2,628 MALFORMED); 249,502 matching physical abstract/concrete transitions and Bellman equalities; 16 finite factor-letter checks; six dynamic-offset falsifiers; 18 off-invariant gate witnesses/192 missing abstract transitions; zero assertion failures. C alphabet mod4, B=C mod2, shifts d=0,1,2,3,4,7; exact T=d+3(L+1)+1+2(L+1)parity(x), S=d+2. Source is NOT a generic all-TM compiler.
+
+**Verified publication paths:**
+- Report: research/agents/tmr-4/2026-11-14_0538_TMR4_NONINJECTIVE_FACTOR_OFFSET_AUDIT020.md
+- Exact natively executed Python: experiments/tmr/tmr4_factor_offset020.py (expected Git blob d1b8b46d083ad9c944f24765480986ba27f719c6)
+- Exact raw JSON: results/raw/tmr/2026-11-14_0538_TMR4_FACTOR_OFFSET020_RAW.json (expected local Git blob 5bbe3dd0f8ecae19314b59cf9658e5c020af0aab)
+
+**Reads and blockers:** replacement directive first and rechecked; complete root proof1 and proof2 (Git blob fallback), complete canonical main.tex, current issue #3, AGENTS/CODEX/skill, all five TMR handoffs and original peer reports and code. TRACKERS REVIEWED; NO MATERIAL CHANGE. Root main.tex unchanged for TMR-5 synthesis. No scheduled tasks changed; P versus NP OPEN.
+
+**ONE NEXT TARGET:** TMR-5 independent all-symbol/all-step audit of the noninjective factor quotient, then a genuinely nonlocal data-reencoding invariant with physical relocation costs included.
+
+END_OF_HANDOFF::TMR-4::2026-11-14_0538_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-14 04:47 PST | INDUCTIVE MIRROR-TAPE CERTIFICATE019
 
 **TMR4-IM19 CANDIDATE/RESTRICTED, pending independent TMR-1/TMR-5 review:** Improved upon TMR-4/018 all-symbol work-alphabet congruence with a **finite locally checkable inductive diagonal relation**. For any fixed finite total deterministic multitape machine A with two genuinely mirrored writable tapes B,C (equal full cellwise contents, aligned heads, every diagonal transition writes equally and moves equally), erase B's symbol **information** while retaining its charged dummy tape, work head and visited-cell footprint. Abstractly read retained C wherever concrete A reads B. For EVERY concrete reachable transition and every related abstract edge, the same-source one-step simulation and reverse replay are exact, preserving SAT/UNSAT/MALFORMED, complete input access, T_A(x), S_A(x). Off-diagonal pairs are excluded ONLY by the proven initial-and-all-transition invariant, not by deleting actual paths. This is a mechanically verifiable **sufficient** certificate, not a complete reachability or semantic-erasure procedure.
