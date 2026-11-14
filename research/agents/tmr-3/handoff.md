@@ -1,3 +1,15 @@
+# TMR-3 CURRENT handoff | 2026-11-14 03:34 PST | AMORTIZED POPCOUNT ONE-HEAD BRIDGE016
+
+**NEW TMR3-AP16 CANDIDATE/RESTRICTED pending TMR-5 or TMR-1 independent review:** A fixed total uniform $h$-locally-moving-source-head multitape decider $A$ admits a fixed ONE-original-input-head simulator $B_A$ with $T_{B_A}(x)\le c_A(L+2)(T_A(x)+1)$ and $S_{B_A}(x)\le S_A(x)+c_A\lceil\log_2(L+2)\rceil$. This improves TMR-5/014's $O_A(L\log L)$ per-logical-step charge to **$O_A(L)$** while keeping $O_A(\log L)$ extra visited writable cells. Source fetch uses a binary countdown plus an actually charged unary-popcount work-head to detect zero in $O(1)$ after each decrement. The crucial identity $\sum_{j=1}^p\nu_2(j)=\sum_{r\ge1}\lfloor p/2^r\rfloor\le p$ amortizes the paid local binary carries. The explicit serialized fetch ledger is $5w+5\sum_{j=1}^p\nu_2(j)+6p+1\le11p+5w+1$. Every original work transition and input reread remains charged. No SAT lower bound.
+
+**ACTUALLY EXECUTED hosted V8, COMPUTATIONAL:** 49,833 source-position fixtures including all binary strings through length 11, 15 longer-length control sets and restricted valid three-variable 3CNF SAT/UNSAT strings; 4,244,205 charged micro-operations, 245,203 trailing-zero carry movements, positions through 1,025, 2,049 direct valuation-identity checks; zero assertions. The full arbitrary-$A$ TM instruction compiler and $O(w)$ initialization are justified symbolically, not compiled or independently replayed. Source `experiments/tmr/tmr3_amortized_countdown_bridge016.cjs`; immutable raw `results/raw/tmr/2026-11-14_0333_TMR3_AMORTIZED_COUNTDOWN016_RAW.json`; report `research/agents/tmr-3/2026-11-14_0334_TMR3_AMORTIZED_POPCOUNT_ONEHEAD_BRIDGE016.md`.
+
+**Corpus:** 2026-11-13 12:49 PST directive first and rechecked, both complete trackers authenticated (proof2 Git blob recovery), full main.tex Git blob, AGENTS.md/CODEX.md/research skill, newest five TMR handoffs and issue #3 through TMR-2/017, original TMR-5/014 report/executable/raw, TMR-3/015 and TMR-2/017 report, primary FLMV JACM 2005. TRACKERS REVIEWED; NO MATERIAL CHANGE. No edits to root main.tex, no schedule changes. P versus NP OPEN.
+
+**ONE NEXT TARGET:** TMR-5 check exact unary-head zero detection and constant-factor physical microcode, then assess whether the same-source simulator construction supports stronger restricted time-space claims without imposing unnecessary trace playback.
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 02:37 PST | FINITE-HEAD CONFIGURATION FRONTIER015
 
 **New mathematical claim TMR3-MCF15: CANDIDATE/RESTRICTED pending TMR-1/TMR-5 independent review.** For any one fixed halting deterministic machine with h independent locally moving read-only input heads, b one-way locally moving writable work tapes, finite state Q and work alphabet Gamma, on the SAME immutable L-bit input and SAME executed resource realization,
