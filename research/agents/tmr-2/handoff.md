@@ -1,3 +1,26 @@
+# TMR-2 CURRENT handoff | 2026-11-13 19:20 PST | DOUBLE-OCCURRENCE SOURCE SENSITIVITY009
+
+**New TMR2-DO9 CANDIDATE pending TMR-5 audit; actual native Node source/witness controls COMPUTATIONAL. Unrestricted all-exponent uniform deterministic SAT time lower bound and P versus NP OPEN.**
+
+**New scoped mathematical result:** Under the strict unary-header proper-3CNF grammar where **every declared variable must appear at least twice**, start with any clause-minimally UNSAT proper 3-CNF having >=3 occurrences of every core variable. Embed core ID $i$ by even-binary-parity $\rho(i)=2i+\operatorname{popcount}(i)\bmod 2$. For the $u$ complementary dummy IDs, use $K=\lceil2u/3\rceil$ distinct positive proper triples, obtained from consecutive cyclic triples (if $3\nmid u$) or two staggered disjoint partitions (if $3\mid u$). Every dummy appears >=2 times. Any original sign flip satisfies a previously falsified minimal core clause; any original identifier-bit flip targets an odd-parity dummy, which can satisfy the changed literal while other filler variables remain true. Original core occurrence decreases by at most one, so **every neighbor is still min-occurrence-two valid**. All $Q=3M(w+1)$ original literal-field bits have valid same-length SAT neighbors. Every correct h-local-binary-read-only-head deterministic SAT decider must observe all Q on the UNSAT input, yielding $T_A(F)+1\ge Q/h$. No storage bound. This is ONLY linear acquisition, not processing.
+
+**Density:** for unbounded cores with $t\to\infty$ and min core occurrence >=3, $\liminf Q/L\ge1/3$. For the odd-charge cubic-prism 3-XOR Tseitin core with $t=3r$, $M=8r$, min core occurrence 8, $\liminf Q/L\ge4/7$. The weaker density versus TMR-5/006's $8/11$ buys a stronger grammar requiring *two* occurrences of each ID. The XOR family retains a cheap global parity algorithm, defeating any superlinear inference from sensitive input bits alone.
+
+**Independent favorable peer mathematical review:** TMR-5/006 and TMR-1/009 one-occurrence filler arguments are valid as stated for their exact grammar, subject to standard clause-minimally UNSAT core hypotheses. This is not a general machine-time theorem. TMR2-DO9 is a distinct new construction awaiting TMR-5/TMR-1 review.
+
+**Executed native Node.js, original code and exact results Git-blob readback verified:** 10 odd-charge strict source cases, 528 clause-deletion witnesses, 11,328 valid one-bit SAT neighbors (1,584 sign + 9,744 identifier), 11,328 min-two grammar checks, 10 filler-mutation negative controls, 5 even-charge SAT controls, 512 exhaustive small-base UNSAT assignments, zero failures. Max L=4054, Q=2304. No full physical Turing-machine instruction simulator or general fallback executed.
+- Report: research/agents/tmr-2/2026-11-13_1920_TMR2_DOUBLE_OCCURRENCE_SOURCE_SENSITIVITY009.md, blob 392b7179fa96ab7ddbbfb20d887938cc0481dd5c.
+- **Exact native Node source**, matched local git hash: experiments/tmr/tmr2_double_occurrence009.cjs, blob ee1d4b6eb7a0c0ebc8ebac7ddc936a85c04d89ec.
+- **Exact raw JSON**, matched local git hash: results/raw/tmr/2026-11-13_1920_TMR2_DOUBLE_OCCURRENCE009_RAW.json, blob 864b08312c04bf96b3b6a2f4b8b5df0acb384f81.
+
+**Repository state:** 2026-11-13 12:49 PST directive read first and rechecked unchanged SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; proof1 28,714 chars read; proof2 **full 1,051,196 chars** recovered via GitHub contents endpoint after empty ordinary tool output; main.tex **full 2,502,146 chars** recovered from authenticated Git blob after empty ordinary output; AGENTS.md, CODEX.md, research skill, all five TMR handoffs, original TMR-1/009, TMR-5/006, TMR-2/008 and relevant source/raw, latest issue #3, and primary Nisan 1991/Buhrman-de Wolf 2002/FLMV 2005 scopes. **TRACKERS REVIEWED; NO MATERIAL CHANGE**. Root main.tex left to TMR-5. No schedules created or modified.
+
+**Next single target:** independently audit the new positive two-occurrence filler for all $u\bmod3$ and pursue a cost of computational processing beyond $O(L)$ acquisition that survives compact algebra, rereads, sharing and recomputation. All unrestricted lower-bound arrows OPEN.
+
+END_OF_HANDOFF::TMR2::2026-11-13_1920_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-13 18:23 PST | DENSE-SOURCE-BIT-SENSITIVITY008
 
 **New EPI8 embedding CANDIDATE pending independent TMR-5/TMR-1 review; native Node finite tests COMPUTATIONAL. All-exponent general SAT machine lower bound and P versus NP OPEN.**
