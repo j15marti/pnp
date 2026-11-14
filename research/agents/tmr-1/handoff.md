@@ -1,3 +1,22 @@
+# TMR-1 CURRENT handoff | 2026-11-13 17:01 PST | ERASING-INDEX-HYBRID-UPPER005
+
+**New EI5 CANDIDATE pending TMR-3/TMR-5 independent review; tests COMPUTATIONAL.** One fixed finite total all-input correct deterministic SAT decider authenticates TMR-2's exact strict proper-3CNF equality source $E_n(a,b)$ and, using **one physically local read-only input head plus a single FLMV-style INDEX tape ERASED after each indexed jump**, achieves $T=O(L_n)$ and $S=O(\log L_n)$ on every member; $L_n=13n+2+24n(1+\max(1,\lceil\log_2(5n)\rceil))=\Theta(n\log n)$. It scans each original bit by ordinary paid rightward head moves and uses **only 2n indexed jumps** to visit first-bank sign anchors and restore the locally scanned position. Every INDEX address is physically rebuilt after erasure, at $O(\log L_n)$ each. Binary scanner-counter increments amortize $O(L_n)$; grammar and literal checks $O(L_n)$; anchor strides $O(n\log L_n)=O(L_n)$. One fixed fully charged exhaustive SAT fallback handles all off-family and malformed input correctly. This sharpens TMR-5/004's conservative erasing-INDEX $O(L\log L)$ implementation upper without contradicting it; the persistent INDEX register is unnecessary. Physically sequential-only TMR-3/002 crossing $T(S+1)=\Omega(Ln)$ does not transfer without model cost.
+
+**Verified main publications:**
+- Report: research/agents/tmr-1/2026-11-13_1701_TMR1_ERASING_INDEX_HYBRID_UPPER005.md, blob \`00c92971746b8c8e150de799e53f9fcc23bff942\`.
+- Exact executed V8 source: experiments/tmr/tmr1_erasing_index_hybrid005.cjs, blob \`d8feeb70c9a0774150015c2f48b4ef471f931bcc\`.
+- Raw output: results/raw/tmr/2026-11-13_1701_TMR1_ERASING_INDEX_HYBRID005_RAW.json, blob \`56aa702ec94cdfe52258c6cd5bb8c134e7c3dabc\`.
+
+**ACTUAL TESTS:** 406 valid original source pairs, 48 SAT/358 UNSAT, 2030 structural/malformed fast-path rejection controls, 20 independent literal-level original-CNF brute-force checks; 4486 assertions, 0 failed. 7,898,112 locally modeled source moves, 47,432 erasing index jumps, 803,935 charged address bits written, largest encoded source 1,626,114 bits, maximum charge-proxy/L 16.8603. Finite hosted V8 source emulator, not physical TM. Native Node CLI download blocked by container DNS, physical TM and LaTeX compilation not run.
+
+**Preflight:** 12:49 directive SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4 first read/rechecked; root proof1 full 28,714 characters, proof2 authentic full Git blob 1,051,196 chars, root main.tex authentic full 2,494,937 characters, AGENTS.md/CODEX.md/repo skill, issue #3 through 1,955 comments, newest 5 TMR handoffs, original TMR-3/002/005, TMR-5/004 and TMR-4/005; original FLMV JACM 2005 Section 2.1 page 4 screenshot directly inspected. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Root main.tex unchanged for TMR-5 synthesis. No tasks or schedules modified. Both P=NP and P!=NP remain OPEN.
+
+**NEXT single target:** Have TMR-3/TMR-5 independently verify the precise *native sequential move plus erased-index jump* protocol and total fallback, then seek a nontransport, program-dependent all-step cost that excludes every polynomial time exponent while admitting arbitrary polynomial workspace.
+
+END_OF_HANDOFF::TMR1::2026-11-13_1701_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-13 15:58 PST | INDEXED-SEQUENTIAL-MODEL-BRIDGE004
 
 **Status:** TMR1-IB4 fixed-program IDX(w)-to-SEQ charged simulation CANDIDATE pending TMR-5 independent review; TMR3-TW2 restricted sequential crossing PROVED/RESTRICTED as previously peer-reviewed; indexed transfer IB4-X CANDIDATE/RESTRICTED; finite source audit COMPUTATIONAL; P versus NP OPEN. New TMR identities supersede LSPV ownership and old Route A/B, without changing tasks or schedules.
