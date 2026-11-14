@@ -1,0 +1,235 @@
+% CLAUDE REPORT::WCDC-0001::2026-11-14T16:00-08:00
+% !TEX program = xelatex
+% Compiles with XeLaTeX or pdfLaTeX (ASCII source).
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\UNSAT}{\mathrm{UNSAT}}
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\Wb}{\overline W}
+\title{Worst-Case Derivation Complexity $\Wb_R(N)$:\\ the Bridge Squeeze, a Pointwise-Transfer Falsifier,\\ and the Explicit-System Requirement}
+\author{P vs NP Research Project --- Claude scheduled routine, run WCDC-0001}
+\date{14 November 2026, 16:00 PST}
+\begin{document}
+\maketitle
+
+\section*{Status}
+\textbf{P versus NP remains OPEN.} Propositions~\ref{prop:squeeze}, \ref{prop:free}, \ref{prop:exist}
+are \textbf{PROVED/EXACT} (elementary). Propositions~\ref{prop:tseitin}, \ref{prop:pv},
+\ref{prop:kp} are \textbf{KNOWN THEOREM} transfers with the exact correspondence stated.
+The table in Section~\ref{sec:exp} is \textbf{COMPUTATIONAL} (tiny sizes; not asymptotic evidence).
+The load-bearing pair ``explicit fixed $R$ with $B_R$ proved'' and ``$\Wb_R(N)\ge N^{\omega(1)}$ proved''
+remains \textbf{OPEN} for every system $R$ for which either half is currently known.
+
+\section{Objects and exact quantifiers}
+\begin{definition}
+A \emph{refutation system} $R$ (Cook--Reckhow) is a polynomial-time checker $V_R(F,\pi)$ such that
+$F\in\UNSAT$ iff $\exists\pi\,V_R(F,\pi)=1$. The charged cost $\mathrm{cost}_R(\pi)$ is the encoded
+length of $\pi$, or any cost polynomially related to it (nodes plus all identifiers, signs and
+coefficients). For a $3$-CNF $F$ let $w_R(F)=\min_{\pi:V_R(F,\pi)=1}\mathrm{cost}_R(\pi)$ and
+\[
+ \Wb_R(N)=\max_{F\in\UNSAT,\ |\langle F\rangle|\le N}\ \min_{\pi:F\vdash_R\bot}\mathrm{cost}_R(\pi).
+\]
+Define the two halves of the program
+\[
+ B_R:\quad \SAT\in\mathrm P\implies \Wb_R(N)\le \poly(N),\qquad
+ LB_R:\quad \Wb_R(N)\ge N^{\omega(1)} .
+\]
+\end{definition}
+The user's multisign DAG hypergraph calculus is an instance: signed hyperedges are clauses,
+a reduction step replaces/adds hyperedges by a sound local rule, the ``minimal reduced logical state''
+for an UNSAT input is the hyperedge $\bot$, and the minimal work is $w_{R_{\mathrm{ms}}}(F)$.
+Two sub-cases must be separated because they behave oppositely:
+$R_{\mathrm{ms}}^{-}$ (merge/eliminate/subsume signed hyperedges on the \emph{original} variables; every
+step is a resolution or weakening step on clauses, so it is p-simulated by DAG Resolution), and
+$R_{\mathrm{ms}}^{+}$ (additionally allows a shared DAG node to name a \emph{fresh} variable defined
+by a gate on older nodes, i.e.\ extension; this p-simulates Extended Resolution $\equiv$ EF).
+
+\section{Results}
+\begin{proposition}[Bridge squeeze]\label{prop:squeeze}
+For every refutation system $R$:
+(a) $B_R\wedge LB_R\implies \mathrm P\ne\mathrm{NP}$;
+(b) if $LB_R$ is a theorem, then $B_R\iff \mathrm P\ne\mathrm{NP}$;
+(c) if $\mathrm P=\mathrm{NP}$, then $B_R\iff R$ is polynomially bounded.
+\end{proposition}
+\begin{proof}
+(a) contrapositive of $B_R$. (b) ``$\Leftarrow$'': if $\mathrm P\neq\mathrm{NP}$, $B_R$ is vacuous.
+``$\Rightarrow$'' is (a). (c) the premise of $B_R$ is then true.
+\end{proof}
+\begin{corollary}
+For tree-like Resolution, Resolution, $R_{\mathrm{ms}}^{-}$, Cutting Planes, Polynomial Calculus,
+and bounded-depth Frege, $LB_R$ is a KNOWN THEOREM (Haken 1985; Urquhart 1987; Chv\'atal--Szemer\'edi 1988;
+Pudl\'ak 1997; Razborov 1998; Ajtai, Beame--Impagliazzo--Pitassi, Kraj\'i\v{c}ek et al.),
+so for these systems the ``weakest sufficient bridge'' $B_R$ is \emph{equivalent to} $\mathrm P\neq\mathrm{NP}$.
+In the world-ledger taxonomy it is an equivalent reformulation, not a weakening.
+A nontrivial two-part program exists only for systems with no known $LB_R$ (Frege, EF, $R_{\mathrm{ms}}^{+}$, \dots).
+\end{corollary}
+
+\begin{proposition}[Scope of the free-optimal-sequence concession]\label{prop:free}
+Let $A$ be any algorithm whose run on $F$ \emph{writes} (or can be read off in linear time as) an
+$R$-derivation of $\bot$. Then $\mathrm{time}_A(F)\ge w_R(F)$ up to the read-off constant,
+whatever search $A$ performs. For an algorithm whose run is not an $R$-derivation, no such inequality
+follows from the definition.
+\end{proposition}
+\begin{proof}
+The written derivation is one of the $\pi$ in the minimum, and writing it costs at least its length.
+For the second sentence see Proposition~\ref{prop:tseitin}.
+\end{proof}
+So the user's point is \textbf{correct and adopted}: not charging strategy discovery only weakens the
+lower bound one would have to prove, and is legitimate. But it is legitimate \emph{only inside the class
+of $R$-producing algorithms}. Passing from that class to all algorithms is exactly $B_R$.
+
+\begin{proposition}[Pointwise-transfer falsifier; KNOWN THEOREM transfer]\label{prop:tseitin}
+There is a total, correct, deterministic SAT decider $A^\ast$ and an explicit family $T_n$ of UNSAT
+$3$-CNFs with $|\langle T_n\rangle|=\Theta(n\log n)$ such that
+$\mathrm{time}_{A^\ast}(T_n)=O(n^3)$ while $w_{R}(T_n)=2^{\Omega(n)}$ for $R\in\{\text{Resolution}, R_{\mathrm{ms}}^{-}\}$.
+\end{proposition}
+\begin{proof}
+$T_n$: Tseitin formulas with odd total charge on explicit $3$-regular expanders (every vertex
+constraint is a parity of $3$ edge variables, i.e.\ $4$ clauses of width $3$).
+Urquhart (1987) and Ben-Sasson--Wigderson (2001, width $\Omega(n)$ $\Rightarrow$ size $2^{\Omega(n)}$)
+give the Resolution bound; $R_{\mathrm{ms}}^{-}$ is p-simulated by Resolution. $A^\ast$: if the input
+is syntactically a Tseitin encoding (checkable in polynomial time), solve the GF(2) system by Gaussian
+elimination; otherwise run exhaustive search. $A^\ast$ is total and correct on all inputs.
+\end{proof}
+Consequences: (i) the ``pointwise simulation'' secondary target is FALSIFIED/RETIRED for every
+resolution-strength multisign calculus; (ii) the requested test ``survive algebraic reasoning / adaptive
+strategy switching'' fails for Tseitin and also for pigeonhole (counting); (iii) the worst-case version
+survives only because $\max_F$ ranges over families on which \emph{no} algorithm is known to be fast,
+which is precisely the open content. Enlarging the calculus to $R_{\mathrm{ms}}^{+}$ removes this
+falsifier (Tseitin and PHP have polynomial Frege, hence EF, proofs; Buss 1987, Urquhart) but then
+$LB_{R_{\mathrm{ms}}^{+}}$ is the open EF lower-bound problem.
+
+\begin{proposition}[Non-explicit existence is trivial]\label{prop:exist}
+$\exists R\ B_R$ is a theorem (classically).
+\end{proposition}
+\begin{proof}
+If $\mathrm P\neq\mathrm{NP}$, any $R$ works. If $\mathrm P=\mathrm{NP}$ via decider $A$, the system
+$S_A$ (empty proof; checker runs $A$) has $\Wb_{S_A}(N)=O(1)$.
+\end{proof}
+Hence every acceptable bridge must be stated for an \textbf{explicit} $R$ fixed in advance, with $B_R$
+proved; otherwise the bridge carries no information. This is a required quantifier repair for the shared
+objective.
+
+\begin{proposition}[EF bridge under provable soundness; KNOWN THEOREM, Cook 1975]\label{prop:pv}
+If $\SAT$ is decided by a polynomial-time $A$ such that Cook's theory $\mathrm{PV}$ (equivalently, for
+$\forall\Sigma^b_1$-consequences, $S^1_2$) proves the $\forall\Pi^b_1$ soundness statement
+$\forall F,\alpha\,[A(F)=0\to \neg\mathrm{Sat}(F,\alpha)]$, then $\Wb_{\mathrm{EF}}(N)\le\poly(N)$.
+\end{proposition}
+This is the corpus's B3 route (LSPV-1/357, /361), adopted, not new. The residual obstruction is a
+correct polynomial algorithm whose soundness is not PV-provable; Pich--Santhanam (2023/2026) show
+how EF lower bounds would imply $\mathrm P\ne\mathrm{NP}$ under further explicit assumptions and also
+identify a barrier to improving such results.
+
+\begin{proposition}[Fixed bridge from $\mathrm E=\mathrm{NE}$; KNOWN THEOREM transfer, new to corpus]\label{prop:kp}
+Kraj\'i\v{c}ek--Pudl\'ak (1989): if $\mathrm E=\mathrm{NE}$ then a p-optimal refutation system $R^\ast$ exists.
+For such $R^\ast$, $B_{R^\ast}$ holds and $LB_{R^\ast}\iff\mathrm{NP}\ne\mathrm{coNP}$. Moreover
+$\mathrm P=\mathrm{NP}\Rightarrow\mathrm E=\mathrm{NE}$ (padding), so in the only case where $B_R$ is not
+vacuous, a fixed universal bridge system exists.
+\end{proposition}
+\begin{proof}
+Under $\SAT\in\mathrm P$ via $A$, $S_A$ is p-bounded and $R^\ast$ p-simulates $S_A$, so $\Wb_{R^\ast}$ is
+polynomial. $LB_{R^\ast}$: $R^\ast$ is p-bounded iff some system is (p-optimality), iff $\mathrm{NP}=\mathrm{coNP}$
+(Cook--Reckhow). Padding: a unary/exponential-padding of an NE language lies in NP.
+\end{proof}
+Assessment: this \emph{closes} $B$ for a fixed system (conditionally on E=NE, and non-explicitly) at the
+price of moving the entire difficulty into $LB$, which becomes NP $\neq$ coNP (stronger than the goal).
+Existence of p-optimal systems is itself OPEN and faces known relativization barriers (arXiv:2408.07408 and references), and the one-bit-advice version is known (Cook--Kraj\'i\v{c}ek 2007). Classification: EXACT
+OBJECT/THEOREM TRANSFER, but a \emph{conservation law}, not progress: across the systems examined, strengthening
+$R$ transfers difficulty from $B_R$ to $LB_R$ without removing it.
+
+\paragraph{Trilemma summary (PROVED/EXACT as a case analysis of known results).}
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+system & $LB_R$ & $B_R$ \\
+\midrule
+Res, $R^-_{\mathrm{ms}}$, CP, PC, AC$^0$-Frege & KNOWN THEOREM & $\iff$ P$\ne$NP; pointwise version FALSIFIED \\
+Frege, EF, $R^+_{\mathrm{ms}}$ & OPEN & CONDITIONAL (PV-provable soundness) \\
+p-optimal $R^\ast$ (if exists) & $\iff$ NP$\ne$coNP & KNOWN THEOREM \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Computation}\label{sec:exp}
+Script \texttt{experiments/claude/wcdc\_treeres\_exact001.py}; raw output
+\texttt{results/raw/claude/2026-11-14\_WCDC0001\_TREERES\_RAW.json}. System: tree-like Resolution with
+weakening, cost $=$ number of tree nodes; exact by dynamic programming over all $3^n$ clauses
+($s(C)=1$ if $C$ weakens an axiom, else $\min_x s(C\vee x)+s(C\vee\bar x)+1$). Total runtime 1.5\,s,
+single stage (no chunking needed). Hostile control: the even-charge (satisfiable) $K_4$ Tseitin
+formula returns $\infty$, as required.
+\begin{center}
+\begin{tabular}{lrrrrr}
+\toprule
+instance & $n$ & clauses & exact tree min & $2^{n+1}-1$ & GF(2) row ops\\
+\midrule
+PHP$^{2}_{1}$ & 2 & 3 & 5 & 7 & --\\
+PHP$^{3}_{2}$ & 6 & 9 & 21 & 127 & --\\
+PHP$^{4}_{3}$ & 12 & 22 & 85 & 8191 & --\\
+Tseitin $K_4$ & 6 & 16 & 55 & 127 & 5\\
+Tseitin $K_{3,3}$ & 9 & 24 & 151 & 1023 & 11\\
+Tseitin prism & 9 & 24 & 95 & 1023 & 9\\
+Tseitin $Q_3$ & 12 & 32 & 255 & 8191 & 20\\
+random 3-CNF, $m=6n$, $n=12$ (max of 4 UNSAT) & 12 & 72 & 31 & 8191 & --\\
+\bottomrule
+\end{tabular}
+\end{center}
+Reading: on Tseitin the exact minimum grows much faster than the GF(2) operation count even at these
+sizes, illustrating Proposition~\ref{prop:tseitin}; dense random 3-CNF at $n\le12$ is easy for tree
+resolution (finite-size effect; the $2^{\Omega(n)}$ theorem needs $m=\Theta(n)$ near threshold and large $n$).
+Exact Resolution-DAG minima were not computed; tree minima upper-bound them.
+No claim of asymptotic growth is drawn from this table.
+
+\section*{Literature preflight (obstacles: fixed-$R$ bridge; LB for strong $R$)}
+Cook--Reckhow (1979); Cook (1975, PV and EF); Kraj\'i\v{c}ek--Pudl\'ak (1989, JSL, optimal systems
+and E=NE); K\"obler--Messner--Tor\'an (2003, weaker EE=NEE condition); Cook--Kraj\'i\v{c}ek (2007, advice);
+arXiv:2408.07408 (2024, optimal proof systems for complex sets hard to find; relativization);
+Pich--Santhanam, ``Towards $\mathrm P\ne\mathrm{NP}$ from Extended Frege lower bounds'', arXiv:2312.08163;
+arXiv:2405.02232 (iEF lower bounds $\Rightarrow\#$P$\not\subseteq$FP/poly); Urquhart (1987); Ben-Sasson--Wigderson (2001).
+No 2025--2026 result was found showing $\mathrm P=\mathrm{NP}\Rightarrow$ EF p-bounded unconditionally.
+\paragraph{Barrier-transfer.} Control theory (certificate/Lyapunov existence vs.\ synthesis): the
+non-explicit existence of $S_A$ is the same phenomenon as ``a Lyapunov function exists iff the system is
+stable'', which yields no stability test --- useful ANALOGY confirming Proposition~\ref{prop:exist}.
+Coding theory / GF(2): Gaussian elimination is an exact algorithm exploiting hidden linear structure ---
+the PQ-ledger warning ``hidden algebraic structure may be a weakness'' is realized EXACTLY by Tseitin.
+PQ items 1--7: FAILED TRANSFER for producing $LB$ in strong systems; item 5 (black-box extraction) is
+precisely $B_R$ and gives nothing new.
+
+\section*{CORPUS REVIEWED}
+\texttt{AGENTS.md}; repository tree and recent log (TMR-1..5 MCSP run through TMR-4/031);
+\texttt{research/agents/codex/2026-11-11\_1203\_SAT\_POLYNOMIAL\_ASSUMPTION\_AUDIT.tex} (defines $W_R$,
+eq.~(12) remark); \texttt{2026-11-11\_1331\_TRANSFER\_RECOVERY\_AND\_RATE\_AMPLIFICATION.tex};
+LSPV-1/336 (clocked optimality reflection), /357, /361 (ER universal reflection, B3);
+\texttt{experiments/arc/lspv2\_576\_tree\_min.py} (prior exact tree-resolution on guarded $K_4$);
+\texttt{research/coordination/2026-11-14\_0819\_USER\_CLAUDE\_SEMANTIC\_COMPOSITION\_REVIEW.md};
+prior Claude reports (world ledger, TPORT, ONETAPE). Targeted, not a byte-complete reread.
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+Proposition~\ref{prop:squeeze}(b) duplicates the Codex 2026-11-11 remark (``once $\neg$QBound($R$) is proved,
+(12) is logically equivalent to the desired separation''); reproved and extended with (c) and the explicit list.
+Proposition~\ref{prop:pv} duplicates LSPV-1/357,/361 (ADOPTED). Propositions~\ref{prop:exist}, \ref{prop:kp}
+(Kraj\'i\v{c}ek--Pudl\'ak) and the Tseitin pointwise falsifier for the multisign calculus were not found in the
+corpus by repository search (``p-optimal'', ``Pudl'', ``Tseitin'' under experiments/). No contradiction found.
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root \texttt{main.tex} was not edited: this routine owns no ownership region (LSPV-1..5 and TMR-1..5 regions only).
+Proposed for the arbiter: add the explicit-$R$ quantifier repair and the trilemma table to the $W_R$ entry.
+\section*{ADOPTED / REJECTED / RETIRED}
+ADOPTED: free optimal sequence (within $R$-producing algorithms); B3/PV route. REJECTED as progress:
+$B_R$ for any $R$ with known $LB_R$ (equivalent reformulation). RETIRED: pointwise algorithm-to-$w_R$
+simulation for resolution-strength multisign calculi.
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+The shared directive's phrase ``weakest sufficient bridge'' is overstated for weak systems: it is not weaker than
+P $\neq$ NP. The directive should require an explicit $R$ fixed in advance (Proposition~\ref{prop:exist}).
+\section*{NEXT TARGET}
+Fix $R^+_{\mathrm{ms}}$ formally and decide whether its extension rule is restricted (e.g.\ bounded fan-in
+definitions of bounded depth). If restricted to depth $d$, test whether it is p-equivalent to depth-$d$ Frege,
+where $LB$ is KNOWN and Proposition~\ref{prop:squeeze}(b) applies again; locate the weakest system in which
+both $LB_R$ is open and $B_R$ is not refuted by an explicit pointwise falsifier.
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WCDC-0001
