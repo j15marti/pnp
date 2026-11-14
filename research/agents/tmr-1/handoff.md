@@ -1,3 +1,24 @@
+# TMR-1 CURRENT handoff | 2026-11-13 19:05 PST | NO-UNUSED-VARIABLE-SENSITIVITY009
+
+**New TMR1-NU9 CANDIDATE pending TMR-2/TMR-5 independent review. Independently reviewed TMR-2/008 fresh even-parity identifier embedding as PROVED/RESTRICTED in its original permissive-unused grammar. Finite hosted V8 and independent native Python evidence: COMPUTATIONAL. Unrestricted P versus NP and all-exponent deterministic SAT lower bound: OPEN.**
+
+**Substantive theorem and stricter grammar bridge:** For ANY clause-minimally UNSAT proper 3-CNF F with t>=3 occurring variables, map IDs to even-popcount $\rho(i)=2i+\mathrm{popcount}(i)\bmod2$, use $N=2^w-1$, $w=\lceil\log_2(2t+2)\rceil$, and ADD all-positive, proper ternary filler clauses that make every unused ID appear. Every original sign or ID bit can still be flipped individually to a valid SAME-LENGTH SAT formula under the additional rule **all declared variable IDs must appear**. If the changed identifier becomes a filler variable j, set j to satisfy the changed literal, and keep the other filler variables TRUE; each filler clause has at least two other true literals. The old core ID remains used since every variable of a minimally UNSAT CNF occurs at least twice. Number of sensitive core bits $Q=3M(w+1)$. For every unbounded t-family, $\liminf Q/L'\ge2/5$; for cubic prisms, $\liminf Q/L'\ge8/11$. Thus every h-local-input-head fixed correct total SAT machine must read Q bits on the UNSAT source, yielding $T_A(x)+1\ge Q/h=\Omega(L')$ with unrestricted work space. No superlinear processing or P != NP follows.
+
+**Published and readback-verified:**
+- Report: research/agents/tmr-1/2026-11-13_1905_TMR1_NO_UNUSED_VARIABLE_SENSITIVITY009.md, blob b0403178fda19c2ee970cf60a0af91693ef17fdd.
+- Exactly executed hosted-V8 independent executable: experiments/tmr/tmr1_no_unused_sensitive009.cjs, blob 9a92e6de90926f0377bd486b4bf8741c10fef426.
+- Raw 10-case source evidence: results/raw/tmr/2026-11-13_1904_TMR1_NO_UNUSED_SENSITIVITY009_RAW.json, blob 0e0f35c42a6d1d0096c1b148fd67d87f564c76fe.
+
+**Actually executed:** Hosted V8 10 cubic-prism odd-charge cases, 528 minimal-core deletion certificates, 1,584 sign flips, 9,744 ID flips, 11,328 parsed strict all-used SAT neighbors, 148 filler clauses, 512 exhaustive smallest-source UNSAT assignments, 10 filler-only negative controls, zero failures. Largest L'=3304, Q=2304. Independently written local native Python 3.13 brute-force reimplementation: 4 sources, 2,016 parsed all-used SAT neighbors, zero failures. Python file local-only, not claimed as GitHub publication. No native Node of GitHub JS, no instruction-level TM trace, no preflight or LaTeX compilation.
+
+**Context, ownership and next task:** Re-read overriding 12:49 directive SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; full proof1 28,714 characters at SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; full proof2 authoritative Git blob 1,051,196 characters at SHA 930c5eeddafce656717f28055a7a755f44737c; full main.tex 2,497,977 characters at SHA 4e0dc7a81c3757289e87661b6df29e458cd03daa; issue #3 through 1,965 comments, five TMR latest handoffs, original TMR-2/006-/008 and TMR-5/005 and TMR-1/007, primary decision-tree and SAT time-space papers. TRACKERS REVIEWED; NO MATERIAL CHANGE; root main.tex intentionally TMR-5 owned. No schedule/task mutation.
+
+**ONE next target:** TMR-5 or TMR-2 independently inspect the strengthened no-unused parser, all identifier flips and $2/5$/$8/11$ asymptotic fractions; develop post-observation processing necessity that does not fail against linear-time canonical prism recognition. All unrestricted arrows OPEN.
+
+END_OF_HANDOFF::TMR1::2026-11-13_1905_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-13 18:03 PST | COMPONENT-PARITY-GATE-ORDER007
 
 **Independent peer-review result:** TMR-5/005's biconnected odd-charge chained XOR3 clause-minimality theorem is mathematically supported across arbitrary gate positions at **PROVED/RESTRICTED** scope. My new exact **CC7 component-parity iff criterion** and gate-order dependence remain **CANDIDATE pending TMR-5/TMR-2 review**. All executable finite evidence **COMPUTATIONAL**; unrestricted SAT superpolynomial lower bound and P versus NP **OPEN**.
