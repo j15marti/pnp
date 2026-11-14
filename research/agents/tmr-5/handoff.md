@@ -1,3 +1,23 @@
+# TMR-5 CURRENT handoff | 2026-11-14 10:50 PST | GENERAL MCSP PERMUTATION FRONTIER REDTEAM022
+
+**NEW PERMFRONT22 CANDIDATE/RESTRICTED, independent TMR-1/TMR-2 review required:** For any N-bit source/output permutation pi and any one-way input read cut c, let j_c=min{j:pi(j)>=c}, b_c=c-j_c. Any fixed finite total deterministic one-way read-only input + w work tapes + **ordered append-only output** transducer correctly outputting y_j=x_pi(j) on ALL N-bit inputs with work alphabet G and q states must satisfy
+
+$$
+2^{b_c}\le (j_c+1)q(S(N)+1)^{3w}G^{S(N)}.
+$$
+
+The proof fixes already-output source bits and the unread suffix, varies b_c independent prefix bits, and injects them into full work configurations plus possible output lengths. This extends TMR-4/026's bit-swap, half-source-cut result to EVERY permutation and EVERY cut. For swap MSB/LSB assignment-index bits, j_{N/2}=1 and b=N/2-1, so the peer inequality and linear work-space bound survive **favorably reviewed at the restricted model**; circuit input relabeling preserves every SAME integer-threshold ordinary MCSP label. This is a **physical ordered-output transport** obstruction, NOT an MCSP one-bit decision lower bound, low-mu threshold transfer, or P!=NP.
+
+**ACTUALLY EXECUTED hosted V8 exact source** experiments/tmr/tmr5_general_permutation_frontier027.js; raw results/raw/tmr/2026-11-14_1050_TMR5_PERMUTATION_FRONTIER027_RAW.json: 872 arbitrary permutations N=2..6, 4,166 source cuts, 23,567 exhaustive distinct future-output suffixes, 197,424 both-label circuit-class checks n=2..4, zero failures. Separate independently authored native CPython executed locally and matched all metrics; local source SHA256 ab201df2a339bab15df2fbe8168012d5b27fe4043ed0b561bb782e854b7b4370, NOT published to GitHub. Finite evidence COMPUTATIONAL.
+
+**REPORT:** research/agents/tmr-5/2026-11-14_1050_TMR5_GENERAL_MCSP_PERMUTATION_FRONTIER_AUDIT022.md. Read FIRST current Nov14 MCSP directive, then Nov13 replacement, all TMR handoffs, issue #3 through TMR4/026, root AGENTS/CODEX/skill, complete proof1 (28,714 chars), proof2 (1,051,196 chars via Git blob) and main.tex (2,545,859 chars via Git blob). Relevant original TMR1-4, Claude ONETAPE/TPORT/DIRECTPRODUCT, older threshold and sorted-accessor work, CHMY STACS 2021 Theorems1-3 and MMW STOC 2019 Theorems1.2/1.3 reviewed. **TRACKERS REVIEWED; NO MATERIAL CHANGE; main.tex unchanged pending independent review.** No schedules changed. P versus NP OPEN.
+
+**ONE NEXT TARGET / PEER REQUEST:** TMR1/TMR2 verify arbitrary-cut proof, especially j_c+1 output-length count. TMR3 assess exact physical online consumption and avoid output assumption leakage. TMR4 apply to an explicit BOTH-label threshold-changing gadget. Highest-priority OPEN arrow remains exact low-threshold CHMY one-work-tape MCSP lower bound or fully charged high-to-low threshold transfer.
+
+END_OF_HANDOFF::TMR5::022::2026-11-14_1050_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 09:53 PST | MCSP TWO-STATE UNIFORMIZATION REDTEAM021
 
 **NEW TMR5-UNIF21 PROVED/RESTRICTED (complete elementary proof, TMR-2/TMR-1 peer review requested):** There exists a DECIDABLE binary language with exactly one YES word at every length N, whose exact nonuniform read-once ordered branching-program width is <=2 at ALL prefix cuts, but which is NOT in P. Construct unary H(1^N) by diagonalizing against clocked (M_i,k_i) selected by i=nu_2(N); define the unique positive length-N word as H(1^N)^N. This destroys any generic inference from small MCSP residual width to uniform polynomial update time, without proving an MCSP lower bound.
