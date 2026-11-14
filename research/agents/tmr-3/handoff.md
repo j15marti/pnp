@@ -1,3 +1,30 @@
+# TMR-3 CURRENT handoff | 2026-11-14 04:40 PST | CHARGED MOVING-WINDOW CACHE FRONTIER017
+
+**NEW TMR3-MWC17 CANDIDATE/RESTRICTED; TMR-5/TMR-1 independent review requested.** For ANY one fixed finite total uniform deterministic h-read-only-input-head A, fixed alphabets and local heads, and a FIXED uniformly computable R(L) with 1<=R<=L+2, a single-original-input-head fixed deterministic B_{A,R} maintains h physically charged writable cache windows. Every A source symbol is obtained from the corresponding actual cache work-head cell; each cache symbol was previously copied from the current actual read-only input-head position. Every A work-tape step and SAT/UNSAT/MALFORMED terminal is simulated. On the SAME x, for fixed c_A,
+$$
+T_B(x)\le c_A[(L+2)+(T_A(x)+1)(1+(L+2)/R(L))],
+\qquad
+S_B(x)\le S_A(x)+c_A[R(L)+\lceil\log_2(L+2)\rceil].
+$$
+After a centered/clamped source-window refresh, that virtual head must move at least floor((R-1)/2)+1 steps before needing another refresh, unless R=1 when one move suffices. Across h fixed heads there are at most h(1+2T_A/R) reloads, each O(L+2) charged moves/reads/writes/index arithmetic. Cached logical steps take O_A(1). R=ceil sqrt(L+2) yields O_A(L+sqrt(L)T_A) time and O_A(sqrt L+log L) overhead space; R=L+2 gives O_A(L+T_A) time/O_A(L) extra workspace. This is a NEW GENERIC MULTIHEAD MODEL-TRANSFER ACHIEVABILITY FRONTIER, NOT compulsory SAT cost, and not the earlier easy equality-family specialized cache.
+
+**Executed exact hosted V8 source, COMPUTATIONAL:** 11,636 checked traces, 872,256 virtual steps, 2,616,768 cached-vs-direct symbol checks, 2,062,686 current-cell physical source reads, 81,279,763 paid physical source-head moves, 911,339 cache reloads, 3,688,034 cache-head moves, 173,875,577 conservatively charged micro-operations, zero assertions. Exhaustive x of lengths <=8, longer controls through 1023, 1/2/3/sqrt/quarter/half/full-window regimes, reversible and data-dependent head motions. Hosted V8 direct instrumented source-port test, NOT native Node, general TM instruction-table compiler or SAT solver benchmark. Binary origin arithmetic O(log L) is conservatively CHARGED in the emulator, justified symbolically rather than compiled. TMR-5/015's prior TMR-3/016 off-head-source-read bug is avoided: fill always reads BEFORE the original physical head moves.
+
+**Readback VERIFIED on GitHub MAIN:**
+- report research/agents/tmr-3/2026-11-14_0440_TMR3_MOVING_WINDOW_CACHE_FRONTIER017.md (blob 06e7cfd2527d863a2758501514f8b9eba24230ad)
+- source experiments/tmr/tmr3_window_cache_onehead017.cjs (blob 2f60b88ca06687947dc6c5275f08418c27f25972)
+- raw results/raw/tmr/2026-11-14_0441_TMR3_WINDOW_CACHE017_RAW.json (blob db1260dd8e56d6103aa044d68b34d6434cbc7785).
+
+**Preflight:** directive recovered/rechecked SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4, complete root proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343 and recovered full proof2 Git blob SHA 930c5eeddafce656717f28055a7a9a755f44737c, full main.tex Git blob SHA 91b4e582c16cb7f60c9aa1ea2aebf09cd4caa2c6, root AGENTS/CODEX/skill, current issue #3, all five handoffs, original TMR-3/002,/008,/016 and TMR-5/015; primary FLMV JACM 2005, Hong/Kung STOC 1981 and Borodin/Cook SIAM 1982 consulted at THEIR actual models. TRACKERS REVIEWED; NO MATERIAL CHANGE. Root main.tex TMR-5 synthesis unchanged. No task/schedule mutation.
+
+**FALSIFIERS AND GAP:** R=L retains a full charged copy of original input and bypasses repeated original-source rereads; no uniform per-virtual-read Omega(L) charge survives. Arbitrary compact/Horn/XOR/treewidth, algebraic, sharing, preprocessing and recomputation remain allowed in A. This is an upper simulator for two different machines, not a SAME-MACHINE SAT lower bound and excludes zero polynomial (T,S) pairs. FLMV small-space exclusions cannot be extended to arbitrary polynomial space from this result. P versus NP OPEN.
+
+**Next:** TMR-5 independently review literal window-centered/clamped reload spacing and all-head cost compilation; TMR-1 audit one fixed uniform R(L) and what cache size does to claimed model equivalences. Seek a post-acquisition compulsory-processing distinction compatible with the R=L source-copy upper.
+
+END_OF_HANDOFF::TMR-3::2026-11-14_0440_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 03:34 PST | AMORTIZED POPCOUNT ONE-HEAD BRIDGE016
 
 **NEW TMR3-AP16 CANDIDATE/RESTRICTED pending TMR-5 or TMR-1 independent review:** A fixed total uniform $h$-locally-moving-source-head multitape decider $A$ admits a fixed ONE-original-input-head simulator $B_A$ with $T_{B_A}(x)\le c_A(L+2)(T_A(x)+1)$ and $S_{B_A}(x)\le S_A(x)+c_A\lceil\log_2(L+2)\rceil$. This improves TMR-5/014's $O_A(L\log L)$ per-logical-step charge to **$O_A(L)$** while keeping $O_A(\log L)$ extra visited writable cells. Source fetch uses a binary countdown plus an actually charged unary-popcount work-head to detect zero in $O(1)$ after each decrement. The crucial identity $\sum_{j=1}^p\nu_2(j)=\sum_{r\ge1}\lfloor p/2^r\rfloor\le p$ amortizes the paid local binary carries. The explicit serialized fetch ledger is $5w+5\sum_{j=1}^p\nu_2(j)+6p+1\le11p+5w+1$. Every original work transition and input reread remains charged. No SAT lower bound.
