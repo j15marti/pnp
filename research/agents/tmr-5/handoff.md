@@ -1,3 +1,25 @@
+# TMR-5 latest handoff | 2026-11-13 15:52 PST | FINITE-BATTERY-TRIE-AND-PB4-REVIEW003
+
+**Status:** TMR-4/004 machine-blind common-start potential ceiling independently reviewed as **PROVED/RESTRICTED**. New simultaneous finite-suite trie theorem TMR5-FT3 **CANDIDATE pending TMR-1/TMR-4 review**. Executed regressions **COMPUTATIONAL**. General superpolynomial all-program SAT lower bound and P versus NP **OPEN**.
+
+**New theorem for peer audit:** For ANY finite binary test set H with R=sum_{x in H}|x|, one fixed correct total deterministic multitape decider B_H has at most 1+R prefix-trie control states, O((R+1)log(R+2)) program bits and decides EVERY x in H in <=|x|+1 physical input/endmarker transitions. It has a fully paid correct exhaustive fallback on all other inputs, including malformed strings. It is ONE program for the entire selected finite suite, but depends on H; increasing suites need not share a fixed program. Thus any all-machine cost-sound MAY abstraction with the same program-blind initial s_x has Phi_x(s_x)<=|x|+1 for ALL x in H by telescoping the genuine B_H executions. This strengthens TMR-4/004's per-input hardwired B_x but DOES NOT bind program-tagged abstractions or uniform all-length polynomial SAT machines. Potential edge inequalities including zero-cost edges and both terminal labels are retained.
+
+**Published/readback-verified:**
+- Report: research/agents/tmr-5/2026-11-13_1552_TMR5_FINITE_BATTERY_TRIE_AND_PB4_REVIEW003.md, blob 7c19a3469307109f7c6ccf965be6a1af69090952
+- Hosted V8 source: experiments/tmr/tmr5_finite_trie_comparator005.cjs, blob b6b43f86cd68b9e504a2734516a336ef5f5fc03e
+- Immutable hosted raw: results/raw/tmr/2026-11-13_1552_TMR5_FINITE_TRIE005_RAW.json, blob 09402432a963b317909732c07247e252c45c43a4
+- Canonical main.tex: TMR-5 region ONLY updated, blob b261f0c8131c2512c1d018dfed9b257fd856ccc5, commit daa6f3b85b09b72280ab64aa56b93d0158c139a1. Outside original region preserved exactly, balanced all 5 TMR markers, one enddocument, P versus NP OPEN.
+
+**Actual tests:** Hosted V8 independent finite-control transition automaton: 147 source inputs (73 SAT, 25 UNSAT, 49 malformed), 11,868 exact comparator/endmarker steps, 5,909 trie states, 798 adversarial probes including 718 fallback probes, valid final-bit opposite-label proper-3CNF siblings, zero failures. The source-level emulator does NOT physically execute the full exhaustive multitape fallback. Local-only independent Python reimplementation: 141 battery members, 11,340 prefix transitions and 775 probes, zero failures; these Python files were NOT published.
+
+**Research state:** 12:49 PST replacement directive read first and rechecked before shared writes; both trackers recovered in full (proof1 28,714 characters, SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 1,051,196 characters, authentic Git blob 930c5eeddafce656717f28055a7a9a755f44737c), main.tex 2,490,254 characters at original current blob, newest issue #3 comments, five newest handoffs, original TMR-4/004 and /001, TMR-1/003, TMR-2/004 and TMR-3/003; preserved historical LSPV-5/510/511 accepted counterexamples. Sources checked: Hartmanis/Stearns 1965, Blum 1967, Cousot/Cousot 1977, Lynch 1975, exact uses and limits in report. TRACKERS REVIEWED; NO MATERIAL CHANGE. No schedules/agents touched; no physical machine simulator, OS Node, repository preflight or LaTeX compilation.
+
+**Single next review obligation:** TMR-1 or TMR-4 independently verify the finite trie endmarker protocol, the fixed program-description bound, all-length total fallback and the separation between one finite-suite compiler and one A across unbounded input lengths. Then TMR-5 should red-team TMR-3/003's charged parsing/workhead time and TMR-2/004's original-source K_m minor. All-algorithm superpolynomial computational bottleneck OPEN.
+
+END_OF_HANDOFF::TMR5::2026-11-13_1552_PST
+
+---
+
 # TMR-5 latest handoff | 2026-11-13 14:52 PST | TEMPORAL-DEFERRAL-AND-CROSSING-REVIEW002
 
 **Current status:** TMR-4/003 independently reviewed **PROVED/RESTRICTED**, TMR-3/002 independently reviewed **PROVED/RESTRICTED**; new TMR5-SF2 **CANDIDATE pending TMR-1 or TMR-4 second review**. Finite evidence **COMPUTATIONAL**. All-algorithm superpolynomial SAT lower bound **OPEN**; P versus NP **OPEN**.
