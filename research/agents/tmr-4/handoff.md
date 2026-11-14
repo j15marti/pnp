@@ -1,3 +1,31 @@
+# TMR-4 CURRENT handoff | 2026-11-13 21:40 PST | PARALLEL-HEAD EXACT MAY INTERVAL012
+
+**New TMR4-PH12 CANDIDATE, pending TMR-5/TMR-1 independent mathematical review.** This run independently reviews TMR-1/011's arbitrary one-head spatial MAY theorem favorably at **PROVED/RESTRICTED** scope and derives its exact extension to any fixed finite number of simultaneously moving local original-input heads starting at arbitrary data positions. On any observed set V, the sharp noncircular every-edge MAY potential is
+
+$$
+\Psi(H,V)=
+1+\min_{\substack{I_j=[a_j,b_j]\ni p_j\\
+\forall D:\,D\cap V=\emptyset\implies D\cap\bigcup_jI_j\ne\emptyset}}
+\max_j\left((b_j-a_j)+\min(p_j-a_j,b_j-p_j)\right),
+$$
+
+with $\Psi=0$ when all certified opposite-label difference sets have already been observed. Every real machine transition maps to a cost-one MAY edge, SAT/UNSAT concrete terminals imply all supports hit by exact deterministic replay, every paid or zero-cost edge obeys $\Psi(u)\le c(u,v)+\Psi(v)$, and $d_{\rm MAY}=\Psi\le L+\min_j\min(p_j,L-1-p_j)<3L/2$. This is a **lower-bound expressivity ceiling**, not a SAT algorithm or an upper bound on actual $T_A$. High certificate multiplicity cannot force post-input processing in this abstraction.
+
+**COMPUTATIONAL:** Native Python executed published-exact Git blob \`135a5e45848b0f517da315a4499511d9b8abbf9a\`, using seed 202611132136. 212 independently computed exact interval formula/BFS cases, 139 multihead and 73 one-head, 2080 BFS states, 5795 edges, 39008 full every-edge potential inequalities, 7 hostile controls, ZERO failures. Cases: one head at center 5 with singleton supports at 0 and 10 costs16; two heads at 0 and10 cost1; two both at0 cost11; illegal free indexed jump fails. No physical SAT TM simulator, native general SAT algorithm or full repository preflight was executed.
+
+**GITHUB MAIN READBACK VERIFIED:**
+- Full report: \`research/agents/tmr-4/2026-11-13_2140_TMR4_PARALLEL_HEAD_INTERVAL012.md\`, blob \`0da43f19e33715636f6248586e7990dc3f65fef6\`.
+- Exact executed portable Python: \`experiments/tmr/tmr4_multihead_interval012.py\`, blob \`135a5e45848b0f517da315a4499511d9b8abbf9a\`.
+- Immutable raw results: \`results/raw/tmr/2026-11-13_2139_TMR4_MULTIHEAD_INTERVAL012_RAW.json\`, blob \`817626f4fe7b95b2f9a8ca91643a93c0357a1810\`.
+
+**Corpus and status:** The superseding 12:49 PST directive was read FIRST and rechecked, SHA \`47459817e66dccf1f3079e6c724c0fd2643e7bc4\`. Root proof1 complete 28,714 chars SHA \`06f7ebc8c2283304a0f5200b518c6e48fa41e343\`; proof2 complete recovered Git blob 1,051,196 chars SHA \`930c5eeddafce656717f28055a7a9a755f44737c\`; main.tex complete recovered Git blob 2,507,300 chars SHA \`c0d657568af18ed0a2d17843b8ef0e6c11ac6327\`. AGENTS.md, CODEX.md, pnp-research skill, latest issue #3 through TMR-3/010, all five current TMR handoffs, TMR-1/011, TMR-5/008, TMR-4/009 and original /479, /511, /514 checker/normalizer evidence reviewed. Primary Cousot 1977, Buhrman-de Wolf 2002 and Fortnow et al. 2005 scope checked. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Canonical main.tex unchanged; TMR-5 synthesizes. No schedules modified. All-exponent P != NP **OPEN**.
+
+**ONE NEXT TARGET:** cost-sound program-dependent processing-state abstraction that does not permit a cheap scan-and-zero-goal path, retaining all actual writable transitions and compact operations. TMR-5 should independently review the parallel-head interval formula and guards before promotion.
+
+END_OF_HANDOFF::TMR4::2026-11-13_2140_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-13 20:36 PST | HEAD-AWARE COST-SOUND SPATIAL CERTIFICATES009
 
 **New TMR4-SPATIAL9 CANDIDATE, pending TMR-5 independent proof audit.** An all-transition MAY graph retaining each physically local input-head coordinate H as well as original-bit observation set V admits the explicit every-edge potential
