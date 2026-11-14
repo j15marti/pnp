@@ -1,3 +1,26 @@
+# TMR-1 CURRENT handoff | 2026-11-13 23:00 PST | CHARGED BINARY-ADDRESS PORT BRIDGE013
+
+**NEW TMR1-IP13 CANDIDATE pending TMR-5/TMR-4 independent mathematical review.** Precisely bounded source-index access does not evade the all-exponent time target by a model mismatch: for any one fixed total deterministic multitape A with a **unit-cost indexed input port** whose address is a fully charged delimited w=ceil(log2(L+2))-bit work-tape register plus invalid tag, there exists one fixed local-original-input-head B_A with
+$$
+T_{B_A}(F)\le d_A(L+2)(w+1)(T_A(F)+1),\qquad
+S_{B_A}(F)\le S_A(F)+(L+2)+d_A(w+1).
+$$
+B copies its complete source, then decodes binary indexed queries and walks its copy locally with a charged binary counter. Every A work-tape transition is preserved, including rereads, sharing, cache, algebra and both terminal labels. This is **not** a claimed universal bound for unbounded-word RAM or indexed arbitrary work memory. No P!=NP statement follows.
+
+**NEW exact quantifier implication:** The fixed-uniform-machine, every-exponent 3-SAT separation target Q_local, if someday proved for ALL ordinary local-source machines, entails the corresponding target Q_idx(w) for ALL declared bounded-address port machines. For target (A,k,C,L0), apply Q_local to B_A with exponent k+2 and constant 4d_A(C+1), then divide the charged polynomial simulation bound. The unrestricted statement Q_local remains OPEN, and this is only an implication. Sequential input crossing or source-observation product lower bounds on B do NOT automatically transfer to A because B's own copy/rereading can pay those charges and uses Omega(L) writable space.
+
+**Actual hosted V8 COMPUTATIONAL audit:** Exact source experiments/tmr/tmr1_indexed_port_bridge013.cjs, SHA 2022e5754034d05e59fcde4855440c3ba50381d8, and raw results/raw/tmr/2026-11-13_2300_TMR1_INDEXED_PORT_BRIDGE013_RAW.json, SHA 16a0a1060b760f8664b1556a365266b97fbf42b9. 6,138 exhaustively selected binary-source/test-pattern runs L<=9, 67,518 source queries, 19,550 out-of-range and 31,494 repeated address requests, 2,453 accept and 3,685 reject synthetic outcomes, ZERO trace/cost/space test failures. This is a **synthetic index-trace driver**, not a native TM SAT decider nor a physical instruction-level simulation; no OS Node native replay.
+
+**Verified report:** research/agents/tmr-1/2026-11-13_2300_TMR1_CHARGED_INDEXED_PORT_BRIDGE013.md (blob 905ada5c5dc744a70146dc94003cf65448f5bd8d). All three source/data/report files verified by readback. TMR-1/012 local-multihead additive simulation and TMR-4/013 prepared-state potential transfer remain pertinent separate scoped claims, not overwritten. Primary originals: FLMV JACM 2005, Hartmanis-Stearns 1965, Katajainen et al 1988 (reverse model direction only).
+
+**Corpus:** controlling five-TMR directive first; full proof1 (28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343), recovered full proof2 Git blob (1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c), recovered full main.tex Git blob (2,511,782 chars SHA c04a02a97492f88938791f363ff91d99b67cd78b), issue #3, AGENTS/CODEX/skill, peer handoffs and materially relevant original reports/code/raw. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Root main.tex left unchanged for TMR-5 whole-document synthesis. No tasks/schedules changed. P versus NP OPEN.
+
+**ONE NEXT TARGET:** TMR-5/TMR-4 independently validate exact binary address-register/overflow semantics and whole-work-state simulation; TMR-3 quantify which source-cut products remain after the charged indexed-port conversion. The all-exponent *processing* necessity under arbitrary polynomial workspace remains OPEN.
+
+END_OF_HANDOFF::TMR-1::2026-11-13_2300_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-13 22:04 PST | INPUT-HEAD COPY BRIDGE012
 
 **New TMR1-CH12 CANDIDATE pending TMR-5/TMR-4 mathematical review:** For every fixed finite total deterministic h-read-only-input-head multitape decider A with all h heads initially at the left endmarker and any fixed number of writable work tapes, construct one fixed correct single-read-only-input-head B_A. Copy the L+2 source/endmarker cells simultaneously onto h initially blank writable work tapes in L+2 transitions, rewind h clone heads in L+1 transitions, and then exactly simulate each A transition with one B transition. Thus for every input x, T_B(x)=T_A(x)+2|x|+3, S_B(x)<=S_A(x)+h(|x|+2)+O(1), and outputs/termination/malformed handling coincide. Arbitrary compact algebra, caching, sharing, rereads and recomputation within A remain allowed and correctly charged.
