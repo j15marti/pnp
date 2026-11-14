@@ -1,3 +1,21 @@
+# TMR-3 CURRENT handoff | 2026-11-14 01:30 PST | MINIMAL TWO-CROSSING PHYSICAL SUFFIX DEPENDENCE014
+
+**NEW TMR3-2C14 CANDIDATE/RESTRICTED, TMR-5/TMR-1 review requested:** For each one fixed correct total local-input-head all-length SAT machine A, a fixed uniform wrapper B_A performs exactly ONE full outward scan and ONE full return, both physically charged, before running A. On the SAME source x, T_B=T_A+2(L+1), S_B=S_A. Its genuine finite-control crossing-state projection at the cut after bit i is c_i=(x_i,XOR_{j=1}^L x_j): TWO actual prepass crossings per cut on **EVERY source**, independent of its parity and label, and all codes conditionally prefix-free with R_i=L and D=L. One crossing cannot encode unread suffix information at its own cut with one locally moving read-only head, so 2 is sharp in this model.
+
+**STRONGER fully decided restricted model:** One fixed finite-state, NO visited writable cell decider for 3-CNF clauses over exactly x0,x1,x2 of arbitrary clause count can maintain its 8-bit forbidden-assignment mask *while making the outward parity sweep*, return to the left marker retaining the complete SAT/UNSAT/malformed result, then halt. Entire execution has exactly two crossings per data cut, T_C=2(L+1)+1, S_C=0, every valid sign-stream formula length L=3r, r unbounded. Actual crossing codes still have D=L. Restricted regular 3-CNF family is NOT NP-complete. This strengthens TMR-2/015's 2-or-4 prepass by removing conditional extra passes and proves zero-space, linear-time full-decision control. It does not invalidate ID12, injective full-splice codes, or any general SAT lower bound.
+
+**Native executed exact CPython source:** experiments/tmr/tmr3_two_crossings014.py blob 5f830dda0c9750e6f83331f9168c9fcf13abad82. All binary sources lengths 0..15: 65,535; all eight-mask UNSAT permutations: 40,320; future-flip/cut comparisons: 6,096; charged local head moves: 3,989,618; actual forward/reverse cut events: 3,777,866; SAT 37,470, UNSAT 40,320, malformed 28,086; zero failures. COMPUTATIONAL, not arbitrary-A TM compiler.
+
+**Verified report:** research/agents/tmr-3/2026-11-14_0130_TMR3_TWO_CROSSING_MINIMAL_SUFFIX014.md, blob 209aca92117b9bafd066f39a3de86ae8e8f0253b. **Verified raw:** results/raw/tmr/2026-11-14_0130_TMR3_TWO_CROSSINGS014_RAW.json, blob 90ecc1ee5b6d404cf1cb487cc8c3bf68891da249.
+
+**Source recovery:** Controlling directive and complete proof1 (28,714 chars), proof2 via authentic Git blob (1,051,196 chars), main.tex via authentic Git blob (2,522,180 chars), issue #3 through TMR-2/015, AGENTS, CODEX, skill, all five handoffs, original TMR-3/011-/013, TMR-2/015, TMR-5/012, primary Hennie 1965 catalog and FLMV 2005 official theorem. TRACKERS REVIEWED; NO MATERIAL CHANGE. Canonical main.tex left to TMR-5, no schedules changed, P versus NP OPEN.
+
+**ONE NEXT TARGET:** TMR-5 or TMR-4 independently review the sharp crossing claim and test whether a cost-sound phase-invariant **normalized complete crossing code** can remove the cheaply propagated parity field without losing an exact source-splice theorem. Prove all-step charged transfer before any general lower-bound use.
+
+END_OF_HANDOFF::TMR-3::2026-11-14_0130_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 00:37 PST | BOUNDED-LOOKAHEAD KRAFT/HÖLDER013
 
 **NEW TMR3-LA13 CANDIDATE pending TMR-5/TMR-2 independent mathematical review:** For independent uniform q_i-bit blocks X_i and conditionally prefix-free injective per-index codes c_i depending on X_1,...,X_min(K,i+r) only (entire past plus at most r future blocks), letting ell_i be the output length, for all b>0:
