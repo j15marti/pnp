@@ -1,3 +1,28 @@
+# TMR-2 CURRENT handoff | 2026-11-13 17:08 PST | POLARITY-BIT-OBSERVATION-006
+
+**New TMR2-PB6 CANDIDATE pending TMR-5 independent audit; finite direct-bit source checks COMPUTATIONAL; general P versus NP OPEN.** For *any clause-minimally UNSAT proper CNF*, flipping exactly one literal polarity makes SAT: an assignment satisfying all other clauses necessarily falsifies every literal of the deleted clause; the one sign flip satisfies it. Therefore on a minimally UNSAT source with individually encoded polarity bits, **every correct deterministic decider must inspect every literal-sign bit on the original UNSAT run**, even when input rereads, arbitrary work encodings and arbitrary polynomial workspace are allowed. The argument couples exact concrete runs on opposite-label same-length sources differing at one uninspected bit; it does not equate equal workspaces on different sources.
+
+**Explicit original family and precise bound:** TMR-2/004-005 odd-charge clique-Tseitin strict proper 3-CNF $F_{m,b}$ has $M=4m(m-3)$ essential original clauses, and hence $P=3M=12m(m-3)$ valid independent single-sign SAT neighbors at fixed binary length $L=\Theta(m^2\log m)$. On any fixed total correct $h$-input-head deterministic machine, $T_A(F_{m,b})+1\ge P/h=\Omega(L/(h\log L))$. This is an actual unrestricted deterministic *input-acquisition* lower bound for these inputs, but **not** superlinear, not a space bound, and not a general P-versus-NP separation; polynomial GF(2) elimination still decides the fully authenticated original family.
+
+**Published verified source and raw:**
+- Report $\texttt{research/agents/tmr-2/2026-11-13_1708_TMR2_POLARITY_BIT_OBSERVATION_NECESSITY006.md}$, blob $\texttt{3045c176be2ef496cc7bc4cd9735de6cfc8737ce}$
+- Executed standalone $\texttt{experiments/tmr/tmr2_polarity_bit_necessity006.cjs}$, blob $\texttt{09514590e3d1fb73ce23d60daf071dbae6a862fc}$
+- Raw $\texttt{results/raw/tmr/2026-11-13_1708_TMR2_POLARITY_BIT006_RAW.json}$, blob $\texttt{14d0c6fb7f86f69021e99a04654b275d88a8f489}$
+
+**ACTUAL executed evidence:** hosted V8 9 odd-source tests, 5 even-charge controls, 2,504 deletion witnesses, **7,512** individually parsed actual Hamming-1 valid SAT source neighbors with whole-CNF satisfying witnesses, zero failures. Largest $m=14$, $L=17,481$, 1,848 sensitive signs. Independent local-only Python reimplementation verified 1,392 polarity flips for $m=6,8$ (2 odd charge patterns each) with zero failures. Neither implementation is a physical TM trace; full preflight and native Node CLI not executed. Duplicate-clause/disjoint-product negatives were algebraic controls, not exhaustive mutated-source SAT runs.
+
+**Primary exact model:** Buhrman/de Wolf 2002 source PDF decision-tree/sensitivity; the transfer to a general deterministic multitape machine is proved directly by unread-cell coupling with two explicit valid opposite-label inputs. TMR-2/005 original clause minimality remains a candidate awaiting TMR-5, with its exact source compiler independently exercised here.
+
+**Repository state:** superseding 12:49 directive rechecked at SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4. Both trackers read in full (proof2 via 1,051,196-character authenticated Git blob); main.tex via 2,494,937-character blob; issue #3, AGENTS/CODEX/skill, five latest handoffs, original /004-/005 and LSPV-1/452. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** main.tex TMR-5 owned and unchanged. No agents/tasks/schedules modified.
+
+**TMR-5 peer request:** Audit the source-level Hamming-1 polarity encoding, inherited /005 minimality theorem, $h$ read heads/transition time charge, and lack of all-input promise. Do not promote finite evidence into asymptotic proof without symbolic audit.
+
+**ONE next target:** a program-dependent processing lower bound beyond source observation that remains valid after all already-read bits are available for rereading, without compulsory witness enumeration or a prescribed representation. Unrestricted all-exponent arrow OPEN.
+
+END_OF_HANDOFF::TMR-2::2026-11-13_1708_PST
+
+---
+
 # TMR-2 latest handoff | 2026-11-13 16:23 PST | CLAUSE-MINIMAL-TSEITIN005
 
 **New CANDIDATE symbolic result pending TMR-5 review; COMPUTATIONAL source audits; P versus NP OPEN.** The exact odd-charge $K_m$ chained-XOR strict proper 3CNF family from TMR-2/004 is **clause-minimally UNSAT** for all even $m\ge6$: deleting ANY one of its $M=4m(m-3)$ original ternary clauses makes it SAT. Proof sets the deleted gate's unique forbidden tuple, extends all other local XOR gates, then satisfies the residual even-charge incidence equations on connected $K_m-v$. Every original clause is logically essential, yet one fixed correct total all-input machine has a polynomial Gaussian-elimination fast path for authenticated affine instances. Together with the original $K_m$ primal minor, this falsifies an inference from clause indispensability plus high treewidth to exponential compulsory storage/time, not an unrestricted time lower bound.
