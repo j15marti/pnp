@@ -1,0 +1,281 @@
+% CLAUDE REPORT::BRIDGE-STRENGTH-0001::2026-11-14T09:52-08:00
+% UTF-8, XeLaTeX/pdfLaTeX compatible.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\Wb}{\overline W}
+\title{BRIDGE-STRENGTH-0001: How Weak Is the ``Weakest Bridge''?\\
+\large Strength ledger for B1/B2/B3 in the worst-case minimum-derivation program}
+\author{Claude (scheduled research run), PNP project}
+\date{November 14, 2026, 09:52 PST}
+\begin{document}
+\maketitle
+
+\noindent\textbf{Status summary.}
+Theorems~1, 2 and 4 and Lemma~5 are \textbf{PROVED/EXACT} and elementary;
+they have not yet had independent project review. Corollary~3 is
+\textbf{PROVED/EXACT} \emph{conditional on} the cited
+\textbf{KNOWN THEOREM} (Urquhart 1987; Ben-Sasson--Wigderson 2001). The
+encoding-length table is \textbf{COMPUTATIONAL}. B1, B2 and B3 for every
+nontrivial preselected calculus, including $R_{\mathrm{mix341}}$ and Extended
+Frege, remain \textbf{OPEN}. \textbf{P versus NP remains OPEN.}
+
+\section{Target and conventions (unchanged from the 2026-11-02 directive)}
+Fix one sound, complete, effectively specified refutation system $R$ with
+nonnegative node weights. For an UNSAT CNF $F$ let
+$W_R(F)=\min_{\pi:F\vdash_R\bot}\operatorname{cost}_R(\pi)$, and let
+\[
+  \Wb_R(N)=\max_{F\in\mathrm{UNSAT},\ |\langle F\rangle|\le N} W_R(F),
+\]
+with $N$ the encoded \emph{bit} length. By definition $\Wb_R$ is
+nondecreasing in $N$. The inner minimum grants free choice of the best
+derivation. For a fixed uniform total correct decider $A$ let
+$T_A^{wc}(N)=\max_{|x|\le N}T_A(x)$. The bridges are:
+\begin{itemize}
+\item[B1] $\forall A\ \exists p_A\ \forall F\in\mathrm{UNSAT}:\ W_R(F)\le p_A(|F|+T_A(F))$;
+\item[B2] $\forall A\ \exists p_A\ \forall N:\ \Wb_R(N)\le p_A(N+T_A^{wc}(N))$;
+\item[B3] $\mathrm{SAT}\in P\Rightarrow \exists C,k\ \forall N:\ \Wb_R(N)\le C(N+1)^k$.
+\end{itemize}
+B1$\Rightarrow$B2$\Rightarrow$B3 is established in the corpus. The directive
+calls B3 the \emph{weakest sufficient} bridge. This report measures what that
+weakness actually buys.
+
+\section{Results}
+
+\begin{theorem}[collapse where B3 has content]\label{thm:collapse}
+Assume $\mathrm{SAT}\in P$. Then for every fixed $R$:
+\[
+ \mathrm{B1}(R)\iff\mathrm{B2}(R)\iff\mathrm{B3}(R)\iff \Wb_R(N)=(N+1)^{O(1)}.
+\]
+Unconditionally, $\Wb_R(N)=(N+1)^{O(1)}$ implies B1$(R)$.
+\end{theorem}
+\begin{proof}
+The forward chain is known. Under $\mathrm{SAT}\in P$ the hypothesis of B3
+holds, so B3$(R)$ is equivalent to its consequent. Now suppose
+$\Wb_R(N)\le C(N+1)^k$, with no assumption on SAT. For every $A$ and every
+UNSAT $F$,
+$W_R(F)\le\Wb_R(|F|)\le C(|F|+1)^k\le C(|F|+T_A(F)+1)^k$, because
+$T_A\ge 0$. This is B1 with $p_A(x)=C(x+1)^k$.
+\end{proof}
+
+\noindent\emph{Reading.} B3 is ``weaker'' than B1/B2 only in worlds with
+$\mathrm{SAT}\notin P$, where it is vacuous. In the one world in which B3
+says anything, all three bridges are the single statement ``$R$ is
+polynomially bounded.'' So any proof of B3$(R)$ either proves
+$\mathrm{SAT}\notin P$ outright, or shows how a polynomial-time SAT algorithm
+forces short $R$-proofs. That second kind of argument is exactly a proof of
+$\mathrm{SAT}\in P\Rightarrow\mathrm{B1}(R)$.
+
+\begin{theorem}[strength transfer of B2]\label{thm:transfer}
+If B2$(R)$ holds, then for every correct decider $A$ there is a constant
+$c_A\ge1$ such that for all $N$
+\[
+ T_A^{wc}(N)\ \ge\ \bigl(\Wb_R(N)/c_A\bigr)^{1/c_A}-N-1 .
+\]
+\end{theorem}
+\begin{proof}
+Enlarge $p_A$ to $c_A(x+1)^{c_A}$ for some $c_A\ge1$. Then B2 gives
+$\Wb_R(N)\le c_A(N+T_A^{wc}(N)+1)^{c_A}$. Solve for $T_A^{wc}(N)$.
+\end{proof}
+
+So B2 for $R$ turns \emph{every} proved lower bound on $\Wb_R$ into a lower
+bound on the worst-case running time of \emph{every} SAT algorithm, losing
+only a polynomial.
+
+\begin{corollary}[B2 for Resolution implies a length-measured ETH-type bound]\label{cor:eth}
+Let $\mathrm{Res}$ be ordinary DAG-like resolution with unit cost per derived
+clause. If B2$(\mathrm{Res})$ holds, then for every correct CNF-SAT decider
+$A$ there are $\gamma_A>0$ and $N_A$ such that
+$T_A^{wc}(N)\ge 2^{\gamma_A N/\log N}$ for all $N\ge N_A$. In particular
+$\mathrm{SAT}\notin\mathrm{DTIME}(2^{o(N/\log N)})$, which is far stronger
+than $\mathrm{SAT}\notin P$.
+\end{corollary}
+\begin{proof}
+\textbf{KNOWN THEOREM} (Urquhart, JACM 1987; also Ben-Sasson--Wigderson,
+JACM 2001, through width and expansion): fix an explicit $d$-regular expander
+family $G_n$ with $d$ constant, and with vertex counts $n$ that have bounded
+ratio gaps. An example is the Margulis--Gabber--Galil graphs on
+$\mathbb Z_m^2$, where $d=8$ and $n=m^2$; multi-edges and loops must be
+handled as in the cited sources. Odd-charge Tseitin formulas $T(G_n)$ then
+require resolution refutations of size $2^{\alpha n}$ for some $\alpha>0$.
+The DIMACS encoding has $dn/2$ variables and $2^{d-1}n$ clauses of width
+$d$, so its bit length is $N_n=\Theta(n\log n)$. This is checked exactly
+below, and it does not depend on graph structure. Given $N$, pick the
+largest admissible $n$ with $N_n\le N$. Then $n=\Omega(N/\log N)$, and since
+$\Wb$ is nondecreasing, $\Wb_{\mathrm{Res}}(N)\ge 2^{\alpha' N/\log N}$ for all
+large $N$. Apply Theorem~\ref{thm:transfer}. The polynomial loss changes only
+the constant in the exponent.
+\end{proof}
+
+\noindent\emph{Calibration.} This bound is tight up to the constant in the
+exponent. A length-$N$ CNF has at most $n=O(N/\log N)$ distinct variables,
+because distinct indices need $\sum\log i=\Theta(n\log n)$ bits, so exhaustive
+search runs in $2^{O(N/\log N)}$. The known length-parameterized algorithms
+(Wahlstr\"om 2005, $O^*(1.0663^L)$; Peng--Xiao, $O^*(1.0638^L)$; $L$ is the
+number of literal occurrences) do not beat $2^{\Theta(N/\log N)}$ in bit
+length. So B2(Res) is \emph{not} falsified by known algorithms. Under ETH
+with sparsification, sparse 3-CNF already has bit length $\Theta(n\log n)$
+and needs time $2^{\delta n}$, so B2(Res) is consistent with standard
+conjectures. Still, proving B2(Res) means proving a length-ETH lower bound
+for every algorithm. That is strictly harder than P$\ne$NP. With the
+directive's own hard-instance baseline, Haken's PHP, the same argument gives
+only $2^{\Omega((N/\log N)^{1/3})}$.
+
+\begin{theorem}[monotonicity tension]\label{thm:mono}
+Suppose $R'$ cost-faithfully polynomially simulates $R$, meaning
+$W_{R'}(F)\le q(|F|+W_R(F))$ for a fixed polynomial $q$. Then
+(i) B3$(R)\Rightarrow$B3$(R')$ and B2$(R)\Rightarrow$B2$(R')$; and
+(ii) a superpolynomial lower bound on $\Wb_{R'}$ implies one on $\Wb_R$.
+Hence the systems with a proved bridge form an up-set, and the systems with
+a proved lower bound form a down-set. A system in both would yield
+P$\ne$NP.
+\end{theorem}
+\begin{proof}
+$\Wb_{R'}(N)\le\max_{|F|\le N}q(N+W_R(F))=q(N+\Wb_R(N))$ for nondecreasing
+$q$. Compose this with the bounds on $\Wb_R$ for (i), and take the
+contrapositive for (ii).
+\end{proof}
+
+\noindent\emph{Consequence.} Every system with a currently proved
+superpolynomial lower bound (Resolution, Cutting Planes, bounded-depth Frege,
+and others) has B3 \emph{equivalent} to $\mathrm{SAT}\notin P$. The corpus
+already credits this for Resolution and for the class schema (LSPV-5 status
+correction; ARC226 M2 qualification). B2 for such systems is even stronger,
+by Corollary~\ref{cor:eth}. For systems at the top of the order, such as
+Extended Frege and $R_{\mathrm{mix341}}\supseteq\mathrm{ER}_2$, no lower bound
+is known. Moreover ``$P=NP\Rightarrow$ EF polynomially bounded'' is itself a
+standard open problem; this run's literature search found no theorem proving
+it. Cook--Reckhow ties polynomial boundedness of \emph{some} system to
+NP$=$coNP, not to the preselected one. The known sufficient routes are the
+$S^1_2$/PV reflection route (LSPV-1/357) and the Pich--Santhanam antichecker
+route (LSPV-1/406). Both are CONDITIONAL. So the program
+``$\Wb_R$ lower bound + B3$(R)$'' does not break P vs NP into an easier pair
+for \emph{any} currently analyzable $R$. Its two halves sit at opposite ends
+of the simulation order, and a single $R$ must satisfy both.
+
+\begin{lemma}[the free-optimal-sequence convention is sound]\label{lem:free}
+Let $M$ be any procedure that, on UNSAT input $F$, \emph{outputs} an
+$R$-refutation $\pi$. Suppose every node of weight $w$ needs at least $w$
+output symbols (true for $R_{\mathrm{mix341}}$'s unit weights). Then
+$\mathrm{time}_M(F)\ge|\pi|\ge W_R(F)$, however $M$ found $\pi$.
+\end{lemma}
+\begin{proof}
+Writing $\pi$ takes at least $|\pi|$ steps, and $|\pi|\ge\operatorname{cost}_R(\pi)\ge W_R(F)$.
+\end{proof}
+
+\noindent This confirms the user's clarification: not charging strategy
+discovery can only weaken the lower bound, never invalidate it. It also
+locates the gap precisely. A general SAT decider is not required to output an
+$R$-refutation, and Theorems~1--4 show that closing that gap (B1/B2/B3) is at
+least as hard as the separation itself for every system whose lower bound is
+known.
+
+\section{Computational check (encoding length)}
+Code: \path{experiments/claude_bridge/tseitin_length.py} (closed-form DIMACS
+byte count for any $d$-regular Tseitin CNF) and
+\path{experiments/claude_bridge/check_formula.py}, an independent builder that
+writes the real DIMACS text for $K_4$ and the 3-prism and confirms UNSAT by
+brute force. It agreed with the closed form: 163 and 239 bytes, UNSAT, PASS.
+Raw data: \path{results/raw/claude_bridge/2026-11-14_tseitin_length.json}.
+For $d=3$, $n=10^2,\dots,10^6$, the ratio $n/(N/\log_2N)$ stays at
+$0.0359$--$0.0366$. For $d=8$ it drifts slowly from $0.00059$ to $0.00052$,
+because decimal index length grows like $\log_{10}n$; this is consistent with
+$\Theta$. Each run takes under one second, so no chunking was needed. This is
+finite evidence for the constant only; the asymptotic statement is the
+elementary count in the proof.
+
+\section{Corpus reviewed}
+AGENTS.md (all current headings, including the 2026-11-09 knot/link
+handoff note and the world-ledger note); the 2026-11-02 12:04 worst-case
+minimum-derivation directive; LSPV-1/335 (MU-core and generator barrier);
+LSPV-1/357 (G\"odel reflection firewall); LSPV-1/405 (dense checkpoints);
+LSPV-1/406 (Pich--Santhanam conditional B3); LSPV-1/415 ($\Pi^0_1$
+correctness); the LSPV-5 B3-for-Resolution status correction in root
+\texttt{main.tex}; codex 2026-11-11 SAT-assumption audit; the 2026-11-14
+MCSP five-agent review and user Claude/semantic-composition review; and this
+folder's earlier Claude reports and world ledger. Root \texttt{main.tex} was
+surveyed by search, not read in full: it has 28{,}182 lines. The full
+knot/link, SIL/M22 and ALL-ARC governance files were \emph{not} reread this
+run; this report does not touch those routes.
+
+\section{Duplication / contradiction audit}
+Already in the corpus and credited, not claimed as new: B1$\Rightarrow$B2$\Rightarrow$B3;
+B3(Res)$\iff$SAT$\notin$P, including the class schema; the PV and antichecker
+sufficient conditions; Haken/Tseitin as Resolution baselines. Searched for
+and not found: the explicit collapse under SAT$\in$P (Theorem~1), B2(Res)
+$\Rightarrow$ a length-ETH bound (Corollary~3), and the up-set/down-set
+statement (Theorem~4). These are elementary, so there is likely no
+mathematical novelty beyond this project. No contradiction with a verified
+corpus result was found.
+
+\section{What changed relative to root main}
+A strength ledger for the bridges. B3 is equivalent to B1 and B2 wherever it
+has content. B2 for any system with an exponential lower bound is
+ETH-strength. The lower-bound half and the bridge half pull in opposite
+directions in the simulation order. Root \texttt{main.tex} was \emph{not}
+edited: Claude has no ownership region there, and AGENTS.md reserves
+whole-document reconciliation for LSPV-5/MAIN. This is recorded as a
+suggestion for the owners.
+
+\section{Adopted / rejected / retired}
+\textbf{Adopted:} the free-optimal-sequence convention (Lemma~5); the
+directive's quantifiers. \textbf{Rejected:} describing B3 as an
+``easier'' target for systems with known lower bounds, or describing B2 as a
+modest intermediate. \textbf{Retired:} none.
+
+\section{Stale or overstated claims found}
+Wording in the directive, ``prioritize the weakest sufficient bridge,'' can
+be misread as saying B3 is easier to \emph{prove}. By Theorem~1 it is
+logically weaker only through vacuity. By Theorem~4, for every currently
+analyzable $R$ it is exactly P$\ne$NP. This is a clarification, not a
+correction of a verified theorem.
+
+\section{Barrier-transfer and PQ ledger}
+\textbf{Obstacles:} (1) no superpolynomial lower bound for EF-strength
+systems; (2) no derivation of reflection or correctness from SAT$\in P$ for
+any fixed $R$. \textbf{Transfer domains checked:} proof complexity and logic
+(Cook--Reckhow; Krajíček--Pudlák optimality; $S^1_2$/PV translation) apply
+directly as known theorems. Fine-grained complexity (ETH and sparsification)
+is an exact object transfer for Corollary~3. Control-theory barrier
+certificates would be a misleading analogy: a certificate is a proof object,
+so asking a decider to produce one reintroduces B1. \textbf{PQ techniques:}
+Schur squares, Hilbert functions and collision entropy are FAILED TRANSFER
+here, since these results are about quantifier structure and have no code
+object. The LWE worst-case/average-case lesson is an ANALOGY only: B2 is
+already worst-case on both sides, and no average-case reduction is proposed.
+\textbf{Relativization:} Theorems 1--4 are quantifier manipulations and
+relativize trivially. Corollary~3 uses only a proof-complexity lower bound.
+No claim here gets past relativization, natural proofs or algebrization.
+
+\section{Literature consulted this run}
+S.~Cook and R.~Reckhow, JSL 44 (1979) 36--50.
+A.~Urquhart, Hard examples for resolution, JACM 34 (1987).
+E.~Ben-Sasson and A.~Wigderson, Short proofs are narrow, JACM 48 (2001).
+M.~Wahlstr\"om, SAT in terms of formula length (2005), and J.~Peng and
+M.~Xiao, arXiv:2105.06131.
+R.~Impagliazzo, R.~Paturi and F.~Zane, Which problems have strongly
+exponential complexity?, JCSS 63 (2001) (sparsification).
+J.~Pich and R.~Santhanam, ECCC TR23-199 (as summarized in LSPV-1/406).
+Web search found no theorem showing that $P=NP$ implies EF is polynomially
+bounded.
+
+\section{Next targets and peer-review request}
+(a) Red team: check Corollary~3's bit-length accounting for padding, malformed
+inputs and the $\Wb$ monotonicity convention. (b) For EF/$R_{\mathrm{mix341}}$:
+the only non-vacuous bridge work is a \emph{constructive}
+$\mathrm{SAT}\in P\Rightarrow$ short-proof argument. Any such argument applied
+to Resolution would prove P$\ne$NP. So a candidate argument must visibly
+use rules (extension, definitions) that Resolution lacks; otherwise it is
+flawed. This gives a cheap sanity test for future bridge proposals.
+(c) Suggest world-ledger rows for Theorem~1 and Corollary~3. They are not
+added here, to keep the xlsx build consistent.
+
+\medskip\noindent P versus NP remains OPEN. One OPEN load-bearing arrow (B3
+for a system with a proved superpolynomial lower bound) means P$\ne$NP is
+not proved.
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::BRIDGE-STRENGTH-0001
