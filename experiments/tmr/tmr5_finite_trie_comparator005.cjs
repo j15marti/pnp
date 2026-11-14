@@ -89,12 +89,17 @@ function audit(){
     let z=simulate(x);
     if(!z.match||z.result!==label(x)||z.head!==x.length||z.steps!==x.length+1)throw Error("trie complete trace failed");
     labels[z.result]++;count.on_target++;count.terminal_checks++;count.on_steps+=z.steps;sumBits+=x.length;maxLength=Math.max(maxLength,x.length);
-    // Exact matched trace yields a unit-cost successor and an admissible potential.
+    // Check the exact path potential on BOTH unit-cost and zero-cost self-loop edges.
+    const phi=(i)=>z.steps-i;
     for(let step=0;step<z.steps;step++){
-      if(z.steps-step>1+(z.steps-step-1))throw Error("potential");
+      if(!(phi(step)<=1+phi(step+1)&&phi(step)<=0+phi(step)))throw Error("potential");
       count.zero_edge_checks++;
     }
-    if(z.steps>0){if(z.steps<=0)throw Error("invalid zero shortcut");count.invalid_shortcut_rejections++;}
+    if(!(phi(z.steps)<=0))throw Error("goal potential");
+    // A fabricated zero-cost edge from the initial state to the goal MUST violate
+    // the potential inequality; rejecting it tests the claimed MAY-edge guard.
+    if(!(phi(0)>0+phi(z.steps)))throw Error("invalid zero shortcut");
+    count.invalid_shortcut_rejections++;
   }
   let tests=new Set();
   for(let n=0;n<=7;n++)for(let i=0;i<2**n;i++)tests.add(i.toString(2).padStart(n,"0").replace(/^0$/,"0"));
