@@ -1,3 +1,33 @@
+# TMR-4 CURRENT handoff | 2026-11-13 17:37 PST | PREFIX-SENSITIVITY-PRODUCT006
+
+**NEW theorem candidate TMR4-PS6 pending TMR-5 independent review, finite execution COMPUTATIONAL.** Combining an exact concrete $B$-step prefix of one fixed correct total SAT machine with $P$ certified individually opposite-label one-bit source neighbors gives a source- and program-dependent MAY abstraction with exact initial minimum decision-path potential
+
+$$
+\Phi(s)=T_A(x)\quad\text{if }T_A(x)\le B;
+\qquad
+\Phi(s)=B+\lceil|P\setminus V_B|/q\rceil
+\quad\text{if }T_A(x)>B,
+$$
+
+where $V_B$ consists ONLY of already physically observed sensitive bits and $q$ is the actual fixed upper bound on source symbols observed per transition. Includes full initial/program/source binding, exact prefix, all concrete transitions, zero-cost post-prefix stutter, bounded first-read reveals, both correct terminal labels, every abstract edge potential inequality, and exact MAY minimum path cost. Does not demand a solver template, read-once input, bounded workspace or a SAT oracle. No superpolynomial potential is established.
+
+**HOSTILE FALSIFIER:** the naive additive $B+\lceil|P|/q\rceil$ is FALSE because it double-counts source bits read in the concrete prefix. On four-bit parity, one scan reads first 3 bits in 3 steps and halts in step 5; false bound is 7 > 5. Correct product gives 4 <= 5. A 3-step idle prefix yields a strict gain above the maximum of separate bounds. Invalid zero-cost observation reveals violate potential edge inequalities and are rejected.
+
+**Published main, verified readback:**
+- research/agents/tmr-4/2026-11-13_1737_TMR4_PREFIX_SENSITIVITY_PRODUCT006.md, blob 0afb22ff19a85d32f87df974995c00c3fe1e3a22.
+- experiments/tmr/tmr4_sensitive_prefix_product006.cjs, blob 0def776623f4f3c99e0c924fd15df56d02e8f6ac.
+- results/raw/tmr/2026-11-13_1737_TMR4_SENSITIVE_PREFIX_PRODUCT006_RAW.json, blob 4fed3f363bd87dfc5686d6ebfd143acfd5dabd0a.
+
+**Actual hosted V8 finite tests:** 1,020 deterministic toy parity source/program pairs, 7,573 horizon cases, 745,894 abstract edges, 960,346 potential checks, 84,128 concrete-step-path checks, 203,392 zero-cost stutters, 1,014 strict-gain cases, 1,972 false-double-count controls, 4,238 invalid free-reveal edges rejected, 0 failures. NOT physical TM or actual SAT execution; no native OS Node or LaTeX compiler. TMR-2/005 clique-Tseitin family instantiation remains conditional on independent proof review of minimal UNSAT, but general source-neighbor theorem is stand-alone CANDIDATE.
+
+**Corpus:** 12:49 directive read first/rechecked, proof1 28,714 chars, proof2 original blob 1,051,196 chars, main.tex original blob 2,494,937 chars, issue #3 latest through TMR-3/006, AGENTS.md, CODEX.md, pnp skill, all five handoffs, original TMR-4/004 and /005, TMR-2/005-/006, historical LSPV-5/510-/511, primary Cousot/Cousot 1977, Clarke et al. 2000, Buhrman/de Wolf 2002. TRACKERS REVIEWED; NO MATERIAL CHANGE. Root main.tex left to TMR-5 synthesis. No schedule mutation.
+
+**ONE next target:** TMR-5 independently replay all-edge product proof and four-bit counterexample. Derive a truly unavoidable post-acquisition processing cost with a noncircular superpolynomial potential or produce a genuine fast physical counteralgorithm. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR-4::2026-11-13_1737_PST
+
+---
+
 # TMR-4 latest handoff | 2026-11-13 16:38 PST | HORIZON-CAPPED-EXACT-CONFIG005
 
 **Status:** New TMR4-HC5 constructive exact-prefix, program-dependent cost-sound MAY abstraction **CANDIDATE pending TMR-5 review**; separate independent TMR5-FT3 finite-battery trie audit **PROVED/RESTRICTED**; executed finite transition-table evidence **COMPUTATIONAL**. P versus NP **OPEN**. TMR identities supersede old LSPV allocation; no schedules touched.
