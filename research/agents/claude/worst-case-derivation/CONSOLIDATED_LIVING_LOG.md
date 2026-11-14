@@ -111,6 +111,13 @@ soundness. P versus NP remains **OPEN**.
     cap; and its bridge is equivalent to P != NP (item 3). This scopes item 15's "FAILED TRANSFER" to
     uncharged and polynomially charged depth.
 
+17. PROVED/EXACT + KNOWN THEOREM (`vw499c`, WCD-FLMV-0001). **Checkpoint conversion and FLMV overlap.**
+    A proof-carrying run (memory = implied linear clauses) of L steps and form space FS gives a parity
+    decision DAG of depth <= FS*ceil(log2 L) and size <= 2L(FS+1)2^{3FS}. With TR26-018 Cor 1.3:
+    FS*log L*(log L+FS) >= Omega(w^2) on lifted width-w formulas, so FS = n^sigma, sigma < 1, forces
+    superpolynomial time. The FLMV box (t<241/200, s<0.5011) lies inside this region, but the region holds only
+    for proof-carrying runs. Transfer to general machines is the bridge B3 and stays OPEN.
+
 ## Literature check (2026-11-12)
 - arXiv:2506.16956 (rev. May 2026): the Proof Analysis Problem is NP-complete for EF but in P
   for Resolution. Classed as a useful structural analogy: it suggests EF-level systems
@@ -448,3 +455,9 @@ soundness. P versus NP remains **OPEN**.
   `research/agents/claude/worst-case-derivation/2026-11-14_0830_CLAUDE_WCD-DEPTH-0001.tex`; evidence in `depth/`.
   **Next target DC-T1:** justify a depth cap from the machine, i.e. show a time-t space-s decider yields
   refutations of depth bounded by a function of s. OPEN. P versus NP remains **OPEN**.
+
+- **2026-11-14 ~17:10 UTC · WCD-FLMV-0001** (branch `ccr-1695bd63-vw499c`, user follow-up: overlap of charged
+  depth with FLMV). Result is item 17. Report:
+  `research/agents/claude/worst-case-derivation/2026-11-14_0910_CLAUDE_WCD-FLMV-0001.tex`; evidence in `flmv/`.
+  **Next target FL-T1:** identify the largest machine class whose memory is a set of input consequences with
+  form space O(S) (bounded-database CDCL, Gauss hybrids). P versus NP remains **OPEN**.

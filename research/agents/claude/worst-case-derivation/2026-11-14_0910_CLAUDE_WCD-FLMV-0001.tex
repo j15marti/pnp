@@ -1,0 +1,100 @@
+% CLAUDE REPORT::WCD-FLMV-0001::2026-11-14T09:10-08:00
+% Claude routine "worst-case minimum derivation cost". User follow-up: overlap of charged depth with the FLMV time-space region.
+% Role-neutral and additive. It does NOT edit root main.tex or any TMR/LSPV region.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\title{WCD-FLMV-0001: charged depth equals space $\times$ log time, and its overlap with the FLMV box}
+\author{Claude scheduled routine (worst-case derivation complexity log)}
+\date{2026-11-14 09:10 America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\paragraph{Status line.}
+\begin{itemize}
+\item Lemma~\ref{lem:cp} (checkpoint conversion, depth $\le$ space $\times\log$ time): \textbf{PROVED/EXACT}; finite checks \textbf{COMPUTATIONAL}.
+\item Theorem~\ref{thm:ts} (time--space tradeoff for proof-carrying runs): \textbf{PROVED/EXACT}, given the \textbf{KNOWN THEOREMS} ECCC TR26-018 Cor.~1.3 and Ben-Sasson--Wigderson. Novelty against the proof-space literature is \emph{not} established.
+\item Overlap with the FLMV box: \textbf{PROVED/EXACT} as a statement about two regions. It is \textbf{not} a new lower bound for general machines.
+\item Transfer from proof-carrying runs to arbitrary deciders: \textbf{OPEN}. This is the same bridge as before. P versus NP remains \textbf{OPEN}.
+\end{itemize}
+
+\section{The two objects}
+\paragraph{FLMV side.} Fortnow--Lipton--van Melkebeek--Viglas prove that SAT is not in $\mathrm{DTISP}(n^{t},n^{s})$ for certain exponent pairs, for \emph{every} deterministic random-access machine. The corpus works with the strict box
+\[t<\tfrac{241}{200}=1.205,\qquad s<\tfrac{11642479}{23232400}\approx0.5011\]
+(\texttt{research/governance/2026-10-24\_2346\_ALL\_ARC\_REFOCUS3.tex}). The proof trades alternations: a run of time $T$ and space $S$ is cut at $b$ checkpoints, the $b$ configurations ($bS$ bits) are guessed, and each segment of length $T/b$ is checked.
+
+\paragraph{Charged-depth side.} WCD-DEPTH-0001 showed that a depth cap $d$ on $R^-$ or Res($\oplus$) refutations forces size $2^{\Omega(w^2/d)}$ on lifted formulas of resolution width $w$. The open question DC-T1 was whether a machine's resources justify a cap.
+
+\section{The bridge between them: checkpoints}
+A \emph{proof-carrying run} is a sequence of memory configurations $M_0=\emptyset,M_1,\dots,M_L\ni\bot$. Each $M_{t+1}$ arises from $M_t$ by downloading a source clause, by adding one line that $M_t$ semantically implies, or by erasing lines. Lines are linear clauses; an $R^-$ row is one equation and a factor on three variables uses three forms. Let:
+\begin{itemize}
+\item $L$ be the number of steps (a lower bound on the machine's time);
+\item $\mathrm{FS}$ be the largest number of distinct linear forms held in any $M_t$ (the \emph{form space}; a wide parity row counts once).
+\end{itemize}
+
+\begin{lemma}[checkpoint conversion]\label{lem:cp}
+A proof-carrying run with parameters $(L,\mathrm{FS})$ yields a parity decision DAG, the Res($\oplus$) model of TR26-018 \S1.5, with
+\[\text{depth}\le \mathrm{FS}\cdot\lceil\log_2L\rceil,\qquad\text{size}\le 2L(\mathrm{FS}+1)\,2^{3\mathrm{FS}}.\]
+\end{lemma}
+\begin{proof}
+Binary search for a step where the memory turns false. Keep an interval $[lo,hi]$ with every line of $M_{lo}$ true and some line of $M_{hi}$ false; start with $[0,L]$. Query the forms of the midpoint configuration, at most $\mathrm{FS}$ queries. Move $lo$ or $hi$ to the midpoint and forget the values of the forms of the discarded endpoint. After $\lceil\log_2L\rceil$ rounds $hi=lo+1$. The one new line of $M_{hi}$ is false and $M_{lo}$ is true. A semantically implied line cannot be false, so the recorded system is inconsistent, or the new line is a downloaded source clause that the recorded values falsify. Both are sinks. A node is determined by the interval (at most $2L$ of them), the number of midpoint forms already queried, and the values of at most $3\mathrm{FS}$ forms.
+\end{proof}
+
+This is the proof-complexity form of the FLMV checkpoint step, iterated $\log L$ times as in Savitch's theorem. With $b$ checkpoints per round the depth is $b\cdot\mathrm{FS}\cdot\log_bL$, which is the $bS$ guess cost on the FLMV side. Razborov (\emph{On space and depth in resolution}, 2018) relates depth and variable space in Resolution in the same spirit; that paper was checked only from a search summary, so no statement is quoted from it.
+
+\paragraph{Check.} \texttt{flmv/checkpoint\_depth.py} builds the conversion for five explicit runs and follows it under every assignment. Each run ends at a falsified source clause and meets both bounds. The runs are odd Tseitin on K4, K33 and the cube ($\mathrm{FS}=5$), and implication chains of length 8 and 14. For the chain of length 14 the bottom-up depth is 14 and the checkpoint depth is 6.
+
+\begin{theorem}[time--space tradeoff for proof-carrying runs]\label{thm:ts}
+Let $F=\varphi\circ\mathrm{MAJ}_3$ where $\varphi$ needs resolution width $w$. Every proof-carrying run refuting $F$ satisfies
+\[\mathrm{FS}\cdot\log L\cdot(\log L+\mathrm{FS})\ \ge\ \Omega(w^2).\]
+For expander Tseitin, $w=\Theta(n)$. Writing $\mathrm{FS}=n^{\sigma}$:
+\begin{itemize}
+\item if $\sigma\ge2/3$, then $L\ge2^{\Omega(n^{2-2\sigma})}$;
+\item if $\sigma\le2/3$, then $L\ge2^{\Omega(n^{1-\sigma/2})}$.
+\end{itemize}
+So every form-space exponent $\sigma<1$ forces superpolynomial time.
+\end{theorem}
+\begin{proof}
+Apply TR26-018 Cor.~1.3 to the DAG of Lemma~\ref{lem:cp}: depth $\ge\Omega(w^2/\log\text{size})$, with $\log\text{size}=O(\log L+\mathrm{FS})$. The two cases are $\mathrm{FS}\ge\log L$ and $\mathrm{FS}\le\log L$.
+\end{proof}
+The plain depth bound alone gives only $\mathrm{FS}\cdot\log L\ge\Omega(w)$. The size--depth tradeoff improves the exponent of $\log L$ by a factor of about $w/\mathrm{FS}$.
+
+\section{The overlap}
+Put both regions in the plane of exponents $(t,s)$, with time $n^{t}$ and space $n^{s}$.
+\begin{itemize}
+\item \textbf{FLMV region:} the box $t<1.205$, $s<0.5011$. It holds for all machines. The hard inputs are not explicit.
+\item \textbf{Charged-depth region:} $s<1$ and every finite $t$. It holds only for proof-carrying runs, with space measured in forms. The hard inputs are explicit.
+\item \textbf{Overlap:} the whole FLMV box lies inside the charged-depth region. At the corner $s=0.5011$, Theorem~\ref{thm:ts} forces $\log_2L\ge n^{0.749}$, against the FLMV exclusion of $T\le n^{1.205}$.
+\end{itemize}
+The depth charged to a run in the FLMV box is $S\log T\approx n^{0.5011}\log n$. That is far below $n$, where the capped bound of WCD-DEPTH-0001 is strongest.
+
+\paragraph{The ratio.} The quantity both sides control is not $T/S$ but the checkpoint cost. On the FLMV side it is $bS+T/b$, minimised at $\sqrt{TS}$. On the proof side it is $\mathrm{FS}\cdot\log L$, because a proof segment needs no rerun: a false line is located by search. That saving is why the proof-side region is so much larger, and it is also why it does not transfer. A general machine's segment cannot be checked by search over lines, because its memory need not consist of consequences of the input.
+
+\section{What this does not give}
+\begin{itemize}
+\item \textbf{No new bound for general machines.} Lifted Tseitin is decidable in polynomial time by an algorithm that recognises the structure and uses linear algebra. Such an algorithm is not a proof-carrying run in $R^-$ or Res($\oplus$) with small form space. So the charged-depth region says nothing about it. FLMV does apply to it, but FLMV's box is small.
+\item \textbf{The FLMV hypothesis does not produce a proof-carrying run.} Assuming SAT $\in\mathrm{DTISP}(n^t,n^s)$ gives a machine, not a refutation. Turning one into the other is the bridge B3, and for a system with a superpolynomial bound that bridge is equivalent to P $\ne$ NP (log item 3).
+\item \textbf{Form space is not bit space.} A machine may store lines in compressed form. $\mathrm{FS}\le$ (bits of memory) holds for explicit line-by-line storage, and is an assumption of the model otherwise.
+\item \textbf{Constants.} The $\Omega$ constant of TR26-018 is not explicit. The formulas are 6-CNF, as before.
+\end{itemize}
+
+\section{CORPUS REVIEWED / DUPLICATION AUDIT / CHANGES}
+\begin{itemize}
+\item \textbf{Corpus reviewed:} as in WCD-RESXOR-0001 and WCD-DEPTH-0001, plus the ARC/FLMV governance note for the box. The LSPV-5 ARC reports that use the box were located by search but not read in full.
+\item \textbf{Duplication / contradiction audit:} a search of the corpus for the box constant finds only machine-side ARC work. No artifact links proof depth to the FLMV checkpoint step. No contradiction found.
+\item \textbf{What changed relative to root main:} nothing; \texttt{main.tex} is not edited.
+\item \textbf{Adopted:} the FLMV box as stated by governance; the simulation and depth results of the two previous reports. \textbf{Rejected:} $T/S$ as the shared quantity. \textbf{Retired:} none.
+\item \textbf{Stale or overstated claims found:} none. DC-T1 of WCD-DEPTH-0001 is answered for proof-carrying runs (depth $\le$ form space $\times\log$ time) and stays OPEN for general machines.
+\end{itemize}
+
+\section{Evidence}
+\texttt{flmv/checkpoint\_depth.py}, \texttt{flmv/raw\_results.json}; single stage, 1.3\,s, all assertions passed. No TeX engine was available, so this file was not compiled.
+
+\paragraph{Next target FL-T1.} Find the largest class of machines whose memory can be read as a set of consequences of the input with form space $O(S)$. Candidates are DPLL/CDCL with bounded clause database and Gaussian-elimination hybrids. For that class Theorem~\ref{thm:ts} is a real time--space lower bound, stronger than FLMV, on explicit inputs. Then test it against the TMR-4 cost-sound abstraction requirements.
+
+\medskip\noindent P versus NP remains OPEN. One OPEN load-bearing arrow means P $\ne$ NP is not proved.
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WCD-FLMV-0001
