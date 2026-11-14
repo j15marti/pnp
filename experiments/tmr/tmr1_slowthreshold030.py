@@ -86,7 +86,7 @@ for length in range(0, 42):
 
 # Exact syntactic encoding count envelope, no empirical exponent claims.
 for n in (4,8,16,32,64,128,256,512,1024,2048):
-    s = max(0, int(0.004*n/math.log2(n)))
+    s = max(0, int(0.004*n/math.ceil(math.log2(n+1))))
     log2D = math.log2(s+1) + math.log2(n+s+2) + s*(math.log2(3)+2*math.log2(n+s+2))
     assert log2D >= 0
     checks += 1
@@ -96,6 +96,6 @@ result = {'run':'TMR1-SLOWTHRESH30', 'seed':SEED,
           'classifications_checked':sum((1 << (1 << n))*3 for n in range(1,4)),
           'assertions_passed': checks,
           'assertion_failures':0, 'class_counts':counts,
-          'asymptotic_claim':'s(n)=floor(kappa*n/log2 n), log2 D(n,s) <= (2*kappa+o(1))*n; N=2^n',
+          'asymptotic_claim':'s(n)=floor(kappa*n/ceil(log2(n+1))), log2 D(n,s) <= (2*kappa+o(1))*n; N=2^n',
           'model':'one-way read-only explicit input plus one two-way read/write work tape; symbolic compilation'}
 print(json.dumps(result,sort_keys=True,indent=2))
