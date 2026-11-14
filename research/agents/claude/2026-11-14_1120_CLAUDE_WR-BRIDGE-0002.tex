@@ -1,0 +1,226 @@
+% CLAUDE REPORT::WR-BRIDGE-0002::2026-11-14T11:20:00-08:00
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage{xurl}
+\usepackage[hidelinks]{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\Pc}{\mathsf P}
+\newcommand{\NP}{\mathsf{NP}}
+\newcommand{\poly}{\operatorname{poly}}
+\newcommand{\WR}{\overline W_R}
+\newcommand{\Down}{\mathrm{Down}}
+\newcommand{\Base}{\mathrm{Base}}
+\title{Attempting Both Bridge Targets:\\
+An Inductive-Invariant Form of the EF Bridge, and Why Weak Systems Fail}
+\author{Claude routine (worst-case derivation directive), run WR-BRIDGE-0002}
+\date{14 November 2026, 11:20 America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\section*{Status}
+\textbf{P versus NP remains OPEN.} This run attempts the two targets left by
+WR-BRIDGE-0001:
+(A) $\SAT\in\Pc\Rightarrow$ some polynomial-time SAT decider has short
+Extended Frege (EF) proofs of its correctness;
+(B) a system $R$ strictly between Resolution and EF with both a provable lower
+bound $\mathrm{LB}_R$ and a provable bridge $\mathrm B_R$.
+Outcome: (A) is reduced to a strictly more local statement (Theorem~\ref{t:down}),
+still OPEN. (B) fails in the predicted way: both routes for building
+$R$-proofs from a SAT algorithm are blocked (Propositions~\ref{p:search},
+\ref{p:sim}). Nothing here proves a lower bound for arbitrary algorithms.
+
+\section{Target A: the bridge as an inductive invariant}
+Encodings allow constants, so restriction $F\mapsto F|_{x=b}$ is a
+polynomial-time map that does not increase encoding length. For a
+polynomial-time $A$ and length $n$ define the propositional families
+(each of size $\poly(n)$, with extension variables for the circuits of $A$
+and of restriction):
+\begin{align*}
+\Down_{A,n}&:\ A(F)=0\ \rightarrow\ A(F|_{x=b})=0
+ &&\text{(all $F$ of length $\le n$, all variables $x$, $b\in\{0,1\}$)},\\
+\Base_{A,n}&:\ A(G)=0\ \rightarrow\ \operatorname{eval}(G)=0
+ &&\text{(all closed $G$ of length $\le n$)}.
+\end{align*}
+Let $\mathrm{Rej}_A=\{F: A(F)=0\}$.
+
+\begin{lemma}[Semantics; PROVED/EXACT]\label{l:sem}
+$\Down_{A,n}\wedge\Base_{A,n}$ are tautologies iff $\mathrm{Rej}_A$ (at length
+$\le n$) contains only UNSAT formulas.
+\end{lemma}
+\begin{proof}
+($\Leftarrow$) UNSAT is closed under restriction and contains no true closed
+formula. ($\Rightarrow$) If $F\in\mathrm{Rej}_A$ and $F(\alpha)=1$, restrict
+along $\alpha$ one variable at a time; by $\Down$ every stage stays in
+$\mathrm{Rej}_A$, and the closed end formula evaluates to $F(\alpha)=1$,
+contradicting $\Base$.
+\end{proof}
+
+\begin{theorem}[Inductive-invariant form of $\mathrm B_{EF}$; PROVED/EXACT
+modulo standard Cook translations]\label{t:down}
+\[
+\mathrm B_{EF}\iff\Bigl(\SAT\in\Pc\Rightarrow\exists A\ \text{poly-time with }
+\mathrm{UNSAT}\subseteq\mathrm{Rej}_A,\ \text{and }\Down_{A,n},\Base_{A,n}
+\text{ have }\poly(n)\text{-size EF proofs}\Bigr).
+\]
+\end{theorem}
+\begin{proof}
+($\Leftarrow$) Let $F$ be UNSAT, so $A(F)=0$, and the concrete evaluation
+$A(\langle F\rangle)=0$ has a polynomial EF proof. Fix assignment variables
+$\alpha$; set $G_0=F$, $G_k=G_{k-1}|_{x_k=\alpha_k}$ (circuits of size
+$\poly(n)$). The $n$ instances of $\Down$ at $(G_{k-1},x_k,\alpha_k)$ chain to
+$A(G_n)=0$; $\Base$ at $G_n$ gives $\operatorname{eval}(G_n)=0$; and
+$\operatorname{eval}(G_n)=F(\alpha)$ is the translation of a
+$\mathrm{PV}$-provable identity about restriction, hence has polynomial EF
+proofs [Cook 1975]. Modus ponens yields a $\poly(n)$-size EF refutation of
+$F$. (Each $\Down$ instance is the given proof with circuits substituted
+for its free variables; EF is closed under such substitution up to
+polynomial size.)
+($\Rightarrow$) If $\SAT\in\Pc$ via a correct $A$ and $\mathrm B_{EF}$ holds,
+EF is polynomially bounded; $\Down_{A,n},\Base_{A,n}$ are tautologies by
+Lemma~\ref{l:sem}, so they have polynomial EF proofs.
+\end{proof}
+
+\paragraph{What this changes.} Compared with Theorem~4 of WR-BRIDGE-0001
+(global correctness tautologies $\mathrm{Corr}_{A,n}$):
+(i) Correctness on SAT inputs is no longer needed; only
+$\mathrm{UNSAT}\subseteq\mathrm{Rej}_A$ (semantic completeness on the UNSAT
+side) plus a \emph{one-step} invariance certificate.
+(ii) The quantifier over assignments disappears from the certified
+statement: $\Down$ relates $A$ on $F$ to $A$ on one restriction.
+(iii) Exact structural correspondence with the user's DAG picture: the
+restriction DAG of $F$ (nodes are partially reduced formulas, edges are
+single substitutions) is the reduction DAG, and $\mathrm{Rej}_A$ must be a
+\emph{forward-invariant set} of that DAG that excludes the ``unsafe'' true
+closed formulas and contains every UNSAT start node. This is exactly the
+shape of a barrier certificate in control theory (invariant, excludes
+unsafe set, contains initial set) [Prajna--Jadbabaie 2004]. Classification:
+EXACT OBJECT correspondence; no theorem transfers, because barrier
+certificate theory supplies no bound on the \emph{proof size} of invariance.
+
+\paragraph{Red team on Target A.}
+\begin{enumerate}
+\item \emph{Circularity.} $\neg\Down_{A,n}$ is an explicit UNSAT CNF
+(after the Tseitin transformation). So Theorem~\ref{t:down} says EF is
+polynomially bounded on all UNSAT formulas iff it is polynomially bounded on
+the single family $\{\neg\Down_{A,n},\neg\Base_{A,n}\}$ for one suitable $A$.
+This collapses the bridge to one family, but that family depends on the
+unknown $A$. A polynomial SAT algorithm can \emph{decide} that family, but
+deciding it does not give an EF proof. That gap is the bridge itself.
+\item \emph{Trivial invariants are exponential.} The recursive
+$A(F)=A(F|_{x=0})\vee A(F|_{x=1})$ makes $\Down$ EF-obvious but takes
+exponential time. Polynomial-time algorithms that are known to be invariant in an
+EF-provable way (unit propagation, 2-SAT implication graphs, Gaussian
+elimination) all have $\mathrm{PV}$-provable correctness, so for them the
+bridge is the known Cook result. No algorithm with polynomial time and
+EF-short $\Down$ proofs is known on a domain that is hard for EF.
+\item \emph{Status.} $\mathrm B_{EF}$: OPEN. Target A: reduced, not proved.
+\end{enumerate}
+
+\section{Target B: an intermediate system}
+Candidates with unconditional lower bounds from the current literature:
+Resolution (Haken), RAT$^-$, i.e.\ RAT without new variables (exponential
+lower bound for the bit pigeonhole principle, Buss--Thapen 2019/2021),
+bounded-depth and regular Res($\oplus$) (Efremenko--Garlik--Itsykson;
+Alekseev--Itsykson; Byramji--Impagliazzo 2025 give
+$\exp(\Omega(n^3/D^2))$ for depth-$D$ Res($\oplus$) proofs of BPHP;
+Efremenko--Itsykson, Strong ETH for bounded-depth Res($\oplus$)).
+For each of these, Proposition~2(c) of WR-BRIDGE-0001 gives
+$\mathrm B_R\Leftrightarrow\Pc\ne\NP$. Given the lower-bound family
+$H$, $\mathrm B_R$ is equivalent to the single-family statement
+$\SAT\in\Pc\Rightarrow w_R(H_n)\le\poly(n)$, which must therefore be
+derived by contradiction. There are two ways to obtain $R$-proofs from a
+SAT algorithm $A$:
+
+\begin{proposition}[Proof search is dead; PROVED/EXACT]\label{p:search}
+Any procedure that uses $A$ only to \emph{find} $R$-proofs (for example,
+self-reduction on ``an $R$-proof of size $\le s$ with prefix $p$ exists'')
+outputs a proof of size $\le s$ only if one exists. On $H$ with
+$w_R(H_n)>\poly(n)$ it therefore produces nothing short.
+\end{proposition}
+
+\begin{proposition}[Simulation requires extension; KNOWN THEOREM plus CANDIDATE]\label{p:sim}
+The other route is Cook-style: simulate $A$'s computation inside $R$, as in
+Theorem~\ref{t:down}. It needs lines that name the gates of $A$'s circuit,
+i.e.\ new variables. Adding new variables to the candidate systems gives
+systems p-equivalent to Extended Resolution: DRAT with new variables
+p-simulates ER [Kiesl--Rebola-Pardo--Heule 2018], and ER $\equiv$ EF
+[Cook--Reckhow 1979]. CANDIDATE claim (not proved): no system without
+extension can carry out the simulation step for general polynomial-time
+$A$. Feasible interpolation, which Resolution and Cutting Planes have,
+is the natural tool for turning this into a theorem.
+\end{proposition}
+Conclusion: Target B fails as WR-BRIDGE-0001 predicted. Once a system can
+run the bridge argument, it is EF-strength and has no known lower bound.
+
+\section{Computational controls (COMPUTATIONAL)}
+Script \path{experiments/claude_wr/certificate_closure.py}
+(SHA-256 \texttt{45cd6a22087871449462c7b0b28d16c16f3c7085f183e8a9a61f6108890156c6},
+seed 20261114, single stage, 4.0\,s, no chunking needed). Raw output:
+\path{results/raw/claude_wr/2026-11-14_certificate_closure.json}.
+
+\emph{2-SAT.} Random UNSAT 2-CNFs ($m=2n$). The decider's rejection
+certificate (implication paths $x\Rightarrow\neg x\Rightarrow x$) was turned
+into an explicit Resolution refutation, and every step was checked:
+6, 11, 9, 16, 14 steps for $n=8,16,32,64,128$, always $\le 2m+1$. Resolution
+contains this algorithm's certificates.
+
+\emph{Tseitin, odd charge.} Gaussian elimination rejects with 3, 5, 5, 7
+row XORs (each costs $O(m)$ bit operations). Exact minimum tree-like
+Resolution leaves are 28, 76, 48, 128 for $K_4$, $K_{3,3}$, prism and $Q_3$
+(6, 9, 9, 12 edge variables). Resolution does \emph{not} contain the affine
+algorithm's certificates; asymptotically this is the Tseitin lower bound
+[Urquhart 1987; Ben-Sasson--Wigderson 2001]. Small graphs are only
+illustrations.
+
+\paragraph{Certificate-closure ledger (KNOWN THEOREMS).}
+For Boolean CSPs (Schaefer), the tractable classes Horn, dual-Horn and
+bijunctive have rejection certificates that bounded-width Resolution can
+check. The affine class needs parity reasoning: Res($\oplus$), or Polynomial
+Calculus over $\mathbb F_2$. For general CSPs, bounded-width Resolution
+refutes exactly the languages of bounded width [Barto--Kozik 2014]. A proof
+system that satisfies the bridge must contain the certificates of
+\emph{every} polynomial-time algorithm, including ones not yet known; this
+is the precise sense in which $\mathrm B_R$ asks for a p-optimal-like $R$
+[Krajíček--Pudlák 1989].
+
+\section*{Literature check (this run)}
+Res($\oplus$): ECCC TR24-128, TR25-039, TR25-118, TR25-188, TR26-007, CCC 2025;
+Byramji--Impagliazzo 2025 (BPHP, depth-$D$); Efremenko--Itsykson, Strong ETH for
+bounded-depth Res($\oplus$). DRAT/PR without new variables: Buss--Thapen,
+arXiv:1909.00520, LMCS. No unrestricted Res($\oplus$) superpolynomial lower bound
+and no EF lower bound found.
+
+\section*{CORPUS REVIEWED}
+WR-BRIDGE-0001 and its raw data; Codex 2026-11-11 SAT-polynomial audit
+(bridge (12)); AGENTS.md; GROKPROOF 17:19 UTC note; repository search for
+``inductive invariant'', ``Down'' and ``barrier certificate'' in agent reports
+found no prior restriction-invariant form of the EF bridge.
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+Theorem~\ref{t:down} refines Theorem~4 of WR-BRIDGE-0001 and is not
+duplicated elsewhere in the corpus. Propositions~\ref{p:search} and \ref{p:sim}
+are standard observations recorded for the directive. No contradictions.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root \texttt{main.tex} was not edited (this routine has no ownership region).
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Retired: Target B as a route to an unconditional proof (any candidate $R$
+with a known lower bound has $\mathrm B_R\Leftrightarrow\Pc\ne\NP$, and both
+proof-generation routes are blocked). Adopted: Target A in the $\Down$ form.
+
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+None.
+
+\section*{Next decisive target}
+OPEN: assuming $\SAT\in\Pc$, construct a polynomial-time $A$ whose
+rejection set contains UNSAT and whose one-step restriction invariance
+$\Down_{A,n}$ has polynomial-size EF proofs. Alternatively, prove a
+relativized or feasible-interpolation barrier showing that no
+black-box construction from an arbitrary $A$ can do this.
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WR-BRIDGE-0002
