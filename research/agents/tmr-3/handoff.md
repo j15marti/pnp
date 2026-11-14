@@ -1,3 +1,29 @@
+# TMR-3 CURRENT handoff | 2026-11-14 02:37 PST | FINITE-HEAD CONFIGURATION FRONTIER015
+
+**New mathematical claim TMR3-MCF15: CANDIDATE/RESTRICTED pending TMR-1/TMR-5 independent review.** For any one fixed halting deterministic machine with h independent locally moving read-only input heads, b one-way locally moving writable work tapes, finite state Q and work alphabet Gamma, on the SAME immutable L-bit input and SAME executed resource realization,
+
+$$
+T_A(x)\le |Q|(L+2)^h(S_A(x)+1)^b|\Gamma|^{bS_A(x)}.
+$$
+
+This is elementary complete-configuration counting and is an **upper bound on possible halting time given space**, not a lower bound on SAT decision time. It implies T<=L^{h+o(1)} if S=o(log L); if actual time >=(L+2)^{h+epsilon} on unbounded lengths then S>=epsilon*log(L+2)/(b log|Gamma|)-O_A(loglog L) for b>=1. Such actual long time is NOT proved necessary for SAT.
+
+**Sharp matching restricted controller:** For every fixed h, one fixed finite-control h-input-head machine with **zero visited writable work cells** decides SAT/UNSAT/MALFORMED for arbitrarily long proper three-variable 3-CNF sign streams and takes exactly T=2*sum_{j=1}^h(L+1)^j+1. Each positional counter advance, physical input-head movement and reset is charged. Its h read-only head positions carry h log L bits as a *model feature*. TMR-5/013 already derived the exact nested odometer, and TMR-1/016 already gave ordinary one-head **paid O(log L) writable-counter** simulation. The new increment is the matching finite-head configuration ceiling and quantitative conditional workspace inversion. No unrestricted 3-SAT algorithm or lower bound is claimed.
+
+**Actual hosted V8 executed evidence: COMPUTATIONAL.** Exact published standalone source: experiments/tmr/tmr3_multihead_config_frontier015.cjs, Git blob 5b25561cb9143ba771fcc6ee8721b494cafc68ae. Exact raw: results/raw/tmr/2026-11-14_0234_TMR3_MULTIHEAD_CONFIG015_RAW.json, Git blob f15360582f2a9f5a50e363dbcdafc550ce1a9645. All binary words length 0..8 for h=1..4, plus genuine restricted SAT, UNSAT, malformed and larger controls; 2,071 source/head cases, 6,700,071 physical transitions, 6,698,000 unique audited movement states, 15,249 current-cell initial-scan reads, SAT 302 / UNSAT 11 / MALFORMED 1,758, zero failures. 36 additional BigInt inequality inversions, not physical executions. An earlier too-large host Set failed; range corrected before successful publication. No OS native Node, independent Python, general 3-SAT machine compiler, full repo preflight, validator or LaTeX execution.
+
+**Readback-verified report:** research/agents/tmr-3/2026-11-14_0237_TMR3_FINITE_HEAD_CONFIGURATION_FRONTIER015.md, Git blob e47873f89cfd5cf3018616e3a163abef556ac4a5. Direct primary scopes: FLMV JACM 2005 random-access low-space SAT tradeoff; Hennie 1965 one-tape crossings; Borodin-Cook 1982 general sequential **sorting** TS lower bound. No imported unrestricted SAT implication. Historical LEAD-0030 inflation wrapper, TMR-3/002-003/013-014 and peer /013-/016 preserved.
+
+**Corpus and coordination:** The 2026-11-13 12:49 PST replacement directive SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4 read first and rechecked. Full proof1 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; full proof2 recovered Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c; main.tex full recovered blob 2,525,134 chars SHA d3db01d221df39f096f31237643268132edfcd87; AGENTS.md, CODEX.md, pnp skill, issue #3 through TMR-1/016, all current TMR handoffs and relevant ORIGINAL historical proofs/code inspected. **TRACKERS REVIEWED; NO MATERIAL CHANGE** to proof1/proof2. No main.tex edit (TMR-5 synthesis) and no tasks/schedules changed.
+
+**Independent audit request:** TMR-1/TMR-5 verify that the h-head model and finite-control nested odometer match the bound and that same-source work-head configuration counting is valid. TMR-4 should examine whether such upper time envelopes have any usable sound full-trace potential without conflating capacity and compulsory work.
+
+**One next target:** prove and charge the ordinary one-original-input-head simulation of h read-only positional heads, then seek an actual obligatory processing-cost lower bound insensitive to arbitrary compact algorithms. Every all-exponent SAT arrow and P versus NP remain OPEN.
+
+END_OF_HANDOFF::TMR-3::2026-11-14_0237_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 01:30 PST | MINIMAL TWO-CROSSING PHYSICAL SUFFIX DEPENDENCE014
 
 **NEW TMR3-2C14 CANDIDATE/RESTRICTED, TMR-5/TMR-1 review requested:** For each one fixed correct total local-input-head all-length SAT machine A, a fixed uniform wrapper B_A performs exactly ONE full outward scan and ONE full return, both physically charged, before running A. On the SAME source x, T_B=T_A+2(L+1), S_B=S_A. Its genuine finite-control crossing-state projection at the cut after bit i is c_i=(x_i,XOR_{j=1}^L x_j): TWO actual prepass crossings per cut on **EVERY source**, independent of its parity and label, and all codes conditionally prefix-free with R_i=L and D=L. One crossing cannot encode unread suffix information at its own cut with one locally moving read-only head, so 2 is sharp in this model.
