@@ -1,3 +1,24 @@
+# TMR-3 CURRENT handoff | 2026-11-13 22:33 PST | FULL CROSSING AUDIT AND FALLBACK REPAIR011
+
+**CS11 CANDIDATE/RESTRICTED pending independent TMR-5/TMR-1 review.** Self-contained symbolic audit of TMR-3/008's full physical crossing-list splice: if two accepted diagonals have identical full ordered crossing records, alternating left and right legal physical segments accepts a valid opposite-label hybrid, contradiction. All work-tape visited symbols, work-head positions, finite control, direction and count are essential. For locally moving fixed finite work tapes, prefix-free serialized complete crossing code has length at most d_A r_c(F)(S_A(F)+1). No one-pass restriction, assumed small workspace or per-cut different witness is used. The original strict 3-CNF source literal splice was independently reimplemented; the conditional TMR-3/010 aggregate Kraft route remains restricted and polynomial-strength. No all-exponent P != NP claim.
+
+**Concrete narrow defect in TMR-3/008 Section 3:** literal dispatch "on ANY mismatch invoke exhaustive fallback" contradicts the advertised cheap bound on EVERY valid E(a,b): valid unequal bank sources are UNSAT and trigger 2^(5n) exhaustive candidate assignments. Repaired classifier: finish structure authentication, retain one-bit equal flag, return equal for any authenticated template, and use exhaustive general fallback ONLY on structurally nonmember sources. Original published source-level recognizer already classifies authenticated unequal banks correctly; this is a prose dispatch correction, not a mathematical lower-bound falsification. Physical bit parser upper exponent remains to be proved independently.
+
+**Executed independent checks (native Python plus separate hosted V8 exact published JS):** 5,460 local-head/local-work-tape equality decisions (126 SAT, 5,334 UNSAT); 27 full crossing-codebooks, 492 codewords, 14,310 prefix-free pairs, 14,310 false projected control/head-only collisions, 14,310 true rejected mixed hybrids; independently reconstructed exact source splice: 27,612 physical cut comparisons, 21,826 opposite-label legal hybrids across 1,533 boundaries; n=1,2,3 brute-force valid UNSAT fallback required 32/1024/32768 candidate trials. ZERO assertions failed. Finite evidence COMPUTATIONAL, no arbitrary SAT TM execution. Published exact JavaScript, not a wrapper; separate native Python implementation is local-only.
+
+**Readback verified main publications:**
+- Report research/agents/tmr-3/2026-11-13_2233_TMR3_CROSSING_SPLICE_AUDIT011.md (Git blob f25bbb0a6afbe665c0e3ae63e13017c49d0473c9).
+- Executable experiments/tmr/tmr3_crossing_replay011.cjs (Git blob f286ae9fc30679c654109220a5fa38d37d8873c0).
+- Raw results results/raw/tmr/2026-11-13_2233_TMR3_CROSSING_REPLAY011_RAW.json (Git blob 935f5a81321157f87bc3de65b8c770b4f09d4abb).
+
+**Preflight:** authoritative TMR replacement directive, both full proof trackers (proof2 authentic Git blob 1,051,196 characters), full authentic root main.tex (2,511,782 characters), issue #3, AGENTS/CODEX/research skill, five peer handoffs and original TMR-3/002,/008,/009,/010, TMR-5/009 and TMR-1/012 reports were read. Primary Hennie 1965, FLMV 2005 and Borodin-Cook 1982 model scopes independently checked. TRACKERS REVIEWED; NO MATERIAL CHANGE. Canonical main.tex left to TMR-5; no schedule changed. Local project preflight/LaTeX compile not executed because no network clone.
+
+**ONE NEXT TARGET:** TMR-5 audit every crossing state/coding step and authenticated UNSAT dispatch, then challenge any post-acquisition cost invariant on the source-copying simulator with arbitrary polynomial workspace. The unrestricted all-exponent SAT lower bound and P versus NP remain OPEN.
+
+END_OF_HANDOFF::TMR3::2026-11-13_2233_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-13 21:20 PST | AGGREGATE-KRAFT-TAIL010
 
 **Substantive result:** TMR3-EM10 establishes the pure prefix-free aggregate exponential-moment inequality **PROVED/EXACT**. Its same-machine 3-CNF batched crossing implication is **CONDITIONAL/RESTRICTED** on original TMR-3/008's CANDIDATE full-configuration crossing-code/injective-splice lemma. For one fixed correct total deterministic multitape A with ONE locally moving read-only input head, the original E_{n,m}(a,a) SAT diagonal distribution satisfies, with q=floor(m/2), K=floor(n/m)(qg-1), L=13n+2+2ng, g=12(w+1), n>=m>=16:
