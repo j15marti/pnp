@@ -1,3 +1,34 @@
+# TMR-3 CURRENT handoff | 2026-11-14 06:34 PST | ALL-TAPE LOCAL-VIEW DELAYED INDEX019
+
+**NEW TMR3-FLV19 CANDIDATE/RESTRICTED, TMR-1/TMR-5 independent review requested:** For ONE fixed finite total deterministic multitape machine using r>=1 physically locally moving nonsensing original-source heads and w>=0 local writable work-tape heads with alphabet size <=g, after *arbitrary paid preprocessing with NO SPACE LIMIT*, a later externally delivered x-independent INDEX query p must return x[p] on all binary L-bit sources. If ALL queries finish in <=t physically charged transitions, q fixed control states and source alphabet size a<=5 yield
+
+$$
+2^L \le q\,a^{r(2t+1)}(g+1)^{w(2t+1)}.
+$$
+
+Sharpened far-position/source-bit accounting gives
+
+$$
+2^L\le q(L+2t+4)^r 2^{r(2t+1)}(g+1)^{w(2t+1)}.
+$$
+
+Set D=r+w log_2(g+1). For fixed r,w,q,g, t>=(1/(2D)-o(1))L **regardless of retained writable storage S**, even S>=L or exponentially larger. Complete all-step coupling: every tape head sees only its original 2t+1-cell local neighborhood, and equal initial local fingerprints imply identical query transitions, writes, and both-bit terminal output for every p, forcing injectivity across 2^L source strings. Absolute head-coordinate sensing, external advice or unit-cost random access are explicitly excluded. This improves *workspace scope* versus TMR-3/018, TMR-5/017 and TMR-1/020 without claiming their sharper sublinear-S leading constants.
+
+**DIRECT EXECUTED native Node.js v22.16.0, COMPUTATIONAL:** 512 L/r/w/window/mode cases; 451 local-fingerprint collisions and 451 identical adaptive physical-current-cell probe traces, including 128 far-coordinate cases; 8,190 full-L-cell copy exactness checks; 0 assertions. Source SHA c8eea121a8979ae6aaf08a876f5a5bba61191460; raw SHA c64b750db441ff0c48fd466c94179fbcac5d5934. Preprocessing uses host arithmetic, not a charged arbitrary-machine TM compiler. A full physical cache avoids the older small-S hypothesis but not the new local-query bound.
+
+**GITHUB MAIN VERIFIED ARTIFACTS:**
+- report research/agents/tmr-3/2026-11-14_0634_TMR3_FULL_TAPE_LOCAL_VIEW_INDEX019.md
+- executed source experiments/tmr/tmr3_local_fingerprint019.cjs
+- immutable raw results/raw/tmr/2026-11-14_0634_TMR3_LOCAL_FINGERPRINT019_RAW.json
+
+**READS:** authoritative replacement directive first/rechecked SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4, complete proof1 28,714 characters SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, complete proof2 authentic Git blob 1,051,196 characters SHA 930c5eeddafce656717f28055a7a9a755f44737c, complete canonical main.tex Git blob 2,536,131 characters SHA f0054c990e11602b4b60ead3bccffa73f11d0d7b, AGENTS/CODEX/skill, issue #3, all latest TMR handoffs and original TMR-1/020, TMR-5/017, TMR-3/018/017/002, primary FLMV/MNSW/Borodin-Cook bibliographic sources. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** TMR-5 owns main.tex synthesis; no task modifications.
+
+**EXACT GAP:** This is still a delayed two-phase INDEX service, not a representation-independent SAT decision-time lower bound. The bound is only linear, not superpolynomial, and ordinary SAT solvers need not service external late index requests. P versus NP remains OPEN. **NEXT:** TMR-5 hostile audit of arbitrary mutable work-tape t-local replay; TMR-2 find a genuine all-machine SAT-semantic bridge or counterexample.
+
+END_OF_HANDOFF::TMR-3::2026-11-14_0634_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 05:29 PST | POST-PREPROCESSING INDEX PORT BARRIER018
 
 **NEW TMR3-IC18 CANDIDATE/RESTRICTED, complete proof pending independent TMR-5/TMR-1 audit.** Fix ONE deterministic locally moving source-head machine A with q control states, h writable tapes, alphabet <=g; phase 1 preprocesses arbitrary L-bit x into <=s visited writable cells, source head reset to LEFT; only after preprocessing is a paid binary index p supplied on a separate read-only query tape. A must return x_p for ALL x,p, with arbitrary rereads, compression and recomputation. With M_A(s)=q(2s+3)^(3h)g^s and b=floor(log_2 M_A(s)), whenever L>b there exists SAME-machine x,p whose physical query phase needs >=L-b transitions. Complete-work-config collision on 2^(b+1) suffixes sharing a prefix of length L-b-1 and physical head-reach prove the result. For s=o(L), worst-case query cost >=(1-o(1))L. Phase delay/reset are REAL interface restrictions; no general SAT lower bound, no all-polynomial S coverage, no compulsory retrieval for an arbitrary SAT decider. s=Theta(L) whole-cache TMR-3/017 evades premise.
