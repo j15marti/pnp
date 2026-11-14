@@ -1,3 +1,30 @@
+# TMR-5 CURRENT handoff | 2026-11-13 23:55 PST | MINIMAL SEVEN-SIGN CERTIFICATES011
+
+**Peer verdict:** TMR-2/013 five- and six-sign certificate count formulas independently reviewed **PROVED/RESTRICTED** for the full authenticated eight-mask G_r sign-position promise. TMR5-M7-011 new inclusion-minimal seven-bit structure/count formula **CANDIDATE pending independent TMR-2/TMR-1 review**. Finite native Python verification **COMPUTATIONAL**. Arbitrary-machine superpolynomial 3-SAT bottleneck and P versus NP remain **OPEN**.
+
+**New exact candidate theorem:** Seven queried sign bits form an *inclusion-minimal*, though not minimum-cardinality, SAT certificate iff seven distinct rows each contribute one queried bit, four share coordinate/value halfcube H=(j,b), three share a different-coordinate halfcube J=(k,c), j distinct from k. Both halfcubes together admit six masks and cannot host seven distinct UNSAT completion masks. Given n_H,n_J and intersection m_{H,J}, the exact candidate count is
+$$
+M_7(a)=\sum_{j\ne k,\ b,c}\sum_{i=0}^4
+\binom{m_{H,J}}i\binom{n_H-m_{H,J}}{4-i}\binom{n_J-i}3.
+$$
+Balanced (0,0,1,1,6,6,7,7) has **16** minimal seven-query certificates, including Q=(1,4,7,10,14,17,20); balanced even-parity (0,0,3,3,5,5,6,6) has zero. The all-equal SAT mask tuple has 1,680 minimal seven-query certificates. TMR-2/013 prior all-mask N6 formula survives, including 57 previously missed six-query supersets in (1,2,3,4,5,6,7,7).
+
+**Actually executed independent native CPython:** one standalone process per each of seven specified fixtures, each classifying ALL binom(24,5)=42,504, binom(24,6)=134,596 and binom(24,7)=346,104 original-query subsets against bitsets of 40,320 authentic UNSAT permutations and testing all seven deletion subsets for candidate minimal-seven forcing queries. 3,662,428 query subsets, zero assertions failed. Each process finished in 2.64 to 3.904 seconds. This is NOT a native instruction-level SAT Turing machine simulation, nor a peer-code wrapper. Source Git blob **e9cc47cdc101f55bd179c5cfacf10e47b422b064**.
+
+**Readback-verified main files:**
+- Report: research/agents/tmr-5/2026-11-13_2355_TMR5_MINIMAL_SEVEN_CERTIFICATE_PEER_REVIEW011.md, blob 832b414d7222bb478fa7c421dc33478cd5da3fb6.
+- Native executable: experiments/tmr/tmr5_minimal_seven_audit011.py, blob e9cc47cdc101f55bd179c5cfacf10e47b422b064.
+- Exact concise native raw case counters and witnesses: results/raw/tmr/2026-11-13_2355_TMR5_MINIMAL_SEVEN_011_RAW.json, blob 565b50fc7c78bf414fb98da1c9fcb301197d5c32.
+- Canonical main.tex: blob 0233cb0ca16a63a2a63a83af6a61ffe985632945, commit 3db9aca21f07001474ca8ae4d423dfc8a1cb6a41. Compared before/after full authentic 2,515,087-byte main text: exactly a 3,151-character TMR-5 region insertion; all other text preserved byte-for-byte, all five owner-region markers balanced, one enddocument, P versus NP OPEN.
+
+**Corpus and sources:** authoritative 12:49 PST TMR replacement directive read first and rechecked SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; complete root proof1 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; complete authentic proof2 1,051,196 chars recovered via git blob SHA 930c5eeddafce656717f28055a7a9a755f44737c; full main.tex authentic git blob; latest issue #3 through TMR-4/014; AGENTS.md, CODEX.md and pnp-research skill; all five latest handoffs; original TMR-2/010 through /013 reports and peer code/raw, original TMR-5/010, TMR-3/008-/012, TMR-4/014; primary Hall 1935, Buhrman/de Wolf 2002 and FLMV 2005 checked at exact models. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No tasks, identities, or scheduled jobs changed. Native Node, physical TM simulation, full project preflight and LaTeX compilation not executed.
+
+**Next TMR-2/TMR-1 peer audit:** prove or falsify the s=7 Hall-deficiency classification and that the 4+3 ordered halfcube count formula has no overlaps. Then seek a whole-run processing-cost invariant valid for arbitrary uniform SAT machines under input copying, algebraic summaries, polynomial workspace, arbitrary rereads, caching and recomputation. TMR-3/011 physical crossing and TMR-4/014 program-blind prepared-state arguments remain scoped; no all-exponent processing lower bound established.
+
+END_OF_HANDOFF::TMR5::2026-11-13_2355_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-13 22:55 PST | BALANCED SIX-CERTIFICATE STRUCTURE PEER AUDIT010
 
 **INDEPENDENT PEER VERDICT: TMR-2/012 PROVED/RESTRICTED**, exact 5-versus-6 promise sign-bit SAT certificate complexity for all authenticated eight-mask SAT tuples, additivity across independent blocks, 24-bit UNSAT product certificate, and same-machine original-input-observation implication `T>=ceil(6r/h)=Omega(L/log L)`. Original `G_r` source grammar only; no source-ID mutation or unrestricted SAT processing lower bound. Proof checked via Hall subcube matching and independent native executable, not a wrapper.
