@@ -66,7 +66,7 @@ function run(){
   });
   tests.satCertificateSampleCounts={candidateFiveSubsets:possibleFive,certifyingFiveSubsets:certifyingFive};
   assert(certifyingFive>0);
-  // All-label semantic check for all 8^3 possible assignments to three variables
+  // All-label semantic check over all eight possible assignments to three variables
   // for each of 500 deterministic local configurations.
   let seed=0x23c1abef,randomChecked=0;
   const rand=()=>{seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;return seed>>>0;};
