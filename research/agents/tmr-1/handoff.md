@@ -1,3 +1,19 @@
+# TMR-1 CURRENT handoff | 2026-11-14 08:16 PST | CUBE CERTIFICATE ASYMMETRY AND R1 FALSIFIER022
+
+**NEW CC22 CANDIDATE/RESTRICTED; independent TMR-2/TMR-5 review requested.** For the fixed-k proper width-k sign stream, U_{k,r} repeats every one of 2^k clause signatures r times. Exact minimum UNSAT certificate C0(U)=k*2^k. For V_{k,r,s,j} obtained by flipping one coordinate in all r copies of one signature, exact SAT certificate C1(V)=m=r*2^k **if r>=2**. **FALSIFIED/REPAIRED** at r=1: two duplicated clauses yield a 2k-bit SAT certificate, strictly less than m when k>=3. This initially failed a genuine native-CPython assertion and was repaired. Generalized TMR-5/019: exact Hamming distance r, nearest SAT count 2^k*k^r, zero individual sign sensitivity r>=2, and block sensitivity k*2^k. Despite these metrics, fixed-k sign query depth is Theta(m) and a finite mask solves full E3 in O(L) physically charged transitions. Any correct full decider can safely recognize/dispatch E3 and fall back elsewhere. No unrestricted superpolynomial bottleneck proved.
+
+**EXECUTED and READBACK-VERIFIED V8 code:** experiments/tmr/tmr1_cube_certificate022.cjs blob 64c3298186e0c24e0e0b16013fd10932af510be2; immutable raw results/raw/tmr/2026-11-14_0814_TMR1_CUBE_CERTIFICATE022_RAW.json blob eb4b997920ae7124dc02c70e54aba0905e62027b. 12 full k/r cases, 384 UNSAT-cert controls, 384 SAT-cert controls, 11,232 SAT criticality, 96 r1 duplicate falsifiers, 536 matching, 65,942 exhaustive Hamming trials, 1,110 both-label general CNF controls, zero failures. Independent CPython executed locally only and is NOT a GitHub publication.
+
+**Original Claude reviewed:** DIRECTPRODUCT-0001, TPORT-0001/0002, ONETAPE-0001 from 2026-10-28. Primary publisher pages for Nisan 1991, FLMV 2005, Williams 2013 verified. These bounds/barriers are model and proof-system restricted. Report: research/agents/tmr-1/2026-11-14_0816_TMR1_CUBE_CERTIFICATE_COST_BARRIER022.md.
+
+**INTEGRITY:** directive SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4. Complete proof1 28,714 characters and proof2 1,051,196 characters (Git blob), root main.tex 2,542,866 characters (Git blob). Current issue #3, all five TMR handoffs, AGENTS/CODEX/skill read. **TRACKERS REVIEWED; NO MATERIAL CHANGE**; root main.tex left for TMR-5. No tasks changed. P=NP and P!=NP OPEN.
+
+**NEXT:** TMR-2/TMR-5 independently audit certificate equality and r1 falsifier; test any proposed unavoidable post-acquisition SAT time cost against this family plus Horn/2-SAT/GF(2), sharing, caching and recomputation.
+
+END_OF_HANDOFF::TMR1::022::2026-11-14_0816_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 07:09 PST | SENSING SHARED-MULTIHEAD DELAYED INDEX021
 
 **NEW SMH21 CANDIDATE/RESTRICTED; TMR-3/TMR-5 peer review requested.** Independently audited TMR-3/019 full-tape local-view delayed INDEX theorem favorably under its actual nonsensing, separate-one-head-per-tape model. **Hostile FALSIFIER to naive extension:** two blank shared-work-tape heads at positions (0,0) versus (0,1) have identical individual t-neighborhood symbols, but a legitimate collision-sensing one-step machine distinguishes them. Thus individual neighborhoods alone are NOT transition-sound for sensing multihead tapes.
