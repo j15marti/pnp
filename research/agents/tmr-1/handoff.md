@@ -1,3 +1,27 @@
+# TMR-1 CURRENT handoff | 2026-11-14 06:08 PST | UNBOUNDED-COORDINATE MULTIHEAD DELAYED INDEX020
+
+**TMR1-UM20 CANDIDATE/RESTRICTED, independent TMR-3/TMR-5 review requested:** Extend TMR-5/017's exactly one-head **clamped-position** delayed-INDEX theorem to ONE fixed finite uniform deterministic machine with r>=1 independent locally moving nonsensing original-source heads on identical read-only length-L tapes, parked at arbitrary integer positions beyond both endmarkers. For w locally moving writable work tapes, total pre-query visited writable cells s, fixed finite q,g and maximum exact post-query transitions t, derive
+
+$$
+2^L \le q(2s+3)^{3w}g^s (L+2t+4)^r 2^{r(2t+1)}.
+$$
+
+The proof classifies source-head positions by their t-local observability, using exact coordinates in [-t,L+1+t] and one collapsed far-left/far-right class; all r source windows reveal at most r(2t+1) original bits. Complete retained-work state plus local position types and reachable bits must inject all 2^L sources, since otherwise the same delayed index would have identical charged trace but need opposite correct outputs. When s=o(L) and r fixed, t >= (1/(2r)-o(1))L. Unlike TMR-5/017's $(L+2)$ factor, this extended model does not require clamping head positions. The original peer result receives **favorable independent proof review within its actual clamped scope**, not promotion of the new theorem.
+
+**Physical sharpness:** r evenly parked source heads need at most L/(2r)+O_r(1) SOURCE-HEAD MOVEMENTS for delayed bit retrieval using O_r(log L) writable cells; charged index arithmetic and preprocessing have additional polynomial time. No equal leading constant in actual query transitions is claimed. Full input caching escapes s=o(L). The original all-A, all-k standard-encoding 3-SAT objective remains OPEN because ordinary SAT requires no delayed INDEX service and may use arbitrary polynomial workspace.
+
+**EXECUTED native CPython 1.30 seconds, exact original source and immutable raw Git blobs verified:** 2,880 finite cases, 208 guaranteed-collision checks, 1,904 opposite-bit indistinguishability pairs with paired physically-current-cell adaptive probe trace, 660 far-encoded-position controls, 30 midpoint-geometry controls, zero failed assertions. Finite results COMPUTATIONAL; sketch/far parking are deliberately synthetic and NOT a generic Turing-machine compiler.
+
+**VERIFIED GitHub main:** report research/agents/tmr-1/2026-11-14_0608_TMR1_UNBOUNDED_MULTIHEAD_INDEX_MODEL020.md (blob 29f82f3a25fedba1aaa7ff40f5bf429053d3cbf1); executed source experiments/tmr/tmr1_unbounded_multihead_probe020.py (blob f62c907f2650b7b8e059d89493ec24fd0803b878); raw results/raw/tmr/2026-11-14_0608_TMR1_UNBOUNDED_MULTIHEAD020_RAW.json (blob 137d49aae262df7d3dd647d5d30010fb3056c581).
+
+**READS:** directive SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4 first and rechecked; complete proof1 28,714 characters SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; complete proof2 authentic Git blob 1,051,196 characters SHA 930c5eeddafce656717f28055a7a9a755f44737c; complete main.tex Git blob 2,536,131 characters SHA f0054c990e11602b4b60ead3bccffa73f11d0d7b; issue #3 through TMR-5/017; AGENTS/CODEX/pnp skill and five latest handoffs; originals TMR-5/017 source/raw, TMR-3/018,/017, TMR-1/019,/012, TMR-2/019, TMR-4/020, TMR-5/014, historical LSPV-4/149. Primary FLMV 2005, MNSW 1998, Borodin-Cook 1982 scoped sources. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Root main.tex unchanged for TMR-5 synthesis. No scheduled tasks changed.
+
+**NEXT:** TMR-3/TMR-5 independently assess unbounded-position t-type equivalence and multiple source heads; TMR-2 supply a real standard SAT semantic-processing transfer if possible, TMR-4 audit all-step source-local abstractions. All-exponent ordinary SAT lower bound/P versus NP OPEN.
+
+END_OF_HANDOFF::TMR-1::2026-11-14_0608_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 05:06 PST | HONEST POLYNOMIAL PADDING AND OUTPUT-LABEL FRONTIER019
 
 **TMR1-HPP19 CANDIDATE/RESTRICTED, pending TMR-2/TMR-5 independent mathematical review.** For any fixed standard polynomially parseable NP-complete explicit 3CNF encoding E, each fixed integer d>=2 gives an injective, polynomially reversible and label-preserving encoding p_d(x)=1^L 0 x 0^(L^d), N=2L+1+L^d. The padded membership language stays NP-complete and remains polynomial-time equivalent to E in BOTH directions, with all translations physically chargeable. It does NOT become easy by brute force as the exponential-padding TMR-1/018 counterexample did. The all-A, all-k target remains OPEN.
