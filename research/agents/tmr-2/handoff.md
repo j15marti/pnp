@@ -1,3 +1,24 @@
+# TMR-2 CURRENT handoff | 2026-11-13 22:15 PST | BALANCED MASK CERTIFICATE DICHOTOMY012
+
+**NEW TMR2-BC12 CANDIDATE pending independent TMR-5 review.** Exact promise sign-bit certificate size for EVERY SAT block of TMR-2/010's original strict-proper all-declared-ID-used 8-mask 3-CNF grammar is **5** if any sign coordinate is biased at least 5-to-3, otherwise **6** if all three sign coordinates balance 4-to-4. SAT product complexity is the SUM of block costs; every UNSAT source still has certificate size 24. Five-query characterization proved by Hall matching: only five different rows querying the identical one-bit/value half-cube can defeat an eight-mask permutation. Every SAT row tuple contains a duplicate complete mask, giving a six-bit upper certificate.
+
+**Concrete balanced family:** each of r core blocks has (0,0,3,3,5,5,6,6), so exact certificate 6r and sign-only Hamming radius four to UNSAT. No robustness claim for arbitrary identifier edits. Any fixed correct h-original-input-head total deterministic decider must observe 6r distinct original source sign bits on this SAT input, hence T>=ceil(6r/h)=Omega(L/log L); no workspace/online/one-pass assumption. TMR-2/010 polynomial authenticated mask-classifier defeats any superpolynomial processing inference.
+
+**EXECUTED published-exact native Python 3.13.5:** 55,455 old SAT tuple query subsets of sizes <=5, 190,051 balanced tuple subsets of sizes <=6; old 3 five-bit certificates, new 0 certificates <=5 and exactly 4 six-bit certificates; 144 sign-distance-four UNSAT neighbors, none closer; r=1,2,3,8,64 product mask controls, zero failures. Independent LOCAL ONLY bit-parallel Python tested all 40,320 permutation completions against all 55,455 balanced <=5-bit queries, zero failures. No physical TM or new full binary source parsing.
+
+**GitHub readback-verified artifacts:**
+- Report research/agents/tmr-2/2026-11-13_2215_TMR2_BALANCED_MASK_CERTIFICATES012.md, blob 8616da950d8afac88fa43ed5079de6b10602ad00.
+- Exact native code experiments/tmr/tmr2_balanced_mask012.py, blob b1ec9df7174b8f72c1f04c854dff4decb0488978.
+- Immutable raw results/raw/tmr/2026-11-13_2215_TMR2_BALANCED_MASK012_RAW.json, blob 9b04d3d3e0e4557ac7d32dce5ef8d2031dd481bb.
+
+**Corpus:** First read current superseding TMR directive SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; proof1 complete SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2 full authentic 1,051,196-character Git blob SHA 930c5eeddafce656717f28055a7a9a755f44737c, main.tex full authentic 2,511,782-character blob SHA c04a02a97492f88938791f363ff91d99b67cd78b, issue #3 through TMR-1/012, AGENTS/CODEX/skill, current five TMR handoffs and original TMR-2/010,/011, TMR-5/007, TMR-1/010, TMR-4/008 handoff. Primary Hall 1935 and Buhrman/de Wolf 2002 checked. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No canonical main.tex or scheduled task edit. P versus NP OPEN.
+
+**ONE NEXT TARGET:** TMR-5 independently verify the five-query Hall uniqueness and 6r additivity; then identify and red-team a true post-input-acquisition computational-work potential valid for arbitrary polynomial workspace and compact algebra.
+
+END_OF_HANDOFF::TMR2::2026-11-13_2215_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-13 21:15 PST | EXACT MASK CERTIFICATE011
 
 **New TMR2-CERT11 CANDIDATE pending TMR-5 peer review, complete symbolic proof in report; independently executed native Node and Python COMPUTATIONAL.** In the same strict all-ID-used 3-CNF authenticated two-label mask superclass G_r from TMR-2/010, take z_r with each block mask list (1,2,3,4,5,6,7,7). The exact **promise sign-bit certificate complexity** is C_G(z_r)=5r, and for **every UNSAT** template source u, C_G(u)=24, independent of r. Every observation set of <=4 bits on any eight-row mask block can be completed to an UNSAT 8-mask permutation by Hall's matching theorem, while observing bit 0 of rows 0,2,4,6,7 makes such a permutation impossible (five 1-valued row bits, only four such distinct masks). All SAT blocks require independent certificates, whereas a single full UNSAT block requires exactly all its 24 sign bits. These are original bit-position certificates, not compulsory solver memory.
