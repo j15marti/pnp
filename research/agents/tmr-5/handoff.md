@@ -1,3 +1,24 @@
+# TMR-5 CURRENT handoff | 2026-11-13 16:48 PST | SINGLE-PORT-INDEXED-REVIEW004
+
+**New TMR5-SI4 CANDIDATE pending TMR-1/TMR-3 peer review.** Original TMR-3/005 dual persistent INDEX-port upper has independent constructive support at **PROVED/RESTRICTED model scope**; finite tests COMPUTATIONAL. The unrestricted all-exponent SAT machine lower bound and P versus NP remain OPEN.
+
+**New substantive theorem candidate:** On the SAME original strict proper 3-CNF equality family $E_n(a,b)$, of encoded $L=13n+2+24n(1+\max(1,\lceil\log_2(5n)\rceil))$, only ONE persistent, paid non-erasing indexed read-only source query port is needed for a fixed total all-input-correct decider to achieve $T=O(L)$, $S=O(\log L)$ on every family member. It authenticates all original bits and endmarker, uses $n$ indexed reads of first-bank sign anchors while parsing second-bank blocks, with $2n$ paid address-context switches between the sequential scan and remote anchor; each switch copies $O(\log L)$ paid address bits. Binary scan increments amortize $O(L)$ work; $n\log L=O(L)$ switching/stride overhead. Store scan/anchor/register addresses, a sign and equality flag, no $n$-bit bank. General fully charged exhaustive fallback off-family. FLMV 2005 INDEX erases after each jump; the corresponding single-port erasing variant gives only $T=O(L\log L)$ under paid address reconstruction, $S=O(\log L)$, still an indexed escape from TMR-3/002 physically sequential $T(S+1)=\Omega(Ln)$.
+
+**Verified report:** research/agents/tmr-5/2026-11-13_1648_TMR5_ONE_PORT_INDEXED_REVIEW004.md, SHA 34e92668d487b7cf03d6fbac96018a4dfc84b2c9.
+**Exact independent hosted-V8 source:** experiments/tmr/tmr5_single_port_indexed_review004.cjs, SHA 36b45a068da0a24fb2f2d87019e533131b79eaa0.
+**Immutable raw:** results/raw/tmr/2026-11-13_1648_TMR5_SINGLE_PORT_INDEXED004_RAW.json, SHA 053e5f5de7fa7cae8f47d5913525881ea5a9ea87.
+All three on main, verified by GitHub readback.
+
+**Actual executed test:** 1,415 exact sources including 85 SAT/1,330 UNSAT; 7,075 malformed/structural rejection probes; 14,150 assertions; 16,556 indexed anchor reads; 33,112 paid context switches; input up to 763,906 bits; zero failures. Independent fresh V8 source emulator, not original TMR-3/005 Node runner, not instruction-level physical TM. Native OS Node, original standalone CLI replay, full repository preflight and LaTeX compilation not executed. Original TMR-3/005 code, report and raw were read. Primary Fortnow et al JACM 2005 Section 2.1 inspected, including the erased-INDEX rule; classical sequential crossing provenance checked through Hennie 1965 bibliographic record.
+
+**Corpus:** 12:49 PST directive read first and rechecked; proof1.txt full 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2.txt full Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c, main.tex full Git blob 2,492,830 chars SHA b261f0c8131c2512c1d018dfed9b257fd856ccc5, AGENTS.md, CODEX.md, .codex/skills/pnp-research/SKILL.md, issue #3 1953 comments latest through TMR-3/005, five latest peer handoffs and relevant original TMR-3/002, TMR-1/004, TMR-2/004-005, historical LSPV-5/510-511 failures. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No agents or schedules modified.
+
+**Next single target:** TMR-1/TMR-3 independently verify TMR5-SI4's paid single-index port restoration, ordinary tape-bit increment amortization, exact grammar recognition and all-input fallback. Pursue an unavoidable whole-execution global consistency cost that cannot be escaped by **even one** charged indexed port, Gaussian elimination, sharing or arbitrary polynomial workspace. General target OPEN.
+
+END_OF_HANDOFF::TMR5::2026-11-13_1648_PST
+
+---
+
 # TMR-5 latest handoff | 2026-11-13 15:52 PST | FINITE-BATTERY-TRIE-AND-PB4-REVIEW003
 
 **Status:** TMR-4/004 machine-blind common-start potential ceiling independently reviewed as **PROVED/RESTRICTED**. New simultaneous finite-suite trie theorem TMR5-FT3 **CANDIDATE pending TMR-1/TMR-4 review**. Executed regressions **COMPUTATIONAL**. General superpolynomial all-program SAT lower bound and P versus NP **OPEN**.
