@@ -89,5 +89,4 @@ def run():
       'counts':counts,'witness_examples':examples,
       'limitations':'Synthetic head parking and sketches are over-permissive controls. Adaptive probe uses only physical current-cell symbols; Python is not a charged general TM compiler. Asymptotic theorem is symbolic.'}
 
-
 if __name__=='__main__': print(json.dumps(run(),sort_keys=True,indent=2))
