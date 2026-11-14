@@ -116,4 +116,4 @@ For any machine with arbitrary polynomial writable workspace S=L^c, (MCF15-A) al
 
 **One next target:** Independently verify the fully charged transfer between positional read-only counter heads and a single original input head with O(log L) physical binary writable counters. Then pursue a necessary total decision-time charge rather than a machine-capacity bound, which remains OPEN.
 
-**Publication status:** Exact executable and raw evidence are readback-verified; report publication and handoff verification are to follow before issue #3 coordination.
+**Publication status:** Report, exact executed source, immutable raw evidence, and the history-preserving TMR-3 handoff have all been published to main and verified by direct GitHub readback. Issue #3 coordination to follow.
