@@ -61,7 +61,6 @@ function run() {
     }
   }
   let cube=Array.from({length:8},(_,i)=>i);
-  function multisets(prefix,start,left){check(3,prefix);if(left===0)return;for(let i=start;i<8;i++)multisets([...prefix,i],i,left-1);}
   // Exactly 43,758 ordered-count canonical E3 multisets with 0..10 clauses.
   function fixedLength(prefix,start,left){if(left===0){check(3,prefix);return;}for(let i=start;i<8;i++)fixedLength([...prefix,i],i,left-1);}
   for(let m=0;m<=10;m++)fixedLength([],0,m);
@@ -74,7 +73,7 @@ function run() {
     }
   }
   // Hostile: full cube UNSAT, duplicate cube UNSAT, unique missing signature SAT,
-  // two SAT/UNSAT disjoint components, 2-SAT auxiliary polarity construction.
+  // two independent UNSAT components (no 2-SAT auxiliary control in this JS file).
   check(3,cube,true);check(3,cube.flatMap(i=>[i,i]),true);
   check(3,[1,2,3,4,5,6,7,1,1,1,1],true);
   const P6=pools[6], key=c=>c.map(x=>x.join(':')).join(',');
