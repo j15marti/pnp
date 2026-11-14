@@ -141,4 +141,6 @@ function run(){
     counts,samples:lastSamples,assertions_failed:0,
     caveat:"Hosted V8 mathematical/encoding experiments, not a compiled physical TM executor; brute-force and BigInt bitset independently agree."};
 }
-run();
+const RESULT = run();
+if (typeof console !== 'undefined' && console.log) console.log(JSON.stringify(RESULT,null,2));
+RESULT;
