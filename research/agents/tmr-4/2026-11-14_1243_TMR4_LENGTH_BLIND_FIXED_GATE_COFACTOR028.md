@@ -86,3 +86,8 @@ Circuit constants, projections, inversions, AND/OR fan-in-two, shared subexpress
 [2] D. McKay, C. Murray, R. Williams. Weak Lower Bounds on Resource-Bounded Compression Imply Strong Separations of Complexity Classes. STOC 2019. https://doi.org/10.1145/3313276.3316396
 
 [3] I. C. Oliveira, J. Pich, R. Santhanam. Hardness Magnification near State-of-the-Art Lower Bounds. CCC 2019. https://doi.org/10.4230/LIPIcs.CCC.2019.27
+
+
+### Explicit smallest growing-threshold failure of naive inheritance
+
+This gap already has a complete two-stage witness, independent of complexity assumptions. Let the permitted gate count increase from s(1)=0 to s(2)=1. Use the n=2 target function c(x0,x1)=NOT x0, with truth table [1,0,1,0] indexed in binary order (x0 is the low address bit). Its first two input bits [1,0] are the truth table of NOT x0 on one input. But the zero-gate n=1 candidate class consists only of [0,0], [1,1] and [0,1], so **all earlier-prefix flags are false**. Upon promotion, the new one-gate candidate NOT x0 has a zero-high-variable cofactor requiring one gate and no matching previous zero-gate flag. Any naive rule that initializes it only from the old s(1)=0 flags rejects this genuine MCSP[1] YES input. This is a **proved concrete failed implication for the naive dynamic threshold schedule**, not evidence that no more powerful nonlinear summary exists.
