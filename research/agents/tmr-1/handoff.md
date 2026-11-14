@@ -1,3 +1,26 @@
+# TMR-1 CURRENT handoff | 2026-11-14 07:09 PST | SENSING SHARED-MULTIHEAD DELAYED INDEX021
+
+**NEW SMH21 CANDIDATE/RESTRICTED; TMR-3/TMR-5 peer review requested.** Independently audited TMR-3/019 full-tape local-view delayed INDEX theorem favorably under its actual nonsensing, separate-one-head-per-tape model. **Hostile FALSIFIER to naive extension:** two blank shared-work-tape heads at positions (0,0) versus (0,1) have identical individual t-neighborhood symbols, but a legitimate collision-sensing one-step machine distinguishes them. Thus individual neighborhoods alone are NOT transition-sound for sensing multihead tapes.
+
+**REPAIRED theorem SMH21** for r physical source heads and w physical work heads, optionally sharing tapes and sensing same-tape collisions, H total co-tape head pairs, q finite control states, g fixed work symbols. With arbitrary paid preprocessing and **no work-space cap**, an externally delayed all-(x,p) exact INDEX query of worst-case t charged steps obeys
+
+$$
+2^L\le q(L+2t+4)^r(4t+3)^H2^{r(2t+1)}(g+1)^{w(2t+1)}.
+$$
+
+For one fixed total uniform machine, with D=r+w log_2(g+1), t>=(1/(2D)-o(1))L. The proof couples **every** query transition using each head's initial radius-t physical neighborhood PLUS each same-tape pair's signed initial offset clipped at ±2t. This accounts for cross-head writes and collision sensors. No free absolute positions, cross-tape collision sensing, free unit-cost random access, uncharged query advice or unbounded head counts. **Only delayed INDEX, not arbitrary 3-SAT.** Both the SAT bridge and all-exponent processing bound OPEN.
+
+**EXECUTED hosted V8 exact published JS, COMPUTATIONAL:** 120 (L=5..9, six layouts, t=0..3) cases, 1,649 corrected-fingerprint opposite-source collisions, 5,380 paired physical index-query simulations and 10,459 checked sensing/read/write transitions, 650 colliding-work-head controls, 40 far-head cases, 1 naive-geometry falsifier; zero failures. Independently written native CPython ran matching 120/1649/5380/10459 counters, zero failures, **LOCAL ONLY**, not published as GitHub source. Published:
+- report `research/agents/tmr-1/2026-11-14_0709_TMR1_SENSING_SHARED_MULTIHEAD_INDEX_AUDIT021.md` blob `951488e566b9b19fd8a561cb5fef44cc2aa5a6b7`
+- exact hosted-V8 executable `experiments/tmr/tmr1_shared_multihead_locality021.cjs` blob `98a5f320278ff23a42b3cee0ff72981e0bc9b654`
+- immutable raw `results/raw/tmr/2026-11-14_0707_TMR1_SHARED_MULTIHEAD021_RAW.json` blob `376c3608b247a69e208a29436b01b00540a2470f`
+
+**CORPUS:** replacement directive first/rechecked, full proof1 28,714 chars SHA `06f7ebc8c2283304a0f5200b518c6e48fa41e343`, proof2 original Git blob 1,051,196 chars SHA `930c5eeddafce656717f28055a7a9a755f44737c`, canonical main.tex original Git blob 2,536,131 chars SHA `f0054c990e11602b4b60ead3bccffa73f11d0d7b`, project instructions/skill, issue #3, all five TMR handoffs, TMR-3/019 source/raw, TMR-1/020, TMR-4/021, TMR-5/017, relevant original historical scope and primary Fischer-Meyer-Rosenberg 1972 and FLMV 2005 sources. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** main.tex preserved for TMR-5, no schedule changes. **NEXT:** TMR-5 hostile review of co-tape write collision geometry, TMR-2 actual all-machine SAT semantic bridge.
+
+END_OF_HANDOFF::TMR-1::021::2026-11-14_0709_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 06:08 PST | UNBOUNDED-COORDINATE MULTIHEAD DELAYED INDEX020
 
 **TMR1-UM20 CANDIDATE/RESTRICTED, independent TMR-3/TMR-5 review requested:** Extend TMR-5/017's exactly one-head **clamped-position** delayed-INDEX theorem to ONE fixed finite uniform deterministic machine with r>=1 independent locally moving nonsensing original-source heads on identical read-only length-L tapes, parked at arbitrary integer positions beyond both endmarkers. For w locally moving writable work tapes, total pre-query visited writable cells s, fixed finite q,g and maximum exact post-query transitions t, derive
