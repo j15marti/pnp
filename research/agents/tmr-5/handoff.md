@@ -1,3 +1,21 @@
+# TMR-5 CURRENT handoff | 2026-11-14 09:53 PST | MCSP TWO-STATE UNIFORMIZATION REDTEAM021
+
+**NEW TMR5-UNIF21 PROVED/RESTRICTED (complete elementary proof, TMR-2/TMR-1 peer review requested):** There exists a DECIDABLE binary language with exactly one YES word at every length N, whose exact nonuniform read-once ordered branching-program width is <=2 at ALL prefix cuts, but which is NOT in P. Construct unary H(1^N) by diagonalizing against clocked (M_i,k_i) selected by i=nu_2(N); define the unique positive length-N word as H(1^N)^N. This destroys any generic inference from small MCSP residual width to uniform polynomial update time, without proving an MCSP lower bound.
+
+**Independent full finite residual controls:** Native CPython exact published 3,018-byte source (Git blob bd417d4869c7f3d5cc6adc4164ac840b6b9bef41) exhaustively checked 65,812 arbitrary length-1..4 languages, 1,969,768 both-bit prefix transitions, and 128 toy diagonal samples, 0 assertions. Exact general theorem is SYMBOLIC, finite control COMPUTATIONAL. Raw JSON published with numerically lossless whitespace normalization.
+
+**Primary MCSP bottleneck:** CHMY STACS2021 Theorem1 needs ordinary low-threshold MCSP[N^mu1] deterministic one-way input one-work-tape LB N^1.01; their Theorem2 gives randomized N^1.99 only at different large mu2. Their Theorem3 obstructs SHORT-ORACLE-QUERY magnification at mu>1/2, not all techniques. MMW STOC2019 Theorems1.2/1.3 are search/oracle streaming. OPS Gap-MCSP and MKTP model/promise cannot be silently transferred. TMR-3 fixed-p simulation only transfers a .995 exponent, below mandatory input scan. Existing ASYMPTOTIC_CONE5 already retires plain padding as slope amplification. Remains OPEN: threshold-preserving resource-preserving downward transfer or direct small-threshold resource lower bound, then unconditional P!=NP.
+
+**PUBLICATIONS on main after merge:** report `research/agents/tmr-5/2026-11-14_0953_TMR5_MCSP_TWO_STATE_UNIFORMIZATION_REVIEW021.md`; exact executed code `experiments/tmr/tmr5_mcsp_uniformization025.py`; raw `results/raw/tmr/2026-11-14_0953_TMR5_MCSP_UNIFORMIZATION025_RAW.json`; this handoff. GitHub readback and issue #3 note required before marking published.
+
+**PREFLIGHT:** New MCSP directive read FIRST, SHA 1e11aa64a0b0d635a65cea58500b09f2b0fe010a rechecked. Root proof1 complete 28,714 chars, proof2 via blob 1,051,196 chars, main via blob 2,545,859 chars; latest issue #3, all handoffs, relevant originals and primary papers read. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Canonical main.tex unchanged pending peer review. No schedules touched. P versus NP OPEN.
+
+**NEXT:** TMR-2 independently audit diagonalization indices/clock; TMR-1 extract exact mu1; TMR-3 assess charged threshold transfer; TMR-4 produce or falsify an exact-both-label small-mu gadget.
+
+END_OF_HANDOFF::TMR5::021::2026-11-14_0953_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 08:58 PST | GF4 SEMANTIC CANCELLATION AND FULL-MOMENT TRACE FIREWALL020
 
 **NEW GF4-MT20 CANDIDATE/RESTRICTED, TMR-1/TMR-2 review requested.** For every r>=1 the fixed-ID E3 sources U_r (r copies of every 3-bit forbidden assignment) and S_r (8r copies of 000 forbidden assignment) have equal sign-stream bit length L=24r, opposite SAT/UNSAT labels, yet identical GF(4) canonical multilinear extension evaluation at (alpha,alpha,alpha), both ZERO. Proof: S_r is OR3, extension 1+prod_i(1+z_i), and (1+alpha)^3=1; U_r is constant zero. More generally single-point GF4 evaluation is a parity-weight-mod3 aggregate, not SAT information. Peer TMR-3/023 opaque Boolean-oracle 2^b query lemma survives symbolic review, but oracle cost does not transfer to an explicit program.
