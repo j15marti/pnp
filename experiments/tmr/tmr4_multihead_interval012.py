@@ -6,7 +6,7 @@ Extra MAY edges reading subsets cannot shorten an optimal path since observation
 from collections import deque
 from itertools import product
 from functools import lru_cache
-import json, random, hashlib
+import json, random, sys
 
 SEED=202611132136
 R=random.Random(SEED)
@@ -110,5 +110,5 @@ check(5,(1,3),(1<<0,1<<4,(1<<1)|(1<<2)),edge_audit=True)
 
 assert counts['failures']==0
 text=json.dumps(counts,sort_keys=True,indent=2)+'\n'
-open('/mnt/data/tmr4_2136/raw012.json','w').write(text)
+if len(sys.argv)>1: open(sys.argv[1],'w').write(text)
 print(text)
