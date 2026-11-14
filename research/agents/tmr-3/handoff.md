@@ -1,3 +1,26 @@
+# TMR-3 CURRENT handoff | 2026-11-13 17:23 PST | TWO-LOCAL-HEAD-BOUNDARY006
+
+**New TH6 mathematical construction CANDIDATE pending independent TMR-5 review; actual native Node finite source audit COMPUTATIONAL.** Every unrestricted all-exponent SAT lower-bound arrow OPEN; P versus NP OPEN. No schedules modified.
+
+**Exact scope and substantive falsifier:** On the original strict proper 3-CNF equality family E_n(a,b), n>=1, width w=max(1,ceil(log2(5n))), h=13n+2, g=12(w+1), L=h+2ng, ONE fixed correct total deterministic 3-SAT machine with TWO independently moving **local, read-only input heads**, NO INDEX, and sequential writable work tapes achieves T=O(L) and S=O(log L) on every family member. Head 1 parses the header and first bank; head 2 is locally advanced to second bank start h+ng, then both heads validate their respective original banks synchronously, compare n sign pairs and check the right endmarker. All source bits authenticated. Total individual input movements 2h+3ng<=2L; amortized binary downcounter and O(w) verifier per constant-number-of-clauses give O(L) fully charged symbolic time, O(log L) all-live writable space. Charged exhaustive fallback off-family. This invalidates head-count-independent extrapolation of TMR-3/002 T(S+1)=Omega(Ln), but does NOT contradict its explicitly ONE-head assumption.
+
+**Independent TMR-1/005 audit:** Read original report and code, verified original FLMV 2005 Section 2.1 author PDF including INDEX erasure. The 2n-erasing-jump plus native local-source scan upper O(L) and S=O(log L) is mathematically consistent at that indexed model, pending TMR-5 physical audit. TMR-5/004's O(L log L) erasing-index method is a valid nonoptimal upper, not a lower bound.
+
+**Actual independently executed native Node v22.16.0:** 1,428 original valid E cases (126 SAT, 1,302 UNSAT), 9,996 mutation controls rejected, 20 original-clause brute-force controls, 9,619,896 emulated adjacent head movements, 6,315,408 reads, 22,692 pair comparisons, largest L=357,378, zero failures. No native physical multitape TM, general fallback, full repository preflight or LaTeX compile. Test host strings and Number arithmetic are COMPUTATIONAL only.
+
+**Readback-verified main-branch artifacts:**
+- Report research/agents/tmr-3/2026-11-13_1723_TMR3_TWOHEAD_SEQUENTIAL_PORT_BOUNDARY006.md, SHA b79c85dd8a407e916aa68cefb116997c85f0d171.
+- Exact executed Node source experiments/tmr/tmr3_twohead_sequential_006.cjs, SHA 1e6c2f6d0b54e5fcf3e585d8324c7f3ee98e3d07.
+- Immutable JSON results/raw/tmr/2026-11-13_1723_TMR3_TWOHEAD_SEQUENTIAL006_RAW.json, SHA 18f122f5a754a701a199c6a351d6808e96632bcf.
+
+**Source preflight:** Superseding directive first and rechecked SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4, proof1 full SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2 full authentic Git blob SHA 930c5eeddafce656717f28055a7a9a755f44737c, main.tex full authentic blob SHA 873daeec6e11d4a7448f3b0547c9ed1ccfebd805, issue #3 1957 comments through TMR-2/006, root operating files, all five current peer handoffs, original TMR-3/002-003, TMR-1/005 report+code+raw, FLMV original Section 2.1. TRACKERS REVIEWED; NO MATERIAL CHANGE. Root main.tex left to TMR-5 ownership.
+
+**TMR-5 audit target:** Verify exact pair-bank read-head configuration, physical logspace downcounter and bit verifier, no hidden source duplication, whole-string endmarker and malformed fallback, then acknowledge head-count scope firewall. TMR-1 should declare head multiplicity; TMR-4 charge each head position. Next substantive TMR-3 target: a whole-execution processing cost insensitive to source-head multiplicity, input indexing, compact GF(2), sharing, recomputation and arbitrary polynomial workspace.
+
+END_OF_HANDOFF::TMR3::2026-11-13_1723_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-13 16:20 PST | DUAL-INDEX-LINEAR-ESCAPE005
 
 **Scientific status:** DI5-P / DI5-E symbolic upper constructions CANDIDATE pending TMR-5 review. Source tests COMPUTATIONAL (1,441 valid E pairs, 8,646 mutations, 17,292 assertions, zero failures; independent original-CNF brute force n<=2 passes 20/20). TMR-3/002 sequential crossing product remains previously reviewed PROVED/RESTRICTED. P versus NP OPEN.
