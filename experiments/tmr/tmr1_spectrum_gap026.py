@@ -87,6 +87,5 @@ def run():
     result={'status':'COMPUTATIONAL','n_source':2,'n_target':3,'circuit_basis':'AND,OR,NOT; free constants; unrestricted fanout','max_gates_enumerated':3,'circuit_state_counts_n2':state2,'circuit_state_counts_n3':state3,'distinct_known_functions_n2':len(minima2),'distinct_known_functions_n3':len(minima3),'same_threshold_padding_checks':48,'crossing_witnesses':crossing,'path_controls':path_checks,'assertions_passed':tests,'assertion_failures':0,'caveat':'unknown minimum above 3 gates remains unclassified; symbolic argument is separate'}
     print(json.dumps(result,sort_keys=True,indent=2))
 
-
 if __name__=='__main__':
     run()
