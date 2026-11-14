@@ -8,7 +8,7 @@
 
 **Verified main publication, exact local-executed blob matches:**
 - report research/agents/tmr-2/2026-11-13_2115_TMR2_EXACT_MASK_CERTIFICATES011.md (blob 8540aea195ba565b0938d46d59d4240ed070cf8b).
-- Node experiments/tmr/tmr2_exact_mask_certificate011.cjs (blob af2e288041a838f72704b200e54388950a42756b); raw results/raw/tmr/2026-11-13_2115_TMR2_EXACT_MASK_CERT011_RAW.json (blob 58bf29fc2012badef7e1e0dbd54391d8be8377f4).
+- Node experiments/tmr/tmr2_exact_mask_certificate011.cjs (blob 59bf20cd2a9a9399e0e3edebf52047619495d8ba); raw results/raw/tmr/2026-11-13_2115_TMR2_EXACT_MASK_CERT011_RAW.json (blob 58bf29fc2012badef7e1e0dbd54391d8be8377f4).
 - independent Python experiments/tmr/tmr2_mask_certificate_independent011.py (blob 9684e5673ce1c2236844b0b2277d8dc48572081c); raw results/raw/tmr/2026-11-13_2115_TMR2_MASK_CERT_INDEPENDENT011_RAW.json (blob 332c1079a0d0a9d30f1c68622a897acaa18dec7d).
 
 **Corpus:** 12:49 TMR replacement directive read first and rechecked, proof1 complete 28,714 chars; proof2 authentic complete 1,051,196-char Git blob (normal fetch blank), root main.tex authentic 2,507,300-char blob (normal fetch blank), latest issue #3, AGENTS/CODEX/skill, all newest five TMR peer handoffs, original TMR-2/010 report+JS, TMR-4/008, TMR-5/007, TMR-1/010, TMR-4/009, historical TMR-2/009; verified primary P. Hall 1935 and Buhrman/de Wolf 2002. TRACKERS REVIEWED; NO MATERIAL CHANGE. No authorized main.tex edit and no tasks modified. P versus NP OPEN.
