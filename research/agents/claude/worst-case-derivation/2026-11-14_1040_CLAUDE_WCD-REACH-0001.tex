@@ -1,0 +1,105 @@
+% CLAUDE REPORT::WCD-REACH-0001::2026-11-14T10:40-08:00
+% Claude routine "worst-case minimum derivation cost". User follow-up: work on TW-T1, TW-T2 and FL-T1.
+% Role-neutral and additive. It does NOT edit root main.tex or any TMR/LSPV region.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{WCD-REACH-0001: a reachability bridge from machine runs to refutations, and the limits of a time-only speedup}
+\author{Claude scheduled routine (worst-case derivation complexity log)}
+\date{2026-11-14 10:40 America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\paragraph{Status line.}
+\begin{itemize}
+\item Lemma~\ref{lem:reach} (reachability bridge, any correct clause-query machine): \textbf{PROVED/EXACT}; exhaustive toy checks \textbf{COMPUTATIONAL}. Not independently reviewed. Novelty not established.
+\item Theorem~\ref{thm:kappa} (time versus knowledge width): \textbf{PROVED/EXACT} given the \textbf{KNOWN THEOREMS} TR26-018 Cor.~1.3 and Ben-Sasson--Wigderson. Not independently reviewed.
+\item FL-T2 (bound knowledge width by machine space): \textbf{OPEN}. This is where the bridge now sits.
+\item Lemma~\ref{lem:tw1} (what a time-only speedup would need): \textbf{PROVED/EXACT}. TW-T1 is \textbf{RETIRED} as a tractable target.
+\item P versus NP remains \textbf{OPEN}.
+\end{itemize}
+
+\section{Model}
+The input has $m$ slots. Each slot holds a clause over $n$ variables, or the symbol $\top$. A machine $M$ queries one slot per step; the slot is determined by its configuration. $M$ is \emph{correct} if it rejects exactly the unsatisfiable inputs. No restriction is placed on how $M$ uses memory, and slots may be re-read.
+
+Fix an unsatisfiable input $F$. Let $C_0,\dots,C_L$ be the configurations of the run on $F$ and $p_0,\dots,p_{L-1}$ the slots queried. Define:
+\begin{itemize}
+\item $Q(C,t)$: the slots queried before time $t$ on \emph{some} input that reaches configuration $C$ at time $t$;
+\item $R_t=Q(C_t,t)\cap\{p_u:u\ge t\}$, the \emph{re-read set}: slots that may already have been read and will be read again;
+\item $I_t(x)$: there is an input $F'$ that reaches $C_t$ at time $t$, has every slot satisfied by $x$, and agrees with $F$ on $R_t$.
+\end{itemize}
+$I_t$ says that, from what the machine holds at time $t$, the assignment $x$ could still be a model of the input.
+
+\section{TW-T2 and FL-T1: the bridge}
+\begin{lemma}[reachability bridge]\label{lem:reach}
+For every correct machine and every unsatisfiable $F$:
+\begin{itemize}
+\item[(a)] $I_0\equiv$ true;
+\item[(b)] $I_L\equiv$ false;
+\item[(c)] for every $t$, $I_t$ together with the clauses $F[q]$, $q\in(\{p_t\}\cup R_{t+1})\setminus R_t$, semantically implies $I_{t+1}$.
+\end{itemize}
+So $I_0,\dots,I_L$ is a refutation of $F$ with one line of memory, in the semantic system whose lines are these predicates.
+\end{lemma}
+\begin{proof}
+(a) The all-$\top$ input reaches $C_0$ and $R_0$ constrains nothing that has been read; any slot in $R_0$ would need $Q(C_0,0)\ne\emptyset$, which is false.
+
+(b) $C_L$ is rejecting. By correctness every input that reaches it is unsatisfiable, so no $x$ satisfies one.
+
+(c) Let $F'$ witness $I_t(x)$ and suppose $x$ satisfies the listed clauses. Let $F''$ be $F'$ with each slot $q\in(\{p_t\}\cup R_{t+1})\setminus R_t$ replaced by $F[q]$. Every such $q$ lies in $\{p_u:u\ge t\}$ and outside $R_t$, hence outside $Q(C_t,t)$. So no input reaching $(C_t,t)$ has queried $q$, the run of $F''$ equals that of $F'$ up to time $t$, and $F''$ reaches $C_t$. It then reads $F''[p_t]=F[p_t]$: either $p_t\in R_t$ and $F'$ already agreed, or $p_t$ was replaced. So $F''$ moves to $C_{t+1}$. It agrees with $F$ on $R_{t+1}$, and $x$ satisfies all its slots.
+\end{proof}
+Part (b) uses correctness on \emph{all} inputs, as log item 11 said any bridge must. For a machine that reads each slot at most once on every path, $R_t=\emptyset$.
+
+\paragraph{Check.} \texttt{bridge/reachability\_bridge.py} runs three machines on every input over 2 variables and 3 slots (729 inputs, 144 unsatisfiable), and two of them over 3 variables and 2 slots. The machines are a one-pass decider, a two-pass decider that first computes a parity, and a decider that keeps a lossy one-bit summary and re-reads. All are verified correct on every input. Over 8{,}352 checked steps the lemma has 0 failures. A control with $R_t$ replaced by $\emptyset$ also shows 0 failures on these machines. So the toy cases do not show that the re-read set is necessary; the proof needs it, and no counterexample without it was found.
+
+\paragraph{Knowledge width.} Let $\kappa(M,F)$ be the largest parity-decision-tree depth of any $I_t$, plus the number of variables in the clauses downloaded at one step. Always $\kappa\le n$. For a proof-carrying run, $\kappa$ is at most the form space of WCD-FLMV-0001.
+
+\begin{theorem}[time versus knowledge width]\label{thm:kappa}
+Let $F=\varphi\circ\mathrm{MAJ}_3$ with $\varphi$ of resolution width $w$. Every correct machine that rejects $F$ in $L$ steps satisfies
+\[\kappa\cdot\log L\cdot(\log L+\kappa)\ \ge\ \Omega(w^2).\]
+For expander Tseitin ($w=\Theta(n)$), knowledge width $n^{\sigma}$ with $\sigma<1$ forces superpolynomial time.
+\end{theorem}
+\begin{proof}
+Run the checkpoint search of WCD-FLMV-0001 on $I_0,\dots,I_L$. In each round evaluate the midpoint predicate by its parity decision tree, at most $\kappa$ queries, and keep only the transcripts of the two endpoints. After $\lceil\log_2L\rceil$ rounds $I_{lo}$ holds and $I_{lo+1}$ fails. By Lemma~\ref{lem:reach}(c) a downloaded clause is false; query its variables to find it. This is a parity decision DAG of depth $O(\kappa\log L)$ and size $2^{O(\kappa)}L$. Apply TR26-018 Cor.~1.3.
+\end{proof}
+
+\paragraph{What this is and is not.}
+\begin{itemize}
+\item It \emph{is} a lower bound that applies to every correct machine, with no assumption that the machine stores proof lines. This answers FL-T1: the class is all clause-query machines, and the price is that space is replaced by knowledge width.
+\item It is \emph{not} a time--space bound. Nothing proved here bounds $\kappa$ by the machine's space $S$. A configuration of $S$ bits can stand for a predicate that depends on all $n$ variables. With $\kappa=n$ the theorem is trivial.
+\item The linear-algebra algorithm for lifted Tseitin is consistent with it: what that algorithm knows midway is a system of parities over gadget outputs, which is not a function of few parities of the input variables.
+\item This is the same shape as the reflection result in the log (\texttt{o78at4}): a machine's own runs always form a proof system with short proofs. The open part is to relate its lines to a system with a lower bound.
+\end{itemize}
+
+\paragraph{New open target FL-T2.} For a correct machine with space $S<n$, is $\kappa$ bounded by a function of $S$ on some explicit hard family? A positive answer on lifted Tseitin with $\kappa\le S^{O(1)}$ and $S\le n^{1/2-\varepsilon}$ would be an unconditional time--space lower bound for all machines on explicit inputs, beyond FLMV. A negative answer would be a correct small-space machine whose midway knowledge is spread over $\Omega(n)$ variables. Neither is known here.
+
+\section{TW-T1: a time-only speedup}
+\begin{lemma}\label{lem:tw1}
+Suppose $\mathrm{DTIME}[t]\subseteq\Sigma_k\mathrm{TIME}[t^{\gamma}]$ on random-access machines, for a fixed $k$ and $\gamma<1$.
+\begin{itemize}
+\item[(i)] A SAT machine with time $n^{c}$ is contradicted when $c^{k}\gamma<1$, with no condition on its space.
+\item[(ii)] To exclude every $c$ one needs, for each $c$, some $k$ with $\gamma_k<c^{-k}$.
+\item[(iii)] The hypothesis implies $\mathrm{DTIME}[t]\subseteq\mathrm{DSPACE}[t^{\gamma}]$.
+\end{itemize}
+\end{lemma}
+\begin{proof}
+(i) $\mathrm{NTIME}[n^{a}]\subseteq\mathrm{DTIME}[n^{ac}]\subseteq\Sigma_k\mathrm{TIME}[n^{ac\gamma}]\subseteq\mathrm{NTIME}[n^{ac^{k}\gamma}]$, using $k-1$ slowdowns. (ii) follows. (iii) $\Sigma_k\mathrm{TIME}[\tau]\subseteq\mathrm{DSPACE}[\tau]$.
+\end{proof}
+The best known simulation of time by space is $\mathrm{DTIME}[t]\subseteq\mathrm{DSPACE}[t/\log t]$ (Hopcroft--Paul--Valiant). So any time-only speedup of the required kind would first improve that bound from a logarithmic to a polynomial saving, which is a long-standing open problem in its own right. TW-T1 is therefore at least that hard, and (ii) asks for savings that grow exponentially with $k$. It is retired as a tractable target. The Hopcroft--Paul--Valiant statement is quoted from memory and was not re-read this run.
+
+\section{CORPUS REVIEWED / DUPLICATION AUDIT / CHANGES}
+\begin{itemize}
+\item \textbf{Corpus reviewed:} the four earlier reports of this session; the consolidated living log, in particular items 7, 11 and the \texttt{o78at4} reflection entry; the TMR replacement directive, whose TMR-4 role asks for a cost-sound abstraction of machine configurations.
+\item \textbf{Duplication / contradiction audit:} the log's reflection calculus builds a proof system from a decider's runs abstractly. Lemma~\ref{lem:reach} gives the lines explicitly and handles re-reading. TMR-4's abstraction work was not read in full this run, so overlap with it is possible and unchecked. No contradiction found.
+\item \textbf{What changed relative to root main:} nothing; \texttt{main.tex} is not edited.
+\item \textbf{Adopted:} the checkpoint conversion of WCD-FLMV-0001. \textbf{Rejected:} none. \textbf{Retired:} TW-T1.
+\item \textbf{Stale or overstated claims found:} WCD-TWOWORLDS-0001 said TW-T2 ``needs the machine's memory to be readable as consequences of the input''. Lemma~\ref{lem:reach} shows every correct machine's memory is readable that way; what is missing is a bound on how wide that reading is.
+\end{itemize}
+
+\section{Evidence}
+\texttt{bridge/reachability\_bridge.py}, \texttt{bridge/raw\_results.json}; single stage, 0.4\,s. No TeX engine was available, so this file was not compiled. No new literature search was run in this step.
+
+\medskip\noindent P versus NP remains OPEN. One OPEN load-bearing arrow means P $\ne$ NP is not proved.
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WCD-REACH-0001

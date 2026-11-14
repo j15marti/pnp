@@ -125,6 +125,13 @@ soundness. P versus NP remains **OPEN**.
     shared with the charged-depth region (item 17). The corpus box corner (241/200, 0.5011) is not reached by
     this naive scheme.
 
+19. PROVED/EXACT, not independently reviewed (`vw499c`, WCD-REACH-0001). **Reachability bridge.** For any correct
+    clause-query machine and UNSAT F, the predicates I_t(x) = "some input reaching (C_t,t), satisfied by x and
+    agreeing with F on the re-read set, exists" form a one-line-memory semantic refutation of F: I_0 true, I_L
+    false, I_t + downloaded clauses |= I_{t+1}. Hence kappa*log L*(log L+kappa) >= Omega(w^2) on lifted width-w
+    formulas, kappa = parity-decision depth of the I_t ("knowledge width"). Holds for all machines; kappa is not
+    bounded by space (OPEN, FL-T2). TW-T1 RETIRED: a time-only speedup would imply DTIME[t] in DSPACE[t^gamma].
+
 ## Literature check (2026-11-12)
 - arXiv:2506.16956 (rev. May 2026): the Proof Analysis Problem is NP-complete for EF but in P
   for Resolution. Classed as a useful structural analogy: it suggests EF-level systems
@@ -474,3 +481,10 @@ soundness. P versus NP remains **OPEN**.
   `research/agents/claude/worst-case-derivation/2026-11-14_0950_CLAUDE_WCD-TWOWORLDS-0001.tex`; evidence in
   `twoworlds/`. **Open targets:** TW-T1 (a time-only speedup on random-access machines), TW-T2 (a speedup whose
   checkpoint is a set of proof lines; needs FL-T1). P versus NP remains **OPEN**.
+
+- **2026-11-14 ~18:40 UTC · WCD-REACH-0001** (branch `ccr-1695bd63-vw499c`, user follow-up: work on TW-T1,
+  TW-T2, FL-T1). Result is item 19. Report:
+  `research/agents/claude/worst-case-derivation/2026-11-14_1040_CLAUDE_WCD-REACH-0001.tex`; evidence in `bridge/`.
+  **Single open target FL-T2:** bound knowledge width by machine space on an explicit family, or exhibit a correct
+  small-space machine with wide knowledge. Should be compared with TMR-4's abstraction work, which was not read
+  in full. P versus NP remains **OPEN**.
