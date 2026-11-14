@@ -1,3 +1,19 @@
+# TMR-4 CURRENT handoff | 2026-11-14 12:43 PST | LENGTH-BLIND FIXED-GATE MCSP COFACTOR INHERITANCE028
+
+**NEW FIXEDGATE28 PROVED/RESTRICTED, independent TMR-1/TMR-2/TMR-3/TMR-5 review OPEN:** For EVERY *fixed integer* s0>=0, ordinary exact MCSP[s0] on explicit full truth-table inputs N=2^n in standard binary order has a single (for that s0) uniform total finite-control deterministic **one-way read-only input + one physical two-way work tape** decider **without an advance length header**, using S(N)=(log N)^(O_s0(1)) work cells and T(N)=N(log N)^(O_s0(1)) transitions. At each input-length doubling, enumerate all <=s0-gate DAG descriptions on the new arity and inherit their first-half match flags from the zero-high-variable **syntactic cofactors**, which still have <=s0 gates; then continue online comparisons. All input movement, index/counter storage, gate evaluation, dual-list promotion and final output charged. This extends PRIOR TMR-5/023 and TMR-2/027 threshold ZERO to **all fixed gate counts**. It is elementary and not claimed externally novel; it is NOT the CHMY small positive mu regime s=N^mu.
+
+**EXPLICIT GROWING-THRESHOLD FALSIFIER:** If s(1)=0 then s(2)=1, the 2-input table [1,0,1,0] for NOT x0 is YES with one gate, but its first half [1,0] matches **no** zero-gate 1-input candidate. Naively inheriting only existing old flags loses a true answer. A more powerful nonlinear summary might repair this; all magnification/3-SAT arrows OPEN.
+
+**ACTUALLY EXECUTED native CPython finite semantic-mask proxy** experiments/tmr/tmr4_fixed_gate_stream028.py (SHA256 dca4dee365d63a3bce111d8f6a4cf13576f019a97ef5cc56bfb586960413e496; Git blob 4dcb1a429d3b9531209ffbdda13cdcf05d72fb9c); raw results/raw/tmr/2026-11-14_1243_TMR4_FIXED_GATE_STREAM028_RAW.json (SHA256 b6eb3e1e804c15201feb696d136d63a00f6b32d522711937dfa7bf52a0a4e653; Git blob bad20bb6e1223a998fa1ef153a177f929ab1fc51). **2,593** recorded finite cases/cofactor checks, all PASS; gate sizes 0,1,2 and all n<=3 tables, random n=4; no native finite-alphabet tape compiler was executed. Full proof and exact costs in research/agents/tmr-4/2026-11-14_1243_TMR4_LENGTH_BLIND_FIXED_GATE_COFACTOR028.md. Historical fixed-affine kernel, clause-compilation, Walsh/moment and transport constraints remain restricted. CHMY STACS2021 Thm1 demands exact MCSP at s=N^mu with small fixed mu and N^1.01 time; larger-mu Thm2 N^1.99 does not transfer. No P!=NP proof.
+
+**PREFLIGHT/OWNERSHIP:** Nov14 MCSP directive FIRST and rechecked sha 1e11aa64a0b0d635a65cea58500b09f2b0fe010a; Nov13 replacement, all TMR handoffs, latest issue #3 through TMR-3/027, AGENTS/CODEX/skill, original TMR/Claude/LSPV/Grok relevant artifacts checked; authentic proof1 28,714 chars, proof2 1,051,196 via Git blob, main.tex 2,545,859 via Git blob. TRACKERS REVIEWED; NO MATERIAL CHANGE. TMR-5 retains main.tex synthesis ownership. No schedules modified.
+
+**NEXT:** TMR-2 audit inheritance invariant; TMR-3 audit exact one-tape charges; TMR-1/TMR-5 hostile check the base circuit source/growing threshold gap. Investigate whether a compact, fully charged **inherited summary** exists for genuinely growing s(n), without replaying first-half source bits.
+
+END_OF_HANDOFF::TMR4::028::2026-11-14_1243_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-14 11:42 PST | ROBUST Gap-MCSP AFFINE-KERNEL COLLISION027
 
 **NEW AFFGAP27 PROVED/RESTRICTED elementary theorem, TMR-2/TMR-5 peer review OPEN:** For ordinary small-circuit YES class C_(n,s) on full N=2^n truth tables, let D(n,s)=(s+1)(n+s+2)[3(n+s+2)^2]^s. For eta in (0,1), d=ceil(eta N), V(N,d-1)=sum_(j=0)^(d-1) binom(N,j). Every **fixed, source-independent** GF(2)-affine sketch A x+u with rank r, and ANY deterministic nonlinear postprocessor psi, necessarily gives the same output on zero YES and some promised Hamming-far NO if
