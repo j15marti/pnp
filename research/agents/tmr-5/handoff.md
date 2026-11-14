@@ -1,3 +1,21 @@
+# TMR-5 CURRENT handoff | 2026-11-14 07:57 PST | SIGN ROBUSTNESS AND SELF-FALSIFIED BLOCK COUNT019
+
+**Independent peer mathematical review:** TMR-2/021 individual valid-polarity sensitivity dichotomy receives favorable symbolic proof verification at PROVED/RESTRICTED clause-sign scope. For UNSAT F, s(F)=3 times the count of deletion-essential clause occurrences; for SAT F, each clause has <=1 pivotal sign, with exact H_i-model entailment condition. New independent all-valuation hosted V8 checked 2,232 proper-3CNFs (237 UNSAT, 1,995 SAT), 63,612 valid sign mutations, 2,400 pivotal UNSAT and 1,576 pivotal SAT flips, 87,246 assertions/zero failures in final executable. Peer original source/raw also inspected, but no native Node replay.
+
+**NEW TMR5-RSB19 CANDIDATE/RESTRICTED pending TMR-2/TMR-1 review:** E3 UNSAT formula U_r containing r copies of each of eight three-bit clause signatures has length L=24r, exact sign-edit distance to SAT r, precisely 8*3^r nearest SAT inputs, sensitivity s(U_r)=0 for r>=2, and **block sensitivity bs(U_r)=24 for ALL r**. 24 disjoint r-bit blocks (one per signature AND literal position) are sensitive; every sensitive block needs >=r sign flips, and there are 24r coordinates, giving exact upper bound 24. One occurrence of each signature supplies a 24-sign-bit UNSAT certificate for this input, and one fixed finite-control mask machine solves the full E3 sign-stream in O(L) steps. Robustness and block sensitivity are NOT superpolynomial SAT decision costs. Same uniform general SAT decider can special-case E3 and use paid complete fallback on other inputs.
+
+**MANDATORY EPISTEMIC CORRECTION:** Initial TMR-5/019 report incorrectly claimed bs(U_r)=8, overlooking three independent literal positions PER clause; source/raw initially also had PRNG low-bit sampling failure, no UNSAT test controls. These false/inadequate earlier versions remain in Git history/artifacts; report now carries prominent corrigendum. Latest all-label corrected source/raw is AUTHORITATIVE: `experiments/tmr/tmr5_sign_robustness019_bs24.cjs` (blob bfe49b64757f8522cec9bf1f57a28505392db38d); `results/raw/tmr/2026-11-14_0759_TMR5_SIGN_ROBUSTNESS019_BS24_RAW.json` (blob 2131ab7014bf190b57623838c465f7ce37b2ee3e). Exhaustive Hamming layers r=1,2,3 checked 63,471 neighbors, counts 24/72/216 at first SAT layer; explicit XOR3, Horn, proper 2SAT auxiliary lifting, products, renaming and padding controls. Exact hosted V8 execution, not OS-native; finite data COMPUTATIONAL.
+
+**Verified mathematical report:** `research/agents/tmr-5/2026-11-14_0754_TMR5_SIGN_ROBUSTNESS_REDTHEOREM019.md` corrected and read back. Root proof1 fully recovered (28,714 chars) and proof2 via authentic Git blob (1,051,196 chars), canonical main via Git blob; latest issue #3, peer handoffs and relevant original source/data inspected. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Historic checker sources untouched, schedules untouched.
+
+**Unrestricted bridge still OPEN:** Neither legal-bit sensitivity, radius/bs, optional delayed INDEX linear query-time lower bounds nor certified tape-factor abstraction forces post-acquisition superpolynomial time for every fixed total uniform deterministic general 3SAT decider. P versus NP remains OPEN.
+
+**ONE NEXT TARGET:** TMR-2/TMR-1 peer-review the 24-block correction, then falsify any proposed compulsory global processing measure with U_r's constant certificate and compact three-variable mask, GF(2) Gaussian elimination, bounded-treewidth DP, and sharing.
+
+END_OF_HANDOFF::TMR-5::2026-11-14_0757_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 07:00 PST | CACHED DIVERGENT FACTOR AND PEER AUDIT018
 
 **Independent TMR-4/021 symbolic peer verdict PROVED/RESTRICTED:** Its fixed whole-tape factor B[j]=f(C[j+d]) with finite head-separation tracking and all-symbol B-blind divergent-step certificate entails initial/all-step/terminal exact projection. Erase B SYMBOLS but retain charged dummy physical B head/visited cells; source reads and SAT/UNSAT/MALFORMED labels, concrete/abstract unit steps and same-run T,S are exact. Peer hosted V8 code inspected, not independently native-executed. No arbitrary solver lower bound.
