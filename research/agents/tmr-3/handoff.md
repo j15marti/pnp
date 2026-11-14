@@ -1,3 +1,19 @@
+# TMR-3 CURRENT handoff | 2026-11-14 15:33 PST | HIGH-MU NETWORK EVENT FRONTIER030
+
+**NEW NETFRONT39 PROVED/RESTRICTED, independent TMR-1/TMR-5 review OPEN:** A fully charged, length-only uniform constructor and constant-symbol-event deterministic/randomized network deciding ordinary high-threshold $MCSP[N^{\mu_2}]$ (the **different large $\mu_2$** of Cheraghchi et al., STACS 2021 Theorem 2) is serializable on one fixed one-way-input plus one-work-tape machine in $T=O(C+N+(E+1)M)$, with $M=O(N+B+(E+p+1)\log(N+B+E+p+2))$. Here $N=2^n$ is full truth-table input length, $B$ description bits, $C$ physical constructor transitions, $p$ processors, $E$ worst-case charged events, and ALL interfaces, input reads and work are counted. For $C=O(N^c), B=O(N^b), p=O(N^a), E=O(N^e)$ and $d=\max(1,a,b)$, CHMY Theorem 2 rules out $c<1.99$ and $e+\max(d,e)<1.99$. In particular $B,C,p=O(N)$ rules out $E=O(N^{0.99-\varepsilon})$ for every fixed $\varepsilon>0$; with $E\le pt$, it rules out simultaneous $p=O(N^a),t=O(N^b)$ when $a+b<0.99$. Restricted to high $\mu_2$, NOT $P\ne NP$.
+
+**NEW CONSPACE39 DIRECT-SIMULATOR LEDGER REPAIR:** Peak writable space of the simulator **executing the specified constructor** is $S_{\rm sim}=O(S_C+M)$, not $O(M)$ as TMR-3/029 stated without bounding constructor peak space. A fixed constructor can write and erase $N^2$ cells and emit an $O(1)$-bit description, giving $S_C=\Theta(N^2)$ but $M=O(N)$. This does NOT show no optimized equivalent constructor exists. A source-dependent constructor needs separately charged source-access simulation.
+
+**ACTUALLY EXECUTED NATIVE CPython:** exact `experiments/tmr/tmr3_network_event_frontier039.py` (Git blob `961688c511d6e92b24f956d6a045a0d48d07a8b2`); raw `results/raw/tmr/2026-11-14_1533_TMR3_HIGHMU_NETWORK039_RAW.json` (blob `65bc84593b95c26cc0c44dfbe70a76c997b03ec1`): 7,200 assertions, 1,016 tiny exhaustive parity networks, 13,772 charged events, 148,136 record-visit proxies, 3,315 exact rational exponent configurations, zero failures. Finite semantic proxy NOT an implemented physical one-tape machine or MCSP lower-bound experiment.
+
+**REPORT:** `research/agents/tmr-3/2026-11-14_1533_TMR3_HIGHMU_NETWORK_EVENT_FRONTIER030.md`. Preflight current MCSP directive FIRST and rechecked, Nov13 TMR directive, AGENTS/CODEX/skill, authentic full proof1/proof2/root-main, issue #3, five handoffs, TMR/Claude originals, CHMY publisher PDF p.23:3 and MMW manuscript. TRACKERS REVIEWED; NO MATERIAL CHANGE. Canonical main.tex unchanged. No schedules modified. P versus NP OPEN.
+
+**NEXT / PEER REQUEST:** TMR-5 audit constructor-space counterexample and exact simulation; TMR-1 verify $\mu_2$ and strict exponent; TMR-2 test query strengthening without invalid online assumptions; TMR-4 seek full-table threshold-preserving reduction. Missing unrestricted arrows OPEN.
+
+END_OF_HANDOFF::TMR3::030::2026-11-14_1533_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 14:55 PST | TWOWAY HEADER AND NETWORK BRIDGE029
 
 **NEW TWOREWIND32 PROVED/RESTRICTED symbolic, TMR-1/TMR-5 peer review OPEN:** Any fixed one-way-input/one-work-tape decision algorithm for $\gamma(n+1)||x$ (literal upfront arity header) with costs $T_H,S_H$ can be compiled into a **header-free, TWO-WAY read-only input** plus ONE work tape algorithm at $T_B=O(N\log N+(T_H+1)\log N)$ and $S_B=S_H+O(\log N)$. First count $N=2^n$, rewind source, synthesize the gamma header on the single work tape, then run the original guest while real source stays parked until guest finishes the header. This yields TMR-3/028 ANNO's $T=N^{1+2\kappa+o(1)}$, $S=N^{2\kappa+o(1)}$ for slowly growing $s_\kappa=\lfloor\kappa n/\lceil\log_2(n+1)\rceil\rfloor$ and fixed $0<\kappa<.005$, but **does NOT** supply the one-WAY model or $s=N^{\mu_1}$ needed in CHMY STACS21 Theorem 1.
