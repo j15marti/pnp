@@ -1,3 +1,24 @@
+# TMR-2 CURRENT handoff | 2026-11-14 07:25 PST | GENERAL PROPER-3CNF POLARITY DICHOTOMY021
+
+**NEW TMR2-SCB21 CANDIDATE/RESTRICTED, independent TMR-1/TMR-5 review requested.** For arbitrary ordered proper 3-CNF F with three distinct variables per clause, let H_i=F without occurrence C_i. Exact one-original-sign-bit SAT/UNSAT sensitivity:
+
+* If F is **UNSAT**, all three polarity bits of C_i change the formula to SAT iff H_i is SAT; otherwise none do. Thus s(F)=3e(F) for the number e(F) of deletion-essential clause occurrences, and s(F)<=3 min(m,2^n,8 binomial(n,3)). This strengthens earlier TMR2/020 G20 bound from inequality to **exact equality**.
+* If F is **SAT**, flipping the jth polarity in C_i creates UNSAT iff H_i entails literal j TRUE and the other two original literals FALSE. Thus C_i is logically implied by H_i, the three clause variables are backbone-fixed, and **at most one sign bit per clause** is pivotal: s(F)<=m. In particular if F has <3 backbone variables, s(F)=0. This is an exact all-length combinatorial theorem in the declared polarity-edit interface, not an all-machine processing bound.
+
+**Proof:** For UNSAT F and H_i SAT, every H_i-model must falsify all three C_i literals, so flipping any one makes SAT. SAT F plus flipped UNSAT iff every H_i-model falsifies the flipped clause, equivalent to the stated fixed selector triple; two such distinct selector triples cannot simultaneously hold on a nonempty model set. Witnesses of distinct deletion-essential clauses are distinct full assignments. Original source-bit sensitivity forces any correct fixed locally moving input-tape decider to physically read those bits by same-input opposite-label trace coupling, but produces **no superlinear computation charge**.
+
+**EXECUTED and PUBLISHED hosted V8 exact source:** 43,758 exhaustive E3 clause multisets m<=10, plus 5,000 deterministic random n=4,5,6 clauses sets and 4 hostile cube/product controls. 48,762 sources, 1,379,646 flips, 6,290 pivotal SAT, 13,041 pivotal UNSAT, 4,347 essential occurrences, 300 renamings, 0 failures. Distinct native CPython LOCAL-ONLY implementation: 53,468 sources, 1,586,727 flips, 4,674 deletion witness checks, 0 failures; local-only Python/JSON not presented as repository artifacts. Both finite tests COMPUTATIONAL.
+
+**Readback-verified main paths:** report research/agents/tmr-2/2026-11-14_0725_TMR2_GENERAL_POLARITY_PIVOTAL_DICHOTOMY021.md (blob 428ba8d10bc419fbd4187b4055ae9032c7a6ef56); V8 source experiments/tmr/tmr2_sign_dichotomy021.cjs (blob fbe23cfe6ff77ad478d1b550b91eb710804eee9b); raw results/raw/tmr/2026-11-14_0722_TMR2_SIGN_DICHOTOMY021_RAW.json (blob df478891e4bba224527b9fcd924604cb3118f84d). Direct primary context: Kullmann 2000/2011 minimal UNSAT; Kiesl et al. 2018 clause redundancy; Dubois and Dequen 2001 backbone; Nisan-Szegedy 1994 sensitivity (all cited and carefully scoped in report).
+
+**Corpus:** directive unchanged SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; proof1 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 authentic Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c; main.tex authentic Git blob 2,539,489 chars SHA f80790efd768574555a85703a14820e1bed56b70; issue #3 through TMR-1/021, AGENTS, CODEX, repo skill, all five latest handoffs, original TMR-2/019-/020 reports/source/raw, TMR-1/021, TMR-3/019, TMR-5/018. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Canonical main.tex not modified. No schedules touched. General P versus NP remains OPEN.
+
+**NEXT:** TMR-5 independently challenge the selector-triple iff and clause-essential equality; then seek a compulsory post-acquisition SAT/UNSAT processing charge robust to a finite-state E3 mask, unrestricted caching, sharing, Horn/2-SAT/GF(2), repeated input rereads and arbitrary polynomial work space.
+
+END_OF_HANDOFF::TMR-2::2026-11-14_0725_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-14 06:24 PST | EXACT THREE-VARIABLE CUBE SIGN ASYMMETRY020
 
 **TMR2-CUBE20 CANDIDATE/RESTRICTED (TMR-1/TMR-5 review requested):** For the actual 3-bit-per-clause proper-3CNF fixed-three-variable sign language E3, clause signature sigma excludes exactly assignment sigma. With multiplicities c_sigma, formula UNSAT iff all eight signatures occur. Exact number of valid SAT/UNSAT label-changing singleton sign flips:
