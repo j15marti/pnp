@@ -1,3 +1,26 @@
+# TMR-2 CURRENT handoff | 2026-11-14 06:24 PST | EXACT THREE-VARIABLE CUBE SIGN ASYMMETRY020
+
+**TMR2-CUBE20 CANDIDATE/RESTRICTED (TMR-1/TMR-5 review requested):** For the actual 3-bit-per-clause proper-3CNF fixed-three-variable sign language E3, clause signature sigma excludes exactly assignment sigma. With multiplicities c_sigma, formula UNSAT iff all eight signatures occur. Exact number of valid SAT/UNSAT label-changing singleton sign flips:
+- UNSAT: s=3 times the number of singleton signatures, at most 24 irrespective of clause count; all eight once gives s=24, all twice gives s=0.
+- SAT with two or more missing signatures: s=0.
+- SAT with unique missing signature a: s=sum_j c_(a xor e_j)*1[c_(a xor e_j)>=2].
+**Explicit infinite SAT family:** six signatures 010..111 each once, plus R+1 copies of 001 ordered last; missing 000. L=3(R+7), s=R+1, last physical bit sign flip yields valid UNSAT, so every correct original-input-local deterministic decider physically reads that last bit and spends at least L steps. A fixed finite-control 8-bit mask scanner classifies ALL E3 sources in O(L) time and ZERO visited writable work cells. Thus Theta(L) valid-label acquisition does not force superlinear semantic SAT processing.
+
+**NEW G20 CANDIDATE/RESTRICTED:** On arbitrary UNSAT proper width-3 CNF with n variables, m occurrences, a sign-pivotal clause must be deletion-essential. Choose for each essential occurrence a distinct witness satisfying all other clauses, which injects essentials into the 2^n assignments. Duplicates are nonessential and only 8*binom(n,3) distinct proper clauses exist. Therefore s_UNSAT,sign<=3*min(m,2^n,8*binom(n,3)). At n=3,m=8 this is tight (24). This does NOT bound multi-bit changes, proof work, or unrestricted decision time.
+
+**ACTUAL native CPython, published exact code/raw and verified Git blobs:** 125,970 count multisets for m=0..12, 4,031,040 actual one-sign mutation comparisons, 125,475 SAT and 495 UNSAT signature multisets, 880 independent literal-evaluation checks, 180 order shuffles, 48 symmetry controls, 8 2-SAT auxiliary controls, Horn/XOR/product controls, 9 malformed tests, all zero failed assertions. One 18.022-second process; finite evidence COMPUTATIONAL and no universal TM compiler.
+- Report: research/agents/tmr-2/2026-11-14_0624_TMR2_CUBE_SIGNATURE_ASYMMETRY020.md
+- Exact natively executed: experiments/tmr/tmr2_cube_signature020.py (Git blob 86de36517fd9e4c24d4a7ac99e1f0f2d6cef74ea)
+- Immutable raw: results/raw/tmr/2026-11-14_0622_TMR2_CUBE_SIGNATURE020_RAW.json (Git blob 2dd51dc27ac95e95e20d32bcc8339dd14f560659)
+
+**CORPUS:** TMR replacement directive first/rechecked SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4. Complete proof1 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2 1,051,196 chars via exact Git blob 930c5eeddafce656717f28055a7a9a755f44737c, canonical main.tex 2,536,131 chars via blob f0054c990e11602b4b60ead3bccffa73f11d0d7b; AGENTS.md, CODEX.md, skill, issue #3, all 5 new TMR peer handoffs; original TMR-2/017/019, TMR-3/018, TMR-5/017, TMR-1/020; Nisan 1991, Buhrman-de Wolf 2002, Kullmann-Zhao 2013. Older assignment rules superseded, verified history retained. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** main.tex reserved for TMR-5. NO task changes.
+
+**NEXT:** TMR-5 independently audit U20/S20/G20 and local-head last-bit charge; find an unavoidable SAT semantic-processing invariant robust to complete acquisition, cache/recompute, Gaussian elimination, Horn/2SAT, alternate encodings and polynomial workspace. Full 3-SAT superpolynomial all-exponent bound and P versus NP remain OPEN.
+
+END_OF_HANDOFF::TMR-2::020::2026-11-14_0624_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-14 05:12 PST | ORDINARY VALID-LABEL SIGN SENSITIVITY019
 
 **NEW TMR2-HSS19 CANDIDATE/RESTRICTED pending TMR-5/TMR-1 review.** For one fixed explicitly encoded proper 3-CNF grammar E with unary n and c headers and fixed-width signed occurrence IDs, construct an unbounded n=9 family F_m with 12 four-clause forcing gadgets and m repeated pivots (x OR y OR z), with z=1, x=y=0 forced. All formulas F_m are SAT, and flipping *one distinct sign bit* of the z occurrence in any pivot produces a **valid, same-length UNSAT** proper 3-CNF. Encoded bit length L=203+16m. By complete-configuration deterministic input-aware coupling, EVERY correct one fixed total uniform multitape SAT decider must read all m pivotal positions, Q_A(F_m)>=m=(L-203)/16, and the last pivot sign at position L forces at least L locally moving source-head steps. No online/one-pass assumption and NO syntactic padding or malformed neighbor.
