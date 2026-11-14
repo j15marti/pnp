@@ -1,3 +1,25 @@
+# TMR-5 CURRENT handoff | 2026-11-13 22:55 PST | BALANCED SIX-CERTIFICATE STRUCTURE PEER AUDIT010
+
+**INDEPENDENT PEER VERDICT: TMR-2/012 PROVED/RESTRICTED**, exact 5-versus-6 promise sign-bit SAT certificate complexity for all authenticated eight-mask SAT tuples, additivity across independent blocks, 24-bit UNSAT product certificate, and same-machine original-input-observation implication `T>=ceil(6r/h)=Omega(L/log L)`. Original `G_r` source grammar only; no source-ID mutation or unrestricted SAT processing lower bound. Proof checked via Hall subcube matching and independent native executable, not a wrapper.
+
+**NEW TMR5-SIX10 CANDIDATE pending TMR-2/TMR-1 review:** For every coordinate-balanced SAT 8-mask tuple, EVERY size-six SAT certificate is exactly either (A) all three coordinates of two rows with equal masks, or (B) the same two coordinates of three rows with identical projection. Exact number equals `sum_m binom(f_m,2)+sum_{|J|=2,v}binom(f_{J,v},3)`. A balanced `(0,0,1,1,6,6,7,7)` source has **12** size-six certificates, of which **8** are projection-triple certificates, refuting the stronger duplicate-pair-only conjecture. This is a new restricted mathematical classification, not an all-exponent SAT lower bound.
+
+**ACTUAL independently authored native Python tests:** 190,051 complete 0..6-bit query subsets for each of five SAT/UNSAT hostile controls (950,255 subsets total), Hall perfect matching tested for every subset, counts at six = 4,12,36,61,0 respectively, 0 failed assertions; unbalanced prior at five has 3 SAT certificates. Separate structural formula sweep exhausted all 343,000 ordered balanced tuples (302,680 SAT, 40,320 UNSAT), computing the six-certificate multiplicity distribution 4:126000, 6:120960, 10:26880, 12:15120, 18:13440, 36:280; all finite evidence COMPUTATIONAL. Exact published Python code Git blobs match independently executed native files. No physical TM or full-parser simulation.
+
+**Readback-verified main artifact paths:**
+- `research/agents/tmr-5/2026-11-13_2255_TMR5_BALANCED_CERTIFICATE_PEER_REVIEW010.md`
+- `experiments/tmr/tmr5_balanced_certificate013.py`
+- `experiments/tmr/tmr5_balanced_sweep013.py`
+- `results/raw/tmr/2026-11-13_2255_TMR5_BALANCED_C6_013_RAW.json`
+
+**Corpus:** latest superseding TMR directive, both complete trackers (proof1 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 recovered full authentic Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c), root main.tex complete authentic Git blob, latest issue #3 through TMR-4/013, AGENTS.md, CODEX.md, pnp skill and all five handoffs, original TMR-2/010,/012, TMR-1/012, TMR-3/010,/011, TMR-4/013. Primary Hall 1935 and FLMV 2005 exact model limits checked. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No task/schedule mutation. P versus NP OPEN.
+
+**ONE NEXT TARGET:** TMR-2 independent audit of exact six-certificate shapes. Then TMR-5 full crossing-code physical splice independent review and post-copy processing potential, with complete input read, arbitrary work space and compact algebra preserved.
+
+END_OF_HANDOFF::TMR5::2026-11-13_2255_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-13 21:55 PST | PARALLEL-HEAD AND KRAFT-SHARPNESS009
 
 **Independent peer theorem verdict: TMR-4/012 PROVED/RESTRICTED** at the exact local-input-head source-observation MAY model. Multihead interval-cover formula is shortest-path exact for arbitrary head origins and previously observed input positions. Each physical concrete step maps to cost-one MAY edge, both terminal labels preserved via unread-opposite-source deterministic replay, and the every-edge sharp potential inequality holds. It has only an $O(L)$ source-transport expressive ceiling; no general SAT processing lower bound. Separately authored native Python 3.13 audited 224 exact BFS/formula comparisons and 8,816 every-edge inequalities, three hostile endpoint controls, zero failures. Peer exact Python inspected but not reexecuted.
