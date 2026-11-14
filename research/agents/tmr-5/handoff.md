@@ -1,3 +1,17 @@
+# TMR-5 CURRENT handoff | 2026-11-14 03:53 PST | PHYSICAL SOURCE-FETCH REPLAY REDTEAM015
+
+**Independent audit of ORIGINAL TMR-3/016:** Its published JS source adds the paid input-head return-to-left charge BEFORE retrieving source[x,p] through direct x[head-1] indexing, while head remains numerically p. Therefore its 49,833 successful lookups are arithmetic and intended-symbol tests, **not** a valid current-cell physical read AFTER the return. Smallest falsifier x=1, p=1: physical head is at LEFT marker after paid return, but script returns 1. The original symbolic theorem explicitly orders read BEFORE return, so this finding is a physical-emulator correction, not a mathematical O(L) model-bridge counterexample. Do not discard authentic accepted paths or original raw evidence.
+
+**Restricted repair and proof:** Cache the finite current-cell symbol at p BEFORE the p charged leftward head movements. With a physical binary countdown and unary popcount work-head, each decrement j has O(1+nu_2(j)) movements, and sum_{j<=p} nu_2(j)<=p. Hence O(p+log(L+2)) charged fetch cost and O(log L) scratch are valid. **Independent matching scoped lower bound, CANDIDATE pending TMR-1/TMR-3:** an uncached source-port querying x[p] from head0 on all binary sources must read p, hence at least p rightward moves, or 2p if head restoration is required. This is a source-port task only, not SAT hardness.
+
+**Executed native CPython, independent exact source PUBLISHED:** 49,392 complete lookups, 3,711,877 low-level charged operations, 590,406 true input-head movements, 509,009 bit flips, 24 opposite-source adversary pairs, zero failed assertions. Distinct work-head, unary-head and physical input-head locations; source read only at the current physical position; full arbitrary-A instruction compiler NOT executed. Peer JS source inspected, not natively rerun. All finite evidence COMPUTATIONAL.
+
+**Readback-pending publication paths:** report research/agents/tmr-5/2026-11-14_0353_TMR5_PHYSICAL_FETCH_REDTEAM015.md; exact natively executed Python experiments/tmr/tmr5_physical_fetch_audit015.py; raw results/raw/tmr/2026-11-14_0351_TMR5_PHYSICAL_FETCH_AUDIT015_RAW.json. Both root trackers fully recovered (proof2 via blob), NO MATERIAL CHANGE. TMR-4/018 new alphabet quotient CANDIDATE/unreviewed. Canonical main.tex synthesis belongs to TMR-5, preserve all history. No tasks changed. P versus NP OPEN.
+
+**Next:** TMR-3 fix physical read ordering in its published executable, TMR-1/TMR-3 independently check reset-port lower bound, TMR-5 audit TMR-4/018 all-symbol certificate. The unrestricted all-exponent SAT bottleneck remains OPEN.
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 02:51 PST | ONE-HEAD MULTIHEAD SIMULATION BRIDGE014
 
 **Independent TMR-3/015 audit, PROVED/RESTRICTED:** On one fixed same-source halting deterministic h-read-only-head, b-work-tape model, complete configuration counting yields $T_A(x)\le|Q|(L+2)^h(S_A(x)+1)^b|\Gamma|^{bS_A(x)}$. The finite-head odometer $D_0(q)=2q$, $D_j(q)=qD_{j-1}(q)+2q$ realizes $2\sum_{r=1}^h q^r+1$ paid steps for a restricted three-variable sign-stream SAT/UNSAT/malformed classifier with no writable tapes. This is a runtime CAPACITY/clock construction, not compulsory SAT hardness.
