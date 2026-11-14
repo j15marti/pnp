@@ -1,3 +1,26 @@
+# TMR-1 CURRENT handoff | 2026-11-14 04:00 PST | HONEST-ENCODING PADDING FRONTIER018
+
+**NEW TMR1-PAD18 CANDIDATE/RESTRICTED pending TMR-5/TMR-2 independent review:** For any fixed explicit proper-3CNF bit encoding E with polynomial syntax validation, the all-algorithm/all-polynomial-exponent lower-bound quantifier Q_E is equivalent to the absence of a fixed total uniform polynomial valid-input decider. If E and D have **two-way fixed uniform polynomial-time SAT/UNSAT-preserving translations**, Q_E iff Q_D. This is a charged encoding/model-transfer safeguard, not a proof of P!=NP.
+
+**NEW FALSIFIER to arbitrary semantic encoding invariance:** Pad any original E source x of length L as p(x)=1^L 0 x 0^(2^L), length N=2L+1+2^L. One fixed total correct ordinary single-input-head decider checks exact suffix and grammar, then brute forces at most L literal-occurrence assignments with all reads/counts charged, in O(N poly(log N)) time and O(log N) writable visited cells. The padded problem is in P under its ACTUAL encoded bit length N, independently of the original standard-encoding 3SAT complexity. The E->p translation necessarily takes Omega(2^L) output time, so this does not transfer back as a polynomial standard-3SAT solver. Original target remains OPEN and tied to one honest fixed encoding.
+
+**EXECUTED hosted V8, COMPUTATIONAL:** Exact published self-contained Node-compatible JS ran 2,047 exhaustive restricted triple-clause sign-source controls (21 SAT, 2,026 UNSAT) through L=10; 6,141 malformed suffix tests; N identity checked; 10 Horn/2SAT/XOR/auxiliary/product semantic controls; zero assertions. Max constructed padded N=1,045. The JS uses array indexing and is NOT a physical arbitrary-length TM compiler. Native OS replay and full repo preflight were not executed.
+
+**Verified publication:**
+- Report: research/agents/tmr-1/2026-11-14_0400_TMR1_PADDING_ENCODING_FRONTIER018.md (Git blob e4ff349caae3722661ed91b14b3238991e7f9b1a).
+- Direct V8 executable: experiments/tmr/tmr1_padding_encoding_frontier018.cjs (Git blob 310e68696f3b5c1cfc2ddd20c0b1f0d669fd0631).
+- Immutable raw: results/raw/tmr/2026-11-14_0400_TMR1_PADDING_ENCODING_FRONTIER018_RAW.json (Git blob 1897dc1f987811e8b73ff73ede46f73c00799381).
+
+**Independent mathematical peer observation:** TMR-4/018 work-symbol quotient needs identical head trajectories and initial positions for exact visited-cell space. Those conditions already force identical visited-footprint S on each run; no new semantic space obligation follows from separately tracking history. Local certificate remains CANDIDATE and has no P!=NP implication.
+
+**Reads/status:** Replacement directive unchanged, full proof1.txt (28,714 chars), full proof2.txt recovered Git blob (1,051,196 chars), full root main.tex recovered Git blob (2,530,965 chars), latest issue #3 through TMR-5/015, AGENTS, CODEX, pnp research skill, all current TMR handoffs, original relevant reports/code/data and historical real accepted counterexamples. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Root main.tex left for authorized TMR-5 synthesis. No schedules modified.
+
+**ONE next objective:** seek a lower-bound invariant that is tied to one ordinary explicit encoded length and is stable under all fixed polynomial-time, fully charged recodings, while allowing arbitrary polynomial workspace and compact Horn/XOR/treewidth algorithms. Ask TMR-5 to review the arbitrary-padding falsifier before promotion. P versus NP remains OPEN.
+
+END_OF_HANDOFF::TMR-1::2026-11-14_0400_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 03:09 PST | COST-EXACT FINITE-CONTROL QUOTIENT017
 
 **NEW TMR1-SCQ17 CANDIDATE/RESTRICTED pending independent TMR-5/TMR-4 review, finite evidence COMPUTATIONAL.** For any ONE fixed finite total deterministic multitape 3-SAT decider A, take its explicit finite transition table and partition finite-control states by exact terminal label and all read-symbol-vector-dependent observable actions (all work writes, all head moves, output and unit transition cost), refining by successor control blocks until stable. This computes the COARSEST *symbol-universal local strong cost congruence* in finite table time. Quotient configurations retain exact immutable source x, ALL work tape contents and head positions. Every concrete step projects with cost one; every quotient step replays from EVERY concrete representative with cost one, both labels and malformed handling are preserved, and for all x, T_quotient(x)=T_A(x) and S_quotient(x)=S_A(x). The theorem has an explicit proof; it does NOT compute the unknown runtime or lower-bound it, and it is incomplete for semantic all-input erasures (TMR-4/017 halting barrier). No general SAT lower bound follows.
