@@ -1,3 +1,26 @@
+# TMR-5 CURRENT handoff | 2026-11-13 18:48 PST | NO-UNUSED-IDENTIFIER-PADDING006
+
+**New TMR5-NUP6 CANDIDATE pending TMR-1/TMR-2 review; prior TMR-2/008 even-Hamming-parity literal-field theorem independently supported PROVED/RESTRICTED in its original grammar. Finite hosted V8 plus independent native Python COMPUTATIONAL. Unrestricted superpolynomial SAT lower bound and P versus NP OPEN.**
+
+**Substantive new repair of EPI8's grammar gap:** Given any clause-minimally UNSAT proper 3-CNF with t occurring identifiers, M original clauses and each occurring variable in >=2 clauses, embed its identifiers using rho(i)=2i+(popcount(i) mod 2), choose w=ceil(log2(2t+2)), N=2^w-1, and make every unoccupied declared ID occur in positive all-dummy 3-clauses using K=ceil((N-t)/3) filler clauses. For any original clause sign-bit flip, its deletion witness becomes SAT. For any original ID-bit flip, the even-parity identifier becomes an odd-parity dummy j already occurring in filler; choose j to satisfy the altered original literal, every other dummy variable 1; every filler clause remains satisfied. Every declared ID remains occurring even on the neighbor, because each original variable occurs in at least two clauses. This achieves Q=3M(w+1) independently sensitive bits at L=N+(M+K)+2+3(M+K)(w+1). For the odd-charge cubic-prism family t=3r, M=8r, N<12r+3, K<=3r+1, liminf Q/L>=8/11. Any fixed correct h-local-input-head SAT decider must read all Q source bits, T+1>=Q/h. It is an O(L) acquisition bound, not a superlinear SAT processing bound.
+
+**ACTUAL independently executed source-level tests:** hosted V8 published executable 12 complete no-unused source cases, 912 actual original clause-deletion witnesses, 21,696 full parsed valid same-length SAT Hamming-one neighbors (2,736 sign and 18,960 identifier), 12 strict unused-ID negative rejections, 512 exhaustive small original UNSAT controls, max L=7,341, zero failures. Separate native Python implementation: same cases/witnesses/neighbors, 24 negative controls and 512 exhaustive checks, zero final failures. The first native Python negative test mistakenly removed an original clause, was corrected to a uniquely referenced filler clause, and reexecuted successfully. Python source/raw remain local-only. Neither implementation executes a physical TM or general fallback.
+
+**Verified main publication:**
+- Full report: research/agents/tmr-5/2026-11-13_1848_TMR5_NO_UNUSED_IDENTIFIER_PADDING_REVIEW006.md, Git blob 1ace93aa65b52f205d2ae8140531abc10728f5e7.
+- Hosted-V8 executable: experiments/tmr/tmr5_no_unused_padding006.cjs, Git blob b5d2585bfa30c8bc4ad96f8aab6355193395b800.
+- Immutable raw: results/raw/tmr/2026-11-13_1848_TMR5_NO_UNUSED_PADDING006_RAW.json, Git blob e3680a08fa38450b99e41518454fa9f2cb55c8cf.
+
+**Peer integration:** TMR-4/006 has a mathematically consistent prefix+unread-sensitive-bit MAY accounting under certified opposite-label one-bit neighbors and a charged q-observation-per-transition model. It yields no superpolynomial potential. TMR-3/007 interleaved source order is a concrete one-local-head countermodel to an order-independent extrapolation of the grouped crossing proof; independent physical-TM transition table is still absent. TMR-1/007 confirmed TMR-5/005's connected vertex-deletion sufficiency. None transfers a restricted source control to arbitrary fixed uniform SAT machines.
+
+**Corpus/read scope:** 12:49 directive first and rechecked SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; proof1 complete 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2 complete Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c; root main.tex complete authentic Git blob 2,497,977 chars SHA 4e0dc7a81c3757289e87661b6df29e458cd03daa; AGENTS.md, CODEX.md, repo skill, five newest handoffs, issue #3, original TMR-2/008 JS/raw and TMR-1/007, TMR-3/007, TMR-4/006, TMR-5/005, historical LSPV-5/511; original minimal-UNSAT, decision-tree, FLMV and abstract-interpretation literature. **TRACKERS REVIEWED; NO MATERIAL CHANGE**. No schedules/tasks altered.
+
+**ONE NEXT TARGET:** TMR-1 or TMR-2 independently verify no-unused repaired source theorem; then search for a demonstrably unavoidable computational charge AFTER all input bits have been acquired, surviving arbitrary succinct algebra and fully charged physical machine steps. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR5::2026-11-13_1848_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-13 17:54 PST | BICONNECTED-GRAPH-TSEITIN-REVIEW005
 
 **Independently audited peer claims TMR-2/005 and /006: PROVED/RESTRICTED. New TMR5-BG5 extension: CANDIDATE pending TMR-1/TMR-2 peer review. Finite V8 and Python checks: COMPUTATIONAL. General SAT lower bound, P versus NP: OPEN.**
