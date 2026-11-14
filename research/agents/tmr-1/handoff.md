@@ -1,3 +1,25 @@
+# TMR-1 CURRENT handoff | 2026-11-14 15:04 PST | NEAR-TIGHT MCSP DUMMY-PADDING TRANSITION029
+
+**NEW PADWINDOW35 PROVED/RESTRICTED, independent TMR-5/TMR-4 review OPEN:** For fan-in-two AND/OR and unary NOT DAG circuits with free constants, let $U(n)$ be the maximum minimum gate count over $n$-input functions. Define $R_\mu(n)$ as the first dummy-input count $r$ for which every repeated full table is ordinary $MCSP[\lfloor2^{\mu(n+r)}\rfloor]$ YES. A direct count of at most $D(n,s)=(s+1)(n+s+2)[3(n+s+2)^2]^s$ circuit descriptions proves that for $n\ge8$ some $f$ requires more than $\lfloor2^n/(16n)\rfloor$ gates. The independent DNF upper is $U(n)\le n2^n+n+2$. With exact padding invariance, for EACH fixed $0<\mu<1$,
+
+$$
+R_\mu(n)=\left(\frac1\mu-1\right)n+O_\mu(\log n),\qquad N'=N^{1/\mu+o(1)}.
+$$
+
+Thus TMR-5/026's $O_\mu(n)$ universal YES-collapse padding bound has a matching *leading linear coefficient*; the exponent $1/\mu$ in materialized table expansion is asymptotically necessary for this specific universal-collapse goal. This is NOT an explicit hard truth-table family, a lower bound on MCSP decision time or a 3-SAT lower bound.
+
+**EXECUTED NATIVE CPython:** `experiments/tmr/tmr1_padding_window035.py`, blob `e8fa3ec48bec05df89b0caf541f4e069edd9df6f`; raw `results/raw/tmr/2026-11-14_1504_TMR1_PADWINDOW035_RAW.json`, blob `8e056ab3b947cc261c274278fcfd672d76ab2f50`. Both source and raw were read back byte-identical with local executed files. 296 exhaustive capped-2-gate truth-table padding comparisons (n=1..3, r=1 or 2), 18 exact rational-threshold numeric checks at n=8..128, zero failures. **Full report:** `research/agents/tmr-1/2026-11-14_1504_TMR1_PADDING_WINDOW_NEAR_TIGHT029.md`. Finite evidence is COMPUTATIONAL.
+
+**PRIMARY SOURCE FIREWALL:** Cheraghchi et al. STACS 2021 Thm 1 at *small* $\mu_1$ gives $MCSP[N^{\mu_1}]\notin DTIME_1[N^{1.01}]\Rightarrow P\ne NP$ for one-way read-only input+one work tape. Thm 2 establishes $N^{1.99}$ randomized one-tape lower bound at a **different larger $\mu_2$**. MMW STOC 2019 Thms 1.2-1.3 concern one-pass oracle-gate **search** MCSP at $s\ge n$; they do not directly lower-bound plain decision MCSP. Threshold/machine transfer still OPEN.
+
+**PREFLIGHT:** Latest Nov14 MCSP directive FIRST/rechecked, Nov13 replacement, AGENTS/CODEX/skill, latest issue #3 through TMR-3/029, five peer handoffs, TMR/Claude/threshold-descent original reports and code. Full authentic proof1 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 1,051,196 chars Git blob 930c5eeddafce656717f28055a7a9a755f44737c; main.tex 2,545,859 chars Git blob 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Canonical main.tex TMR-5-owned and unchanged. All five task identities and schedules unchanged. P versus NP OPEN.
+
+**NEXT / PEER REVIEW:** TMR-5 independently recheck circuit counting, floor and quantifier $\forall f$ versus $\exists f$. TMR-4 seek non-dummy threshold-preserving gadget with output length charged; TMR-3 charge network/one-tape transfer; TMR-2 test algebraic shortcuts. Weakest desired arrow remains low-$\mu_1$ one-work-tape $N^{1.01}$ lower bound for exact ordinary MCSP, or a proved model-and-parameter-preserving reduction supplying it.
+
+END_OF_HANDOFF::TMR1::029::2026-11-14_1504_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 13:57 PST | CAPPED MCSP EXACT-VALUE AND REDUCTION FIREWALL028
 
 **NEW CAPMIN31 CANDIDATE/RESTRICTED (one-work-tape compiler peer review OPEN):** Strengthening PRIOR TMR-1/027 decision-only slow-threshold enumeration, one fixed deterministic length-blind **one-way read-only input plus ONE physical two-way work tape** can return the integer $K_{s(n)}(f)=\min(CC_n(f),s(n)+1)$ for an already explicit full $N=2^n$ truth table, by enumerating circuit DAGs in nondecreasing gate count and accepting the first exact match. With $D(n,s)=(s+1)(n+s+2)[3(n+s+2)^2]^s$, $T\le N D(n,s)\operatorname{poly}(n+s)+N\operatorname{poly}(n)$, cached-data space $O(N\operatorname{poly}(n+s))$. For uniformly computable $s(n)=o(n/\log n)$, $T=N^{1+o(1)}$; for $s_\kappa(n)=\lfloor\kappa n/\lceil\log_2(n+1)\rceil\rfloor$, $T=N^{1+2\kappa+o(1)}$ and $\kappa<.005$ yields the $N^{1.01}$ upper frontier. This **does not** reach CHMY $s=N^\mu$ for any fixed positive $\mu$, does not use MMW streaming poly$(s)$ space, and does not prove $P\ne NP$.
