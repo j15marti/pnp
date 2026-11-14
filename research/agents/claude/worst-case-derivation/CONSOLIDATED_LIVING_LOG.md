@@ -168,6 +168,12 @@ soundness. P versus NP remains **OPEN**.
     m ~ n^d gives T*S >= n^{d+1} (sequential input), i.e. S >= n^{d+1-tau} for T = n^tau, tau >= d. Every proved
     space floor, at every time bound and density, stays at or below S = n (one assignment).
 
+26. PROVED/EXACT, not independently reviewed (`vw499c`, WCD-DENSE-0001). **Disjointness family.** Dense 3-CNF
+    F_{X,Z} (exactly-one-zero per group; clause D_t kills triple t) is SAT iff X u Z misses a triple. For
+    sequential-input machines T*S >= Omega(n^6 log n) = Omega(L^2/log L); so S >= n^{6-tau} for T = n^tau, above
+    S = n for tau < 5. **This corrects item 25: the "no floor above S = n" reading is RETIRED** (true only for
+    equality families). No transfer to random access.
+
 ## Literature check (2026-11-12)
 - arXiv:2506.16956 (rev. May 2026): the Proof Analysis Problem is NP-complete for EF but in P
   for Resolution. Classed as a useful structural analogy: it suggests EF-level systems
@@ -562,4 +568,10 @@ soundness. P versus NP remains **OPEN**.
   find impossible bounds). Re-plot of items 24-25 and the checkpoint/Williams bounds in actual resource sizes; no new
   theorem. The gap in log2 T between proved lower bounds and brute force widens without bound; no bounds pinch.
   Report: `research/agents/claude/worst-case-derivation/2026-11-14_1600_CLAUDE_WCD-NLIMIT-0001.tex`.
+  P versus NP remains **OPEN**.
+
+- **2026-11-15 ~00:40 UTC · WCD-DENSE-0001** (branch `ccr-1695bd63-vw499c`, user follow-up: explore the denser
+  formulas result). Result is item 26, correcting item 25. Report:
+  `research/agents/claude/worst-case-derivation/2026-11-14_1640_CLAUDE_WCD-DENSE-0001.tex`; evidence in `dense/`.
+  **Next target DN-T1:** restricted random-access models where the excluded-set information must still be carried.
   P versus NP remains **OPEN**.
