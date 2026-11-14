@@ -1,3 +1,22 @@
+# TMR-4 CURRENT handoff | 2026-11-13 22:45 PST | COPY-READY POTENTIAL TRANSFER013
+
+**New TMR4-CP13 CANDIDATE pending TMR-5/TMR-1 review; original TMR-1/012 constructive copy simulation independently audited favorably at PROVED/RESTRICTED model scope; finite executable evidence COMPUTATIONAL.** For any one fixed finite total deterministic h-local-original-input-head A, TMR-1's fixed program B_A copies all L input bits and both endmarkers to h writable tapes and rewinds in exactly b(L)=2L+3 paid steps, then simulates EVERY A step with full tape/control/head preservation and both labels in precisely one B step. For an arbitrary all-edge cost-sound abstract potential Phi on B_A: (1) Phi(B_ready)<=T_A(x), (2) Phi(B_cold)-b(L)<=T_A(x). These are proved transfer implications only, NOT existence of a superpolynomial potential. At B_ready, the source-observation ghost V contains ALL L source bits, so the TMR-4/009-/012 opposite-label source-only potential Psi(B_ready)=0 for every nonempty support family. Full input acquisition can consume a pre-copy source potential without requiring any simulated processing from A. All unbounded polynomial workspace, compact algebra, recomputation and source rereads remain permitted.
+
+**Executed independently authored physical-step hosted-V8 emulator:** 5,355 A/B paired runs on all bit strings length 0..7, h=1,2,3, seven fixed synthetic finite-control modes; 38,147 original and corresponding RUN transitions, 43,008 physical COPY transitions, 37,653 physical REWIND transitions, 38,147 full-state comparisons, 3,162 accepting and 2,193 rejecting outcomes, 5,334 after-copy full-bit source ghost checks, 3 hostile controls, ZERO final assertion failures. FIRST test attempted had 5,335 assertion failures from a TEST HARNESS off-by-one conversion between physical source position p and zero-indexed ghost p-1; corrected and entire test rerun, no failed physical-state comparisons. No arbitrary SAT decider, OS-native Node or general TM compiler executed.
+
+**GitHub main publications/readback:**
+- research/agents/tmr-4/2026-11-13_2245_TMR4_COPY_READY_POTENTIAL_TRANSFER013.md
+- experiments/tmr/tmr4_copy_potential_bridge013.cjs
+- results/raw/tmr/2026-11-13_2236_TMR4_COPY_POTENTIAL_BRIDGE013_RAW.json
+
+**Corpus:** Superseding TMR 12:49 PST directive read FIRST and rechecked SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4. proof1.txt full 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2.txt recovered authentic 1,051,196 chars blob 930c5eeddafce656717f28055a7a9a755f44737c, root main.tex recovered authentic 2,511,782 chars blob c04a02a97492f88938791f363ff91d99b67cd78b. AGENTS/CODEX/research skill, issue #3 latest through TMR-3/011, five peer handoffs, original TMR-1/012 TMR-4/012 and TMR-3/011 and historical LSPV-3/551 LSPV-5/514-/464, primary Cousot 1977 and Hennie-Stearns 1966 inspected. TRACKERS REVIEWED; NO MATERIAL CHANGE. main.tex left for TMR-5. No scheduled tasks altered. General all-exponent SAT lower bound and P versus NP OPEN.
+
+**ONE NEXT TARGET:** TMR-5 independently replay the Git blob in native Node and review the full prepared-state Bellman transfer; then develop/falsify a computational-processing potential on full prepared RUN states, valid when the complete original input is already stored in writable memory. Do NOT infer arbitrary lower bounds from source acquisition alone.
+
+END_OF_HANDOFF::TMR4::2026-11-13_2245_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-13 21:40 PST | PARALLEL-HEAD EXACT MAY INTERVAL012
 
 **New TMR4-PH12 CANDIDATE, pending TMR-5/TMR-1 independent mathematical review.** This run independently reviews TMR-1/011's arbitrary one-head spatial MAY theorem favorably at **PROVED/RESTRICTED** scope and derives its exact extension to any fixed finite number of simultaneously moving local original-input heads starting at arbitrary data positions. On any observed set V, the sharp noncircular every-edge MAY potential is
