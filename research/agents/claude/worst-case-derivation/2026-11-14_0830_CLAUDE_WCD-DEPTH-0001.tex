@@ -1,0 +1,105 @@
+% CLAUDE REPORT::WCD-DEPTH-0001::2026-11-14T08:30-08:00
+% Claude routine "worst-case minimum derivation cost". User follow-up request: build a model that charges for depth.
+% Role-neutral and additive. It does NOT edit root main.tex or any TMR/LSPV region.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\title{WCD-DEPTH-0001: a depth-charged cost model for $R^-$ and what it can and cannot prove}
+\author{Claude scheduled routine (worst-case derivation complexity log)}
+\date{2026-11-14 08:30 America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\paragraph{Status line.}
+\begin{itemize}
+\item Lemma~\ref{lem:collapse} (polynomial depth charges change nothing): \textbf{PROVED/EXACT}.
+\item Lemma~\ref{lem:depth} (depth-preserving simulation, factor 3): \textbf{PROVED/EXACT}; finite parts \textbf{COMPUTATIONAL}.
+\item Theorem~\ref{thm:cap} (exponential bound under a depth cap): \textbf{PROVED/EXACT}, given the \textbf{KNOWN THEOREMS} ECCC TR26-018 Cor.~1.3 and Ben-Sasson--Wigderson.
+\item Theorem~\ref{thm:prod} (quartic bound for the product charge): same status.
+\item The bridge for the capped system: \textbf{equivalent to} P $\ne$ NP, by the bridge-collapse lemma (log item 3). It is not a reduction of the problem.
+\item P versus NP remains \textbf{OPEN}.
+\end{itemize}
+
+\section{The model}
+$R^-=\{\mathrm{RES},\mathrm{AND3},\mathrm{XOR},\mathrm{LOCAL\text{-}CONVERT}\}$ is as in WCD-RESXOR-0001. For a refutation $\pi$ write:
+\begin{itemize}
+\item $S(\pi)$ for the number of derived nodes (the cost used so far);
+\item $D(\pi)$ for the number of derived nodes on the longest path from a source clause to $\bot$.
+\end{itemize}
+A \emph{depth-charged cost} is any $c(S,D)$ that is nondecreasing in both arguments. The target becomes
+\[\overline W^{\,c}_{R^-}(N)=\max_{F\in\mathrm{UNSAT},\,|\langle F\rangle|\le N}\ \min_{\pi}\ c\bigl(S(\pi),D(\pi)\bigr).\]
+The optimal derivation is still chosen freely. Three instances are studied:
+\begin{itemize}
+\item \emph{Polynomial charge:} $c=S\cdot D^k$ for a fixed $k$.
+\item \emph{Hard cap:} $c=S$ if $D\le d(n)$ and $\infty$ otherwise, where $n$ is the number of variables. Call this system $R^-[d]$. It is complete whenever $d(n)\ge n$, because a decision-tree resolution refutation has depth at most $n$.
+\item \emph{Exponential charge:} $c=S+2^{D/d(n)}$, a smooth form of the cap.
+\end{itemize}
+
+\section{Results}
+\begin{lemma}[polynomial depth charges collapse]\label{lem:collapse}
+$D(\pi)\le S(\pi)$ for every $\pi$. Hence $S\le S\cdot D^k\le S^{k+1}$, and $\overline W^{\,S D^k}_{R}$ is superpolynomial if and only if $\overline W_R$ is. This holds for every proof system $R$.
+\end{lemma}
+\begin{proof}
+A path visits distinct nodes.
+\end{proof}
+So a depth charge can change the superpolynomial question only if it is a cap, or grows superpolynomially in $D$.
+
+\begin{lemma}[depth-preserving simulation]\label{lem:depth}
+The simulation of WCD-RESXOR-0001 turns an $R^-$ refutation with $S$ nodes and depth $D$ into a Res($\oplus$) refutation with at most $|F|+120S$ lines and depth at most $3D$. Depth in Res($\oplus$) is the number of resolution steps on a path, as in TR26-018; semantic weakening adds none.
+\end{lemma}
+\begin{proof}
+Per node: RES adds 1 resolution step. XOR adds 1 (one weakening, one resolution). AND3 and LOCAL-CONVERT are weakenings followed by a decision tree on at most 3 variables, which adds at most 3. The script \texttt{depth/depth\_charged\_model.py} tracks depth through all 1032 XOR instances ($n\le4$) and all 2113 local derivations on 3 variables. The maxima are 1 and 3.
+\end{proof}
+
+\begin{theorem}[exponential bound under a depth cap]\label{thm:cap}
+Let $F_G=T_G\circ\mathrm{MAJ}_3$ be the lifted expander-Tseitin family of WCD-RESXOR-0001, with $n=\Theta(h)$ variables and resolution width $w=e(G)=\Theta(n)$. Every $R^-$ refutation of $F_G$ with depth at most $d$ has
+\[S\ \ge\ \frac{2^{\Omega(w^2/d)}-|F_G|}{120}.\]
+Consequently:
+\begin{itemize}
+\item for $d=n^{2-\varepsilon}$, $\overline W_{R^-[d]}\ge 2^{\Omega(n^{\varepsilon})}$;
+\item for the minimal complete cap $d=n$, $\overline W_{R^-[n]}(N)=2^{\Theta(N/\log N)}$. The upper bound is the decision tree, so the bound is tight in the exponent up to a constant;
+\item for the exponential charge $c=S+2^{D/n}$, $\overline W^{\,c}_{R^-}\ge 2^{\Omega(\sqrt n)}$, by balancing the two terms at $D\approx n^{3/2}$.
+\end{itemize}
+\end{theorem}
+\begin{proof}
+TR26-018 Cor.~1.3: for a 1-stifling gadget of constant size, every Res($\oplus$) refutation of $\varphi\circ g$ of size at most $S'$ has depth $\Omega(w^2/\log S')$. So depth at most $3d$ forces $\log S'\ge\Omega(w^2/d)$. Apply Lemma~\ref{lem:depth} with $S'\le|F_G|+120S$. The constant inside $\Omega$ is not explicit in the paper, so none is claimed here.
+\end{proof}
+
+\begin{theorem}[product charge: quartic, still polynomial]\label{thm:prod}
+For the same family, every $R^-$ refutation has $S\cdot D\ge\Omega(w^4/\log w)=\Omega(n^4/\log n)$.
+\end{theorem}
+\begin{proof}
+Res($\oplus$) size is at least $w(w+1)/2$ (TR26-018 Thm.~1.6) and depth is at least $\Omega(w^2/\log S')$. The product $S'\cdot w^2/\log S'$ is increasing in $S'$, so it is minimised at $S'=w(w+1)/2$. Transfer with Lemma~\ref{lem:depth}.
+\end{proof}
+
+\section{What the depth-charged model does not give}
+\begin{itemize}
+\item \textbf{The cap carries the hardness.} By TR26-018 Cor.~1.5, Res($\oplus$) of depth $o(n^2/\log^4 n)$ does not polynomially simulate plain Resolution. There are formulas $\psi_n$ with polynomial-size Resolution refutations that are superpolynomially hard under the cap. By Lemma~\ref{lem:depth} the same holds for $R^-[d]$. So a large $\overline W_{R^-[d]}$ measures the restriction on the proof, and does not show the formula is hard to decide.
+\item \textbf{The bridge is the whole problem.} $R^-[d]$ now has an unconditional superpolynomial lower bound. By the bridge-collapse lemma (log item 3), ``SAT $\in$ P $\Rightarrow\overline W_{R^-[d]}\le\mathrm{poly}$'' is then equivalent to P $\ne$ NP. A polynomial-time algorithm is under no obligation to work at small proof depth. Its run has polynomially many sequential steps, and a faithful proof transcript of it can be that deep.
+\item \textbf{The known frontier is depth $n^2$.} All current techniques stop at depth about $n^2$. At $d\ge n^2$ Theorem~\ref{thm:cap} is vacuous. An algorithm running in time $n^3$ already escapes any cap these theorems can handle.
+\item \textbf{Calibration.} As in WCD-RESXOR-0001 the bounds are asymptotic. The constant in $\Omega$ is not explicit, so no finite instance is certified.
+\end{itemize}
+
+\section{Correction to the previous report}
+WCD-RESXOR-0001 classed the depth-capped Res($\oplus$) bounds as FAILED TRANSFER. That stays correct for the uncharged $\overline W_{R^-}$ and, by Lemma~\ref{lem:collapse}, for every polynomial depth charge. Under a hard cap or exponential charge they are an EXACT THEOREM TRANSFER (Theorem~\ref{thm:cap}).
+
+\section{CORPUS REVIEWED / DUPLICATION AUDIT / CHANGES}
+\begin{itemize}
+\item \textbf{Corpus reviewed:} as in WCD-RESXOR-0001 (same session), plus TR26-018 Thm.~1.2, Cor.~1.3, Thm.~1.4 and Cor.~1.5 from the primary text.
+\item \textbf{Duplication / contradiction audit:} no earlier artifact of this routine defines a depth-charged $\overline W$. The TMR and LSPV time--space work charges machine space and time, not proof depth, so there is no overlap. No contradiction found.
+\item \textbf{What changed relative to root main:} nothing; \texttt{main.tex} is not edited.
+\item \textbf{Adopted:} the $R^-$ rules and the simulation of WCD-RESXOR-0001. \textbf{Rejected:} polynomial depth charges as a route to superpolynomial bounds (Lemma~\ref{lem:collapse}). \textbf{Retired:} none.
+\item \textbf{Stale or overstated claims found:} the FAILED TRANSFER label above, now scoped.
+\end{itemize}
+
+\section{Evidence}
+\texttt{depth/depth\_charged\_model.py}, \texttt{depth/raw\_results.json}; single stage, 0.14\,s, all assertions passed. No TeX engine was available, so this file was not compiled.
+
+\paragraph{Next target DC-T1.} Decide whether a cap can be \emph{justified by the machine} and not chosen by hand: show that a decider running in time $t$ and space $s$ yields an $R$-refutation of depth bounded in terms of $s$ (not $t$). If depth tracked space, the capped bound would become a time--space statement for small-space deciders, which is the regime the TMR roles already study. This is OPEN and may fail.
+
+\medskip\noindent P versus NP remains OPEN. One OPEN load-bearing arrow means P $\ne$ NP is not proved.
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WCD-DEPTH-0001

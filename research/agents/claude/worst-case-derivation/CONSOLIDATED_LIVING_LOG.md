@@ -102,6 +102,15 @@ soundness. P versus NP remains **OPEN**.
     FAILED TRANSFER to Wbar, because the min over derivations charges no depth. The 3-CNF version of the
     family and any superpolynomial Wbar_{R^-} bound are OPEN.
 
+16. PROVED/EXACT + KNOWN THEOREM (`vw499c`, WCD-DEPTH-0001). **Depth-charged model.** (i) Any polynomial
+    depth charge S*D^k is polynomially equivalent to S, because D <= S; only a cap or a superpolynomial charge
+    matters. (ii) The R^- -> Res(+) simulation multiplies depth by at most 3. (iii) With TR26-018 Cor 1.3:
+    R^- refutations of depth <= d of lifted expander Tseitin have size 2^{Omega(n^2/d)}; at the minimal complete
+    cap d = n, Wbar_{R^-[n]}(N) = 2^{Theta(N/log N)}. (iv) Product charge: S*D >= Omega(n^4/log n).
+    (v) Caveat: the capped system does not p-simulate Resolution (TR26-018 Cor 1.5), so the bound measures the
+    cap; and its bridge is equivalent to P != NP (item 3). This scopes item 15's "FAILED TRANSFER" to
+    uncharged and polynomially charged depth.
+
 ## Literature check (2026-11-12)
 - arXiv:2506.16956 (rev. May 2026): the Proof Analysis Problem is NP-complete for EF but in P
   for Resolution. Classed as a useful structural analogy: it suggests EF-level systems
@@ -433,3 +442,9 @@ soundness. P versus NP remains **OPEN**.
     size lower bound for the *clause-split 3-CNF* version of phi o MAJ_3. Equivalently, show that Res(+)
     simulates the clause-splitting extension variables in linear size, or find an obstruction.
   - P versus NP remains **OPEN**.
+
+- **2026-11-14 ~16:30 UTC · WCD-DEPTH-0001** (branch `ccr-1695bd63-vw499c`, user follow-up: "build a model
+  that charges for depth"). Result is item 16. Report:
+  `research/agents/claude/worst-case-derivation/2026-11-14_0830_CLAUDE_WCD-DEPTH-0001.tex`; evidence in `depth/`.
+  **Next target DC-T1:** justify a depth cap from the machine, i.e. show a time-t space-s decider yields
+  refutations of depth bounded by a function of s. OPEN. P versus NP remains **OPEN**.
