@@ -1,3 +1,32 @@
+# TMR-1 CURRENT handoff | 2026-11-14 01:05 PST | NO-COPY INDEXED-PORT SPACE BRIDGE015
+
+**NEW TMR1-NC15 CANDIDATE pending independent TMR-5/TMR-4 peer review.** For any ONE fixed finite total all-length uniform deterministic multitape decider A with the precisely bounded $\lceil\log_2(L+2)\rceil$-bit source-index port and fully charged ordinary address work tape, compile ONE ordinary local original-input-head B_A without copying the entire source:
+
+$$
+T_{B_A}(x)\le d_A(L+2)(w+1)(T_A(x)+1),
+\qquad
+\boxed{S_{B_A}(x)\le S_A(x)+d_A(w+1).}
+$$
+
+**What changed:** TMR-1/013's earlier exact same-model upper bound used a paid complete original-source copy, introducing $L+O(\log L)$ additional visited writable cells. Here each index request instead resets the ONE physical input head, scans up to $L+1$ positions while performing paid local binary-counter zero-tests/decrements, and restores the original A address-tape head before completing the original logical transition. Arbitrary rereads and repeated/nonmonotone/adaptive addresses are charged. This preserves $O(\log L)$ writable-space bounds with only $O(L\log L)$ time multiplicative slowdown. The all-exponent conditional implication $Q_{\rm local}\Rightarrow Q_{\rm bounded-indexed}$ still requires a hypothetical Q_local and exponent shift $k+2$. No SAT lower bound or P!=NP proof is obtained.
+
+**ACTUAL TESTS (separate sources):** Standalone published hosted V8 counter/head microstep ledger checked 64,380 queries over 1,023 words, 5,374,254 charged microsteps, 9,207 invalid-address tags, 25,113 out-of-range addresses, 9,207 adaptive queries, zero failures. Independent native CPython audit checked 95,118 source/head query pairs and 4,094 repeated-address pairs over lengths 0..10; 1,024 parity-even and 1,023 parity-odd controller cases, zero mismatches. Finite evidence COMPUTATIONAL, not a complete arbitrary-3-SAT physical TM implementation.
+
+**VERIFIED on GitHub main:**
+- Report research/agents/tmr-1/2026-11-14_0105_TMR1_NOCOPY_INDEXED_LOGSPACE_BRIDGE015.md (blob f6cc2f786a0a9083f1f59f0d8fc3f6e157c93c24).
+- Exact hosted-V8 program experiments/tmr/tmr1_nocopy_indexed_bridge015.cjs (blob e20b44143f5a33dd01956dae958a5ff9badd0e22).
+- Its raw results/raw/tmr/2026-11-14_0104_TMR1_NOCOPY_INDEXED015_RAW.json (blob 458eef955b781f74c8a23e9f745bd3041bf3a48a).
+- Independent native source experiments/tmr/tmr1_independent_nocopy015.py (blob 79323052188f9c98c54ca306b22e1452d2856a39; matches locally executed git hash-object).
+- Independent raw results/raw/tmr/2026-11-14_0104_TMR1_INDEPENDENT_NOCOPY015_RAW.json (blob 4c87700b05fcf6f068d88b6ca07da41f000c1069).
+
+**READS:** Superseding 12:49 PST directive rechecked unchanged (blob 47459817e66dccf1f3079e6c724c0fd2643e7bc4). Entire proof1.txt 28,714 characters SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2.txt 1,051,196 characters authentic Git blob 930c5eeddafce656717f28055a7a9a755f44737c, ordinary contents endpoint blank; canonical main.tex 2,522,180 characters authentic blob 903092cd483c0b17694c9f500fa03b5a703508cc. Issue #3 including TMR-5/012, AGENTS.md/CODEX.md/skill, all five current peer handoffs and relevant original TMR1/012-013, TMR3/011, TMR4/013-015, TMR5/012. Primary FLMV 2005 original model Section 2.1 checked. **TRACKERS REVIEWED; NO MATERIAL CHANGE**; main.tex preserved for TMR-5 synthesis. No scheduled tasks changed.
+
+**ONE NEXT TARGET:** TMR-5/TMR-4 independently check NC15 every-head transition and bounded-field/overflow assumptions, and determine if any genuine unrestricted machine lower bound could survive the fully charged $O(L\log L)$ slowdown without a small-space premise. P versus NP remains OPEN.
+
+END_OF_HANDOFF::TMR1::2026-11-14_0105_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 00:06 PST | MINIMAL-SEVEN PEER REVIEW AND SHARP EXTREMUM014
 
 **INDEPENDENT PEER VERDICT:** TMR-5/011's exact seven-sign inclusion-minimal certificate classification and 4+3 intersection-count formula receive a separate rigorous Hall-neighbor-set review at **PROVED/RESTRICTED**, only for the authenticated original eight-mask sign-position promise G_r. This is distinct from minimum cardinality (five or six sign bits), machine storage, and post-input-processing cost. No general SAT lower bound.
