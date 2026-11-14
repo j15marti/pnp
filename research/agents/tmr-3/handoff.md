@@ -1,3 +1,25 @@
+# TMR-3 CURRENT handoff | 2026-11-14 11:30 PST | LENGTH-OBLIVIOUS MCSP PADDING FRONTIER026
+
+**NEW LENGTHBLIND26 CANDIDATE/RESTRICTED**, independently checkable elementary proof, TMR-5/TMR-1 review OPEN: For one fixed uniform finite transducer on ALL admissible lengths N=2^n, one-way read-only source initially **without** a length header/advice, w fixed local two-way work tapes with G finite symbols and q states, and read-inaccessible ordered append-only output, exact contiguous ignored-low-bit padding E_{t(n)}(x)=each x_i repeated R_n=2^{t(n)} requires
+
+$$
+2^{N-2}\le (R_n+1)q(2S(N)+3)^{3w}G^{S(N)}.
+$$
+
+When t(n)=ceil(a n) with fixed a>0, S(N)=Omega(N). Proof: compare shared N-bit source prefix x=01v against longer valid x'=x0... with R_{n'}>R_n; before seeing short-input endmarker, outputs cannot pass R_n zero bits, yet N-2 freely varied source bits must be retained in complete work config + emitted-prefix length to finish exact output. **This is an interlength, unknown-input-size obstruction**, unlike PRIOR TMR-4/026, TMR-5/022 fixed-length permutation frontiers. Fixed t, upfront n header or two-way input avoids linear retention. Caching N bits costs allowed polynomial workspace; no MCSP time lower bound, no threshold-changing reduction, no SAT separation.
+
+**ACTUALLY EXECUTED V8 and published:** experiments/tmr/tmr3_length_blind_padding026.cjs and raw results/raw/tmr/2026-11-14_1130_TMR3_LENGTH_BLIND_PADDING026_V8_RAW.json; 16,452 exhaustive short/long ambiguous-prefix cases, 32,904 independently generated padded tables, 65,808 fixed-t positive streaming controls, zero failures. **INDEPENDENT native CPython local-only:** matching 16,452 length ambiguity tests, 816 both-label small-circuit checks, 65,808 fixed-t controls, 0 failures, source SHA256 cfca3cf85104637f77ca90ad8567eac048478f64c0a9f069977f998043248d44. Both computational, not native finite-alphabet TM or universal compiler.
+
+**PAPER and theorem scope:** CHMY STACS2021 Theorems 1 and 2, p23:3, same one-way input plus one two-way work tape, low-mu N^1.01 hypothesis versus large-mu N^1.99 established lower bound, remain different languages. MMW STOC2019 Theorems1.2-1.3 are oracle-assisted streaming **search** and require simultaneous poly(s) update+space. TMR-1/024 PRIOR exact circuit minimum and threshold matching. For padding ratio M=N^rho a naive low-bound composition into a high-bound contradiction needs 1.01rho<1.99 and model-preserving extra costs. No implication established.
+
+**REPORT:** research/agents/tmr-3/2026-11-14_1130_TMR3_MCSP_LENGTH_BLIND_PADDING_FRONTIER026.md. **PRE-FLIGHT:** Nov14 directive FIRST blob 1e11aa64a0b0d635a65cea58500b09f2b0fe010a, Nov13 replacement, complete proof1 28,714 blob 06f7ebc8c2283304a0f5200b518c6e48fa41e343, full proof2 1,051,196 blob 930c5eeddafce656717f28055a7a9a755f44737c, root main.tex 2,545,859 blob 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34c, root instructions/skill, all five TMR handoffs, latest issue #3, prior TMR/Claude original reports and publisher primary PDFs. **TRACKERS REVIEWED; NO MATERIAL CHANGE**; main.tex left to TMR-5. No tasks modified.
+
+**NEXT:** TMR-5 peer-review length-ambiguity cut/injection and output-tape assumption. TMR-1 check exact variable order/threshold parameter arithmetic; TMR-2 inspect input-length oracle escape. Develop charged **same-one-work-tape generator/MCSP-consumer** physical composition without an upfront n header. Arbitrary P vs NP OPEN.
+
+END_OF_HANDOFF::TMR3::026::2026-11-14_1130_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 10:28 PST | UNIFORM GROWING-RING MCSP SERIALIZATION025
 
 **NEW RING25 CANDIDATE/RESTRICTED pending TMR-1/TMR-5 formal review.** A uniformly constructible synchronous ring with polynomially growing p(N) locally moving one-work-tape processors, one common ONE-WAY new source bit per round, fixed finite catalogue of local rules, two unit-capacity nearest-neighbor ports and a polynomial clock B(N)>=R(N), is simulated by ONE finite deterministic one-way-input/one-work-tape machine in **T=O(U(N)+B(N)[N+p(N)B(N)])** and S=O(N+p(N)B(N)). U(N) is full physically charged uniform initialization/generator cost. The proof spools source input on the sole work tape and uses O(1) complete finite-alphabet sweeps per round over p adjacent 2B+O(1)-cell processor regions, including source retrieval, old-to-new head markers, adjacent-port messages and ring wrap. **Only RING topology**, not arbitrary interconnect or free input fanout. Distinct from PRIOR fixed-p TMR-3/024.
