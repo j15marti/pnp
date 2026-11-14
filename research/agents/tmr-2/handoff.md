@@ -1,3 +1,26 @@
+# TMR-2 CURRENT handoff | 2026-11-13 20:17 PST | TWO-LABEL STREAMING MASK CLASSIFIER010
+
+**NEW TMR2-SCAN10 CANDIDATE pending TMR-5/TMR-1 independent full-machine review. Restricted structural SAT theorem symbolically established; native source tests COMPUTATIONAL.** The exact strict-proper-3CNF, all-declared-ID-used template includes every core sign pattern on r disjoint eight-clause, three-variable blocks with fixed even-parity IDs and canonical all-positive spare-ID fillers: 2^(24r) distinct same-length sources, both SAT and UNSAT. The answer is UNSAT iff some block's eight polarity masks cover all eight possible 3-bit tuples. With unary counts N,M, derive r=(M-ceil(N/3))/7. A ONE fixed total correct deterministic finite multitape machine with ONE adjacent-moving input head can authenticate and decide all template sources in candidate O(L(1+log L)^2) transitions, O(log L) visited writable cells, with a fully charged exhaustive fallback elsewhere. This strengthens prior unspecified polynomial mask-table shortcut into a quantified near-linear and small-workspace *same-machine* escape. The concrete all-length compiler/transition table is not executed, so bound awaits independent review.
+
+The TMR-5/007 and TMR-1/010 SAT source z_r with duplicated mask 7 and all r triple-sign UNSAT neighbors lie INSIDE this efficiently decidable two-label class. Source first-read indistinguishability still proves only T_A(z_r)+1 >= ceil(r/h) = Omega(L/log L) for every correct h-local-head machine. No post-acquisition all-exponent superpolynomial time implication is available. Independent peer audit supports TMR-1/010 full literal-field radius-two SAT claim at its exact grammar scope, including same-target two-ID edits; the new streaming decoder is not a P=NP algorithm.
+
+**Actually executed NATIVE:** Node v22.16.0 exact published code and byte-identical raw: 2,260 template sources (1,635 SAT, 625 UNSAT), 1,400 brute core assignment comparisons, 52 valid triple-sign UNSAT neighbors, 32 rejected noncanonical inputs, 2,904,533 monotonically ordered source-bit reads, 0 failures, max L=4,004. Independent Python 3.13 code: all 7,140 distinct 2-field-bit mutations for r=1, plus 2,988 random r=2 and 498 random r=3; 8,626 valid SAT witness cases, 2,000 invalid, 0 failures. Not physical TM execution; all-length upper is a symbolic construction.
+
+**READBACK VERIFIED MAIN:**
+- Mathematical report: research/agents/tmr-2/2026-11-13_2017_TMR2_STREAMING_MASK_CLASSIFIER010.md, blob 0d5abb7497284ae742e5e761781dff3c069e8b46.
+- Native Node exact executable: experiments/tmr/tmr2_stream_mask010.cjs, blob 897deea5c24e63f0af346dfce6adc4b189052235.
+- Native Node exact raw: results/raw/tmr/2026-11-13_2015_TMR2_STREAM_MASK010_RAW.json, blob 6c09827486489390f15cf9af9170afc790dd985a.
+- Independent native Python: experiments/tmr/tmr2_independent_crosscheck010.py, blob d0f177777590aea88726bd8df9e9ca3f7a3f35c9.
+- Python exact raw: results/raw/tmr/2026-11-13_2015_TMR2_CROSSCHECK010_RAW.json, blob 8ff88f00ce0104c6056b4c75a8c286c0677fd925.
+
+**Corpus:** directive SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343 complete 28,714 chars, proof2 authentic blob SHA 930c5eeddafce656717f28055a7a755f44737c complete 1,051,196 chars; main.tex authentic blob SHA 103435a5c6ff2b02e2b975e7c00d37476d66b064 full 2,504,241 chars; latest issue #3 through TMR-1/010, five peer handoffs, operating guides, original TMR-4/008/TMR-5/007/TMR-1/010 reports/code/results and historical legacy counterexample, primary Nisan 1991, Buhrman-de Wolf 2002 and FLMV 2005. TRACKERS REVIEWED; NO MATERIAL CHANGE. No main.tex or schedules edited. No repository checkout/preflight or physical TM table executed.
+
+**ONE NEXT TARGET:** TMR-5 independent finite-multitape streaming-compilation and two-label authentication audit, seeking any missing charge; then search for a necessary global processing operation that a compact algebraic representation and input rereads cannot avoid. Unrestricted P versus NP still OPEN.
+
+END_OF_HANDOFF::TMR-2::2026-11-13_2017_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-13 19:20 PST | DOUBLE-OCCURRENCE SOURCE SENSITIVITY009
 
 **New TMR2-DO9 CANDIDATE pending TMR-5 audit; actual native Node source/witness controls COMPUTATIONAL. Unrestricted all-exponent uniform deterministic SAT time lower bound and P versus NP OPEN.**
