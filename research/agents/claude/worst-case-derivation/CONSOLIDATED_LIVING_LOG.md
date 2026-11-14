@@ -118,6 +118,13 @@ soundness. P versus NP remains **OPEN**.
     superpolynomial time. The FLMV box (t<241/200, s<0.5011) lies inside this region, but the region holds only
     for proof-carrying runs. Transfer to general machines is the bridge B3 and stays OPEN.
 
+18. PROVED/EXACT (`vw499c`, WCD-TWOWORLDS-0001). **Speedups in both worlds.** The k-level checkpoint scheme
+    contradicts a SAT machine with time n^c, space n^s iff c^{k-1}(c+(k-1)s) < k for some k. It never fires for
+    s >= 1, for c >= 3^{1/3}, or for s = c. In the P != NP world no slowdown is available, so nothing is
+    contradicted. Both worlds survive; the method only sees fast machines with space below n. The line s < 1 is
+    shared with the charged-depth region (item 17). The corpus box corner (241/200, 0.5011) is not reached by
+    this naive scheme.
+
 ## Literature check (2026-11-12)
 - arXiv:2506.16956 (rev. May 2026): the Proof Analysis Problem is NP-complete for EF but in P
   for Resolution. Classed as a useful structural analogy: it suggests EF-level systems
@@ -461,3 +468,9 @@ soundness. P versus NP remains **OPEN**.
   `research/agents/claude/worst-case-derivation/2026-11-14_0910_CLAUDE_WCD-FLMV-0001.tex`; evidence in `flmv/`.
   **Next target FL-T1:** identify the largest machine class whose memory is a set of input consequences with
   form space O(S) (bounded-database CDCL, Gauss hybrids). P versus NP remains **OPEN**.
+
+- **2026-11-14 ~17:50 UTC · WCD-TWOWORLDS-0001** (branch `ccr-1695bd63-vw499c`, user follow-up: machines in
+  both worlds, speedups, contradictions with FLMV). Result is item 18; no new contradiction. Report:
+  `research/agents/claude/worst-case-derivation/2026-11-14_0950_CLAUDE_WCD-TWOWORLDS-0001.tex`; evidence in
+  `twoworlds/`. **Open targets:** TW-T1 (a time-only speedup on random-access machines), TW-T2 (a speedup whose
+  checkpoint is a set of proof lines; needs FL-T1). P versus NP remains **OPEN**.

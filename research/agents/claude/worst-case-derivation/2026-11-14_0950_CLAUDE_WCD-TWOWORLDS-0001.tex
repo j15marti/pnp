@@ -1,0 +1,91 @@
+% CLAUDE REPORT::WCD-TWOWORLDS-0001::2026-11-14T09:50-08:00
+% Claude routine "worst-case minimum derivation cost". User follow-up: machines in both worlds, speedups, contradictions with FLMV.
+% Role-neutral and additive. It does NOT edit root main.tex or any TMR/LSPV region.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\title{WCD-TWOWORLDS-0001: checkpoint speedups applied to a SAT machine in each world}
+\author{Claude scheduled routine (worst-case derivation complexity log)}
+\date{2026-11-14 09:50 America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\paragraph{Status line.}
+\begin{itemize}
+\item Lemma~\ref{lem:scheme} (the $k$-level scheme): \textbf{KNOWN THEOREM} (Lipton--Viglas for $k=2$; the general form is the standard Fortnow--van Melkebeek speedup followed by slowdowns). Re-derived here, not new.
+\item Theorem~\ref{thm:edges} (where the scheme can and cannot contradict): \textbf{PROVED/EXACT}; grid check \textbf{COMPUTATIONAL}.
+\item Theorem~\ref{thm:B} (no contradiction in the P $\ne$ NP world): \textbf{PROVED/EXACT} for this scheme.
+\item Outcome: no contradiction was found beyond the known FLMV-type region. Both worlds survive. P versus NP remains \textbf{OPEN}.
+\end{itemize}
+
+\section{Setup}
+\begin{itemize}
+\item \textbf{World A (P = NP side).} There is a machine deciding SAT in time $n^{c}$ and space $n^{s}$, with $c\ge1$ and $0\le s\le c$.
+\item \textbf{World B (P $\ne$ NP side).} Every machine deciding SAT takes time $n^{c(n)}$ with $c(n)$ unbounded.
+\end{itemize}
+The \emph{speedup} is the checkpoint step: $\mathrm{DTISP}[T,S]\subseteq\Sigma_k\mathrm{TIME}[(T S^{k-1})^{1/k}]$. The \emph{slowdown} uses the world's SAT machine to remove one quantifier, at the price of raising the time to the power $c$. A contradiction is a violation of the nondeterministic time hierarchy, $\mathrm{NTIME}[n^{a}]\subseteq\mathrm{NTIME}[n^{a'}]$ with $a'<a$.
+
+\begin{lemma}[$k$-level scheme]\label{lem:scheme}
+In World A, for every $k\ge2$ and $a\ge1$,
+\[\mathrm{NTIME}[n^{a}]\subseteq\mathrm{DTISP}[n^{ac},n^{as}]\subseteq\Sigma_k\mathrm{TIME}\bigl[n^{a(c+(k-1)s)/k}\bigr]\subseteq\mathrm{NTIME}\bigl[n^{a\,c^{k-1}(c+(k-1)s)/k}\bigr].\]
+So World A is contradicted whenever $c^{k-1}\bigl(c+(k-1)s\bigr)<k$ for some $k$.
+\end{lemma}
+\begin{proof}
+The first inclusion is the assumption, through the quasi-linear reduction to SAT (polylogarithmic factors are dropped). The second balances $b^{k}=T/S$ checkpoints per level, with guess cost $bS$. The third removes $k-1$ quantifiers, each by one use of the assumed machine.
+\end{proof}
+
+\begin{theorem}[edges of the contradiction region]\label{thm:edges}
+The scheme contradicts World A in none of these cases:
+\begin{itemize}
+\item[(i)] $s\ge1$: then $c^{k-1}(c+(k-1)s)\ge1+(k-1)=k$;
+\item[(ii)] $c\ge3^{1/3}\approx1.4423$: then $c^{k}\ge k$ for every $k$, because $\max_k k^{1/k}=3^{1/3}$;
+\item[(iii)] $s=c$, a machine that uses as much space as time: this is a special case of (i).
+\end{itemize}
+As $c\to1$ the region tends to $s<1$, which agrees with the Fortnow--van Melkebeek limit.
+\end{theorem}
+\paragraph{Check.} \texttt{twoworlds/two\_worlds\_speedup.py} tests 160{,}801 exact rational grid points with $1\le c\le3$, $0\le s\le c$ and $k=2,\dots,12$. It finds 7{,}982 contradicted points, and none with $s\ge1$, with $c\ge1.4423$, or with $s=c$. The largest contradicted time exponent by space exponent:
+\begin{center}
+\begin{tabular}{l|ccccccc}
+$s$ & 0 & 0.25 & 0.5 & 0.5011 & 0.75 & 0.9 & 0.99\\\hline
+$c_{\max}$ & 1.4423 & 1.2947 & 1.1861 & 1.1857 & 1.0881 & 1.0341 & 1.0033
+\end{tabular}
+\end{center}
+The corpus box corner $(241/200,\,0.5011)$ is \emph{not} reached by this scheme: the $k=2$ value is $2.056>2$ and the $k=3$ value is $3.205>3$. The box rests on the sharper Fortnow--van Melkebeek and Williams arguments, which are not re-derived here. Williams' method reaches $2\cos(\pi/7)\approx1.8019$ at $s=0$, and Buss--Williams show alternation trading cannot pass that (world-ledger row L13).
+
+\begin{theorem}[World B is not contradicted]\label{thm:B}
+In World B the only available slowdown uses a machine with local exponent $c(n)\to\infty$. Each scheme needs $c(n)^{k-1}(c(n)+(k-1)s)<k$ at the input scale where it is applied. By Theorem~\ref{thm:edges}(ii) this fails once $c(n)\ge3^{1/3}$, hence for all large $n$. The speedup alone is an unconditional inclusion and contradicts nothing.
+\end{theorem}
+For slowly growing bounds the scheme still applies on a finite range. With time $2^{n^{0.1}}$ the local exponent stays below $3^{1/3}$ until $n\approx2^{66}$. This excludes nothing asymptotically.
+
+\section{Reading of the result}
+\begin{itemize}
+\item \textbf{The method only sees space-efficient fast machines.} The contradiction lives in the corner of World A where the machine is both fast ($c<1.80$ by the best known argument) and uses space below $n$. Everywhere else the two worlds look the same to it.
+\item \textbf{Why it stops at space $n$.} A checkpoint costs $S$. Once $S\ge n$, a checkpoint costs as much as writing down a full assignment, so guessing checkpoints is no cheaper than guessing the answer. The charged-depth region of WCD-FLMV-0001 stops at the same line, $s<1$, for the same reason: depth $\approx$ space $\times\log$ time is useful only while the space is below the number of variables.
+\item \textbf{P = NP does not put a machine in the corner.} P = NP gives polynomial time for SAT. It does not give space below $n$; that would need a separate collapse such as SAT in small-space polynomial time. So World A in general is untouched.
+\item \textbf{The ceiling is proved, not merely observed.} Alternation trading with these rules cannot reach exponent 2 (Buss--Williams). A machine in World A with time $n^{2}$ is beyond every argument of this kind.
+\end{itemize}
+
+\section{What a collision would need}
+A new contradiction needs a speedup that still pays when the space is $n$ or more. Two candidates are recorded, both \textbf{OPEN}:
+\begin{itemize}
+\item \textbf{TW-T1.} A speedup for time alone. On multitape machines $\mathrm{DTIME}[t]\subseteq\Sigma_4\mathrm{TIME}[t/\log^{*}t]$ is known (Paul--Pippenger--Szemer\'edi--Trotter), and it separates linear time only. Any polynomial-factor version on random-access machines would enlarge the region to $s=c$.
+\item \textbf{TW-T2.} A speedup whose checkpoint is a set of proof lines and not a machine configuration, as in WCD-FLMV-0001. Its cost is form space, which can be far below bit space. It needs the machine's memory to be readable as consequences of the input, which is target FL-T1.
+\end{itemize}
+
+\section{CORPUS REVIEWED / DUPLICATION AUDIT / CHANGES}
+\begin{itemize}
+\item \textbf{Corpus reviewed:} the three earlier reports of this session; \texttt{research/agents/claude/tport/} (README and \texttt{atp.py}, the existing alternation-trading engine for $n^{o(1)}$ space); the world-ledger pointer in AGENTS.md (rows L13, L34--L37); the ARC/FLMV governance note for the box.
+\item \textbf{Duplication / contradiction audit:} TPORT-0001/0002 cover alternation trading with $n^{o(1)}$ space and a portfolio. They do not vary the space exponent or treat the P $\ne$ NP side. Theorem~\ref{thm:edges} agrees with them at $s=0$. No contradiction found.
+\item \textbf{What changed relative to root main:} nothing; \texttt{main.tex} is not edited.
+\item \textbf{Adopted:} the FLMV box as stated by governance; ledger row L13. \textbf{Rejected:} the hope that speedups in the P $\ne$ NP world yield a contradiction. \textbf{Retired:} none.
+\item \textbf{Stale or overstated claims found:} none.
+\end{itemize}
+
+\section{Evidence}
+\texttt{twoworlds/two\_worlds\_speedup.py}, \texttt{twoworlds/raw\_results.json}; single stage, 8.7\,s, exact rational grid. No TeX engine was available, so this file was not compiled. Literature was not searched again in this step; the statements used are the ones located earlier in the session.
+
+\medskip\noindent P versus NP remains OPEN. One OPEN load-bearing arrow means P $\ne$ NP is not proved.
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WCD-TWOWORLDS-0001
