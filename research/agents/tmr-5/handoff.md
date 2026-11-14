@@ -1,3 +1,19 @@
+# TMR-5 CURRENT handoff | 2026-11-14 04:59 PST | OFFSET-MIRROR INDEPENDENT AUDIT016
+
+**INDEPENDENT PEER VERDICT PROVED/RESTRICTED for ORIGINAL TMR-4/019:** Its finite on-diagonal full-work-tape congruence is a valid all-initial/all-step/two-way exact projection on the stated aligned-head invariant, retaining the physically charged erased B dummy tape, both visited-work-cell histories, exact source and SAT/UNSAT/MALFORMED labels. At every cost-one abstract edge the report's potential satisfies Phi(a)=1+Phi(b), including gate and terminal. Off-diagonal (B=1,C=0) shortcut is replay-spurious by the *proved initial-and-inductive equality*; unlike old checker-accepted aliases it may be removed. No universal solver lower bound follows.
+
+**NEW TMR5-SM16 CANDIDATE/RESTRICTED pending independent TMR-1/TMR-4 review:** Generalize to fixed work-head displacement d: B[j]=C[j+d], h_C=h_B+d, with a fully charged d-step initialization from standard blank aligned heads. On every diagonal transition, equal writes and equal moves preserve this full-tape invariant. Erase B's symbol contents while retaining its charged dummy tape/head/visited footprint; every actual transition exactly replays. Restricted parity-gated proper-3CNF sign controller gives T_d(x)=d+3(L+1)+1+2(L+1)parity(x), S_d=d+2. Bellman-tight source-bound potential includes all bootstrap, head motions, both labels, malformed terminal. No superpoly SAT potential is obtained.
+
+**EXECUTED and PUBLISHED, hosted V8 independent source:** 6,168 traces, 249,502 concrete/abstract transitions and Bellman checks, 3,534 SAT/6 UNSAT/2,628 MALFORMED, 18 hostile off-invariant tests missing 192 transitions, zero failures. **Separately independently written native CPython LOCAL-ONLY:** 12,330 traces, 548,385 transitions/Bellman checks, 24 off-invariant tests missing 528 transitions, zero failures. No full arbitrary-machine compiler. Finite results COMPUTATIONAL.
+
+**GitHub main readback VERIFIED:** report research/agents/tmr-5/2026-11-14_0459_TMR5_OFFSET_MIRROR_INDEPENDENT_AUDIT016.md; executed V8 source experiments/tmr/tmr5_shifted_mirror_redteam016.cjs; raw results/raw/tmr/2026-11-14_0458_TMR5_SHIFTED_MIRROR016_RAW.json.
+
+**CORPUS:** Directive first/rechecked SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; proof1 complete 28,714 chars, proof2 complete via Git blob 1,051,196 chars; main.tex recovered complete 2,530,965 chars before shared update; issue #3 through TMR-4/019, AGENTS, CODEX, pnp skill, all five peer handoffs, original TMR-4/019,/018, TMR-1/017, TMR-3/017 code and reports, accepted literal-order alias LSPV-5/523 original source, primary Cousot POPL1977/Clarke CAV2000/FLMV JACM2005. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No task mutations.
+
+**NEXT:** TMR-1/TMR-4 independently audit the fixed-offset theorem. Establish any all-machine necessary processing cost after input acquisition compatible with full-source caching, Horn/GF2, alternate encodings and polynomial workspace. Unrestricted 3-SAT bottleneck/P versus NP OPEN.
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 03:53 PST | PHYSICAL SOURCE-FETCH REPLAY REDTEAM015
 
 **Independent audit of ORIGINAL TMR-3/016:** Its published JS source adds the paid input-head return-to-left charge BEFORE retrieving source[x,p] through direct x[head-1] indexing, while head remains numerically p. Therefore its 49,833 successful lookups are arithmetic and intended-symbol tests, **not** a valid current-cell physical read AFTER the return. Smallest falsifier x=1, p=1: physical head is at LEFT marker after paid return, but script returns 1. The original symbolic theorem explicitly orders read BEFORE return, so this finding is a physical-emulator correction, not a mathematical O(L) model-bridge counterexample. Do not discard authentic accepted paths or original raw evidence.
