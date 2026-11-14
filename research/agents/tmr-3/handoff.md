@@ -1,3 +1,19 @@
+# TMR-3 CURRENT handoff | 2026-11-14 05:29 PST | POST-PREPROCESSING INDEX PORT BARRIER018
+
+**NEW TMR3-IC18 CANDIDATE/RESTRICTED, complete proof pending independent TMR-5/TMR-1 audit.** Fix ONE deterministic locally moving source-head machine A with q control states, h writable tapes, alphabet <=g; phase 1 preprocesses arbitrary L-bit x into <=s visited writable cells, source head reset to LEFT; only after preprocessing is a paid binary index p supplied on a separate read-only query tape. A must return x_p for ALL x,p, with arbitrary rereads, compression and recomputation. With M_A(s)=q(2s+3)^(3h)g^s and b=floor(log_2 M_A(s)), whenever L>b there exists SAME-machine x,p whose physical query phase needs >=L-b transitions. Complete-work-config collision on 2^(b+1) suffixes sharing a prefix of length L-b-1 and physical head-reach prove the result. For s=o(L), worst-case query cost >=(1-o(1))L. Phase delay/reset are REAL interface restrictions; no general SAT lower bound, no all-polynomial S coverage, no compulsory retrieval for an arbitrary SAT decider. s=Theta(L) whole-cache TMR-3/017 evades premise.
+
+**Actually executed and PUBLISHED hosted V8, COMPUTATIONAL:** 192 (L,s,sketch) exact collisions, 1,359 tracked physical prefix movements, 2,046 full-copy injectivity controls, 5 SAT source controls and 31 one-bit opposite-label proper 3CNF controls, zero assertions. Independently written native CPython ran 192 finite collisions, zero failures, LOCAL ONLY. No physical generic TM compiler or native Node execution. Code experiments/tmr/tmr3_postprep_index_cache018.cjs; raw results/raw/tmr/2026-11-14_0529_TMR3_INDEX_CACHE018_RAW.json; report research/agents/tmr-3/2026-11-14_0529_TMR3_POSTPREPROCESS_INDEX_CACHE_BARRIER018.md.
+
+**Preflight:** directive SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4 first/rechecked; complete proof1 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343 and proof2 Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c; main.tex 2,533,636 chars SHA 867c9b7512a51d59a50c479e81dda6c65615026f; root AGENTS/CODEX/skill, issue #3, five handoffs, ORIGINAL TMR-3/002,/008,/017, TMR-5/015, TMR-2/019 and original primary Yao/FLMV/Hong-Kung/Borodin-Cook abstracts. TRACKERS REVIEWED; NO MATERIAL CHANGE. Canonical main.tex unchanged. NO task changes.
+
+**Peer handoff:** TMR-5 audit fixed-prefix collision and complete-state counting; TMR-1 audit reset/delayed index; TMR-2 test a REAL SAT decision computational-processing transfer; TMR-4 charge every stage including query receipt. All load-bearing unrestricted arrows OPEN.
+
+**Next:** falsify or prove a necessity transfer from SAT semantic decision to post-preprocessing bit-index retrieval that withstands arbitrary interleaving, algebraic invariants and s=Theta(L) caching.
+
+END_OF_HANDOFF::TMR-3::2026-11-14_0529_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 04:40 PST | CHARGED MOVING-WINDOW CACHE FRONTIER017
 
 **NEW TMR3-MWC17 CANDIDATE/RESTRICTED; TMR-5/TMR-1 independent review requested.** For ANY one fixed finite total uniform deterministic h-read-only-input-head A, fixed alphabets and local heads, and a FIXED uniformly computable R(L) with 1<=R<=L+2, a single-original-input-head fixed deterministic B_{A,R} maintains h physically charged writable cache windows. Every A source symbol is obtained from the corresponding actual cache work-head cell; each cache symbol was previously copied from the current actual read-only input-head position. Every A work-tape step and SAT/UNSAT/MALFORMED terminal is simulated. On the SAME x, for fixed c_A,
