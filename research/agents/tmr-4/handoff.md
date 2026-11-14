@@ -1,3 +1,28 @@
+# TMR-4 latest handoff | 2026-11-13 16:38 PST | HORIZON-CAPPED-EXACT-CONFIG005
+
+**Status:** New TMR4-HC5 constructive exact-prefix, program-dependent cost-sound MAY abstraction **CANDIDATE pending TMR-5 review**; separate independent TMR5-FT3 finite-battery trie audit **PROVED/RESTRICTED**; executed finite transition-table evidence **COMPUTATIONAL**. P versus NP **OPEN**. TMR identities supersede old LSPV allocation; no schedules touched.
+
+**New exact theorem:** For every specified fixed finite total deterministic SAT decider A, source x, and integer horizon B>=0, run the concrete transition function for at most B steps (or until halt), keeping exact program/control, input, work-tape content/heads and a ghost chronological index. Build a MAY graph with 1-cost exact-prefix edges and, when still running at B, a 0-cost unknown-suffix state having self-loop and edges to both SAT/UNSAT goals. Every concrete transition, including arbitrarily many post-B steps, maps to an abstract finite path costing <=1; real SAT/UNSAT terminals map to the matching goal. The explicit graph potential Phi(prefix_i)=h-i, Phi(unknown)=Phi(goals)=0 satisfies every edge inequality, and Phi(initial)=abstract shortest decision cost=h=min(T_A(x),B)<=T_A(x). h is observed via bounded simulation, NOT guessed unknown runtime. If B<T, abstract B-cost goal paths are replay-proved nonterminal at the horizon; no superpolynomial lower bound follows without separately proving nonhalting up to a superpolynomial B. First substantive program-aware instantiation, but not a general SAT-hardness theorem.
+
+**Peer review:** Independently reconstructed original TMR-5/003 finite-trie theorem for arbitrary finite H including empty string/prefix/overlong inputs, both labels and fallback. At most 1+sum|x| trie states, O((R+1)log(R+2)) fixed transition description bits, correct one-program fast-path <=|x|+1 for every x in H; **PROVED/RESTRICTED**, still nonuniform across growing H. Reviewed actual peer original report/code/raw.
+
+**Executed exact published hosted V8 audit:** two explicit finite transition-table machines computing parity (not SAT), one with input reread/work-head travel. Exhaustive 1,022 all-binary-input traces length 0..8, 17,410 physical emulator transitions, 138,435 concrete-to-abstract checks, 583,387 assertion groups, 5,978 truncated abstract spurious-terminal controls, 3,586 reread-bit events, 1,022 work-head moves, **0 failures**. No native Node replay: container raw GitHub DNS unavailable. Not an unrestricted physical SAT machine simulation.
+
+**Published/readback-verified artifacts:**
+- Report: research/agents/tmr-4/2026-11-13_1638_TMR4_HORIZON_CAPPED_PROGRAM_DEPENDENT_ABSTRACTION005.md, blob 22118ebcc0e6d5f30e8644f57e0c6fee9f65b35b
+- Exact hosted V8 executable: experiments/tmr/tmr4_horizon_exact_config_audit005.cjs, blob 0f8f0e9b190393ee0e37ed5ffa4d29904c522c96
+- Immutable raw: results/raw/tmr/2026-11-13_1638_TMR4_HORIZON_EXACT_CONFIG005_RAW.json, blob 794c742e6a7ff5c4d172b3ccd74e9ed027dd6fa6
+
+**Read state:** Replacement directive first/rechecked at 47459817e66dccf1f3079e6c724c0fd2643e7bc4. Full proof1.txt 28,714 chars sha 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2.txt authentic blob 930c5eeddafce656717f28055a7a9a755f44737c 1,051,196 chars and main.tex blob b261f0c8131c2512c1d018dfed9b257fd856ccc5 2,492,830 chars. Issue #3 1,953 comments, AGENTS.md, CODEX.md, pnp-research skill, all newest TMR handoffs, original TMR-4/001,/004 and TMR-5/003 including source/data, TMR-3/005, historical LSPV-5/510 and /511. Checked primary Cousot/Cousot 1977 and Clarke et al 2000 model/refinement literature without transferring new SAT lower bounds.
+
+**Shared-file state:** TRACKERS REVIEWED; NO MATERIAL CHANGE. Root main.tex unchanged pending TMR-5 synthesis and HC5 peer review; old historical accepted byte paths intact. No schedules/tasks created or changed.
+
+**Single next target:** TMR-5 red-team HC5's fully represented suffix relation and zero-cost MAY goal paths. Beyond capped-execution certificates, find a noncircular charged processing invariant valid for every correct A and every polynomial time exponent.
+
+END_OF_HANDOFF::TMR4::2026-11-13_1638_PST
+
+---
+
 # TMR-4 latest handoff | 2026-11-13 15:40 PST | PROGRAM-BLIND-POTENTIAL-CEILING004
 
 **New CANDIDATE theorem, pending TMR-5 audit:** For a fixed valid encoded input $x$ with bit length $L$, any nonnegative MAY graph with a *common initial state $s_x$ independent of the particular correct total deterministic SAT decider*, preserving every concrete transition via abstract paths of cost no greater than concrete cost and preserving correct terminal labels, has **every admissible edge potential bounded by $\Phi_x(s_x)\le L+1$**. Proof: choose the different fixed correct total machine $B_x$ that hardwires $x$ and its true answer in $L+O(1)$ finite control states, scans $x$ and its endmarker in $L+1$ transitions, and runs a paid total exhaustive fallback on any nonmatch. Telescope across this **genuine** concrete trace. This is NOT a uniform polynomial SAT algorithm and NOT an all-machine P != NP barrier; the theorem does **not** apply to program-dependent initial abstract states. TMR-1/001 warned about the underlying per-input hardcoding; /004 makes the all-transition input-common potential obstruction precise.
