@@ -1,0 +1,174 @@
+% CLAUDE REPORT::WCD-RESXOR-0001::2026-11-14T07:50-08:00
+% Scheduled Claude routine "worst-case minimum derivation cost" (Wbar_R directive).
+% Role-neutral and additive. It does NOT edit root main.tex (TMR-5 owns synthesis) or any TMR/LSPV region.
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\title{WCD-RESXOR-0001: $R^-\le_p\mathrm{Res}(\oplus)$ and an unconditional quadratic lower bound on $\overline W_{R^-}$}
+\author{Claude scheduled routine (worst-case derivation complexity log)}
+\date{2026-11-14 07:50 America/Los\_Angeles}
+\begin{document}
+\maketitle
+
+\paragraph{Status line.}
+\begin{itemize}
+\item Lemma~\ref{lem:sim} (linear simulation $R^-\le\mathrm{Res}(\oplus)$, $K\le120$): \textbf{PROVED/EXACT}. Its finite parts are \textbf{COMPUTATIONAL}, checked exhaustively.
+\item Theorem~\ref{thm:quad}: \textbf{PROVED/EXACT}, conditional only on two \textbf{KNOWN THEOREMS}, Itsykson--Podolskii--Shekhovtsov (ECCC TR26-018, Thm.~1.6/7.4) and Ben-Sasson--Wigderson.
+\item Transfer of the depth-capped $\mathrm{Res}(\oplus)$ bounds to $\overline W$: \textbf{FAILED TRANSFER}.
+\item Still \textbf{OPEN}: a 3-CNF version of the family, any superpolynomial $\overline W_{R^-}$, the full $R_{\mathrm{mix341}}$ with DEF, bridge B3, and P versus NP.
+\end{itemize}
+The bound is polynomial, so it has no bearing on P versus NP.
+
+\section{Target and fixed system}
+The shared target is
+\[\overline W_R(N)=\max_{F\in\mathrm{UNSAT},\,|\langle F\rangle|\le N}\ \min_{\pi:F\vdash_R\bot}\mathrm{cost}_R(\pi).\]
+Each distinct derived node of a shared DAG costs one unit. The optimal derivation is chosen freely. Depth, proof search and space are not charged.
+
+$R^-=\{\mathrm{RES},\mathrm{AND3},\mathrm{XOR},\mathrm{LOCAL\text{-}CONVERT}\}$ is the definition-free fragment of $R_{\mathrm{mix341}}$. Its rules are exactly as written in \texttt{research/agents/lspv-2/2026-11-02\_1216\_LSPV-2\_MIXED\_TSEITIN\_MIN\_DAG341.tex}, without DEF, as declared in WCDC-001 (branch \texttt{ccr-1695bd63-0nas44}). The local supports are at most 3, as in that text.
+
+$\mathrm{Res}(\oplus)$ is the system defined in TR26-018, \S1, quoted from the primary text read this run:
+\begin{itemize}
+\item a line is a linear clause, that is, a disjunction of $\mathbb F_2$-linear equations;
+\item the resolution rule derives $C\vee D$ from $C\vee(f=0)$ and $D\vee(f=1)$, for any linear form $f$;
+\item semantic weakening derives $D$ from $C$ whenever $C\models D$.
+\end{itemize}
+
+\section{Results}
+\begin{lemma}[linear simulation]\label{lem:sim}
+Let $\pi$ be an $R^-$ refutation of a CNF $F$ with $W$ derived nodes. Then $F$ has a $\mathrm{Res}(\oplus)$ refutation with at most $|F|+K W$ lines, where $K\le 120$. The per-rule costs are: RES 1, XOR 2, AND3 at most 23, LOCAL-CONVERT at most 120.
+\end{lemma}
+\begin{proof}
+Represent each $R^-$ object by Res($\oplus$) lines:
+\begin{itemize}
+\item a clause by itself;
+\item an equation $f=b$ by the one-equation line $(f=b)$;
+\item a factor on $V$ with $|V|\le3$ by the full-width maxterm CNF of its truth table, which has at most 8 lines.
+\end{itemize}
+Translate each rule as follows.
+\begin{itemize}
+\item \emph{RES.} This is the Res($\oplus$) resolution rule with $f=x$, so it takes 1 line.
+\item \emph{XOR.} The premises are $(f=a)$ and $(g=b)$. Weaken $(g=b)$ to $(f=a{+}1)\vee(f{+}g=a{+}b)$; this is sound because $g=b$ together with $f=a$ gives $f+g=a+b$. Then resolve this line with $(f=a)$ on $f$. The result is $(f{+}g=a{+}b)$ in 2 lines. A row of $0=1$ is the empty line.
+\item \emph{AND3.} The maxterms of $f_1\wedge f_2$ are exactly the union of the maxterms of $f_1$ and of $f_2$ over $V$. Each one is a weakening of a premise line, which gives at most 8 lines. An optional GF(2) row annotation is a further line implied by those maxterms.
+\item \emph{LOCAL-CONVERT.} The conclusion is a clause, a row, or a condition on at most 3 variables, given by at most 8 maxterms. It is implied by the premise's maxterms.
+\end{itemize}
+A line $T$ implied by a maxterm CNF $S$ on $\le3$ variables is derived by a decision tree. The tree branches on the variables outside $T$. At each leaf $\rho$, the line $T\vee\neg\rho$ is a weakening of a premise, or a tautology weakened from any premise. Resolving upward yields $T$.
+
+The script \texttt{resxor/rminus\_resxor\_transfer.py} builds every such derivation for all 256 Boolean functions on 3 variables. That covers all 2113 implied clauses and rows, and each step is checked by the Res($\oplus$) rule checker. The maximum is 7 lines for an implied clause and 15 for an implied row. The XOR translation is checked on all 1032 instances with $n\le4$; the general proof is the two-line argument above. Axioms of $F$ are added once. The root is the empty line.
+\end{proof}
+
+\begin{lemma}[top-down size]\label{lem:td}
+A bottom-up Res($\oplus$) refutation with $s$ lines yields a parity decision DAG, the top-down model of TR26-018 \S1.5, with at most $s$ nodes.
+\end{lemma}
+\begin{proof}
+Label the node of line $C$ by the linear system $\neg C$, and contract weakening chains. Semantic implication composes, so the result is still valid.
+\begin{itemize}
+\item A resolution step on $f$ becomes a query of $f$. The children are valid because $\neg C\wedge\neg D\wedge(f=\alpha)$ implies the negation of the matching premise.
+\item A line obtained by weakening an axiom $A$ becomes a sink, because $\neg D\models\neg A$.
+\item The empty line becomes the source, labelled ``true''.
+\end{itemize}
+\end{proof}
+
+\begin{theorem}[unconditional quadratic bound for unrestricted $R^-$]\label{thm:quad}
+Let $G$ range over an explicit family of $d$-regular graphs on $h$ vertices with constant $d$ and $e(G)\ge ch$. Here
+\[e(G)=\min_{h/3\le|U|\le2h/3}|\delta(U)|,\]
+and $T_G$ is odd-charge Tseitin. Let $F_G=T_G\circ\mathrm{MAJ}_3$, a $2d$-CNF with $2^{d-1}3^d h$ clauses. Then
+\[W_{R^-}(F_G)\ \ge\ \frac{e(G)(e(G)+1)/2-|F_G|}{120}=\Omega(h^2).\]
+Hence $\overline W_{R^-}(N)\ge\Omega(N^2/\log^2N)$ over CNFs of constant width.
+\end{theorem}
+\begin{proof}
+\begin{itemize}
+\item $\mathrm{MAJ}_3$ is 1-stifling, which is checked exhaustively.
+\item By Ben-Sasson--Wigderson, every resolution refutation of $T_G$ has width at least $e(G)$.
+\item By TR26-018 Thm.~1.6, every Res($\oplus$) refutation of $F_G$ therefore has size at least $e(G)(e(G){+}1)/2$. This bound is quoted from the primary text.
+\item Apply Lemmas~\ref{lem:sim} and~\ref{lem:td}.
+\end{itemize}
+For encoded length: $|F_G|=\Theta(h)$ and $N=\Theta(h\log h)$ bits.
+\end{proof}
+
+\paragraph{Calibration.} For cubic graphs, $|F_G|=108h$, so the bound is positive only when $h>216/c^2$. With $c\approx0.1$ (random cubic bisection), that means $h>21600$. On the five executed graphs (K4, K33, prism, cube, Petersen) the numeric bound is \emph{vacuous} (0), and the raw JSON records this.
+
+The controls all agree with the construction:
+\begin{itemize}
+\item the lifted odd K4 formula has 0 models;
+\item the lifted even K4 formula has $32768=8\cdot4^6$ models, the SAT control;
+\item unlifted odd Tseitin has the linear optimum $W_{R^-}=4h-1$ (LSPV-2/341), so the lift is essential.
+\end{itemize}
+
+\paragraph{Failed transfers.} The depth-capped Res($\oplus$) results do not lower-bound $\overline W$:
+\begin{itemize}
+\item TR26-018 Thm.~1.4 and Cor.~1.5, depth $o(n^2/\log^4 n)$;
+\item Bhattacharya--Chattopadhyay, arXiv:2507.23008, depth $N^{2-\varepsilon}$;
+\item Byramji--Impagliazzo, $\exp(\Omega(n^3/D^2))$ at depth $D$.
+\end{itemize}
+In the supercritical cases the formulas have polynomial-size \emph{resolution} refutations. The free choice of the optimal derivation then makes $\overline W$ polynomial on them. These bounds would matter only if a cost model charged depth or span, and the present directive does not. The classification is FAILED TRANSFER.
+
+\paragraph{What this does not give.}
+\begin{itemize}
+\item[(i)] \emph{A 3-CNF family.} Splitting the width-6 clauses adds extension variables, and Res($\oplus$) size preservation under splitting is not proved here. This is the new target RX-T1, which is OPEN.
+\item[(ii)] \emph{A superpolynomial bound.} The strongest known unrestricted DAG Res($\oplus$) size bound is quadratic, and superpolynomial DAG Res($\oplus$) is OPEN (TR26-018 \S1). The upper bound for $W_{R^-}(F_G)$ is also unknown. Resolution is exponential on $F_G$ by lifted width, and $R^-$ cannot build the 9-variable lifted parities without DEF. So $W_{R^-}(F_G)\in[\Omega(h^2),2^{O(h)}]$, which is CANDIDATE hard and OPEN.
+\item[(iii)] \emph{DEF.} With DEF, $R_{\mathrm{mix341}}$ contains Extended Resolution (\texttt{c6iury} TIER-ER-0001), and the EF barrier (log item 9) applies.
+\end{itemize}
+
+\section{Bridge B3 (no change)}
+For $R^-$ no superpolynomial lower bound is known, so the bridge-collapse equivalence (log item 3) does not yet apply to $R^-$. If one were proved, $\mathrm{B3}_{R^-}$ would be equivalent to SAT$\notin$P. Nothing here bears on B3.
+
+\section{CORPUS REVIEWED}
+The following were read this run:
+\begin{itemize}
+\item AGENTS.md;
+\item the TMR replacement directive (\texttt{research/coordination/2026-11-13\_1249\_TM\_RESOURCE\_AGENT\_REPLACEMENT.md});
+\item the two-gate five-role handoff;
+\item LSPV-2/341, the rule text;
+\item the newest consolidated living log (\texttt{rd63xh}), carried onto this branch;
+\item the reports and logs of the four later unmerged runs: \texttt{slqyt4}, \texttt{0nas44} (WCDC-001, read in full for $R^-$), \texttt{2btsj4} and \texttt{ic4tsx}.
+\end{itemize}
+In total 284 \texttt{ccr-1695bd63-*} branches were surveyed by head commit.
+
+\section{DUPLICATION / CONTRADICTION AUDIT}
+\begin{itemize}
+\item \texttt{slqyt4}, \texttt{2btsj4} and \texttt{ic4tsx} repeat log items 3, 7 and 12. No new theorem was found there, and they are indexed in the log.
+\item WCDC-001 listed $R^-\le_p\mathrm{Res}(\oplus)$ as CANDIDATE. This run proves it, with an explicit constant.
+\item No existing artifact gives a superlinear $\overline W_{R^-}$ bound, so Theorem~\ref{thm:quad} is new to the corpus.
+\item No contradiction found.
+\end{itemize}
+
+\section{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Root \texttt{main.tex} is unchanged. It is owned by the TMR roles, and this routine has no ownership region there. All changes are additive files under \texttt{research/agents/claude/worst-case-derivation/}.
+
+\section{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+\begin{itemize}
+\item \textbf{Adopted:} the /341 rules, the WCDC-001 definition of $R^-$, and the BSW width bound.
+\item \textbf{Retired:} depth-capped Res($\oplus$) bounds as $\overline W$ evidence.
+\item \textbf{Upgraded:} WCDC-001's CANDIDATE ``$R^-\le_p\mathrm{Res}(\oplus)$'' is now PROVED/EXACT.
+\end{itemize}
+
+\section{STALE OR OVERSTATED CLAIMS FOUND}
+\begin{itemize}
+\item The 10:50 log entry said that ECCC TR26-018 ``reportedly'' gives a quadratic size lower bound. This is now confirmed from the primary text: the exact bound is $w(w+1)/2$, for $\varphi\circ g$ with $g$ 1-stifling.
+\item The web-search summary's description of Bhattacharya--Chattopadhyay as depth ``$\approx N^2$'' versus ``$N^{2-\varepsilon}$'' was not resolved. It is not load-bearing.
+\end{itemize}
+
+\section{Literature (primary text read this run)}
+\begin{itemize}
+\item Itsykson, Podolskii, Shekhovtsov, \emph{Resolution width lifts to near-quadratic-depth Res($\oplus$) size}, ECCC TR26-018, Feb.~2026. Read: Thms.~1.2, 1.4, 1.6, Cor.~1.5, and \S1.5.
+\item Ben-Sasson, Wigderson, JACM 2001: the width of Tseitin formulas.
+\item Efremenko, Garl\'ik, Itsykson, STOC 2024: regular Res($\oplus$). Checked from a search summary only.
+\item Bhattacharya, Chattopadhyay, arXiv:2507.23008. Checked from a search summary only.
+\end{itemize}
+
+\section{Evidence}
+\begin{itemize}
+\item Code: \texttt{research/agents/claude/worst-case-derivation/resxor/rminus\_resxor\_transfer.py}.
+\item Raw output: \texttt{resxor/raw\_results.json}.
+\item Single stage, 1.3\,s, all assertions passed. No TeX engine was available in this container, so this file was not compiled this run.
+\item Host wall time is not native machine cost.
+\end{itemize}
+
+\paragraph{Next target RX-T1.} Find a Res($\oplus$) size lower bound for the clause-split 3-CNF version of $T_G\circ\mathrm{MAJ}_3$. Either prove that Res($\oplus$) simulates clause-splitting variables with linear overhead, or exhibit an obstruction. Part (b) of the AC$^0[2]$-Frege target in the log is unchanged.
+
+\medskip\noindent P versus NP remains OPEN. One OPEN load-bearing arrow means P $\ne$ NP is not proved.
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WCD-RESXOR-0001
