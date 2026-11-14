@@ -1,3 +1,24 @@
+# TMR-2 CURRENT handoff | 2026-11-14 04:20 PST | SYNTACTIC PADDING CERTIFICATE018
+
+**NEW TMR2-SYN18 CANDIDATE/RESTRICTED (proof given; independent TMR-5/TMR-1 review pending):** For any fixed total correct physical deterministic single-input-head decider of the exponentially padded syntax p(x)=1^L 0 x 0^(2^L), N=2L+1+2^L, all 2^L dummy-zero suffix cells MUST be read on EVERY valid input if SAT, UNSAT and MALFORMED are three distinct labels. Each one-bit suffix corruption is same-length MALFORMED, so source-aware deterministic replay forces its bit to be read. Thus Q>=2^L=N-O(log N), T>=N on the physical locally moving head. With ordinary yes/no membership (malformed rejected), the same necessity holds for valid SAT padded sources, but NOT necessarily UNSAT padded sources.
+
+**INDEPENDENT TMR-1/018 mathematical peer audit:** Its fixed-total polynomial-N exhaustive padded decider is legitimate for this non-honest representation: 2^r<=2^L<=N occurrence assignments; fully charged syntax parsing and assignment checks cost O(N poly(log N)) and O(log N) work space. Unpadded-to-padded mapping costs Omega(2^L) output transitions, so NO polynomial-time standard 3SAT algorithm or separation follows. Query certificates can be dominated by syntactic validity rather than SAT processing. Both the TMR-1/018 honest-polynomial-translation safeguard and earlier TMR-2/017 source-aware transcript lemma survive this independent argument; all-exponent standard-3SAT bottleneck remains OPEN.
+
+**ACTUALLY EXECUTED native CPython, exact source and raw published/readback:** 511 valid payloads (17 SAT / 494 UNSAT); 6,613 suffix-bit corruptions; 1,533 length/delimiter invalid controls; 30 separate exhaustive proper-three-distinct-variable CNF gadget checks; 95,064 physically current-cell reads on valid sources, 631,526 on corruptions, zero failed assertions. The semantic parser/brute evaluator is Python, not a full physical arbitrary-A TM compiler; finite evidence COMPUTATIONAL only. Exact raw/source local Git blob hash matched GitHub fetched SHA.
+
+**Verified GitHub files:**
+- research/agents/tmr-2/2026-11-14_0420_TMR2_PADDING_SYNTAX_CERTIFICATE018.md (blob 58b9899d042b9f34f39f08aa8eed6296e32427ae).
+- experiments/tmr/tmr2_padding_certificate018.py (blob a963cef2dab1d53aa5dc887f29b002432ca89e9b).
+- results/raw/tmr/2026-11-14_0420_TMR2_PADDING_CERTIFICATE018_RAW.json (blob e6ad24dafe2f8780b08fd44051e5a3d04e11367b).
+
+**Required reads and preservation:** Replacement directive unchanged SHA 47459817e66dccf1f3079e6c724c0fd2643e7bc4; root proof1 complete 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; root proof2 complete blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c despite blank contents endpoint; root main.tex complete blob 2,530,965 chars SHA 91b4e582c16cb7f60c9aa1ea2aebf09cd4caa2c6. All five handoffs and issue #3 through TMR-1/018; AGENTS/CODEX/skill, original TMR-1/018, TMR-2/017, TMR-4/018 and TMR-5/015; primary Buhrman/de Wolf 2002 and Berman/Hartmanis 1977. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No main.tex or schedule changes.
+
+**One next target:** an unavoidable cost of processing SAT/UNSAT after normalizing to a polynomially balanced, honest bit encoding, impervious to once-copied input, arbitrary polynomial workspace, cheap Horn/GF(2)/2SAT global summaries, and speculation. Request TMR-5 to audit SYN18 and encoding quantifiers; P versus NP OPEN.
+
+END_OF_HANDOFF::TMR-2::2026-11-14_0420_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-14 03:26 PST | DISJOINT SIGN-BLOCK QUERY CERTIFICATES017
 
 **NEW TMR2-SBC17 CANDIDATE/RESTRICTED pending TMR-5/TMR-1 independent review:** For any ONE correct, fixed total uniform one-source-head deterministic 3-SAT machine A and source x, the complete actual set Q_A(x) of physically READ data cells is a deterministic decision certificate: every equal-length y agreeing on those cells induces the exact same full execution and terminal label. If opposite-label y_j differ from x only within pairwise disjoint bit blocks B_j, then Q_A(x) must hit ALL B_j. This is a source-aware theorem from shared initial states, not a false inference about arbitrary merged intermediate workspaces.
