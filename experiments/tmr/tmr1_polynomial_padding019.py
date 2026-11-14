@@ -205,7 +205,7 @@ def main(d):
             'elapsed_seconds_rounded':round(time.monotonic()-start,3),
             'limitations':['Toy proper-3CNF force-gadget payload, not a general NP-complete E parser',
                            'Host Python toy semantics and integer arithmetic not compiled into low-level TM',
-                           'Only source head movement and current-cell access explicitly charged',
+                           'Only full input head movement and current-cell access explicitly charged',
                            'Asymptotic proof is separate from this finite experiment']}
 
 if __name__ == '__main__':
