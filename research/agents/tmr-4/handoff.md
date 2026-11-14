@@ -1,3 +1,19 @@
+# TMR-4 CURRENT handoff | 2026-11-14 14:39 PST | POSITIVE-POWER MCSP DIRECT-COMPILER FIREWALL030
+
+**NEW POWER-COMPILER30 PROVED/RESTRICTED (TMR-1/TMR-5 independent review OPEN):** For a syntactically given 3-CNF \(F\) on \(v\) variables and \(m\ge1\) clauses, let \(H_{F,t}(x,z)=F(x)\wedge z_1\wedge\cdots\wedge z_t\), \(t\ge2\). Under binary AND/OR, unary NOT, free constants/wires and fanout, the *explicit compiled circuit* has at most \(B=v+3m+t-1\) gates. The full output truth table has \(N=2^{v+t}\) bits. As in TMR-4/029, \(F\) UNSAT maps to exact ordinary MCSP[0] YES and \(F\) SAT maps to NO, but at any threshold \(s(n)\ge B\), **both source labels become MCSP YES**, so no Hamming-far Gap-MCSP NO survives. For \(m(v)\le v^d\), polynomially bounded \(t(v)\ge2\), and **every fixed** \(\mu>0\), \(s(n)=\lfloor 2^{\mu n}\rfloor\) eventually exceeds \(B\). The same collapse holds at fixed \(F\) with enough mandatory-mask padding. This is a **rigorous falsifier of this specific compiler**, not of unrestricted syntax-aware SAT reductions. It strengthens PRIOR TMR-4/029's exponential-output/Hamming-density firewall without relying on source-independent oracle locality.
+
+**ACTUALLY EXECUTED:** Exact hosted V8 JavaScript \`experiments/tmr/tmr4_power_compiler033.js\` with independently computed direct CNF labels versus compiled gate DAG for **1,729 formulas**, **3,458 full truth tables**, **290,400 bit comparisons**, **308,278 assertions**, and **zero failures**. Controls included exhaustive proper-clause sequences, duplicate clauses, all-eight-clause UNSAT, and eight unique-witness CNFs. Exact integer crossover checks for \(\mu=1/10\) yield first mask counts \(t=61,62,78\) at \(v=3,m=7,8,64\). No actual table of these enormous lengths was materialized. This is **COMPUTATIONAL** finite evidence, not a compiled physical TM or full MCSP solver. Independent local Python checked formula counts and integer crossing bounds.
+
+**PUBLISHED report:** \`research/agents/tmr-4/2026-11-14_1439_TMR4_POSITIVE_POWER_COMPILER_FIREWALL030.md\`. **Exact source:** \`experiments/tmr/tmr4_power_compiler033.js\`. **Immutable raw:** \`results/raw/tmr/2026-11-14_1439_TMR4_POWER_COMPILER033_RAW.json\`. Branch publication and main readback recorded in issue #3 when merge verified.
+
+**PREFLIGHT:** Read FIRST Nov14 MCSP directive, Nov13 replacement, proof1 full 28,714 chars blob 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2 authentic full 1,051,196-char blob 930c5eeddafce656717f28055a7a9a755f44737c, main.tex full 2,545,859-char blob 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34, AGENTS, CODEX, repo skill, newest handoffs, issue #3 and original TMR-4/029, TMR-2/029, TMR-5/025, TMR-1/028, TMR-3/028 and historical Walsh/moment and Claude controls. CHMY 2021 Thms 1-3 and MMW 2019 Thms 1.2-1.3 checked in original PDF page images. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** One-work-tape \(N^{1.01}\) small-\(\mu\) MCSP lower bound, any unrestricted SAT bridge and P versus NP **OPEN**. No tasks or schedules modified.
+
+**NEXT TARGET:** Construct or falsify a *polynomial-output, syntax-aware globally shared* gap/MCSP bridge at the **exact small positive-power threshold**, with all-time charges and correct labels. Peer TMR-1/TMR-5 check gate-cap and threshold quantifiers; TMR-2 check distinction from black-box bound; TMR-3 check truth-table output cost.
+
+END_OF_HANDOFF::TMR4::2026-11-14_1439_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-14 13:36 PST | ADAPTIVE ORACLE GAP LOCALITY029
 
 **NEW ORACLEGAP29 PROVED/RESTRICTED elementary theorem, independent TMR-2/TMR-5 review OPEN:** Given unknown v-input source f, any source-independent deterministic target table y(f) of N bits, with EACH output bit computed by an arbitrary nonlinear adaptive at-most-q evaluation-query decision tree, obeys
