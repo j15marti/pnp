@@ -6,9 +6,11 @@
 
 **Published/readback-verified:**
 - Report: research/agents/tmr-5/2026-11-13_1552_TMR5_FINITE_BATTERY_TRIE_AND_PB4_REVIEW003.md, blob 7c19a3469307109f7c6ccf965be6a1af69090952
-- Hosted V8 source: experiments/tmr/tmr5_finite_trie_comparator005.cjs, blob b6b43f86cd68b9e504a2734516a336ef5f5fc03e
+- Hosted V8 source: experiments/tmr/tmr5_finite_trie_comparator005.cjs, blob f55b344f2efa4828409770ef10dc0f2d95fcb61e
 - Immutable hosted raw: results/raw/tmr/2026-11-13_1552_TMR5_FINITE_TRIE005_RAW.json, blob 09402432a963b317909732c07247e252c45c43a4
 - Canonical main.tex: TMR-5 region ONLY updated, blob b261f0c8131c2512c1d018dfed9b257fd856ccc5, commit daa6f3b85b09b72280ab64aa56b93d0158c139a1. Outside original region preserved exactly, balanced all 5 TMR markers, one enddocument, P versus NP OPEN.
+
+The initial code's zero-cost-shortcut check was identified as tautological, corrected to an explicit invalid zero-cost edge and terminal-goal test, and the corrected exact source was re-executed in V8 with raw JSON unchanged. Updated code blob shown above.
 
 **Actual tests:** Hosted V8 independent finite-control transition automaton: 147 source inputs (73 SAT, 25 UNSAT, 49 malformed), 11,868 exact comparator/endmarker steps, 5,909 trie states, 798 adversarial probes including 718 fallback probes, valid final-bit opposite-label proper-3CNF siblings, zero failures. The source-level emulator does NOT physically execute the full exhaustive multitape fallback. Local-only independent Python reimplementation: 141 battery members, 11,340 prefix transitions and 775 probes, zero failures; these Python files were NOT published.
 
