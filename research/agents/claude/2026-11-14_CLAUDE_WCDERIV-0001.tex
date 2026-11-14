@@ -1,0 +1,243 @@
+% CLAUDE REPORT::WCDERIV-0001::2026-11-14
+% Scheduled routine: worst-case minimum-derivation-cost program (W-bar_R).
+% XeLaTeX/pdfLaTeX compatible.
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Wbar}{\overline W}
+\newcommand{\UNSAT}{\mathrm{UNSAT}}
+\newcommand{\SAT}{\mathrm{SAT}}
+\newcommand{\poly}{\operatorname{poly}}
+\title{WCDERIV-0001: The bridge/lower-bound dichotomy for the worst-case minimum-derivation program}
+\author{Claude routine (scheduled run), repository \texttt{j15marti/pnp}}
+\date{2026-11-14}
+\begin{document}
+\maketitle
+
+\noindent\textbf{Status: P versus NP remains OPEN.} This report proves two elementary
+results (PROVED/EXACT) that locate where the difficulty in the program sits, and adds a
+small COMPUTATIONAL table. No load-bearing arrow of a separation is closed.
+
+\section{Target as assigned}
+For a fixed sound and complete refutation system $R$ (the multisign DAG-hypergraph
+reduction calculus, or any fixed alternative) and a cost function $\operatorname{cost}_R$
+polynomially related to proof bit length, define
+\[
+\Wbar_R(N)=\max_{\substack{F\in\UNSAT\\ |\langle F\rangle|\le N}}\
+\min_{\pi:F\vdash_R\bot}\operatorname{cost}_R(\pi).
+\]
+The minimal reduced logical state of an unsatisfiable formula is $\bot$ (the empty signed
+hyperedge); $\Wbar_R$ is the worst-case cost of reaching it with the best sequence granted
+for free. The program asks for
+\begin{itemize}
+\item[(LB)] $\Wbar_R(N)$ is superpolynomial, and
+\item[(BR)] $\SAT\in\mathrm P\implies \Wbar_R(N)\le\poly(N)$.
+\end{itemize}
+(LB)$\wedge$(BR) $\Rightarrow\SAT\notin\mathrm P$ by contraposition. The free choice of
+$\pi$ is a legitimate lower-bound relaxation: any executed sequence costs at least the
+minimum, and discovery costs only add. Note that $\min_\pi$ is a nondeterministic
+(coNP-side) quantity; for a single optimal $R$, (LB) would give $\mathrm{NP}\ne\mathrm{coNP}$,
+which is stronger than $\mathrm P\ne\mathrm{NP}$.
+
+\section{Result 1: weak systems make the bridge equal to the whole problem}
+
+\begin{theorem}[PROVED/EXACT]\label{thm:weak}
+Let $R$ be any fixed system for which (LB) is an unconditional theorem. Then (BR) for $R$
+is logically equivalent to $\SAT\notin\mathrm P$.
+\end{theorem}
+\begin{proof}
+($\Leftarrow$) If $\SAT\notin\mathrm P$, (BR) holds vacuously.
+($\Rightarrow$) (BR) and (LB) give $\SAT\notin\mathrm P$ by contraposition.
+\end{proof}
+
+\noindent (LB) is a KNOWN THEOREM for: tree-like and general resolution (Haken 1985; for
+Tseitin, Urquhart 1987, Ben-Sasson--Wigderson 2001); cutting planes (Pudl\'ak 1997);
+Polynomial Calculus (Razborov 1998; Ben-Sasson--Impagliazzo 1999); bounded-depth Frege
+(Ajtai 1988, Beame--Impagliazzo--Pitassi, Krají\v{c}ek--Pudl\'ak--Woods, H\aa stad 2025
+improvements); $\mathrm{AC}^0[p]$-Frege for specific DNF families (Lu--Santhanam--Tzameret,
+ECCC 2025/134). Hence:
+
+\begin{corollary}
+If the multisign DAG-hypergraph calculus is p-simulated by any of the systems above (in
+particular, if its only rules are signed hyperedge merging/resolution, unit propagation,
+subsumption and deletion, without extension variables), then priority (LB) is already
+achieved by the literature and the remaining (BR) \emph{is} the P versus NP problem with no
+reduction in difficulty. Such a calculus cannot serve as a ``weakest sufficient bridge''.
+\end{corollary}
+
+\noindent This complements the corpus result LSPV-1/334 (FREE-CHOICE-TRANSFER-BARRIER334),
+which falsifies the stronger pointwise simulation TR(Resolution) unconditionally via
+Tseitin formulas plus a Gaussian-elimination decider. Theorem~\ref{thm:weak} concerns the
+weaker conditional bridge (BR) and shows it cannot be falsified or proved for such $R$
+without settling P versus NP.
+
+\section{Result 2: a fixed system whose bridge reduces to a provability residual}
+
+Fix a consistent, recursively axiomatized theory $T\supseteq$ Robinson's $Q$ with
+polynomial-time proof checking (e.g.\ PA or ZFC). For a deterministic machine $A$ and
+$k\ge1$ let
+\[
+\mathrm{Snd}_{A,k}:\quad \forall F\,\forall x\ \bigl[A\text{ halts on }F\text{ within }
+|F|^k+k\text{ steps with output }\UNSAT\ \rightarrow\ x\not\models F\bigr],
+\]
+a $\Pi_1$ sentence (all inner quantifiers bounded).
+
+\begin{definition}
+$R_T$ accepts, as a refutation of $F$, either (a) an Extended Frege refutation of $F$, or (b)
+a tuple $w=(A,k,p,1^{|F|^k+k})$ where $p$ is a $T$-proof of $\mathrm{Snd}_{A,k}$ and $A$,
+simulated on $F$ for $|F|^k+k$ steps, outputs $\UNSAT$. Cost $=|w|$.
+\end{definition}
+
+\begin{theorem}[PROVED/EXACT]\label{thm:RT}
+(i) $R_T$ is a Cook--Reckhow proof system: polynomial-time checkable, sound and complete.
+(ii) If some deterministic $A$ decides SAT in time $|F|^k+k$ and $T\vdash\mathrm{Snd}_{A,k}$,
+then $\Wbar_{R_T}(N)\le C_{A,T}+O(N^k)$.
+\end{theorem}
+\begin{proof}
+(i) Checking (a) is the EF checker. For (b), verify $p$ against the fixed formula
+$\mathrm{Snd}_{A,k}$ (polynomial in $|p|+|A|$) and simulate $A$ for $|F|^k+k$ steps
+(polynomial in the padding length). Soundness of (a) is EF soundness. For (b): a false
+$\Pi_1$ sentence has a true $\Sigma_1$ negation, which $Q$ proves; so consistent
+$T\supseteq Q$ proves no false $\Pi_1$ sentence. Thus $\mathrm{Snd}_{A,k}$ is true and the
+accepted $F$ is unsatisfiable. Completeness is inherited from EF.
+(ii) For every unsatisfiable $F$ the tuple $(A,k,p,1^{|F|^k+k})$ is accepted, and its length
+is $|A|+|p|+O(\log k)+|F|^k+k$, where $|A|,|p|,k$ are constants independent of $F$.
+\end{proof}
+
+\begin{corollary}[exact decomposition of the bridge for $R_T$]\label{cor:decomp}
+Let $\mathrm{PROV}_T$ be: ``if $\SAT\in\mathrm P$ then some polynomial-time SAT decider is
+$T$-provably UNSAT-sound for some explicit clock''. Then
+\[
+\mathrm{PROV}_T\ \Longrightarrow\ \mathrm{(BR)}\text{ for }R_T,
+\qquad\text{hence}\qquad
+\mathrm{(LB)}\text{ for }R_T\ \wedge\ \mathrm{PROV}_T\ \Longrightarrow\ \mathrm P\ne\mathrm{NP}.
+\]
+Unconditionally, (LB) for $R_T$ implies that no polynomial-time SAT algorithm is
+$T$-provably UNSAT-sound.
+\end{corollary}
+
+\begin{remark}[relation to the corpus; what is new]
+(1) Codex 2026-11-11 TRANSFER\_RECOVERY uses an $A$-\emph{dependent} system $Q_A$; $R_T$ is
+fixed before any algorithm is chosen and covers every $T$-provably sound decider at once.
+(2) LSPV-1 2026-11-13 PA\_CORRECTNESS\_CERTIFICATION\_TRAP shows by G\"odel~II that some
+correct decider $A_{T,D}$ is not $T$-provably correct, so a certificate-only transfer
+cannot cover \emph{all} deciders. That does not refute $\mathrm{PROV}_T$: (BR) needs
+\emph{one} provably sound polynomial decider, not all of them. The residual is therefore
+exactly $\mathrm{PROV}_T$, and only UNSAT-side soundness is required. The runtime bound
+need not be $T$-provable because the clock is paid in the proof.
+(3) $R_T$ is a version of the standard ``proof system of a theory'' construction
+(Krají\v{c}ek--Pudl\'ak 1989). The corollary is written out here for the $\Wbar_R$ target.
+\end{remark}
+
+\section{The dichotomy}
+\begin{center}
+\begin{tabular}{p{3.2cm}|p{5.3cm}|p{5.3cm}}
+ & (LB) superpolynomial $\Wbar_R$ & (BR) $\SAT\in\mathrm P\Rightarrow\Wbar_R\le\poly$\\\hline
+Weak $R$ (Res, CP, PC, AC$^0$-Frege, rule-only hypergraph merging) & KNOWN THEOREM & $\equiv$ P$\ne$NP (Thm.~\ref{thm:weak}); no progress possible without solving the problem\\\hline
+$R_T$ (EF + $T$-reflection) & OPEN; at least as hard as EF lower bounds. Best known unrestricted Frege bounds are only quadratic (as noted in Jeřábek 2025). & Reduces to $\mathrm{PROV}_T$ (Cor.~\ref{cor:decomp}); OPEN\\\hline
+Optimal $R^\ast$ (if it exists) & $\equiv$ NP$\ne$coNP & PROVED if $R^\ast$ exists: NP$=$coNP $\Rightarrow$ some p-bounded system $\Rightarrow R^\ast$ p-bounded (Cook--Reckhow 1979); existence OPEN (follows from NE$=$coNE, Krajíček--Pudlák 1989)
+\end{tabular}
+\end{center}
+\noindent\emph{Consequence for the program.} For a multisign DAG hypergraph calculus to be a
+non-vacuous bridge target it must include \emph{extension} (fresh nodes defined as signed
+gates of old nodes, i.e.\ shared DAG definitions), so that it reaches at least EF strength.
+At that point (LB) is beyond every currently known proof-complexity technique. The program
+moves the difficulty between the two arrows but does not remove it. The useful work is to
+find the weakest $R$ for which (BR) is provable without solving P versus NP.
+Theorem~\ref{thm:weak} shows such an $R$ must lie strictly above every system with a known
+lower bound.
+
+\section{Computational sanity table (COMPUTATIONAL)}
+\texttt{research/agents/claude/worst-case-derivation/treelike\_min.py} computes the exact
+minimum tree-like resolution refutation size ($2L-1$ for the optimal falsified-clause
+decision tree with $L$ leaves) by memoized branch-and-bound over partial assignments. Each
+instance runs as its own chunk under the 30\,s rule. Raw results are in
+\texttt{treelike\_min\_results.jsonl}
+(sha256 \texttt{ca74689f\ldots fccd38}; script sha256 \texttt{91d23319\ldots 77be1}).
+\begin{center}
+\begin{tabular}{lrrrr}
+Family & vars & clauses & min leaves $L$ & min tree-like size\\\hline
+PHP$^{2}_{1}$ & 2 & 3 & 3 & 5\\
+PHP$^{3}_{2}$ & 6 & 9 & 11 & 21\\
+PHP$^{4}_{3}$ & 12 & 22 & 43 & 85\\
+Tseitin $K_3$ (odd) & 3 & 6 & 6 & 11\\
+Tseitin $K_4$ (odd) & 6 & 16 & 28 & 55\\
+Tseitin $K_5$ (odd) & 10 & 40 & 232 & 463
+\end{tabular}
+\end{center}
+PHP$^5_4$ (20 variables) and Tseitin $K_6$ (15 variables) did not finish within 30\,s and
+are not recorded. The PHP leaf counts satisfy $L_{m+1}=4L_m-1$ for $m=1,2$; this is a
+finite observation only (CANDIDATE pattern, not claimed beyond $m\le3$). The table only
+illustrates known exponential (LB) for weak $R$. It is not evidence for (BR).
+
+\section*{CORPUS REVIEWED}
+Root \texttt{AGENTS.md} (including the 2026-11-09 knot/link handoff note and the world-ledger
+note) and the \texttt{main.tex} ownership-marker layout (LSPV-1..5, TMR-1..5; this routine
+owns no region and did not edit \texttt{main.tex}). Also read:
+\texttt{research/coordination/2026-11-13\_1249\_TM\_RESOURCE\_AGENT\_REPLACEMENT.md} (its
+per-length-minimization warning does not apply: $R$ is fixed and the minimum is over
+derivations, not algorithms);
+LSPV-1 \texttt{2026-11-13\_USER\_TOTAL\_PROGRESS\_TWO\_GATE\_REFOCUS.md} (same $\Wbar_R$ and
+family bridge; conditional composition theorem);
+LSPV-1/334 FREE\_CHOICE\_TRANSFER\_BARRIER;
+LSPV-1 2026-11-13 PA\_CORRECTNESS\_CERTIFICATION\_TRAP\_GATE;
+Codex 2026-11-11 TRANSFER\_RECOVERY\_AND\_RATE\_AMPLIFICATION (sections on $Q_A$, reflection
+and Pich--Santhanam); the TMR-1..5 directory listings; and prior Claude world-ledger, TPORT
+and one-tape reports. This is a targeted survey, not a reread of every historical byte.
+
+\section*{DUPLICATION / CONTRADICTION AUDIT}
+The definition of $\Wbar_R$ and the conditional composition duplicate LSPV-1 2026-11-13 and
+are cited, not reclaimed. Theorem~\ref{thm:weak} is a short logical observation, distinct
+from 334's unconditional falsification of pointwise TR(Res). Theorem~\ref{thm:RT} and
+Corollary~\ref{cor:decomp} differ from Codex's $A$-dependent $Q_A$ and refine (without
+contradicting) the LSPV-1 G\"odel trap. No contradiction was found.
+
+\section*{WHAT CHANGED RELATIVE TO ROOT MAIN}
+Nothing in \texttt{main.tex} changed. This report adds a proved dichotomy:
+for weak $R$, (BR) $\equiv$ P$\ne$NP; for the fixed system $R_T$, (BR) $\Leftarrow\mathrm{PROV}_T$.
+
+\section*{ADOPTED / REJECTED / RETIRED PRIOR COMPONENTS}
+Adopted: free optimal sequence choice, count-once shared DAG cost, LSPV-1 conditional
+composition. Rejected as a non-vacuous bridge target: any multisign hypergraph calculus
+without extension (Theorem~\ref{thm:weak}).
+
+\section*{STALE OR OVERSTATED CLAIMS FOUND}
+A search-engine summary consulted this run stated that Extended Frege ``is'' polynomially
+bounded. That is false as stated: whether EF is polynomially bounded is OPEN, and it is
+implied by NP$=$coNP only for an optimal system. No repository claim relied on it.
+
+\section*{Barrier-transfer and post-quantum ledger}
+Proof complexity and logic: feasible interpolation and reflection principles are a
+\emph{directly transferable theorem} domain (Cook--Reckhow; Krajíček--Pudlák). Optimization
+duality (LP/cutting planes): a \emph{failed transfer} for (BR), because CP has known lower
+bounds and Theorem~\ref{thm:weak} applies. PQ item 5 (worst-to-average reductions):
+ANALOGY/CANDIDATE only, since $\mathrm{PROV}_T$ is a uniform provability statement, not an
+average-case one. Relativization: Theorems~\ref{thm:weak} and~\ref{thm:RT} relativize, so
+they are structural bookkeeping, not separation techniques.
+
+\section*{Literature checked this run}
+Cook \& Reckhow, JSL 44 (1979); Krajíček \& Pudlák, JSL 54 (1989); Haken, TCS 39 (1985);
+Ben-Sasson \& Wigderson, JACM 48 (2001); Pudlák, JSL 62 (1997); H\aa stad, ``On small-depth
+Frege proofs for PHP'', TheoretiCS 2025 (arXiv:2401.15683); Lu, Santhanam \& Tzameret, ECCC
+TR25-134; de Rezende et al., arXiv:2604.28172 (2026, semantic tree-like Frege with bounded
+line size); Jeřábek 2025 (remark that unrestricted Frege lower bounds are only
+linear in lines and quadratic in size). No source surveyed proves superpolynomial Frege or
+EF lower bounds, so (LB) for $R_T$ remains beyond the frontier.
+
+\section*{Next target}
+Find the weakest fixed $R$ above all systems with known lower bounds for which
+$\mathrm{PROV}$-type reflection is cheap. Concretely: does Theorem~\ref{thm:RT}(ii) survive
+with $T=S^1_2$ or $V^0$-level bounded arithmetic, where $R_T$ collapses to EF or Frege? If it
+does, (BR) for EF would reduce to ``SAT$\in$P $\Rightarrow$ some decider is $S^1_2$-provably
+UNSAT-sound'', connecting to Pich--Santhanam 2023.
+
+\medskip\noindent P versus NP remains OPEN.
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WCDERIV-0001
