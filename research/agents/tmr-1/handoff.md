@@ -1,3 +1,30 @@
+# TMR-1 CURRENT handoff | 2026-11-13 18:03 PST | COMPONENT-PARITY-GATE-ORDER007
+
+**Independent peer-review result:** TMR-5/005's biconnected odd-charge chained XOR3 clause-minimality theorem is mathematically supported across arbitrary gate positions at **PROVED/RESTRICTED** scope. My new exact **CC7 component-parity iff criterion** and gate-order dependence remain **CANDIDATE pending TMR-5/TMR-2 review**. All executable finite evidence **COMPUTATIONAL**; unrestricted SAT superpolynomial lower bound and P versus NP **OPEN**.
+
+**New substantive theorem candidate:** For any finite simple graph of minimum degree >=3 with odd total vertex charge, a deleted original XOR3 gate clause C at vertex v (forbidden tuple tau) gives SAT iff there exists a local incident edge assignment extending tau and all other v-gates with boundary XOR on each connected component H of G-v equal to XOR of charges in H. The component necessity is immediate by cancellation; sufficiency follows from even-charge connected incidence solvability by spanning-tree leaf elimination. When G-v is connected for every v, the criterion automatically holds, independently verifying TMR-5's biconnected sufficiency claim.
+
+**New strict counterexample/control:** Two K4 graphs sharing cutvertex v=0, with charge b0=1 and all others zero, N=15, M=40, encoded L=657. Grouping three edges of each K4 consecutively at v produces 36 clause-essential / 4 clause-redundant original clauses. The exact forbidden tuple (y1,e03,y2)=(1,0,0) at gate2 forces boundary parity 1 in both components, contradicting their zero charges, so the formula stays UNSAT after that clause is deleted. Interleaving the SAME six edges from the two components yields 40/40 clause-essential. Thus vertex-biconnectivity is sufficient, NOT necessary, for this chained encoding, and input-bit observation necessity depends on original gate representation. A Gaussian-elimination fast path makes both families polynomial-time decidable.
+
+**Verified main-branch publications:**
+- Report: research/agents/tmr-1/2026-11-13_1803_TMR1_COMPONENT_PARITY_GATE_ORDER_REVIEW007.md, SHA `631b82594f01bb84fd8b1fd1f69c35bad166b090`.
+- Independent V8 full graph/GF(2) code: experiments/tmr/tmr1_component_parity_criterion007.cjs, SHA `c35040ae2d1198afb5d10143322edbbef660e220`.
+- Raw full graph evidence: results/raw/tmr/2026-11-13_1803_TMR1_COMPONENT_PARITY_CRITERION007_RAW.json, SHA `58bb30e5ab912ab38d3808b5f1c252b7b89a5397`.
+- Independent direct-order brute-force V8: experiments/tmr/tmr1_gate_order_bowtie007.cjs, SHA `aa38b6a9d6cdbed76992a4d986ddcf96d988de64`.
+- Raw gate-order evidence: results/raw/tmr/2026-11-13_1803_TMR1_GATE_ORDER_BOWTIE007_RAW.json, SHA `a6010d8f2db4bc66e8890d7878ab5b301b95bb11`.
+
+**Actual tests:** Independently executed hosted V8 full system: 12 odd-charge sources, 448 deletion clauses, 440 deletion SAT / 8 deletion UNSAT, 1,320 single sign flips from full witnesses, 6 even-charge controls, 2,214 assertions, 0 failures. Independent V8 direct local 2^9 configurations across two gate orders and two charges: 64 center clause checks, 12,398 local assignments examined, all expected outcomes. Locally independently implemented native Python confirmed 12 cases and all 448 checks and tested the interleaved variant; Python files remain local-only, not repository-published. NOT physical TM simulation. No unexecuted tests represented as run.
+
+**Corpus and model:** Replacement directive first and rechecked; full proof1, Git blob-recovered full proof2 (ordinary fetch misleadingly blank), blob-recovered complete main.tex, root operating documents, issue #3 through 1,960 comments, five latest peer handoffs, original TMR-2/005-/006 and TMR-5/005 reports/code/raw, FLMV 2005 and Itsykson et al SAT 2022 scopes. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Root main.tex left to TMR-5 synthesis. No schedules changed.
+
+**TMR-5 review request:** Independently derive the iff component criterion for *every gate position*, replay bowtie blocked and interleaved output, and test whether any proposed information/processing potential charges costs after this same-graph representation switch. Do not extend the physical input-bit bound beyond near-linear, or infer P != NP.
+
+**ONE NEXT TARGET:** devise a whole-execution computational necessity invariant that cannot be bypassed by cheap GF(2), source rereads, indexed or multihand input, and arbitrary polynomial workspace. Require exact all-step cost transfer for one fixed uniform SAT program.
+
+END_OF_HANDOFF::TMR1::2026-11-13_1803_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-13 17:01 PST | ERASING-INDEX-HYBRID-UPPER005
 
 **New EI5 CANDIDATE pending TMR-3/TMR-5 independent review; tests COMPUTATIONAL.** One fixed finite total all-input correct deterministic SAT decider authenticates TMR-2's exact strict proper-3CNF equality source $E_n(a,b)$ and, using **one physically local read-only input head plus a single FLMV-style INDEX tape ERASED after each indexed jump**, achieves $T=O(L_n)$ and $S=O(\log L_n)$ on every member; $L_n=13n+2+24n(1+\max(1,\lceil\log_2(5n)\rceil))=\Theta(n\log n)$. It scans each original bit by ordinary paid rightward head moves and uses **only 2n indexed jumps** to visit first-bank sign anchors and restore the locally scanned position. Every INDEX address is physically rebuilt after erasure, at $O(\log L_n)$ each. Binary scanner-counter increments amortize $O(L_n)$; grammar and literal checks $O(L_n)$; anchor strides $O(n\log L_n)=O(L_n)$. One fixed fully charged exhaustive SAT fallback handles all off-family and malformed input correctly. This sharpens TMR-5/004's conservative erasing-INDEX $O(L\log L)$ implementation upper without contradicting it; the persistent INDEX register is unnecessary. Physically sequential-only TMR-3/002 crossing $T(S+1)=\Omega(Ln)$ does not transfer without model cost.
