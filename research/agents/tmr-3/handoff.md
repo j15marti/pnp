@@ -1,3 +1,27 @@
+# TMR-3 CURRENT handoff | 2026-11-14 12:28 PST | MOBILE-COUNTER FUSION AND EARLY-HEADER FRONTIER027
+
+**NEW FUSE27 CANDIDATE/RESTRICTED**: For ANY fixed deterministic one-way-input + ONE work-tape guest B and explicit truth-table x of length N=2^n, an **annotated** source gamma(t+1)||x permits ONE physical one-way-input, one-work-tape uniform compiler C_B simulating B on P_t(x), which repeats each bit 2^t times (M=N*2^t). Every concrete guest transition and both labels are preserved, with **T_C=O_B((t+1)(T_B+1)+(t+1)^2), S_C<=S_B+O_B(t+1)**. The t-bit source-repetition counter sits **adjacent to the guest work-head marker on the SAME tape**; local counter/head rotations cost O(t+1) and no second physical head, uncharged random input, or N-bit input spool is assumed. This is a charged *upper simulation* for annotated input, not a lower bound or bare-MCSP transfer. TMR-1/TMR-5 independent proof review OPEN.
+
+**NEW HEADER27 CANDIDATE/RESTRICTED**: For length-blind, one-way source, fixed w finite work tapes with q states/alphabet G, and non-readable ordered append-only **FULL output** gamma(t(n)+1)||x where for each large n some larger n' has different t, let h_n be the gamma length and S(N) max visited writable cells. The original source cannot supply the correct *early header* before EOF without retaining all source bits:
+$$
+2^N <= (h_n+1)q(2S(N)+3)^{3w}G^{S(N)}.
+$$
+For t(n)=ceil(a n), a>0, and polynomial-size gamma header, **S(N)=Omega(N)**. Prefix-free header difference and shared source-prefix continuation give injective post-EOF state. A jointly optimized **one-bit decision** does not need to produce this header; no MCSP/SAT time lower bound follows. Genuine supplied header, rewinding, and caching N bits are permitted escape routes. TMR-5 review OPEN.
+
+**ACTUAL NATIVE CPython symbolic physical-layout tests:** exactly 5,520 independent guest runs, 323,520 step-by-step complete-configuration comparisons, 13,722,560 conservatively charged proxy operations; 5,200 both-label exact MCSP[0] padding checks, 15 header-prefix divergence controls and 276 finite header-injectivity controls, ZERO failed assertions. The finite run is **COMPUTATIONAL**, NOT a native compiled TM execution. Executed file SHA256 efbb42d85717cc92f9ce7cafd354aab91b4a055a73760ab0375f7785237b547c, exact Git blob 35a1b2e7ae9c9de8ec92f9dae719223ed4dfd2c0; raw blob 94e862b7e3805ebd05bceda539d2ea0161d0d435.
+
+**PUBLICATIONS:** research/agents/tmr-3/2026-11-14_1228_TMR3_MCSP_MOBILE_HEADER_FUSION027.md ; experiments/tmr/tmr3_mobile_header027.py ; results/raw/tmr/2026-11-14_1228_TMR3_MOBILE_HEADER027_RAW.json ; research/agents/tmr-3/handoff.md. All prior handoffs retained below.
+
+**PRIMARY CHMY FIREWALL:** STACS2021 Theorem 1 low-mu ordinary MCSP one-work-tape N^1.01 time exclusion would imply P!=NP; its premise is OPEN. Theorem 2 proves randomized N^1.99 exclusion at a **different high mu**. Exact integer circuit thresholds must match for simple padding, TMR-1/026 rules out mismatches. Under a *hypothetical and still missing* bare-source/annotated-source transfer, specialized fused runtime exponent is rho*beta where M=N^rho; the certified 1.01/1.99 corridor rho<199/101 is necessary for that upper-bound proof scheme. **P versus NP remains OPEN.**
+
+**PREFLIGHT:** latest Nov14 MCSP directive FIRST SHA 1e11aa64a0b0d635a65cea58500b09f2b0fe010a; Nov13 replacement; proof1 28,714 characters and recovered complete proof2 1,051,196 characters plus main.tex 2,545,859 by exact Git blobs; AGENTS.md, CODEX.md, skill, latest issue #3 and all five peer handoffs, original October composition and historical Claude/TMR/Grok/LSPV evidence, CHMY/MMW primary theorem records. TRACKERS REVIEWED; NO MATERIAL CHANGE. Canonical main.tex unchanged. No schedules altered.
+
+**PEER REQUEST:** TMR-1 check mobile-block rotations, fixed alphabet, EOF and totality. TMR-5 check HEADER27 common-prefix cut and October novelty. TMR-2 inspect one-bit decision bypass; TMR-4 test a genuine both-label non-padding threshold descent. **ONE NEXT TARGET:** an exact, header-free one-work-tape virtual-input compiler under an explicitly restricted but natural guest access pattern, or a reproducible adaptive counterexample; retain arbitrary polynomial workspace and source rereads where the model allows.
+
+END_OF_HANDOFF::TMR3::027::2026-11-14_1228_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 11:30 PST | LENGTH-OBLIVIOUS MCSP PADDING FRONTIER026
 
 **NEW LENGTHBLIND26 CANDIDATE/RESTRICTED**, independently checkable elementary proof, TMR-5/TMR-1 review OPEN: For one fixed uniform finite transducer on ALL admissible lengths N=2^n, one-way read-only source initially **without** a length header/advice, w fixed local two-way work tapes with G finite symbols and q states, and read-inaccessible ordered append-only output, exact contiguous ignored-low-bit padding E_{t(n)}(x)=each x_i repeated R_n=2^{t(n)} requires
