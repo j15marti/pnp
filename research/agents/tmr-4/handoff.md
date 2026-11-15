@@ -1,3 +1,19 @@
+# TMR-4 CURRENT handoff | 2026-11-15 01:37 PST | PREFIX079 /041
+
+**GOVERNING:** 2026-11-14 fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP secondary, five existing TMR identities/schedules untouched; P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, peer mathematical review OPEN:** For ANY decidable binary language L and any source x in the standard left-start locally moving read-only-input machine model, define d_L(x) as the shortest padded prefix that forces L(x) among ALL possible input strings. For every correct total fixed deterministic machine A, physical T_A(x)>=d_L(x). For each FIXED source x there exists a different correct total hardcoded-prefix comparator A_x that attains exactly d_L(x) on x, using exhaustive fallback elsewhere. Therefore min over programs per input is exactly d_L(x)<=|x|+1. This is a genuine **program-oblivious source-frontier ceiling**, not a uniform SAT algorithm or full dynamic lower-bound barrier.
+
+**ALL-STEP COST-SOUND ABSTRACTION:** Concrete state retains immutable source/program/control/tapes/heads/history. Abstract projection preserves x, d_L(x), rightmost scanned cell r and halt. Every authentic physical paid transition has an abstract cost-one simulation. Authentic zero-cost SCC closure is identity. Seven-coordinate p=(0,0,0,0,0,max(0,d-1-r),1[nonhalt]); all correct goals p=0. Exact cone lambda_int,lambda_machine>=0, lambda_int+lambda_machine<=1 from genuine fused final scan+halt. Exact primal=dual d, lambda=(0,0,0,0,0,1,0). Four-row exact conservative abstract tariff matrix is separate JSON.
+
+**NEW QUANTITATIVE CONTROLS:** TMR-3/040's early-negative G_t^- has EXACT d=P_t=26(t+1) while positive G_t^+ has d=N_t+1 for N=3t^2+5t+2. On UNSAT negative, raw EOF ghost leaves N-P>0 at real early-reject goal. TMR-2/040 nonaffine NAE Q_k has exact rank 2^k but SAT depth L_k+1; any program-oblivious fixed positive source rank coefficient would require lambda_rank<=(L_k+1)/(2^k-1)->0. This does not preclude program-dependent potential on a fixed uniform A.
+
+**ACTUALLY EXECUTED:** exactly serialized V8 audit 12,547 assertions zero failures; 255 toy prefix strings, 65,025 bounded-universe comparisons; t=9..20 strict sources; k=2..16 NAE witnesses; 1,784 exact rational grid points. No compiled physical TM; finite evidence COMPUTATIONAL. REPORT research/agents/tmr-4/2026-11-15_0137_TMR4_EXACT_PREFIX_DEPTH_NO_GO041.md ; CODE experiments/tmr/tmr4_prefix_depth079.js ; RAW results/raw/tmr/2026-11-15_0137_TMR4_PREFIX079_NATIVE_RAW.json ; MATRIX results/raw/tmr/2026-11-15_0137_TMR4_PREFIX079_MATRIX.json.
+
+**AUDIT/NEXT:** TMR-1 audit pointwise vs fixed-program quantifiers; TMR-3 verify source prefix exactness; TMR-5 replay hardcoded comparator malformed fallback and source-rank ceiling; TMR-2 find a dynamic A-dependent obstruction after cheap mechanisms. Next TMR-4 target charged finite-alphabet fixed-program SAT front end, Gaussian and witness shortcuts included as MAY. /341 FAIL full logical authority, /386 RESTRICTED. Unrestricted machine transfer and multiscale superpoly initial potential OPEN. **TRACKERS REVIEWED; NO MATERIAL CHANGE**, root main.tex and schedules unchanged.
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-15 00:38 PST | ENDMARKER074 /040
 
 **GOVERNING:** 2026-11-14 fusion-Lipschitz refocus Git blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; existing identities and schedules unchanged, MCSP secondary; P versus NP OPEN.
