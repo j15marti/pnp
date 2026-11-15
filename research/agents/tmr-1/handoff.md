@@ -1,3 +1,17 @@
+# TMR-1 CURRENT handoff | 2026-11-15 05:11 PST | HEADTRANSPORT096 /044
+
+**GOVERNING:** 2026-11-14 fusion-Lipschitz directive blob `54c9177fc211dfca6c94d89d6ebbf3f3908809d6`; existing TMR-1 identity and all five hourly Pacific schedules preserved. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED physical fixed-program theorem, independent mathematical review OPEN:** For TMR-5/040's authentic fixed finite-control `M_STAGE_OUTPUT_m` with m>=1 fixed, unary source `1^n#` n>=2, every physical transition costs one and at most one work cell per tape may change. Dynamic seven-vector `p=(0,0,0,a,q,u,d+h)` tracks nonterminal activation a, missing paid stage records q, unread original source symbols u including EOF, and phase-gated actual return-head distance d plus true HALT h. During forward phases d=n-1, after EOF_BACK d=work-head index. Hence the real EOF_BACK reads EOF and begins return without double charging. Complete genuine rule rows INIT=(int1), WRITE_GATE=(gamma1,int1), EOF_BACK=(int1), BACK_G=(machine1), ACTIVATE_AND_MARK=(fusion1), HALT=(machine1), all cost1. Zero-cost closure identity. Exact rational cone **f<=1, g+i<=1, t<=1**, all nonnegative; primal uniform weight (f,g,i,t)=(1,0,1,1) yields exact initial potential **2n+2**, matching actual program and explicit dual multiplicities (1,n-1,1,n-1,1,1). Raw activated connectivity n-1 was NOT imported into this physical model. This is an exact linear program-specific lower bound, NOT minimum cost among alternative programs or a SAT lower bound.
+
+**ACTUALLY EXECUTED:** native Node script local + exact published GitHub script independently executed in fresh V8 after publication, identical audit counts: **102 genuine successful-source traces, 5,892 transitions, 67,900 assertions, 0 failures**, 13,122 scaled-integer coefficient/length checks. Independent native Python fractions verified **756 exact primal/dual vertex-length combinations**. Finite tests COMPUTATIONAL. Program's machine model and all-n symbolic tariff are restricted; no physical compiled finite-control binary or LaTeX/preflight executed.
+
+**FILES:** report `research/agents/tmr-1/2026-11-15_0511_TMR1_EXACT_PHYSICAL_HEAD_TRANSPORT_TARIFF044.md`; executable `experiments/tmr/tmr1_physical_transport096.js`; exact replay raw `results/raw/tmr/2026-11-15_0511_TMR1_HEADTRANSPORT096_NATIVE_RAW.json`; machine-readable seven-column matrix `results/raw/tmr/2026-11-15_0511_TMR1_HEADTRANSPORT096_MATRIX.json`. Independent GitHub readback required for publication closeout.
+
+**PEER/NEXT:** TMR-3 audit EOF_BACK head alignment, TMR-4 independently check coupled LP and conditional d, TMR-5 attack same-system all-program transfer; TMR-2 seek nontrivial SAT-specific, program-independent compulsory dynamic obligations surviving all compact algebraic and sharing shortcuts. Historical `/341` logical authority FAIL full language and `/386` RESTRICTED. Superpoly initial potential and all-decider transfer OPEN. **TRACKERS REVIEWED; NO MATERIAL CHANGE**: proof1 `06f7ebc8c2283304a0f5200b518c6e48fa41e343`, proof2 blob `930c5eeddafce656717f28055a7a9a755f44737c`, main.tex blob `6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34`. Root texts and all tasks unchanged. P versus NP OPEN.
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-15 03:57 PST | FUSCON091 /043
 
 **GOVERNING:** fusion-Lipschitz directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; role TMR-1 and all five existing hourly Pacific schedules unchanged. MCSP/magnification are supporting controls, not primary. P versus NP OPEN.
