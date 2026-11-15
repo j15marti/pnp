@@ -1,3 +1,19 @@
+# TMR-5 CURRENT handoff | 2026-11-15 00:52 PST | SHUFFLED-GAUSS074 /036
+
+**GOVERNING:** 2026-11-14 fusion-Lipschitz directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP supporting, all five existing TMR schedules unchanged.
+
+**NEW PROVED/RESTRICTED, independent math review OPEN:** Independent authenticated source-indexed Gaussian detector for *arbitrarily ordered proper 3-CNF*: for each unordered triple, group all eight possible signed source clauses (duplicates allowed) and extract either of the two complete four-clause parity equations when all four signs occur, retaining their original source indices. Gaussian elimination with row-provenance yields a recheckable selected original-clause UNSAT witness if the extracted affine subset is inconsistent. Every accepted source is genuinely UNSAT; a fixed finite-alphabet total correct SAT decider can detect these cores and early-reject in O((L+1)^8) transitions, with exhaustive fallback elsewhere and O((L+1)^4) space on recognized sources. In contrast to TMR-3/038's separate strict all-consecutive block macro authority, this detector handles arbitrary clause/literal permutation, sign renaming, duplicate source clauses, unrelated clauses and inconsistent *subsets* even when the entire row collection fails the even-incidence/global-odd shortcut. On TMR-3/039's odd prism sources and their enlarged negative-source closure, the early rejection is polynomial. F_m^+ still SAT via all-zero, allowing a separate polynomial accept control on the original opposite-label pair. Hence any all-step SAT-machine potential growing superpolynomially on this recognized closure FAILS by telescoping against a legitimate polynomial solver. Native Resolution proof hardness and last-bit ingress remain valid at their own scopes; no unrestricted P-vs-NP implication.
+
+**EXECUTED:** V8 function serialized byte-identically to experiments/tmr/tmr5_shuffled_gauss074.js, 918 assertion checks, zero failures; exhaustive all 256 three-variable proper-clause subsets, 400 seeded 4-variable cases against brute force, K4 four-row contradiction and all 16 single-clause deletions, 25 affine-core shuffle/rename/sign/duplicate/noise controls, 25 satisfiable even-charge controls, 3 malformed controls, independent source-certificate replay. Raw results/raw/tmr/2026-11-15_0050_TMR5_SHUFFLED_GAUSS074_V8_RAW.json. No compiled physical TM; all-instances theorem symbolic. The exact fetched, published JS was independently re-executed in a fresh V8 isolate and matched the fetched raw JSON exactly (918 checks, zero failures); no native Node process ran.
+
+**REPORT:** research/agents/tmr-5/2026-11-15_0052_TMR5_SHUFFLED_GAUSS_CORE_REDTEAM036.md.
+
+**RANKED:** PASS/RESTRICTED source-indexed GF(2) core authentication; PASS/RESTRICTED polynomial recognizer with complete fallback; FAIL raw fusion/parity-block multiplicity as uniform SAT transition burden; TMR-3/039 last-bit ingress PASS/RESTRICTED; prior proof/replay tariffs RESTRICTED; /341 FAIL full authority, /386 RESTRICTED; all-machine superpolynomial initial gap and transfer OPEN. P versus NP OPEN.
+
+**PEERS/NEXT:** TMR-2 produce nonaffine source-aware obstruction after this canonical cheap quotient; TMR-3 audit finite-tape polynomial compilation and last-bit controls; TMR-4 add actual paid Gaussian shortcuts to MAY transition inventory; TMR-1 audit quantifiers and family scope. Next TMR-5 run target a surviving nonaffine row under learned/extension shortcut. TRACKERS REVIEWED; NO MATERIAL CHANGE. Root main.tex unchanged. No tasks altered.
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 23:54 PST | MODEALT068 /035
 
 **Controlling directive:** fusion-Lipschitz refocus Git blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Preserve five TMR identities/schedules; MCSP secondary; P versus NP OPEN.
