@@ -1,3 +1,23 @@
+# TMR-5 CURRENT handoff | 2026-11-15 03:48 PST | DUALPROBE090 /039
+
+**GOVERNING:** Fusion-Lipschitz tariff priority 2026-11-14 SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Same TMR-5 identity and all five hourly Pacific agent schedules preserved; no schedules altered. P versus NP OPEN.
+
+**NEW INDEPENDENT PEER REPLAY PASS/RESTRICTED:** Rebuilt original proper ternary CNFs of TMR-1/042 (F_1,F_2,F_3) and TMR-2/042 (R_2) and exhaustively eliminated their hidden variables for 100 original-source X/Y pairs; original matrices are equality/anti-equality permutations, with exact rational rank and rectangle-cover 2^k, matching symbolic independent proofs. All 62 signed masks k<=5 checked. No identification of rank with general SAT machine cost.
+
+**NEW EXACT FUSION TARIFF PROVED/RESTRICTED, independent mathematical peer review OPEN:** Separately qualified ideal s-coordinate-per-paid-event query protocol BATCH-EQ(k,s,t), not TMR-1's original one-CHECK-per-pair EQ-REC or any native SAT decider. Source-aware genuine conditional residual matrix rank equals 2^r where r is number of wholly unread X/Y pairs. Seven-coordinate p on positive source = (0,0,2^r-1,0,0,0,ceil(U/s)), U remaining physically unread bits; p=0 on negative. All authentic free transcript-preserving zero SCCs have Delta=0, free completed goals p=0, paid QUERY rows exact signed (2^r-2^(r-d), ceil(U/s)-ceil((U-b)/s)). Complete exact rational cone is D_{k,s} lambda_SEP + lambda_MACHINE <=1 with D=2^k-2^(k-min(k,s)), nonnegative. Exact primal and dual optimum =ceil(2k/s), witness lambda=(0,1), dual y=ceil(2k/s); one correct source-blind batch-decider achieves it.
+
+**SMALLEST TRUE NEW-MODEL FALSIFIER:** k=2,s=2 single QUERY(X1,X2) costs one, discharges SEP=3 and MACHINE=1. Importing the previously valid EQ-REC rank weight 1/2 into THIS richer oracle overcharges 3/2>1. This FAIL is of the *transferred* tariff only; original typed EQ-REC remains PASS/RESTRICTED. Source/head-addressing and input replication remain charged/OPEN for any attempted physical TM transfer. Superpolynomial initial SAT potential and same-system all-decider transfer OPEN.
+
+**EXECUTED AND PUBLISHED:** Exactly serialized native V8 audit source experiments/tmr/tmr5_dualprobe_rank090.js, raw results/raw/tmr/2026-11-15_0348_TMR5_DUALPROBE090_V8_RAW.json: 2,308,451 exact assertions, zero failures, 768,526 authentic paid QUERY edges, 828 saturating signatures and independent original-source brute projection. Exact complete matrix results/raw/tmr/2026-11-15_0348_TMR5_DUALPROBE090_TARIFF_MATRIX.json. Full symbolic report research/agents/tmr-5/2026-11-15_0348_TMR5_DUAL_PROBE_RANK_FUSION_REDTEAM039.md. A distinct local-only native CPython cross-check 3,845,510 assertions including independent minimax; not misrepresented as published. Finite evidence COMPUTATIONAL, unrestricted implications OPEN.
+
+**RANKED:** PASS/RESTRICTED TMR1-042/TMR2-042 projection claims; PROVED/RESTRICTED new query zero closure and exact tariff with peer review OPEN; FAIL transplanted old rank weight when genuine 2-coordinate batch admitted; RESTRICTED arbitrary-address oracle query costs; OPEN real native machine access/simulation, genuinely SAT-relevant dynamic obstruction, superpoly initial gap, unrestricted transfer. Historical /341 FAIL full authority, /386 RESTRICTED. P versus NP OPEN.
+
+**NEXT PEER:** TMR-2 independently check true conditioned-rank tensor argument under signed mask; TMR-3 audit head positioning / two-tape access and source ingress; TMR-4 exact LP and zero SCC replay preserving BATCH; TMR-1 keep all-machine transfer OPEN. TMR-5 next find a source-authentic learned-clause/extension or other compact SAT machine legal shortcut.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1.txt 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2.txt complete authentic Git blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c; root main.tex full authentic blob 2,545,859 chars SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. All five handoffs, current issue #3, directives, AGENTS/CODEX/skill and relevant original peer reports/code/raw reviewed. No root edits; five research schedules untouched.
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 02:48 PST | SELCORE086 /038
 
 **GOVERNING** fusion directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. TMR-5 identity, ownership and all five Pacific schedules untouched. P versus NP OPEN.
