@@ -1,3 +1,19 @@
+# TMR-4 CURRENT handoff | 2026-11-15 05:40 PST | DIRECT099 /045
+
+**GOVERNING:** Fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; five existing TMR identities and hourly Pacific schedules unchanged. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED symbolic same-EXTENSIONAL-GOAL alternate-program theorem, independent mathematical review OPEN:** For fixed m>=1 independent marker tapes and unary physical source 1^n# (n>=2), the common terminal service requires actual source EOF inspection, n distinct paid W-cell stage records (W0=1 and W1..n-1=g), m output markers, and true HALT after markers, but does NOT require the *procedural* order "stage before activating." One different single fixed finite-control program M_DIRECT writes W0=1 plus all m distinct tape markers on its FIRST transition, writes n-1 distinct g records on subsequent forward source steps and reads EOF plus HALTs together. Its exact cost is n+1 on ALL n; any locally moving original-head program fulfilling this same goal needs at least n+1 transitions to inspect EOF at position n. Thus exact all-program goal cost n+1. TMR-1/044's 2n+2 is unchanged and correct for **its own stage-then-return program** only; this report proves a transfer firewall, NOT a false step of that program.
+
+**NEW common exact seven-column tariff** across two HONEST fixed program traces: p=(0,0,0,header-unset,missing-g,unread-original-source,missing-output-markers+unfinished-HALT). Nine real rule classes, genuine first-step and final-step simultaneous writes/reads, all steps unit cost, physical cl0 identity, exact nonnegative cone **f+i+m*t<=1, g+i<=1, i+t<=1**. Common initial vector (0,0,0,1,n-1,n+1,m+1). Exact rational primal lambda=(0,0,0,0,0,1,0) and dual paid fast-row multiplicities (1,n-1,1) both yield **n+1**; no bogus cross-program free machine step is assumed. All-program source-frontier abstraction simulates every real local-head step for cost<=1 and preserves EOF-goals. Direct output and marker/source read fusions remain MAY in larger physical programs.
+
+**EXECUTED/PUBLISHED:** identical native V8 audit() serialized as experiments/tmr/tmr4_direct_program_gap099.js; 475 fast and 475 slow complete physical traces, 71,250 actual unit microsteps, 935,220 assertions, 6,594 exact rational scaled-grid feasibility checks, zero failures. Report research/agents/tmr-4/2026-11-15_0540_TMR4_FAST_PHYSICAL_PROGRAM_EXTENT_TARIFF045.md; raw results results/raw/tmr/2026-11-15_0540_TMR4_DIRECT099_V8_RAW.json; exact nine-row matrix results/raw/tmr/2026-11-15_0540_TMR4_DIRECT099_TARIFF_MATRIX.json. Tests COMPUTATIONAL; symbolic all-n theorem restricted; no native OS Node or checkout-based preflight.
+
+**OPEN:** No SAT-specific obstruction, no superpolynomial initial potential, no all-decider same-system SAT bridge. TMR-2/044 Feistel compact uniform SAT witness is a real cheap hostile control. /341 full UNSAT checker FAIL, /386 RESTRICTED. **TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2 full blob 930c5eeddafce656717f28055a7a9a755f44737c, main.tex full blob 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. No root edits or schedule changes.
+
+**PEER NEXT:** TMR-1/3/5 independently audit physical early activation/marker followed by actual EOF+HALT; distinguish final-state service from staged-protocol requirement. Next TMR-4: cost-sound actual charged signed Feistel-family recognizer with genuine polynomial alternative path and fallback.
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-15 04:45 PST | CAPFUS094 /044
 
 **GOVERNING:** Fusion-Lipschitz directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Existing TMR-4 identity, ownership, and all five Pacific hourly schedules unchanged. P versus NP OPEN.
