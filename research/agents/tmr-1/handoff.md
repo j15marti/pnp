@@ -1,3 +1,23 @@
+# TMR-1 CURRENT handoff | 2026-11-14 20:56 PST | TSEITIN-TRANSFER-GATE058 /036
+
+**Controlling directive:** fusion-Lipschitz five-agent refocus, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. MCSP and FLMV supporting only; all five TMR schedules, titles and states unchanged.
+
+**NEW PROVED/RESTRICTED (independent TMR-4/TMR-5 review OPEN):** Deterministic polynomial-time constructible cubic expander odd-charge Tseitin proper 3-CNF F_m has encoded L_m=Theta(H_m log H_m), exponential native ordinary Resolution refutation size 2^{Omega(H_m)} by the published Urquhart/Ben-Sasson-Wigderson theorem, while a *single fixed, total, all-input correct SAT decider* recognizes complete original source parity clauses, computes component charges and correctly decides F_m in L_m^{O(1)} steps; it uses exhaustive fallback off-source. Thus any goal-preserving compiler from this actual machine trace to native Q-RES-H with W_R <= g(L) T_A + polynomial(L) requires g(L_m)>=2^{Omega(L_m/log L_m)}. In particular the universal Q-TM->Resolution all-step cost-underestimating bridge is falsified for this R. This is **NOT** a SAT lower bound, **NOT** a new Resolution lower bound, and does not exclude a stronger qualified calculus with its own new hardness proof.
+
+**SOURCE BINDING:** F_m has 4H original 3-clauses, 3H/2 edge vars, each group syntactically validated, each variable exactly two distinct groups, XOR charges checked per connected component, unrecognized inputs brute-forced; physical parse and GF2 work counted. Q-TM vs Q-RES-H model mismatch is the precise obstruction, not an abstract CEGAR-spurious path. /341 FAIL as full logical UNSAT authority and /386 RESTRICTED remain unchanged.
+
+**REPORT** research/agents/tmr-1/2026-11-14_2056_TMR1_TSEITIN_RESOLUTION_TRANSFER_DISTORTION036.md
+**RECONSTRUCTED SOURCE** experiments/tmr/tmr1_tseitin_transfer_gate058.py
+**NATIVE RAW SUMMARY** results/raw/tmr/2026-11-14_2056_TMR1_TSEITIN_TRANSFER058_NATIVE_RAW.json
+**PROVENANCE** results/raw/tmr/2026-11-14_2056_TMR1_TSEITIN_TRANSFER058_PROVENANCE.json
+**ACTUALLY EXECUTED** local original native CPython source 121 assertions, zero failures; published script is clean reimplementation not byte-identically rerun. Finite data COMPUTATIONAL. TRACKERS REVIEWED; NO MATERIAL CHANGE; root main.tex unchanged. P versus NP OPEN.
+
+**PEER REQUEST:** TMR-4 independently check all-step contradiction, TMR-5 source and quantifier audit, TMR-3 price physically charged Gaussian elimination, TMR-2 design source-aware nonaffine fusion component that vanishes on cheap Tseitin controls. Weakest next theorem is an authenticated stronger-calculus or unrestricted-machine lower-bound component surviving actual compact algebra and sharing.
+
+**PREVIOUS HANDOFF HISTORY PRESERVED BELOW.**
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 20:04 PST | FUSCORE054 SAT-model/terminal-mask/source-core calibration035
 
 **GOVERNING FUSION DIRECTIVE** blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6, MCSP secondary; schedules and ownership unchanged.
