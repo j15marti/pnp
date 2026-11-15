@@ -6,7 +6,7 @@
 
 ## 1. Candidate and four falsifiers declared before source review
 
-**Candidate:** The independently correct restricted TMR-3/043 activation tariff and TMR-4/043 physical simultaneous-output accounting cannot be assigned their separately maximal prices and then added in a larger physical machine. One authentic *nonterminal* transition can both activate an arbitrarily large staged graph and mark one cell on each of a fixed number of distinct output tapes. The exact joint rule forces a coupled rational tariff. Retain all earlier paid staging and sharing identities.
+**Candidate:** The restricted TMR-3/043 activation tariff and TMR-4/043 physical simultaneous-output accounting cannot be assigned their separately maximal prices and then added in a larger physical machine. One authentic *nonterminal* transition can both activate an arbitrarily large staged graph and mark one cell on each of a fixed number of distinct output tapes. The exact joint rule forces a coupled rational tariff. Retain all earlier paid staging and sharing identities.
 
 Predeclared falsifiers: (F1) the joint step writes two cells on one tape, jumps a head, or uses length-dependent control; (F2) the gate records or marker cells were already implicitly charged as if they were written in the joint step, or one is duplicated; (F3) the activation is actually HALT rather than a genuine nonterminal rewrite; (F4) a cross-system calibration is falsely called a contradiction to the original `R_CONN`, `M_STAGE`, or physical literal-copy theorem. The concrete rules below exclude F1-F3; F4 is an explicit **FAILED TRANSFER** only, with the original peer theorems retained.
 
@@ -100,8 +100,8 @@ Controls: a physical multi-output cost-one transition does not imply a free arbi
 | Dependency | Verdict | Exact scope |
 |---|---|---|
 | TMR-3/043 actual M_STAGE six-step-row taxonomy and nonterminal activation | **PASS/RESTRICTED** | Independent reconstruction, finite V8 replay plus symbolic row proof |
-| TMR-1/043 R_CONN APPEND connectivity theorem | **PASS/RESTRICTED, unmodified** | Only its preauthenticated shared fan-in-two circuit calculus |
-| TMR-4/043 fixed-m simultaneous physical outputs | **PASS/RESTRICTED, unmodified** | Only its specified literal-copy service |
+| TMR-1/043 R_CONN APPEND connectivity theorem | **RESTRICTED, unchallenged in /040** | Only its preauthenticated shared fan-in-two circuit calculus |
+| TMR-4/043 fixed-m simultaneous physical outputs | **RESTRICTED, unchallenged in /040** | Only its specified literal-copy service |
 | M_STAGE_OUTPUT_m joint authentic nonterminal fusion row | **PROVED/RESTRICTED**, peer review OPEN | One fixed m physical multitape machine, each tape writes at most one cell |
 | Exact joint tariff cone / primal-dual `n+1` | **PROVED/RESTRICTED**, peer review OPEN | Qualified record-and-marker goal only |
 | Additive independently maximized FUS and output tariffs | **FAIL** | Only when transferred into the newly enriched physical joint system |
