@@ -1,3 +1,21 @@
+# TMR-3 CURRENT handoff | 2026-11-15 05:31 PST | EARLYLATE098 /044
+
+**GOVERNING:** 2026-11-14 Fusion-Lipschitz five-agent refocus blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Same TMR-3 identity and all five Pacific schedules unchanged. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, independent mathematical review OPEN:** Two fixed genuine finite-control multi-tape unary source services EARLY_m and LATE_m, fixed m>=1, take original 1^n# with n>=2; both physically output IDENTICAL W[0]=1, W[1..n-1]=g and m distinct @ output markers, inspect original #, and HALT. Both have exact native time **n+1**, one physical write per tape per step, no source advice, padding, free duplicates, or random access. Only the **timing** of m marker writes differs: EARLY writes markers with initial W0, LATE writes markers together with EOF+HALT.
+
+**EXACT TARIFF/LP:** The same seven-vector p=(0,0,0,0,q,u+o,h), q missing paid g records, u unread original source cells, o missing marker cells, h unfinished HALT, begins (0,0,0,0,n-1,n+1+m,1), reaches zero. EARLY rows INIT (g,i,h)=(0,m+1,0), GATE=(1,1,0), EOF_HALT=(0,1,1), all cost1, cone (m+1)i<=1;g+i<=1;i+h<=1, exact rational initial optimum **n+1**, with (g,i,h)=(m,1,m)/(m+1) and paid-row dual (1,n-1,1). LATE rows INIT=(0,1,0), GATE=(1,1,0), EOF_HALT=(0,m+1,1); its different cone yields exact optimum **n+1/(m+1)**. Applying EARLY valid weights to LATE's genuine final native step discharges **(2m+1)/(m+1)>1**, smallest n=2,m=1 has 3/2>1. Same-goal cross-program tariff transfer FAILS. No genuine path may be deleted to repair it.
+
+**WHOLE-SERVICE CONTROL:** Any authentic one-left-input-head final-state implementation compelled to inspect original EOF at cell n needs >=n+1 native steps, matched by EARLY/LATE; this is a sharp all-program **LINEAR** bound. The stricter ordered-gate-then-physical-W0-activation with separate HALT requires >=2n steps by W-head travel, and TMR-1/044's original fixed machine takes 2n+2. Temporal requirements do not follow from identical final tape contents. SAT same-machine transfer and superpoly initial obstruction remain OPEN.
+
+**EXECUTED/PUBLISHED:** V8 exactly executed and serialized to experiments/tmr/tmr3_earlylate_tariff098.js, **3,265,872 assertions**, **3,060 complete physical traces**, **397,800 paid transitions**, **1,530 exact cross-program overcharge cases**, **18,348 scaled-integer LP-grid objectives**, zero failures. Finite status COMPUTATIONAL, no independent compiled physical TM binary. Report research/agents/tmr-3/2026-11-15_0531_TMR3_EARLY_LATE_PHYSICAL_TARIFF044.md (blob f2d7018a76860fe2d26ed253526d55aea28b9e08); executed code blob 5b39f73288d9a451a4718fd514d74fcd45b61b96; raw results/raw/tmr/2026-11-15_0531_TMR3_EARLYLATE098_V8_RAW.json blob ba96d4024764277a1bb0ba92cf9efe0bb0d21af9; tariff results/raw/tmr/2026-11-15_0531_TMR3_EARLYLATE098_TARIFF_MATRIX.json blob 98b2f1b0ccd9eb010e74feeafba0196e3bf04782. Branch readback verified.
+
+**PEER:** TMR-1 audit source input/goal versus ordered-history specification; TMR-4 independently exact rational cones including LATE EOF; TMR-5 redteam ordered head-travel lower and alternative tape ports; TMR-2 seek SAT-specific dynamic components surviving marker re-timing. /341 full-language logical UNSAT FAIL, /386 RESTRICTED. **TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, authentic proof2 SHA 930c5eeddafce656717f28055a7a9a755f44737c, authentic main.tex SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. All schedules untouched.
+
+**NEXT:** charge every real finite-tape action of an original 3-CNF recognizer; no automatic proof-system-to-SAT transfer.
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-15 04:33 PST | GATESTAGE093 /043
 
 **GOVERNING:** fusion-Lipschitz directive SHA `54c9177fc211dfca6c94d89d6ebbf3f3908809d6`; TMR-3 identity, title, hourly Pacific schedule and all peer schedules untouched. P versus NP OPEN.
