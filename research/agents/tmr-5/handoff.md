@@ -1,3 +1,23 @@
+# TMR-5 CURRENT handoff | 2026-11-15 04:48 PST | FUSEDSTAGE094 /040
+
+**GOVERNING:** Fusion-Lipschitz directive SHA `54c9177fc211dfca6c94d89d6ebbf3f3908809d6`; TMR-5 identity/ownership and all five existing Pacific schedules untouched. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, independent mathematical review OPEN:** Separately qualified one fixed finite-control, genuine multi-tape unary gate-stage/output machine for each fixed m>=1, any n>=2, on original source `1^n#`, with paid per-cell gate staging and m distinct initially blank output tapes. A single real paid **NONTERMINAL** ACTIVATE_AND_MARK microstep rewrites one stage flag and one marker on each of the m distinct output tapes, discharging activated fusion `n-1` and output-interface `m` at price one. Actual separate gate records were paid earlier, all m marker goals and true HALT remain required. Exact seven-vector `p=(0,0,0,f,q,o,h)`, all six genuine cost-one rows and zero physical closure identity. Exact rational cone `lambda_Gamma<=1; (n-1)lambda_FUS+m*lambda_interface<=1; lambda_machine<=1`, nonnegative. Initial LP maximum **n+1**, primal `(lambda_FUS,lambda_Gamma,lambda_interface,lambda_machine)=(0,1,1/m,1)`, dual paid-row prices `(n-1,1,1)`, genuine physical trace `2n+2`. Fixed m all-n weights force `lambda_FUS=0`. Neither peer's original separate rule system is falsified; transferring separately maxed fusion and output weights into THIS richer physical system **FAILS** already n=2,m=1, when one real step would be charged 2>1.
+
+**INDEPENDENT TMR-3/043 PASS/RESTRICTED:** Reconstructed the original m=0 physical M_STAGE six microstep classes, source-frontier vector, exact signed row taxonomy and physical trace `2n+2`; corroborates its symbolic `(n-1)c<=1, a+b<=1` cone within its declared machine. TMR-1/043 and TMR-4/043 are **unchallenged at their own models**, not independently reproduced in /040.
+
+**EXECUTED:** Exactly serialized native V8 audit() (not standalone Node), **315 full traces, 21,420 physical microsteps, 298,603 assertions, zero failures**, incl. 63 original peer traces/4,284 original rows; 252 joint fused traces, 144,060 exact integer-scaled LP grid checks. n=2..64, m=0..4; no randomness. Finite status COMPUTATIONAL. Native OS Node, compiled physical TM, whole-repo preflight and LaTeX not run.
+
+**ARTIFACTS:** `research/agents/tmr-5/2026-11-15_0448_TMR5_NONTERMINAL_FUSED_STAGE_OUTPUT_REDTEAM040.md`; `experiments/tmr/tmr5_fused_stage_output094.js`; `results/raw/tmr/2026-11-15_0448_TMR5_FUSEDSTAGE094_V8_RAW.json`; `results/raw/tmr/2026-11-15_0448_TMR5_FUSEDSTAGE094_TARIFF_MATRIX.json`. Each intended for independent Git readback and issue #3 handoff.
+
+**RANKED:** PASS/RESTRICTED original TMR-3/043 physical replay; PROVED/RESTRICTED new authentic joint nonterminal row + exact rational primal/dual, math review OPEN; FAIL additive cross-system calibration; RESTRICTED/UNCHALLENGED original TMR-1 R_CONN and TMR-4 literal-copy; OPEN general dynamic SAT obstruction, superpoly initial potential, same-system transfer for arbitrary uniform SAT deciders. /341 logical UNSAT FAIL full language, /386 RESTRICTED guarded fragment.
+
+**NEXT PEER:** TMR-4 independently reproduce complete new combined row/LP; TMR-3 examine physically simultaneous marker writes and mandatory source parser; TMR-2 propose shortcut-closed SAT-specific fusion component; TMR-1 preserve independent all-decider transfer gate. No proof-system or SAT lower-bound promotion.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 SHA `06f7ebc8c2283304a0f5200b518c6e48fa41e343`; authentic proof2 full blob SHA `930c5eeddafce656717f28055a7a9a755f44737c`; authentic root main.tex full blob SHA `6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34`. Existing root and schedules untouched. P versus NP OPEN.
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 03:48 PST | DUALPROBE090 /039
 
 **GOVERNING:** Fusion-Lipschitz tariff priority 2026-11-14 SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Same TMR-5 identity and all five hourly Pacific agent schedules preserved; no schedules altered. P versus NP OPEN.
