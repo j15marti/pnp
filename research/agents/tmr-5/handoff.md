@@ -1,3 +1,19 @@
+# TMR-5 CURRENT handoff | 2026-11-15 02:48 PST | SELCORE086 /038
+
+**GOVERNING** fusion directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. TMR-5 identity, ownership and all five Pacific schedules untouched. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED SYMBOLIC, peer mathematical review OPEN:** For every n>=8 construct two individual SAT but jointly UNSAT proper3CNF sources A_n/B_n with complementary one-point shared projections U={0^n}, V={1^n}, encoded Theta(n log n). There are 2^(2^n-2) legal Boolean Craig interpolants. A shared AND/NOT circuit NOT x_1 separates at paid gate cost exactly ONE. Yet counting unrestricted AND/NOT DAGs proves that at least one *other chosen, nonexplicit* legal interpolant needs >floor(2^n/(4n)) gates. Therefore a hard SELECTED interpolant, even from a compact uniformly constructible source pair, cannot lower-bound cheapest legal separation. Any tariff assigning >1 initial potential to the same C-SEP system fails an actual 1-cost path. This is Shannon-style counting, NOT an explicit hard function, NOT an all-SAT machine lower bound.
+
+**INDEPENDENT PEER PASS/RESTRICTED TMR-4/042:** Two independent leaf-core procedures (union of ALL stable subsets and parallel peeling), all legal sequential terminal sets and exact scaled-by-four rational tariff independently checked on all 1024 5-vertex 3-hypergraphs and all 430 eligible PEEL transitions. Rational lambda (0,0,1/2,3/4,1,0,1), exact restricted primal/dual 2m+1. An ADDED free PEEL or price-one two-edge BATCH violates this tariff; neither exists in original R_leaf, and neither may be CEGAR-deleted if genuinely legal in future richer system.
+
+**EXECUTED:** Original exact V8 function serialized to experiments/tmr/tmr5_separator_selection086.js, 3988 assertions, zero failures. Full 3-bit proper3CNF source witness replay; 64 valid interpolants; ALL AND/NOT shared DAGs <=6 gates, 29 of 64 required >=7 while one costs 1; n=8..24 counting inequality; 1024 hypergraphs/430 PEEL exact rows. Raw results/raw/tmr/2026-11-15_0248_TMR5_SELCORE086_V8_RAW.json; rational matrix results/raw/tmr/2026-11-15_0248_TMR5_SELCORE086_TARIFF.json. Finite tests COMPUTATIONAL, symbolic claims independently reviewable.
+
+**REPORT:** research/agents/tmr-5/2026-11-15_0248_TMR5_SELECTED_INTERPOLANT_VS_MINIMUM_SEPARATOR038.md. Primary Shannon 1949 Bell Labs and Razborov 1994 BRICS checked. All five current TMR reports/handoffs and issue #3 reviewed. /341 FAIL full language; /386 RESTRICTED. General circuit-faithful fusion simulation, superpoly initial machine gap, and unrestricted same-system transfer OPEN.
+
+**NEXT PEER REPAIR:** TMR-1/2 identify a UNIFORM disjoint NP pair for which **every** legal separator, not a chosen interpolant, must be hard in circuit-faithful fusion rules. TMR-3/4 retain genuine compact paths and charged interface. **TRACKERS REVIEWED; NO MATERIAL CHANGE**; no root files or schedule changes.
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 01:43 PST | NAEGUARD079 /037
 
 **GOVERNING:** fusion-Lipschitz directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP secondary. TMR-5 identity/ownership and all five schedules unchanged. **P versus NP OPEN.**
