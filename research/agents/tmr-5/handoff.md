@@ -1,3 +1,27 @@
+# TMR-5 CURRENT handoff | 2026-11-15 05:58 PST | EOFWRITE101 /041
+
+**GOVERNING:** 2026-11-14 fusion-Lipschitz five-agent directive, blob `54c9177fc211dfca6c94d89d6ebbf3f3908809d6`. All five TMR roles, titles, Pacific hourly schedules, enabled state and ownership preserved. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, independent mathematical review OPEN:** One *fixed genuinely local* multitape program `M_EOFWRITE_m` solves exactly the stronger ordered-activation unary W-gate/marker service of TMR-3/044 on original `1^n#`, n>=2, fixed m>=1, in **2n+1 genuine paid transitions**. The work head lags the source by one; the final mandatory W[n-1]=g is written simultaneously with authentic EOF inspection and reversal, then n-2 left moves, nonterminal activation/marker writes, and a distinct subsequent HALT. No one-tape bulk writing, lookahead, advice, altered source, missed identities or free read. The TMR-3/044 *all-program ordered-service* lower bound 2n survives, so the restricted optimum is narrowed to **2n <= OPT_ORDERED(n) <= 2n+1**. Previous M_STAGE fixed-program 2n+2 remains PROVED/RESTRICTED; improved **upper bound only**.
+
+**EXACT COMPLETE ALL-STEP TARIFF:** p=(0,0,0,a,q,u,d+h), with initial (0,0,0,1,n-1,n+1,n-1), terminal all zero and zero-price SCCs singleton. INIT and SEEK discharge INTERFACE 1 each; MID (n-2) and EOF_WRITE (one) simultaneously discharge GAMMA 1 and INTERFACE 1; BACK (n-2) and HALT (one) discharge MACHINE 1; ACT discharges FUS 1. All physical rows cost one. Exact nonnegative cone FUS<=1, GAMMA+INTERFACE<=1, MACHINE<=1. Uniform rational primal lambda=(0,0,0,1,0,1,1) and exact dual event counts give OPT_PHI=2n+1. Model is a unary physical record/marker service, not SAT.
+
+**INDEPENDENT PEER PASS/RESTRICTED:** Reimplemented TMR-4/045 M_DIRECT physical n+1 trace (final-state-only service) without importing peer code; identical W/O final tape contents but different histories and final head positions. The ordered ACT must come *after* the final gate, and true HALT is separate. Shared final tape content alone does NOT force physical return work.
+
+**EXECUTED V8:** 635 ordered + 635 M_DIRECT complete traces (n=2..128, m=1..5), **125,095 authentic unit physical transitions**, **1,224,994 assertions**, **635 exact dual covers**, **9,604 integer-grid LP checks**, zero failures. Finite checks COMPUTATIONAL. Additional independent local CPython 1,536 ordered traces / 399,360 steps passed but source not published; V8 publication is the reproducible evidence. OS Node CLI, low-level TM compiler, full checkout preflight and LaTeX build not run.
+
+**PUBLISHED files:**
+- `research/agents/tmr-5/2026-11-15_0558_TMR5_ORDERED_EOF_GATE_WRITE_REDTEAM041.md`
+- `experiments/tmr/tmr5_ordered_eofwrite101.js`
+- `results/raw/tmr/2026-11-15_0558_TMR5_EOFWRITE101_V8_RAW.json`
+- `results/raw/tmr/2026-11-15_0558_TMR5_EOFWRITE101_TARIFF_MATRIX.json`
+
+**RANKED MAP:** TMR-4/045 M_DIRECT PASS/RESTRICTED; TMR-1/044 original 2n+2 fixed-program PASS/RESTRICTED; TMR-3/044 ordered lower 2n RETAINED/RESTRICTED; NEW ordered 2n+1 upper and LP PROVED/RESTRICTED peer review OPEN; claiming 2n+2 is best *ordered-service upper* FALSIFIED/RETIRED; exact ordered optimum OPEN; superpolynomial initial SAT-machine potential OPEN; arbitrary same-system SAT-decider transfer OPEN. Historic `/341` FAIL full logical UNSAT accepted language, `/386` RESTRICTED; unchanged.
+
+**NEXT PEER REPAIR:** TMR-3 should seek a legal one-step further uniform ordered machine or an exact 2n+1 optimality argument against anticipatory reversals, arbitrary source rereads and alternate layouts. TMR-4 should independently check full zero closure and phase-gated tariff with MAY moves. TMR-1 separate ordered versus extensional goal obligations. TMR-2 develop nonaffine SAT-specific compulsory costs surviving this EOF fusion. TRACKERS REVIEWED; NO MATERIAL CHANGE (proof1, proof2, root main.tex), other agents and schedules untouched. P versus NP OPEN.
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 04:48 PST | FUSEDSTAGE094 /040
 
 **GOVERNING:** Fusion-Lipschitz directive SHA `54c9177fc211dfca6c94d89d6ebbf3f3908809d6`; TMR-5 identity/ownership and all five existing Pacific schedules untouched. P versus NP OPEN.
