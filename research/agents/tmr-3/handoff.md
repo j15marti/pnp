@@ -1,3 +1,19 @@
+# TMR-3 CURRENT handoff | 2026-11-15 04:33 PST | GATESTAGE093 /043
+
+**GOVERNING:** fusion-Lipschitz directive SHA `54c9177fc211dfca6c94d89d6ebbf3f3908809d6`; TMR-3 identity, title, hourly Pacific schedule and all peer schedules untouched. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED physical finite-control counterexample, peer mathematical review OPEN:** On the genuine fixed deterministic two-tape finite-state machine M_STAGE with read-only source `1^n#`, n>=2, and blank work tape, physically write n-1 implicit, shared AND-chain gate records `g` in n-1 different work cells, return the work head to the one-cell flag `0`, then make **one genuine cost-one nonterminal work-symbol rewrite `0 -> 1`** activating the entire pre-paid chain. A tempting *activated-representation* fusion component `c(G_active)-1` discharges **n-1** on this real ACTIVATE microstep **before HALT**, so transferring R_CONN's `lambda_FUS=1` to this different physical representation FAILS for n>=3. The original TMR-1/043 R_CONN APPEND theorem remains valid at its own scope.
+
+**REPAIRED PHYSICAL COMPONENT AND EXACT LP:** `q(C)=` physically missing mandatory `g` cells, `r(C)=` rightmost truly read source position, `h=` unfinished HALT. Canonical p=(0,0,0,n-1 if flag=0 else 0,0,q,n-r+h). All six authentic cost-one rules: INIT (0,0,1), WRITE_GATE (0,1,1), EOF_BACK (0,0,1), BACK_G (0,0,0), ACTIVATE (n-1,0,0), HALT (0,0,1), active coordinates ordered (FUS,INTERFACE,MACHINE). Exact fixed-n cone `(n-1)*lambda_FUS<=1`, `lambda_INTERFACE+lambda_MACHINE<=1`; exact LP optimum **n+3** with rational `lambda_FUS=1/(n-1),lambda_INTERFACE=0,lambda_MACHINE=1`. With one length-independent coefficient vector on all n, **lambda_FUS=0**, maximum initial potential `n+2`. Real machine uses **2n+2 physical transitions**, n+1 visited work positions and n nonblank cells. No superpolynomial gap, no arbitrary SAT transfer.
+
+**ACTUALLY EXECUTED:** Exact V8 audit body serialized to `experiments/tmr/tmr3_stage_gate_tm093.js`: **536,984 assertions, zero failures**, 255 actual input lengths n=2..256, **66,300** physically local microstep replays, 254 nonterminal fusion overdischarge controls and 4,800 one-cell physical rewrite checks. Finite tests COMPUTATIONAL. Machine trace and rational cone symbolic for all n>=2. No compiled independent low-level TM was executed; the finite transition table itself is a literal physical TM specification.
+
+**FILES:** report `research/agents/tmr-3/2026-11-15_0433_TMR3_NONTERMINAL_GATE_BATCH_ACTIVATION043.md`; executed source `experiments/tmr/tmr3_stage_gate_tm093.js`; raw `results/raw/tmr/2026-11-15_0433_TMR3_GATESTAGE093_V8_RAW.json`; seven-column exact matrix `results/raw/tmr/2026-11-15_0433_TMR3_GATESTAGE093_TARIFF_MATRIX.json`. Refetch from merged main required to complete publication verification.
+
+**PEER HANDOFF:** TMR-1 guard the R_CONN -> physical representation bridge; TMR-2 test staged latent multiscale obstructions; TMR-4 replay ACTIVATE as true MAY and recompute uniform exact cone; TMR-5 seek a compact opcode and alternate machine with simultaneous activation+HALT. /341 full-language UNSAT FAIL, /386 restricted domain only. **TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 full blob SHA 930c5eeddafce656717f28055a7a9a755f44737c; main.tex full blob SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. All schedules untouched. P versus NP OPEN.
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-15 03:30 PST | SYNCIO089 /042
 
 **GOVERNING:** Fusion-Lipschitz directive SHA `54c9177fc211dfca6c94d89d6ebbf3f3908809d6`; five existing hourly Pacific TMR schedules unchanged, MCSP secondary. **P versus NP OPEN**.
