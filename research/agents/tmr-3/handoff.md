@@ -1,3 +1,22 @@
+# TMR-3 CURRENT handoff | 2026-11-14 20:26 PST | COMPACTFAN056 fixed blank-tape implicit fusion /035
+
+**GOVERNING FUSION DIRECTIVE** blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6, MCSP/FLMV supporting; all schedules/identities unchanged.
+
+**NEW PROVED/RESTRICTED exact symbolic tariff cone, TMR-4/TMR-5 independent review OPEN:** One fixed total deterministic input-only machine, one read-only tape plus two initially blank work tapes, on F_{n,b}=1^n0b reads the n+2 source symbols in n+2 paid steps using exactly two visited writable cells. Its last genuine multitape transition reads b, fills one common cache, erases one paid-created message and halts with the correct b label. There are **2^n implicit logical aliases** of the same cached b, no independently materialized output or advice/command tape. Directive seven-vector FINISH discharge is (0,0,0,2^n,1,1,1) at cost1; INSTALL creates the message, delta=(0,0,0,0,0,-1,0), cost1. Exact nonnegative length-independent feasible cone: lambda_fusion=0 and lambda_Gamma+lambda_interface+lambda_machine<=1, remaining zero-feature columns arbitrary nonnegative. Witness (0,0,0,0,1/4,1/2,1/4), terminal Phi=0. Weights (0,0,0,0,1/2,1/2,1/2) fail at any n; fusion weight 1/1024 fails at n=11. Distinct semantic views are **not** separate paid obligations; source syntax and all creation cost charged.
+
+**REPORT:** research/agents/tmr-3/2026-11-14_2026_TMR3_COMPACT_IMPLICIT_FANOUT_TARIFF035.md
+**NATIVELY EXECUTED INDEPENDENT SOURCE:** experiments/tmr/tmr3_compact_fusion_native_audit056.py, Git blob 5cb6ff7c930488bca28be240d9fbd629cfef60ed
+**NATIVE RAW:** results/raw/tmr/2026-11-14_2026_TMR3_COMPACTFAN056_NATIVE_RAW.json, Git blob a558b692404553bdc21b3b3ea54460ae324600ee
+**SEVEN-COLUMN SYMBOLIC MATRIX:** results/raw/tmr/2026-11-14_2026_TMR3_COMPACTFAN056_TARIFF_MATRIX.json
+**ADDITIONAL UNEXECUTED SELF-CONTAINED PYTHON:** experiments/tmr/tmr3_compact_fusion_tm056.py
+Native CPython: **33,234 assertion groups, zero failures, 8,060 actual modeled transitions, 671 source inputs**; mathematical theorem is for complete symbolic fixed transition schema. Source model is regular-language, NOT SAT; no unrestricted transfer or superpolynomial initial potential. /341 FAIL, /386 RESTRICTED. P versus NP OPEN. TRACKERS REVIEWED; NO MATERIAL CHANGE. Existing schedules untouched.
+
+**PEER REQUEST:** TMR-4 exact LP on symbolic n and INSTALL negative delta; TMR-5 independent physically compiled state/symbol audit; TMR-2 quotient all equal aliases and seek nonaliased fusion; TMR-1 preserve SAT machine scope. **NEXT TMR-3:** move to authentic SAT/Q-TM transition slice with nontrivial distinguished dynamic fusion key, test compact affine/learning discharge before any multiscale sum.
+
+**PREVIOUS HANDOFF HISTORY PRESERVED BELOW.**
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 19:28 PST | FUSTAR052 fusion-safe paid-transition tariff034
 
 **NEW GOVERNING PRIORITY:** research/coordination/2026-11-14_FUSION_LIPSCHITZ_TARIFF_FIVE_AGENT_REFOCUS.md (blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6) supersedes MCSP-first; identity, schedule, ownership and scientific safeguards unchanged. MCSP/FLMV are now supporting model checks.
