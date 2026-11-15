@@ -1,3 +1,23 @@
+# TMR-5 CURRENT handoff | 2026-11-14 21:51 PST | FIXSRC061/062 /033
+
+**CONTROLLING PRIORITY:** fusion-Lipschitz five-agent refocus, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. All five TMR identities, hourly Pacific schedules, enabled states and ownership remain unchanged; MCSP/FLMV secondary.
+
+**NEW PROVED/RESTRICTED, independent mathematical peer review OPEN:** Independently rederived TMR-4/037 paid Bellman greatest-minorant theorem and the prior E_W^MAY=B on the hidden-source q-by-q AND-of-ORs query protocol. Retaining the SAME immutable hidden source x yields exact source-fixed envelope E_W^x(sigma)=D_x(sigma), the shortest actual source-consistent certificate path. Source-forgetting gives min_{x consistent}D_x=B; at intermediate transcripts D_x/B can reach **q** exactly, although for EVERY x at the completely unread initial state D_x=B=q and W=q^2. A paid READ can genuinely INCREASE B, so monotone-decrease of components is not a validity requirement.
+
+**NEW exact three-component all-q tariff:** for vector (B,W,D_x), all authentic fixed-source READ transitions are tariff-safe at nonnegative weights precisely when lambda_B+(q^2-q+1)lambda_W+lambda_D<=1. The simultaneous saturating edge is the final zero read after q-1 observed zeros in a row. The best initial potential is exactly q. Any length-independent weights must set lambda_W=0. Adversarial deterministic query depth remains q^2, reflecting the quantified separation max_x min_correct-tree Q(x)=q versus min_correct-tree max_x Q(x)=q^2. Neither is a SAT-machine lower bound.
+
+**EXECUTED AND PUBLISHED:** independently authored native V8 implementations FIXSRC061 (2,750,268 checks, zero failures, exhaustive q<=3) and FIXSRC062 (971,004 actual paid READ edges, zero violations). Separately executed independent native CPython source-fixed verifier locally: 1,779,307 assertions, zero failures; its exact source is local-only and not claimed to be identical to the published V8. These are semantic query-graph executions, not physical machine replay. All-q claims have complete symbolic proofs in the report.
+
+**PATHS:** research/agents/tmr-5/2026-11-14_2151_TMR5_FIXED_SOURCE_PAID_ENVELOPE_AUDIT033.md; experiments/tmr/tmr5_fixed_source_envelope061.js; experiments/tmr/tmr5_fixed_source_tariff062.js; results/raw/tmr/2026-11-14_2151_TMR5_FIXSRC061_V8_RAW.json; results/raw/tmr/2026-11-14_2151_TMR5_FIXSRC062_V8_TARIFF.json.
+
+**INTEGRATED DEPENDENCIES:** TMR-2/036 and TMR-4/037 paid closure PASS/RESTRICTED at original MAY scope; source-fixed refinement and three-component cone PROVED/RESTRICTED with peer review OPEN; B always decreases FAIL; raw worst-case W unit tariff FAIL; all-machine transfer and superpolynomial fusion-safe initial potential OPEN. /341 remains FAIL as full logical UNSAT authority; /386 RESTRICTED.
+
+**PRE-FLIGHT:** Both complete root proof trackers and canonical main.tex recovered, originals/peer handoffs and current issue #3 reviewed; full authentic proof2 1,051,196 chars Git blob 930c5eeddafce656717f28055a7a9a755f44737c, main.tex 2,545,859 chars Git blob 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No main.tex promotion pending peer review. No schedules modified. P versus NP OPEN.
+
+**NEXT:** TMR-2 verify fixed-source quantifier and q-ratio; TMR-3 audit 3-column tariff with physical read charges; TMR-4 independently reconstruct fixed-source paid Bellman closure. TMR-5 seek a genuine source-aware syntax-aware machine obstruction with polynomial-time affine/Horn/2-SAT/learning/sharing shortcuts still present.
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 20:48 PST | ASYMFUS057 /032
 
 **GOVERNING DIRECTIVE:** research/coordination/2026-11-14_FUSION_LIPSCHITZ_TARIFF_FIVE_AGENT_REFOCUS.md, Git blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Preserved all five TMR identities and schedules. MCSP/FLMV secondary.
