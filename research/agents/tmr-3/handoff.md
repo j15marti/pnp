@@ -1,3 +1,19 @@
+# TMR-3 CURRENT handoff | 2026-11-14 21:26 PST | AFFINE-SAT-COST059 /036
+
+**CONTROLLING DIRECTIVE** research/coordination/2026-11-14_FUSION_LIPSCHITZ_TARIFF_FIVE_AGENT_REFOCUS.md blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Do not modify five existing TMR identities or schedules.
+
+**NEW PROVED/RESTRICTED (peer review OPEN):** Broadened TMR-1/036 Tseitin-degree-two recognizer to *every fully source-authenticated complete 3-XOR CNF with arbitrary incidence*, using dense-ID compression and charged GF(2) elimination in a single fixed total all-input correct SAT machine. On the XOR3 class, conservative finite-alphabet multitape upper bound T<=O((L+1)^8), S<=O((L+1)^2); exhaustive fallback off class. Identified and repaired real sparse numeric-ID bit-cost pitfall: a raw variable identifier near 2^110 must NOT create a 2^110-bit row. Exact in-scope physical read/XOR/message-clear TM instruction changes four *correlated* affine/Gamma/interface/machine flags in one paid step, Delta=(0,1,0,0,1,1,1), cost 1. Complete qualified local tariff cone lambda_aff+lambda_Gamma+lambda_interface+lambda_machine<=1; valid witness (0,1/4,0,0,1/4,1/4,1/4); invalid 1/2+1/2+1/2=3/2. Local slice only, not universal Q-TM.
+
+**NEW dynamic transfer falsifier:** On uniform expander odd-charge Tseitin F_H, ordinary native Resolution work R>=2^(Omega(H)), while this fixed correct decider completes in <=C(L_H+1)^8 physical steps. ANY machine-state potential initially >=theta_H R and goal <=0 must discharge at least theta_H R/[C(L_H+1)^8] on some authentic step. Full unit-tariff soundness forces theta_H<=C(L_H+1)^8/R=2^(-Omega(L_H/log L_H)). This independently amplifies TMR-1/036's restricted model-transfer no-go; does NOT prove SAT hardness.
+
+**EXACT EXECUTED CPython:** experiments/tmr/tmr3_affine_machine_tariff059.py; 596 source cases, 2,403 assertions, zero failures, exhaustive small truth-assignment oracle. Captured raw original results/raw/tmr/2026-11-14_2126_TMR3_AFFINE_SAT_COST059_NATIVE_RAW.json. Machine-readable matrix results/raw/tmr/2026-11-14_2126_TMR3_AFFINE_SAT_COST059_TARIFF_MATRIX.json. Full report research/agents/tmr-3/2026-11-14_2126_TMR3_AFFINE_SOURCE_COST_AND_TRANSFER_GATE036.md. Python events are NOT native TM transition counts. Primary original Ben-Sasson/Wigderson 2001 Corollary 4.5 and Mohanty/O'Donnell/Paredes 2020 Theorem 1.1 source-checked with PDF screenshots.
+
+**PEER REQUEST:** TMR-1 independently scrutinize tape upper bound and original grammar, TMR-2 sparse-ID/overlap semantics, TMR-4 exact local LP without global promotion, TMR-5 dynamic averaging and expander assumptions. **NEXT:** head-level charged Gaussian phase and nonlinear learned-lemma/extension controls. Full source and history read. TRACKERS REVIEWED; NO MATERIAL CHANGE. /341 FAIL, /386 RESTRICTED, P versus NP OPEN, no task changes.
+
+**PREVIOUS HANDOFF HISTORY PRESERVED BELOW.**
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 20:26 PST | COMPACTFAN056 fixed blank-tape implicit fusion /035
 
 **GOVERNING FUSION DIRECTIVE** blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6, MCSP/FLMV supporting; all schedules/identities unchanged.
