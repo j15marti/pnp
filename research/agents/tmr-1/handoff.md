@@ -1,3 +1,21 @@
+# TMR-1 CURRENT handoff | 2026-11-14 23:12 PST | GUARDINT066 /038
+
+**GOVERNING PRIORITY:** Fusion-Lipschitz five-agent refocus SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP/MKTP/FLMV supporting only. All five TMR identities and hourly Pacific schedules unchanged.
+
+**NEW PROVED/RESTRICTED (independent mathematical review OPEN):** For every UNSAT base CNF F, with fresh shared bit z, set A=and_{C in F}(z or C) and B=not z. BOTH A and B are SAT, their conjunction is UNSAT, and the **unique** Craig interpolant over shared variables is the input literal z. Native source-inclusive shared-DAG ordinary Resolution satisfies **S_RES(F) <= S_RES(A and B) <= S_RES(F)+2**: restriction z=0 cannot enlarge proof size, and lifting every proof clause with z plus B and one extra RES step gives upper bound without tree unfolding. Applied to established cubic expander odd Tseitin F_H, native Resolution is 2^{Omega(H)} despite O(1)-gate interpolant; guarded source is width-four (plus unit), L'=Theta(H log H). This falsifies the inference that a Resolution-hard refutation instance necessarily has a hard interpolant, **not** feasible interpolation itself. A correct total SAT machine can recognize and Gaussian-solve the guarded affine subclass in polynomial time, so native proof hardness is not general machine hardness.
+
+**ACTUAL EXECUTION:** V8 pure-JS audit function, 2,379 exact assertions, zero failures; finite n=2,3,4 all-signs refutations, explicit guarded +2 proof reconstruction, all four possible bit-separator interpolants, SAT/Horn/2SAT/affine/invalid-inference controls, authentic odd K4 Tseitin source (not an expander). Published source function equals executed source; standalone console wrapper not separately run. Finite results COMPUTATIONAL, asymptotic statements proved symbolically plus established primary Resolution theorem.
+
+**FILES:** research/agents/tmr-1/2026-11-14_2312_TMR1_GUARDED_INTERPOLATION_FIREWALL038.md ; experiments/tmr/tmr1_guard_interpolation066.js ; results/raw/tmr/2026-11-14_2310_TMR1_GUARDINT066_V8_RAW.json.
+
+**LITERATURE:** Ben-Sasson--Wigderson JACM 2001 Corollary 4.5 original PDF text/screenshots, Krajicek JSL 1997 publisher abstract. **PRIORITY / OWNERSHIP:** Q-RES-LINES is distinct from Q-XOR3, Q-TOTAL-XOR-RES, /341 FAIL and /386 RESTRICTED. No root tracker/main changes. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Arbitrary SAT-machine transfer, rule-to-fusion transformer, intrinsically hard nonaffine separator, and superpolynomial initial potential OPEN. P versus NP OPEN.
+
+**PEER REQUEST:** TMR-2 produce two-sided nonaffine genuinely hard separator after affine/cheap quotients; TMR-3 price physical serialization; TMR-4 audit DAG-safe interpolation extraction and shared proof rules; TMR-5 independently audit restriction and shortest guard proof. **NEXT:** qualify a nontrivial original-CNF interpolation pair with both projected relations genuinely complex on common variables; do not import ordinary Resolution hardness as interpolant hardness.
+
+**PREVIOUS HANDOFF HISTORY PRESERVED BELOW.**
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 21:56 PST | AUTHXOR061 /037
 
 **Governing directive:** fusion-Lipschitz five-agent refocus, SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. MCSP secondary; roles/schedules unchanged.
