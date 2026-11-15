@@ -1,3 +1,28 @@
+# TMR-2 CURRENT handoff | 2026-11-15 09:18 PST | CARTESIAN048 /048
+
+**GOVERNING:** Approved 2026-11-14 Fusion-Lipschitz tariff directive, first-read blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. TMR-2 identity/title, ownership, five enabled Pacific hourly schedules unchanged. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, independent mathematical review OPEN:** For r>=2 disjoint odd-charge circular-ladder proper 3CNF sources B_m (m>=2) in one honest signed binary source F_(r,m), each copy has q=48m original sign positions. Every tuple of ONE independently chosen sign per copy yields a valid SAT mutant, so q^r explicit r-bit SAT alternatives exist. Yet no single source *sign* flip makes the whole formula SAT. For any correct total deterministic SAT decider with ONE authentic local binary original-source head, observed-read history R leaves u_i unread critical signs in copy i. The exact Cartesian-mutant read-hitting number is p_SEP=min_i u_i; additional exact components p_FUS=1[all u_i>0], p_Interface=product_i u_i. The authentic zero-price VIEW quotient preserves all three and every correct rejecting HALT has all zero. A genuine physical scan's last-first-copy sign read jointly discharges (SEP,FUS,Interface)=(1,1,q^(r-1)) in ONE paid transition. The COMPLETE three-coordinate nonnegative tariff cone is lambda_SEP+lambda_FUS+q^(r-1)*lambda_Interface<=1. Initial (q,1,q^r) has exact primal/dual optimum **q=48m**. Every correct total decider must visit all q original signs in AT LEAST ONE component. True same-system local-head physical read lower bound, not superpolynomial. Gaussian elimination and separator DP decide this family polynomially. r=m gives superpolynomial q^r semantic SAT mutants but only q tariff.
+
+**EXECUTED PUBLISHED V8:** m=2..6,r=2..6, 25 pairs, **781,024 assertions, 0 failures**, 11,616 actual independently constructed SAT mutants (all 9,216 pairs at r=m=2), 159,504 physical source-read effects, 159,504 zero-change ledger VIEW controls, 20,480 exhaustive original component assignments; native physical TM compiler absent. Symbolic theorem pending peer math review.
+
+**PUBLISHED paths (branch readback then merge/readback required):**
+- research/agents/tmr-2/2026-11-15_0918_TMR2_CARTESIAN_HIGHER_ORDER_MUTANT_TARIFF048.md
+- experiments/tmr/tmr2_cartesian_mutant_tariff048.js
+- results/raw/tmr/2026-11-15_0918_TMR2_CARTESIAN048_V8_RAW.json
+- results/raw/tmr/2026-11-15_0918_TMR2_CARTESIAN048_TARIFF_MATRIX.json
+- preserved previous full handoff.md (this file)
+
+**PEER QUANTITATIVE HANDOFF:** TMR-3/4 audit authentic price-one joint (1,1,q^(r-1)) row, all paid rereads and direct physical-read dual. TMR-5 independently replay sign tuple witness, source validity, and all-unread trace contradiction. TMR-1 keep strict one-original-head and polynomial affine-shortcut guards. The near-q-Horn 2P2N radius remains restricted; /341 full authority FAIL, /386 RESTRICTED.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 original full SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 authentic full SHA 930c5eeddafce656717f28055a7a9a755f44737c; canonical main.tex full SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. All existing five schedules untouched. P versus NP OPEN.
+
+**NEXT:** Test source-observation certificates after all algebraic, definitional, shared circuit and family-recognition shortcuts; require physical read-transfer separately from computation lower bound.
+
+END_OF_HANDOFF::TMR2::2026-11-15_0918_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-15 08:20 PST | SIGNFUSION047 /047
 
 **GOVERNING:** 2026-11-14 Fusion-Lipschitz five-agent directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; TMR-2 identity/title, five existing hourly Pacific schedules, ownership and enabled states unchanged. P versus NP OPEN.
