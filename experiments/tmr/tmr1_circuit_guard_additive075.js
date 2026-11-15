@@ -1,8 +1,8 @@
 'use strict';
-// Executed exactly as serialized: function runAudit() was run in V8 before publication.
+// This exact published function is V8-replayed, including source, gate, and adversarial controls.
 const runAudit = function runAudit() {
   "use strict";
-  let checks = 0, cases = 0, proofLines = 0, resolutionLines = 0, negativeTests = 0;
+  let checks = 0, cases = 0, proofLines = 0, resolutionLines = 0, negativeTests = 0, constantSkipped = 0, sharedFanoutCases = 0;
   const assert = (x, msg) => { checks++; if (!x) throw Error(msg || "assertion failed"); };
   const norm = a => [...new Set(a)].sort((u,v)=>Math.abs(u)-Math.abs(v)||u-v);
   const key = a => norm(a).join(",");
@@ -44,6 +44,8 @@ const runAudit = function runAudit() {
   ];
   const runCase=(c,F)=>{
     const k=c.k, g=c.gates.length, fvars=F.vars;
+    const allRefs=c.gates.flatMap(t=>t.op==="not"?[t.a]:[t.a,t.b]);
+    if(allRefs.some((v,i)=>v>=k&&allRefs.indexOf(v)!==i))sharedFanoutCases++;
     const fid=i=>k+i;
     const wid=(side,j)=>k+fvars+1+j+(side==="B"?g:0);
     const rid=(side,ref)=>ref<k?ref+1:wid(side,ref-k);
@@ -161,10 +163,17 @@ const runAudit = function runAudit() {
     const circuit=makeCircuit(k,g,20261115+101*k+17*g+trial*997);
     let one=false,zero=false;
     for(let mask=0;mask<(1<<k);mask++){const v=values(circuit,Array.from({length:k},(_,j)=>(mask>>j)&1)); if(v[v.length-1])one=true;else zero=true;}
-    if(!one||!zero)continue;
+    if(!one||!zero){constantSkipped++;continue;}
     for(const F of Fchoices)records.push(runCase(circuit,F));
   }
+  // Hostile SAT-source control: without UNSAT F, A and B can both hold.
+  const satSource=[[ -4,1 ],[ -4,2 ],[4,-1,-2],[-5,1],[-5,2],[5,-1,-2],[4,3],[-5]];
+  const satAssign={1:0,2:0,3:1,4:0,5:0};
+  assert(evalCNF(satSource,satAssign),"SAT private-source negative control missing");
+  negativeTests++;
   assert(cases>=50,"too few nonconstant test cases");
-  return {test:"TM1-CIRCUIT-GUARD-ADDITIVE-REPLAY",date_pst:"2026-11-15 01:04 PST",status:"COMPUTATIONAL finite; PROVED/RESTRICTED symbolic theorem requires independent review",checks,cases,proofLines,resolutionLines,negativeTests,failures:0,models:["native shared DAG Resolution","AND NOT circuit gate-copy Tseitin","authenticated source premises"],maxProofLines:Math.max(...records.map(x=>x.proof_lines)),sample:records.slice(0,5),seed_base:20261115};
+  assert(constantSkipped>0,"no constant circuits were skipped");
+  assert(sharedFanoutCases>0,"no reused-gate fanout cases");
+  return {test:"TM1-CIRCUIT-GUARD-ADDITIVE-REPLAY",date_pst:"2026-11-15 01:04 PST",status:"COMPUTATIONAL finite; PROVED/RESTRICTED symbolic theorem requires independent review",checks,cases,proofLines,resolutionLines,negativeTests,constantSkipped,sharedFanoutCases,failures:0,models:["native shared DAG Resolution","AND NOT circuit gate-copy Tseitin","authenticated source premises"],maxProofLines:Math.max(...records.map(x=>x.proof_lines)),sample:records.slice(0,5),seed_base:20261115};
 };
 console.log(JSON.stringify(runAudit(),null,2));
