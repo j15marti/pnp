@@ -1,3 +1,27 @@
+# TMR-5 CURRENT handoff | 2026-11-14 22:55 PST | MINCORE065 /034
+
+**Controlling directive:** 2026-11-14 fusion-Lipschitz refocus, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP/FLMV secondary; five existing agent identities, schedules and enabled states unchanged.
+
+**NEW PROVED/RESTRICTED, peer mathematical review OPEN:** Independently generalized TMR-1/037 authenticated binary-XOR source-calculus proof price from the connected cubic Tseitin special case to every inconsistent finite affine source A x = b. Define s=min{|supp z| : z^T A=0, z^T b=1}. For the exact price-one SOURCE, binary ADD, HALT shared-DAG calculus, minimum proof work is **exactly 2s**. Lower bound uses provenance and undirected DAG connectivity 2a >= a+t-1; upper bound combines an optimal source subset. Every minimum odd dependency is a minimally dependent source-row circuit, so s<=rank(A)+1<=n+1 and native affine refutation price <=2(n+1)=O(encoded original CNF length). This extends TMR-1/037, not a general-SAT lower bound or finite-alphabet machine time theorem.
+
+**AUTHENTIC FUSION FALSIFIER:** Disjoint odd-charge cubic prisms with 6 and 8 vertices produce a valid original Q-XOR3 source, but the cheapest proof uses only the six-vertex component, costing 12 rather than the invalid sum 28. Requiring every inconsistent conjunct to be separately refuted changes the UNSAT goal. Every all-step tariff with terminal Phi<=0 on this system has initial Phi<=2s. Connected odd cubic s=H reproduces TMR-1's exact 2H proof price. Duplicate contradictory source-row test is generalized Q-AFF only, NOT authenticated by strict unique-triple Q-XOR3 parser.
+
+**EXECUTED:** Native CPython, 924 exhaustive small source systems (607 inconsistent), 1,600 seeded random systems, exhaustive small shortest-proof BFS and six cubic prism controls: **3,731 assertions, zero failures**. Source and raw results byte-identical to published blobs. Machine-physical execution not performed; all-size claims supported by symbolic proof only.
+
+**REPORT** research/agents/tmr-5/2026-11-14_2255_TMR5_AFFINE_MINCORE_PRICE_CEILING034.md, blob 6836ea4bba4ba3b8c3cc2013e44314acd0539f27.
+**CODE** experiments/tmr/tmr5_affine_min_core065.py, blob 345485eac9d0625256421f3f6a933890cde44983.
+**RAW** results/raw/tmr/2026-11-14_2255_TMR5_MINCORE065_NATIVE_RAW.json, blob 73ae590a9e254193cb46b247d5eb5b0119dd8999.
+
+**INTEGRATED MAP:** TMR-1/037 connected 2H PASS/RESTRICTED; general 2s and rank ceiling PROVED/RESTRICTED, peer review OPEN; summed disjoint-odd proof burdens FAIL; abstract XOR price is not binary-output cost (TMR-3/037 RESTRICTED); arbitrary-SAT-machine transfer OPEN; superpolynomial fusion-safe initial potential OPEN; /341 full authority FAIL; /386 guarded fragment RESTRICTED; P vs NP OPEN. TMR-2 to independently audit the minimal-circuit rank bound, TMR-4 verify the authentic goal and cheap-path closure, TMR-3 audit any finite-alphabet serialization/transfer.
+
+**Preflight:** Current fusion directive, November 13 replacement, full root proof1 and authentic full proof2/main Git blobs, issue #3, AGENTS/CODEX/research skill, five current handoffs, TMR-1/037, TMR-3/037, TMR-4/037, LEAD-0029 and /341 /386 historical scope read. TRACKERS REVIEWED; NO MATERIAL CHANGE. No tasks changed.
+
+**NEXT:** Falsify a proposed dynamic nonaffine fusion obstruction using a real cheap proof or verify one authentic all-step tariff for such an obstruction. Affine-only fragment cannot supply the superpolynomial initial gap.
+
+END_OF_HANDOFF::TMR5::034::2026-11-14_2255_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 21:51 PST | FIXSRC061/062 /033
 
 **CONTROLLING PRIORITY:** fusion-Lipschitz five-agent refocus, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. All five TMR identities, hourly Pacific schedules, enabled states and ownership remain unchanged; MCSP/FLMV secondary.
