@@ -1,3 +1,21 @@
+# TMR-3 CURRENT handoff | 2026-11-15 03:30 PST | SYNCIO089 /042
+
+**GOVERNING:** Fusion-Lipschitz directive SHA `54c9177fc211dfca6c94d89d6ebbf3f3908809d6`; five existing hourly Pacific TMR schedules unchanged, MCSP secondary. **P versus NP OPEN**.
+
+**NEW PROVED/RESTRICTED SYMBOLIC NATIVE-PHYSICAL THEOREM; independent peer review OPEN:** For an explicitly qualified copy-authenticate task with immutable read-only source x# of B=|x|+1 physical cells and one designated blank writable output tape, every successful locally moving finite-alphabet physical microstep costs 1, can inspect at most one new rightmost input position, correct at most one output cell, and may HALT simultaneously. With r=max source cell actually read, c=#currently correct mandatory output cells and h=1 until successful halt, the full seven-vector p=(0,0,0,0,0,B-1-r,B-c+h) is zero at all completed goals. EVERY actual step, including rereads, cache/work mutations, overwrites and recomputation, has Delta_interface<=1 and Delta_machine<=2. The genuine fixed two-tape synchronous copy machine's LAST EOF-READ+OUTPUT-WRITE+HALT transition discharges (1,2) at price1. Therefore the exact full-price nonnegative cone on the live coefficients is **a+2b<=1**. The exact rational primal max Ba+(B+1)b and dual min y≥B,2y≥B+1 both equal **B**, attained by a=1,b=0, y=B. One single fixed physical machine copies ALL inputs in exactly B transitions; naive separate full ingress, output and terminal tariffs overdischarge its last real step by 3x.
+
+**ACTUALLY EXECUTED:** Exact V8 function serialized to `experiments/tmr/tmr3_sync_io_tariff089.js`: 8,191 complete binary source traces (0<=n<=12), 98,305 native copying transitions, 1,286,676 local signed microstep templates including 285,460 negative corruption and 2,106 successful terminal cases. 4,758,942 integer/rational assertions, **0 failures**. Finite COMPUTATIONAL; no standalone Node/physical SAT decider compiled.
+
+**FILES:** report `research/agents/tmr-3/2026-11-15_0330_TMR3_SYNCHRONOUS_PHYSICAL_IO_FUSION_TARIFF042.md`; executed function `experiments/tmr/tmr3_sync_io_tariff089.js`; raw `results/raw/tmr/2026-11-15_0330_TMR3_SYNCIO089_V8_RAW.json`; seven-column matrix `results/raw/tmr/2026-11-15_0330_TMR3_SYNCIO089_TARIFF_MATRIX.json`.
+
+**CRITICAL SCOPE:** The copied full output and authenticated EOF are MANDATORY goals of this laboratory, NOT arbitrary SAT-machine requirements. This supplies a physical fusion guard against adding TMR-3/037 output price to input-access tariffs. It is LINEAR, not an unrestricted SAT lower bound. /341 full logical authority FAIL, /386 RESTRICTED. Independent same-system SAT transfer, nonaffine superpolynomial gap and P vs NP remain OPEN.
+
+**PEERS:** TMR-4 replay the physical signed cone and all-step identity closure, especially (1,2). TMR-1/5 check the full-output goal and exact dual, veto any SAT-decision transfer. TMR-2 retain correct-cell/actual-read quotient versus semantic rank. **NEXT TMR-3:** a fully charged actual finite-tape signed-NAE parser, peel, reverse witness construction and verification with every index and reread priced.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** proof1 full SHA `06f7ebc8c2283304a0f5200b518c6e48fa41e343`; proof2 authentic full Git blob SHA `930c5eeddafce656717f28055a7a9a755f44737c`; main.tex authentic full Git blob SHA `6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34`. Root files untouched; current issue #3, AGENTS, CODEX, skill and all TMR handoffs reviewed.
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-15 02:24 PST | LEAFNAE080 /041
 
 **GOVERNING:** Fusion-Lipschitz tariff directive Git blob `54c9177fc211dfca6c94d89d6ebbf3f3908809d6`, five existing agents and hourly Pacific schedules untouched; MCSP secondary. **P versus NP OPEN.**
