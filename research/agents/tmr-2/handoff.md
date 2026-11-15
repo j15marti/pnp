@@ -1,3 +1,29 @@
+# TMR-2 CURRENT handoff | 2026-11-15 12:20 PST | IPFIELD051 /051
+
+**GOVERNING FIRST:** 2026-11-15 SAT compression/circuits directive SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a. Track A primary, TMR identity/title/ownership and five enabled hourly Pacific schedules preserved. P versus NP OPEN.
+
+**NEW PROVED/EXACT RESTRICTED; peer mathematical review OPEN:** For the *fixed-formula projected assignment relation* IP_k(x,y)=XOR_i(x_i AND y_i), k>=1, its grouped x:y matrix has **rank_GF2=k**, **rank_Q=2^k-1**, and **2^k distinct residual Boolean rows**. Grouped-order complete read-once layer width is 2^k, while the legal interleaved x1,y1,...,xk,yk order has all layers width <=4 and an O(k)-gate AND/XOR circuit. The characteristic-two rank can exponentially underestimate deterministic grouped width; rational high rank under one order does not impose unrestricted algorithm cost. TMR-4/051's one-sided rank<=frontier bound remains correct. This is a model-scoped counterexample, not a claim of new literature priority.
+
+**EXACT STRICT 3CNF LIFT:** Functional AND/XOR gates, seven-clause three-variable global pin and padded short clauses give V=4k+2 variables, C=7k+4 distinct proper ternary clauses, exactly 21k+12 occurrences and input length Theta(k log k). Each (x,y) has a unique gate/pin extension, accepted exactly when IP_k(x,y)=1. Total satisfying assignments (2^k-1)2^(k-1). The projected relation is not Horn, dual-Horn, bijunctive or affine for k>=2, yet admits a path decomposition with bag size<=8 (treewidth<=7), an explicit satisfying witness, and polynomial-time bounded-treewidth DP. One fixed total correct SAT decider can witness-check this canonical source in O(N polylog N) time and O(log N) workspace before exhaustive fallback. No all-input polynomial solver.
+
+**EXECUTED EVIDENCE:** Self-contained Node 22/V8 source exact GF(2) BigInt elimination and modular elimination mod 65521, with nonzero minor plus structural bound certifying Q rank, actual prefix cofactor truth masks for both orders, independent DISJ/EQ/SINGLE controls k=1..7, all canonical original-input extensions k=1..7, and all full assignments exhaustive k<=3. **39,407 counted test steps/assertions; zero failures; no seed.** Finite results COMPUTATIONAL. Source revision ipfield051.v1, no external dependencies or probabilistic arithmetic. Notebook/exact original CNF and Turing-machine source compilers not built.
+
+**ARTIFACTS:**
+- research/agents/tmr-2/2026-11-15_1220_TMR2_PARITY_IP_FIELD_ORDER_FIREWALL051.md
+- experiments/tmr/tmr2_ipfield_051.js
+- results/raw/tmr/2026-11-15_1220_TMR2_IPFIELD051_V8_RAW.json
+- this full historical handoff.md.
+
+**FOUR-GATE STATUS:** DISJ PASS restricted, unrestricted rank inference FAIL; relativization PASS elementary identities and OPEN nonrelativizing general transfer; simultaneous DTISP N/A to representation, OPEN FLMV transfer; deterministic configuration count PASS only as upper-bound guard. /341 FAIL as full logical UNSAT authority and /386 RESTRICTED, unchanged.
+
+**CORPUS/OWNERSHIP:** Directive FIRST, both root tracker SHAs, root main SHA, AGENTS/CODEX/skill, all five latest handoffs, issue #3, TMR-2/050, TMR-4/051, TMR-5/046, TMR-1/050-051 were consulted. Connector returned empty full proof2/root main bodies; no root edits or main promotion. TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE. Other agents and schedules untouched.
+
+**NEXT:** source-local adaptive variable-order selection with fully charged discovery, and exact lower bounds that survive reordering, characteristic choice, sharing, compact circuits, Horn expanders and DISJ. General SAT-machine bridge OPEN; P versus NP OPEN.
+
+END_OF_HANDOFF::TMR2::2026-11-15_1220_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-15 11:19 PST | DYNAMIC-PREFIX-RANK050 /050
 
 **GOVERNING FIRST:** SAT compression/circuits directive on main SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a; replaces Allender-first and fusion-first priorities. Track A dynamic multi-cut/representation and DISJ hostile controls. Five existing identities, Pacific hourly schedules, ownership and enabled states unchanged. P versus NP OPEN.
