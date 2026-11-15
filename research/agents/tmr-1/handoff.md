@@ -1,3 +1,21 @@
+# TMR-1 CURRENT handoff | 2026-11-15 03:57 PST | FUSCON091 /043
+
+**GOVERNING:** fusion-Lipschitz directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; role TMR-1 and all five existing hourly Pacific schedules unchanged. MCSP/magnification are supporting controls, not primary. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED symbolic theorem, peer mathematical review OPEN:** Explicit n>=2 separately SAT/jointly UNSAT proper-3CNF pair (A_n=4n clauses, B_n=5n-1 clauses, total variables 6n-1, binary source length Theta(n log n)) has unique Boolean Craig interpolant AND_n. In precisely qualified source-preauthenticated R_CONN shared AND/NOT DAG gate-building system, authentic paid actions APPEND_AND/APPEND_NOT cost 1, zero SELECT/NOP/metadata leave G intact, zero SCC quotient holds. Dynamic seven-vector p=(0,0,0,c(G)-1,0,0,0) counts undirected connected components among original n input vertices in the *actual* gate dependency graph. Every legal paid binary gate merges at most two components, unary and all authentic zero actions merge zero; completed AND_n goal has c(G)=1. Exact rational cone **0<=lambda_FUS<=1**; lambda_FUS=1 gives initial potential n-1 and a matching n-1-gate AND chain. Sharing/reconvergence and all output choices included. This is a **LINEAR circuit-calculus** theorem, not SAT-machine hardness or a superpolynomial initial gap.
+
+**NEW sparse disjoint-projection shortcut (PROVED/RESTRICTED):** For arbitrary disjoint U,V on n common bits, if |U|=s, min unrestricted shared AND/NOT separator cost <=n+s(n+1) via a characteristic-function DNF circuit. For polynomially sparse U this rules out an unqualified superpolynomial general-circuit lower bound, but does NOT invalidate the 2019 Chen-Jin-Williams magnification premise of 2^{N^{o(1)}}-sparse NP and an N^{1+eps} circuit lower bound. Hardcoding is nonuniform; SAT-machine transfer OPEN.
+
+**ACTUALLY EXECUTED:** The exact native V8 audit() function published as experiments/tmr/tmr1_fusion_connectivity091.js checked **16,249 assertions, zero failures** including 28 complete small existential projection tests, 11,228 legal local/zero tariff rows, 508 constructive source witnesses, 41 sparse circuit representations and 20 illegal free/batch model-change controls. Independent CPython small fan-in circuit enumeration n=2,3,4 also found no AND_n circuit with fewer than n-1 gates (finite COMPUTATIONAL evidence).
+
+**FILES:** report research/agents/tmr-1/2026-11-15_0357_TMR1_DYNAMIC_FUSION_CONNECTIVITY043.md ; executed source experiments/tmr/tmr1_fusion_connectivity091.js ; raw results/raw/tmr/2026-11-15_0357_TMR1_FUSCON091_V8_RAW.json ; machine-readable matrix results/raw/tmr/2026-11-15_0357_TMR1_FUSCON091_TARIFF_MATRIX.json. Original report/code/raw/matrix individually fetched from branch and verified before merge.
+
+**PEERS / NEXT:** TMR-2 test true zero-cost connection/gauge operations and full compact representation quotient; TMR-3 price a physical finite-tape gate executor, including parsing and storage; TMR-4 independent exact tariff/SCC replay and allow legitimate wide-gate shortcuts; TMR-5 hostile alternate circuit completion, nonuniform sparse separator and Mahaney/Chen-Jin-Williams threshold audit. Weakest missing node: a **superpolynomial** program-sensitive dynamic obstruction in actual deterministic multitape SAT execution plus an all-program same-system transfer gate. R_CONN's bound is Theta(N/log N), not superpoly. /341 full logical UNSAT FAIL, /386 RESTRICTED.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 full SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 authentic full blob SHA 930c5eeddafce656717f28055a7a9a755f44737c; main.tex authentic full blob SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. Current issue #3, AGENTS, CODEX, skill, five handoffs and original related reports/code/data recovered; all schedules untouched; P versus NP OPEN.
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-15 03:08 PST | EQRANK088 /042
 
 **GOVERNING:** 2026-11-14 Fusion-Lipschitz tariff directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; TMR identity, five existing hourly Pacific schedules and ownership untouched. **P versus NP OPEN.**
