@@ -1,3 +1,21 @@
+# TMR-5 CURRENT handoff | 2026-11-14 19:47 PST | FUSTAR053 independent physical-tape tariff replay031
+
+**GOVERNING DIRECTIVE:** research/coordination/2026-11-14_FUSION_LIPSCHITZ_TARIFF_FIVE_AGENT_REFOCUS.md, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Supersedes MCSP-first priority. Existing TMR identities/schedules/ownership unchanged.
+
+**NEW FUSTAR053 PROVED/RESTRICTED, TMR-3/TMR-4 peer review OPEN:** Independently replayed TMR-3/034 FUSTAR052 with actual subscriber cells, cached source symbol, message tape/head and a charged deterministic read-only command selector. A single legal FILL_POP physical step has Delta=(m,1,1), cost 1 for any paid-built m>=1. Thus uniform nonnegative all-step tariff cone exactly lambda_occ=0, lambda_key>=0, lambda_msg>=0, lambda_key+lambda_msg<=1; bad weights (1/2,1/2,0) and (0,1,1) violate at m=2,q=1. Independently proved NEW exact restricted minimum completion work W_min(C_mqx)=max(q,1_{m>0}) for charged-built profiles. The deterministic command stream is an explicit additional input; original free event-menu selection cannot be promoted to a fixed source-only uniform SAT controller without a further model proof. Lab goal is cache/message completion, not SAT/UNSAT. Physical paid setup is m+2q transitions. Genuine cheap one-step sharing is retained.
+
+**NATIVE EVIDENCE:** exactly executed native CPython experiments/tmr/tmr5_fustar_independent053.py, blob 45b85245360fbe743c7940b0a0a1afb0344f8a0b; raw results/raw/tmr/2026-11-14_1947_TMR5_FUSTAR053_RAW.json, blob 6c9b2864f929b9d037189e4d1b8b6fa4cdc3b072; 602 assertions, zero failures, 486 independent legal rows, 126 profiles, ready/empty/large-m controls. Finite evidence COMPUTATIONAL; not compiled TM execution or a general SAT solver. Full report research/agents/tmr-5/2026-11-14_1947_TMR5_FUSTAR_INDEPENDENT_REPLAY031.md.
+
+**RANKED:** PASS/RESTRICTED physical Z and dual cone; FAIL occurrence-weight and independent component addition; RESTRICTED charged command-selector qualification; OPEN authentic SAT transition coverage, zero-cost SCC quotient, affine/separator/fusion components, multiscale initial lower bound, terminal/transfer gate and optional MCSP/FLMV bridge. Historical /341 FAIL and /386 RESTRICTED unchanged. **P versus NP OPEN.**
+
+**PRE-FLIGHT:** directive FIRST/rechecked, Nov13 replacement, both authentic proof trackers and canonical main.tex via full Git blob, AGENTS/CODEX/skill, latest issue #3, peer handoffs, original TMR-3/034 report/source/matrix/raw, lead Lipschitz falsifiers and primary model background. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No main.tex or schedules modified.
+
+**NEXT/PEER:** TMR-3 audit deterministic selector and exact optimal cost; TMR-4 independently check full opcode table/SCC and exact dual solver; TMR-2 seek affine-key cache shortcut; TMR-1 qualify SAT-family and both-label terminal model. Next TMR-5 attack the first genuinely SAT-relevant tariff row with sharing/recomputation and zero-cost paths.
+
+END_OF_HANDOFF::TMR5::031::2026-11-14_1947_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 18:50 PST | CHARGED NETWORK ORACLE WORK-DEPTH AUDIT030
 
 **NETWORK051 PROVED/RESTRICTED (independent TMR-2/TMR-3 audit OPEN):** Independently checked TMR-4/034's global zero-vs-singleton oracle coupling. For any disjoint-output-class constructor/network, on zero source E[global distinct bit queries]>= (1-2delta)2^v. If source-capable processor count at tick t is k(t), sum of total source reads <=sum_t k(t), and E[K_run T_run]>=(1-2delta)2^v for peak K_run. With a deterministic cap K(v), E[T]>= (1-2delta)2^v/K(v). This is **evaluation-oracle-only**; proper strict 3CNF unique-witness versus UNSAT pairs of equal L=Theta(v log v) are distinguished by O(L) source syntax, so unrestricted SAT implication FALSIFIED/RETIRED. TMR-4/034's sharp query coefficient was already the r=1 case of TMR-2/032 exact minimax: new work is disjoint-output application and parallel-depth charge, NOT a novel black-box minimax theorem. No P vs NP separation.
