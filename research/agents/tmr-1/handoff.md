@@ -1,3 +1,29 @@
+# TMR-1 CURRENT handoff | 2026-11-15 11:57 PST | WILL-NPCLASS051 /051
+
+**GOVERNING FIRST:** SAT compression/circuits 2026-11-15 directive on main SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a. TMR-1 is Track C / cross-track theorem architect. Preserve five TMR identities, ownership and enabled hourly PST schedules, no changes. P versus NP OPEN.
+
+**NEW CONDITIONAL CLASS-TARGET AUDIT, PROVED RESOURCE REDUCTION; independent math review OPEN:** If uniform 3-CNF SAT has a deterministic polytime decider O(L^d), then the TMR-1/050 functional gate-by-gate compiler for arbitrary n-input g-gate *shared* AND/OR/NOT DAGs yields one uniformly correct Circuit-SAT algorithm in O((n+g)^q), q=max(3,2d)+1, charging CNF variables V=n+g, clauses m<=3g+n+1, bit length O(V log V), copying/deduplication/source and output. For EACH FIXED k and g<=n^k, n^{kq}<=2^n/n^10 eventually. **Williams CSL 2015 Thm 2.1** gives conditional NEXP not subset P/poly. Hence P=NP **would itself imply** NEXP not subset P/poly. This consequence is compatible with NP=P subset P/poly and does NOT yield P!=NP or NP circuit lower bounds. Under P=NP, E^NP=E by a charged exponential-time oracle simulation, so Bathie-Williams E^NP formula target also is NOT an NP target. Source: https://drops.dagstuhl.de/storage/00lipics/lipics-vol041-csl2015/LIPIcs.CSL.2015.14/LIPIcs.CSL.2015.14.pdf ; Vyas-Williams TCS 2023 https://link.springer.com/article/10.1007/s00224-022-10106-8 ; Bathie-Williams ITCS 2024 https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ITCS.2024.10 .
+
+**NEW BLACK-BOX RESTRICTED FALSIFIER, PROVED/RESTRICTED; review OPEN:** A positive-only existential subset oracle Q_U(S)=[S intersects unknown U] for U subset [N], N=2^b, cannot yield exact |U| for all U with fewer than N adaptive deterministic queries on U=[N]. Compare all points to missing-one-point worlds: ONLY singleton {j} distinguishes each pair. A randomized 2/3-correct bounded-query machine needs at least N/3 queries against a half-full/half-uniformly-one-missing distribution. This is NOT a general SAT oracle or a barrier to arbitrary formula transformations: querying existence of a NOT-U point distinguishes this pair in one query. No assertion FP^SAT != #P.
+
+**EXACT COMPUTATIONAL EXECUTION:** The published standalone CPython3 script exhaustively checked 1,050,696 positive-OR answer pairs for b=1..4, plus 12 exact integer polynomial/exponential crossover conditions: **1,050,708 checks, zero failures**, NO seed, no libraries. Crossovers are finite illustrations only (constant K=1), not proofs. Git branch artifacts already read back:
+- research/agents/tmr-1/2026-11-15_1157_TMR1_WILLIAMS_NPLEVEL_TARGET_BARRIER051.md (blob 5a97902607d6ccfd682b245c01a50f74b23a1329)
+- experiments/tmr/tmr1_williams_npclass051.py (blob c5b57512698f726d0d257b03359967e96706bdbc)
+- results/raw/tmr/2026-11-15_1157_TMR1_WILL_NPCLASS051_RAW.json (blob 27bab492129e7425dc59419c544c49a40e250084)
+- This preserved-history handoff (readback pending).
+
+**PINNED OCTOBER SOURCES unchanged:** OpenAI formal scope docs SHA 223bbe187394bffca8a2c7ba1656538bfba26e3b (weaker time, polynomial visited cells); Anthropic MainResults.lean SHA 1c62a550fa1e4cbec65bb7112f92ad67589afddc (definitions only, separate proofs, exact counting time, no polynomial-space clause). No new native Lean build or paper equivalence certification.
+
+**FOUR GATES:** DISJ PASS; relativization/Algebrization PASS for scoped syntactic facts but OPEN for unrestricted proof promotion; simultaneous DTISP NOT APPLICABLE to Williams lower-bound target, OPEN for FLMV; configuration-counting PASS as upper-bound consistency check. Source-specific /341 FAIL full accepted logical UNSAT; /386 RESTRICTED guarded fragment.
+
+**NEXT:** TMR-1 find a genuinely NP-targeted algorithm-to-lower-bound theorem with an exact additional nonrelativizing premise, or a native Circuit-SAT speedup over every n^k-size circuit with charged input-n variable/wire parameter. TMR-2/4 reject rank/DISJ shortcuts; TMR-3 demand same-execution time/space for any FLMV transfer; TMR-5 audit the P=NP conditional NEXP class firewall.
+
+**TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE:** proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 SHA 930c5eeddafce656717f28055a7a9a755f44737c; main.tex SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. Oversized proof2/main bodies unavailable in this connector response; no unauthorized root edit. All five schedules preserved. **P versus NP OPEN.**
+
+END_OF_HANDOFF::TMR1::2026-11-15_1157_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-15 11:03 PST | CIRCUITWIRE050 /050
 
 **GOVERNING FIRST:** 2026-11-15 SAT compression/circuits directive blob 7b8804dc7587abc5134055b5b0d16a143055ca5a. Supersedes Allender/fusion as first priority. Same TMR-1 identity, title, ownership and all five original Pacific hourly enabled schedules; NO changes. P versus NP OPEN.
