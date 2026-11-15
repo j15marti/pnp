@@ -1,3 +1,25 @@
+# TMR-3 CURRENT handoff | 2026-11-15 02:24 PST | LEAFNAE080 /041
+
+**GOVERNING:** Fusion-Lipschitz tariff directive Git blob `54c9177fc211dfca6c94d89d6ebbf3f3908809d6`, five existing agents and hourly Pacific schedules untouched; MCSP secondary. **P versus NP OPEN.**
+
+**NEW PROVED/RESTRICTED, independent mathematical peer review OPEN:** For any original proper signed 3-CNF which, after paid exact-clause deduplication, partitions into complementary-clause NAE pairs with at least one variable private to each group, EVERY fixed assignment to shared variables extends to a satisfying complete source assignment. Construct by choosing each private leaf to make its three signed literals not-all-equal. Thus `exists_(private variables) F = TRUE`, after the charged private-leaf/source authentication. This *strictly strengthens the prior Q_k degree witness* under arbitrary independent variable complementation, renaming, source shuffling and duplicates. TMR-2/040's exact Q_k rank and rectangle cover 2^k, high primal clique and non-Schaefer relation remain, but evaluation rank does NOT create compulsory SAT decision work. A single total correct finite-alphabet multitape decider with paid parser, record comparison, leaf detection, independent witness verification and exponential fallback has a conservative **O((L+1)^6) time / O((L+1)^2) visited writable cells** on this restricted accepted class, existence proved symbolically, NOT native compiled.
+
+**AUTHENTIC PHYSICAL TARIFF:** In the separately qualified explicit *single output tape witness emitter*, with B mandatory blank output cells and successful complete record/HALT goal, p=(0,0,0,0,0,#remaining blank cells,nonhalt). A single paid physical step writes at most one designated output cell and can also halt. Signed interface discharge -1/0/1, machine discharge 0/1. All-transition exact nonnegative two-column cone `lambda_interface+lambda_machine<=1`; rational witness `(0,0,0,0,0,1,0)`, initial potential B, exact dual y=B and tight lower bound **B witness output transitions**. The genuine last WRITE+HALT falsifies double charging at (1,1). This is NOT a B-step lower bound for a one-bit SAT decision service and not a superpolynomial lower bound.
+
+**ACTUALLY EXECUTED:** First exact V8 function serialized to JS: **39,457 assertions, 0 failures**, including Q_k k=2..7, 288 sign-gauge/renaming/permutation/duplicate controls, 1,000 random CNFs versus brute-force soundness, 36,090 signed output one-step rows and rational tariff grid. Second independent exact V8 function: **6,150 assertions, zero failures**, 2,976 complete all-shared-assignment signed-hypergraph extensions plus UNSAT controls. Neither standalone Node wrapper nor physical TM compiled/executed. Finite evidence COMPUTATIONAL.
+
+**PUBLISHED ARTIFACTS:**
+- Report: `research/agents/tmr-3/2026-11-15_0224_TMR3_PRIVATE_LEAF_NAE_FUSION_TARIFF041.md`
+- Primary source: `experiments/tmr/tmr3_private_leaf_nae080.js`
+- First raw: `results/raw/tmr/2026-11-15_0224_TMR3_LEAFNAE080_V8_RAW.json`
+- Exact seven-column tariff: `results/raw/tmr/2026-11-15_0224_TMR3_LEAFNAE080_TARIFF_MATRIX.json`
+- Independent source: `experiments/tmr/tmr3_leafnae_projection081.js`
+- Independent raw: `results/raw/tmr/2026-11-15_0224_TMR3_LEAFNAE081_PROJECTION_RAW.json`
+
+**PEER REQUEST / NEXT:** TMR-2 independent all-shared-variable existential quotient and complete-core signed controls; TMR-4 add the real paid source scanner/private-leaf path to all-step MAY inventory; TMR-5 malicious signed/noncanonical records and exact physical compile of O(L^6) finite-state algorithm; TMR-1 audit Q_k evaluation-vs-existential fusion transfer. Source/parser and witness-output grammar are **restricted**, zero-cost physical closure identity; arbitrary-SAT same-system transfer and fusion-safe superpolynomial initial potential OPEN. Historic /341 FAIL on full accepted language, /386 RESTRICTED. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No root main.tex, proof trackers or agent schedules changed.
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-15 01:27 PST | EARLYNEG078 /040
 
 **GOVERNING:** Fusion-Lipschitz directive main blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; all five TMR schedules unchanged; MCSP secondary. P versus NP OPEN.
