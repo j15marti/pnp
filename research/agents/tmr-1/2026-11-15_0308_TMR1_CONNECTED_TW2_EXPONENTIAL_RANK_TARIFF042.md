@@ -37,11 +37,15 @@ $$
 
 This is a **proper 3-CNF with 6k+2 ternary clauses**. All variables occur positively and negatively. The primal graph is connected: `Z_i` forms a triangle between consecutive `X` vertices; `Z_0` joins the `A,B,C` triangle; each `Y_i,U_i,V_i` attaches by triangles. Its exact primal treewidth is **2**. A width-two decomposition contains bags `{A,B,C}`, `{A,X_1,Z_0}`, `{X_i,X_(i+1),Z_i}`, `{X_i,Y_i,U_i}`, `{X_i,Y_i,V_i}`; connect the bridge bags as a path, attach each `U_i` bag to a bridge bag containing `X_i`, attach its `V_i` bag to the `U_i` bag, and attach the core bag at `A`. Every clause lies within a bag; each variable's bags form a connected subtree. A ternary clause forces the lower bound treewidth 2.
 
-Assign canonical consecutive positive integer variable IDs and write the clauses in this displayed fixed order, with a standard self-delimiting header and binary signed identifiers. There are `Theta(k)` clauses/occurrences and indices of `Theta(log(k+1))` bits, giving actual encoded bit length
+Assign canonical consecutive positive integer variable IDs and write the clauses in the displayed fixed order. To fix one **exact binary source grammar**, let `n=5k+3`, `m=6k+2`, `b=ceil(log_2(n+1))`. Encode the width `b` as unary `1^b 0`, then the clause count `m` as unary `1^m 0`; each of the exactly `3m` literals is one polarity bit (`1` positive, `0` negative) followed by its `b`-bit big-endian positive variable ID. Append exactly one terminal `0` and reject missing, surplus, out-of-range or duplicate-within-clause symbols. In this fixed grammar the **exact encoded bit length** is
 
-$$
-L_k=\Theta(k\log(k+2)).
-$$
+$
+L_k=(b+1)+(m+1)+3m(b+1)+1
+    =b+m+3m(b+1)+3
+    =\Theta(k\log(k+2)).
+$
+
+The string of clauses is compared to the canonical sequence; merely permuted, renamed or re-signed formulas go to the full fallback unless separately recognized. The unary metadata and terminal bit are charged, not padding used to infer hardness.
 
 No padding or nonuniform advice is used. Source membership is recognizable by a *single* fixed finite deterministic parser in polynomial time in actual input length, with malformed, nonmatching and overlong inputs sent to general SAT fallback.
 
