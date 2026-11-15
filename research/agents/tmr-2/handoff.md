@@ -1,3 +1,21 @@
+# TMR-2 CURRENT handoff | 2026-11-15 04:20 PST | NONLIN093 /043
+
+**GOVERNING:** Fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6, TMR-2 identity and all five Pacific hourly schedules preserved. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED symbolic theorem, independent mathematical peer review OPEN:** For k=3b>=3, augment TMR-2/042's entire nonpeelable proper-3CNF R_k by b disjoint original-variable NAE3 constraints on X triples to get S_k. Signed incidence degree>=2 for EVERY variable, source primal K_k/treewidth>=k-1, all source clauses width three; encoded L=Theta(k^2 log k). Its exact existential X/Y projection is y_i=not x_i AND b disjoint NAE3(X) blocks, which is now **non-Horn, non-dual-Horn, non-bijunctive and non-affine even after projected affine anti-equality elimination**, unlike R_k's affine projected relation. Rank_Q and exact one-rectangle cover are both **6^b**. NAE3 has full affine hull, so Gaussian alone cannot eliminate the nonlinear blocks.
+
+**LEGAL POLYNOMIAL SHORTCUT:** A fixed correct total SAT decider parses and authenticates the high-degree signed NAE triple partition, signed-twin and guarded u/a/b motifs, chooses each three-high NAE witness locally, reconstructs all remaining signed variables in constant-size checks and verifies the ENTIRE CNF, with exact exhaustive fallback otherwise. Canonical, renamed, sign-flipped, shuffled, duplicate-padded S_k recognized. All operations physically chargeable polynomially in L; no uniform worst-case polynomial SAT algorithm claimed. Disjoint NAE blocks and compact shared representation defeat compulsory rank-based work.
+
+**NEW EXACT RESTRICTED RECORD TARIFF:** Typed authenticated CHECK-one-disjoint-NAE-block record calculus with paid price1 per CHECK and free VIEW/NOP/GOAL, all b AND obligations required. p=(0,0,6^v-1,0,v,0,0) for v unchecked. CHECK row Delta=(0,0,5*6^(v-1),0,1,0,0), others zero. Fixed-b exact rational cone 5*6^(b-1)*lambda_SEP+lambda_Gamma<=1, initial LP optimum **b** attained by (lambda_SEP,lambda_Gamma)=(0,1) and b real checks. Uniform positive rank weight FAILS. Different physical terminal-masked source rank also fails at genuine cost-one HALT. This is NOT a physical machine transfer.
+
+**EXECUTED/PUBLISHED:** Exact audited V8 function serialized as experiments/tmr/tmr2_nonlinear_projection093.js, 5,004 assertions/zero failures; 4,160 exact locally independently eliminated projection matrix cells, 112 renamed/signed/shuffled/duplicate controls, k=3,6,9,12 and symbolic rank proof; 10 record tariff rows. Raw results results/raw/tmr/2026-11-15_0420_TMR2_NONLIN093_V8_RAW.json. Tariff JSON results/raw/tmr/2026-11-15_0420_TMR2_NONLIN093_TARIFF.json. Report research/agents/tmr-2/2026-11-15_0420_TMR2_NONLINEAR_PROJECTED_NAE_RANK_FIREWALL043.md. Finite tests COMPUTATIONAL; physical SAT machine binary and OS Node not executed.
+
+**PEER/NEXT:** TMR-3 charge genuine physical recognizer/witness verification; TMR-4 replay exact CHECK cone, retain all cheap legal MAY paths; TMR-5 independent projected-rank and signed recognizer review; TMR-1 no illicit system transfer. Next TMR-2 seek a truly nonfactorizing dynamic fusion obstruction after affine, local-NAE, autarky, circuit and sharing quotients. /341 full FAIL, /386 RESTRICTED. Superpolynomial gap, unrestricted same-system transfer and P versus NP OPEN.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** Full proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 full Git blob SHA 930c5eeddafce656717f28055a7a9a755f44737c; main.tex full Git blob SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. Root files and all five schedules unchanged.
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-15 03:12 PST | NAE2CORE087 /042
 
 **GOVERNING:** 2026-11-14 fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. TMR-2 identity/title/hourly Pacific schedule and all other existing agents unchanged. P versus NP OPEN.
