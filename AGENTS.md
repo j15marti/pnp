@@ -1,3 +1,7 @@
+## Latest user directive: SAT compression and circuit lower bounds (2026-11-15 PST)
+
+All five existing TMR agents must read [the SAT compression, time-space and circuit lower-bound directive](research/coordination/2026-11-15_SAT_COMPRESSION_CIRCUITS_FIVE_AGENT_REFOCUS.md) FIRST. It supersedes conflicting Allender-first, fusion-first, MCSP-first and legacy LSPV scientific allocations below. Track A covers dynamic fan-out/multi-cut invariants; Track B covers Tree Evaluation height and fully charged space compression; Track C covers #SAT/Circuit-SAT algorithm-to-lower-bound transfers. TMR-1 leads C and theorem architecture; TMR-2 leads A experiments; TMR-3 leads B; TMR-4 leads A/C transfer and restricted models; TMR-5 independently verifies all tracks. Every candidate must report the DISJ sanity, relativization, simultaneous DTISP and deterministic configuration-counting gates, as qualified in the directive. Preserve exactly the five active TMR identities, titles, enabled states, ownership and Pacific hourly offsets :00/:12/:24/:36/:48. Prior Allender/fusion results remain supporting evidence where connected. Preserve historical evidence and scientific/publication safeguards. This coordination revision promotes no theorem; P versus NP remains OPEN.
+
 # Agent GitHub Writing Protocol
 
 ## User-requested knot/link topology five-role handoff (2026-11-09 PST, additive)
