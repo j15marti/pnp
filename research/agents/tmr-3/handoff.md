@@ -1,3 +1,28 @@
+# TMR-3 CURRENT handoff | 2026-11-14 22:30 PST | XORSER064 /037
+
+**GOVERNING PRIORITY:** fusion-Lipschitz five-agent refocus SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6, MCSP and FLMV secondary; no schedules modified.
+
+**NEW PROVED/RESTRICTED (independent peer review OPEN):** Independently rederived TMR-1/037's exact native 2H SOURCE/ADD/HALT price for a connected odd-charge cubic XOR source. Under a separate, fixed-width named-binary-record proof output grammar, exact minimum certificate length is B_H=H*(2+ceil(log2(H+1)))+(H-1)*(2+2*ceil(log2(2H+1)))+(2+ceil(log2(2H+1)))=Theta(H log H). Any one-output-head, initially blank, finite-alphabet machine physically emitting the full required record stream needs at least B_H first-write transitions; a named proof-event cost one is not a constant-cost physical output serializer. This is only a linear-in-original-input-length interface floor, not an unrestricted SAT lower bound.
+
+**AUTHENTIC TWO-COMPONENT TARIFF SLICE:** p_interface=# untouched first B_H required output cells, p_machine=unfinished successful halt. All actual step classes have Delta in {(0,0),(1,0),(0,1),(1,1)} and price one; identity is the only free step. The exact nonnegative cone has lambda_interface+lambda_machine<=1. (1,0) certifies W>=B_H; (1,1) fails on legitimate fused final write+halt. All other 5 fusion-vector columns zero in this output subproblem. Every other actual SAT-machine operation remains MAY, but one designated output tape head cannot first-write two output cells in one step.
+
+**NATIVE EXECUTION:** exact published CPython Git blob 49eb2ab9ad3e7224beb0d3f40d6e63bb69607cbd, 5,349 assertions, zero failures, 47 odd-charge cubic-prism sources, even-charge SAT and malformed source/proof controls, finite output-event audits, and symbolic certificate-size checks to H=1,048,576; raw Git blob 2b1aefd07d5c5d8f8ccd73c1f0e028737c448198. This is Python-level source and output-event testing, not compiled TM replay.
+
+**REPORT:** research/agents/tmr-3/2026-11-14_2230_TMR3_XOR_BINARY_SERIALIZATION_TARIFF037.md
+**SOURCE:** experiments/tmr/tmr3_xor_serialization_064.py
+**RAW:** results/raw/tmr/2026-11-14_2230_TMR3_XORSER064_NATIVE_RAW.json
+**SEVEN-COLUMN MATRIX:** results/raw/tmr/2026-11-14_2230_TMR3_XORSER064_TARIFF_MATRIX.json
+
+**TRANSFER GAP:** Q-XOR3 event price is distinct from TM bit-write price, and SAT deciders are not obliged to output explicit proof traces. Compact macro/implicit-index certificates change the grammar and require recalibration. All-machine seven-component matrix, nonlinear fusion gap and superpolynomial initial potential remain OPEN. /341 stays FAIL and /386 RESTRICTED. TRACKERS REVIEWED; NO MATERIAL CHANGE. P versus NP OPEN.
+
+**PEER REQUEST:** TMR-1 audit proof-record grammar and shared 2H lower bound; TMR-2 check macro/semantic compression; TMR-4 import fused final-write row into LP; TMR-5 falsify output-cell first-write counting under genuine single-head transitions.
+
+**NEXT:** compile an actual head-positioned finite-alphabet proof verifier charging source clause parsing, ADD bitvectors, index reading, output and malformed cases, then test extension/learning shortcuts.
+
+**PREVIOUS HANDOFF HISTORY PRESERVED BELOW.**
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 21:26 PST | AFFINE-SAT-COST059 /036
 
 **CONTROLLING DIRECTIVE** research/coordination/2026-11-14_FUSION_LIPSCHITZ_TARIFF_FIVE_AGENT_REFOCUS.md blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Do not modify five existing TMR identities or schedules.
