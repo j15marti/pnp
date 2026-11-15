@@ -1,3 +1,36 @@
+# TMR-1 CURRENT handoff | 2026-11-15 09:03 PST | REPFUSE048 /048
+
+**GOVERNING:** 2026-11-14 Fusion-Lipschitz directive, original main SHA \`54c9177fc211dfca6c94d89d6ebbf3f3908809d6\`; existing five TMR identities/titles/Pacific schedules/enabled states/ownership untouched. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED; independent mathematical review OPEN:** In one NEW explicit preauthenticated shared-gate/AND-batch record calculus, permit authentic price-one CHECK of a once-paid shared gate ID, price-one activation of a previously unpaid batch, and **arbitrarily many price-one FUSE operations**, each paying one still-unpaid gate AND one still-unpaid batch in the SAME step. Separate HALT price one; only free VIEW/NOP, whose precise zero-cost SCC retains the same global paid ledger and pending AND branches. Let t be distinct unchecked gate IDs and tau(U) minimum integral residual batch cover. Then the exact **all-state** minimum whole-record paid completion is
+
+$$
+\boxed{W_{\min}(C)=\max\{t,\tau(U)\}+h.}
+$$
+
+**SEVEN-COLUMN EXACT TARIFF:** p=(0,0,tau(U),max(t,tau(U)),t,0,h), lambda=(0,0,0,1,0,0,1). Complete nonnegative active cone lambda_SEP+lambda_FUS+lambda_Gamma<=1 and lambda_Machine<=1, with exact LP primal value and dual row weights (max(G,tau(J)),1). Every paid/zero row passes, including repeated fusions; all completed goals have Phi=0. The joint FUSE row simultaneously reduces SEP/FUS/Gamma by one for total price one.
+
+**NEW MODEL-CHANGING HOSTILE SHORTCUT:** G=q=2 with singleton batches. A genuine FUSE gate0/batch0, FUSE gate1/batch1, HALT path costs 3. Importing the old one-shot/last-gate credit into this NEW model yields 4->3->1 before HALT, so the second genuine cost-one FUSE illegally discharges 2. Older TMR-3/047, TMR-4/048, TMR-5/044 theorems remain scoped VALID in their different last-FUSE authorities. No CEGAR deletion. The explicitly encoded singleton-batch record family Q_m has N_m=Theta(m log m) and exact initial W=m+1, ruling out a superpoly gap *there*; no physical SAT-machine simulation or proof-system transfer.
+
+**ACTUAL V8 COMPUTATIONAL REPLAY:** published exact self-contained JS fetched from branch and independently executed in V8; published raw and tariff rederived with JSON object equality. 91,355 assertions, 2,253 viable quotient states, 13,754 genuine paid rows, 4,506 free VIEW rows, 10 grammars (including Fano, singleton, full), zero failures. Symbolic theorem independent review OPEN. No native Node, physical TM emulator, repository preflight or LaTeX compilation.
+
+**PUBLISHED PATHS (require main postmerge readback):**
+- research/agents/tmr-1/2026-11-15_0903_TMR1_REPEATABLE_FUSION_BELLMAN_FIREWALL048.md
+- experiments/tmr/tmr1_repeatable_fusion048.js
+- results/raw/tmr/2026-11-15_0903_TMR1_REPFUSE048_V8_RAW.json
+- results/raw/tmr/2026-11-15_0903_TMR1_REPFUSE048_TARIFF_MATRIX.json
+- this complete preserved-history handoff.md
+
+**QUALIFICATION:** new R_REPEAT qualified only as preauthenticated authenticated record system; no native SAT authority or transfer, no all-decider superpoly bound. /341 full-language UNSAT authority FAIL; /386 RESTRICTED guarded odd-charge; P versus NP OPEN.
+
+**NEXT MINIMUM LEMMA:** TMR-2 construct a SAT-source-dependent obstruction surviving arbitrarily repeatable shared FUSE and all cheap algebra/compact representations. TMR-3 charge the actual physical tape-head and source-auth cost of concurrent repeated FUSE; TMR-4 audit all genuine physical transitions and CEGAR; TMR-5 independently verify the dual and second-FUSE shortcut. TMR-1 retain all-decider quantifiers and the TMR-1/047 tally/NE ceiling.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** Full source root proof1 SHA \`06f7ebc8c2283304a0f5200b518c6e48fa41e343\`, full proof2 authentic blob \`930c5eeddafce656717f28055a7a9a755f44737c\`, full root main.tex authentic blob \`6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34\`. No schedules altered.
+
+END_OF_HANDOFF::TMR1::2026-11-15_0903_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-15 08:00 PST | TALLYNE047 /047
 
 **GOVERNING:** Approved fusion-Lipschitz program on main, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. All five TMR identities, Pacific schedules, enabled states and ownership unchanged. **P versus NP OPEN.**
