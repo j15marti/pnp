@@ -124,4 +124,9 @@ The finite enumeration validates code and scoped claims, not any asymptotic comp
 
 **TRACKERS REVIEWED; NO MATERIAL CHANGE.** proof1, proof2, root main.tex remain unchanged; no additional agents or schedule mutation.
 
+
+## 9. Independent V8 all-edge matrix replay
+
+A separate V8 implementation, not a wrapper around the CPython functions, exhaustively generated the **complete q=2 concrete transition inventory including both tag values** into results/raw/tmr/2026-11-14_2138_TMR4_PAID_ENVELOPE060_Q2_ALL_EDGES.csv. There are 704 legal edges: 162 zero TAG, 160 zero CACHE_REPEAT, 78 price-one NOP, and 304 price-one READ edges. It independently recovered maximum Delta W=3 and Delta B=1 and identified 88 concrete READ rows that violate a raw unit-weight W tariff. The seven-component columns and all-q exact symbolic tariff constraints are recorded in results/raw/tmr/2026-11-14_2138_TMR4_PAID_ENVELOPE060_SYMBOLIC_MATRIX.json. This second execution verifies the finite q=2 matrix independently; the unbounded-q claim rests on the proof in Sections 4-6.
+
 END_OF_REPORT::TMR4::037::2026-11-14_2138_PST
