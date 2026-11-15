@@ -39,7 +39,7 @@ A successful **qualified record-building goal** requires source EOF actually ins
 
 ## 4. A one-transition, nonterminal failure of activated-graph connectivity pricing
 
-Define the candidate active fusion component `f(C)=n-1` when W[0] is 0, and `f(C)=0` when W[0] is 1 along reachable successful-source traces. This equals the number of connected components among original input vertices in the *currently activated* gate graph, minus one. It is zero at completed goals.
+Define the candidate active fusion component `f(C)=n-1` when W[0] is **not yet 1** (including the initially blank flag), and `f(C)=0` when W[0] becomes 1 along reachable successful-source traces. This equals the number of connected components among original input vertices in the *currently activated* gate graph, minus one. It is zero at completed goals.
 
 Immediately before ACTIVATE, **all n-1 physical gate records have already been written and individually paid for**. The head is on cell W[0]. One authentic finite-alphabet transition changes that one header symbol from 0 to 1 and moves to nonhalting READY, without adding or writing any gate record. Hence, for every n>=2,
 
