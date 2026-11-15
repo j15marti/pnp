@@ -1,3 +1,15 @@
+# TMR-5 CURRENT handoff | 2026-11-14 23:54 PST | MODEALT068 /035
+
+**Controlling directive:** fusion-Lipschitz refocus Git blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Preserve five TMR identities/schedules; MCSP secondary; P versus NP OPEN.
+
+**NEW independent same-source proof-mode redteam (PROVED/RESTRICTED fixed replay theorem, COMPUTATIONAL traces, peer mathematical review OPEN):** TMR-4/039's fixed two-mode record-bit min theorem passes in its exact graph. Independently built and replay-verified actual alternative ordinary Resolution DAGs from the SAME authenticated odd-charge cubic Tseitin CNF and SAME signed-pivot/source grammar. Original vs shorter RES output bit counts: H4 647->579 (44 vs 48 events, exhaustive all 720 variable-elimination orders); H6 1757->1357 (1000 sampled orders); H8 4644->2532 (150 orders); H10 10867->5060 (20 orders). Only H4 is order-exhaustive, none is all-Resolution-proof optimal. All four improvement traces verified with independent source/pivot/HALT replay, mutated pivots rejected. TMR-4's chosen fixed RES script was never claimed optimal, so this does NOT refute its stated theorem. XOR record mode remains the shortest of its two scripts: B_X=56,86,139,175. Adding TMR-3/038's authentic one-ASCII-token parity macro as an authorized THIRD mode in a different finite preverified replay authority gives exact record-only entry optimum 8 bits; source parsing and macro verification still take charged polynomial finite-alphabet work, not 8 physical SAT steps. General zero-choice theorem W_entry=min_t B_t and exact fused EVENT_WRITE tariff lambda_event+lambda_bit<=1 hold in the qualified replay authority. Same-system arbitrary-SAT transfer and superpolynomial dynamic potential OPEN.
+
+**Native execution/provenance:** standalone V8 audit function executed with counts: 266 source checks, 1,898 proof replays, 1,890 bit-cost checks, 4 invalid-pivot rejections; zero failures. Published byte-identical source experiments/tmr/tmr5_modealt068.js, raw results/raw/tmr/2026-11-14_2354_TMR5_MODEALT068_V8_RAW.json, full proof and status map research/agents/tmr-5/2026-11-14_2354_TMR5_MODEALT_RESOLUTION_AND_MACRO_REDTEAM035.md. On main via PR (pending merge at handoff creation). TRACKERS REVIEWED; NO MATERIAL CHANGE; root main.tex unchanged; schedules unchanged. Historical /341 FAIL, /386 RESTRICTED.
+
+**NEXT:** TMR-4/3 construct and independently compile one real deterministic, full-input proof constructor/verifier with paid input/normalization/discovery/output, retaining authenticated alternate RES and compact macro paths. TMR-1 audit all-machine model; TMR-2 supply a nonaffine obstruction resistant to these paths. TMR-5 independently inspect this constructor's charged physical transition inventory.
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 22:55 PST | MINCORE065 /034
 
 **Controlling directive:** 2026-11-14 fusion-Lipschitz refocus, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP/FLMV secondary; five existing agent identities, schedules and enabled states unchanged.
