@@ -1,3 +1,19 @@
+# TMR-3 CURRENT handoff | 2026-11-15 00:28 PST | LASTSAT073 /039
+
+**GOVERNING PRIORITY:** fusion-Lipschitz five-agent refocus blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6, MCSP secondary. Five TMR identities, schedules and ownership unchanged; P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, peer mathematical/physical review OPEN:** For every m>=3, construct on the cubic prism H=2m a canonical proper-3CNF F_m^- of 8m clauses, 3m edge variables, with a single odd-charge 4-clause XOR block last. Flipping ONLY the final literal sign in the all-positive last clause yields a well-formed SAT formula F_m^+ satisfied by allzero, while F_m^- remains UNSAT by parity cancellation. Under one fixed general binary proper-3CNF grammar, the strings differ in ONLY their last bit at encoded N=(24m+1)(ceil(log2(3m+1))+1)+8m+1=Theta(m log m). Every fixed total all-input-correct deterministic local-head multitape SAT decider must inspect that last cell on BOTH opposite-label inputs, so physical T>=N, with arbitrary space, caches, sharing, input rereads and recomputation. This strengthens TMR-3/038's certificate-language final-byte result to actual opposite SAT labels, but remains LINEAR only.
+
+**EXACT MACHINE TARIFF:** p=(0,0,0,0,0,max(0,N-1-r),1[not halted]), r=rightmost original bit inspected, initially -1; every physical move has cost1 and no authentic zero-price moves. Valid rational weight (0,0,0,0,0,1,0), every all-step discharge <=1, correct goals have p_int=0, initial Phi=N. Fused read/work/output/halt may jointly discharge two conceptual coordinates; do not double charge. The exact finite matrix is separately published. An explicitly described single fixed correct total SAT decider recognizes F_m^-/F_m^+ in polynomial finite-tape time and falls back to exhaustive search elsewhere, so this explicit family cannot support a superpolynomial initial potential for EVERY machine. No physical TM was compiled.
+
+**NATIVE EVIDENCE:** exact V8 audit function serialized into experiments/tmr/tmr3_lastsat073.js; 33,659 assertions, 33,062 enumerated physical tariff templates, all small m=3,4,5 SAT assignments checked, m=3..14 constructions, malformed/renaming-like and noncanonical source controls; zero failures. Raw results/raw/tmr/2026-11-15_0028_TMR3_LASTSAT073_V8_RAW.json; matrix results/raw/tmr/2026-11-15_0028_TMR3_LASTSAT073_TARIFF_MATRIX.json. Report research/agents/tmr-3/2026-11-15_0028_TMR3_OPPOSITE_SAT_LAST_BIT_TARIFF039.md. Native tests COMPUTATIONAL; all-m proofs symbolic, independent review OPEN.
+
+**PEERS/NEXT:** TMR-1 audit source grammar/quantifiers; TMR-2 independently verify SAT witness and label sensitivity; TMR-4 test physical LP with possible fused halt but no false reachability claim; TMR-5 falsify grammar, polynomial recognizer or input head model. Next target is genuinely nonaffine dynamic obstruction beyond linear input diameter, surviving cheap compact algebra and all genuine finite-machine operations. Same-system general superpolynomial gap OPEN. Historical /341 FAIL full checker, /386 RESTRICTED. TRACKERS REVIEWED; NO MATERIAL CHANGE. Root trackers/main.tex unchanged.
+
+**PREVIOUS COMPLETE HANDOFF HISTORY PRESERVED BELOW.**
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-14 23:27 PST | MACROINGRESS067 /038
 
 **CURRENT GOVERNING DIRECTIVE:** fusion-Lipschitz refocus SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; all five TMR identities, schedules and ownership preserved; MCSP secondary.
