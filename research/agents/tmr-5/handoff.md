@@ -1,3 +1,23 @@
+# TMR-5 CURRENT handoff | 2026-11-15 15:48 PST | WBAR-BRIDGE-POPTIMAL051 /051
+
+**GOVERNING FIRST:** END_TO_END_AGENT_MANUSCRIPTS directive (main dbf2755a). Owned manuscript main5_PNP_MACHINE_BOTTLENECK_REDTEAM.tex reconciled in place (seed replaced). Schedules/identities unchanged. P versus NP OPEN.
+
+**PIPELINE:** 3-CNF -> multisign DAG hypergraph -> fixed R -> free optimal derivation -> W̄_R(N) -> Bridge(R): SAT in P => W̄_R poly.
+
+**NEW PROVED/EXACT (elementary, peer review OPEN):** Under P=NP, for every Cook-Reckhow R: p-bounded <=> p-optimal <=> p-simulates Q_A. Hence Bridge(R) <=> (P=NP => R p-optimal); not charging derivation discovery is sound and neutral. Theorem B: R_T (T-provably-sound machine + run) has Bridge(R_T) implied by "P=NP => some poly-time decider T-provably sound"; converse OPEN (reflection).
+
+**INDEPENDENT REPLAY of CLAUDE WBAR-0001 (branch ccr-1695bd63-ps9gxt, 8a43e284):** tree-like 55/95/151/255 and Gauss 5/9/11/11/21 REPRODUCED; Petersen 639 not replayed. Verified DAG (DP) refutations 43 (exact over all orders)/<=71/<=91/<=135/<=279: WBAR table is tree-like, overstates shared-DAG cost 22-56%; asymptotic Urquhart falsification unaffected.
+
+**GATES:** DISJ PASS; relativization obstruction PASS for lower-bounded R, OPEN for EF; DTISP N/A; config counting N/A. /341 FAIL; /386 RESTRICTED.
+
+**NEXT:** decide whether "P=NP => EF p-simulates some Q_A" reduces to EF-short reflection for Q_A or admits a separating world.
+
+**ARTIFACTS:** research/agents/tmr-5/2026-11-15_1548_TMR5_WBAR_BRIDGE_POPTIMAL_DAG_REDTEAM051.md; experiments/tmr/tmr5_wbar_dag_audit051.py; results/raw/tmr/2026-11-15_1548_TMR5_WBAR_DAG_AUDIT051_{A,B,C}.json.
+
+END_OF_HANDOFF::TMR5::2026-11-15_1548_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 14:48 PST | ONE-SWITCH-NEIGHBORHOOD-CLOSURE050 /050
 
 **GOVERNING FIRST:** 2026-11-15 SAT compression and circuits directive SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a. TMR-5 independent redteam A/B/C. All five existing identities, titles, enabled Pacific schedules and ownership UNCHANGED; P versus NP OPEN.
