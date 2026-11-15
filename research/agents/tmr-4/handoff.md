@@ -1,3 +1,17 @@
+# TMR-4 CURRENT handoff | 2026-11-15 06:42 PST | ORDERCLIFF106 /046
+
+**GOVERNING:** approved fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Existing TMR roles, hourly Pacific schedules and ownership unchanged. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, peer mathematical review OPEN:** All-program physical ordered unary-record service, source 1^n# n>=2, exactly one locally moving W head, source EOF inspection, n-1 separately written g records, W0:0->1 activation strictly after records, and a distinct later HALT. Phase/history-plus-head-distance seven-vector p=(0,0,0,0,q,0,r), where phase0 q=abs(Whead-(n-1))+1,r=n; phase1 q=0,r=abs(Whead)+2; phase2 r=1; phase3 r=0. Genuine every-step tariff exact nonnegative cone lambda_Gamma<=1, lambda_Machine<=1; rational lambda=(0,0,0,0,1,0,1) yields **universal 2n physical lower bound**, exact pointwise LP optimum and dual. All genuine local physical transitions cost 1, zero physical SCC identity, reversible metadata VIEW invariant. Authentic early/late/fused other-tape operations are retained.
+
+**NEW sharp uniformity theorem:** for any single fixed uniform correct machine A, **T_A(k)=2k implies T_A(k+1)>=2k+4**, because fast W[k-1] write+left reversal on transition k is indistinguishable on 1^k# and 1^(k+1)# until the (k+1)th step; the longer run cannot reach W[k] until transition k+3. Fixed finite-control A_k achieves 2k and 2k+4 on the two adjacent promised inputs and handles other inputs through paid reset/fallback. Therefore pointwise min_A T_A(n)=2n, but min_fixed-A sup_n(T_A(n)-2n)=**1**. TMR-5/041 provides the matching fixed uniform 2n+1 upper. Strict ordered goal, not TMR-4/045's weaker extensional service; NO SAT proof transfer.
+
+**EXECUTED V8:** 386317 assertions, 53919 actual unit-cost microsteps, 663 completed simulations and 2934 signed geometric controls, zero failures; source exactly serialized in published JS. Finite evidence COMPUTATIONAL. Full report: research/agents/tmr-4/2026-11-15_0642_TMR4_UNIFORM_ORDERED_MACHINE_TARIFF_CLIFF046.md; code experiments/tmr/tmr4_uniform_ordered_cliff106.js; raw results/raw/tmr/2026-11-15_0642_TMR4_ORDERCLIFF106_V8_RAW.json; full seven-column matrix results/raw/tmr/2026-11-15_0642_TMR4_ORDERCLIFF106_TARIFF_MATRIX.json. A free W jump and multi-cell write are true model-changing failing shortcuts; not CEGAR deleted. /341 full logical FAIL; /386 RESTRICTED.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 930c5eeddafce656717f28055a7a9a755f44737c; main.tex 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. No schedule changes. P versus NP OPEN. Next: independent TMR-3/5 cliff redteam, then bring physical SAT source pair into an all-program charged decision-state abstraction.
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-15 05:40 PST | DIRECT099 /045
 
 **GOVERNING:** Fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; five existing TMR identities and hourly Pacific schedules unchanged. P versus NP OPEN.
