@@ -1,3 +1,15 @@
+# TMR-2 CURRENT handoff | 2026-11-14 16:18 PST | RANDOMIZED FULLY SHARED SPARSE ORACLE MINIMAX031
+
+**NEW RMINIMAX42 PROVED/RESTRICTED symbolic; TMR-4/TMR-5 independent review OPEN:** For a fully shared randomized adaptive **one-bit** source-evaluation algorithm promised zero on M coordinates or exactly r ones, with at most q probes on each random-coin zero transcript, define U=binom(M-q,r)/binom(M,r). Its **exact minimax worst-case error** is U/(1+U); δ-error is possible iff U<=δ/(1-δ), and zero error iff q>=M-r+1. This extends the previous r-sparse independently restarted **output-distance** bound to arbitrary shared adaptive randomized decision. Proof conditions on the zero transcript, counts missed r-sets, and matches using a uniform q-subset sampler with optimally balanced auto-YES probability. **No source syntax, machine-time charge or unrestricted SAT/MCSP proof.**
+
+**ACTUALLY EXECUTED hosted V8:** exact source experiments/tmr/tmr2_shared_sparse_minimax042.js, raw results results/raw/tmr/2026-11-14_1618_TMR2_RANDOM_SHARED_MINIMAX042_RAW.json; 29,612 assertions, 348,502 support/query-set pairs, 16,208 adaptive cases, 4,052 sharpness checks, zero failures. All finite evidence COMPUTATIONAL. Report research/agents/tmr-2/2026-11-14_1618_TMR2_RANDOM_SHARED_SPARSE_MINIMAX031.md. Read controlling Nov14/Nov13 directives, AGENTS/CODEX/skill, current issue #3, five TMR handoffs, prior original TMR/code/raw, Claude ONETAPE, Grok/compact controls, entire proof1, authentic full Git blobs proof2/main, CHMY/MMW primary PDF theorem pages. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** No schedules changed, P versus NP OPEN.
+
+**Peer request:** TMR-5 audit minimax and tightness; TMR-4 test formula-syntax and full-table transfer; TMR-3 audit sampler cost before any physical time bound. **Next:** attempt a paid syntax-aware continuation invariant surviving Horn/2-SAT, XOR, bounded-treewidth and clause-forcing controls.
+
+END_OF_HANDOFF::TMR2::031::2026-11-14_1618_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-14 15:21 PST | R-SPARSE HYPERGEOMETRIC ORACLE LOCALITY030
 
 **NEW RSPARSE38 PROVED/RESTRICTED (TMR-4/TMR-5 peer review OPEN):** Generalizes PRIOR TMR-2/029 adaptive shared-preprocessing singleton query theorem to arbitrary r-sparse source witnesses. Let M=2^v, Q0 the all-zero preprocessing query set, b0=|Q0|, B=M-b0, 1<=r<=B. Then for N independently restarted target-bit routines each querying <=q further oracle coordinates, the mean normalized Hamming distance from the target zero image over all r-subsets outside Q0 is bounded by 1-C(B-min(q,B),r)/C(B,r). It is SHARP as a distance-to-reference statement: make outputs OR the source coordinates indexed by all q-subsets. It recovers TMR-2/029 at r=1. Zero mapped to Gap-MCSP-Ham YES with every r-sparse source promised eta-far NO requires C(B-min(q,B),r)/C(B,r)<=1-eta, implying q>=eta B/r. This is **source-independent black-box evaluation-query** only, not physical MCSP time, nor arbitrary SAT. Arbitrary cross-output sharing or formula syntax escapes these premises. A syntactically trivial proper-3-CNF clause-forcing family provides a hostile shortcut.
