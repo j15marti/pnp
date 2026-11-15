@@ -1,3 +1,17 @@
+# TMR-5 CURRENT handoff | 2026-11-15 11:00 PST | EXPANDER-MULTICUT046 /046
+
+**GOVERNING:** First read the previously prompted Allender directive, then located the *newer* user-authorized `2026-11-15_SAT_COMPRESSION_CIRCUITS_FIVE_AGENT_REFOCUS.md` directive on `main`, SHA `7b8804dc7587abc5134055b5b0d16a143055ca5a`, explicitly superseding Allender-first priority. Tracks A/B/C are current; Allender and fusion are supporting calibration. No five-agent task, schedule, title, enabled-state or ownership changes. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED symbolic, independent math peer review OPEN:** For every constant-degree simple graph edge-expander with max degree d and edge-expansion h>0, the **all-negative Horn 2CNF** F_G(x)=AND_{uv in E}(NOT x_u OR NOT x_v) has an all-zero satisfying assignment and O(n) circuit, yet every balanced variable cut has full assignment-evaluation matrix rank at least 2^(h*n/[6d(d+1)]) over EVERY field. Proof: expansion gives hn/3 cross edges; greedy induced matching selects at least hn/[6d(d+1)], producing a D^tensor-r minor, D=[[1,1],[1,0]], det=-1. Even *all-balanced-cut* exponential rank is therefore a **FAIL** proxy for unrestricted circuit complexity or SAT decision time. This strengthens the DISJ negative control, does not claim priority over known expander CNF/OBDD results. Exact finite enumeration: C6, Q3, Petersen10, **452 balanced cuts**, GF(2) rank/induced matching inequalities, zero failures (COMPUTATIONAL).
+
+**INDEPENDENT PEER REPRODUCTION:** TMR-1/049 unique-extension inclusive-majority balance PASS/RESTRICTED; TMR-2/049 guarded-CNF and SAT/NOT-SAT constant YES firewall PASS/RESTRICTED; TMR-3/049 one-query quantum-then-classical virtual-access ledger PASS/CONDITIONAL (reduction OPEN); TMR-4/050 weighted-lumpable SCC path-count semiring PASS/RESTRICTED. Allender's fixed-space small-space exclusion and bounded-error quantum conversion do not grant a SAT lower bound. Mandatory four gates: DISJ PASS as falsification; relativization no separation claimed; simultaneous DTISP OPEN for transfer; deterministic config counting supplies only a runtime UPPER bound given workspace.
+
+**PUBLICATION:** report `research/agents/tmr-5/2026-11-15_1100_TMR5_EXPANDER_ALLBALANCED_MULTICUT_RANK_REDTEAM046.md`; executable `experiments/tmr/tmr5_expander_multicut046.py`; raw `results/raw/tmr/2026-11-15_1100_TMR5_EXPANDER_MULTICUT046_PY_RAW.json`. Root proof1 SHA `06f7ebc8c2283304a0f5200b518c6e48fa41e343` visible; oversized proof2 and main.tex only SHA/metadata exposed this time, no complete current bodies retrieved, so NO root writes. **TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE.** Preflight full checkout unexecuted. Historical /341 FAIL, /386 RESTRICTED. P versus NP OPEN.
+
+**NEXT PEER REPAIR:** TMR-2/4 construct a concrete dynamic, sharing-safe invariant with small value on the all-balanced-cut high-rank Horn expander, DISJ, affine and compact-circuit controls, and independently prove every legal paid-transition tariff; TMR-1/3 keep class/quantifier, Tree Evaluation time-space and circuit-to-CNF size gates separate. An unrestricted all-machine SAT lower bound remains OPEN.
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 09:45 PST | ALLENDER045 /045
 
 **GOVERNING PRIORITY:** FIRST read 2026-11-15 Allender–MajMajSAT five-agent directive (SHA 1760aefab5944a063f64b62142e358fbd2b94235); fusion-Lipschitz remains secondary supporting program. Existing five TMR identities, hourly Pacific schedules, enabled states and ownership untouched. P versus NP OPEN.
