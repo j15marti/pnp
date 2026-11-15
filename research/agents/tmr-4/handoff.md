@@ -1,3 +1,27 @@
+# TMR-4 CURRENT handoff | 2026-11-15 15:11 PST | LIVE-FAULT-OBSERVABLE-CIRCUITS054 /054
+
+**GOVERNING FIRST:** SAT compression and circuits directive 2026-11-15 SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a. Tracks A/C. Preserve existing five task identities, titles, enabled hourly PST schedules and ownership. P versus NP OPEN.
+
+**NEW PROVED/EXACT RESTRICTED, independent mathematical review OPEN:** For each n>=2 and k>=n-1, a 4k-gate fan-in<=2 NOT/AND/OR DAG implements f(x)=x1 through k four-gate Shannon identity layers (NOT z, a AND z, a AND NOT z, OR). Every gate is structurally live AND counterfactually fault-observable at the final output under a one-gate output override with downstream recomputation; every input variable appears in the CNF. Nonetheless every assignment cut has rank1, one-node BDD computes the function, and #SAT=2^(n-1). For DISJ_r, r>=2, prepend a 4r-1 gate DISJ circuit to same wrapper: all gates live/fault observable, grouped rank2^r over every field, genuine interleaved BP2r nodes, and #SAT=3^r. No forbidden-operation exclusion. Gate-fault observability and static rank cannot force general circuit hardness or compulsory SAT decision work.
+
+**EXACT NORMALIZER TAX:** Singleton wrapper g=4k, wires=7k, functional width<=3 CNF V=n+4k,m=11k+1, 25k+1 literal occurrences. DISJ wrapper g=4r-1+4k, wires=6r-2+7k, V=6r-1+4k,m=10r-2+11k,literals=18r-6+25k. Exactly one gate-assignment extension per accepted original assignment. For k=n^2, all gates remain live, but a polynomial-time grammar recognizer computes exact counts without enumerating assignments. Real source scan, wire indices and output arithmetic charged; no linear-in-original-n compression transfer.
+
+**ACTUALLY EXECUTED native Node + V8:** source revision tmr4-observable-live054.v1, seed NONE, **23 circuits, 42,079 assertions, 1,280 original assignments, 39,200 fault replays, 40,480 CNF checks, 138,496 exhaustive tiny auxiliary assignments, zero failures**. Symbolic construction PROVED/EXACT scoped, finite evidence COMPUTATIONAL, external mathematical peer review OPEN. Source git blob 8658d7fe5d9995527db72e0d8c5b6841b57f851c and raw blob c97a5fbfb999550f580f3e4a97af23859fcd2389; local SHA-256 in report.
+
+**ARTIFACTS:**
+- research/agents/tmr-4/2026-11-15_1511_TMR4_OBSERVABLE_LIVE_GATE_FALSIFIER054.md
+- experiments/tmr/tmr4_observable_live054.js
+- results/raw/tmr/2026-11-15_1511_TMR4_OBSERVABLELIVE054_NODE_RAW.json
+- this full-history preserving handoff.md.
+
+**FOUR GATES:** DISJ PASS restricted and unrestricted naive rank transfer FAIL; relativization PASS for elementary construction / nonrelativizing unrestricted step OPEN; simultaneous DTISP NOT APPLICABLE to structural lemma, forbidden-box matched-machine transfer OPEN; deterministic configuration-count PASS as upper bound only. /341 FAIL as full logical UNSAT authority, /386 RESTRICTED. All sharing/fanout/source/clauses/bit lengths charged for representation, solver-grammar recognizer polynomial not uncharged. Root proof1 read SHA06f7ebc8; proof2 SHA930c5eed and main.tex SHA6ac34c5d returned empty bodies, so **TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE**. Preflight local checkout unavailable (GitHub DNS failure). No schedule modifications.
+
+**NEXT LEMMA:** A genuinely nontrivial circuit subclass that compiles into a polynomial shared bounded-switch BP with source-local, fully charged decomposition/order discovery, or a circuit counterexample. Dynamic invariant must tolerate DISJ interleaving, Shannon wrapper, Horn/2SAT and affine shortcuts. Unrestricted circuit-to-SAT-machine transfer OPEN. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR4::2026-11-15_1511_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-15 13:36 PST | ADAPTIVE-SWITCH-RECTANGLES053 /053
 
 **GOVERNING FIRST:** SAT compression/circuit directive 2026-11-15 main blob 7b8804dc7587abc5134055b5b0d16a143055ca5a. Tracks A/C; identities, Pacific schedules and ownership unchanged. P versus NP OPEN.
