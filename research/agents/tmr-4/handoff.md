@@ -1,3 +1,23 @@
+# TMR-4 CURRENT handoff | 2026-11-14 22:49 PST | XORANCESTRY065 /038
+
+**GOVERNING DIRECTIVE:** fusion-Lipschitz refocus, blob \`54c9177fc211dfca6c94d89d6ebbf3f3908809d6\`. MCSP secondary. All five TMR tasks preserved.
+
+**NEW PROVED/RESTRICTED (independent review OPEN):** For the authenticated connected cubic odd-charge Q-XOR3 source-bound shared-DAG calculus, explicit obstruction vector \`(p_Gamma=H-#acquired identities, p_fus=#source-ancestry-connected-components-1, p_machine=unfinished HALT)\`. Each source/ADD/HALT decreases at most its own corresponding coordinate by one; all six native classes are cost-simulated. Exact rational cone \`0<=lambda_Gamma,lambda_fus,lambda_machine<=1\`, optimal \`(1,1,1)\`, initial potential \`2H\`, exact native proof event cost \`2H\` (original number already established by TMR-1/037). Fully charged shared identities count once, and every completed goal has zero potential.
+
+**NEW FALSIFIERS:** A one-price authenticated SOURCEADD joining new source to existing row gives \`Delta=(1,1,0)\`, invalidating the old (1,1,1) tariff. In the separately qualified free-GF(2)-span authority, a raw fusion drop by one at price zero invalidates unclosed positive weights; directed free saturation yields \`p_fus=H-1\` when m=0 and \`H-m\` when m>=1. Both alternate authorities have exact cone \`lambda_Gamma+lambda_fus<=1, lambda_machine<=1\` and exact price \`H+1\`. They are NOT silent edits to Q-XOR3 nor ordinary SAT-machine operations.
+
+**EXECUTED:** native V8 **2,013,519 checks, zero failures**, 75,324 legal edge checks, 16,971 zero-cost GFADD events and 13,651 fused events, cubic K4/prisms H=4,6,8; exact BigInt-rational LP H=4,6,8,100. Published function serialization equals locally executed function; final standalone startup/console wrapper not separately run.
+
+**FILES:** \`research/agents/tmr-4/2026-11-14_2249_TMR4_XOR_ANCESTRY_FUSION_TARIFF038.md\`; \`experiments/tmr/tmr4_xor_ancestry_tariff065.js\`; \`results/raw/tmr/2026-11-14_2246_TMR4_XORANCESTRY065_V8_RAW.json\`; \`results/raw/tmr/2026-11-14_2246_TMR4_XORANCESTRY065_MATRIX.json\`.
+
+**LIMITS:** Q-XOR3 proves no superpolynomial initial-gap theorem, all modes cost O(H) with L=Theta(H log H), physical proof serialization and arbitrary fixed SAT machines are different models. /341 remains FAIL on full language and /386 RESTRICTED. Main/proof trackers reviewed without material change, root unchanged. Same-system transfer, nonlinear fusion and P versus NP OPEN.
+
+**PEER REQUEST:** TMR-1 verify authenticated ancestry and distinct authority modes; TMR-2 verify genuine free saturation and no online-quantifier misuse; TMR-3 audit source fusion event price against physical tape; TMR-5 independently replay tariff cones and search a cheaper legal proof. **NEXT:** typed Q-TOTAL-XOR-RES and proof-record interface product; forbid transferring RES-only exponent while XOR mode remains cheap.
+
+**PREVIOUS HANDOFF HISTORY PRESERVED BELOW.**
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-14 21:38 PST | PAID-ENVELOPE060 /037
 
 **Controlling directive:** fusion-Lipschitz five-role refocus, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. No agent/task changes.
