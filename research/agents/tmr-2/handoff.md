@@ -1,3 +1,28 @@
+# TMR-2 CURRENT handoff | 2026-11-15 08:20 PST | SIGNFUSION047 /047
+
+**GOVERNING:** 2026-11-14 Fusion-Lipschitz five-agent directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; TMR-2 identity/title, five existing hourly Pacific schedules, ownership and enabled states unchanged. P versus NP OPEN.
+
+**NEW EXACT PROVED/RESTRICTED PHYSICAL TARIFF (independent math review OPEN):** On TMR-1/045's honest odd-charge circular-ladder original proper-3CNF F_m (H=4m cubic vertices, 4H clauses, 12H=48m signed literal occurrences, length N_m=Theta(m log m)), every original polarity bit is pivotal: each single-bit flip gives a valid SAT mutant with a connected G-v spanning-tree GF(2) witness. The existence of pivotal signs and completed input trace is historical LSPV-4/499,/506, TMR-2/021 prior art, NOT a new SAT lower bound. What is new here is the simultaneous seven-vector **all-correct-total-SAT-program physical fusion tariff** for four nested genuine obligations: p=(0,0,0,unread_vertex_packets,unread_clause_packets,unread_critical_signs,unvisited_source_frontier). Initial p=(0,0,0,H,4H,12H,N_m); completed correct UNSAT goal all zero. Physical microsteps price1 with ONE initially-left local read-only source head; actual zero-price closure identity/VIEW preserving read history.
+
+**EXACT COMPLETE ALL-STEP CONE AND DUAL:** A genuine single vertex-last source-bit read has signed four-active discharge (1,1,1,1) for ONE paid step. All other genuine rows discharge subsets of these four or zero. Therefore exact all-state nonnegative cone is lambda_FUS+lambda_Gamma+lambda_Interface+lambda_Machine<=1. Initial exact optimum **N_m**, primal lambda=(0,0,0,0,0,0,1), exact dual y=N_m on the vertex-last row. Four correlated scales CANNOT be added as separate unit tariffs. Same-system all-correct-decider source acquisition lower bound is linear N_m, not superpolynomial; arbitrary programs/GF2/circuits/learning/rereads remain fully allowed.
+
+**EXECUTED FINITE V8:** m=2..15, 5,712 signed one-bit SAT mutants explicitly witnessed via graph-minus-vertex tree construction, 42,796 exact first-read tariff rows, 4,096 exhaustive original assignments at m2; **358,102 assertions, zero failures**, plus 700 identity/revisit bookkeeping checks (not compiled TM). Scientific tests COMPUTATIONAL, all-m symbolic theorem peer review OPEN. The source has bounded primal treewidth <=17 and polynomial affine shortcut, a deliberate hostile easy control. /341 FAIL full logical authority, /386 RESTRICTED.
+
+**PUBLISHED paths:**
+- research/agents/tmr-2/2026-11-15_0820_TMR2_PHYSICAL_SIGN_FUSION_TARIFF047.md
+- experiments/tmr/tmr2_sign_fusion047.js
+- results/raw/tmr/2026-11-15_0820_TMR2_SIGN_FUSION047_V8_RAW.json
+- results/raw/tmr/2026-11-15_0820_TMR2_SIGN_FUSION047_TARIFF_MATRIX.json
+- preserved historical handoff.md (this file)
+
+**PEER QUANTITATIVE HANDOFF:** TMR-3/4 add the cost-one physical vertex-last joint row and enforce lambda_FUS+lambda_Gamma+lambda_Interface+lambda_Machine<=1; TMR-5 independent mutant proof and width-17 decomposition audit; TMR-1 retain physical all-decider transfer and polynomial family-recognizer ceiling. No all-program superpoly initial potential or alternate-port transfer; P versus NP OPEN.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; authentic full proof2 SHA 930c5eeddafce656717f28055a7a9a755f44737c; root full main.tex SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. No agent schedule changes.
+
+END_OF_HANDOFF::TMR2::2026-11-15_0820_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-15 07:08 PST | BATCH116 /046
 
 **GOVERNING:** User-approved Fusion-Lipschitz five-agent refocus, original main SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. TMR-2 identity, title, hourly Pacific schedule, five roles and ownership retained. P versus NP OPEN.
