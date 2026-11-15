@@ -152,6 +152,22 @@ function run(){
       test(evalCNF(s.neg,x)===!uniqueOne(x,i),"exact-one complement CNF");
     }
   }
+  const badBase=[[1],[-1]], badObj=wrapper(badBase,4);
+  for(let i=0;i<4;i++){
+    const singleton=1<<i;
+    test(evalCNF(badObj.A,singleton),"authentic A accepts exact-one");
+    test(!evalCNF(badObj.neg,singleton),"authentic B forbids exact-one");
+    test(evalCNF(badObj.neg.filter((_,j)=>j!==i),singleton),"omitted B clause admits SAT");
+  }
+  const valid=liftedProof(badBase,3,baseProof(badBase));
+  const corrupt=valid.rows.map(x=>({...x,parents:x.parents.slice()}));
+  const firstRes=corrupt.findIndex(x=>x.kind==="res");
+  test(firstRes>=0,"has proof inference");
+  corrupt[firstRes].pivot=999;
+  test(!independentlyVerify(corrupt,wrapper(badBase,3).full),"bad signed pivot rejected");
+  const forge=valid.rows.map(x=>({...x,parents:x.parents.slice()}));
+  forge[0].c=[98765];
+  test(!independentlyVerify(forge,wrapper(badBase,3).full),"unauthenticated source rejected");
   const easy=wrapper([[1]],3);
   test(evalCNF(easy.A,8) && !uniqueOne(0,3),"SAT-base negative control");
   const output={tag:"GUARDLIFT071",scope:"native-resolution, not fixed SAT machine",base_subsets:256,unsat_bases:unsat,sat_bases:sat,lifted_proofs:proofs,verified_assertions:checks,failures:0,maximum_proof_lines:maxProof,guard_k:[3,4,5,6],corollary:"non-Schaefer exact-one separator; inherited native Resolution hardness; O(k^2) separator circuit"};
