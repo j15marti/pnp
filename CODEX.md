@@ -1,105 +1,29 @@
-# Codex Operating Guide — P vs NP Research Lab
+# Codex operating guide: end-to-end PNP research
 
-Codex is the implementation, verification, falsification, and repository-maintenance arm of this project.
+Codex implements, tests, falsifies and maintains evidence. It cannot promote finite experiments to asymptotic theorems or close an unrestricted separation with open dependencies.
 
-It is **not** authorized to promote finite experiments into asymptotic theorems or to claim a proof of P != NP while any load-bearing implication is open.
+## Current authority
 
-## Required project skill
+Read research/coordination/2026-11-15_END_TO_END_AGENT_MANUSCRIPTS.md FIRST, then AGENTS.md and .codex/skills/pnp-research/SKILL.md. The earlier SAT-compression directive supplies compatible scientific scope, not its superseded tracker workflow.
 
-For any substantive P-vs-NP / exact-SAT research task in this repository, invoke the repo-scoped skill:
+Use the assigned main1_PNP_MACHINE_MODEL_LEAD.tex, main2_PNP_INFORMATION_NECESSITY.tex, main3_PNP_TIME_SPACE_TRADEOFFS.tex, main4_PNP_COST_SOUND_ABSTRACTION.tex or main5_PNP_MACHINE_BOTTLENECK_REDTEAM.tex. Edit the owner's current file or create only if absent. Do not read or write proof.txt, proof1.txt or proof2.txt in normal runs. Root main.tex is not a required active tracker or completion gate. Preserve historical files unchanged.
 
-`$pnp-research`
+## Startup and execution
 
-located at `.codex/skills/pnp-research/SKILL.md`.
+Run python .codex/skills/pnp-research/scripts/preflight.py --check --json when a checkout is available. This checks the five current manuscripts and does not inspect retired trackers. Otherwise disclose the environment limitation and perform state recovery through connected reads. Read your manuscript completely, relevant peer sections, handoffs, recent issue #3 entries and materially relevant original reports/code/data. Inspect draft branches, not only main summaries. Survey current tree and search for duplicate/retired approaches.
 
-The skill owns the shared research workflow: state recovery, exact quantifiers, falsification-first testing, hostile controls, barrier audits, proof-status discipline, experiment provenance, and report/main.tex write rules. `CODEX.md` remains the repository-level operating guide; the skill is the reusable execution protocol.
+Choose one named dependency in an end-to-end encoded-input -> construction -> interfaces -> computation -> output -> consequence chain. State model, quantifiers, promises, parameters, resource target and 2-4 falsifiers before research. Search primary sources. Do not replace a missing construction with schematic oracles. Partial lemmas must explain their integration point.
 
-## Start every task
+Charge parsing, source authentication, reduction construction, query volume and per-access costs, arithmetic precision, wire/variable growth, switching, failed work, retention, sharing, recomputation and output on the SAME realization. Preserve legitimate alternative representations. Keep parallel span separate from total work; use aggregate network memory. Include the four mandatory gates and appropriate barrier/easy-family controls.
 
-1. Invoke `$pnp-research` and run its preflight.
-2. Read `AGENTS.md` and repository-root `main.tex`.
-3. Read the newest verified file in `research/main/`.
-4. Read the task specification under `tasks/`.
-5. Read the relevant latest agent reports under `research/agents/`.
-6. Identify every definition that must come from a primary source.
-7. If an exact construction is missing, stop that branch and record the missing definition. Do not substitute a schematic construction.
+## Evidence and writes
 
-## Corpus-wide reconciliation
+Keep reusable implementations in src/pnp_lab/, runners in experiments/, immutable evidence in results/raw/, and detailed dated reports in research/agents/tmr-i/. Reconcile material findings into the owner's root LaTeX manuscript and keep a compact handoff. Preserve exact code revision, input, seed, raw outputs, source pins, scope and review status. Separate symbolic proof from COMPUTATIONAL evidence and CONDITIONAL premises. Keep each Python stage about 30 seconds; split/checkpoint rather than raise timeouts.
 
-For every substantive P-vs-NP task, survey the current repository tree before new work. Do not assume the newest report contains the whole project state.
+Fetch full body and current SHA before existing-file edits, use conflict-safe branches/leases, preserve unrelated content, and read back every publication. A local file, an open PR and a main merge are different statuses. Run relevant tests and manuscript compilation when available, and report unexecuted or legacy-incompatible checks accurately. Do not blindly run a historical checker that demands retired tracker/main ownership; adapt its file targets or disclose the incompatibility, never suppress a genuine scientific failure.
 
-At minimum, inspect root `main.tex`, current task files, newest and relevant historical MAIN snapshots, materially relevant LSPV reports across all specialists, active `research/explorations/` components (including CRS-PPC and CCSPC when relevant), governance notes, and the code/data/result artifacts cited by the claims under review. Use repository search/history to locate prior formulations, counterexamples, contradictions, and retired routes.
+The active manuscripts are coherent papers, not append-only logs. Record exact status, complete dependencies, same-machine ledger, gates, controls, references, evidence and next lemma. Do not claim manuscript reconciliation if full contents were unavailable. Use MANUSCRIPT REVIEWED; NO MATERIAL CHANGE when appropriate.
 
-Every research output should state what was already known, what changed, and whether any root-MAIN statement became stale.
+P versus NP remains OPEN. /341 remains FAIL as full logical UNSAT authority; /386 remains RESTRICTED. No agent schedule or identity changes.
 
-For LSPV work, a successful run must also reconcile root `main.tex` in the same run according to the ownership rules in `AGENTS.md`. LSPV-5 remains final arbiter of whole-document synthesis.
-
-## Research discipline
-
-Every computational result must record:
-- exact code revision / commit;
-- parameters and random seed;
-- whether the result is symbolic, exhaustive, randomized, or heuristic;
-- raw machine-readable output;
-- the hostile controls run;
-- limitations;
-- proof status.
-
-Allowed statuses:
-`PROVED/EXACT`, `KNOWN THEOREM`, `COMPUTATIONAL`, `CONDITIONAL`, `CANDIDATE`, `OPEN`, `FALSIFIED/RETIRED`.
-
-Finite evidence is always `COMPUTATIONAL` unless accompanied by a complete proof.
-
-## Preferred workflow
-
-Create a branch or worktree per task. Keep code, raw results, and interpretation separable.
-
-Typical commands:
-
-```bash
-python -m pip install -e '.[dev]'
-pytest -q
-python scripts/check_research_reports.py
-python experiments/product_span/run.py --toy-affine --source-bits 4 --outputs 8 --seed 1
-```
-
-## Current priority tasks
-
-1. `tasks/TASK-001-su-vms-product-span.md`
-2. `tasks/TASK-002-hostile-controls.md`
-3. `tasks/TASK-003-primitive-trace-battery.md`
-4. `tasks/TASK-004_HEC-static-to-online-compiler.md`
-5. `tasks/TASK-005_CRS-PPC-bridge-theorems.md`
-
-The reusable CCSPC component is recorded under
-`research/explorations/random-challenge/2026-10-01_CCSPC1_CANONICAL-CAUSAL-SAT-POINTER-CASCADE.md`.
-
-Do not start TASK-001's exact SU/vMS implementation until the primary-source definitions required by the task are present in the repository or otherwise explicitly supplied.
-
-## Output conventions
-
-- reusable code: `src/pnp_lab/`
-- task-specific runners: `experiments/<task>/`
-- immutable raw outputs: `results/raw/`
-- concise derived summaries: `results/summaries/`
-- research interpretations: new LaTeX reports under the appropriate `research/` path
-- task specifications: `tasks/`
-
-A negative result, counterexample, or route retirement is a successful research outcome when reproducible.
-
-
-## Living project document
-
-The canonical living progress document is permanently `/main.tex` at repository root. Do not move it, rename it, or create another `main.tex`.
-
-When a Codex experiment materially changes the verified project state, update the relevant COMPUTATIONAL/result portion of root `main.tex` only if an ownership marker or explicit Codex-owned region authorizes the edit. Otherwise create the result/report and leave a handoff for LSPV-5. For LSPV-1..4 runs, the owned specialist region must be reconciled every successful run; for LSPV-5, whole-document reconciliation is mandatory every successful run.
-
-Treat `main.tex` as a readable research dashboard, not a raw log: preserve polished LaTeX, tables, diagrams, equations, status discipline, and source/report paths.
-
-
-## Python runtime rule
-- Every individual Python program or experiment invocation should be designed to finish in roughly **30 seconds or less**.
-- If a computation is expected to exceed roughly 30 seconds, split it into multiple independent or checkpointed stages, parameter chunks, seeds, or input-size batches.
-- Persist intermediate outputs so later stages resume from verified results rather than rerunning completed work.
-- Do not increase a tool timeout as a substitute for decomposition.
-- Reports must state the chunking strategy whenever a larger experiment is partitioned this way.
+Previous guide preserved verbatim at research/governance/archive/2026-11-15_PRE_END_TO_END_CODEX.md, blob 754999f50de93cdb693ed37bc8110d31e9e698ef. Historical task lists are supporting evidence only when connected to the current chain, not mandatory independent priorities.

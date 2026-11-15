@@ -1,254 +1,50 @@
 ---
 name: pnp-research
-description: Conduct rigorous P-vs-NP and exact-SAT research in j15marti/pnp. Use for theorem development, literature review, falsification, computational experiments, LSPV specialist/red-team/synthesis work, proof-status reconciliation, or updates to the project's LaTeX research record.
+description: Conduct rigorous end-to-end P-vs-NP and exact-SAT research, falsification, implementation, review and agent-owned LaTeX manuscript maintenance in j15marti/pnp.
 ---
 
-# P vs NP Research Skill
-
-Use this skill for substantive research work in the `j15marti/pnp` repository.
-
-The purpose of this skill is **research discipline**, not a preferred proof strategy. It must help discover, test, falsify, formalize, or retire arguments without turning conjectures or finite experiments into theorem claims.
-
-## Mandatory startup
-
-1. Run:
-   ```bash
-   python .codex/skills/pnp-research/scripts/preflight.py
-   ```
-2. Survey the current repository tree, then read, in this order:
-   - repository-root `main.tex`;
-   - `AGENTS.md`;
-   - `CODEX.md`;
-   - the newest verified MAIN and every materially relevant historical MAIN surfaced by repository search;
-   - materially relevant LSPV reports across all specialist directories, not only the newest peer;
-   - active `research/explorations/` components, including HEC/CRS-PPC/CCSPC when relevant;
-   - governance notes and experiment/result artifacts cited by active claims;
-   - the relevant task under `tasks/`, when one exists.
-   Search repository content/history for duplicate formulations, contradictions, prior counterexamples, and retired routes before treating an idea as new.
-3. Determine the run mode from the task:
-   - `structure`
-   - `product-span`
-   - `reconstruction`
-   - `red-team`
-   - `synthesis`
-   - `experiment`
-4. Read `references/modes.md` for the selected mode.
-5. State internally before doing substantive work:
-   - the single target;
-   - the exact quantifier prefix;
-   - the computation/model assumptions;
-   - the SAME_REALIZATION object(s);
-   - the weakest theorem that would materially advance the target.
-
-If an exact construction or theorem definition needed for the task is missing, record the missing definition and stop that branch. Do not silently replace it with a schematic surrogate.
-
-## Mandatory corpus reconciliation record
-
-Every substantive run must explicitly record:
-
-- corpus/artifacts surveyed;
-- duplicate or conflicting prior work found;
-- what changed relative to root `main.tex`;
-- which prior components were adopted, rejected, downgraded, or retired.
-
-For an LSPV run, the standalone report is not the final step. After the report verifies, refetch root `main.tex` and reconcile the authorized ownership region in the same run. LSPV-5 must reconcile the whole document every successful run. Use current blob SHA, preserve unauthorized regions, read back the result, and verify OPEN status, balanced ownership markers, strict labels, and no silent strengthening.
-
-## Research loop
-
-Follow this order unless the task genuinely requires another dependency order:
-
-1. **STATE** — recover the current verified project state.
-2. **TARGET** — identify one load-bearing arrow or one explicit falsification target.
-3. **LITERATURE** — search primary literature before relying on a substantive theorem.
-4. **FORMALIZE** — write exact definitions, quantifiers, model, parameters, and claimed implication.
-5. **FALSIFY FIRST** — attack the weakest point before extending the proof.
-6. **TEST** — when finite computation can clarify the claim, implement a reproducible experiment.
-7. **BARRIER AUDIT** — relativization, algebrization, wrappers, model transfer, and Natural Proofs when applicable.
-8. **STATUS** — assign only an allowed status.
-9. **COMMIT** — write code/data/report separately enough to audit.
-10. **HANDOFF** — end with one concrete next target.
+# PNP research skill
 
-Read `references/research-protocol.md` for the full guard and promotion checklist.
+## Current workflow authority
 
-## Allowed proof statuses
+Read research/coordination/2026-11-15_END_TO_END_AGENT_MANUSCRIPTS.md FIRST. Use its five stable main#_AGENTNAME.tex files and the ownership table in AGENTS.md. The earlier SAT-compression directive retains compatible scientific guards and tracks. Superseded instructions in references, historical task files and archived guides cannot require reading/updating proof.txt, proof1.txt, proof2.txt or reconciling root main.tex. Leave those files untouched. This is a documentation/work-selection change, not a theorem promotion.
 
-Use only:
+## State recovery and target
 
-- `PROVED/EXACT`
-- `KNOWN THEOREM`
-- `COMPUTATIONAL`
-- `CONDITIONAL`
-- `CANDIDATE`
-- `OPEN`
-- `FALSIFIED/RETIRED`
+Run scripts/preflight.py relative to this skill, with --check --json when a local checkout exists. It checks current manuscripts, not retired trackers. Otherwise disclose why it was not run and recover source state with connected tools. Survey the repository; read OWN manuscript fully, current peer sections, all compact handoffs, issue #3 and relevant original reports, code and raw data. Inspect unmerged branches when main handoffs lag. Search for duplicates, contradictions and retired routes. Do not mechanically reread unrelated history.
 
-Finite experiments are `COMPUTATIONAL` unless accompanied by a complete symbolic proof.
+Choose the run mode (construction, reconstruction, structure, experiment, red-team or synthesis) and consult relevant references/modes.md and references/research-protocol.md as supporting scientific checklists; their older file-routing instructions are superseded. State one precise candidate, exact quantifier prefix, model, input encoding, SAME_REALIZATION objects and 2-4 falsifiers before primary-source/corpus search.
 
-One `OPEN` load-bearing arrow means (P\neq NP) is not proved.
+Select one end-to-end chain from authentic encoded input through construction, access, computation and output to the actual claimed consequence. Every partial lemma must close, strengthen or falsify a named dependency in that chain. Do not manufacture a completion, substitute a schematic missing construction, or pursue disconnected toy variants as the primary deliverable. Record unavailable definitions as OPEN and attack another identified dependency.
 
-## Permanent guards
+## Scientific loop and permanent guards
 
-Never infer unrestricted runtime directly from:
+Recover state; identify the load-bearing target; consult original sources; formalize all definitions, quantifiers and bounds; attack the weakest point; implement bounded reproducible tests when useful; audit barriers; assign status; reconcile the owned manuscript; publish evidence and a compact handoff.
 
-- semantic multiplicity;
-- number of candidate witnesses;
-- formula/backdoor/treewidth/incidence geometry;
-- representation size;
-- proof-system size;
-- communication complexity;
-- circuit size in a restricted model;
-- existence of a certificate/decomposition;
-- a lower bound on an algorithm family rather than all relevant algorithms.
+Keep existence, acquisition, verification and decision costs distinct. A semantic object, a representation and a physical computation are not interchangeable. Do not invert forall-algorithm/exists-input into exists-one-input/forall-algorithm. Lower bounds for a proof system, fixed DAG, representation, circuit subclass, communication interface or solver portfolio do not automatically transfer to arbitrary SAT machines. A counting oracle, a guessed checkpoint or preloaded work state is not free original-source access.
 
-Keep distinct:
+Charge full input parsing/authentication, reductions, discovery, parameter/decomposition selection, failed attempts, adaptive switches, number of queries and access costs, indices, buffers, source rereads, wires, coefficient bit lengths, retention, shared identities, recomputation and output. Prove cost partitions before adding overlapping components. Time and peak space must belong to the same declared execution. Shared physical cells count once; networks require total sequential work and aggregate live storage. Preserve legal caching, compact algebra and alternate algorithms; unknown operations remain conservative MAY.
 
-[
-\text{existence}\neq\text{acquisition}\neq\text{verification}\neq\text{decision cost},
-]
+Every candidate records PASS, FAIL, OPEN or NOT APPLICABLE WITH REASON for: DISJ sanity; relativization; simultaneous DTISP; deterministic configuration counting. Configuration counting is an upper bound for the declared deterministic total model, not a runtime lower bound or automatic randomized/quantum bound. Identify any claimed nonrelativizing step; apply algebrization and Natural Proofs checks where relevant. An OPEN load-bearing gate blocks unrestricted promotion.
 
-and
+Run applicable controls: Horn/dual-Horn, 2-SAT, affine/XOR/Gaussian, treewidth/DP, equality, autarkies, products, renaming/complementation, padding/auxiliaries, compact circuits, selector projection, unique-solution rank one, local basis/field effects, DEAD/COPY/DELAY/INTERP/RECOMP wrappers and maximal/algebraic oracle controls. Never treat a legitimate cheap path as a spurious artifact to remove. Historical /341 remains FAIL as full logical UNSAT authority; /386 remains RESTRICTED.
 
-[
-\text{semantic object}\neq\text{machine state}\neq\text{runtime}.
-]
+When relevant, consult cross-domain or post-quantum techniques, but classify imports as exact theorem transfer, analogy requiring a bridge, or failed transfer. Do not insert cryptographic/oracle hypotheses into an unconditional argument. Preserve majority ties, error/amplitude models, uniformity, model matching and complete reduction costs.
 
-Do not invert quantifiers such as
-[
-\forall A\,\exists F_A
-quad\not\Rightarrow\quad
-\exists F\,\forall A.
-]
+## Sources, tests and status
 
-Time, space, source, witness, extracted object, and lower-bound resource must refer to the same declared realization unless an explicit model-preserving transformation is proved and charged.
+For each used theorem record original source/version, exact model, quantifiers, input/resource measure, uniformity, hypotheses, actual conclusion and exclusions. Differentiate manuscript claims, formal theorem statements, actual proof terms and executed kernel builds. A matching name or assertion count does not verify a theorem.
 
-## Mandatory hostile controls
+Allowed status: KNOWN THEOREM, PROVED/EXACT, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED. Scope every proof and state independent-review status. Finite experiments remain COMPUTATIONAL unless accompanied by a complete symbolic proof; do not infer asymptotics from samples. An unrestricted separation requires every load-bearing implication.
 
-Apply the relevant subset of these before treating a resource as serious:
+Each experiment records exact code revision, input encoding, parameters, seeds, exhaustive/random/heuristic mode, raw output, controls and limitations. Keep scripts about 30 seconds per invocation and split/checkpoint larger work. Do not fabricate execution, source retrieval, peer review or a successful publication.
 
-- Horn and dual-Horn;
-- 2-SAT/Krom;
-- affine/XOR/Tseitin with Gaussian elimination;
-- bounded treewidth / dynamic programming;
-- independent products;
-- renaming and variable complementation;
-- padding and auxiliary variables;
-- compact alternative representations;
-- DEAD / COPY / DELAY / INTERP / RECOMP wrappers;
-- maximal semantic oracle;
-- algebraic oracle / low-degree extension access.
+## Owned living manuscript and publication
 
-A candidate invariant that makes an easy control falsely expensive is invalid unless the discrepancy is formally explained.
+The assigned root manuscript is the primary maintained artifact. Keep it a coherent readable paper with target/status, exact model and quantifiers, dependency chain, complete lemmas and proofs, same-execution resource ledger, four gates, hostile controls and failed branches, references, evidence revisions, independent-review status and one next lemma. No LaTeX bullet glyphs; prefer prose or item[]. Use a companion .bib when useful. Detailed timestamped reports are historical support; executable code and immutable raw evidence remain separate.
 
-## Post-quantum structural toolkit
+Before editing, recover COMPLETE current contents plus SHA. Preserve owner boundaries, use a branch/current-head lease, and merge concurrent changes rather than overwrite. If full recovery fails, do not replace that file; publish an additive owned report and exact handoff. Read back the full changed manuscript and evidence; verify scope, OPEN statements, structural LaTeX and ownership markers. Run relevant tests/compilation when possible and disclose unexecuted or obsolete checks. Update compact handoff.md and issue #3 with paths/revisions, actual validation, draft/main status and one next dependency. Retry transient publication failures safely; preserve exact pending bodies.
 
-When relevant to the current barrier, explicitly test the following PQC/PQ-cryptanalysis ideas:
+A successful run produces a connected substantive result or falsifier, not merely a survey. Reconcile the manuscript after material changes; otherwise explicitly record MANUSCRIPT REVIEWED; NO MATERIAL CHANGE. Never claim to have reviewed retired trackers. Do not alter the five agent identities, enabled states or Pacific schedules.
 
-- shortening/puncturing/filtrations of Schur squares;
-- quadratic-relation matrix spaces and minimum relation rank;
-- Hilbert functions, syzygies, and graded Betti numbers;
-- lossiness/collision entropy for many-to-one maps;
-- black-box reduction architecture inspired by LWE worst-case/average-case reductions;
-- collision extraction / special-soundness style binding instead of generic uniqueness.
-
-Treat them as exact transfers only when the algebraic object and hypotheses match. Cryptographic hardness assumptions, random-oracle assumptions, and physical/quantum security notions cannot be inserted into an unconditional complexity proof.
-
-## Cross-domain barrier transfer
-
-For each substantive run, identify the current major obstacle(s) and search the direct literature first. Then check whether an analogous obstruction has a rigorous treatment in another field or subfield, including electronics/VLSI, control theory, coding theory, algebraic geometry, topology, optimization, distributed computing, or proof complexity when relevant.
-
-Classify every cross-domain import as one of:
-- **THEOREM TRANSFER** — exact hypotheses/model mapping proved;
-- **ANALOGY / CANDIDATE** — suggestive but missing a transfer theorem;
-- **FAILED TRANSFER** — model mismatch, easy counterexample, or no same-realization connection.
-
-Always state the exact correspondence and the missing bridge. Analogy alone cannot promote a complexity claim.
-
-## Literature discipline
-
-Prefer original papers and authoritative theorem statements.
-
-For every theorem used materially, record:
-
-- exact model;
-- quantifiers;
-- input measure;
-- resource measure;
-- uniformity/nonuniformity assumptions;
-- hypotheses;
-- conclusion;
-- what the theorem does **not** imply for this project.
-
-If the task is based on repository or user-provided sources, preserve their terminology and framing. Do not silently repair a source gap from memory. Outside literature may be added only as clearly distinguished verification or expansion.
-
-## Computational discipline
-
-For every experiment record:
-
-- exact code revision;
-- input parameters;
-- random seed if any;
-- exhaustive vs randomized vs heuristic;
-- raw machine-readable output path;
-- controls run;
-- limitations.
-
-Prefer code under `src/pnp_lab/`, runners under `experiments/`, immutable data under `results/raw/`, and derived summaries under `results/summaries/`.
-
-Search for the smallest counterexample before searching for supporting examples.
-
-## Proof-promotion gate
-
-Do not mark a new project claim `PROVED/EXACT` unless all of the following are present:
-
-1. exact theorem statement;
-2. exact quantifiers;
-3. declared machine/model;
-4. complete proof;
-5. dependency list;
-6. SAME_REALIZATION audit where resources are joint;
-7. easy-family hostile controls;
-8. wrapper/representation audit where relevant;
-9. relativization audit;
-10. algebrization audit when relevant;
-11. Natural Proofs audit when a constructive circuit property is used;
-12. independent red-team review or an explicit note that such review is still pending.
-
-If item 12 is pending, keep the result below final promotion in the living synthesis unless existing project governance explicitly allows otherwise.
-
-## Repository writes
-
-The one canonical living synthesis is repository-root `main.tex`. Never move it or create another `main.tex`.
-
-- LSPV-1 must reconcile only its marked ownership region every successful run.
-- LSPV-2 must reconcile only its marked ownership region every successful run.
-- LSPV-3 must reconcile only its marked ownership region every successful run.
-- LSPV-4 must reconcile only its marked ownership region every successful run.
-- LSPV-5 must perform whole-document reconciliation every successful run and remains final synthesis arbiter.
-- Codex experiment work should normally create results/reports and hand off to LSPV-5 rather than rewriting executive conclusions.
-
-Timestamped reports are append-only historical records.
-
-Use `assets/report-template.tex` when a new standalone research report is needed.
-
-After changing `main.tex` or a timestamped report, run:
-
-```bash
-python scripts/check_research_reports.py
-python .codex/skills/pnp-research/scripts/preflight.py --check
-```
-
-Run relevant unit tests before committing computational results.
-
-## Definition of done
-
-A successful run leaves:
-
-- one sharply stated result, counterexample, or narrowed open arrow;
-- an allowed proof status;
-- reproducible evidence when computation was used;
-- an explicit barrier/hostile-control result;
-- no silently strengthened claim;
-- one next target;
-- repository paths for every created artifact.
-
-A reproducible falsification or route retirement is a successful outcome.
+P versus NP remains OPEN. Prior skill preserved verbatim at research/governance/archive/2026-11-15_PRE_END_TO_END_SKILL.md (blob b8df83a7b0b1428f349b0e02ce1387d979e8db7f).
