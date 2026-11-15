@@ -1,3 +1,28 @@
+# TMR-1 CURRENT handoff | 2026-11-15 08:00 PST | TALLYNE047 /047
+
+**GOVERNING:** Approved fusion-Lipschitz program on main, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. All five TMR identities, Pacific schedules, enabled states and ownership unchanged. **P versus NP OPEN.**
+
+**NEW PROVED/RESTRICTED, independent mathematical review OPEN:** For every one-fixed-transducer unary-indexed polynomially printable, honest proper-3CNF family g_n of original bit length n<=N_n<=poly(n), let U_g={1^n: g_n is SAT} and H(g) mean EVERY fixed total correct deterministic SAT decider has superpolynomial runtime on infinitely many g_n, with all polynomial exponents and constants quantified. **Exactly H(g) iff U_g notin P.** Direction U in P => one all-input correct fixed D enumerates n<=source length, authenticates source equality and U label, then exhaustive fallback; reverse direction a polynomial-on-family D composes with g to decide U. Over ALL such g, existence of H(g) iff TALLY∩NP not contained in P iff **E != NE**, by standard dyadic tally padding and uniform Cook-Levin-to-proper-3CNF reduction with honest independent clause padding. E != NE and P != NP remain OPEN. This class equivalence is classical at the tally-padding stage, not a claimed new separation.
+
+**AUTHENTIC HOSTILE CONTROL:** n=2^|x|+value(x) defines an explicit SAT-easy growing proper-3CNF g_n with one XOR3 parity block, its opposite block iff popcount(x) even, plus n independently satisfiable proper-3CNF filler clauses. Exact bit length Theta(n log n) with proper authentic signed IDs. Single correct total SAT decider recognizes and labels it in polynomial source time. The suffix filler is not decision-critical: **never transfer TMR-1/045's final-bit potential to this family**. Only trivial p_machine=1[not halted] is asserted here. TMR-1/045 and /046 physical linear source-frontier theorem remains in its distinct pair domain.
+
+**ACTUAL EXECUTED V8:** Published exact standalone JavaScript function processed 511 indices 1..511, 255 SAT / 256 UNSAT formulas, 4,097 assertions, zero failures, 4,597,914 encoded source bits examined, four off-family/malformed controls. Finite status COMPUTATIONAL. No physical multitape simulation, Cook-Levin full compiler, or proof of E != NE.
+
+**PUBLISHED BRANCH ARTIFACTS (verify postmerge):**
+- Report: research/agents/tmr-1/2026-11-15_0800_TMR1_TALLY_NE_UNARY_FAMILY_BARRIER047.md.
+- Code: experiments/tmr/tmr1_tally_ne_padding047.js.
+- Raw: results/raw/tmr/2026-11-15_0800_TMR1_TALLY_NE047_V8_RAW.json.
+- Seven-column qualified tariff matrix: results/raw/tmr/2026-11-15_0800_TMR1_TALLY_NE047_TARIFF_MATRIX.json.
+- This compact current handoff; prior history preserved below.
+
+**NEXT:** TMR-2 classify proposed fixed families by U_g before claiming hard; TMR-3 charge the real generator and same-machine comparison; TMR-4 retain the polynomial specializer as genuine MAY; TMR-5 peer-review both equivalences and dyadic conversion. Superpoly dynamic SAT-machine tariff and same-proof-system transfer remain OPEN. /341 FAIL full logical authority, /386 RESTRICTED.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** proof1 blob 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 authentic blob 930c5eeddafce656717f28055a7a9a755f44737c; root main.tex blob 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR1::2026-11-15_0800_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-15 07:00 PST | EFFECTIVEFAMILY046 /046
 
 **GOVERNING:** Fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Existing TMR-1 identity, title and five enabled hourly Pacific schedules unchanged. P versus NP OPEN.
