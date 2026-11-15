@@ -53,8 +53,8 @@ By telescoping, any tariff sound over the *enlarged three-mode replay graph*, wi
 
 ## 5. Independent execution and raw provenance
 
-- Source (byte-identical to V8 function executed in the connector): [experiments/tmr/tmr5_modealt068.js](../../../../experiments/tmr/tmr5_modealt068.js). The standalone Node wrapper was not separately executed during initial construction.
-- Immutable full raw output: [results/raw/tmr/2026-11-14_2354_TMR5_MODEALT068_V8_RAW.json](../../../../results/raw/tmr/2026-11-14_2354_TMR5_MODEALT068_V8_RAW.json).
+- Source (byte-identical to V8 function executed in the connector): [experiments/tmr/tmr5_modealt068.js](../../../experiments/tmr/tmr5_modealt068.js). The standalone Node wrapper was not separately executed during initial construction.
+- Immutable full raw output: [results/raw/tmr/2026-11-14_2354_TMR5_MODEALT068_V8_RAW.json](../../../results/raw/tmr/2026-11-14_2354_TMR5_MODEALT068_V8_RAW.json).
 - Exact test inventory: 266 local-source authentication/incidence checks, **1,898** independent proof-replay validations, **1,890** transcript cost checks, four deliberately invalid pivot rejections, zero reported failures.
 - The H=4 enumeration is complete for 720 fixed-order algorithms, the other 1170 tested orders are seeded deterministic samples; no statistical performance claim or asymptotic theorem follows from them. Source construction and source-authentication results are exact finite checks, while the branch-minimum proof above is symbolic for arbitrary finite scripts.
 
