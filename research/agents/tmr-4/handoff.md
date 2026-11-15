@@ -1,3 +1,29 @@
+# TMR-4 CURRENT handoff | 2026-11-15 12:35 PST | SWITCH-PRODUCT-MULTICUT052 /052
+
+**GOVERNING FIRST:** 2026-11-15 SAT compression/circuits directive SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a, Tracks A/C. All five TMR identities, titles, ownership, enabled Pacific schedules remain unchanged. P versus NP OPEN.
+
+**NEW RESTRICTED PROVED/EXACT LEMMA, INDEPENDENT MATHEMATICAL REVIEW OPEN:** For EVERY Boolean assignment-evaluation function f, fixed variable order pi, arbitrary two-side variable partition P=(X,Y), and field K, let D_pi(P) be the b switches between X and Y along pi, let q_i be the number of distinct prefix residual cofactors. Then rank_K(M_P(f)) <= PRODUCT_{i in D_pi(P)} q_i <= PRODUCT |F_i(B)| <= (V(B)+2)^b for any shared deterministic pi-ordered read-once BDD B (skips and early terminals allowed), with V counting distinct internal nodes once. Proof by complete deterministic residual automaton and expansion at every X/Y block boundary. At b=1 it recovers TMR-4/051. This is a representation lower bound only. Source-local actual BDD tests simulate faithfully in the quotient; NO unrestricted SAT-TM or shared-circuit cost transfer established.
+
+**GENUINE CHEAP-ORDER FALSIFIER:** DISJ3 grouped x:y rank 8 but the legal interleaved order has synchronized frontier peak 3, internal BDD nodes 6 and O(k) general gates. Thus FALSE: rank at any arbitrary variable cut <= one max ordered frontier. IP3 grouped rank GF2=3 but odd-prime=7; TMR-2/051 gives Q rank7. Ordinary Horn/equality/singleton controls retained. No invalid potential path removed by CEGAR.
+
+**EXECUTED V8 COMPUTATIONAL:** Exact BigInt GF2 elimination for all 720 variable orders x all 62 nontrivial partitions x five families (223,200 matrices); 267,852 assertions, ZERO failures. DISJ tensor formula independent check. 4,608 DISJ3 and 4,608 EQ3 naive nonprefix-transfer counterexamples. Exact standalone SymPy Q ranks k=1..5 independently checked DISJ [2,4,8,16,32], IP [1,3,7,15,31]. Seed NONE. OS Node standalone/Lean build/project preflight NOT executed.
+
+**PUBLISHED PATHS (branch main postmerge pending at this handoff write):**
+- research/agents/tmr-4/2026-11-15_1235_TMR4_SWITCH_PRODUCT_MULTICUT_TRANSFER052.md
+- experiments/tmr/tmr4_multicut_frontier052.js
+- results/raw/tmr/2026-11-15_1235_TMR4_MULTICUT_FRONTIER052_V8_RAW.json
+- research/agents/tmr-4/handoff.md
+
+**FOUR GATES:** DISJ PASS for restricted switch theorem, FAIL for naive unrestricted nonprefix rank transfer. Relativization PASS restricted, nonrelativizing unrestricted step OPEN. Same-execution DTISP NOT APPLICABLE to representation and OPEN for transfer. Deterministic configuration counting PASS upper-bound guard ONLY. Track C retains live-gate Tseitin V=n+l, m<=3l+n+1, unknown exponent source constants and no NP-level contradiction. /341 remains FAIL full logical UNSAT authority, /386 RESTRICTED.
+
+**CORPUS:** New directive first, root proof1 full, proof2 and main SHA metadata but EMPTY bodies (no claim of full recovery), AGENTS/CODEX/skill, five current handoffs, issue #3, original TMR-1/051, TMR-2/051, TMR-4/051, TMR-5/047 plus Bryant/Nisan primary literature and pinned Anthropic statement. Full repo preflight unavailable without mounted checkout. TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE.
+
+**ONE NEXT TARGET:** adaptive variable-order read-once branching programs: bound multi-cut rank using path-respecting state-dependent switches with fully priced branching/order discovery, or find smallest falsifier. General SAT transfer OPEN. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR4::2026-11-15_1235_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-15 11:34 PST | OBDD-RANK-TRANSFER051 /051
 
 **CURRENT PRIORITY:** SAT lower bounds, compression and circuits directive 2026-11-15 (blob 7b8804dc7587abc5134055b5b0d16a143055ca5a), Tracks A/C. Previous Allender, fusion, MCSP-first directives are secondary. All five TMR schedules/identities/ownership unchanged. P versus NP OPEN.
