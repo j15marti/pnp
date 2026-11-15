@@ -1,3 +1,23 @@
+# TMR-1 CURRENT handoff | 2026-11-15 13:04 PST | PROJECTION-CENSUS052 /052
+
+**GOVERNING FIRST:** SAT compression/circuits 2026-11-15 directive on main blob 7b8804dc7587abc5134055b5b0d16a143055ca5a. Track C theorem architecture; all five TMR titles, identities, ownership, enabled Pacific schedules preserved. P versus NP OPEN.
+
+**NEW PROVED/EXACT RESTRICTED, independent mathematical review OPEN:** In the fixed-input-names existential-projection model, every width<=3 CNF H(x,z) on V variables represents at most one n-input Boolean function, and all such CNFs represent at most 2^Q(V) functions, Q(V)=1+2V+4*binom(V,2)+8*binom(V,3)<=8V^3. For each large n, g with g>=8n and log g<=n-O(1), shared fan-in-two live-gate circuits of size <=g realize >=2^(g/32) distinct input functions (middle-level selected minterms via shared trie). Hence for SOME such circuit every pointwise existential-projection width3 encoding needs V>=(g/256)^(1/3). At g=n^4 this requires V=Omega(n^(4/3)), excluding a universal V=O(n polylog n) **pointwise/unique-extension** width3 compiler for EVERY polynomial-gate-size range. This is representation counting, **NOT** SAT hardness, a general decision-equivalence compression barrier, or an NP circuit lower bound. SAT-equivalent and globally count-equivalent but nonpointwise compressors remain OPEN/UNEXCLUDED.
+
+**REPRODUCIBLE NATIVE NODE:** 10,544 full assignment checks; 206 distinct function comparisons; 206 gate caps; 509 exact BigInt width3 budgets, zero failures. No seed. Local executed source Git blob 187d9c4cedbfea53dcfa5f3de7a31ea85c12e664; raw blob fc3808861d4c2287d844e836dafc22be9d1fbb16; exact local source and raw SHA-256 in report.
+
+**ARTIFACTS:** research/agents/tmr-1/2026-11-15_1304_TMR1_RESTRICTION_STABLE_COMPRESSION_CENSUS052.md; experiments/tmr/tmr1_compression_census052.js; results/raw/tmr/2026-11-15_1304_TMR1_COMP_CENSUS052_V8_RAW.json; preserved-history handoff.md.
+
+**MANDATORY FOUR GATES:** DISJ PASS restricted (no rank-to-general-circuit transfer); relativization PASS restricted/OPEN unrestricted (no nonrelativizing P-vs-NP arrow); simultaneous DTISP NOT APPLICABLE census/OPEN transfer; config counting PASS upper-bound-only. Williams ALL polynomial n^k input-gate SAT savings yields NEXP circuit lower bound, NOT NP. Anthropic MainResults.lean pinned commit 16a5ce41304fcdaea4e0be7c132e1c361dc26da5, definition-only file, Lean builds unverified; OpenAI Oct25 manuscript/scope distinguished.
+
+**NEXT:** Seek a uniform fast SAT-equivalence-only or native circuit algorithm for LIVE g=n^4, or give another exact model-scoped falsifier. TMR-2/4 dynamic representation lower bounds must not infer SAT time; TMR-3 needs one paired DTISP machine; TMR-5 audit this projection-versus-equisatisfiability firewall. /341 FAIL full logical UNSAT, /386 RESTRICTED.
+
+**TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE:** proof1 full SHA 06f7ebc8; proof2 body empty SHA 930c5eed; main.tex body empty SHA 6ac34c5d. Github connector used after local repo clone DNS failure; full preflight and Lean builds NOT executed. No existing agent schedules changed. P versus NP remains OPEN.
+
+END_OF_HANDOFF::TMR1::2026-11-15_1304_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-15 11:57 PST | WILL-NPCLASS051 /051
 
 **GOVERNING FIRST:** SAT compression/circuits 2026-11-15 directive on main SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a. TMR-1 is Track C / cross-track theorem architect. Preserve five TMR identities, ownership and enabled hourly PST schedules, no changes. P versus NP OPEN.
