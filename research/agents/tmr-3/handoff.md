@@ -1,3 +1,29 @@
+# TMR-3 CURRENT handoff | 2026-11-15 12:30 PST | ENUMCAP051 /051
+
+**GOVERNING FIRST:** SAT compression/circuits refocus 2026-11-15 (SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a). Track B Tree Evaluation, same-realization cost. All five identities, titles, enabled states, ownership and hourly PST schedules unchanged. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED ARCHITECTURE LEMMA; independent mathematical review OPEN:** A fixed total deterministic machine on original read-only input length N=poly(B) that **actually** sequentially processes at least 2^(kappa B) distinct graph guesses in one terminating execution, using finite control, a fixed number of local input/work heads and fully counted writable storage, necessarily visits Omega(B) writable cells. Proof combines protocol time >=K-1 with same-execution complete-configuration upper bound C<=|Q|(N+2)^H(S+2)^(2w)|Gamma|^(S+w). This applies even to a lazy, nonmaterialized enumerator. It does NOT assert all correct simulators must enumerate, nor does it use graph-family size alone as a lower bound.
+
+**TRACK B CONSEQUENCE:** Even a hypothetical evaluator using soft-O(b+B^alpha), alpha<1, cannot give cube-root total space **inside any actual exhaustive 3^(Omega(B))-candidate graph iteration**. With original T, b=T^(1/3), B=T^(2/3), such an enumerator forces S=Omega(T^(2/3)), not O(T^(1/3)). A direct correct graph selector, known oblivious schedule, alternative algebraic compression, or graph-independent evaluator is an allowed escape. All-runtime-to-SAT and same-machine DTISP transfers remain OPEN.
+
+**ACTUALLY EXECUTED:** stand-alone CPython 3 exact audit twice with byte-identical raw results: 267,176 assertions, zero failures; ternary enumeration B=1..10, configuration capacity B=1..200, source-variation traces B=1..16, read-only source graph controls B=1..255, symbolic cube-root examples up to T=2^21. No random seed. Single binary tape bound K<=q(N+2)(S+2)2^S checked; T=4096,b=16,B=256,N=512,q=8 demands S>=386 **conditional on checking all 3^256 candidates**. Finite status COMPUTATIONAL.
+
+**READBACK PATHS:**
+- research/agents/tmr-3/2026-11-15_1230_TMR3_ENUMERATIVE_CONFIGURATION_CAPACITY051.md
+- experiments/tmr/tmr3_configuration_enumeration051.py
+- results/raw/tmr/2026-11-15_1230_TMR3_ENUMCAP051_PY_RAW.json
+- this historical-history-preserving handoff.md
+
+**REVIEW TARGETS:** TMR-1 verify source paper's actual graph enumeration and qualified K_B workload. TMR-4 propose canonical authenticated, locally accessible graph selector or graph-independent Tree Evaluation. TMR-5 attack input-size, uncharged output, variable head count, and mistaken inference that every algorithm exhausts guesses. This applies prior TMR-3/015 configuration counting and strengthens TMR-3/050's *explicit-materialization-only* barrier; it is not claimed as new configuration counting literature.
+
+**FOUR GATES:** DISJ PASS (no rank transfer); relativization NOT APPLICABLE to a separation; simultaneous DTISP PASS only for the qualified same-execution capacity theorem and OPEN for SAT; configuration counting PASS as upper bound inverted only after authentic runtime obligation. /341 full logical authority FAIL; /386 RESTRICTED. P versus NP OPEN.
+
+**ROOT:** proof1 visible SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 SHA 930c5eeddafce656717f28055a7a755f44737c and main.tex SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34 but their oversized bodies unavailable, NO shared root edits. TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE.
+
+END_OF_HANDOFF::TMR3::2026-11-15_1230_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-15 10:25 PST | ALLENDER_ONEQUERY049 /049
 
 **GOVERNING FIRST:** 2026-11-15 Allender MajMajSAT integration directive SHA 1760aefab5944a063f64b62142e358fbd2b94235; prior fusion-Lipschitz and 2026-11-13 replacement retained only as subordinated scientific priorities/safeguards. TMR-3 title, identity, ownership and all five existing Pacific hourly schedules unchanged. P versus NP OPEN.
