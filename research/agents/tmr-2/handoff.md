@@ -1,3 +1,19 @@
+# TMR-2 CURRENT handoff | 2026-11-14 17:20 PST | EXACT EXPECTED SPARSE-ORACLE MINIMAX032
+
+**NEW EXPECTSPARSE46 PROVED/RESTRICTED; TMR-3/TMR-5 mathematical review OPEN:** For randomized adaptive opaque source-oracle decision distinguishing zero from exactly r positives among M coordinates at two-sided worst-case error δ<1/2, with arbitrary shared local work, the **exact minimum expected distinct reads on zero** is (1-δ) h_{M,r}(δ/(1-δ)), where h is the inverse of the piecewise-linear hypergeometric no-hit curve H(q)=C(M-q,r)/C(M,r). Lower bound conditions on correct zero-source transcripts, applies Jensen on that fraction, and minimizes the convex-inverse perspective; upper bound is a matching mixture of immediate incorrect guessing and uniformly random q/q+1 probes. New objective vs TMR-2/031's fixed worst-case cap.
+
+**NEW ORDINARY-MCSP SHARPER INPUT-INGRESS RESTRICTED TRANSFER:** With full table N=2^n, s=floor(N^mu), 0<mu<1, r=ceil(Ks), K>2mu/(1-mu), and sparse-neighbor YES probability epsilon<=D(n,s)/C(N,r), every YES table and δ-error randomized charged point-bit decider satisfies E[q] >= (1-δ) h_{N,r}((δ+(1-δ)epsilon)/(1-δ)); asymptotic coefficient is (1-δ)log((1-δ)/δ) N/r, versus prior TMR-5/028 log(1/(2δ)) N/r. At δ=1/3: 0.4620981204 vs 0.4054651081, +13.9674%. STILL O(N^(1-mu)), no N^1.01 work bound, no SAT lower bound.
+
+**EXECUTED NATIVE CPython:** experiments/tmr/tmr2_expected_sparse_query046.py, Git blob d639a6859ecacf1a0ff8827669806a39e0d8d1e8, actual immutable raw results/raw/tmr/2026-11-14_1720_TMR2_EXPECTED_SPARSE_QUERY046_RAW.json, blob ceea4556c40851b341604bd7bdeca6c7a7779dfb. 6,524 assertions, 325 independent HiGHS LP optima, 132,242 exhaustive support/query operations, zero failures; finite evidence COMPUTATIONAL. Full report research/agents/tmr-2/2026-11-14_1720_TMR2_EXPECTED_QUERY_MINIMAX032.md.
+
+**PREFLIGHT/CORPUS:** Controlling Nov14 directive FIRST, Nov13 directive, entire root proof1 and recovered authentic large proof2/main Git blobs, AGENTS/CODEX/skill, five handoffs and issue #3 through TMR-1/031. Original CHMY STACS2021 Thm1/2 publisher page 23:3; MMW STOC2019 Thm1.2/1.3 original page 2; original TMR-2/031, TMR-3/031, TMR-5/028 and code/raw, Claude ONETAPE/DIRECTPRODUCT, TMR-4 Walsh moments, TMR-5 syntax forcing. TRACKERS REVIEWED; NO MATERIAL CHANGE. Root main.tex unchanged TMR-5-owned; schedules untouched. P versus NP OPEN.
+
+**PEER/NEXT:** TMR-5 audit good-branch convexity and exact sampler; TMR-3 all source-aware network reads; TMR-4 syntax-aware/compact-algebra countercontrols; TMR-1 threshold mu1/mu2. Next find or falsify an invariant of charged unavoidable **post-input computation** that survives full syntax, sharing, input rereading and recomputation.
+
+END_OF_HANDOFF::TMR2::032::2026-11-14_1720_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-14 16:18 PST | RANDOMIZED FULLY SHARED SPARSE ORACLE MINIMAX031
 
 **NEW RMINIMAX42 PROVED/RESTRICTED symbolic; TMR-4/TMR-5 independent review OPEN:** For a fully shared randomized adaptive **one-bit** source-evaluation algorithm promised zero on M coordinates or exactly r ones, with at most q probes on each random-coin zero transcript, define U=binom(M-q,r)/binom(M,r). Its **exact minimax worst-case error** is U/(1+U); δ-error is possible iff U<=δ/(1-δ), and zero error iff q>=M-r+1. This extends the previous r-sparse independently restarted **output-distance** bound to arbitrary shared adaptive randomized decision. Proof conditions on the zero transcript, counts missed r-sets, and matches using a uniform q-subset sampler with optimally balanced auto-YES probability. **No source syntax, machine-time charge or unrestricted SAT/MCSP proof.**
