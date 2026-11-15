@@ -12,7 +12,7 @@ Predeclared falsifiers: (F1) any legal free VIEW or NOP changes paid identities 
 
 ## 2. Corpus and prior-work boundary
 
-Read FIRST the approved \`research/coordination/2026-11-14_FUSION_LIPSCHITZ_TARIFF_FIVE_AGENT_REFOCUS.md\` (blob \`54c9177fc211dfca6c94d89d6ebbf3f3908809d6\`), then the TMR replacement directive, both root proof trackers, root main.tex, issue #3, AGENTS.md, CODEX.md, repository research skill, all five current TMR handoffs, and relevant original material. The ordinary Contents API supplied empty *bodies* for proof2/main, but the authentic Git blobs were independently recovered and their complete 1,051,196- and 2,545,859-character bodies inspected. Current root blob SHAs: proof1 \`06f7ebc8c2283304a0f5200b518c6e48fa41e343\`, proof2 \`930c5eeddafce656717f28055a7a9a755f44737c\`, main.tex \`6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34\`.
+Read FIRST the approved `research/coordination/2026-11-14_FUSION_LIPSCHITZ_TARIFF_FIVE_AGENT_REFOCUS.md` (blob `54c9177fc211dfca6c94d89d6ebbf3f3908809d6`), then the TMR replacement directive, both root proof trackers, root main.tex, issue #3, AGENTS.md, CODEX.md, repository research skill, all five current TMR handoffs, and relevant original material. The ordinary Contents API supplied empty *bodies* for proof2/main, but the authentic Git blobs were independently recovered and their complete 1,051,196- and 2,545,859-character bodies inspected. Current root blob SHAs: proof1 `06f7ebc8c2283304a0f5200b518c6e48fa41e343`, proof2 `930c5eeddafce656717f28055a7a9a755f44737c`, main.tex `6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34`.
 
 Original direct dependencies: TMR-2/046 fractional versus integer batch covers; TMR-3/046 first authentic last-CHECK-plus-BATCH FUSE; TMR-4/047 dynamic cover and single-gate credit; TMR-5/043 independently computed exact Bellman tariffs; TMR-3/047 newly introduced the *fixed* b-wide FUSE and its exact potential. These are prior results, not claims of this report. The NEW claim is one mixed-width catalogue in a single precisely specified authority, its exact all-state Bellman formula, all seven-coordinate row verification, catalogue-switch credit, and rational primal/dual verification. TMR-1/047's indexed-family theorem and TMR-2/047's physical sign-fusion audit supply explicit hostile uniformity and machine-cost boundaries. Historical /341 remains FAIL as a full UNSAT authority; /386 remains RESTRICTED.
 
@@ -109,7 +109,7 @@ The published matrix includes every physical rule-row instance for the feature c
 
 ## 6. Independent computation and real hostile controls
 
-Executed the exact self-contained V8 function serialized into \`experiments/tmr/tmr4_mixed_catalogue134.js\`. It independently generated the full legal graph, computed Tarjan zero-cost SCCs, quotient edges, recursive cheapest legal completion for every quotient state, all-rule signed potential inequalities, and a separate exact-rational three-dimensional vertex LP. Results: **13 valid case grammars, 55,299 assertions, 8,278 paid rows, 7,364 zero-price rows, 1,841 zero-price SCCs, 94 real signed negative-Gamma rows, zero unexpected failures**. Included singleton, full batch, overlapping triangle, multiwidth catalogue and seven-scale cover controls; the deliberately malformed uncovered grammar was rejected. Every genuine shared identity is a P bit, counted once. All branches preserve AND-scale obligations until an authentic BATCH or FUSE.
+Executed the exact self-contained V8 function serialized into `experiments/tmr/tmr4_mixed_catalogue134.js`. It independently generated the full legal graph, computed Tarjan zero-cost SCCs, quotient edges, recursive cheapest legal completion for every quotient state, all-rule signed potential inequalities, and a separate exact-rational three-dimensional vertex LP. Results: **13 valid case grammars, 55,299 assertions, 8,278 paid rows, 7,364 zero-price rows, 1,841 zero-price SCCs, 94 real signed negative-Gamma rows, zero unexpected failures**. Included singleton, full batch, overlapping triangle, multiwidth catalogue and seven-scale cover controls; the deliberately malformed uncovered grammar was rejected. Every genuine shared identity is a P bit, counted once. All branches preserve AND-scale obligations until an authentic BATCH or FUSE.
 
 Three **genuine shortcuts if independently ADDED to a DIFFERENT rule authority**, independently calculated, are mandatory failing controls:
 
@@ -127,10 +127,10 @@ Logical record work is the number of paid CHECK/BATCH/FUSE/HALT events, with a g
 
 ## 8. Publication and next precise target
 
-- Report: \`research/agents/tmr-4/2026-11-15_0847_TMR4_MIXED_FUSION_CATALOGUE_RATIONAL_TARIFF048.md\`
-- Executed code: \`experiments/tmr/tmr4_mixed_catalogue134.js\`
-- Immutable raw: \`results/raw/tmr/2026-11-15_0847_TMR4_MIXEDFUSE134_V8_RAW.json\`
-- Complete case matrix: \`results/raw/tmr/2026-11-15_0847_TMR4_MIXEDFUSE134_TARIFF_MATRIX.json\`
-- Handoff: \`research/agents/tmr-4/handoff.md\` (prepend; preserve old content).
+- Report: `research/agents/tmr-4/2026-11-15_0847_TMR4_MIXED_FUSION_CATALOGUE_RATIONAL_TARIFF048.md`
+- Executed code: `experiments/tmr/tmr4_mixed_catalogue134.js`
+- Immutable raw: `results/raw/tmr/2026-11-15_0847_TMR4_MIXEDFUSE134_V8_RAW.json`
+- Complete case matrix: `results/raw/tmr/2026-11-15_0847_TMR4_MIXEDFUSE134_TARIFF_MATRIX.json`
+- Handoff: `research/agents/tmr-4/handoff.md` (prepend; preserve old content).
 
 **NEXT:** TMR-3/5 should independently replay the catalogue-switch CHECK loss-of-credit rows and attempt a genuine earlier or repeated FUSE in a physically charged representation. TMR-2 should seek a SAT-specific obstruction beyond authenticated G+q metadata, and TMR-1 should maintain separate every-decider same-input, same-machine transfer. No root tracker or main.tex edits; **TRACKERS REVIEWED; NO MATERIAL CHANGE**. No schedule changes.
