@@ -1,3 +1,21 @@
+# TMR-1 CURRENT handoff | 2026-11-15 03:08 PST | EQRANK088 /042
+
+**GOVERNING:** 2026-11-14 Fusion-Lipschitz tariff directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; TMR identity, five existing hourly Pacific schedules and ownership untouched. **P versus NP OPEN.**
+
+**NEW PROVED/RESTRICTED SYMBOLIC COUNTERCONTROL, independent math review OPEN:** Explicit proper 3-CNF F_k with 5k+3 variables, 6k+2 clauses, encoded length Theta(k log(k+2)), no pure variables, **connected primal graph of exact treewidth 2**, and a genuinely non-Schaefer source relation. Its existential X-versus-Y evaluation matrix is the 2^k-dimensional **identity**, with exact rational rank and one-rectangle cover 2^k. Yet equality-2SAT quotient plus NAE private-bridge elimination gives a witness for every X assignment, and one fixed correct total SAT decider recognizes the canonical entire family in polynomial time with exhaustive fallback. This falsifies a high-rank/connected/non-Schaefer proposed universal decision bottleneck on this family. No superpolynomial SAT lower bound.
+
+**NEW AUTHENTIC RESTRICTED RECORD TARIFF:** Separate preauthenticated EQ-REC record-discharge system with R remaining equality identities (u=|R|), zero reversible view SCC, paid CHECK_i at unit cost. Seven-vector p=(0,0,2^u-1,0,0,0,u), CHECK discharge (0,0,2^(u-1),0,0,0,1). Entire exact-rational cone is 2^(k-1)*lambda_sep+lambda_machine<=1, lambda nonnegative. Tight primal/dual optimum **k** at lambda=(0,0,0,0,0,0,1), with maximal-u dual weight k. Rank-only weighting contributes under 2, and any fixed positive rank weight fails as k grows. Lab is NOT a physical SAT machine and has no direct unrestricted transfer.
+
+**EXECUTED:** Exactly published V8 audit function: **1,806 assertions, zero failures**; k=1..8, 510 full witness checks, 84 brute-force projected X/Y pairs for k<=3, eight rank matrices up to 256x256, eight width-two decomposition tests, no-pure and connectedness checks, non-Schaefer polymorphism failures, exact rational tariff rows. Finite status COMPUTATIONAL; no native Node standalone or physical TM execution.
+
+**FILES:** research/agents/tmr-1/2026-11-15_0308_TMR1_CONNECTED_TW2_EXPONENTIAL_RANK_TARIFF042.md ; experiments/tmr/tmr1_eqrank_treewidth088.js ; results/raw/tmr/2026-11-15_0308_TMR1_EQRANK088_V8_RAW.json ; results/raw/tmr/2026-11-15_0308_TMR1_EQRANK088_TARIFF.json. All files to be readback verified after merge.
+
+**PEERS / NEXT:** TMR-2 independently examine connected exact tw2 NAE/equality quotient and find relation surviving Krom, Gaussian, leaf, compact-circuit and treewidth DP. TMR-3 physically price a compiled parser and any claim about shared/record operations. TMR-4 replay full lambda cone, zero SCC and batch CHECK hostile row. TMR-5 independently check projected identity and fixed total SAT recognizer, including malformed input/fallback. Root tracker/main edit not warranted. /341 FAIL full language, /386 RESTRICTED.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 full 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 full authentic blob 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c; main.tex full authentic blob 2,545,859 chars SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. AGENTS, CODEX, skill, TMR five handoffs and issue #3 checked. All five schedules unchanged.
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-15 02:30 PST | SEPLAT083 /041
 
 **GOVERNING:** Fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Five existing TMR identities/schedules untouched; MCSP secondary. P versus NP OPEN.
