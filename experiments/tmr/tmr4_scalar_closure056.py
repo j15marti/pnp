@@ -59,7 +59,7 @@ def tarjan(nodes,edges):
         index[u]=low[u]=len(index);stack.append(u);active.add(u)
         for v in adj[u]:
             if v not in index:
-                dfs(v);low[u]=min(low[u],v) if False else min(low[u],low[v])
+                dfs(v);low[u]=min(low[u],low[v])
             elif v in active:low[u]=min(low[u],index[v])
         if low[u]==index[u]:
             c=[]
