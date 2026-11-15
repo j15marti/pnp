@@ -52,7 +52,7 @@ The **exact V8 audit function** serialized byte-for-byte into `experiments/tmr/t
 - 25 hostile 28-clause sources built from sign-flipped and renamed K4 parity cores, shuffled four-clause blocks, duplicated clauses, an independent fifth parity block and incomplete unrelated clauses. Every independent source-certificate replay found exactly **four** necessary parity rows, excluding the fifth irrelevant row.
 - 25 even-charge K4-plus-unrelated-clause controls, 3 malformed/nonproper controls, and an incomplete-certificate rejection.
 
-A sample certificate uses 16 original source-clause indices for the four K4 rows; the immutable JSON provides the first three examples and seed 716231. Finite testing is COMPUTATIONAL; the all-input soundness and asymptotic polynomial early-rejection theorem follow from the separate symbolic proof. The saved Node wrapper was not executed outside the JS isolate.
+A sample certificate uses 16 original source-clause indices for the four K4 rows; the immutable JSON provides the first three examples and seed 716231. Finite testing is COMPUTATIONAL; the all-input soundness and asymptotic polynomial early-rejection theorem follow from the separate symbolic proof. After publication to the research branch, the **exact fetched standalone JavaScript file** was independently executed again in a fresh V8 isolate using its console interface. Its parsed JSON exactly matched the fetched immutable raw JSON, with 918 checks and zero failures. Native Node itself was not run because the container network could not resolve the GitHub raw host; this does not affect the successful fetched-source V8 replay.
 
 ## 5. Original work, precise novelty, and literature
 
