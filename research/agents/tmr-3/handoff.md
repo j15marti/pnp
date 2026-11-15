@@ -1,3 +1,17 @@
+# TMR-3 CURRENT handoff | 2026-11-15 01:27 PST | EARLYNEG078 /040
+
+**GOVERNING:** Fusion-Lipschitz directive main blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; all five TMR schedules unchanged; MCSP secondary. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, independent physical review OPEN:** In the SAME strict unary-width/unary-count proper 3-CNF grammar as TMR-3/039 and TMR-4/040, construct opposite-label sources G_t^- and G_t^+ of length N=3t^2+5t+2, differing only in sign bit P-1 where P=26(t+1)=Theta(sqrt N). G_t^- starts with all eight signed clauses on three high-bit-set IDs, hence is UNSAT regardless of later clauses; G_t^+ removes only the all-positive prohibition and is SAT by allzero. Every correct local-head SAT machine must inspect the pivotal bit (T^- >=P); by strict invalid-extension indistinguishability, all accepting machines must inspect the positive endmarker (T^+ >=N+1). A *single fixed correct total SAT decider* can reject G_t^- without reading the suffix/endmarker in O(t log t) transitions and O(log t) writable cells, with a full parser/exhaustive fallback on other inputs. This gives a real sublinear-in-N negative execution and falsifies extending positive-only ENDMARKER074 to NO instances. The old TMR-4 positive theorem remains PASS/RESTRICTED.
+
+**TARIFF:** source-sensitive tau(G^-)=P-1, tau(G^+)=N, r=rightmost inspected input cell, p_interface=max(0,tau-r), p_machine=1[nonhalt]; all other five components zero. Every authentic paid local step gives Delta_interface<=1, genuine fused read+halt gives (1,1), exact two-column conservative cone lambda_interface+lambda_machine<=1, certificate lambda=(0,0,0,0,0,1,0). Initial potentials P and N+1; terminal0 on correct goals. Uniform endmarker potential on negative terminal instead remains N-P>0, hence fails goal preservation. No zero-cost native TM steps. Big input identifiers are not array indexes; dense renaming is a cheap hostile control.
+
+**EXECUTED:** exactly serialized V8 function in experiments/tmr/tmr3_early_negative_ingress078.js, 74,574 assertions and 37,100 sampled physical transition templates, 11 opposite-label pairs, zero failures. Standalone Node wrapper not separately run; no compiled physical TM. Original output results/raw/tmr/2026-11-15_0127_TMR3_EARLYNEG078_V8_RAW.json; matrix results/raw/tmr/2026-11-15_0127_TMR3_EARLYNEG078_TARIFF_MATRIX.json; report research/agents/tmr-3/2026-11-15_0127_TMR3_ASYMMETRIC_PREFIX_INGRESS_TARIFF040.md. Finite tests COMPUTATIONAL; theorem symbolic.
+
+**PEERS/NEXT:** TMR-4 audit source-aware ghost and exact fused tariff; TMR-5 audit malformed extension and binary-counter work-tape runtime; TMR-1 check source grammar/variable ID magnitudes; TMR-2 nonaffine dynamic obstruction. TRACKERS REVIEWED; NO MATERIAL CHANGE. Both trackers and root main.tex unchanged. Historical /341 FAIL, /386 RESTRICTED. Same-machine superpolynomial initial potential and P versus NP OPEN.
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-15 00:28 PST | LASTSAT073 /039
 
 **GOVERNING PRIORITY:** fusion-Lipschitz five-agent refocus blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6, MCSP secondary. Five TMR identities, schedules and ownership unchanged; P versus NP OPEN.
