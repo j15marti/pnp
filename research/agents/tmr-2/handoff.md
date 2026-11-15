@@ -1,3 +1,29 @@
+# TMR-2 CURRENT handoff | 2026-11-15 13:14 PST | UNIQUE-SELECTOR-MULTICUT052 /052
+
+**FIRST PRIORITY:** SAT compression/circuits five-agent directive, main blob 7b8804dc7587abc5134055b5b0d16a143055ca5a. Track A assignment-tensor/basis/multicut experimental scope, with no machine-hardness promotion; P versus NP OPEN. Five identities/schedules unchanged.
+
+**NEW PROVED/EXACT RESTRICTED (independent mathematics peer review OPEN):** For a simple graph G with n original vertices and m>=2 edges, define I_G(x)=AND_{uv in E}(NOT x_u OR NOT x_v) and one uniquely determined selector z=OR_{uv in E}(x_u AND x_v). An explicit unique-extension strict proper 3CNF has V=n+2m+2 variables, C=6m+4 ternary clauses, 18m+12 literal occurrences and O(m) functional gates/wires. For each original-variable partition A:B and every field K, its two fixed-z partial existential contractions are H0=D_G and H1=J-D_G. Thus rank_K(H1)>=rank_K(H0)-1 but after the legal unique-extension selector contraction H0+H1=J has exact rank 1. This is an exact sum/count identity; no uncharged multiplicity or auxiliary padding is involved.
+
+**ALL-BALANCED APPLICATION:** TMR-5/046 already established rank(D_G)>=2^{hn/(6d(d+1))} on every balanced original-variable cut of any degree-d, edge-expansion-h graph. The new selector construction makes BOTH z slices exponential across every such cut, yet the projection is rank one. Explicit constant-degree expander families exist. The formula is SAT for all-zero x, and one fixed uniform total exact decider can recognize the canonical gate/pin grammar and verify the witness in polynomial N work, with exhaustive fallback for every other source. Uniform positive physical-work tariff weight on the two slice ranks is FALSIFIED by telescoping along this authentic short accepting path. It is NOT a one-step physical TM contraction, nor a general machine lower bound.
+
+**COMPUTATIONAL, readback-verified source and raw:** CPython 3.13.5, deterministic revision tmr2_unique_selector_rank052.v1, Q4 sample seed 20261115. 205,760 exact assertions, zero failures; all 452 balanced cuts C6/Q3/Petersen over GF2 and F65521; Q4 12 seeded GF2 balanced cuts; every original graph assignment checked against unique gate extension and wrong selector. Source SHA256 950db74faf3e85c9ac338e3c45cf8a4037d09f2c67b3060a29ff4f7890338e47; raw SHA256 0597a5f0962b4fdd0c127efbea1bff1269e0d5ff76a2a3b5fdcbfd72d2fb1017.
+
+**ARTIFACTS:**
+- research/agents/tmr-2/2026-11-15_1314_TMR2_UNIQUE_SELECTOR_MULTICUT_FIREWALL052.md
+- experiments/tmr/tmr2_unique_selector_rank052.py
+- results/raw/tmr/2026-11-15_1314_TMR2_SELECTOR_RANK052_PY_RAW.json
+- research/agents/tmr-2/handoff.md (this addendum)
+
+**FOUR GATES:** DISJ PASS as hostile falsifier, unrestricted rank transfer FAIL. Relativization PASS for scoped algebra, unrestricted nonrelativizing step OPEN. Same-realization DTISP NOT APPLICABLE to structural algebra, OPEN for forbidden-box route. Configuration counting PASS as an upper-bound-only guard T<=2^{O(s+log N)}. Controls include Horn/2SAT, affine, equality, bounded treewidth, autarky, all products, circuit sharing, local basis invariance, padding and unique-solution rank-one tensor. Historical /341 FAIL as full logical UNSAT authority; /386 RESTRICTED.
+
+**CORPUS:** Governing directive read first, AGENTS/CODEX/research skill, five handoffs, issue #3, original TMR-5/046 induced matching proof/code, TMR-4/051-052, TMR-2/050-051, root proof1 fully read; oversized proof2/main.tex returned valid blobs but empty text, so not fully recovered. TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE. No task/agent changes.
+
+**NEXT TARGET for TMR-3/4:** An execution-sensitive, cheap-quotient-aware obstruction with physically sound all-transition tariff, after eliminating one functional selector and compact shared circuitry; falsify on DISJ, Horn expander and unique-selector construction before promoting restricted circuit transfers.
+
+END_OF_HANDOFF::TMR2::2026-11-15_1314_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-15 12:20 PST | IPFIELD051 /051
 
 **GOVERNING FIRST:** 2026-11-15 SAT compression/circuits directive SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a. Track A primary, TMR identity/title/ownership and five enabled hourly Pacific schedules preserved. P versus NP OPEN.
