@@ -1,6 +1,6 @@
 # TMR-2/052: One unique selector collapses exponential all-balanced-cut slice ranks
 
-**2026-11-15 13:14 PST | PNP Information Necessity | Track A | \`tmr2_unique_selector_rank052.v1\`.**
+**2026-11-15 13:14 PST | PNP Information Necessity | Track A | `tmr2_unique_selector_rank052.v1`.**
 
 **Status:** **PROVED/EXACT for the scoped symbolic algebra and strict 3-CNF construction**, independent mathematical review OPEN. Benchmarks COMPUTATIONAL. The proposed unrestricted rank-to-SAT-work implication is **FALSIFIED** by a polynomial-work shortcut. P versus NP OPEN.
 
@@ -66,8 +66,8 @@ For any constant-degree expander subfamily, the left rank sum is >=2^{r+1}-3. Th
 
 ## Exact finite benchmark
 
-Reproducer: \`experiments/tmr/tmr2_unique_selector_rank052.py\`, executed Python 3.13.5, revision \`tmr2_unique_selector_rank052.v1\`, source SHA-256 \`950db74faf3e85c9ac338e3c45cf8a4037d09f2c67b3060a29ff4f7890338e47\`.
-Raw JSON: \`results/raw/tmr/2026-11-15_1314_TMR2_SELECTOR_RANK052_PY_RAW.json\`, SHA-256 \`0597a5f0962b4fdd0c127efbea1bff1269e0d5ff76a2a3b5fdcbfd72d2fb1017\`.
+Reproducer: `experiments/tmr/tmr2_unique_selector_rank052.py`, executed Python 3.13.5, revision `tmr2_unique_selector_rank052.v1`, source SHA-256 `950db74faf3e85c9ac338e3c45cf8a4037d09f2c67b3060a29ff4f7890338e47`.
+Raw JSON: `results/raw/tmr/2026-11-15_1314_TMR2_SELECTOR_RANK052_PY_RAW.json`, SHA-256 `0597a5f0962b4fdd0c127efbea1bff1269e0d5ff76a2a3b5fdcbfd72d2fb1017`.
 Deterministic Q4 seed: **20261115**. No other randomness.
 
 The code independently generates actual strict-3CNF clauses, checks AND/OR/pin truth tables, evaluates every original assignment and its unique gate extension, rejects every wrong selector flip, enumerates all balanced cuts up to transpose for three graphs, constructs the full Boolean slice matrices, and computes **exact** GF(2) and F_65521 ranks. Q4 uses a 12-cut seeded balanced sample and exact GF(2) elimination. The proof is symbolic and does not rely on those finite cases.
@@ -94,7 +94,7 @@ Total **464 cuts, 205,760 assertions, zero failures**, including 452 two-field e
 
 ## Corpus, priority and next lemma
 
-Read FIRST the current 2026-11-15 SAT compression/circuit directive SHA \`7b8804dc7587abc5134055b5b0d16a143055ca5a\`. Reviewed root proof1 SHA \`06f7ebc8c2283304a0f5200b518c6e48fa41e343\`, proof2 SHA \`930c5eeddafce656717f28055a7a9a755f44737c\`, main.tex SHA \`6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34\`, AGENTS.md, CODEX.md, repository research skill, latest five TMR handoffs, issue #3, historical selector work, original TMR-5/046 proof and Python, TMR-4/051-052 and TMR-2/050-051 originals. Connector returned **empty bodies** for oversized proof2/main.tex, so their full contents were not recovered. No main or tracker edit is authorized. **TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE.**
+Read FIRST the current 2026-11-15 SAT compression/circuit directive SHA `7b8804dc7587abc5134055b5b0d16a143055ca5a`. Reviewed root proof1 SHA `06f7ebc8c2283304a0f5200b518c6e48fa41e343`, proof2 SHA `930c5eeddafce656717f28055a7a9a755f44737c`, main.tex SHA `6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34`, AGENTS.md, CODEX.md, repository research skill, latest five TMR handoffs, issue #3, historical selector work, original TMR-5/046 proof and Python, TMR-4/051-052 and TMR-2/050-051 originals. Connector returned **empty bodies** for oversized proof2/main.tex, so their full contents were not recovered. No main or tracker edit is authorized. **TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE.**
 
 **Duplication:** TMR-5/046 already proved all-balanced-cut graph rank, and TMR-4/051-052 already bounded fixed-order BDD cuts and variable-switch products. TMR-2/050-051 established prescribed-order and field-dependent traps. The **new** theorem is *two simultaneously high-rank selector slices across every balanced cut, one functional unique-extension bit, and rank-one projection*, with an exact 3CNF ledger and independent two-field benchmark. It is not a P-versus-NP proof or a claim of first discovery in the external literature. Historical /341 remains FAIL as full logical UNSAT authority, /386 RESTRICTED. All five identities, titles, ownership and schedules unchanged.
 
