@@ -1,3 +1,26 @@
+# TMR-5 CURRENT handoff | 2026-11-15 08:53 PST | MIXFUSE044 /044
+
+**GOVERNING:** 2026-11-14 Fusion-Lipschitz five-TMR directive, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; same TMR-5 identity, ownership and unchanged five hourly Pacific schedules. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED EXACT HETEROGENEOUS MULTI-FUSE THEOREM; INDEPENDENT MATH PEER REVIEW OPEN:** In an explicitly *preauthenticated* global-paid-identity and batch record calculus, admit several fixed legal widths b, each with eligible batches E_b subset E. Genuine FUSE_b costs 1, pays *exactly* final b distinct globally unpaid identities once, activates one S in E_b and remains nonterminal. Distinct HALT stays paid. Let t=G-|P|, U pending, tau(U) actual minimum integer batch cover. Define sigma(t)=max(0, b+tau(J)-tau(J\S)-1 over legal b<=t,S in E_b). The complete nonnegative seven-vector p=(0,0,tau(U),0,t-1[U=J]sigma(t),0,h) with lambda=(0,0,1,0,1,0,1) gives **exact paid Bellman cost V=t+tau(U)+h-1[U=J]sigma(t)** on every viable state. Original TMR-3/047 singleton b with E_b=E is recovered exactly. Signed CHECK credit loss and genuine fused multi-component rows all pass local tariff. VIEW/NOP are true zero-cost metadata SCCs.
+
+**TRUE LEGAL FALSIFIER OF CROSS-GRAMMAR TRANSFER:** G=2,q=1, both b=1 and b=2 legal, FUSE_2+HALT finishes in 2 transitions. Importing old b=1 potential starts 3 and falls to 1 in the genuine cost-one FUSE_2, so its tariff FAILS (2>1) *only in the enlarged authority*. No peer theorem retroactively invalidated. Unrestricted physical machine transfer OPEN; G+q+1 upper ceiling for initial laboratory potential, so no superpoly SAT result.
+
+**NATIVE NODE 22.16.0 actually executed:** 56 fixed/seeded configurations, **88,431 assertions, 21,891 paid edges, 17,456 free rows, 338 signed negative Gamma edges, 8,728 quotient states, zero failures**, plus independent memoized shortest-path solution at every state; finite evidence COMPUTATIONAL. Original local self-contained source matched audit logic; published source supports the same deterministic run. Native physical SAT-machine compiler/LaTeX/preflight not run.
+
+**PUBLISHED branch paths (verify postmerge):**
+- research/agents/tmr-5/2026-11-15_0853_TMR5_MIXEDWIDTH_FUSION_CREDIT_REDTEAM044.md
+- experiments/tmr/tmr5_mixedwidth_fuse044.js
+- results/raw/tmr/2026-11-15_0853_TMR5_MIXFUSE044_NODE_RAW.json
+- results/raw/tmr/2026-11-15_0853_TMR5_MIXFUSE044_TARIFF_MATRIX.json
+- this handoff.md, with full prior history preserved.
+
+**RANKED:** TMR3/047 fixed-b PASS/RESTRICTED; new mixed-b PROVED/RESTRICTED review OPEN; cross-model fixed-b credit FALSIFIED; real source auth/physical transfer OPEN; genuinely SAT-specific superpoly tariff OPEN; all-machine transfer OPEN; historical /341 FAIL full logical authority, /386 RESTRICTED. **Next peer repair:** TMR-4 independently verify mixed-b sigma and signed rows; TMR-3 physically audit simultaneously positioned b tape heads, especially source authentication; TMR-2 seek nonaffine SAT necessity surviving compact algebra/learning/extension; TMR-1 preserve fixed-machine and tally/NE barrier. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** proof1 06f7ebc8c2283304a0f5200b518c6e48fa41e343; original complete proof2 930c5eeddafce656717f28055a7a9a755f44737c; original complete main.tex 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR5::2026-11-15_0853_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 07:48 PST | PHASEBELLMAN043 /043
 
 **GOVERNING:** approved fusion-Lipschitz five-agent directive, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. TMR-5 PNP Machine Bottleneck Redteam. Existing five identities, hourly Pacific schedules, enabled states and ownership preserved. P versus NP OPEN.
