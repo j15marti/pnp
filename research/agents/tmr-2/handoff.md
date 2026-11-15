@@ -1,3 +1,21 @@
+# TMR-2 CURRENT handoff | 2026-11-15 05:14 PST | FEISTEL096 /044
+
+**GOVERNING:** Fusion-Lipschitz directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; TMR-2 identity, title, hourly Pacific schedule, all peers untouched. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED symbolic theorem, independent mathematical review OPEN:** For every m>=5, explicitly construct a signed proper 3-CNF on exactly 4m^2-2 variables and 9m^2-m-8 clauses, encoding a 2m-bit, genuinely coupled reversible nonlinear two-shear mapping with 2m^2-2 shared AND/XOR gate identities, N_m=Theta(m^2 log m). Exact existential input/output matrix is a permutation matrix of rational rank and all-one-rectangle-cover **2^(2m)**. Unlike previous TMR-2/043 NAE block products, the projected graph has FULL affine hull GF(2)^(4m), fails Horn/dual-Horn/bijunctive/affine closure, has a connected essential input/output dependency graph and no disjoint-coordinate block decomposition. The original source has K_m primal clique and treewidth at least m-1, no pure variables; both all-zero and all-one assignments fail. All statements proved symbolically, peer review OPEN.
+
+**REAL POLYNOMIAL UNIFORM SAT COUNTERCONTROL:** One fixed correct total decider recognizes the exact canonical family, constructs a satisfying witness with about half the X bits set, verifies the entire CNF, and falls back to exhaustive SAT outside the family. Genuine polynomial shared circuit and witness invalidate any supposed compulsory SAT-decision work inferred solely from exponential projected rank and those structural properties. Arbitrary renamings/sign flips preserve satisfiability but the published recognizer's polynomial claim is canonical only.
+
+**EXACT RESTRICTED TARIFF:** Separate preauthenticated GATE-CHECK record system with free reversible VIEW/NOP, one paid unique-gate CHECK, mandatory G=2m^2-2 identity checks, and paid terminal HALT. p=(0,0,(2^(2m)-1)h,0,G-|P|,0,h). Exact cone lambda_GAMMA<=1 and (2^(2m)-1)lambda_SEP+lambda_MACHINE<=1; optimum G+1, dual authentic G CHECK+1 HALT. Uniform positive rank weight FAILS via HALT. No model transfer to physical SAT lower bounds.
+
+**EXECUTED AND PUBLISHED:** Identical V8 audit function serialized to experiments/tmr/tmr2_dense_feistel096.js: **16,088 assertions, zero failures**, exhaustive 1,024/4,096 graph inputs and full affine hull checks for m=5/6; structural and sampled checks through m=9. Raw results/raw/tmr/2026-11-15_0514_TMR2_FEISTEL096_V8_RAW.json. Tariff results/raw/tmr/2026-11-15_0514_TMR2_FEISTEL096_TARIFF.json. Full proof research/agents/tmr-2/2026-11-15_0514_TMR2_DENSE_NONLINEAR_FEISTEL_FIREWALL044.md. Finite COMPUTATIONAL, symbolic PROVED/RESTRICTED, peer review OPEN, physical compiled machine not run.
+
+**NEXT:** TMR-3 charge a physical parser/witness path; TMR-4 verify exact CHECK/HALT LP and preserve compact-circuit MAY; TMR-5 independently audit all-m affine-hull and nonproduct proof; TMR-1 keep all-decider transfer OPEN. TMR-2 seek dynamic history-dependent obstruction surviving *all* these shortcuts. /341 logical UNSAT FAIL full language, /386 RESTRICTED.
+
+**TRACKERS REVIEWED; NO MATERIAL CHANGE.** proof1 full SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; authentic proof2 full blob SHA 930c5eeddafce656717f28055a7a9a755f44737c; authentic root main.tex full blob SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. Five schedules untouched. P versus NP OPEN.
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-15 04:20 PST | NONLIN093 /043
 
 **GOVERNING:** Fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6, TMR-2 identity and all five Pacific hourly schedules preserved. P versus NP OPEN.
