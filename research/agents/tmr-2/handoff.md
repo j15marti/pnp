@@ -1,3 +1,19 @@
+# TMR-2 CURRENT handoff | 2026-11-14 19:20 PST | EDGE-QUANTILE050 typical-YES two-sided MCSP input probe frontier034
+
+**SCIENTIFIC STATUS: PROVED/RESTRICTED, TMR-3/TMR-5 independent mathematical review OPEN; P versus NP OPEN.** Source attribution correction: MAGRED-EDGEADAPT8 (2026-10-18) ALREADY proved the full adaptive source query coupling E q >=(1-2delta)(N-log|Y|) when averaged over exact ordinary MCSP YES. **New in /034** is the explicit typical-YES quantile: for t>0 at least fraction 1-log2|Y|/t of YES tables have expected charged source reads >=(1-2delta)(N-t). With s=floor(N^mu), t=N^(1-(1-mu)/2), a 1-o(1) fraction of YES requires (1-2delta-o(1))N source bit reads even for two-sided constant-error, fully adaptive, random-access machines with arbitrary workspace. The original edge theorem is NOT claimed as new. This is still only exponent one, not CHMY small-mu1 N^1.01 decision lower bound.
+
+**NEW HOSTILE COUNTERCONTROL:** Exact enumeration of <=2 unrestricted binary-gate functions on n=3 inputs yields 152 YES strings; constant-zero table has all eight single-bit neighbors YES and ZERO opposite-label one-bit neighbors. The old MAGRED tiny NAND tests were basis/threshold restricted and do not justify an all-YES singleton-neighbor lemma. TMR-2/033 all-YES one-sided acceptance-fiber theorem remains separate and stronger under zero false positives.
+
+**NATIVE CPython:** original executed experiments/tmr/tmr2_edge_boundary_audit050.py (Git blob 8ee44ed7f31647e307840fea4c3d5d129390afbf); raw results/raw/tmr/2026-11-14_1915_TMR2_EDGE_BOUNDARY050_RAW.json (blob 6fbc8ba7387e50246a73198602dae46ae17bf60d); 66,479 assertions, zero failures, exhaustive all 65,790 nonempty induced subsets of 3/4-dimensional Boolean cubes plus exact tiny-gate classes. Report research/agents/tmr-2/2026-11-14_1920_TMR2_MCSP_EDGE_QUANTILE_COUNTERCONTROL034.md. Finite tests COMPUTATIONAL, not compiled TM execution or asymptotic proof.
+
+**PREFLIGHT:** Controlling Nov14 MCSP directive FIRST and rechecked SHA 1e11aa64a0b0d635a65cea58500b09f2b0fe010a, Nov13 replacement, AGENTS/CODEX/skill, issue #3, five latest peer handoffs, both proof trackers, canonical main and original MAGRED/TMR/Claude/Grok/legacy counterexamples; CHMY STACS2021 primary Theorems 1-2 and MMW STOC2019 primary original inspected. proof1 complete SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 authentic 1,051,196-char blob 930c5eeddafce656717f28055a7a9a755f44737c; main.tex authentic 2,545,859-char blob 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. **TRACKERS REVIEWED; NO MATERIAL CHANGE**; canonical main.tex and existing schedules untouched.
+
+**NEXT/PEER:** TMR-5 audit quantile proof and basis-sensitive falsifier; TMR-3 audit source-bit total work and max K parallel elapsed-time transfer; TMR-4 check exact both-label syntax-aware SAT-to-small-mu ordinary MCSP bridge; TMR-1 verify theorem thresholds and N vs L encoding. General MCSP post-ingress N^1.01 time premise OPEN.
+
+END_OF_HANDOFF::TMR2::034::2026-11-14_1920_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-14 18:14 PST | ONE-SIDED ORDINARY-MCSP ACCEPTANCE FIBERS033
 
 **NEW ACCEPT-FIBER49 PROVED/RESTRICTED, independent TMR-5/TMR-3 mathematical audit OPEN:** For ordinary exact MCSP on arbitrary full truth tables $N=2^n$, $s=\lfloor N^\mu\rfloor$, $0<\mu<1$, let $Y\le D(n,s)=(s+1)(n+s+2)[3(n+s+2)^2]^s$, $\log_2 D=o(N)$. Any fixed randomized *bit-access* decider with NO false-positive acceptance on MCSP NO inputs, and YES acceptance probability at least $1-\delta$, must on **each YES input** read at least $N-\lfloor\log_2D\rfloor$ distinct bits with probability at least $1-\delta$, giving expected bit reads $(1-\delta-o(1))N$. This extends the prior deterministic exact FIBER27/TMR-2/026 result to **one-sided randomization** without TMR-3/032's physical one-way input-head assumption, but does **not** apply to constant two-sided error and does **not** prove $N^{1.01}$ MCSP decision time.
