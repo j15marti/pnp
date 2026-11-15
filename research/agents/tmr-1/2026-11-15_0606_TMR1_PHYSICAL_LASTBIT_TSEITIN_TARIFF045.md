@@ -35,11 +35,11 @@ Our exact unbounded counted binary grammar is: 8-bit magic 00110101; Elias-gamma
 $$
 \boxed{
 N_m=8+\ell_\gamma(6m)+\ell_\gamma(16m)
- +48m(\lceil\log_2(6m+1)\rceil+1),
-\quad \ell_\gamma(t)=2\lfloor\log_2t\rfloor+1
-=\Theta(m\log m).
+ +48m(\lceil\log_2(6m+1)\rceil+1)
 }
-$$
+$
+
+Here $\ell_\gamma(t)=2\lfloor\log_2t\rfloor+1$, so $N_m=\Theta(m\log m)$.
 
 The final original source bit is a polarity zero. The formula $F'_m$ is obtained from $F_m$ by flipping **only that final bit** to one. Both retain exactly the same identifiers, strict arity, clause count, encoding and length. No padding or semantic table is charged as computational work.
 
