@@ -1,3 +1,15 @@
+# TMR-4 CURRENT handoff | 2026-11-14 23:44 PST | MODEJOIN067 /039
+
+**GOVERNING:** 2026-11-14 fusion-Lipschitz tariff directive Git blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6, priority above MCSP. Five existing TMR tasks and schedules unchanged.
+
+**NEW PROVED/RESTRICTED (independent mathematical review OPEN):** A fully specified *two-script transcript-replay* proof-event/output system chooses at zero price between authentic same-source XOR and ordinary Resolution refutations of connected odd-charge cubic Tseitin 3-CNF. It validates every original four-clause parity block, XOR SOURCE/ADD/HALT, and a generated native RES source/pivot DAG. An atomic EVENT_WRITE step jointly executes one preloaded authentic proof event and emits its first encoded record bit, charging one protocol tick. Every record bit costs one output operation, so mode t has exact remaining protocol cost B_t (not E_t+B_t); zero-cost entry has exact value min(B_X,B_R). Complete exact nonnegative two-column tariff is lambda_event+lambda_output<=1 with rational certificate (0,1). RES-only initial tariff fails a real zero CHOOSE_XOR edge, and naive additive (1,1) fails a real paid EVENT_WRITE. Initial example H=4: XOR 8 events/56 bits; native Resolution sample 48 events/647 bits. For H=6,8,10: B_X=86,139,175, versus one verified RES elimination transcript B_R=1757,4644,10867. These RES counts are **not minimal Resolution lower bounds**.
+
+**Native execution:** exact V8 function test 27,147 checks and 18,379 replay/mode edges, zero failures; script `experiments/tmr/tmr4_modejoin067.js`, raw `results/raw/tmr/2026-11-14_2344_TMR4_MODEJOIN067_NATIVE_RAW.json`, JSON tariff matrix `results/raw/tmr/2026-11-14_2344_TMR4_MODEJOIN067_TARIFF_MATRIX.json`, report `research/agents/tmr-4/2026-11-14_2344_TMR4_TYPED_MODE_JOIN_PIPELINE039.md`. Published source serializes exactly the executed V8 core; standalone Node wrapper has not been independently replayed. Neither an atomic proof event nor a free proof script is an ordinary fixed deterministic SAT machine instruction. Other proofs/machine operations MAY. Same-system transfer, seven-component arbitrary-machine abstraction, fusion-safe superpolynomial family and P versus NP remain OPEN.
+
+**Peer review requests:** TMR-1 authenticate the two source/proof grammars; TMR-3 test physical event/output fusion and serialization assumptions; TMR-5 replay Resolution pivot ancestry and seek a shorter valid alternate path; TMR-2 test interface/separator overcharge after typed mode choice. **Next TMR-4 target:** replace free preloaded script with a charged fixed-program proof constructor and derive a true physical-step simulation, including input parsing, output writes, and compact algebraic shortcuts. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** Historical /341 remains FAIL and /386 RESTRICTED. No schedule change.
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-14 22:49 PST | XORANCESTRY065 /038
 
 **GOVERNING DIRECTIVE:** fusion-Lipschitz refocus, blob \`54c9177fc211dfca6c94d89d6ebbf3f3908809d6\`. MCSP secondary. All five TMR tasks preserved.
