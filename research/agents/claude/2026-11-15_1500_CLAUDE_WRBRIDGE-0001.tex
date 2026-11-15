@@ -1,0 +1,95 @@
+% CLAUDE REPORT::WRBRIDGE-0001::2026-11-15T15:00Z
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}\newtheorem{definition}{Definition}
+\title{Worst-case minimum derivation cost $\overline W_R(N)$:\\ what the conditional bridge can and cannot buy}
+\author{Claude scheduled routine, run WRBRIDGE-0001}
+\date{2026-11-15}
+\begin{document}\maketitle
+
+\paragraph{Status line.} P versus NP remains \textbf{OPEN}. Nothing here proves a lower bound for an arbitrary SAT algorithm. Status labels: PROVED/EXACT, KNOWN THEOREM, COMPUTATIONAL, CONDITIONAL, CANDIDATE, OPEN, FALSIFIED/RETIRED.
+
+\section{Target}
+For a fixed sound inference system $R$ on signed (multisign) clause hypergraphs,
+\[
+\overline W_R(N)=\max_{F\in\mathrm{UNSAT},\,|\langle F\rangle|\le N}\ \min_{\pi:F\vdash_R\bot}\operatorname{cost}_R(\pi),
+\qquad
+\text{Bridge}(R):\ \ \mathrm{SAT}\in\mathrm P\Rightarrow \overline W_R(N)\le\mathrm{poly}(N).
+\]
+The minimum over $\pi$ charges nothing for finding the best derivation, as the directive asks. Every reduction step of the multisign DAG hypergraph calculus is local and checkable in polynomial time. So $R$, with the derivation as its proof, is a Cook--Reckhow propositional proof system. $\overline W_R$ is then its worst-case proof complexity function. In particular $\overline W_R\le\mathrm{poly}$ means $R$ is polynomially bounded.
+
+\section{Results}
+\begin{proposition}[Bridge $\Leftrightarrow$ conditional optimality; PROVED/EXACT, folklore]\label{p:eq}
+For every Cook--Reckhow system $R$:
+\[
+\mathrm{Bridge}(R)\iff\bigl(\mathrm P=\mathrm{NP}\Rightarrow R\text{ is p-optimal}\bigr)\iff\bigl(\mathrm P=\mathrm{NP}\Rightarrow R\text{ p-simulates every proof system}\bigr).
+\]
+\end{proposition}
+\begin{proof}
+Assume $\mathrm P=\mathrm{NP}$ throughout.
+($\Rightarrow$) Suppose $R$ is p-bounded with bound $p$. Take a proof $\rho$ of $F$ in any system $Q$. Finding an $R$-refutation of $F$ of size $\le p(|F|)$ is an NP search problem. Under $\mathrm P=\mathrm{NP}$ it is solvable in polynomial time by self-reduction. This gives a polynomial-time translation, so $R$ p-simulates $Q$ and is p-optimal.
+($\Leftarrow$) Let $A$ be a polynomial-time SAT decider. Define the system $P_A$: a proof of $F$ is $1^{|F|}$, accepted iff $A(F)=0$. $P_A$ is p-bounded. If $R$ p-simulates $P_A$, then $R$ is p-bounded.
+\end{proof}
+
+\begin{corollary}[No-shortcut corollary; PROVED/EXACT]\label{c:weak}
+Let $R$ be any system with an unconditional superpolynomial lower bound on $\overline W_R$: resolution (Haken 1985), cutting planes, bounded-depth Frege, polynomial calculus, Res$(k)$. Then $\mathrm{Bridge}(R)$ is logically equivalent to $\mathrm P\ne\mathrm{NP}$.
+If the multisign DAG hypergraph calculus has only resolution-type signed-hyperedge merges, it is simulated by resolution or by Res$(k)$. Its bridge is then exactly as hard as the original problem.
+\end{corollary}
+\begin{proof}
+The consequent of the bridge is false. So the bridge holds iff its antecedent fails.
+\end{proof}
+
+\begin{corollary}[Factorisation through NP$\neq$coNP; PROVED/EXACT]\label{c:fact}
+For a system $R$ with no known superpolynomial lower bound, such as Frege or extended Frege (EF), the route has two halves:
+\[
+\underbrace{\overline W_R\ne\mathrm{poly}}_{\Rightarrow\ \mathrm{NP}\ne\mathrm{coNP}}\quad+\quad\mathrm{Bridge}(R)\ \Longrightarrow\ \mathrm P\ne\mathrm{NP}.
+\]
+The lower-bound half alone implies NP$\neq$coNP (Cook--Reckhow 1979). That statement is not known to follow from P$\neq$NP.
+\end{corollary}
+\noindent The plan is valid. However, its lower-bound half is at least as strong as NP$\neq$coNP. Choosing the best sequence for free is exactly what turns a time measure into a co-nondeterministic proof-length measure.
+
+\begin{proposition}[Feasible bridge for EF; KNOWN THEOREM (Cook 1975; Krajíček--Pudlák 1989), restated]\label{p:ef}
+Let $A$ be a polynomial-time algorithm, and suppose Cook's theory $\mathrm{PV}$ proves $\forall F\,[A(F)=0\to F\text{ unsatisfiable}]$. Then EF has polynomial-size refutations of every $F$ with $A(F)=0$.
+Hence: if SAT is in P via a PV-provably sound decider, then $\overline W_{\mathrm{EF}}\le\mathrm{poly}$.
+\end{proposition}
+\noindent The bridge is therefore \textbf{CONDITIONAL} for EF, with the condition being feasible provability of soundness. It is \textbf{OPEN} for EF in general. By Prop.~\ref{p:eq}, the unconditional EF bridge is equivalent to ``$\mathrm P=\mathrm{NP}\Rightarrow$ EF is p-optimal''. That question is open in the literature.
+
+\textbf{The weakest sufficient transfer theorem in this framework is:} \emph{every polynomial-time SAT decider has a soundness proof in $\mathrm{PV}$.} Equivalently, ``P$\ne$NP via EF lower bounds'' requires ruling out P-time deciders whose correctness is unprovable in PV.
+
+\section{Computational illustration (COMPUTATIONAL)}
+Script: \texttt{experiments/claude\_wr/tree\_res\_minsize.py}. For $R$ = tree-like resolution (which equals DPLL without learning), it compares the exact minimum refutation size (the best branching tree, found by exhaustive search over restrictions) with a fixed-order DPLL.
+\begin{center}\begin{tabular}{lrrrr}
+instance & $n$ & clauses & min tree nodes & fixed-order DPLL\\\hline
+PHP$^{2}_{1}$ & 2 & 3 & 5 & 5\\
+PHP$^{3}_{2}$ & 6 & 9 & 21 & 29\\
+PHP$^{4}_{3}$ & 12 & 22 & 85 & 197\\
+rand 3-CNF ($\alpha=6$), 3 seeds & 6/8/10 & 36/48/60 & 17--33 & 45--263
+\end{tabular}\end{center}
+For $m\le3$ the PHP minima equal $(4^{m+1}-1)/3$. This is only an observation on three points, not a proved formula. The gap between the free-strategy minimum and the fixed strategy grows quickly. The ``free best sequence'' therefore strictly lowers the measured cost: it is a nondeterministic resource.
+Each run took under 30\,s (one invocation per family and size). Raw data: \texttt{results/raw/claude\_wr/2026-11-15\_WR\_*.json}.
+
+\section{Barrier-transfer literature preflight}
+Obstacles: (O1) proving superpolynomial lower bounds for strong $R$ (Frege or EF); (O2) transfer from arbitrary algorithms to $R$-proofs.
+\begin{itemize}
+\item Directly transferable: Cook--Reckhow 1979; Haken 1985; Cook 1975; Krajíček--Pudlák 1989 (PV and EF correspondence, optimal-system questions); CDCL $\equiv$ resolution (Pipatsrisawat--Darwiche 2011).
+\item Recent (checked 2026-11-15): Håstad--Risse (rev.\ 2025), bounded-depth Frege lower bounds for Tseitin; Lu--Santhanam--Tzameret (ECCC 2025/134) on AC$^0[p]$-Frege; Davis--Robere (ECCC 2026/055) on Res(log) and depth-$d$ Frege; arXiv 2506.16956, NP-hardness of the proof-analysis problem for EF. None gives a Frege or EF lower bound or a bridge.
+\item Structural analogy (needs a new theorem): automatability. Under P=NP every system is automatable. A bridge would need the converse direction: algorithm $\Rightarrow$ proof.
+\item Failed transfer: lower bounds for unlink or knot detection (the topology handoff), which are not proof-length lower bounds. PQ ledger items 1--7 do not supply the required PV-provability statement (FAILED TRANSFER).
+\end{itemize}
+
+\section{Corpus reviewed; duplication and contradiction audit}
+\textbf{Read:} AGENTS.md; the root \texttt{main.tex} ownership map (LSPV-1..5 and TMR-1..5 regions); the TMR-5 handoff (2026-11-15 EOFWRITE101/041); git history through \texttt{f2b95c69}; the Claude world ledger rows L01--L40; LSPV-5 reports that used the same five-role assignment (2026-11-10 to 2026-11-13).
+\textbf{Duplication:} the Cook--Reckhow equivalence is standard. Its explicit pairing with the $\overline W_R$ bridge and with Cor.~\ref{c:weak} was not found in the ledger rows. These are new ledger candidates, not new mathematics.
+\textbf{Contradictions:} none found. The TMR physical tariffs concern restricted machine models and are consistent with this report.
+\textbf{What changed relative to root main:} nothing. This routine owns no \texttt{main.tex} region, and the report edits none.
+\textbf{Adopted / rejected / retired:} adopted the $\overline W_R$ definition. Retired as a P$\ne$NP route: ``bridge for resolution-strength $R$'' (equivalent to the goal itself). Kept OPEN: the EF and Frege bridge.
+\textbf{Stale or overstated claims found:} none checked in this run.
+
+\section{Open arrows}
+(A1) $\overline W_{\mathrm{EF}}$ superpolynomial: OPEN; it implies NP$\neq$coNP. (A2) Bridge(EF) without the PV-provability hypothesis: OPEN. (A3) P versus NP: \textbf{OPEN}.
+
+\end{document}
+% END_OF_VERIFIED_REPORT::CLAUDE::WRBRIDGE-0001
