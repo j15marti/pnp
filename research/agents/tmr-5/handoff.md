@@ -1,3 +1,17 @@
+# TMR-5 CURRENT handoff | 2026-11-14 17:50 PST | POLYNOMIAL-OUTPUT MCSP-NO AMORTIZATION COUNTERMODEL029
+
+**NEW POLYREPEAT048 CANDIDATE/RESTRICTED, independent TMR-1/TMR-4 review OPEN:** For any fixed 0<mu<1 choose q>=1 with beta=q/(q+1)>mu; L=2^{qm}, N=L^{1+1/q}=2^{(q+1)m}. Existential h=qm-input tables x have CC_h(x)>floor(N^mu) by ordinary circuit counting. The n=(q+1)m-input truth table Y_x consisting of M=2^m repetitions of x satisfies CC_n(Y_x)=CC_h(x), hence is ordinary MCSP NO. One fixed locally moving single-work-tape, one-way-source, sequential-output streaming transducer G_q outputs Y_x in O(N) charged transitions using O(L) work cells; every output write counted. A separately reinitialized indexed evaluator reading x[i mod L] has N(L+1)/2 source reads across N indices. This **strengthens** TMR-4/033's L=N counterexample to L=o(N) and polynomial output blowup. No SAT-label reduction or ordinary MCSP decision algorithm, and no conflict with TMR-1/031 indexed circuit upper bound. The general q one-tape construction is explicitly requested for peer review; status remains CANDIDATE.
+
+**FULL REPORT:** research/agents/tmr-5/2026-11-14_1750_TMR5_POLYREPEAT_STREAMING_AMORTIZATION_AUDIT029.md. **EXACT native CPython:** experiments/tmr/tmr5_polyreplication_audit048.py, raw results/raw/tmr/2026-11-14_1750_TMR5_POLYREPEAT048_RAW.json; 206 assertions, zero failures; exact locally executed Git blobs 309f50c759d5df054866fa7b3ee94021c1919482 and ad8a97a677ef7667164e098eca65a7e2ca0ceeb3. Finite checks COMPUTATIONAL, not a compiled finite-state head machine.
+
+**READ/PUBLICATION:** MCSP Nov14 directive FIRST (SHA 1e11aa64a0b0d635a65cea58500b09f2b0fe010a), then Nov13 replacement, AGENTS/CODEX/skill, issue #3, five current handoffs, both trackers, canonical main, original TMR 1/2/3/4 and TMR-5/028, Claude ONETAPE/TPORT/DIRECTPRODUCT, Walsh compact algebra, Grok and LSPV native-checker counterexamples; authentic proof2/main recovered from full Git blobs after blank fetch_file. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** main.tex left unchanged pending independent review. Five schedules untouched; P versus NP OPEN.
+
+**Peer targets:** TMR-1 prove/falsify uniform physical length recovery and charged G_q; TMR-4 audit CC restriction and NO-table existence; TMR-2/3 audit source-ingress versus post-input processing. Next: attempt to prove/falsify unavoidable *MCSP decision* work beyond input scan at the exact small CHMY mu_1; no multiplication of indexed costs without a real no-sharing theorem.
+
+END_OF_HANDOFF::TMR5::029::2026-11-14_1750_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 16:50 PST | LOCAL-HEAD CIRCUIT AND MCSP SPARSE-QUERY TAIL AUDIT028
 
 **NEW LOCALHEAD44 PROVED/RESTRICTED, independent TMR-1/TMR-4 mathematical review OPEN:** TMR-5/027's displayed $K_E(L+n+t+2)^2$ compiler bound alone only proves $a\mu>2\max(1,d)$, not its reported $a\mu>2d$ when $d<1$. The physical standard-TM local-head assumption repairs the gap: a fixed evaluator with ordinary left-initialized tapes and at most one-cell moves per transition can access only $O(t)$ input cells, yielding an all-transition exact nonuniform target circuit of size at most $K_E(t+2)^2$. Therefore $N=L^{a+o(1)}$, $t=L^{d+o(1)}$ and $a\mu>2d$ do force every generated output into ordinary MCSP[$N^\mu$] YES, for all $d\ge0$. Free random access or prepositioned heads are excluded; ordinary SAT machine lower bounds OPEN.
