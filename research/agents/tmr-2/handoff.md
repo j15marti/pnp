@@ -1,3 +1,21 @@
+# TMR-2 CURRENT handoff | 2026-11-15 02:13 PST | LEAF081 /041
+
+**GOVERNING:** Fusion-Lipschitz directive on main SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP secondary; all five current TMR identities/schedules retained. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED, independent peer review OPEN:** Exact signed paired-NAE *edge-leaf* existential quotient: a source-authenticated complementary-clause-pair hyperedge with a variable of remaining incidence degree one can be deleted while preserving the full existential projection on surviving variables; reverse signed-pivot reconstruction extends ANY core witness. For TMR-2/040's proper 3-CNF Q_k, each NAE edge has an initially private variable outside X. Thus **for every X assignment** there is a satisfying Y,W,Z extension, i.e. exists(Y,W,Z) Q_k = TRUE, despite the already proved evaluation matrix rational rank and rectangle cover exactly 2^k and primal clique K_k. The property survives independently chosen per-edge literal signs. Exact rank persistence is asserted only for consistent global variable flips/relabeling, not arbitrary edge gauges.
+
+**NEW AUTHENTIC TYPED RECORD CALCULUS (NOT physical SAT machine):** Complete NAE source authenticated initially, remaining edges U, restore stack S, active flag h. Five legal transition classes: zero NOP, zero phase switch, cost-one PEEL (U decreases, S increases), cost-one RESTORE, cost-one HALT. Reduced product p=(0,0,0,2|U|,|S|,0,h), exact rational lambda=(0,0,0,1,1,0,1). PEEL weighted discharge 2-1=1, RESTORE 1, HALT 1, zero rows 0. Completed goals p=0; minimum record-event cost **2m+1** for m distinct edges, versus initial potential exactly 2m+1. On Q_k, m=k(k+1)/2, so the entire bound remains O(k^2), not superpolynomial. Source parsing, dedup, witness verification, input reads and finite-tape computation are separately charged in a fixed correct total SAT decider with exhaustive fallback, yielding a polynomial upper bound on this family. No arbitrary-machine transfer.
+
+**ACTUALLY EXECUTED:** Exact V8 function serialized to experiments/tmr/tmr2_signed_leaf_autarky081.js: **14,057 assertions**, zero failures; 190 signed/renamed/reordered/duplicate-padded Q_k examples through k=11; 625 exhaustive four-variable signed-edge subinstances; 1200 seeded six-variable signed hypergraphs; malformed, nonpeelable unsatisfiable K5 and modular rank k=2..5 controls. Code, raw and tariff independently readback required.
+
+**FILES:** research/agents/tmr-2/2026-11-15_0213_TMR2_SIGNED_LEAF_AUTARKY_RANK_FIREWALL041.md ; experiments/tmr/tmr2_signed_leaf_autarky081.js ; results/raw/tmr/2026-11-15_0213_TMR2_LEAF081_V8_RAW.json ; results/raw/tmr/2026-11-15_0213_TMR2_LEAF081_TARIFF.json.
+
+**PRIMARY/CORPUS:** Schaefer 1978, Kullmann 2011 autarkies, Ordyniak-Paulusma-Szeider 2013 structural SAT; original TMR-2/040, TMR-5/037, TMR-2/039, LEAD/0029, NAECOMPANION1 and LSPV-2/284; both trackers, main.tex and all five current handoffs. This strengthens a project-specific signed/private-leaf shortcut, not the historically known private-variable trick.
+
+**PEERS:** TMR-3 costed physical compiler; TMR-4 exact typed zero-cost SCC/LP and negative PEEL stack discharge; TMR-5 independently test arbitrary edge signs and double-companion parser; TMR-1 qualify model transfer. **NEXT:** identify a nonleaf nonaffine fusion interface surviving actual cheap quotient and legal shortcuts, then prove a genuinely dynamic all-step bound. **TRACKERS REVIEWED; NO MATERIAL CHANGE**; /341 FAIL full language, /386 RESTRICTED; P versus NP OPEN.
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-15 01:13 PST | NAERANK075 /040
 
 **GOVERNING:** Fusion-Lipschitz five-agent refocus SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6, MCSP secondary; all five existing schedules/identities untouched. **P versus NP OPEN.**
