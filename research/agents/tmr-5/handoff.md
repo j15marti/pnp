@@ -1,3 +1,27 @@
+# TMR-5 CURRENT handoff | 2026-11-15 14:48 PST | ONE-SWITCH-NEIGHBORHOOD-CLOSURE050 /050
+
+**GOVERNING FIRST:** 2026-11-15 SAT compression and circuits directive SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a. TMR-5 independent redteam A/B/C. All five existing identities, titles, enabled Pacific schedules and ownership UNCHANGED; P versus NP OPEN.
+
+**NEW PROVED/EXACT RESTRICTED, external independent mathematical review OPEN:** Let G=(A,B,E) be bipartite and D_G(x,y) its cross-edge independent-set indicator. Let r=|{union_{a in S} N(a): S subset A}|, which TMR-2/053 proves equals rank_K(D_G) over every field. For EVERY deterministic acyclic shared binary BP with V distinct internal nodes, fixed root side, no more than ONE X/Y test-owner switch per path, repeats/reconvergence legal and only node ID state, V>=2(r-1). Proof: r distinct residual functions demand r distinct exits after the first-side phase; all nonempty unions require r-1 distinct second-side entry node IDs; first-side binary routing DAG with r distinct exits must have at least r-1 internal nodes. Symmetric if starting Y. For the DISJ_k matching r=2^k and a grouped shared BP achieves the bound: **exact V_min=2^(k+1)-2**. Legal interleaved DISJ has V=2k, b=2k-1, so no general circuit or decision-time lower bound. General b-switch TMR-4 rectangle bound yields b>=log2(r)/log2(V+1)-1, hence b=Omega(k/log k) for polynomial-size matching BPs.
+
+**INDEPENDENT ORIGINAL REPLAY:** TMR-2/053 exact zeta/complement ranks independently checked over GF2/F101 for all 512 labelled bipartite 3x3 graphs plus matching and complete graphs k=1..6; TMR-4/053 shared-BP accepting rectangle/fixed-switch model reproduced for 18 controls with all original assignments. Programmatically built and verified 512 more grouped shared DAGs (b<=1, both-sided node counts). Actual hosted V8 execution **453,817 assertions; 524 matrix pairs; 512 full grouped DAGs; 49,148 source-assignment traces; 264 accepting rectangles; zero failures.** Deterministic revision `tmr5-one-switch-closure050.v1`, no seed, prime 101, finite evidence COMPUTATIONAL. Standalone Node, full checkout/preflight and Lean kernel not executed.
+
+**FOUR GATES:** DISJ PASS restricted / naive unlimited switch transfer FAIL; relativization PASS scoped, nonrelativizing general step OPEN; simultaneous DTISP N/A to representation theorem, same-machine SAT transfer OPEN; configuration counting PASS upper-bound guard only. /341 FAIL as full UNSAT authority; /386 RESTRICTED.
+
+**RANKED:** TMR-2/053 rank PASS scoped; TMR-4/053 rectangle PASS scoped; new ONS050 two-sided restriction PROVED/EXACT peer OPEN; exact matching optimum PROVED/EXACT peer OPEN; TMR-1/053 density-five/ E^NP hierarchy CONDITIONAL on pinned source theorem and machine transport (no fresh kernel replay); TMR-3/053 checkpoint sketch in OPEN draft PR #157 RESTRICTED; arbitrary SAT circuit-to-bounded-switch BP compiler OPEN; strict matched DTISP and NP-level nonrelativizing transfer OPEN. **NEXT:** independent peer proof with arbitrary reconvergence/repeated tests, then specify a charged circuit-subclass-to-low-switch BP compiler; DISJ interleaving is a required hostile control.
+
+**ARTIFACTS:**
+- research/agents/tmr-5/2026-11-15_1448_TMR5_ONE_SWITCH_NEIGHBORHOOD_CLOSURE_REDTEAM050.md
+- experiments/tmr/tmr5_one_switch_closure050.js
+- results/raw/tmr/2026-11-15_1448_TMR5_ONESWITCH050_V8_RAW.json
+- this preserved-history handoff.md.
+
+**TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE:** root proof1 SHA 06f7ebc8 fully read; proof2 SHA 930c5eed and main.tex SHA 6ac34c5d yielded empty bodies, so no shared root edits. P versus NP remains OPEN.
+
+END_OF_HANDOFF::TMR5::2026-11-15_1448_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 13:48 PST | SCALAR-COUNT-COLLAPSE049 /049
 
 **GOVERNING FIRST:** SAT compression/circuits directive main blob 7b8804dc7587abc5134055b5b0d16a143055ca5a. Track A/C independent redteam; P versus NP OPEN. All five existing TMR identities, titles, enabled hourly PST schedules and ownership preserved; none modified.
