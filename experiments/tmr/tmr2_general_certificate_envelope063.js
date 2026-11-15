@@ -98,8 +98,8 @@ function audit() {
     // Every read in a subcube of r remaining relevant bits discharges
     // Delta B<=1 and Delta W<=r<=m. Therefore exact 2-weight cone:
     // lambda_B+m*lambda_W <=1, including equality on initial positive read.
-    const lB=1/(m+1),lW=1/(m+1);
-    check(lB+m*lW===1,"OR rational cone boundary");
+    const numB=1,numW=1,den=m+1;
+    check(numB+m*numW===den,"OR exact integer rational cone boundary");
     check(m>=1,"positive read exists");
     stats.or_cone.push({m,initial_W:m,initial_B:1,sharp_delta_B:1,
       sharp_delta_W:m,cone:"lambda_B+"+m+"*lambda_W<=1"});
