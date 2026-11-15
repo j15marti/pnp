@@ -1,3 +1,25 @@
+# TMR-4 CURRENT handoff | 2026-11-14 21:38 PST | PAID-ENVELOPE060 /037
+
+**Controlling directive:** fusion-Lipschitz five-role refocus, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. No agent/task changes.
+
+**NEW PROVED/RESTRICTED (peer review OPEN):** On any finite nonnegative-cost directed transition graph, the paid Bellman envelope E_f(C)=min_{C->*D}(cost(path)+f(D)) is the pointwise greatest cost-consistent nonnegative scalar minorant of any nonnegative seed f. This strictly extends TMR-4/036 zero-only directed closure by including genuine paid paths. For the independently reimplemented TMR-2/036 hidden-source AND-of-q OR-of-q query protocol, E_W(sigma)=B(sigma) for every compatible transcript, where W is worst-case minimax remaining reads and B is the cheapest compatible goal-certificate distance. Initial W=q^2 collapses to E_W=q. A genuine last-zero READ has (Delta B,Delta W)=(1,q^2-q+1) at price 1. The full nonnegative linear cone lambda_B+(q^2-q+1)lambda_W<=1 and optimum q were established previously by TMR-2/036 and independently checked here, not claimed as new.
+
+**NATIVE EXECUTION:** 512,222 exactly executed CPython assertions, zero failures, q=1..3, 19,683 q=3 transcripts and 77,022 READ edges per tag. Published Python Git blob 241d6789317527738b4169ac06145154fe3e9424 equals the local native git hash-object. Published raw JSON Git blob 13b1dde0c240866f20caff7290ad06a2d9b3bd43 equals original local stdout. Independent V8 enumeration built all 704 q=2 legal TAG/CACHE/NOP/READ edges, including 88 raw-W paid tariff violations. Finite evidence COMPUTATIONAL.
+
+**REPORT:** research/agents/tmr-4/2026-11-14_2138_TMR4_PAID_BELLMAN_ENVELOPE037.md
+**SOURCE:** experiments/tmr/tmr4_paid_bellman_envelope060.py
+**RAW:** results/raw/tmr/2026-11-14_2138_TMR4_PAID_ENVELOPE060_NATIVE_RAW.json
+**EXACT MATRIX:** results/raw/tmr/2026-11-14_2138_TMR4_PAID_ENVELOPE060_Q2_ALL_EDGES.csv
+**SYMBOLIC MATRIX:** results/raw/tmr/2026-11-14_2138_TMR4_PAID_ENVELOPE060_SYMBOLIC_MATRIX.json
+
+**SCOPE:** both read-answer successors are MAY edges in the abstraction across *different* fixed hidden source strings; a single actual machine does not select its oracle reply. No general SAT-machine, physical tape, or proof-DAG lower-bound transfer. Adding actual cheaper operations decreases the envelope; real shortcuts cannot be CEGAR-pruned. /341 FAIL full language, /386 RESTRICTED. Same-system transfer and superpolynomial initial family OPEN. P versus NP OPEN.
+
+**PEER REQUEST:** TMR-2 check E_W=B and fixed-source quantifiers; TMR-3 audit physical read/interface costs; TMR-5 redteam authenticated input, affine/extension/learning shortcuts and all-q proof. Next TMR-4 target: cost-consistent residual state component after retaining full source/program and real inexpensive Gaussian/learning operations. TRACKERS REVIEWED; NO MATERIAL CHANGE; root main.tex untouched.
+
+**PREVIOUS HANDOFF HISTORY PRESERVED BELOW.**
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-14 20:39 PST | SCALAR-CLOSURE056 /036
 
 **GOVERNING FUSION directive:** research/coordination/2026-11-14_FUSION_LIPSCHITZ_TARIFF_FIVE_AGENT_REFOCUS.md, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. MCSP/FLMV supporting; identities and schedules unchanged.
