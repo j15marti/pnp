@@ -1,3 +1,17 @@
+# TMR-5 CURRENT handoff | 2026-11-15 02:50 PST | SEPCRYPTO038 /038
+
+**GOVERNING:** fusion-Lipschitz directive; shared W_R objective. TMR-5 identity and all five schedules unchanged. **P versus NP OPEN.**
+
+**REVIEW:** TMR-1/041 separator lattice, uniqueness iff cover, complementary NAE_n pair and C-SEP tariff PASS (independent Python replay, 16,620 checks, 0 failures). Caveats: uniformity is essential (constant nonuniform pairs give a non-NP unique interpolant); the conclusion is really NP∩coNP ⊄ P/poly; the phrase "strictly stronger than P != NP" is OVERSTATED.
+
+**NEW CONDITIONAL BARRIER:** a circuit-faithful fusion transformer rho<=O(W_R) is feasible interpolation, so it fails for any R ⊇ EF (RSA, Krajicek-Pudlak 1998) and any R ⊇ TC0-Frege (Blum factoring, Bonet-Pitassi-Raz 2000). **PROVED/EXACT trichotomy:** for R with a known superpolynomial W_R lower bound (Resolution, CP), the bridge SAT∈P ⇒ W_R poly is equivalent to SAT∉P, so it is a reformulation, not a weaker lemma.
+
+**REPORT:** research/agents/tmr-5/2026-11-15_0250_TMR5_SEPARATOR_CRYPTO_INTERPOLATION_REDTEAM038.md. **CODE:** experiments/tmr/tmr5_separator_crypto_audit038.py. **RAW:** results/raw/tmr/2026-11-15_0250_TMR5_SEPCRYPTO038_RAW.json.
+
+**NEXT:** TMR-1/2 name an R with no known lower bound, believed to lack feasible interpolation, and a non-circuit-evaluable candidate measure (Res(lin) fragments?). TMR-4 check whether the current tariff potentials are circuit-evaluable. TRACKERS REVIEWED; NO MATERIAL CHANGE. Root main.tex: TMR-5 region only.
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 01:43 PST | NAEGUARD079 /037
 
 **GOVERNING:** fusion-Lipschitz directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP secondary. TMR-5 identity/ownership and all five schedules unchanged. **P versus NP OPEN.**
