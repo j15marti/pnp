@@ -1,3 +1,29 @@
+# TMR-4 CURRENT handoff | 2026-11-15 11:34 PST | OBDD-RANK-TRANSFER051 /051
+
+**CURRENT PRIORITY:** SAT lower bounds, compression and circuits directive 2026-11-15 (blob 7b8804dc7587abc5134055b5b0d16a143055ca5a), Tracks A/C. Previous Allender, fusion, MCSP-first directives are secondary. All five TMR schedules/identities/ownership unchanged. P versus NP OPEN.
+
+**NEW PROVED/EXACT RESTRICTED, independent peer mathematical review OPEN:** For any fixed variable order pi, a deterministic shared ordered read-once BDD with V distinct nonterminal nodes, skips and early terminals, and fixed formula evaluation function f, for each prefix p over any field K the assignment-evaluation matrix factors as R_p G_p through reachable frontier states. Hence rank_K(M_p) <= |frontier_p| <= V+2. In a fully leveled branching program, width_p >= rank_K(M_p). This is a representation-size lower bound, NOT an arbitrary circuit or SAT-TM time lower bound. Source-literal function and encoded-SAT decision are distinct.
+
+**LEGAL DISJ FALSIFIER:** Group x-first/y-second DISJ_k has middle rank 2^k over every field, reduced OBDD 2^(k+1)-2 internal nodes; interleaving x_i,y_i gives legal 2k-node OBDD and O(k) two-level unbounded-fan-in circuit. Exact finite k=3 enumeration all 720 orders: OBDD sizes min6/max14, peak rank min2/max8, 48 node-optimal orders. k=4 grouped30 nodes/rank16; interleaved8/rank2. Unique 8-variable singleton indicator: rank one, 8 nodes. All 720 C6 Horn orders: OBDD min12/max14, peak GF(2) rank min4/max5. No random seeds, no failed executable assertions.
+
+**NEW RESTRICTED CONSEQUENCE FROM TMR-5/046:** On any authenticated constant-degree h-expander family, its prior all-balanced-cut all-field rank >=2^(h*n/[6d(d+1)]) implies every fixed-order OBDD has V>=2^(h*n/[6d(d+1)])-2. Yet the same Horn 2CNFs have O(n) circuits and an all-zero SAT witness, so even minimizing over ALL orders does not transfer to general circuits or SAT machine time. Algebraic factorization is elementary/known OBDD reasoning, no novelty claim beyond this project combination.
+
+**FOUR GATES:** DISJ PASS for scoped OBDD transfer, FAIL for unrestricted proposal; relativization PASS/RESTRICTED to BDD identity, OPEN unrestricted nonrelativizing arrow; simultaneous DTISP N/A to graph size, OPEN to machine transfer; deterministic configuration counting PASS only as upper-bound guard T<=2^O(s+log N), not lower bound. TMR-1/050 circuit-to-CNF fully charged variable count n+g, clauses <=3g+n+1 and O((n+g)log(n+g)) encoding retained. /341 FAIL full logical UNSAT; /386 RESTRICTED.
+
+**FILES:** 
+- research/agents/tmr-4/2026-11-15_1134_TMR4_FIXED_ORDER_OBDD_RANK_TRANSFER051.md
+- experiments/tmr/tmr4_obdd_rank_transfer051.js
+- results/raw/tmr/2026-11-15_1134_TMR4_FIXED_ORDER_OBDD_RANK_TRANSFER051_V8_RAW.json
+- this handoff.md.
+
+**CORPUS:** current directive FIRST, both trackers/main (SHAs proof1 06f7ebc8, proof2 930c5eed, main 6ac34c5d; oversized proof2/main bodies empty through connector, thus no full-current-body claim), AGENTS/CODEX/skill, all TMR handoffs, issue #3, TMR-1/050/TMR-2/050/TMR-5/046 originals, Bryant 1986 primary source. No local clone/preflight due container network DNS failure. TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE.
+
+**NEXT:** Derive or falsify an adaptive, sharing-safe dynamic circuit-to-cut tariff that stays small on every DISJ, Horn expander, affine, unique-solution and compact-CNF control and charges all actual discovery/switching/recomputation; no arbitrary-machine bridge exists. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR4::2026-11-15_1134_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-15 10:39 PST | ALLENDER_PATH050 /050
 
 **GOVERNING FIRST:** 2026-11-15 Allender–MajMajSAT five-TMR directive (SHA 1760aefab5944a063f64b62142e358fbd2b94235), then prior fusion and TMR replacement; same five TMR identities, schedules, ownership and safeguards. P versus NP OPEN.
