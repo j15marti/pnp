@@ -1,3 +1,25 @@
+# TMR-5 CURRENT handoff | 2026-11-15 09:45 PST | ALLENDER045 /045
+
+**GOVERNING PRIORITY:** FIRST read 2026-11-15 Allender–MajMajSAT five-agent directive (SHA 1760aefab5944a063f64b62142e358fbd2b94235); fusion-Lipschitz remains secondary supporting program. Existing five TMR identities, hourly Pacific schedules, enabled states and ownership untouched. P versus NP OPEN.
+
+**NEW RESTRICTED EXACT THEOREM:** For one $m$-bit majority predicate with **inclusive tie** $S\ge2^{m-1}$, the explicitly uniform four-block randomized rule (two F(x) blocks, one full-accept block, one accept-only-$x=0^m$ block) has exactly $2S+2^m+1$ accepting paths of $2^{m+2}$, so strictly $p>1/2$ iff inclusive majority YES. The easy formulas $x_1$ and $x_1\land\neg(x_2\land\cdots\land x_m)$ give $p_\pm=1/2\pm2^{-(m+2)}$. Pinsker/KL prove any **sample-only** two-thirds-success distinguisher needs $K\ge(2/9)4^m$ independent samples. Two separate YES weak tests combined by AND yield $p_+^2<1/2$, genuine black-box false-majority counterexample. No formula-processing lower bound or unrestricted SAT lower bound is inferred.
+
+**NEW CONDITIONAL QUANTITATIVE BRIDGE:** If ONE uniform exact deterministic MajMajSAT-to-SAT oracle compiler makes at most $N^b$ queries of length $N^a$, nonoracle time $N^r$, retained space $N^u$, and a *bounded-error* algebraic-amplitude quantum SAT solver has time $m^t$, space $m^s$, then with charged materialized queries and compatible measured-classical interface, total quantum resources are $N^{\max(r,b+at)+o(1)}$ time and $N^{\max(u,a,as)+o(1)}$ space. The strict simultaneous inequalities $\max(r,b+at)<1+\gamma(\sigma)$, $\max(u,a,as)<\sigma$ would contradict Allender Theorem 7 plus van Melkebeek–Watson Theorem 1. Numerical $\gamma$ NOT known. One actual materialized $\Omega(N)$-bit query forces $\Omega(N)$ writable space, defeating every $\sigma<1$ target. Virtual query compiler, its read charges, exact majority preservation, all-source correctness, and independent transfer remain OPEN.
+
+**INDEPENDENT PEER REPRODUCTIONS:** TMR-1/048 repeatable single-gate FUSE yields exact restricted $\max(t,\tau(U))+h$ by pairing lower and upper bounds, PASS/RESTRICTED. TMR-2/048 Cartesian mutant count-vector cone $\lambda_{\rm sep}+\lambda_{\rm fus}+q^{r-1}\lambda_{\rm int}\le1$ reproduced across 8,478 genuine read rows and initial exact optimum $q$, PASS/RESTRICTED. TMR-4/049 singleton-batch heterogeneous FUSE$_2$ exact cost $t+u-2\min(\lfloor t/2\rfloor,u)+1$ reproduced in 130 count states, PASS/RESTRICTED. Imported overlapping cover shortcut FAILS: genuine FUSE2(a),FUSE2(b),HALT costs 3 against naive potential 4. TMR-3/048 already-staged marker physical suffix remains RESTRICTED; blank-tape/original-source compiler independently OPEN.
+
+**EXECUTED EXACT V8:** 41,410 assertions, 8,478 Cartesian paid rows, 130 independent Bellman states, exhaustive strict-PP branch counts for m=2..11, no failures. Raw and standalone code are separate and fully reproducible. Symbolic results require independent mathematical review; finite evidence COMPUTATIONAL.
+
+**ARTIFACTS:** research/agents/tmr-5/2026-11-15_0945_TMR5_ALLENDER_TIE_BLACKBOX_AND_BRIDGE_REDTEAM045.md; experiments/tmr/tmr5_allender_tie_blackbox045.js; results/raw/tmr/2026-11-15_0945_TMR5_ALLENDER045_V8_RAW.json; this handoff. Readback and issue #3 posting required after PR merge.
+
+**RANKED:** Allender theorem KNOWN; vMW simulation KNOWN; tie normalizer/sample-only bound PROVED/RESTRICTED review OPEN; conditional compiler sound if exact interfaces; no proven MajMajSAT-to-SAT reduction OPEN; full quantum interface translation OPEN; overlapping naive FUSE FAIL; same-system unrestricted SAT transfer OPEN; superpolynomial potential OPEN; /341 full logical FAIL; /386 RESTRICTED; P versus NP OPEN.
+
+**ONE NEXT TARGET:** TMR-2 produce/attack an exact double-majority-to-SAT virtual query construction preserving denominators, ties and auxiliary-variable semantics; TMR-3 charge its actual per-access time, aggregate space and quantum error reduction; TMR-1 verify fixed $\gamma$ margins and hierarchy direction; TMR-4 prove every-step soundness including sign-sensitive probabilistic goal rather than an accepting shortest branch. TMR-5 independently falsify hidden model switch and padding. TRACKERS REVIEWED; NO MATERIAL CHANGE (proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2 SHA 930c5eeddafce656717f28055a7a755f44737c, main.tex SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34). No agent schedules touched.
+
+END_OF_HANDOFF::TMR5::2026-11-15_0945_PST
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-15 08:53 PST | MIXFUSE044 /044
 
 **GOVERNING:** 2026-11-14 Fusion-Lipschitz five-TMR directive, blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; same TMR-5 identity, ownership and unchanged five hourly Pacific schedules. P versus NP OPEN.
