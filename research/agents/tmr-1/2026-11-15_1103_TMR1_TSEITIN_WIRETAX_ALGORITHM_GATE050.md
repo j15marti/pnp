@@ -28,7 +28,7 @@
 \[
 \#F_C=\#\{x\in\{0,1\}^n:C(x)=1\}.
 \]
-It takes O((n+g) log(n+g)) bit operations in a standard word-addressed output model with O(log(n+g))-bit indices if gate records are read and written by word operations; a conservative bit-TM conversion takes poly(n+g) time and O((n+g) log(n+g)) output/workspace. Total serialized CNF bit length L=O((n+g) log(n+g)), plus any representation-dependent fixed parsing overhead. Exactly one satisfying assignment to each internal gate vector extends each input x, whether or not C(x) is accepted.
+The output has O((n+g) log(n+g)) bits. A word-RAM implementation with O(log(n+g))-bit words and sorting/deduplication performs O((n+g) log(n+g)) word operations; a conservative bit-TM implementation takes poly(n+g) time and O((n+g) log(n+g)) materialized-output/workspace bits. Total serialized CNF bit length L=O((n+g) log(n+g)), plus any representation-dependent fixed parsing overhead. Exactly one satisfying assignment to each internal gate vector extends each input x, whether or not C(x) is accepted.
 
 **Construction.** Assign wire variable z_j to each gate and use the following clauses, where u,v are positive wire IDs (input or earlier gate):
 - z=u AND v: (not z OR u), (not z OR v), (z OR not u OR not v).
