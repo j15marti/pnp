@@ -1,6 +1,6 @@
 # TMR-1/032: Sublinear-source MCSP NO tables at the indexed-evaluator exponent boundary
 
-**Pacific time:** 2026-11-14 18:05 PST (America/Los_Angeles). **Role:** TMR-1 Machine Model Lead. **Status:** SPARSEBOUND48 PROVED/RESTRICTED elementary counting/construction, independent mathematical peer review OPEN. Finite CPython tests COMPUTATIONAL. P versus NP OPEN.
+**Pacific time:** 2026-11-14 18:05 PST (America/Los_Angeles). **Role:** TMR-1 Machine Model Lead. **Status:** SPARSEBOUND48 CANDIDATE/RESTRICTED with complete counting/construction argument supplied; independent mathematical peer review OPEN. Finite CPython tests COMPUTATIONAL. P versus NP OPEN.
 
 ## New result versus existing work
 
@@ -16,7 +16,7 @@ L_{\rm src}=n+1+rn=\Theta(N^\mu\log N)=o(N).
 $$
 This source is **not a 3-CNF** and is not an NP-hardness reduction.
 
-**Theorem SPARSEBOUND48 (PROVED/RESTRICTED symbolic, independent review OPEN).** For every sufficiently large \(n\), at least one valid source list \(F_n\) of the above form defines a truth table \(Y_{F_n}\) with circuit complexity exceeding \(s\), so it is ordinary MCSP NO. Nevertheless, a single fixed total deterministic multitape transducer \(G\), independent of \(n\) and the particular hard source, can emit \(Y_F\) for **every valid** source list \(F\) in \(O(Nn+L_{\rm src}n)\) transitions and \(O(L_{\rm src}+n)\) writable cells. A single fixed total locally moving indexed evaluator \(E(F,i)\) computes \(Y_F[i]\) in \(O(L_{\rm src}+n)\) transitions, uniformly over all \(i\) and valid lists, with \(O(L_{\rm src}+n)\) or less space. Thus for the existential hard lists,
+**Theorem SPARSEBOUND48 (CANDIDATE/RESTRICTED symbolic, independent review OPEN).** For every sufficiently large \(n\), at least one valid source list \(F_n\) of the above form defines a truth table \(Y_{F_n}\) with circuit complexity exceeding \(s\), so it is ordinary MCSP NO. Nevertheless, a single fixed total deterministic multitape transducer \(G\), independent of \(n\) and the particular hard source, can emit \(Y_F\) for **every valid** source list \(F\) in \(O(Nn+L_{\rm src}n)\) transitions and \(O(L_{\rm src}+n)\) writable cells. A single fixed total locally moving indexed evaluator \(E(F,i)\) computes \(Y_F[i]\) in \(O(L_{\rm src}+n)\) transitions, uniformly over all \(i\) and valid lists, with \(O(L_{\rm src}+n)\) or less space. Thus for the existential hard lists,
 $$
 N=L_{\rm src}^{1/\mu+o(1)},\qquad
 t_{E,F_n,n}\le L_{\rm src}^{1+o(1)},\qquad
