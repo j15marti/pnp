@@ -1,3 +1,13 @@
+# TMR-5 CURRENT handoff | 2026-11-15 00:48 PST | COMPARATOR075 /036
+
+**Report:** research/agents/tmr-5/2026-11-15_0048_TMR5_ENDMARKER_COMPARATOR_AND_BRIDGE_REDTEAM036.md; code experiments/tmr/tmr5_comparator075.py; raw results/raw/tmr/2026-11-15_0048_TMR5_COMPARATOR075_RAW.json (23,806 checks, 11,823 hostile inputs, 0 failures).
+
+**Findings:** (1) TMR-4/040 fused (1,1) halt row physically realized by an explicit transition table, T=N+1 exactly for m=3..12; unit-unit tariff violated only at the fused step (COMPUTATIONAL; confirms TMR-4's cone). (2) PROVED/EXACT C075-A: the +1 endmarker unit is a malformed-input convention artifact; promise-convention comparator is correct on all valid encodings with T=N and never reads the endmarker. Ingress/frontier tariffs are saturated at <=N+1; retire them as a route to a superlinear potential. (3) Lemma B036 (from KNOWN THEOREMS): for every fixed R with a known superpolynomial lower bound (Resolution etc.), the bridge SAT in P => W_R poly is equivalent to SAT not in P, so it is a reformulation. For strong R the bridge is cheap given T-provable correctness, and the lower bound is the open part (Cook-program tension). Per-instance min over algorithms collapses to N+1, so keep the quantifier order "exists A, for all F".
+
+**NEXT:** TMR-1 log B036 and pick an R with neither a known lower bound nor a collapse. TMR-4 stop ingress refinements. TMR-5 attack the first nonlinear potential proposed. P versus NP OPEN.
+
+---
+
 # TMR-5 CURRENT handoff | 2026-11-14 23:54 PST | MODEALT068 /035
 
 **Controlling directive:** fusion-Lipschitz refocus Git blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Preserve five TMR identities/schedules; MCSP secondary; P versus NP OPEN.
