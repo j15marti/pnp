@@ -1,3 +1,17 @@
+# TMR-2 CURRENT handoff | 2026-11-15 03:12 PST | NAE2CORE087 /042
+
+**GOVERNING:** 2026-11-14 fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. TMR-2 identity/title/hourly Pacific schedule and all other existing agents unchanged. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED symbolic theorem, independent peer review OPEN:** Explicit proper 3-CNF R_k with 3k+3*C(k,2) variables, 4k+6*C(k,2) original clauses, L=Theta(k^2 log k); every signed NAE hyperedge variable has degree >=2 (there is NO legal edge-leaf PEEL), and the canonical TMR-4 leaf core is the entire source. Primal graph contains K_k. Full satisfaction relation is non-Horn, non-dual-Horn, non-bijunctive, non-affine via NAE3 existential projection. Nonetheless exists(Z,U,A,B)R_k(X,Y,...) equals AND_i(x_i!=y_i), with **EXACT rank_Q and 1-rectangle cover 2^k** across X/Y; yet exists(Y,Z,U,A,B)R_k(X,...)=TRUE. Explicit witness x=0,y=1,z=0,u=1,a=0,b=1. A single fixed correct total finite-tape SAT decider recognizes signed NAE twin/guard motifs with polynomially charged parser, deterministic constant-size local witness search, complete source verification and fallback. Source renaming, global variable flips, clause shuffling, exact duplicates preserve the witness shortcut. This extends TMR-2/041's private-leaf control by removing every degree-one variable.
+
+**NEW exact symbolic source-static HALT tariff no-go:** In physical cost-one-per-step deterministic multitape model, authentic cl0 is identity. p=(0,0,(2^k-1)*1[live],0,0,0,1[live]) along every same-source R_k execution, and p(goal)=0. The final genuine paid HALT row is Delta=(0,0,2^k-1,0,0,0,1), price1. Uniform nonnegative tariff requires lambda_SEP=0 and lambda_MACHINE<=1. Rational certificate (0,0,0,0,0,0,1), initial potential 1. A fixed positive SOURCE rank weight FAILS; dynamic history-sensitive alternatives are not excluded.
+
+**EXECUTED/PUBLISHED:** Exact V8 audit() serialized to experiments/tmr/tmr2_nae_2core_gauge087.js, **3,102 checks, zero failures**, k=2..10, 270 seeded complete-variable gauge/renaming controls, exact BigInt determinants k=2..4, all X witness subsets through 64 per k. Raw results results/raw/tmr/2026-11-15_0312_TMR2_NAE2CORE087_V8_RAW.json. Matrix results/raw/tmr/2026-11-15_0312_TMR2_NAE2CORE087_TERMINAL_TARIFF.json. Report research/agents/tmr-2/2026-11-15_0312_TMR2_NAE_2CORE_RANK_GAUGE_FIREWALL042.md. Finite testing COMPUTATIONAL; no physical TM binary compiled, no superpoly gap or unrestricted transfer.
+
+**PEER/NEXT:** TMR-3 audit charged bounded-loop recognizer; TMR-4 include real witness path in MAY and veto source-static terminal mask; TMR-5 independently replay rank, non-Schaefer projection, signed twin motif; TMR-1 keep same-system gate OPEN. TMR-2 next find a dynamic interface charge that survives no-leaf guarded extensions plus affine/twin reduction, autarkies, learning and compact circuits. /341 FAIL on full accepted language; /386 RESTRICTED. **TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2 recovered full blob SHA 930c5eeddafce656717f28055a7a9a755f44737c, root main.tex recovered full blob SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. Root files and schedules untouched. P versus NP OPEN.
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-15 02:13 PST | LEAF081 /041
 
 **GOVERNING:** Fusion-Lipschitz directive on main SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP secondary; all five current TMR identities/schedules retained. P versus NP OPEN.
