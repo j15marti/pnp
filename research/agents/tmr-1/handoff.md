@@ -1,3 +1,27 @@
+# TMR-1 CURRENT handoff | 2026-11-15 15:03 PST | DENSITY4-STACK-TRANSFER054 /054
+
+**GOVERNING FIRST:** research/coordination/2026-11-15_SAT_COMPRESSION_CIRCUITS_FIVE_AGENT_REFOCUS.md, blob 7b8804dc7587abc5134055b5b0d16a143055ca5a. Track C. Five existing TMR identities, ownership, hourly Pacific enabled schedules untouched. P versus NP OPEN.
+
+**NEW PROVED/EXACT RESTRICTED COMPILER, independent review OPEN:** Every explicit shared fan-in-two arbitrary binary truth-table DAG with q>=1 inputs, G gates and V=q+G>=4 has a unique-extension count-preserving width<=3 CNF H with m<=4G+u+1<=4V, where u is the number of original inputs unused by gates/output. All auxiliary gate outputs syntactically occur. Tautological (x,not x,x) for each unused original yields Anthropic formal AllOccur; exact ordered-list dedup yields NoDup; m>=2. This sharpens /053 density five to D4 without assuming strict proper 3CNF. Original-variable #SAT is exactly preserved even with constant functions, repeated predecessors, dead gates and arbitrary fan-out.
+
+**NEW EXACT BIT/MACHINE BRIDGE, conditional on pinned source theorem:** Anthropic input encoding (k=3) has B=V+5+3m*(floor(log2(2V))+1)<=O(VlogV) bits, low-bit-first slots. A fixed finite-stack TM2 whose finite blocks contain boundedly many stack operations can be simulated on one conventional fixed multitape machine in O(T+B^2) physical steps and O(T+B) writable cells, including stack orientation and output. The pinned Anthropic min exponent, k=3, AllOccur V<=3m, m<=4V gives expM<=12V/sqrt(log2(V/3))=(12+o(1))V/sqrt(log2 V). This is 12C rather than /053's 15C source coefficient; NO polynomial-space guarantee, NO q-only speedup when G=q^4. The inherited /053 E^NP hierarchy witness uses 3 copies, exponent 36Ceta*n for s=eta*n*sqrt(log n), admissible eta<1/(72C), but is NOT an NP lower bound.
+
+**COMPUTATIONAL:** Revision TMR1_DENSITY4_STACK054_v1, deterministic xorshift32 seed 20261115, hosted V8 426 circuits (10 directed controls, 256 truth-table/predecessor sweep, 160 seeded), 8,160 original assignments, 47,888 full assignments, 24,229 assertions, zero failures. Exact Lean-style bit encoding and inverse parser exercised. No Lean kernel rebuild; no full repo preflight.
+
+**ARTIFACTS:** research/agents/tmr-1/2026-11-15_1503_TMR1_DENSITY4_STACK_MODEL_TRANSFER054.md; experiments/tmr/tmr1_density4_stack054.js; results/raw/tmr/2026-11-15_1503_TMR1_DENSITY4_STACK054_V8_RAW.json; this full-history-preserving handoff.
+
+**FOUR GATES:** DISJ PASS compact circuit control; relativization PASS restricted but nonrelativizing NP-level step OPEN; simultaneous DTISP NOT APPLICABLE to hierarchy, OPEN for FLMV (space bound only O(T+B)); deterministic configuration counting PASS upper-bound guard.
+
+**SOURCE:** Anthropic formal-math pinned commit 16a5ce41304fcdaea4e0be7c132e1c361dc26da5, MainResults.lean blob 1c62a550fa1e4cbec65bb7112f92ad67589afddc and Solution.lean blob 176892178e49792ae41368c13bb4973bae035b29; prior /053 source and raw inspected; TMR-5/049 scalar-count counterexample not bypassed. No kernel build. All five handoffs, issue #3, AGENTS.md/CODEX.md/pnp-research skill and trackers consulted.
+
+**NEXT:** independent Lean kernel replay of the density-sensitive theorem plus direct TM2/tape simulation verification, or a truly charged q-based #Circuit-SAT speedup for G=q^4. No NP-level conclusion. /341 FAIL full UNSAT authority; /386 RESTRICTED.
+
+**TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE:** proof1 full SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343; proof2 SHA 930c5eeddafce656717f28055a7a9a755f44737c body returned empty; main.tex SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34 body returned empty. No shared-root edits.
+
+END_OF_HANDOFF::TMR1::2026-11-15_1503_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-15 13:57 PST | QUANTITATIVE-LOGLOG-DENSITY053 /053
 
 **GOVERNING FIRST:** SAT compression/circuits 2026-11-15 directive on main blob 7b8804dc7587abc5134055b5b0d16a143055ca5a. Track C theorem architecture; all TMR identities, ownership, enabled Pacific schedules remain intact. P versus NP OPEN.
