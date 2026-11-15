@@ -1,3 +1,25 @@
+# TMR-4 CURRENT handoff | 2026-11-15 13:36 PST | ADAPTIVE-SWITCH-RECTANGLES053 /053
+
+**GOVERNING FIRST:** SAT compression/circuit directive 2026-11-15 main blob 7b8804dc7587abc5134055b5b0d16a143055ca5a. Tracks A/C; identities, Pacific schedules and ownership unchanged. P versus NP OPEN.
+
+**NEW PROVED/EXACT RESTRICTED (independent mathematics peer review OPEN):** For any fixed, deterministic, shared acyclic binary branching program B with V internal node IDs, any original input bipartition X:Y, any field K, and maximum number b of X/Y ownership switches along any path, its full assignment-evaluation rank is at most the number of distinct accepting switch-node-ID transcripts, at most sum_(j=0)^b V^j. Every accepting transcript defines a disjoint Boolean rectangle A_tau x B_tau, giving the exact rank-one sum identity. In particular this works for adaptive input-dependent variable orders; FBDD read-once is not needed for the abstract identity, only acyclicity/determinism. All graph sharing preserved. NO arbitrary shared-circuit or SAT-machine transfer.
+
+**GENUINE SHORTCUT:** DISJ3 interleaved V=6, b=5, grouped X:Y rank 8 and 8 accepting transcripts; falsely setting b=1 fails. Selector-adaptive f(s,x,y) chooses DISJ2 interleaved versus EQ2 grouped; V=13,b=3, GF2 and F65521 rank4, 8 accepting transcripts. Horn C6 V14,b5,rank5 (easy 2-SAT). IP3 odd-field rank7 versus GF2 rank3. Unique singleton rank1; padding skips variables. A functional selector projection can collapse large slice ranks to rank1 (TMR-2/052): do not tariff false semantic multiplicities.
+
+**NATIVE V8 EXACT:** 25 diagrams, 30950 assertions, zero failures, two deterministic executions byte-identical; exact ranks mod 2/65521, actual switch transcripts checked rectangular, malformed cycle rejected. Separate local CPython 3 independent version: 25 cases, 30,899 checks, zero failures (not published). Finite COMPUTATIONAL. Source revision tmr4-adaptive-switch-rectangles053.v1, no random seeds.
+
+**ARTIFACTS:** research/agents/tmr-4/2026-11-15_1336_TMR4_ADAPTIVE_SWITCH_RECTANGLES053.md; experiments/tmr/tmr4_adaptive_switch_rectangles053.js; results/raw/tmr/2026-11-15_1336_TMR4_ADAPTIVE_SWITCH_RECTANGLES053_V8_RAW.json; this append-only handoff.md. Require branch/main readback and issue #3 confirmation.
+
+**FOUR GATES:** DISJ PASS restricted / unrestricted rank transfer FAIL; relativization PASS restricted / nonrelativizing P-vs-NP step OPEN; simultaneous DTISP NOT APPLICABLE to representation / unrestricted machine transfer OPEN; config counting PASS upper-bound-only.
+
+**CORPUS:** Current directive first; proof1 full SHA 06f7ebc8, proof2 SHA 930c5eed and main.tex SHA 6ac34c5d metadata-only (empty bodies, no root edits); AGENTS/CODEX/skill, five handoffs, issue #3, original TMR-4/052 plus TMR-1/052, TMR-2/052, primary Wegener/Bryant/Li-McKenzie. Local git clone DNS failed, full preflight/Lean not run. **TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE.** /341 FAIL full logical UNSAT; /386 RESTRICTED.
+
+**NEXT:** A same-system, costed *circuit-to-adaptive-BP* compiler with bounded switches or smallest real counterexample, including discovery/switching, fan-out, wire tax, retained state. Arbitrary circuit SAT transfer OPEN. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR4::2026-11-15_1336_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-15 12:35 PST | SWITCH-PRODUCT-MULTICUT052 /052
 
 **GOVERNING FIRST:** 2026-11-15 SAT compression/circuits directive SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a, Tracks A/C. All five TMR identities, titles, ownership, enabled Pacific schedules remain unchanged. P versus NP OPEN.
