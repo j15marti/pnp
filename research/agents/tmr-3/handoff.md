@@ -1,3 +1,27 @@
+# TMR-3 CURRENT handoff | 2026-11-15 06:37 PST | ONLINE_REVERSAL109 /045
+
+**GOVERNING:** Fusion-Lipschitz five-agent directive blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Same TMR-3 identity and five enabled Pacific hourly schedules preserved. No proof of P versus NP.
+
+**NEW PROVED/RESTRICTED, independent mathematical review OPEN:** For the unchanged authentic ordered physical unary W-gate/marker service on source 1^n# with one original source head, one physically local W head, fixed m marker tapes, mandatory nonterminal W0 activation after all n-1 separate gate writes and a distinct later HALT: (A) every correct eligible program takes at least 2n steps on each n>=2; (B) **any ONE fixed uniform program can attain 2n at at most ONE input length**, because equality forces W to reverse left at step n whereas equality at any larger r forces W to move right on the same input-indistinguishable step; (C) for every fixed k, a length-k-specialized but all-unary-length correct finite-control program A_k speculatively reverses at k, authenticates EOF at k+1, takes exactly 2k on that input, and physically cleans its tape/rewinds source/executes a paid uniform fallback on every mismatch. Thus pointwise inf_A T_A(n)=2n but uniform min_A sup_n(T_A(n)-2n)=**1**, attained by TMR-5/041's genuine one-fixed-program 2n+1 machine. Every uniform A has T_A(n)>=2n+1 on all but at most one n. No all-machine SAT transfer is claimed.
+
+**EXACT RESTRICTED FAST-BRANCH SEVEN-COLUMN TARIFF:** p=(0,0,0,f,g,i,d+h) with initial (0,0,0,2,k-1,k+1,k-1), terminal zero. Rows FAST_INIT (f,i)=(1,1), k-1 FAST_GATE (g,i)=(1,1), EOF_BACK (i,d)=(1,1) when k>=3, k-3 BACK(d)=1, ACT(f)=1 and distinct HALT(h)=1; for k=2 EOF_ACT f+i=1+1 substitutes EOF_BACK+ACT. Every price-one authentic row obeys lambda^T Delta<=1 for exact rational lambda=(0,0,0,1,1,0,1); primal objective **2k**, matched by k-specific paid event-count dual **2k**. Full reset/fallback program rows **are genuine MAY** and are NOT claimed to satisfy the fast-only tariff without additional analysis. Physical zero-cost SCCs singleton, no count-twice gate evidence.
+
+**ACTUALLY EXECUTED:** Native hosted V8 audit() serialized in exact self-contained JS source. **2,219 complete original-input cases**, **651,656 assertions**, **147,791 unit physical microsteps**, **2,040 paid cleanup/fallback runs**, 56 targeted fast cases and five exact calibrated LP matrices, zero failures. Fixed finite tapes/heads modeled at native action level; no low-level TM compiler. Computational evidence separate from all-n geometry/indistinguishability proof. Independent mathematics review OPEN.
+
+**READBACK-VERIFIED BRANCH ARTIFACTS:**
+- Report research/agents/tmr-3/2026-11-15_0637_TMR3_ONLINE_REVERSAL_UNIFORM_GAP045.md, blob 442759c44aa291894b19d63a88445db16006b164.
+- Executed source experiments/tmr/tmr3_unary_online_reversal109.js, blob 1534719f9a5b19c0fa6c6ca14ed2b2f542689f6b.
+- Immutable raw results/raw/tmr/2026-11-15_0637_TMR3_ONLINE_REVERSAL109_V8_RAW.json, blob fd947f213e73b809aa5825078d85ca0e1b5595fc.
+- Rule matrix results/raw/tmr/2026-11-15_0637_TMR3_ONLINE_REVERSAL109_TARIFF_MATRIX.json, blob 33e784de2e6ea1dd5abcafca6c8dc326581c2baa.
+
+**CORPUS/TRACKERS:** First governing directive, replacement directive, complete proof1 28,714 chars SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343, authentic full proof2 1,051,196 chars SHA 930c5eeddafce656717f28055a7a9a755f44737c, authentic main.tex 2,545,859 chars SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34, issue #3, AGENTS/CODEX/skill, five current TMR handoffs, original TMR-3/044, TMR-5/041, TMR-4/045, TMR-1/045, historic Lipschitz controls; verified original Hennie/Stearns DOI scope. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** All five existing schedules untouched. /341 logical UNSAT authority FAIL, /386 RESTRICTED, P versus NP OPEN.
+
+**PEER NEXT:** TMR-4 independently audit the precise per-program quantifier order and charged A_k miss reset; preserve MAY fallback and do not export the successful-branch LP. TMR-5 attempt a second optimal length for one uniform program or a legal way to reverse before actually observing original EOF. TMR-1 retain physical original source/goal distinction. TMR-2 seek a SAT-specific multiscale obstruction surviving such speculative and simultaneous transitions.
+
+END_OF_HANDOFF::TMR3::2026-11-15_0637_PST
+
+---
+
 # TMR-3 CURRENT handoff | 2026-11-15 05:31 PST | EARLYLATE098 /044
 
 **GOVERNING:** 2026-11-14 Fusion-Lipschitz five-agent refocus blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Same TMR-3 identity and all five Pacific schedules unchanged. P versus NP OPEN.
