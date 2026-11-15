@@ -1,6 +1,6 @@
 /* TMR-5/045: independent exhaustive redteam, Node 18+; no external packages. */
 function audit() {
-  let assertions=0, exceptions=0;
+  let assertions=0, exceptions=0, sampleEvaluations=0;
   const check=(ok,msg)=>{assertions++;if(!ok){exceptions++;throw Error(msg)}};
   const tie=[];
   for(let m=2;m<=11;m++){
@@ -13,7 +13,7 @@ function audit() {
     const Splus=Array.from({length:n},(_,x)=>f(x,false)?1:0).reduce((a,b)=>a+b,0);
     const Sminus=Array.from({length:n},(_,x)=>f(x,true)?1:0).reduce((a,b)=>a+b,0);
     let Aplus=0,Aminus=0;
-    for(let z=0;z<4*n;z++){if(sampleAccept(z,false))Aplus++;if(sampleAccept(z,true))Aminus++;assertions+=2}
+    for(let z=0;z<4*n;z++){if(sampleAccept(z,false))Aplus++;if(sampleAccept(z,true))Aminus++;sampleEvaluations+=2}
     check(Splus===n/2&&Sminus===n/2-1,`truth counts m${m}`);
     check(Aplus===2*n+1&&Aminus===2*n-1,`tie normalized counts m${m}`);
     const eps=1/(4*n), pPlus=Aplus/(4*n), pMinus=Aminus/(4*n);
@@ -77,6 +77,6 @@ function audit() {
     check(vertexOpt===q,"LP extreme nonnegative objective");
     cartesian.push({q,r,states:size,paid_rows:rows,max_joint_row:discharge,exact_lp_optimum:q});
   }
-  return {run:"TMR5-ALLENDER045",kind:"independent exact enumeration plus symbolic restricted lemmas",tie,quantitative_blackbox_bound:"K >= 1/(72 epsilon^2) = (2/9) * 4^m for two-thirds-success sample-only discrimination",hostile_PP_AND:"p_plus^2<1/2 for all tested m>=2; symbolic holds for every m>=2",repeatable_fuse2_checks:fusionStates,fusion,overlap_shortcut:{start_unpaid_gates:4,pending_obligations:["a","b"],batch_menu:["a","b","ab"],FUSE2_eligible:["a","b"],genuine_shortest:hostile,naive_tau_credit_cost:naive},cartesian,cartesian_rows:cartesianRows,assertions,exceptions};
+  return {run:"TMR5-ALLENDER045",kind:"independent exact enumeration plus symbolic restricted lemmas",tie,quantitative_blackbox_bound:"K >= 1/(72 epsilon^2) = (2/9) * 4^m for two-thirds-success sample-only discrimination",hostile_PP_AND:"p_plus^2<1/2 for all tested m>=2; symbolic holds for every m>=2",repeatable_fuse2_checks:fusionStates,fusion,overlap_shortcut:{start_unpaid_gates:4,pending_obligations:["a","b"],batch_menu:["a","b","ab"],FUSE2_eligible:["a","b"],genuine_shortest:hostile,naive_tau_credit_cost:naive},cartesian,cartesian_rows:cartesianRows,assertions,sample_evaluations:sampleEvaluations,exceptions};
 }
 console.log(JSON.stringify(audit(),null,2));
