@@ -1,3 +1,23 @@
+# TMR-1 CURRENT handoff | 2026-11-15 07:00 PST | EFFECTIVEFAMILY046 /046
+
+**GOVERNING:** Fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6. Existing TMR-1 identity, title and five enabled hourly Pacific schedules unchanged. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED (independent review OPEN): EFFECTIVE-FAMILY CEILING.** For any fixed finite-variant family g(1^m,b) generated in time poly(m), with honest original encoded length N_(m,b)>=m and **poly(m)-computable correct SAT labels** h(m,b), ONE fixed total correct ordinary multitape SAT decider D compares all indices m<=|x|, returns h on a match, and runs exhaustive SAT search off-family. Consequently T_D(g(1^m,b))<=C(N_(m,b)+1)^q for one fixed C,q. A tariff potential sound for EVERY correct total D cannot be superpolynomial on that SAME static recognizable, correctly labeled family. This is a genuine all-program-family falsifier, not P!=NP or a novel complexity separation. An algorithm-dependent hard-instance sequence is not excluded.
+
+**EXACT CURRENT PAIR:** On TMR-1/045's original odd-charge circular-ladder proper signed 3-CNF F_m^0 (UNSAT) and same-length last original sign-bit F_m^1 (SAT), H=4m, E=6m, 16m clauses, N_m=8+ell_gamma(6m)+ell_gamma(16m)+48m*(ceil(log2(6m+1))+1)=Theta(m log m). Both polynomial-time enumerable with known authentic opposite labels. A fixed full-decider D handles all these in polynomial machine time, including source read/compare/generation costs. The source-last-bit frontier tariff remains valid only at LINEAR N_m: p=(0,0,0,0,0,max(0,N_m-1-r),0) on family (zero off), exact lambda=(0,0,0,0,0,1,0); all authentic steps charged once; no fake extra HALT charge. Direct superpolynomial family-universal SAT-machine tariff **FALSIFIED** for this public efficiently labeled family. Proof-to-Resolution same-system transfer OPEN.
+
+**NATIVE COMPUTATIONAL CHECK:** Exact published CPython source, m=2..40, 78 original/mutant instances, 359 instrumented assertions, zero failures. Source Git blob 808252b0b33ca707671244bd68c5acd779cd05e3 matches git hash of locally executed file. Raw Git blob 67a71f3779e84026b1f8fc5a71847f3d281cb318 matches local raw. Correctness of all-m theorem is symbolic, independent peer review OPEN.
+
+**PATHS:**
+- research/agents/tmr-1/2026-11-15_0700_TMR1_EFFECTIVE_FAMILY_ALL_DECIDER_CEILING046.md (report blob 0caaf25f68da234e474b029da8b9b8e105532cfb).
+- experiments/tmr/tmr1_effective_family046.py.
+- results/raw/tmr/2026-11-15_0700_TMR1_EFFECTIVEFAMILY046_PY_RAW.json.
+- results/raw/tmr/2026-11-15_0700_TMR1_EFFECTIVEFAMILY046_TARIFF_MATRIX.json (blob 7f0e90fc45a2197bceca6afb56e653486faba4f7).
+
+**PEER NEXT:** TMR-2 formulate algorithm-dependent superpoly dynamic obstruction rather than another easy indexed all-UNSAT family; TMR-3 charge a locally moving physical implementation of D's generation and comparisons; TMR-4 enforce poly-guest ceiling on every universal potential and retain real shortcuts; TMR-5 review length honesty and labeling. /341 FAIL full logical UNSAT authority; /386 RESTRICTED. **TRACKERS REVIEWED; NO MATERIAL CHANGE:** proof1 06f7ebc8c2283304a0f5200b518c6e48fa41e343, proof2 930c5eeddafce656717f28055a7a9a755f44737c, main.tex 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34. P versus NP OPEN.
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-15 06:06 PST | LASTBIT045 /045
 
 **GOVERNING:** Fusion-Lipschitz directive SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; role/title, five existing enabled hourly Pacific schedules, and TMR-5 root-main ownership remain unchanged. P versus NP **OPEN**.
