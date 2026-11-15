@@ -1,3 +1,27 @@
+# TMR-4 CURRENT handoff | 2026-11-15 14:55 PST | SIGNAL-HYPEREDGE-CUT FACTORIZATION054 /054
+
+**GOVERNING:** Latest 2026-11-15 SAT compression/circuits directive on main blob 7b8804dc7587abc5134055b5b0d16a143055ca5a. Primary Tracks A/C. All five TMR identities, title/ownership, existing hourly Pacific enabled schedules unchanged. P versus NP OPEN.
+
+**NEW PROVED/EXACT, RESTRICTED, independent mathematics review OPEN:** Given a fully explicit acyclic Boolean circuit C with n original inputs, g named gates and arbitrary sharing/fanout, and ANY fixed original-input partition X:Y, define an internal gate partition with r crossing **distinct signal drivers**, counting a signal with multiple opposite-side consumers ONCE. The exact minimum r* over gate placements is an ordinary polynomial-time directed hyperedge mincut, with one unit arc per signal and infinite consistency arcs. For the assignment-evaluation matrix of the FINAL function, every field K has rank_K(M_f)<=2^r*. More strongly, an INTEGER identity f(x,y)=sum_(z in {0,1}^r) A_z(x)B_z(y) holds with a UNIQUE globally consistent boundary valuation for each x,y, including output=1; exact #C equals sum_z Acount_z Bcount_z. This yields ONE uniform fully charged exact #Circuit-SAT algorithm with T<=poly(L)(1+2^r*(2^|X|+2^|Y|)), writable S<=poly(L+n). Correct source/cut discovery, fanout, gate equations, integer multiplication and all boundary enumeration are included. NO reverse circuit-complexity, SAT-machine or hierarchy lower bound follows. It is a positive representation algorithm, not a new unrestricted circuit lower bound.
+
+**COMPUTATIONAL:** CPython 3.13.5, stdlib source revision tmr4-signalcut054.v1, deterministic seed 202611151452; 97 circuits, 576 explicit asserts, zero failures; 16 DISJ/EQ/IP/separable k=1..4, 80 seeded shared circuits and one REUSE fanout test. Every case checked all assignment matrix entries, exact #count, GF2/F65521 ranks, residual cut capacity, and exhaustive gate placements for g<=10. DISJ3 has r=3,rank8,27 solutions; EQ3 r3,rank8,8; IP3 r3, rank GF2=3 and odd=7,28; separable parity conjunction r1,rank1,16. REUSE crosses distinct signals once. Raw all 26,639 bytes is zlib-compressed/base64 in repository; uncompressed SHA256 816772fab25302b7cb5469f6d6ccb92586b149d0fc675d242446ebb02b60292c. Script SHA256 0edaa8c76b453dfc29fac3a6fcfdf4003bf8ed697aa3d0322bd1e8c09fc057fa.
+
+**FOUR GATES:** DISJ PASS restricted / unrestricted rank-to-work FAIL; relativization PASS restricted, all nonrelativizing separation arrows OPEN; simultaneous DTISP NOT APPLICABLE to representation, forbidden-box transfer OPEN (same algorithm's polynomial space charged); deterministic configuration counting PASS upper-bound guard only. Affine, Horn, 2-SAT, unique solution, selector projection, field choice, circuits, sharing, auxiliary/padding all remain real cheap controls. /341 FAIL full logical UNSAT authority; /386 RESTRICTED.
+
+**PUBLISHED ARTIFACTS (readback verified on research branch; require postmerge main readback and issue #3 status):**
+- research/agents/tmr-4/2026-11-15_1455_TMR4_SIGNAL_HYPEREDGE_CUT_FACTORIZATION054.md
+- experiments/tmr/tmr4_circuit_signal_cut054.py
+- results/raw/tmr/2026-11-15_1455_TMR4_SIGNALCUT054_FULL_RAW_JSON_ZLIB_BASE64.txt
+- research/agents/tmr-4/handoff.md (append-only historical preservation)
+
+**CORPUS:** Current directive FIRST; proof1 root body readable SHA 06f7ebc8; proof2 SHA 930c5eed and main.tex SHA 6ac34c5d returned EMPTY bodies via connector, not presumed empty. AGENTS/CODEX/skill, all five TMR handoffs, issue #3, TMR-4/053, TMR-2/053, TMR-1/053, TMR-5/049, primary Kushilevitz-Nisan and structural circuit treewidth literature. Full local git checkout/preflight failed DNS, no Lean or root build. **TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE.** No root edits or schedule modifications.
+
+**NEXT SINGLE LEMMA:** Either a uniformly constructible input-variable partition or restricted circuit rewriting with bounded r* and charged discovery/wire overhead, or a cheap Horn/affine all-balanced-cut family disproving any implied hard-work conjecture. Unrestricted SAT circuit-to-machine transfer OPEN. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR4::2026-11-15_1455_PST
+
+---
+
 # TMR-4 CURRENT handoff | 2026-11-15 13:36 PST | ADAPTIVE-SWITCH-RECTANGLES053 /053
 
 **GOVERNING FIRST:** SAT compression/circuit directive 2026-11-15 main blob 7b8804dc7587abc5134055b5b0d16a143055ca5a. Tracks A/C; identities, Pacific schedules and ownership unchanged. P versus NP OPEN.
