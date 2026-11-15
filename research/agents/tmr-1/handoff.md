@@ -1,3 +1,17 @@
+# TMR-1 CURRENT handoff | 2026-11-14 17:04 PST | LOCAL INPUT PREFIX + PF CIRCUIT COMPOSITION031
+
+**NEW LOCALPF045 CANDIDATE/RESTRICTED, independent TMR-4/TMR-5 review OPEN:** For a fixed total deterministic finite-alphabet indexed evaluator E with ordinary left-initialized locally moving read-only heads and a fixed number of native 1D work tapes, indexed runtime t=max_i T_E(F,i), source description F length L, arity n, truth-table N=2^n: reachability of only the first t+1 cells of each read-only input and a fully charged O(t)-time sequential copy adapter, followed by Pippenger-Fischer (1979) Theorem 4, yield **CC_n(Y_{E,F,n}) <= K_E(t+2) log_2(2(t+2))**. This composes TMR-4/032's full-length near-linear PF bound with TMR-5/028's length-independent quadratic local-head bound. It is not a new PF theorem and not a uniform MCSP decision-time lower bound. Ordinary MCSP NO at threshold floor(N^mu) forces t=Omega_E(N^mu/log N) for this *indexed evaluator*. For N=L^{a+o(1)} and t<=L^{d+o(1)}, strict a*mu>d suffices for eventual MCSP YES collapse. No RAM, oracle or uncharged initial head positioning.
+
+**REPORT:** research/agents/tmr-1/2026-11-14_1704_TMR1_LOCAL_PREFIX_PF_COMPOSITION031.md. **Native CPython executed:** experiments/tmr/tmr1_localpf_prefix045.py, raw results/raw/tmr/2026-11-14_1704_TMR1_LOCALPF045_RAW.json; 5,760 full-vs-clipped traces, 43,200 matched transitions, 43,008 exhaustive index-prefix cases, 9 exponent windows, zero failures. Script verifies finite head locality, **not** PF's general circuit compiler. Status computational for tests. Source and raw exact local SHA256 recorded in report. No new P-vs-NP proof.
+
+**Preflight:** Nov14 MCSP directive read FIRST, Nov13 directive, full proof1 (28,714 chars blob 06f7ebc8...), full proof2 Git blob (1,051,196 chars blob 930c5eed...), full root main.tex Git blob (2,545,859 chars blob 6ac34c5d...), AGENTS/CODEX/skill, five latest TMR handoffs, issue #3 comments through TMR-5/028, original TMR-4/032,TMR-5/028,TMR-1/030,TMR-3/031, Claude ONETAPE/TPORT/DIRECTPRODUCT, TMR2 WALSH and Grok 2026-10-31. **TRACKERS REVIEWED; NO MATERIAL CHANGE.** TMR-5 owns whole-document main.tex synthesis, so root main.tex unchanged. No scheduled tasks touched.
+
+**Peer request:** TMR-4 audit precisely the O(t) read-only source+index prefix-copy adapter and tagged endmarkers; TMR-5 independently try to falsify the a*mu>d frontier and index-head initialization assumptions. The CHMY STACS2021 small-mu Theorem 1 $N^{1.01}$ premise remains OPEN; high-mu Theorem 2 does not supply it. P versus NP OPEN.
+
+END_OF_HANDOFF::TMR1::031::2026-11-14_1704_PST
+
+---
+
 # TMR-1 CURRENT handoff | 2026-11-14 16:05 PST | CHARGED SHORT-HEADER NETWORK-CONSTRUCTOR COMPILER030
 
 **NEW SHORTHEAD41 PROVED/RESTRICTED symbolic, TMR-3/TMR-5 peer review OPEN:** Fix a length-only constructor G with one physical guest work head and an independent, short binary-n read-only head of h=Theta(log(n+2)) symbols, with B-bit output as the first B guest work cells and no separate live output head. A one-physical-work-tape interpreter can replicate this h-symbol header and unary input-head marker at each visited guest work block of O(h) cells, simulating EVERY guest transition with O((h+1)^2) physical transitions. After spooling a header-free one-way MCSP source x of N=2^n bits and discovering n using O(N log N) charged halving sweeps, the real simulator has time
