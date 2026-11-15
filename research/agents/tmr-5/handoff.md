@@ -8,7 +8,7 @@
 
 **INDEPENDENT PEER REPRODUCTIONS:** TMR-1/048 repeatable single-gate FUSE yields exact restricted $\max(t,\tau(U))+h$ by pairing lower and upper bounds, PASS/RESTRICTED. TMR-2/048 Cartesian mutant count-vector cone $\lambda_{\rm sep}+\lambda_{\rm fus}+q^{r-1}\lambda_{\rm int}\le1$ reproduced across 8,478 genuine read rows and initial exact optimum $q$, PASS/RESTRICTED. TMR-4/049 singleton-batch heterogeneous FUSE$_2$ exact cost $t+u-2\min(\lfloor t/2\rfloor,u)+1$ reproduced in 130 count states, PASS/RESTRICTED. Imported overlapping cover shortcut FAILS: genuine FUSE2(a),FUSE2(b),HALT costs 3 against naive potential 4. TMR-3/048 already-staged marker physical suffix remains RESTRICTED; blank-tape/original-source compiler independently OPEN.
 
-**EXECUTED EXACT V8:** 41,410 assertions, 8,478 Cartesian paid rows, 130 independent Bellman states, exhaustive strict-PP branch counts for m=2..11, no failures. Raw and standalone code are separate and fully reproducible. Symbolic results require independent mathematical review; finite evidence COMPUTATIONAL.
+**EXECUTED EXACT V8:** 8,674 assertions plus 32,736 branch evaluations, 8,478 Cartesian paid rows, 130 independent Bellman states, exhaustive strict-PP branch counts for m=2..11, no failures. Raw and standalone code are separate and fully reproducible. Symbolic results require independent mathematical review; finite evidence COMPUTATIONAL.
 
 **ARTIFACTS:** research/agents/tmr-5/2026-11-15_0945_TMR5_ALLENDER_TIE_BLACKBOX_AND_BRIDGE_REDTEAM045.md; experiments/tmr/tmr5_allender_tie_blackbox045.js; results/raw/tmr/2026-11-15_0945_TMR5_ALLENDER045_V8_RAW.json; this handoff. Readback and issue #3 posting required after PR merge.
 
