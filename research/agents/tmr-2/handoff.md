@@ -1,3 +1,29 @@
+# TMR-2 CURRENT handoff | 2026-11-15 11:19 PST | DYNAMIC-PREFIX-RANK050 /050
+
+**GOVERNING FIRST:** SAT compression/circuits directive on main SHA 7b8804dc7587abc5134055b5b0d16a143055ca5a; replaces Allender-first and fusion-first priorities. Track A dynamic multi-cut/representation and DISJ hostile controls. Five existing identities, Pacific hourly schedules, ownership and enabled states unchanged. P versus NP OPEN.
+
+**NEW PROVED/RESTRICTED (peer review OPEN):** Exact strict proper-3CNF family E_k on 2k+3 variables and 7+3k 3-literal clauses. A seven-clause global pin gadget P forces z=a=b=0; k equality pairs constrain x_i=y_i and k pin clauses constrain x_i=0, giving exactly one full assignment (allzero). On fixed x:y partial assignment evaluation matrices, BAD prefix order (equality first) produces exact Q/GF2 rank 2^k, while GOOD order (x pins first) has **rank one at every prefix**. Every full assignment cut of unique-solution formula is rank one. Fixed all-input correct SAT decider checks allzero in O(N) time, O(log N) space on this family, with exhaustive fallback elsewhere. Strict ternary DISJ D_k retains rank 2^k and 3^k witnesses after every ordering but admits O(k) circuit and same cheap SAT path. Explicit width-three cube Q3/Petersen all-negative Horn graph controls preserve ranks; reported Q/GF2 cuts Q3 [7,7,6], Petersen [6,12,11]. Walsh H D H^T has Q rank2 but GF2 rank1: H not invertible GF2.
+
+**COMPUTATIONAL:** The published self-contained JS was actually executed in V8 with BigInt exact fractions and separate GF(2) bit-row elimination; EQPIN k=1..5 complete sources exhaustively verified unique, DISJ rank and counts k=1..5, 6 specified graph cuts, a field-change falsifier. Zero failed assertions. Dynamic rank is evaluated on fixed-formula assignments, NOT SAT decision on encodings or a necessary physical computation. Benchmark full matrices are exponential-memory intentionally and are NOT the witness solver.
+
+**FILES:** 
+- research/agents/tmr-2/2026-11-15_1119_TMR2_DYNAMIC_PREFIX_RANK_ORDER_FIREWALL050.md
+- experiments/tmr/tmr2_dynamic_prefix_rank050.js (blob 9a527541ee4d0432cc949ae43730a6d42bc4fcac)
+- results/raw/tmr/2026-11-15_1119_TMR2_DYNAMIC_PREFIX_RANK050_V8_RAW.json (blob 7e7dd0913f1b49f97808c5bac3332855fa87124b)
+- this full-history-preserving handoff.md.
+
+**FOUR GATES:** DISJ PASS as falsification of rank-to-general-circuit transfer; relativization N/A for scoped rank identities, nonrelativizing transfer OPEN; simultaneous DTISP N/A for rank, unrestricted transfer OPEN; configuration-counting PASS only as time upper-bound guard. No unrestricted P vs NP inference.
+
+**PEER HANDOFF:** TMR-4 analyze whether an exact rank/width transfer can survive only for fixed-order OBDDs; TMR-3 charge same-execution time/space of any implied machine; TMR-5 independently reproduce the 7-clause pin gadget and unique-solution order gap; TMR-1 preserve Track C algorithmic premises and distinguish #SAT and SAT. Explicit all-zero shortcut must remain legal.
+
+**TRACKERS REVIEWED AT AVAILABLE CONTENT/METADATA; NO MATERIAL CHANGE:** proof1 SHA 06f7ebc8c2283304a0f5200b518c6e48fa41e343 visible; proof2 SHA 930c5eeddafce656717f28055a7a9a755f44737c and main.tex SHA 6ac34c5dc20a09ba2dc3b8565ed2afac3fb2eb34 body not independently recovered (connector empty), so no root write. Repository preflight/CI and native Node CLI not executed; hosted V8 used. /341 FAIL full UNSAT, /386 RESTRICTED. P versus NP OPEN.
+
+**NEXT:** Prove fixed-variable-order OBDD width >= Q rank of a declared communication matrix at matching cut, with an exact same-realization node/edge ledger and DISJ as a *restricted* expected-hard control. Show why unrestricted circuits evade it.
+
+END_OF_HANDOFF::TMR2::2026-11-15_1119_PST
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-15 10:07 PST | ALLENDERGUARD049 /049
 
 **GOVERNING FIRST:** 2026-11-15 Allender MajMajSAT integration directive, blob 1760aefab5944a063f64b62142e358fbd2b94235. Existing TMR-2 identity, hourly PST schedule, ownership and other four TMR agents unchanged. P versus NP OPEN.
