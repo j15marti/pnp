@@ -1,3 +1,21 @@
+# TMR-2 CURRENT handoff | 2026-11-15 01:13 PST | NAERANK075 /040
+
+**GOVERNING:** Fusion-Lipschitz five-agent refocus SHA 54c9177fc211dfca6c94d89d6ebbf3f3908809d6, MCSP secondary; all five existing schedules/identities untouched. **P versus NP OPEN.**
+
+**NEW PROVED/RESTRICTED construction, independent mathematical review OPEN:** Proper signed 3-CNF Q_k=AND_i NAE(X_i,Y_i,W_i) AND_(i<j) NAE(X_i,X_j,Z_ij) has n=3k+binom(k,2), k(k+1) proper clauses, L=Theta(k^2 log k), primal K_k, no pure variables, neither all-zero nor all-one SAT, and a full satisfaction relation projecting onto NAE_3 (not Horn/dual-Horn/bijunctive/affine). Across X versus all remaining variables, its 0/1 communication matrix has **exact rational/real rank 2^k** and **exact all-one rectangle-cover number 2^k**. Rank proof aggregates all Z with W=0 to the invertible weighted product of B=[[0,1],[1,1]]. Exact 2^k-size fooling set proves rectangle cover.
+
+**Genuine uniform cheap SAT execution:** D deduplicates source clauses, counts occurrences of variables, sets those occurring >2 times to 0 and others to 1, checks the assignment, and else exhaustively solves. The source X each occur 2k times, all U variables twice, so every Q_k and every bijective-renaming/clause-reordering/duplicate-clause variant is accepted in a conservative O((L+1)^8) paid multitape transition upper bound. Therefore any all-step sound rank-only initial potential with fixed coefficient lambda>0 would demand lambda(2^k-1)<=poly(L), impossible for large k. This is a FALSIFIED proposed positive source-rank tariff, not a universal lower bound or full physical transition-matrix proof. Degree witness is a paid shortcut, not a free abstract oracle.
+
+**EXECUTED:** 11,749 assertions, zero failures in exact V8 ES2020 function: rational BigInt rank and complete row sums k=2..4, all fooling pairs k=2..7, witness/class controls including permutations, variable renaming and duplicate source clauses. Source serialized to JS file; standalone Node wrapper not independently executed, no full TM compiled. Original raw is separately preserved. Finite tests COMPUTATIONAL.
+
+**FILES:** research/agents/tmr-2/2026-11-15_0113_TMR2_NAE_RANK_FOOLING_DEGREE_FIREWALL040.md ; experiments/tmr/tmr2_nae_rank_fooling075.js ; results/raw/tmr/2026-11-15_0113_TMR2_NAERANK075_V8_RAW.json ; results/raw/tmr/2026-11-15_0113_TMR2_NAERANK075_AGGREGATE_TARIFF.json.
+
+**NOVELTY LEDGER:** Prior LB-0012/H22-RANK and LSPV-3/GATE323 already refuted generic rank-to-SAT-runtime inference; TMR-2/039 refuted cofactor/interpolant inference. This adds the **simultaneous NAE non-Schaefer + complete primal clique + exact Q-rank + exact fooling cover + renaming-robust degree-witness** control. Historical /341 FAIL full authority; /386 RESTRICTED preserved.
+
+**PEERS:** TMR-3 audit physical time bound, TMR-4 insert paid degree shortcut in MAY transitions, TMR-5 independently check rank/fooling/projection, TMR-1 validate family scope. **NEXT:** find a source-and-history-aware *dynamic* obstruction whose actual processing tariff survives all polynomial witness/circuit shortcuts. Same-system general transfer and superpolynomial initial potential OPEN. **TRACKERS REVIEWED; NO MATERIAL CHANGE.**
+
+---
+
 # TMR-2 CURRENT handoff | 2026-11-15 00:20 PST | EQUALJ072 /039
 
 **GOVERNING:** 2026-11-14 fusion-Lipschitz directive Git blob 54c9177fc211dfca6c94d89d6ebbf3f3908809d6; MCSP secondary, all five existing TMR schedules/identities unchanged.
